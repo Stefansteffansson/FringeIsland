@@ -1,0 +1,41 @@
+:root {
+  /* Brand Colors */
+  --color-primary: #1e3a8a;
+  /* Deep Blue */
+  --color-primary-light: #60a5fa;
+  /* Blue 400 */
+  --color-secondary: #06b6d4;
+  /* Cyan 500 */
+  --color-accent: #f97316;
+  /* Orange 500 */
+
+  /* Neutral Colors */
+  --color-bg-base: #ffffff;
+  /* Slate 50 */
+  --color-bg-card: #ffffff;
+  --color-text-main: #0f172a;
+  /* Slate 900 */
+  --color-text-muted: #64748b;
+  /* Slate 500 */
+  --color-border: #e2e8f0;
+  /* Slate 200 */
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Playfair Display', serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-base: #0f172a;
+    --color-bg-card: #1e293b;
+    --color-text-main: #f1f5f9;
+    --color-text-muted: #94a3b8;
+    --color-border: #334155;
+  }
+}
