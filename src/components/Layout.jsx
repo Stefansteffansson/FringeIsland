@@ -1,6 +1,6 @@
 import logo from '../assets/clinic-logo.png';
 
-const Layout = ({ children }) => {
+const Layout = ({ children, onLogout }) => {
   return (
     <div className="app-layout">
       <header className="main-header">
@@ -11,7 +11,7 @@ const Layout = ({ children }) => {
           <nav className="main-nav">
             <button className="btn btn-ghost">Översikt</button>
             <button className="btn btn-ghost">Patienter</button>
-            <button className="btn btn-ghost">Logga ut</button>
+            <button className="btn btn-ghost" onClick={onLogout}>Logga ut</button>
           </nav>
         </div>
       </header>

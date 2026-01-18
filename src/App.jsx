@@ -14,11 +14,15 @@ function App() {
     }
   };
 
+  const handleLogout = () => {
+    setUser(null);
+  };
+
   if (!user) {
     return <Home onLogin={handleLogin} />;
   }
 
-  return <Dashboard />;
+  return <Dashboard onLogout={handleLogout} />;
 }
 
 export default App

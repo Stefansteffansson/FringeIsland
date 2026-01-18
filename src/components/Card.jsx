@@ -1,14 +1,14 @@
 import React from 'react';
 
-const Card = ({ title, children, className = '' }) => {
-    return (
-        <div className={`card ${className}`}>
-            {title && <div className="card-header"><h3>{title}</h3></div>}
-            <div className="card-body">
-                {children}
-            </div>
+const Card = ({ title, children, className = '', ...props }) => {
+  return (
+    <div className={`card ${className}`} {...props}>
+      {title && <div className="card-header"><h3>{title}</h3></div>}
+      <div className="card-body">
+        {children}
+      </div>
 
-            <style>{`
+      <style>{`
         .card {
           background: var(--color-bg-card);
           border: 1px solid var(--color-border);
@@ -33,8 +33,8 @@ const Card = ({ title, children, className = '' }) => {
           padding: 1.5rem;
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };
 
 export default Card;
