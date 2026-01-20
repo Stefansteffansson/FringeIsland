@@ -261,9 +261,6 @@ CREATE TABLE user_group_roles (
   group_role_id UUID NOT NULL REFERENCES group_roles(id) ON DELETE CASCADE,
   assigned_by_user_id UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
   assigned_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  CONSTRAINT check_role_group_match CHECK (
-    group_role_id IN (SELECT id FROM group_roles WHERE group_id = user_group_roles.group_id)
-  ),
   UNIQUE (user_id, group_id, group_role_id)
 );
 
@@ -271,6 +268,26 @@ CREATE INDEX idx_ugr_user ON user_group_roles(user_id);
 CREATE INDEX idx_ugr_group ON user_group_roles(group_id);
 CREATE INDEX idx_ugr_role ON user_group_roles(group_role_id);
 CREATE INDEX idx_ugr_user_group ON user_group_roles(user_id, group_id);
+
+-- Add a trigger to validate that the role belongs to the correct group
+CREATE OR REPLACE FUNCTION validate_user_group_role()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM group_roles 
+    WHERE id = NEW.group_role_id 
+    AND group_id = NEW.group_id
+  ) THEN
+    RAISE EXCEPTION 'Role % does not belong to group %', NEW.group_role_id, NEW.group_id;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_user_group_role_match
+  BEFORE INSERT OR UPDATE ON user_group_roles
+  FOR EACH ROW
+  EXECUTE FUNCTION validate_user_group_role();
 
 
 -- ============================================
