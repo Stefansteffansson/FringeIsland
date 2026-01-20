@@ -1,109 +1,151 @@
-# CLAUDE.md
+# Changelog
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+All notable changes to the FringeIsland project will be documented in this file.
 
-## Project Overview
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-FringeIsland is an educational and training platform for personal development, leadership training, and team/organizational development. Users embark on "journeys" - structured learning experiences that can be taken solo, in pairs, or in groups.
+## [Unreleased]
 
-**Current Status**: Architecture & Planning phase (no code implemented yet)
+### Planned
+- Implement Next.js 14+ frontend with App Router
+- Set up Supabase authentication integration
+- Create initial UI components for user registration and login
+- Implement journey browsing and enrollment flows
+- Build group creation and management interfaces
 
-## Technology Stack
+---
 
-- **Frontend**: Next.js 14+ (App Router), TypeScript, React
-- **Backend**: Supabase (PostgreSQL + Auth + RLS + Real-time)
-- **Styling**: TBD (Tailwind CSS recommended)
-- **Hosting**: Vercel (frontend) + Supabase (backend)
+## [0.1.1] - 2026-01-20
 
-## Architecture Overview
+### Added
+- **Database Implementation**: Successfully deployed complete database schema to Supabase
+  - 13 tables created (all core and authorization tables)
+  - 40 permissions seeded into database
+  - 5 role templates seeded (Platform Admin, Group Leader, Travel Guide, Member, Observer)
+  - 4 group templates seeded (Small Team, Large Group, Organization, Learning Cohort)
+  - All indexes, triggers, and RLS policies successfully deployed
+  - Validation trigger added for user_group_roles to ensure role-group consistency
 
-The platform is built on three foundational concepts:
+### Fixed
+- Replaced CHECK constraint with trigger in `user_group_roles` table (PostgreSQL doesn't support subqueries in CHECK constraints)
+- Updated migration script with corrected user_group_roles validation approach
 
-### Core Entities
+### Technical Details
+- Database: Fully operational with 13 tables, RLS enabled on all tables
+- Seed Data: 40 permissions, 5 role templates, 4 group templates
+- Phase: Database Implementation ✅ Complete
 
-1. **Journeys** - Structured learning experiences (content templates, NOT organizational units)
-   - Users/groups enroll in journeys
-   - Types: predefined (Phase 1), user-created (Phase 2), dynamic/adaptive (Phase 3)
+---
 
-2. **Groups** - Flexible organizational units
-   - NO hard-coded group types (Team, Organization, etc.) - all are just "Groups" with optional labels
-   - Groups can contain users AND other groups (network-based, not just hierarchical)
-   - Multi-parent membership allowed
+## [0.1.0] - 2026-01-20
 
-3. **Authorization** - Three-layer permission model:
-   - Permissions (atomic capabilities like `invite_members`, `view_journey_content`)
-   - Role Templates (system-level blueprints: Platform Admin, Group Leader, Travel Guide, Member, Observer)
-   - Group Roles (instances per group, customizable)
+### Added
+- **Database Schema v2.0**: Complete PostgreSQL schema with proper dependency ordering
+  - Core tables: users, groups, group_memberships, journeys, journey_enrollments
+  - Authorization tables: permissions, role_templates, group_templates, role_template_permissions, group_template_roles, group_roles, group_role_permissions, user_group_roles
+  - Row Level Security (RLS) policies for all tables
+  - Comprehensive indexes for performance optimization
+  - Seed data for permissions, role templates, and group templates
+- **Migration Script**: `fringeisland_migration.sql` for automated database setup
+- **Architecture Documentation**:
+  - `ARCHITECTURE.md`: Overall system design and core concepts
+  - `DATABASE_SCHEMA.md`: Complete database schema with RLS policies
+  - `AUTHORIZATION.md`: Detailed permission system design
+  - `DOMAIN_ENTITIES.md`: Core business entities and relationships
+  - `ROADMAP.md`: Implementation phases and milestones
+  - `DEFERRED_DECISIONS.md`: Architectural decisions postponed to later phases
+- **Project Documentation**:
+  - `README.md`: Project overview, vision, and current status
+  - `CHANGELOG.md`: Version history and changes tracking
+  - `.gitignore`: Git ignore rules for Node.js and common editor files
+- **Supabase Project**: Created FringeIslandDB database instance
 
-### Key Architectural Decisions
+### Changed
+- Reorganized database table creation order to resolve foreign key dependency issues
+  - Moved `permissions`, `role_templates`, and `group_templates` before `groups`
+  - Ensured all referenced tables are created before tables that reference them
+- Updated documentation structure for better clarity and navigation
 
-- **ADR-001**: Journeys are content templates, not nodes in organizational hierarchy
-- **ADR-002**: Flexible group model with no hard-coded types
-- **ADR-003**: Two-tier role system (templates + group instances)
-- **ADR-004**: Permission inheritance is configurable per relationship (deferred to Phase 2)
-- **ADR-005**: Every group must have at least one Group Leader
-- **ADR-006**: Pairs are just 2-member groups (no special entity)
+### Technical Details
+- Stack: Next.js 14+, TypeScript, React, Supabase (PostgreSQL)
+- Database: PostgreSQL with Row Level Security
+- Authorization: Flexible node/group-based permission system
+- Phase: Architecture & Planning → Database Implementation
 
-### Authorization Rules
+---
 
-- Users can have multiple roles in the same group (permissions are additive/union)
-- Each group's roles are customizable independently
-- Group creator auto-assigned Group Leader role
-- Platform Admin is fallback if group has no leader
+## Project Phases
 
-## Database Schema
+### Phase 1: Foundation (Current)
+**Status**: In Progress  
+**Timeline**: January 2026
 
-See `docs/architecture/DATABASE_SCHEMA.md` for complete schema including:
+- [x] Complete architecture planning
+- [x] Design database schema
+- [x] Document authorization system
+- [x] Create comprehensive roadmap
+- [x] Set up Supabase project
+- [x] Implement database schema
+- [x] Verify RLS policies
+- [ ] Set up development environment
+- [ ] Initialize Next.js project
 
-**Core Tables**: users, groups, group_memberships, journeys, journey_enrollments
+### Phase 2: Core Platform (Planned)
+**Timeline**: February - March 2026
 
-**Authorization Tables**: permissions, role_templates, role_template_permissions, group_templates, group_template_roles, group_roles, group_role_permissions, user_group_roles
+- [ ] Implement authentication system
+- [ ] Build user profile management
+- [ ] Create group creation and management
+- [ ] Develop journey browsing and enrollment
+- [ ] Implement basic permissions and roles
 
-All tables use Row Level Security (RLS) policies for authorization enforcement.
+### Phase 3: Journey Experience (Planned)
+**Timeline**: April - May 2026
 
-## Development Commands
+- [ ] Build journey content delivery system
+- [ ] Implement progress tracking
+- [ ] Create facilitator tools
+- [ ] Add group journey features
+- [ ] Develop basic analytics
 
-*Commands will be added once implementation begins.*
+### Phase 4: Enhanced Features (Planned)
+**Timeline**: June - August 2026
 
-Planned setup (Next.js 14+ with Supabase):
-```bash
-# Install dependencies
-npm install
+- [ ] Add user-created journeys
+- [ ] Implement journey marketplace
+- [ ] Build communication features (forums, messaging)
+- [ ] Add feedback and review systems
+- [ ] Enhance analytics and reporting
 
-# Run development server
-npm run dev
+---
 
-# Run tests
-npm test
+## Version History Summary
 
-# Build for production
-npm run build
+- **v0.1.1** (2026-01-20): Database successfully implemented and deployed to Supabase
+- **v0.1.0** (2026-01-20): Initial architecture and database schema design
+- More versions to come as development progresses...
 
-# Database migrations (Supabase)
-npx supabase db push
-npx supabase db reset
-```
+---
 
-## Project Documentation
+## Notes
 
-- `docs/architecture/ARCHITECTURE.md` - System design and core concepts
-- `docs/architecture/DATABASE_SCHEMA.md` - Complete Supabase schema with RLS policies
-- `docs/architecture/AUTHORIZATION.md` - Permission system details
-- `docs/architecture/DOMAIN_ENTITIES.md` - Core business entities
-- `docs/planning/ROADMAP.md` - Implementation phases (4 phases)
-- `docs/planning/DEFERRED_DECISIONS.md` - Design decisions deferred to later phases
+### Versioning Strategy
+- **0.x.x**: Pre-release development versions
+- **1.0.0**: First production-ready release with core features
+- **x.y.z**: Major.Minor.Patch following semantic versioning
 
-## Implementation Phases
+### Contributing
+Currently in early development phase. Contribution guidelines will be added when the project reaches a stable state.
 
-1. **Phase 1 (MVP)**: Core platform with predefined journeys, groups, roles, basic forum/messaging
-2. **Phase 2**: User-created journeys, marketplace, enhanced collaboration
-3. **Phase 3**: Dynamic/adaptive journey paths
-4. **Phase 4**: Developer API and SDK
+### Database Migrations
+- Each database schema change will be documented with migration scripts
+- Migration files are located in `supabase/migrations/` directory
+- ✅ **Current migration**: `20260120_initial_schema.sql` (deployed successfully)
 
-## Key Implementation Notes
+---
 
-- Permission checks must happen at API route level AND be enforced via RLS policies (defense in depth)
-- Never rely only on frontend validation
-- Group memberships track both users AND groups as members (polymorphic via check constraint)
-- Journey enrollments are either for a user OR a group (never both)
-- JSONB fields used for extensible settings and journey content structure
+**Project**: FringeIsland  
+**Repository**: https://github.com/Stefansteffansson/FringeIsland  
+**Maintainer**: Stefan Steffansson  
+**License**: TBD
