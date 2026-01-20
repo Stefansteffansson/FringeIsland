@@ -1,27 +1,38 @@
 # FringeIsland
 
-**An educational and training platform for personal development, leadership training, and team/organizational development.**
+An educational and training platform for personal development, leadership training, and team/organizational development.
 
 ## 🎯 Vision
 
 FringeIsland enables users to embark on transformative "journeys" - structured learning experiences that can be taken solo, in pairs, or in groups. Like physical travel, these journeys combine exploration, exercise, and experience to foster growth and skill development.
 
-## 🏗️ Current Status
+## 📦 Current Status
 
-**Phase**: Architecture & Planning  
-**Stack**: Next.js 14+ (App Router) + TypeScript + React + Supabase
+**Phase**: Architecture & Planning → Database Implementation  
+**Stack**: Next.js 14+ (App Router) + TypeScript + React + Supabase  
+**Version**: 0.1.0 (See [CHANGELOG.md](CHANGELOG.md) for detailed version history)
 
 This project is in the architectural planning phase. We are designing a flexible, node-based authorization system that supports dynamic group structures and customizable permissions.
 
 ## 📚 Documentation
 
-Comprehensive documentation is available in the [`docs/`](./docs/) directory:
+Comprehensive documentation is available in the [docs/](docs/) directory:
 
-- **[Architecture Overview](./docs/architecture/ARCHITECTURE.md)** - System design and core concepts
-- **[Database Schema](./docs/architecture/DATABASE_SCHEMA.md)** - Supabase schema and RLS policies
-- **[Authorization System](./docs/architecture/AUTHORIZATION.md)** - Permission and role management
-- **[Domain Entities](./docs/architecture/DOMAIN_ENTITIES.md)** - Core business entities
-- **[Roadmap](./docs/planning/ROADMAP.md)** - Implementation phases
+### Architecture Documentation
+- [Architecture Overview](docs/architecture/ARCHITECTURE.md) - System design and core concepts
+- [Database Schema](docs/architecture/DATABASE_SCHEMA.md) - Supabase schema and RLS policies
+- [Authorization System](docs/architecture/AUTHORIZATION.md) - Permission and role management
+- [Domain Entities](docs/architecture/DOMAIN_ENTITIES.md) - Core business entities
+
+### Planning Documentation
+- [Roadmap](docs/planning/ROADMAP.md) - Implementation phases and milestones
+- [Deferred Decisions](docs/planning/DEFERRED_DECISIONS.md) - Architectural decisions postponed to later phases
+
+### Database Migrations
+- [Initial Schema](supabase/migrations/20260120_initial_schema.sql) - Complete database setup script with tables, indexes, RLS policies, and seed data
+
+### Project Management
+- [CHANGELOG.md](CHANGELOG.md) - Version history and detailed change log
 
 ## 🚀 Key Features (Planned)
 
@@ -63,7 +74,25 @@ Flexible organizational units (teams, companies, cohorts) with customizable memb
 - **Backend**: Supabase (PostgreSQL + Auth + RLS + Real-time)
 - **Repository**: [github.com/Stefansteffansson/FringeIsland](https://github.com/Stefansteffansson/FringeIsland)
 
-## 📖 Getting Started
+## 🏁 Getting Started
+
+### Database Setup
+
+1. **Create Supabase Project**
+   - Sign up at [supabase.com](https://supabase.com)
+   - Create a new project
+
+2. **Run Initial Migration**
+   - Open the Supabase SQL Editor
+   - Copy the contents of [`supabase/migrations/20260120_initial_schema.sql`](supabase/migrations/20260120_initial_schema.sql)
+   - Execute the script to create all tables, indexes, RLS policies, and seed data
+
+3. **Verify Setup**
+   - Check that all tables are created
+   - Verify RLS policies are enabled
+   - Confirm seed data is present (permissions, role templates, group templates)
+
+### Development Environment (Coming Soon)
 
 Documentation is being actively developed. Implementation will begin once architectural planning is complete.
 
