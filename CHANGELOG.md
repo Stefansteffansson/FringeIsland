@@ -16,6 +16,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.1] - 2026-01-20
+
+### Added
+- **Database Implementation**: Successfully deployed complete database schema to Supabase
+  - 13 tables created (all core and authorization tables)
+  - 40 permissions seeded into database
+  - 5 role templates seeded (Platform Admin, Group Leader, Travel Guide, Member, Observer)
+  - 4 group templates seeded (Small Team, Large Group, Organization, Learning Cohort)
+  - All indexes, triggers, and RLS policies successfully deployed
+  - Validation trigger added for user_group_roles to ensure role-group consistency
+
+### Fixed
+- Replaced CHECK constraint with trigger in `user_group_roles` table (PostgreSQL doesn't support subqueries in CHECK constraints)
+- Updated migration script with corrected user_group_roles validation approach
+
+### Technical Details
+- Database: Fully operational with 13 tables, RLS enabled on all tables
+- Seed Data: 40 permissions, 5 role templates, 4 group templates
+- Phase: Database Implementation ✅ Complete
+
+---
+
 ## [0.1.0] - 2026-01-20
 
 ### Added
@@ -64,8 +86,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [x] Document authorization system
 - [x] Create comprehensive roadmap
 - [x] Set up Supabase project
-- [ ] Implement database schema
-- [ ] Verify RLS policies
+- [x] Implement database schema
+- [x] Verify RLS policies
 - [ ] Set up development environment
 - [ ] Initialize Next.js project
 
@@ -100,7 +122,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History Summary
 
-- **v0.1.0** (2026-01-20): Initial architecture and database schema
+- **v0.1.1** (2026-01-20): Database successfully implemented and deployed to Supabase
+- **v0.1.0** (2026-01-20): Initial architecture and database schema design
 - More versions to come as development progresses...
 
 ---
@@ -117,8 +140,8 @@ Currently in early development phase. Contribution guidelines will be added when
 
 ### Database Migrations
 - Each database schema change will be documented with migration scripts
-- Migration files are located in `/migrations` directory (to be created)
-- Current migration: `fringeisland_migration.sql` (initial schema)
+- Migration files are located in `supabase/migrations/` directory
+- ✅ **Current migration**: `20260120_initial_schema.sql` (deployed successfully)
 
 ---
 
@@ -126,3 +149,5 @@ Currently in early development phase. Contribution guidelines will be added when
 **Repository**: https://github.com/Stefansteffansson/FringeIsland  
 **Maintainer**: Stefan Steffansson  
 **License**: TBD
+
+** EOF **
