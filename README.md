@@ -8,11 +8,11 @@ FringeIsland enables users to embark on transformative "journeys" - structured l
 
 ## 📦 Current Status
 
-**Phase**: Architecture & Planning → Database Implementation  
-**Stack**: Next.js 14+ (App Router) + TypeScript + React + Supabase  
-**Version**: 0.1.0 (See [CHANGELOG.md](CHANGELOG.md) for detailed version history)
+**Phase**: Phase 1 Foundation ✅ Complete → Phase 2 Core Platform  
+**Stack**: Next.js 16.1 (App Router) + TypeScript + React + Tailwind CSS + Supabase  
+**Version**: 0.1.2 (See [CHANGELOG.md](CHANGELOG.md) for detailed version history)
 
-This project is in the architectural planning phase. We are designing a flexible, node-based authorization system that supports dynamic group structures and customizable permissions.
+Phase 1 is complete! The database is fully deployed, Next.js is configured, and Supabase integration is working. Ready to begin building authentication and core features.
 
 ## 📚 Documentation
 
@@ -76,6 +76,11 @@ Flexible organizational units (teams, companies, cohorts) with customizable memb
 
 ## 🏁 Getting Started
 
+### Prerequisites
+- Node.js 18.17 or later
+- npm or yarn
+- Supabase account
+
 ### Database Setup
 
 1. **Create Supabase Project**
@@ -88,13 +93,40 @@ Flexible organizational units (teams, companies, cohorts) with customizable memb
    - Execute the script to create all tables, indexes, RLS policies, and seed data
 
 3. **Verify Setup**
-   - Check that all tables are created
+   - Check that all 13 tables are created
    - Verify RLS policies are enabled
-   - Confirm seed data is present (permissions, role templates, group templates)
+   - Confirm seed data is present (40 permissions, 5 role templates, 4 group templates)
 
-### Development Environment (Coming Soon)
+### Local Development
 
-Documentation is being actively developed. Implementation will begin once architectural planning is complete.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Stefansteffansson/FringeIsland.git
+   cd FringeIsland
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   - Create a `.env.local` file in the root directory
+   - Add your Supabase credentials:
+     ```
+     NEXT_PUBLIC_SUPABASE_URL=your-project-url
+     NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+     ```
+   - Get these from Supabase Dashboard → Settings → API
+
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser**
+   - Navigate to [http://localhost:3000](http://localhost:3000)
+   - You should see the database connection test page
 
 ## 🤝 Contributing
 

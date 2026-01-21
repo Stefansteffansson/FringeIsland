@@ -8,11 +8,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Implement Next.js 14+ frontend with App Router
 - Set up Supabase authentication integration
 - Create initial UI components for user registration and login
 - Implement journey browsing and enrollment flows
 - Build group creation and management interfaces
+
+---
+
+## [0.1.2] - 2026-01-21
+
+### Added
+- **Next.js Project Setup**: Complete Next.js 14+ initialization with App Router
+  - TypeScript configuration with strict mode
+  - Tailwind CSS for styling
+  - ESLint for code quality
+  - Project structure organized in repository root
+- **Supabase Integration**: Full client/server integration
+  - Client-side Supabase client (`lib/supabase/client.ts`)
+  - Server-side Supabase client with cookie handling (`lib/supabase/server.ts`)
+  - Proxy middleware for session management (`proxy.ts`)
+  - Environment variables configured (`.env.local`)
+- **Database Connection**: Verified and tested
+  - Successfully fetching data from Supabase
+  - RLS policies working correctly
+  - Test page displaying permissions from database
+
+### Changed
+- Updated `.gitignore` with Next.js-specific entries
+  - Added `.next`, `out`, `build` directories
+  - Added environment variable files
+  - Added TypeScript build info
+- Migrated from `middleware.ts` to `proxy.ts` (Next.js 16 convention)
+- Updated home page (`app/page.tsx`) with database connection test
+
+### Technical Details
+- Next.js: 16.1.4 with Turbopack
+- Supabase packages: `@supabase/supabase-js`, `@supabase/ssr`
+- Development server: Running on http://localhost:3000
+- **Phase 1: Foundation** ✅ **COMPLETE**
 
 ---
 
@@ -77,8 +110,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Project Phases
 
-### Phase 1: Foundation (Current)
-**Status**: In Progress  
+### Phase 1: Foundation ✅ COMPLETE
+**Status**: Complete  
 **Timeline**: January 2026
 
 - [x] Complete architecture planning
@@ -88,8 +121,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [x] Set up Supabase project
 - [x] Implement database schema
 - [x] Verify RLS policies
-- [ ] Set up development environment
-- [ ] Initialize Next.js project
+- [x] Set up development environment
+- [x] Initialize Next.js project
+- [x] Configure Supabase integration
+- [x] Test database connection
 
 ### Phase 2: Core Platform (Planned)
 **Timeline**: February - March 2026
@@ -122,6 +157,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History Summary
 
+- **v0.1.2** (2026-01-21): Phase 1 complete - Next.js setup and Supabase integration working
 - **v0.1.1** (2026-01-20): Database successfully implemented and deployed to Supabase
 - **v0.1.0** (2026-01-20): Initial architecture and database schema design
 - More versions to come as development progresses...
@@ -149,5 +185,3 @@ Currently in early development phase. Contribution guidelines will be added when
 **Repository**: https://github.com/Stefansteffansson/FringeIsland  
 **Maintainer**: Stefan Steffansson  
 **License**: TBD
-
-** EOF **
