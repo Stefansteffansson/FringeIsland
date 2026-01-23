@@ -1,3 +1,4 @@
+
 # Changelog
 
 All notable changes to the FringeIsland project will be documented in this file.
@@ -8,10 +9,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Set up Supabase authentication integration
-- Create initial UI components for user registration and login
-- Implement journey browsing and enrollment flows
-- Build group creation and management interfaces
+- User profile editing and avatar upload
+- Group creation and management interfaces
+- Journey browsing and enrollment flows
+- Basic permissions and roles UI
+
+---
+
+## [0.2.0] - 2026-01-23
+
+### Added
+- **Complete Authentication System**: Full Supabase Auth integration
+  - User registration (signup) with email, password, and display name
+  - User login with email/password authentication
+  - User logout functionality
+  - Session management with automatic persistence
+  - Protected routes (profile page with redirect logic)
+  - Auth context (`AuthContext`) for global state management
+  - `useAuth()` hook for accessing auth state in components
+- **Auth UI Components**:
+  - Reusable `AuthForm` component for login and signup
+  - Login page at `/login` route
+  - Signup page at `/signup` route
+  - Profile page at `/profile` route (protected)
+  - Updated homepage with auth-aware navigation
+- **Database Triggers for User Lifecycle**:
+  - Automatic user profile creation trigger on signup
+  - Soft delete trigger when user account is deleted
+  - Users marked as `is_active = false` instead of hard deletion
+- **Database Schema Fixes**:
+  - Fixed user creation trigger to use `full_name` column (not `display_name`)
+  - Changed `users.auth_user_id` constraint from CASCADE to SET NULL
+  - Changed related table constraints (user_group_roles, group_memberships, journey_enrollments) from CASCADE to RESTRICT
+- **Security Enhancements**:
+  - Enabled Row Level Security (RLS) on users table
+  - Added RLS policies for user data access (view and update own profile)
+  - Users can only access their own profile data
+- **Documentation**:
+  - Complete authentication implementation guide
+  - Migration file: `20260123_fix_user_trigger_and_rls.sql`
+
+### Changed
+- Updated `app/layout.tsx` to wrap app with AuthProvider
+- Updated `app/page.tsx` with auth-aware navigation and welcome messages
+- Updated `lib/auth/AuthContext.tsx` - removed automatic profile creation (now handled by database trigger)
+
+### Technical Details
+- Authentication: Supabase Auth with email/password
+- User lifecycle: Database triggers for creation and soft deletion
+- Protected routes: Client-side redirect logic with useAuth hook
+- **Phase 2: Core Platform** - Authentication ✅ COMPLETE (20% of Phase 2)
 
 ---
 
@@ -126,14 +173,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [x] Configure Supabase integration
 - [x] Test database connection
 
-### Phase 2: Core Platform (Planned)
+### Phase 2: Core Platform (In Progress - 20% Complete)
 **Timeline**: February - March 2026
 
-- [ ] Implement authentication system
+- [x] **Implement authentication system** ✅ COMPLETE
+  - [x] User signup with email/password
+  - [x] User login functionality
+  - [x] User logout functionality
+  - [x] Session management
+  - [x] Protected routes
+  - [x] Auth context and hooks
+  - [x] Database triggers for user lifecycle
+  - [x] RLS security policies
 - [ ] Build user profile management
+  - [ ] Profile editing functionality
+  - [ ] Avatar upload
+  - [ ] Profile page enhancements
 - [ ] Create group creation and management
+  - [ ] Create new groups
+  - [ ] List and browse groups
+  - [ ] Member management
+  - [ ] Role assignment
 - [ ] Develop journey browsing and enrollment
-- [ ] Implement basic permissions and roles
+  - [ ] Journey catalog
+  - [ ] Journey details
+  - [ ] Enrollment functionality
+- [ ] Implement basic permissions and roles UI
+  - [ ] Display user roles
+  - [ ] Permission-based UI elements
+  - [ ] Role management interface
 
 ### Phase 3: Journey Experience (Planned)
 **Timeline**: April - May 2026
@@ -157,6 +225,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History Summary
 
+- **v0.2.0** (2026-01-23): Authentication system complete - signup, login, logout, protected routes, soft delete
 - **v0.1.2** (2026-01-21): Phase 1 complete - Next.js setup and Supabase integration working
 - **v0.1.1** (2026-01-20): Database successfully implemented and deployed to Supabase
 - **v0.1.0** (2026-01-20): Initial architecture and database schema design
@@ -177,7 +246,9 @@ Currently in early development phase. Contribution guidelines will be added when
 ### Database Migrations
 - Each database schema change will be documented with migration scripts
 - Migration files are located in `supabase/migrations/` directory
-- ✅ **Current migration**: `20260120_initial_schema.sql` (deployed successfully)
+- **Migrations**:
+  - ✅ `20260120_initial_schema.sql` - Initial database setup (Phase 1)
+  - ✅ `20260123_fix_user_trigger_and_rls.sql` - User lifecycle management and RLS (Phase 2)
 
 ---
 
