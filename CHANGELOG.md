@@ -1,4 +1,3 @@
-
 # Changelog
 
 All notable changes to the FringeIsland project will be documented in this file.
@@ -9,10 +8,96 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- User profile editing and avatar upload
 - Group creation and management interfaces
 - Journey browsing and enrollment flows
 - Basic permissions and roles UI
+
+---
+
+## [0.2.2] - 2026-01-24
+
+### Added
+- **Avatar Upload Feature**: Complete profile picture functionality
+  - Upload images (JPG, PNG, WebP) up to 2MB
+  - Real-time image preview before upload
+  - Upload to Supabase Storage (`avatars` bucket)
+  - Circular avatar display on profile page (96px)
+  - Avatar preview on edit page (128px)
+  - Replace existing avatar with new image
+  - Delete avatar functionality
+  - Default placeholder (👤 emoji) when no avatar set
+  - File validation (type and size)
+  - Progress indicators during upload
+  - Error handling with user-friendly messages
+- **Supabase Storage Integration**:
+  - Created `avatars` storage bucket
+  - Row Level Security policies for upload, update, delete, and public read
+  - User-specific folder structure (`{user_id}/avatar.{ext}`)
+  - Upsert functionality (replaces old avatar automatically)
+- **Next.js Configuration**:
+  - Added Supabase domain to `remotePatterns` for Image component
+  - Configured image optimization for avatar display
+
+### Changed
+- Updated profile display page (`app/profile/page.tsx`)
+  - Added circular avatar with 4px gray border
+  - Avatar positioned next to user name in header
+  - Improved layout with flex positioning
+  - Default placeholder if no avatar
+- Updated profile edit page (`app/profile/edit/page.tsx`)
+  - Added "Profile Picture" section at top
+  - Separated "Profile Picture" and "Profile Information" into distinct cards
+  - Integrated AvatarUpload component
+  - Real-time avatar preview updates
+- Updated `next.config.ts`
+  - Added Supabase storage domain to allowed image sources
+  - Configured remote patterns for avatar images
+
+### Technical Details
+- Avatar storage: Supabase Storage bucket with RLS policies
+- Image optimization: Next.js Image component with proper configuration
+- File structure: `avatars/{user_id}/avatar.{ext}` for organization
+- Security: Users can only upload/delete their own avatars
+- **Phase 2: Core Platform** - Avatar Upload ✅ COMPLETE (40% of Phase 2)
+
+---
+
+## [0.2.1] - 2026-01-24
+
+### Added
+- **User Profile Management**: Complete profile editing functionality
+  - Profile edit page at `/profile/edit` route
+  - Edit full name (required, min 2 characters, max 100 characters)
+  - Edit bio (optional, max 500 characters)
+  - Character counter for bio field
+  - Form validation with user-friendly error messages
+  - Success messages with automatic redirect after save
+  - Cancel button to return to profile without saving
+- **Enhanced Profile Display**:
+  - Improved profile page layout with better styling
+  - Display full name, email, bio, and account creation date
+  - "Edit Profile" button for easy access to editing
+  - Placeholder sections for upcoming features (avatar, groups, journeys)
+  - Empty state message when bio is not set
+- **New Components**:
+  - `ProfileEditForm` component (`components/profile/ProfileEditForm.tsx`)
+  - Reusable form component with validation and error handling
+  - Loading states during save operation
+  - Disabled form fields while saving to prevent double submission
+
+### Changed
+- Updated profile page (`app/profile/page.tsx`) with enhanced UI
+  - Better visual hierarchy and spacing
+  - Gradient background matching app theme
+  - Improved button styling and layout
+  - Added "Coming Soon" feature preview section
+
+### Technical Details
+- Profile data persisted to Supabase `users` table
+- Client-side validation before database update
+- Automatic timestamp update (`updated_at`) on profile save
+- Uses existing RLS policies (users can only edit their own profile)
+- **Phase 2: Core Platform** - Profile Management ✅ COMPLETE (30% of Phase 2)
 
 ---
 
@@ -173,7 +258,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [x] Configure Supabase integration
 - [x] Test database connection
 
-### Phase 2: Core Platform (In Progress - 20% Complete)
+### Phase 2: Core Platform (In Progress - 40% Complete)
 **Timeline**: February - March 2026
 
 - [x] **Implement authentication system** ✅ COMPLETE
@@ -184,75 +269,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [x] Protected routes
   - [x] Auth context and hooks
   - [x] Database triggers for user lifecycle
-  - [x] RLS security policies
-- [ ] Build user profile management
-  - [ ] Profile editing functionality
-  - [ ] Avatar upload
-  - [ ] Profile page enhancements
-- [ ] Create group creation and management
-  - [ ] Create new groups
-  - [ ] List and browse groups
-  - [ ] Member management
+
+- [x] **User profile management** ✅ COMPLETE
+  - [x] Profile editing functionality
+  - [x] Edit full name and bio
+  - [x] Form validation
+  - [x] Enhanced profile display
+
+- [x] **Avatar upload** ✅ COMPLETE
+  - [x] Image upload to Supabase Storage
+  - [x] Avatar display on profile
+  - [x] Delete/replace avatar
+  - [x] File validation
+
+- [ ] **Group management** (Next Up)
+  - [ ] Group creation
+  - [ ] Member invitation
   - [ ] Role assignment
-- [ ] Develop journey browsing and enrollment
+  - [ ] Group settings
+
+- [ ] **Journey browsing**
   - [ ] Journey catalog
   - [ ] Journey details
-  - [ ] Enrollment functionality
-- [ ] Implement basic permissions and roles UI
+  - [ ] Enrollment
+
+- [ ] **Basic permissions UI**
   - [ ] Display user roles
   - [ ] Permission-based UI elements
-  - [ ] Role management interface
 
 ### Phase 3: Journey Experience (Planned)
-**Timeline**: April - May 2026
-
-- [ ] Build journey content delivery system
-- [ ] Implement progress tracking
-- [ ] Create facilitator tools
-- [ ] Add group journey features
-- [ ] Develop basic analytics
+**Timeline**: Q2 2026
 
 ### Phase 4: Enhanced Features (Planned)
-**Timeline**: June - August 2026
-
-- [ ] Add user-created journeys
-- [ ] Implement journey marketplace
-- [ ] Build communication features (forums, messaging)
-- [ ] Add feedback and review systems
-- [ ] Enhance analytics and reporting
-
----
-
-## Version History Summary
-
-- **v0.2.0** (2026-01-23): Authentication system complete - signup, login, logout, protected routes, soft delete
-- **v0.1.2** (2026-01-21): Phase 1 complete - Next.js setup and Supabase integration working
-- **v0.1.1** (2026-01-20): Database successfully implemented and deployed to Supabase
-- **v0.1.0** (2026-01-20): Initial architecture and database schema design
-- More versions to come as development progresses...
-
----
-
-## Notes
-
-### Versioning Strategy
-- **0.x.x**: Pre-release development versions
-- **1.0.0**: First production-ready release with core features
-- **x.y.z**: Major.Minor.Patch following semantic versioning
-
-### Contributing
-Currently in early development phase. Contribution guidelines will be added when the project reaches a stable state.
-
-### Database Migrations
-- Each database schema change will be documented with migration scripts
-- Migration files are located in `supabase/migrations/` directory
-- **Migrations**:
-  - ✅ `20260120_initial_schema.sql` - Initial database setup (Phase 1)
-  - ✅ `20260123_fix_user_trigger_and_rls.sql` - User lifecycle management and RLS (Phase 2)
-
----
-
-**Project**: FringeIsland  
-**Repository**: https://github.com/Stefansteffansson/FringeIsland  
-**Maintainer**: Stefan Steffansson  
-**License**: TBD
+**Timeline**: Q3-Q4 2026

@@ -28,7 +28,18 @@ export async function updateSession(request: NextRequest) {
   )
 
   // Refresh session if expired
-  await supabase.auth.getUser()
+  try {
+    await supabase.auth.getUser()
+  } catch (err: unknown) {
+    // Supabase may throw when a refresh token is missing (e.g. no session yet).
+    // Ignore that specific case to avoid noisy logs during dev/startup.
+    const e = err as { code?: string; status?: number }
+    if (e?.code === 'refresh_token_not_found' || e?.status === 400) {
+      // harmless — no session to refresh
+    } else {
+      throw err
+    }
+  }
 
   return supabaseResponse
 }

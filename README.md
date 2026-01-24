@@ -8,11 +8,22 @@ FringeIsland enables users to embark on transformative "journeys" - structured l
 
 ## 📦 Current Status
 
-**Phase**: Phase 2 Core Platform (20% Complete)  
+**Phase**: Phase 2 Core Platform (40% Complete)  
 **Stack**: Next.js 16.1 (App Router) + TypeScript + React + Tailwind CSS + Supabase  
-**Version**: 0.2.0 (See [CHANGELOG.md](CHANGELOG.md) for detailed version history)
+**Version**: 0.2.2 (See [CHANGELOG.md](CHANGELOG.md) for detailed version history)
 
 ### ✅ Recently Completed
+**Avatar Upload** (January 24, 2026):
+- Upload profile pictures to Supabase Storage
+- Circular avatar display with borders
+- Replace and delete avatar functionality
+- File validation and error handling
+
+**User Profile Management** (January 24, 2026):
+- Profile editing with full name and bio
+- Form validation and character limits
+- Enhanced profile display
+
 **Authentication System** (January 23, 2026):
 - User signup, login, and logout
 - Session management with protected routes
@@ -21,7 +32,7 @@ FringeIsland enables users to embark on transformative "journeys" - structured l
 - Auth context and hooks for state management
 
 ### 🚀 Ready for Development
-The foundation is complete and authentication is working. Ready to build user profiles, groups, and journeys!
+The foundation is complete, authentication is working, and users can fully manage their profiles including avatars. Next up: groups and journeys!
 
 ## 📚 Documentation
 
@@ -51,19 +62,28 @@ Comprehensive documentation is available in the [docs/](docs/) directory:
 - Row Level Security on all tables
 - Flexible node/group-based authorization system
 - Next.js 16.1 with TypeScript and Tailwind CSS
-- Supabase integration (database + auth)
+- Supabase integration (database + auth + storage)
 
-### ✅ Phase 2: Authentication (Complete)
-- User signup with email/password and display name
-- User login and logout
-- Protected routes with automatic redirects
-- Session persistence across page refreshes
-- Soft delete (users marked inactive, not deleted)
-- Auth context and hooks for global state
+### ✅ Phase 2: Authentication & Profile (In Progress - 40% Complete)
 
-### 🔄 Phase 2: In Progress (Next Features)
-- User profile editing and avatar upload
-- Group creation and management
+**Completed:**
+- ✅ User signup with email/password and display name
+- ✅ User login and logout
+- ✅ Protected routes with automatic redirects
+- ✅ Session persistence across page refreshes
+- ✅ Soft delete (users marked inactive, not deleted)
+- ✅ Auth context and hooks for global state
+- ✅ Profile editing (full name and bio)
+- ✅ Form validation and error handling
+- ✅ Enhanced profile display
+- ✅ Avatar upload to Supabase Storage
+- ✅ Avatar display (circular, bordered)
+- ✅ Replace and delete avatar
+- ✅ File validation (type, size)
+- ✅ Default placeholder when no avatar
+
+**Next Up:**
+- 🔄 Group creation and management
 - Journey browsing and enrollment
 - Basic permissions and roles UI
 
@@ -88,138 +108,133 @@ Structured learning experiences that users can complete solo or collaboratively.
 Flexible organizational units (teams, companies, cohorts) with customizable membership and permissions. Groups can contain users and other groups ("member of" relationships).
 
 ### Roles & Permissions
-- **Role Templates**: System-level blueprints (Admin, Group Leader, Travel Guide, Member, Observer)
-- **Group Roles**: Instance of a role within a specific group with customizable permissions
-- **Permissions**: Atomic capabilities (e.g., `invite_members`, `view_journey_content`)
+Fine-grained authorization system with role templates and group-specific instances. Permissions are context-based and customizable per group.
 
-## 🛠️ Technology Stack
+## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 16.1 with App Router, TypeScript, React, Tailwind CSS
-- **Backend**: Supabase (PostgreSQL + Auth + RLS + Real-time)
-- **Authentication**: Supabase Auth with email/password
-- **Database**: PostgreSQL with Row Level Security
-- **Repository**: [github.com/Stefansteffansson/FringeIsland](https://github.com/Stefansteffansson/FringeIsland)
+- **Frontend**: Next.js 16.1 (App Router), React, TypeScript, Tailwind CSS
+- **Backend**: Supabase (PostgreSQL, Auth, Storage)
+- **Image Optimization**: Next.js Image component with remote patterns
+- **Deployment**: Vercel (planned)
+- **Version Control**: Git + GitHub
 
-## 🏁 Getting Started
+## 📋 Getting Started
 
 ### Prerequisites
-- Node.js 18.17 or later
-- npm or yarn
+- Node.js 18+ installed
+- npm or yarn package manager
 - Supabase account
 
-### Database Setup
+### Installation
 
-1. **Create Supabase Project**
-   - Sign up at [supabase.com](https://supabase.com)
-   - Create a new project
-
-2. **Run Migrations**
-   - Open the Supabase SQL Editor
-   - Run migrations in order:
-     1. `supabase/migrations/20260120_initial_schema.sql` - Initial setup
-     2. `supabase/migrations/20260123_fix_user_trigger_and_rls.sql` - User lifecycle
-
-3. **Verify Setup**
-   - Check that all 13 tables are created
-   - Verify RLS policies are enabled
-   - Confirm seed data is present (40 permissions, 5 role templates, 4 group templates)
-   - Test triggers: Sign up a user and verify profile is created automatically
-
-### Local Development
-
-1. **Clone the repository**
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/Stefansteffansson/FringeIsland.git
    cd FringeIsland
    ```
 
-2. **Install dependencies**
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3. **Set up environment variables**
-   - Create a `.env.local` file in the root directory
-   - Add your Supabase credentials:
-     ```
-     NEXT_PUBLIC_SUPABASE_URL=your-project-url
-     NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-     ```
-   - Get these from Supabase Dashboard → Settings → API
+3. **Configure environment variables:**
+   Create a `.env.local` file in the root directory:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
 
-4. **Run the development server**
+4. **Set up Supabase Storage** (for avatars):
+   - Create an `avatars` bucket (public)
+   - Set up RLS policies (see documentation)
+
+5. **Configure Next.js for images:**
+   Update `next.config.ts` to include your Supabase domain in `remotePatterns`
+
+6. **Run the development server:**
    ```bash
    npm run dev
    ```
 
-5. **Open your browser**
-   - Navigate to [http://localhost:3000](http://localhost:3000)
-   - Try creating an account at `/signup`
-   - Log in at `/login`
-   - View your profile at `/profile`
+7. **Open your browser:**
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 🧪 Testing Authentication
+### Current Features
 
-### Sign Up Flow
-1. Go to http://localhost:3000/signup
-2. Enter email, password, and display name
-3. Click "Sign Up"
-4. Should redirect to `/profile`
-5. Profile should show your information
+**Authentication:**
+- Sign up at `/signup`
+- Sign in at `/login`
+- View profile at `/profile` (protected)
 
-### Sign In Flow
-1. Go to http://localhost:3000/login
-2. Enter your credentials
-3. Should redirect to `/profile`
+**Profile Management:**
+- Edit profile at `/profile/edit`
+- Update full name and bio
+- Upload profile picture
+- Replace or delete avatar
+- View profile information with avatar
 
-### Protected Routes
-1. While signed out, try to access http://localhost:3000/profile
-2. Should automatically redirect to `/login`
+## 📖 Project Structure
 
-### Soft Delete
-1. Sign up a test user
-2. Go to Supabase Dashboard → Authentication → Users
-3. Delete the user
-4. Go to Table Editor → users table
-5. User should still exist with `is_active = false`
-
-## 📊 Database Structure
-
-### Core Tables
-- `users` - User profiles and authentication data
-- `groups` - Organizational units (teams, companies, cohorts)
-- `group_memberships` - User-to-group relationships
-- `journeys` - Learning experience templates
-- `journey_enrollments` - User journey participation
-
-### Authorization Tables
-- `permissions` - Atomic capabilities (40 seeded)
-- `role_templates` - System-level role blueprints (5 seeded)
-- `group_templates` - Organizational templates (4 seeded)
-- `role_template_permissions` - Template-to-permission mappings
-- `group_template_roles` - Template default roles
-- `group_roles` - Group-specific role instances
-- `group_role_permissions` - Role-specific permissions
-- `user_group_roles` - User role assignments
-
-## 🔐 Security Features
-
-- **Row Level Security (RLS)**: Enabled on all tables
-- **Soft Delete**: Users marked inactive instead of deleted
-- **Auth Triggers**: Automatic profile creation and lifecycle management
-- **Protected Routes**: Client-side auth state checks
-- **Session Management**: Automatic persistence and refresh
+```
+FringeIsland/
+├── app/                          # Next.js App Router
+│   ├── page.tsx                  # Homepage
+│   ├── layout.tsx                # Root layout with AuthProvider
+│   ├── globals.css               # Global styles
+│   ├── login/
+│   │   └── page.tsx             # Login page
+│   ├── signup/
+│   │   └── page.tsx             # Signup page
+│   └── profile/
+│       ├── page.tsx             # Profile display page (with avatar)
+│       └── edit/
+│           └── page.tsx         # Profile edit page (with avatar upload)
+├── components/                   # Reusable components
+│   ├── auth/
+│   │   └── AuthForm.tsx         # Auth form component
+│   └── profile/
+│       ├── ProfileEditForm.tsx  # Profile edit form component
+│       └── AvatarUpload.tsx     # Avatar upload component
+├── docs/                         # Documentation
+│   ├── architecture/            # Architecture docs
+│   ├── planning/                # Planning docs
+│   └── implementation/          # Implementation guides
+├── lib/                         # Utilities
+│   ├── supabase/               # Supabase clients
+│   │   ├── client.ts           # Browser client
+│   │   ├── server.ts           # Server client
+│   │   └── middleware.ts       # Session helper
+│   └── auth/
+│       └── AuthContext.tsx     # Auth context and hooks
+├── supabase/
+│   └── migrations/             # Database migrations
+├── .env.local                   # Environment variables (gitignored)
+├── CHANGELOG.md                 # Version history
+├── CLAUDE.md                    # Claude context file
+├── next.config.ts               # Next.js configuration (with image domains)
+└── README.md                    # This file
+```
 
 ## 🤝 Contributing
 
-This is a private project currently in active development. Contribution guidelines will be added when the project reaches a stable state.
+This is a personal project currently in active development. Once the MVP is complete, contributions will be welcome!
 
 ## 📄 License
 
-TBD
+TBD - License to be determined
+
+## 🔗 Links
+
+- **Repository**: https://github.com/Stefansteffansson/FringeIsland
+- **Supabase Project**: FringeIslandDB
+- **Documentation**: [docs/](docs/)
+
+## 📞 Contact
+
+Stefan Steffansson - Project Creator & Developer
 
 ---
 
-**Built with care for transformative learning experiences** 🌊
-
-**Current Progress**: Phase 2 - Authentication Complete ✅ (20% of Core Platform)
+**Status**: Phase 2 in progress (40% complete) - Avatar upload working, group management next  
+**Last Updated**: January 24, 2026
