@@ -8,9 +8,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Group creation and management interfaces
+- Group detail page (view individual group)
+- Member management (invite, remove members)
+- Role assignment interface
 - Journey browsing and enrollment flows
 - Basic permissions and roles UI
+
+---
+
+## [0.2.3] - 2026-01-25
+
+### Added
+- **Group Creation Feature**: Complete group creation and listing functionality
+  - Create new groups from templates (Small Team, Large Group, Organization, Learning Cohort)
+  - Set group name (required, 3-100 characters)
+  - Set description (optional, max 500 characters)
+  - Set custom label (optional, max 50 characters, e.g., "Team", "Department")
+  - Control visibility (public/private toggle)
+  - Control member list visibility
+  - Character counters for all text inputs
+  - Form validation with user-friendly error messages
+  - Automatic group leader assignment
+  - Creator automatically becomes first member and group leader
+- **My Groups Page**: View all groups user belongs to
+  - Grid layout of group cards (responsive: 1/2/3 columns)
+  - Group cards show: name, description, label, member count, public/private status
+  - Click to view group details (coming in next step)
+  - Empty state with call-to-action for first group
+  - "Coming Soon" placeholders for future features (Discover, Invitations, Settings)
+- **Database Operations**: Automated group setup workflow
+  - Creates group record in `groups` table
+  - Adds creator to `group_memberships` table
+  - Fetches "Group Leader Role Template"
+  - Creates group role instance in `group_roles` table
+  - Assigns creator as group leader in `user_group_roles` table
+- **Row Level Security Policies**: Complete RLS implementation for groups
+  - Groups table: create, view own groups, view public groups
+  - Group memberships table: add members, view memberships
+  - Group roles table: create roles, view roles
+  - Group role permissions table: set permissions, view permissions
+  - User group roles table: assign roles, view role assignments
+
+### Changed
+- Updated navigation to include `/groups` route
+- Improved error handling with detailed database error messages
+
+### Fixed
+- Fixed `group_roles` table insert with correct column names (`created_from_role_template_id`, `name`)
+- Added missing `assigned_by_user_id` field to `user_group_roles` inserts
+- Corrected RLS policies to allow initial group creation flow
+
+### Technical Details
+- Group creation: 5-step automated workflow with proper error handling
+- RLS policies: 12 total policies across 5 tables
+- Database constraints: All foreign keys and not-null constraints properly satisfied
+- **Phase 2: Core Platform** - Group Creation ✅ COMPLETE (Step 1 of 4) (45% of Phase 2)
 
 ---
 
@@ -258,7 +310,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [x] Configure Supabase integration
 - [x] Test database connection
 
-### Phase 2: Core Platform (In Progress - 40% Complete)
+### Phase 2: Core Platform (In Progress - 45% Complete)
 **Timeline**: February - March 2026
 
 - [x] **Implement authentication system** ✅ COMPLETE
@@ -282,11 +334,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [x] Delete/replace avatar
   - [x] File validation
 
-- [ ] **Group management** (Next Up)
-  - [ ] Group creation
-  - [ ] Member invitation
-  - [ ] Role assignment
-  - [ ] Group settings
+- [x] **Group creation** ✅ COMPLETE (Step 1/4)
+  - [x] Create groups from templates
+  - [x] Set group properties (name, description, label)
+  - [x] Control visibility settings
+  - [x] Automatic group leader assignment
+  - [x] View groups list
+
+- [ ] **Group management** (In Progress - Steps 2-4)
+  - [ ] Group detail page (Step 2 - next)
+  - [ ] Member management (Step 3)
+  - [ ] Role assignment (Step 4)
 
 - [ ] **Journey browsing**
   - [ ] Journey catalog

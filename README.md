@@ -8,11 +8,20 @@ FringeIsland enables users to embark on transformative "journeys" - structured l
 
 ## 📦 Current Status
 
-**Phase**: Phase 2 Core Platform (40% Complete)  
+**Phase**: Phase 2 Core Platform (45% Complete)  
 **Stack**: Next.js 16.1 (App Router) + TypeScript + React + Tailwind CSS + Supabase  
-**Version**: 0.2.2 (See [CHANGELOG.md](CHANGELOG.md) for detailed version history)
+**Version**: 0.2.3 (See [CHANGELOG.md](CHANGELOG.md) for detailed version history)
 
 ### ✅ Recently Completed
+
+**Group Creation** (January 25, 2026):
+- Create groups from templates (Small Team, Large Group, Organization, Learning Cohort)
+- Set group name, description, and custom label
+- Control visibility (public/private) and member list settings
+- Automatic group leader assignment
+- View all groups in "My Groups" page
+- Complete RLS policies for group security
+
 **Avatar Upload** (January 24, 2026):
 - Upload profile pictures to Supabase Storage
 - Circular avatar display with borders
@@ -32,7 +41,7 @@ FringeIsland enables users to embark on transformative "journeys" - structured l
 - Auth context and hooks for state management
 
 ### 🚀 Ready for Development
-The foundation is complete, authentication is working, and users can fully manage their profiles including avatars. Next up: groups and journeys!
+The foundation is complete, authentication is working, users can manage their profiles with avatars, and groups can be created! Next up: group detail pages and member management.
 
 ## 📚 Documentation
 
@@ -64,7 +73,7 @@ Comprehensive documentation is available in the [docs/](docs/) directory:
 - Next.js 16.1 with TypeScript and Tailwind CSS
 - Supabase integration (database + auth + storage)
 
-### ✅ Phase 2: Authentication & Profile (In Progress - 40% Complete)
+### ✅ Phase 2: Authentication & Profile (In Progress - 45% Complete)
 
 **Completed:**
 - ✅ User signup with email/password and display name
@@ -81,9 +90,16 @@ Comprehensive documentation is available in the [docs/](docs/) directory:
 - ✅ Replace and delete avatar
 - ✅ File validation (type, size)
 - ✅ Default placeholder when no avatar
+- ✅ Group creation from templates
+- ✅ Group visibility and member list settings
+- ✅ Automatic group leader assignment
+- ✅ My Groups page with group cards
+- ✅ Complete RLS policies for groups
 
 **Next Up:**
-- 🔄 Group creation and management
+- 🔄 Group detail page (view individual group)
+- Member management (invite, remove members)
+- Role assignment interface
 - Journey browsing and enrollment
 - Basic permissions and roles UI
 
@@ -106,6 +122,12 @@ Structured learning experiences that users can complete solo or collaboratively.
 
 ### Groups
 Flexible organizational units (teams, companies, cohorts) with customizable membership and permissions. Groups can contain users and other groups ("member of" relationships).
+
+**Group Templates:**
+- **Small Team** - For teams of 2-10 people
+- **Large Group** - For groups of 10+ people
+- **Organization** - For companies and institutions
+- **Learning Cohort** - For learning groups going through journeys together
 
 ### Roles & Permissions
 Fine-grained authorization system with role templates and group-specific instances. Permissions are context-based and customizable per group.
@@ -174,6 +196,13 @@ Fine-grained authorization system with role templates and group-specific instanc
 - Replace or delete avatar
 - View profile information with avatar
 
+**Groups:**
+- View groups at `/groups`
+- Create group at `/groups/create`
+- Select from 4 group templates
+- Set group properties and visibility
+- Automatic group leader role assignment
+
 ## 📖 Project Structure
 
 ```
@@ -186,16 +215,22 @@ FringeIsland/
 │   │   └── page.tsx             # Login page
 │   ├── signup/
 │   │   └── page.tsx             # Signup page
-│   └── profile/
-│       ├── page.tsx             # Profile display page (with avatar)
-│       └── edit/
-│           └── page.tsx         # Profile edit page (with avatar upload)
+│   ├── profile/
+│   │   ├── page.tsx             # Profile display page (with avatar)
+│   │   └── edit/
+│   │       └── page.tsx         # Profile edit page (with avatar upload)
+│   └── groups/
+│       ├── page.tsx             # My Groups list page
+│       └── create/
+│           └── page.tsx         # Create group page
 ├── components/                   # Reusable components
 │   ├── auth/
 │   │   └── AuthForm.tsx         # Auth form component
-│   └── profile/
-│       ├── ProfileEditForm.tsx  # Profile edit form component
-│       └── AvatarUpload.tsx     # Avatar upload component
+│   ├── profile/
+│   │   ├── ProfileEditForm.tsx  # Profile edit form component
+│   │   └── AvatarUpload.tsx     # Avatar upload component
+│   └── groups/
+│       └── GroupCreateForm.tsx  # Group creation form component
 ├── docs/                         # Documentation
 │   ├── architecture/            # Architecture docs
 │   ├── planning/                # Planning docs
@@ -236,5 +271,5 @@ Stefan Steffansson - Project Creator & Developer
 
 ---
 
-**Status**: Phase 2 in progress (40% complete) - Avatar upload working, group management next  
-**Last Updated**: January 24, 2026
+**Status**: Phase 2 in progress (45% complete) - Group creation working, group detail page next  
+**Last Updated**: January 25, 2026

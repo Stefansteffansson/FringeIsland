@@ -30,6 +30,13 @@ Project management and roadmap documents:
 - **[DEFERRED_DECISIONS.md](./planning/DEFERRED_DECISIONS.md)**  
   Design decisions and features deferred to later phases with context for future implementation
 
+### Implementation Documentation (`implementation/`)
+
+Guides for implementing specific features:
+
+- **AUTH_IMPLEMENTATION_SUMMARY.md**  
+  Complete authentication implementation (v0.2.0 - January 23, 2026)
+
 ## 🎯 Quick Start Guide
 
 ### For Developers
@@ -42,6 +49,92 @@ Project management and roadmap documents:
 1. Review [ROADMAP.md](./planning/ROADMAP.md) for implementation phases
 2. Check [DEFERRED_DECISIONS.md](./planning/DEFERRED_DECISIONS.md) for future considerations
 
+## 📊 Implementation Status
+
+### ✅ Phase 1: Foundation (Complete)
+- Database schema with 13 tables
+- Row Level Security framework
+- Supabase integration
+- Next.js 16.1 setup
+
+### 🔄 Phase 2: Core Platform (In Progress - 45%)
+
+**Completed Features:**
+- ✅ **Authentication** (v0.2.0 - Jan 23, 2026)
+  - User signup, login, logout
+  - Session management
+  - Protected routes
+  - Soft delete user lifecycle
+  
+- ✅ **Profile Management** (v0.2.1 - Jan 24, 2026)
+  - Profile editing (name, bio)
+  - Form validation
+  
+- ✅ **Avatar Upload** (v0.2.2 - Jan 24, 2026)
+  - Supabase Storage integration
+  - Image upload/delete
+  - Avatar display throughout app
+  
+- ✅ **Group Creation** (v0.2.3 - Jan 25, 2026)
+  - Create groups from templates
+  - Group visibility settings
+  - Automatic leader assignment
+  - My Groups list page
+  - Complete RLS policies
+
+**In Progress:**
+- 🔄 Group detail page
+- 🔄 Member management
+- 🔄 Role assignment
+
+**Planned:**
+- ⏳ Journey browsing
+- ⏳ Journey enrollment
+- ⏳ Basic permissions UI
+
+## 🗄️ Database Migrations
+
+Migration files are located in `/supabase/migrations/`:
+
+1. **`20260120_initial_schema.sql`**  
+   Initial database setup with 13 tables, indexes, triggers, and seed data
+   - Core tables: users, groups, journeys, etc.
+   - Authorization tables: permissions, roles, templates
+   - 40 permissions seeded
+   - 5 role templates seeded
+   - 4 group templates seeded
+
+2. **`20260123_fix_user_trigger_and_rls.sql`**  
+   User lifecycle management and authentication RLS policies
+   - Automatic user profile creation trigger
+   - Soft delete trigger
+   - User table RLS policies
+
+3. **`20260125_group_rls_policies.sql`**  
+   Group creation and management RLS policies
+   - Groups table policies (create, view own, view public)
+   - Group memberships policies
+   - Group roles policies
+   - Group role permissions policies
+   - User group roles policies
+   - Enables complete group creation workflow
+
+### Applying Migrations
+
+**For new projects:**
+```sql
+-- Run migrations in order:
+\i supabase/migrations/20260120_initial_schema.sql
+\i supabase/migrations/20260123_fix_user_trigger_and_rls.sql
+\i supabase/migrations/20260125_group_rls_policies.sql
+```
+
+**For existing projects:**
+```sql
+-- Apply only new migrations you haven't run yet
+\i supabase/migrations/20260125_group_rls_policies.sql
+```
+
 ## 🔄 Documentation Updates
 
 These documents are living artifacts that evolve with the project. When making significant architectural or design changes:
@@ -49,6 +142,8 @@ These documents are living artifacts that evolve with the project. When making s
 1. Update relevant documentation files
 2. Add notes to DEFERRED_DECISIONS.md for future work
 3. Keep ROADMAP.md aligned with current priorities
+4. Create new migration files for database changes
+5. Update this README with implementation status
 
 ## 📝 Document Conventions
 
@@ -57,6 +152,7 @@ These documents are living artifacts that evolve with the project. When making s
 - **Code blocks**: Include language hints for syntax highlighting
 - **Examples**: Provide concrete examples where helpful
 - **Cross-references**: Link between related documents
+- **Migration files**: Format as `YYYYMMDD_description.sql`
 
 ## 🤔 Questions or Clarifications?
 
@@ -64,4 +160,6 @@ If documentation is unclear or incomplete, please flag for improvement. Good doc
 
 ---
 
-**Last Updated**: January 2026
+**Last Updated**: January 25, 2026  
+**Current Version**: 0.2.3  
+**Phase**: 2 (Core Platform) - 45% Complete

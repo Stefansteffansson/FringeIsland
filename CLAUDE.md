@@ -1,8 +1,8 @@
 # FringeIsland - Claude Context File
 
-**Last Updated:** 2026-01-23  
-**Project Version:** 0.2.0  
-**Current Phase:** Phase 2 Core Platform (20% Complete)
+**Last Updated:** 2026-01-25  
+**Project Version:** 0.2.3  
+**Current Phase:** Phase 2 Core Platform (45% Complete)
 
 ---
 
@@ -30,48 +30,77 @@ FringeIsland is an educational and training platform for personal development, l
 - ✅ Database connection verified and working
 - ✅ Documentation updated
 
-### Phase 2: Core Platform - Authentication ✅ COMPLETE (January 23, 2026)
+### Phase 2: Core Platform (In Progress - 45% Complete)
 
+#### ✅ Authentication System (v0.2.0 - January 23, 2026)
 **Completed:**
-- ✅ **Authentication System** - Fully functional
-  - User signup with email, password, and display name
-  - User login with session management
-  - User logout functionality
-  - Protected routes with automatic redirects
-  - Auth context (`AuthContext`) and `useAuth()` hook
-  - Session persistence across page refreshes
-- ✅ **Database Triggers** - User lifecycle management
-  - Automatic user profile creation on signup
-  - Soft delete trigger (users marked `is_active = false`, not deleted)
-  - Fixed constraint: `users.auth_user_id` from CASCADE to SET NULL
-  - Changed related constraints to RESTRICT (preserves data integrity)
-- ✅ **Security Implementation**
-  - Row Level Security (RLS) enabled on users table
-  - RLS policies: users can view/update only their own profile
-  - Secure authentication flow
-- ✅ **UI Components**
-  - Reusable `AuthForm` component for login/signup
-  - Login page (`/login`)
-  - Signup page (`/signup`)
-  - Protected profile page (`/profile`)
-  - Updated homepage with auth-aware navigation
-- ✅ **Migration Files**
-  - `20260120_initial_schema.sql` - Initial database setup
-  - `20260123_fix_user_trigger_and_rls.sql` - User lifecycle and security
+- ✅ User signup with email, password, and display name
+- ✅ User login with session management
+- ✅ User logout functionality
+- ✅ Protected routes with automatic redirects
+- ✅ Auth context (`AuthContext`) and `useAuth()` hook
+- ✅ Session persistence across page refreshes
+- ✅ Database triggers for user lifecycle (auto profile creation, soft delete)
+- ✅ Row Level Security on users table
+- ✅ Migration: `20260123_fix_user_trigger_and_rls.sql`
+
+#### ✅ User Profile Management (v0.2.1 - January 24, 2026)
+**Completed:**
+- ✅ Profile editing functionality (full name and bio)
+- ✅ Profile edit page at `/profile/edit`
+- ✅ Form validation with character limits (name: 2-100, bio: 500)
+- ✅ Enhanced profile display with better styling
+- ✅ Success messages and automatic redirect
+- ✅ ProfileEditForm component created
+
+#### ✅ Avatar Upload (v0.2.2 - January 24, 2026)
+**Completed:**
+- ✅ Image upload to Supabase Storage (`avatars` bucket)
+- ✅ File validation (JPG/PNG/WebP, max 2MB)
+- ✅ Real-time image preview
+- ✅ Circular avatar display (96px on profile, 128px on edit page)
+- ✅ Replace and delete avatar functionality
+- ✅ Default placeholder (👤 emoji)
+- ✅ Next.js Image component configuration
+- ✅ Supabase Storage RLS policies
+- ✅ AvatarUpload component created
+
+#### ✅ Group Creation (v0.2.3 - January 25, 2026)
+**Completed:**
+- ✅ Group creation from templates (Small Team, Large Group, Organization, Learning Cohort)
+- ✅ Group creation form with validation
+  - Group name (required, 3-100 chars)
+  - Description (optional, max 500 chars)
+  - Custom label (optional, max 50 chars)
+  - Visibility settings (public/private, show member list)
+- ✅ Automatic 5-step workflow:
+  1. Create group record
+  2. Add creator as member
+  3. Fetch "Group Leader" role template
+  4. Create group role instance
+  5. Assign creator as group leader
+- ✅ My Groups page (`/groups`) with group cards
+- ✅ Group creation page (`/groups/create`)
+- ✅ Complete RLS policies (12 policies across 5 tables)
+- ✅ Migration: `20260125_group_rls_policies.sql`
+- ✅ GroupCreateForm component created
+- ✅ Empty state, loading states, error handling
 
 **Current State:**
-- Authentication fully working and tested
-- Soft delete verified (users marked inactive, not deleted)
-- No console errors
+- Authentication, profiles, avatars, and group creation all fully working
+- 45% of Phase 2 complete
+- Group Management Step 1 of 4 complete
 - Production-ready code
 - All changes committed to GitHub
 
 ### Phase 2: Remaining Tasks
 
-**Upcoming:**
-- [ ] User profile editing functionality
-- [ ] Avatar upload
-- [ ] Group creation and management UI
+**Group Management (Steps 2-4):**
+- [ ] Step 2: Group detail page (view individual group, members, settings)
+- [ ] Step 3: Member management (invite, remove members)
+- [ ] Step 4: Role assignment (assign roles to members)
+
+**Other Features:**
 - [ ] Journey browsing and enrollment flows
 - [ ] Basic permissions and roles UI
 
@@ -90,11 +119,22 @@ FringeIsland/
 │   ├── signup/
 │   │   └── page.tsx             # Signup page
 │   ├── profile/
-│   │   └── page.tsx             # Protected profile page
+│   │   ├── page.tsx             # Profile display (with avatar)
+│   │   └── edit/
+│   │       └── page.tsx         # Profile edit (with avatar upload)
+│   ├── groups/
+│   │   ├── page.tsx             # My Groups list
+│   │   └── create/
+│   │       └── page.tsx         # Create group
 │   └── favicon.ico               # Site icon
 ├── components/                   # Reusable components
-│   └── auth/
-│       └── AuthForm.tsx         # Auth form component
+│   ├── auth/
+│   │   └── AuthForm.tsx         # Auth form component
+│   ├── profile/
+│   │   ├── ProfileEditForm.tsx  # Profile edit form
+│   │   └── AvatarUpload.tsx     # Avatar upload component
+│   └── groups/
+│       └── GroupCreateForm.tsx  # Group creation form
 ├── docs/                         # Architecture documentation
 │   ├── architecture/
 │   │   ├── ARCHITECTURE.md       # System design (8,500 words)
@@ -104,11 +144,12 @@ FringeIsland/
 │   ├── planning/
 │   │   ├── ROADMAP.md            # Implementation phases (3,500 words)
 │   │   └── DEFERRED_DECISIONS.md # Postponed decisions (1,500 words)
-│   └── implementation/
-│       ├── AUTH_IMPLEMENTATION.md # Auth system docs
-│       └── INSTALLATION.md        # Auth installation guide
+│   ├── implementation/
+│   │   ├── AUTH_IMPLEMENTATION_SUMMARY.md
+│   │   └── INSTALLATION.md
+│   └── README.md                 # Documentation index
 ├── lib/
-│   ├── supabase/                 # Supabase utilities
+│   ├── supabase/                # Supabase utilities
 │   │   ├── client.ts             # Client-side Supabase client
 │   │   ├── server.ts             # Server-side Supabase client
 │   │   └── middleware.ts         # Session management helper
@@ -118,14 +159,15 @@ FringeIsland/
 ├── supabase/
 │   └── migrations/
 │       ├── 20260120_initial_schema.sql          # Initial DB setup
-│       └── 20260123_fix_user_trigger_and_rls.sql # User lifecycle & RLS
+│       ├── 20260123_fix_user_trigger_and_rls.sql # User lifecycle & RLS
+│       └── 20260125_group_rls_policies.sql      # Group RLS policies
 ├── .env.local                    # Environment variables (gitignored)
 ├── .gitignore                    # Git ignore rules
-├── CHANGELOG.md                  # Version history (v0.2.0)
+├── CHANGELOG.md                  # Version history (v0.2.3)
 ├── CLAUDE.md                     # This file - Claude context
 ├── README.md                     # Project overview
 ├── eslint.config.mjs             # ESLint configuration
-├── next.config.ts                # Next.js configuration
+├── next.config.ts                # Next.js configuration (with image domains)
 ├── package.json                  # Dependencies
 ├── package-lock.json             # Locked dependencies
 ├── postcss.config.mjs            # PostCSS configuration
@@ -143,6 +185,7 @@ FringeIsland/
 - **Project URL:** https://jveybknjawtvosnahebd.supabase.co
 - **Region:** Europe (eu-central-2)
 - **Database:** PostgreSQL with Row Level Security enabled
+- **Storage:** Avatars bucket configured with RLS policies
 - **Tables:** 13 (users, groups, group_memberships, journeys, journey_enrollments, permissions, role_templates, group_templates, role_template_permissions, group_template_roles, group_roles, group_role_permissions, user_group_roles)
 
 ### Database Schema
@@ -165,13 +208,26 @@ FringeIsland/
 ## 🛠️ Technical Notes
 
 ### Critical Learnings
+
+#### Database & PostgreSQL
 1. **PostgreSQL Constraint Limitation:** PostgreSQL does not allow subqueries in CHECK constraints. Use triggers instead for validation requiring subqueries.
-2. **Next.js 16 Middleware:** Changed from `middleware.ts` to `proxy.ts` - export must be `export async function proxy()` not `middleware`
-3. **Supabase New API Keys:** New publishable key format `sb_publishable_...` instead of old JWT format `eyJ...`
-4. **File Structure:** Next.js App Router uses `app/` directory, not `src/`
-5. **Column Naming:** Users table uses `full_name` not `display_name`
-6. **Soft Delete Implementation:** Required changing `users.auth_user_id` constraint from CASCADE to SET NULL, and related table constraints to RESTRICT
-7. **Auth Trigger Timing:** Database triggers on `auth.users` must fire AFTER operations to work correctly
+2. **CASCADE Constraints:** Can prevent soft delete triggers from working. Use SET NULL and RESTRICT instead.
+3. **Column Naming:** Users table uses `full_name` not `display_name`
+4. **Auth Trigger Timing:** Database triggers on `auth.users` must fire AFTER operations to work correctly
+
+#### Next.js & Frontend
+5. **Next.js 16 Middleware:** Changed from `middleware.ts` to `proxy.ts` - export must be `export async function proxy()` not `middleware`
+6. **File Structure:** Next.js App Router uses `app/` directory, not `src/`
+7. **Image Configuration:** Must add Supabase domain to `next.config.ts` remotePatterns for avatar images
+8. **Supabase New API Keys:** New publishable key format `sb_publishable_...` instead of old JWT format `eyJ...`
+
+#### Group Creation & RLS (v0.2.3)
+9. **RLS Requirements:** Must both ENABLE RLS *and* create policies (two separate steps)
+10. **group_roles Schema:** Table requires `name` field (not `custom_name`) and uses `created_from_role_template_id` (not `role_template_id`)
+11. **user_group_roles Schema:** Requires `assigned_by_user_id` field for audit trail
+12. **RLS Policy Complexity:** Simplified policies work better for initial workflows. Complex permission checks can be added later.
+13. **Error Debugging:** Browser Network tab → Response tab shows detailed database error messages (crucial for debugging RLS issues)
+14. **Query Performance:** Use two-step queries (get IDs, then fetch data) instead of nested Supabase queries for better reliability
 
 ### Environment Variables
 Located in `.env.local` (gitignored):
@@ -203,32 +259,40 @@ git push                            # Push to GitHub
 When starting the next session, Claude should:
 
 1. **Read this file** to get up to speed
-2. **Check CHANGELOG.md** for latest changes (v0.2.0)
+2. **Check CHANGELOG.md** for latest changes (v0.2.3)
 3. **Review Phase 2 remaining tasks**
 4. **Ask user** what they want to work on next
 
 ### Suggested Next Steps (Phase 2 Remaining)
 
-1. **User Profile Management** (2-3 hours)
-   - Profile editing functionality
-   - Avatar upload with Supabase Storage
-   - Update profile form
-   - Profile page enhancements
+1. **Group Detail Page** (3-4 hours) - RECOMMENDED NEXT
+   - View individual group
+   - Display group information (name, description, label)
+   - Show member list with avatars
+   - Show group settings
+   - Edit group button (for leaders)
+   - Display user's role in group
 
-2. **Group Management** (4-5 hours)
-   - Group creation UI
-   - Group listing/browsing
-   - Member management (add/remove)
-   - Role assignment interface
-   - Group settings
+2. **Member Management** (3-4 hours)
+   - Invite members by email
+   - Accept/decline invitations
+   - Remove members (leaders only)
+   - Leave group (members)
+   - Member list with roles
 
-3. **Journey Browsing** (3-4 hours)
+3. **Role Assignment** (2-3 hours)
+   - View available roles for group
+   - Assign roles to members (leaders only)
+   - Change member roles
+   - View member permissions
+
+4. **Journey Browsing** (3-4 hours)
    - Journey catalog/listing
    - Journey detail pages
    - Enrollment functionality
    - View enrolled journeys
 
-4. **Permissions & Roles UI** (2-3 hours)
+5. **Permissions & Roles UI** (2-3 hours)
    - Display user roles
    - Permission-based UI elements
    - Role management interface
@@ -237,7 +301,10 @@ When starting the next session, Claude should:
 
 ## 🔄 Version History
 
-- **v0.2.0** (2026-01-23): Phase 2 Authentication complete - signup, login, logout, soft delete, RLS
+- **v0.2.3** (2026-01-25): Group creation complete - create groups, My Groups page, 12 RLS policies (45% Phase 2)
+- **v0.2.2** (2026-01-24): Avatar upload complete - Supabase Storage integration, image upload/delete (40% Phase 2)
+- **v0.2.1** (2026-01-24): Profile management complete - edit name/bio, form validation (30% Phase 2)
+- **v0.2.0** (2026-01-23): Authentication complete - signup, login, logout, soft delete, RLS (20% Phase 2)
 - **v0.1.2** (2026-01-21): Phase 1 complete - Next.js setup and Supabase integration working
 - **v0.1.1** (2026-01-20): Database successfully implemented and deployed to Supabase
 - **v0.1.0** (2026-01-20): Initial architecture and database schema design
@@ -256,6 +323,7 @@ When starting the next session, Claude should:
 - Alert user when README.md needs to be committed to git after updates
 - Update CHANGELOG.md for all significant changes
 - Update this CLAUDE.md file when major milestones are reached
+- Create migration files for all RLS policy changes
 
 ### Development Practices
 - Follow the established patterns in `lib/supabase/` for Supabase integration
@@ -263,7 +331,9 @@ When starting the next session, Claude should:
 - Follow existing code style (ESLint configuration)
 - Test database connections before implementing new features
 - Always verify RLS policies are working as expected
-- Test soft delete functionality when modifying user-related code
+- Check browser Network tab for detailed database errors
+- Test with actual data, not just empty states
+- Use simplified RLS policies initially, can be made more complex later
 
 ### Authentication Notes
 - Auth context is in `lib/auth/AuthContext.tsx`
@@ -272,15 +342,23 @@ When starting the next session, Claude should:
 - Soft delete preserves user data with `is_active = false`
 - User profile automatically created on signup via database trigger
 
+### Group Management Notes (v0.2.3)
+- Group creation uses 5-step automated workflow
+- Creator automatically becomes group leader
+- RLS policies enable self-assignment for initial setup
+- group_roles requires both `name` and `created_from_role_template_id`
+- user_group_roles requires `assigned_by_user_id` for audit
+- Always enable RLS AND create policies (two separate steps)
+
 ---
 
 ## 🎯 Current Focus
 
-**Just Completed:** Full authentication system with soft delete ✅  
-**Progress:** Phase 2 - 20% complete  
-**Next Up:** User profile management OR group management (user's choice)
+**Just Completed:** Group creation with complete RLS policies ✅  
+**Progress:** Phase 2 - 45% complete  
+**Next Up:** Group detail page (Step 2 of Group Management)
 
 ---
 
 **End of Claude Context File**  
-*Last major update: Authentication system completion (v0.2.0)*
+*Last major update: Group creation completion (v0.2.3)*
