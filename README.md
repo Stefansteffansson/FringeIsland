@@ -8,11 +8,19 @@ FringeIsland enables users to embark on transformative "journeys" - structured l
 
 ## 📦 Current Status
 
-**Phase**: Phase 2 Core Platform (45% Complete)  
+**Phase**: Phase 2 Core Platform (48% Complete)  
 **Stack**: Next.js 16.1 (App Router) + TypeScript + React + Tailwind CSS + Supabase  
-**Version**: 0.2.3 (See [CHANGELOG.md](CHANGELOG.md) for detailed version history)
+**Version**: 0.2.4 (See [CHANGELOG.md](CHANGELOG.md) for detailed version history)
 
 ### ✅ Recently Completed
+
+**Group Detail Page** (January 25, 2026):
+- View individual groups at `/groups/[id]`
+- Display group information with role badges
+- Member list with avatars and roles
+- Edit button for group leaders
+- Access control (members + public groups)
+- Fixed RLS policy conflicts for viewing groups
 
 **Group Creation** (January 25, 2026):
 - Create groups from templates (Small Team, Large Group, Organization, Learning Cohort)
@@ -97,8 +105,7 @@ Comprehensive documentation is available in the [docs/](docs/) directory:
 - ✅ Complete RLS policies for groups
 
 **Next Up:**
-- 🔄 Group detail page (view individual group)
-- Member management (invite, remove members)
+- 🔄 Member management (invite, remove members)
 - Role assignment interface
 - Journey browsing and enrollment
 - Basic permissions and roles UI

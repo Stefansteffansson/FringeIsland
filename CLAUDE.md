@@ -1,8 +1,8 @@
 # FringeIsland - Claude Context File
 
 **Last Updated:** 2026-01-25  
-**Project Version:** 0.2.3  
-**Current Phase:** Phase 2 Core Platform (45% Complete)
+**Project Version:** 0.2.4  
+**Current Phase:** Phase 2 Core Platform (48% Complete)
 
 ---
 
@@ -86,18 +86,30 @@ FringeIsland is an educational and training platform for personal development, l
 - ✅ GroupCreateForm component created
 - ✅ Empty state, loading states, error handling
 
+#### ✅ Group Detail Page (v0.2.4 - January 25, 2026)
+**Completed:**
+- ✅ Dynamic route at `/groups/[id]` for viewing individual groups
+- ✅ Display group information (name, description, label, visibility)
+- ✅ Show user's role badges in the group
+- ✅ Member list with avatars and roles (if enabled or user is leader)
+- ✅ "Edit Group" button (leaders only)
+- ✅ Access control (members can view their groups, public groups visible to all)
+- ✅ Error page for unauthorized access or non-existent groups
+- ✅ Fixed RLS policy conflicts (combined two SELECT policies into one)
+- ✅ Improved error handling with `.maybeSingle()`
+- ✅ Migration: `20260125_fix_groups_rls_policy.sql`
+
 **Current State:**
-- Authentication, profiles, avatars, and group creation all fully working
-- 45% of Phase 2 complete
-- Group Management Step 1 of 4 complete
+- Authentication, profiles, avatars, group creation, and group detail page all fully working
+- 48% of Phase 2 complete
+- Group Management Step 2 of 4 complete
 - Production-ready code
 - All changes committed to GitHub
 
 ### Phase 2: Remaining Tasks
 
-**Group Management (Steps 2-4):**
-- [ ] Step 2: Group detail page (view individual group, members, settings)
-- [ ] Step 3: Member management (invite, remove members)
+**Group Management (Steps 3-4):**
+- [ ] Step 3: Member management (invite, remove members, leave group)
 - [ ] Step 4: Role assignment (assign roles to members)
 
 **Other Features:**
@@ -124,8 +136,10 @@ FringeIsland/
 │   │       └── page.tsx         # Profile edit (with avatar upload)
 │   ├── groups/
 │   │   ├── page.tsx             # My Groups list
-│   │   └── create/
-│   │       └── page.tsx         # Create group
+│   │   ├── create/
+│   │   │   └── page.tsx         # Create group
+│   │   └── [id]/
+│   │       └── page.tsx         # Group detail page
 │   └── favicon.ico               # Site icon
 ├── components/                   # Reusable components
 │   ├── auth/
@@ -160,10 +174,11 @@ FringeIsland/
 │   └── migrations/
 │       ├── 20260120_initial_schema.sql          # Initial DB setup
 │       ├── 20260123_fix_user_trigger_and_rls.sql # User lifecycle & RLS
-│       └── 20260125_group_rls_policies.sql      # Group RLS policies
+│       ├── 20260125_group_rls_policies.sql      # Group RLS policies
+│       └── 20260125_fix_groups_rls_policy.sql   # Fix group viewing RLS
 ├── .env.local                    # Environment variables (gitignored)
 ├── .gitignore                    # Git ignore rules
-├── CHANGELOG.md                  # Version history (v0.2.3)
+├── CHANGELOG.md                  # Version history (v0.2.4)
 ├── CLAUDE.md                     # This file - Claude context
 ├── README.md                     # Project overview
 ├── eslint.config.mjs             # ESLint configuration
@@ -229,6 +244,12 @@ FringeIsland/
 13. **Error Debugging:** Browser Network tab → Response tab shows detailed database error messages (crucial for debugging RLS issues)
 14. **Query Performance:** Use two-step queries (get IDs, then fetch data) instead of nested Supabase queries for better reliability
 
+#### Group Detail Page & RLS (v0.2.4)
+15. **RLS Policy Conflicts:** Multiple SELECT policies with conflicting logic can interfere with each other. Use single policy with OR logic instead.
+16. **maybeSingle() vs single():** Use `.maybeSingle()` when a query might return no results (e.g., checking if group exists). Use `.single()` only when exactly one result is guaranteed.
+17. **406 Errors:** Usually indicate RLS policy blocking the query, not a database error
+18. **Combined RLS Policies:** For viewing resources, combine "view own" and "view public" into one policy with OR logic for better performance and fewer conflicts
+
 ### Environment Variables
 Located in `.env.local` (gitignored):
 ```
@@ -259,28 +280,20 @@ git push                            # Push to GitHub
 When starting the next session, Claude should:
 
 1. **Read this file** to get up to speed
-2. **Check CHANGELOG.md** for latest changes (v0.2.3)
+2. **Check CHANGELOG.md** for latest changes (v0.2.4)
 3. **Review Phase 2 remaining tasks**
 4. **Ask user** what they want to work on next
 
 ### Suggested Next Steps (Phase 2 Remaining)
 
-1. **Group Detail Page** (3-4 hours) - RECOMMENDED NEXT
-   - View individual group
-   - Display group information (name, description, label)
-   - Show member list with avatars
-   - Show group settings
-   - Edit group button (for leaders)
-   - Display user's role in group
-
-2. **Member Management** (3-4 hours)
+1. **Member Management** (3-4 hours) - RECOMMENDED NEXT
    - Invite members by email
    - Accept/decline invitations
    - Remove members (leaders only)
    - Leave group (members)
    - Member list with roles
 
-3. **Role Assignment** (2-3 hours)
+2. **Role Assignment** (2-3 hours)
    - View available roles for group
    - Assign roles to members (leaders only)
    - Change member roles
@@ -301,6 +314,7 @@ When starting the next session, Claude should:
 
 ## 🔄 Version History
 
+- **v0.2.4** (2026-01-25): Group detail page complete - view groups, member list, role badges, RLS fix (48% Phase 2)
 - **v0.2.3** (2026-01-25): Group creation complete - create groups, My Groups page, 12 RLS policies (45% Phase 2)
 - **v0.2.2** (2026-01-24): Avatar upload complete - Supabase Storage integration, image upload/delete (40% Phase 2)
 - **v0.2.1** (2026-01-24): Profile management complete - edit name/bio, form validation (30% Phase 2)
@@ -342,23 +356,27 @@ When starting the next session, Claude should:
 - Soft delete preserves user data with `is_active = false`
 - User profile automatically created on signup via database trigger
 
-### Group Management Notes (v0.2.3)
+### Group Management Notes (v0.2.3-v0.2.4)
 - Group creation uses 5-step automated workflow
 - Creator automatically becomes group leader
 - RLS policies enable self-assignment for initial setup
 - group_roles requires both `name` and `created_from_role_template_id`
 - user_group_roles requires `assigned_by_user_id` for audit
 - Always enable RLS AND create policies (two separate steps)
+- **Group viewing:** Use combined RLS policy with OR logic to avoid conflicts
+- **Dynamic routes:** `[id]` directory creates Next.js dynamic route
+- **Error handling:** Use `.maybeSingle()` when results might be empty
+- **RLS conflicts:** Multiple SELECT policies can interfere; combine into one policy
 
 ---
 
 ## 🎯 Current Focus
 
-**Just Completed:** Group creation with complete RLS policies ✅  
-**Progress:** Phase 2 - 45% complete  
-**Next Up:** Group detail page (Step 2 of Group Management)
+**Just Completed:** Group detail page with RLS fix ✅  
+**Progress:** Phase 2 - 48% complete  
+**Next Up:** Member management (Step 3 of Group Management)
 
 ---
 
 **End of Claude Context File**  
-*Last major update: Group creation completion (v0.2.3)*
+*Last major update: Group detail page completion (v0.2.4)*

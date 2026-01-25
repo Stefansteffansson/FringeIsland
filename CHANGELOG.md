@@ -8,11 +8,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Group detail page (view individual group)
 - Member management (invite, remove members)
 - Role assignment interface
 - Journey browsing and enrollment flows
 - Basic permissions and roles UI
+
+---
+
+## [0.2.4] - 2026-01-25
+
+### Added
+- **Group Detail Page**: Complete individual group viewing functionality
+  - Dynamic route at `/groups/[id]` for viewing individual groups
+  - Display group information (name, description, custom label)
+  - Show public/private status badge
+  - Display user's role(s) in the group with badges
+  - Show member count and creation date
+  - Member list display (if enabled or user is group leader)
+    - Member avatars with circular crop
+    - Member names and roles
+    - Responsive grid layout (1/2/3 columns)
+    - Placeholder for users without avatars
+  - "Edit Group" button (visible to group leaders only)
+  - Back to My Groups navigation
+  - Access control (members can view their groups, public groups visible to all)
+  - Error page for unauthorized access or non-existent groups
+  - "Coming Soon" placeholders for future actions (Invite Members, Manage Roles, Start Journey)
+
+### Fixed
+- **RLS Policy Issue**: Fixed conflicting SELECT policies on groups table
+  - Combined two separate policies into one with OR logic
+  - Now allows viewing public groups OR groups user is member of
+  - Resolves 406 errors when trying to view groups
+- **Error Handling**: Improved error messages for group not found
+  - Use `.maybeSingle()` instead of `.single()` to avoid errors on missing groups
+  - Better error messages ("Group not found" vs generic errors)
+  - Proper handling of RLS policy restrictions
+
+### Changed
+- Updated group cards in My Groups list to be clickable (navigate to detail page)
+- Improved error handling throughout group viewing flow
+
+### Technical Details
+- Migration file: `20260125_fix_groups_rls_policy.sql` (RLS policy fix)
+- Uses combined RLS policy: "Users can view groups they belong to or public groups"
+- Queries: 7 database queries for complete group detail view
+- Leader detection: checks for "Group Leader" role in user_group_roles
+- **Phase 2: Core Platform** - Group Detail Page ✅ COMPLETE (Step 2 of 4) (48% of Phase 2)
 
 ---
 
@@ -33,7 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **My Groups Page**: View all groups user belongs to
   - Grid layout of group cards (responsive: 1/2/3 columns)
   - Group cards show: name, description, label, member count, public/private status
-  - Click to view group details (coming in next step)
+  - Click to view group details (implemented in v0.2.4)
   - Empty state with call-to-action for first group
   - "Coming Soon" placeholders for future features (Discover, Invitations, Settings)
 - **Database Operations**: Automated group setup workflow
@@ -62,6 +104,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Group creation: 5-step automated workflow with proper error handling
 - RLS policies: 12 total policies across 5 tables
 - Database constraints: All foreign keys and not-null constraints properly satisfied
+- Migration file: `20260125_group_rls_policies.sql`
 - **Phase 2: Core Platform** - Group Creation ✅ COMPLETE (Step 1 of 4) (45% of Phase 2)
 
 ---
@@ -310,7 +353,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [x] Configure Supabase integration
 - [x] Test database connection
 
-### Phase 2: Core Platform (In Progress - 45% Complete)
+### Phase 2: Core Platform (In Progress - 48% Complete)
 **Timeline**: February - March 2026
 
 - [x] **Implement authentication system** ✅ COMPLETE
@@ -341,9 +384,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [x] Automatic group leader assignment
   - [x] View groups list
 
-- [ ] **Group management** (In Progress - Steps 2-4)
-  - [ ] Group detail page (Step 2 - next)
-  - [ ] Member management (Step 3)
+- [x] **Group detail page** ✅ COMPLETE (Step 2/4)
+  - [x] View individual group
+  - [x] Display group information
+  - [x] Show member list with avatars
+  - [x] Show user's role in group
+  - [x] Edit button for leaders
+  - [x] Access control
+
+- [ ] **Group management** (In Progress - Steps 3-4)
+  - [ ] Member management (Step 3 - next)
   - [ ] Role assignment (Step 4)
 
 - [ ] **Journey browsing**

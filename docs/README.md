@@ -57,7 +57,7 @@ Guides for implementing specific features:
 - Supabase integration
 - Next.js 16.1 setup
 
-### 🔄 Phase 2: Core Platform (In Progress - 45%)
+### 🔄 Phase 2: Core Platform (In Progress - 48%)
 
 **Completed Features:**
 - ✅ **Authentication** (v0.2.0 - Jan 23, 2026)
@@ -82,8 +82,14 @@ Guides for implementing specific features:
   - My Groups list page
   - Complete RLS policies
 
+- ✅ **Group Detail Page** (v0.2.4 - Jan 25, 2026)
+  - View individual groups
+  - Member list with avatars
+  - User role badges
+  - Edit button for leaders
+  - Fixed RLS policy conflicts
+
 **In Progress:**
-- 🔄 Group detail page
 - 🔄 Member management
 - 🔄 Role assignment
 
@@ -118,6 +124,12 @@ Migration files are located in `/supabase/migrations/`:
    - Group role permissions policies
    - User group roles policies
    - Enables complete group creation workflow
+
+4. **`20260125_fix_groups_rls_policy.sql`**  
+   Fix for group viewing RLS policy conflicts
+   - Combines two conflicting SELECT policies into one
+   - Allows viewing public groups OR groups user is member of
+   - Resolves 406 errors when viewing groups
 
 ### Applying Migrations
 
@@ -161,5 +173,5 @@ If documentation is unclear or incomplete, please flag for improvement. Good doc
 ---
 
 **Last Updated**: January 25, 2026  
-**Current Version**: 0.2.3  
-**Phase**: 2 (Core Platform) - 45% Complete
+**Current Version**: 0.2.4  
+**Phase**: 2 (Core Platform) - 48% Complete
