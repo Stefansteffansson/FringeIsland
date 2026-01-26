@@ -33,14 +33,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
         if (error) {
           setError(error.message);
         } else {
-          router.push('/profile');
+          router.push('/groups'); // Changed from /profile to /groups
         }
       } else {
         const { error } = await signIn(email, password);
         if (error) {
           setError(error.message);
         } else {
-          router.push('/profile');
+          router.push('/groups'); // Changed from /profile to /groups
         }
       }
     } catch (err) {
