@@ -296,6 +296,8 @@ CREATE TRIGGER update_groups_updated_at
 
 Tracks membership relationships (User→Group and Group→Group).
 
+**⚠️ UPDATED in v0.2.5:** Status constraint now includes 'invited' for member invitation workflow.
+
 ```sql
 CREATE TABLE group_memberships (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -309,7 +311,8 @@ CREATE TABLE group_memberships (
   added_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   
   -- Membership status
-  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'paused', 'removed')),
+  -- v0.2.5: Added 'invited' status for invitation workflow
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'invited', 'paused', 'removed')),
   status_changed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   
   -- Constraint: exactly one of user_id or member_group_id must be set
@@ -329,6 +332,78 @@ CREATE INDEX idx_memberships_member_group ON group_memberships(member_group_id);
 CREATE INDEX idx_memberships_status ON group_memberships(status);
 CREATE INDEX idx_memberships_active ON group_memberships(group_id, status) WHERE status = 'active';
 ```
+
+**Status Values (v0.2.5):**
+- `'active'` - Member is an active participant in the group
+- `'invited'` - User has been invited but has not yet accepted (NEW in v0.2.5)
+- `'paused'` - Member account temporarily suspended
+- `'removed'` - Member has been removed from group
+
+---
+
+## 🆕 v0.2.5: Database Trigger for Last Leader Protection
+
+### prevent_last_leader_removal()
+
+**NEW in v0.2.5:** Ensures every group always has at least one Group Leader.
+
+```sql
+CREATE OR REPLACE FUNCTION prevent_last_leader_removal()
+RETURNS TRIGGER AS $$
+DECLARE
+  leader_count INTEGER;
+  is_leader BOOLEAN;
+BEGIN
+  -- Check if the member being removed is a leader
+  SELECT EXISTS (
+    SELECT 1
+    FROM user_group_roles ugr
+    JOIN group_roles gr ON gr.id = ugr.group_role_id
+    WHERE ugr.user_id = OLD.user_id
+    AND ugr.group_id = OLD.group_id
+    AND gr.name = 'Group Leader'
+  ) INTO is_leader;
+
+  -- If not a leader, allow deletion
+  IF NOT is_leader THEN
+    RETURN OLD;
+  END IF;
+
+  -- Count remaining leaders in the group
+  SELECT COUNT(DISTINCT ugr.user_id)
+  INTO leader_count
+  FROM user_group_roles ugr
+  JOIN group_roles gr ON gr.id = ugr.group_role_id
+  JOIN group_memberships gm ON gm.user_id = ugr.user_id AND gm.group_id = ugr.group_id
+  WHERE ugr.group_id = OLD.group_id
+  AND gr.name = 'Group Leader'
+  AND gm.status = 'active'
+  AND ugr.user_id != OLD.user_id;
+
+  -- If this is the last leader, prevent deletion
+  IF leader_count = 0 THEN
+    RAISE EXCEPTION 'Cannot remove the last leader from the group. Promote another member to leader first.';
+  END IF;
+
+  RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger: Check Last Leader Removal
+CREATE TRIGGER check_last_leader_removal
+BEFORE DELETE ON group_memberships
+FOR EACH ROW
+EXECUTE FUNCTION prevent_last_leader_removal();
+```
+
+**Purpose:** Prevents both self-removal (leaving) and leader-removal (kicking) if the user is the last Group Leader.
+
+**Behavior:**
+- Fires before any DELETE operation on `group_memberships`
+- Checks if user being removed has "Group Leader" role
+- If leader, counts remaining active leaders
+- If last leader, raises exception and blocks the deletion
+- Otherwise, allows deletion to proceed normally
 
 ---
 
@@ -570,6 +645,12 @@ CREATE POLICY "Platform admins can view all users"
         AND grp.granted = true
     )
   );
+
+-- 🆕 v0.2.5: Users can search other users by email (for invitations)
+CREATE POLICY "Users can search other users by email for invitations"
+  ON users FOR SELECT
+  TO authenticated
+  USING (true);
 ```
 
 ---
@@ -626,6 +707,8 @@ CREATE POLICY "Group leaders can update groups"
 
 ### group_memberships
 
+**🆕 v0.2.5:** Added 6 new RLS policies for member management
+
 ```sql
 ALTER TABLE group_memberships ENABLE ROW LEVEL SECURITY;
 
@@ -654,6 +737,69 @@ CREATE POLICY "Group leaders can manage memberships"
         AND p.name IN ('invite_members', 'remove_members', 'activate_members', 'pause_members')
         AND grp.granted = true
     )
+  );
+
+-- 🆕 v0.2.5: Leaders can create invitations (status='invited')
+CREATE POLICY "Users can create invitations for groups they lead"
+  ON group_memberships FOR INSERT
+  TO authenticated
+  WITH CHECK (
+    status = 'invited'
+    AND EXISTS (
+      SELECT 1 FROM user_group_roles ugr
+      JOIN group_roles gr ON gr.id = ugr.group_role_id
+      WHERE ugr.user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
+      AND ugr.group_id = group_memberships.group_id
+      AND gr.name = 'Group Leader'
+    )
+  );
+
+-- 🆕 v0.2.5: Users can accept their own invitations
+CREATE POLICY "Users can accept their own invitations"
+  ON group_memberships FOR UPDATE
+  TO authenticated
+  USING (
+    user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
+    AND status = 'invited'
+  )
+  WITH CHECK (
+    user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
+    AND status = 'active'
+  );
+
+-- 🆕 v0.2.5: Users can decline their own invitations
+CREATE POLICY "Users can decline their own invitations"
+  ON group_memberships FOR DELETE
+  TO authenticated
+  USING (
+    user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
+    AND status = 'invited'
+  );
+
+-- 🆕 v0.2.5: Members can leave groups (status='active')
+CREATE POLICY "Members can leave groups"
+  ON group_memberships FOR DELETE
+  TO authenticated
+  USING (
+    user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
+    AND status = 'active'
+  );
+
+-- 🆕 v0.2.5: Leaders can remove members from their groups
+CREATE POLICY "Leaders can remove members from their groups"
+  ON group_memberships FOR DELETE
+  TO authenticated
+  USING (
+    group_id IN (
+      SELECT gm.group_id
+      FROM group_memberships gm
+      JOIN user_group_roles ugr ON ugr.user_id = gm.user_id AND ugr.group_id = gm.group_id
+      JOIN group_roles gr ON gr.id = ugr.group_role_id
+      WHERE gm.user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
+      AND gm.status = 'active'
+      AND gr.name = 'Group Leader'
+    )
+    AND status = 'active'
   );
 ```
 
@@ -934,6 +1080,55 @@ CREATE POLICY "Group leaders can manage role assignments"
 
 ---
 
+## 🆕 v0.2.5: Member Management Workflows
+
+### Invitation Workflow
+
+**1. Leader Invites User**
+```sql
+INSERT INTO group_memberships (group_id, user_id, added_by_user_id, status)
+VALUES ('group-uuid', 'user-uuid', 'leader-uuid', 'invited');
+```
+- Status: `'invited'`
+- RLS: Only leaders can create invitations
+
+**2. User Accepts Invitation**
+```sql
+UPDATE group_memberships 
+SET status = 'active' 
+WHERE id = 'invitation-uuid' AND status = 'invited';
+```
+- Status changes: `'invited'` → `'active'`
+- RLS: Only the invited user can accept
+
+**3. User Declines Invitation**
+```sql
+DELETE FROM group_memberships 
+WHERE id = 'invitation-uuid' AND status = 'invited';
+```
+- Record is deleted
+- RLS: Only the invited user can decline
+
+### Leave/Remove Workflow
+
+**4. Member Leaves Group**
+```sql
+DELETE FROM group_memberships 
+WHERE group_id = 'group-uuid' AND user_id = 'user-uuid' AND status = 'active';
+```
+- RLS: User can delete their own membership
+- Trigger: Blocks if user is last leader
+
+**5. Leader Removes Member**
+```sql
+DELETE FROM group_memberships 
+WHERE id = 'membership-uuid' AND status = 'active';
+```
+- RLS: Only leaders can remove others
+- Trigger: Blocks if removing last leader
+
+---
+
 ## Migration Strategy
 
 ### Recommended Approach
@@ -950,6 +1145,7 @@ If migrating manually, follow this sequence:
 4. **Phase 4:** Authorization junction tables
 5. **Phase 5:** Seed data (permissions, role templates, group templates)
 6. **Phase 6:** Enable RLS and create policies
+7. **🆕 Phase 7 (v0.2.5):** Create last leader protection trigger
 
 ---
 
@@ -985,7 +1181,29 @@ If migrating manually, follow this sequence:
 
 ---
 
-**Document Version**: 2.0  
-**Last Updated**: January 2026  
-**Changes from v1.0**: Reorganized table creation order to eliminate dependency errors  
-**Next Review**: After initial schema implementation
+## 🆕 v0.2.5 Changes Summary
+
+### Schema Changes
+1. **group_memberships.status** - Added `'invited'` to CHECK constraint
+2. **New Trigger Function** - `prevent_last_leader_removal()`
+3. **New Trigger** - `check_last_leader_removal` on `group_memberships`
+
+### New RLS Policies (6 total)
+1. Users can search other users by email (users table)
+2. Users can create invitations for groups they lead (group_memberships)
+3. Users can accept their own invitations (group_memberships)
+4. Users can decline their own invitations (group_memberships)
+5. Members can leave groups (group_memberships)
+6. Leaders can remove members from their groups (group_memberships)
+
+### Migration Files
+- `20260125_enable_member_invitations.sql`
+- `20260125_enable_accept_decline_invitations.sql`
+- `20260125_enable_leave_remove_members.sql`
+
+---
+
+**Document Version**: 2.1  
+**Last Updated**: January 26, 2026 (v0.2.5)  
+**Changes from v2.0**: Added v0.2.5 member management features (status constraint, trigger, 6 RLS policies, workflows)  
+**Next Review**: After completing Phase 1.4 (Journey System)
