@@ -63,6 +63,11 @@ export default function ProfileEditForm({
 
       setSuccess(true);
       
+      // Refresh navigation to show updated profile
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('refreshNavigation'));
+      }
+      
       // Redirect back to profile page after short delay
       setTimeout(() => {
         router.push('/profile');

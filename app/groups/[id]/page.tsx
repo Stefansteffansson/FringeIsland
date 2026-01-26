@@ -6,6 +6,8 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import Image from 'next/image';
+import InviteMemberModal from '@/components/groups/InviteMemberModal';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 interface GroupData {
   id: string;
@@ -42,6 +44,23 @@ export default function GroupDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLeader, setIsLeader] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [userData, setUserData] = useState<{ id: string } | null>(null);
+  const [removingMemberId, setRemovingMemberId] = useState<string | null>(null);
+  const [leavingGroup, setLeavingGroup] = useState(false);
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    variant: 'danger' | 'warning' | 'info';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+    variant: 'info',
+  });
   const router = useRouter();
   const supabase = createClient();
 
@@ -64,6 +83,8 @@ export default function GroupDetailPage() {
           .single();
 
         if (userError) throw userError;
+
+        setUserData(userData); // Store user data for modal
 
         // Fetch group data
         // Use maybeSingle() instead of single() to avoid error when group doesn't exist
@@ -202,6 +223,149 @@ export default function GroupDetailPage() {
       fetchGroupData();
     }
   }, [user, authLoading, groupId, router, supabase]);
+
+  const handleLeaveGroup = async () => {
+    if (!userData || !group) return;
+
+    // Check if user is a leader
+    const isUserLeader = userRoles.some(role => role.role_name === 'Group Leader');
+    
+    if (isUserLeader) {
+      // Count other leaders
+      const otherLeaders = members.filter(
+        member => member.user_id !== userData.id && member.roles.includes('Group Leader')
+      );
+
+      if (otherLeaders.length === 0) {
+        setConfirmModal({
+          isOpen: true,
+          title: 'Cannot Leave Group',
+          message: 'You are the last leader of this group. Please promote another member to leader before leaving, or delete the group.',
+          onConfirm: () => setConfirmModal({ ...confirmModal, isOpen: false }),
+          variant: 'warning',
+        });
+        return;
+      }
+    }
+
+    // Show confirmation modal
+    setConfirmModal({
+      isOpen: true,
+      title: 'Leave Group?',
+      message: `Are you sure you want to leave "${group.name}"? This action cannot be undone.`,
+      onConfirm: async () => {
+        setConfirmModal({ ...confirmModal, isOpen: false });
+        setLeavingGroup(true);
+
+        try {
+          // Delete the membership
+          const { error } = await supabase
+            .from('group_memberships')
+            .delete()
+            .eq('group_id', groupId)
+            .eq('user_id', userData.id)
+            .eq('status', 'active');
+
+          if (error) throw error;
+
+          // Redirect to groups page
+          router.push('/groups');
+        } catch (err: any) {
+          console.error('Error leaving group:', err);
+          
+          // Show error modal
+          setConfirmModal({
+            isOpen: true,
+            title: 'Error',
+            message: err.message?.includes('last leader') 
+              ? 'You are the last leader of this group. Please promote another member to leader before leaving.'
+              : 'Failed to leave group. Please try again.',
+            onConfirm: () => setConfirmModal({ ...confirmModal, isOpen: false }),
+            variant: 'danger',
+          });
+        } finally {
+          setLeavingGroup(false);
+        }
+      },
+      variant: 'danger',
+    });
+  };
+
+  const handleRemoveMember = async (membershipId: string, memberName: string, memberUserId: string) => {
+    if (!userData || !group) return;
+
+    // Check if trying to remove a leader
+    const memberToRemove = members.find(m => m.user_id === memberUserId);
+    const isMemberLeader = memberToRemove?.roles.includes('Group Leader');
+
+    if (isMemberLeader) {
+      // Count total leaders
+      const leaderCount = members.filter(m => m.roles.includes('Group Leader')).length;
+
+      if (leaderCount === 1) {
+        setConfirmModal({
+          isOpen: true,
+          title: 'Cannot Remove Leader',
+          message: `${memberName} is the last leader of this group. Promote another member to leader before removing them.`,
+          onConfirm: () => setConfirmModal({ ...confirmModal, isOpen: false }),
+          variant: 'warning',
+        });
+        return;
+      }
+    }
+
+    // Show confirmation modal
+    setConfirmModal({
+      isOpen: true,
+      title: 'Remove Member?',
+      message: `Remove ${memberName} from "${group.name}"? They will need to be re-invited to rejoin.`,
+      onConfirm: async () => {
+        setConfirmModal({ ...confirmModal, isOpen: false });
+        setRemovingMemberId(membershipId);
+
+        try {
+          // Find the membership ID
+          const { data: membershipData, error: findError } = await supabase
+            .from('group_memberships')
+            .select('id')
+            .eq('group_id', groupId)
+            .eq('user_id', memberUserId)
+            .eq('status', 'active')
+            .single();
+
+          if (findError) throw findError;
+
+          // Delete the membership
+          const { error } = await supabase
+            .from('group_memberships')
+            .delete()
+            .eq('id', membershipData.id);
+
+          if (error) throw error;
+
+          // Update local state
+          setMembers(prev => prev.filter(m => m.user_id !== memberUserId));
+          setMemberCount(prev => prev - 1);
+        } catch (err: any) {
+          console.error('Error removing member:', err);
+          
+          // Show error modal
+          setConfirmModal({
+            isOpen: true,
+            title: 'Error',
+            message: err.message?.includes('last leader')
+              ? 'Cannot remove the last leader from the group. Promote another member to leader first.'
+              : 'Failed to remove member. Please try again.',
+            onConfirm: () => setConfirmModal({ ...confirmModal, isOpen: false }),
+            variant: 'danger',
+          });
+        } finally {
+          setRemovingMemberId(null);
+        }
+      },
+      variant: 'danger',
+    });
+  };
 
   // Show loading state
   if (authLoading || loading) {
@@ -345,42 +509,64 @@ export default function GroupDetailPage() {
                 {members.map((member) => (
                   <div
                     key={member.id}
-                    className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors"
+                    className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition-all border border-gray-100"
                   >
-                    {/* Avatar */}
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-gray-200 flex-shrink-0">
-                      {member.avatar_url ? (
-                        <Image
-                          src={member.avatar_url}
-                          alt={member.full_name}
-                          fill
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gray-200 flex items-center justify-center text-2xl">
-                          👤
-                        </div>
-                      )}
+                    <div className="flex items-center gap-4 mb-3">
+                      {/* Avatar */}
+                      <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-purple-500 flex-shrink-0">
+                        {member.avatar_url ? (
+                          <Image
+                            src={member.avatar_url}
+                            alt={member.full_name}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-white text-2xl font-bold">
+                            {member.full_name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Name */}
+                      <div className="flex-1">
+                        <h3 className="font-bold text-gray-800 text-lg">
+                          {member.full_name}
+                          {userData && member.user_id === userData.id && (
+                            <span className="ml-2 text-sm text-blue-600">(You)</span>
+                          )}
+                        </h3>
+                      </div>
                     </div>
 
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-800 truncate">
-                        {member.full_name}
-                      </p>
-                      {member.roles.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {member.roles.map((role, index) => (
-                            <span
-                              key={index}
-                              className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded"
-                            >
-                              {role}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                    {/* Roles */}
+                    {member.roles.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {member.roles.map((role, index) => (
+                          <span
+                            key={index}
+                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                              role === 'Group Leader'
+                                ? 'bg-purple-100 text-purple-700'
+                                : 'bg-blue-100 text-blue-700'
+                            }`}
+                          >
+                            {role}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Remove Button (leaders only, can't remove self) */}
+                    {isLeader && userData && member.user_id !== userData.id && (
+                      <button
+                        onClick={() => handleRemoveMember(member.id, member.full_name, member.user_id)}
+                        disabled={removingMemberId === member.user_id}
+                        className="w-full px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-red-200"
+                      >
+                        {removingMemberId === member.user_id ? 'Removing...' : 'Remove Member'}
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -389,46 +575,67 @@ export default function GroupDetailPage() {
         )}
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="text-3xl mb-3">📨</div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Invite Members
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Add new members to the group
-            </p>
-            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              Coming Soon →
-            </button>
-          </div>
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">Quick Actions</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Invite Members Card */}
+            <div className="border-2 border-blue-100 rounded-xl p-6 hover:border-blue-300 transition-colors">
+              <div className="text-3xl mb-3">✉️</div>
+              <h3 className="font-semibold text-gray-800 mb-2">Invite Members</h3>
+              <p className="text-sm text-gray-600 mb-4">Add people to this group</p>
+              {isLeader ? (
+                <button
+                  onClick={() => setShowInviteModal(true)}
+                  className="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all"
+                >
+                  Invite Someone →
+                </button>
+              ) : (
+                <p className="text-sm text-gray-500 italic">Leaders only</p>
+              )}
+            </div>
 
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="text-3xl mb-3">🎭</div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Manage Roles
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Assign roles to members
-            </p>
-            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              Coming Soon →
-            </button>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="text-3xl mb-3">🚀</div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Start Journey
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Begin a journey with this group
-            </p>
-            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              Coming Soon →
-            </button>
+            {/* Leave Group Card */}
+            <div className="border-2 border-red-100 rounded-xl p-6 hover:border-red-300 transition-colors">
+              <div className="text-3xl mb-3">🚪</div>
+              <h3 className="font-semibold text-gray-800 mb-2">Leave Group</h3>
+              <p className="text-sm text-gray-600 mb-4">Remove yourself from this group</p>
+              <button
+                onClick={handleLeaveGroup}
+                disabled={leavingGroup}
+                className="w-full px-4 py-2 bg-red-100 text-red-700 rounded-lg font-semibold hover:bg-red-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {leavingGroup ? 'Leaving...' : 'Leave Group'}
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Invite Member Modal */}
+        {showInviteModal && userData && (
+          <InviteMemberModal
+            groupId={groupId}
+            groupName={group.name}
+            currentUserId={userData.id}
+            onClose={() => setShowInviteModal(false)}
+            onSuccess={() => {
+              // Refresh the page to show updated member count
+              window.location.reload();
+            }}
+          />
+        )}
+
+        {/* Confirmation Modal */}
+        <ConfirmModal
+          isOpen={confirmModal.isOpen}
+          title={confirmModal.title}
+          message={confirmModal.message}
+          onConfirm={confirmModal.onConfirm}
+          onCancel={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+          variant={confirmModal.variant}
+          confirmText={confirmModal.variant === 'danger' ? 'Yes, proceed' : 'OK'}
+        />
       </div>
     </div>
   );

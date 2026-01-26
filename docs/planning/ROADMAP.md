@@ -6,7 +6,7 @@ This document outlines the implementation phases, milestones, and development pr
 
 FringeIsland development is organized into four major phases, each building on the previous:
 
-- **Phase 1: Foundation** - Core platform with predefined journeys
+- **Phase 1: Foundation** - Core platform with predefined journeys ⏳ **IN PROGRESS (65%)**
 - **Phase 2: User-Generated Content** - Journey marketplace and customization
 - **Phase 3: Dynamic Journeys** - Adaptive learning paths
 - **Phase 4: Developer Platform** - API and integrations
@@ -21,138 +21,166 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-## Phase 1: Foundation (MVP)
+## Phase 1: Foundation (MVP) ⏳ IN PROGRESS - 65% Complete
 
 **Goal**: Launch a working platform where groups can embark on predefined journeys together.
 
 **Timeline**: 3-4 months
 
+**Current Status** (as of v0.2.5 - Jan 26, 2026):
+- ✅ Core infrastructure complete
+- ✅ User management complete
+- ✅ Group management mostly complete
+- ⏳ Journey system (not started)
+- ⏳ Communication (not started)
+- ⏳ Polish and launch (not started)
+
 **Success Criteria**:
 - ✅ Users can create accounts and profiles
 - ✅ Users can create and manage groups
-- ✅ Groups can enroll in predefined journeys
-- ✅ Basic forum and messaging for collaboration
-- ✅ Role-based permissions working correctly
-- ✅ 5-10 high-quality predefined journeys available
+- ⏳ Groups can enroll in predefined journeys
+- ⏳ Basic forum and messaging for collaboration
+- 🔄 Role-based permissions working (basic functionality done)
+- ⏳ 5-10 high-quality predefined journeys available
 
-### Phase 1.1: Core Infrastructure (Weeks 1-3)
+### Phase 1.1: Core Infrastructure (Weeks 1-3) ✅ COMPLETE
+
+**Status**: ✅ **COMPLETE** (v0.1.0 - v0.1.2)
 
 **Deliverables**:
 
-1. **Project Setup**
-   - Next.js 14+ with App Router
-   - TypeScript configuration
-   - Supabase project setup
-   - Development environment
-   - CI/CD pipeline (GitHub Actions)
+1. **Project Setup** ✅
+   - ✅ Next.js 16.1 with App Router
+   - ✅ TypeScript configuration
+   - ✅ Supabase project setup
+   - ✅ Development environment
+   - ⏳ CI/CD pipeline (GitHub Actions) - Deferred
 
-2. **Database Schema**
-   - Implement complete schema from DATABASE_SCHEMA.md
-   - Create migration scripts
-   - Seed initial data (permissions, role templates, group templates)
-   - Set up Row Level Security policies
+2. **Database Schema** ✅
+   - ✅ Implement complete schema from DATABASE_SCHEMA.md
+   - ✅ Create migration scripts
+   - ✅ Seed initial data (permissions, role templates, group templates)
+   - ✅ Set up Row Level Security policies
 
-3. **Authentication**
-   - Supabase Auth integration
-   - Email/password authentication
-   - OAuth providers (Google, GitHub)
-   - Session management
-   - Protected routes
+3. **Authentication** ✅
+   - ✅ Supabase Auth integration
+   - ✅ Email/password authentication
+   - ⏳ OAuth providers (Google, GitHub) - Deferred
+   - ✅ Session management
+   - ✅ Protected routes
 
-**Acceptance Criteria**:
-- Database schema deployed to Supabase
-- User registration and login working
-- All RLS policies enforced
+**Acceptance Criteria**: ✅ ALL MET
+- ✅ Database schema deployed to Supabase
+- ✅ User registration and login working
+- ✅ All RLS policies enforced
+
+**Completed**: January 24-25, 2026 (v0.1.0 - v0.2.1)
 
 ---
 
-### Phase 1.2: User Management (Weeks 4-5)
+### Phase 1.2: User Management (Weeks 4-5) ✅ COMPLETE
+
+**Status**: ✅ **COMPLETE** (v0.2.2)
 
 **Deliverables**:
 
-1. **User Profiles**
-   - Profile creation/editing
-   - Avatar upload
-   - Bio and settings
-   - Account activation/deactivation
+1. **User Profiles** ✅
+   - ✅ Profile creation/editing
+   - ✅ Avatar upload
+   - ✅ Bio and settings
+   - ⏳ Account activation/deactivation - Deferred
 
-2. **User Dashboard**
-   - Overview of user's groups
-   - Active journeys
-   - Recent activity
-   - Quick actions
+2. **User Dashboard** 🔄
+   - 🔄 Overview of user's groups (partial - groups page exists)
+   - ⏳ Active journeys
+   - ⏳ Recent activity
+   - ⏳ Quick actions
 
-**Acceptance Criteria**:
-- Users can create and edit profiles
-- Profile data persists correctly
-- Dashboard shows accurate user data
+**Acceptance Criteria**: ✅ CORE MET
+- ✅ Users can create and edit profiles
+- ✅ Profile data persists correctly
+- 🔄 Dashboard shows accurate user data (groups only)
+
+**Completed**: January 25, 2026 (v0.2.2)
 
 ---
 
-### Phase 1.3: Group Management (Weeks 6-8)
+### Phase 1.3: Group Management (Weeks 6-8) ✅ MOSTLY COMPLETE
+
+**Status**: ✅ **MOSTLY COMPLETE** (v0.2.3 - v0.2.5)
 
 **Deliverables**:
 
-1. **Group Creation**
-   - Create group from templates
-   - Group settings (name, description, visibility)
-   - Initial role setup from templates
+1. **Group Creation** ✅
+   - ✅ Create group from templates
+   - ✅ Group settings (name, description, visibility)
+   - ✅ Initial role setup from templates
 
-2. **Group Membership**
-   - Invite members via email
-   - Accept/decline invitations
-   - View member list
-   - Remove members
-   - Pause/activate members
+2. **Group Membership** ✅
+   - ✅ Invite members via email (v0.2.5)
+   - ✅ Accept/decline invitations (v0.2.5)
+   - ✅ View member list
+   - ✅ Remove members (v0.2.5)
+   - ✅ Leave groups (v0.2.5)
+   - ⏳ Pause/activate members - Deferred
 
-3. **Group Roles**
-   - Assign roles to members
-   - View role permissions
-   - Customize role permissions (basic)
-   - Group Leader safeguards
+3. **Group Roles** 🔄
+   - 🔄 Assign roles to members (basic setup exists)
+   - ✅ View role permissions
+   - ⏳ Customize role permissions (basic) - Next up
+   - ✅ Group Leader safeguards (last leader protection)
 
-4. **Subgroups (Basic)**
-   - Add group as member of parent group
-   - View group hierarchy
-   - Basic navigation
+4. **Subgroups (Basic)** ⏳
+   - ⏳ Add group as member of parent group
+   - ⏳ View group hierarchy
+   - ⏳ Basic navigation
 
-**Acceptance Criteria**:
-- Users can create groups and invite members
-- Role assignment working correctly
-- Group Leader can manage group settings
-- Cannot remove last Group Leader (safeguard works)
+**Acceptance Criteria**: ✅ MOSTLY MET
+- ✅ Users can create groups and invite members
+- 🔄 Role assignment working (basic functionality)
+- ✅ Group Leader can manage group settings
+- ✅ Cannot remove last Group Leader (safeguard works)
+
+**Progress**:
+- v0.2.3: Group creation
+- v0.2.4: Group detail page
+- v0.2.5: Member management (invite, accept, leave, remove)
+
+**Next**: Role assignment UI, subgroups
 
 ---
 
-### Phase 1.4: Journey System (Weeks 9-11)
+### Phase 1.4: Journey System (Weeks 9-11) ⏳ NOT STARTED
+
+**Status**: ⏳ **NOT STARTED**
 
 **Deliverables**:
 
-1. **Journey Catalog**
+1. **Journey Catalog** ⏳
    - Browse predefined journeys
    - Filter by tags, difficulty, duration
    - View journey details
    - Search functionality
 
-2. **Journey Enrollment**
+2. **Journey Enrollment** ⏳
    - Individual enrollment
    - Group enrollment (by Group Leader)
    - Enrollment confirmation
    - View enrolled journeys
 
-3. **Journey Content Delivery**
+3. **Journey Content Delivery** ⏳
    - Linear journey progression (A→B)
    - Step-by-step navigation
    - Content display (text, images, videos)
    - Activity completion tracking
 
-4. **Journey Progress**
+4. **Journey Progress** ⏳
    - Individual progress tracking
    - Group progress overview
    - Completion status
    - Travel Guide view of member progress
 
-5. **Initial Predefined Journeys**
+5. **Initial Predefined Journeys** ⏳
    - Create 5-10 high-quality journeys
    - Cover different topics (leadership, team building, personal development)
    - Different difficulty levels and durations
@@ -163,20 +191,24 @@ FringeIsland development is organized into four major phases, each building on t
 - Progress tracking accurate
 - Travel Guides can view member progress
 
+**Priority**: HIGH - Next major feature after role assignment UI
+
 ---
 
-### Phase 1.5: Communication (Weeks 12-13)
+### Phase 1.5: Communication (Weeks 12-13) ⏳ NOT STARTED
+
+**Status**: ⏳ **NOT STARTED**
 
 **Deliverables**:
 
-1. **Forum System**
+1. **Forum System** ⏳
    - Group forums
    - Post messages
    - Reply to messages
    - Basic moderation (delete/edit)
    - Forum visibility settings
 
-2. **Messaging**
+2. **Messaging** ⏳
    - Direct messages between users
    - Message notifications
    - Message history
@@ -187,38 +219,42 @@ FringeIsland development is organized into four major phases, each building on t
 - Direct messaging working
 - Notifications delivered correctly
 
+**Priority**: MEDIUM - After journey system basics
+
 ---
 
-### Phase 1.6: Polish and Launch (Weeks 14-16)
+### Phase 1.6: Polish and Launch (Weeks 14-16) ⏳ NOT STARTED
+
+**Status**: ⏳ **NOT STARTED**
 
 **Deliverables**:
 
-1. **UI/UX Refinement**
-   - Responsive design (mobile, tablet, desktop)
-   - Accessibility improvements (WCAG 2.1 AA)
-   - Loading states and error handling
-   - User onboarding flow
+1. **UI/UX Refinement** 🔄
+   - 🔄 Responsive design (partial - desktop done)
+   - ⏳ Accessibility improvements (WCAG 2.1 AA)
+   - ✅ Loading states and error handling (mostly done)
+   - ⏳ User onboarding flow
 
-2. **Testing**
+2. **Testing** ⏳
    - Unit tests (80%+ coverage for critical paths)
    - Integration tests (key user flows)
    - E2E tests (Playwright/Cypress)
    - Performance testing
    - Security audit
 
-3. **Documentation**
-   - User guide
-   - Help center articles
-   - Video tutorials
-   - Admin documentation
+3. **Documentation** 🔄
+   - ⏳ User guide
+   - ⏳ Help center articles
+   - ⏳ Video tutorials
+   - 🔄 Admin documentation (technical docs exist)
 
-4. **Beta Testing**
+4. **Beta Testing** ⏳
    - Invite 10-20 beta users
    - Collect feedback
    - Fix critical bugs
    - Iterate on UX
 
-5. **Launch**
+5. **Launch** ⏳
    - Public launch announcement
    - Monitor performance and errors
    - Rapid bug fixing
@@ -232,18 +268,111 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
+## ✅ What We've Completed (v0.1.0 - v0.2.5)
+
+### v0.2.5 (Jan 26, 2026) - Member Management & Navigation
+- ✅ **Member invitation system** (email-based)
+- ✅ **Accept/decline invitations** (dedicated page)
+- ✅ **Leave groups** (with last leader protection)
+- ✅ **Remove members** (leaders only)
+- ✅ **Global navigation bar** (real-time updates)
+- ✅ **Confirmation modal system** (replaced all alerts)
+- ✅ **Database trigger** for last leader protection
+- ✅ **6 new RLS policies** for member management
+
+### v0.2.4 (Jan 25, 2026) - Group Detail Page
+- ✅ Dynamic group detail view at `/groups/[id]`
+- ✅ Member list with avatars and roles
+- ✅ Role badges display
+- ✅ Public/private status indicators
+- ✅ Access control and error handling
+
+### v0.2.3 (Jan 25, 2026) - Group Creation
+- ✅ Group creation form
+- ✅ Group settings (name, description, label)
+- ✅ Public/private visibility
+- ✅ Member list visibility toggle
+- ✅ Automatic leader assignment
+
+### v0.2.2 (Jan 25, 2026) - Profile Management
+- ✅ View profile page
+- ✅ Edit profile (name, bio)
+- ✅ Avatar upload with optimization
+- ✅ Supabase Storage integration
+
+### v0.2.0-0.2.1 (Jan 24-25, 2026) - Auth & Groups List
+- ✅ Authentication system overhaul
+- ✅ AuthContext implementation
+- ✅ Groups list page
+- ✅ Session management
+
+### v0.1.0-0.1.2 (Jan 24, 2026) - Foundation
+- ✅ Project initialization (Next.js 16.1)
+- ✅ Database schema (13 tables)
+- ✅ RLS policies
+- ✅ Seed data
+- ✅ Basic authentication
+
+---
+
+## 🎯 Next Up (Immediate Priorities)
+
+### Priority 1: Role Assignment UI (Step 4)
+**Goal**: Complete group management with role assignment interface
+
+**Deliverables**:
+- Promote member to leader
+- Assign/remove roles
+- Role management UI
+- Visual role indicators
+
+**Timeline**: 1-2 weeks
+**Impact**: Completes core group management (~75% Phase 1)
+
+---
+
+### Priority 2: Journey System Basics (Step 5)
+**Goal**: Enable groups to browse and enroll in journeys
+
+**Deliverables**:
+- Journey catalog/browse page
+- Journey detail page
+- Enrollment system
+- Journey-group connections
+
+**Timeline**: 2-3 weeks
+**Impact**: Major milestone (~85% Phase 1)
+
+---
+
+### Priority 3: Journey Content Delivery (Step 6)
+**Goal**: Users can progress through journey content
+
+**Deliverables**:
+- Journey step navigation
+- Content display
+- Progress tracking
+- Completion status
+
+**Timeline**: 2-3 weeks
+**Impact**: Core journey functionality (~95% Phase 1)
+
+---
+
 ## Phase 2: User-Generated Content
 
 **Goal**: Enable users to create, customize, and share journeys in a marketplace.
 
 **Timeline**: 2-3 months (after Phase 1 launch)
 
+**Status**: ⏳ **NOT STARTED**
+
 **Success Criteria**:
-- ✅ Users can create their own journeys
-- ✅ Journey marketplace functional
-- ✅ Journey rating/review system working
-- ✅ Journey versioning implemented
-- ✅ 100+ user-created journeys published
+- Users can create their own journeys
+- Journey marketplace functional
+- Journey rating/review system working
+- Journey versioning implemented
+- 100+ user-created journeys published
 
 ### Phase 2.1: Journey Creation Tools (Weeks 1-3)
 
@@ -321,37 +450,15 @@ FringeIsland development is organized into four major phases, each building on t
 
 3. **Enhanced Forums**
    - Journey-specific forums
-   - Rich text formatting
-   - File attachments
-   - @mentions and notifications
+   - Rich media in posts (images, videos)
+   - Polls and surveys
+   - Pinned/featured posts
+   - Forum search
 
 **Acceptance Criteria**:
-- Multiple users can edit journeys together
-- Custom roles working correctly
-- Enhanced forums functional
-
----
-
-### Phase 2.4: Monetization (Optional, Weeks 9-10)
-
-**Deliverables**:
-
-1. **Payment Integration**
-   - Stripe integration
-   - Paid journeys
-   - Subscription plans
-   - Creator payouts
-
-2. **Pricing Options**
-   - Free journeys
-   - One-time purchase
-   - Subscription access
-   - Organizational licensing
-
-**Acceptance Criteria**:
-- Payment processing working
-- Creators can set prices
-- Revenue sharing functional
+- Journey co-creation working
+- Custom roles fully functional
+- Enhanced forums smooth and feature-rich
 
 ---
 
@@ -361,11 +468,13 @@ FringeIsland development is organized into four major phases, each building on t
 
 **Timeline**: 3-4 months (after Phase 2)
 
+**Status**: ⏳ **NOT STARTED**
+
 **Success Criteria**:
-- ✅ Journeys can branch based on user choices
-- ✅ Content adapts to user performance
-- ✅ Context-aware recommendations working
-- ✅ 10+ dynamic journeys published
+- Journeys can branch based on user choices
+- Content adapts to user performance
+- Context-aware recommendations working
+- 10+ dynamic journeys published
 
 ### Phase 3.1: Journey Logic Engine (Weeks 1-4)
 
@@ -454,11 +563,13 @@ FringeIsland development is organized into four major phases, each building on t
 
 **Timeline**: 2-3 months (after Phase 3)
 
+**Status**: ⏳ **NOT STARTED**
+
 **Success Criteria**:
-- ✅ REST API documented and stable
-- ✅ SDK released (JavaScript/TypeScript)
-- ✅ 5+ third-party integrations built
-- ✅ Developer documentation comprehensive
+- REST API documented and stable
+- SDK released (JavaScript/TypeScript)
+- 5+ third-party integrations built
+- Developer documentation comprehensive
 
 ### Phase 4.1: REST API (Weeks 1-3)
 
@@ -666,6 +777,12 @@ FringeIsland development is organized into four major phases, each building on t
 
 ### Key Architectural Decisions
 
+**2026-01-26**: Implemented member management with last leader protection (v0.2.5)  
+**2026-01-26**: Created global navigation with real-time updates (v0.2.5)  
+**2026-01-26**: Replaced browser alerts with modal system (v0.2.5)  
+**2026-01-25**: Built group detail page with role display (v0.2.4)  
+**2026-01-25**: Implemented group creation (v0.2.3)  
+**2026-01-25**: Added avatar upload with Supabase Storage (v0.2.2)  
 **2026-01-18**: Chose flexible group model over hard-coded types  
 **2026-01-18**: Decided journeys are content, not organizational nodes  
 **2026-01-18**: Implemented two-tier role system (templates + instances)  
@@ -674,6 +791,35 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: January 2026  
-**Next Review**: Monthly during development
+## Current Development Focus (January 2026)
+
+### Active Work (v0.2.5)
+- ✅ Member management complete
+- ✅ Navigation system complete
+- ✅ Modal system complete
+
+### Next Sprint
+**Priority 1**: Role Assignment UI
+- Promote to leader functionality
+- Assign/remove roles interface
+- Role management page
+
+**Priority 2**: Journey System Foundation
+- Journey catalog design
+- Database queries for journeys
+- Journey browsing UI
+
+### Blockers & Dependencies
+- None currently
+
+### Technical Debt
+- Add unit tests for critical paths
+- Improve mobile responsiveness
+- Add loading skeletons
+- Implement error tracking (Sentry)
+
+---
+
+**Document Version**: 1.1  
+**Last Updated**: January 26, 2026 (v0.2.5)  
+**Next Review**: February 2026 or after next major feature

@@ -1,282 +1,282 @@
 # FringeIsland
 
-An educational and training platform for personal development, leadership training, and team/organizational development.
+**Version:** 0.2.5  
+**Last Updated:** January 26, 2026
 
-## 🎯 Vision
+Educational and training platform for personal development, leadership training, and team/organizational development.
 
-FringeIsland enables users to embark on transformative "journeys" - structured learning experiences that can be taken solo, in pairs, or in groups. Like physical travel, these journeys combine exploration, exercise, and experience to foster growth and skill development.
+---
 
-## 📦 Current Status
+## 🚀 Current Status
 
-**Phase**: Phase 2 Core Platform (48% Complete)  
-**Stack**: Next.js 16.1 (App Router) + TypeScript + React + Tailwind CSS + Supabase  
-**Version**: 0.2.4 (See [CHANGELOG.md](CHANGELOG.md) for detailed version history)
+**Phase 2: Core Platform - 65% Complete**
 
-### ✅ Recently Completed
+### ✅ Completed Features
 
-**Group Detail Page** (January 25, 2026):
-- View individual groups at `/groups/[id]`
-- Display group information with role badges
-- Member list with avatars and roles
-- Edit button for group leaders
-- Access control (members + public groups)
-- Fixed RLS policy conflicts for viewing groups
+#### Authentication & User Management
+- ✅ User signup with email validation
+- ✅ User login with session management
+- ✅ Protected routes with middleware
+- ✅ AuthContext for global auth state
+- ✅ Logout functionality
 
-**Group Creation** (January 25, 2026):
-- Create groups from templates (Small Team, Large Group, Organization, Learning Cohort)
-- Set group name, description, and custom label
-- Control visibility (public/private) and member list settings
-- Automatic group leader assignment
-- View all groups in "My Groups" page
-- Complete RLS policies for group security
+#### Profile Management
+- ✅ View user profile (`/profile`)
+- ✅ Edit profile (name, bio) (`/profile/edit`)
+- ✅ Avatar upload with image optimization
+- ✅ Profile picture display throughout app
 
-**Avatar Upload** (January 24, 2026):
-- Upload profile pictures to Supabase Storage
-- Circular avatar display with borders
-- Replace and delete avatar functionality
-- File validation and error handling
+#### Group Management
+- ✅ Create new groups (`/groups/create`)
+- ✅ View all user's groups (`/groups`)
+- ✅ View group details (`/groups/[id]`)
+- ✅ Public/private group settings
+- ✅ Custom group labels
+- ✅ Member list visibility controls
 
-**User Profile Management** (January 24, 2026):
-- Profile editing with full name and bio
-- Form validation and character limits
-- Enhanced profile display
+#### Member Management (NEW in v0.2.5)
+- ✅ **Invite members by email** (leaders only)
+- ✅ **Accept/decline invitations** (`/invitations`)
+- ✅ **Leave groups** (all members)
+- ✅ **Remove members** (leaders only)
+- ✅ **Last leader protection** (database trigger)
+- ✅ Real-time member count updates
+- ✅ Smooth animations (no browser alerts)
 
-**Authentication System** (January 23, 2026):
-- User signup, login, and logout
-- Session management with protected routes
-- Soft delete user lifecycle management
-- Row Level Security enabled
-- Auth context and hooks for state management
+#### Navigation & UX (NEW in v0.2.5)
+- ✅ **Global navigation bar** (persistent across pages)
+- ✅ **Real-time invitation badge** (shows pending count)
+- ✅ **User menu dropdown** (avatar, profile, logout)
+- ✅ **Active page indicators**
+- ✅ **Auto-updating navigation** (refreshes on data changes)
+- ✅ **Beautiful confirmation modals** (replaced all alerts)
+- ✅ **Responsive design** (mobile & desktop)
 
-### 🚀 Ready for Development
-The foundation is complete, authentication is working, users can manage their profiles with avatars, and groups can be created! Next up: group detail pages and member management.
+### 🚧 In Progress
+- None (ready for next phase)
 
-## 📚 Documentation
-
-Comprehensive documentation is available in the [docs/](docs/) directory:
-
-### Architecture Documentation
-- [Architecture Overview](docs/architecture/ARCHITECTURE.md) - System design and core concepts
-- [Database Schema](docs/architecture/DATABASE_SCHEMA.md) - Supabase schema and RLS policies
-- [Authorization System](docs/architecture/AUTHORIZATION.md) - Permission and role management
-- [Domain Entities](docs/architecture/DOMAIN_ENTITIES.md) - Core business entities
-
-### Planning Documentation
-- [Roadmap](docs/planning/ROADMAP.md) - Implementation phases and milestones
-- [Deferred Decisions](docs/planning/DEFERRED_DECISIONS.md) - Architectural decisions postponed to later phases
-
-### Database Migrations
-- [Initial Schema](supabase/migrations/20260120_initial_schema.sql) - Complete database setup script
-- [User Lifecycle & RLS](supabase/migrations/20260123_fix_user_trigger_and_rls.sql) - Authentication triggers and security
-
-### Project Management
-- [CHANGELOG.md](CHANGELOG.md) - Version history and detailed change log
-
-## 🚀 Key Features
-
-### ✅ Phase 1: Foundation (Complete)
-- Complete database schema with 13 tables
-- Row Level Security on all tables
-- Flexible node/group-based authorization system
-- Next.js 16.1 with TypeScript and Tailwind CSS
-- Supabase integration (database + auth + storage)
-
-### ✅ Phase 2: Authentication & Profile (In Progress - 45% Complete)
-
-**Completed:**
-- ✅ User signup with email/password and display name
-- ✅ User login and logout
-- ✅ Protected routes with automatic redirects
-- ✅ Session persistence across page refreshes
-- ✅ Soft delete (users marked inactive, not deleted)
-- ✅ Auth context and hooks for global state
-- ✅ Profile editing (full name and bio)
-- ✅ Form validation and error handling
-- ✅ Enhanced profile display
-- ✅ Avatar upload to Supabase Storage
-- ✅ Avatar display (circular, bordered)
-- ✅ Replace and delete avatar
-- ✅ File validation (type, size)
-- ✅ Default placeholder when no avatar
-- ✅ Group creation from templates
-- ✅ Group visibility and member list settings
-- ✅ Automatic group leader assignment
-- ✅ My Groups page with group cards
-- ✅ Complete RLS policies for groups
-
-**Next Up:**
-- 🔄 Member management (invite, remove members)
-- Role assignment interface
+### 📋 Upcoming Features
+- Role assignment interface (promote to leader)
 - Journey browsing and enrollment
-- Basic permissions and roles UI
+- Permissions and roles UI
+- Dashboard/home page
+- Activity feed and notifications
 
-### 🔮 Phase 3: Journey Experience (Planned)
-- Journey content delivery system
-- Progress tracking
-- Facilitator tools
-- Group journey features
+---
 
-### 🔮 Phase 4: Enhanced Features (Planned)
-- User-created journey marketplace
-- Communication features (forums, messaging)
-- Feedback and review systems
-- Advanced analytics
+## 🏗️ Tech Stack
 
-## 🏛️ Core Concepts
+- **Framework:** Next.js 16.1 with App Router
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Backend:** Supabase (PostgreSQL + Auth + Storage)
+- **Deployment:** (TBD)
 
-### Journeys
-Structured learning experiences that users can complete solo or collaboratively. Journeys are content templates that groups or individuals enroll in.
+---
 
-### Groups
-Flexible organizational units (teams, companies, cohorts) with customizable membership and permissions. Groups can contain users and other groups ("member of" relationships).
+## 📂 Project Structure
 
-**Group Templates:**
-- **Small Team** - For teams of 2-10 people
-- **Large Group** - For groups of 10+ people
-- **Organization** - For companies and institutions
-- **Learning Cohort** - For learning groups going through journeys together
+```
+FringeIsland/
+├── app/
+│   ├── groups/
+│   │   ├── [id]/
+│   │   │   └── page.tsx          # Group detail page
+│   │   ├── create/
+│   │   │   └── page.tsx          # Create group
+│   │   └── page.tsx              # Groups list
+│   ├── invitations/
+│   │   └── page.tsx              # Invitations page (NEW)
+│   ├── login/
+│   │   └── page.tsx              # Login page
+│   ├── profile/
+│   │   ├── edit/
+│   │   │   └── page.tsx          # Edit profile
+│   │   └── page.tsx              # View profile
+│   ├── signup/
+│   │   └── page.tsx              # Signup page
+│   ├── layout.tsx                # Root layout with Navigation
+│   └── page.tsx                  # Home page
+├── components/
+│   ├── auth/
+│   │   ├── AuthContext.tsx       # Authentication context
+│   │   └── AuthForm.tsx          # Login/signup forms
+│   ├── groups/
+│   │   ├── GroupCreateForm.tsx   # Group creation form
+│   │   └── InviteMemberModal.tsx # Invite members modal (NEW)
+│   ├── profile/
+│   │   ├── AvatarUpload.tsx      # Avatar upload component
+│   │   └── ProfileEditForm.tsx   # Profile edit form
+│   ├── ui/
+│   │   └── ConfirmModal.tsx      # Reusable modal (NEW)
+│   └── Navigation.tsx            # Global navigation bar (NEW)
+├── lib/
+│   ├── auth/
+│   │   └── AuthContext.tsx       # Auth context provider
+│   └── supabase/
+│       ├── client.ts             # Supabase client
+│       └── server.ts             # Server-side Supabase
+├── supabase/
+│   └── migrations/               # SQL migration files (NEW)
+├── public/                       # Static assets
+├── CHANGELOG.md                  # Version history
+├── CLAUDE.md                     # AI context documentation
+└── README.md                     # This file
+```
 
-### Roles & Permissions
-Fine-grained authorization system with role templates and group-specific instances. Permissions are context-based and customizable per group.
+---
 
-## 🛠️ Tech Stack
+## 📊 Database Schema
 
-- **Frontend**: Next.js 16.1 (App Router), React, TypeScript, Tailwind CSS
-- **Backend**: Supabase (PostgreSQL, Auth, Storage)
-- **Image Optimization**: Next.js Image component with remote patterns
-- **Deployment**: Vercel (planned)
-- **Version Control**: Git + GitHub
+### Core Tables (13 total)
 
-## 📋 Getting Started
+**Users & Authentication:**
+- `users` - User profiles and metadata
+- `auth.users` - Supabase authentication (managed)
+
+**Groups & Memberships:**
+- `groups` - Group information
+- `group_memberships` - User-group relationships (with status: active/invited/frozen)
+- `group_roles` - Available roles (Group Leader, Member, etc.)
+- `user_group_roles` - User role assignments per group
+
+**Journeys:**
+- `journeys` - Journey definitions
+- `journey_enrollments` - User journey participation
+- `journey_content` - Journey structure and content
+
+**Other:**
+- `group_journey_links` - Groups connected to journeys
+- `tags` - Tag definitions
+- `journey_tags` - Journey tagging
+- `user_preferences` - User settings
+
+---
+
+## 🔒 Security
+
+### Row Level Security (RLS)
+All tables have comprehensive RLS policies:
+- Users can only see their own data
+- Group members can view their groups
+- Public groups visible to all
+- Leaders can manage their groups
+- Invitations protected per user
+- Last leader protection via database trigger
+
+### Authentication
+- Supabase Auth with email/password
+- Session management with AuthContext
+- Protected routes via middleware
+- Automatic redirect for unauthenticated users
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ installed
-- npm or yarn package manager
+- Node.js 18+ 
+- npm or yarn
 - Supabase account
 
 ### Installation
 
-1. **Clone the repository:**
+1. **Clone the repository**
    ```bash
    git clone https://github.com/Stefansteffansson/FringeIsland.git
    cd FringeIsland
    ```
 
-2. **Install dependencies:**
+2. **Install dependencies**
    ```bash
    npm install
    ```
 
-3. **Configure environment variables:**
-   Create a `.env.local` file in the root directory:
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+3. **Set up environment variables**
+   Create `.env.local`:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
    ```
 
-4. **Set up Supabase Storage** (for avatars):
-   - Create an `avatars` bucket (public)
-   - Set up RLS policies (see documentation)
+4. **Run database migrations**
+   - Run SQL files in `supabase/migrations/` in order
+   - Or use Supabase CLI: `supabase db push`
 
-5. **Configure Next.js for images:**
-   Update `next.config.ts` to include your Supabase domain in `remotePatterns`
-
-6. **Run the development server:**
+5. **Start development server**
    ```bash
    npm run dev
    ```
 
-7. **Open your browser:**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-### Current Features
-
-**Authentication:**
-- Sign up at `/signup`
-- Sign in at `/login`
-- View profile at `/profile` (protected)
-
-**Profile Management:**
-- Edit profile at `/profile/edit`
-- Update full name and bio
-- Upload profile picture
-- Replace or delete avatar
-- View profile information with avatar
-
-**Groups:**
-- View groups at `/groups`
-- Create group at `/groups/create`
-- Select from 4 group templates
-- Set group properties and visibility
-- Automatic group leader role assignment
-
-## 📖 Project Structure
-
-```
-FringeIsland/
-├── app/                          # Next.js App Router
-│   ├── page.tsx                  # Homepage
-│   ├── layout.tsx                # Root layout with AuthProvider
-│   ├── globals.css               # Global styles
-│   ├── login/
-│   │   └── page.tsx             # Login page
-│   ├── signup/
-│   │   └── page.tsx             # Signup page
-│   ├── profile/
-│   │   ├── page.tsx             # Profile display page (with avatar)
-│   │   └── edit/
-│   │       └── page.tsx         # Profile edit page (with avatar upload)
-│   └── groups/
-│       ├── page.tsx             # My Groups list page
-│       └── create/
-│           └── page.tsx         # Create group page
-├── components/                   # Reusable components
-│   ├── auth/
-│   │   └── AuthForm.tsx         # Auth form component
-│   ├── profile/
-│   │   ├── ProfileEditForm.tsx  # Profile edit form component
-│   │   └── AvatarUpload.tsx     # Avatar upload component
-│   └── groups/
-│       └── GroupCreateForm.tsx  # Group creation form component
-├── docs/                         # Documentation
-│   ├── architecture/            # Architecture docs
-│   ├── planning/                # Planning docs
-│   └── implementation/          # Implementation guides
-├── lib/                         # Utilities
-│   ├── supabase/               # Supabase clients
-│   │   ├── client.ts           # Browser client
-│   │   ├── server.ts           # Server client
-│   │   └── middleware.ts       # Session helper
-│   └── auth/
-│       └── AuthContext.tsx     # Auth context and hooks
-├── supabase/
-│   └── migrations/             # Database migrations
-├── .env.local                   # Environment variables (gitignored)
-├── CHANGELOG.md                 # Version history
-├── CLAUDE.md                    # Claude context file
-├── next.config.ts               # Next.js configuration (with image domains)
-└── README.md                    # This file
-```
-
-## 🤝 Contributing
-
-This is a personal project currently in active development. Once the MVP is complete, contributions will be welcome!
-
-## 📄 License
-
-TBD - License to be determined
-
-## 🔗 Links
-
-- **Repository**: https://github.com/Stefansteffansson/FringeIsland
-- **Supabase Project**: FringeIslandDB
-- **Documentation**: [docs/](docs/)
-
-## 📞 Contact
-
-Stefan Steffansson - Project Creator & Developer
+6. **Open in browser**
+   ```
+   http://localhost:3000
+   ```
 
 ---
 
-**Status**: Phase 2 in progress (45% complete) - Group creation working, group detail page next  
-**Last Updated**: January 25, 2026
+## 📝 Recent Changes (v0.2.5)
+
+### Member Management System
+Complete member management with invite, accept/decline, leave, and remove functionality. Leaders can invite members by email, users can accept or decline invitations, and members can leave groups. Leaders can remove members with automatic last-leader protection.
+
+### Navigation System
+Global navigation bar with real-time updates. Shows invitation count badge, user avatar dropdown, and active page indicators. Automatically refreshes when profile or invitations change.
+
+### UI/UX Improvements
+Replaced all browser alerts with beautiful confirmation modals. Added smooth animations, loading states, and error handling throughout the app.
+
+See [CHANGELOG.md](./CHANGELOG.md) for complete version history.
+
+---
+
+## 🗺️ Roadmap
+
+### Phase 2: Core Platform (Current - 65% complete)
+- ✅ Authentication system
+- ✅ Profile management
+- ✅ Group creation
+- ✅ Member management
+- ✅ Navigation system
+- ⏳ Permissions & roles UI
+- ⏳ Journey browsing
+
+### Phase 3: Journey System
+- Journey creation and editing
+- Content management
+- Enrollment workflows
+- Progress tracking
+
+### Phase 4: Advanced Features
+- Marketplace for user-created journeys
+- Dynamic/adaptive journeys
+- Analytics and reporting
+- Team collaboration tools
+
+---
+
+## 🤝 Contributing
+
+This is a private project. For questions or suggestions, contact the development team.
+
+---
+
+## 📄 License
+
+Proprietary - All rights reserved
+
+---
+
+## 👥 Team
+
+- **Stefan Steffansson** - Project Lead & Developer
+
+---
+
+## 📧 Contact
+
+For questions or support, contact: [Your contact information]
+
+---
+
+**Built with ❤️ using Next.js, TypeScript, and Supabase**
