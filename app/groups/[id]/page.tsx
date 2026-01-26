@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import Image from 'next/image';
-import InviteMemberModal from '@/components/groups/InviteMemberModal';
+import AssignRoleModal from '@/components/groups/AssignRoleModal';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 
 interface GroupData {
@@ -25,8 +25,15 @@ interface Member {
   user_id: string;
   full_name: string;
   avatar_url: string | null;
-  roles: string[];
+  roles: string[]; // Role names for display
+  roleData: RoleData[]; // Full role info with IDs
   added_at: string;
+}
+
+interface RoleData {
+  user_group_role_id: string; // user_group_roles.id (for deletion)
+  role_id: string; // group_roles.id (for filtering)
+  role_name: string; // group_roles.name (for display)
 }
 
 interface UserRole {
@@ -44,23 +51,21 @@ export default function GroupDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLeader, setIsLeader] = useState(false);
-  const [showInviteModal, setShowInviteModal] = useState(false);
-  const [userData, setUserData] = useState<{ id: string } | null>(null);
-  const [removingMemberId, setRemovingMemberId] = useState<string | null>(null);
-  const [leavingGroup, setLeavingGroup] = useState(false);
-  const [confirmModal, setConfirmModal] = useState<{
-    isOpen: boolean;
-    title: string;
-    message: string;
-    onConfirm: () => void;
-    variant: 'danger' | 'warning' | 'info';
-  }>({
-    isOpen: false,
-    title: '',
-    message: '',
-    onConfirm: () => {},
-    variant: 'info',
-  });
+  
+  // Role management state
+  const [assignRoleModalOpen, setAssignRoleModalOpen] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<{
+    id: string;
+    name: string;
+    roleIds: string[];
+  } | null>(null);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [roleToRemove, setRoleToRemove] = useState<{
+    userGroupRoleId: string;
+    roleName: string;
+    memberName: string;
+  } | null>(null);
+  
   const router = useRouter();
   const supabase = createClient();
 
@@ -83,8 +88,6 @@ export default function GroupDetailPage() {
           .single();
 
         if (userError) throw userError;
-
-        setUserData(userData); // Store user data for modal
 
         // Fetch group data
         // Use maybeSingle() instead of single() to avoid error when group doesn't exist
@@ -178,12 +181,15 @@ export default function GroupDetailPage() {
 
           if (usersError) throw usersError;
 
-          // Get roles for all members
+          // Get roles for all members (including IDs for management)
           const { data: allRolesData, error: allRolesError } = await supabase
             .from('user_group_roles')
             .select(`
+              id,
               user_id,
+              group_role_id,
               group_roles (
+                id,
                 name
               )
             `)
@@ -196,7 +202,16 @@ export default function GroupDetailPage() {
           const membersWithRoles = usersData.map(u => {
             const membership = membershipsData.find(m => m.user_id === u.id);
             const userRoleData = allRolesData.filter((r: any) => r.user_id === u.id);
+            
+            // Extract role names for display
             const roleNames = userRoleData.map((r: any) => r.group_roles?.name || 'Unknown');
+            
+            // Extract full role data for management
+            const roleData: RoleData[] = userRoleData.map((r: any) => ({
+              user_group_role_id: r.id,
+              role_id: r.group_roles?.id || '',
+              role_name: r.group_roles?.name || 'Unknown',
+            }));
 
             return {
               id: u.id,
@@ -204,6 +219,7 @@ export default function GroupDetailPage() {
               full_name: u.full_name,
               avatar_url: u.avatar_url,
               roles: roleNames,
+              roleData: roleData,
               added_at: membership?.added_at || '',
             };
           });
@@ -224,147 +240,174 @@ export default function GroupDetailPage() {
     }
   }, [user, authLoading, groupId, router, supabase]);
 
-  const handleLeaveGroup = async () => {
-    if (!userData || !group) return;
-
-    // Check if user is a leader
-    const isUserLeader = userRoles.some(role => role.role_name === 'Group Leader');
+  // Role Management Functions
+  const refetchMembers = async () => {
+    if (!user) return;
+    setLoading(true);
     
-    if (isUserLeader) {
-      // Count other leaders
-      const otherLeaders = members.filter(
-        member => member.user_id !== userData.id && member.roles.includes('Group Leader')
-      );
+    try {
+      const { data: userData } = await supabase
+        .from('users')
+        .select('id')
+        .eq('auth_user_id', user.id)
+        .single();
 
-      if (otherLeaders.length === 0) {
-        setConfirmModal({
-          isOpen: true,
-          title: 'Cannot Leave Group',
-          message: 'You are the last leader of this group. Please promote another member to leader before leaving, or delete the group.',
-          onConfirm: () => setConfirmModal({ ...confirmModal, isOpen: false }),
-          variant: 'warning',
-        });
-        return;
-      }
+      if (!userData) return;
+
+      const { data: membershipsData } = await supabase
+        .from('group_memberships')
+        .select('user_id, added_at')
+        .eq('group_id', groupId)
+        .eq('status', 'active');
+
+      if (!membershipsData) return;
+
+      const userIds = membershipsData.map(m => m.user_id);
+      const { data: usersData } = await supabase
+        .from('users')
+        .select('id, full_name, avatar_url')
+        .in('id', userIds);
+
+      const { data: allRolesData } = await supabase
+        .from('user_group_roles')
+        .select(`
+          id,
+          user_id,
+          group_role_id,
+          group_roles (
+            id,
+            name
+          )
+        `)
+        .eq('group_id', groupId)
+        .in('user_id', userIds);
+
+      if (!usersData || !allRolesData) return;
+
+      const membersWithRoles = usersData.map(u => {
+        const membership = membershipsData.find(m => m.user_id === u.id);
+        const userRoleData = allRolesData.filter((r: any) => r.user_id === u.id);
+        const roleNames = userRoleData.map((r: any) => r.group_roles?.name || 'Unknown');
+        const roleData: RoleData[] = userRoleData.map((r: any) => ({
+          user_group_role_id: r.id,
+          role_id: r.group_roles?.id || '',
+          role_name: r.group_roles?.name || 'Unknown',
+        }));
+
+        return {
+          id: u.id,
+          user_id: u.id,
+          full_name: u.full_name,
+          avatar_url: u.avatar_url,
+          roles: roleNames,
+          roleData: roleData,
+          added_at: membership?.added_at || '',
+        };
+      });
+
+      setMembers(membersWithRoles);
+
+      // CRITICAL FIX: Update current user's roles and isLeader status
+      const currentUserRoles = allRolesData
+        .filter((r: any) => r.user_id === userData.id)
+        .map((r: any) => ({
+          role_name: r.group_roles?.name || 'Unknown'
+        }));
+      
+      setUserRoles(currentUserRoles);
+      
+      // Update isLeader state
+      const hasLeaderRole = currentUserRoles.some(r => r.role_name === 'Group Leader');
+      setIsLeader(hasLeaderRole);
+
+    } catch (err) {
+      console.error('Error refetching members:', err);
+    } finally {
+      setLoading(false);
     }
-
-    // Show confirmation modal
-    setConfirmModal({
-      isOpen: true,
-      title: 'Leave Group?',
-      message: `Are you sure you want to leave "${group.name}"? This action cannot be undone.`,
-      onConfirm: async () => {
-        setConfirmModal({ ...confirmModal, isOpen: false });
-        setLeavingGroup(true);
-
-        try {
-          // Delete the membership
-          const { error } = await supabase
-            .from('group_memberships')
-            .delete()
-            .eq('group_id', groupId)
-            .eq('user_id', userData.id)
-            .eq('status', 'active');
-
-          if (error) throw error;
-
-          // Redirect to groups page
-          router.push('/groups');
-        } catch (err: any) {
-          console.error('Error leaving group:', err);
-          
-          // Show error modal
-          setConfirmModal({
-            isOpen: true,
-            title: 'Error',
-            message: err.message?.includes('last leader') 
-              ? 'You are the last leader of this group. Please promote another member to leader before leaving.'
-              : 'Failed to leave group. Please try again.',
-            onConfirm: () => setConfirmModal({ ...confirmModal, isOpen: false }),
-            variant: 'danger',
-          });
-        } finally {
-          setLeavingGroup(false);
-        }
-      },
-      variant: 'danger',
-    });
   };
 
-  const handleRemoveMember = async (membershipId: string, memberName: string, memberUserId: string) => {
-    if (!userData || !group) return;
+  const handlePromoteToLeader = async (memberId: string, memberName: string) => {
+    if (!user) return;
 
-    // Check if trying to remove a leader
-    const memberToRemove = members.find(m => m.user_id === memberUserId);
-    const isMemberLeader = memberToRemove?.roles.includes('Group Leader');
+    try {
+      // Get current user's database ID
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('auth_user_id', user.id)
+        .single();
 
-    if (isMemberLeader) {
-      // Count total leaders
-      const leaderCount = members.filter(m => m.roles.includes('Group Leader')).length;
+      if (userError) throw userError;
 
-      if (leaderCount === 1) {
-        setConfirmModal({
-          isOpen: true,
-          title: 'Cannot Remove Leader',
-          message: `${memberName} is the last leader of this group. Promote another member to leader before removing them.`,
-          onConfirm: () => setConfirmModal({ ...confirmModal, isOpen: false }),
-          variant: 'warning',
+      // Find Group Leader role ID
+      const { data: leaderRole, error: roleError } = await supabase
+        .from('group_roles')
+        .select('id')
+        .eq('group_id', groupId)
+        .eq('name', 'Group Leader')
+        .single();
+
+      if (roleError) throw roleError;
+
+      // Assign Group Leader role
+      const { error: assignError } = await supabase
+        .from('user_group_roles')
+        .insert({
+          user_id: memberId,
+          group_id: groupId,
+          group_role_id: leaderRole.id,
+          assigned_by_user_id: userData.id,
         });
-        return;
+
+      if (assignError) throw assignError;
+
+      // Success - refresh members
+      await refetchMembers();
+    } catch (err: any) {
+      console.error('Error promoting to leader:', err);
+      alert(err.message || 'Failed to promote member to leader');
+    }
+  };
+
+  const handleOpenAssignRole = (member: Member) => {
+    setSelectedMember({
+      id: member.user_id,
+      name: member.full_name,
+      roleIds: member.roleData.map(r => r.role_id),
+    });
+    setAssignRoleModalOpen(true);
+  };
+
+  const handleRemoveRole = (userGroupRoleId: string, roleName: string, memberName: string) => {
+    setRoleToRemove({ userGroupRoleId, roleName, memberName });
+    setConfirmModalOpen(true);
+  };
+
+  const confirmRemoveRole = async () => {
+    if (!roleToRemove) return;
+
+    try {
+      const { error } = await supabase
+        .from('user_group_roles')
+        .delete()
+        .eq('id', roleToRemove.userGroupRoleId);
+
+      if (error) throw error;
+
+      // Success - refresh members
+      await refetchMembers();
+      setConfirmModalOpen(false);
+      setRoleToRemove(null);
+    } catch (err: any) {
+      console.error('Error removing role:', err);
+      // Check if it's the last leader error
+      if (err.message.includes('last leader')) {
+        alert('Cannot remove the last leader from the group. Promote another member to leader first.');
+      } else {
+        alert(err.message || 'Failed to remove role');
       }
     }
-
-    // Show confirmation modal
-    setConfirmModal({
-      isOpen: true,
-      title: 'Remove Member?',
-      message: `Remove ${memberName} from "${group.name}"? They will need to be re-invited to rejoin.`,
-      onConfirm: async () => {
-        setConfirmModal({ ...confirmModal, isOpen: false });
-        setRemovingMemberId(membershipId);
-
-        try {
-          // Find the membership ID
-          const { data: membershipData, error: findError } = await supabase
-            .from('group_memberships')
-            .select('id')
-            .eq('group_id', groupId)
-            .eq('user_id', memberUserId)
-            .eq('status', 'active')
-            .single();
-
-          if (findError) throw findError;
-
-          // Delete the membership
-          const { error } = await supabase
-            .from('group_memberships')
-            .delete()
-            .eq('id', membershipData.id);
-
-          if (error) throw error;
-
-          // Update local state
-          setMembers(prev => prev.filter(m => m.user_id !== memberUserId));
-          setMemberCount(prev => prev - 1);
-        } catch (err: any) {
-          console.error('Error removing member:', err);
-          
-          // Show error modal
-          setConfirmModal({
-            isOpen: true,
-            title: 'Error',
-            message: err.message?.includes('last leader')
-              ? 'Cannot remove the last leader from the group. Promote another member to leader first.'
-              : 'Failed to remove member. Please try again.',
-            onConfirm: () => setConfirmModal({ ...confirmModal, isOpen: false }),
-            variant: 'danger',
-          });
-        } finally {
-          setRemovingMemberId(null);
-        }
-      },
-      variant: 'danger',
-    });
   };
 
   // Show loading state
@@ -505,15 +548,15 @@ export default function GroupDetailPage() {
             {members.length === 0 ? (
               <p className="text-gray-500 text-center py-8">No members to display</p>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="space-y-4">
                 {members.map((member) => (
                   <div
                     key={member.id}
-                    className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition-all border border-gray-100"
+                    className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors"
                   >
-                    <div className="flex items-center gap-4 mb-3">
+                    <div className="flex items-start gap-4">
                       {/* Avatar */}
-                      <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-purple-500 flex-shrink-0">
+                      <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-gray-200 flex-shrink-0">
                         {member.avatar_url ? (
                           <Image
                             src={member.avatar_url}
@@ -522,51 +565,81 @@ export default function GroupDetailPage() {
                             className="object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-white text-2xl font-bold">
-                            {member.full_name.charAt(0).toUpperCase()}
+                          <div className="w-full h-full bg-gray-200 flex items-center justify-center text-2xl">
+                            👤
                           </div>
                         )}
                       </div>
 
-                      {/* Name */}
-                      <div className="flex-1">
-                        <h3 className="font-bold text-gray-800 text-lg">
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-gray-800 mb-1">
                           {member.full_name}
-                          {userData && member.user_id === userData.id && (
-                            <span className="ml-2 text-sm text-blue-600">(You)</span>
-                          )}
-                        </h3>
+                        </p>
+                        
+                        {/* Roles with remove button */}
+                        {member.roleData.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {member.roleData.map((roleInfo) => {
+                              // Count how many Group Leaders exist in this group
+                              const groupLeaderCount = members.filter(m => 
+                                m.roles.includes('Group Leader')
+                              ).length;
+                              
+                              // Don't show remove button if:
+                              // 1. This is a Group Leader role, AND
+                              // 2. There's only one Group Leader in the group
+                              const isLastLeader = roleInfo.role_name === 'Group Leader' && groupLeaderCount === 1;
+                              
+                              return (
+                                <span
+                                  key={roleInfo.user_group_role_id}
+                                  className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded"
+                                >
+                                  {roleInfo.role_name}
+                                  {isLeader && !isLastLeader && (
+                                    <button
+                                      onClick={() => handleRemoveRole(
+                                        roleInfo.user_group_role_id,
+                                        roleInfo.role_name,
+                                        member.full_name
+                                      )}
+                                      className="ml-1 hover:text-red-600 font-bold text-sm"
+                                      title={`Remove ${roleInfo.role_name} role`}
+                                    >
+                                      ×
+                                    </button>
+                                  )}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {/* Role Management Buttons (Leaders Only) */}
+                        {isLeader && (
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {/* Promote to Leader (if not already a leader) */}
+                            {!member.roles.includes('Group Leader') && (
+                              <button
+                                onClick={() => handlePromoteToLeader(member.user_id, member.full_name)}
+                                className="text-xs px-3 py-1.5 bg-green-50 text-green-600 rounded hover:bg-green-100 transition-colors font-medium"
+                              >
+                                ↑ Promote to Leader
+                              </button>
+                            )}
+                            
+                            {/* Assign Role */}
+                            <button
+                              onClick={() => handleOpenAssignRole(member)}
+                              className="text-xs px-3 py-1.5 bg-purple-50 text-purple-600 rounded hover:bg-purple-100 transition-colors font-medium"
+                            >
+                              + Assign Role
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
-
-                    {/* Roles */}
-                    {member.roles.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {member.roles.map((role, index) => (
-                          <span
-                            key={index}
-                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                              role === 'Group Leader'
-                                ? 'bg-purple-100 text-purple-700'
-                                : 'bg-blue-100 text-blue-700'
-                            }`}
-                          >
-                            {role}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Remove Button (leaders only, can't remove self) */}
-                    {isLeader && userData && member.user_id !== userData.id && (
-                      <button
-                        onClick={() => handleRemoveMember(member.id, member.full_name, member.user_id)}
-                        disabled={removingMemberId === member.user_id}
-                        className="w-full px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-red-200"
-                      >
-                        {removingMemberId === member.user_id ? 'Removing...' : 'Remove Member'}
-                      </button>
-                    )}
                   </div>
                 ))}
               </div>
@@ -575,68 +648,80 @@ export default function GroupDetailPage() {
         )}
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Quick Actions</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Invite Members Card */}
-            <div className="border-2 border-blue-100 rounded-xl p-6 hover:border-blue-300 transition-colors">
-              <div className="text-3xl mb-3">✉️</div>
-              <h3 className="font-semibold text-gray-800 mb-2">Invite Members</h3>
-              <p className="text-sm text-gray-600 mb-4">Add people to this group</p>
-              {isLeader ? (
-                <button
-                  onClick={() => setShowInviteModal(true)}
-                  className="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all"
-                >
-                  Invite Someone →
-                </button>
-              ) : (
-                <p className="text-sm text-gray-500 italic">Leaders only</p>
-              )}
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="text-3xl mb-3">📨</div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              Invite Members
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Add new members to the group
+            </p>
+            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+              Coming Soon →
+            </button>
+          </div>
 
-            {/* Leave Group Card */}
-            <div className="border-2 border-red-100 rounded-xl p-6 hover:border-red-300 transition-colors">
-              <div className="text-3xl mb-3">🚪</div>
-              <h3 className="font-semibold text-gray-800 mb-2">Leave Group</h3>
-              <p className="text-sm text-gray-600 mb-4">Remove yourself from this group</p>
-              <button
-                onClick={handleLeaveGroup}
-                disabled={leavingGroup}
-                className="w-full px-4 py-2 bg-red-100 text-red-700 rounded-lg font-semibold hover:bg-red-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {leavingGroup ? 'Leaving...' : 'Leave Group'}
-              </button>
-            </div>
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="text-3xl mb-3">🎭</div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              Manage Roles
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Assign roles to members
+            </p>
+            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+              Coming Soon →
+            </button>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="text-3xl mb-3">🚀</div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              Start Journey
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Begin a journey with this group
+            </p>
+            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+              Coming Soon →
+            </button>
           </div>
         </div>
-
-        {/* Invite Member Modal */}
-        {showInviteModal && userData && (
-          <InviteMemberModal
-            groupId={groupId}
-            groupName={group.name}
-            currentUserId={userData.id}
-            onClose={() => setShowInviteModal(false)}
-            onSuccess={() => {
-              // Refresh the page to show updated member count
-              window.location.reload();
-            }}
-          />
-        )}
-
-        {/* Confirmation Modal */}
-        <ConfirmModal
-          isOpen={confirmModal.isOpen}
-          title={confirmModal.title}
-          message={confirmModal.message}
-          onConfirm={confirmModal.onConfirm}
-          onCancel={() => setConfirmModal({ ...confirmModal, isOpen: false })}
-          variant={confirmModal.variant}
-          confirmText={confirmModal.variant === 'danger' ? 'Yes, proceed' : 'OK'}
-        />
       </div>
+
+      {/* Assign Role Modal */}
+      {selectedMember && (
+        <AssignRoleModal
+          isOpen={assignRoleModalOpen}
+          onClose={() => {
+            setAssignRoleModalOpen(false);
+            setSelectedMember(null);
+          }}
+          groupId={groupId}
+          memberId={selectedMember.id}
+          memberName={selectedMember.name}
+          currentRoleIds={selectedMember.roleIds}
+          onSuccess={refetchMembers}
+        />
+      )}
+
+      {/* Confirm Remove Role Modal */}
+      {roleToRemove && (
+        <ConfirmModal
+          isOpen={confirmModalOpen}
+          title="Remove Role?"
+          message={`Are you sure you want to remove the "${roleToRemove.roleName}" role from ${roleToRemove.memberName}?`}
+          confirmText="Remove Role"
+          cancelText="Cancel"
+          variant="warning"
+          onConfirm={confirmRemoveRole}
+          onCancel={() => {
+            setConfirmModalOpen(false);
+            setRoleToRemove(null);
+          }}
+        />
+      )}
     </div>
   );
 }
