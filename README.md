@@ -1,6 +1,6 @@
 # FringeIsland
 
-**Version:** 0.2.8  
+**Version:** 0.2.9  
 **Last Updated:** January 27, 2026
 
 Educational and training platform for personal development, leadership training, and team/organizational development.
@@ -84,6 +84,14 @@ Educational and training platform for personal development, leadership training,
 - ✅ **Auto-updating navigation** (refreshes on data changes)
 - ✅ **Beautiful confirmation modals** (replaced all alerts)
 - ✅ **Responsive design** (mobile & desktop)
+
+#### Error Handling (NEW in v0.2.9) 🛡️
+- ✅ **Error Boundaries** - Prevent app crashes
+- ✅ **Custom error pages** - User-friendly error messages
+- ✅ **404 page** - Branded "Island Not Found" page
+- ✅ **Recovery options** - "Try Again" and "Go Home" buttons
+- ✅ **Development mode** - Detailed error information for debugging
+
 
 ### 🚧 In Progress
 - Journey enrollment (individual + group)

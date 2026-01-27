@@ -1,6 +1,6 @@
 # CLAUDE.md - AI Context Documentation
 
-**Version:** 0.2.8  
+**Version:** 0.2.9  
 **Last Updated:** January 27, 2026  
 **Purpose:** Technical context for AI assistants working on FringeIsland
 
@@ -355,6 +355,35 @@ try {
   }
 }
 ```
+
+### Error Boundaries (NEW in v0.2.9)
+**Wrap components to catch errors gracefully**
+
+```typescript
+import ErrorBoundary from '@/components/ui/ErrorBoundary';
+
+// Wrap any component that might error
+<ErrorBoundary>
+  <YourComponent />
+</ErrorBoundary>
+
+// Custom fallback UI
+<ErrorBoundary fallback={<CustomErrorUI />}>
+  <YourComponent />
+</ErrorBoundary>
+```
+
+**Error Pages:**
+- `app/error.tsx` - Catches route-level errors
+- `app/global-error.tsx` - Catches root layout errors
+- `app/not-found.tsx` - Custom 404 page
+
+**Best Practices:**
+- Error boundaries catch component errors only
+- Use try-catch for async operations and event handlers
+- Always provide recovery options (Try Again, Go Home)
+- Show error details in development mode only
+- Log errors for tracking (ready for Sentry integration)
 
 ---
 

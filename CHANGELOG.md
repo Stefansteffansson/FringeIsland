@@ -15,6 +15,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.9] - 2026-01-27
+
+### Added
+- **Error Handling System** (Complete implementation)
+  - ErrorBoundary component (`components/ui/ErrorBoundary.tsx`)
+  - Route error page (`app/error.tsx`) with "Try Again" functionality
+  - Global error handler (`app/global-error.tsx`) for critical errors
+  - Custom 404 page (`app/not-found.tsx`) with branded messaging
+  - Integrated ErrorBoundary into root layout
+  - Development mode shows detailed error information
+  - Production mode shows user-friendly messages
+  - Recovery options: "Try Again", "Go Home", "Reload App"
+
+### Changed
+- **Navigation Component** - Now displays for logged-out users
+  - Shows "Sign In" and "Get Started" buttons on homepage
+  - Consistent navigation UI across entire application
+- **Homepage** - Removed duplicate navigation component
+  - Cleaner code structure
+  - Relies on global Navigation component
+
+### Fixed
+- Duplicate navigation code eliminated
+- Improved error resilience across the app
+- Better user experience when errors occur
+
+### Technical Details
+- Error boundaries catch component-level errors
+- Next.js error pages handle route and global errors
+- All error pages are client components
+- Ready for error tracking service integration (Sentry, LogRocket, etc.)
+
+---
+
 ## [0.2.8] - 2026-01-27
 
 ### Added
