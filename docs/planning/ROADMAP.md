@@ -6,7 +6,7 @@ This document outlines the implementation phases, milestones, and development pr
 
 FringeIsland development is organized into four major phases, each building on the previous:
 
-- **Phase 1: Foundation** - Core platform with predefined journeys ⏳ **IN PROGRESS (70%)**
+- **Phase 1: Foundation** - Core platform with predefined journeys ⏳ **IN PROGRESS (75%)**
 - **Phase 2: User-Generated Content** - Journey marketplace and customization
 - **Phase 3: Dynamic Journeys** - Adaptive learning paths
 - **Phase 4: Developer Platform** - API and integrations
@@ -21,27 +21,27 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-## Phase 1: Foundation (MVP) ⏳ IN PROGRESS - 70% Complete
+## Phase 1: Foundation (MVP) ⏳ IN PROGRESS - 75% Complete
 
 **Goal**: Launch a working platform where groups can embark on predefined journeys together.
 
 **Timeline**: 3-4 months
 
-**Current Status** (as of v0.2.7 - Jan 26, 2026):
+**Current Status** (as of v0.2.8 - Jan 27, 2026):
 - ✅ Core infrastructure complete
 - ✅ User management complete
 - ✅ Group management complete (v0.2.7)
-- ⏳ Journey system (not started)
+- 🔄 Journey system - browsing complete, enrollment in progress (v0.2.8)
 - ⏳ Communication (not started)
 - ⏳ Polish and launch (not started)
 
 **Success Criteria**:
 - ✅ Users can create accounts and profiles
 - ✅ Users can create and manage groups
-- ⏳ Groups can enroll in predefined journeys
+- 🔄 Groups can enroll in predefined journeys (browsing complete, enrollment next)
 - ⏳ Basic forum and messaging for collaboration
 - ✅ Role-based permissions working (complete)
-- ⏳ 5-10 high-quality predefined journeys available
+- ✅ 8 high-quality predefined journeys available (v0.2.8)
 
 ### Phase 1.1: Core Infrastructure (Weeks 1-3) ✅ COMPLETE
 
@@ -163,19 +163,21 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-### Phase 1.4: Journey System (Weeks 9-11) ⏳ NOT STARTED
+### Phase 1.4: Journey System (Weeks 9-11) 🔄 IN PROGRESS - 50% Complete
 
-**Status**: ⏳ **NOT STARTED**
+**Status**: 🔄 **IN PROGRESS** (v0.2.8)
 
 **Deliverables**:
 
-1. **Journey Catalog** ⏳
-   - Browse predefined journeys
-   - Filter by tags, difficulty, duration
-   - View journey details
-   - Search functionality
+1. **Journey Catalog** ✅ COMPLETE (v0.2.8)
+   - ✅ Browse predefined journeys at `/journeys`
+   - ✅ Filter by tags, difficulty, duration
+   - ✅ View journey details at `/journeys/[id]`
+   - ✅ Search functionality
+   - ✅ Responsive grid layout
+   - ✅ Beautiful detail page with tabs
 
-2. **Journey Enrollment** ⏳
+2. **Journey Enrollment** ⏳ NEXT UP
    - Individual enrollment
    - Group enrollment (by Group Leader)
    - Enrollment confirmation
@@ -193,18 +195,26 @@ FringeIsland development is organized into four major phases, each building on t
    - Completion status
    - Travel Guide view of member progress
 
-5. **Initial Predefined Journeys** ⏳
-   - Create 5-10 high-quality journeys
-   - Cover different topics (leadership, team building, personal development)
-   - Different difficulty levels and durations
+5. **Initial Predefined Journeys** ✅ COMPLETE (v0.2.8)
+   - ✅ Created 8 high-quality journeys
+   - ✅ Cover different topics (leadership, communication, team building, personal development, decision making, emotional intelligence, agile, resilience)
+   - ✅ Different difficulty levels (3 beginner, 3 intermediate, 2 advanced)
+   - ✅ Varied durations (150-300 minutes)
 
 **Acceptance Criteria**:
-- Users can browse and enroll in journeys
-- Journey content displays correctly
-- Progress tracking accurate
-- Travel Guides can view member progress
+- ✅ Users can browse journeys (COMPLETE)
+- 🔄 Users can enroll in journeys (IN PROGRESS)
+- ⏳ Journey content displays correctly (NOT STARTED)
+- ⏳ Progress tracking accurate (NOT STARTED)
+- ⏳ Travel Guides can view member progress (NOT STARTED)
 
-**Priority**: HIGH - Next major feature after role assignment UI
+**Progress**:
+- v0.2.8: Journey catalog and browsing complete (50%)
+- Next: Journey enrollment (individual + group)
+
+**Completed**: January 27, 2026 (v0.2.8 - Part 1)
+
+**Next**: Journey enrollment functionality
 
 ---
 
@@ -788,6 +798,8 @@ FringeIsland development is organized into four major phases, each building on t
 
 ## Decision Log
 
+**2026-01-27**: Implemented journey catalog with search/filter functionality (v0.2.8)  
+**2026-01-27**: Seeded 8 predefined journeys covering various topics and difficulty levels (v0.2.8)  
 ### Key Architectural Decisions
 
 **2026-01-26**: Implemented member management with last leader protection (v0.2.5)  
@@ -806,21 +818,23 @@ FringeIsland development is organized into four major phases, each building on t
 
 ## Current Development Focus (January 2026)
 
-### Active Work (v0.2.5)
-- ✅ Member management complete
-- ✅ Navigation system complete
-- ✅ Modal system complete
+### Active Work (v0.2.8)
+- ✅ Journey catalog and browsing complete
+- 🔄 Journey enrollment in progress
 
 ### Next Sprint
-**Priority 1**: Role Assignment UI
-- Promote to leader functionality
-- Assign/remove roles interface
-- Role management page
+**Priority 1**: Journey Enrollment
+- Individual enrollment functionality
+- Group enrollment (Group Leaders)
+- Enrollment confirmation modal
+- View enrolled journeys page
+- Check for existing enrollments
 
-**Priority 2**: Journey System Foundation
-- Journey catalog design
-- Database queries for journeys
-- Journey browsing UI
+**Priority 2**: Journey Content Delivery
+- Step-by-step navigation
+- Content display
+- Progress tracking
+- Completion status
 
 ### Blockers & Dependencies
 - None currently
@@ -833,6 +847,6 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-**Document Version**: 1.1  
-**Last Updated**: January 26, 2026 (v0.2.5)  
-**Next Review**: February 2026 or after next major feature
+**Document Version**: 1.2  
+**Last Updated**: January 27, 2026 (v0.2.8)  
+**Next Review**: February 2026 or after journey enrollment complete

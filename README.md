@@ -1,7 +1,7 @@
 # FringeIsland
 
-**Version:** 0.2.7  
-**Last Updated:** January 26, 2026
+**Version:** 0.2.8  
+**Last Updated:** January 27, 2026
 
 Educational and training platform for personal development, leadership training, and team/organizational development.
 
@@ -9,7 +9,7 @@ Educational and training platform for personal development, leadership training,
 
 ## 🚀 Current Status
 
-**Phase 2: Core Platform - 70% Complete**
+**Phase 1: Foundation - 75% Complete**
 
 ### ✅ Completed Features
 
@@ -30,7 +30,7 @@ Educational and training platform for personal development, leadership training,
 - ✅ Create new groups (`/groups/create`)
 - ✅ View all user's groups (`/groups`)
 - ✅ View group details (`/groups/[id]`)
-- ✅ **Edit group settings** (`/groups/[id]/edit`) - NEW in v0.2.7
+- ✅ **Edit group settings** (`/groups/[id]/edit`) - v0.2.7
 - ✅ Public/private group settings
 - ✅ Custom group labels
 - ✅ Member list visibility controls
@@ -44,12 +44,37 @@ Educational and training platform for personal development, leadership training,
 - ✅ Real-time member count updates
 - ✅ Smooth animations (no browser alerts)
 
-#### Role Management (NEW in v0.2.6.2)
+#### Role Management (v0.2.6.2)
 - ✅ **Assign roles to members** (via AssignRoleModal)
 - ✅ **Promote to Group Leader**
 - ✅ **Remove roles** with last leader protection
 - ✅ **Multiple roles per member**
 - ✅ Real-time role updates in UI
+
+#### Journey System (NEW in v0.2.8) 🎉
+- ✅ **Journey catalog page** (`/journeys`)
+  - Search by title and description
+  - Filter by difficulty (beginner, intermediate, advanced)
+  - Filter by topic/tags
+  - Responsive grid layout
+  - Results counter
+- ✅ **Journey detail page** (`/journeys/[id]`)
+  - Beautiful hero section with gradient
+  - Two-tab interface (Overview & Curriculum)
+  - Expandable step list with details
+  - Sticky sidebar with metadata
+  - Breadcrumb navigation
+- ✅ **8 predefined journeys**
+  - Leadership Fundamentals (180 min, Beginner)
+  - Effective Communication Skills (240 min, Beginner)
+  - Building High-Performance Teams (300 min, Intermediate)
+  - Personal Development Kickstart (150 min, Beginner)
+  - Strategic Decision Making (270 min, Advanced)
+  - Emotional Intelligence at Work (210 min, Intermediate)
+  - Agile Team Collaboration (200 min, Intermediate)
+  - Resilience and Stress Management (180 min, Beginner)
+- ✅ **TypeScript types** (`lib/types/journey.ts`)
+- ✅ **Navigation link** (Journeys 🗺️)
 
 #### Navigation & UX
 - ✅ **Global navigation bar** (persistent across pages)
@@ -61,14 +86,14 @@ Educational and training platform for personal development, leadership training,
 - ✅ **Responsive design** (mobile & desktop)
 
 ### 🚧 In Progress
-- None (ready for next phase)
+- Journey enrollment (individual + group)
 
 ### 📋 Upcoming Features
-- Journey browsing and enrollment
+- View enrolled journeys
 - Journey content delivery
-- Permissions dashboard
-- Activity feed and notifications
-- Advanced group features (subgroups, etc.)
+- Progress tracking
+- Travel Guide views
+- Communication features (forums, messaging)
 
 ---
 
@@ -91,12 +116,16 @@ FringeIsland/
 │   │   ├── [id]/
 │   │   │   ├── page.tsx          # Group detail page
 │   │   │   └── edit/
-│   │   │       └── page.tsx      # Edit group (NEW in v0.2.7)
+│   │   │       └── page.tsx      # Edit group
 │   │   ├── create/
 │   │   │   └── page.tsx          # Create group
 │   │   └── page.tsx              # Groups list
 │   ├── invitations/
 │   │   └── page.tsx              # Invitations page
+│   ├── journeys/                 # NEW in v0.2.8
+│   │   ├── [id]/
+│   │   │   └── page.tsx          # Journey detail page
+│   │   └── page.tsx              # Journey catalog
 │   ├── login/
 │   │   └── page.tsx              # Login page
 │   ├── profile/
@@ -114,7 +143,7 @@ FringeIsland/
 │   ├── groups/
 │   │   ├── GroupCreateForm.tsx   # Group creation form
 │   │   ├── InviteMemberModal.tsx # Invite members modal
-│   │   └── AssignRoleModal.tsx   # Assign roles modal (NEW)
+│   │   └── AssignRoleModal.tsx   # Assign roles modal
 │   ├── profile/
 │   │   ├── AvatarUpload.tsx      # Avatar upload component
 │   │   └── ProfileEditForm.tsx   # Profile edit form
@@ -124,11 +153,13 @@ FringeIsland/
 ├── lib/
 │   ├── auth/
 │   │   └── AuthContext.tsx       # Auth context provider
-│   └── supabase/
-│       ├── client.ts             # Supabase client
-│       └── server.ts             # Server-side Supabase
+│   ├── supabase/
+│   │   ├── client.ts             # Supabase client
+│   │   └── server.ts             # Server-side Supabase
+│   └── types/
+│       └── journey.ts            # Journey types (NEW in v0.2.8)
 ├── supabase/
-│   └── migrations/               # SQL migration files
+│   └── migrations/               # SQL migration files (9 total)
 ├── public/                       # Static assets
 ├── CHANGELOG.md                  # Version history
 ├── CLAUDE.md                     # AI context documentation
@@ -151,16 +182,24 @@ FringeIsland/
 - `group_roles` - Available roles (Group Leader, Member, etc.)
 - `user_group_roles` - User role assignments per group
 
-**Journeys:**
-- `journeys` - Journey definitions
+**Journeys:** (NEW in v0.2.8)
+- `journeys` - Journey definitions with JSONB content
 - `journey_enrollments` - User journey participation
-- `journey_content` - Journey structure and content
 
 **Other:**
-- `group_journey_links` - Groups connected to journeys
-- `tags` - Tag definitions
-- `journey_tags` - Journey tagging
-- `user_preferences` - User settings
+- `permissions` - System permissions (40 seeded)
+- `role_templates` - Role blueprints (5 seeded)
+- `group_templates` - Group blueprints (4 seeded)
+- `role_template_permissions` - Role-permission mappings
+- `group_template_roles` - Template-role mappings
+- `group_role_permissions` - Role permissions
+
+**Database Migrations:** 9 total
+1. `20260120_initial_schema.sql` - Initial setup
+2. `20260123_fix_user_trigger_and_rls.sql` - User lifecycle
+3-7. Group RLS policies and member management
+8. Last leader protection trigger
+9. **`20260127_seed_predefined_journeys.sql` - 8 journeys (NEW)**
 
 ---
 
@@ -211,8 +250,9 @@ All tables have comprehensive RLS policies:
    ```
 
 4. **Run database migrations**
-   - Run SQL files in `supabase/migrations/` in order
+   - Run SQL files in `supabase/migrations/` in order (1-9)
    - Or use Supabase CLI: `supabase db push`
+   - **NEW Migration #9:** `20260127_seed_predefined_journeys.sql` (v0.2.8)
 
 5. **Start development server**
    ```bash
@@ -227,6 +267,39 @@ All tables have comprehensive RLS policies:
 ---
 
 ## 📝 Recent Changes
+
+### v0.2.8 - Journey Catalog & Browsing (January 27, 2026)
+
+**Journey System - Part 1:**
+- Journey catalog page at `/journeys` with grid layout
+- Search functionality (title and description)
+- Filter by difficulty (beginner, intermediate, advanced)
+- Filter by topic/tags with results counter
+- Journey detail page at `/journeys/[id]` with:
+  - Hero section with gradient background
+  - Breadcrumb navigation
+  - Two tabs: Overview and Curriculum
+  - Expandable step list showing all journey steps
+  - Sticky sidebar with journey metadata
+  - "Enroll in Journey" button (placeholder for now)
+
+**8 Predefined Journeys:**
+- Leadership Fundamentals (180 min, Beginner)
+- Effective Communication Skills (240 min, Beginner)
+- Building High-Performance Teams (300 min, Intermediate)
+- Personal Development Kickstart (150 min, Beginner)
+- Strategic Decision Making (270 min, Advanced)
+- Emotional Intelligence at Work (210 min, Intermediate)
+- Agile Team Collaboration (200 min, Intermediate)
+- Resilience and Stress Management (180 min, Beginner)
+
+**Technical:**
+- New migration #9: `20260127_seed_predefined_journeys.sql`
+- TypeScript types in `lib/types/journey.ts`
+- Navigation link added (Journeys 🗺️)
+- Journey content stored as JSONB with structured steps
+- All journeys marked as published and public
+- Responsive design with Tailwind CSS
 
 ### v0.2.7 - Edit Group & Invite Members (January 26, 2026)
 
@@ -243,63 +316,40 @@ All tables have comprehensive RLS policies:
 - Email-based invitations with validation
 - Automatic member list refresh
 
-### v0.2.6.2 - Role Assignment UI (January 26, 2026)
-
-**Role Management:**
-- AssignRoleModal for managing member roles
-- Promote members to Group Leader
-- Assign/remove multiple roles
-- Last leader protection in UI
-- Immediate state updates after role changes
-
-### v0.2.5 - Member Management & Navigation (January 25, 2026)
-
-**Member Management System:**
-- Complete member lifecycle (invite, accept/decline, leave, remove)
-- InviteMemberModal component
-- Last leader protection via database trigger
-- Real-time member count updates
-
-**Navigation System:**
-- Global navigation bar with real-time updates
-- Invitation count badge
-- User avatar dropdown menu
-- Active page indicators
-
-**UI/UX Improvements:**
-- ConfirmModal component (replaced all browser alerts)
-- Smooth animations and loading states
-- Consistent modal pattern throughout app
-
 See [CHANGELOG.md](./CHANGELOG.md) for complete version history.
 
 ---
 
 ## 🗺️ Roadmap
 
-### Phase 2: Core Platform (Current - 70% complete)
+### Phase 1: Foundation (Current - 75% complete)
 - ✅ Authentication system
 - ✅ Profile management
 - ✅ Group creation & editing
 - ✅ Member management
 - ✅ Role management
 - ✅ Navigation system
-- ⏳ Journey browsing
+- ✅ **Journey catalog & browsing (NEW in v0.2.8)**
 - ⏳ Journey enrollment
+- ⏳ Journey content delivery
 
-### Phase 3: Journey System
-- Journey creation and editing
-- Content management
-- Enrollment workflows
-- Progress tracking
-- Facilitator tools
+### Phase 2: Journey Experience
+- Journey progress tracking
+- Facilitator/Travel Guide tools
+- Group journey features
+- Completion tracking
 
-### Phase 4: Advanced Features
-- Marketplace for user-created journeys
+### Phase 3: Advanced Features
+- User-created journeys
+- Journey marketplace
 - Dynamic/adaptive journeys
 - Analytics and reporting
+
+### Phase 4: Communication & Community
+- Forums and messaging
+- Notifications
 - Team collaboration tools
-- Communication features (forums, messaging)
+- Feedback systems
 
 ---
 

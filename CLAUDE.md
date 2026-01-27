@@ -1,7 +1,7 @@
 # CLAUDE.md - AI Context Documentation
 
-**Version:** 0.2.7  
-**Last Updated:** January 26, 2026  
+**Version:** 0.2.8  
+**Last Updated:** January 27, 2026  
 **Purpose:** Technical context for AI assistants working on FringeIsland
 
 ---
@@ -10,7 +10,7 @@
 
 FringeIsland is an educational platform for personal development, leadership training, and organizational development. The platform uses a "journey" metaphor where users take structured learning experiences solo, in pairs, or groups.
 
-**Current Phase:** Phase 2 - 70% Complete  
+**Current Phase:** Phase 1 - 75% Complete  
 **Tech Stack:** Next.js 16.1, TypeScript, Tailwind CSS, Supabase  
 **Database:** PostgreSQL via Supabase (13 tables with RLS)  
 **Repository:** https://github.com/Stefansteffansson/FringeIsland
@@ -87,6 +87,43 @@ FringeIsland is an educational platform for personal development, leadership tra
 ```
 
 **Important:** Status values are enforced by CHECK constraint
+
+### journeys (NEW in v0.2.8)
+```sql
+- id (uuid, primary key)
+- title (text)
+- description (text)
+- created_by_user_id (uuid, foreign key to users)
+- is_published (boolean, default false)
+- is_public (boolean, default false)
+- journey_type (text: 'predefined', 'user_created', 'dynamic')
+- content (jsonb)  # Stores structured journey steps
+- estimated_duration_minutes (integer, nullable)
+- difficulty_level (text: 'beginner', 'intermediate', 'advanced', nullable)
+- tags (text array, nullable)
+- created_at (timestamp)
+- updated_at (timestamp)
+- published_at (timestamp, nullable)
+```
+
+**Content Structure (JSONB):**
+```json
+{
+  "version": "1.0",
+  "structure": "linear",
+  "steps": [
+    {
+      "id": "step_1",
+      "title": "Step Title",
+      "type": "content" | "activity" | "assessment",
+      "duration_minutes": 30,
+      "required": true
+    }
+  ]
+}
+```
+
+**Important:** Journey content is stored as JSONB for flexibility
 
 ### group_roles
 ```sql
@@ -617,7 +654,7 @@ await refetchMembers();
 
 ---
 
-## 🎯 Current State (v0.2.6.2)
+## 🎯 Current State (v0.2.8)
 
 ### Completed Features
 - ✅ Full authentication system (signup, login, logout)
@@ -628,6 +665,9 @@ await refetchMembers();
 - ✅ Member management (invite, accept, decline, leave, remove)
 - ✅ **Email-based member invitations with validation** - v0.2.7
 - ✅ **Role assignment UI (promote, assign, remove)** - v0.2.6.2
+- ✅ **Journey catalog with search and filters** - v0.2.8
+- ✅ **Journey detail pages with expandable curriculum** - v0.2.8
+- ✅ **8 predefined journeys seeded** - v0.2.8
 - ✅ Global navigation with real-time updates
 - ✅ Beautiful modal system (no browser alerts)
 - ✅ Last leader protection (UI + database trigger)
@@ -637,11 +677,11 @@ await refetchMembers();
 - ✅ **Phase 1.1:** Foundation (100%)
 - ✅ **Phase 1.2:** Authentication (100%)
 - ✅ **Phase 1.3:** Group Management (100%)
-- ⏳ **Phase 1.4:** Journey System (0% - next)
+- 🔄 **Phase 1.4:** Journey System (50% - browsing complete, enrollment next)
 
 ### Ready for Next Steps
-- ⏳ Journey catalog and browsing
-- ⏳ Journey enrollment (individual + group)
+- ⏳ Journey enrollment (individual + group) - NEXT
+- ⏳ View enrolled journeys
 - ⏳ Journey content delivery
 - ⏳ Progress tracking
 - ⏳ Communication system (Phase 1.5)
@@ -684,6 +724,45 @@ await refetchMembers();
 
 ## 📝 Version-Specific Notes
 
+
+
+### v0.2.8 Changes (January 27, 2026)
+- **Journey System - Part 1** (catalog and browsing)
+- Added journey catalog page at `/journeys`
+  - Search by title and description
+  - Filter by difficulty level (beginner, intermediate, advanced)
+  - Filter by topic/tags
+  - Responsive grid layout with journey cards
+  - Results counter and clear filters button
+- Added journey detail page at `/journeys/[id]`
+  - Hero section with gradient background
+  - Breadcrumb navigation (Journeys > Journey Title)
+  - Two-tab interface (Overview and Curriculum)
+  - Expandable step list showing all journey steps
+  - Sticky sidebar with journey metadata
+  - "Enroll in Journey" button (placeholder for enrollment feature)
+- **8 predefined journeys seeded** via Migration #9
+  - Leadership Fundamentals (180 min, Beginner)
+  - Effective Communication Skills (240 min, Beginner)
+  - Building High-Performance Teams (300 min, Intermediate)
+  - Personal Development Kickstart (150 min, Beginner)
+  - Strategic Decision Making (270 min, Advanced)
+  - Emotional Intelligence at Work (210 min, Intermediate)
+  - Agile Team Collaboration (200 min, Intermediate)
+  - Resilience and Stress Management (180 min, Beginner)
+- Added TypeScript types for journeys in `lib/types/journey.ts`
+- Updated Navigation component with Journeys link (🗺️)
+- Journey content stored as JSONB with structured steps
+
+### Key Files Added in v0.2.8
+- `app/journeys/page.tsx` (NEW - journey catalog)
+- `app/journeys/[id]/page.tsx` (NEW - journey detail)
+- `lib/types/journey.ts` (NEW - TypeScript types)
+- `supabase/migrations/20260127_seed_predefined_journeys.sql` (NEW - Migration #9)
+
+### Key Files Modified in v0.2.8
+- `components/Navigation.tsx` (added Journeys link)
+
 ### v0.2.7 Changes (January 26, 2026)
 - Added edit group page at `/groups/[id]/edit`
 - Group Leaders can edit name, description, label, visibility settings
@@ -714,4 +793,4 @@ await refetchMembers();
 ---
 
 **This document should be updated with each significant change to the project.**  
-**Last major update:** Edit Group + Invite Members (v0.2.7) - January 26, 2026
+**Last major update:** Journey Catalog & Browsing (v0.2.8) - January 27, 2026
