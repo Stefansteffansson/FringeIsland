@@ -6,7 +6,7 @@ This document outlines the implementation phases, milestones, and development pr
 
 FringeIsland development is organized into four major phases, each building on the previous:
 
-- **Phase 1: Foundation** - Core platform with predefined journeys ⏳ **IN PROGRESS (65%)**
+- **Phase 1: Foundation** - Core platform with predefined journeys ⏳ **IN PROGRESS (70%)**
 - **Phase 2: User-Generated Content** - Journey marketplace and customization
 - **Phase 3: Dynamic Journeys** - Adaptive learning paths
 - **Phase 4: Developer Platform** - API and integrations
@@ -21,16 +21,16 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-## Phase 1: Foundation (MVP) ⏳ IN PROGRESS - 65% Complete
+## Phase 1: Foundation (MVP) ⏳ IN PROGRESS - 70% Complete
 
 **Goal**: Launch a working platform where groups can embark on predefined journeys together.
 
 **Timeline**: 3-4 months
 
-**Current Status** (as of v0.2.5 - Jan 26, 2026):
+**Current Status** (as of v0.2.7 - Jan 26, 2026):
 - ✅ Core infrastructure complete
 - ✅ User management complete
-- ✅ Group management mostly complete
+- ✅ Group management complete (v0.2.7)
 - ⏳ Journey system (not started)
 - ⏳ Communication (not started)
 - ⏳ Polish and launch (not started)
@@ -40,7 +40,7 @@ FringeIsland development is organized into four major phases, each building on t
 - ✅ Users can create and manage groups
 - ⏳ Groups can enroll in predefined journeys
 - ⏳ Basic forum and messaging for collaboration
-- 🔄 Role-based permissions working (basic functionality done)
+- ✅ Role-based permissions working (complete)
 - ⏳ 5-10 high-quality predefined journeys available
 
 ### Phase 1.1: Core Infrastructure (Weeks 1-3) ✅ COMPLETE
@@ -105,9 +105,9 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-### Phase 1.3: Group Management (Weeks 6-8) ✅ MOSTLY COMPLETE
+### Phase 1.3: Group Management (Weeks 6-8) ✅ COMPLETE
 
-**Status**: ✅ **MOSTLY COMPLETE** (v0.2.3 - v0.2.5)
+**Status**: ✅ **COMPLETE** (v0.2.3 - v0.2.7)
 
 **Deliverables**:
 
@@ -116,37 +116,50 @@ FringeIsland development is organized into four major phases, each building on t
    - ✅ Group settings (name, description, visibility)
    - ✅ Initial role setup from templates
 
-2. **Group Membership** ✅
-   - ✅ Invite members via email (v0.2.5)
+2. **Group Editing** ✅ (v0.2.7)
+   - ✅ Edit group name, description, label
+   - ✅ Toggle public/private visibility
+   - ✅ Toggle show member list setting
+   - ✅ Authorization checks (Group Leaders only)
+
+3. **Group Membership** ✅
+   - ✅ Invite members via email (v0.2.5, UI connected v0.2.7)
    - ✅ Accept/decline invitations (v0.2.5)
    - ✅ View member list
    - ✅ Remove members (v0.2.5)
    - ✅ Leave groups (v0.2.5)
    - ⏳ Pause/activate members - Deferred
 
-3. **Group Roles** 🔄
-   - 🔄 Assign roles to members (basic setup exists)
+4. **Group Roles** ✅ (v0.2.6.2)
+   - ✅ Assign roles to members
+   - ✅ Promote to Group Leader
+   - ✅ Remove roles with last leader protection
    - ✅ View role permissions
-   - ⏳ Customize role permissions (basic) - Next up
    - ✅ Group Leader safeguards (last leader protection)
+   - ⏳ Customize role permissions - Deferred to Phase 2
 
-4. **Subgroups (Basic)** ⏳
-   - ⏳ Add group as member of parent group
-   - ⏳ View group hierarchy
-   - ⏳ Basic navigation
+5. **Subgroups (Basic)** ⏳
+   - ⏳ Add group as member of parent group - Deferred to Phase 2
+   - ⏳ View group hierarchy - Deferred to Phase 2
+   - ⏳ Basic navigation - Deferred to Phase 2
 
-**Acceptance Criteria**: ✅ MOSTLY MET
+**Acceptance Criteria**: ✅ ALL CORE CRITERIA MET
 - ✅ Users can create groups and invite members
-- 🔄 Role assignment working (basic functionality)
+- ✅ Role assignment working completely
 - ✅ Group Leader can manage group settings
+- ✅ Group Leader can edit group details
 - ✅ Cannot remove last Group Leader (safeguard works)
 
 **Progress**:
 - v0.2.3: Group creation
 - v0.2.4: Group detail page
 - v0.2.5: Member management (invite, accept, leave, remove)
+- v0.2.6.2: Role assignment UI (promote, assign, remove)
+- v0.2.7: Edit group page + invite modal integration
 
-**Next**: Role assignment UI, subgroups
+**Completed**: January 26, 2026 (v0.2.7)
+
+**Next**: Phase 1.4 - Journey System
 
 ---
 

@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import Image from 'next/image';
 import AssignRoleModal from '@/components/groups/AssignRoleModal';
+import InviteMemberModal from '@/components/groups/InviteMemberModal';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 
 interface GroupData {
@@ -66,6 +67,10 @@ export default function GroupDetailPage() {
     memberName: string;
   } | null>(null);
   
+  // Invite member state
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
+  const [userData, setUserData] = useState<{ id: string } | null>(null);
+  
   const router = useRouter();
   const supabase = createClient();
 
@@ -88,6 +93,9 @@ export default function GroupDetailPage() {
           .single();
 
         if (userError) throw userError;
+
+        // Store userData for invite modal
+        setUserData(userData);
 
         // Fetch group data
         // Use maybeSingle() instead of single() to avoid error when group doesn't exist
@@ -648,46 +656,51 @@ export default function GroupDetailPage() {
         )}
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="text-3xl mb-3">📨</div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Invite Members
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Add new members to the group
-            </p>
-            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              Coming Soon →
-            </button>
-          </div>
+        {isLeader && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <div className="text-3xl mb-3">📨</div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                Invite Members
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Add new members to the group
+              </p>
+              <button
+                onClick={() => setInviteModalOpen(true)}
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Invite Now →
+              </button>
+            </div>
 
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="text-3xl mb-3">🎭</div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Manage Roles
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Assign roles to members
-            </p>
-            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              Coming Soon →
-            </button>
-          </div>
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <div className="text-3xl mb-3">🎭</div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                Manage Roles
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Assign roles to members
+              </p>
+              <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                See Member List Above →
+              </button>
+            </div>
 
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="text-3xl mb-3">🚀</div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Start Journey
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Begin a journey with this group
-            </p>
-            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              Coming Soon →
-            </button>
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <div className="text-3xl mb-3">🚀</div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                Start Journey
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Begin a journey with this group
+              </p>
+              <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                Coming Soon →
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Assign Role Modal */}
@@ -720,6 +733,17 @@ export default function GroupDetailPage() {
             setConfirmModalOpen(false);
             setRoleToRemove(null);
           }}
+        />
+      )}
+
+      {/* Invite Member Modal */}
+      {inviteModalOpen && group && userData && (
+        <InviteMemberModal
+          groupId={groupId}
+          groupName={group.name}
+          currentUserId={userData.id}
+          onClose={() => setInviteModalOpen(false)}
+          onSuccess={refetchMembers}
         />
       )}
     </div>

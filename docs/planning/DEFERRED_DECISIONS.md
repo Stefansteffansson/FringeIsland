@@ -271,6 +271,252 @@ Subgroups:
 
 ---
 
+### Subgroups Implementation (Added January 26, 2026)
+
+**Topic**: Should Phase 1.3 include the ability for groups to have other groups as members?
+
+**Context**: During Phase 1.3 Role Assignment UI implementation (January 26, 2026), we reached a decision point: implement basic role management now, or also implement the full subgroups feature. The database schema already supports subgroups via `group_memberships.member_group_id`, but implementing the UI and business logic would add significant complexity.
+
+**Decision**: Defer subgroups to Phase 2. Complete basic role assignment UI first.
+
+**Deferred To**: Phase 2 (Enhanced Features)
+
+**Rationale**:
+- **High Complexity**: Requires circular reference prevention, depth limit enforcement, and permission inheritance rules
+- **Time Savings**: Deferring saves 3-5 weeks of development time  
+- **Faster to MVP**: Basic role management delivers immediate value without subgroup complexity
+- **Better Validation**: Learn actual user needs before building complex hierarchy features
+- **Database Ready**: `member_group_id` field exists, so adding feature later requires no migration
+- **Lower Risk**: Can observe how users actually organize groups before building assumptions into the system
+
+**Current State (v0.2.6.2)**:
+- ✅ Database schema fully supports subgroups (`member_group_id` in `group_memberships`)
+- ✅ Constraint prevents both `user_id` and `member_group_id` from being set
+- ✅ RLS policies don't block group-as-member operations
+- ❌ No UI for adding groups as subgroups
+- ❌ No circular reference prevention (would allow Group A → B → A)
+- ❌ No depth limit enforcement
+- ❌ No permission inheritance rules defined
+- ❌ No hierarchy visualization
+
+**Notes for Future Implementation**:
+
+**Critical Architecture Decisions:**
+
+1. **Circular Reference Prevention** (REQUIRED)
+   ```
+   Problem: Without prevention, users could create:
+   Group A → member of → Group B → member of → Group A (infinite loop)
+   
+   Solution: Implement cycle detection before allowing membership
+   
+   Options:
+   a) Database trigger (most reliable)
+   b) Application-level check (easier to test)
+   c) Both (recommended)
+   
+   Pseudocode:
+   function canAddAsSubgroup(parentId, childId) {
+     visited = Set()
+     current = childId
+     
+     while (current has parent) {
+       if (current === parentId) return false  // Would create cycle
+       if (visited.has(current)) return false  // Already visited
+       visited.add(current)
+       current = getParent(current)
+     }
+     
+     return true
+   }
+   ```
+
+2. **Depth Limits** (RECOMMENDED)
+   ```
+   Question: How deep should hierarchies be allowed to go?
+   
+   Options:
+   a) Unlimited (simple but risky for performance)
+   b) Fixed limit like 5 levels (recommended)
+   c) Configurable per organization (complex)
+   
+   Example with 5-level limit:
+   Organization → Division → Department → Team → Squad (✅ allowed)
+   Organization → ... → Sub-sub-sub-sub-team (❌ blocked at level 6)
+   
+   Implementation:
+   - Add trigger to count hierarchy depth before insert
+   - Show warning in UI when approaching limit
+   - Make configurable in Phase 3 if needed
+   ```
+
+3. **Permission Inheritance** (COMPLEX)
+   ```
+   Question: Do roles in parent groups apply to child groups?
+   
+   Options:
+   a) Isolated - Each group has independent permissions (simplest)
+   b) Parent→Child - Parent admins automatically control children
+   c) Child→Parent - Child leaders get observer access to parents  
+   d) Configurable per relationship
+   
+   Recommendation for Phase 2:
+   - Start with ISOLATED (option a)
+   - Prevents unintended access
+   - Simpler to reason about
+   - Add inheritance in Phase 3 based on user demand
+   
+   See also: "Permission Inheritance Between Parent/Child Groups" (above)
+   ```
+
+4. **Multiple Parents**
+   ```
+   Question: Can one group belong to multiple parent groups?
+   
+   Current schema: YES (no unique constraint on member_group_id)
+   
+   Example:
+   "Marketing Team" → member of → "Product Division"
+                   → member of → "Customer Success Org"
+   
+   Implications:
+   - More flexible (can model matrix organizations)
+   - More complex (which parent's settings apply?)
+   - Harder UI (multiple hierarchy paths)
+   
+   Recommendation: 
+   - Allow it (don't add constraint)
+   - Warn users about complexity
+   - Show all parent paths in UI
+   ```
+
+**UI Design Considerations:**
+
+```
+Group Settings Page → New "Subgroups" Tab
+
+┌─────────────────────────────────────────────┐
+│ Parent Groups                               │
+│ (Groups this group belongs to)              │
+│                                             │
+│ ▪ Acme Corporation                          │
+│   Added: Jan 15, 2026 by Stefan Test        │
+│   [View Group] [Leave]                      │
+│                                             │
+│ [+ Join Existing Group]                     │
+└─────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────┐
+│ Child Groups                                │
+│ (Groups that are members here)              │
+│                                             │
+│ ▪ Engineering Team (24 members)             │
+│   Added: Jan 16, 2026                       │
+│   [Manage] [Remove from Group]              │
+│                                             │
+│ ▪ Design Team (8 members)                   │
+│   Added: Jan 17, 2026                       │
+│   [Manage] [Remove from Group]              │
+│                                             │
+│ [+ Add Existing Group]                      │
+│ [+ Create New Child Group]                  │
+└─────────────────────────────────────────────┘
+
+Hierarchy Tree View:
+┌─────────────────────────────────────────────┐
+│ Acme Corporation                            │
+│ ├─ Product Division                         │
+│ │  ├─ Engineering Team ← You are here       │
+│ │  │  ├─ Backend Squad                      │
+│ │  │  └─ Frontend Squad                     │
+│ │  └─ Design Team                           │
+│ └─ Sales Division                           │
+│    └─ Inside Sales Team                     │
+└─────────────────────────────────────────────┘
+```
+
+**Implementation Roadmap (Phase 2)**:
+
+Week 1-2: Core Infrastructure
+- [ ] Circular reference detection algorithm
+- [ ] Depth limit trigger/validation
+- [ ] Update RLS policies if needed
+- [ ] Add hierarchy helper functions
+
+Week 3-4: Basic UI
+- [ ] Add/remove subgroup controls
+- [ ] Parent/child relationship display
+- [ ] Prevent circular refs in UI
+- [ ] Error messages and warnings
+
+Week 5-6: Advanced UI
+- [ ] Hierarchy tree visualization
+- [ ] Breadcrumb navigation for nested groups
+- [ ] Search within hierarchy
+- [ ] Drag-and-drop reordering (optional)
+
+Week 7: Testing & Polish
+- [ ] Test with 100+ group hierarchy
+- [ ] Performance optimization
+- [ ] User acceptance testing
+- [ ] Documentation
+
+**Estimated Effort**: 7-8 weeks total
+
+**Technical Challenges**:
+
+1. **Query Performance**: Deep hierarchies require recursive queries
+   - Solution: Cache hierarchy paths, use materialized views
+
+2. **UI Complexity**: Hard to visualize complex org structures
+   - Solution: Tree view, breadcrumbs, search/filter
+
+3. **Data Integrity**: Must prevent orphaned groups and cycles
+   - Solution: Database constraints + triggers + application validation
+
+**Success Metrics (Phase 2)**:
+- % of groups using subgroup feature
+- Average hierarchy depth (expect 2-3 levels)
+- Zero circular reference errors after launch
+- User satisfaction with hierarchy navigation
+- Query performance under load
+
+**Business Value**:
+- **High** for enterprises (500+ users)
+- **Medium** for mid-size orgs (50-500 users)
+- **Low** for small teams (<50 users)
+- **Overall**: Medium-High value for target market
+
+**Risk Level**: 
+- **Technical Risk**: Medium (well-understood patterns)
+- **UX Risk**: Medium-High (hierarchy complexity)
+- **Performance Risk**: Medium (can be optimized)
+
+**Dependencies**:
+- Requires Phase 1.3 role management to be complete (✅ done v0.2.6.2)
+- Benefits from permission inheritance design (currently deferred)
+- May inform future permission inheritance implementation
+
+**Related Decisions**:
+- "Permission Inheritance Between Parent/Child Groups" (see above)
+- "Managing Group-to-Group Relationships" (see above)
+- Phase 2 roadmap and feature prioritization
+
+**User Stories Deferred**:
+- "As an org admin, I want to organize teams into departments"
+- "As a group leader, I want to create sub-teams under my team"
+- "As a member, I want to see my team's place in the org hierarchy"
+- "As a facilitator, I want to manage journeys across related groups"
+
+---
+
+**Decision Date**: January 26, 2026  
+**Made By**: Stefan (Product Owner) + Claude (Technical Advisor)  
+**Saves**: 3-5 weeks development time  
+**Next Review**: Phase 2 planning (est. March 2026)
+
+---
+
 ## Journey System
 
 ### Dynamic Journey Path Changes
@@ -287,281 +533,362 @@ Subgroups:
 
 **Architecture Changes Needed:**
 
-1. **Journey Structure Evolution**
-
-   **Phase 1/2 (Linear):**
-   ```json
-   {
-     "steps": [
-       {"id": "step_1", "next": "step_2"},
-       {"id": "step_2", "next": "step_3"},
-       {"id": "step_3", "next": null}
-     ]
-   }
+1. **Journey Structure**
+   ```
+   Linear (Phase 1-2):
+   Step 1 → Step 2 → Step 3 → Complete
+   
+   Dynamic (Phase 3):
+   Step 1 → [Conditional Logic] → Step 2A or Step 2B
+                                  → Step 3
+                                  → Complete
    ```
 
-   **Phase 3 (Branching):**
-   ```json
-   {
-     "steps": [
-       {
-         "id": "step_1",
-         "type": "content",
-         "next": "step_2"
-       },
-       {
-         "id": "step_2",
-         "type": "choice",
-         "question": "What's your priority?",
-         "branches": [
-           {"choice": "Speed", "next": "step_3a"},
-           {"choice": "Quality", "next": "step_3b"}
-         ]
-       },
-       {"id": "step_3a", "next": "step_4"},
-       {"id": "step_3b", "next": "step_4"}
-     ]
-   }
+2. **Conditional Logic System**
+   - If/then rules
+   - User responses
+   - Completion status
+   - Performance metrics
+   - Time constraints
+
+3. **Data Model**
+   ```sql
+   journey_steps:
+   - next_step_id (simple linear)
+   
+   vs.
+   
+   journey_step_conditions:
+   - condition_type
+   - condition_value
+   - next_step_if_true
+   - next_step_if_false
    ```
 
-   **Phase 3 (Adaptive):**
-   ```json
-   {
-     "steps": [
-       {
-         "id": "assessment_1",
-         "type": "assessment",
-         "next": {
-           "type": "conditional",
-           "conditions": [
-             {"if": "score < 70", "then": "remedial_content"},
-             {"if": "score >= 70", "then": "advanced_content"}
-           ]
-         }
-       }
-     ]
-   }
-   ```
+**Use Cases:**
 
-2. **State Management**
-   - Track user's position in branching paths
-   - Store decisions/choices made
-   - Handle backtracking (can users go back?)
-   - Save state for pause/resume
-
-3. **Analytics**
-   - Which paths are most common?
-   - Where do users drop off?
-   - Which branches lead to better outcomes?
-   - A/B test different paths
-
-**Types of Dynamic Behavior:**
-
-1. **User Choice Points**
-   - Explicit branching (user chooses path)
-   - Multiple endings
-   - Exploration vs. guided paths
-
-2. **Performance-Based Adaptation**
-   - Assessment scores determine next steps
-   - Difficulty adjustment
-   - Remedial content injection
-
-3. **Context-Aware Content**
-   - Time of day/week affects content
-   - User's role in group affects path
-   - Previous journey completion affects recommendations
-
-4. **AI-Driven Adaptation** (Phase 4?)
-   - ML predicts optimal path for user
-   - Personalized content selection
-   - Dynamic difficulty scaling
-
-**Technical Challenges:**
-
-- **Journey Builder UI**: How to create branching journeys visually?
-  - Flowchart-style editor
-  - Visual programming (Scratch-like blocks)
-  - Code-based DSL for power users
-
-- **Path Validation**: Ensure all branches lead somewhere
-  - No dead ends (unless intentional)
-  - All users can complete journey
-  - Cycles handled correctly
-
-- **Version Control**: What happens when journey creator updates?
-  - Users mid-journey on old version?
-  - Migrate users to new version?
-  - Allow completing old version?
+- **Skill-based paths**: Different content based on user's current level
+- **Choice-based narratives**: User choices affect journey direction
+- **Adaptive difficulty**: Content adjusts based on performance
+- **Personalized recommendations**: Show relevant next steps
 
 **Before Implementation:**
-- Study existing adaptive learning platforms (Duolingo, Khan Academy)
-- Design journey logic DSL (domain-specific language)
-- Create prototype with 2-3 sample dynamic journeys
-- Test with users to validate comprehension
+- Design condition system architecture
+- Create condition evaluation engine
+- Build journey editor for dynamic paths
+- Test with pilot users
 
 ---
 
-## Authorization
+### Journey Versioning and Updates
 
-### Temporary and Conditional Permissions
+**Topic**: How should we handle updates to journeys that users are actively taking?
 
-**Topic**: Should the system support time-limited or context-dependent permissions?
+**Context**: Journey creators may want to update content, but users are mid-journey. Do they see old or new version?
 
-**Context**: Some use cases might benefit from temporary role assignments or permissions that only apply in certain contexts.
+**Decision**: Phase 1 doesn't support journey updates. Phase 2+ handles versioning.
 
-**Decision**: Not needed for Phase 1. Evaluate for Phase 2+.
+**Deferred To**: Phase 2
 
-**Deferred To**: Phase 2 or later (based on user demand)
+**Options to Consider:**
 
-**Examples:**
+1. **Snapshot on Enrollment**
+   - User gets journey version from enrollment date
+   - Updates don't affect active journeys
+   - Pros: Consistency, no surprises
+   - Cons: Users miss improvements
 
-**Temporary Permissions:**
-```
-- "Guest Speaker" role that expires after 1 week
-- "Project Lead" role for duration of project
-- "Moderator" role during specific event
-```
+2. **Always Use Latest**
+   - Users always see current version
+   - Pros: Everyone gets best experience
+   - Cons: Can break progress tracking
 
-**Conditional Permissions:**
-```
-- Can edit content ONLY if it's their own
-- Can invite members ONLY if group is under size limit
-- Can view analytics ONLY for journeys they facilitate
-```
+3. **Opt-in Updates**
+   - User chooses to upgrade mid-journey
+   - Pros: User control
+   - Cons: Complex UX
 
-**Implementation Ideas:**
-
-```typescript
-interface PermissionGrant {
-  permission: Permission;
-  granted: boolean;
-  
-  // Temporal constraints (optional)
-  valid_from?: Date;
-  valid_until?: Date;
-  
-  // Conditional constraints (optional)
-  conditions?: {
-    type: 'ownership' | 'size_limit' | 'status';
-    params: Record<string, any>;
-  }[];
-}
-```
-
-**Use Cases to Validate:**
-- Guest facilitators for limited time
-- Trial memberships that expire
-- Context-specific admin rights
-- Resource-based permissions (edit own content)
+4. **Smart Merging**
+   - Minor updates apply automatically
+   - Major changes require opt-in
+   - Pros: Balance of both
+   - Cons: Complex to implement
 
 **Before Implementation:**
-- Collect concrete user stories requiring this
-- Design condition evaluation engine
-- Consider performance impact
-- Ensure UI can communicate constraints clearly
+- Survey users on preferences
+- Design version numbering system
+- Plan data migration strategy
+- Test with beta journeys
 
 ---
 
-## Collaboration Features
+### Journey Discovery and Search
 
-### Advanced Forum Features
+**Topic**: How do users find journeys relevant to their needs?
 
-**Topic**: What additional forum features are needed beyond basic post/reply?
+**Context**: Phase 1 has basic journey list. Phase 2+ needs sophisticated discovery.
 
-**Context**: Phase 1 includes basic forum (post, reply, moderate). Many modern forums have rich features.
+**Decision**: Simple list/browse for Phase 1. Advanced discovery in Phase 2.
 
-**Decision**: Start simple. Add features based on user demand.
+**Deferred To**: Phase 2
 
-**Deferred To**: Phase 2+
+**Discovery Methods:**
 
-**Potential Features:**
+**Browsing:**
+- Categories/tags
+- Popular journeys
+- Recently added
+- Recommended for you
 
-**Content Features:**
-- Rich text formatting (bold, italic, lists)
-- Code blocks with syntax highlighting
-- File attachments
-- Embedded media (YouTube, etc.)
-- Polls and surveys
-- Reactions (emoji reactions)
-- @mentions and notifications
-- Threads and nested replies
+**Search:**
+- Full-text search
+- Filters (duration, difficulty, type)
+- Sort options
+- Faceted search
 
-**Organization Features:**
-- Categories and subcategories
-- Tags/labels
-- Pinned posts
-- Featured posts
-- Post templates
+**Personalization:**
+- Based on completed journeys
+- Based on group memberships
+- Based on skill level
+- Collaborative filtering
 
-**Moderation Features:**
-- Report posts
-- Flag for review
-- Automated spam detection
-- Moderation queue
-- User reputation system
-- Post approval workflow
-
-**Discovery Features:**
-- Sort by newest/popular/unanswered
-- Search within forum
-- Saved posts / bookmarks
-- Following specific topics
-- Email digests
+**Social Discovery:**
+- What friends are taking
+- Group leader recommendations
+- Trending in your organization
 
 **Before Implementation:**
-- Analyze which features users request most
-- Study popular forum platforms (Discourse, etc.)
-- Consider integration with third-party forum tools
-- Evaluate: build vs. integrate existing solution?
+- Analyze user behavior patterns
+- Design recommendation algorithm
+- Choose search technology (Algolia, Elasticsearch)
+- A/B test different discovery UIs
 
 ---
 
 ## User Experience
 
-### Mobile App
+### Notification System
 
-**Topic**: Should FringeIsland have native mobile apps (iOS/Android)?
+**Topic**: How should users be notified about platform events?
 
-**Context**: Phase 1 is responsive web. Mobile apps could improve engagement.
+**Context**: Users need to know about invitations, journey deadlines, feedback, etc.
 
-**Decision**: Start with responsive web. Evaluate mobile apps post-launch.
+**Decision**: Email notifications for Phase 1. In-app notifications in Phase 2.
 
-**Deferred To**: Post-Phase 1 (based on mobile web usage)
+**Deferred To**: Phase 2 (In-app notifications)
+
+**Notification Types:**
+
+**Immediate (Real-time):**
+- Group invitation received
+- Direct message received
+- Mentioned in forum
+- Journey deadline approaching
+
+**Daily Digest:**
+- Summary of activity
+- New content available
+- Friend completed journey
+- Achievements unlocked
+
+**Weekly Summary:**
+- Group activity recap
+- Journey progress
+- Upcoming deadlines
+- Platform news
+
+**Preferences:**
+- Per-notification-type settings
+- Email vs. in-app vs. push
+- Frequency controls
+- Quiet hours
+
+**Before Implementation:**
+- Design notification data model
+- Choose notification service (Firebase, Pusher)
+- Create notification management UI
+- Test notification fatigue mitigation
+
+---
+
+### Mobile Application
+
+**Topic**: Should FringeIsland have native mobile apps?
+
+**Context**: Platform is web-based (responsive). Native apps could improve experience.
+
+**Decision**: Web-first for Phase 1. Consider mobile apps based on demand.
+
+**Deferred To**: Phase 2+ (if user demand is high)
+
+**Options:**
+
+1. **Progressive Web App (PWA)**
+   - Web app that works offline
+   - Can install to home screen
+   - Pros: One codebase, easier
+   - Cons: Limited native features
+
+2. **React Native**
+   - Cross-platform iOS + Android
+   - Pros: Share code with web
+   - Cons: Still need separate app
+
+3. **Native Apps**
+   - Separate Swift (iOS) + Kotlin (Android)
+   - Pros: Best performance, full features
+   - Cons: 3x development effort
+
+**Mobile-Specific Features:**
+- Push notifications
+- Offline access to journeys
+- Camera integration for activities
+- Location-based features
+
+**Before Implementation:**
+- Survey users on mobile usage patterns
+- Analyze web traffic (mobile vs. desktop)
+- Prototype key mobile features
+- Evaluate development cost vs. value
+
+---
+
+### Accessibility (a11y)
+
+**Topic**: How accessible should the platform be to users with disabilities?
+
+**Context**: Accessibility is important but requires significant effort to do well.
+
+**Decision**: Basic accessibility for Phase 1. Enhanced features as needed.
+
+**Deferred To**: Ongoing (continuous improvement)
+
+**Accessibility Standards:**
+
+**WCAG 2.1 Level AA (Target):**
+- Screen reader support
+- Keyboard navigation
+- Color contrast
+- Alt text for images
+- Captions for videos
+- Focus indicators
+
+**Phase 1 Basics:**
+- Semantic HTML
+- ARIA labels where needed
+- Keyboard shortcuts
+- Responsive text sizing
+
+**Phase 2+ Enhancements:**
+- High contrast mode
+- Dyslexia-friendly fonts
+- Audio descriptions
+- Sign language videos
+- Simplified language option
+
+**Testing:**
+- Automated tools (axe, Lighthouse)
+- Manual testing with screen readers
+- User testing with disabled users
+- Regular audits
+
+**Before Implementation:**
+- Conduct accessibility audit
+- Prioritize most-needed features
+- Train team on a11y best practices
+- Budget for ongoing testing
+
+---
+
+## Social Features
+
+### Forum and Community
+
+**Topic**: Should the platform include forums or community discussion spaces?
+
+**Context**: Users may want to discuss journeys, share experiences, ask questions.
+
+**Decision**: Phase 1 has no forums. Consider adding in Phase 2 based on user need.
+
+**Deferred To**: Phase 2+ (if user demand exists)
+
+**Forum Types:**
+
+**Group Forums:**
+- Private to group members
+- For discussing group journeys
+- Travel guide facilitation
+
+**Journey Forums:**
+- All users taking a journey
+- Share progress and tips
+- Ask questions
+
+**Global Forum:**
+- All platform users
+- General discussions
+- Feature requests
+- Community building
+
+**Features Needed:**
+- Threads and replies
+- Reactions (likes, helpful)
+- Moderation tools
+- Search and filtering
+- Notifications
+
+**Alternative:**
+- Integrate with Slack/Discord
+- Embed chat widget
+- Link to external forum
+
+**Before Implementation:**
+- Gauge user interest
+- Evaluate moderation effort
+- Choose forum software
+- Design community guidelines
+
+---
+
+### Direct Messaging
+
+**Topic**: Should users be able to send direct messages to each other?
+
+**Context**: Users may want to communicate privately about journeys or group activities.
+
+**Decision**: No DMs in Phase 1. Consider adding based on user requests.
+
+**Deferred To**: Phase 2+ (if requested)
 
 **Considerations:**
 
-**Pros of Native Apps:**
-- Better performance
-- Offline functionality
-- Push notifications
-- Native mobile UX patterns
-- App store visibility
+**Pros:**
+- Enables peer support
+- Facilitates collaboration
+- Reduces need for external tools
 
-**Cons of Native Apps:**
-- Development cost (2x platforms)
-- Maintenance burden
-- App store approval process
-- Additional QA burden
+**Cons:**
+- Moderation challenges
+- Privacy concerns
+- Potential for spam/harassment
+- Development effort
 
-**Alternative: Progressive Web App (PWA)**
-- Works on all platforms
-- Installable on home screen
-- Offline support
-- Push notifications (on Android)
-- Lower development cost
+**Implementation Options:**
+1. Build custom messaging
+2. Integrate third-party (Stream, SendBird)
+3. Link to email/external apps
 
-**Decision Framework:**
-1. Launch responsive web
-2. Monitor mobile web usage
-3. If > 40% mobile traffic, consider PWA
-4. If clear ROI, build native apps
+**Safety Features:**
+- Block/report users
+- Message filtering
+- Read receipts (optional)
+- Disappearing messages?
 
 **Before Implementation:**
-- Analyze mobile web analytics
-- Survey users on mobile app interest
-- Calculate development cost/ROI
-- Choose: PWA vs. native vs. React Native
+- Assess demand through user interviews
+- Plan moderation strategy
+- Consider legal/privacy implications
+- Budget for customer support load
 
 ---
 
@@ -841,6 +1168,6 @@ When deferring a new decision:
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: January 2026  
+**Document Version**: 1.1  
+**Last Updated**: January 26, 2026 (v0.2.6.2)  
 **Next Review**: Quarterly or as deferred items are implemented

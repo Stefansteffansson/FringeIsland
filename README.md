@@ -1,6 +1,6 @@
 # FringeIsland
 
-**Version:** 0.2.5  
+**Version:** 0.2.7  
 **Last Updated:** January 26, 2026
 
 Educational and training platform for personal development, leadership training, and team/organizational development.
@@ -9,7 +9,7 @@ Educational and training platform for personal development, leadership training,
 
 ## 🚀 Current Status
 
-**Phase 2: Core Platform - 65% Complete**
+**Phase 2: Core Platform - 70% Complete**
 
 ### ✅ Completed Features
 
@@ -30,11 +30,12 @@ Educational and training platform for personal development, leadership training,
 - ✅ Create new groups (`/groups/create`)
 - ✅ View all user's groups (`/groups`)
 - ✅ View group details (`/groups/[id]`)
+- ✅ **Edit group settings** (`/groups/[id]/edit`) - NEW in v0.2.7
 - ✅ Public/private group settings
 - ✅ Custom group labels
 - ✅ Member list visibility controls
 
-#### Member Management (NEW in v0.2.5)
+#### Member Management
 - ✅ **Invite members by email** (leaders only)
 - ✅ **Accept/decline invitations** (`/invitations`)
 - ✅ **Leave groups** (all members)
@@ -43,7 +44,14 @@ Educational and training platform for personal development, leadership training,
 - ✅ Real-time member count updates
 - ✅ Smooth animations (no browser alerts)
 
-#### Navigation & UX (NEW in v0.2.5)
+#### Role Management (NEW in v0.2.6.2)
+- ✅ **Assign roles to members** (via AssignRoleModal)
+- ✅ **Promote to Group Leader**
+- ✅ **Remove roles** with last leader protection
+- ✅ **Multiple roles per member**
+- ✅ Real-time role updates in UI
+
+#### Navigation & UX
 - ✅ **Global navigation bar** (persistent across pages)
 - ✅ **Real-time invitation badge** (shows pending count)
 - ✅ **User menu dropdown** (avatar, profile, logout)
@@ -56,15 +64,15 @@ Educational and training platform for personal development, leadership training,
 - None (ready for next phase)
 
 ### 📋 Upcoming Features
-- Role assignment interface (promote to leader)
 - Journey browsing and enrollment
-- Permissions and roles UI
-- Dashboard/home page
+- Journey content delivery
+- Permissions dashboard
 - Activity feed and notifications
+- Advanced group features (subgroups, etc.)
 
 ---
 
-## 🏗️ Tech Stack
+## 🗃️ Tech Stack
 
 - **Framework:** Next.js 16.1 with App Router
 - **Language:** TypeScript
@@ -81,12 +89,14 @@ FringeIsland/
 ├── app/
 │   ├── groups/
 │   │   ├── [id]/
-│   │   │   └── page.tsx          # Group detail page
+│   │   │   ├── page.tsx          # Group detail page
+│   │   │   └── edit/
+│   │   │       └── page.tsx      # Edit group (NEW in v0.2.7)
 │   │   ├── create/
 │   │   │   └── page.tsx          # Create group
 │   │   └── page.tsx              # Groups list
 │   ├── invitations/
-│   │   └── page.tsx              # Invitations page (NEW)
+│   │   └── page.tsx              # Invitations page
 │   ├── login/
 │   │   └── page.tsx              # Login page
 │   ├── profile/
@@ -103,13 +113,14 @@ FringeIsland/
 │   │   └── AuthForm.tsx          # Login/signup forms
 │   ├── groups/
 │   │   ├── GroupCreateForm.tsx   # Group creation form
-│   │   └── InviteMemberModal.tsx # Invite members modal (NEW)
+│   │   ├── InviteMemberModal.tsx # Invite members modal
+│   │   └── AssignRoleModal.tsx   # Assign roles modal (NEW)
 │   ├── profile/
 │   │   ├── AvatarUpload.tsx      # Avatar upload component
 │   │   └── ProfileEditForm.tsx   # Profile edit form
 │   ├── ui/
-│   │   └── ConfirmModal.tsx      # Reusable modal (NEW)
-│   └── Navigation.tsx            # Global navigation bar (NEW)
+│   │   └── ConfirmModal.tsx      # Reusable modal
+│   └── Navigation.tsx            # Global navigation bar
 ├── lib/
 │   ├── auth/
 │   │   └── AuthContext.tsx       # Auth context provider
@@ -117,7 +128,7 @@ FringeIsland/
 │       ├── client.ts             # Supabase client
 │       └── server.ts             # Server-side Supabase
 ├── supabase/
-│   └── migrations/               # SQL migration files (NEW)
+│   └── migrations/               # SQL migration files
 ├── public/                       # Static assets
 ├── CHANGELOG.md                  # Version history
 ├── CLAUDE.md                     # AI context documentation
@@ -215,16 +226,50 @@ All tables have comprehensive RLS policies:
 
 ---
 
-## 📝 Recent Changes (v0.2.5)
+## 📝 Recent Changes
 
-### Member Management System
-Complete member management with invite, accept/decline, leave, and remove functionality. Leaders can invite members by email, users can accept or decline invitations, and members can leave groups. Leaders can remove members with automatic last-leader protection.
+### v0.2.7 - Edit Group & Invite Members (January 26, 2026)
 
-### Navigation System
-Global navigation bar with real-time updates. Shows invitation count badge, user avatar dropdown, and active page indicators. Automatically refreshes when profile or invitations change.
+**Edit Group Functionality:**
+- New edit page at `/groups/[id]/edit` for Group Leaders
+- Edit group name, description, label
+- Toggle public/private and member list visibility
+- Form validation with error handling
+- Authorization checks (Group Leaders only)
 
-### UI/UX Improvements
-Replaced all browser alerts with beautiful confirmation modals. Added smooth animations, loading states, and error handling throughout the app.
+**Invite Members Integration:**
+- Connected InviteMemberModal to group detail page
+- "Invite Now" button (replaces "Coming Soon")
+- Email-based invitations with validation
+- Automatic member list refresh
+
+### v0.2.6.2 - Role Assignment UI (January 26, 2026)
+
+**Role Management:**
+- AssignRoleModal for managing member roles
+- Promote members to Group Leader
+- Assign/remove multiple roles
+- Last leader protection in UI
+- Immediate state updates after role changes
+
+### v0.2.5 - Member Management & Navigation (January 25, 2026)
+
+**Member Management System:**
+- Complete member lifecycle (invite, accept/decline, leave, remove)
+- InviteMemberModal component
+- Last leader protection via database trigger
+- Real-time member count updates
+
+**Navigation System:**
+- Global navigation bar with real-time updates
+- Invitation count badge
+- User avatar dropdown menu
+- Active page indicators
+
+**UI/UX Improvements:**
+- ConfirmModal component (replaced all browser alerts)
+- Smooth animations and loading states
+- Consistent modal pattern throughout app
 
 See [CHANGELOG.md](./CHANGELOG.md) for complete version history.
 
@@ -232,26 +277,29 @@ See [CHANGELOG.md](./CHANGELOG.md) for complete version history.
 
 ## 🗺️ Roadmap
 
-### Phase 2: Core Platform (Current - 65% complete)
+### Phase 2: Core Platform (Current - 70% complete)
 - ✅ Authentication system
 - ✅ Profile management
-- ✅ Group creation
+- ✅ Group creation & editing
 - ✅ Member management
+- ✅ Role management
 - ✅ Navigation system
-- ⏳ Permissions & roles UI
 - ⏳ Journey browsing
+- ⏳ Journey enrollment
 
 ### Phase 3: Journey System
 - Journey creation and editing
 - Content management
 - Enrollment workflows
 - Progress tracking
+- Facilitator tools
 
 ### Phase 4: Advanced Features
 - Marketplace for user-created journeys
 - Dynamic/adaptive journeys
 - Analytics and reporting
 - Team collaboration tools
+- Communication features (forums, messaging)
 
 ---
 

@@ -8,341 +8,377 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Role assignment interface (promote to leader, assign roles)
 - Journey browsing and enrollment flows
-- Basic permissions and roles UI
-- Dashboard/home page
-- Activity feed and notifications
+- Advanced permissions and roles UI
 
 ---
 
-## [0.2.5] - 2026-01-26
+## [0.2.7] - 2026-01-26
 
-### Added - Member Management System
-- **Invite Members Feature** (Step 3A)
-  - Email-based invitation system for group leaders
-  - User lookup by email with validation
-  - Duplicate invitation prevention
-  - Invitation modal with clean UI
-  - Success/error messages with icons
+### Added
+- **Edit Group Functionality**: Group Leaders can now edit group settings
+  - Edit group page at `/groups/[id]/edit` route
+  - Edit group name (required, max 100 characters)
+  - Edit description (optional, max 500 characters)
+  - Edit label (optional, max 50 characters)
+  - Toggle public/private visibility
+  - Toggle show member list setting
+  - Form validation with user-friendly error messages
+  - Authorization check (only Group Leaders can access)
+  - Success redirect back to group page after save
+  - Loading states during save operation
+
+- **Invite Members Integration**: Connected existing InviteMemberModal to group detail page
+  - "Invite Now" button in Quick Actions section (replaces "Coming Soon")
+  - Email-based invitation system
+  - Validation checks:
+    - Valid email format
+    - User exists in database
+    - Not already a member
+    - No pending invitation
+  - Success messages with automatic modal close
+  - Member list auto-refresh after successful invite
+
+### Changed
+- Updated group detail page (`app/groups/[id]/page.tsx`)
+  - Added InviteMemberModal import and state management
+  - Stored userData for invite modal usage
+  - Changed "Invite Members" button from "Coming Soon" to functional "Invite Now"
+  - Added invite modal rendering at end of page
+  - Quick Actions section now only visible to Group Leaders
+
+### Fixed
+- Edit Group button was linking to non-existent route
+  - Button existed but `/groups/[id]/edit` route was never implemented
+  - Created complete edit group page with full functionality
+
+### Technical Details
+- Edit group form updates `groups` table with `updated_at` timestamp
+- Invitation creates `group_memberships` record with status='invited'
+- RLS policies handle authorization for both features
+- Modal-based UI for better user experience
+- Immediate UI updates after successful operations
+
+---
+
+## [0.2.6.2] - 2026-01-26
+
+### Added
+- **Role Assignment UI**: Complete interface for managing member roles
+  - AssignRoleModal component for assigning/removing roles
+  - Promote to Group Leader functionality
+  - Assign multiple roles to members
+  - Remove roles from members
+  - Real-time role updates in member list
+
+### Fixed
+- **Last Leader Protection UI**: Hide × button when member is the last Group Leader
+  - Previous: Button visible but disabled (confusing)
+  - Now: Button hidden completely with explanatory text
+- **Immediate State Updates**: Role changes now update UI instantly
+  - Fixed: Role buttons showing stale state after changes
+  - Solution: Update both members array AND userRoles state
+  - Pattern: `setMembers(...)` + `setUserRoles(...)` + `setIsLeader(...)`
+
+### Changed
+- Default landing page changed from `/profile` to `/groups`
+  - AuthForm redirect updated for better UX
+  - Users land on groups list after login/signup
+
+### Technical Details
+- Member data fetching enhanced to include role IDs for filtering
+- State management pattern established for role changes
+- Component: `components/groups/AssignRoleModal.tsx`
+
+---
+
+## [0.2.5] - 2026-01-25
+
+### Added
+- **Member Management System**: Complete member lifecycle management
+  - Invite members by email (Group Leaders only)
+  - Accept/decline invitations (`/invitations` page)
+  - Leave groups (all members)
+  - Remove members (Group Leaders only)
+  - Last leader protection via database trigger
   - Real-time member count updates
-  - RLS policy: Users can search other users by email
-  - RLS policy: Group leaders can create invitations
+  - InviteMemberModal component (`components/groups/InviteMemberModal.tsx`)
 
-- **Accept/Decline Invitations** (Step 3B)
-  - Dedicated invitations page at `/invitations`
-  - View all pending group invitations
-  - Display group name, label, inviter name, and invitation date
-  - Accept invitation → changes status to 'active'
-  - Decline invitation → deletes invitation record
-  - Smooth fade-out animations (no ugly browser alerts)
-  - Empty state with helpful message
-  - Loading states and error handling
-  - RLS policy: Users can accept their own invitations
-  - RLS policy: Users can decline their own invitations
+- **Global Navigation Bar**: Persistent navigation across all pages
+  - Navigation component (`components/Navigation.tsx`)
+  - Real-time invitation badge (shows pending count)
+  - User menu dropdown with avatar
+  - Active page indicators
+  - Auto-updating on data changes
+  - Responsive design (mobile & desktop)
 
-- **Leave & Remove Members** (Step 3C)
-  - Leave Group functionality for all members
-  - Remove Member functionality for group leaders
-  - Last leader protection (prevents removing/leaving if only leader)
-  - Database trigger: `prevent_last_leader_removal()`
-  - Confirmation dialogs before destructive actions
-  - Real-time member list updates after removal
-  - Loading states per action ("Leaving...", "Removing...")
-  - RLS policy: Users can leave groups
-  - RLS policy: Group leaders can remove members
+- **Beautiful Confirmation Modals**: Replaced all browser alerts
+  - ConfirmModal component (`components/ui/ConfirmModal.tsx`)
+  - Reusable modal for all confirmations
+  - Smooth animations and loading states
+  - Consistent UX across the app
 
-### Added - UI/UX Improvements
-- **Global Navigation Bar**
-  - Persistent navigation at top of all pages
-  - Logo/brand with click to home
-  - Main nav buttons: My Groups, Invitations, Profile
-  - Real-time invitation count badge (red circle with number)
-  - User menu dropdown with avatar, name, and email
-  - Active page indicator (blue highlight)
-  - Sticky positioning (stays at top while scrolling)
-  - Responsive design (hides labels on mobile)
-  - Auto-hides on login/signup pages
-  - Auto-closes dropdown on navigation or logout
-
-- **Real-Time Navigation Updates**
-  - Navigation refreshes when profile is updated
-  - Invitation badge updates when invites are accepted/declined
-  - Avatar updates immediately after upload
-  - Name updates immediately after profile edit
-  - Custom event system for triggering refreshes
-  - No page refresh needed for updates
-
-- **Confirmation Modal System**
-  - Beautiful reusable `ConfirmModal` component
-  - Three variants: danger (red), warning (yellow), info (blue)
-  - Icon support with emoji
-  - Backdrop blur effect
-  - Keyboard support (Escape to close)
-  - Smooth animations (fade-in, zoom-in)
-  - Replaced all ugly browser `alert()` and `confirm()` calls
+- **Database Trigger**: Automatic last leader protection
+  - Migration: `20260125_6_prevent_last_leader_removal.sql`
+  - Prevents deletion of last Group Leader role
+  - Database-level enforcement for data integrity
 
 ### Changed
-- **Invitations Page**: Complete redesign with smooth UX
-  - No more browser alert() popups
-  - Success animation with checkmark
-  - Card fade-out on accept/decline
-  - Professional, polished interface
+- Updated root layout (`app/layout.tsx`) with Navigation component
+- Replaced all `window.alert()` and `window.confirm()` with ConfirmModal
+- Enhanced group detail page with member management actions
+- Improved invitations page with accept/decline functionality
 
-- **Group Detail Page**: Enhanced with member management
-  - Added "Invite Members" button (leaders only)
-  - Added "Leave Group" button (all members)
-  - Added "Remove Member" buttons (leaders only, per member)
-  - Integrated InviteMemberModal
-  - Integrated ConfirmModal for confirmations
-  - Real-time updates after member changes
-
-- **Profile Edit**: Triggers navigation refresh
-  - Updates navigation bar immediately after save
-  - Shows updated name/avatar without page refresh
-
-### Fixed
-- **Database Constraints**: Updated group_memberships status check
-  - Added 'invited' status to allowed values
-  - Previous constraint only allowed 'active' and 'frozen'
-  - Now allows: 'active', 'invited', 'frozen'
-
-- **User Menu Dropdown**: Auto-close behavior
-  - Closes when user logs out
-  - Closes when different user logs in
-  - Closes when navigating to different page
-  - Closes when clicking outside (already worked)
-
-- **Console Errors**: Reduced noise
-  - Only log unexpected errors, not validation errors
-  - Better error categorization
-  - Cleaner development experience
-
-### Technical
-- **RLS Policies Added** (6 new policies):
-  1. Users table SELECT: Search users by email
-  2. Group_memberships INSERT: Create invitations
-  3. Group_memberships UPDATE: Accept invitations
-  4. Group_memberships DELETE: Decline invitations
-  5. Group_memberships DELETE: Leave groups
-  6. Group_memberships DELETE: Remove members
-  
-- **Database Functions**:
-  - `prevent_last_leader_removal()`: Trigger function to ensure groups always have at least one leader
-  - Runs before DELETE on group_memberships
-  - Checks if user being removed is a leader
-  - Counts remaining leaders
-  - Raises exception if last leader
-
-- **Event System**:
-  - Custom `refreshNavigation` event for real-time updates
-  - Dispatched from profile edit, invitations page
-  - Listened to by Navigation component
-  - Triggers data refetch on event
-
-- **Component Structure**:
-  - `Navigation.tsx`: Global navigation bar
-  - `ConfirmModal.tsx`: Reusable confirmation modal
-  - `InviteMemberModal.tsx`: Invite members by email
-  - Updated: ProfileEditForm, InvitationsPage, GroupDetailPage
-
-### Database Changes
-- Updated `group_memberships` table:
-  - Status constraint now includes 'invited'
-  - Added trigger: `check_last_leader_removal`
-  - Added function: `prevent_last_leader_removal()`
-
-### Security
-- All member management actions protected by RLS
-- Last leader protection at database level (trigger)
-- User can only manage their own invitations
-- Leaders can only remove members from their groups
-- Invitation validation (duplicate checks)
-
-### Files Added
-- `components/Navigation.tsx`
-- `components/ui/ConfirmModal.tsx`
-- `components/groups/InviteMemberModal.tsx`
-- `app/invitations/page.tsx`
-- `supabase/migrations/20260125_enable_member_invitations.sql`
-- `supabase/migrations/20260125_enable_accept_decline_invitations.sql`
-- `supabase/migrations/20260125_enable_leave_remove_members.sql`
-
-### Documentation
-- Created comprehensive READMEs for each step
-- Added navigation implementation guide
-- Added navigation refresh guide
-- Documented RLS policies
-- Created installation instructions
+### Technical Details
+- Custom events for navigation refresh (`refreshNavigation`)
+- RLS policies updated for invitation management
+- Database trigger for last leader protection
+- Modal-based UI pattern established
 
 ---
 
-## [0.2.4] - 2026-01-25
+## [0.2.1] - 2026-01-24
 
 ### Added
-- **Group Detail Page**: Complete individual group viewing functionality
-  - Dynamic route at `/groups/[id]` for viewing individual groups
-  - Display group information (name, description, custom label)
-  - Show public/private status badge
-  - Display user's role(s) in the group with badges
-  - Show member count and creation date
-  - Member list display (if enabled or user is group leader)
-    - Member avatars with circular crop
-    - Member names and roles
-    - Responsive grid layout (1/2/3 columns)
-    - Placeholder for users without avatars
-  - "Edit Group" button (visible to group leaders only)
-  - Back to My Groups navigation
-  - Access control (members can view their groups, public groups visible to all)
-  - Error page for unauthorized access or non-existent groups
-  - "Coming Soon" placeholders for future actions (Invite Members, Manage Roles, Start Journey)
-
-### Fixed
-- **RLS Policy Issue**: Fixed conflicting SELECT policies on groups table
-  - Combined two separate policies into one with OR logic
-  - Now allows viewing public groups OR groups user is member of
-  - Resolves 406 errors when trying to view groups
-- **Error Handling**: Improved error messages for group not found
-  - Use `.maybeSingle()` instead of `.single()` to avoid errors on missing groups
-  - Better error messages ("Group not found" vs generic errors)
-  - Proper handling of RLS policy restrictions
+- **User Profile Management**: Complete profile editing functionality
+  - Profile edit page at `/profile/edit` route
+  - Edit full name (required, min 2 characters, max 100 characters)
+  - Edit bio (optional, max 500 characters)
+  - Character counter for bio field
+  - Form validation with user-friendly error messages
+  - Success messages with automatic redirect after save
+  - Cancel button to return to profile without saving
+- **Enhanced Profile Display**:
+  - Improved profile page layout with better styling
+  - Display full name, email, bio, and account creation date
+  - "Edit Profile" button for easy access to editing
+  - Placeholder sections for upcoming features (avatar, groups, journeys)
+  - Empty state message when bio is not set
+- **New Components**:
+  - `ProfileEditForm` component (`components/profile/ProfileEditForm.tsx`)
+  - Reusable form component with validation and error handling
+  - Loading states during save operation
+  - Disabled form fields while saving to prevent double submission
 
 ### Changed
-- Updated group cards in My Groups list to be clickable (navigate to detail page)
-- Improved error handling throughout group viewing flow
+- Updated profile page (`app/profile/page.tsx`) with enhanced UI
+  - Better visual hierarchy and spacing
+  - Gradient background matching app theme
+  - Improved button styling and layout
+  - Added "Coming Soon" feature preview section
+
+### Technical Details
+- Profile data persisted to Supabase `users` table
+- Client-side validation before database update
+- Automatic timestamp update (`updated_at`) on profile save
+- Uses existing RLS policies (users can only edit their own profile)
 
 ---
 
-## [0.2.3] - 2026-01-25
+## [0.2.0] - 2026-01-23
 
 ### Added
-- **Group Creation Feature**: Complete workflow for creating new groups
-  - Form at `/groups/create` with all group properties
-  - Name, description, custom label fields
-  - Public/private visibility toggle
-  - Member list visibility toggle
-  - Success/error states
-  - Automatic redirection after creation
-  - Creator automatically becomes "Group Leader"
-  - Database integration with proper error handling
-  
-### Technical
-- Created GroupCreateForm component
-- Integrated with Supabase groups and group_memberships tables
-- Added RLS policy for group creation
-- Proper user role assignment on group creation
+- **Complete Authentication System**: Full Supabase Auth integration
+  - User registration (signup) with email, password, and display name
+  - User login with email/password authentication
+  - User logout functionality
+  - Session management with automatic persistence
+  - Protected routes (profile page with redirect logic)
+  - Auth context (`AuthContext`) for global state management
+  - `useAuth()` hook for accessing auth state in components
+- **Auth UI Components**:
+  - Reusable `AuthForm` component for login and signup
+  - Login page at `/login` route
+  - Signup page at `/signup` route
+  - Profile page at `/profile` route (protected)
+  - Updated homepage with auth-aware navigation
+- **Database Triggers for User Lifecycle**:
+  - Automatic user profile creation trigger on signup
+  - Soft delete trigger when user account is deleted
+  - Users marked as `is_active = false` instead of hard deletion
+- **Database Schema Fixes**:
+  - Fixed user creation trigger to use `full_name` column (not `display_name`)
+  - Changed `users.auth_user_id` constraint from CASCADE to SET NULL
+  - Changed related table constraints (user_group_roles, group_memberships, journey_enrollments) from CASCADE to RESTRICT
+- **Security Enhancements**:
+  - Enabled Row Level Security (RLS) on users table
+  - Added RLS policies for user data access (view and update own profile)
+  - Users can only access their own profile data
+- **Documentation**:
+  - Complete authentication implementation guide
+  - Migration file: `20260123_fix_user_trigger_and_rls.sql`
+
+### Changed
+- Updated `app/layout.tsx` to wrap app with AuthProvider
+- Updated `app/page.tsx` with auth-aware navigation and welcome messages
+- Updated `lib/auth/AuthContext.tsx` - removed automatic profile creation (now handled by database trigger)
+
+### Technical Details
+- Authentication: Supabase Auth with email/password
+- User lifecycle: Database triggers for creation and soft deletion
+- Protected routes: Client-side redirect logic with useAuth hook
 
 ---
 
-## [0.2.2] - 2026-01-25
+## [0.1.2] - 2026-01-21
 
 ### Added
-- **Profile Management**: Complete CRUD operations for user profiles
-  - View profile at `/profile` with all user information
-  - Edit profile at `/profile/edit` with form validation
-  - Update full name and bio
-  - Display creation date
-  - Success/error states
+- **Next.js Project Setup**: Complete Next.js 14+ initialization with App Router
+  - TypeScript configuration with strict mode
+  - Tailwind CSS for styling
+  - ESLint for code quality
+  - Project structure organized in repository root
+- **Supabase Integration**: Full client/server integration
+  - Client-side Supabase client (`lib/supabase/client.ts`)
+  - Server-side Supabase client with cookie handling (`lib/supabase/server.ts`)
+  - Proxy middleware for session management (`proxy.ts`)
+  - Environment variables configured (`.env.local`)
+- **Database Connection**: Verified and tested
+  - Successfully fetching data from Supabase
+  - RLS policies working correctly
+  - Test page displaying permissions from database
 
-- **Avatar Upload Feature**: Profile picture management
-  - Upload avatar from profile page
-  - Image preview before upload
-  - File type validation (PNG, JPG, JPEG, GIF, WEBP)
-  - File size validation (max 5MB)
-  - Automatic image optimization (800x800px)
-  - Supabase Storage integration
-  - Public URL generation
-  - Database record update
-  - Real-time UI update
+### Changed
+- Updated `.gitignore` with Next.js-specific entries
+  - Added `.next`, `out`, `build` directories
+  - Added environment variable files
+  - Added TypeScript build info
+- Migrated from `middleware.ts` to `proxy.ts` (Next.js 16 convention)
+- Updated home page (`app/page.tsx`) with database connection test
 
-### Technical
-- Created ProfileEditForm component
-- Created AvatarUpload component
-- Set up Supabase Storage bucket: `avatars`
-- Implemented RLS policies for avatar storage
-- Image processing with canvas API
+### Technical Details
+- Next.js: 16.1.4 with Turbopack
+- Supabase packages: `@supabase/supabase-js`, `@supabase/ssr`
+- Development server: Running on http://localhost:3000
+- **Phase 1: Foundation** ✅ **COMPLETE**
 
 ---
 
-## [0.2.1] - 2026-01-25
+## [0.1.1] - 2026-01-20
+
+### Added
+- **Database Implementation**: Successfully deployed complete database schema to Supabase
+  - 13 tables created (all core and authorization tables)
+  - 40 permissions seeded into database
+  - 5 role templates seeded (Platform Admin, Group Leader, Travel Guide, Member, Observer)
+  - 4 group templates seeded (Small Team, Large Group, Organization, Learning Cohort)
+  - All indexes, triggers, and RLS policies successfully deployed
+  - Validation trigger added for user_group_roles to ensure role-group consistency
 
 ### Fixed
-- **Authentication Flow**: Complete overhaul of auth system
-  - Fixed infinite redirect loops
-  - Implemented proper session management
-  - Created AuthContext for global auth state
-  - Protected routes with middleware
-  - Proper loading states
+- Replaced CHECK constraint with trigger in `user_group_roles` table (PostgreSQL doesn't support subqueries in CHECK constraints)
+- Updated migration script with corrected user_group_roles validation approach
 
-### Technical
-- Migrated from server-side auth checks to client-side AuthContext
-- Created custom hooks: useAuth()
-- Implemented proper TypeScript types for auth
-- Added session persistence
+### Technical Details
+- Database: Fully operational with 13 tables, RLS enabled on all tables
+- Seed Data: 40 permissions, 5 role templates, 4 group templates
+- Phase: Database Implementation ✅ Complete
 
 ---
 
-## [0.2.0] - 2026-01-25
+## [0.1.0] - 2026-01-20
 
 ### Added
-- **Groups List Page**: View all user's groups
-  - Display groups at `/groups` route
-  - Show group name, description, label
-  - Member count display
-  - Public/private badges
-  - "Create New Group" button
-  - Empty state for new users
+- **Database Schema v2.0**: Complete PostgreSQL schema with proper dependency ordering
+  - Core tables: users, groups, group_memberships, journeys, journey_enrollments
+  - Authorization tables: permissions, role_templates, group_templates, role_template_permissions, group_template_roles, group_roles, group_role_permissions, user_group_roles
+  - Row Level Security (RLS) policies for all tables
+  - Comprehensive indexes for performance optimization
+  - Seed data for permissions, role templates, and group templates
+- **Migration Script**: `fringeisland_migration.sql` for automated database setup
+- **Architecture Documentation**:
+  - `ARCHITECTURE.md`: Overall system design and core concepts
+  - `DATABASE_SCHEMA.md`: Complete database schema with RLS policies
+  - `AUTHORIZATION.md`: Detailed permission system design
+  - `DOMAIN_ENTITIES.md`: Core business entities and relationships
+  - `ROADMAP.md`: Implementation phases and milestones
+  - `DEFERRED_DECISIONS.md`: Architectural decisions postponed to later phases
+- **Project Documentation**:
+  - `README.md`: Project overview, vision, and current status
+  - `CHANGELOG.md`: Version history and changes tracking
+  - `.gitignore`: Git ignore rules for Node.js and common editor files
+- **Supabase Project**: Created FringeIslandDB database instance
 
-### Technical
-- Created groups list page component
-- Integrated with group_memberships table
-- Added RLS policies for group viewing
+### Changed
+- Reorganized database table creation order to resolve foreign key dependency issues
+  - Moved `permissions`, `role_templates`, and `group_templates` before `groups`
+  - Ensured all referenced tables are created before tables that reference them
+- Updated documentation structure for better clarity and navigation
+
+### Technical Details
+- Stack: Next.js 14+, TypeScript, React, Supabase (PostgreSQL)
+- Database: PostgreSQL with Row Level Security
+- Authorization: Flexible node/group-based permission system
+- Phase: Architecture & Planning → Database Implementation
 
 ---
 
-## [0.1.2] - 2026-01-24
+## Project Phases
 
-### Added
-- **Initial Authentication System**
-  - Sign up page with email validation
-  - Login page with remember me option
-  - Basic session handling
-  - Supabase Auth integration
+### Phase 1: Foundation ✅ COMPLETE
+**Status**: Complete  
+**Timeline**: January 2026
 
-### Technical
-- Set up Supabase client configuration
-- Created auth pages and forms
-- Basic user table structure
+- [x] Complete architecture planning
+- [x] Design database schema
+- [x] Document authorization system
+- [x] Create comprehensive roadmap
+- [x] Set up Supabase project
+- [x] Implement database schema
+- [x] Verify RLS policies
+- [x] Set up development environment
+- [x] Initialize Next.js project
+- [x] Configure Supabase integration
+- [x] Test database connection
 
----
+### Phase 2: Core Platform (In Progress - 70% Complete)
+**Timeline**: January - February 2026
 
-## [0.1.1] - 2026-01-24
+- [x] **Implement authentication system** ✅ COMPLETE
+  - [x] User signup with email/password
+  - [x] User login functionality
+  - [x] User logout functionality
+  - [x] Session management
+  - [x] Protected routes
+  - [x] Auth context and hooks
+  - [x] Database triggers for user lifecycle
 
-### Added
-- **Database Schema**: Complete initial database design
-  - 13 tables with relationships
-  - Row Level Security (RLS) policies
-  - Seed data for development
-  - Foreign key constraints
+- [x] **User profile management** ✅ COMPLETE
+  - [x] Profile editing functionality
+  - [x] Edit full name and bio
+  - [x] Form validation
+  - [x] Enhanced profile display
+  - [x] Avatar upload (v0.2.5)
 
-### Technical
-- PostgreSQL schema deployed to Supabase
-- Comprehensive RLS policies for all tables
-- Seed data includes users, groups, roles
+- [x] **Group management** ✅ COMPLETE
+  - [x] Group creation
+  - [x] View groups (list and detail)
+  - [x] Edit group settings (v0.2.7)
+  - [x] Invite members by email (v0.2.5 + v0.2.7 UI connection)
+  - [x] Accept/decline invitations (v0.2.5)
+  - [x] Leave groups (v0.2.5)
+  - [x] Remove members (v0.2.5)
+  - [x] Role assignment UI (v0.2.6.2)
+  - [x] Last leader protection (v0.2.5)
 
----
+- [x] **Navigation & UX** ✅ COMPLETE
+  - [x] Global navigation bar (v0.2.5)
+  - [x] Invitation badges (v0.2.5)
+  - [x] User menu dropdown (v0.2.5)
+  - [x] Confirmation modals (v0.2.5)
+  - [x] Responsive design (v0.2.5)
 
-## [0.1.0] - 2026-01-24
+- [ ] **Journey browsing** (Next)
+  - [ ] Journey catalog
+  - [ ] Journey details
+  - [ ] Enrollment
 
-### Added
-- **Project Initialization**
-  - Next.js 16.1 with App Router
-  - TypeScript configuration
-  - Tailwind CSS setup
-  - Project structure
-  - Git repository initialization
+- [ ] **Basic permissions UI**
+  - [ ] Display user roles
+  - [ ] Permission-based UI elements
 
-### Technical
-- Created base project structure
-- Configured build tools
-- Set up development environment
+### Phase 3: Journey Experience (Planned)
+**Timeline**: Q2 2026
+
+### Phase 4: Enhanced Features (Planned)
+**Timeline**: Q3-Q4 2026
