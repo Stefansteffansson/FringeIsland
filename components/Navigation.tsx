@@ -86,7 +86,43 @@ export default function Navigation() {
   };
 
   // Don't render anything on login/signup pages
-  if (hideNav || !user) return null;
+  if (hideNav) return null;
+
+  // Show simplified nav for logged-out users
+  if (!user) {
+    return (
+      <nav className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo/Brand */}
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:from-blue-700 hover:to-purple-700 transition-all"
+            >
+              <span className="text-2xl">🏝️</span>
+              FringeIsland
+            </Link>
+
+            {/* Auth Buttons */}
+            <div className="flex items-center gap-4">
+              <Link
+                href="/login"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/signup"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              >
+                Get Started
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   const navItems = [
     { href: '/groups', label: 'My Groups', icon: '👥' },
@@ -107,8 +143,8 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo/Brand */}
-          <Link 
-            href="/groups" 
+          <Link
+            href="/groups"
             className="flex items-center gap-2 text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:from-blue-700 hover:to-purple-700 transition-all"
           >
             <span className="text-2xl">🏝️</span>
@@ -121,11 +157,10 @@ export default function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
-                  isActive(item.href)
+                className={`relative px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${isActive(item.href)
                     ? 'bg-blue-50 text-blue-700'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                }`}
+                  }`}
               >
                 <span>{item.icon}</span>
                 <span className="hidden sm:inline">{item.label}</span>
@@ -168,18 +203,18 @@ export default function Navigation() {
             {showUserMenu && (
               <>
                 {/* Backdrop */}
-                <div 
-                  className="fixed inset-0 z-30" 
+                <div
+                  className="fixed inset-0 z-30"
                   onClick={() => setShowUserMenu(false)}
                 />
-                
+
                 {/* Menu */}
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-40">
                   <div className="px-4 py-3 border-b border-gray-100">
                     <p className="text-sm font-semibold text-gray-900">{userData?.full_name}</p>
                     <p className="text-xs text-gray-500">{user.email}</p>
                   </div>
-                  
+
                   <Link
                     href="/profile"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
@@ -187,7 +222,7 @@ export default function Navigation() {
                   >
                     👤 View Profile
                   </Link>
-                  
+
                   <Link
                     href="/profile/edit"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
@@ -195,9 +230,9 @@ export default function Navigation() {
                   >
                     ✏️ Edit Profile
                   </Link>
-                  
+
                   <div className="border-t border-gray-100 my-2" />
-                  
+
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"

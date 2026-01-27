@@ -19,52 +19,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-blue-600">FringeIsland</h1>
-            </div>
-            <div className="flex items-center gap-4">
-              {loading ? (
-                <div className="text-gray-500">Loading...</div>
-              ) : user ? (
-                <>
-                  <Link 
-                    href="/profile"
-                    className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-                  >
-                    Profile
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link 
-                    href="/login"
-                    className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-                  >
-                    Sign In
-                  </Link>
-                  <Link 
-                    href="/signup"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-                  >
-                    Get Started
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </nav>
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center max-w-3xl mx-auto">
           <h2 className="text-5xl font-bold text-gray-900 mb-6">
             Transform Through Journey
           </h2>
           <p className="text-xl text-gray-600 mb-12">
-            Embark on transformative learning experiences designed for personal development, 
+            Embark on transformative learning experiences designed for personal development,
             leadership training, and team growth. Take journeys solo or collaborate with others.
           </p>
 
@@ -73,7 +34,7 @@ export default function Home() {
               <p className="text-lg text-gray-700">
                 Welcome back, <span className="font-semibold">{user.user_metadata?.display_name || user.email}</span>!
               </p>
-              <Link 
+              <Link
                 href="/profile"
                 className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-colors"
               >
@@ -82,13 +43,13 @@ export default function Home() {
             </div>
           ) : (
             <div className="flex gap-4 justify-center">
-              <Link 
+              <Link
                 href="/signup"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-colors"
               >
                 Start Your Journey
               </Link>
-              <Link 
+              <Link
                 href="/login"
                 className="bg-white hover:bg-gray-50 text-gray-900 px-8 py-4 rounded-lg text-lg font-medium border-2 border-gray-200 transition-colors"
               >
@@ -129,7 +90,7 @@ export default function Home() {
             <p className="text-gray-600 mb-4">
               Ready to begin your transformation?
             </p>
-            <Link 
+            <Link
               href="/signup"
               className="text-blue-600 hover:text-blue-700 font-medium text-lg"
             >
