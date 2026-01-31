@@ -71,7 +71,7 @@ export default function MyJourneysPage() {
           journey_id,
           status,
           enrolled_at,
-          journeys!inner(
+          journeys (
             id,
             title,
             description,
@@ -80,44 +80,69 @@ export default function MyJourneysPage() {
           )
         `)
         .eq('user_id', userData.id)
+        .not('journeys', 'is', null)
         .order('enrolled_at', { ascending: false });
 
       if (individualError) throw individualError;
 
-      // Fetch group enrollments
-      const { data: groupData, error: groupError } = await supabase
-        .from('journey_enrollments')
-        .select(`
-          id,
-          journey_id,
-          status,
-          enrolled_at,
-          journeys!inner(
-            id,
-            title,
-            description,
-            difficulty_level,
-            estimated_duration_minutes
-          ),
-          groups!inner(
-            id,
-            name
-          )
-        `)
-        .not('group_id', 'is', null)
-        .in('group_id',
-          supabase
-            .from('group_memberships')
-            .select('group_id')
-            .eq('user_id', userData.id)
-            .eq('status', 'active')
-        )
-        .order('enrolled_at', { ascending: false });
+      // Get user's group IDs first
+      const { data: userGroups } = await supabase
+        .from('group_memberships')
+        .select('group_id')
+        .eq('user_id', userData.id)
+        .eq('status', 'active');
 
-      if (groupError) throw groupError;
+      const groupIds = userGroups?.map(g => g.group_id) || [];
 
-      setIndividualJourneys(individualData as any[] || []);
-      setGroupJourneys(groupData as any[] || []);
+      // Fetch group enrollments (only if user belongs to groups)
+      let groupData = null;
+      if (groupIds.length > 0) {
+        const { data, error: groupError } = await supabase
+          .from('journey_enrollments')
+          .select(`
+            id,
+            journey_id,
+            status,
+            enrolled_at,
+            journeys (
+              id,
+              title,
+              description,
+              difficulty_level,
+              estimated_duration_minutes
+            ),
+            groups (
+              id,
+              name
+            )
+          `)
+          .in('group_id', groupIds)
+          .not('journeys', 'is', null)
+          .not('groups', 'is', null)
+          .order('enrolled_at', { ascending: false });
+
+        if (groupError) throw groupError;
+        groupData = data;
+      }
+
+      // Map the data to match our interface (journeys -> journey, groups -> group)
+      const mappedIndividual = (individualData || [])
+        .filter((e: any) => e.journeys)
+        .map((e: any) => ({
+          ...e,
+          journey: e.journeys,
+        }));
+
+      const mappedGroup = (groupData || [])
+        .filter((e: any) => e.journeys && e.groups)
+        .map((e: any) => ({
+          ...e,
+          journey: e.journeys,
+          group: e.groups,
+        }));
+
+      setIndividualJourneys(mappedIndividual);
+      setGroupJourneys(mappedGroup);
     } catch (err: any) {
       console.error('Error fetching enrollments:', err);
       setError('Failed to load your journeys. Please try again.');
@@ -177,27 +202,33 @@ export default function MyJourneysPage() {
     });
   };
 
-  const JourneyCard = ({ enrollment, groupName }: { enrollment: JourneyEnrollment; groupName?: string }) => (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow p-6">
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">
-            {enrollment.journey.title}
-          </h3>
-          {enrollment.journey.description && (
-            <p className="text-sm text-gray-600 line-clamp-2">
-              {enrollment.journey.description}
-            </p>
-          )}
-        </div>
-        <div className="ml-4">
-          {getStatusBadge(enrollment.status)}
-        </div>
-      </div>
+  const JourneyCard = ({ enrollment, groupName }: { enrollment: JourneyEnrollment; groupName?: string }) => {
+    // Safety check
+    if (!enrollment.journey) {
+      return null;
+    }
 
-      <div className="flex flex-wrap items-center gap-3 mb-4 text-sm text-gray-500">
-        {enrollment.journey.difficulty_level && getDifficultyBadge(enrollment.journey.difficulty_level)}
-        {enrollment.journey.estimated_duration_minutes && (
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow p-6">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+              {enrollment.journey.title}
+            </h3>
+            {enrollment.journey.description && (
+              <p className="text-sm text-gray-600 line-clamp-2">
+                {enrollment.journey.description}
+              </p>
+            )}
+          </div>
+          <div className="ml-4">
+            {getStatusBadge(enrollment.status)}
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3 mb-4 text-sm text-gray-500">
+          {enrollment.journey.difficulty_level && getDifficultyBadge(enrollment.journey.difficulty_level)}
+          {enrollment.journey.estimated_duration_minutes && (
           <span className="flex items-center gap-1">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -232,7 +263,8 @@ export default function MyJourneysPage() {
         </Link>
       </div>
     </div>
-  );
+    );
+  };
 
   if (authLoading || loading) {
     return (

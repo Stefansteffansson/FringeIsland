@@ -74,22 +74,29 @@ export default function JourneyDetailPage() {
         return;
       }
 
-      // Check group enrollment
-      const { data: groupEnrollments } = await supabase
-        .from('journey_enrollments')
-        .select(`
-          id,
-          groups!inner(id, name)
-        `)
-        .eq('journey_id', journeyId)
-        .not('group_id', 'is', null)
-        .in('group_id',
-          supabase
-            .from('group_memberships')
-            .select('group_id')
-            .eq('user_id', userData.id)
-            .eq('status', 'active')
-        );
+      // First, get all group IDs the user belongs to
+      const { data: userGroups } = await supabase
+        .from('group_memberships')
+        .select('group_id')
+        .eq('user_id', userData.id)
+        .eq('status', 'active');
+
+      const groupIds = userGroups?.map(g => g.group_id) || [];
+
+      // Check group enrollment (only if user belongs to any groups)
+      let groupEnrollments = null;
+      if (groupIds.length > 0) {
+        const { data } = await supabase
+          .from('journey_enrollments')
+          .select(`
+            id,
+            groups!inner(id, name)
+          `)
+          .eq('journey_id', journeyId)
+          .in('group_id', groupIds);
+
+        groupEnrollments = data;
+      }
 
       if (groupEnrollments && groupEnrollments.length > 0) {
         const enrollment = groupEnrollments[0] as any;

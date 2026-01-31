@@ -187,6 +187,7 @@ export default function Navigation() {
                     src={userData.avatar_url}
                     alt={userData.full_name}
                     fill
+                    sizes="40px"
                     className="object-cover"
                   />
                 ) : (

@@ -1,7 +1,7 @@
 # CLAUDE.md - AI Context Documentation
 
-**Version:** 0.2.9  
-**Last Updated:** January 27, 2026  
+**Version:** 0.2.10
+**Last Updated:** January 31, 2026
 **Purpose:** Technical context for AI assistants working on FringeIsland
 
 ---
@@ -10,7 +10,7 @@
 
 FringeIsland is an educational platform for personal development, leadership training, and organizational development. The platform uses a "journey" metaphor where users take structured learning experiences solo, in pairs, or groups.
 
-**Current Phase:** Phase 1 - 75% Complete  
+**Current Phase:** Phase 1 - 85% Complete  
 **Tech Stack:** Next.js 16.1, TypeScript, Tailwind CSS, Supabase  
 **Database:** PostgreSQL via Supabase (13 tables with RLS)  
 **Repository:** https://github.com/Stefansteffansson/FringeIsland
@@ -569,6 +569,113 @@ const { error } = await supabase
 await refetchMembers();
 ```
 
+### Journey Enrollment (v0.2.10)
+```typescript
+// Individual enrollment
+const { error } = await supabase
+  .from('journey_enrollments')
+  .insert({
+    journey_id: journeyId,
+    user_id: userData.id,
+    group_id: null,
+    enrolled_by_user_id: userData.id,
+    status: 'active',
+    progress_data: {},
+  });
+
+// Group enrollment (Group Leaders only)
+const { error } = await supabase
+  .from('journey_enrollments')
+  .insert({
+    journey_id: journeyId,
+    user_id: null,
+    group_id: selectedGroupId,
+    enrolled_by_user_id: userData.id,
+    status: 'active',
+    progress_data: {},
+  });
+
+// Check enrollment status (both individual and group)
+// First, get user's group IDs
+const { data: userGroups } = await supabase
+  .from('group_memberships')
+  .select('group_id')
+  .eq('user_id', userData.id)
+  .eq('status', 'active');
+
+const groupIds = userGroups?.map(g => g.group_id) || [];
+
+// Check individual enrollment
+const { data: individualEnrollment } = await supabase
+  .from('journey_enrollments')
+  .select('id')
+  .eq('journey_id', journeyId)
+  .eq('user_id', userData.id)
+  .maybeSingle();
+
+// Check group enrollment (if user belongs to groups)
+let groupEnrollment = null;
+if (groupIds.length > 0) {
+  const { data } = await supabase
+    .from('journey_enrollments')
+    .select('id, groups!inner(name)')
+    .eq('journey_id', journeyId)
+    .in('group_id', groupIds)
+    .maybeSingle();
+
+  groupEnrollment = data;
+}
+```
+
+### Fetching Enrollments (v0.2.10)
+```typescript
+// Fetch individual enrollments
+const { data: individualData } = await supabase
+  .from('journey_enrollments')
+  .select(`
+    id,
+    journey_id,
+    status,
+    enrolled_at,
+    journeys (
+      id,
+      title,
+      description,
+      difficulty_level,
+      estimated_duration_minutes
+    )
+  `)
+  .eq('user_id', userData.id)
+  .not('journeys', 'is', null)
+  .order('enrolled_at', { ascending: false });
+
+// Map data: Supabase returns 'journeys' (plural), but component expects 'journey' (singular)
+const mappedData = (individualData || [])
+  .filter((e: any) => e.journeys)
+  .map((e: any) => ({
+    ...e,
+    journey: e.journeys,
+  }));
+
+// Fetch group enrollments (use array in .in() to avoid subquery issues)
+const groupIds = userGroups?.map(g => g.group_id) || [];
+if (groupIds.length > 0) {
+  const { data } = await supabase
+    .from('journey_enrollments')
+    .select(`
+      id,
+      journey_id,
+      status,
+      enrolled_at,
+      journeys (id, title, description, difficulty_level, estimated_duration_minutes),
+      groups (id, name)
+    `)
+    .in('group_id', groupIds)
+    .not('journeys', 'is', null)
+    .not('groups', 'is', null);
+}
+```
+
 ---
 
 ## 🛠 Known Issues & Solutions
@@ -683,7 +790,7 @@ await refetchMembers();
 
 ---
 
-## 🎯 Current State (v0.2.8)
+## 🎯 Current State (v0.2.10)
 
 ### Completed Features
 - ✅ Full authentication system (signup, login, logout)
@@ -697,6 +804,9 @@ await refetchMembers();
 - ✅ **Journey catalog with search and filters** - v0.2.8
 - ✅ **Journey detail pages with expandable curriculum** - v0.2.8
 - ✅ **8 predefined journeys seeded** - v0.2.8
+- ✅ **Journey enrollment (individual + group)** - v0.2.10
+- ✅ **My Journeys page (view enrolled journeys)** - v0.2.10
+- ✅ **Enrollment modal with validation** - v0.2.10
 - ✅ Global navigation with real-time updates
 - ✅ Beautiful modal system (no browser alerts)
 - ✅ Last leader protection (UI + database trigger)
@@ -706,12 +816,10 @@ await refetchMembers();
 - ✅ **Phase 1.1:** Foundation (100%)
 - ✅ **Phase 1.2:** Authentication (100%)
 - ✅ **Phase 1.3:** Group Management (100%)
-- 🔄 **Phase 1.4:** Journey System (50% - browsing complete, enrollment next)
+- 🔄 **Phase 1.4:** Journey System (85% - browsing + enrollment complete)
 
 ### Ready for Next Steps
-- ⏳ Journey enrollment (individual + group) - NEXT
-- ⏳ View enrolled journeys
-- ⏳ Journey content delivery
+- ⏳ Journey content delivery - NEXT
 - ⏳ Progress tracking
 - ⏳ Communication system (Phase 1.5)
 

@@ -8,10 +8,68 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Journey enrollment (individual and group)
 - Journey content delivery system
 - Progress tracking
 - Communication features (forums, messaging)
+
+---
+
+## [0.2.10] - 2026-01-31
+
+### Added
+- **Journey Enrollment System** (Phase 1.4 Part 2 - Complete)
+  - EnrollmentModal component (`components/journeys/EnrollmentModal.tsx`)
+    - Two enrollment types: Individual or Group
+    - Group enrollment restricted to Group Leaders
+    - Fetches user's leader groups dynamically
+    - Validates existing enrollments before submission
+    - Beautiful modal UI with success state
+  - My Journeys page (`/my-journeys`)
+    - Two tabs: "Individual Journeys" and "Group Journeys"
+    - Journey cards with status badges (active, completed, paused, frozen)
+    - Difficulty badges and duration display
+    - Empty states with "Browse Catalog" CTAs
+    - Continue/Review buttons for each journey
+  - Journey Detail Page Updates
+    - Checks enrollment status (individual OR group)
+    - Dynamic enrollment buttons based on status:
+      - Not enrolled: "Enroll in Journey" (opens modal)
+      - Enrolled individually: "View My Journeys" (green button)
+      - Enrolled via group: "Enrolled via [Group Name]" (info badge)
+    - Login redirect preserves journey URL
+  - Navigation Updates
+    - Added "My Journeys" link (📚) to global navigation
+    - Active state handling for `/my-journeys` route
+- **Database Migration** (`20260131_fix_journey_enrollment_rls.sql`)
+  - Fixed infinite recursion in RLS policy
+  - Removed nested enrollment check from database level
+  - Dual enrollment prevention handled in application layer
+- **TypeScript Types**
+  - Added `EnrollmentWithJourney` interface for My Journeys page
+
+### Changed
+- Supabase query patterns updated to avoid `.in()` subquery issues
+  - Fetch group IDs first, then use array in `.in()` method
+  - Works around browser client limitations
+- Data mapping for Supabase foreign key returns
+  - Transforms plural (`journeys`, `groups`) to singular (`journey`, `group`)
+  - Ensures component data structure consistency
+
+### Fixed
+- RLS policy infinite recursion error for journey enrollments
+- Supabase query compatibility with browser client
+- Navigation avatar image warning (added `sizes` prop)
+- Journey data structure mismatch in My Journeys page
+
+### Technical Details
+- **Phase 1.4 Progress**: 75% → 85% complete
+- **New Files**: 3 (EnrollmentModal, My Journeys page, RLS fix migration)
+- **Modified Files**: 4 (Journey Detail page, Navigation, Journey types, My Journeys)
+- **Business Rules Enforced**:
+  - No dual enrollment (individual + group for same journey)
+  - Only Group Leaders can enroll groups
+  - Unlimited journey enrollments allowed
+  - Enrollment status: active, completed, paused, frozen
 
 ---
 

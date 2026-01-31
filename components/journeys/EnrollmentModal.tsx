@@ -136,20 +136,27 @@ export default function EnrollmentModal({
       if (userError) throw userError;
 
       if (enrollmentType === 'individual') {
+        // First, get user's group IDs
+        const { data: userGroups } = await supabase
+          .from('group_memberships')
+          .select('group_id')
+          .eq('user_id', userData.id)
+          .eq('status', 'active');
+
+        const groupIds = userGroups?.map(g => g.group_id) || [];
+
         // Check if user is already enrolled via a group
-        const { data: existingGroupEnrollment } = await supabase
-          .from('journey_enrollments')
-          .select('id, groups!inner(name)')
-          .eq('journey_id', journeyId)
-          .not('group_id', 'is', null)
-          .in('group_id',
-            supabase
-              .from('group_memberships')
-              .select('group_id')
-              .eq('user_id', userData.id)
-              .eq('status', 'active')
-          )
-          .maybeSingle();
+        let existingGroupEnrollment = null;
+        if (groupIds.length > 0) {
+          const { data } = await supabase
+            .from('journey_enrollments')
+            .select('id, groups!inner(name)')
+            .eq('journey_id', journeyId)
+            .in('group_id', groupIds)
+            .maybeSingle();
+
+          existingGroupEnrollment = data;
+        }
 
         if (existingGroupEnrollment) {
           throw new Error(`You are already enrolled via your group: ${(existingGroupEnrollment as any).groups.name}`);
@@ -218,7 +225,8 @@ export default function EnrollmentModal({
       }, 1500);
     } catch (err: any) {
       console.error('Error enrolling:', err);
-      setError(err.message || 'Failed to enroll. Please try again.');
+      const errorMessage = err.message || err.error_description || err.hint || 'Failed to enroll. Please try again.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
