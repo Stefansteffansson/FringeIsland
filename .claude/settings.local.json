@@ -8,7 +8,8 @@
       "Bash(claude mcp add:*)",
       "WebSearch",
       "WebFetch(domain:supabase.com)",
-      "Bash(claude mcp remove:*)"
+      "Bash(claude mcp remove:*)",
+      "Bash(git push:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
