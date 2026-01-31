@@ -127,13 +127,15 @@ export default function Navigation() {
   const navItems = [
     { href: '/groups', label: 'My Groups', icon: '👥' },
     { href: '/journeys', label: 'Journeys', icon: '🗺️' },
+    { href: '/my-journeys', label: 'My Journeys', icon: '📚' },
     { href: '/invitations', label: 'Invitations', icon: '📬', badge: invitationCount },
     { href: '/profile', label: 'Profile', icon: '👤' },
   ];
 
   const isActive = (href: string) => {
     if (href === '/groups' && pathname.startsWith('/groups')) return true;
-    if (href === '/journeys' && pathname.startsWith('/journeys')) return true;
+    if (href === '/journeys' && pathname === '/journeys') return true; // Only exact match for journey catalog
+    if (href === '/my-journeys' && pathname.startsWith('/my-journeys')) return true;
     if (href === '/profile' && pathname.startsWith('/profile')) return true;
     return pathname === href;
   };

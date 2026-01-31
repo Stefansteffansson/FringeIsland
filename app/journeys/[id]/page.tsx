@@ -6,6 +6,13 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Journey, JourneyStep } from '@/lib/types/journey';
 import { useAuth } from '@/lib/auth/AuthContext';
+import EnrollmentModal from '@/components/journeys/EnrollmentModal';
+
+interface EnrollmentInfo {
+  isEnrolled: boolean;
+  enrollmentType: 'individual' | 'group' | null;
+  groupName?: string;
+}
 
 export default function JourneyDetailPage() {
   const params = useParams();
@@ -16,6 +23,12 @@ export default function JourneyDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'curriculum'>('overview');
   const [expandedSteps, setExpandedSteps] = useState<Set<string>>(new Set());
+  const [enrollmentInfo, setEnrollmentInfo] = useState<EnrollmentInfo>({
+    isEnrolled: false,
+    enrollmentType: null,
+  });
+  const [enrollmentModalOpen, setEnrollmentModalOpen] = useState(false);
+  const [checkingEnrollment, setCheckingEnrollment] = useState(false);
   
   const supabase = createClient();
   const journeyId = params.id as string;
@@ -25,6 +38,80 @@ export default function JourneyDetailPage() {
       fetchJourney();
     }
   }, [journeyId]);
+
+  useEffect(() => {
+    if (user && journeyId) {
+      checkEnrollmentStatus();
+    }
+  }, [user, journeyId]);
+
+  const checkEnrollmentStatus = async () => {
+    try {
+      setCheckingEnrollment(true);
+
+      // Get user's database ID
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('auth_user_id', user!.id)
+        .single();
+
+      if (userError) throw userError;
+
+      // Check individual enrollment
+      const { data: individualEnrollment } = await supabase
+        .from('journey_enrollments')
+        .select('id')
+        .eq('journey_id', journeyId)
+        .eq('user_id', userData.id)
+        .maybeSingle();
+
+      if (individualEnrollment) {
+        setEnrollmentInfo({
+          isEnrolled: true,
+          enrollmentType: 'individual',
+        });
+        return;
+      }
+
+      // Check group enrollment
+      const { data: groupEnrollments } = await supabase
+        .from('journey_enrollments')
+        .select(`
+          id,
+          groups!inner(id, name)
+        `)
+        .eq('journey_id', journeyId)
+        .not('group_id', 'is', null)
+        .in('group_id',
+          supabase
+            .from('group_memberships')
+            .select('group_id')
+            .eq('user_id', userData.id)
+            .eq('status', 'active')
+        );
+
+      if (groupEnrollments && groupEnrollments.length > 0) {
+        const enrollment = groupEnrollments[0] as any;
+        setEnrollmentInfo({
+          isEnrolled: true,
+          enrollmentType: 'group',
+          groupName: enrollment.groups.name,
+        });
+        return;
+      }
+
+      // Not enrolled
+      setEnrollmentInfo({
+        isEnrolled: false,
+        enrollmentType: null,
+      });
+    } catch (err) {
+      console.error('Error checking enrollment:', err);
+    } finally {
+      setCheckingEnrollment(false);
+    }
+  };
 
   const fetchJourney = async () => {
     try {
@@ -114,12 +201,23 @@ export default function JourneyDetailPage() {
 
   const handleEnroll = () => {
     if (!user) {
-      router.push('/login');
+      router.push(`/login?redirect=/journeys/${journeyId}`);
       return;
     }
-    
-    // TODO: Implement enrollment logic in next phase
-    alert('Enrollment functionality coming soon! This will allow you to enroll in the journey.');
+
+    if (enrollmentInfo.isEnrolled) {
+      // Navigate to My Journeys page
+      router.push('/my-journeys');
+      return;
+    }
+
+    // Open enrollment modal
+    setEnrollmentModalOpen(true);
+  };
+
+  const handleEnrollmentSuccess = () => {
+    // Refresh enrollment status
+    checkEnrollmentStatus();
   };
 
   if (loading) {
@@ -230,12 +328,36 @@ export default function JourneyDetailPage() {
               </div>
             </div>
 
-            <button
-              onClick={handleEnroll}
-              className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-lg text-lg font-semibold shadow-lg transition-colors"
-            >
-              Enroll in Journey
-            </button>
+            {enrollmentInfo.isEnrolled ? (
+              enrollmentInfo.enrollmentType === 'individual' ? (
+                <button
+                  onClick={handleEnroll}
+                  className="bg-green-600 text-white hover:bg-green-700 px-8 py-4 rounded-lg text-lg font-semibold shadow-lg transition-colors flex items-center gap-2"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Enrolled - View My Journeys
+                </button>
+              ) : (
+                <div>
+                  <div className="inline-flex items-center gap-2 bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold shadow-lg">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Enrolled via {enrollmentInfo.groupName}
+                  </div>
+                </div>
+              )
+            ) : (
+              <button
+                onClick={handleEnroll}
+                disabled={checkingEnrollment}
+                className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-lg text-lg font-semibold shadow-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {checkingEnrollment ? 'Checking...' : 'Enroll in Journey'}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -485,12 +607,33 @@ export default function JourneyDetailPage() {
               </div>
 
               <div className="mt-6 pt-6 border-t border-gray-200">
-                <button
-                  onClick={handleEnroll}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-                >
-                  Enroll Now
-                </button>
+                {enrollmentInfo.isEnrolled ? (
+                  enrollmentInfo.enrollmentType === 'individual' ? (
+                    <button
+                      onClick={handleEnroll}
+                      className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      View My Journeys
+                    </button>
+                  ) : (
+                    <div className="text-center py-3 px-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                      <p className="text-sm font-medium text-blue-900">
+                        Enrolled via {enrollmentInfo.groupName}
+                      </p>
+                    </div>
+                  )
+                ) : (
+                  <button
+                    onClick={handleEnroll}
+                    disabled={checkingEnrollment}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {checkingEnrollment ? 'Checking...' : 'Enroll Now'}
+                  </button>
+                )}
                 <p className="mt-3 text-xs text-center text-gray-500">
                   Free to enroll • Start anytime
                 </p>
@@ -499,6 +642,17 @@ export default function JourneyDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Enrollment Modal */}
+      {journey && (
+        <EnrollmentModal
+          isOpen={enrollmentModalOpen}
+          onClose={() => setEnrollmentModalOpen(false)}
+          journeyId={journey.id}
+          journeyTitle={journey.title}
+          onSuccess={handleEnrollmentSuccess}
+        />
+      )}
     </div>
   );
 }

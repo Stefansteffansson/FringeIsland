@@ -25,6 +25,9 @@ build
 .env.test.local
 .env.production.local
 
+# MCP Configuration (contains sensitive keys)
+.mcp.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

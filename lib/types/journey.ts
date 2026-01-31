@@ -91,3 +91,18 @@ export interface JourneyFilters {
 
 // Journey sort options
 export type JourneySortOption = 'newest' | 'oldest' | 'title' | 'duration' | 'difficulty';
+
+// Journey enrollment with full journey data (for My Journeys page)
+export interface EnrollmentWithJourney extends JourneyEnrollment {
+  journey: {
+    id: string;
+    title: string;
+    description: string | null;
+    difficulty_level: DifficultyLevel | null;
+    estimated_duration_minutes: number | null;
+  };
+  group?: {
+    id: string;
+    name: string;
+  };
+}
