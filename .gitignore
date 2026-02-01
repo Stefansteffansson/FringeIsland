@@ -27,6 +27,7 @@ build
 
 # MCP Configuration (contains sensitive keys)
 .mcp.json
+.claude/
 
 # Editor directories and files
 .vscode/*
