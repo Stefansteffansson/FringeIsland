@@ -29,6 +29,12 @@ build
 .mcp.json
 .claude/
 
+# SQLite databases (local development)
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
