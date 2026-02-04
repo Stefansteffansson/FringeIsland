@@ -12,7 +12,8 @@
 
 **Active Tasks:**
 - [ ] Complete documentation restructuring (5 phases)
-- [ ] Create boot-up and close-down workflows
+- [x] Create boot-up and close-down workflows
+- [x] Integrate workflows into CLAUDE.md for automatic detection
 - [ ] Organize session bridges and feature docs
 
 **Blocked/Waiting:**
@@ -62,14 +63,13 @@
 ## 🔄 Last Session Summary
 
 **Date:** 2026-02-04
-**Summary:** Initiated full project restructuring to improve documentation organization and AI agent context management. Created PROJECT_STATUS.md, documentation index, and workflow systems for session continuity.
+**Summary:** Integrated workflow automation into CLAUDE.md. Added session management detection that proactively reminds about boot-up/close-down workflows. AI assistant now watches for session start/end signals and suggests following documented workflows.
 
-**Bridge Doc:** `docs/planning/sessions/2026-02-04-restructuring.md` (to be created)
+**Bridge Doc:** Not needed (documentation update only)
 
 **Files Modified:**
-- Created: PROJECT_STATUS.md
-- Reorganizing: docs structure
-- Planning: boot-up/close-down workflows
+- Modified: CLAUDE.md (added Session Management section)
+- Modified: PROJECT_STATUS.md (this file)
 
 ---
 

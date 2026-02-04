@@ -17,6 +17,68 @@ FringeIsland is an educational platform for personal development, leadership tra
 
 ---
 
+## 🚀 Session Management (IMPORTANT - Read First!)
+
+### Boot-Up Workflow Detection
+
+**When a conversation begins**, check if the user followed the boot-up workflow:
+
+**IF first message includes:** "Boot up FringeIsland" / "Start FringeIsland session" / "Boot FringeIsland"
+- ✅ Follow the complete workflow in `docs/workflows/boot-up.md`
+- Read PROJECT_STATUS.md and ROADMAP.md
+- Present current state and ask what to work on
+
+**IF first message is task-focused** (e.g., "Fix bug X", "Add feature Y"):
+- ⚠️ **STOP and remind user first:**
+  ```
+  Before we start, would you like me to run the boot-up workflow?
+  This helps me understand the current project state and priorities.
+
+  Say "yes" or "boot up" to run it, or "skip" to proceed directly.
+  ```
+
+**WHY:** Boot-up ensures I have full context about:
+- Current project state and active tasks
+- Recent changes and decisions
+- Git status and blockers
+- What was worked on last session
+
+### Close-Down Workflow Detection
+
+**Watch for session-ending signals:**
+- User says: "thanks", "that's all", "that's it", "done for now", "good for today", "finished", "we're done"
+- After completing a major feature or significant work
+- User asks to commit changes or wrap up
+- Conversation naturally concluding with no follow-up questions
+
+**When detected, proactively suggest:**
+```
+Looks like we're wrapping up. Shall we run the close-down workflow?
+
+This will:
+- Summarize what we accomplished
+- Update PROJECT_STATUS.md
+- Create git commit (if needed)
+- Document next steps
+
+Say "yes" or "close down" to run it, or "skip" if you prefer.
+```
+
+**WHY:** Close-down ensures:
+- Work is documented for next session
+- PROJECT_STATUS.md stays current
+- Decisions and context are captured
+- Git commits are properly formatted
+- Next priorities are clear
+
+### Workflow Files
+
+- **Boot-up:** `docs/workflows/boot-up.md` - Start of session checklist
+- **Close-down:** `docs/workflows/close-down.md` - End of session checklist
+- **Status:** `PROJECT_STATUS.md` - Current state (always update on close-down)
+
+---
+
 ## 🗂️ Architecture Decisions
 
 ### Authentication Pattern
