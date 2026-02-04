@@ -1168,6 +1168,11 @@ When deferring a new decision:
 
 ---
 
-**Document Version**: 1.1  
-**Last Updated**: January 26, 2026 (v0.2.6.2)  
+**Document Version**: 1.2
+**Last Updated**: February 4, 2026 (v0.2.10)
 **Next Review**: Quarterly or as deferred items are implemented
+
+**Recent Updates**:
+- v0.2.10: No new deferred decisions (journey enrollment completed as planned)
+- v0.2.9: Error handling implemented (was not deferred, added proactively)
+- v0.2.8: Journey catalog implemented (no major deferrals)
