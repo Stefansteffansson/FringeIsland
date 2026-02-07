@@ -1,3 +1,12 @@
+// Load environment variables from .env.local
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+config({ path: resolve(__dirname, '../.env.local') });
+
+// Polyfill fetch for Node.js environment
+import 'whatwg-fetch';
+
 // Learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
 
