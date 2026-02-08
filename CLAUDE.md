@@ -1,7 +1,7 @@
 # CLAUDE.md - AI Context Documentation
 
 **Version:** 0.2.10
-**Last Updated:** January 31, 2026
+**Last Updated:** February 8, 2026
 **Purpose:** Technical context for AI assistants working on FringeIsland
 
 ---
@@ -772,9 +772,10 @@ if (groupIds.length > 0) {
 
 ### Adding New Features
 1. **Design database changes** (if needed)
-   - Create SQL migration file
-   - Add RLS policies
-   - Test in Supabase dashboard
+   - Create migration using Supabase CLI: `supabase-cli.bat migration new feature_name`
+   - Edit the generated SQL file to add tables, columns, RLS policies, etc.
+   - Apply with: `supabase-cli.bat db push`
+   - Verify changes in Supabase dashboard
 
 2. **Create components**
    - Start with TypeScript interfaces
@@ -794,6 +795,65 @@ if (groupIds.length > 0) {
    - Update CHANGELOG.md
    - Update this file (CLAUDE.md)
    - Update README.md if needed
+
+### Database Migrations with Supabase CLI
+
+**IMPORTANT:** Always use Supabase CLI for database migrations (set up February 8, 2026).
+
+**Why:** Automated migration workflow prevents manual SQL copy-paste errors and maintains migration history.
+
+**Helper Scripts:**
+- Windows: `supabase-cli.bat`
+- Mac/Linux: `supabase-cli.sh`
+
+These scripts automatically load your access token from `.env.local`.
+
+**Common Commands:**
+
+```bash
+# Create a new migration
+supabase-cli.bat migration new feature_name
+
+# This creates: supabase/migrations/TIMESTAMP_feature_name.sql
+# Edit the generated file with your SQL changes
+
+# Push migration to database
+supabase-cli.bat db push
+
+# Check migration history
+supabase-cli.bat migration list
+
+# Pull remote schema changes (if modified via dashboard)
+supabase-cli.bat db pull
+```
+
+**Workflow:**
+1. Create migration: `supabase-cli.bat migration new add_column_to_users`
+2. Edit the generated `.sql` file in `supabase/migrations/`
+3. Apply to database: `supabase-cli.bat db push`
+4. Verify in Supabase dashboard
+5. Commit the migration file to git
+
+**Important Notes:**
+- Access token stored in `.env.local` as `SUPABASE_ACCESS_TOKEN`
+- Migration files are in `supabase/migrations/` directory
+- Always test migrations in development before production
+- Keep migration files in git for version history
+
+**Example Migration File:**
+```sql
+-- supabase/migrations/20260208_add_user_preferences.sql
+
+-- Add new column
+ALTER TABLE users ADD COLUMN preferences JSONB DEFAULT '{}';
+
+-- Update RLS policy if needed
+CREATE POLICY "users_update_own_preferences"
+ON users
+FOR UPDATE
+TO authenticated
+USING (auth_user_id = auth.uid());
+```
 
 ### Testing Checklist
 - [ ] Authentication flows work
@@ -991,5 +1051,6 @@ if (groupIds.length > 0) {
 
 ---
 
-**This document should be updated with each significant change to the project.**  
+**This document should be updated with each significant change to the project.**
 **Last major update:** Journey Catalog & Browsing (v0.2.8) - January 27, 2026
+**Latest update:** Added Supabase CLI migration workflow documentation - February 8, 2026
