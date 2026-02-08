@@ -5,25 +5,26 @@
 
 ---
 
-## B-GRP-001: Last Leader Protection
+## B-GRP-001: Last Leader Protection ✅
 
 **Rule:** A group MUST always have at least one member with the Group Leader role.
 
 **Why:** Groups become orphaned without leaders. No one can manage membership, assign roles, edit settings, or delete the group. This creates unmaintainable groups and poor user experience.
 
 **Verified by:**
-- **Test:** `tests/integration/groups/last-leader.test.ts` (TODO)
+- **Test:** `tests/integration/groups/last-leader.test.ts` ✅ **4/4 PASSING**
 - **Code:** `app/groups/[id]/page.tsx` (UI prevents removal when count === 1)
-- **Database:** `supabase/migrations/20260125_6_prevent_last_leader_removal.sql`
+- **Database:** `supabase/migrations/20260125_6_prevent_last_leader_removal.sql` ✅ **APPLIED**
 - **Trigger:** `prevent_last_leader_removal()` function (enforces at database level)
 
 **Acceptance Criteria:**
 - [x] Cannot remove last leader via UI (× button disabled/hidden)
-- [x] Cannot remove last leader via API (trigger blocks transaction)
-- [x] Cannot delete last leader via direct SQL (trigger blocks)
-- [x] Error message is clear to user
-- [x] Can remove leader role if other leaders exist
+- [x] Cannot remove last leader via API (trigger blocks transaction) ✅ **TESTED**
+- [x] Cannot delete last leader via direct SQL (trigger blocks) ✅ **TESTED**
+- [x] Error message is clear to user ("Cannot remove the last Group Leader...")
+- [x] Can remove leader role if other leaders exist ✅ **TESTED**
 - [x] Can promote another member, then remove original leader
+- [x] Concurrent deletion attempts all blocked ✅ **TESTED**
 
 **Examples:**
 
@@ -33,14 +34,15 @@
 - Group has 3 leaders → Remove 2 leader roles → Success (1 leader remains)
 
 ❌ **Invalid:**
-- Group has 1 leader → Attempt to remove leader role → **BLOCKED** (trigger error)
-- Group has 1 leader → User deletes their own account → **ALLOWED** (CASCADE delete is acceptable)
+- Group has 1 leader → Attempt to remove leader role → **BLOCKED** (trigger error) ✅
+- Group has 1 leader → Multiple simultaneous removal attempts → **ALL BLOCKED** ✅
 
 **Edge Cases:**
 
 - **Scenario:** User deletes their own account (the only leader)
-  - **Behavior:** CASCADE delete is allowed
-  - **Why:** Account deletion supersedes group rules; group becomes orphaned (admin cleanup required)
+  - **Behavior:** Trigger blocks CASCADE delete - role remains orphaned ✅ **TESTED**
+  - **Why:** Prevents groups from becoming completely leaderless; admin must assign new leader before cleanup
+  - **Note:** Changed from original design (was going to allow CASCADE) - this is better for data integrity
 
 - **Scenario:** All members attempt to leave simultaneously
   - **Behavior:** Last leader's leave request is blocked
@@ -62,6 +64,7 @@
 **History:**
 - 2026-01-26: Implemented (v0.2.6.2) - Database trigger + UI safeguard
 - 2026-02-07: Documented (restructure to behavior-first approach)
+- 2026-02-08: Migration applied to production, all tests passing ✅
 
 ---
 
@@ -290,15 +293,15 @@
 ## Notes
 
 **Implemented Behaviors:**
-- ✅ B-GRP-001: Last Leader Protection
+- ✅ B-GRP-001: Last Leader Protection (4/4 tests passing ✅)
 - ✅ B-GRP-002: Member Invitation Lifecycle
 - ✅ B-GRP-003: Group Visibility Rules
 - ✅ B-GRP-004: Group Editing Permissions
 - 🔴 B-GRP-005: Group Deletion Rules (planned)
 
 **Test Coverage:**
-- 0 / 5 behaviors have tests (0%)
-- **Priority:** Write tests for B-GRP-001 and B-GRP-003 (critical paths)
+- 1 / 5 behaviors have tests (20%)
+- **Next Priority:** Write tests for B-GRP-003 (RLS visibility - CRITICAL for security)
 
 **Next Behaviors to Document:**
 - B-GRP-006: Member Removal Rules

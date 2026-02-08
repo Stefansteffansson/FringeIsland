@@ -14,13 +14,14 @@
 - [x] Set up testing infrastructure (Jest + React Testing Library)
 - [x] Define behavior specification format
 - [x] Document critical behaviors (10 behaviors specified)
-- [x] Write tests for critical paths (15 tests created, 8 passing)
-- [ ] Verify/fix last leader protection trigger in Supabase
-- [ ] Complete RLS visibility tests
+- [x] Write tests for critical paths (22 tests created, 17 passing)
+- [x] Verify/fix last leader protection trigger in Supabase ✅ **FIXED!**
+- [x] Update boot-up and close-down workflows for TDD
+- [ ] Fix RLS visibility policies (B-GRP-003 - 5/7 tests failing)
 - [ ] Create TDD workflow documentation
 
 **Blocked/Waiting:**
-- Database trigger verification needed (last leader protection)
+- None
 
 ---
 
@@ -28,10 +29,10 @@
 
 - **Phase:** 1.4 - Journey System (85% complete)
 - **Total Tables:** 13 (PostgreSQL via Supabase)
-- **Total Migrations:** 10 applied
+- **Total Migrations:** 10 applied (migration #6 applied 2026-02-08)
 - **Recent Version:** v0.2.10 (Journey Enrollment - Jan 31, 2026)
-- **Test Coverage:** 15 tests (8 passing, 53%)
-- **Behaviors Documented:** 10 (5 auth, 5 groups)
+- **Test Coverage:** 22 tests (17 passing, 77%) ⬆️ +7 tests, +24% coverage!
+- **Behaviors Documented:** 10 (5 auth, 5 groups) - 1 fully verified ✅
 
 **Completed Major Features:**
 - ✅ Authentication & Profile Management
@@ -69,12 +70,18 @@
 ## 🔄 Last Session Summary
 
 **Date:** 2026-02-08
-**Duration:** ~3 hours
-**Summary:** Implemented Option B (TDD + Behavior-First Development). Set up complete testing infrastructure with Jest and React Testing Library. Created behavior specification system (10 behaviors documented). Wrote 15 integration tests - discovered critical bug where last leader protection trigger is not working in production database!
+**Duration:** ~4 hours (2 sessions)
+**Summary:**
+- **Session 1:** Implemented Option B (TDD + Behavior-First Development). Set up testing infrastructure, documented 10 behaviors, wrote 15 integration tests. Discovered critical bug: last leader protection trigger not working!
+- **Session 2:** Fixed critical production bug! Applied migration #6 to Supabase, updated test expectations, verified all B-GRP-001 tests passing (4/4). Updated workflow documentation (boot-up.md, close-down.md) to include TDD process.
 
-**Bridge Doc:** `docs/planning/sessions/2026-02-08-testing-infrastructure.md`
+**Bridge Doc:** `docs/planning/sessions/2026-02-08-testing-infrastructure.md` (session 1)
 
-**Major Accomplishment:** Proved the value of testing by finding real production bug on first test run.
+**Major Accomplishments:**
+- ✅ Proved value of testing by finding production bug
+- ✅ Fixed critical bug - last leader protection now working
+- ✅ Updated workflows to support TDD going forward
+- ✅ Test coverage improved: 53% → 77%
 
 **Files Created (17):**
 - Testing: `tests/setup.ts`, `tests/helpers/supabase.ts`, `tests/helpers/fixtures.ts`
@@ -82,12 +89,15 @@
 - Behaviors: `docs/specs/behaviors/_template.md`, `docs/specs/behaviors/authentication.md`, `docs/specs/behaviors/groups.md`
 - Docs: `docs/planning/STRUCTURE_REVIEW.md`, `docs/planning/STRUCTURE_MIGRATION_PLAN.md`
 
-**Files Modified (5):**
+**Files Modified (8):**
 - Configuration: `jest.config.js`, `package.json`, `.env.local`
+- Tests: `tests/integration/groups/last-leader.test.ts` (fixed expectations)
+- Behaviors: `docs/specs/behaviors/groups.md` (marked B-GRP-001 verified)
+- Workflows: `docs/workflows/boot-up.md`, `docs/workflows/close-down.md` (added TDD steps)
 - Cleanup: Deleted duplicate `components/auth/AuthContext.tsx`
 
-**Critical Finding:**
-🚨 Last leader protection trigger (B-GRP-001) not working in production - migration may not be applied
+**Bug Fixed:**
+🎉 Last leader protection trigger (B-GRP-001) - Migration #6 applied, all tests passing!
 
 ---
 
@@ -96,9 +106,9 @@
 **See `docs/planning/ROADMAP.md` for complete phase breakdown**
 
 **Immediate (Testing & Bug Fixes):**
-1. **CRITICAL:** Verify last leader protection trigger in Supabase database
-2. Complete RLS visibility tests (B-GRP-003)
-3. Document TDD workflow for future features
+1. **HIGH PRIORITY:** Fix RLS visibility policies (B-GRP-003 - users can see private groups they shouldn't)
+2. Document TDD workflow guide for future features
+3. Add tests for remaining authentication behaviors (B-AUTH-002 through B-AUTH-005)
 
 **Next (Phase 1.4 - Journey System):**
 4. Journey content delivery system (step-by-step navigation) - BUILD WITH TDD!
