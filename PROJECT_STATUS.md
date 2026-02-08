@@ -82,6 +82,8 @@
 - **Session 2:** Fixed critical production bug! Applied migration #6 to Supabase, updated test expectations, verified all B-GRP-001 tests passing (4/4).
 - **Session 3:** ✅ **MASSIVE RLS SECURITY FIX!** Discovered RLS was disabled on most tables. Enabled RLS on all 13 tables, fixed infinite recursion with security definer functions, fixed membership status constraint bug. All 7 B-GRP-003 tests now passing! Set up Supabase CLI for automated migrations.
 
+**Bridge Doc:** `docs/planning/sessions/2026-02-08-rls-security-fixes.md`
+
 **Major Accomplishments:**
 - 🔒 **CRITICAL SECURITY FIX:** Enabled RLS on all 13 tables (was disabled - major vulnerability!)
 - ✅ Fixed infinite recursion in RLS policies using security definer functions
