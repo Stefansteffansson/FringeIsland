@@ -2,7 +2,7 @@
 
 **Purpose:** Standard procedure for starting a work session on FringeIsland
 **For:** AI assistants and developers starting a new session
-**Last Updated:** February 4, 2026
+**Last Updated:** February 8, 2026
 
 ---
 
@@ -67,7 +67,27 @@ OR
 ⚠️ X uncommitted files, Y untracked files
 ```
 
-### 3. Load Core Context
+### 3. Check Test Status (NEW - Since v0.2.10+)
+**Command:** `npm test -- --listTests | wc -l` (count) or check PROJECT_STATUS.md
+
+**Check:**
+- Current test coverage (from PROJECT_STATUS.md)
+- Any failing tests from last session
+- Blockers related to test failures
+
+**Report:**
+```
+🧪 Test coverage:
+- Tests: X total (Y passing, Z% coverage)
+- Status: ✅ All passing / ⚠️ N failing
+- Blockers: [List any test-related blockers]
+```
+
+**If tests failing:**
+- Prioritize fixing tests before new work
+- Load relevant behavior specs
+
+### 4. Load Core Context
 **Always load:** `CLAUDE.md` (auto-loaded by system)
 
 **Optionally load based on work type:**
@@ -75,6 +95,11 @@ OR
 - UI work → `docs/agents/contexts/ui-agent.md`
 - Feature work → `docs/agents/contexts/feature-agent.md`
 - Specific feature → `docs/features/implemented/[feature].md`
+- **Testing/TDD work** → `docs/specs/behaviors/[domain].md`
+
+**NEW: If building new feature:**
+- Load relevant behavior specs from `docs/specs/behaviors/`
+- Remind about TDD workflow (spec → test → implement)
 
 **Report:**
 ```
@@ -82,9 +107,10 @@ OR
 - CLAUDE.md (technical patterns)
 - [agent-context].md (if relevant)
 - [feature docs] (if specified)
+- [behavior specs] (if TDD work)
 ```
 
-### 4. Ask User
+### 5. Ask User
 **Prompt user:**
 ```
 ✅ Ready to work on FringeIsland v0.2.10
@@ -95,6 +121,19 @@ Suggestions based on PROJECT_STATUS.md:
 1. [Active task 1]
 2. [Active task 2]
 3. [Next priority 1]
+
+💡 Reminder: We use TDD for new features (spec → test → implement)
+```
+
+**If building new feature, remind:**
+```
+Building new feature? Follow TDD workflow:
+1. Write behavior spec in docs/specs/behaviors/
+2. Write tests in tests/integration/
+3. Run tests (should fail - RED)
+4. Implement feature
+5. Run tests (should pass - GREEN)
+6. Refactor and document
 ```
 
 ---

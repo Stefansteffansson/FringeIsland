@@ -2,7 +2,7 @@
 
 **Purpose:** Standard procedure for ending a work session on FringeIsland
 **For:** AI assistants and developers ending a session
-**Last Updated:** February 4, 2026
+**Last Updated:** February 8, 2026
 
 ---
 
@@ -29,24 +29,58 @@ Let's wrap up this session. What did we accomplish today?
 - Decisions made
 - Challenges encountered
 - Incomplete work
+- **Tests written/updated** (NEW - Since v0.2.10+)
+- **Behaviors documented** (NEW - Since v0.2.10+)
+- **Test results** (passing/failing)
 
-### 2. Update PROJECT_STATUS.md
+### 2. Run Tests (NEW - If Code Changed)
+**If code was modified:**
+
+```bash
+npm test
+```
+
+**Check:**
+- All tests passing?
+- New tests added?
+- Test coverage changed?
+
+**If tests failing:**
+- Fix before committing OR
+- Document as known issue in commit message
+
+**Report:**
+```
+🧪 Test Status:
+- Tests: X total (Y passing, Z failing)
+- Coverage: N% (was M%)
+- New tests: [list new test files]
+```
+
+### 3. Update PROJECT_STATUS.md
 **Update fields:**
 - **Last Updated** date
 - **Current Focus** (if changed)
 - **Active Tasks** (mark completed, add new)
+- **Test Coverage** (if tests added/removed) - NEW
+- **Behaviors Documented** (if behaviors added) - NEW
 - **Last Session Summary** (what we just did)
 - **Next Priorities** (update based on progress)
 
+**Include in summary:**
+- Test results (if tests run)
+- Behaviors added (if any)
+- Bugs discovered via tests (if any)
+
 **Show diff to user for approval**
 
-### 3. Create Session Bridge (if significant work)
+### 4. Create Session Bridge (if significant work)
 **If substantial work done:**
 - Create file: `docs/planning/sessions/YYYY-MM-DD-brief-description.md`
 - Include: summary, decisions, files changed, next steps
 - Link from PROJECT_STATUS.md
 
-**Template:**
+**Template (Updated for TDD):**
 ```markdown
 # Session: [Brief Description]
 
@@ -57,6 +91,16 @@ Let's wrap up this session. What did we accomplish today?
 ## Summary
 [What we did]
 
+## Test Results (NEW)
+- Tests added: X
+- Tests passing: Y/Z (N%)
+- Coverage: Before → After
+- Bugs found: [list any]
+
+## Behaviors Documented (NEW)
+- [B-DOMAIN-###]: Behavior name
+- [B-DOMAIN-###]: Behavior name
+
 ## Decisions Made
 - Decision 1
 - Decision 2
@@ -65,6 +109,8 @@ Let's wrap up this session. What did we accomplish today?
 - Created: [files]
 - Modified: [files]
 - Deleted: [files]
+- **Tests:** [test files]
+- **Behaviors:** [behavior spec files]
 
 ## Next Steps
 - [ ] Task 1
@@ -74,7 +120,7 @@ Let's wrap up this session. What did we accomplish today?
 [Any important notes for next session]
 ```
 
-### 4. Update Features Database (if applicable)
+### 5. Update Features Database (if applicable)
 **If features completed or added:**
 
 ```bash
@@ -87,13 +133,13 @@ node manage_features.js
 - Add new features discovered
 - Update test status
 
-### 5. Update CHANGELOG.md (if version change)
+### 6. Update CHANGELOG.md (if version change)
 **If implementing a new version:**
 - Add version entry
 - List all changes
 - Update date
 
-### 6. Git Commit (optional but recommended)
+### 7. Git Commit (optional but recommended)
 **Ask user:**
 ```
 Would you like me to create a git commit?
@@ -116,7 +162,7 @@ git add [relevant files]
 git commit -m "[commit message]"
 ```
 
-### 7. Final Report
+### 8. Final Report
 **Present to user:**
 ```
 ✅ Session closed for FringeIsland
@@ -124,10 +170,16 @@ git commit -m "[commit message]"
 📝 Summary:
 [Brief summary of work done]
 
+🧪 Test Status: (NEW)
+- Tests: X total (Y passing, Z%)
+- New tests: N added
+- Bugs found: M (if any)
+
 📄 Updated:
 - PROJECT_STATUS.md
+- [Behavior specs: docs/specs/behaviors/...] (NEW)
+- [Tests: tests/.../...] (NEW)
 - [ROADMAP.md / not needed]
-- [DEFERRED_DECISIONS.md / not needed]
 - [Session bridge created/not needed]
 - [Features database updated/not needed]
 - [CHANGELOG.md updated/not needed]
