@@ -248,7 +248,7 @@ describe('B-GRP-003: Group Visibility Rules (RLS)', () => {
       .update({ status: 'removed' })
       .eq('id', membership!.id);
 
-    // Query again (RLS should re-evaluate)
+    // Query again (RLS should re-evaluate immediately)
     const { data: after } = await supabase
       .from('groups')
       .select('*')

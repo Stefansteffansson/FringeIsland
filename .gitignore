@@ -56,3 +56,7 @@ coverage
 
 # Vercel
 .vercel
+
+# Supabase
+supabase/.temp/
+.supabase/

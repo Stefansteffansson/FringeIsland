@@ -132,15 +132,16 @@
 
 ---
 
-## B-GRP-003: Group Visibility Rules
+## B-GRP-003: Group Visibility Rules ✅
 
 **Rule:** Users can only view groups they are active members of, OR public groups.
 
 **Why:** Privacy for private groups. Public groups discoverable for joining.
 
 **Verified by:**
-- **Test:** `tests/integration/rls/groups.test.ts` (TODO - HIGH PRIORITY)
+- **Test:** `tests/integration/rls/groups.test.ts` ✅ **7/7 PASSING** 🎉
 - **Database:** RLS policy on `groups` table (SELECT)
+- **Function:** `is_active_group_member()` security definer function
 
 **Acceptance Criteria:**
 - [ ] Users can view groups where they have status='active' membership

@@ -8,16 +8,20 @@
 
 ## 🎯 What We're Working On NOW
 
-**Current Focus:** Testing infrastructure and behavior-driven development implementation (Option B)
+**Current Focus:** ✅ **COMPLETED!** Critical RLS security fixes and Supabase CLI setup
 
 **Active Tasks:**
 - [x] Set up testing infrastructure (Jest + React Testing Library)
 - [x] Define behavior specification format
 - [x] Document critical behaviors (10 behaviors specified)
-- [x] Write tests for critical paths (22 tests created, 17 passing)
-- [x] Verify/fix last leader protection trigger in Supabase ✅ **FIXED!**
+- [x] Write tests for critical paths (29 tests created, 29 passing) ✅
+- [x] Verify/fix last leader protection trigger in Supabase ✅
 - [x] Update boot-up and close-down workflows for TDD
-- [ ] Fix RLS visibility policies (B-GRP-003 - 5/7 tests failing)
+- [x] Fix RLS visibility policies (B-GRP-003) ✅ **7/7 TESTS PASSING!**
+- [x] Enable RLS on ALL tables (critical security fix) ✅
+- [x] Fix infinite recursion in RLS policies ✅
+- [x] Fix membership status constraint bug ✅
+- [x] Set up Supabase CLI for automated migrations ✅
 - [ ] Create TDD workflow documentation
 
 **Blocked/Waiting:**
@@ -28,11 +32,12 @@
 ## 📊 Quick Stats
 
 - **Phase:** 1.4 - Journey System (85% complete)
-- **Total Tables:** 13 (PostgreSQL via Supabase)
-- **Total Migrations:** 10 applied (migration #6 applied 2026-02-08)
+- **Total Tables:** 13 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
+- **Total Migrations:** 18 applied (+8 today for RLS fixes)
 - **Recent Version:** v0.2.10 (Journey Enrollment - Jan 31, 2026)
-- **Test Coverage:** 22 tests (17 passing, 77%) ⬆️ +7 tests, +24% coverage!
-- **Behaviors Documented:** 10 (5 auth, 5 groups) - 1 fully verified ✅
+- **Test Coverage:** 29 tests (29 passing, 100%!) 🎉 ⬆️ +12 tests, +23% coverage!
+- **Behaviors Documented:** 10 (5 auth, 5 groups) - **2 fully verified** ✅
+- **Supabase CLI:** Configured and ready for automated migrations ✅
 
 **Completed Major Features:**
 - ✅ Authentication & Profile Management
@@ -42,6 +47,7 @@
 - ✅ My Journeys Page
 - ✅ Error Handling System
 - ✅ Testing Infrastructure (Jest + integration tests)
+- ✅ **RLS Security (all tables protected)** 🔒
 
 ---
 
@@ -70,34 +76,41 @@
 ## 🔄 Last Session Summary
 
 **Date:** 2026-02-08
-**Duration:** ~4 hours (2 sessions)
+**Duration:** ~6 hours (3 sessions)
 **Summary:**
 - **Session 1:** Implemented Option B (TDD + Behavior-First Development). Set up testing infrastructure, documented 10 behaviors, wrote 15 integration tests. Discovered critical bug: last leader protection trigger not working!
-- **Session 2:** Fixed critical production bug! Applied migration #6 to Supabase, updated test expectations, verified all B-GRP-001 tests passing (4/4). Updated workflow documentation (boot-up.md, close-down.md) to include TDD process.
-
-**Bridge Doc:** `docs/planning/sessions/2026-02-08-testing-infrastructure.md` (session 1)
+- **Session 2:** Fixed critical production bug! Applied migration #6 to Supabase, updated test expectations, verified all B-GRP-001 tests passing (4/4).
+- **Session 3:** ✅ **MASSIVE RLS SECURITY FIX!** Discovered RLS was disabled on most tables. Enabled RLS on all 13 tables, fixed infinite recursion with security definer functions, fixed membership status constraint bug. All 7 B-GRP-003 tests now passing! Set up Supabase CLI for automated migrations.
 
 **Major Accomplishments:**
-- ✅ Proved value of testing by finding production bug
-- ✅ Fixed critical bug - last leader protection now working
-- ✅ Updated workflows to support TDD going forward
-- ✅ Test coverage improved: 53% → 77%
+- 🔒 **CRITICAL SECURITY FIX:** Enabled RLS on all 13 tables (was disabled - major vulnerability!)
+- ✅ Fixed infinite recursion in RLS policies using security definer functions
+- ✅ Fixed membership status constraint (allowed 'frozen' but not 'removed'/'paused')
+- ✅ All B-GRP-003 tests passing (7/7) - Group visibility rules fully verified
+- ✅ Set up Supabase CLI - no more manual SQL migrations!
+- ✅ Test coverage: 77% → 100% (29/29 tests passing)
+- ✅ Proved TDD value: Found 3 critical bugs through testing
 
-**Files Created (17):**
-- Testing: `tests/setup.ts`, `tests/helpers/supabase.ts`, `tests/helpers/fixtures.ts`
-- Tests: `tests/integration/verify-supabase.test.ts`, `tests/integration/auth/signup.test.ts`, `tests/integration/groups/last-leader.test.ts`, `tests/integration/rls/groups.test.ts`
-- Behaviors: `docs/specs/behaviors/_template.md`, `docs/specs/behaviors/authentication.md`, `docs/specs/behaviors/groups.md`
-- Docs: `docs/planning/STRUCTURE_REVIEW.md`, `docs/planning/STRUCTURE_MIGRATION_PLAN.md`
+**Critical Bugs Fixed:**
+1. 🎉 Last leader protection trigger (B-GRP-001)
+2. 🎉 RLS disabled on all tables (critical security vulnerability)
+3. 🎉 Infinite recursion in RLS policies (circular dependency)
+4. 🎉 Membership status constraint missing 'removed' and 'paused'
 
-**Files Modified (8):**
-- Configuration: `jest.config.js`, `package.json`, `.env.local`
-- Tests: `tests/integration/groups/last-leader.test.ts` (fixed expectations)
-- Behaviors: `docs/specs/behaviors/groups.md` (marked B-GRP-001 verified)
-- Workflows: `docs/workflows/boot-up.md`, `docs/workflows/close-down.md` (added TDD steps)
-- Cleanup: Deleted duplicate `components/auth/AuthContext.tsx`
+**Migrations Created (8):**
+- `20260208_fix_groups_rls_visibility.sql` - Fixed groups SELECT policy
+- `20260208_enable_rls_all_tables.sql` - Enabled RLS on all 13 tables
+- `20260208_fix_rls_recursion.sql` - Attempted recursion fix (v1)
+- `20260208_fix_rls_recursion_v2.sql` - Attempted recursion fix (v2)
+- `20260208_fix_rls_with_functions.sql` - Security definer function solution
+- `20260208_fix_function_caching.sql` - Marked function as VOLATILE
+- `20260208_fix_membership_status_constraint.sql` - Fixed CHECK constraint
+- Helper scripts: `supabase-cli.sh`, `supabase-cli.bat`
 
-**Bug Fixed:**
-🎉 Last leader protection trigger (B-GRP-001) - Migration #6 applied, all tests passing!
+**Files Modified:**
+- Tests: `tests/integration/rls/groups.test.ts` (added debugging, cleaned up)
+- Behaviors: `docs/specs/behaviors/groups.md` (marked B-GRP-003 verified 7/7)
+- Status: `PROJECT_STATUS.md` (this file)
 
 ---
 
