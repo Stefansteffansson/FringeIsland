@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-04
+**Last Updated:** 2026-02-08
 **Current Version:** 0.2.10
 **Active Branch:** main
 
@@ -8,16 +8,19 @@
 
 ## 🎯 What We're Working On NOW
 
-**Current Focus:** Project restructuring - organizing documentation and creating workflows for better AI agent context management
+**Current Focus:** Testing infrastructure and behavior-driven development implementation (Option B)
 
 **Active Tasks:**
-- [x] Complete documentation restructuring (5 phases)
-- [x] Create boot-up and close-down workflows
-- [x] Integrate workflows into CLAUDE.md for automatic detection
-- [ ] Organize session bridges and feature docs
+- [x] Set up testing infrastructure (Jest + React Testing Library)
+- [x] Define behavior specification format
+- [x] Document critical behaviors (10 behaviors specified)
+- [x] Write tests for critical paths (15 tests created, 8 passing)
+- [ ] Verify/fix last leader protection trigger in Supabase
+- [ ] Complete RLS visibility tests
+- [ ] Create TDD workflow documentation
 
 **Blocked/Waiting:**
-- None
+- Database trigger verification needed (last leader protection)
 
 ---
 
@@ -27,6 +30,8 @@
 - **Total Tables:** 13 (PostgreSQL via Supabase)
 - **Total Migrations:** 10 applied
 - **Recent Version:** v0.2.10 (Journey Enrollment - Jan 31, 2026)
+- **Test Coverage:** 15 tests (8 passing, 53%)
+- **Behaviors Documented:** 10 (5 auth, 5 groups)
 
 **Completed Major Features:**
 - ✅ Authentication & Profile Management
@@ -35,6 +40,7 @@
 - ✅ Journey Enrollment (individual + group)
 - ✅ My Journeys Page
 - ✅ Error Handling System
+- ✅ Testing Infrastructure (Jest + integration tests)
 
 ---
 
@@ -62,14 +68,26 @@
 
 ## 🔄 Last Session Summary
 
-**Date:** 2026-02-04
-**Summary:** Integrated workflow automation into CLAUDE.md. Added session management detection that proactively reminds about boot-up/close-down workflows. AI assistant now watches for session start/end signals and suggests following documented workflows.
+**Date:** 2026-02-08
+**Duration:** ~3 hours
+**Summary:** Implemented Option B (TDD + Behavior-First Development). Set up complete testing infrastructure with Jest and React Testing Library. Created behavior specification system (10 behaviors documented). Wrote 15 integration tests - discovered critical bug where last leader protection trigger is not working in production database!
 
-**Bridge Doc:** Not needed (documentation update only)
+**Bridge Doc:** `docs/planning/sessions/2026-02-08-testing-infrastructure.md`
 
-**Files Modified:**
-- Modified: CLAUDE.md (added Session Management section)
-- Modified: PROJECT_STATUS.md (this file)
+**Major Accomplishment:** Proved the value of testing by finding real production bug on first test run.
+
+**Files Created (17):**
+- Testing: `tests/setup.ts`, `tests/helpers/supabase.ts`, `tests/helpers/fixtures.ts`
+- Tests: `tests/integration/verify-supabase.test.ts`, `tests/integration/auth/signup.test.ts`, `tests/integration/groups/last-leader.test.ts`, `tests/integration/rls/groups.test.ts`
+- Behaviors: `docs/specs/behaviors/_template.md`, `docs/specs/behaviors/authentication.md`, `docs/specs/behaviors/groups.md`
+- Docs: `docs/planning/STRUCTURE_REVIEW.md`, `docs/planning/STRUCTURE_MIGRATION_PLAN.md`
+
+**Files Modified (5):**
+- Configuration: `jest.config.js`, `package.json`, `.env.local`
+- Cleanup: Deleted duplicate `components/auth/AuthContext.tsx`
+
+**Critical Finding:**
+🚨 Last leader protection trigger (B-GRP-001) not working in production - migration may not be applied
 
 ---
 
@@ -77,10 +95,15 @@
 
 **See `docs/planning/ROADMAP.md` for complete phase breakdown**
 
-**Immediate (Phase 1.4 - Journey System):**
-1. Journey content delivery system (step-by-step navigation)
-2. Progress tracking for enrolled journeys
-3. Journey completion tracking
+**Immediate (Testing & Bug Fixes):**
+1. **CRITICAL:** Verify last leader protection trigger in Supabase database
+2. Complete RLS visibility tests (B-GRP-003)
+3. Document TDD workflow for future features
+
+**Next (Phase 1.4 - Journey System):**
+4. Journey content delivery system (step-by-step navigation) - BUILD WITH TDD!
+5. Progress tracking for enrolled journeys
+6. Journey completion tracking
 
 **Phase 1.5 - Communication:**
 4. Basic messaging system
