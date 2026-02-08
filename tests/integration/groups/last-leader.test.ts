@@ -49,13 +49,17 @@ describe('B-GRP-001: Last Leader Protection', () => {
     expect(groupError).toBeNull();
     testGroup = group;
 
-    // Get the Group Leader role for this group
-    const { data: leaderRole } = await admin
+    // Create Group Leader role for this group (not auto-created)
+    const { data: leaderRole, error: roleError } = await admin
       .from('group_roles')
-      .select('id')
-      .eq('group_id', group.id)
-      .eq('name', 'Group Leader')
+      .insert({
+        group_id: group.id,
+        name: 'Group Leader',
+      })
+      .select()
       .single();
+
+    expect(roleError).toBeNull();
 
     expect(leaderRole).toBeDefined();
 
@@ -96,11 +100,14 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .select()
       .single();
 
+    // Create Group Leader role
     const { data: leaderRole } = await admin
       .from('group_roles')
-      .select('id')
-      .eq('group_id', group!.id)
-      .eq('name', 'Group Leader')
+      .insert({
+        group_id: group!.id,
+        name: 'Group Leader',
+      })
+      .select()
       .single();
 
     // Assign leader role to both users
@@ -163,11 +170,14 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .select()
       .single();
 
+    // Create Group Leader role
     const { data: leaderRole } = await admin
       .from('group_roles')
-      .select('id')
-      .eq('group_id', group!.id)
-      .eq('name', 'Group Leader')
+      .insert({
+        group_id: group!.id,
+        name: 'Group Leader',
+      })
+      .select()
       .single();
 
     await admin
@@ -211,11 +221,14 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .select()
       .single();
 
+    // Create Group Leader role
     const { data: leaderRole } = await admin
       .from('group_roles')
-      .select('id')
-      .eq('group_id', group!.id)
-      .eq('name', 'Group Leader')
+      .insert({
+        group_id: group!.id,
+        name: 'Group Leader',
+      })
+      .select()
       .single();
 
     const { data: roleAssignment } = await admin
