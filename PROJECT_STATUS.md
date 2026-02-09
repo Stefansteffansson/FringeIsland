@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-09 (Evening session)
+**Last Updated:** 2026-02-09 (Late evening session)
 **Current Version:** 0.2.10
 **Active Branch:** main
 
@@ -8,7 +8,7 @@
 
 ## 🎯 What We're Working On NOW
 
-**Current Focus:** ✅ **COMPLETED!** Documentation restructuring - BDD hierarchy established
+**Current Focus:** ✅ **COMPLETED!** Workflow documentation improvements - File path clarity
 
 **Active Tasks:**
 - [x] Set up testing infrastructure (Jest + React Testing Library)
@@ -25,6 +25,7 @@
 - [x] Create TDD workflow documentation ✅
 - [x] Create Vision and Product Specification ✅
 - [x] Establish BDD hierarchy (Vision → Spec → Roadmap → Features → Behaviors → Tests → Code) ✅
+- [x] Strengthen workflow documentation with explicit file paths ✅
 
 **Blocked/Waiting:**
 - None
@@ -78,29 +79,29 @@
 
 ## 🔄 Last Session Summary
 
-**Date:** 2026-02-09 (Evening)
-**Duration:** ~2 hours
+**Date:** 2026-02-09 (Late evening - Workflow improvements)
+**Duration:** ~30 minutes
 **Summary:**
-- ✅ **DEVELOPMENT DASHBOARD:** Built comprehensive local web dashboard at `/dev/dashboard`
-- ✅ Created visual phase timeline with progress indicators (all Phase 1.1-1.6 + Phase 2, 3, 4)
-- ✅ Card-based layout with expand/collapse functionality for all status sections
-- ✅ Floating stats bar with quick links to key documentation files
-- ✅ Added phase labels to Next Priorities `[Phase X.Y]` format
-- ✅ Converted priorities to table format for better readability
-- ✅ Fixed VS Code links (proper URI format for Windows paths)
-- ✅ Dashboard covers navigation completely for maximum screen space
-- ✅ Updated boot-up and close-down workflows to reference dashboard
+- ✅ **WORKFLOW DOCUMENTATION:** Strengthened boot-up and close-down workflows with explicit file paths
+- ✅ Identified and diagnosed boot-up error (file path issue - tried reading ROADMAP.md from root instead of docs/planning/)
+- ✅ Added prominent **file path tables** at top of both workflow files
+- ✅ Updated **CLAUDE.md** Session Management with critical file path requirements
+- ✅ Added multiple visual warnings and wrong/right examples throughout workflows
+- ✅ Reinforced exact path usage in all documentation update steps
 
 **Major Accomplishments:**
-- 📊 **VISUAL PROJECT STATUS:** Dashboard provides at-a-glance view of project state
-- 🎨 **DARK THEME INTERFACE:** Compressed, compact design optimized for information density
-- 🔗 **QUICK FILE ACCESS:** One-click links to open docs in VS Code
-- 📈 **PHASE TRACKING:** Visual timeline shows completion status for all phases
-- 🔄 **REAL-TIME UPDATES:** Reads from markdown files on page refresh
+- ⚠️ **CRITICAL PATH EMPHASIS:** File path tables impossible to miss at workflow start
+- 📋 **WRONG/RIGHT EXAMPLES:** Clear examples prevent common mistakes (e.g., ROADMAP.md vs docs/planning/ROADMAP.md)
+- 🔒 **ERROR PREVENTION:** Instructions added for handling file read failures
+- 📍 **LOCATION CLARITY:** Every file path now includes directory reminder (e.g., "⚠️ ROOT DIRECTORY!" or "⚠️ docs/planning/ DIRECTORY!")
 
 **Files Changed:**
-- **Created (8):** `app/dev/dashboard/page.tsx`, `app/dev/dashboard/layout.tsx`, `components/dashboard/DashboardCard.tsx`, `components/dashboard/FloatingStatsBar.tsx`, `components/dashboard/PhaseTimeline.tsx`, `lib/dashboard/parsers.ts`, `lib/dashboard/roadmap-parser.ts`, `DASHBOARD.md`
-- **Updated (4):** `PROJECT_STATUS.md`, `docs/workflows/boot-up.md`, `docs/workflows/close-down.md`, `package.json` (lucide-react dependency)
+- **Modified (3):** `CLAUDE.md` (Session Management section), `docs/workflows/boot-up.md` (added file path table and warnings), `docs/workflows/close-down.md` (added file path table and warnings)
+
+**Previous Session (Earlier today):**
+- ✅ Built development dashboard at `/dev/dashboard` with visual project status
+- ✅ Created phase timeline, card-based layout, floating stats bar
+- ✅ Fixed VS Code links for Windows paths
 
 ---
 

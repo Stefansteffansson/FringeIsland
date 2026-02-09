@@ -13,15 +13,43 @@ When user says "Boot up FringeIsland" or starts a new session, follow this workf
 
 ---
 
+## ⚠️ CRITICAL: EXACT FILE PATHS - READ AS WRITTEN, DO NOT MODIFY!
+
+**These file paths are EXACT. Use them PRECISELY as shown. DO NOT guess or change paths!**
+
+| File | EXACT Path (use this EXACTLY) | Location |
+|------|-------------------------------|----------|
+| **Project Status** | `PROJECT_STATUS.md` | Root directory |
+| **Roadmap** | `docs/planning/ROADMAP.md` | docs/planning/ directory |
+| **Vision** | `docs/VISION.md` | docs/ directory |
+| **Product Spec** | `docs/planning/PRODUCT_SPEC.md` | docs/planning/ directory |
+| **Deferred Decisions** | `docs/planning/DEFERRED_DECISIONS.md` | docs/planning/ directory |
+
+**IMPORTANT NOTES:**
+- ❌ **WRONG:** `ROADMAP.md` (root directory)
+- ✅ **CORRECT:** `docs/planning/ROADMAP.md`
+- ❌ **WRONG:** Guessing file locations
+- ✅ **CORRECT:** Using EXACT paths from table above
+
+**IF A FILE READ FAILS:**
+1. Do NOT skip the file silently
+2. Report the error to the user immediately
+3. Use Glob to find the correct location
+4. Update this table if the file has moved
+
+---
+
 ## 📋 Boot-Up Checklist
 
 ### 1. Read Current Status
-**Files:**
-- `PROJECT_STATUS.md` (root directory) - Current state
-- `docs/planning/ROADMAP.md` - Phase progress and priorities
+**Files (use EXACT paths from table above!):**
+- `PROJECT_STATUS.md` (root directory) - Current state ✅ REQUIRED
+- `docs/planning/ROADMAP.md` (NOT root/ROADMAP.md!) - Phase progress and priorities ✅ REQUIRED
 - `docs/VISION.md` - Why we're building this (optional, for new features or context)
 - `docs/planning/PRODUCT_SPEC.md` - What we're building (optional, for new features)
 - `docs/planning/DEFERRED_DECISIONS.md` - What we're NOT building (optional, if relevant)
+
+**⚠️ REMINDER:** Use paths EXACTLY as written above. Refer to the file paths table if unsure.
 
 **Extract from PROJECT_STATUS.md:**
 - Current version

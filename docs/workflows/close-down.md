@@ -13,6 +13,35 @@ When user says "Close down session" or "End session", follow this workflow.
 
 ---
 
+## ⚠️ CRITICAL: EXACT FILE PATHS - READ AS WRITTEN, DO NOT MODIFY!
+
+**These file paths are EXACT. Use them PRECISELY as shown. DO NOT guess or change paths!**
+
+| File | EXACT Path (use this EXACTLY) | When to Update | Location |
+|------|-------------------------------|----------------|----------|
+| **Project Status** | `PROJECT_STATUS.md` | ✅ ALWAYS (required) | Root directory |
+| **Roadmap** | `docs/planning/ROADMAP.md` | If significant progress | docs/planning/ directory |
+| **Deferred Decisions** | `docs/planning/DEFERRED_DECISIONS.md` | If new deferrals | docs/planning/ directory |
+| **Product Spec** | `docs/planning/PRODUCT_SPEC.md` | If scope changed | docs/planning/ directory |
+| **Behavior Specs** | `docs/specs/behaviors/[domain].md` | If behaviors tested | docs/specs/behaviors/ directory |
+| **Feature Docs** | `docs/features/implemented/[feature].md` | If features updated | docs/features/implemented/ directory |
+| **Session Bridge** | `docs/planning/sessions/YYYY-MM-DD-description.md` | If significant work | docs/planning/sessions/ directory |
+
+**IMPORTANT NOTES:**
+- ❌ **WRONG:** `ROADMAP.md` (root directory)
+- ✅ **CORRECT:** `docs/planning/ROADMAP.md`
+- ❌ **WRONG:** Guessing file locations
+- ✅ **CORRECT:** Using EXACT paths from table above
+- ⚠️ **PROJECT_STATUS.md is ALWAYS updated** - This is in root directory, not docs/
+
+**IF A FILE READ FAILS:**
+1. Do NOT skip the file silently
+2. Report the error to the user immediately
+3. Use Glob to find the correct location
+4. Update this table if the file has moved
+
+---
+
 ## 📋 Close-Down Checklist
 
 ### 1. Summarize Work Done
@@ -59,7 +88,9 @@ npm test
 
 ### 3. Update Documentation
 
-**A. Update PROJECT_STATUS.md (ALWAYS)**
+**A. Update PROJECT_STATUS.md (ALWAYS REQUIRED) ⚠️ ROOT DIRECTORY!**
+**File path:** `PROJECT_STATUS.md` (root directory, NOT docs/PROJECT_STATUS.md!)
+
 Update fields:
 - **Last Updated** date
 - **Current Focus** (if changed)
@@ -288,7 +319,8 @@ See you next time! 👋
 2. [Reorder if priorities changed]
 ```
 
-**E. Update ROADMAP.md (if significant progress):**
+**E. Update ROADMAP.md (if significant progress) ⚠️ docs/planning/ DIRECTORY!**
+**File path:** `docs/planning/ROADMAP.md` (NOT root/ROADMAP.md!)
 
 Update these sections if major milestones hit:
 - Current phase completion percentage (e.g., 75% → 85%)
@@ -298,7 +330,8 @@ Update these sections if major milestones hit:
 - Add to "Decision Log" if architectural choices made
 - Update feature links if new features completed
 
-**F. Update DEFERRED_DECISIONS.md (if new deferrals):**
+**F. Update DEFERRED_DECISIONS.md (if new deferrals) ⚠️ docs/planning/ DIRECTORY!**
+**File path:** `docs/planning/DEFERRED_DECISIONS.md` (NOT root!)
 
 Add new entry if you decided NOT to build something:
 - Use standard format (Topic, Context, Decision, Deferred To, Notes)

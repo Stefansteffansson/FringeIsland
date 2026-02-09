@@ -25,7 +25,10 @@ FringeIsland is an educational platform for personal development, leadership tra
 
 **IF first message includes:** "Boot up FringeIsland" / "Start FringeIsland session" / "Boot FringeIsland"
 - ✅ Follow the complete workflow in `docs/workflows/boot-up.md`
-- Read PROJECT_STATUS.md and ROADMAP.md
+- ⚠️ **CRITICAL:** Read the workflow file EXACTLY and follow ALL instructions TO THE LETTER
+- ⚠️ **CRITICAL:** Use EXACT file paths as specified in the workflow (DO NOT GUESS OR MODIFY PATHS)
+- Read PROJECT_STATUS.md (root directory)
+- Read docs/planning/ROADMAP.md (NOT ROADMAP.md in root!)
 - Present current state and ask what to work on
 
 **IF first message is task-focused** (e.g., "Fix bug X", "Add feature Y"):
@@ -42,6 +45,12 @@ FringeIsland is an educational platform for personal development, leadership tra
 - Recent changes and decisions
 - Git status and blockers
 - What was worked on last session
+
+**CRITICAL REQUIREMENTS:**
+- ✅ Read `docs/workflows/boot-up.md` FIRST before doing ANYTHING else
+- ✅ Follow file paths EXACTLY as written in the workflow (DO NOT modify or guess paths)
+- ✅ Complete ALL steps in the workflow in sequence
+- ✅ Report any file read errors immediately (do not skip files)
 
 ### Close-Down Workflow Detection
 
@@ -70,6 +79,13 @@ Say "yes" or "close down" to run it, or "skip" if you prefer.
 - Decisions and context are captured
 - Git commits are properly formatted
 - Next priorities are clear
+
+**CRITICAL REQUIREMENTS:**
+- ✅ Read `docs/workflows/close-down.md` FIRST before doing ANYTHING else
+- ✅ Follow file paths EXACTLY as written in the workflow (DO NOT modify or guess paths)
+- ✅ Update PROJECT_STATUS.md (root directory) - ALWAYS REQUIRED
+- ✅ Update docs/planning/ROADMAP.md (if significant progress) - Use correct path!
+- ✅ Complete ALL steps in the workflow in sequence
 
 ### Workflow Files
 
