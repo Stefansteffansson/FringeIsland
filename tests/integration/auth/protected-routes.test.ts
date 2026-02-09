@@ -187,9 +187,9 @@ describe('B-AUTH-005: Protected Route Enforcement', () => {
   it('should allow users to search other users by email (for invitations)', async () => {
     const supabase = createTestClient();
 
-    // Arrange: Create two users
-    const user1 = await createTestUser({ displayName: 'Searcher', email: 'searcher@fringeisland.test' });
-    const user2 = await createTestUser({ displayName: 'Searchable', email: 'searchable@fringeisland.test' });
+    // Arrange: Create two users with random emails (avoids conflicts from failed cleanup)
+    const user1 = await createTestUser({ displayName: 'Searcher' });
+    const user2 = await createTestUser({ displayName: 'Searchable' });
     testUsers.push(user1.user.id, user2.user.id);
 
     await supabase.auth.signInWithPassword({ email: user1.email, password: user1.password });
@@ -198,12 +198,12 @@ describe('B-AUTH-005: Protected Route Enforcement', () => {
     const { data: searchResults, error: searchError } = await supabase
       .from('users')
       .select('id, email, full_name')
-      .eq('email', 'searchable@fringeisland.test');
+      .eq('email', user2.email);
 
     // Assert: Search successful (RLS allows SELECT by email)
     expect(searchError).toBeNull();
     expect(searchResults?.length).toBe(1);
-    expect(searchResults?.[0].email).toBe('searchable@fringeisland.test');
+    expect(searchResults?.[0].email).toBe(user2.email);
   });
 
   it('should prevent access after sign out', async () => {

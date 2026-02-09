@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-09 (Evening session - Auth testing + Group docs)
+**Last Updated:** 2026-02-09 (Late evening - RLS Policy Debugging & Fix)
 **Current Version:** 0.2.10
 **Active Branch:** main
 
@@ -8,12 +8,12 @@
 
 ## 🎯 What We're Working On NOW
 
-**Current Focus:** ✅ **COMPLETED!** Auth testing (Task #1) + Group management documentation (Task #2)
+**Current Focus:** ✅ **COMPLETED!** Fixed groups INSERT RLS policy issue - all tests passing!
 
 **Active Tasks:**
-- [x] Add tests for authentication behaviors (B-AUTH-002 through B-AUTH-005) ✅ **DONE!**
-- [x] Create feature doc for group management ✅ **DONE!**
-- [x] Fix critical RLS security vulnerability (inactive users) ✅ **FIXED!**
+- [x] Debug groups INSERT RLS policy failure ✅ **DONE!**
+- [x] Fix SELECT policy to allow creator to see their groups ✅ **DONE!**
+- [x] Clean up debug files ✅ **DONE!**
 
 **Blocked/Waiting:**
 - None
@@ -26,7 +26,7 @@
 - **Total Tables:** 13 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
 - **Total Migrations:** 23 applied (+5 today for RLS inactive users fix)
 - **Recent Version:** v0.2.10 (Journey Enrollment - Jan 31, 2026)
-- **Test Coverage:** 46 tests (43 passing, 93%!) 🎉 ⬆️ +17 tests in this session!
+- **Test Coverage:** 46 tests (46 passing, 100%!) 🎉 ⬆️ **ALL PASSING!**
 - **Behaviors Documented:** 10 (5 auth, 5 groups) - **6 fully verified** ✅ (+4 auth behaviors verified today!)
 - **Feature Docs:** 3 complete (authentication, journey-system, group-management) ✅ **NEW!**
 - **Supabase CLI:** Configured and ready for automated migrations ✅
@@ -68,44 +68,47 @@
 
 ## 🔄 Last Session Summary
 
-**Date:** 2026-02-09 (Evening - Authentication testing + Group management docs)
-**Duration:** ~2 hours
+**Date:** 2026-02-09 (Late evening - RLS Policy Debugging Marathon)
+**Duration:** ~3 hours
 **Summary:**
-- ✅ **TASK #1 COMPLETE:** Added tests for authentication behaviors (B-AUTH-002 through B-AUTH-005)
-  - Created 4 new test files with 24 new tests (signin, signout, session-persistence, protected-routes)
-  - **43/46 tests passing (93%!)**
-- ✅ **TASK #2 COMPLETE:** Created comprehensive group management feature documentation
-  - 400+ line feature doc covering all Phase 1.3 features
-  - Documented 5 behaviors (B-GRP-001 through B-GRP-005)
-- 🔒 **CRITICAL SECURITY FIX:** Fixed RLS vulnerability allowing inactive users to access profiles
-  - Created 5 RLS fix migrations
-  - Applied fixes manually via Supabase Dashboard SQL Editor
-  - Verified with tests: Inactive users now properly blocked ✅
+- 🔍 **ISSUE DISCOVERED:** Groups INSERT RLS policy was failing all tests
+- 🎯 **ROOT CAUSE FOUND:** SELECT policy was blocking RETURNING clause after INSERT!
+  - Problem: Creator couldn't see their own newly created group
+  - PostgREST does INSERT...RETURNING which triggers SELECT policy
+  - SELECT policy only allowed: is_public=true OR is_member
+  - New groups are private and creator isn't a member yet = SELECT fails!
+- ✅ **SOLUTION:** Fixed SELECT policy to allow creator to see own groups
+  - Added: `created_by_user_id = get_current_user_profile_id()` to SELECT policy
+  - Fixed INSERT policy to use proper function with SECURITY DEFINER
+  - Re-enabled RLS on groups table (was disabled during testing)
 
 **Major Accomplishments:**
-- 🧪 **TEST COVERAGE:** 46 total tests (up from 29) - 59% increase!
-- ✅ **AUTH BEHAVIORS VERIFIED:** B-AUTH-001 through B-AUTH-005 all tested
-- 📚 **FEATURE DOCUMENTATION:** Group management fully documented
-- 🔐 **SECURITY HARDENING:** RLS policies now correctly enforce is_active flag
+- 🧪 **ALL TESTS PASSING:** 46/46 (100%!) - up from 43/46 (93%)
+- 🔒 **RLS POLICIES FIXED:** Both INSERT and SELECT policies now working correctly
+- 🧹 **CLEANED UP:** Removed 25+ debug files and temporary migrations
+- 📚 **LEARNED:** PostgREST RETURNING behavior and nested RLS policy evaluation
 
-**Files Created:**
-- **Tests (4):** `tests/integration/auth/signin.test.ts`, `signout.test.ts`, `session-persistence.test.ts`, `protected-routes.test.ts`
-- **Docs (1):** `docs/features/implemented/group-management.md`
-- **Migrations (5):** `supabase/migrations/20260209_*.sql` (RLS fixes)
+**Debugging Process:**
+- Created 25+ diagnostic scripts and test files
+- Tested function execution (✅ worked), policy conditions (✅ worked), role assignment (✅ worked)
+- Discovered the issue was NOT the INSERT policy but the SELECT policy!
+- Used Supabase logs to trace the actual SQL query being executed
 
 **Files Modified:**
-- `tests/integration/auth/signin.test.ts` (removed debug code)
+- **RLS Policies:** Fixed `groups_select_by_creator_or_member` and `groups_insert_by_active_users`
+- **Helper Function:** `public.get_current_user_profile_id()` (SECURITY DEFINER)
 - `PROJECT_STATUS.md` (this file - updated stats and summary)
+- `diagnose-auth-context.js` (added role checking - then deleted during cleanup)
 
-**RLS Policies Fixed:**
-- Dropped 10 conflicting policies
-- Created 3 correct policies (users_select_own_active, users_select_others_active, users_update_own_active)
-- All policies now check `is_active = true` for security
+**Files Cleaned Up (Deleted):**
+- 25+ debug scripts (.js, .sql, .sh files)
+- 3 temporary migration files
+- 1 temporary scripts/ directory
 
 **Test Results:**
-- **Before:** 29/29 tests (100% but limited coverage)
-- **After:** 43/46 tests (93% with comprehensive auth coverage)
-- **Failing:** 3 tests in protected-routes (groups INSERT RLS - different issue, not auth-related)
+- **Before session:** 43/46 tests passing (93%)
+- **After session:** 46/46 tests passing (100%!) 🎉
+- **Fixed:** 3 failing tests in protected-routes.test.ts (groups INSERT RLS)
 
 ---
 
