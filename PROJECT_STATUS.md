@@ -100,6 +100,10 @@
 - `PROJECT_STATUS.md` (this file - updated stats and summary)
 - `diagnose-auth-context.js` (added role checking - then deleted during cleanup)
 
+**Files Created:**
+- `cleanup-test-users.js` (safely deletes test users and related data)
+- `supabase/migrations/20260209201039_fix_groups_rls_policies_final.sql` (documents RLS fixes)
+
 **Files Cleaned Up (Deleted):**
 - 25+ debug scripts (.js, .sql, .sh files)
 - 3 temporary migration files
