@@ -32,6 +32,10 @@ export const metadata: Metadata = {
   description: 'Development dashboard for FringeIsland project',
 };
 
+// Force dynamic rendering to prevent hydration mismatches
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function DashboardPage() {
   // Development only - dashboard reads local .md files that don't exist in production
   if (process.env.NODE_ENV === 'production') {
@@ -210,7 +214,7 @@ export default async function DashboardPage() {
                             <span className="text-gray-600 text-[10px]">—</span>
                           )}
                         </td>
-                        <td className="py-2 px-2 text-gray-200 text-xs font-normal">{priority.priority}</td>
+                        <td className="py-2 px-2 text-gray-200 text-xs font-normal" suppressHydrationWarning>{priority.priority}</td>
                         <td className="py-2 px-2 text-center">
                           <span
                             className={`px-1.5 py-0.5 text-[10px] font-medium rounded-full inline-block ${
