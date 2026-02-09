@@ -20,12 +20,14 @@ This is your **master navigation** for all FringeIsland documentation. Documents
 | I want to... | Go to... |
 |--------------|----------|
 | Get project overview | `../PROJECT_STATUS.md` |
+| Understand WHY we're building this | `VISION.md` (NEW) |
+| See WHAT we're building | `planning/PRODUCT_SPEC.md` (NEW) |
 | Understand current technical patterns | `../CLAUDE.md` |
 | Set up the project | `implementation/INSTALLATION.md` |
 | See what changed | `../CHANGELOG.md` |
 | Understand the architecture | `architecture/ARCHITECTURE.md` |
 | Work on database | `database/schema-overview.md` + `agents/contexts/database-agent.md` |
-| Build a feature | `features/` + `agents/contexts/feature-agent.md` |
+| Build a feature with TDD | `workflows/tdd-workflow.md` (NEW) + `features/` + `specs/behaviors/` |
 | See the roadmap | `planning/ROADMAP.md` |
 | Start a work session | `workflows/boot-up.md` |
 | End a work session | `workflows/close-down.md` |
@@ -33,6 +35,14 @@ This is your **master navigation** for all FringeIsland documentation. Documents
 ---
 
 ## 📚 Documentation Structure
+
+### 🎯 Vision & Planning (`/docs/`)
+Why we exist and what we're building
+
+- **[VISION.md](VISION.md)** - Vision, intent, and core beliefs (NEW)
+- **[planning/PRODUCT_SPEC.md](planning/PRODUCT_SPEC.md)** - Product specification for v1.0 (NEW)
+- **[planning/ROADMAP.md](planning/ROADMAP.md)** - Development phases and timeline
+- **[planning/DEFERRED_DECISIONS.md](planning/DEFERRED_DECISIONS.md)** - What we're NOT building
 
 ### 🏗️ Architecture (`/docs/architecture/`)
 System design, patterns, and technical decisions
@@ -62,13 +72,22 @@ Feature specifications, use cases, and test plans
 - **[in-progress/](features/in-progress/)** - Features currently under development
 - **[planned/](features/planned/)** - Future features and specifications
 
-### 📋 Planning (`/docs/planning/`)
-Project planning, roadmaps, and session notes
+### 📋 Specifications (`/docs/specs/`)
+Behavior specifications for Test-Driven Development
 
+- **[behaviors/](specs/behaviors/)** - Documented behaviors (rules & constraints)
+  - `authentication.md` - B-AUTH-001 through B-AUTH-005
+  - `groups.md` - B-GRP-001 through B-GRP-005
+- See: [TDD Workflow](workflows/tdd-workflow.md) for how to use behavior specs
+
+### 📝 Planning & History (`/docs/planning/`)
+Roadmaps, decisions, and session notes
+
+- **[PRODUCT_SPEC.md](planning/PRODUCT_SPEC.md)** - Product specification (NEW)
 - **[ROADMAP.md](planning/ROADMAP.md)** - Feature roadmap and development phases
-- **[DEFERRED_DECISIONS.md](planning/DEFERRED_DECISIONS.md)** - Decisions postponed to future phases
-- **[journey-system/](planning/journey-system/)** - Journey system design documents
+- **[DEFERRED_DECISIONS.md](planning/DEFERRED_DECISIONS.md)** - What we're NOT building
 - **[sessions/](planning/sessions/)** - Session bridges and development notes
+- **[archive/](planning/archive/)** - Historical/meta documentation
 
 ### 🤖 Agent Contexts (`/docs/agents/`)
 Specialized contexts for AI agents working on specific domains
@@ -83,6 +102,7 @@ Standard workflows for common development tasks
 
 - **[boot-up.md](workflows/boot-up.md)** - How to start a work session
 - **[close-down.md](workflows/close-down.md)** - How to end a session and create handoffs
+- **[tdd-workflow.md](workflows/tdd-workflow.md)** - Test-Driven Development process (NEW)
 
 ---
 
@@ -91,18 +111,24 @@ Standard workflows for common development tasks
 ### New Developer Onboarding
 Read in this order:
 1. `../PROJECT_STATUS.md` - Current state
-2. `../README.md` - Project overview
-3. `architecture/ARCHITECTURE.md` - System design
-4. `database/schema-overview.md` - Data model
-5. `implementation/INSTALLATION.md` - Setup environment
-6. `planning/ROADMAP.md` - What's next
+2. `VISION.md` - Why FringeIsland exists (NEW)
+3. `planning/PRODUCT_SPEC.md` - What we're building (NEW)
+4. `../README.md` - Project overview
+5. `architecture/ARCHITECTURE.md` - System design
+6. `database/schema-overview.md` - Data model
+7. `workflows/tdd-workflow.md` - How we develop (NEW)
+8. `implementation/INSTALLATION.md` - Setup environment
+9. `planning/ROADMAP.md` - What's next
 
 ### New AI Agent Onboarding
 Read in this order:
 1. `../PROJECT_STATUS.md` - Current state
-2. `../CLAUDE.md` - Technical patterns (auto-loaded)
-3. `agents/contexts/[your-domain]-agent.md` - Your focused context
-4. Relevant feature docs from `features/implemented/`
+2. `VISION.md` - Why we're building this (NEW)
+3. `../CLAUDE.md` - Technical patterns (auto-loaded)
+4. `workflows/tdd-workflow.md` - Development process (if building features)
+5. `agents/contexts/[your-domain]-agent.md` - Your focused context
+6. Relevant feature docs from `features/implemented/`
+7. Behavior specs from `specs/behaviors/` (if testing)
 
 ### Understanding a Specific Feature
 1. Check `features/implemented/[feature-name].md` for overview
@@ -116,15 +142,18 @@ Read in this order:
 
 **Version:** 0.2.10
 **Phase:** 1.4 - Journey System (85% complete)
+**Testing:** 29 tests, 29 passing (100%)
 
-**Recent Additions:**
+**Recent Additions (Feb 2026):**
+- Vision & Product Spec documentation (NEW)
+- Test-Driven Development workflow (NEW)
 - Journey enrollment (individual + group)
 - My Journeys page
-- Error handling system
-- 8 predefined journeys
+- RLS security fixes (all tables protected)
+- Behavior specifications (10 documented)
 
 **Next Up:**
-- Journey content delivery
+- Journey content delivery (with TDD)
 - Progress tracking
 - Communication system (Phase 1.5)
 
@@ -136,15 +165,20 @@ See `../PROJECT_STATUS.md` for detailed current state.
 
 | Document | Status | Last Updated |
 |----------|--------|--------------|
-| PROJECT_STATUS.md | ✅ Current | 2026-02-04 |
+| PROJECT_STATUS.md | ✅ Current | 2026-02-08 |
+| VISION.md | 🆕 **NEW** | 2026-02-09 |
+| PRODUCT_SPEC.md | 🆕 **NEW** | 2026-02-09 |
 | CLAUDE.md | ✅ Current | v0.2.10 |
-| README.md | ⚠️ Needs update | v0.2.9 |
+| README.md | ✅ Current | v0.2.10 (updated 2026-02-09) |
 | CHANGELOG.md | ✅ Current | v0.2.10 |
+| TDD Workflow | 🆕 **NEW** | 2026-02-09 |
+| ROADMAP.md | ✅ Updated | 2026-02-09 (added BDD hierarchy) |
 | Architecture docs | ✅ Current | v0.2.0 |
-| Database docs | 🆕 Being created | 2026-02-04 |
-| Feature docs | 🆕 Being created | 2026-02-04 |
-| Agent contexts | 🆕 Being created | 2026-02-04 |
-| Workflows | 🆕 Being created | 2026-02-04 |
+| Database docs | ✅ Current | 2026-02-04 |
+| Feature docs | 🔄 Partial | 2026-02-04 (auth, journeys complete; groups needed) |
+| Behavior specs | ✅ Current | 2026-02-08 (10 behaviors documented) |
+| Agent contexts | ✅ Current | 2026-02-04 |
+| Workflows | ✅ Current | 2026-02-09 (boot-up, close-down, TDD) |
 
 ---
 

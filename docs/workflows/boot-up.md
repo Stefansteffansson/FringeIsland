@@ -2,7 +2,7 @@
 
 **Purpose:** Standard procedure for starting a work session on FringeIsland
 **For:** AI assistants and developers starting a new session
-**Last Updated:** February 8, 2026
+**Last Updated:** February 9, 2026
 
 ---
 
@@ -19,6 +19,8 @@ When user says "Boot up FringeIsland" or starts a new session, follow this workf
 **Files:**
 - `PROJECT_STATUS.md` (root directory) - Current state
 - `docs/planning/ROADMAP.md` - Phase progress and priorities
+- `docs/VISION.md` - Why we're building this (optional, for new features or context)
+- `docs/planning/PRODUCT_SPEC.md` - What we're building (optional, for new features)
 - `docs/planning/DEFERRED_DECISIONS.md` - What we're NOT building (optional, if relevant)
 
 **Extract from PROJECT_STATUS.md:**
@@ -95,19 +97,29 @@ OR
 - UI work → `docs/agents/contexts/ui-agent.md`
 - Feature work → `docs/agents/contexts/feature-agent.md`
 - Specific feature → `docs/features/implemented/[feature].md`
-- **Testing/TDD work** → `docs/specs/behaviors/[domain].md`
+- **Testing/TDD work** → `docs/specs/behaviors/[domain].md` + `docs/workflows/tdd-workflow.md`
 
 **NEW: If building new feature:**
+- **FIRST:** Verify feature context (see TDD workflow Phase 0):
+  - Check `docs/planning/PRODUCT_SPEC.md` - Is feature listed?
+  - Check `docs/features/[feature].md` - Does feature doc exist?
+  - If missing, create feature doc first or ask user
+- Load `docs/VISION.md` (optional, understand "why")
+- Load `docs/planning/PRODUCT_SPEC.md` (verify feature scope)
 - Load relevant behavior specs from `docs/specs/behaviors/`
-- Remind about TDD workflow (spec → test → implement)
+- Load TDD workflow from `docs/workflows/tdd-workflow.md`
+- Remind about full BDD hierarchy (Vision → Product Spec → Roadmap → Features → Behaviors → Tests → Code)
 
 **Report:**
 ```
 📚 Context loaded:
 - CLAUDE.md (technical patterns)
+- VISION.md (optional, for new features)
+- PRODUCT_SPEC.md (optional, for new features)
 - [agent-context].md (if relevant)
 - [feature docs] (if specified)
 - [behavior specs] (if TDD work)
+- TDD workflow (if building new feature)
 ```
 
 ### 5. Ask User
@@ -127,13 +139,20 @@ Suggestions based on PROJECT_STATUS.md:
 
 **If building new feature, remind:**
 ```
-Building new feature? Follow TDD workflow:
-1. Write behavior spec in docs/specs/behaviors/
-2. Write tests in tests/integration/
+Building new feature? Follow TDD workflow (docs/workflows/tdd-workflow.md):
+
+0. Verify feature context:
+   - Feature in Product Spec? (docs/planning/PRODUCT_SPEC.md)
+   - Feature doc exists? (docs/features/[feature].md)
+
+1. Write behavior spec (docs/specs/behaviors/[domain].md)
+2. Write tests (tests/integration/[domain]/[feature].test.ts)
 3. Run tests (should fail - RED)
-4. Implement feature
+4. Implement feature (database → backend → frontend)
 5. Run tests (should pass - GREEN)
 6. Refactor and document
+
+Full process: Vision → Product Spec → Roadmap → Features → Behaviors → Tests → Code
 ```
 
 ---
@@ -245,11 +264,13 @@ Ready to work. What's first?
 
 **Actions:**
 1. Read PROJECT_STATUS.md
-2. Load feature-agent.md context
-3. Check if feature exists in docs/features/
-4. Load feature doc if exists
-5. Check git status
-6. Ask: "Planning or implementing notifications?"
+2. **Check PRODUCT_SPEC.md** - Is "notifications" listed as a feature?
+3. **Check docs/features/** - Does feature doc exist?
+4. If missing, alert user: "Feature not in Product Spec. Should we add it first?"
+5. Load feature-agent.md context
+6. Load TDD workflow (docs/workflows/tdd-workflow.md)
+7. Check git status
+8. Ask: "Planning or implementing notifications?"
 
 ### Scenario 3: Bug Fix
 **User:** "Boot up FringeIsland, fixing a bug in group invitations"

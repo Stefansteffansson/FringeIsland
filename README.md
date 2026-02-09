@@ -1,7 +1,7 @@
 # FringeIsland
 
-**Version:** 0.2.9  
-**Last Updated:** January 27, 2026
+**Version:** 0.2.10
+**Last Updated:** February 9, 2026
 
 Educational and training platform for personal development, leadership training, and team/organizational development.
 
@@ -9,7 +9,9 @@ Educational and training platform for personal development, leadership training,
 
 ## 🚀 Current Status
 
-**Phase 1: Foundation - 75% Complete**
+**Phase 1: Foundation - 85% Complete**
+
+**Testing:** 29 integration tests, 29 passing (100% coverage on critical behaviors)
 
 ### ✅ Completed Features
 
@@ -93,15 +95,25 @@ Educational and training platform for personal development, leadership training,
 - ✅ **Development mode** - Detailed error information for debugging
 
 
+#### Journey Enrollment (NEW in v0.2.10) 🎯
+- ✅ **Enroll in journeys individually** (solo learning)
+- ✅ **Enroll groups in journeys** (Group Leaders only)
+- ✅ **My Journeys page** (`/my-journeys`)
+  - Two tabs: Individual Journeys & Group Journeys
+  - Journey cards with status badges
+  - Continue/Review buttons
+- ✅ **Enrollment status tracking** (prevents dual enrollment)
+- ✅ **Beautiful enrollment modal** with validation
+
 ### 🚧 In Progress
-- Journey enrollment (individual + group)
+- Journey content delivery (step-by-step navigation)
+- Progress tracking
 
 ### 📋 Upcoming Features
-- View enrolled journeys
-- Journey content delivery
-- Progress tracking
-- Travel Guide views
-- Communication features (forums, messaging)
+- Journey step completion
+- Travel Guide progress views
+- Communication features (Phase 1.5: forums, messaging)
+- User-created journeys (Phase 2)
 
 ---
 
@@ -111,6 +123,8 @@ Educational and training platform for personal development, leadership training,
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
 - **Backend:** Supabase (PostgreSQL + Auth + Storage)
+- **Testing:** Jest + React Testing Library (29 tests, 100% passing)
+- **Development:** Test-Driven Development (TDD) with behavior specifications
 - **Deployment:** (TBD)
 
 ---

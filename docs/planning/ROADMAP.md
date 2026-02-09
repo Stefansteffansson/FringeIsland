@@ -1,12 +1,50 @@
 # FringeIsland Roadmap
 
+**Version:** 1.4
+**Last Updated:** February 9, 2026
+**Links:** [Vision](../VISION.md) | [Product Spec](PRODUCT_SPEC.md) | [Features](../features/)
+
 This document outlines the implementation phases, milestones, and development priorities for FringeIsland.
+
+---
+
+## 🗺️ How This Roadmap Fits (BDD Hierarchy)
+
+```
+1. Vision & Intent (../VISION.md)
+   ↓ WHY we're building this
+
+2. Product Specification (PRODUCT_SPEC.md)
+   ↓ WHAT we're building
+
+3. Roadmap (this document)
+   ↓ WHEN we're building it
+
+4. Milestones (sections below)
+   ↓ How we measure progress
+
+5. Features (../features/)
+   ↓ User-facing functionality
+
+6. Behaviors (../specs/behaviors/)
+   ↓ Rules that govern features
+
+7. Tests (tests/integration/)
+   ↓ Verify behaviors work
+
+8. Implementation (app/, components/)
+   ↓ Code that passes tests
+```
+
+**This roadmap defines WHEN features are built. See [Product Spec](PRODUCT_SPEC.md) for WHAT we're building and [Vision](../VISION.md) for WHY.**
+
+---
 
 ## Overview
 
 FringeIsland development is organized into four major phases, each building on the previous:
 
-- **Phase 1: Foundation** - Core platform with predefined journeys ⏳ **IN PROGRESS (75%)**
+- **Phase 1: Foundation** - Core platform with predefined journeys ⏳ **IN PROGRESS (85%)**
 - **Phase 2: User-Generated Content** - Journey marketplace and customization
 - **Phase 3: Dynamic Journeys** - Adaptive learning paths
 - **Phase 4: Developer Platform** - API and integrations
@@ -27,7 +65,7 @@ FringeIsland development is organized into four major phases, each building on t
 
 **Timeline**: 3-4 months
 
-**Current Status** (as of v0.2.10 - Feb 4, 2026):
+**Current Status** (as of v0.2.10 - Feb 9, 2026):
 - ✅ Core infrastructure complete
 - ✅ User management complete
 - ✅ Group management complete (v0.2.7)
@@ -35,6 +73,15 @@ FringeIsland development is organized into four major phases, each building on t
 - ⏳ Journey content delivery (next up)
 - ⏳ Communication (not started)
 - ⏳ Polish and launch (not started)
+
+**Features Delivered** (see [Product Spec](PRODUCT_SPEC.md) for details):
+- ✅ Authentication & Profiles ([docs/features/implemented/authentication.md](../features/implemented/authentication.md))
+- ✅ Group Management (feature doc needed)
+- ✅ Member Management (feature doc needed)
+- ✅ Role Management (feature doc needed)
+- ✅ Journey Catalog & Discovery ([docs/features/implemented/journey-system.md](../features/implemented/journey-system.md))
+- ✅ Journey Enrollment ([docs/features/implemented/journey-system.md](../features/implemented/journey-system.md))
+- ⏳ Journey Content Delivery (next - 15% remaining for Phase 1)
 
 **Success Criteria**:
 - ✅ Users can create accounts and profiles

@@ -2,7 +2,7 @@
 
 **Purpose:** Standard procedure for ending a work session on FringeIsland
 **For:** AI assistants and developers ending a session
-**Last Updated:** February 8, 2026
+**Last Updated:** February 9, 2026
 
 ---
 
@@ -57,8 +57,10 @@ npm test
 - New tests: [list new test files]
 ```
 
-### 3. Update PROJECT_STATUS.md
-**Update fields:**
+### 3. Update Documentation
+
+**A. Update PROJECT_STATUS.md (ALWAYS)**
+Update fields:
 - **Last Updated** date
 - **Current Focus** (if changed)
 - **Active Tasks** (mark completed, add new)
@@ -67,9 +69,36 @@ npm test
 - **Last Session Summary** (what we just did)
 - **Next Priorities** (update based on progress)
 
+**B. Update Behavior Specs (if behaviors tested) - NEW**
+Mark behaviors as verified in `docs/specs/behaviors/[domain].md`:
+```markdown
+**Verified by:**
+- **Test:** `tests/integration/.../test.ts` ✅ **4/4 PASSING**
+
+**Acceptance Criteria:**
+- [x] Criterion 1 ✅ **TESTED**
+- [x] Criterion 2 ✅ **TESTED**
+```
+
+**C. Update Feature Docs (if behaviors added) - NEW**
+Link behaviors to features in `docs/features/implemented/[feature].md`:
+```markdown
+**Behaviors:**
+- B-GRP-001: Last Leader Protection (verified ✅)
+- B-GRP-002: Member Invitation Lifecycle (verified ✅)
+```
+
+**D. Update PRODUCT_SPEC.md (if scope changed) - NEW**
+Update if:
+- Features added/removed from scope
+- Success criteria changed
+- User personas evolved
+- Acceptance criteria modified
+
 **Include in summary:**
 - Test results (if tests run)
-- Behaviors added (if any)
+- Behaviors added/verified (if any)
+- Feature docs updated (if any)
 - Bugs discovered via tests (if any)
 
 **Show diff to user for approval**
@@ -110,7 +139,8 @@ npm test
 - Modified: [files]
 - Deleted: [files]
 - **Tests:** [test files]
-- **Behaviors:** [behavior spec files]
+- **Behaviors:** [behavior spec files] ← Mark as verified ✅
+- **Feature Docs:** [feature doc files] ← Link behaviors
 
 ## Next Steps
 - [ ] Task 1
@@ -177,8 +207,10 @@ git commit -m "[commit message]"
 
 📄 Updated:
 - PROJECT_STATUS.md
-- [Behavior specs: docs/specs/behaviors/...] (NEW)
+- [Behavior specs: docs/specs/behaviors/... (marked as verified ✅)] (NEW)
+- [Feature docs: docs/features/.../... (linked behaviors)] (NEW)
 - [Tests: tests/.../...] (NEW)
+- [PRODUCT_SPEC.md (if scope changed)] (NEW)
 - [ROADMAP.md / not needed]
 - [Session bridge created/not needed]
 - [Features database updated/not needed]
@@ -254,7 +286,7 @@ See you next time! 👋
 2. [Reorder if priorities changed]
 ```
 
-**B. Update ROADMAP.md (if significant progress):**
+**E. Update ROADMAP.md (if significant progress):**
 
 Update these sections if major milestones hit:
 - Current phase completion percentage (e.g., 75% → 85%)
@@ -262,8 +294,9 @@ Update these sections if major milestones hit:
 - Add to "What We've Completed" section
 - Update "Current Development Focus"
 - Add to "Decision Log" if architectural choices made
+- Update feature links if new features completed
 
-**C. Update DEFERRED_DECISIONS.md (if new deferrals):**
+**F. Update DEFERRED_DECISIONS.md (if new deferrals):**
 
 Add new entry if you decided NOT to build something:
 - Use standard format (Topic, Context, Decision, Deferred To, Notes)
@@ -658,7 +691,9 @@ Excellent work today! See you next time! 👋
 ## 🔗 Related Workflows
 
 - **Boot Up:** `docs/workflows/boot-up.md`
+- **TDD Workflow:** `docs/workflows/tdd-workflow.md`
 - **Project Status:** `PROJECT_STATUS.md`
+- **Product Spec:** `docs/planning/PRODUCT_SPEC.md`
 - **Session Bridges:** `docs/planning/sessions/`
 
 ---
