@@ -69,6 +69,8 @@ Update fields:
 - **Last Session Summary** (what we just did)
 - **Next Priorities** (update based on progress)
 
+**Note:** If dashboard is open (http://localhost:3000/dev/dashboard), refresh page to see updates
+
 **B. Update Behavior Specs (if behaviors tested) - NEW**
 Mark behaviors as verified in `docs/specs/behaviors/[domain].md`:
 ```markdown

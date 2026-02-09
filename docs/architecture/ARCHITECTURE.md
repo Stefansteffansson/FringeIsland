@@ -18,15 +18,15 @@ This document outlines the overall system architecture, core design principles, 
 ┌─────────────────────────────────────────────────────────────┐
 │                     Frontend (Next.js 14+)                  │
 │                                                             │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐    │
-│  │   Journey    │  │    Group     │  │    User      │    │
-│  │  Management  │  │  Management  │  │  Management  │    │
-│  └──────────────┘  └──────────────┘  └──────────────┘    │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │   Journey    │  │    Group     │  │    User      │       │
+│  │  Management  │  │  Management  │  │  Management  │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
 │                                                             │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐    │
-│  │    Forum     │  │  Messaging   │  │   Progress   │    │
-│  │    System    │  │    System    │  │   Tracking   │    │
-│  └──────────────┘  └──────────────┘  └──────────────┘    │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │    Forum     │  │  Messaging   │  │   Progress   │       │
+│  │    System    │  │    System    │  │   Tracking   │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
 └─────────────────────────────────────────────────────────────┘
                               │
                               │ API Layer
@@ -34,16 +34,16 @@ This document outlines the overall system architecture, core design principles, 
 ┌─────────────────────────────────────────────────────────────┐
 │                    Supabase Backend                         │
 │                                                             │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │              PostgreSQL Database                      │  │
-│  │  - Users, Groups, Journeys, Roles, Permissions       │  │
-│  │  - Row Level Security (RLS) policies                 │  │
-│  └──────────────────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │              PostgreSQL Database                     │   │
+│  │  - Users, Groups, Journeys, Roles, Permissions       │   │
+│  │  - Row Level Security (RLS) policies                 │   │
+│  └──────────────────────────────────────────────────────┘   │
 │                                                             │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐    │
-│  │     Auth     │  │   Real-time  │  │   Storage    │    │
-│  │   (Built-in) │  │ Subscriptions│  │ (For assets) │    │
-│  └──────────────┘  └──────────────┘  └──────────────┘    │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │     Auth     │  │   Real-time  │  │   Storage    │       │
+│  │   (Built-in) │  │ Subscriptions│  │ (For assets) │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
 └─────────────────────────────────────────────────────────────┘
 ```
 

@@ -135,6 +135,8 @@ Suggestions based on PROJECT_STATUS.md:
 3. [Next priority 1]
 
 💡 Reminder: We use TDD for new features (spec → test → implement)
+
+📊 Optional: View dashboard at http://localhost:3000/dev/dashboard (refresh for updates)
 ```
 
 **If building new feature, remind:**
