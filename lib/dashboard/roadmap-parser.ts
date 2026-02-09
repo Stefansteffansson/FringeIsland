@@ -30,12 +30,12 @@ export function getPhaseTimeline(): Phase[] {
 
     // Phase 1 subphases
     const phase1Subphases = [
-      { id: '1.1', name: 'Core Infrastructure', pattern: /Phase 1\.1.*?✅ COMPLETE/s },
-      { id: '1.2', name: 'User Management', pattern: /Phase 1\.2.*?✅ COMPLETE/s },
-      { id: '1.3', name: 'Group Management', pattern: /Phase 1\.3.*?✅ COMPLETE/s },
-      { id: '1.4', name: 'Journey System', pattern: /Phase 1\.4.*?(\d+)% Complete/s },
-      { id: '1.5', name: 'Communication', pattern: /Phase 1\.5.*?NOT STARTED/s },
-      { id: '1.6', name: 'Polish & Launch', pattern: /Phase 1\.6.*?NOT STARTED/s },
+      { id: '1.1', name: 'Core Infrastructure', pattern: /Phase 1\.1[\s\S]*?✅ COMPLETE/ },
+      { id: '1.2', name: 'User Management', pattern: /Phase 1\.2[\s\S]*?✅ COMPLETE/ },
+      { id: '1.3', name: 'Group Management', pattern: /Phase 1\.3[\s\S]*?✅ COMPLETE/ },
+      { id: '1.4', name: 'Journey System', pattern: /Phase 1\.4[\s\S]*?(\d+)% Complete/ },
+      { id: '1.5', name: 'Communication', pattern: /Phase 1\.5[\s\S]*?NOT STARTED/ },
+      { id: '1.6', name: 'Polish & Launch', pattern: /Phase 1\.6[\s\S]*?NOT STARTED/ },
     ];
 
     phase1Subphases.forEach(({ id, name, pattern }) => {

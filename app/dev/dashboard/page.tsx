@@ -33,6 +33,18 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
+  // Development only - dashboard reads local .md files that don't exist in production
+  if (process.env.NODE_ENV === 'production') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-white mb-4">Development Dashboard</h1>
+          <p className="text-gray-400">This dashboard is only available in development mode.</p>
+        </div>
+      </div>
+    );
+  }
+
   // Fetch all data
   const version = getProjectVersion();
   const { focus, isComplete } = getCurrentFocus();
