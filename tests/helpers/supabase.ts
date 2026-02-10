@@ -85,6 +85,45 @@ export const cleanupTestGroup = async (groupId: string) => {
 };
 
 /**
+ * Clean up test journey and all related enrollments
+ */
+export const cleanupTestJourney = async (journeyId: string) => {
+  const admin = createAdminClient();
+
+  // Delete enrollments first
+  await admin
+    .from('journey_enrollments')
+    .delete()
+    .eq('journey_id', journeyId);
+
+  // Delete journey
+  const { error } = await admin
+    .from('journeys')
+    .delete()
+    .eq('id', journeyId);
+
+  if (error) {
+    console.error('Failed to cleanup test journey:', error);
+  }
+};
+
+/**
+ * Clean up a specific journey enrollment
+ */
+export const cleanupTestEnrollment = async (enrollmentId: string) => {
+  const admin = createAdminClient();
+
+  const { error } = await admin
+    .from('journey_enrollments')
+    .delete()
+    .eq('id', enrollmentId);
+
+  if (error) {
+    console.error('Failed to cleanup test enrollment:', error);
+  }
+};
+
+/**
  * Generate unique test email
  */
 export const generateTestEmail = () => {
