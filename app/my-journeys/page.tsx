@@ -11,6 +11,11 @@ interface JourneyEnrollment {
   journey_id: string;
   status: string;
   enrolled_at: string;
+  progress_data: {
+    current_step_id?: string;
+    completed_steps?: string[];
+    total_steps?: number;
+  };
   journey: {
     id: string;
     title: string;
@@ -71,6 +76,7 @@ export default function MyJourneysPage() {
           journey_id,
           status,
           enrolled_at,
+          progress_data,
           journeys (
             id,
             title,
@@ -104,6 +110,7 @@ export default function MyJourneysPage() {
             journey_id,
             status,
             enrolled_at,
+            progress_data,
             journeys (
               id,
               title,
@@ -202,11 +209,19 @@ export default function MyJourneysPage() {
     });
   };
 
+  const getPlayButtonLabel = (enrollment: JourneyEnrollment): string => {
+    if (enrollment.status === 'completed') return 'Review Journey';
+    if (enrollment.progress_data?.current_step_id) return 'Continue';
+    return 'Start Journey';
+  };
+
   const JourneyCard = ({ enrollment, groupName }: { enrollment: JourneyEnrollment; groupName?: string }) => {
-    // Safety check
-    if (!enrollment.journey) {
-      return null;
-    }
+    if (!enrollment.journey) return null;
+
+    const completedCount = enrollment.progress_data?.completed_steps?.length || 0;
+    const totalSteps = enrollment.progress_data?.total_steps;
+    const showProgress = totalSteps && totalSteps > 0 && enrollment.status === 'active';
+    const progressPercent = showProgress ? Math.round((completedCount / totalSteps) * 100) : 0;
 
     return (
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow p-6">
@@ -229,40 +244,56 @@ export default function MyJourneysPage() {
         <div className="flex flex-wrap items-center gap-3 mb-4 text-sm text-gray-500">
           {enrollment.journey.difficulty_level && getDifficultyBadge(enrollment.journey.difficulty_level)}
           {enrollment.journey.estimated_duration_minutes && (
-          <span className="flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            {formatDuration(enrollment.journey.estimated_duration_minutes)}
-          </span>
-        )}
-        <span>Enrolled {formatDate(enrollment.enrolled_at)}</span>
-      </div>
-
-      {groupName && (
-        <div className="mb-4 flex items-center gap-2 text-sm text-blue-600">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-          <span>via {groupName}</span>
+            <span className="flex items-center gap-1">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {formatDuration(enrollment.journey.estimated_duration_minutes)}
+            </span>
+          )}
+          <span>Enrolled {formatDate(enrollment.enrolled_at)}</span>
         </div>
-      )}
 
-      <div className="flex gap-3">
-        <Link
-          href={`/journeys/${enrollment.journey_id}`}
-          className="flex-1 text-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-        >
-          {enrollment.status === 'completed' ? 'Review Journey' : 'Continue'}
-        </Link>
-        <Link
-          href={`/journeys/${enrollment.journey_id}`}
-          className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          Details
-        </Link>
+        {/* Progress bar (only when in-progress and total_steps is known) */}
+        {showProgress && (
+          <div className="mb-4">
+            <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+              <span>{completedCount} of {totalSteps} steps complete</span>
+              <span>{progressPercent}%</span>
+            </div>
+            <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className="h-1.5 bg-blue-500 rounded-full transition-all"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        {groupName && (
+          <div className="mb-4 flex items-center gap-2 text-sm text-blue-600">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <span>via {groupName}</span>
+          </div>
+        )}
+
+        <div className="flex gap-3">
+          <Link
+            href={`/journeys/${enrollment.journey_id}/play`}
+            className="flex-1 text-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+          >
+            {getPlayButtonLabel(enrollment)}
+          </Link>
+          <Link
+            href={`/journeys/${enrollment.journey_id}`}
+            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            Details
+          </Link>
+        </div>
       </div>
-    </div>
     );
   };
 
@@ -364,7 +395,7 @@ export default function MyJourneysPage() {
                 <JourneyCard
                   key={enrollment.id}
                   enrollment={enrollment}
-                  groupName={(enrollment as any).groups.name}
+                  groupName={(enrollment as GroupJourneyEnrollment).group.name}
                 />
               ))}
             </div>

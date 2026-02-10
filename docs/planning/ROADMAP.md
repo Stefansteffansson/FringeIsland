@@ -44,7 +44,7 @@ This document outlines the implementation phases, milestones, and development pr
 
 FringeIsland development is organized into four major phases, each building on the previous:
 
-- **Phase 1: Foundation** - Core platform with predefined journeys ⏳ **IN PROGRESS (85%)**
+- **Phase 1: Foundation** - Core platform with predefined journeys ⏳ **IN PROGRESS (95%)**
 - **Phase 2: User-Generated Content** - Journey marketplace and customization
 - **Phase 3: Dynamic Journeys** - Adaptive learning paths
 - **Phase 4: Developer Platform** - API and integrations
@@ -59,19 +59,18 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-## Phase 1: Foundation (MVP) ⏳ IN PROGRESS - 85% Complete
+## Phase 1: Foundation (MVP) ⏳ IN PROGRESS - 95% Complete
 
 **Goal**: Launch a working platform where groups can embark on predefined journeys together.
 
 **Timeline**: 3-4 months
 
-**Current Status** (as of v0.2.10 - Feb 9, 2026):
+**Current Status** (as of v0.2.11 - Feb 10, 2026):
 - ✅ Core infrastructure complete
 - ✅ User management complete
 - ✅ Group management complete (v0.2.7)
-- ✅ Journey system - browsing and enrollment complete (v0.2.10)
-- ⏳ Journey content delivery (next up)
-- ⏳ Communication (not started)
+- ✅ Journey system - browsing, enrollment, and content delivery complete (v0.2.11)
+- ⏳ Communication (not started - Phase 1.5 NEXT)
 - ⏳ Polish and launch (not started)
 
 **Features Delivered** (see [Product Spec](PRODUCT_SPEC.md) for details):
@@ -81,13 +80,13 @@ FringeIsland development is organized into four major phases, each building on t
 - ✅ Role Management (feature doc needed)
 - ✅ Journey Catalog & Discovery ([docs/features/implemented/journey-system.md](../features/implemented/journey-system.md))
 - ✅ Journey Enrollment ([docs/features/implemented/journey-system.md](../features/implemented/journey-system.md))
-- ⏳ Journey Content Delivery (next - 15% remaining for Phase 1)
+- ✅ Journey Content Delivery ([docs/features/implemented/journey-system.md](../features/implemented/journey-system.md))
 
 **Success Criteria**:
 - ✅ Users can create accounts and profiles
 - ✅ Users can create and manage groups
-- 🔄 Groups can enroll in predefined journeys (browsing complete, enrollment next)
-- ⏳ Basic forum and messaging for collaboration
+- ✅ Groups can enroll in predefined journeys and work through content (v0.2.11)
+- ⏳ Basic forum and messaging for collaboration (Phase 1.5 — NEXT)
 - ✅ Role-based permissions working (complete)
 - ✅ 8 high-quality predefined journeys available (v0.2.8)
 
@@ -211,9 +210,9 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-### Phase 1.4: Journey System (Weeks 9-11) ✅ MOSTLY COMPLETE - 85% Complete
+### Phase 1.4: Journey System (Weeks 9-11) ✅ COMPLETE
 
-**Status**: ✅ **MOSTLY COMPLETE** (v0.2.10)
+**Status**: ✅ **COMPLETE** (v0.2.11)
 
 **Deliverables**:
 
@@ -234,17 +233,21 @@ FringeIsland development is organized into four major phases, each building on t
    - ✅ Enrollment status checking
    - ✅ Dual-enrollment prevention
 
-3. **Journey Content Delivery** ⏳
-   - Linear journey progression (A→B)
-   - Step-by-step navigation
-   - Content display (text, images, videos)
-   - Activity completion tracking
+3. **Journey Content Delivery** ✅ COMPLETE (v0.2.11)
+   - ✅ Linear journey progression (A→B)
+   - ✅ Step-by-step navigation with Previous/Next
+   - ✅ Content display (description + instructions per step)
+   - ✅ Activity completion tracking (required-step gating)
+   - ✅ Progress saved to progress_data JSONB
+   - ✅ Resume from last position
+   - ✅ Review mode for completed journeys
 
-4. **Journey Progress** ⏳
-   - Individual progress tracking
-   - Group progress overview
-   - Completion status
-   - Travel Guide view of member progress
+4. **Journey Progress** ✅ COMPLETE (v0.2.11)
+   - ✅ Individual progress tracking (progress_data JSONB)
+   - ✅ Completion status per enrollment
+   - ✅ Progress bar on My Journeys page
+   - ⏳ Group progress overview - Deferred to Phase 2
+   - ⏳ Travel Guide view of member progress - Deferred to Phase 2
 
 5. **Initial Predefined Journeys** ✅ COMPLETE (v0.2.8)
    - ✅ Created 8 high-quality journeys
@@ -255,19 +258,19 @@ FringeIsland development is organized into four major phases, each building on t
 **Acceptance Criteria**:
 - ✅ Users can browse journeys (COMPLETE v0.2.8)
 - ✅ Users can enroll in journeys (COMPLETE v0.2.10)
-- ⏳ Journey content displays correctly (NOT STARTED - NEXT UP)
-- ⏳ Progress tracking accurate (NOT STARTED)
-- ⏳ Travel Guides can view member progress (NOT STARTED)
+- ✅ Journey content displays correctly (COMPLETE v0.2.11)
+- ✅ Progress tracking accurate (COMPLETE v0.2.11)
+- ⏳ Travel Guides can view member progress (Deferred to Phase 2)
 
 **Progress**:
 - v0.2.8: Journey catalog and browsing complete (50%)
 - v0.2.9: Error handling system added
 - v0.2.10: Journey enrollment complete (85%)
-- Next: Journey content delivery
+- v0.2.11: Journey content delivery + progress tracking complete (100%) ✅
 
-**Completed**: January 31, 2026 (v0.2.10 - Enrollment)
+**Completed**: February 10, 2026 (v0.2.11 - JourneyPlayer)
 
-**Next**: Journey content delivery (step-by-step navigation)
+**Next**: Phase 1.5 - Communication System
 
 ---
 
@@ -344,7 +347,21 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-## ✅ What We've Completed (v0.1.0 - v0.2.10)
+## ✅ What We've Completed (v0.1.0 - v0.2.11)
+
+### v0.2.11 (Feb 10, 2026) - JourneyPlayer + Test Stability
+- ✅ **JourneyPlayer** — full step-by-step content delivery at `/journeys/[id]/play`
+- ✅ **4 new components**: ProgressBar, StepSidebar, StepContent, JourneyPlayer
+- ✅ **Progress saved** to `journey_enrollments.progress_data` JSONB on every action
+- ✅ **Resume from last position** using `current_step_id`
+- ✅ **Required-step gating** (Next blocked until step completed)
+- ✅ **Completion detection** → marks enrollment `status: 'completed'`
+- ✅ **Review mode** for completed journeys (free navigation)
+- ✅ **My Journeys improvements**: /play links, smart labels, in-progress bar
+- ✅ **Test stability fixed**: 90/90 passing consistently (was 12 failing intermittently)
+- ✅ **suite-setup.ts** with global `beforeAll`/`beforeEach` delays
+- ✅ **4 domain-split test scripts** for targeted feedback
+- ✅ **`signInWithRetry` helper** with exponential backoff
 
 ### v0.2.10 (Jan 31, 2026) - Journey Enrollment System
 - ✅ **Individual journey enrollment** (users can enroll themselves)
@@ -436,45 +453,31 @@ FringeIsland development is organized into four major phases, each building on t
 
 ## 🎯 Next Up (Immediate Priorities)
 
-### Priority 1: Role Assignment UI (Step 4)
-**Goal**: Complete group management with role assignment interface
+### Priority 1: Communication System (Phase 1.5)
+**Goal**: Enable groups to communicate — forums for group discussion, direct messaging for 1:1
 
 **Deliverables**:
-- Promote member to leader
-- Assign/remove roles
-- Role management UI
-- Visual role indicators
+- Group forums (post, reply, moderate)
+- Direct messages between users
+- Notification system (in-app)
+- Read/unread status
 
-**Timeline**: 1-2 weeks
-**Impact**: Completes core group management (~75% Phase 1)
+**Timeline**: 2-3 weeks
+**Impact**: Phase 1.5 complete (~98% Phase 1)
 
 ---
 
-### Priority 2: Journey System Basics (Step 5)
-**Goal**: Enable groups to browse and enroll in journeys
+### Priority 2: Polish and Launch (Phase 1.6)
+**Goal**: Prepare platform for public launch with a small beta group
 
 **Deliverables**:
-- Journey catalog/browse page
-- Journey detail page
-- Enrollment system
-- Journey-group connections
+- Mobile responsiveness audit
+- User onboarding flow
+- E2E tests (Playwright)
+- Beta testing with 10-20 users
 
 **Timeline**: 2-3 weeks
-**Impact**: Major milestone (~85% Phase 1)
-
----
-
-### Priority 3: Journey Content Delivery (Step 6)
-**Goal**: Users can progress through journey content
-
-**Deliverables**:
-- Journey step navigation
-- Content display
-- Progress tracking
-- Completion status
-
-**Timeline**: 2-3 weeks
-**Impact**: Core journey functionality (~95% Phase 1)
+**Impact**: Phase 1 complete → launch ready
 
 ---
 
@@ -894,6 +897,8 @@ FringeIsland development is organized into four major phases, each building on t
 
 ## Decision Log
 
+**2026-02-10**: JourneyPlayer built — progress stored in progress_data JSONB, required-step gating, review mode (v0.2.11)
+**2026-02-10**: Integration test flakiness fixed with inter-test delays in setupFilesAfterEnv (v0.2.11)
 **2026-02-04**: Complete documentation restructuring for better AI agent context management
 **2026-01-31**: Simplified journey enrollment RLS to avoid recursion (v0.2.10)
 **2026-01-31**: Moved dual-enrollment prevention to application layer (v0.2.10)
@@ -918,24 +923,18 @@ FringeIsland development is organized into four major phases, each building on t
 
 ## Current Development Focus (February 2026)
 
-### Active Work (v0.2.10)
-- ✅ Journey enrollment complete
-- ✅ Documentation restructuring complete
-- 🔄 Preparing for journey content delivery
+### Active Work (v0.2.11)
+- ✅ Journey enrollment complete (v0.2.10)
+- ✅ Journey content delivery complete (v0.2.11)
+- ✅ Progress tracking complete (v0.2.11)
+- ⏳ Communication system (Phase 1.5 — NEXT)
 
 ### Next Sprint
-**Priority 1**: Journey Content Delivery
-- Step-by-step navigation UI
-- Content rendering (text, activities, assessments)
-- Save progress as you go
-- Resume from last position
-- Step completion tracking
-
-**Priority 2**: Progress Tracking
-- Step-by-step navigation
-- Content display
-- Progress tracking
-- Completion status
+**Priority 1**: Communication System (Phase 1.5)
+- Group forums (post, reply, moderate)
+- Direct messaging between users
+- Notification system
+- Read/unread status
 
 ### Blockers & Dependencies
 - None currently
@@ -948,6 +947,6 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-**Document Version**: 1.3
-**Last Updated**: February 4, 2026 (v0.2.10)
-**Next Review**: After journey content delivery complete or March 2026
+**Document Version**: 1.5
+**Last Updated**: February 10, 2026 (v0.2.11)
+**Next Review**: After communication system complete or March 2026

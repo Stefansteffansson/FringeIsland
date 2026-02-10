@@ -11,6 +11,8 @@ export interface JourneyStep {
   type: StepType;
   duration_minutes: number;
   required: boolean;
+  description?: string;
+  instructions?: string;
   content?: Record<string, unknown>;
 }
 
@@ -66,6 +68,21 @@ export interface JourneyCard {
 // Journey enrollment status types
 export type EnrollmentStatus = 'active' | 'completed' | 'paused' | 'frozen';
 
+// Progress tracking types for journey player
+export interface StepProgressEntry {
+  completed_at: string;
+  time_spent_minutes: number;
+}
+
+export interface JourneyProgressData {
+  current_step_id?: string;
+  completed_steps?: string[];
+  step_progress?: Record<string, StepProgressEntry>;
+  total_time_spent_minutes?: number;
+  last_checkpoint?: string;
+  total_steps?: number;
+}
+
 // Journey enrollment entity
 export interface JourneyEnrollment {
   id: string;
@@ -77,7 +94,20 @@ export interface JourneyEnrollment {
   status: EnrollmentStatus;
   status_changed_at: string;
   completed_at: string | null;
-  progress_data: Record<string, unknown>;
+  last_accessed_at: string | null;
+  progress_data: JourneyProgressData;
+}
+
+// Enrollment record as used by the JourneyPlayer
+export interface PlayerEnrollment {
+  id: string;
+  journey_id: string;
+  user_id: string | null;
+  group_id: string | null;
+  status: EnrollmentStatus;
+  progress_data: JourneyProgressData;
+  last_accessed_at: string | null;
+  completed_at: string | null;
 }
 
 // Journey filters for catalog

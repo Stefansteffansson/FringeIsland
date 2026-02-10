@@ -124,6 +124,40 @@ export const cleanupTestEnrollment = async (enrollmentId: string) => {
 };
 
 /**
+ * Sign in a test user with retry on auth rate limit.
+ *
+ * Tests call signInWithPassword without checking the return value, so a
+ * silent rate-limit failure leaves the client unauthenticated. This helper
+ * verifies the session was actually created and retries with backoff if not.
+ *
+ * Usage (replaces raw signInWithPassword in tests):
+ *   await signInWithRetry(supabase, email, password);
+ */
+export const signInWithRetry = async (
+  supabase: ReturnType<typeof createTestClient>,
+  email: string,
+  password: string,
+  maxRetries = 3,
+): Promise<void> => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (!error) {
+      // Verify we actually have a session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) return;
+    }
+
+    if (attempt < maxRetries) {
+      // Exponential backoff: 1s, 2s, 4s
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+    }
+  }
+
+  throw new Error(`signInWithRetry: failed to sign in as ${email} after ${maxRetries} attempts`);
+};
+
+/**
  * Generate unique test email
  */
 export const generateTestEmail = () => {

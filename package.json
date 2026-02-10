@@ -12,6 +12,10 @@
     "test:coverage": "jest --coverage",
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration --runInBand",
+    "test:integration:auth": "jest tests/integration/auth --runInBand",
+    "test:integration:groups": "jest tests/integration/groups --runInBand",
+    "test:integration:journeys": "jest tests/integration/journeys --runInBand",
+    "test:integration:rls": "jest tests/integration/rls --runInBand",
     "test:e2e": "jest tests/e2e"
   },
   "dependencies": {

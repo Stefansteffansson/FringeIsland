@@ -8,9 +8,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Journey content delivery system
-- Progress tracking
-- Communication features (forums, messaging)
+- Communication features (forums, messaging, notifications)
+
+---
+
+## [0.2.11] - 2026-02-10
+
+### Added
+- **Journey Player** — Full step-by-step content delivery system at `/journeys/[id]/play`
+  - `ProgressBar` component: reusable progress indicator (blue → green at 100%)
+  - `StepSidebar` component: step list with ✅/⬤/○ indicators, locked future steps, progress summary
+  - `StepContent` component: renders step description, instructions, and type-aware action button
+  - `JourneyPlayer` component: orchestrates navigation, progress saving, completion detection, review mode
+  - Step navigation with Previous / Next buttons and sticky footer
+  - Required-step completion gating (can't advance past required step without completing)
+  - Progress saved to `journey_enrollments.progress_data` JSONB on every action
+  - Resume from last position (`current_step_id` in progress_data)
+  - Completion detection: marks enrollment `status: 'completed'` when all required steps done
+  - Review mode for completed journeys (free navigation, no gating)
+  - Unenrolled users redirected back to journey detail page
+- **My Journeys Improvements**
+  - "Continue" button now navigates to `/journeys/[id]/play` (was `/my-journeys`)
+  - Smart button labels: Start / Continue / Review based on progress state
+  - In-progress bar showing completed steps vs. total steps
+- **Testing Infrastructure Improvements**
+  - `tests/integration/suite-setup.ts`: global delay injection (`beforeAll` 2s + `beforeEach` 800ms)
+  - `signInWithRetry` helper in `tests/helpers/supabase.ts` with exponential backoff
+  - 4 domain-split test scripts: `test:integration:auth`, `test:integration:groups`, `test:integration:journeys`, `test:integration:rls`
+
+### Changed
+- `lib/types/journey.ts`: Added `JourneyProgressData`, `StepProgressEntry`, `PlayerEnrollment` interfaces; extended `JourneyStep` with `description`/`instructions` fields; `JourneyEnrollment.progress_data` now typed as `JourneyProgressData`
+- `app/journeys/[id]/page.tsx`: Enrolled button now links to `/play` with label "Start Journey"
+- `jest.config.js`: Added `suite-setup.ts` to integration project's `setupFilesAfterEnv`
+- `package.json`: Added 4 domain-split `test:integration:*` scripts
+
+### Fixed
+- Integration test flakiness: 12/90 tests were failing randomly due to Supabase auth rate limiting causing silent sign-in failures → unauthenticated queries → RLS blocks → cascading null results. Fixed with inter-test delays.
+- My Journeys group name display bug (`enrollment.group.name` was `(enrollment as any).groups.name`)
+
+### Technical Details
+- **Phase 1.4 Progress**: 85% → 100% complete ✅
+- **New Files**: 6 (4 components, 1 page, 1 test setup)
+- **Modified Files**: 6 (types, 2 pages, jest config, package.json, test helpers)
+- **Test Status**: 90/90 passing (stable, verified on multiple consecutive runs)
 
 ---
 
