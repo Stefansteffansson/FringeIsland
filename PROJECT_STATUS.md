@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-09 (Late evening - RLS Policy Debugging & Fix)
+**Last Updated:** 2026-02-10 (Journey Behavior Tests + RLS Fixes)
 **Current Version:** 0.2.10
 **Active Branch:** main
 
@@ -8,12 +8,15 @@
 
 ## 🎯 What We're Working On NOW
 
-**Current Focus:** ✅ **COMPLETED!** Fixed groups INSERT RLS policy issue - all tests passing!
+**Current Focus:** Journey Content Delivery System (Phase 1.4 - next step after tests)
 
 **Active Tasks:**
-- [x] Debug groups INSERT RLS policy failure ✅ **DONE!**
-- [x] Fix SELECT policy to allow creator to see their groups ✅ **DONE!**
-- [x] Clean up debug files ✅ **DONE!**
+- [x] Create journeys.md behavior spec (B-JRN-001 to B-JRN-007) ✅ **DONE!**
+- [x] Write 48 integration tests for all 7 journey behaviors ✅ **DONE!**
+- [x] Fix journey_enrollments RLS policies ✅ **DONE!**
+- [x] Fix missing journeys SELECT RLS policy ✅ **DONE!**
+- [x] All 48 journey tests passing ✅ **DONE!**
+- [ ] **NEXT:** Journey content delivery (JourneyPlayer UI component)
 
 **Blocked/Waiting:**
 - None
@@ -22,13 +25,13 @@
 
 ## 📊 Quick Stats
 
-- **Phase:** 1.4 - Journey System (85% complete)
+- **Phase:** 1.4 - Journey System (90% complete - tests all green!)
 - **Total Tables:** 13 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 23 applied (+5 today for RLS inactive users fix)
+- **Total Migrations:** 25 applied (+2 today for enrollment RLS + journeys SELECT policy)
 - **Recent Version:** v0.2.10 (Journey Enrollment - Jan 31, 2026)
-- **Test Coverage:** 46 tests (46 passing, 100%!) 🎉 ⬆️ **ALL PASSING!**
-- **Behaviors Documented:** 10 (5 auth, 5 groups) - **6 fully verified** ✅ (+4 auth behaviors verified today!)
-- **Feature Docs:** 3 complete (authentication, journey-system, group-management) ✅ **NEW!**
+- **Test Coverage:** 94 tests (48 journey + 46 other, 48/48 journey passing with `npm run test:integration`)
+- **Behaviors Documented:** 17 (5 auth, 5 groups, 7 journeys) ✅ **NEW!**
+- **Feature Docs:** 3 complete (authentication, journey-system, group-management) ✅
 - **Supabase CLI:** Configured and ready for automated migrations ✅
 
 **Completed Major Features:**
@@ -68,51 +71,55 @@
 
 ## 🔄 Last Session Summary
 
-**Date:** 2026-02-09 (Late evening - RLS Policy Debugging Marathon)
-**Duration:** ~3 hours
+**Date:** 2026-02-10 (Journey Behavior Spec + Integration Tests + RLS Fixes)
 **Summary:**
-- 🔍 **ISSUE DISCOVERED:** Groups INSERT RLS policy was failing all tests
-- 🎯 **ROOT CAUSE FOUND:** SELECT policy was blocking RETURNING clause after INSERT!
-  - Problem: Creator couldn't see their own newly created group
-  - PostgREST does INSERT...RETURNING which triggers SELECT policy
-  - SELECT policy only allowed: is_public=true OR is_member
-  - New groups are private and creator isn't a member yet = SELECT fails!
-- ✅ **SOLUTION:** Fixed SELECT policy to allow creator to see own groups
-  - Added: `created_by_user_id = get_current_user_profile_id()` to SELECT policy
-  - Fixed INSERT policy to use proper function with SECURITY DEFINER
-  - Re-enabled RLS on groups table (was disabled during testing)
+- ✅ **BEHAVIOR SPEC CREATED:** `docs/specs/behaviors/journeys.md` (7 behaviors, B-JRN-001 to B-JRN-007)
+- ✅ **48 TESTS WRITTEN:** Full TDD test suite for all journey behaviors
+- ✅ **2 RLS MIGRATIONS APPLIED:**
+  - `20260210_fix_journey_enrollment_rls_and_schema.sql` - Fixed enrollment RLS + added `last_accessed_at` column
+  - `20260210_add_journeys_rls_policies.sql` - Added missing journeys SELECT policy (was MISSING entirely!)
+- ✅ **ALL 48 JOURNEY TESTS PASSING** via `npx jest --runInBand tests/integration/journeys`
 
-**Major Accomplishments:**
-- 🧪 **ALL TESTS PASSING:** 46/46 (100%!) - up from 43/46 (93%)
-- 🔒 **RLS POLICIES FIXED:** Both INSERT and SELECT policies now working correctly
-- 🧹 **CLEANED UP:** Removed 25+ debug files and temporary migrations
-- 📚 **LEARNED:** PostgREST RETURNING behavior and nested RLS policy evaluation
+**Root Causes Found & Fixed:**
+1. **`journey_enrollments` INSERT blocked by RETURNING**: PostgREST INSERT...RETURNING triggered SELECT policy which used raw subqueries (nested RLS). Fixed with SECURITY DEFINER functions.
+2. **`journeys` table had NO SELECT policy**: RLS was enabled but no policy was created, so nobody could read journeys. Fixed by adding `journeys_select_published` policy.
+3. **Missing `last_accessed_at` column**: Added to `journey_enrollments` table.
+4. **Timestamp format Z vs +00:00**: Fixed test assertions to compare as Date objects.
+5. **UNIQUE constraint cascade failures in resume tests**: Fixed with `try/finally` cleanup pattern.
+6. **Parallel auth rate limiting**: Fixed by adding `--runInBand` to `test:integration` script.
 
-**Debugging Process:**
-- Created 25+ diagnostic scripts and test files
-- Tested function execution (✅ worked), policy conditions (✅ worked), role assignment (✅ worked)
-- Discovered the issue was NOT the INSERT policy but the SELECT policy!
-- Used Supabase logs to trace the actual SQL query being executed
-
-**Files Modified:**
-- **RLS Policies:** Fixed `groups_select_by_creator_or_member` and `groups_insert_by_active_users`
-- **Helper Function:** `public.get_current_user_profile_id()` (SECURITY DEFINER)
-- `PROJECT_STATUS.md` (this file - updated stats and summary)
-- `diagnose-auth-context.js` (added role checking - then deleted during cleanup)
+**New SECURITY DEFINER Functions Created:**
+- `public.is_group_leader(p_group_id UUID)` - Checks if current user is Group Leader
+- `public.is_active_group_member_for_enrollment(p_group_id UUID)` - Checks group membership
 
 **Files Created:**
-- `cleanup-test-users.js` (safely deletes test users and related data)
-- `supabase/migrations/20260209201039_fix_groups_rls_policies_final.sql` (documents RLS fixes)
+- `docs/specs/behaviors/journeys.md` (7 journey behaviors fully documented)
+- `supabase/migrations/20260210_fix_journey_enrollment_rls_and_schema.sql`
+- `supabase/migrations/20260210_add_journeys_rls_policies.sql`
+- `tests/integration/journeys/catalog.test.ts` (B-JRN-001: 6 tests)
+- `tests/integration/journeys/detail.test.ts` (B-JRN-002: 7 tests)
+- `tests/integration/journeys/enrollment.test.ts` (B-JRN-003: 9 tests)
+- `tests/integration/journeys/step-navigation.test.ts` (B-JRN-004: 5 tests)
+- `tests/integration/journeys/progress-tracking.test.ts` (B-JRN-005: 8 tests)
+- `tests/integration/journeys/resume.test.ts` (B-JRN-006: 6 tests)
+- `tests/integration/journeys/completion.test.ts` (B-JRN-007: 7 tests)
 
-**Files Cleaned Up (Deleted):**
-- 25+ debug scripts (.js, .sql, .sh files)
-- 3 temporary migration files
-- 1 temporary scripts/ directory
+**Files Modified:**
+- `tests/helpers/fixtures.ts` (added `testJourneyMultiStep` fixture)
+- `tests/helpers/supabase.ts` (added `cleanupTestJourney`, `cleanupTestEnrollment`)
+- `package.json` (added `--runInBand` to `test:integration` script)
+- `PROJECT_STATUS.md` (this file)
 
 **Test Results:**
-- **Before session:** 43/46 tests passing (93%)
-- **After session:** 46/46 tests passing (100%!) 🎉
-- **Fixed:** 3 failing tests in protected-routes.test.ts (groups INSERT RLS)
+- **Before session:** 46 tests, 46 passing (journey tests didn't exist yet)
+- **After session:** 94 tests, 48/48 journey tests passing with `npm run test:integration`
+- **Note:** `npm test` (parallel) has pre-existing auth test flakiness unrelated to journey changes
+
+**⚠️ Known Issue (Pre-existing, not caused by our changes):**
+- `cleanupTestGroup` fails with `42703: record "old" has no field "group_role_id"`
+  - The `prevent_last_leader_removal` trigger has a bug when CASCADE deleting groups
+  - Only affects test cleanup (console.error), not test results
+  - Should be investigated in a future session
 
 ---
 
@@ -121,12 +128,12 @@
 **See `docs/planning/ROADMAP.md` for complete phase breakdown**
 
 **Immediate (Phase 1.4 - Journey System):**
-1. [Phase 1.4] **Journey content delivery system** (step-by-step navigation) - BUILD WITH TDD! 🚀
-2. [Phase 1.4] Progress tracking for enrolled journeys
-3. [Phase 1.4] Journey completion tracking
+1. [Phase 1.4] **Journey content delivery (JourneyPlayer UI)** - step navigation, content display 🚀 **← NEXT**
+2. [Phase 1.4] Progress tracking UI (leverages tested DB layer from today)
+3. [Phase 1.4] Journey completion UI flow
 
 **Testing & Documentation:**
-4. Fix 3 remaining test failures in protected-routes.test.ts (groups INSERT RLS)
+4. Fix `cleanupTestGroup` 42703 trigger bug (pre-existing, non-critical)
 5. Add tests for remaining group behaviors (B-GRP-002, B-GRP-004)
 
 **Phase 1.5 - Communication:**
