@@ -72,6 +72,7 @@
 ## 🔄 Last Session Summary
 
 **Date:** 2026-02-10 (Journey Behavior Spec + Integration Tests + RLS Fixes)
+**Bridge Doc:** `docs/planning/sessions/2026-02-10-journey-tests-and-rls-fixes.md`
 **Summary:**
 - ✅ **BEHAVIOR SPEC CREATED:** `docs/specs/behaviors/journeys.md` (7 behaviors, B-JRN-001 to B-JRN-007)
 - ✅ **48 TESTS WRITTEN:** Full TDD test suite for all journey behaviors
