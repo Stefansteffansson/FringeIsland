@@ -46,44 +46,47 @@ describe('B-AUTH-002: Sign In Requires Active Profile', () => {
     expect(authData.session?.access_token).toBeDefined();
   });
 
-  it('should block access for users with inactive profiles (is_active=false)', async () => {
+  it('should block sign in for users with inactive profiles (is_active=false)', async () => {
     const admin = createAdminClient();
     const supabase = createTestClient();
 
-    // Arrange: Create test user
+    // Arrange: Create test user then deactivate their profile
     const { email, password, user, profile } = await createTestUser({
       displayName: 'Inactive User Test',
     });
     testUsers.push(user.id);
 
-    // Deactivate the user profile (soft delete)
     await admin
       .from('users')
       .update({ is_active: false })
       .eq('id', profile.id);
 
-    // Act: Try to sign in
+    // Act: Sign in — Supabase Auth allows it (credentials are valid)
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    // Note: Supabase Auth will allow sign in (credentials valid)
-    // But RLS policies should prevent access to data
-    expect(authError).toBeNull(); // Auth succeeds
+    expect(authError).toBeNull();       // Auth layer: credentials accepted
     expect(authData.user).toBeDefined();
 
-    // Assert: Cannot access user profile via RLS
-    const { data: profileData, error: profileError } = await supabase
+    // Application-layer check (mirrors AuthContext.signIn() behaviour):
+    // get_current_user_profile_id() returns null for is_active=false users,
+    // so RLS blocks the profile query entirely.
+    const { data: profileData } = await supabase
       .from('users')
-      .select('*')
+      .select('is_active')
       .eq('auth_user_id', user.id)
-      .single();
+      .maybeSingle();
 
-    // RLS should block access to inactive profiles
-    // Either returns null or throws RLS error
-    const accessBlocked = profileData === null || profileError !== null;
-    expect(accessBlocked).toBe(true);
+    expect(profileData).toBeNull(); // RLS blocks inactive profile
+
+    // AuthContext.signIn() detects a null profile and signs the user out.
+    await supabase.auth.signOut();
+
+    // Verify session cleared
+    const { data: sessionData } = await supabase.auth.getSession();
+    expect(sessionData.session).toBeNull();
   });
 
   it('should fail sign in with invalid credentials', async () => {

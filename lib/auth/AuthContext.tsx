@@ -66,12 +66,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
+
+      // Application-layer active check.
+      // get_current_user_profile_id() returns null for is_active=false users,
+      // so RLS blocks the profile query → profile is null for deactivated accounts.
+      const { data: profile } = await supabase
+        .from('users')
+        .select('is_active')
+        .eq('auth_user_id', data.user.id)
+        .maybeSingle();
+
+      if (!profile) {
+        await supabase.auth.signOut();
+        throw new Error('Your account has been deactivated. Please contact support.');
+      }
+
       return { error: null };
     } catch (error) {
       return { error: error as Error };

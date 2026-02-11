@@ -25,8 +25,10 @@ export default function EditGroupPage() {
   const [group, setGroup] = useState<GroupData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLeader, setIsLeader] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -146,6 +148,28 @@ export default function EditGroupPage() {
     }
   };
 
+  const handleDelete = async () => {
+    setDeleting(true);
+    setError(null);
+
+    try {
+      const { error: deleteError } = await supabase
+        .from('groups')
+        .delete()
+        .eq('id', groupId);
+
+      if (deleteError) throw deleteError;
+
+      // Redirect to groups list — group no longer exists
+      router.push('/groups');
+    } catch (err: any) {
+      console.error('Error deleting group:', err);
+      setError(err.message || 'Failed to delete group. Please try again.');
+      setDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -213,7 +237,7 @@ export default function EditGroupPage() {
           </p>
         </div>
 
-        {/* Form */}
+        {/* Settings Form */}
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl p-8">
           {/* Error Message */}
           {error && (
@@ -353,7 +377,71 @@ export default function EditGroupPage() {
             </button>
           </div>
         </form>
+
+        {/* Danger Zone */}
+        <div className="mt-8 bg-white rounded-2xl shadow-xl p-8 border border-red-100">
+          <h2 className="text-lg font-semibold text-red-700 mb-1">Danger Zone</h2>
+          <p className="text-sm text-gray-500 mb-6">
+            Permanently delete this group and all its data. This cannot be undone.
+          </p>
+          <button
+            type="button"
+            onClick={() => setShowDeleteConfirm(true)}
+            disabled={deleting}
+            className="px-6 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Delete Group
+          </button>
+        </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
+            <div className="text-4xl mb-4 text-center">⚠️</div>
+            <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
+              Delete &quot;{group?.name}&quot;?
+            </h3>
+            <p className="text-gray-600 text-center mb-2">
+              This will permanently delete the group and all associated data:
+            </p>
+            <ul className="text-sm text-gray-500 mb-6 space-y-1 list-disc list-inside">
+              <li>All member records</li>
+              <li>All roles and role assignments</li>
+              <li>All journey enrollments</li>
+            </ul>
+            <p className="text-sm font-semibold text-red-600 text-center mb-6">
+              This action cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleting}
+                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {deleting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Deleting...
+                  </span>
+                ) : (
+                  'Yes, Delete Group'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

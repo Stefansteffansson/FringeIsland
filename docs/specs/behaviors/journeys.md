@@ -203,7 +203,7 @@
 
 ---
 
-## B-JRN-004: Journey Step Navigation ⏳
+## B-JRN-004: Journey Step Navigation ✅
 
 **Rule:** Enrolled users navigate journey steps sequentially. Steps must be completed in order for linear journeys. Users cannot skip required steps.
 
@@ -268,14 +268,15 @@
 
 **Testing Priority:** 🔴 CRITICAL (core feature, data integrity)
 
-**Status:** 🔴 NOT YET IMPLEMENTED
+**Status:** ✅ IMPLEMENTED (v0.2.11)
 
 **History:**
 - 2026-02-09: Documented (planned for next sprint)
+- 2026-02-11: Implemented — `JourneyPlayer.tsx` with Next/Prev navigation, step counter, `current_step_id` saved to `progress_data` on every navigation
 
 ---
 
-## B-JRN-005: Step Completion Tracking ⏳
+## B-JRN-005: Step Completion Tracking ✅
 
 **Rule:** When a user marks a step as complete, that completion is permanently recorded in their enrollment's `progress_data`. Completed steps cannot be "uncompleted". Overall progress percentage is calculated from completed steps.
 
@@ -356,14 +357,15 @@
 
 **Testing Priority:** 🔴 CRITICAL (data integrity, core feature)
 
-**Status:** 🔴 NOT YET IMPLEMENTED
+**Status:** ✅ IMPLEMENTED (v0.2.11)
 
 **History:**
 - 2026-02-09: Documented (planned for next sprint)
+- 2026-02-11: Implemented — `handleMarkStepComplete()` in `JourneyPlayer.tsx` records `completed_steps[]`, `step_progress{}` with `completed_at` + `time_spent_minutes`, idempotent completion
 
 ---
 
-## B-JRN-006: Journey Resume ⏳
+## B-JRN-006: Journey Resume ✅
 
 **Rule:** When an enrolled user returns to a journey they have previously started, they are automatically placed at their last saved step — not restarted from step 1.
 
@@ -422,14 +424,15 @@
 
 **Testing Priority:** 🔴 CRITICAL (core user experience, data-driven)
 
-**Status:** 🔴 NOT YET IMPLEMENTED
+**Status:** ✅ IMPLEMENTED (v0.2.11)
 
 **History:**
 - 2026-02-09: Documented (planned for next sprint)
+- 2026-02-11: Implemented — `getInitialStepIndex()` reads `progress_data.current_step_id` on player load; `my-journeys/page.tsx` shows "Start Journey" / "Continue" / "Review Journey" and progress %
 
 ---
 
-## B-JRN-007: Journey Completion ⏳
+## B-JRN-007: Journey Completion ✅
 
 **Rule:** A journey is marked as complete when all required steps are completed. Completion updates `journey_enrollments.status` to `'completed'` and records `completed_at` timestamp.
 
@@ -485,10 +488,11 @@
 
 **Testing Priority:** 🟡 HIGH (milestone event, data integrity)
 
-**Status:** 🔴 NOT YET IMPLEMENTED
+**Status:** ✅ IMPLEMENTED (v0.2.11)
 
 **History:**
 - 2026-02-09: Documented (planned for next sprint)
+- 2026-02-11: Implemented — auto-detects when all required steps complete, updates `status='completed'` + `completed_at`, shows celebration screen; "Review Journey" mode in `my-journeys/page.tsx`
 
 ---
 
@@ -498,26 +502,23 @@
 
 | Behavior | Description | Status | Tests |
 |----------|-------------|--------|-------|
-| B-JRN-001 | Journey Catalog Discovery | ✅ Implemented (v0.2.8) | ❌ TODO |
-| B-JRN-002 | Journey Detail Access | ✅ Implemented (v0.2.8) | ❌ TODO |
-| B-JRN-003 | Journey Enrollment Rules | ✅ Implemented (v0.2.10) | ❌ TODO |
-| B-JRN-004 | Journey Step Navigation | 🔴 Not Implemented | ❌ TODO |
-| B-JRN-005 | Step Completion Tracking | 🔴 Not Implemented | ❌ TODO |
-| B-JRN-006 | Journey Resume | 🔴 Not Implemented | ❌ TODO |
-| B-JRN-007 | Journey Completion | 🔴 Not Implemented | ❌ TODO |
+| B-JRN-001 | Journey Catalog Discovery | ✅ Implemented (v0.2.8) | `catalog.test.ts` — 6 tests ✅ |
+| B-JRN-002 | Journey Detail Access | ✅ Implemented (v0.2.8) | `detail.test.ts` — 7 tests ✅ |
+| B-JRN-003 | Journey Enrollment Rules | ✅ Implemented (v0.2.10) | `enrollment.test.ts` — 9 tests ✅ |
+| B-JRN-004 | Journey Step Navigation | ✅ Implemented (v0.2.11) | `step-navigation.test.ts` — 5 tests ✅ |
+| B-JRN-005 | Step Completion Tracking | ✅ Implemented (v0.2.11) | `progress-tracking.test.ts` — 8 tests ✅ |
+| B-JRN-006 | Journey Resume | ✅ Implemented (v0.2.11) | `resume.test.ts` — 6 tests ✅ |
+| B-JRN-007 | Journey Completion | ✅ Implemented (v0.2.11) | `completion.test.ts` — 7 tests ✅ |
+
+**Key Components:**
+- `app/journeys/[id]/play/page.tsx` — Journey player page (enrollment check, load state)
+- `components/journeys/JourneyPlayer.tsx` — Full player: navigation, step completion, save progress, completion detection
+- `app/my-journeys/page.tsx` — "Start" / "Continue" / "Review Journey" buttons, progress % display
 
 **Test Coverage:**
-- 0 / 7 behaviors have tests (0%)
-- **Next Priority:** Write tests for B-JRN-003 (enrollment rules - CRITICAL)
-- **Then:** Write tests for B-JRN-004 → B-JRN-005 → B-JRN-006 (content delivery sprint)
-
-**Testing Files to Create:**
-- `tests/integration/journeys/catalog.test.ts` (B-JRN-001)
-- `tests/integration/journeys/enrollment.test.ts` (B-JRN-003)
-- `tests/integration/journeys/step-navigation.test.ts` (B-JRN-004)
-- `tests/integration/journeys/progress-tracking.test.ts` (B-JRN-005)
-- `tests/integration/journeys/resume.test.ts` (B-JRN-006)
-- `tests/integration/journeys/completion.test.ts` (B-JRN-007)
+- 7 / 7 behaviors have tests (100%) ✅
+- Total: 48 tests across 7 files, all passing
+- **Last updated:** 2026-02-11
 
 **Next Behaviors to Document (Future Phases):**
 - B-JRN-008: Group Progress Visibility (Travel Guide can see member progress) - Phase 2

@@ -79,9 +79,9 @@
 
 **Acceptance Criteria:**
 - [x] Sign in with valid credentials succeeds if is_active=true
-- [ ] Sign in with valid credentials fails if is_active=false (TODO - verify)
-- [x] Auth context checks is_active on session load
-- [ ] Inactive users are redirected to account reactivation page (TODO)
+- [x] Sign in with valid credentials blocked if is_active=false (AuthContext auto-signs-out + returns error)
+- [x] Auth context checks is_active after sign in via profile query
+- [ ] Inactive users redirected to account reactivation page (deferred — Phase 2)
 
 **Examples:**
 
@@ -109,7 +109,7 @@
 
 **Testing Priority:** 🔴 CRITICAL (security, prevents deleted users from accessing)
 
-**Status:** 🟡 PARTIALLY IMPLEMENTED (needs verification)
+**Status:** ✅ IMPLEMENTED (v0.2.12) — reactivation page deferred to Phase 2
 
 **History:**
 - 2026-01-24: Implemented (v0.1.0) - is_active flag
@@ -286,14 +286,19 @@
 
 **Implemented Behaviors:**
 - ✅ B-AUTH-001: Sign Up Creates Profile
-- 🟡 B-AUTH-002: Sign In Requires Active Profile (needs verification)
+- ✅ B-AUTH-002: Sign In Requires Active Profile
 - ✅ B-AUTH-003: Session Persistence
 - ✅ B-AUTH-004: Sign Out Cleanup
 - ✅ B-AUTH-005: Protected Route Enforcement
 
 **Test Coverage:**
-- 0 / 5 behaviors have tests (0%)
-- **Priority:** Write tests for B-AUTH-001 and B-AUTH-005 (critical paths)
+- 5 / 5 behaviors have tests (100%) ✅
+- `signup.test.ts` — 4 tests (B-AUTH-001)
+- `signin.test.ts` — 5 tests (B-AUTH-002)
+- `session-persistence.test.ts` — 7 tests (B-AUTH-003)
+- `signout.test.ts` — 5 tests (B-AUTH-004)
+- `protected-routes.test.ts` — 7 tests (B-AUTH-005)
+- **Last updated:** 2026-02-11
 
 **Next Behaviors to Document:**
 - B-AUTH-006: Password Reset Flow

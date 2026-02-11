@@ -12,6 +12,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.12] - 2026-02-11
+
+### Added
+- **Group Deletion** (B-GRP-005 complete)
+  - "Danger Zone" section in `/groups/[id]/edit` with confirmation modal
+  - DELETE RLS policy on `groups` table: Group Leaders can delete their groups
+  - Cascade deletes: memberships, roles, role assignments, enrollments all removed
+- **Catalog Table RLS Policies** — `group_templates`, `role_templates`, `role_template_permissions`, `group_template_roles` now have SELECT policies for authenticated users (were silently blocking all reads)
+- `scripts/apply-migration-temp.js` — reliable migration application via Supabase management API (bypasses CLI tracking issues)
+
+### Fixed
+- **Group creation end-to-end** — Three cascading RLS gaps that prevented group creation:
+  1. `group_memberships`: no INSERT policy allowed `status='active'` (bootstrap case missing) → added "Group creator can join their own group"
+  2. `role_templates`: 406 Not Acceptable — no SELECT policy → added USING(true) policy
+  3. `group_templates`: empty dropdown — same missing SELECT policy → fixed
+- **Role assignment 403** — `user_group_roles` INSERT policy was a placeholder (self-assign only since Jan 25); replaced with proper Group Leaders policy + bootstrap self-assign when no leader exists yet
+- **Role removal silently failing** — no DELETE policy existed on `user_group_roles`; added Group Leaders can remove roles
+- **Group cascade delete blocked** — `prevent_last_leader_removal` trigger fired during CASCADE delete of a group, blocking it; fixed with early return when group no longer exists
+- **B-AUTH-002 inactive user blocking** — `AuthContext.signIn()` now queries `users.is_active` after successful auth; auto signs out and throws if profile is inactive/blocked
+- **Migration tracking** — `scripts/apply-migration-temp.js` established as canonical approach for applying migrations when `db push` fails due to date-only version conflicts
+
+### Security
+- `group_has_leader()` SECURITY DEFINER helper — avoids self-referential RLS recursion when checking if a group has a leader from inside an INSERT policy
+- Bootstrap INSERT policies now properly scoped: only the group creator can self-add, only when preconditions are met
+
+### Technical Details
+- **New Migrations:** 4 (`20260211181225`, `20260211182333`, `20260211183334`, `20260211183842`)
+- **New Files:** 5 (4 migrations + apply-migration-temp.js)
+- **Modified Files:** 4 (edit page, deletion test, AuthContext, signin test)
+- **Test Status:** 110/110 passing ✅
+
+---
+
 ## [0.2.11] - 2026-02-10
 
 ### Added

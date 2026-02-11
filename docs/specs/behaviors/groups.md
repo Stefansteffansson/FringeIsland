@@ -68,14 +68,14 @@
 
 ---
 
-## B-GRP-002: Member Invitation Lifecycle
+## B-GRP-002: Member Invitation Lifecycle ✅
 
 **Rule:** Members can only have status='active' if they accepted an invitation or were directly added by a leader.
 
 **Why:** Prevents unauthorized access to private groups. Ensures explicit opt-in for group membership.
 
 **Verified by:**
-- **Test:** `tests/integration/groups/invitations.test.ts` (TODO)
+- **Test:** `tests/integration/groups/invitations.test.ts` ✅ **9 tests**
 - **Code:** `components/groups/InviteMemberModal.tsx` (creates invitations)
 - **Code:** `app/invitations/page.tsx` (accept/decline flow)
 - **Database:** RLS policies on `group_memberships` table
@@ -188,14 +188,14 @@
 
 ---
 
-## B-GRP-004: Group Editing Permissions
+## B-GRP-004: Group Editing Permissions ✅
 
 **Rule:** Only Group Leaders can edit group settings (name, description, visibility, etc.).
 
 **Why:** Prevents unauthorized modification of group configuration. Maintains leadership control.
 
 **Verified by:**
-- **Test:** `tests/integration/groups/edit-permissions.test.ts` (TODO)
+- **Test:** `tests/integration/groups/edit-permissions.test.ts` ✅ **5 tests**
 - **Code:** `app/groups/[id]/edit/page.tsx` (authorization check)
 - **Database:** RLS policy on `groups` table (UPDATE)
 
@@ -240,15 +240,15 @@
 
 ---
 
-## B-GRP-005: Group Deletion Rules
+## B-GRP-005: Group Deletion Rules 🔄
 
 **Rule:** Only Group Leaders can delete groups, and deletion cascades to all related records.
 
 **Why:** Prevents accidental data loss, ensures only authorized users can delete.
 
 **Verified by:**
-- **Test:** `tests/integration/groups/deletion.test.ts` (TODO)
-- **Code:** `[deletion UI not yet implemented]`
+- **Test:** `tests/integration/groups/deletion.test.ts` ✅ **5 tests** (cascade + RLS blocking)
+- **Code:** `[deletion UI not yet implemented — see Status below]`
 - **Database:** CASCADE foreign keys on related tables
 
 **Acceptance Criteria:**
@@ -284,25 +284,28 @@
 
 **Testing Priority:** 🟡 HIGH (data integrity)
 
-**Status:** 🔴 NOT YET IMPLEMENTED
+**Status:** ✅ IMPLEMENTED (v0.2.12)
 
 **History:**
 - 2026-02-07: Documented (planned feature)
+- 2026-02-11: Cascade + RLS blocking tests added
+- 2026-02-11: DELETE RLS policy added, trigger cascade fix applied, Danger Zone UI added (v0.2.12)
 
 ---
 
 ## Notes
 
 **Implemented Behaviors:**
-- ✅ B-GRP-001: Last Leader Protection (4/4 tests passing ✅)
-- ✅ B-GRP-002: Member Invitation Lifecycle
-- ✅ B-GRP-003: Group Visibility Rules
-- ✅ B-GRP-004: Group Editing Permissions
-- 🔴 B-GRP-005: Group Deletion Rules (planned)
+- ✅ B-GRP-001: Last Leader Protection (4 tests ✅)
+- ✅ B-GRP-002: Member Invitation Lifecycle (9 tests ✅)
+- ✅ B-GRP-003: Group Visibility Rules (7 tests ✅)
+- ✅ B-GRP-004: Group Editing Permissions (5 tests ✅)
+- ✅ B-GRP-005: Group Deletion Rules (6 tests ✅)
 
 **Test Coverage:**
-- 1 / 5 behaviors have tests (20%)
-- **Next Priority:** Write tests for B-GRP-003 (RLS visibility - CRITICAL for security)
+- 5 / 5 behaviors have tests (100%) ✅
+- Total group tests: ~30 across all files
+- **Last updated:** 2026-02-11
 
 **Next Behaviors to Document:**
 - B-GRP-006: Member Removal Rules
