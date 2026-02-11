@@ -28,30 +28,43 @@ export function getPhaseTimeline(): Phase[] {
 
     const phases: Phase[] = [];
 
-    // Phase 1 subphases
+    // Phase 1 subphases.
+    // Each pattern is anchored to the ### heading line so the match never
+    // spans into an adjacent phase section. We capture the Status line that
+    // immediately follows the heading (within ~200 chars) and classify from that.
     const phase1Subphases = [
-      { id: '1.1', name: 'Core Infrastructure', pattern: /Phase 1\.1[\s\S]*?✅ COMPLETE/ },
-      { id: '1.2', name: 'User Management', pattern: /Phase 1\.2[\s\S]*?✅ COMPLETE/ },
-      { id: '1.3', name: 'Group Management', pattern: /Phase 1\.3[\s\S]*?✅ COMPLETE/ },
-      { id: '1.4', name: 'Journey System', pattern: /Phase 1\.4[\s\S]*?(\d+)% Complete/ },
-      { id: '1.5', name: 'Communication', pattern: /Phase 1\.5[\s\S]*?NOT STARTED/ },
-      { id: '1.6', name: 'Polish & Launch', pattern: /Phase 1\.6[\s\S]*?NOT STARTED/ },
+      { id: '1.1', name: 'Core Infrastructure' },
+      { id: '1.2', name: 'User Management' },
+      { id: '1.3', name: 'Group Management' },
+      { id: '1.4', name: 'Journey System' },
+      { id: '1.5', name: 'Communication' },
+      { id: '1.6', name: 'Polish & Launch' },
     ];
 
-    phase1Subphases.forEach(({ id, name, pattern }) => {
-      const match = content.match(pattern);
+    phase1Subphases.forEach(({ id, name }) => {
+      // Match the heading line for this specific phase, then capture up to
+      // the next 300 characters (enough for the **Status** line).
+      const headingPattern = new RegExp(
+        `### Phase ${id.replace('.', '\\.')}:[\\s\\S]{0,300}`
+      );
+      const match = content.match(headingPattern);
 
-      if (match) {
-        if (match[0].includes('✅ COMPLETE')) {
-          phases.push({ id, name, status: 'complete', percentage: 100, label: `Phase ${id}` });
-        } else if (match[1]) {
-          // In progress with percentage
+      if (!match) return;
+
+      const section = match[0];
+
+      if (section.includes('✅ COMPLETE') || section.includes('✅ **COMPLETE**')) {
+        phases.push({ id, name, status: 'complete', percentage: 100, label: `Phase ${id}` });
+      } else {
+        // Look for an explicit "X% Complete" in the status line
+        const pctMatch = section.match(/(\d+)%\s*Complete/i);
+        if (pctMatch) {
           phases.push({
             id,
             name,
             status: 'in-progress',
-            percentage: parseInt(match[1]),
-            label: `Phase ${id}`
+            percentage: parseInt(pctMatch[1]),
+            label: `Phase ${id}`,
           });
         } else {
           // Not started

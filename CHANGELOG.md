@@ -12,6 +12,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.13] - 2026-02-11
+
+### Added
+- **B-ROL-001, B-ROL-002, B-ROL-003 behavior specs** — `docs/specs/behaviors/roles.md` fully documented
+  - B-ROL-001: Role Assignment Permissions (INSERT/DELETE RLS, bootstrap, helpers)
+  - B-ROL-002: Role Template Initialization (group creation flow, partial-impl note)
+  - B-ROL-003: Role Visibility Rules (SELECT policy on `user_group_roles`)
+- **`role-assignment.test.ts`** — 8 integration tests covering B-ROL-001 (INSERT side) and B-ROL-003 (SELECT side) with authenticated clients; previously these were untested
+- **`scripts/delete-groups-admin.js`** — admin utility to safely delete groups by owner email (dry-run + delete modes)
+
+### Fixed
+- **Dev dashboard: Phase timeline** — Phase 1.4 was missing; Phase 1.5 was falsely shown as complete. Root cause: regex patterns in `roadmap-parser.ts` weren't anchored to `### Phase X.Y:` headings. Fixed with a 300-char headed window approach.
+- **Dev dashboard: Test stats** — Tests showed 0% (0:0). Root cause: regex expected `tests (N passing` format but `PROJECT_STATUS.md` uses `tests, **N/N passing**`. Fixed with dual-format regex.
+- **Documentation count errors** — Corrected behavior count (21→20), migration count (29→33 files), test count (110→118) in `PROJECT_STATUS.md` and `groups.md`
+
+### Security
+- **`SET search_path = ''` applied to all 9 public functions** — resolves all 9 Supabase Security Advisor "Function Search Path Mutable" warnings
+  - `get_current_user_profile_id`, `get_current_role`, `is_group_leader`, `is_active_group_leader`, `is_active_group_member_for_enrollment`, `group_has_leader`, `update_updated_at_column`, `validate_user_group_role`, `prevent_last_leader_removal`
+  - All table references fully qualified with `public.` prefix inside function bodies
+
+### Technical Details
+- **New Migration:** 1 (`20260211192415_fix_function_search_path.sql`)
+- **New Files:** 4 (migration, roles.md, role-assignment.test.ts, delete-groups-admin.js)
+- **Modified Files:** 4 (roadmap-parser.ts, parsers.ts, PROJECT_STATUS.md, groups.md)
+- **Test Status:** 118/118 passing ✅
+
+---
+
 ## [0.2.12] - 2026-02-11
 
 ### Added

@@ -115,7 +115,12 @@ export function getQuickStats(): {
     const phaseMatch = content.match(/\*\*Phase:\*\* (.+)/);
     const tablesMatch = content.match(/\*\*Total Tables:\*\* (\d+)/);
     const migrationsMatch = content.match(/\*\*Total Migrations:\*\* (\d+)/);
-    const testsMatch = content.match(/\*\*Test Coverage:\*\* (\d+) tests \((\d+) passing/);
+    // Matches either format:
+    //   "110 tests, **110/110 passing**"  (current)
+    //   "110 tests (110 passing"           (legacy)
+    const testsMatch =
+      content.match(/\*\*Test Coverage:\*\* (\d+) tests[^0-9]+(\d+)\/\d+ passing/) ||
+      content.match(/\*\*Test Coverage:\*\* (\d+) tests \((\d+) passing/);
     const behaviorsMatch = content.match(/\*\*Behaviors Documented:\*\* (\d+)/);
 
     return {

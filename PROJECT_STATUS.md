@@ -1,7 +1,7 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-11 (RLS Bootstrap Fixes + Group Deletion + Auth Hardening)
-**Current Version:** 0.2.12
+**Last Updated:** 2026-02-11 (Security Fixes + Behavior Docs + Role Tests)
+**Current Version:** 0.2.13
 **Active Branch:** main
 
 ---
@@ -19,6 +19,10 @@
 - [x] **Fix role assignment 403 (user_group_roles RLS)** ✅ **DONE v0.2.12!**
 - [x] **Fix group creation 403 (group_memberships bootstrap)** ✅ **DONE v0.2.12!**
 - [x] **Fix catalog tables 406 (group_templates/role_templates RLS)** ✅ **DONE v0.2.12!**
+- [x] **Fix 9 Supabase Security Advisor warnings (Function Search Path Mutable)** ✅ **DONE v0.2.13!**
+- [x] **Document B-ROL-001, B-ROL-002, B-ROL-003 behaviors** ✅ **DONE v0.2.13!**
+- [x] **Write role-assignment.test.ts (8 tests, INSERT + SELECT RLS)** ✅ **DONE v0.2.13!**
+- [x] **Fix dev dashboard (phase timeline + test stats regex)** ✅ **DONE v0.2.13!**
 - [ ] **NEXT:** Phase 1.5 - Communication System (forums, messaging)
 
 **Blocked/Waiting:**
@@ -28,12 +32,12 @@
 
 ## 📊 Quick Stats
 
-- **Phase:** 1.4 - Journey System (100% complete ✅) → Moving to Phase 1.5
+- **Phase:** 1.5 - Communication System (0% — not started)
 - **Total Tables:** 13 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 29 applied
-- **Recent Version:** v0.2.12 (RLS Bootstrap Fixes - Feb 11, 2026)
-- **Test Coverage:** 110 tests, **110/110 passing** ✅ (stable)
-- **Behaviors Documented:** 17 (5 auth, 5 groups, 7 journeys) ✅
+- **Total Migrations:** 33 migration files
+- **Recent Version:** v0.2.13 (Security Fixes + Behavior Docs + Tests - Feb 11, 2026)
+- **Test Coverage:** 118 tests, **118/118 passing** ✅ (stable)
+- **Behaviors Documented:** 20 (5 auth, 5 groups, 7 journeys, 3 roles) ✅
 - **Feature Docs:** 3 complete (authentication, journey-system, group-management) ✅
 - **Supabase CLI:** Configured and ready for automated migrations ✅
 
@@ -46,7 +50,7 @@
 - ✅ Journey Content Delivery (JourneyPlayer UI)
 - ✅ **Group Deletion (Danger Zone UI + RLS)** 🎯 **NEW v0.2.12!**
 - ✅ Error Handling System
-- ✅ Testing Infrastructure (Jest + integration tests, 110/110 stable) 🧪
+- ✅ Testing Infrastructure (Jest + integration tests, 118/118 stable) 🧪
 - ✅ **RLS Security (all tables protected)** 🔒
 - ✅ **Development Dashboard** (visual project status at /dev/dashboard) 📊
 
@@ -76,45 +80,32 @@
 
 ## 🔄 Last Session Summary
 
-**Date:** 2026-02-11 (RLS Bootstrap Fixes + Group Deletion + Auth Hardening)
-**Bridge Doc:** `docs/planning/sessions/2026-02-11-rls-bootstrap-fixes-and-group-deletion.md`
+**Date:** 2026-02-11 (Security Fixes + Behavior Docs + Role Tests)
+**Bridge Doc:** `docs/planning/sessions/2026-02-11-security-behavior-docs-and-tests.md`
 **Summary:**
-- ✅ **B-GRP-005 COMPLETE:** Group Deletion — Danger Zone UI + DELETE RLS + cascade trigger fix
-- ✅ **B-AUTH-002 COMPLETE:** Sign-in now blocks inactive users (was only partially implemented)
-- ✅ **ROLE ASSIGNMENT FIXED:** user_group_roles INSERT/DELETE RLS policies were wrong from day 1
-- ✅ **GROUP CREATION FIXED:** 3 cascading RLS gaps resolved end-to-end
-- ✅ **110/110 tests passing** throughout
+- ✅ **Security:** Fixed 9 Supabase "Function Search Path Mutable" warnings — `SET search_path = ''` applied to all 9 public functions (v0.2.13)
+- ✅ **Behaviors:** Documented B-ROL-001, B-ROL-002, B-ROL-003 in `docs/specs/behaviors/roles.md`
+- ✅ **Tests:** `role-assignment.test.ts` written — 8 new tests filling INSERT/SELECT test gap (now 118 total)
+- ✅ **Dashboard:** Fixed 3 bugs — Phase 1.4 missing from timeline, Phase 1.5 false green, Tests 0%
+- ✅ **Docs audit:** Corrected behavior count (21→20), migration count (29→33), test counts throughout
+- ✅ **Admin cleanup:** Deleted 3 orphan groups for stefan@example.com via `scripts/delete-groups-admin.js`
 
-**What was fixed:**
-- `prevent_last_leader_removal` trigger blocked CASCADE group deletes — fixed with group-existence check
-- `user_group_roles` INSERT policy was self-assign-only placeholder — replaced with Group Leaders policy + bootstrap
-- `user_group_roles` DELETE policy was missing entirely — added
-- `group_memberships` INSERT policy deleted as "overly permissive" — broke group creation; added bootstrap policy
-- `group_templates` / `role_templates` had RLS enabled but no SELECT policies — added USING(true) policies
-- Migration tracking canonical workflow established + `scripts/apply-migration-temp.js` created
-
-**Migrations Applied (4 new):**
-- `20260211181225` — Group DELETE policy + cascade trigger fix
-- `20260211182333` — user_group_roles INSERT+DELETE policies + group_has_leader() helper
-- `20260211183334` — group_memberships bootstrap INSERT policy
-- `20260211183842` — SELECT policies for group_templates, role_templates, role_template_permissions, group_template_roles
+**Migrations Applied (1 new):**
+- `20260211192415` — `SET search_path = ''` for all 9 public functions (security hardening)
 
 **Files Created:**
-- `supabase/migrations/20260211181225_add_group_delete_policy.sql`
-- `supabase/migrations/20260211182333_fix_user_group_roles_insert_policy.sql`
-- `supabase/migrations/20260211183334_fix_group_memberships_bootstrap_insert.sql`
-- `supabase/migrations/20260211183842_add_select_policies_for_catalog_tables.sql`
-- `scripts/apply-migration-temp.js`
+- `scripts/delete-groups-admin.js`
+- `docs/specs/behaviors/roles.md` (B-ROL-001, B-ROL-002, B-ROL-003)
+- `supabase/migrations/20260211192415_fix_function_search_path.sql`
+- `tests/integration/groups/role-assignment.test.ts`
 
 **Files Modified:**
-- `app/groups/[id]/edit/page.tsx` (Danger Zone section + handleDelete + confirmation modal)
-- `tests/integration/groups/deletion.test.ts` (last test now expects success, not blocked)
-- `lib/auth/AuthContext.tsx` (signIn checks is_active, auto signs out inactive users)
-- `tests/integration/auth/signin.test.ts` (B-AUTH-002 test updated)
-- `docs/specs/behaviors/groups.md` (B-GRP-005 marked ✅ IMPLEMENTED)
-- `docs/specs/behaviors/authentication.md` (B-AUTH-002 marked ✅)
+- `lib/dashboard/roadmap-parser.ts` (fixed phase detection regex)
+- `lib/dashboard/parsers.ts` (fixed test stats regex)
+- `PROJECT_STATUS.md` (version, counts, session summary)
+- `docs/specs/behaviors/groups.md` (test count breakdown)
 
-**Test Results:** 110/110 passing ✅
+**Test Results:** 118/118 passing ✅
 
 ---
 

@@ -304,10 +304,19 @@
 
 **Test Coverage:**
 - 5 / 5 behaviors have tests (100%) ✅
-- Total group tests: ~30 across all files
+- `last-leader.test.ts` — 4 tests (B-GRP-001)
+- `invitations.test.ts` — 9 tests (B-GRP-002)
+- `rls/groups.test.ts` — 7 tests (B-GRP-003)
+- `edit-permissions.test.ts` — 5 tests (B-GRP-004)
+- `deletion.test.ts` — 6 tests (B-GRP-005)
+- Total GRP tests: **31 across 5 files** ✅
+- *(Role assignment for group roles is tested in `role-assignment.test.ts` — see roles.md)*
 - **Last updated:** 2026-02-11
 
 **Next Behaviors to Document:**
 - B-GRP-006: Member Removal Rules
 - B-GRP-007: Group Template Initialization
 - B-GRP-008: Group Label Uniqueness (if enforced)
+
+**Related Behavior Specs:**
+- `roles.md` — B-ROL-001: Role Assignment Permissions ✅
