@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-11 (Security Fixes + Behavior Docs + Role Tests)
+**Last Updated:** 2026-02-11 (RBAC Design Complete)
 **Current Version:** 0.2.13
 **Active Branch:** main
 
@@ -23,10 +23,12 @@
 - [x] **Document B-ROL-001, B-ROL-002, B-ROL-003 behaviors** ✅ **DONE v0.2.13!**
 - [x] **Write role-assignment.test.ts (8 tests, INSERT + SELECT RLS)** ✅ **DONE v0.2.13!**
 - [x] **Fix dev dashboard (phase timeline + test stats regex)** ✅ **DONE v0.2.13!**
+- [x] **RBAC / Dynamic Permissions System — DESIGN COMPLETE** ✅ (22 decisions, D1-D22)
 - [ ] **NEXT:** Phase 1.5 - Communication System (forums, messaging)
+- [ ] **NEXT:** RBAC implementation (after Phase 1.5 communication infrastructure)
 
 **Blocked/Waiting:**
-- None
+- RBAC implementation depends on Phase 1.5 messaging (D13: in-app notifications needed for membership flows)
 
 ---
 
@@ -53,6 +55,7 @@
 - ✅ Testing Infrastructure (Jest + integration tests, 118/118 stable) 🧪
 - ✅ **RLS Security (all tables protected)** 🔒
 - ✅ **Development Dashboard** (visual project status at /dev/dashboard) 📊
+- ✅ **RBAC System Design** (22 decisions, ready for implementation) 🔒
 
 ---
 
@@ -80,32 +83,23 @@
 
 ## 🔄 Last Session Summary
 
-**Date:** 2026-02-11 (Security Fixes + Behavior Docs + Role Tests)
-**Bridge Doc:** `docs/planning/sessions/2026-02-11-security-behavior-docs-and-tests.md`
+**Date:** 2026-02-11 (RBAC Design Complete — Session 2)
 **Summary:**
-- ✅ **Security:** Fixed 9 Supabase "Function Search Path Mutable" warnings — `SET search_path = ''` applied to all 9 public functions (v0.2.13)
-- ✅ **Behaviors:** Documented B-ROL-001, B-ROL-002, B-ROL-003 in `docs/specs/behaviors/roles.md`
-- ✅ **Tests:** `role-assignment.test.ts` written — 8 new tests filling INSERT/SELECT test gap (now 118 total)
-- ✅ **Dashboard:** Fixed 3 bugs — Phase 1.4 missing from timeline, Phase 1.5 false green, Tests 0%
-- ✅ **Docs audit:** Corrected behavior count (21→20), migration count (29→33), test counts throughout
-- ✅ **Admin cleanup:** Deleted 3 orphan groups for stefan@example.com via `scripts/delete-groups-admin.js`
+- ✅ **RBAC Design Complete:** 22 design decisions (D1-D22) across two planning sessions
+- ✅ **Q1-Q8 resolved:** Granularity, union, no negatives, has_permission(), caching, migration, guardrails, visitor group
+- ✅ **Q9-Q11 resolved:** Schema group-to-group only (D15), preserve data on leaving (D16), four default roles (D17)
+- ✅ **New decisions D14-D22:** Role selector UI, data privacy/consent, try-it journeys, system-level grids, joining groups = Member, seeded permissions delta
+- ✅ **Key terminology:** "Group Leader" → Steward, "Travel Guide" → Guide, "journey groups" → engagement groups
+- ✅ **Planning doc finalized:** `docs/features/planned/dynamic-permissions-system.md`
+- ✅ **Memory files updated:** MEMORY.md (90 lines), rbac-planning.md, rls-and-testing.md
 
-**Migrations Applied (1 new):**
-- `20260211192415` — `SET search_path = ''` for all 9 public functions (security hardening)
+**No code changes this session** — design/planning only.
 
-**Files Created:**
-- `scripts/delete-groups-admin.js`
-- `docs/specs/behaviors/roles.md` (B-ROL-001, B-ROL-002, B-ROL-003)
-- `supabase/migrations/20260211192415_fix_function_search_path.sql`
-- `tests/integration/groups/role-assignment.test.ts`
+**Previous Session (2026-02-11, Session 1):**
+- Security hardening (v0.2.13), behavior docs, role tests, dashboard fixes
+- See `docs/planning/sessions/2026-02-11-security-behavior-docs-and-tests.md`
 
-**Files Modified:**
-- `lib/dashboard/roadmap-parser.ts` (fixed phase detection regex)
-- `lib/dashboard/parsers.ts` (fixed test stats regex)
-- `PROJECT_STATUS.md` (version, counts, session summary)
-- `docs/specs/behaviors/groups.md` (test count breakdown)
-
-**Test Results:** 118/118 passing ✅
+**Test Results:** 118/118 passing ✅ (unchanged)
 
 ---
 
@@ -114,21 +108,21 @@
 **See `docs/planning/ROADMAP.md` for complete phase breakdown**
 
 **Immediate (Phase 1.5 - Communication System):**
-1. [Phase 1.5] Basic messaging system 🚀 **← NEXT**
+1. [Phase 1.5] Basic messaging system 🚀 **← NEXT** (also infrastructure for RBAC membership flows, D13)
 2. [Phase 1.5] Group forums/discussions
-3. [Phase 1.5] Notification system
+3. [Phase 1.5] Notification system (in-app, required for group-joins-group flows)
+
+**RBAC Implementation (after Phase 1.5 messaging infrastructure):**
+4. Schema evolution (group_type column, group-to-group memberships, personal groups)
+5. Build `has_permission()` SQL function + `usePermissions()` React hook
+6. Migrate UI from `isLeader` to `hasPermission()` (parallel run with feature flag)
+7. Role management UI (Steward creates/customizes roles)
 
 **Testing & Documentation:**
-4. Verify group creation flow end-to-end in browser (after RLS fixes)
-5. Add B-ROL-001 behavior spec (Role Assignment Permissions) — now fully implemented
-
-**Phase 1.5 - Communication:**
-6. [Phase 1.5] Basic messaging system
-7. [Phase 1.5] Group forums/discussions
-8. [Phase 1.5] Notification system
+8. Verify group creation flow end-to-end in browser (after RLS fixes)
 
 **Phase 2 - Journey Experience:**
-9. [Phase 2] Facilitator/Travel Guide tools
+9. [Phase 2] Facilitator/Guide tools
 10. [Phase 2] Group journey coordination
 11. [Phase 2] Advanced progress tracking
 

@@ -278,6 +278,8 @@ FringeIsland development is organized into four major phases, each building on t
 
 **Status**: ⏳ **NOT STARTED**
 
+**Note**: Phase 1.5 is also **infrastructure for the RBAC system** (D13). The in-app messaging system is needed for group membership flows (join requests, acceptance notifications, group-joins-group notifications). This elevates its priority.
+
 **Deliverables**:
 
 1. **Forum System** ⏳
@@ -289,16 +291,22 @@ FringeIsland development is organized into four major phases, each building on t
 
 2. **Messaging** ⏳
    - Direct messages between users
-   - Message notifications
+   - In-app notifications (also needed for RBAC membership flows)
    - Message history
    - Read/unread status
+
+3. **Notification System** ⏳ (infrastructure for RBAC)
+   - In-app notification delivery
+   - Group membership notifications (join requests, acceptance)
+   - Group-joins-group notifications (D13: individual + group-level)
 
 **Acceptance Criteria**:
 - Users can post and reply in forums
 - Direct messaging working
-- Notifications delivered correctly
+- In-app notifications delivered correctly
+- Notification infrastructure supports membership flows (for RBAC phase)
 
-**Priority**: MEDIUM - After journey system basics
+**Priority**: HIGH - Infrastructure for both communication AND RBAC system
 
 ---
 
@@ -565,9 +573,9 @@ FringeIsland development is organized into four major phases, each building on t
    - Version control (basic)
    - Change tracking
 
-2. **Group Customization**
-   - Custom group roles beyond templates
-   - Advanced permission customization
+2. **Group Customization** (RBAC design complete — see `docs/features/planned/dynamic-permissions-system.md`)
+   - Custom group roles (Steward can create/customize — D2, D17)
+   - Dynamic permission system (hasPermission() replaces isLeader — D1, D4)
    - Group branding (logo, colors)
 
 3. **Enhanced Forums**
@@ -897,6 +905,7 @@ FringeIsland development is organized into four major phases, each building on t
 
 ## Decision Log
 
+**2026-02-11**: RBAC/Dynamic Permissions System design complete — 22 decisions (D1-D22). See `docs/features/planned/dynamic-permissions-system.md`. Key: universal group pattern, groups-join-groups, 4 default roles (Steward/Guide/Member/Observer), 31 permissions, data privacy consent, try-it journeys.
 **2026-02-10**: JourneyPlayer built — progress stored in progress_data JSONB, required-step gating, review mode (v0.2.11)
 **2026-02-10**: Integration test flakiness fixed with inter-test delays in setupFilesAfterEnv (v0.2.11)
 **2026-02-04**: Complete documentation restructuring for better AI agent context management
@@ -923,21 +932,26 @@ FringeIsland development is organized into four major phases, each building on t
 
 ## Current Development Focus (February 2026)
 
-### Active Work (v0.2.11)
-- ✅ Journey enrollment complete (v0.2.10)
-- ✅ Journey content delivery complete (v0.2.11)
-- ✅ Progress tracking complete (v0.2.11)
+### Active Work (v0.2.13)
+- ✅ Journey system complete (v0.2.11)
+- ✅ Security hardening + behavior docs + role tests (v0.2.13)
+- ✅ **RBAC system design complete** (22 decisions, D1-D22) — `docs/features/planned/dynamic-permissions-system.md`
 - ⏳ Communication system (Phase 1.5 — NEXT)
 
 ### Next Sprint
 **Priority 1**: Communication System (Phase 1.5)
 - Group forums (post, reply, moderate)
 - Direct messaging between users
-- Notification system
+- In-app notification system (also infrastructure for RBAC membership flows)
 - Read/unread status
 
+**Priority 2**: RBAC Implementation (after Phase 1.5 messaging)
+- Schema evolution (group_type, group-to-group memberships, personal groups)
+- `has_permission()` function + `usePermissions()` hook
+- Migrate from `isLeader` to `hasPermission()`
+
 ### Blockers & Dependencies
-- None currently
+- RBAC implementation depends on Phase 1.5 in-app messaging (D13: membership notifications)
 
 ### Technical Debt
 - Add unit tests for critical paths
@@ -947,6 +961,6 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-**Document Version**: 1.5
-**Last Updated**: February 10, 2026 (v0.2.11)
+**Document Version**: 1.6
+**Last Updated**: February 11, 2026 (RBAC design complete, Phase 1.5 priority elevated)
 **Next Review**: After communication system complete or March 2026
