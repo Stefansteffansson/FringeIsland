@@ -86,7 +86,36 @@ npm test
 - New tests: [list new test files]
 ```
 
-### 3. Update Documentation
+### 3. Update Agent Learnings (NEW - Agent Learning System)
+
+For each domain you worked in today, append discoveries to the relevant journal:
+
+**Journal files:** `docs/agents/learnings/[domain].md`
+- `database.md` — Schema, migration, RLS discoveries
+- `ui.md` — Component, styling, UX discoveries
+- `integration.md` — Data flow, query, state management discoveries
+- `testing.md` — Test pattern, debugging, coverage discoveries
+- `architecture.md` — Design, schema evolution, dependency discoveries
+- `qa.md` — Review findings, recurring issues
+- `sprints.md` — Process improvements, planning insights
+
+**For each discovery, append:**
+```markdown
+### YYYY-MM-DD: [Short description]
+[What happened, what was learned]
+→ Promoted to playbook? Not yet
+```
+
+**Cross-cutting insights** (affect multiple agents) → Also note in MEMORY.md if under 150-line cap.
+
+**Report:**
+```
+📚 Agent Learnings:
+- [domain].md: [N] new entries
+- MEMORY.md: [Updated / No changes needed]
+```
+
+### 4. Update Documentation
 
 **A. Update PROJECT_STATUS.md (ALWAYS REQUIRED) ⚠️ ROOT DIRECTORY!**
 **File path:** `PROJECT_STATUS.md` (root directory, NOT docs/PROJECT_STATUS.md!)
@@ -136,7 +165,7 @@ Update if:
 
 **Show diff to user for approval**
 
-### 4. Create Session Bridge (if significant work)
+### 5. Create Session Bridge (if significant work)
 **If substantial work done:**
 - Create file: `docs/planning/sessions/YYYY-MM-DD-brief-description.md`
 - Include: summary, decisions, files changed, next steps
@@ -183,7 +212,7 @@ Update if:
 [Any important notes for next session]
 ```
 
-### 5. Update Features Database (if applicable)
+### 6. Update Features Database (if applicable)
 **If features completed or added:**
 
 ```bash
@@ -196,13 +225,13 @@ node manage_features.js
 - Add new features discovered
 - Update test status
 
-### 6. Update CHANGELOG.md (if version change)
+### 7. Update CHANGELOG.md (if version change)
 **If implementing a new version:**
 - Add version entry
 - List all changes
 - Update date
 
-### 7. Git Commit (optional but recommended)
+### 8. Git Commit (optional but recommended)
 **Ask user:**
 ```
 Would you like me to create a git commit?
@@ -225,7 +254,7 @@ git add [relevant files]
 git commit -m "[commit message]"
 ```
 
-### 8. Final Report
+### 9. Final Report
 **Present to user:**
 ```
 ✅ Session closed for FringeIsland
@@ -668,7 +697,7 @@ Completed comprehensive documentation restructuring:
 - docs/agents/README.md (created)
 - docs/agents/contexts/database-agent.md (created)
 - docs/agents/contexts/ui-agent.md (created)
-- docs/agents/contexts/feature-agent.md (created)
+- docs/agents/contexts/feature-agent.md (created, later archived)
 - docs/workflows/boot-up.md (created)
 - docs/workflows/close-down.md (created - this file!)
 

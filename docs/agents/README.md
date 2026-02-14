@@ -1,217 +1,173 @@
-# Agent Contexts
+# Agent System
 
-**Purpose:** Provide focused, minimal context for AI agents working on specific domains
-
-**Last Updated:** February 4, 2026
-
----
-
-## 🎯 What Are Agent Contexts?
-
-Agent contexts are **curated documentation packages** that contain only the information needed for a specific type of work. This helps AI assistants:
-
-- **Load faster** - Only relevant information
-- **Focus better** - No distraction from unrelated code
-- **Work smarter** - Pre-filtered context for the task
-- **Stay under token limits** - Minimal, focused content
+**Purpose:** Two-tier agent structure with continuous learning for AI-assisted development
+**Last Updated:** February 13, 2026
 
 ---
 
-## 📋 Available Contexts
+## Architecture
 
-### [database-agent.md](./contexts/database-agent.md)
-**For:** Database schema changes, migrations, RLS policies
-**Includes:** Schema overview, migration patterns, RLS guidelines, Supabase patterns
-**Skip:** UI components, styling, frontend logic
+Agents are organized in two tiers:
 
-### [ui-agent.md](./contexts/ui-agent.md)
-**For:** UI components, styling, user experience
-**Includes:** Component patterns, Tailwind conventions, UX guidelines, modal patterns
-**Skip:** Database schema, backend logic, migrations
+### Tier 1: Domain Agents (Knowledge + Execution)
+These are your "hands" — they know how to build things in their domain.
 
-### [feature-agent.md](./contexts/feature-agent.md)
-**For:** Implementing new features end-to-end
-**Includes:** Full-stack patterns, feature workflow, testing guidelines, documentation requirements
-**Skip:** Deep implementation details (load specific docs as needed)
+| Agent | File | Purpose |
+|-------|------|---------|
+| **Database** | [database-agent.md](./contexts/database-agent.md) | Schema, migrations, RLS, triggers, functions |
+| **UI** | [ui-agent.md](./contexts/ui-agent.md) | Components, styling, UX patterns, accessibility |
+| **Integration** | [integration-agent.md](./contexts/integration-agent.md) | Data flow, Supabase queries, state management |
+| **Test** | [test-agent.md](./contexts/test-agent.md) | Behavior specs, test writing, coverage tracking |
 
----
+### Tier 2: Process Agents (Thinking + Governance)
+These are your "brain" — they think about what to build and whether it's good.
 
-## 🚀 How to Use Agent Contexts
+| Agent | File | Purpose |
+|-------|------|---------|
+| **Architect** | [architect-agent.md](./contexts/architect-agent.md) | System design, schema evolution, technical decisions |
+| **QA/Review** | [qa-agent.md](./contexts/qa-agent.md) | Code review, security audit, pattern compliance |
+| **Sprint** | [sprint-agent.md](./contexts/sprint-agent.md) | Planning, retrospectives, knowledge curation |
 
-### For AI Assistants
-
-**Starting a database task:**
-```
-"Read docs/agents/contexts/database-agent.md, then help me add a new table for notifications."
-```
-
-**Starting a UI task:**
-```
-"Read docs/agents/contexts/ui-agent.md, then help me create a modal for confirming deletion."
-```
-
-**Starting a feature:**
-```
-"Read docs/agents/contexts/feature-agent.md, then help me implement the messaging system."
-```
-
-### For Humans
-
-Use agent contexts to:
-- Understand what domain-specific context an AI needs
-- Review key patterns before assigning work
-- Onboard new team members faster
+### Legacy (Archived)
+| Agent | File | Status |
+|-------|------|--------|
+| **Feature** | [feature-agent.md](./contexts/archive/feature-agent.md) | Replaced by Integration Agent + workflows. Archived for reference. |
 
 ---
 
-## 📐 Context Design Principles
+## How Agents Work Together
 
-**Each agent context should:**
+### Feature Development Flow
+```
+Sprint Agent: "Here's what we're building"
+    |
+Architect Agent: "Here's the design"
+    |
+Test Agent: "Here are the behavior specs + failing tests" (RED)
+    |
+Database Agent + Integration Agent + UI Agent: "Built it" (GREEN)
+    |
+QA/Review Agent: "Reviewed — looks good" (or "fix these issues")
+    |
+Test Agent: "All tests pass"
+    |
+Sprint Agent: "Update status, retrospective"
+```
 
-1. **Be focused** - One domain, one purpose
-2. **Be complete** - Everything needed for that domain
-3. **Be minimal** - Nothing extra
-4. **Reference other docs** - Don't duplicate, link instead
-5. **Include examples** - Show don't tell
-
-**Token Budget:**
-- Target: ~5,000-10,000 tokens per context
-- Leave room for actual code/files
-- Link to detailed docs rather than including full text
+### Bug Fix Flow
+```
+Test Agent: "Failing test reproduces the bug" (RED)
+    |
+[Domain Agent]: "Fixed" (GREEN)
+    |
+QA/Review Agent: "Verified, no regressions"
+```
 
 ---
 
-## 🔧 Creating New Agent Contexts
+## Continuous Learning System
 
-### When to Create a New Context
+Agents learn through a three-layer system:
 
-Create a new agent context when:
-- A new domain emerges (e.g., "API-agent" for external APIs)
-- An existing context grows too large (split it)
-- A specialized workflow needs unique context (e.g., "migration-agent")
+### Layer 1: Playbooks (stable, curated)
+The agent context files themselves. Contain **proven patterns** confirmed across multiple uses. Updated deliberately during Sprint retrospectives.
 
-### Template Structure
+**Location:** `docs/agents/contexts/[agent].md`
+
+### Layer 2: Journals (running, append-only)
+Each agent has a companion learning log. Discoveries are appended during work. Low friction, fast capture.
+
+**Location:** `docs/agents/learnings/[domain].md`
+
+| Domain | Journal File |
+|--------|-------------|
+| Database | `learnings/database.md` |
+| UI | `learnings/ui.md` |
+| Integration | `learnings/integration.md` |
+| Testing | `learnings/testing.md` |
+| Architecture | `learnings/architecture.md` |
+| QA | `learnings/qa.md` |
+| Sprints | `learnings/sprints.md` |
+
+### Layer 3: Collective Memory (cross-cutting index)
+`MEMORY.md` in the Claude Code memory directory. Holds only cross-cutting rules that affect ALL agents. Hard cap: 150 lines.
+
+### Learning Flow
+```
+During work:
+  Discovery → Agent Journal (append)
+
+Close-down workflow:
+  "What did we learn?" → Relevant Agent Journal(s)
+  Cross-cutting insight → MEMORY.md
+
+Sprint retrospective:
+  Review journals → Promote confirmed patterns to Playbooks
+  Review MEMORY.md → Prune outdated entries
+  Flag recurring issues → Update relevant agent's Known Pitfalls
+```
+
+### Journal Entry Format
+```markdown
+### YYYY-MM-DD: [Short description]
+[What happened, what was learned]
+→ Promoted to playbook? [Not yet / Yes (date)]
+```
+
+### Promotion Criteria
+A journal entry is promoted to a playbook when:
+- Confirmed across **2+ separate uses** (not just one occurrence)
+- Represents a **stable pattern** (not a one-off workaround)
+- Would **prevent a mistake** if known upfront
+
+---
+
+## Agent Context Structure
+
+Every agent playbook follows this structure:
 
 ```markdown
-# [Domain] Agent Context
+# [Agent Name] Context
 
-**Purpose:** [One-line description]
-**For:** [Types of tasks]
-**Last Updated:** [Date]
+## Identity          — Who am I? What do I care about?
+## Quick Reference   — Key files, commands, numbers
+## Boundaries        — What I do / don't do / hand off to
+## [Domain Content]  — Patterns, checklists, examples
+## Quality Gates     — How I know my work is done
+## Known Pitfalls    — Common mistakes to avoid
+## Learning Protocol — Journal location and update process
+## Related Docs      — Links to detailed documentation
+```
+
+**Critical sections** that older agents may lack:
+- **Boundaries** — Prevents agents from doing each other's work
+- **Quality Gates** — Clear "definition of done"
+- **Learning Protocol** — Connection to the journal system
 
 ---
 
-## Quick Reference
+## Which Agent to Load
 
-[Key information in bullet points]
+| Work Type | Primary Agent | Also Load |
+|-----------|--------------|-----------|
+| Database changes | Database | Architect (for design) |
+| UI components | UI | Integration (for data) |
+| Wiring data to UI | Integration | — |
+| Writing tests | Test | Relevant domain agent |
+| System design | Architect | Database (for schema) |
+| Code review | QA/Review | — |
+| Sprint planning | Sprint | — |
+| New feature (full) | Start with Architect, then domain agents as needed | Test |
+| Bug fix | Test first (reproduce), then domain agent | QA/Review (verify) |
 
----
-
-## Essential Patterns
-
-[Code patterns specific to this domain]
+**Rule:** Load 1-2 agents at a time, not all seven. Each agent's Boundaries section tells you when to hand off.
 
 ---
 
 ## Related Documentation
 
-[Links to detailed docs]
-
----
-
-## Common Tasks
-
-[Step-by-step for frequent operations]
-```
-
----
-
-## 🎓 Learning Path
-
-**New to the project?**
-1. Read `PROJECT_STATUS.md` (current state)
-2. Read `CLAUDE.md` (technical patterns)
-3. Choose your domain:
-   - Database work → database-agent.md
-   - UI work → ui-agent.md
-   - Feature work → feature-agent.md
-4. Load relevant feature docs from `docs/features/`
-
----
-
-## 📊 Context Usage Guidelines
-
-### For Database Work
-- **Always load:** database-agent.md
-- **Usually load:** schema-overview.md, migrations-log.md
-- **Sometimes load:** Specific feature docs if touching feature data
-- **Rarely load:** UI components, frontend code
-
-### For UI Work
-- **Always load:** ui-agent.md
-- **Usually load:** Relevant feature docs from features/implemented/
-- **Sometimes load:** Database schema if querying data
-- **Rarely load:** Migration files, backend logic
-
-### For Feature Work
-- **Always load:** feature-agent.md, CLAUDE.md
-- **Usually load:** Relevant existing feature docs
-- **Sometimes load:** database-agent.md OR ui-agent.md (depending on focus)
-- **Rarely load:** Everything at once (too much context)
-
----
-
-## 🔄 Keeping Contexts Updated
-
-**Update agent contexts when:**
-- New patterns emerge (e.g., new modal pattern)
-- Technology changes (e.g., Next.js upgrade)
-- Common mistakes identified (add to guidelines)
-- New tools added (e.g., new database library)
-
-**Don't update for:**
-- Individual feature implementations (those go in features/)
-- Project-specific details (those go in CLAUDE.md)
-- Temporary workarounds (document those separately)
-
----
-
-## 💡 Tips for Effective Context Use
-
-### Do's
-- ✅ Load the right context for your task
-- ✅ Reference other docs when you need more detail
-- ✅ Follow patterns shown in the context
-- ✅ Update the context if you discover better patterns
-
-### Don'ts
-- ❌ Load all contexts at once (context overload)
-- ❌ Skip contexts and load entire codebase (inefficient)
-- ❌ Ignore patterns in favor of custom approaches (consistency matters)
-- ❌ Let contexts become outdated (maintain them)
-
----
-
-## 📚 Related Documentation
-
-- **Main technical reference:** `CLAUDE.md`
-- **Current project state:** `PROJECT_STATUS.md`
+- **Workflows:** `docs/workflows/` (boot-up, close-down, TDD, feature development)
+- **Behavior specs:** `docs/specs/behaviors/`
 - **Feature docs:** `docs/features/`
-- **Database docs:** `docs/database/`
-- **Architecture docs:** `docs/architecture/`
-
----
-
-## 🤝 Contributing
-
-When you use an agent context and discover:
-- **Missing information:** Add it
-- **Outdated information:** Update it
-- **Confusing information:** Clarify it
-- **Wrong information:** Fix it
-
-Keep contexts **lean**, **accurate**, and **helpful**.
-
----
-
-**Agent contexts are living documents. Improve them as you use them.**
+- **Project status:** `PROJECT_STATUS.md`
+- **Technical patterns:** `CLAUDE.md`

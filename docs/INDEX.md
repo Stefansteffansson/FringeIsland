@@ -89,13 +89,22 @@ Roadmaps, decisions, and session notes
 - **[sessions/](planning/sessions/)** - Session bridges and development notes
 - **[archive/](planning/archive/)** - Historical/meta documentation
 
-### 🤖 Agent Contexts (`/docs/agents/`)
-Specialized contexts for AI agents working on specific domains
+### 🤖 Agent System (`/docs/agents/`)
+Two-tier agent structure with continuous learning (7 agents)
 
-- **[contexts/database-agent.md](agents/contexts/database-agent.md)** - Database work context
-- **[contexts/ui-agent.md](agents/contexts/ui-agent.md)** - UI/component work context
-- **[contexts/feature-agent.md](agents/contexts/feature-agent.md)** - Feature development context
-- **[README.md](agents/README.md)** - How to use agent contexts
+**Tier 1 — Domain Agents:**
+- **[contexts/database-agent.md](agents/contexts/database-agent.md)** - Schema, migrations, RLS, triggers
+- **[contexts/ui-agent.md](agents/contexts/ui-agent.md)** - Components, styling, UX patterns
+- **[contexts/integration-agent.md](agents/contexts/integration-agent.md)** - Data flow, queries, state management
+- **[contexts/test-agent.md](agents/contexts/test-agent.md)** - Behavior specs, test writing, coverage
+
+**Tier 2 — Process Agents:**
+- **[contexts/architect-agent.md](agents/contexts/architect-agent.md)** - System design, technical decisions
+- **[contexts/qa-agent.md](agents/contexts/qa-agent.md)** - Code review, security audit, pattern compliance
+- **[contexts/sprint-agent.md](agents/contexts/sprint-agent.md)** - Planning, retrospectives, knowledge curation
+
+**Learning Journals:** `agents/learnings/*.md` (one per agent domain)
+- **[README.md](agents/README.md)** - Agent system overview and learning system
 
 ### 🔄 Workflows (`/docs/workflows/`)
 Standard workflows for common development tasks

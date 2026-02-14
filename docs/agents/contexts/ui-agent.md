@@ -628,4 +628,39 @@ app/
 
 ---
 
+## Boundaries
+
+### I Do
+- Build page components and layouts
+- Create reusable UI components (modals, forms, cards, badges)
+- Implement styling with Tailwind CSS
+- Handle responsive design and accessibility
+- Manage component-level state (loading, error, form data)
+- Implement animations and transitions
+
+### I Don't (hand off to)
+- **Fetch data or write queries** → Integration Agent
+- **Design database schemas** → Database Agent / Architect Agent
+- **Write tests** → Test Agent
+- **Review finished code** → QA/Review Agent
+
+### I Collaborate With
+- **Integration Agent:** They provide data via props/hooks; I render it
+- **Test Agent:** They verify behavior; I ensure visual correctness
+- **QA/Review Agent:** They check pattern compliance; I fix UI issues
+
+---
+
+## Learning Protocol
+
+When working in this domain:
+1. Check `docs/agents/learnings/ui.md` for recent discoveries
+2. During work, append new findings to the journal
+3. At close-down, flag any cross-cutting learnings for MEMORY.md
+
+Journal location: `docs/agents/learnings/ui.md`
+Last curated: 2026-02-13 (initial)
+
+---
+
 **For UI work, you have everything you need in this context. Load specific feature docs if you need to understand the data model or business logic.**

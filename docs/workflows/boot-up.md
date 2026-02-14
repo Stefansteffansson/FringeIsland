@@ -123,7 +123,7 @@ OR
 **Optionally load based on work type:**
 - Database work → `docs/agents/contexts/database-agent.md`
 - UI work → `docs/agents/contexts/ui-agent.md`
-- Feature work → `docs/agents/contexts/feature-agent.md`
+- Feature work → `docs/agents/contexts/integration-agent.md` + `docs/agents/contexts/architect-agent.md`
 - Specific feature → `docs/features/implemented/[feature].md`
 - **Testing/TDD work** → `docs/specs/behaviors/[domain].md` + `docs/workflows/tdd-workflow.md`
 
@@ -240,7 +240,7 @@ What type of work will you be doing?
 **Load appropriate context:**
 - Option 1 → database-agent.md
 - Option 2 → ui-agent.md
-- Option 3 → feature-agent.md
+- Option 3 → integration-agent.md + architect-agent.md
 - Option 4 → Based on bug location
 - Option 5 → No additional context
 - Option 6 → Ask for specifics
@@ -297,7 +297,7 @@ Ready to work. What's first?
 2. **Check PRODUCT_SPEC.md** - Is "notifications" listed as a feature?
 3. **Check docs/features/** - Does feature doc exist?
 4. If missing, alert user: "Feature not in Product Spec. Should we add it first?"
-5. Load feature-agent.md context
+5. Load integration-agent.md + architect-agent.md contexts
 6. Load TDD workflow (docs/workflows/tdd-workflow.md)
 7. Check git status
 8. Ask: "Planning or implementing notifications?"
@@ -339,7 +339,7 @@ Ask: "What will you work on?"
   ↓
   ├─→ Database work → Load database-agent.md
   ├─→ UI work → Load ui-agent.md
-  ├─→ Feature work → Load feature-agent.md
+  ├─→ Feature work → Load integration-agent.md + architect-agent.md
   ├─→ Specific feature → Load feature doc
   ├─→ Documentation → No additional context
   └─→ Other → Ask for details
@@ -400,7 +400,8 @@ What would you like to work on?
 
 📚 Context loaded:
 - CLAUDE.md (technical patterns - auto)
-- feature-agent.md (full-stack development)
+- integration-agent.md (data flow, queries)
+- architect-agent.md (system design)
 - journey-system.md (feature docs)
 
 🎯 Next priorities:

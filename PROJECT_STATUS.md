@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-11 (RBAC Design Complete)
+**Last Updated:** 2026-02-13 (Agent System Architecture)
 **Current Version:** 0.2.13
 **Active Branch:** main
 
@@ -24,6 +24,7 @@
 - [x] **Write role-assignment.test.ts (8 tests, INSERT + SELECT RLS)** ✅ **DONE v0.2.13!**
 - [x] **Fix dev dashboard (phase timeline + test stats regex)** ✅ **DONE v0.2.13!**
 - [x] **RBAC / Dynamic Permissions System — DESIGN COMPLETE** ✅ (22 decisions, D1-D22)
+- [x] **Agent System — Two-tier architecture with continuous learning** ✅ (7 agents, 7 journals, 3-layer learning)
 - [ ] **NEXT:** Phase 1.5 - Communication System (forums, messaging)
 - [ ] **NEXT:** RBAC implementation (after Phase 1.5 communication infrastructure)
 
@@ -56,6 +57,7 @@
 - ✅ **RLS Security (all tables protected)** 🔒
 - ✅ **Development Dashboard** (visual project status at /dev/dashboard) 📊
 - ✅ **RBAC System Design** (22 decisions, ready for implementation) 🔒
+- ✅ **Agent System** (7 agents, two-tier architecture, continuous learning) 🤖
 
 ---
 
@@ -74,30 +76,33 @@
 - **Architecture decisions:** `docs/architecture/ARCHITECTURE.md`
 - **Planning context:** `docs/planning/ROADMAP.md` + `docs/planning/DEFERRED_DECISIONS.md`
 
-**Agent Contexts (focused, minimal):**
-- `docs/agents/contexts/database-agent.md` - For DB schema, migrations, RLS
-- `docs/agents/contexts/ui-agent.md` - For components, styling, UX
-- `docs/agents/contexts/feature-agent.md` - For feature development
+**Agent System (two-tier, 7 agents — see `docs/agents/README.md`):**
+- **Tier 1 — Domain:** `database-agent.md`, `ui-agent.md`, `integration-agent.md`, `test-agent.md`
+- **Tier 2 — Process:** `architect-agent.md`, `qa-agent.md`, `sprint-agent.md`
+- **Learning journals:** `docs/agents/learnings/*.md` (one per domain)
 
 ---
 
 ## 🔄 Last Session Summary
 
-**Date:** 2026-02-11 (RBAC Design Complete — Session 2)
+**Date:** 2026-02-13 (Agent System Architecture)
 **Summary:**
-- ✅ **RBAC Design Complete:** 22 design decisions (D1-D22) across two planning sessions
-- ✅ **Q1-Q8 resolved:** Granularity, union, no negatives, has_permission(), caching, migration, guardrails, visitor group
-- ✅ **Q9-Q11 resolved:** Schema group-to-group only (D15), preserve data on leaving (D16), four default roles (D17)
-- ✅ **New decisions D14-D22:** Role selector UI, data privacy/consent, try-it journeys, system-level grids, joining groups = Member, seeded permissions delta
-- ✅ **Key terminology:** "Group Leader" → Steward, "Travel Guide" → Guide, "journey groups" → engagement groups
-- ✅ **Planning doc finalized:** `docs/features/planned/dynamic-permissions-system.md`
-- ✅ **Memory files updated:** MEMORY.md (90 lines), rbac-planning.md, rls-and-testing.md
+- ✅ **Agent System built:** Two-tier architecture (4 domain + 3 process agents)
+- ✅ **5 new agent playbooks:** Test, Architect, Integration, Sprint, QA/Review
+- ✅ **7 learning journals:** One per agent domain (continuous learning system)
+- ✅ **3-layer learning:** Playbooks (stable) → Journals (running) → MEMORY.md (cross-cutting index)
+- ✅ **Feature Agent → Integration Agent:** Refactored, old agent archived
+- ✅ **Existing agents updated:** Database + UI agents got Boundaries + Learning Protocol
+- ✅ **README rewritten:** `docs/agents/README.md` — full system overview
+- ✅ **MEMORY.md restructured:** Pure index, 78 lines (150-line hard cap)
+- ✅ **Close-down workflow updated:** New step 3 "Update Agent Learnings"
+- ✅ **6 files updated** for feature-agent.md → archive references
 
-**No code changes this session** — design/planning only.
+**No code changes this session** — documentation/architecture only.
 
-**Previous Session (2026-02-11, Session 1):**
-- Security hardening (v0.2.13), behavior docs, role tests, dashboard fixes
-- See `docs/planning/sessions/2026-02-11-security-behavior-docs-and-tests.md`
+**Previous Session (2026-02-11, Session 2):**
+- RBAC design complete (22 decisions, D1-D22)
+- See `docs/features/planned/dynamic-permissions-system.md`
 
 **Test Results:** 118/118 passing ✅ (unchanged)
 
