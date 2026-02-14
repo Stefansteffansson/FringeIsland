@@ -77,8 +77,28 @@ Pick 2-3 goals maximum. Each goal should be:
 - **Valuable** — Moves the project forward meaningfully
 - **Testable** — Has clear "done" criteria
 
-#### 3. Break Into Tasks
-For each goal, create tasks following this template:
+#### 3. Break Into Tasks — MANDATORY TDD ORDERING
+
+**CRITICAL: Tasks MUST follow TDD order. Tests come BEFORE implementation, not after.**
+
+The correct task dependency chain for any new feature:
+
+```
+1. Feature doc (verify in Product Spec, create/update)
+2. Behavior specs (Test Agent writes B-XXX-NNN)
+3. Integration tests (Test Agent writes, runs → MUST FAIL = RED)
+4. Schema/system design (Architect Agent)
+5. Database migration (Database Agent) → some tests go GREEN
+6. UI components (UI Agent)
+7. Data wiring (Integration Agent) → remaining tests go GREEN
+8. Refactor + document
+```
+
+**The Test Agent runs SECOND (after feature context), NOT LAST.**
+**Tests MUST fail before implementation begins (RED phase).**
+**If tests pass immediately, something is wrong.**
+
+For each task, use this template:
 
 ```markdown
 ### Task: [Action verb] [specific thing]
@@ -89,13 +109,27 @@ For each goal, create tasks following this template:
 **Estimate:** S (< 1 hour) / M (1-3 hours) / L (3+ hours)
 ```
 
-Example:
+Example (correct TDD ordering):
 ```markdown
+### Task: Write behavior specs for notifications
+**Goal:** Phase 1.5 Communication System
+**Agent(s):** Test Agent
+**Depends on:** Feature doc verified
+**Done when:** B-COMM-001 to B-COMM-003 documented with acceptance criteria
+**Estimate:** S
+
+### Task: Write failing integration tests for notifications
+**Goal:** Phase 1.5 Communication System
+**Agent(s):** Test Agent
+**Depends on:** Behavior specs written
+**Done when:** Tests written, run, and FAIL (RED) — no implementation exists yet
+**Estimate:** M
+
 ### Task: Design notifications table schema
 **Goal:** Phase 1.5 Communication System
-**Agent(s):** Architect Agent → Database Agent
-**Depends on:** Nothing
-**Done when:** Migration SQL reviewed and ready to apply
+**Agent(s):** Architect Agent
+**Depends on:** Behavior specs + failing tests exist
+**Done when:** Schema design documented, addresses all test scenarios
 **Estimate:** M
 ```
 

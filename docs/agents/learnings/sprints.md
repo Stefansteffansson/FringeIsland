@@ -19,4 +19,29 @@ Sprint process established. Key insights from project history:
 
 ---
 
+### 2026-02-14: CRITICAL — TDD ordering violation in Sprint 1.5-A
+
+**What happened:** Sprint Agent ordered tasks with Tests last (Task 10, blocked by all implementation). This resulted in test-after development, NOT TDD. Tests ran against a fully implemented system — no RED phase, no failing tests driving implementation.
+
+**Actual order:** Architect → Database → UI → Integration → Tests (WRONG)
+**Correct order:** Feature doc → Behaviors → Tests (RED) → Architect → Database/UI/Integration (GREEN) → Refactor
+
+**Root cause:** Sprint Agent treated tests as "verification at the end" rather than "specification before implementation." The dependency graph had tests blocked by implementation tasks, inverting the TDD cycle.
+
+**MANDATORY RULE — TDD ordering for ALL future sprints:**
+1. Feature doc (verify in Product Spec, create/update feature doc)
+2. Behavior specs (B-XXX-NNN in docs/specs/behaviors/)
+3. Integration tests written and run — MUST FAIL (RED)
+4. THEN Architect designs schema/system
+5. THEN Database Agent implements migrations
+6. THEN UI + Integration Agents build and wire
+7. Tests run again — MUST PASS (GREEN)
+8. Refactor, document
+
+**The Test Agent runs SECOND (after feature context), not LAST.**
+
+→ Promoted to playbook? MUST PROMOTE — this is a critical process rule.
+
+---
+
 <!-- Append new entries below this line -->

@@ -37,22 +37,26 @@ These are your "brain" — they think about what to build and whether it's good.
 
 ## How Agents Work Together
 
-### Feature Development Flow
+### Feature Development Flow (TDD — MANDATORY ORDER)
 ```
-Sprint Agent: "Here's what we're building"
-    |
-Architect Agent: "Here's the design"
+Sprint Agent: "Here's what we're building" (feature doc verified)
     |
 Test Agent: "Here are the behavior specs + failing tests" (RED)
+    |                    ← Tests MUST exist and FAIL before design/implementation
+Architect Agent: "Here's the design" (informed by test scenarios)
     |
 Database Agent + Integration Agent + UI Agent: "Built it" (GREEN)
     |
 QA/Review Agent: "Reviewed — looks good" (or "fix these issues")
     |
-Test Agent: "All tests pass"
+Test Agent: "All tests pass, coverage verified"
     |
 Sprint Agent: "Update status, retrospective"
 ```
+
+**CRITICAL:** The Test Agent runs BEFORE the Architect Agent for new features.
+Tests drive the design, not the other way around. If tests pass immediately
+after writing (before implementation), something is wrong.
 
 ### Bug Fix Flow
 ```

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth/AuthContext';
+import { NotificationProvider } from '@/lib/notifications/NotificationContext';
 import Navigation from '@/components/Navigation';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
 
@@ -22,8 +23,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <ErrorBoundary>
           <AuthProvider>
-            <Navigation />
-            {children}
+            <NotificationProvider>
+              <Navigation />
+              {children}
+            </NotificationProvider>
           </AuthProvider>
         </ErrorBoundary>
       </body>

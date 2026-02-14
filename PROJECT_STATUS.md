@@ -1,14 +1,14 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-13 (Agent System Architecture)
-**Current Version:** 0.2.13
+**Last Updated:** 2026-02-14 (Phase 1.5-A: Notifications + Forum)
+**Current Version:** 0.2.14
 **Active Branch:** main
 
 ---
 
 ## 🎯 What We're Working On NOW
 
-**Current Focus:** Phase 1.5 - Communication System (forums, messaging, notifications)
+**Current Focus:** Phase 1.5-B - Direct Messaging (next sub-sprint)
 
 **Active Tasks:**
 - [x] Create journeys.md behavior spec (B-JRN-001 to B-JRN-007) ✅
@@ -25,23 +25,24 @@
 - [x] **Fix dev dashboard (phase timeline + test stats regex)** ✅ **DONE v0.2.13!**
 - [x] **RBAC / Dynamic Permissions System — DESIGN COMPLETE** ✅ (22 decisions, D1-D22)
 - [x] **Agent System — Two-tier architecture with continuous learning** ✅ (7 agents, 7 journals, 3-layer learning)
-- [ ] **NEXT:** Phase 1.5 - Communication System (forums, messaging)
-- [ ] **NEXT:** RBAC implementation (after Phase 1.5 communication infrastructure)
+- [x] **Phase 1.5-A: Notification System + Group Forum** ✅ **DONE v0.2.14!**
+- [ ] **NEXT:** Phase 1.5-B - Direct Messaging (user-to-user)
+- [ ] **NEXT:** RBAC implementation (partially unblocked — notifications infrastructure exists)
 
 **Blocked/Waiting:**
-- RBAC implementation depends on Phase 1.5 messaging (D13: in-app notifications needed for membership flows)
+- RBAC implementation partially unblocked (notifications exist), full unblock after Phase 1.5-B messaging
 
 ---
 
 ## 📊 Quick Stats
 
-- **Phase:** 1.5 - Communication System (0% — not started)
-- **Total Tables:** 13 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 33 migration files
-- **Recent Version:** v0.2.13 (Security Fixes + Behavior Docs + Tests - Feb 11, 2026)
-- **Test Coverage:** 118 tests, **118/118 passing** ✅ (stable)
-- **Behaviors Documented:** 20 (5 auth, 5 groups, 7 journeys, 3 roles) ✅
-- **Feature Docs:** 3 complete (authentication, journey-system, group-management) ✅
+- **Phase:** 1.5 - Communication System (~50% — notifications + forum done, messaging next)
+- **Total Tables:** 15 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
+- **Total Migrations:** 36 migration files
+- **Recent Version:** v0.2.14 (Notifications + Forum - Feb 14, 2026)
+- **Test Coverage:** 138 tests, **138/138 passing** ✅ (stable)
+- **Behaviors Documented:** 27 (5 auth, 5 groups, 7 journeys, 3 roles, 7 communication) ✅
+- **Feature Docs:** 3 complete + 2 planned designs (notification-system, group-forum-system)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
 
 **Completed Major Features:**
@@ -51,13 +52,15 @@
 - ✅ Journey Enrollment (individual + group)
 - ✅ My Journeys Page
 - ✅ Journey Content Delivery (JourneyPlayer UI)
-- ✅ **Group Deletion (Danger Zone UI + RLS)** 🎯 **NEW v0.2.12!**
+- ✅ **Group Deletion (Danger Zone UI + RLS)** v0.2.12
 - ✅ Error Handling System
-- ✅ Testing Infrastructure (Jest + integration tests, 118/118 stable) 🧪
+- ✅ Testing Infrastructure (Jest + integration tests, 138/138 stable) 🧪
 - ✅ **RLS Security (all tables protected)** 🔒
 - ✅ **Development Dashboard** (visual project status at /dev/dashboard) 📊
 - ✅ **RBAC System Design** (22 decisions, ready for implementation) 🔒
 - ✅ **Agent System** (7 agents, two-tier architecture, continuous learning) 🤖
+- ✅ **Notification System** (7 types, Realtime push, triggers, bell UI) 🔔 **NEW v0.2.14!**
+- ✅ **Group Forum** (flat threading, RBAC stub, moderation, tab UI) 💬 **NEW v0.2.14!**
 
 ---
 
@@ -85,26 +88,27 @@
 
 ## 🔄 Last Session Summary
 
-**Date:** 2026-02-13 (Agent System Architecture)
+**Date:** 2026-02-14 (Phase 1.5-A: Notifications + Forum)
 **Summary:**
-- ✅ **Agent System built:** Two-tier architecture (4 domain + 3 process agents)
-- ✅ **5 new agent playbooks:** Test, Architect, Integration, Sprint, QA/Review
-- ✅ **7 learning journals:** One per agent domain (continuous learning system)
-- ✅ **3-layer learning:** Playbooks (stable) → Journals (running) → MEMORY.md (cross-cutting index)
-- ✅ **Feature Agent → Integration Agent:** Refactored, old agent archived
-- ✅ **Existing agents updated:** Database + UI agents got Boundaries + Learning Protocol
-- ✅ **README rewritten:** `docs/agents/README.md` — full system overview
-- ✅ **MEMORY.md restructured:** Pure index, 78 lines (150-line hard cap)
-- ✅ **Close-down workflow updated:** New step 3 "Update Agent Learnings"
-- ✅ **6 files updated** for feature-agent.md → archive references
+- ✅ **Sprint 1.5-A complete:** Notification System + Group Forum built end-to-end
+- ✅ **Notification system:** `notifications` table, 6 SECURITY DEFINER trigger functions, 5 triggers on group_memberships + user_group_roles, Supabase Realtime subscriptions, NotificationProvider context, NotificationBell dropdown in nav
+- ✅ **Group forum:** `forum_posts` table, `has_forum_permission()` RBAC-compatible stub, flat two-level threading enforced by trigger, ForumSection/ForumPost/ForumComposer/ForumReplyList components, tab navigation on group detail page
+- ✅ **Bug found and fixed:** Cascade delete FK violation in notification trigger (group deleted but trigger tried to reference it)
+- ✅ **20 new integration tests:** 10 notification + 10 forum, all passing
+- ✅ **7 new behavior specs:** B-COMM-001 through B-COMM-007
+- ✅ **Design docs saved:** `docs/features/planned/notification-system.md` + `group-forum-system.md`
+- ✅ **Agent system first real use:** Sprint → Architect → Database → UI → Test agents all used
+- ⚠️ **Process lesson:** TDD ordering was violated (tests written last instead of first). Fixed Sprint Agent playbook, Agent README, and MEMORY.md to enforce correct ordering in future.
 
-**No code changes this session** — documentation/architecture only.
+**3 new migrations:**
+- `20260214161709_notification_system.sql` — notifications table + triggers
+- `20260214161716_add_group_forum_posts.sql` — forum_posts table + RBAC stub
+- `20260214230404_fix_notification_cascade_delete.sql` — cascade delete bugfix
 
-**Previous Session (2026-02-11, Session 2):**
-- RBAC design complete (22 decisions, D1-D22)
-- See `docs/features/planned/dynamic-permissions-system.md`
+**Test Results:** 138/138 passing ✅ (was 118)
 
-**Test Results:** 118/118 passing ✅ (unchanged)
+**Previous Session (2026-02-13):**
+- Agent System built (7 agents, two-tier architecture)
 
 ---
 
@@ -112,24 +116,21 @@
 
 **See `docs/planning/ROADMAP.md` for complete phase breakdown**
 
-**Immediate (Phase 1.5 - Communication System):**
-1. [Phase 1.5] Basic messaging system 🚀 **← NEXT** (also infrastructure for RBAC membership flows, D13)
-2. [Phase 1.5] Group forums/discussions
-3. [Phase 1.5] Notification system (in-app, required for group-joins-group flows)
+**Immediate (Phase 1.5-B - Direct Messaging):**
+1. [Phase 1.5-B] Direct messaging between users (user-to-user conversations)
+2. [Phase 1.5-B] Inbox/Messages page
+3. [Phase 1.5-B] Read/unread status for messages
 
-**RBAC Implementation (after Phase 1.5 messaging infrastructure):**
+**RBAC Implementation (partially unblocked):**
 4. Schema evolution (group_type column, group-to-group memberships, personal groups)
 5. Build `has_permission()` SQL function + `usePermissions()` React hook
 6. Migrate UI from `isLeader` to `hasPermission()` (parallel run with feature flag)
 7. Role management UI (Steward creates/customizes roles)
 
-**Testing & Documentation:**
-8. Verify group creation flow end-to-end in browser (after RLS fixes)
-
-**Phase 2 - Journey Experience:**
-9. [Phase 2] Facilitator/Guide tools
-10. [Phase 2] Group journey coordination
-11. [Phase 2] Advanced progress tracking
+**Phase 1.6 - Polish and Launch:**
+8. Mobile responsiveness audit
+9. User onboarding flow
+10. E2E tests (Playwright)
 
 **What We're NOT Building Yet:**
 - See `docs/planning/DEFERRED_DECISIONS.md` for rationale on deferred features
@@ -152,10 +153,11 @@
 ## 📝 Notes
 
 - **Tech Stack:** Next.js 16.1, TypeScript, Tailwind CSS, Supabase (PostgreSQL)
-- **Database:** 13 tables with comprehensive RLS policies
+- **Database:** 15 tables with comprehensive RLS policies
 - **Repository:** https://github.com/Stefansteffansson/FringeIsland
 - **Local Dev:** http://localhost:3000
 - **Supabase Project:** [Your Supabase project]
+- **TDD MANDATORY:** Behaviors → Tests (RED) → Implement (GREEN). Never write tests last.
 
 ---
 

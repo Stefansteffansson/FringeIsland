@@ -9,6 +9,7 @@ import Image from 'next/image';
 import AssignRoleModal from '@/components/groups/AssignRoleModal';
 import InviteMemberModal from '@/components/groups/InviteMemberModal';
 import ConfirmModal from '@/components/ui/ConfirmModal';
+import ForumSection from '@/components/groups/forum/ForumSection';
 
 interface GroupData {
   id: string;
@@ -70,6 +71,10 @@ export default function GroupDetailPage() {
   // Invite member state
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [userData, setUserData] = useState<{ id: string } | null>(null);
+
+  // Tab state and membership flag
+  const [activeTab, setActiveTab] = useState<'overview' | 'forum'>('overview');
+  const [isMember, setIsMember] = useState(false);
   
   const router = useRouter();
   const supabase = createClient();
@@ -136,6 +141,9 @@ export default function GroupDetailPage() {
           if (!groupData.is_public) {
             throw new Error('You do not have access to this private group');
           }
+          setIsMember(false);
+        } else {
+          setIsMember(true);
         }
 
         // Get member count
@@ -548,6 +556,44 @@ export default function GroupDetailPage() {
           </div>
         </div>
 
+        {/* Tab navigation — only shown to members */}
+        {isMember && (
+          <div className="flex border-b border-gray-200 mb-6 bg-white rounded-t-xl shadow-sm px-6 pt-4">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`pb-3 px-4 text-sm font-semibold border-b-2 transition-colors mr-2 ${
+                activeTab === 'overview'
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('forum')}
+              className={`pb-3 px-4 text-sm font-semibold border-b-2 transition-colors ${
+                activeTab === 'forum'
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Forum
+            </button>
+          </div>
+        )}
+
+        {/* Forum Tab */}
+        {isMember && activeTab === 'forum' && (
+          <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Group Forum</h2>
+            <ForumSection groupId={groupId} isLeader={isLeader} />
+          </div>
+        )}
+
+        {/* Overview Tab content (members section + quick actions) */}
+        {(!isMember || activeTab === 'overview') && (
+          <>
+
         {/* Members Section */}
         {(group.show_member_list || isLeader) && (
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
@@ -700,6 +746,9 @@ export default function GroupDetailPage() {
               </button>
             </div>
           </div>
+        )}
+
+          </>
         )}
       </div>
 

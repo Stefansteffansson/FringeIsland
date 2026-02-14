@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { createClient } from '@/lib/supabase/client';
+import NotificationBell from '@/components/notifications/NotificationBell';
 
 // Add event listener for navigation refresh
 export const refreshNavigation = () => {
@@ -174,6 +175,9 @@ export default function Navigation() {
               </Link>
             ))}
           </div>
+
+          {/* Notification Bell */}
+          <NotificationBell />
 
           {/* User Menu */}
           <div className="relative">
