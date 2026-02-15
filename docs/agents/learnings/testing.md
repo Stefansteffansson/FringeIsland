@@ -19,4 +19,16 @@ Starting point. Known patterns captured in playbook from prior sessions:
 
 ---
 
+### 2026-02-15: Clock skew between JS client and DB server breaks timestamp comparisons
+
+When testing read tracking (B-MSG-006), setting `last_read_at` from JS `new Date().toISOString()` and comparing against DB-side `NOW()` timestamps failed because the JS client clock was ahead of the DB server. Messages inserted after the JS timestamp still had `created_at` earlier than the JS-generated `last_read_at`.
+
+**Fix:** Use a DB-side baseline — insert a "marker" message first, read back its `created_at`, and use that as the read marker. Both timestamps now come from the same clock (DB server), eliminating skew.
+
+**Pattern:** For any test comparing client-set timestamps against DB-generated timestamps, always derive both from the DB. Never mix JS `Date()` with DB `NOW()`.
+
+→ Promoted to playbook? Not yet (confirm if pattern recurs)
+
+---
+
 <!-- Append new entries below this line -->

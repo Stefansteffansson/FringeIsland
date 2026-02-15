@@ -20,6 +20,16 @@ Starting point. Known patterns captured in playbook from prior sessions:
 
 ---
 
+### 2026-02-15: Column-level UPDATE restriction via SECURITY DEFINER helper
+
+For the conversations table, each participant can only update their own `last_read_at` column. Standard RLS WITH CHECK can't express "column X didn't change." Solution: a `can_update_conversation()` SECURITY DEFINER function that compares old vs new values using `IS DISTINCT FROM` and rejects changes to the other participant's column.
+
+**Pattern:** When RLS needs column-level restrictions on UPDATE, use a SECURITY DEFINER helper that reads the existing row and validates which columns changed.
+
+→ Promoted to playbook? Not yet (first use of this pattern)
+
+---
+
 ### 2026-02-14: Notification System — SECURITY DEFINER trigger functions (controlled INSERT bypass)
 
 **Context:** Implementing notification_system migration (20260214161709).
