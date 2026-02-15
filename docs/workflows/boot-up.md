@@ -167,22 +167,48 @@ Suggestions based on PROJECT_STATUS.md:
 📊 Optional: View dashboard at http://localhost:3000/dev/dashboard (refresh for updates)
 ```
 
+### 6. Hand Off to Sprint Agent (for feature work)
+
+**⛔ CRITICAL: When the user selects feature work, hand off to the Sprint Agent immediately.**
+
+Do NOT start exploring the codebase, launching parallel agents, or planning on your own.
+
+**When user selects a feature to work on:**
+```
+Great — "[Feature Name]" it is.
+
+I'm handing off to the Sprint Agent to create a step-by-step plan.
+Each step will require your approval before I proceed to the next one.
+
+Loading Sprint Agent context...
+```
+
+**Actions:**
+1. Load `docs/agents/contexts/sprint-agent.md`
+2. Load `docs/workflows/feature-development.md`
+3. Sprint Agent creates a sequential plan with user checkpoints (see Sprint Agent context)
+4. **Present the plan to the user for approval BEFORE executing any step**
+5. Execute one step at a time, asking for permission between each step
+
+**⛔ DO NOT:**
+- Launch multiple agents in parallel for feature work
+- Start exploring code before the Sprint Agent has created a plan
+- Skip the planning step for "simple" features
+- Proceed to the next step without user approval
+
 **If building new feature, remind:**
 ```
-Building new feature? Follow TDD workflow (docs/workflows/tdd-workflow.md):
+Building new feature? The Sprint Agent will guide us through the TDD workflow:
 
-0. Verify feature context:
-   - Feature in Product Spec? (docs/planning/PRODUCT_SPEC.md)
-   - Feature doc exists? (docs/features/[feature].md)
+0. Verify feature context (Product Spec, feature doc)
+1. Write behavior spec → ASK USER to proceed
+2. Write failing tests (RED) → ASK USER to proceed
+3. Design schema/system → ASK USER to proceed
+4. Implement (GREEN) → ASK USER to proceed
+5. Verify (QA) → ASK USER to proceed
+6. Document
 
-1. Write behavior spec (docs/specs/behaviors/[domain].md)
-2. Write tests (tests/integration/[domain]/[feature].test.ts)
-3. Run tests (should fail - RED)
-4. Implement feature (database → backend → frontend)
-5. Run tests (should pass - GREEN)
-6. Refactor and document
-
-Full process: Vision → Product Spec → Roadmap → Features → Behaviors → Tests → Code
+Each step completes fully before the next begins. No parallel execution.
 ```
 
 ---
@@ -337,10 +363,17 @@ Check git status
   ↓
 Ask: "What will you work on?"
   ↓
+  ├─→ Feature work → Hand off to Sprint Agent (Step 6)
+  │     ↓
+  │     Sprint Agent creates sequential plan
+  │     ↓
+  │     User approves plan
+  │     ↓
+  │     Execute one step at a time (user checkpoint between each)
+  │
   ├─→ Database work → Load database-agent.md
   ├─→ UI work → Load ui-agent.md
-  ├─→ Feature work → Load integration-agent.md + architect-agent.md
-  ├─→ Specific feature → Load feature doc
+  ├─→ Bug fix → Load test-agent.md (reproduce first)
   ├─→ Documentation → No additional context
   └─→ Other → Ask for details
   ↓

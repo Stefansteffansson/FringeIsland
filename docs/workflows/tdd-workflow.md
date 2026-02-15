@@ -663,9 +663,10 @@ expect(error?.message).toContain('Cannot remove last leader');
 2. Create/update feature doc: `docs/features/implemented/journey-system.md`
 3. Document behavior: `docs/specs/behaviors/journeys.md` - B-JRNY-003: Progress Tracking
 4. Write test: `tests/integration/journeys/progress.test.ts`
-5. Create migration: `supabase-cli.bat migration new add_journey_progress`
+4a. **Run test and CONFIRM FAIL (RED)** — tests MUST fail before any implementation
+5. Create migration: `bash supabase-cli.sh migration new add_journey_progress`
 6. Add table, RLS policies, triggers
-7. Run test (should pass)
+7. Run test (should pass — GREEN)
 8. Build UI (test-driven for logic, manual for visual)
 
 ---

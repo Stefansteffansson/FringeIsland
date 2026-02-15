@@ -786,31 +786,47 @@ if (groupIds.length > 0) {
 
 ## 🚀 Development Workflow
 
-### Adding New Features
-1. **Design database changes** (if needed)
-   - Create migration using Supabase CLI: `supabase-cli.bat migration new feature_name`
-   - Edit the generated SQL file to add tables, columns, RLS policies, etc.
-   - Apply with: `supabase-cli.bat db push`
-   - Verify changes in Supabase dashboard
+### Adding New Features — MANDATORY TDD ORDER
 
-2. **Create components**
-   - Start with TypeScript interfaces
-   - Build UI with Tailwind
+**⛔ HARD RULE: Steps 1-3 MUST be complete before Step 4 begins. No exceptions.**
+
+See `docs/workflows/feature-development.md` for the full canonical workflow.
+
+1. **Verify feature context**
+   - Check `docs/planning/PRODUCT_SPEC.md` — is this feature in scope?
+   - Create/update feature doc in `docs/features/`
+
+2. **Document behaviors** (Test Agent)
+   - Write behavior specs in `docs/specs/behaviors/`
+   - Define rules, acceptance criteria, edge cases
+
+3. **Write failing tests — RED** (Test Agent)
+   - Write integration tests in `tests/integration/`
+   - Run tests — they MUST FAIL (no implementation exists yet)
+   - **⛔ STOP: If tests pass, something is wrong. Do not proceed.**
+
+4. **Design the system** (Architect Agent)
+   - Schema, RLS strategy, data flow
+   - Design must address all scenarios from the failing tests
+   - **Pre-condition: Failing tests from Step 3 must exist**
+
+5. **Implement database** (Database Agent)
+   - Create migration: `bash supabase-cli.sh migration new feature_name`
+   - Edit the generated SQL file, apply migration
+   - Run tests — some should now pass
+
+6. **Build UI + wire data** (UI Agent + Integration Agent)
+   - Create components with TypeScript interfaces
+   - Wire up Supabase queries
    - Add loading/error states
 
-3. **Integrate with backend**
-   - Use Supabase client
-   - Handle errors gracefully
-   - Test RLS policies work
+7. **Verify all tests pass — GREEN**
+   - Run full test suite: `npm run test:integration`
+   - All tests from Step 3 must now pass
 
-4. **Update navigation** (if needed)
-   - Add nav link
-   - Dispatch refresh events
-
-5. **Document changes**
-   - Update CHANGELOG.md
-   - Update this file (CLAUDE.md)
-   - Update README.md if needed
+8. **Refactor and document**
+   - Update CHANGELOG.md, CLAUDE.md, README.md as needed
+   - Update navigation if needed
 
 ### Database Migrations with Supabase CLI
 

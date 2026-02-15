@@ -224,6 +224,15 @@ CREATE TRIGGER check_last_leader_removal
 
 ## 📝 Migration Workflow
 
+### 0. Verify Failing Tests Exist (HARD GATE)
+
+**Before creating ANY migration, verify:**
+- [ ] Behavior specs exist for this feature
+- [ ] Integration tests are written
+- [ ] Tests have been run and confirmed to FAIL (RED)
+
+**If missing → STOP. Hand back to Test Agent. Do NOT create the migration.**
+
 ### 1. Create Migration File
 **Naming:** `YYYYMMDD_descriptive_name.sql`
 **Location:** `supabase/migrations/`
@@ -270,7 +279,12 @@ SELECT COUNT(*) FROM notifications;
 - Verify indexes created
 - Check foreign keys work
 
-### 3. Update Documentation
+### 3. Run Integration Tests (Confirm GREEN)
+- Run `npm run test:integration` — previously failing tests should now pass
+- If tests still fail, fix the migration before proceeding
+- This confirms the migration correctly implements the designed behavior
+
+### 4. Update Documentation
 - Add entry to `docs/database/migrations-log.md`
 - Update `docs/database/schema-overview.md` if new table
 - Update `docs/database/rls-policies.md` if new policies
@@ -452,7 +466,7 @@ DELETE FROM user_group_roles WHERE id = '[last-leader-id]'; -- Should fail
 ### I Collaborate With
 - **Architect Agent:** They design the schema; I implement the migration
 - **Integration Agent:** I define the tables; they write queries against them
-- **Test Agent:** I create RLS policies; they verify them with integration tests
+- **Test Agent:** They write failing tests FIRST; I create migrations to make those tests pass
 
 ---
 

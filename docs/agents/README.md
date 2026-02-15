@@ -37,19 +37,34 @@ These are your "brain" — they think about what to build and whether it's good.
 
 ## How Agents Work Together
 
-### Feature Development Flow (TDD — MANDATORY ORDER)
+### Feature Development Flow (TDD — MANDATORY ORDER, SEQUENTIAL EXECUTION)
+
+**⛔ RULE: One agent at a time. User approves each transition. No parallel agents during feature work.**
+
 ```
 Sprint Agent: "Here's what we're building" (feature doc verified)
     |
-Test Agent: "Here are the behavior specs + failing tests" (RED)
+    🛑 USER CHECKPOINT — "Feature doc ready. Proceed to behaviors?"
+    |
+Test Agent: "Here are the behavior specs" (B-XXX-NNN)
+    |
+    🛑 USER CHECKPOINT — "Behaviors documented. Proceed to tests?"
+    |
+Test Agent: "Here are the failing tests" (RED)
+    |
+    🛑 USER CHECKPOINT — "Tests failing (RED). Proceed to design?"
     |                    ← Tests MUST exist and FAIL before design/implementation
 Architect Agent: "Here's the design" (informed by test scenarios)
     |
-Database Agent + Integration Agent + UI Agent: "Built it" (GREEN)
+    🛑 USER CHECKPOINT — "Design complete. Proceed to implementation?"
+    |
+Database Agent → Integration Agent → UI Agent: "Built it" (GREEN)
+    |
+    🛑 USER CHECKPOINT — "All tests pass (GREEN). Proceed to review?"
     |
 QA/Review Agent: "Reviewed — looks good" (or "fix these issues")
     |
-Test Agent: "All tests pass, coverage verified"
+    🛑 USER CHECKPOINT — "Review complete. Proceed to documentation?"
     |
 Sprint Agent: "Update status, retrospective"
 ```
@@ -57,6 +72,10 @@ Sprint Agent: "Update status, retrospective"
 **CRITICAL:** The Test Agent runs BEFORE the Architect Agent for new features.
 Tests drive the design, not the other way around. If tests pass immediately
 after writing (before implementation), something is wrong.
+
+**CRITICAL:** Sequential execution only — one agent at a time, user approves each
+transition. Never launch parallel agents for feature work. Each checkpoint is a
+conversation with the user, not an internal gate.
 
 ### Bug Fix Flow
 ```
@@ -161,10 +180,12 @@ Every agent playbook follows this structure:
 | System design | Architect | Database (for schema) |
 | Code review | QA/Review | — |
 | Sprint planning | Sprint | — |
-| New feature (full) | Start with Architect, then domain agents as needed | Test |
+| New feature (full) | 1. Test (behaviors + RED tests) → 2. Architect (design) → 3. Domain agents | Sprint (planning) |
 | Bug fix | Test first (reproduce), then domain agent | QA/Review (verify) |
 
 **Rule:** Load 1-2 agents at a time, not all seven. Each agent's Boundaries section tells you when to hand off.
+
+**Rule:** Sequential execution only — one agent at a time, user approves each transition. Never launch parallel agents for feature development work.
 
 ---
 

@@ -77,26 +77,49 @@ Pick 2-3 goals maximum. Each goal should be:
 - **Valuable** — Moves the project forward meaningfully
 - **Testable** — Has clear "done" criteria
 
-#### 3. Break Into Tasks — MANDATORY TDD ORDERING
+#### 3. Break Into Tasks — MANDATORY TDD ORDERING + USER CHECKPOINTS
 
 **CRITICAL: Tasks MUST follow TDD order. Tests come BEFORE implementation, not after.**
+**CRITICAL: Each step MUST end with asking the user for permission to proceed to the next step.**
 
 The correct task dependency chain for any new feature:
 
 ```
 1. Feature doc (verify in Product Spec, create/update)
+   → 🛑 USER CHECKPOINT: "Step 1 complete. Feature doc ready. Shall I proceed to Step 2 (behavior specs)?"
+
 2. Behavior specs (Test Agent writes B-XXX-NNN)
+   → 🛑 USER CHECKPOINT: "Step 2 complete. Behavior specs written. Shall I proceed to Step 3 (write failing tests)?"
+
 3. Integration tests (Test Agent writes, runs → MUST FAIL = RED)
+   → 🛑 USER CHECKPOINT: "Step 3 complete. Tests written and failing (RED). Shall I proceed to Step 4 (design)?"
+
 4. Schema/system design (Architect Agent)
+   → 🛑 USER CHECKPOINT: "Step 4 complete. Design documented. Shall I proceed to Step 5 (database migration)?"
+
 5. Database migration (Database Agent) → some tests go GREEN
+   → 🛑 USER CHECKPOINT: "Step 5 complete. Migration applied, N tests now pass. Shall I proceed to Step 6 (UI)?"
+
 6. UI components (UI Agent)
+   → 🛑 USER CHECKPOINT: "Step 6 complete. Components built. Shall I proceed to Step 7 (wire data)?"
+
 7. Data wiring (Integration Agent) → remaining tests go GREEN
+   → 🛑 USER CHECKPOINT: "Step 7 complete. All tests pass (GREEN). Shall I proceed to Step 8 (document)?"
+
 8. Refactor + document
 ```
 
 **The Test Agent runs SECOND (after feature context), NOT LAST.**
 **Tests MUST fail before implementation begins (RED phase).**
 **If tests pass immediately, something is wrong.**
+
+### User Checkpoint Rules
+
+- **No step begins without user approval.** This is a hard requirement, not a suggestion.
+- **One agent at a time.** Sequential execution only — no parallel agents during feature work.
+- **Present results before asking.** Show the user what was accomplished in the current step before asking to proceed.
+- **User can redirect.** If the user says "wait" or "let me review", stop and wait. If the user says "go back", return to the previous step.
+- **Never bundle steps.** Even if two steps seem trivial, complete one and ask before starting the next.
 
 For each task, use this template:
 
@@ -232,6 +255,8 @@ For each entry in MEMORY.md:
 My work is done when:
 - [ ] Sprint goals are specific and achievable
 - [ ] Tasks are broken down with clear "done" criteria
+- [ ] **Task dependency chain follows TDD ordering (behaviors → RED tests → design → implement)**
+- [ ] **No design/implementation tasks exist without preceding behavior + failing test tasks**
 - [ ] Dependencies are identified
 - [ ] Retrospective asked all three questions
 - [ ] Agent journals are reviewed and curated
