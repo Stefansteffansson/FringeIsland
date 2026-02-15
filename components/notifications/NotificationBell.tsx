@@ -41,6 +41,14 @@ function notificationHref(notification: Notification): string {
     return `/groups/${group_id}`;
   }
 
+  // Direct message notification → go to conversation
+  if (notification.type === 'new_direct_message') {
+    if (payload && typeof payload === 'object' && 'conversation_id' in payload && payload.conversation_id) {
+      return `/messages/${payload.conversation_id}`;
+    }
+    return '/messages';
+  }
+
   // Default fallback
   if (
     notification.type === 'group_invitation' ||

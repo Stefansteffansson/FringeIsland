@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth/AuthContext';
 import { NotificationProvider } from '@/lib/notifications/NotificationContext';
+import { MessagingProvider } from '@/lib/messaging/MessagingContext';
 import Navigation from '@/components/Navigation';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
 
@@ -24,8 +25,10 @@ export default function RootLayout({
         <ErrorBoundary>
           <AuthProvider>
             <NotificationProvider>
-              <Navigation />
-              {children}
+              <MessagingProvider>
+                <Navigation />
+                {children}
+              </MessagingProvider>
             </NotificationProvider>
           </AuthProvider>
         </ErrorBoundary>

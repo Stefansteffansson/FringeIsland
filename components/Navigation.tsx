@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { createClient } from '@/lib/supabase/client';
+import { useMessaging } from '@/lib/messaging/MessagingContext';
 import NotificationBell from '@/components/notifications/NotificationBell';
 
 // Add event listener for navigation refresh
@@ -15,6 +16,7 @@ export const refreshNavigation = () => {
 
 export default function Navigation() {
   const { user } = useAuth();
+  const { unreadConversationCount } = useMessaging();
   const pathname = usePathname();
   const router = useRouter();
   const [userData, setUserData] = useState<{ full_name: string; avatar_url: string | null } | null>(null);
@@ -129,6 +131,7 @@ export default function Navigation() {
     { href: '/groups', label: 'My Groups', icon: '👥' },
     { href: '/journeys', label: 'Journeys', icon: '🗺️' },
     { href: '/my-journeys', label: 'My Journeys', icon: '📚' },
+    { href: '/messages', label: 'Messages', icon: '💬', badge: unreadConversationCount },
     { href: '/invitations', label: 'Invitations', icon: '📬', badge: invitationCount },
     { href: '/profile', label: 'Profile', icon: '👤' },
   ];
@@ -137,6 +140,7 @@ export default function Navigation() {
     if (href === '/groups' && pathname.startsWith('/groups')) return true;
     if (href === '/journeys' && pathname === '/journeys') return true; // Only exact match for journey catalog
     if (href === '/my-journeys' && pathname.startsWith('/my-journeys')) return true;
+    if (href === '/messages' && pathname.startsWith('/messages')) return true;
     if (href === '/profile' && pathname.startsWith('/profile')) return true;
     return pathname === href;
   };

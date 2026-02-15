@@ -386,6 +386,42 @@ export default function GroupDetailPage() {
     }
   };
 
+  const handleStartConversation = async (otherUserId: string) => {
+    if (!userData) return;
+
+    try {
+      // Sort participant IDs (required by CHECK constraint)
+      const p1 = userData.id < otherUserId ? userData.id : otherUserId;
+      const p2 = userData.id < otherUserId ? otherUserId : userData.id;
+
+      // Try to find existing conversation
+      const { data: existing } = await supabase
+        .from('conversations')
+        .select('id')
+        .eq('participant_1', p1)
+        .eq('participant_2', p2)
+        .maybeSingle();
+
+      if (existing) {
+        router.push(`/messages/${existing.id}`);
+        return;
+      }
+
+      // Create new conversation
+      const { data: newConv, error: convErr } = await supabase
+        .from('conversations')
+        .insert({ participant_1: p1, participant_2: p2 })
+        .select('id')
+        .single();
+
+      if (convErr) throw convErr;
+
+      router.push(`/messages/${newConv.id}`);
+    } catch (err) {
+      console.error('Error starting conversation:', err);
+    }
+  };
+
   const handleOpenAssignRole = (member: Member) => {
     setSelectedMember({
       id: member.user_id,
@@ -670,28 +706,41 @@ export default function GroupDetailPage() {
                           </div>
                         )}
 
-                        {/* Role Management Buttons (Leaders Only) */}
-                        {isLeader && (
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {/* Promote to Leader (if not already a leader) */}
-                            {!member.roles.includes('Group Leader') && (
-                              <button
-                                onClick={() => handlePromoteToLeader(member.user_id, member.full_name)}
-                                className="text-xs px-3 py-1.5 bg-green-50 text-green-600 rounded hover:bg-green-100 transition-colors font-medium"
-                              >
-                                ↑ Promote to Leader
-                              </button>
-                            )}
-                            
-                            {/* Assign Role */}
+                        {/* Member Action Buttons */}
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {/* Send Message (for non-self members) */}
+                          {userData && member.user_id !== userData.id && (
                             <button
-                              onClick={() => handleOpenAssignRole(member)}
-                              className="text-xs px-3 py-1.5 bg-purple-50 text-purple-600 rounded hover:bg-purple-100 transition-colors font-medium"
+                              onClick={() => handleStartConversation(member.user_id)}
+                              className="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition-colors font-medium"
                             >
-                              + Assign Role
+                              💬 Message
                             </button>
-                          </div>
-                        )}
+                          )}
+
+                          {/* Role Management Buttons (Leaders Only) */}
+                          {isLeader && (
+                            <>
+                              {/* Promote to Leader (if not already a leader) */}
+                              {!member.roles.includes('Group Leader') && (
+                                <button
+                                  onClick={() => handlePromoteToLeader(member.user_id, member.full_name)}
+                                  className="text-xs px-3 py-1.5 bg-green-50 text-green-600 rounded hover:bg-green-100 transition-colors font-medium"
+                                >
+                                  ↑ Promote to Leader
+                                </button>
+                              )}
+
+                              {/* Assign Role */}
+                              <button
+                                onClick={() => handleOpenAssignRole(member)}
+                                className="text-xs px-3 py-1.5 bg-purple-50 text-purple-600 rounded hover:bg-purple-100 transition-colors font-medium"
+                              >
+                                + Assign Role
+                              </button>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>

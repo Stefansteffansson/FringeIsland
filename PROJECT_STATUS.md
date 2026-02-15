@@ -1,7 +1,7 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-14 (Phase 1.5-A: Notifications + Forum)
-**Current Version:** 0.2.14
+**Last Updated:** 2026-02-15 (Phase 1.5-B: Direct Messaging)
+**Current Version:** 0.2.15
 **Active Branch:** main
 
 ---
@@ -26,23 +26,23 @@
 - [x] **RBAC / Dynamic Permissions System — DESIGN COMPLETE** ✅ (22 decisions, D1-D22)
 - [x] **Agent System — Two-tier architecture with continuous learning** ✅ (7 agents, 7 journals, 3-layer learning)
 - [x] **Phase 1.5-A: Notification System + Group Forum** ✅ **DONE v0.2.14!**
-- [ ] **NEXT:** Phase 1.5-B - Direct Messaging (user-to-user)
-- [ ] **NEXT:** RBAC implementation (partially unblocked — notifications infrastructure exists)
+- [x] **Phase 1.5-B: Direct Messaging** ✅ **DONE v0.2.15!**
+- [ ] **NEXT:** RBAC implementation (fully unblocked — all communication infrastructure exists)
 
 **Blocked/Waiting:**
-- RBAC implementation partially unblocked (notifications exist), full unblock after Phase 1.5-B messaging
+- Nothing blocked — RBAC implementation fully unblocked (all communication infrastructure complete)
 
 ---
 
 ## 📊 Quick Stats
 
-- **Phase:** 1.5 - Communication System (~50% — notifications + forum done, messaging next)
-- **Total Tables:** 15 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 36 migration files
-- **Recent Version:** v0.2.14 (Notifications + Forum - Feb 14, 2026)
-- **Test Coverage:** 138 tests, **138/138 passing** ✅ (stable)
-- **Behaviors Documented:** 27 (5 auth, 5 groups, 7 journeys, 3 roles, 7 communication) ✅
-- **Feature Docs:** 3 complete + 2 planned designs (notification-system, group-forum-system)
+- **Phase:** 1.5 - Communication System (100% — notifications, forum, messaging all complete)
+- **Total Tables:** 17 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
+- **Total Migrations:** 37 migration files
+- **Recent Version:** v0.2.15 (Direct Messaging - Feb 15, 2026)
+- **Test Coverage:** 157 tests, **157/157 passing** ✅ (stable)
+- **Behaviors Documented:** 33 (5 auth, 5 groups, 7 journeys, 3 roles, 7 communication, 6 messaging) ✅
+- **Feature Docs:** 3 complete + 3 planned designs (notification-system, group-forum-system, direct-messaging)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
 
 **Completed Major Features:**
@@ -54,13 +54,14 @@
 - ✅ Journey Content Delivery (JourneyPlayer UI)
 - ✅ **Group Deletion (Danger Zone UI + RLS)** v0.2.12
 - ✅ Error Handling System
-- ✅ Testing Infrastructure (Jest + integration tests, 138/138 stable) 🧪
+- ✅ Testing Infrastructure (Jest + integration tests, 157/157 stable) 🧪
 - ✅ **RLS Security (all tables protected)** 🔒
 - ✅ **Development Dashboard** (visual project status at /dev/dashboard) 📊
 - ✅ **RBAC System Design** (22 decisions, ready for implementation) 🔒
 - ✅ **Agent System** (7 agents, two-tier architecture, continuous learning) 🤖
-- ✅ **Notification System** (7 types, Realtime push, triggers, bell UI) 🔔 **NEW v0.2.14!**
-- ✅ **Group Forum** (flat threading, RBAC stub, moderation, tab UI) 💬 **NEW v0.2.14!**
+- ✅ **Notification System** (7 types, Realtime push, triggers, bell UI) 🔔 v0.2.14
+- ✅ **Group Forum** (flat threading, RBAC stub, moderation, tab UI) 💬 v0.2.14
+- ✅ **Direct Messaging** (1:1 conversations, inbox, read tracking, Realtime) 📨 **NEW v0.2.15!**
 
 ---
 
@@ -88,24 +89,26 @@
 
 ## 🔄 Last Session Summary
 
-**Date:** 2026-02-14 (Phase 1.5-A: Notifications + Forum)
+**Date:** 2026-02-15 (Phase 1.5-B: Direct Messaging)
 **Summary:**
-- ✅ **Sprint 1.5-A complete:** Notification System + Group Forum built end-to-end
-- ✅ **Notification system:** `notifications` table, 6 SECURITY DEFINER trigger functions, 5 triggers on group_memberships + user_group_roles, Supabase Realtime subscriptions, NotificationProvider context, NotificationBell dropdown in nav
-- ✅ **Group forum:** `forum_posts` table, `has_forum_permission()` RBAC-compatible stub, flat two-level threading enforced by trigger, ForumSection/ForumPost/ForumComposer/ForumReplyList components, tab navigation on group detail page
-- ✅ **Bug found and fixed:** Cascade delete FK violation in notification trigger (group deleted but trigger tried to reference it)
-- ✅ **20 new integration tests:** 10 notification + 10 forum, all passing
-- ✅ **7 new behavior specs:** B-COMM-001 through B-COMM-007
-- ✅ **Design docs saved:** `docs/features/planned/notification-system.md` + `group-forum-system.md`
-- ✅ **Agent system first real use:** Sprint → Architect → Database → UI → Test agents all used
-- ⚠️ **Process lesson:** TDD ordering was violated (tests written last instead of first). Fixed Sprint Agent playbook, Agent README, and MEMORY.md to enforce correct ordering in future.
+- ✅ **Sprint 1.5-B complete:** Direct Messaging system built end-to-end with proper TDD workflow
+- ✅ **TDD workflow followed correctly:** Behaviors → Failing tests (RED, 18/19 failed) → Design → Migration → UI → Tests pass (GREEN, 19/19) → QA verified
+- ✅ **Database:** `conversations` table (sorted participant IDs, unique constraint, per-participant read tracking) + `direct_messages` table (immutable, content validation)
+- ✅ **4 SECURITY DEFINER functions:** `is_conversation_participant()`, `can_update_conversation()`, `update_conversation_last_message_at()`, `notify_new_direct_message()`
+- ✅ **5 RLS policies:** conversations SELECT/INSERT/UPDATE, direct_messages SELECT/INSERT
+- ✅ **UI:** Messages inbox (`/messages`), conversation view (`/messages/[conversationId]`), MessagingContext provider, "Message" button on group members, notification routing
+- ✅ **Realtime:** Both tables published for live message delivery + unread count updates
+- ✅ **19 new integration tests:** All passing, covering all 6 behavior specs (B-MSG-001 through B-MSG-006)
+- ✅ **Bug fixed during development:** Clock skew between JS client and DB server caused B-MSG-006 unread count test to fail — fixed by using DB-side baseline timestamp
+- ✅ **QA:** Full suite run twice (157/157 both runs), security review passed, pattern consistency verified
 
-**3 new migrations:**
-- `20260214161709_notification_system.sql` — notifications table + triggers
-- `20260214161716_add_group_forum_posts.sql` — forum_posts table + RBAC stub
-- `20260214230404_fix_notification_cascade_delete.sql` — cascade delete bugfix
+**1 new migration:**
+- `20260215134017_add_direct_messaging.sql` — conversations + direct_messages tables, functions, RLS, triggers, Realtime
 
-**Test Results:** 138/138 passing ✅ (was 118)
+**Test Results:** 157/157 passing ✅ (was 138)
+
+**Previous Session (2026-02-14):**
+- Phase 1.5-A complete: Notification System + Group Forum (v0.2.14)
 
 **Previous Session (2026-02-13):**
 - Agent System built (7 agents, two-tier architecture)
@@ -116,16 +119,11 @@
 
 **See `docs/planning/ROADMAP.md` for complete phase breakdown**
 
-**Immediate (Phase 1.5-B - Direct Messaging):**
-1. [Phase 1.5-B] Direct messaging between users (user-to-user conversations)
-2. [Phase 1.5-B] Inbox/Messages page
-3. [Phase 1.5-B] Read/unread status for messages
-
-**RBAC Implementation (partially unblocked):**
-4. Schema evolution (group_type column, group-to-group memberships, personal groups)
-5. Build `has_permission()` SQL function + `usePermissions()` React hook
-6. Migrate UI from `isLeader` to `hasPermission()` (parallel run with feature flag)
-7. Role management UI (Steward creates/customizes roles)
+**RBAC Implementation (fully unblocked — all communication infrastructure complete):**
+1. Schema evolution (group_type column, group-to-group memberships, personal groups)
+2. Build `has_permission()` SQL function + `usePermissions()` React hook
+3. Migrate UI from `isLeader` to `hasPermission()` (parallel run with feature flag)
+4. Role management UI (Steward creates/customizes roles)
 
 **Phase 1.6 - Polish and Launch:**
 8. Mobile responsiveness audit

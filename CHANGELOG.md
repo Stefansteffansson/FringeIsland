@@ -8,7 +8,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Communication features (forums, messaging, notifications)
+- RBAC implementation (Dynamic Permissions System)
+
+---
+
+## [0.2.15] - 2026-02-15
+
+### Added
+- **Direct Messaging System** (Phase 1.5-B complete)
+  - `conversations` table: 1:1 user pairs with sorted participant IDs, unique constraint, per-participant read tracking
+  - `direct_messages` table: immutable messages with content validation, sender enforcement via RLS
+  - `is_conversation_participant()` SECURITY DEFINER helper for RLS policies
+  - `can_update_conversation()` SECURITY DEFINER helper enforcing column-level update restrictions (own `last_read_at` only)
+  - `update_conversation_last_message_at()` trigger keeps inbox sorted by most recent message
+  - `notify_new_direct_message()` trigger creates notification for recipient (not sender) with message preview
+  - 5 RLS policies: conversations SELECT/INSERT/UPDATE, direct_messages SELECT/INSERT
+  - Realtime publication for both tables (live message delivery)
+- **Messages Inbox** (`/messages`) — conversation list with unread indicators, last message preview, time formatting
+- **Conversation View** (`/messages/[conversationId]`) — real-time chat with auto-read marking, optimistic message display
+- **MessagingContext** — global provider for unread conversation count, Realtime subscription, visibility change refresh
+- **"Message" button** on group member list — find-or-create conversation, navigate to chat
+- **Notification routing** — `new_direct_message` notifications route to `/messages/{conversationId}`
+- **B-MSG-001 through B-MSG-006 behavior specs** — `docs/specs/behaviors/messaging.md`
+- **19 integration tests** for direct messaging (send, privacy/RLS, uniqueness, inbox, notifications, read tracking)
+
+### Technical Details
+- **New Migration:** 1 (`20260215134017_add_direct_messaging.sql`)
+- **New Tables:** 2 (`conversations`, `direct_messages`)
+- **New Functions:** 4 (`is_conversation_participant`, `can_update_conversation`, `update_conversation_last_message_at`, `notify_new_direct_message`)
+- **New Files:** 5 (migration, MessagingContext, messages page, conversation page, messaging behavior specs)
+- **Modified Files:** 4 (layout.tsx, Navigation.tsx, NotificationBell.tsx, group detail page)
+- **Test Status:** 157/157 passing (19 new messaging tests + 138 existing)
+
+---
+
+## [0.2.14] - 2026-02-14
+
+### Added
+- **Notification System + Group Forum** (Phase 1.5-A complete)
+- See commit `ec4bd66` for full details
 
 ---
 
