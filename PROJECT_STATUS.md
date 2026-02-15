@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-15 (Phase 1.5-B: Direct Messaging)
+**Last Updated:** 2026-02-15 (Communication system bug fixes)
 **Current Version:** 0.2.15
 **Active Branch:** main
 
@@ -38,7 +38,7 @@
 
 - **Phase:** 1.5 - Communication System (100% — notifications, forum, messaging all complete)
 - **Total Tables:** 17 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 37 migration files
+- **Total Migrations:** 38 migration files
 - **Recent Version:** v0.2.15 (Direct Messaging - Feb 15, 2026)
 - **Test Coverage:** 157 tests, **157/157 passing** ✅ (stable)
 - **Behaviors Documented:** 33 (5 auth, 5 groups, 7 journeys, 3 roles, 7 communication, 6 messaging) ✅
@@ -89,23 +89,25 @@
 
 ## 🔄 Last Session Summary
 
-**Date:** 2026-02-15 (Phase 1.5-B: Direct Messaging)
+**Date:** 2026-02-15 (Communication system bug fixes)
 **Summary:**
-- ✅ **Sprint 1.5-B complete:** Direct Messaging system built end-to-end with proper TDD workflow
-- ✅ **TDD workflow followed correctly:** Behaviors → Failing tests (RED, 18/19 failed) → Design → Migration → UI → Tests pass (GREEN, 19/19) → QA verified
-- ✅ **Database:** `conversations` table (sorted participant IDs, unique constraint, per-participant read tracking) + `direct_messages` table (immutable, content validation)
-- ✅ **4 SECURITY DEFINER functions:** `is_conversation_participant()`, `can_update_conversation()`, `update_conversation_last_message_at()`, `notify_new_direct_message()`
-- ✅ **5 RLS policies:** conversations SELECT/INSERT/UPDATE, direct_messages SELECT/INSERT
-- ✅ **UI:** Messages inbox (`/messages`), conversation view (`/messages/[conversationId]`), MessagingContext provider, "Message" button on group members, notification routing
-- ✅ **Realtime:** Both tables published for live message delivery + unread count updates
-- ✅ **19 new integration tests:** All passing, covering all 6 behavior specs (B-MSG-001 through B-MSG-006)
-- ✅ **Bug fixed during development:** Clock skew between JS client and DB server caused B-MSG-006 unread count test to fail — fixed by using DB-side baseline timestamp
-- ✅ **QA:** Full suite run twice (157/157 both runs), security review passed, pattern consistency verified
+- ✅ **Investigated forum 403 bug:** Members without a role in `user_group_roles` are blocked by `has_forum_permission()`. Root cause: invitation acceptance flow never assigns a "Member" role. **Decision: Leave for RBAC to fix** (personal group joining engagement group auto-assigns Member role per D21).
+- ✅ **Fixed DM sender badge bug:** Sender's own message showed as unread in Messages badge. Fix: update sender's `last_read_at` after sending.
+- ✅ **Removed DM notification trigger:** DMs created duplicate alerts (bell + Messages badge). Removed `notify_new_direct_message()` trigger/function. DMs now tracked exclusively via Messages badge.
+- ✅ **Fixed "View all notifications" 404:** Link pointed to non-existent `/notifications` page. Replaced with "Dismiss all" button.
+- ✅ **Fixed Realtime unread race condition:** Badge flashed (1) when user was already viewing the conversation. Fix: await `last_read_at` update before refreshing count + 500ms delay in MessagingContext.
+- ✅ **Updated B-MSG-005 tests:** Now verify DMs do NOT create notifications.
 
 **1 new migration:**
-- `20260215134017_add_direct_messaging.sql` — conversations + direct_messages tables, functions, RLS, triggers, Realtime
+- `20260215183547_remove_dm_notification_trigger.sql` — Drop trigger + function + clean up existing DM notifications
 
-**Test Results:** 157/157 passing ✅ (was 138)
+**Test Results:** 157/157 passing ✅ (stable)
+
+**Known Issue (deferred to RBAC):**
+- Forum post/reply 403 for members without explicit role assignment. RBAC will fix via D21 (joining groups get Member role by default).
+
+**Previous Session (2026-02-15, earlier):**
+- Sprint 1.5-B complete: Direct Messaging system built end-to-end with TDD
 
 **Previous Session (2026-02-14):**
 - Phase 1.5-A complete: Notification System + Group Forum (v0.2.14)

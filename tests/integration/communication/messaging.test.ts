@@ -484,7 +484,7 @@ describe('B-MSG-004: Conversation List (Inbox)', () => {
 // B-MSG-005: New Message Notification
 // ============================================================
 
-describe('B-MSG-005: New Message Notification', () => {
+describe('B-MSG-005: DMs do NOT create notifications (unread tracked via Messages badge)', () => {
   let sender: any;
   let recipient: any;
   let conversationId: string | null = null;
@@ -517,20 +517,20 @@ describe('B-MSG-005: New Message Notification', () => {
     if (recipient) await cleanupTestUser(recipient.user.id);
   });
 
-  it('B-MSG-005: sending a message creates a new_direct_message notification for the recipient', async () => {
+  it('B-MSG-005: sending a DM does NOT create a notification for the recipient', async () => {
     expect(conversationId).not.toBeNull();
 
     // Clean any pre-existing notifications
     await admin.from('notifications').delete().eq('recipient_user_id', recipient.profile.id).eq('type', 'new_direct_message');
 
-    // Send a message via admin (trigger should fire regardless)
+    // Send a message via admin
     await admin.from('direct_messages').insert({
       conversation_id: conversationId!,
       sender_id: sender.profile.id,
-      content: 'Hello! This should trigger a notification.',
+      content: 'Hello! This should NOT trigger a notification.',
     });
 
-    // Check notification was created for recipient
+    // Verify NO notification was created for recipient
     const { data: notifications, error } = await admin
       .from('notifications')
       .select('*')
@@ -538,20 +538,10 @@ describe('B-MSG-005: New Message Notification', () => {
       .eq('type', 'new_direct_message');
 
     expect(error).toBeNull();
-    expect(notifications).not.toBeNull();
-    expect(notifications!.length).toBeGreaterThanOrEqual(1);
-
-    const notif = notifications![0];
-    expect(notif.type).toBe('new_direct_message');
-    expect(notif.is_read).toBe(false);
-    expect(notif.payload).toMatchObject({
-      conversation_id: conversationId,
-    });
-    // Payload should include sender info
-    expect(notif.payload.sender_name).toBeTruthy();
+    expect(notifications).toHaveLength(0);
   });
 
-  it('B-MSG-005: notification is NOT created for the sender', async () => {
+  it('B-MSG-005: sending a DM does NOT create a notification for the sender', async () => {
     expect(conversationId).not.toBeNull();
 
     // Clean notifications for sender
@@ -561,7 +551,7 @@ describe('B-MSG-005: New Message Notification', () => {
     await admin.from('direct_messages').insert({
       conversation_id: conversationId!,
       sender_id: sender.profile.id,
-      content: 'Another message — no self-notification.',
+      content: 'Another message — no notification at all.',
     });
 
     // Check no notification was created for the sender

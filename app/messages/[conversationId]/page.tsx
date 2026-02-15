@@ -137,7 +137,7 @@ export default function ConversationPage() {
           table: 'direct_messages',
           filter: `conversation_id=eq.${conversationId}`,
         },
-        (payload) => {
+        async (payload) => {
           const newMsg = payload.new as DirectMessage;
           setMessages((prev) => {
             // Avoid duplicates (our own optimistic insert)
@@ -147,20 +147,20 @@ export default function ConversationPage() {
 
           // If the message is from the other user, mark as read immediately
           if (newMsg.sender_id !== userProfileId) {
-            supabase
+            const { data: conv } = await supabase
               .from('conversations')
               .select('participant_1')
               .eq('id', conversationId)
-              .single()
-              .then(({ data: conv }) => {
-                if (!conv) return;
-                const isP1 = conv.participant_1 === userProfileId;
-                const readField = isP1 ? 'participant_1_last_read_at' : 'participant_2_last_read_at';
-                supabase
-                  .from('conversations')
-                  .update({ [readField]: new Date().toISOString() })
-                  .eq('id', conversationId);
-              });
+              .single();
+
+            if (conv) {
+              const isP1 = conv.participant_1 === userProfileId;
+              const readField = isP1 ? 'participant_1_last_read_at' : 'participant_2_last_read_at';
+              await supabase
+                .from('conversations')
+                .update({ [readField]: new Date().toISOString() })
+                .eq('id', conversationId);
+            }
 
             refreshUnreadCount();
           }
@@ -200,6 +200,22 @@ export default function ConversationPage() {
           if (prev.some((m) => m.id === data.id)) return prev;
           return [...prev, data];
         });
+      }
+
+      // Update sender's last_read_at so their own message doesn't show as unread
+      const { data: conv } = await supabase
+        .from('conversations')
+        .select('participant_1')
+        .eq('id', conversationId)
+        .single();
+
+      if (conv) {
+        const isP1 = conv.participant_1 === userProfileId;
+        const readField = isP1 ? 'participant_1_last_read_at' : 'participant_2_last_read_at';
+        await supabase
+          .from('conversations')
+          .update({ [readField]: new Date().toISOString() })
+          .eq('id', conversationId);
       }
 
       inputRef.current?.focus();

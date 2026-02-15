@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useNotifications } from '@/lib/notifications/NotificationContext';
 import type { Notification } from '@/lib/notifications/NotificationContext';
@@ -262,15 +261,17 @@ export default function NotificationBell() {
           </div>
 
           {/* Footer */}
-          {!isLoading && (
-            <div className="border-t border-gray-100 px-4 py-2.5">
-              <Link
-                href="/notifications"
-                onClick={() => setIsOpen(false)}
-                className="text-xs text-blue-600 hover:text-blue-700 font-medium transition-colors"
+          {!isLoading && notifications.length > 0 && (
+            <div className="border-t border-gray-100 px-4 py-2.5 text-center">
+              <button
+                onClick={async () => {
+                  await markAllAsRead();
+                  setIsOpen(false);
+                }}
+                className="text-xs text-gray-500 hover:text-gray-700 font-medium transition-colors"
               >
-                View all notifications
-              </Link>
+                Dismiss all
+              </button>
             </div>
           )}
         </div>

@@ -146,8 +146,9 @@ export function MessagingProvider({
           table: 'direct_messages',
         },
         () => {
-          // A new message was inserted — refresh unread count
-          refreshUnreadCount();
+          // A new message was inserted — delay briefly so the conversation
+          // page (if open) can update last_read_at before we recount
+          setTimeout(() => refreshUnreadCount(), 500);
         }
       )
       .subscribe((status) => {
