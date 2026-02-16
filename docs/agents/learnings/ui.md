@@ -8,6 +8,10 @@
 
 ## Entries
 
+### 2026-02-16: PermissionPicker anti-escalation UX
+The PermissionPicker component disables checkboxes for permissions the user doesn't hold, with a tooltip "You don't hold this permission". This enforces anti-escalation at the UI level (RLS also enforces it at the DB level). Category accordion with auto-expand for categories with selected permissions provides good UX for 42+ permissions.
+> Promoted to playbook? Not yet
+
 ### 2026-02-13: Journal initialized
 Starting point. Known patterns captured in playbook from prior sessions:
 - Always use ConfirmModal, never browser alert()/confirm()

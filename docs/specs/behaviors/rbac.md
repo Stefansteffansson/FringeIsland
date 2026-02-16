@@ -807,6 +807,379 @@
 
 ---
 
+## B-RBAC-018: manage_roles Permission Exists in Catalog
+
+**Rule:** The permission catalog includes a `manage_roles` permission in the `group_management` category. This permission gates all role CRUD operations: creating custom roles, editing role names/descriptions/permissions, and deleting custom roles. The Steward role template includes this permission by default.
+
+**Why:** Without a dedicated permission for role management, the system cannot gate who can create/edit/delete roles using the RBAC model. We'd have to hardcode "only Stewards" — which is the anti-pattern RBAC eliminates. A single coarse permission is used because role CRUD and permission configuration share the same UI context and have similar security impact (Q1 principle).
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/role-management.test.ts`
+- **Database:** `permissions` table, `role_template_permissions`, `group_role_permissions`
+- **Migration:** TBD
+
+**Acceptance Criteria:**
+- [ ] `permissions` table contains `manage_roles` with category `group_management`
+- [ ] Permission catalog total is now 42 (was 41)
+- [ ] Steward role template has `manage_roles` in `role_template_permissions`
+- [ ] All existing Steward role instances (in `group_role_permissions`) have `manage_roles` backfilled
+- [ ] Deusex role has `manage_roles` added to its `group_role_permissions`
+- [ ] Guide, Member, Observer templates do NOT have `manage_roles`
+
+**Examples:**
+
+✅ **Valid:**
+- `SELECT * FROM permissions WHERE name = 'manage_roles'` → Returns 1 row, category = 'group_management'
+- `SELECT count(*) FROM permissions` → Returns 42
+- Steward in Group A: `hasPermission('manage_roles')` → true
+
+❌ **Invalid:**
+- Member checks `hasPermission('manage_roles')` → false (Members can't manage roles by default)
+- `manage_roles` missing from Deusex role → VIOLATED
+
+**Testing Priority:** 🔴 CRITICAL (gates all Sub-Sprint 4 functionality)
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 4)
+
+---
+
+## B-RBAC-019: View Roles in Group (Role List)
+
+**Rule:** Any active group member can view the list of roles in their group, including role names, descriptions, and permission counts. Viewing the full permission details of a role requires the `manage_roles` permission.
+
+**Why:** All members should know what roles exist in their group (transparency). But the detailed permission configuration is only relevant to those who can manage roles. This mirrors the existing pattern where all members can see role badges but only Stewards manage them.
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/role-management.test.ts`
+- **Code:** Role list component on group page or dedicated `/groups/[id]/roles` page
+- **Database:** `group_roles` SELECT policy (existing — members can view roles in their groups)
+
+**Acceptance Criteria:**
+- [ ] Any active group member can see the list of roles (name, description, member count)
+- [ ] Users with `manage_roles` permission see a "Manage Roles" button/link
+- [ ] Users without `manage_roles` do NOT see management controls (create/edit/delete buttons)
+- [ ] Role list shows which roles originated from templates vs. custom-created
+- [ ] Role list shows permission count per role (e.g., "24 permissions")
+- [ ] Loading state shown while fetching roles
+- [ ] Empty state handled (no roles — shouldn't happen with templates, but defensive)
+
+**Examples:**
+
+✅ **Valid:**
+- Member views group → sees "Steward (24 permissions), Guide (15), Member (12), Observer (7)"
+- Steward views group → sees same list PLUS "Manage Roles" button
+- Custom "Mentor" role with 8 permissions → shows in list with "8 permissions"
+
+❌ **Invalid:**
+- Member sees create/edit/delete buttons on roles → VIOLATED (needs `manage_roles`)
+- Active member can't see role list at all → VIOLATED (all members can view)
+
+**Testing Priority:** 🟡 HIGH
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 4)
+
+---
+
+## B-RBAC-020: Create Custom Role
+
+**Rule:** Users with the `manage_roles` permission can create custom roles in their group. Custom roles have a name, optional description, and a set of permissions selected from the system catalog. Custom roles have `created_from_role_template_id = NULL`.
+
+**Why:** Different groups have fundamentally different needs (D2). A corporate training group might need a "Mentor" role. A community of practice might need a "Facilitator" role. Stewards must be able to create roles tailored to their group without developer involvement.
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/role-management.test.ts`
+- **Code:** Create role modal/form component
+- **Database:** `group_roles` INSERT + `group_role_permissions` INSERT
+
+**Acceptance Criteria:**
+- [ ] "Create Role" button visible only when `hasPermission('manage_roles')` is true
+- [ ] Form requires a non-empty role name (trimmed, minimum 1 character)
+- [ ] Form accepts optional description text
+- [ ] Form includes permission picker (see B-RBAC-023)
+- [ ] Created role has `created_from_role_template_id = NULL` (custom, not from template)
+- [ ] Created role has `group_id` set to the current group
+- [ ] Selected permissions are inserted into `group_role_permissions`
+- [ ] Role name must be unique within the group (UNIQUE constraint on `group_id, name`)
+- [ ] Duplicate name shows user-friendly error (not raw SQL error)
+- [ ] Creating a role with zero permissions is valid (empty role)
+- [ ] After creation, role list refreshes to show the new role
+- [ ] Success feedback shown to user (toast/message)
+
+**Examples:**
+
+✅ **Valid:**
+- Steward creates "Mentor" role with `view_others_progress`, `provide_feedback_to_members` → saved
+- Steward creates "Auditor" role with zero permissions → valid (permissions can be added later)
+- Steward creates role with description "Helps new members get started" → saved
+
+❌ **Invalid:**
+- Empty name submitted → BLOCKED (validation error)
+- Duplicate name "Steward" in same group → BLOCKED (unique constraint, user-friendly message)
+- Member without `manage_roles` creates a role → BLOCKED (permission check)
+
+**Edge Cases:**
+- **Scenario:** Role name with only whitespace
+  - **Behavior:** Trimmed → empty → validation error
+- **Scenario:** Very long role name (100+ characters)
+  - **Behavior:** Accept but consider UI truncation (no hard DB limit unless added)
+
+**Testing Priority:** 🔴 CRITICAL (core Sub-Sprint 4 feature)
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 4)
+
+---
+
+## B-RBAC-021: Edit Role (Name, Description, Permissions)
+
+**Rule:** Users with the `manage_roles` permission can edit any role in their group — including roles created from templates. Editing includes changing the name, description, and permission set. Changes to a group's role do NOT affect the template or other groups' roles.
+
+**Why:** Per D2, template-based roles start with default permissions but can be customized after creation. A Steward might want to give their Guide role extra permissions or restrict the Observer role further. The template is a starting point, not a constraint.
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/role-management.test.ts`
+- **Code:** Edit role modal/form component
+- **Database:** `group_roles` UPDATE + `group_role_permissions` INSERT/DELETE
+
+**Acceptance Criteria:**
+- [ ] "Edit" button on each role visible only when `hasPermission('manage_roles')` is true
+- [ ] Can edit role name (same validation as create: non-empty, unique in group)
+- [ ] Can edit role description
+- [ ] Can add permissions (INSERT into `group_role_permissions`)
+- [ ] Can remove permissions (DELETE from `group_role_permissions`)
+- [ ] Changes to a group role do NOT affect the role template it was created from
+- [ ] Changes do NOT affect the same-named role in other groups
+- [ ] Permission picker pre-populates with current permissions (checkboxes checked)
+- [ ] After saving, role list refreshes to show updated data
+- [ ] Anti-escalation guardrail enforced (see B-RBAC-024)
+
+**Examples:**
+
+✅ **Valid:**
+- Steward edits Guide role: adds `invite_members` → Guide in THIS group can now invite
+- Steward edits Observer role: removes `view_forum` → Observer in THIS group can't view forum
+- Steward renames "Member" to "Participant" in their group → other groups unaffected
+- Steward edits a custom "Mentor" role's permissions → works same as template roles
+
+❌ **Invalid:**
+- Editing Guide in Group A changes Guide in Group B → VIOLATED (independence)
+- Editing Guide in Group A changes Guide Role Template → VIOLATED (template immutability after copy)
+- Member without `manage_roles` opens edit form → VIOLATED (permission check)
+
+**Edge Cases:**
+- **Scenario:** Steward renames "Steward" to something else
+  - **Behavior:** Allowed. The last-steward protection trigger checks role name — if renamed, the trigger needs to be aware. **Decision needed:** Should the Steward role name be immutable, or should the trigger check by template origin?
+  - **Current trigger:** Checks `group_roles.name = 'Steward'`. If renamed, trigger breaks.
+  - **Recommendation:** Update trigger to check `created_from_role_template_id` = Steward template ID, not name.
+
+- **Scenario:** Steward removes ALL permissions from a role that members hold
+  - **Behavior:** Allowed. Those members effectively have zero group-context permissions (still have Tier 1 system permissions).
+  - **Why:** Steward has authority over their group's role configuration.
+
+**Testing Priority:** 🔴 CRITICAL (core Sub-Sprint 4 feature)
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 4)
+
+---
+
+## B-RBAC-022: Delete Custom Role
+
+**Rule:** Users with the `manage_roles` permission can delete custom roles (roles with `created_from_role_template_id = NULL`). Template-originated roles cannot be deleted. Deleting a role removes all `user_group_roles` assignments and `group_role_permissions` entries for that role (CASCADE).
+
+**Why:** Custom roles may become obsolete. A "Mentor" role created for a specific initiative should be deletable when no longer needed. Template roles (Steward, Guide, Member, Observer) are protected because they're the group's structural foundation — deleting "Steward" would leave no one with management permissions.
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/role-management.test.ts`
+- **Code:** Delete role button/confirmation
+- **Database:** `group_roles` DELETE (CASCADE to `user_group_roles`, `group_role_permissions`)
+
+**Acceptance Criteria:**
+- [ ] "Delete" button shown only on custom roles (`created_from_role_template_id IS NULL`)
+- [ ] Template-originated roles show no delete button (even for users with `manage_roles`)
+- [ ] Deletion requires confirmation (ConfirmModal with danger variant)
+- [ ] Confirmation message shows how many members currently hold this role
+- [ ] On delete, `user_group_roles` entries for this role are removed (CASCADE)
+- [ ] On delete, `group_role_permissions` entries for this role are removed (CASCADE)
+- [ ] After deletion, affected members lose the role (their other roles remain)
+- [ ] Role list refreshes after deletion
+- [ ] If deleted role was a member's ONLY role, they remain a group member but with zero group-context permissions (Tier 1 still applies)
+
+**Examples:**
+
+✅ **Valid:**
+- Steward deletes custom "Mentor" role → role removed, 3 members who had it lose it
+- Steward sees delete button on "Mentor" (custom) but NOT on "Steward" (template)
+- Confirmation shows: "Delete 'Mentor' role? 3 members currently have this role."
+
+❌ **Invalid:**
+- Steward deletes "Steward" template role → BLOCKED (template roles are protected)
+- Steward deletes "Guide" template role → BLOCKED
+- Member without `manage_roles` sees delete button → VIOLATED
+
+**Edge Cases:**
+- **Scenario:** Delete a custom role that no members hold
+  - **Behavior:** Allowed (clean delete, no member impact)
+  - **Confirmation:** "Delete 'Auditor' role? No members currently have this role."
+
+- **Scenario:** Delete a custom role that is the only role for some members
+  - **Behavior:** Allowed. Those members become "role-less" members (still in group, have Tier 1 permissions only)
+  - **Why:** Steward made an informed choice (confirmation showed member count)
+
+**Testing Priority:** 🟡 HIGH
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 4)
+
+---
+
+## B-RBAC-023: Permission Picker — Category-Grouped Selection
+
+**Rule:** The permission picker UI displays all permissions from the system catalog, organized by category. Each permission has a checkbox, label (the permission name, human-readable), and description. The picker is used in both create and edit role flows.
+
+**Why:** The system catalog has 42 permissions across 6 categories. Without organization, this is an overwhelming list of checkboxes. Grouping by category (group_management, journey_management, journey_participation, communication, feedback, platform_admin) makes the UI scannable and helps Stewards understand what they're granting (D1, D2).
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/role-management.test.ts`
+- **Code:** PermissionPicker component
+- **Database:** `permissions` table (fetched and grouped by `category`)
+
+**Acceptance Criteria:**
+- [ ] Fetches all permissions from `permissions` table
+- [ ] Groups permissions by `category` column
+- [ ] Each category is a collapsible/expandable section with header
+- [ ] Category headers show: category name + count of selected permissions (e.g., "Group Management (8/15)")
+- [ ] Each permission shows: checkbox + human-readable name + description
+- [ ] Checkboxes reflect current state (checked = granted, unchecked = not granted)
+- [ ] User can toggle individual permissions
+- [ ] "Select All" / "Deselect All" per category (convenience)
+- [ ] Platform_admin permissions are hidden or clearly marked as system-only (not grantable by Stewards)
+- [ ] Anti-escalation guardrail applied: permissions the current user doesn't hold are disabled/greyed out (see B-RBAC-024)
+- [ ] Permission picker is a reusable component (used by both create and edit flows)
+- [ ] Total selected count shown (e.g., "12 of 42 permissions selected")
+
+**Examples:**
+
+✅ **Valid:**
+- Steward opens permission picker → sees 6 categories, each expandable
+- "Group Management" section expanded → shows 15 checkboxes (including `manage_roles`)
+- Steward checks `view_others_progress` → checkbox becomes checked, count updates
+- Category header updates: "Journey Participation (3/5)" → "(4/5)"
+
+❌ **Invalid:**
+- All 42 permissions shown as flat list with no grouping → VIOLATED (poor UX)
+- Steward can check `manage_platform_settings` (platform_admin) → VIOLATED (not grantable)
+- No description shown for permissions → VIOLATED (Steward needs to understand what they're granting)
+
+**Edge Cases:**
+- **Scenario:** Platform_admin category permissions
+  - **Behavior:** Hidden from permission picker (or shown as disabled with "System only" label)
+  - **Why:** Regular Stewards cannot grant platform admin permissions; only Deusex can
+
+- **Scenario:** Permission descriptions are missing in DB
+  - **Behavior:** Show permission name as fallback (e.g., `invite_members` → "invite_members")
+  - **Why:** Graceful degradation
+
+**Testing Priority:** 🟡 HIGH
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 4)
+
+---
+
+## B-RBAC-024: Anti-Escalation Guardrail
+
+**Rule:** A user can only grant permissions that they themselves hold. When configuring a role's permissions, any permission the current user does NOT have is shown as disabled/greyed out and cannot be checked. This prevents privilege escalation.
+
+**Why:** Without this guardrail, a Steward could create a role more powerful than their own (Q7 in design doc). For example, a Steward whose own role has had `delete_group` removed could still grant `delete_group` to a new role — effectively escalating privileges. The anti-escalation rule prevents this.
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/role-management.test.ts`
+- **Code:** Permission picker component + server-side validation
+- **Database:** RLS policy or application-layer check on `group_role_permissions` INSERT
+
+**Acceptance Criteria:**
+- [ ] Permission picker disables (greyed out, non-clickable) any permission the current user does not hold
+- [ ] Disabled permissions show tooltip/label: "You don't have this permission"
+- [ ] Server-side validation: attempting to INSERT a permission the user doesn't hold into `group_role_permissions` is rejected
+- [ ] Deusex users can grant ALL permissions (they hold all 42)
+- [ ] If user has permission from Tier 1 (system group), they can grant it in Tier 2 (engagement group role)
+- [ ] The check uses the user's effective permissions (union of all roles in this group + system groups)
+- [ ] Anti-escalation applies to BOTH create and edit flows
+
+**Examples:**
+
+✅ **Valid:**
+- Steward with 25 permissions → can grant any of those 25 to a custom role
+- Steward whose `delete_group` was removed → `delete_group` checkbox is disabled in picker
+- Deusex user → all 42 checkboxes are enabled
+- User has `invite_members` from Tier 1 (FI Members) → can grant it in engagement group role
+
+❌ **Invalid:**
+- User without `moderate_forum` grants it to a custom role → VIOLATED (escalation)
+- All checkboxes enabled for non-Deusex users → VIOLATED (missing guardrail)
+- Guardrail only enforced client-side but not server-side → VIOLATED (bypassable)
+
+**Edge Cases:**
+- **Scenario:** Steward creates a role, then another Steward removes a permission from the first Steward's role. First Steward tries to edit the custom role and re-add that permission.
+  - **Behavior:** The permission is now disabled in the picker (first Steward no longer holds it)
+  - **Why:** Anti-escalation is always evaluated against current effective permissions, not historical
+
+- **Scenario:** User has `manage_roles` but very few other permissions
+  - **Behavior:** Can create roles but can only grant the few permissions they hold
+  - **Why:** `manage_roles` grants the ability to manage role structure, not to escalate
+
+**Testing Priority:** 🔴 CRITICAL (security — prevents privilege escalation)
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 4)
+
+---
+
+## B-RBAC-025: RLS Policies Use has_permission() for Role Management
+
+**Rule:** RLS policies on `group_roles` and `group_role_permissions` tables use `has_permission()` function calls instead of `created_by_user_id` checks. This ensures role management access is controlled by the RBAC system itself.
+
+**Why:** Current RLS policies on these tables check `created_by_user_id` (hardcoded to group creator). This means only the original group creator can manage roles, even if they're no longer a Steward or if another user has been promoted. Migrating to `has_permission('manage_roles')` checks makes role management RBAC-consistent.
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/role-management.test.ts`
+- **Database:** RLS policies on `group_roles` and `group_role_permissions`
+- **Migration:** TBD
+
+**Acceptance Criteria:**
+- [ ] `group_roles` INSERT policy: allows when user has `manage_roles` permission in the group
+- [ ] `group_roles` UPDATE policy (NEW): allows when user has `manage_roles` permission in the group
+- [ ] `group_roles` DELETE policy (NEW): allows when user has `manage_roles` permission AND role is custom (`created_from_role_template_id IS NULL`)
+- [ ] `group_role_permissions` INSERT policy: allows when user has `manage_roles` permission in the role's group
+- [ ] `group_role_permissions` DELETE policy (NEW): allows when user has `manage_roles` permission in the role's group
+- [ ] Old `created_by_user_id` checks are removed from these policies
+- [ ] SELECT policies remain unchanged (all active members can view)
+- [ ] Anti-escalation enforced at RLS level: user can only INSERT permissions they themselves hold
+
+**Examples:**
+
+✅ **Valid:**
+- Steward (with `manage_roles`) inserts new `group_roles` row → allowed by RLS
+- Steward updates `group_roles.name` → allowed by RLS (UPDATE policy)
+- Steward deletes custom role → allowed by RLS (DELETE policy, custom role check)
+- Steward inserts `group_role_permissions` row for a permission they hold → allowed
+
+❌ **Invalid:**
+- Member (without `manage_roles`) tries to INSERT into `group_roles` → BLOCKED by RLS
+- Steward tries to DELETE a template-originated role → BLOCKED by RLS (template protection)
+- User tries to INSERT a permission they don't hold into `group_role_permissions` → BLOCKED (anti-escalation)
+- Original group creator who is no longer Steward tries to manage roles → BLOCKED (no longer has `manage_roles`)
+
+**Testing Priority:** 🔴 CRITICAL (security — RLS is the last line of defense)
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 4)
+
+---
+
 ## Notes
 
 **Domain Code:** RBAC
@@ -834,8 +1207,15 @@
 - B-RBAC-016: Enrollment Modal — Permission-Based Group Enrollment (enroll_group_in_journey replaces role name query)
 - B-RBAC-017: No Remaining isLeader or Role-Name Checks (definition of done)
 
-**Future Sub-Sprints (behaviors TBD):**
-- Sub-Sprint 4: Role management UI (Steward creates/customizes roles, permission picker)
+**Sub-Sprint 4 Behaviors:**
+- B-RBAC-018: manage_roles Permission Exists in Catalog
+- B-RBAC-019: View Roles in Group (Role List)
+- B-RBAC-020: Create Custom Role
+- B-RBAC-021: Edit Role (Name, Description, Permissions)
+- B-RBAC-022: Delete Custom Role
+- B-RBAC-023: Permission Picker — Category-Grouped Selection
+- B-RBAC-024: Anti-Escalation Guardrail
+- B-RBAC-025: RLS Policies Use has_permission() for Role Management
 
 **Design Decisions Referenced:**
 - D1 (Three-Layer Architecture), D2 (Self-Service Customization), D3 (Deusex is a Group)

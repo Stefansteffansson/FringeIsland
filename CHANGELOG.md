@@ -8,7 +8,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- RBAC Sub-Sprint 4: Role management UI
+- Phase 1.6: Polish and Launch
+
+---
+
+## [0.2.19] - 2026-02-16
+
+### Added
+- **RBAC Sub-Sprint 4: Role Management** (manage_roles permission, RLS policies, UI components)
+  - `manage_roles` permission added to catalog (total now 42 permissions)
+  - `description` column on `group_roles` table
+  - `manage_roles` backfilled to Steward role template (now 25 permissions) and all existing Steward instances
+  - `manage_roles` added to Deusex system role (now 42 permissions)
+  - Two SECURITY DEFINER helpers: `get_group_id_for_role()`, `get_permission_name()` (bypass nested RLS)
+  - `RoleManagementSection` component — lists group roles with create/edit/delete buttons
+  - `RoleFormModal` component — create/edit role modal with name, description, and permission picker
+  - `PermissionPicker` component — category-grouped checkbox UI with anti-escalation enforcement
+  - **B-RBAC-018 through B-RBAC-025 behavior specs** — role management behaviors
+  - **47 integration tests** for role management (`tests/integration/rbac/role-management.test.ts`)
+
+### Changed
+- `prevent_last_leader_removal` trigger — now checks `created_from_role_template_id` instead of role name (safe against role renaming)
+- RLS policies on `group_roles` — replaced `created_by_user_id` checks with `has_permission('manage_roles')`
+- RLS policies on `group_role_permissions` — `manage_roles` + anti-escalation (must hold permission being granted)
+- Group detail page — added Roles section (gated by `manage_roles` permission)
+
+### Technical Details
+- **New Migrations:** 2 (`20260216140506_rbac_role_management.sql`, `20260216140740_rbac_role_management_fix_nested_rls.sql`)
+- **New Components:** 3 (`RoleManagementSection`, `RoleFormModal`, `PermissionPicker`)
+- **Test Status:** 319/319 passing (47 new + 272 existing, zero regressions, 2x QA runs)
+- **Security Review:** Anti-escalation enforced at RLS level; template roles cannot be deleted; nested RLS solved with SECURITY DEFINER helpers
 
 ---
 

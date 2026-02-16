@@ -33,23 +33,23 @@ describe('B-RBAC-001: Permission Catalog Integrity', () => {
     if (testUser) await cleanupTestUser(testUser.user.id);
   });
 
-  it('should have exactly 41 permissions in the catalog', async () => {
+  it('should have exactly 42 permissions in the catalog', async () => {
     const { data, error } = await admin
       .from('permissions')
       .select('id');
 
     expect(error).toBeNull();
-    expect(data).toHaveLength(41);
+    expect(data).toHaveLength(42);
   });
 
-  it('should have 14 group_management permissions', async () => {
+  it('should have 15 group_management permissions', async () => {
     const { data, error } = await admin
       .from('permissions')
       .select('name')
       .eq('category', 'group_management');
 
     expect(error).toBeNull();
-    expect(data).toHaveLength(14);
+    expect(data).toHaveLength(15);
   });
 
   it('should have 10 journey_management permissions', async () => {

@@ -150,14 +150,14 @@ describe('B-RBAC-012: Deusex Has All Permissions', () => {
     expect(data).toBe(true);
   });
 
-  it('should grant Deusex user ALL 41 permissions', async () => {
+  it('should grant Deusex user ALL 42 permissions', async () => {
     // Get all permission names from the catalog
     const { data: allPerms } = await admin
       .from('permissions')
       .select('name');
 
     expect(allPerms).not.toBeNull();
-    expect(allPerms!.length).toBe(41);
+    expect(allPerms!.length).toBe(42);
 
     // Check each permission
     const results = await Promise.all(

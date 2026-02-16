@@ -19,12 +19,21 @@ describe('B-GRP-001: Last Leader Protection', () => {
   let testUser1: any;
   let testUser2: any;
   let testGroup: any;
+  let stewardTemplateId: string;
   const admin = createAdminClient();
 
   beforeAll(async () => {
     // Create two test users
     testUser1 = await createTestUser({ displayName: 'Leader 1' });
     testUser2 = await createTestUser({ displayName: 'Leader 2' });
+
+    // Look up the Steward template ID (trigger checks template, not name)
+    const { data: template } = await admin
+      .from('role_templates')
+      .select('id')
+      .eq('name', 'Steward Role Template')
+      .single();
+    stewardTemplateId = template!.id;
   });
 
   afterAll(async () => {
@@ -55,6 +64,7 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .insert({
         group_id: group.id,
         name: 'Steward',
+        created_from_role_template_id: stewardTemplateId,
       })
       .select()
       .single();
@@ -106,6 +116,7 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .insert({
         group_id: group!.id,
         name: 'Steward',
+        created_from_role_template_id: stewardTemplateId,
       })
       .select()
       .single();
@@ -176,6 +187,7 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .insert({
         group_id: group!.id,
         name: 'Steward',
+        created_from_role_template_id: stewardTemplateId,
       })
       .select()
       .single();
@@ -236,6 +248,7 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .insert({
         group_id: group!.id,
         name: 'Steward',
+        created_from_role_template_id: stewardTemplateId,
       })
       .select()
       .single();

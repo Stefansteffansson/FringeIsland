@@ -9,6 +9,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import AssignRoleModal from '@/components/groups/AssignRoleModal';
 import InviteMemberModal from '@/components/groups/InviteMemberModal';
+import RoleManagementSection from '@/components/groups/RoleManagementSection';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import ForumSection from '@/components/groups/forum/ForumSection';
 
@@ -78,7 +79,7 @@ export default function GroupDetailPage() {
   
   const router = useRouter();
   const supabase = createClient();
-  const { hasPermission, refetch: refetchPermissions } = usePermissions(groupId);
+  const { permissions, hasPermission, refetch: refetchPermissions } = usePermissions(groupId);
 
   useEffect(() => {
     // Redirect to login if not authenticated
@@ -744,6 +745,15 @@ export default function GroupDetailPage() {
               </div>
             )}
           </div>
+        )}
+
+        {/* Role Management Section (permission-gated) */}
+        {hasPermission('manage_roles') && (
+          <RoleManagementSection
+            groupId={groupId}
+            userPermissions={permissions}
+            onRolesChanged={refetchMembers}
+          />
         )}
 
         {/* Quick Actions */}

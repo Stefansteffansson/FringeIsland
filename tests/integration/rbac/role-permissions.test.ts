@@ -95,7 +95,7 @@ describe('B-RBAC-005: Group Role Permission Initialization', () => {
       .eq('group_role_id', stewardRoleId);
 
     expect(error).toBeNull();
-    expect(data).toHaveLength(24);
+    expect(data).toHaveLength(25);
   });
 
   it('should include invite_members in Steward role permissions', async () => {
@@ -171,8 +171,8 @@ describe('B-RBAC-005: Group Role Permission Initialization', () => {
         .select('role_template_id, permission_id')
         .eq('role_template_id', stewardTemplate.id);
 
-      // Template should still have 24 (unaffected by group-level change)
-      expect(templatePerms).toHaveLength(24);
+      // Template should still have 25 (unaffected by group-level change)
+      expect(templatePerms).toHaveLength(25);
     }
   });
 

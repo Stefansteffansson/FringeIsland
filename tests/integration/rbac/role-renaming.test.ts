@@ -28,10 +28,19 @@ describe('B-RBAC-007: Role Renaming in Existing Groups', () => {
   let member: any;
   let testGroupId: string;
   let stewardRoleId: string;
+  let stewardTemplateId: string;
 
   beforeAll(async () => {
     steward = await createTestUser({ displayName: 'RBAC Rename - Steward' });
     member = await createTestUser({ displayName: 'RBAC Rename - Member' });
+
+    // Look up the Steward template ID (trigger checks template, not name)
+    const { data: template } = await admin
+      .from('role_templates')
+      .select('id')
+      .eq('name', 'Steward Role Template')
+      .single();
+    stewardTemplateId = template!.id;
 
     // Create test group
     const { data: group } = await admin
@@ -62,10 +71,10 @@ describe('B-RBAC-007: Role Renaming in Existing Groups', () => {
         status: 'active',
       });
 
-      // Create Steward role (new name)
+      // Create Steward role (new name, linked to template for trigger)
       const { data: role } = await admin
         .from('group_roles')
-        .insert({ group_id: testGroupId, name: 'Steward' })
+        .insert({ group_id: testGroupId, name: 'Steward', created_from_role_template_id: stewardTemplateId })
         .select()
         .single();
 

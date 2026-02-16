@@ -96,17 +96,17 @@ describe('B-RBAC-004 + B-RBAC-007: Role Template Permissions & Renaming', () => 
       expect(data!.length).toBeGreaterThan(0);
     });
 
-    it('should have 57 total role_template_permissions rows', async () => {
+    it('should have 58 total role_template_permissions rows', async () => {
       const { data, error } = await admin
         .from('role_template_permissions')
         .select('role_template_id, permission_id');
 
       expect(error).toBeNull();
-      // Steward: 24 + Guide: 14 + Member: 12 + Observer: 7 = 57
-      expect(data).toHaveLength(57);
+      // Steward: 25 + Guide: 14 + Member: 12 + Observer: 7 = 58
+      expect(data).toHaveLength(58);
     });
 
-    it('should map 24 permissions to the Steward template', async () => {
+    it('should map 25 permissions to the Steward template', async () => {
       const { data: template } = await admin
         .from('role_templates')
         .select('id')
@@ -125,7 +125,7 @@ describe('B-RBAC-004 + B-RBAC-007: Role Template Permissions & Renaming', () => 
         .eq('role_template_id', template.id);
 
       expect(error).toBeNull();
-      expect(data).toHaveLength(24);
+      expect(data).toHaveLength(25);
     });
 
     it('should map 14 permissions to the Guide template', async () => {

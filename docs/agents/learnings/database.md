@@ -8,6 +8,18 @@
 
 ## Entries
 
+### 2026-02-16: Nested RLS in INSERT policies with anti-escalation
+When an INSERT policy on table A uses subqueries on tables B and C (e.g., `SELECT group_id FROM group_roles WHERE id = group_role_id`), those subqueries are subject to RLS on B and C. This silently blocks legitimate inserts. Fix: create SECURITY DEFINER helper functions (`get_group_id_for_role()`, `get_permission_name()`) that bypass RLS. This is the second time we hit nested RLS (first was `has_permission`). Always use helpers for cross-table lookups in policies.
+> Promoted to playbook? Partially — already in MEMORY.md, now confirmed with second occurrence.
+
+### 2026-02-16: Trigger should check template ID, not role name
+The `prevent_last_leader_removal` trigger was checking `gr.name = 'Steward'`. If the Steward role is renamed, the trigger silently stops protecting. Fix: check `created_from_role_template_id` against the Steward Role Template ID. This is more robust and aligns with the template system design. All tests that create "Steward" roles must now include `created_from_role_template_id`.
+> Promoted to playbook? Not yet
+
+### 2026-02-16: Adding a permission bumps many hardcoded counts in tests
+Adding `manage_roles` (41→42) caused 13 test failures across 8 suites: permission catalog count, Steward template count, Deusex count, total template permissions, group_management category count. When adding permissions, grep for the old count across all test files and update systematically.
+> Promoted to playbook? Not yet
+
 ### 2026-02-16: RBAC Sub-Sprint 1 — Schema discoveries
 - `group_role_permissions` and `role_template_permissions` have composite PKs, no `id` column. All queries must use `.select('group_role_id, permission_id')` not `.select('id')`.
 - `group_roles` table has no `description` column. Don't try to INSERT descriptions.

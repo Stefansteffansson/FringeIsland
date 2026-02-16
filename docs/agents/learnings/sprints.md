@@ -8,6 +8,10 @@
 
 ## Entries
 
+### 2026-02-16: RBAC Sub-Sprint 4 completed full TDD cycle successfully
+Full workflow: 8 behavior specs → 47 tests (15 RED) → design → 2 migrations → fix nested RLS → all GREEN → 2x QA runs. The nested RLS issue was caught by tests (not manual testing), validating the TDD approach. Session continued from context compaction mid-stream — no data loss. Total RBAC: 4 sub-sprints, 25 behaviors, ~110 tests, 7 migrations.
+> Promoted to playbook? Not yet
+
 ### 2026-02-13: Journal initialized
 Sprint process established. Key insights from project history:
 - XL tasks (like RBAC design) should be split across sessions with checkpoints

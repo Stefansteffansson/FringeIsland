@@ -8,6 +8,14 @@
 
 ## Entries
 
+### 2026-02-16: Tests must link template IDs when creating Steward roles
+After the `prevent_last_leader_removal` trigger was changed to check `created_from_role_template_id` instead of role name, all tests that create "Steward" roles ad-hoc must include `created_from_role_template_id: stewardTemplateId`. Look it up in `beforeAll` via `admin.from('role_templates').select('id').eq('name', 'Steward Role Template').single()`. Without this, the trigger won't protect the role.
+> Promoted to playbook? Not yet
+
+### 2026-02-16: Permission count tests are fragile — consider dynamic counts
+Hardcoded counts (41 permissions, 24 Steward template perms, etc.) break every time a permission is added. Consider using `toBeGreaterThanOrEqual()` or fetching the expected count dynamically instead of hardcoding. For now, grep-and-replace works but is error-prone.
+> Promoted to playbook? Not yet
+
 ### 2026-02-16: RBAC test patterns and gotchas
 - Composite PK tables (group_role_permissions, role_template_permissions): use `.select('col1, col2')` not `.select('id')`. Supabase returns null for non-existent columns silently.
 - When renaming roles, other test suites that create roles with old names will leave orphaned data if they fail before cleanup. After role rename migrations, delete stale test data before verifying "no old names exist" assertions.

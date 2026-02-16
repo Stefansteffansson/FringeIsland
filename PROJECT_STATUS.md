@@ -1,25 +1,28 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-16 (RBAC Sub-Sprint 3 complete)
-**Current Version:** 0.2.18
+**Last Updated:** 2026-02-16 (RBAC Sub-Sprint 4 complete)
+**Current Version:** 0.2.19
 **Active Branch:** main
 
 ---
 
 ## 🎯 What We're Working On NOW
 
-**Current Focus:** RBAC Implementation — Sub-Sprint 3 complete, Sub-Sprint 4 next
+**Current Focus:** RBAC Implementation — All 4 Sub-Sprints COMPLETE!
 
 **Active Tasks:**
 - [x] **RBAC Sub-Sprint 1: Schema Foundation** ✅ **DONE v0.2.16!**
 - [x] **RBAC Sub-Sprint 2: Permission Resolution** ✅ **DONE v0.2.17!**
 - [x] **RBAC Sub-Sprint 3: UI Migration** ✅ **DONE v0.2.18!**
-  - [x] B-RBAC-013: Group detail page — permission-gated actions
-  - [x] B-RBAC-014: Edit group page — permission-gated access
-  - [x] B-RBAC-015: Forum moderation — permission-gated delete
-  - [x] B-RBAC-016: Enrollment modal — permission-based group enrollment
-  - [x] B-RBAC-017: No remaining isLeader or role-name access checks
-- [ ] **NEXT:** RBAC Sub-Sprint 4: Role management UI
+- [x] **RBAC Sub-Sprint 4: Role Management** ✅ **DONE v0.2.19!**
+  - [x] B-RBAC-018: manage_roles permission
+  - [x] B-RBAC-019: View group roles
+  - [x] B-RBAC-020: Create custom role
+  - [x] B-RBAC-021: Edit role
+  - [x] B-RBAC-022: Delete custom role
+  - [x] B-RBAC-023: Permission picker (anti-escalation)
+  - [x] B-RBAC-024: Anti-escalation enforcement
+  - [x] B-RBAC-025: RLS policies for role management
 
 **Blocked/Waiting:**
 - Nothing blocked
@@ -28,12 +31,12 @@
 
 ## 📊 Quick Stats
 
-- **Phase:** RBAC Implementation (Sub-Sprint 3 of 4 complete)
+- **Phase:** RBAC Implementation COMPLETE (4 of 4 sub-sprints done)
 - **Total Tables:** 17 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 43 migration files (+5 RBAC)
-- **Recent Version:** v0.2.18 (RBAC Sub-Sprint 3 - Feb 16, 2026)
-- **Test Coverage:** 272 tests, **272/272 passing** ✅ (stable)
-- **Behaviors Documented:** 50 (5 auth, 5 groups, 7 journeys, 3 roles, 7 communication, 6 messaging, 17 RBAC) ✅
+- **Total Migrations:** 45 migration files (+7 RBAC)
+- **Recent Version:** v0.2.19 (RBAC Sub-Sprint 4 - Feb 16, 2026)
+- **Test Coverage:** 319 tests, **319/319 passing** ✅ (stable, 2x QA verified)
+- **Behaviors Documented:** 58 (5 auth, 5 groups, 7 journeys, 3 roles, 7 communication, 6 messaging, 25 RBAC) ✅
 - **Feature Docs:** 3 complete + 3 planned designs (notification-system, group-forum-system, direct-messaging)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
 
@@ -56,7 +59,8 @@
 - ✅ **Direct Messaging** (1:1 conversations, inbox, read tracking, Realtime) 📨 v0.2.15
 - ✅ **RBAC Sub-Sprint 1** (group types, personal groups, system groups, role rename, template permissions, auto-copy trigger) 🔒 v0.2.16
 - ✅ **RBAC Sub-Sprint 2** (has_permission() SQL function, get_user_permissions(), usePermissions() React hook, two-tier resolution) 🔒 v0.2.17
-- ✅ **RBAC Sub-Sprint 3** (UI migration: isLeader → hasPermission across 6 components, permission-gated actions) 🔒 **NEW v0.2.18!**
+- ✅ **RBAC Sub-Sprint 3** (UI migration: isLeader → hasPermission across 6 components, permission-gated actions) 🔒 v0.2.18
+- ✅ **RBAC Sub-Sprint 4** (Role management: manage_roles permission, RLS policies, RoleManagementSection/RoleFormModal/PermissionPicker UI) 🔒 **NEW v0.2.19!**
 
 ---
 
@@ -84,27 +88,28 @@
 
 ## 🔄 Last Session Summary
 
-**Date:** 2026-02-16 (RBAC Sub-Sprint 3: UI Migration)
+**Date:** 2026-02-16 (RBAC Sub-Sprint 4: Role Management)
 **Summary:**
-- ✅ **Full TDD workflow:** Behavior specs (5 behaviors, B-RBAC-013 through B-RBAC-017) → Tests (34 written, all GREEN since infrastructure exists) → Design → Implement → QA (2x full suite) → Document
-- ✅ **6 files migrated from isLeader → hasPermission:**
-  - `app/groups/[id]/page.tsx` — 6 permission gates (edit_group_settings, view_member_list, remove_roles, assign_roles, invite_members)
-  - `app/groups/[id]/edit/page.tsx` — edit_group_settings + delete_group gates
-  - `ForumSection.tsx` — added usePermissions hook, passes moderate_forum
-  - `ForumPost.tsx` + `ForumReplyList.tsx` — isLeader prop → canModerate prop
-  - `EnrollmentModal.tsx` — role-name query → has_permission RPC (enroll_group_in_journey)
-- ✅ **Updated DEFERRED_DECISIONS.md** — 6 stale entries resolved/updated
-- ✅ **Security review:** Fail-closed behavior confirmed, no permission escalation risks
+- ✅ **Full TDD workflow:** Behavior specs (8 behaviors, B-RBAC-018 through B-RBAC-025) → Tests (47 written, 15 RED initially) → Design → Implement (2 migrations) → QA (2x full suite) → Document
+- ✅ **Database changes:**
+  - `manage_roles` permission added to catalog (42 total), backfilled to Steward template + instances + Deusex
+  - `description` column on `group_roles`
+  - `prevent_last_leader_removal` trigger fixed: checks `created_from_role_template_id` not role name
+  - RLS policies on `group_roles` and `group_role_permissions` replaced with `has_permission('manage_roles')` + anti-escalation
+  - 2 SECURITY DEFINER helpers for nested RLS bypass
+- ✅ **3 new UI components:**
+  - `RoleManagementSection` — role list with create/edit/delete, integrated into group detail page
+  - `RoleFormModal` — create/edit role modal with name, description, permission picker
+  - `PermissionPicker` — category-grouped checkbox UI, anti-escalation enforcement
+- ✅ **RBAC implementation fully complete** (4 of 4 sub-sprints done)
 
-**Test Results:** 272/272 passing ✅ (34 new UI permission tests + 238 existing, zero regressions, zero flakiness on 2x runs)
+**Test Results:** 319/319 passing ✅ (47 new role-management tests + 272 existing, zero regressions, 2x QA runs)
 
-**Bridge Doc:** `docs/planning/sessions/2026-02-16-rbac-sub-sprint-3.md`
+**Previous Session (2026-02-16, earlier):**
+- RBAC Sub-Sprint 3: UI migration isLeader → hasPermission
 
 **Previous Session (2026-02-15):**
 - Communication system bug fixes, DM sender badge, notification trigger removal
-
-**Previous Session (2026-02-15, earlier):**
-- Sprint 1.5-B complete: Direct Messaging system built end-to-end with TDD
 
 **Previous Session (2026-02-14):**
 - Phase 1.5-A complete: Notification System + Group Forum (v0.2.14)
@@ -115,11 +120,11 @@
 
 **See `docs/planning/ROADMAP.md` for complete phase breakdown**
 
-**RBAC Implementation (Sub-Sprint 3 of 4 complete):**
+**RBAC Implementation COMPLETE (4 of 4 sub-sprints):**
 1. ~~Schema evolution (group_type, personal groups, system groups, role rename)~~ ✅ **DONE**
 2. ~~`has_permission()` SQL function + `usePermissions()` React hook~~ ✅ **DONE**
 3. ~~Migrate UI from `isLeader` to `hasPermission()`~~ ✅ **DONE**
-4. Role management UI (Steward creates/customizes roles) ← **NEXT**
+4. ~~Role management UI (manage_roles, RLS, UI components)~~ ✅ **DONE**
 
 **Phase 1.6 - Polish and Launch:**
 8. Mobile responsiveness audit

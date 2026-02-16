@@ -161,7 +161,7 @@ describe('B-RBAC-006: System Groups Exist', () => {
     expect(data!.group_type).toBe('system');
   });
 
-  it('should have a "Deusex" role with ALL 41 permissions', async () => {
+  it('should have a "Deusex" role with ALL 42 permissions', async () => {
     const { data: group } = await admin
       .from('groups')
       .select('id')
@@ -189,7 +189,7 @@ describe('B-RBAC-006: System Groups Exist', () => {
       .select('group_role_id, permission_id')
       .eq('group_role_id', role.id);
 
-    expect(perms).toHaveLength(41);
+    expect(perms).toHaveLength(42);
   });
 
   // --- System group protection ---
