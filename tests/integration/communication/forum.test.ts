@@ -77,7 +77,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
     // Create Group Leader role and assign to leader
     const { data: lr, error: lrErr } = await admin
       .from('group_roles')
-      .insert({ group_id: testGroup.id, name: 'Group Leader' })
+      .insert({ group_id: testGroup.id, name: 'Steward' })
       .select()
       .single();
     expect(lrErr).toBeNull();

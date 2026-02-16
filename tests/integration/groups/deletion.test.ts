@@ -70,7 +70,7 @@ describe('B-GRP-005: Group Deletion Rules', () => {
     // (the trigger only fires for 'Group Leader' roles, blocking CASCADE delete)
     const { data: travelGuideRole } = await admin
       .from('group_roles')
-      .insert({ group_id: group!.id, name: 'Travel Guide' })
+      .insert({ group_id: group!.id, name: 'Guide' })
       .select()
       .single();
 
@@ -283,7 +283,7 @@ describe('B-GRP-005: Group Deletion Rules', () => {
 
     const { data: leaderRole } = await admin
       .from('group_roles')
-      .insert({ group_id: group!.id, name: 'Group Leader' })
+      .insert({ group_id: group!.id, name: 'Steward' })
       .select()
       .single();
 

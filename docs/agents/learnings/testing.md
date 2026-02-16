@@ -8,6 +8,13 @@
 
 ## Entries
 
+### 2026-02-16: RBAC test patterns and gotchas
+- Composite PK tables (group_role_permissions, role_template_permissions): use `.select('col1, col2')` not `.select('id')`. Supabase returns null for non-existent columns silently.
+- When renaming roles, other test suites that create roles with old names will leave orphaned data if they fail before cleanup. After role rename migrations, delete stale test data before verifying "no old names exist" assertions.
+- `createTestUser()` now triggers handle_new_user() which creates personal group + FI Members enrollment + role assignments. This generates role_assigned notifications. Tests counting notifications must clean up or account for these.
+- Independence test for group_role_permissions: delete by composite key `.eq('group_role_id', id).eq('permission_id', id)`, not by `.eq('id', id)`.
+→ Promoted to playbook? Not yet
+
 ### 2026-02-13: Journal initialized
 Starting point. Known patterns captured in playbook from prior sessions:
 - PostgREST INSERT...RETURNING gotcha (triggers SELECT policy)

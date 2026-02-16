@@ -57,7 +57,7 @@ describe('B-GRP-004: Group Editing Permissions', () => {
 
     const { data: role } = await admin
       .from('group_roles')
-      .insert({ group_id: testGroup.id, name: 'Group Leader' })
+      .insert({ group_id: testGroup.id, name: 'Steward' })
       .select()
       .single();
 

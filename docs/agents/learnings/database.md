@@ -8,6 +8,14 @@
 
 ## Entries
 
+### 2026-02-16: RBAC Sub-Sprint 1 — Schema discoveries
+- `group_role_permissions` and `role_template_permissions` have composite PKs, no `id` column. All queries must use `.select('group_role_id, permission_id')` not `.select('id')`.
+- `group_roles` table has no `description` column. Don't try to INSERT descriptions.
+- Role renaming requires updating ALL functions and RLS policies that hardcode role names. Found 6+ functions and 2+ inline policies referencing 'Group Leader' beyond the 3 core functions.
+- `handle_new_user()` trigger extension (personal group + FI Members enrollment) causes `notify_role_assigned` trigger to fire for the new user_group_roles inserts. Tests that count notifications must account for this.
+- `copy_template_permissions` trigger (AFTER INSERT on group_roles) auto-populates `group_role_permissions` when `created_from_role_template_id` is set. Uses `ON CONFLICT DO NOTHING` for idempotency.
+→ Promoted to playbook? Not yet
+
 ### 2026-02-13: Journal initialized
 Starting point. Known patterns captured in playbook from prior sessions:
 - Always set search_path = '' on public functions

@@ -64,7 +64,7 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
     // Create Group Leader role and assign it
     const { data: role, error: roleErr } = await admin
       .from('group_roles')
-      .insert({ group_id: testGroup.id, name: 'Group Leader' })
+      .insert({ group_id: testGroup.id, name: 'Steward' })
       .select()
       .single();
     expect(roleErr).toBeNull();
@@ -439,6 +439,14 @@ describe('B-COMM-003: Notification Read Status — mark as read', () => {
   });
 
   it('B-COMM-003: unread count is accurate', async () => {
+    // Clean up ALL existing unread notifications (handle_new_user now creates
+    // role_assigned notifications for personal group + FI Members enrollment)
+    await admin
+      .from('notifications')
+      .update({ is_read: true, read_at: new Date().toISOString() })
+      .eq('recipient_user_id', testUser.profile.id)
+      .eq('is_read', false);
+
     // Create a fresh unread notification
     const { data: unreadNotif } = await admin
       .from('notifications')
@@ -464,7 +472,7 @@ describe('B-COMM-003: Notification Read Status — mark as read', () => {
         .eq('is_read', false);
 
       expect(error).toBeNull();
-      // Exactly 1 unread notification (the other was marked read above)
+      // Exactly 1 unread notification (all others were marked read above)
       expect(data).toHaveLength(1);
     } finally {
       await supabase.auth.signOut();

@@ -1181,7 +1181,9 @@ These permissions need to be added to the `permissions` table:
 
 ### D22: Seeded Permissions & Templates — Final Delta (Resolved 2026-02-11)
 
-**Decision:** The existing 30 seeded permissions need minimal changes. The new model requires 1 rename, 1 removal, 2 additions (net: 31 permissions). Role templates need 1 removal and 2 renames (net: 4 templates).
+**Decision:** The existing permissions need minimal changes. The new model requires 1 rename, 1 removal, 2 additions. Role templates need 1 removal and 2 renames (net: 4 templates).
+
+> **CORRECTION (2026-02-16):** D22 originally stated "30 seeded permissions → 31 final." The actual DB has **40 seeded permissions** (the original count of 30 was a math error — category totals 13+9+5+5+3+5=40, not 30). The `platform_admin` category has 5 permissions (including `view_platform_analytics`, which was omitted from D22's listing). Correct final count: **41 permissions** (40 - 1 removed + 2 added). Template permission counts (Steward 24, Guide 15, Member 12, Observer 7) are unaffected — the extra perm is `platform_admin`, not granted to any engagement group template.
 
 #### Permission Changes
 
@@ -1201,8 +1203,8 @@ These permissions need to be added to the `permissions` table:
 | `journey_participation` | 5 | `view_journey_content`, `complete_journey_activities`, `view_own_progress`, `view_others_progress`, **`view_group_progress`** (renamed) |
 | `communication` | 5 | `post_forum_messages`, `send_direct_messages`, `moderate_forum`, `view_forum`, `reply_to_messages` |
 | `feedback` | 2 | `provide_feedback_to_members`, `receive_feedback` |
-| `platform_admin` | 4 | `manage_platform_settings`, `manage_all_groups`, `manage_role_templates`, `manage_group_templates` |
-| **Total** | **31** | (was 30: +2 added, -1 removed, 1 renamed) |
+| `platform_admin` | 5 | `manage_platform_settings`, `manage_all_groups`, `manage_role_templates`, `manage_group_templates`, `view_platform_analytics` |
+| **Total** | **41** | (was 40: +2 added, -1 removed, 1 renamed) |
 
 #### Role Template Changes
 

@@ -66,7 +66,7 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
       .from('group_roles')
       .insert({
         group_id: group!.id,
-        name: 'Group Leader',
+        name: 'Steward',
       })
       .select()
       .single();

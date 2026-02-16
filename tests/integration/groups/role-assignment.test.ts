@@ -73,7 +73,7 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
     // Create Group Leader role and assign to leader
     const { data: lr, error: lrErr } = await admin
       .from('group_roles')
-      .insert({ group_id: testGroup.id, name: 'Group Leader' })
+      .insert({ group_id: testGroup.id, name: 'Steward' })
       .select()
       .single();
 
@@ -91,7 +91,7 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
     // Create a "Travel Guide" role (target for assignment tests)
     const { data: mr, error: mrErr } = await admin
       .from('group_roles')
-      .insert({ group_id: testGroup.id, name: 'Travel Guide' })
+      .insert({ group_id: testGroup.id, name: 'Guide' })
       .select()
       .single();
 
@@ -205,7 +205,7 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
 
     const { data: bootstrapRole } = await admin
       .from('group_roles')
-      .insert({ group_id: bootstrapGroup!.id, name: 'Group Leader' })
+      .insert({ group_id: bootstrapGroup!.id, name: 'Steward' })
       .select()
       .single();
 

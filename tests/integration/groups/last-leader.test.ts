@@ -54,7 +54,7 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .from('group_roles')
       .insert({
         group_id: group.id,
-        name: 'Group Leader',
+        name: 'Steward',
       })
       .select()
       .single();
@@ -85,7 +85,7 @@ describe('B-GRP-001: Last Leader Protection', () => {
 
     // Assert: Deletion should be blocked by trigger
     expect(deleteError).not.toBeNull();
-    expect(deleteError?.message).toContain('last Group Leader');
+    expect(deleteError?.message).toContain('last Steward');
   });
 
   it('should allow removing a leader role when other leaders exist', async () => {
@@ -105,7 +105,7 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .from('group_roles')
       .insert({
         group_id: group!.id,
-        name: 'Group Leader',
+        name: 'Steward',
       })
       .select()
       .single();
@@ -175,7 +175,7 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .from('group_roles')
       .insert({
         group_id: group!.id,
-        name: 'Group Leader',
+        name: 'Steward',
       })
       .select()
       .single();
@@ -235,7 +235,7 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .from('group_roles')
       .insert({
         group_id: group!.id,
-        name: 'Group Leader',
+        name: 'Steward',
       })
       .select()
       .single();

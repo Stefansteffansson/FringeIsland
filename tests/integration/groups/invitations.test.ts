@@ -74,7 +74,7 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
     // Create Group Leader role and assign to leader
     const { data: role, error: roleErr } = await admin
       .from('group_roles')
-      .insert({ group_id: testGroup.id, name: 'Group Leader' })
+      .insert({ group_id: testGroup.id, name: 'Steward' })
       .select()
       .single();
 
