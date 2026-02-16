@@ -8,8 +8,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- RBAC Sub-Sprint 3: UI migration (isLeader → hasPermission)
 - RBAC Sub-Sprint 4: Role management UI
+
+---
+
+## [0.2.18] - 2026-02-16
+
+### Changed
+- **RBAC Sub-Sprint 3: UI Migration** (isLeader → hasPermission across all components)
+  - `app/groups/[id]/page.tsx` — replaced `isLeader` boolean with `usePermissions(groupId)` hook; 6 UI gates now use specific permissions (`edit_group_settings`, `view_member_list`, `remove_roles`, `assign_roles`, `invite_members`)
+  - `app/groups/[id]/edit/page.tsx` — replaced `isLeader` with `hasPermission('edit_group_settings')`; added `hasPermission('delete_group')` gate on Danger Zone
+  - `ForumSection.tsx` — removed `isLeader` prop, added internal `usePermissions(groupId)` hook, passes `hasPermission('moderate_forum')` as `canModerate`
+  - `ForumPost.tsx` + `ForumReplyList.tsx` — renamed `isLeader` prop to `canModerate`
+  - `EnrollmentModal.tsx` — replaced `group_roles.name = 'Group Leader'` query with `has_permission` RPC checking `enroll_group_in_journey`
+
+### Added
+- **B-RBAC-013 through B-RBAC-017 behavior specs** — UI permission gating behaviors
+- **34 integration tests** for UI permission gating (`tests/integration/rbac/ui-permission-gating.test.ts`)
+- **Updated DEFERRED_DECISIONS.md** — resolved 6 stale entries (Permission Inheritance, Group-to-Group, Subgroups, Notifications, Forum, DM)
+
+### Technical Details
+- **Files Modified:** 6 UI components (no database changes)
+- **Test Status:** 272/272 passing (34 new + 238 existing, zero regressions)
+- **Security Review:** Fail-closed behavior confirmed; loading states prevent unauthorized content flash
 
 ---
 

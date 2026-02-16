@@ -21,7 +21,7 @@ export interface ForumPostData {
 
 interface ForumPostProps {
   post: ForumPostData;
-  isLeader: boolean;
+  canModerate: boolean;
   currentUserId: string;
   replyCount?: number;
   onReply?: (parentPostId: string, content: string) => Promise<void>;
@@ -59,7 +59,7 @@ function relativeTime(dateStr: string): string {
 
 export default function ForumPost({
   post,
-  isLeader,
+  canModerate,
   currentUserId,
   replyCount = 0,
   onReply,
@@ -255,8 +255,8 @@ export default function ForumPost({
                   </button>
                 )}
 
-                {/* Delete button (leaders only — moderation) */}
-                {isLeader && (
+                {/* Delete button (moderation permission) */}
+                {canModerate && (
                   <button
                     onClick={handleDeleteClick}
                     className="text-xs text-gray-500 hover:text-red-600 transition-colors font-medium"

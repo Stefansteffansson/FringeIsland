@@ -610,6 +610,203 @@
 
 ---
 
+## B-RBAC-013: Group Detail Page — Permission-Gated Actions
+
+**Rule:** The group detail page (`app/groups/[id]/page.tsx`) shows action buttons based on the user's permissions in that group, not based on whether they hold a specific role name. Each action maps to a specific permission from the catalog.
+
+**Why:** The current UI uses `isLeader` (derived from `role.name === 'Group Leader'`) as a binary gate for all management actions. This is too coarse — a Guide who should be able to view member progress can't, and a custom role with `invite_members` permission can't see the invite button. Permission-based gating enables fine-grained, customizable access (D1, D2, D14).
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/ui-permission-gating.test.ts`
+- **Code:** `app/groups/[id]/page.tsx` using `usePermissions(groupId)` hook
+- **Database:** `has_permission()` + `get_user_permissions()` SQL functions (Sub-Sprint 2)
+
+**Acceptance Criteria:**
+- [ ] Page uses `usePermissions(groupId)` hook instead of deriving `isLeader` from role names
+- [ ] Edit Group button: shown when `hasPermission('edit_group_settings')` is true
+- [ ] Invite Member button: shown when `hasPermission('invite_members')` is true
+- [ ] Remove Member button (×): shown when `hasPermission('remove_members')` is true
+- [ ] Assign Role button: shown when `hasPermission('assign_roles')` is true
+- [ ] Remove Role button (×): shown when `hasPermission('remove_roles')` is true
+- [ ] Member list section: shown when `show_member_list` is true OR `hasPermission('view_member_list')` is true
+- [ ] Quick Actions section: shown when user has ANY management permission (invite, assign, etc.)
+- [ ] While permissions are loading (`loading = true`), management buttons are hidden (fail closed)
+- [ ] No code checks `role.name === 'Group Leader'` or `role.name === 'Steward'` for access decisions
+
+**Examples:**
+
+✅ **Valid:**
+- User with Steward role sees edit, invite, remove, assign buttons (Steward has all management perms)
+- User with Guide role sees member list but NOT invite/remove/assign buttons (Guide lacks those perms)
+- User with custom "Mentor" role that has `invite_members` sees the invite button but NOT edit/remove
+- Deusex user sees all buttons in every group (all permissions via Tier 1)
+
+❌ **Invalid:**
+- Code checks `isLeader` or `role.name === 'Steward'` → VIOLATED (must use `hasPermission()`)
+- Guide user can't see member list even though Guide has `view_member_list` → VIOLATED
+- Permissions still loading but buttons are visible → VIOLATED (fail closed during loading)
+
+**Edge Cases:**
+- **Scenario:** User has multiple roles (Steward + Guide) in the same group
+  - **Behavior:** Buttons reflect union of permissions (both roles' permissions apply)
+  - **Why:** D12 — multiple roles = union
+
+- **Scenario:** Steward removes `invite_members` from a custom role while user is viewing the page
+  - **Behavior:** Buttons don't update until page reload or `refreshNavigation` event
+  - **Why:** No real-time subscription yet; hook re-fetches on navigation events
+
+**Testing Priority:** 🔴 CRITICAL (most-used page, most permission checks)
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 3)
+
+---
+
+## B-RBAC-014: Edit Group Page — Permission-Gated Access
+
+**Rule:** The edit group page (`app/groups/[id]/edit/page.tsx`) checks `hasPermission('edit_group_settings')` to determine if the user can access the page, not whether they hold the "Group Leader" or "Steward" role.
+
+**Why:** Access to group editing should be controlled by the `edit_group_settings` permission, which the Steward can grant to other roles if desired (D2). Hardcoding role-name checks prevents this flexibility.
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/ui-permission-gating.test.ts`
+- **Code:** `app/groups/[id]/edit/page.tsx` using `usePermissions(groupId)` hook
+
+**Acceptance Criteria:**
+- [ ] Page uses `usePermissions(groupId)` hook instead of deriving `isLeader` from role names
+- [ ] Page renders edit form when `hasPermission('edit_group_settings')` is true
+- [ ] Page renders "not authorized" message when `hasPermission('edit_group_settings')` is false
+- [ ] Delete group (Danger Zone) section: shown when `hasPermission('delete_group')` is true
+- [ ] While permissions are loading, page shows loading state (not the edit form)
+- [ ] No code checks `role.name === 'Group Leader'` or `role.name === 'Steward'`
+
+**Examples:**
+
+✅ **Valid:**
+- User with Steward role navigates to `/groups/[id]/edit` → sees edit form
+- User with Member role navigates to `/groups/[id]/edit` → sees "not authorized"
+- User with custom role that has `edit_group_settings` but NOT `delete_group` → sees edit form but NOT Danger Zone
+
+❌ **Invalid:**
+- Page checks `isLeader` boolean → VIOLATED
+- User with `edit_group_settings` permission (via custom role) is denied access → VIOLATED
+
+**Testing Priority:** 🟡 HIGH
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 3)
+
+---
+
+## B-RBAC-015: Forum Moderation — Permission-Gated Delete
+
+**Rule:** Forum moderation actions (deleting others' posts) are gated by the `moderate_forum` permission, not by whether the user is a "Group Leader" or "Steward". Users can always edit/delete their own posts regardless of permissions.
+
+**Why:** Forum moderation is a specific capability that may be delegated to roles other than Steward (e.g., a "Moderator" custom role). The current `isLeader` prop creates a binary gate that prevents this delegation (D2, D18a).
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/ui-permission-gating.test.ts`
+- **Code:** `ForumSection.tsx`, `ForumPost.tsx`, `ForumReplyList.tsx`
+
+**Acceptance Criteria:**
+- [ ] `ForumSection` receives permission data instead of `isLeader` boolean prop
+- [ ] Delete button on others' posts: shown when `hasPermission('moderate_forum')` is true
+- [ ] Users can always edit/delete their OWN posts (no permission needed — author check)
+- [ ] `ForumPost` and `ForumReplyList` components updated to use permission-based prop
+- [ ] No `isLeader` prop in forum component interfaces
+
+**Examples:**
+
+✅ **Valid:**
+- Steward sees delete button on all posts (has `moderate_forum` permission)
+- Guide does NOT see delete button on others' posts (Guide lacks `moderate_forum` per D18a)
+- Member sees edit/delete on their own posts only
+- Custom "Moderator" role with `moderate_forum` permission sees delete button on all posts
+
+❌ **Invalid:**
+- `isLeader` prop still passed to forum components → VIOLATED
+- Guide can delete others' posts → VIOLATED (Guide doesn't have `moderate_forum`)
+
+**Testing Priority:** 🟡 HIGH
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 3)
+
+---
+
+## B-RBAC-016: Enrollment Modal — Permission-Based Group Enrollment
+
+**Rule:** The enrollment modal's group enrollment tab fetches groups where the user has the `enroll_group_in_journey` permission, not groups where the user has the "Group Leader" role name.
+
+**Why:** The current code queries `group_roles.name = 'Group Leader'` to find eligible groups. This breaks when roles are renamed (already renamed to "Steward") and prevents custom roles with enrollment permissions from working (D2).
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/ui-permission-gating.test.ts`
+- **Code:** `components/journeys/EnrollmentModal.tsx`
+
+**Acceptance Criteria:**
+- [ ] Group enrollment tab fetches groups using `has_permission()` or `get_user_permissions()` instead of role name matching
+- [ ] User sees groups where they have `enroll_group_in_journey` permission
+- [ ] "You must be a Group Leader" message updated to permission-based language (e.g., "You don't have permission to enroll any groups")
+- [ ] Variable names updated: `leaderGroups` → `enrollableGroups`, `fetchLeaderGroups` → `fetchEnrollableGroups`
+- [ ] No code queries `group_roles.name = 'Group Leader'` or `group_roles.name = 'Steward'`
+
+**Examples:**
+
+✅ **Valid:**
+- User with Steward role in 3 groups → sees all 3 groups in dropdown
+- User with custom "Coordinator" role that has `enroll_group_in_journey` → sees those groups too
+- User with Member role only (no enrollment perm) → sees "no permission" message
+
+❌ **Invalid:**
+- Code filters by `group_roles.name = 'Group Leader'` → VIOLATED (already renamed to Steward, and should use permissions anyway)
+- User with `enroll_group_in_journey` on a custom role can't see the group → VIOLATED
+
+**Testing Priority:** 🟡 HIGH
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 3)
+
+---
+
+## B-RBAC-017: No Remaining isLeader or Role-Name Checks in Application Code
+
+**Rule:** After Sub-Sprint 3, no application code (components, pages, hooks) uses `isLeader` boolean state, `role.name === 'Group Leader'`, `role.name === 'Steward'`, or any other role-name string comparison for access decisions. All access decisions use `hasPermission('permission_name')`.
+
+**Why:** Role-name checks are the root problem RBAC solves. If any remain, the system is partially migrated and fragile — renaming a role breaks access, and custom roles can't work. This behavior is the "definition of done" for Sub-Sprint 3 (D1, D2).
+
+**Verified by:**
+- **Test:** Code grep / static analysis (no integration test needed)
+- **Code:** All files in `app/` and `components/`
+
+**Acceptance Criteria:**
+- [ ] `grep -r "isLeader" app/ components/` → 0 matches (excluding comments/docs)
+- [ ] `grep -r "'Group Leader'" app/ components/` → 0 matches
+- [ ] `grep -r "'Steward'" app/ components/` → 0 matches (for access checks; display labels are OK)
+- [ ] `grep -r "role.name ===" app/ components/` → 0 matches (for access decisions)
+- [ ] `grep -r "role_name ===" app/ components/` → 0 matches (for access decisions)
+- [ ] All removed `isLeader` state variables have been replaced with `usePermissions()` hook calls
+- [ ] Role names may still appear in display/labels (e.g., showing "Steward" badge) — this is OK
+- [ ] The `is_active_group_leader()` SQL helper function may still exist for RLS backward compatibility (RLS migration is a separate concern from UI migration)
+
+**Examples:**
+
+✅ **Valid:**
+- `{hasPermission('invite_members') && <InviteButton />}` — permission-based
+- `<span>{role.name}</span>` — displaying role name in UI label (not access decision)
+
+❌ **Invalid:**
+- `const isLeader = roles.some(r => r.name === 'Steward')` → VIOLATED
+- `{isLeader && <EditButton />}` → VIOLATED
+- `.eq('group_roles.name', 'Group Leader')` → VIOLATED (Supabase query filtering by role name)
+
+**Testing Priority:** 🔴 CRITICAL (definition of done for Sub-Sprint 3)
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 3)
+
+---
+
 ## Notes
 
 **Domain Code:** RBAC
@@ -630,14 +827,20 @@
 - B-RBAC-011: usePermissions() Hook (fetch permission set, cache in React state)
 - B-RBAC-012: Deusex Has All Permissions (validates RBAC model, no bypasses)
 
+**Sub-Sprint 3 Behaviors:**
+- B-RBAC-013: Group Detail Page — Permission-Gated Actions (usePermissions replaces isLeader)
+- B-RBAC-014: Edit Group Page — Permission-Gated Access (edit_group_settings check)
+- B-RBAC-015: Forum Moderation — Permission-Gated Delete (moderate_forum replaces isLeader)
+- B-RBAC-016: Enrollment Modal — Permission-Based Group Enrollment (enroll_group_in_journey replaces role name query)
+- B-RBAC-017: No Remaining isLeader or Role-Name Checks (definition of done)
+
 **Future Sub-Sprints (behaviors TBD):**
-- Sub-Sprint 3: RLS policy migration (`has_permission()` replaces `is_active_group_leader()`), UI migration (`usePermissions()` replaces `isLeader`)
-- Sub-Sprint 4: Group-to-group membership, transitive resolution, circularity prevention
+- Sub-Sprint 4: Role management UI (Steward creates/customizes roles, permission picker)
 
 **Design Decisions Referenced:**
 - D1 (Three-Layer Architecture), D2 (Self-Service Customization), D3 (Deusex is a Group)
 - D4 (RLS Migration), D5 (Two-Tier Scoping), D6 (FI Members Group), D7 (Groups Join Groups)
-- D9 (Personal Group = Identity), D12 (Union Semantics), D15 (Group-to-Group Only Schema)
-- D17 (Four Default Roles), D18a (Permission Grid), D20 (System-Level Grids)
-- D22 (Seeded Permissions Delta)
+- D9 (Personal Group = Identity), D12 (Union Semantics), D14 (Role Selector "Act as...")
+- D15 (Group-to-Group Only Schema), D17 (Four Default Roles), D18a (Permission Grid)
+- D20 (System-Level Grids), D22 (Seeded Permissions Delta)
 - Q4 (`has_permission()` function design), Q5 (`usePermissions()` hook design)

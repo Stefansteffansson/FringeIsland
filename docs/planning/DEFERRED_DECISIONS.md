@@ -15,98 +15,21 @@ Each deferred decision includes:
 
 ## Permission System
 
-### Permission Inheritance Between Parent/Child Groups
+### Permission Inheritance Between Parent/Child Groups — RESOLVED
 
 **Topic**: How should permissions flow between parent and child groups in hierarchical structures?
 
-**Context**: During architectural planning, we recognized that groups can have parent-child relationships (groups containing other groups). The question arose: should a user who is Admin in a parent group automatically have permissions in child groups?
+**Status:** **RESOLVED** by RBAC design decisions D5, D7, D10, D12 (February 2026). See `docs/features/planned/dynamic-permissions-system.md`.
 
-**Decision**: Defer to post-Phase 1. For MVP, groups will have isolated permission scopes.
+**Resolution:**
+- **D5 (Two-Tier Scoping):** System group permissions always active; context group permissions scoped to that group only. No automatic "bleeding" of permissions.
+- **D7 (Groups Join Groups):** The host group assigns roles to the joining group. Permissions in the host group are controlled by the host's Steward, NOT inherited from the joining group's internal roles.
+- **D10 (Transitive Membership):** Fully transitive (Mogwai → Alpha → Beta means access to Beta), but with Beta's roles assigned to Alpha — not Alpha's internal permissions projected onto Beta.
+- **D12 (Multiple Paths = Union):** If a user reaches a group through multiple paths, effective permissions are the additive union.
 
-**Rationale**:
-- Permission inheritance adds significant complexity to authorization logic
-- Different organizational patterns need different inheritance rules
-- Need real user feedback to understand which patterns are most useful
-- Can be added later without breaking existing groups
+**Key insight:** There is no "inheritance" in the traditional parent→child sense. The host group always decides what the joining group can do. This replaces all three original options (cascade down, bubble up, isolated) with a single universal model.
 
-**Deferred To**: Phase 2 (User-Generated Content)
-
-**Notes for Future Implementation**:
-
-**Design Pattern Options:**
-
-1. **Parent → Child (Cascade Down)**
-   ```
-   Acme Corp (Parent) - Stefan is Admin
-   └─> Marketing Team (Child) - Stefan automatically has Admin permissions
-   ```
-   
-   **Use Cases:**
-   - Organizational hierarchies where parent admins need control
-   - Companies wanting central oversight of all teams
-   
-   **Implementation:**
-   - Stored in `groups.settings`: `{"inheritance": "parent_to_child"}`
-   - Authorization checks must traverse up parent chain
-   - Performance consideration: Cache parent-child relationships
-
-2. **Child → Parent (Bubble Up)**
-   ```
-   Marketing Team (Child) - Stefan is Admin
-   └─> Acme Corp (Parent) - Stefan automatically has Observer role
-   ```
-   
-   **Use Cases:**
-   - Visibility/reporting where child leaders need parent access
-   - Bottom-up organizational structures
-   
-   **Implementation:**
-   - Configure which child role maps to which parent role
-   - Stored in `groups.settings`: `{"inheritance": "child_to_parent", "role_mappings": {...}}`
-
-3. **Isolated (No Inheritance)**
-   ```
-   Each group has completely independent permissions
-   ```
-   
-   **Use Cases:**
-   - Groups wanting full autonomy
-   - Privacy-sensitive scenarios
-   
-   **Implementation:**
-   - Default behavior (already implemented)
-
-**Technical Considerations:**
-
-- **Performance**: Inheritance checks could require multiple database queries
-  - Solution: Cache permission sets, precompute inheritance chains
-  
-- **Security**: Inheritance could create unintended access
-  - Solution: Make inheritance opt-in, show clear warnings
-  
-- **UI/UX**: Users need to understand inherited permissions
-  - Solution: Clear visual indication of inherited vs. direct permissions
-  
-- **Database**: RLS policies become more complex
-  - Solution: Create helper functions for permission checks
-
-**Example Configuration Schema:**
-```json
-{
-  "inheritance": "parent_to_child" | "child_to_parent" | "isolated",
-  "role_mappings": {
-    "child_role_id": "parent_role_id"  // For child→parent inheritance
-  },
-  "inheritance_depth": 1,  // How many levels to inherit (1 = direct parent only)
-  "override_allowed": true  // Can child groups override inherited permissions?
-}
-```
-
-**Before Implementation:**
-- Conduct user research on which patterns are needed
-- Test with 3-5 beta organizations with different structures
-- Benchmark performance impact
-- Create comprehensive test suite for inheritance scenarios
+**Implementation:** Sub-Sprint 1 (v0.2.16) and Sub-Sprint 2 (v0.2.17) built the schema and `has_permission()` SQL function. Sub-Sprint 3 (UI migration) is next.
 
 ---
 
@@ -168,352 +91,59 @@ In Phase 2, user-generated content creates new scenarios:
 
 ## Group Management
 
-### Managing Group-to-Group Relationships
+### Managing Group-to-Group Relationships — PARTIALLY RESOLVED
 
 **Topic**: How should users manage complex relationships when groups are members of other groups?
 
-**Context**: Groups can be members of parent groups, but we haven't designed the management interface for creating, viewing, and modifying these relationships.
+**Status:** **Design RESOLVED** by RBAC decisions D7, D11, D21 (February 2026). **UI still deferred.** See `docs/features/planned/dynamic-permissions-system.md`.
 
-**Decision**: For Phase 1, implement basic "add group as member" functionality. Defer advanced relationship management.
+**What's resolved (design):**
+- **D7:** Universal group-to-group membership model. Personal groups and engagement groups use the same joining mechanism.
+- **D11:** Circularity prevention via `BEFORE INSERT` trigger with recursive CTE check.
+- **D21:** Joining groups get Member role by default. Host Steward can promote/restrict.
 
-**Deferred To**: Phase 2
-
-**Notes for Future Implementation**:
-
-**Management Interface Needs:**
-
-1. **Visualizing Hierarchy**
-   - Tree view of group relationships
-   - Graph view for complex networks
-   - Breadcrumb navigation
-   - Parent/child group indicators
-
-2. **Creating Relationships**
-   - Add existing group as member
-   - Create new subgroup directly
-   - Bulk operations (add multiple groups)
-
-3. **Modifying Relationships**
-   - Remove group from parent
-   - Transfer group to different parent
-   - Reorder groups (if ordering matters)
-
-4. **Permissions for Relationships**
-   - Who can add/remove group relationships?
-   - Do both parent and child need to consent?
-   - Can groups reject membership in parent?
-
-**Complex Scenarios to Consider:**
-
-```
-Scenario 1: Circular Relationships (MUST PREVENT)
-Group A → member of → Group B → member of → Group A (BAD!)
-
-Prevention:
-- Check for cycles before allowing relationship
-- Traverse parent chain to ensure no loops
-
-Scenario 2: Multi-Parent Memberships (ALLOWED)
-Group A → member of → Group B
-         └→ member of → Group C
-
-UI Challenge:
-- Show all parent groups clearly
-- Handle conflicting settings from multiple parents
-
-Scenario 3: Deep Hierarchies (PERFORMANCE CONCERN)
-Org → Division → Department → Team → Sub-team → Working Group
-
-Performance:
-- Limit depth (e.g., max 5 levels)?
-- Cache hierarchy for performance
-- Lazy load deep branches
-```
-
-**UI Mockup Considerations:**
-
-```
-Group Settings → Relationships Tab
-
-Parent Groups:
-┌───────────────────────────────────┐
-│ ▪ Acme Corporation               │
-│   Added: 2025-01-15              │
-│   [View] [Leave Group]           │
-│                                   │
-│ ▪ Tech Startups Alliance         │
-│   Added: 2025-01-10              │
-│   [View] [Leave Group]           │
-│                                   │
-│ [+ Join Group]                   │
-└───────────────────────────────────┘
-
-Subgroups:
-┌───────────────────────────────────┐
-│ ▪ Marketing Team (12 members)    │
-│   Added: 2025-01-16              │
-│   [Manage] [Remove]              │
-│                                   │
-│ ▪ Design Team (5 members)        │
-│   Added: 2025-01-17              │
-│   [Manage] [Remove]              │
-│                                   │
-│ [+ Add Existing Group]           │
-│ [+ Create New Subgroup]          │
-└───────────────────────────────────┘
-```
-
-**Before Implementation:**
-- Test with real organizations with complex structures
-- Decide on depth limits (if any)
-- Design cycle prevention algorithm
-- Create comprehensive relationship management UI
+**What's still deferred (UI, Phase 2+):**
+- Group-joins-group request/acceptance UI
+- Hierarchy visualization (tree view, breadcrumbs)
+- Attribution display ("Mogwai in 'Alpha'" chain)
+- Joining-group role management UI (host Steward configures roles for joining groups)
 
 ---
 
-### Subgroups Implementation (Added January 26, 2026)
+### Subgroups / Groups-Join-Groups — DESIGN RESOLVED, UI DEFERRED
 
 **Topic**: Should Phase 1.3 include the ability for groups to have other groups as members?
 
-**Context**: During Phase 1.3 Role Assignment UI implementation (January 26, 2026), we reached a decision point: implement basic role management now, or also implement the full subgroups feature. The database schema already supports subgroups via `group_memberships.member_group_id`, but implementing the UI and business logic would add significant complexity.
+**Original Decision (Jan 26, 2026)**: Defer subgroups to Phase 2.
 
-**Decision**: Defer subgroups to Phase 2. Complete basic role assignment UI first.
+**Status:** **Design RESOLVED** by RBAC decisions D7, D9, D10, D11, D15 (February 2026). **UI still deferred to Phase 2.** See `docs/features/planned/dynamic-permissions-system.md`.
 
-**Deferred To**: Phase 2 (Enhanced Features)
+**What's resolved (design + schema):**
+- **D7:** Universal group-to-group membership model (personal groups and engagement groups use same mechanism)
+- **D9:** Personal group = user identity (auto-created on signup, bridges user to groups)
+- **D10:** Transitive membership with configurable depth (unlimited by default)
+- **D11:** Circularity prevention via `BEFORE INSERT` trigger with recursive CTE
+- **D15:** Schema migrated to `member_group_id` only (drop `user_id` from memberships)
+- **D12:** Multiple paths to same group = union of permissions
+- **D21:** Joining groups get Member role by default
 
-**Rationale**:
-- **High Complexity**: Requires circular reference prevention, depth limit enforcement, and permission inheritance rules
-- **Time Savings**: Deferring saves 3-5 weeks of development time  
-- **Faster to MVP**: Basic role management delivers immediate value without subgroup complexity
-- **Better Validation**: Learn actual user needs before building complex hierarchy features
-- **Database Ready**: `member_group_id` field exists, so adding feature later requires no migration
-- **Lower Risk**: Can observe how users actually organize groups before building assumptions into the system
+**What's implemented (Sub-Sprint 1, v0.2.16):**
+- ✅ `group_type` column on `groups` table ('system', 'personal', 'engagement')
+- ✅ Personal groups auto-created on signup
+- ✅ System groups created (FI Members, Visitor, Deusex)
+- ✅ Permission catalog (41 permissions) and template permissions (57 rows)
 
-**Current State (v0.2.6.2)**:
-- ✅ Database schema fully supports subgroups (`member_group_id` in `group_memberships`)
-- ✅ Constraint prevents both `user_id` and `member_group_id` from being set
-- ✅ RLS policies don't block group-as-member operations
-- ❌ No UI for adding groups as subgroups
-- ❌ No circular reference prevention (would allow Group A → B → A)
-- ❌ No depth limit enforcement
-- ❌ No permission inheritance rules defined
-- ❌ No hierarchy visualization
+**What's still deferred (UI, Phase 2+):**
+- Group-joins-group request/acceptance UI
+- Hierarchy visualization (tree view, breadcrumbs)
+- Attribution display ("Mogwai in 'Alpha'" chain)
+- `user_id` → `member_group_id` migration for existing memberships (D15)
+- Circularity prevention trigger (D11 — designed, not yet implemented)
+- Depth limit configuration
 
-**Notes for Future Implementation**:
-
-**Critical Architecture Decisions:**
-
-1. **Circular Reference Prevention** (REQUIRED)
-   ```
-   Problem: Without prevention, users could create:
-   Group A → member of → Group B → member of → Group A (infinite loop)
-   
-   Solution: Implement cycle detection before allowing membership
-   
-   Options:
-   a) Database trigger (most reliable)
-   b) Application-level check (easier to test)
-   c) Both (recommended)
-   
-   Pseudocode:
-   function canAddAsSubgroup(parentId, childId) {
-     visited = Set()
-     current = childId
-     
-     while (current has parent) {
-       if (current === parentId) return false  // Would create cycle
-       if (visited.has(current)) return false  // Already visited
-       visited.add(current)
-       current = getParent(current)
-     }
-     
-     return true
-   }
-   ```
-
-2. **Depth Limits** (RECOMMENDED)
-   ```
-   Question: How deep should hierarchies be allowed to go?
-   
-   Options:
-   a) Unlimited (simple but risky for performance)
-   b) Fixed limit like 5 levels (recommended)
-   c) Configurable per organization (complex)
-   
-   Example with 5-level limit:
-   Organization → Division → Department → Team → Squad (✅ allowed)
-   Organization → ... → Sub-sub-sub-sub-team (❌ blocked at level 6)
-   
-   Implementation:
-   - Add trigger to count hierarchy depth before insert
-   - Show warning in UI when approaching limit
-   - Make configurable in Phase 3 if needed
-   ```
-
-3. **Permission Inheritance** (COMPLEX)
-   ```
-   Question: Do roles in parent groups apply to child groups?
-   
-   Options:
-   a) Isolated - Each group has independent permissions (simplest)
-   b) Parent→Child - Parent admins automatically control children
-   c) Child→Parent - Child leaders get observer access to parents  
-   d) Configurable per relationship
-   
-   Recommendation for Phase 2:
-   - Start with ISOLATED (option a)
-   - Prevents unintended access
-   - Simpler to reason about
-   - Add inheritance in Phase 3 based on user demand
-   
-   See also: "Permission Inheritance Between Parent/Child Groups" (above)
-   ```
-
-4. **Multiple Parents**
-   ```
-   Question: Can one group belong to multiple parent groups?
-   
-   Current schema: YES (no unique constraint on member_group_id)
-   
-   Example:
-   "Marketing Team" → member of → "Product Division"
-                   → member of → "Customer Success Org"
-   
-   Implications:
-   - More flexible (can model matrix organizations)
-   - More complex (which parent's settings apply?)
-   - Harder UI (multiple hierarchy paths)
-   
-   Recommendation: 
-   - Allow it (don't add constraint)
-   - Warn users about complexity
-   - Show all parent paths in UI
-   ```
-
-**UI Design Considerations:**
-
-```
-Group Settings Page → New "Subgroups" Tab
-
-┌─────────────────────────────────────────────┐
-│ Parent Groups                               │
-│ (Groups this group belongs to)              │
-│                                             │
-│ ▪ Acme Corporation                          │
-│   Added: Jan 15, 2026 by Stefan Test        │
-│   [View Group] [Leave]                      │
-│                                             │
-│ [+ Join Existing Group]                     │
-└─────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────┐
-│ Child Groups                                │
-│ (Groups that are members here)              │
-│                                             │
-│ ▪ Engineering Team (24 members)             │
-│   Added: Jan 16, 2026                       │
-│   [Manage] [Remove from Group]              │
-│                                             │
-│ ▪ Design Team (8 members)                   │
-│   Added: Jan 17, 2026                       │
-│   [Manage] [Remove from Group]              │
-│                                             │
-│ [+ Add Existing Group]                      │
-│ [+ Create New Child Group]                  │
-└─────────────────────────────────────────────┘
-
-Hierarchy Tree View:
-┌─────────────────────────────────────────────┐
-│ Acme Corporation                            │
-│ ├─ Product Division                         │
-│ │  ├─ Engineering Team ← You are here       │
-│ │  │  ├─ Backend Squad                      │
-│ │  │  └─ Frontend Squad                     │
-│ │  └─ Design Team                           │
-│ └─ Sales Division                           │
-│    └─ Inside Sales Team                     │
-└─────────────────────────────────────────────┘
-```
-
-**Implementation Roadmap (Phase 2)**:
-
-Week 1-2: Core Infrastructure
-- [ ] Circular reference detection algorithm
-- [ ] Depth limit trigger/validation
-- [ ] Update RLS policies if needed
-- [ ] Add hierarchy helper functions
-
-Week 3-4: Basic UI
-- [ ] Add/remove subgroup controls
-- [ ] Parent/child relationship display
-- [ ] Prevent circular refs in UI
-- [ ] Error messages and warnings
-
-Week 5-6: Advanced UI
-- [ ] Hierarchy tree visualization
-- [ ] Breadcrumb navigation for nested groups
-- [ ] Search within hierarchy
-- [ ] Drag-and-drop reordering (optional)
-
-Week 7: Testing & Polish
-- [ ] Test with 100+ group hierarchy
-- [ ] Performance optimization
-- [ ] User acceptance testing
-- [ ] Documentation
-
-**Estimated Effort**: 7-8 weeks total
-
-**Technical Challenges**:
-
-1. **Query Performance**: Deep hierarchies require recursive queries
-   - Solution: Cache hierarchy paths, use materialized views
-
-2. **UI Complexity**: Hard to visualize complex org structures
-   - Solution: Tree view, breadcrumbs, search/filter
-
-3. **Data Integrity**: Must prevent orphaned groups and cycles
-   - Solution: Database constraints + triggers + application validation
-
-**Success Metrics (Phase 2)**:
-- % of groups using subgroup feature
-- Average hierarchy depth (expect 2-3 levels)
-- Zero circular reference errors after launch
-- User satisfaction with hierarchy navigation
-- Query performance under load
-
-**Business Value**:
-- **High** for enterprises (500+ users)
-- **Medium** for mid-size orgs (50-500 users)
-- **Low** for small teams (<50 users)
-- **Overall**: Medium-High value for target market
-
-**Risk Level**: 
-- **Technical Risk**: Medium (well-understood patterns)
-- **UX Risk**: Medium-High (hierarchy complexity)
-- **Performance Risk**: Medium (can be optimized)
-
-**Dependencies**:
-- Requires Phase 1.3 role management to be complete (✅ done v0.2.6.2)
-- Benefits from permission inheritance design (currently deferred)
-- May inform future permission inheritance implementation
-
-**Related Decisions**:
-- "Permission Inheritance Between Parent/Child Groups" (see above)
-- "Managing Group-to-Group Relationships" (see above)
-- Phase 2 roadmap and feature prioritization
-
-**User Stories Deferred**:
-- "As an org admin, I want to organize teams into departments"
-- "As a group leader, I want to create sub-teams under my team"
-- "As a member, I want to see my team's place in the org hierarchy"
-- "As a facilitator, I want to manage journeys across related groups"
-
----
-
-**Decision Date**: January 26, 2026  
-**Made By**: Stefan (Product Owner) + Claude (Technical Advisor)  
-**Saves**: 3-5 weeks development time  
-**Next Review**: Phase 2 planning (est. March 2026)
+**Original rationale still valid for UI deferral:**
+- Learn actual user needs before building complex hierarchy UI
+- Schema foundation is in place; UI can be added incrementally
 
 ---
 
@@ -667,47 +297,17 @@ Week 7: Testing & Polish
 
 ## User Experience
 
-### Notification System
+### Notification System — IMPLEMENTED
 
 **Topic**: How should users be notified about platform events?
 
-**Context**: Users need to know about invitations, journey deadlines, feedback, etc.
+**Status:** **IMPLEMENTED** in v0.2.14 (February 2026). 7 notification types, Supabase Realtime push, database triggers, bell UI with badge counter.
 
-**Decision**: Email notifications for Phase 1. In-app notifications in Phase 2.
-
-**Deferred To**: Phase 2 (In-app notifications)
-
-**Notification Types:**
-
-**Immediate (Real-time):**
-- Group invitation received
-- Direct message received
-- Mentioned in forum
-- Journey deadline approaching
-
-**Daily Digest:**
-- Summary of activity
-- New content available
-- Friend completed journey
-- Achievements unlocked
-
-**Weekly Summary:**
-- Group activity recap
-- Journey progress
-- Upcoming deadlines
-- Platform news
-
-**Preferences:**
-- Per-notification-type settings
-- Email vs. in-app vs. push
-- Frequency controls
+**What's still deferred:**
+- Email notification delivery (currently in-app only)
+- Daily/weekly digest summaries
+- Per-notification-type preferences
 - Quiet hours
-
-**Before Implementation:**
-- Design notification data model
-- Choose notification service (Firebase, Pusher)
-- Create notification management UI
-- Test notification fatigue mitigation
 
 ---
 
@@ -802,93 +402,33 @@ Week 7: Testing & Polish
 
 ## Social Features
 
-### Forum and Community
+### Forum and Community — PARTIALLY IMPLEMENTED
 
 **Topic**: Should the platform include forums or community discussion spaces?
 
-**Context**: Users may want to discuss journeys, share experiences, ask questions.
+**Status:** **Group Forums IMPLEMENTED** in v0.2.14 (February 2026). Flat threading, moderation tools, RBAC stub, tab UI integrated into group detail page.
 
-**Decision**: Phase 1 has no forums. Consider adding in Phase 2 based on user need.
-
-**Deferred To**: Phase 2+ (if user demand exists)
-
-**Forum Types:**
-
-**Group Forums:**
-- Private to group members
-- For discussing group journeys
-- Travel guide facilitation
-
-**Journey Forums:**
-- All users taking a journey
-- Share progress and tips
-- Ask questions
-
-**Global Forum:**
-- All platform users
-- General discussions
-- Feature requests
-- Community building
-
-**Features Needed:**
-- Threads and replies
+**What's still deferred:**
+- Journey-specific forums
+- Global platform forum
 - Reactions (likes, helpful)
-- Moderation tools
-- Search and filtering
-- Notifications
-
-**Alternative:**
-- Integrate with Slack/Discord
-- Embed chat widget
-- Link to external forum
-
-**Before Implementation:**
-- Gauge user interest
-- Evaluate moderation effort
-- Choose forum software
-- Design community guidelines
+- Forum search and filtering
+- Rich media in posts (images, videos)
+- Pinned/featured posts
 
 ---
 
-### Direct Messaging
+### Direct Messaging — IMPLEMENTED
 
 **Topic**: Should users be able to send direct messages to each other?
 
-**Context**: Users may want to communicate privately about journeys or group activities.
+**Status:** **IMPLEMENTED** in v0.2.15 (February 2026). 1:1 conversations, inbox UI, read tracking, Supabase Realtime for live updates.
 
-**Decision**: No DMs in Phase 1. Consider adding based on user requests.
-
-**Deferred To**: Phase 2+ (if requested)
-
-**Considerations:**
-
-**Pros:**
-- Enables peer support
-- Facilitates collaboration
-- Reduces need for external tools
-
-**Cons:**
-- Moderation challenges
-- Privacy concerns
-- Potential for spam/harassment
-- Development effort
-
-**Implementation Options:**
-1. Build custom messaging
-2. Integrate third-party (Stream, SendBird)
-3. Link to email/external apps
-
-**Safety Features:**
+**What's still deferred:**
 - Block/report users
-- Message filtering
-- Read receipts (optional)
-- Disappearing messages?
-
-**Before Implementation:**
-- Assess demand through user interviews
-- Plan moderation strategy
-- Consider legal/privacy implications
-- Budget for customer support load
+- Message filtering/moderation
+- Group DMs (multi-party conversations)
+- Message search
 
 ---
 
@@ -1168,11 +708,12 @@ When deferring a new decision:
 
 ---
 
-**Document Version**: 1.2
-**Last Updated**: February 4, 2026 (v0.2.10)
+**Document Version**: 1.3
+**Last Updated**: February 16, 2026 (v0.2.17)
 **Next Review**: Quarterly or as deferred items are implemented
 
 **Recent Updates**:
+- v0.2.17: Marked Permission Inheritance as RESOLVED (D5/D7/D10/D12). Marked Subgroups design as RESOLVED (D7/D9/D10/D11/D15). Marked Group-to-Group Relationships design as RESOLVED (D7/D11/D21). Updated Notifications (IMPLEMENTED v0.2.14), Forum (PARTIALLY IMPLEMENTED v0.2.14), DM (IMPLEMENTED v0.2.15).
 - v0.2.10: No new deferred decisions (journey enrollment completed as planned)
 - v0.2.9: Error handling implemented (was not deferred, added proactively)
 - v0.2.8: Journey catalog implemented (no major deferrals)

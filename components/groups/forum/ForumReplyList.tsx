@@ -6,7 +6,7 @@ import ForumPost, { ForumPostData } from './ForumPost';
 interface ForumReplyListProps {
   parentPostId: string;
   replies: ForumPostData[];
-  isLeader: boolean;
+  canModerate: boolean;
   currentUserId: string;
   onDelete: (postId: string) => Promise<void>;
   onEdit: (postId: string, newContent: string) => Promise<void>;
@@ -17,7 +17,7 @@ const INITIAL_VISIBLE = 3;
 export default function ForumReplyList({
   parentPostId,
   replies,
-  isLeader,
+  canModerate,
   currentUserId,
   onDelete,
   onEdit,
@@ -37,7 +37,7 @@ export default function ForumReplyList({
         <ForumPost
           key={reply.id}
           post={reply}
-          isLeader={isLeader}
+          canModerate={canModerate}
           currentUserId={currentUserId}
           onDelete={onDelete}
           onEdit={onEdit}

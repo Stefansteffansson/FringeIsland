@@ -3,22 +3,23 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { createClient } from '@/lib/supabase/client';
+import { usePermissions } from '@/lib/hooks/usePermissions';
 import ForumPost, { ForumPostData } from './ForumPost';
 import ForumComposer from './ForumComposer';
 import ForumReplyList from './ForumReplyList';
 
 interface ForumSectionProps {
   groupId: string;
-  isLeader: boolean;
 }
 
 interface PostWithReplies extends ForumPostData {
   replies: ForumPostData[];
 }
 
-export default function ForumSection({ groupId, isLeader }: ForumSectionProps) {
+export default function ForumSection({ groupId }: ForumSectionProps) {
   const { user } = useAuth();
   const supabase = createClient();
+  const { hasPermission } = usePermissions(groupId);
 
   const [posts, setPosts] = useState<PostWithReplies[]>([]);
   const [loading, setLoading] = useState(true);
@@ -247,7 +248,7 @@ export default function ForumSection({ groupId, isLeader }: ForumSectionProps) {
             <div key={post.id}>
               <ForumPost
                 post={post}
-                isLeader={isLeader}
+                canModerate={hasPermission('moderate_forum')}
                 currentUserId={currentUserId}
                 replyCount={post.replies.length}
                 onReply={handleCreateReply}
@@ -260,7 +261,7 @@ export default function ForumSection({ groupId, isLeader }: ForumSectionProps) {
               <ForumReplyList
                 parentPostId={post.id}
                 replies={post.replies}
-                isLeader={isLeader}
+                canModerate={hasPermission('moderate_forum')}
                 currentUserId={currentUserId}
                 onDelete={handleDeletePost}
                 onEdit={handleEditPost}

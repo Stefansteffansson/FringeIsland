@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { createClient } from '@/lib/supabase/client';
+import { usePermissions } from '@/lib/hooks/usePermissions';
 import Link from 'next/link';
 
 interface GroupData {
@@ -21,13 +22,13 @@ export default function EditGroupPage() {
   const groupId = params.id as string;
   const router = useRouter();
   const supabase = createClient();
+  const { hasPermission, loading: permissionsLoading } = usePermissions(groupId);
 
   const [group, setGroup] = useState<GroupData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isLeader, setIsLeader] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Form state
@@ -68,29 +69,7 @@ export default function EditGroupPage() {
 
         if (groupError) throw groupError;
 
-        // Check if user is a Group Leader
-        const { data: rolesData } = await supabase
-          .from('user_group_roles')
-          .select(`
-            group_roles (
-              name
-            )
-          `)
-          .eq('user_id', userData.id)
-          .eq('group_id', groupId);
-
-        const hasLeaderRole = rolesData?.some(
-          (r: any) => r.group_roles?.name === 'Group Leader'
-        );
-
-        setIsLeader(hasLeaderRole || false);
-
-        // If not a leader, redirect to group page
-        if (!hasLeaderRole) {
-          router.push(`/groups/${groupId}`);
-          return;
-        }
-
+        // Permission check is done at render time via hasPermission
         // Set group data and form data
         setGroup(groupData);
         setFormData({
@@ -184,7 +163,7 @@ export default function EditGroupPage() {
   };
 
   // Loading state
-  if (authLoading || loading) {
+  if (authLoading || loading || permissionsLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
         <div className="text-center">
@@ -196,7 +175,7 @@ export default function EditGroupPage() {
   }
 
   // Not authorized or error
-  if (!isLeader || error) {
+  if (!hasPermission('edit_group_settings') || error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md text-center">
@@ -205,7 +184,7 @@ export default function EditGroupPage() {
             {error ? 'Error' : 'Access Denied'}
           </h2>
           <p className="text-gray-600 mb-6">
-            {error || 'You must be a Group Leader to edit this group.'}
+            {error || 'You do not have permission to edit this group.'}
           </p>
           <Link
             href={`/groups/${groupId}`}
@@ -346,7 +325,7 @@ export default function EditGroupPage() {
                     Show Member List
                   </span>
                   <p className="text-xs text-gray-500 mt-1">
-                    Allow members to see the full list of group members. Group Leaders can always see all members.
+                    Allow members to see the full list of group members. Users with the view_member_list permission can always see all members.
                   </p>
                 </div>
               </label>
@@ -378,7 +357,8 @@ export default function EditGroupPage() {
           </div>
         </form>
 
-        {/* Danger Zone */}
+        {/* Danger Zone (only for users with delete_group permission) */}
+        {hasPermission('delete_group') && (
         <div className="mt-8 bg-white rounded-2xl shadow-xl p-8 border border-red-100">
           <h2 className="text-lg font-semibold text-red-700 mb-1">Danger Zone</h2>
           <p className="text-sm text-gray-500 mb-6">
@@ -393,6 +373,7 @@ export default function EditGroupPage() {
             Delete Group
           </button>
         </div>
+        )}
       </div>
 
       {/* Delete Confirmation Modal */}

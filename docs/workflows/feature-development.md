@@ -2,23 +2,28 @@
 
 **Purpose:** Authoritative end-to-end lifecycle for building new features in FringeIsland
 **For:** All agents — this is the canonical ordering that every feature must follow
-**Last Updated:** February 15, 2026
+**Last Updated:** February 16, 2026
 
 ---
 
 ## Overview
 
-Every new feature follows six phases with **hard STOP gates** between them. No phase may begin until the previous phase's gate is passed. This prevents schema-first design and ensures TDD compliance.
+Every new feature follows seven phases with **hard STOP gates** between them. No phase may begin until the previous phase's gate is passed. This prevents schema-first design and ensures TDD compliance.
 
 **⛔ CRITICAL: Every STOP gate is a USER CHECKPOINT.** The AI must present what was accomplished and ask the user for permission to proceed. These are conversations with the user, not internal AI checkpoints. Never proceed to the next phase without explicit user approval.
 
 ```
-Phase 0: Feature Context ──GATE──▶ Phase 1: Behaviors ──GATE──▶ Phase 2: Tests RED
-    │                                                                    │
-    │                                                              GATE (tests MUST fail)
-    │                                                                    │
-    ▼                                                                    ▼
-Phase 6: Document ◀──GATE── Phase 5: Verify ◀──GATE── Phase 4: Implement GREEN ◀──GATE── Phase 3: Design
+Phase 0: Feature Context ──GATE──▶ Phase 1: Behaviors ──GATE──▶ Phase 2: Write Tests
+    │                                                                       │
+    │                                                                     GATE
+    │                                                                       │
+    │                                                                       ▼
+    │                                                              Phase 3: Run Tests RED
+    │                                                              (tests MUST fail)
+    │                                                                       │
+    ▼                                                                     GATE
+                                                                            │
+Phase 7: Document ◀──GATE── Phase 6: Verify ◀──GATE── Phase 5: Implement GREEN ◀──GATE── Phase 4: Design
 ```
 
 ---
@@ -63,33 +68,49 @@ Phase 6: Document ◀──GATE── Phase 5: Verify ◀──GATE── Phase 
 
 ---
 
-## Phase 2: Tests RED
+## Phase 2: Write Tests
 
 **Owner:** Test Agent
 
 **Actions:**
 1. Write integration tests in `tests/integration/[domain]/[feature].test.ts`
 2. Tests should cover all CRITICAL and HIGH behaviors
-3. Run tests: `npm run test:integration`
-4. **Tests MUST FAIL** — this confirms they're testing something that doesn't exist yet
+3. Do NOT run tests yet — that is Phase 3
 
 **⛔ STOP GATE → Phase 3:**
 - [ ] Integration tests are written for all CRITICAL/HIGH behaviors
-- [ ] Tests have been run
-- [ ] Tests FAIL (RED) — if they pass, the test is wrong or the feature already exists
-- [ ] Test failure messages are clear and actionable
-- [ ] **Ask user:** "Phase 2 complete. Tests written and failing (RED). Shall I proceed to Phase 3 (design)?"
-
-**If tests pass immediately:** STOP. The test is not testing what you think. Fix the test before proceeding.
+- [ ] Test code is syntactically valid
+- [ ] **Ask user:** "Phase 2 complete. Tests written. Shall I proceed to Phase 3 (run tests to confirm RED)?"
 
 ---
 
-## Phase 3: Design
+## Phase 3: Run Tests — RED
+
+**Owner:** Test Agent
+
+**Actions:**
+1. Run tests: `npm run test:integration`
+2. **Tests MUST FAIL** — this confirms they're testing something that doesn't exist yet
+3. Review each failure message — they should be clear and actionable
+4. If any test passes unexpectedly, investigate: the test is wrong or the feature already exists
+
+**⛔ STOP GATE → Phase 4:**
+- [ ] Tests have been run
+- [ ] Tests FAIL (RED) — if they pass, the test is wrong or the feature already exists
+- [ ] Test failure messages are clear and actionable
+- [ ] Failure count and summary reported to user
+- [ ] **Ask user:** "Phase 3 complete. N tests failing (RED). Shall I proceed to Phase 4 (design)?"
+
+**If tests pass immediately:** STOP. The test is not testing what you think. Fix the test and re-run before proceeding.
+
+---
+
+## Phase 4: Design
 
 **Owner:** Architect Agent
 
 **Actions:**
-1. **First: Verify Phase 2 gate is passed** (failing tests exist)
+1. **First: Verify Phase 3 gate is passed** (failing tests exist)
 2. Read behavior specs and failing tests to understand requirements
 3. Design schema (tables, relationships, constraints, indexes)
 4. Design RLS strategy (SELECT, INSERT, UPDATE, DELETE)
@@ -97,17 +118,17 @@ Phase 6: Document ◀──GATE── Phase 5: Verify ◀──GATE── Phase 
 6. Document the design with migration plan
 7. Verify design addresses all scenarios from the failing tests
 
-**⛔ STOP GATE → Phase 4:**
-- [ ] Failing tests from Phase 2 exist (verified, not assumed)
+**⛔ STOP GATE → Phase 5:**
+- [ ] Failing tests from Phase 3 exist (verified, not assumed)
 - [ ] Design is documented
 - [ ] Schema changes have migration SQL drafted
 - [ ] RLS strategy covers all CRUD operations
 - [ ] Design addresses all failing test scenarios
-- [ ] **Ask user:** "Phase 3 complete. Design documented. Shall I proceed to Phase 4 (implement)?"
+- [ ] **Ask user:** "Phase 4 complete. Design documented. Shall I proceed to Phase 5 (implement)?"
 
 ---
 
-## Phase 4: Implement GREEN
+## Phase 5: Implement GREEN
 
 **Owner:** Database Agent, UI Agent, Integration Agent
 
@@ -123,14 +144,14 @@ Phase 6: Document ◀──GATE── Phase 5: Verify ◀──GATE── Phase 
    - Supabase queries, state management
    - Run tests — all should now pass
 
-**⛔ STOP GATE → Phase 5:**
-- [ ] All tests from Phase 2 now PASS (GREEN)
+**⛔ STOP GATE → Phase 6:**
+- [ ] All tests from Phase 3 now PASS (GREEN)
 - [ ] No new test failures introduced
-- [ ] **Ask user:** "Phase 4 complete. All tests pass (GREEN). Shall I proceed to Phase 5 (verify/QA)?"
+- [ ] **Ask user:** "Phase 5 complete. All tests pass (GREEN). Shall I proceed to Phase 6 (verify/QA)?"
 
 ---
 
-## Phase 5: Verify
+## Phase 6: Verify
 
 **Owner:** QA/Review Agent + Test Agent
 
@@ -141,15 +162,15 @@ Phase 6: Document ◀──GATE── Phase 5: Verify ◀──GATE── Phase 
 4. Review for pattern consistency
 5. Manual smoke test if UI changes are involved
 
-**⛔ STOP GATE → Phase 6:**
+**⛔ STOP GATE → Phase 7:**
 - [ ] All tests pass (run twice)
 - [ ] No security issues identified
 - [ ] Code follows established patterns
-- [ ] **Ask user:** "Phase 5 complete. QA verified. Shall I proceed to Phase 6 (document)?"
+- [ ] **Ask user:** "Phase 6 complete. QA verified. Shall I proceed to Phase 7 (document)?"
 
 ---
 
-## Phase 6: Document
+## Phase 7: Document
 
 **Owner:** Sprint Agent (or implementing agent)
 
@@ -173,25 +194,28 @@ Phase 6: Document ◀──GATE── Phase 5: Verify ◀──GATE── Phase 
 |-------|-------|------------|
 | 0. Context | Sprint | Feature doc |
 | 1. Behaviors | Test | Behavior specs (B-XXX-NNN) |
-| 2. Tests RED | Test | Failing integration tests |
-| 3. Design | Architect | Schema + RLS + data flow design |
-| 4. Implement GREEN | Database + UI + Integration | Working code, passing tests |
-| 5. Verify | QA/Review + Test | Confirmed quality |
-| 6. Document | Sprint | Updated docs |
+| 2. Write Tests | Test | Integration test code |
+| 3. Run Tests RED | Test | Confirmed failing tests (RED) |
+| 4. Design | Architect | Schema + RLS + data flow design |
+| 5. Implement GREEN | Database + UI + Integration | Working code, passing tests |
+| 6. Verify | QA/Review + Test | Confirmed quality |
+| 7. Document | Sprint | Updated docs |
 
 ---
 
 ## Anti-Patterns (What NOT to Do)
 
-1. **Schema-first design** — Designing tables before behaviors/tests exist. This happened in Phase 1.5-A and 1.5-B. The fix is the hard gate at Phase 3.
+1. **Schema-first design** — Designing tables before behaviors/tests exist. This happened in Phase 1.5-A and 1.5-B. The fix is the hard gate at Phase 4.
 
 2. **Tests last** — Writing tests after implementation. Tests written after code tend to verify the implementation rather than the behavior.
 
-3. **Skipping Phase 2** — "We'll add tests later." Later never comes, or the tests are weak.
+3. **Skipping Phase 2-3** — "We'll add tests later." Later never comes, or the tests are weak.
 
-4. **Design without test evidence** — The Architect Agent must see actual failing tests, not just behavior specs.
+4. **Skipping the RED step** — Writing tests (Phase 2) but not running them to confirm failure (Phase 3) before designing. If you don't see tests fail, you don't know they're testing anything real.
 
-5. **Implementing without design** — Jumping from tests to code without a design review leads to ad-hoc schema decisions.
+5. **Design without test evidence** — The Architect Agent must see actual failing tests from Phase 3, not just behavior specs.
+
+6. **Implementing without design** — Jumping from tests to code without a design review leads to ad-hoc schema decisions.
 
 ---
 

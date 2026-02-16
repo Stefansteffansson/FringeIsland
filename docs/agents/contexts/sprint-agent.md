@@ -89,27 +89,31 @@ The correct task dependency chain for any new feature:
    → 🛑 USER CHECKPOINT: "Step 1 complete. Feature doc ready. Shall I proceed to Step 2 (behavior specs)?"
 
 2. Behavior specs (Test Agent writes B-XXX-NNN)
-   → 🛑 USER CHECKPOINT: "Step 2 complete. Behavior specs written. Shall I proceed to Step 3 (write failing tests)?"
+   → 🛑 USER CHECKPOINT: "Step 2 complete. Behavior specs written. Shall I proceed to Step 3 (write tests)?"
 
-3. Integration tests (Test Agent writes, runs → MUST FAIL = RED)
-   → 🛑 USER CHECKPOINT: "Step 3 complete. Tests written and failing (RED). Shall I proceed to Step 4 (design)?"
+3. Write integration tests (Test Agent writes test code — does NOT run yet)
+   → 🛑 USER CHECKPOINT: "Step 3 complete. Tests written. Shall I proceed to Step 4 (run tests to confirm RED)?"
 
-4. Schema/system design (Architect Agent)
-   → 🛑 USER CHECKPOINT: "Step 4 complete. Design documented. Shall I proceed to Step 5 (database migration)?"
+4. Run tests — confirm RED (Test Agent runs tests → MUST FAIL)
+   → 🛑 USER CHECKPOINT: "Step 4 complete. N tests failing (RED). Shall I proceed to Step 5 (design)?"
 
-5. Database migration (Database Agent) → some tests go GREEN
-   → 🛑 USER CHECKPOINT: "Step 5 complete. Migration applied, N tests now pass. Shall I proceed to Step 6 (UI)?"
+5. Schema/system design (Architect Agent)
+   → 🛑 USER CHECKPOINT: "Step 5 complete. Design documented. Shall I proceed to Step 6 (database migration)?"
 
-6. UI components (UI Agent)
-   → 🛑 USER CHECKPOINT: "Step 6 complete. Components built. Shall I proceed to Step 7 (wire data)?"
+6. Database migration (Database Agent) → some tests go GREEN
+   → 🛑 USER CHECKPOINT: "Step 6 complete. Migration applied, N tests now pass. Shall I proceed to Step 7 (UI)?"
 
-7. Data wiring (Integration Agent) → remaining tests go GREEN
-   → 🛑 USER CHECKPOINT: "Step 7 complete. All tests pass (GREEN). Shall I proceed to Step 8 (document)?"
+7. UI components (UI Agent)
+   → 🛑 USER CHECKPOINT: "Step 7 complete. Components built. Shall I proceed to Step 8 (wire data)?"
 
-8. Refactor + document
+8. Data wiring (Integration Agent) → remaining tests go GREEN
+   → 🛑 USER CHECKPOINT: "Step 8 complete. All tests pass (GREEN). Shall I proceed to Step 9 (document)?"
+
+9. Refactor + document
 ```
 
 **The Test Agent runs SECOND (after feature context), NOT LAST.**
+**Writing tests (Step 3) and running them (Step 4) are separate steps.**
 **Tests MUST fail before implementation begins (RED phase).**
 **If tests pass immediately, something is wrong.**
 

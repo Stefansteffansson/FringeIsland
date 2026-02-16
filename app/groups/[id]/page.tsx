@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { createClient } from '@/lib/supabase/client';
+import { usePermissions } from '@/lib/hooks/usePermissions';
 import Link from 'next/link';
 import Image from 'next/image';
 import AssignRoleModal from '@/components/groups/AssignRoleModal';
@@ -52,7 +53,6 @@ export default function GroupDetailPage() {
   const [memberCount, setMemberCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isLeader, setIsLeader] = useState(false);
   
   // Role management state
   const [assignRoleModalOpen, setAssignRoleModalOpen] = useState(false);
@@ -78,6 +78,7 @@ export default function GroupDetailPage() {
   
   const router = useRouter();
   const supabase = createClient();
+  const { hasPermission, refetch: refetchPermissions } = usePermissions(groupId);
 
   useEffect(() => {
     // Redirect to login if not authenticated
@@ -155,7 +156,7 @@ export default function GroupDetailPage() {
 
         setMemberCount(count || 0);
 
-        // Fetch user's roles in this group
+        // Fetch user's roles in this group (for display only)
         const { data: rolesData, error: rolesError } = await supabase
           .from('user_group_roles')
           .select(`
@@ -173,12 +174,8 @@ export default function GroupDetailPage() {
         }));
         setUserRoles(roles);
 
-        // Check if user is a group leader
-        const hasLeaderRole = roles.some(r => r.role_name === 'Group Leader');
-        setIsLeader(hasLeaderRole);
-
-        // Fetch members if member list is visible
-        if (groupData.show_member_list || hasLeaderRole) {
+        // Always fetch members — visibility gated at render time via hasPermission
+        {
           // Get all memberships
           const { data: membershipsData, error: membershipsError } = await supabase
             .from('group_memberships')
@@ -323,18 +320,17 @@ export default function GroupDetailPage() {
 
       setMembers(membersWithRoles);
 
-      // CRITICAL FIX: Update current user's roles and isLeader status
+      // Update current user's display roles
       const currentUserRoles = allRolesData
         .filter((r: any) => r.user_id === userData.id)
         .map((r: any) => ({
           role_name: r.group_roles?.name || 'Unknown'
         }));
-      
+
       setUserRoles(currentUserRoles);
-      
-      // Update isLeader state
-      const hasLeaderRole = currentUserRoles.some(r => r.role_name === 'Group Leader');
-      setIsLeader(hasLeaderRole);
+
+      // Refetch permissions to sync with role changes
+      await refetchPermissions();
 
     } catch (err) {
       console.error('Error refetching members:', err);
@@ -580,8 +576,8 @@ export default function GroupDetailPage() {
               </div>
             </div>
 
-            {/* Edit Button (Leaders Only) */}
-            {isLeader && (
+            {/* Edit Button (permission-gated) */}
+            {hasPermission('edit_group_settings') && (
               <Link
                 href={`/groups/${group.id}/edit`}
                 className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all shadow-md"
@@ -622,7 +618,7 @@ export default function GroupDetailPage() {
         {isMember && activeTab === 'forum' && (
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Group Forum</h2>
-            <ForumSection groupId={groupId} isLeader={isLeader} />
+            <ForumSection groupId={groupId} />
           </div>
         )}
 
@@ -631,7 +627,7 @@ export default function GroupDetailPage() {
           <>
 
         {/* Members Section */}
-        {(group.show_member_list || isLeader) && (
+        {(group.show_member_list || hasPermission('view_member_list')) && (
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Members</h2>
             
@@ -687,7 +683,7 @@ export default function GroupDetailPage() {
                                   className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded"
                                 >
                                   {roleInfo.role_name}
-                                  {isLeader && !isLastLeader && (
+                                  {hasPermission('remove_roles') && !isLastLeader && (
                                     <button
                                       onClick={() => handleRemoveRole(
                                         roleInfo.user_group_role_id,
@@ -718,8 +714,8 @@ export default function GroupDetailPage() {
                             </button>
                           )}
 
-                          {/* Role Management Buttons (Leaders Only) */}
-                          {isLeader && (
+                          {/* Role Management Buttons (permission-gated) */}
+                          {hasPermission('assign_roles') && (
                             <>
                               {/* Promote to Leader (if not already a leader) */}
                               {!member.roles.includes('Group Leader') && (
@@ -751,7 +747,7 @@ export default function GroupDetailPage() {
         )}
 
         {/* Quick Actions */}
-        {isLeader && (
+        {hasPermission('invite_members') && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white rounded-xl shadow-md p-6">
               <div className="text-3xl mb-3">📨</div>

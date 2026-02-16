@@ -1,32 +1,25 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-16 (RBAC Sub-Sprint 2 complete)
-**Current Version:** 0.2.17
+**Last Updated:** 2026-02-16 (RBAC Sub-Sprint 3 complete)
+**Current Version:** 0.2.18
 **Active Branch:** main
 
 ---
 
 ## 🎯 What We're Working On NOW
 
-**Current Focus:** RBAC Implementation — Sub-Sprint 2 complete, Sub-Sprint 3 next
+**Current Focus:** RBAC Implementation — Sub-Sprint 3 complete, Sub-Sprint 4 next
 
 **Active Tasks:**
 - [x] **RBAC Sub-Sprint 1: Schema Foundation** ✅ **DONE v0.2.16!**
-  - [x] B-RBAC-001: Permission catalog (41 permissions, D22 changes)
-  - [x] B-RBAC-002: Group types (system/personal/engagement)
-  - [x] B-RBAC-003: Personal groups on signup
-  - [x] B-RBAC-004: Role template permissions (57 rows)
-  - [x] B-RBAC-005: Group role permission initialization (template copy + trigger)
-  - [x] B-RBAC-006: System groups (FI Members, Visitor, Deusex)
-  - [x] B-RBAC-007: Role renaming (Steward/Guide in templates, group_roles, functions, policies)
 - [x] **RBAC Sub-Sprint 2: Permission Resolution** ✅ **DONE v0.2.17!**
-  - [x] B-RBAC-008: Engagement group permission resolution (Tier 2)
-  - [x] B-RBAC-009: System group permission resolution (Tier 1, additive)
-  - [x] B-RBAC-010: Permission check edge cases (fail closed)
-  - [x] B-RBAC-011: usePermissions() React hook (created, not unit-tested yet)
-  - [x] B-RBAC-012: Deusex has all permissions (41/41)
-- [ ] **NEXT:** RBAC Sub-Sprint 3: UI migration (isLeader → hasPermission)
-- [ ] **THEN:** RBAC Sub-Sprint 4: Role management UI
+- [x] **RBAC Sub-Sprint 3: UI Migration** ✅ **DONE v0.2.18!**
+  - [x] B-RBAC-013: Group detail page — permission-gated actions
+  - [x] B-RBAC-014: Edit group page — permission-gated access
+  - [x] B-RBAC-015: Forum moderation — permission-gated delete
+  - [x] B-RBAC-016: Enrollment modal — permission-based group enrollment
+  - [x] B-RBAC-017: No remaining isLeader or role-name access checks
+- [ ] **NEXT:** RBAC Sub-Sprint 4: Role management UI
 
 **Blocked/Waiting:**
 - Nothing blocked
@@ -35,12 +28,12 @@
 
 ## 📊 Quick Stats
 
-- **Phase:** RBAC Implementation (Sub-Sprint 2 of 4 complete)
+- **Phase:** RBAC Implementation (Sub-Sprint 3 of 4 complete)
 - **Total Tables:** 17 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
 - **Total Migrations:** 43 migration files (+5 RBAC)
-- **Recent Version:** v0.2.17 (RBAC Sub-Sprint 2 - Feb 16, 2026)
-- **Test Coverage:** 238 tests, **238/238 passing** ✅ (stable)
-- **Behaviors Documented:** 45 (5 auth, 5 groups, 7 journeys, 3 roles, 7 communication, 6 messaging, 12 RBAC) ✅
+- **Recent Version:** v0.2.18 (RBAC Sub-Sprint 3 - Feb 16, 2026)
+- **Test Coverage:** 272 tests, **272/272 passing** ✅ (stable)
+- **Behaviors Documented:** 50 (5 auth, 5 groups, 7 journeys, 3 roles, 7 communication, 6 messaging, 17 RBAC) ✅
 - **Feature Docs:** 3 complete + 3 planned designs (notification-system, group-forum-system, direct-messaging)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
 
@@ -62,7 +55,8 @@
 - ✅ **Group Forum** (flat threading, RBAC stub, moderation, tab UI) 💬 v0.2.14
 - ✅ **Direct Messaging** (1:1 conversations, inbox, read tracking, Realtime) 📨 v0.2.15
 - ✅ **RBAC Sub-Sprint 1** (group types, personal groups, system groups, role rename, template permissions, auto-copy trigger) 🔒 v0.2.16
-- ✅ **RBAC Sub-Sprint 2** (has_permission() SQL function, get_user_permissions(), usePermissions() React hook, two-tier resolution) 🔒 **NEW v0.2.17!**
+- ✅ **RBAC Sub-Sprint 2** (has_permission() SQL function, get_user_permissions(), usePermissions() React hook, two-tier resolution) 🔒 v0.2.17
+- ✅ **RBAC Sub-Sprint 3** (UI migration: isLeader → hasPermission across 6 components, permission-gated actions) 🔒 **NEW v0.2.18!**
 
 ---
 
@@ -90,19 +84,21 @@
 
 ## 🔄 Last Session Summary
 
-**Date:** 2026-02-16 (RBAC Sub-Sprint 2: Permission Resolution)
+**Date:** 2026-02-16 (RBAC Sub-Sprint 3: UI Migration)
 **Summary:**
-- ✅ **Full TDD workflow:** Behavior specs (5 behaviors, B-RBAC-008 through B-RBAC-012) → Failing tests (24 RED) → Design → Implement (GREEN) → QA → Document
-- ✅ **1 migration applied:**
-  - `20260216111905_rbac_permission_resolution.sql` — `has_permission()` + `get_user_permissions()` SQL functions
-- ✅ **Created `usePermissions()` React hook** (`lib/hooks/usePermissions.ts`)
-- ✅ **Two-tier permission resolution:** System groups (Tier 1, always active) + context groups (Tier 2, group-scoped)
-- ✅ **Security:** Both functions SECURITY DEFINER with search_path='', NULL→false fail-closed
-- ✅ **Deusex validated:** All 41 permissions granted via normal resolution (no bypass)
+- ✅ **Full TDD workflow:** Behavior specs (5 behaviors, B-RBAC-013 through B-RBAC-017) → Tests (34 written, all GREEN since infrastructure exists) → Design → Implement → QA (2x full suite) → Document
+- ✅ **6 files migrated from isLeader → hasPermission:**
+  - `app/groups/[id]/page.tsx` — 6 permission gates (edit_group_settings, view_member_list, remove_roles, assign_roles, invite_members)
+  - `app/groups/[id]/edit/page.tsx` — edit_group_settings + delete_group gates
+  - `ForumSection.tsx` — added usePermissions hook, passes moderate_forum
+  - `ForumPost.tsx` + `ForumReplyList.tsx` — isLeader prop → canModerate prop
+  - `EnrollmentModal.tsx` — role-name query → has_permission RPC (enroll_group_in_journey)
+- ✅ **Updated DEFERRED_DECISIONS.md** — 6 stale entries resolved/updated
+- ✅ **Security review:** Fail-closed behavior confirmed, no permission escalation risks
 
-**Test Results:** 238/238 passing ✅ (24 new permission tests + 214 existing, zero regressions)
+**Test Results:** 272/272 passing ✅ (34 new UI permission tests + 238 existing, zero regressions, zero flakiness on 2x runs)
 
-**Bridge Doc:** `docs/planning/sessions/2026-02-16-rbac-sub-sprint-2.md`
+**Bridge Doc:** `docs/planning/sessions/2026-02-16-rbac-sub-sprint-3.md`
 
 **Previous Session (2026-02-15):**
 - Communication system bug fixes, DM sender badge, notification trigger removal
@@ -119,11 +115,11 @@
 
 **See `docs/planning/ROADMAP.md` for complete phase breakdown**
 
-**RBAC Implementation (Sub-Sprint 2 of 4 complete):**
+**RBAC Implementation (Sub-Sprint 3 of 4 complete):**
 1. ~~Schema evolution (group_type, personal groups, system groups, role rename)~~ ✅ **DONE**
 2. ~~`has_permission()` SQL function + `usePermissions()` React hook~~ ✅ **DONE**
-3. Migrate UI from `isLeader` to `hasPermission()` ← **NEXT**
-4. Role management UI (Steward creates/customizes roles)
+3. ~~Migrate UI from `isLeader` to `hasPermission()`~~ ✅ **DONE**
+4. Role management UI (Steward creates/customizes roles) ← **NEXT**
 
 **Phase 1.6 - Polish and Launch:**
 8. Mobile responsiveness audit

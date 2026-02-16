@@ -35,10 +35,10 @@ export default function EnrollmentModal({
 
   const supabase = createClient();
 
-  // Fetch groups where user is Group Leader
+  // Fetch groups where user has enroll_group_in_journey permission
   useEffect(() => {
     if (isOpen && enrollmentType === 'group' && user) {
-      fetchLeaderGroups();
+      fetchEnrollableGroups();
     }
   }, [isOpen, enrollmentType, user]);
 
@@ -71,7 +71,7 @@ export default function EnrollmentModal({
     };
   }, [isOpen, loading, onClose]);
 
-  const fetchLeaderGroups = async () => {
+  const fetchEnrollableGroups = async () => {
     try {
       setLoadingGroups(true);
       setError(null);
@@ -85,36 +85,37 @@ export default function EnrollmentModal({
 
       if (userError) throw userError;
 
-      // Get groups where user is a Group Leader
-      const { data: rolesData, error: rolesError } = await supabase
-        .from('user_group_roles')
-        .select(`
-          group_id,
-          group_roles!inner(name),
-          groups!inner(id, name)
-        `)
+      // Get all groups the user is an active member of
+      const { data: memberships, error: membershipError } = await supabase
+        .from('group_memberships')
+        .select('group_id, groups!inner(id, name)')
         .eq('user_id', userData.id)
-        .eq('group_roles.name', 'Group Leader');
+        .eq('status', 'active');
 
-      if (rolesError) throw rolesError;
+      if (membershipError) throw membershipError;
 
-      // Extract unique groups
-      const uniqueGroups: Group[] = [];
-      const seenIds = new Set<string>();
+      // Check enroll_group_in_journey permission for each group
+      const enrollableGroups: Group[] = [];
 
-      rolesData?.forEach((role: any) => {
-        if (!seenIds.has(role.groups.id)) {
-          seenIds.add(role.groups.id);
-          uniqueGroups.push({
-            id: role.groups.id,
-            name: role.groups.name,
+      for (const membership of memberships || []) {
+        const { data: hasEnrollPerm } = await supabase.rpc('has_permission', {
+          p_user_id: userData.id,
+          p_group_id: membership.group_id,
+          p_permission_name: 'enroll_group_in_journey',
+        });
+
+        if (hasEnrollPerm) {
+          const group = membership.groups as any;
+          enrollableGroups.push({
+            id: group.id,
+            name: group.name,
           });
         }
-      });
+      }
 
-      setLeaderGroups(uniqueGroups);
+      setLeaderGroups(enrollableGroups);
     } catch (err: any) {
-      console.error('Error fetching leader groups:', err);
+      console.error('Error fetching enrollable groups:', err);
       setError('Failed to load your groups. Please try again.');
     } finally {
       setLoadingGroups(false);
@@ -329,7 +330,7 @@ export default function EnrollmentModal({
                 ) : leaderGroups.length === 0 ? (
                   <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                     <p className="text-sm text-yellow-800">
-                      You must be a Group Leader to enroll a group. You don't have any groups where you're a leader.
+                      You don't have permission to enroll any of your groups in journeys.
                     </p>
                   </div>
                 ) : (
