@@ -17,6 +17,11 @@ Sprint process established. Key insights from project history:
 
 → Promoted to playbook? ✅ (all in Sprint Workflow + Scope Management)
 
+### 2026-02-16: Write Tests vs Run Tests split (workflow improvement)
+- Separating "write tests" (Phase 2) from "run tests to confirm RED" (Phase 3) caught a real insight: UI migration tests pass immediately (GREEN) because the infrastructure already exists. This is correct and expected for migration sub-sprints — the tests serve as safety nets, not TDD in the classical sense.
+- Updated both `docs/workflows/feature-development.md` and `docs/agents/contexts/sprint-agent.md` with the split. The workflow now has 7 phases (was 6).
+→ Promoted to playbook? ✅ (already applied to sprint-agent.md and feature-development.md)
+
 ---
 
 ### 2026-02-14: CRITICAL — TDD ordering violation in Sprint 1.5-A
