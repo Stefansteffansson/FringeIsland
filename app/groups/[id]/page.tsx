@@ -340,48 +340,6 @@ export default function GroupDetailPage() {
     }
   };
 
-  const handlePromoteToLeader = async (memberId: string, memberName: string) => {
-    if (!user) return;
-
-    try {
-      // Get current user's database ID
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('auth_user_id', user.id)
-        .single();
-
-      if (userError) throw userError;
-
-      // Find Group Leader role ID
-      const { data: leaderRole, error: roleError } = await supabase
-        .from('group_roles')
-        .select('id')
-        .eq('group_id', groupId)
-        .eq('name', 'Group Leader')
-        .single();
-
-      if (roleError) throw roleError;
-
-      // Assign Group Leader role
-      const { error: assignError } = await supabase
-        .from('user_group_roles')
-        .insert({
-          user_id: memberId,
-          group_id: groupId,
-          group_role_id: leaderRole.id,
-          assigned_by_user_id: userData.id,
-        });
-
-      if (assignError) throw assignError;
-
-      // Success - refresh members
-      await refetchMembers();
-    } catch (err: any) {
-      console.error('Error promoting to leader:', err);
-      alert(err.message || 'Failed to promote member to leader');
-    }
-  };
 
   const handleStartConversation = async (otherUserId: string) => {
     if (!userData) return;
@@ -452,7 +410,7 @@ export default function GroupDetailPage() {
       console.error('Error removing role:', err);
       // Check if it's the last leader error
       if (err.message.includes('last leader')) {
-        alert('Cannot remove the last leader from the group. Promote another member to leader first.');
+        alert('Cannot remove the last Steward from the group. Assign another member the Steward role first.');
       } else {
         alert(err.message || 'Failed to remove role');
       }
@@ -718,16 +676,6 @@ export default function GroupDetailPage() {
                           {/* Role Management Buttons (permission-gated) */}
                           {hasPermission('assign_roles') && (
                             <>
-                              {/* Promote to Leader (if not already a leader) */}
-                              {!member.roles.includes('Group Leader') && (
-                                <button
-                                  onClick={() => handlePromoteToLeader(member.user_id, member.full_name)}
-                                  className="text-xs px-3 py-1.5 bg-green-50 text-green-600 rounded hover:bg-green-100 transition-colors font-medium"
-                                >
-                                  ↑ Promote to Leader
-                                </button>
-                              )}
-
                               {/* Assign Role */}
                               <button
                                 onClick={() => handleOpenAssignRole(member)}
@@ -819,6 +767,7 @@ export default function GroupDetailPage() {
           memberId={selectedMember.id}
           memberName={selectedMember.name}
           currentRoleIds={selectedMember.roleIds}
+          userPermissions={permissions}
           onSuccess={refetchMembers}
         />
       )}

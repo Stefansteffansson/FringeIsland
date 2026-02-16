@@ -12,6 +12,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.20] - 2026-02-16
+
+### Added
+- **Group deletion notifications** — BEFORE DELETE trigger on `groups` notifies all active members (except the deleter) with group name pre-rendered in body
+- **Auto-assign Member role on invitation acceptance** — AFTER UPDATE trigger on `group_memberships` automatically assigns Member role when status changes from 'invited' to 'active'
+- **`can_assign_role()` DB function** — anti-escalation enforcement at RLS level; user must hold `assign_roles` permission AND every permission on the target role
+- **`is_group_creator()` SECURITY DEFINER helper** — avoids nested RLS when checking group creator in policies
+- **Bootstrap case for group_roles INSERT** — group creator can create roles when no Steward exists yet (chicken-and-egg fix)
+- **Permissions SELECT policy** — authenticated users can now read the `permissions` catalog table
+- **Backfill Member role for existing groups** — ensures all active engagement group members have the Member role
+
+### Changed
+- **`user_group_roles` RLS policies** — replaced `is_active_group_leader()` with `has_permission('assign_roles')` + `can_assign_role()` anti-escalation
+- **`copy_template_permissions_on_role_create()` trigger** — now SECURITY DEFINER to bypass RLS during group creation bootstrap
+- **AssignRoleModal** — added `userPermissions` prop; filters out roles the user can't assign (anti-escalation at UI level)
+- **RoleFormModal** — added self-lockout warning when removing `manage_roles`/`assign_roles` from own role; warning in footer area (always visible)
+- **NotificationBell** — notifications no longer navigate anywhere; clicks only mark as read; unread notifications sorted first in dropdown
+- **GroupCreateForm** — improved error handling and retry logic for role creation during bootstrap
+- **RoleManagementSection** — passes user permissions to AssignRoleModal; improved refresh after role changes
+- **Invitations page** — removed client-side Member role assignment (now handled by DB trigger)
+
+### Fixed
+- **Agnes 403 on role assignment** — RLS INSERT policy on `user_group_roles` was using pre-RBAC `is_active_group_leader()` check
+- **New members missing roles after invitation acceptance** — client-side role assignment blocked by RLS; moved to DB trigger
+- **Group creation 403 on group_roles** — bootstrap chicken-and-egg: creator had no `manage_roles` permission during initial setup
+- **Template permission copy failing during bootstrap** — trigger function was not SECURITY DEFINER
+- **Orphaned groups with no roles** — groups created before bootstrap fix had no Steward/Member roles; backfilled
+- **Notification 404 on deleted groups** — clicking "Group Deleted" notification navigated to non-existent group page
+- **Notification badge count mismatch** — unread notifications hidden below dropdown fold; fixed by sorting unread first
+
+### Technical Details
+- **New Migrations:** 9 (permissions SELECT policy, member role backfill, user_group_roles RLS, auto-assign trigger, missing member roles backfill, bootstrap INSERT fix, template permissions SECURITY DEFINER, orphaned groups backfill, group deletion notifications)
+- **Modified Components:** 9 (AssignRoleModal, RoleFormModal, RoleManagementSection, PermissionPicker, NotificationBell, GroupCreateForm, group detail page, groups page, invitations page)
+- **New DB Functions:** 3 (`can_assign_role`, `is_group_creator`, `notify_group_deleted`)
+- **New DB Triggers:** 2 (`assign_member_role_on_accept`, `notify_group_deleted`)
+
+---
+
 ## [0.2.19] - 2026-02-16
 
 ### Added

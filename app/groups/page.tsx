@@ -65,7 +65,8 @@ export default function GroupsPage() {
         const { data: groupsData, error: groupsError } = await supabase
           .from('groups')
           .select('id, name, description, label, is_public, created_at')
-          .in('id', groupIds);
+          .in('id', groupIds)
+          .eq('group_type', 'engagement');
 
         if (groupsError) throw groupsError;
 

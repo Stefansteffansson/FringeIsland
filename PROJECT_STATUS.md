@@ -1,7 +1,7 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-16 (RBAC Sub-Sprint 4 complete)
-**Current Version:** 0.2.19
+**Last Updated:** 2026-02-16 (RBAC bug fixes + group deletion notifications)
+**Current Version:** 0.2.20
 **Active Branch:** main
 
 ---
@@ -33,8 +33,8 @@
 
 - **Phase:** RBAC Implementation COMPLETE (4 of 4 sub-sprints done)
 - **Total Tables:** 17 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 45 migration files (+7 RBAC)
-- **Recent Version:** v0.2.19 (RBAC Sub-Sprint 4 - Feb 16, 2026)
+- **Total Migrations:** 54 migration files (+7 RBAC +9 bug fixes)
+- **Recent Version:** v0.2.20 (RBAC bug fixes + notifications - Feb 16, 2026)
 - **Test Coverage:** 319 tests, **319/319 passing** ✅ (stable, 2x QA verified)
 - **Behaviors Documented:** 58 (5 auth, 5 groups, 7 journeys, 3 roles, 7 communication, 6 messaging, 25 RBAC) ✅
 - **Feature Docs:** 3 complete + 3 planned designs (notification-system, group-forum-system, direct-messaging)
@@ -88,31 +88,30 @@
 
 ## 🔄 Last Session Summary
 
-**Date:** 2026-02-16 (RBAC Sub-Sprint 4: Role Management)
+**Date:** 2026-02-16 (RBAC bug fixes + group deletion notifications)
 **Summary:**
-- ✅ **Full TDD workflow:** Behavior specs (8 behaviors, B-RBAC-018 through B-RBAC-025) → Tests (47 written, 15 RED initially) → Design → Implement (2 migrations) → QA (2x full suite) → Document
-- ✅ **Database changes:**
-  - `manage_roles` permission added to catalog (42 total), backfilled to Steward template + instances + Deusex
-  - `description` column on `group_roles`
-  - `prevent_last_leader_removal` trigger fixed: checks `created_from_role_template_id` not role name
-  - RLS policies on `group_roles` and `group_role_permissions` replaced with `has_permission('manage_roles')` + anti-escalation
-  - 2 SECURITY DEFINER helpers for nested RLS bypass
-- ✅ **3 new UI components:**
-  - `RoleManagementSection` — role list with create/edit/delete, integrated into group detail page
-  - `RoleFormModal` — create/edit role modal with name, description, permission picker
-  - `PermissionPicker` — category-grouped checkbox UI, anti-escalation enforcement
-- ✅ **RBAC implementation fully complete** (4 of 4 sub-sprints done)
+- ✅ **Fixed cascading RBAC bugs** discovered during real-user testing (Stefan + Agnes):
+  - `user_group_roles` INSERT/DELETE RLS: replaced `is_active_group_leader()` with `has_permission('assign_roles')` + `can_assign_role()` anti-escalation
+  - AssignRoleModal: added UI-level anti-escalation filtering (users only see roles they can assign)
+  - RoleFormModal: added self-lockout warning when removing `manage_roles`/`assign_roles`
+  - Auto-assign Member role on invitation acceptance via DB trigger (replaced unreliable client-side code)
+  - Bootstrap case for group creation (chicken-and-egg with group_roles INSERT policy)
+  - Made `copy_template_permissions` trigger SECURITY DEFINER
+  - Backfilled orphaned groups with no roles and members missing Member role
+- ✅ **Group deletion notifications** — BEFORE DELETE trigger notifies all members except deleter
+- ✅ **Notification UX** — notifications no longer navigate, unread sorted first
+- ✅ **9 new migrations applied**, 10 files modified, 3 new DB functions, 2 new triggers
 
-**Test Results:** 319/319 passing ✅ (47 new role-management tests + 272 existing, zero regressions, 2x QA runs)
+**Bridge Doc:** `docs/planning/sessions/2026-02-16-rbac-bugfixes-and-notifications.md`
 
 **Previous Session (2026-02-16, earlier):**
-- RBAC Sub-Sprint 3: UI migration isLeader → hasPermission
+- RBAC Sub-Sprint 4: Role Management (v0.2.19)
+
+**Previous Session (2026-02-16, earlier):**
+- RBAC Sub-Sprint 3: UI migration isLeader → hasPermission (v0.2.18)
 
 **Previous Session (2026-02-15):**
 - Communication system bug fixes, DM sender badge, notification trigger removal
-
-**Previous Session (2026-02-14):**
-- Phase 1.5-A complete: Notification System + Group Forum (v0.2.14)
 
 ---
 

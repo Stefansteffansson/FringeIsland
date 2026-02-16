@@ -129,6 +129,9 @@ export default function InvitationsPage() {
 
       if (error) throw error;
 
+      // Note: Member role is auto-assigned by the database trigger
+      // (assign_member_role_on_accept) when status changes to 'active'
+
       // Show success state briefly
       setProcessingId(null);
       setSuccessId(invitationId);

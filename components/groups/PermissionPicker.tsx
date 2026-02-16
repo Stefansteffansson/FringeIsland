@@ -2,6 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import {
+  CATEGORY_LABELS,
+  CATEGORY_ORDER,
+  sortPermissionsByDisplayOrder,
+} from '@/lib/constants/permissions';
 
 interface Permission {
   id: string;
@@ -16,24 +21,6 @@ interface PermissionPickerProps {
   userPermissions: string[]; // Permissions the current user holds (anti-escalation)
   disabled?: boolean;
 }
-
-const CATEGORY_LABELS: Record<string, string> = {
-  group_management: 'Group Management',
-  journey_management: 'Journey Management',
-  journey_participation: 'Journey Participation',
-  communication: 'Communication',
-  feedback: 'Feedback',
-  platform_admin: 'Platform Administration',
-};
-
-const CATEGORY_ORDER = [
-  'group_management',
-  'journey_management',
-  'journey_participation',
-  'communication',
-  'feedback',
-  'platform_admin',
-];
 
 export default function PermissionPicker({
   selectedPermissionIds,
@@ -104,7 +91,9 @@ export default function PermissionPicker({
     .map(category => ({
       category,
       label: CATEGORY_LABELS[category] || category,
-      permissions: permissions.filter(p => p.category === category),
+      permissions: sortPermissionsByDisplayOrder(
+        permissions.filter(p => p.category === category)
+      ),
     }))
     .filter(group => group.permissions.length > 0);
 
@@ -142,11 +131,13 @@ export default function PermissionPicker({
             >
               <span className="font-medium text-gray-700 text-sm">{group.label}</span>
               <div className="flex items-center gap-2">
-                {selectedCount > 0 && (
-                  <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-600 rounded-full">
-                    {selectedCount}/{group.permissions.length}
-                  </span>
-                )}
+                <span className={`text-xs px-2 py-0.5 rounded-full ${
+                  selectedCount > 0
+                    ? 'bg-blue-100 text-blue-600'
+                    : 'bg-gray-100 text-gray-400'
+                }`}>
+                  {selectedCount}/{group.permissions.length}
+                </span>
                 <span className="text-gray-400 text-sm">
                   {isExpanded ? '▲' : '▼'}
                 </span>
@@ -167,9 +158,9 @@ export default function PermissionPicker({
                           ? 'opacity-50 cursor-not-allowed'
                           : isSelected
                             ? 'bg-blue-50'
-                            : 'hover:bg-gray-50'
+                            : 'opacity-50 hover:opacity-100 hover:bg-gray-50'
                       }`}
-                      title={!userHolds ? 'You cannot grant a permission you do not hold' : permission.description}
+                      title={!userHolds ? 'You cannot grant a permission you do not hold in this group' : permission.description}
                     >
                       <input
                         type="checkbox"
@@ -187,7 +178,12 @@ export default function PermissionPicker({
                         </span>
                         {!userHolds && (
                           <span className="text-xs text-amber-600 block mt-0.5">
-                            You don't hold this permission
+                            You don't hold this permission in this group
+                          </span>
+                        )}
+                        {userHolds && !isSelected && (
+                          <span className="text-xs text-blue-500 block mt-0.5">
+                            Available — you already hold this permission via another role
                           </span>
                         )}
                       </div>

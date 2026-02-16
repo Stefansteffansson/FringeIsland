@@ -5,6 +5,18 @@ import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/auth/AuthContext';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import RoleFormModal from './RoleFormModal';
+import {
+  CATEGORY_LABELS,
+  CATEGORY_ORDER,
+  sortPermissionsByDisplayOrder,
+} from '@/lib/constants/permissions';
+
+interface Permission {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+}
 
 interface GroupRole {
   id: string;
@@ -31,6 +43,7 @@ export default function RoleManagementSection({
   const supabase = createClient();
 
   const [roles, setRoles] = useState<GroupRole[]>([]);
+  const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,10 +52,21 @@ export default function RoleManagementSection({
   const [editingRole, setEditingRole] = useState<GroupRole | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [roleToDelete, setRoleToDelete] = useState<GroupRole | null>(null);
+  const [expandedRoles, setExpandedRoles] = useState<Set<string>>(new Set());
 
   const fetchRoles = async () => {
     try {
       setLoading(true);
+
+      // Fetch all permissions catalog (for the view permissions checklist)
+      const { data: permCatalog, error: permCatalogError } = await supabase
+        .from('permissions')
+        .select('id, name, description, category')
+        .order('category')
+        .order('name');
+
+      if (permCatalogError) throw permCatalogError;
+      setAllPermissions(permCatalog || []);
 
       // Fetch roles for this group
       const { data: rolesData, error: rolesError } = await supabase
@@ -120,8 +144,27 @@ export default function RoleManagementSection({
     setFormModalOpen(true);
   };
 
-  const handleEditRole = (role: GroupRole) => {
-    setEditingRole(role);
+  const handleEditRole = async (role: GroupRole) => {
+    // Fetch fresh data from DB to avoid stale descriptions/permissions
+    const { data: freshRole } = await supabase
+      .from('group_roles')
+      .select('id, name, description, created_from_role_template_id')
+      .eq('id', role.id)
+      .single();
+
+    const { data: freshPerms } = await supabase
+      .from('group_role_permissions')
+      .select('permission_id, permissions(name)')
+      .eq('group_role_id', role.id);
+
+    setEditingRole({
+      ...role,
+      name: freshRole?.name ?? role.name,
+      description: freshRole?.description ?? role.description,
+      created_from_role_template_id: freshRole?.created_from_role_template_id ?? role.created_from_role_template_id,
+      permissionIds: freshPerms?.map((p: any) => p.permission_id) ?? role.permissionIds,
+      permissionNames: freshPerms?.map((p: any) => p.permissions?.name || '') ?? role.permissionNames,
+    });
     setFormModalOpen(true);
   };
 
@@ -171,6 +214,29 @@ export default function RoleManagementSection({
     onRolesChanged();
   };
 
+  const toggleRoleExpanded = (roleId: string) => {
+    setExpandedRoles(prev => {
+      const next = new Set(prev);
+      if (next.has(roleId)) {
+        next.delete(roleId);
+      } else {
+        next.add(roleId);
+      }
+      return next;
+    });
+  };
+
+  // Group permissions by category for the checklist view, sorted by display order
+  const groupedPermissions = CATEGORY_ORDER
+    .map(category => ({
+      category,
+      label: CATEGORY_LABELS[category] || category,
+      permissions: sortPermissionsByDisplayOrder(
+        allPermissions.filter(p => p.category === category)
+      ),
+    }))
+    .filter(group => group.permissions.length > 0);
+
   if (loading) {
     return (
       <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
@@ -215,6 +281,8 @@ export default function RoleManagementSection({
           {roles.map(role => {
             const isTemplate = !!role.created_from_role_template_id;
             const isCustom = !isTemplate;
+            const isExpanded = expandedRoles.has(role.id);
+            const rolePermissionIds = new Set(role.permissionIds);
 
             return (
               <div
@@ -243,24 +311,16 @@ export default function RoleManagementSection({
                       <p className="text-sm text-gray-500 mb-2">{role.description}</p>
                     )}
 
-                    {/* Permission badges */}
-                    {role.permissionNames.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {role.permissionNames.slice(0, 8).map((perm, i) => (
-                          <span
-                            key={i}
-                            className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded"
-                          >
-                            {perm.replace(/_/g, ' ')}
-                          </span>
-                        ))}
-                        {role.permissionNames.length > 8 && (
-                          <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-500 rounded">
-                            +{role.permissionNames.length - 8} more
-                          </span>
-                        )}
-                      </div>
-                    )}
+                    {/* View Permissions toggle */}
+                    <button
+                      onClick={() => toggleRoleExpanded(role.id)}
+                      className="text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1"
+                    >
+                      <span>{isExpanded ? '▲' : '▼'}</span>
+                      {isExpanded
+                        ? 'Hide Permissions'
+                        : `View Permissions (${role.permissionIds.length}/${allPermissions.length})`}
+                    </button>
                   </div>
 
                   {/* Action buttons */}
@@ -281,6 +341,63 @@ export default function RoleManagementSection({
                     )}
                   </div>
                 </div>
+
+                {/* Expanded permissions checklist */}
+                {isExpanded && (
+                  <div className="mt-3 pt-3 border-t border-gray-100 space-y-3">
+                    {groupedPermissions.map(group => {
+                      const grantedInCategory = group.permissions.filter(p =>
+                        rolePermissionIds.has(p.id)
+                      ).length;
+
+                      return (
+                        <div key={group.category}>
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                              {group.label}
+                            </h4>
+                            <span className="text-xs text-gray-400">
+                              {grantedInCategory}/{group.permissions.length}
+                            </span>
+                          </div>
+                          <div className="space-y-0.5">
+                            {group.permissions.map(permission => {
+                              const isGranted = rolePermissionIds.has(permission.id);
+                              return (
+                                <div
+                                  key={permission.id}
+                                  className={`flex items-start gap-2 px-2 py-1 rounded text-sm ${
+                                    isGranted ? 'bg-green-50' : ''
+                                  }`}
+                                >
+                                  <span className={`mt-0.5 flex-shrink-0 ${
+                                    isGranted ? 'text-green-600' : 'text-gray-300'
+                                  }`}>
+                                    {isGranted ? '✓' : '—'}
+                                  </span>
+                                  <div className="flex-1 min-w-0">
+                                    <span className={`text-sm ${
+                                      isGranted
+                                        ? 'font-medium text-gray-800'
+                                        : 'text-gray-400'
+                                    }`}>
+                                      {permission.name.replace(/_/g, ' ')}
+                                    </span>
+                                    {isGranted && permission.description && (
+                                      <span className="text-xs text-gray-500 block">
+                                        {permission.description}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             );
           })}

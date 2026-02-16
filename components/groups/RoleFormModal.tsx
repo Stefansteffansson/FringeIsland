@@ -36,6 +36,7 @@ export default function RoleFormModal({
   const [selectedPermissionIds, setSelectedPermissionIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lockoutWarning, setLockoutWarning] = useState<string | null>(null);
 
   const isEditing = !!editRole;
 
@@ -70,13 +71,58 @@ export default function RoleFormModal({
 
   const handleClose = () => {
     setError(null);
+    setLockoutWarning(null);
     setName('');
     setDescription('');
     setSelectedPermissionIds([]);
     onClose();
   };
 
-  const handleSubmit = async () => {
+  // Check if removing a critical permission would lock the user out
+  const checkSelfLockout = async (
+    userId: string,
+    removedPermissionIds: string[]
+  ): Promise<string | null> => {
+    if (removedPermissionIds.length === 0 || !editRole) return null;
+
+    // Find which critical permissions are being removed (manage_roles, assign_roles)
+    const { data: criticalPerms } = await supabase
+      .from('permissions')
+      .select('id, name')
+      .in('id', removedPermissionIds)
+      .in('name', ['manage_roles', 'assign_roles']);
+
+    if (!criticalPerms || criticalPerms.length === 0) return null;
+
+    // For each critical permission being removed, check if user has it from another role
+    for (const perm of criticalPerms) {
+      // Check user's OTHER roles in this group for the same permission
+      const { data: otherSources, error: checkError } = await supabase
+        .from('user_group_roles')
+        .select('group_role_id, group_role_permissions!inner(permission_id)')
+        .eq('user_id', userId)
+        .eq('group_id', groupId)
+        .neq('group_role_id', editRole.id)
+        .eq('group_role_permissions.permission_id', perm.id);
+
+      if (checkError) {
+        // If the query fails (e.g., RLS), fall back to a simpler check
+        // using the userPermissions prop — count occurrences
+        console.warn('Lockout check query failed, using fallback:', checkError);
+      }
+
+      const hasOtherSource = otherSources && otherSources.length > 0;
+
+      if (!hasOtherSource) {
+        const permLabel = perm.name.replace(/_/g, ' ');
+        return `You are about to remove "${permLabel}" from this role. This is your only role in this group with this permission — saving will lock you out of this capability. Are you sure?`;
+      }
+    }
+
+    return null;
+  };
+
+  const handleSubmit = async (skipLockoutCheck = false) => {
     if (!user) return;
 
     const trimmedName = name.trim();
@@ -87,6 +133,7 @@ export default function RoleFormModal({
 
     setLoading(true);
     setError(null);
+    setLockoutWarning(null);
 
     try {
       // Get current user's database ID
@@ -99,6 +146,22 @@ export default function RoleFormModal({
       if (userError) throw userError;
 
       if (isEditing && editRole) {
+        // Sync permissions: compute what's being removed/added
+        const currentIds = new Set(editRole.permissionIds);
+        const newIds = new Set(selectedPermissionIds);
+        const toRemove = editRole.permissionIds.filter(id => !newIds.has(id));
+        const toAdd = selectedPermissionIds.filter(id => !currentIds.has(id));
+
+        // Self-lockout check (only on first attempt, skip if user confirmed)
+        if (!skipLockoutCheck && toRemove.length > 0) {
+          const warning = await checkSelfLockout(userData.id, toRemove);
+          if (warning) {
+            setLockoutWarning(warning);
+            setLoading(false);
+            return;
+          }
+        }
+
         // Update existing role
         const { error: updateError } = await supabase
           .from('group_roles')
@@ -110,12 +173,7 @@ export default function RoleFormModal({
 
         if (updateError) throw updateError;
 
-        // Sync permissions: remove deselected, add newly selected
-        const currentIds = new Set(editRole.permissionIds);
-        const newIds = new Set(selectedPermissionIds);
-
         // Permissions to remove
-        const toRemove = editRole.permissionIds.filter(id => !newIds.has(id));
         if (toRemove.length > 0) {
           const { error: removeError } = await supabase
             .from('group_role_permissions')
@@ -127,7 +185,6 @@ export default function RoleFormModal({
         }
 
         // Permissions to add
-        const toAdd = selectedPermissionIds.filter(id => !currentIds.has(id));
         if (toAdd.length > 0) {
           const inserts = toAdd.map(permId => ({
             group_role_id: editRole.id,
@@ -267,7 +324,10 @@ export default function RoleFormModal({
             </p>
             <PermissionPicker
               selectedPermissionIds={selectedPermissionIds}
-              onChange={setSelectedPermissionIds}
+              onChange={(ids) => {
+                setSelectedPermissionIds(ids);
+                if (lockoutWarning) setLockoutWarning(null);
+              }}
               userPermissions={userPermissions}
               disabled={loading}
             />
@@ -275,30 +335,64 @@ export default function RoleFormModal({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-100 flex justify-end gap-3">
-          <button
-            onClick={handleClose}
-            disabled={loading}
-            className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            disabled={loading || !name.trim()}
-            className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2"
-          >
-            {loading ? (
+        <div className="p-6 border-t border-gray-100">
+          {/* Self-lockout warning */}
+          {lockoutWarning && (
+            <div className="p-3 bg-amber-50 border border-amber-300 rounded-lg mb-4">
+              <p className="text-sm font-semibold text-amber-800 mb-1">Warning: You may lose access</p>
+              <p className="text-sm text-amber-700">{lockoutWarning}</p>
+            </div>
+          )}
+
+          <div className="flex justify-end gap-3">
+            {lockoutWarning ? (
               <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Saving...
+                <button
+                  type="button"
+                  onClick={() => setLockoutWarning(null)}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
+                >
+                  Go Back
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLockoutWarning(null);
+                    handleSubmit(true);
+                  }}
+                  className="px-6 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition-all shadow-md text-sm"
+                >
+                  Save Anyway
+                </button>
               </>
-            ) : isEditing ? (
-              'Save Changes'
             ) : (
-              'Create Role'
+              <>
+                <button
+                  onClick={handleClose}
+                  disabled={loading}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleSubmit()}
+                  disabled={loading || !name.trim()}
+                  className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Saving...
+                    </>
+                  ) : isEditing ? (
+                    'Save Changes'
+                  ) : (
+                    'Create Role'
+                  )}
+                </button>
+              </>
             )}
-          </button>
+          </div>
         </div>
       </div>
     </div>

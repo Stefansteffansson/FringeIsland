@@ -99,4 +99,24 @@ notification if it does not — avoids spurious "role removed" noise during grou
 
 → Promoted to playbook? Pending Sprint Agent review.
 
+### 2026-02-16: Bootstrap pattern for chicken-and-egg RLS during group creation
+Group creation requires inserting into `group_roles`, but the INSERT RLS policy requires `manage_roles` permission which the creator doesn't have yet (roles don't exist). Solution: add a "bootstrap case" to the INSERT policy — `is_group_creator(group_id) AND NOT group_has_leader(group_id)`. This pattern works because once the Steward role is created and assigned, the bootstrap path is no longer matched. The `is_group_creator()` function must be SECURITY DEFINER to avoid nested RLS on the groups table.
+> Promoted to playbook? Not yet
+
+### 2026-02-16: copy_template_permissions trigger must be SECURITY DEFINER
+The `copy_template_permissions_on_role_create()` trigger copies permissions from a role template to a new group role. During group creation bootstrap, the creator has no permissions, so the trigger's INSERT into `group_role_permissions` is blocked by RLS. Fix: make the trigger function SECURITY DEFINER. This is a system operation (template copying), not a user action, so SECURITY DEFINER is appropriate per the established pattern.
+> Promoted to playbook? Not yet
+
+### 2026-02-16: Auto-assign Member role via DB trigger, not client-side
+Client-side role assignment after invitation acceptance fails because the newly-accepted member has no `assign_roles` permission, and the bootstrap case doesn't apply (Steward already exists). Solution: AFTER UPDATE trigger on `group_memberships` that fires when `OLD.status = 'invited' AND NEW.status = 'active'`, finds the Member role template instance for the group, and assigns it. The trigger is SECURITY DEFINER to bypass RLS.
+> Promoted to playbook? Not yet
+
+### 2026-02-16: BEFORE DELETE trigger to capture data before CASCADE
+The `notify_group_deleted` trigger must fire BEFORE DELETE on groups, not AFTER, because CASCADE will delete `group_memberships` rows before an AFTER trigger runs. The BEFORE trigger can still read membership data. The notification's `group_id` will be SET NULL by CASCADE, but the group name is pre-rendered in the notification title/body so that's fine.
+> Promoted to playbook? Not yet
+
+### 2026-02-16: can_assign_role() — DB-level anti-escalation for role assignment
+The `user_group_roles` INSERT RLS policy now calls `can_assign_role(user_id, group_role_id)` which checks: (1) user has `assign_roles` permission via `has_permission()`, and (2) anti-escalation — every permission on the target role must be held by the assigning user. This replaces the old `is_active_group_leader()` check and is the correct RBAC pattern.
+> Promoted to playbook? Not yet
+
 <!-- Append new entries below this line -->

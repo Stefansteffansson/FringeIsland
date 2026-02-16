@@ -11,6 +11,7 @@ interface AssignRoleModalProps {
   memberId: string;
   memberName: string;
   currentRoleIds: string[]; // Role IDs user already has
+  userPermissions: string[]; // Permissions the current user holds (anti-escalation)
   onSuccess: () => void;
 }
 
@@ -26,6 +27,7 @@ export default function AssignRoleModal({
   memberId,
   memberName,
   currentRoleIds,
+  userPermissions,
   onSuccess,
 }: AssignRoleModalProps) {
   const { user } = useAuth();
@@ -54,16 +56,53 @@ export default function AssignRoleModal({
 
         if (rolesError) throw rolesError;
 
-        // Filter out roles the user already has
-        const filteredRoles = (allRoles || []).filter(
+        // Filter out roles the member already has
+        const candidateRoles = (allRoles || []).filter(
           (role) => !currentRoleIds.includes(role.id)
         );
 
-        setAvailableRoles(filteredRoles);
+        // Anti-escalation: fetch each role's permissions and filter out
+        // roles that have permissions the current user doesn't hold
+        const roleIds = candidateRoles.map(r => r.id);
+        let assignableRoles = candidateRoles;
+
+        if (roleIds.length > 0) {
+          const { data: rolePerms, error: permsError } = await supabase
+            .from('group_role_permissions')
+            .select('group_role_id, permissions!inner(name)')
+            .in('group_role_id', roleIds)
+            .eq('granted', true);
+
+          if (permsError) throw permsError;
+
+          // Build a map: roleId → Set of permission names
+          const rolePermMap = new Map<string, Set<string>>();
+          for (const rp of rolePerms || []) {
+            const permName = (rp.permissions as any)?.name;
+            if (!permName) continue;
+            if (!rolePermMap.has(rp.group_role_id)) {
+              rolePermMap.set(rp.group_role_id, new Set());
+            }
+            rolePermMap.get(rp.group_role_id)!.add(permName);
+          }
+
+          // Keep only roles where ALL permissions are held by the current user
+          const userPermSet = new Set(userPermissions);
+          assignableRoles = candidateRoles.filter(role => {
+            const perms = rolePermMap.get(role.id);
+            if (!perms || perms.size === 0) return true; // Role with no permissions is safe
+            for (const p of perms) {
+              if (!userPermSet.has(p)) return false;
+            }
+            return true;
+          });
+        }
+
+        setAvailableRoles(assignableRoles);
 
         // Auto-select first role if available
-        if (filteredRoles.length > 0) {
-          setSelectedRoleId(filteredRoles[0].id);
+        if (assignableRoles.length > 0) {
+          setSelectedRoleId(assignableRoles[0].id);
         }
       } catch (err) {
         console.error('Error fetching roles:', err);
@@ -76,7 +115,7 @@ export default function AssignRoleModal({
     if (isOpen) {
       fetchRoles();
     }
-  }, [isOpen, groupId, currentRoleIds, supabase]);
+  }, [isOpen, groupId, currentRoleIds, userPermissions, supabase]);
 
   // Handle assign role
   const handleAssignRole = async () => {
@@ -184,7 +223,9 @@ export default function AssignRoleModal({
         {!fetchingRoles && availableRoles.length === 0 && (
           <div className="text-center py-8">
             <p className="text-gray-600">
-              {memberName} already has all available roles in this group.
+              No roles available to assign. This can happen if {memberName} already
+              has all roles, or if the remaining roles require permissions you
+              don't hold in this group.
             </p>
             <button
               onClick={handleClose}

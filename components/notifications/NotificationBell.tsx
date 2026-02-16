@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useNotifications } from '@/lib/notifications/NotificationContext';
 import type { Notification } from '@/lib/notifications/NotificationContext';
 
@@ -21,43 +20,6 @@ function timeAgo(dateString: string): string {
   if (diffHours < 24) return `${diffHours}h ago`;
   if (diffDays < 7) return `${diffDays}d ago`;
   return date.toLocaleDateString();
-}
-
-function notificationHref(notification: Notification): string {
-  const { payload, group_id } = notification;
-
-  // Navigate to the relevant page based on payload or group_id
-  if (payload && typeof payload === 'object') {
-    if ('group_id' in payload && payload.group_id) {
-      return `/groups/${payload.group_id}`;
-    }
-    if ('journey_id' in payload && payload.journey_id) {
-      return `/journeys/${payload.journey_id}`;
-    }
-  }
-
-  if (group_id) {
-    return `/groups/${group_id}`;
-  }
-
-  // Direct message notification → go to conversation
-  if (notification.type === 'new_direct_message') {
-    if (payload && typeof payload === 'object' && 'conversation_id' in payload && payload.conversation_id) {
-      return `/messages/${payload.conversation_id}`;
-    }
-    return '/messages';
-  }
-
-  // Default fallback
-  if (
-    notification.type === 'group_invitation' ||
-    notification.type === 'invitation_accepted' ||
-    notification.type === 'invitation_declined'
-  ) {
-    return '/invitations';
-  }
-
-  return '/notifications';
 }
 
 // ─── Notification Item ────────────────────────────────────────────────────────
@@ -96,7 +58,7 @@ function NotificationItem({
           {notification.title}
         </p>
         {notification.body && (
-          <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{notification.body}</p>
+          <p className="text-xs text-gray-500 mt-0.5">{notification.body}</p>
         )}
         <p className="text-xs text-gray-400 mt-1">{timeAgo(notification.created_at)}</p>
       </div>
@@ -128,7 +90,6 @@ function BellIcon({ className }: { className?: string }) {
 // ─── NotificationBell ─────────────────────────────────────────────────────────
 
 export default function NotificationBell() {
-  const router = useRouter();
   const { unreadCount, notifications, isLoading, markAsRead, markAllAsRead } =
     useNotifications();
 
@@ -165,14 +126,10 @@ export default function NotificationBell() {
   }, [isOpen]);
 
   const handleNotificationClick = async (notification: Notification) => {
-    // Mark as read first (no-op if already read)
+    // Mark as read (no-op if already read)
     if (!notification.is_read) {
       await markAsRead(notification.id);
     }
-
-    const href = notificationHref(notification);
-    setIsOpen(false);
-    router.push(href);
   };
 
   const handleMarkAllAsRead = async (e: React.MouseEvent) => {
@@ -180,8 +137,10 @@ export default function NotificationBell() {
     await markAllAsRead();
   };
 
-  // Show only the 10 most recent in the dropdown
-  const recentNotifications = notifications.slice(0, 10);
+  // Show unread first, then recent read ones (up to 15 total)
+  const unread = notifications.filter((n) => !n.is_read);
+  const read = notifications.filter((n) => n.is_read);
+  const recentNotifications = [...unread, ...read].slice(0, 15);
 
   return (
     <div ref={containerRef} className="relative">

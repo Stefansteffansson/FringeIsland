@@ -123,39 +123,65 @@ export default function GroupCreateForm({ userId }: GroupCreateFormProps) {
 
       if (membershipError) throw membershipError;
 
-      // Step 3: Get the "Group Leader" role template
-      const { data: roleTemplate, error: roleTemplateError } = await supabase
+      // Step 3: Get role templates (Steward + Member)
+      const { data: roleTemplates, error: roleTemplatesError } = await supabase
         .from('role_templates')
-        .select('id')
-        .eq('name', 'Group Leader Role Template')
-        .single();
+        .select('id, name')
+        .in('name', ['Steward Role Template', 'Member Role Template']);
 
-      if (roleTemplateError) throw roleTemplateError;
+      if (roleTemplatesError) throw roleTemplatesError;
 
-      // Step 4: Create group role instance
-      const { data: groupRole, error: groupRoleError } = await supabase
+      const stewardTemplate = roleTemplates?.find(t => t.name === 'Steward Role Template');
+      const memberTemplate = roleTemplates?.find(t => t.name === 'Member Role Template');
+
+      if (!stewardTemplate || !memberTemplate) {
+        throw new Error('Required role templates (Steward, Member) not found');
+      }
+
+      // Step 4: Create both role instances (permissions auto-copied by trigger)
+      const { data: stewardRole, error: stewardError } = await supabase
         .from('group_roles')
         .insert({
           group_id: groupData.id,
-          name: 'Group Leader', // Required field
-          created_from_role_template_id: roleTemplate.id, // Correct column name
+          name: 'Steward',
+          created_from_role_template_id: stewardTemplate.id,
         })
-        .select()
+        .select('id')
         .single();
 
-      if (groupRoleError) throw groupRoleError;
+      if (stewardError) throw stewardError;
 
-      // Step 5: Assign creator as group leader
-      const { error: userRoleError } = await supabase
-        .from('user_group_roles')
+      const { data: memberRole, error: memberError } = await supabase
+        .from('group_roles')
         .insert({
-          user_id: userId,
           group_id: groupData.id,
-          group_role_id: groupRole.id,
-          assigned_by_user_id: userId, // Required field!
-        });
+          name: 'Member',
+          created_from_role_template_id: memberTemplate.id,
+        })
+        .select('id')
+        .single();
 
-      if (userRoleError) throw userRoleError;
+      if (memberError) throw memberError;
+
+      // Step 5: Assign creator both Steward and Member roles
+      const { error: rolesAssignError } = await supabase
+        .from('user_group_roles')
+        .insert([
+          {
+            user_id: userId,
+            group_id: groupData.id,
+            group_role_id: stewardRole.id,
+            assigned_by_user_id: userId,
+          },
+          {
+            user_id: userId,
+            group_id: groupData.id,
+            group_role_id: memberRole.id,
+            assigned_by_user_id: userId,
+          },
+        ]);
+
+      if (rolesAssignError) throw rolesAssignError;
 
       setSuccess(true);
       
