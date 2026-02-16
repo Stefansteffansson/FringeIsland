@@ -8,7 +8,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- RBAC implementation (Dynamic Permissions System)
+- RBAC Sub-Sprint 3: UI migration (isLeader → hasPermission)
+- RBAC Sub-Sprint 4: Role management UI
+
+---
+
+## [0.2.17] - 2026-02-16
+
+### Added
+- **RBAC Sub-Sprint 2: Permission Resolution** (has_permission + usePermissions hook)
+  - `has_permission(p_user_id, p_group_id, p_permission_name)` SQL function — two-tier resolution (system groups always active + context group scoped)
+  - `get_user_permissions(p_user_id, p_group_id)` SQL function — batch fetch returning deduplicated TEXT[] array
+  - `usePermissions(groupId)` React hook — fetches permission set, provides synchronous `hasPermission()` lookup
+  - Both SQL functions: SECURITY DEFINER, search_path='', fail closed (NULL→false)
+  - Short-circuit optimization: system group match returns immediately without checking context group
+- **B-RBAC-008 through B-RBAC-012 behavior specs** — `docs/specs/behaviors/rbac.md`
+- **24 integration tests** for permission resolution (engagement group, system group, edge cases, Deusex all-permissions)
+
+### Technical Details
+- **New Migration:** 1 (`20260216111905_rbac_permission_resolution.sql`)
+- **New Functions:** 2 (`has_permission`, `get_user_permissions`)
+- **New Files:** 4 (migration, usePermissions hook, 2 test suites, session log)
+- **Test Status:** 238/238 passing (24 new + 214 existing, zero regressions)
+
+---
+
+## [0.2.16] - 2026-02-16
+
+### Added
+- **RBAC Sub-Sprint 1: Schema Foundation**
+  - `group_type` column on groups (system/personal/engagement)
+  - Personal group creation on signup (handle_new_user extended)
+  - 3 system groups: FI Members, Visitor, Deusex (with roles and permissions)
+  - Role template permissions (57 rows across 4 templates)
+  - `copy_template_permissions` trigger for automatic permission initialization
+  - Role renaming: Group Leader→Steward, Travel Guide→Guide
+- **B-RBAC-001 through B-RBAC-007 behavior specs**
+- **57 integration tests** for RBAC schema foundation
+
+### Technical Details
+- **New Migrations:** 4 (schema+permissions, system groups, personal groups+rename, reference rename)
+- **Test Status:** 218/218 passing (57 new + 161 existing)
 
 ---
 

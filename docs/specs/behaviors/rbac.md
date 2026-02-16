@@ -328,6 +328,288 @@
 
 ---
 
+## B-RBAC-008: Engagement Group Permission Resolution
+
+**Rule:** `has_permission()` checks if a user has a specific permission in an engagement group by looking up their roles in that group and checking if any role grants the permission.
+
+**Why:** This is the core Tier 2 (context-specific) permission resolution logic. Users can have different roles in different groups, so the permission check must be scoped to the group context being checked (D5). A user who is a Steward in Group A but only a Member in Group B should only have Steward permissions when acting in Group A's context.
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/permission-resolution.test.ts`
+- **Database:** `has_permission(user_id, group_id, permission_name)` SQL function
+- **Migration:** `20260216111905_rbac_permission_resolution.sql`
+
+**Acceptance Criteria:**
+- [ ] `has_permission(user_id, group_id, 'invite_members')` returns true if user is an active member of the group AND has a role with that permission
+- [ ] User must have `status = 'active'` in `group_memberships` for the group
+- [ ] Checks `user_group_roles` → `group_roles` → `group_role_permissions` → `permissions` path
+- [ ] If user has multiple roles in the group, permissions are unioned (any role grants = true)
+- [ ] Returns false if user is not a member of the group
+- [ ] Returns false if user is a member but has status 'invited' (not yet accepted)
+- [ ] Returns false if user is a member but none of their roles grant the permission
+- [ ] Function is `SECURITY DEFINER` with `search_path = ''` (project convention)
+
+**Examples:**
+
+✅ **Valid:**
+- User has Steward role in Group A, check `has_permission(user_id, group_a_id, 'invite_members')` → true
+- User has Member role in Group B (Member has 12 perms but NOT invite_members), check `has_permission(user_id, group_b_id, 'invite_members')` → false
+- User has both Steward AND Member roles in Group C, check `has_permission(user_id, group_c_id, 'invite_members')` → true (union semantics)
+
+❌ **Invalid:**
+- User is invited to Group D but hasn't accepted (status='invited'), check `has_permission(user_id, group_d_id, 'view_journey_content')` → false
+- User is not a member of Group E, check `has_permission(user_id, group_e_id, any_permission)` → false
+
+**Edge Cases:**
+- **Scenario:** User has Observer role (7 permissions) and checks `post_forum_messages` (not in Observer)
+  - **Behavior:** `has_permission()` returns false
+  - **Why:** Observer can view but not post (D18a grid)
+
+- **Scenario:** User's membership is paused (`status = 'paused'`)
+  - **Behavior:** `has_permission()` returns false (only 'active' memberships count)
+  - **Why:** Paused users should not have any group-context permissions
+
+**Testing Priority:** 🔴 CRITICAL (core permission resolution — all UI and RLS depend on this)
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 2)
+
+---
+
+## B-RBAC-009: System Group Permission Resolution (Tier 1)
+
+**Rule:** `has_permission()` always checks system group permissions (Tier 1) in addition to context group permissions. System permissions are additive and apply regardless of which engagement group context is being checked.
+
+**Why:** System groups provide platform-wide permissions that apply everywhere (D5, D6). A user who is a member of FringeIsland Members should be able to `create_group` no matter which group's page they're viewing. System permissions are always "on" — they don't require a group context to be active.
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/permission-resolution.test.ts`
+- **Database:** `has_permission(user_id, group_id, permission_name)` SQL function
+- **Migration:** `20260216111905_rbac_permission_resolution.sql`
+
+**Acceptance Criteria:**
+- [ ] `has_permission()` checks system groups (where `group_type = 'system'`) FIRST
+- [ ] If permission found in system groups, return true immediately (no need to check context group)
+- [ ] System group permissions apply to ALL group contexts (e.g., `create_group` works everywhere)
+- [ ] FringeIsland Members group has a Member role with 8 permissions (D20)
+- [ ] These 8 permissions are available to all authenticated users in any context
+- [ ] Deusex group has a Deusex role with ALL 41 permissions (D3, D20, D22 correction)
+- [ ] Deusex members have ALL permissions in ALL contexts (via system group, not bypass)
+- [ ] Visitor group has a Guest role with 5 permissions (D20)
+- [ ] Anonymous users (if supported) get Visitor permissions
+
+**Examples:**
+
+✅ **Valid:**
+- User is FI Members, check `has_permission(user_id, any_group_id, 'create_group')` → true (Tier 1)
+- User is FI Members, check `has_permission(user_id, any_group_id, 'browse_journey_catalog')` → true (Tier 1)
+- User is Deusex member, check `has_permission(user_id, any_group_id, 'delete_group')` → true (Tier 1, all perms)
+- User is ONLY in engagement groups (not FI Members somehow), check `has_permission(user_id, group_id, 'create_group')` → false (no Tier 1 access)
+
+❌ **Invalid:**
+- User has `create_group` from FI Members but function doesn't check system groups → VIOLATED
+- Deusex member missing one permission because function only checks context group → VIOLATED
+
+**Edge Cases:**
+- **Scenario:** User has permission from BOTH system group AND context group
+  - **Behavior:** `has_permission()` returns true (union of Tier 1 + Tier 2)
+  - **Why:** Permissions are additive across tiers
+
+- **Scenario:** User is checking a system group as the context (e.g., `has_permission(user_id, fi_members_id, permission)`)
+  - **Behavior:** Works normally — system groups can be queried like any other group
+  - **Why:** System groups are still groups; they just also grant Tier 1 permissions
+
+- **Scenario:** New authenticated user who hasn't accepted any group invitations yet
+  - **Behavior:** Has 8 permissions from FI Members (Tier 1), but 0 from engagement groups (Tier 2)
+  - **Why:** System group membership is automatic; engagement groups require invitation + acceptance
+
+**Testing Priority:** 🔴 CRITICAL (Tier 1 permissions are the foundation of platform-wide access)
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 2)
+
+---
+
+## B-RBAC-010: Permission Check Edge Cases
+
+**Rule:** `has_permission()` returns false for invalid inputs, non-existent entities, and edge cases where permission should not be granted.
+
+**Why:** Robust error handling prevents security holes. If a user_id, group_id, or permission_name is invalid, the function must fail closed (deny access) rather than throw an error or return null, which could cause RLS policies to malfunction (D4).
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/permission-resolution.test.ts`
+- **Database:** `has_permission(user_id, group_id, permission_name)` SQL function
+- **Migration:** `20260216111905_rbac_permission_resolution.sql`
+
+**Acceptance Criteria:**
+- [ ] Non-existent `user_id` → returns false
+- [ ] Non-existent `group_id` → returns false
+- [ ] Non-existent `permission_name` → returns false
+- [ ] NULL `user_id` → returns false
+- [ ] NULL `group_id` → returns false
+- [ ] NULL `permission_name` → returns false
+- [ ] User exists but is soft-deleted (`is_active = false`) → returns false
+- [ ] User is a member of the group but status is 'invited' → returns false
+- [ ] User is a member of the group but status is 'removed' → returns false
+- [ ] User is a member of the group but status is 'paused' → returns false
+- [ ] Valid inputs but user is not a member of the group → returns false
+- [ ] Valid inputs but user has no roles in the group → returns false (edge case: member with no roles)
+- [ ] Valid inputs but user's roles don't grant the permission → returns false
+- [ ] Function does NOT throw errors (silent false for all invalid cases)
+
+**Examples:**
+
+✅ **Valid (function works correctly):**
+- `has_permission('00000000-0000-0000-0000-000000000000', valid_group, 'invite_members')` → false (fake user)
+- `has_permission(valid_user, '00000000-0000-0000-0000-000000000000', 'invite_members')` → false (fake group)
+- `has_permission(valid_user, valid_group, 'nonexistent_permission')` → false (invalid permission)
+- `has_permission(NULL, valid_group, 'invite_members')` → false (NULL input)
+- `has_permission(inactive_user, valid_group, 'view_journey_content')` → false (soft-deleted user)
+
+❌ **Invalid (bugs to avoid):**
+- Function throws SQL error on NULL input → VIOLATED (must return false)
+- Function returns NULL instead of false → VIOLATED (breaks RLS boolean checks)
+- Function allows soft-deleted users to pass permission checks → VIOLATED
+
+**Edge Cases:**
+- **Scenario:** User is removed from group (`status = 'removed'`) but `user_group_roles` entries still exist
+  - **Behavior:** `has_permission()` returns false (membership status check comes before role lookup)
+  - **Why:** Roles are historical data; only active memberships grant permissions
+
+- **Scenario:** Permission name has typo (e.g., `'invite_member'` instead of `'invite_members'`)
+  - **Behavior:** `has_permission()` returns false (no such permission in catalog)
+  - **Why:** Fail closed — better to deny access than grant due to typo
+
+- **Scenario:** User passes a personal group ID as the context
+  - **Behavior:** Works normally (personal groups are groups; user is sole member with Myself role)
+  - **Why:** No special handling needed; the data model is consistent
+
+- **Scenario:** Function is called during signup before personal group is created
+  - **Behavior:** Returns false for engagement group checks (no memberships yet), but returns true for FI Members Tier 1 permissions (signup trigger adds FI Members membership)
+  - **Why:** Signup trigger creates both personal group AND FI Members membership atomically
+
+**Testing Priority:** 🔴 CRITICAL (security — must fail closed, never open)
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 2)
+
+---
+
+## B-RBAC-011: usePermissions() Hook — Permission Set Fetching
+
+**Rule:** The `usePermissions(groupId)` React hook fetches the complete set of permission names the current user has in the given group context, combining system (Tier 1) and context (Tier 2) permissions. It returns a synchronous lookup function and a loading state.
+
+**Why:** UI components need to check permissions frequently (e.g., show/hide buttons, enable/disable features). Calling `has_permission()` via Supabase RPC on every render would be slow and wasteful. Instead, fetch the user's full permission set once and cache it in React state (Q5 in design doc).
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/use-permissions-hook.test.ts` (React Testing Library)
+- **Code:** `lib/hooks/usePermissions.ts`
+- **Database:** Supabase query combining system + context permissions
+
+**Acceptance Criteria:**
+- [ ] Hook signature: `usePermissions(groupId: string | null) → { permissions: string[], hasPermission: (name: string) => boolean, loading: boolean }`
+- [ ] `permissions` is a deduplicated array of permission name strings (e.g., `['invite_members', 'edit_group_settings', ...]`)
+- [ ] `hasPermission('invite_members')` returns true/false synchronously (checks the cached `permissions` array)
+- [ ] `loading` is true during initial fetch, false after data loads
+- [ ] Re-fetches when `groupId` changes
+- [ ] Re-fetches when `refreshNavigation` custom event fires (same event that triggers Navigation.tsx refresh)
+- [ ] Returns empty `permissions: []` when user is not authenticated
+- [ ] Returns empty `permissions: []` when `groupId` is null
+- [ ] Combines Tier 1 (system group) + Tier 2 (context group) permissions in one query
+- [ ] Uses `useAuth()` hook to get current user ID
+- [ ] Uses Supabase client to fetch permissions (not direct `has_permission()` calls)
+
+**Examples:**
+
+✅ **Valid:**
+- User loads group detail page → `usePermissions(groupId)` called → hook fetches permissions → `hasPermission('invite_members')` returns true/false based on fetched data
+- User accepts invitation → `refreshNavigation` event fires → hook re-fetches → buttons update
+- User switches from Group A to Group B → `groupId` changes → hook re-fetches → different permission set
+- Component renders `{hasPermission('delete_group') && <DeleteButton />}` → button shows/hides instantly (no async check)
+
+❌ **Invalid:**
+- Hook calls `has_permission()` SQL function on every button render → VIOLATED (too slow, use cached data)
+- `hasPermission()` returns a Promise → VIOLATED (must be synchronous)
+- Hook doesn't re-fetch on group change → VIOLATED (stale permissions)
+
+**Edge Cases:**
+- **Scenario:** User loads group page before hook finishes fetching
+  - **Behavior:** `loading = true`, `permissions = []`, `hasPermission(any) = false` → All permission-gated buttons hidden
+  - **Why:** Fail closed during loading; buttons appear once permissions load
+
+- **Scenario:** User is on Group A's page but also has permissions from FI Members (Tier 1)
+  - **Behavior:** `permissions` includes BOTH Tier 1 (e.g., `create_group`) AND Tier 2 (e.g., `invite_members` if Steward)
+  - **Why:** Hook combines both tiers in one query for efficiency
+
+- **Scenario:** User's role is changed by another Steward while they're viewing the page
+  - **Behavior:** Permissions don't update until `refreshNavigation` event or page reload
+  - **Why:** No real-time subscription yet (Phase 2 feature)
+
+- **Scenario:** Hook is called with `groupId = null` (e.g., on a non-group page)
+  - **Behavior:** Returns only Tier 1 (system group) permissions, no Tier 2
+  - **Why:** No group context to check; only platform-wide permissions apply
+
+**Testing Priority:** 🔴 CRITICAL (all UI permission checks depend on this hook)
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 2)
+
+---
+
+## B-RBAC-012: Deusex Has All Permissions
+
+**Rule:** Users who are members of the Deusex system group have ALL permissions in ALL contexts. This is not a bypass — it works through the normal permission resolution: the Deusex role has all 31 permissions, and system group permissions are always active (Tier 1).
+
+**Why:** Validates that the RBAC model can express "superuser" purely through permissions, with no special-case code (D3). Deusex users go through the same `has_permission()` checks as everyone else; they just happen to always return true because their role grants all permissions.
+
+**Verified by:**
+- **Test:** `tests/integration/rbac/deusex-permissions.test.ts`
+- **Database:** `has_permission(deusex_user_id, any_group, any_permission)` always returns true
+- **Migration:** `20260216111905_rbac_permission_resolution.sql` (functions) + `20260216071649_rbac_system_groups.sql` (Deusex group/role)
+
+**Acceptance Criteria:**
+- [ ] Deusex group exists with `group_type = 'system'`
+- [ ] Deusex group has a "Deusex" role
+- [ ] Deusex role has ALL 41 permissions mapped in `group_role_permissions`
+- [ ] When new permissions are added to the catalog, Deusex role must be explicitly updated (no auto-grant)
+- [ ] `has_permission(deusex_user, any_valid_group, any_valid_permission)` → true
+- [ ] Deusex users can perform ANY action in ANY group (subject to implementation, not just permission check)
+- [ ] No special-case code checks for "is Deusex" — permission checks are the ONLY gate
+- [ ] `usePermissions(groupId)` for a Deusex user returns all 41 permission names
+
+**Examples:**
+
+✅ **Valid:**
+- Deusex user checks `has_permission(user_id, group_a, 'delete_group')` → true
+- Deusex user checks `has_permission(user_id, group_b, 'invite_members')` → true
+- Deusex user checks `has_permission(user_id, any_group, 'create_group')` → true
+- UI code: `if (hasPermission('delete_group'))` shows delete button for Deusex users
+
+❌ **Invalid:**
+- Code checks `if (user.role === 'admin')` instead of `hasPermission(...)` → VIOLATED (no special-case code)
+- New permission added but Deusex role doesn't get it → VIOLATED (Deusex must have all)
+- Deusex member is blocked from an action even though they have the permission → VIOLATED (permission should grant access)
+
+**Edge Cases:**
+- **Scenario:** New permission `reset_user_password` is added to the catalog (future feature)
+  - **Behavior:** Migration must add this permission to Deusex role explicitly
+  - **Why:** Forces awareness (D3 — no silent auto-grant)
+
+- **Scenario:** Deusex user tries to delete the FringeIsland Members system group
+  - **Behavior:** Permission check passes, but implementation should block deleting system groups (business logic, not permission logic)
+  - **Why:** Some actions are universally forbidden regardless of permissions
+
+- **Scenario:** Deusex user loads `usePermissions(groupId)`
+  - **Behavior:** Returns all 31 permission names (deduplicated if context group also has some)
+  - **Why:** Tier 1 grants all, so hook returns the full catalog
+
+**Testing Priority:** 🔴 CRITICAL (validates RBAC model correctness — no bypasses)
+
+**History:**
+- 2026-02-16: Created (Sub-Sprint 2)
+
+---
+
 ## Notes
 
 **Domain Code:** RBAC
@@ -341,14 +623,21 @@
 - B-RBAC-006: System Groups Exist (FI Members, Visitor, Deusex)
 - B-RBAC-007: Role Renaming (Steward/Guide terminology)
 
+**Sub-Sprint 2 Behaviors:**
+- B-RBAC-008: Engagement Group Permission Resolution (`has_permission()` Tier 2 logic)
+- B-RBAC-009: System Group Permission Resolution (Tier 1 logic, additive)
+- B-RBAC-010: Permission Check Edge Cases (fail closed, invalid inputs)
+- B-RBAC-011: usePermissions() Hook (fetch permission set, cache in React state)
+- B-RBAC-012: Deusex Has All Permissions (validates RBAC model, no bypasses)
+
 **Future Sub-Sprints (behaviors TBD):**
-- Sub-Sprint 2: `has_permission()` function, RLS migration
-- Sub-Sprint 3: `usePermissions()` hook, UI migration from `isLeader`
+- Sub-Sprint 3: RLS policy migration (`has_permission()` replaces `is_active_group_leader()`), UI migration (`usePermissions()` replaces `isLeader`)
 - Sub-Sprint 4: Group-to-group membership, transitive resolution, circularity prevention
 
 **Design Decisions Referenced:**
 - D1 (Three-Layer Architecture), D2 (Self-Service Customization), D3 (Deusex is a Group)
-- D5 (Two-Tier Scoping), D6 (FI Members Group), D7 (Groups Join Groups)
-- D9 (Personal Group = Identity), D15 (Group-to-Group Only Schema)
+- D4 (RLS Migration), D5 (Two-Tier Scoping), D6 (FI Members Group), D7 (Groups Join Groups)
+- D9 (Personal Group = Identity), D12 (Union Semantics), D15 (Group-to-Group Only Schema)
 - D17 (Four Default Roles), D18a (Permission Grid), D20 (System-Level Grids)
 - D22 (Seeded Permissions Delta)
+- Q4 (`has_permission()` function design), Q5 (`usePermissions()` hook design)
