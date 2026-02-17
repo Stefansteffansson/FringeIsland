@@ -41,7 +41,7 @@ export function getCurrentFocus(): { focus: string; isComplete: boolean } {
     const match = content.match(/\*\*Current Focus:\*\* (.+)/);
     if (match) {
       const focus = match[1];
-      const isComplete = focus.includes('✅') || focus.includes('COMPLETED');
+      const isComplete = focus.includes('✅') || focus.toUpperCase().includes('COMPLETE');
       return { focus, isComplete };
     }
     return { focus: 'Unknown', isComplete: false };
@@ -68,6 +68,8 @@ export function getActiveTasks(): Array<{ task: string; completed: boolean }> {
           .replace(/^- \[x\]/i, '')
           .replace(/^- \[ \]/i, '')
           .replace(/✅/g, '')
+          .replace(/\*\*/g, '')
+          .replace(/~~/g, '')
           .trim();
         return { task, completed };
       });
@@ -91,7 +93,14 @@ export function getBlockers(): string[] {
       .split('\n')
       .filter(line => line.trim().startsWith('-'))
       .map(line => line.replace(/^-\s*/, '').trim())
-      .filter(blocker => blocker.toLowerCase() !== 'none');
+      .filter(blocker => {
+        const lower = blocker.toLowerCase();
+        return lower !== 'none' &&
+          !lower.includes('nothing blocked') &&
+          !lower.includes('no blockers') &&
+          !lower.includes('n/a') &&
+          lower !== 'nothing';
+      });
 
     return blockers;
   } catch {
@@ -171,6 +180,8 @@ export function getNextPriorities(): Array<{ priority: string; status: string; p
           .replace(/^\d+\.\s*/, '')
           .replace(/\[Phase [\d.]+\]\s*/, '') // Remove phase label from text
           .replace(/[✅🔄⏳]/g, '')
+          .replace(/\*\*/g, '')
+          .replace(/~~/g, '')
           .trim();
 
         return { priority, status, phase };
@@ -350,15 +361,15 @@ export function getLastSessionSummary(): {
 
     const dateMatch = sessionSection[1].match(/\*\*Date:\*\* (.+)/);
     const durationMatch = sessionSection[1].match(/\*\*Duration:\*\* (.+)/);
-    const summaryMatch = sessionSection[1].match(/\*\*Summary:\*\*([\s\S]*?)\*\*(?:Bridge Doc|Major Accomplishments)/);
+    const summaryMatch = sessionSection[1].match(/\*\*Summary:\*\*([\s\S]*?)\*\*(?:Bridge Doc|Previous Session|Major Accomplishments)/);
 
-    // Extract accomplishments
-    const accomplishmentsSection = sessionSection[1].match(/\*\*Major Accomplishments:\*\*([\s\S]*?)(?:\*\*Files Changed|\n\n)/);
-    const accomplishments = accomplishmentsSection
-      ? accomplishmentsSection[1]
+    // Extract accomplishments from summary bullet points (top-level only)
+    const accomplishments = summaryMatch
+      ? summaryMatch[1]
           .split('\n')
-          .filter(line => line.trim().startsWith('-'))
-          .map(line => line.replace(/^-\s*/, '').trim())
+          .filter(line => /^- /.test(line))
+          .map(line => line.replace(/^-\s*/, '').replace(/✅/g, '').replace(/\*\*/g, '').trim())
+          .filter(line => line.length > 0)
       : [];
 
     return {

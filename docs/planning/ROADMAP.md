@@ -44,7 +44,7 @@ This document outlines the implementation phases, milestones, and development pr
 
 FringeIsland development is organized into four major phases, each building on the previous:
 
-- **Phase 1: Foundation** - Core platform with predefined journeys ⏳ **IN PROGRESS (95%)**
+- **Phase 1: Foundation** - Core platform with predefined journeys ⏳ **IN PROGRESS (83%)**
 - **Phase 2: User-Generated Content** - Journey marketplace and customization
 - **Phase 3: Dynamic Journeys** - Adaptive learning paths
 - **Phase 4: Developer Platform** - API and integrations
@@ -59,7 +59,7 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-## Phase 1: Foundation (MVP) ⏳ IN PROGRESS - 95% Complete
+## Phase 1: Foundation (MVP) ⏳ IN PROGRESS - 83% Complete
 
 **Goal**: Launch a working platform where groups can embark on predefined journeys together.
 
@@ -70,7 +70,7 @@ FringeIsland development is organized into four major phases, each building on t
 - ✅ User management complete
 - ✅ Group management complete (v0.2.7)
 - ✅ Journey system - browsing, enrollment, and content delivery complete (v0.2.11)
-- ⏳ Communication (not started - Phase 1.5 NEXT)
+- ✅ Communication complete (v0.2.14 - v0.2.15)
 - ⏳ Polish and launch (not started)
 
 **Features Delivered** (see [Product Spec](PRODUCT_SPEC.md) for details):
@@ -86,7 +86,7 @@ FringeIsland development is organized into four major phases, each building on t
 - ✅ Users can create accounts and profiles
 - ✅ Users can create and manage groups
 - ✅ Groups can enroll in predefined journeys and work through content (v0.2.11)
-- ⏳ Basic forum and messaging for collaboration (Phase 1.5 — NEXT)
+- ✅ Basic forum and messaging for collaboration (v0.2.14 - v0.2.15)
 - ✅ Role-based permissions working (complete)
 - ✅ 8 high-quality predefined journeys available (v0.2.8)
 
@@ -274,39 +274,42 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-### Phase 1.5: Communication (Weeks 12-13) ⏳ NOT STARTED
+### Phase 1.5: Communication (Weeks 12-13) ✅ COMPLETE
 
-**Status**: ⏳ **NOT STARTED**
+**Status**: ✅ **COMPLETE** (v0.2.14 - v0.2.15)
 
 **Note**: Phase 1.5 is also **infrastructure for the RBAC system** (D13). The in-app messaging system is needed for group membership flows (join requests, acceptance notifications, group-joins-group notifications). This elevates its priority.
 
 **Deliverables**:
 
-1. **Forum System** ⏳
-   - Group forums
-   - Post messages
-   - Reply to messages
-   - Basic moderation (delete/edit)
-   - Forum visibility settings
+1. **Forum System** ✅ COMPLETE (v0.2.14)
+   - ✅ Group forums (flat threading)
+   - ✅ Post messages
+   - ✅ Reply to messages
+   - ✅ Basic moderation (delete/edit)
+   - ✅ RBAC stub for permissions
+   - ✅ Tab UI integration
 
-2. **Messaging** ⏳
-   - Direct messages between users
-   - In-app notifications (also needed for RBAC membership flows)
-   - Message history
-   - Read/unread status
+2. **Messaging** ✅ COMPLETE (v0.2.15)
+   - ✅ Direct messages between users (1:1 conversations)
+   - ✅ In-app notifications
+   - ✅ Message history (inbox)
+   - ✅ Read/unread status with tracking
+   - ✅ Supabase Realtime push
 
-3. **Notification System** ⏳ (infrastructure for RBAC)
-   - In-app notification delivery
-   - Group membership notifications (join requests, acceptance)
-   - Group-joins-group notifications (D13: individual + group-level)
+3. **Notification System** ✅ COMPLETE (v0.2.14)
+   - ✅ In-app notification delivery (7 types)
+   - ✅ Bell UI with unread count
+   - ✅ Database triggers for automated notifications
+   - ✅ Supabase Realtime push
 
-**Acceptance Criteria**:
-- Users can post and reply in forums
-- Direct messaging working
-- In-app notifications delivered correctly
-- Notification infrastructure supports membership flows (for RBAC phase)
+**Acceptance Criteria**: ✅ ALL MET
+- ✅ Users can post and reply in forums
+- ✅ Direct messaging working
+- ✅ In-app notifications delivered correctly
+- ✅ Notification infrastructure supports membership flows
 
-**Priority**: HIGH - Infrastructure for both communication AND RBAC system
+**Completed**: February 15, 2026 (v0.2.14 - v0.2.15)
 
 ---
 

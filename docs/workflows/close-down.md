@@ -348,16 +348,25 @@ See you next time! 👋
 2. [Reorder if priorities changed]
 ```
 
-**E. Update ROADMAP.md (if significant progress) ⚠️ docs/planning/ DIRECTORY!**
+**E. Update ROADMAP.md (if phase milestone hit) ⚠️ docs/planning/ DIRECTORY!**
 **File path:** `docs/planning/ROADMAP.md` (NOT root/ROADMAP.md!)
 
-Update these sections if major milestones hit:
-- Current phase completion percentage (e.g., 75% → 85%)
-- Mark features/deliverables complete (✅)
-- Add to "What We've Completed" section
-- Update "Current Development Focus"
-- Add to "Decision Log" if architectural choices made
-- Update feature links if new features completed
+**⚠️ REQUIRED when ANY of these apply:**
+- A phase or sub-phase was completed (e.g., Phase 1.5 → mark ✅ COMPLETE)
+- A major feature spanning multiple versions was finished (e.g., RBAC v0.2.16-v0.2.20)
+- Phase completion percentage changed significantly (e.g., 75% → 85%)
+
+**Update these sections:**
+- Phase heading status (⏳ NOT STARTED → ✅ COMPLETE)
+- Phase **Status** line with version numbers
+- Phase deliverables (mark ✅ with completion details)
+- Overall Phase 1 completion percentage
+- "What We've Completed" section
+- "Current Development Focus" section
+- "Decision Log" if architectural choices made
+- Feature links if new features completed
+
+**Dashboard impact:** The dev dashboard phase timeline reads from this file. Stale data here = wrong dashboard.
 
 **F. Update DEFERRED_DECISIONS.md (if new deferrals) ⚠️ docs/planning/ DIRECTORY!**
 **File path:** `docs/planning/DEFERRED_DECISIONS.md` (NOT root!)
@@ -568,11 +577,12 @@ EOF
 
 1. **Summarize:** "Completed journey enrollment feature with individual and group enrollment"
 2. **Update:** PROJECT_STATUS.md (mark feature complete)
-3. **Create:** Session bridge with full details
-4. **Update:** Features database (mark complete)
-5. **Update:** CHANGELOG.md (add to version notes)
-6. **Commit:** Git commit with comprehensive message
-7. **Report:** Full session summary
+3. **Update:** ROADMAP.md (if phase/sub-phase completed — mark ✅, update %)
+4. **Create:** Session bridge with full details
+5. **Update:** Features database (mark complete)
+6. **Update:** CHANGELOG.md (add to version notes)
+7. **Commit:** Git commit with comprehensive message
+8. **Report:** Full session summary
 
 ### Scenario 2: Bug Fix
 **Minor work done:**
@@ -619,6 +629,10 @@ Summarize work done
 Significant work?
   ├─ Yes → Create session bridge
   └─ No → Skip bridge
+  ↓
+Phase/sub-phase completed?
+  ├─ Yes → Update ROADMAP.md (mark phase ✅, update %)
+  └─ No → Skip roadmap
   ↓
 Feature complete?
   ├─ Yes → Update features database
