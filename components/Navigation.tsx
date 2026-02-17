@@ -22,6 +22,7 @@ export default function Navigation() {
   const [userData, setUserData] = useState<{ full_name: string; avatar_url: string | null } | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [invitationCount, setInvitationCount] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const supabase = createClient();
 
@@ -56,6 +57,14 @@ export default function Navigation() {
             .eq('status', 'invited');
 
           setInvitationCount(count || 0);
+
+          // Check admin permission (Deusex member)
+          const { data: hasAdminPerm } = await supabase.rpc('has_permission', {
+            p_user_id: profile.id,
+            p_group_id: '00000000-0000-0000-0000-000000000000',
+            p_permission_name: 'manage_all_groups',
+          });
+          setIsAdmin(hasAdminPerm === true);
         }
       } catch (err) {
         console.error('Error fetching user data:', err);
@@ -134,6 +143,7 @@ export default function Navigation() {
     { href: '/messages', label: 'Messages', icon: '💬', badge: unreadConversationCount },
     { href: '/invitations', label: 'Invitations', icon: '📬', badge: invitationCount },
     { href: '/profile', label: 'Profile', icon: '👤' },
+    ...(isAdmin ? [{ href: '/admin', label: 'Admin', icon: '🔑' }] : []),
   ];
 
   const isActive = (href: string) => {
@@ -142,6 +152,7 @@ export default function Navigation() {
     if (href === '/my-journeys' && pathname.startsWith('/my-journeys')) return true;
     if (href === '/messages' && pathname.startsWith('/messages')) return true;
     if (href === '/profile' && pathname.startsWith('/profile')) return true;
+    if (href === '/admin' && pathname.startsWith('/admin')) return true;
     return pathname === href;
   };
 

@@ -88,6 +88,20 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
     });
     expect(assignErr).toBeNull();
 
+    // Grant assign_roles permission to the Steward role (required by RBAC INSERT policy)
+    const { data: assignRolesPerm } = await admin
+      .from('permissions')
+      .select('id')
+      .eq('name', 'assign_roles')
+      .single();
+    expect(assignRolesPerm).not.toBeNull();
+
+    await admin.from('group_role_permissions').insert({
+      group_role_id: leaderRole.id,
+      permission_id: assignRolesPerm!.id,
+      granted: true,
+    });
+
     // Create a "Travel Guide" role (target for assignment tests)
     const { data: mr, error: mrErr } = await admin
       .from('group_roles')

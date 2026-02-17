@@ -54,12 +54,38 @@ export const createAdminClient = () => {
 
 /**
  * Clean up test data (use carefully!)
- * Deletes users created during tests
+ * Deletes users created during tests.
+ *
+ * IMPORTANT: Deleting from auth.users triggers handle_user_deletion() which
+ * only soft-deletes public.users (is_active = false). It does NOT cascade-delete
+ * group_memberships or user_group_roles. We must remove those explicitly first,
+ * otherwise orphaned memberships cause null joins when RLS hides inactive users.
  */
 export const cleanupTestUser = async (userId: string) => {
   const admin = createAdminClient();
 
-  // Delete from auth.users (CASCADE deletes public.users)
+  // Look up the public.users profile id (needed for membership/role cleanup)
+  const { data: profile } = await admin
+    .from('users')
+    .select('id')
+    .eq('auth_user_id', userId)
+    .maybeSingle();
+
+  if (profile) {
+    // Remove role assignments first (FK dependency)
+    await admin
+      .from('user_group_roles')
+      .delete()
+      .eq('user_id', profile.id);
+
+    // Remove group memberships
+    await admin
+      .from('group_memberships')
+      .delete()
+      .eq('user_id', profile.id);
+  }
+
+  // Delete from auth.users (triggers soft-delete on public.users)
   const { error } = await admin.auth.admin.deleteUser(userId);
 
   if (error) {

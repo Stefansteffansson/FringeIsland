@@ -288,8 +288,9 @@ describe('B-GRP-003: Group Visibility Rules (RLS)', () => {
       .select('*')
       .eq('id', privateGroup.id);
 
-    // Assert: Should NOT see the group (only active members can)
-    expect(groups).toHaveLength(0);
+    // Assert: Invited users CAN see the group (needed for invitations page)
+    // Changed in migration fix_groups_visibility_for_invited_and_rename_deusex
+    expect(groups).toHaveLength(1);
 
     await supabase.auth.signOut();
     await cleanupTestUser(user4.user.id);

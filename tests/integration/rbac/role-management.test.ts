@@ -166,7 +166,7 @@ describe('B-RBAC-018: manage_roles Permission in Catalog', () => {
     const { data: deusexGroup } = await admin
       .from('groups')
       .select('id')
-      .eq('name', 'Deusex')
+      .eq('name', 'DeusEx')
       .eq('group_type', 'system')
       .single();
 
@@ -179,7 +179,7 @@ describe('B-RBAC-018: manage_roles Permission in Catalog', () => {
       .from('group_roles')
       .select('id')
       .eq('group_id', deusexGroup.id)
-      .eq('name', 'Deusex')
+      .eq('name', 'DeusEx')
       .single();
 
     const { data: perm } = await admin

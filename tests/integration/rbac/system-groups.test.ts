@@ -153,7 +153,8 @@ describe('B-RBAC-006: System Groups Exist', () => {
     const { data, error } = await admin
       .from('groups')
       .select('id, name, group_type')
-      .eq('name', 'Deusex')
+      .eq('name', 'DeusEx')
+      .eq('group_type', 'system')
       .single();
 
     expect(error).toBeNull();
@@ -165,7 +166,8 @@ describe('B-RBAC-006: System Groups Exist', () => {
     const { data: group } = await admin
       .from('groups')
       .select('id')
-      .eq('name', 'Deusex')
+      .eq('name', 'DeusEx')
+      .eq('group_type', 'system')
       .single();
 
     if (!group) {
@@ -177,7 +179,7 @@ describe('B-RBAC-006: System Groups Exist', () => {
       .from('group_roles')
       .select('id, name')
       .eq('group_id', group.id)
-      .eq('name', 'Deusex')
+      .eq('name', 'DeusEx')
       .single();
 
     expect(role).not.toBeNull();
