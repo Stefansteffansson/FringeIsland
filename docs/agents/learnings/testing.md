@@ -46,4 +46,34 @@ When testing read tracking (B-MSG-006), setting `last_read_at` from JS `new Date
 
 ---
 
+### 2026-02-18: Admin visibility tests — beware creator-based false positives
+
+When testing that an admin can see groups via admin policy (not via creator/member policy), the test group must NOT be created by the admin user. If the admin is `created_by_user_id`, they can see the group via the existing creator SELECT policy, making the test pass for the wrong reason (false positive).
+
+**Fix:** Use a different user as creator, and don't add the admin as a member. This ensures the only way the admin can see the group is via the new admin visibility policy.
+
+Similarly, when testing that a normal user CANNOT see a private group, that user must not be the creator or a member. Use a dedicated "outsider" test user with no relationship to the group.
+
+> Promoted to playbook? Not yet
+
+---
+
+### 2026-02-18: Some RPC tests pass "for wrong reason" before implementation
+
+Tests asserting "non-admin blocked from calling RPC" will pass before the RPC exists because `function does not exist` is still an error. After implementing the RPC, re-verify these tests to confirm they fail for the right reason (permission denied, not function-not-found).
+
+**Pattern:** After implementing RPCs, always re-run non-admin tests and check the error MESSAGE, not just error presence.
+
+> Promoted to playbook? Not yet
+
+---
+
+### 2026-02-18: Existing UPDATE policy on users table is too broad
+
+The current users UPDATE policy allows any authenticated user to update any user row (not just their own). This was exposed by the B-ADMIN-010 "block non-admin from deactivating another user" test — the normal user CAN set `is_active = false` on another user. Needs to be fixed in implementation: restrict UPDATE to own row OR users with admin permission.
+
+> Promoted to playbook? Not yet
+
+---
+
 <!-- Append new entries below this line -->

@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-17 (DeusEx Admin Foundation + crash recovery)
+**Last Updated:** 2026-02-18 (Admin User Actions — specs + failing tests)
 **Current Version:** 0.2.21
 **Active Branch:** main
 
@@ -8,7 +8,7 @@
 
 ## What We're Working On NOW
 
-**Current Focus:** DeusEx Admin Foundation — Sub-Sprints 1+2 COMPLETE, User Management Actions NOT STARTED
+**Current Focus:** DeusEx Admin Foundation — Sub-Sprint 3 (User Management Actions) — TDD RED phase complete, ready for Design
 
 **Active Tasks:**
 - [x] **Admin Sub-Sprint 1: DB Foundation** ✅ **DONE v0.2.21**
@@ -20,17 +20,18 @@
   - [x] B-ADMIN-001: Admin route protection (layout gate)
   - [x] B-ADMIN-002: Admin dashboard (4 stat cards + data panels)
   - [x] B-ADMIN-003: DeusEx member management (invite/remove)
-- [ ] **Admin: User Management Actions** — NOT STARTED (needs discussion)
-  - [ ] B-ADMIN-008: User decommission
-  - [ ] B-ADMIN-009: User hard delete
-  - [ ] B-ADMIN-010: Admin user management (activate/deactivate)
-  - [ ] B-ADMIN-011: Admin notification send
-  - [ ] B-ADMIN-012: Admin group visibility
-  - [ ] User row selection in data panels (checkboxes)
-  - [ ] Action bar for batch operations
+- [ ] **Admin Sub-Sprint 3: User Management Actions** — IN PROGRESS (TDD RED done)
+  - [x] Behavior specs written (19 total in admin.md — 7 unchanged, 5 revised, 7 new)
+  - [x] Feature doc updated with Sub-Sprint 3 scope (decisions 7-14)
+  - [x] Failing tests written: 28 tests across 5 files (17 failing, 11 passing)
+  - [ ] **NEXT: Step 4 — Design** (Architect Agent: schema, RLS, RPCs)
+  - [ ] Step 5 — Implement DB migrations (is_decommissioned, admin UPDATE policy, RPCs, group visibility)
+  - [ ] Step 6 — Verify GREEN for Sub-Sprint 3A
+  - [ ] Steps 7-11 — Sub-Sprint 3B: UI (selection model, action bar, panel rename)
+  - [ ] Steps 12-16 — Sub-Sprint 3C: Wire all 10 actions + document
 
 **Blocked/Waiting:**
-- User management actions scope needs discussion before implementation
+- None — ready to proceed with Step 4 (Design)
 
 ---
 
@@ -40,8 +41,8 @@
 - **Total Tables:** 18 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅ (+admin_audit_log)
 - **Total Migrations:** 62 migration files (+8 admin foundation)
 - **Recent Version:** v0.2.21 (DeusEx Admin Foundation - Feb 17, 2026)
-- **Test Coverage:** 349 tests, **349/349 passing** ✅
-- **Behaviors Documented:** 70 (58 previous + 12 admin) ✅
+- **Test Coverage:** 377 tests (349 existing + 28 new admin), **349 passing, 17 failing (new RED tests)** — existing tests not re-verified
+- **Behaviors Documented:** 77 (58 previous + 19 admin) ✅
 - **Feature Docs:** 4 complete + 3 planned designs
 - **Supabase CLI:** Configured and ready for automated migrations ✅
 
@@ -92,22 +93,20 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-17 (DeusEx Admin Foundation + crash recovery)
+**Date:** 2026-02-18 (Admin User Actions — specs + failing tests)
 **Summary:**
-- ✅ **Built DeusEx Admin Foundation** (2 sub-sprints, completed before crash):
-  - Sub-Sprint 1 (DB): auto-grant trigger, bootstrap migration, last-member protection, admin audit log
-  - Sub-Sprint 2 (UI): admin dashboard with interactive stat cards, DeusEx member management, route protection
-  - 8 new migrations, 6 new UI files, 6 new test files, behavior spec, feature doc
-  - Mid-session rename: `'Deusex'` → `'DeusEx'` (2 cleanup migrations)
-- ✅ **Crash recovery** — session crashed before committing. Recovery session:
-  - Diagnosed state: all code complete, tests had 5 failures from incomplete rename
-  - Fixed 3 test issues: DeusEx casing in assertions, invited-user group visibility, assign_roles permission in test fixture
-  - All 349 tests passing
+- ✅ **Defined all user management requirements** with user (10 decisions)
+- ✅ **Rewrote admin behavior spec** — 19 behaviors total (7 unchanged, 5 revised, 7 new)
+- ✅ **Updated feature doc** with Sub-Sprint 3 scope (decisions 7-14, sub-sprint breakdowns)
+- ✅ **Created sprint plan** — 16 steps across 3 sub-sprints (3A DB, 3B UI, 3C Wire)
+- ✅ **Wrote 28 failing tests** across 5 new test files (TDD RED phase complete)
+- ✅ **Fixed test false positive** in admin-group-visibility (added outsider user)
+- ⚠️ Full suite verification interrupted — verify 349 existing tests at start of next session
 
-**Bridge Doc:** `docs/planning/sessions/2026-02-17-deusex-admin-foundation.md`
+**Bridge Doc:** `docs/planning/sessions/2026-02-18-admin-user-actions-specs-and-tests.md`
 
-**Previous Session (2026-02-16):**
-- RBAC bug fixes + group deletion notifications (v0.2.20)
+**Previous Session (2026-02-17):**
+- DeusEx Admin Foundation Sub-Sprints 1+2 + crash recovery (v0.2.21)
 
 ---
 
@@ -115,13 +114,12 @@
 
 **See `docs/planning/ROADMAP.md` for complete phase breakdown**
 
-**Immediate — Admin User Management (needs discussion):**
-1. Define scope for user selection + action bar in admin data panels
-2. B-ADMIN-008: User decommission (soft permanent removal)
-3. B-ADMIN-009: User hard delete (GDPR compliance)
-4. B-ADMIN-010: Admin user management (activate/deactivate)
-5. B-ADMIN-011: Admin notification send
-6. B-ADMIN-012: Admin group visibility
+**Immediate — Admin Sub-Sprint 3 (TDD RED done, continue with Design):**
+1. Verify existing 349 tests still pass (interrupted last session)
+2. Step 4: Design — `is_decommissioned` column, admin UPDATE policy, RPCs, group visibility policy
+3. Step 5: Implement DB migrations
+4. Step 6: Verify GREEN for Sub-Sprint 3A (B-ADMIN-008 through B-ADMIN-012)
+5. Steps 7-16: Sub-Sprints 3B (UI) and 3C (Wire actions)
 
 **Phase 1.6 - Polish and Launch:**
 7. Mobile responsiveness audit
@@ -131,6 +129,7 @@
 **Known Issues:**
 - `app/admin/fix-orphans/page.tsx` uses `alert()` (should use ConfirmModal)
 - `ROADMAP.md` is outdated (still references Phase 1.5 as next)
+- Current users UPDATE RLS policy is too broad — normal users can update other users' `is_active` (exposed by B-ADMIN-010 tests)
 
 **What We're NOT Building Yet:**
 - See `docs/planning/DEFERRED_DECISIONS.md` for rationale on deferred features
