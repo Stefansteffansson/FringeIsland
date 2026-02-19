@@ -9,13 +9,16 @@
  * unauthenticated queries → RLS blocks everything → null/PGRST116 results
  * → cascading test failures.
  *
- * - beforeAll: 2s gap between suites (prevents burst at suite boundaries)
- * - beforeEach: 800ms gap between every test case (prevents burst within a suite)
+ * - beforeAll: 1s gap between suites (prevents burst at suite boundaries)
+ * - beforeEach: 500ms gap between every test case (prevents burst within a suite)
+ *
+ * NOTE: Reduced from 2s/800ms on 2026-02-19. If auth rate-limit failures
+ * reappear in full suite runs, increase these values back.
  */
 beforeAll(async () => {
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  await new Promise(resolve => setTimeout(resolve, 1000));
 });
 
 beforeEach(async () => {
-  await new Promise(resolve => setTimeout(resolve, 800));
+  await new Promise(resolve => setTimeout(resolve, 500));
 });

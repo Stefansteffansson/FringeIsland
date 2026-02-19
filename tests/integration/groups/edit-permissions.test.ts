@@ -185,7 +185,7 @@ describe('B-GRP-004: Group Editing Permissions', () => {
     }
 
     await supabase.auth.signOut();
-  });
+  }, 10000);
 
   it('should block non-members from updating group settings', async () => {
     const supabase = createTestClient();
@@ -209,7 +209,7 @@ describe('B-GRP-004: Group Editing Permissions', () => {
     }
 
     await supabase.auth.signOut();
-  });
+  }, 10000);
 
   it('should revoke edit permission immediately when user is demoted from leader', async () => {
     // To demote the leader we need a second leader first (last-leader trigger blocks
