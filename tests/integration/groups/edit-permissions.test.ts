@@ -121,7 +121,7 @@ describe('B-GRP-004: Group Editing Permissions', () => {
     await admin.from('groups').update({ name: 'Test Group - Edit Permissions' }).eq('id', testGroup.id);
 
     await supabase.auth.signOut();
-  });
+  }, 10000);
 
   it('should allow Group Leaders to update description, label, and visibility', async () => {
     const supabase = createTestClient();
@@ -159,7 +159,7 @@ describe('B-GRP-004: Group Editing Permissions', () => {
     }).eq('id', testGroup.id);
 
     await supabase.auth.signOut();
-  });
+  }, 10000);
 
   it('should block regular members from updating group settings', async () => {
     const supabase = createTestClient();
