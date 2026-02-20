@@ -2,7 +2,7 @@
 
 **Status:** Active
 **Phase:** 1.6 — Admin Foundation
-**Last Updated:** February 18, 2026
+**Last Updated:** February 20, 2026
 
 ---
 
@@ -80,15 +80,15 @@ The DeusEx system group exists with all 42 permissions (Tier 1 resolution). This
 | B-ADMIN-013 | Users Panel Selection | ✅ Implemented + Tested |
 | B-ADMIN-014 | Users Panel Action Bar | ✅ Implemented + Tested |
 
-### Sub-Sprint 3C (Wire Actions) — NOT STARTED
+### Sub-Sprint 3C (Wire Actions — DB Layer) — COMPLETE v0.2.24
 
 | Code | Name | Status |
 |------|------|--------|
-| B-ADMIN-015 | Admin Message (DM) | ⏳ Specced |
-| B-ADMIN-016 | Admin Invite to Group | ⏳ Specced |
-| B-ADMIN-017 | Admin Join Group (direct add) | ⏳ Specced |
-| B-ADMIN-018 | Admin Remove from Group | ⏳ Specced |
-| B-ADMIN-019 | Admin Force Logout | ⏳ Specced |
+| B-ADMIN-015 | Admin Message (DM) | ✅ DB + Tests (4 tests) |
+| B-ADMIN-016 | Admin Invite to Group | ✅ DB + Tests (6 tests) |
+| B-ADMIN-017 | Admin Join Group (direct add) | ✅ DB + Tests (5 tests) |
+| B-ADMIN-018 | Admin Remove from Group | ✅ DB + Tests (5 tests) |
+| B-ADMIN-019 | Admin Force Logout | ✅ DB + Tests (6 tests) |
 
 Full specs: `docs/specs/behaviors/admin.md`
 
@@ -127,58 +127,76 @@ Full specs: `docs/specs/behaviors/admin.md`
 - `admin-route-access.test.ts`
 - `deusex-member-management.test.ts`
 
-### Sub-Sprint 3A: DB Foundation for User Actions — NOT STARTED
+### Sub-Sprint 3A: DB Foundation for User Actions — COMPLETE v0.2.22
 
-**DB changes needed:**
-- Add `is_decommissioned BOOLEAN NOT NULL DEFAULT false` to `users` table
+**Migration:** `20260219153530_admin_user_actions_foundation.sql`
+- `is_decommissioned BOOLEAN NOT NULL DEFAULT false` on `users` table
 - Admin UPDATE policy on `users` (for `is_active`, `is_decommissioned`)
 - `admin_hard_delete_user(target_user_id UUID)` RPC (SECURITY DEFINER, FK-safe cascade)
 - `admin_send_notification(target_user_ids UUID[], title TEXT, message TEXT)` RPC
-- Updated SELECT policy on `groups` for admin group visibility
+- Admin SELECT policy on `groups` for group visibility
 
-**Tests:** `tests/integration/admin/`
+**Tests:** `tests/integration/admin/` (28 tests)
 - `user-decommission.test.ts`
 - `user-hard-delete.test.ts`
 - `admin-user-management.test.ts`
 - `admin-notification-send.test.ts`
 - `admin-group-visibility.test.ts`
 
-### Sub-Sprint 3B: UI Foundation (Panel + Selection + Action Bar) — NOT STARTED
+### Sub-Sprint 3B: UI Foundation (Panel + Selection + Action Bar) — COMPLETE v0.2.23
 
 **Modified Files:**
-- `app/admin/page.tsx` — rename stat card, update count logic, add toggle
-- `components/admin/AdminDataPanel.tsx` — add selection (checkboxes, toggle-click, Shift+range, cross-page persistence, counter)
+- `app/admin/page.tsx` — "Active Users" → "Users", decommissioned toggle, status badges
+- `components/admin/AdminDataPanel.tsx` — checkboxes, toggle-click, Shift+range, cross-page persistence, counter
 
 **New Files:**
-- `components/admin/UserActionBar.tsx` — action bar with 3 groups, 10 buttons, context-sensitive disabling
+- `components/admin/UserActionBar.tsx` — 3 groups, 10 buttons, context-sensitive disabling
+- `lib/admin/selectionUtils.ts` — pure selection logic
+- `lib/admin/actionBarUtils.ts` — pure action enablement logic
+- `lib/admin/userFilterUtils.ts` — pure user filter logic
 
-**Selection Model:**
-- Click row → toggle selection
-- Shift+click → range select
-- Header checkbox → select/deselect all visible
-- Cross-page persistence (selected IDs in state)
-- Counter: "X users selected"
-- Mobile: tap to toggle, press+drag for range
+**Tests:** 99 unit tests across 3 files
+- `tests/unit/admin/selectionUtils.test.ts`
+- `tests/unit/admin/actionBarUtils.test.ts`
+- `tests/unit/admin/userFilterUtils.test.ts`
 
-### Sub-Sprint 3C: Wire Actions — NOT STARTED
+### Sub-Sprint 3C: Wire Actions — DB Layer COMPLETE v0.2.24, UI NEXT
 
-**Action buttons to wire (3 groups):**
+**DB Layer (COMPLETE v0.2.24):**
 
-| Group | Action | UI | DB |
+**Migrations:**
+- `20260220082034_admin_group_action_policies.sql` — 5 RLS policies (admin SELECT/INSERT on group_memberships, admin SELECT/INSERT/DELETE on user_group_roles)
+- `20260220082112_admin_action_rpcs_and_audit_triggers.sql` — `admin_force_logout` RPC + audit triggers on group_memberships and direct_messages
+- `20260220082527_fix_admin_action_triggers_and_rpc.sql` — type cast fix, SECURITY DEFINER on `validate_user_group_role` + `prevent_last_leader_removal`, admin SELECT on group_roles
+
+**Key Findings:**
+- PostgREST DELETE...RETURNING requires rows visible under SELECT policy
+- Trigger functions querying RLS-protected tables need SECURITY DEFINER
+- `auth.refresh_tokens.user_id` is varchar, not UUID — needs explicit `::text` cast
+
+**Tests:** `tests/integration/admin/` (26 tests)
+- `admin-message-send.test.ts` — 4 tests (DM creation, reuse, individual convos, audit)
+- `admin-invite-to-group.test.ts` — 6 tests (invite, batch, skip existing, engagement filter, non-admin blocked, audit)
+- `admin-join-group.test.ts` — 5 tests (direct add, Member role, skip existing, group filter, audit)
+- `admin-remove-from-group.test.ts` — 5 tests (remove, role cleanup, Steward protection, intersection, audit)
+- `admin-force-logout.test.ts` — 6 tests (RPC, session invalidation, inactive users, batch, non-admin blocked, audit)
+
+**UI Layer (NEXT):**
+
+| Group | Action | UI | DB Status |
 |-------|--------|----|----|
-| Communication | Message | Compose modal → create/reuse DMs | Existing DM tables |
-| Communication | Notify | Title+message modal → RPC | `admin_send_notification` RPC (3A) |
-| Account | Deactivate | ConfirmModal → update `is_active` | Admin UPDATE policy (3A) |
-| Account | Activate | Direct → update `is_active` | Admin UPDATE policy (3A) |
-| Account | Delete (soft) | ConfirmModal → update `is_decommissioned` | Admin UPDATE policy (3A) |
-| Account | Delete (hard) | Strong ConfirmModal → RPC per user | `admin_hard_delete_user` RPC (3A) |
-| Account | Logout | ConfirmModal → Auth Admin API | Supabase Auth Admin |
-| Group | Invite | Group picker → insert memberships (invited) | B-ADMIN-012 policy (3A) |
-| Group | Join | Group picker + ConfirmModal → insert memberships (active) | B-ADMIN-012 policy (3A) |
-| Group | Remove | Intersection group picker + ConfirmModal → delete memberships | B-ADMIN-012 policy (3A) |
+| Communication | Message | Compose modal → create/reuse DMs | ✅ Admin DM policies |
+| Communication | Notify | Title+message modal → RPC | ✅ `admin_send_notification` (3A) |
+| Account | Deactivate | ConfirmModal → update `is_active` | ✅ Admin UPDATE policy (3A) |
+| Account | Activate | Direct → update `is_active` | ✅ Admin UPDATE policy (3A) |
+| Account | Delete (soft) | ConfirmModal → update `is_decommissioned` | ✅ Admin UPDATE policy (3A) |
+| Account | Delete (hard) | Strong ConfirmModal → RPC per user | ✅ `admin_hard_delete_user` (3A) |
+| Account | Logout | ConfirmModal → `admin_force_logout` RPC | ✅ `admin_force_logout` (3C) |
+| Group | Invite | Group picker → insert memberships (invited) | ✅ Admin INSERT policy (3C) |
+| Group | Join | Group picker + ConfirmModal → insert memberships (active) | ✅ Admin INSERT policy (3C) |
+| Group | Remove | Intersection group picker + ConfirmModal | ✅ Admin DELETE + SELECT (3C) |
 
-**New Files:**
-- `components/admin/NotifyModal.tsx` — title + message input
+**New Files Needed (UI):**
 - `components/admin/MessageModal.tsx` — message input
 - `components/admin/GroupPickerModal.tsx` — group search + select (reused for Invite/Join/Remove)
 
@@ -232,15 +250,25 @@ Full specs: `docs/specs/behaviors/admin.md`
 - [x] Action bar appears with 10 grouped buttons
 - [x] Context-sensitive disabling works
 
-### Sub-Sprint 3C (Actions)
-- [ ] Message → individual DMs to each selected user
-- [ ] Notify → admin notification to each selected user
-- [ ] Deactivate → `is_active = false` with ConfirmModal
-- [ ] Activate → `is_active = true` (no confirm needed)
-- [ ] Delete (soft) → decommission with ConfirmModal
-- [ ] Delete (hard) → cascade delete with strong ConfirmModal
-- [ ] Invite → group picker, sends invitations
-- [ ] Join → group picker + ConfirmModal, direct add
-- [ ] Remove → intersection group picker + ConfirmModal
-- [ ] Logout → force sign-out with ConfirmModal
-- [ ] All audit-logged
+### Sub-Sprint 3C — DB Layer (VERIFIED v0.2.24)
+- [x] Admin can create DM conversations with any user (RLS policies)
+- [x] Admin can insert group memberships (invite/join) into any engagement group
+- [x] Admin can remove group memberships from any engagement group
+- [x] Admin can assign/remove roles in any group
+- [x] Steward last-leader protection works for admin operations
+- [x] `admin_force_logout` RPC revokes sessions + refresh tokens
+- [x] Non-admin blocked from all admin operations
+- [x] Audit triggers auto-log admin group/message operations
+- [x] All 26 integration tests passing, 506/506 full suite passing
+
+### Sub-Sprint 3C — UI Wiring (NEXT)
+- [ ] Message → MessageModal + create/reuse DMs
+- [ ] Notify → NotifyModal + `admin_send_notification` RPC
+- [ ] Deactivate → ConfirmModal + `is_active = false`
+- [ ] Activate → direct `is_active = true`
+- [ ] Delete (soft) → ConfirmModal + decommission
+- [ ] Delete (hard) → strong ConfirmModal + `admin_hard_delete_user` RPC
+- [ ] Invite → GroupPickerModal + insert memberships (invited)
+- [ ] Join → GroupPickerModal + ConfirmModal + insert memberships (active)
+- [ ] Remove → GroupPickerModal (intersection) + ConfirmModal + delete memberships
+- [ ] Logout → ConfirmModal + `admin_force_logout` RPC

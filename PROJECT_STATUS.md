@@ -1,14 +1,14 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-20 (Admin Sub-Sprint 3B — UI Foundation GREEN)
-**Current Version:** 0.2.23
+**Last Updated:** 2026-02-20 (Admin Sub-Sprint 3C — Wire Actions DB GREEN)
+**Current Version:** 0.2.24
 **Active Branch:** main
 
 ---
 
 ## What We're Working On NOW
 
-**Current Focus:** DeusEx Admin Foundation — Sub-Sprint 3B complete (GREEN), ready for Sub-Sprint 3C (Wire Actions)
+**Current Focus:** DeusEx Admin Foundation — Sub-Sprint 3C DB layer complete (GREEN), UI wiring next
 
 **Active Tasks:**
 - [x] **Admin Sub-Sprint 1: DB Foundation** ✅ **DONE v0.2.21**
@@ -20,7 +20,7 @@
   - [x] B-ADMIN-001: Admin route protection (layout gate)
   - [x] B-ADMIN-002: Admin dashboard (4 stat cards + data panels)
   - [x] B-ADMIN-003: DeusEx member management (invite/remove)
-- [ ] **Admin Sub-Sprint 3: User Management Actions** — IN PROGRESS (3A DB GREEN, 3B UI GREEN, 3C next)
+- [ ] **Admin Sub-Sprint 3: User Management Actions** — IN PROGRESS (3A DB done, 3B UI done, 3C DB done, 3C UI next)
   - [x] Behavior specs written (19 total in admin.md — 7 unchanged, 5 revised, 7 new)
   - [x] Feature doc updated with Sub-Sprint 3 scope (decisions 7-14)
   - [x] Failing tests written: 28 integration tests across 5 files
@@ -32,20 +32,26 @@
     - [x] Users panel: selection model (checkboxes, Shift+range, cross-page, counter)
     - [x] UserActionBar: 3 groups, 10 buttons, context-sensitive disabling
     - [x] Dashboard: "Active Users" → "Users", decommissioned toggle, status badges
-  - [ ] **NEXT: Steps 12-16 — Sub-Sprint 3C: Wire all 10 actions + document**
+  - [x] Steps 12-16 — **Sub-Sprint 3C: Wire Actions (DB layer)** ✅ **v0.2.24**
+    - [x] 26 integration tests written and passing (B-ADMIN-015 through B-ADMIN-019)
+    - [x] 6 new RLS policies (admin SELECT/INSERT on group_memberships, user_group_roles, group_roles)
+    - [x] `admin_force_logout` RPC (session/token revocation)
+    - [x] Audit triggers on group_memberships + direct_messages
+    - [x] Fixed validate_user_group_role + prevent_last_leader_removal (SECURITY DEFINER)
+  - [ ] **NEXT: Sub-Sprint 3C UI — wire action handlers + modals (MessageModal, GroupPickerModal)**
 
 **Blocked/Waiting:**
-- None — ready to proceed with Sub-Sprint 3C (Wire Actions)
+- None — ready to proceed with UI wiring for action buttons
 
 ---
 
 ## Quick Stats
 
-- **Phase:** Admin Foundation (Sub-Sprints 1+2 complete, 3A DB done, 3B UI done, 3C next)
+- **Phase:** Admin Foundation (Sub-Sprints 1+2 complete, 3A DB done, 3B UI done, 3C DB done, 3C UI next)
 - **Total Tables:** 18 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅ (+admin_audit_log)
-- **Total Migrations:** 64 migration files (+2 admin user actions)
-- **Recent Version:** v0.2.23 (Admin Sub-Sprint 3B UI GREEN - Feb 20, 2026)
-- **Test Coverage:** 480 tests (377 integration + 99 unit + 4 setup), **480 passing** ✅
+- **Total Migrations:** 67 migration files (+3 admin group action policies/RPCs/fixes)
+- **Recent Version:** v0.2.24 (Admin Sub-Sprint 3C DB GREEN - Feb 20, 2026)
+- **Test Coverage:** 403 integration + 99 unit + 4 setup = **506 tests, all passing** ✅
 - **Behaviors Documented:** 77 (58 previous + 19 admin) ✅
 - **Feature Docs:** 4 complete + 3 planned designs
 - **Supabase CLI:** Configured and ready for automated migrations ✅
@@ -97,25 +103,33 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-20 (Admin Sub-Sprint 3B — UI Foundation GREEN)
+**Date:** 2026-02-20 (Admin Sub-Sprint 3C — Wire Actions DB GREEN)
 **Summary:**
-- ✅ **Wrote 99 unit tests** for pure function logic (3 test suites, TDD RED → GREEN)
-- ✅ **Created 3 pure function modules** in `lib/admin/`: user-filter, selection-model, action-bar-logic
-- ✅ **Enhanced AdminDataPanel** with selection model: checkboxes, Shift+range, cross-page persistence, status badges, decommissioned toggle
-- ✅ **Created UserActionBar** component: 3 groups (Communication/Account/Group), 10 buttons, context-sensitive disabling
-- ✅ **Dashboard rename**: "Active Users" → "Users", stat count reflects filter state
-- ✅ **Full suite: 480/480 passing** (377 integration + 99 unit + 4 setup)
+- ✅ **Wrote 26 integration tests** for B-ADMIN-015 through B-ADMIN-019 (message, invite, join, remove, force logout)
+- ✅ **3 DB migrations**: admin RLS policies, RPCs/triggers, trigger fixes
+- ✅ **6 new RLS policies**: admin SELECT/INSERT on group_memberships, user_group_roles, group_roles; admin INSERT/DELETE on user_group_roles
+- ✅ **`admin_force_logout` RPC**: revokes auth sessions + refresh tokens, audit logged
+- ✅ **2 audit triggers**: auto-log admin operations on group_memberships and direct_messages
+- ✅ **Fixed 2 trigger functions**: `validate_user_group_role` + `prevent_last_leader_removal` now SECURITY DEFINER
+- ✅ **Full suite: 506/506 passing** (403 integration + 99 unit + 4 setup)
+
+**Key Findings:**
+- PostgREST DELETE...RETURNING requires rows visible under SELECT policy (root cause of admin DELETE failures)
+- Trigger functions querying RLS-protected tables need SECURITY DEFINER
+- `auth.refresh_tokens.user_id` is varchar, not UUID — needs explicit cast
 
 **Key New Files:**
-- `lib/admin/user-filter.ts` — AdminUser type, filterUsers, computeUserCount, getUserStatLabel
-- `lib/admin/selection-model.ts` — toggleSelection, rangeSelect, selectAllVisible, deselectAllVisible, isAllVisibleSelected
-- `lib/admin/action-bar-logic.ts` — computeActionStates, isDestructiveAction, clearsSelectionAfterAction, constants
-- `components/admin/UserActionBar.tsx` — action bar UI component
-- `tests/unit/admin/` — 3 unit test files (99 tests)
+- `tests/integration/admin/admin-message-send.test.ts` — 4 tests (DM creation, reuse, individual convos, audit)
+- `tests/integration/admin/admin-invite-to-group.test.ts` — 6 tests (invite, batch, skip existing, engagement filter, non-admin blocked, audit)
+- `tests/integration/admin/admin-join-group.test.ts` — 5 tests (direct add, Member role, skip existing, group filter, audit)
+- `tests/integration/admin/admin-remove-from-group.test.ts` — 5 tests (remove, role cleanup, Steward protection, intersection, audit)
+- `tests/integration/admin/admin-force-logout.test.ts` — 6 tests (RPC, session invalidation, inactive users, batch, non-admin blocked, audit)
+- `supabase/migrations/20260220082034_admin_group_action_policies.sql`
+- `supabase/migrations/20260220082112_admin_action_rpcs_and_audit_triggers.sql`
+- `supabase/migrations/20260220082527_fix_admin_action_triggers_and_rpc.sql`
 
-**Previous Session (2026-02-19):**
-- Admin Sub-Sprint 3A — DB migrations GREEN (28 integration tests)
-- Key: is_decommissioned column, admin UPDATE/SELECT policies, RPCs, group visibility
+**Previous Session (2026-02-20 earlier):**
+- Admin Sub-Sprint 3B — UI Foundation GREEN (99 unit tests, selection model, action bar)
 
 ---
 
@@ -123,13 +137,12 @@
 
 **See `docs/planning/ROADMAP.md` for complete phase breakdown**
 
-**Immediate — Admin Sub-Sprint 3C (Wire Actions):**
-1. Write behavior tests for action wiring (message, notify, deactivate, activate, etc.)
-2. Run tests (RED)
-3. Design action execution flow (modals, RPCs, state updates)
-4. Implement action handlers + modals (NotifyModal, MessageModal, GroupPickerModal)
-5. Verify GREEN
-6. Document completion
+**Immediate — Admin Sub-Sprint 3C UI Wiring:**
+1. Wire action handlers in admin page (connect buttons to DB operations)
+2. Create MessageModal (compose + send DMs to selected users)
+3. Create GroupPickerModal (select engagement group for invite/join/remove)
+4. Wire remaining actions (notify, activate, deactivate, delete, logout) via existing RPCs/policies
+5. Verify all actions work end-to-end
 
 **Phase 1.6 - Polish and Launch:**
 7. Mobile responsiveness audit
