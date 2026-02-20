@@ -160,7 +160,7 @@ Full specs: `docs/specs/behaviors/admin.md`
 - `tests/unit/admin/actionBarUtils.test.ts`
 - `tests/unit/admin/userFilterUtils.test.ts`
 
-### Sub-Sprint 3C: Wire Actions — DB Layer COMPLETE v0.2.24, UI NEXT
+### Sub-Sprint 3C: Wire Actions — COMPLETE v0.2.25
 
 **DB Layer (COMPLETE v0.2.24):**
 
@@ -181,24 +181,25 @@ Full specs: `docs/specs/behaviors/admin.md`
 - `admin-remove-from-group.test.ts` — 5 tests (remove, role cleanup, Steward protection, intersection, audit)
 - `admin-force-logout.test.ts` — 6 tests (RPC, session invalidation, inactive users, batch, non-admin blocked, audit)
 
-**UI Layer (NEXT):**
+**UI Layer (COMPLETE v0.2.25):**
 
-| Group | Action | UI | DB Status |
+| Group | Action | UI | Status |
 |-------|--------|----|----|
-| Communication | Message | Compose modal → create/reuse DMs | ✅ Admin DM policies |
-| Communication | Notify | Title+message modal → RPC | ✅ `admin_send_notification` (3A) |
-| Account | Deactivate | ConfirmModal → update `is_active` | ✅ Admin UPDATE policy (3A) |
-| Account | Activate | Direct → update `is_active` | ✅ Admin UPDATE policy (3A) |
-| Account | Delete (soft) | ConfirmModal → update `is_decommissioned` | ✅ Admin UPDATE policy (3A) |
-| Account | Delete (hard) | Strong ConfirmModal → RPC per user | ✅ `admin_hard_delete_user` (3A) |
-| Account | Logout | ConfirmModal → `admin_force_logout` RPC | ✅ `admin_force_logout` (3C) |
-| Group | Invite | Group picker → insert memberships (invited) | ✅ Admin INSERT policy (3C) |
-| Group | Join | Group picker + ConfirmModal → insert memberships (active) | ✅ Admin INSERT policy (3C) |
-| Group | Remove | Intersection group picker + ConfirmModal | ✅ Admin DELETE + SELECT (3C) |
+| Communication | Message | MessageModal → create/reuse DMs | ✅ Wired |
+| Communication | Notify | NotifyModal → `admin_send_notification` RPC | ✅ Wired |
+| Account | Deactivate | ConfirmModal → update `is_active` | ✅ Wired |
+| Account | Activate | Direct → update `is_active` | ✅ Wired |
+| Account | Delete (soft) | ConfirmModal → update `is_decommissioned` | ✅ Wired |
+| Account | Delete (hard) | Strong ConfirmModal → `admin_hard_delete_user` RPC | ✅ Wired |
+| Account | Logout | ConfirmModal → `admin_force_logout` RPC | ✅ Wired |
+| Group | Invite | GroupPickerModal → insert memberships (invited) | ✅ Wired |
+| Group | Join | GroupPickerModal + ConfirmModal → insert memberships (active) + Member role | ✅ Wired |
+| Group | Remove | GroupPickerModal (intersection) + ConfirmModal → delete roles + memberships | ✅ Wired |
 
-**New Files Needed (UI):**
-- `components/admin/MessageModal.tsx` — message input
-- `components/admin/GroupPickerModal.tsx` — group search + select (reused for Invite/Join/Remove)
+**New Files (UI):**
+- `components/admin/NotifyModal.tsx` — title + message form
+- `components/admin/MessageModal.tsx` — DM compose form
+- `components/admin/GroupPickerModal.tsx` — searchable group picker (3 modes: invite/join/remove)
 
 ---
 
@@ -261,14 +262,14 @@ Full specs: `docs/specs/behaviors/admin.md`
 - [x] Audit triggers auto-log admin group/message operations
 - [x] All 26 integration tests passing, 506/506 full suite passing
 
-### Sub-Sprint 3C — UI Wiring (NEXT)
-- [ ] Message → MessageModal + create/reuse DMs
-- [ ] Notify → NotifyModal + `admin_send_notification` RPC
-- [ ] Deactivate → ConfirmModal + `is_active = false`
-- [ ] Activate → direct `is_active = true`
-- [ ] Delete (soft) → ConfirmModal + decommission
-- [ ] Delete (hard) → strong ConfirmModal + `admin_hard_delete_user` RPC
-- [ ] Invite → GroupPickerModal + insert memberships (invited)
-- [ ] Join → GroupPickerModal + ConfirmModal + insert memberships (active)
-- [ ] Remove → GroupPickerModal (intersection) + ConfirmModal + delete memberships
-- [ ] Logout → ConfirmModal + `admin_force_logout` RPC
+### Sub-Sprint 3C — UI Wiring (COMPLETE v0.2.25)
+- [x] Message → MessageModal + create/reuse DMs per user
+- [x] Notify → NotifyModal + `admin_send_notification` RPC
+- [x] Deactivate → ConfirmModal + `is_active = false`
+- [x] Activate → direct `is_active = true`
+- [x] Delete (soft) → ConfirmModal + decommission
+- [x] Delete (hard) → strong ConfirmModal + `admin_hard_delete_user` RPC per user
+- [x] Invite → GroupPickerModal + insert memberships (invited)
+- [x] Join → GroupPickerModal + ConfirmModal + insert memberships (active) + Member role
+- [x] Remove → GroupPickerModal (intersection) + ConfirmModal + delete roles + memberships
+- [x] Logout → ConfirmModal + `admin_force_logout` RPC

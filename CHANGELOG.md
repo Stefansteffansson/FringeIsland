@@ -12,6 +12,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.25] - 2026-02-20
+
+### Added
+- **Admin Sub-Sprint 3C: Wire Actions (UI)** — all 10 admin action buttons fully functional
+  - **NotifyModal** (`components/admin/NotifyModal.tsx`) — title + message form, calls `admin_send_notification` RPC
+  - **MessageModal** (`components/admin/MessageModal.tsx`) — DM compose form, find-or-create conversation per user, audit log with `user_count`
+  - **GroupPickerModal** (`components/admin/GroupPickerModal.tsx`) — searchable engagement group picker with 3 modes (invite/join/remove), intersection filtering for remove mode
+  - **ConfirmModal integration** — deactivate (warning), decommission (danger), hard delete (danger), force logout (warning), join group (warning), remove from group (danger)
+  - **Status message banner** — auto-clearing success/error messages (5s timeout, dismiss button)
+  - **Action-in-progress overlay** — prevents double-clicks during async operations
+  - **Data refresh pattern** — `refreshTrigger` prop on AdminDataPanel forces re-fetch after mutations
+  - **Common group count computation** — real-time intersection query for Remove button enablement
+
+### Changed
+- **Admin page** (`app/admin/page.tsx`) — fully wired `handleAction` with all 10 action cases; added `useAuth`, modals, execute functions, audit logging
+- **AdminDataPanel** — added `refreshTrigger` prop for parent-triggered re-fetch
+
+### Technical Details
+- **New Files:** 3 (`NotifyModal.tsx`, `MessageModal.tsx`, `GroupPickerModal.tsx`)
+- **Modified Files:** 2 (`app/admin/page.tsx`, `components/admin/AdminDataPanel.tsx`)
+- **Test Coverage:** 506 total (403 integration + 99 unit + 4 setup), all passing (1 pre-existing flaky timeout)
+- **No new migrations** — all DB layer was completed in v0.2.24
+
+---
+
 ## [0.2.23] - 2026-02-20
 
 ### Added

@@ -136,6 +136,8 @@ interface AdminDataPanelProps {
   showDecommissioned?: boolean;
   onShowDecommissionedChange?: (show: boolean) => void;
   onUsersDataChange?: (data: AdminUser[]) => void;
+  // Increment to trigger data re-fetch (e.g. after an action modifies user data)
+  refreshTrigger?: number;
 }
 
 export default function AdminDataPanel({
@@ -146,6 +148,7 @@ export default function AdminDataPanel({
   showDecommissioned,
   onShowDecommissionedChange,
   onUsersDataChange,
+  refreshTrigger,
 }: AdminDataPanelProps) {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -252,7 +255,8 @@ export default function AdminDataPanel({
       setData([]);
     }
     setLoading(false);
-  }, [cardType, page, search, supabase, showDecommissioned, onUsersDataChange]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cardType, page, search, supabase, showDecommissioned, onUsersDataChange, refreshTrigger]);
 
   useEffect(() => {
     fetchData();
