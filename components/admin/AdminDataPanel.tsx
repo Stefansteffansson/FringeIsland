@@ -21,6 +21,7 @@ interface Column {
 }
 
 const PAGE_SIZE = 10;
+const SEARCH_DEBOUNCE_MS = 300;
 
 const STATUS_BADGE = (row: any) => {
   if (row.is_decommissioned) {
@@ -140,6 +141,63 @@ interface AdminDataPanelProps {
   refreshTrigger?: number;
 }
 
+// Build a Supabase query for a given card type, search, and filters.
+// Returns the query builder (before .range()) so callers can add .range() or { count }.
+function buildQuery(
+  supabase: ReturnType<typeof createClient>,
+  cardType: CardType,
+  trimmedSearch: string,
+  showDecommissioned: boolean | undefined,
+) {
+  switch (cardType) {
+    case 'users': {
+      let q = supabase
+        .from('users')
+        .select('id, full_name, email, is_active, is_decommissioned, created_at', { count: 'exact' })
+        .order('created_at', { ascending: false });
+      if (!showDecommissioned) {
+        q = q.eq('is_decommissioned', false);
+      }
+      if (trimmedSearch) {
+        q = q.or(`full_name.ilike.%${trimmedSearch}%,email.ilike.%${trimmedSearch}%`);
+      }
+      return q;
+    }
+    case 'groups': {
+      let q = supabase
+        .from('groups')
+        .select('id, name, group_type, is_public, created_at', { count: 'exact' })
+        .eq('group_type', 'engagement')
+        .order('created_at', { ascending: false });
+      if (trimmedSearch) {
+        q = q.ilike('name', `%${trimmedSearch}%`);
+      }
+      return q;
+    }
+    case 'journeys': {
+      let q = supabase
+        .from('journeys')
+        .select('id, title, difficulty_level, is_published, estimated_duration_minutes, created_at', { count: 'exact' })
+        .order('created_at', { ascending: false });
+      if (trimmedSearch) {
+        q = q.ilike('title', `%${trimmedSearch}%`);
+      }
+      return q;
+    }
+    case 'enrollments': {
+      return supabase
+        .from('journey_enrollments')
+        .select('id, status, enrolled_at, journeys(title), users!journey_enrollments_user_id_fkey(full_name), groups(name)', { count: 'exact' })
+        .order('enrolled_at', { ascending: false });
+    }
+  }
+}
+
+interface CacheEntry {
+  rows: any[];
+  count: number;
+}
+
 export default function AdminDataPanel({
   cardType,
   totalCount,
@@ -151,11 +209,14 @@ export default function AdminDataPanel({
   refreshTrigger,
 }: AdminDataPanelProps) {
   const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [fetching, setFetching] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [page, setPage] = useState(0);
   const [filteredCount, setFilteredCount] = useState(totalCount ?? 0);
   const lastClickedIndexRef = useRef<number | null>(null);
+  const prefetchCacheRef = useRef<Map<string, CacheEntry>>(new Map());
   const supabase = createClient();
 
   const isUsersPanel = cardType === 'users' && selectedIds !== undefined;
@@ -163,100 +224,95 @@ export default function AdminDataPanel({
   const columns = COLUMNS[cardType];
   const visibleIds = data.map((row: any) => row.id as string);
 
+  // Build a cache key for a given page
+  const cacheKey = useCallback(
+    (p: number) => `${cardType}|${p}|${debouncedSearch}|${showDecommissioned}|${refreshTrigger}`,
+    [cardType, debouncedSearch, showDecommissioned, refreshTrigger],
+  );
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchInput);
+    }, SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  // Clear prefetch cache when filters/search/card change
+  useEffect(() => {
+    prefetchCacheRef.current.clear();
+  }, [cardType, debouncedSearch, showDecommissioned, refreshTrigger]);
+
+  // Prefetch a page in the background (fire-and-forget)
+  const prefetchPage = useCallback(
+    (targetPage: number) => {
+      const key = cacheKey(targetPage);
+      if (prefetchCacheRef.current.has(key)) return; // already cached
+
+      const from = targetPage * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+      const trimmedSearch = debouncedSearch.trim().toLowerCase();
+
+      const query = buildQuery(supabase, cardType, trimmedSearch, showDecommissioned);
+      query.range(from, to).then(({ data: rows, count, error }) => {
+        if (!error && rows) {
+          prefetchCacheRef.current.set(key, { rows, count: count ?? 0 });
+        }
+      });
+    },
+    [supabase, cardType, debouncedSearch, showDecommissioned, cacheKey],
+  );
+
   const fetchData = useCallback(async () => {
-    setLoading(true);
+    // Check prefetch cache first
+    const key = cacheKey(page);
+    const cached = prefetchCacheRef.current.get(key);
+    if (cached) {
+      setData(cached.rows);
+      setFilteredCount(cached.count);
+      if (cardType === 'users' && onUsersDataChange) {
+        onUsersDataChange(cached.rows as AdminUser[]);
+      }
+      setInitialLoading(false);
+      // Prefetch adjacent pages
+      if (page < Math.ceil(cached.count / PAGE_SIZE) - 1) prefetchPage(page + 1);
+      if (page > 0) prefetchPage(page - 1);
+      return;
+    }
+
+    setFetching(true);
     try {
       const from = page * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;
-      const trimmedSearch = search.trim().toLowerCase();
+      const trimmedSearch = debouncedSearch.trim().toLowerCase();
 
-      let query;
-      let countQuery;
+      // Single query returns both rows AND count
+      const query = buildQuery(supabase, cardType, trimmedSearch, showDecommissioned);
+      const { data: rows, count, error } = await query.range(from, to);
 
-      switch (cardType) {
-        case 'users':
-          query = supabase
-            .from('users')
-            .select('id, full_name, email, is_active, is_decommissioned, created_at')
-            .order('created_at', { ascending: false });
-          countQuery = supabase
-            .from('users')
-            .select('*', { count: 'exact', head: true });
-
-          // Apply decommissioned filter
-          if (!showDecommissioned) {
-            query = query.eq('is_decommissioned', false);
-            countQuery = countQuery.eq('is_decommissioned', false);
-          }
-
-          if (trimmedSearch) {
-            query = query.or(`full_name.ilike.%${trimmedSearch}%,email.ilike.%${trimmedSearch}%`);
-            countQuery = countQuery.or(`full_name.ilike.%${trimmedSearch}%,email.ilike.%${trimmedSearch}%`);
-          }
-          break;
-
-        case 'groups':
-          query = supabase
-            .from('groups')
-            .select('id, name, group_type, is_public, created_at')
-            .eq('group_type', 'engagement')
-            .order('created_at', { ascending: false });
-          countQuery = supabase
-            .from('groups')
-            .select('*', { count: 'exact', head: true })
-            .eq('group_type', 'engagement');
-          if (trimmedSearch) {
-            query = query.ilike('name', `%${trimmedSearch}%`);
-            countQuery = countQuery.ilike('name', `%${trimmedSearch}%`);
-          }
-          break;
-
-        case 'journeys':
-          query = supabase
-            .from('journeys')
-            .select('id, title, difficulty_level, is_published, estimated_duration_minutes, created_at')
-            .order('created_at', { ascending: false });
-          countQuery = supabase
-            .from('journeys')
-            .select('*', { count: 'exact', head: true });
-          if (trimmedSearch) {
-            query = query.ilike('title', `%${trimmedSearch}%`);
-            countQuery = countQuery.ilike('title', `%${trimmedSearch}%`);
-          }
-          break;
-
-        case 'enrollments':
-          query = supabase
-            .from('journey_enrollments')
-            .select('id, status, enrolled_at, journeys(title), users!journey_enrollments_user_id_fkey(full_name), groups(name)')
-            .order('enrolled_at', { ascending: false });
-          countQuery = supabase
-            .from('journey_enrollments')
-            .select('*', { count: 'exact', head: true });
-          break;
-      }
-
-      const { count } = await countQuery;
       setFilteredCount(count ?? 0);
 
-      const { data: rows, error } = await query.range(from, to);
       if (error) {
         console.error(`Failed to fetch ${cardType}:`, error);
         setData([]);
       } else {
         setData(rows || []);
-        // Report users data to parent for action bar
         if (cardType === 'users' && onUsersDataChange && rows) {
           onUsersDataChange(rows as AdminUser[]);
         }
+        // Prefetch adjacent pages
+        const totalPgs = Math.ceil((count ?? 0) / PAGE_SIZE);
+        if (page < totalPgs - 1) prefetchPage(page + 1);
+        if (page > 0) prefetchPage(page - 1);
       }
     } catch (err) {
       console.error(`Error fetching ${cardType}:`, err);
       setData([]);
     }
-    setLoading(false);
+    setFetching(false);
+    setInitialLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardType, page, search, supabase, showDecommissioned, onUsersDataChange, refreshTrigger]);
+  }, [cardType, page, debouncedSearch, supabase, showDecommissioned, onUsersDataChange, refreshTrigger, cacheKey, prefetchPage]);
 
   useEffect(() => {
     fetchData();
@@ -265,12 +321,14 @@ export default function AdminDataPanel({
   // Reset page when search changes
   useEffect(() => {
     setPage(0);
-  }, [search]);
+  }, [debouncedSearch]);
 
   // Reset search and page when card type changes
   useEffect(() => {
-    setSearch('');
+    setSearchInput('');
+    setDebouncedSearch('');
     setPage(0);
+    setInitialLoading(true);
   }, [cardType]);
 
   // --- Selection handlers (users panel only) ---
@@ -313,8 +371,8 @@ export default function AdminDataPanel({
       <div className="mb-4 flex items-center gap-4">
         <input
           type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
           placeholder={searchPlaceholder}
           disabled={cardType === 'enrollments'}
           className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-400"
@@ -340,7 +398,13 @@ export default function AdminDataPanel({
       )}
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto relative">
+        {/* Subtle loading overlay — shown when fetching subsequent pages (not initial load) */}
+        {fetching && !initialLoading && (
+          <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center pointer-events-none">
+            <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-200">
@@ -362,7 +426,7 @@ export default function AdminDataPanel({
             </tr>
           </thead>
           <tbody>
-            {loading ? (
+            {initialLoading ? (
               Array.from({ length: 3 }).map((_, i) => (
                 <tr key={i} className="border-b border-gray-100">
                   {isUsersPanel && (
@@ -380,7 +444,7 @@ export default function AdminDataPanel({
             ) : data.length === 0 ? (
               <tr>
                 <td colSpan={columns.length + (isUsersPanel ? 1 : 0)} className="py-8 text-center text-gray-500">
-                  {search ? 'No results match your search.' : 'No data found.'}
+                  {debouncedSearch ? 'No results match your search.' : 'No data found.'}
                 </td>
               </tr>
             ) : (

@@ -170,17 +170,17 @@ export default function AdminDashboard() {
     setExpandedCard((prev) => (prev === cardType ? null : cardType));
   };
 
-  const handleShowDecommissionedChange = (show: boolean) => {
+  const handleShowDecommissionedChange = useCallback((show: boolean) => {
     setShowDecommissioned(show);
-  };
+  }, []);
 
-  const handleSelectionChange = (newSelection: Set<string>) => {
+  const handleSelectionChange = useCallback((newSelection: Set<string>) => {
     setSelectedUserIds(newSelection);
-  };
+  }, []);
 
-  const handleUsersDataChange = (data: AdminUser[]) => {
+  const handleUsersDataChange = useCallback((data: AdminUser[]) => {
     setUsersData(data);
-  };
+  }, []);
 
   // --- Action helpers ---
 
