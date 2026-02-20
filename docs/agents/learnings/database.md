@@ -145,4 +145,16 @@ The trigger was only checking `created_from_role_template_id` to identify Stewar
 
 > Promoted to playbook? Not yet
 
+### 2026-02-20: has_permission() in SELECT RLS policies is a per-row performance tax
+`has_permission()` does up to 2 multi-table 4-way JOINs (group_memberships → groups → user_group_roles → group_role_permissions → permissions). When embedded in SELECT policies, PostgreSQL may evaluate it for every row. For inactive/decommissioned users in the admin panel (6700 rows), simpler policies fail → has_permission() MUST be evaluated. Even with STABLE marking, the planner is not guaranteed to cache results. Solution: use service_role for admin queries (bypass RLS), then drop admin SELECT policies. See performance-optimization.md.
+> Promoted to playbook? Not yet
+
+### 2026-02-20: Missing composite indexes on frequently joined columns
+Three missing indexes identified: (1) `groups(group_type)` — used in has_permission() Tier 1 and admin filters, (2) `group_memberships(user_id, group_id, status)` — used in has_permission() and is_active_group_member(), (3) `user_group_roles(user_id, group_id, group_role_id)` — covers full JOIN chain in has_permission(). Existing individual column indexes force bitmap merge instead of single index scan.
+> Promoted to playbook? Not yet
+
+### 2026-02-20: groups SELECT policy has up to ~8 sub-queries per row
+The policy has 5 OR branches: is_public, is_active_group_member() (2 sub-queries), is_invited_group_member() (2 sub-queries), get_current_user_profile_id() (1 sub-query), has_permission() (up to 2 sub-queries). For private groups where the user is not a member, all branches evaluate. PostgreSQL's OR short-circuit is not guaranteed by the planner.
+> Promoted to playbook? Not yet
+
 <!-- Append new entries below this line -->

@@ -44,4 +44,20 @@ Due to FK constraints, `user_group_roles` has a foreign key to `group_membership
 DB test suites assert specific metadata keys. The generic `writeAuditLog` helper uses `{ count }` but the message-send tests expect `{ user_count }`. When wiring actions, always check the corresponding test file for expected metadata shape. Custom audit entries may be needed rather than using a generic helper.
 > Promoted to playbook? Not yet
 
+### 2026-02-20: Unstable callback references cause infinite re-render loops in data panels
+When passing state-setter callbacks as props to child components that include them in useCallback/useEffect dependency arrays, ALWAYS wrap the parent's handler in useCallback. Without this, every parent render creates a new function reference → child's fetchData recreates → useEffect fires → child calls onDataChange → parent re-renders → infinite loop. This affected AdminDataPanel receiving handleUsersDataChange, handleSelectionChange, and handleShowDecommissionedChange from the admin page.
+> Promoted to playbook? Not yet
+
+### 2026-02-20: Supabase `{ count: 'exact' }` can be inlined with the data query
+Instead of firing a separate HEAD-only count query + a data query (2 HTTP requests), use `.select('columns', { count: 'exact' }).range(from, to)` to get both rows AND total count in a single request. This halves the network round-trips for paginated views.
+> Promoted to playbook? Not yet
+
+### 2026-02-20: Prefetch adjacent pages for instant pagination
+After loading page N, silently fire background fetches for page N+1 and N-1. Store in a Map ref keyed by (cardType, page, search, filters). Clear cache when filters change. On page navigation, check cache first — if hit, render instantly with zero network wait.
+> Promoted to playbook? Not yet
+
+### 2026-02-20: User profile ID resolution runs 4-7 times per page load
+The query `users.select('id').eq('auth_user_id', user.id)` is independently executed by MessagingContext, NotificationContext, Navigation, the page component, usePermissions, and ForumSection. Should be resolved once in AuthContext and shared via hook. See performance-optimization.md Tier 1C.
+> Promoted to playbook? Not yet
+
 <!-- Append new entries below this line -->
