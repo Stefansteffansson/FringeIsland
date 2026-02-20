@@ -1,14 +1,14 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-19 (Admin Sub-Sprint 3A — DB migrations GREEN)
-**Current Version:** 0.2.22
+**Last Updated:** 2026-02-20 (Admin Sub-Sprint 3B — UI Foundation GREEN)
+**Current Version:** 0.2.23
 **Active Branch:** main
 
 ---
 
 ## What We're Working On NOW
 
-**Current Focus:** DeusEx Admin Foundation — Sub-Sprint 3A complete (GREEN), ready for Sub-Sprint 3B (UI)
+**Current Focus:** DeusEx Admin Foundation — Sub-Sprint 3B complete (GREEN), ready for Sub-Sprint 3C (Wire Actions)
 
 **Active Tasks:**
 - [x] **Admin Sub-Sprint 1: DB Foundation** ✅ **DONE v0.2.21**
@@ -20,28 +20,32 @@
   - [x] B-ADMIN-001: Admin route protection (layout gate)
   - [x] B-ADMIN-002: Admin dashboard (4 stat cards + data panels)
   - [x] B-ADMIN-003: DeusEx member management (invite/remove)
-- [ ] **Admin Sub-Sprint 3: User Management Actions** — IN PROGRESS (3A DB GREEN, 3B UI next)
+- [ ] **Admin Sub-Sprint 3: User Management Actions** — IN PROGRESS (3A DB GREEN, 3B UI GREEN, 3C next)
   - [x] Behavior specs written (19 total in admin.md — 7 unchanged, 5 revised, 7 new)
   - [x] Feature doc updated with Sub-Sprint 3 scope (decisions 7-14)
-  - [x] Failing tests written: 28 tests across 5 files
+  - [x] Failing tests written: 28 integration tests across 5 files
   - [x] Step 4 — Design (schema, RLS, RPCs) ✅
   - [x] Step 5 — DB migrations (is_decommissioned, admin UPDATE/SELECT policies, RPCs, group visibility) ✅
   - [x] Step 6 — **GREEN: All 28 tests passing** ✅ **v0.2.22**
-  - [ ] **NEXT: Steps 7-11 — Sub-Sprint 3B: UI** (selection model, action bar, panel rename)
-  - [ ] Steps 12-16 — Sub-Sprint 3C: Wire all 10 actions + document
+  - [x] Steps 7-11 — **Sub-Sprint 3B: UI Foundation** ✅ **v0.2.23**
+    - [x] 99 unit tests (pure function logic for selection, action bar, user filter)
+    - [x] Users panel: selection model (checkboxes, Shift+range, cross-page, counter)
+    - [x] UserActionBar: 3 groups, 10 buttons, context-sensitive disabling
+    - [x] Dashboard: "Active Users" → "Users", decommissioned toggle, status badges
+  - [ ] **NEXT: Steps 12-16 — Sub-Sprint 3C: Wire all 10 actions + document**
 
 **Blocked/Waiting:**
-- None — ready to proceed with Sub-Sprint 3B (UI)
+- None — ready to proceed with Sub-Sprint 3C (Wire Actions)
 
 ---
 
 ## Quick Stats
 
-- **Phase:** Admin Foundation (Sub-Sprints 1+2 complete, 3A DB done, 3B UI next)
+- **Phase:** Admin Foundation (Sub-Sprints 1+2 complete, 3A DB done, 3B UI done, 3C next)
 - **Total Tables:** 18 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅ (+admin_audit_log)
 - **Total Migrations:** 64 migration files (+2 admin user actions)
-- **Recent Version:** v0.2.22 (Admin Sub-Sprint 3A DB GREEN - Feb 19, 2026)
-- **Test Coverage:** 377 tests, **377 passing** ✅
+- **Recent Version:** v0.2.23 (Admin Sub-Sprint 3B UI GREEN - Feb 20, 2026)
+- **Test Coverage:** 480 tests (377 integration + 99 unit + 4 setup), **480 passing** ✅
 - **Behaviors Documented:** 77 (58 previous + 19 admin) ✅
 - **Feature Docs:** 4 complete + 3 planned designs
 - **Supabase CLI:** Configured and ready for automated migrations ✅
@@ -93,22 +97,25 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-19 (Admin Sub-Sprint 3A — DB migrations GREEN)
+**Date:** 2026-02-20 (Admin Sub-Sprint 3B — UI Foundation GREEN)
 **Summary:**
-- ✅ **Verified existing 349 tests** all pass (interrupted in previous session)
-- ✅ **Designed DB changes** (Step 4): is_decommissioned column, admin policies, RPCs, group visibility
-- ✅ **Implemented 2 migrations** (Step 5): foundation + SELECT policy fix
-- ✅ **All 28 new admin tests GREEN** (Step 6): was 17 failing, now 0
-- ✅ **Full suite: 377/377 passing** (fixed 2 edit-permissions timeouts)
-- ✅ **Key RLS discovery**: PostgreSQL requires NEW row after UPDATE to be visible under SELECT policies
+- ✅ **Wrote 99 unit tests** for pure function logic (3 test suites, TDD RED → GREEN)
+- ✅ **Created 3 pure function modules** in `lib/admin/`: user-filter, selection-model, action-bar-logic
+- ✅ **Enhanced AdminDataPanel** with selection model: checkboxes, Shift+range, cross-page persistence, status badges, decommissioned toggle
+- ✅ **Created UserActionBar** component: 3 groups (Communication/Account/Group), 10 buttons, context-sensitive disabling
+- ✅ **Dashboard rename**: "Active Users" → "Users", stat count reflects filter state
+- ✅ **Full suite: 480/480 passing** (377 integration + 99 unit + 4 setup)
 
-**Key Migration Files:**
-- `20260219153530_admin_user_actions_foundation.sql` — is_decommissioned, triggers, admin UPDATE, RPCs, group visibility
-- `20260219160451_fix_admin_update_add_select_policy.sql` — admin SELECT policy on users (the fix)
+**Key New Files:**
+- `lib/admin/user-filter.ts` — AdminUser type, filterUsers, computeUserCount, getUserStatLabel
+- `lib/admin/selection-model.ts` — toggleSelection, rangeSelect, selectAllVisible, deselectAllVisible, isAllVisibleSelected
+- `lib/admin/action-bar-logic.ts` — computeActionStates, isDestructiveAction, clearsSelectionAfterAction, constants
+- `components/admin/UserActionBar.tsx` — action bar UI component
+- `tests/unit/admin/` — 3 unit test files (99 tests)
 
-**Previous Session (2026-02-18):**
-- Admin User Actions specs + failing tests (TDD RED phase)
-- Bridge doc: `docs/planning/sessions/2026-02-18-admin-user-actions-specs-and-tests.md`
+**Previous Session (2026-02-19):**
+- Admin Sub-Sprint 3A — DB migrations GREEN (28 integration tests)
+- Key: is_decommissioned column, admin UPDATE/SELECT policies, RPCs, group visibility
 
 ---
 
@@ -116,13 +123,13 @@
 
 **See `docs/planning/ROADMAP.md` for complete phase breakdown**
 
-**Immediate — Admin Sub-Sprint 3B (UI Foundation):**
-1. Step 7: Write UI behavior tests (selection model, action bar, panel rename)
-2. Step 8: Run tests (RED)
-3. Step 9: Design UI components
-4. Step 10: Implement UI
-5. Step 11: Verify GREEN
-6. Steps 12-16: Sub-Sprint 3C (Wire all 10 actions + document)
+**Immediate — Admin Sub-Sprint 3C (Wire Actions):**
+1. Write behavior tests for action wiring (message, notify, deactivate, activate, etc.)
+2. Run tests (RED)
+3. Design action execution flow (modals, RPCs, state updates)
+4. Implement action handlers + modals (NotifyModal, MessageModal, GroupPickerModal)
+5. Verify GREEN
+6. Document completion
 
 **Phase 1.6 - Polish and Launch:**
 7. Mobile responsiveness audit

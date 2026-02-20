@@ -62,23 +62,23 @@ The DeusEx system group exists with all 42 permissions (Tier 1 resolution). This
 | B-ADMIN-002 | Admin Dashboard | ✅ Implemented (to be revised in Sub-Sprint 3) |
 | B-ADMIN-003 | DeusEx Member Management | ✅ Implemented + Tested |
 
-### Sub-Sprint 3A (DB Foundation for User Actions) — NOT STARTED
+### Sub-Sprint 3A (DB Foundation for User Actions) — COMPLETE v0.2.22
 
 | Code | Name | Status |
 |------|------|--------|
-| B-ADMIN-008 | User Decommission (soft delete) | ⏳ Specced |
-| B-ADMIN-009 | User Hard Delete | ⏳ Specced |
-| B-ADMIN-010 | Admin User Management (activate/deactivate) | ⏳ Specced |
-| B-ADMIN-011 | Admin Notification Send | ⏳ Specced |
-| B-ADMIN-012 | Admin Group Visibility | ⏳ Specced |
+| B-ADMIN-008 | User Decommission (soft delete) | ✅ Implemented + Tested |
+| B-ADMIN-009 | User Hard Delete | ✅ Implemented + Tested |
+| B-ADMIN-010 | Admin User Management (activate/deactivate) | ✅ Implemented + Tested |
+| B-ADMIN-011 | Admin Notification Send | ✅ Implemented + Tested |
+| B-ADMIN-012 | Admin Group Visibility | ✅ Implemented + Tested |
 
-### Sub-Sprint 3B (UI Foundation — Panel + Selection + Action Bar) — NOT STARTED
+### Sub-Sprint 3B (UI Foundation — Panel + Selection + Action Bar) — COMPLETE v0.2.23
 
 | Code | Name | Status |
 |------|------|--------|
-| B-ADMIN-002 | Admin Dashboard (REVISED — rename, toggle, count) | ⏳ Specced |
-| B-ADMIN-013 | Users Panel Selection | ⏳ Specced |
-| B-ADMIN-014 | Users Panel Action Bar | ⏳ Specced |
+| B-ADMIN-002 | Admin Dashboard (REVISED — rename, toggle, count) | ✅ Implemented + Tested |
+| B-ADMIN-013 | Users Panel Selection | ✅ Implemented + Tested |
+| B-ADMIN-014 | Users Panel Action Bar | ✅ Implemented + Tested |
 
 ### Sub-Sprint 3C (Wire Actions) — NOT STARTED
 
@@ -213,24 +213,24 @@ Full specs: `docs/specs/behaviors/admin.md`
 - [x] Remove a DeusEx member (when not last) → success, audit log entry
 - [x] All integration tests pass (349/349)
 
-### Sub-Sprint 3A (DB)
-- [ ] `is_decommissioned` column exists on users table
-- [ ] Admin can decommission a user (sets both flags)
-- [ ] Admin can hard-delete a user (all records removed, audit entry preserved)
-- [ ] Admin can activate/deactivate users
-- [ ] Admin can send notifications to any users
-- [ ] Admin can see all groups (including private)
-- [ ] Non-admin cannot perform any of the above
+### Sub-Sprint 3A (DB) — VERIFIED v0.2.22
+- [x] `is_decommissioned` column exists on users table
+- [x] Admin can decommission a user (sets both flags)
+- [x] Admin can hard-delete a user (all records removed, audit entry preserved)
+- [x] Admin can activate/deactivate users
+- [x] Admin can send notifications to any users
+- [x] Admin can see all groups (including private)
+- [x] Non-admin cannot perform any of the above
 
-### Sub-Sprint 3B (UI)
-- [ ] Stat card labeled "Users" (not "Active Users")
-- [ ] Count reflects current filter (active + inactive by default)
-- [ ] Toggle shows/hides decommissioned users
-- [ ] Rows have checkboxes, click toggles, Shift+click ranges
-- [ ] Selection persists across pages
-- [ ] "X users selected" counter visible
-- [ ] Action bar appears with 10 grouped buttons
-- [ ] Context-sensitive disabling works
+### Sub-Sprint 3B (UI) — VERIFIED v0.2.23
+- [x] Stat card labeled "Users" (not "Active Users")
+- [x] Count reflects current filter (active + inactive by default)
+- [x] Toggle shows/hides decommissioned users
+- [x] Rows have checkboxes, click toggles, Shift+click ranges
+- [x] Selection persists across pages
+- [x] "X users selected" counter visible
+- [x] Action bar appears with 10 grouped buttons
+- [x] Context-sensitive disabling works
 
 ### Sub-Sprint 3C (Actions)
 - [ ] Message → individual DMs to each selected user

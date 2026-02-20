@@ -1,10 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import AdminStatCard from '@/components/admin/AdminStatCard';
 import AdminDataPanel from '@/components/admin/AdminDataPanel';
+import UserActionBar from '@/components/admin/UserActionBar';
+import type { AdminUser } from '@/lib/admin/user-filter';
+import type { ActionName } from '@/lib/admin/action-bar-logic';
 
 type CardType = 'users' | 'groups' | 'journeys' | 'enrollments';
 
@@ -24,50 +27,75 @@ export default function AdminDashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [expandedCard, setExpandedCard] = useState<CardType | null>(null);
+  const [showDecommissioned, setShowDecommissioned] = useState(false);
+  const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set());
+  const [usersData, setUsersData] = useState<AdminUser[]>([]);
   const supabase = createClient();
 
+  const fetchStats = useCallback(async () => {
+    try {
+      // Users count: default shows active + inactive (excludes decommissioned)
+      const usersQuery = showDecommissioned
+        ? supabase.from('users').select('*', { count: 'exact', head: true })
+        : supabase.from('users').select('*', { count: 'exact', head: true }).eq('is_decommissioned', false);
+
+      const [usersRes, groupsRes, journeysRes, enrollmentsRes] = await Promise.all([
+        usersQuery,
+        supabase
+          .from('groups')
+          .select('*', { count: 'exact', head: true })
+          .eq('group_type', 'engagement'),
+        supabase
+          .from('journeys')
+          .select('*', { count: 'exact', head: true }),
+        supabase
+          .from('journey_enrollments')
+          .select('*', { count: 'exact', head: true }),
+      ]);
+
+      setStats({
+        users: usersRes.count,
+        groups: groupsRes.count,
+        journeys: journeysRes.count,
+        enrollments: enrollmentsRes.count,
+      });
+    } catch (err) {
+      console.error('Failed to fetch platform stats:', err);
+    }
+
+    setLoading(false);
+  }, [supabase, showDecommissioned]);
+
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const [usersRes, groupsRes, journeysRes, enrollmentsRes] = await Promise.all([
-          supabase
-            .from('users')
-            .select('*', { count: 'exact', head: true })
-            .eq('is_active', true),
-          supabase
-            .from('groups')
-            .select('*', { count: 'exact', head: true })
-            .eq('group_type', 'engagement'),
-          supabase
-            .from('journeys')
-            .select('*', { count: 'exact', head: true }),
-          supabase
-            .from('journey_enrollments')
-            .select('*', { count: 'exact', head: true }),
-        ]);
-
-        setStats({
-          users: usersRes.count,
-          groups: groupsRes.count,
-          journeys: journeysRes.count,
-          enrollments: enrollmentsRes.count,
-        });
-      } catch (err) {
-        console.error('Failed to fetch platform stats:', err);
-      }
-
-      setLoading(false);
-    };
-
     fetchStats();
-  }, [supabase]);
+  }, [fetchStats]);
 
   const handleCardClick = (cardType: CardType) => {
     setExpandedCard((prev) => (prev === cardType ? null : cardType));
   };
 
+  const handleShowDecommissionedChange = (show: boolean) => {
+    setShowDecommissioned(show);
+  };
+
+  const handleSelectionChange = (newSelection: Set<string>) => {
+    setSelectedUserIds(newSelection);
+  };
+
+  const handleUsersDataChange = (data: AdminUser[]) => {
+    setUsersData(data);
+  };
+
+  const handleAction = (action: ActionName) => {
+    // Stub — actions will be wired in Sub-Sprint 3C
+    console.log(`Action "${action}" triggered for ${selectedUserIds.size} users:`, [...selectedUserIds]);
+  };
+
+  // Look up full user objects for selected IDs
+  const selectedUsers = usersData.filter((u) => selectedUserIds.has(u.id));
+
   const cards: { type: CardType; title: string; icon: string; statKey: keyof PlatformStats }[] = [
-    { type: 'users', title: 'Active Users', icon: '👥', statKey: 'users' },
+    { type: 'users', title: 'Users', icon: '👥', statKey: 'users' },
     { type: 'groups', title: 'Groups', icon: '🏘️', statKey: 'groups' },
     { type: 'journeys', title: 'Journeys', icon: '🗺️', statKey: 'journeys' },
     { type: 'enrollments', title: 'Enrollments', icon: '📚', statKey: 'enrollments' },
@@ -102,8 +130,23 @@ export default function AdminDashboard() {
           <AdminDataPanel
             cardType={expandedCard}
             totalCount={stats[expandedCard]}
+            selectedIds={expandedCard === 'users' ? selectedUserIds : undefined}
+            onSelectionChange={expandedCard === 'users' ? handleSelectionChange : undefined}
+            showDecommissioned={expandedCard === 'users' ? showDecommissioned : undefined}
+            onShowDecommissionedChange={expandedCard === 'users' ? handleShowDecommissionedChange : undefined}
+            onUsersDataChange={expandedCard === 'users' ? handleUsersDataChange : undefined}
           />
         </div>
+      )}
+
+      {/* Action Bar for Users panel */}
+      {expandedCard === 'users' && selectedUserIds.size > 0 && (
+        <UserActionBar
+          selectedUsers={selectedUsers}
+          selectedCount={selectedUserIds.size}
+          commonGroupCount={0}
+          onAction={handleAction}
+        />
       )}
 
       {/* Quick Actions */}

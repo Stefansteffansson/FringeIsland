@@ -1,7 +1,16 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import {
+  toggleSelection,
+  rangeSelect,
+  selectAllVisible,
+  deselectAllVisible,
+  isAllVisibleSelected,
+  getSelectedCount,
+} from '@/lib/admin/selection-model';
+import type { AdminUser } from '@/lib/admin/user-filter';
 
 type CardType = 'users' | 'groups' | 'journeys' | 'enrollments';
 
@@ -13,10 +22,33 @@ interface Column {
 
 const PAGE_SIZE = 10;
 
+const STATUS_BADGE = (row: any) => {
+  if (row.is_decommissioned) {
+    return (
+      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
+        Decommissioned
+      </span>
+    );
+  }
+  if (!row.is_active) {
+    return (
+      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+        Inactive
+      </span>
+    );
+  }
+  return (
+    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+      Active
+    </span>
+  );
+};
+
 const COLUMNS: Record<CardType, Column[]> = {
   users: [
     { key: 'full_name', label: 'Name' },
     { key: 'email', label: 'Email' },
+    { key: 'status', label: 'Status', render: STATUS_BADGE },
     {
       key: 'created_at',
       label: 'Joined',
@@ -98,18 +130,35 @@ const COLUMNS: Record<CardType, Column[]> = {
 interface AdminDataPanelProps {
   cardType: CardType;
   totalCount: number | null;
+  // Users panel selection (only used when cardType === 'users')
+  selectedIds?: Set<string>;
+  onSelectionChange?: (newSelection: Set<string>) => void;
+  showDecommissioned?: boolean;
+  onShowDecommissionedChange?: (show: boolean) => void;
+  onUsersDataChange?: (data: AdminUser[]) => void;
 }
 
-export default function AdminDataPanel({ cardType, totalCount }: AdminDataPanelProps) {
+export default function AdminDataPanel({
+  cardType,
+  totalCount,
+  selectedIds,
+  onSelectionChange,
+  showDecommissioned,
+  onShowDecommissionedChange,
+  onUsersDataChange,
+}: AdminDataPanelProps) {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
   const [filteredCount, setFilteredCount] = useState(totalCount ?? 0);
+  const lastClickedIndexRef = useRef<number | null>(null);
   const supabase = createClient();
 
+  const isUsersPanel = cardType === 'users' && selectedIds !== undefined;
   const totalPages = Math.max(1, Math.ceil(filteredCount / PAGE_SIZE));
   const columns = COLUMNS[cardType];
+  const visibleIds = data.map((row: any) => row.id as string);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -125,13 +174,18 @@ export default function AdminDataPanel({ cardType, totalCount }: AdminDataPanelP
         case 'users':
           query = supabase
             .from('users')
-            .select('id, full_name, email, created_at')
-            .eq('is_active', true)
+            .select('id, full_name, email, is_active, is_decommissioned, created_at')
             .order('created_at', { ascending: false });
           countQuery = supabase
             .from('users')
-            .select('*', { count: 'exact', head: true })
-            .eq('is_active', true);
+            .select('*', { count: 'exact', head: true });
+
+          // Apply decommissioned filter
+          if (!showDecommissioned) {
+            query = query.eq('is_decommissioned', false);
+            countQuery = countQuery.eq('is_decommissioned', false);
+          }
+
           if (trimmedSearch) {
             query = query.or(`full_name.ilike.%${trimmedSearch}%,email.ilike.%${trimmedSearch}%`);
             countQuery = countQuery.or(`full_name.ilike.%${trimmedSearch}%,email.ilike.%${trimmedSearch}%`);
@@ -176,7 +230,6 @@ export default function AdminDataPanel({ cardType, totalCount }: AdminDataPanelP
           countQuery = supabase
             .from('journey_enrollments')
             .select('*', { count: 'exact', head: true });
-          // Search not supported for enrollments (joined fields)
           break;
       }
 
@@ -189,13 +242,17 @@ export default function AdminDataPanel({ cardType, totalCount }: AdminDataPanelP
         setData([]);
       } else {
         setData(rows || []);
+        // Report users data to parent for action bar
+        if (cardType === 'users' && onUsersDataChange && rows) {
+          onUsersDataChange(rows as AdminUser[]);
+        }
       }
     } catch (err) {
       console.error(`Error fetching ${cardType}:`, err);
       setData([]);
     }
     setLoading(false);
-  }, [cardType, page, search, supabase]);
+  }, [cardType, page, search, supabase, showDecommissioned, onUsersDataChange]);
 
   useEffect(() => {
     fetchData();
@@ -212,6 +269,30 @@ export default function AdminDataPanel({ cardType, totalCount }: AdminDataPanelP
     setPage(0);
   }, [cardType]);
 
+  // --- Selection handlers (users panel only) ---
+  const handleRowClick = (rowId: string, rowIndex: number, event: React.MouseEvent) => {
+    if (!isUsersPanel || !onSelectionChange || !selectedIds) return;
+
+    if (event.shiftKey && lastClickedIndexRef.current !== null) {
+      const newSelection = rangeSelect(visibleIds, selectedIds, lastClickedIndexRef.current, rowIndex);
+      onSelectionChange(newSelection);
+    } else {
+      const newSelection = toggleSelection(selectedIds, rowId);
+      onSelectionChange(newSelection);
+    }
+    lastClickedIndexRef.current = rowIndex;
+  };
+
+  const handleHeaderCheckbox = () => {
+    if (!isUsersPanel || !onSelectionChange || !selectedIds) return;
+
+    if (isAllVisibleSelected(selectedIds, visibleIds)) {
+      onSelectionChange(deselectAllVisible(selectedIds, visibleIds));
+    } else {
+      onSelectionChange(selectAllVisible(selectedIds, visibleIds));
+    }
+  };
+
   const searchPlaceholder = {
     users: 'Search by name or email...',
     groups: 'Search by group name...',
@@ -219,25 +300,56 @@ export default function AdminDataPanel({ cardType, totalCount }: AdminDataPanelP
     enrollments: 'Search not available for enrollments',
   }[cardType];
 
+  const selectedCount = selectedIds ? getSelectedCount(selectedIds) : 0;
+  const allVisibleSelected = selectedIds ? isAllVisibleSelected(selectedIds, visibleIds) : false;
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 animate-in fade-in duration-200">
-      {/* Search */}
-      <div className="mb-4">
+      {/* Search + Decommissioned Toggle */}
+      <div className="mb-4 flex items-center gap-4">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={searchPlaceholder}
           disabled={cardType === 'enrollments'}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-400"
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-400"
         />
+        {isUsersPanel && onShowDecommissionedChange && (
+          <label className="flex items-center gap-2 text-sm text-gray-600 whitespace-nowrap cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showDecommissioned ?? false}
+              onChange={(e) => onShowDecommissionedChange(e.target.checked)}
+              className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            Show decommissioned
+          </label>
+        )}
       </div>
+
+      {/* Selection Counter */}
+      {isUsersPanel && selectedCount > 0 && (
+        <div className="mb-3 px-1 text-sm font-medium text-blue-700">
+          {selectedCount} user{selectedCount !== 1 ? 's' : ''} selected
+        </div>
+      )}
 
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-200">
+              {isUsersPanel && (
+                <th className="w-10 py-3 px-2">
+                  <input
+                    type="checkbox"
+                    checked={allVisibleSelected && visibleIds.length > 0}
+                    onChange={handleHeaderCheckbox}
+                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                </th>
+              )}
               {columns.map((col) => (
                 <th key={col.key} className="text-left py-3 px-4 font-semibold text-gray-600">
                   {col.label}
@@ -249,6 +361,11 @@ export default function AdminDataPanel({ cardType, totalCount }: AdminDataPanelP
             {loading ? (
               Array.from({ length: 3 }).map((_, i) => (
                 <tr key={i} className="border-b border-gray-100">
+                  {isUsersPanel && (
+                    <td className="py-3 px-2">
+                      <div className="w-4 h-4 bg-gray-200 rounded animate-pulse"></div>
+                    </td>
+                  )}
                   {columns.map((col) => (
                     <td key={col.key} className="py-3 px-4">
                       <div className="w-24 h-4 bg-gray-200 rounded animate-pulse"></div>
@@ -258,20 +375,51 @@ export default function AdminDataPanel({ cardType, totalCount }: AdminDataPanelP
               ))
             ) : data.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="py-8 text-center text-gray-500">
+                <td colSpan={columns.length + (isUsersPanel ? 1 : 0)} className="py-8 text-center text-gray-500">
                   {search ? 'No results match your search.' : 'No data found.'}
                 </td>
               </tr>
             ) : (
-              data.map((row, idx) => (
-                <tr key={row.id || idx} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                  {columns.map((col) => (
-                    <td key={col.key} className="py-3 px-4 text-gray-700">
-                      {col.render ? col.render(row) : row[col.key] ?? '-'}
-                    </td>
-                  ))}
-                </tr>
-              ))
+              data.map((row, idx) => {
+                const isSelected = isUsersPanel && selectedIds?.has(row.id);
+                const isDecom = row.is_decommissioned;
+                return (
+                  <tr
+                    key={row.id || idx}
+                    onClick={(e) => handleRowClick(row.id, idx, e)}
+                    className={`border-b border-gray-100 transition-colors ${
+                      isUsersPanel ? 'cursor-pointer' : ''
+                    } ${
+                      isSelected
+                        ? 'bg-blue-50 hover:bg-blue-100'
+                        : isDecom
+                          ? 'bg-gray-50 hover:bg-gray-100 opacity-60'
+                          : 'hover:bg-gray-50'
+                    }`}
+                  >
+                    {isUsersPanel && (
+                      <td className="py-3 px-2" onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          checked={isSelected ?? false}
+                          onChange={() => {
+                            if (onSelectionChange && selectedIds) {
+                              onSelectionChange(toggleSelection(selectedIds, row.id));
+                              lastClickedIndexRef.current = idx;
+                            }
+                          }}
+                          className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                      </td>
+                    )}
+                    {columns.map((col) => (
+                      <td key={col.key} className="py-3 px-4 text-gray-700">
+                        {col.render ? col.render(row) : row[col.key] ?? '-'}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>

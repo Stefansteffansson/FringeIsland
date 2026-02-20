@@ -12,6 +12,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.23] - 2026-02-20
+
+### Added
+- **Admin Sub-Sprint 3B: UI Foundation** (selection model, action bar, dashboard refinements)
+  - **Users Panel Selection** (B-ADMIN-013) — checkbox column, click-to-toggle, Shift+click range select, header checkbox, cross-page persistence, selection counter
+  - **UserActionBar component** (B-ADMIN-014) — 10 action buttons in 3 groups (Communication/Account/Group), context-sensitive disabling with reasons, destructive action styling
+  - **Pure function modules** in `lib/admin/`:
+    - `user-filter.ts` — AdminUser type, filterUsers, computeUserCount, getUserStatLabel
+    - `selection-model.ts` — toggleSelection, rangeSelect, selectAllVisible, deselectAllVisible, isAllVisibleSelected
+    - `action-bar-logic.ts` — computeActionStates, isDestructiveAction, clearsSelectionAfterAction, ACTION_CATEGORIES
+  - **99 unit tests** across 3 test suites in `tests/unit/admin/`
+
+### Changed
+- **Admin Dashboard** (B-ADMIN-002 revised) — stat card renamed "Active Users" to "Users"; count reflects filter state (active + inactive by default, decommissioned on toggle)
+- **AdminDataPanel** — users panel shows `is_active`/`is_decommissioned` status badges (Active/Inactive/Decommissioned); "Show decommissioned" toggle; selected row highlighting; decommissioned rows visually muted
+
+### Technical Details
+- **New Files:** 4 (`lib/admin/user-filter.ts`, `lib/admin/selection-model.ts`, `lib/admin/action-bar-logic.ts`, `components/admin/UserActionBar.tsx`)
+- **New Test Files:** 3 (`tests/unit/admin/user-filter.test.ts`, `tests/unit/admin/selection-model.test.ts`, `tests/unit/admin/action-bar-logic.test.ts`)
+- **Modified Files:** 2 (`app/admin/page.tsx`, `components/admin/AdminDataPanel.tsx`)
+- **Test Coverage:** 480 total (377 integration + 99 unit + 4 setup), all passing
+
+---
+
 ## [0.2.20] - 2026-02-16
 
 ### Added
