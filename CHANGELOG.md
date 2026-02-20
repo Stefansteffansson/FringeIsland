@@ -12,6 +12,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.26] - 2026-02-20
+
+### Added
+- **Performance Tier 1: Quick Wins** — system-wide responsiveness improvements
+  - **Tier 1A: Database indexes** — 3 composite indexes for `has_permission()` and RLS optimization (`groups.group_type`, `group_memberships(group_id, user_id, status)`, `user_group_roles(user_id, group_id)`)
+  - **Tier 1B: Admin service_role API route** — `/api/admin/users` bypasses RLS entirely using service_role key; JWT validation + admin authorization at route level; 11 TDD integration tests
+  - **Tier 1C: Shared UserProfile context** — AuthContext resolves `auth_user_id → users.id` once after login; 20+ files refactored to use shared `userProfile` context; eliminates 4-6 duplicate HTTP requests per page load
+
+### Changed
+- **AuthContext** (`lib/auth/AuthContext.tsx`) — added `userProfile` state, `resolveProfile` callback, `refreshProfile` function
+- **AdminDataPanel** — users panel now fetches via `/api/admin/users` API route instead of client-side Supabase query
+- **20+ page/component files** — migrated from per-component `userData` resolution to shared `userProfile` from `useAuth()`
+
+### Technical Details
+- **New Files:** 4 (`admin-users-query.ts`, `app/api/admin/users/route.ts`, `admin-users-api.test.ts`, `add_performance_indexes.sql`)
+- **Modified Files:** 25 (AuthContext, Navigation, 15+ pages, 5+ components)
+- **Test Coverage:** 517 total (414 integration + 99 unit + 4 setup), all passing
+- **Migration:** `20260220103052_add_performance_indexes.sql`
+
+---
+
 ## [0.2.25] - 2026-02-20
 
 ### Added

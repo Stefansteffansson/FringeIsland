@@ -27,6 +27,14 @@ Plan: parallel run with feature flag, not big-bang migration.
 
 → Promoted to playbook? ✅ (referenced in Current System Map)
 
+### 2026-02-20: Performance optimization — 3-tier fix strategy
+Deep analysis identified 5 root causes for slow admin/group pages. Organized into 3 tiers:
+- **Tier 1 (quick wins):** Database indexes, shared auth context, service_role admin API
+- **Tier 2 (query restructuring):** Parallelize group detail, N+1 fix, remove has_permission from SELECT policies
+- **Tier 3 (polish):** Debounce, deduplicate stats
+Key insight: `has_permission()` in SELECT RLS policies causes per-row function calls with 3 subqueries each. For admin pages, bypassing RLS entirely via service_role is the right fix — admin authorization happens once at the route level, not per row. For non-admin pages, removing `has_permission()` from SELECT policies (Tier 2C) requires careful analysis of what each policy actually protects.
+→ Promoted to playbook? Not yet
+
 ---
 
 ### 2026-02-20: Group detail page has 18 HTTP requests with 8 sequential on critical path

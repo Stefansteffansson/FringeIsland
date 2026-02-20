@@ -28,6 +28,10 @@ Starting point. Known patterns captured in playbook from prior sessions:
 - PostgREST INSERT...RETURNING gotcha (triggers SELECT policy)
 - Rate limiting mitigation (suite-setup.ts delays)
 - try/finally for UNIQUE constraint cleanup
+
+### 2026-02-20: TDD for server-side functions — test the function, not the HTTP route
+For `queryAdminUsers()` (Tier 1B), we wrote 11 integration tests against the standalone function rather than the Next.js API route. This avoids mocking `NextRequest`/`NextResponse` while still validating authorization, pagination, search, and filtering. The function accepts `callerUserId` directly (resolved by the route), making tests simple: create test users, add one to DeusEx group, call function with admin vs non-admin caller. Pattern works well for any server-side logic where the HTTP layer is thin.
+> Promoted to playbook? Not yet
 - Timestamp comparison (+00:00 vs Z)
 
 → Promoted to playbook? ✅ (all in Known Pitfalls section)

@@ -28,6 +28,14 @@ Adding `manage_roles` (41→42) caused 13 test failures across 8 suites: permiss
 - `copy_template_permissions` trigger (AFTER INSERT on group_roles) auto-populates `group_role_permissions` when `created_from_role_template_id` is set. Uses `ON CONFLICT DO NOTHING` for idempotency.
 → Promoted to playbook? Not yet
 
+### 2026-02-20: Composite indexes for RLS/has_permission() optimization
+Three composite indexes significantly reduce `has_permission()` cost in RLS policies:
+1. `idx_groups_group_type` on `groups(group_type)` — speeds up system group lookups
+2. `idx_group_memberships_group_user_status` on `group_memberships(group_id, user_id, status)` — covers membership existence checks
+3. `idx_user_group_roles_user_group` on `user_group_roles(user_id, group_id)` — covers role lookups in permission checks
+These target the exact columns used in `has_permission()` subqueries that RLS policies call on every row access.
+→ Promoted to playbook? Not yet
+
 ### 2026-02-13: Journal initialized
 Starting point. Known patterns captured in playbook from prior sessions:
 - Always set search_path = '' on public functions

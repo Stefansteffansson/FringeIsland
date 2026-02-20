@@ -28,6 +28,14 @@ Client-side INSERT into `user_group_roles` after accepting an invitation fails b
 Group creation involves a chain: INSERT group → INSERT membership → INSERT group_roles → trigger copies template permissions → INSERT user_group_roles. Each step has RLS policies that assume prior steps are complete. The bootstrap pattern requires: (1) `is_group_creator()` SECURITY DEFINER helper, (2) bootstrap case in group_roles INSERT policy, (3) `copy_template_permissions` trigger as SECURITY DEFINER, (4) bootstrap case in user_group_roles INSERT policy. Missing any link breaks the chain.
 > Promoted to playbook? Not yet
 
+### 2026-02-20: Shared UserProfile context eliminates duplicate queries
+Resolving `auth_user_id → users.id` in AuthContext once after login and sharing via `userProfile` context value eliminated 4-6 duplicate HTTP requests per page load across 20+ consumer files. Key pattern: AuthContext resolves profile after `getSession()` and on `onAuthStateChange`, stores as `{ id, full_name, avatar_url }`. Components consume via `const { userProfile } = useAuth()` instead of each doing their own Supabase query. Also listens for `refreshNavigation` events to update cached profile.
+> Promoted to playbook? Not yet
+
+### 2026-02-20: service_role API route pattern for admin queries
+First API route in the project: `/api/admin/users`. Pattern: (1) extract JWT from Authorization header or cookies, (2) verify via `serviceClient.auth.getUser(token)`, (3) resolve `auth_user_id → profile.id`, (4) delegate to standalone query function. The query function (`queryAdminUsers`) is importable by both the route and integration tests, avoiding Next.js mocking. Uses `service_role` key to bypass RLS entirely — admin authorization checked once at function level via `has_permission()`.
+> Promoted to playbook? Not yet
+
 ### 2026-02-20: DM find-or-create pattern with sorted participant IDs
 The `conversations` table has a CHECK constraint: `participant_1 < participant_2` (lexicographic UUID comparison). When creating admin DMs, sort the two UUIDs before querying or inserting. Pattern: `const p1 = adminId < targetId ? adminId : targetId; const p2 = adminId < targetId ? targetId : adminId;`. Then query `.eq('participant_1', p1).eq('participant_2', p2)` and use `.maybeSingle()` since conversation may not exist yet.
 > Promoted to playbook? Not yet
