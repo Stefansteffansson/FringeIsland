@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 
@@ -29,52 +29,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
+  const profileResolvedRef = useRef(false);
 
-  // Resolve auth_user_id → users table profile (id, full_name, avatar_url)
-  const resolveProfile = useCallback(async (authUserId: string): Promise<UserProfile | null> => {
-    try {
-      const { data } = await supabase
-        .from('users')
-        .select('id, full_name, avatar_url')
-        .eq('auth_user_id', authUserId)
-        .single();
-      return data as UserProfile | null;
-    } catch {
-      return null;
-    }
-  }, [supabase]);
-
+  // Auth state: only set user/session, never make DB queries inside callbacks
   useEffect(() => {
     let cancelled = false;
 
-    // Get initial session + resolve profile before marking as loaded
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       if (cancelled) return;
       setSession(session);
       setUser(session?.user ?? null);
-
-      if (session?.user) {
-        const profile = await resolveProfile(session.user.id);
-        if (!cancelled) setUserProfile(profile);
-      }
-
-      if (!cancelled) setLoading(false);
+      setLoading(false);
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-
-      if (session?.user) {
-        const profile = await resolveProfile(session.user.id);
-        setUserProfile(profile);
-      } else {
+      if (!session?.user) {
         setUserProfile(null);
+        profileResolvedRef.current = false;
       }
-
       setLoading(false);
     });
 
@@ -82,14 +58,55 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       cancelled = true;
       subscription.unsubscribe();
     };
-  }, [supabase.auth, resolveProfile]);
+  }, [supabase.auth]);
+
+  // Profile resolution: separate effect triggered by user state changes
+  // This avoids deadlocking the Supabase SSR client by not querying inside onAuthStateChange
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+
+    const resolve = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('id, full_name, avatar_url')
+          .eq('auth_user_id', user.id)
+          .single();
+        if (error) {
+          console.error('[AuthContext] Profile resolution failed:', error.message);
+          return;
+        }
+        if (!cancelled && data) {
+          setUserProfile(data as UserProfile);
+          profileResolvedRef.current = true;
+        }
+      } catch (err) {
+        console.error('[AuthContext] Profile resolution exception:', err);
+      }
+    };
+
+    resolve();
+
+    return () => { cancelled = true; };
+  }, [user, supabase]);
 
   // Refresh cached profile (call after profile edits)
   const refreshProfile = useCallback(async () => {
     if (!user) return;
-    const profile = await resolveProfile(user.id);
-    if (profile) setUserProfile(profile);
-  }, [user, resolveProfile]);
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('id, full_name, avatar_url')
+        .eq('auth_user_id', user.id)
+        .single();
+      if (!error && data) {
+        setUserProfile(data as UserProfile);
+      }
+    } catch {
+      // Silently fail on refresh
+    }
+  }, [user, supabase]);
 
   // Listen for refreshNavigation events to update cached profile
   useEffect(() => {
@@ -112,9 +129,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (error) throw error;
 
-      // NOTE: We're NOT creating the users table record here
-      // We'll handle that with a Supabase trigger instead
-
       return { error: null };
     } catch (error) {
       return { error: error as Error };
@@ -131,8 +145,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (error) throw error;
 
       // Application-layer active check.
-      // get_current_user_profile_id() returns null for is_active=false users,
-      // so RLS blocks the profile query → profile is null for deactivated accounts.
       const { data: profile } = await supabase
         .from('users')
         .select('is_active')

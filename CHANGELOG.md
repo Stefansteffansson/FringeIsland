@@ -12,6 +12,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.27] - 2026-02-20
+
+### Fixed
+- **CRITICAL: Auth deadlock in Supabase SSR client** — Restructured AuthContext to resolve user profile in a separate `useEffect` instead of inside `onAuthStateChange`. The `@supabase/ssr` `createBrowserClient` holds an internal lock during auth state callbacks; making DB queries inside the callback caused the query to hang indefinitely, leaving `userProfile` null and all pages stuck on loading spinners.
+- **Navigation null safety** — Added optional chaining for `full_name` access (`full_name?.charAt(0)`) and safe `alt` attribute on avatar Image component.
+- **Admin API 401 on cookie-based auth** — AdminDataPanel now passes JWT via `Authorization: Bearer` header instead of relying on `@supabase/ssr` chunked cookie parsing, which the API route couldn't decode.
+
+### Changed
+- **Dropped admin SELECT RLS policies (Tier 2C)** — Removed `has_permission()` from SELECT policies on `users`, `group_memberships`, `user_group_roles`, and `groups` tables. Admin queries already use `service_role` API route (Tier 1B), so these policies were unnecessary and added latency to ALL authenticated queries. This is a hotfix that also completes Performance Tier 2C.
+- **Simplified groups SELECT policy** — Reduced from 5 OR branches to 4 (removed `has_permission()` branch).
+
+### Technical Details
+- **Migration:** `20260220120833_hotfix_drop_admin_select_policies.sql`
+- **Modified Files:** `AuthContext.tsx`, `Navigation.tsx`, `AdminDataPanel.tsx`
+- **Root Cause:** `@supabase/ssr` `createBrowserClient` deadlocks when DB queries are made inside `onAuthStateChange` callbacks
+
+---
+
 ## [0.2.26] - 2026-02-20
 
 ### Added

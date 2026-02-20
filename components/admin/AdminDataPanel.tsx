@@ -208,7 +208,17 @@ async function fetchUsersViaAPI(
   if (search) params.set('search', search);
 
   try {
-    const res = await fetch(`/api/admin/users?${params.toString()}`);
+    // Get current session token to pass in Authorization header
+    // (cookie-based auth from @supabase/ssr uses chunked encoding that
+    // the API route can't easily parse, so pass the token explicitly)
+    const supabase = createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    const headers: Record<string, string> = {};
+    if (session?.access_token) {
+      headers['Authorization'] = `Bearer ${session.access_token}`;
+    }
+
+    const res = await fetch(`/api/admin/users?${params.toString()}`, { headers });
     if (!res.ok) return null;
     const json = await res.json();
     return { rows: json.data || [], count: json.count ?? 0 };

@@ -68,4 +68,12 @@ After loading page N, silently fire background fetches for page N+1 and N-1. Sto
 The query `users.select('id').eq('auth_user_id', user.id)` is independently executed by MessagingContext, NotificationContext, Navigation, the page component, usePermissions, and ForumSection. Should be resolved once in AuthContext and shared via hook. See performance-optimization.md Tier 1C.
 > Promoted to playbook? Not yet
 
+### 2026-02-20: Never make DB queries inside onAuthStateChange with @supabase/ssr
+The `createBrowserClient` from `@supabase/ssr` holds an internal lock during auth state change callbacks. Making Supabase DB queries (e.g., `supabase.from('users').select(...)`) inside `onAuthStateChange` causes the query to hang forever — the client waits for the auth lock to release, but the lock waits for the callback to finish. **Fix:** Only set React state inside `onAuthStateChange`, then use a separate `useEffect` watching the `user` state to resolve the profile. This pattern was already working in Node.js tests (which use `createClient` from `@supabase/supabase-js`, not the SSR variant) — the bug was SSR-specific.
+> Promoted to playbook? Not yet
+
+### 2026-02-20: Admin API routes must use Authorization header, not cookie parsing
+The `@supabase/ssr` client stores auth tokens in chunked, encoded cookies (e.g., `sb-<ref>-auth-token.0`, `.1`, etc.). API routes that try to manually parse these cookies to extract a JWT will fail. **Fix:** Have the frontend get the token via `supabase.auth.getSession()` and pass it explicitly in the `Authorization: Bearer <token>` header. The API route already handled this path — just the frontend wasn't using it.
+> Promoted to playbook? Not yet
+
 <!-- Append new entries below this line -->

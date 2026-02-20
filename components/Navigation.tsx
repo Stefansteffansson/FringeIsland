@@ -192,14 +192,14 @@ export default function Navigation() {
                 {userProfile?.avatar_url ? (
                   <Image
                     src={userProfile.avatar_url}
-                    alt={userProfile.full_name}
+                    alt={userProfile?.full_name || 'User'}
                     fill
                     sizes="40px"
                     className="object-cover"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-white font-bold text-lg">
-                    {userProfile?.full_name.charAt(0).toUpperCase() || 'U'}
+                    {userProfile?.full_name?.charAt(0)?.toUpperCase() || 'U'}
                   </div>
                 )}
               </div>

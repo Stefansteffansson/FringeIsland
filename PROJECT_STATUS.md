@@ -1,7 +1,7 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-20 (Performance Tier 1 Implementation)
-**Current Version:** 0.2.26
+**Last Updated:** 2026-02-20 (Hotfix: Auth deadlock + Tier 2C)
+**Current Version:** 0.2.27
 **Active Branch:** main
 
 ---
@@ -19,9 +19,12 @@
 - [x] **Tier 1A: Add missing indexes** ✅ DONE — 3 composite indexes (groups.group_type, memberships, ugr)
 - [x] **Tier 1B: Admin service_role route** ✅ DONE — /api/admin/users bypasses RLS, 11 TDD tests
 - [x] **Tier 1C: Shared UserProfile context** ✅ DONE — eliminated 4-6 duplicate queries/page across 20+ files
+- [x] **HOTFIX: Auth deadlock in Supabase SSR** ✅ FIXED — profile resolution moved out of onAuthStateChange
+- [x] **HOTFIX: Navigation null safety** ✅ FIXED — full_name?.charAt(0) + safe alt attribute
+- [x] **HOTFIX: Admin API cookie auth** ✅ FIXED — pass JWT via Authorization header
+- [x] **Tier 2C: Remove has_permission() from SELECT RLS policies** ✅ DONE — admin handled by service_role
 - [ ] **Tier 2A: Parallelize group detail queries** — 8 sequential → 3 parallel steps
 - [ ] **Tier 2B: Fix N+1 on My Groups** — RPC for batch member counts
-- [ ] **Tier 2C: Remove has_permission() from SELECT RLS policies** — admin handled by service_role
 - [ ] **Tier 3: Admin polish** — debounce commonGroupCount, deduplicate stats
 
 **Blocked/Waiting:**
@@ -36,10 +39,10 @@
 
 ## Quick Stats
 
-- **Phase:** Performance Optimization (Tier 1 COMPLETE, Tier 2 next)
+- **Phase:** Performance Optimization (Tier 1 + 2C COMPLETE, Tier 2A/2B next)
 - **Total Tables:** 18 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 68 migration files
-- **Recent Version:** v0.2.26 (Performance Tier 1 — indexes, shared profile, admin API)
+- **Total Migrations:** 69 migration files
+- **Recent Version:** v0.2.27 (Hotfix: auth deadlock + Tier 2C admin SELECT policy removal)
 - **Test Coverage:** 414 integration + 99 unit + 4 setup = **517 tests, all passing** ✅
 - **Behaviors Documented:** 77 (58 previous + 19 admin) ✅
 - **Feature Docs:** 4 complete + 3 planned designs + 1 active (performance)
@@ -93,39 +96,23 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-20 (Performance Tier 1 Implementation)
+**Date:** 2026-02-20 (Hotfix: Auth deadlock + Tier 2C)
 **Summary:**
-- Implemented **Performance Tier 1** — all 3 sub-tasks complete:
-  - **1A: Database indexes** — 3 composite indexes for has_permission() and RLS
-  - **1C: Shared UserProfile** — AuthContext resolves profile once, 20+ files updated to eliminate 4-6 duplicate HTTP requests per page
-  - **1B: Admin API route** — `/api/admin/users` with service_role bypasses RLS (TDD: 11 tests)
-- AdminDataPanel users panel now fetches via server-side API (groups/journeys/enrollments unchanged)
-- **517 tests passing** (414 integration + 99 unit + 4 setup), up from 506
+- **CRITICAL HOTFIX:** Fixed Supabase SSR auth deadlock — `@supabase/ssr`'s `createBrowserClient` deadlocks when DB queries run inside `onAuthStateChange`. Restructured AuthContext to resolve profile in a separate `useEffect`.
+- **Tier 2C COMPLETE:** Dropped admin SELECT policies using `has_permission()` from users, group_memberships, user_group_roles, and groups tables. These caused query hangs for all authenticated users.
+- Fixed Navigation null safety (`full_name?.charAt(0)`)
+- Fixed admin API 401 — AdminDataPanel now passes JWT via Authorization header
 
 **Files Created:**
-- `supabase/migrations/20260220103052_add_performance_indexes.sql` — 3 indexes
-- `lib/admin/admin-users-query.ts` — server-side admin users query (service_role)
-- `app/api/admin/users/route.ts` — API route (JWT validation + admin check)
-- `tests/integration/admin/admin-users-api.test.ts` — 11 TDD tests for B-PERF-001
+- `supabase/migrations/20260220120833_hotfix_drop_admin_select_policies.sql`
 
-**Files Modified (20+ files — Tier 1C shared profile refactor):**
-- `lib/auth/AuthContext.tsx` — added userProfile state, resolveProfile, refreshProfile
-- `components/Navigation.tsx` — uses shared userProfile
-- `lib/messaging/MessagingContext.tsx` — removed profile resolution
-- `lib/notifications/NotificationContext.tsx` — removed profile resolution
-- `lib/hooks/usePermissions.ts` — uses shared userProfile
-- `components/groups/forum/ForumSection.tsx` — derives currentUserId from context
-- `components/groups/RoleFormModal.tsx` — uses userProfile.id
-- `components/groups/AssignRoleModal.tsx` — uses userProfile.id
-- `components/journeys/EnrollmentModal.tsx` — uses userProfile.id
-- `components/admin/AdminDataPanel.tsx` — users panel via API route
-- `app/groups/[id]/page.tsx` — major refactor, removed userData state
-- `app/groups/page.tsx`, `app/groups/create/page.tsx`, `app/groups/[id]/edit/page.tsx`
-- `app/invitations/page.tsx`, `app/journeys/[id]/page.tsx`, `app/journeys/[id]/play/page.tsx`
-- `app/my-journeys/page.tsx`, `app/profile/page.tsx`, `app/profile/edit/page.tsx`
-- `app/admin/page.tsx`, `app/admin/layout.tsx`, `app/admin/deusex/page.tsx`, `app/admin/fix-orphans/page.tsx`
+**Files Modified:**
+- `lib/auth/AuthContext.tsx` — restructured: profile resolution now in separate useEffect, not inside onAuthStateChange
+- `components/Navigation.tsx` — null safety for full_name and avatar alt
+- `components/admin/AdminDataPanel.tsx` — pass JWT via Authorization header for admin API
 
 **Previous Sessions (2026-02-20):**
+- Performance Tier 1 implementation (indexes, shared profile, admin API route) — v0.2.26
 - Performance analysis + admin bug fixes (design doc created)
 - Admin Sub-Sprint 3C UI wiring: all 10 action buttons with modals (v0.2.25)
 
@@ -135,12 +122,11 @@
 
 **See `docs/features/active/performance-optimization.md` for full plan**
 
-**Tier 1 COMPLETE** ✅
+**Tier 1 + 2C COMPLETE** ✅
 
-**Next — Performance Optimization (Tier 2):**
+**Next — Performance Optimization (Tier 2A/2B):**
 1. Parallelize group detail page queries (8 sequential → 3 parallel steps)
 2. Fix N+1 on My Groups with batch RPC
-3. Remove has_permission() from SELECT RLS policies
 
 **Then — Phase 1.6 Polish and Launch:**
 7. Mobile responsiveness audit

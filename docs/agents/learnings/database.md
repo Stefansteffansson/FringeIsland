@@ -165,4 +165,8 @@ Three missing indexes identified: (1) `groups(group_type)` — used in has_permi
 The policy has 5 OR branches: is_public, is_active_group_member() (2 sub-queries), is_invited_group_member() (2 sub-queries), get_current_user_profile_id() (1 sub-query), has_permission() (up to 2 sub-queries). For private groups where the user is not a member, all branches evaluate. PostgreSQL's OR short-circuit is not guaranteed by the planner.
 > Promoted to playbook? Not yet
 
+### 2026-02-20: Dropping admin SELECT policies as hotfix for query hangs
+The `deusex_admin_select_*` SELECT policies on `users`, `group_memberships`, and `user_group_roles` called `has_permission()` which was evaluated for EVERY authenticated SELECT — even for non-admin users. On resource-constrained databases, this caused queries to hang indefinitely. Since admin queries already bypass RLS via the service_role API route (Tier 1B), these SELECT policies were unnecessary. Also simplified the `groups` SELECT policy from 5 OR branches to 4 by removing the `has_permission()` branch. **Rule: never put expensive functions in SELECT RLS policies — use service_role bypass for admin access instead.**
+> Promoted to playbook? Not yet
+
 <!-- Append new entries below this line -->
