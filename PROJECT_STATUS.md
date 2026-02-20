@@ -1,7 +1,7 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-20 (Hotfix: Auth deadlock + Tier 2C)
-**Current Version:** 0.2.27
+**Last Updated:** 2026-02-20 (Realtime fixes + Admin filters + Auto force-logout)
+**Current Version:** 0.2.28
 **Active Branch:** main
 
 ---
@@ -41,8 +41,8 @@
 
 - **Phase:** Performance Optimization (Tier 1 + 2C COMPLETE, Tier 2A/2B next)
 - **Total Tables:** 18 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 69 migration files
-- **Recent Version:** v0.2.27 (Hotfix: auth deadlock + Tier 2C admin SELECT policy removal)
+- **Total Migrations:** 70 migration files
+- **Recent Version:** v0.2.28 (Realtime fixes + admin user filters + auto force-logout)
 - **Test Coverage:** 414 integration + 99 unit + 4 setup = **517 tests, all passing** ✅
 - **Behaviors Documented:** 77 (58 previous + 19 admin) ✅
 - **Feature Docs:** 4 complete + 3 planned designs + 1 active (performance)
@@ -96,25 +96,31 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-20 (Hotfix: Auth deadlock + Tier 2C)
+**Date:** 2026-02-20 (v0.2.28 — Realtime fixes + Admin filters + Auto force-logout)
 **Summary:**
-- **CRITICAL HOTFIX:** Fixed Supabase SSR auth deadlock — `@supabase/ssr`'s `createBrowserClient` deadlocks when DB queries run inside `onAuthStateChange`. Restructured AuthContext to resolve profile in a separate `useEffect`.
-- **Tier 2C COMPLETE:** Dropped admin SELECT policies using `has_permission()` from users, group_memberships, user_group_roles, and groups tables. These caused query hangs for all authenticated users.
-- Fixed Navigation null safety (`full_name?.charAt(0)`)
-- Fixed admin API 401 — AdminDataPanel now passes JWT via Authorization header
+- **Fixed Realtime notification/messaging errors** — `notifications` table was missing from `supabase_realtime` publication. Also fixed unstable supabase client references in NotificationContext, MessagingContext, and ConversationPage using `useMemo`.
+- **Admin user filter toggles** — Replaced single "Show decommissioned" checkbox with three-toggle pill UI: Active, Inactive, Decommissioned (default: Active + Inactive ON, Decommissioned OFF). Server-side PostgREST `.or()` filters match client-side logic.
+- **Admin "Select All" / "Select Page" / "Deselect All"** — "Select All" fetches all matching user IDs via paginated API (batches of 1000) to overcome Supabase row limit.
+- **Auto force-logout on deactivate/decommission** — Deactivate and decommission actions now call `admin_force_logout` RPC to invalidate existing sessions immediately.
 
 **Files Created:**
-- `supabase/migrations/20260220120833_hotfix_drop_admin_select_policies.sql`
+- `supabase/migrations/20260220161033_add_notifications_to_realtime_publication.sql`
 
 **Files Modified:**
-- `lib/auth/AuthContext.tsx` — restructured: profile resolution now in separate useEffect, not inside onAuthStateChange
-- `components/Navigation.tsx` — null safety for full_name and avatar alt
-- `components/admin/AdminDataPanel.tsx` — pass JWT via Authorization header for admin API
+- `lib/notifications/NotificationContext.tsx` — useMemo for supabase client, removed from deps
+- `lib/messaging/MessagingContext.tsx` — useMemo for supabase client, skip self-sent message recounts
+- `app/messages/[conversationId]/page.tsx` — useMemo for supabase, error callback on subscription
+- `lib/admin/admin-users-query.ts` — three-toggle filter logic + `queryAdminUserIds()` with batch pagination
+- `lib/admin/user-filter.ts` — `UserFilters` interface, `DEFAULT_USER_FILTERS`, `buildStatusFilterString()`
+- `app/api/admin/users/route.ts` — showActive, showInactive, idsOnly params
+- `app/admin/page.tsx` — userFilters state, auto force-logout on deactivate/decommission
+- `components/admin/AdminDataPanel.tsx` — FilterPill toggles, Select All/Page/Deselect buttons
+- `tests/unit/admin/user-filter.test.ts` — updated to three-toggle filter tests (19 passing)
 
 **Previous Sessions (2026-02-20):**
+- Hotfix: Auth deadlock + Tier 2C admin SELECT policy removal — v0.2.27
 - Performance Tier 1 implementation (indexes, shared profile, admin API route) — v0.2.26
 - Performance analysis + admin bug fixes (design doc created)
-- Admin Sub-Sprint 3C UI wiring: all 10 action buttons with modals (v0.2.25)
 
 ---
 
@@ -136,7 +142,6 @@
 **Known Issues:**
 - `app/admin/fix-orphans/page.tsx` uses `alert()` (should use ConfirmModal)
 - `ROADMAP.md` "Next Priorities" section is outdated (still references Phase 1.5 as next)
-- Groups SELECT policy `has_permission()` adds latency (~2s) — addressed in Tier 2C
 
 **What We're NOT Building Yet:**
 - See `docs/planning/DEFERRED_DECISIONS.md` for rationale on deferred features

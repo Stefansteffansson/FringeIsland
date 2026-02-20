@@ -12,6 +12,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.28] - 2026-02-20
+
+### Fixed
+- **Realtime notification/messaging errors** — Added `notifications` table to `supabase_realtime` publication (was missing, causing CHANNEL_ERROR). Fixed unstable supabase client references in NotificationContext, MessagingContext, and ConversationPage using `useMemo`.
+- **MessagingContext self-message recount** — Added sender_id check to skip recounting unread messages for the sender's own messages.
+- **ConversationPage missing error callback** — Added error status handler to Realtime subscription.
+
+### Added
+- **Admin user filter toggles** — Three-toggle pill UI (Active, Inactive, Decommissioned) replacing single "Show decommissioned" checkbox. Default: Active + Inactive ON, Decommissioned OFF. Server-side PostgREST `.or()` filters with `and()` sub-conditions for accurate filtering.
+- **Admin Select All / Select Page / Deselect All** — "Select All" fetches all matching user IDs via paginated API endpoint (`idsOnly=true`), batching in groups of 1000 to overcome Supabase row limit.
+- **Auto force-logout on deactivate/decommission** — Both admin actions now call `admin_force_logout` RPC to invalidate existing JWT sessions immediately, closing the session continuity gap.
+
+### Technical Details
+- **Migration:** `20260220161033_add_notifications_to_realtime_publication.sql`
+- **New exports:** `UserFilters`, `DEFAULT_USER_FILTERS`, `buildStatusFilterString()` in `lib/admin/user-filter.ts`
+- **New API params:** `showActive`, `showInactive`, `idsOnly` on `/api/admin/users`
+- **New function:** `queryAdminUserIds()` with batch pagination (1000/batch)
+- **Unit tests:** 19 passing for user filter logic
+
+---
+
 ## [0.2.27] - 2026-02-20
 
 ### Fixed
