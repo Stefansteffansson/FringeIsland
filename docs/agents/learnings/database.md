@@ -119,4 +119,30 @@ The `notify_group_deleted` trigger must fire BEFORE DELETE on groups, not AFTER,
 The `user_group_roles` INSERT RLS policy now calls `can_assign_role(user_id, group_role_id)` which checks: (1) user has `assign_roles` permission via `has_permission()`, and (2) anti-escalation — every permission on the target role must be held by the assigning user. This replaces the old `is_active_group_leader()` check and is the correct RBAC pattern.
 > Promoted to playbook? Not yet
 
+### 2026-02-20: PostgREST DELETE...RETURNING requires SELECT visibility
+
+When PostgREST executes a DELETE, it issues `DELETE ... RETURNING *`. This means the row must pass BOTH the DELETE policy AND a SELECT policy. An admin DELETE policy existed on `group_memberships`, but the only SELECT policy checked group membership — admins who aren't group members couldn't see the rows, so DELETE silently returned 0 rows. Fix: add a parallel admin SELECT policy on any table where admin DELETE is needed.
+
+**Pattern:** For every admin DELETE policy, ensure a matching admin SELECT policy exists on the same table.
+
+> Promoted to playbook? Not yet
+
+### 2026-02-20: Trigger functions querying RLS-protected tables need SECURITY DEFINER
+
+Two existing triggers (`validate_user_group_role`, `prevent_last_leader_removal`) query `group_roles` to validate operations. When an admin assigns a role in a group they don't belong to, RLS blocks the trigger from seeing `group_roles` rows, causing false validation failures ("Role X does not belong to group Y"). Fix: make these trigger functions SECURITY DEFINER. This extends the existing pattern: triggers that enforce business rules must bypass RLS to see all relevant data.
+
+> Promoted to playbook? Not yet
+
+### 2026-02-20: auth.refresh_tokens.user_id is varchar, not UUID
+
+The `auth.refresh_tokens` table stores `user_id` as `varchar`, not `UUID`. Comparing a UUID variable directly fails with `operator does not exist: character varying = uuid`. Fix: explicit cast `WHERE user_id = v_target_auth_id::text`. The `auth.sessions` table uses UUID normally — no cast needed there.
+
+> Promoted to playbook? Not yet
+
+### 2026-02-20: prevent_last_leader_removal needs name fallback, not just template ID
+
+The trigger was only checking `created_from_role_template_id` to identify Steward roles. Roles created without templates (e.g., in test setup) were not recognized as Steward roles, allowing the last Steward to be removed. Fix: check BOTH template ID AND `name = 'Steward'` as fallback. This partially reverts the 2026-02-16 decision to only check template ID.
+
+> Promoted to playbook? Not yet
+
 <!-- Append new entries below this line -->

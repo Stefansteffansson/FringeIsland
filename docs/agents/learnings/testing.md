@@ -76,4 +76,18 @@ The current users UPDATE policy allows any authenticated user to update any user
 
 ---
 
+### 2026-02-20: JWT access tokens survive session deletion — test refresh instead
+
+Force logout (deleting `auth.sessions` + `auth.refresh_tokens`) does NOT immediately invalidate existing JWT access tokens. PostgREST validates JWTs using the signing secret, not by checking `auth.sessions`. The JWT remains valid until natural expiry (~3600s). To test force logout, verify that `auth.refreshSession()` fails (returns error or null session), not that immediate API calls fail.
+
+**Pattern:** When testing session revocation, always test token REFRESH failure, not immediate API call failure.
+
+> Promoted to playbook? Not yet
+
+### 2026-02-20: Audit triggers detect admin operations via has_permission() check
+
+Rather than creating separate RPCs for each admin action (which would require rewriting tests), use AFTER triggers on the target tables that check `has_permission(caller, zero_uuid, 'manage_all_groups')`. If true, the trigger auto-creates an `admin_audit_log` entry. This approach: (a) keeps tests TDD-compliant (tests use standard Supabase client operations), (b) automatically captures all admin operations without explicit RPC calls.
+
+> Promoted to playbook? Not yet
+
 <!-- Append new entries below this line -->
