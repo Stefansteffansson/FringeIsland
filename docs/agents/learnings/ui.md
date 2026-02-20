@@ -47,4 +47,20 @@ Notification clicks should only mark as read, not navigate to other pages. If a 
 When sorting notifications, always put unread items first, then read items. Without this, unread notifications can be hidden below the fold (visible limit of ~10-15 items), causing the badge count to not match what the user sees.
 > Promoted to playbook? Not yet
 
+### 2026-02-20: Admin action modals — three modal patterns for different action types
+1. **ConfirmModal** — for destructive/irreversible actions (deactivate, delete, logout). Shows warning, requires explicit click.
+2. **Form modals** (NotifyModal, MessageModal) — for compose-and-send actions. Include form validation, loading spinner, error display within modal.
+3. **Picker modals** (GroupPickerModal) — for selection-then-action flows. Searchable list, selected highlight, mode-dependent button colors (red for remove, blue for invite/join).
+
+Key pattern: GroupPickerModal uses a single component with 3 modes (`invite`/`join`/`remove`) via `MODE_CONFIG` record. For `remove` mode, it computes the intersection of groups shared by ALL selected users. This is better than 3 separate modals.
+> Promoted to playbook? Not yet
+
+### 2026-02-20: Status message banner pattern for admin actions
+Instead of toast libraries or alert(), use a state-driven banner: `statusMessage: { type: 'success' | 'error', text: string } | null`. Auto-clear with `setTimeout` (5s) in a `useEffect`, plus a dismiss button. Shows above the main content area. Green for success, red for error, with border for subtle distinction. This is simpler than a toast system and works well for admin panels.
+> Promoted to playbook? Not yet
+
+### 2026-02-20: refreshTrigger pattern for parent-controlled data re-fetch
+When a parent component performs an action that changes data displayed by a child, pass a `refreshTrigger: number` prop that the parent increments after each mutation. The child includes this in its `useCallback` dependency array. This is cleaner than exposing a `refresh()` method via ref and works naturally with React's re-render cycle.
+> Promoted to playbook? Not yet
+
 <!-- Append new entries below this line -->

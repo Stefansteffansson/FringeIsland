@@ -44,7 +44,7 @@ This document outlines the implementation phases, milestones, and development pr
 
 FringeIsland development is organized into four major phases, each building on the previous:
 
-- **Phase 1: Foundation** - Core platform with predefined journeys ⏳ **IN PROGRESS (83%)**
+- **Phase 1: Foundation** - Core platform with predefined journeys ⏳ **IN PROGRESS (95%)**
 - **Phase 2: User-Generated Content** - Journey marketplace and customization
 - **Phase 3: Dynamic Journeys** - Adaptive learning paths
 - **Phase 4: Developer Platform** - API and integrations
@@ -59,7 +59,7 @@ FringeIsland development is organized into four major phases, each building on t
 
 ---
 
-## Phase 1: Foundation (MVP) ⏳ IN PROGRESS - 83% Complete
+## Phase 1: Foundation (MVP) ⏳ IN PROGRESS - 95% Complete
 
 **Goal**: Launch a working platform where groups can embark on predefined journeys together.
 
@@ -310,6 +310,24 @@ FringeIsland development is organized into four major phases, each building on t
 - ✅ Notification infrastructure supports membership flows
 
 **Completed**: February 15, 2026 (v0.2.14 - v0.2.15)
+
+---
+
+### Phase 1.5b: RBAC System ✅ COMPLETE
+
+**Status**: ✅ **COMPLETE** (v0.2.16 - v0.2.20)
+
+See `docs/features/planned/dynamic-permissions-system.md` for full design (22 decisions).
+4 sub-sprints: schema migration, permission system, UI migration, role management.
+
+---
+
+### Phase 1.5c: Admin Foundation ✅ COMPLETE
+
+**Status**: ✅ **COMPLETE** (v0.2.21 - v0.2.25)
+
+See `docs/features/active/deusex-admin-foundation.md` for full details.
+3 sub-sprints: DB foundation, admin panel UI, user management actions (10 actions wired).
 
 ---
 
@@ -965,5 +983,5 @@ FringeIsland development is organized into four major phases, each building on t
 ---
 
 **Document Version**: 1.6
-**Last Updated**: February 11, 2026 (RBAC design complete, Phase 1.5 priority elevated)
+**Last Updated**: February 20, 2026 (Admin Foundation complete v0.2.25, RBAC complete v0.2.20)
 **Next Review**: After communication system complete or March 2026
