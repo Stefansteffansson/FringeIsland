@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -51,7 +52,7 @@ export function MessagingProvider({
   children: React.ReactNode;
 }) {
   const { userProfile } = useAuth();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const userProfileId = userProfile?.id ?? null;
   const [unreadConversationCount, setUnreadConversationCount] = useState(0);
@@ -109,7 +110,11 @@ export function MessagingProvider({
 
     init();
 
-    // Subscribe to new messages via Realtime to update unread count
+    // Subscribe to new messages via Realtime to update unread count.
+    // Note: direct_messages has no recipient column, and Realtime filters only
+    // support eq, so we can't filter server-side by conversation list. Instead,
+    // we skip the recount when the current user sent the message (they already
+    // know about it) and let RLS filter the actual query.
     const channel = supabase
       .channel(`direct_messages:${userProfileId}`)
       .on(
@@ -119,9 +124,12 @@ export function MessagingProvider({
           schema: 'public',
           table: 'direct_messages',
         },
-        () => {
-          // A new message was inserted — delay briefly so the conversation
-          // page (if open) can update last_read_at before we recount
+        (payload) => {
+          const newMsg = payload.new as { sender_id?: string };
+          // Skip recount for messages we sent ourselves
+          if (newMsg.sender_id === userProfileId) return;
+          // Delay briefly so the conversation page (if open) can update
+          // last_read_at before we recount
           setTimeout(() => refreshUnreadCount(), 500);
         }
       )
@@ -139,7 +147,7 @@ export function MessagingProvider({
       channelRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userProfileId, supabase]);
+  }, [userProfileId]);
 
   // ── Step 3: Re-fetch on visibility change ────────────────────────────────
   useEffect(() => {
@@ -154,7 +162,7 @@ export function MessagingProvider({
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userProfileId, supabase]);
+  }, [userProfileId]);
 
   // ── Step 4: Hook into refreshNavigation ──────────────────────────────────
   useEffect(() => {
@@ -167,7 +175,7 @@ export function MessagingProvider({
     window.addEventListener('refreshNavigation', handleRefresh);
     return () => window.removeEventListener('refreshNavigation', handleRefresh);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userProfileId, supabase]);
+  }, [userProfileId]);
 
   return (
     <MessagingContext.Provider

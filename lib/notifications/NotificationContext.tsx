@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -49,7 +50,7 @@ export function NotificationProvider({
   children: React.ReactNode;
 }) {
   const { userProfile } = useAuth();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const userProfileId = userProfile?.id ?? null;
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -128,7 +129,8 @@ export function NotificationProvider({
       supabase.removeChannel(channel);
       channelRef.current = null;
     };
-  }, [userProfileId, supabase]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userProfileId]);
 
   // ── Step 3: Re-fetch unread count on page visibility change / reconnect ────
   useEffect(() => {
@@ -155,7 +157,8 @@ export function NotificationProvider({
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [userProfileId, supabase]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userProfileId]);
 
   // ── Step 4: Hook into refreshNavigation custom event ──────────────────────
   useEffect(() => {
@@ -180,7 +183,8 @@ export function NotificationProvider({
     return () => {
       window.removeEventListener('refreshNavigation', handleRefresh);
     };
-  }, [userProfileId, supabase]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userProfileId]);
 
   // ── Actions ───────────────────────────────────────────────────────────────
 

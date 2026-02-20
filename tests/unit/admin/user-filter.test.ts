@@ -6,8 +6,8 @@
  * - User count computation for the stat card
  * - Stat card label (always "Users", not "Active Users")
  *
- * Default filter: active + inactive visible, decommissioned hidden.
- * Toggle controls decommissioned visibility.
+ * Three filter toggles: showActive, showInactive, showDecommissioned.
+ * Default: active + inactive visible, decommissioned hidden.
  */
 
 import { describe, it, expect } from '@jest/globals';
@@ -15,8 +15,9 @@ import {
   filterUsers,
   computeUserCount,
   getUserStatLabel,
+  DEFAULT_USER_FILTERS,
   type AdminUser,
-  type UserFilterOptions,
+  type UserFilters,
 } from '@/lib/admin/user-filter';
 
 // --- Test Data ---
@@ -50,77 +51,133 @@ describe('B-ADMIN-002: User Filter Logic', () => {
     });
   });
 
-  describe('filterUsers — default (showDecommissioned: false)', () => {
-    const opts: UserFilterOptions = { showDecommissioned: false };
+  describe('DEFAULT_USER_FILTERS', () => {
+    it('defaults to active + inactive visible, decommissioned hidden', () => {
+      expect(DEFAULT_USER_FILTERS).toEqual({
+        showActive: true,
+        showInactive: true,
+        showDecommissioned: false,
+      });
+    });
+  });
+
+  describe('filterUsers — default filters (active + inactive, no decom)', () => {
+    const filters: UserFilters = { showActive: true, showInactive: true, showDecommissioned: false };
 
     it('shows active users', () => {
-      const result = filterUsers(allUsers, opts);
+      const result = filterUsers(allUsers, filters);
       expect(result).toContainEqual(activeUser);
       expect(result).toContainEqual(activeUser2);
     });
 
     it('shows inactive users (not decommissioned)', () => {
-      const result = filterUsers(allUsers, opts);
+      const result = filterUsers(allUsers, filters);
       expect(result).toContainEqual(inactiveUser);
       expect(result).toContainEqual(inactiveUser2);
     });
 
     it('hides decommissioned users', () => {
-      const result = filterUsers(allUsers, opts);
+      const result = filterUsers(allUsers, filters);
       const ids = result.map(u => u.id);
       expect(ids).not.toContain('decom-1');
       expect(ids).not.toContain('decom-2');
     });
 
     it('returns 4 users (2 active + 2 inactive, excludes 2 decommissioned)', () => {
-      const result = filterUsers(allUsers, opts);
+      const result = filterUsers(allUsers, filters);
       expect(result).toHaveLength(4);
     });
   });
 
-  describe('filterUsers — showDecommissioned: true', () => {
-    const opts: UserFilterOptions = { showDecommissioned: true };
+  describe('filterUsers — all three toggled ON', () => {
+    const filters: UserFilters = { showActive: true, showInactive: true, showDecommissioned: true };
 
     it('shows all users including decommissioned', () => {
-      const result = filterUsers(allUsers, opts);
+      const result = filterUsers(allUsers, filters);
       expect(result).toHaveLength(6);
     });
 
     it('includes decommissioned users', () => {
-      const result = filterUsers(allUsers, opts);
+      const result = filterUsers(allUsers, filters);
       expect(result).toContainEqual(decomUser);
       expect(result).toContainEqual(decomUser2);
     });
   });
 
+  describe('filterUsers — only active', () => {
+    const filters: UserFilters = { showActive: true, showInactive: false, showDecommissioned: false };
+
+    it('shows only active users', () => {
+      const result = filterUsers(allUsers, filters);
+      expect(result).toHaveLength(2);
+      expect(result).toContainEqual(activeUser);
+      expect(result).toContainEqual(activeUser2);
+    });
+  });
+
+  describe('filterUsers — only inactive', () => {
+    const filters: UserFilters = { showActive: false, showInactive: true, showDecommissioned: false };
+
+    it('shows only inactive non-decommissioned users', () => {
+      const result = filterUsers(allUsers, filters);
+      expect(result).toHaveLength(2);
+      expect(result).toContainEqual(inactiveUser);
+      expect(result).toContainEqual(inactiveUser2);
+    });
+  });
+
+  describe('filterUsers — only decommissioned', () => {
+    const filters: UserFilters = { showActive: false, showInactive: false, showDecommissioned: true };
+
+    it('shows only decommissioned users', () => {
+      const result = filterUsers(allUsers, filters);
+      expect(result).toHaveLength(2);
+      expect(result).toContainEqual(decomUser);
+      expect(result).toContainEqual(decomUser2);
+    });
+  });
+
+  describe('filterUsers — all toggled OFF', () => {
+    const filters: UserFilters = { showActive: false, showInactive: false, showDecommissioned: false };
+
+    it('returns empty array', () => {
+      const result = filterUsers(allUsers, filters);
+      expect(result).toHaveLength(0);
+    });
+  });
+
   describe('filterUsers — edge cases', () => {
     it('returns empty array for empty input', () => {
-      expect(filterUsers([], { showDecommissioned: false })).toHaveLength(0);
+      expect(filterUsers([], DEFAULT_USER_FILTERS)).toHaveLength(0);
     });
 
     it('returns empty array when all users are decommissioned and toggle is off', () => {
-      const result = filterUsers([decomUser, decomUser2], { showDecommissioned: false });
+      const result = filterUsers([decomUser, decomUser2], DEFAULT_USER_FILTERS);
       expect(result).toHaveLength(0);
     });
 
     it('returns all when no users are decommissioned regardless of toggle', () => {
       const nonDecom = [activeUser, inactiveUser];
-      expect(filterUsers(nonDecom, { showDecommissioned: false })).toHaveLength(2);
-      expect(filterUsers(nonDecom, { showDecommissioned: true })).toHaveLength(2);
+      expect(filterUsers(nonDecom, DEFAULT_USER_FILTERS)).toHaveLength(2);
+      expect(filterUsers(nonDecom, { showActive: true, showInactive: true, showDecommissioned: true })).toHaveLength(2);
     });
   });
 
   describe('computeUserCount', () => {
     it('counts only visible users (default: excludes decommissioned)', () => {
-      expect(computeUserCount(allUsers, { showDecommissioned: false })).toBe(4);
+      expect(computeUserCount(allUsers, DEFAULT_USER_FILTERS)).toBe(4);
     });
 
-    it('counts all users when decommissioned toggle is on', () => {
-      expect(computeUserCount(allUsers, { showDecommissioned: true })).toBe(6);
+    it('counts all users when all toggles are on', () => {
+      expect(computeUserCount(allUsers, { showActive: true, showInactive: true, showDecommissioned: true })).toBe(6);
+    });
+
+    it('counts only active when inactive and decom are off', () => {
+      expect(computeUserCount(allUsers, { showActive: true, showInactive: false, showDecommissioned: false })).toBe(2);
     });
 
     it('returns 0 for empty list', () => {
-      expect(computeUserCount([], { showDecommissioned: false })).toBe(0);
+      expect(computeUserCount([], DEFAULT_USER_FILTERS)).toBe(0);
     });
   });
 });

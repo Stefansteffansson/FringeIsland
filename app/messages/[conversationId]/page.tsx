@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -21,7 +21,7 @@ export default function ConversationPage() {
   const { user, loading: authLoading } = useAuth();
   const { userProfileId, refreshUnreadCount } = useMessaging();
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const [messages, setMessages] = useState<DirectMessage[]>([]);
   const [otherUser, setOtherUser] = useState<OtherUser | null>(null);
@@ -121,7 +121,7 @@ export default function ConversationPage() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, authLoading, userProfileId, conversationId, router, supabase]);
+  }, [user, authLoading, userProfileId, conversationId, router]);
 
   // Realtime subscription for new messages in this conversation
   useEffect(() => {
@@ -166,13 +166,17 @@ export default function ConversationPage() {
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'CHANNEL_ERROR') {
+          console.error('[ConversationPage] Realtime channel error');
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [conversationId, userProfileId, supabase]);
+  }, [conversationId, userProfileId]);
 
   const handleSend = async () => {
     if (!newMessage.trim() || !userProfileId || sending) return;

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { queryAdminUsers } from '@/lib/admin/admin-users-query';
+import { queryAdminUsers, queryAdminUserIds } from '@/lib/admin/admin-users-query';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -15,7 +15,10 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
  *   page (number, default 0)
  *   pageSize (number, default 10, max 100)
  *   search (string, optional)
+ *   showActive (boolean, default true)
+ *   showInactive (boolean, default true)
  *   showDecommissioned (boolean, default false)
+ *   idsOnly (boolean, default false) — returns only matching IDs (no pagination)
  */
 export async function GET(request: NextRequest) {
   try {
@@ -59,17 +62,40 @@ export async function GET(request: NextRequest) {
 
     // Parse query params
     const searchParams = request.nextUrl.searchParams;
+    const search = searchParams.get('search') || undefined;
+    const showActive = searchParams.get('showActive') !== 'false'; // default true
+    const showInactive = searchParams.get('showInactive') !== 'false'; // default true
+    const showDecommissioned = searchParams.get('showDecommissioned') === 'true'; // default false
+    const idsOnly = searchParams.get('idsOnly') === 'true';
+
+    if (idsOnly) {
+      // Return all matching IDs (no pagination)
+      const result = await queryAdminUserIds({
+        callerUserId: profile.id,
+        search,
+        showActive,
+        showInactive,
+        showDecommissioned,
+      });
+
+      if (result.error) {
+        return NextResponse.json({ error: result.error }, { status: 403 });
+      }
+
+      return NextResponse.json({ ids: result.ids });
+    }
+
+    // Standard paginated query
     const page = Math.max(0, parseInt(searchParams.get('page') || '0', 10));
     const pageSize = Math.min(100, Math.max(1, parseInt(searchParams.get('pageSize') || '10', 10)));
-    const search = searchParams.get('search') || undefined;
-    const showDecommissioned = searchParams.get('showDecommissioned') === 'true';
 
-    // Delegate to the query function (which also validates admin status)
     const result = await queryAdminUsers({
       callerUserId: profile.id,
       page,
       pageSize,
       search,
+      showActive,
+      showInactive,
       showDecommissioned,
     });
 

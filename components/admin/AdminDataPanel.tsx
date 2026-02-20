@@ -10,7 +10,7 @@ import {
   isAllVisibleSelected,
   getSelectedCount,
 } from '@/lib/admin/selection-model';
-import type { AdminUser } from '@/lib/admin/user-filter';
+import type { AdminUser, UserFilters } from '@/lib/admin/user-filter';
 
 type CardType = 'users' | 'groups' | 'journeys' | 'enrollments';
 
@@ -134,8 +134,8 @@ interface AdminDataPanelProps {
   // Users panel selection (only used when cardType === 'users')
   selectedIds?: Set<string>;
   onSelectionChange?: (newSelection: Set<string>) => void;
-  showDecommissioned?: boolean;
-  onShowDecommissionedChange?: (show: boolean) => void;
+  userFilters?: UserFilters;
+  onUserFiltersChange?: (filters: UserFilters) => void;
   onUsersDataChange?: (data: AdminUser[]) => void;
   // Increment to trigger data re-fetch (e.g. after an action modifies user data)
   refreshTrigger?: number;
@@ -147,7 +147,7 @@ function buildQuery(
   supabase: ReturnType<typeof createClient>,
   cardType: CardType,
   trimmedSearch: string,
-  showDecommissioned: boolean | undefined,
+  userFilters?: UserFilters,
 ) {
   switch (cardType) {
     case 'users': {
@@ -155,9 +155,20 @@ function buildQuery(
         .from('users')
         .select('id, full_name, email, is_active, is_decommissioned, created_at', { count: 'exact' })
         .order('created_at', { ascending: false });
-      if (!showDecommissioned) {
-        q = q.eq('is_decommissioned', false);
+
+      if (userFilters) {
+        const { showActive, showInactive, showDecommissioned } = userFilters;
+        if (!(showActive && showInactive && showDecommissioned)) {
+          const conditions: string[] = [];
+          if (showActive) conditions.push('and(is_active.eq.true,is_decommissioned.eq.false)');
+          if (showInactive) conditions.push('and(is_active.eq.false,is_decommissioned.eq.false)');
+          if (showDecommissioned) conditions.push('is_decommissioned.eq.true');
+          if (conditions.length > 0) {
+            q = q.or(conditions.join(','));
+          }
+        }
       }
+
       if (trimmedSearch) {
         q = q.or(`full_name.ilike.%${trimmedSearch}%,email.ilike.%${trimmedSearch}%`);
       }
@@ -198,19 +209,18 @@ async function fetchUsersViaAPI(
   page: number,
   pageSize: number,
   search: string,
-  showDecommissioned: boolean | undefined,
+  filters?: UserFilters,
 ): Promise<{ rows: any[]; count: number } | null> {
   const params = new URLSearchParams({
     page: String(page),
     pageSize: String(pageSize),
-    showDecommissioned: String(!!showDecommissioned),
+    showActive: String(filters?.showActive ?? true),
+    showInactive: String(filters?.showInactive ?? true),
+    showDecommissioned: String(filters?.showDecommissioned ?? false),
   });
   if (search) params.set('search', search);
 
   try {
-    // Get current session token to pass in Authorization header
-    // (cookie-based auth from @supabase/ssr uses chunked encoding that
-    // the API route can't easily parse, so pass the token explicitly)
     const supabase = createClient();
     const { data: { session } } = await supabase.auth.getSession();
     const headers: Record<string, string> = {};
@@ -227,18 +237,78 @@ async function fetchUsersViaAPI(
   }
 }
 
+// Fetch all matching user IDs via API (for "Select All" across pages)
+async function fetchAllUserIdsViaAPI(
+  search: string,
+  filters?: UserFilters,
+): Promise<string[] | null> {
+  const params = new URLSearchParams({
+    idsOnly: 'true',
+    showActive: String(filters?.showActive ?? true),
+    showInactive: String(filters?.showInactive ?? true),
+    showDecommissioned: String(filters?.showDecommissioned ?? false),
+  });
+  if (search) params.set('search', search);
+
+  try {
+    const supabase = createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    const headers: Record<string, string> = {};
+    if (session?.access_token) {
+      headers['Authorization'] = `Bearer ${session.access_token}`;
+    }
+
+    const res = await fetch(`/api/admin/users?${params.toString()}`, { headers });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.ids || [];
+  } catch {
+    return null;
+  }
+}
+
 interface CacheEntry {
   rows: any[];
   count: number;
 }
+
+// ─── Filter Toggle Pill ──────────────────────────────────────────────────────
+
+function FilterPill({
+  label,
+  active,
+  colorClass,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  colorClass: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all ${
+        active
+          ? `${colorClass} border-current`
+          : 'bg-gray-100 text-gray-400 border-gray-200 hover:bg-gray-150'
+      }`}
+    >
+      <span className={`inline-block w-2 h-2 rounded-full ${active ? 'bg-current' : 'bg-gray-300'}`} />
+      {label}
+    </button>
+  );
+}
+
+// ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function AdminDataPanel({
   cardType,
   totalCount,
   selectedIds,
   onSelectionChange,
-  showDecommissioned,
-  onShowDecommissionedChange,
+  userFilters,
+  onUserFiltersChange,
   onUsersDataChange,
   refreshTrigger,
 }: AdminDataPanelProps) {
@@ -249,6 +319,7 @@ export default function AdminDataPanel({
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [page, setPage] = useState(0);
   const [filteredCount, setFilteredCount] = useState(totalCount ?? 0);
+  const [selectingAll, setSelectingAll] = useState(false);
   const lastClickedIndexRef = useRef<number | null>(null);
   const prefetchCacheRef = useRef<Map<string, CacheEntry>>(new Map());
   const supabase = createClient();
@@ -260,8 +331,8 @@ export default function AdminDataPanel({
 
   // Build a cache key for a given page
   const cacheKey = useCallback(
-    (p: number) => `${cardType}|${p}|${debouncedSearch}|${showDecommissioned}|${refreshTrigger}`,
-    [cardType, debouncedSearch, showDecommissioned, refreshTrigger],
+    (p: number) => `${cardType}|${p}|${debouncedSearch}|${JSON.stringify(userFilters)}|${refreshTrigger}`,
+    [cardType, debouncedSearch, userFilters, refreshTrigger],
   );
 
   // Debounce search input
@@ -275,36 +346,39 @@ export default function AdminDataPanel({
   // Clear prefetch cache when filters/search/card change
   useEffect(() => {
     prefetchCacheRef.current.clear();
-  }, [cardType, debouncedSearch, showDecommissioned, refreshTrigger]);
+  }, [cardType, debouncedSearch, userFilters, refreshTrigger]);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(0);
+  }, [userFilters]);
 
   // Prefetch a page in the background (fire-and-forget)
   const prefetchPage = useCallback(
     (targetPage: number) => {
       const key = cacheKey(targetPage);
-      if (prefetchCacheRef.current.has(key)) return; // already cached
+      if (prefetchCacheRef.current.has(key)) return;
 
       const trimmedSearch = debouncedSearch.trim().toLowerCase();
 
       if (cardType === 'users') {
-        // Users: fetch via server-side API route (service_role, no RLS overhead)
-        fetchUsersViaAPI(targetPage, PAGE_SIZE, trimmedSearch, showDecommissioned).then((result) => {
+        fetchUsersViaAPI(targetPage, PAGE_SIZE, trimmedSearch, userFilters).then((result) => {
           if (result) {
             prefetchCacheRef.current.set(key, result);
           }
         });
       } else {
-        // Other card types: direct Supabase query
         const from = targetPage * PAGE_SIZE;
         const to = from + PAGE_SIZE - 1;
-        const query = buildQuery(supabase, cardType, trimmedSearch, showDecommissioned);
-        query.range(from, to).then(({ data: rows, count, error }) => {
+        const query = buildQuery(supabase, cardType, trimmedSearch, userFilters);
+        query.range(from, to).then(({ data: rows, count, error }: any) => {
           if (!error && rows) {
             prefetchCacheRef.current.set(key, { rows, count: count ?? 0 });
           }
         });
       }
     },
-    [supabase, cardType, debouncedSearch, showDecommissioned, cacheKey],
+    [supabase, cardType, debouncedSearch, userFilters, cacheKey],
   );
 
   const fetchData = useCallback(async () => {
@@ -318,7 +392,6 @@ export default function AdminDataPanel({
         onUsersDataChange(cached.rows as AdminUser[]);
       }
       setInitialLoading(false);
-      // Prefetch adjacent pages
       if (page < Math.ceil(cached.count / PAGE_SIZE) - 1) prefetchPage(page + 1);
       if (page > 0) prefetchPage(page - 1);
       return;
@@ -329,15 +402,13 @@ export default function AdminDataPanel({
       const trimmedSearch = debouncedSearch.trim().toLowerCase();
 
       if (cardType === 'users') {
-        // Users: fetch via server-side API route (service_role, no RLS overhead)
-        const result = await fetchUsersViaAPI(page, PAGE_SIZE, trimmedSearch, showDecommissioned);
+        const result = await fetchUsersViaAPI(page, PAGE_SIZE, trimmedSearch, userFilters);
         if (result) {
           setData(result.rows);
           setFilteredCount(result.count);
           if (onUsersDataChange) {
             onUsersDataChange(result.rows as AdminUser[]);
           }
-          // Prefetch adjacent pages
           const totalPgs = Math.ceil(result.count / PAGE_SIZE);
           if (page < totalPgs - 1) prefetchPage(page + 1);
           if (page > 0) prefetchPage(page - 1);
@@ -346,10 +417,9 @@ export default function AdminDataPanel({
           setData([]);
         }
       } else {
-        // Other card types: direct Supabase query
         const from = page * PAGE_SIZE;
         const to = from + PAGE_SIZE - 1;
-        const query = buildQuery(supabase, cardType, trimmedSearch, showDecommissioned);
+        const query = buildQuery(supabase, cardType, trimmedSearch, userFilters);
         const { data: rows, count, error } = await query.range(from, to);
 
         setFilteredCount(count ?? 0);
@@ -359,7 +429,6 @@ export default function AdminDataPanel({
           setData([]);
         } else {
           setData(rows || []);
-          // Prefetch adjacent pages
           const totalPgs = Math.ceil((count ?? 0) / PAGE_SIZE);
           if (page < totalPgs - 1) prefetchPage(page + 1);
           if (page > 0) prefetchPage(page - 1);
@@ -372,7 +441,7 @@ export default function AdminDataPanel({
     setFetching(false);
     setInitialLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardType, page, debouncedSearch, supabase, showDecommissioned, onUsersDataChange, refreshTrigger, cacheKey, prefetchPage]);
+  }, [cardType, page, debouncedSearch, supabase, userFilters, onUsersDataChange, refreshTrigger, cacheKey, prefetchPage]);
 
   useEffect(() => {
     fetchData();
@@ -415,6 +484,37 @@ export default function AdminDataPanel({
     }
   };
 
+  const handleSelectAll = async () => {
+    if (!isUsersPanel || !onSelectionChange) return;
+    setSelectingAll(true);
+    try {
+      const trimmedSearch = debouncedSearch.trim().toLowerCase();
+      const ids = await fetchAllUserIdsViaAPI(trimmedSearch, userFilters);
+      if (ids) {
+        onSelectionChange(new Set(ids));
+      }
+    } catch (err) {
+      console.error('Failed to select all users:', err);
+    }
+    setSelectingAll(false);
+  };
+
+  const handleSelectPage = () => {
+    if (!isUsersPanel || !onSelectionChange || !selectedIds) return;
+    onSelectionChange(selectAllVisible(selectedIds, visibleIds));
+  };
+
+  const handleDeselectAll = () => {
+    if (!isUsersPanel || !onSelectionChange) return;
+    onSelectionChange(new Set());
+  };
+
+  // --- Filter toggle handler ---
+  const toggleFilter = (key: keyof UserFilters) => {
+    if (!userFilters || !onUserFiltersChange) return;
+    onUserFiltersChange({ ...userFilters, [key]: !userFilters[key] });
+  };
+
   const searchPlaceholder = {
     users: 'Search by name or email...',
     groups: 'Search by group name...',
@@ -427,28 +527,74 @@ export default function AdminDataPanel({
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 animate-in fade-in duration-200">
-      {/* Search + Decommissioned Toggle */}
-      <div className="mb-4 flex items-center gap-4">
+      {/* Search */}
+      <div className="mb-3">
         <input
           type="text"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           placeholder={searchPlaceholder}
           disabled={cardType === 'enrollments'}
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-400"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-400"
         />
-        {isUsersPanel && onShowDecommissionedChange && (
-          <label className="flex items-center gap-2 text-sm text-gray-600 whitespace-nowrap cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showDecommissioned ?? false}
-              onChange={(e) => onShowDecommissionedChange(e.target.checked)}
-              className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-            Show decommissioned
-          </label>
-        )}
       </div>
+
+      {/* Filter Toggles + Selection Buttons (users only) */}
+      {isUsersPanel && userFilters && onUserFiltersChange && (
+        <div className="mb-3 flex flex-wrap items-center gap-3">
+          {/* Status filter pills */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-medium text-gray-500 mr-1">Show:</span>
+            <FilterPill
+              label="Active"
+              active={userFilters.showActive}
+              colorClass="bg-green-50 text-green-700"
+              onClick={() => toggleFilter('showActive')}
+            />
+            <FilterPill
+              label="Inactive"
+              active={userFilters.showInactive}
+              colorClass="bg-yellow-50 text-yellow-700"
+              onClick={() => toggleFilter('showInactive')}
+            />
+            <FilterPill
+              label="Decommissioned"
+              active={userFilters.showDecommissioned}
+              colorClass="bg-red-50 text-red-700"
+              onClick={() => toggleFilter('showDecommissioned')}
+            />
+          </div>
+
+          {/* Separator */}
+          <div className="h-5 w-px bg-gray-200" />
+
+          {/* Selection buttons */}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={handleSelectAll}
+              disabled={selectingAll || filteredCount === 0}
+              className="px-2.5 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              {selectingAll ? 'Selecting...' : `Select All (${filteredCount})`}
+            </button>
+            <button
+              onClick={handleSelectPage}
+              disabled={visibleIds.length === 0}
+              className="px-2.5 py-1 text-xs font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-md hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              Select Page
+            </button>
+            {selectedCount > 0 && (
+              <button
+                onClick={handleDeselectAll}
+                className="px-2.5 py-1 text-xs font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-md hover:bg-gray-100 transition-colors"
+              >
+                Deselect All
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Selection Counter */}
       {isUsersPanel && selectedCount > 0 && (

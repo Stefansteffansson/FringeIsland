@@ -12,6 +12,8 @@ import NotifyModal from '@/components/admin/NotifyModal';
 import MessageModal from '@/components/admin/MessageModal';
 import GroupPickerModal from '@/components/admin/GroupPickerModal';
 import type { AdminUser } from '@/lib/admin/user-filter';
+import { DEFAULT_USER_FILTERS } from '@/lib/admin/user-filter';
+import type { UserFilters } from '@/lib/admin/user-filter';
 import type { ActionName } from '@/lib/admin/action-bar-logic';
 import { clearsSelectionAfterAction } from '@/lib/admin/action-bar-logic';
 
@@ -43,7 +45,7 @@ export default function AdminDashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [expandedCard, setExpandedCard] = useState<CardType | null>(null);
-  const [showDecommissioned, setShowDecommissioned] = useState(false);
+  const [userFilters, setUserFilters] = useState<UserFilters>(DEFAULT_USER_FILTERS);
   const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set());
   const [usersData, setUsersData] = useState<AdminUser[]>([]);
   const [currentUserProfileId, setCurrentUserProfileId] = useState<string | null>(null);
@@ -123,10 +125,23 @@ export default function AdminDashboard() {
 
   const fetchStats = useCallback(async () => {
     try {
-      // Users count: default shows active + inactive (excludes decommissioned)
-      const usersQuery = showDecommissioned
-        ? supabase.from('users').select('*', { count: 'exact', head: true })
-        : supabase.from('users').select('*', { count: 'exact', head: true }).eq('is_decommissioned', false);
+      // Users count: apply status filters
+      let usersQuery = supabase.from('users').select('*', { count: 'exact', head: true });
+
+      // Build filter from toggles
+      const { showActive, showInactive, showDecommissioned } = userFilters;
+      if (!(showActive && showInactive && showDecommissioned)) {
+        const conditions: string[] = [];
+        if (showActive) conditions.push('and(is_active.eq.true,is_decommissioned.eq.false)');
+        if (showInactive) conditions.push('and(is_active.eq.false,is_decommissioned.eq.false)');
+        if (showDecommissioned) conditions.push('is_decommissioned.eq.true');
+        if (conditions.length > 0) {
+          usersQuery = usersQuery.or(conditions.join(','));
+        } else {
+          // All OFF — count will be 0
+          usersQuery = usersQuery.eq('id', '00000000-0000-0000-0000-000000000000');
+        }
+      }
 
       const [usersRes, groupsRes, journeysRes, enrollmentsRes] = await Promise.all([
         usersQuery,
@@ -153,7 +168,7 @@ export default function AdminDashboard() {
     }
 
     setLoading(false);
-  }, [supabase, showDecommissioned]);
+  }, [supabase, userFilters]);
 
   useEffect(() => {
     fetchStats();
@@ -163,8 +178,8 @@ export default function AdminDashboard() {
     setExpandedCard((prev) => (prev === cardType ? null : cardType));
   };
 
-  const handleShowDecommissionedChange = useCallback((show: boolean) => {
-    setShowDecommissioned(show);
+  const handleUserFiltersChange = useCallback((filters: UserFilters) => {
+    setUserFilters(filters);
   }, []);
 
   const handleSelectionChange = useCallback((newSelection: Set<string>) => {
@@ -240,8 +255,11 @@ export default function AdminDashboard() {
 
       if (error) throw error;
 
+      // Auto force-logout: invalidate sessions so deactivation takes effect immediately
+      await supabase.rpc('admin_force_logout', { target_user_ids: targetIds });
+
       await writeAuditLog('user_deactivated', targetIds.length, targetIds);
-      afterAction('deactivate', `Deactivated ${targetIds.length} user(s).`);
+      afterAction('deactivate', `Deactivated and logged out ${targetIds.length} user(s).`);
     } catch (err: any) {
       console.error('Deactivate failed:', err);
       setStatusMessage({ type: 'error', text: err.message || 'Failed to deactivate users.' });
@@ -260,8 +278,11 @@ export default function AdminDashboard() {
 
       if (error) throw error;
 
+      // Auto force-logout: invalidate sessions so decommission takes effect immediately
+      await supabase.rpc('admin_force_logout', { target_user_ids: targetIds });
+
       await writeAuditLog('user_decommissioned', targetIds.length, targetIds);
-      afterAction('delete_soft', `Decommissioned ${targetIds.length} user(s).`);
+      afterAction('delete_soft', `Decommissioned and logged out ${targetIds.length} user(s).`);
     } catch (err: any) {
       console.error('Decommission failed:', err);
       setStatusMessage({ type: 'error', text: err.message || 'Failed to decommission users.' });
@@ -665,7 +686,7 @@ export default function AdminDashboard() {
       case 'deactivate':
         showConfirm({
           title: 'Deactivate Users?',
-          message: `This will deactivate ${count} user${count !== 1 ? 's' : ''}. They will not be able to log in until reactivated.`,
+          message: `This will deactivate ${count} user${count !== 1 ? 's' : ''} and immediately log them out of all devices. They will not be able to log in until reactivated.`,
           confirmText: 'Deactivate',
           variant: 'warning',
           onConfirm: () => executeDeactivate(targetIds),
@@ -784,8 +805,8 @@ export default function AdminDashboard() {
             totalCount={stats[expandedCard]}
             selectedIds={expandedCard === 'users' ? selectedUserIds : undefined}
             onSelectionChange={expandedCard === 'users' ? handleSelectionChange : undefined}
-            showDecommissioned={expandedCard === 'users' ? showDecommissioned : undefined}
-            onShowDecommissionedChange={expandedCard === 'users' ? handleShowDecommissionedChange : undefined}
+            userFilters={expandedCard === 'users' ? userFilters : undefined}
+            onUserFiltersChange={expandedCard === 'users' ? handleUserFiltersChange : undefined}
             onUsersDataChange={expandedCard === 'users' ? handleUsersDataChange : undefined}
             refreshTrigger={expandedCard === 'users' ? refreshKey : undefined}
           />
