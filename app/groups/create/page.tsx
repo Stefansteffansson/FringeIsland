@@ -1,17 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
-import { createClient } from '@/lib/supabase/client';
 import GroupCreateForm from '@/components/groups/GroupCreateForm';
 
 export default function CreateGroupPage() {
-  const { user, loading: authLoading } = useAuth();
-  const [userId, setUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, userProfile, loading: authLoading } = useAuth();
   const router = useRouter();
-  const supabase = createClient();
 
   useEffect(() => {
     // Redirect to login if not authenticated
@@ -19,34 +15,12 @@ export default function CreateGroupPage() {
       router.push('/login');
       return;
     }
+  }, [user, authLoading, router]);
 
-    // Get user's database ID
-    const fetchUserId = async () => {
-      if (!user) return;
-
-      try {
-        const { data, error } = await supabase
-          .from('users')
-          .select('id')
-          .eq('auth_user_id', user.id)
-          .single();
-
-        if (error) throw error;
-        setUserId(data.id);
-      } catch (err) {
-        console.error('Error fetching user ID:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (user) {
-      fetchUserId();
-    }
-  }, [user, authLoading, router, supabase]);
+  const userId = userProfile?.id ?? null;
 
   // Show loading state
-  if (authLoading || loading) {
+  if (authLoading || !userProfile) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
         <div className="text-center">

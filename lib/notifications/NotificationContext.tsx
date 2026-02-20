@@ -48,49 +48,23 @@ export function NotificationProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useAuth();
+  const { userProfile } = useAuth();
   const supabase = createClient();
 
-  const [userProfileId, setUserProfileId] = useState<string | null>(null);
+  const userProfileId = userProfile?.id ?? null;
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
   const channelRef = useRef<RealtimeChannel | null>(null);
 
-  // ── Step 1: Resolve profile ID when auth user changes ──────────────────────
+  // Reset state when user logs out
   useEffect(() => {
-    if (!user) {
-      setUserProfileId(null);
+    if (!userProfileId) {
       setNotifications([]);
       setUnreadCount(0);
-      return;
     }
-
-    let cancelled = false;
-
-    const resolveProfile = async () => {
-      try {
-        const { data: profile } = await supabase
-          .from('users')
-          .select('id')
-          .eq('auth_user_id', user.id)
-          .single();
-
-        if (!cancelled && profile) {
-          setUserProfileId(profile.id);
-        }
-      } catch (err) {
-        console.error('[NotificationProvider] Failed to resolve profile id:', err);
-      }
-    };
-
-    resolveProfile();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [user, supabase]);
+  }, [userProfileId]);
 
   // ── Step 2: Fetch notifications + subscribe to Realtime ───────────────────
   useEffect(() => {

@@ -34,7 +34,7 @@ interface ConfirmModalState {
 }
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const [stats, setStats] = useState<PlatformStats>({
     users: null,
     groups: null,
@@ -67,19 +67,12 @@ export default function AdminDashboard() {
   });
   const supabase = createClient();
 
-  // Fetch current user's profile ID for audit log entries
+  // Set current user's profile ID from shared context
   useEffect(() => {
-    if (!user) return;
-    const fetchProfile = async () => {
-      const { data } = await supabase
-        .from('users')
-        .select('id')
-        .eq('auth_user_id', user.id)
-        .single();
-      if (data) setCurrentUserProfileId(data.id);
-    };
-    fetchProfile();
-  }, [user, supabase]);
+    if (userProfile) {
+      setCurrentUserProfileId(userProfile.id);
+    }
+  }, [userProfile]);
 
   // Auto-clear status message after 5 seconds
   useEffect(() => {

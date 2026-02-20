@@ -1,7 +1,7 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-20 (Performance Analysis + Admin Bug Fixes)
-**Current Version:** 0.2.25
+**Last Updated:** 2026-02-20 (Performance Tier 1 Implementation)
+**Current Version:** 0.2.26
 **Active Branch:** main
 
 ---
@@ -16,16 +16,16 @@
 - [x] **Admin infinite re-render bug** ✅ FIXED (useCallback wrapping)
 - [x] **AdminDataPanel optimizations** ✅ DONE (single query, prefetch, debounce, two-tier loading)
 - [x] **Deep performance analysis** ✅ DONE (5 root causes identified, 3-tier fix plan)
-- [ ] **Tier 1A: Add missing indexes** — migration (groups.group_type, memberships composite, ugr composite)
-- [ ] **Tier 1B: Admin service_role route** — bypass RLS for admin queries (biggest win)
-- [ ] **Tier 1C: Shared UserProfile context** — eliminate 4-6 duplicate user queries per page
+- [x] **Tier 1A: Add missing indexes** ✅ DONE — 3 composite indexes (groups.group_type, memberships, ugr)
+- [x] **Tier 1B: Admin service_role route** ✅ DONE — /api/admin/users bypasses RLS, 11 TDD tests
+- [x] **Tier 1C: Shared UserProfile context** ✅ DONE — eliminated 4-6 duplicate queries/page across 20+ files
 - [ ] **Tier 2A: Parallelize group detail queries** — 8 sequential → 3 parallel steps
 - [ ] **Tier 2B: Fix N+1 on My Groups** — RPC for batch member counts
 - [ ] **Tier 2C: Remove has_permission() from SELECT RLS policies** — admin handled by service_role
 - [ ] **Tier 3: Admin polish** — debounce commonGroupCount, deduplicate stats
 
 **Blocked/Waiting:**
-- None — ready to implement
+- None — Tier 2 ready to implement
 
 **Previous Feature (COMPLETE):**
 - [x] **Admin Sub-Sprint 1: DB Foundation** ✅ v0.2.21
@@ -36,11 +36,11 @@
 
 ## Quick Stats
 
-- **Phase:** Performance Optimization (pre-Phase 1.6 polish)
+- **Phase:** Performance Optimization (Tier 1 COMPLETE, Tier 2 next)
 - **Total Tables:** 18 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 67 migration files
-- **Recent Version:** v0.2.25 (Admin Sub-Sprint 3C UI Wiring - Feb 20, 2026)
-- **Test Coverage:** 403 integration + 99 unit + 4 setup = **506 tests, all passing** ✅
+- **Total Migrations:** 68 migration files
+- **Recent Version:** v0.2.26 (Performance Tier 1 — indexes, shared profile, admin API)
+- **Test Coverage:** 414 integration + 99 unit + 4 setup = **517 tests, all passing** ✅
 - **Behaviors Documented:** 77 (58 previous + 19 admin) ✅
 - **Feature Docs:** 4 complete + 3 planned designs + 1 active (performance)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
@@ -93,26 +93,41 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-20 (Performance Analysis Session)
+**Date:** 2026-02-20 (Performance Tier 1 Implementation)
 **Summary:**
-- Fixed **infinite re-render loop** in admin panel (unstable useCallback references in page.tsx)
-- Applied **5 AdminDataPanel optimizations**: single query with inline count, two-tier loading (skeleton → overlay), debounced search (300ms), prefetch adjacent pages, extracted buildQuery() helper
-- Conducted **deep Opus-level performance analysis** of entire system — 3 parallel analysis agents
-- Identified **5 root causes**: has_permission() per-row tax in RLS, 18-request query waterfall on group detail, N+1 on My Groups, missing indexes, admin-specific issues
-- Created comprehensive **design doc** with 3-tier implementation plan and expected results
-- **No code changes are uncommitted** beyond the admin bug fixes + AdminDataPanel optimizations
-
-**Files Modified (uncommitted):**
-- `app/admin/page.tsx` — useCallback fix for 3 handler functions
-- `components/admin/AdminDataPanel.tsx` — rewritten fetch logic (single query, prefetch cache, debounce, two-tier loading, buildQuery helper)
+- Implemented **Performance Tier 1** — all 3 sub-tasks complete:
+  - **1A: Database indexes** — 3 composite indexes for has_permission() and RLS
+  - **1C: Shared UserProfile** — AuthContext resolves profile once, 20+ files updated to eliminate 4-6 duplicate HTTP requests per page
+  - **1B: Admin API route** — `/api/admin/users` with service_role bypasses RLS (TDD: 11 tests)
+- AdminDataPanel users panel now fetches via server-side API (groups/journeys/enrollments unchanged)
+- **517 tests passing** (414 integration + 99 unit + 4 setup), up from 506
 
 **Files Created:**
-- `docs/features/active/performance-optimization.md` — full design doc
+- `supabase/migrations/20260220103052_add_performance_indexes.sql` — 3 indexes
+- `lib/admin/admin-users-query.ts` — server-side admin users query (service_role)
+- `app/api/admin/users/route.ts` — API route (JWT validation + admin check)
+- `tests/integration/admin/admin-users-api.test.ts` — 11 TDD tests for B-PERF-001
+
+**Files Modified (20+ files — Tier 1C shared profile refactor):**
+- `lib/auth/AuthContext.tsx` — added userProfile state, resolveProfile, refreshProfile
+- `components/Navigation.tsx` — uses shared userProfile
+- `lib/messaging/MessagingContext.tsx` — removed profile resolution
+- `lib/notifications/NotificationContext.tsx` — removed profile resolution
+- `lib/hooks/usePermissions.ts` — uses shared userProfile
+- `components/groups/forum/ForumSection.tsx` — derives currentUserId from context
+- `components/groups/RoleFormModal.tsx` — uses userProfile.id
+- `components/groups/AssignRoleModal.tsx` — uses userProfile.id
+- `components/journeys/EnrollmentModal.tsx` — uses userProfile.id
+- `components/admin/AdminDataPanel.tsx` — users panel via API route
+- `app/groups/[id]/page.tsx` — major refactor, removed userData state
+- `app/groups/page.tsx`, `app/groups/create/page.tsx`, `app/groups/[id]/edit/page.tsx`
+- `app/invitations/page.tsx`, `app/journeys/[id]/page.tsx`, `app/journeys/[id]/play/page.tsx`
+- `app/my-journeys/page.tsx`, `app/profile/page.tsx`, `app/profile/edit/page.tsx`
+- `app/admin/page.tsx`, `app/admin/layout.tsx`, `app/admin/deusex/page.tsx`, `app/admin/fix-orphans/page.tsx`
 
 **Previous Sessions (2026-02-20):**
+- Performance analysis + admin bug fixes (design doc created)
 - Admin Sub-Sprint 3C UI wiring: all 10 action buttons with modals (v0.2.25)
-- Admin Sub-Sprint 3C DB layer: 26 integration tests, RLS policies, RPCs, triggers (v0.2.24)
-- Admin Sub-Sprint 3B: UI Foundation, 99 unit tests, selection model, action bar (v0.2.23)
 
 ---
 
@@ -120,15 +135,12 @@
 
 **See `docs/features/active/performance-optimization.md` for full plan**
 
-**Immediate — Performance Optimization (Tier 1):**
-1. Add 3 missing database indexes (migration)
-2. Shared UserProfile in AuthContext (eliminate 4-6 duplicate queries/page)
-3. Admin API route with service_role (bypass RLS for admin — biggest win)
+**Tier 1 COMPLETE** ✅
 
 **Next — Performance Optimization (Tier 2):**
-4. Parallelize group detail page queries (8 sequential → 3 parallel steps)
-5. Fix N+1 on My Groups with batch RPC
-6. Remove has_permission() from SELECT RLS policies
+1. Parallelize group detail page queries (8 sequential → 3 parallel steps)
+2. Fix N+1 on My Groups with batch RPC
+3. Remove has_permission() from SELECT RLS policies
 
 **Then — Phase 1.6 Polish and Launch:**
 7. Mobile responsiveness audit

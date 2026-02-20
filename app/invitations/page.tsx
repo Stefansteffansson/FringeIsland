@@ -17,7 +17,7 @@ interface Invitation {
 }
 
 export default function InvitationsPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, userProfile, loading: authLoading } = useAuth();
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
@@ -44,23 +44,14 @@ export default function InvitationsPage() {
     }
 
     const fetchInvitations = async () => {
-      if (!user) return;
+      if (!userProfile) return;
 
       try {
-        // Get user's database ID
-        const { data: userData, error: userError } = await supabase
-          .from('users')
-          .select('id')
-          .eq('auth_user_id', user.id)
-          .single();
-
-        if (userError) throw userError;
-
         // Fetch pending invitations
         const { data: invitationsData, error: invitationsError } = await supabase
           .from('group_memberships')
           .select('id, group_id, added_by_user_id, added_at')
-          .eq('user_id', userData.id)
+          .eq('user_id', userProfile.id)
           .eq('status', 'invited');
 
         if (invitationsError) throw invitationsError;
@@ -112,10 +103,10 @@ export default function InvitationsPage() {
       }
     };
 
-    if (user) {
+    if (userProfile) {
       fetchInvitations();
     }
-  }, [user, authLoading, router, supabase]);
+  }, [user, userProfile, authLoading, router, supabase]);
 
   const handleAccept = async (invitationId: string, groupName: string) => {
     setProcessingId(invitationId);

@@ -17,7 +17,7 @@ interface EnrollmentInfo {
 export default function JourneyDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const [journey, setJourney] = useState<Journey | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,30 +40,22 @@ export default function JourneyDetailPage() {
   }, [journeyId]);
 
   useEffect(() => {
-    if (user && journeyId) {
+    if (userProfile && journeyId) {
       checkEnrollmentStatus();
     }
-  }, [user, journeyId]);
+  }, [userProfile, journeyId]);
 
   const checkEnrollmentStatus = async () => {
+    if (!userProfile) return;
     try {
       setCheckingEnrollment(true);
-
-      // Get user's database ID
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('auth_user_id', user!.id)
-        .single();
-
-      if (userError) throw userError;
 
       // Check individual enrollment
       const { data: individualEnrollment } = await supabase
         .from('journey_enrollments')
         .select('id')
         .eq('journey_id', journeyId)
-        .eq('user_id', userData.id)
+        .eq('user_id', userProfile.id)
         .maybeSingle();
 
       if (individualEnrollment) {
@@ -78,7 +70,7 @@ export default function JourneyDetailPage() {
       const { data: userGroups } = await supabase
         .from('group_memberships')
         .select('group_id')
-        .eq('user_id', userData.id)
+        .eq('user_id', userProfile.id)
         .eq('status', 'active');
 
       const groupIds = userGroups?.map(g => g.group_id) || [];

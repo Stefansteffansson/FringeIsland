@@ -13,7 +13,7 @@ interface OrphanedGroup {
 }
 
 export default function AdminFixOrphansPage() {
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const supabase = createClient();
   const router = useRouter();
   const [orphanedGroups, setOrphanedGroups] = useState<OrphanedGroup[]>([]);
@@ -83,20 +83,11 @@ export default function AdminFixOrphansPage() {
   }, [user, supabase]);
 
   const fixOrphanedGroup = async (group: OrphanedGroup) => {
-    if (!user) return;
+    if (!userProfile) return;
 
     setFixing(group.id);
 
     try {
-      // Get current user's database ID
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('auth_user_id', user.id)
-        .single();
-
-      if (userError) throw userError;
-
       // Find Group Leader role for this group
       const { data: leaderRole, error: roleError } = await supabase
         .from('group_roles')
@@ -114,7 +105,7 @@ export default function AdminFixOrphansPage() {
           user_id: group.created_by_user_id,
           group_id: group.id,
           group_role_id: leaderRole.id,
-          assigned_by_user_id: userData.id, // You (admin) are assigning it
+          assigned_by_user_id: userProfile.id, // You (admin) are assigning it
         });
 
       if (assignError) throw assignError;

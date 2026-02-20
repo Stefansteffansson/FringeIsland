@@ -193,6 +193,30 @@ function buildQuery(
   }
 }
 
+// Fetch users via server-side API route (uses service_role, bypasses RLS)
+async function fetchUsersViaAPI(
+  page: number,
+  pageSize: number,
+  search: string,
+  showDecommissioned: boolean | undefined,
+): Promise<{ rows: any[]; count: number } | null> {
+  const params = new URLSearchParams({
+    page: String(page),
+    pageSize: String(pageSize),
+    showDecommissioned: String(!!showDecommissioned),
+  });
+  if (search) params.set('search', search);
+
+  try {
+    const res = await fetch(`/api/admin/users?${params.toString()}`);
+    if (!res.ok) return null;
+    const json = await res.json();
+    return { rows: json.data || [], count: json.count ?? 0 };
+  } catch {
+    return null;
+  }
+}
+
 interface CacheEntry {
   rows: any[];
   count: number;
@@ -249,16 +273,26 @@ export default function AdminDataPanel({
       const key = cacheKey(targetPage);
       if (prefetchCacheRef.current.has(key)) return; // already cached
 
-      const from = targetPage * PAGE_SIZE;
-      const to = from + PAGE_SIZE - 1;
       const trimmedSearch = debouncedSearch.trim().toLowerCase();
 
-      const query = buildQuery(supabase, cardType, trimmedSearch, showDecommissioned);
-      query.range(from, to).then(({ data: rows, count, error }) => {
-        if (!error && rows) {
-          prefetchCacheRef.current.set(key, { rows, count: count ?? 0 });
-        }
-      });
+      if (cardType === 'users') {
+        // Users: fetch via server-side API route (service_role, no RLS overhead)
+        fetchUsersViaAPI(targetPage, PAGE_SIZE, trimmedSearch, showDecommissioned).then((result) => {
+          if (result) {
+            prefetchCacheRef.current.set(key, result);
+          }
+        });
+      } else {
+        // Other card types: direct Supabase query
+        const from = targetPage * PAGE_SIZE;
+        const to = from + PAGE_SIZE - 1;
+        const query = buildQuery(supabase, cardType, trimmedSearch, showDecommissioned);
+        query.range(from, to).then(({ data: rows, count, error }) => {
+          if (!error && rows) {
+            prefetchCacheRef.current.set(key, { rows, count: count ?? 0 });
+          }
+        });
+      }
     },
     [supabase, cardType, debouncedSearch, showDecommissioned, cacheKey],
   );
@@ -282,28 +316,44 @@ export default function AdminDataPanel({
 
     setFetching(true);
     try {
-      const from = page * PAGE_SIZE;
-      const to = from + PAGE_SIZE - 1;
       const trimmedSearch = debouncedSearch.trim().toLowerCase();
 
-      // Single query returns both rows AND count
-      const query = buildQuery(supabase, cardType, trimmedSearch, showDecommissioned);
-      const { data: rows, count, error } = await query.range(from, to);
-
-      setFilteredCount(count ?? 0);
-
-      if (error) {
-        console.error(`Failed to fetch ${cardType}:`, error);
-        setData([]);
-      } else {
-        setData(rows || []);
-        if (cardType === 'users' && onUsersDataChange && rows) {
-          onUsersDataChange(rows as AdminUser[]);
+      if (cardType === 'users') {
+        // Users: fetch via server-side API route (service_role, no RLS overhead)
+        const result = await fetchUsersViaAPI(page, PAGE_SIZE, trimmedSearch, showDecommissioned);
+        if (result) {
+          setData(result.rows);
+          setFilteredCount(result.count);
+          if (onUsersDataChange) {
+            onUsersDataChange(result.rows as AdminUser[]);
+          }
+          // Prefetch adjacent pages
+          const totalPgs = Math.ceil(result.count / PAGE_SIZE);
+          if (page < totalPgs - 1) prefetchPage(page + 1);
+          if (page > 0) prefetchPage(page - 1);
+        } else {
+          console.error('Failed to fetch users via API');
+          setData([]);
         }
-        // Prefetch adjacent pages
-        const totalPgs = Math.ceil((count ?? 0) / PAGE_SIZE);
-        if (page < totalPgs - 1) prefetchPage(page + 1);
-        if (page > 0) prefetchPage(page - 1);
+      } else {
+        // Other card types: direct Supabase query
+        const from = page * PAGE_SIZE;
+        const to = from + PAGE_SIZE - 1;
+        const query = buildQuery(supabase, cardType, trimmedSearch, showDecommissioned);
+        const { data: rows, count, error } = await query.range(from, to);
+
+        setFilteredCount(count ?? 0);
+
+        if (error) {
+          console.error(`Failed to fetch ${cardType}:`, error);
+          setData([]);
+        } else {
+          setData(rows || []);
+          // Prefetch adjacent pages
+          const totalPgs = Math.ceil((count ?? 0) / PAGE_SIZE);
+          if (page < totalPgs - 1) prefetchPage(page + 1);
+          if (page > 0) prefetchPage(page - 1);
+        }
       }
     } catch (err) {
       console.error(`Error fetching ${cardType}:`, err);

@@ -17,33 +17,14 @@ interface PostWithReplies extends ForumPostData {
 }
 
 export default function ForumSection({ groupId }: ForumSectionProps) {
-  const { user } = useAuth();
+  const { userProfile } = useAuth();
   const supabase = createClient();
   const { hasPermission } = usePermissions(groupId);
 
   const [posts, setPosts] = useState<PostWithReplies[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentUserId, setCurrentUserId] = useState<string>('');
-
-  // Fetch the user's internal DB id once
-  useEffect(() => {
-    const fetchUserId = async () => {
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from('users')
-        .select('id')
-        .eq('auth_user_id', user.id)
-        .single();
-
-      if (data) {
-        setCurrentUserId(data.id);
-      }
-    };
-
-    fetchUserId();
-  }, [user, supabase]);
+  const currentUserId = userProfile?.id ?? '';
 
   // Fetch posts + replies
   const fetchPosts = useCallback(async () => {

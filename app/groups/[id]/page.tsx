@@ -45,7 +45,7 @@ interface UserRole {
 }
 
 export default function GroupDetailPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, userProfile, loading: authLoading } = useAuth();
   const params = useParams();
   const groupId = params.id as string;
   const [group, setGroup] = useState<GroupData | null>(null);
@@ -54,7 +54,7 @@ export default function GroupDetailPage() {
   const [memberCount, setMemberCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Role management state
   const [assignRoleModalOpen, setAssignRoleModalOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<{
@@ -68,15 +68,14 @@ export default function GroupDetailPage() {
     roleName: string;
     memberName: string;
   } | null>(null);
-  
+
   // Invite member state
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
-  const [userData, setUserData] = useState<{ id: string } | null>(null);
 
   // Tab state and membership flag
   const [activeTab, setActiveTab] = useState<'overview' | 'forum'>('overview');
   const [isMember, setIsMember] = useState(false);
-  
+
   const router = useRouter();
   const supabase = createClient();
   const { permissions, hasPermission, refetch: refetchPermissions } = usePermissions(groupId);
@@ -89,20 +88,9 @@ export default function GroupDetailPage() {
     }
 
     const fetchGroupData = async () => {
-      if (!user) return;
+      if (!userProfile) return;
 
       try {
-        // Get user's database ID
-        const { data: userData, error: userError } = await supabase
-          .from('users')
-          .select('id')
-          .eq('auth_user_id', user.id)
-          .single();
-
-        if (userError) throw userError;
-
-        // Store userData for invite modal
-        setUserData(userData);
 
         // Fetch group data
         // Use maybeSingle() instead of single() to avoid error when group doesn't exist
@@ -130,7 +118,7 @@ export default function GroupDetailPage() {
           .from('group_memberships')
           .select('id')
           .eq('group_id', groupId)
-          .eq('user_id', userData.id)
+          .eq('user_id', userProfile.id)
           .eq('status', 'active')
           .maybeSingle();
 
@@ -165,7 +153,7 @@ export default function GroupDetailPage() {
               name
             )
           `)
-          .eq('user_id', userData.id)
+          .eq('user_id', userProfile.id)
           .eq('group_id', groupId);
 
         if (rolesError) throw rolesError;
@@ -249,25 +237,17 @@ export default function GroupDetailPage() {
       }
     };
 
-    if (user && groupId) {
+    if (userProfile && groupId) {
       fetchGroupData();
     }
-  }, [user, authLoading, groupId, router, supabase]);
+  }, [user, userProfile, authLoading, groupId, router, supabase]);
 
   // Role Management Functions
   const refetchMembers = async () => {
-    if (!user) return;
+    if (!userProfile) return;
     setLoading(true);
-    
+
     try {
-      const { data: userData } = await supabase
-        .from('users')
-        .select('id')
-        .eq('auth_user_id', user.id)
-        .single();
-
-      if (!userData) return;
-
       const { data: membershipsData } = await supabase
         .from('group_memberships')
         .select('user_id, added_at')
@@ -323,7 +303,7 @@ export default function GroupDetailPage() {
 
       // Update current user's display roles
       const currentUserRoles = allRolesData
-        .filter((r: any) => r.user_id === userData.id)
+        .filter((r: any) => r.user_id === userProfile.id)
         .map((r: any) => ({
           role_name: r.group_roles?.name || 'Unknown'
         }));
@@ -342,12 +322,12 @@ export default function GroupDetailPage() {
 
 
   const handleStartConversation = async (otherUserId: string) => {
-    if (!userData) return;
+    if (!userProfile) return;
 
     try {
       // Sort participant IDs (required by CHECK constraint)
-      const p1 = userData.id < otherUserId ? userData.id : otherUserId;
-      const p2 = userData.id < otherUserId ? otherUserId : userData.id;
+      const p1 = userProfile.id < otherUserId ? userProfile.id : otherUserId;
+      const p2 = userProfile.id < otherUserId ? otherUserId : userProfile.id;
 
       // Try to find existing conversation
       const { data: existing } = await supabase
@@ -664,7 +644,7 @@ export default function GroupDetailPage() {
                         {/* Member Action Buttons */}
                         <div className="flex flex-wrap gap-2 mt-2">
                           {/* Send Message (for non-self members) */}
-                          {userData && member.user_id !== userData.id && (
+                          {userProfile && member.user_id !== userProfile.id && (
                             <button
                               onClick={() => handleStartConversation(member.user_id)}
                               className="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition-colors font-medium"
@@ -790,11 +770,11 @@ export default function GroupDetailPage() {
       )}
 
       {/* Invite Member Modal */}
-      {inviteModalOpen && group && userData && (
+      {inviteModalOpen && group && userProfile && (
         <InviteMemberModal
           groupId={groupId}
           groupName={group.name}
-          currentUserId={userData.id}
+          currentUserId={userProfile.id}
           onClose={() => setInviteModalOpen(false)}
           onSuccess={refetchMembers}
         />

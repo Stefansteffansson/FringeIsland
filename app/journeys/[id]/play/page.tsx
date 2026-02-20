@@ -11,7 +11,7 @@ import JourneyPlayer from '@/components/journeys/JourneyPlayer';
 export default function JourneyPlayPage() {
   const params = useParams();
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
+  const { user, userProfile, loading: authLoading } = useAuth();
   const [journey, setJourney] = useState<Journey | null>(null);
   const [enrollment, setEnrollment] = useState<PlayerEnrollment | null>(null);
   const [loading, setLoading] = useState(true);
@@ -28,24 +28,16 @@ export default function JourneyPlayPage() {
   }, [authLoading, user]);
 
   useEffect(() => {
-    if (user && journeyId) {
+    if (userProfile && journeyId) {
       loadPlayerData();
     }
-  }, [user, journeyId]);
+  }, [userProfile, journeyId]);
 
   const loadPlayerData = async () => {
+    if (!userProfile) return;
     try {
       setLoading(true);
       setError(null);
-
-      // Get user's database profile ID
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('auth_user_id', user!.id)
-        .single();
-
-      if (userError) throw userError;
 
       // Fetch journey
       const { data: journeyData, error: journeyError } = await supabase
@@ -65,7 +57,7 @@ export default function JourneyPlayPage() {
         .from('journey_enrollments')
         .select('id, journey_id, user_id, group_id, status, progress_data, last_accessed_at, completed_at')
         .eq('journey_id', journeyId)
-        .eq('user_id', userData.id)
+        .eq('user_id', userProfile.id)
         .maybeSingle();
 
       if (individualEnrollment) {
@@ -78,7 +70,7 @@ export default function JourneyPlayPage() {
       const { data: userGroups } = await supabase
         .from('group_memberships')
         .select('group_id')
-        .eq('user_id', userData.id)
+        .eq('user_id', userProfile.id)
         .eq('status', 'active');
 
       const groupIds = userGroups?.map((g: { group_id: string }) => g.group_id) || [];

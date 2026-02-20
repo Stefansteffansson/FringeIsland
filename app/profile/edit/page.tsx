@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 import ProfileEditForm from '@/components/profile/ProfileEditForm';
 import AvatarUpload from '@/components/profile/AvatarUpload';
 
-interface UserProfile {
+interface EditableProfile {
   id: string;
   full_name: string;
   bio: string | null;
@@ -15,8 +15,8 @@ interface UserProfile {
 }
 
 export default function EditProfilePage() {
-  const { user, loading: authLoading } = useAuth();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const { user, userProfile, loading: authLoading } = useAuth();
+  const [profile, setProfile] = useState<EditableProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -29,19 +29,19 @@ export default function EditProfilePage() {
       return;
     }
 
-    // Fetch user profile data
+    // Fetch user profile data (needs bio beyond cached profile)
     const fetchProfile = async () => {
-      if (!user) return;
+      if (!userProfile) return;
 
       try {
         const { data, error: fetchError } = await supabase
           .from('users')
           .select('id, full_name, bio, avatar_url')
-          .eq('auth_user_id', user.id)
+          .eq('id', userProfile.id)
           .single();
 
         if (fetchError) throw fetchError;
-        
+
         setProfile(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load profile');
@@ -50,10 +50,10 @@ export default function EditProfilePage() {
       }
     };
 
-    if (user) {
+    if (userProfile) {
       fetchProfile();
     }
-  }, [user, authLoading, router, supabase]);
+  }, [user, userProfile, authLoading, router, supabase]);
 
   const handleAvatarUploadComplete = (url: string) => {
     // Update local state with new avatar URL

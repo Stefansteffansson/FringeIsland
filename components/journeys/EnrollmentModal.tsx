@@ -24,7 +24,7 @@ export default function EnrollmentModal({
   journeyTitle,
   onSuccess,
 }: EnrollmentModalProps) {
-  const { user } = useAuth();
+  const { userProfile } = useAuth();
   const [enrollmentType, setEnrollmentType] = useState<'individual' | 'group'>('individual');
   const [leaderGroups, setLeaderGroups] = useState<Group[]>([]);
   const [selectedGroupId, setSelectedGroupId] = useState<string>('');
@@ -37,10 +37,10 @@ export default function EnrollmentModal({
 
   // Fetch groups where user has enroll_group_in_journey permission
   useEffect(() => {
-    if (isOpen && enrollmentType === 'group' && user) {
+    if (isOpen && enrollmentType === 'group' && userProfile) {
       fetchEnrollableGroups();
     }
-  }, [isOpen, enrollmentType, user]);
+  }, [isOpen, enrollmentType, userProfile]);
 
   // Reset state when modal closes
   useEffect(() => {
@@ -72,24 +72,16 @@ export default function EnrollmentModal({
   }, [isOpen, loading, onClose]);
 
   const fetchEnrollableGroups = async () => {
+    if (!userProfile) return;
     try {
       setLoadingGroups(true);
       setError(null);
-
-      // Get user's database ID
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('auth_user_id', user!.id)
-        .single();
-
-      if (userError) throw userError;
 
       // Get all groups the user is an active member of
       const { data: memberships, error: membershipError } = await supabase
         .from('group_memberships')
         .select('group_id, groups!inner(id, name)')
-        .eq('user_id', userData.id)
+        .eq('user_id', userProfile.id)
         .eq('status', 'active');
 
       if (membershipError) throw membershipError;
@@ -99,7 +91,7 @@ export default function EnrollmentModal({
 
       for (const membership of memberships || []) {
         const { data: hasEnrollPerm } = await supabase.rpc('has_permission', {
-          p_user_id: userData.id,
+          p_user_id: userProfile.id,
           p_group_id: membership.group_id,
           p_permission_name: 'enroll_group_in_journey',
         });
@@ -123,25 +115,17 @@ export default function EnrollmentModal({
   };
 
   const handleEnroll = async () => {
+    if (!userProfile) return;
     try {
       setLoading(true);
       setError(null);
-
-      // Get user's database ID
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('auth_user_id', user!.id)
-        .single();
-
-      if (userError) throw userError;
 
       if (enrollmentType === 'individual') {
         // First, get user's group IDs
         const { data: userGroups } = await supabase
           .from('group_memberships')
           .select('group_id')
-          .eq('user_id', userData.id)
+          .eq('user_id', userProfile.id)
           .eq('status', 'active');
 
         const groupIds = userGroups?.map(g => g.group_id) || [];
@@ -168,9 +152,9 @@ export default function EnrollmentModal({
           .from('journey_enrollments')
           .insert({
             journey_id: journeyId,
-            user_id: userData.id,
+            user_id: userProfile.id,
             group_id: null,
-            enrolled_by_user_id: userData.id,
+            enrolled_by_user_id: userProfile.id,
             status: 'active',
             progress_data: {},
           });
@@ -206,7 +190,7 @@ export default function EnrollmentModal({
             journey_id: journeyId,
             user_id: null,
             group_id: selectedGroupId,
-            enrolled_by_user_id: userData.id,
+            enrolled_by_user_id: userProfile.id,
             status: 'active',
             progress_data: {},
           });

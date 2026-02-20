@@ -13,13 +13,13 @@ interface UsePermissionsResult {
 }
 
 export function usePermissions(groupId: string | null): UsePermissionsResult {
-  const { user } = useAuth();
+  const { userProfile } = useAuth();
   const [permissions, setPermissions] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchPermissions = useCallback(async () => {
-    if (!user || !groupId) {
+    if (!userProfile || !groupId) {
       setPermissions([]);
       setLoading(false);
       return;
@@ -30,24 +30,10 @@ export function usePermissions(groupId: string | null): UsePermissionsResult {
 
     const supabase = createClient();
 
-    // Get the public user ID from auth user ID
-    const { data: userData, error: userError } = await supabase
-      .from('users')
-      .select('id')
-      .eq('auth_user_id', user.id)
-      .single();
-
-    if (userError || !userData) {
-      setError('Failed to resolve user');
-      setPermissions([]);
-      setLoading(false);
-      return;
-    }
-
     const { data, error: rpcError } = await supabase.rpc(
       'get_user_permissions',
       {
-        p_user_id: userData.id,
+        p_user_id: userProfile.id,
         p_group_id: groupId,
       }
     );
@@ -60,7 +46,7 @@ export function usePermissions(groupId: string | null): UsePermissionsResult {
     }
 
     setLoading(false);
-  }, [user, groupId]);
+  }, [userProfile, groupId]);
 
   useEffect(() => {
     fetchPermissions();

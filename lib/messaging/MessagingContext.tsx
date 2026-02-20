@@ -50,46 +50,20 @@ export function MessagingProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useAuth();
+  const { userProfile } = useAuth();
   const supabase = createClient();
 
-  const [userProfileId, setUserProfileId] = useState<string | null>(null);
+  const userProfileId = userProfile?.id ?? null;
   const [unreadConversationCount, setUnreadConversationCount] = useState(0);
 
   const channelRef = useRef<RealtimeChannel | null>(null);
 
-  // ── Step 1: Resolve profile ID ───────────────────────────────────────────
+  // Reset unread count when user logs out
   useEffect(() => {
-    if (!user) {
-      setUserProfileId(null);
+    if (!userProfileId) {
       setUnreadConversationCount(0);
-      return;
     }
-
-    let cancelled = false;
-
-    const resolveProfile = async () => {
-      try {
-        const { data: profile } = await supabase
-          .from('users')
-          .select('id')
-          .eq('auth_user_id', user.id)
-          .single();
-
-        if (!cancelled && profile) {
-          setUserProfileId(profile.id);
-        }
-      } catch (err) {
-        console.error('[MessagingProvider] Failed to resolve profile id:', err);
-      }
-    };
-
-    resolveProfile();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [user, supabase]);
+  }, [userProfileId]);
 
   // ── Step 2: Count unread conversations + subscribe to Realtime ──────────
   const refreshUnreadCount = async () => {

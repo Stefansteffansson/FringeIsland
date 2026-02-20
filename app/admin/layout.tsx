@@ -10,7 +10,7 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading: authLoading } = useAuth();
+  const { user, userProfile, loading: authLoading } = useAuth();
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -25,23 +25,16 @@ export default function AdminLayout({
     }
 
     const checkPermission = async () => {
+      if (!userProfile) {
+        setHasAccess(false);
+        setLoading(false);
+        return;
+      }
+
       try {
-        // Get user's profile ID
-        const { data: userData, error: userError } = await supabase
-          .from('users')
-          .select('id')
-          .eq('auth_user_id', user.id)
-          .single();
-
-        if (userError || !userData) {
-          setHasAccess(false);
-          setLoading(false);
-          return;
-        }
-
         // Check manage_all_groups permission (Tier 1 — works with any group_id)
         const { data, error } = await supabase.rpc('has_permission', {
-          p_user_id: userData.id,
+          p_user_id: userProfile.id,
           p_group_id: '00000000-0000-0000-0000-000000000000',
           p_permission_name: 'manage_all_groups',
         });

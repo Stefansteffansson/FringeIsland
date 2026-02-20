@@ -15,11 +15,10 @@ export const refreshNavigation = () => {
 };
 
 export default function Navigation() {
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const { unreadConversationCount } = useMessaging();
   const pathname = usePathname();
   const router = useRouter();
-  const [userData, setUserData] = useState<{ full_name: string; avatar_url: string | null } | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [invitationCount, setInvitationCount] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -35,43 +34,32 @@ export default function Navigation() {
   }, [pathname]);
 
   useEffect(() => {
-    if (!user || hideNav) return;
+    if (!userProfile || hideNav) return;
 
-    const fetchUserData = async () => {
+    const fetchNavData = async () => {
       try {
-        // Get user profile data
-        const { data: profile } = await supabase
-          .from('users')
-          .select('id, full_name, avatar_url')
-          .eq('auth_user_id', user.id)
-          .single();
+        // Get invitation count
+        const { count } = await supabase
+          .from('group_memberships')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', userProfile.id)
+          .eq('status', 'invited');
 
-        if (profile) {
-          setUserData(profile);
+        setInvitationCount(count || 0);
 
-          // Get invitation count
-          const { count } = await supabase
-            .from('group_memberships')
-            .select('*', { count: 'exact', head: true })
-            .eq('user_id', profile.id)
-            .eq('status', 'invited');
-
-          setInvitationCount(count || 0);
-
-          // Check admin permission (Deusex member)
-          const { data: hasAdminPerm } = await supabase.rpc('has_permission', {
-            p_user_id: profile.id,
-            p_group_id: '00000000-0000-0000-0000-000000000000',
-            p_permission_name: 'manage_all_groups',
-          });
-          setIsAdmin(hasAdminPerm === true);
-        }
+        // Check admin permission (Deusex member)
+        const { data: hasAdminPerm } = await supabase.rpc('has_permission', {
+          p_user_id: userProfile.id,
+          p_group_id: '00000000-0000-0000-0000-000000000000',
+          p_permission_name: 'manage_all_groups',
+        });
+        setIsAdmin(hasAdminPerm === true);
       } catch (err) {
-        console.error('Error fetching user data:', err);
+        console.error('Error fetching nav data:', err);
       }
     };
 
-    fetchUserData();
+    fetchNavData();
 
     // Close user menu when user changes
     setShowUserMenu(false);
@@ -86,7 +74,7 @@ export default function Navigation() {
     return () => {
       window.removeEventListener('refreshNavigation', handleRefresh);
     };
-  }, [user, hideNav, supabase, refreshKey]);
+  }, [userProfile, hideNav, supabase, refreshKey]);
 
   const handleLogout = async () => {
     try {
@@ -201,22 +189,22 @@ export default function Navigation() {
               className="flex items-center gap-3 hover:bg-gray-50 rounded-lg p-2 transition-all"
             >
               <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-purple-500">
-                {userData?.avatar_url ? (
+                {userProfile?.avatar_url ? (
                   <Image
-                    src={userData.avatar_url}
-                    alt={userData.full_name}
+                    src={userProfile.avatar_url}
+                    alt={userProfile.full_name}
                     fill
                     sizes="40px"
                     className="object-cover"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-white font-bold text-lg">
-                    {userData?.full_name.charAt(0).toUpperCase() || 'U'}
+                    {userProfile?.full_name.charAt(0).toUpperCase() || 'U'}
                   </div>
                 )}
               </div>
               <span className="hidden md:inline text-gray-700 font-medium">
-                {userData?.full_name || 'User'}
+                {userProfile?.full_name || 'User'}
               </span>
               <span className="text-gray-400">▼</span>
             </button>
@@ -233,7 +221,7 @@ export default function Navigation() {
                 {/* Menu */}
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-40">
                   <div className="px-4 py-3 border-b border-gray-100">
-                    <p className="text-sm font-semibold text-gray-900">{userData?.full_name}</p>
+                    <p className="text-sm font-semibold text-gray-900">{userProfile?.full_name}</p>
                     <p className="text-xs text-gray-500">{user.email}</p>
                   </div>
 

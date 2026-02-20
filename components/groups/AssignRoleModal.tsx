@@ -30,7 +30,7 @@ export default function AssignRoleModal({
   userPermissions,
   onSuccess,
 }: AssignRoleModalProps) {
-  const { user } = useAuth();
+  const { userProfile } = useAuth();
   const supabase = createClient();
   const [availableRoles, setAvailableRoles] = useState<GroupRole[]>([]);
   const [selectedRoleId, setSelectedRoleId] = useState<string>('');
@@ -119,7 +119,7 @@ export default function AssignRoleModal({
 
   // Handle assign role
   const handleAssignRole = async () => {
-    if (!selectedRoleId || !user) {
+    if (!selectedRoleId || !userProfile) {
       setError('Please select a role');
       return;
     }
@@ -128,15 +128,6 @@ export default function AssignRoleModal({
     setError(null);
 
     try {
-      // Get current user's database ID
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('auth_user_id', user.id)
-        .single();
-
-      if (userError) throw userError;
-
       // Assign the role
       const { error: assignError } = await supabase
         .from('user_group_roles')
@@ -144,7 +135,7 @@ export default function AssignRoleModal({
           user_id: memberId,
           group_id: groupId,
           group_role_id: selectedRoleId,
-          assigned_by_user_id: userData.id,
+          assigned_by_user_id: userProfile.id,
         });
 
       if (assignError) throw assignError;

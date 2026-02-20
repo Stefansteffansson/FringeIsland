@@ -17,7 +17,7 @@ interface Group {
 }
 
 export default function GroupsPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, userProfile, loading: authLoading } = useAuth();
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,23 +33,14 @@ export default function GroupsPage() {
 
     // Fetch user's groups
     const fetchGroups = async () => {
-      if (!user) return;
+      if (!userProfile) return;
 
       try {
-        // Get user's database ID
-        const { data: userData, error: userError } = await supabase
-          .from('users')
-          .select('id')
-          .eq('auth_user_id', user.id)
-          .single();
-
-        if (userError) throw userError;
-
         // Get group IDs where user is a member
         const { data: memberships, error: membershipsError } = await supabase
           .from('group_memberships')
           .select('group_id')
-          .eq('user_id', userData.id)
+          .eq('user_id', userProfile.id)
           .eq('status', 'active');
 
         if (membershipsError) throw membershipsError;
@@ -95,10 +86,10 @@ export default function GroupsPage() {
       }
     };
 
-    if (user) {
+    if (userProfile) {
       fetchGroups();
     }
-  }, [user, authLoading, router, supabase]);
+  }, [user, userProfile, authLoading, router, supabase]);
 
   // Show loading state
   if (authLoading || loading) {

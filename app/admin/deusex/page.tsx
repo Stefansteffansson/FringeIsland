@@ -18,7 +18,7 @@ interface DeusexMember {
 }
 
 export default function DeusexManagementPage() {
-  const { user } = useAuth();
+  const { userProfile } = useAuth();
   const [members, setMembers] = useState<DeusexMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string>('');
@@ -46,14 +46,9 @@ export default function DeusexManagementPage() {
       if (!deusexGroup) return;
       setDeusexGroupId(deusexGroup.id);
 
-      // Get current user profile ID
-      if (user) {
-        const { data: profile } = await supabase
-          .from('users')
-          .select('id')
-          .eq('auth_user_id', user.id)
-          .single();
-        if (profile) setCurrentUserId(profile.id);
+      // Get current user profile ID from shared context
+      if (userProfile) {
+        setCurrentUserId(userProfile.id);
       }
 
       // Fetch DeusEx members
@@ -86,7 +81,7 @@ export default function DeusexManagementPage() {
     }
 
     setLoading(false);
-  }, [user, supabase]);
+  }, [userProfile, supabase]);
 
   useEffect(() => {
     fetchMembers();

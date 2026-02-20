@@ -28,7 +28,7 @@ export default function RoleFormModal({
   userPermissions,
   editRole = null,
 }: RoleFormModalProps) {
-  const { user } = useAuth();
+  const { userProfile } = useAuth();
   const supabase = createClient();
 
   const [name, setName] = useState('');
@@ -123,7 +123,7 @@ export default function RoleFormModal({
   };
 
   const handleSubmit = async (skipLockoutCheck = false) => {
-    if (!user) return;
+    if (!userProfile) return;
 
     const trimmedName = name.trim();
     if (!trimmedName) {
@@ -136,15 +136,6 @@ export default function RoleFormModal({
     setLockoutWarning(null);
 
     try {
-      // Get current user's database ID
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('auth_user_id', user.id)
-        .single();
-
-      if (userError) throw userError;
-
       if (isEditing && editRole) {
         // Sync permissions: compute what's being removed/added
         const currentIds = new Set(editRole.permissionIds);
@@ -154,7 +145,7 @@ export default function RoleFormModal({
 
         // Self-lockout check (only on first attempt, skip if user confirmed)
         if (!skipLockoutCheck && toRemove.length > 0) {
-          const warning = await checkSelfLockout(userData.id, toRemove);
+          const warning = await checkSelfLockout(userProfile.id, toRemove);
           if (warning) {
             setLockoutWarning(warning);
             setLoading(false);

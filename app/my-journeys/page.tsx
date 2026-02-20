@@ -33,7 +33,7 @@ interface GroupJourneyEnrollment extends JourneyEnrollment {
 }
 
 export default function MyJourneysPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, userProfile, loading: authLoading } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'individual' | 'group'>('individual');
   const [individualJourneys, setIndividualJourneys] = useState<JourneyEnrollment[]>([]);
@@ -49,24 +49,16 @@ export default function MyJourneysPage() {
       return;
     }
 
-    if (user) {
+    if (userProfile) {
       fetchEnrollments();
     }
-  }, [user, authLoading]);
+  }, [user, userProfile, authLoading]);
 
   const fetchEnrollments = async () => {
+    if (!userProfile) return;
     try {
       setLoading(true);
       setError(null);
-
-      // Get user's database ID
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('auth_user_id', user!.id)
-        .single();
-
-      if (userError) throw userError;
 
       // Fetch individual enrollments
       const { data: individualData, error: individualError } = await supabase
@@ -85,7 +77,7 @@ export default function MyJourneysPage() {
             estimated_duration_minutes
           )
         `)
-        .eq('user_id', userData.id)
+        .eq('user_id', userProfile.id)
         .not('journeys', 'is', null)
         .order('enrolled_at', { ascending: false });
 
@@ -95,7 +87,7 @@ export default function MyJourneysPage() {
       const { data: userGroups } = await supabase
         .from('group_memberships')
         .select('group_id')
-        .eq('user_id', userData.id)
+        .eq('user_id', userProfile.id)
         .eq('status', 'active');
 
       const groupIds = userGroups?.map(g => g.group_id) || [];

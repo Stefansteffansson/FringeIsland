@@ -17,7 +17,7 @@ interface GroupData {
 }
 
 export default function EditGroupPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, userProfile, loading: authLoading } = useAuth();
   const params = useParams();
   const groupId = params.id as string;
   const router = useRouter();
@@ -48,18 +48,9 @@ export default function EditGroupPage() {
     }
 
     const fetchGroupData = async () => {
-      if (!user) return;
+      if (!userProfile) return;
 
       try {
-        // Get user's database ID
-        const { data: userData, error: userError } = await supabase
-          .from('users')
-          .select('id')
-          .eq('auth_user_id', user.id)
-          .single();
-
-        if (userError) throw userError;
-
         // Fetch group data
         const { data: groupData, error: groupError } = await supabase
           .from('groups')
@@ -87,10 +78,10 @@ export default function EditGroupPage() {
       }
     };
 
-    if (user) {
+    if (userProfile) {
       fetchGroupData();
     }
-  }, [user, authLoading, groupId, router, supabase]);
+  }, [user, userProfile, authLoading, groupId, router, supabase]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

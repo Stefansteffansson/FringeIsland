@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { createClient } from '@/lib/supabase/client';
 import Image from 'next/image';
 
-interface UserProfile {
+interface ProfileData {
   full_name: string;
   bio: string | null;
   avatar_url: string | null;
@@ -14,8 +14,8 @@ interface UserProfile {
 }
 
 export default function ProfilePage() {
-  const { user, loading: authLoading, signOut } = useAuth();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const { user, userProfile, loading: authLoading, signOut } = useAuth();
+  const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const supabase = createClient();
@@ -27,13 +27,14 @@ export default function ProfilePage() {
     }
 
     const fetchProfile = async () => {
-      if (!user) return;
+      if (!userProfile) return;
 
       try {
+        // Profile page needs bio + created_at beyond what's cached in userProfile
         const { data, error } = await supabase
           .from('users')
           .select('full_name, bio, avatar_url, created_at')
-          .eq('auth_user_id', user.id)
+          .eq('id', userProfile.id)
           .single();
 
         if (error) throw error;
@@ -45,10 +46,10 @@ export default function ProfilePage() {
       }
     };
 
-    if (user) {
+    if (userProfile) {
       fetchProfile();
     }
-  }, [user, authLoading, router, supabase]);
+  }, [user, userProfile, authLoading, router, supabase]);
 
   const handleSignOut = async () => {
     await signOut();
