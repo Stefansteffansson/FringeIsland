@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-20 (Realtime fixes + Admin filters + Auto force-logout)
+**Last Updated:** 2026-02-21 (Performance Tier 2A — parallelized group detail queries)
 **Current Version:** 0.2.28
 **Active Branch:** main
 
@@ -23,8 +23,8 @@
 - [x] **HOTFIX: Navigation null safety** ✅ FIXED — full_name?.charAt(0) + safe alt attribute
 - [x] **HOTFIX: Admin API cookie auth** ✅ FIXED — pass JWT via Authorization header
 - [x] **Tier 2C: Remove has_permission() from SELECT RLS policies** ✅ DONE — admin handled by service_role
-- [ ] **Tier 2A: Parallelize group detail queries** — 8 sequential → 3 parallel steps
-- [ ] **Tier 2B: Fix N+1 on My Groups** — RPC for batch member counts
+- [x] **Tier 2A: Parallelize group detail queries** ✅ DONE — 7 sequential → 4 queries in 2 parallel steps, 3 redundant queries eliminated
+- [x] **Tier 2B: Fix N+1 on My Groups** ✅ DONE — new `get_group_member_counts` RPC, N+2 queries → 3 queries in 2 parallel steps
 - [ ] **Tier 3: Admin polish** — debounce commonGroupCount, deduplicate stats
 
 **Blocked/Waiting:**
@@ -39,9 +39,9 @@
 
 ## Quick Stats
 
-- **Phase:** Performance Optimization (Tier 1 + 2C COMPLETE, Tier 2A/2B next)
+- **Phase:** Performance Optimization (Tier 1 + 2A + 2B + 2C COMPLETE, Tier 3 next)
 - **Total Tables:** 18 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 70 migration files
+- **Total Migrations:** 71 migration files
 - **Recent Version:** v0.2.28 (Realtime fixes + admin user filters + auto force-logout)
 - **Test Coverage:** 414 integration + 99 unit + 4 setup = **517 tests, all passing** ✅
 - **Behaviors Documented:** 77 (58 previous + 19 admin) ✅
@@ -96,31 +96,23 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-20 (v0.2.28 — Realtime fixes + Admin filters + Auto force-logout)
+**Date:** 2026-02-21 (Performance Tier 2A — parallelized group detail queries)
 **Summary:**
-- **Fixed Realtime notification/messaging errors** — `notifications` table was missing from `supabase_realtime` publication. Also fixed unstable supabase client references in NotificationContext, MessagingContext, and ConversationPage using `useMemo`.
-- **Admin user filter toggles** — Replaced single "Show decommissioned" checkbox with three-toggle pill UI: Active, Inactive, Decommissioned (default: Active + Inactive ON, Decommissioned OFF). Server-side PostgREST `.or()` filters match client-side logic.
-- **Admin "Select All" / "Select Page" / "Deselect All"** — "Select All" fetches all matching user IDs via paginated API (batches of 1000) to overcome Supabase row limit.
-- **Auto force-logout on deactivate/decommission** — Deactivate and decommission actions now call `admin_force_logout` RPC to invalidate existing sessions immediately.
+- **Tier 2A: Parallelized group detail page queries** — Refactored `fetchGroupData` in `app/groups/[id]/page.tsx`: eliminated 3 redundant queries (membership check, member count, user roles — all derived from existing data), parallelized remaining 4 queries into 2 `Promise.all` steps. Also parallelized `refetchMembers` (Q7+Q8 now run in parallel). Expected: ~1.2s → ~300-400ms.
+- **Tier 2B: Fixed N+1 on My Groups page** — Created `get_group_member_counts` RPC (SECURITY DEFINER, takes UUID array, returns batch counts). Refactored `app/groups/page.tsx`: replaced N individual count queries with single RPC call, parallelized group data + counts fetch. For 10 groups: 12 requests → 3.
 
 **Files Created:**
-- `supabase/migrations/20260220161033_add_notifications_to_realtime_publication.sql`
+- `supabase/migrations/20260221090925_get_group_member_counts_rpc.sql`
 
 **Files Modified:**
-- `lib/notifications/NotificationContext.tsx` — useMemo for supabase client, removed from deps
-- `lib/messaging/MessagingContext.tsx` — useMemo for supabase client, skip self-sent message recounts
-- `app/messages/[conversationId]/page.tsx` — useMemo for supabase, error callback on subscription
-- `lib/admin/admin-users-query.ts` — three-toggle filter logic + `queryAdminUserIds()` with batch pagination
-- `lib/admin/user-filter.ts` — `UserFilters` interface, `DEFAULT_USER_FILTERS`, `buildStatusFilterString()`
-- `app/api/admin/users/route.ts` — showActive, showInactive, idsOnly params
-- `app/admin/page.tsx` — userFilters state, auto force-logout on deactivate/decommission
-- `components/admin/AdminDataPanel.tsx` — FilterPill toggles, Select All/Page/Deselect buttons
-- `tests/unit/admin/user-filter.test.ts` — updated to three-toggle filter tests (19 passing)
+- `app/groups/[id]/page.tsx` — `fetchGroupData`: 7 sequential → 4 queries in 2 parallel steps; `refetchMembers`: 3 sequential → 2 steps with `Promise.all`
+- `app/groups/page.tsx` — N+1 count queries replaced with single RPC + parallelized with group data fetch
 
-**Previous Sessions (2026-02-20):**
-- Hotfix: Auth deadlock + Tier 2C admin SELECT policy removal — v0.2.27
-- Performance Tier 1 implementation (indexes, shared profile, admin API route) — v0.2.26
-- Performance analysis + admin bug fixes (design doc created)
+**Previous Sessions:**
+- 2026-02-20: Realtime fixes + admin user filters + auto force-logout — v0.2.28
+- 2026-02-20: Auth deadlock + Tier 2C admin SELECT policy removal — v0.2.27
+- 2026-02-20: Performance Tier 1 (indexes, shared profile, admin API route) — v0.2.26
+- 2026-02-20: Performance analysis + admin bug fixes (design doc created)
 
 ---
 
@@ -128,11 +120,11 @@
 
 **See `docs/features/active/performance-optimization.md` for full plan**
 
-**Tier 1 + 2C COMPLETE** ✅
+**Tier 1 + 2A + 2B + 2C COMPLETE** ✅
 
-**Next — Performance Optimization (Tier 2A/2B):**
-1. Parallelize group detail page queries (8 sequential → 3 parallel steps)
-2. Fix N+1 on My Groups with batch RPC
+**Next — Performance Optimization (Tier 3):**
+1. Debounce commonGroupCount in admin panel
+2. Deduplicate admin stats
 
 **Then — Phase 1.6 Polish and Launch:**
 7. Mobile responsiveness audit

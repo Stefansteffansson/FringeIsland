@@ -51,31 +51,31 @@ export default function GroupsPage() {
           return;
         }
 
-        // Get the actual group data
+        // Parallel: fetch group data + batch member counts
         const groupIds = memberships.map(m => m.group_id);
-        const { data: groupsData, error: groupsError } = await supabase
-          .from('groups')
-          .select('id, name, description, label, is_public, created_at')
-          .in('id', groupIds)
-          .eq('group_type', 'engagement');
+        const [groupsResult, countsResult] = await Promise.all([
+          supabase
+            .from('groups')
+            .select('id, name, description, label, is_public, created_at')
+            .in('id', groupIds)
+            .eq('group_type', 'engagement'),
+          supabase.rpc('get_group_member_counts', { p_group_ids: groupIds }),
+        ]);
 
-        if (groupsError) throw groupsError;
+        if (groupsResult.error) throw groupsResult.error;
 
-        // Count members for each group
-        const groupsWithCounts = await Promise.all(
-          (groupsData || []).map(async (group) => {
-            const { count } = await supabase
-              .from('group_memberships')
-              .select('*', { count: 'exact', head: true })
-              .eq('group_id', group.id)
-              .eq('status', 'active');
+        // Build a map of group_id → member_count
+        const countMap = new Map<string, number>();
+        if (countsResult.data) {
+          for (const row of countsResult.data) {
+            countMap.set(row.group_id, Number(row.member_count));
+          }
+        }
 
-            return {
-              ...group,
-              member_count: count || 0,
-            };
-          })
-        );
+        const groupsWithCounts = (groupsResult.data || []).map(group => ({
+          ...group,
+          member_count: countMap.get(group.id) || 0,
+        }));
 
         setGroups(groupsWithCounts);
       } catch (err) {

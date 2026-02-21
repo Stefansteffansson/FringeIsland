@@ -257,55 +257,47 @@ CREATE INDEX CONCURRENTLY idx_ugr_user_group_role
 
 ### Tier 2: Medium Effort, High Impact
 
-#### 2A. Parallelize Group Detail Page Queries
+#### 2A. Parallelize Group Detail Page Queries ✅ DONE (2026-02-21)
 
 **Type:** Refactor `fetchGroupData` in `app/groups/[id]/page.tsx`
-**Effort:** ~1 hour
+**Status:** COMPLETE
 
-**Current:** 8 sequential queries (Q1→Q2→Q3→Q4→Q5→Q6→Q7→Q8)
+**Was:** 7 sequential queries (Q1 already eliminated by Tier 1C): Q2→Q3→Q4→Q5→Q6→Q7→Q8
 
-**Proposed:** 3 steps with redundant queries eliminated:
+**Now:** 4 queries in 2 parallel steps, 3 redundant queries eliminated:
 
 ```
-Step 1: Get userProfile from context (instant, no query)
+Step 1: Promise.all([
+  fetch group data (Q2),
+  fetch all memberships (Q6)
+])
+— Derive isMember from Q6 (.some), memberCount from Q6 (.length)  ← eliminates Q3+Q4
 
 Step 2: Promise.all([
-  fetch group data (Q2),
-  fetch all memberships (Q6 — replaces Q3+Q4+Q6),
-  get user permissions (already in usePermissions hook)
-])
-
-Step 3: Promise.all([
   fetch member profiles (Q7),
-  fetch all member roles (Q8 — replaces Q5+Q8)
+  fetch all member roles (Q8)
 ])
+— Derive userRoles from Q8 (.filter by current user)  ← eliminates Q5
 ```
 
-**Impact:** 8 sequential → 2 parallel steps. ~1.2s → ~300-400ms.
+Also parallelized `refetchMembers`: Q6 → Promise.all([Q7, Q8]) + added setMemberCount.
 
-#### 2B. Fix Groups Page N+1 — Single RPC for Member Counts
+**Impact:** 7 sequential → 2 parallel steps. ~1.2s → ~300-400ms.
+
+#### 2B. Fix Groups Page N+1 — Single RPC for Member Counts ✅ DONE (2026-02-21)
 
 **Type:** New database RPC + edit `app/groups/page.tsx`
-**Effort:** ~1 hour
+**Status:** COMPLETE
 
-**Approach:** Create an RPC that takes an array of group IDs and returns member counts:
+**Implementation:**
+1. Created `get_group_member_counts(UUID[])` RPC — SECURITY DEFINER, batches all counts in one query
+2. Refactored `fetchGroups` in `app/groups/page.tsx`:
+   - Q1 (get group IDs) runs first
+   - `Promise.all([Q2: group data, Q3: member counts RPC])` runs in parallel
+   - Results combined via Map lookup
+3. Migration: `20260221090925_get_group_member_counts_rpc.sql`
 
-```sql
-CREATE FUNCTION get_group_member_counts(p_group_ids UUID[])
-RETURNS TABLE(group_id UUID, member_count BIGINT)
-LANGUAGE sql SECURITY DEFINER SET search_path = ''
-AS $$
-  SELECT group_id, COUNT(*) as member_count
-  FROM public.group_memberships
-  WHERE group_id = ANY(p_group_ids)
-    AND status = 'active'
-  GROUP BY group_id;
-$$;
-```
-
-Then in the page: one RPC call replaces N count queries.
-
-**Impact:** My Groups with 10 groups: 10 HTTP requests → 1. Page loads ~500ms faster.
+**Impact:** My Groups with 10 groups: 12 HTTP requests → 3 (2 parallel steps). ~500ms faster.
 
 #### 2C. Remove `has_permission()` from SELECT RLS Policies
 

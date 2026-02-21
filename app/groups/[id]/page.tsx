@@ -92,99 +92,52 @@ export default function GroupDetailPage() {
 
       try {
 
-        // Fetch group data
-        // Use maybeSingle() instead of single() to avoid error when group doesn't exist
-        const { data: groupData, error: groupError } = await supabase
-          .from('groups')
-          .select('*')
-          .eq('id', groupId)
-          .maybeSingle();
+        // Step 1: Parallel — fetch group data + all memberships
+        const [groupResult, membershipsResult] = await Promise.all([
+          supabase
+            .from('groups')
+            .select('*')
+            .eq('id', groupId)
+            .maybeSingle(),
+          supabase
+            .from('group_memberships')
+            .select('user_id, added_at')
+            .eq('group_id', groupId)
+            .eq('status', 'active'),
+        ]);
 
-        // Handle errors
-        if (groupError) {
-          console.error('Group fetch error:', groupError);
+        if (groupResult.error) {
+          console.error('Group fetch error:', groupResult.error);
           throw new Error('Failed to load group');
         }
-        
-        // If no group found
-        if (!groupData) {
+        if (!groupResult.data) {
           throw new Error('Group not found');
         }
-        
-        setGroup(groupData);
+        setGroup(groupResult.data);
 
-        // Check if user is a member of this group
-        const { data: membershipData, error: membershipError } = await supabase
-          .from('group_memberships')
-          .select('id')
-          .eq('group_id', groupId)
-          .eq('user_id', userProfile.id)
-          .eq('status', 'active')
-          .maybeSingle();
+        if (membershipsResult.error) throw membershipsResult.error;
+        const membershipsData = membershipsResult.data;
 
-        if (membershipError) {
-          throw new Error(membershipError.message || 'Failed to check membership');
-        }
-
-        if (!membershipData) {
-          // User is not a member
-          if (!groupData.is_public) {
+        // Derive isMember and memberCount from memberships (eliminates 2 separate queries)
+        const isUserMember = membershipsData.some(m => m.user_id === userProfile.id);
+        if (!isUserMember) {
+          if (!groupResult.data.is_public) {
             throw new Error('You do not have access to this private group');
           }
           setIsMember(false);
         } else {
           setIsMember(true);
         }
+        setMemberCount(membershipsData.length);
 
-        // Get member count
-        const { count } = await supabase
-          .from('group_memberships')
-          .select('*', { count: 'exact', head: true })
-          .eq('group_id', groupId)
-          .eq('status', 'active');
-
-        setMemberCount(count || 0);
-
-        // Fetch user's roles in this group (for display only)
-        const { data: rolesData, error: rolesError } = await supabase
-          .from('user_group_roles')
-          .select(`
-            group_roles (
-              name
-            )
-          `)
-          .eq('user_id', userProfile.id)
-          .eq('group_id', groupId);
-
-        if (rolesError) throw rolesError;
-
-        const roles = rolesData.map((r: any) => ({
-          role_name: r.group_roles?.name || 'Unknown'
-        }));
-        setUserRoles(roles);
-
-        // Always fetch members — visibility gated at render time via hasPermission
-        {
-          // Get all memberships
-          const { data: membershipsData, error: membershipsError } = await supabase
-            .from('group_memberships')
-            .select('user_id, added_at')
-            .eq('group_id', groupId)
-            .eq('status', 'active');
-
-          if (membershipsError) throw membershipsError;
-
-          // Get user details for all members
-          const userIds = membershipsData.map(m => m.user_id);
-          const { data: usersData, error: usersError } = await supabase
+        // Step 2: Parallel — fetch member profiles + all member roles
+        const userIds = membershipsData.map(m => m.user_id);
+        const [usersResult, rolesResult] = await Promise.all([
+          supabase
             .from('users')
             .select('id, full_name, avatar_url')
-            .in('id', userIds);
-
-          if (usersError) throw usersError;
-
-          // Get roles for all members (including IDs for management)
-          const { data: allRolesData, error: allRolesError } = await supabase
+            .in('id', userIds),
+          supabase
             .from('user_group_roles')
             .select(`
               id,
@@ -196,38 +149,43 @@ export default function GroupDetailPage() {
               )
             `)
             .eq('group_id', groupId)
-            .in('user_id', userIds);
+            .in('user_id', userIds),
+        ]);
 
-          if (allRolesError) throw allRolesError;
+        if (usersResult.error) throw usersResult.error;
+        if (rolesResult.error) throw rolesResult.error;
 
-          // Combine data
-          const membersWithRoles = usersData.map(u => {
-            const membership = membershipsData.find(m => m.user_id === u.id);
-            const userRoleData = allRolesData.filter((r: any) => r.user_id === u.id);
-            
-            // Extract role names for display
-            const roleNames = userRoleData.map((r: any) => r.group_roles?.name || 'Unknown');
-            
-            // Extract full role data for management
-            const roleData: RoleData[] = userRoleData.map((r: any) => ({
-              user_group_role_id: r.id,
-              role_id: r.group_roles?.id || '',
-              role_name: r.group_roles?.name || 'Unknown',
-            }));
+        // Combine member data
+        const membersWithRoles = usersResult.data.map(u => {
+          const membership = membershipsData.find(m => m.user_id === u.id);
+          const userRoleData = rolesResult.data.filter((r: any) => r.user_id === u.id);
+          const roleNames = userRoleData.map((r: any) => r.group_roles?.name || 'Unknown');
+          const roleData: RoleData[] = userRoleData.map((r: any) => ({
+            user_group_role_id: r.id,
+            role_id: r.group_roles?.id || '',
+            role_name: r.group_roles?.name || 'Unknown',
+          }));
 
-            return {
-              id: u.id,
-              user_id: u.id,
-              full_name: u.full_name,
-              avatar_url: u.avatar_url,
-              roles: roleNames,
-              roleData: roleData,
-              added_at: membership?.added_at || '',
-            };
-          });
+          return {
+            id: u.id,
+            user_id: u.id,
+            full_name: u.full_name,
+            avatar_url: u.avatar_url,
+            roles: roleNames,
+            roleData: roleData,
+            added_at: membership?.added_at || '',
+          };
+        });
 
-          setMembers(membersWithRoles);
-        }
+        setMembers(membersWithRoles);
+
+        // Derive current user's roles from all roles (eliminates separate query)
+        const currentUserRoles = rolesResult.data
+          .filter((r: any) => r.user_id === userProfile.id)
+          .map((r: any) => ({
+            role_name: r.group_roles?.name || 'Unknown'
+          }));
+        setUserRoles(currentUserRoles);
 
       } catch (err) {
         console.error('Error fetching group:', err);
@@ -256,31 +214,33 @@ export default function GroupDetailPage() {
 
       if (!membershipsData) return;
 
+      // Parallel: fetch member profiles + all member roles
       const userIds = membershipsData.map(m => m.user_id);
-      const { data: usersData } = await supabase
-        .from('users')
-        .select('id, full_name, avatar_url')
-        .in('id', userIds);
-
-      const { data: allRolesData } = await supabase
-        .from('user_group_roles')
-        .select(`
-          id,
-          user_id,
-          group_role_id,
-          group_roles (
+      const [usersResult, rolesResult] = await Promise.all([
+        supabase
+          .from('users')
+          .select('id, full_name, avatar_url')
+          .in('id', userIds),
+        supabase
+          .from('user_group_roles')
+          .select(`
             id,
-            name
-          )
-        `)
-        .eq('group_id', groupId)
-        .in('user_id', userIds);
+            user_id,
+            group_role_id,
+            group_roles (
+              id,
+              name
+            )
+          `)
+          .eq('group_id', groupId)
+          .in('user_id', userIds),
+      ]);
 
-      if (!usersData || !allRolesData) return;
+      if (!usersResult.data || !rolesResult.data) return;
 
-      const membersWithRoles = usersData.map(u => {
+      const membersWithRoles = usersResult.data.map(u => {
         const membership = membershipsData.find(m => m.user_id === u.id);
-        const userRoleData = allRolesData.filter((r: any) => r.user_id === u.id);
+        const userRoleData = rolesResult.data.filter((r: any) => r.user_id === u.id);
         const roleNames = userRoleData.map((r: any) => r.group_roles?.name || 'Unknown');
         const roleData: RoleData[] = userRoleData.map((r: any) => ({
           user_group_role_id: r.id,
@@ -300,9 +260,10 @@ export default function GroupDetailPage() {
       });
 
       setMembers(membersWithRoles);
+      setMemberCount(membershipsData.length);
 
-      // Update current user's display roles
-      const currentUserRoles = allRolesData
+      // Derive current user's roles from all roles
+      const currentUserRoles = rolesResult.data
         .filter((r: any) => r.user_id === userProfile.id)
         .map((r: any) => ({
           role_name: r.group_roles?.name || 'Unknown'
