@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { createClient } from '@/lib/supabase/client';
@@ -84,7 +84,7 @@ export default function AdminDashboard() {
     }
   }, [statusMessage]);
 
-  // Compute common engagement group count for Remove button enablement
+  // Compute common engagement group count for Remove button enablement (debounced)
   useEffect(() => {
     if (selectedUserIds.size === 0) {
       setCommonGroupCount(0);
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
     const targetIds = [...selectedUserIds];
     let cancelled = false;
 
-    const compute = async () => {
+    const timer = setTimeout(async () => {
       try {
         const { data: memberships } = await supabase
           .from('group_memberships')
@@ -117,15 +117,17 @@ export default function AdminDashboard() {
       } catch {
         if (!cancelled) setCommonGroupCount(0);
       }
-    };
+    }, 300);
 
-    compute();
-    return () => { cancelled = true; };
+    return () => { cancelled = true; clearTimeout(timer); };
   }, [selectedUserIds, supabase]);
+
+  // Track whether static stats (groups, journeys, enrollments) have been loaded
+  const staticStatsLoadedRef = useRef(false);
 
   const fetchStats = useCallback(async () => {
     try {
-      // Users count: apply status filters
+      // Users count: always fetch (filter-dependent)
       let usersQuery = supabase.from('users').select('*', { count: 'exact', head: true });
 
       // Build filter from toggles
@@ -143,26 +145,34 @@ export default function AdminDashboard() {
         }
       }
 
-      const [usersRes, groupsRes, journeysRes, enrollmentsRes] = await Promise.all([
-        usersQuery,
-        supabase
-          .from('groups')
-          .select('*', { count: 'exact', head: true })
-          .eq('group_type', 'engagement'),
-        supabase
-          .from('journeys')
-          .select('*', { count: 'exact', head: true }),
-        supabase
-          .from('journey_enrollments')
-          .select('*', { count: 'exact', head: true }),
-      ]);
+      if (!staticStatsLoadedRef.current) {
+        // First load or after action: fetch all 4 stats
+        const [usersRes, groupsRes, journeysRes, enrollmentsRes] = await Promise.all([
+          usersQuery,
+          supabase
+            .from('groups')
+            .select('*', { count: 'exact', head: true })
+            .eq('group_type', 'engagement'),
+          supabase
+            .from('journeys')
+            .select('*', { count: 'exact', head: true }),
+          supabase
+            .from('journey_enrollments')
+            .select('*', { count: 'exact', head: true }),
+        ]);
 
-      setStats({
-        users: usersRes.count,
-        groups: groupsRes.count,
-        journeys: journeysRes.count,
-        enrollments: enrollmentsRes.count,
-      });
+        setStats({
+          users: usersRes.count,
+          groups: groupsRes.count,
+          journeys: journeysRes.count,
+          enrollments: enrollmentsRes.count,
+        });
+        staticStatsLoadedRef.current = true;
+      } else {
+        // Filter change: only re-fetch users count
+        const usersRes = await usersQuery;
+        setStats(prev => ({ ...prev, users: usersRes.count }));
+      }
     } catch (err) {
       console.error('Failed to fetch platform stats:', err);
     }
@@ -202,6 +212,7 @@ export default function AdminDashboard() {
 
   const refreshData = () => {
     setRefreshKey((k) => k + 1);
+    staticStatsLoadedRef.current = false; // Force full refresh after actions
     fetchStats();
   };
 

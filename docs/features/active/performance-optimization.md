@@ -1,6 +1,6 @@
 # Performance Optimization — System-Wide Responsiveness
 
-**Status:** Active — Analysis Complete, Implementation Not Started
+**Status:** COMPLETE — All Tiers Implemented (1A, 1B, 1C, 2A, 2B, 2C, 3A, 3B)
 **Created:** 2026-02-20
 **Priority:** HIGH — Blocking user experience on admin panel and groups pages
 **Version:** 0.2.26 (target)
@@ -328,17 +328,17 @@ USING (
 
 **Impact:** Every SELECT on users/groups/memberships gets faster for ALL users (not just admin).
 
-### Tier 3: Polish
+### Tier 3: Polish ✅ DONE
 
-#### 3A. Debounce `commonGroupCount` in Admin Panel
-
-**File:** `app/admin/page.tsx`
-**Change:** Add 300ms debounce to the `selectedUserIds` effect that computes common group count.
-
-#### 3B. Deduplicate Admin Stats
+#### 3A. Debounce `commonGroupCount` in Admin Panel ✅ DONE
 
 **File:** `app/admin/page.tsx`
-**Change:** When `showDecommissioned` toggles, only re-fetch users count (not all 4). Panel already gets its own count from the data query.
+**Change:** Wrapped `commonGroupCount` computation in 300ms `setTimeout` with proper cleanup (`clearTimeout` + `cancelled` flag). Prevents rapid-fire queries when user clicks through selections quickly.
+
+#### 3B. Deduplicate Admin Stats ✅ DONE
+
+**File:** `app/admin/page.tsx`
+**Change:** Added `staticStatsLoadedRef` (`useRef`) to track whether static stats (groups, journeys, enrollments) have been loaded. On filter changes, only re-fetches users count (the only filter-dependent stat). On actions (deactivate, etc.), resets ref to force full refresh. Reduces 4 parallel queries to 1 on every filter toggle.
 
 ---
 

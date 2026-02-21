@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-21 (Performance Tier 2A — parallelized group detail queries)
+**Last Updated:** 2026-02-21 (Performance Optimization COMPLETE — all tiers done)
 **Current Version:** 0.2.28
 **Active Branch:** main
 
@@ -25,10 +25,11 @@
 - [x] **Tier 2C: Remove has_permission() from SELECT RLS policies** ✅ DONE — admin handled by service_role
 - [x] **Tier 2A: Parallelize group detail queries** ✅ DONE — 7 sequential → 4 queries in 2 parallel steps, 3 redundant queries eliminated
 - [x] **Tier 2B: Fix N+1 on My Groups** ✅ DONE — new `get_group_member_counts` RPC, N+2 queries → 3 queries in 2 parallel steps
-- [ ] **Tier 3: Admin polish** — debounce commonGroupCount, deduplicate stats
+- [x] **Tier 3A: Debounce commonGroupCount** ✅ DONE — 300ms setTimeout with cleanup
+- [x] **Tier 3B: Deduplicate admin stats** ✅ DONE — useRef tracks static stats, filter changes only re-fetch users count
 
 **Blocked/Waiting:**
-- None — Tier 2 ready to implement
+- None — Performance Optimization feature COMPLETE
 
 **Previous Feature (COMPLETE):**
 - [x] **Admin Sub-Sprint 1: DB Foundation** ✅ v0.2.21
@@ -39,7 +40,7 @@
 
 ## Quick Stats
 
-- **Phase:** Performance Optimization (Tier 1 + 2A + 2B + 2C COMPLETE, Tier 3 next)
+- **Phase:** Performance Optimization COMPLETE (All Tiers: 1A, 1B, 1C, 2A, 2B, 2C, 3A, 3B)
 - **Total Tables:** 18 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
 - **Total Migrations:** 71 migration files
 - **Recent Version:** v0.2.28 (Realtime fixes + admin user filters + auto force-logout)
@@ -96,17 +97,20 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-21 (Performance Tier 2A — parallelized group detail queries)
+**Date:** 2026-02-21 (Performance Optimization COMPLETE — all tiers done)
 **Summary:**
-- **Tier 2A: Parallelized group detail page queries** — Refactored `fetchGroupData` in `app/groups/[id]/page.tsx`: eliminated 3 redundant queries (membership check, member count, user roles — all derived from existing data), parallelized remaining 4 queries into 2 `Promise.all` steps. Also parallelized `refetchMembers` (Q7+Q8 now run in parallel). Expected: ~1.2s → ~300-400ms.
-- **Tier 2B: Fixed N+1 on My Groups page** — Created `get_group_member_counts` RPC (SECURITY DEFINER, takes UUID array, returns batch counts). Refactored `app/groups/page.tsx`: replaced N individual count queries with single RPC call, parallelized group data + counts fetch. For 10 groups: 12 requests → 3.
+- **Tier 2A: Parallelized group detail page queries** — Refactored `fetchGroupData`: eliminated 3 redundant queries, parallelized remaining 4 into 2 `Promise.all` steps. Expected: ~1.2s → ~300-400ms.
+- **Tier 2B: Fixed N+1 on My Groups page** — Created `get_group_member_counts` RPC, replaced N individual count queries with single batch call. For 10 groups: 12 requests → 3.
+- **Tier 3A: Debounced commonGroupCount** — 300ms setTimeout with cleanup in admin panel.
+- **Tier 3B: Deduplicated admin stats** — useRef tracks static stats; filter changes only re-fetch users count (1 query instead of 4).
 
 **Files Created:**
 - `supabase/migrations/20260221090925_get_group_member_counts_rpc.sql`
 
 **Files Modified:**
-- `app/groups/[id]/page.tsx` — `fetchGroupData`: 7 sequential → 4 queries in 2 parallel steps; `refetchMembers`: 3 sequential → 2 steps with `Promise.all`
+- `app/groups/[id]/page.tsx` — `fetchGroupData`: 7 sequential → 4 queries in 2 parallel steps; `refetchMembers`: parallelized
 - `app/groups/page.tsx` — N+1 count queries replaced with single RPC + parallelized with group data fetch
+- `app/admin/page.tsx` — debounced commonGroupCount (300ms), deduplicated stats with useRef
 
 **Previous Sessions:**
 - 2026-02-20: Realtime fixes + admin user filters + auto force-logout — v0.2.28
@@ -120,13 +124,9 @@
 
 **See `docs/features/active/performance-optimization.md` for full plan**
 
-**Tier 1 + 2A + 2B + 2C COMPLETE** ✅
+**Performance Optimization COMPLETE** ✅ (All Tiers: 1A, 1B, 1C, 2A, 2B, 2C, 3A, 3B)
 
-**Next — Performance Optimization (Tier 3):**
-1. Debounce commonGroupCount in admin panel
-2. Deduplicate admin stats
-
-**Then — Phase 1.6 Polish and Launch:**
+**Next — Phase 1.6 Polish and Launch:**
 7. Mobile responsiveness audit
 8. User onboarding flow
 9. E2E tests (Playwright)

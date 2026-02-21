@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Performance Tier 2A: Parallelized group detail page queries** — Refactored `fetchGroupData` in `app/groups/[id]/page.tsx`: eliminated 3 redundant queries (membership check, member count, current user roles — all derived from existing query results), parallelized remaining 4 queries into 2 `Promise.all` steps. Also parallelized `refetchMembers` (member profiles + roles fetched in parallel). Expected improvement: ~1.2s → ~300-400ms.
 - **Performance Tier 2B: Fixed N+1 on My Groups page** — Created `get_group_member_counts` RPC function (SECURITY DEFINER, batch UUID array input). Refactored `app/groups/page.tsx`: replaced N individual count queries with single RPC call, parallelized group data + counts into one `Promise.all`. For 10 groups: 12 HTTP requests → 3 (2 parallel steps).
+- **Performance Tier 3A: Debounced commonGroupCount** — Admin panel's common group count computation now uses 300ms debounce with proper cleanup, preventing rapid-fire queries during quick user selections.
+- **Performance Tier 3B: Deduplicated admin stats** — Filter changes now only re-fetch users count (the only filter-dependent stat). Static stats (groups, journeys, enrollments) are cached after first load. Full refresh triggered only after admin actions.
 
 ### Planned
 - Phase 1.6: Polish and Launch
