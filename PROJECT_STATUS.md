@@ -8,7 +8,7 @@
 
 ## What We're Working On NOW
 
-**Current Focus:** Performance Optimization — system-wide responsiveness overhaul
+**Current Focus:** Performance Optimization COMPLETE — next: Phase 1.6 Polish and Launch
 
 **Design Doc:** `docs/features/active/performance-optimization.md` (COMPLETE — full analysis + implementation plan)
 
@@ -133,7 +133,6 @@
 
 **Known Issues:**
 - `app/admin/fix-orphans/page.tsx` uses `alert()` (should use ConfirmModal)
-- `ROADMAP.md` "Next Priorities" section is outdated (still references Phase 1.5 as next)
 
 **What We're NOT Building Yet:**
 - See `docs/planning/DEFERRED_DECISIONS.md` for rationale on deferred features

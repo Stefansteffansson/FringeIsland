@@ -76,4 +76,16 @@ The `createBrowserClient` from `@supabase/ssr` holds an internal lock during aut
 The `@supabase/ssr` client stores auth tokens in chunked, encoded cookies (e.g., `sb-<ref>-auth-token.0`, `.1`, etc.). API routes that try to manually parse these cookies to extract a JWT will fail. **Fix:** Have the frontend get the token via `supabase.auth.getSession()` and pass it explicitly in the `Authorization: Bearer <token>` header. The API route already handled this path — just the frontend wasn't using it.
 > Promoted to playbook? Not yet
 
+### 2026-02-21: Derive values from existing query results instead of separate queries
+When parallelizing queries, first check if any query result can be derived from another. In `fetchGroupData`, 3 out of 7 queries were redundant: (1) membership check — derivable from the memberships list via `.some()`, (2) member count — derivable from `.length`, (3) current user roles — derivable from the all-roles query filtered by user ID. Eliminating derived queries before parallelizing the rest gives maximum benefit.
+> Promoted to playbook? Not yet
+
+### 2026-02-21: SECURITY DEFINER RPC for batch operations bypassing RLS
+When you need aggregate data across rows the user may not individually have SELECT access to (e.g., member counts for multiple groups), create a `SECURITY DEFINER` function that accepts an array parameter and returns batch results. Pattern: `get_group_member_counts(p_group_ids UUID[]) RETURNS TABLE(group_id UUID, member_count BIGINT)` with `SET search_path = ''`. Grant EXECUTE to `authenticated`. Client calls via `supabase.rpc('fn_name', { param: arrayValue })` and builds a Map from results.
+> Promoted to playbook? Not yet
+
+### 2026-02-21: useRef for conditional re-fetching (static vs dynamic data)
+When a component fetches multiple stats but only some change on user interaction (e.g., filter changes), use `useRef(false)` to track whether the static stats have loaded. First call fetches all; subsequent calls only fetch the dynamic subset. Reset the ref when a full refresh is needed (e.g., after admin actions). Pattern: `staticStatsLoadedRef.current = true` after first load, check in fetchStats to decide 1-query vs 4-query path.
+> Promoted to playbook? Not yet
+
 <!-- Append new entries below this line -->

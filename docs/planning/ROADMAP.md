@@ -331,6 +331,15 @@ See `docs/features/active/deusex-admin-foundation.md` for full details.
 
 ---
 
+### Phase 1.5d: Performance Optimization ✅ COMPLETE
+
+**Status**: ✅ **COMPLETE** (v0.2.26 - v0.2.28, plus Tier 2+3 commits)
+
+See `docs/features/active/performance-optimization.md` for full analysis and implementation details.
+8 tiers: DB indexes (1A), admin service_role API (1B), shared UserProfile context (1C), parallel group detail queries (2A), batch RPC for N+1 fix (2B), drop expensive SELECT policies (2C), debounce admin (3A), deduplicate stats (3B).
+
+---
+
 ### Phase 1.6: Polish and Launch (Weeks 14-16) ⏳ NOT STARTED
 
 **Status**: ⏳ **NOT STARTED**
@@ -482,21 +491,7 @@ See `docs/features/active/deusex-admin-foundation.md` for full details.
 
 ## 🎯 Next Up (Immediate Priorities)
 
-### Priority 1: Communication System (Phase 1.5)
-**Goal**: Enable groups to communicate — forums for group discussion, direct messaging for 1:1
-
-**Deliverables**:
-- Group forums (post, reply, moderate)
-- Direct messages between users
-- Notification system (in-app)
-- Read/unread status
-
-**Timeline**: 2-3 weeks
-**Impact**: Phase 1.5 complete (~98% Phase 1)
-
----
-
-### Priority 2: Polish and Launch (Phase 1.6)
+### Priority 1: Polish and Launch (Phase 1.6)
 **Goal**: Prepare platform for public launch with a small beta group
 
 **Deliverables**:
@@ -953,35 +948,29 @@ See `docs/features/active/deusex-admin-foundation.md` for full details.
 
 ## Current Development Focus (February 2026)
 
-### Active Work (v0.2.13)
+### Completed (v0.2.11 - v0.2.28)
 - ✅ Journey system complete (v0.2.11)
 - ✅ Security hardening + behavior docs + role tests (v0.2.13)
-- ✅ **RBAC system design complete** (22 decisions, D1-D22) — `docs/features/planned/dynamic-permissions-system.md`
-- ⏳ Communication system (Phase 1.5 — NEXT)
+- ✅ **RBAC system design & implementation** (22 decisions, 4 sub-sprints, v0.2.16-v0.2.20)
+- ✅ Communication system — forums, DM, notifications, Realtime (v0.2.14-v0.2.15)
+- ✅ Admin Foundation — dashboard, user management, 10 actions (v0.2.21-v0.2.25)
+- ✅ **Performance Optimization** — all 8 tiers complete (v0.2.26-v0.2.28+)
 
 ### Next Sprint
-**Priority 1**: Communication System (Phase 1.5)
-- Group forums (post, reply, moderate)
-- Direct messaging between users
-- In-app notification system (also infrastructure for RBAC membership flows)
-- Read/unread status
-
-**Priority 2**: RBAC Implementation (after Phase 1.5 messaging)
-- Schema evolution (group_type, group-to-group memberships, personal groups)
-- `has_permission()` function + `usePermissions()` hook
-- Migrate from `isLeader` to `hasPermission()`
-
-### Blockers & Dependencies
-- RBAC implementation depends on Phase 1.5 in-app messaging (D13: membership notifications)
+**Priority 1**: Polish and Launch (Phase 1.6)
+- Mobile responsiveness audit
+- User onboarding flow
+- E2E tests (Playwright)
+- Beta testing with 10-20 users
 
 ### Technical Debt
-- Add unit tests for critical paths
 - Improve mobile responsiveness
 - Add loading skeletons
 - Implement error tracking (Sentry)
+- `app/admin/fix-orphans/page.tsx` uses `alert()` (should use ConfirmModal)
 
 ---
 
-**Document Version**: 1.6
-**Last Updated**: February 20, 2026 (Admin Foundation complete v0.2.25, RBAC complete v0.2.20)
-**Next Review**: After communication system complete or March 2026
+**Document Version**: 1.7
+**Last Updated**: February 21, 2026 (Performance Optimization complete, all tiers)
+**Next Review**: After Phase 1.6 or March 2026
