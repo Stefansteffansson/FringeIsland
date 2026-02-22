@@ -39,6 +39,11 @@ describe('RBAC UI Permission Gating', () => {
   let memberProfile: any;
   let observerProfile: any;
 
+  let stewardPersonalGroupId: string;
+  let guidePersonalGroupId: string;
+  let memberPersonalGroupId: string;
+  let observerPersonalGroupId: string;
+
   // Test group + roles
   let testGroup: any;
   let stewardRole: any;
@@ -62,6 +67,11 @@ describe('RBAC UI Permission Gating', () => {
     memberProfile = memberUser.profile;
     observerProfile = observerUser.profile;
 
+    stewardPersonalGroupId = stewardUser.personalGroupId;
+    guidePersonalGroupId = guideUser.personalGroupId;
+    memberPersonalGroupId = memberUser.personalGroupId;
+    observerPersonalGroupId = observerUser.personalGroupId;
+
     // Create test engagement group
     const { data: group, error: groupErr } = await admin
       .from('groups')
@@ -69,7 +79,7 @@ describe('RBAC UI Permission Gating', () => {
         name: 'UI Gating Test Group',
         description: 'Testing UI permission gating',
         group_type: 'engagement',
-        created_by_user_id: stewardProfile.id,
+        created_by_group_id: stewardPersonalGroupId,
       })
       .select()
       .single();
@@ -79,10 +89,10 @@ describe('RBAC UI Permission Gating', () => {
 
     // Add all users as active members
     await admin.from('group_memberships').insert([
-      { group_id: testGroup.id, user_id: stewardProfile.id, added_by_user_id: stewardProfile.id, status: 'active' },
-      { group_id: testGroup.id, user_id: guideProfile.id, added_by_user_id: stewardProfile.id, status: 'active' },
-      { group_id: testGroup.id, user_id: memberProfile.id, added_by_user_id: stewardProfile.id, status: 'active' },
-      { group_id: testGroup.id, user_id: observerProfile.id, added_by_user_id: stewardProfile.id, status: 'active' },
+      { group_id: testGroup.id, member_group_id: stewardPersonalGroupId, added_by_group_id: stewardPersonalGroupId, status: 'active' },
+      { group_id: testGroup.id, member_group_id: guidePersonalGroupId, added_by_group_id: stewardPersonalGroupId, status: 'active' },
+      { group_id: testGroup.id, member_group_id: memberPersonalGroupId, added_by_group_id: stewardPersonalGroupId, status: 'active' },
+      { group_id: testGroup.id, member_group_id: observerPersonalGroupId, added_by_group_id: stewardPersonalGroupId, status: 'active' },
     ]);
 
     // Get role templates
@@ -114,10 +124,10 @@ describe('RBAC UI Permission Gating', () => {
 
     // Assign roles to users
     await admin.from('user_group_roles').insert([
-      { user_id: stewardProfile.id, group_id: testGroup.id, group_role_id: stewardRole.id, assigned_by_user_id: stewardProfile.id },
-      { user_id: guideProfile.id, group_id: testGroup.id, group_role_id: guideRole.id, assigned_by_user_id: stewardProfile.id },
-      { user_id: memberProfile.id, group_id: testGroup.id, group_role_id: memberRole.id, assigned_by_user_id: stewardProfile.id },
-      { user_id: observerProfile.id, group_id: testGroup.id, group_role_id: observerRole.id, assigned_by_user_id: stewardProfile.id },
+      { member_group_id: stewardPersonalGroupId, group_id: testGroup.id, group_role_id: stewardRole.id, assigned_by_group_id: stewardPersonalGroupId },
+      { member_group_id: guidePersonalGroupId, group_id: testGroup.id, group_role_id: guideRole.id, assigned_by_group_id: stewardPersonalGroupId },
+      { member_group_id: memberPersonalGroupId, group_id: testGroup.id, group_role_id: memberRole.id, assigned_by_group_id: stewardPersonalGroupId },
+      { member_group_id: observerPersonalGroupId, group_id: testGroup.id, group_role_id: observerRole.id, assigned_by_group_id: stewardPersonalGroupId },
     ]);
 
     // Create second group where steward is also Steward (for enrollment tests)
@@ -127,7 +137,7 @@ describe('RBAC UI Permission Gating', () => {
         name: 'UI Gating Second Group',
         description: 'Second group for enrollment tests',
         group_type: 'engagement',
-        created_by_user_id: stewardProfile.id,
+        created_by_group_id: stewardPersonalGroupId,
       })
       .select()
       .single();
@@ -135,8 +145,8 @@ describe('RBAC UI Permission Gating', () => {
     secondGroup = group2;
 
     await admin.from('group_memberships').insert([
-      { group_id: secondGroup.id, user_id: stewardProfile.id, added_by_user_id: stewardProfile.id, status: 'active' },
-      { group_id: secondGroup.id, user_id: memberProfile.id, added_by_user_id: stewardProfile.id, status: 'active' },
+      { group_id: secondGroup.id, member_group_id: stewardPersonalGroupId, added_by_group_id: stewardPersonalGroupId, status: 'active' },
+      { group_id: secondGroup.id, member_group_id: memberPersonalGroupId, added_by_group_id: stewardPersonalGroupId, status: 'active' },
     ]);
 
     // Create roles in second group
@@ -152,8 +162,8 @@ describe('RBAC UI Permission Gating', () => {
     secondGroupMemberRole = secondRoleMap.get('Member');
 
     await admin.from('user_group_roles').insert([
-      { user_id: stewardProfile.id, group_id: secondGroup.id, group_role_id: secondRoleMap.get('Steward')!.id, assigned_by_user_id: stewardProfile.id },
-      { user_id: memberProfile.id, group_id: secondGroup.id, group_role_id: secondGroupMemberRole.id, assigned_by_user_id: stewardProfile.id },
+      { member_group_id: stewardPersonalGroupId, group_id: secondGroup.id, group_role_id: secondRoleMap.get('Steward')!.id, assigned_by_group_id: stewardPersonalGroupId },
+      { member_group_id: memberPersonalGroupId, group_id: secondGroup.id, group_role_id: secondGroupMemberRole.id, assigned_by_group_id: stewardPersonalGroupId },
     ]);
   }, 60000);
 
@@ -175,8 +185,8 @@ describe('RBAC UI Permission Gating', () => {
     describe('edit_group_settings permission', () => {
       it('Steward has edit_group_settings', async () => {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: stewardProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: stewardPersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'edit_group_settings',
         });
         expect(data).toBe(true);
@@ -184,8 +194,8 @@ describe('RBAC UI Permission Gating', () => {
 
       it('Guide does NOT have edit_group_settings', async () => {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: guideProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: guidePersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'edit_group_settings',
         });
         expect(data).toBe(false);
@@ -193,8 +203,8 @@ describe('RBAC UI Permission Gating', () => {
 
       it('Member does NOT have edit_group_settings', async () => {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: memberProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: memberPersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'edit_group_settings',
         });
         expect(data).toBe(false);
@@ -202,8 +212,8 @@ describe('RBAC UI Permission Gating', () => {
 
       it('Observer does NOT have edit_group_settings', async () => {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: observerProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: observerPersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'edit_group_settings',
         });
         expect(data).toBe(false);
@@ -214,8 +224,8 @@ describe('RBAC UI Permission Gating', () => {
     describe('invite_members permission', () => {
       it('Steward has invite_members', async () => {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: stewardProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: stewardPersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'invite_members',
         });
         expect(data).toBe(true);
@@ -223,8 +233,8 @@ describe('RBAC UI Permission Gating', () => {
 
       it('Guide does NOT have invite_members', async () => {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: guideProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: guidePersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'invite_members',
         });
         expect(data).toBe(false);
@@ -232,8 +242,8 @@ describe('RBAC UI Permission Gating', () => {
 
       it('Member does NOT have invite_members', async () => {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: memberProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: memberPersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'invite_members',
         });
         expect(data).toBe(false);
@@ -244,8 +254,8 @@ describe('RBAC UI Permission Gating', () => {
     describe('remove_members permission', () => {
       it('Steward has remove_members', async () => {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: stewardProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: stewardPersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'remove_members',
         });
         expect(data).toBe(true);
@@ -253,8 +263,8 @@ describe('RBAC UI Permission Gating', () => {
 
       it('Guide does NOT have remove_members', async () => {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: guideProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: guidePersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'remove_members',
         });
         expect(data).toBe(false);
@@ -265,8 +275,8 @@ describe('RBAC UI Permission Gating', () => {
     describe('assign_roles permission', () => {
       it('Steward has assign_roles', async () => {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: stewardProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: stewardPersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'assign_roles',
         });
         expect(data).toBe(true);
@@ -274,8 +284,8 @@ describe('RBAC UI Permission Gating', () => {
 
       it('Guide does NOT have assign_roles', async () => {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: guideProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: guidePersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'assign_roles',
         });
         expect(data).toBe(false);
@@ -283,8 +293,8 @@ describe('RBAC UI Permission Gating', () => {
 
       it('Member does NOT have assign_roles', async () => {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: memberProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: memberPersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'assign_roles',
         });
         expect(data).toBe(false);
@@ -295,8 +305,8 @@ describe('RBAC UI Permission Gating', () => {
     describe('remove_roles permission', () => {
       it('Steward has remove_roles', async () => {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: stewardProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: stewardPersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'remove_roles',
         });
         expect(data).toBe(true);
@@ -304,13 +314,13 @@ describe('RBAC UI Permission Gating', () => {
 
       it('Non-steward roles do NOT have remove_roles', async () => {
         const { data: guideData } = await admin.rpc('has_permission', {
-          p_user_id: guideProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: guidePersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'remove_roles',
         });
         const { data: memberData } = await admin.rpc('has_permission', {
-          p_user_id: memberProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: memberPersonalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'remove_roles',
         });
         expect(guideData).toBe(false);
@@ -321,10 +331,10 @@ describe('RBAC UI Permission Gating', () => {
     // Member list visibility: show_member_list OR hasPermission('view_member_list')
     describe('view_member_list permission', () => {
       it('all four roles have view_member_list', async () => {
-        for (const profile of [stewardProfile, guideProfile, memberProfile, observerProfile]) {
+        for (const pgId of [stewardPersonalGroupId, guidePersonalGroupId, memberPersonalGroupId, observerPersonalGroupId]) {
           const { data } = await admin.rpc('has_permission', {
-            p_user_id: profile.id,
-            p_group_id: testGroup.id,
+            p_acting_group_id: pgId,
+            p_context_group_id: testGroup.id,
             p_permission_name: 'view_member_list',
           });
           expect(data).toBe(true);
@@ -336,8 +346,8 @@ describe('RBAC UI Permission Gating', () => {
     describe('get_user_permissions returns correct sets', () => {
       it('Steward gets 24+ permissions (Tier 2) plus Tier 1', async () => {
         const { data } = await admin.rpc('get_user_permissions', {
-          p_user_id: stewardProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: stewardPersonalGroupId,
+          p_context_group_id: testGroup.id,
         });
 
         expect(data).toContain('edit_group_settings');
@@ -355,8 +365,8 @@ describe('RBAC UI Permission Gating', () => {
 
       it('Member gets 12 permissions (Tier 2) plus Tier 1', async () => {
         const { data } = await admin.rpc('get_user_permissions', {
-          p_user_id: memberProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: memberPersonalGroupId,
+          p_context_group_id: testGroup.id,
         });
 
         expect(data).toContain('view_member_list');
@@ -371,8 +381,8 @@ describe('RBAC UI Permission Gating', () => {
 
       it('Observer gets 7 permissions (Tier 2) plus Tier 1', async () => {
         const { data } = await admin.rpc('get_user_permissions', {
-          p_user_id: observerProfile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: observerPersonalGroupId,
+          p_context_group_id: testGroup.id,
         });
 
         expect(data).toContain('view_member_list');
@@ -393,8 +403,8 @@ describe('RBAC UI Permission Gating', () => {
   describe('B-RBAC-014: Edit Group Page — Permission-Gated Access', () => {
     it('Steward has edit_group_settings (can access edit page)', async () => {
       const { data } = await admin.rpc('has_permission', {
-        p_user_id: stewardProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: stewardPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'edit_group_settings',
       });
       expect(data).toBe(true);
@@ -402,8 +412,8 @@ describe('RBAC UI Permission Gating', () => {
 
     it('Steward has delete_group (can see Danger Zone)', async () => {
       const { data } = await admin.rpc('has_permission', {
-        p_user_id: stewardProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: stewardPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'delete_group',
       });
       expect(data).toBe(true);
@@ -411,8 +421,8 @@ describe('RBAC UI Permission Gating', () => {
 
     it('Member does NOT have edit_group_settings (denied access)', async () => {
       const { data } = await admin.rpc('has_permission', {
-        p_user_id: memberProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: memberPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'edit_group_settings',
       });
       expect(data).toBe(false);
@@ -420,8 +430,8 @@ describe('RBAC UI Permission Gating', () => {
 
     it('Guide does NOT have delete_group', async () => {
       const { data } = await admin.rpc('has_permission', {
-        p_user_id: guideProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: guidePersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'delete_group',
       });
       expect(data).toBe(false);
@@ -435,8 +445,8 @@ describe('RBAC UI Permission Gating', () => {
   describe('B-RBAC-015: Forum Moderation — Permission-Gated Delete', () => {
     it('Steward has moderate_forum (can delete others posts)', async () => {
       const { data } = await admin.rpc('has_permission', {
-        p_user_id: stewardProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: stewardPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'moderate_forum',
       });
       expect(data).toBe(true);
@@ -444,8 +454,8 @@ describe('RBAC UI Permission Gating', () => {
 
     it('Guide does NOT have moderate_forum', async () => {
       const { data } = await admin.rpc('has_permission', {
-        p_user_id: guideProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: guidePersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'moderate_forum',
       });
       expect(data).toBe(false);
@@ -453,8 +463,8 @@ describe('RBAC UI Permission Gating', () => {
 
     it('Member does NOT have moderate_forum', async () => {
       const { data } = await admin.rpc('has_permission', {
-        p_user_id: memberProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: memberPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'moderate_forum',
       });
       expect(data).toBe(false);
@@ -462,8 +472,8 @@ describe('RBAC UI Permission Gating', () => {
 
     it('Observer does NOT have moderate_forum', async () => {
       const { data } = await admin.rpc('has_permission', {
-        p_user_id: observerProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: observerPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'moderate_forum',
       });
       expect(data).toBe(false);
@@ -472,8 +482,8 @@ describe('RBAC UI Permission Gating', () => {
     // Posting permissions (Members can post, Observers cannot)
     it('Member has post_forum_messages', async () => {
       const { data } = await admin.rpc('has_permission', {
-        p_user_id: memberProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: memberPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'post_forum_messages',
       });
       expect(data).toBe(true);
@@ -481,8 +491,8 @@ describe('RBAC UI Permission Gating', () => {
 
     it('Observer does NOT have post_forum_messages', async () => {
       const { data } = await admin.rpc('has_permission', {
-        p_user_id: observerProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: observerPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'post_forum_messages',
       });
       expect(data).toBe(false);
@@ -496,13 +506,13 @@ describe('RBAC UI Permission Gating', () => {
   describe('B-RBAC-016: Enrollment Modal — Permission-Based Group Enrollment', () => {
     it('Steward has enroll_group_in_journey in both groups', async () => {
       const { data: group1 } = await admin.rpc('has_permission', {
-        p_user_id: stewardProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: stewardPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'enroll_group_in_journey',
       });
       const { data: group2 } = await admin.rpc('has_permission', {
-        p_user_id: stewardProfile.id,
-        p_group_id: secondGroup.id,
+        p_acting_group_id: stewardPersonalGroupId,
+        p_context_group_id: secondGroup.id,
         p_permission_name: 'enroll_group_in_journey',
       });
       expect(group1).toBe(true);
@@ -511,8 +521,8 @@ describe('RBAC UI Permission Gating', () => {
 
     it('Member does NOT have enroll_group_in_journey', async () => {
       const { data } = await admin.rpc('has_permission', {
-        p_user_id: memberProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: memberPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'enroll_group_in_journey',
       });
       expect(data).toBe(false);
@@ -520,26 +530,26 @@ describe('RBAC UI Permission Gating', () => {
 
     it('Member does NOT have enroll_group_in_journey in second group either', async () => {
       const { data } = await admin.rpc('has_permission', {
-        p_user_id: memberProfile.id,
-        p_group_id: secondGroup.id,
+        p_acting_group_id: memberPersonalGroupId,
+        p_context_group_id: secondGroup.id,
         p_permission_name: 'enroll_group_in_journey',
       });
       expect(data).toBe(false);
     });
 
-    it('Guide does NOT have enroll_group_in_journey', async () => {
+    it('Guide has enroll_group_in_journey', async () => {
       const { data } = await admin.rpc('has_permission', {
-        p_user_id: guideProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: guidePersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'enroll_group_in_journey',
       });
-      expect(data).toBe(false);
+      expect(data).toBe(true);
     });
 
     it('Observer does NOT have enroll_group_in_journey', async () => {
       const { data } = await admin.rpc('has_permission', {
-        p_user_id: observerProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: observerPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'enroll_group_in_journey',
       });
       expect(data).toBe(false);
@@ -547,10 +557,10 @@ describe('RBAC UI Permission Gating', () => {
 
     // enroll_self_in_journey comes from FI Members (Tier 1)
     it('all users have enroll_self_in_journey via FI Members (Tier 1)', async () => {
-      for (const profile of [stewardProfile, guideProfile, memberProfile, observerProfile]) {
+      for (const pgId of [stewardPersonalGroupId, guidePersonalGroupId, memberPersonalGroupId, observerPersonalGroupId]) {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: profile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: pgId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'enroll_self_in_journey',
         });
         expect(data).toBe(true);

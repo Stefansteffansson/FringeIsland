@@ -47,7 +47,7 @@ describe('B-RBAC-007: Role Renaming in Existing Groups', () => {
       .from('groups')
       .insert({
         name: 'RBAC Rename Test Group',
-        created_by_user_id: steward.profile.id,
+        created_by_group_id: steward.personalGroupId,
       })
       .select()
       .single();
@@ -58,16 +58,16 @@ describe('B-RBAC-007: Role Renaming in Existing Groups', () => {
       // Add steward as active member
       await admin.from('group_memberships').insert({
         group_id: testGroupId,
-        user_id: steward.profile.id,
-        added_by_user_id: steward.profile.id,
+        member_group_id: steward.personalGroupId,
+        added_by_group_id: steward.personalGroupId,
         status: 'active',
       });
 
       // Add member as active member
       await admin.from('group_memberships').insert({
         group_id: testGroupId,
-        user_id: member.profile.id,
-        added_by_user_id: steward.profile.id,
+        member_group_id: member.personalGroupId,
+        added_by_group_id: steward.personalGroupId,
         status: 'active',
       });
 
@@ -84,9 +84,9 @@ describe('B-RBAC-007: Role Renaming in Existing Groups', () => {
         // Assign steward role
         await admin.from('user_group_roles').insert({
           group_id: testGroupId,
-          user_id: steward.profile.id,
+          member_group_id: steward.personalGroupId,
           group_role_id: stewardRoleId,
-          assigned_by_user_id: steward.profile.id,
+          assigned_by_group_id: steward.personalGroupId,
         });
       }
     }
@@ -138,7 +138,7 @@ describe('B-RBAC-007: Role Renaming in Existing Groups', () => {
       .from('user_group_roles')
       .select('id')
       .eq('group_id', testGroupId)
-      .eq('user_id', steward.profile.id)
+      .eq('member_group_id', steward.personalGroupId)
       .eq('group_role_id', stewardRoleId)
       .single();
 
@@ -177,9 +177,9 @@ describe('B-RBAC-007: Role Renaming in Existing Groups', () => {
       .from('user_group_roles')
       .insert({
         group_id: testGroupId,
-        user_id: member.profile.id,
+        member_group_id: member.personalGroupId,
         group_role_id: memberRole.id,
-        assigned_by_user_id: steward.profile.id,
+        assigned_by_group_id: steward.personalGroupId,
       });
 
     // Should succeed — Steward has permission to assign roles

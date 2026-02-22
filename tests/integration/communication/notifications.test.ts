@@ -36,6 +36,7 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
   beforeAll(async () => {
     leader  = await createTestUser({ displayName: 'Notif Test - Leader' });
     invitee = await createTestUser({ displayName: 'Notif Test - Invitee' });
+    const { personalGroupId: leaderPgId } = leader;
 
     // Create group
     const { data: group, error: gErr } = await admin
@@ -44,7 +45,7 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
         name: 'Notification Test Group',
         description: 'Group for B-COMM-001 tests',
         is_public: false,
-        created_by_user_id: leader.profile.id,
+        created_by_group_id: leaderPgId,
       })
       .select()
       .single();
@@ -55,8 +56,8 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
     // Add leader as active member
     const { error: lmErr } = await admin.from('group_memberships').insert({
       group_id: testGroup.id,
-      user_id: leader.profile.id,
-      added_by_user_id: leader.profile.id,
+      member_group_id: leaderPgId,
+      added_by_group_id: leaderPgId,
       status: 'active',
     });
     expect(lmErr).toBeNull();
@@ -71,10 +72,10 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
     leaderRole = role;
 
     const { error: assignErr } = await admin.from('user_group_roles').insert({
-      user_id: leader.profile.id,
+      member_group_id: leaderPgId,
       group_id: testGroup.id,
       group_role_id: leaderRole.id,
-      assigned_by_user_id: leader.profile.id,
+      assigned_by_group_id: leaderPgId,
     });
     expect(assignErr).toBeNull();
   });
@@ -96,12 +97,14 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
 
     // Act: create a group_memberships row with status='invited' via admin
     // (trigger fires regardless of who inserts — triggers test database-level guarantee)
+    const { personalGroupId: inviteePgId } = invitee;
+    const { personalGroupId: leaderPgId } = leader;
     const { data: membership, error: mErr } = await admin
       .from('group_memberships')
       .insert({
         group_id: testGroup.id,
-        user_id: invitee.profile.id,
-        added_by_user_id: leader.profile.id,
+        member_group_id: inviteePgId,
+        added_by_group_id: leaderPgId,
         status: 'invited',
       })
       .select()
@@ -114,7 +117,7 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
     const { data: notifications, error: nErr } = await admin
       .from('notifications')
       .select('*')
-      .eq('recipient_user_id', invitee.profile.id)
+      .eq('recipient_group_id', inviteePgId)
       .eq('type', 'group_invitation')
       .eq('group_id', testGroup.id);
 
@@ -136,17 +139,19 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
 
     // Cleanup: remove the invitation so subsequent tests start clean
     await admin.from('group_memberships').delete().eq('id', membership!.id);
-    await admin.from('notifications').delete().eq('recipient_user_id', invitee.profile.id).eq('type', 'group_invitation');
+    await admin.from('notifications').delete().eq('recipient_group_id', invitee.personalGroupId).eq('type', 'group_invitation');
   });
 
   it('B-COMM-001: acceptance UPDATE creates an invitation_accepted notification for Group Leaders', async () => {
     // Arrange: create invitation
+    const { personalGroupId: inviteePgId } = invitee;
+    const { personalGroupId: leaderPgId } = leader;
     const { data: membership, error: mErr } = await admin
       .from('group_memberships')
       .insert({
         group_id: testGroup.id,
-        user_id: invitee.profile.id,
-        added_by_user_id: leader.profile.id,
+        member_group_id: inviteePgId,
+        added_by_group_id: leaderPgId,
         status: 'invited',
       })
       .select()
@@ -158,7 +163,7 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
     await admin
       .from('notifications')
       .delete()
-      .eq('recipient_user_id', invitee.profile.id)
+      .eq('recipient_group_id', inviteePgId)
       .eq('type', 'group_invitation');
 
     // Act: update status from 'invited' to 'active' — triggers invitation_accepted notification
@@ -173,7 +178,7 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
     const { data: notifications, error: nErr } = await admin
       .from('notifications')
       .select('*')
-      .eq('recipient_user_id', leader.profile.id)
+      .eq('recipient_group_id', leader.personalGroupId)
       .eq('type', 'invitation_accepted')
       .eq('group_id', testGroup.id);
 
@@ -187,7 +192,7 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
     expect(notif.payload).toMatchObject({
       group_id: testGroup.id,
       group_name: testGroup.name,
-      member_id: invitee.profile.id,
+      member_group_id: invitee.personalGroupId,
     });
 
     // Cleanup: remove invitee membership and notifications
@@ -213,7 +218,7 @@ describe('B-COMM-002: Notification Privacy — RLS enforcement', () => {
     const { data: notif, error: nErr } = await admin
       .from('notifications')
       .insert({
-        recipient_user_id: userA.profile.id,
+        recipient_group_id: userA.personalGroupId,
         type: 'group_invitation',
         title: 'Test Notification',
         body: 'This is a test notification for User A',
@@ -228,8 +233,8 @@ describe('B-COMM-002: Notification Privacy — RLS enforcement', () => {
 
   afterAll(async () => {
     // Clean up notifications for these test users
-    await admin.from('notifications').delete().eq('recipient_user_id', userA.profile.id);
-    await admin.from('notifications').delete().eq('recipient_user_id', userB.profile.id);
+    await admin.from('notifications').delete().eq('recipient_group_id', userA.personalGroupId);
+    await admin.from('notifications').delete().eq('recipient_group_id', userB.personalGroupId);
     if (userA) await cleanupTestUser(userA.user.id);
     if (userB) await cleanupTestUser(userB.user.id);
   });
@@ -249,7 +254,7 @@ describe('B-COMM-002: Notification Privacy — RLS enforcement', () => {
       expect(error).toBeNull();
       expect(data).not.toBeNull();
       expect(data!.length).toBe(1);
-      expect(data![0].recipient_user_id).toBe(userA.profile.id);
+      expect(data![0].recipient_group_id).toBe(userA.personalGroupId);
     } finally {
       await supabase.auth.signOut();
     }
@@ -284,7 +289,7 @@ describe('B-COMM-002: Notification Privacy — RLS enforcement', () => {
       const { data, error } = await supabase
         .from('notifications')
         .insert({
-          recipient_user_id: userA.profile.id,
+          recipient_group_id: userA.personalGroupId,
           type: 'group_invitation',
           title: 'Self-created notification',
           body: 'This should not be allowed',
@@ -346,7 +351,7 @@ describe('B-COMM-003: Notification Read Status — mark as read', () => {
     const { data: notif, error } = await admin
       .from('notifications')
       .insert({
-        recipient_user_id: testUser.profile.id,
+        recipient_group_id: testUser.personalGroupId,
         type: 'role_assigned',
         title: 'New Role Assigned',
         body: 'You have been assigned the role of Member in Test Group.',
@@ -361,7 +366,7 @@ describe('B-COMM-003: Notification Read Status — mark as read', () => {
   });
 
   afterAll(async () => {
-    await admin.from('notifications').delete().eq('recipient_user_id', testUser.profile.id);
+    await admin.from('notifications').delete().eq('recipient_group_id', testUser.personalGroupId);
     if (testUser) await cleanupTestUser(testUser.user.id);
   });
 
@@ -426,7 +431,7 @@ describe('B-COMM-003: Notification Read Status — mark as read', () => {
       const { data, error } = await supabase
         .from('notifications')
         .select('id')
-        .eq('recipient_user_id', testUser.profile.id)
+        .eq('recipient_group_id', testUser.personalGroupId)
         .eq('is_read', false);
 
       expect(error).toBeNull();
@@ -444,14 +449,14 @@ describe('B-COMM-003: Notification Read Status — mark as read', () => {
     await admin
       .from('notifications')
       .update({ is_read: true, read_at: new Date().toISOString() })
-      .eq('recipient_user_id', testUser.profile.id)
+      .eq('recipient_group_id', testUser.personalGroupId)
       .eq('is_read', false);
 
     // Create a fresh unread notification
     const { data: unreadNotif } = await admin
       .from('notifications')
       .insert({
-        recipient_user_id: testUser.profile.id,
+        recipient_group_id: testUser.personalGroupId,
         type: 'group_invitation',
         title: 'Another Notification',
         body: 'Unread test notification',
@@ -468,7 +473,7 @@ describe('B-COMM-003: Notification Read Status — mark as read', () => {
       const { data, error } = await supabase
         .from('notifications')
         .select('id', { count: 'exact' })
-        .eq('recipient_user_id', testUser.profile.id)
+        .eq('recipient_group_id', testUser.personalGroupId)
         .eq('is_read', false);
 
       expect(error).toBeNull();

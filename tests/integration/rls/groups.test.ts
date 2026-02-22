@@ -37,7 +37,7 @@ describe('B-GRP-003: Group Visibility Rules (RLS)', () => {
         name: 'Private Test Group',
         description: 'RLS test - private',
         is_public: false,
-        created_by_user_id: user1.profile.id,
+        created_by_group_id: user1.personalGroupId,
       })
       .select()
       .single();
@@ -49,8 +49,8 @@ describe('B-GRP-003: Group Visibility Rules (RLS)', () => {
       .from('group_memberships')
       .insert({
         group_id: privGroup!.id,
-        user_id: user1.profile.id,
-        added_by_user_id: user1.profile.id,
+        member_group_id: user1.personalGroupId,
+        added_by_group_id: user1.personalGroupId,
         status: 'active',
       });
 
@@ -61,7 +61,7 @@ describe('B-GRP-003: Group Visibility Rules (RLS)', () => {
         name: 'Public Test Group',
         description: 'RLS test - public',
         is_public: true,
-        created_by_user_id: user1.profile.id,
+        created_by_group_id: user1.personalGroupId,
       })
       .select()
       .single();
@@ -220,8 +220,8 @@ describe('B-GRP-003: Group Visibility Rules (RLS)', () => {
       .from('group_memberships')
       .insert({
         group_id: privateGroup.id,
-        user_id: user3.profile.id,
-        added_by_user_id: user1.profile.id,
+        member_group_id: user3.personalGroupId,
+        added_by_group_id: user1.personalGroupId,
         status: 'active',
       })
       .select()
@@ -270,8 +270,8 @@ describe('B-GRP-003: Group Visibility Rules (RLS)', () => {
       .from('group_memberships')
       .insert({
         group_id: privateGroup.id,
-        user_id: user4.profile.id,
-        added_by_user_id: user1.profile.id,
+        member_group_id: user4.personalGroupId,
+        added_by_group_id: user1.personalGroupId,
         status: 'invited', // Not active yet!
       });
 

@@ -33,13 +33,13 @@ describe('B-RBAC-001: Permission Catalog Integrity', () => {
     if (testUser) await cleanupTestUser(testUser.user.id);
   });
 
-  it('should have exactly 42 permissions in the catalog', async () => {
+  it('should have exactly 44 permissions in the catalog', async () => {
     const { data, error } = await admin
       .from('permissions')
       .select('id');
 
     expect(error).toBeNull();
-    expect(data).toHaveLength(42);
+    expect(data).toHaveLength(44);
   });
 
   it('should have 15 group_management permissions', async () => {
@@ -62,14 +62,14 @@ describe('B-RBAC-001: Permission Catalog Integrity', () => {
     expect(data).toHaveLength(10);
   });
 
-  it('should have 5 journey_participation permissions', async () => {
+  it('should have 6 journey_participation permissions', async () => {
     const { data, error } = await admin
       .from('permissions')
       .select('name')
       .eq('category', 'journey_participation');
 
     expect(error).toBeNull();
-    expect(data).toHaveLength(5);
+    expect(data).toHaveLength(6);
   });
 
   it('should have 5 communication permissions', async () => {
@@ -82,14 +82,14 @@ describe('B-RBAC-001: Permission Catalog Integrity', () => {
     expect(data).toHaveLength(5);
   });
 
-  it('should have 2 feedback permissions (view_member_feedback removed)', async () => {
+  it('should have 3 feedback permissions', async () => {
     const { data, error } = await admin
       .from('permissions')
       .select('name')
       .eq('category', 'feedback');
 
     expect(error).toBeNull();
-    expect(data).toHaveLength(2);
+    expect(data).toHaveLength(3);
   });
 
   it('should have 5 platform_admin permissions', async () => {
@@ -102,28 +102,28 @@ describe('B-RBAC-001: Permission Catalog Integrity', () => {
     expect(data).toHaveLength(5);
   });
 
-  it('should have renamed track_group_progress to view_group_progress', async () => {
-    const { data: oldPerm } = await admin
+  it('should have both track_group_progress and view_group_progress', async () => {
+    const { data: trackPerm } = await admin
       .from('permissions')
       .select('id')
       .eq('name', 'track_group_progress');
 
-    const { data: newPerm } = await admin
+    const { data: viewPerm } = await admin
       .from('permissions')
       .select('id')
       .eq('name', 'view_group_progress');
 
-    expect(oldPerm).toHaveLength(0); // Old name gone
-    expect(newPerm).toHaveLength(1); // New name exists
+    expect(trackPerm).toHaveLength(1);
+    expect(viewPerm).toHaveLength(1);
   });
 
-  it('should have removed view_member_feedback permission', async () => {
+  it('should have view_member_feedback permission', async () => {
     const { data } = await admin
       .from('permissions')
       .select('id')
       .eq('name', 'view_member_feedback');
 
-    expect(data).toHaveLength(0);
+    expect(data).toHaveLength(1);
   });
 
   it('should have added browse_journey_catalog permission', async () => {

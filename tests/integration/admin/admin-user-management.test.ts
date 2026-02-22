@@ -59,16 +59,16 @@ describe('B-ADMIN-010: Admin User Management (Activate/Deactivate)', () => {
     // Add deusexUser to DeusEx group
     await admin.from('group_memberships').insert({
       group_id: deusexGroupId,
-      user_id: deusexUser.profile.id,
-      added_by_user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
+      added_by_group_id: deusexUser.personalGroupId,
       status: 'active',
     });
 
     await admin.from('user_group_roles').insert({
-      user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
       group_id: deusexGroupId,
       group_role_id: deusexRoleId,
-      assigned_by_user_id: deusexUser.profile.id,
+      assigned_by_group_id: deusexUser.personalGroupId,
     });
 
     // Sign in clients
@@ -98,10 +98,10 @@ describe('B-ADMIN-010: Admin User Management (Activate/Deactivate)', () => {
 
     // Clean up DeusEx membership
     await admin.from('user_group_roles').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
     await admin.from('group_memberships').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     if (deusexUser) await cleanupTestUser(deusexUser.user.id);

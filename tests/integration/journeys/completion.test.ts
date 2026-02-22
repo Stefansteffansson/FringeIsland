@@ -34,13 +34,14 @@ describe('B-JRN-007: Journey Completion (DB Layer)', () => {
   beforeAll(async () => {
     testUser = await createTestUser({ displayName: 'Completion Test User' });
     otherUser = await createTestUser({ displayName: 'Other User (no access)' });
+    const { personalGroupId } = testUser;
 
     const { data: j } = await admin
       .from('journeys')
       .insert({
         ...testJourneyMultiStep,
         title: 'Completion Test Journey',
-        created_by_user_id: testUser.profile.id,
+        created_by_group_id: personalGroupId,
       })
       .select()
       .single();
@@ -62,13 +63,13 @@ describe('B-JRN-007: Journey Completion (DB Layer)', () => {
     });
 
     // Create enrollment
+    const { personalGroupId } = testUser;
     const { data: enrollment } = await supabase
       .from('journey_enrollments')
       .insert({
         journey_id: journey.id,
-        user_id: testUser.profile.id,
-        group_id: null,
-        enrolled_by_user_id: testUser.profile.id,
+        group_id: personalGroupId,
+        enrolled_by_group_id: personalGroupId,
         status: 'active',
         progress_data: {},
       })
@@ -115,13 +116,13 @@ describe('B-JRN-007: Journey Completion (DB Layer)', () => {
     });
 
     // Create enrollment and mark complete via admin
+    const { personalGroupId } = testUser;
     const { data: enrollment } = await admin
       .from('journey_enrollments')
       .insert({
         journey_id: journey.id,
-        user_id: testUser.profile.id,
-        group_id: null,
-        enrolled_by_user_id: testUser.profile.id,
+        group_id: personalGroupId,
+        enrolled_by_group_id: personalGroupId,
         status: 'completed',
         completed_at: new Date().toISOString(),
         progress_data: {
@@ -136,7 +137,7 @@ describe('B-JRN-007: Journey Completion (DB Layer)', () => {
     const { data: myEnrollments } = await supabase
       .from('journey_enrollments')
       .select('id, status, completed_at, progress_data')
-      .eq('user_id', testUser.profile.id)
+      .eq('group_id', personalGroupId)
       .eq('status', 'completed');
 
     expect(myEnrollments).not.toBeNull();
@@ -152,13 +153,13 @@ describe('B-JRN-007: Journey Completion (DB Layer)', () => {
 
   it('should prevent other users from completing someone else\'s enrollment', async () => {
     // Create enrollment for testUser
+    const { personalGroupId } = testUser;
     const { data: enrollment } = await admin
       .from('journey_enrollments')
       .insert({
         journey_id: journey.id,
-        user_id: testUser.profile.id,
-        group_id: null,
-        enrolled_by_user_id: testUser.profile.id,
+        group_id: personalGroupId,
+        enrolled_by_group_id: personalGroupId,
         status: 'active',
         progress_data: {},
       })
@@ -201,13 +202,13 @@ describe('B-JRN-007: Journey Completion (DB Layer)', () => {
 
   it('should enforce valid status values via CHECK constraint', async () => {
     // Attempt to set invalid status
+    const { personalGroupId } = testUser;
     const { data: enrollment } = await admin
       .from('journey_enrollments')
       .insert({
         journey_id: journey.id,
-        user_id: testUser.profile.id,
-        group_id: null,
-        enrolled_by_user_id: testUser.profile.id,
+        group_id: personalGroupId,
+        enrolled_by_group_id: personalGroupId,
         status: 'active',
         progress_data: {},
       })
@@ -228,15 +229,15 @@ describe('B-JRN-007: Journey Completion (DB Layer)', () => {
 
   it('should allow all valid status transitions', async () => {
     const VALID_STATUSES = ['active', 'completed', 'paused', 'frozen'];
+    const { personalGroupId } = testUser;
 
     for (const status of VALID_STATUSES) {
       const { data: enrollment } = await admin
         .from('journey_enrollments')
         .insert({
           journey_id: journey.id,
-          user_id: testUser.profile.id,
-          group_id: null,
-          enrolled_by_user_id: testUser.profile.id,
+          group_id: personalGroupId,
+          enrolled_by_group_id: personalGroupId,
           status: 'active',
           progress_data: {},
         })
@@ -275,13 +276,13 @@ describe('B-JRN-007: Journey Completion (DB Layer)', () => {
   });
 
   it('should set completed_at only when transitioning to completed status', async () => {
+    const { personalGroupId } = testUser;
     const { data: enrollment } = await admin
       .from('journey_enrollments')
       .insert({
         journey_id: journey.id,
-        user_id: testUser.profile.id,
-        group_id: null,
-        enrolled_by_user_id: testUser.profile.id,
+        group_id: personalGroupId,
+        enrolled_by_group_id: personalGroupId,
         status: 'active',
         progress_data: {},
       })

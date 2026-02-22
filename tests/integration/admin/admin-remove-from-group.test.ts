@@ -65,16 +65,16 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     // Add deusexUser to DeusEx group
     await admin.from('group_memberships').insert({
       group_id: deusexGroupId,
-      user_id: deusexUser.profile.id,
-      added_by_user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
+      added_by_group_id: deusexUser.personalGroupId,
       status: 'active',
     });
 
     await admin.from('user_group_roles').insert({
-      user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
       group_id: deusexGroupId,
       group_role_id: deusexRoleId,
-      assigned_by_user_id: deusexUser.profile.id,
+      assigned_by_group_id: deusexUser.personalGroupId,
     });
 
     // Create test group 1 (admin is NOT creator or member)
@@ -83,7 +83,7 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
       .insert({
         name: 'Admin Remove Test Group 1',
         description: 'Group for testing admin remove',
-        created_by_user_id: stewardUser.profile.id,
+        created_by_group_id: stewardUser.personalGroupId,
         group_type: 'engagement',
         is_public: false,
       })
@@ -112,20 +112,20 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     await admin.from('group_memberships').insert([
       {
         group_id: testGroupId,
-        user_id: stewardUser.profile.id,
-        added_by_user_id: stewardUser.profile.id,
+        member_group_id: stewardUser.personalGroupId,
+        added_by_group_id: stewardUser.personalGroupId,
         status: 'active',
       },
       {
         group_id: testGroupId,
-        user_id: memberUser1.profile.id,
-        added_by_user_id: stewardUser.profile.id,
+        member_group_id: memberUser1.personalGroupId,
+        added_by_group_id: stewardUser.personalGroupId,
         status: 'active',
       },
       {
         group_id: testGroupId,
-        user_id: memberUser2.profile.id,
-        added_by_user_id: stewardUser.profile.id,
+        member_group_id: memberUser2.personalGroupId,
+        added_by_group_id: stewardUser.personalGroupId,
         status: 'active',
       },
     ]);
@@ -133,22 +133,22 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     // Assign roles
     await admin.from('user_group_roles').insert([
       {
-        user_id: stewardUser.profile.id,
+        member_group_id: stewardUser.personalGroupId,
         group_id: testGroupId,
         group_role_id: stewardRoleId,
-        assigned_by_user_id: stewardUser.profile.id,
+        assigned_by_group_id: stewardUser.personalGroupId,
       },
       {
-        user_id: memberUser1.profile.id,
+        member_group_id: memberUser1.personalGroupId,
         group_id: testGroupId,
         group_role_id: memberRoleId,
-        assigned_by_user_id: stewardUser.profile.id,
+        assigned_by_group_id: stewardUser.personalGroupId,
       },
       {
-        user_id: memberUser2.profile.id,
+        member_group_id: memberUser2.personalGroupId,
         group_id: testGroupId,
         group_role_id: memberRoleId,
-        assigned_by_user_id: stewardUser.profile.id,
+        assigned_by_group_id: stewardUser.personalGroupId,
       },
     ]);
 
@@ -158,7 +158,7 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
       .insert({
         name: 'Admin Remove Test Group 2',
         description: 'Second group for intersection testing',
-        created_by_user_id: stewardUser.profile.id,
+        created_by_group_id: stewardUser.personalGroupId,
         group_type: 'engagement',
         is_public: false,
       })
@@ -171,8 +171,8 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     // Add memberUser1 (but NOT memberUser2) to group 2
     await admin.from('group_memberships').insert({
       group_id: testGroup2Id,
-      user_id: memberUser1.profile.id,
-      added_by_user_id: stewardUser.profile.id,
+      member_group_id: memberUser1.personalGroupId,
+      added_by_group_id: stewardUser.personalGroupId,
       status: 'active',
     });
 
@@ -192,15 +192,15 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
 
     // Clean up audit log entries
     await admin.from('admin_audit_log').delete()
-      .eq('actor_user_id', deusexUser.profile.id)
+      .eq('actor_group_id', deusexUser.personalGroupId)
       .eq('action', 'admin_remove_from_group');
 
     // Clean up DeusEx membership
     await admin.from('user_group_roles').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
     await admin.from('group_memberships').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     if (deusexUser) await cleanupTestUser(deusexUser.user.id);
@@ -214,7 +214,7 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     const { error: roleError } = await deusexClient
       .from('user_group_roles')
       .delete()
-      .eq('user_id', memberUser1.profile.id)
+      .eq('member_group_id', memberUser1.personalGroupId)
       .eq('group_id', testGroupId);
 
     expect(roleError).toBeNull();
@@ -223,7 +223,7 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     const { error: membershipError } = await deusexClient
       .from('group_memberships')
       .delete()
-      .eq('user_id', memberUser1.profile.id)
+      .eq('member_group_id', memberUser1.personalGroupId)
       .eq('group_id', testGroupId);
 
     expect(membershipError).toBeNull();
@@ -232,7 +232,7 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     const { data: membership } = await admin
       .from('group_memberships')
       .select('id')
-      .eq('user_id', memberUser1.profile.id)
+      .eq('member_group_id', memberUser1.personalGroupId)
       .eq('group_id', testGroupId)
       .maybeSingle();
 
@@ -244,7 +244,7 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     const { error: roleError } = await deusexClient
       .from('user_group_roles')
       .delete()
-      .eq('user_id', memberUser2.profile.id)
+      .eq('member_group_id', memberUser2.personalGroupId)
       .eq('group_id', testGroupId);
 
     expect(roleError).toBeNull();
@@ -253,7 +253,7 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     const { error: membershipError } = await deusexClient
       .from('group_memberships')
       .delete()
-      .eq('user_id', memberUser2.profile.id)
+      .eq('member_group_id', memberUser2.personalGroupId)
       .eq('group_id', testGroupId);
 
     expect(membershipError).toBeNull();
@@ -262,7 +262,7 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     const { data: roles } = await admin
       .from('user_group_roles')
       .select('id')
-      .eq('user_id', memberUser2.profile.id)
+      .eq('member_group_id', memberUser2.personalGroupId)
       .eq('group_id', testGroupId);
 
     expect(roles).toEqual([]);
@@ -271,7 +271,7 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     const { data: membership } = await admin
       .from('group_memberships')
       .select('id')
-      .eq('user_id', memberUser2.profile.id)
+      .eq('member_group_id', memberUser2.personalGroupId)
       .eq('group_id', testGroupId)
       .maybeSingle();
 
@@ -283,7 +283,7 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     const { error } = await deusexClient
       .from('user_group_roles')
       .delete()
-      .eq('user_id', stewardUser.profile.id)
+      .eq('member_group_id', stewardUser.personalGroupId)
       .eq('group_id', testGroupId)
       .eq('group_role_id', stewardRoleId);
 
@@ -292,7 +292,7 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     const { data: stewardRoles } = await admin
       .from('user_group_roles')
       .select('id')
-      .eq('user_id', stewardUser.profile.id)
+      .eq('member_group_id', stewardUser.personalGroupId)
       .eq('group_id', testGroupId)
       .eq('group_role_id', stewardRoleId);
 
@@ -310,14 +310,14 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     const { data: user1Groups } = await admin
       .from('group_memberships')
       .select('group_id')
-      .eq('user_id', memberUser1.profile.id)
+      .eq('member_group_id', memberUser1.personalGroupId)
       .eq('status', 'active');
 
     // Get stewardUser's groups (steward is still in group 1)
     const { data: stewardGroups } = await admin
       .from('group_memberships')
       .select('group_id')
-      .eq('user_id', stewardUser.profile.id)
+      .eq('member_group_id', stewardUser.personalGroupId)
       .eq('status', 'active');
 
     // Compute intersection
@@ -335,7 +335,7 @@ describe('B-ADMIN-018: Admin Remove from Group', () => {
     const { data: auditEntries } = await admin
       .from('admin_audit_log')
       .select('*')
-      .eq('actor_user_id', deusexUser.profile.id)
+      .eq('actor_group_id', deusexUser.personalGroupId)
       .eq('action', 'admin_remove_from_group');
 
     expect(auditEntries).not.toBeNull();

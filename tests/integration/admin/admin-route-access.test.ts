@@ -30,8 +30,11 @@ describe('B-ADMIN-001: Admin Route Protection', () => {
   let testGroupId: string;
 
   beforeAll(async () => {
-    deusexUser = await createTestUser({ displayName: 'Admin Access Deusex' });
-    normalUser = await createTestUser({ displayName: 'Admin Access Normal' });
+    const deusexResult = await createTestUser({ displayName: 'Admin Access Deusex' });
+    const normalResult = await createTestUser({ displayName: 'Admin Access Normal' });
+
+    deusexUser = deusexResult;
+    normalUser = normalResult;
 
     // Look up Deusex group and role
     const { data: deusexGroup } = await admin
@@ -57,16 +60,16 @@ describe('B-ADMIN-001: Admin Route Protection', () => {
     // Add deusexUser to Deusex group with role
     await admin.from('group_memberships').insert({
       group_id: deusexGroupId,
-      user_id: deusexUser.profile.id,
-      added_by_user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
+      added_by_group_id: deusexUser.personalGroupId,
       status: 'active',
     });
 
     await admin.from('user_group_roles').insert({
-      user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
       group_id: deusexGroupId,
       group_role_id: deusexRoleId,
-      assigned_by_user_id: deusexUser.profile.id,
+      assigned_by_group_id: deusexUser.personalGroupId,
     });
 
     // Create a test engagement group for context
@@ -75,7 +78,7 @@ describe('B-ADMIN-001: Admin Route Protection', () => {
       .insert({
         name: 'Admin Access Test Group',
         group_type: 'engagement',
-        created_by_user_id: normalUser.profile.id,
+        created_by_group_id: normalUser.personalGroupId,
       })
       .select()
       .single();
@@ -92,10 +95,10 @@ describe('B-ADMIN-001: Admin Route Protection', () => {
   afterAll(async () => {
     // Clean up
     await admin.from('user_group_roles').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
     await admin.from('group_memberships').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     if (testGroupId) {
@@ -107,8 +110,8 @@ describe('B-ADMIN-001: Admin Route Protection', () => {
 
   it('should grant manage_all_groups to Deusex member', async () => {
     const { data, error } = await admin.rpc('has_permission', {
-      p_user_id: deusexUser.profile.id,
-      p_group_id: testGroupId,
+      p_acting_group_id: deusexUser.personalGroupId,
+      p_context_group_id: testGroupId,
       p_permission_name: 'manage_all_groups',
     });
 
@@ -118,8 +121,8 @@ describe('B-ADMIN-001: Admin Route Protection', () => {
 
   it('should NOT grant manage_all_groups to normal user', async () => {
     const { data, error } = await admin.rpc('has_permission', {
-      p_user_id: normalUser.profile.id,
-      p_group_id: testGroupId,
+      p_acting_group_id: normalUser.personalGroupId,
+      p_context_group_id: testGroupId,
       p_permission_name: 'manage_all_groups',
     });
 
@@ -150,8 +153,8 @@ describe('B-ADMIN-001: Admin Route Protection', () => {
 
   it('should return manage_all_groups in Deusex user permissions array', async () => {
     const { data, error } = await admin.rpc('get_user_permissions', {
-      p_user_id: deusexUser.profile.id,
-      p_group_id: testGroupId,
+      p_acting_group_id: deusexUser.personalGroupId,
+      p_context_group_id: testGroupId,
     });
 
     expect(error).toBeNull();
@@ -161,8 +164,8 @@ describe('B-ADMIN-001: Admin Route Protection', () => {
 
   it('should NOT include manage_all_groups in normal user permissions', async () => {
     const { data, error } = await admin.rpc('get_user_permissions', {
-      p_user_id: normalUser.profile.id,
-      p_group_id: testGroupId,
+      p_acting_group_id: normalUser.personalGroupId,
+      p_context_group_id: testGroupId,
     });
 
     expect(error).toBeNull();

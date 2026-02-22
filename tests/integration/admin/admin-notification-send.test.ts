@@ -61,16 +61,16 @@ describe('B-ADMIN-011: Admin Notification Send', () => {
     // Add deusexUser to DeusEx group
     await admin.from('group_memberships').insert({
       group_id: deusexGroupId,
-      user_id: deusexUser.profile.id,
-      added_by_user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
+      added_by_group_id: deusexUser.personalGroupId,
       status: 'active',
     });
 
     await admin.from('user_group_roles').insert({
-      user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
       group_id: deusexGroupId,
       group_role_id: deusexRoleId,
-      assigned_by_user_id: deusexUser.profile.id,
+      assigned_by_group_id: deusexUser.personalGroupId,
     });
 
     // Sign in clients
@@ -88,10 +88,10 @@ describe('B-ADMIN-011: Admin Notification Send', () => {
 
     // Clean up DeusEx membership
     await admin.from('user_group_roles').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
     await admin.from('group_memberships').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     if (deusexUser) await cleanupTestUser(deusexUser.user.id);
@@ -134,9 +134,9 @@ describe('B-ADMIN-011: Admin Notification Send', () => {
     expect(notifs!.length).toBe(2);
 
     // Verify both users received the notification
-    const recipientIds = notifs!.map((n: any) => n.recipient_user_id);
-    expect(recipientIds).toContain(targetUser1.profile.id);
-    expect(recipientIds).toContain(targetUser2.profile.id);
+    const recipientGroupIds = notifs!.map((n: any) => n.recipient_group_id);
+    expect(recipientGroupIds).toContain(targetUser1.personalGroupId);
+    expect(recipientGroupIds).toContain(targetUser2.personalGroupId);
   });
 
   it('should create notifications with correct type and content', async () => {
@@ -160,7 +160,7 @@ describe('B-ADMIN-011: Admin Notification Send', () => {
     expect(notif!.type).toBe('admin_notification');
     expect(notif!.title).toBe('Type Check');
     expect(notif!.body).toBe('Checking notification fields.');
-    expect(notif!.recipient_user_id).toBe(targetUser1.profile.id);
+    expect(notif!.recipient_group_id).toBe(targetUser1.personalGroupId);
     expect(notif!.is_read).toBe(false);
   });
 

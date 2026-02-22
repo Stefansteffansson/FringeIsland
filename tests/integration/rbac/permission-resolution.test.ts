@@ -28,6 +28,8 @@ describe('RBAC Permission Resolution', () => {
   let userB: any; // Will be Member
   let userAProfile: any;
   let userBProfile: any;
+  let userAPersonalGroupId: string;
+  let userBPersonalGroupId: string;
 
   // Test group + roles
   let testGroup: any;
@@ -41,6 +43,8 @@ describe('RBAC Permission Resolution', () => {
 
     userAProfile = userA.profile;
     userBProfile = userB.profile;
+    userAPersonalGroupId = userA.personalGroupId;
+    userBPersonalGroupId = userB.personalGroupId;
 
     // Create test engagement group
     const { data: group, error: groupErr } = await admin
@@ -49,7 +53,7 @@ describe('RBAC Permission Resolution', () => {
         name: 'Permission Resolution Test Group',
         description: 'Testing permission resolution',
         group_type: 'engagement',
-        created_by_user_id: userAProfile.id,
+        created_by_group_id: userAPersonalGroupId,
       })
       .select()
       .single();
@@ -61,14 +65,14 @@ describe('RBAC Permission Resolution', () => {
     await admin.from('group_memberships').insert([
       {
         group_id: testGroup.id,
-        user_id: userAProfile.id,
-        added_by_user_id: userAProfile.id,
+        member_group_id: userAPersonalGroupId,
+        added_by_group_id: userAPersonalGroupId,
         status: 'active',
       },
       {
         group_id: testGroup.id,
-        user_id: userBProfile.id,
-        added_by_user_id: userAProfile.id,
+        member_group_id: userBPersonalGroupId,
+        added_by_group_id: userAPersonalGroupId,
         status: 'active',
       },
     ]);
@@ -113,16 +117,16 @@ describe('RBAC Permission Resolution', () => {
     // Assign roles
     await admin.from('user_group_roles').insert([
       {
-        user_id: userAProfile.id,
+        member_group_id: userAPersonalGroupId,
         group_id: testGroup.id,
         group_role_id: stewardRole.id,
-        assigned_by_user_id: userAProfile.id,
+        assigned_by_group_id: userAPersonalGroupId,
       },
       {
-        user_id: userBProfile.id,
+        member_group_id: userBPersonalGroupId,
         group_id: testGroup.id,
         group_role_id: memberRole.id,
-        assigned_by_user_id: userAProfile.id,
+        assigned_by_group_id: userAPersonalGroupId,
       },
     ]);
   }, 30000);
@@ -140,8 +144,8 @@ describe('RBAC Permission Resolution', () => {
   describe('B-RBAC-008: Engagement Group Permission Resolution', () => {
     it('should return true when Steward has invite_members', async () => {
       const { data, error } = await admin.rpc('has_permission', {
-        p_user_id: userAProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: userAPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'invite_members',
       });
 
@@ -151,8 +155,8 @@ describe('RBAC Permission Resolution', () => {
 
     it('should return false when Member does NOT have invite_members', async () => {
       const { data, error } = await admin.rpc('has_permission', {
-        p_user_id: userBProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: userBPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'invite_members',
       });
 
@@ -162,8 +166,8 @@ describe('RBAC Permission Resolution', () => {
 
     it('should return true when Member has view_member_list', async () => {
       const { data, error } = await admin.rpc('has_permission', {
-        p_user_id: userBProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: userBPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'view_member_list',
       });
 
@@ -192,16 +196,16 @@ describe('RBAC Permission Resolution', () => {
 
       // Give user A both Steward + Observer roles
       await admin.from('user_group_roles').insert({
-        user_id: userAProfile.id,
+        member_group_id: userAPersonalGroupId,
         group_id: testGroup.id,
         group_role_id: observerRole!.id,
-        assigned_by_user_id: userAProfile.id,
+        assigned_by_group_id: userAPersonalGroupId,
       });
 
       // Steward-only permission should still work (union semantics)
       const { data, error } = await admin.rpc('has_permission', {
-        p_user_id: userAProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: userAPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'assign_roles',
       });
 
@@ -214,8 +218,8 @@ describe('RBAC Permission Resolution', () => {
 
       try {
         const { data, error } = await admin.rpc('has_permission', {
-          p_user_id: userC.profile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: userC.personalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'view_member_list',
         });
 
@@ -233,22 +237,22 @@ describe('RBAC Permission Resolution', () => {
         // Add as invited (not active)
         await admin.from('group_memberships').insert({
           group_id: testGroup.id,
-          user_id: userD.profile.id,
-          added_by_user_id: userAProfile.id,
+          member_group_id: userD.personalGroupId,
+          added_by_group_id: userAPersonalGroupId,
           status: 'invited',
         });
 
         // Assign Member role
         await admin.from('user_group_roles').insert({
-          user_id: userD.profile.id,
+          member_group_id: userD.personalGroupId,
           group_id: testGroup.id,
           group_role_id: memberRole.id,
-          assigned_by_user_id: userAProfile.id,
+          assigned_by_group_id: userAPersonalGroupId,
         });
 
         const { data, error } = await admin.rpc('has_permission', {
-          p_user_id: userD.profile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: userD.personalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'view_member_list',
         });
 
@@ -268,8 +272,8 @@ describe('RBAC Permission Resolution', () => {
     it('should return true for create_group from FI Members (any authenticated user)', async () => {
       // User B is just a Member in testGroup but FI Members grants create_group
       const { data, error } = await admin.rpc('has_permission', {
-        p_user_id: userBProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: userBPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'create_group',
       });
 
@@ -279,8 +283,8 @@ describe('RBAC Permission Resolution', () => {
 
     it('should return true for browse_journey_catalog from FI Members', async () => {
       const { data, error } = await admin.rpc('has_permission', {
-        p_user_id: userBProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: userBPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'browse_journey_catalog',
       });
 
@@ -292,8 +296,8 @@ describe('RBAC Permission Resolution', () => {
       // User B is Member role — should NOT have invite_members
       // even though they're FI Members (invite_members is engagement-scoped)
       const { data, error } = await admin.rpc('has_permission', {
-        p_user_id: userBProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: userBPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'invite_members',
       });
 
@@ -304,14 +308,14 @@ describe('RBAC Permission Resolution', () => {
     it('should provide additive permissions from system + context groups', async () => {
       // User B should have create_group (Tier 1) AND view_member_list (Tier 2 Member role)
       const { data: systemPerm } = await admin.rpc('has_permission', {
-        p_user_id: userBProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: userBPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'create_group',
       });
 
       const { data: contextPerm } = await admin.rpc('has_permission', {
-        p_user_id: userBProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: userBPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'view_member_list',
       });
 
@@ -327,8 +331,8 @@ describe('RBAC Permission Resolution', () => {
   describe('B-RBAC-010: Edge Cases and Error Handling', () => {
     it('should return false for non-existent user_id', async () => {
       const { data, error } = await admin.rpc('has_permission', {
-        p_user_id: '00000000-0000-0000-0000-000000000000',
-        p_group_id: testGroup.id,
+        p_acting_group_id: '00000000-0000-0000-0000-000000000000',
+        p_context_group_id: testGroup.id,
         p_permission_name: 'view_member_list',
       });
 
@@ -338,8 +342,8 @@ describe('RBAC Permission Resolution', () => {
 
     it('should return false for non-existent group_id', async () => {
       const { data, error } = await admin.rpc('has_permission', {
-        p_user_id: userAProfile.id,
-        p_group_id: '00000000-0000-0000-0000-000000000000',
+        p_acting_group_id: userAPersonalGroupId,
+        p_context_group_id: '00000000-0000-0000-0000-000000000000',
         p_permission_name: 'view_member_list',
       });
 
@@ -349,8 +353,8 @@ describe('RBAC Permission Resolution', () => {
 
     it('should return false for non-existent permission_name', async () => {
       const { data, error } = await admin.rpc('has_permission', {
-        p_user_id: userAProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: userAPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'nonexistent_permission_xyz',
       });
 
@@ -360,8 +364,8 @@ describe('RBAC Permission Resolution', () => {
 
     it('should return false for NULL user_id', async () => {
       const { data, error } = await admin.rpc('has_permission', {
-        p_user_id: null,
-        p_group_id: testGroup.id,
+        p_acting_group_id: null,
+        p_context_group_id: testGroup.id,
         p_permission_name: 'view_member_list',
       });
 
@@ -371,8 +375,8 @@ describe('RBAC Permission Resolution', () => {
 
     it('should return false for NULL group_id', async () => {
       const { data, error } = await admin.rpc('has_permission', {
-        p_user_id: userAProfile.id,
-        p_group_id: null,
+        p_acting_group_id: userAPersonalGroupId,
+        p_context_group_id: null,
         p_permission_name: 'view_member_list',
       });
 
@@ -382,8 +386,8 @@ describe('RBAC Permission Resolution', () => {
 
     it('should return false for NULL permission_name', async () => {
       const { data, error } = await admin.rpc('has_permission', {
-        p_user_id: userAProfile.id,
-        p_group_id: testGroup.id,
+        p_acting_group_id: userAPersonalGroupId,
+        p_context_group_id: testGroup.id,
         p_permission_name: null,
       });
 
@@ -397,16 +401,16 @@ describe('RBAC Permission Resolution', () => {
       try {
         await admin.from('group_memberships').insert({
           group_id: testGroup.id,
-          user_id: userE.profile.id,
-          added_by_user_id: userAProfile.id,
+          member_group_id: userE.personalGroupId,
+          added_by_group_id: userAPersonalGroupId,
           status: 'active',
         });
 
         await admin.from('user_group_roles').insert({
-          user_id: userE.profile.id,
+          member_group_id: userE.personalGroupId,
           group_id: testGroup.id,
           group_role_id: memberRole.id,
-          assigned_by_user_id: userAProfile.id,
+          assigned_by_group_id: userAPersonalGroupId,
         });
 
         // Set status to removed
@@ -414,11 +418,11 @@ describe('RBAC Permission Resolution', () => {
           .from('group_memberships')
           .update({ status: 'removed' })
           .eq('group_id', testGroup.id)
-          .eq('user_id', userE.profile.id);
+          .eq('member_group_id', userE.personalGroupId);
 
         const { data, error } = await admin.rpc('has_permission', {
-          p_user_id: userE.profile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: userE.personalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'view_member_list',
         });
 
@@ -435,16 +439,16 @@ describe('RBAC Permission Resolution', () => {
       try {
         await admin.from('group_memberships').insert({
           group_id: testGroup.id,
-          user_id: userF.profile.id,
-          added_by_user_id: userAProfile.id,
+          member_group_id: userF.personalGroupId,
+          added_by_group_id: userAPersonalGroupId,
           status: 'active',
         });
 
         await admin.from('user_group_roles').insert({
-          user_id: userF.profile.id,
+          member_group_id: userF.personalGroupId,
           group_id: testGroup.id,
           group_role_id: memberRole.id,
-          assigned_by_user_id: userAProfile.id,
+          assigned_by_group_id: userAPersonalGroupId,
         });
 
         // Set status to paused
@@ -452,11 +456,11 @@ describe('RBAC Permission Resolution', () => {
           .from('group_memberships')
           .update({ status: 'paused' })
           .eq('group_id', testGroup.id)
-          .eq('user_id', userF.profile.id);
+          .eq('member_group_id', userF.personalGroupId);
 
         const { data, error } = await admin.rpc('has_permission', {
-          p_user_id: userF.profile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: userF.personalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: 'view_member_list',
         });
 

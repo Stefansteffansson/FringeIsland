@@ -1,4 +1,4 @@
-// Journey-related TypeScript types for FringeIsland
+// Journey-related TypeScript types for FringeIsland (D15 Universal Group Pattern)
 
 export type JourneyType = 'predefined' | 'user_created' | 'dynamic';
 export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced';
@@ -30,7 +30,7 @@ export interface Journey {
   id: string;
   title: string;
   description: string | null;
-  created_by_user_id: string;
+  created_by_group_id: string;
   is_published: boolean;
   is_public: boolean;
   journey_type: JourneyType;
@@ -43,12 +43,12 @@ export interface Journey {
   published_at: string | null;
 }
 
-// Journey with creator information (for displays)
+// Journey with creator group information (for displays)
 export interface JourneyWithCreator extends Journey {
-  creator?: {
+  creator_group?: {
     id: string;
-    full_name: string;
-    avatar_url: string | null;
+    name: string;
+    group_type: string;
   };
 }
 
@@ -83,13 +83,12 @@ export interface JourneyProgressData {
   total_steps?: number;
 }
 
-// Journey enrollment entity
+// Journey enrollment entity (D15: group_id always set, no user_id)
 export interface JourneyEnrollment {
   id: string;
   journey_id: string;
-  user_id: string | null;
-  group_id: string | null;
-  enrolled_by_user_id: string;
+  group_id: string;
+  enrolled_by_group_id: string;
   enrolled_at: string;
   status: EnrollmentStatus;
   status_changed_at: string;
@@ -102,8 +101,7 @@ export interface JourneyEnrollment {
 export interface PlayerEnrollment {
   id: string;
   journey_id: string;
-  user_id: string | null;
-  group_id: string | null;
+  group_id: string;
   status: EnrollmentStatus;
   progress_data: JourneyProgressData;
   last_accessed_at: string | null;

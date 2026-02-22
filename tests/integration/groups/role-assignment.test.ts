@@ -44,7 +44,7 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
         name: 'Role Assignment Test Group',
         description: 'Tests for B-ROL-001 and B-ROL-003',
         is_public: false,
-        created_by_user_id: leader.profile.id,
+        created_by_group_id: leader.personalGroupId,
       })
       .select()
       .single();
@@ -55,8 +55,8 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
     // Add leader as active member
     const { error: lmErr } = await admin.from('group_memberships').insert({
       group_id: testGroup.id,
-      user_id: leader.profile.id,
-      added_by_user_id: leader.profile.id,
+      member_group_id: leader.personalGroupId,
+      added_by_group_id: leader.personalGroupId,
       status: 'active',
     });
     expect(lmErr).toBeNull();
@@ -64,8 +64,8 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
     // Add regular member as active member
     const { error: mmErr } = await admin.from('group_memberships').insert({
       group_id: testGroup.id,
-      user_id: member.profile.id,
-      added_by_user_id: leader.profile.id,
+      member_group_id: member.personalGroupId,
+      added_by_group_id: leader.personalGroupId,
       status: 'active',
     });
     expect(mmErr).toBeNull();
@@ -81,10 +81,10 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
     leaderRole = lr;
 
     const { error: assignErr } = await admin.from('user_group_roles').insert({
-      user_id: leader.profile.id,
+      member_group_id: leader.personalGroupId,
       group_id: testGroup.id,
       group_role_id: leaderRole.id,
-      assigned_by_user_id: leader.profile.id,
+      assigned_by_group_id: leader.personalGroupId,
     });
     expect(assignErr).toBeNull();
 
@@ -137,17 +137,17 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
       const { data, error } = await supabase
         .from('user_group_roles')
         .insert({
-          user_id: member.profile.id,
+          member_group_id: member.personalGroupId,
           group_id: testGroup.id,
           group_role_id: memberRole.id,
-          assigned_by_user_id: leader.profile.id,
+          assigned_by_group_id: leader.personalGroupId,
         })
         .select()
         .single();
 
       expect(error).toBeNull();
       expect(data).not.toBeNull();
-      expect(data!.user_id).toBe(member.profile.id);
+      expect(data!.member_group_id).toBe(member.personalGroupId);
       expect(data!.group_role_id).toBe(memberRole.id);
       assignmentId = data?.id ?? null;
     } finally {
@@ -164,10 +164,10 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
       const { data, error } = await supabase
         .from('user_group_roles')
         .insert({
-          user_id: leader.profile.id,
+          member_group_id: leader.personalGroupId,
           group_id: testGroup.id,
           group_role_id: memberRole.id,
-          assigned_by_user_id: member.profile.id,
+          assigned_by_group_id: member.personalGroupId,
         })
         .select()
         .single();
@@ -188,10 +188,10 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
       const { data, error } = await supabase
         .from('user_group_roles')
         .insert({
-          user_id: member.profile.id,
+          member_group_id: member.personalGroupId,
           group_id: testGroup.id,
           group_role_id: memberRole.id,
-          assigned_by_user_id: outsider.profile.id,
+          assigned_by_group_id: outsider.personalGroupId,
         })
         .select()
         .single();
@@ -212,7 +212,7 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
       .from('groups')
       .insert({
         name: 'Bootstrap Test Group - Role Assignment',
-        created_by_user_id: leader.profile.id,
+        created_by_group_id: leader.personalGroupId,
       })
       .select()
       .single();
@@ -226,8 +226,8 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
     // Add leader as active member (required for function calls within the policy context)
     await admin.from('group_memberships').insert({
       group_id: bootstrapGroup!.id,
-      user_id: leader.profile.id,
-      added_by_user_id: leader.profile.id,
+      member_group_id: leader.personalGroupId,
+      added_by_group_id: leader.personalGroupId,
       status: 'active',
     });
 
@@ -236,17 +236,17 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
       const { data, error } = await supabase
         .from('user_group_roles')
         .insert({
-          user_id: leader.profile.id,
+          member_group_id: leader.personalGroupId,
           group_id: bootstrapGroup!.id,
           group_role_id: bootstrapRole!.id,
-          assigned_by_user_id: leader.profile.id,
+          assigned_by_group_id: leader.personalGroupId,
         })
         .select()
         .single();
 
       expect(error).toBeNull();
       expect(data).not.toBeNull();
-      expect(data!.user_id).toBe(leader.profile.id);
+      expect(data!.member_group_id).toBe(leader.personalGroupId);
     } finally {
       // Remove user_group_roles first to avoid last-leader trigger, then group
       await admin.from('user_group_roles').delete().eq('group_id', bootstrapGroup!.id);
@@ -265,10 +265,10 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
       const { data, error } = await supabase
         .from('user_group_roles')
         .insert({
-          user_id: member.profile.id,
+          member_group_id: member.personalGroupId,
           group_id: testGroup.id,
           group_role_id: leaderRole.id,
-          assigned_by_user_id: member.profile.id,
+          assigned_by_group_id: member.personalGroupId,
         })
         .select()
         .single();
@@ -289,10 +289,10 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
     const { data: firstAssignment } = await admin
       .from('user_group_roles')
       .insert({
-        user_id: member.profile.id,
+        member_group_id: member.personalGroupId,
         group_id: testGroup.id,
         group_role_id: memberRole.id,
-        assigned_by_user_id: leader.profile.id,
+        assigned_by_group_id: leader.personalGroupId,
       })
       .select()
       .single();
@@ -302,10 +302,10 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
       const { data, error } = await supabase
         .from('user_group_roles')
         .insert({
-          user_id: member.profile.id,
+          member_group_id: member.personalGroupId,
           group_id: testGroup.id,
           group_role_id: memberRole.id,
-          assigned_by_user_id: leader.profile.id,
+          assigned_by_group_id: leader.personalGroupId,
         })
         .select()
         .single();
@@ -331,14 +331,14 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
     try {
       const { data, error } = await supabase
         .from('user_group_roles')
-        .select('id, user_id, group_role_id')
+        .select('id, member_group_id, group_role_id')
         .eq('group_id', testGroup.id);
 
       expect(error).toBeNull();
       // At minimum, the leader's Group Leader assignment must be visible
       expect(data).not.toBeNull();
       expect(data!.length).toBeGreaterThanOrEqual(1);
-      const leaderAssignment = data!.find(r => r.user_id === leader.profile.id);
+      const leaderAssignment = data!.find(r => r.member_group_id === leader.personalGroupId);
       expect(leaderAssignment).toBeDefined();
     } finally {
       await supabase.auth.signOut();

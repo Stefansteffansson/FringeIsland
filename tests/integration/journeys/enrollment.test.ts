@@ -34,6 +34,8 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
   beforeAll(async () => {
     regularUser = await createTestUser({ displayName: 'Regular Enrollee' });
     leaderUser = await createTestUser({ displayName: 'Group Leader Enrollee' });
+    const { personalGroupId: regularPgId } = regularUser;
+    const { personalGroupId: leaderPgId } = leaderUser;
 
     // Create published test journey
     const { data: j } = await admin
@@ -41,7 +43,7 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
       .insert({
         ...testJourney,
         title: 'Enrollment Test Journey',
-        created_by_user_id: regularUser.profile.id,
+        created_by_group_id: regularPgId,
       })
       .select()
       .single();
@@ -54,7 +56,7 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
       .insert({
         name: 'Enrollment Test Group',
         description: 'Group for enrollment tests',
-        created_by_user_id: leaderUser.profile.id,
+        created_by_group_id: leaderPgId,
       })
       .select()
       .single();
@@ -78,8 +80,8 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
       .from('group_memberships')
       .insert({
         group_id: group!.id,
-        user_id: leaderUser.profile.id,
-        added_by_user_id: leaderUser.profile.id,
+        member_group_id: leaderPgId,
+        added_by_group_id: leaderPgId,
         status: 'active',
       });
 
@@ -87,10 +89,10 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
     await admin
       .from('user_group_roles')
       .insert({
-        user_id: leaderUser.profile.id,
+        member_group_id: leaderPgId,
         group_id: group!.id,
         group_role_id: role!.id,
-        assigned_by_user_id: leaderUser.profile.id,
+        assigned_by_group_id: leaderPgId,
       });
   });
 
@@ -109,13 +111,13 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
         password: regularUser.password,
       });
 
+      const { personalGroupId } = regularUser;
       const { data: enrollment, error } = await supabase
         .from('journey_enrollments')
         .insert({
           journey_id: journey.id,
-          user_id: regularUser.profile.id,
-          group_id: null,
-          enrolled_by_user_id: regularUser.profile.id,
+          group_id: personalGroupId,
+          enrolled_by_group_id: personalGroupId,
           status: 'active',
           progress_data: {},
         })
@@ -125,8 +127,7 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
       expect(error).toBeNull();
       expect(enrollment).toBeDefined();
       expect(enrollment!.journey_id).toBe(journey.id);
-      expect(enrollment!.user_id).toBe(regularUser.profile.id);
-      expect(enrollment!.group_id).toBeNull();
+      expect(enrollment!.group_id).toBe(personalGroupId);
       expect(enrollment!.status).toBe('active');
 
       // Cleanup this specific enrollment for subsequent tests
@@ -145,13 +146,13 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
         password: regularUser.password,
       });
 
+      const { personalGroupId } = regularUser;
       const { data: enrollment } = await supabase
         .from('journey_enrollments')
         .insert({
           journey_id: journey.id,
-          user_id: regularUser.profile.id,
-          group_id: null,
-          enrolled_by_user_id: regularUser.profile.id,
+          group_id: personalGroupId,
+          enrolled_by_group_id: personalGroupId,
           status: 'active',
           progress_data: {},
         })
@@ -173,13 +174,13 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
 
     it('should detect duplicate individual enrollment in same journey', async () => {
       // Create first enrollment via admin
+      const { personalGroupId } = regularUser;
       const { data: first } = await admin
         .from('journey_enrollments')
         .insert({
           journey_id: journey.id,
-          user_id: regularUser.profile.id,
-          group_id: null,
-          enrolled_by_user_id: regularUser.profile.id,
+          group_id: personalGroupId,
+          enrolled_by_group_id: personalGroupId,
           status: 'active',
           progress_data: {},
         })
@@ -197,7 +198,7 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
         .from('journey_enrollments')
         .select('id')
         .eq('journey_id', journey.id)
-        .eq('user_id', regularUser.profile.id)
+        .eq('group_id', personalGroupId)
         .maybeSingle();
 
       // App layer: duplicate found — should NOT proceed with second insert
@@ -220,21 +221,22 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
         password: regularUser.password,
       });
 
-      // Attempt to enroll with leaderUser's ID (not regularUser's)
+      // Attempt to enroll with leaderUser's personal group ID (not regularUser's)
+      const { personalGroupId: leaderPgId } = leaderUser;
+      const { personalGroupId: regularPgId } = regularUser;
       const { data: enrollment, error } = await supabase
         .from('journey_enrollments')
         .insert({
           journey_id: journey.id,
-          user_id: leaderUser.profile.id, // Not the signed-in user!
-          group_id: null,
-          enrolled_by_user_id: regularUser.profile.id,
+          group_id: leaderPgId, // Not the signed-in user's personal group!
+          enrolled_by_group_id: regularPgId,
           status: 'active',
           progress_data: {},
         })
         .select()
         .single();
 
-      // RLS should block inserting with another user's ID
+      // RLS should block inserting with another user's personal group ID
       expect(error).not.toBeNull();
       expect(enrollment).toBeNull();
 
@@ -250,13 +252,13 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
         password: leaderUser.password,
       });
 
+      const { personalGroupId } = leaderUser;
       const { data: enrollment, error } = await supabase
         .from('journey_enrollments')
         .insert({
           journey_id: journey.id,
-          user_id: null,
           group_id: testGroup.id,
-          enrolled_by_user_id: leaderUser.profile.id,
+          enrolled_by_group_id: personalGroupId,
           status: 'active',
           progress_data: {},
         })
@@ -266,7 +268,6 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
       expect(error).toBeNull();
       expect(enrollment).toBeDefined();
       expect(enrollment!.group_id).toBe(testGroup.id);
-      expect(enrollment!.user_id).toBeNull();
 
       // Cleanup
       await admin
@@ -279,13 +280,13 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
 
     it('should detect duplicate group enrollment in same journey', async () => {
       // Create first group enrollment via admin
+      const { personalGroupId } = leaderUser;
       const { data: first } = await admin
         .from('journey_enrollments')
         .insert({
           journey_id: journey.id,
-          user_id: null,
           group_id: testGroup.id,
-          enrolled_by_user_id: leaderUser.profile.id,
+          enrolled_by_group_id: personalGroupId,
           status: 'active',
           progress_data: {},
         })
@@ -321,14 +322,15 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
 
   describe('Dual Enrollment Prevention', () => {
     it('should detect when user is enrolled individually AND their group is enrolled in same journey', async () => {
-      // Create individual enrollment for regularUser
+      // Create individual enrollment for regularUser (using their personal group)
+      const { personalGroupId: regularPgId } = regularUser;
+      const { personalGroupId: leaderPgId } = leaderUser;
       const { data: individualEnrollment } = await admin
         .from('journey_enrollments')
         .insert({
           journey_id: journey.id,
-          user_id: regularUser.profile.id,
-          group_id: null,
-          enrolled_by_user_id: regularUser.profile.id,
+          group_id: regularPgId,
+          enrolled_by_group_id: regularPgId,
           status: 'active',
           progress_data: {},
         })
@@ -340,8 +342,8 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
         .from('group_memberships')
         .insert({
           group_id: testGroup.id,
-          user_id: regularUser.profile.id,
-          added_by_user_id: leaderUser.profile.id,
+          member_group_id: regularPgId,
+          added_by_group_id: leaderPgId,
           status: 'active',
         })
         .select()
@@ -353,19 +355,19 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
         password: regularUser.password,
       });
 
-      // App layer: check individual enrollment
+      // App layer: check individual enrollment (personal group)
       const { data: existingIndividual } = await supabase
         .from('journey_enrollments')
         .select('id')
         .eq('journey_id', journey.id)
-        .eq('user_id', regularUser.profile.id)
+        .eq('group_id', regularPgId)
         .maybeSingle();
 
       // App layer: get user's groups
       const { data: userGroups } = await supabase
         .from('group_memberships')
         .select('group_id')
-        .eq('user_id', regularUser.profile.id)
+        .eq('member_group_id', regularPgId)
         .eq('status', 'active');
 
       const groupIds = userGroups?.map((g: any) => g.group_id) || [];
@@ -396,41 +398,22 @@ describe('B-JRN-003: Journey Enrollment Rules', () => {
   });
 
   describe('Enrollment Record Integrity', () => {
-    it('should enforce that user_id and group_id are mutually exclusive', async () => {
-      // Attempt to create enrollment with BOTH user_id AND group_id (violates CHECK constraint)
+    it('should require group_id to be set', async () => {
+      // Attempt to create enrollment with group_id as null (violates NOT NULL constraint)
+      const { personalGroupId } = regularUser;
       const { data, error } = await admin
         .from('journey_enrollments')
         .insert({
           journey_id: journey.id,
-          user_id: regularUser.profile.id,
-          group_id: testGroup.id, // Both set — violates constraint
-          enrolled_by_user_id: regularUser.profile.id,
+          group_id: null, // null — violates constraint
+          enrolled_by_group_id: personalGroupId,
           status: 'active',
           progress_data: {},
         })
         .select()
         .single();
 
-      expect(error).not.toBeNull(); // CHECK constraint violated
-      expect(data).toBeNull();
-    });
-
-    it('should enforce that either user_id or group_id must be set', async () => {
-      // Attempt to create enrollment with NEITHER user_id NOR group_id
-      const { data, error } = await admin
-        .from('journey_enrollments')
-        .insert({
-          journey_id: journey.id,
-          user_id: null,
-          group_id: null, // Both null — violates constraint
-          enrolled_by_user_id: regularUser.profile.id,
-          status: 'active',
-          progress_data: {},
-        })
-        .select()
-        .single();
-
-      expect(error).not.toBeNull(); // CHECK constraint violated
+      expect(error).not.toBeNull(); // NOT NULL / CHECK constraint violated
       expect(data).toBeNull();
     });
   });

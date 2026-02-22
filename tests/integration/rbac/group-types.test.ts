@@ -53,7 +53,7 @@ describe('B-RBAC-002: Group Type Classification', () => {
       .insert({
         name: 'Invalid Type Test',
         group_type: 'admin',
-        created_by_user_id: testUser.profile.id,
+        created_by_group_id: testUser.personalGroupId,
       });
 
     expect(error).not.toBeNull(); // CHECK constraint violation
@@ -66,7 +66,7 @@ describe('B-RBAC-002: Group Type Classification', () => {
       .insert({
         name: 'RBAC Group Type Test - Engagement',
         group_type: 'engagement',
-        created_by_user_id: testUser.profile.id,
+        created_by_group_id: testUser.personalGroupId,
       })
       .select()
       .single();
@@ -82,7 +82,7 @@ describe('B-RBAC-002: Group Type Classification', () => {
       .from('groups')
       .insert({
         name: 'RBAC Group Type Default Test',
-        created_by_user_id: testUser.profile.id,
+        created_by_group_id: testUser.personalGroupId,
       })
       .select('group_type')
       .single();

@@ -3,7 +3,7 @@
  *
  * Tests: B-RBAC-006: System Groups Exist
  *
- * Verifies that the three system groups (FringeIsland Members, Visitor, Deusex)
+ * Verifies that the four system groups (FringeIsland Members, Visitor, DeusEx, [Deleted User])
  * exist with correct group_type, roles, and permissions.
  *
  * These tests MUST FAIL initially (RED) — system groups don't exist yet.
@@ -162,7 +162,7 @@ describe('B-RBAC-006: System Groups Exist', () => {
     expect(data!.group_type).toBe('system');
   });
 
-  it('should have a "Deusex" role with ALL 42 permissions', async () => {
+  it('should have a "Deusex" role with ALL 44 permissions', async () => {
     const { data: group } = await admin
       .from('groups')
       .select('id')
@@ -191,19 +191,19 @@ describe('B-RBAC-006: System Groups Exist', () => {
       .select('group_role_id, permission_id')
       .eq('group_role_id', role.id);
 
-    expect(perms).toHaveLength(42);
+    expect(perms).toHaveLength(44);
   });
 
   // --- System group protection ---
 
-  it('should have exactly 3 system groups', async () => {
+  it('should have exactly 4 system groups', async () => {
     const { data, error } = await admin
       .from('groups')
       .select('id')
       .eq('group_type', 'system');
 
     expect(error).toBeNull();
-    expect(data).toHaveLength(3);
+    expect(data).toHaveLength(4);
   });
 
   it('should not show system groups in normal user group listings', async () => {

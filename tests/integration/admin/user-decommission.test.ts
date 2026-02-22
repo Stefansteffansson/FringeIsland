@@ -60,16 +60,16 @@ describe('B-ADMIN-008: User Decommission', () => {
     // Add deusexUser to DeusEx group
     await admin.from('group_memberships').insert({
       group_id: deusexGroupId,
-      user_id: deusexUser.profile.id,
-      added_by_user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
+      added_by_group_id: deusexUser.personalGroupId,
       status: 'active',
     });
 
     await admin.from('user_group_roles').insert({
-      user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
       group_id: deusexGroupId,
       group_role_id: deusexRoleId,
-      assigned_by_user_id: deusexUser.profile.id,
+      assigned_by_group_id: deusexUser.personalGroupId,
     });
 
     // Create a test group and add targetUser as a member (to verify records preserved)
@@ -78,7 +78,7 @@ describe('B-ADMIN-008: User Decommission', () => {
       .insert({
         name: 'Decommission Test Group',
         description: 'Group to verify record preservation',
-        created_by_user_id: deusexUser.profile.id,
+        created_by_group_id: deusexUser.personalGroupId,
         group_type: 'engagement',
       })
       .select()
@@ -88,8 +88,8 @@ describe('B-ADMIN-008: User Decommission', () => {
       testGroupId = testGroup.id;
       await admin.from('group_memberships').insert({
         group_id: testGroupId,
-        user_id: targetUser.profile.id,
-        added_by_user_id: deusexUser.profile.id,
+        member_group_id: targetUser.personalGroupId,
+        added_by_group_id: deusexUser.personalGroupId,
         status: 'active',
       });
     }
@@ -127,10 +127,10 @@ describe('B-ADMIN-008: User Decommission', () => {
 
     // Clean up DeusEx membership
     await admin.from('user_group_roles').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
     await admin.from('group_memberships').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     if (deusexUser) await cleanupTestUser(deusexUser.user.id);
@@ -174,7 +174,7 @@ describe('B-ADMIN-008: User Decommission', () => {
     const { data: memberships, error } = await admin
       .from('group_memberships')
       .select('id, status')
-      .eq('user_id', targetUser.profile.id);
+      .eq('member_group_id', targetUser.personalGroupId);
 
     expect(error).toBeNull();
     expect(memberships).not.toBeNull();

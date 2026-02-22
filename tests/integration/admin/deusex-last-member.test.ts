@@ -29,50 +29,50 @@ describe('B-ADMIN-005: Last Deusex Member Protection', () => {
   let testUserMembershipId: string;
 
   /**
-   * Helper: get all Deusex role assignment IDs except for a given user
+   * Helper: get all Deusex role assignment IDs except for a given personal group
    */
-  async function getOtherRoleIds(excludeUserId: string) {
+  async function getOtherRoleIds(excludePersonalGroupId: string) {
     const { data } = await admin
       .from('user_group_roles')
-      .select('id, user_id')
+      .select('id, member_group_id')
       .eq('group_id', deusexGroupId)
       .eq('group_role_id', deusexRoleId)
-      .neq('user_id', excludeUserId);
+      .neq('member_group_id', excludePersonalGroupId);
     return data || [];
   }
 
   /**
-   * Helper: get all active Deusex membership IDs except for a given user
+   * Helper: get all active Deusex membership IDs except for a given personal group
    */
-  async function getOtherMembershipIds(excludeUserId: string) {
+  async function getOtherMembershipIds(excludePersonalGroupId: string) {
     const { data } = await admin
       .from('group_memberships')
-      .select('id, user_id')
+      .select('id, member_group_id')
       .eq('group_id', deusexGroupId)
       .eq('status', 'active')
-      .neq('user_id', excludeUserId);
+      .neq('member_group_id', excludePersonalGroupId);
     return data || [];
   }
 
   /**
-   * Helper: restore a user's Deusex membership and role
+   * Helper: restore a personal group's Deusex membership and role
    */
-  async function restoreDeusexMember(userId: string) {
+  async function restoreDeusexMember(personalGroupId: string) {
     // Re-add membership (idempotent via ON CONFLICT)
     await admin.from('group_memberships').upsert({
       group_id: deusexGroupId,
-      user_id: userId,
-      added_by_user_id: userId,
+      member_group_id: personalGroupId,
+      added_by_group_id: personalGroupId,
       status: 'active',
-    }, { onConflict: 'group_id,user_id,member_group_id' });
+    }, { onConflict: 'group_id,member_group_id' });
 
     // Re-add role (idempotent via ON CONFLICT)
     await admin.from('user_group_roles').upsert({
-      user_id: userId,
+      member_group_id: personalGroupId,
       group_id: deusexGroupId,
       group_role_id: deusexRoleId,
-      assigned_by_user_id: userId,
-    }, { onConflict: 'user_id,group_id,group_role_id' });
+      assigned_by_group_id: personalGroupId,
+    }, { onConflict: 'member_group_id,group_id,group_role_id' });
   }
 
   beforeAll(async () => {
@@ -104,8 +104,8 @@ describe('B-ADMIN-005: Last Deusex Member Protection', () => {
       .from('group_memberships')
       .insert({
         group_id: deusexGroupId,
-        user_id: testUser.profile.id,
-        added_by_user_id: testUser.profile.id,
+        member_group_id: testUser.personalGroupId,
+        added_by_group_id: testUser.personalGroupId,
         status: 'active',
       })
       .select()
@@ -115,10 +115,10 @@ describe('B-ADMIN-005: Last Deusex Member Protection', () => {
     const { data: role } = await admin
       .from('user_group_roles')
       .insert({
-        user_id: testUser.profile.id,
+        member_group_id: testUser.personalGroupId,
         group_id: deusexGroupId,
         group_role_id: deusexRoleId,
-        assigned_by_user_id: testUser.profile.id,
+        assigned_by_group_id: testUser.personalGroupId,
       })
       .select()
       .single();
@@ -137,12 +137,12 @@ describe('B-ADMIN-005: Last Deusex Member Protection', () => {
     // Ensure bootstrap user is restored
     const { data: bootstrapUser } = await admin
       .from('users')
-      .select('id')
+      .select('id, personal_group_id')
       .eq('email', 'deusex@fringeisland.com')
       .maybeSingle();
 
-    if (bootstrapUser) {
-      await restoreDeusexMember(bootstrapUser.id);
+    if (bootstrapUser?.personal_group_id) {
+      await restoreDeusexMember(bootstrapUser.personal_group_id);
     }
 
     if (testUser) await cleanupTestUser(testUser.user.id);
@@ -162,10 +162,10 @@ describe('B-ADMIN-005: Last Deusex Member Protection', () => {
     const { data: newRole } = await admin
       .from('user_group_roles')
       .insert({
-        user_id: testUser.profile.id,
+        member_group_id: testUser.personalGroupId,
         group_id: deusexGroupId,
         group_role_id: deusexRoleId,
-        assigned_by_user_id: testUser.profile.id,
+        assigned_by_group_id: testUser.personalGroupId,
       })
       .select()
       .single();
@@ -174,7 +174,7 @@ describe('B-ADMIN-005: Last Deusex Member Protection', () => {
 
   it('should block removing the last Deusex role', async () => {
     // Temporarily remove all OTHER Deusex role holders
-    const others = await getOtherRoleIds(testUser.profile.id);
+    const others = await getOtherRoleIds(testUser.personalGroupId);
     for (const other of others) {
       await admin.from('user_group_roles').delete().eq('id', other.id);
     }
@@ -190,7 +190,7 @@ describe('B-ADMIN-005: Last Deusex Member Protection', () => {
 
     // Restore other role holders
     for (const other of others) {
-      await restoreDeusexMember(other.user_id);
+      await restoreDeusexMember(other.member_group_id);
     }
   });
 
@@ -211,8 +211,8 @@ describe('B-ADMIN-005: Last Deusex Member Protection', () => {
       .from('group_memberships')
       .insert({
         group_id: deusexGroupId,
-        user_id: testUser.profile.id,
-        added_by_user_id: testUser.profile.id,
+        member_group_id: testUser.personalGroupId,
+        added_by_group_id: testUser.personalGroupId,
         status: 'active',
       })
       .select()
@@ -222,10 +222,10 @@ describe('B-ADMIN-005: Last Deusex Member Protection', () => {
     const { data: newRole } = await admin
       .from('user_group_roles')
       .insert({
-        user_id: testUser.profile.id,
+        member_group_id: testUser.personalGroupId,
         group_id: deusexGroupId,
         group_role_id: deusexRoleId,
-        assigned_by_user_id: testUser.profile.id,
+        assigned_by_group_id: testUser.personalGroupId,
       })
       .select()
       .single();
@@ -234,13 +234,13 @@ describe('B-ADMIN-005: Last Deusex Member Protection', () => {
 
   it('should block removing the last active Deusex membership', async () => {
     // Temporarily remove all OTHER Deusex role holders
-    const otherRoles = await getOtherRoleIds(testUser.profile.id);
+    const otherRoles = await getOtherRoleIds(testUser.personalGroupId);
     for (const other of otherRoles) {
       await admin.from('user_group_roles').delete().eq('id', other.id);
     }
 
     // Temporarily remove all OTHER Deusex memberships
-    const otherMemberships = await getOtherMembershipIds(testUser.profile.id);
+    const otherMemberships = await getOtherMembershipIds(testUser.personalGroupId);
     for (const other of otherMemberships) {
       await admin.from('group_memberships').delete().eq('id', other.id);
     }
@@ -261,10 +261,10 @@ describe('B-ADMIN-005: Last Deusex Member Protection', () => {
     const { data: newRole, error: roleError } = await admin
       .from('user_group_roles')
       .insert({
-        user_id: testUser.profile.id,
+        member_group_id: testUser.personalGroupId,
         group_id: deusexGroupId,
         group_role_id: deusexRoleId,
-        assigned_by_user_id: testUser.profile.id,
+        assigned_by_group_id: testUser.personalGroupId,
       })
       .select()
       .single();
@@ -275,7 +275,7 @@ describe('B-ADMIN-005: Last Deusex Member Protection', () => {
       const { data: existingRole } = await admin
         .from('user_group_roles')
         .select('id')
-        .eq('user_id', testUser.profile.id)
+        .eq('member_group_id', testUser.personalGroupId)
         .eq('group_id', deusexGroupId)
         .eq('group_role_id', deusexRoleId)
         .maybeSingle();
@@ -288,7 +288,7 @@ describe('B-ADMIN-005: Last Deusex Member Protection', () => {
 
     // Restore all other members
     for (const other of otherMemberships) {
-      await restoreDeusexMember(other.user_id);
+      await restoreDeusexMember(other.member_group_id);
     }
   });
 });

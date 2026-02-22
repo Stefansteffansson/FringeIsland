@@ -69,16 +69,16 @@ describe('B-ADMIN-019: Admin Force Logout', () => {
     // Add deusexUser to DeusEx group
     await admin.from('group_memberships').insert({
       group_id: deusexGroupId,
-      user_id: deusexUser.profile.id,
-      added_by_user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
+      added_by_group_id: deusexUser.personalGroupId,
       status: 'active',
     });
 
     await admin.from('user_group_roles').insert({
-      user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
       group_id: deusexGroupId,
       group_role_id: deusexRoleId,
-      assigned_by_user_id: deusexUser.profile.id,
+      assigned_by_group_id: deusexUser.personalGroupId,
     });
 
     // Sign in clients
@@ -101,15 +101,15 @@ describe('B-ADMIN-019: Admin Force Logout', () => {
 
     // Clean up audit log entries
     await admin.from('admin_audit_log').delete()
-      .eq('actor_user_id', deusexUser.profile.id)
+      .eq('actor_group_id', deusexUser.personalGroupId)
       .eq('action', 'admin_force_logout');
 
     // Clean up DeusEx membership
     await admin.from('user_group_roles').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
     await admin.from('group_memberships').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     if (deusexUser) await cleanupTestUser(deusexUser.user.id);
@@ -187,7 +187,7 @@ describe('B-ADMIN-019: Admin Force Logout', () => {
     const { data: auditEntries } = await admin
       .from('admin_audit_log')
       .select('*')
-      .eq('actor_user_id', deusexUser.profile.id)
+      .eq('actor_group_id', deusexUser.personalGroupId)
       .eq('action', 'admin_force_logout');
 
     expect(auditEntries).not.toBeNull();

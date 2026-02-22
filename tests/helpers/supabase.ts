@@ -1,5 +1,5 @@
 /**
- * Supabase Test Helpers
+ * Supabase Test Helpers (D15 Universal Group Pattern)
  *
  * Utilities for integration tests that interact with Supabase.
  * Uses service role key for full access (bypassing RLS in setup/teardown).
@@ -54,38 +54,47 @@ export const createAdminClient = () => {
 
 /**
  * Clean up test data (use carefully!)
- * Deletes users created during tests.
  *
- * IMPORTANT: Deleting from auth.users triggers handle_user_deletion() which
- * only soft-deletes public.users (is_active = false). It does NOT cascade-delete
- * group_memberships or user_group_roles. We must remove those explicitly first,
- * otherwise orphaned memberships cause null joins when RLS hides inactive users.
+ * D15 cleanup chain:
+ * 1. Look up the user's personal_group_id
+ * 2. Delete any journeys created by personal group (RESTRICT FK)
+ * 3. Delete the personal group (CASCADE handles memberships, roles,
+ *    enrollments, notifications, conversations)
+ * 4. Delete from auth.users (CASCADE removes public.users row)
  */
 export const cleanupTestUser = async (userId: string) => {
   const admin = createAdminClient();
 
-  // Look up the public.users profile id (needed for membership/role cleanup)
+  // Look up the public.users profile (get personal_group_id for cleanup)
   const { data: profile } = await admin
     .from('users')
-    .select('id')
+    .select('id, personal_group_id')
     .eq('auth_user_id', userId)
     .maybeSingle();
 
-  if (profile) {
-    // Remove role assignments first (FK dependency)
+  if (profile?.personal_group_id) {
+    // Handle RESTRICT FK: delete journeys created by this personal group
     await admin
-      .from('user_group_roles')
+      .from('journeys')
       .delete()
-      .eq('user_id', profile.id);
+      .eq('created_by_group_id', profile.personal_group_id);
 
-    // Remove group memberships
+    // Delete the personal group — CASCADE handles:
+    //   - group_memberships (member_group_id or group_id)
+    //   - user_group_roles (member_group_id or group_id)
+    //   - journey_enrollments (group_id)
+    //   - notifications (recipient_group_id)
+    //   - conversations (participant_1 or participant_2)
+    //   - forum_posts.author_group_id → SET NULL
+    //   - direct_messages.sender_group_id → SET NULL
+    //   - admin_audit_log.actor_group_id → SET NULL
     await admin
-      .from('group_memberships')
+      .from('groups')
       .delete()
-      .eq('user_id', profile.id);
+      .eq('id', profile.personal_group_id);
   }
 
-  // Delete from auth.users (triggers soft-delete on public.users)
+  // Delete from auth.users (CASCADE removes public.users row)
   const { error } = await admin.auth.admin.deleteUser(userId);
 
   if (error) {
@@ -194,7 +203,11 @@ export const generateTestEmail = () => {
 
 /**
  * Create a test user (bypasses normal signup flow)
- * Returns { user, profile }
+ * Returns { user, profile, personalGroupId, email, password }
+ *
+ * D15: The handle_new_user() trigger creates a personal group and sets
+ * personal_group_id on the users row. personalGroupId is the user's
+ * identity in the group system.
  */
 export const createTestUser = async (options?: {
   email?: string;
@@ -221,7 +234,7 @@ export const createTestUser = async (options?: {
     throw new Error(`Failed to create test user: ${authError.message}`);
   }
 
-  // Get profile (should be created by trigger)
+  // Get profile (should be created by trigger, including personal_group_id)
   const { data: profile, error: profileError } = await admin
     .from('users')
     .select('*')
@@ -235,6 +248,7 @@ export const createTestUser = async (options?: {
   return {
     user: authData.user,
     profile,
+    personalGroupId: profile.personal_group_id as string,
     email,
     password,
   };

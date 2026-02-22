@@ -27,6 +27,7 @@ describe('B-JRN-002: Journey Detail Access', () => {
 
   beforeAll(async () => {
     testUser = await createTestUser({ displayName: 'Detail Test User' });
+    const { personalGroupId } = testUser;
 
     const { data: published } = await admin
       .from('journeys')
@@ -34,7 +35,7 @@ describe('B-JRN-002: Journey Detail Access', () => {
         ...testJourneyMultiStep,
         title: 'Detail Test Journey (Published)',
         is_published: true,
-        created_by_user_id: testUser.profile.id,
+        created_by_group_id: personalGroupId,
       })
       .select()
       .single();
@@ -47,7 +48,7 @@ describe('B-JRN-002: Journey Detail Access', () => {
         ...testJourneyMultiStep,
         title: 'Detail Test Journey (Unpublished)',
         is_published: false,
-        created_by_user_id: testUser.profile.id,
+        created_by_group_id: personalGroupId,
       })
       .select()
       .single();

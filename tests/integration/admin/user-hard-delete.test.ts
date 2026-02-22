@@ -60,16 +60,16 @@ describe('B-ADMIN-009: User Hard Delete', () => {
     // Add deusexUser to DeusEx group
     await admin.from('group_memberships').insert({
       group_id: deusexGroupId,
-      user_id: deusexUser.profile.id,
-      added_by_user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
+      added_by_group_id: deusexUser.personalGroupId,
       status: 'active',
     });
 
     await admin.from('user_group_roles').insert({
-      user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
       group_id: deusexGroupId,
       group_role_id: deusexRoleId,
-      assigned_by_user_id: deusexUser.profile.id,
+      assigned_by_group_id: deusexUser.personalGroupId,
     });
 
     // Create a test group and add targetUser to it (to verify cascade)
@@ -78,7 +78,7 @@ describe('B-ADMIN-009: User Hard Delete', () => {
       .insert({
         name: 'HardDelete Test Group',
         description: 'Group for cascade testing',
-        created_by_user_id: deusexUser.profile.id,
+        created_by_group_id: deusexUser.personalGroupId,
         group_type: 'engagement',
       })
       .select()
@@ -88,8 +88,8 @@ describe('B-ADMIN-009: User Hard Delete', () => {
       testGroupId = testGroup.id;
       await admin.from('group_memberships').insert({
         group_id: testGroupId,
-        user_id: targetUser.profile.id,
-        added_by_user_id: deusexUser.profile.id,
+        member_group_id: targetUser.personalGroupId,
+        added_by_group_id: deusexUser.personalGroupId,
         status: 'active',
       });
     }
@@ -111,15 +111,15 @@ describe('B-ADMIN-009: User Hard Delete', () => {
 
     // Clean up DeusEx membership
     await admin.from('user_group_roles').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
     await admin.from('group_memberships').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     // Clean up audit log entries
     await admin.from('admin_audit_log').delete()
-      .eq('actor_user_id', deusexUser.profile.id);
+      .eq('actor_group_id', deusexUser.personalGroupId);
 
     if (deusexUser) await cleanupTestUser(deusexUser.user.id);
     // targetUser may already be hard-deleted by the test — only clean up if still exists
@@ -165,11 +165,11 @@ describe('B-ADMIN-009: User Hard Delete', () => {
 
     expect(userRow).toBeNull();
 
-    // Verify: no group memberships remain
+    // Verify: no group memberships remain (personal group should be deleted)
     const { data: memberships } = await admin
       .from('group_memberships')
       .select('id')
-      .eq('user_id', targetProfileId);
+      .eq('member_group_id', targetUser.personalGroupId);
 
     expect(memberships).toEqual([]);
 
@@ -177,7 +177,7 @@ describe('B-ADMIN-009: User Hard Delete', () => {
     const { data: roles } = await admin
       .from('user_group_roles')
       .select('id')
-      .eq('user_id', targetProfileId);
+      .eq('member_group_id', targetUser.personalGroupId);
 
     expect(roles).toEqual([]);
   });
@@ -188,7 +188,7 @@ describe('B-ADMIN-009: User Hard Delete', () => {
       .from('admin_audit_log')
       .select('*')
       .eq('action', 'user_hard_deleted')
-      .eq('actor_user_id', deusexUser.profile.id);
+      .eq('actor_group_id', deusexUser.personalGroupId);
 
     expect(error).toBeNull();
     expect(logs).not.toBeNull();

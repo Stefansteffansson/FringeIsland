@@ -62,16 +62,16 @@ describe('B-ADMIN-017: Admin Join Group (Direct Add)', () => {
     // Add deusexUser to DeusEx group
     await admin.from('group_memberships').insert({
       group_id: deusexGroupId,
-      user_id: deusexUser.profile.id,
-      added_by_user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
+      added_by_group_id: deusexUser.personalGroupId,
       status: 'active',
     });
 
     await admin.from('user_group_roles').insert({
-      user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
       group_id: deusexGroupId,
       group_role_id: deusexRoleId,
-      assigned_by_user_id: deusexUser.profile.id,
+      assigned_by_group_id: deusexUser.personalGroupId,
     });
 
     // Create a test engagement group (admin is NOT the creator or member)
@@ -80,7 +80,7 @@ describe('B-ADMIN-017: Admin Join Group (Direct Add)', () => {
       .insert({
         name: 'Admin Join Test Group',
         description: 'Group for testing admin direct add',
-        created_by_user_id: existingActiveUser.profile.id,
+        created_by_group_id: existingActiveUser.personalGroupId,
         group_type: 'engagement',
         is_public: false,
       })
@@ -106,8 +106,8 @@ describe('B-ADMIN-017: Admin Join Group (Direct Add)', () => {
     // Add existing active member
     await admin.from('group_memberships').insert({
       group_id: testGroupId,
-      user_id: existingActiveUser.profile.id,
-      added_by_user_id: existingActiveUser.profile.id,
+      member_group_id: existingActiveUser.personalGroupId,
+      added_by_group_id: existingActiveUser.personalGroupId,
       status: 'active',
     });
 
@@ -125,15 +125,15 @@ describe('B-ADMIN-017: Admin Join Group (Direct Add)', () => {
 
     // Clean up audit log entries
     await admin.from('admin_audit_log').delete()
-      .eq('actor_user_id', deusexUser.profile.id)
+      .eq('actor_group_id', deusexUser.personalGroupId)
       .eq('action', 'admin_join_group');
 
     // Clean up DeusEx membership
     await admin.from('user_group_roles').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
     await admin.from('group_memberships').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     if (deusexUser) await cleanupTestUser(deusexUser.user.id);
@@ -148,8 +148,8 @@ describe('B-ADMIN-017: Admin Join Group (Direct Add)', () => {
       .from('group_memberships')
       .insert({
         group_id: testGroupId,
-        user_id: targetUser1.profile.id,
-        added_by_user_id: deusexUser.profile.id,
+        member_group_id: targetUser1.personalGroupId,
+        added_by_group_id: deusexUser.personalGroupId,
         status: 'active',
       })
       .select()
@@ -159,7 +159,7 @@ describe('B-ADMIN-017: Admin Join Group (Direct Add)', () => {
     expect(data).not.toBeNull();
     expect(data!.status).toBe('active');
     expect(data!.group_id).toBe(testGroupId);
-    expect(data!.user_id).toBe(targetUser1.profile.id);
+    expect(data!.member_group_id).toBe(targetUser1.personalGroupId);
   });
 
   it('should assign Member role automatically when admin direct-adds a user', async () => {
@@ -168,8 +168,8 @@ describe('B-ADMIN-017: Admin Join Group (Direct Add)', () => {
       .from('group_memberships')
       .insert({
         group_id: testGroupId,
-        user_id: targetUser2.profile.id,
-        added_by_user_id: deusexUser.profile.id,
+        member_group_id: targetUser2.personalGroupId,
+        added_by_group_id: deusexUser.personalGroupId,
         status: 'active',
       });
 
@@ -182,10 +182,10 @@ describe('B-ADMIN-017: Admin Join Group (Direct Add)', () => {
     const { error: roleError } = await deusexClient
       .from('user_group_roles')
       .insert({
-        user_id: targetUser2.profile.id,
+        member_group_id: targetUser2.personalGroupId,
         group_id: testGroupId,
         group_role_id: memberRoleId,
-        assigned_by_user_id: deusexUser.profile.id,
+        assigned_by_group_id: deusexUser.personalGroupId,
       });
 
     expect(roleError).toBeNull();
@@ -194,7 +194,7 @@ describe('B-ADMIN-017: Admin Join Group (Direct Add)', () => {
     const { data: roles } = await admin
       .from('user_group_roles')
       .select('group_role_id, group_roles(name)')
-      .eq('user_id', targetUser2.profile.id)
+      .eq('member_group_id', targetUser2.personalGroupId)
       .eq('group_id', testGroupId);
 
     expect(roles).not.toBeNull();
@@ -210,8 +210,8 @@ describe('B-ADMIN-017: Admin Join Group (Direct Add)', () => {
       .from('group_memberships')
       .insert({
         group_id: testGroupId,
-        user_id: existingActiveUser.profile.id,
-        added_by_user_id: deusexUser.profile.id,
+        member_group_id: existingActiveUser.personalGroupId,
+        added_by_group_id: deusexUser.personalGroupId,
         status: 'active',
       })
       .select()
@@ -221,15 +221,15 @@ describe('B-ADMIN-017: Admin Join Group (Direct Add)', () => {
     // Verify the existing membership is unchanged
     const { data: membership } = await admin
       .from('group_memberships')
-      .select('status, added_by_user_id')
+      .select('status, added_by_group_id')
       .eq('group_id', testGroupId)
-      .eq('user_id', existingActiveUser.profile.id)
+      .eq('member_group_id', existingActiveUser.personalGroupId)
       .single();
 
     expect(membership).not.toBeNull();
     expect(membership!.status).toBe('active');
     // The original added_by should be preserved
-    expect(membership!.added_by_user_id).toBe(existingActiveUser.profile.id);
+    expect(membership!.added_by_group_id).toBe(existingActiveUser.personalGroupId);
   });
 
   it('should only show engagement groups in group picker (exclude system and personal)', async () => {
@@ -267,7 +267,7 @@ describe('B-ADMIN-017: Admin Join Group (Direct Add)', () => {
     const { data: auditEntries } = await admin
       .from('admin_audit_log')
       .select('*')
-      .eq('actor_user_id', deusexUser.profile.id)
+      .eq('actor_group_id', deusexUser.personalGroupId)
       .eq('action', 'admin_join_group');
 
     expect(auditEntries).not.toBeNull();

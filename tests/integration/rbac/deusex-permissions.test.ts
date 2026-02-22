@@ -51,17 +51,17 @@ describe('B-RBAC-012: Deusex Has All Permissions', () => {
     // Add deusex user to Deusex system group
     await admin.from('group_memberships').insert({
       group_id: deusexGroup.id,
-      user_id: deusexUser.profile.id,
-      added_by_user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
+      added_by_group_id: deusexUser.personalGroupId,
       status: 'active',
     });
 
     // Assign Deusex role
     await admin.from('user_group_roles').insert({
-      user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
       group_id: deusexGroup.id,
       group_role_id: deusexRole.id,
-      assigned_by_user_id: deusexUser.profile.id,
+      assigned_by_group_id: deusexUser.personalGroupId,
     });
 
     // Create a test engagement group for context
@@ -71,7 +71,7 @@ describe('B-RBAC-012: Deusex Has All Permissions', () => {
         name: 'Deusex Test Engagement Group',
         description: 'For testing Deusex permissions in engagement context',
         group_type: 'engagement',
-        created_by_user_id: normalUser.profile.id,
+        created_by_group_id: normalUser.personalGroupId,
       })
       .select()
       .single();
@@ -82,8 +82,8 @@ describe('B-RBAC-012: Deusex Has All Permissions', () => {
     // Add normal user as active member with Member role
     await admin.from('group_memberships').insert({
       group_id: testGroup.id,
-      user_id: normalUser.profile.id,
-      added_by_user_id: normalUser.profile.id,
+      member_group_id: normalUser.personalGroupId,
+      added_by_group_id: normalUser.personalGroupId,
       status: 'active',
     });
 
@@ -104,10 +104,10 @@ describe('B-RBAC-012: Deusex Has All Permissions', () => {
       .single();
 
     await admin.from('user_group_roles').insert({
-      user_id: normalUser.profile.id,
+      member_group_id: normalUser.personalGroupId,
       group_id: testGroup.id,
       group_role_id: memberRole!.id,
-      assigned_by_user_id: normalUser.profile.id,
+      assigned_by_group_id: normalUser.personalGroupId,
     });
   }, 30000);
 
@@ -119,8 +119,8 @@ describe('B-RBAC-012: Deusex Has All Permissions', () => {
 
   it('should grant Deusex user invite_members in engagement group', async () => {
     const { data, error } = await admin.rpc('has_permission', {
-      p_user_id: deusexUser.profile.id,
-      p_group_id: testGroup.id,
+      p_acting_group_id: deusexUser.personalGroupId,
+      p_context_group_id: testGroup.id,
       p_permission_name: 'invite_members',
     });
 
@@ -130,8 +130,8 @@ describe('B-RBAC-012: Deusex Has All Permissions', () => {
 
   it('should grant Deusex user delete_group in engagement group', async () => {
     const { data, error } = await admin.rpc('has_permission', {
-      p_user_id: deusexUser.profile.id,
-      p_group_id: testGroup.id,
+      p_acting_group_id: deusexUser.personalGroupId,
+      p_context_group_id: testGroup.id,
       p_permission_name: 'delete_group',
     });
 
@@ -141,8 +141,8 @@ describe('B-RBAC-012: Deusex Has All Permissions', () => {
 
   it('should grant Deusex user manage_all_groups (platform_admin permission)', async () => {
     const { data, error } = await admin.rpc('has_permission', {
-      p_user_id: deusexUser.profile.id,
-      p_group_id: testGroup.id,
+      p_acting_group_id: deusexUser.personalGroupId,
+      p_context_group_id: testGroup.id,
       p_permission_name: 'manage_all_groups',
     });
 
@@ -150,21 +150,21 @@ describe('B-RBAC-012: Deusex Has All Permissions', () => {
     expect(data).toBe(true);
   });
 
-  it('should grant Deusex user ALL 42 permissions', async () => {
+  it('should grant Deusex user ALL 44 permissions', async () => {
     // Get all permission names from the catalog
     const { data: allPerms } = await admin
       .from('permissions')
       .select('name');
 
     expect(allPerms).not.toBeNull();
-    expect(allPerms!.length).toBe(42);
+    expect(allPerms!.length).toBe(44);
 
     // Check each permission
     const results = await Promise.all(
       allPerms!.map(async (perm: { name: string }) => {
         const { data, error } = await admin.rpc('has_permission', {
-          p_user_id: deusexUser.profile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: deusexUser.personalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: perm.name,
         });
 
@@ -178,14 +178,14 @@ describe('B-RBAC-012: Deusex Has All Permissions', () => {
 
   it('should NOT grant normal user platform_admin permissions (control)', async () => {
     const { data: manageGroups } = await admin.rpc('has_permission', {
-      p_user_id: normalUser.profile.id,
-      p_group_id: testGroup.id,
+      p_acting_group_id: normalUser.personalGroupId,
+      p_context_group_id: testGroup.id,
       p_permission_name: 'manage_all_groups',
     });
 
     const { data: manageTemplates } = await admin.rpc('has_permission', {
-      p_user_id: normalUser.profile.id,
-      p_group_id: testGroup.id,
+      p_acting_group_id: normalUser.personalGroupId,
+      p_context_group_id: testGroup.id,
       p_permission_name: 'manage_role_templates',
     });
 
@@ -201,8 +201,8 @@ describe('B-RBAC-012: Deusex Has All Permissions', () => {
     const results = await Promise.all(
       allPerms!.map(async (perm: { name: string }) => {
         const { data } = await admin.rpc('has_permission', {
-          p_user_id: normalUser.profile.id,
-          p_group_id: testGroup.id,
+          p_acting_group_id: normalUser.personalGroupId,
+          p_context_group_id: testGroup.id,
           p_permission_name: perm.name,
         });
 
@@ -212,8 +212,8 @@ describe('B-RBAC-012: Deusex Has All Permissions', () => {
 
     const granted = results.filter((r) => r.granted === true);
 
-    // Normal user has SOME permissions (FI Members + Member role) but NOT all 41
+    // Normal user has SOME permissions (FI Members + Member role) but NOT all 44
     expect(granted.length).toBeGreaterThan(0);
-    expect(granted.length).toBeLessThan(41);
+    expect(granted.length).toBeLessThan(44);
   });
 });

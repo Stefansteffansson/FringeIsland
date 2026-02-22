@@ -31,13 +31,14 @@ describe('B-JRN-006: Journey Resume (DB Layer)', () => {
 
   beforeAll(async () => {
     testUser = await createTestUser({ displayName: 'Resume Test User' });
+    const { personalGroupId } = testUser;
 
     const { data: j } = await admin
       .from('journeys')
       .insert({
         ...testJourneyMultiStep,
         title: 'Resume Test Journey',
-        created_by_user_id: testUser.profile.id,
+        created_by_group_id: personalGroupId,
       })
       .select()
       .single();
@@ -60,13 +61,13 @@ describe('B-JRN-006: Journey Resume (DB Layer)', () => {
         password: testUser.password,
       });
 
+      const { personalGroupId } = testUser;
       const { data: enrollment } = await supabase
         .from('journey_enrollments')
         .insert({
           journey_id: journey.id,
-          user_id: testUser.profile.id,
-          group_id: null,
-          enrolled_by_user_id: testUser.profile.id,
+          group_id: personalGroupId,
+          enrolled_by_group_id: personalGroupId,
           status: 'active',
           progress_data: {},
         })
@@ -97,13 +98,13 @@ describe('B-JRN-006: Journey Resume (DB Layer)', () => {
         password: testUser.password,
       });
 
+      const { personalGroupId } = testUser;
       const { data: enrollment } = await supabase
         .from('journey_enrollments')
         .insert({
           journey_id: journey.id,
-          user_id: testUser.profile.id,
-          group_id: null,
-          enrolled_by_user_id: testUser.profile.id,
+          group_id: personalGroupId,
+          enrolled_by_group_id: personalGroupId,
           status: 'active',
           progress_data: {},
         })
@@ -153,13 +154,13 @@ describe('B-JRN-006: Journey Resume (DB Layer)', () => {
         password: testUser.password,
       });
 
+      const { personalGroupId } = testUser;
       const { data: enrollment } = await supabase
         .from('journey_enrollments')
         .insert({
           journey_id: journey.id,
-          user_id: testUser.profile.id,
-          group_id: null,
-          enrolled_by_user_id: testUser.profile.id,
+          group_id: personalGroupId,
+          enrolled_by_group_id: personalGroupId,
           status: 'active',
           progress_data: {},
         })
@@ -244,13 +245,13 @@ describe('B-JRN-006: Journey Resume (DB Layer)', () => {
         password: testUser.password,
       });
 
+      const { personalGroupId } = testUser;
       const { data: enrollment } = await supabase
         .from('journey_enrollments')
         .insert({
           journey_id: journey.id,
-          user_id: testUser.profile.id,
-          group_id: null,
-          enrolled_by_user_id: testUser.profile.id,
+          group_id: personalGroupId,
+          enrolled_by_group_id: personalGroupId,
           status: 'active',
           progress_data: {},
         })

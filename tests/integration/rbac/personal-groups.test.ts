@@ -31,7 +31,7 @@ describe('B-RBAC-003: Personal Group Creation on Signup', () => {
         .from('groups')
         .select('id')
         .eq('group_type', 'personal')
-        .eq('created_by_user_id', testUser.profile.id)
+        .eq('created_by_group_id', testUser.personalGroupId)
         .maybeSingle();
 
       if (personalGroup) {
@@ -46,7 +46,7 @@ describe('B-RBAC-003: Personal Group Creation on Signup', () => {
       .from('groups')
       .select('id, name, group_type')
       .eq('group_type', 'personal')
-      .eq('created_by_user_id', testUser.profile.id);
+      .eq('created_by_group_id', testUser.personalGroupId);
 
     expect(error).toBeNull();
     expect(data).toHaveLength(1);
@@ -58,7 +58,7 @@ describe('B-RBAC-003: Personal Group Creation on Signup', () => {
       .from('groups')
       .select('name')
       .eq('group_type', 'personal')
-      .eq('created_by_user_id', testUser.profile.id)
+      .eq('created_by_group_id', testUser.personalGroupId)
       .single();
 
     expect(data).not.toBeNull();
@@ -70,19 +70,19 @@ describe('B-RBAC-003: Personal Group Creation on Signup', () => {
       .from('groups')
       .select('id')
       .eq('group_type', 'personal')
-      .eq('created_by_user_id', testUser.profile.id)
+      .eq('created_by_group_id', testUser.personalGroupId)
       .single();
 
     expect(personalGroup).not.toBeNull();
 
     const { data: memberships, error } = await admin
       .from('group_memberships')
-      .select('user_id, status')
+      .select('member_group_id, status')
       .eq('group_id', personalGroup!.id);
 
     expect(error).toBeNull();
     expect(memberships).toHaveLength(1);
-    expect(memberships![0].user_id).toBe(testUser.profile.id);
+    expect(memberships![0].member_group_id).toBe(testUser.personalGroupId);
     expect(memberships![0].status).toBe('active');
   });
 
@@ -91,7 +91,7 @@ describe('B-RBAC-003: Personal Group Creation on Signup', () => {
       .from('groups')
       .select('id')
       .eq('group_type', 'personal')
-      .eq('created_by_user_id', testUser.profile.id)
+      .eq('created_by_group_id', testUser.personalGroupId)
       .single();
 
     expect(personalGroup).not.toBeNull();
@@ -111,7 +111,7 @@ describe('B-RBAC-003: Personal Group Creation on Signup', () => {
       .from('groups')
       .select('id')
       .eq('group_type', 'personal')
-      .eq('created_by_user_id', testUser.profile.id)
+      .eq('created_by_group_id', testUser.personalGroupId)
       .single();
 
     expect(personalGroup).not.toBeNull();
@@ -127,13 +127,13 @@ describe('B-RBAC-003: Personal Group Creation on Signup', () => {
 
     const { data: assignment, error } = await admin
       .from('user_group_roles')
-      .select('user_id')
+      .select('member_group_id')
       .eq('group_id', personalGroup!.id)
       .eq('group_role_id', myselfRole!.id);
 
     expect(error).toBeNull();
     expect(assignment).toHaveLength(1);
-    expect(assignment![0].user_id).toBe(testUser.profile.id);
+    expect(assignment![0].member_group_id).toBe(testUser.personalGroupId);
   });
 
   it('should give each user exactly one personal group', async () => {
@@ -141,7 +141,7 @@ describe('B-RBAC-003: Personal Group Creation on Signup', () => {
       .from('groups')
       .select('id')
       .eq('group_type', 'personal')
-      .eq('created_by_user_id', testUser.profile.id);
+      .eq('created_by_group_id', testUser.personalGroupId);
 
     expect(error).toBeNull();
     expect(data).toHaveLength(1); // Exactly one, not zero, not two

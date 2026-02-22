@@ -40,7 +40,7 @@ describe('B-GRP-004: Group Editing Permissions', () => {
         label: 'original-label',
         is_public: false,
         show_member_list: true,
-        created_by_user_id: leader.profile.id,
+        created_by_group_id: leader.personalGroupId,
       })
       .select()
       .single();
@@ -50,8 +50,8 @@ describe('B-GRP-004: Group Editing Permissions', () => {
     // Add leader as active member + Group Leader role
     await admin.from('group_memberships').insert({
       group_id: testGroup.id,
-      user_id: leader.profile.id,
-      added_by_user_id: leader.profile.id,
+      member_group_id: leader.personalGroupId,
+      added_by_group_id: leader.personalGroupId,
       status: 'active',
     });
 
@@ -66,10 +66,10 @@ describe('B-GRP-004: Group Editing Permissions', () => {
     const { data: assignment } = await admin
       .from('user_group_roles')
       .insert({
-        user_id: leader.profile.id,
+        member_group_id: leader.personalGroupId,
         group_id: testGroup.id,
         group_role_id: leaderRole.id,
-        assigned_by_user_id: leader.profile.id,
+        assigned_by_group_id: leader.personalGroupId,
       })
       .select()
       .single();
@@ -79,8 +79,8 @@ describe('B-GRP-004: Group Editing Permissions', () => {
     // Add regular member (no leader role)
     await admin.from('group_memberships').insert({
       group_id: testGroup.id,
-      user_id: member.profile.id,
-      added_by_user_id: leader.profile.id,
+      member_group_id: member.personalGroupId,
+      added_by_group_id: leader.personalGroupId,
       status: 'active',
     });
   });
@@ -220,18 +220,18 @@ describe('B-GRP-004: Group Editing Permissions', () => {
       // Add second leader as active member + assign Group Leader role
       await admin.from('group_memberships').insert({
         group_id: testGroup.id,
-        user_id: secondLeader.profile.id,
-        added_by_user_id: leader.profile.id,
+        member_group_id: secondLeader.personalGroupId,
+        added_by_group_id: leader.personalGroupId,
         status: 'active',
       });
 
       const { data: secondAssignment } = await admin
         .from('user_group_roles')
         .insert({
-          user_id: secondLeader.profile.id,
+          member_group_id: secondLeader.personalGroupId,
           group_id: testGroup.id,
           group_role_id: leaderRole.id,
-          assigned_by_user_id: leader.profile.id,
+          assigned_by_group_id: leader.personalGroupId,
         })
         .select()
         .single();
@@ -271,10 +271,10 @@ describe('B-GRP-004: Group Editing Permissions', () => {
       const { data: restored } = await admin
         .from('user_group_roles')
         .insert({
-          user_id: leader.profile.id,
+          member_group_id: leader.personalGroupId,
           group_id: testGroup.id,
           group_role_id: leaderRole.id,
-          assigned_by_user_id: leader.profile.id,
+          assigned_by_group_id: leader.personalGroupId,
         })
         .select()
         .single();

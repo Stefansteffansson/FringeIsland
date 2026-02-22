@@ -38,7 +38,7 @@ describe('B-RBAC-005: Group Role Permission Initialization', () => {
       .from('groups')
       .insert({
         name: 'RBAC Role Perms Test Group',
-        created_by_user_id: testUser.profile.id,
+        created_by_group_id: testUser.personalGroupId,
         group_type: 'engagement',
       })
       .select()
@@ -83,7 +83,7 @@ describe('B-RBAC-005: Group Role Permission Initialization', () => {
     expect(data!.length).toBeGreaterThan(0);
   });
 
-  it('should copy 24 permissions for a Steward role from template', async () => {
+  it('should copy 31 permissions for a Steward role from template', async () => {
     if (!stewardRoleId) {
       expect(stewardRoleId).toBeDefined();
       return;
@@ -95,7 +95,7 @@ describe('B-RBAC-005: Group Role Permission Initialization', () => {
       .eq('group_role_id', stewardRoleId);
 
     expect(error).toBeNull();
-    expect(data).toHaveLength(25);
+    expect(data).toHaveLength(31);
   });
 
   it('should include invite_members in Steward role permissions', async () => {
@@ -171,8 +171,8 @@ describe('B-RBAC-005: Group Role Permission Initialization', () => {
         .select('role_template_id, permission_id')
         .eq('role_template_id', stewardTemplate.id);
 
-      // Template should still have 25 (unaffected by group-level change)
-      expect(templatePerms).toHaveLength(25);
+      // Template should still have 31 (unaffected by group-level change)
+      expect(templatePerms).toHaveLength(31);
     }
   });
 

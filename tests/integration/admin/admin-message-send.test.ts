@@ -59,16 +59,16 @@ describe('B-ADMIN-015: Admin Message Send (DM)', () => {
     // Add deusexUser to DeusEx group
     await admin.from('group_memberships').insert({
       group_id: deusexGroupId,
-      user_id: deusexUser.profile.id,
-      added_by_user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
+      added_by_group_id: deusexUser.personalGroupId,
       status: 'active',
     });
 
     await admin.from('user_group_roles').insert({
-      user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
       group_id: deusexGroupId,
       group_role_id: deusexRoleId,
-      assigned_by_user_id: deusexUser.profile.id,
+      assigned_by_group_id: deusexUser.personalGroupId,
     });
 
     // Sign in admin client
@@ -85,15 +85,15 @@ describe('B-ADMIN-015: Admin Message Send (DM)', () => {
 
     // Clean up audit log entries from these tests
     await admin.from('admin_audit_log').delete()
-      .eq('actor_user_id', deusexUser.profile.id)
+      .eq('actor_group_id', deusexUser.personalGroupId)
       .eq('action', 'admin_message_sent');
 
     // Clean up DeusEx membership
     await admin.from('user_group_roles').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
     await admin.from('group_memberships').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     if (deusexUser) await cleanupTestUser(deusexUser.user.id);
@@ -102,12 +102,12 @@ describe('B-ADMIN-015: Admin Message Send (DM)', () => {
   }, 30000);
 
   it('should create a DM conversation and send a message to a target user', async () => {
-    const adminId = deusexUser.profile.id;
-    const targetId = targetUser1.profile.id;
+    const adminPgId = deusexUser.personalGroupId;
+    const targetPgId = targetUser1.personalGroupId;
 
     // Sort participant IDs (DB constraint: participant_1 < participant_2)
-    const p1 = adminId < targetId ? adminId : targetId;
-    const p2 = adminId < targetId ? targetId : adminId;
+    const p1 = adminPgId < targetPgId ? adminPgId : targetPgId;
+    const p2 = adminPgId < targetPgId ? targetPgId : adminPgId;
 
     // Create conversation
     const { data: conv, error: convError } = await deusexClient
@@ -125,7 +125,7 @@ describe('B-ADMIN-015: Admin Message Send (DM)', () => {
       .from('direct_messages')
       .insert({
         conversation_id: conv!.id,
-        sender_id: adminId,
+        sender_group_id: adminPgId,
         content: 'Admin message to target user 1',
       })
       .select()
@@ -134,14 +134,14 @@ describe('B-ADMIN-015: Admin Message Send (DM)', () => {
     expect(msgError).toBeNull();
     expect(msg).not.toBeNull();
     expect(msg!.content).toBe('Admin message to target user 1');
-    expect(msg!.sender_id).toBe(adminId);
+    expect(msg!.sender_group_id).toBe(adminPgId);
   });
 
   it('should reuse existing conversation when messaging the same user again', async () => {
-    const adminId = deusexUser.profile.id;
-    const targetId = targetUser1.profile.id;
-    const p1 = adminId < targetId ? adminId : targetId;
-    const p2 = adminId < targetId ? targetId : adminId;
+    const adminPgId = deusexUser.personalGroupId;
+    const targetPgId = targetUser1.personalGroupId;
+    const p1 = adminPgId < targetPgId ? adminPgId : targetPgId;
+    const p2 = adminPgId < targetPgId ? targetPgId : adminPgId;
 
     // Check for existing conversation (should exist from previous test)
     const { data: existing } = await deusexClient
@@ -158,7 +158,7 @@ describe('B-ADMIN-015: Admin Message Send (DM)', () => {
       .from('direct_messages')
       .insert({
         conversation_id: existing!.id,
-        sender_id: adminId,
+        sender_group_id: adminPgId,
         content: 'Follow-up admin message',
       })
       .select()
@@ -178,12 +178,12 @@ describe('B-ADMIN-015: Admin Message Send (DM)', () => {
   });
 
   it('should create individual conversations for each target user (not group chat)', async () => {
-    const adminId = deusexUser.profile.id;
-    const target2Id = targetUser2.profile.id;
+    const adminPgId = deusexUser.personalGroupId;
+    const target2PgId = targetUser2.personalGroupId;
 
     // Create conversation with target user 2
-    const p1 = adminId < target2Id ? adminId : target2Id;
-    const p2 = adminId < target2Id ? target2Id : adminId;
+    const p1 = adminPgId < target2PgId ? adminPgId : target2PgId;
+    const p2 = adminPgId < target2PgId ? target2PgId : adminPgId;
 
     const { data: conv, error: convError } = await deusexClient
       .from('conversations')
@@ -196,9 +196,9 @@ describe('B-ADMIN-015: Admin Message Send (DM)', () => {
     createdConversationIds.push(conv!.id);
 
     // Verify this is a DIFFERENT conversation from target user 1
-    const target1Id = targetUser1.profile.id;
-    const t1p1 = adminId < target1Id ? adminId : target1Id;
-    const t1p2 = adminId < target1Id ? target1Id : adminId;
+    const target1PgId = targetUser1.personalGroupId;
+    const t1p1 = adminPgId < target1PgId ? adminPgId : target1PgId;
+    const t1p2 = adminPgId < target1PgId ? target1PgId : adminPgId;
 
     const { data: conv1 } = await admin
       .from('conversations')
@@ -216,7 +216,7 @@ describe('B-ADMIN-015: Admin Message Send (DM)', () => {
     const { data: auditEntries } = await admin
       .from('admin_audit_log')
       .select('*')
-      .eq('actor_user_id', deusexUser.profile.id)
+      .eq('actor_group_id', deusexUser.personalGroupId)
       .eq('action', 'admin_message_sent');
 
     expect(auditEntries).not.toBeNull();

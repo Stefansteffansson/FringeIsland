@@ -50,7 +50,7 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .insert({
         name: 'Test Group - Last Leader',
         description: 'Testing last leader protection',
-        created_by_user_id: testUser1.profile.id,
+        created_by_group_id: testUser1.personalGroupId,
       })
       .select()
       .single();
@@ -77,10 +77,10 @@ describe('B-GRP-001: Last Leader Protection', () => {
     const { data: roleAssignment, error: assignError } = await admin
       .from('user_group_roles')
       .insert({
-        user_id: testUser1.profile.id,
+        member_group_id: testUser1.personalGroupId,
         group_id: group.id,
         group_role_id: leaderRole!.id,
-        assigned_by_user_id: testUser1.profile.id,
+        assigned_by_group_id: testUser1.personalGroupId,
       })
       .select()
       .single();
@@ -105,7 +105,7 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .insert({
         name: 'Test Group - Two Leaders',
         description: 'Testing with multiple leaders',
-        created_by_user_id: testUser1.profile.id,
+        created_by_group_id: testUser1.personalGroupId,
       })
       .select()
       .single();
@@ -125,10 +125,10 @@ describe('B-GRP-001: Last Leader Protection', () => {
     const { data: role1 } = await admin
       .from('user_group_roles')
       .insert({
-        user_id: testUser1.profile.id,
+        member_group_id: testUser1.personalGroupId,
         group_id: group!.id,
         group_role_id: leaderRole!.id,
-        assigned_by_user_id: testUser1.profile.id,
+        assigned_by_group_id: testUser1.personalGroupId,
       })
       .select()
       .single();
@@ -136,10 +136,10 @@ describe('B-GRP-001: Last Leader Protection', () => {
     const { data: role2 } = await admin
       .from('user_group_roles')
       .insert({
-        user_id: testUser2.profile.id,
+        member_group_id: testUser2.personalGroupId,
         group_id: group!.id,
         group_role_id: leaderRole!.id,
-        assigned_by_user_id: testUser1.profile.id,
+        assigned_by_group_id: testUser1.personalGroupId,
       })
       .select()
       .single();
@@ -176,7 +176,7 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .insert({
         name: 'Test Group - Account Deletion',
         description: 'Testing account deletion as last leader',
-        created_by_user_id: testUser3.profile.id,
+        created_by_group_id: testUser3.personalGroupId,
       })
       .select()
       .single();
@@ -195,10 +195,10 @@ describe('B-GRP-001: Last Leader Protection', () => {
     await admin
       .from('user_group_roles')
       .insert({
-        user_id: testUser3.profile.id,
+        member_group_id: testUser3.personalGroupId,
         group_id: group!.id,
         group_role_id: leaderRole!.id,
-        assigned_by_user_id: testUser3.profile.id,
+        assigned_by_group_id: testUser3.personalGroupId,
       });
 
     // Act: Delete user account (CASCADE will try to delete roles)
@@ -237,7 +237,7 @@ describe('B-GRP-001: Last Leader Protection', () => {
       .insert({
         name: 'Test Group - Concurrent Removal',
         description: 'Testing concurrent removal attempts',
-        created_by_user_id: testUser1.profile.id,
+        created_by_group_id: testUser1.personalGroupId,
       })
       .select()
       .single();
@@ -256,10 +256,10 @@ describe('B-GRP-001: Last Leader Protection', () => {
     const { data: roleAssignment } = await admin
       .from('user_group_roles')
       .insert({
-        user_id: testUser1.profile.id,
+        member_group_id: testUser1.personalGroupId,
         group_id: group!.id,
         group_role_id: leaderRole!.id,
-        assigned_by_user_id: testUser1.profile.id,
+        assigned_by_group_id: testUser1.personalGroupId,
       })
       .select()
       .single();

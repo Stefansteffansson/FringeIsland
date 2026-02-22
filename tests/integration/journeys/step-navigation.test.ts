@@ -34,6 +34,7 @@ describe('B-JRN-004: Journey Step Navigation (DB Layer)', () => {
   beforeAll(async () => {
     enrolledUser = await createTestUser({ displayName: 'Navigation Test User' });
     otherUser = await createTestUser({ displayName: 'Other User (no access)' });
+    const { personalGroupId } = enrolledUser;
 
     // Create multi-step journey
     const { data: j } = await admin
@@ -41,7 +42,7 @@ describe('B-JRN-004: Journey Step Navigation (DB Layer)', () => {
       .insert({
         ...testJourneyMultiStep,
         title: 'Navigation Test Journey',
-        created_by_user_id: enrolledUser.profile.id,
+        created_by_group_id: personalGroupId,
       })
       .select()
       .single();
@@ -53,9 +54,8 @@ describe('B-JRN-004: Journey Step Navigation (DB Layer)', () => {
       .from('journey_enrollments')
       .insert({
         journey_id: journey.id,
-        user_id: enrolledUser.profile.id,
-        group_id: null,
-        enrolled_by_user_id: enrolledUser.profile.id,
+        group_id: personalGroupId,
+        enrolled_by_group_id: personalGroupId,
         status: 'active',
         progress_data: {},
       })

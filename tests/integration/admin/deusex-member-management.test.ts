@@ -55,16 +55,16 @@ describe('B-ADMIN-003: Deusex Member Management', () => {
     // Add adminUser to Deusex
     await admin.from('group_memberships').insert({
       group_id: deusexGroupId,
-      user_id: adminUser.profile.id,
-      added_by_user_id: adminUser.profile.id,
+      member_group_id: adminUser.personalGroupId,
+      added_by_group_id: adminUser.personalGroupId,
       status: 'active',
     });
 
     await admin.from('user_group_roles').insert({
-      user_id: adminUser.profile.id,
+      member_group_id: adminUser.personalGroupId,
       group_id: deusexGroupId,
       group_role_id: deusexRoleId,
-      assigned_by_user_id: adminUser.profile.id,
+      assigned_by_group_id: adminUser.personalGroupId,
     });
 
     // Sign in admin user
@@ -75,23 +75,23 @@ describe('B-ADMIN-003: Deusex Member Management', () => {
   afterAll(async () => {
     // Clean up target user's Deusex data if any
     await admin.from('user_group_roles').delete()
-      .eq('user_id', targetUser.profile.id)
+      .eq('member_group_id', targetUser.personalGroupId)
       .eq('group_id', deusexGroupId);
     await admin.from('group_memberships').delete()
-      .eq('user_id', targetUser.profile.id)
+      .eq('member_group_id', targetUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     // Clean up admin user's Deusex data
     await admin.from('user_group_roles').delete()
-      .eq('user_id', adminUser.profile.id)
+      .eq('member_group_id', adminUser.personalGroupId)
       .eq('group_id', deusexGroupId);
     await admin.from('group_memberships').delete()
-      .eq('user_id', adminUser.profile.id)
+      .eq('member_group_id', adminUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     // Clean up audit log entries from tests
     await admin.from('admin_audit_log').delete()
-      .eq('actor_user_id', adminUser.profile.id);
+      .eq('actor_group_id', adminUser.personalGroupId);
 
     if (adminUser) await cleanupTestUser(adminUser.user.id);
     if (targetUser) await cleanupTestUser(targetUser.user.id);
@@ -127,8 +127,8 @@ describe('B-ADMIN-003: Deusex Member Management', () => {
       .from('group_memberships')
       .insert({
         group_id: deusexGroupId,
-        user_id: targetUser.profile.id,
-        added_by_user_id: adminUser.profile.id,
+        member_group_id: targetUser.personalGroupId,
+        added_by_group_id: adminUser.personalGroupId,
         status: 'active',
       });
 
@@ -138,18 +138,18 @@ describe('B-ADMIN-003: Deusex Member Management', () => {
     const { error: roleError } = await admin
       .from('user_group_roles')
       .insert({
-        user_id: targetUser.profile.id,
+        member_group_id: targetUser.personalGroupId,
         group_id: deusexGroupId,
         group_role_id: deusexRoleId,
-        assigned_by_user_id: adminUser.profile.id,
+        assigned_by_group_id: adminUser.personalGroupId,
       });
 
     expect(roleError).toBeNull();
 
     // Verify: user now has manage_all_groups permission
     const { data: hasPerm } = await admin.rpc('has_permission', {
-      p_user_id: targetUser.profile.id,
-      p_group_id: deusexGroupId,
+      p_acting_group_id: targetUser.personalGroupId,
+      p_context_group_id: deusexGroupId,
       p_permission_name: 'manage_all_groups',
     });
 
@@ -161,7 +161,7 @@ describe('B-ADMIN-003: Deusex Member Management', () => {
     const { error } = await adminClient
       .from('admin_audit_log')
       .insert({
-        actor_user_id: adminUser.profile.id,
+        actor_group_id: adminUser.personalGroupId,
         action: 'add_deusex_member',
         target: targetUser.email,
         metadata: {
@@ -188,7 +188,7 @@ describe('B-ADMIN-003: Deusex Member Management', () => {
     const { error: roleError } = await admin
       .from('user_group_roles')
       .delete()
-      .eq('user_id', targetUser.profile.id)
+      .eq('member_group_id', targetUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     expect(roleError).toBeNull();
@@ -197,15 +197,15 @@ describe('B-ADMIN-003: Deusex Member Management', () => {
     const { error: memberError } = await admin
       .from('group_memberships')
       .delete()
-      .eq('user_id', targetUser.profile.id)
+      .eq('member_group_id', targetUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     expect(memberError).toBeNull();
 
     // Verify: user no longer has manage_all_groups
     const { data: hasPerm } = await admin.rpc('has_permission', {
-      p_user_id: targetUser.profile.id,
-      p_group_id: deusexGroupId,
+      p_acting_group_id: targetUser.personalGroupId,
+      p_context_group_id: deusexGroupId,
       p_permission_name: 'manage_all_groups',
     });
 
@@ -216,7 +216,7 @@ describe('B-ADMIN-003: Deusex Member Management', () => {
     const { error } = await adminClient
       .from('admin_audit_log')
       .insert({
-        actor_user_id: adminUser.profile.id,
+        actor_group_id: adminUser.personalGroupId,
         action: 'remove_deusex_member',
         target: targetUser.email,
         metadata: {
@@ -234,12 +234,15 @@ describe('B-ADMIN-003: Deusex Member Management', () => {
       .from('group_memberships')
       .select(`
         id,
-        user_id,
+        member_group_id,
         added_at,
-        users!group_memberships_user_id_fkey (
+        groups!group_memberships_member_group_id_fkey (
           id,
-          email,
-          full_name
+          users!inner (
+            id,
+            email,
+            full_name
+          )
         )
       `)
       .eq('group_id', deusexGroupId)
@@ -251,7 +254,7 @@ describe('B-ADMIN-003: Deusex Member Management', () => {
 
     // adminUser should be in the list
     const adminMember = members!.find(
-      (m: any) => m.user_id === adminUser.profile.id
+      (m: any) => m.member_group_id === adminUser.personalGroupId
     );
     expect(adminMember).not.toBeUndefined();
   });

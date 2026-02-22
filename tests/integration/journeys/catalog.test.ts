@@ -27,6 +27,7 @@ describe('B-JRN-001: Journey Catalog Discovery (RLS)', () => {
 
   beforeAll(async () => {
     testUser = await createTestUser({ displayName: 'Catalog Test User' });
+    const { personalGroupId } = testUser;
 
     // Create a published journey
     const { data: published } = await admin
@@ -35,7 +36,7 @@ describe('B-JRN-001: Journey Catalog Discovery (RLS)', () => {
         ...testJourney,
         title: 'Published Test Journey',
         is_published: true,
-        created_by_user_id: testUser.profile.id,
+        created_by_group_id: personalGroupId,
       })
       .select()
       .single();
@@ -49,7 +50,7 @@ describe('B-JRN-001: Journey Catalog Discovery (RLS)', () => {
         ...testJourney,
         title: 'Unpublished Draft Journey',
         is_published: false,
-        created_by_user_id: testUser.profile.id,
+        created_by_group_id: personalGroupId,
       })
       .select()
       .single();

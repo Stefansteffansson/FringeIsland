@@ -44,13 +44,15 @@ describe('B-MSG-001 + B-MSG-002: Send Messages and Message Privacy', () => {
     userA = await createTestUser({ displayName: 'DM Test - User A' });
     userB = await createTestUser({ displayName: 'DM Test - User B' });
     userC = await createTestUser({ displayName: 'DM Test - Outsider C' });
+    const pgA = userA.personalGroupId;
+    const pgB = userB.personalGroupId;
 
     // Create a conversation between A and B via admin
     const { data: conv, error: convErr } = await admin
       .from('conversations')
       .insert({
-        participant_1: userA.profile.id < userB.profile.id ? userA.profile.id : userB.profile.id,
-        participant_2: userA.profile.id < userB.profile.id ? userB.profile.id : userA.profile.id,
+        participant_1: pgA < pgB ? pgA : pgB,
+        participant_2: pgA < pgB ? pgB : pgA,
       })
       .select()
       .single();
@@ -83,7 +85,7 @@ describe('B-MSG-001 + B-MSG-002: Send Messages and Message Privacy', () => {
         .from('direct_messages')
         .insert({
           conversation_id: conversationId!,
-          sender_id: userA.profile.id,
+          sender_group_id: userA.personalGroupId,
           content: 'Hello User B!',
         })
         .select()
@@ -92,7 +94,7 @@ describe('B-MSG-001 + B-MSG-002: Send Messages and Message Privacy', () => {
       expect(error).toBeNull();
       expect(data).not.toBeNull();
       expect(data!.conversation_id).toBe(conversationId);
-      expect(data!.sender_id).toBe(userA.profile.id);
+      expect(data!.sender_group_id).toBe(userA.personalGroupId);
       expect(data!.content).toBe('Hello User B!');
       expect(data!.created_at).toBeTruthy();
     } finally {
@@ -100,7 +102,7 @@ describe('B-MSG-001 + B-MSG-002: Send Messages and Message Privacy', () => {
     }
   });
 
-  it('B-MSG-001: sender cannot impersonate another user (RLS enforces sender_id)', async () => {
+  it('B-MSG-001: sender cannot impersonate another user (RLS enforces sender_group_id)', async () => {
     expect(conversationId).not.toBeNull();
 
     const supabase = createTestClient();
@@ -112,7 +114,7 @@ describe('B-MSG-001 + B-MSG-002: Send Messages and Message Privacy', () => {
         .from('direct_messages')
         .insert({
           conversation_id: conversationId!,
-          sender_id: userB.profile.id, // impersonation attempt
+          sender_group_id: userB.personalGroupId, // impersonation attempt
           content: 'Pretending to be User B',
         })
         .select()
@@ -137,7 +139,7 @@ describe('B-MSG-001 + B-MSG-002: Send Messages and Message Privacy', () => {
         .from('direct_messages')
         .insert({
           conversation_id: conversationId!,
-          sender_id: userA.profile.id,
+          sender_group_id: userA.personalGroupId,
           content: '',
         })
         .select()
@@ -161,7 +163,7 @@ describe('B-MSG-001 + B-MSG-002: Send Messages and Message Privacy', () => {
       .from('direct_messages')
       .insert({
         conversation_id: conversationId!,
-        sender_id: userA.profile.id,
+        sender_group_id: userA.personalGroupId,
         content: 'Message for privacy test',
       })
       .select()
@@ -217,7 +219,7 @@ describe('B-MSG-001 + B-MSG-002: Send Messages and Message Privacy', () => {
         .from('direct_messages')
         .insert({
           conversation_id: conversationId!,
-          sender_id: userC.profile.id,
+          sender_group_id: userC.personalGroupId,
           content: 'Outsider trying to send a message',
         })
         .select()
@@ -260,8 +262,10 @@ describe('B-MSG-003: Conversation Creation and Uniqueness', () => {
   });
 
   it('B-MSG-003: can create a conversation between two users', async () => {
-    const p1 = userA.profile.id < userB.profile.id ? userA.profile.id : userB.profile.id;
-    const p2 = userA.profile.id < userB.profile.id ? userB.profile.id : userA.profile.id;
+    const pgA = userA.personalGroupId;
+    const pgB = userB.personalGroupId;
+    const p1 = pgA < pgB ? pgA : pgB;
+    const p2 = pgA < pgB ? pgB : pgA;
 
     const { data, error } = await admin
       .from('conversations')
@@ -277,8 +281,10 @@ describe('B-MSG-003: Conversation Creation and Uniqueness', () => {
   });
 
   it('B-MSG-003: duplicate conversation between same user pair is rejected (unique constraint)', async () => {
-    const p1 = userA.profile.id < userB.profile.id ? userA.profile.id : userB.profile.id;
-    const p2 = userA.profile.id < userB.profile.id ? userB.profile.id : userA.profile.id;
+    const pgA = userA.personalGroupId;
+    const pgB = userB.personalGroupId;
+    const p1 = pgA < pgB ? pgA : pgB;
+    const p2 = pgA < pgB ? pgB : pgA;
 
     const { data, error } = await admin
       .from('conversations')
@@ -292,8 +298,10 @@ describe('B-MSG-003: Conversation Creation and Uniqueness', () => {
   });
 
   it('B-MSG-003: conversation between different user pair succeeds', async () => {
-    const p1 = userA.profile.id < userC.profile.id ? userA.profile.id : userC.profile.id;
-    const p2 = userA.profile.id < userC.profile.id ? userC.profile.id : userA.profile.id;
+    const pgA = userA.personalGroupId;
+    const pgC = userC.personalGroupId;
+    const p1 = pgA < pgC ? pgA : pgC;
+    const p2 = pgA < pgC ? pgC : pgA;
 
     const { data, error } = await admin
       .from('conversations')
@@ -312,19 +320,21 @@ describe('B-MSG-003: Conversation Creation and Uniqueness', () => {
     await signInWithRetry(supabase, userC.email, userC.password);
 
     try {
+      const pgA = userA.personalGroupId;
+      const pgB = userB.personalGroupId;
       const { data, error } = await supabase
         .from('conversations')
         .select('*')
-        .or(`participant_1.eq.${userA.profile.id},participant_2.eq.${userA.profile.id}`)
-        .or(`participant_1.eq.${userB.profile.id},participant_2.eq.${userB.profile.id}`);
+        .or(`participant_1.eq.${pgA},participant_2.eq.${pgA}`)
+        .or(`participant_1.eq.${pgB},participant_2.eq.${pgB}`);
 
       expect(error).toBeNull();
       // User C should only see conversations they participate in
       // The A-B conversation should NOT appear
       const abConv = (data || []).find(
         (c: any) =>
-          (c.participant_1 === userA.profile.id || c.participant_2 === userA.profile.id) &&
-          (c.participant_1 === userB.profile.id || c.participant_2 === userB.profile.id)
+          (c.participant_1 === pgA || c.participant_2 === pgA) &&
+          (c.participant_1 === pgB || c.participant_2 === pgB)
       );
       expect(abConv).toBeUndefined();
     } finally {
@@ -350,8 +360,12 @@ describe('B-MSG-004: Conversation List (Inbox)', () => {
     userC = await createTestUser({ displayName: 'Inbox Test - User C' });
 
     // Create two conversations for User A
-    const pAB1 = userA.profile.id < userB.profile.id ? userA.profile.id : userB.profile.id;
-    const pAB2 = userA.profile.id < userB.profile.id ? userB.profile.id : userA.profile.id;
+    const pgA = userA.personalGroupId;
+    const pgB = userB.personalGroupId;
+    const pgC = userC.personalGroupId;
+
+    const pAB1 = pgA < pgB ? pgA : pgB;
+    const pAB2 = pgA < pgB ? pgB : pgA;
 
     const { data: c1 } = await admin
       .from('conversations')
@@ -360,8 +374,8 @@ describe('B-MSG-004: Conversation List (Inbox)', () => {
       .single();
     convAB = c1?.id ?? null;
 
-    const pAC1 = userA.profile.id < userC.profile.id ? userA.profile.id : userC.profile.id;
-    const pAC2 = userA.profile.id < userC.profile.id ? userC.profile.id : userA.profile.id;
+    const pAC1 = pgA < pgC ? pgA : pgC;
+    const pAC2 = pgA < pgC ? pgC : pgA;
 
     const { data: c2 } = await admin
       .from('conversations')
@@ -374,7 +388,7 @@ describe('B-MSG-004: Conversation List (Inbox)', () => {
     if (convAB) {
       await admin.from('direct_messages').insert({
         conversation_id: convAB,
-        sender_id: userA.profile.id,
+        sender_group_id: pgA,
         content: 'First message to B',
       });
     }
@@ -385,7 +399,7 @@ describe('B-MSG-004: Conversation List (Inbox)', () => {
     if (convAC) {
       await admin.from('direct_messages').insert({
         conversation_id: convAC,
-        sender_id: userA.profile.id,
+        sender_group_id: pgA,
         content: 'First message to C',
       });
     }
@@ -464,7 +478,7 @@ describe('B-MSG-004: Conversation List (Inbox)', () => {
     // Send a new message in convAB
     await admin.from('direct_messages').insert({
       conversation_id: convAB!,
-      sender_id: userB.profile.id,
+      sender_group_id: userB.personalGroupId,
       content: 'New message from B',
     });
 
@@ -494,8 +508,10 @@ describe('B-MSG-005: DMs do NOT create notifications (unread tracked via Message
     recipient = await createTestUser({ displayName: 'Notif Test - Recipient' });
 
     // Create conversation
-    const p1 = sender.profile.id < recipient.profile.id ? sender.profile.id : recipient.profile.id;
-    const p2 = sender.profile.id < recipient.profile.id ? recipient.profile.id : sender.profile.id;
+    const pgSender = sender.personalGroupId;
+    const pgRecipient = recipient.personalGroupId;
+    const p1 = pgSender < pgRecipient ? pgSender : pgRecipient;
+    const p2 = pgSender < pgRecipient ? pgRecipient : pgSender;
 
     const { data: conv } = await admin
       .from('conversations')
@@ -509,8 +525,8 @@ describe('B-MSG-005: DMs do NOT create notifications (unread tracked via Message
   afterAll(async () => {
     if (conversationId) {
       await admin.from('direct_messages').delete().eq('conversation_id', conversationId);
-      await admin.from('notifications').delete().eq('recipient_user_id', recipient.profile.id).eq('type', 'new_direct_message');
-      await admin.from('notifications').delete().eq('recipient_user_id', sender.profile.id).eq('type', 'new_direct_message');
+      await admin.from('notifications').delete().eq('recipient_group_id', recipient.personalGroupId).eq('type', 'new_direct_message');
+      await admin.from('notifications').delete().eq('recipient_group_id', sender.personalGroupId).eq('type', 'new_direct_message');
       await admin.from('conversations').delete().eq('id', conversationId);
     }
     if (sender) await cleanupTestUser(sender.user.id);
@@ -521,12 +537,12 @@ describe('B-MSG-005: DMs do NOT create notifications (unread tracked via Message
     expect(conversationId).not.toBeNull();
 
     // Clean any pre-existing notifications
-    await admin.from('notifications').delete().eq('recipient_user_id', recipient.profile.id).eq('type', 'new_direct_message');
+    await admin.from('notifications').delete().eq('recipient_group_id', recipient.personalGroupId).eq('type', 'new_direct_message');
 
     // Send a message via admin
     await admin.from('direct_messages').insert({
       conversation_id: conversationId!,
-      sender_id: sender.profile.id,
+      sender_group_id: sender.personalGroupId,
       content: 'Hello! This should NOT trigger a notification.',
     });
 
@@ -534,7 +550,7 @@ describe('B-MSG-005: DMs do NOT create notifications (unread tracked via Message
     const { data: notifications, error } = await admin
       .from('notifications')
       .select('*')
-      .eq('recipient_user_id', recipient.profile.id)
+      .eq('recipient_group_id', recipient.personalGroupId)
       .eq('type', 'new_direct_message');
 
     expect(error).toBeNull();
@@ -545,12 +561,12 @@ describe('B-MSG-005: DMs do NOT create notifications (unread tracked via Message
     expect(conversationId).not.toBeNull();
 
     // Clean notifications for sender
-    await admin.from('notifications').delete().eq('recipient_user_id', sender.profile.id).eq('type', 'new_direct_message');
+    await admin.from('notifications').delete().eq('recipient_group_id', sender.personalGroupId).eq('type', 'new_direct_message');
 
     // Send another message
     await admin.from('direct_messages').insert({
       conversation_id: conversationId!,
-      sender_id: sender.profile.id,
+      sender_group_id: sender.personalGroupId,
       content: 'Another message — no notification at all.',
     });
 
@@ -558,7 +574,7 @@ describe('B-MSG-005: DMs do NOT create notifications (unread tracked via Message
     const { data: notifications, error } = await admin
       .from('notifications')
       .select('*')
-      .eq('recipient_user_id', sender.profile.id)
+      .eq('recipient_group_id', sender.personalGroupId)
       .eq('type', 'new_direct_message');
 
     expect(error).toBeNull();
@@ -580,8 +596,10 @@ describe('B-MSG-006: Message Read Tracking', () => {
     userB = await createTestUser({ displayName: 'Read Track - User B' });
 
     // Create conversation
-    const p1 = userA.profile.id < userB.profile.id ? userA.profile.id : userB.profile.id;
-    const p2 = userA.profile.id < userB.profile.id ? userB.profile.id : userA.profile.id;
+    const pgA = userA.personalGroupId;
+    const pgB = userB.personalGroupId;
+    const p1 = pgA < pgB ? pgA : pgB;
+    const p2 = pgA < pgB ? pgB : pgA;
 
     const { data: conv } = await admin
       .from('conversations')
@@ -631,7 +649,7 @@ describe('B-MSG-006: Message Read Tracking', () => {
         .eq('id', conversationId!)
         .single();
 
-      const isP1 = conv!.participant_1 === userA.profile.id;
+      const isP1 = conv!.participant_1 === userA.personalGroupId;
       const updateField = isP1 ? 'participant_1_last_read_at' : 'participant_2_last_read_at';
 
       const { error } = await supabase
@@ -648,7 +666,7 @@ describe('B-MSG-006: Message Read Tracking', () => {
         .eq('id', conversationId!)
         .single();
 
-      const storedTime = new Date(updated![updateField]).getTime();
+      const storedTime = new Date((updated as any)[updateField]).getTime();
       const sentTime = new Date(readAt).getTime();
       expect(Math.abs(storedTime - sentTime)).toBeLessThan(5000);
     } finally {
@@ -670,7 +688,7 @@ describe('B-MSG-006: Message Read Tracking', () => {
         .eq('id', conversationId!)
         .single();
 
-      const isP1 = conv!.participant_1 === userA.profile.id;
+      const isP1 = conv!.participant_1 === userA.personalGroupId;
       const otherField = isP1 ? 'participant_2_last_read_at' : 'participant_1_last_read_at';
 
       // Get current value of the other participant's field
@@ -694,7 +712,7 @@ describe('B-MSG-006: Message Read Tracking', () => {
         .eq('id', conversationId!)
         .single();
 
-      expect(after![otherField]).toBe(before![otherField]);
+      expect((after as any)[otherField]).toBe((before as any)[otherField]);
     } finally {
       await supabase.auth.signOut();
     }
@@ -710,7 +728,7 @@ describe('B-MSG-006: Message Read Tracking', () => {
       .eq('id', conversationId!)
       .single();
 
-    const isP1 = conv!.participant_1 === userA.profile.id;
+    const isP1 = conv!.participant_1 === userA.personalGroupId;
     const readField = isP1 ? 'participant_1_last_read_at' : 'participant_2_last_read_at';
 
     // Insert a "baseline" message first to get a DB-server timestamp
@@ -718,7 +736,7 @@ describe('B-MSG-006: Message Read Tracking', () => {
       .from('direct_messages')
       .insert({
         conversation_id: conversationId!,
-        sender_id: userA.profile.id,
+        sender_group_id: userA.personalGroupId,
         content: 'Baseline message before read marker',
       })
       .select('created_at')
@@ -736,12 +754,12 @@ describe('B-MSG-006: Message Read Tracking', () => {
 
     await admin.from('direct_messages').insert({
       conversation_id: conversationId!,
-      sender_id: userB.profile.id,
+      sender_group_id: userB.personalGroupId,
       content: 'Unread message 1',
     });
     await admin.from('direct_messages').insert({
       conversation_id: conversationId!,
-      sender_id: userB.profile.id,
+      sender_group_id: userB.personalGroupId,
       content: 'Unread message 2',
     });
 

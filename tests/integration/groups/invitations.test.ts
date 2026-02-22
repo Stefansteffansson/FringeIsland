@@ -37,7 +37,7 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
         .from('group_memberships')
         .delete()
         .eq('group_id', testGroup.id)
-        .eq('user_id', invitee.profile.id);
+        .eq('member_group_id', invitee.personalGroupId);
       await cleanupTestUser(invitee.user.id);
     }
   };
@@ -54,7 +54,7 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
         name: 'Test Group - Invitations',
         description: 'Testing invitation lifecycle',
         is_public: false,
-        created_by_user_id: leader.profile.id,
+        created_by_group_id: leader.personalGroupId,
       })
       .select()
       .single();
@@ -65,8 +65,8 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
     // Add leader as active member
     const { error: lmErr } = await admin.from('group_memberships').insert({
       group_id: testGroup.id,
-      user_id: leader.profile.id,
-      added_by_user_id: leader.profile.id,
+      member_group_id: leader.personalGroupId,
+      added_by_group_id: leader.personalGroupId,
       status: 'active',
     });
     expect(lmErr).toBeNull();
@@ -82,18 +82,18 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
     leaderRole = role;
 
     const { error: assignErr } = await admin.from('user_group_roles').insert({
-      user_id: leader.profile.id,
+      member_group_id: leader.personalGroupId,
       group_id: testGroup.id,
       group_role_id: leaderRole.id,
-      assigned_by_user_id: leader.profile.id,
+      assigned_by_group_id: leader.personalGroupId,
     });
     expect(assignErr).toBeNull();
 
     // Add regular member (no leader role)
     const { error: mmErr } = await admin.from('group_memberships').insert({
       group_id: testGroup.id,
-      user_id: member.profile.id,
-      added_by_user_id: leader.profile.id,
+      member_group_id: member.personalGroupId,
+      added_by_group_id: leader.personalGroupId,
       status: 'active',
     });
     expect(mmErr).toBeNull();
@@ -119,8 +119,8 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
         .from('group_memberships')
         .insert({
           group_id: testGroup.id,
-          user_id: invitee.profile.id,
-          added_by_user_id: leader.profile.id,
+          member_group_id: invitee.personalGroupId,
+          added_by_group_id: leader.personalGroupId,
           status: 'invited',
         })
         .select()
@@ -141,8 +141,8 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
         .from('group_memberships')
         .insert({
           group_id: testGroup.id,
-          user_id: invitee.profile.id,
-          added_by_user_id: leader.profile.id,
+          member_group_id: invitee.personalGroupId,
+          added_by_group_id: leader.personalGroupId,
           status: 'invited',
         })
         .select()
@@ -178,8 +178,8 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
         .from('group_memberships')
         .insert({
           group_id: testGroup.id,
-          user_id: invitee.profile.id,
-          added_by_user_id: leader.profile.id,
+          member_group_id: invitee.personalGroupId,
+          added_by_group_id: leader.personalGroupId,
           status: 'invited',
         })
         .select()
@@ -212,8 +212,8 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
         .from('group_memberships')
         .insert({
           group_id: testGroup.id,
-          user_id: invitee.profile.id,
-          added_by_user_id: leader.profile.id,
+          member_group_id: invitee.personalGroupId,
+          added_by_group_id: leader.personalGroupId,
           status: 'invited',
         })
         .select()
@@ -253,8 +253,8 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
         .from('group_memberships')
         .insert({
           group_id: testGroup.id,
-          user_id: invitee.profile.id,
-          added_by_user_id: leader.profile.id,
+          member_group_id: invitee.personalGroupId,
+          added_by_group_id: leader.personalGroupId,
           status: 'invited',
         })
         .select()
@@ -296,8 +296,8 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
         .from('group_memberships')
         .insert({
           group_id: testGroup.id,
-          user_id: invitee.profile.id,
-          added_by_user_id: invitee.profile.id,
+          member_group_id: invitee.personalGroupId,
+          added_by_group_id: invitee.personalGroupId,
           status: 'active',
         })
         .select()
@@ -321,8 +321,8 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
         .from('group_memberships')
         .insert({
           group_id: testGroup.id,
-          user_id: invitee.profile.id,
-          added_by_user_id: member.profile.id,
+          member_group_id: invitee.personalGroupId,
+          added_by_group_id: member.personalGroupId,
           status: 'invited',
         })
         .select()
@@ -355,8 +355,8 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
         .from('group_memberships')
         .insert({
           group_id: testGroup.id,
-          user_id: invitee.profile.id,
-          added_by_user_id: leader.profile.id,
+          member_group_id: invitee.personalGroupId,
+          added_by_group_id: leader.personalGroupId,
           status: 'invited',
         })
         .select()
@@ -396,8 +396,8 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
       .from('group_memberships')
       .insert({
         group_id: testGroup.id,
-        user_id: member.profile.id,
-        added_by_user_id: leader.profile.id,
+        member_group_id: member.personalGroupId,
+        added_by_group_id: leader.personalGroupId,
         status: 'invited',
       })
       .select()
@@ -417,8 +417,8 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
         .from('group_memberships')
         .insert({
           group_id: testGroup.id,
-          user_id: invitee.profile.id,
-          added_by_user_id: leader.profile.id,
+          member_group_id: invitee.personalGroupId,
+          added_by_group_id: leader.personalGroupId,
           status: 'invited',
         })
         .select()
@@ -441,8 +441,8 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
         .from('group_memberships')
         .insert({
           group_id: testGroup.id,
-          user_id: invitee.profile.id,
-          added_by_user_id: leader.profile.id,
+          member_group_id: invitee.personalGroupId,
+          added_by_group_id: leader.personalGroupId,
           status: 'invited',
         })
         .select()

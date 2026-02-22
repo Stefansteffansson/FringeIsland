@@ -81,7 +81,7 @@ describe('B-AUTH-005: Protected Route Enforcement', () => {
     const supabase = createTestClient();
 
     // Arrange: Create and sign in test user
-    const { email, password, user, profile } = await createTestUser({
+    const { email, password, user, profile, personalGroupId } = await createTestUser({
       displayName: 'Groups Access Test',
     });
     testUsers.push(user.id);
@@ -94,7 +94,7 @@ describe('B-AUTH-005: Protected Route Enforcement', () => {
       .insert({
         name: 'Test Group',
         description: 'Group for RLS testing',
-        created_by_user_id: profile.id,
+        created_by_group_id: personalGroupId,
       })
       .select()
       .single();
@@ -108,7 +108,7 @@ describe('B-AUTH-005: Protected Route Enforcement', () => {
     const { data: groupsData, error: groupsError } = await supabase
       .from('groups')
       .select('*')
-      .eq('created_by_user_id', profile.id);
+      .eq('created_by_group_id', personalGroupId);
 
     // Assert: Can see own groups
     expect(groupsError).toBeNull();
@@ -121,7 +121,7 @@ describe('B-AUTH-005: Protected Route Enforcement', () => {
     const unauthenticatedSupabase = createTestClient();
 
     // Arrange: Create authenticated user and group
-    const { email, password, user, profile } = await createTestUser({
+    const { email, password, user, profile, personalGroupId } = await createTestUser({
       displayName: 'Unauthenticated Groups Test',
     });
     testUsers.push(user.id);
@@ -133,7 +133,7 @@ describe('B-AUTH-005: Protected Route Enforcement', () => {
       .insert({
         name: 'Private Test Group',
         description: 'Should not be accessible',
-        created_by_user_id: profile.id,
+        created_by_group_id: personalGroupId,
         is_public: false,
       })
       .select()

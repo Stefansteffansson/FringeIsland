@@ -64,16 +64,16 @@ describe('B-ADMIN-016: Admin Invite to Group', () => {
     // Add deusexUser to DeusEx group
     await admin.from('group_memberships').insert({
       group_id: deusexGroupId,
-      user_id: deusexUser.profile.id,
-      added_by_user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
+      added_by_group_id: deusexUser.personalGroupId,
       status: 'active',
     });
 
     await admin.from('user_group_roles').insert({
-      user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
       group_id: deusexGroupId,
       group_role_id: deusexRoleId,
-      assigned_by_user_id: deusexUser.profile.id,
+      assigned_by_group_id: deusexUser.personalGroupId,
     });
 
     // Create a test engagement group (admin is NOT the creator or member)
@@ -82,7 +82,7 @@ describe('B-ADMIN-016: Admin Invite to Group', () => {
       .insert({
         name: 'Admin Invite Test Group',
         description: 'Group for testing admin invite',
-        created_by_user_id: normalUser.profile.id,
+        created_by_group_id: normalUser.personalGroupId,
         group_type: 'engagement',
         is_public: false,
       })
@@ -95,8 +95,8 @@ describe('B-ADMIN-016: Admin Invite to Group', () => {
     // Add existing member to the test group
     await admin.from('group_memberships').insert({
       group_id: testGroupId,
-      user_id: existingMemberUser.profile.id,
-      added_by_user_id: normalUser.profile.id,
+      member_group_id: existingMemberUser.personalGroupId,
+      added_by_group_id: normalUser.personalGroupId,
       status: 'active',
     });
 
@@ -116,15 +116,15 @@ describe('B-ADMIN-016: Admin Invite to Group', () => {
 
     // Clean up audit log entries
     await admin.from('admin_audit_log').delete()
-      .eq('actor_user_id', deusexUser.profile.id)
+      .eq('actor_group_id', deusexUser.personalGroupId)
       .eq('action', 'admin_invite_to_group');
 
     // Clean up DeusEx membership
     await admin.from('user_group_roles').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
     await admin.from('group_memberships').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     if (deusexUser) await cleanupTestUser(deusexUser.user.id);
@@ -141,8 +141,8 @@ describe('B-ADMIN-016: Admin Invite to Group', () => {
       .from('group_memberships')
       .insert({
         group_id: testGroupId,
-        user_id: targetUser1.profile.id,
-        added_by_user_id: deusexUser.profile.id,
+        member_group_id: targetUser1.personalGroupId,
+        added_by_group_id: deusexUser.personalGroupId,
         status: 'invited',
       })
       .select()
@@ -152,8 +152,8 @@ describe('B-ADMIN-016: Admin Invite to Group', () => {
     expect(data).not.toBeNull();
     expect(data!.status).toBe('invited');
     expect(data!.group_id).toBe(testGroupId);
-    expect(data!.user_id).toBe(targetUser1.profile.id);
-    expect(data!.added_by_user_id).toBe(deusexUser.profile.id);
+    expect(data!.member_group_id).toBe(targetUser1.personalGroupId);
+    expect(data!.added_by_group_id).toBe(deusexUser.personalGroupId);
   });
 
   it('should allow admin to invite multiple users in batch', async () => {
@@ -162,8 +162,8 @@ describe('B-ADMIN-016: Admin Invite to Group', () => {
       .from('group_memberships')
       .insert({
         group_id: testGroupId,
-        user_id: targetUser2.profile.id,
-        added_by_user_id: deusexUser.profile.id,
+        member_group_id: targetUser2.personalGroupId,
+        added_by_group_id: deusexUser.personalGroupId,
         status: 'invited',
       })
       .select()
@@ -175,16 +175,16 @@ describe('B-ADMIN-016: Admin Invite to Group', () => {
     // Verify both invitations exist
     const { data: memberships } = await admin
       .from('group_memberships')
-      .select('user_id, status')
+      .select('member_group_id, status')
       .eq('group_id', testGroupId)
       .eq('status', 'invited');
 
     expect(memberships).not.toBeNull();
     expect(memberships!.length).toBeGreaterThanOrEqual(2);
 
-    const invitedIds = memberships!.map((m: any) => m.user_id);
-    expect(invitedIds).toContain(targetUser1.profile.id);
-    expect(invitedIds).toContain(targetUser2.profile.id);
+    const invitedPgIds = memberships!.map((m: any) => m.member_group_id);
+    expect(invitedPgIds).toContain(targetUser1.personalGroupId);
+    expect(invitedPgIds).toContain(targetUser2.personalGroupId);
   });
 
   it('should skip users who are already active members of the group', async () => {
@@ -193,8 +193,8 @@ describe('B-ADMIN-016: Admin Invite to Group', () => {
       .from('group_memberships')
       .insert({
         group_id: testGroupId,
-        user_id: existingMemberUser.profile.id,
-        added_by_user_id: deusexUser.profile.id,
+        member_group_id: existingMemberUser.personalGroupId,
+        added_by_group_id: deusexUser.personalGroupId,
         status: 'invited',
       })
       .select()
@@ -206,7 +206,7 @@ describe('B-ADMIN-016: Admin Invite to Group', () => {
       .from('group_memberships')
       .select('status')
       .eq('group_id', testGroupId)
-      .eq('user_id', existingMemberUser.profile.id)
+      .eq('member_group_id', existingMemberUser.personalGroupId)
       .single();
 
     expect(membership).not.toBeNull();
@@ -240,8 +240,8 @@ describe('B-ADMIN-016: Admin Invite to Group', () => {
       .from('group_memberships')
       .insert({
         group_id: testGroupId,
-        user_id: targetUser1.profile.id,
-        added_by_user_id: normalUser.profile.id,
+        member_group_id: targetUser1.personalGroupId,
+        added_by_group_id: normalUser.personalGroupId,
         status: 'invited',
       });
 
@@ -249,14 +249,14 @@ describe('B-ADMIN-016: Admin Invite to Group', () => {
     // Verify no new invitation was created by normalClient
     const { data: memberships } = await admin
       .from('group_memberships')
-      .select('added_by_user_id')
+      .select('added_by_group_id')
       .eq('group_id', testGroupId)
-      .eq('user_id', targetUser1.profile.id)
+      .eq('member_group_id', targetUser1.personalGroupId)
       .eq('status', 'invited');
 
     // If an invitation exists, it should be from the admin, not from normalUser
     if (memberships && memberships.length > 0) {
-      expect(memberships[0].added_by_user_id).toBe(deusexUser.profile.id);
+      expect(memberships[0].added_by_group_id).toBe(deusexUser.personalGroupId);
     }
   });
 
@@ -265,7 +265,7 @@ describe('B-ADMIN-016: Admin Invite to Group', () => {
     const { data: auditEntries } = await admin
       .from('admin_audit_log')
       .select('*')
-      .eq('actor_user_id', deusexUser.profile.id)
+      .eq('actor_group_id', deusexUser.personalGroupId)
       .eq('action', 'admin_invite_to_group');
 
     expect(auditEntries).not.toBeNull();

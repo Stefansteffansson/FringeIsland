@@ -40,6 +40,8 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
     leader   = await createTestUser({ displayName: 'Forum Test - Leader' });
     member   = await createTestUser({ displayName: 'Forum Test - Member' });
     outsider = await createTestUser({ displayName: 'Forum Test - Outsider' });
+    const { personalGroupId: leaderPgId } = leader;
+    const { personalGroupId: memberPgId } = member;
 
     // Create test group
     const { data: group, error: gErr } = await admin
@@ -48,7 +50,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
         name: 'Forum Test Group',
         description: 'Group for forum system tests',
         is_public: false,
-        created_by_user_id: leader.profile.id,
+        created_by_group_id: leaderPgId,
       })
       .select()
       .single();
@@ -59,8 +61,8 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
     // Add leader as active member
     const { error: lmErr } = await admin.from('group_memberships').insert({
       group_id: testGroup.id,
-      user_id: leader.profile.id,
-      added_by_user_id: leader.profile.id,
+      member_group_id: leaderPgId,
+      added_by_group_id: leaderPgId,
       status: 'active',
     });
     expect(lmErr).toBeNull();
@@ -68,8 +70,8 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
     // Add regular member as active member
     const { error: mmErr } = await admin.from('group_memberships').insert({
       group_id: testGroup.id,
-      user_id: member.profile.id,
-      added_by_user_id: leader.profile.id,
+      member_group_id: memberPgId,
+      added_by_group_id: leaderPgId,
       status: 'active',
     });
     expect(mmErr).toBeNull();
@@ -84,10 +86,10 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
     leaderRole = lr;
 
     const { error: laErr } = await admin.from('user_group_roles').insert({
-      user_id: leader.profile.id,
+      member_group_id: leaderPgId,
       group_id: testGroup.id,
       group_role_id: leaderRole.id,
-      assigned_by_user_id: leader.profile.id,
+      assigned_by_group_id: leaderPgId,
     });
     expect(laErr).toBeNull();
 
@@ -101,10 +103,10 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
     memberRole = mr;
 
     const { error: maErr } = await admin.from('user_group_roles').insert({
-      user_id: member.profile.id,
+      member_group_id: memberPgId,
       group_id: testGroup.id,
       group_role_id: memberRole.id,
-      assigned_by_user_id: leader.profile.id,
+      assigned_by_group_id: leaderPgId,
     });
     expect(maErr).toBeNull();
   });
@@ -136,7 +138,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
         .from('forum_posts')
         .insert({
           group_id: testGroup.id,
-          author_user_id: member.profile.id,
+          author_group_id: member.personalGroupId,
           content: 'Hello from a member! This is a top-level post.',
         })
         .select()
@@ -145,7 +147,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
       expect(error).toBeNull();
       expect(data).not.toBeNull();
       expect(data!.group_id).toBe(testGroup.id);
-      expect(data!.author_user_id).toBe(member.profile.id);
+      expect(data!.author_group_id).toBe(member.personalGroupId);
       expect(data!.content).toBe('Hello from a member! This is a top-level post.');
       expect(data!.parent_post_id).toBeNull();
       expect(data!.is_deleted).toBe(false);
@@ -166,7 +168,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
         .from('forum_posts')
         .insert({
           group_id: testGroup.id,
-          author_user_id: leader.profile.id,
+          author_group_id: leader.personalGroupId,
           content: 'Leader announcement post.',
         })
         .select()
@@ -191,7 +193,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
       .from('forum_posts')
       .insert({
         group_id: testGroup.id,
-        author_user_id: leader.profile.id,
+        author_group_id: leader.personalGroupId,
         content: 'Top-level post for reply test.',
       })
       .select()
@@ -209,7 +211,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
         .from('forum_posts')
         .insert({
           group_id: testGroup.id,
-          author_user_id: member.profile.id,
+          author_group_id: member.personalGroupId,
           content: 'This is a reply to the top-level post.',
           parent_post_id: parentPost!.id,
         })
@@ -234,7 +236,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
       .from('forum_posts')
       .insert({
         group_id: testGroup.id,
-        author_user_id: leader.profile.id,
+        author_group_id: leader.personalGroupId,
         content: 'Top-level post.',
       })
       .select()
@@ -244,7 +246,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
       .from('forum_posts')
       .insert({
         group_id: testGroup.id,
-        author_user_id: member.profile.id,
+        author_group_id: member.personalGroupId,
         content: 'First reply.',
         parent_post_id: topPost!.id,
       })
@@ -260,7 +262,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
         .from('forum_posts')
         .insert({
           group_id: testGroup.id,
-          author_user_id: member.profile.id,
+          author_group_id: member.personalGroupId,
           content: 'Reply to a reply — should be blocked.',
           parent_post_id: firstReply!.id,  // firstReply has a parent_post_id, so it's not top-level
         })
@@ -269,7 +271,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
 
       // Trigger raises EXCEPTION → PostgREST returns error
       expect(error).not.toBeNull();
-      expect(error!.message).toContain('Replies to replies are not allowed');
+      expect(error!.message).toContain('Cannot reply to a reply. Maximum thread depth is 2 levels.');
       expect(data).toBeNull();
     } finally {
       // Cleanup: delete reply first (CASCADE from topPost would also do this)
@@ -289,7 +291,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
       .from('forum_posts')
       .insert({
         group_id: testGroup.id,
-        author_user_id: member.profile.id,
+        author_group_id: member.personalGroupId,
         content: 'Post to be moderated by leader.',
       })
       .select()
@@ -329,7 +331,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
       .from('forum_posts')
       .insert({
         group_id: testGroup.id,
-        author_user_id: leader.profile.id,
+        author_group_id: leader.personalGroupId,
         content: "Leader's post that member should not be able to delete.",
       })
       .select()
@@ -377,7 +379,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
         .from('forum_posts')
         .insert({
           group_id: testGroup.id,
-          author_user_id: member.profile.id,
+          author_group_id: member.personalGroupId,
           content: 'Original content.',
         })
         .select()
@@ -418,7 +420,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
       .from('forum_posts')
       .insert({
         group_id: testGroup.id,
-        author_user_id: leader.profile.id,
+        author_group_id: leader.personalGroupId,
         content: 'Visible to members only.',
       })
       .select()
@@ -454,7 +456,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
         .from('forum_posts')
         .insert({
           group_id: testGroup.id,
-          author_user_id: outsider.profile.id,
+          author_group_id: outsider.personalGroupId,
           content: 'Outsider should not be able to post.',
         })
         .select()
@@ -474,7 +476,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
       .from('forum_posts')
       .insert({
         group_id: testGroup.id,
-        author_user_id: leader.profile.id,
+        author_group_id: leader.personalGroupId,
         content: 'Content visible to all active members.',
       })
       .select()

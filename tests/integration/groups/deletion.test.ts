@@ -46,7 +46,7 @@ describe('B-GRP-005: Group Deletion Rules', () => {
       .insert({
         name: 'Test Group - Cascade Delete',
         description: 'Testing cascade deletion',
-        created_by_user_id: leader.profile.id,
+        created_by_group_id: leader.personalGroupId,
       })
       .select()
       .single();
@@ -54,15 +54,15 @@ describe('B-GRP-005: Group Deletion Rules', () => {
     // Add membership and role
     await admin.from('group_memberships').insert({
       group_id: group!.id,
-      user_id: leader.profile.id,
-      added_by_user_id: leader.profile.id,
+      member_group_id: leader.personalGroupId,
+      added_by_group_id: leader.personalGroupId,
       status: 'active',
     });
 
     await admin.from('group_memberships').insert({
       group_id: group!.id,
-      user_id: member.profile.id,
-      added_by_user_id: leader.profile.id,
+      member_group_id: member.personalGroupId,
+      added_by_group_id: leader.personalGroupId,
       status: 'active',
     });
 
@@ -75,10 +75,10 @@ describe('B-GRP-005: Group Deletion Rules', () => {
       .single();
 
     await admin.from('user_group_roles').insert({
-      user_id: leader.profile.id,
+      member_group_id: leader.personalGroupId,
       group_id: group!.id,
       group_role_id: travelGuideRole!.id,
-      assigned_by_user_id: leader.profile.id,
+      assigned_by_group_id: leader.personalGroupId,
     });
 
     // Verify records exist before deletion
@@ -133,7 +133,7 @@ describe('B-GRP-005: Group Deletion Rules', () => {
       .from('groups')
       .insert({
         name: 'Test Group - Enrollment Cascade',
-        created_by_user_id: leader.profile.id,
+        created_by_group_id: leader.personalGroupId,
       })
       .select()
       .single();
@@ -154,8 +154,7 @@ describe('B-GRP-005: Group Deletion Rules', () => {
         .insert({
           journey_id: journey.id,
           group_id: group!.id,
-          user_id: null,
-          enrolled_by_user_id: leader.profile.id,
+          enrolled_by_group_id: leader.personalGroupId,
           status: 'active',
           progress_data: {},
         })
@@ -185,15 +184,15 @@ describe('B-GRP-005: Group Deletion Rules', () => {
       .from('groups')
       .insert({
         name: 'Test Group - Member Cannot Delete',
-        created_by_user_id: leader.profile.id,
+        created_by_group_id: leader.personalGroupId,
       })
       .select()
       .single();
 
     await admin.from('group_memberships').insert({
       group_id: group!.id,
-      user_id: member.profile.id,
-      added_by_user_id: leader.profile.id,
+      member_group_id: member.personalGroupId,
+      added_by_group_id: leader.personalGroupId,
       status: 'active',
     });
 
@@ -231,7 +230,7 @@ describe('B-GRP-005: Group Deletion Rules', () => {
       .from('groups')
       .insert({
         name: 'Test Group - Non-Member Cannot Delete',
-        created_by_user_id: leader.profile.id,
+        created_by_group_id: leader.personalGroupId,
       })
       .select()
       .single();
@@ -268,7 +267,7 @@ describe('B-GRP-005: Group Deletion Rules', () => {
       .from('groups')
       .insert({
         name: 'Test Group - Leader Delete',
-        created_by_user_id: leader.profile.id,
+        created_by_group_id: leader.personalGroupId,
       })
       .select()
       .single();
@@ -276,8 +275,8 @@ describe('B-GRP-005: Group Deletion Rules', () => {
     // Set up leader membership + Group Leader role
     await admin.from('group_memberships').insert({
       group_id: group!.id,
-      user_id: leader.profile.id,
-      added_by_user_id: leader.profile.id,
+      member_group_id: leader.personalGroupId,
+      added_by_group_id: leader.personalGroupId,
       status: 'active',
     });
 
@@ -288,10 +287,10 @@ describe('B-GRP-005: Group Deletion Rules', () => {
       .single();
 
     await admin.from('user_group_roles').insert({
-      user_id: leader.profile.id,
+      member_group_id: leader.personalGroupId,
       group_id: group!.id,
       group_role_id: leaderRole!.id,
-      assigned_by_user_id: leader.profile.id,
+      assigned_by_group_id: leader.personalGroupId,
     });
 
     // Verify setup is in place

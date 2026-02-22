@@ -31,8 +31,16 @@ describe('B-ADMIN-007: Admin Audit Log', () => {
 
   beforeAll(async () => {
     // Create users
-    deusexUser = await createTestUser({ displayName: 'Audit Deusex User' });
-    normalUser = await createTestUser({ displayName: 'Audit Normal User' });
+    const deusexResult = await createTestUser({ displayName: 'Audit Deusex User' });
+    deusexUser = { ...deusexResult, personalGroupId: deusexResult.personalGroupId };
+    const normalResult = await createTestUser({ displayName: 'Audit Normal User' });
+    normalUser = { ...normalResult, personalGroupId: normalResult.personalGroupId };
+
+    const { user: dUser, profile: dProfile, personalGroupId: deusexPgId } = deusexResult;
+    const { user: nUser, profile: nProfile, personalGroupId: normalPgId } = normalResult;
+
+    deusexUser = { user: dUser, profile: dProfile, personalGroupId: deusexPgId, email: deusexResult.email, password: deusexResult.password };
+    normalUser = { user: nUser, profile: nProfile, personalGroupId: normalPgId, email: normalResult.email, password: normalResult.password };
 
     // Look up Deusex group and role
     const { data: deusexGroup } = await admin
@@ -58,16 +66,16 @@ describe('B-ADMIN-007: Admin Audit Log', () => {
     // Add deusex user to Deusex group
     await admin.from('group_memberships').insert({
       group_id: deusexGroupId,
-      user_id: deusexUser.profile.id,
-      added_by_user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
+      added_by_group_id: deusexUser.personalGroupId,
       status: 'active',
     });
 
     await admin.from('user_group_roles').insert({
-      user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
       group_id: deusexGroupId,
       group_role_id: deusexRoleId,
-      assigned_by_user_id: deusexUser.profile.id,
+      assigned_by_group_id: deusexUser.personalGroupId,
     });
 
     // Sign in both users
@@ -86,10 +94,10 @@ describe('B-ADMIN-007: Admin Audit Log', () => {
 
     // Clean up Deusex membership
     await admin.from('user_group_roles').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
     await admin.from('group_memberships').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     if (deusexUser) await cleanupTestUser(deusexUser.user.id);
@@ -100,7 +108,7 @@ describe('B-ADMIN-007: Admin Audit Log', () => {
     // Query the table structure via admin (service role) — just select with limit 0
     const { error } = await admin
       .from('admin_audit_log')
-      .select('id, actor_user_id, action, target, metadata, created_at')
+      .select('id, actor_group_id, action, target, metadata, created_at')
       .limit(0);
 
     expect(error).toBeNull();
@@ -110,7 +118,7 @@ describe('B-ADMIN-007: Admin Audit Log', () => {
     const { data, error } = await deusexClient
       .from('admin_audit_log')
       .insert({
-        actor_user_id: deusexUser.profile.id,
+        actor_group_id: deusexUser.personalGroupId,
         action: 'test_action',
         target: 'test_target',
         metadata: { test: true },
@@ -148,7 +156,7 @@ describe('B-ADMIN-007: Admin Audit Log', () => {
     const { data, error } = await normalClient
       .from('admin_audit_log')
       .insert({
-        actor_user_id: normalUser.profile.id,
+        actor_group_id: normalUser.personalGroupId,
         action: 'unauthorized_action',
         target: 'test',
         metadata: {},

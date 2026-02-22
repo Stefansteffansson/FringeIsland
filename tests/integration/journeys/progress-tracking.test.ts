@@ -37,13 +37,14 @@ describe('B-JRN-005: Step Completion Tracking (DB Layer)', () => {
 
   beforeAll(async () => {
     testUser = await createTestUser({ displayName: 'Progress Test User' });
+    const { personalGroupId } = testUser;
 
     const { data: j } = await admin
       .from('journeys')
       .insert({
         ...testJourneyMultiStep,
         title: 'Progress Tracking Test Journey',
-        created_by_user_id: testUser.profile.id,
+        created_by_group_id: personalGroupId,
       })
       .select()
       .single();
@@ -54,9 +55,8 @@ describe('B-JRN-005: Step Completion Tracking (DB Layer)', () => {
       .from('journey_enrollments')
       .insert({
         journey_id: journey.id,
-        user_id: testUser.profile.id,
-        group_id: null,
-        enrolled_by_user_id: testUser.profile.id,
+        group_id: personalGroupId,
+        enrolled_by_group_id: personalGroupId,
         status: 'active',
         progress_data: {},
       })

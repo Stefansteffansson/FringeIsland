@@ -62,16 +62,16 @@ describe('B-ADMIN-012: Admin Group Visibility', () => {
     // Add deusexUser to DeusEx group
     await admin.from('group_memberships').insert({
       group_id: deusexGroupId,
-      user_id: deusexUser.profile.id,
-      added_by_user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
+      added_by_group_id: deusexUser.personalGroupId,
       status: 'active',
     });
 
     await admin.from('user_group_roles').insert({
-      user_id: deusexUser.profile.id,
+      member_group_id: deusexUser.personalGroupId,
       group_id: deusexGroupId,
       group_role_id: deusexRoleId,
-      assigned_by_user_id: deusexUser.profile.id,
+      assigned_by_group_id: deusexUser.personalGroupId,
     });
 
     // Create a private engagement group where admin is NOT the creator and NOT a member
@@ -81,7 +81,7 @@ describe('B-ADMIN-012: Admin Group Visibility', () => {
       .insert({
         name: 'Private Admin Test Group',
         description: 'Private group for visibility testing',
-        created_by_user_id: normalUser.profile.id,
+        created_by_group_id: normalUser.personalGroupId,
         group_type: 'engagement',
         is_public: false,
       })
@@ -93,8 +93,8 @@ describe('B-ADMIN-012: Admin Group Visibility', () => {
       // Add normalUser as a member (not the admin)
       await admin.from('group_memberships').insert({
         group_id: privateGroupId,
-        user_id: normalUser.profile.id,
-        added_by_user_id: normalUser.profile.id,
+        member_group_id: normalUser.personalGroupId,
+        added_by_group_id: normalUser.personalGroupId,
         status: 'active',
       });
     }
@@ -105,7 +105,7 @@ describe('B-ADMIN-012: Admin Group Visibility', () => {
       .insert({
         name: 'Public Admin Test Group',
         description: 'Public group for visibility testing',
-        created_by_user_id: normalUser.profile.id,
+        created_by_group_id: normalUser.personalGroupId,
         group_type: 'engagement',
         is_public: true,
       })
@@ -140,10 +140,10 @@ describe('B-ADMIN-012: Admin Group Visibility', () => {
 
     // Clean up DeusEx membership
     await admin.from('user_group_roles').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
     await admin.from('group_memberships').delete()
-      .eq('user_id', deusexUser.profile.id)
+      .eq('member_group_id', deusexUser.personalGroupId)
       .eq('group_id', deusexGroupId);
 
     if (deusexUser) await cleanupTestUser(deusexUser.user.id);

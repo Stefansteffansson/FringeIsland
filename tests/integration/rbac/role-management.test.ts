@@ -39,13 +39,13 @@ describe('B-RBAC-018: manage_roles Permission in Catalog', () => {
     expect(data![0].description).toBeTruthy();
   });
 
-  it('should have 42 total permissions after adding manage_roles', async () => {
+  it('should have 44 total permissions after adding manage_roles', async () => {
     const { data, error } = await admin
       .from('permissions')
       .select('id');
 
     expect(error).toBeNull();
-    expect(data).toHaveLength(42);
+    expect(data).toHaveLength(44);
   });
 
   it('should have 15 group_management permissions (was 14)', async () => {
@@ -84,7 +84,7 @@ describe('B-RBAC-018: manage_roles Permission in Catalog', () => {
     expect(mapping).toHaveLength(1);
   });
 
-  it('should have Steward template with 25 permissions (was 24)', async () => {
+  it('should have Steward template with 31 permissions (was 30)', async () => {
     const { data: template } = await admin
       .from('role_templates')
       .select('id')
@@ -96,7 +96,7 @@ describe('B-RBAC-018: manage_roles Permission in Catalog', () => {
       .select('permission_id')
       .eq('role_template_id', template!.id);
 
-    expect(mappings).toHaveLength(25);
+    expect(mappings).toHaveLength(31);
   });
 
   it('should NOT include manage_roles in Guide template', async () => {
@@ -221,7 +221,7 @@ describe('B-RBAC-019: View Roles in Group', () => {
       .from('groups')
       .insert({
         name: 'Role View Test Group',
-        created_by_user_id: stewardUser.profile.id,
+        created_by_group_id: stewardUser.personalGroupId,
         group_type: 'engagement',
       })
       .select()
@@ -231,8 +231,8 @@ describe('B-RBAC-019: View Roles in Group', () => {
 
     // Add memberships
     await admin.from('group_memberships').insert([
-      { group_id: testGroupId, user_id: stewardUser.profile.id, added_by_user_id: stewardUser.profile.id, status: 'active' },
-      { group_id: testGroupId, user_id: memberUser.profile.id, added_by_user_id: stewardUser.profile.id, status: 'active' },
+      { group_id: testGroupId, member_group_id: stewardUser.personalGroupId, added_by_group_id: stewardUser.personalGroupId, status: 'active' },
+      { group_id: testGroupId, member_group_id: memberUser.personalGroupId, added_by_group_id: stewardUser.personalGroupId, status: 'active' },
     ]);
 
     // Get Steward template and assign role
@@ -263,8 +263,8 @@ describe('B-RBAC-019: View Roles in Group', () => {
 
     // Assign roles
     await admin.from('user_group_roles').insert([
-      { user_id: stewardUser.profile.id, group_id: testGroupId, group_role_id: stewardRole!.id, assigned_by_user_id: stewardUser.profile.id },
-      { user_id: memberUser.profile.id, group_id: testGroupId, group_role_id: memberRole!.id, assigned_by_user_id: stewardUser.profile.id },
+      { member_group_id: stewardUser.personalGroupId, group_id: testGroupId, group_role_id: stewardRole!.id, assigned_by_group_id: stewardUser.personalGroupId },
+      { member_group_id: memberUser.personalGroupId, group_id: testGroupId, group_role_id: memberRole!.id, assigned_by_group_id: stewardUser.personalGroupId },
     ]);
 
     await signInWithRetry(stewardClient, stewardUser.email, stewardUser.password);
@@ -340,7 +340,7 @@ describe('B-RBAC-020: Create Custom Role', () => {
       .from('groups')
       .insert({
         name: 'Create Role Test Group',
-        created_by_user_id: stewardUser.profile.id,
+        created_by_group_id: stewardUser.personalGroupId,
         group_type: 'engagement',
       })
       .select()
@@ -349,8 +349,8 @@ describe('B-RBAC-020: Create Custom Role', () => {
     testGroupId = group!.id;
 
     await admin.from('group_memberships').insert([
-      { group_id: testGroupId, user_id: stewardUser.profile.id, added_by_user_id: stewardUser.profile.id, status: 'active' },
-      { group_id: testGroupId, user_id: memberUser.profile.id, added_by_user_id: stewardUser.profile.id, status: 'active' },
+      { group_id: testGroupId, member_group_id: stewardUser.personalGroupId, added_by_group_id: stewardUser.personalGroupId, status: 'active' },
+      { group_id: testGroupId, member_group_id: memberUser.personalGroupId, added_by_group_id: stewardUser.personalGroupId, status: 'active' },
     ]);
 
     const { data: stewardTemplate } = await admin
@@ -380,8 +380,8 @@ describe('B-RBAC-020: Create Custom Role', () => {
       .single();
 
     await admin.from('user_group_roles').insert([
-      { user_id: stewardUser.profile.id, group_id: testGroupId, group_role_id: stewardRoleId, assigned_by_user_id: stewardUser.profile.id },
-      { user_id: memberUser.profile.id, group_id: testGroupId, group_role_id: memberRole!.id, assigned_by_user_id: stewardUser.profile.id },
+      { member_group_id: stewardUser.personalGroupId, group_id: testGroupId, group_role_id: stewardRoleId, assigned_by_group_id: stewardUser.personalGroupId },
+      { member_group_id: memberUser.personalGroupId, group_id: testGroupId, group_role_id: memberRole!.id, assigned_by_group_id: stewardUser.personalGroupId },
     ]);
 
     await signInWithRetry(stewardClient, stewardUser.email, stewardUser.password);
@@ -512,7 +512,7 @@ describe('B-RBAC-021: Edit Role', () => {
       .from('groups')
       .insert({
         name: 'Edit Role Test Group',
-        created_by_user_id: stewardUser.profile.id,
+        created_by_group_id: stewardUser.personalGroupId,
         group_type: 'engagement',
       })
       .select()
@@ -521,8 +521,8 @@ describe('B-RBAC-021: Edit Role', () => {
     testGroupId = group!.id;
 
     await admin.from('group_memberships').insert([
-      { group_id: testGroupId, user_id: stewardUser.profile.id, added_by_user_id: stewardUser.profile.id, status: 'active' },
-      { group_id: testGroupId, user_id: memberUser.profile.id, added_by_user_id: stewardUser.profile.id, status: 'active' },
+      { group_id: testGroupId, member_group_id: stewardUser.personalGroupId, added_by_group_id: stewardUser.personalGroupId, status: 'active' },
+      { group_id: testGroupId, member_group_id: memberUser.personalGroupId, added_by_group_id: stewardUser.personalGroupId, status: 'active' },
     ]);
 
     const { data: stewardTemplate } = await admin
@@ -559,8 +559,8 @@ describe('B-RBAC-021: Edit Role', () => {
     customRoleId = customRole!.id;
 
     await admin.from('user_group_roles').insert([
-      { user_id: stewardUser.profile.id, group_id: testGroupId, group_role_id: stewardRole!.id, assigned_by_user_id: stewardUser.profile.id },
-      { user_id: memberUser.profile.id, group_id: testGroupId, group_role_id: memberRole!.id, assigned_by_user_id: stewardUser.profile.id },
+      { member_group_id: stewardUser.personalGroupId, group_id: testGroupId, group_role_id: stewardRole!.id, assigned_by_group_id: stewardUser.personalGroupId },
+      { member_group_id: memberUser.personalGroupId, group_id: testGroupId, group_role_id: memberRole!.id, assigned_by_group_id: stewardUser.personalGroupId },
     ]);
 
     await signInWithRetry(stewardClient, stewardUser.email, stewardUser.password);
@@ -786,7 +786,7 @@ describe('B-RBAC-022: Delete Custom Role', () => {
       .from('groups')
       .insert({
         name: 'Delete Role Test Group',
-        created_by_user_id: stewardUser.profile.id,
+        created_by_group_id: stewardUser.personalGroupId,
         group_type: 'engagement',
       })
       .select()
@@ -795,8 +795,8 @@ describe('B-RBAC-022: Delete Custom Role', () => {
     testGroupId = group!.id;
 
     await admin.from('group_memberships').insert([
-      { group_id: testGroupId, user_id: stewardUser.profile.id, added_by_user_id: stewardUser.profile.id, status: 'active' },
-      { group_id: testGroupId, user_id: memberUser.profile.id, added_by_user_id: stewardUser.profile.id, status: 'active' },
+      { group_id: testGroupId, member_group_id: stewardUser.personalGroupId, added_by_group_id: stewardUser.personalGroupId, status: 'active' },
+      { group_id: testGroupId, member_group_id: memberUser.personalGroupId, added_by_group_id: stewardUser.personalGroupId, status: 'active' },
     ]);
 
     const { data: stewardTemplate } = await admin
@@ -824,8 +824,8 @@ describe('B-RBAC-022: Delete Custom Role', () => {
       .single();
 
     await admin.from('user_group_roles').insert([
-      { user_id: stewardUser.profile.id, group_id: testGroupId, group_role_id: stewardRole!.id, assigned_by_user_id: stewardUser.profile.id },
-      { user_id: memberUser.profile.id, group_id: testGroupId, group_role_id: memberRole!.id, assigned_by_user_id: stewardUser.profile.id },
+      { member_group_id: stewardUser.personalGroupId, group_id: testGroupId, group_role_id: stewardRole!.id, assigned_by_group_id: stewardUser.personalGroupId },
+      { member_group_id: memberUser.personalGroupId, group_id: testGroupId, group_role_id: memberRole!.id, assigned_by_group_id: stewardUser.personalGroupId },
     ]);
 
     await signInWithRetry(stewardClient, stewardUser.email, stewardUser.password);
@@ -921,10 +921,10 @@ describe('B-RBAC-022: Delete Custom Role', () => {
       .single();
 
     await admin.from('user_group_roles').insert({
-      user_id: memberUser.profile.id,
+      member_group_id: memberUser.personalGroupId,
       group_id: testGroupId,
       group_role_id: customRole!.id,
-      assigned_by_user_id: stewardUser.profile.id,
+      assigned_by_group_id: stewardUser.personalGroupId,
     });
 
     // Verify assignment exists
@@ -1032,7 +1032,7 @@ describe('B-RBAC-024: Anti-Escalation Guardrail', () => {
       .from('groups')
       .insert({
         name: 'Anti-Escalation Test Group',
-        created_by_user_id: stewardUser.profile.id,
+        created_by_group_id: stewardUser.personalGroupId,
         group_type: 'engagement',
       })
       .select()
@@ -1041,8 +1041,8 @@ describe('B-RBAC-024: Anti-Escalation Guardrail', () => {
     testGroupId = group!.id;
 
     await admin.from('group_memberships').insert([
-      { group_id: testGroupId, user_id: stewardUser.profile.id, added_by_user_id: stewardUser.profile.id, status: 'active' },
-      { group_id: testGroupId, user_id: guideUser.profile.id, added_by_user_id: stewardUser.profile.id, status: 'active' },
+      { group_id: testGroupId, member_group_id: stewardUser.personalGroupId, added_by_group_id: stewardUser.personalGroupId, status: 'active' },
+      { group_id: testGroupId, member_group_id: guideUser.personalGroupId, added_by_group_id: stewardUser.personalGroupId, status: 'active' },
     ]);
 
     const { data: stewardTemplate } = await admin
@@ -1095,8 +1095,8 @@ describe('B-RBAC-024: Anti-Escalation Guardrail', () => {
     }
 
     await admin.from('user_group_roles').insert([
-      { user_id: stewardUser.profile.id, group_id: testGroupId, group_role_id: stewardRole!.id, assigned_by_user_id: stewardUser.profile.id },
-      { user_id: guideUser.profile.id, group_id: testGroupId, group_role_id: guideRole!.id, assigned_by_user_id: stewardUser.profile.id },
+      { member_group_id: stewardUser.personalGroupId, group_id: testGroupId, group_role_id: stewardRole!.id, assigned_by_group_id: stewardUser.personalGroupId },
+      { member_group_id: guideUser.personalGroupId, group_id: testGroupId, group_role_id: guideRole!.id, assigned_by_group_id: stewardUser.personalGroupId },
     ]);
 
     await signInWithRetry(stewardClient, stewardUser.email, stewardUser.password);
@@ -1199,7 +1199,7 @@ describe('B-RBAC-025: RLS Policies for Role Management', () => {
       .from('groups')
       .insert({
         name: 'RLS Role Test Group',
-        created_by_user_id: stewardUser.profile.id,
+        created_by_group_id: stewardUser.personalGroupId,
         group_type: 'engagement',
       })
       .select()
@@ -1208,8 +1208,8 @@ describe('B-RBAC-025: RLS Policies for Role Management', () => {
     testGroupId = group!.id;
 
     await admin.from('group_memberships').insert([
-      { group_id: testGroupId, user_id: stewardUser.profile.id, added_by_user_id: stewardUser.profile.id, status: 'active' },
-      { group_id: testGroupId, user_id: memberUser.profile.id, added_by_user_id: stewardUser.profile.id, status: 'active' },
+      { group_id: testGroupId, member_group_id: stewardUser.personalGroupId, added_by_group_id: stewardUser.personalGroupId, status: 'active' },
+      { group_id: testGroupId, member_group_id: memberUser.personalGroupId, added_by_group_id: stewardUser.personalGroupId, status: 'active' },
     ]);
 
     const { data: stewardTemplate } = await admin
@@ -1237,8 +1237,8 @@ describe('B-RBAC-025: RLS Policies for Role Management', () => {
       .single();
 
     await admin.from('user_group_roles').insert([
-      { user_id: stewardUser.profile.id, group_id: testGroupId, group_role_id: stewardRole!.id, assigned_by_user_id: stewardUser.profile.id },
-      { user_id: memberUser.profile.id, group_id: testGroupId, group_role_id: memberRole!.id, assigned_by_user_id: stewardUser.profile.id },
+      { member_group_id: stewardUser.personalGroupId, group_id: testGroupId, group_role_id: stewardRole!.id, assigned_by_group_id: stewardUser.personalGroupId },
+      { member_group_id: memberUser.personalGroupId, group_id: testGroupId, group_role_id: memberRole!.id, assigned_by_group_id: stewardUser.personalGroupId },
     ]);
 
     await signInWithRetry(stewardClient, stewardUser.email, stewardUser.password);
