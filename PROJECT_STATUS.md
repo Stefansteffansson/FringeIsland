@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-21 (Performance Optimization COMPLETE — all tiers done)
+**Last Updated:** 2026-02-22 (D15 schema rebuild committed + pushed)
 **Current Version:** 0.2.28
 **Active Branch:** main
 
@@ -42,7 +42,7 @@
 
 - **Phase:** Performance Optimization COMPLETE (All Tiers: 1A, 1B, 1C, 2A, 2B, 2C, 3A, 3B)
 - **Total Tables:** 18 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 71 migration files
+- **Total Migrations:** 5 active + 71 archived (consolidated via D15 rebuild)
 - **Recent Version:** v0.2.28 (Realtime fixes + admin user filters + auto force-logout)
 - **Test Coverage:** 414 integration + 99 unit + 4 setup = **517 tests, all passing** ✅
 - **Behaviors Documented:** 77 (58 previous + 19 admin) ✅
@@ -97,26 +97,23 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-21 (Performance Optimization COMPLETE — all tiers done)
+**Date:** 2026-02-22 (D15 Universal Group Pattern — schema rebuild committed)
 **Summary:**
-- **Tier 2A: Parallelized group detail page queries** — Refactored `fetchGroupData`: eliminated 3 redundant queries, parallelized remaining 4 into 2 `Promise.all` steps. Expected: ~1.2s → ~300-400ms.
-- **Tier 2B: Fixed N+1 on My Groups page** — Created `get_group_member_counts` RPC, replaced N individual count queries with single batch call. For 10 groups: 12 requests → 3.
-- **Tier 3A: Debounced commonGroupCount** — 300ms setTimeout with cleanup in admin panel.
-- **Tier 3B: Deduplicated admin stats** — useRef tracks static stats; filter changes only re-fetch users count (1 query instead of 4).
+- Committed and pushed the D15 Universal Group Pattern schema rebuild (was uncommitted from previous session)
+- 71 old incremental migrations archived to `supabase/migrations/archive/`
+- 5 new consolidated migrations replace the old schema (user_id → member_group_id everywhere)
+- 40+ integration test files updated to use new column names
+- 4 new type files added (`admin.ts`, `group.ts`, `messaging.ts`, `user.ts`)
+- Utility scripts and seed data added
+- `pg` dependency added to `package.json`
 
-**Files Created:**
-- `supabase/migrations/20260221090925_get_group_member_counts_rpc.sql`
-
-**Files Modified:**
-- `app/groups/[id]/page.tsx` — `fetchGroupData`: 7 sequential → 4 queries in 2 parallel steps; `refetchMembers`: parallelized
-- `app/groups/page.tsx` — N+1 count queries replaced with single RPC + parallelized with group data fetch
-- `app/admin/page.tsx` — debounced commonGroupCount (300ms), deduplicated stats with useRef
+**Commit:** `ce58227` — 143 files changed, 4,931 additions, 929 deletions
 
 **Previous Sessions:**
+- 2026-02-21: Performance Optimization Tiers 2+3 (parallel queries, N+1 fix, debounce, dedup)
 - 2026-02-20: Realtime fixes + admin user filters + auto force-logout — v0.2.28
 - 2026-02-20: Auth deadlock + Tier 2C admin SELECT policy removal — v0.2.27
 - 2026-02-20: Performance Tier 1 (indexes, shared profile, admin API route) — v0.2.26
-- 2026-02-20: Performance analysis + admin bug fixes (design doc created)
 
 ---
 
