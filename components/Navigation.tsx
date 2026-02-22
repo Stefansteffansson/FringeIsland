@@ -42,15 +42,15 @@ export default function Navigation() {
         const { count } = await supabase
           .from('group_memberships')
           .select('*', { count: 'exact', head: true })
-          .eq('user_id', userProfile.id)
+          .eq('member_group_id', userProfile.personal_group_id)
           .eq('status', 'invited');
 
         setInvitationCount(count || 0);
 
         // Check admin permission (Deusex member)
         const { data: hasAdminPerm } = await supabase.rpc('has_permission', {
-          p_user_id: userProfile.id,
-          p_group_id: '00000000-0000-0000-0000-000000000000',
+          p_acting_group_id: userProfile.personal_group_id,
+          p_context_group_id: '00000000-0000-0000-0000-000000000000',
           p_permission_name: 'manage_all_groups',
         });
         setIsAdmin(hasAdminPerm === true);

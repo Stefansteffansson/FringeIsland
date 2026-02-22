@@ -121,6 +121,7 @@ export default function EditProfilePage() {
           </h2>
           <AvatarUpload
             userId={profile.id}
+            personalGroupId={userProfile!.personal_group_id}
             currentAvatarUrl={profile.avatar_url}
             onUploadComplete={handleAvatarUploadComplete}
           />
@@ -135,6 +136,7 @@ export default function EditProfilePage() {
             initialFullName={profile.full_name}
             initialBio={profile.bio}
             userId={profile.id}
+            personalGroupId={userProfile!.personal_group_id}
           />
         </div>
       </div>

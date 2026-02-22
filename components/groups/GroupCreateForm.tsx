@@ -101,7 +101,7 @@ export default function GroupCreateForm({ userId }: GroupCreateFormProps) {
           name: groupName.trim(),
           description: description.trim() || null,
           label: label.trim() || null,
-          created_by_user_id: userId,
+          created_by_group_id: userId,
           created_from_group_template_id: selectedTemplate || null,
           is_public: isPublic,
           show_member_list: showMemberList,
@@ -116,8 +116,8 @@ export default function GroupCreateForm({ userId }: GroupCreateFormProps) {
         .from('group_memberships')
         .insert({
           group_id: groupData.id,
-          user_id: userId,
-          added_by_user_id: userId,
+          member_group_id: userId,
+          added_by_group_id: userId,
           status: 'active',
         });
 
@@ -168,16 +168,16 @@ export default function GroupCreateForm({ userId }: GroupCreateFormProps) {
         .from('user_group_roles')
         .insert([
           {
-            user_id: userId,
+            member_group_id: userId,
             group_id: groupData.id,
             group_role_id: stewardRole.id,
-            assigned_by_user_id: userId,
+            assigned_by_group_id: userId,
           },
           {
-            user_id: userId,
+            member_group_id: userId,
             group_id: groupData.id,
             group_role_id: memberRole.id,
-            assigned_by_user_id: userId,
+            assigned_by_group_id: userId,
           },
         ]);
 

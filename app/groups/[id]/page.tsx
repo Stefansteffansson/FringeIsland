@@ -21,12 +21,12 @@ interface GroupData {
   is_public: boolean;
   show_member_list: boolean;
   created_at: string;
-  created_by_user_id: string;
+  created_by_group_id: string;
 }
 
 interface Member {
   id: string;
-  user_id: string;
+  member_group_id: string;
   full_name: string;
   avatar_url: string | null;
   roles: string[]; // Role names for display
@@ -101,7 +101,7 @@ export default function GroupDetailPage() {
             .maybeSingle(),
           supabase
             .from('group_memberships')
-            .select('user_id, added_at')
+            .select('member_group_id, added_at')
             .eq('group_id', groupId)
             .eq('status', 'active'),
         ]);
@@ -119,7 +119,7 @@ export default function GroupDetailPage() {
         const membershipsData = membershipsResult.data;
 
         // Derive isMember and memberCount from memberships (eliminates 2 separate queries)
-        const isUserMember = membershipsData.some(m => m.user_id === userProfile.id);
+        const isUserMember = membershipsData.some(m => m.member_group_id === userProfile.personal_group_id);
         if (!isUserMember) {
           if (!groupResult.data.is_public) {
             throw new Error('You do not have access to this private group');
@@ -130,18 +130,18 @@ export default function GroupDetailPage() {
         }
         setMemberCount(membershipsData.length);
 
-        // Step 2: Parallel — fetch member profiles + all member roles
-        const userIds = membershipsData.map(m => m.user_id);
-        const [usersResult, rolesResult] = await Promise.all([
+        // Step 2: Parallel — fetch member display data (from groups table) + all member roles
+        const memberGroupIds = membershipsData.map(m => m.member_group_id);
+        const [memberGroupsResult, rolesResult] = await Promise.all([
           supabase
-            .from('users')
-            .select('id, full_name, avatar_url')
-            .in('id', userIds),
+            .from('groups')
+            .select('id, name, avatar_url')
+            .in('id', memberGroupIds),
           supabase
             .from('user_group_roles')
             .select(`
               id,
-              user_id,
+              member_group_id,
               group_role_id,
               group_roles (
                 id,
@@ -149,28 +149,28 @@ export default function GroupDetailPage() {
               )
             `)
             .eq('group_id', groupId)
-            .in('user_id', userIds),
+            .in('member_group_id', memberGroupIds),
         ]);
 
-        if (usersResult.error) throw usersResult.error;
+        if (memberGroupsResult.error) throw memberGroupsResult.error;
         if (rolesResult.error) throw rolesResult.error;
 
         // Combine member data
-        const membersWithRoles = usersResult.data.map(u => {
-          const membership = membershipsData.find(m => m.user_id === u.id);
-          const userRoleData = rolesResult.data.filter((r: any) => r.user_id === u.id);
-          const roleNames = userRoleData.map((r: any) => r.group_roles?.name || 'Unknown');
-          const roleData: RoleData[] = userRoleData.map((r: any) => ({
+        const membersWithRoles = memberGroupsResult.data.map(g => {
+          const membership = membershipsData.find(m => m.member_group_id === g.id);
+          const memberRoleData = rolesResult.data.filter((r: any) => r.member_group_id === g.id);
+          const roleNames = memberRoleData.map((r: any) => r.group_roles?.name || 'Unknown');
+          const roleData: RoleData[] = memberRoleData.map((r: any) => ({
             user_group_role_id: r.id,
             role_id: r.group_roles?.id || '',
             role_name: r.group_roles?.name || 'Unknown',
           }));
 
           return {
-            id: u.id,
-            user_id: u.id,
-            full_name: u.full_name,
-            avatar_url: u.avatar_url,
+            id: g.id,
+            member_group_id: g.id,
+            full_name: g.name,
+            avatar_url: g.avatar_url,
             roles: roleNames,
             roleData: roleData,
             added_at: membership?.added_at || '',
@@ -181,7 +181,7 @@ export default function GroupDetailPage() {
 
         // Derive current user's roles from all roles (eliminates separate query)
         const currentUserRoles = rolesResult.data
-          .filter((r: any) => r.user_id === userProfile.id)
+          .filter((r: any) => r.member_group_id === userProfile.personal_group_id)
           .map((r: any) => ({
             role_name: r.group_roles?.name || 'Unknown'
           }));
@@ -208,24 +208,24 @@ export default function GroupDetailPage() {
     try {
       const { data: membershipsData } = await supabase
         .from('group_memberships')
-        .select('user_id, added_at')
+        .select('member_group_id, added_at')
         .eq('group_id', groupId)
         .eq('status', 'active');
 
       if (!membershipsData) return;
 
-      // Parallel: fetch member profiles + all member roles
-      const userIds = membershipsData.map(m => m.user_id);
-      const [usersResult, rolesResult] = await Promise.all([
+      // Parallel: fetch member display data (from groups) + all member roles
+      const memberGroupIds = membershipsData.map(m => m.member_group_id);
+      const [memberGroupsResult, rolesResult] = await Promise.all([
         supabase
-          .from('users')
-          .select('id, full_name, avatar_url')
-          .in('id', userIds),
+          .from('groups')
+          .select('id, name, avatar_url')
+          .in('id', memberGroupIds),
         supabase
           .from('user_group_roles')
           .select(`
             id,
-            user_id,
+            member_group_id,
             group_role_id,
             group_roles (
               id,
@@ -233,26 +233,26 @@ export default function GroupDetailPage() {
             )
           `)
           .eq('group_id', groupId)
-          .in('user_id', userIds),
+          .in('member_group_id', memberGroupIds),
       ]);
 
-      if (!usersResult.data || !rolesResult.data) return;
+      if (!memberGroupsResult.data || !rolesResult.data) return;
 
-      const membersWithRoles = usersResult.data.map(u => {
-        const membership = membershipsData.find(m => m.user_id === u.id);
-        const userRoleData = rolesResult.data.filter((r: any) => r.user_id === u.id);
-        const roleNames = userRoleData.map((r: any) => r.group_roles?.name || 'Unknown');
-        const roleData: RoleData[] = userRoleData.map((r: any) => ({
+      const membersWithRoles = memberGroupsResult.data.map(g => {
+        const membership = membershipsData.find(m => m.member_group_id === g.id);
+        const memberRoleData = rolesResult.data.filter((r: any) => r.member_group_id === g.id);
+        const roleNames = memberRoleData.map((r: any) => r.group_roles?.name || 'Unknown');
+        const roleData: RoleData[] = memberRoleData.map((r: any) => ({
           user_group_role_id: r.id,
           role_id: r.group_roles?.id || '',
           role_name: r.group_roles?.name || 'Unknown',
         }));
 
         return {
-          id: u.id,
-          user_id: u.id,
-          full_name: u.full_name,
-          avatar_url: u.avatar_url,
+          id: g.id,
+          member_group_id: g.id,
+          full_name: g.name,
+          avatar_url: g.avatar_url,
           roles: roleNames,
           roleData: roleData,
           added_at: membership?.added_at || '',
@@ -264,7 +264,7 @@ export default function GroupDetailPage() {
 
       // Derive current user's roles from all roles
       const currentUserRoles = rolesResult.data
-        .filter((r: any) => r.user_id === userProfile.id)
+        .filter((r: any) => r.member_group_id === userProfile.personal_group_id)
         .map((r: any) => ({
           role_name: r.group_roles?.name || 'Unknown'
         }));
@@ -282,13 +282,14 @@ export default function GroupDetailPage() {
   };
 
 
-  const handleStartConversation = async (otherUserId: string) => {
+  const handleStartConversation = async (otherGroupId: string) => {
     if (!userProfile) return;
 
     try {
       // Sort participant IDs (required by CHECK constraint)
-      const p1 = userProfile.id < otherUserId ? userProfile.id : otherUserId;
-      const p2 = userProfile.id < otherUserId ? otherUserId : userProfile.id;
+      const myId = userProfile.personal_group_id;
+      const p1 = myId < otherGroupId ? myId : otherGroupId;
+      const p2 = myId < otherGroupId ? otherGroupId : myId;
 
       // Try to find existing conversation
       const { data: existing } = await supabase
@@ -320,7 +321,7 @@ export default function GroupDetailPage() {
 
   const handleOpenAssignRole = (member: Member) => {
     setSelectedMember({
-      id: member.user_id,
+      id: member.member_group_id,
       name: member.full_name,
       roleIds: member.roleData.map(r => r.role_id),
     });
@@ -605,9 +606,9 @@ export default function GroupDetailPage() {
                         {/* Member Action Buttons */}
                         <div className="flex flex-wrap gap-2 mt-2">
                           {/* Send Message (for non-self members) */}
-                          {userProfile && member.user_id !== userProfile.id && (
+                          {userProfile && member.member_group_id !== userProfile.personal_group_id && (
                             <button
-                              onClick={() => handleStartConversation(member.user_id)}
+                              onClick={() => handleStartConversation(member.member_group_id)}
                               className="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition-colors font-medium"
                             >
                               💬 Message
@@ -735,7 +736,7 @@ export default function GroupDetailPage() {
         <InviteMemberModal
           groupId={groupId}
           groupName={group.name}
-          currentUserId={userProfile.id}
+          currentUserId={userProfile.personal_group_id}
           onClose={() => setInviteModalOpen(false)}
           onSuccess={refetchMembers}
         />

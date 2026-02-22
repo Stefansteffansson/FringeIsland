@@ -25,6 +25,7 @@ import {
 function makeUser(overrides: Partial<AdminUser> = {}): AdminUser {
   return {
     id: overrides.id ?? 'user-1',
+    personal_group_id: overrides.personal_group_id ?? 'pg-user-1',
     full_name: overrides.full_name ?? 'Test User',
     email: overrides.email ?? 'test@example.com',
     is_active: overrides.is_active ?? true,

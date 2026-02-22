@@ -49,10 +49,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    // Resolve auth_user_id → public user profile id
+    // Resolve auth_user_id → public user profile (need personal_group_id for RPC)
     const { data: profile } = await serviceClient
       .from('users')
-      .select('id')
+      .select('id, personal_group_id')
       .eq('auth_user_id', user.id)
       .single();
 
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
     if (idsOnly) {
       // Return all matching IDs (no pagination)
       const result = await queryAdminUserIds({
-        callerUserId: profile.id,
+        callerUserId: profile.personal_group_id,
         search,
         showActive,
         showInactive,
@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
     const pageSize = Math.min(100, Math.max(1, parseInt(searchParams.get('pageSize') || '10', 10)));
 
     const result = await queryAdminUsers({
-      callerUserId: profile.id,
+      callerUserId: profile.personal_group_id,
       page,
       pageSize,
       search,

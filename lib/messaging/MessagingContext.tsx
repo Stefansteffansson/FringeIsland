@@ -27,7 +27,7 @@ export interface Conversation {
 export interface DirectMessage {
   id: string;
   conversation_id: string;
-  sender_id: string;
+  sender_group_id: string;
   content: string;
   created_at: string;
 }
@@ -54,7 +54,7 @@ export function MessagingProvider({
   const { userProfile } = useAuth();
   const supabase = useMemo(() => createClient(), []);
 
-  const userProfileId = userProfile?.id ?? null;
+  const userProfileId = userProfile?.personal_group_id ?? null;
   const [unreadConversationCount, setUnreadConversationCount] = useState(0);
 
   const channelRef = useRef<RealtimeChannel | null>(null);
@@ -125,9 +125,9 @@ export function MessagingProvider({
           table: 'direct_messages',
         },
         (payload) => {
-          const newMsg = payload.new as { sender_id?: string };
+          const newMsg = payload.new as { sender_group_id?: string };
           // Skip recount for messages we sent ourselves
-          if (newMsg.sender_id === userProfileId) return;
+          if (newMsg.sender_group_id === userProfileId) return;
           // Delay briefly so the conversation page (if open) can update
           // last_read_at before we recount
           setTimeout(() => refreshUnreadCount(), 500);

@@ -24,7 +24,7 @@ export default function ForumSection({ groupId }: ForumSectionProps) {
   const [posts, setPosts] = useState<PostWithReplies[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const currentUserId = userProfile?.id ?? '';
+  const currentUserId = userProfile?.personal_group_id ?? '';
 
   // Fetch posts + replies
   const fetchPosts = useCallback(async () => {
@@ -37,7 +37,7 @@ export default function ForumSection({ groupId }: ForumSectionProps) {
         .from('forum_posts')
         .select(`
           id, content, is_deleted, created_at, updated_at, parent_post_id,
-          author:users!author_user_id (id, full_name, avatar_url)
+          author:groups!author_group_id (id, name, avatar_url)
         `)
         .eq('group_id', groupId)
         .is('parent_post_id', null)
@@ -56,7 +56,7 @@ export default function ForumSection({ groupId }: ForumSectionProps) {
           .from('forum_posts')
           .select(`
             id, content, is_deleted, created_at, updated_at, parent_post_id,
-            author:users!author_user_id (id, full_name, avatar_url)
+            author:groups!author_group_id (id, name, avatar_url)
           `)
           .in('parent_post_id', postIds)
           .order('created_at', { ascending: true });
@@ -100,7 +100,7 @@ export default function ForumSection({ groupId }: ForumSectionProps) {
 
     const { error } = await supabase.from('forum_posts').insert({
       group_id: groupId,
-      author_user_id: currentUserId,
+      author_group_id: currentUserId,
       content,
       parent_post_id: null,
     });
@@ -116,7 +116,7 @@ export default function ForumSection({ groupId }: ForumSectionProps) {
 
     const { error } = await supabase.from('forum_posts').insert({
       group_id: groupId,
-      author_user_id: currentUserId,
+      author_group_id: currentUserId,
       content,
       parent_post_id: parentPostId,
     });

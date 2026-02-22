@@ -132,10 +132,10 @@ export default function AssignRoleModal({
       const { error: assignError } = await supabase
         .from('user_group_roles')
         .insert({
-          user_id: memberId,
+          member_group_id: memberId,
           group_id: groupId,
           group_role_id: selectedRoleId,
-          assigned_by_user_id: userProfile.id,
+          assigned_by_group_id: userProfile.personal_group_id,
         });
 
       if (assignError) throw assignError;

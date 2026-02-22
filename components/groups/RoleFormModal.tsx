@@ -100,7 +100,7 @@ export default function RoleFormModal({
       const { data: otherSources, error: checkError } = await supabase
         .from('user_group_roles')
         .select('group_role_id, group_role_permissions!inner(permission_id)')
-        .eq('user_id', userId)
+        .eq('member_group_id', userId)
         .eq('group_id', groupId)
         .neq('group_role_id', editRole.id)
         .eq('group_role_permissions.permission_id', perm.id);
@@ -145,7 +145,7 @@ export default function RoleFormModal({
 
         // Self-lockout check (only on first attempt, skip if user confirmed)
         if (!skipLockoutCheck && toRemove.length > 0) {
-          const warning = await checkSelfLockout(userProfile.id, toRemove);
+          const warning = await checkSelfLockout(userProfile.personal_group_id, toRemove);
           if (warning) {
             setLockoutWarning(warning);
             setLoading(false);

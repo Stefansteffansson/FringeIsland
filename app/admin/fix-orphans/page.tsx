@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 interface OrphanedGroup {
   id: string;
   name: string;
-  created_by_user_id: string;
+  created_by_group_id: string;
   creator_name: string;
 }
 
@@ -28,7 +28,7 @@ export default function AdminFixOrphansPage() {
         // Get all groups
         const { data: allGroups, error: groupsError } = await supabase
           .from('groups')
-          .select('id, name, created_by_user_id');
+          .select('id, name, created_by_group_id');
 
         if (groupsError) throw groupsError;
 
@@ -46,24 +46,24 @@ export default function AdminFixOrphansPage() {
               )
             `)
             .eq('group_id', group.id)
-            .eq('group_roles.name', 'Group Leader');
+            .eq('group_roles.name', 'Steward');
 
           if (rolesError) throw rolesError;
 
           // If no leaders, it's orphaned
           if (!leaderRoles || leaderRoles.length === 0) {
-            // Get creator name
-            const { data: creator } = await supabase
-              .from('users')
-              .select('full_name')
-              .eq('id', group.created_by_user_id)
+            // Get creator name from their personal group
+            const { data: creatorGroup } = await supabase
+              .from('groups')
+              .select('name')
+              .eq('id', group.created_by_group_id)
               .single();
 
             orphaned.push({
               id: group.id,
               name: group.name,
-              created_by_user_id: group.created_by_user_id,
-              creator_name: creator?.full_name || 'Unknown',
+              created_by_group_id: group.created_by_group_id,
+              creator_name: creatorGroup?.name || 'Unknown',
             });
           }
         }
@@ -88,31 +88,31 @@ export default function AdminFixOrphansPage() {
     setFixing(group.id);
 
     try {
-      // Find Group Leader role for this group
-      const { data: leaderRole, error: roleError } = await supabase
+      // Find Steward role for this group
+      const { data: stewardRole, error: roleError } = await supabase
         .from('group_roles')
         .select('id')
         .eq('group_id', group.id)
-        .eq('name', 'Group Leader')
+        .eq('name', 'Steward')
         .single();
 
       if (roleError) throw roleError;
 
-      // Assign original creator as Group Leader
+      // Assign original creator as Steward
       const { error: assignError } = await supabase
         .from('user_group_roles')
         .insert({
-          user_id: group.created_by_user_id,
+          member_group_id: group.created_by_group_id,
           group_id: group.id,
-          group_role_id: leaderRole.id,
-          assigned_by_user_id: userProfile.id, // You (admin) are assigning it
+          group_role_id: stewardRole.id,
+          assigned_by_group_id: userProfile.personal_group_id,
         });
 
       if (assignError) throw assignError;
 
       // Success! Remove from orphaned list
       setOrphanedGroups(prev => prev.filter(g => g.id !== group.id));
-      alert(`✅ Fixed! ${group.creator_name} is now Group Leader of "${group.name}"`);
+      alert(`Fixed! ${group.creator_name} is now Steward of "${group.name}"`);
     } catch (err: any) {
       console.error('Error fixing orphaned group:', err);
       alert(`Failed to fix group: ${err.message}`);
@@ -140,14 +140,14 @@ export default function AdminFixOrphansPage() {
             🔧 Fix Orphaned Groups
           </h1>
           <p className="text-gray-600 mb-8">
-            Groups without any Group Leader need to be fixed
+            Groups without any Steward need to be fixed
           </p>
 
           {orphanedGroups.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-6xl mb-4">✅</div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                All Groups Have Leaders!
+                All Groups Have Stewards!
               </h2>
               <p className="text-gray-600">
                 No orphaned groups found. Everything looks good!
@@ -181,7 +181,7 @@ export default function AdminFixOrphansPage() {
                         Created by: <span className="font-semibold">{group.creator_name}</span>
                       </p>
                       <div className="inline-block px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
-                        No Group Leader
+                        No Steward
                       </div>
                     </div>
 
@@ -203,7 +203,7 @@ export default function AdminFixOrphansPage() {
 
                   <div className="mt-4 pt-4 border-t border-gray-200">
                     <p className="text-sm text-gray-600">
-                      <strong>Solution:</strong> Will assign <span className="font-semibold">{group.creator_name}</span> (original creator) as Group Leader
+                      <strong>Solution:</strong> Will assign <span className="font-semibold">{group.creator_name}</span> (original creator) as Steward
                     </p>
                   </div>
                 </div>

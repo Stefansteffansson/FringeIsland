@@ -8,13 +8,14 @@ import DeusexMemberList from '@/components/admin/DeusexMemberList';
 
 interface DeusexMember {
   id: string;
-  user_id: string;
+  member_group_id: string;
   added_at: string;
-  users: {
+  member_group: {
     id: string;
-    email: string;
-    full_name: string;
+    name: string;
+    avatar_url: string | null;
   };
+  member_email?: string; // fetched separately from users table
 }
 
 export default function DeusexManagementPage() {
@@ -46,22 +47,22 @@ export default function DeusexManagementPage() {
       if (!deusexGroup) return;
       setDeusexGroupId(deusexGroup.id);
 
-      // Get current user profile ID from shared context
+      // Get current user's personal_group_id from shared context
       if (userProfile) {
-        setCurrentUserId(userProfile.id);
+        setCurrentUserId(userProfile.personal_group_id);
       }
 
-      // Fetch DeusEx members
+      // Fetch DeusEx members — join to groups for display data
       const { data, error } = await supabase
         .from('group_memberships')
         .select(`
           id,
-          user_id,
+          member_group_id,
           added_at,
-          users!group_memberships_user_id_fkey (
+          member_group:groups!group_memberships_member_group_id_fkey (
             id,
-            email,
-            full_name
+            name,
+            avatar_url
           )
         `)
         .eq('group_id', deusexGroup.id)
@@ -73,9 +74,28 @@ export default function DeusexManagementPage() {
         return;
       }
 
-      // Filter out memberships where user data couldn't be joined (null users)
-      const validMembers = (data || []).filter((m: any) => m.users !== null);
-      setMembers(validMembers as unknown as DeusexMember[]);
+      // Filter out memberships where group data couldn't be joined
+      const validMembers = (data || []).filter((m: any) => m.member_group !== null);
+
+      // Fetch emails for each member (DeusEx has few members, so this is fast)
+      const memberGroupIds = validMembers.map((m: any) => m.member_group_id);
+      let emailMap: Record<string, string> = {};
+      if (memberGroupIds.length > 0) {
+        const { data: usersWithEmails } = await supabase
+          .from('users')
+          .select('personal_group_id, email')
+          .in('personal_group_id', memberGroupIds);
+        for (const u of usersWithEmails || []) {
+          emailMap[u.personal_group_id] = u.email;
+        }
+      }
+
+      const membersWithEmails = validMembers.map((m: any) => ({
+        ...m,
+        member_email: emailMap[m.member_group_id] || '',
+      }));
+
+      setMembers(membersWithEmails as unknown as DeusexMember[]);
     } catch (err) {
       console.error('Error fetching members:', err);
     }
@@ -104,7 +124,7 @@ export default function DeusexManagementPage() {
       // Look up user by email
       const { data: targetUser, error: lookupError } = await supabase
         .from('users')
-        .select('id, email, full_name')
+        .select('id, email, full_name, personal_group_id')
         .eq('email', email)
         .maybeSingle();
 
@@ -121,7 +141,7 @@ export default function DeusexManagementPage() {
       }
 
       // Check if already a DeusEx member or has a pending invitation
-      const existing = members.find((m) => m.user_id === targetUser.id);
+      const existing = members.find((m) => m.member_group_id === targetUser.personal_group_id);
       if (existing) {
         setAddError(`${targetUser.full_name} is already a DeusEx member.`);
         setAddLoading(false);
@@ -132,7 +152,7 @@ export default function DeusexManagementPage() {
         .from('group_memberships')
         .select('id')
         .eq('group_id', deusexGroupId)
-        .eq('user_id', targetUser.id)
+        .eq('member_group_id', targetUser.personal_group_id)
         .eq('status', 'invited')
         .maybeSingle();
 
@@ -147,8 +167,8 @@ export default function DeusexManagementPage() {
         .from('group_memberships')
         .insert({
           group_id: deusexGroupId,
-          user_id: targetUser.id,
-          added_by_user_id: currentUserId,
+          member_group_id: targetUser.personal_group_id,
+          added_by_group_id: currentUserId,
           status: 'invited',
         });
 
@@ -160,7 +180,7 @@ export default function DeusexManagementPage() {
 
       // Write audit log
       await supabase.from('admin_audit_log').insert({
-        actor_user_id: currentUserId,
+        actor_group_id: currentUserId,
         action: 'invite_deusex_member',
         target: targetUser.email,
         metadata: {
@@ -186,7 +206,7 @@ export default function DeusexManagementPage() {
       const { error: roleError } = await supabase
         .from('user_group_roles')
         .delete()
-        .eq('user_id', member.user_id)
+        .eq('member_group_id', member.member_group_id)
         .eq('group_id', deusexGroupId);
 
       if (roleError) {
@@ -215,12 +235,12 @@ export default function DeusexManagementPage() {
 
       // Write audit log
       await supabase.from('admin_audit_log').insert({
-        actor_user_id: currentUserId,
+        actor_group_id: currentUserId,
         action: 'remove_deusex_member',
-        target: member.users.email,
+        target: member.member_email || '',
         metadata: {
-          target_user_id: member.user_id,
-          target_name: member.users.full_name,
+          target_group_id: member.member_group_id,
+          target_name: member.member_group.name,
         },
       });
 

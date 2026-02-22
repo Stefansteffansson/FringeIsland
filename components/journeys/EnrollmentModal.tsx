@@ -81,7 +81,7 @@ export default function EnrollmentModal({
       const { data: memberships, error: membershipError } = await supabase
         .from('group_memberships')
         .select('group_id, groups!inner(id, name)')
-        .eq('user_id', userProfile.id)
+        .eq('member_group_id', userProfile.personal_group_id)
         .eq('status', 'active');
 
       if (membershipError) throw membershipError;
@@ -91,8 +91,8 @@ export default function EnrollmentModal({
 
       for (const membership of memberships || []) {
         const { data: hasEnrollPerm } = await supabase.rpc('has_permission', {
-          p_user_id: userProfile.id,
-          p_group_id: membership.group_id,
+          p_acting_group_id: userProfile.personal_group_id,
+          p_context_group_id: membership.group_id,
           p_permission_name: 'enroll_group_in_journey',
         });
 
@@ -125,7 +125,7 @@ export default function EnrollmentModal({
         const { data: userGroups } = await supabase
           .from('group_memberships')
           .select('group_id')
-          .eq('user_id', userProfile.id)
+          .eq('member_group_id', userProfile.personal_group_id)
           .eq('status', 'active');
 
         const groupIds = userGroups?.map(g => g.group_id) || [];
@@ -147,14 +147,13 @@ export default function EnrollmentModal({
           throw new Error(`You are already enrolled via your group: ${(existingGroupEnrollment as any).groups.name}`);
         }
 
-        // Enroll individual
+        // Enroll individual (personal group = the user)
         const { error: enrollError } = await supabase
           .from('journey_enrollments')
           .insert({
             journey_id: journeyId,
-            user_id: userProfile.id,
-            group_id: null,
-            enrolled_by_user_id: userProfile.id,
+            group_id: userProfile.personal_group_id,
+            enrolled_by_group_id: userProfile.personal_group_id,
             status: 'active',
             progress_data: {},
           });
@@ -188,9 +187,8 @@ export default function EnrollmentModal({
           .from('journey_enrollments')
           .insert({
             journey_id: journeyId,
-            user_id: null,
             group_id: selectedGroupId,
-            enrolled_by_user_id: userProfile.id,
+            enrolled_by_group_id: userProfile.personal_group_id,
             status: 'active',
             progress_data: {},
           });

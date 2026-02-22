@@ -72,7 +72,7 @@ export default function AdminDashboard() {
   // Set current user's profile ID from shared context
   useEffect(() => {
     if (userProfile) {
-      setCurrentUserProfileId(userProfile.id);
+      setCurrentUserProfileId(userProfile.personal_group_id);
     }
   }, [userProfile]);
 
@@ -96,10 +96,17 @@ export default function AdminDashboard() {
 
     const timer = setTimeout(async () => {
       try {
+        // Look up personal_group_ids for selected users
+        const personalGroupIds = targetIds
+          .map(id => usersData.find(u => u.id === id)?.personal_group_id)
+          .filter(Boolean) as string[];
+
+        if (personalGroupIds.length === 0) { if (!cancelled) setCommonGroupCount(0); return; }
+
         const { data: memberships } = await supabase
           .from('group_memberships')
-          .select('user_id, group_id')
-          .in('user_id', targetIds)
+          .select('member_group_id, group_id')
+          .in('member_group_id', personalGroupIds)
           .eq('status', 'active');
 
         if (cancelled || !memberships) return;
@@ -120,7 +127,7 @@ export default function AdminDashboard() {
     }, 300);
 
     return () => { cancelled = true; clearTimeout(timer); };
-  }, [selectedUserIds, supabase]);
+  }, [selectedUserIds, supabase, usersData]);
 
   // Track whether static stats (groups, journeys, enrollments) have been loaded
   const staticStatsLoadedRef = useRef(false);
@@ -227,7 +234,7 @@ export default function AdminDashboard() {
   const writeAuditLog = async (action: string, count: number, targetIds: string[]) => {
     if (!currentUserProfileId) return;
     await supabase.from('admin_audit_log').insert({
-      actor_user_id: currentUserProfileId,
+      actor_group_id: currentUserProfileId,
       action,
       target: `${count} user(s)`,
       metadata: { target_user_ids: targetIds, count },
@@ -386,10 +393,14 @@ export default function AdminDashboard() {
     const adminId = currentUserProfileId;
     let sentCount = 0;
 
-    for (const targetId of targetIds) {
+    for (const targetUserId of targetIds) {
+      // Look up target's personal_group_id
+      const targetPersonalGroupId = usersData.find(u => u.id === targetUserId)?.personal_group_id;
+      if (!targetPersonalGroupId) continue;
+
       // Sort participant IDs (DB constraint: participant_1 < participant_2)
-      const p1 = adminId < targetId ? adminId : targetId;
-      const p2 = adminId < targetId ? targetId : adminId;
+      const p1 = adminId < targetPersonalGroupId ? adminId : targetPersonalGroupId;
+      const p2 = adminId < targetPersonalGroupId ? targetPersonalGroupId : adminId;
 
       // Find or create conversation
       const { data: existing } = await supabase
@@ -418,7 +429,7 @@ export default function AdminDashboard() {
         .from('direct_messages')
         .insert({
           conversation_id: conversationId,
-          sender_id: adminId,
+          sender_group_id: adminId,
           content,
         });
 
@@ -429,7 +440,7 @@ export default function AdminDashboard() {
     // Audit log — test expects metadata.user_count
     if (currentUserProfileId) {
       await supabase.from('admin_audit_log').insert({
-        actor_user_id: currentUserProfileId,
+        actor_group_id: currentUserProfileId,
         action: 'admin_message_sent',
         target: `${targetIds.length} user(s)`,
         metadata: { target_user_ids: targetIds, user_count: targetIds.length },
@@ -481,12 +492,16 @@ export default function AdminDashboard() {
       let skipped = 0;
 
       for (const userId of targetIds) {
+        // Look up personal_group_id for this user
+        const personalGroupId = usersData.find(u => u.id === userId)?.personal_group_id;
+        if (!personalGroupId) { skipped++; continue; }
+
         // Check for existing membership
         const { data: existing } = await supabase
           .from('group_memberships')
           .select('id')
           .eq('group_id', group.id)
-          .eq('user_id', userId)
+          .eq('member_group_id', personalGroupId)
           .maybeSingle();
 
         if (existing) {
@@ -498,8 +513,8 @@ export default function AdminDashboard() {
           .from('group_memberships')
           .insert({
             group_id: group.id,
-            user_id: userId,
-            added_by_user_id: currentUserProfileId,
+            member_group_id: personalGroupId,
+            added_by_group_id: currentUserProfileId,
             status: 'invited',
           });
 
@@ -516,7 +531,7 @@ export default function AdminDashboard() {
       }
 
       await supabase.from('admin_audit_log').insert({
-        actor_user_id: currentUserProfileId,
+        actor_group_id: currentUserProfileId,
         action: 'admin_invite_to_group',
         target: group.name,
         metadata: { group_id: group.id, group_name: group.name, user_count: targetIds.length, invited, skipped },
@@ -550,12 +565,16 @@ export default function AdminDashboard() {
       let skipped = 0;
 
       for (const userId of targetIds) {
+        // Look up personal_group_id for this user
+        const personalGroupId = usersData.find(u => u.id === userId)?.personal_group_id;
+        if (!personalGroupId) { skipped++; continue; }
+
         // Check for existing active membership
         const { data: existing } = await supabase
           .from('group_memberships')
           .select('id')
           .eq('group_id', group.id)
-          .eq('user_id', userId)
+          .eq('member_group_id', personalGroupId)
           .eq('status', 'active')
           .maybeSingle();
 
@@ -569,8 +588,8 @@ export default function AdminDashboard() {
           .from('group_memberships')
           .insert({
             group_id: group.id,
-            user_id: userId,
-            added_by_user_id: currentUserProfileId,
+            member_group_id: personalGroupId,
+            added_by_group_id: currentUserProfileId,
             status: 'active',
           });
 
@@ -588,10 +607,10 @@ export default function AdminDashboard() {
           await supabase
             .from('user_group_roles')
             .insert({
-              user_id: userId,
+              member_group_id: personalGroupId,
               group_id: group.id,
               group_role_id: memberRole.id,
-              assigned_by_user_id: currentUserProfileId,
+              assigned_by_group_id: currentUserProfileId,
             });
         }
 
@@ -599,7 +618,7 @@ export default function AdminDashboard() {
       }
 
       await supabase.from('admin_audit_log').insert({
-        actor_user_id: currentUserProfileId,
+        actor_group_id: currentUserProfileId,
         action: 'admin_join_group',
         target: group.name,
         metadata: { group_id: group.id, group_name: group.name, user_count: targetIds.length, added, skipped },
@@ -625,11 +644,15 @@ export default function AdminDashboard() {
       const errors: string[] = [];
 
       for (const userId of targetIds) {
+        // Look up personal_group_id for this user
+        const personalGroupId = usersData.find(u => u.id === userId)?.personal_group_id;
+        if (!personalGroupId) { errors.push(`No personal group for ${userId}`); continue; }
+
         // Remove roles first (FK dependency)
         const { error: roleErr } = await supabase
           .from('user_group_roles')
           .delete()
-          .eq('user_id', userId)
+          .eq('member_group_id', personalGroupId)
           .eq('group_id', group.id);
 
         if (roleErr) {
@@ -642,7 +665,7 @@ export default function AdminDashboard() {
         const { error: membershipErr } = await supabase
           .from('group_memberships')
           .delete()
-          .eq('user_id', userId)
+          .eq('member_group_id', personalGroupId)
           .eq('group_id', group.id);
 
         if (membershipErr) {
@@ -653,7 +676,7 @@ export default function AdminDashboard() {
       }
 
       await supabase.from('admin_audit_log').insert({
-        actor_user_id: currentUserProfileId,
+        actor_group_id: currentUserProfileId,
         action: 'admin_remove_from_group',
         target: group.name,
         metadata: { group_id: group.id, group_name: group.name, user_count: targetIds.length, removed, errors: errors.length },
@@ -876,7 +899,7 @@ export default function AdminDashboard() {
         isOpen={groupPickerState.isOpen}
         onClose={closeGroupPicker}
         mode={groupPickerState.mode}
-        selectedUserIds={[...selectedUserIds]}
+        selectedUserIds={[...selectedUserIds].map(id => usersData.find(u => u.id === id)?.personal_group_id).filter(Boolean) as string[]}
         onSelect={handleGroupSelected}
       />
 

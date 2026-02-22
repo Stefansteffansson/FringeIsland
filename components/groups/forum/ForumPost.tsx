@@ -14,7 +14,7 @@ export interface ForumPostData {
   parent_post_id: string | null;
   author: {
     id: string;
-    full_name: string;
+    name: string;
     avatar_url: string | null;
   } | null;
 }
@@ -147,13 +147,13 @@ export default function ForumPost({
             {post.author?.avatar_url ? (
               <Image
                 src={post.author.avatar_url}
-                alt={post.author.full_name}
+                alt={post.author.name}
                 fill
                 className="object-cover"
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs font-semibold">
-                {post.author?.full_name?.charAt(0)?.toUpperCase() ?? '?'}
+                {post.author?.name?.charAt(0)?.toUpperCase() ?? '?'}
               </div>
             )}
           </div>
@@ -162,7 +162,7 @@ export default function ForumPost({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-semibold text-sm text-gray-900">
-                {post.author?.full_name ?? 'Unknown'}
+                {post.author?.name ?? 'Unknown'}
               </span>
               <span className="text-xs text-gray-400" title={new Date(post.created_at).toLocaleString()}>
                 {relativeTime(post.created_at)}

@@ -55,7 +55,7 @@ export default function JourneyDetailPage() {
         .from('journey_enrollments')
         .select('id')
         .eq('journey_id', journeyId)
-        .eq('user_id', userProfile.id)
+        .eq('group_id', userProfile.personal_group_id)
         .maybeSingle();
 
       if (individualEnrollment) {
@@ -70,7 +70,7 @@ export default function JourneyDetailPage() {
       const { data: userGroups } = await supabase
         .from('group_memberships')
         .select('group_id')
-        .eq('user_id', userProfile.id)
+        .eq('member_group_id', userProfile.personal_group_id)
         .eq('status', 'active');
 
       const groupIds = userGroups?.map(g => g.group_id) || [];

@@ -50,8 +50,8 @@ export default function InvitationsPage() {
         // Fetch pending invitations
         const { data: invitationsData, error: invitationsError } = await supabase
           .from('group_memberships')
-          .select('id, group_id, added_by_user_id, added_at')
-          .eq('user_id', userProfile.id)
+          .select('id, group_id, added_by_group_id, added_at')
+          .eq('member_group_id', userProfile.personal_group_id)
           .eq('status', 'invited');
 
         if (invitationsError) throw invitationsError;
@@ -71,26 +71,26 @@ export default function InvitationsPage() {
 
         if (groupsError) throw groupsError;
 
-        // Get invited_by user details
-        const invitedByIds = invitationsData.map(inv => inv.added_by_user_id);
-        const { data: usersData, error: usersError } = await supabase
-          .from('users')
-          .select('id, full_name')
-          .in('id', invitedByIds);
+        // Get invited_by group details (personal groups have name = display name)
+        const invitedByGroupIds = invitationsData.map(inv => inv.added_by_group_id);
+        const { data: inviterGroups, error: inviterError } = await supabase
+          .from('groups')
+          .select('id, name')
+          .in('id', invitedByGroupIds);
 
-        if (usersError) throw usersError;
+        if (inviterError) throw inviterError;
 
         // Combine data
         const invitationsWithDetails = invitationsData.map(inv => {
           const group = groupsData.find(g => g.id === inv.group_id);
-          const invitedBy = usersData.find(u => u.id === inv.added_by_user_id);
+          const invitedBy = inviterGroups?.find(g => g.id === inv.added_by_group_id);
 
           return {
             id: inv.id,
             group_id: inv.group_id,
             group_name: group?.name || 'Unknown Group',
             group_label: group?.label || null,
-            invited_by_name: invitedBy?.full_name || 'Someone',
+            invited_by_name: invitedBy?.name || 'Someone',
             invited_at: inv.added_at,
           };
         });

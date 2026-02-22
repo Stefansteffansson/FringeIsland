@@ -64,8 +64,8 @@ export default function GroupPickerModal({
 
         const { data: memberships } = await supabase
           .from('group_memberships')
-          .select('user_id, group_id')
-          .in('user_id', selectedUserIds)
+          .select('member_group_id, group_id')
+          .in('member_group_id', selectedUserIds)
           .eq('status', 'active');
 
         if (!memberships || memberships.length === 0) {

@@ -6,14 +6,16 @@ import Image from 'next/image';
 
 interface AvatarUploadProps {
   userId: string;
+  personalGroupId: string;
   currentAvatarUrl: string | null;
   onUploadComplete: (url: string) => void;
 }
 
-export default function AvatarUpload({ 
-  userId, 
-  currentAvatarUrl, 
-  onUploadComplete 
+export default function AvatarUpload({
+  userId,
+  personalGroupId,
+  currentAvatarUrl,
+  onUploadComplete
 }: AvatarUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(currentAvatarUrl);
@@ -90,6 +92,12 @@ export default function AvatarUpload({
 
       if (updateError) throw updateError;
 
+      // Also update personal group's avatar_url (canonical source for display joins)
+      await supabase
+        .from('groups')
+        .update({ avatar_url: publicUrl })
+        .eq('id', personalGroupId);
+
       // Call success callback
       onUploadComplete(publicUrl);
     } catch (err) {
@@ -129,6 +137,12 @@ export default function AvatarUpload({
         .eq('id', userId);
 
       if (updateError) throw updateError;
+
+      // Also update personal group's avatar_url
+      await supabase
+        .from('groups')
+        .update({ avatar_url: null })
+        .eq('id', personalGroupId);
 
       setPreview(null);
       onUploadComplete('');

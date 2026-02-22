@@ -10,7 +10,7 @@ import { createClient } from '@/lib/supabase/client';
 import type { DirectMessage } from '@/lib/messaging/MessagingContext';
 
 interface OtherUser {
-  id: string;
+  personal_group_id: string;
   full_name: string;
   avatar_url: string | null;
 }
@@ -75,12 +75,12 @@ export default function ConversationPage() {
 
         const { data: userData } = await supabase
           .from('users')
-          .select('id, full_name, avatar_url')
-          .eq('id', otherUserId)
+          .select('personal_group_id, full_name, avatar_url')
+          .eq('personal_group_id', otherUserId)
           .single();
 
         if (!cancelled) {
-          setOtherUser(userData || { id: otherUserId, full_name: 'Unknown User', avatar_url: null });
+          setOtherUser(userData || { personal_group_id: otherUserId, full_name: 'Unknown User', avatar_url: null });
         }
 
         // Fetch messages
@@ -146,7 +146,7 @@ export default function ConversationPage() {
           });
 
           // If the message is from the other user, mark as read immediately
-          if (newMsg.sender_id !== userProfileId) {
+          if (newMsg.sender_group_id !== userProfileId) {
             const { data: conv } = await supabase
               .from('conversations')
               .select('participant_1')
@@ -190,7 +190,7 @@ export default function ConversationPage() {
         .from('direct_messages')
         .insert({
           conversation_id: conversationId,
-          sender_id: userProfileId,
+          sender_group_id: userProfileId,
           content,
         })
         .select()
@@ -318,7 +318,7 @@ export default function ConversationPage() {
             </div>
           ) : (
             messages.map((msg) => {
-              const isMine = msg.sender_id === userProfileId;
+              const isMine = msg.sender_group_id === userProfileId;
               return (
                 <div
                   key={msg.id}

@@ -40,7 +40,7 @@ export default function InviteMemberModal({
       // Check if user exists with this email
       const { data: invitedUser, error: userError } = await supabase
         .from('users')
-        .select('id, full_name, email')
+        .select('id, full_name, email, personal_group_id')
         .eq('email', email.toLowerCase())
         .maybeSingle();
 
@@ -55,7 +55,7 @@ export default function InviteMemberModal({
         .from('group_memberships')
         .select('status')
         .eq('group_id', groupId)
-        .eq('user_id', invitedUser.id)
+        .eq('member_group_id', invitedUser.personal_group_id)
         .maybeSingle();
 
       if (membershipCheckError) throw membershipCheckError;
@@ -73,8 +73,8 @@ export default function InviteMemberModal({
         .from('group_memberships')
         .insert({
           group_id: groupId,
-          user_id: invitedUser.id,
-          added_by_user_id: currentUserId,
+          member_group_id: invitedUser.personal_group_id,
+          added_by_group_id: currentUserId,
           status: 'invited',
         });
 

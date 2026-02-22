@@ -58,35 +58,35 @@ export default function MessagesPage() {
           c.participant_1 === userProfileId ? c.participant_2 : c.participant_1
         );
 
-        // Fetch user profiles
+        // Fetch user profiles (otherUserIds are personal_group_ids)
         const { data: users, error: usersErr } = await supabase
           .from('users')
-          .select('id, full_name, avatar_url')
-          .in('id', otherUserIds);
+          .select('personal_group_id, full_name, avatar_url')
+          .in('personal_group_id', otherUserIds);
 
         if (usersErr) throw usersErr;
 
         // Fetch last message for each conversation
         const conversationIds = convs.map((c: any) => c.id);
-        const lastMessages: Record<string, { content: string; sender_id: string }> = {};
+        const lastMessages: Record<string, { content: string; sender_group_id: string }> = {};
 
         for (const convId of conversationIds) {
           const { data: msgs } = await supabase
             .from('direct_messages')
-            .select('content, sender_id')
+            .select('content, sender_group_id')
             .eq('conversation_id', convId)
             .order('created_at', { ascending: false })
             .limit(1);
 
           if (msgs && msgs.length > 0) {
-            lastMessages[convId] = { content: msgs[0].content, sender_id: msgs[0].sender_id };
+            lastMessages[convId] = { content: msgs[0].content, sender_group_id: msgs[0].sender_group_id };
           }
         }
 
         // Build conversation items
         const items: ConversationItem[] = convs.map((c: any) => {
           const otherUserId = c.participant_1 === userProfileId ? c.participant_2 : c.participant_1;
-          const otherUserData = (users || []).find((u: any) => u.id === otherUserId);
+          const otherUserData = (users || []).find((u: any) => u.personal_group_id === otherUserId);
           const isP1 = c.participant_1 === userProfileId;
           const lastReadAt = isP1 ? c.participant_1_last_read_at : c.participant_2_last_read_at;
 
@@ -106,7 +106,7 @@ export default function MessagesPage() {
             lastMessagePreview: lastMsg?.content
               ? (lastMsg.content.length > 80 ? lastMsg.content.slice(0, 80) + '...' : lastMsg.content)
               : null,
-            lastMessageSenderId: lastMsg?.sender_id || null,
+            lastMessageSenderId: lastMsg?.sender_group_id || null,
             isUnread: !!isUnread,
           };
         });

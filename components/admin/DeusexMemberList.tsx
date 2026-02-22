@@ -5,13 +5,14 @@ import ConfirmModal from '@/components/ui/ConfirmModal';
 
 interface DeusexMember {
   id: string; // membership id
-  user_id: string;
+  member_group_id: string;
   added_at: string;
-  users: {
+  member_group: {
     id: string;
-    email: string;
-    full_name: string;
+    name: string;
+    avatar_url: string | null;
   };
+  member_email?: string; // fetched separately from users table
 }
 
 interface DeusexMemberListProps {
@@ -76,23 +77,23 @@ export default function DeusexMemberList({
   return (
     <>
       <div className="space-y-2">
-        {members.filter((m) => m.users).map((member) => (
+        {members.filter((m) => m.member_group).map((member) => (
           <div
             key={member.id}
             className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
           >
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white font-bold">
-                {member.users.full_name?.charAt(0).toUpperCase() || '?'}
+                {member.member_group.name?.charAt(0).toUpperCase() || '?'}
               </div>
               <div>
                 <p className="font-medium text-gray-900">
-                  {member.users.full_name}
-                  {member.user_id === currentUserId && (
+                  {member.member_group.name}
+                  {member.member_group_id === currentUserId && (
                     <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">You</span>
                   )}
                 </p>
-                <p className="text-sm text-gray-500">{member.users.email}</p>
+                <p className="text-sm text-gray-500">{member.member_email || ''}</p>
               </div>
             </div>
 
@@ -121,7 +122,7 @@ export default function DeusexMemberList({
         title="Remove DeusEx Member?"
         message={
           confirmModal.member
-            ? `Are you sure you want to remove ${confirmModal.member.users.full_name} from the DeusEx group? They will lose all platform admin permissions.`
+            ? `Are you sure you want to remove ${confirmModal.member.member_group.name} from the DeusEx group? They will lose all platform admin permissions.`
             : ''
         }
         confirmText={removing ? 'Removing...' : 'Remove'}

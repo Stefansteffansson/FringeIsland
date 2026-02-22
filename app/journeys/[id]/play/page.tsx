@@ -55,9 +55,9 @@ export default function JourneyPlayPage() {
       // Check individual enrollment
       const { data: individualEnrollment } = await supabase
         .from('journey_enrollments')
-        .select('id, journey_id, user_id, group_id, status, progress_data, last_accessed_at, completed_at')
+        .select('id, journey_id, group_id, status, progress_data, last_accessed_at, completed_at')
         .eq('journey_id', journeyId)
-        .eq('user_id', userProfile.id)
+        .eq('group_id', userProfile.personal_group_id)
         .maybeSingle();
 
       if (individualEnrollment) {
@@ -70,7 +70,7 @@ export default function JourneyPlayPage() {
       const { data: userGroups } = await supabase
         .from('group_memberships')
         .select('group_id')
-        .eq('user_id', userProfile.id)
+        .eq('member_group_id', userProfile.personal_group_id)
         .eq('status', 'active');
 
       const groupIds = userGroups?.map((g: { group_id: string }) => g.group_id) || [];
@@ -78,7 +78,7 @@ export default function JourneyPlayPage() {
       if (groupIds.length > 0) {
         const { data: groupEnrollment } = await supabase
           .from('journey_enrollments')
-          .select('id, journey_id, user_id, group_id, status, progress_data, last_accessed_at, completed_at')
+          .select('id, journey_id, group_id, status, progress_data, last_accessed_at, completed_at')
           .eq('journey_id', journeyId)
           .in('group_id', groupIds)
           .maybeSingle();

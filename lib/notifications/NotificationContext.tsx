@@ -16,7 +16,7 @@ import { useAuth } from '@/lib/auth/AuthContext';
 
 export interface Notification {
   id: string;
-  recipient_user_id: string;
+  recipient_group_id: string;
   type: string;
   title: string;
   body: string | null;
@@ -52,7 +52,7 @@ export function NotificationProvider({
   const { userProfile } = useAuth();
   const supabase = useMemo(() => createClient(), []);
 
-  const userProfileId = userProfile?.id ?? null;
+  const userProfileId = userProfile?.personal_group_id ?? null;
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -79,7 +79,7 @@ export function NotificationProvider({
         const { data, error } = await supabase
           .from('notifications')
           .select('*')
-          .eq('recipient_user_id', userProfileId)
+          .eq('recipient_group_id', userProfileId)
           .order('created_at', { ascending: false })
           .limit(50);
 
@@ -108,7 +108,7 @@ export function NotificationProvider({
           event: 'INSERT',
           schema: 'public',
           table: 'notifications',
-          filter: `recipient_user_id=eq.${userProfileId}`,
+          filter: `recipient_group_id=eq.${userProfileId}`,
         },
         (payload) => {
           const newNotification = payload.new as Notification;
@@ -143,7 +143,7 @@ export function NotificationProvider({
         const { count } = await supabase
           .from('notifications')
           .select('*', { count: 'exact', head: true })
-          .eq('recipient_user_id', userProfileId)
+          .eq('recipient_group_id', userProfileId)
           .eq('is_read', false);
 
         setUnreadCount(count ?? 0);
@@ -169,7 +169,7 @@ export function NotificationProvider({
         const { count } = await supabase
           .from('notifications')
           .select('*', { count: 'exact', head: true })
-          .eq('recipient_user_id', userProfileId)
+          .eq('recipient_group_id', userProfileId)
           .eq('is_read', false);
 
         setUnreadCount(count ?? 0);
@@ -217,7 +217,7 @@ export function NotificationProvider({
       const { error } = await supabase
         .from('notifications')
         .update({ is_read: true, read_at: new Date().toISOString() })
-        .eq('recipient_user_id', userProfileId)
+        .eq('recipient_group_id', userProfileId)
         .eq('is_read', false);
 
       if (error) throw error;

@@ -17,7 +17,7 @@ export default function CreateGroupPage() {
     }
   }, [user, authLoading, router]);
 
-  const userId = userProfile?.id ?? null;
+  const userId = userProfile?.personal_group_id ?? null;
 
   // Show loading state
   if (authLoading || !userProfile) {

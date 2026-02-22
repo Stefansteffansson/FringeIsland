@@ -40,7 +40,7 @@ export default function GroupsPage() {
         const { data: memberships, error: membershipsError } = await supabase
           .from('group_memberships')
           .select('group_id')
-          .eq('user_id', userProfile.id)
+          .eq('member_group_id', userProfile.personal_group_id)
           .eq('status', 'active');
 
         if (membershipsError) throw membershipsError;

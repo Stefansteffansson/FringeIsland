@@ -19,7 +19,7 @@ export function usePermissions(groupId: string | null): UsePermissionsResult {
   const [error, setError] = useState<string | null>(null);
 
   const fetchPermissions = useCallback(async () => {
-    if (!userProfile || !groupId) {
+    if (!userProfile?.personal_group_id || !groupId) {
       setPermissions([]);
       setLoading(false);
       return;
@@ -33,8 +33,8 @@ export function usePermissions(groupId: string | null): UsePermissionsResult {
     const { data, error: rpcError } = await supabase.rpc(
       'get_user_permissions',
       {
-        p_user_id: userProfile.id,
-        p_group_id: groupId,
+        p_acting_group_id: userProfile.personal_group_id,
+        p_context_group_id: groupId,
       }
     );
 

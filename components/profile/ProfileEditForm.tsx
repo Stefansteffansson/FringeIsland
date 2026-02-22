@@ -8,12 +8,14 @@ interface ProfileEditFormProps {
   initialFullName: string;
   initialBio: string | null;
   userId: string;
+  personalGroupId: string;
 }
 
-export default function ProfileEditForm({ 
-  initialFullName, 
-  initialBio, 
-  userId 
+export default function ProfileEditForm({
+  initialFullName,
+  initialBio,
+  userId,
+  personalGroupId,
 }: ProfileEditFormProps) {
   const [fullName, setFullName] = useState(initialFullName);
   const [bio, setBio] = useState(initialBio || '');
@@ -60,6 +62,12 @@ export default function ProfileEditForm({
         .eq('id', userId);
 
       if (updateError) throw updateError;
+
+      // Also update personal group's name (canonical source for display joins)
+      await supabase
+        .from('groups')
+        .update({ name: fullName.trim() })
+        .eq('id', personalGroupId);
 
       setSuccess(true);
       

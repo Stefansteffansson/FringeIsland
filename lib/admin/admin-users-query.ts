@@ -35,6 +35,7 @@ export interface AdminUsersParams {
 
 export interface AdminUserRow {
   id: string;
+  personal_group_id: string;
   full_name: string;
   email: string;
   is_active: boolean;
@@ -58,8 +59,8 @@ export interface AdminUserIdsResult {
  */
 async function isDeusExMember(serviceClient: any, userId: string): Promise<boolean> {
   const { data } = await serviceClient.rpc('has_permission', {
-    p_user_id: userId,
-    p_group_id: '00000000-0000-0000-0000-000000000000',
+    p_acting_group_id: userId,
+    p_context_group_id: '00000000-0000-0000-0000-000000000000',
     p_permission_name: 'manage_all_groups',
   });
 
@@ -117,7 +118,7 @@ export async function queryAdminUsers(params: AdminUsersParams): Promise<AdminUs
   // Build query — service_role bypasses all RLS
   let query = serviceClient
     .from('users')
-    .select('id, full_name, email, is_active, is_decommissioned, created_at', { count: 'exact' })
+    .select('id, personal_group_id, full_name, email, is_active, is_decommissioned, created_at', { count: 'exact' })
     .order('created_at', { ascending: false });
 
   // Apply status filter (null = all ON, no filter needed)

@@ -34,8 +34,8 @@ export default function AdminLayout({
       try {
         // Check manage_all_groups permission (Tier 1 — works with any group_id)
         const { data, error } = await supabase.rpc('has_permission', {
-          p_user_id: userProfile.id,
-          p_group_id: '00000000-0000-0000-0000-000000000000',
+          p_acting_group_id: userProfile.personal_group_id,
+          p_context_group_id: '00000000-0000-0000-0000-000000000000',
           p_permission_name: 'manage_all_groups',
         });
 
