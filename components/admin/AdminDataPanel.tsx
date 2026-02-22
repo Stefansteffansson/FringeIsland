@@ -117,7 +117,7 @@ const COLUMNS: Record<CardType, Column[]> = {
     {
       key: 'enrollee',
       label: 'Enrolled By',
-      render: (row) => row.users?.full_name || row.groups?.name || '-',
+      render: (row) => row.groups?.name || '-',
     },
     { key: 'status', label: 'Status' },
     {
@@ -198,7 +198,7 @@ function buildQuery(
     case 'enrollments': {
       return supabase
         .from('journey_enrollments')
-        .select('id, status, enrolled_at, journeys(title), users!journey_enrollments_user_id_fkey(full_name), groups(name)', { count: 'exact' })
+        .select('id, status, enrolled_at, journeys(title), groups!journey_enrollments_group_id_fkey(name)', { count: 'exact' })
         .order('enrolled_at', { ascending: false });
     }
   }

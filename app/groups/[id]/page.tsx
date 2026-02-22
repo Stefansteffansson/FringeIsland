@@ -568,15 +568,15 @@ export default function GroupDetailPage() {
                         {member.roleData.length > 0 && (
                           <div className="flex flex-wrap gap-1 mb-2">
                             {member.roleData.map((roleInfo) => {
-                              // Count how many Group Leaders exist in this group
-                              const groupLeaderCount = members.filter(m => 
-                                m.roles.includes('Group Leader')
+                              // Count how many Stewards exist in this group
+                              const stewardCount = members.filter(m =>
+                                m.roles.includes('Steward')
                               ).length;
-                              
+
                               // Don't show remove button if:
-                              // 1. This is a Group Leader role, AND
-                              // 2. There's only one Group Leader in the group
-                              const isLastLeader = roleInfo.role_name === 'Group Leader' && groupLeaderCount === 1;
+                              // 1. This is a Steward role, AND
+                              // 2. There's only one Steward in the group
+                              const isLastLeader = roleInfo.role_name === 'Steward' && stewardCount === 1;
                               
                               return (
                                 <span
