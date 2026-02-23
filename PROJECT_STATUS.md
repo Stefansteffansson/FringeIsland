@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-23 (Enhanced Member Invitations)
+**Last Updated:** 2026-02-23 (Test Data Cleanup + Script Housekeeping)
 **Current Version:** 0.2.29
 **Active Branch:** main
 
@@ -88,24 +88,20 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-23 (Test Data Cleanup Infrastructure)
+**Date:** 2026-02-23 (Test Data Cleanup + Script Housekeeping)
 **Summary:**
-- Built 3-layer test data cleanup system to prevent orphaned rows
-- Created `scripts/cleanup-test-data.js` — one-time purge with `--dry-run` support
-- Created `tests/global-teardown.ts` — Jest globalTeardown auto-sweeps after every suite run
-- Hardened `cleanupTestGroup()` with journey pre-delete (RESTRICT FK blocker)
-- Wired globalTeardown into `jest.config.js` integration project
+- Built 3-layer test data cleanup system (globalTeardown + one-time script + hardened helper)
 - Purged 1,741 orphaned groups, 3,437 memberships, 5,784 notifications from DB
 - Documented in test-agent playbook, testing journal, TDD workflow, MEMORY.md
-
-**Previous session:** 2026-02-23 (Enhanced Member Invitations)
-- User Search Typeahead, Pending Email Invitations, API route, 14 tests, 2 behavior specs
+- Deleted 8 one-off troubleshooting scripts from `scripts/` (superseded or no longer needed)
+- Committed Enhanced Member Invitations (previously uncommitted from earlier session)
 
 **Previous Sessions:**
+- 2026-02-23: Enhanced Member Invitations — typeahead, pending email invitations, 14 tests
+- 2026-02-23: Database cleanup + D15 residual fixes
 - 2026-02-23: D15 Hardening Sprint, Claude Code permissions cleanup
 - 2026-02-22: D15 migration audit, residual fixes, documentation
 - 2026-02-21: Performance Optimization Tiers 2+3
-- 2026-02-20: Realtime fixes + admin user filters + auto force-logout — v0.2.28
 
 ---
 
