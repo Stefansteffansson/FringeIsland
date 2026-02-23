@@ -737,6 +737,7 @@ export default function GroupDetailPage() {
           groupId={groupId}
           groupName={group.name}
           currentUserId={userProfile.personal_group_id}
+          existingMemberGroupIds={members.map(m => m.member_group_id)}
           onClose={() => setInviteModalOpen(false)}
           onSuccess={refetchMembers}
         />

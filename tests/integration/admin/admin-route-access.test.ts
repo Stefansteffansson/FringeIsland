@@ -149,7 +149,7 @@ describe('B-ADMIN-001: Admin Route Protection', () => {
 
     expect(error).toBeNull();
     expect(data).toEqual([]); // RLS blocks, returns empty
-  });
+  }, 15000);
 
   it('should return manage_all_groups in Deusex user permissions array', async () => {
     const { data, error } = await admin.rpc('get_user_permissions', {

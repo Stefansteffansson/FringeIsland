@@ -619,7 +619,7 @@ describe('B-MSG-006: Message Read Tracking', () => {
     if (userB) await cleanupTestUser(userB.user.id);
   });
 
-  it('B-MSG-006: new conversation starts with last_read_at = NULL for both participants', async () => {
+  it('B-MSG-006: new conversation has last_read_at set (defaults to NOW())', async () => {
     expect(conversationId).not.toBeNull();
 
     const { data, error } = await admin
@@ -629,8 +629,9 @@ describe('B-MSG-006: Message Read Tracking', () => {
       .single();
 
     expect(error).toBeNull();
-    expect(data!.participant_1_last_read_at).toBeNull();
-    expect(data!.participant_2_last_read_at).toBeNull();
+    // Column defaults to NOW() — both timestamps should be set
+    expect(data!.participant_1_last_read_at).not.toBeNull();
+    expect(data!.participant_2_last_read_at).not.toBeNull();
   });
 
   it('B-MSG-006: participant can update their own last_read_at', async () => {

@@ -62,10 +62,21 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
     });
     expect(lmErr).toBeNull();
 
-    // Create Group Leader role and assign it
+    // Look up the Steward Role Template so the trigger can find stewards
+    const { data: stewardTemplate } = await admin
+      .from('role_templates')
+      .select('id')
+      .eq('name', 'Steward Role Template')
+      .single();
+
+    // Create Steward role linked to template and assign it
     const { data: role, error: roleErr } = await admin
       .from('group_roles')
-      .insert({ group_id: testGroup.id, name: 'Steward' })
+      .insert({
+        group_id: testGroup.id,
+        name: 'Steward',
+        created_from_role_template_id: stewardTemplate?.id ?? null,
+      })
       .select()
       .single();
     expect(roleErr).toBeNull();
@@ -114,11 +125,12 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
     expect(membership).not.toBeNull();
 
     // Assert: notification exists for invitee
+    // Trigger emits type='invitation_received', title='Group Invitation'
     const { data: notifications, error: nErr } = await admin
       .from('notifications')
       .select('*')
       .eq('recipient_group_id', inviteePgId)
-      .eq('type', 'group_invitation')
+      .eq('type', 'invitation_received')
       .eq('group_id', testGroup.id);
 
     expect(nErr).toBeNull();
@@ -126,20 +138,20 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
     expect(notifications!.length).toBeGreaterThanOrEqual(1);
 
     const notif = notifications![0];
-    expect(notif.type).toBe('group_invitation');
-    expect(notif.title).toBe('New Group Invitation');
+    expect(notif.type).toBe('invitation_received');
+    expect(notif.title).toBe('Group Invitation');
     expect(notif.body).toBeTruthy();
     expect(notif.payload).toMatchObject({
       group_id: testGroup.id,
       group_name: testGroup.name,
-      membership_id: membership!.id,
+      inviter_group_id: leaderPgId,
     });
     expect(notif.is_read).toBe(false);
     expect(notif.read_at).toBeNull();
 
     // Cleanup: remove the invitation so subsequent tests start clean
     await admin.from('group_memberships').delete().eq('id', membership!.id);
-    await admin.from('notifications').delete().eq('recipient_group_id', invitee.personalGroupId).eq('type', 'group_invitation');
+    await admin.from('notifications').delete().eq('recipient_group_id', invitee.personalGroupId).eq('type', 'invitation_received');
   });
 
   it('B-COMM-001: acceptance UPDATE creates an invitation_accepted notification for Group Leaders', async () => {
@@ -159,12 +171,12 @@ describe('B-COMM-001: Notification Delivery — invitation triggers', () => {
 
     expect(mErr).toBeNull();
 
-    // Clear the group_invitation notification created by the INSERT trigger
+    // Clear the invitation_received notification created by the INSERT trigger
     await admin
       .from('notifications')
       .delete()
       .eq('recipient_group_id', inviteePgId)
-      .eq('type', 'group_invitation');
+      .eq('type', 'invitation_received');
 
     // Act: update status from 'invited' to 'active' — triggers invitation_accepted notification
     const { error: upErr } = await admin

@@ -782,6 +782,8 @@ expect(error?.message).toContain('Cannot remove last leader');
 - Use `afterAll()` to cleanup test data
 - Don't pollute database with test data
 - Each test should be independent
+- **Safety net:** Jest `globalTeardown` (`tests/global-teardown.ts`) automatically sweeps orphaned test data after every suite run — catches leaks from crashed `afterAll` hooks
+- **Manual recovery:** `node scripts/cleanup-test-data.js` purges all orphaned test data (use `--dry-run` to preview)
 
 **7. Descriptive Names Save Time**
 - Future you will thank you

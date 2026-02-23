@@ -149,11 +149,10 @@ describe('B-ADMIN-008: User Decommission', () => {
   });
 
   it('should allow admin to decommission a user', async () => {
-    // Admin sets is_decommissioned = true and is_active = false
-    const { error } = await deusexClient
-      .from('users')
-      .update({ is_decommissioned: true, is_active: false } as any)
-      .eq('id', targetUser.profile.id);
+    // Admin decommissions via RPC
+    const { error } = await deusexClient.rpc('admin_decommission_user', {
+      target_user_id: targetUser.profile.id,
+    });
 
     expect(error).toBeNull();
 
@@ -207,11 +206,13 @@ describe('B-ADMIN-008: User Decommission', () => {
   });
 
   it('should block non-admin from decommissioning a user', async () => {
-    // Normal user tries to set is_decommissioned on another user
-    const { error } = await normalClient
-      .from('users')
-      .update({ is_decommissioned: true } as any)
-      .eq('id', deusexUser.profile.id);
+    // Normal user tries to decommission via RPC — should be rejected
+    const { error } = await normalClient.rpc('admin_decommission_user', {
+      target_user_id: deusexUser.profile.id,
+    });
+
+    // RPC should reject (no permission)
+    expect(error).not.toBeNull();
 
     // Verify the user was NOT decommissioned
     const { data: user } = await admin

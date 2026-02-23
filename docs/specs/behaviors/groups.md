@@ -293,6 +293,41 @@
 
 ---
 
+## B-GRP-006: User Search Typeahead 🔄
+
+**Rule:** The invite modal MUST provide typeahead search that queries users by name or email, debounced at 300ms, returning max 8 results, excluding current group members and self.
+
+**Why:** Stewards rarely remember exact email addresses. Typeahead reduces friction and errors in the invitation flow.
+
+**Verified by:**
+- **Test:** `tests/integration/groups/user-search.test.ts` (~4 tests)
+- **Code:** `components/groups/InviteMemberModal.tsx` (typeahead UI)
+- **Database:** `users` table SELECT via `.or('full_name.ilike.%q%,email.ilike.%q%')`
+
+**Acceptance Criteria:**
+- [ ] Typing 2+ characters triggers search after 300ms debounce
+- [ ] Results show avatar, full name, and email
+- [ ] Max 8 results returned
+- [ ] Current group members excluded from results
+- [ ] Current user (self) excluded from results
+- [ ] Selecting a result fills the email field
+- [ ] Empty/short queries show no dropdown
+
+**Examples:**
+
+- Steward types "jan" → dropdown shows "Jane Smith (jane@example.com)", "Janet Lee (janet@co.com)"
+- Steward types "j" → no dropdown (fewer than 2 characters)
+- Steward types "existingmember@..." → no results (already a member)
+
+**Related Behaviors:**
+- B-GRP-002: Member Invitation Lifecycle
+- B-INV-001: Pending Email Invitations
+
+**History:**
+- 2026-02-23: Documented
+
+---
+
 ## Notes
 
 **Implemented Behaviors:**
@@ -301,22 +336,25 @@
 - ✅ B-GRP-003: Group Visibility Rules (7 tests ✅)
 - ✅ B-GRP-004: Group Editing Permissions (5 tests ✅)
 - ✅ B-GRP-005: Group Deletion Rules (6 tests ✅)
+- 🔄 B-GRP-006: User Search Typeahead (4 tests planned)
 
 **Test Coverage:**
-- 5 / 5 behaviors have tests (100%) ✅
+- 5 / 6 behaviors have tests (83%)
 - `last-leader.test.ts` — 4 tests (B-GRP-001)
 - `invitations.test.ts` — 9 tests (B-GRP-002)
 - `rls/groups.test.ts` — 7 tests (B-GRP-003)
 - `edit-permissions.test.ts` — 5 tests (B-GRP-004)
 - `deletion.test.ts` — 6 tests (B-GRP-005)
-- Total GRP tests: **31 across 5 files** ✅
+- `user-search.test.ts` — 4 tests planned (B-GRP-006)
+- Total GRP tests: **31 across 5 files** ✅ + 4 planned
 - *(Role assignment for group roles is tested in `role-assignment.test.ts` — see roles.md)*
-- **Last updated:** 2026-02-11
+- **Last updated:** 2026-02-23
 
 **Next Behaviors to Document:**
-- B-GRP-006: Member Removal Rules
-- B-GRP-007: Group Template Initialization
-- B-GRP-008: Group Label Uniqueness (if enforced)
+- B-GRP-007: Member Removal Rules
+- B-GRP-008: Group Template Initialization
+- B-GRP-009: Group Label Uniqueness (if enforced)
 
 **Related Behavior Specs:**
 - `roles.md` — B-ROL-001: Role Assignment Permissions ✅
+- `invitations.md` — B-INV-001: Pending Email Invitations 🔄

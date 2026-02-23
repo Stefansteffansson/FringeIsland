@@ -108,6 +108,9 @@ export const cleanupTestUser = async (userId: string) => {
 export const cleanupTestGroup = async (groupId: string) => {
   const admin = createAdminClient();
 
+  // Pre-delete: journeys with RESTRICT FK on created_by_group_id
+  await admin.from('journeys').delete().eq('created_by_group_id', groupId);
+
   // Delete group (CASCADE handles memberships, roles, etc.)
   const { error } = await admin
     .from('groups')

@@ -1,50 +1,40 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-23 (Database cleanup + D15 residual fixes)
-**Current Version:** 0.2.28
+**Last Updated:** 2026-02-23 (Enhanced Member Invitations)
+**Current Version:** 0.2.29
 **Active Branch:** main
 
 ---
 
 ## What We're Working On NOW
 
-**Current Focus:** Performance Optimization COMPLETE — next: Phase 1.6 Polish and Launch
+**Current Focus:** Enhanced Member Invitations — COMPLETE
 
-**Design Doc:** `docs/features/active/performance-optimization.md` (COMPLETE — full analysis + implementation plan)
+**Design Doc:** `docs/features/active/enhanced-member-invitations.md`
 
 **Active Tasks:**
-- [x] **Admin infinite re-render bug** ✅ FIXED (useCallback wrapping)
-- [x] **AdminDataPanel optimizations** ✅ DONE (single query, prefetch, debounce, two-tier loading)
-- [x] **Deep performance analysis** ✅ DONE (5 root causes identified, 3-tier fix plan)
-- [x] **Tier 1A: Add missing indexes** ✅ DONE — 3 composite indexes (groups.group_type, memberships, ugr)
-- [x] **Tier 1B: Admin service_role route** ✅ DONE — /api/admin/users bypasses RLS, 11 TDD tests
-- [x] **Tier 1C: Shared UserProfile context** ✅ DONE — eliminated 4-6 duplicate queries/page across 20+ files
-- [x] **HOTFIX: Auth deadlock in Supabase SSR** ✅ FIXED — profile resolution moved out of onAuthStateChange
-- [x] **HOTFIX: Navigation null safety** ✅ FIXED — full_name?.charAt(0) + safe alt attribute
-- [x] **HOTFIX: Admin API cookie auth** ✅ FIXED — pass JWT via Authorization header
-- [x] **Tier 2C: Remove has_permission() from SELECT RLS policies** ✅ DONE — admin handled by service_role
-- [x] **Tier 2A: Parallelize group detail queries** ✅ DONE — 7 sequential → 4 queries in 2 parallel steps, 3 redundant queries eliminated
-- [x] **Tier 2B: Fix N+1 on My Groups** ✅ DONE — new `get_group_member_counts` RPC, N+2 queries → 3 queries in 2 parallel steps
-- [x] **Tier 3A: Debounce commonGroupCount** ✅ DONE — 300ms setTimeout with cleanup
-- [x] **Tier 3B: Deduplicate admin stats** ✅ DONE — useRef tracks static stats, filter changes only re-fetch users count
+- [x] **User Search Typeahead** ✅ DONE — debounced 300ms, name+email search, avatar dropdown, 8 result limit, excludes members/self
+- [x] **Pending Email Invitations** ✅ DONE — new `pending_email_invitations` table, RLS, handle_new_user() trigger auto-claim, simulated email service
+- [x] **API Route** ✅ DONE — `/api/invitations/send-email` with JWT auth + permission check
+- [x] **14 integration tests** ✅ DONE — 10 pending-invitations + 4 user-search
 
 **Blocked/Waiting:**
-- None — Performance Optimization feature COMPLETE
+- None
 
-**Previous Feature (COMPLETE):**
-- [x] **Admin Sub-Sprint 1: DB Foundation** ✅ v0.2.21
-- [x] **Admin Sub-Sprint 2: Admin Panel UI** ✅ v0.2.21
-- [x] **Admin Sub-Sprint 3: User Management Actions** ✅ v0.2.25
+**Previous Features (COMPLETE):**
+- [x] **Performance Optimization** ✅ All tiers (1A-3B)
+- [x] **DeusEx Admin Foundation** ✅ v0.2.21-v0.2.25
+- [x] **D15 Universal Group Pattern** ✅ v0.2.29
 
 ---
 
 ## Quick Stats
 
-- **Phase:** Performance Optimization COMPLETE (All Tiers: 1A, 1B, 1C, 2A, 2B, 2C, 3A, 3B)
-- **Total Tables:** 18 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 6 active + 71 archived (consolidated via D15 rebuild + hardening trigger)
-- **Recent Version:** v0.2.28 (Realtime fixes + admin user filters + auto force-logout)
-- **Test Coverage:** 424 integration + 99 unit + 4 setup = **527 tests** ✅
+- **Phase:** Enhanced Member Invitations COMPLETE
+- **Total Tables:** 19 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
+- **Total Migrations:** 7 active + 71 archived
+- **Recent Version:** v0.2.29 (Enhanced Member Invitations)
+- **Test Coverage:** 438 integration + 99 unit + 4 setup = **541 tests** ✅
 - **Behaviors Documented:** 77 (58 previous + 19 admin) ✅
 - **Feature Docs:** 4 complete + 3 planned designs + 1 active (performance)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
@@ -84,7 +74,7 @@
 **For Specific Work:**
 - **Database work:** `docs/database/schema-overview.md`
 - **Feature development:** `docs/features/implemented/[feature-name].md`
-- **Active feature:** `docs/features/active/performance-optimization.md` ← **START HERE**
+- **Active feature:** `docs/features/active/enhanced-member-invitations.md` ← **LATEST**
 - **Admin feature (complete):** `docs/features/active/deusex-admin-foundation.md`
 - **Architecture decisions:** `docs/architecture/ARCHITECTURE.md`
 - **Planning context:** `docs/planning/ROADMAP.md` + `docs/planning/DEFERRED_DECISIONS.md`
@@ -98,33 +88,24 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-23 (Database cleanup + D15 residual fixes)
+**Date:** 2026-02-23 (Test Data Cleanup Infrastructure)
 **Summary:**
-- Full database cleanup: removed ~8,400 test artifact rows across 6 tables
-- Cleaned 57 orphaned auth.users entries and avatar storage bucket
-- Preserved all seed data (8 journeys, 4 system groups, templates, permissions)
-- Fixed D15 residual: ambiguous `groups` join in My Journeys page (PostgREST PGRST201)
-- Fixed avatar upload not refreshing Navigation (missing `refreshNavigation` dispatch)
-- Re-created Supabase Storage policies for avatars bucket (INSERT/UPDATE/DELETE)
-- Promoted deusex@fringeisland.com to DeusEx admin
+- Built 3-layer test data cleanup system to prevent orphaned rows
+- Created `scripts/cleanup-test-data.js` — one-time purge with `--dry-run` support
+- Created `tests/global-teardown.ts` — Jest globalTeardown auto-sweeps after every suite run
+- Hardened `cleanupTestGroup()` with journey pre-delete (RESTRICT FK blocker)
+- Wired globalTeardown into `jest.config.js` integration project
+- Purged 1,741 orphaned groups, 3,437 memberships, 5,784 notifications from DB
+- Documented in test-agent playbook, testing journal, TDD workflow, MEMORY.md
 
-**Previous session:** 2026-02-23 (Claude Code permissions cleanup)
-- Consolidated `.claude/settings.local.json` from ~90 permission entries to ~30 using wildcard patterns
-
-**Previous session:** 2026-02-23 (D15 Hardening Sprint)
-- Created `enforce_personal_group_id_immutability` trigger, 10 new tests, comment fixes
-- RBAC 162→171, Auth 28→29, Groups 32/32, Communication forum 10/10
-
-**Previous session:** 2026-02-22 (D15 migration audit, residual fixes, documentation)
-- Audited all 28 steps of D15 frontend migration plan — all COMPLETE
-- Fixed broken enrollment query, last-Steward UI protection, stale comments
-- Created comprehensive feature doc
+**Previous session:** 2026-02-23 (Enhanced Member Invitations)
+- User Search Typeahead, Pending Email Invitations, API route, 14 tests, 2 behavior specs
 
 **Previous Sessions:**
-- 2026-02-21: Performance Optimization Tiers 2+3 (parallel queries, N+1 fix, debounce, dedup)
+- 2026-02-23: D15 Hardening Sprint, Claude Code permissions cleanup
+- 2026-02-22: D15 migration audit, residual fixes, documentation
+- 2026-02-21: Performance Optimization Tiers 2+3
 - 2026-02-20: Realtime fixes + admin user filters + auto force-logout — v0.2.28
-- 2026-02-20: Auth deadlock + Tier 2C admin SELECT policy removal — v0.2.27
-- 2026-02-20: Performance Tier 1 (indexes, shared profile, admin API route) — v0.2.26
 
 ---
 
@@ -132,12 +113,12 @@
 
 **See `docs/features/active/performance-optimization.md` for full plan**
 
-**Performance Optimization COMPLETE** ✅ (All Tiers: 1A, 1B, 1C, 2A, 2B, 2C, 3A, 3B)
+**Enhanced Member Invitations COMPLETE** ✅
 
 **Next — Phase 1.6 Polish and Launch:**
-7. Mobile responsiveness audit
-8. User onboarding flow
-9. E2E tests (Playwright)
+1. Mobile responsiveness audit
+2. User onboarding flow
+3. E2E tests (Playwright)
 
 **Known Issues:**
 - `app/admin/fix-orphans/page.tsx` uses `alert()` (should use ConfirmModal)

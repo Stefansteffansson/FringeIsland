@@ -40,6 +40,7 @@ const customJestConfig = {
       testEnvironment: 'jest-environment-node',
       testMatch: ['<rootDir>/tests/integration/**/*.test.{ts,tsx}', '<rootDir>/tests/*.test.{ts,tsx}'],
       setupFilesAfterEnv: ['<rootDir>/tests/setup.ts', '<rootDir>/tests/integration/suite-setup.ts'],
+      globalTeardown: '<rootDir>/tests/global-teardown.ts',
       moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/$1',
       },

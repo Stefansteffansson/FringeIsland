@@ -110,11 +110,11 @@ describe('B-ADMIN-010: Admin User Management (Activate/Deactivate)', () => {
   }, 30000);
 
   it('should allow admin to deactivate a user', async () => {
-    // Admin sets is_active = false via RLS-respecting client
-    const { error } = await deusexClient
-      .from('users')
-      .update({ is_active: false })
-      .eq('id', targetUser.profile.id);
+    // Admin deactivates via RPC
+    const { error } = await deusexClient.rpc('admin_update_user_status', {
+      target_user_id: targetUser.profile.id,
+      new_is_active: false,
+    });
 
     expect(error).toBeNull();
 
@@ -136,11 +136,11 @@ describe('B-ADMIN-010: Admin User Management (Activate/Deactivate)', () => {
       .update({ is_active: false })
       .eq('id', targetUser.profile.id);
 
-    // Admin activates the user
-    const { error } = await deusexClient
-      .from('users')
-      .update({ is_active: true })
-      .eq('id', targetUser.profile.id);
+    // Admin activates via RPC
+    const { error } = await deusexClient.rpc('admin_update_user_status', {
+      target_user_id: targetUser.profile.id,
+      new_is_active: true,
+    });
 
     expect(error).toBeNull();
 
@@ -162,11 +162,15 @@ describe('B-ADMIN-010: Admin User Management (Activate/Deactivate)', () => {
       .update({ is_decommissioned: true, is_active: false } as any)
       .eq('id', targetUser.profile.id);
 
-    // Admin tries to activate the decommissioned user
-    const { error } = await deusexClient
-      .from('users')
-      .update({ is_active: true })
-      .eq('id', targetUser.profile.id);
+    // Admin tries to activate the decommissioned user via RPC
+    const { error } = await deusexClient.rpc('admin_update_user_status', {
+      target_user_id: targetUser.profile.id,
+      new_is_active: true,
+    });
+
+    // RPC should reject reactivation of decommissioned user
+    expect(error).not.toBeNull();
+    expect(error!.message).toContain('decommissioned');
 
     // Verify the user is still decommissioned and inactive
     const { data: user } = await admin
@@ -187,11 +191,14 @@ describe('B-ADMIN-010: Admin User Management (Activate/Deactivate)', () => {
   });
 
   it('should block non-admin from deactivating another user', async () => {
-    // Normal user tries to deactivate the target user
-    const { error } = await normalClient
-      .from('users')
-      .update({ is_active: false })
-      .eq('id', targetUser.profile.id);
+    // Normal user tries to deactivate via RPC — should be rejected
+    const { error } = await normalClient.rpc('admin_update_user_status', {
+      target_user_id: targetUser.profile.id,
+      new_is_active: false,
+    });
+
+    // RPC should reject (no permission)
+    expect(error).not.toBeNull();
 
     // Verify the user was NOT deactivated (check via admin)
     const { data: user } = await admin

@@ -28,6 +28,8 @@ I am the Test Agent. I ensure that every feature has documented behaviors and ve
 - **Helpers:** `tests/helpers/supabase.ts` (clients, cleanup, fixtures)
 - **Fixtures:** `tests/helpers/fixtures.ts` (reusable test data)
 - **Suite setup:** `tests/integration/suite-setup.ts` (rate limit delays)
+- **Global teardown:** `tests/global-teardown.ts` (auto-sweeps orphaned test data)
+- **Cleanup script:** `scripts/cleanup-test-data.js` (`--dry-run` for preview)
 - **Run all:** `npm run test:integration`
 - **Run domain:** `npm run test:integration:auth` / `:groups` / `:journeys` / `:rls`
 - **Run single:** `npm test -- tests/integration/[domain]/[file].test.ts`
@@ -262,6 +264,36 @@ Last curated: 2026-02-13 (initial)
 
 ---
 
+## Test Data Cleanup Infrastructure
+
+Three layers protect against orphaned test data accumulating in the database:
+
+### Layer 1: `afterAll` hooks (per-suite)
+Each test suite cleans up its own data in `afterAll` using `cleanupTestUser()` / `cleanupTestGroup()`. This handles the happy path where the suite runs to completion.
+
+### Layer 2: Jest `globalTeardown` (automatic)
+**File:** `tests/global-teardown.ts`
+Runs automatically after every `npm run test:integration` completes (success, failure, or Ctrl+C). Three-phase sweep:
+1. Find `@fringeisland.test` auth users → delete journeys → personal group → auth user
+2. Delete orphan personal groups (no matching `public.users` row)
+3. Delete orphan engagement groups (`created_by_group_id IS NULL`, excludes system/personal)
+
+### Layer 3: One-time cleanup script (manual)
+**File:** `scripts/cleanup-test-data.js`
+For catastrophic accumulation (machine crash, skipped teardowns). Same three-phase logic.
+```bash
+node scripts/cleanup-test-data.js --dry-run   # preview
+node scripts/cleanup-test-data.js              # purge
+```
+
+### Key cleanup details
+- **RESTRICT FK blocker:** `journeys.created_by_group_id` must be deleted BEFORE the group
+- **CASCADE chain from groups:** memberships, roles, user_group_roles, enrollments, notifications, conversations, DMs, forum_posts, pending_invitations
+- **Orphan detection:** Personal groups where no `public.users` row references them; engagement groups where `created_by_group_id` is NULL (SET NULL after creator deletion)
+- `cleanupTestGroup()` now pre-deletes journeys to avoid RESTRICT FK failures
+
+---
+
 ## Related Documentation
 
 - **Behavior spec template:** `docs/specs/behaviors/_template.md`
@@ -269,4 +301,6 @@ Last curated: 2026-02-13 (initial)
 - **Test helpers:** `tests/helpers/supabase.ts`
 - **Test fixtures:** `tests/helpers/fixtures.ts`
 - **Suite setup:** `tests/integration/suite-setup.ts`
+- **Global teardown:** `tests/global-teardown.ts` (auto-sweeps orphaned test data)
+- **Cleanup script:** `scripts/cleanup-test-data.js` (manual purge, `--dry-run` supported)
 - **Existing specs:** `docs/specs/behaviors/authentication.md`, `groups.md`, `journeys.md`, `roles.md`

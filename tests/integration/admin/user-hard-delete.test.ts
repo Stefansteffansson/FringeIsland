@@ -184,22 +184,23 @@ describe('B-ADMIN-009: User Hard Delete', () => {
 
   it('should create audit log entry before deletion', async () => {
     // Check for audit log entry about the deleted target user
+    // SQL RPC uses action = 'admin_hard_delete_user'
     const { data: logs, error } = await admin
       .from('admin_audit_log')
       .select('*')
-      .eq('action', 'user_hard_deleted')
+      .eq('action', 'admin_hard_delete_user')
       .eq('actor_group_id', deusexUser.personalGroupId);
 
     expect(error).toBeNull();
     expect(logs).not.toBeNull();
     expect(logs!.length).toBeGreaterThanOrEqual(1);
 
-    // Audit entry should capture the deleted user's info
+    // Audit entry captures target_user_id and target_personal_group_id
     const entry = logs!.find(
       (l: any) => l.metadata?.target_user_id === targetUser.profile.id
     );
     expect(entry).not.toBeUndefined();
-    expect(entry!.metadata.target_email).toBe(targetUser.email);
+    expect(entry!.metadata.target_personal_group_id).toBe(targetUser.personalGroupId);
   });
 
   it('should block non-admin from calling hard delete RPC', async () => {

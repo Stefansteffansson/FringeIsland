@@ -96,7 +96,7 @@ describe('B-RBAC-007: Role Renaming in Existing Groups', () => {
     if (testGroupId) await cleanupTestGroup(testGroupId);
     if (steward) await cleanupTestUser(steward.user.id);
     if (member) await cleanupTestUser(member.user.id);
-  });
+  }, 15000);
 
   it('should have no group_roles named "Group Leader" in any group', async () => {
     const { data } = await admin

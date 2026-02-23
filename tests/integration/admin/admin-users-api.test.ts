@@ -85,7 +85,7 @@ describe('B-PERF-001: Admin Users API (service_role)', () => {
 
   it('should reject non-admin caller with an error', async () => {
     const result = await queryAdminUsers({
-      callerUserId: normalUser.profile.id,
+      callerUserId: normalUser.personalGroupId,
       page: 0,
       pageSize: 10,
     });
@@ -96,7 +96,7 @@ describe('B-PERF-001: Admin Users API (service_role)', () => {
 
   it('should allow admin (Deusex) caller', async () => {
     const result = await queryAdminUsers({
-      callerUserId: deusexUser.profile.id,
+      callerUserId: deusexUser.personalGroupId,
       page: 0,
       pageSize: 10,
     });
@@ -110,7 +110,7 @@ describe('B-PERF-001: Admin Users API (service_role)', () => {
 
   it('should return users with correct fields', async () => {
     const result = await queryAdminUsers({
-      callerUserId: deusexUser.profile.id,
+      callerUserId: deusexUser.personalGroupId,
       page: 0,
       pageSize: 10,
     });
@@ -131,7 +131,7 @@ describe('B-PERF-001: Admin Users API (service_role)', () => {
 
   it('should respect page and pageSize parameters', async () => {
     const result = await queryAdminUsers({
-      callerUserId: deusexUser.profile.id,
+      callerUserId: deusexUser.personalGroupId,
       page: 0,
       pageSize: 2,
     });
@@ -144,13 +144,13 @@ describe('B-PERF-001: Admin Users API (service_role)', () => {
 
   it('should return different results for different pages', async () => {
     const page0 = await queryAdminUsers({
-      callerUserId: deusexUser.profile.id,
+      callerUserId: deusexUser.personalGroupId,
       page: 0,
       pageSize: 2,
     });
 
     const page1 = await queryAdminUsers({
-      callerUserId: deusexUser.profile.id,
+      callerUserId: deusexUser.personalGroupId,
       page: 1,
       pageSize: 2,
     });
@@ -173,7 +173,7 @@ describe('B-PERF-001: Admin Users API (service_role)', () => {
 
   it('should filter by search term (name match)', async () => {
     const result = await queryAdminUsers({
-      callerUserId: deusexUser.profile.id,
+      callerUserId: deusexUser.personalGroupId,
       page: 0,
       pageSize: 50,
       search: 'Perf API Deusex',
@@ -188,7 +188,7 @@ describe('B-PERF-001: Admin Users API (service_role)', () => {
 
   it('should filter by search term (email match)', async () => {
     const result = await queryAdminUsers({
-      callerUserId: deusexUser.profile.id,
+      callerUserId: deusexUser.personalGroupId,
       page: 0,
       pageSize: 50,
       search: deusexUser.email,
@@ -200,7 +200,7 @@ describe('B-PERF-001: Admin Users API (service_role)', () => {
 
   it('should return empty results for non-matching search', async () => {
     const result = await queryAdminUsers({
-      callerUserId: deusexUser.profile.id,
+      callerUserId: deusexUser.personalGroupId,
       page: 0,
       pageSize: 10,
       search: 'zzz_nonexistent_user_zzz',
@@ -215,7 +215,7 @@ describe('B-PERF-001: Admin Users API (service_role)', () => {
 
   it('should exclude decommissioned users by default', async () => {
     const result = await queryAdminUsers({
-      callerUserId: deusexUser.profile.id,
+      callerUserId: deusexUser.personalGroupId,
       page: 0,
       pageSize: 100,
       showDecommissioned: false,
@@ -230,7 +230,7 @@ describe('B-PERF-001: Admin Users API (service_role)', () => {
     // This test verifies the flag works — decommissioned users may or may not
     // exist, but the query should succeed and return a count
     const result = await queryAdminUsers({
-      callerUserId: deusexUser.profile.id,
+      callerUserId: deusexUser.personalGroupId,
       page: 0,
       pageSize: 100,
       showDecommissioned: true,
@@ -240,7 +240,7 @@ describe('B-PERF-001: Admin Users API (service_role)', () => {
     expect(result.data).not.toBeNull();
     // count with decommissioned should be >= count without
     const resultWithout = await queryAdminUsers({
-      callerUserId: deusexUser.profile.id,
+      callerUserId: deusexUser.personalGroupId,
       page: 0,
       pageSize: 100,
       showDecommissioned: false,
@@ -252,7 +252,7 @@ describe('B-PERF-001: Admin Users API (service_role)', () => {
 
   it('should return users ordered by created_at descending', async () => {
     const result = await queryAdminUsers({
-      callerUserId: deusexUser.profile.id,
+      callerUserId: deusexUser.personalGroupId,
       page: 0,
       pageSize: 10,
     });

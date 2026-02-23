@@ -108,9 +108,9 @@ describe('B-ADMIN-011: Admin Notification Send', () => {
       message: 'Test message',
     });
 
-    // Should succeed (return 0), not "function does not exist"
+    // Should succeed (return {success, count}), not "function does not exist"
     expect(error).toBeNull();
-    expect(data).toBe(0);
+    expect(data.count).toBe(0);
   });
 
   it('should send notifications to multiple users', async () => {
@@ -121,7 +121,7 @@ describe('B-ADMIN-011: Admin Notification Send', () => {
     });
 
     expect(error).toBeNull();
-    expect(data).toBe(2);
+    expect(data.count).toBe(2);
 
     // Verify notifications exist in the table
     const { data: notifs } = await admin
@@ -172,7 +172,7 @@ describe('B-ADMIN-011: Admin Notification Send', () => {
     });
 
     expect(error).toBeNull();
-    expect(data).toBe(0);
+    expect(data.count).toBe(0);
   });
 
   it('should block non-admin from calling send notification RPC', async () => {

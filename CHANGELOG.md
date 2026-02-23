@@ -8,6 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Enhanced Member Invitations: User Search Typeahead** — InviteMemberModal now includes debounced typeahead search (300ms) that queries users by name or email, shows avatar + name + email in dropdown, and excludes current group members and self. Max 8 results.
+- **Enhanced Member Invitations: Pending Email Invitations** — Stewards can now invite non-users by email. Creates `pending_email_invitations` record with 30-day expiration and UUID token. When the person signs up, `handle_new_user()` trigger auto-claims the invitation and creates a `group_memberships` row with `status='invited'`. Simulated email service (`lib/email/send.ts`) logs to console — swap one file for Resend/SendGrid later.
+- **New table: `pending_email_invitations`** — Stores pending invitations for non-users with RLS policies using `has_permission('invite_members')`.
+- **New API route: `/api/invitations/send-email`** — POST endpoint for sending simulated invitation emails, with JWT auth and permission validation.
+- **14 new integration tests** — `pending-invitations.test.ts` (10 tests: RLS, storage, trigger auto-claim, expiration, case-insensitive matching) + `user-search.test.ts` (4 tests: name/email search, limit, no results).
+- **2 new behavior specs** — B-GRP-006 (User Search Typeahead) in `groups.md`, B-INV-001 (Pending Email Invitations) in new `invitations.md`.
+
+### Changed
+- **InviteMemberModal refactored** — Two-flow modal: existing user (typeahead select → standard invite) vs non-user (email → pending invitation + simulated email). New `existingMemberGroupIds` prop for client-side member filtering.
+- **`handle_new_user()` trigger updated** — Added Step 8: claims all non-expired pending email invitations matching the new user's email, creating `group_memberships` rows with `status='invited'`.
+
+### Technical Details
+- **Migration:** `20260223140126_enhanced_member_invitations.sql`
+- **New files:** `lib/email/send.ts`, `app/api/invitations/send-email/route.ts`, `docs/specs/behaviors/invitations.md`, `docs/features/active/enhanced-member-invitations.md`
+- **Modified:** `components/groups/InviteMemberModal.tsx`, `app/groups/[id]/page.tsx`
+
+---
+
+### Added
 - **D15 Hardening: `personal_group_id` immutability trigger** — New `enforce_personal_group_id_immutability` trigger on `public.users` prevents UPDATE from changing or NULLing `personal_group_id` after it's set. Security invariant: personal group is the user's identity in the universal group pattern.
 - **D15 Hardening: 10 new integration tests** — `personal_group_id` non-null after signup (1), immutability trigger protection (3), groups-join-groups with engagement group actors (4), Myself role zero permissions (2). Total RBAC tests: 162 → 171.
 - **D15 Hardening: 5 behavior specs** — B-D15-001 through B-D15-005 documenting immutability, groups-join-groups, engagement group actors, Myself role permissions, and admin auth resolution chain.

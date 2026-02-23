@@ -98,4 +98,20 @@ Rather than creating separate RPCs for each admin action (which would require re
 
 > Promoted to playbook? Not yet
 
+### 2026-02-23: Test data cleanup infrastructure — three-layer safety net
+
+After thousands of orphaned rows accumulated (1,749 groups, 3,446 memberships, 5,844 notifications), we built a three-layer cleanup system:
+
+1. **`afterAll` hooks** (existing) — per-suite cleanup, handles the happy path
+2. **Jest `globalTeardown`** (`tests/global-teardown.ts`, NEW) — automatic sweep after every suite run. Three phases: delete test auth users → sweep orphan personal groups → sweep orphan engagement groups
+3. **One-time script** (`scripts/cleanup-test-data.js`, NEW) — manual purge with `--dry-run` support
+
+**Root cause of orphans:** When `afterAll` hooks timeout or crash, cleanup never runs. Also, deleting auth users CASCADE-deletes `public.users` rows, but the personal group (referenced via `users.personal_group_id`) is NOT cascade-deleted because the FK direction is FROM users TO groups. The personal group remains as an orphan.
+
+**RESTRICT FK trap:** `journeys.created_by_group_id` uses RESTRICT, so you must delete journeys before their creator group. `cleanupTestGroup()` was hardened to pre-delete journeys.
+
+**Verification:** One-time script reduced groups from 1,749 → 8, memberships 3,446 → 9, notifications 5,844 → 60. globalTeardown confirmed working — caught 3 leaked personal groups from a single test run.
+
+> Promoted to playbook? Yes — added "Test Data Cleanup Infrastructure" section to test-agent.md
+
 <!-- Append new entries below this line -->
