@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-23 (D15 Hardening Sprint — immutability trigger, 10 new tests, comment fixes)
+**Last Updated:** 2026-02-23 (Database cleanup + D15 residual fixes)
 **Current Version:** 0.2.28
 **Active Branch:** main
 
@@ -98,15 +98,22 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-23 (D15 Hardening Sprint)
+**Date:** 2026-02-23 (Database cleanup + D15 residual fixes)
 **Summary:**
-- **Track A (Security):** Created `enforce_personal_group_id_immutability` trigger — blocks UPDATE that changes or NULLs `personal_group_id` after it's set. Migration: `20260223075926_protect_personal_group_id.sql`. 3 tests (RED → GREEN).
-- **Track B (Test Coverage):** Added 7 new tests documenting guarantees: groups-join-groups (engagement group as member, 2 tests), `has_permission()` with engagement group actor (2 tests), Myself role has zero permissions (2 tests), admin auth chain (1 test — blocked by pre-existing deusex fixture issue). Also added `personal_group_id` non-null assertion to signup tests.
-- **Track C (Comments):** Fixed 7 stale comments across 4 test files (`invitations`, `role-assignment`, `deletion`, `forum`). Renamed `travelGuideRole` → `guideRole` variable.
-- **Behavior Specs:** Created `docs/specs/behaviors/d15-hardening.md` (B-D15-001 through B-D15-005). Updated `authentication.md` B-AUTH-001 criteria.
-- **Test Counts:** RBAC 162→171, Auth 28→29, Groups 32/32, Communication forum 10/10. All new tests pass.
+- Full database cleanup: removed ~8,400 test artifact rows across 6 tables
+- Cleaned 57 orphaned auth.users entries and avatar storage bucket
+- Preserved all seed data (8 journeys, 4 system groups, templates, permissions)
+- Fixed D15 residual: ambiguous `groups` join in My Journeys page (PostgREST PGRST201)
+- Fixed avatar upload not refreshing Navigation (missing `refreshNavigation` dispatch)
+- Re-created Supabase Storage policies for avatars bucket (INSERT/UPDATE/DELETE)
+- Promoted deusex@fringeisland.com to DeusEx admin
 
-**Known Pre-Existing Issue:** `deusex-bootstrap.test.ts` `beforeAll` fails (deusex user exists in auth but not resolvable in `public.users`). Not related to D15 changes — affects entire admin test suite.
+**Previous session:** 2026-02-23 (Claude Code permissions cleanup)
+- Consolidated `.claude/settings.local.json` from ~90 permission entries to ~30 using wildcard patterns
+
+**Previous session:** 2026-02-23 (D15 Hardening Sprint)
+- Created `enforce_personal_group_id_immutability` trigger, 10 new tests, comment fixes
+- RBAC 162→171, Auth 28→29, Groups 32/32, Communication forum 10/10
 
 **Previous session:** 2026-02-22 (D15 migration audit, residual fixes, documentation)
 - Audited all 28 steps of D15 frontend migration plan — all COMPLETE
@@ -134,6 +141,7 @@
 
 **Known Issues:**
 - `app/admin/fix-orphans/page.tsx` uses `alert()` (should use ConfirmModal)
+- Hydration mismatch warning in `AuthForm.tsx:60` (cosmetic, non-blocking)
 
 **What We're NOT Building Yet:**
 - See `docs/planning/DEFERRED_DECISIONS.md` for rationale on deferred features

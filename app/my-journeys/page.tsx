@@ -110,14 +110,14 @@ export default function MyJourneysPage() {
               difficulty_level,
               estimated_duration_minutes
             ),
-            groups (
+            groups!group_id (
               id,
               name
             )
           `)
           .in('group_id', groupIds)
           .not('journeys', 'is', null)
-          .not('groups', 'is', null)
+          .not('groups!group_id', 'is', null)
           .order('enrolled_at', { ascending: false });
 
         if (groupError) throw groupError;

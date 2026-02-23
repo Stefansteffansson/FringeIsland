@@ -60,6 +60,10 @@ export default function EditProfilePage() {
     if (profile) {
       setProfile({ ...profile, avatar_url: url || null });
     }
+    // Refresh navigation to show updated avatar
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('refreshNavigation'));
+    }
   };
 
   // Show loading state
