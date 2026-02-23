@@ -27,8 +27,8 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
   let member: any;    // Active member WITHOUT leader role
   let outsider: any;  // Not a member of testGroup at all
   let testGroup: any;
-  let leaderRole: any;  // "Group Leader" group_role for testGroup
-  let memberRole: any;  // "Travel Guide" group_role for testGroup (used as target to assign)
+  let leaderRole: any;  // "Steward" group_role for testGroup
+  let memberRole: any;  // "Guide" group_role for testGroup (used as target to assign)
 
   const admin = createAdminClient();
 
@@ -310,7 +310,7 @@ describe('B-ROL-001 + B-ROL-003: Role Assignment Permissions & Visibility', () =
         .select()
         .single();
 
-      // UNIQUE (user_id, group_id, group_role_id) violated
+      // UNIQUE (member_group_id, group_id, group_role_id) violated
       expect(error).not.toBeNull();
       expect(data).toBeNull();
     } finally {

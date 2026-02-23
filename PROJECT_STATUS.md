@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-22 (D15 schema rebuild committed + pushed)
+**Last Updated:** 2026-02-22 (D15 migration audit complete, all residuals fixed + documented)
 **Current Version:** 0.2.28
 **Active Branch:** main
 
@@ -42,9 +42,9 @@
 
 - **Phase:** Performance Optimization COMPLETE (All Tiers: 1A, 1B, 1C, 2A, 2B, 2C, 3A, 3B)
 - **Total Tables:** 18 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 5 active + 71 archived (consolidated via D15 rebuild)
+- **Total Migrations:** 6 active + 71 archived (consolidated via D15 rebuild + hardening trigger)
 - **Recent Version:** v0.2.28 (Realtime fixes + admin user filters + auto force-logout)
-- **Test Coverage:** 414 integration + 99 unit + 4 setup = **517 tests, all passing** ✅
+- **Test Coverage:** 424 integration + 99 unit + 4 setup = **527 tests** ✅
 - **Behaviors Documented:** 77 (58 previous + 19 admin) ✅
 - **Feature Docs:** 4 complete + 3 planned designs + 1 active (performance)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
@@ -68,6 +68,7 @@
 - ✅ **Direct Messaging** (1:1 conversations, inbox, read tracking, Realtime) v0.2.15
 - ✅ **RBAC Implementation** (4 sub-sprints: schema, permissions, UI migration, role management) v0.2.16-v0.2.20
 - ✅ **DeusEx Admin Foundation** (route protection, dashboard, member management, audit log) v0.2.21-v0.2.25
+- ✅ **D15 Universal Group Pattern** (schema rebuild, 28-step frontend migration, all residuals fixed) v0.2.29
 
 ---
 
@@ -97,17 +98,20 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-22 (D15 Universal Group Pattern — schema rebuild committed)
+**Date:** 2026-02-23 (D15 Hardening Sprint)
 **Summary:**
-- Committed and pushed the D15 Universal Group Pattern schema rebuild (was uncommitted from previous session)
-- 71 old incremental migrations archived to `supabase/migrations/archive/`
-- 5 new consolidated migrations replace the old schema (user_id → member_group_id everywhere)
-- 40+ integration test files updated to use new column names
-- 4 new type files added (`admin.ts`, `group.ts`, `messaging.ts`, `user.ts`)
-- Utility scripts and seed data added
-- `pg` dependency added to `package.json`
+- **Track A (Security):** Created `enforce_personal_group_id_immutability` trigger — blocks UPDATE that changes or NULLs `personal_group_id` after it's set. Migration: `20260223075926_protect_personal_group_id.sql`. 3 tests (RED → GREEN).
+- **Track B (Test Coverage):** Added 7 new tests documenting guarantees: groups-join-groups (engagement group as member, 2 tests), `has_permission()` with engagement group actor (2 tests), Myself role has zero permissions (2 tests), admin auth chain (1 test — blocked by pre-existing deusex fixture issue). Also added `personal_group_id` non-null assertion to signup tests.
+- **Track C (Comments):** Fixed 7 stale comments across 4 test files (`invitations`, `role-assignment`, `deletion`, `forum`). Renamed `travelGuideRole` → `guideRole` variable.
+- **Behavior Specs:** Created `docs/specs/behaviors/d15-hardening.md` (B-D15-001 through B-D15-005). Updated `authentication.md` B-AUTH-001 criteria.
+- **Test Counts:** RBAC 162→171, Auth 28→29, Groups 32/32, Communication forum 10/10. All new tests pass.
 
-**Commit:** `ce58227` — 143 files changed, 4,931 additions, 929 deletions
+**Known Pre-Existing Issue:** `deusex-bootstrap.test.ts` `beforeAll` fails (deusex user exists in auth but not resolvable in `public.users`). Not related to D15 changes — affects entire admin test suite.
+
+**Previous session:** 2026-02-22 (D15 migration audit, residual fixes, documentation)
+- Audited all 28 steps of D15 frontend migration plan — all COMPLETE
+- Fixed broken enrollment query, last-Steward UI protection, stale comments
+- Created comprehensive feature doc
 
 **Previous Sessions:**
 - 2026-02-21: Performance Optimization Tiers 2+3 (parallel queries, N+1 fix, debounce, dedup)

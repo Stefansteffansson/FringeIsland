@@ -97,13 +97,14 @@ In Phase 2, user-generated content creates new scenarios:
 
 **Status:** **Design RESOLVED** by RBAC decisions D7, D11, D21 (February 2026). **UI still deferred.** See `docs/features/planned/dynamic-permissions-system.md`.
 
-**What's resolved (design):**
+**What's resolved (design + schema):**
 - **D7:** Universal group-to-group membership model. Personal groups and engagement groups use the same joining mechanism.
-- **D11:** Circularity prevention via `BEFORE INSERT` trigger with recursive CTE check.
+- **D11:** Circularity prevention via `BEFORE INSERT` trigger with recursive CTE check. **Designed but NOT yet implemented** — must be built before shipping group-joins-group UI.
 - **D21:** Joining groups get Member role by default. Host Steward can promote/restrict.
+- **D15:** Schema migrated, engagement group as member verified by integration tests, `has_permission()` is type-agnostic.
 
 **What's still deferred (UI, Phase 2+):**
-- Group-joins-group request/acceptance UI
+- Group-joins-group request/acceptance UI (⚠️ **requires D11 circularity trigger first**)
 - Hierarchy visualization (tree view, breadcrumbs)
 - Attribution display ("Mogwai in 'Alpha'" chain)
 - Joining-group role management UI (host Steward configures roles for joining groups)
@@ -137,9 +138,16 @@ In Phase 2, user-generated content creates new scenarios:
 - Group-joins-group request/acceptance UI
 - Hierarchy visualization (tree view, breadcrumbs)
 - Attribution display ("Mogwai in 'Alpha'" chain)
-- `user_id` → `member_group_id` migration for existing memberships (D15)
 - Circularity prevention trigger (D11 — designed, not yet implemented)
 - Depth limit configuration
+
+**⚠️ Important: Circularity prevention (D11) MUST be implemented before shipping group-joins-group UI.**
+The schema allows any group to join any group — nothing prevents A → B → A circular memberships today. This is safe while only personal groups join engagement groups (personal groups can't form cycles), but the D11 `BEFORE INSERT` trigger with recursive CTE check is a **prerequisite** for enabling the group-joins-group UI. Without it, users could create infinite permission resolution loops.
+
+**What's been completed since original deferral:**
+- ✅ `user_id` → `member_group_id` migration (D15, v0.2.29)
+- ✅ Schema verified: engagement groups can join other groups at DB level (D15 Hardening, tested in `groups-join-groups.test.ts`)
+- ✅ `has_permission()` is type-agnostic — works with any group as actor
 
 **Original rationale still valid for UI deferral:**
 - Learn actual user needs before building complex hierarchy UI

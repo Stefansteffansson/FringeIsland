@@ -146,4 +146,49 @@ describe('B-RBAC-003: Personal Group Creation on Signup', () => {
     expect(error).toBeNull();
     expect(data).toHaveLength(1); // Exactly one, not zero, not two
   });
+
+  // ──────────────────────────────────────────────────────────────────
+  // B-D15-004: Myself Role Has Zero Permissions
+  // ──────────────────────────────────────────────────────────────────
+
+  it('should have zero group_role_permissions for the Myself role', async () => {
+    const { data: personalGroup } = await admin
+      .from('groups')
+      .select('id')
+      .eq('group_type', 'personal')
+      .eq('created_by_group_id', testUser.personalGroupId)
+      .single();
+
+    expect(personalGroup).not.toBeNull();
+
+    const { data: myselfRole } = await admin
+      .from('group_roles')
+      .select('id')
+      .eq('group_id', personalGroup!.id)
+      .eq('name', 'Myself')
+      .single();
+
+    expect(myselfRole).not.toBeNull();
+
+    const { data: permissions, error } = await admin
+      .from('group_role_permissions')
+      .select('id')
+      .eq('group_role_id', myselfRole!.id);
+
+    expect(error).toBeNull();
+    expect(permissions).toHaveLength(0);
+  });
+
+  it('should return false for has_permission() on personal group self-check', async () => {
+    // Myself role has no permissions, so checking any permission
+    // against the personal group should return false (unless FI Members grants it)
+    const { data, error } = await admin.rpc('has_permission', {
+      p_acting_group_id: testUser.personalGroupId,
+      p_context_group_id: testUser.personalGroupId,
+      p_permission_name: 'invite_members',
+    });
+
+    expect(error).toBeNull();
+    expect(data).toBe(false);
+  });
 });

@@ -130,6 +130,36 @@ describe('B-AUTH-001: Sign Up Creates Profile', () => {
     }
   });
 
+  it('should have personal_group_id set (non-null) after signup', async () => {
+    const supabase = createTestClient();
+    const email = generateTestEmail();
+    const password = 'Test123!@#$';
+
+    const { data: authData } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { display_name: 'Personal Group Test' },
+      },
+    });
+
+    if (authData.user) {
+      testUsers.push(authData.user.id);
+
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const { data: profile } = await supabase
+        .from('users')
+        .select('personal_group_id')
+        .eq('auth_user_id', authData.user.id)
+        .single();
+
+      expect(profile).not.toBeNull();
+      expect(profile?.personal_group_id).not.toBeNull();
+      expect(typeof profile?.personal_group_id).toBe('string');
+    }
+  });
+
   it('should set default values on profile creation', async () => {
     const supabase = createTestClient();
     const email = generateTestEmail();

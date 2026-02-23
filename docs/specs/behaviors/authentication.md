@@ -22,6 +22,7 @@
 - [x] Trigger automatically creates public.users record
 - [x] Profile has auth_user_id linked to auth.users.id
 - [x] Profile has email and full_name populated
+- [x] Profile has personal_group_id set (non-null) — personal group created by trigger
 - [x] If trigger fails, sign up transaction rolls back
 - [x] User cannot sign up with existing email
 

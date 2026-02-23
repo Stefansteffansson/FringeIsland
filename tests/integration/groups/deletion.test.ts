@@ -66,9 +66,9 @@ describe('B-GRP-005: Group Deletion Rules', () => {
       status: 'active',
     });
 
-    // Use a non-leader role to avoid triggering last-leader protection
-    // (the trigger only fires for 'Group Leader' roles, blocking CASCADE delete)
-    const { data: travelGuideRole } = await admin
+    // Use a non-Steward role to avoid triggering last-leader protection
+    // (the trigger only fires for 'Steward' roles, blocking CASCADE delete)
+    const { data: guideRole } = await admin
       .from('group_roles')
       .insert({ group_id: group!.id, name: 'Guide' })
       .select()
@@ -77,7 +77,7 @@ describe('B-GRP-005: Group Deletion Rules', () => {
     await admin.from('user_group_roles').insert({
       member_group_id: leader.personalGroupId,
       group_id: group!.id,
-      group_role_id: travelGuideRole!.id,
+      group_role_id: guideRole!.id,
       assigned_by_group_id: leader.personalGroupId,
     });
 

@@ -7,7 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **D15 Hardening: `personal_group_id` immutability trigger** — New `enforce_personal_group_id_immutability` trigger on `public.users` prevents UPDATE from changing or NULLing `personal_group_id` after it's set. Security invariant: personal group is the user's identity in the universal group pattern.
+- **D15 Hardening: 10 new integration tests** — `personal_group_id` non-null after signup (1), immutability trigger protection (3), groups-join-groups with engagement group actors (4), Myself role zero permissions (2). Total RBAC tests: 162 → 171.
+- **D15 Hardening: 5 behavior specs** — B-D15-001 through B-D15-005 documenting immutability, groups-join-groups, engagement group actors, Myself role permissions, and admin auth resolution chain.
+
 ### Changed
+- **D15 Universal Group Pattern — Schema Rebuild** — Consolidated 71 incremental migrations into 5 clean migrations. Core change: `group_memberships.user_id` → `member_group_id` (group-to-group only). Every user represented by a personal group. Column renames across 10+ tables (`added_by_user_id` → `added_by_group_id`, `created_by_user_id` → `created_by_group_id`, etc.). Old migrations archived to `supabase/migrations/archive/`.
+- **D15 Frontend Migration (28 steps)** — All 26 production files migrated to new column names and Universal Group Pattern. 36 files total including tests and types. "Group Leader" → "Steward" terminology throughout.
+- **D15 Residual Fixes** — Fixed broken enrollment query in `AdminDataPanel.tsx` (dead `users!journey_enrollments_user_id_fkey` → `groups!journey_enrollments_group_id_fkey`). Fixed last-Steward UI protection in group detail page (`'Group Leader'` → `'Steward'`). Fixed stale UI text and comments.
+
+### Fixed
+- **Stale comments in test files** — Updated 7 comment locations across 4 test files to reflect D15 column renames (`user_id` → `member_group_id`, `added_by_user_id` → `added_by_group_id`, `author_user_id` → `author_group_id`) and terminology ("Group Leader" → "Steward", "Travel Guide" → "Guide"). Renamed `travelGuideRole` → `guideRole` variable in deletion tests.
 - **Performance Tier 2A: Parallelized group detail page queries** — Refactored `fetchGroupData` in `app/groups/[id]/page.tsx`: eliminated 3 redundant queries (membership check, member count, current user roles — all derived from existing query results), parallelized remaining 4 queries into 2 `Promise.all` steps. Also parallelized `refetchMembers` (member profiles + roles fetched in parallel). Expected improvement: ~1.2s → ~300-400ms.
 - **Performance Tier 2B: Fixed N+1 on My Groups page** — Created `get_group_member_counts` RPC function (SECURITY DEFINER, batch UUID array input). Refactored `app/groups/page.tsx`: replaced N individual count queries with single RPC call, parallelized group data + counts into one `Promise.all`. For 10 groups: 12 HTTP requests → 3 (2 parallel steps).
 - **Performance Tier 3A: Debounced commonGroupCount** — Admin panel's common group count computation now uses 300ms debounce with proper cleanup, preventing rapid-fire queries during quick user selections.

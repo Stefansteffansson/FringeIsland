@@ -329,7 +329,7 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
         .single();
 
       // The "Users can create invitations for groups they lead" INSERT policy only
-      // checks added_by_user_id = current user and status = 'invited'.
+      // checks added_by_group_id = current user's personal group and status = 'invited'.
       // It does NOT verify the user is a Group Leader.
       // This is a known policy gap — any active member can send invitations.
       // Document the actual behaviour rather than asserting it blocks.
@@ -403,7 +403,7 @@ describe('B-GRP-002: Member Invitation Lifecycle', () => {
       .select()
       .single();
 
-    // Should fail: unique constraint on (group_id, user_id)
+    // Should fail: unique constraint on (group_id, member_group_id)
     expect(error).not.toBeNull();
     expect(data).toBeNull();
 

@@ -170,6 +170,46 @@ describe('B-ADMIN-006: Deusex Bootstrap', () => {
     expect(data).toBe(true);
   });
 
+  it('should resolve admin auth chain: auth_user_id → personal_group_id → DeusEx → permissions', async () => {
+    // B-D15-005: Verify the full resolution chain
+    // Step 1: We already have deusexPersonalGroupId resolved from the user profile
+    expect(deusexPersonalGroupId).toBeDefined();
+    expect(typeof deusexPersonalGroupId).toBe('string');
+
+    // Step 2: Verify personal_group_id points to a real personal group
+    const { data: personalGroup, error: pgErr } = await admin
+      .from('groups')
+      .select('id, group_type')
+      .eq('id', deusexPersonalGroupId)
+      .single();
+
+    expect(pgErr).toBeNull();
+    expect(personalGroup).not.toBeNull();
+    expect(personalGroup!.group_type).toBe('personal');
+
+    // Step 3: Verify personal group is a member of DeusEx system group
+    const { data: membership, error: memErr } = await admin
+      .from('group_memberships')
+      .select('id, status')
+      .eq('group_id', deusexGroupId)
+      .eq('member_group_id', deusexPersonalGroupId)
+      .eq('status', 'active')
+      .single();
+
+    expect(memErr).toBeNull();
+    expect(membership).not.toBeNull();
+
+    // Step 4: has_permission resolves through the chain
+    const { data, error } = await admin.rpc('has_permission', {
+      p_acting_group_id: deusexPersonalGroupId,
+      p_context_group_id: testGroup.id,
+      p_permission_name: 'manage_all_groups',
+    });
+
+    expect(error).toBeNull();
+    expect(data).toBe(true);
+  });
+
   it('should have ALL permissions (Tier 1 system group resolution)', async () => {
     const { data: allPerms } = await admin
       .from('permissions')

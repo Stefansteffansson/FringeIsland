@@ -33,7 +33,7 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
   let member: any;      // Active member WITH Member role
   let outsider: any;    // Not a member of testGroup at all
   let testGroup: any;
-  let leaderRole: any;  // 'Group Leader' group_role for testGroup
+  let leaderRole: any;  // 'Steward' group_role for testGroup
   let memberRole: any;  // 'Member' group_role for testGroup
 
   beforeAll(async () => {
@@ -349,8 +349,8 @@ describe('B-COMM-004 + B-COMM-005 + B-COMM-006 + B-COMM-007: Group Forum System'
         .update({ is_deleted: true })
         .eq('id', leaderPost!.id);
 
-      // RLS: update_own policy requires author_user_id = current_user AND is_deleted=false
-      // (member is not the author), moderate_forum requires Group Leader role
+      // RLS: update_own policy requires author_group_id = current_user's personal group AND is_deleted=false
+      // (member is not the author), moderate_forum requires Steward role
       // No matching policy → no rows updated, no error thrown (silent RLS block)
       expect(error).toBeNull();
 
