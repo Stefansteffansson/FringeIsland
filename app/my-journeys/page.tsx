@@ -396,7 +396,7 @@ export default function MyJourneysPage() {
               <div className="text-6xl mb-4">👥</div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">No Group Journeys Yet</h3>
               <p className="text-gray-600 mb-6">
-                Your groups haven't enrolled in any journeys. Group Leaders can enroll groups from the journey catalog.
+                Your groups haven't enrolled in any journeys. Stewards can enroll groups from the journey catalog.
               </p>
               <Link
                 href="/journeys"

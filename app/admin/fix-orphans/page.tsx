@@ -32,11 +32,11 @@ export default function AdminFixOrphansPage() {
 
         if (groupsError) throw groupsError;
 
-        // Check each group for Group Leader
+        // Check each group for Steward
         const orphaned: OrphanedGroup[] = [];
 
         for (const group of allGroups || []) {
-          // Count Group Leaders in this group
+          // Count Stewards in this group
           const { data: leaderRoles, error: rolesError } = await supabase
             .from('user_group_roles')
             .select(`
