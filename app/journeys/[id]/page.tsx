@@ -82,7 +82,7 @@ export default function JourneyDetailPage() {
           .from('journey_enrollments')
           .select(`
             id,
-            groups!inner(id, name)
+            groups!journey_enrollments_group_id_fkey(id, name)
           `)
           .eq('journey_id', journeyId)
           .in('group_id', groupIds);

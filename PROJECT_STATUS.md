@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-23 (Test Data Cleanup + Script Housekeeping)
+**Last Updated:** 2026-02-23 (Fix PGRST201 ambiguous FK errors)
 **Current Version:** 0.2.29
 **Active Branch:** main
 
@@ -88,15 +88,15 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-23 (Test Data Cleanup + Script Housekeeping)
+**Date:** 2026-02-23 (Fix PGRST201 ambiguous FK errors)
 **Summary:**
-- Built 3-layer test data cleanup system (globalTeardown + one-time script + hardened helper)
-- Purged 1,741 orphaned groups, 3,437 memberships, 5,784 notifications from DB
-- Documented in test-agent playbook, testing journal, TDD workflow, MEMORY.md
-- Deleted 8 one-off troubleshooting scripts from `scripts/` (superseded or no longer needed)
-- Committed Enhanced Member Invitations (previously uncommitted from earlier session)
+- Fixed PGRST201 "Could not embed" errors in EnrollmentModal and journey detail page
+- Root cause: D15 Universal Group Pattern added multiple FKs from group_memberships/journey_enrollments to groups
+- PostgREST couldn't disambiguate bare `groups!inner(...)` — replaced with explicit FK hints
+- 3 queries fixed across 2 files
 
 **Previous Sessions:**
+- 2026-02-23: Test Data Cleanup + Script Housekeeping
 - 2026-02-23: Enhanced Member Invitations — typeahead, pending email invitations, 14 tests
 - 2026-02-23: Database cleanup + D15 residual fixes
 - 2026-02-23: D15 Hardening Sprint, Claude Code permissions cleanup
@@ -119,6 +119,7 @@
 **Known Issues:**
 - `app/admin/fix-orphans/page.tsx` uses `alert()` (should use ConfirmModal)
 - Hydration mismatch warning in `AuthForm.tsx:60` (cosmetic, non-blocking)
+- WebSocket/Realtime connection warning in console (cosmetic, non-blocking)
 
 **What We're NOT Building Yet:**
 - See `docs/planning/DEFERRED_DECISIONS.md` for rationale on deferred features

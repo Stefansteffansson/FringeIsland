@@ -80,7 +80,7 @@ export default function EnrollmentModal({
       // Get all groups the user is an active member of
       const { data: memberships, error: membershipError } = await supabase
         .from('group_memberships')
-        .select('group_id, groups!inner(id, name)')
+        .select('group_id, groups!group_memberships_group_id_fkey(id, name)')
         .eq('member_group_id', userProfile.personal_group_id)
         .eq('status', 'active');
 
@@ -135,7 +135,7 @@ export default function EnrollmentModal({
         if (groupIds.length > 0) {
           const { data } = await supabase
             .from('journey_enrollments')
-            .select('id, groups!inner(name)')
+            .select('id, groups!journey_enrollments_group_id_fkey(name)')
             .eq('journey_id', journeyId)
             .in('group_id', groupIds)
             .maybeSingle();
