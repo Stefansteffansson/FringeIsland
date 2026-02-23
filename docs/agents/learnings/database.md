@@ -8,6 +8,10 @@
 
 ## Entries
 
+### 2026-02-23: Immutability triggers for identity columns
+When a column serves as an identity anchor (like `personal_group_id`), protect it with a `BEFORE UPDATE` trigger that checks `OLD.col IS NOT NULL AND NEW.col IS DISTINCT FROM OLD.col`. This allows the initial set (NULL → value) while blocking all subsequent changes. Pattern pairs well with `enforce_decommission_invariant()` on the same table.
+> Promoted to playbook? Not yet
+
 ### 2026-02-16: Nested RLS in INSERT policies with anti-escalation
 When an INSERT policy on table A uses subqueries on tables B and C (e.g., `SELECT group_id FROM group_roles WHERE id = group_role_id`), those subqueries are subject to RLS on B and C. This silently blocks legitimate inserts. Fix: create SECURITY DEFINER helper functions (`get_group_id_for_role()`, `get_permission_name()`) that bypass RLS. This is the second time we hit nested RLS (first was `has_permission`). Always use helpers for cross-table lookups in policies.
 > Promoted to playbook? Partially — already in MEMORY.md, now confirmed with second occurrence.

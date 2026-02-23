@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-22 (D15 migration audit complete, all residuals fixed + documented)
+**Last Updated:** 2026-02-23 (D15 Hardening Sprint — immutability trigger, 10 new tests, comment fixes)
 **Current Version:** 0.2.28
 **Active Branch:** main
 

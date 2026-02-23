@@ -8,6 +8,10 @@
 
 ## Entries
 
+### 2026-02-23: "Document existing guarantees" tests may pass immediately — that's OK
+Track B of the D15 hardening sprint wrote tests for guarantees that already worked (e.g., `has_permission()` with engagement group actor, Myself role zero permissions). These tests passed immediately because the underlying code was already generic. This is expected and valuable — the tests document the guarantee and catch future regressions. Don't confuse "passes immediately" with "unnecessary test."
+> Promoted to playbook? Not yet
+
 ### 2026-02-16: Tests must link template IDs when creating Steward roles
 After the `prevent_last_leader_removal` trigger was changed to check `created_from_role_template_id` instead of role name, all tests that create "Steward" roles ad-hoc must include `created_from_role_template_id: stewardTemplateId`. Look it up in `beforeAll` via `admin.from('role_templates').select('id').eq('name', 'Steward Role Template').single()`. Without this, the trigger won't protect the role.
 > Promoted to playbook? Not yet
