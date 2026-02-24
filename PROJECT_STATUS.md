@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-24 (Force logout responsiveness + stale session handling)
+**Last Updated:** 2026-02-24 (Fix admin deactivate/decommission RLS + admin layout race condition)
 **Current Version:** 0.2.29
 **Active Branch:** main
 
@@ -88,24 +88,21 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-24 (Force logout responsiveness + stale session handling)
+**Date:** 2026-02-24 (Fix admin deactivate/decommission + admin layout race condition)
 **Summary:**
-- Implemented force-logout responsiveness for admin actions (force-logout, deactivate, decommission)
-- Added Realtime broadcast channel (`force-logout:{userId}`) for instant client notification (best-effort)
-- Added `validateSession()` to AuthContext — calls `getUser()` to detect dead sessions, signs out + redirects to /login
-- Added 10-second periodic polling + tab focus/visibility handlers for near-immediate force-logout detection
-- Added error states with retry buttons to 5 pages (profile, invitations, messages, groups list, group detail)
-- Extracted fetch functions to `useCallback` in profile, invitations, messages pages for retry support
-- Admin broadcasts force_logout event after force-logout, deactivate, and decommission RPC calls
-- 7 files modified, 0 new files, 0 migrations
+- Fixed admin deactivate/decommission silently failing due to RLS — client-side `.update()` blocked by `users_select_active` policy when setting `is_active=false` (NEW row invisible after UPDATE)
+- Replaced client-side `.update()` with existing SECURITY DEFINER RPCs: `admin_update_user_status` (activate/deactivate) and `admin_decommission_user` (decommission)
+- Fixed `signIn()` in AuthContext to check `!profile.is_active` explicitly (defense-in-depth, not just row visibility)
+- Suppressed noisy 406 console error for deactivated user profile resolution (PGRST116)
+- Fixed intermittent "Access Denied" on admin panel — `userProfile` was missing from the dependency array in `admin/layout.tsx`, causing the permission check to fire before profile was resolved
+- 3 files modified, 0 new files, 0 migrations
 
 **Key decisions:**
-- Realtime broadcast is best-effort (may not work without Realtime Authorization config)
-- 10-second polling via `getUser()` is the reliable fallback
-- `window.location.replace('/login')` used for redirect (clears stale page state, prevents Back button)
-- `scope: 'local'` on signOut broken in supabase-js 2.91.0 — use default global scope
+- Always use SECURITY DEFINER RPCs for admin operations that change RLS-visible columns — client-side `.update()` fails when the NEW row violates SELECT policies
+- Admin layout waits for `userProfile` before checking permissions (stays in loading state instead of false "Access Denied")
 
 **Previous Sessions:**
+- 2026-02-24: Force logout responsiveness + stale session error handling
 - 2026-02-23: Fix PGRST201 ambiguous FK errors
 - 2026-02-23: Test Data Cleanup + Script Housekeeping
 - 2026-02-23: Enhanced Member Invitations — typeahead, pending email invitations, 14 tests

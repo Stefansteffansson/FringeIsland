@@ -24,13 +24,10 @@ export default function AdminLayout({
       return;
     }
 
-    const checkPermission = async () => {
-      if (!userProfile) {
-        setHasAccess(false);
-        setLoading(false);
-        return;
-      }
+    // userProfile resolves asynchronously after user — wait for it
+    if (!userProfile) return;
 
+    const checkPermission = async () => {
       try {
         // Check manage_all_groups permission (Tier 1 — works with any group_id)
         const { data, error } = await supabase.rpc('has_permission', {
@@ -54,7 +51,7 @@ export default function AdminLayout({
     };
 
     checkPermission();
-  }, [user, authLoading, router, supabase]);
+  }, [user, userProfile, authLoading, router, supabase]);
 
   if (authLoading || loading) {
     return (

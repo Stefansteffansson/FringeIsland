@@ -277,12 +277,13 @@ export default function AdminDashboard() {
   const executeActivate = async (targetIds: string[]) => {
     setActionInProgress(true);
     try {
-      const { error } = await supabase
-        .from('users')
-        .update({ is_active: true })
-        .in('id', targetIds);
-
-      if (error) throw error;
+      for (const userId of targetIds) {
+        const { data, error } = await supabase.rpc('admin_update_user_status', {
+          target_user_id: userId,
+          new_is_active: true,
+        });
+        if (error) throw error;
+      }
 
       await writeAuditLog('user_activated', targetIds.length, targetIds);
       afterAction('activate', `Activated ${targetIds.length} user(s).`);
@@ -297,12 +298,13 @@ export default function AdminDashboard() {
     setActionInProgress(true);
     closeConfirm();
     try {
-      const { error } = await supabase
-        .from('users')
-        .update({ is_active: false })
-        .in('id', targetIds);
-
-      if (error) throw error;
+      for (const userId of targetIds) {
+        const { data, error } = await supabase.rpc('admin_update_user_status', {
+          target_user_id: userId,
+          new_is_active: false,
+        });
+        if (error) throw error;
+      }
 
       // Auto force-logout: invalidate sessions so deactivation takes effect immediately
       await supabase.rpc('admin_force_logout', { target_user_ids: targetIds });
@@ -323,12 +325,12 @@ export default function AdminDashboard() {
     setActionInProgress(true);
     closeConfirm();
     try {
-      const { error } = await supabase
-        .from('users')
-        .update({ is_decommissioned: true, is_active: false } as any)
-        .in('id', targetIds);
-
-      if (error) throw error;
+      for (const userId of targetIds) {
+        const { data, error } = await supabase.rpc('admin_decommission_user', {
+          target_user_id: userId,
+        });
+        if (error) throw error;
+      }
 
       // Auto force-logout: invalidate sessions so decommission takes effect immediately
       await supabase.rpc('admin_force_logout', { target_user_ids: targetIds });

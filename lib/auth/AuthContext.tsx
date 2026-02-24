@@ -77,7 +77,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .eq('auth_user_id', user.id)
           .single();
         if (error) {
-          console.error('[AuthContext] Profile resolution failed:', error.message);
+          // 406 = row hidden by RLS (deactivated user). signIn() handles this
+          // with a user-facing message, so only log unexpected errors.
+          if (error.code !== 'PGRST116') {
+            console.error('[AuthContext] Profile resolution failed:', error.message);
+          }
           return;
         }
         if (!cancelled && data) {
@@ -224,13 +228,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (error) throw error;
 
       // Application-layer active check.
-      const { data: profile } = await supabase
+      // RLS hides deactivated users (is_active = false), so the query may
+      // return null or a 406 error. Both mean the account is deactivated.
+      const { data: profile, error: profileError } = await supabase
         .from('users')
         .select('is_active')
         .eq('auth_user_id', data.user.id)
         .maybeSingle();
 
-      if (!profile) {
+      if (profileError || !profile || !profile.is_active) {
         await supabase.auth.signOut();
         throw new Error('Your account has been deactivated. Please contact support.');
       }
