@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-24 (Fix admin deactivate/decommission RLS + admin layout race condition)
+**Last Updated:** 2026-02-24 (Admin bug fixes + hard delete trigger bypass + orphan group issue identified)
 **Current Version:** 0.2.29
 **Active Branch:** main
 
@@ -32,7 +32,7 @@
 
 - **Phase:** Enhanced Member Invitations COMPLETE
 - **Total Tables:** 19 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 7 active + 71 archived
+- **Total Migrations:** 8 active + 71 archived
 - **Recent Version:** v0.2.29 (Enhanced Member Invitations)
 - **Test Coverage:** 438 integration + 99 unit + 4 setup = **541 tests** ✅
 - **Behaviors Documented:** 77 (58 previous + 19 admin) ✅
@@ -88,20 +88,23 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-24 (Fix admin deactivate/decommission + admin layout race condition)
+**Date:** 2026-02-24 (Admin bug fixes + hard delete trigger bypass + orphan group issue)
 **Summary:**
-- Fixed admin deactivate/decommission silently failing due to RLS — client-side `.update()` blocked by `users_select_active` policy when setting `is_active=false` (NEW row invisible after UPDATE)
-- Replaced client-side `.update()` with existing SECURITY DEFINER RPCs: `admin_update_user_status` (activate/deactivate) and `admin_decommission_user` (decommission)
-- Fixed `signIn()` in AuthContext to check `!profile.is_active` explicitly (defense-in-depth, not just row visibility)
-- Suppressed noisy 406 console error for deactivated user profile resolution (PGRST116)
-- Fixed intermittent "Access Denied" on admin panel — `userProfile` was missing from the dependency array in `admin/layout.tsx`, causing the permission check to fire before profile was resolved
-- 3 files modified, 0 new files, 0 migrations
+- Fixed admin deactivate/decommission silently failing due to RLS — replaced client-side `.update()` with SECURITY DEFINER RPCs (`admin_update_user_status`, `admin_decommission_user`)
+- Fixed `signIn()` to check `profileError` and `!profile.is_active` explicitly (defense-in-depth)
+- Suppressed noisy PGRST116 console error for deactivated user profile resolution
+- Fixed intermittent "Access Denied" on admin panel — added `userProfile` to dependency array in `admin/layout.tsx`
+- Fixed hard delete blocked by `prevent_last_leader_removal` trigger — added `app.hard_delete_in_progress` bypass to both `prevent_last_leader_removal()` and `prevent_last_deusex_role_removal()` (Migration #8)
+- **Identified orphan group issue** — hard deleting a user who is the last Steward leaves groups leaderless (see Next Priorities)
+- 4 files modified, 1 migration
 
 **Key decisions:**
-- Always use SECURITY DEFINER RPCs for admin operations that change RLS-visible columns — client-side `.update()` fails when the NEW row violates SELECT policies
-- Admin layout waits for `userProfile` before checking permissions (stays in loading state instead of false "Access Denied")
+- Always use SECURITY DEFINER RPCs for admin operations that change RLS-visible columns
+- Admin layout waits for `userProfile` before checking permissions
+- Hard delete bypass for last-leader triggers uses same `app.hard_delete_in_progress` pattern as notification triggers
 
 **Previous Sessions:**
+- 2026-02-24: Fix admin deactivate/decommission RLS + admin layout race condition
 - 2026-02-24: Force logout responsiveness + stale session error handling
 - 2026-02-23: Fix PGRST201 ambiguous FK errors
 - 2026-02-23: Test Data Cleanup + Script Housekeeping
@@ -118,12 +121,25 @@
 
 **Enhanced Member Invitations COMPLETE** ✅
 
-**Next — Phase 1.6 Polish and Launch:**
+**Next — Orphan Group Stewardship Transfer (PRIORITY):**
+When deactivating/decommissioning/hard-deleting a user who is the last Steward of a group, the admin UI must:
+1. Detect affected groups (where user is sole Steward)
+2. Present a stewardship transfer UI before proceeding
+3. Allow admin to pick another member of the group, OR the DeusEx user, OR another user (who gets auto-joined first)
+4. Transfer Steward role, then proceed with the delete/deactivate action
+
+**Approaches to consider:**
+- **Pre-check approach:** Before executing the action, query for groups where user is last Steward. If any found, show a transfer modal. Only proceed after all groups have new Stewards assigned.
+- **Database-level approach:** New RPC that handles the full flow atomically — detect orphans, assign new steward, then delete.
+- **UI flow:** Modal listing affected groups with dropdowns to select new Steward per group. Options: existing group members, DeusEx admin, or search for any user (auto-join if needed).
+
+**After orphan fix — Phase 1.6 Polish and Launch:**
 1. Mobile responsiveness audit
 2. User onboarding flow
 3. E2E tests (Playwright)
 
 **Known Issues:**
+- **Orphan groups after hard delete** — groups lose their last Steward (no admin, no one can manage). Needs stewardship transfer UI.
 - `app/admin/fix-orphans/page.tsx` uses `alert()` (should use ConfirmModal)
 - Hydration mismatch warning in `AuthForm.tsx:60` (cosmetic, non-blocking)
 - WebSocket/Realtime connection warning in console (cosmetic, non-blocking)
