@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-23 (Fix PGRST201 ambiguous FK errors)
+**Last Updated:** 2026-02-24 (Force logout responsiveness + stale session handling)
 **Current Version:** 0.2.29
 **Active Branch:** main
 
@@ -8,7 +8,7 @@
 
 ## What We're Working On NOW
 
-**Current Focus:** Enhanced Member Invitations — COMPLETE
+**Current Focus:** Force Logout Responsiveness + Session Hardening — COMPLETE
 
 **Design Doc:** `docs/features/active/enhanced-member-invitations.md`
 
@@ -88,20 +88,30 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-23 (Fix PGRST201 ambiguous FK errors)
+**Date:** 2026-02-24 (Force logout responsiveness + stale session handling)
 **Summary:**
-- Fixed PGRST201 "Could not embed" errors in EnrollmentModal and journey detail page
-- Root cause: D15 Universal Group Pattern added multiple FKs from group_memberships/journey_enrollments to groups
-- PostgREST couldn't disambiguate bare `groups!inner(...)` — replaced with explicit FK hints
-- 3 queries fixed across 2 files
+- Implemented force-logout responsiveness for admin actions (force-logout, deactivate, decommission)
+- Added Realtime broadcast channel (`force-logout:{userId}`) for instant client notification (best-effort)
+- Added `validateSession()` to AuthContext — calls `getUser()` to detect dead sessions, signs out + redirects to /login
+- Added 10-second periodic polling + tab focus/visibility handlers for near-immediate force-logout detection
+- Added error states with retry buttons to 5 pages (profile, invitations, messages, groups list, group detail)
+- Extracted fetch functions to `useCallback` in profile, invitations, messages pages for retry support
+- Admin broadcasts force_logout event after force-logout, deactivate, and decommission RPC calls
+- 7 files modified, 0 new files, 0 migrations
+
+**Key decisions:**
+- Realtime broadcast is best-effort (may not work without Realtime Authorization config)
+- 10-second polling via `getUser()` is the reliable fallback
+- `window.location.replace('/login')` used for redirect (clears stale page state, prevents Back button)
+- `scope: 'local'` on signOut broken in supabase-js 2.91.0 — use default global scope
 
 **Previous Sessions:**
+- 2026-02-23: Fix PGRST201 ambiguous FK errors
 - 2026-02-23: Test Data Cleanup + Script Housekeeping
 - 2026-02-23: Enhanced Member Invitations — typeahead, pending email invitations, 14 tests
 - 2026-02-23: Database cleanup + D15 residual fixes
 - 2026-02-23: D15 Hardening Sprint, Claude Code permissions cleanup
 - 2026-02-22: D15 migration audit, residual fixes, documentation
-- 2026-02-21: Performance Optimization Tiers 2+3
 
 ---
 
@@ -120,6 +130,9 @@
 - `app/admin/fix-orphans/page.tsx` uses `alert()` (should use ConfirmModal)
 - Hydration mismatch warning in `AuthForm.tsx:60` (cosmetic, non-blocking)
 - WebSocket/Realtime connection warning in console (cosmetic, non-blocking)
+- Realtime broadcast for force-logout may not work without Realtime Authorization policies (polling fallback handles this)
+- `signOut({ scope: 'local' })` broken in supabase-js 2.91.0 — makes server call despite docs saying local-only
+- Console 403 errors on force-logout redirect (browser-level network logs, not visible to end users)
 
 **What We're NOT Building Yet:**
 - See `docs/planning/DEFERRED_DECISIONS.md` for rationale on deferred features
