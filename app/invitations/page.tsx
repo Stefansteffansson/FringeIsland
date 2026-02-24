@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { createClient } from '@/lib/supabase/client';
@@ -17,9 +17,10 @@ interface Invitation {
 }
 
 export default function InvitationsPage() {
-  const { user, userProfile, loading: authLoading } = useAuth();
+  const { user, userProfile, loading: authLoading, validateSession } = useAuth();
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [successId, setSuccessId] = useState<string | null>(null);
   const [confirmModal, setConfirmModal] = useState<{
@@ -36,6 +37,69 @@ export default function InvitationsPage() {
   const router = useRouter();
   const supabase = createClient();
 
+  const fetchInvitations = useCallback(async () => {
+    if (!userProfile) return;
+
+    setError(null);
+    try {
+      // Fetch pending invitations
+      const { data: invitationsData, error: invitationsError } = await supabase
+        .from('group_memberships')
+        .select('id, group_id, added_by_group_id, added_at')
+        .eq('member_group_id', userProfile.personal_group_id)
+        .eq('status', 'invited');
+
+      if (invitationsError) throw invitationsError;
+
+      if (!invitationsData || invitationsData.length === 0) {
+        setInvitations([]);
+        setLoading(false);
+        return;
+      }
+
+      // Get group details
+      const groupIds = invitationsData.map(inv => inv.group_id);
+      const { data: groupsData, error: groupsError } = await supabase
+        .from('groups')
+        .select('id, name, label')
+        .in('id', groupIds);
+
+      if (groupsError) throw groupsError;
+
+      // Get invited_by group details (personal groups have name = display name)
+      const invitedByGroupIds = invitationsData.map(inv => inv.added_by_group_id);
+      const { data: inviterGroups, error: inviterError } = await supabase
+        .from('groups')
+        .select('id, name')
+        .in('id', invitedByGroupIds);
+
+      if (inviterError) throw inviterError;
+
+      // Combine data
+      const invitationsWithDetails = invitationsData.map(inv => {
+        const group = groupsData.find(g => g.id === inv.group_id);
+        const invitedBy = inviterGroups?.find(g => g.id === inv.added_by_group_id);
+
+        return {
+          id: inv.id,
+          group_id: inv.group_id,
+          group_name: group?.name || 'Unknown Group',
+          group_label: group?.label || null,
+          invited_by_name: invitedBy?.name || 'Someone',
+          invited_at: inv.added_at,
+        };
+      });
+
+      setInvitations(invitationsWithDetails);
+    } catch (err) {
+      console.error('Error fetching invitations:', err);
+      await validateSession();
+      setError('Failed to load invitations. Your session may have expired.');
+    } finally {
+      setLoading(false);
+    }
+  }, [userProfile, supabase, validateSession]);
+
   useEffect(() => {
     // Redirect to login if not authenticated
     if (!authLoading && !user) {
@@ -43,70 +107,10 @@ export default function InvitationsPage() {
       return;
     }
 
-    const fetchInvitations = async () => {
-      if (!userProfile) return;
-
-      try {
-        // Fetch pending invitations
-        const { data: invitationsData, error: invitationsError } = await supabase
-          .from('group_memberships')
-          .select('id, group_id, added_by_group_id, added_at')
-          .eq('member_group_id', userProfile.personal_group_id)
-          .eq('status', 'invited');
-
-        if (invitationsError) throw invitationsError;
-
-        if (!invitationsData || invitationsData.length === 0) {
-          setInvitations([]);
-          setLoading(false);
-          return;
-        }
-
-        // Get group details
-        const groupIds = invitationsData.map(inv => inv.group_id);
-        const { data: groupsData, error: groupsError } = await supabase
-          .from('groups')
-          .select('id, name, label')
-          .in('id', groupIds);
-
-        if (groupsError) throw groupsError;
-
-        // Get invited_by group details (personal groups have name = display name)
-        const invitedByGroupIds = invitationsData.map(inv => inv.added_by_group_id);
-        const { data: inviterGroups, error: inviterError } = await supabase
-          .from('groups')
-          .select('id, name')
-          .in('id', invitedByGroupIds);
-
-        if (inviterError) throw inviterError;
-
-        // Combine data
-        const invitationsWithDetails = invitationsData.map(inv => {
-          const group = groupsData.find(g => g.id === inv.group_id);
-          const invitedBy = inviterGroups?.find(g => g.id === inv.added_by_group_id);
-
-          return {
-            id: inv.id,
-            group_id: inv.group_id,
-            group_name: group?.name || 'Unknown Group',
-            group_label: group?.label || null,
-            invited_by_name: invitedBy?.name || 'Someone',
-            invited_at: inv.added_at,
-          };
-        });
-
-        setInvitations(invitationsWithDetails);
-      } catch (err) {
-        console.error('Error fetching invitations:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (userProfile) {
       fetchInvitations();
     }
-  }, [user, userProfile, authLoading, router, supabase]);
+  }, [user, userProfile, authLoading, router, fetchInvitations]);
 
   const handleAccept = async (invitationId: string, groupName: string) => {
     setProcessingId(invitationId);
@@ -201,6 +205,26 @@ export default function InvitationsPage() {
         <div className="text-center">
           <div className="inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           <p className="mt-4 text-gray-600">Loading invitations...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center px-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-3xl">⚠️</span>
+          </div>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Something went wrong</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={fetchInvitations}
+            className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     );

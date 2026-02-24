@@ -241,6 +241,37 @@ export default function AdminDashboard() {
     });
   };
 
+  // Broadcast force-logout to target users via Realtime (best-effort).
+  // ack:true ensures send() waits for server acknowledgment before resolving,
+  // so the message is actually delivered before we remove the channel.
+  const broadcastForceLogout = async (targetUserIds: string[]) => {
+    for (const userId of targetUserIds) {
+      try {
+        const channel = supabase.channel(`force-logout:${userId}`, {
+          config: { broadcast: { ack: true } },
+        });
+        await new Promise<void>((resolve) => {
+          channel.subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+              channel.send({
+                type: 'broadcast',
+                event: 'force_logout',
+                payload: {},
+              }).finally(() => resolve());
+            }
+          });
+          // Timeout after 3s to avoid hanging
+          setTimeout(resolve, 3000);
+        });
+        // Small delay after send for propagation before cleanup
+        await new Promise((r) => setTimeout(r, 200));
+        supabase.removeChannel(channel);
+      } catch {
+        // Best-effort — ignore errors
+      }
+    }
+  };
+
   // --- Execute functions ---
 
   const executeActivate = async (targetIds: string[]) => {
@@ -276,6 +307,9 @@ export default function AdminDashboard() {
       // Auto force-logout: invalidate sessions so deactivation takes effect immediately
       await supabase.rpc('admin_force_logout', { target_user_ids: targetIds });
 
+      // Broadcast to connected clients for immediate sign-out (best-effort)
+      broadcastForceLogout(targetIds).catch(() => {});
+
       await writeAuditLog('user_deactivated', targetIds.length, targetIds);
       afterAction('deactivate', `Deactivated and logged out ${targetIds.length} user(s).`);
     } catch (err: any) {
@@ -298,6 +332,9 @@ export default function AdminDashboard() {
 
       // Auto force-logout: invalidate sessions so decommission takes effect immediately
       await supabase.rpc('admin_force_logout', { target_user_ids: targetIds });
+
+      // Broadcast to connected clients for immediate sign-out (best-effort)
+      broadcastForceLogout(targetIds).catch(() => {});
 
       await writeAuditLog('user_decommissioned', targetIds.length, targetIds);
       afterAction('delete_soft', `Decommissioned and logged out ${targetIds.length} user(s).`);
@@ -357,6 +394,9 @@ export default function AdminDashboard() {
       });
 
       if (error) throw error;
+
+      // Broadcast to connected clients for immediate sign-out (best-effort)
+      broadcastForceLogout(targetIds).catch(() => {});
 
       // RPC creates its own audit entries
       afterAction('logout', `Forced logout for ${targetIds.length} user(s).`);

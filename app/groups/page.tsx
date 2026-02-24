@@ -17,7 +17,7 @@ interface Group {
 }
 
 export default function GroupsPage() {
-  const { user, userProfile, loading: authLoading } = useAuth();
+  const { user, userProfile, loading: authLoading, validateSession } = useAuth();
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -80,7 +80,8 @@ export default function GroupsPage() {
         setGroups(groupsWithCounts);
       } catch (err) {
         console.error('Error fetching groups:', err);
-        setError('Failed to load groups');
+        await validateSession();
+        setError('Failed to load groups. Your session may have expired.');
       } finally {
         setLoading(false);
       }

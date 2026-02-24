@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
-import { User, Session } from '@supabase/supabase-js';
+import { User, Session, RealtimeChannel } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 
 export interface UserProfile {
@@ -20,6 +20,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  validateSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,6 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
   const profileResolvedRef = useRef(false);
+  const forceLogoutChannelRef = useRef<RealtimeChannel | null>(null);
 
   // Auth state: only set user/session, never make DB queries inside callbacks
   useEffect(() => {
@@ -92,6 +94,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => { cancelled = true; };
   }, [user, supabase]);
 
+  // Force-logout Realtime subscription: listens for admin-initiated force logout
+  useEffect(() => {
+    if (!userProfile) {
+      // Clean up any existing channel when profile is cleared (logout)
+      if (forceLogoutChannelRef.current) {
+        supabase.removeChannel(forceLogoutChannelRef.current);
+        forceLogoutChannelRef.current = null;
+      }
+      return;
+    }
+
+    const channel = supabase.channel(`force-logout:${userProfile.id}`)
+      .on('broadcast', { event: 'force_logout' }, () => {
+        // Sign out immediately — no DB queries (deadlock rule)
+        supabase.auth.signOut();
+      })
+      .subscribe((status) => {
+        if (status === 'CHANNEL_ERROR') {
+          console.error('[AuthContext] Force-logout channel error');
+        }
+      });
+
+    forceLogoutChannelRef.current = channel;
+
+    return () => {
+      supabase.removeChannel(channel);
+      forceLogoutChannelRef.current = null;
+    };
+  }, [userProfile, supabase]);
+
   // Refresh cached profile (call after profile edits)
   const refreshProfile = useCallback(async () => {
     if (!user) return;
@@ -115,6 +147,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     window.addEventListener('refreshNavigation', handleRefresh);
     return () => window.removeEventListener('refreshNavigation', handleRefresh);
   }, [refreshProfile]);
+
+  // Validate session: calls getUser() (hits Auth, not PostgREST — safe from deadlock).
+  // If session is invalid, signs out and redirects to /login. Uses window.location.replace
+  // so the stale page is replaced in history (Back button won't return to it).
+  const validateSession = useCallback(async () => {
+    try {
+      const { error } = await supabase.auth.getUser();
+      if (error) {
+        await supabase.auth.signOut();
+        window.location.replace('/login');
+      }
+    } catch {
+      await supabase.auth.signOut();
+      window.location.replace('/login');
+    }
+  }, [supabase]);
+
+  // Periodic session validation: catches force-logouts even if Realtime broadcast
+  // doesn't reach the client. Also checks immediately when the tab regains focus
+  // (user switches back to the app) so stale sessions are caught quickly.
+  useEffect(() => {
+    if (!user) return;
+
+    const interval = setInterval(() => {
+      validateSession();
+    }, 10_000);
+
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        validateSession();
+      }
+    };
+
+    const handleFocus = () => {
+      validateSession();
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [user, validateSession]);
 
   const signUp = async (email: string, password: string, displayName: string) => {
     try {
@@ -176,6 +254,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signIn,
     signOut,
     refreshProfile,
+    validateSession,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

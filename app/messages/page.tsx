@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -22,12 +22,100 @@ interface ConversationItem {
 }
 
 export default function MessagesPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, validateSession } = useAuth();
   const { userProfileId, refreshUnreadCount } = useMessaging();
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
+
+  const fetchConversations = useCallback(async () => {
+    if (!userProfileId) return;
+
+    setError(null);
+    try {
+      // Fetch all conversations for the current user
+      const { data: convs, error: convErr } = await supabase
+        .from('conversations')
+        .select('*')
+        .order('last_message_at', { ascending: false, nullsFirst: false });
+
+      if (convErr) throw convErr;
+
+      if (!convs || convs.length === 0) {
+        setConversations([]);
+        setLoading(false);
+        return;
+      }
+
+      // Get other participants' user IDs
+      const otherUserIds = convs.map((c: any) =>
+        c.participant_1 === userProfileId ? c.participant_2 : c.participant_1
+      );
+
+      // Fetch user profiles (otherUserIds are personal_group_ids)
+      const { data: users, error: usersErr } = await supabase
+        .from('users')
+        .select('personal_group_id, full_name, avatar_url')
+        .in('personal_group_id', otherUserIds);
+
+      if (usersErr) throw usersErr;
+
+      // Fetch last message for each conversation
+      const conversationIds = convs.map((c: any) => c.id);
+      const lastMessages: Record<string, { content: string; sender_group_id: string }> = {};
+
+      for (const convId of conversationIds) {
+        const { data: msgs } = await supabase
+          .from('direct_messages')
+          .select('content, sender_group_id')
+          .eq('conversation_id', convId)
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (msgs && msgs.length > 0) {
+          lastMessages[convId] = { content: msgs[0].content, sender_group_id: msgs[0].sender_group_id };
+        }
+      }
+
+      // Build conversation items
+      const items: ConversationItem[] = convs.map((c: any) => {
+        const otherUserId = c.participant_1 === userProfileId ? c.participant_2 : c.participant_1;
+        const otherUserData = (users || []).find((u: any) => u.personal_group_id === otherUserId);
+        const isP1 = c.participant_1 === userProfileId;
+        const lastReadAt = isP1 ? c.participant_1_last_read_at : c.participant_2_last_read_at;
+
+        const isUnread = c.last_message_at && (!lastReadAt ||
+          new Date(c.last_message_at).getTime() > new Date(lastReadAt).getTime());
+
+        const lastMsg = lastMessages[c.id];
+
+        return {
+          id: c.id,
+          otherUser: {
+            id: otherUserId,
+            full_name: otherUserData?.full_name || 'Unknown User',
+            avatar_url: otherUserData?.avatar_url || null,
+          },
+          lastMessageAt: c.last_message_at,
+          lastMessagePreview: lastMsg?.content
+            ? (lastMsg.content.length > 80 ? lastMsg.content.slice(0, 80) + '...' : lastMsg.content)
+            : null,
+          lastMessageSenderId: lastMsg?.sender_group_id || null,
+          isUnread: !!isUnread,
+        };
+      });
+
+      setConversations(items);
+    } catch (err) {
+      console.error('Error fetching conversations:', err);
+      await validateSession();
+      setError('Failed to load messages. Your session may have expired.');
+    } finally {
+      setLoading(false);
+    }
+  }, [userProfileId, supabase, validateSession]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -37,90 +125,8 @@ export default function MessagesPage() {
 
     if (!userProfileId) return;
 
-    const fetchConversations = async () => {
-      try {
-        // Fetch all conversations for the current user
-        const { data: convs, error: convErr } = await supabase
-          .from('conversations')
-          .select('*')
-          .order('last_message_at', { ascending: false, nullsFirst: false });
-
-        if (convErr) throw convErr;
-
-        if (!convs || convs.length === 0) {
-          setConversations([]);
-          setLoading(false);
-          return;
-        }
-
-        // Get other participants' user IDs
-        const otherUserIds = convs.map((c: any) =>
-          c.participant_1 === userProfileId ? c.participant_2 : c.participant_1
-        );
-
-        // Fetch user profiles (otherUserIds are personal_group_ids)
-        const { data: users, error: usersErr } = await supabase
-          .from('users')
-          .select('personal_group_id, full_name, avatar_url')
-          .in('personal_group_id', otherUserIds);
-
-        if (usersErr) throw usersErr;
-
-        // Fetch last message for each conversation
-        const conversationIds = convs.map((c: any) => c.id);
-        const lastMessages: Record<string, { content: string; sender_group_id: string }> = {};
-
-        for (const convId of conversationIds) {
-          const { data: msgs } = await supabase
-            .from('direct_messages')
-            .select('content, sender_group_id')
-            .eq('conversation_id', convId)
-            .order('created_at', { ascending: false })
-            .limit(1);
-
-          if (msgs && msgs.length > 0) {
-            lastMessages[convId] = { content: msgs[0].content, sender_group_id: msgs[0].sender_group_id };
-          }
-        }
-
-        // Build conversation items
-        const items: ConversationItem[] = convs.map((c: any) => {
-          const otherUserId = c.participant_1 === userProfileId ? c.participant_2 : c.participant_1;
-          const otherUserData = (users || []).find((u: any) => u.personal_group_id === otherUserId);
-          const isP1 = c.participant_1 === userProfileId;
-          const lastReadAt = isP1 ? c.participant_1_last_read_at : c.participant_2_last_read_at;
-
-          const isUnread = c.last_message_at && (!lastReadAt ||
-            new Date(c.last_message_at).getTime() > new Date(lastReadAt).getTime());
-
-          const lastMsg = lastMessages[c.id];
-
-          return {
-            id: c.id,
-            otherUser: {
-              id: otherUserId,
-              full_name: otherUserData?.full_name || 'Unknown User',
-              avatar_url: otherUserData?.avatar_url || null,
-            },
-            lastMessageAt: c.last_message_at,
-            lastMessagePreview: lastMsg?.content
-              ? (lastMsg.content.length > 80 ? lastMsg.content.slice(0, 80) + '...' : lastMsg.content)
-              : null,
-            lastMessageSenderId: lastMsg?.sender_group_id || null,
-            isUnread: !!isUnread,
-          };
-        });
-
-        setConversations(items);
-      } catch (err) {
-        console.error('Error fetching conversations:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchConversations();
-  }, [user, authLoading, userProfileId, router, supabase]);
+  }, [user, authLoading, userProfileId, router, fetchConversations]);
 
   if (authLoading || loading) {
     return (
@@ -128,6 +134,26 @@ export default function MessagesPage() {
         <div className="text-center">
           <div className="inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           <p className="mt-4 text-gray-600">Loading messages...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center px-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-3xl">⚠️</span>
+          </div>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Something went wrong</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={fetchConversations}
+            className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     );

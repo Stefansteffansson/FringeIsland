@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { createClient } from '@/lib/supabase/client';
@@ -14,11 +14,35 @@ interface ProfileData {
 }
 
 export default function ProfilePage() {
-  const { user, userProfile, loading: authLoading, signOut } = useAuth();
+  const { user, userProfile, loading: authLoading, signOut, validateSession } = useAuth();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
+
+  const fetchProfile = useCallback(async () => {
+    if (!userProfile) return;
+
+    setError(null);
+    try {
+      // Profile page needs bio + created_at beyond what's cached in userProfile
+      const { data, error: fetchError } = await supabase
+        .from('users')
+        .select('full_name, bio, avatar_url, created_at')
+        .eq('id', userProfile.id)
+        .single();
+
+      if (fetchError) throw fetchError;
+      setProfile(data);
+    } catch (err) {
+      console.error('Error fetching profile:', err);
+      await validateSession();
+      setError('Failed to load profile. Your session may have expired.');
+    } finally {
+      setLoading(false);
+    }
+  }, [userProfile, supabase, validateSession]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -26,30 +50,10 @@ export default function ProfilePage() {
       return;
     }
 
-    const fetchProfile = async () => {
-      if (!userProfile) return;
-
-      try {
-        // Profile page needs bio + created_at beyond what's cached in userProfile
-        const { data, error } = await supabase
-          .from('users')
-          .select('full_name, bio, avatar_url, created_at')
-          .eq('id', userProfile.id)
-          .single();
-
-        if (error) throw error;
-        setProfile(data);
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (userProfile) {
       fetchProfile();
     }
-  }, [user, userProfile, authLoading, router, supabase]);
+  }, [user, userProfile, authLoading, router, fetchProfile]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -72,6 +76,26 @@ export default function ProfilePage() {
   }
 
   if (!user) return null;
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center px-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-3xl">⚠️</span>
+          </div>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Something went wrong</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={fetchProfile}
+            className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-12 px-4">

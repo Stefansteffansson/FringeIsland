@@ -45,7 +45,7 @@ interface UserRole {
 }
 
 export default function GroupDetailPage() {
-  const { user, userProfile, loading: authLoading } = useAuth();
+  const { user, userProfile, loading: authLoading, validateSession } = useAuth();
   const params = useParams();
   const groupId = params.id as string;
   const [group, setGroup] = useState<GroupData | null>(null);
@@ -189,6 +189,7 @@ export default function GroupDetailPage() {
 
       } catch (err) {
         console.error('Error fetching group:', err);
+        await validateSession();
         setError(err instanceof Error ? err.message : 'Failed to load group');
       } finally {
         setLoading(false);
