@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-27 (Fix personal group RLS visibility)
+**Last Updated:** 2026-02-27 (Leave Group Feature Review + [Deleted User] sentinel seed)
 **Current Version:** 0.2.31
 **Active Branch:** main
 
@@ -8,24 +8,20 @@
 
 ## What We're Working On NOW
 
-**Current Focus:** Personal Group RLS Visibility Fix — COMPLETE
+**Current Focus:** Leave Group Feature Specification — review and refinement complete
 
-**Design Doc:** `docs/features/implemented/display-name-system.md`
+**Design Doc:** `docs/features/planned/leave_group_feature_review.md`
 
 **Active Tasks:**
-- [x] **Behavior Specs** ✅ DONE — 11 behaviors (B-DISP-001 through B-DISP-011)
-- [x] **Integration Tests (RED)** ✅ DONE — 28 tests across 2 suites
-- [x] **Architect Review** ✅ DONE — schema, trigger, signup, backfill confirmed
-- [x] **Database Migration** ✅ DONE — 3 columns, sync trigger, handle_new_user() update
-- [x] **UI Changes** ✅ DONE — Profile edit form (nickname, display preference, visibility toggle)
-- [x] **Integration Wiring** ✅ DONE — AuthContext, Navigation, Messages, InviteMemberModal
-- [x] **QA/Review** ✅ DONE — 466/466 tests passing, security review complete
-- [x] **Documentation** ✅ DONE — Feature doc moved to implemented, CHANGELOG updated
+- [x] **Leave Group Feature Review** ✅ DONE — multi-round analysis, 9 ambiguities resolved
+- [x] **[Deleted User] Sentinel Seed** ✅ DONE — migration applied, system group now exists in DB
+- [ ] **Leave Group Implementation** — Next: TDD workflow (behaviors → RED tests → implement)
 
 **Blocked/Waiting:**
 - None
 
 **Previous Features (COMPLETE):**
+- [x] **Personal Group RLS Visibility Fix** ✅ v0.2.31
 - [x] **Display Name / Nickname System** ✅ v0.2.30
 - [x] **Performance Optimization** ✅ All tiers (1A-3B)
 - [x] **DeusEx Admin Foundation** ✅ v0.2.21-v0.2.25
@@ -35,13 +31,13 @@
 
 ## Quick Stats
 
-- **Phase:** Personal Group RLS Visibility Fix COMPLETE
+- **Phase:** Leave Group Feature Specification COMPLETE — ready for implementation
 - **Total Tables:** 19 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 10 active + 71 archived
+- **Total Migrations:** 11 active + 71 archived
 - **Recent Version:** v0.2.31 (Fix personal group RLS visibility)
 - **Test Coverage:** 466 integration + 99 unit + 4 setup = **569 tests** ✅
 - **Behaviors Documented:** 88 (77 previous + 11 display-name) ✅
-- **Feature Docs:** 5 complete + 2 planned designs + 1 active (performance)
+- **Feature Docs:** 5 complete + 2 planned designs (leave-group refined) + 1 active (performance)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
 
 **Completed Major Features:**
@@ -94,22 +90,23 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-27 (Fix personal group RLS visibility — bug fix)
+**Date:** 2026-02-27 (Leave Group Feature Review + [Deleted User] sentinel seed)
 **Summary:**
-- Fixed "Unknown" display name bug across 6 surfaces (v0.2.31)
-- Root cause: `groups_select` RLS policy had no condition allowing users to see other users' personal groups
-- Personal groups are identity containers (name + avatar) — the single source of truth for display names
-- Any Supabase query joining to `groups` via `author_group_id` or `personal_group_id` returned NULL for other users
-- Fix: Added `group_type = 'personal'` as first condition in `groups_select` policy
-- Surfaces fixed: forum posts, DM list, conversation headers, group member list, invite modal
-- 466/466 tests passing, zero regressions
-- 1 migration, 0 application code changes needed
+- Multi-round analysis of `leave_group_feature_review.md` — cross-referenced with actual DB schema (19 tables)
+- Identified and resolved 9 ambiguities: group soft delete, exclusive journey naming, notification scope, pending invitation transfer, frozen enrollment, predefined journey ownership, [Deleted User] sentinel, group closure logging
+- Created and applied migration `20260227120843_seed_deleted_user_sentinel_group.sql` — seeds the `[Deleted User]` system group that `admin_hard_delete_user` RPC references (was missing, causing content to fallback to admin's personal group)
+- No application code changes — documentation and 1 seed migration only
 
 **Key decisions:**
-- `OR group_type = 'personal'` chosen over co-membership check (simpler, DM-compatible, consistent with users table visibility)
-- Personal group data (name, avatar) is non-sensitive — equivalent to a public username
+- Group lifecycle via `groups.status` column: `'active'`, `'closed'`, `'archived'`, `'suspended'` — groups never hard-deleted
+- "Exclusive Journey" renamed → "Non-Public Journey" (`is_public = false`) — no new schema column needed
+- `journey_enrollments.status = 'frozen'` for read-only access when member leaves group (already in CHECK constraint)
+- Predefined journeys to be owned by "FringeIsland Journeys" engagement group (future migration)
+- Pending invitations from departing Steward: `added_by_group_id`/`invited_by_group_id` transferred to DeusEx
+- No DeusEx notification for simple group closures — `admin_audit_log` sufficient (no general event log yet)
 
 **Previous Sessions:**
+- 2026-02-27: Fix personal group RLS visibility (v0.2.31)
 - 2026-02-27: Display Name / Nickname System — full TDD sprint (v0.2.30)
 - 2026-02-24: Admin bug fixes + hard delete trigger bypass + orphan group issue identified
 - 2026-02-24: Force logout responsiveness + stale session error handling
@@ -128,12 +125,13 @@
 
 **Display Name / Nickname System COMPLETE** ✅
 
-**Next — Orphan Group Stewardship Transfer (PRIORITY):**
-When deactivating/decommissioning/hard-deleting a user who is the last Steward of a group, the admin UI must:
-1. Detect affected groups (where user is sole Steward)
-2. Present a stewardship transfer UI before proceeding
-3. Allow admin to pick another member of the group, OR the DeusEx user, OR another user (who gets auto-joined first)
-4. Transfer Steward role, then proceed with the delete/deactivate action
+**Next — Leave Group Feature (PRIORITY):**
+Full leave/exit group implementation — see `docs/features/planned/leave_group_feature_review.md` for complete specification.
+Key tracks:
+1. **Track 1** — Last Steward leaves (stewardship transfer or group closure)
+2. **Track 2** — Regular member leaves (clean exit with enrollment freezing)
+3. **Track 3** — Platform exit (cascading leave across all groups)
+Includes: group lifecycle (`groups.status`), enrollment freezing, pending invitation transfer, forum anonymisation, smart notifications.
 
 **Approaches to consider:**
 - **Pre-check approach:** Before executing the action, query for groups where user is last Steward. If any found, show a transfer modal. Only proceed after all groups have new Stewards assigned.

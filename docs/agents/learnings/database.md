@@ -8,6 +8,10 @@
 
 ## Entries
 
+### 2026-02-27: Always verify seed data exists for RPC references
+The `admin_hard_delete_user` RPC referenced a `[Deleted User]` system group via `SELECT id FROM groups WHERE name = '[Deleted User]' AND group_type = 'system'`, but no migration ever created this row. The `COALESCE(v_deleted_user_group_id, v_caller_group_id)` fallback silently assigned orphaned content to the admin's personal group. Lesson: when an RPC references sentinel/system data by name, verify the seed migration exists. Add idempotent `INSERT ... WHERE NOT EXISTS` for all system rows.
+> Promoted to playbook? Not yet
+
 ### 2026-02-27: Personal groups need explicit RLS SELECT visibility
 When personal groups became the single source of truth for display names (v0.2.30), the `groups_select` policy wasn't updated to allow other users to see them. Personal groups are `is_public = false` and have self-membership only, so no existing policy condition matches for cross-user queries. Fix: add `group_type = 'personal'` to `groups_select`. Lesson: whenever a table becomes a join target for identity resolution, verify that the RLS SELECT policy allows the join from any authenticated user's perspective — not just the row owner's.
 → Promoted to playbook? Not yet
