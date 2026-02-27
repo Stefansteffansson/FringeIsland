@@ -1,335 +1,354 @@
 # Authentication System
 
-**Status:** ✅ Implemented
-**Version:** 0.2.1
-**Last Updated:** January 23, 2026
+**Status:** IMPLEMENTED
+**Date:** January 20, 2026
+**Completed:** February 27, 2026
+**Version:** v0.2.31
+**Phase:** 1.2 (Authentication) + 1.6 (Polish & Launch)
+**Related:** [Display Name System](./display-name-system.md) | [Group Management](./group-management.md) | [Dynamic Permissions System](../planned/dynamic-permissions-system.md)
 
 ---
 
-## Overview
+## Context
 
-Complete authentication system using Supabase Auth with email/password, session management, and protected routes.
+FringeIsland uses a two-layer authentication model. **Layer 1** is Supabase Auth (`auth.users`) — it owns credentials, sessions, and JWTs. **Layer 2** is the application profile (`public.users`) — it extends the auth record with platform-specific data like display names, bios, and decommission state.
 
----
+The D15 Universal Group Pattern introduced the **personal group** as the user's identity anchor in the group system. Every user gets a personal group at signup, and all group-facing references (memberships, role assignments, forum authorship) use `personal_group_id` instead of `user_id`. The personal group's `name` field is the single source of truth for the user's display name, driven by the display name / nickname system.
 
-## Features
-
-### User Signup
-- Email and password registration
-- Email validation
-- Automatic profile creation
-- Immediate sign-in after signup
-- Default redirect to /groups page
-
-### User Login
-- Email and password authentication
-- Session persistence
-- Remember me functionality (via Supabase)
-- Error handling with user-friendly messages
-- Redirect to originally requested page
-
-### User Logout
-- Clear session
-- Redirect to homepage
-- Clean state reset
-
-### Session Management
-- AuthContext for global state
-- useAuth() hook for components
-- Automatic session refresh
-- Session persistence across page reloads
-
-### Protected Routes
-- Middleware-based protection (proxy.ts)
-- Automatic redirect to /login for unauthenticated users
-- Preserves intended destination
-- Public routes: /, /login, /signup
+Account lifecycle is split between **self-service** (signup, signin, signout) and **admin-only** operations (deactivate, decommission, hard-delete). There is no self-service account deletion.
 
 ---
 
-## Architecture
+## Feature Summary
 
-### AuthContext
-**Location:** `lib/auth/AuthContext.tsx`
-**Purpose:** Global authentication state management
+1. **Signup** creates an `auth.users` record, which fires the `handle_new_user()` trigger — an 8-step function that bootstraps the user profile, personal group, self-membership, Myself role, FI Members enrollment, and pending invitation claims
+2. **Active-user gate** on sign-in: RLS hides deactivated users (`is_active = false`), and `signIn()` explicitly checks + auto-signs-out deactivated accounts
+3. **Session management** via Supabase Auth cookies, refreshed transparently by `proxy.ts` on every request
+4. **Force-logout** for admin-deactivated users via three mechanisms: Realtime broadcast, server-side session deletion, and 10-second polling fallback
+5. **Route protection** via `proxy.ts` (Next.js 16 proxy pattern) — refreshes sessions only, no redirect logic
+6. **AuthContext** provides `UserProfile` (including `personal_group_id`, `display_name` resolved from personal group) via React Context + `useAuth()` hook
+7. **Display name system** — nickname/real-name toggle synced to personal group `name`; cross-reference [display-name-system.md](./display-name-system.md) for full details
+8. **Admin account lifecycle** — four operations (activate, deactivate, decommission, hard-delete) via SECURITY DEFINER RPCs; no self-service deletion
+9. **[Deleted User] sentinel** — hard-deleted users' content (forum posts, journeys, groups) is reassigned to a system sentinel group
 
-**Provides:**
+---
+
+## Data Model
+
+### `users` table
+
+| Column | Type | Default | Nullable | Purpose |
+|--------|------|---------|----------|---------|
+| `id` | UUID | `gen_random_uuid()` | No | Primary key |
+| `auth_user_id` | UUID | — | No | FK to `auth.users(id)` ON DELETE CASCADE. UNIQUE. |
+| `email` | TEXT | — | No | UNIQUE. Copied from auth on signup. |
+| `full_name` | TEXT | — | No | Legal / real name |
+| `avatar_url` | TEXT | — | Yes | Profile picture URL |
+| `bio` | TEXT | — | Yes | Free-text biography |
+| `is_active` | BOOLEAN | `true` | No | `false` = deactivated (hidden by RLS) |
+| `is_decommissioned` | BOOLEAN | `false` | No | `true` = permanently retired, cannot be reactivated |
+| `personal_group_id` | UUID | — | Yes | FK to `groups(id)` ON DELETE SET NULL. Set in Step 3 of signup. Immutable after set. |
+| `nickname` | TEXT | — | No | Alias / display name. Defaults to first word of `full_name`. CHECK `char_length >= 1`. |
+| `display_preference` | TEXT | `'nickname'` | No | `'real_name'` or `'nickname'` — controls personal group `name` |
+| `show_real_name` | BOOLEAN | `false` | No | Whether non-admin users can see `full_name` |
+| `created_at` | TIMESTAMPTZ | `NOW()` | No | Account creation timestamp |
+| `updated_at` | TIMESTAMPTZ | `NOW()` | No | Auto-updated by `set_users_updated_at` trigger |
+
+---
+
+## Core Mechanisms
+
+### Signup: `handle_new_user()` — 8-step trigger
+
+Fires `AFTER INSERT ON auth.users`. SECURITY DEFINER. Creates the entire identity scaffold:
+
+```sql
+-- Step 1: Create user profile (personal_group_id = NULL initially)
+INSERT INTO public.users (auth_user_id, email, full_name, avatar_url, nickname)
+VALUES (NEW.id, NEW.email, v_full_name, v_avatar_url, v_nickname);
+
+-- Step 2: Create personal group (group_type = 'personal', is_public = false)
+INSERT INTO public.groups (name, group_type, is_public, show_member_list, avatar_url)
+VALUES (v_nickname, 'personal', false, false, v_avatar_url);
+
+-- Step 3: Break circular dependency — link user ↔ personal group
+UPDATE public.users SET personal_group_id = v_personal_group_id WHERE id = v_user_id;
+UPDATE public.groups SET created_by_group_id = v_personal_group_id WHERE id = v_personal_group_id;
+
+-- Step 4: Self-membership — personal group is a member of itself
+INSERT INTO public.group_memberships (group_id, member_group_id, added_by_group_id, status)
+VALUES (v_personal_group_id, v_personal_group_id, v_personal_group_id, 'active');
+
+-- Step 5: Create "Myself" role in the personal group
+INSERT INTO public.group_roles (group_id, name)
+VALUES (v_personal_group_id, 'Myself');
+
+-- Step 6: Assign "Myself" role to the personal group
+INSERT INTO public.user_group_roles (member_group_id, group_id, group_role_id, assigned_by_group_id)
+VALUES (v_personal_group_id, v_personal_group_id, v_myself_role_id, v_personal_group_id);
+
+-- Step 7: Enroll personal group in FringeIsland Members system group + assign Member role
+INSERT INTO public.group_memberships (group_id, member_group_id, ...)
+VALUES (v_fi_members_group_id, v_personal_group_id, ...);
+
+-- Step 8: Claim pending email invitations (match by email, create 'invited' memberships)
+FOR v_pending IN SELECT ... FROM public.pending_email_invitations
+  WHERE LOWER(invited_email) = LOWER(NEW.email) AND status = 'pending' AND expires_at > NOW()
+LOOP
+  INSERT INTO public.group_memberships (...) VALUES (...) ON CONFLICT DO NOTHING;
+  UPDATE public.pending_email_invitations SET status = 'claimed', claimed_at = NOW() WHERE id = v_pending.id;
+END LOOP;
+```
+
+**Key details:**
+- `v_full_name` = `COALESCE(raw_user_meta_data->>'display_name', email)`
+- `v_nickname` = `split_part(v_full_name, ' ', 1)` — first word of full name
+- Personal group `name` is set to `v_nickname` (not full name) — users appear by first name by default
+- `display_preference` and `show_real_name` use column defaults (`'nickname'`, `false`)
+
+### Sign-in: active-user gate
+
 ```typescript
-interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-  signOut: () => Promise<void>;
+// AuthContext.tsx — signIn()
+const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+if (error) throw error;
+
+// Application-layer active check (RLS hides deactivated users)
+const { data: profile, error: profileError } = await supabase
+  .from('users')
+  .select('is_active')
+  .eq('auth_user_id', data.user.id)
+  .maybeSingle();
+
+if (profileError || !profile || !profile.is_active) {
+  await supabase.auth.signOut();
+  throw new Error('Your account has been deactivated. Please contact support.');
 }
 ```
 
-**Usage:**
+**Why `.maybeSingle()`:** RLS policy `users_select_active` filters `WHERE is_active = true`. A deactivated user's row is invisible, so the query returns null — which triggers the sign-out and error message.
+
+### Session management: `proxy.ts`
+
+Next.js 16 uses `proxy.ts` (not `middleware.ts`). The proxy runs on every matching request and refreshes the Supabase session cookie:
+
 ```typescript
-import { useAuth } from '@/lib/auth/AuthContext';
+// proxy.ts
+import { updateSession } from '@/lib/supabase/middleware';
 
-function Component() {
-  const { user, loading, signOut } = useAuth();
-
-  if (loading) return <div>Loading...</div>;
-  if (!user) return <div>Please log in</div>;
-
-  return <div>Welcome, {user.email}</div>;
+export async function proxy(request: NextRequest) {
+  return await updateSession(request);
 }
 ```
 
-### Supabase Integration
-**Client:** `lib/supabase/client.ts` (browser)
-**Server:** `lib/supabase/server.ts` (SSR/API routes)
+`updateSession()` creates a server-side Supabase client, calls `getUser()` to refresh the session token if expired, and writes updated cookies to the response. It does **not** redirect — route protection is handled at the component level via `useAuth()`.
 
-**Authentication flow:**
-1. User submits credentials
-2. Supabase validates and creates session
-3. AuthContext updates with user data
-4. Trigger fires to create/update user profile
-5. Navigation refreshes
+### Force-logout: three mechanisms
 
-### User Profile Creation
-**Trigger:** `create_user_profile()`
-**Fires on:** INSERT auth.users
-**Creates:** Record in users table
+When an admin deactivates a user, the platform attempts to force-sign-out any active sessions:
 
-**Links:**
-- auth.users.id → users.auth_user_id
-- Copies email from auth to users.email
-- Sets default full_name from email
-- Enables profile management
+1. **Realtime broadcast** — AuthContext subscribes to `force-logout:{userId}` channel; admin sends a broadcast event; client calls `signOut()` immediately
+2. **Server-side session deletion** — `admin_force_logout(target_user_ids UUID[])` RPC deletes both `auth.sessions` and `auth.refresh_tokens` for the target users
+3. **10-second polling fallback** — `validateSession()` runs on a 10-second interval and on tab focus/visibility change; calls `supabase.auth.getUser()` and signs out if the session is invalid
 
-### User Deletion Handling
-**Trigger:** `handle_user_deletion()`
-**Fires on:** DELETE auth.users
-**Action:** Sets users.is_active = false (soft delete)
-
-**Preserves:**
-- User's historical data
-- Group memberships (historical)
-- Created groups (ownership record)
-- Journey enrollments (progress record)
-
----
-
-## Components
-
-### AuthForm
-**Location:** `components/auth/AuthForm.tsx`
-**Purpose:** Unified login/signup form component
-
-**Features:**
-- Toggle between login and signup modes
-- Form validation
-- Error handling
-- Loading states
-- Smooth transitions
-
-**Props:**
 ```typescript
-interface AuthFormProps {
-  mode: 'login' | 'signup';
+// AuthContext.tsx — Realtime force-logout subscription
+const channel = supabase.channel(`force-logout:${userProfile.id}`)
+  .on('broadcast', { event: 'force_logout' }, () => {
+    supabase.auth.signOut();
+  })
+  .subscribe();
+
+// AuthContext.tsx — Periodic session validation (fallback)
+const interval = setInterval(() => { validateSession(); }, 10_000);
+```
+
+### AuthContext: `UserProfile` interface
+
+```typescript
+export interface UserProfile {
+  id: string;              // public.users.id
+  full_name: string;       // Legal name
+  avatar_url: string | null;
+  personal_group_id: string; // The user's personal group UUID
+  nickname: string;        // Alias / display name
+  display_preference: 'real_name' | 'nickname';
+  show_real_name: boolean;
+  display_name: string;    // Resolved from personal group name (single source of truth)
 }
 ```
 
-### Navigation Authentication State
-**Location:** `components/Navigation.tsx`
-**Shows:**
-- Logged in: User avatar + dropdown menu
-- Logged out: Sign In + Get Started buttons
+`display_name` is computed at query time by joining the personal group:
+
+```typescript
+const { data } = await supabase
+  .from('users')
+  .select('..., personal_group:groups!personal_group_id(name)')
+  .eq('auth_user_id', user.id)
+  .single();
+
+// display_name = pg?.name || data.nickname || data.full_name
+```
+
+### Display name sync
+
+When `nickname`, `full_name`, or `display_preference` changes on `users`, the `sync_display_name_to_personal_group` AFTER UPDATE trigger writes the appropriate value to `groups.name` on the user's personal group. See [display-name-system.md](./display-name-system.md) for full details.
 
 ---
 
-## Database Schema
+## Security Functions
 
-### auth.users (Supabase managed)
-- id (uuid, primary key)
-- email (text, unique)
-- encrypted_password (text)
-- email_confirmed_at (timestamp)
-- created_at (timestamp)
-- last_sign_in_at (timestamp)
-
-### users (Application table)
-- id (uuid, primary key)
-- auth_user_id (uuid, foreign key to auth.users)
-- email (text, unique)
-- full_name (text)
-- avatar_url (text, nullable)
-- bio (text, nullable)
-- is_active (boolean, default true)
-- created_at (timestamp)
-- updated_at (timestamp)
+| Function | Type | Purpose |
+|----------|------|---------|
+| `get_current_user_profile_id()` | SQL, SECURITY DEFINER, STABLE | Returns `public.users.id` for the current `auth.uid()` (active users only) |
+| `get_current_personal_group_id()` | SQL, SECURITY DEFINER, STABLE | Returns `personal_group_id` for the current `auth.uid()` — the primary identity function for all D15 RLS policies |
+| `is_platform_admin()` | SQL, SECURITY DEFINER, STABLE | Returns `true` if current user's personal group is an active member of the DeusEx system group. Used in RLS policies (PG17-safe). |
 
 ---
 
-## Security
+## RLS Policies (`users` table)
 
-### RLS Policies (users table)
-**SELECT:**
-- Users can view their own profile
-- Users can search others by email (for invitations)
+### SELECT: `users_select_active`
 
-**UPDATE:**
-- Users can only update their own profile
-- Cannot change email or auth_user_id
+```sql
+CREATE POLICY "users_select_active"
+  ON public.users FOR SELECT TO authenticated
+  USING (is_active = true);
+```
 
-**INSERT/DELETE:**
-- Handled by triggers only
-- Application cannot directly insert/delete
+All authenticated users can see all active user profiles. Deactivated users are invisible. No column-level filtering — `show_real_name` enforcement is application-layer.
 
-### Password Security
-- Handled entirely by Supabase Auth
-- Encrypted at rest
-- Bcrypt hashing
-- No password exposure to application
+### UPDATE: `users_update_own`
 
-### Session Security
-- HTTP-only cookies (via Supabase)
-- Secure flag in production
-- Automatic expiration
-- Refresh token rotation
+```sql
+CREATE POLICY "users_update_own"
+  ON public.users FOR UPDATE TO authenticated
+  USING (auth_user_id = auth.uid())
+  WITH CHECK (auth_user_id = auth.uid());
+```
 
----
+Users can only update their own profile.
 
-## Routes
+### UPDATE: admin operations (no RLS policy)
 
-### Public Routes
-- `/` - Homepage
-- `/login` - Login page
-- `/signup` - Signup page
+The base D15 migration created a `deusex_admin_update_users` policy using `has_permission()`, but RC7 dropped it without replacement. Admin user mutations (activate, deactivate, decommission, hard-delete) go through SECURITY DEFINER RPCs (`admin_update_user_status`, `admin_decommission_user`, `admin_hard_delete_user`) which bypass RLS entirely.
 
-### Protected Routes
-- `/groups` - My Groups (default landing after auth)
-- `/groups/[id]` - Group detail
-- `/groups/create` - Create group
-- `/profile` - User profile
-- `/profile/edit` - Edit profile
-- `/journeys` - Journey catalog
-- `/my-journeys` - Enrolled journeys
-- `/invitations` - Pending invitations
+### INSERT / DELETE
+
+No INSERT or DELETE policies. User creation is handled by the `handle_new_user()` SECURITY DEFINER trigger. Deletion is handled by admin RPCs (`admin_hard_delete_user()`).
 
 ---
 
-## User Flows
+## Admin Account Lifecycle
 
-### Signup Flow
-1. User visits /signup
-2. Enters email + password
-3. Submits form
-4. Supabase creates auth.users record
-5. Trigger creates users record
-6. User automatically signed in
-7. Redirect to /groups
+All admin operations require `manage_all_groups` permission (DeusEx system group membership). Executed via SECURITY DEFINER RPCs.
 
-### Login Flow
-1. User visits /login (or redirected from protected route)
-2. Enters email + password
-3. Submits form
-4. Supabase validates credentials
-5. Session created and stored
-6. AuthContext updated
-7. Redirect to original destination or /groups
+| Operation | RPC | Effect | Reversible? |
+|-----------|-----|--------|-------------|
+| **Activate** | `admin_update_user_status(target_user_id, true)` | Sets `is_active = true` | Yes |
+| **Deactivate** | `admin_update_user_status(target_user_id, false)` | Sets `is_active = false`. User hidden by RLS. Typically followed by `admin_force_logout()`. | Yes (unless decommissioned) |
+| **Decommission** | `admin_decommission_user(target_user_id)` | Sets `is_decommissioned = true`, `is_active = false`. Cannot be reactivated. | No |
+| **Hard-delete** | `admin_hard_delete_user(target_user_id)` | Reassigns content to [Deleted User] sentinel, deletes personal group (CASCADE), deletes user record, deletes auth.users record | No |
 
-### Logout Flow
-1. User clicks Logout in navigation
-2. signOut() called from AuthContext
-3. Supabase session cleared
-4. AuthContext updated (user = null)
-5. Navigation refreshes
-6. Redirect to homepage
+### Hard-delete cascade detail
+
+`admin_hard_delete_user()` performs these steps in a single transaction:
+
+1. Verify caller has `manage_all_groups` permission
+2. Get target's `personal_group_id` and `auth_user_id`
+3. Get `[Deleted User]` sentinel system group ID
+4. Write audit log entry
+5. Reassign content FKs: `forum_posts.author_group_id`, `journeys.created_by_group_id`, `groups.created_by_group_id`, `admin_audit_log.actor_group_id`, `group_memberships.added_by_group_id`, `user_group_roles.assigned_by_group_id`, `journey_enrollments.enrolled_by_group_id`
+6. Set session variables to bypass `enforce_personal_group_id_immutability` and notification triggers
+7. `DELETE FROM groups WHERE id = personal_group_id` — CASCADE removes memberships, roles, notifications, enrollments, conversations
+8. `DELETE FROM users WHERE id = target_user_id`
+9. `DELETE FROM auth.users WHERE id = auth_user_id`
 
 ---
 
-## Error Handling
+## Triggers on `users`
 
-### Common Errors
-- Invalid credentials → "Invalid email or password"
-- Email already exists → "Email already registered"
-- Network error → "Connection failed. Please try again."
-- Session expired → Automatic redirect to /login
+| Trigger | Timing | Event | Function | Purpose |
+|---------|--------|-------|----------|---------|
+| `set_users_updated_at` | BEFORE UPDATE | UPDATE | `update_updated_at_column()` | Auto-sets `updated_at = NOW()` |
+| `enforce_decommission_invariant` | BEFORE UPDATE | UPDATE | `enforce_decommission_invariant()` | If `is_decommissioned = true`, forces `is_active = false` |
+| `enforce_personal_group_id_immutability` | BEFORE UPDATE | UPDATE | `enforce_personal_group_id_immutability()` | Blocks changes to `personal_group_id` after it's set (bypass via `app.bypass_personal_group_id_immutability` session var) |
+| `sync_display_name_to_personal_group` | AFTER UPDATE OF nickname, full_name, display_preference | UPDATE | `sync_personal_group_display_name()` | Syncs personal group `name` to match display preference |
 
-### User-Friendly Messages
-- Never expose technical details
-- Clear actionable messages
-- Links to relevant help
+### Triggers on `auth.users`
 
----
-
-## Testing
-
-### Test Cases
-- ✅ Signup with new email works
-- ✅ Signup with existing email shows error
-- ✅ Login with correct credentials works
-- ✅ Login with wrong password shows error
-- ✅ Protected routes redirect to login
-- ✅ Logout clears session
-- ✅ Session persists across page reloads
-- ✅ User profile created automatically
-- ✅ Account deletion soft-deletes profile
+| Trigger | Timing | Event | Function | Purpose |
+|---------|--------|-------|----------|---------|
+| `on_auth_user_created` | AFTER INSERT | INSERT | `handle_new_user()` | 8-step user bootstrap (profile, personal group, memberships, roles, pending invitations) |
+| `on_auth_user_deleted` | AFTER DELETE | DELETE | `handle_user_deletion()` | Soft-delete: sets `is_active = false` on public.users |
 
 ---
 
-## Future Enhancements
+## Behaviors & Testing
 
-### Phase 2 (Planned)
-- Social authentication (Google, GitHub)
-- Two-factor authentication
-- Password reset via email
-- Email verification requirement
+### Behavior Specs
+
+- `docs/specs/behaviors/authentication.md` — Sign-up, sign-in, sign-out, session management behaviors
+- `docs/specs/behaviors/admin.md` — Admin user lifecycle behaviors (activate, deactivate, decommission, hard-delete)
+- `docs/specs/behaviors/display-name.md` — Display name / nickname behaviors (B-DISP-001 through B-DISP-011)
+
+### Integration Tests
+
+- `tests/integration/auth/signup.test.ts` — Signup flow, handle_new_user trigger
+- `tests/integration/auth/signin.test.ts` — Sign-in, active-user gate, deactivated user rejection
+- `tests/integration/auth/signout.test.ts` — Sign-out flow
+- `tests/integration/auth/session-persistence.test.ts` — Session persistence across reloads
+- `tests/integration/auth/protected-routes.test.ts` — Route protection via proxy.ts
+- `tests/integration/admin/admin-user-management.test.ts` — Admin activate/deactivate
+- `tests/integration/admin/user-decommission.test.ts` — Decommission flow
+- `tests/integration/admin/user-hard-delete.test.ts` — Hard-delete cascade + [Deleted User] sentinel
+- `tests/integration/admin/admin-force-logout.test.ts` — Force-logout mechanisms
+- `tests/integration/users/display-name.test.ts` — Display name toggle, nickname sync
+- `tests/integration/users/display-name-rls.test.ts` — Display name RLS visibility
+
+---
+
+## Known Limitations
+
+1. **No self-service account deletion** — users cannot delete their own accounts; only admins can decommission or hard-delete
+2. **No self-service reactivation page** — deactivated users see a generic error; no dedicated "contact admin" flow
+3. **No per-device session management** — users cannot view or revoke individual sessions
+4. **Force-logout is best-effort** — Realtime broadcast may not reach the client (network issues, tab closed); 10-second polling is the fallback
+5. **`signOut()` scope:local** — `supabase-js 2.91.0` `signOut()` defaults to `scope: 'local'` (does not invalidate server-side session); force-logout relies on server-side session deletion as a separate step
+6. **`onAuthStateChange` deadlock risk** — DB queries inside the Supabase SSR `onAuthStateChange` callback cause deadlocks. Profile resolution is done in a separate `useEffect` triggered by user state changes.
+
+---
+
+## Out of Scope
+
+- OAuth / social authentication (Google, GitHub)
+- Two-factor authentication (2FA)
+- Password reset UI (deferred to Phase 2)
+- Email verification requirement (email confirmation disabled for MVP)
 - Magic link authentication
-
-### Phase 3 (Planned)
-- SSO for organizations
-- SAML integration
-- Role-based access control at auth level
-- Session management UI
-
----
-
-## Technical Details
-
-### Next.js 16 Middleware
-**File:** `proxy.ts` (not middleware.ts in Next.js 16)
-**Export:** Named export `proxy` (not default)
-
-**Pattern:**
-```typescript
-export const proxy = async (request: NextRequest) => {
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session && isProtectedRoute) {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
-
-  return NextResponse.next();
-};
-```
-
-### AuthContext Pattern
-**Wraps entire app** in layout.tsx
-**Provides global state** via React Context
-**Custom hook** for easy access
+- SSO / SAML integration
 
 ---
 
 ## Related Documentation
 
-- **Full implementation:** `docs/implementation/AUTH_IMPLEMENTATION.md`
-- **Database schema:** `docs/database/schema-overview.md`
-- **User profile feature:** `docs/features/implemented/profile-management.md`
+- **Display name system:** `docs/features/implemented/display-name-system.md`
+- **Group management:** `docs/features/implemented/group-management.md`
+- **RBAC design:** `docs/features/planned/dynamic-permissions-system.md`
+- **Behavior specs:** `docs/specs/behaviors/authentication.md`, `docs/specs/behaviors/admin.md`
+- **D15 base migration:** `supabase/migrations/20260222000000_rebuild_universal_group_pattern.sql`
+- **RC7 admin fixes:** `supabase/migrations/20260223171200_fix_rc7_admin_user_ops.sql`
+- **Display name migration:** `supabase/migrations/20260227095615_add_display_name_system.sql`
+- **[Deleted User] sentinel:** `supabase/migrations/20260227120843_seed_deleted_user_sentinel_group.sql`
 
 ---
 
-## Changelog
+## Version History
 
-**v0.2.1** (Jan 23, 2026)
-- Fixed user profile creation trigger
-- Added soft delete on account deletion
-- Updated RLS policies for email search
-
-**v0.2.0** (Jan 20, 2026)
-- Initial authentication system
-- Login and signup pages
-- AuthContext and useAuth hook
-- Protected route middleware
+- **v0.2.31** (2026-02-27): Display name system (nickname, display_preference, show_real_name), personal group name sync trigger, updated handle_new_user() for nickname. [Deleted User] sentinel group. Personal group RLS visibility fix.
+- **v0.2.30** (2026-02-27): Display name / nickname columns and sync trigger added.
+- **v0.2.23** (2026-02-23): RC7 admin fixes — `is_platform_admin()`, admin RPCs (activate, deactivate, decommission, hard-delete), force-logout, session variable bypasses for immutability and notification triggers.
+- **v0.2.22** (2026-02-22): D15 Universal Group Pattern — complete schema rebuild. `personal_group_id` on users, `handle_new_user()` creates personal group + self-membership + Myself role + FI Members enrollment. Two-layer identity model established.
+- **v0.2.7** (2026-01-26): Default landing page changed to /groups.
+- **v0.2.1** (2026-01-23): Fixed user profile creation trigger, added soft delete on auth.users removal, updated RLS policies.
+- **v0.2.0** (2026-01-20): Initial authentication system — login, signup, AuthContext, proxy.ts route protection.

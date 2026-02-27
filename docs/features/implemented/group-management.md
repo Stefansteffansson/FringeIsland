@@ -1,531 +1,660 @@
 # Group Management System
 
-**Status:** ✅ Implemented
-**Version:** 0.2.7
-**Last Updated:** February 9, 2026
+**Status:** IMPLEMENTED
+**Date:** January 24, 2026
+**Completed:** February 27, 2026
+**Version:** v0.2.31
+**Phase:** 1.3 (Group Management) + post-D15 (RBAC, admin lifecycle)
+**Related:** [Authentication](./authentication.md) | [Display Name System](./display-name-system.md) | [Dynamic Permissions System](../planned/dynamic-permissions-system.md)
 
 ---
 
-## Overview
+## Context
 
-Complete group management system enabling users to create groups, invite members, assign roles, and manage group settings. Groups are the core organizational unit for collaborative journey experiences.
+FringeIsland uses a **Universal Group Pattern** (D15) where every actor in the system is a group. Users interact through their personal group, and all relationships are group-to-group. This eliminates the traditional `user_id` FK pattern — memberships, role assignments, and content authorship all reference `member_group_id` (a personal group's UUID) instead of a user UUID.
 
-**Key Capabilities:**
-- Create groups from templates
-- Invite members via email
-- Assign and manage roles (Group Leader, Travel Guide, Member)
-- Edit group settings (name, description, visibility)
-- Last leader protection (database-enforced)
-- Public/private group visibility
-- Member list management
+There are **three group types**:
+- **Personal** — one per user, created at signup by `handle_new_user()`, is the user's identity anchor. `is_public = false`, `show_member_list = false`.
+- **System** — platform infrastructure groups (DeusEx admin group, FringeIsland Members, [Deleted User] sentinel). Created by migrations, not by users.
+- **Engagement** — user-created groups for collaboration (teams, cohorts, guilds). Created via the GroupCreateForm UI.
 
----
+The **groups-as-members** design means a personal group joins an engagement group as a member. This architecture supports future group-joins-group scenarios (e.g., a team joining an organization) without schema changes.
 
-## Features
-
-### Group Creation
-- Create groups from predefined templates (Small Circle, Team, Guild, Community)
-- Custom group names and descriptions
-- Optional labels for categorization
-- Public/private visibility toggle
-- Member list visibility control
-- Automatic creator assignment as Group Leader
-- Immediate redirect to group detail page
-
-**Implementation:**
-- Page: `app/groups/create/page.tsx`
-- Template selection with visual cards
-- Real-time validation
-- Group creation creates initial membership + leader role automatically
-
-### Group Viewing
-- List view of all accessible groups (`/groups`)
-- Detailed group view (`/groups/[id]`)
-- Member list with avatars and role badges
-- Group settings display (public/private, label, description)
-- Join button for public groups (if not member)
-- Edit button for Group Leaders
-
-**RLS-Enforced Visibility:**
-- Users see groups they're active members of
-- Users see all public groups
-- Private groups hidden from non-members
-- Invited (not active) users cannot see group details
-
-### Member Invitations
-- **Email-based search:** Find users by email address
-- **Invite modal:** `InviteMemberModal` component
-- **Invitation status:** Starts as 'invited', becomes 'active' on acceptance
-- **Invitations page:** `/invitations` - View and manage pending invitations
-- **Accept/Decline flow:** One-click acceptance or decline
-- **Real-time updates:** Navigation updates invitation count
-
-**User Flow:**
-1. Group Leader clicks "Invite Members"
-2. Searches for user by email
-3. Clicks "Invite" - Creates `group_memberships` record with status='invited'
-4. Invited user sees invitation on `/invitations` page
-5. User accepts → status changes to 'active'
-6. User declines → membership record deleted
-
-**Implementation:**
-- Component: `components/groups/InviteMemberModal.tsx`
-- Page: `app/invitations/page.tsx`
-- RLS: Only leaders can create invitations, only invitees can view/modify
-
-### Role Management
-- **Assign roles:** Group Leaders can assign any role to active members
-- **Multiple roles:** Members can have multiple roles simultaneously
-- **Promote to leader:** Dedicated "Promote to Leader" button
-- **Remove roles:** Remove individual roles from members
-- **Last leader protection:** Cannot remove last Group Leader role (enforced by database trigger)
-
-**Available Roles:**
-- **Group Leader:** Full control over group (edit, invite, assign roles, manage members)
-- **Travel Guide:** Facilitates journey experiences (Phase 2)
-- **Member:** Standard participant (read-only for group settings)
-
-**UI:**
-- Modal: `AssignRoleModal` - Multi-select role assignment
-- Visual indicators: Role badges on member cards
-- Dynamic buttons: Show/hide based on permissions
-
-**Implementation:**
-- Component: `components/groups/AssignRoleModal.tsx`
-- Trigger: `prevent_last_leader_removal()` - Database-level protection
-- RLS: Only leaders can assign/remove roles
-
-### Group Editing
-- **Edit page:** `/groups/[id]/edit` (Group Leaders only)
-- **Editable fields:**
-  - Group name
-  - Description
-  - Label (optional categorization)
-  - Public/private visibility
-  - Show member list toggle
-- **Authorization:** RLS + UI checks ensure only leaders can edit
-- **Real-time validation:** Name required, trimmed whitespace
-
-**Implementation:**
-- Page: `app/groups/[id]/edit/page.tsx`
-- RLS: UPDATE policy checks for Group Leader role
-- Navigation: "Edit Group" button only visible to leaders
-
-### Member Management
-- **Leave group:** Members can voluntarily leave (except last leader)
-- **Remove members:** Group Leaders can remove members (shows confirmation modal)
-- **View member list:** See all active members with roles (if show_member_list=true)
-- **Member count:** Display active member count
-- **Last leader protection:** Last leader cannot leave or be removed
-
-**Implementation:**
-- UI: Member cards with action buttons
-- Modal: `ConfirmModal` for destructive actions
-- RLS: Leaders can remove members, users can remove themselves (with restrictions)
+**RBAC** replaces the old `isLeader` boolean pattern. Permission checks use `has_permission(acting_group_id, context_group_id, permission_name)` — a two-tier function that checks system group permissions (Tier 1) and then context group permissions (Tier 2). The frontend `usePermissions` hook exposes `hasPermission()` for UI gating.
 
 ---
 
-## Architecture
+## Feature Summary
 
-### Database Schema
+1. **Three group types** — personal (identity), system (infrastructure), engagement (user-created) — with `group_type` CHECK constraint
+2. **Group creation** from templates via GroupCreateForm — 7-step client-side flow (template selection, group insert, self-membership, role template lookup, Steward + Member role creation, role assignment)
+3. **Visibility** — `is_public` for discoverability; `show_member_list` for member list visibility; RLS enforces that private groups are invisible to non-members
+4. **Invitations (existing users)** — Stewards search by email/name via typeahead, create `group_memberships` with `status = 'invited'`
+5. **Invitations (pending email)** — when the invitee has no account yet, a `pending_email_invitations` record is created; claimed automatically by `handle_new_user()` at signup
+6. **Invitation lifecycle** — `invited` → `active` (accept), or DELETE (decline/revoke). Accepting auto-assigns the Member role via trigger. Notifications sent to Stewards on accept/decline.
+7. **Role management** — four roles from templates: Steward, Guide (future), Member, Observer (future). Roles are group-scoped instances of role templates. Multiple roles per member supported.
+8. **Last Steward protection** — `prevent_last_leader_removal()` trigger blocks deleting the last Steward role assignment from any group. UI hides the remove button when only one Steward remains.
+9. **RBAC** — 31 permissions, `has_permission()` two-tier check, `can_assign_role()` anti-escalation, `usePermissions` hook. Replaces all `isLeader` boolean checks.
+10. **Group editing** — Stewards (users with `edit_group_settings` permission) can edit name, description, label, visibility settings via `/groups/[id]/edit`
+11. **Danger Zone / group deletion** — users with `delete_group` permission can permanently delete a group. CASCADE removes memberships, roles, enrollments. RESTRICT on `journeys.created_by_group_id` blocks deletion if group has created journeys. Notification trigger alerts all active members.
+12. **Notification triggers** — database triggers fire on: invitation received, invitation accepted, invitation declined, member left, member removed, role assigned, role removed, group deleted
+13. **Known gaps** — no leave-group feature, no group soft-delete/lifecycle, no group-joins-group UI, no personal/system group protection in Danger Zone
 
-#### groups Table
-```sql
-CREATE TABLE groups (
-  id UUID PRIMARY KEY,
-  name TEXT NOT NULL,
-  description TEXT,
-  label TEXT,                           -- Optional categorization
-  is_public BOOLEAN DEFAULT false,       -- Visibility control
-  show_member_list BOOLEAN DEFAULT true, -- Member list visibility
-  settings JSONB DEFAULT '{}',           -- Future extensibility
-  created_by_user_id UUID REFERENCES users(id),
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+---
+
+## Data Model
+
+### `groups` table
+
+| Column | Type | Default | Nullable | Purpose |
+|--------|------|---------|----------|---------|
+| `id` | UUID | `gen_random_uuid()` | No | Primary key |
+| `name` | TEXT | — | No | Display name. For personal groups, synced from user's display preference. |
+| `description` | TEXT | — | Yes | Group description |
+| `label` | TEXT | — | Yes | Optional categorization label |
+| `created_by_group_id` | UUID | — | Yes | FK to `groups(id)` ON DELETE SET NULL. The personal group of the creator. |
+| `created_from_group_template_id` | UUID | — | Yes | FK to `group_templates(id)` ON DELETE SET NULL. Template used at creation. |
+| `group_type` | TEXT | `'engagement'` | No | CHECK `('system', 'personal', 'engagement')` |
+| `is_public` | BOOLEAN | `false` | No | Whether the group is discoverable by non-members |
+| `show_member_list` | BOOLEAN | `true` | No | Whether the member list is visible to members |
+| `avatar_url` | TEXT | — | Yes | Group avatar (for personal groups, copied from user's avatar) |
+| `settings` | JSONB | `'{}'` | No | Extensible settings (future use) |
+| `created_at` | TIMESTAMPTZ | `NOW()` | No | Creation timestamp |
+| `updated_at` | TIMESTAMPTZ | `NOW()` | No | Auto-updated by `set_groups_updated_at` trigger |
+
+### `group_memberships` table
+
+| Column | Type | Default | Nullable | Purpose |
+|--------|------|---------|----------|---------|
+| `id` | UUID | `gen_random_uuid()` | No | Primary key |
+| `group_id` | UUID | — | No | FK to `groups(id)` ON DELETE CASCADE. The group being joined. |
+| `member_group_id` | UUID | — | No | FK to `groups(id)` ON DELETE CASCADE. The personal group of the joining member. |
+| `added_by_group_id` | UUID | — | Yes | FK to `groups(id)` ON DELETE SET NULL. The personal group of whoever invited/added. |
+| `status` | TEXT | `'active'` | No | CHECK `('active', 'invited', 'paused', 'removed')` |
+| `added_at` | TIMESTAMPTZ | `NOW()` | No | When the membership was created |
+| `status_changed_at` | TIMESTAMPTZ | `NOW()` | No | When the status last changed |
+
+**Constraint:** `UNIQUE(group_id, member_group_id)` — a member can only appear once in a group.
+
+### `user_group_roles` table
+
+| Column | Type | Default | Nullable | Purpose |
+|--------|------|---------|----------|---------|
+| `id` | UUID | `gen_random_uuid()` | No | Primary key |
+| `member_group_id` | UUID | — | No | FK to `groups(id)` ON DELETE CASCADE. The personal group of the role holder. |
+| `group_id` | UUID | — | No | FK to `groups(id)` ON DELETE CASCADE. The group context for this role. |
+| `group_role_id` | UUID | — | No | FK to `group_roles(id)` ON DELETE CASCADE. The specific role instance. |
+| `assigned_by_group_id` | UUID | — | Yes | FK to `groups(id)` ON DELETE SET NULL. Who assigned the role. |
+| `assigned_at` | TIMESTAMPTZ | `NOW()` | No | When the role was assigned |
+
+**Constraint:** `UNIQUE(member_group_id, group_id, group_role_id)` — a member can hold each role only once per group.
+
+### `group_roles` table
+
+| Column | Type | Default | Nullable | Purpose |
+|--------|------|---------|----------|---------|
+| `id` | UUID | `gen_random_uuid()` | No | Primary key |
+| `group_id` | UUID | — | No | FK to `groups(id)` ON DELETE CASCADE. The group this role belongs to. |
+| `name` | TEXT | — | No | Role name (e.g., 'Steward', 'Member') |
+| `description` | TEXT | — | Yes | Role description |
+| `created_from_role_template_id` | UUID | — | Yes | FK to `role_templates(id)` ON DELETE SET NULL. Template this role was cloned from. |
+| `created_at` | TIMESTAMPTZ | `NOW()` | No | Creation timestamp |
+
+**Constraint:** `UNIQUE(group_id, name)` — role names are unique within a group.
+
+### `pending_email_invitations` table
+
+| Column | Type | Default | Nullable | Purpose |
+|--------|------|---------|----------|---------|
+| `id` | UUID | `gen_random_uuid()` | No | Primary key |
+| `group_id` | UUID | — | No | FK to `groups(id)` ON DELETE CASCADE. The group being invited to. |
+| `invited_email` | TEXT | — | No | The email address of the invitee |
+| `invited_by_group_id` | UUID | — | Yes | FK to `groups(id)` ON DELETE SET NULL. Who sent the invitation. |
+| `token` | UUID | `gen_random_uuid()` | No | Invitation token for future email link support (no UNIQUE constraint — collision-free by UUID nature) |
+| `status` | TEXT | `'pending'` | No | CHECK `('pending', 'claimed', 'expired')` |
+| `created_at` | TIMESTAMPTZ | `NOW()` | No | When the invitation was created |
+| `expires_at` | TIMESTAMPTZ | `NOW() + 30 days` | No | Expiration timestamp |
+| `claimed_at` | TIMESTAMPTZ | — | Yes | When the invitation was claimed (user signed up) |
+
+**Constraint:** `UNIQUE(group_id, invited_email)` — one pending invitation per email per group.
+
+### `role_templates` table (seed data)
+
+| Name | is_system | Purpose |
+|------|-----------|---------|
+| Steward Role Template | true | Full group management permissions |
+| Guide Role Template | true | Journey facilitation permissions (future) |
+| Member Role Template | true | Standard participation permissions |
+| Observer Role Template | true | Read-only permissions (future) |
+
+---
+
+## Core Mechanisms
+
+### Group creation: 7-step `GroupCreateForm` flow
+
+The client-side creation flow in `components/groups/GroupCreateForm.tsx`:
+
+```typescript
+// Step 1: INSERT group (created_by_group_id = userProfile.personal_group_id)
+const { data: groupData } = await supabase.from('groups').insert({
+  name, description, label, created_by_group_id: userId,
+  created_from_group_template_id: selectedTemplate, is_public, show_member_list,
+}).select().single();
+
+// Step 2: INSERT self-membership (member_group_id = personal_group_id, status = 'active')
+await supabase.from('group_memberships').insert({
+  group_id: groupData.id, member_group_id: userId,
+  added_by_group_id: userId, status: 'active',
+});
+
+// Step 3: Fetch role templates (Steward + Member)
+const { data: roleTemplates } = await supabase.from('role_templates')
+  .select('id, name').in('name', ['Steward Role Template', 'Member Role Template']);
+
+// Step 4: CREATE Steward role instance (permissions auto-copied by copy_template_permissions trigger)
+const { data: stewardRole } = await supabase.from('group_roles').insert({
+  group_id: groupData.id, name: 'Steward', created_from_role_template_id: stewardTemplate.id,
+}).select('id').single();
+
+// Step 5: CREATE Member role instance
+const { data: memberRole } = await supabase.from('group_roles').insert({
+  group_id: groupData.id, name: 'Member', created_from_role_template_id: memberTemplate.id,
+}).select('id').single();
+
+// Step 6: Assign creator both Steward and Member roles
+await supabase.from('user_group_roles').insert([
+  { member_group_id: userId, group_id: groupData.id, group_role_id: stewardRole.id, assigned_by_group_id: userId },
+  { member_group_id: userId, group_id: groupData.id, group_role_id: memberRole.id, assigned_by_group_id: userId },
+]);
+
+// Step 7: Redirect to /groups
 ```
 
-#### group_memberships Table
-```sql
-CREATE TABLE group_memberships (
-  id UUID PRIMARY KEY,
-  group_id UUID REFERENCES groups(id) ON DELETE CASCADE,
-  user_id UUID REFERENCES users(id) ON DELETE RESTRICT,
-  added_by_user_id UUID REFERENCES users(id),
-  status TEXT CHECK (status IN ('invited', 'active', 'paused', 'removed')),
-  added_at TIMESTAMPTZ DEFAULT NOW(),
-  status_changed_at TIMESTAMPTZ DEFAULT NOW()
-);
+**RLS bootstrap:** The `memberships_insert_bootstrap` and `ugr_insert_assign` (bootstrap branch) policies allow the group creator to self-add before any Steward exists, using `is_group_creator()` and `NOT group_has_leader()` checks.
+
+### Invitation flow
+
+**Path A: Existing user (typeahead search)**
+
+1. Steward opens InviteMemberModal, searches by email or display name
+2. Typeahead queries `users` table (RLS: `users_select_active`)
+3. Steward clicks "Invite" → INSERT into `group_memberships` with `status = 'invited'`, `added_by_group_id = personal_group_id`
+4. `notify_invitation_received` trigger fires → creates notification for the invitee
+5. Invitee sees invitation on `/invitations` page
+
+**Path B: Non-existent user (pending email)**
+
+1. Steward enters an email that doesn't match any existing user
+2. INSERT into `pending_email_invitations` with `status = 'pending'`, `expires_at = NOW() + 30 days`
+3. When the invitee signs up, `handle_new_user()` Step 8 claims all matching pending invitations → creates `group_memberships` with `status = 'invited'` + marks pending invitation as `'claimed'`
+4. Flow continues as Path A from step 4
+
+### Invitation acceptance
+
+```typescript
+// Accept: UPDATE status from 'invited' to 'active'
+await supabase.from('group_memberships')
+  .update({ status: 'active' })
+  .eq('id', membershipId);
 ```
 
-**Status Values:**
-- `invited` - Pending invitation
-- `active` - Accepted member
-- `paused` - Temporarily inactive (Phase 2)
-- `removed` - Removed from group (Phase 2 - audit trail)
-
-#### group_roles Table
-```sql
-CREATE TABLE group_roles (
-  id UUID PRIMARY KEY,
-  group_id UUID REFERENCES groups(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,  -- e.g., 'Group Leader', 'Travel Guide', 'Member'
-  description TEXT,
-  created_from_role_template_id UUID REFERENCES role_templates(id),
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
-
-#### user_group_roles Table
-```sql
-CREATE TABLE user_group_roles (
-  id UUID PRIMARY KEY,
-  user_id UUID REFERENCES users(id) ON DELETE RESTRICT,
-  group_id UUID REFERENCES groups(id) ON DELETE CASCADE,
-  group_role_id UUID REFERENCES group_roles(id) ON DELETE CASCADE,
-  assigned_by_user_id UUID REFERENCES users(id),
-  assigned_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
-
-**Key Design:**
-- Users can have multiple roles per group
-- Roles are group-specific instances of templates
-- CASCADE on group deletion (clean up all related data)
-- RESTRICT on user deletion (preserve referential integrity)
-
-### RLS Policies
-
-#### Groups Table Policies
-```sql
--- SELECT: Users can view groups they're members of OR public groups
-CREATE POLICY "groups_select_with_function"
-ON groups FOR SELECT
-TO authenticated
-USING (
-  is_public = true
-  OR is_active_group_member(id)
-);
-
--- INSERT: Authenticated users can create groups
-CREATE POLICY "Users can create groups"
-ON groups FOR INSERT
-TO authenticated
-WITH CHECK (
-  created_by_user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
-);
-
--- UPDATE: Group Leaders can update their groups
--- (RLS policy checks for Group Leader role)
-```
-
-#### Group Memberships Policies
-```sql
--- SELECT: Users can view memberships in groups they belong to
-CREATE POLICY "group_memberships_select_with_function"
-ON group_memberships FOR SELECT
-TO authenticated
-USING (
-  user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
-  OR is_active_group_member(group_id)
-);
-
--- INSERT: Leaders can create invitations
-CREATE POLICY "Users can create invitations for groups they lead"
-ON group_memberships FOR INSERT
-TO authenticated
-WITH CHECK (
-  added_by_user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
-  AND status = 'invited'
-);
-
--- UPDATE: Users can accept their own invitations
--- DELETE: Users can decline invitations or leave groups (with restrictions)
-```
-
-#### User Group Roles Policies
-```sql
--- SELECT: Users can view role assignments in groups they belong to
--- INSERT: Group Leaders can assign roles
--- DELETE: Group Leaders can remove roles (with last leader protection)
-```
-
-### Security Definer Function
-
-**Function:** `is_active_group_member(group_id UUID)`
-**Purpose:** Check if current user is an active member of a group (bypasses RLS to avoid recursion)
+The `auto_assign_member_role_on_accept` AFTER UPDATE trigger fires when `OLD.status = 'invited' AND NEW.status = 'active'`:
 
 ```sql
-CREATE OR REPLACE FUNCTION is_active_group_member(check_group_id UUID)
-RETURNS BOOLEAN
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
-DECLARE
-  user_uuid UUID;
-  is_member BOOLEAN;
-BEGIN
-  -- Get current user's profile UUID
-  SELECT id INTO user_uuid
-  FROM users
-  WHERE auth_user_id = auth.uid();
+-- Trigger: auto_assign_member_role_on_accept()
+SELECT id INTO v_member_role_id FROM public.group_roles
+  WHERE group_id = NEW.group_id AND name = 'Member' LIMIT 1;
 
-  IF user_uuid IS NULL THEN
-    RETURN FALSE;
-  END IF;
-
-  -- Check for active membership
-  SELECT EXISTS (
-    SELECT 1
-    FROM group_memberships
-    WHERE group_id = check_group_id
-      AND user_id = user_uuid
-      AND status = 'active'
-  ) INTO is_member;
-
-  RETURN COALESCE(is_member, FALSE);
-END;
-$$;
+INSERT INTO public.user_group_roles (member_group_id, group_id, group_role_id, assigned_by_group_id)
+  VALUES (NEW.member_group_id, NEW.group_id, v_member_role_id, NEW.member_group_id)
+  ON CONFLICT DO NOTHING;
 ```
 
-**Why SECURITY DEFINER:**
-- Breaks circular RLS dependency between `groups` and `group_memberships`
-- Function runs with elevated privileges to query both tables
-- Returns simple boolean for policy evaluation
+The `notify_invitation_accepted` trigger notifies all Stewards of the group.
 
-### Database Triggers
-
-#### Last Leader Protection Trigger
-**Trigger:** `check_last_leader_removal`
-**Fires:** BEFORE DELETE ON `user_group_roles`
-**Function:** `prevent_last_leader_removal()`
+### RBAC: `has_permission()` two-tier check
 
 ```sql
-CREATE OR REPLACE FUNCTION prevent_last_leader_removal()
-RETURNS TRIGGER AS $$
-DECLARE
-  leader_count INTEGER;
-  role_name TEXT;
-BEGIN
-  -- Get role name
-  SELECT gr.name INTO role_name
-  FROM group_roles gr
-  WHERE gr.id = OLD.group_role_id;
+-- Tier 1: System group permissions (context-free)
+-- Checks if the acting group has the permission via any system group membership
+SELECT 1 FROM group_memberships gm
+  JOIN user_group_roles ugr ON ugr.member_group_id = gm.member_group_id AND ugr.group_id = gm.group_id
+  JOIN group_role_permissions grp ON grp.group_role_id = ugr.group_role_id
+  JOIN permissions p ON p.id = grp.permission_id
+  JOIN groups g ON g.id = gm.group_id
+  WHERE gm.member_group_id = p_acting_group_id AND gm.status = 'active'
+    AND g.group_type = 'system' AND grp.granted = true AND p.name = p_permission_name;
 
-  -- Only check for Group Leader roles
-  IF role_name = 'Group Leader' THEN
-    -- Count remaining leaders
-    SELECT COUNT(*) INTO leader_count
-    FROM user_group_roles ugr
-    JOIN group_roles gr ON ugr.group_role_id = gr.id
-    WHERE ugr.group_id = OLD.group_id
-      AND gr.name = 'Group Leader'
-      AND ugr.id != OLD.id;
-
-    -- Block if this is the last leader
-    IF leader_count = 0 THEN
-      RAISE EXCEPTION 'Cannot remove the last Group Leader from the group';
-    END IF;
-  END IF;
-
-  RETURN OLD;
-END;
-$$ LANGUAGE plpgsql;
+-- Tier 2: Context group permissions (if Tier 1 didn't match)
+-- Checks if the acting group has the permission in the specific context group
+SELECT 1 FROM group_memberships gm
+  JOIN user_group_roles ugr ON ...
+  WHERE gm.member_group_id = p_acting_group_id AND gm.group_id = p_context_group_id
+    AND mst.status = 'active' AND grp.granted = true AND p.name = p_permission_name;
 ```
 
-**Protection Guarantees:**
-- ✅ Blocks last leader removal via UI
-- ✅ Blocks last leader removal via API
-- ✅ Blocks last leader removal via direct SQL
-- ✅ Blocks concurrent deletion attempts
-- ✅ Prevents cascade deletion of last leader
+**Frontend: `usePermissions` hook** (`lib/hooks/usePermissions.ts`)
+
+```typescript
+const { hasPermission, loading, refetch } = usePermissions(groupId);
+
+// Usage in UI
+{hasPermission('edit_group_settings') && <EditButton />}
+{hasPermission('delete_group') && <DangerZone />}
+{hasPermission('invite_members') && <InviteButton />}
+```
+
+### Anti-escalation: `can_assign_role()`
+
+Prevents a user from assigning a role that grants permissions they don't hold themselves:
+
+```sql
+SELECT has_permission(p_acting_group_id, p_group_id, 'assign_roles')
+  AND NOT EXISTS (
+    SELECT 1 FROM group_role_permissions grp
+    JOIN permissions p ON p.id = grp.permission_id
+    WHERE grp.group_role_id = p_group_role_id AND grp.granted = true
+      AND NOT has_permission(p_acting_group_id, p_group_id, p.name)
+  );
+```
+
+### Last Steward protection
+
+**Trigger:** `prevent_last_leader_removal()` — BEFORE DELETE on `user_group_roles`
+
+```sql
+-- Skip during hard-delete cascade (session variable bypass)
+IF current_setting('app.hard_delete_in_progress', true) = 'true' THEN RETURN OLD; END IF;
+
+-- If parent group is gone (CASCADE), allow deletion
+IF NOT EXISTS (SELECT 1 FROM groups WHERE id = OLD.group_id) THEN RETURN OLD; END IF;
+
+-- Check if the role being removed is a Steward role (by template or name)
+-- Count remaining Steward role holders (excluding the one being removed)
+-- If count = 0: RAISE EXCEPTION 'Cannot remove the last Steward from the group.'
+```
+
+**UI gate:** The AssignRoleModal counts Stewards and disables the Steward checkbox if removing it would leave zero Stewards.
+
+### Group deletion / Danger Zone
+
+The edit page (`app/groups/[id]/edit/page.tsx`) shows a Danger Zone section when `hasPermission('delete_group')` is true:
+
+```typescript
+const handleDelete = async () => {
+  const { error } = await supabase.from('groups').delete().eq('id', groupId);
+  if (error) throw error;
+  router.push('/groups');
+};
+```
+
+**CASCADE table** (data deleted when a group is deleted):
+
+| Table | FK Column | ON DELETE |
+|-------|-----------|-----------|
+| `group_memberships` | `group_id` | CASCADE |
+| `user_group_roles` | `group_id` | CASCADE |
+| `group_roles` | `group_id` | CASCADE |
+| `journey_enrollments` | `group_id` | CASCADE |
+| `notifications` | `recipient_group_id` | CASCADE |
+| `notifications` | `group_id` (context) | SET NULL |
+| `forum_posts` | `group_id` | CASCADE |
+
+**RESTRICT blocker:** `journeys.created_by_group_id` has ON DELETE RESTRICT. If the group has created any journeys, deletion fails with a FK violation. This is currently unhandled in the UI.
+
+**Notification trigger:** `notify_group_deleted()` fires BEFORE DELETE on `groups`, notifying all active members (except the deleter) before the CASCADE removes membership records.
 
 ---
 
-## User Flows
+## RBAC Functions
 
-### Creating a Group
-1. User navigates to `/groups/create`
-2. Selects template (Small Circle, Team, Guild, Community)
-3. Fills in name, description (optional), label (optional)
-4. Configures visibility (public/private) and member list display
-5. Clicks "Create Group"
-6. System creates:
-   - `groups` record
-   - `group_memberships` record (creator, status='active')
-   - `group_roles` records (from template)
-   - `user_group_roles` record (creator as Group Leader)
-7. Redirects to `/groups/[id]`
-
-### Inviting Members
-1. Group Leader views group detail page
-2. Clicks "Invite Members" button
-3. Modal opens (`InviteMemberModal`)
-4. Searches for user by email
-5. Selects user from search results
-6. Clicks "Invite"
-7. System creates `group_memberships` with status='invited'
-8. Modal closes, member list refreshes
-9. Invited user sees invitation on `/invitations` page
-
-### Accepting Invitations
-1. User navigates to `/invitations`
-2. Sees list of pending invitations
-3. Clicks "Accept" on an invitation
-4. System updates `group_memberships.status` to 'active'
-5. Invitation removed from list
-6. Navigation updates (group now appears in user's groups)
-
-### Assigning Roles
-1. Group Leader views group detail page
-2. Clicks "Assign Role" on member card
-3. Modal opens (`AssignRoleModal`)
-4. Selects roles (multi-select)
-5. Clicks "Assign Roles"
-6. System:
-   - Removes unchecked roles (DELETE from `user_group_roles`)
-   - Adds newly checked roles (INSERT into `user_group_roles`)
-   - Validates last leader protection
-7. Modal closes, member cards update with new role badges
-8. If user removed their own leader role, UI updates instantly (buttons disappear)
-
-### Editing Group
-1. Group Leader views group detail page
-2. Clicks "Edit Group" button
-3. Navigates to `/groups/[id]/edit`
-4. Updates fields (name, description, visibility, etc.)
-5. Clicks "Save Changes"
-6. System validates and updates `groups` table
-7. Redirects to `/groups/[id]`
-8. Changes visible immediately
+| Function | Type | Purpose |
+|----------|------|---------|
+| `has_permission(acting_group_id, context_group_id, permission_name)` | PLPGSQL, SECURITY DEFINER | Core RBAC check — two-tier (system → context) |
+| `get_user_permissions(acting_group_id, context_group_id)` | SQL, SECURITY DEFINER | Returns `TEXT[]` of all permission names for a group in a context |
+| `can_assign_role(acting_group_id, group_id, group_role_id)` | SQL, SECURITY DEFINER | Anti-escalation check for role assignment |
+| `get_current_personal_group_id()` | SQL, SECURITY DEFINER | Returns current user's personal group UUID |
+| `get_current_user_profile_id()` | SQL, SECURITY DEFINER | Returns current user's `users.id` |
+| `is_platform_admin()` | SQL, SECURITY DEFINER | PG17-safe check for DeusEx system group membership |
+| `is_active_group_member(group_id)` | SQL, SECURITY DEFINER | Quick membership check (avoids circular RLS) |
+| `is_invited_group_member(group_id)` | SQL, SECURITY DEFINER | Check for pending invitation (for group visibility) |
+| `is_group_creator(group_id)` | SQL, SECURITY DEFINER | Check if current user created the group (for bootstrap) |
+| `group_has_leader(group_id)` | SQL, SECURITY DEFINER | Check if group has any Steward (for bootstrap detection) |
 
 ---
 
-## Component Structure
+## RLS Policies
 
-### Pages
-- `app/groups/page.tsx` - Group list view
-- `app/groups/create/page.tsx` - Group creation form
-- `app/groups/[id]/page.tsx` - Group detail view
-- `app/groups/[id]/edit/page.tsx` - Group editing form
-- `app/invitations/page.tsx` - Invitation management
+### `groups` table (4 policies — as of final `fix_personal_group_rls_visibility` migration)
 
-### Components
-- `components/groups/InviteMemberModal.tsx` - Member invitation UI
-- `components/groups/AssignRoleModal.tsx` - Role assignment UI
-- `components/ui/ConfirmModal.tsx` - Confirmation dialogs (used for removals)
+```sql
+-- SELECT: Personal groups visible to all (identity containers), public groups,
+-- member groups, invited groups, creator's groups, platform admins
+CREATE POLICY "groups_select"
+  ON public.groups FOR SELECT TO authenticated
+  USING (
+    group_type = 'personal'
+    OR is_public = true
+    OR public.is_active_group_member(id)
+    OR public.is_invited_group_member(id)
+    OR created_by_group_id = public.get_current_personal_group_id()
+    OR public.is_platform_admin()
+  );
 
-### Utilities
-- `lib/supabase/client.ts` - Supabase client (browser)
-- `lib/supabase/server.ts` - Supabase client (server)
+-- INSERT: Creator must be the current user's personal group
+CREATE POLICY "groups_insert"
+  ON public.groups FOR INSERT TO authenticated
+  WITH CHECK (created_by_group_id = public.get_current_personal_group_id());
+
+-- UPDATE: Requires edit_group_settings permission in the group
+CREATE POLICY "groups_update"
+  ON public.groups FOR UPDATE TO authenticated
+  USING (public.has_permission(public.get_current_personal_group_id(), id, 'edit_group_settings'))
+  WITH CHECK (public.has_permission(public.get_current_personal_group_id(), id, 'edit_group_settings'));
+
+-- DELETE: Requires delete_group permission in the group
+CREATE POLICY "groups_delete"
+  ON public.groups FOR DELETE TO authenticated
+  USING (public.has_permission(public.get_current_personal_group_id(), id, 'delete_group'));
+```
+
+### `group_memberships` table (8 policies)
+
+```sql
+-- SELECT: Active members of the group, or viewing own memberships, or platform admin
+CREATE POLICY "memberships_select"
+  ON public.group_memberships FOR SELECT TO authenticated
+  USING (
+    public.is_active_group_member(group_id)
+    OR member_group_id = public.get_current_personal_group_id()
+    OR public.is_platform_admin()
+  );
+
+-- INSERT (invite): Requires invite_members permission, status must be 'invited'
+CREATE POLICY "memberships_insert_invite"
+  ON public.group_memberships FOR INSERT TO authenticated
+  WITH CHECK (
+    status = 'invited'
+    AND added_by_group_id = public.get_current_personal_group_id()
+    AND public.has_permission(public.get_current_personal_group_id(), group_id, 'invite_members')
+  );
+
+-- INSERT (bootstrap): Creator self-adds during group creation
+CREATE POLICY "memberships_insert_bootstrap"
+  ON public.group_memberships FOR INSERT TO authenticated
+  WITH CHECK (
+    member_group_id = public.get_current_personal_group_id()
+    AND added_by_group_id = public.get_current_personal_group_id()
+    AND status = 'active'
+    AND public.is_group_creator(group_id)
+  );
+
+-- INSERT (admin): Platform admin can add memberships
+CREATE POLICY "gm_insert_admin"
+  ON public.group_memberships FOR INSERT TO authenticated
+  WITH CHECK (
+    public.is_platform_admin()
+    AND added_by_group_id = public.get_current_personal_group_id()
+  );
+
+-- UPDATE (accept): Invitee can accept their own invitation (invited → active)
+CREATE POLICY "memberships_update_accept"
+  ON public.group_memberships FOR UPDATE TO authenticated
+  USING (member_group_id = public.get_current_personal_group_id() AND status = 'invited')
+  WITH CHECK (status = 'active');
+
+-- DELETE (leave): Members can delete their own membership
+CREATE POLICY "memberships_delete_leave"
+  ON public.group_memberships FOR DELETE TO authenticated
+  USING (member_group_id = public.get_current_personal_group_id());
+
+-- DELETE (remove): Steward can remove active members
+CREATE POLICY "memberships_delete_remove"
+  ON public.group_memberships FOR DELETE TO authenticated
+  USING (
+    public.has_permission(public.get_current_personal_group_id(), group_id, 'remove_members')
+    AND status = 'active'
+  );
+
+-- DELETE (admin): Platform admin can remove any membership
+CREATE POLICY "gm_delete_admin"
+  ON public.group_memberships FOR DELETE TO authenticated
+  USING (public.is_platform_admin());
+```
+
+### `user_group_roles` table (5 policies)
+
+```sql
+-- SELECT: Active members of the group, or viewing own roles, or platform admin
+CREATE POLICY "ugr_select"
+  ON public.user_group_roles FOR SELECT TO authenticated
+  USING (
+    public.is_active_group_member(group_id)
+    OR member_group_id = public.get_current_personal_group_id()
+    OR public.is_platform_admin()
+  );
+
+-- INSERT (assign): Requires assign_roles + anti-escalation check, OR bootstrap (no Steward yet)
+CREATE POLICY "ugr_insert_assign"
+  ON public.user_group_roles FOR INSERT TO authenticated
+  WITH CHECK (
+    (public.can_assign_role(public.get_current_personal_group_id(), group_id, group_role_id)
+      AND assigned_by_group_id = public.get_current_personal_group_id())
+    OR
+    (member_group_id = public.get_current_personal_group_id()
+      AND assigned_by_group_id = public.get_current_personal_group_id()
+      AND NOT public.group_has_leader(group_id))
+  );
+
+-- INSERT (admin): Platform admin can assign roles
+CREATE POLICY "ugr_insert_admin"
+  ON public.user_group_roles FOR INSERT TO authenticated
+  WITH CHECK (public.is_platform_admin());
+
+-- DELETE: Requires assign_roles permission
+CREATE POLICY "ugr_delete"
+  ON public.user_group_roles FOR DELETE TO authenticated
+  USING (public.has_permission(public.get_current_personal_group_id(), group_id, 'assign_roles'));
+
+-- DELETE (admin): Platform admin can remove roles
+CREATE POLICY "ugr_delete_admin"
+  ON public.user_group_roles FOR DELETE TO authenticated
+  USING (public.is_platform_admin());
+```
+
+### `group_roles` table (5 policies)
+
+```sql
+-- SELECT: Active members, invited members, or group creator; platform admin via service_role
+CREATE POLICY "group_roles_select"
+  ON public.group_roles FOR SELECT TO authenticated
+  USING (
+    public.is_active_group_member(group_id)
+    OR public.is_invited_group_member(group_id)
+    OR public.is_platform_admin()
+  );
+
+-- INSERT: Requires manage_roles permission, OR bootstrap (creator, no Steward yet)
+CREATE POLICY "group_roles_insert"
+  ON public.group_roles FOR INSERT TO authenticated
+  WITH CHECK (
+    public.has_permission(public.get_current_personal_group_id(), group_id, 'manage_roles')
+    OR (public.is_group_creator(group_id) AND NOT public.group_has_leader(group_id))
+  );
+
+-- UPDATE: Requires manage_roles permission
+CREATE POLICY "group_roles_update"
+  ON public.group_roles FOR UPDATE TO authenticated
+  USING (public.has_permission(public.get_current_personal_group_id(), group_id, 'manage_roles'))
+  WITH CHECK (public.has_permission(public.get_current_personal_group_id(), group_id, 'manage_roles'));
+
+-- DELETE: Requires manage_roles permission, only custom roles (template roles protected)
+CREATE POLICY "group_roles_delete"
+  ON public.group_roles FOR DELETE TO authenticated
+  USING (
+    created_from_role_template_id IS NULL
+    AND public.has_permission(public.get_current_personal_group_id(), group_id, 'manage_roles')
+  );
+```
+
+### `pending_email_invitations` table (3 policies)
+
+```sql
+-- SELECT: Users with invite_members permission in the group
+CREATE POLICY "pending_invitations_select"
+  ON public.pending_email_invitations FOR SELECT TO authenticated
+  USING (public.has_permission(public.get_current_personal_group_id(), group_id, 'invite_members'));
+
+-- INSERT: Users with invite_members permission, must be the inviter
+CREATE POLICY "pending_invitations_insert"
+  ON public.pending_email_invitations FOR INSERT TO authenticated
+  WITH CHECK (
+    invited_by_group_id = public.get_current_personal_group_id()
+    AND public.has_permission(public.get_current_personal_group_id(), group_id, 'invite_members')
+  );
+
+-- DELETE: Users with invite_members permission can cancel invitations
+CREATE POLICY "pending_invitations_delete"
+  ON public.pending_email_invitations FOR DELETE TO authenticated
+  USING (public.has_permission(public.get_current_personal_group_id(), group_id, 'invite_members'));
+```
 
 ---
 
-## Testing
+## Trigger Inventory
 
-### Implemented Tests
-✅ **B-GRP-001: Last Leader Protection** - `tests/integration/groups/last-leader.test.ts` (4/4 passing)
-- Cannot remove last leader via DELETE
-- Can remove leader when multiple leaders exist
-- Concurrent deletion attempts all blocked
-- Trigger blocks CASCADE deletion on user account deletion
+### `groups` table
 
-✅ **B-GRP-003: Group Visibility Rules** - `tests/integration/rls/groups.test.ts` (7/7 passing)
-- Users can view groups they're active members of
-- Users can view public groups
-- Private groups hidden from non-members
-- RLS enforces visibility at database level
+| Trigger | Timing | Event | Function | Purpose |
+|---------|--------|-------|----------|---------|
+| `set_groups_updated_at` | BEFORE UPDATE | UPDATE | `update_updated_at_column()` | Auto-sets `updated_at = NOW()` |
+| `notify_group_deleted` | BEFORE DELETE | DELETE | `notify_group_deleted()` | Notifies active members before CASCADE deletes memberships |
 
-### Pending Tests
-- ⏳ B-GRP-002: Member Invitation Lifecycle
-- ⏳ B-GRP-004: Group Editing Permissions
-- ⏳ B-GRP-005: Group Deletion Rules
+### `group_memberships` table
 
----
+| Trigger | Timing | Event | Function | Purpose |
+|---------|--------|-------|----------|---------|
+| `notify_invitation_received` | AFTER INSERT | INSERT | `notify_invitation_received()` | Notifies invitee when invitation is created |
+| `assign_member_role_on_accept` | AFTER UPDATE | UPDATE (invited → active) | `auto_assign_member_role_on_accept()` | Auto-assigns Member role when invitation accepted |
+| `auto_assign_deusex_role` | AFTER UPDATE | UPDATE | `auto_assign_deusex_role_on_accept()` | Auto-assigns DeusEx role when DeusEx invitation accepted |
+| `notify_invitation_accepted` | AFTER UPDATE | UPDATE | `notify_invitation_accepted()` | Notifies Stewards when invitation accepted |
+| `notify_invitation_declined_or_member_change` | AFTER DELETE | DELETE | `notify_invitation_declined_or_member_change()` | Notifies Stewards on decline; notifies Stewards on leave; notifies removed member |
+| `check_last_deusex_membership_removal` | BEFORE DELETE | DELETE | `prevent_last_deusex_membership_removal()` | Blocks removing last DeusEx member |
+| `trg_audit_admin_membership_change` | AFTER INSERT OR DELETE | INSERT, DELETE | `audit_admin_membership_change()` | Writes admin audit log for admin-initiated membership changes |
 
-## Behaviors
+### `user_group_roles` table
 
-### Documented Behaviors
-See `docs/specs/behaviors/groups.md` for complete behavior specifications:
+| Trigger | Timing | Event | Function | Purpose |
+|---------|--------|-------|----------|---------|
+| `validate_user_group_role` | BEFORE INSERT | INSERT | `validate_user_group_role()` | Ensures role belongs to the correct group |
+| `check_last_leader_removal` | BEFORE DELETE | DELETE | `prevent_last_leader_removal()` | Blocks removing last Steward role (with hard-delete bypass) |
+| `check_last_deusex_role_removal` | BEFORE DELETE | DELETE | `prevent_last_deusex_role_removal()` | Blocks removing last DeusEx role (with hard-delete bypass) |
+| `notify_role_assigned` | AFTER INSERT | INSERT | `notify_role_assigned()` | Notifies member when role is assigned |
+| `notify_role_removed` | AFTER DELETE | DELETE | `notify_role_removed()` | Notifies member when role is removed (skip on CASCADE) |
 
-- **B-GRP-001:** Last Leader Protection ✅
-- **B-GRP-002:** Member Invitation Lifecycle ✅
-- **B-GRP-003:** Group Visibility Rules ✅
-- **B-GRP-004:** Group Editing Permissions ✅
-- **B-GRP-005:** Group Deletion Rules (planned)
+### `group_roles` table
 
----
-
-## Edge Cases & Limitations
-
-### Current Limitations
-1. **No group deletion UI:** Groups can only be deleted via SQL (planned for future)
-2. **No member removal undo:** Once removed, must be re-invited
-3. **No audit trail:** Status changes not logged (planned for Phase 2)
-4. **No notification system:** Invited users must manually check `/invitations` page
-5. **Single-device sessions:** No real-time sync across tabs (refresh required)
-
-### Handled Edge Cases
-✅ Last leader cannot leave or be removed (trigger protection)
-✅ Cannot invite existing members (unique constraint)
-✅ Cannot directly insert active members (RLS blocks)
-✅ Multiple leaders can safely coexist
-✅ Group deletion cascades to all related data
-✅ Concurrent role deletions handled atomically
+| Trigger | Timing | Event | Function | Purpose |
+|---------|--------|-------|----------|---------|
+| `copy_template_permissions` | AFTER INSERT | INSERT | `copy_template_permissions_on_role_create()` | Copies permissions from role template to new group role instance |
 
 ---
 
-## Performance Considerations
+## Affected Surfaces
 
-### Optimizations
-- Security definer function avoids RLS recursion
-- Indexed foreign keys (automatic via PostgreSQL)
-- RLS policies use simple boolean checks
-
-### Scaling Notes
-- Member list queries fetch all members (O(n) - acceptable for MVP)
-- Role checks done per-request (no caching - acceptable for MVP)
-- Future: Add pagination for groups with 100+ members
+| Surface | File Path | Key Permissions |
+|---------|-----------|-----------------|
+| Group list | `app/groups/page.tsx` | — (RLS handles visibility) |
+| Group detail | `app/groups/[id]/page.tsx` | `view_member_list`, `invite_members`, `assign_roles` |
+| Group creation | `app/groups/create/page.tsx` + `components/groups/GroupCreateForm.tsx` | — (any authenticated user) |
+| Group editing | `app/groups/[id]/edit/page.tsx` | `edit_group_settings`, `delete_group` |
+| Invite modal | `components/groups/InviteMemberModal.tsx` | `invite_members` |
+| Assign role modal | `components/groups/AssignRoleModal.tsx` | `assign_roles` |
+| Invitations page | `app/invitations/page.tsx` | — (own invitations only) |
+| Navigation | `components/ui/Navigation.tsx` | — (invitation count badge) |
 
 ---
 
-## Future Enhancements (Phase 2)
+## Behaviors & Testing
 
-### Planned Features
-- **Subgroups:** Groups as members of other groups
-- **Custom roles:** Define roles beyond templates
-- **Advanced permissions:** Granular permission customization
-- **Audit trail:** Log all membership and role changes
-- **Real-time updates:** WebSockets for live member list updates
-- **Bulk invitations:** Invite multiple users at once
-- **Invitation expiry:** Time-limited invitations
+### Behavior Specs
 
-### Deferred to Later Phases
-- **Group templates marketplace:** User-created templates
-- **Group analytics:** Member engagement metrics
-- **Group archival:** Soft delete for groups
-- **Member pausing:** Temporary leave without losing membership
+- `docs/specs/behaviors/groups.md` — Group creation, visibility, editing, deletion behaviors
+- `docs/specs/behaviors/invitations.md` — Invitation lifecycle behaviors
+- `docs/specs/behaviors/roles.md` — Role assignment and management behaviors
+- `docs/specs/behaviors/rbac.md` — RBAC permission resolution behaviors
+- `docs/specs/behaviors/d15-hardening.md` — D15-specific edge cases and hardening
+- `docs/specs/behaviors/admin.md` — Admin group management behaviors
+
+### Integration Tests
+
+- `tests/integration/groups/last-leader.test.ts` — Last Steward protection trigger
+- `tests/integration/groups/edit-permissions.test.ts` — Group editing permission checks
+- `tests/integration/groups/invitations.test.ts` — Invitation lifecycle (invite, accept, decline)
+- `tests/integration/groups/pending-invitations.test.ts` — Pending email invitation flow
+- `tests/integration/groups/role-assignment.test.ts` — Role assignment and removal
+- `tests/integration/groups/deletion.test.ts` — Group deletion + CASCADE + RESTRICT
+- `tests/integration/groups/user-search.test.ts` — User search for invitations
+- `tests/integration/rls/groups.test.ts` — Groups table RLS policies
+- `tests/integration/rbac/role-permissions.test.ts` — Role-permission resolution
+- `tests/integration/rbac/role-management.test.ts` — Role CRUD operations
+- `tests/integration/rbac/permission-resolution.test.ts` — has_permission() two-tier check
+- `tests/integration/rbac/ui-permission-gating.test.ts` — UI permission gating
+- `tests/integration/rbac/personal-groups.test.ts` — Personal group invariants
+- `tests/integration/rbac/d15-hardening.test.ts` — Bootstrap policies, anti-escalation
+- `tests/integration/communication/notifications.test.ts` — Notification triggers
+
+---
+
+## Known Limitations
+
+1. **No leave-group feature** — the `memberships_delete_leave` RLS policy exists, but no UI implements it yet. The last Steward cannot leave (trigger blocks it), and there is no "transfer Steward" flow.
+2. **No group soft-delete / lifecycle** — groups are hard-deleted via `DELETE FROM groups`. No archive, deactivate, or undo capability.
+3. **No personal/system group protection in Danger Zone** — the edit page does not check `group_type` before showing the delete button. Personal and system groups could theoretically be deleted from the UI if the user has `delete_group` permission.
+4. **RESTRICT FK blocker unhandled** — if a group has created journeys (`journeys.created_by_group_id`), deletion fails with a FK violation. The UI shows the raw error instead of a user-friendly message.
+5. **No group-joins-group UI** — the schema supports groups as members of other groups via `member_group_id`, but no UI exists for this workflow.
+6. **Danger Zone uses local modal, not ConfirmModal** — the delete confirmation is a locally-defined modal in the edit page, not the shared `ConfirmModal` component.
+7. **No leave-group for last Steward** — the last Steward has no way to leave (trigger blocks role removal, and there's no "dissolve group" or "transfer Steward" flow).
+8. **Group creation is client-side multi-step** — the 7-step creation flow is not transactional; a failure at step 5 leaves a group with memberships but no roles. A server-side RPC would be more robust.
+
+---
+
+## Out of Scope
+
+- **Group-joins-group UI** — schema supports it, but no frontend implementation
+- **Custom role creation UI** — roles are currently created from templates only; no UI for defining new role types
+- **Member pausing** — `status = 'paused'` is in the CHECK constraint but unused
+- **Bulk invitations** — one invitation at a time
+- **Invitation expiry enforcement** — `expires_at` is stored but not checked in the UI (only checked in the signup trigger)
+- **Group transfer** — no ability to transfer group ownership (created_by_group_id)
+- **Group archival** — no soft-delete or archive state for groups
 
 ---
 
 ## Related Documentation
 
-- **Behaviors:** `docs/specs/behaviors/groups.md`
-- **Tests:** `tests/integration/groups/` and `tests/integration/rls/groups.test.ts`
-- **Database Schema:** `docs/database/schema-overview.md`
-- **Technical Patterns:** `CLAUDE.md` (Group Management section)
-- **Roadmap:** `docs/planning/ROADMAP.md` (Phase 1.3)
+- **Authentication:** `docs/features/implemented/authentication.md`
+- **Display name system:** `docs/features/implemented/display-name-system.md`
+- **RBAC design:** `docs/features/planned/dynamic-permissions-system.md`
+- **Behavior specs:** `docs/specs/behaviors/groups.md`, `docs/specs/behaviors/invitations.md`, `docs/specs/behaviors/rbac.md`
+- **D15 base migration:** `supabase/migrations/20260222000000_rebuild_universal_group_pattern.sql`
+- **RC7 admin fixes:** `supabase/migrations/20260223171200_fix_rc7_admin_user_ops.sql`
+- **Pending email invitations:** `supabase/migrations/20260223140126_enhanced_member_invitations.sql`
+- **Hard-delete trigger bypass:** `supabase/migrations/20260224205639_fix_hard_delete_leader_trigger_bypass.sql`
+- **Personal group RLS fix:** `supabase/migrations/20260227110556_fix_personal_group_rls_visibility.sql`
 
 ---
 
 ## Version History
 
-- **v0.2.7** (2026-01-26): Group editing + invite modal integration
-- **v0.2.6.2** (2026-01-26): Role assignment UI with last leader protection
-- **v0.2.5** (2026-01-26): Member invitations and management
-- **v0.2.4** (2026-01-25): Group detail page
-- **v0.2.3** (2026-01-25): Group creation
-- **v0.1.2** (2026-01-24): Initial schema and RLS policies
-
----
-
-**Status:** ✅ **COMPLETE** - All Phase 1.3 features implemented and tested
+- **v0.2.31** (2026-02-27): Display name system — personal group `name` is now the display name source of truth. `groups_select` policy updated to make personal groups visible to all authenticated users (`group_type = 'personal'`). [Deleted User] sentinel group seeded.
+- **v0.2.24** (2026-02-24): Hard-delete trigger bypass — `prevent_last_leader_removal()` and `prevent_last_deusex_role_removal()` skip during `app.hard_delete_in_progress`.
+- **v0.2.23** (2026-02-23): RC7 admin fixes — `is_platform_admin()`, admin RLS overrides on memberships/roles/groups. Notification triggers updated with hard-delete cascade guards. Enhanced member invitations — `pending_email_invitations` table, `handle_new_user()` Step 8 (claim pending invitations).
+- **v0.2.22** (2026-02-22): D15 Universal Group Pattern — complete schema rebuild. `member_group_id` replaces `user_id`. `created_by_group_id` replaces `created_by_user_id`. RBAC with `has_permission()`, `can_assign_role()`, `usePermissions` hook. Steward/Guide/Member/Observer role templates. Notification triggers. Group deletion with CASCADE + Danger Zone UI.
+- **v0.2.7** (2026-01-26): Group editing page + invite modal integration.
+- **v0.2.6.2** (2026-01-26): Role assignment UI with last leader protection.
+- **v0.2.5** (2026-01-26): Member invitations and management.
+- **v0.2.4** (2026-01-25): Group detail page.
+- **v0.2.3** (2026-01-25): Group creation.
+- **v0.1.2** (2026-01-24): Initial schema and RLS policies.
