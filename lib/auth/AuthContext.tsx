@@ -9,6 +9,10 @@ export interface UserProfile {
   full_name: string;
   avatar_url: string | null;
   personal_group_id: string;
+  nickname: string;
+  display_preference: 'real_name' | 'nickname';
+  show_real_name: boolean;
+  display_name: string; // Resolved from personal group name (single source of truth)
 }
 
 interface AuthContextType {
@@ -73,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('id, full_name, avatar_url, personal_group_id')
+          .select('id, full_name, avatar_url, personal_group_id, nickname, display_preference, show_real_name, personal_group:groups!personal_group_id(name)')
           .eq('auth_user_id', user.id)
           .single();
         if (error) {
@@ -85,7 +89,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return;
         }
         if (!cancelled && data) {
-          setUserProfile(data as UserProfile);
+          const pg = data.personal_group as any;
+          setUserProfile({
+            id: data.id,
+            full_name: data.full_name,
+            avatar_url: data.avatar_url,
+            personal_group_id: data.personal_group_id,
+            nickname: data.nickname,
+            display_preference: data.display_preference,
+            show_real_name: data.show_real_name,
+            display_name: pg?.name || data.nickname || data.full_name,
+          });
           profileResolvedRef.current = true;
         }
       } catch (err) {
@@ -134,11 +148,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { data, error } = await supabase
         .from('users')
-        .select('id, full_name, avatar_url, personal_group_id')
+        .select('id, full_name, avatar_url, personal_group_id, nickname, display_preference, show_real_name, personal_group:groups!personal_group_id(name)')
         .eq('auth_user_id', user.id)
         .single();
       if (!error && data) {
-        setUserProfile(data as UserProfile);
+        const pg = data.personal_group as any;
+        setUserProfile({
+          id: data.id,
+          full_name: data.full_name,
+          avatar_url: data.avatar_url,
+          personal_group_id: data.personal_group_id,
+          nickname: data.nickname,
+          display_preference: data.display_preference,
+          show_real_name: data.show_real_name,
+          display_name: pg?.name || data.nickname || data.full_name,
+        });
       }
     } catch {
       // Silently fail on refresh

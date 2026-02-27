@@ -11,7 +11,7 @@ import type { DirectMessage } from '@/lib/messaging/MessagingContext';
 
 interface OtherUser {
   personal_group_id: string;
-  full_name: string;
+  display_name: string;
   avatar_url: string | null;
 }
 
@@ -75,12 +75,16 @@ export default function ConversationPage() {
 
         const { data: userData } = await supabase
           .from('users')
-          .select('personal_group_id, full_name, avatar_url')
+          .select('personal_group_id, avatar_url, personal_group:groups!personal_group_id(name)')
           .eq('personal_group_id', otherUserId)
           .single();
 
         if (!cancelled) {
-          setOtherUser(userData || { personal_group_id: otherUserId, full_name: 'Unknown User', avatar_url: null });
+          const pg = userData?.personal_group as any;
+          setOtherUser(userData
+            ? { personal_group_id: userData.personal_group_id, display_name: pg?.name || 'Unknown User', avatar_url: userData.avatar_url }
+            : { personal_group_id: otherUserId, display_name: 'Unknown User', avatar_url: null }
+          );
         }
 
         // Fetch messages
@@ -290,18 +294,18 @@ export default function ConversationPage() {
                 {otherUser.avatar_url ? (
                   <Image
                     src={otherUser.avatar_url}
-                    alt={otherUser.full_name}
+                    alt={otherUser.display_name}
                     fill
                     sizes="40px"
                     className="object-cover"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-white font-bold">
-                    {otherUser.full_name.charAt(0).toUpperCase()}
+                    {otherUser.display_name.charAt(0).toUpperCase()}
                   </div>
                 )}
               </div>
-              <h2 className="font-semibold text-gray-900">{otherUser.full_name}</h2>
+              <h2 className="font-semibold text-gray-900">{otherUser.display_name}</h2>
             </div>
           )}
         </div>

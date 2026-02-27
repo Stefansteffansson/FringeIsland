@@ -6,7 +6,8 @@ import Image from 'next/image';
 
 interface SearchResult {
   id: string;
-  full_name: string;
+  display_name: string;
+  full_name: string | null; // Only shown if show_real_name is true
   email: string;
   avatar_url: string | null;
   personal_group_id: string;
@@ -67,8 +68,8 @@ export default function InviteMemberModal({
     try {
       const { data, error: searchError } = await supabase
         .from('users')
-        .select('id, full_name, email, avatar_url, personal_group_id')
-        .or(`full_name.ilike.%${query}%,email.ilike.%${query}%`)
+        .select('id, full_name, email, avatar_url, personal_group_id, show_real_name, personal_group:groups!personal_group_id(name)')
+        .or(`full_name.ilike.%${query}%,email.ilike.%${query}%,nickname.ilike.%${query}%`)
         .limit(8);
 
       if (searchError) {
@@ -76,12 +77,24 @@ export default function InviteMemberModal({
         return;
       }
 
-      // Filter out current members and self
-      const filtered = (data || []).filter(
-        (u) =>
-          u.personal_group_id !== currentUserId &&
-          !existingMemberGroupIds.includes(u.personal_group_id)
-      );
+      // Filter out current members and self, map display names
+      const filtered = (data || [])
+        .filter(
+          (u) =>
+            u.personal_group_id !== currentUserId &&
+            !existingMemberGroupIds.includes(u.personal_group_id)
+        )
+        .map((u) => {
+          const pg = u.personal_group as any;
+          return {
+            id: u.id,
+            display_name: pg?.name || u.full_name,
+            full_name: u.show_real_name ? u.full_name : null,
+            email: u.email,
+            avatar_url: u.avatar_url,
+            personal_group_id: u.personal_group_id,
+          };
+        });
 
       setSearchResults(filtered);
       setShowDropdown(filtered.length > 0);
@@ -131,9 +144,9 @@ export default function InviteMemberModal({
 
       if (existingMembership) {
         if (existingMembership.status === 'active') {
-          throw new Error(`${selectedUser.full_name} is already a member of this group`);
+          throw new Error(`${selectedUser.display_name} is already a member of this group`);
         } else if (existingMembership.status === 'invited') {
-          throw new Error(`${selectedUser.full_name} already has a pending invitation to this group`);
+          throw new Error(`${selectedUser.display_name} already has a pending invitation to this group`);
         }
       }
 
@@ -149,7 +162,7 @@ export default function InviteMemberModal({
 
       if (inviteError) throw inviteError;
 
-      setSuccess(`Invitation sent to ${selectedUser.full_name}!`);
+      setSuccess(`Invitation sent to ${selectedUser.display_name}!`);
       setEmail('');
       setSelectedUser(null);
 
@@ -181,11 +194,13 @@ export default function InviteMemberModal({
       // Check if user exists — maybe they typed the email directly
       const { data: existingUser } = await supabase
         .from('users')
-        .select('id, full_name, personal_group_id')
+        .select('id, personal_group_id, personal_group:groups!personal_group_id(name)')
         .eq('email', normalizedEmail)
         .maybeSingle();
 
       if (existingUser) {
+        const existingDisplayName = (existingUser.personal_group as any)?.name || 'User';
+
         // User exists — use the standard invitation flow
         const { data: existingMembership } = await supabase
           .from('group_memberships')
@@ -196,9 +211,9 @@ export default function InviteMemberModal({
 
         if (existingMembership) {
           if (existingMembership.status === 'active') {
-            throw new Error(`${existingUser.full_name} is already a member of this group`);
+            throw new Error(`${existingDisplayName} is already a member of this group`);
           } else if (existingMembership.status === 'invited') {
-            throw new Error(`${existingUser.full_name} already has a pending invitation to this group`);
+            throw new Error(`${existingDisplayName} already has a pending invitation to this group`);
           }
         }
 
@@ -213,7 +228,7 @@ export default function InviteMemberModal({
 
         if (inviteError) throw inviteError;
 
-        setSuccess(`Invitation sent to ${existingUser.full_name}!`);
+        setSuccess(`Invitation sent to ${existingDisplayName}!`);
       } else {
         // User does NOT exist — create pending email invitation
         // Check for existing pending invitation
@@ -352,7 +367,7 @@ export default function InviteMemberModal({
                   {selectedUser.avatar_url ? (
                     <Image
                       src={selectedUser.avatar_url}
-                      alt={selectedUser.full_name}
+                      alt={selectedUser.display_name}
                       fill
                       className="object-cover"
                     />
@@ -363,7 +378,7 @@ export default function InviteMemberModal({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-800 truncate">{selectedUser.full_name}</p>
+                  <p className="text-sm font-medium text-gray-800 truncate">{selectedUser.display_name}</p>
                   <p className="text-xs text-gray-500 truncate">{selectedUser.email}</p>
                 </div>
                 <button
@@ -394,7 +409,7 @@ export default function InviteMemberModal({
                       {user.avatar_url ? (
                         <Image
                           src={user.avatar_url}
-                          alt={user.full_name}
+                          alt={user.display_name}
                           fill
                           className="object-cover"
                         />
@@ -405,7 +420,10 @@ export default function InviteMemberModal({
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-800 truncate">{user.full_name}</p>
+                      <p className="text-sm font-medium text-gray-800 truncate">{user.display_name}</p>
+                      {user.full_name && (
+                        <p className="text-xs text-gray-400 truncate">{user.full_name}</p>
+                      )}
                       <p className="text-xs text-gray-500 truncate">{user.email}</p>
                     </div>
                   </button>

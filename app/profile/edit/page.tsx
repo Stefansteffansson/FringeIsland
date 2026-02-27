@@ -12,6 +12,9 @@ interface EditableProfile {
   full_name: string;
   bio: string | null;
   avatar_url: string | null;
+  nickname: string;
+  display_preference: 'real_name' | 'nickname';
+  show_real_name: boolean;
 }
 
 export default function EditProfilePage() {
@@ -36,7 +39,7 @@ export default function EditProfilePage() {
       try {
         const { data, error: fetchError } = await supabase
           .from('users')
-          .select('id, full_name, bio, avatar_url')
+          .select('id, full_name, bio, avatar_url, nickname, display_preference, show_real_name')
           .eq('id', userProfile.id)
           .single();
 
@@ -139,6 +142,9 @@ export default function EditProfilePage() {
           <ProfileEditForm
             initialFullName={profile.full_name}
             initialBio={profile.bio}
+            initialNickname={profile.nickname}
+            initialDisplayPreference={profile.display_preference}
+            initialShowRealName={profile.show_real_name}
             userId={profile.id}
             personalGroupId={userProfile!.personal_group_id}
           />

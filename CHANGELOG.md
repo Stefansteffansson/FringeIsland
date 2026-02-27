@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Display Name / Nickname System** — Users can set a nickname and toggle between displaying their real name or nickname platform-wide. Personal group `name` is the single source of truth for display identity across all social surfaces (forums, messages, navigation, member lists). Real name visibility is opt-in (off by default). Admins always see real names.
+  - **New columns on `users`:** `nickname` (TEXT NOT NULL), `display_preference` ('real_name' | 'nickname'), `show_real_name` (BOOLEAN, default false)
+  - **New trigger:** `sync_personal_group_display_name()` — AFTER UPDATE on `users` keeps personal group name in sync with display preference
+  - **Updated `handle_new_user()` trigger** — Sets nickname to first name, creates personal group with nickname (not full name)
+  - **AuthContext expanded** — `UserProfile` now includes `nickname`, `display_preference`, `show_real_name`, `display_name` (resolved via personal group JOIN)
+  - **All social surfaces migrated** — Navigation, Messages, Conversations, InviteMemberModal now resolve display names from personal group `name`
+  - **InviteMemberModal search** now matches `nickname` + `full_name` + `email`; shows `full_name` only if `show_real_name = true`
+  - **Profile edit page** — New fields: nickname, display preference radio buttons, show real name toggle, live preview
+  - **28 new integration tests** — `display-name.test.ts` (16 tests) + `display-name-rls.test.ts` (12 tests) covering B-DISP-001 through B-DISP-011
+  - **11 behavior specs** in `docs/specs/behaviors/display-name.md`
+  - **Migration:** `20260227095615_add_display_name_system.sql`
+
+### Added
 - **Enhanced Member Invitations: User Search Typeahead** — InviteMemberModal now includes debounced typeahead search (300ms) that queries users by name or email, shows avatar + name + email in dropdown, and excludes current group members and self. Max 8 results.
 - **Enhanced Member Invitations: Pending Email Invitations** — Stewards can now invite non-users by email. Creates `pending_email_invitations` record with 30-day expiration and UUID token. When the person signs up, `handle_new_user()` trigger auto-claims the invitation and creates a `group_memberships` row with `status='invited'`. Simulated email service (`lib/email/send.ts`) logs to console — swap one file for Resend/SendGrid later.
 - **New table: `pending_email_invitations`** — Stores pending invitations for non-users with RLS policies using `has_permission('invite_members')`.

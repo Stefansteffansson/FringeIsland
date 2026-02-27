@@ -192,19 +192,19 @@ export default function Navigation() {
                 {userProfile?.avatar_url ? (
                   <Image
                     src={userProfile.avatar_url}
-                    alt={userProfile?.full_name || 'User'}
+                    alt={userProfile?.display_name || 'User'}
                     fill
                     sizes="40px"
                     className="object-cover"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-white font-bold text-lg">
-                    {userProfile?.full_name?.charAt(0)?.toUpperCase() || 'U'}
+                    {userProfile?.display_name?.charAt(0)?.toUpperCase() || 'U'}
                   </div>
                 )}
               </div>
               <span className="hidden md:inline text-gray-700 font-medium">
-                {userProfile?.full_name || 'User'}
+                {userProfile?.display_name || 'User'}
               </span>
               <span className="text-gray-400">▼</span>
             </button>
@@ -221,7 +221,7 @@ export default function Navigation() {
                 {/* Menu */}
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-40">
                   <div className="px-4 py-3 border-b border-gray-100">
-                    <p className="text-sm font-semibold text-gray-900">{userProfile?.full_name}</p>
+                    <p className="text-sm font-semibold text-gray-900">{userProfile?.display_name}</p>
                     <p className="text-xs text-gray-500">{user.email}</p>
                   </div>
 

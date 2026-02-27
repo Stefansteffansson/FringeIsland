@@ -53,7 +53,7 @@ describe('B-RBAC-003: Personal Group Creation on Signup', () => {
     expect(data![0].group_type).toBe('personal');
   });
 
-  it('should name the personal group after the user', async () => {
+  it('should name the personal group after the user nickname (first name)', async () => {
     const { data } = await admin
       .from('groups')
       .select('name')
@@ -62,7 +62,8 @@ describe('B-RBAC-003: Personal Group Creation on Signup', () => {
       .single();
 
     expect(data).not.toBeNull();
-    expect(data!.name).toBe('Personal Group Test User');
+    // B-DISP-001: Personal group name defaults to nickname (first word of full_name)
+    expect(data!.name).toBe('Personal');
   });
 
   it('should make the user the sole member of their personal group', async () => {

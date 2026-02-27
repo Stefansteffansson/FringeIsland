@@ -7,6 +7,9 @@ import { createClient } from '@/lib/supabase/client';
 interface ProfileEditFormProps {
   initialFullName: string;
   initialBio: string | null;
+  initialNickname: string;
+  initialDisplayPreference: 'real_name' | 'nickname';
+  initialShowRealName: boolean;
   userId: string;
   personalGroupId: string;
 }
@@ -14,11 +17,17 @@ interface ProfileEditFormProps {
 export default function ProfileEditForm({
   initialFullName,
   initialBio,
+  initialNickname,
+  initialDisplayPreference,
+  initialShowRealName,
   userId,
   personalGroupId,
 }: ProfileEditFormProps) {
   const [fullName, setFullName] = useState(initialFullName);
   const [bio, setBio] = useState(initialBio || '');
+  const [nickname, setNickname] = useState(initialNickname);
+  const [displayPreference, setDisplayPreference] = useState<'real_name' | 'nickname'>(initialDisplayPreference);
+  const [showRealName, setShowRealName] = useState(initialShowRealName);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -44,6 +53,12 @@ export default function ProfileEditForm({
       return;
     }
 
+    if (!nickname.trim()) {
+      setError('Nickname is required');
+      setLoading(false);
+      return;
+    }
+
     if (bio.length > 500) {
       setError('Bio must be less than 500 characters');
       setLoading(false);
@@ -52,22 +67,21 @@ export default function ProfileEditForm({
 
     try {
       // Update user profile in database
+      // The sync_personal_group_display_name trigger automatically
+      // updates the personal group name based on display_preference
       const { error: updateError } = await supabase
         .from('users')
         .update({
           full_name: fullName.trim(),
+          nickname: nickname.trim(),
+          display_preference: displayPreference,
+          show_real_name: showRealName,
           bio: bio.trim() || null,
           updated_at: new Date().toISOString(),
         })
         .eq('id', userId);
 
       if (updateError) throw updateError;
-
-      // Also update personal group's name (canonical source for display joins)
-      await supabase
-        .from('groups')
-        .update({ name: fullName.trim() })
-        .eq('id', personalGroupId);
 
       setSuccess(true);
       
@@ -95,8 +109,8 @@ export default function ProfileEditForm({
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Full Name Field */}
       <div>
-        <label 
-          htmlFor="fullName" 
+        <label
+          htmlFor="fullName"
           className="block text-sm font-medium text-gray-700 mb-2"
         >
           Full Name *
@@ -112,8 +126,98 @@ export default function ProfileEditForm({
           maxLength={100}
         />
         <p className="mt-1 text-sm text-gray-500">
-          This is how others will see your name
+          Your real name (only visible to others if you allow it)
         </p>
+      </div>
+
+      {/* Nickname Field */}
+      <div>
+        <label
+          htmlFor="nickname"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
+          Nickname / Display Name *
+        </label>
+        <input
+          type="text"
+          id="nickname"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+          disabled={loading}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+          placeholder="Enter your nickname"
+          maxLength={50}
+        />
+        <p className="mt-1 text-sm text-gray-500">
+          This is how other users will see you on the platform
+        </p>
+      </div>
+
+      {/* Display Preference */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          Display Name Preference
+        </label>
+        <div className="space-y-3">
+          <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+            <input
+              type="radio"
+              name="displayPreference"
+              value="nickname"
+              checked={displayPreference === 'nickname'}
+              onChange={() => setDisplayPreference('nickname')}
+              disabled={loading}
+              className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+            />
+            <div>
+              <span className="text-sm font-medium text-gray-900">Show my nickname</span>
+              <p className="text-xs text-gray-500">Others will see &quot;{nickname.trim() || '...'}&quot; in forums, messages, and member lists</p>
+            </div>
+          </label>
+          <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+            <input
+              type="radio"
+              name="displayPreference"
+              value="real_name"
+              checked={displayPreference === 'real_name'}
+              onChange={() => setDisplayPreference('real_name')}
+              disabled={loading}
+              className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+            />
+            <div>
+              <span className="text-sm font-medium text-gray-900">Show my real name</span>
+              <p className="text-xs text-gray-500">Others will see &quot;{fullName.trim() || '...'}&quot; in forums, messages, and member lists</p>
+            </div>
+          </label>
+        </div>
+        <div className="mt-2 p-3 bg-blue-50 rounded-lg">
+          <p className="text-xs text-blue-700">
+            Others will see you as: <span className="font-semibold">{displayPreference === 'nickname' ? (nickname.trim() || '...') : (fullName.trim() || '...')}</span>
+          </p>
+        </div>
+      </div>
+
+      {/* Profile Visibility */}
+      <div>
+        <label className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+          <div>
+            <span className="text-sm font-medium text-gray-900">Allow others to see my real name</span>
+            <p className="text-xs text-gray-500 mt-0.5">
+              When turned off, only your nickname is visible to other users on your profile
+            </p>
+          </div>
+          <div className="relative">
+            <input
+              type="checkbox"
+              checked={showRealName}
+              onChange={(e) => setShowRealName(e.target.checked)}
+              disabled={loading}
+              className="sr-only peer"
+              id="showRealName"
+            />
+            <div className="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+          </div>
+        </label>
       </div>
 
       {/* Bio Field */}

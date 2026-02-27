@@ -12,7 +12,7 @@ interface ConversationItem {
   id: string;
   otherUser: {
     id: string;
-    full_name: string;
+    display_name: string;
     avatar_url: string | null;
   };
   lastMessageAt: string | null;
@@ -54,10 +54,10 @@ export default function MessagesPage() {
         c.participant_1 === userProfileId ? c.participant_2 : c.participant_1
       );
 
-      // Fetch user profiles (otherUserIds are personal_group_ids)
+      // Fetch user profiles with display name from personal group
       const { data: users, error: usersErr } = await supabase
         .from('users')
-        .select('personal_group_id, full_name, avatar_url')
+        .select('personal_group_id, avatar_url, personal_group:groups!personal_group_id(name)')
         .in('personal_group_id', otherUserIds);
 
       if (usersErr) throw usersErr;
@@ -91,11 +91,12 @@ export default function MessagesPage() {
 
         const lastMsg = lastMessages[c.id];
 
+        const pg = otherUserData?.personal_group as any;
         return {
           id: c.id,
           otherUser: {
             id: otherUserId,
-            full_name: otherUserData?.full_name || 'Unknown User',
+            display_name: pg?.name || 'Unknown User',
             avatar_url: otherUserData?.avatar_url || null,
           },
           lastMessageAt: c.last_message_at,
@@ -207,14 +208,14 @@ export default function MessagesPage() {
                     {conv.otherUser.avatar_url ? (
                       <Image
                         src={conv.otherUser.avatar_url}
-                        alt={conv.otherUser.full_name}
+                        alt={conv.otherUser.display_name}
                         fill
                         sizes="48px"
                         className="object-cover"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-white font-bold text-lg">
-                        {conv.otherUser.full_name.charAt(0).toUpperCase()}
+                        {conv.otherUser.display_name.charAt(0).toUpperCase()}
                       </div>
                     )}
                   </div>
@@ -225,7 +226,7 @@ export default function MessagesPage() {
                       <h3 className={`text-sm truncate ${
                         conv.isUnread ? 'font-bold text-gray-900' : 'font-medium text-gray-700'
                       }`}>
-                        {conv.otherUser.full_name}
+                        {conv.otherUser.display_name}
                       </h3>
                       {conv.lastMessageAt && (
                         <span className="text-xs text-gray-400 flex-shrink-0 ml-2">

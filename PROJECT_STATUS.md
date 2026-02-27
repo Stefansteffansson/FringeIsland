@@ -1,27 +1,32 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-24 (Admin bug fixes + hard delete trigger bypass + orphan group issue identified)
-**Current Version:** 0.2.29
+**Last Updated:** 2026-02-27 (Display Name / Nickname System)
+**Current Version:** 0.2.30
 **Active Branch:** main
 
 ---
 
 ## What We're Working On NOW
 
-**Current Focus:** Force Logout Responsiveness + Session Hardening — COMPLETE
+**Current Focus:** Display Name / Nickname System — COMPLETE
 
-**Design Doc:** `docs/features/active/enhanced-member-invitations.md`
+**Design Doc:** `docs/features/implemented/display-name-system.md`
 
 **Active Tasks:**
-- [x] **User Search Typeahead** ✅ DONE — debounced 300ms, name+email search, avatar dropdown, 8 result limit, excludes members/self
-- [x] **Pending Email Invitations** ✅ DONE — new `pending_email_invitations` table, RLS, handle_new_user() trigger auto-claim, simulated email service
-- [x] **API Route** ✅ DONE — `/api/invitations/send-email` with JWT auth + permission check
-- [x] **14 integration tests** ✅ DONE — 10 pending-invitations + 4 user-search
+- [x] **Behavior Specs** ✅ DONE — 11 behaviors (B-DISP-001 through B-DISP-011)
+- [x] **Integration Tests (RED)** ✅ DONE — 28 tests across 2 suites
+- [x] **Architect Review** ✅ DONE — schema, trigger, signup, backfill confirmed
+- [x] **Database Migration** ✅ DONE — 3 columns, sync trigger, handle_new_user() update
+- [x] **UI Changes** ✅ DONE — Profile edit form (nickname, display preference, visibility toggle)
+- [x] **Integration Wiring** ✅ DONE — AuthContext, Navigation, Messages, InviteMemberModal
+- [x] **QA/Review** ✅ DONE — 466/466 tests passing, security review complete
+- [x] **Documentation** ✅ DONE — Feature doc moved to implemented, CHANGELOG updated
 
 **Blocked/Waiting:**
 - None
 
 **Previous Features (COMPLETE):**
+- [x] **Display Name / Nickname System** ✅ v0.2.30
 - [x] **Performance Optimization** ✅ All tiers (1A-3B)
 - [x] **DeusEx Admin Foundation** ✅ v0.2.21-v0.2.25
 - [x] **D15 Universal Group Pattern** ✅ v0.2.29
@@ -30,13 +35,13 @@
 
 ## Quick Stats
 
-- **Phase:** Enhanced Member Invitations COMPLETE
+- **Phase:** Display Name / Nickname System COMPLETE
 - **Total Tables:** 19 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 8 active + 71 archived
-- **Recent Version:** v0.2.29 (Enhanced Member Invitations)
-- **Test Coverage:** 438 integration + 99 unit + 4 setup = **541 tests** ✅
-- **Behaviors Documented:** 77 (58 previous + 19 admin) ✅
-- **Feature Docs:** 4 complete + 3 planned designs + 1 active (performance)
+- **Total Migrations:** 9 active + 71 archived
+- **Recent Version:** v0.2.30 (Display Name / Nickname System)
+- **Test Coverage:** 466 integration + 99 unit + 4 setup = **569 tests** ✅
+- **Behaviors Documented:** 88 (77 previous + 11 display-name) ✅
+- **Feature Docs:** 5 complete + 2 planned designs + 1 active (performance)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
 
 **Completed Major Features:**
@@ -59,6 +64,7 @@
 - ✅ **RBAC Implementation** (4 sub-sprints: schema, permissions, UI migration, role management) v0.2.16-v0.2.20
 - ✅ **DeusEx Admin Foundation** (route protection, dashboard, member management, audit log) v0.2.21-v0.2.25
 - ✅ **D15 Universal Group Pattern** (schema rebuild, 28-step frontend migration, all residuals fixed) v0.2.29
+- ✅ **Display Name / Nickname System** (nickname, display preference toggle, real name visibility, 28 tests) v0.2.30
 
 ---
 
@@ -74,7 +80,7 @@
 **For Specific Work:**
 - **Database work:** `docs/database/schema-overview.md`
 - **Feature development:** `docs/features/implemented/[feature-name].md`
-- **Active feature:** `docs/features/active/enhanced-member-invitations.md` ← **LATEST**
+- **Latest feature:** `docs/features/implemented/display-name-system.md` ← **LATEST**
 - **Admin feature (complete):** `docs/features/active/deusex-admin-foundation.md`
 - **Architecture decisions:** `docs/architecture/ARCHITECTURE.md`
 - **Planning context:** `docs/planning/ROADMAP.md` + `docs/planning/DEFERRED_DECISIONS.md`
@@ -88,23 +94,27 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-24 (Admin bug fixes + hard delete trigger bypass + orphan group issue)
+**Date:** 2026-02-27 (Display Name / Nickname System — full TDD sprint)
 **Summary:**
-- Fixed admin deactivate/decommission silently failing due to RLS — replaced client-side `.update()` with SECURITY DEFINER RPCs (`admin_update_user_status`, `admin_decommission_user`)
-- Fixed `signIn()` to check `profileError` and `!profile.is_active` explicitly (defense-in-depth)
-- Suppressed noisy PGRST116 console error for deactivated user profile resolution
-- Fixed intermittent "Access Denied" on admin panel — added `userProfile` to dependency array in `admin/layout.tsx`
-- Fixed hard delete blocked by `prevent_last_leader_removal` trigger — added `app.hard_delete_in_progress` bypass to both `prevent_last_leader_removal()` and `prevent_last_deusex_role_removal()` (Migration #8)
-- **Identified orphan group issue** — hard deleting a user who is the last Steward leaves groups leaderless (see Next Priorities)
-- 4 files modified, 1 migration
+- Implemented Display Name / Nickname System (v0.2.30) — full 7-phase TDD sprint
+- Added 3 columns to `users`: `nickname`, `display_preference`, `show_real_name`
+- Created `sync_personal_group_display_name()` AFTER UPDATE trigger — keeps personal group name in sync
+- Updated `handle_new_user()` — sets nickname to first name, personal group uses nickname
+- Expanded `UserProfile` in AuthContext with display_name resolved via personal group JOIN
+- Migrated all social surfaces: Navigation, Messages, Conversations, InviteMemberModal
+- Profile edit page: nickname field, display preference radio buttons, show_real_name toggle
+- 28 new integration tests (16 + 12), 11 behavior specs (B-DISP-001 through B-DISP-011)
+- Full QA: 466/466 tests passing, security review complete
+- 1 migration, 8 files modified
 
 **Key decisions:**
-- Always use SECURITY DEFINER RPCs for admin operations that change RLS-visible columns
-- Admin layout waits for `userProfile` before checking permissions
-- Hard delete bypass for last-leader triggers uses same `app.hard_delete_in_progress` pattern as notification triggers
+- Personal group `name` is the single source of truth for display identity
+- AFTER UPDATE trigger (not BEFORE) to avoid interference with 3 existing BEFORE triggers
+- `show_real_name` enforced at application layer (RLS is row-level, not column-level)
+- Default: nickname = first name, display_preference = 'nickname', show_real_name = false
 
 **Previous Sessions:**
-- 2026-02-24: Fix admin deactivate/decommission RLS + admin layout race condition
+- 2026-02-24: Admin bug fixes + hard delete trigger bypass + orphan group issue identified
 - 2026-02-24: Force logout responsiveness + stale session error handling
 - 2026-02-23: Fix PGRST201 ambiguous FK errors
 - 2026-02-23: Test Data Cleanup + Script Housekeeping
@@ -119,7 +129,7 @@
 
 **See `docs/features/active/performance-optimization.md` for full plan**
 
-**Enhanced Member Invitations COMPLETE** ✅
+**Display Name / Nickname System COMPLETE** ✅
 
 **Next — Orphan Group Stewardship Transfer (PRIORITY):**
 When deactivating/decommissioning/hard-deleting a user who is the last Steward of a group, the admin UI must:

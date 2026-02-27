@@ -11,6 +11,9 @@ interface ProfileData {
   bio: string | null;
   avatar_url: string | null;
   created_at: string;
+  nickname: string;
+  display_preference: 'real_name' | 'nickname';
+  show_real_name: boolean;
 }
 
 export default function ProfilePage() {
@@ -29,7 +32,7 @@ export default function ProfilePage() {
       // Profile page needs bio + created_at beyond what's cached in userProfile
       const { data, error: fetchError } = await supabase
         .from('users')
-        .select('full_name, bio, avatar_url, created_at')
+        .select('full_name, bio, avatar_url, created_at, nickname, display_preference, show_real_name')
         .eq('id', userProfile.id)
         .single();
 
@@ -136,8 +139,15 @@ export default function ProfilePage() {
             {/* Name and Info */}
             <div className="flex-1">
               <h2 className="text-2xl font-bold text-gray-800 mb-1">
-                {profile?.full_name || 'User'}
+                {profile?.display_preference === 'nickname'
+                  ? profile?.nickname
+                  : profile?.full_name || 'User'}
               </h2>
+              {profile?.display_preference === 'nickname' && (
+                <p className="text-gray-600 text-sm mb-1">
+                  {profile.full_name}
+                </p>
+              )}
               <p className="text-gray-500 text-sm">
                 Member since {profile ? new Date(profile.created_at).toLocaleDateString('en-US', {
                   year: 'numeric',
@@ -165,6 +175,31 @@ export default function ProfilePage() {
 
           {/* Profile Information */}
           <div className="space-y-6">
+            {/* Display Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Display Name
+              </label>
+              <p className="text-gray-900 bg-gray-50 px-4 py-3 rounded-lg">
+                {profile?.display_preference === 'nickname'
+                  ? profile?.nickname
+                  : profile?.full_name || 'Not set'}
+                <span className="text-gray-400 text-sm ml-2">
+                  (showing {profile?.display_preference === 'nickname' ? 'nickname' : 'real name'})
+                </span>
+              </p>
+            </div>
+
+            {/* Nickname */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Nickname
+              </label>
+              <p className="text-gray-900 bg-gray-50 px-4 py-3 rounded-lg">
+                {profile?.nickname || 'Not set'}
+              </p>
+            </div>
+
             {/* Full Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -172,6 +207,9 @@ export default function ProfilePage() {
               </label>
               <p className="text-gray-900 bg-gray-50 px-4 py-3 rounded-lg">
                 {profile?.full_name || 'Not set'}
+                {profile && !profile.show_real_name && (
+                  <span className="text-gray-400 text-sm ml-2">(hidden from other users)</span>
+                )}
               </p>
             </div>
 

@@ -71,7 +71,7 @@ FringeIsland development is organized into four major phases, each building on t
 - ✅ Group management complete (v0.2.7)
 - ✅ Journey system - browsing, enrollment, and content delivery complete (v0.2.11)
 - ✅ Communication complete (v0.2.14 - v0.2.15)
-- ⏳ Polish and launch (not started)
+- ⏳ Polish and launch (in progress — display name system complete)
 
 **Features Delivered** (see [Product Spec](PRODUCT_SPEC.md) for details):
 - ✅ Authentication & Profiles ([docs/features/implemented/authentication.md](../features/implemented/authentication.md))
@@ -340,9 +340,9 @@ See `docs/features/active/performance-optimization.md` for full analysis and imp
 
 ---
 
-### Phase 1.6: Polish and Launch (Weeks 14-16) ⏳ NOT STARTED
+### Phase 1.6: Polish and Launch (Weeks 14-16) ⏳ IN PROGRESS
 
-**Status**: ⏳ **NOT STARTED**
+**Status**: ⏳ **IN PROGRESS** — Display Name System complete (v0.2.30)
 
 **Deliverables**:
 
@@ -351,6 +351,7 @@ See `docs/features/active/performance-optimization.md` for full analysis and imp
    - ⏳ Accessibility improvements (WCAG 2.1 AA)
    - ✅ Loading states and error handling (mostly done)
    - ⏳ User onboarding flow
+   - ✅ **Display Name / Nickname System** (v0.2.30) — nickname, display preference toggle, real name visibility, 28 tests
 
 2. **Testing** ⏳
    - Unit tests (80%+ coverage for critical paths)
