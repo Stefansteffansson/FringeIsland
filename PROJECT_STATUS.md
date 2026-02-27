@@ -1,14 +1,14 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-27 (Display Name / Nickname System)
-**Current Version:** 0.2.30
+**Last Updated:** 2026-02-27 (Fix personal group RLS visibility)
+**Current Version:** 0.2.31
 **Active Branch:** main
 
 ---
 
 ## What We're Working On NOW
 
-**Current Focus:** Display Name / Nickname System — COMPLETE
+**Current Focus:** Personal Group RLS Visibility Fix — COMPLETE
 
 **Design Doc:** `docs/features/implemented/display-name-system.md`
 
@@ -35,10 +35,10 @@
 
 ## Quick Stats
 
-- **Phase:** Display Name / Nickname System COMPLETE
+- **Phase:** Personal Group RLS Visibility Fix COMPLETE
 - **Total Tables:** 19 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 9 active + 71 archived
-- **Recent Version:** v0.2.30 (Display Name / Nickname System)
+- **Total Migrations:** 10 active + 71 archived
+- **Recent Version:** v0.2.31 (Fix personal group RLS visibility)
 - **Test Coverage:** 466 integration + 99 unit + 4 setup = **569 tests** ✅
 - **Behaviors Documented:** 88 (77 previous + 11 display-name) ✅
 - **Feature Docs:** 5 complete + 2 planned designs + 1 active (performance)
@@ -94,26 +94,23 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-27 (Display Name / Nickname System — full TDD sprint)
+**Date:** 2026-02-27 (Fix personal group RLS visibility — bug fix)
 **Summary:**
-- Implemented Display Name / Nickname System (v0.2.30) — full 7-phase TDD sprint
-- Added 3 columns to `users`: `nickname`, `display_preference`, `show_real_name`
-- Created `sync_personal_group_display_name()` AFTER UPDATE trigger — keeps personal group name in sync
-- Updated `handle_new_user()` — sets nickname to first name, personal group uses nickname
-- Expanded `UserProfile` in AuthContext with display_name resolved via personal group JOIN
-- Migrated all social surfaces: Navigation, Messages, Conversations, InviteMemberModal
-- Profile edit page: nickname field, display preference radio buttons, show_real_name toggle
-- 28 new integration tests (16 + 12), 11 behavior specs (B-DISP-001 through B-DISP-011)
-- Full QA: 466/466 tests passing, security review complete
-- 1 migration, 8 files modified
+- Fixed "Unknown" display name bug across 6 surfaces (v0.2.31)
+- Root cause: `groups_select` RLS policy had no condition allowing users to see other users' personal groups
+- Personal groups are identity containers (name + avatar) — the single source of truth for display names
+- Any Supabase query joining to `groups` via `author_group_id` or `personal_group_id` returned NULL for other users
+- Fix: Added `group_type = 'personal'` as first condition in `groups_select` policy
+- Surfaces fixed: forum posts, DM list, conversation headers, group member list, invite modal
+- 466/466 tests passing, zero regressions
+- 1 migration, 0 application code changes needed
 
 **Key decisions:**
-- Personal group `name` is the single source of truth for display identity
-- AFTER UPDATE trigger (not BEFORE) to avoid interference with 3 existing BEFORE triggers
-- `show_real_name` enforced at application layer (RLS is row-level, not column-level)
-- Default: nickname = first name, display_preference = 'nickname', show_real_name = false
+- `OR group_type = 'personal'` chosen over co-membership check (simpler, DM-compatible, consistent with users table visibility)
+- Personal group data (name, avatar) is non-sensitive — equivalent to a public username
 
 **Previous Sessions:**
+- 2026-02-27: Display Name / Nickname System — full TDD sprint (v0.2.30)
 - 2026-02-24: Admin bug fixes + hard delete trigger bypass + orphan group issue identified
 - 2026-02-24: Force logout responsiveness + stale session error handling
 - 2026-02-23: Fix PGRST201 ambiguous FK errors

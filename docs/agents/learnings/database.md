@@ -8,6 +8,10 @@
 
 ## Entries
 
+### 2026-02-27: Personal groups need explicit RLS SELECT visibility
+When personal groups became the single source of truth for display names (v0.2.30), the `groups_select` policy wasn't updated to allow other users to see them. Personal groups are `is_public = false` and have self-membership only, so no existing policy condition matches for cross-user queries. Fix: add `group_type = 'personal'` to `groups_select`. Lesson: whenever a table becomes a join target for identity resolution, verify that the RLS SELECT policy allows the join from any authenticated user's perspective — not just the row owner's.
+→ Promoted to playbook? Not yet
+
 ### 2026-02-23: Immutability triggers for identity columns
 When a column serves as an identity anchor (like `personal_group_id`), protect it with a `BEFORE UPDATE` trigger that checks `OLD.col IS NOT NULL AND NEW.col IS DISTINCT FROM OLD.col`. This allows the initial set (NULL → value) while blocking all subsequent changes. Pattern pairs well with `enforce_decommission_invariant()` on the same table.
 > Promoted to playbook? Not yet

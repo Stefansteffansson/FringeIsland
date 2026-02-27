@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Personal group RLS visibility** — Other users' personal groups were invisible under the `groups_select` RLS policy, causing display names to show as "Unknown" across 6 surfaces (forum posts, DM list, conversation headers, group member list, invite modal). Added `group_type = 'personal'` condition to `groups_select` policy. Personal groups are identity containers (name + avatar) and are safe to expose to all authenticated users. Zero application code changes needed.
+  - **Migration:** `20260227110556_fix_personal_group_rls_visibility.sql`
+  - **Surfaces fixed:** ForumSection/ForumPost, messages page, conversation page, group detail member list, InviteMemberModal
+
 ### Added
 - **Display Name / Nickname System** — Users can set a nickname and toggle between displaying their real name or nickname platform-wide. Personal group `name` is the single source of truth for display identity across all social surfaces (forums, messages, navigation, member lists). Real name visibility is opt-in (off by default). Admins always see real names.
   - **New columns on `users`:** `nickname` (TEXT NOT NULL), `display_preference` ('real_name' | 'nickname'), `show_real_name` (BOOLEAN, default false)
