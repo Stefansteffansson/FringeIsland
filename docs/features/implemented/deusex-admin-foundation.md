@@ -1,6 +1,6 @@
 # DeusEx Admin Foundation
 
-**Status:** Active
+**Status:** ✅ Implemented (v0.2.21–v0.2.25)
 **Phase:** 1.6 — Admin Foundation
 **Last Updated:** February 20, 2026
 

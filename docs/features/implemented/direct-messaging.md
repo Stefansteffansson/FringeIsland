@@ -1,6 +1,6 @@
 # Direct Messaging System
 
-**Status:** Phase 0 - Feature Context (ready for behavior specs)
+**Status:** ✅ Implemented (v0.2.15)
 **Phase:** 1.5-B (Communication - Direct Messaging)
 **Date:** February 15, 2026
 **Dependencies:** Notification system (Phase 1.5-A, complete), existing user/auth infrastructure

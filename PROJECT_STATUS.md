@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-27 (Leave Group Feature Review + [Deleted User] sentinel seed)
+**Last Updated:** 2026-02-28 (Lifecycle Roadmap Decisions + Leave Group spec tweaks + feature doc reorganization)
 **Current Version:** 0.2.31
 **Active Branch:** main
 
@@ -8,14 +8,19 @@
 
 ## What We're Working On NOW
 
-**Current Focus:** Leave Group Feature Specification — review and refinement complete
+**Current Focus:** Lifecycle Roadmap — 5 binding decisions, 5-sprint structure, security fixes first
 
-**Design Doc:** `docs/features/planned/leave_group_feature_review.md`
+**Key Docs:**
+- `docs/planning/lifecycle-roadmap-decisions.md` — **Single source of truth** for sprint structure and decisions
+- `docs/features/planned/leave_group_feature_review.md` — Leave group spec (9 tweaks applied 2026-02-28)
 
 **Active Tasks:**
 - [x] **Leave Group Feature Review** ✅ DONE — multi-round analysis, 9 ambiguities resolved
 - [x] **[Deleted User] Sentinel Seed** ✅ DONE — migration applied, system group now exists in DB
-- [ ] **Leave Group Implementation** — Next: TDD workflow (behaviors → RED tests → implement)
+- [x] **Lifecycle Roadmap Decisions** ✅ DONE — 5 binding decisions (D-R1 to D-R5), 5-sprint structure, dependency graph
+- [x] **Leave Group Spec Tweaks** ✅ DONE — 9 tweaks applied (prerequisites, scope exclusion, resolved OPENs)
+- [x] **Feature Doc Reorganization** ✅ DONE — moved implemented features from planned/active → implemented/
+- [ ] **Sprint 0 — Security Fixes** — NEXT: Non-public journey RLS, EnrollmentModal is_public check, JourneyPlayer frozen enforcement
 
 **Blocked/Waiting:**
 - None
@@ -31,13 +36,13 @@
 
 ## Quick Stats
 
-- **Phase:** Leave Group Feature Specification COMPLETE — ready for implementation
+- **Phase:** Lifecycle Roadmap COMPLETE — Sprint 0 (Security Fixes) is next
 - **Total Tables:** 19 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
 - **Total Migrations:** 11 active + 71 archived
 - **Recent Version:** v0.2.31 (Fix personal group RLS visibility)
 - **Test Coverage:** 466 integration + 99 unit + 4 setup = **569 tests** ✅
 - **Behaviors Documented:** 88 (77 previous + 11 display-name) ✅
-- **Feature Docs:** 5 complete + 2 planned designs (leave-group refined) + 1 active (performance)
+- **Feature Docs:** 8 implemented + 1 planned design (leave-group refined) + 1 roadmap (lifecycle decisions)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
 
 **Completed Major Features:**
@@ -77,7 +82,8 @@
 - **Database work:** `docs/database/schema-overview.md`
 - **Feature development:** `docs/features/implemented/[feature-name].md`
 - **Latest feature:** `docs/features/implemented/display-name-system.md` ← **LATEST**
-- **Admin feature (complete):** `docs/features/active/deusex-admin-foundation.md`
+- **Admin feature (complete):** `docs/features/implemented/deusex-admin-foundation.md`
+- **Lifecycle roadmap:** `docs/planning/lifecycle-roadmap-decisions.md` ← **NEW** (5 sprints, 5 decisions)
 - **Architecture decisions:** `docs/architecture/ARCHITECTURE.md`
 - **Planning context:** `docs/planning/ROADMAP.md` + `docs/planning/DEFERRED_DECISIONS.md`
 
@@ -90,22 +96,24 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-27 (Leave Group Feature Review + [Deleted User] sentinel seed)
+**Date:** 2026-02-28 (Lifecycle Roadmap Decisions + Feature Doc Reorganization)
 **Summary:**
-- Multi-round analysis of `leave_group_feature_review.md` — cross-referenced with actual DB schema (19 tables)
-- Identified and resolved 9 ambiguities: group soft delete, exclusive journey naming, notification scope, pending invitation transfer, frozen enrollment, predefined journey ownership, [Deleted User] sentinel, group closure logging
-- Created and applied migration `20260227120843_seed_deleted_user_sentinel_group.sql` — seeds the `[Deleted User]` system group that `admin_hard_delete_user` RPC references (was missing, causing content to fallback to admin's personal group)
-- No application code changes — documentation and 1 seed migration only
+- Deep analysis of all interconnected lifecycle features (user/group/journey) — mapped 8 lifecycle tracks (A-H)
+- Identified 5 things broken in current state: non-public journey RLS, missing groups.status, wrong journey ownership, cosmetic-only frozen enrollment, no smart notifications
+- Created lifecycle roadmap with 5 binding decisions (D-R1 to D-R5) and 5-sprint structure
+- Applied 9 tweaks to `leave_group_feature_review.md` — added prerequisites section, scope exclusion, resolved 4 OPEN items, added 2 new sections
+- Reorganized feature docs: moved 7 implemented features from planned/active → implemented/ folder
+- Rewrote `journey-system.md` to reflect post-D15 accuracy
 
-**Key decisions:**
-- Group lifecycle via `groups.status` column: `'active'`, `'closed'`, `'archived'`, `'suspended'` — groups never hard-deleted
-- "Exclusive Journey" renamed → "Non-Public Journey" (`is_public = false`) — no new schema column needed
-- `journey_enrollments.status = 'frozen'` for read-only access when member leaves group (already in CHECK constraint)
-- Predefined journeys to be owned by "FringeIsland Journeys" engagement group (future migration)
-- Pending invitations from departing Steward: `added_by_group_id`/`invited_by_group_id` transferred to DeusEx
-- No DeusEx notification for simple group closures — `admin_audit_log` sufficient (no general event log yet)
+**Key decisions (binding — see `docs/planning/lifecycle-roadmap-decisions.md`):**
+- **D-R1:** Smart notifications are a separate feature (Sprint 3), not part of leave-group core
+- **D-R2:** Security fixes (Sprint 0) must complete before any leave-group implementation
+- **D-R3:** Platform exit is admin-assisted for v1 — no self-service "Leave FringeIsland" button
+- **D-R4:** Timeout mechanism deferred to Sprint 3 — hard-coded 7d/30d values when implemented
+- **D-R5:** Forum content preserved on hard delete — attribution anonymised, content kept
 
 **Previous Sessions:**
+- 2026-02-27: Leave Group Feature Review + [Deleted User] sentinel seed
 - 2026-02-27: Fix personal group RLS visibility (v0.2.31)
 - 2026-02-27: Display Name / Nickname System — full TDD sprint (v0.2.30)
 - 2026-02-24: Admin bug fixes + hard delete trigger bypass + orphan group issue identified
@@ -125,20 +133,21 @@
 
 **Display Name / Nickname System COMPLETE** ✅
 
-**Next — Leave Group Feature (PRIORITY):**
-Full leave/exit group implementation — see `docs/features/planned/leave_group_feature_review.md` for complete specification.
-Key tracks:
-1. **Track 1** — Last Steward leaves (stewardship transfer or group closure)
-2. **Track 2** — Regular member leaves (clean exit with enrollment freezing)
-3. **Track 3** — Platform exit (cascading leave across all groups)
-Includes: group lifecycle (`groups.status`), enrollment freezing, pending invitation transfer, forum anonymisation, smart notifications.
+**Next — Sprint 0: Security Fixes (PRIORITY):**
+Fix broken non-public journey access control and frozen enrollment enforcement. TDD workflow.
+See `docs/planning/lifecycle-roadmap-decisions.md` for full sprint structure.
+1. **S1:** Fix `journeys_select_published` RLS — enforce `is_public`
+2. **S2:** Fix `EnrollmentModal` — check `is_public` before enrollment
+3. **S3:** Fix `JourneyPlayer` — enforce `frozen` enrollment status (read-only view)
+4. **S4:** RLS-level frozen enforcement — `AND status != 'frozen'` on enrollment UPDATE policies
 
-**Approaches to consider:**
-- **Pre-check approach:** Before executing the action, query for groups where user is last Steward. If any found, show a transfer modal. Only proceed after all groups have new Stewards assigned.
-- **Database-level approach:** New RPC that handles the full flow atomically — detect orphans, assign new steward, then delete.
-- **UI flow:** Modal listing affected groups with dropdowns to select new Steward per group. Options: existing group members, DeusEx admin, or search for any user (auto-join if needed).
+**After Sprint 0:**
+- Sprint 1: Foundation Schema (`groups.status` column + "FringeIsland Journeys" group)
+- Sprint 2: Leave Group Core (regular member, sole Steward→DeusEx, group closure)
+- Sprint 3: Smart Notifications + Steward Nomination (Track 1)
+- Sprint 4: Platform Exit (admin-assisted)
 
-**After orphan fix — Phase 1.6 Polish and Launch:**
+**After lifecycle features — Phase 1.6 Polish and Launch:**
 1. Mobile responsiveness audit
 2. User onboarding flow
 3. E2E tests (Playwright)

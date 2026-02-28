@@ -1,8 +1,8 @@
 # Dynamic Permissions System
 
-**Status:** Planning
+**Status:** ✅ Implemented (v0.2.16–v0.2.20) — Design reference retained
 **Created:** February 11, 2026
-**Last Updated:** February 11, 2026 (D1-D22: all design decisions complete, ready for implementation)
+**Last Updated:** February 27, 2026 (moved to implemented; RBAC shipped across 4 sub-sprints)
 **Related:** [PRODUCT_SPEC](../../planning/PRODUCT_SPEC.md) | [ROADMAP](../../planning/ROADMAP.md) | [DEFERRED_DECISIONS](../../planning/DEFERRED_DECISIONS.md)
 
 ---

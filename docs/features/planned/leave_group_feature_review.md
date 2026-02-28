@@ -24,6 +24,23 @@ The following is explicitly **OUT of scope** for this feature:
 
 - Stepping down as Steward while remaining a group member (separate feature, separate entry point)
 - The DeusEx admin backlog/dashboard (flagged as related feature)
+- **Engagement-group-leaves-engagement-group** — this feature covers personal groups leaving engagement groups only. Group-level leave flows are deferred to Phase 2 (groups-join-groups UI). See `docs/planning/lifecycle-roadmap-decisions.md` D-R1 through D-R5 for rationale.
+
+### 2.5 Hard Prerequisites
+
+The following must be complete before BDD scenarios for leave-group can be written or implemented:
+
+**Sprint 0 — Security Fixes (no dependencies):**
+1. **Non-public journey RLS fix:** Update `journeys_select_published` policy to enforce `is_public` — non-public journeys (`is_public = false`) must only be visible to enrolled users or members of the owning group. Currently anyone with the UUID can read and enroll.
+2. **EnrollmentModal `is_public` check:** Non-members of the owning group must not be able to enroll in non-public journeys via the UI.
+3. **JourneyPlayer frozen enforcement:** `enrollment.status === 'frozen'` must show read-only view with contextual message, blocking step completion and navigation to new steps.
+4. **RLS frozen enforcement:** Add `AND status != 'frozen'` to `enrollment_update_own` and `enrollment_update_group` RLS policies.
+
+**Sprint 1 — Foundation Schema (depends on Sprint 0):**
+1. **`groups.status` column:** Migration adding `status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'closed', 'archived', 'suspended'))` + partial index + RLS policy updates (non-admin users only see `status = 'active'` groups).
+2. **"FringeIsland Journeys" engagement group:** Create via migration (`group_type = 'engagement'`, `is_public = true`). Migrate all 8 predefined journeys: `SET created_by_group_id = <fi_journeys_id>, is_public = true`. This is a **hard prerequisite** — without it, the distinction between "platform journey" and "group non-public journey" is untestable.
+
+**Reference:** See `docs/planning/lifecycle-roadmap-decisions.md` for the full dependency graph and sprint structure.
 
 ---
 
@@ -113,6 +130,8 @@ When the leaving user is the sole Steward, the system presents a dialog:
 
 ### 4.3 Track 1 — Nominate a Successor
 
+> **Sprint 3 — Requires smart notification infrastructure.** This section (4.3) and section 4.4 (Track 1A/B/C) are NOT part of the initial leave-group implementation (Sprint 2). They require the smart notifications feature to be designed, specified, and implemented first. See `docs/planning/lifecycle-roadmap-decisions.md` decision D-R1. Sprint 2 ships with Track 2 (DeusEx immediate handover) only.
+
 The leaving Steward nominates one or more people as a **ranked list**. Invitations are sent sequentially in ranked order — the next invitation is only sent after the previous is declined or has timed out.
 
 Nominees must be existing FringeIsland users and can be:
@@ -164,7 +183,7 @@ If the leaving member is enrolled in any Non-Public Journeys, the confirmation d
 - All group members notified: *"FringeIsland has temporarily assumed stewardship of this group."*
 - DeusEx backlog receives smart notification: *"[Group] requires a permanent Steward. Please review and assign."*
 
-> ⚑ **OPEN:** Timeout durations for Track 1 (invitation acceptance window) and Track 1C (absence window) are not yet defined. To be decided — consider whether these should be platform-wide configurable values.
+> ✅ **RESOLVED — Timeout durations:** Hard-coded for v1: **7 days** for invitation acceptance window, **30 days** for steward absence window. Configurable values deferred to a polish sprint after Track 1 is working. See `docs/planning/lifecycle-roadmap-decisions.md` decision D-R4.
 
 ### 4.4 Track 2 — Immediate DeusEx Handover
 
@@ -261,7 +280,7 @@ This means:
 
 - Anonymisation takes effect at the exact moment the membership record is removed from the database
 
-> ⚑ **OPEN — GDPR / Right to Erasure:** If a user hard-deletes their account, should post content also be erased (truly anonymous empty posts) or only the attribution? This is a legal/policy decision to be resolved before implementation.
+> ⚑ **OPEN — GDPR / Right to Erasure:** If a user hard-deletes their account, should post content also be erased (truly anonymous empty posts) or only the attribution? This is a legal/policy decision to be resolved before public launch. **For v1:** Content preserved, attribution anonymised to "[Deleted User]" (decision D-R5). See Section 13.
 
 > ✅ **RESOLVED — Forum schema:** Forum tables were built in the D15 Universal Group Pattern rebuild (v0.2.29). The `forum_posts` table already has `author_group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL`. The display-layer logic (membership check at query time) needs to be implemented in the `ForumSection` component.
 
@@ -278,7 +297,7 @@ This means:
 | **Non-Public Journey** | Engagement group | `false` | Read-only (`frozen` status). Further engagement locked. |
 | Personal journey | Personal group | either | Unaffected — not tied to engagement group |
 
-> **Note — Platform journeys ownership:** The 8 predefined journeys are currently owned by an arbitrary user's personal group (legacy from pre-D15 seed migration). These need to be migrated to a new **"FringeIsland Journeys"** engagement group (`group_type = 'engagement'`) with `is_public = true`. This group serves as the canonical owner for all platform-provided journeys. Migration: create group → update `journeys.created_by_group_id` for all predefined journeys → set `is_public = true` on all.
+> **⚠️ Hard Prerequisite — Platform journeys ownership:** The 8 predefined journeys are currently owned by an arbitrary user's personal group (legacy from pre-D15 seed migration). These **must** be migrated to a new **"FringeIsland Journeys"** engagement group (`group_type = 'engagement'`) with `is_public = true` before leave-group BDD scenarios can be written. This is Sprint 1 work — see Section 2.5 and `docs/planning/lifecycle-roadmap-decisions.md`. Migration: create group → update `journeys.created_by_group_id` for all predefined journeys → set `is_public = true` on all.
 
 ### 7.2 Non-Public Journeys — Detail
 
@@ -326,8 +345,8 @@ All notifications are internal FringeIsland notifications — no emails. **Smart
 | New Steward appointed (Track 1A) | All group members | Standard | *"[Nominee] has been appointed as the new Steward of [Group]."* |
 | Nomination declined OR timeout (Track 1B/1C) | Leaving Steward | Smart (Try again / Hand to DeusEx) | *"Your nomination was not accepted. Would you like to nominate someone else, or hand Stewardship to FringeIsland?"* |
 | DeusEx takes stewardship (Track 1C, Track 2) | All group members | Standard | *"FringeIsland has temporarily assumed stewardship of this group."* |
-| DeusEx takes stewardship (Track 1C, Track 2) | DeusEx | Smart (backlog item) | *"[Group] requires a permanent Steward. Please review and assign."* |
-| Group closed (last member left) — orphaned Non-Public Journeys | DeusEx | Smart (backlog item) | *"[Group] has been closed. [X] Non-Public Journey(s) require review."* |
+| DeusEx takes stewardship (Track 1C, Track 2) | DeusEx | Standard (v1) / Smart (Sprint 3) | *"[Group] requires a permanent Steward. Please review and assign."* |
+| Group closed (last member left) — orphaned Non-Public Journeys | DeusEx | Standard (v1) / Smart (Sprint 3) | *"[Group] has been closed. [X] Non-Public Journey(s) require review."* |
 | Group closed (last member left) — no orphaned journeys | — | No notification | Logged only (see note below) |
 
 > **Note — Group closure logging:** Simple group closures (no orphaned Non-Public Journeys) do not notify DeusEx. However, these events should be recorded. The platform currently has `admin_audit_log` for admin-initiated actions only. A general-purpose **event log** or **activity log** does not yet exist. Consider whether group closures (and other user-initiated lifecycle events) should be recorded in `admin_audit_log` with a system actor, or in a future dedicated event log table. This is a cross-cutting concern that affects multiple features beyond leave-group.
@@ -340,10 +359,11 @@ All notifications are internal FringeIsland notifications — no emails. **Smart
 - **GDPR / Right to Erasure:** On hard account delete, should post content be erased or only attribution? Legal/policy decision required.
 - ✅ **RESOLVED — `[Deleted User]` sentinel group created:** Migration `20260227120843_seed_deleted_user_sentinel_group.sql` seeds the `[Deleted User]` system group (`group_type = 'system'`, `is_public = false`). The `admin_hard_delete_user` RPC now correctly reassigns `forum_posts.author_group_id`, `journeys.created_by_group_id`, and `groups.created_by_group_id` to this sentinel before deleting the personal group.
 - **Conversations on platform exit (hard delete):** `conversations` reference personal groups as `participant_1`/`participant_2` with `ON DELETE CASCADE` — conversations are **deleted** when a personal group is hard-deleted. Consider whether conversations should be reassigned to `[Deleted User]` to preserve message history for the other participant. For platform exit with soft delete (`is_active = false`), the personal group survives and conversations are unaffected.
-- **Journey frozen enforcement detail:** The `'frozen'` status on `journey_enrollments` is confirmed as the mechanism. Remaining: which UI surfaces need frozen-state checks, and whether RLS policies should also enforce it or if application-layer only is sufficient.
-- **"FringeIsland Journeys" group creation:** The 8 predefined journeys need migrating from their current owner (arbitrary user's personal group) to a new "FringeIsland Journeys" engagement group. Migration to be written.
+- ✅ **RESOLVED — Journey frozen enforcement:** Both RLS and application-layer. RLS: add `AND status != 'frozen'` to `enrollment_update_own` and `enrollment_update_group` policies (prevents any progress writes at the database level). Application: JourneyPlayer checks `enrollment.status === 'frozen'` and renders read-only view with contextual message. This is Sprint 0 work — see Section 2.5.
+- ✅ **RESOLVED — "FringeIsland Journeys" group creation:** Elevated to hard prerequisite (Section 2.5, Sprint 1). Migration to be written during Sprint 1.
 - ✅ **RESOLVED — Group lifecycle:** New `groups.status` column with values: `'active'`, `'closed'`, `'archived'`, `'suspended'`. Last member leaving sets status to `'closed'`. See Section 3.1. Migration to be written.
 - **Event logging for user-initiated actions:** `admin_audit_log` exists for admin actions, but no general event log covers user-initiated lifecycle events (group closures, member departures, stewardship transfers). Cross-cutting concern — may warrant a dedicated `event_log` or `activity_log` table in a future sprint.
+- ✅ **RESOLVED — DeusEx backlog notifications:** Standard notifications for v1 (Sprint 2). Smart notifications for DeusEx backlog items deferred to Sprint 3. Standard notification is sufficient for MVP — DeusEx admins can see the group state directly via the admin panel.
 
 ---
 
@@ -394,4 +414,39 @@ All notifications are internal FringeIsland notifications — no emails. **Smart
 
 ---
 
-*This document reflects a design discussion only. It is not a final specification. Topics marked ⚑ require resolution before BDD scenarios can be written.*
+---
+
+## 12. Platform Exit — Admin-Assisted for v1
+
+> **Decision D-R3** (see `docs/planning/lifecycle-roadmap-decisions.md`)
+
+In v1, there is **no self-service "Leave FringeIsland" button**. The platform exit flow is:
+
+1. User self-service leaves each engagement group individually (stewardship transfers happen here — always self-service via the flows in Sections 4.1–4.4)
+2. User contacts support to request account deactivation
+3. Admin uses existing admin panel to deactivate/decommission the account (`admin_decommission_user()` or `admin_hard_delete_user()`)
+
+**Sprint 4** builds a lightweight admin-facing cascade action ("Exit user from all groups"), NOT a self-service UI. Self-service account deletion is deferred to Phase 1.6 or later (requires GDPR/legal review).
+
+The group-level stewardship transfer machinery (which is the hard part) is fully self-service regardless of this decision.
+
+---
+
+## 13. Forum Content Preserved on Hard Delete
+
+> **Decision D-R5** (see `docs/planning/lifecycle-roadmap-decisions.md`)
+
+When an admin hard-deletes a user:
+- Forum post **content is preserved** unchanged
+- Only the **attribution** changes to "[Deleted User]" (via the `[Deleted User]` sentinel group — see `admin_hard_delete_user()` RPC)
+- The display layer shows:
+  - **"Former Member"** — for members who left a group (derived at query time from membership status)
+  - **"[Deleted User]"** — for hard-deleted accounts (derived from `author_group_id` pointing to the sentinel)
+
+No GDPR-driven content erasure for v1. If needed later, it would be a separate feature with legal review.
+
+---
+
+> ⚠️ **OPEN items resolved 2026-02-28:** Timeout durations (Section 4.3), frozen enforcement (Section 9), FringeIsland Journeys group (Section 9), DeusEx backlog notifications (Section 9). See `docs/planning/lifecycle-roadmap-decisions.md` for full decision rationale.
+
+*This document reflects a design discussion with binding decisions applied 2026-02-28. Remaining open items: GDPR/Right to Erasure (legal review needed), Conversations on platform exit (hard delete), Event logging for user-initiated actions. All other items resolved — see Section 2.5 for prerequisites and `docs/planning/lifecycle-roadmap-decisions.md` for sprint structure.*

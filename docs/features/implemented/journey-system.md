@@ -1,29 +1,30 @@
 # Journey System
 
-**Status:** ✅ Partially Implemented (85% complete)
-**Version:** 0.2.10
-**Last Updated:** February 4, 2026
+**Status:** ✅ Implemented (v0.2.8–v0.2.11)
+**Last Updated:** February 27, 2026
+**Covers:** Catalog, enrollment, content delivery, progress tracking
 
 ---
 
 ## Overview
 
-Educational journey system where users can browse, enroll in, and complete structured learning experiences. Supports both individual and group enrollment.
+Educational journey system where users can browse, enroll in, and complete structured learning experiences. Supports both individual enrollment (via personal group) and group enrollment (via engagement group). Content is delivered step-by-step through the JourneyPlayer.
+
+**Key architectural note (D15):** The journey system uses the universal group pattern. There is no `user_id` anywhere in the journey tables. Individual enrollments use the user's `personal_group_id` as the `group_id`. Group enrollments use the engagement group's ID.
 
 ---
 
 ## Implemented Features
 
 ### Journey Catalog (v0.2.8)
-**Page:** `/journeys`
+**Page:** `/journeys` (`app/journeys/page.tsx`)
 
 **Features:**
-- Grid layout showing all available journeys
+- Grid layout showing all published journeys
 - Search by title and description
 - Filter by difficulty (beginner, intermediate, advanced)
 - Filter by topic/tags
-- Results counter
-- Clear filters button
+- Results counter and clear filters button
 - Responsive design
 
 **Journey Cards Show:**
@@ -34,79 +35,98 @@ Educational journey system where users can browse, enroll in, and complete struc
 - "View Details" button
 
 ### Journey Detail Page (v0.2.8)
-**Page:** `/journeys/[id]`
+**Page:** `/journeys/[id]` (`app/journeys/[id]/page.tsx`)
 
 **Sections:**
-1. **Hero Section**
-   - Title and description
-   - Gradient background
-   - Breadcrumb navigation
-   - Enrollment button (dynamic based on status)
-
-2. **Overview Tab**
-   - Full description
-   - Learning objectives
-   - Target audience
-   - Prerequisites
-
-3. **Curriculum Tab**
-   - Expandable step list
-   - Step details (type, duration, description)
-   - Visual indicators for step types
-   - Total step count
-
-4. **Sidebar (Sticky)**
-   - Difficulty level
-   - Estimated duration
-   - Tags
-   - Enrollment button
+1. **Hero Section** — Title, description, gradient background, breadcrumb navigation
+2. **Overview Tab** — Full description, learning objectives, target audience, prerequisites
+3. **Curriculum Tab** — Expandable step list with type icons, duration, required tags
+4. **Sidebar (Sticky)** — Difficulty, duration, tags, enrollment button
 
 **Enrollment Button States:**
-- Not enrolled → "Enroll in Journey" (opens modal)
-- Enrolled individually → "View My Journeys" (green, links to /my-journeys)
-- Enrolled via group → "Enrolled via [Group Name]" (info badge)
-- Not logged in → "Sign in to Enroll" (links to /login)
+- Not enrolled: "Enroll in Journey" (opens EnrollmentModal)
+- Enrolled individually: "View My Journeys" (green, links to /my-journeys)
+- Enrolled via group: "Enrolled via [Group Name]" (info badge)
+- Not logged in: "Sign in to Enroll" (links to /login)
 
 ### Journey Enrollment (v0.2.10)
 **Component:** `components/journeys/EnrollmentModal.tsx`
 
 **Features:**
 - Two enrollment types:
-  1. **Individual Enrollment** - For personal learning
-  2. **Group Enrollment** - Enroll a group (leader-only)
-- Dynamic group selection (only shows groups where user is leader)
-- Enrollment validation (checks existing enrollments)
-- Prevents dual enrollment (individual + group for same journey)
-- Success state with confirmation
-- Error handling
+  1. **Individual** — uses `userProfile.personal_group_id` as `group_id`
+  2. **Group** — selects from groups where user has `enroll_group_in_journey` permission
+- Permission check via `supabase.rpc('has_permission', ...)` per group
+- Dual-enrollment prevention (individual + group for same journey)
+- Catches `23505` unique violation as fallback duplicate detection
+- Success state with 1500ms delay before close
 
 **Business Rules:**
-- ✅ Users can enroll in unlimited journeys individually
-- ✅ Users can enroll in same journey via different groups
-- ❌ Cannot enroll individually AND via group in same journey
-- ✅ Only Group Leaders can enroll groups
-- ❌ Groups cannot be enrolled twice in same journey
+- Users can enroll in unlimited journeys individually
+- Users can enroll in the same journey via different groups
+- Cannot enroll individually AND via group in same journey
+- Only users with `enroll_group_in_journey` permission (Steward/Guide) can enroll groups
+- Groups cannot be enrolled twice in same journey
 
-### My Journeys Page (v0.2.10)
-**Page:** `/my-journeys`
+### JourneyPlayer (v0.2.11)
+**Page:** `/journeys/[id]/play` (`app/journeys/[id]/play/page.tsx`)
+**Component:** `components/journeys/JourneyPlayer.tsx`
+
+The main content delivery engine. Receives journey data and enrollment, renders step-by-step content.
 
 **Features:**
-- Two tabs:
-  1. **Individual Journeys** - Personally enrolled
-  2. **Group Journeys** - Enrolled via groups
-- Journey cards with:
-  - Title and description
-  - Status badge (active, completed, paused, frozen)
-  - Difficulty badge
-  - Duration display
-  - "Continue Journey" or "Review Journey" button
-  - For group journeys: Shows group name
+- Linear step-by-step navigation (Previous / Next)
+- Required-step gating (Next blocked until step marked complete)
+- Progress saved to `progress_data` JSONB on every navigation and completion
+- Resume from last position via `current_step_id`
+- Completion detection (all required steps done -> `status = 'completed'`)
+- Review mode for completed journeys (free navigation, review banner)
+- `last_accessed_at` updated on mount
+
+**Progress tracking per step:**
+- `completed_at` timestamp
+- `time_spent_minutes` (calculated from step entry time)
+- Running `total_time_spent_minutes`
+- `last_checkpoint` for resume
+
+**Layout:** StepSidebar (left) + StepContent (main) in flex layout.
+
+### Supporting Components (v0.2.11)
+
+**`StepSidebar.tsx`** — Left panel showing:
+- ProgressBar at top
+- Clickable step list with status indicators (completed: green check, current: blue dot, future: gray number)
+- Type icons (content: pencil, activity: pencil, assessment: check)
+- Duration, required tags
+- Steps only clickable if completed, current, or in review mode
+
+**`StepContent.tsx`** — Main content area showing:
+- Step header (type, step N of M, duration, required tag, completed badge)
+- Description text
+- Instructions in blue callout block (if present)
+- Placeholder for rich `step.content` JSONB ("coming soon")
+- Mark Complete / Complete Activity / Submit Assessment button
+
+**`ProgressBar.tsx`** — Simple progress bar component:
+- Props: `percent` (0-100), optional `label`, `size` (sm/md)
+- Turns green at 100%
+
+### My Journeys Page (v0.2.10)
+**Page:** `/my-journeys` (`app/my-journeys/page.tsx`)
+
+**Features:**
+- Two tabs: Individual Journeys / Group Journeys
+- Individual tab: enrollments where `group_id = personal_group_id`
+- Group tab: enrollments where `group_id` is in user's active engagement groups
+- Journey cards with title, description, status badge, difficulty, duration
+- Progress bar when `total_steps` known and status is active
+- Smart button labels: "Start Journey" / "Continue" / "Review Journey"
+- All links go to `/journeys/[id]/play`
 - Empty states with "Browse Catalog" CTAs
-- Responsive grid layout
 
 **Navigation:**
-- Added "My Journeys" link (📚) to global navigation
-- Active state highlighting
+- `🗺️ Journeys` link (exact match on `/journeys`)
+- `📚 My Journeys` link (`startsWith` match on `/my-journeys`)
 
 ---
 
@@ -114,23 +134,26 @@ Educational journey system where users can browse, enroll in, and complete struc
 
 ### journeys Table
 ```sql
-CREATE TABLE journeys (
-  id UUID PRIMARY KEY,
+CREATE TABLE public.journeys (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
-  description TEXT NOT NULL,
-  created_by_user_id UUID REFERENCES users(id),
-  is_published BOOLEAN DEFAULT false,
-  is_public BOOLEAN DEFAULT false,
-  journey_type TEXT CHECK (journey_type IN ('predefined', 'user_created', 'dynamic')),
-  content JSONB NOT NULL,
+  description TEXT,
+  created_by_group_id UUID NOT NULL REFERENCES public.groups(id) ON DELETE RESTRICT,
+  is_published BOOLEAN NOT NULL DEFAULT false,
+  is_public BOOLEAN NOT NULL DEFAULT false,
+  journey_type TEXT NOT NULL DEFAULT 'predefined'
+    CHECK (journey_type IN ('predefined', 'user_created', 'dynamic')),
+  content JSONB,
   estimated_duration_minutes INTEGER,
   difficulty_level TEXT CHECK (difficulty_level IN ('beginner', 'intermediate', 'advanced')),
   tags TEXT[],
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   published_at TIMESTAMPTZ
 );
 ```
+
+**D15 change:** `created_by_user_id` replaced by `created_by_group_id NOT NULL`. The RESTRICT constraint means a group cannot be deleted while it owns journeys. Auto-update trigger on `updated_at`.
 
 **Content Structure (JSONB):**
 ```json
@@ -145,19 +168,8 @@ CREATE TABLE journeys (
       "duration_minutes": 30,
       "required": true,
       "description": "Learn the fundamentals...",
-      "content": {
-        "text": "...",
-        "resources": [...]
-      }
-    },
-    {
-      "id": "step_2",
-      "title": "Self-Assessment Exercise",
-      "type": "activity",
-      "duration_minutes": 45,
-      "required": true,
-      "description": "Complete the leadership style assessment",
-      "instructions": "..."
+      "instructions": "Read through the material and reflect on...",
+      "content": { }
     }
   ]
 }
@@ -165,24 +177,29 @@ CREATE TABLE journeys (
 
 ### journey_enrollments Table
 ```sql
-CREATE TABLE journey_enrollments (
-  id UUID PRIMARY KEY,
-  journey_id UUID REFERENCES journeys(id),
-  user_id UUID REFERENCES users(id),        -- NULL for group enrollments
-  group_id UUID REFERENCES groups(id),      -- NULL for individual enrollments
-  enrolled_by_user_id UUID REFERENCES users(id),
-  status TEXT CHECK (status IN ('active', 'completed', 'paused', 'frozen')),
-  progress_data JSONB DEFAULT '{}',
-  enrolled_at TIMESTAMPTZ DEFAULT NOW(),
+CREATE TABLE public.journey_enrollments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  journey_id UUID NOT NULL REFERENCES public.journeys(id) ON DELETE CASCADE,
+  group_id UUID NOT NULL REFERENCES public.groups(id) ON DELETE CASCADE,
+  enrolled_by_group_id UUID REFERENCES public.groups(id) ON DELETE SET NULL,
+  status TEXT NOT NULL DEFAULT 'active'
+    CHECK (status IN ('active', 'completed', 'paused', 'frozen')),
+  progress_data JSONB NOT NULL DEFAULT '{}',
+  enrolled_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  status_changed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   completed_at TIMESTAMPTZ,
-  last_accessed_at TIMESTAMPTZ,
-
-  CHECK (
-    (user_id IS NOT NULL AND group_id IS NULL) OR
-    (user_id IS NULL AND group_id IS NOT NULL)
-  )
+  last_accessed_at TIMESTAMPTZ
 );
 ```
+
+**D15 changes:**
+- No `user_id` column. The universal group pattern means `group_id` is always set:
+  - Individual enrollment: `group_id` = user's `personal_group_id`
+  - Group enrollment: `group_id` = engagement group's ID
+- `enrolled_by_group_id` replaces `enrolled_by_user_id`
+- `status_changed_at` is new (tracks when status last changed)
+- The old XOR CHECK constraint (`user_id IS NOT NULL AND group_id IS NULL OR ...`) no longer exists
+- No UNIQUE constraint on `(journey_id, group_id)` — duplicate prevention at application layer
 
 **Progress Data Structure (JSONB):**
 ```json
@@ -196,9 +213,107 @@ CREATE TABLE journey_enrollments (
     }
   },
   "total_time_spent_minutes": 125,
-  "last_checkpoint": "step_2"
+  "last_checkpoint": "step_2",
+  "total_steps": 6
 }
 ```
+
+**Indexes:**
+```sql
+CREATE INDEX idx_journeys_published ON public.journeys(is_published, is_public);
+CREATE INDEX idx_enrollments_group ON public.journey_enrollments(group_id);
+CREATE INDEX idx_enrollments_journey ON public.journey_enrollments(journey_id);
+```
+
+---
+
+## RLS Policies
+
+### journeys Table
+
+One policy — published journeys visible to all authenticated users:
+
+```sql
+CREATE POLICY "journeys_select_published"
+  ON public.journeys FOR SELECT TO authenticated
+  USING (is_published = true);
+```
+
+No INSERT/UPDATE/DELETE policies for regular users (all journeys are system-seeded). Admins use service role.
+
+### journey_enrollments Table
+
+Five policies using RBAC helper functions:
+
+**SELECT — own enrollments (personal group):**
+```sql
+CREATE POLICY "enrollment_select_own"
+  ON public.journey_enrollments FOR SELECT TO authenticated
+  USING (group_id = public.get_current_personal_group_id());
+```
+
+**SELECT — group enrollments (active member):**
+```sql
+CREATE POLICY "enrollment_select_group"
+  ON public.journey_enrollments FOR SELECT TO authenticated
+  USING (public.is_active_group_member(group_id));
+```
+
+**INSERT — individual (personal group only):**
+```sql
+CREATE POLICY "enrollment_insert_individual"
+  ON public.journey_enrollments FOR INSERT TO authenticated
+  WITH CHECK (
+    group_id = public.get_current_personal_group_id()
+    AND enrolled_by_group_id = public.get_current_personal_group_id()
+  );
+```
+
+**INSERT — group (requires `enroll_group_in_journey` permission):**
+```sql
+CREATE POLICY "enrollment_insert_group"
+  ON public.journey_enrollments FOR INSERT TO authenticated
+  WITH CHECK (
+    group_id != public.get_current_personal_group_id()
+    AND enrolled_by_group_id = public.get_current_personal_group_id()
+    AND public.has_permission(
+      public.get_current_personal_group_id(),
+      group_id,
+      'enroll_group_in_journey'
+    )
+  );
+```
+
+**UPDATE — own enrollment:**
+```sql
+CREATE POLICY "enrollment_update_own"
+  ON public.journey_enrollments FOR UPDATE TO authenticated
+  USING (group_id = public.get_current_personal_group_id())
+  WITH CHECK (group_id = public.get_current_personal_group_id());
+```
+
+**UPDATE — group enrollment (with permission):**
+```sql
+CREATE POLICY "enrollment_update_group"
+  ON public.journey_enrollments FOR UPDATE TO authenticated
+  USING (
+    public.has_permission(
+      public.get_current_personal_group_id(), group_id, 'enroll_group_in_journey'
+    )
+  )
+  WITH CHECK (
+    public.has_permission(
+      public.get_current_personal_group_id(), group_id, 'enroll_group_in_journey'
+    )
+  );
+```
+
+**Note:** No DELETE policy exists. Unenrollment is not currently implemented at the RLS level.
+
+**Helper functions used:**
+- `get_current_personal_group_id()` — returns `users.personal_group_id` for the authenticated user
+- `is_active_group_member(group_id)` — checks active membership
+- `has_permission(acting_group_id, context_group_id, permission_name)` — RBAC permission check
 
 ---
 
@@ -206,37 +321,14 @@ CREATE TABLE journey_enrollments (
 
 **8 journeys seeded** via migration:
 
-1. **Leadership Fundamentals** (180 min, Beginner)
-   - Tags: leadership, fundamentals, management
-   - 6 steps
-
-2. **Effective Communication Skills** (240 min, Beginner)
-   - Tags: communication, soft-skills, collaboration
-   - 8 steps
-
-3. **Building High-Performance Teams** (300 min, Intermediate)
-   - Tags: team-building, leadership, collaboration
-   - 10 steps
-
-4. **Personal Development Kickstart** (150 min, Beginner)
-   - Tags: personal-development, goal-setting, productivity
-   - 5 steps
-
-5. **Strategic Decision Making** (270 min, Advanced)
-   - Tags: strategy, decision-making, critical-thinking
-   - 9 steps
-
-6. **Emotional Intelligence at Work** (210 min, Intermediate)
-   - Tags: emotional-intelligence, self-awareness, empathy
-   - 7 steps
-
-7. **Agile Team Collaboration** (200 min, Intermediate)
-   - Tags: agile, collaboration, teamwork
-   - 8 steps
-
-8. **Resilience and Stress Management** (180 min, Beginner)
-   - Tags: resilience, mental-health, well-being
-   - 6 steps
+1. **Leadership Fundamentals** (180 min, Beginner) — 6 steps
+2. **Effective Communication Skills** (240 min, Beginner) — 8 steps
+3. **Building High-Performance Teams** (300 min, Intermediate) — 10 steps
+4. **Personal Development Kickstart** (150 min, Beginner) — 5 steps
+5. **Strategic Decision Making** (270 min, Advanced) — 9 steps
+6. **Emotional Intelligence at Work** (210 min, Intermediate) — 7 steps
+7. **Agile Team Collaboration** (200 min, Intermediate) — 8 steps
+8. **Resilience and Stress Management** (180 min, Beginner) — 6 steps
 
 ---
 
@@ -244,35 +336,43 @@ CREATE TABLE journey_enrollments (
 
 **Location:** `lib/types/journey.ts`
 
+### Core Types
 ```typescript
+export type JourneyType = 'predefined' | 'user_created' | 'dynamic';
+export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced';
+export type StepType = 'content' | 'activity' | 'assessment';
+export type EnrollmentStatus = 'active' | 'completed' | 'paused' | 'frozen';
+
 export interface JourneyStep {
   id: string;
   title: string;
-  type: 'content' | 'activity' | 'assessment';
+  type: StepType;
   duration_minutes: number;
   required: boolean;
   description?: string;
-  content?: any;
   instructions?: string;
+  content?: Record<string, unknown>;
 }
 
 export interface JourneyContent {
   version: string;
-  structure: 'linear' | 'branching';
+  structure: 'linear' | 'branching' | 'adaptive';
   steps: JourneyStep[];
+  resources?: Array<Record<string, unknown>>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface Journey {
   id: string;
   title: string;
-  description: string;
-  created_by_user_id: string;
+  description: string | null;
+  created_by_group_id: string;
   is_published: boolean;
   is_public: boolean;
-  journey_type: 'predefined' | 'user_created' | 'dynamic';
+  journey_type: JourneyType;
   content: JourneyContent;
   estimated_duration_minutes: number | null;
-  difficulty_level: 'beginner' | 'intermediate' | 'advanced' | null;
+  difficulty_level: DifficultyLevel | null;
   tags: string[] | null;
   created_at: string;
   updated_at: string;
@@ -282,19 +382,58 @@ export interface Journey {
 export interface JourneyEnrollment {
   id: string;
   journey_id: string;
-  user_id: string | null;
-  group_id: string | null;
-  enrolled_by_user_id: string;
-  status: 'active' | 'completed' | 'paused' | 'frozen';
-  progress_data: any;
+  group_id: string;
+  enrolled_by_group_id: string;
   enrolled_at: string;
+  status: EnrollmentStatus;
+  status_changed_at: string;
   completed_at: string | null;
   last_accessed_at: string | null;
+  progress_data: JourneyProgressData;
 }
 
+export interface PlayerEnrollment {
+  id: string;
+  journey_id: string;
+  group_id: string;
+  status: EnrollmentStatus;
+  progress_data: JourneyProgressData;
+  last_accessed_at: string | null;
+  completed_at: string | null;
+}
+```
+
+### Progress Types
+```typescript
+export interface StepProgressEntry {
+  completed_at: string;
+  time_spent_minutes: number;
+}
+
+export interface JourneyProgressData {
+  current_step_id?: string;
+  completed_steps?: string[];
+  step_progress?: Record<string, StepProgressEntry>;
+  total_time_spent_minutes?: number;
+  last_checkpoint?: string;
+  total_steps?: number;
+}
+```
+
+### Display Types
+```typescript
 export interface EnrollmentWithJourney extends JourneyEnrollment {
-  journey: Journey;
-  group?: { id: string; name: string };
+  journey: {
+    id: string;
+    title: string;
+    description: string | null;
+    difficulty_level: DifficultyLevel | null;
+    estimated_duration_minutes: number | null;
+  };
+  group?: {
+    id: string;
+    name: string;
+  };
 }
 ```
 
@@ -303,110 +442,79 @@ export interface EnrollmentWithJourney extends JourneyEnrollment {
 ## User Flows
 
 ### Browse Journeys
-1. User navigates to /journeys
-2. Sees journey catalog with filters
-3. Can search/filter to find relevant journeys
-4. Clicks journey card to view details
+1. Navigate to `/journeys`
+2. See catalog with search/filter controls
+3. Search/filter to find relevant journeys
+4. Click journey card to view details
 
 ### View Journey Details
-1. User views journey detail page
-2. Sees overview, curriculum, and metadata
-3. Can expand/collapse curriculum steps
-4. Enrollment button shows based on auth and enrollment status
+1. View journey detail page at `/journeys/[id]`
+2. See overview, curriculum, and metadata
+3. Expand/collapse curriculum steps
+4. Enrollment button shown based on auth and enrollment status
 
 ### Enroll Individually
-1. User clicks "Enroll in Journey"
+1. Click "Enroll in Journey"
 2. EnrollmentModal opens
-3. User selects "Individual"
-4. Confirms enrollment
-5. Success state shown
-6. Modal closes
+3. Select "Myself" tab
+4. Confirm enrollment
+5. Insert: `group_id = personal_group_id`, `enrolled_by_group_id = personal_group_id`
+6. Success state shown, modal closes
 7. Button updates to "View My Journeys"
 
-### Enroll Group (Leader Only)
-1. Group Leader clicks "Enroll in Journey"
+### Enroll Group (Steward/Guide)
+1. Click "Enroll in Journey"
 2. EnrollmentModal opens
-3. User selects "Group"
-4. Dropdown shows only groups where user is leader
-5. Selects group
-6. Confirms enrollment
-7. Success state shown
-8. Modal closes
+3. Select "A Group" tab
+4. Dropdown shows groups where user has `enroll_group_in_journey` permission
+5. Select group, confirm
+6. Insert: `group_id = engagement_group_id`, `enrolled_by_group_id = personal_group_id`
+7. Success state shown, modal closes
 
-### View My Journeys
-1. User navigates to /my-journeys
-2. Sees two tabs (Individual, Group)
-3. Can view all enrolled journeys
-4. Can continue active journeys
-5. Can review completed journeys
-
----
-
-## RLS Policies
-
-### journeys Table
-**SELECT:**
-- All authenticated users can view published journeys
-- Creators can view their own unpublished journeys
-
-**INSERT/UPDATE/DELETE:**
-- Creators can manage their own journeys
-- (Currently only system-seeded journeys exist)
-
-### journey_enrollments Table
-**SELECT:**
-- Users can view their own enrollments
-- Users can view enrollments for groups they belong to
-
-**INSERT:**
-- Users can create individual enrollments
-- Group Leaders can create group enrollments
-
-**UPDATE:**
-- Users can update their own enrollment status/progress
-- Group Leaders can update their group enrollments
-
-**DELETE:**
-- Users can delete their own enrollments (unenroll)
-- Group Leaders can unenroll their groups
-
-**NOTE:** v0.2.10 simplified RLS to avoid recursion. Dual-enrollment prevention handled in application.
+### Play Journey
+1. From My Journeys, click "Start Journey" / "Continue" / "Review Journey"
+2. `/journeys/[id]/play` loads enrollment and journey data
+3. JourneyPlayer renders with sidebar + content
+4. Navigate steps with Previous/Next
+5. Mark steps complete (required steps gate the Next button)
+6. Progress auto-saved on every navigation
+7. On all required steps complete: enrollment marked `completed`
+8. Review mode allows free navigation of completed journeys
 
 ---
 
-## API Patterns
+## API Patterns (Post-D15)
 
-### Check Enrollment Status
+### Check Individual Enrollment
 ```typescript
-// Get user's group IDs first
-const { data: userGroups } = await supabase
-  .from('group_memberships')
-  .select('group_id')
-  .eq('user_id', userData.id)
-  .eq('status', 'active');
-
-const groupIds = userGroups?.map(g => g.group_id) || [];
-
-// Check individual enrollment
 const { data: individualEnrollment } = await supabase
   .from('journey_enrollments')
   .select('id')
   .eq('journey_id', journeyId)
-  .eq('user_id', userData.id)
+  .eq('group_id', userProfile.personal_group_id)
   .maybeSingle();
+```
 
-// Check group enrollment
-let groupEnrollment = null;
-if (groupIds.length > 0) {
-  const { data } = await supabase
-    .from('journey_enrollments')
-    .select('id, groups!inner(name)')
-    .eq('journey_id', journeyId)
-    .in('group_id', groupIds)
-    .maybeSingle();
+### Find User's Groups (D15 Pattern)
+```typescript
+const { data: userGroups } = await supabase
+  .from('group_memberships')
+  .select('group_id')
+  .eq('member_group_id', userProfile.personal_group_id)
+  .eq('status', 'active');
 
-  groupEnrollment = data;
-}
+const groupIds = userGroups?.map(g => g.group_id) || [];
+```
+
+### Check Group Enrollment
+```typescript
+// Explicit FK hint needed — two FKs to groups table
+const { data: groupEnrollment } = await supabase
+  .from('journey_enrollments')
+  .select('id, groups!journey_enrollments_group_id_fkey(id, name)')
+  .eq('journey_id', journeyId)
+  .in('group_id', groupIds)
+  .maybeSingle();
 ```
 
 ### Enroll Individually
@@ -415,9 +523,8 @@ const { error } = await supabase
   .from('journey_enrollments')
   .insert({
     journey_id: journeyId,
-    user_id: userData.id,
-    group_id: null,
-    enrolled_by_user_id: userData.id,
+    group_id: userProfile.personal_group_id,
+    enrolled_by_group_id: userProfile.personal_group_id,
     status: 'active',
     progress_data: {},
   });
@@ -429,55 +536,40 @@ const { error } = await supabase
   .from('journey_enrollments')
   .insert({
     journey_id: journeyId,
-    user_id: null,
-    group_id: selectedGroupId,
-    enrolled_by_user_id: userData.id,
+    group_id: selectedEngagementGroupId,
+    enrolled_by_group_id: userProfile.personal_group_id,
     status: 'active',
     progress_data: {},
   });
 ```
 
-### Fetch My Journeys
+### Fetch My Journeys (Individual)
 ```typescript
-// Individual enrollments
-const { data: individualData } = await supabase
+const { data } = await supabase
   .from('journey_enrollments')
   .select(`
-    id,
-    journey_id,
-    status,
-    enrolled_at,
-    journeys (
-      id,
-      title,
-      description,
-      difficulty_level,
-      estimated_duration_minutes
-    )
+    id, journey_id, status, enrolled_at, progress_data,
+    journeys (id, title, description, difficulty_level, estimated_duration_minutes)
   `)
-  .eq('user_id', userData.id)
+  .eq('group_id', userProfile.personal_group_id)
   .not('journeys', 'is', null)
   .order('enrolled_at', { ascending: false });
 
-// Map data (Supabase returns plural 'journeys', component expects singular 'journey')
-const mappedData = individualData
-  ?.filter((e: any) => e.journeys)
-  .map((e: any) => ({
-    ...e,
-    journey: e.journeys,
-  })) || [];
+// Map: Supabase returns 'journeys' (plural), component expects 'journey' (singular)
+const mapped = (data || [])
+  .filter((e: any) => e.journeys)
+  .map((e: any) => ({ ...e, journey: e.journeys }));
+```
 
-// Group enrollments (use array in .in() to avoid subquery issues)
+### Fetch My Journeys (Group)
+```typescript
 if (groupIds.length > 0) {
-  const { data: groupData } = await supabase
+  const { data } = await supabase
     .from('journey_enrollments')
     .select(`
-      id,
-      journey_id,
-      status,
-      enrolled_at,
+      id, journey_id, status, enrolled_at, progress_data,
       journeys (id, title, description, difficulty_level, estimated_duration_minutes),
-      groups (id, name)
+      groups!group_id (id, name)
     `)
     .in('group_id', groupIds)
     .not('journeys', 'is', null)
@@ -487,25 +579,62 @@ if (groupIds.length > 0) {
 
 ---
 
+## File Map
+
+### Pages
+| Route | File | Purpose |
+|-------|------|---------|
+| `/journeys` | `app/journeys/page.tsx` | Catalog with search and filters |
+| `/journeys/[id]` | `app/journeys/[id]/page.tsx` | Detail page with Overview/Curriculum tabs |
+| `/journeys/[id]/play` | `app/journeys/[id]/play/page.tsx` | Player wrapper (auth/enrollment checks) |
+| `/my-journeys` | `app/my-journeys/page.tsx` | Enrolled journeys (Individual/Group tabs) |
+
+### Components
+| File | Purpose |
+|------|---------|
+| `components/journeys/JourneyPlayer.tsx` | Main player orchestrator |
+| `components/journeys/StepSidebar.tsx` | Left sidebar with step list and progress |
+| `components/journeys/StepContent.tsx` | Step content display and completion UI |
+| `components/journeys/ProgressBar.tsx` | Reusable progress bar |
+| `components/journeys/EnrollmentModal.tsx` | Enrollment modal (individual + group) |
+
+### Types
+| File | Purpose |
+|------|---------|
+| `lib/types/journey.ts` | All journey/enrollment TypeScript interfaces |
+
+---
+
+## Technical Notes
+
+### FK Disambiguation
+`journey_enrollments` has two FKs to `groups` (`group_id` and `enrolled_by_group_id`). Supabase requires an explicit FK hint to avoid PGRST201 ambiguous relationship errors:
+```typescript
+// Use FK name hint
+.select('groups!journey_enrollments_group_id_fkey(id, name)')
+// Or use column hint
+.select('groups!group_id(id, name)')
+```
+
+### Data Mapping
+Supabase returns foreign key data with the plural table name. Map to singular for component consistency:
+```typescript
+// Supabase returns: { journeys: {...} }
+// Component expects: { journey: {...} }
+const mapped = data.map(e => ({ ...e, journey: e.journeys }));
+```
+
+### JSONB Content Storage
+**Benefits:** Flexible structure, easy to extend without migrations, fast PostgreSQL JSON queries.
+**Trade-offs:** Less strict DB-level typing, need TypeScript interfaces, more complex validation.
+
+---
+
 ## Not Yet Implemented
 
-### Journey Content Delivery (Next Priority)
-- Step-by-step navigation
-- Content rendering (text, video, activities)
-- Save progress as you go
-- Resume from last position
-- Step completion tracking
-
-### Progress Tracking
-- Visual progress indicators
-- Completion percentage
-- Time spent tracking
-- Achievement badges
-- Progress sharing
-
 ### Journey Management (Phase 2)
-- User-created journeys
-- Journey templates
+- User-created journeys (journey builder)
+- Journey templates and duplication
 - Collaborative authoring
 - Journey marketplace
 - Version control
@@ -517,97 +646,41 @@ if (groupIds.length > 0) {
 - Assessments and quizzes
 - Certifications
 
----
-
-## Testing
-
-### Test Cases
-- ✅ Journey catalog displays all published journeys
-- ✅ Search filters journeys correctly
-- ✅ Difficulty filter works
-- ✅ Journey detail page shows all information
-- ✅ Curriculum steps expand/collapse
-- ✅ Individual enrollment works
-- ✅ Group enrollment works (leader only)
-- ✅ Dual enrollment prevention works
-- ✅ My Journeys page shows enrolled journeys
-- ✅ Enrollment status checks work
-- ✅ Navigation updates after enrollment
-
-### Known Issues
-- None currently
-
----
-
-## Technical Notes
-
-### Supabase Query Patterns
-**Issue:** Browser client doesn't support complex subqueries in `.in()` method
-**Solution:** Fetch IDs first, then use array in `.in()`
-
-```typescript
-// ❌ DON'T: Subquery in .in()
-.in('group_id', supabase.from('group_memberships').select('group_id'))
-
-// ✅ DO: Fetch first, then use array
-const { data: groups } = await supabase
-  .from('group_memberships')
-  .select('group_id')
-  .eq('user_id', userId);
-
-const groupIds = groups?.map(g => g.group_id) || [];
-.in('group_id', groupIds)
-```
-
-### Data Mapping
-**Issue:** Supabase returns foreign key data with plural table name
-**Solution:** Map to singular for component consistency
-
-```typescript
-// Supabase returns: { journeys: {...} }
-// Component expects: { journey: {...} }
-const mapped = data.map(e => ({ ...e, journey: e.journeys }));
-```
-
-### JSONB Content Storage
-**Benefits:**
-- Flexible structure for different journey types
-- Easy to add new fields without schema changes
-- Can store complex nested data
-- Fast JSON queries with PostgreSQL
-
-**Trade-offs:**
-- Less strict typing at database level
-- Need TypeScript interfaces for application
-- More complex validation logic
-
----
-
-## Related Documentation
-
-- **Database schema:** `docs/database/schema-overview.md`
-- **Migration #9:** `docs/database/migrations-log.md` (predefined journeys)
-- **Migration #10:** `docs/database/migrations-log.md` (RLS fix)
-- **TypeScript types:** `lib/types/journey.ts`
-- **Technical patterns:** `CLAUDE.md`
+### Deferred
+- Group progress overview (Steward/Guide view of member progress)
+- Rich content rendering in StepContent (currently placeholder)
+- DELETE RLS policy for unenrollment
+- Achievement badges
 
 ---
 
 ## Changelog
 
+**v0.2.11** (Feb 10, 2026)
+- JourneyPlayer with step-by-step content delivery
+- 4 new components: JourneyPlayer, StepSidebar, StepContent, ProgressBar
+- Progress saved to `progress_data` JSONB on every action
+- Resume from last position via `current_step_id`
+- Required-step gating
+- Completion detection and review mode
+- My Journeys: progress bars, play links, smart labels
+
 **v0.2.10** (Jan 31, 2026)
 - Enrollment system (individual + group)
-- My Journeys page
+- EnrollmentModal component
+- My Journeys page with two tabs
 - Enrollment status checking
 - Fixed RLS recursion issue
 
 **v0.2.8** (Jan 27, 2026)
-- Journey catalog page
-- Journey detail page
+- Journey catalog page with search/filter
+- Journey detail page with Overview/Curriculum tabs
 - 8 predefined journeys seeded
-- Search and filter functionality
-- Curriculum expansion UI
+- TypeScript types in `lib/types/journey.ts`
 
 ---
 
-**Next up:** Journey content delivery and progress tracking (Phase 1.4 completion)
+**Related Documentation:**
+- Database schema: `docs/database/schema-overview.md`
+- RBAC permissions: `docs/features/implemented/dynamic-permissions-system.md`
+- D15 migration: `docs/features/implemented/d15-universal-group-pattern-migration.md`
