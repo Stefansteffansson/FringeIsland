@@ -8,6 +8,14 @@
 
 ## Entries
 
+### 2026-02-28: Smart notification test type collision
+When testing `handle_notification_action` RPC with a generic test, the test used `type: 'stewardship_nomination'` with dummy `action_data: { test: true }`. The RPC dispatched to `_handle_stewardship_nomination_action`, which tried to find a Steward role for a non-existent group, causing "Role does not exist" errors. **Fix:** Use a non-existent type like `'test_action'` for generic action handler tests — the RPC only dispatches side effects for known types.
+→ Promoted to playbook? Not yet
+
+### 2026-02-28: SECURITY DEFINER RPC with internal helpers pattern
+For complex multi-step operations (stewardship nomination), use a public-facing RPC (`handle_notification_action`) that validates and dispatches to an internal helper (`_handle_stewardship_nomination_action`). The internal helper is NOT granted to `authenticated` — it can only be called by other SECURITY DEFINER functions. This keeps the public surface small while allowing complex internal logic.
+→ Promoted to playbook? Not yet
+
 ### 2026-02-27: Always verify seed data exists for RPC references
 The `admin_hard_delete_user` RPC referenced a `[Deleted User]` system group via `SELECT id FROM groups WHERE name = '[Deleted User]' AND group_type = 'system'`, but no migration ever created this row. The `COALESCE(v_deleted_user_group_id, v_caller_group_id)` fallback silently assigned orphaned content to the admin's personal group. Lesson: when an RPC references sentinel/system data by name, verify the seed migration exists. Add idempotent `INSERT ... WHERE NOT EXISTS` for all system rows.
 > Promoted to playbook? Not yet

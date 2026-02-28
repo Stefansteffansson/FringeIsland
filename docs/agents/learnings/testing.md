@@ -8,6 +8,14 @@
 
 ## Entries
 
+### 2026-02-28: Use generic notification types for handler tests
+When testing `handle_notification_action` RPC generically (not testing stewardship-specific side effects), use a non-domain type like `'test_action'` instead of `'stewardship_nomination'`. The handler dispatches type-specific side effects that assume real domain data exists (groups, roles, nominees). Using the wrong type causes false failures that look like RPC bugs but are actually missing test data.
+→ Promoted to playbook? Not yet
+
+### 2026-02-28: Sprint 3 test structure — two focused suites
+Split integration tests by domain concern: `smart-notifications.test.ts` (11 tests for schema + handler validation) and `stewardship-nomination.test.ts` (8 tests for domain flow). This keeps each suite focused and allows running domain-specific tests during development (`npm run test:integration:communication` vs `npm run test:integration:groups`).
+→ Promoted to playbook? Not yet
+
 ### 2026-02-23: "Document existing guarantees" tests may pass immediately — that's OK
 Track B of the D15 hardening sprint wrote tests for guarantees that already worked (e.g., `has_permission()` with engagement group actor, Myself role zero permissions). These tests passed immediately because the underlying code was already generic. This is expected and valuable — the tests document the guarantee and catch future regressions. Don't confuse "passes immediately" with "unnecessary test."
 > Promoted to playbook? Not yet

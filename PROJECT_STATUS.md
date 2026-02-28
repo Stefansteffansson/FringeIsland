@@ -41,7 +41,7 @@
 - **Total Tables:** 19 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
 - **Total Migrations:** 15 active + 71 archived
 - **Recent Version:** v0.2.35 (Sprint 3 — Smart Notifications + Steward Nomination)
-- **Test Coverage:** 540 integration + 99 unit + 4 setup = **649+ tests** ✅ (was 630)
+- **Test Coverage:** 540 integration + 99 unit + 4 setup = **649 tests** (645/649 pass, 4 pre-existing flaky) ✅ (was 630)
 - **Behaviors Documented:** 101 (97 previous + 4 Sprint 3: B-NOTIF-001, B-NOTIF-002, B-NOTIF-003, B-GRP-011) ✅
 - **Feature Docs:** 15 implemented + 0 active + 1 planned design + 1 roadmap (lifecycle decisions)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
@@ -109,6 +109,10 @@
 - L4: Stewardship nomination — `nominate_steward` RPC, ranked nominees, sequential notifications, 7-day expiry, DeusEx fallback
 - Internal helper `_handle_stewardship_nomination_action` for accept/decline side effects
 - 19 new integration tests (11 smart-notifications + 8 stewardship-nomination), all GREEN
+- **Feature doc review:** 5 of 16 docs updated with Sprint 3 cross-references (notification-system, smart-notifications, leave-group-core, group-management, leave_group_feature_review)
+- **Agent learnings:** 2 database, 2 testing, 2 sprint entries added
+
+**Bridge doc:** `docs/planning/sessions/2026-02-28-sprint3-smart-notifications.md`
 
 **Key files:**
 - `supabase/migrations/20260228125730_sprint3_smart_notifications.sql` — schema + RPCs

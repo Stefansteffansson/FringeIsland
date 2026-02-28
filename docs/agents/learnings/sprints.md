@@ -8,6 +8,14 @@
 
 ## Entries
 
+### 2026-02-28: Full autonomy mode — Sprint 3 completed in single session
+User granted full autonomy: no checkpoint pauses, free to CRUD any file, auto-apply migrations, commit and push at milestones. Sprint 3 (Smart Notifications + Stewardship Nomination) completed end-to-end in one session: Phase 0 (feature doc) → Phase 1 (behavior specs) → Phase 2 (RED, 19 tests) → Phase 3 (GREEN, migration + UI) → Phase 4 (docs + commit). Two commits: `95b4ab3` (implementation) and `62c09fa` (feature doc review). Full TDD cycle maintained even with autonomy.
+→ Promoted to playbook? Not yet
+
+### 2026-02-28: Feature doc review as separate commit
+After Sprint implementation, reviewing all 16 feature docs for cross-references and updating 5 affected docs was done as a separate commit from the implementation. This creates a clean git history: implementation commit has all code/test/migration changes, doc review commit has only doc cross-reference updates.
+→ Promoted to playbook? Not yet
+
 ### 2026-02-16: RBAC Sub-Sprint 4 completed full TDD cycle successfully
 Full workflow: 8 behavior specs → 47 tests (15 RED) → design → 2 migrations → fix nested RLS → all GREEN → 2x QA runs. The nested RLS issue was caught by tests (not manual testing), validating the TDD approach. Session continued from context compaction mid-stream — no data loss. Total RBAC: 4 sub-sprints, 25 behaviors, ~110 tests, 7 migrations.
 > Promoted to playbook? Not yet
