@@ -21,7 +21,10 @@
     "test:integration:admin": "jest tests/integration/admin --runInBand --verbose",
     "test:integration:communication": "jest tests/integration/communication --runInBand --verbose",
     "test:integration:security": "jest tests/integration/security --runInBand --verbose",
-    "test:e2e": "jest tests/e2e"
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",
@@ -33,6 +36,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^30.2.0",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
