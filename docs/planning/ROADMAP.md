@@ -317,7 +317,7 @@ FringeIsland development is organized into four major phases, each building on t
 
 **Status**: ✅ **COMPLETE** (v0.2.16 - v0.2.20)
 
-See `docs/features/planned/dynamic-permissions-system.md` for full design (22 decisions).
+See `docs/features/implemented/dynamic-permissions-system.md` for full design (22 decisions).
 4 sub-sprints: schema migration, permission system, UI migration, role management.
 
 ---
@@ -326,7 +326,7 @@ See `docs/features/planned/dynamic-permissions-system.md` for full design (22 de
 
 **Status**: ✅ **COMPLETE** (v0.2.21 - v0.2.25)
 
-See `docs/features/active/deusex-admin-foundation.md` for full details.
+See `docs/features/implemented/deusex-admin-foundation.md` for full details.
 3 sub-sprints: DB foundation, admin panel UI, user management actions (10 actions wired).
 
 ---
@@ -335,14 +335,16 @@ See `docs/features/active/deusex-admin-foundation.md` for full details.
 
 **Status**: ✅ **COMPLETE** (v0.2.26 - v0.2.28, plus Tier 2+3 commits)
 
-See `docs/features/active/performance-optimization.md` for full analysis and implementation details.
+See `docs/features/implemented/performance-optimization.md` for full analysis and implementation details.
 8 tiers: DB indexes (1A), admin service_role API (1B), shared UserProfile context (1C), parallel group detail queries (2A), batch RPC for N+1 fix (2B), drop expensive SELECT policies (2C), debounce admin (3A), deduplicate stats (3B).
 
 ---
 
 ### Phase 1.6: Polish and Launch (Weeks 14-16) ⏳ IN PROGRESS
 
-**Status**: ⏳ **IN PROGRESS** — Display Name System complete (v0.2.30)
+**Status**: ⏳ **IN PROGRESS** — Display Name System complete (v0.2.30), Lifecycle Roadmap complete (2026-02-28)
+
+**Current Focus:** Sprint 0 (Security Fixes) → Sprint 1 (Foundation Schema) → Sprint 2 (Leave Group Core). See `docs/planning/lifecycle-roadmap-decisions.md` for full 5-sprint structure.
 
 **Deliverables**:
 
