@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-28 (Sprint 4 — Platform Exit complete)
+**Last Updated:** 2026-02-28 (Playwright E2E testing setup)
 **Current Version:** 0.2.36
 **Active Branch:** main
 
@@ -41,7 +41,7 @@
 - **Total Tables:** 19 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
 - **Total Migrations:** 16 active + 71 archived
 - **Recent Version:** v0.2.36 (Sprint 4 — Platform Exit)
-- **Test Coverage:** 550 integration + 99 unit + 4 setup = **659 tests** (655/659 pass, 4 pre-existing flaky) ✅ (was 649)
+- **Test Coverage:** 550 integration + 99 unit + 4 setup = **659 Jest tests** (655/659 pass, 4 pre-existing flaky) + **7 Playwright E2E tests** ✅
 - **Behaviors Documented:** 105 (101 previous + 4 Sprint 4: B-EXIT-001, B-EXIT-002, B-EXIT-003, B-EXIT-004) ✅
 - **Feature Docs:** 18 implemented + 0 active + 1 planned design + 1 roadmap (lifecycle decisions)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
@@ -55,7 +55,7 @@
 - ✅ Journey Content Delivery (JourneyPlayer UI)
 - ✅ **Group Deletion (Danger Zone UI + RLS)** v0.2.12
 - ✅ Error Handling System
-- ✅ Testing Infrastructure (Jest + integration tests)
+- ✅ Testing Infrastructure (Jest + integration tests + Playwright E2E)
 - ✅ **RLS Security (all tables protected + Sprint 0 security fixes)** v0.2.32
 - ✅ **Foundation Schema (groups.status + FI Journeys group)** v0.2.33
 - ✅ **Leave Group Core (L1 regular leave + L2 DeusEx handover + L3 group closure)** v0.2.34
@@ -101,32 +101,26 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-28 (Sprint 4 — Platform Exit + feature doc review)
+**Date:** 2026-02-28 (Playwright E2E testing setup)
 **Summary:**
-- Completed Sprint 4: Platform Exit (admin-assisted) — full TDD workflow, v0.2.36
-- `admin_exit_user_from_platform` SECURITY DEFINER RPC — cascades leave across all engagement groups
-- Per-group scenario detection: L1 (regular leave), L2 (sole Steward → DeusEx handover), L3 (group closure)
-- L4 nomination explicitly skipped for admin-initiated exit (always L2 for sole Steward)
-- Safety guards: self-exit blocked, decommissioned-user blocked, DeusEx-member blocked
-- Decommission + force logout after all groups processed
-- Audit log with detailed per-group metadata
-- Admin UI: "Exit Platform" button in UserActionBar with ConfirmModal
-- 10 new integration tests, all GREEN. 106/106 admin suite passes, zero regressions.
-- **ALL 5 LIFECYCLE SPRINTS COMPLETE** (S0 security → S1 foundation → S2 leave core → S3 notifications → S4 platform exit)
-- Feature doc review: 8 docs updated with Sprint 4 cross-references
-- Created `docs/features/implemented/lifecycle-flows.md` — end-to-end flow descriptions for leave group, smart notifications, and platform exit (6 flows, ASCII diagram, notification summary)
+- Set up Playwright E2E testing infrastructure with Chromium
+- Created global-setup (real browser login for @supabase/ssr HttpOnly cookies)
+- Created global-teardown (FK-safe cleanup of @fringeisland.test users)
+- 7 starter E2E tests: 4 auth (login page, invalid creds, unauth redirect, successful login) + 3 journeys (catalog, detail click-through, groups page)
+- Added 4 npm scripts: test:e2e, test:e2e:ui, test:e2e:headed, test:e2e:debug
+- Key learning: `storageState: undefined` doesn't clear SSR HttpOnly cookies — must use explicit `{ cookies: [], origins: [] }`
+- Decision: defer integrating Playwright into TDD workflow until core features are stable
 
 **Key files:**
-- `supabase/migrations/20260228144747_sprint4_platform_exit.sql` — RPC definition
-- `tests/integration/admin/platform-exit.test.ts` — 10 tests (B-EXIT-001 through B-EXIT-004)
-- `lib/admin/action-bar-logic.ts` — added `exit_platform` action type
-- `components/admin/UserActionBar.tsx` — added "Exit Platform" button
-- `app/admin/page.tsx` — added executeExitPlatform + handleAction case
-- `docs/features/implemented/platform-exit.md` — Feature doc
-- `docs/features/implemented/lifecycle-flows.md` — Flow descriptions (L1-L4, platform exit)
-- `docs/specs/behaviors/platform-exit.md` — B-EXIT-001, B-EXIT-002, B-EXIT-003, B-EXIT-004
+- `playwright.config.ts` — Playwright configuration
+- `tests/e2e/global-setup.ts` — session user creation + browser login
+- `tests/e2e/global-teardown.ts` — test data cleanup
+- `tests/e2e/helpers/auth.ts` — reusable E2E auth helpers
+- `tests/e2e/auth.spec.ts` — 4 unauthenticated tests
+- `tests/e2e/journeys.spec.ts` — 3 authenticated tests
 
 **Previous Sessions:**
+- 2026-02-28: Sprint 4 — Platform Exit + feature doc review (v0.2.36)
 - 2026-02-28: Sprint 3 — Smart Notifications + Steward Nomination (v0.2.35)
 - 2026-02-28: Sprint 2 — Leave Group Core + Feature Doc Review (v0.2.34)
 - 2026-02-28: Sprint 1 — Foundation Schema (v0.2.33)
@@ -165,7 +159,7 @@
 **Next — Phase 1.6 Polish and Launch:**
 1. Mobile responsiveness audit
 2. User onboarding flow
-3. E2E tests (Playwright)
+3. ~~E2E tests (Playwright)~~ ✅ Setup complete (7 starter tests), workflow integration deferred
 
 **Known Issues:**
 - **Orphan groups after hard delete** — groups lose their last Steward (no admin, no one can manage). Needs stewardship transfer UI.
