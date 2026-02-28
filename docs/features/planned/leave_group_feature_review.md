@@ -2,6 +2,7 @@
 ## Leave Group & Steward Handover Flow
 *February 2026 | Sprint 2 (L1/L2/L3) COMPLETE — see `docs/features/implemented/leave-group-core.md`*
 *Sprint 3 (Track 1 Stewardship Nomination) COMPLETE — see `docs/features/implemented/smart-notifications.md`*
+*Sprint 4 (Platform Exit — admin-assisted cascade) COMPLETE — see `docs/features/implemented/platform-exit.md`*
 
 ---
 

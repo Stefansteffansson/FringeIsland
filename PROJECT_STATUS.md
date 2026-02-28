@@ -1,22 +1,22 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-28 (Sprint 3 — Smart Notifications + Steward Nomination complete)
-**Current Version:** 0.2.35
+**Last Updated:** 2026-02-28 (Sprint 4 — Platform Exit complete)
+**Current Version:** 0.2.36
 **Active Branch:** main
 
 ---
 
 ## What We're Working On NOW
 
-**Current Focus:** Sprint 3 COMPLETE — Sprint 4 (Platform Exit) is next
+**Current Focus:** ALL 5 LIFECYCLE SPRINTS COMPLETE — Phase 1.6 Polish & Launch is next
 
 **Key Docs:**
 - `docs/planning/lifecycle-roadmap-decisions.md` — **Single source of truth** for sprint structure and decisions
-- `docs/features/implemented/smart-notifications.md` — Sprint 3 feature doc (COMPLETE)
-- `docs/specs/behaviors/notifications.md` — B-NOTIF-001, B-NOTIF-002, B-NOTIF-003 (Smart Notifications)
-- `docs/specs/behaviors/groups.md` — B-GRP-011 (Stewardship Nomination)
+- `docs/features/implemented/platform-exit.md` — Sprint 4 feature doc (COMPLETE)
+- `docs/specs/behaviors/platform-exit.md` — B-EXIT-001 through B-EXIT-004
 
 **Active Tasks:**
+- [x] **Sprint 4 — Platform Exit** ✅ DONE — admin_exit_user_from_platform RPC, admin UI button, 10 new tests, v0.2.36
 - [x] **Sprint 3 — Smart Notifications + Steward Nomination** ✅ DONE — F3 (schema) + F3-UI (actionable bell) + F3-Handler (RPC) + L4 (nomination flow), 19 new tests, v0.2.35
 - [x] **Sprint 2 — Leave Group Core** ✅ DONE — L1 + L2 + L3, 17 new tests, v0.2.34
 - [x] **Sprint 1 — Foundation Schema** ✅ DONE — F1 + F2, 19 new tests, v0.2.33
@@ -37,13 +37,13 @@
 
 ## Quick Stats
 
-- **Phase:** Sprint 3 COMPLETE — Sprint 4 (Platform Exit) is next
+- **Phase:** ALL 5 LIFECYCLE SPRINTS COMPLETE — Phase 1.6 Polish & Launch is next
 - **Total Tables:** 19 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 15 active + 71 archived
-- **Recent Version:** v0.2.35 (Sprint 3 — Smart Notifications + Steward Nomination)
-- **Test Coverage:** 540 integration + 99 unit + 4 setup = **649 tests** (645/649 pass, 4 pre-existing flaky) ✅ (was 630)
-- **Behaviors Documented:** 101 (97 previous + 4 Sprint 3: B-NOTIF-001, B-NOTIF-002, B-NOTIF-003, B-GRP-011) ✅
-- **Feature Docs:** 15 implemented + 0 active + 1 planned design + 1 roadmap (lifecycle decisions)
+- **Total Migrations:** 16 active + 71 archived
+- **Recent Version:** v0.2.36 (Sprint 4 — Platform Exit)
+- **Test Coverage:** 550 integration + 99 unit + 4 setup = **659 tests** (655/659 pass, 4 pre-existing flaky) ✅ (was 649)
+- **Behaviors Documented:** 105 (101 previous + 4 Sprint 4: B-EXIT-001, B-EXIT-002, B-EXIT-003, B-EXIT-004) ✅
+- **Feature Docs:** 18 implemented + 0 active + 1 planned design + 1 roadmap (lifecycle decisions)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
 
 **Completed Major Features:**
@@ -60,6 +60,7 @@
 - ✅ **Foundation Schema (groups.status + FI Journeys group)** v0.2.33
 - ✅ **Leave Group Core (L1 regular leave + L2 DeusEx handover + L3 group closure)** v0.2.34
 - ✅ **Smart Notifications + Steward Nomination** (actionable notifs, accept/decline, Track 1 nomination) v0.2.35
+- ✅ **Platform Exit** (admin-assisted cascade exit from all groups + decommission) v0.2.36
 - ✅ **Development Dashboard** (visual project status at /dev/dashboard)
 - ✅ **RBAC System Design** (22 decisions, fully implemented)
 - ✅ **Agent System** (7 agents, two-tier architecture, continuous learning)
@@ -85,7 +86,7 @@
 **For Specific Work:**
 - **Database work:** `docs/database/schema-overview.md`
 - **Feature development:** `docs/features/implemented/[feature-name].md`
-- **Latest feature:** `docs/features/implemented/smart-notifications.md` ← **LATEST**
+- **Latest feature:** `docs/features/implemented/platform-exit.md` ← **LATEST**
 - **Admin feature (complete):** `docs/features/implemented/deusex-admin-foundation.md`
 - **Lifecycle roadmap:** `docs/planning/lifecycle-roadmap-decisions.md` ← **NEW** (5 sprints, 5 decisions)
 - **Architecture decisions:** `docs/architecture/ARCHITECTURE.md`
@@ -100,31 +101,33 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-28 (Sprint 3 — Smart Notifications + Steward Nomination)
+**Date:** 2026-02-28 (Sprint 4 — Platform Exit + feature doc review)
 **Summary:**
-- Completed Sprint 3: Smart Notifications + Steward Nomination — full TDD workflow, v0.2.35
-- F3: Smart notification schema — 5 new columns, consistency constraint, pending action index
-- F3-UI: NotificationBell updated with Accept/Decline buttons, loading spinners, actioned/expired badges
-- F3-Handler: `handle_notification_action` SECURITY DEFINER RPC with ownership, expiry, action validation
-- L4: Stewardship nomination — `nominate_steward` RPC, ranked nominees, sequential notifications, 7-day expiry, DeusEx fallback
-- Internal helper `_handle_stewardship_nomination_action` for accept/decline side effects
-- 19 new integration tests (11 smart-notifications + 8 stewardship-nomination), all GREEN
-- **Feature doc review:** 5 of 16 docs updated with Sprint 3 cross-references (notification-system, smart-notifications, leave-group-core, group-management, leave_group_feature_review)
-- **Agent learnings:** 2 database, 2 testing, 2 sprint entries added
-
-**Bridge doc:** `docs/planning/sessions/2026-02-28-sprint3-smart-notifications.md`
+- Completed Sprint 4: Platform Exit (admin-assisted) — full TDD workflow, v0.2.36
+- `admin_exit_user_from_platform` SECURITY DEFINER RPC — cascades leave across all engagement groups
+- Per-group scenario detection: L1 (regular leave), L2 (sole Steward → DeusEx handover), L3 (group closure)
+- L4 nomination explicitly skipped for admin-initiated exit (always L2 for sole Steward)
+- Safety guards: self-exit blocked, decommissioned-user blocked, DeusEx-member blocked
+- Decommission + force logout after all groups processed
+- Audit log with detailed per-group metadata
+- Admin UI: "Exit Platform" button in UserActionBar with ConfirmModal
+- 10 new integration tests, all GREEN. 106/106 admin suite passes, zero regressions.
+- **ALL 5 LIFECYCLE SPRINTS COMPLETE** (S0 security → S1 foundation → S2 leave core → S3 notifications → S4 platform exit)
+- Feature doc review: 8 docs updated with Sprint 4 cross-references
+- Created `docs/features/implemented/lifecycle-flows.md` — end-to-end flow descriptions for leave group, smart notifications, and platform exit (6 flows, ASCII diagram, notification summary)
 
 **Key files:**
-- `supabase/migrations/20260228125730_sprint3_smart_notifications.sql` — schema + RPCs
-- `tests/integration/communication/smart-notifications.test.ts` — 11 tests (B-NOTIF-001, B-NOTIF-003)
-- `tests/integration/groups/stewardship-nomination.test.ts` — 8 tests (B-GRP-011)
-- `lib/notifications/NotificationContext.tsx` — handleAction method added
-- `components/notifications/NotificationBell.tsx` — actionable UI with Accept/Decline buttons
-- `docs/features/implemented/smart-notifications.md` — Feature doc
-- `docs/specs/behaviors/notifications.md` — B-NOTIF-001, B-NOTIF-002, B-NOTIF-003
-- `docs/specs/behaviors/groups.md` — B-GRP-011 (Stewardship Nomination)
+- `supabase/migrations/20260228144747_sprint4_platform_exit.sql` — RPC definition
+- `tests/integration/admin/platform-exit.test.ts` — 10 tests (B-EXIT-001 through B-EXIT-004)
+- `lib/admin/action-bar-logic.ts` — added `exit_platform` action type
+- `components/admin/UserActionBar.tsx` — added "Exit Platform" button
+- `app/admin/page.tsx` — added executeExitPlatform + handleAction case
+- `docs/features/implemented/platform-exit.md` — Feature doc
+- `docs/features/implemented/lifecycle-flows.md` — Flow descriptions (L1-L4, platform exit)
+- `docs/specs/behaviors/platform-exit.md` — B-EXIT-001, B-EXIT-002, B-EXIT-003, B-EXIT-004
 
 **Previous Sessions:**
+- 2026-02-28: Sprint 3 — Smart Notifications + Steward Nomination (v0.2.35)
 - 2026-02-28: Sprint 2 — Leave Group Core + Feature Doc Review (v0.2.34)
 - 2026-02-28: Sprint 1 — Foundation Schema (v0.2.33)
 - 2026-02-28: Sprint 0 — Security Fixes + Feature Doc Review (v0.2.32)
@@ -155,11 +158,11 @@
 
 **Sprint 3 — Smart Notifications + Steward Nomination COMPLETE** ✅ (v0.2.35)
 
-**Next — Sprint 4: Platform Exit (admin-assisted):**
-Admin action "Exit user from all groups" — iterate all memberships, apply appropriate leave track (L1/L2/L4) per group, then deactivate/decommission. NOT self-service.
-See `docs/planning/lifecycle-roadmap-decisions.md` for full sprint structure.
+**Sprint 4 — Platform Exit COMPLETE** ✅ (v0.2.36)
 
-**After lifecycle features — Phase 1.6 Polish and Launch:**
+**ALL 5 LIFECYCLE SPRINTS COMPLETE.** Full user/group lifecycle is now implemented.
+
+**Next — Phase 1.6 Polish and Launch:**
 1. Mobile responsiveness audit
 2. User onboarding flow
 3. E2E tests (Playwright)

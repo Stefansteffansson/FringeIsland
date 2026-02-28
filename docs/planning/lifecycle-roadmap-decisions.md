@@ -123,9 +123,14 @@ LEAVE GROUP CORE
 - NotificationContext update to render actionable notifications
 - Track 1: ranked nominee list, sequential invitations, timeout handling
 
-### Sprint 4 — Platform Exit (L5)
-- Self-service "Exit Platform" flow (cascade leave across all groups)
-- Three modes: disengaged, engaged/leave-now, engaged/stay
+### Sprint 4 — Platform Exit (L5) ✅ COMPLETE (v0.2.36)
+- ✅ `admin_exit_user_from_platform` SECURITY DEFINER RPC — cascades L1/L2/L3 across all engagement groups
+- ✅ Admin UI: "Exit Platform" button in UserActionBar with ConfirmModal
+- ✅ Safety guards: self-exit, decommissioned, DeusEx member
+- ✅ Decommission + force logout after all groups processed
+- ✅ Audit log with detailed per-group metadata
+- ✅ 10 integration tests, 106/106 admin suite GREEN
+- ✅ Migration: `20260228144747_sprint4_platform_exit.sql`
 
 ---
 

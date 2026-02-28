@@ -5,7 +5,7 @@
 **Date:** February 14, 2026
 **Last Updated:** February 28, 2026 (Sprint 3 — smart notification schema, RPCs, UI)
 **Phase:** 1.5-A (Infrastructure for RBAC/Communication)
-**Related:** [Dynamic Permissions System](./dynamic-permissions-system.md) (D13) | [ARCHITECTURE](../../architecture/ARCHITECTURE.md)
+**Related:** [Dynamic Permissions System](./dynamic-permissions-system.md) (D13) | [Platform Exit](./platform-exit.md) | [ARCHITECTURE](../../architecture/ARCHITECTURE.md)
 
 ---
 

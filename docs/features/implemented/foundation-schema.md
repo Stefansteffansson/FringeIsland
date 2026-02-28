@@ -8,7 +8,7 @@
 **Phase:** 1.6 (Polish and Launch — lifecycle prerequisites)
 **Depends on:** Sprint 0 complete (v0.2.32) ✅
 **Source:** `docs/planning/lifecycle-roadmap-decisions.md`
-**Related:** [Group Management](./group-management.md) | [Leave Group Core](./leave-group-core.md) | [Leave Group Review](../planned/leave_group_feature_review.md) | [Journey System](./journey-system.md)
+**Related:** [Group Management](./group-management.md) | [Leave Group Core](./leave-group-core.md) | [Platform Exit](./platform-exit.md) | [Leave Group Review](../planned/leave_group_feature_review.md) | [Journey System](./journey-system.md)
 
 ---
 

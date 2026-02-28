@@ -342,16 +342,16 @@ See `docs/features/implemented/performance-optimization.md` for full analysis an
 
 ### Phase 1.6: Polish and Launch (Weeks 14-16) ⏳ IN PROGRESS
 
-**Status**: ⏳ **IN PROGRESS** — Sprint 3 Smart Notifications complete (v0.2.35), Sprint 2 Leave Group Core complete (v0.2.34), Sprint 1 Foundation Schema complete (v0.2.33), Sprint 0 Security Fixes complete (v0.2.32)
+**Status**: ⏳ **IN PROGRESS** — All 5 lifecycle sprints complete (v0.2.32-v0.2.36). Polish & launch items remaining.
 
-**Current Focus:** Sprint 4 (Platform Exit — admin-assisted). See `docs/planning/lifecycle-roadmap-decisions.md` for full 5-sprint structure.
+**Current Focus:** Phase 1.6 Polish & Launch. See `docs/planning/lifecycle-roadmap-decisions.md` for lifecycle sprint history.
 
-**Lifecycle Sprints:**
+**Lifecycle Sprints (ALL COMPLETE):**
 - ✅ Sprint 0: Security Fixes (v0.2.32) — 4 gaps fixed, 19 tests
 - ✅ Sprint 1: Foundation Schema (v0.2.33) — groups.status + FI Journeys group, 19 tests
 - ✅ Sprint 2: Leave Group Core (v0.2.34) — L1 + L2 + L3, leave_group RPC, 17 tests
 - ✅ Sprint 3: Smart Notifications + Steward Nomination (v0.2.35) — F3 + F3-UI + F3-Handler + L4, 19 tests
-- ⏳ Sprint 4: Platform Exit (admin-assisted) — next
+- ✅ Sprint 4: Platform Exit (v0.2.36) — admin_exit_user_from_platform RPC + admin UI, 10 tests
 
 **Deliverables**:
 

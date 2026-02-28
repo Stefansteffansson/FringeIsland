@@ -41,7 +41,8 @@ The **groups-as-members** design means a personal group joins an engagement grou
 13. **Leave-group** — `leave_group(p_group_id)` SECURITY DEFINER RPC handles three scenarios: regular member leave (L1), sole Steward -> DeusEx handover (L2), group closure on last member leave (L3). Non-public journey enrollments frozen, pending invitations transferred. (Sprint 2, v0.2.34). See [leave-group-core.md](./leave-group-core.md).
 14. **Group lifecycle** — `groups.status` column with CHECK constraint (`active`, `closed`, `archived`, `suspended`). Non-active groups hidden from non-admin users via RLS. (Sprint 1, v0.2.33). See [foundation-schema.md](./foundation-schema.md).
 15. **Stewardship nomination (Track 1)** — `nominate_steward()` RPC allows sole Steward to nominate ranked successors. Smart notification with Accept/Decline, 7-day expiry, sequential nominees, DeusEx fallback. (Sprint 3, v0.2.35). See [smart-notifications.md](./smart-notifications.md).
-16. **Known gaps** — no group-joins-group UI, no personal/system group protection in Danger Zone, no self-service platform exit (Sprint 4)
+16. **Platform exit** — `admin_exit_user_from_platform()` SECURITY DEFINER RPC cascades leave across all engagement groups (L1/L2/L3 per group), decommissions user, force-logs-out. L4 nomination explicitly skipped for admin exit. (Sprint 4, v0.2.36). See [platform-exit.md](./platform-exit.md).
+17. **Known gaps** — no group-joins-group UI, no personal/system group protection in Danger Zone, no self-service platform exit
 
 ---
 
@@ -643,7 +644,7 @@ CREATE POLICY "pending_invitations_delete"
 - **Invitation expiry enforcement** — `expires_at` is stored but not checked in the UI (only checked in the signup trigger)
 - **Group transfer** — no ability to transfer group ownership (created_by_group_id)
 - ~~**Track 1 stewardship nomination**~~ — **IMPLEMENTED (v0.2.35, Sprint 3).** See [smart-notifications.md](./smart-notifications.md).
-- **Self-service platform exit** — admin-assisted only for v1 (Sprint 4)
+- ~~**Self-service platform exit** — admin-assisted only for v1 (Sprint 4)~~ — **Admin-assisted platform exit IMPLEMENTED (v0.2.36, Sprint 4).** Self-service remains deferred. See [platform-exit.md](./platform-exit.md).
 - **Group archive/suspend UI** — `groups.status` supports `'archived'` and `'suspended'` values, but no admin UI exists to set them
 
 ---
@@ -655,6 +656,7 @@ CREATE POLICY "pending_invitations_delete"
 - **RBAC design:** `docs/features/implemented/dynamic-permissions-system.md`
 - **Leave Group Core:** `docs/features/implemented/leave-group-core.md`
 - **Smart Notifications:** `docs/features/implemented/smart-notifications.md`
+- **Platform Exit:** `docs/features/implemented/platform-exit.md`
 - **Foundation Schema:** `docs/features/implemented/foundation-schema.md`
 - **Leave Group Review (full spec):** `docs/features/planned/leave_group_feature_review.md`
 - **Behavior specs:** `docs/specs/behaviors/groups.md`, `docs/specs/behaviors/invitations.md`, `docs/specs/behaviors/rbac.md`
@@ -666,11 +668,13 @@ CREATE POLICY "pending_invitations_delete"
 - **Foundation schema migration:** `supabase/migrations/20260228110815_sprint1_foundation_schema.sql`
 - **Leave group migration:** `supabase/migrations/20260228120745_sprint2_leave_group_core.sql`
 - **Smart notifications migration:** `supabase/migrations/20260228125730_sprint3_smart_notifications.sql`
+- **Platform exit migration:** `supabase/migrations/20260228144747_sprint4_platform_exit.sql`
 
 ---
 
 ## Version History
 
+- **v0.2.36** (2026-02-28): Sprint 4 — Platform Exit. `admin_exit_user_from_platform()` RPC cascades L1/L2/L3 across all engagement groups, decommissions user, force-logs-out. L4 nomination skipped for admin exit. 10 new tests. B-EXIT-001 through B-EXIT-004. See [platform-exit.md](./platform-exit.md).
 - **v0.2.35** (2026-02-28): Sprint 3 — Smart Notifications + Stewardship Nomination. `nominate_steward()` RPC for Track 1, `handle_notification_action()` for smart notification responses. Accept/Decline UI in NotificationBell. 8 new stewardship tests. B-GRP-011.
 - **v0.2.34** (2026-02-28): Sprint 2 — Leave Group Core. `leave_group()` RPC handles L1 (regular leave), L2 (sole Steward -> DeusEx handover), L3 (group closure). `prevent_last_leader_removal` trigger updated with closed-group bypass. 17 new tests. B-GRP-008, B-GRP-009, B-GRP-010.
 - **v0.2.33** (2026-02-28): Sprint 1 — Foundation Schema. `groups.status` column (active/closed/archived/suspended), partial index, RLS policy updates. "FringeIsland Journeys" engagement group created, 8 predefined journeys migrated. 19 new tests.

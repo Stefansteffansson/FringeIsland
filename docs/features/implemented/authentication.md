@@ -335,7 +335,8 @@ All admin operations require `manage_all_groups` permission (DeusEx system group
 - **Display name system:** `docs/features/implemented/display-name-system.md`
 - **Group management:** `docs/features/implemented/group-management.md`
 - **RBAC design:** `docs/features/implemented/dynamic-permissions-system.md`
-- **Behavior specs:** `docs/specs/behaviors/authentication.md`, `docs/specs/behaviors/admin.md`
+- **Behavior specs:** `docs/specs/behaviors/authentication.md`, `docs/specs/behaviors/admin.md`, `docs/specs/behaviors/platform-exit.md`
+- **Platform exit:** `docs/features/implemented/platform-exit.md` (decommission + force-logout after admin exit)
 - **D15 base migration:** `supabase/migrations/20260222000000_rebuild_universal_group_pattern.sql`
 - **RC7 admin fixes:** `supabase/migrations/20260223171200_fix_rc7_admin_user_ops.sql`
 - **Display name migration:** `supabase/migrations/20260227095615_add_display_name_system.sql`

@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Sprint 4 — Platform Exit (v0.2.36)** — Admin-assisted cascade exit from all engagement groups + decommission.
+  - **`admin_exit_user_from_platform(p_target_user_id)` RPC** — SECURITY DEFINER function iterates all active engagement group memberships for target user. Applies per-group logic: L1 (regular leave) for regular members, L2 (sole Steward → DeusEx handover) for sole Stewards, L3 (group closure) for last member. L4 nomination explicitly skipped (admin exit always uses L2). After all groups processed: user decommissioned (`is_decommissioned=true`, `is_active=false`), auth sessions deleted, audit log entry created.
+  - **Safety guards:** Self-exit blocked, already-decommissioned users rejected, DeusEx members (platform admins) rejected, non-admin callers rejected.
+  - **Admin UI:** "Exit Platform" button added to UserActionBar in the Account category. ConfirmModal with danger variant explains the cascade. `executeExitPlatform` handler processes per-user with error collection, broadcasts force-logout to connected clients.
+  - **Migration:** `20260228144747_sprint4_platform_exit.sql`
+  - **Behaviors:** B-EXIT-001 (Group Cascade), B-EXIT-002 (Decommission After Exit), B-EXIT-003 (Safety Guards), B-EXIT-004 (Audit Trail)
+  - **Tests:** 10 new integration tests (4 safety guards + 1 no-groups + 3 single-group scenarios + 1 multi-group + 1 audit log)
+  - **Full admin suite:** 106/106 tests passing, zero regressions
+  - **ALL 5 LIFECYCLE SPRINTS COMPLETE** (S0→S1→S2→S3→S4)
+
 - **Sprint 3 — Smart Notifications + Steward Nomination (v0.2.35)** — Actionable notification infrastructure and Track 1 stewardship nomination flow.
   - **F3: Smart notification schema** — 5 new columns on `notifications`: `action_type` (TEXT), `action_data` (JSONB), `action_taken` (TEXT), `action_taken_at` (TIMESTAMPTZ), `expires_at` (TIMESTAMPTZ). Consistency constraint: `action_taken` requires `action_type` to be set. Index on pending actions for efficient queries.
   - **F3-UI: Actionable notification UI** — `NotificationContext` updated with `handleAction()` method that calls `handle_notification_action` RPC. `NotificationBell` renders Accept/Decline buttons for smart notifications, shows loading spinners during action, displays "Accepted"/"Declined" badges for actioned notifications, and "Expired" badge for timed-out notifications. Auto-marks as read on action.

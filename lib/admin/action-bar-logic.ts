@@ -17,7 +17,8 @@ export type ActionName =
   | 'logout'
   | 'invite'
   | 'join'
-  | 'remove';
+  | 'remove'
+  | 'exit_platform';
 
 export interface ActionState {
   disabled: boolean;
@@ -85,13 +86,19 @@ export function computeActionStates(
         ? 'Selected users share no common groups'
         : undefined,
     },
+    exit_platform: {
+      disabled: allDecommissioned,
+      reason: allDecommissioned
+        ? 'All selected users are already decommissioned'
+        : undefined,
+    },
   };
 }
 
 /** Action categories for grouping in the UI. */
 export const ACTION_CATEGORIES: Record<string, ActionName[]> = {
   communication: ['message', 'notify'],
-  account: ['deactivate', 'activate', 'delete_soft', 'delete_hard', 'logout'],
+  account: ['deactivate', 'activate', 'delete_soft', 'delete_hard', 'logout', 'exit_platform'],
   group: ['invite', 'join', 'remove'],
 };
 
@@ -102,6 +109,7 @@ export const DESTRUCTIVE_ACTIONS: ActionName[] = [
   'delete_hard',
   'logout',
   'remove',
+  'exit_platform',
 ];
 
 /** Actions that clear the selection after execution (user state changes). */
@@ -109,6 +117,7 @@ export const SELECTION_CLEARING_ACTIONS: ActionName[] = [
   'deactivate',
   'delete_soft',
   'delete_hard',
+  'exit_platform',
 ];
 
 /** Check if an action requires ConfirmModal. */

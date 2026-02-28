@@ -195,6 +195,7 @@ Full specs: `docs/specs/behaviors/admin.md`
 | Group | Invite | GroupPickerModal → insert memberships (invited) | ✅ Wired |
 | Group | Join | GroupPickerModal + ConfirmModal → insert memberships (active) + Member role | ✅ Wired |
 | Group | Remove | GroupPickerModal (intersection) + ConfirmModal → delete roles + memberships | ✅ Wired |
+| Account | Exit Platform | ConfirmModal → `admin_exit_user_from_platform` RPC (cascade leave + decommission) | ✅ Wired |
 
 **New Files (UI):**
 - `components/admin/NotifyModal.tsx` — title + message form

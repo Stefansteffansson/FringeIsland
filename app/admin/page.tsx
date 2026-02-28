@@ -409,6 +409,47 @@ export default function AdminDashboard() {
     setActionInProgress(false);
   };
 
+  const executeExitPlatform = async (targetIds: string[]) => {
+    setActionInProgress(true);
+    closeConfirm();
+    try {
+      const errors: string[] = [];
+      for (const userId of targetIds) {
+        const { data, error } = await supabase.rpc('admin_exit_user_from_platform', {
+          p_target_user_id: userId,
+        });
+        if (error) {
+          errors.push(`${userId}: ${error.message}`);
+        }
+      }
+
+      if (errors.length > 0) {
+        const exited = targetIds.length - errors.length;
+        setStatusMessage({
+          type: 'error',
+          text: `Exited ${exited}/${targetIds.length} users. Errors: ${errors.join('; ')}`,
+        });
+      } else {
+        // Broadcast force logout (RPC already deleted sessions, this notifies connected clients)
+        broadcastForceLogout(targetIds).catch(() => {});
+        setStatusMessage({
+          type: 'success',
+          text: `Exited ${targetIds.length} user(s) from platform. All groups handled, accounts decommissioned.`,
+        });
+      }
+
+      // RPC creates its own audit entries
+      if (clearsSelectionAfterAction('exit_platform')) {
+        setSelectedUserIds(new Set());
+      }
+      refreshData();
+    } catch (err: any) {
+      console.error('Exit platform failed:', err);
+      setStatusMessage({ type: 'error', text: err.message || 'Failed to exit users from platform.' });
+    }
+    setActionInProgress(false);
+  };
+
   const executeNotify = async (title: string, message: string) => {
     const targetIds = [...selectedUserIds];
     try {
@@ -796,6 +837,16 @@ export default function AdminDashboard() {
           confirmText: 'Force Logout',
           variant: 'warning',
           onConfirm: () => executeForceLogout(targetIds),
+        });
+        break;
+
+      case 'exit_platform':
+        showConfirm({
+          title: 'Exit Users from Platform?',
+          message: `This will exit ${count} user${count !== 1 ? 's' : ''} from ALL engagement groups (applying leave/handover logic per group), then decommission and force-logout. This action cannot be undone.`,
+          confirmText: `Exit ${count} User${count !== 1 ? 's' : ''} from Platform`,
+          variant: 'danger',
+          onConfirm: () => executeExitPlatform(targetIds),
         });
         break;
 

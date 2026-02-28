@@ -26,6 +26,7 @@ const ACTION_LABELS: Record<ActionName, { label: string; icon: string }> = {
   invite: { label: 'Invite', icon: '📩' },
   join: { label: 'Join', icon: '➕' },
   remove: { label: 'Remove', icon: '🚫' },
+  exit_platform: { label: 'Exit Platform', icon: '🚪' },
 };
 
 const CATEGORY_LABELS: Record<string, string> = {

@@ -7,7 +7,7 @@
 **Version:** v0.2.35
 **Phase:** 1.6 (Polish and Launch — lifecycle features)
 **Dependencies:** Sprint 2 (v0.2.34) — COMPLETE
-**Related:** [Notification System](./notification-system.md) | [Leave Group Core](./leave-group-core.md) | [Lifecycle Roadmap Decisions](../../planning/lifecycle-roadmap-decisions.md)
+**Related:** [Notification System](./notification-system.md) | [Leave Group Core](./leave-group-core.md) | [Platform Exit](./platform-exit.md) | [Lifecycle Roadmap Decisions](../../planning/lifecycle-roadmap-decisions.md)
 
 ---
 
@@ -79,7 +79,7 @@ When the sole Steward of a group wants to leave:
 - Configurable timeout durations (hard-coded 7 days)
 - Email notifications for smart notifications
 - Notification preferences (mute types)
-- Self-service platform exit (Sprint 4)
+- ~~Self-service platform exit~~ — **Admin-assisted platform exit IMPLEMENTED (v0.2.36, Sprint 4).** Self-service remains deferred. See [platform-exit.md](./platform-exit.md).
 
 ---
 
