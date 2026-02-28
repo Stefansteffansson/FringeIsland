@@ -2,10 +2,10 @@
 
 **Status:** IMPLEMENTED
 **Date:** January 24, 2026
-**Completed:** February 27, 2026
-**Version:** v0.2.31
-**Phase:** 1.3 (Group Management) + post-D15 (RBAC, admin lifecycle)
-**Related:** [Authentication](./authentication.md) | [Display Name System](./display-name-system.md) | [Dynamic Permissions System](../planned/dynamic-permissions-system.md)
+**Completed:** February 28, 2026
+**Version:** v0.2.34
+**Phase:** 1.3 (Group Management) + post-D15 (RBAC, admin lifecycle, leave-group)
+**Related:** [Authentication](./authentication.md) | [Display Name System](./display-name-system.md) | [Dynamic Permissions System](./dynamic-permissions-system.md) | [Leave Group Core](./leave-group-core.md) | [Foundation Schema](./foundation-schema.md)
 
 ---
 
@@ -38,7 +38,9 @@ The **groups-as-members** design means a personal group joins an engagement grou
 10. **Group editing** — Stewards (users with `edit_group_settings` permission) can edit name, description, label, visibility settings via `/groups/[id]/edit`
 11. **Danger Zone / group deletion** — users with `delete_group` permission can permanently delete a group. CASCADE removes memberships, roles, enrollments. RESTRICT on `journeys.created_by_group_id` blocks deletion if group has created journeys. Notification trigger alerts all active members.
 12. **Notification triggers** — database triggers fire on: invitation received, invitation accepted, invitation declined, member left, member removed, role assigned, role removed, group deleted
-13. **Known gaps** — no leave-group feature, no group soft-delete/lifecycle, no group-joins-group UI, no personal/system group protection in Danger Zone
+13. **Leave-group** — `leave_group(p_group_id)` SECURITY DEFINER RPC handles three scenarios: regular member leave (L1), sole Steward -> DeusEx handover (L2), group closure on last member leave (L3). Non-public journey enrollments frozen, pending invitations transferred. (Sprint 2, v0.2.34). See [leave-group-core.md](./leave-group-core.md).
+14. **Group lifecycle** — `groups.status` column with CHECK constraint (`active`, `closed`, `archived`, `suspended`). Non-active groups hidden from non-admin users via RLS. (Sprint 1, v0.2.33). See [foundation-schema.md](./foundation-schema.md).
+15. **Known gaps** — no group-joins-group UI, no personal/system group protection in Danger Zone, no Track 1 stewardship nomination (Sprint 3), no self-service platform exit (Sprint 4)
 
 ---
 
@@ -58,6 +60,7 @@ The **groups-as-members** design means a personal group joins an engagement grou
 | `is_public` | BOOLEAN | `false` | No | Whether the group is discoverable by non-members |
 | `show_member_list` | BOOLEAN | `true` | No | Whether the member list is visible to members |
 | `avatar_url` | TEXT | — | Yes | Group avatar (for personal groups, copied from user's avatar) |
+| `status` | TEXT | `'active'` | No | CHECK `('active', 'closed', 'archived', 'suspended')`. Lifecycle state. `'closed'` = last member left. Non-active groups hidden from non-admin users via RLS. (Sprint 1, v0.2.33) |
 | `settings` | JSONB | `'{}'` | No | Extensible settings (future use) |
 | `created_at` | TIMESTAMPTZ | `NOW()` | No | Creation timestamp |
 | `updated_at` | TIMESTAMPTZ | `NOW()` | No | Auto-updated by `set_groups_updated_at` trigger |
@@ -267,6 +270,10 @@ SELECT has_permission(p_acting_group_id, p_group_id, 'assign_roles')
 -- Skip during hard-delete cascade (session variable bypass)
 IF current_setting('app.hard_delete_in_progress', true) = 'true' THEN RETURN OLD; END IF;
 
+-- Skip if group is closed (Sprint 2 — allows role cleanup during group closure)
+SELECT status INTO v_group_status FROM public.groups WHERE id = OLD.group_id;
+IF v_group_status = 'closed' THEN RETURN OLD; END IF;
+
 -- If parent group is gone (CASCADE), allow deletion
 IF NOT EXISTS (SELECT 1 FROM groups WHERE id = OLD.group_id) THEN RETURN OLD; END IF;
 
@@ -321,6 +328,7 @@ const handleDelete = async () => {
 | `is_invited_group_member(group_id)` | SQL, SECURITY DEFINER | Check for pending invitation (for group visibility) |
 | `is_group_creator(group_id)` | SQL, SECURITY DEFINER | Check if current user created the group (for bootstrap) |
 | `group_has_leader(group_id)` | SQL, SECURITY DEFINER | Check if group has any Steward (for bootstrap detection) |
+| `leave_group(p_group_id)` | PLPGSQL, SECURITY DEFINER | Leave-group RPC — handles L1 (regular), L2 (DeusEx handover), L3 (group closure) scenarios automatically (Sprint 2, v0.2.34) |
 
 ---
 
@@ -580,7 +588,7 @@ CREATE POLICY "pending_invitations_delete"
 
 ### Behavior Specs
 
-- `docs/specs/behaviors/groups.md` — Group creation, visibility, editing, deletion behaviors
+- `docs/specs/behaviors/groups.md` — Group creation, visibility, editing, deletion, leave-group behaviors (B-GRP-008, B-GRP-009, B-GRP-010)
 - `docs/specs/behaviors/invitations.md` — Invitation lifecycle behaviors
 - `docs/specs/behaviors/roles.md` — Role assignment and management behaviors
 - `docs/specs/behaviors/rbac.md` — RBAC permission resolution behaviors
@@ -604,19 +612,21 @@ CREATE POLICY "pending_invitations_delete"
 - `tests/integration/rbac/personal-groups.test.ts` — Personal group invariants
 - `tests/integration/rbac/d15-hardening.test.ts` — Bootstrap policies, anti-escalation
 - `tests/integration/communication/notifications.test.ts` — Notification triggers
+- `tests/integration/groups/leave-group.test.ts` — Leave group (L1 regular, L2 DeusEx handover, L3 group closure) — 17 tests
 
 ---
 
 ## Known Limitations
 
-1. **No leave-group feature** — the `memberships_delete_leave` RLS policy exists, but no UI implements it yet. The last Steward cannot leave (trigger blocks it), and there is no "transfer Steward" flow.
-2. **No group soft-delete / lifecycle** — groups are hard-deleted via `DELETE FROM groups`. No archive, deactivate, or undo capability.
+1. ~~**No leave-group feature**~~ — **RESOLVED (v0.2.34, Sprint 2).** `leave_group()` RPC handles regular leave, DeusEx handover, and group closure. See [leave-group-core.md](./leave-group-core.md). **Note:** No frontend UI yet — RPC is tested but Leave Group button/modal not built.
+2. ~~**No group soft-delete / lifecycle**~~ — **RESOLVED (v0.2.33, Sprint 1).** `groups.status` column with CHECK constraint (`active`, `closed`, `archived`, `suspended`). Non-active groups hidden from non-admin users via RLS. See [foundation-schema.md](./foundation-schema.md).
 3. **No personal/system group protection in Danger Zone** — the edit page does not check `group_type` before showing the delete button. Personal and system groups could theoretically be deleted from the UI if the user has `delete_group` permission.
 4. **RESTRICT FK blocker unhandled** — if a group has created journeys (`journeys.created_by_group_id`), deletion fails with a FK violation. The UI shows the raw error instead of a user-friendly message.
 5. **No group-joins-group UI** — the schema supports groups as members of other groups via `member_group_id`, but no UI exists for this workflow.
 6. **Danger Zone uses local modal, not ConfirmModal** — the delete confirmation is a locally-defined modal in the edit page, not the shared `ConfirmModal` component.
-7. **No leave-group for last Steward** — the last Steward has no way to leave (trigger blocks role removal, and there's no "dissolve group" or "transfer Steward" flow).
+7. ~~**No leave-group for last Steward**~~ — **RESOLVED (v0.2.34, Sprint 2).** Sole Steward -> DeusEx handover (L2). Last member -> group closure (L3). Track 1 (stewardship nomination) deferred to Sprint 3.
 8. **Group creation is client-side multi-step** — the 7-step creation flow is not transactional; a failure at step 5 leaves a group with memberships but no roles. A server-side RPC would be more robust.
+9. **No Leave Group UI** — the `leave_group()` RPC exists but no frontend button, confirmation modal, or handover dialog has been built yet.
 
 ---
 
@@ -628,7 +638,9 @@ CREATE POLICY "pending_invitations_delete"
 - **Bulk invitations** — one invitation at a time
 - **Invitation expiry enforcement** — `expires_at` is stored but not checked in the UI (only checked in the signup trigger)
 - **Group transfer** — no ability to transfer group ownership (created_by_group_id)
-- **Group archival** — no soft-delete or archive state for groups
+- **Track 1 stewardship nomination** — requires smart notifications (Sprint 3)
+- **Self-service platform exit** — admin-assisted only for v1 (Sprint 4)
+- **Group archive/suspend UI** — `groups.status` supports `'archived'` and `'suspended'` values, but no admin UI exists to set them
 
 ---
 
@@ -636,18 +648,26 @@ CREATE POLICY "pending_invitations_delete"
 
 - **Authentication:** `docs/features/implemented/authentication.md`
 - **Display name system:** `docs/features/implemented/display-name-system.md`
-- **RBAC design:** `docs/features/planned/dynamic-permissions-system.md`
+- **RBAC design:** `docs/features/implemented/dynamic-permissions-system.md`
+- **Leave Group Core:** `docs/features/implemented/leave-group-core.md`
+- **Foundation Schema:** `docs/features/implemented/foundation-schema.md`
+- **Leave Group Review (full spec):** `docs/features/planned/leave_group_feature_review.md`
 - **Behavior specs:** `docs/specs/behaviors/groups.md`, `docs/specs/behaviors/invitations.md`, `docs/specs/behaviors/rbac.md`
 - **D15 base migration:** `supabase/migrations/20260222000000_rebuild_universal_group_pattern.sql`
 - **RC7 admin fixes:** `supabase/migrations/20260223171200_fix_rc7_admin_user_ops.sql`
 - **Pending email invitations:** `supabase/migrations/20260223140126_enhanced_member_invitations.sql`
 - **Hard-delete trigger bypass:** `supabase/migrations/20260224205639_fix_hard_delete_leader_trigger_bypass.sql`
 - **Personal group RLS fix:** `supabase/migrations/20260227110556_fix_personal_group_rls_visibility.sql`
+- **Foundation schema migration:** `supabase/migrations/20260228110815_sprint1_foundation_schema.sql`
+- **Leave group migration:** `supabase/migrations/20260228120745_sprint2_leave_group_core.sql`
 
 ---
 
 ## Version History
 
+- **v0.2.34** (2026-02-28): Sprint 2 — Leave Group Core. `leave_group()` RPC handles L1 (regular leave), L2 (sole Steward -> DeusEx handover), L3 (group closure). `prevent_last_leader_removal` trigger updated with closed-group bypass. 17 new tests. B-GRP-008, B-GRP-009, B-GRP-010.
+- **v0.2.33** (2026-02-28): Sprint 1 — Foundation Schema. `groups.status` column (active/closed/archived/suspended), partial index, RLS policy updates. "FringeIsland Journeys" engagement group created, 8 predefined journeys migrated. 19 new tests.
+- **v0.2.32** (2026-02-28): Sprint 0 — Security Fixes. Non-public journey RLS, enrollment enrollability checks, frozen enrollment enforcement.
 - **v0.2.31** (2026-02-27): Display name system — personal group `name` is now the display name source of truth. `groups_select` policy updated to make personal groups visible to all authenticated users (`group_type = 'personal'`). [Deleted User] sentinel group seeded.
 - **v0.2.24** (2026-02-24): Hard-delete trigger bypass — `prevent_last_leader_removal()` and `prevent_last_deusex_role_removal()` skip during `app.hard_delete_in_progress`.
 - **v0.2.23** (2026-02-23): RC7 admin fixes — `is_platform_admin()`, admin RLS overrides on memberships/roles/groups. Notification triggers updated with hard-delete cascade guards. Enhanced member invitations — `pending_email_invitations` table, `handle_new_user()` Step 8 (claim pending invitations).

@@ -392,6 +392,171 @@
 
 ---
 
+## B-GRP-008: Regular Member Leave Group 🔄
+
+**Rule:** An active member of an engagement group can leave the group. Leaving deletes the membership, cascades role removal, freezes non-public journey enrollments, and triggers "Former Member" display in forums.
+
+**Why:** Members must be able to disengage from groups they no longer wish to participate in. Their contributions (forum posts) are preserved but anonymised. Non-public journey progress is preserved in read-only mode to respect the group's intellectual property while retaining the member's work.
+
+**Verified by:**
+- **Test:** `tests/integration/groups/leave-group.test.ts` (Sprint 2)
+- **RPC:** `leave_group(p_group_id UUID)` SECURITY DEFINER function
+- **Database:** CASCADE on `member_group_id` for roles
+
+**Acceptance Criteria:**
+- [ ] Active member can call `leave_group(group_id)` and their membership is deleted
+- [ ] Roles are cascade-deleted when membership is removed
+- [ ] Non-public journey enrollments are set to `status='frozen'` with `progress_data.frozen_reason='left_group'`
+- [ ] Public/platform journey enrollments are NOT affected
+- [ ] Steward(s) receive standard notification ("X has left the group")
+- [ ] Cannot leave a personal group or system group (only engagement groups)
+- [ ] Cannot leave a group you're not an active member of
+- [ ] Forum posts by the leaving member remain but display "Former Member" (query-time)
+- [ ] If member rejoins, "Former Member" reverts to their display name automatically
+- [ ] If member rejoins, frozen enrollments are restored to `status='active'`
+
+**Examples:**
+
+✅ **Valid:**
+- Regular member leaves group → Membership deleted, roles removed, non-public enrollments frozen
+- Member with multiple roles leaves → All roles cascade-deleted
+- Member enrolled in platform journey leaves → Platform journey enrollment unchanged
+- Member with no non-public enrollments leaves → Clean exit, no enrollment changes
+
+❌ **Invalid:**
+- Member tries to leave personal group → **BLOCKED** (only engagement groups)
+- Non-member tries to leave group → **BLOCKED** (not an active member)
+- Sole Steward tries regular leave → **BLOCKED** (must use handover flow — B-GRP-009)
+
+**Edge Cases:**
+
+- **Scenario:** Member is enrolled in both public and non-public journeys via the group
+  - **Behavior:** Only non-public enrollments frozen; public enrollments unaffected
+  - **Why:** Public journeys are accessible to all — group membership is irrelevant
+
+- **Scenario:** Member has individual enrollment in a non-public journey (enrolled personally, not via group)
+  - **Behavior:** Individual enrollment frozen if the journey is owned by the group being left
+  - **Why:** Access to non-public content is tied to group membership, regardless of enrollment type
+
+- **Scenario:** Member is last member but has non-Steward roles only
+  - **Behavior:** Triggers L3 group closure flow (B-GRP-010), NOT regular leave
+  - **Why:** Last member leaving closes the group
+
+**Testing Priority:** 🔴 CRITICAL (core lifecycle feature)
+
+**History:**
+- 2026-02-28: Documented (Sprint 2 — Leave Group Core)
+
+---
+
+## B-GRP-009: Sole Steward DeusEx Handover 🔄
+
+**Rule:** When the sole Steward of an engagement group wants to leave and other members exist, stewardship MUST be transferred to DeusEx before exit. Pending invitations are reassigned to DeusEx. All group members are notified.
+
+**Why:** Groups must always have a Steward to function. When the sole Steward leaves, DeusEx (the platform system group) assumes temporary stewardship until a permanent replacement is assigned. This prevents groups from becoming orphaned.
+
+**Verified by:**
+- **Test:** `tests/integration/groups/leave-group.test.ts` (Sprint 2)
+- **RPC:** `leave_group(p_group_id UUID)` — detects sole Steward scenario
+- **Database:** `prevent_last_leader_removal` trigger bypassed via RPC logic
+
+**Acceptance Criteria:**
+- [ ] Sole Steward calling `leave_group()` triggers DeusEx handover automatically
+- [ ] DeusEx is added as member of the group with Steward role
+- [ ] Leaving Steward's membership is then deleted (roles cascade)
+- [ ] Pending invitations (`group_memberships` with `status='invited'`) have `added_by_group_id` updated to DeusEx
+- [ ] Pending email invitations have `invited_by_group_id` updated to DeusEx
+- [ ] All group members receive notification: "FringeIsland has temporarily assumed stewardship"
+- [ ] DeusEx receives notification: "[Group] requires a permanent Steward"
+- [ ] Non-public journey enrollments frozen (same as L1)
+- [ ] Steward with co-Stewards uses regular leave (B-GRP-008), NOT this flow
+
+**Examples:**
+
+✅ **Valid:**
+- Sole Steward of 5-member group leaves → DeusEx gets Steward role → Steward exits → 4 members + DeusEx remain
+- Sole Steward leaves group with pending invitations → Invitations now show "invited by FringeIsland"
+
+❌ **Invalid:**
+- Sole Steward tries to leave without handover → **BLOCKED** (RPC enforces handover)
+- Non-Steward triggers handover flow → **BLOCKED** (only sole Steward scenario)
+
+**Edge Cases:**
+
+- **Scenario:** DeusEx is already a member of the group (rare)
+  - **Behavior:** DeusEx gets Steward role added (not duplicate membership)
+  - **Why:** Idempotent — DeusEx may have been added by admin previously
+
+- **Scenario:** Group has 2 Stewards, one leaves
+  - **Behavior:** Regular leave (B-GRP-008) — no DeusEx handover needed
+  - **Why:** Other Steward(s) can manage the group
+
+- **Scenario:** Sole Steward is also the last member
+  - **Behavior:** Triggers group closure (B-GRP-010) instead
+  - **Why:** No remaining members to manage — group should close
+
+**Testing Priority:** 🔴 CRITICAL (prevents orphaned groups)
+
+**History:**
+- 2026-02-28: Documented (Sprint 2 — Leave Group Core)
+
+---
+
+## B-GRP-010: Group Closure on Last Member Leave 🔄
+
+**Rule:** When the last active member of an engagement group leaves, the group status is set to `'closed'`, all group journey enrollments are frozen, and non-public journeys created by the group are transferred to DeusEx.
+
+**Why:** Empty groups serve no purpose and should be hidden from non-admin views. Content (journeys, forum posts) is preserved for potential admin review or reactivation. Non-public journeys need a custodian (DeusEx) to prevent orphaned content.
+
+**Verified by:**
+- **Test:** `tests/integration/groups/leave-group.test.ts` (Sprint 2)
+- **RPC:** `leave_group(p_group_id UUID)` — detects last member scenario
+- **Database:** `groups.status` column (Sprint 1 — B-GRP-007)
+
+**Acceptance Criteria:**
+- [ ] Last member calling `leave_group()` sets `groups.status = 'closed'`
+- [ ] ALL journey enrollments where `group_id` = closed group are set to `status='frozen'` with `frozen_reason='group_closed'`
+- [ ] Non-public journeys (`is_public = false`) with `created_by_group_id` = closed group are transferred to DeusEx (`created_by_group_id` → DeusEx)
+- [ ] Public journeys created by the group are NOT transferred (they remain accessible)
+- [ ] DeusEx notified if non-public journeys were transferred: "[Group] has been closed. X Non-Public Journey(s) require review."
+- [ ] No DeusEx notification if no non-public journeys exist
+- [ ] Closed group is invisible to non-admin users (B-GRP-007 already enforces this)
+- [ ] Membership is deleted after closure actions complete
+- [ ] Platform admins can still see the closed group
+
+**Examples:**
+
+✅ **Valid:**
+- Last member (regular) leaves → Group closed, enrollments frozen, non-public journeys to DeusEx
+- Last member (Steward) leaves → Group closed (no handover needed — no remaining members)
+- Group has no non-public journeys → Group closed, no DeusEx journey notification
+- Group has only public journeys → Journeys NOT transferred, group closed
+
+❌ **Invalid:**
+- Group with 2 members, one leaves → Group stays active (not last member)
+- System group (DeusEx) closure → **BLOCKED** (only engagement groups)
+
+**Edge Cases:**
+
+- **Scenario:** Last member is sole Steward — is this L2 or L3?
+  - **Behavior:** L3 (group closure) — no DeusEx handover because there are no remaining members to manage
+  - **Why:** Handover is pointless for an empty group. DeusEx only needs to manage orphaned content, not the group itself.
+
+- **Scenario:** Group has members with `status='invited'` but no `status='active'`
+  - **Behavior:** Last ACTIVE member leaving triggers closure. Pending invitations are deleted (CASCADE on group closure is fine since group is being closed).
+  - **Why:** Invited members haven't joined yet — they shouldn't prevent closure.
+
+- **Scenario:** Group has journey enrollments from both individual and group enrollment paths
+  - **Behavior:** All enrollments are frozen regardless of enrollment path
+  - **Why:** The group is closed — all associated enrollments should be frozen
+
+**Testing Priority:** 🔴 CRITICAL (group lifecycle, data integrity)
+
+**History:**
+- 2026-02-28: Documented (Sprint 2 — Leave Group Core)
+
+---
+
 ## Notes
 
 **Implemented Behaviors:**
@@ -401,27 +566,30 @@
 - ✅ B-GRP-004: Group Editing Permissions (5 tests ✅)
 - ✅ B-GRP-005: Group Deletion Rules (6 tests ✅)
 - 🔄 B-GRP-006: User Search Typeahead (4 tests planned)
-- 🔄 B-GRP-007: Group Status Visibility (Sprint 1 — tests planned)
+- 🔄 B-GRP-007: Group Status Visibility (9 tests ✅ — Sprint 1)
+- 🔄 B-GRP-008: Regular Member Leave Group (Sprint 2 — tests planned)
+- 🔄 B-GRP-009: Sole Steward DeusEx Handover (Sprint 2 — tests planned)
+- 🔄 B-GRP-010: Group Closure on Last Member Leave (Sprint 2 — tests planned)
 
 **Test Coverage:**
-- 5 / 7 behaviors have tests (71%)
+- 7 / 10 behaviors have tests (70%)
 - `last-leader.test.ts` — 4 tests (B-GRP-001)
 - `invitations.test.ts` — 9 tests (B-GRP-002)
 - `rls/groups.test.ts` — 7 tests (B-GRP-003)
 - `edit-permissions.test.ts` — 5 tests (B-GRP-004)
 - `deletion.test.ts` — 6 tests (B-GRP-005)
 - `user-search.test.ts` — 4 tests planned (B-GRP-006)
-- `group-status.test.ts` — tests planned (B-GRP-007)
-- Total GRP tests: **31 across 5 files** ✅ + planned
+- `group-status.test.ts` — 9 tests (B-GRP-007)
+- `leave-group.test.ts` — tests planned (B-GRP-008 + B-GRP-009 + B-GRP-010)
+- Total GRP tests: **40 across 7 files** ✅ + planned
 - *(Role assignment for group roles is tested in `role-assignment.test.ts` — see roles.md)*
 - **Last updated:** 2026-02-28
 
 **Next Behaviors to Document:**
-- B-GRP-008: Member Removal Rules (Sprint 2 — leave-group)
-- B-GRP-009: Group Template Initialization
-- B-GRP-010: Group Label Uniqueness (if enforced)
+- B-GRP-011: Group Template Initialization
+- B-GRP-012: Group Label Uniqueness (if enforced)
 
 **Related Behavior Specs:**
 - `roles.md` — B-ROL-001: Role Assignment Permissions ✅
 - `invitations.md` — B-INV-001: Pending Email Invitations 🔄
-- `journeys.md` — B-JRN-008: Platform Journey Ownership 🔄 (Sprint 1)
+- `journeys.md` — B-JRN-008: Platform Journey Ownership ✅ (Sprint 1)

@@ -270,6 +270,20 @@ The 4 `communication.forum.*` permissions **already exist** in the `permissions`
 
 ---
 
+## Former Member Display (Sprint 2, v0.2.34)
+
+When a member leaves a group via the `leave_group()` RPC, their `author_group_id` on forum posts is **never mutated**. Display name resolution is a query-time concern:
+
+- `author_group_id` references an active member of the group -> display the author's personal group `name`
+- `author_group_id` is no longer an active member -> display **"Former Member"**
+- `author_group_id` points to the `[Deleted User]` sentinel group -> display **"[Deleted User]"**
+
+**Implementation note:** The ForumSection component should check `group_memberships` for the `author_group_id` in the current group. If no active membership exists, substitute the display name. This is a display-layer concern — no schema or RLS changes needed.
+
+**Rejoin behavior:** If a former member's personal group rejoins the same engagement group, their display name is automatically restored — no additional work required.
+
+---
+
 ## Soft Delete Strategy
 
 - `is_deleted` defaults to `false`
@@ -350,3 +364,4 @@ Moderating (soft delete):
 |------|--------|--------|
 | 2026-02-14 | Initial design | Architect Agent |
 | 2026-02-28 | Updated D15 column renames: `author_user_id` → `author_group_id`, `user_id` → `member_group_id`, role names Steward/Guide | Sprint 0 review |
+| 2026-02-28 | Added "Former Member" display section for leave-group context (Sprint 2, v0.2.34) | Sprint 2 |

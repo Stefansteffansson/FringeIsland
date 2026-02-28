@@ -1,6 +1,6 @@
 # FringeIsland — Feature Discussion Review
 ## Leave Group & Steward Handover Flow
-*February 2026 | Draft for Review*
+*February 2026 | Sprint 2 (L1/L2/L3) COMPLETE — see `docs/features/implemented/leave-group-core.md`*
 
 ---
 
@@ -51,7 +51,7 @@ Key architectural facts relevant to this feature:
 - The permission system is fully group-based. Authentication only establishes identity. All permissions flow through roles assigned to groups.
 - Every user has a **personal group** (`users.personal_group_id`), auto-created on signup. It is the personal group that joins engagement groups — not the user directly.
 - `group_memberships` uses `member_group_id` (not `user_id`). The personal group's ID is used as `member_group_id` when joining an engagement group.
-- The personal group `name` field is the single source of truth for display identity. It may contain a nickname or real name depending on `users.display_preference` (see `docs/features/planned/display-name-system.md`).
+- The personal group `name` field is the single source of truth for display identity. It may contain a nickname or real name depending on `users.display_preference` (see `docs/features/implemented/display-name-system.md`).
 - Three group types exist: `'system'` (DeusEx, FringeIsland Members), `'personal'` (one per user), `'engagement'` (user-created groups).
 - **Group lifecycle** is managed via a new `groups.status` column (see Section 3.1 below). Groups are never hard-deleted — they transition through statuses.
 - The role formerly known as Group Leader has been **renamed to Steward** in the D15 migration.
@@ -254,7 +254,7 @@ The user wants to ensure a proper handover for each group.
 
 - Anonymisation applies only within the group the member's personal group has left
 - The member retains their display name (resolved from their personal group `name` — may be a nickname or real name depending on their `display_preference`) in all other groups where they remain an active member
-- See `docs/features/planned/display-name-system.md` for the display name resolution model
+- See `docs/features/implemented/display-name-system.md` for the display name resolution model
 
 ### 6.2 Implementation Approach — Soft Flag (Option B)
 
@@ -376,7 +376,7 @@ All notifications are internal FringeIsland notifications — no emails. **Smart
 > A user may want to give up the Steward role without leaving the group. This shares the same handover logic as Leave Group but has a different outcome (user stays as regular member). Requires a separate entry point — e.g. from a "Manage My Role" section.
 
 > → **RELATED FEATURE: Display Name / Nickname System**
-> See `docs/features/planned/display-name-system.md`. Users can set a nickname and toggle between displaying their real name or nickname platform-wide. The personal group `name` is the single source of truth for display identity, synced via database trigger. Currently in planning (Phase 1.6). This feature affects how "Former Member" vs. display name resolution works in the anonymisation logic.
+> See `docs/features/implemented/display-name-system.md`. Users can set a nickname and toggle between displaying their real name or nickname platform-wide. The personal group `name` is the single source of truth for display identity, synced via database trigger. Currently in planning (Phase 1.6). This feature affects how "Former Member" vs. display name resolution works in the anonymisation logic.
 
 ---
 
@@ -449,4 +449,8 @@ No GDPR-driven content erasure for v1. If needed later, it would be a separate f
 
 > ⚠️ **OPEN items resolved 2026-02-28:** Timeout durations (Section 4.3), frozen enforcement (Section 9), FringeIsland Journeys group (Section 9), DeusEx backlog notifications (Section 9). See `docs/planning/lifecycle-roadmap-decisions.md` for full decision rationale.
 
-*This document reflects a design discussion with binding decisions applied 2026-02-28. Remaining open items: GDPR/Right to Erasure (legal review needed), Conversations on platform exit (hard delete), Event logging for user-initiated actions. All other items resolved — see Section 2.5 for prerequisites and `docs/planning/lifecycle-roadmap-decisions.md` for sprint structure.*
+*This document reflects a design discussion with binding decisions applied 2026-02-28.*
+
+**Sprint 2 Implementation (v0.2.34):** L1 (regular leave), L2 (DeusEx handover), L3 (group closure) are fully implemented via `leave_group()` SECURITY DEFINER RPC. See `docs/features/implemented/leave-group-core.md` for implementation details, test coverage, and known limitations.
+
+*Remaining open items: GDPR/Right to Erasure (legal review needed), Conversations on platform exit (hard delete), Event logging for user-initiated actions. Track 1 (stewardship nomination) and platform exit are Sprint 3 and Sprint 4 respectively — see `docs/planning/lifecycle-roadmap-decisions.md` for sprint structure.*

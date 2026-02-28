@@ -721,6 +721,20 @@ const mapped = data.map(e => ({ ...e, journey: e.journeys }));
 
 ## Changelog
 
+**v0.2.34** (Feb 28, 2026) — Sprint 2: Leave Group Core
+- `leave_group()` RPC freezes non-public journey enrollments on member exit (`frozen_reason: 'left_group'`)
+- Group closure (L3) freezes ALL group journey enrollments (`frozen_reason: 'group_closed'`)
+- Non-public journeys transferred to DeusEx on group closure (`created_by_group_id` updated)
+- Public journey enrollments are NOT affected by leave-group
+- 17 integration tests in `tests/integration/groups/leave-group.test.ts`
+- Migration: `20260228120745_sprint2_leave_group_core.sql`
+
+**v0.2.33** (Feb 28, 2026) — Sprint 1: Foundation Schema
+- "FringeIsland Journeys" engagement group created — 8 predefined journeys migrated to platform ownership
+- All 8 journeys confirmed `is_public = true`, `created_by_group_id` → FI Journeys group
+- `groups.status` column added (prerequisite for leave-group enrollment freezing)
+- Migration: `20260228110815_sprint1_foundation_schema.sql`
+
 **v0.2.32** (Feb 28, 2026) — Sprint 0: Security Fixes
 - Non-public journey visibility enforced at RLS level (`is_public` check in `journeys_select_published`)
 - Non-public journey enrollment gated at RLS level (`is_journey_enrollable()` in INSERT policies)

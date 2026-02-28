@@ -246,7 +246,19 @@ Both result from DELETE on `group_memberships` where `status = 'active'`. The tr
 | `role_assigned` | `user_group_roles` INSERT | User receiving role | "New Role Assigned" |
 | `role_removed` | `user_group_roles` DELETE | User losing role | "Role Removed" |
 
-### Future Types (Not Phase 1.5-A)
+### Sprint 2 Types (Leave Group — v0.2.34)
+
+These notifications are created directly by the `leave_group()` SECURITY DEFINER RPC, not by triggers:
+
+| Type | Trigger Source | Recipient | Title |
+|------|---------------|-----------|-------|
+| `stewardship_transferred` | `leave_group()` RPC (L2 scenario) | All group members | "FringeIsland has temporarily assumed stewardship of [Group]." |
+| `stewardship_required` | `leave_group()` RPC (L2 scenario) | DeusEx | "[Group] requires a permanent Steward. Please review and assign." |
+| `group_closed` | `leave_group()` RPC (L3 scenario, orphaned journeys) | DeusEx | "[Group] has been closed. [N] non-public journey(s) require review." |
+
+**Note:** The `member_left` notification type (from the initial set above) is still created by the existing `notify_invitation_declined_or_member_change` trigger when the `leave_group()` RPC deletes the membership row.
+
+### Future Types
 
 | Type | Feature | Phase |
 |------|---------|-------|
@@ -303,3 +315,4 @@ Replace current invitation-count logic in `Navigation.tsx`:
 |------|--------|--------|
 | 2026-02-14 | Initial design | Architect Agent |
 | 2026-02-28 | Updated D15 column renames: `recipient_user_id` → `recipient_group_id`, `get_current_user_profile_id()` → `get_current_personal_group_id()` | Sprint 0 review |
+| 2026-02-28 | Added Sprint 2 notification types: `stewardship_transferred`, `stewardship_required`, `group_closed` — created by `leave_group()` RPC | Sprint 2 |

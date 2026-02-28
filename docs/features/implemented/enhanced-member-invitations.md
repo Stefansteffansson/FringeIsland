@@ -76,6 +76,18 @@ CREATE TABLE public.pending_email_invitations (
 | `tests/integration/groups/pending-invitations.test.ts` | Integration tests |
 | `tests/integration/groups/user-search.test.ts` | Integration tests |
 
+## Sprint 2 Impact (v0.2.34)
+
+When a sole Steward leaves a group via L2 (DeusEx handover), pending email invitations are transferred:
+
+- `pending_email_invitations.invited_by_group_id` is updated from the leaving Steward's personal group to the DeusEx system group
+- This ensures invitations remain valid and can still be claimed by new users at signup
+- The invitation now appears as sent by "FringeIsland" (DeusEx) rather than the departed Steward
+
+See `docs/features/implemented/leave-group-core.md` for full details.
+
+---
+
 ## Files Modified
 
 | File | Change |

@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Sprint 2 — Leave Group Core (v0.2.34)** — Three leave-group scenarios implemented as a single `leave_group(p_group_id)` SECURITY DEFINER RPC.
+  - **L1: Regular member leave** — Membership deleted, roles cascade-removed, non-public journey enrollments frozen (`status='frozen'`, `frozen_reason='left_group'` in progress_data), Steward(s) notified via existing `member_left` trigger. Public/platform journey enrollments unaffected. Forum posts show "Former Member" at query time (no data mutation).
+  - **L2: Sole Steward → DeusEx handover** — DeusEx added as group member with Steward role (idempotent), pending invitations (`added_by_group_id`, `invited_by_group_id`) transferred to DeusEx, then L1 flow executes. Custom notifications: all members get `stewardship_transferred`, DeusEx gets `stewardship_required`.
+  - **L3: Group closure (last member leaves)** — `groups.status` set to `'closed'`, all non-public journey enrollments frozen (`frozen_reason='group_closed'`), non-public journeys `created_by_group_id` transferred to DeusEx, DeusEx notified (`group_closed`) if orphaned journeys exist. Public journeys NOT transferred.
+  - **Updated trigger:** `prevent_last_leader_removal()` now bypasses when `groups.status = 'closed'` (allows role cleanup on group closure).
+  - **Validation:** Rejects non-engagement groups (personal/system), non-active groups, non-members.
+  - **Migration:** `20260228120745_sprint2_leave_group_core.sql`
+  - **Behaviors:** B-GRP-008 (Regular Member Leave), B-GRP-009 (Sole Steward DeusEx Handover), B-GRP-010 (Group Closure)
+  - **Tests:** 17 new integration tests (7 L1 + 4 L2 + 6 L3)
+  - **Full suite:** 630/630 tests passing, zero regressions
+
 - **Sprint 1 — Foundation Schema (v0.2.33)** — Two infrastructure changes that enable leave-group lifecycle features (Sprint 2).
   - **F1: `groups.status` column** — New TEXT column with CHECK constraint (`active`, `closed`, `archived`, `suspended`). Default: `active`. Partial index `idx_groups_status_active` for common query path. Updated `groups_select` RLS policy: non-admin users only see `status = 'active'` groups, personal groups always visible, platform admins see all.
   - **F2: "FringeIsland Journeys" engagement group** — Created platform-owned engagement group. DeusEx added as member with Steward role. Re-seeded all 8 predefined journeys with `created_by_group_id` pointing to FI Journeys group (journeys were lost during D15 rebuild). `created_by_group_id` set to DeusEx to prevent globalTeardown orphan sweep.

@@ -1,25 +1,24 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-28 (Sprint 1 — Foundation Schema complete)
-**Current Version:** 0.2.33
+**Last Updated:** 2026-02-28 (Sprint 2 — Leave Group Core complete)
+**Current Version:** 0.2.34
 **Active Branch:** main
 
 ---
 
 ## What We're Working On NOW
 
-**Current Focus:** Sprint 1 COMPLETE — Sprint 2 (Leave Group Core) is next
+**Current Focus:** Sprint 2 COMPLETE — Sprint 3 (Smart Notifications + Steward Nomination) is next
 
 **Key Docs:**
 - `docs/planning/lifecycle-roadmap-decisions.md` — **Single source of truth** for sprint structure and decisions
-- `docs/features/active/foundation-schema.md` — Sprint 1 feature doc (COMPLETE)
-- `docs/specs/behaviors/groups.md` — B-GRP-007 (Group Status Visibility)
-- `docs/specs/behaviors/journeys.md` — B-JRN-008 (Platform Journey Ownership)
+- `docs/features/implemented/leave-group-core.md` — Sprint 2 feature doc (COMPLETE)
+- `docs/specs/behaviors/groups.md` — B-GRP-008, B-GRP-009, B-GRP-010 (Leave Group)
 
 **Active Tasks:**
-- [x] **Sprint 1 — Foundation Schema** ✅ DONE — F1 (groups.status) + F2 (FI Journeys group), 19 new tests, 504/504 GREEN, v0.2.33
+- [x] **Sprint 2 — Leave Group Core** ✅ DONE — L1 (regular leave) + L2 (DeusEx handover) + L3 (group closure), 17 new tests, 630/630 GREEN, v0.2.34
+- [x] **Sprint 1 — Foundation Schema** ✅ DONE — F1 (groups.status) + F2 (FI Journeys group), 19 new tests, v0.2.33
 - [x] **Sprint 0 — Security Fixes** ✅ DONE — 4 security gaps fixed (S1-S4), 19 new tests, v0.2.32
-- [x] **Feature Doc Review** ✅ DONE — 6 docs updated (D15 renames, Sprint 0 staleness, path fixes)
 
 **Blocked/Waiting:**
 - None
@@ -36,13 +35,13 @@
 
 ## Quick Stats
 
-- **Phase:** Sprint 1 COMPLETE — Sprint 2 (Leave Group Core) is next
+- **Phase:** Sprint 2 COMPLETE — Sprint 3 (Smart Notifications + Steward Nomination) is next
 - **Total Tables:** 19 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 13 active + 71 archived
-- **Recent Version:** v0.2.33 (Sprint 1 — Foundation Schema)
-- **Test Coverage:** 504 integration + 99 unit + 4 setup = **607 tests** ✅
-- **Behaviors Documented:** 94 (92 previous + 2 Sprint 1) ✅
-- **Feature Docs:** 8 implemented + 1 active (foundation-schema COMPLETE) + 1 planned design (leave-group refined) + 1 roadmap (lifecycle decisions)
+- **Total Migrations:** 14 active + 71 archived
+- **Recent Version:** v0.2.34 (Sprint 2 — Leave Group Core)
+- **Test Coverage:** 521 integration + 99 unit + 4 setup = **630 tests** ✅ (was 607)
+- **Behaviors Documented:** 97 (94 previous + 3 Sprint 2: B-GRP-008, B-GRP-009, B-GRP-010) ✅
+- **Feature Docs:** 14 implemented + 0 active + 1 planned design (leave-group refined) + 1 roadmap (lifecycle decisions)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
 
 **Completed Major Features:**
@@ -57,6 +56,7 @@
 - ✅ Testing Infrastructure (Jest + integration tests)
 - ✅ **RLS Security (all tables protected + Sprint 0 security fixes)** v0.2.32
 - ✅ **Foundation Schema (groups.status + FI Journeys group)** v0.2.33
+- ✅ **Leave Group Core (L1 regular leave + L2 DeusEx handover + L3 group closure)** v0.2.34
 - ✅ **Development Dashboard** (visual project status at /dev/dashboard)
 - ✅ **RBAC System Design** (22 decisions, fully implemented)
 - ✅ **Agent System** (7 agents, two-tier architecture, continuous learning)
@@ -82,7 +82,7 @@
 **For Specific Work:**
 - **Database work:** `docs/database/schema-overview.md`
 - **Feature development:** `docs/features/implemented/[feature-name].md`
-- **Latest feature:** `docs/features/implemented/display-name-system.md` ← **LATEST**
+- **Latest feature:** `docs/features/implemented/leave-group-core.md` ← **LATEST**
 - **Admin feature (complete):** `docs/features/implemented/deusex-admin-foundation.md`
 - **Lifecycle roadmap:** `docs/planning/lifecycle-roadmap-decisions.md` ← **NEW** (5 sprints, 5 decisions)
 - **Architecture decisions:** `docs/architecture/ARCHITECTURE.md`
@@ -97,23 +97,30 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-28 (Sprint 1 — Foundation Schema)
+**Date:** 2026-02-28 (Sprint 2 + Feature Doc Review)
 **Summary:**
-- Completed Sprint 1: Foundation Schema — full TDD workflow (Phases 0-7), v0.2.33
-- F1: Added `groups.status` column (active/closed/archived/suspended) with CHECK constraint, partial index, updated `groups_select` RLS policy
-- F2: Created "FringeIsland Journeys" engagement group, added DeusEx as Steward, re-seeded 8 predefined journeys with correct D15 ownership
-- 19 new integration tests (9 group-status + 10 platform-ownership), 504/504 GREEN, zero regressions
-- Discovered and fixed: (1) journeys table was empty (lost during D15 rebuild), (2) globalTeardown orphan sweep deleted FI Journeys group when `created_by_group_id` was NULL — fixed by setting it to DeusEx
+- Completed Sprint 2: Leave Group Core — full TDD workflow (Phases 0-7), v0.2.34
+- L1: Regular member leave — membership deletion, role cascade, non-public enrollment freezing, Steward notification
+- L2: Sole Steward → DeusEx handover — DeusEx gets membership + Steward role, pending invitations transferred, all members notified
+- L3: Group closure — `groups.status = 'closed'`, all enrollments frozen, non-public journeys transferred to DeusEx, DeusEx notified
+- `leave_group(p_group_id)` SECURITY DEFINER RPC handles all 3 scenarios automatically
+- Updated `prevent_last_leader_removal` trigger to allow role deletion when group is 'closed'
+- 17 new integration tests (7 L1 + 4 L2 + 6 L3), 630/630 GREEN, zero regressions
+- **Feature doc review:** All 15 feature docs reviewed and updated for Sprint 1+2 changes
+  - Moved `leave-group-core.md` and `foundation-schema.md` from `active/` to `implemented/`
+  - Updated `group-management.md` (Known Limitations resolved, data model, triggers, version history)
+  - Updated `notification-system.md`, `journey-system.md`, `group-forum-system.md`, `enhanced-member-invitations.md`
+  - Fixed 5 stale cross-doc links (`planned/` → `implemented/`, `active/` → `implemented/`)
 
 **Key files:**
-- `supabase/migrations/20260228111514_sprint1_foundation_schema.sql` — F1 + F2
-- `tests/integration/groups/group-status.test.ts` — 9 tests (B-GRP-007)
-- `tests/integration/journeys/platform-ownership.test.ts` — 10 tests (B-JRN-008)
-- `docs/features/active/foundation-schema.md` — Feature doc (COMPLETE)
-- `docs/specs/behaviors/groups.md` — B-GRP-007
-- `docs/specs/behaviors/journeys.md` — B-JRN-008
+- `supabase/migrations/20260228120745_sprint2_leave_group_core.sql` — leave_group RPC + trigger update
+- `tests/integration/groups/leave-group.test.ts` — 17 tests (B-GRP-008, B-GRP-009, B-GRP-010)
+- `docs/features/implemented/leave-group-core.md` — Feature doc (COMPLETE, moved from active/)
+- `docs/features/implemented/foundation-schema.md` — Feature doc (COMPLETE, moved from active/)
+- `docs/specs/behaviors/groups.md` — B-GRP-008, B-GRP-009, B-GRP-010
 
 **Previous Sessions:**
+- 2026-02-28: Sprint 1 — Foundation Schema (v0.2.33)
 - 2026-02-28: Sprint 0 — Security Fixes + Feature Doc Review (v0.2.32)
 - 2026-02-28: Lifecycle Roadmap Decisions + feature doc reorganization
 - 2026-02-27: Leave Group Feature Review + [Deleted User] sentinel seed
@@ -132,18 +139,19 @@
 
 ## Next Priorities
 
-**See `docs/features/active/performance-optimization.md` for full plan**
+**See `docs/features/implemented/performance-optimization.md` for full plan**
 
 **Display Name / Nickname System COMPLETE** ✅
 
 **Sprint 1 — Foundation Schema COMPLETE** ✅ (v0.2.33)
 
-**Next — Sprint 2: Leave Group Core:**
-Regular member leave, sole Steward→DeusEx transfer, group closure. TDD workflow.
+**Sprint 2 — Leave Group Core COMPLETE** ✅ (v0.2.34)
+
+**Next — Sprint 3: Smart Notifications + Steward Nomination (Track 1):**
+Smart notification schema extension, actionable notification UI, Track 1 stewardship nomination flow.
 See `docs/planning/lifecycle-roadmap-decisions.md` for full sprint structure.
 
-**After Sprint 2:**
-- Sprint 3: Smart Notifications + Steward Nomination (Track 1)
+**After Sprint 3:**
 - Sprint 4: Platform Exit (admin-assisted)
 
 **After lifecycle features — Phase 1.6 Polish and Launch:**

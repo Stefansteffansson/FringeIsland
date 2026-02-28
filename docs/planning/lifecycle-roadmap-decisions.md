@@ -110,11 +110,13 @@ LEAVE GROUP CORE
 1. `groups.status` column migration + RLS policy updates (AND status = 'active' for non-admins)
 2. "FringeIsland Journeys" engagement group + predefined journey ownership migration
 
-### Sprint 2 — Leave Group Core (L1 + L2 + L3)
-- Regular member leaves (standard confirmation, enrollment freezing, forum anonymisation)
-- Sole Steward -> DeusEx (immediate handover, standard notifications)
-- Group closure (last member, status -> 'closed', journey transfer)
-- All using standard notifications only — no smart notification dependency
+### Sprint 2 — Leave Group Core (L1 + L2 + L3) ✅ COMPLETE (v0.2.34)
+- ✅ Regular member leaves — membership deletion, role cascade, non-public enrollment freezing, Steward notification
+- ✅ Sole Steward → DeusEx — DeusEx gets membership + Steward role, pending invitations transferred, all members notified
+- ✅ Group closure — `groups.status = 'closed'`, all enrollments frozen, non-public journeys transferred to DeusEx
+- ✅ All using standard notifications only — no smart notification dependency
+- ✅ 17 integration tests, 630/630 GREEN
+- ✅ Migration: `20260228120745_sprint2_leave_group_core.sql`
 
 ### Sprint 3 — Smart Notifications + Steward Nomination (L4)
 - Smart notification schema extension (action_type, action_data, action_taken)

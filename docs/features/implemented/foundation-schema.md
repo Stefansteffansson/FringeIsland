@@ -1,13 +1,14 @@
 # Foundation Schema (Sprint 1)
 
-**Status:** COMPLETE
+**Status:** IMPLEMENTED
 **Sprint:** 1 (Foundation Schema)
 **Date:** February 28, 2026
-**Version:** v0.2.33 (planned)
+**Completed:** February 28, 2026
+**Version:** v0.2.33
 **Phase:** 1.6 (Polish and Launch — lifecycle prerequisites)
 **Depends on:** Sprint 0 complete (v0.2.32) ✅
 **Source:** `docs/planning/lifecycle-roadmap-decisions.md`
-**Related:** [Group Management](../implemented/group-management.md) | [Leave Group Review](../planned/leave_group_feature_review.md) | [Journey System](../implemented/journey-system.md)
+**Related:** [Group Management](./group-management.md) | [Leave Group Core](./leave-group-core.md) | [Leave Group Review](../planned/leave_group_feature_review.md) | [Journey System](./journey-system.md)
 
 ---
 

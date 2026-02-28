@@ -2,7 +2,7 @@
 
 > **Purpose:** Document the rules and guarantees for the admin foundation system.
 > **Domain Code:** ADMIN
-> **Design Reference:** `docs/features/active/deusex-admin-foundation.md`
+> **Design Reference:** `docs/features/implemented/deusex-admin-foundation.md`
 > **Sub-Sprint:** 1 — DB Foundation, 2 — Admin Panel UI, 3 — Users Panel & Actions
 
 ---

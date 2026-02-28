@@ -342,15 +342,15 @@ See `docs/features/implemented/performance-optimization.md` for full analysis an
 
 ### Phase 1.6: Polish and Launch (Weeks 14-16) ⏳ IN PROGRESS
 
-**Status**: ⏳ **IN PROGRESS** — Sprint 1 Foundation Schema complete (v0.2.33), Sprint 0 Security Fixes complete (v0.2.32)
+**Status**: ⏳ **IN PROGRESS** — Sprint 2 Leave Group Core complete (v0.2.34), Sprint 1 Foundation Schema complete (v0.2.33), Sprint 0 Security Fixes complete (v0.2.32)
 
-**Current Focus:** Sprint 2 (Leave Group Core) → Sprint 3 (Smart Notifications) → Sprint 4 (Platform Exit). See `docs/planning/lifecycle-roadmap-decisions.md` for full 5-sprint structure.
+**Current Focus:** Sprint 3 (Smart Notifications + Steward Nomination) → Sprint 4 (Platform Exit). See `docs/planning/lifecycle-roadmap-decisions.md` for full 5-sprint structure.
 
 **Lifecycle Sprints:**
 - ✅ Sprint 0: Security Fixes (v0.2.32) — 4 gaps fixed, 19 tests
 - ✅ Sprint 1: Foundation Schema (v0.2.33) — groups.status + FI Journeys group, 19 tests
-- ⏳ Sprint 2: Leave Group Core — next
-- ⏳ Sprint 3: Smart Notifications + Steward Nomination
+- ✅ Sprint 2: Leave Group Core (v0.2.34) — L1 + L2 + L3, leave_group RPC, 17 tests
+- ⏳ Sprint 3: Smart Notifications + Steward Nomination — next
 - ⏳ Sprint 4: Platform Exit (admin-assisted)
 
 **Deliverables**:
@@ -931,6 +931,7 @@ See `docs/features/implemented/performance-optimization.md` for full analysis an
 
 ## Decision Log
 
+**2026-02-28**: Sprint 2 Leave Group Core complete (v0.2.34) — `leave_group(p_group_id)` SECURITY DEFINER RPC handles 3 scenarios: L1 regular member leave (enrollment freezing, role cascade, Steward notification), L2 sole Steward→DeusEx handover (membership + role transfer, pending invitation reassignment, member notifications), L3 group closure (status→closed, all enrollments frozen, non-public journeys transferred to DeusEx). Updated `prevent_last_leader_removal` trigger for closed-group bypass. 17 new tests, 630/630 GREEN.
 **2026-02-28**: Sprint 0 Security Fixes complete (v0.2.32) — 4 gaps fixed: non-public journey RLS (S1), enrollment INSERT gating (S2), JourneyPlayer frozen UI (S3), enrollment UPDATE frozen RLS (S4). 2 new SECURITY DEFINER helpers, 5 RLS policies replaced, 19 new tests. Full TDD workflow.
 **2026-02-11**: RBAC/Dynamic Permissions System design complete — 22 decisions (D1-D22). See `docs/features/planned/dynamic-permissions-system.md`. Key: universal group pattern, groups-join-groups, 4 default roles (Steward/Guide/Member/Observer), 31 permissions, data privacy consent, try-it journeys.
 **2026-02-10**: JourneyPlayer built — progress stored in progress_data JSONB, required-step gating, review mode (v0.2.11)

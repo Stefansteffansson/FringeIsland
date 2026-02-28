@@ -5,7 +5,7 @@
 **Completed:** February 27, 2026
 **Version:** v0.2.31
 **Phase:** 1.2 (Authentication) + 1.6 (Polish & Launch)
-**Related:** [Display Name System](./display-name-system.md) | [Group Management](./group-management.md) | [Dynamic Permissions System](../planned/dynamic-permissions-system.md)
+**Related:** [Display Name System](./display-name-system.md) | [Group Management](./group-management.md) | [Dynamic Permissions System](./dynamic-permissions-system.md)
 
 ---
 
@@ -334,7 +334,7 @@ All admin operations require `manage_all_groups` permission (DeusEx system group
 
 - **Display name system:** `docs/features/implemented/display-name-system.md`
 - **Group management:** `docs/features/implemented/group-management.md`
-- **RBAC design:** `docs/features/planned/dynamic-permissions-system.md`
+- **RBAC design:** `docs/features/implemented/dynamic-permissions-system.md`
 - **Behavior specs:** `docs/specs/behaviors/authentication.md`, `docs/specs/behaviors/admin.md`
 - **D15 base migration:** `supabase/migrations/20260222000000_rebuild_universal_group_pattern.sql`
 - **RC7 admin fixes:** `supabase/migrations/20260223171200_fix_rc7_admin_user_ops.sql`
