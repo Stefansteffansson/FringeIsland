@@ -1,9 +1,9 @@
 # Notification System Design
 
-**Status:** ✅ Implemented (v0.2.14)
+**Status:** ✅ Implemented (v0.2.14, smart notifications v0.2.35)
 **Author:** Architect Agent
 **Date:** February 14, 2026
-**Last Updated:** February 28, 2026 (D15 column renames applied)
+**Last Updated:** February 28, 2026 (Sprint 3 — smart notification schema, RPCs, UI)
 **Phase:** 1.5-A (Infrastructure for RBAC/Communication)
 **Related:** [Dynamic Permissions System](./dynamic-permissions-system.md) (D13) | [ARCHITECTURE](../../architecture/ARCHITECTURE.md)
 
@@ -51,7 +51,21 @@ CREATE TABLE notifications (
 | `group_id` | UUID, nullable, FK groups | Optional group context. SET NULL on group deletion (notification remains readable but unlinked). Used for filtering "notifications about group X". |
 | `is_read` | BOOLEAN, default false | Read/unread state. Simple boolean, not a timestamp-based "seen" model. |
 | `read_at` | TIMESTAMPTZ, nullable | When the notification was marked as read. NULL if unread. Useful for analytics and "recently read" queries. |
-| `created_at` | TIMESTAMPTZ | When the notification was created. No `updated_at` -- notifications are append-only (only `is_read` and `read_at` change). |
+| `created_at` | TIMESTAMPTZ | When the notification was created. No `updated_at` -- notifications are append-only (only `is_read`, `read_at`, `action_taken`, and `action_taken_at` change). |
+
+### Smart Notification Columns (Sprint 3, v0.2.35)
+
+| Column | Type | Purpose |
+|--------|------|---------|
+| `action_type` | TEXT, nullable | Type of action expected: `accept_decline`, `multi_choice`, `acknowledge`, or NULL (passive). NULL means a standard passive notification. |
+| `action_data` | JSONB, nullable | Action-specific context data (e.g., group name, nominator name, nominee rank). Rendered in the UI alongside action buttons. |
+| `action_taken` | TEXT, nullable | User's response: `accepted`, `declined`, etc. NULL until the user responds. |
+| `action_taken_at` | TIMESTAMPTZ, nullable | When the user responded. NULL until actioned. |
+| `expires_at` | TIMESTAMPTZ, nullable | When the notification action expires. Used for timeout handling (e.g., 7-day stewardship nomination window). |
+
+**Consistency constraint:** `notifications_action_consistency` — `action_taken` can only be set when `action_type` is not NULL. Prevents passive notifications from having an action response.
+
+**Index:** `idx_notifications_pending_actions` — partial index on `(recipient_group_id, created_at DESC) WHERE action_type IS NOT NULL AND action_taken IS NULL AND (expires_at IS NULL OR expires_at > NOW())` for efficient queries of pending actionable notifications.
 
 ### Design Decisions
 
@@ -258,6 +272,24 @@ These notifications are created directly by the `leave_group()` SECURITY DEFINER
 
 **Note:** The `member_left` notification type (from the initial set above) is still created by the existing `notify_invitation_declined_or_member_change` trigger when the `leave_group()` RPC deletes the membership row.
 
+### Sprint 3 Types (Smart Notifications — v0.2.35)
+
+These are **smart notifications** with `action_type` set, created by SECURITY DEFINER RPCs:
+
+| Type | action_type | Created by | Recipient | Title |
+|------|-------------|------------|-----------|-------|
+| `stewardship_nomination` | `accept_decline` | `nominate_steward()` RPC | Nominee | "Stewardship Nomination: [Group]" |
+| `stewardship_accepted` | NULL (passive) | `_handle_stewardship_nomination_action()` | All group members | "[Nominee] has accepted stewardship of [Group]" |
+| `stewardship_declined_all` | NULL (passive) | `_handle_stewardship_nomination_action()` | DeusEx | "All nominees declined stewardship of [Group]" |
+
+**RPCs (Sprint 3):**
+
+| RPC | Type | Purpose |
+|-----|------|---------|
+| `handle_notification_action(p_notification_id UUID, p_action TEXT)` | PLPGSQL, SECURITY DEFINER | Validates ownership, actionability, expiry, action validity. Records response. Dispatches type-specific side effects (e.g., stewardship transfer on accept). |
+| `nominate_steward(p_group_id UUID, p_nominee_ids UUID[])` | PLPGSQL, SECURITY DEFINER | Sole Steward nominates ranked successors. Sends smart notification to first nominee with 7-day expiry. Validates: sole Steward, active members, no self-nomination, no duplicate in-progress. |
+| `_handle_stewardship_nomination_action(...)` | PLPGSQL, internal | Accept: grant Steward role, remove original Steward (L1 flow), notify group. Decline: advance to next nominee or DeusEx fallback (L2 flow). |
+
 ### Future Types
 
 | Type | Feature | Phase |
@@ -286,9 +318,10 @@ Single migration file, ordered by dependency:
 ### NotificationProvider (React Context)
 
 1. On mount (authenticated): fetch unread count via REST, subscribe to Realtime channel
-2. Expose: `unreadCount`, `notifications[]`, `markAsRead(id)`, `markAllAsRead()`, `deleteNotification(id)`
+2. Expose: `unreadCount`, `notifications[]`, `markAsRead(id)`, `markAllAsRead()`, `deleteNotification(id)`, `handleAction(id, action)` (Sprint 3)
 3. On Realtime INSERT: prepend to `notifications[]`, increment `unreadCount`
 4. On logout: unsubscribe, clear state
+5. `handleAction()` calls `handle_notification_action` RPC, updates local state (action_taken, is_read), dispatches `refreshNavigation` event
 
 ### Navigation Integration
 
@@ -316,3 +349,4 @@ Replace current invitation-count logic in `Navigation.tsx`:
 | 2026-02-14 | Initial design | Architect Agent |
 | 2026-02-28 | Updated D15 column renames: `recipient_user_id` → `recipient_group_id`, `get_current_user_profile_id()` → `get_current_personal_group_id()` | Sprint 0 review |
 | 2026-02-28 | Added Sprint 2 notification types: `stewardship_transferred`, `stewardship_required`, `group_closed` — created by `leave_group()` RPC | Sprint 2 |
+| 2026-02-28 | Sprint 3: Smart notification columns (`action_type`, `action_data`, `action_taken`, `action_taken_at`, `expires_at`), consistency constraint, pending action index. New RPCs: `handle_notification_action`, `nominate_steward`, `_handle_stewardship_nomination_action`. New types: `stewardship_nomination` (smart), `stewardship_accepted`, `stewardship_declined_all`. NotificationContext `handleAction()` method, NotificationBell Accept/Decline UI. | Sprint 3 |

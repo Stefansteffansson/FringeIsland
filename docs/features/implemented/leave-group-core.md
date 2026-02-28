@@ -200,8 +200,8 @@ This is a display-layer concern handled by ForumSection component's membership c
 
 ## Known Limitations
 
-1. **No UI yet** — the `leave_group()` RPC is tested but no frontend button/modal exists. UI will be built alongside Sprint 3 or as a follow-up.
-2. **No Track 1 (stewardship nomination)** — requires smart notifications (Sprint 3).
+1. **No UI yet** — the `leave_group()` RPC is tested but no frontend button/modal exists. UI will be built as a follow-up.
+2. ~~**No Track 1 (stewardship nomination)**~~ — **RESOLVED (v0.2.35, Sprint 3).** `nominate_steward()` RPC, smart notifications with Accept/Decline, sequential nominees, 7-day expiry, DeusEx fallback. See [smart-notifications.md](./smart-notifications.md).
 3. **No platform exit** — admin-assisted only (Sprint 4).
 4. **Forum "Former Member" display** — the query-time membership check needs to be implemented in the `ForumSection` component. Currently, ex-member posts still show the author's display name.
 5. **Enrollment unfreezing on rejoin** — not yet implemented. When a member rejoins a group, frozen enrollments are not automatically restored to `'active'`.
@@ -210,8 +210,8 @@ This is a display-layer concern handled by ForumSection component's membership c
 
 ## Out of Scope
 
-- Track 1 stewardship nomination flow (Sprint 3)
-- Smart notification schema and UI (Sprint 3)
+- ~~Track 1 stewardship nomination flow~~ — **IMPLEMENTED (v0.2.35, Sprint 3).** See [smart-notifications.md](./smart-notifications.md).
+- ~~Smart notification schema and UI~~ — **IMPLEMENTED (v0.2.35, Sprint 3).** See [smart-notifications.md](./smart-notifications.md).
 - Platform exit cascade (Sprint 4)
 - Self-service account deletion
 - Group-joins-group leave flows (Phase 2)
@@ -220,4 +220,5 @@ This is a display-layer concern handled by ForumSection component's membership c
 
 ## Version History
 
+- **v0.2.35** (2026-02-28): Track 1 stewardship nomination implemented in Sprint 3 — `nominate_steward()` RPC, smart notifications, sequential nominees, DeusEx fallback. Known Limitation #2 resolved. See [smart-notifications.md](./smart-notifications.md).
 - **v0.2.34** (2026-02-28): Sprint 2 complete — `leave_group()` RPC (L1 + L2 + L3), `prevent_last_leader_removal` trigger update for closed groups, 17 integration tests, 3 behavior specs (B-GRP-008, B-GRP-009, B-GRP-010).

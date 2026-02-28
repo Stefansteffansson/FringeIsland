@@ -3,8 +3,8 @@
 **Status:** IMPLEMENTED
 **Date:** January 24, 2026
 **Completed:** February 28, 2026
-**Version:** v0.2.34
-**Phase:** 1.3 (Group Management) + post-D15 (RBAC, admin lifecycle, leave-group)
+**Version:** v0.2.35
+**Phase:** 1.3 (Group Management) + post-D15 (RBAC, admin lifecycle, leave-group, stewardship nomination)
 **Related:** [Authentication](./authentication.md) | [Display Name System](./display-name-system.md) | [Dynamic Permissions System](./dynamic-permissions-system.md) | [Leave Group Core](./leave-group-core.md) | [Foundation Schema](./foundation-schema.md)
 
 ---
@@ -40,7 +40,8 @@ The **groups-as-members** design means a personal group joins an engagement grou
 12. **Notification triggers** — database triggers fire on: invitation received, invitation accepted, invitation declined, member left, member removed, role assigned, role removed, group deleted
 13. **Leave-group** — `leave_group(p_group_id)` SECURITY DEFINER RPC handles three scenarios: regular member leave (L1), sole Steward -> DeusEx handover (L2), group closure on last member leave (L3). Non-public journey enrollments frozen, pending invitations transferred. (Sprint 2, v0.2.34). See [leave-group-core.md](./leave-group-core.md).
 14. **Group lifecycle** — `groups.status` column with CHECK constraint (`active`, `closed`, `archived`, `suspended`). Non-active groups hidden from non-admin users via RLS. (Sprint 1, v0.2.33). See [foundation-schema.md](./foundation-schema.md).
-15. **Known gaps** — no group-joins-group UI, no personal/system group protection in Danger Zone, no Track 1 stewardship nomination (Sprint 3), no self-service platform exit (Sprint 4)
+15. **Stewardship nomination (Track 1)** — `nominate_steward()` RPC allows sole Steward to nominate ranked successors. Smart notification with Accept/Decline, 7-day expiry, sequential nominees, DeusEx fallback. (Sprint 3, v0.2.35). See [smart-notifications.md](./smart-notifications.md).
+16. **Known gaps** — no group-joins-group UI, no personal/system group protection in Danger Zone, no self-service platform exit (Sprint 4)
 
 ---
 
@@ -329,6 +330,8 @@ const handleDelete = async () => {
 | `is_group_creator(group_id)` | SQL, SECURITY DEFINER | Check if current user created the group (for bootstrap) |
 | `group_has_leader(group_id)` | SQL, SECURITY DEFINER | Check if group has any Steward (for bootstrap detection) |
 | `leave_group(p_group_id)` | PLPGSQL, SECURITY DEFINER | Leave-group RPC — handles L1 (regular), L2 (DeusEx handover), L3 (group closure) scenarios automatically (Sprint 2, v0.2.34) |
+| `nominate_steward(p_group_id, p_nominee_ids)` | PLPGSQL, SECURITY DEFINER | Track 1 stewardship nomination — sole Steward nominates ranked successors, sends smart notification to first nominee with 7-day expiry (Sprint 3, v0.2.35) |
+| `handle_notification_action(p_notification_id, p_action)` | PLPGSQL, SECURITY DEFINER | Process user response to smart notification — validates ownership, actionability, expiry, dispatches type-specific side effects (Sprint 3, v0.2.35) |
 
 ---
 
@@ -588,7 +591,7 @@ CREATE POLICY "pending_invitations_delete"
 
 ### Behavior Specs
 
-- `docs/specs/behaviors/groups.md` — Group creation, visibility, editing, deletion, leave-group behaviors (B-GRP-008, B-GRP-009, B-GRP-010)
+- `docs/specs/behaviors/groups.md` — Group creation, visibility, editing, deletion, leave-group behaviors (B-GRP-008, B-GRP-009, B-GRP-010), stewardship nomination (B-GRP-011)
 - `docs/specs/behaviors/invitations.md` — Invitation lifecycle behaviors
 - `docs/specs/behaviors/roles.md` — Role assignment and management behaviors
 - `docs/specs/behaviors/rbac.md` — RBAC permission resolution behaviors
@@ -613,6 +616,7 @@ CREATE POLICY "pending_invitations_delete"
 - `tests/integration/rbac/d15-hardening.test.ts` — Bootstrap policies, anti-escalation
 - `tests/integration/communication/notifications.test.ts` — Notification triggers
 - `tests/integration/groups/leave-group.test.ts` — Leave group (L1 regular, L2 DeusEx handover, L3 group closure) — 17 tests
+- `tests/integration/groups/stewardship-nomination.test.ts` — Stewardship nomination Track 1 (B-GRP-011) — 8 tests
 
 ---
 
@@ -624,7 +628,7 @@ CREATE POLICY "pending_invitations_delete"
 4. **RESTRICT FK blocker unhandled** — if a group has created journeys (`journeys.created_by_group_id`), deletion fails with a FK violation. The UI shows the raw error instead of a user-friendly message.
 5. **No group-joins-group UI** — the schema supports groups as members of other groups via `member_group_id`, but no UI exists for this workflow.
 6. **Danger Zone uses local modal, not ConfirmModal** — the delete confirmation is a locally-defined modal in the edit page, not the shared `ConfirmModal` component.
-7. ~~**No leave-group for last Steward**~~ — **RESOLVED (v0.2.34, Sprint 2).** Sole Steward -> DeusEx handover (L2). Last member -> group closure (L3). Track 1 (stewardship nomination) deferred to Sprint 3.
+7. ~~**No leave-group for last Steward**~~ — **RESOLVED (v0.2.34, Sprint 2).** Sole Steward -> DeusEx handover (L2). Last member -> group closure (L3). ~~Track 1 (stewardship nomination) deferred to Sprint 3.~~ **RESOLVED (v0.2.35, Sprint 3).** `nominate_steward()` RPC with smart notifications.
 8. **Group creation is client-side multi-step** — the 7-step creation flow is not transactional; a failure at step 5 leaves a group with memberships but no roles. A server-side RPC would be more robust.
 9. **No Leave Group UI** — the `leave_group()` RPC exists but no frontend button, confirmation modal, or handover dialog has been built yet.
 
@@ -638,7 +642,7 @@ CREATE POLICY "pending_invitations_delete"
 - **Bulk invitations** — one invitation at a time
 - **Invitation expiry enforcement** — `expires_at` is stored but not checked in the UI (only checked in the signup trigger)
 - **Group transfer** — no ability to transfer group ownership (created_by_group_id)
-- **Track 1 stewardship nomination** — requires smart notifications (Sprint 3)
+- ~~**Track 1 stewardship nomination**~~ — **IMPLEMENTED (v0.2.35, Sprint 3).** See [smart-notifications.md](./smart-notifications.md).
 - **Self-service platform exit** — admin-assisted only for v1 (Sprint 4)
 - **Group archive/suspend UI** — `groups.status` supports `'archived'` and `'suspended'` values, but no admin UI exists to set them
 
@@ -650,6 +654,7 @@ CREATE POLICY "pending_invitations_delete"
 - **Display name system:** `docs/features/implemented/display-name-system.md`
 - **RBAC design:** `docs/features/implemented/dynamic-permissions-system.md`
 - **Leave Group Core:** `docs/features/implemented/leave-group-core.md`
+- **Smart Notifications:** `docs/features/implemented/smart-notifications.md`
 - **Foundation Schema:** `docs/features/implemented/foundation-schema.md`
 - **Leave Group Review (full spec):** `docs/features/planned/leave_group_feature_review.md`
 - **Behavior specs:** `docs/specs/behaviors/groups.md`, `docs/specs/behaviors/invitations.md`, `docs/specs/behaviors/rbac.md`
@@ -660,11 +665,13 @@ CREATE POLICY "pending_invitations_delete"
 - **Personal group RLS fix:** `supabase/migrations/20260227110556_fix_personal_group_rls_visibility.sql`
 - **Foundation schema migration:** `supabase/migrations/20260228110815_sprint1_foundation_schema.sql`
 - **Leave group migration:** `supabase/migrations/20260228120745_sprint2_leave_group_core.sql`
+- **Smart notifications migration:** `supabase/migrations/20260228125730_sprint3_smart_notifications.sql`
 
 ---
 
 ## Version History
 
+- **v0.2.35** (2026-02-28): Sprint 3 — Smart Notifications + Stewardship Nomination. `nominate_steward()` RPC for Track 1, `handle_notification_action()` for smart notification responses. Accept/Decline UI in NotificationBell. 8 new stewardship tests. B-GRP-011.
 - **v0.2.34** (2026-02-28): Sprint 2 — Leave Group Core. `leave_group()` RPC handles L1 (regular leave), L2 (sole Steward -> DeusEx handover), L3 (group closure). `prevent_last_leader_removal` trigger updated with closed-group bypass. 17 new tests. B-GRP-008, B-GRP-009, B-GRP-010.
 - **v0.2.33** (2026-02-28): Sprint 1 — Foundation Schema. `groups.status` column (active/closed/archived/suspended), partial index, RLS policy updates. "FringeIsland Journeys" engagement group created, 8 predefined journeys migrated. 19 new tests.
 - **v0.2.32** (2026-02-28): Sprint 0 — Security Fixes. Non-public journey RLS, enrollment enrollability checks, frozen enrollment enforcement.

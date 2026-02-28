@@ -1,6 +1,7 @@
 # FringeIsland — Feature Discussion Review
 ## Leave Group & Steward Handover Flow
 *February 2026 | Sprint 2 (L1/L2/L3) COMPLETE — see `docs/features/implemented/leave-group-core.md`*
+*Sprint 3 (Track 1 Stewardship Nomination) COMPLETE — see `docs/features/implemented/smart-notifications.md`*
 
 ---
 
@@ -130,7 +131,7 @@ When the leaving user is the sole Steward, the system presents a dialog:
 
 ### 4.3 Track 1 — Nominate a Successor
 
-> **Sprint 3 — Requires smart notification infrastructure.** This section (4.3) and section 4.4 (Track 1A/B/C) are NOT part of the initial leave-group implementation (Sprint 2). They require the smart notifications feature to be designed, specified, and implemented first. See `docs/planning/lifecycle-roadmap-decisions.md` decision D-R1. Sprint 2 ships with Track 2 (DeusEx immediate handover) only.
+> ✅ **IMPLEMENTED (v0.2.35, Sprint 3).** Track 1 stewardship nomination is now implemented via `nominate_steward()` RPC with smart notifications. See `docs/features/implemented/smart-notifications.md` for full details. ~~Sprint 3 — Requires smart notification infrastructure.~~
 
 The leaving Steward nominates one or more people as a **ranked list**. Invitations are sent sequentially in ranked order — the next invitation is only sent after the previous is declined or has timed out.
 
@@ -453,4 +454,6 @@ No GDPR-driven content erasure for v1. If needed later, it would be a separate f
 
 **Sprint 2 Implementation (v0.2.34):** L1 (regular leave), L2 (DeusEx handover), L3 (group closure) are fully implemented via `leave_group()` SECURITY DEFINER RPC. See `docs/features/implemented/leave-group-core.md` for implementation details, test coverage, and known limitations.
 
-*Remaining open items: GDPR/Right to Erasure (legal review needed), Conversations on platform exit (hard delete), Event logging for user-initiated actions. Track 1 (stewardship nomination) and platform exit are Sprint 3 and Sprint 4 respectively — see `docs/planning/lifecycle-roadmap-decisions.md` for sprint structure.*
+**Sprint 3 Implementation (v0.2.35):** Track 1 stewardship nomination fully implemented via `nominate_steward()` and `handle_notification_action()` SECURITY DEFINER RPCs. See `docs/features/implemented/smart-notifications.md` for implementation details.
+
+*Remaining open items: GDPR/Right to Erasure (legal review needed), Conversations on platform exit (hard delete), Event logging for user-initiated actions. Platform exit is Sprint 4 — see `docs/planning/lifecycle-roadmap-decisions.md` for sprint structure.*

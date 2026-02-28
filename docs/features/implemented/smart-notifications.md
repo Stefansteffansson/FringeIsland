@@ -1,12 +1,13 @@
 # Smart Notifications (Sprint 3)
 
-**Status:** ACTIVE
+**Status:** IMPLEMENTED
 **Sprint:** 3 (Lifecycle Roadmap)
 **Date:** February 28, 2026
-**Version:** v0.2.35 (target)
+**Completed:** February 28, 2026
+**Version:** v0.2.35
 **Phase:** 1.6 (Polish and Launch — lifecycle features)
 **Dependencies:** Sprint 2 (v0.2.34) — COMPLETE
-**Related:** [Notification System](../implemented/notification-system.md) | [Leave Group Core](../implemented/leave-group-core.md) | [Lifecycle Roadmap Decisions](../../planning/lifecycle-roadmap-decisions.md)
+**Related:** [Notification System](./notification-system.md) | [Leave Group Core](./leave-group-core.md) | [Lifecycle Roadmap Decisions](../../planning/lifecycle-roadmap-decisions.md)
 
 ---
 
@@ -129,8 +130,29 @@ ALTER TABLE notifications
 
 ---
 
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `supabase/migrations/20260228125730_sprint3_smart_notifications.sql` | Schema extension + RPCs |
+| `lib/notifications/NotificationContext.tsx` | `handleAction()` method added |
+| `components/notifications/NotificationBell.tsx` | Accept/Decline buttons, actioned/expired badges |
+| `tests/integration/communication/smart-notifications.test.ts` | 11 tests (B-NOTIF-001, B-NOTIF-003) |
+| `tests/integration/groups/stewardship-nomination.test.ts` | 8 tests (B-GRP-011) |
+| `docs/specs/behaviors/notifications.md` | B-NOTIF-001, B-NOTIF-002, B-NOTIF-003 |
+| `docs/specs/behaviors/groups.md` | B-GRP-011 |
+
+## Test Results
+
+- 19 new integration tests (11 smart-notifications + 8 stewardship-nomination)
+- All 19/19 GREEN
+- Full regression suite passing, zero regressions
+
+---
+
 ## Revision History
 
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-02-28 | Initial feature doc | Sprint Agent |
+| 2026-02-28 | Sprint 3 complete — status IMPLEMENTED, key files, test results, related link fix | Sprint Agent |
