@@ -181,4 +181,16 @@ The policy has 5 OR branches: is_public, is_active_group_member() (2 sub-queries
 The `deusex_admin_select_*` SELECT policies on `users`, `group_memberships`, and `user_group_roles` called `has_permission()` which was evaluated for EVERY authenticated SELECT — even for non-admin users. On resource-constrained databases, this caused queries to hang indefinitely. Since admin queries already bypass RLS via the service_role API route (Tier 1B), these SELECT policies were unnecessary. Also simplified the `groups` SELECT policy from 5 OR branches to 4 by removing the `has_permission()` branch. **Rule: never put expensive functions in SELECT RLS policies — use service_role bypass for admin access instead.**
 > Promoted to playbook? Not yet
 
+### 2026-02-28: globalTeardown orphan sweep deletes engagement groups with NULL created_by_group_id
+The `globalTeardown` (tests/global-teardown.ts) Phase 3 deletes all engagement groups where `created_by_group_id IS NULL`. The "FringeIsland Journeys" group was initially created without a creator, so it was deleted between test runs — causing platform-ownership tests to fail in the full suite but pass individually. Fix: set `created_by_group_id` to DeusEx's group ID. **Rule:** platform-owned engagement groups must have a non-NULL `created_by_group_id` to survive the orphan sweep. Design the migration to look up the creator (DeusEx) BEFORE creating the group.
+> Promoted to playbook? Not yet
+
+### 2026-02-28: Supabase Management API may silently skip DO blocks combined with DDL
+When sending a migration containing both DDL statements (ALTER TABLE, CREATE INDEX, DROP/CREATE POLICY) and PL/pgSQL DO blocks to the `/database/query` endpoint, the DDL executes but the DO block may silently fail (returns `[]` with no error). Workaround: execute DO blocks as separate API calls. The `apply-migration-temp.js` script may need splitting for complex migrations.
+> Promoted to playbook? Not yet
+
+### 2026-02-28: Predefined journeys lost during D15 rebuild — seed data fragility
+The 8 predefined journeys seeded in archived migration `20260127_seed_predefined_journeys.sql` used the old `created_by_user_id` column. After D15 schema rebuild (which dropped that column), the archived migration became invalid and the journeys were never re-seeded. The new active migration set only has the schema, not the seed data. **Rule:** when rebuilding schema (drop+recreate), verify ALL seed data is included in the new migration set, not just the schema structure.
+> Promoted to playbook? Not yet
+
 <!-- Append new entries below this line -->

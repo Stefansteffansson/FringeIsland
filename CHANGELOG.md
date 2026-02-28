@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Sprint 1 — Foundation Schema (v0.2.33)** — Two infrastructure changes that enable leave-group lifecycle features (Sprint 2).
+  - **F1: `groups.status` column** — New TEXT column with CHECK constraint (`active`, `closed`, `archived`, `suspended`). Default: `active`. Partial index `idx_groups_status_active` for common query path. Updated `groups_select` RLS policy: non-admin users only see `status = 'active'` groups, personal groups always visible, platform admins see all.
+  - **F2: "FringeIsland Journeys" engagement group** — Created platform-owned engagement group. DeusEx added as member with Steward role. Re-seeded all 8 predefined journeys with `created_by_group_id` pointing to FI Journeys group (journeys were lost during D15 rebuild). `created_by_group_id` set to DeusEx to prevent globalTeardown orphan sweep.
+  - **Migration:** `20260228111514_sprint1_foundation_schema.sql`
+  - **Behaviors:** B-GRP-007 (Group Status Visibility), B-JRN-008 (Platform Journey Ownership)
+  - **Tests:** 19 new integration tests (9 group-status + 10 platform-ownership)
+  - **Full suite:** 504/504 tests passing, zero regressions
+
 ### Fixed
 - **Sprint 0 — Security Fixes (v0.2.32)** — Fixed 4 security gaps identified in lifecycle roadmap analysis. Defense-in-depth: both RLS and UI enforcement for all fixes.
   - **S1: Non-public journey visibility (RLS)** — `journeys_select_published` now enforces `is_public`. Non-public journeys visible only to owning group members, enrolled users, or platform admins. New SECURITY DEFINER helper: `is_enrolled_in_journey()`.

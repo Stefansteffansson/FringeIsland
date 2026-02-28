@@ -114,4 +114,12 @@ After thousands of orphaned rows accumulated (1,749 groups, 3,446 memberships, 5
 
 > Promoted to playbook? Yes — added "Test Data Cleanup Infrastructure" section to test-agent.md
 
+### 2026-02-28: globalTeardown Phase 3 can delete migration-created groups
+The globalTeardown Phase 3 sweep (`created_by_group_id IS NULL` + not system + not personal) deletes engagement groups created by migrations that don't set `created_by_group_id`. The "FringeIsland Journeys" group was initially created without a creator and was deleted between test runs. Tests passed individually but failed in the full suite because the group was gone by the time the test ran. **Pattern:** Always verify migration-created groups have non-NULL `created_by_group_id`. Run the full suite twice when adding new migration-created entities to catch teardown-related issues.
+> Promoted to playbook? Not yet
+
+### 2026-02-28: Jest `--testPathPattern` is deprecated, use `--testPathPatterns`
+Jest replaced the singular `--testPathPattern` flag with plural `--testPathPatterns`. The old flag produces a deprecation warning. Use `--testPathPatterns="group-status|platform-ownership"` for running multiple specific test files.
+> Promoted to playbook? Not yet
+
 <!-- Append new entries below this line -->

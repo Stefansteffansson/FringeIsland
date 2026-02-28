@@ -342,9 +342,16 @@ See `docs/features/implemented/performance-optimization.md` for full analysis an
 
 ### Phase 1.6: Polish and Launch (Weeks 14-16) ⏳ IN PROGRESS
 
-**Status**: ⏳ **IN PROGRESS** — Sprint 0 Security Fixes complete (v0.2.32), Lifecycle Roadmap complete (2026-02-28)
+**Status**: ⏳ **IN PROGRESS** — Sprint 1 Foundation Schema complete (v0.2.33), Sprint 0 Security Fixes complete (v0.2.32)
 
-**Current Focus:** Sprint 1 (Foundation Schema) → Sprint 2 (Leave Group Core) → Sprint 3 (Smart Notifications). See `docs/planning/lifecycle-roadmap-decisions.md` for full 5-sprint structure.
+**Current Focus:** Sprint 2 (Leave Group Core) → Sprint 3 (Smart Notifications) → Sprint 4 (Platform Exit). See `docs/planning/lifecycle-roadmap-decisions.md` for full 5-sprint structure.
+
+**Lifecycle Sprints:**
+- ✅ Sprint 0: Security Fixes (v0.2.32) — 4 gaps fixed, 19 tests
+- ✅ Sprint 1: Foundation Schema (v0.2.33) — groups.status + FI Journeys group, 19 tests
+- ⏳ Sprint 2: Leave Group Core — next
+- ⏳ Sprint 3: Smart Notifications + Steward Nomination
+- ⏳ Sprint 4: Platform Exit (admin-assisted)
 
 **Deliverables**:
 

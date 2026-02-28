@@ -328,6 +328,70 @@
 
 ---
 
+## B-GRP-007: Group Status Visibility 🔄
+
+**Rule:** Every group has a `status` column constrained to `active`, `closed`, `archived`, or `suspended`. Non-admin users can ONLY see groups with `status = 'active'`. Platform admins (DeusEx members) can see groups of any status.
+
+**Why:** The leave-group feature (Sprint 2) requires groups to be closeable and archivable. Once a group is closed, it should disappear from non-admin views — members can no longer interact with it, and it doesn't clutter group lists. Admins need visibility into all groups for platform management.
+
+**Verified by:**
+- **Test:** `tests/integration/groups/group-status.test.ts`
+- **Database:** `groups.status` CHECK constraint
+- **Database:** Partial index `idx_groups_status_active` on `groups (id) WHERE status = 'active'`
+- **Database:** Updated RLS SELECT policy on `groups` table
+
+**Acceptance Criteria:**
+- [ ] `groups.status` column exists with type TEXT, NOT NULL, DEFAULT 'active'
+- [ ] CHECK constraint enforces: `status IN ('active', 'closed', 'archived', 'suspended')`
+- [ ] All existing groups have `status = 'active'` after migration
+- [ ] Non-admin user querying groups sees ONLY `status = 'active'` groups
+- [ ] Non-admin user cannot see closed/archived/suspended groups even if they are a member
+- [ ] Platform admin (`is_platform_admin()` returns true) sees groups of ALL statuses
+- [ ] New groups created via UI default to `status = 'active'`
+- [ ] Partial index exists for performance on the common `status = 'active'` query path
+
+**Examples:**
+
+✅ **Valid:**
+- Regular user queries `/groups` → Sees only active groups they're a member of (or public active groups)
+- Admin queries groups via admin panel → Sees all groups including closed/archived/suspended
+- New group created → `status = 'active'` automatically
+- Group status set to 'closed' by migration/RPC → Group disappears from non-admin views
+
+❌ **Invalid:**
+- Non-admin user queries all groups → Returns closed group in results → **BUG** (RLS should filter)
+- Group created with status = 'invalid_value' → **BLOCKED** (CHECK constraint)
+- Group created with status = NULL → **BLOCKED** (NOT NULL constraint)
+
+**Edge Cases:**
+
+- **Scenario:** User is an active member of a group that transitions to 'closed'
+  - **Behavior:** Group immediately disappears from the user's group list
+  - **Why:** Status = 'closed' means the group is no longer active; membership is irrelevant for visibility
+
+- **Scenario:** Group is 'suspended' — user tries to view it via direct URL `/groups/[id]`
+  - **Behavior:** Returns 404 / null (RLS filters it out before the app layer)
+  - **Why:** Suspended groups are invisible to non-admins; no special "suspended" UI for regular users
+
+- **Scenario:** Admin views a closed group's detail page
+  - **Behavior:** Full group details visible, including members and history
+  - **Why:** Admins need to manage closed groups (e.g., reopen, audit, delete)
+
+- **Scenario:** Public group with status = 'archived'
+  - **Behavior:** NOT visible to non-admin users, even though `is_public = true`
+  - **Why:** Status filter takes precedence over public visibility
+
+**Related Behaviors:**
+- B-GRP-003: Group Visibility Rules (this behavior EXTENDS B-GRP-003 with status filtering)
+- B-GRP-005: Group Deletion Rules (deletion is permanent; status = 'closed'/'archived' is soft)
+
+**Testing Priority:** 🔴 CRITICAL (security — prevents data leakage of non-active groups)
+
+**History:**
+- 2026-02-28: Documented (Sprint 1 Foundation Schema)
+
+---
+
 ## Notes
 
 **Implemented Behaviors:**
@@ -337,24 +401,27 @@
 - ✅ B-GRP-004: Group Editing Permissions (5 tests ✅)
 - ✅ B-GRP-005: Group Deletion Rules (6 tests ✅)
 - 🔄 B-GRP-006: User Search Typeahead (4 tests planned)
+- 🔄 B-GRP-007: Group Status Visibility (Sprint 1 — tests planned)
 
 **Test Coverage:**
-- 5 / 6 behaviors have tests (83%)
+- 5 / 7 behaviors have tests (71%)
 - `last-leader.test.ts` — 4 tests (B-GRP-001)
 - `invitations.test.ts` — 9 tests (B-GRP-002)
 - `rls/groups.test.ts` — 7 tests (B-GRP-003)
 - `edit-permissions.test.ts` — 5 tests (B-GRP-004)
 - `deletion.test.ts` — 6 tests (B-GRP-005)
 - `user-search.test.ts` — 4 tests planned (B-GRP-006)
-- Total GRP tests: **31 across 5 files** ✅ + 4 planned
+- `group-status.test.ts` — tests planned (B-GRP-007)
+- Total GRP tests: **31 across 5 files** ✅ + planned
 - *(Role assignment for group roles is tested in `role-assignment.test.ts` — see roles.md)*
-- **Last updated:** 2026-02-23
+- **Last updated:** 2026-02-28
 
 **Next Behaviors to Document:**
-- B-GRP-007: Member Removal Rules
-- B-GRP-008: Group Template Initialization
-- B-GRP-009: Group Label Uniqueness (if enforced)
+- B-GRP-008: Member Removal Rules (Sprint 2 — leave-group)
+- B-GRP-009: Group Template Initialization
+- B-GRP-010: Group Label Uniqueness (if enforced)
 
 **Related Behavior Specs:**
 - `roles.md` — B-ROL-001: Role Assignment Permissions ✅
 - `invitations.md` — B-INV-001: Pending Email Invitations 🔄
+- `journeys.md` — B-JRN-008: Platform Journey Ownership 🔄 (Sprint 1)

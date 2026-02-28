@@ -496,6 +496,73 @@
 
 ---
 
+## B-JRN-008: Platform Journey Ownership 🔄
+
+**Rule:** All predefined (platform-provided) journeys MUST be owned by the "FringeIsland Journeys" engagement group. This group exists as a public, platform-managed group with DeusEx as its Steward.
+
+**Why:** The leave-group feature (Sprint 2) freezes non-public journey enrollments when a member leaves a group. For this to work correctly, the system must distinguish "platform journey" (owned by FI Journeys group, public) from "group non-public journey" (owned by an engagement group, non-public). Currently, the 8 predefined journeys are owned by a random user's personal group (legacy seed), making this distinction untestable.
+
+**Verified by:**
+- **Test:** `tests/integration/journeys/platform-ownership.test.ts`
+- **Database:** Migration creates "FringeIsland Journeys" group and updates `journeys.created_by_group_id`
+- **Database:** `group_memberships` + `user_group_roles` for DeusEx Steward role in FI Journeys group
+
+**Acceptance Criteria:**
+- [ ] A group named "FringeIsland Journeys" exists with `group_type = 'engagement'` and `is_public = true`
+- [ ] The FI Journeys group has `status = 'active'` (requires B-GRP-007 column to exist)
+- [ ] All 8 predefined journeys have `created_by_group_id` pointing to the FI Journeys group
+- [ ] All 8 predefined journeys have `is_public = true`
+- [ ] All 8 predefined journeys have `is_published = true` (unchanged — already true)
+- [ ] DeusEx admin group is a member of the FI Journeys group with Steward role
+- [ ] The FI Journeys group is visible in public group listings (is_public + status = 'active')
+- [ ] The migration is idempotent — running it again does not create duplicate groups or break FK relationships
+- [ ] No existing enrollment records are broken by the ownership change
+
+**Examples:**
+
+✅ **Valid:**
+- Query `SELECT * FROM groups WHERE name = 'FringeIsland Journeys'` → Returns exactly 1 row
+- Query predefined journey → `created_by_group_id` = FI Journeys group UUID
+- Admin queries FI Journeys group members → DeusEx is listed as Steward
+- Non-admin user browses public groups → FI Journeys group visible (public + active)
+
+❌ **Invalid:**
+- Predefined journey still owned by random user's personal group → **BUG** (migration didn't run)
+- FI Journeys group has `group_type = 'system'` → **BUG** (should be 'engagement')
+- FI Journeys group missing from public groups list → **BUG** (is_public or status wrong)
+- Running migration twice → Duplicate "FringeIsland Journeys" groups created → **BUG** (not idempotent)
+
+**Edge Cases:**
+
+- **Scenario:** "FringeIsland Journeys" group already exists (migration re-run)
+  - **Behavior:** Migration detects existing group and skips creation; still updates journey ownership
+  - **Why:** Idempotency — safe to re-run without duplicating data
+
+- **Scenario:** One of the 8 predefined journeys was deleted before migration
+  - **Behavior:** Migration updates remaining journeys; no error on missing journey
+  - **Why:** Migration should be resilient to partial data states
+
+- **Scenario:** User has an existing enrollment in a predefined journey — does ownership change affect it?
+  - **Behavior:** No effect — enrollment references `journey_id`, not `created_by_group_id`
+  - **Why:** Enrollment FK is to the journey, not to the owning group
+
+- **Scenario:** FI Journeys group is deleted by admin
+  - **Behavior:** `created_by_group_id` on journeys SET NULL (ON DELETE SET NULL FK)
+  - **Why:** Journeys survive group deletion; ownership becomes NULL (orphaned but accessible)
+
+**Related Behaviors:**
+- B-GRP-007: Group Status Visibility (FI Journeys group must have status = 'active')
+- B-GRP-003: Group Visibility Rules (FI Journeys group is public, so visible to all)
+- B-JRN-001: Journey Catalog Discovery (predefined journeys still appear in catalog)
+- B-JRN-003: Journey Enrollment Rules (enrollment unaffected by ownership change)
+
+**Testing Priority:** 🔴 CRITICAL (data integrity — prerequisite for leave-group enrollment freezing)
+
+**History:**
+- 2026-02-28: Documented (Sprint 1 Foundation Schema)
+
+---
+
 ## Notes
 
 **Implementation Status:**
@@ -509,6 +576,7 @@
 | B-JRN-005 | Step Completion Tracking | ✅ Implemented (v0.2.11) | `progress-tracking.test.ts` — 8 tests ✅ |
 | B-JRN-006 | Journey Resume | ✅ Implemented (v0.2.11) | `resume.test.ts` — 6 tests ✅ |
 | B-JRN-007 | Journey Completion | ✅ Implemented (v0.2.11) | `completion.test.ts` — 7 tests ✅ |
+| B-JRN-008 | Platform Journey Ownership | 🔄 Sprint 1 | `platform-ownership.test.ts` — tests planned |
 
 **Key Components:**
 - `app/journeys/[id]/play/page.tsx` — Journey player page (enrollment check, load state)
@@ -516,11 +584,11 @@
 - `app/my-journeys/page.tsx` — "Start" / "Continue" / "Review Journey" buttons, progress % display
 
 **Test Coverage:**
-- 7 / 7 behaviors have tests (100%) ✅
-- Total: 48 tests across 7 files, all passing
-- **Last updated:** 2026-02-11
+- 7 / 8 behaviors have tests (87.5%)
+- Total: 48 tests across 7 files, all passing + Sprint 1 tests planned
+- **Last updated:** 2026-02-28
 
 **Next Behaviors to Document (Future Phases):**
-- B-JRN-008: Group Progress Visibility (Travel Guide can see member progress) - Phase 2
-- B-JRN-009: Journey Unenrollment Rules
-- B-JRN-010: Journey Access After Unenrollment
+- B-JRN-009: Group Progress Visibility (Travel Guide can see member progress) - Phase 2
+- B-JRN-010: Journey Unenrollment Rules
+- B-JRN-011: Journey Access After Unenrollment

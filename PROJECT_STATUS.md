@@ -1,26 +1,24 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-28 (Sprint 0 — Security Fixes complete)
-**Current Version:** 0.2.32
+**Last Updated:** 2026-02-28 (Sprint 1 — Foundation Schema complete)
+**Current Version:** 0.2.33
 **Active Branch:** main
 
 ---
 
 ## What We're Working On NOW
 
-**Current Focus:** Sprint 0 COMPLETE — Sprint 1 (Foundation Schema) is next
+**Current Focus:** Sprint 1 COMPLETE — Sprint 2 (Leave Group Core) is next
 
 **Key Docs:**
 - `docs/planning/lifecycle-roadmap-decisions.md` — **Single source of truth** for sprint structure and decisions
-- `docs/specs/behaviors/security.md` — Sprint 0 behavior specs (4 behaviors, all verified)
+- `docs/features/active/foundation-schema.md` — Sprint 1 feature doc (COMPLETE)
+- `docs/specs/behaviors/groups.md` — B-GRP-007 (Group Status Visibility)
+- `docs/specs/behaviors/journeys.md` — B-JRN-008 (Platform Journey Ownership)
 
 **Active Tasks:**
-- [x] **Leave Group Feature Review** ✅ DONE — multi-round analysis, 9 ambiguities resolved
-- [x] **[Deleted User] Sentinel Seed** ✅ DONE — migration applied, system group now exists in DB
-- [x] **Lifecycle Roadmap Decisions** ✅ DONE — 5 binding decisions (D-R1 to D-R5), 5-sprint structure, dependency graph
-- [x] **Leave Group Spec Tweaks** ✅ DONE — 9 tweaks applied (prerequisites, scope exclusion, resolved OPENs)
-- [x] **Feature Doc Reorganization** ✅ DONE — moved implemented features from planned/active → implemented/
-- [x] **Sprint 0 — Security Fixes** ✅ DONE — 4 security gaps fixed (S1-S4), 19 new tests, 485/485 GREEN, v0.2.32
+- [x] **Sprint 1 — Foundation Schema** ✅ DONE — F1 (groups.status) + F2 (FI Journeys group), 19 new tests, 504/504 GREEN, v0.2.33
+- [x] **Sprint 0 — Security Fixes** ✅ DONE — 4 security gaps fixed (S1-S4), 19 new tests, v0.2.32
 - [x] **Feature Doc Review** ✅ DONE — 6 docs updated (D15 renames, Sprint 0 staleness, path fixes)
 
 **Blocked/Waiting:**
@@ -38,13 +36,13 @@
 
 ## Quick Stats
 
-- **Phase:** Sprint 0 COMPLETE — Sprint 1 (Foundation Schema) is next
+- **Phase:** Sprint 1 COMPLETE — Sprint 2 (Leave Group Core) is next
 - **Total Tables:** 19 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 12 active + 71 archived
-- **Recent Version:** v0.2.32 (Sprint 0 — Security Fixes)
-- **Test Coverage:** 485 integration + 99 unit + 4 setup = **588 tests** ✅
-- **Behaviors Documented:** 92 (88 previous + 4 security) ✅
-- **Feature Docs:** 8 implemented + 1 planned design (leave-group refined) + 1 roadmap (lifecycle decisions)
+- **Total Migrations:** 13 active + 71 archived
+- **Recent Version:** v0.2.33 (Sprint 1 — Foundation Schema)
+- **Test Coverage:** 504 integration + 99 unit + 4 setup = **607 tests** ✅
+- **Behaviors Documented:** 94 (92 previous + 2 Sprint 1) ✅
+- **Feature Docs:** 8 implemented + 1 active (foundation-schema COMPLETE) + 1 planned design (leave-group refined) + 1 roadmap (lifecycle decisions)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
 
 **Completed Major Features:**
@@ -58,6 +56,7 @@
 - ✅ Error Handling System
 - ✅ Testing Infrastructure (Jest + integration tests)
 - ✅ **RLS Security (all tables protected + Sprint 0 security fixes)** v0.2.32
+- ✅ **Foundation Schema (groups.status + FI Journeys group)** v0.2.33
 - ✅ **Development Dashboard** (visual project status at /dev/dashboard)
 - ✅ **RBAC System Design** (22 decisions, fully implemented)
 - ✅ **Agent System** (7 agents, two-tier architecture, continuous learning)
@@ -98,28 +97,24 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-28 (Sprint 0 Security Fixes + Feature Doc Review)
+**Date:** 2026-02-28 (Sprint 1 — Foundation Schema)
 **Summary:**
-- Completed Sprint 0: Security Fixes — full TDD workflow (Phases 0-7), v0.2.32
-- Fixed 4 security gaps: S1 (non-public journey RLS), S2 (enrollment INSERT gating), S3 (JourneyPlayer frozen UI), S4 (enrollment UPDATE frozen RLS)
-- Created 2 new SECURITY DEFINER helper functions: `is_enrolled_in_journey()`, `is_journey_enrollable()`
-- 19 new security integration tests, 485/485 GREEN, zero regressions
-- Reviewed all 13 feature docs, updated 6:
-  - `journey-system.md` — Sprint 0 RLS policies, frozen enrollment handling
-  - `group-forum-system.md` — D15 column renames (author_group_id, member_group_id, Steward/Guide)
-  - `notification-system.md` — D15 column renames (recipient_group_id, get_current_personal_group_id)
-  - `direct-messaging.md` — Checked all 8 success criteria boxes
-  - `leave_group_feature_review.md` — Marked Sprint 0 prerequisites complete
-  - `enhanced-member-invitations.md` — Fixed self-reference path
+- Completed Sprint 1: Foundation Schema — full TDD workflow (Phases 0-7), v0.2.33
+- F1: Added `groups.status` column (active/closed/archived/suspended) with CHECK constraint, partial index, updated `groups_select` RLS policy
+- F2: Created "FringeIsland Journeys" engagement group, added DeusEx as Steward, re-seeded 8 predefined journeys with correct D15 ownership
+- 19 new integration tests (9 group-status + 10 platform-ownership), 504/504 GREEN, zero regressions
+- Discovered and fixed: (1) journeys table was empty (lost during D15 rebuild), (2) globalTeardown orphan sweep deleted FI Journeys group when `created_by_group_id` was NULL — fixed by setting it to DeusEx
 
 **Key files:**
-- `supabase/migrations/20260228102720_sprint0_security_fixes.sql` — RLS fixes (S1, S2, S4)
-- `components/journeys/JourneyPlayer.tsx` — Frozen UI enforcement (S3)
-- `docs/specs/behaviors/security.md` — 4 behavior specs (all verified)
-- `tests/integration/security/` — 19 new tests
-- `docs/features/implemented/` — 5 docs updated, `docs/features/planned/` — 1 doc updated
+- `supabase/migrations/20260228111514_sprint1_foundation_schema.sql` — F1 + F2
+- `tests/integration/groups/group-status.test.ts` — 9 tests (B-GRP-007)
+- `tests/integration/journeys/platform-ownership.test.ts` — 10 tests (B-JRN-008)
+- `docs/features/active/foundation-schema.md` — Feature doc (COMPLETE)
+- `docs/specs/behaviors/groups.md` — B-GRP-007
+- `docs/specs/behaviors/journeys.md` — B-JRN-008
 
 **Previous Sessions:**
+- 2026-02-28: Sprint 0 — Security Fixes + Feature Doc Review (v0.2.32)
 - 2026-02-28: Lifecycle Roadmap Decisions + feature doc reorganization
 - 2026-02-27: Leave Group Feature Review + [Deleted User] sentinel seed
 - 2026-02-27: Fix personal group RLS visibility (v0.2.31)
@@ -141,14 +136,13 @@
 
 **Display Name / Nickname System COMPLETE** ✅
 
-**Sprint 0 — Security Fixes COMPLETE** ✅ (v0.2.32)
+**Sprint 1 — Foundation Schema COMPLETE** ✅ (v0.2.33)
 
-**Next — Sprint 1: Foundation Schema:**
-Add `groups.status` column + "FringeIsland Journeys" system group. TDD workflow.
+**Next — Sprint 2: Leave Group Core:**
+Regular member leave, sole Steward→DeusEx transfer, group closure. TDD workflow.
 See `docs/planning/lifecycle-roadmap-decisions.md` for full sprint structure.
 
-**After Sprint 1:**
-- Sprint 2: Leave Group Core (regular member, sole Steward→DeusEx, group closure)
+**After Sprint 2:**
 - Sprint 3: Smart Notifications + Steward Nomination (Track 1)
 - Sprint 4: Platform Exit (admin-assisted)
 
