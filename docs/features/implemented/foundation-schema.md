@@ -8,7 +8,7 @@
 **Phase:** 1.6 (Polish and Launch — lifecycle prerequisites)
 **Depends on:** Sprint 0 complete (v0.2.32) ✅
 **Source:** `docs/planning/lifecycle-roadmap-decisions.md`
-**Related:** [Group Management](./group-management.md) | [Leave Group Core](./leave-group-core.md) | [Platform Exit](./platform-exit.md) | [Leave Group Review](../planned/leave_group_feature_review.md) | [Journey System](./journey-system.md)
+**Related:** [Group Management](./group-management.md) | [Leave Group Core](./leave-group-core.md) | [Platform Exit](./platform-exit.md) | [Leave Group Review](../../archive/leave_group_feature_review.md) | [Journey System](./journey-system.md)
 
 ---
 
@@ -121,8 +121,8 @@ The "FringeIsland Journeys" group functions like a normal engagement group that 
 
 ## Out of Scope (Sprint 1)
 
-- Leave-group feature (Sprint 2)
-- Smart notifications (Sprint 3)
-- Group lifecycle state machine (status transitions — Sprint 2)
+- ~~Leave-group feature~~ — **IMPLEMENTED (Sprint 2, v0.2.34).** See [leave-group-core.md](./leave-group-core.md).
+- ~~Smart notifications~~ — **IMPLEMENTED (Sprint 3, v0.2.35).** See [smart-notifications.md](./smart-notifications.md).
+- ~~Group lifecycle state machine (status transitions)~~ — **Partially implemented (Sprint 2, v0.2.34).** `leave_group()` RPC sets `status = 'closed'` on last-member leave.
 - Group archive/suspend UI (future)
 - Journey ownership transfer UI (future)

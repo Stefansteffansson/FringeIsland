@@ -2,7 +2,7 @@
 
 **Status:** ✅ Implemented (v0.2.21–v0.2.25)
 **Phase:** 1.6 — Admin Foundation
-**Last Updated:** February 20, 2026
+**Last Updated:** February 28, 2026
 
 ---
 
@@ -274,3 +274,4 @@ Full specs: `docs/specs/behaviors/admin.md`
 - [x] Join → GroupPickerModal + ConfirmModal + insert memberships (active) + Member role
 - [x] Remove → GroupPickerModal (intersection) + ConfirmModal + delete roles + memberships
 - [x] Logout → ConfirmModal + `admin_force_logout` RPC
+- [x] Exit Platform → ConfirmModal + `admin_exit_user_from_platform` RPC (cascade leave + decommission)

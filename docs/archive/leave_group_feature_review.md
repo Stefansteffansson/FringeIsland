@@ -1,3 +1,9 @@
+> **ARCHIVED** — All sprints complete. This design discussion document is retained for historical context only. See the authoritative implementation docs:
+> - [Leave Group Core](../features/implemented/leave-group-core.md) (Sprint 2, L1/L2/L3)
+> - [Smart Notifications](../features/implemented/smart-notifications.md) (Sprint 3, Track 1 nomination)
+> - [Platform Exit](../features/implemented/platform-exit.md) (Sprint 4, admin-assisted cascade)
+> - [Foundation Schema](../features/implemented/foundation-schema.md) (Sprint 1, prerequisites)
+
 # FringeIsland — Feature Discussion Review
 ## Leave Group & Steward Handover Flow
 *February 2026 | Sprint 2 (L1/L2/L3) COMPLETE — see `docs/features/implemented/leave-group-core.md`*

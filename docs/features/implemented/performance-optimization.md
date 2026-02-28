@@ -3,7 +3,7 @@
 **Status:** ✅ Implemented (v0.2.26–v0.2.28) — All Tiers Complete (1A, 1B, 1C, 2A, 2B, 2C, 3A, 3B)
 **Created:** 2026-02-20
 **Priority:** HIGH — Blocking user experience on admin panel and groups pages
-**Version:** 0.2.26 (target)
+**Version:** 0.2.26–0.2.28 (complete)
 
 ---
 
@@ -20,6 +20,8 @@ The admin panel (6700 users) and the My Groups / Group Detail pages are unaccept
 ---
 
 ## Root Cause Analysis (5 Root Causes)
+
+> **Historical note:** This diagnosis was performed 2026-02-20, prior to D15. Column names, function names, and policy structures described below reflect the pre-D15 state. All issues identified here have been resolved — see the Fixes sections below for the implemented solutions and current architecture in `group-management.md`.
 
 ### Root Cause 1: `has_permission()` as a Per-Row Tax in RLS Policies
 
@@ -166,7 +168,7 @@ User in 10 groups = 10 additional HTTP requests, each passing through RLS.
 
 ---
 
-## Fixes Already Applied (This Session — 2026-02-20)
+## Fixes Already Applied (v0.2.26, 2026-02-20)
 
 ### Fix 1: Infinite Re-render Loop (DONE)
 
@@ -204,12 +206,14 @@ User in 10 groups = 10 additional HTTP requests, each passing through RLS.
 CREATE INDEX CONCURRENTLY idx_groups_group_type ON groups(group_type);
 
 -- Speed up has_permission() and is_active_group_member() lookups
+-- (D15: user_id renamed to member_group_id)
 CREATE INDEX CONCURRENTLY idx_memberships_user_group_status
-  ON group_memberships(user_id, group_id, status);
+  ON group_memberships(member_group_id, group_id, status);
 
 -- Speed up has_permission() JOIN chain (covering index)
+-- (D15: user_id renamed to member_group_id)
 CREATE INDEX CONCURRENTLY idx_ugr_user_group_role
-  ON user_group_roles(user_id, group_id, group_role_id);
+  ON user_group_roles(member_group_id, group_id, group_role_id);
 ```
 
 **Impact:** Every `has_permission()` call gets faster. Every membership lookup gets faster. Affects all pages.
@@ -299,32 +303,14 @@ Also parallelized `refetchMembers`: Q6 → Promise.all([Q7, Q8]) + added setMemb
 
 **Impact:** My Groups with 10 groups: 12 HTTP requests → 3 (2 parallel steps). ~500ms faster.
 
-#### 2C. Remove `has_permission()` from SELECT RLS Policies
+#### 2C. Remove `has_permission()` from SELECT RLS Policies ✅ DONE
 
 **Type:** Migration
-**Effort:** ~1-2 hours (careful policy rewrite)
+**Status:** COMPLETE — admin SELECT policies dropped; `groups_select` simplified via `is_platform_admin()`.
 
-**Approach:** With admin queries handled by `service_role` (Tier 1B), the `deusex_admin_select_*` policies on `users`, `group_memberships`, `user_group_roles` are no longer needed. Drop them.
+**Approach:** With admin queries handled by `service_role` (Tier 1B), the `deusex_admin_select_*` policies on `users`, `group_memberships`, `user_group_roles` were dropped. The `groups` SELECT policy was simplified to use `is_platform_admin()` (a fast SQL SECURITY DEFINER check) instead of `has_permission()`.
 
-For the `groups` table SELECT policy, simplify to remove the `has_permission()` branch:
-```sql
--- Before (5 OR branches, up to ~8 sub-queries per row):
-USING (
-  is_public = true
-  OR is_active_group_member(id)
-  OR is_invited_group_member(id)
-  OR created_by_user_id = get_current_user_profile_id()
-  OR has_permission(...)  -- EXPENSIVE, remove this
-)
-
--- After (4 OR branches, admin handled by service_role):
-USING (
-  is_public = true
-  OR is_active_group_member(id)
-  OR is_invited_group_member(id)
-  OR created_by_user_id = get_current_user_profile_id()
-)
-```
+> **Note:** The original pre-D15 policy used `created_by_user_id` / `get_current_user_profile_id()`. Post-D15, these became `created_by_group_id` / `get_current_personal_group_id()`. The final policy uses `is_platform_admin()` for admin access. See `group-management.md` for the current policy definitions.
 
 **Impact:** Every SELECT on users/groups/memberships gets faster for ALL users (not just admin).
 
@@ -365,32 +351,17 @@ USING (
 
 ---
 
-## Key Files Reference
+## Key Files Modified
 
-**Files already modified this session:**
-- `app/admin/page.tsx` — useCallback fix for infinite loop
-- `components/admin/AdminDataPanel.tsx` — single query, prefetch, debounce, two-tier loading
+- `app/admin/page.tsx` — useCallback fix, stat dedup, commonGroupCount debounce
+- `components/admin/AdminDataPanel.tsx` — single query, prefetch, debounce, two-tier loading, API route
+- `app/api/admin/users/route.ts` — service_role admin route (Tier 1B)
+- `lib/auth/AuthContext.tsx` — shared userProfile (Tier 1C)
+- `app/groups/[id]/page.tsx` — parallelized queries (Tier 2A)
+- `app/groups/page.tsx` — RPC batch member counts (Tier 2B)
+- `supabase/migrations/` — indexes (1A), `get_group_member_counts` RPC (2B), admin policy cleanup (2C)
 
-**Files to modify (Tier 1):**
-- `supabase/migrations/` — new migration for indexes
-- `lib/auth/AuthContext.tsx` — add userProfile
-- `app/api/admin/users/route.ts` — new server route (service_role)
-- `components/admin/AdminDataPanel.tsx` — use API route for users
-
-**Files to modify (Tier 2):**
-- `app/groups/[id]/page.tsx` — parallelize queries, remove redundant
-- `app/groups/page.tsx` — replace N+1 with RPC
-- `supabase/migrations/` — new RPC + drop admin SELECT policies
-- `components/Navigation.tsx` — use shared userProfile
-- `lib/contexts/MessagingContext.tsx` — use shared userProfile
-- `lib/contexts/NotificationContext.tsx` — use shared userProfile
-- `hooks/usePermissions.ts` — use shared userProfile
-
-**Analysis source files (for reference):**
-- `has_permission()` defined in: `supabase/migrations/20260216111905_rbac_permission_resolution.sql`
-- Admin RLS policies in: `supabase/migrations/20260219160451_fix_admin_update_add_select_policy.sql`
-- Groups SELECT policy in: `supabase/migrations/20260219153530_*.sql`
-- Helper functions (`is_active_group_member`, `get_current_user_profile_id`) in RBAC migrations
+> **Note:** Post-D15, the pre-D15 migration files referenced in the Root Cause Analysis section (e.g., `20260216111905_rbac_permission_resolution.sql`) were superseded by the D15 rebuild migration.
 
 ---
 

@@ -160,8 +160,6 @@ Two issues found and fixed after the initial 28-step migration:
 | `created_by_user_id` | 0 matches |
 | `enrolled_by_user_id` | 0 matches |
 
-**Note:** Test files (`tests/integration/`) still contain some old-pattern references in comments and test data. These are non-functional and will be cleaned up as tests are updated.
-
 ---
 
 ## Git History

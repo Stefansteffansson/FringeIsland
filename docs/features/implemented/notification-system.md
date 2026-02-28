@@ -148,7 +148,7 @@ USING (
 
 ### Channel Model
 
-Each authenticated user subscribes to a single Realtime channel filtered by their `recipient_user_id`:
+Each authenticated user subscribes to a single Realtime channel filtered by their `recipient_group_id`:
 
 ```
 Channel: postgres_changes
@@ -302,14 +302,9 @@ These are **smart notifications** with `action_type` set, created by SECURITY DE
 
 ## Migration Plan
 
-Single migration file, ordered by dependency:
+> **Note:** Migration complete (v0.2.14). See `supabase/migrations/` for the applied migration file.
 
-1. Create `notifications` table + indexes
-2. Enable RLS + create policies (SELECT, UPDATE, DELETE only)
-3. Ensure `get_current_user_profile_id()` exists
-4. Create 6 notification trigger functions (SECURITY DEFINER)
-5. Create 5 triggers on `group_memberships` and `user_group_roles`
-6. Verification block
+Originally implemented as a single migration with 6 steps: table + indexes, RLS policies, helper functions, trigger functions, triggers, verification. Post-D15 column renames applied in the D15 rebuild migration.
 
 ---
 

@@ -307,7 +307,7 @@ Each item below is explicitly deferred. This section prevents scope creep and en
 
 ---
 
-## Tweaks Applied to `leave_group_feature_review.md`
+## Tweaks Applied to `leave_group_feature_review.md` (now at `docs/archive/leave_group_feature_review.md`)
 
 Before Sprint 2 BDD scenarios are written, the spec received these updates (applied 2026-02-28):
 

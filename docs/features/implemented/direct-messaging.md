@@ -84,9 +84,9 @@ When a user receives a new message, a notification is created (type: `new_direct
 
 ---
 
-## Data Model (High-Level)
+## Data Model
 
-Two tables are needed:
+Two tables (implemented v0.2.15):
 
 ### conversations
 - Represents a 1:1 conversation between two users
@@ -96,9 +96,9 @@ Two tables are needed:
 ### direct_messages
 - Individual messages within a conversation
 - Links to conversation and sender
-- Read tracking at the message level or conversation level (design decision for Phase 3)
+- Read tracking at the message level or conversation level
 
-**Note:** Detailed schema design happens in Phase 3 (Architect Agent). This section provides intent only.
+**Note:** For detailed schema (columns, constraints, RLS), see the migration files in `supabase/migrations/`.
 
 ---
 
@@ -107,7 +107,7 @@ Two tables are needed:
 ### Notification System (Phase 1.5-A)
 - New message triggers a `new_direct_message` notification via SECURITY DEFINER function
 - Payload includes: sender name, message preview (truncated), conversation ID
-- Follows existing notification trigger pattern from `notification-system.md`
+- **Note:** The `new_direct_message` notification type is not yet listed in the [Notification System](./notification-system.md) type registry — it should be added there.
 
 ### Navigation Bar
 - Add Messages icon with unread count badge (alongside existing notification bell)

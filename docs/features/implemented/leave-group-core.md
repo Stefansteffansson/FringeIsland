@@ -7,7 +7,7 @@
 **Version:** v0.2.34
 **Phase:** 1.6 (Polish and Launch — lifecycle features)
 **Dependencies:** Sprint 0 (v0.2.32) + Sprint 1 (v0.2.33) — both COMPLETE
-**Related:** [Group Management](./group-management.md) | [Foundation Schema](./foundation-schema.md) | [Leave Group Review](../planned/leave_group_feature_review.md)
+**Related:** [Group Management](./group-management.md) | [Foundation Schema](./foundation-schema.md) | [Leave Group Review](../../archive/leave_group_feature_review.md)
 
 ---
 
@@ -15,7 +15,7 @@
 
 Sprint 2 implements the core leave-group flows that do NOT require smart notifications. These are the scenarios where a member can leave immediately without an asynchronous nomination process. The `leave_group(p_group_id)` SECURITY DEFINER RPC handles all three scenarios automatically based on membership count and role status.
 
-**Full spec:** `docs/features/planned/leave_group_feature_review.md`
+**Full spec:** `docs/archive/leave_group_feature_review.md`
 **Roadmap decisions:** `docs/planning/lifecycle-roadmap-decisions.md`
 
 ---
@@ -128,6 +128,8 @@ This allows role deletion when a group is being closed (L3 scenario).
 
 ### Notification Types Created by RPC
 
+> These types are also registered in the [Notification System — Sprint 2 Types](./notification-system.md).
+
 | Type | Scenario | Recipient | Message |
 |------|----------|-----------|---------|
 | `stewardship_transferred` | L2 | All group members | "FringeIsland has temporarily assumed stewardship of [Group]." |
@@ -193,7 +195,7 @@ This is a display-layer concern handled by ForumSection component's membership c
 | `supabase/migrations/20260228120745_sprint2_leave_group_core.sql` | `leave_group()` RPC + trigger update |
 | `tests/integration/groups/leave-group.test.ts` | 17 integration tests |
 | `docs/specs/behaviors/groups.md` | B-GRP-008, B-GRP-009, B-GRP-010 |
-| `docs/features/planned/leave_group_feature_review.md` | Full design spec |
+| `docs/archive/leave_group_feature_review.md` | Full design spec (archived) |
 | `docs/planning/lifecycle-roadmap-decisions.md` | Sprint structure and decisions |
 
 ---

@@ -272,249 +272,15 @@ TIER 2 — CONTEXT GROUPS (active only in that group):
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### RBAC vs. Current Approach
-
-| Aspect | Current (v0.2.13) | Target (RBAC) |
-|--------|-------------------|---------------|
-| **How permissions checked** | `role.name === 'Group Leader'` in UI code | `hasPermission(userId, groupId, 'members.invite')` |
-| **Where permissions defined** | Implicitly in component logic | Explicitly in `permissions` + `group_role_permissions` tables |
-| **Can users customize roles?** | No | Yes — Group Leaders can adjust what each role can do |
-| **Adding a new role** | Requires code changes | Add role + assign permissions in DB |
-| **Permission granularity** | Binary: leader vs. non-leader | Fine-grained: 30+ discrete permissions |
+> **Note:** The RBAC system replaced the original `isLeader` boolean pattern (v0.2.13). The pre-RBAC schema had the permission and role template tables but they were unwired — `role_template_permissions` and `group_role_permissions` were empty. The D15 rebuild (v0.2.22) wired everything up. For the current schema, see [Group Management](./group-management.md) and the D15 migration doc.
 
 ---
 
-## Existing Database Infrastructure
+## Activity Catalog
 
-The schema already has the tables needed for RBAC. They were created in migration `20260120_initial_schema.sql` but **never wired into the application**.
+The RBAC system was designed against a complete inventory of ~73 discrete platform actions across 10 domains: auth, profile, groups, members, roles, journeys, enrollments, communication, feedback, and admin. The implemented permission set (41 permissions, D22) is a coarse-grained subset — multiple leaf activities map to a single permission where they share a UI context and security impact.
 
-### Tables (already exist)
-
-```
-permissions                    # 30+ permission definitions (seeded)
-role_templates                 # 5 role templates (seeded)
-role_template_permissions      # Maps templates → permissions (EXISTS BUT EMPTY!)
-group_templates                # 4 group templates (seeded)
-group_template_roles           # Maps group templates → role templates (seeded)
-group_roles                    # Actual roles instantiated per group
-group_role_permissions         # Maps group roles → permissions (EXISTS BUT EMPTY!)
-user_group_roles               # Maps users → roles in a group (actively used)
-```
-
-### What's Seeded
-
-**Permissions (30 entries across 6 categories):**
-
-| Category | Permissions |
-|----------|------------|
-| `group_management` (13) | `create_group`, `edit_group_settings`, `delete_group`, `invite_members`, `remove_members`, `activate_members`, `pause_members`, `assign_roles`, `remove_roles`, `view_member_list`, `view_member_profiles`, `set_group_visibility`, `control_member_list_visibility` |
-| `journey_management` (9) | `enroll_group_in_journey`, `enroll_self_in_journey`, `unenroll_from_journey`, `freeze_journey`, `create_journey`, `edit_journey`, `publish_journey`, `unpublish_journey`, `delete_journey` |
-| `journey_participation` (5) | `view_journey_content`, `complete_journey_activities`, `view_own_progress`, `view_others_progress`, `track_group_progress` |
-| `communication` (5) | `post_forum_messages`, `send_direct_messages`, `moderate_forum`, `view_forum`, `reply_to_messages` |
-| `feedback` (3) | `provide_feedback_to_members`, `receive_feedback`, `view_member_feedback` |
-| `platform_admin` (4) | `manage_platform_settings`, `manage_all_groups`, `manage_role_templates`, `manage_group_templates` |
-
-**Role Templates (5):**
-- Platform Admin Role Template
-- Group Leader Role Template
-- Travel Guide Role Template
-- Member Role Template
-- Observer Role Template
-
-### What's Missing
-
-- `role_template_permissions` — **empty**. Templates aren't connected to permissions.
-- `group_role_permissions` — **empty**. Live group roles aren't connected to permissions.
-- No application code reads these tables for access decisions.
-
----
-
-## Complete Activity Tree
-
-Every discrete action a user can perform in FringeIsland, organized hierarchically by domain. Each leaf node represents a candidate **permission** in the RBAC system.
-
-### 1. Authentication
-
-```
-auth
- |- auth.signup                          # Create a new account
- |- auth.signin                          # Sign in to existing account
- +- auth.signout                         # End current session
-```
-
-> **Note:** Auth actions are pre-authentication and handled by Supabase Auth directly. They don't participate in RBAC. Included for completeness.
-
-### 2. Profile
-
-```
-profile
- |- profile.view_own                     # View own profile page
- |- profile.edit
- |   |- profile.edit.name                # Change display name
- |   |- profile.edit.bio                 # Change bio text
- |   +- profile.edit.avatar              # Upload/replace avatar image
- +- profile.deactivate                   # Deactivate account (soft delete; not yet in UI)
-```
-
-> **Note:** Profile actions are user-scoped (you can only edit your own). No group context. These may remain outside RBAC or use a simple "authenticated user" baseline.
-
-### 3. Groups
-
-```
-groups
- |- groups.list                          # View list of groups user belongs to
- |- groups.browse_public                 # Browse/discover public groups
- |- groups.create                        # Create a new group
- |                                       #   (multi-step: group + membership + role setup)
- |- groups.view
- |   |- groups.view.details              # View group name, description, settings
- |   +- groups.view.members              # View member list
- |                                       #   (currently gated by show_member_list OR isLeader)
- |- groups.edit
- |   |- groups.edit.name                 # Change group name
- |   |- groups.edit.description          # Change group description
- |   |- groups.edit.label                # Change group label
- |   |- groups.edit.visibility           # Toggle public/private
- |   +- groups.edit.member_list_visibility   # Toggle show_member_list
- |- groups.delete                        # Delete group (cascades memberships, roles, enrollments)
- +- groups.leave                         # Leave a group
-                                         #   (blocked by trigger if last leader)
-```
-
-### 4. Members (group-scoped)
-
-```
-members
- |- members.view
- |   |- members.view.list                # See who is in the group
- |   |- members.view.roles               # See what roles each member holds
- |   +- members.view.invitation_count    # See pending invitation badge (navigation)
- |- members.invite
- |   |- members.invite.search_user       # Look up a user by email
- |   +- members.invite.send              # Create invitation (status='invited')
- |- members.remove                       # Remove an active member from group
- |- members.activate                     # Reactivate a paused member (not yet in UI)
- |- members.pause                        # Pause a member (not yet in UI)
- +- members.invitation
-     |- members.invitation.view          # View own pending invitations
-     |- members.invitation.accept        # Accept an invitation (invited -> active)
-     +- members.invitation.decline       # Decline an invitation (delete record)
-```
-
-### 5. Roles (group-scoped)
-
-```
-roles
- |- roles.view                           # View available roles in a group
- |- roles.assign                         # Assign a role to a member
- |   |- roles.assign.member              # Assign "Member" role
- |   |- roles.assign.travel_guide        # Assign "Travel Guide" role
- |   +- roles.assign.leader              # Promote to "Group Leader"
- |- roles.remove                         # Remove a role from a member
- |                                       #   (blocked by trigger if last leader)
- +- roles.manage                         # (Phase 2: custom role creation)
-     |- roles.manage.create              # Create a custom role for the group
-     |- roles.manage.edit                # Edit a custom role's permissions
-     +- roles.manage.delete              # Delete a custom role
-```
-
-### 6. Journeys (catalog / browsing)
-
-```
-journeys
- |- journeys.browse                      # View the journey catalog
- |   |- journeys.browse.search           # Search by title/description
- |   |- journeys.browse.filter_difficulty # Filter: beginner/intermediate/advanced
- |   +- journeys.browse.filter_tags      # Filter by topic tags
- |- journeys.view
- |   |- journeys.view.details            # View journey overview (description, metadata)
- |   +- journeys.view.curriculum         # View step list (expandable)
- +- journeys.manage                      # (Admin/Creator only; not yet in UI)
-     |- journeys.manage.create           # Create a new journey
-     |- journeys.manage.edit             # Edit journey content/metadata
-     |- journeys.manage.publish          # Publish/unpublish a journey
-     +- journeys.manage.delete           # Delete a journey
-```
-
-### 7. Enrollments (group-scoped for group enrollments)
-
-```
-enrollments
- |- enrollments.view
- |   |- enrollments.view.individual      # View own individual enrollments (My Journeys tab 1)
- |   +- enrollments.view.group           # View group enrollments (My Journeys tab 2)
- |- enrollments.enroll
- |   |- enrollments.enroll.individual    # Enroll self in a journey
- |   +- enrollments.enroll.group         # Enroll a group in a journey
- |- enrollments.unenroll                 # Cancel an enrollment (not yet in UI)
- |- enrollments.freeze                   # Freeze journey progress (not yet in UI)
- +- enrollments.progress
-     |- enrollments.progress.view        # See progress bar / completion percentage
-     |- enrollments.progress.play        # Launch journey player
-     |- enrollments.progress.navigate    # Move between steps (prev/next/sidebar)
-     |- enrollments.progress.complete_step     # Mark a step as complete
-     |- enrollments.progress.complete_journey  # Complete entire journey
-     |- enrollments.progress.resume      # Resume from last saved position
-     |- enrollments.progress.view_others # View other members' progress (Travel Guide)
-     +- enrollments.progress.track_group # View group-wide progress overview
-```
-
-### 8. Communication (Phase 1.5 — not yet built)
-
-```
-communication
- |- communication.forum
- |   |- communication.forum.view         # View forum content
- |   |- communication.forum.post         # Post messages in forums
- |   |- communication.forum.reply        # Reply to messages
- |   +- communication.forum.moderate     # Delete/edit others' messages
- +- communication.messaging
-     |- communication.messaging.send     # Send direct messages
-     |- communication.messaging.view     # View message history
-     +- communication.messaging.manage   # Manage message settings
-```
-
-### 9. Feedback (not yet built)
-
-```
-feedback
- |- feedback.provide                     # Give feedback to members
- |- feedback.receive                     # Receive feedback
- +- feedback.view_others                 # View feedback given to other members
-```
-
-### 10. Platform Administration
-
-```
-admin
- |- admin.platform
- |   |- admin.platform.settings          # Manage platform-wide settings
- |   |- admin.platform.manage_groups     # Manage all groups on platform
- |   |- admin.platform.manage_templates  # Create/edit role and group templates
- |   +- admin.platform.manage_users      # View/deactivate/reactivate users
- +- admin.dev
-     |- admin.dev.dashboard              # View development dashboard (dev mode)
-     |- admin.dev.orphan_scan            # Scan for groups without leaders
-     +- admin.dev.orphan_fix             # Assign leader to orphaned group
-```
-
----
-
-## Activity Summary
-
-| Domain | Leaf Activities | Scope | Status |
-|--------|----------------|-------|--------|
-| **Authentication** | 3 | Global (pre-auth) | Implemented |
-| **Profile** | 5 | User-scoped | Implemented |
-| **Groups** | 11 | Group-scoped | Implemented |
-| **Members** | 10 | Group-scoped | Mostly implemented (pause/activate deferred) |
-| **Roles** | 7 | Group-scoped | Partially implemented (manage.* deferred) |
-| **Journeys** | 8 | Global + group-scoped | Partially implemented (manage.* deferred) |
-| **Enrollments** | 12 | User + group-scoped | Mostly implemented (unenroll/freeze deferred) |
-| **Communication** | 7 | Group-scoped | Not started (Phase 1.5) |
-| **Feedback** | 3 | Group-scoped | Not started |
-| **Admin** | 7 | Global (platform) | Partially implemented |
-| **Total** | **~73** | | |
+Full activity tree, summary table, and activity-to-permission mapping: see **[Activity Catalog](../../reference/activity-catalog.md)**.
 
 ---
 
@@ -574,107 +340,11 @@ journeys.manage.*               # Create, edit, publish, delete journeys
 
 ---
 
-## Mapping: Activity Tree to Existing Seeded Permissions
+## Mapping: Activity Tree to Permissions
 
-How the activity tree maps to the 30+ permissions already in the database:
-
-| Activity | Existing Permission | Match Quality |
-|----------|-------------------|---------------|
-| `groups.edit.*` | `edit_group_settings` | Coarse (one permission for all edit sub-actions) |
-| `groups.edit.visibility` | `set_group_visibility` | Exact |
-| `groups.edit.member_list_visibility` | `control_member_list_visibility` | Exact |
-| `groups.delete` | `delete_group` | Exact |
-| `members.invite.*` | `invite_members` | Exact |
-| `members.remove` | `remove_members` | Exact |
-| `members.activate` | `activate_members` | Exact |
-| `members.pause` | `pause_members` | Exact |
-| `members.view.list` | `view_member_list` | Exact |
-| `members.view.roles` | `view_member_profiles` | Close (profiles includes roles) |
-| `roles.assign.*` | `assign_roles` | Coarse (doesn't distinguish which role) |
-| `roles.remove` | `remove_roles` | Exact |
-| `enrollments.enroll.group` | `enroll_group_in_journey` | Exact |
-| `enrollments.enroll.individual` | `enroll_self_in_journey` | Exact |
-| `enrollments.unenroll` | `unenroll_from_journey` | Exact |
-| `enrollments.freeze` | `freeze_journey` | Exact |
-| `enrollments.progress.play` | `view_journey_content` | Close |
-| `enrollments.progress.complete_step` | `complete_journey_activities` | Close |
-| `enrollments.progress.view` | `view_own_progress` | Exact |
-| `enrollments.progress.view_others` | `view_others_progress` | Exact |
-| `enrollments.progress.track_group` | `track_group_progress` | Exact |
-| `communication.forum.view` | `view_forum` | Exact |
-| `communication.forum.post` | `post_forum_messages` | Exact |
-| `communication.forum.reply` | `reply_to_messages` | Exact |
-| `communication.forum.moderate` | `moderate_forum` | Exact |
-| `communication.messaging.send` | `send_direct_messages` | Exact |
-| `feedback.provide` | `provide_feedback_to_members` | Exact |
-| `feedback.receive` | `receive_feedback` | Exact |
-| `feedback.view_others` | `view_member_feedback` | Exact |
-| `admin.platform.settings` | `manage_platform_settings` | Exact |
-| `admin.platform.manage_groups` | `manage_all_groups` | Exact |
-| `admin.platform.manage_templates` | `manage_role_templates` + `manage_group_templates` | Split |
-| `journeys.manage.create` | `create_journey` | Exact |
-| `journeys.manage.edit` | `edit_journey` | Exact |
-| `journeys.manage.publish` | `publish_journey` | Exact |
-| `journeys.manage.delete` | `delete_journey` | Exact |
-
-### Gaps in Existing Permissions
-
-Activities in the tree that have **no matching seeded permission**:
-
-| Activity | Notes |
-|----------|-------|
-| `groups.create` | Currently any authenticated user can create; may need platform-level control |
-| `groups.leave` | Currently unrestricted for members; may not need a permission |
-| `groups.view.details` | Currently tied to membership/public; may not need a permission |
-| `members.invitation.accept/decline` | User-scoped (always own invitations); may not need permissions |
-| `roles.manage.*` | Phase 2 (custom role creation) |
-| `journeys.browse.*` | Currently open to all authenticated users |
-| `enrollments.progress.navigate/resume` | Implicit in having access to the player |
-| `communication.messaging.view/manage` | Not yet seeded (Phase 1.5) |
+> **Note:** The activity-to-permission mapping was a design-time gap analysis (completed Feb 11, 2026). D22 resolved all identified gaps (added `browse_journey_catalog` and `browse_public_groups`). The full mapping table and remaining gaps are documented in `docs/reference/activity-catalog.md`.
 
 ---
-
-## Default Permission Sets per Role Template
-
-**SUPERSEDED:** The old 5-role mapping below is replaced by the D17/D18a four-role grid (Steward, Guide, Member, Observer). See **D18a** in the Design Decisions section for the approved permission grid.
-
-**Summary of role renaming:**
-- "Platform Admin" → system-level only (Deusex group)
-- "Group Leader" → **Steward**
-- "Travel Guide" → **Guide**
-- "Member" → **Member** (updated permissions)
-- "Observer" → **Observer** (updated permissions)
-
-**Key permission changes from original proposal:**
-- `view_member_feedback` → **dropped** (feedback is private, D18)
-- `track_group_progress` → **renamed** to `view_group_progress`, given to all roles
-- `provide_feedback_to_members` → added to Member (peer feedback), removed from Observer
-
----
-
-## Current Access Control (v0.2.13) — What Needs to Change
-
-### UI Layer (components)
-Currently checks `isLeader` boolean derived from `group_roles.name === 'Group Leader'`:
-
-| File | Check | Would Become |
-|------|-------|-------------|
-| `app/groups/[id]/page.tsx` | `isLeader` → show invite/remove/role buttons | `hasPermission('invite_members')`, etc. |
-| `app/groups/[id]/edit/page.tsx` | `isLeader` → allow access to edit page | `hasPermission('edit_group_settings')` |
-| `components/groups/InviteMemberModal.tsx` | Assumes caller is leader | `hasPermission('invite_members')` |
-| `components/groups/AssignRoleModal.tsx` | Assumes caller is leader | `hasPermission('assign_roles')` |
-| `components/journeys/EnrollmentModal.tsx` | `isLeader` → show group enrollment tab | `hasPermission('enroll_group_in_journey')` |
-
-### Database Layer (RLS policies)
-Currently use coarse checks like "is user a member" or "is created_by_user_id = current":
-
-| Table | Current Policy | Would Become |
-|-------|---------------|-------------|
-| `groups` UPDATE | `created_by_user_id = current` | Check `edit_group_settings` permission |
-| `groups` DELETE | `created_by_user_id = current` | Check `delete_group` permission |
-| `group_memberships` INSERT | `added_by_user_id = current` | Check `invite_members` permission |
-| `user_group_roles` INSERT | `assigned_by_user_id = current` | Check `assign_roles` permission |
-| `user_group_roles` DELETE | Trigger-based | Check `remove_roles` permission + trigger |
 
 ---
 
@@ -768,7 +438,7 @@ Joining Group ──joins──> Host Group ──assigns──> Roles ──hav
 
 ### D8: Engagement Groups (Terminology) (Resolved 2026-02-11)
 
-**Decision:** Rename "engagement groups" to **"engagement groups"** throughout the system. Engagement groups can serve many purposes:
+**Decision:** Rename "journey groups" to **"engagement groups"** throughout the system. Engagement groups can serve many purposes:
 
 - Journey groups (people learning together)
 - Book circles
@@ -1194,7 +864,7 @@ These permissions need to be added to the `permissions` table:
 | **Add** | `browse_journey_catalog` | journey_management | D20 — needed for Guest and FI Member system roles |
 | **Add** | `browse_public_groups` | group_management | D20 — needed for Guest and FI Member system roles |
 
-#### Final Permission Catalog (31 permissions)
+#### Final Permission Catalog (41 permissions)
 
 | Category | Count | Permissions |
 |---|---|---|
@@ -1258,156 +928,23 @@ These permissions need to be added to the `permissions` table:
 | D19 | Try-It Journeys | Anonymous-to-member conversion, fundamental product feature |
 | D20 | System-Level Role Grids | Guest 5, FI Member 8, Myself 0 (RLS), Deusex all |
 | D21 | Joining Groups = Member | No separate External Observer, engagement over observation |
-| D22 | Seeded Permissions Delta | 31 permissions (1 rename, 1 remove, 2 add), 4 role templates |
+| D22 | Seeded Permissions Delta | 41 permissions (1 rename, 1 remove, 2 add from base of 40), 4 role templates |
 
 ---
 
-## Resolved: Q1-Q8 (Approved 2026-02-11)
+## Remaining Future Work
 
-**Status:** All approved by Stefan. Q2 extended with D14 (Role Selector UI). Q6 delegated to implementation-time best judgment.
+- **Group-joins-group UI** — schema supports it (`member_group_id`), but no frontend for groups requesting to join other groups
+- **Custom role UI** — role management, permission picker, guardrails for preventing privilege escalation
+- **Attribution display** — "Mogwai in 'Alpha'" chain display in group contexts
 
-### Q1 Proposal: Coarse Granularity (~30 permissions)
-
-**Recommendation:** Keep the ~30 seeded permissions as the granularity level. Don't expand to 73 leaf activities.
-
-**Reasoning:**
-- Fine-grained (73 permissions) creates overwhelming UI for group leaders picking permissions in a checkbox grid.
-- Coarse (30 permissions) maps well to actual UI actions — the edit page is one page, not five separate pages.
-- The two existing exceptions make sense: `set_group_visibility` and `control_member_list_visibility` are separated from `edit_group_settings` because visibility changes have bigger security implications than renaming.
-
-**Practical rule:** If actions share a UI context (same page/modal) and have similar security impact → one permission. If one action has notably higher security implications → separate permission.
-
-**Means:** We stick with ~30 seeded permissions (plus a few new ones for the engagement group model), not 73.
-
-### Q2 Proposal: Union (Confirmed)
-
-**Recommendation:** Yes, union. Already established in D12 for multiple paths — confirming it also applies within a single group when a user holds multiple roles.
-
-A user with Leader + Member roles gets the superset of both. Since permissions are only grants (no denials), there's no conflict.
-
-### Q3 Proposal: No Negative Permissions — Grants Only
-
-**Recommendation:** Remove the `granted` boolean concept. Permissions are grants only. If a permission exists in a role's permission set, it's granted. If it doesn't exist, it's not granted. No explicit denials.
-
-**Reasoning:**
-- Negative permissions create priority problems: if Role A grants `invite_members` and Role B denies it, which wins? Every RBAC system that adds negation needs complex resolution rules.
-- Our model is clean because it's additive. Union works because there are no contradictions.
-- If a group leader wants to restrict someone, they remove the role or create a more limited role. No need for explicit denials.
-- The `granted` column on junction tables can be dropped or ignored.
-
-### Q4 Proposal: Yes, `has_permission()` SQL Function
-
-**Recommendation:** Build a centralized `has_permission(user_id, group_id, permission_name) → boolean` function, `SECURITY DEFINER`, used by RLS policies.
-
-**Function logic:**
-1. Look up the user's personal group
-2. Check system group permissions (Tier 1 — always active)
-3. Check context group permissions (Tier 2 — including transitive membership via recursive CTE)
-4. Return boolean
-
-**Performance concern:** Recursive CTE on every row of every query could be expensive.
-**Mitigation:** Start with direct query. If needed, add a materialized view or cache table that pre-computes "user X has permissions Y in group Z" and refreshes on membership/role changes. This turns permission checks into simple indexed lookups.
-
-### Q5 Proposal: Client-Side Cache Per Group Context
-
-**Recommendation:** Fetch the user's full permission set for a group context once (one query: system + context permissions), cache in React state via a `usePermissions(groupId)` hook. All `hasPermission()` calls in components read from cache synchronously.
-
-**Invalidation — re-fetch when:**
-- User's role changes (via existing `refreshNavigation` custom event pattern)
-- User switches group context
-- Page reload
-
-No websocket/realtime invalidation initially. The existing event pattern is sufficient.
-
-### Q6 Proposal: Parallel Run With Feature Flag
-
-**Recommendation:** Four-phase migration:
-1. Build `hasPermission()` alongside existing `isLeader` checks. Both run, but only `isLeader` controls the UI.
-2. Add logging — when `hasPermission()` would give a different answer than `isLeader`, log it. Catches misconfigurations.
-3. Flip the flag. `hasPermission()` takes over. `isLeader` becomes fallback.
-4. Remove `isLeader` code entirely.
-
-Conservative but safe. Permission bugs = lockouts or unauthorized access.
-
-### Q7 Proposal: Minimal Guardrails — Only Anti-Escalation
-
-**Recommendation:** One critical guardrail: **a leader can only grant permissions they themselves hold.** This prevents privilege escalation.
-
-**Not needed initially:**
-- Max roles per group — no hard limit (leader's problem to manage)
-- Minimum permissions — an empty role is valid (system-tier provides baseline)
-- Other limits — add if abuse occurs
-
-### Q8 Proposal: Visitor Group Maps to Supabase `anon` Role
-
-**Recommendation:** The Visitor group exists as a real record in the database (Deusex can manage its definitions), but membership is implicit.
-
-**Implementation:**
-- RLS policies for `anon` role = Visitor group's permission enforcement
-- The Visitor group's role/permissions in the DB are the source of truth for anonymous access
-- A sync mechanism ensures `anon` RLS policies match the Visitor group's permission set
-
-This keeps the uniform model (everything is a group) while being pragmatic about Supabase's auth model.
-
----
-
-## Next Steps
-
-### Phase A: Resolve Remaining Design Questions
-1. **Resolve open questions 1-11 above** — Especially granularity (#1), schema changes (#9), and role templates (#11).
-2. **Design role templates together** — Default internal roles and joining-group roles for engagement groups. Must be discussed before creation.
-3. **Review and challenge the activity tree** — Are there missing activities? Over-specified ones? Does the engagement group model add new activities?
-
-### Phase B: Schema Evolution
-4. **Add `group_type` column** — Distinguish system/personal/engagement groups.
-5. **Evolve membership model** — Ensure `group_memberships` supports group-to-group membership cleanly. Decide on `user_id` vs. `member_group_id` approach.
-6. **Add group-member roles** — Table for assigning roles to joining groups (not just individual users).
-7. **Add circularity constraint** — `BEFORE INSERT` trigger with recursive CTE to prevent circular membership.
-8. **Add `max_membership_depth` setting** — System config, default unlimited, toggleable.
-9. **Seed `role_template_permissions`** — Connect role templates to their default permission sets.
-10. **Add template-to-instance copy logic** — Copy permissions when roles are instantiated from templates.
-11. **Create system groups** — Visitor, FringeIsland Members, Deusex groups with their roles and permission sets.
-12. **Create personal group on signup** — Extend the `on_auth_user_created` trigger.
-13. **Backfill existing data** — Existing groups/users need personal groups, membership migration, permission mappings.
-
-### Phase C: Build Permission Checking
-14. **Build `has_permission()` SQL function** — `SECURITY DEFINER` function for RLS. Must handle transitive group membership (recursive CTE).
-15. **Build `usePermissions()` React hook** — Client-side hook that fetches and caches permissions for a given group context.
-16. **Build `hasPermission()` client helper** — Synchronous check against cached permissions.
-
-### Phase D: Migrate Existing Code
-17. **Migrate UI checks** — Replace `isLeader` with `hasPermission()` calls, one component at a time.
-18. **Migrate RLS policies** — Replace coarse policies with `has_permission()` function calls.
-19. **Rename "journey groups" to "engagement groups"** — Throughout codebase, UI, and docs.
-20. **Test thoroughly** — Permission changes affect every protected action. Full integration test pass required.
-
-### Phase E: Group-Joins-Group UI + Communication Infrastructure
-21. **Build group membership request/acceptance UI** — Groups requesting to join other groups.
-22. **Build in-app notification system** — Required infrastructure for membership notifications (D13).
-23. **Build joining-group role management** — Host group leaders configure what roles joining groups receive.
-24. **Build attribution display** — Show "Mogwai in 'Alpha'" chain in group contexts.
-
-### Phase F: Custom Role UI
-25. **Build role management UI** — Allow group leaders to create/edit/delete custom roles.
-26. **Build permission picker UI** — Toggle permissions per role from the system catalog.
-27. **Add guardrails** — Prevent leaders from creating roles more powerful than their own, enforce minimum permissions, etc.
+> **Note:** The original design included Phases A–F of next steps. Phases A–D are complete (implemented in D15 rebuild, v0.2.22–v0.2.29). The notification system (Phase E item 22) was implemented in v0.2.14. The remaining items above are from Phases E and F.
 
 ---
 
 ## Revision History
 
-| Date | Change | Author |
-|------|--------|--------|
-| 2026-02-11 | Initial activity tree and RBAC analysis | AI + Stefan |
-| 2026-02-11 | Added three-layer architecture decision (D1) and self-service customization decision (D2). Added template-to-instance flow. Restructured next steps into phased plan. Added role creation guardrails as open question #8. | AI + Stefan |
-| 2026-02-11 | Added D3-D6. Rewrote Permission Scope Model, group type visual overview, permission resolution examples, signup flow. | AI + Stefan |
-| 2026-02-11 | **Major update:** Groups-join-groups model (D7). Renamed to "engagement groups" (D8). Personal group = user identity (D9). Transitive membership with configurable depth (D10). Circularity constraint (D11). Multiple paths = union (D12). Notification model (D13). Fixed D3 (Deusex is a GROUP). Rewrote Group Type Model with joining-group roles, attribution chains, and group-to-group visual. Added open questions #9-11. Restructured Next Steps into 6 phases (A-F). | AI + Stefan |
-| 2026-02-11 | Added "Proposed Resolutions for Q1-Q8" section with detailed AI recommendations awaiting Stefan's review. Saved to doc before context compaction. | AI |
-| 2026-02-11 | Q1-Q8 approved by Stefan. Added D14: Role Selector "Act as..." UI filter. Marked Q1-Q8 as resolved. Continuing with Q9-Q11. | AI + Stefan |
-| 2026-02-11 | Added D15 (schema: group-to-group only, Option A), D16 (preserve data on leaving), D17 (four default roles: Steward/Guide/Member/Observer). Q9-Q10 resolved. Q11 in progress. | AI + Stefan |
-| 2026-02-11 | Added D18 (data privacy: feedback private, sharing_level consent, cross-group aggregates, small group protection) and D18a (complete permission grid for four roles). All 11 questions resolved. Renamed track_group_progress → view_group_progress. Dropped view_member_feedback. Updated peer feedback model. | AI + Stefan |
-| 2026-02-11 | System-level role grids designed (Guest/FI Member/Myself/Deusex). Added D19: Try-It Journeys + anonymous-to-member conversion as fundamental product feature. Updated Visitor group permissions with try-it journey access. | AI + Stefan |
-| 2026-02-11 | Formalized D20: System-level role permission grids. Guest 5, FI Member 8, Myself 0 (RLS only), Deusex all. Documented RLS-only activities. Identified 2 new permissions + 1 new journey flag needed. | AI + Stefan |
-| 2026-02-11 | Added D21: Joining groups get Member role by default (no separate External Observer). Eliminated "internal vs. joining-group roles" distinction. Updated D17, visual overview, permission resolution examples, and group type table. | AI + Stefan |
-| 2026-02-11 | Added D22: Final seeded permissions delta (31 perms: 1 rename, 1 remove, 2 add) and role template changes (4 templates: 1 remove, 2 rename). Added complete decision summary table. All design work complete. | AI + Stefan |
-| 2026-02-16 | **UI note:** Permission display order is hardcoded in `lib/constants/permissions.ts`. When adding new permissions to the database, also add them to `PERMISSION_DISPLAY_ORDER` in that file so they appear in the correct logical group. Unmapped permissions fall to the end of their category alphabetically (no breakage, but suboptimal UX). | AI + Stefan |
+| Date | Change |
+|------|--------|
+| 2026-02-11 | Design completed: 22 decisions (D1–D22), activity tree, three-layer architecture, permission grids, scope model. All design questions (Q1–Q8) resolved and approved. |
+| 2026-02-16 | UI note: permission display order hardcoded in `lib/constants/permissions.ts` — new permissions need `PERMISSION_DISPLAY_ORDER` entry. |

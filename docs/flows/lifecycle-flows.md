@@ -3,7 +3,7 @@
 **Status:** Reference Document
 **Date:** February 28, 2026
 **Covers:** Sprint 2 (v0.2.34), Sprint 3 (v0.2.35), Sprint 4 (v0.2.36)
-**Related:** [Leave Group Core](./leave-group-core.md) | [Smart Notifications](./smart-notifications.md) | [Platform Exit](./platform-exit.md)
+**Related:** [Leave Group Core](../features/implemented/leave-group-core.md) | [Smart Notifications](../features/implemented/smart-notifications.md) | [Platform Exit](../features/implemented/platform-exit.md)
 
 ---
 

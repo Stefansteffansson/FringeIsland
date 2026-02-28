@@ -126,78 +126,13 @@ CREATE INDEX idx_forum_posts_group_toplevel
 
 ---
 
-## RLS Policy Decision
+## RLS Strategy
 
-### Option A: Current Pattern (isLeader Role-Name Check)
+**Decision:** Option B — RBAC-compatible `has_forum_permission()` stub. Checks role names internally but has a signature matching the future `has_permission()`. When full RBAC ships, swap internals — RLS policies stay unchanged.
 
-Uses existing `is_active_group_member()` and `is_active_group_leader()` functions. Consistent with all current RLS policies.
+> **Note:** `has_forum_permission()` is a **transitional stub**. It will be replaced by the general `has_permission(acting_group_id, context_group_id, permission_name)` function from the [Dynamic Permissions System](./dynamic-permissions-system.md) once that migration is applied. The RLS policies below will need no changes — only the function body is swapped.
 
-**Pros:**
-- Consistent with every existing RLS policy (10+ migrations)
-- Zero new functions to create
-- Well-tested helper functions
-- Faster to build
-
-**Cons:**
-- Binary: member (can view/post) or leader (can moderate). No granularity.
-- When RBAC ships, every forum RLS policy must be rewritten
-- Observers can post (no distinction at RLS level)
-- Travel Guides cannot moderate
-
-### Option B: RBAC-Compatible Stub (RECOMMENDED)
-
-Build `has_forum_permission()` function now. Checks role names internally but has the signature matching future `has_permission()`. When RBAC ships, swap internals -- RLS policies stay unchanged.
-
-```sql
-CREATE OR REPLACE FUNCTION public.has_forum_permission(
-  p_group_id UUID,
-  p_permission_name TEXT
-)
-RETURNS BOOLEAN
-LANGUAGE plpgsql
-SECURITY DEFINER
-STABLE
-SET search_path = ''
-AS $$
-DECLARE
-  v_personal_group_id UUID;
-  v_role_names TEXT[];
-BEGIN
-  v_personal_group_id := public.get_current_personal_group_id();
-  IF v_personal_group_id IS NULL THEN RETURN FALSE; END IF;
-
-  -- Must be active group member (D15: member_group_id, not user_id)
-  IF NOT EXISTS (
-    SELECT 1 FROM public.group_memberships
-    WHERE group_id = p_group_id AND member_group_id = v_personal_group_id AND status = 'active'
-  ) THEN RETURN FALSE; END IF;
-
-  -- Get role names (D15: member_group_id, not user_id)
-  SELECT array_agg(gr.name) INTO v_role_names
-  FROM public.user_group_roles ugr
-  JOIN public.group_roles gr ON ugr.group_role_id = gr.id
-  WHERE ugr.member_group_id = v_personal_group_id AND ugr.group_id = p_group_id;
-
-  -- Map permissions to roles (D15: Steward/Guide, not Group Leader/Travel Guide)
-  CASE p_permission_name
-    WHEN 'view_forum' THEN
-      RETURN v_role_names IS NOT NULL;
-    WHEN 'post_forum_messages' THEN
-      RETURN v_role_names && ARRAY['Steward', 'Guide', 'Member'];
-    WHEN 'reply_to_messages' THEN
-      RETURN v_role_names && ARRAY['Steward', 'Guide', 'Member'];
-    WHEN 'moderate_forum' THEN
-      RETURN v_role_names && ARRAY['Steward'];
-    ELSE
-      RETURN FALSE;
-  END CASE;
-END;
-$$;
-
-GRANT EXECUTE ON FUNCTION public.has_forum_permission(UUID, TEXT) TO authenticated;
-```
-
-### RLS Policies (Option B)
+### RLS Policies
 
 ```sql
 ALTER TABLE public.forum_posts ENABLE ROW LEVEL SECURITY;
@@ -236,14 +171,6 @@ USING (public.has_forum_permission(group_id, 'moderate_forum'))
 WITH CHECK (public.has_forum_permission(group_id, 'moderate_forum'));
 ```
 
-### Recommendation: Option B
-
-**Rationale:**
-1. RBAC migration is designed and scheduled (D1-D22). Building with role-name checks creates known technical debt.
-2. Incremental cost is ~30 minutes. Migration cost saved is 4 policy rewrites.
-3. Observer distinction matters now (prevents Observers from posting per D18a).
-4. Sets the pattern for all future tables built after RBAC design.
-
 ---
 
 ## Permission Seeding
@@ -261,7 +188,7 @@ The 4 `communication.forum.*` permissions **already exist** in the `permissions`
 
 ### Role-Permission Mapping (D18a)
 
-| Permission | Group Leader | Travel Guide | Member | Observer |
+| Permission | Steward | Guide | Member | Observer |
 |---|---|---|---|---|
 | `view_forum` | yes | yes | yes | yes |
 | `post_forum_messages` | yes | yes | yes | no |

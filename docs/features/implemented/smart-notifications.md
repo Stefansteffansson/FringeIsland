@@ -13,7 +13,7 @@
 
 ## Context
 
-The existing notification system (v0.2.14, updated for D15) supports 12 passive notification types — they inform users of events but require no response. Sprint 3 extends this with **smart notifications**: actionable notifications that embed response buttons (Accept/Decline, Yes/No, multi-choice) and track user responses.
+The existing notification system (v0.2.14, updated for D15) supports 10 passive notification types (7 initial + 3 Sprint 2) — they inform users of events but require no response. Sprint 3 extends this with **smart notifications**: actionable notifications that embed response buttons (Accept/Decline, Yes/No, multi-choice) and track user responses.
 
 Smart notifications are infrastructure that unblocks:
 - **Track 1 stewardship nomination** (L4) — sole Steward nominates successors, nominees accept/decline via notification
@@ -27,15 +27,7 @@ Smart notifications are infrastructure that unblocks:
 
 ### F3: Smart Notification Schema Extension
 
-Add columns to the existing `notifications` table:
-
-| Column | Type | Purpose |
-|--------|------|---------|
-| `action_type` | TEXT, nullable | Type of action: `accept_decline`, `multi_choice`, `acknowledge`, NULL (passive) |
-| `action_data` | JSONB, nullable | Action-specific data: choices, context, metadata |
-| `action_taken` | TEXT, nullable | User's response: `accepted`, `declined`, `choice_1`, etc. |
-| `action_taken_at` | TIMESTAMPTZ, nullable | When the user responded |
-| `expires_at` | TIMESTAMPTZ, nullable | When the notification action expires (for timeout handling) |
+Adds 5 columns to the existing `notifications` table: `action_type`, `action_data`, `action_taken`, `action_taken_at`, `expires_at`. For the full column definitions, constraints, and indexes, see [Notification System — Smart Notification Columns](./notification-system.md).
 
 **Key rule:** Passive notifications (existing 12 types) have `action_type = NULL`. Smart notifications have `action_type` set.
 
@@ -98,22 +90,7 @@ When the sole Steward of a group wants to leave:
 
 ### notifications table (ALTER)
 
-```sql
-ALTER TABLE notifications
-  ADD COLUMN action_type TEXT,
-  ADD COLUMN action_data JSONB,
-  ADD COLUMN action_taken TEXT,
-  ADD COLUMN action_taken_at TIMESTAMPTZ,
-  ADD COLUMN expires_at TIMESTAMPTZ;
-
--- Constraint: action_taken only set on actionable notifications
-ALTER TABLE notifications
-  ADD CONSTRAINT notifications_action_consistency
-  CHECK (
-    (action_type IS NULL AND action_taken IS NULL AND action_taken_at IS NULL)
-    OR (action_type IS NOT NULL)
-  );
-```
+Adds 5 columns + consistency constraint + pending-action index. Full DDL and column definitions: see [Notification System — Smart Notification Columns](./notification-system.md).
 
 ### New Notification Types
 

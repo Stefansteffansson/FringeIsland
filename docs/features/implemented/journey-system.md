@@ -58,7 +58,7 @@ Educational journey system where users can browse, enroll in, and complete struc
   2. **Group** — selects from groups where user has `enroll_group_in_journey` permission
 - Permission check via `supabase.rpc('has_permission', ...)` per group
 - Dual-enrollment prevention (individual + group for same journey)
-- Catches `23505` unique violation as fallback duplicate detection
+- Catches `23505` unique violation as defensive fallback (no UNIQUE constraint on `(journey_id, group_id)` — see note below — but catches any unexpected DB-level duplicate)
 - Success state with 1500ms delay before close
 
 **Business Rules:**
@@ -399,108 +399,9 @@ CREATE POLICY "enrollment_update_group"
 
 ## TypeScript Types
 
-**Location:** `lib/types/journey.ts`
+**Source of truth:** `lib/types/journey.ts`
 
-### Core Types
-```typescript
-export type JourneyType = 'predefined' | 'user_created' | 'dynamic';
-export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced';
-export type StepType = 'content' | 'activity' | 'assessment';
-export type EnrollmentStatus = 'active' | 'completed' | 'paused' | 'frozen';
-
-export interface JourneyStep {
-  id: string;
-  title: string;
-  type: StepType;
-  duration_minutes: number;
-  required: boolean;
-  description?: string;
-  instructions?: string;
-  content?: Record<string, unknown>;
-}
-
-export interface JourneyContent {
-  version: string;
-  structure: 'linear' | 'branching' | 'adaptive';
-  steps: JourneyStep[];
-  resources?: Array<Record<string, unknown>>;
-  metadata?: Record<string, unknown>;
-}
-
-export interface Journey {
-  id: string;
-  title: string;
-  description: string | null;
-  created_by_group_id: string;
-  is_published: boolean;
-  is_public: boolean;
-  journey_type: JourneyType;
-  content: JourneyContent;
-  estimated_duration_minutes: number | null;
-  difficulty_level: DifficultyLevel | null;
-  tags: string[] | null;
-  created_at: string;
-  updated_at: string;
-  published_at: string | null;
-}
-
-export interface JourneyEnrollment {
-  id: string;
-  journey_id: string;
-  group_id: string;
-  enrolled_by_group_id: string;
-  enrolled_at: string;
-  status: EnrollmentStatus;
-  status_changed_at: string;
-  completed_at: string | null;
-  last_accessed_at: string | null;
-  progress_data: JourneyProgressData;
-}
-
-export interface PlayerEnrollment {
-  id: string;
-  journey_id: string;
-  group_id: string;
-  status: EnrollmentStatus;
-  progress_data: JourneyProgressData;
-  last_accessed_at: string | null;
-  completed_at: string | null;
-}
-```
-
-### Progress Types
-```typescript
-export interface StepProgressEntry {
-  completed_at: string;
-  time_spent_minutes: number;
-}
-
-export interface JourneyProgressData {
-  current_step_id?: string;
-  completed_steps?: string[];
-  step_progress?: Record<string, StepProgressEntry>;
-  total_time_spent_minutes?: number;
-  last_checkpoint?: string;
-  total_steps?: number;
-}
-```
-
-### Display Types
-```typescript
-export interface EnrollmentWithJourney extends JourneyEnrollment {
-  journey: {
-    id: string;
-    title: string;
-    description: string | null;
-    difficulty_level: DifficultyLevel | null;
-    estimated_duration_minutes: number | null;
-  };
-  group?: {
-    id: string;
-    name: string;
-  };
-}
-```
+Key types: `Journey`, `JourneyEnrollment`, `PlayerEnrollment`, `JourneyContent`, `JourneyStep`, `JourneyProgressData`, `StepProgressEntry`, `EnrollmentWithJourney`. Enums: `JourneyType`, `DifficultyLevel`, `StepType`, `EnrollmentStatus`.
 
 ---
 

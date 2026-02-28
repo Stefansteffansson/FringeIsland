@@ -83,29 +83,11 @@ The **groups-as-members** design means a personal group joins an engagement grou
 
 ### `user_group_roles` table
 
-| Column | Type | Default | Nullable | Purpose |
-|--------|------|---------|----------|---------|
-| `id` | UUID | `gen_random_uuid()` | No | Primary key |
-| `member_group_id` | UUID | — | No | FK to `groups(id)` ON DELETE CASCADE. The personal group of the role holder. |
-| `group_id` | UUID | — | No | FK to `groups(id)` ON DELETE CASCADE. The group context for this role. |
-| `group_role_id` | UUID | — | No | FK to `group_roles(id)` ON DELETE CASCADE. The specific role instance. |
-| `assigned_by_group_id` | UUID | — | Yes | FK to `groups(id)` ON DELETE SET NULL. Who assigned the role. |
-| `assigned_at` | TIMESTAMPTZ | `NOW()` | No | When the role was assigned |
-
-**Constraint:** `UNIQUE(member_group_id, group_id, group_role_id)` — a member can hold each role only once per group.
+Assigns roles to members within a group context. `UNIQUE(member_group_id, group_id, group_role_id)` — a member can hold each role only once per group. Full schema: see [Dynamic Permissions System](./dynamic-permissions-system.md).
 
 ### `group_roles` table
 
-| Column | Type | Default | Nullable | Purpose |
-|--------|------|---------|----------|---------|
-| `id` | UUID | `gen_random_uuid()` | No | Primary key |
-| `group_id` | UUID | — | No | FK to `groups(id)` ON DELETE CASCADE. The group this role belongs to. |
-| `name` | TEXT | — | No | Role name (e.g., 'Steward', 'Member') |
-| `description` | TEXT | — | Yes | Role description |
-| `created_from_role_template_id` | UUID | — | Yes | FK to `role_templates(id)` ON DELETE SET NULL. Template this role was cloned from. |
-| `created_at` | TIMESTAMPTZ | `NOW()` | No | Creation timestamp |
-
-**Constraint:** `UNIQUE(group_id, name)` — role names are unique within a group.
+Group-scoped role instances cloned from role templates (Steward, Guide, Member, Observer). `UNIQUE(group_id, name)`. Full schema: see [Dynamic Permissions System](./dynamic-permissions-system.md).
 
 ### `pending_email_invitations` table
 
@@ -125,12 +107,7 @@ The **groups-as-members** design means a personal group joins an engagement grou
 
 ### `role_templates` table (seed data)
 
-| Name | is_system | Purpose |
-|------|-----------|---------|
-| Steward Role Template | true | Full group management permissions |
-| Guide Role Template | true | Journey facilitation permissions (future) |
-| Member Role Template | true | Standard participation permissions |
-| Observer Role Template | true | Read-only permissions (future) |
+Four system templates: Steward, Guide, Member, Observer. Permissions are auto-copied to group role instances via `copy_template_permissions` trigger. Full details: see [Dynamic Permissions System](./dynamic-permissions-system.md).
 
 ---
 
@@ -220,49 +197,11 @@ The `notify_invitation_accepted` trigger notifies all Stewards of the group.
 
 ### RBAC: `has_permission()` two-tier check
 
-```sql
--- Tier 1: System group permissions (context-free)
--- Checks if the acting group has the permission via any system group membership
-SELECT 1 FROM group_memberships gm
-  JOIN user_group_roles ugr ON ugr.member_group_id = gm.member_group_id AND ugr.group_id = gm.group_id
-  JOIN group_role_permissions grp ON grp.group_role_id = ugr.group_role_id
-  JOIN permissions p ON p.id = grp.permission_id
-  JOIN groups g ON g.id = gm.group_id
-  WHERE gm.member_group_id = p_acting_group_id AND gm.status = 'active'
-    AND g.group_type = 'system' AND grp.granted = true AND p.name = p_permission_name;
-
--- Tier 2: Context group permissions (if Tier 1 didn't match)
--- Checks if the acting group has the permission in the specific context group
-SELECT 1 FROM group_memberships gm
-  JOIN user_group_roles ugr ON ...
-  WHERE gm.member_group_id = p_acting_group_id AND gm.group_id = p_context_group_id
-    AND mst.status = 'active' AND grp.granted = true AND p.name = p_permission_name;
-```
-
-**Frontend: `usePermissions` hook** (`lib/hooks/usePermissions.ts`)
-
-```typescript
-const { hasPermission, loading, refetch } = usePermissions(groupId);
-
-// Usage in UI
-{hasPermission('edit_group_settings') && <EditButton />}
-{hasPermission('delete_group') && <DangerZone />}
-{hasPermission('invite_members') && <InviteButton />}
-```
+Core permission function: checks system group permissions (Tier 1, context-free) then context group permissions (Tier 2, group-scoped). Used by RLS policies and the frontend `usePermissions` hook (`lib/hooks/usePermissions.ts`). Full implementation: see [Dynamic Permissions System](./dynamic-permissions-system.md).
 
 ### Anti-escalation: `can_assign_role()`
 
-Prevents a user from assigning a role that grants permissions they don't hold themselves:
-
-```sql
-SELECT has_permission(p_acting_group_id, p_group_id, 'assign_roles')
-  AND NOT EXISTS (
-    SELECT 1 FROM group_role_permissions grp
-    JOIN permissions p ON p.id = grp.permission_id
-    WHERE grp.group_role_id = p_group_role_id AND grp.granted = true
-      AND NOT has_permission(p_acting_group_id, p_group_id, p.name)
-  );
-```
+Prevents assigning a role that grants permissions the assigner doesn't hold. Combines `has_permission('assign_roles')` with a subquery check. Full implementation: see [Dynamic Permissions System](./dynamic-permissions-system.md).
 
 ### Last Steward protection
 
@@ -310,7 +249,9 @@ const handleDelete = async () => {
 | `notifications` | `group_id` (context) | SET NULL |
 | `forum_posts` | `group_id` | CASCADE |
 
-**RESTRICT blocker:** `journeys.created_by_group_id` has ON DELETE RESTRICT. If the group has created any journeys, deletion fails with a FK violation. This is currently unhandled in the UI.
+**RESTRICT blockers:**
+- `journeys.created_by_group_id` ON DELETE RESTRICT — if the group has created any journeys, deletion fails with a FK violation. Currently unhandled in the UI.
+- `forum_posts.author_group_id` ON DELETE RESTRICT — if a personal group has authored forum posts, that personal group cannot be deleted (on hard-delete, posts are reassigned to `[Deleted User]` sentinel first). See [Group Forum System](./group-forum-system.md).
 
 **Notification trigger:** `notify_group_deleted()` fires BEFORE DELETE on `groups`, notifying all active members (except the deleter) before the CASCADE removes membership records.
 
@@ -318,21 +259,14 @@ const handleDelete = async () => {
 
 ## RBAC Functions
 
-| Function | Type | Purpose |
-|----------|------|---------|
-| `has_permission(acting_group_id, context_group_id, permission_name)` | PLPGSQL, SECURITY DEFINER | Core RBAC check — two-tier (system → context) |
-| `get_user_permissions(acting_group_id, context_group_id)` | SQL, SECURITY DEFINER | Returns `TEXT[]` of all permission names for a group in a context |
-| `can_assign_role(acting_group_id, group_id, group_role_id)` | SQL, SECURITY DEFINER | Anti-escalation check for role assignment |
-| `get_current_personal_group_id()` | SQL, SECURITY DEFINER | Returns current user's personal group UUID |
-| `get_current_user_profile_id()` | SQL, SECURITY DEFINER | Returns current user's `users.id` |
-| `is_platform_admin()` | SQL, SECURITY DEFINER | PG17-safe check for DeusEx system group membership |
-| `is_active_group_member(group_id)` | SQL, SECURITY DEFINER | Quick membership check (avoids circular RLS) |
-| `is_invited_group_member(group_id)` | SQL, SECURITY DEFINER | Check for pending invitation (for group visibility) |
-| `is_group_creator(group_id)` | SQL, SECURITY DEFINER | Check if current user created the group (for bootstrap) |
-| `group_has_leader(group_id)` | SQL, SECURITY DEFINER | Check if group has any Steward (for bootstrap detection) |
-| `leave_group(p_group_id)` | PLPGSQL, SECURITY DEFINER | Leave-group RPC — handles L1 (regular), L2 (DeusEx handover), L3 (group closure) scenarios automatically (Sprint 2, v0.2.34) |
-| `nominate_steward(p_group_id, p_nominee_ids)` | PLPGSQL, SECURITY DEFINER | Track 1 stewardship nomination — sole Steward nominates ranked successors, sends smart notification to first nominee with 7-day expiry (Sprint 3, v0.2.35) |
-| `handle_notification_action(p_notification_id, p_action)` | PLPGSQL, SECURITY DEFINER | Process user response to smart notification — validates ownership, actionability, expiry, dispatches type-specific side effects (Sprint 3, v0.2.35) |
+The group management system uses 13 SECURITY DEFINER functions for RBAC, lifecycle, and bootstrap operations. Key functions used by this feature:
+
+- **`has_permission()`** — core two-tier RBAC check. See [Dynamic Permissions System](./dynamic-permissions-system.md).
+- **`can_assign_role()`** — anti-escalation check. See [Dynamic Permissions System](./dynamic-permissions-system.md).
+- **`leave_group()`** — L1/L2/L3 leave scenarios. See [Leave Group Core](./leave-group-core.md).
+- **`nominate_steward()` / `handle_notification_action()`** — Track 1 stewardship nomination. See [Smart Notifications](./smart-notifications.md).
+
+Helper functions (`get_current_personal_group_id`, `is_platform_admin`, `is_active_group_member`, `is_group_creator`, `group_has_leader`, etc.) are documented in [Dynamic Permissions System](./dynamic-permissions-system.md).
 
 ---
 
@@ -437,78 +371,11 @@ CREATE POLICY "gm_delete_admin"
 
 ### `user_group_roles` table (5 policies)
 
-```sql
--- SELECT: Active members of the group, or viewing own roles, or platform admin
-CREATE POLICY "ugr_select"
-  ON public.user_group_roles FOR SELECT TO authenticated
-  USING (
-    public.is_active_group_member(group_id)
-    OR member_group_id = public.get_current_personal_group_id()
-    OR public.is_platform_admin()
-  );
-
--- INSERT (assign): Requires assign_roles + anti-escalation check, OR bootstrap (no Steward yet)
-CREATE POLICY "ugr_insert_assign"
-  ON public.user_group_roles FOR INSERT TO authenticated
-  WITH CHECK (
-    (public.can_assign_role(public.get_current_personal_group_id(), group_id, group_role_id)
-      AND assigned_by_group_id = public.get_current_personal_group_id())
-    OR
-    (member_group_id = public.get_current_personal_group_id()
-      AND assigned_by_group_id = public.get_current_personal_group_id()
-      AND NOT public.group_has_leader(group_id))
-  );
-
--- INSERT (admin): Platform admin can assign roles
-CREATE POLICY "ugr_insert_admin"
-  ON public.user_group_roles FOR INSERT TO authenticated
-  WITH CHECK (public.is_platform_admin());
-
--- DELETE: Requires assign_roles permission
-CREATE POLICY "ugr_delete"
-  ON public.user_group_roles FOR DELETE TO authenticated
-  USING (public.has_permission(public.get_current_personal_group_id(), group_id, 'assign_roles'));
-
--- DELETE (admin): Platform admin can remove roles
-CREATE POLICY "ugr_delete_admin"
-  ON public.user_group_roles FOR DELETE TO authenticated
-  USING (public.is_platform_admin());
-```
+SELECT (active members/own/admin), INSERT (assign with anti-escalation + bootstrap), INSERT (admin), DELETE (assign_roles permission), DELETE (admin). Full policy definitions: see [Dynamic Permissions System](./dynamic-permissions-system.md).
 
 ### `group_roles` table (5 policies)
 
-```sql
--- SELECT: Active members, invited members, or group creator; platform admin via service_role
-CREATE POLICY "group_roles_select"
-  ON public.group_roles FOR SELECT TO authenticated
-  USING (
-    public.is_active_group_member(group_id)
-    OR public.is_invited_group_member(group_id)
-    OR public.is_platform_admin()
-  );
-
--- INSERT: Requires manage_roles permission, OR bootstrap (creator, no Steward yet)
-CREATE POLICY "group_roles_insert"
-  ON public.group_roles FOR INSERT TO authenticated
-  WITH CHECK (
-    public.has_permission(public.get_current_personal_group_id(), group_id, 'manage_roles')
-    OR (public.is_group_creator(group_id) AND NOT public.group_has_leader(group_id))
-  );
-
--- UPDATE: Requires manage_roles permission
-CREATE POLICY "group_roles_update"
-  ON public.group_roles FOR UPDATE TO authenticated
-  USING (public.has_permission(public.get_current_personal_group_id(), group_id, 'manage_roles'))
-  WITH CHECK (public.has_permission(public.get_current_personal_group_id(), group_id, 'manage_roles'));
-
--- DELETE: Requires manage_roles permission, only custom roles (template roles protected)
-CREATE POLICY "group_roles_delete"
-  ON public.group_roles FOR DELETE TO authenticated
-  USING (
-    created_from_role_template_id IS NULL
-    AND public.has_permission(public.get_current_personal_group_id(), group_id, 'manage_roles')
-  );
-```
+SELECT (active/invited members + admin), INSERT (manage_roles + bootstrap), UPDATE (manage_roles), DELETE (manage_roles, custom roles only). Full policy definitions: see [Dynamic Permissions System](./dynamic-permissions-system.md).
 
 ### `pending_email_invitations` table (3 policies)
 
@@ -623,15 +490,13 @@ CREATE POLICY "pending_invitations_delete"
 
 ## Known Limitations
 
-1. ~~**No leave-group feature**~~ — **RESOLVED (v0.2.34, Sprint 2).** `leave_group()` RPC handles regular leave, DeusEx handover, and group closure. See [leave-group-core.md](./leave-group-core.md). **Note:** No frontend UI yet — RPC is tested but Leave Group button/modal not built.
-2. ~~**No group soft-delete / lifecycle**~~ — **RESOLVED (v0.2.33, Sprint 1).** `groups.status` column with CHECK constraint (`active`, `closed`, `archived`, `suspended`). Non-active groups hidden from non-admin users via RLS. See [foundation-schema.md](./foundation-schema.md).
-3. **No personal/system group protection in Danger Zone** — the edit page does not check `group_type` before showing the delete button. Personal and system groups could theoretically be deleted from the UI if the user has `delete_group` permission.
-4. **RESTRICT FK blocker unhandled** — if a group has created journeys (`journeys.created_by_group_id`), deletion fails with a FK violation. The UI shows the raw error instead of a user-friendly message.
-5. **No group-joins-group UI** — the schema supports groups as members of other groups via `member_group_id`, but no UI exists for this workflow.
-6. **Danger Zone uses local modal, not ConfirmModal** — the delete confirmation is a locally-defined modal in the edit page, not the shared `ConfirmModal` component.
-7. ~~**No leave-group for last Steward**~~ — **RESOLVED (v0.2.34, Sprint 2).** Sole Steward -> DeusEx handover (L2). Last member -> group closure (L3). ~~Track 1 (stewardship nomination) deferred to Sprint 3.~~ **RESOLVED (v0.2.35, Sprint 3).** `nominate_steward()` RPC with smart notifications.
-8. **Group creation is client-side multi-step** — the 7-step creation flow is not transactional; a failure at step 5 leaves a group with memberships but no roles. A server-side RPC would be more robust.
-9. **No Leave Group UI** — the `leave_group()` RPC exists but no frontend button, confirmation modal, or handover dialog has been built yet.
+1. **No personal/system group protection in Danger Zone** — the edit page does not check `group_type` before showing the delete button. Personal and system groups could theoretically be deleted from the UI if the user has `delete_group` permission.
+2. **RESTRICT FK blocker unhandled** — if a group has created journeys (`journeys.created_by_group_id`), deletion fails with a FK violation. The UI shows the raw error instead of a user-friendly message.
+3. **No group-joins-group UI** — the schema supports groups as members of other groups via `member_group_id`, but no UI exists for this workflow.
+4. **Danger Zone uses local modal, not ConfirmModal** — the delete confirmation is a locally-defined modal in the edit page, not the shared `ConfirmModal` component.
+5. **Group creation is client-side multi-step** — the 7-step creation flow is not transactional; a failure at step 5 leaves a group with memberships but no roles. A server-side RPC would be more robust.
+6. **No Leave Group UI** — the `leave_group()` RPC exists but no frontend button, confirmation modal, or handover dialog has been built yet.
+7. **Forum "Former Member" display** — the query-time membership check needs to be implemented in the `ForumSection` component. Currently, ex-member posts still show the author's display name.
 
 ---
 
@@ -643,8 +508,7 @@ CREATE POLICY "pending_invitations_delete"
 - **Bulk invitations** — one invitation at a time
 - **Invitation expiry enforcement** — `expires_at` is stored but not checked in the UI (only checked in the signup trigger)
 - **Group transfer** — no ability to transfer group ownership (created_by_group_id)
-- ~~**Track 1 stewardship nomination**~~ — **IMPLEMENTED (v0.2.35, Sprint 3).** See [smart-notifications.md](./smart-notifications.md).
-- ~~**Self-service platform exit** — admin-assisted only for v1 (Sprint 4)~~ — **Admin-assisted platform exit IMPLEMENTED (v0.2.36, Sprint 4).** Self-service remains deferred. See [platform-exit.md](./platform-exit.md).
+- **Self-service platform exit** — admin-assisted is implemented (v0.2.36); self-service remains deferred
 - **Group archive/suspend UI** — `groups.status` supports `'archived'` and `'suspended'` values, but no admin UI exists to set them
 
 ---
@@ -658,7 +522,7 @@ CREATE POLICY "pending_invitations_delete"
 - **Smart Notifications:** `docs/features/implemented/smart-notifications.md`
 - **Platform Exit:** `docs/features/implemented/platform-exit.md`
 - **Foundation Schema:** `docs/features/implemented/foundation-schema.md`
-- **Leave Group Review (full spec):** `docs/features/planned/leave_group_feature_review.md`
+- **Leave Group Review (archived):** `docs/archive/leave_group_feature_review.md`
 - **Behavior specs:** `docs/specs/behaviors/groups.md`, `docs/specs/behaviors/invitations.md`, `docs/specs/behaviors/rbac.md`
 - **D15 base migration:** `supabase/migrations/20260222000000_rebuild_universal_group_pattern.sql`
 - **RC7 admin fixes:** `supabase/migrations/20260223171200_fix_rc7_admin_user_ops.sql`

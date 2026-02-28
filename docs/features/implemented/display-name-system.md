@@ -46,6 +46,8 @@ CHECK (char_length(nickname) >= 1)  -- never blank
 
 The personal group `name` field already exists and is already queried by forums. The new columns on `users` are metadata that drive what value gets written to `groups.name`.
 
+> **Note:** For the full `users` table schema, see [Authentication](./authentication.md).
+
 ---
 
 ## Core Mechanism
@@ -87,7 +89,7 @@ This means **new users appear by first name by default**, not by full name.
 | **Forum posts** | `groups!author_group_id (id, name, avatar_url)` |
 | **Forum replies** | Same as above |
 
-### Need migration to personal group `name`
+### Need frontend migration to personal group `name` (pending implementation)
 
 | Surface | Current pattern | New pattern |
 |---------|----------------|-------------|
@@ -150,10 +152,11 @@ New fields to add:
 
 ### `users.full_name` visibility
 
-- The existing `users` SELECT policy allows other users to see `full_name` (for invitation search). This needs refinement:
-  - **Invitation search:** Should search both `full_name` and `nickname`, but only return `full_name` in results if `show_real_name = true`
-  - **General display:** Other users should not see `full_name` unless `show_real_name = true`
-  - **Implementation note:** RLS is row-level, not column-level. Column-level visibility is best handled at the application layer (select only the columns you need) or via database views.
+- The existing `users` SELECT policy allows other users to see `full_name` (for invitation search). **Resolved:** RLS is row-level, not column-level, so `show_real_name` enforcement is handled at the application query layer:
+  - **Regular queries:** Don't SELECT `full_name` for other users unless `show_real_name = true`
+  - **Admin queries:** Use service role (bypasses RLS), always see `full_name`
+  - **Own profile:** User always sees their own `full_name`
+  - No RLS policy changes needed.
 
 ### Personal group `name` sync trigger
 
@@ -323,114 +326,6 @@ None — all requirements clarified in the design conversation (Feb 27, 2026).
 
 ---
 
-## Architect Review (Phase 4 — Feb 27, 2026)
+## Architect Review
 
-**Status:** APPROVED with clarifications below.
-
-### 1. Schema Changes — CONFIRMED
-
-The three new columns on `users` are correct:
-- `nickname TEXT` — added nullable, backfilled, then `SET NOT NULL`
-- `display_preference TEXT NOT NULL DEFAULT 'nickname' CHECK (...)` — correct
-- `show_real_name BOOLEAN NOT NULL DEFAULT false` — correct
-- `CHECK (char_length(nickname) >= 1)` named `nickname_not_empty` — correct
-
-### 2. Sync Trigger — CONFIRMED with notes
-
-`sync_personal_group_display_name()`:
-- **AFTER UPDATE** (not BEFORE) — correct, avoids interference with three existing BEFORE UPDATE triggers:
-  1. `set_users_updated_at` (timestamp)
-  2. `enforce_decommission_invariant` (decommissioned → always inactive)
-  3. `enforce_personal_group_id_immutability` (locks personal_group_id)
-- **SECURITY DEFINER SET search_path = ''** — required (cross-cutting rule)
-- **Column-specific:** `AFTER UPDATE OF nickname, full_name, display_preference` — correct, avoids firing on unrelated updates (bio, avatar, etc.)
-- **NULL guard:** `IF NEW.personal_group_id IS NOT NULL` — correct, protects edge cases
-- **Does NOT fire on INSERT** — correct, signup flow handles initial name in `handle_new_user()`
-
-### 3. Signup Trigger Changes — CONFIRMED with correction
-
-Current `handle_new_user()` (from `20260223140126_enhanced_member_invitations.sql`) needs two changes:
-
-**Step 1 (create user):** Add nickname column:
-```sql
-INSERT INTO public.users (auth_user_id, email, full_name, avatar_url, nickname)
-VALUES (
-  NEW.id,
-  NEW.email,
-  COALESCE(NEW.raw_user_meta_data->>'display_name', NEW.email),
-  v_avatar_url,
-  split_part(COALESCE(NEW.raw_user_meta_data->>'display_name', NEW.email), ' ', 1)
-);
-```
-- `display_preference` and `show_real_name` use column defaults (`'nickname'` and `false`) — no need to specify
-
-**Step 2 (create personal group):** Use nickname instead of full display_name:
-```sql
-INSERT INTO public.groups (name, group_type, is_public, show_member_list, avatar_url)
-VALUES (
-  split_part(COALESCE(NEW.raw_user_meta_data->>'display_name', NEW.email), ' ', 1),
-  'personal', false, false, v_avatar_url
-);
-```
-
-**Note:** `split_part('Stefan Stefansson', ' ', 1)` → `'Stefan'`. For email fallback `split_part('user@example.com', ' ', 1)` → `'user@example.com'` (no space, returns whole string). Both are acceptable.
-
-### 4. Backfill Strategy — CONFIRMED with correction
-
-**Add null/empty guard to backfill WHERE clause:**
-```sql
-UPDATE users
-SET nickname = split_part(full_name, ' ', 1)
-WHERE nickname IS NULL
-  AND full_name IS NOT NULL
-  AND char_length(full_name) > 0;
-```
-Without this, users with empty/null `full_name` would get empty nicknames, violating the upcoming constraint. (In practice `full_name` is NOT NULL, but defense-in-depth.)
-
-### 5. RLS for show_real_name — CONFIRMED: Application Layer
-
-Current `users` SELECT policy: `USING (is_active = true)` — row-level only, no column filtering possible. The `show_real_name` enforcement is correctly handled at the application query layer:
-- Regular queries: don't SELECT `full_name` for other users unless `show_real_name = true`
-- Admin queries: use service role (bypasses RLS), always see `full_name`
-- Own profile: user always sees their own `full_name`
-
-**No RLS policy changes needed.**
-
-### 6. display_name in AuthContext — CONFIRMED: Not a DB column
-
-The navigation and UI will use a `display_name` value from `AuthContext`. This is computed by joining the personal group `name` in the profile fetch query:
-```sql
-SELECT u.*, pg.name as display_name
-FROM users u
-JOIN groups pg ON pg.id = u.personal_group_id
-WHERE u.auth_user_id = auth.uid()
-```
-No new database column — it's a query-time join.
-
-### 7. Migration File Count — CONFIRMED: One file
-
-Single migration covers:
-1. ALTER TABLE (3 columns)
-2. Backfill nickname
-3. SET NOT NULL + CHECK constraint
-4. Backfill personal group names
-5. Create sync trigger function + trigger
-6. CREATE OR REPLACE handle_new_user()
-
-### 8. Trigger Ordering Risk — LOW
-
-The new AFTER UPDATE trigger fires after all BEFORE UPDATE triggers. The `enforce_personal_group_id_immutability` trigger ensures `personal_group_id` is stable by the time our sync trigger reads it. No ordering conflict.
-
-### 9. Test Coverage Mapping
-
-All 25 test assertions map directly to the proposed schema changes:
-- B-DISP-001 (4 tests) → `handle_new_user()` changes
-- B-DISP-002 (4 tests) → `sync_personal_group_display_name()` trigger
-- B-DISP-003 (2 tests) → trigger column-specific firing
-- B-DISP-004 (2 tests) → trigger column-specific firing
-- B-DISP-005 (2 tests) → `nickname_not_empty` CHECK + NOT NULL
-- B-DISP-006/007/008 (8 tests) → `show_real_name` column + application layer
-- B-DISP-009 (1 test) → personal group `name` sync (existing FK join)
-- B-DISP-011 (4 tests) → `nickname` column + `ilike` search
-
-**No design gaps found. Proceed to Phase 5 (implement).**
+**Status:** APPROVED (Feb 27, 2026). All 9 review points confirmed — schema, triggers, backfill, RLS strategy, signup changes, and test coverage mapping (25 assertions across B-DISP-001 through B-DISP-011). Key clarifications: sync trigger is AFTER UPDATE (avoids BEFORE trigger conflicts), `show_real_name` enforced at application layer (not RLS), `display_name` is a query-time join (not a DB column). No design gaps found.
