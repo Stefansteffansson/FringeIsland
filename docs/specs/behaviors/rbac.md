@@ -2,7 +2,7 @@
 
 > **Purpose:** Document the fundamental rules and guarantees for the Role-Based Access Control system.
 > **Domain Code:** RBAC
-> **Design Reference:** `docs/features/planned/dynamic-permissions-system.md` (D1-D22)
+> **Design Reference:** `docs/features/implemented/dynamic-permissions-system.md` (D1-D22)
 > **Sub-Sprint:** 1 — Schema Foundation
 
 ---

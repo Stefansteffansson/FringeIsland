@@ -146,9 +146,9 @@ supabase-cli.bat migration list
 
 ## ⚠️ Security Reminders
 
-### URGENT: User Shared Credentials in Chat
-- Database password: `0Fringeisland1` (shared publicly)
-- Personal access tokens were also shared
+### URGENT: Credentials Were Shared in Chat (SCRUBBED)
+- Database password was exposed (REDACTED — password has been reset)
+- Personal access tokens were also shared (REDACTED — tokens have been regenerated)
 
 **Action Required:**
 1. Reset Supabase database password immediately

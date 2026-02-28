@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-28 (Playwright E2E testing setup)
+**Last Updated:** 2026-02-28 (Documentation restructuring)
 **Current Version:** 0.2.36
 **Active Branch:** main
 
@@ -101,25 +101,25 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-28 (Playwright E2E testing setup)
+**Date:** 2026-02-28 (Documentation restructuring)
 **Summary:**
-- Set up Playwright E2E testing infrastructure with Chromium
-- Created global-setup (real browser login for @supabase/ssr HttpOnly cookies)
-- Created global-teardown (FK-safe cleanup of @fringeisland.test users)
-- 7 starter E2E tests: 4 auth (login page, invalid creds, unauth redirect, successful login) + 3 journeys (catalog, detail click-through, groups page)
-- Added 4 npm scripts: test:e2e, test:e2e:ui, test:e2e:headed, test:e2e:debug
-- Key learning: `storageState: undefined` doesn't clear SSR HttpOnly cookies — must use explicit `{ cookies: [], origins: [] }`
-- Decision: defer integrating Playwright into TDD workflow until core features are stable
+- Deep restructuring of all planning + workflow documentation
+- CLAUDE.md: 1,089 → 121 lines (routing doc, no code examples)
+- boot-up.md: 509 → 96 lines, close-down.md: 753 → 109 lines
+- ROADMAP.md: 988 → ~170 lines (removed changelog/decisions/duplicates)
+- Merged tdd-workflow.md into feature-development.md (single TDD source)
+- Merged lifecycle-sprint-plan.md into lifecycle-roadmap-decisions.md
+- Created NEXT.md — quick human-readable "what's next" overview
+- Updated PRODUCT_SPEC.md to v1.1 (Phase 1 at 95%)
+- Archived 19 old session bridges + 2 phase-2 design docs
+- Fixed stale paths in 4 behavior spec files + MEMORY.md
+- Scrubbed exposed credential from archived session file
+- Net: +678 / -10,471 lines across 35 files
 
-**Key files:**
-- `playwright.config.ts` — Playwright configuration
-- `tests/e2e/global-setup.ts` — session user creation + browser login
-- `tests/e2e/global-teardown.ts` — test data cleanup
-- `tests/e2e/helpers/auth.ts` — reusable E2E auth helpers
-- `tests/e2e/auth.spec.ts` — 4 unauthenticated tests
-- `tests/e2e/journeys.spec.ts` — 3 authenticated tests
+**Key principle:** All context-loaded docs (CLAUDE.md, workflows, MEMORY.md) must stay within 80-150 lines for reliable full attention by AI assistants.
 
 **Previous Sessions:**
+- 2026-02-28: Documentation restructuring (CLAUDE.md, workflows, ROADMAP, NEXT.md, archives)
 - 2026-02-28: Sprint 4 — Platform Exit + feature doc review (v0.2.36)
 - 2026-02-28: Sprint 3 — Smart Notifications + Steward Nomination (v0.2.35)
 - 2026-02-28: Sprint 2 — Leave Group Core + Feature Doc Review (v0.2.34)
@@ -191,7 +191,7 @@
 ## Notes
 
 - **Tech Stack:** Next.js 16.1, TypeScript, Tailwind CSS, Supabase (PostgreSQL)
-- **Database:** 18 tables with comprehensive RLS policies
+- **Database:** 19 tables with comprehensive RLS policies
 - **Repository:** https://github.com/Stefansteffansson/FringeIsland
 - **Local Dev:** http://localhost:3000
 - **Supabase Project:** [Your Supabase project]

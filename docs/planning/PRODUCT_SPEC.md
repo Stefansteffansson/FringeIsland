@@ -1,8 +1,8 @@
 # FringeIsland - Product Specification
 
-**Version:** 1.0
-**Last Updated:** February 9, 2026
-**Status:** Living document - v1.0 MVP scope
+**Version:** 1.1
+**Last Updated:** February 28, 2026
+**Status:** Living document - v1.0 MVP scope (Phase 1: 95% complete)
 **Links:** [Vision](../VISION.md) | [Roadmap](ROADMAP.md) | [Features](../features/)
 
 ---
@@ -213,21 +213,26 @@ Vision (Why) → Product Spec (What) → Roadmap (When) → Features (How) → B
 - Real-time invitation count updates
 - Current page visually distinct
 
-### ⏳ Out of Scope - v1.0
+### Delivered Beyond Original v1.0 Scope
 
-**Phase 1.5+ Features:**
-- Communication (messaging, forums, notifications)
-- Advanced progress tracking
-- Journey content delivery (step-by-step player)
-- Completion certificates
-- Activity feeds
+The following features were originally out of scope for v1.0 but have been implemented:
+
+- ✅ **Communication** — Forums (v0.2.14), DM (v0.2.15), Notifications (v0.2.14), Smart Notifications (v0.2.35)
+- ✅ **Journey content delivery** — Step-by-step JourneyPlayer (v0.2.11)
+- ✅ **Progress tracking** — Per-enrollment progress with resume (v0.2.11)
+- ✅ **RBAC system** — 4 roles, 31 permissions, has_permission() (v0.2.16–v0.2.20)
+- ✅ **Admin panel** — DeusEx dashboard, 10 admin actions (v0.2.21–v0.2.25)
+- ✅ **Lifecycle flows** — Leave group, steward nomination, platform exit (v0.2.32–v0.2.36)
+- ✅ **Display names** — Nickname system with privacy controls (v0.2.30)
+
+### Still Out of Scope
 
 **Phase 2+ Features:**
-- User-created journeys
-- Journey marketplace
-- Travel Guide role
-- Advanced group features (subgroups, teams)
-- Social features (likes, comments, shares)
+- User-created journeys and journey marketplace
+- Travel Guide role (full implementation)
+- Advanced group features (subgroups/groups-join-groups UI)
+- Completion certificates
+- Activity feeds
 
 **Phase 3+ Features:**
 - Dynamic/adaptive journeys
@@ -257,18 +262,24 @@ Vision (Why) → Product Spec (What) → Roadmap (When) → Features (How) → B
 - ✅ Feature: Member Management
 - ✅ Feature: Role Management
 
-### Phase 1.4: Journey System (85% Complete)
-**Milestone:** Users can browse and enroll in journeys
-- ✅ Feature: Journey Catalog & Discovery
-- ✅ Feature: Journey Enrollment
-- ⏳ Feature: Journey Content Delivery (next)
-- ⏳ Feature: Progress Tracking (next)
+### Phase 1.4: Journey System (Complete)
+**Milestone:** Users can browse, enroll, and complete journeys
+- ✅ Feature: Journey Catalog & Discovery (v0.2.8)
+- ✅ Feature: Journey Enrollment (v0.2.10)
+- ✅ Feature: Journey Content Delivery (v0.2.11)
+- ✅ Feature: Progress Tracking (v0.2.11)
 
-### Phase 1.5: Communication (Planned)
+### Phase 1.5: Communication (Complete)
 **Milestone:** Groups can communicate and collaborate
-- ⏳ Feature: Basic Messaging
-- ⏳ Feature: Group Forums
-- ⏳ Feature: Notifications
+- ✅ Feature: Group Forums (v0.2.14)
+- ✅ Feature: Direct Messaging (v0.2.15)
+- ✅ Feature: Notifications (v0.2.14, extended v0.2.35)
+
+### Phase 1.5b–e: Platform Hardening (Complete)
+- ✅ RBAC System — 4 roles, 31 permissions (v0.2.16–v0.2.20)
+- ✅ Admin Foundation — DeusEx panel, 10 actions (v0.2.21–v0.2.25)
+- ✅ Performance — 8-tier optimization (v0.2.26–v0.2.28)
+- ✅ Lifecycle — Leave group, nomination, platform exit (v0.2.32–v0.2.36)
 
 ---
 
@@ -277,11 +288,11 @@ Vision (Why) → Product Spec (What) → Roadmap (When) → Features (How) → B
 ### Tech Stack
 - **Frontend:** Next.js 16.1 (App Router), React, TypeScript, Tailwind CSS
 - **Backend:** Supabase (PostgreSQL + Auth + Storage)
-- **Testing:** Jest + React Testing Library (integration tests)
+- **Testing:** Jest (659 tests: integration + unit) + Playwright (7 E2E tests)
 - **Deployment:** Vercel (frontend), Supabase Cloud (backend)
 
 ### Database
-- **Tables:** 13 tables with comprehensive RLS policies
+- **Tables:** 19 tables with comprehensive RLS policies
 - **Security:** Row Level Security (RLS) on all tables
 - **Triggers:** Business logic enforcement (e.g., last leader protection)
 - **Migrations:** Supabase CLI for version-controlled migrations
@@ -477,6 +488,7 @@ Vision (Why) → Product Spec (What) → Roadmap (When) → Features (How) → B
 **Owner:** Product team (currently: Stefan + AI assistant)
 **Review Cadence:** After each major phase completion
 **Version History:**
+- v1.1 (Feb 28, 2026): Updated status — Phase 1.4-1.5e all complete, technical specs updated
 - v1.0 (Feb 9, 2026): Initial product spec for v1.0 MVP
 
 ---

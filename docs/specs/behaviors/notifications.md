@@ -14,7 +14,7 @@
 **Verified by:**
 - **Test:** `tests/integration/communication/smart-notifications.test.ts`
 - **Database:** Sprint 3 migration (ALTER TABLE notifications)
-- **Feature:** [Smart Notifications](../../features/active/smart-notifications.md)
+- **Feature:** [Smart Notifications](../../features/implemented/smart-notifications.md)
 
 **Acceptance Criteria:**
 - [ ] `action_type` column exists (TEXT, nullable, NULL for passive notifications)
@@ -55,7 +55,7 @@
 **Verified by:**
 - **Code:** `components/notifications/NotificationBell.tsx`
 - **Code:** `lib/notifications/NotificationContext.tsx`
-- **Feature:** [Smart Notifications](../../features/active/smart-notifications.md)
+- **Feature:** [Smart Notifications](../../features/implemented/smart-notifications.md)
 
 **Acceptance Criteria:**
 - [ ] Notifications with `action_type = 'accept_decline'` show Accept and Decline buttons
@@ -83,7 +83,7 @@
 **Verified by:**
 - **Test:** `tests/integration/communication/smart-notifications.test.ts`
 - **Database:** `handle_notification_action()` RPC (SECURITY DEFINER)
-- **Feature:** [Smart Notifications](../../features/active/smart-notifications.md)
+- **Feature:** [Smart Notifications](../../features/implemented/smart-notifications.md)
 
 **Acceptance Criteria:**
 - [ ] RPC accepts `(p_notification_id UUID, p_action TEXT)` and returns JSONB result

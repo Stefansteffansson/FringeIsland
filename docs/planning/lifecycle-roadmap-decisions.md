@@ -1,11 +1,25 @@
 # FringeIsland: Lifecycle Feature Roadmap — Decision Record
 
 **Date:** 2026-02-28
-**Status:** Decisions finalised, ready for implementation
+**Status:** ALL 5 SPRINTS COMPLETE (v0.2.32–v0.2.36)
 **Participants:** Stefan + Claude (Opus 4.6 analysis session)
-**Purpose:** Capture all decisions, deferrals, and sprint structure for the interconnected user/group/journey lifecycle features. This document is the single source of truth for future sprint planning.
+**Purpose:** Decision record for the 5-sprint lifecycle feature implementation. Single source of truth for sprint structure, binding decisions, and deferrals.
 
-**Context:** Users, personal groups, engagement groups, journeys (public vs exclusive), group-in-groups, stewardship, and DeusEx all interact in complex ways. Before implementing the leave-group feature, we need to fix existing gaps and establish foundation work. This analysis maps all the flows, identifies what's broken, and recommends a work order.
+**Context:** Users, personal groups, engagement groups, journeys (public vs exclusive), group-in-groups, stewardship, and DeusEx all interact in complex ways. This analysis mapped all the flows, identified gaps, and defined the work order.
+
+---
+
+## Quick Reference
+
+| Sprint | Name | Goal | Version | Tests | Status |
+|--------|------|------|---------|-------|--------|
+| **0** | Security Fixes | Fix non-public journey access + frozen enrollment | v0.2.32 | +19 | **DONE** |
+| **1** | Foundation Schema | groups.status + FI Journeys group | v0.2.33 | +19 | **DONE** |
+| **2** | Leave Group Core | L1 + L2 + L3 (no smart notifs) | v0.2.34 | +17 | **DONE** |
+| **3** | Smart Notifications + Track 1 | Actionable notifs + steward nomination | v0.2.35 | +19 | **DONE** |
+| **4** | Platform Exit | Admin-assisted cascade exit | v0.2.36 | +10 | **DONE** |
+
+**Total:** 84 new tests across 5 sprints. All lifecycle tracks (A–G) implemented.
 
 ---
 
@@ -297,13 +311,18 @@ Each item below is explicitly deferred. This section prevents scope creep and en
 **Depends on:** Sprint 2 complete (simpler leave-group tracks proven working)
 **Timeout mechanism decision made here** (pg_cron vs. lazy vs. hybrid)
 
-### Sprint 4 — Platform Exit (Admin-Assisted)
+### Sprint 4 — Platform Exit (Admin-Assisted) ✅ COMPLETE (v0.2.36)
 **Goal:** Enable admin-assisted cascade exit from all groups.
+**Completed:** 2026-02-28 | **Tests:** 10 new | **Migration:** `20260228144747_sprint4_platform_exit.sql`
 **Scope:**
-- Admin action: "Exit user from all groups" — iterates all engagement group memberships, applies appropriate leave-group track per group (L1/L2/L4 depending on role)
-- Standard admin deactivation/decommission after all groups are handled
+- ✅ `admin_exit_user_from_platform` SECURITY DEFINER RPC — cascades L1/L2/L3 across all engagement groups
+- ✅ Admin UI: "Exit Platform" button in UserActionBar with ConfirmModal
+- ✅ Safety guards: self-exit, decommissioned, DeusEx member
+- ✅ Decommission + force logout after all groups processed
+- ✅ Audit log with detailed per-group metadata
 - NOT self-service — admin panel only
 **Depends on:** Sprint 2 + Sprint 3 complete (all leave-group tracks working)
+**Feature doc:** `docs/features/implemented/platform-exit.md` | **Behaviors:** B-EXIT-001 through B-EXIT-004
 
 ---
 

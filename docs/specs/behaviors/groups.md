@@ -567,7 +567,7 @@
 - **Test:** `tests/integration/groups/stewardship-nomination.test.ts`
 - **RPC:** `nominate_steward(p_group_id UUID, p_nominee_ids UUID[])` SECURITY DEFINER
 - **RPC:** `handle_notification_action(p_notification_id UUID, p_action TEXT)` SECURITY DEFINER
-- **Feature:** [Smart Notifications](../../features/active/smart-notifications.md)
+- **Feature:** [Smart Notifications](../../features/implemented/smart-notifications.md)
 
 **Acceptance Criteria:**
 - [ ] Sole Steward can call `nominate_steward(group_id, [nominee1_id, nominee2_id, ...])` with 1+ nominees
