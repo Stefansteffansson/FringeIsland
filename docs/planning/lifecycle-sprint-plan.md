@@ -1,6 +1,7 @@
 # FringeIsland: Lifecycle Sprint Plan
 
 **Created:** 2026-02-28
+**Last Updated:** 2026-02-28
 **Source:** `docs/planning/lifecycle-roadmap-decisions.md`
 **Purpose:** Quick-reference table view of the 5-sprint lifecycle implementation plan
 
@@ -10,41 +11,51 @@
 
 | Sprint | Name | Goal | Depends On | Status |
 |--------|------|------|------------|--------|
-| **0** | Security Fixes | Fix broken non-public journey access + frozen enrollment | None | **NEXT** |
-| **1** | Foundation Schema | Add schema pieces leave-group depends on | Sprint 0 | Pending |
-| **2** | Leave Group Core | Leave-group flows without smart notifications | Sprint 0 + 1 | Pending |
-| **3** | Smart Notifications + Track 1 | Actionable notification infra + steward nomination | Sprint 2 | Pending |
+| **0** | Security Fixes | Fix broken non-public journey access + frozen enrollment | None | **DONE** (v0.2.32) |
+| **1** | Foundation Schema | Add schema pieces leave-group depends on | Sprint 0 | **DONE** (v0.2.33) |
+| **2** | Leave Group Core | Leave-group flows without smart notifications | Sprint 0 + 1 | **DONE** (v0.2.34) |
+| **3** | Smart Notifications + Track 1 | Actionable notification infra + steward nomination | Sprint 2 | **NEXT** |
 | **4** | Platform Exit | Admin-assisted cascade exit from all groups | Sprint 2 + 3 | Pending |
 
 ---
 
-## Sprint 0 — Security Fixes (No Dependencies)
+## Sprint 0 — Security Fixes (No Dependencies) ✅ DONE (v0.2.32)
 
-| Task | Description |
-|------|-------------|
-| **S1** | Fix `journeys_select_published` RLS — enforce `is_public`, not just `is_published`. Non-public journeys visible only to enrolled users or owning group members |
-| **S2** | Fix `EnrollmentModal` — check `is_public` before allowing enrollment in non-public journeys |
-| **S3** | Fix `JourneyPlayer` — enforce `frozen` enrollment status (read-only view, block step completion) |
-| **S4** | Add `AND status != 'frozen'` to `enrollment_update_own` and `enrollment_update_group` RLS policies |
+**Completed:** 2026-02-28 | **Tests:** 19 new | **Migration:** `20260228_sprint0_security_fixes.sql`
 
----
+| Task | Description | Status |
+|------|-------------|--------|
+| **S1** | Fix `journeys_select_published` RLS — enforce `is_public`, not just `is_published`. Non-public journeys visible only to enrolled users or owning group members | ✅ |
+| **S2** | Fix `EnrollmentModal` — check `is_public` before allowing enrollment in non-public journeys | ✅ |
+| **S3** | Fix `JourneyPlayer` — enforce `frozen` enrollment status (read-only view, block step completion) | ✅ |
+| **S4** | Add `AND status != 'frozen'` to `enrollment_update_own` and `enrollment_update_group` RLS policies | ✅ |
 
-## Sprint 1 — Foundation Schema
-
-| Task | Description |
-|------|-------------|
-| **F1** | `groups.status` column migration — `active/closed/archived/suspended` + partial index + RLS updates (non-admins see only `active` groups) |
-| **F2** | Create "FringeIsland Journeys" engagement group + re-seed all 8 predefined journeys with correct `created_by_group_id` and `is_public = true` |
+**Implementation notes:** 2 new SECURITY DEFINER helpers, 5 RLS policies replaced. Full TDD workflow.
 
 ---
 
-## Sprint 2 — Leave Group Core
+## Sprint 1 — Foundation Schema ✅ DONE (v0.2.33)
 
-| Task | Description |
-|------|-------------|
-| **L1** | Regular member leaves — confirmation dialog (with non-public journey warning), membership deletion, role cascade, enrollment freezing, forum anonymisation, Steward notification |
-| **L2** | Sole Steward exits to DeusEx (Track 2) — stewardship transfers to DeusEx, pending invitations reassigned, standard notifications to all members + DeusEx |
-| **L3** | Group closure (last member leaves) — `groups.status → 'closed'`, all enrollments frozen, non-public journeys transferred to DeusEx, DeusEx notified |
+**Completed:** 2026-02-28 | **Tests:** 19 new | **Migration:** `20260228_sprint1_foundation_schema.sql`
+
+| Task | Description | Status |
+|------|-------------|--------|
+| **F1** | `groups.status` column migration — `active/closed/archived/suspended` + partial index + RLS updates (non-admins see only `active` groups) | ✅ |
+| **F2** | Create "FringeIsland Journeys" engagement group + re-seed all 8 predefined journeys with correct `created_by_group_id` and `is_public = true` | ✅ |
+
+---
+
+## Sprint 2 — Leave Group Core ✅ DONE (v0.2.34)
+
+**Completed:** 2026-02-28 | **Tests:** 17 new (630/630 GREEN total) | **Migration:** `20260228120745_sprint2_leave_group_core.sql`
+
+| Task | Description | Status |
+|------|-------------|--------|
+| **L1** | Regular member leaves — membership deletion, role cascade, non-public enrollment freezing, Steward notification | ✅ |
+| **L2** | Sole Steward exits to DeusEx (Track 2) — DeusEx gets membership + Steward role, pending invitations transferred, all members notified | ✅ |
+| **L3** | Group closure (last member leaves) — `groups.status → 'closed'`, all enrollments frozen, non-public journeys transferred to DeusEx, DeusEx notified | ✅ |
+
+**Implementation notes:** `leave_group(p_group_id)` SECURITY DEFINER RPC handles all 3 scenarios automatically. Updated `prevent_last_leader_removal` trigger to allow role deletion when group is 'closed'. Feature doc: `docs/features/implemented/leave-group-core.md`. Behaviors: B-GRP-008, B-GRP-009, B-GRP-010.
 
 ---
 
@@ -94,27 +105,36 @@
 ## Dependency Graph
 
 ```
-SPRINT 0 — Security Fixes (no dependencies)
-├── S1: Fix journeys RLS policy (is_public enforcement)
-├── S2: Fix EnrollmentModal is_public check
-├── S3: Enforce frozen status in JourneyPlayer
-└── S4: RLS-level frozen enforcement
+SPRINT 0 — Security Fixes ✅ DONE (v0.2.32)
+├── S1: Fix journeys RLS policy (is_public enforcement) ✅
+├── S2: Fix EnrollmentModal is_public check ✅
+├── S3: Enforce frozen status in JourneyPlayer ✅
+└── S4: RLS-level frozen enforcement ✅
 
-SPRINT 1 — Foundation Schema (depends on Sprint 0)
-├── F1: groups.status column migration
-└── F2: "FringeIsland Journeys" group + re-seed predefined journeys
+SPRINT 1 — Foundation Schema ✅ DONE (v0.2.33)
+├── F1: groups.status column migration ✅
+└── F2: "FringeIsland Journeys" group + re-seed predefined journeys ✅
 
-SPRINT 2 — Leave Group Core (depends on Sprint 0 + 1)
-├── L1: Regular member leaves
-├── L2: Sole Steward → DeusEx immediately
-└── L3: Group closure / last member leaves
+SPRINT 2 — Leave Group Core ✅ DONE (v0.2.34)
+├── L1: Regular member leaves ✅
+├── L2: Sole Steward → DeusEx immediately ✅
+└── L3: Group closure / last member leaves ✅
 
-SPRINT 3 — Smart Notifications + Track 1 (depends on Sprint 2)
+SPRINT 3 — Smart Notifications + Track 1 ⏳ NEXT
 ├── F3: Smart notification schema + UI + handler
 └── L4: Stewardship nomination flow
 
-SPRINT 4 — Platform Exit (depends on Sprint 2 + 3)
+SPRINT 4 — Platform Exit (depends on Sprint 3)
 └── L5: Admin-assisted cascade exit
 ```
 
-**Critical path:** S1 → F1 + F2 (parallel) → S2 + S3 → L1 → L2 → L3 → [smart notifs] → L4 → L5
+**Critical path:** ~~S1 → F1 + F2 (parallel) → S2 + S3 → L1 → L2 → L3~~ (DONE) → [smart notifs] → L4 → L5
+
+---
+
+## Progress Summary
+
+- **Sprints completed:** 3 of 5 (Sprint 0, 1, 2)
+- **Tests added:** 55 new tests across 3 sprints (19 + 19 + 17)
+- **Total test suite:** 630/630 GREEN
+- **Next sprint:** Sprint 3 — Smart Notifications + Steward Nomination
