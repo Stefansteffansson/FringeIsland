@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Sprint 3 — Smart Notifications + Steward Nomination (v0.2.35)** — Actionable notification infrastructure and Track 1 stewardship nomination flow.
+  - **F3: Smart notification schema** — 5 new columns on `notifications`: `action_type` (TEXT), `action_data` (JSONB), `action_taken` (TEXT), `action_taken_at` (TIMESTAMPTZ), `expires_at` (TIMESTAMPTZ). Consistency constraint: `action_taken` requires `action_type` to be set. Index on pending actions for efficient queries.
+  - **F3-UI: Actionable notification UI** — `NotificationContext` updated with `handleAction()` method that calls `handle_notification_action` RPC. `NotificationBell` renders Accept/Decline buttons for smart notifications, shows loading spinners during action, displays "Accepted"/"Declined" badges for actioned notifications, and "Expired" badge for timed-out notifications. Auto-marks as read on action.
+  - **F3-Handler: `handle_notification_action` RPC** — SECURITY DEFINER function validates ownership (recipient must match caller's personal group), actionability (must have `action_type`, no prior action), expiry check, and action validity per type. Dispatches type-specific side effects for `stewardship_nomination` type.
+  - **L4: Stewardship nomination (Track 1)** — `nominate_steward(p_group_id, p_nominee_ids)` RPC allows sole Steward to nominate ranked successors. Sends smart notification to first nominee with 7-day expiry. On accept: nominee gets Steward role, original Steward removed from group (L1 flow). On decline: next nominee notified. If all decline: DeusEx fallback (L2 flow). Prevents self-nomination, non-member nomination, duplicate in-progress nominations.
+  - **Internal helper:** `_handle_stewardship_nomination_action()` — handles accept (grant Steward, remove original member, freeze enrollments, notify group) and decline (advance to next nominee or DeusEx fallback).
+  - **Migration:** `20260228125730_sprint3_smart_notifications.sql`
+  - **Behaviors:** B-NOTIF-001 (Smart Notification Schema), B-NOTIF-002 (Actionable Notification UI), B-NOTIF-003 (Notification Action Handler), B-GRP-011 (Stewardship Nomination Track 1)
+  - **Tests:** 19 new integration tests (11 smart-notifications + 8 stewardship-nomination)
+
 - **Sprint 2 — Leave Group Core (v0.2.34)** — Three leave-group scenarios implemented as a single `leave_group(p_group_id)` SECURITY DEFINER RPC.
   - **L1: Regular member leave** — Membership deleted, roles cascade-removed, non-public journey enrollments frozen (`status='frozen'`, `frozen_reason='left_group'` in progress_data), Steward(s) notified via existing `member_left` trigger. Public/platform journey enrollments unaffected. Forum posts show "Former Member" at query time (no data mutation).
   - **L2: Sole Steward → DeusEx handover** — DeusEx added as group member with Steward role (idempotent), pending invitations (`added_by_group_id`, `invited_by_group_id`) transferred to DeusEx, then L1 flow executes. Custom notifications: all members get `stewardship_transferred`, DeusEx gets `stewardship_required`.

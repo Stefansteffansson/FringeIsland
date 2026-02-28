@@ -557,6 +557,68 @@
 
 ---
 
+## B-GRP-011: Stewardship Nomination (Track 1) 🔄
+
+**Rule:** When the sole Steward of an engagement group wants to leave and other members exist, the Steward MAY nominate successors from the active members. The system sends sequential smart notifications to nominees in ranked order. If a nominee accepts, they become Steward and the original Steward exits. If all nominees decline or time out, the system falls back to DeusEx handover (B-GRP-009).
+
+**Why:** Track 2 (immediate DeusEx handover) is a safety net, not the ideal path. Groups function better with a human Steward chosen by the departing leader. Track 1 gives the Steward control over succession while providing automatic fallback if no nominee accepts.
+
+**Verified by:**
+- **Test:** `tests/integration/groups/stewardship-nomination.test.ts`
+- **RPC:** `nominate_steward(p_group_id UUID, p_nominee_ids UUID[])` SECURITY DEFINER
+- **RPC:** `handle_notification_action(p_notification_id UUID, p_action TEXT)` SECURITY DEFINER
+- **Feature:** [Smart Notifications](../../features/active/smart-notifications.md)
+
+**Acceptance Criteria:**
+- [ ] Sole Steward can call `nominate_steward(group_id, [nominee1_id, nominee2_id, ...])` with 1+ nominees
+- [ ] Nominees must be active members of the group (not the caller)
+- [ ] First nominee receives `stewardship_nomination` smart notification with `action_type = 'accept_decline'`
+- [ ] Notification includes `expires_at` = NOW() + 7 days
+- [ ] Nominee can accept via `handle_notification_action(notification_id, 'accepted')`
+- [ ] On accept: nominee gets Steward role, original Steward executes regular leave (B-GRP-008 flow)
+- [ ] Nominee can decline via `handle_notification_action(notification_id, 'declined')`
+- [ ] On decline: next nominee in rank order receives nomination notification
+- [ ] If notification expires (7 days), it is treated as decline — next nominee notified
+- [ ] If ALL nominees decline/expire: automatic DeusEx fallback (B-GRP-009 flow)
+- [ ] Original Steward remains in group until a nominee accepts or DeusEx fallback completes
+- [ ] Only the sole Steward of the group can initiate nomination (not co-Stewards, not regular members)
+- [ ] Cannot nominate while another nomination is already in progress for the same group
+- [ ] Nomination state tracked in `action_data` JSONB on the notification
+
+**Examples:**
+
+✅ **Valid:**
+- Sole Steward nominates [Alice, Bob] → Alice gets notification → Alice accepts → Alice is Steward, original Steward leaves
+- Sole Steward nominates [Alice, Bob] → Alice declines → Bob gets notification → Bob accepts → Bob is Steward
+- Sole Steward nominates [Alice] → Alice doesn't respond for 7 days → auto-decline → DeusEx fallback
+
+❌ **Invalid:**
+- Regular member tries to nominate → **BLOCKED** ("Only the sole Steward can nominate")
+- Sole Steward nominates non-member → **BLOCKED** ("Nominee must be an active member")
+- Sole Steward nominates themselves → **BLOCKED** ("Cannot nominate yourself")
+- Nomination while another is in progress → **BLOCKED** ("Nomination already in progress")
+
+**Edge Cases:**
+
+- **Scenario:** Nominee leaves the group before responding
+  - **Behavior:** Notification expires naturally (they can't action it after leaving). Lazy check on next view moves to next nominee.
+  - **Why:** Membership check is implicit — if they left, their notification is orphaned but the expiry mechanism handles it.
+
+- **Scenario:** Group has only 1 other member — they decline
+  - **Behavior:** DeusEx fallback immediately (no more nominees)
+  - **Why:** Same as all-nominees-exhausted flow
+
+- **Scenario:** Steward tries to leave while nomination is in progress
+  - **Behavior:** `leave_group()` detects pending nomination → raises error ("Nomination in progress, please wait or cancel")
+  - **Why:** The Steward must stay until succession is resolved
+
+**Testing Priority:** 🔴 CRITICAL (core lifecycle feature, builds on smart notifications)
+
+**History:**
+- 2026-02-28: Documented (Sprint 3)
+
+---
+
 ## Notes
 
 **Implemented Behaviors:**
@@ -567,12 +629,13 @@
 - ✅ B-GRP-005: Group Deletion Rules (6 tests ✅)
 - 🔄 B-GRP-006: User Search Typeahead (4 tests planned)
 - 🔄 B-GRP-007: Group Status Visibility (9 tests ✅ — Sprint 1)
-- 🔄 B-GRP-008: Regular Member Leave Group (Sprint 2 — tests planned)
-- 🔄 B-GRP-009: Sole Steward DeusEx Handover (Sprint 2 — tests planned)
-- 🔄 B-GRP-010: Group Closure on Last Member Leave (Sprint 2 — tests planned)
+- 🔄 B-GRP-008: Regular Member Leave Group (17 tests ✅ — Sprint 2)
+- 🔄 B-GRP-009: Sole Steward DeusEx Handover (17 tests ✅ — Sprint 2)
+- 🔄 B-GRP-010: Group Closure on Last Member Leave (17 tests ✅ — Sprint 2)
+- 🔄 B-GRP-011: Stewardship Nomination Track 1 (Sprint 3 — tests planned)
 
 **Test Coverage:**
-- 7 / 10 behaviors have tests (70%)
+- 8 / 11 behaviors have tests (73%)
 - `last-leader.test.ts` — 4 tests (B-GRP-001)
 - `invitations.test.ts` — 9 tests (B-GRP-002)
 - `rls/groups.test.ts` — 7 tests (B-GRP-003)
@@ -580,16 +643,18 @@
 - `deletion.test.ts` — 6 tests (B-GRP-005)
 - `user-search.test.ts` — 4 tests planned (B-GRP-006)
 - `group-status.test.ts` — 9 tests (B-GRP-007)
-- `leave-group.test.ts` — tests planned (B-GRP-008 + B-GRP-009 + B-GRP-010)
-- Total GRP tests: **40 across 7 files** ✅ + planned
+- `leave-group.test.ts` — 17 tests (B-GRP-008 + B-GRP-009 + B-GRP-010)
+- `stewardship-nomination.test.ts` — tests planned (B-GRP-011)
+- Total GRP tests: **57 across 8 files** ✅ + planned
 - *(Role assignment for group roles is tested in `role-assignment.test.ts` — see roles.md)*
 - **Last updated:** 2026-02-28
 
 **Next Behaviors to Document:**
-- B-GRP-011: Group Template Initialization
-- B-GRP-012: Group Label Uniqueness (if enforced)
+- B-GRP-012: Group Template Initialization
+- B-GRP-013: Group Label Uniqueness (if enforced)
 
 **Related Behavior Specs:**
 - `roles.md` — B-ROL-001: Role Assignment Permissions ✅
 - `invitations.md` — B-INV-001: Pending Email Invitations 🔄
 - `journeys.md` — B-JRN-008: Platform Journey Ownership ✅ (Sprint 1)
+- `notifications.md` — B-NOTIF-001 to B-NOTIF-003 (Sprint 3)

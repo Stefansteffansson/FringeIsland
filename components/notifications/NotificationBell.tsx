@@ -22,20 +22,62 @@ function timeAgo(dateString: string): string {
   return date.toLocaleDateString();
 }
 
+// ─── Action helpers ──────────────────────────────────────────────────────────
+
+/** Map action_type → valid action labels */
+const ACTION_LABELS: Record<string, { accept: string; decline: string }> = {
+  accept_decline: { accept: 'Accept', decline: 'Decline' },
+};
+
+function isExpired(expiresAt: string | null): boolean {
+  if (!expiresAt) return false;
+  return new Date(expiresAt).getTime() < Date.now();
+}
+
 // ─── Notification Item ────────────────────────────────────────────────────────
 
 function NotificationItem({
   notification,
   onAction,
+  onSmartAction,
 }: {
   notification: Notification;
   onAction: (notification: Notification) => void;
+  onSmartAction: (id: string, action: string) => Promise<void>;
 }) {
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  const isActionable =
+    notification.action_type &&
+    !notification.action_taken &&
+    !isExpired(notification.expires_at);
+
+  const labels = notification.action_type
+    ? ACTION_LABELS[notification.action_type]
+    : null;
+
+  const handleSmartAction = async (
+    e: React.MouseEvent,
+    action: string
+  ) => {
+    e.stopPropagation();
+    setActionLoading(action);
+    try {
+      await onSmartAction(notification.id, action);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       onClick={() => onAction(notification)}
-      className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 flex items-start gap-3 ${
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') onAction(notification);
+      }}
+      className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 flex items-start gap-3 cursor-pointer ${
         !notification.is_read ? 'bg-blue-50 hover:bg-blue-50/70' : ''
       }`}
     >
@@ -61,8 +103,58 @@ function NotificationItem({
           <p className="text-xs text-gray-500 mt-0.5">{notification.body}</p>
         )}
         <p className="text-xs text-gray-400 mt-1">{timeAgo(notification.created_at)}</p>
+
+        {/* Smart notification: action buttons */}
+        {isActionable && labels && (
+          <div className="flex gap-2 mt-2">
+            <button
+              type="button"
+              disabled={actionLoading !== null}
+              onClick={(e) => handleSmartAction(e, 'accepted')}
+              className="px-3 py-1 text-xs font-medium rounded-md bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {actionLoading === 'accepted' ? (
+                <span className="flex items-center gap-1">
+                  <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ...
+                </span>
+              ) : (
+                labels.accept
+              )}
+            </button>
+            <button
+              type="button"
+              disabled={actionLoading !== null}
+              onClick={(e) => handleSmartAction(e, 'declined')}
+              className="px-3 py-1 text-xs font-medium rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {actionLoading === 'declined' ? (
+                <span className="flex items-center gap-1">
+                  <span className="w-3 h-3 border-2 border-gray-500 border-t-transparent rounded-full animate-spin" />
+                  ...
+                </span>
+              ) : (
+                labels.decline
+              )}
+            </button>
+          </div>
+        )}
+
+        {/* Already actioned badge */}
+        {notification.action_taken && (
+          <p className="text-xs mt-1.5 font-medium text-gray-500">
+            {notification.action_taken === 'accepted' ? 'Accepted' : 'Declined'}
+          </p>
+        )}
+
+        {/* Expired badge */}
+        {notification.action_type &&
+          !notification.action_taken &&
+          isExpired(notification.expires_at) && (
+            <p className="text-xs mt-1.5 font-medium text-amber-600">Expired</p>
+          )}
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -90,8 +182,14 @@ function BellIcon({ className }: { className?: string }) {
 // ─── NotificationBell ─────────────────────────────────────────────────────────
 
 export default function NotificationBell() {
-  const { unreadCount, notifications, isLoading, markAsRead, markAllAsRead } =
-    useNotifications();
+  const {
+    unreadCount,
+    notifications,
+    isLoading,
+    markAsRead,
+    markAllAsRead,
+    handleAction,
+  } = useNotifications();
 
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -129,6 +227,17 @@ export default function NotificationBell() {
     // Mark as read (no-op if already read)
     if (!notification.is_read) {
       await markAsRead(notification.id);
+    }
+  };
+
+  const handleSmartAction = async (id: string, action: string) => {
+    const result = await handleAction(id, action);
+    if (!result.success) {
+      console.error('[NotificationBell] Action failed:', result.error);
+    }
+    // Trigger nav refresh so group pages pick up role changes
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('refreshNavigation'));
     }
   };
 
@@ -212,6 +321,7 @@ export default function NotificationBell() {
                     <NotificationItem
                       notification={notification}
                       onAction={handleNotificationClick}
+                      onSmartAction={handleSmartAction}
                     />
                   </div>
                 ))}

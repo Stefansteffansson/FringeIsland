@@ -25,6 +25,12 @@ export interface Notification {
   is_read: boolean;
   read_at: string | null;
   created_at: string;
+  // Smart notification fields (Sprint 3)
+  action_type: string | null;
+  action_data: Record<string, unknown> | null;
+  action_taken: string | null;
+  action_taken_at: string | null;
+  expires_at: string | null;
 }
 
 interface NotificationContextType {
@@ -34,6 +40,7 @@ interface NotificationContextType {
   markAsRead: (id: string) => Promise<void>;
   markAllAsRead: () => Promise<void>;
   deleteNotification: (id: string) => Promise<void>;
+  handleAction: (id: string, action: string) => Promise<{ success: boolean; error?: string }>;
 }
 
 // ─── Context ─────────────────────────────────────────────────────────────────
@@ -232,6 +239,48 @@ export function NotificationProvider({
     }
   };
 
+  const handleAction = async (
+    id: string,
+    action: string
+  ): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const { data, error } = await supabase.rpc('handle_notification_action', {
+        p_notification_id: id,
+        p_action: action,
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        // Update local state: mark action_taken and auto-read
+        setNotifications((prev) =>
+          prev.map((n) =>
+            n.id === id
+              ? {
+                  ...n,
+                  action_taken: action,
+                  action_taken_at: new Date().toISOString(),
+                  is_read: true,
+                  read_at: n.read_at ?? new Date().toISOString(),
+                }
+              : n
+          )
+        );
+        // Decrement unread if it was unread
+        const wasUnread = notifications.find((n) => n.id === id && !n.is_read);
+        if (wasUnread) {
+          setUnreadCount((prev) => Math.max(0, prev - 1));
+        }
+        return { success: true };
+      }
+
+      return { success: false, error: data?.error ?? 'Unknown error' };
+    } catch (err: any) {
+      console.error('[NotificationProvider] Failed to handle action:', err);
+      return { success: false, error: err.message ?? 'Failed to process action' };
+    }
+  };
+
   const deleteNotification = async (id: string) => {
     try {
       const { error } = await supabase
@@ -262,6 +311,7 @@ export function NotificationProvider({
         markAsRead,
         markAllAsRead,
         deleteNotification,
+        handleAction,
       }}
     >
       {children}

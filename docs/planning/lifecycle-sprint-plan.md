@@ -14,8 +14,8 @@
 | **0** | Security Fixes | Fix broken non-public journey access + frozen enrollment | None | **DONE** (v0.2.32) |
 | **1** | Foundation Schema | Add schema pieces leave-group depends on | Sprint 0 | **DONE** (v0.2.33) |
 | **2** | Leave Group Core | Leave-group flows without smart notifications | Sprint 0 + 1 | **DONE** (v0.2.34) |
-| **3** | Smart Notifications + Track 1 | Actionable notification infra + steward nomination | Sprint 2 | **NEXT** |
-| **4** | Platform Exit | Admin-assisted cascade exit from all groups | Sprint 2 + 3 | Pending |
+| **3** | Smart Notifications + Track 1 | Actionable notification infra + steward nomination | Sprint 2 | **DONE** (v0.2.35) |
+| **4** | Platform Exit | Admin-assisted cascade exit from all groups | Sprint 2 + 3 | **NEXT** |
 
 ---
 
@@ -59,14 +59,18 @@
 
 ---
 
-## Sprint 3 — Smart Notifications + Steward Nomination
+## Sprint 3 — Smart Notifications + Steward Nomination ✅ DONE (v0.2.35)
 
-| Task | Description |
-|------|-------------|
-| **F3** | Smart notification schema — add `action_type`, `action_data`, `action_taken`, `action_taken_at` to `notifications` |
-| **F3-UI** | Update `NotificationContext` + bell UI to render actionable notifications with embedded buttons |
-| **F3-Handler** | Server-side action handler (RPC/API route) to process notification responses |
-| **L4** | Track 1 stewardship nomination — ranked nominee list, sequential smart notification invitations, accept/decline, timeout handling, DeusEx fallback |
+**Completed:** 2026-02-28 | **Tests:** 19 new (11 smart-notifications + 8 stewardship-nomination) | **Migration:** `20260228125730_sprint3_smart_notifications.sql`
+
+| Task | Description | Status |
+|------|-------------|--------|
+| **F3** | Smart notification schema — add `action_type`, `action_data`, `action_taken`, `action_taken_at`, `expires_at` to `notifications` + consistency constraint | ✅ |
+| **F3-UI** | Update `NotificationContext` + bell UI to render actionable notifications with Accept/Decline buttons, loading states, expired/actioned badges | ✅ |
+| **F3-Handler** | `handle_notification_action` SECURITY DEFINER RPC — validates ownership, actionability, expiry, action validity; records response; dispatches type-specific side effects | ✅ |
+| **L4** | Track 1 stewardship nomination — `nominate_steward` RPC, ranked nominee list, sequential smart notifications, 7-day expiry, accept (Steward transfer + original leaves) / decline (next nominee) / all-decline (DeusEx fallback) | ✅ |
+
+**Implementation notes:** `handle_notification_action` dispatches to `_handle_stewardship_nomination_action` for stewardship-specific side effects. `nominate_steward` validates sole Steward, active members, no self-nomination, no duplicate in-progress. Lazy timeout (expiry checked at action time, not via scheduled jobs). Feature doc: `docs/features/implemented/smart-notifications.md`. Behaviors: B-NOTIF-001, B-NOTIF-002, B-NOTIF-003, B-GRP-011.
 
 ---
 
@@ -120,21 +124,22 @@ SPRINT 2 — Leave Group Core ✅ DONE (v0.2.34)
 ├── L2: Sole Steward → DeusEx immediately ✅
 └── L3: Group closure / last member leaves ✅
 
-SPRINT 3 — Smart Notifications + Track 1 ⏳ NEXT
-├── F3: Smart notification schema + UI + handler
-└── L4: Stewardship nomination flow
+SPRINT 3 — Smart Notifications + Track 1 ✅ DONE (v0.2.35)
+├── F3: Smart notification schema + constraint + handler RPC ✅
+├── F3-UI: NotificationContext + NotificationBell actionable UI ✅
+└── L4: Stewardship nomination (nominate_steward RPC + accept/decline/fallback) ✅
 
-SPRINT 4 — Platform Exit (depends on Sprint 3)
+SPRINT 4 — Platform Exit (depends on Sprint 3) ⏳ NEXT
 └── L5: Admin-assisted cascade exit
 ```
 
-**Critical path:** ~~S1 → F1 + F2 (parallel) → S2 + S3 → L1 → L2 → L3~~ (DONE) → [smart notifs] → L4 → L5
+**Critical path:** ~~S1 → F1 + F2 (parallel) → S2 + S3 → L1 → L2 → L3~~ (DONE) → ~~F3 → L4~~ (DONE) → L5
 
 ---
 
 ## Progress Summary
 
-- **Sprints completed:** 3 of 5 (Sprint 0, 1, 2)
-- **Tests added:** 55 new tests across 3 sprints (19 + 19 + 17)
-- **Total test suite:** 630/630 GREEN
-- **Next sprint:** Sprint 3 — Smart Notifications + Steward Nomination
+- **Sprints completed:** 4 of 5 (Sprint 0, 1, 2, 3)
+- **Tests added:** 74 new tests across 4 sprints (19 + 19 + 17 + 19)
+- **Total test suite:** 649+ GREEN
+- **Next sprint:** Sprint 4 — Platform Exit (admin-assisted)
