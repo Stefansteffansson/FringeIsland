@@ -21,6 +21,7 @@
 - [x] **Leave Group Spec Tweaks** ✅ DONE — 9 tweaks applied (prerequisites, scope exclusion, resolved OPENs)
 - [x] **Feature Doc Reorganization** ✅ DONE — moved implemented features from planned/active → implemented/
 - [x] **Sprint 0 — Security Fixes** ✅ DONE — 4 security gaps fixed (S1-S4), 19 new tests, 485/485 GREEN, v0.2.32
+- [x] **Feature Doc Review** ✅ DONE — 6 docs updated (D15 renames, Sprint 0 staleness, path fixes)
 
 **Blocked/Waiting:**
 - None
@@ -97,24 +98,26 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-28 (Sprint 0 — Security Fixes, full TDD sprint)
+**Date:** 2026-02-28 (Sprint 0 Security Fixes + Feature Doc Review)
 **Summary:**
-- Completed Sprint 0: Security Fixes — full TDD workflow (Phases 0-7)
+- Completed Sprint 0: Security Fixes — full TDD workflow (Phases 0-7), v0.2.32
 - Fixed 4 security gaps: S1 (non-public journey RLS), S2 (enrollment INSERT gating), S3 (JourneyPlayer frozen UI), S4 (enrollment UPDATE frozen RLS)
 - Created 2 new SECURITY DEFINER helper functions: `is_enrolled_in_journey()`, `is_journey_enrollable()`
-- Replaced 5 RLS policies on `journeys` and `journey_enrollments` tables
-- Updated JourneyPlayer with frozen enrollment detection, amber banner, blocked actions, read-only navigation
-- Updated My Journeys page with frozen badge, "Review Steps" label, grey progress bar
-- 19 new security integration tests (10 journey-access + 9 frozen-enrollment), all GREEN
-- Full suite: 485/485 tests passing, zero regressions
-- Version bump to v0.2.32
+- 19 new security integration tests, 485/485 GREEN, zero regressions
+- Reviewed all 13 feature docs, updated 6:
+  - `journey-system.md` — Sprint 0 RLS policies, frozen enrollment handling
+  - `group-forum-system.md` — D15 column renames (author_group_id, member_group_id, Steward/Guide)
+  - `notification-system.md` — D15 column renames (recipient_group_id, get_current_personal_group_id)
+  - `direct-messaging.md` — Checked all 8 success criteria boxes
+  - `leave_group_feature_review.md` — Marked Sprint 0 prerequisites complete
+  - `enhanced-member-invitations.md` — Fixed self-reference path
 
 **Key files:**
 - `supabase/migrations/20260228102720_sprint0_security_fixes.sql` — RLS fixes (S1, S2, S4)
 - `components/journeys/JourneyPlayer.tsx` — Frozen UI enforcement (S3)
-- `app/my-journeys/page.tsx` — Frozen badge/label updates
 - `docs/specs/behaviors/security.md` — 4 behavior specs (all verified)
 - `tests/integration/security/` — 19 new tests
+- `docs/features/implemented/` — 5 docs updated, `docs/features/planned/` — 1 doc updated
 
 **Previous Sessions:**
 - 2026-02-28: Lifecycle Roadmap Decisions + feature doc reorganization
