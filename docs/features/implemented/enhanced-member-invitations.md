@@ -68,7 +68,7 @@ CREATE TABLE public.pending_email_invitations (
 
 | File | Purpose |
 |------|---------|
-| `docs/features/active/enhanced-member-invitations.md` | This feature doc |
+| `docs/features/implemented/enhanced-member-invitations.md` | This feature doc |
 | `docs/specs/behaviors/invitations.md` | B-INV-001 behavior spec |
 | `supabase/migrations/<ts>_enhanced_member_invitations.sql` | New table + trigger update |
 | `lib/email/send.ts` | Email service abstraction (console.log) |

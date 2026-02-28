@@ -1,8 +1,8 @@
 # Journey System
 
-**Status:** ✅ Implemented (v0.2.8–v0.2.11)
-**Last Updated:** February 27, 2026
-**Covers:** Catalog, enrollment, content delivery, progress tracking
+**Status:** ✅ Implemented (v0.2.8–v0.2.11, security fixes v0.2.32)
+**Last Updated:** February 28, 2026
+**Covers:** Catalog, enrollment, content delivery, progress tracking, access control
 
 ---
 
@@ -81,7 +81,15 @@ The main content delivery engine. Receives journey data and enrollment, renders 
 - Resume from last position via `current_step_id`
 - Completion detection (all required steps done -> `status = 'completed'`)
 - Review mode for completed journeys (free navigation, review banner)
-- `last_accessed_at` updated on mount
+- `last_accessed_at` updated on mount (skipped for frozen enrollments)
+- **Frozen enrollment enforcement (Sprint 0, v0.2.32):**
+  - Detects `enrollment.status === 'frozen'` on load
+  - Shows amber banner: "This enrollment has been frozen. You can review previous steps but cannot make new progress."
+  - "Mark Complete" button hidden (passes `isReviewMode || isFrozen` to StepContent)
+  - Navigation to unvisited steps blocked (only already-completed steps accessible)
+  - No writes to `progress_data` (navigateToStep returns early when frozen)
+  - `last_accessed_at` update skipped on mount
+  - Next button label shows "End of Review" on last step
 
 **Progress tracking per step:**
 - `completed_at` timestamp
@@ -119,8 +127,11 @@ The main content delivery engine. Receives journey data and enrollment, renders 
 - Individual tab: enrollments where `group_id = personal_group_id`
 - Group tab: enrollments where `group_id` is in user's active engagement groups
 - Journey cards with title, description, status badge, difficulty, duration
-- Progress bar when `total_steps` known and status is active
-- Smart button labels: "Start Journey" / "Continue" / "Review Journey"
+- Progress bar when `total_steps` known and status is active or frozen
+- Smart button labels: "Start Journey" / "Continue" / "Review Journey" / "Review Steps" (frozen)
+- **Frozen enrollment display (Sprint 0, v0.2.32):**
+  - Frozen cards show "Review Steps" button label (not "Continue" or "Start")
+  - Progress bar uses grey color (`bg-gray-400`) instead of blue for frozen enrollments
 - All links go to `/journeys/[id]/play`
 - Empty states with "Browse Catalog" CTAs
 
@@ -231,15 +242,42 @@ CREATE INDEX idx_enrollments_journey ON public.journey_enrollments(journey_id);
 
 ### journeys Table
 
-One policy — published journeys visible to all authenticated users:
+One SELECT policy — published journeys visible based on `is_public` flag (updated in Sprint 0, v0.2.32):
 
 ```sql
 CREATE POLICY "journeys_select_published"
   ON public.journeys FOR SELECT TO authenticated
-  USING (is_published = true);
+  USING (
+    is_published = true
+    AND (
+      -- Public journeys: visible to all authenticated users
+      is_public = true
+      -- Non-public journeys: visible to owning group members
+      OR public.is_active_group_member(created_by_group_id)
+      -- Non-public journeys: visible to enrolled users (including frozen — for review)
+      OR public.is_enrolled_in_journey(id)
+      -- Platform admins: see all published journeys
+      OR public.is_platform_admin()
+    )
+  );
 ```
 
 No INSERT/UPDATE/DELETE policies for regular users (all journeys are system-seeded). Admins use service role.
+
+**Helper function (Sprint 0):**
+```sql
+-- SECURITY DEFINER to avoid nested RLS on journey_enrollments
+CREATE OR REPLACE FUNCTION public.is_enrolled_in_journey(check_journey_id UUID)
+RETURNS BOOLEAN
+LANGUAGE sql SECURITY DEFINER STABLE SET search_path = ''
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.journey_enrollments
+    WHERE journey_id = check_journey_id
+      AND group_id = public.get_current_personal_group_id()
+  );
+$$;
+```
 
 ### journey_enrollments Table
 
@@ -259,17 +297,18 @@ CREATE POLICY "enrollment_select_group"
   USING (public.is_active_group_member(group_id));
 ```
 
-**INSERT — individual (personal group only):**
+**INSERT — individual (personal group only, with enrollability check — Sprint 0):**
 ```sql
 CREATE POLICY "enrollment_insert_individual"
   ON public.journey_enrollments FOR INSERT TO authenticated
   WITH CHECK (
     group_id = public.get_current_personal_group_id()
     AND enrolled_by_group_id = public.get_current_personal_group_id()
+    AND public.is_journey_enrollable(journey_id)
   );
 ```
 
-**INSERT — group (requires `enroll_group_in_journey` permission):**
+**INSERT — group (requires `enroll_group_in_journey` permission, with enrollability check — Sprint 0):**
 ```sql
 CREATE POLICY "enrollment_insert_group"
   ON public.journey_enrollments FOR INSERT TO authenticated
@@ -281,18 +320,41 @@ CREATE POLICY "enrollment_insert_group"
       group_id,
       'enroll_group_in_journey'
     )
+    AND public.is_journey_enrollable(journey_id)
   );
 ```
 
-**UPDATE — own enrollment:**
+**Helper function (Sprint 0):**
+```sql
+-- SECURITY DEFINER to avoid nested RLS on journeys table
+CREATE OR REPLACE FUNCTION public.is_journey_enrollable(check_journey_id UUID)
+RETURNS BOOLEAN
+LANGUAGE sql SECURITY DEFINER STABLE SET search_path = ''
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.journeys
+    WHERE id = check_journey_id
+      AND is_published = true
+      AND (
+        is_public = true
+        OR public.is_active_group_member(created_by_group_id)
+      )
+  );
+$$;
+```
+
+**UPDATE — own enrollment (frozen enrollments blocked — Sprint 0):**
 ```sql
 CREATE POLICY "enrollment_update_own"
   ON public.journey_enrollments FOR UPDATE TO authenticated
-  USING (group_id = public.get_current_personal_group_id())
+  USING (
+    group_id = public.get_current_personal_group_id()
+    AND status != 'frozen'
+  )
   WITH CHECK (group_id = public.get_current_personal_group_id());
 ```
 
-**UPDATE — group enrollment (with permission):**
+**UPDATE — group enrollment (with permission, frozen enrollments blocked — Sprint 0):**
 ```sql
 CREATE POLICY "enrollment_update_group"
   ON public.journey_enrollments FOR UPDATE TO authenticated
@@ -300,6 +362,7 @@ CREATE POLICY "enrollment_update_group"
     public.has_permission(
       public.get_current_personal_group_id(), group_id, 'enroll_group_in_journey'
     )
+    AND status != 'frozen'
   )
   WITH CHECK (
     public.has_permission(
@@ -314,6 +377,8 @@ CREATE POLICY "enrollment_update_group"
 - `get_current_personal_group_id()` — returns `users.personal_group_id` for the authenticated user
 - `is_active_group_member(group_id)` — checks active membership
 - `has_permission(acting_group_id, context_group_id, permission_name)` — RBAC permission check
+- `is_enrolled_in_journey(journey_id)` — checks enrollment via personal group (SECURITY DEFINER, Sprint 0)
+- `is_journey_enrollable(journey_id)` — checks journey is published AND (public OR user is owning group member) (SECURITY DEFINER, Sprint 0)
 
 ---
 
@@ -655,6 +720,17 @@ const mapped = data.map(e => ({ ...e, journey: e.journeys }));
 ---
 
 ## Changelog
+
+**v0.2.32** (Feb 28, 2026) — Sprint 0: Security Fixes
+- Non-public journey visibility enforced at RLS level (`is_public` check in `journeys_select_published`)
+- Non-public journey enrollment gated at RLS level (`is_journey_enrollable()` in INSERT policies)
+- Frozen enrollment UPDATE blocked at RLS level (`AND status != 'frozen'` in USING clauses)
+- Frozen enrollment UI enforcement in JourneyPlayer (amber banner, blocked actions, read-only navigation)
+- Frozen badge and "Review Steps" label on My Journeys cards
+- 2 new SECURITY DEFINER helper functions: `is_enrolled_in_journey()`, `is_journey_enrollable()`
+- 19 new security integration tests
+- Migration: `20260228102720_sprint0_security_fixes.sql`
+- Behaviors: B-SEC-001, B-SEC-002, B-SEC-003, B-SEC-004
 
 **v0.2.11** (Feb 10, 2026)
 - JourneyPlayer with step-by-step content delivery

@@ -3,8 +3,9 @@
 **Status:** ✅ Implemented (v0.2.14)
 **Author:** Architect Agent
 **Date:** February 14, 2026
+**Last Updated:** February 28, 2026 (D15 column renames applied)
 **Phase:** 1.5-A (Communication - Forums)
-**Dependencies:** Current schema (13 tables), existing RLS helper functions
+**Dependencies:** Current schema (19 tables), existing RLS helper functions
 
 ---
 
@@ -20,7 +21,7 @@ Phase 1.5-A adds group forums alongside the notification system. Forums enable g
 CREATE TABLE public.forum_posts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   group_id UUID NOT NULL REFERENCES public.groups(id) ON DELETE CASCADE,
-  author_user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE RESTRICT,
+  author_group_id UUID NOT NULL REFERENCES public.groups(id) ON DELETE RESTRICT,
   parent_post_id UUID REFERENCES public.forum_posts(id) ON DELETE CASCADE,
   content TEXT NOT NULL,
   is_deleted BOOLEAN NOT NULL DEFAULT false,
@@ -35,7 +36,7 @@ CREATE TABLE public.forum_posts (
 |--------|------|-----|
 | `id` | UUID PK | Standard pattern -- `gen_random_uuid()` |
 | `group_id` | UUID NOT NULL FK | Every post belongs to exactly one group's forum. CASCADE on group delete removes all posts. |
-| `author_user_id` | UUID NOT NULL FK | Who wrote it. RESTRICT prevents deleting a user who has posts (soft-delete via `is_active` is the user deletion pattern). |
+| `author_group_id` | UUID NOT NULL FK groups | Who wrote it (personal group ID). RESTRICT prevents deleting a group that has posts. On hard-delete, content is reassigned to [Deleted User] sentinel group. |
 | `parent_post_id` | UUID nullable FK | NULL = top-level post. Non-null = reply to a top-level post. CASCADE ensures replies are removed if parent is hard-deleted. |
 | `content` | TEXT NOT NULL | Post body. No length limit at DB level -- enforce in UI (e.g., 10,000 characters). |
 | `is_deleted` | BOOLEAN default false | Soft delete for moderation. Deleted posts show "[deleted]" placeholder. |
@@ -115,7 +116,7 @@ CREATE INDEX idx_forum_posts_parent
 
 -- Author lookups
 CREATE INDEX idx_forum_posts_author
-  ON public.forum_posts(author_user_id);
+  ON public.forum_posts(author_group_id);
 
 -- Optimized: non-deleted top-level posts for a group (most common query)
 CREATE INDEX idx_forum_posts_group_toplevel
@@ -159,34 +160,34 @@ STABLE
 SET search_path = ''
 AS $$
 DECLARE
-  v_user_id UUID;
+  v_personal_group_id UUID;
   v_role_names TEXT[];
 BEGIN
-  v_user_id := public.get_current_user_profile_id();
-  IF v_user_id IS NULL THEN RETURN FALSE; END IF;
+  v_personal_group_id := public.get_current_personal_group_id();
+  IF v_personal_group_id IS NULL THEN RETURN FALSE; END IF;
 
-  -- Must be active group member
+  -- Must be active group member (D15: member_group_id, not user_id)
   IF NOT EXISTS (
     SELECT 1 FROM public.group_memberships
-    WHERE group_id = p_group_id AND user_id = v_user_id AND status = 'active'
+    WHERE group_id = p_group_id AND member_group_id = v_personal_group_id AND status = 'active'
   ) THEN RETURN FALSE; END IF;
 
-  -- Get role names
+  -- Get role names (D15: member_group_id, not user_id)
   SELECT array_agg(gr.name) INTO v_role_names
   FROM public.user_group_roles ugr
   JOIN public.group_roles gr ON ugr.group_role_id = gr.id
-  WHERE ugr.user_id = v_user_id AND ugr.group_id = p_group_id;
+  WHERE ugr.member_group_id = v_personal_group_id AND ugr.group_id = p_group_id;
 
-  -- Map permissions to roles (mirrors D18a permission grid)
+  -- Map permissions to roles (D15: Steward/Guide, not Group Leader/Travel Guide)
   CASE p_permission_name
     WHEN 'view_forum' THEN
       RETURN v_role_names IS NOT NULL;
     WHEN 'post_forum_messages' THEN
-      RETURN v_role_names && ARRAY['Group Leader', 'Travel Guide', 'Member'];
+      RETURN v_role_names && ARRAY['Steward', 'Guide', 'Member'];
     WHEN 'reply_to_messages' THEN
-      RETURN v_role_names && ARRAY['Group Leader', 'Travel Guide', 'Member'];
+      RETURN v_role_names && ARRAY['Steward', 'Guide', 'Member'];
     WHEN 'moderate_forum' THEN
-      RETURN v_role_names && ARRAY['Group Leader'];
+      RETURN v_role_names && ARRAY['Steward'];
     ELSE
       RETURN FALSE;
   END CASE;
@@ -206,11 +207,11 @@ CREATE POLICY "forum_posts_select_permission"
 ON public.forum_posts FOR SELECT TO authenticated
 USING (public.has_forum_permission(group_id, 'view_forum'));
 
--- INSERT: Users with post or reply permission
+-- INSERT: Users with post or reply permission (D15: author_group_id)
 CREATE POLICY "forum_posts_insert_permission"
 ON public.forum_posts FOR INSERT TO authenticated
 WITH CHECK (
-  author_user_id = public.get_current_user_profile_id()
+  author_group_id = public.get_current_personal_group_id()
   AND (
     (parent_post_id IS NULL AND public.has_forum_permission(group_id, 'post_forum_messages'))
     OR
@@ -218,14 +219,14 @@ WITH CHECK (
   )
 );
 
--- UPDATE: Authors can edit own non-deleted posts
+-- UPDATE: Authors can edit own non-deleted posts (D15: author_group_id)
 CREATE POLICY "forum_posts_update_own"
 ON public.forum_posts FOR UPDATE TO authenticated
 USING (
-  author_user_id = public.get_current_user_profile_id() AND is_deleted = false
+  author_group_id = public.get_current_personal_group_id() AND is_deleted = false
 )
 WITH CHECK (
-  author_user_id = public.get_current_user_profile_id() AND is_deleted = false
+  author_group_id = public.get_current_personal_group_id() AND is_deleted = false
 );
 
 -- UPDATE: Moderators can soft-delete any post
@@ -312,13 +313,13 @@ Forum listing:
 
 Creating a post:
   UI form submit
-    -> Supabase .from('forum_posts').insert({ group_id, content, author_user_id })
+    -> Supabase .from('forum_posts').insert({ group_id, content, author_group_id })
     -> RLS: has_forum_permission(group_id, 'post_forum_messages')
     -> Return new post -> Append to state
 
 Creating a reply:
   UI reply form submit
-    -> Supabase .from('forum_posts').insert({ group_id, content, author_user_id, parent_post_id })
+    -> Supabase .from('forum_posts').insert({ group_id, content, author_group_id, parent_post_id })
     -> RLS: has_forum_permission(group_id, 'reply_to_messages')
     -> Trigger: enforce_flat_threading (validates parent is top-level)
     -> Return new reply -> Append to replies state
@@ -348,3 +349,4 @@ Moderating (soft delete):
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-02-14 | Initial design | Architect Agent |
+| 2026-02-28 | Updated D15 column renames: `author_user_id` → `author_group_id`, `user_id` → `member_group_id`, role names Steward/Guide | Sprint 0 review |

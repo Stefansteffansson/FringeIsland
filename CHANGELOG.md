@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **Sprint 0 — Security Fixes (v0.2.32)** — Fixed 4 security gaps identified in lifecycle roadmap analysis. Defense-in-depth: both RLS and UI enforcement for all fixes.
+  - **S1: Non-public journey visibility (RLS)** — `journeys_select_published` now enforces `is_public`. Non-public journeys visible only to owning group members, enrolled users, or platform admins. New SECURITY DEFINER helper: `is_enrolled_in_journey()`.
+  - **S2: Non-public journey enrollment gating (RLS)** — INSERT policies on `journey_enrollments` now validate `is_journey_enrollable()`. Non-members cannot enroll in non-public journeys via direct API. New SECURITY DEFINER helper: `is_journey_enrollable()`.
+  - **S3: Frozen enrollment UI enforcement** — JourneyPlayer now detects `status = 'frozen'`, shows amber banner, blocks step completion, blocks navigation to unvisited steps, skips all progress writes. My Journeys shows "Review Steps" label and grey progress bar for frozen enrollments.
+  - **S4: Frozen enrollment RLS enforcement** — `enrollment_update_own` and `enrollment_update_group` policies now include `AND status != 'frozen'` in USING clause. Only service_role (admin) can modify frozen enrollments.
+  - **Migration:** `20260228102720_sprint0_security_fixes.sql`
+  - **Behaviors:** B-SEC-001, B-SEC-002, B-SEC-003, B-SEC-004 (all verified)
+  - **Tests:** 19 new security integration tests (10 journey-access + 9 frozen-enrollment)
+  - **Full suite:** 485/485 tests passing, zero regressions
+
 - **Personal group RLS visibility** — Other users' personal groups were invisible under the `groups_select` RLS policy, causing display names to show as "Unknown" across 6 surfaces (forum posts, DM list, conversation headers, group member list, invite modal). Added `group_type = 'personal'` condition to `groups_select` policy. Personal groups are identity containers (name + avatar) and are safe to expose to all authenticated users. Zero application code changes needed.
   - **Migration:** `20260227110556_fix_personal_group_rls_visibility.sql`
   - **Surfaces fixed:** ForumSection/ForumPost, messages page, conversation page, group detail member list, InviteMemberModal

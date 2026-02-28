@@ -20,6 +20,7 @@
     "test:integration:rbac": "jest tests/integration/rbac --runInBand --verbose",
     "test:integration:admin": "jest tests/integration/admin --runInBand --verbose",
     "test:integration:communication": "jest tests/integration/communication --runInBand --verbose",
+    "test:integration:security": "jest tests/integration/security --runInBand --verbose",
     "test:e2e": "jest tests/e2e"
   },
   "dependencies": {

@@ -3,6 +3,7 @@
 **Status:** ✅ Implemented (v0.2.14)
 **Author:** Architect Agent
 **Date:** February 14, 2026
+**Last Updated:** February 28, 2026 (D15 column renames applied)
 **Phase:** 1.5-A (Infrastructure for RBAC/Communication)
 **Related:** [Dynamic Permissions System](./dynamic-permissions-system.md) (D13) | [ARCHITECTURE](../../architecture/ARCHITECTURE.md)
 
@@ -25,7 +26,7 @@ The current system has a rudimentary "invitation badge" in `components/Navigatio
 ```sql
 CREATE TABLE notifications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  recipient_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  recipient_group_id UUID NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
   type TEXT NOT NULL,
   title TEXT NOT NULL,
   body TEXT,
@@ -42,7 +43,7 @@ CREATE TABLE notifications (
 | Column | Type | Purpose |
 |--------|------|---------|
 | `id` | UUID | Primary key, consistent with all other tables |
-| `recipient_user_id` | UUID, NOT NULL, FK users | Who receives this notification. FK to `users.id` (not `auth.users`), consistent with all other user references. CASCADE on user deletion. |
+| `recipient_group_id` | UUID, NOT NULL, FK groups | Who receives this notification. FK to `groups.id` — references the recipient's personal group (D15 universal group pattern). CASCADE on group deletion. |
 | `type` | TEXT, NOT NULL | Notification type identifier (see "Notification Types" section below). TEXT not ENUM so new types can be added without migration. |
 | `title` | TEXT, NOT NULL | Human-readable short title for display (e.g., "New Group Invitation"). Pre-rendered at creation time, not computed at read time. |
 | `body` | TEXT, nullable | Optional longer description (e.g., "Stefan invited you to join Alpha Team"). Pre-rendered. |
@@ -60,8 +61,8 @@ For Phase 1.5-A, all notification types are delivered to all users. Preferences 
 **Why pre-rendered `title` and `body`?**
 Alternative: store only type + payload, render in the UI. Problem: if group names or user names change after notification creation, the notification text would retroactively change, which is confusing. Pre-rendering at creation time captures the state at the moment of the event. The `payload` JSONB still has IDs for navigation/linking.
 
-**Why `recipient_user_id` not `recipient_group_id`?**
-In the D15 future model, users are represented by personal groups. However, the current schema still uses `user_id` in most places. Notifications are fundamentally per-user (each human sees their own notification bell). Using `user_id` keeps things simple. When D15 migration happens, this column can be migrated to reference personal groups -- but the notification-per-human model stays the same.
+**Why `recipient_group_id` (personal group) not `recipient_user_id`?**
+D15 established the universal group pattern where every user is represented by a personal group. Notifications reference `recipient_group_id` (the recipient's personal group UUID) rather than a user ID. This is consistent with all other D15 tables. Notifications are fundamentally per-user (each human sees their own notification bell) — the personal group is the user's identity anchor.
 
 **Why TEXT not ENUM for `type`?**
 Adding new notification types is a common operation (new feature = new notification). TEXT avoids a migration each time. A CHECK constraint is not used either -- validation happens in the creation function. Invalid types won't be created because only controlled SECURITY DEFINER functions create notifications.
@@ -73,12 +74,12 @@ Adding new notification types is a common operation (new feature = new notificat
 ```sql
 -- Primary query: "get my unread notifications, newest first"
 CREATE INDEX idx_notifications_recipient_unread
-  ON notifications (recipient_user_id, created_at DESC)
+  ON notifications (recipient_group_id, created_at DESC)
   WHERE is_read = false;
 
 -- Secondary query: "get all my notifications, newest first" (paginated)
 CREATE INDEX idx_notifications_recipient_created
-  ON notifications (recipient_user_id, created_at DESC);
+  ON notifications (recipient_group_id, created_at DESC);
 
 -- Filter by group context
 CREATE INDEX idx_notifications_group
@@ -93,37 +94,37 @@ CREATE INDEX idx_notifications_group
 ```sql
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 
--- SELECT: Users can only read their own notifications
+-- SELECT: Users can only read their own notifications (D15: personal group)
 CREATE POLICY "Users can read own notifications"
 ON notifications
 FOR SELECT
 TO authenticated
 USING (
-  recipient_user_id = get_current_user_profile_id()
+  recipient_group_id = get_current_personal_group_id()
 );
 
 -- INSERT: Only SECURITY DEFINER functions can insert.
 -- No INSERT policy for 'authenticated' role.
 
--- UPDATE: Users can mark their own notifications as read
+-- UPDATE: Users can mark their own notifications as read (D15: personal group)
 CREATE POLICY "Users can update own notifications"
 ON notifications
 FOR UPDATE
 TO authenticated
 USING (
-  recipient_user_id = get_current_user_profile_id()
+  recipient_group_id = get_current_personal_group_id()
 )
 WITH CHECK (
-  recipient_user_id = get_current_user_profile_id()
+  recipient_group_id = get_current_personal_group_id()
 );
 
--- DELETE: Users can dismiss/delete their own notifications
+-- DELETE: Users can dismiss/delete their own notifications (D15: personal group)
 CREATE POLICY "Users can delete own notifications"
 ON notifications
 FOR DELETE
 TO authenticated
 USING (
-  recipient_user_id = get_current_user_profile_id()
+  recipient_group_id = get_current_personal_group_id()
 );
 ```
 
@@ -139,7 +140,7 @@ Each authenticated user subscribes to a single Realtime channel filtered by thei
 Channel: postgres_changes
 Table:   notifications
 Event:   INSERT
-Filter:  recipient_user_id=eq.<current_user_profile_id>
+Filter:  recipient_group_id=eq.<current_personal_group_id>
 ```
 
 Supabase Realtime Postgres Changes respects RLS, so a user cannot subscribe to another user's notifications.
@@ -155,7 +156,7 @@ const channel = supabase
       event: 'INSERT',
       schema: 'public',
       table: 'notifications',
-      filter: `recipient_user_id=eq.${userProfileId}`,
+      filter: `recipient_group_id=eq.${personalGroupId}`,
     },
     (payload) => {
       handleNewNotification(payload.new);
@@ -301,3 +302,4 @@ Replace current invitation-count logic in `Navigation.tsx`:
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-02-14 | Initial design | Architect Agent |
+| 2026-02-28 | Updated D15 column renames: `recipient_user_id` → `recipient_group_id`, `get_current_user_profile_id()` → `get_current_personal_group_id()` | Sprint 0 review |

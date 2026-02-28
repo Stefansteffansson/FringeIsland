@@ -121,14 +121,14 @@ Two tables are needed:
 
 ## Success Criteria
 
-- [ ] Users can send and receive 1:1 messages
-- [ ] Inbox shows all conversations sorted by recency
-- [ ] Unread conversations are visually distinct
-- [ ] Nav bar shows unread message count
-- [ ] New messages trigger notifications
-- [ ] Messages are private (RLS enforced — only sender and recipient can see)
-- [ ] Real-time delivery works for online users
-- [ ] Message history persists and loads correctly
+- [x] Users can send and receive 1:1 messages
+- [x] Inbox shows all conversations sorted by recency
+- [x] Unread conversations are visually distinct
+- [x] Nav bar shows unread message count
+- [x] New messages trigger notifications
+- [x] Messages are private (RLS enforced — only sender and recipient can see)
+- [x] Real-time delivery works for online users
+- [x] Message history persists and loads correctly
 
 ---
 

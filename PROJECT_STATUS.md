@@ -1,18 +1,18 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-28 (Lifecycle Roadmap Decisions + Leave Group spec tweaks + feature doc reorganization)
-**Current Version:** 0.2.31
+**Last Updated:** 2026-02-28 (Sprint 0 — Security Fixes complete)
+**Current Version:** 0.2.32
 **Active Branch:** main
 
 ---
 
 ## What We're Working On NOW
 
-**Current Focus:** Lifecycle Roadmap — 5 binding decisions, 5-sprint structure, security fixes first
+**Current Focus:** Sprint 0 COMPLETE — Sprint 1 (Foundation Schema) is next
 
 **Key Docs:**
 - `docs/planning/lifecycle-roadmap-decisions.md` — **Single source of truth** for sprint structure and decisions
-- `docs/features/planned/leave_group_feature_review.md` — Leave group spec (9 tweaks applied 2026-02-28)
+- `docs/specs/behaviors/security.md` — Sprint 0 behavior specs (4 behaviors, all verified)
 
 **Active Tasks:**
 - [x] **Leave Group Feature Review** ✅ DONE — multi-round analysis, 9 ambiguities resolved
@@ -20,12 +20,13 @@
 - [x] **Lifecycle Roadmap Decisions** ✅ DONE — 5 binding decisions (D-R1 to D-R5), 5-sprint structure, dependency graph
 - [x] **Leave Group Spec Tweaks** ✅ DONE — 9 tweaks applied (prerequisites, scope exclusion, resolved OPENs)
 - [x] **Feature Doc Reorganization** ✅ DONE — moved implemented features from planned/active → implemented/
-- [ ] **Sprint 0 — Security Fixes** — NEXT: Non-public journey RLS, EnrollmentModal is_public check, JourneyPlayer frozen enforcement
+- [x] **Sprint 0 — Security Fixes** ✅ DONE — 4 security gaps fixed (S1-S4), 19 new tests, 485/485 GREEN, v0.2.32
 
 **Blocked/Waiting:**
 - None
 
 **Previous Features (COMPLETE):**
+- [x] **Sprint 0 — Security Fixes** ✅ v0.2.32
 - [x] **Personal Group RLS Visibility Fix** ✅ v0.2.31
 - [x] **Display Name / Nickname System** ✅ v0.2.30
 - [x] **Performance Optimization** ✅ All tiers (1A-3B)
@@ -36,12 +37,12 @@
 
 ## Quick Stats
 
-- **Phase:** Lifecycle Roadmap COMPLETE — Sprint 0 (Security Fixes) is next
+- **Phase:** Sprint 0 COMPLETE — Sprint 1 (Foundation Schema) is next
 - **Total Tables:** 19 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
-- **Total Migrations:** 11 active + 71 archived
-- **Recent Version:** v0.2.31 (Fix personal group RLS visibility)
-- **Test Coverage:** 466 integration + 99 unit + 4 setup = **569 tests** ✅
-- **Behaviors Documented:** 88 (77 previous + 11 display-name) ✅
+- **Total Migrations:** 12 active + 71 archived
+- **Recent Version:** v0.2.32 (Sprint 0 — Security Fixes)
+- **Test Coverage:** 485 integration + 99 unit + 4 setup = **588 tests** ✅
+- **Behaviors Documented:** 92 (88 previous + 4 security) ✅
 - **Feature Docs:** 8 implemented + 1 planned design (leave-group refined) + 1 roadmap (lifecycle decisions)
 - **Supabase CLI:** Configured and ready for automated migrations ✅
 
@@ -55,7 +56,7 @@
 - ✅ **Group Deletion (Danger Zone UI + RLS)** v0.2.12
 - ✅ Error Handling System
 - ✅ Testing Infrastructure (Jest + integration tests)
-- ✅ **RLS Security (all tables protected)**
+- ✅ **RLS Security (all tables protected + Sprint 0 security fixes)** v0.2.32
 - ✅ **Development Dashboard** (visual project status at /dev/dashboard)
 - ✅ **RBAC System Design** (22 decisions, fully implemented)
 - ✅ **Agent System** (7 agents, two-tier architecture, continuous learning)
@@ -96,23 +97,27 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-28 (Lifecycle Roadmap Decisions + Feature Doc Reorganization)
+**Date:** 2026-02-28 (Sprint 0 — Security Fixes, full TDD sprint)
 **Summary:**
-- Deep analysis of all interconnected lifecycle features (user/group/journey) — mapped 8 lifecycle tracks (A-H)
-- Identified 5 things broken in current state: non-public journey RLS, missing groups.status, wrong journey ownership, cosmetic-only frozen enrollment, no smart notifications
-- Created lifecycle roadmap with 5 binding decisions (D-R1 to D-R5) and 5-sprint structure
-- Applied 9 tweaks to `leave_group_feature_review.md` — added prerequisites section, scope exclusion, resolved 4 OPEN items, added 2 new sections
-- Reorganized feature docs: moved 7 implemented features from planned/active → implemented/ folder
-- Rewrote `journey-system.md` to reflect post-D15 accuracy
+- Completed Sprint 0: Security Fixes — full TDD workflow (Phases 0-7)
+- Fixed 4 security gaps: S1 (non-public journey RLS), S2 (enrollment INSERT gating), S3 (JourneyPlayer frozen UI), S4 (enrollment UPDATE frozen RLS)
+- Created 2 new SECURITY DEFINER helper functions: `is_enrolled_in_journey()`, `is_journey_enrollable()`
+- Replaced 5 RLS policies on `journeys` and `journey_enrollments` tables
+- Updated JourneyPlayer with frozen enrollment detection, amber banner, blocked actions, read-only navigation
+- Updated My Journeys page with frozen badge, "Review Steps" label, grey progress bar
+- 19 new security integration tests (10 journey-access + 9 frozen-enrollment), all GREEN
+- Full suite: 485/485 tests passing, zero regressions
+- Version bump to v0.2.32
 
-**Key decisions (binding — see `docs/planning/lifecycle-roadmap-decisions.md`):**
-- **D-R1:** Smart notifications are a separate feature (Sprint 3), not part of leave-group core
-- **D-R2:** Security fixes (Sprint 0) must complete before any leave-group implementation
-- **D-R3:** Platform exit is admin-assisted for v1 — no self-service "Leave FringeIsland" button
-- **D-R4:** Timeout mechanism deferred to Sprint 3 — hard-coded 7d/30d values when implemented
-- **D-R5:** Forum content preserved on hard delete — attribution anonymised, content kept
+**Key files:**
+- `supabase/migrations/20260228102720_sprint0_security_fixes.sql` — RLS fixes (S1, S2, S4)
+- `components/journeys/JourneyPlayer.tsx` — Frozen UI enforcement (S3)
+- `app/my-journeys/page.tsx` — Frozen badge/label updates
+- `docs/specs/behaviors/security.md` — 4 behavior specs (all verified)
+- `tests/integration/security/` — 19 new tests
 
 **Previous Sessions:**
+- 2026-02-28: Lifecycle Roadmap Decisions + feature doc reorganization
 - 2026-02-27: Leave Group Feature Review + [Deleted User] sentinel seed
 - 2026-02-27: Fix personal group RLS visibility (v0.2.31)
 - 2026-02-27: Display Name / Nickname System — full TDD sprint (v0.2.30)
@@ -133,16 +138,13 @@
 
 **Display Name / Nickname System COMPLETE** ✅
 
-**Next — Sprint 0: Security Fixes (PRIORITY):**
-Fix broken non-public journey access control and frozen enrollment enforcement. TDD workflow.
-See `docs/planning/lifecycle-roadmap-decisions.md` for full sprint structure.
-1. **S1:** Fix `journeys_select_published` RLS — enforce `is_public`
-2. **S2:** Fix `EnrollmentModal` — check `is_public` before enrollment
-3. **S3:** Fix `JourneyPlayer` — enforce `frozen` enrollment status (read-only view)
-4. **S4:** RLS-level frozen enforcement — `AND status != 'frozen'` on enrollment UPDATE policies
+**Sprint 0 — Security Fixes COMPLETE** ✅ (v0.2.32)
 
-**After Sprint 0:**
-- Sprint 1: Foundation Schema (`groups.status` column + "FringeIsland Journeys" group)
+**Next — Sprint 1: Foundation Schema:**
+Add `groups.status` column + "FringeIsland Journeys" system group. TDD workflow.
+See `docs/planning/lifecycle-roadmap-decisions.md` for full sprint structure.
+
+**After Sprint 1:**
 - Sprint 2: Leave Group Core (regular member, sole Steward→DeusEx, group closure)
 - Sprint 3: Smart Notifications + Steward Nomination (Track 1)
 - Sprint 4: Platform Exit (admin-assisted)

@@ -202,6 +202,7 @@ export default function MyJourneysPage() {
   };
 
   const getPlayButtonLabel = (enrollment: JourneyEnrollment): string => {
+    if (enrollment.status === 'frozen') return 'Review Steps';
     if (enrollment.status === 'completed') return 'Review Journey';
     if (enrollment.progress_data?.current_step_id) return 'Continue';
     return 'Start Journey';
@@ -212,7 +213,7 @@ export default function MyJourneysPage() {
 
     const completedCount = enrollment.progress_data?.completed_steps?.length || 0;
     const totalSteps = enrollment.progress_data?.total_steps;
-    const showProgress = totalSteps && totalSteps > 0 && enrollment.status === 'active';
+    const showProgress = totalSteps && totalSteps > 0 && (enrollment.status === 'active' || enrollment.status === 'frozen');
     const progressPercent = showProgress ? Math.round((completedCount / totalSteps) * 100) : 0;
 
     return (
@@ -255,7 +256,7 @@ export default function MyJourneysPage() {
             </div>
             <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
               <div
-                className="h-1.5 bg-blue-500 rounded-full transition-all"
+                className={`h-1.5 rounded-full transition-all ${enrollment.status === 'frozen' ? 'bg-gray-400' : 'bg-blue-500'}`}
                 style={{ width: `${progressPercent}%` }}
               />
             </div>

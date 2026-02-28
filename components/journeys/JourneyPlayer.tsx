@@ -49,17 +49,20 @@ export default function JourneyPlayer({ journey, enrollment, onJourneyComplete }
 
   const stepStartTime = useRef<Date>(new Date());
 
-  // Update last_accessed_at on mount
+  // Update last_accessed_at on mount (skip for frozen — RLS blocks it anyway)
   useEffect(() => {
-    supabase
-      .from('journey_enrollments')
-      .update({ last_accessed_at: new Date().toISOString() })
-      .eq('id', enrollment.id)
-      .then(() => {/* fire-and-forget */});
+    if (!isFrozen) {
+      supabase
+        .from('journey_enrollments')
+        .update({ last_accessed_at: new Date().toISOString() })
+        .eq('id', enrollment.id)
+        .then(() => {/* fire-and-forget */});
+    }
   }, []);
 
   const currentStep = steps[currentStepIndex];
   const isReviewMode = enrollment.status === 'completed';
+  const isFrozen = enrollment.status === 'frozen';
   const isCurrentStepCompleted = currentStep ? completedStepIds.has(currentStep.id) : false;
   const isLastStep = currentStepIndex === steps.length - 1;
 
@@ -81,7 +84,7 @@ export default function JourneyPlayer({ journey, enrollment, onJourneyComplete }
   };
 
   const handleMarkStepComplete = async () => {
-    if (!currentStep || isCurrentStepCompleted) return;
+    if (!currentStep || isCurrentStepCompleted || isFrozen) return;
 
     const now = new Date();
     const timeSpent = Math.round((now.getTime() - stepStartTime.current.getTime()) / 60000);
@@ -136,6 +139,9 @@ export default function JourneyPlayer({ journey, enrollment, onJourneyComplete }
     setCurrentStepIndex(newIndex);
     stepStartTime.current = new Date();
 
+    // Skip progress saves for frozen enrollments (RLS blocks it anyway)
+    if (isFrozen) return;
+
     const newStep = steps[newIndex];
     if (!newStep) return;
 
@@ -151,6 +157,15 @@ export default function JourneyPlayer({ journey, enrollment, onJourneyComplete }
 
   const handleNext = async () => {
     if (!currentStep) return;
+
+    // Frozen: only allow navigating to already-completed steps
+    if (isFrozen) {
+      const nextStep = steps[currentStepIndex + 1];
+      if (!isLastStep && nextStep && completedStepIds.has(nextStep.id)) {
+        await navigateToStep(currentStepIndex + 1);
+      }
+      return;
+    }
 
     // Gate: required step must be completed before advancing
     if (currentStep.required && !isCurrentStepCompleted && !isReviewMode) {
@@ -170,6 +185,11 @@ export default function JourneyPlayer({ journey, enrollment, onJourneyComplete }
   };
 
   const handleSidebarStepClick = async (index: number) => {
+    // Frozen: only allow navigating to already-completed steps
+    if (isFrozen) {
+      const targetStep = steps[index];
+      if (!targetStep || !completedStepIds.has(targetStep.id)) return;
+    }
     await navigateToStep(index);
   };
 
@@ -219,14 +239,15 @@ export default function JourneyPlayer({ journey, enrollment, onJourneyComplete }
     );
   }
 
-  const isNextDisabled =
-    !isReviewMode &&
-    currentStep?.required &&
-    !isCurrentStepCompleted;
+  const isNextDisabled = isFrozen
+    ? // Frozen: disabled unless next step is already completed
+      isLastStep || !steps[currentStepIndex + 1] || !completedStepIds.has(steps[currentStepIndex + 1].id)
+    : // Normal: disabled if required step not completed
+      !isReviewMode && currentStep?.required && !isCurrentStepCompleted;
 
   let nextButtonLabel = 'Next';
   if (isLastStep) {
-    nextButtonLabel = isReviewMode ? 'Finish Review' : 'Complete Journey';
+    nextButtonLabel = isFrozen ? 'End of Review' : isReviewMode ? 'Finish Review' : 'Complete Journey';
   }
 
   return (
@@ -257,6 +278,15 @@ export default function JourneyPlayer({ journey, enrollment, onJourneyComplete }
           </div>
         )}
 
+        {/* Frozen enrollment banner */}
+        {isFrozen && (
+          <div className="bg-amber-50 border-b border-amber-200 px-6 py-3">
+            <p className="text-sm text-amber-800">
+              <strong>Frozen:</strong> This enrollment has been frozen. You can review previous steps but cannot make new progress.
+            </p>
+          </div>
+        )}
+
         {/* Review mode banner */}
         {isReviewMode && (
           <div className="bg-blue-50 border-b border-blue-200 px-6 py-3">
@@ -274,7 +304,7 @@ export default function JourneyPlayer({ journey, enrollment, onJourneyComplete }
               stepNumber={currentStepIndex + 1}
               totalSteps={steps.length}
               isCompleted={isCurrentStepCompleted}
-              isReviewMode={isReviewMode}
+              isReviewMode={isReviewMode || isFrozen}
               onMarkComplete={handleMarkStepComplete}
               savingProgress={savingProgress}
             />
@@ -308,8 +338,8 @@ export default function JourneyPlayer({ journey, enrollment, onJourneyComplete }
             </span>
 
             <button
-              onClick={isLastStep && !isReviewMode ? handleMarkStepComplete : handleNext}
-              disabled={isLastStep && isNextDisabled}
+              onClick={isLastStep && !isReviewMode && !isFrozen ? handleMarkStepComplete : handleNext}
+              disabled={isNextDisabled}
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium"
             >
               {nextButtonLabel}

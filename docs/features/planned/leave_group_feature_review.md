@@ -30,11 +30,11 @@ The following is explicitly **OUT of scope** for this feature:
 
 The following must be complete before BDD scenarios for leave-group can be written or implemented:
 
-**Sprint 0 — Security Fixes (no dependencies):**
-1. **Non-public journey RLS fix:** Update `journeys_select_published` policy to enforce `is_public` — non-public journeys (`is_public = false`) must only be visible to enrolled users or members of the owning group. Currently anyone with the UUID can read and enroll.
-2. **EnrollmentModal `is_public` check:** Non-members of the owning group must not be able to enroll in non-public journeys via the UI.
-3. **JourneyPlayer frozen enforcement:** `enrollment.status === 'frozen'` must show read-only view with contextual message, blocking step completion and navigation to new steps.
-4. **RLS frozen enforcement:** Add `AND status != 'frozen'` to `enrollment_update_own` and `enrollment_update_group` RLS policies.
+**Sprint 0 — Security Fixes (no dependencies):** ✅ **ALL COMPLETE (v0.2.32)**
+1. ~~**Non-public journey RLS fix:** Update `journeys_select_published` policy to enforce `is_public` — non-public journeys (`is_public = false`) must only be visible to enrolled users or members of the owning group.~~ ✅ Done — S1 in `20260228102720_sprint0_security_fixes.sql`
+2. ~~**EnrollmentModal `is_public` check:** Non-members of the owning group must not be able to enroll in non-public journeys via the UI.~~ ✅ Done — S2, `is_journey_enrollable()` SECURITY DEFINER function
+3. ~~**JourneyPlayer frozen enforcement:** `enrollment.status === 'frozen'` must show read-only view with contextual message, blocking step completion and navigation to new steps.~~ ✅ Done — S3, amber banner + blocked actions in `JourneyPlayer.tsx`
+4. ~~**RLS frozen enforcement:** Add `AND status != 'frozen'` to `enrollment_update_own` and `enrollment_update_group` RLS policies.~~ ✅ Done — S4 in `20260228102720_sprint0_security_fixes.sql`
 
 **Sprint 1 — Foundation Schema (depends on Sprint 0):**
 1. **`groups.status` column:** Migration adding `status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'closed', 'archived', 'suspended'))` + partial index + RLS policy updates (non-admin users only see `status = 'active'` groups).

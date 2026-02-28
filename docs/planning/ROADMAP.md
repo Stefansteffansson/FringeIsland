@@ -342,9 +342,9 @@ See `docs/features/implemented/performance-optimization.md` for full analysis an
 
 ### Phase 1.6: Polish and Launch (Weeks 14-16) ⏳ IN PROGRESS
 
-**Status**: ⏳ **IN PROGRESS** — Display Name System complete (v0.2.30), Lifecycle Roadmap complete (2026-02-28)
+**Status**: ⏳ **IN PROGRESS** — Sprint 0 Security Fixes complete (v0.2.32), Lifecycle Roadmap complete (2026-02-28)
 
-**Current Focus:** Sprint 0 (Security Fixes) → Sprint 1 (Foundation Schema) → Sprint 2 (Leave Group Core). See `docs/planning/lifecycle-roadmap-decisions.md` for full 5-sprint structure.
+**Current Focus:** Sprint 1 (Foundation Schema) → Sprint 2 (Leave Group Core) → Sprint 3 (Smart Notifications). See `docs/planning/lifecycle-roadmap-decisions.md` for full 5-sprint structure.
 
 **Deliverables**:
 
@@ -924,6 +924,7 @@ See `docs/features/implemented/performance-optimization.md` for full analysis an
 
 ## Decision Log
 
+**2026-02-28**: Sprint 0 Security Fixes complete (v0.2.32) — 4 gaps fixed: non-public journey RLS (S1), enrollment INSERT gating (S2), JourneyPlayer frozen UI (S3), enrollment UPDATE frozen RLS (S4). 2 new SECURITY DEFINER helpers, 5 RLS policies replaced, 19 new tests. Full TDD workflow.
 **2026-02-11**: RBAC/Dynamic Permissions System design complete — 22 decisions (D1-D22). See `docs/features/planned/dynamic-permissions-system.md`. Key: universal group pattern, groups-join-groups, 4 default roles (Steward/Guide/Member/Observer), 31 permissions, data privacy consent, try-it journeys.
 **2026-02-10**: JourneyPlayer built — progress stored in progress_data JSONB, required-step gating, review mode (v0.2.11)
 **2026-02-10**: Integration test flakiness fixed with inter-test delays in setupFilesAfterEnv (v0.2.11)
@@ -974,6 +975,6 @@ See `docs/features/implemented/performance-optimization.md` for full analysis an
 
 ---
 
-**Document Version**: 1.7
-**Last Updated**: February 21, 2026 (Performance Optimization complete, all tiers)
+**Document Version**: 1.8
+**Last Updated**: February 28, 2026 (Sprint 0 Security Fixes complete)
 **Next Review**: After Phase 1.6 or March 2026
