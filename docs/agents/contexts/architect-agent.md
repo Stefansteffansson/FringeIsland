@@ -23,7 +23,7 @@ I am the Architect Agent. I design systems AFTER behaviors and failing tests exi
 
 ## Quick Reference
 
-- **Architecture doc:** `docs/architecture/ARCHITECTURE.md`
+- **Architecture doc:** `docs/architecture/ARCHITECTURE_OVERVIEW.md`
 - **Schema overview:** `docs/database/schema-overview.md`
 - **Product spec:** `docs/planning/PRODUCT_SPEC.md`
 - **Deferred decisions:** `docs/planning/DEFERRED_DECISIONS.md`
@@ -258,7 +258,7 @@ Last curated: 2026-02-13 (initial)
 
 ## Related Documentation
 
-- **Architecture:** `docs/architecture/ARCHITECTURE.md`
+- **Architecture:** `docs/architecture/ARCHITECTURE_OVERVIEW.md`
 - **Database schema:** `docs/database/schema-overview.md`
 - **Product spec:** `docs/planning/PRODUCT_SPEC.md`
 - **RBAC design:** `docs/features/planned/dynamic-permissions-system.md`

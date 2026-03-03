@@ -47,7 +47,7 @@ export default function FloatingStatsBar({ stats, projectRoot }: FloatingStatsBa
     { name: 'Deferred', path: '/docs/planning/DEFERRED_DECISIONS.md', icon: XCircle, color: 'text-orange-400' },
     { name: 'CLAUDE', path: '/CLAUDE.md', icon: FileCode, color: 'text-pink-400' },
     { name: 'Schema', path: '/docs/database/schema-overview.md', icon: Database, color: 'text-cyan-400' },
-    { name: 'Architecture', path: '/docs/architecture/ARCHITECTURE.md', icon: Building2, color: 'text-indigo-400' },
+    { name: 'Architecture', path: '/docs/architecture/ARCHITECTURE_OVERVIEW.md', icon: Building2, color: 'text-indigo-400' },
   ];
 
   return (

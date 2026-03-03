@@ -987,7 +987,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Seed data for permissions, role templates, and group templates
 - **Migration Script**: `fringeisland_migration.sql` for automated database setup
 - **Architecture Documentation**:
-  - `ARCHITECTURE.md`: Overall system design and core concepts
+  - `ARCHITECTURE_OVERVIEW.md`: Overall system design and core concepts
   - `DATABASE_SCHEMA.md`: Complete database schema with RLS policies
   - `AUTHORIZATION.md`: Detailed permission system design
   - `DOMAIN_ENTITIES.md`: Core business entities and relationships

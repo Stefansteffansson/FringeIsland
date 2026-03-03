@@ -16,7 +16,7 @@ This document outlines the overall system architecture, core design principles, 
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     Frontend (Next.js 14+)                  │
+│                  Frontend (Next.js 16.1)                    │
 │                                                             │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
 │  │   Journey    │  │    Group     │  │    User      │       │
@@ -27,17 +27,22 @@ This document outlines the overall system architecture, core design principles, 
 │  │    Forum     │  │  Messaging   │  │   Progress   │       │
 │  │    System    │  │    System    │  │   Tracking   │       │
 │  └──────────────┘  └──────────────┘  └──────────────┘       │
+│                                                             │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │Notifications │  │    Admin     │  │  Lifecycle   │       │
+│  │    System    │  │   Dashboard  │  │  Management  │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
 └─────────────────────────────────────────────────────────────┘
                               │
-                              │ API Layer
+                              │ API Layer (proxy.ts)
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                    Supabase Backend                         │
 │                                                             │
 │  ┌──────────────────────────────────────────────────────┐   │
-│  │              PostgreSQL Database                     │   │
+│  │              PostgreSQL Database (19 tables)         │   │
 │  │  - Users, Groups, Journeys, Roles, Permissions       │   │
-│  │  - Row Level Security (RLS) policies                 │   │
+│  │  - Row Level Security (RLS) on all tables            │   │
 │  └──────────────────────────────────────────────────────┘   │
 │                                                             │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
@@ -50,17 +55,22 @@ This document outlines the overall system architecture, core design principles, 
 ### Technology Stack
 
 **Frontend**
-- **Framework**: Next.js 14+ (App Router)
+- **Framework**: Next.js 16.1 (App Router)
 - **Language**: TypeScript
 - **UI Library**: React
-- **Styling**: TBD (Tailwind CSS recommended)
+- **Styling**: Tailwind CSS
+- **Route Protection**: `proxy.ts` (Next.js 16 replaces `middleware.ts`)
 
 **Backend**
 - **Platform**: Supabase
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL (19 tables with RLS)
 - **Authentication**: Supabase Auth
 - **Real-time**: Supabase Real-time subscriptions
 - **Storage**: Supabase Storage (for journey assets, user uploads)
+
+**Testing**
+- **Unit/Integration**: Jest (659 tests across 8 domains)
+- **E2E**: Playwright (7 tests)
 
 **Infrastructure**
 - **Hosting**: Vercel (frontend) + Supabase (backend)
@@ -140,39 +150,38 @@ Example 2: Multi-parent Membership
 
 ### 3. Authorization System
 
-**Three-Layer Permission Model:**
+**Three-Layer Permission Model** (22 design decisions, D1-D22 — see [full RBAC design](../features/implemented/dynamic-permissions-system.md)):
 
 ```
-1. PERMISSIONS (Atomic capabilities)
-   └─ view_journey_content
-   └─ invite_members
-   └─ assign_roles
-   └─ etc.
+1. PERMISSIONS (31 atomic capabilities, system-defined)
+   └─ members.invite, members.remove, roles.assign, journey.enroll, ...
+   └─ Grows ONLY when developers build new features
 
-2. ROLE TEMPLATES (System-level blueprints)
-   └─ Admin Role Template → [set of permissions]
-   └─ Group Leader Role Template → [set of permissions]
-   └─ Travel Guide Role Template → [set of permissions]
-   └─ Member Role Template → [set of permissions]
-   └─ Observer Role Template → [set of permissions]
+2. ROLE TEMPLATES (4 system-level blueprints)
+   └─ Steward → full group management
+   └─ Guide → journey facilitation + member visibility
+   └─ Member → standard participation
+   └─ Observer → read-only access
 
-3. GROUP ROLES (Instance per group)
+3. GROUP ROLES (Instance per group, customizable)
    └─ "Marketing Team" has:
-       ├─ Admin (copied from Admin Role Template, customizable)
-       ├─ Travel Guide (copied from Travel Guide Role Template)
-       └─ Member (copied from Member Role Template)
+       ├─ Steward (from Steward template, customizable)
+       ├─ Guide (from Guide template)
+       └─ Member (from Member template)
 ```
+
+**Runtime enforcement**: `has_permission(user_id, group_id, permission_name)` replaces hardcoded role-name checks. Platform admin checks use `is_platform_admin()` (SECURITY DEFINER function checking DeusEx system group membership).
 
 **Key Authorization Principles:**
 
 1. **Context-based**: Permissions are scoped to specific groups
-   - Stefan is "Admin" in Group A, "Member" in Group B
+   - Stefan is "Steward" in Group A, "Member" in Group B
 
 2. **Multi-role**: Users can have multiple roles in the same group
-   - Stefan is both "Group Leader" AND "Travel Guide" in same group
+   - Stefan is both "Steward" AND "Guide" in same group
 
 3. **Customizable**: Each group can customize its role permissions
-   - "Admin" role in Group A may have different permissions than in Group B
+   - "Steward" role in Group A may have different permissions than in Group B
 
 4. **Inheritable**: Permission inheritance between parent/child groups is configurable
    - Can flow parent→child, child→parent, or neither
@@ -233,14 +242,14 @@ Example 2: Multi-parent Membership
 
 **Alternative Considered**: Fixed inheritance rules (rejected - too restrictive)
 
-### ADR-005: Group Leader Safeguard
+### ADR-005: Steward Safeguard
 
-**Decision**: Every group must have at least one Group Leader. If last Group Leader is removed, role defaults to Platform Admin.
+**Decision**: Every group must have at least one Steward. If the last Steward is removed, the DeusEx system group (platform admins) acts as safety net.
 
 **Rationale**:
 - Prevents "orphaned" groups without management capability
-- Platform Admin acts as safety net
-- Group Leader can be reassigned to recover control
+- DeusEx membership provides platform-level recovery
+- Steward role can be reassigned to restore group autonomy
 - Balances flexibility with stability
 
 **Alternative Considered**: Allow groups without leaders (rejected - too risky)
@@ -272,10 +281,10 @@ Example 2: Multi-parent Membership
 4. System creates:
    - Group record: "Marketing Team"
    - Group Roles (copied from template):
-     ├─ Admin (from Admin Role Template)
-     ├─ Travel Guide (from Travel Guide Role Template)
+     ├─ Steward (from Steward Role Template)
+     ├─ Guide (from Guide Role Template)
      └─ Member (from Member Role Template)
-   - User Group Role: assigns creator as "Group Leader"
+   - User Group Role: assigns creator as "Steward"
 5. User can now:
    - Invite members
    - Customize role permissions
@@ -292,8 +301,8 @@ Solo Enrollment:
 4. User begins journey with full access to content
 
 Group Enrollment:
-1. Group Leader browses journey catalog
-2. Group Leader clicks "Enroll Group" on "Team Building Journey"
+1. Steward browses journey catalog
+2. Steward clicks "Enroll Group" on "Team Building Journey"
 3. System creates journey_enrollment for entire group
 4. All group members gain access to journey content
 5. Group progresses through journey together
@@ -304,42 +313,40 @@ Group Enrollment:
 ```
 Question: Can Stefan invite new members to Marketing Team?
 
-1. System identifies Stefan's roles in Marketing Team:
-   → Stefan has "Group Leader" role
-2. System retrieves "Group Leader" role's permissions:
-   → "Group Leader" role has permission: invite_members = true
-3. Action allowed ✓
+1. System calls has_permission(stefan_id, marketing_team_id, 'members.invite')
+2. Function finds Stefan's roles → Stefan has "Steward" role
+3. Steward role grants members.invite → true
+4. Action allowed ✓
 
 Question: Can Stefan view Alice's progress in a journey?
 
-1. System identifies Stefan's roles in the relevant group:
-   → Stefan has "Travel Guide" role
-2. System retrieves "Travel Guide" role's permissions:
-   → "Travel Guide" role has permission: view_others_progress = true
-3. Action allowed ✓
+1. System calls has_permission(stefan_id, group_id, 'journey.view_others_progress')
+2. Function finds Stefan's roles → Stefan has "Guide" role
+3. Guide role grants journey.view_others_progress → true
+4. Action allowed ✓
 ```
 
 ## Security Considerations
 
 ### Row Level Security (RLS)
 
-All database tables use Supabase Row Level Security policies to enforce authorization at the database level.
+All 19 database tables use Supabase Row Level Security policies to enforce authorization at the database level. See [ARCHITECTURE_BASELINE.md](./ARCHITECTURE_BASELINE.md) for the full policy inventory.
 
 **Key RLS Patterns:**
 
 1. **User Data**: Users can only access their own user record
 2. **Group Data**: Users can access groups they're members of (directly or through parent groups)
 3. **Journey Data**: Users can access journeys they're enrolled in
-4. **Permission-based**: Actions checked against user's group roles
-
-See [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md) for detailed RLS policies.
+4. **Permission-based**: Actions checked via `has_permission()` against user's group roles
+5. **Admin policies**: Use `is_platform_admin()` (SECURITY DEFINER) — complex PLPGSQL fails in PG17 RLS
+6. **SECURITY DEFINER helpers**: Used to bypass nested RLS in helper functions; never for user-data mutations
 
 ### Authentication
 
-- Supabase Auth handles user authentication
-- Support for email/password, OAuth providers
-- Session management via JWT tokens
-- Secure by default
+- Supabase Auth handles user authentication (email/password)
+- Client-side via `AuthContext` + `useAuth()` hook
+- `proxy.ts` handles session refresh and route protection (Next.js 16 pattern)
+- JWT tokens passed via `Authorization: Bearer` header for API routes
 
 ### Data Privacy
 
@@ -375,6 +382,19 @@ Supabase Real-time subscriptions for:
 - Group member presence
 - Forum activity
 
+## Current Feature Domains (Phase 1)
+
+- **Auth** — Email/password signup, login, session management, profile
+- **Groups** — Creation, membership, invitations, subgroups, templates
+- **Journeys** — Catalog, enrollment (solo + group), curriculum, progress tracking
+- **Communication** — Group forums (posts + replies), direct messaging
+- **RBAC** — Dynamic permissions (31), 4 role templates, `has_permission()` runtime checks
+- **Admin** — Platform admin dashboard via DeusEx system group, floating stats bar
+- **Lifecycle** — Journey state machine (draft → active → paused → completed → archived)
+- **Notifications** — In-app notification system with real-time delivery
+
+See `docs/features/implemented/` for detailed feature documentation.
+
 ## Future Architecture Considerations
 
 ### Phase 2: Journey Marketplace
@@ -399,17 +419,24 @@ Supabase Real-time subscriptions for:
 
 - **Journey**: A structured learning experience (content template)
 - **Group**: A flexible organizational unit containing users and/or other groups
-- **Permission**: An atomic capability (e.g., `invite_members`)
+- **Personal Group**: Auto-created group representing an individual user (universal group pattern)
+- **DeusEx**: System group whose members have platform admin privileges
+- **Permission**: An atomic capability (e.g., `members.invite`); 31 across 7 categories
 - **Role Template**: System-level blueprint for a role with default permissions
 - **Group Role**: Instance of a role within a specific group (customizable)
-- **Group Leader**: Role responsible for managing a specific group
-- **Travel Guide**: Role responsible for facilitating journeys
-- **Platform Admin**: System-level administrator role
+- **Steward**: Role responsible for managing a specific group (formerly "Group Leader")
+- **Guide**: Role responsible for facilitating journeys (formerly "Travel Guide")
+- **Member**: Standard participation role
+- **Observer**: Read-only access role
+- **Platform Admin**: User with DeusEx group membership; checked via `is_platform_admin()`
 - **Enrollment**: Relationship between user/group and journey
 - **Member of**: Relationship indicating user belongs to group or group belongs to parent group
+- **Notification**: In-app alert for invitations, role changes, and group events
+- **Direct Message**: Private message between two users
+- **Forum**: Group-scoped discussion board with posts and replies
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: January 2026  
-**Next Review**: After Phase 1 implementation begins
+**Document Version**: 2.0
+**Last Updated**: March 2026
+**See also**: [ARCHITECTURE_BASELINE.md](./ARCHITECTURE_BASELINE.md) for full inventory (tables, routes, providers, migrations)
