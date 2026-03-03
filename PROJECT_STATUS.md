@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-02-28 (Documentation restructuring)
+**Last Updated:** 2026-03-03 (Architecture Baseline + live DB validation)
 **Current Version:** 0.2.36
 **Active Branch:** main
 
@@ -89,6 +89,7 @@
 - **Latest feature:** `docs/features/implemented/platform-exit.md` ← **LATEST**
 - **Admin feature (complete):** `docs/features/implemented/deusex-admin-foundation.md`
 - **Lifecycle roadmap:** `docs/planning/lifecycle-roadmap-decisions.md` ← **NEW** (5 sprints, 5 decisions)
+- **Architecture baseline:** `docs/architecture/ARCHITECTURE_BASELINE.md` ← **NEW** (6-phase analysis, live-validated)
 - **Architecture decisions:** `docs/architecture/ARCHITECTURE.md`
 - **Planning context:** `docs/planning/ROADMAP.md` + `docs/planning/DEFERRED_DECISIONS.md`
 
@@ -101,24 +102,21 @@
 
 ## Last Session Summary
 
-**Date:** 2026-02-28 (Documentation restructuring)
+**Date:** 2026-03-03 (Architecture Baseline + live DB validation)
 **Summary:**
-- Deep restructuring of all planning + workflow documentation
-- CLAUDE.md: 1,089 → 121 lines (routing doc, no code examples)
-- boot-up.md: 509 → 96 lines, close-down.md: 753 → 109 lines
-- ROADMAP.md: 988 → ~170 lines (removed changelog/decisions/duplicates)
-- Merged tdd-workflow.md into feature-development.md (single TDD source)
-- Merged lifecycle-sprint-plan.md into lifecycle-roadmap-decisions.md
-- Created NEXT.md — quick human-readable "what's next" overview
-- Updated PRODUCT_SPEC.md to v1.1 (Phase 1 at 95%)
-- Archived 19 old session bridges + 2 phase-2 design docs
-- Fixed stale paths in 4 behavior spec files + MEMORY.md
-- Scrubbed exposed credential from archived session file
-- Net: +678 / -10,471 lines across 35 files
-
-**Key principle:** All context-loaded docs (CLAUDE.md, workflows, MEMORY.md) must stay within 80-150 lines for reliable full attention by AI assistants.
+- Created comprehensive 6-phase Architecture Baseline (`docs/architecture/ARCHITECTURE_BASELINE.md`, 1,456 lines)
+- Phase 1: Application layer (31 routes, component hierarchy, state management)
+- Phase 2: Database layer (19 tables, 27 RPCs, 27 triggers, 55 RLS policies, 32 indexes)
+- Phase 3: API boundary (~130 Supabase calls, 2 API routes, 5 Realtime channels)
+- Phase 4: Cross-layer journey traces (3 flows with mermaid sequence diagrams)
+- Phase 5: Architectural observations (4 coupling hotspots, 7 SP boundaries, 6 risks)
+- Phase 6: BDD connection points (8 Gherkin scenarios, 6 evolution candidates)
+- Validated live Supabase database against migration files — zero schema drift
+- 11 documentation corrections applied (2 missing RPCs, 1 missing trigger, count errors)
+- Schema Drift Report added as §2.10
 
 **Previous Sessions:**
+- 2026-03-03: Architecture Baseline + live DB validation (zero drift, 11 corrections)
 - 2026-02-28: Documentation restructuring (CLAUDE.md, workflows, ROADMAP, NEXT.md, archives)
 - 2026-02-28: Sprint 4 — Platform Exit + feature doc review (v0.2.36)
 - 2026-02-28: Sprint 3 — Smart Notifications + Steward Nomination (v0.2.35)

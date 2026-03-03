@@ -1,9 +1,13 @@
 # What's Next
 
-**Last Updated:** February 28, 2026
+**Last Updated:** March 3, 2026
 **Current Version:** v0.2.36
 
 ---
+
+## Recently Completed
+
+- **Architecture Baseline** — 6-phase analysis with live DB validation, zero schema drift (`docs/architecture/ARCHITECTURE_BASELINE.md`)
 
 ## Now: Phase 1.6 — Polish & Launch
 
