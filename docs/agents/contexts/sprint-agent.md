@@ -201,7 +201,19 @@ Run at the end of a work cycle or when a significant milestone is reached:
    - **Turned out to be wrong?** → Delete from journal
 3. Check playbooks for stale information → Remove or update
 
-#### 4. Curate MEMORY.md
+#### 4. Doc Health Check
+
+**Full workflow:** `docs/workflows/doc-health-check.md`
+
+Three questions before moving on:
+
+1. **Terminology drift:** Were any role names, entity names, or permission names changed this sprint? → If yes: list every behavior spec and feature doc that uses the old name. Update them.
+2. **Schema drift:** Were any tables added, columns dropped, or RLS policies changed? → If yes: check `docs/database/schema-overview.md`, `docs/database/rls-policies.md`, and `docs/architecture/DATABASE_SCHEMA.md` for accuracy.
+3. **Unchecked acceptance criteria:** Are there behavior specs with `- [ ]` checkboxes for features that are fully implemented and tested? → If yes: verify the linked test passes and check the box.
+
+Skip only if this sprint had no schema changes, no renames, and no new test passes.
+
+#### 5. Curate MEMORY.md
 
 ```markdown
 MEMORY.md capacity check:
@@ -216,7 +228,7 @@ For each entry in MEMORY.md:
 - New cross-cutting discovery this sprint? → Add (if under cap)
 ```
 
-#### 5. Update Project Documentation
+#### 6. Update Project Documentation
 
 - `SPRINT.md` — Always update (tick off steps, advance TDD phase, update next sprint)
 - `PROJECT_STATUS.md` — Always update (stats, last session summary)
@@ -266,6 +278,7 @@ My work is done when:
 - [ ] Dependencies are identified
 - [ ] Retrospective asked all three questions
 - [ ] Agent journals are reviewed and curated
+- [ ] Doc health check complete — no terminology drift, schema drift, or unchecked acceptance criteria remaining
 - [ ] MEMORY.md is under 150 lines
 - [ ] PROJECT_STATUS.md is current
 - [ ] Next sprint priorities are clear

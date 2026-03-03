@@ -93,7 +93,7 @@ const { data, error } = await supabase
   .from('group_memberships')
   .select('id')
   .eq('group_id', groupId)
-  .eq('user_id', userId)
+  .eq('member_group_id', memberGroupId)
   .maybeSingle();  // returns null if not found
 
 // Related data (joins)
@@ -101,7 +101,7 @@ const { data } = await supabase
   .from('user_group_roles')
   .select(`
     id,
-    user_id,
+    member_group_id,
     group_role_id,
     group_roles (
       id,
@@ -156,7 +156,7 @@ const handleAction = async () => {
     await fetchData();
 
     // CRITICAL: Also update current user state if affected
-    // (e.g., after role changes, update isLeader)
+    // (e.g., after role changes, refetch userPermissions / re-evaluate hasPermission())
 
     // Trigger navigation refresh if needed
     if (typeof window !== 'undefined') {
@@ -164,8 +164,8 @@ const handleAction = async () => {
     }
   } catch (err: any) {
     // User-friendly error messages
-    if (err.message.includes('last leader')) {
-      alert('Cannot remove the last leader from the group.');
+    if (err.message.includes('last Steward')) {
+      alert('Cannot remove the last Steward from the group. Assign another Steward first.');
     } else {
       alert(err.message || 'Action failed. Please try again.');
     }
@@ -195,7 +195,7 @@ const mappedData = (rawData || [])
 After any insert/update/delete, refetch the data. Never assume the local state matches the database. RLS might filter differently after the change.
 
 ### Update ALL Related State
-After role changes: update members list, userRoles, AND isLeader. Missing one causes stale UI (buttons that don't work, permissions that appear wrong).
+After role changes: update members list, userRoles, AND userPermissions (drives hasPermission() checks). Missing one causes stale UI (buttons that don't work, permissions that appear wrong).
 
 ### Use .maybeSingle() vs .single()
 - `.single()` — record MUST exist (throws error if not found)
@@ -218,19 +218,22 @@ if (error) {
 
 ### Check Enrollment Patterns (Complex Example)
 ```typescript
-// Individual enrollment check
+// userProfile comes from useAuth() — exposes personal_group_id after D15
+const { userProfile } = useAuth();
+
+// Individual enrollment check (D15: use group_id with personal_group_id, not user_id)
 const { data: individual } = await supabase
   .from('journey_enrollments')
   .select('id')
   .eq('journey_id', journeyId)
-  .eq('user_id', userData.id)
+  .eq('group_id', userProfile.personal_group_id)
   .maybeSingle();
 
-// Group enrollment check (user's groups)
+// Group enrollment check — find groups the user belongs to (D15: member_group_id)
 const { data: userGroups } = await supabase
   .from('group_memberships')
   .select('group_id')
-  .eq('user_id', userData.id)
+  .eq('member_group_id', userProfile.personal_group_id)
   .eq('status', 'active');
 
 const groupIds = userGroups?.map(g => g.group_id) || [];
@@ -238,7 +241,7 @@ let groupEnrollment = null;
 if (groupIds.length > 0) {
   const { data } = await supabase
     .from('journey_enrollments')
-    .select('id, groups!inner(name)')
+    .select('id, groups!journey_enrollments_group_id_fkey(name)')
     .eq('journey_id', journeyId)
     .in('group_id', groupIds)
     .maybeSingle();

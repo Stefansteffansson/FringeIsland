@@ -134,7 +134,7 @@
 
 ## B-JRN-003: Journey Enrollment Rules ✅
 
-**Rule:** A user can enroll individually in any published journey once. A Group Leader can enroll their group in any published journey once. A user cannot be enrolled individually AND via group in the same journey simultaneously.
+**Rule:** A user can enroll individually in any published journey once. A Steward can enroll their group in any published journey once. A user cannot be enrolled individually AND via group in the same journey simultaneously.
 
 **Why:** Duplicate enrollments create conflicting progress records and confusing UX. Enrollment is a deliberate commitment that should be tracked unambiguously. Group enrollment is a leadership action affecting all group members.
 
@@ -143,24 +143,24 @@
 - **Code:** `components/journeys/EnrollmentModal.tsx` (validation logic)
 - **Code:** `app/journeys/[id]/page.tsx` (enrollment status check)
 - **Database:** RLS policy on `journey_enrollments` table
-- **Database:** CHECK constraint `(user_id IS NOT NULL AND group_id IS NULL) OR (user_id IS NULL AND group_id IS NOT NULL)`
+- **Database:** Enrollment uses `group_id` for all enrollment types (individual enrollments use personal group's `group_id` per D15 universal group pattern)
 
 **Acceptance Criteria:**
 - [x] Users can enroll in unlimited journeys individually
 - [x] Users can be enrolled in same journey via different groups (different groups = separate records)
 - [x] Cannot enroll individually AND via group in same journey
-- [x] Only Group Leaders can enroll groups
+- [x] Only Stewards can enroll groups
 - [x] Groups cannot be enrolled twice in the same journey
 - [x] Enrollment status persisted in `journey_enrollments` table
-- [x] Enrollment modal shows only groups where user is a Group Leader
+- [x] Enrollment modal shows only groups where user is a Steward
 - [x] Success state shown after enrollment; button updates without page reload
 
 **Examples:**
 
 ✅ **Valid:**
 - User enrolls individually in "Leadership Fundamentals" → Success
-- Group Leader enrolls "Team Alpha" in "Agile Collaboration" → Success
-- User is Group Leader of 2 groups → Can enroll both groups in same journey (separate records)
+- Steward enrolls "Team Alpha" in "Agile Collaboration" → Success
+- User is Steward of 2 groups → Can enroll both groups in same journey (separate records)
 - User is member of group enrolled in journey AND enrolls individually in a DIFFERENT journey → Success
 
 ❌ **Invalid:**
@@ -192,7 +192,7 @@
 - B-JRN-002: Journey Detail Access (enrollment button states)
 - B-JRN-004: Journey Step Navigation (requires active enrollment)
 - B-JRN-005: Step Completion Tracking (progress saved per enrollment)
-- B-GRP-001: Last Leader Protection (Group Leaders can enroll groups)
+- B-GRP-001: Last Leader Protection (Stewards can enroll groups)
 
 **Testing Priority:** 🔴 CRITICAL (business logic, data integrity, prevents duplicate records)
 
@@ -589,6 +589,6 @@
 - **Last updated:** 2026-02-28
 
 **Next Behaviors to Document (Future Phases):**
-- B-JRN-009: Group Progress Visibility (Travel Guide can see member progress) - Phase 2
+- B-JRN-009: Group Progress Visibility (Guide can see member progress) - Phase 2
 - B-JRN-010: Journey Unenrollment Rules
 - B-JRN-011: Journey Access After Unenrollment

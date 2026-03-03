@@ -129,7 +129,7 @@ This document tracks all database migrations with notes on what changed and why.
 **Added:**
 - `prevent_last_leader_removal()` trigger function
 - BEFORE DELETE trigger on user_group_roles
-- Prevents removing the last Group Leader from a group
+- Prevents removing the last Steward from a group
 
 **Reason:**
 - Critical business rule enforcement
@@ -141,7 +141,7 @@ This document tracks all database migrations with notes on what changed and why.
 -- Counts remaining leaders after potential deletion
 -- Raises exception if count would be zero
 IF remaining_leaders = 0 THEN
-  RAISE EXCEPTION 'Cannot remove the last Group Leader';
+  RAISE EXCEPTION 'Cannot remove the last Steward';
 END IF;
 ```
 
@@ -273,7 +273,7 @@ supabase db push
 - Indexes created successfully
 
 **Test as different users:**
-- Group leaders
+- Stewards
 - Regular members
 - Non-members
 - Unauthenticated users (if applicable)

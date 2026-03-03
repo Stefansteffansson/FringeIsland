@@ -5,11 +5,11 @@
 
 ---
 
-## B-GRP-001: Last Leader Protection ✅
+## B-GRP-001: Last Steward Protection ✅
 
-**Rule:** A group MUST always have at least one member with the Group Leader role.
+**Rule:** A group MUST always have at least one member with the Steward role.
 
-**Why:** Groups become orphaned without leaders. No one can manage membership, assign roles, edit settings, or delete the group. This creates unmaintainable groups and poor user experience.
+**Why:** Groups become orphaned without Stewards. No one can manage membership, assign roles, edit settings, or delete the group. This creates unmaintainable groups and poor user experience.
 
 **Verified by:**
 - **Test:** `tests/integration/groups/last-leader.test.ts` ✅ **4/4 PASSING**
@@ -18,24 +18,24 @@
 - **Trigger:** `prevent_last_leader_removal()` function (enforces at database level)
 
 **Acceptance Criteria:**
-- [x] Cannot remove last leader via UI (× button disabled/hidden)
-- [x] Cannot remove last leader via API (trigger blocks transaction) ✅ **TESTED**
-- [x] Cannot delete last leader via direct SQL (trigger blocks) ✅ **TESTED**
-- [x] Error message is clear to user ("Cannot remove the last Group Leader...")
-- [x] Can remove leader role if other leaders exist ✅ **TESTED**
+- [x] Cannot remove last Steward via UI (× button disabled/hidden)
+- [x] Cannot remove last Steward via API (trigger blocks transaction) ✅ **TESTED**
+- [x] Cannot delete last Steward via direct SQL (trigger blocks) ✅ **TESTED**
+- [x] Error message is clear to user ("Cannot remove the last Steward...")
+- [x] Can remove Steward role if other leaders exist ✅ **TESTED**
 - [x] Can promote another member, then remove original leader
 - [x] Concurrent deletion attempts all blocked ✅ **TESTED**
 
 **Examples:**
 
 ✅ **Valid:**
-- Group has 2 leaders → Remove 1 leader role → Success (1 leader remains)
-- Group has 1 leader → Promote another member to leader → Remove original → Success
-- Group has 3 leaders → Remove 2 leader roles → Success (1 leader remains)
+- Group has 2 Stewards → Remove 1 Steward role → Success (1 Steward remains)
+- Group has 1 Steward → Promote another member to Steward → Remove original → Success
+- Group has 3 Stewards → Remove 2 Steward roles → Success (1 Steward remains)
 
 ❌ **Invalid:**
-- Group has 1 leader → Attempt to remove leader role → **BLOCKED** (trigger error) ✅
-- Group has 1 leader → Multiple simultaneous removal attempts → **ALL BLOCKED** ✅
+- Group has 1 Steward → Attempt to remove Steward role → **BLOCKED** (trigger error) ✅
+- Group has 1 Steward → Multiple simultaneous removal attempts → **ALL BLOCKED** ✅
 
 **Edge Cases:**
 
@@ -46,20 +46,20 @@
 
 - **Scenario:** All members attempt to leave simultaneously
   - **Behavior:** Last leader's leave request is blocked
-  - **Why:** Transaction isolation prevents race conditions; last leader sees error
+  - **Why:** Transaction isolation prevents race conditions; last Steward sees error
 
 - **Scenario:** Group created without any leader
-  - **Behavior:** IMPOSSIBLE - group creation assigns creator as leader
+  - **Behavior:** IMPOSSIBLE - group creation assigns creator as Steward
   - **Why:** Foreign key constraint + creation logic guarantees leader on insert
 
-- **Scenario:** Last leader tries to demote themselves
+- **Scenario:** Last Steward tries to demote themselves
   - **Behavior:** Blocked (same as removing role)
-  - **Why:** Trigger counts Group Leader roles, prevents when count would become 0
+  - **Why:** Trigger counts Steward roles; prevents removal when count would become 0
 
 **Related Behaviors:**
-- B-GRP-002: Member Invitation Lifecycle (invitations don't affect leader count)
-- B-GRP-005: Group Deletion Rules (requires leader permission)
-- B-ROL-001: Role Assignment Permissions (only leaders can assign roles)
+- B-GRP-002: Member Invitation Lifecycle (invitations don't affect Steward count)
+- B-GRP-005: Group Deletion Rules (requires Steward permission)
+- B-ROL-001: Role Assignment Permissions (only Stewards can assign roles)
 
 **History:**
 - 2026-01-26: Implemented (v0.2.6.2) - Database trigger + UI safeguard
@@ -86,26 +86,26 @@
 - [x] Users can only see their own invitations
 - [x] Accept changes status to 'active'
 - [x] Decline deletes membership record
-- [x] Leaders can invite multiple members
+- [x] Stewards can invite multiple members
 - [x] Cannot directly insert status='active' (RLS blocks)
 
 **Examples:**
 
 ✅ **Valid:**
-- Leader invites user → `INSERT` with status='invited' → Success
+- Steward invites user → `INSERT` with status='invited' → Success
 - User views `/invitations` page → Sees pending invitation → Success
 - User clicks "Accept" → `UPDATE` to status='active' → Success
 - User clicks "Decline" → `DELETE` membership record → Success
 
 ❌ **Invalid:**
 - User directly `INSERT` with status='active' → **BLOCKED** (RLS policy)
-- Non-member views invitation → **BLOCKED** (RLS filters by user_id)
-- User updates someone else's invitation → **BLOCKED** (RLS filters by user_id)
+- Non-member views invitation → **BLOCKED** (RLS filters by member_group_id)
+- User updates someone else's invitation → **BLOCKED** (RLS filters by member_group_id)
 
 **Edge Cases:**
 
 - **Scenario:** User already member, invited again
-  - **Behavior:** Insert fails (unique constraint on user_id + group_id)
+  - **Behavior:** Insert fails (unique constraint on member_group_id + group_id)
   - **Why:** Prevents duplicate memberships
 
 - **Scenario:** Group deleted while invitation pending
@@ -121,7 +121,7 @@
   - **Why:** Can only invite existing users (current implementation)
 
 **Related Behaviors:**
-- B-GRP-001: Last Leader Protection
+- B-GRP-001: Last Steward Protection
 - B-GRP-003: Group Visibility Rules
 - B-USR-001: User Account Lifecycle
 
@@ -144,11 +144,11 @@
 - **Function:** `is_active_group_member()` security definer function
 
 **Acceptance Criteria:**
-- [ ] Users can view groups where they have status='active' membership
-- [ ] Users can view groups where is_public=true
-- [ ] Users CANNOT view private groups they're not members of
-- [ ] Users CANNOT view groups where they have status='invited' (not active yet)
-- [ ] Unauthenticated users can only see public groups
+- [x] Users can view groups where they have status='active' membership ✅ TESTED
+- [x] Users can view groups where is_public=true ✅ TESTED
+- [x] Users CANNOT view private groups they're not members of ✅ TESTED
+- [x] Users CANNOT view groups where they have status='invited' (not active yet) ✅ TESTED
+- [x] Unauthenticated users can only see public groups ✅ TESTED
 
 **Examples:**
 
@@ -190,7 +190,7 @@
 
 ## B-GRP-004: Group Editing Permissions ✅
 
-**Rule:** Only Group Leaders can edit group settings (name, description, visibility, etc.).
+**Rule:** Only Stewards can edit group settings (name, description, visibility, etc.).
 
 **Why:** Prevents unauthorized modification of group configuration. Maintains leadership control.
 
@@ -200,18 +200,18 @@
 - **Database:** RLS policy on `groups` table (UPDATE)
 
 **Acceptance Criteria:**
-- [x] Group Leaders can access `/groups/[id]/edit` page
-- [x] Non-leaders get permission denied error
-- [x] Group Leaders can update: name, description, label, is_public, show_member_list
-- [x] Non-leaders cannot UPDATE even via API
-- [ ] Changes are logged (future: audit trail)
+- [x] Stewards can access `/groups/[id]/edit` page
+- [x] Non-Stewards get permission denied error
+- [x] Stewards can update: name, description, label, is_public, show_member_list
+- [x] Non-Stewards cannot UPDATE even via API
+- [ ] Changes are logged (deferred — audit trail, Phase 2)
 
 **Examples:**
 
 ✅ **Valid:**
-- Group Leader navigates to edit page → Success
-- Group Leader updates group name → Success
-- Group Leader toggles visibility → Success
+- Steward navigates to edit page → Success
+- Steward updates group name → Success
+- Steward toggles visibility → Success
 
 ❌ **Invalid:**
 - Regular member navigates to edit page → **BLOCKED** (redirected or error)
@@ -220,16 +220,16 @@
 
 **Edge Cases:**
 
-- **Scenario:** User was leader, then demoted
+- **Scenario:** User was Steward, then demoted
   - **Behavior:** Immediately loses edit permission
   - **Why:** Permission check happens on each request
 
-- **Scenario:** Multiple leaders editing simultaneously
+- **Scenario:** Multiple Stewards editing simultaneously
   - **Behavior:** Last write wins (no conflict resolution)
   - **Why:** No locking mechanism (acceptable for MVP)
 
 **Related Behaviors:**
-- B-GRP-001: Last Leader Protection
+- B-GRP-001: Last Steward Protection
 - B-ROL-001: Role Assignment Permissions
 
 **Testing Priority:** 🟡 HIGH (business logic, security)
@@ -242,7 +242,7 @@
 
 ## B-GRP-005: Group Deletion Rules 🔄
 
-**Rule:** Only Group Leaders can delete groups, and deletion cascades to all related records.
+**Rule:** Only Stewards can delete groups, and deletion cascades to all related records.
 
 **Why:** Prevents accidental data loss, ensures only authorized users can delete.
 
@@ -252,16 +252,16 @@
 - **Database:** CASCADE foreign keys on related tables
 
 **Acceptance Criteria:**
-- [ ] Only Group Leaders can delete groups (UI + RLS)
-- [ ] Deletion cascades to: memberships, roles, enrollments, forums
-- [ ] Confirmation modal warns about data loss
-- [ ] Cannot delete group with active journey enrollments (future safeguard?)
-- [ ] Deletion is logged (audit trail)
+- [x] Only Stewards can delete groups (UI + RLS) ✅ TESTED
+- [x] Deletion cascades to: memberships, roles, enrollments, forums ✅ TESTED
+- [ ] Confirmation modal warns about data loss (deferred — Danger Zone UI exists but no confirmation modal yet)
+- [ ] Cannot delete group with active journey enrollments (deferred — future safeguard)
+- [ ] Deletion is logged (deferred — audit trail, Phase 2)
 
 **Examples:**
 
 ✅ **Valid:**
-- Group Leader clicks "Delete Group" → Confirmation modal → Confirms → Success
+- Steward clicks "Delete Group" → Confirmation modal → Confirms → Success
 - Deletion removes: memberships, user_group_roles, group_roles, enrollments
 
 ❌ **Invalid:**
@@ -279,7 +279,7 @@
   - **Why:** Major action affecting many users
 
 **Related Behaviors:**
-- B-GRP-001: Last Leader Protection (doesn't apply to deletion)
+- B-GRP-001: Last Steward Protection (doesn't apply to deletion)
 - B-ENRL-003: Enrollment Cascade Rules
 
 **Testing Priority:** 🟡 HIGH (data integrity)
@@ -622,7 +622,7 @@
 ## Notes
 
 **Implemented Behaviors:**
-- ✅ B-GRP-001: Last Leader Protection (4 tests ✅)
+- ✅ B-GRP-001: Last Steward Protection (4 tests ✅)
 - ✅ B-GRP-002: Member Invitation Lifecycle (9 tests ✅)
 - ✅ B-GRP-003: Group Visibility Rules (7 tests ✅)
 - ✅ B-GRP-004: Group Editing Permissions (5 tests ✅)

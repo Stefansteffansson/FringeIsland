@@ -27,9 +27,9 @@ I am the Architect Agent. I design systems AFTER behaviors and failing tests exi
 - **Schema overview:** `docs/database/schema-overview.md`
 - **Product spec:** `docs/planning/PRODUCT_SPEC.md`
 - **Deferred decisions:** `docs/planning/DEFERRED_DECISIONS.md`
-- **RBAC design:** `docs/features/planned/dynamic-permissions-system.md`
+- **RBAC design:** `docs/features/implemented/dynamic-permissions-system.md`
 - **Migration files:** `supabase/migrations/`
-- **Current tables:** 13 (PostgreSQL via Supabase, all with RLS)
+- **Current tables:** 19 (PostgreSQL via Supabase, all with RLS)
 - **Tech stack:** Next.js 16.1, TypeScript, Tailwind CSS, Supabase
 
 ---
@@ -206,13 +206,13 @@ journeys ← journey definitions (JSONB content)
 journey_enrollments ← user/group enrollment (JSONB progress_data)
 ```
 
-### Planned Schema Evolution (RBAC — D1-D22)
-- Add `group_type` column to groups (system, personal, engagement)
-- Drop `user_id` from memberships, use `member_group_id` only
-- Add `permission_sets` table + `role_permission_sets` join
-- Add `has_permission()` function replacing `isLeader` checks
+### Schema Evolution (RBAC — D1-D22) — COMPLETE
+- Added `group_type` column to groups (system, personal, engagement)
+- Dropped `user_id` from memberships; `member_group_id` only
+- Added `permission_sets` table + `role_permission_sets` join
+- Added `has_permission()` function replacing `isLeader` checks — **COMPLETE (RBAC Sub-Sprint 1)**
 - Auto-create personal groups on signup
-- See full design: `docs/features/planned/dynamic-permissions-system.md`
+- See full design: `docs/features/implemented/dynamic-permissions-system.md`
 
 ---
 
@@ -261,7 +261,7 @@ Last curated: 2026-02-13 (initial)
 - **Architecture:** `docs/architecture/ARCHITECTURE_OVERVIEW.md`
 - **Database schema:** `docs/database/schema-overview.md`
 - **Product spec:** `docs/planning/PRODUCT_SPEC.md`
-- **RBAC design:** `docs/features/planned/dynamic-permissions-system.md`
+- **RBAC design:** `docs/features/implemented/dynamic-permissions-system.md`
 - **Deferred decisions:** `docs/planning/DEFERRED_DECISIONS.md`
 - **Migration files:** `supabase/migrations/`
 - **Database Agent:** `docs/agents/contexts/database-agent.md` (implementation partner)

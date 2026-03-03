@@ -100,6 +100,7 @@ bash supabase-cli.sh migration list
 | Agent journals | `docs/agents/learnings/` |
 | TDD + feature workflow | `docs/workflows/feature-development.md` |
 | Boot-up / Close-down | `docs/workflows/boot-up.md`, `docs/workflows/close-down.md` |
+| Doc health check | `docs/workflows/doc-health-check.md` |
 
 ---
 

@@ -232,6 +232,7 @@ describe('B-[DOMAIN]-[NUM]: [Behavior Name]', () => {
 - [ ] Schema changes have migration SQL drafted
 - [ ] RLS strategy covers all CRUD operations
 - [ ] Design addresses all failing test scenarios
+- [ ] Affected docs identified — list every existing doc (behavior specs, feature docs, architecture docs, database docs, CLAUDE.md) that this design will invalidate or require updating. Attach this list to the design output for Phase 7.
 - [ ] **Ask user:** "Phase 4 complete. Design documented. Shall I proceed to Phase 5 (implement)?"
 
 ---
@@ -291,11 +292,13 @@ describe('B-[DOMAIN]-[NUM]: [Behavior Name]', () => {
 4. Update `CHANGELOG.md` if version bumped
 5. Update `CLAUDE.md` if new patterns established
 6. Update feature doc with implementation details
-7. Create session bridge if significant work
+7. Cross-reference audit — work through the affected-docs list from Phase 4. For each doc: open it, verify terminology, schema references, RLS rules, acceptance criteria, and role names still match reality. Apply corrections. If no affected-docs list exists (e.g., hotfix), audit behavior specs for the domain, the domain feature doc, and `docs/architecture/ARCHITECTURE_OVERVIEW.md` as minimum.
+8. Create session bridge if significant work
 
 **Done when:**
 - [ ] All documentation is current
-- [ ] Feature is traceable: Vision → Product Spec → Feature → Behaviors → Tests → Code
+- [ ] Cross-reference audit complete — no doc on the affected-docs list has uncorrected drift
+- [ ] Feature is traceable upward: `docs/VISION.md` → `docs/planning/PRODUCT_SPEC.md` → `docs/features/` → `docs/specs/behaviors/` → `tests/integration/` → `app/` (verified, not assumed)
 
 ---
 
@@ -521,5 +524,6 @@ npx jest tests/integration/[domain]/[feature].test.ts --runInBand --verbose
 
 - **Boot-up workflow:** `docs/workflows/boot-up.md`
 - **Close-down workflow:** `docs/workflows/close-down.md`
+- **Doc health check:** `docs/workflows/doc-health-check.md`
 - **Behavior spec template:** `docs/specs/behaviors/_template.md`
 - **Agent system:** `docs/agents/README.md`

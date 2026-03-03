@@ -128,7 +128,7 @@ FringeIsland is built around six core domain entities:
 | name | String | Yes | Group name |
 | description | Text | No | Group description/purpose |
 | label | String | No | Optional user-defined label (e.g., "Team", "Organization") |
-| created_by_user_id | UUID | Yes | User who created the group |
+| created_by_group_id | UUID | Yes | Group that created the group |
 | created_from_group_template_id | UUID | No | Template used to create group |
 | is_public | Boolean | Yes | Public visibility (default: false) |
 | show_member_list | Boolean | Yes | Show member list publicly (default: true) |
@@ -152,8 +152,8 @@ FringeIsland is built around six core domain entities:
 1. **Flexible Structure**: Groups can contain users, other groups, or both
 2. **No Hard-coded Types**: All groups are simply "Groups" with optional labels
 3. **Multi-parent Membership**: Groups can belong to multiple parent groups
-4. **Creator Auto-Leadership**: Group creator automatically gets Group Leader role
-5. **Must Have Leader**: Every group must have at least one Group Leader
+4. **Creator Auto-Leadership**: Group creator automatically gets Steward role
+5. **Must Have Leader**: Every group must have at least one Steward
 6. **Visibility Control**: Groups can be public/private with configurable member list visibility
 7. **Network-based**: Not limited to hierarchical trees (supports network structures)
 
@@ -184,7 +184,7 @@ FringeIsland is built around six core domain entities:
   "name": "Marketing Team",
   "description": "Cross-functional marketing team focused on digital channels",
   "label": "Team",
-  "created_by_user_id": "550e8400-e29b-41d4-a716-446655440000",
+  "created_by_group_id": "550e8400-e29b-41d4-a716-446655440000",
   "created_from_group_template_id": "template_small_team",
   "is_public": false,
   "show_member_list": true,
@@ -210,7 +210,7 @@ FringeIsland is built around six core domain entities:
 | id | UUID | Yes | Unique identifier |
 | title | String | Yes | Journey title/name |
 | description | Text | No | Journey description |
-| created_by_user_id | UUID | Yes | User who created the journey |
+| created_by_group_id | UUID | Yes | Group that created the journey |
 | is_published | Boolean | Yes | Published to catalog (default: false) |
 | is_public | Boolean | Yes | Publicly visible (default: false) |
 | journey_type | String | Yes | Type: predefined, user_created, dynamic |
@@ -284,7 +284,7 @@ FringeIsland is built around six core domain entities:
   "id": "770e8400-e29b-41d4-a716-446655440002",
   "title": "Leadership Fundamentals",
   "description": "Core leadership skills for emerging leaders",
-  "created_by_user_id": "550e8400-e29b-41d4-a716-446655440000",
+  "created_by_group_id": "550e8400-e29b-41d4-a716-446655440000",
   "is_published": true,
   "is_public": true,
   "journey_type": "predefined",
@@ -339,8 +339,8 @@ FringeIsland is built around six core domain entities:
 
 **Core System Templates:**
 - Platform Admin Role Template
-- Group Leader Role Template
-- Travel Guide Role Template
+- Steward Role Template
+- Guide Role Template
 - Member Role Template
 - Observer Role Template
 
@@ -464,7 +464,7 @@ FringeIsland is built around six core domain entities:
 3. **Status Lifecycle**: active → completed OR paused → active OR frozen
 4. **Group Enrollment**: All active group members have access to journey content
 5. **Progress Tracking**: Each enrollment has independent progress data
-6. **Freezing**: Travel guides can freeze journeys to prevent accidental changes
+6. **Freezing**: Guides can freeze journeys to prevent accidental changes
 
 **Status Definitions:**
 
@@ -473,7 +473,7 @@ FringeIsland is built around six core domain entities:
 | active | Currently in progress |
 | completed | Journey finished |
 | paused | Temporarily halted by user/group |
-| frozen | Administratively frozen (by travel guide) |
+| frozen | Administratively frozen (by guide) |
 
 **Progress Data Schema (JSONB):**
 
@@ -522,8 +522,8 @@ FringeIsland is built around six core domain entities:
 
 2. Stefan creates "Marketing Team" group
    └─> Group entity created
-   └─> Group roles created (Admin, Travel Guide, Member)
-   └─> Stefan assigned Group Leader role
+   └─> Group roles created (Admin, Guide, Member)
+   └─> Stefan assigned Steward role
 
 3. Stefan invites Alice to Marketing Team
    └─> Group membership created (Alice → Marketing Team)
@@ -543,11 +543,11 @@ FringeIsland is built around six core domain entities:
 ```
 1. Stefan creates "Acme Corporation" group
    └─> Group entity created
-   └─> Stefan assigned Group Leader
+   └─> Stefan assigned Steward
 
 2. Stefan creates "Marketing Team" group
    └─> Group entity created
-   └─> Stefan assigned Group Leader
+   └─> Stefan assigned Steward
 
 3. Stefan adds "Marketing Team" as member of "Acme Corporation"
    └─> Group membership created (Marketing Team → Acme Corporation)

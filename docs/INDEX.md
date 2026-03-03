@@ -98,6 +98,7 @@ Two-tier agent structure with continuous learning (7 agents).
 - **[boot-up.md](workflows/boot-up.md)** — How to start a work session
 - **[close-down.md](workflows/close-down.md)** — How to end a session and create handoffs
 - **[feature-development.md](workflows/feature-development.md)** — TDD feature workflow (8 phases, 0-7)
+- **[doc-health-check.md](workflows/doc-health-check.md)** — Periodic audit for terminology, schema, and acceptance criteria drift
 
 ---
 

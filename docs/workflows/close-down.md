@@ -14,8 +14,10 @@
 | **Roadmap** | `docs/planning/ROADMAP.md` | If phase milestone hit |
 | **Product Spec** | `docs/planning/PRODUCT_SPEC.md` | If scope changed |
 | **Deferred Decisions** | `docs/planning/DEFERRED_DECISIONS.md` | If new deferrals |
-| **Behavior Specs** | `docs/specs/behaviors/[domain].md` | If behaviors tested |
-| **Feature Docs** | `docs/features/implemented/[feature].md` | If features updated |
+| **Behavior Specs** | `docs/specs/behaviors/[domain].md` | If behaviors tested, OR if a cross-cutting change (terminology, schema, roles) affects specs in other domains |
+| **Feature Docs** | `docs/features/implemented/[feature].md` | If feature updated, OR if a cross-cutting change invalidates sections in related feature docs |
+| **Architecture Docs** | `docs/architecture/[doc].md` | If schema, RLS, auth flow, or system design changed |
+| **Database Docs** | `docs/database/[doc].md` | If tables, columns, migrations, or RLS policies changed |
 | **Session Bridge** | `docs/planning/sessions/YYYY-MM-DD-description.md` | If significant work |
 
 If a file read fails: report the error immediately, use Glob to find it, update this table.
@@ -49,6 +51,8 @@ For each domain worked in, append discoveries to `docs/agents/learnings/[domain]
 **C. Behavior specs (if tested):** Mark behaviors as verified in `docs/specs/behaviors/[domain].md` with test results and checked acceptance criteria.
 
 **D. Feature docs (if updated):** Link verified behaviors in `docs/features/implemented/[feature].md`.
+
+**D2. Cross-cutting consistency (if any terminology, schema, or role change was made):** Check docs outside the domain worked in. Check `docs/architecture/ARCHITECTURE_OVERVIEW.md` for stale role names or schema references. Check `docs/architecture/AUTHORIZATION.md` and `docs/database/rls-policies.md` if RLS changed. Check behavior specs in other domains that reference the changed concept (e.g., a rename from "Group Leader" to "Steward" touches every spec that used the old term).
 
 **E. ROADMAP.md (if phase milestone hit):** Update phase status, completion %, deliverables. Path: `docs/planning/ROADMAP.md` (not root!).
 
@@ -104,6 +108,7 @@ Sprint status: [active work stream + phase + steps completed/remaining, from SPR
 
 - **Boot-up:** `docs/workflows/boot-up.md`
 - **Feature development (TDD):** `docs/workflows/feature-development.md`
+- **Doc health check:** `docs/workflows/doc-health-check.md`
 - **Project status:** `PROJECT_STATUS.md`
 - **Sprint tracker:** `SPRINT.md`
 - **Session bridges:** `docs/planning/sessions/`

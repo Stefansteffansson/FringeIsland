@@ -1,8 +1,4 @@
-# AUTHORIZATION.md - v0.2.5 Update Required
-
-## 📝 This Document Needs Updating
-
-The AUTHORIZATION.md file should be updated to include the **6 new RLS policies** from v0.2.5.
+# AUTHORIZATION.md - Updated for RBAC (v0.2.5+)
 
 ---
 
@@ -22,7 +18,7 @@ USING (true);
 Add these 5 new policies:
 
 ```sql
--- 1. Leaders can create invitations
+-- 1. Stewards can create invitations
 CREATE POLICY "Users can create invitations for groups they lead"
 ON group_memberships FOR INSERT
 TO authenticated
@@ -31,9 +27,9 @@ WITH CHECK (
   AND EXISTS (
     SELECT 1 FROM user_group_roles ugr
     JOIN group_roles gr ON gr.id = ugr.group_role_id
-    WHERE ugr.user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
+    WHERE ugr.member_group_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
     AND ugr.group_id = group_memberships.group_id
-    AND gr.name = 'Group Leader'
+    AND gr.name = 'Steward'
   )
 );
 
@@ -42,11 +38,11 @@ CREATE POLICY "Users can accept their own invitations"
 ON group_memberships FOR UPDATE
 TO authenticated
 USING (
-  user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
+  member_group_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
   AND status = 'invited'
 )
 WITH CHECK (
-  user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
+  member_group_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
   AND status = 'active'
 );
 
@@ -55,7 +51,7 @@ CREATE POLICY "Users can decline their own invitations"
 ON group_memberships FOR DELETE
 TO authenticated
 USING (
-  user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
+  member_group_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
   AND status = 'invited'
 );
 
@@ -64,23 +60,23 @@ CREATE POLICY "Members can leave groups"
 ON group_memberships FOR DELETE
 TO authenticated
 USING (
-  user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
+  member_group_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
   AND status = 'active'
 );
 
--- 5. Leaders can remove members
-CREATE POLICY "Leaders can remove members from their groups"
+-- 5. Stewards can remove members
+CREATE POLICY "Stewards can remove members from their groups"
 ON group_memberships FOR DELETE
 TO authenticated
 USING (
   group_id IN (
     SELECT gm.group_id
     FROM group_memberships gm
-    JOIN user_group_roles ugr ON ugr.user_id = gm.user_id AND ugr.group_id = gm.group_id
+    JOIN user_group_roles ugr ON ugr.member_group_id = gm.member_group_id AND ugr.group_id = gm.group_id
     JOIN group_roles gr ON gr.id = ugr.group_role_id
-    WHERE gm.user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
+    WHERE gm.member_group_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
     AND gm.status = 'active'
-    AND gr.name = 'Group Leader'
+    AND gr.name = 'Steward'
   )
   AND status = 'active'
 );
@@ -90,59 +86,59 @@ USING (
 
 ## ✅ Database Trigger to Document
 
-Add section on the last leader protection trigger:
+Add section on the last Steward protection trigger:
 
 ```sql
--- Trigger Function: Prevent Last Leader Removal
-CREATE OR REPLACE FUNCTION prevent_last_leader_removal()
+-- Trigger Function: Prevent Last Steward Removal
+CREATE OR REPLACE FUNCTION prevent_last_steward_removal()
 RETURNS TRIGGER AS $$
 DECLARE
-  leader_count INTEGER;
-  is_leader BOOLEAN;
+  steward_count INTEGER;
+  is_steward BOOLEAN;
 BEGIN
-  -- Check if the member being removed is a leader
+  -- Check if the member being removed is a Steward
   SELECT EXISTS (
     SELECT 1
     FROM user_group_roles ugr
     JOIN group_roles gr ON gr.id = ugr.group_role_id
-    WHERE ugr.user_id = OLD.user_id
+    WHERE ugr.member_group_id = OLD.member_group_id
     AND ugr.group_id = OLD.group_id
-    AND gr.name = 'Group Leader'
-  ) INTO is_leader;
+    AND gr.name = 'Steward'
+  ) INTO is_steward;
 
-  -- If not a leader, allow deletion
-  IF NOT is_leader THEN
+  -- If not a Steward, allow deletion
+  IF NOT is_steward THEN
     RETURN OLD;
   END IF;
 
-  -- Count remaining leaders in the group
-  SELECT COUNT(DISTINCT ugr.user_id)
-  INTO leader_count
+  -- Count remaining Stewards in the group
+  SELECT COUNT(DISTINCT ugr.member_group_id)
+  INTO steward_count
   FROM user_group_roles ugr
   JOIN group_roles gr ON gr.id = ugr.group_role_id
-  JOIN group_memberships gm ON gm.user_id = ugr.user_id AND gm.group_id = ugr.group_id
+  JOIN group_memberships gm ON gm.member_group_id = ugr.member_group_id AND gm.group_id = ugr.group_id
   WHERE ugr.group_id = OLD.group_id
-  AND gr.name = 'Group Leader'
+  AND gr.name = 'Steward'
   AND gm.status = 'active'
-  AND ugr.user_id != OLD.user_id;
+  AND ugr.member_group_id != OLD.member_group_id;
 
-  -- If this is the last leader, prevent deletion
-  IF leader_count = 0 THEN
-    RAISE EXCEPTION 'Cannot remove the last leader from the group. Promote another member to leader first.';
+  -- If this is the last Steward, prevent deletion
+  IF steward_count = 0 THEN
+    RAISE EXCEPTION 'Cannot remove the last Steward from the group. Promote another member to Steward first.';
   END IF;
 
   RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger: Check Last Leader Removal
-CREATE TRIGGER check_last_leader_removal
+-- Trigger: Check Last Steward Removal
+CREATE TRIGGER check_last_steward_removal
 BEFORE DELETE ON group_memberships
 FOR EACH ROW
-EXECUTE FUNCTION prevent_last_leader_removal();
+EXECUTE FUNCTION prevent_last_steward_removal();
 ```
 
-**Purpose:** Ensures every group always has at least one leader.
+**Purpose:** Ensures every group always has at least one Steward.
 
 ---
 
@@ -153,8 +149,8 @@ EXECUTE FUNCTION prevent_last_leader_removal();
 - 5 on `group_memberships` table
 
 **New Database Objects:** 2
-- 1 trigger function: `prevent_last_leader_removal()`
-- 1 trigger: `check_last_leader_removal`
+- 1 trigger function: `prevent_last_steward_removal()`
+- 1 trigger: `check_last_steward_removal`
 
 ---
 
@@ -167,4 +163,4 @@ See the full migration files for implementation:
 
 ---
 
-**Update AUTHORIZATION.md with these policies and triggers to reflect v0.2.5 changes.**
+**These policies and triggers reflect the post-RBAC schema (v0.2.5+), including the D15 migration (`user_id` → `member_group_id` in group_memberships) and role rename ("Group Leader" → "Steward").**

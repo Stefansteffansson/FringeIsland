@@ -17,10 +17,10 @@
 - **Trigger:** `enforce_personal_group_id_immutability()` on `public.users`
 
 **Acceptance Criteria:**
-- [ ] UPDATE that changes `personal_group_id` to a different UUID raises an error
-- [ ] UPDATE that sets `personal_group_id` to NULL raises an error
-- [ ] UPDATE of other fields (e.g., `bio`) succeeds normally
-- [ ] Initial set from NULL → UUID by `handle_new_user()` trigger is allowed
+- [x] UPDATE that changes `personal_group_id` to a different UUID raises an error
+- [x] UPDATE that sets `personal_group_id` to NULL raises an error
+- [x] UPDATE of other fields (e.g., `bio`) succeeds normally
+- [x] Initial set from NULL → UUID by `handle_new_user()` trigger is allowed
 
 **Testing Priority:** 🔴 CRITICAL (security invariant)
 
@@ -36,8 +36,8 @@
 - **Test:** `tests/integration/rbac/groups-join-groups.test.ts`
 
 **Acceptance Criteria:**
-- [ ] Engagement group inserted as `member_group_id` in `group_memberships` succeeds
-- [ ] Membership is visible to host group members via RLS
+- [x] Engagement group inserted as `member_group_id` in `group_memberships` succeeds
+- [x] Membership is visible to host group members via RLS
 
 **Testing Priority:** 🟡 HIGH (architectural guarantee)
 
@@ -53,8 +53,8 @@
 - **Test:** `tests/integration/rbac/groups-join-groups.test.ts`
 
 **Acceptance Criteria:**
-- [ ] `has_permission(engagementGroupA, engagementGroupB, 'invite_members')` → true (if A is Steward in B)
-- [ ] `has_permission(engagementGroupA, unrelatedGroup, 'view_member_list')` → false (no membership)
+- [x] `has_permission(engagementGroupA, engagementGroupB, 'invite_members')` → true (if A is Steward in B)
+- [x] `has_permission(engagementGroupA, unrelatedGroup, 'view_member_list')` → false (no membership)
 
 **Testing Priority:** 🟡 HIGH (permission system generality)
 
@@ -70,8 +70,8 @@
 - **Test:** `tests/integration/rbac/personal-groups.test.ts`
 
 **Acceptance Criteria:**
-- [ ] `group_role_permissions` for a Myself role has 0 rows
-- [ ] `has_permission(personalGroupId, personalGroupId, 'invite_members')` → false
+- [x] `group_role_permissions` for a Myself role has 0 rows
+- [x] `has_permission(personalGroupId, personalGroupId, 'invite_members')` → false
 
 **Testing Priority:** 🟢 MEDIUM (correctness guarantee)
 
@@ -87,8 +87,8 @@
 - **Test:** `tests/integration/admin/deusex-bootstrap.test.ts`
 
 **Acceptance Criteria:**
-- [ ] Admin's `personal_group_id` resolves from JWT
-- [ ] `has_permission(personalGroupId, anyGroup, 'manage_all_groups')` → true
+- [x] Admin's `personal_group_id` resolves from JWT
+- [x] `has_permission(personalGroupId, anyGroup, 'manage_all_groups')` → true
 
 **Testing Priority:** 🟢 MEDIUM (admin path verification)
 

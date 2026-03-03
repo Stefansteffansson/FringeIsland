@@ -10,7 +10,7 @@
 
 **Rule:** When a group membership event occurs (invitation, acceptance, decline, removal, or leaving), the notification system MUST create an in-app notification for the appropriate recipient(s) within the same database transaction.
 
-**Why:** Members need timely awareness of membership changes. Without guaranteed notification delivery, users miss invitations, leaders are unaware when members accept or leave, and the platform lacks a reliable communication channel.
+**Why:** Members need timely awareness of membership changes. Without guaranteed notification delivery, users miss invitations, Stewards are unaware when members accept or leave, and the platform lacks a reliable communication channel.
 
 **Verified by:**
 - **Test:** `tests/integration/communication/notifications.test.ts` (B-COMM-001 cases)
@@ -25,16 +25,16 @@
 **Acceptance Criteria:**
 - [x] Inviting a user creates a `group_invitation` notification for the invited user ✅ TESTED
 - [x] Invitation notification has correct title ("New Group Invitation"), body, and payload (group_id, group_name, inviter_id, inviter_name, membership_id) ✅ TESTED
-- [x] Accepting an invitation creates an `invitation_accepted` notification for all Group Leaders ✅ TESTED
-- [ ] Declining an invitation creates an `invitation_declined` notification for all Group Leaders
+- [x] Accepting an invitation creates an `invitation_accepted` notification for all Stewards ✅ TESTED
+- [ ] Declining an invitation creates an `invitation_declined` notification for all Stewards
 - [x] Notification payload contains accurate group_id, group_name, and actor information ✅ TESTED
 
 **Examples:**
 
 ✅ **Valid:**
-- Leader invites User B → `group_invitation` notification created for User B with type='group_invitation'
-- User B accepts invitation → `invitation_accepted` notification created for every Group Leader in the group
-- User B declines invitation → `invitation_declined` notification created for every Group Leader in the group
+- Steward invites User B → `group_invitation` notification created for User B with type='group_invitation'
+- User B accepts invitation → `invitation_accepted` notification created for every Steward in the group
+- User B declines invitation → `invitation_declined` notification created for every Steward in the group
 
 ❌ **Invalid:**
 - An invitation INSERT with status='active' (bypassing flow) → trigger does NOT fire (WHEN condition requires status='invited')
@@ -42,12 +42,12 @@
 
 **Edge Cases:**
 
-- **Scenario:** Group has multiple leaders
-  - **Behavior:** `invitation_accepted` creates one notification per leader
-  - **Why:** Each leader needs independent awareness of group activity
+- **Scenario:** Group has multiple Stewards
+  - **Behavior:** `invitation_accepted` creates one notification per Steward
+  - **Why:** Each Steward needs independent awareness of group activity
 
 - **Scenario:** Invited user's record is deleted by admin (service role, no auth.uid())
-  - **Behavior:** `invitation_declined` trigger fires; leaders are notified
+  - **Behavior:** `invitation_declined` trigger fires; Stewards are notified
   - **Why:** auth.uid() is NULL in service role context; the trigger handles this gracefully
 
 - **Scenario:** Group is deleted while invitation is pending
@@ -172,7 +172,7 @@
 
 ## B-COMM-004: Forum Post Creation
 
-**Rule:** Active group members with the 'Member', 'Travel Guide', or 'Group Leader' role MUST be able to create top-level forum posts in their group's forum; non-members MUST NOT.
+**Rule:** Active group members with the 'Member', 'Guide', or 'Steward' role MUST be able to create top-level forum posts in their group's forum; non-members MUST NOT.
 
 **Why:** Forums are the primary discussion channel within a group. Only members with active participation roles can post — observers can only read (per D18a permission grid).
 
@@ -180,7 +180,7 @@
 - **Test:** `tests/integration/communication/forum.test.ts` (B-COMM-004 cases)
 - **Database:** `supabase/migrations/20260214161716_add_group_forum_posts.sql`
 - **RLS Policy:** `"forum_posts_insert_permission"` — WITH CHECK uses has_forum_permission(group_id, 'post_forum_messages')
-- **Function:** `has_forum_permission()` — maps 'post_forum_messages' to 'Group Leader', 'Travel Guide', 'Member' roles
+- **Function:** `has_forum_permission()` — maps 'post_forum_messages' to Steward, Guide, and Member roles
 - **Constraint:** `chk_content_not_empty` — prevents blank posts
 
 **Acceptance Criteria:**
@@ -193,7 +193,7 @@
 
 ✅ **Valid:**
 - Active member with Member role creates post: `INSERT INTO forum_posts { group_id, author_user_id, content }` → succeeds
-- Group Leader creates a top-level post → succeeds
+- Steward creates a top-level post → succeeds
 
 ❌ **Invalid:**
 - Non-member inserts post → **BLOCKED** (has_forum_permission returns false; RLS INSERT WITH CHECK fails)
@@ -276,37 +276,37 @@
 
 ## B-COMM-006: Forum Moderation
 
-**Rule:** Group Leaders MUST be able to soft-delete any post in their group's forum by setting is_deleted=true; non-leaders MUST NOT be able to soft-delete posts authored by others.
+**Rule:** Stewards MUST be able to soft-delete any post in their group's forum by setting is_deleted=true; non-Stewards MUST NOT be able to soft-delete posts authored by others.
 
-**Why:** Moderation is essential for group health. Only Group Leaders have the trust and responsibility to remove content. Non-leaders can only edit their own posts. Soft-delete preserves content for audit/appeal.
+**Why:** Moderation is essential for group health. Only Stewards have the trust and responsibility to remove content. Non-leaders can only edit their own posts. Soft-delete preserves content for audit/appeal.
 
 **Verified by:**
 - **Test:** `tests/integration/communication/forum.test.ts` (B-COMM-006 cases)
 - **Database:** `supabase/migrations/20260214161716_add_group_forum_posts.sql`
 - **RLS Policy:** `"forum_posts_moderate_permission"` — UPDATE USING has_forum_permission(group_id, 'moderate_forum')
 - **RLS Policy:** `"forum_posts_update_own"` — UPDATE USING author_user_id = current_user AND is_deleted = false
-- **Function:** `has_forum_permission()` — 'moderate_forum' maps only to 'Group Leader'
+- **Function:** `has_forum_permission()` — 'moderate_forum' maps only to 'Steward'
 
 **Acceptance Criteria:**
-- [x] Group Leader can UPDATE any post in their group to set is_deleted=true ✅ TESTED
+- [x] Steward can UPDATE any post in their group to set is_deleted=true ✅ TESTED
 - [x] Post is NOT hard-deleted (record remains in database with is_deleted=true) ✅ TESTED
-- [x] Regular member (non-leader) cannot set is_deleted=true on another member's post ✅ TESTED
+- [x] Regular member (non-Steward) cannot set is_deleted=true on another member's post ✅ TESTED
 - [x] Author can edit their own post content (via `forum_posts_update_own` policy) while post is not deleted ✅ TESTED
 - [ ] Author cannot edit their own post content after it is soft-deleted (UPDATE own blocked when is_deleted=true)
 
 **Examples:**
 
 ✅ **Valid:**
-- Group Leader issues `UPDATE forum_posts SET is_deleted=true WHERE id=<any_post_in_group>` → succeeds
+- Steward issues `UPDATE forum_posts SET is_deleted=true WHERE id=<any_post_in_group>` → succeeds
 - Author issues `UPDATE forum_posts SET content='edited content' WHERE id=<own_post>` (not deleted) → succeeds
 
 ❌ **Invalid:**
-- Regular member issues `UPDATE forum_posts SET is_deleted=true WHERE id=<another_members_post>` → **blocked** (only own non-deleted posts allowed via `forum_posts_update_own`; `forum_posts_moderate_permission` requires Group Leader)
+- Regular member issues `UPDATE forum_posts SET is_deleted=true WHERE id=<another_members_post>` → **blocked** (only own non-deleted posts allowed via `forum_posts_update_own`; `forum_posts_moderate_permission` requires Steward)
 - Author issues `UPDATE forum_posts SET content='new content' WHERE id=<own_deleted_post>` → **blocked** (UPDATE own policy requires is_deleted=false)
 
 **Edge Cases:**
 
-- **Scenario:** Group Leader moderates their own post
+- **Scenario:** Steward moderates their own post
   - **Behavior:** Allowed (moderate_forum permission applies to ALL posts including own)
   - **Why:** Moderation is a group-level permission, not restricted to others' posts
 
@@ -395,9 +395,9 @@
   - B-COMM-002: 4 tests (own read, cross-user RLS, no INSERT, no cross-UPDATE)
   - B-COMM-003: 4 tests (initial state, mark as read, unread query, unread count)
 - `communication/forum.test.ts` — 10 tests, 10/10 PASSING ✅
-  - B-COMM-004: 2 tests (member post, leader post)
+  - B-COMM-004: 2 tests (member post, Steward post)
   - B-COMM-005: 2 tests (valid reply, reply-to-reply blocked)
-  - B-COMM-006: 3 tests (leader soft-delete, non-leader blocked, author edit own)
+  - B-COMM-006: 3 tests (leader soft-delete, non-Steward blocked, author edit own)
   - B-COMM-007: 3 tests (non-member no view, non-member no post, member can view)
 - **Total: 20 new tests, all passing**
 - **Last updated:** 2026-02-14

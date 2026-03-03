@@ -116,7 +116,7 @@
 
 ✅ **Valid:**
 - New user signs up → Personal group created → User is sole member with "Myself" role
-- Query `SELECT g.* FROM groups g JOIN group_memberships gm ON g.id = gm.group_id WHERE gm.user_id = X AND g.group_type = 'personal'` → Returns exactly 1 row
+- Query `SELECT g.* FROM groups g JOIN group_memberships gm ON g.id = gm.group_id WHERE gm.member_group_id = X AND g.group_type = 'personal'` → Returns exactly 1 row
 
 ❌ **Invalid:**
 - User signs up but no personal group exists → VIOLATED (trigger must fire)
@@ -292,14 +292,14 @@
 - **Migration:** TBD (rename in role_templates and group_roles)
 
 **Acceptance Criteria:**
-- [ ] `role_templates` contains "Steward Role Template" (not "Group Leader Role Template")
-- [ ] `role_templates` contains "Guide Role Template" (not "Travel Guide Role Template")
-- [ ] All existing `group_roles` named "Group Leader" are renamed to "Steward"
-- [ ] All existing `group_roles` named "Travel Guide" are renamed to "Guide"
-- [ ] "Member" and "Observer" role names remain unchanged
-- [ ] RLS helper functions updated: `is_active_group_leader()` → `is_active_steward()` (or equivalent)
-- [ ] UI references updated: "Group Leader" → "Steward", "Travel Guide" → "Guide"
-- [ ] Last-leader protection trigger updated to check for "Steward" instead of "Group Leader"
+- [x] `role_templates` contains "Steward Role Template" (not "Group Leader Role Template")
+- [x] `role_templates` contains "Guide Role Template" (not "Travel Guide Role Template")
+- [x] All existing `group_roles` named "Group Leader" are renamed to "Steward"
+- [x] All existing `group_roles` named "Travel Guide" are renamed to "Guide"
+- [x] "Member" and "Observer" role names remain unchanged
+- [x] RLS helper functions updated: `is_active_steward()` (formerly `is_active_group_leader()`)
+- [x] UI references updated: "Group Leader" → "Steward", "Travel Guide" → "Guide"
+- [x] Last-leader protection trigger updated to check for "Steward" instead of "Group Leader"
 
 **Examples:**
 
@@ -1140,9 +1140,9 @@
 
 ## B-RBAC-025: RLS Policies Use has_permission() for Role Management
 
-**Rule:** RLS policies on `group_roles` and `group_role_permissions` tables use `has_permission()` function calls instead of `created_by_user_id` checks. This ensures role management access is controlled by the RBAC system itself.
+**Rule:** RLS policies on `group_roles` and `group_role_permissions` tables use `has_permission()` function calls instead of `created_by_group_id` checks. This ensures role management access is controlled by the RBAC system itself.
 
-**Why:** Current RLS policies on these tables check `created_by_user_id` (hardcoded to group creator). This means only the original group creator can manage roles, even if they're no longer a Steward or if another user has been promoted. Migrating to `has_permission('manage_roles')` checks makes role management RBAC-consistent.
+**Why:** Current RLS policies on these tables check `created_by_group_id` (hardcoded to group creator). This means only the original group creator can manage roles, even if they're no longer a Steward or if another user has been promoted. Migrating to `has_permission('manage_roles')` checks makes role management RBAC-consistent.
 
 **Verified by:**
 - **Test:** `tests/integration/rbac/role-management.test.ts`
@@ -1155,7 +1155,7 @@
 - [ ] `group_roles` DELETE policy (NEW): allows when user has `manage_roles` permission AND role is custom (`created_from_role_template_id IS NULL`)
 - [ ] `group_role_permissions` INSERT policy: allows when user has `manage_roles` permission in the role's group
 - [ ] `group_role_permissions` DELETE policy (NEW): allows when user has `manage_roles` permission in the role's group
-- [ ] Old `created_by_user_id` checks are removed from these policies
+- [ ] Old `created_by_group_id` checks are removed from these policies
 - [ ] SELECT policies remain unchanged (all active members can view)
 - [ ] Anti-escalation enforced at RLS level: user can only INSERT permissions they themselves hold
 

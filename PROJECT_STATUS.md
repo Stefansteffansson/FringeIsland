@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-03-03 (Documentation restructuring — overlap elimination + SPRINT.md)
+**Last Updated:** 2026-03-03 (Doc drift prevention + existing drift fix)
 **Current Version:** 0.2.36
 **Active Branch:** main
 
@@ -80,20 +80,26 @@ See `SPRINT.md` for current work streams, TDD phase, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-03-03 (Documentation restructuring — overlap elimination + SPRINT.md)
+**Date:** 2026-03-03 (Doc drift prevention + existing drift fix)
 **Summary:**
-- Comprehensive doc restructuring: gave each file ONE job, eliminated overlap across 16 files
-- README.md rewritten (403→155 lines): GitHub landing page only, removed duplicated roadmap/schema/features
-- INDEX.md rewritten (249→128 lines): navigation hub only, removed status/tips sections
-- Created SPRINT.md (new operational heartbeat): multi-stream TDD phase tracking, replaces NEXT.md
-- Deleted NEXT.md (fully absorbed by SPRINT.md)
-- Slimmed PROJECT_STATUS.md: removed "Working On NOW" + "Next Priorities" sections → pointer to SPRINT.md
-- Fixed stale terminology across 4 planning docs: Group Leader→Steward, Travel Guide→Guide (15+ edits)
-- Fixed TDD phase numbering mismatch between CLAUDE.md, boot-up.md vs canonical feature-development.md
-- Added phase summary table to feature-development.md
-- Updated 9 files with NEXT.md→SPRINT.md references (CLAUDE.md, boot-up, close-down, feature-dev, sprint-agent, INDEX, ROADMAP, MEMORY.md)
-- Fixed lifecycle-roadmap-decisions.md: all 5 tracks marked ✅ IMPLEMENTED (were misleadingly "NOT IMPLEMENTED")
-- Fixed PRODUCT_SPEC.md Non-Goals (messaging IS implemented) and Iteration Plan (Phase 1.5→Phase 2)
+- Built 3-layer documentation drift prevention system across workflow files:
+  - Phase 4 STOP gate: affected-docs list requirement; Phase 7: cross-reference audit step
+  - Close-down: added D2 cross-cutting consistency step, architecture/database doc rows, widened trigger conditions
+  - Sprint Agent retrospective: added doc health check as step 4, added quality gate
+- Created standalone `docs/workflows/doc-health-check.md` workflow (terminology, schema, acceptance criteria checks)
+- Referenced new workflow in 7 index/navigation files (CLAUDE.md, INDEX.md, agents/README.md, PROJECT_STATUS.md, boot-up, close-down, feature-development)
+- Fixed ~130+ instances of existing documentation drift across 17 active documents:
+  - Terminology: "Group Leader"→"Steward", "Travel Guide"→"Guide" in all behavior specs, architecture docs, database docs, agent playbooks
+  - Schema: user_id→member_group_id, created_by_user_id→created_by_group_id, assigned_by_user_id→assigned_by_group_id
+  - Code patterns: isLeader→hasPermission() in agent playbooks, activity catalog, agent journals
+  - Checked unchecked acceptance criteria for implemented features (groups.md, d15-hardening.md, rbac.md Sub-Sprint 1)
+  - Updated AUTHORIZATION.md from pre-RBAC to post-RBAC state
+  - Fixed architect-agent.md: RBAC marked complete, file paths corrected, table count updated
+
+**Previous Sessions:**
+- 2026-03-03: Documentation restructuring — overlap elimination + SPRINT.md
+- 2026-03-03: Architecture Baseline + live DB validation (zero drift, 11 corrections)
+- 2026-02-28: Documentation restructuring (CLAUDE.md, workflows, ROADMAP, NEXT.md, archives)
 
 **Previous Sessions:**
 - 2026-03-03: Architecture Baseline + live DB validation (zero drift, 11 corrections)
@@ -141,6 +147,9 @@ See `SPRINT.md` for current work streams, TDD phase, and sprint step plan.
 **Ending your session?**
 - Read: `docs/workflows/close-down.md`
 - Or ask: "Close down session"
+
+**Checking doc drift?**
+- Read: `docs/workflows/doc-health-check.md`
 
 ---
 

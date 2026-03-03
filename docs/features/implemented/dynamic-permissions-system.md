@@ -13,7 +13,7 @@ FringeIsland currently enforces access control through **hardcoded role name che
 
 1. **Rigid** — Adding a new role or tweaking what a role can do requires code changes.
 2. **Fragile** — Permission logic is scattered across components, not centralized.
-3. **Not user-configurable** — Group Leaders can't customize what their Travel Guides or Members can do.
+3. **Not user-configurable** — Stewards can't customize what their Guides or Members can do.
 4. **Inconsistent** — The database already has `permissions`, `role_template_permissions`, and `group_role_permissions` tables, but they are **not wired up at runtime**. Checks are done by role name, not by permission lookup.
 
 This document captures the **complete activity inventory** of the system and lays the groundwork for replacing hardcoded checks with a **dynamic, database-driven permission system** where roles are defined by the set of permissions they hold.
@@ -136,7 +136,7 @@ Context group permissions apply **only when the user is operating within that sp
 | Group | Membership | Roles | Purpose |
 |-------|-----------|-------|---------|
 | **Personal Group** | Auto-created per user (exactly 1 member: themselves) | Myself | User's identity + "My Home" — manage own profile, view own enrollments, track own progress. Named by the user (alias). |
-| **Engagement Groups** | User-created, groups join groups | Steward, Guide, Member, Observer, custom | Collaborative access: journeys, book circles, communities of practice, travel guide networks, organizational units, etc. |
+| **Engagement Groups** | User-created, groups join groups | Steward, Guide, Member, Observer, custom | Collaborative access: journeys, book circles, communities of practice, guide networks, organizational units, etc. |
 
 #### How Groups Join Groups
 
@@ -387,7 +387,7 @@ Decisions made during planning that shape the architecture:
 - **Visitor** (system, implicit for anonymous users)
 - **FringeIsland Members** (system, auto-join on signup)
 - **Personal Group** (context, auto-created per user, user's identity/"My Home")
-- **Engagement Groups** (context, user-created — journeys, book circles, communities of practice, travel guide networks, etc.)
+- **Engagement Groups** (context, user-created — journeys, book circles, communities of practice, guide networks, etc.)
 - **Deusex** (system, manually assigned superusers)
 
 **Rationale:** A uniform model means no special cases in the permission checking code. Visitors, regular members, group leaders, and superusers all go through the exact same mechanism. The group-to-group model also naturally supports organizational structures — engagement groups joining other engagement groups — without needing a separate "relationship" or "hierarchy" system.
@@ -589,7 +589,7 @@ At <100 users the extra JOIN is sub-millisecond. At 100K+ users it's ~1-2ms — 
 
 **These are defaults — fully customizable.** Stewards can rename roles, adjust permissions, or create additional custom roles. The templates exist to give groups a sensible starting point.
 
-**Replaces:** The previous 5 role templates (Platform Admin, Group Leader, Travel Guide, Member, Observer) will be updated. "Platform Admin" becomes system-level only (Deusex). "Group Leader" → "Steward". "Travel Guide" → "Guide". Member and Observer remain (with updated permissions).
+**Replaces:** The previous 5 role templates (Platform Admin, Group Leader, Guide, Member, Observer) will be updated. "Platform Admin" becomes system-level only (Deusex). "Group Leader" → "Steward". "Travel Guide" → "Guide". Member and Observer remain (with updated permissions).
 
 ### D18: Data Privacy — Feedback Privacy + Sharing Consent (Resolved 2026-02-11)
 
@@ -882,7 +882,7 @@ These permissions need to be added to the `permissions` table:
 |---|---|---|
 | Platform Admin Role Template | **Remove** | Becomes Deusex group role (system-level, not a group template) |
 | Group Leader Role Template | **Rename** | Steward Role Template |
-| Travel Guide Role Template | **Rename** | Guide Role Template |
+| Guide Role Template | **Rename** | Guide Role Template |
 | Member Role Template | Keep | Member Role Template (update permissions per D18a) |
 | Observer Role Template | Keep | Observer Role Template (update permissions per D18a) |
 

@@ -221,8 +221,8 @@ CREATE INDEX idx_role_templates_name ON role_templates(name);
 ```sql
 INSERT INTO role_templates (name, description) VALUES
 ('Platform Admin Role Template', 'Full platform administration capabilities'),
-('Group Leader Role Template', 'Manage and lead a specific group'),
-('Travel Guide Role Template', 'Facilitate journeys and provide guidance'),
+('Steward Role Template', 'Manage and lead a specific group'),
+('Guide Role Template', 'Facilitate journeys and provide guidance'),
 ('Member Role Template', 'Standard participant in groups and journeys'),
 ('Observer Role Template', 'View-only access to group activities');
 ```
@@ -341,11 +341,11 @@ CREATE INDEX idx_memberships_active ON group_memberships(group_id, status) WHERE
 
 ---
 
-## 🆕 v0.2.5: Database Trigger for Last Leader Protection
+## 🆕 v0.2.5: Database Trigger for Last Steward Protection
 
 ### prevent_last_leader_removal()
 
-**NEW in v0.2.5:** Ensures every group always has at least one Group Leader.
+**NEW in v0.2.5:** Ensures every group always has at least one Steward.
 
 ```sql
 CREATE OR REPLACE FUNCTION prevent_last_leader_removal()
@@ -361,28 +361,28 @@ BEGIN
     JOIN group_roles gr ON gr.id = ugr.group_role_id
     WHERE ugr.user_id = OLD.user_id
     AND ugr.group_id = OLD.group_id
-    AND gr.name = 'Group Leader'
+    AND gr.name = 'Steward'
   ) INTO is_leader;
 
-  -- If not a leader, allow deletion
+  -- If not a Steward, allow deletion
   IF NOT is_leader THEN
     RETURN OLD;
   END IF;
 
-  -- Count remaining leaders in the group
+  -- Count remaining Stewards in the group
   SELECT COUNT(DISTINCT ugr.user_id)
   INTO leader_count
   FROM user_group_roles ugr
   JOIN group_roles gr ON gr.id = ugr.group_role_id
   JOIN group_memberships gm ON gm.user_id = ugr.user_id AND gm.group_id = ugr.group_id
   WHERE ugr.group_id = OLD.group_id
-  AND gr.name = 'Group Leader'
+  AND gr.name = 'Steward'
   AND gm.status = 'active'
   AND ugr.user_id != OLD.user_id;
 
-  -- If this is the last leader, prevent deletion
+  -- If this is the last Steward, prevent deletion
   IF leader_count = 0 THEN
-    RAISE EXCEPTION 'Cannot remove the last leader from the group. Promote another member to leader first.';
+    RAISE EXCEPTION 'Cannot remove the last Steward from the group. Promote another member to Steward first.';
   END IF;
 
   RETURN OLD;
@@ -396,13 +396,13 @@ FOR EACH ROW
 EXECUTE FUNCTION prevent_last_leader_removal();
 ```
 
-**Purpose:** Prevents both self-removal (leaving) and leader-removal (kicking) if the user is the last Group Leader.
+**Purpose:** Prevents both self-removal (leaving) and Steward-removal (kicking) if the user is the last Steward.
 
 **Behavior:**
 - Fires before any DELETE operation on `group_memberships`
-- Checks if user being removed has "Group Leader" role
-- If leader, counts remaining active leaders
-- If last leader, raises exception and blocks the deletion
+- Checks if user being removed has "Steward" role
+- If Steward, counts remaining active Stewards
+- If last Steward, raises exception and blocks the deletion
 - Otherwise, allows deletion to proceed normally
 
 ---
@@ -542,7 +542,7 @@ Role instances within specific groups (copied from role templates, customizable)
 CREATE TABLE group_roles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   group_id UUID NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,  -- e.g., 'Admin', 'Travel Guide' (editable)
+  name TEXT NOT NULL,  -- e.g., 'Admin', 'Guide' (editable)
   created_from_role_template_id UUID REFERENCES role_templates(id) ON DELETE SET NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -686,8 +686,8 @@ CREATE POLICY "Users can create groups"
     )
   );
 
--- Group Leaders can update their groups
-CREATE POLICY "Group leaders can update groups"
+-- Stewards can update their groups
+CREATE POLICY "Stewards can update groups"
   ON groups FOR UPDATE
   USING (
     EXISTS (
@@ -723,8 +723,8 @@ CREATE POLICY "Users can view group memberships"
     )
   );
 
--- Group leaders can manage memberships
-CREATE POLICY "Group leaders can manage memberships"
+-- Stewards can manage memberships
+CREATE POLICY "Stewards can manage memberships"
   ON group_memberships FOR ALL
   USING (
     EXISTS (
@@ -739,7 +739,7 @@ CREATE POLICY "Group leaders can manage memberships"
     )
   );
 
--- 🆕 v0.2.5: Leaders can create invitations (status='invited')
+-- 🆕 v0.2.5: Stewards can create invitations (status='invited')
 CREATE POLICY "Users can create invitations for groups they lead"
   ON group_memberships FOR INSERT
   TO authenticated
@@ -750,7 +750,7 @@ CREATE POLICY "Users can create invitations for groups they lead"
       JOIN group_roles gr ON gr.id = ugr.group_role_id
       WHERE ugr.user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
       AND ugr.group_id = group_memberships.group_id
-      AND gr.name = 'Group Leader'
+      AND gr.name = 'Steward'
     )
   );
 
@@ -785,8 +785,8 @@ CREATE POLICY "Members can leave groups"
     AND status = 'active'
   );
 
--- 🆕 v0.2.5: Leaders can remove members from their groups
-CREATE POLICY "Leaders can remove members from their groups"
+-- 🆕 v0.2.5: Stewards can remove members from their groups
+CREATE POLICY "Stewards can remove members from their groups"
   ON group_memberships FOR DELETE
   TO authenticated
   USING (
@@ -797,7 +797,7 @@ CREATE POLICY "Leaders can remove members from their groups"
       JOIN group_roles gr ON gr.id = ugr.group_role_id
       WHERE gm.user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
       AND gm.status = 'active'
-      AND gr.name = 'Group Leader'
+      AND gr.name = 'Steward'
     )
     AND status = 'active'
   );
@@ -886,8 +886,8 @@ CREATE POLICY "Users can enroll in journeys"
     )
   );
 
--- Group leaders can enroll groups in journeys
-CREATE POLICY "Group leaders can enroll groups"
+-- Stewards can enroll groups in journeys
+CREATE POLICY "Stewards can enroll groups"
   ON journey_enrollments FOR INSERT
   WITH CHECK (
     EXISTS (
@@ -1004,8 +1004,8 @@ CREATE POLICY "Users can view group roles"
     )
   );
 
--- Group leaders can manage roles
-CREATE POLICY "Group leaders can manage roles"
+-- Stewards can manage roles
+CREATE POLICY "Stewards can manage roles"
   ON group_roles FOR ALL
   USING (
     EXISTS (
@@ -1061,8 +1061,8 @@ CREATE POLICY "Users can view group role assignments"
     )
   );
 
--- Group leaders can assign/remove roles
-CREATE POLICY "Group leaders can manage role assignments"
+-- Stewards can assign/remove roles
+CREATE POLICY "Stewards can manage role assignments"
   ON user_group_roles FOR ALL
   USING (
     EXISTS (
@@ -1084,13 +1084,13 @@ CREATE POLICY "Group leaders can manage role assignments"
 
 ### Invitation Workflow
 
-**1. Leader Invites User**
+**1. Steward Invites User**
 ```sql
 INSERT INTO group_memberships (group_id, user_id, added_by_user_id, status)
 VALUES ('group-uuid', 'user-uuid', 'leader-uuid', 'invited');
 ```
 - Status: `'invited'`
-- RLS: Only leaders can create invitations
+- RLS: Only Stewards can create invitations
 
 **2. User Accepts Invitation**
 ```sql
@@ -1117,15 +1117,15 @@ DELETE FROM group_memberships
 WHERE group_id = 'group-uuid' AND user_id = 'user-uuid' AND status = 'active';
 ```
 - RLS: User can delete their own membership
-- Trigger: Blocks if user is last leader
+- Trigger: Blocks if user is last Steward
 
-**5. Leader Removes Member**
+**5. Steward Removes Member**
 ```sql
 DELETE FROM group_memberships 
 WHERE id = 'membership-uuid' AND status = 'active';
 ```
-- RLS: Only leaders can remove others
-- Trigger: Blocks if removing last leader
+- RLS: Only Stewards can remove others
+- Trigger: Blocks if removing last Steward
 
 ---
 
@@ -1194,7 +1194,7 @@ If migrating manually, follow this sequence:
 3. Users can accept their own invitations (group_memberships)
 4. Users can decline their own invitations (group_memberships)
 5. Members can leave groups (group_memberships)
-6. Leaders can remove members from their groups (group_memberships)
+6. Stewards can remove members from their groups (group_memberships)
 
 ### Migration Files
 - `20260125_enable_member_invitations.sql`

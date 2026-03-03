@@ -44,7 +44,7 @@ groups
  |- groups.view
  |   |- groups.view.details              # View group name, description, settings
  |   +- groups.view.members              # View member list
- |                                       #   (currently gated by show_member_list OR isLeader)
+ |                                       #   (currently gated by show_member_list OR hasPermission())
  |- groups.edit
  |   |- groups.edit.name                 # Change group name
  |   |- groups.edit.description          # Change group description

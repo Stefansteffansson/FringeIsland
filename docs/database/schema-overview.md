@@ -57,14 +57,14 @@ Future Tables (Phase 2+):
 **Purpose:** Organizational units (teams, departments, cohorts)
 **Key Fields:** id, name, description, label, is_public, show_member_list, settings (JSONB)
 **Relationships:**
-- Owned by users (created_by_user_id)
+- Owned by groups (created_by_group_id)
 - Contains members via group_memberships
 - Has roles via group_roles
 **Features:** Public/private visibility, custom labels, flexible settings
 
 ### group_memberships
 **Purpose:** User-group relationships with status tracking
-**Key Fields:** id, group_id, user_id, member_group_id (for subgroups), status, added_by_user_id
+**Key Fields:** id, group_id, member_group_id, status, added_by_group_id
 **Status Values:** 'active', 'invited', 'paused', 'removed' (CHECK constraint enforced)
 **Relationships:**
 - Links users to groups
@@ -95,23 +95,23 @@ Future Tables (Phase 2+):
 
 ### journey_enrollments
 **Purpose:** Track user and group participation in journeys
-**Key Fields:** id, journey_id, user_id, group_id, enrolled_by_user_id, status, progress_data (JSONB)
+**Key Fields:** id, journey_id, group_id, enrolled_by_group_id, status, progress_data (JSONB)
 **Enrollment Types:**
-- Individual: user_id set, group_id NULL
-- Group: group_id set, user_id NULL
+- Individual: uses the member's personal group's group_id (D15: user_id eliminated)
+- Group: uses the group's group_id directly
 **Status Values:** 'active', 'completed', 'paused', 'frozen'
 **Business Rules:**
 - No dual enrollment (individual + group for same journey)
-- Only Group Leaders can enroll groups
+- Only Stewards can enroll groups
 - Progress stored as JSONB for flexibility
 
 ### group_roles
 **Purpose:** Role instances within specific groups
 **Key Fields:** id, group_id, name, description, created_from_role_template_id
 **Default Roles:**
-- Group Leader (created on group creation)
+- Steward (created on group creation)
 - Member
-- Travel Guide (for journey facilitation)
+- Guide (for journey facilitation)
 **Relationships:**
 - Belongs to group
 - Created from role_template
@@ -120,12 +120,12 @@ Future Tables (Phase 2+):
 
 ### user_group_roles
 **Purpose:** Assign roles to users within groups
-**Key Fields:** id, user_id, group_id, group_role_id, assigned_by_user_id
+**Key Fields:** id, member_group_id, group_id, group_role_id, assigned_by_group_id
 **Features:**
 - Multiple roles per user per group
 - Tracks who assigned the role
-- Protected by RLS (leaders can assign)
-**Important Trigger:** Last leader protection prevents removing final Group Leader
+- Protected by RLS (Stewards can assign)
+**Important Trigger:** Last leader protection prevents removing final Steward
 
 ---
 
@@ -137,7 +137,7 @@ All tables have comprehensive Row Level Security policies. See `docs/database/rl
 - Users can only see their own data
 - Group members can view their groups
 - Public groups visible to all authenticated users
-- Leaders can manage their groups
+- Stewards can manage their groups
 - Invitations are user-specific
 - Last leader protection at database level
 
@@ -159,8 +159,8 @@ Soft-deletes user profile when auth user is deleted
 - Trigger: ON DELETE auth.users
 
 ### prevent_last_leader_removal()
-Prevents removing the last Group Leader from a group
-- Raises exception if attempt to remove last leader
+Prevents removing the last Steward from a group
+- Raises exception if attempt to remove last Steward
 - Trigger: BEFORE DELETE user_group_roles
 - Business rule enforcement at database level
 
@@ -231,14 +231,13 @@ const { data: userData } = await supabase
   .eq('auth_user_id', user.id)
   .single();
 
-// Check if user is group leader
-const { data: roles } = await supabase
-  .from('user_group_roles')
-  .select('group_roles(name)')
-  .eq('user_id', userData.id)
-  .eq('group_id', groupId);
+// Check if user has a specific permission in a group
+// Use the usePermissions() hook (client) or hasPermission() RPC (server)
+const { hasPermission } = usePermissions(groupId);
+const canManageMembers = hasPermission('manage_members');
 
-const isLeader = roles?.some(r => r.group_roles?.name === 'Group Leader');
+// Or via RPC for server-side checks:
+// const { data } = await supabase.rpc('has_permission', { p_group_id: groupId, p_permission: 'manage_members' });
 ```
 
 ---

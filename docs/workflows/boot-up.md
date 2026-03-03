@@ -91,6 +91,7 @@ Each phase completes fully before the next begins. No parallel execution.
 
 - **Close-down:** `docs/workflows/close-down.md`
 - **Feature development (TDD):** `docs/workflows/feature-development.md`
+- **Doc health check:** `docs/workflows/doc-health-check.md`
 - **Project status:** `PROJECT_STATUS.md`
 - **Sprint tracker:** `SPRINT.md`
 - **Agent contexts:** `docs/agents/contexts/`

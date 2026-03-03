@@ -123,7 +123,7 @@ CREATE POLICY "Members can view their groups"
   USING (
     id IN (
       SELECT group_id FROM group_memberships
-      WHERE user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
+      WHERE member_group_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
       AND status = 'active'
     )
   );
@@ -138,7 +138,7 @@ CREATE POLICY "Leaders can manage their groups"
       SELECT ugr.group_id FROM user_group_roles ugr
       JOIN group_roles gr ON ugr.group_role_id = gr.id
       WHERE ugr.user_id = (SELECT id FROM users WHERE auth_user_id = auth.uid())
-      AND gr.name = 'Group Leader'
+      AND gr.name = 'Steward'
     )
   );
 ```
@@ -203,11 +203,11 @@ BEGIN
   FROM user_group_roles ugr
   JOIN group_roles gr ON ugr.group_role_id = gr.id
   WHERE ugr.group_id = OLD.group_id
-  AND gr.name = 'Group Leader'
+  AND gr.name = 'Steward'
   AND ugr.id != OLD.id;
 
   IF remaining_leaders = 0 THEN
-    RAISE EXCEPTION 'Cannot remove the last Group Leader from the group';
+    RAISE EXCEPTION 'Cannot remove the last Steward from the group';
   END IF;
 
   RETURN OLD;
@@ -340,7 +340,7 @@ const { data } = await supabase
 const { data: memberships } = await supabase
   .from('group_memberships')
   .select('group_id')
-  .eq('user_id', userId);
+  .eq('member_group_id', userId);
 
 const groupIds = memberships?.map(m => m.group_id) || [];
 
@@ -388,7 +388,7 @@ const mapped = data.map(e => ({
 CREATE INDEX idx_[table]_[column] ON [table]([column]);
 
 -- Composite indexes (for common queries):
-CREATE INDEX idx_memberships_user_status ON group_memberships(user_id, status);
+CREATE INDEX idx_memberships_user_status ON group_memberships(member_group_id, status);
 
 -- Partial indexes (for filtered queries):
 CREATE INDEX idx_users_active ON users(is_active) WHERE is_active = true;

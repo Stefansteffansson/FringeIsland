@@ -255,14 +255,14 @@
 - **Database:** Table + RLS policies
 
 **Acceptance Criteria:**
-- [ ] Table `admin_audit_log` exists with columns: `id`, `actor_user_id`, `action`, `target`, `metadata` (JSONB), `created_at`
+- [ ] Table `admin_audit_log` exists with columns: `id`, `actor_group_id`, `action`, `target`, `metadata` (JSONB), `created_at`
 - [ ] RLS is enabled on the table
 - [ ] DeusEx members can SELECT all rows
 - [ ] DeusEx members can INSERT new rows
 - [ ] No UPDATE policy exists (immutable)
 - [ ] No DELETE policy exists (immutable)
 - [ ] Non-admin authenticated users cannot SELECT, INSERT, UPDATE, or DELETE
-- [ ] `actor_user_id` references `users(id)`
+- [ ] `actor_group_id` references `groups(id)`
 - [ ] `created_at` defaults to `NOW()`
 
 **Examples:**
@@ -643,7 +643,7 @@
 - [ ] Group picker shows all engagement groups (excludes personal and system groups)
 - [ ] Admin can search/filter groups in the picker
 - [ ] On select group + confirm: inserts `group_memberships` row per user with `status = 'invited'`
-- [ ] `added_by_user_id` = admin's user ID
+- [ ] `added_by_group_id` = admin's personal group ID
 - [ ] Users already in the group (any status) are skipped with a note
 - [ ] After invite: success toast ("X users invited to [Group Name]")
 - [ ] If some skipped: toast includes note ("Y already in group, X invited")
@@ -685,7 +685,7 @@
 - [ ] Admin can search/filter groups in the picker
 - [ ] ConfirmModal after group selection: "Directly add X users to [Group Name]? They will not need to accept an invitation."
 - [ ] On confirm: inserts `group_memberships` row per user with `status = 'active'`
-- [ ] `added_by_user_id` = admin's user ID
+- [ ] `added_by_group_id` = admin's personal group ID
 - [ ] Default "Member" role assigned automatically
 - [ ] Users already active in the group are skipped with a note
 - [ ] After join: success toast ("X users added to [Group Name]")

@@ -117,11 +117,11 @@ For every table affected by the change:
 ### 1. Missing SELECT Policy for RETURNING
 **Symptom:** INSERT appears to fail but actually succeeds.
 **Cause:** PostgREST INSERT...RETURNING triggers SELECT policy. Missing creator check in SELECT.
-**Fix:** Add `OR created_by_user_id = get_current_user_profile_id()` to SELECT policy.
+**Fix:** Add `OR created_by_group_id = get_current_personal_group_id()` to SELECT policy.
 
 ### 2. Stale State After Role Changes
 **Symptom:** UI buttons still show/hide incorrectly after role assignment.
-**Cause:** Only member list refreshed, not `isLeader` / `userRoles` state.
+**Cause:** Only member list refreshed, not `permissions` / `userRoles` state.
 **Fix:** Update ALL related state in `refetchMembers()`.
 
 ### 3. Nested RLS Recursion
