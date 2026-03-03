@@ -76,7 +76,7 @@ Learning isn't "taking courses" - it's **embarking on journeys**:
 
 2. **Group-Based Learning**
    - Travel solo, in pairs, or as a group
-   - Roles: Leaders, Travel Guides, Members
+   - Roles: Stewards, Guides, Members, Observers
    - Built-in accountability and support
 
 3. **Edutainment First**
@@ -166,9 +166,9 @@ Start with core experiences, add complexity only when needed.
 
 **NOT in v1.0:**
 - User-created journeys (Phase 2)
-- Advanced communication (forums, messaging)
 - Dynamic/adaptive content (Phase 3)
 - AI-powered personalization (Phase 3)
+- See [DEFERRED_DECISIONS.md](planning/DEFERRED_DECISIONS.md) for full list and rationale
 
 **Success Criteria for v1.0:**
 - 100+ users actively using the platform

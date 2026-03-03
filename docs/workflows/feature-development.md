@@ -8,11 +8,22 @@
 
 ## Overview
 
-Every new feature follows seven phases with **hard STOP gates** between them. No phase may begin until the previous phase's gate is passed. This prevents schema-first design and ensures TDD compliance.
+Every new feature follows eight phases (0–7) with **hard STOP gates** between them. No phase may begin until the previous phase's gate is passed. This prevents schema-first design and ensures TDD compliance.
 
 This document is the single source of truth for the development process. It combines the phase structure (what order) with the TDD reference material (how to implement each phase).
 
 **⛔ CRITICAL: Every STOP gate is a USER CHECKPOINT.** The AI must present what was accomplished and ask the user for permission to proceed. These are conversations with the user, not internal AI checkpoints. Never proceed to the next phase without explicit user approval.
+
+| Phase | Name | What it means |
+|-------|------|---------------|
+| 0 | Feature Context | Confirm the feature is in scope; create/update the feature doc |
+| 1 | Behaviors | Write behavior specs — the rules this feature must obey |
+| 2 | Write Tests | Write integration tests that verify those behaviors |
+| 3 | Run Tests RED | Run the tests — they MUST fail (nothing is built yet) |
+| 4 | Design | Design schema, RLS, and data flow to make the tests pass |
+| 5 | Implement GREEN | Build it (database + UI + wiring) until all tests pass |
+| 6 | Verify | QA — run full suite twice, check security, smoke test |
+| 7 | Document | Update PROJECT_STATUS, CHANGELOG, feature docs, behavior specs |
 
 ```
 Phase 0: Feature Context ──GATE──▶ Phase 1: Behaviors ──GATE──▶ Phase 2: Write Tests
@@ -276,7 +287,7 @@ describe('B-[DOMAIN]-[NUM]: [Behavior Name]', () => {
 **Actions:**
 1. Update behavior specs — mark as verified with test links
 2. Update `PROJECT_STATUS.md`
-3. Update `docs/planning/NEXT.md` if priorities changed
+3. Update `SPRINT.md` — tick off completed steps, update TDD phase, update "Next Sprint" if priorities shifted
 4. Update `CHANGELOG.md` if version bumped
 5. Update `CLAUDE.md` if new patterns established
 6. Update feature doc with implementation details

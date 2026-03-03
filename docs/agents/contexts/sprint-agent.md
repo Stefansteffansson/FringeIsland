@@ -22,6 +22,7 @@ I am the Sprint Agent. I keep the team moving with purpose. I plan what to build
 
 ## Quick Reference
 
+- **Active sprint:** `SPRINT.md` (root — TDD phase, step plan, next sprint)
 - **Project status:** `PROJECT_STATUS.md` (root)
 - **Roadmap:** `docs/planning/ROADMAP.md`
 - **Product spec:** `docs/planning/PRODUCT_SPEC.md`
@@ -217,7 +218,8 @@ For each entry in MEMORY.md:
 
 #### 5. Update Project Documentation
 
-- `PROJECT_STATUS.md` — Always update (current focus, active tasks, last session)
+- `SPRINT.md` — Always update (tick off steps, advance TDD phase, update next sprint)
+- `PROJECT_STATUS.md` — Always update (stats, last session summary)
 - `docs/planning/ROADMAP.md` — Update if phase progress changed
 - `CHANGELOG.md` — Update if version bumped
 - Create session bridge in `docs/planning/sessions/` if significant work
@@ -286,7 +288,7 @@ Last curated: 2026-02-13 (initial)
 
 - **Boot-up workflow:** `docs/workflows/boot-up.md`
 - **Close-down workflow:** `docs/workflows/close-down.md`
-- **TDD workflow:** `docs/workflows/tdd-workflow.md`
+- **TDD + feature workflow:** `docs/workflows/feature-development.md`
 - **Feature development workflow:** `docs/workflows/feature-development.md`
 - **Session bridges:** `docs/planning/sessions/`
 - **Deferred decisions:** `docs/planning/DEFERRED_DECISIONS.md`

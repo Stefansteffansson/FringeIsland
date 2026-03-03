@@ -461,14 +461,14 @@ The schema allows any group to join any group — nothing prevents A → B → A
 - Skill development tracking
 - Comparison to peers (opt-in)
 
-**Travel Guides:**
+**Guides:**
 - Member progress overview
 - Drop-off points
 - Completion rates by journey
 - Engagement metrics
 - Feedback effectiveness
 
-**Group Leaders:**
+**Stewards:**
 - Group activity trends
 - Member engagement
 - Journey enrollment patterns
@@ -716,11 +716,12 @@ When deferring a new decision:
 
 ---
 
-**Document Version**: 1.3
-**Last Updated**: February 16, 2026 (v0.2.17)
+**Document Version**: 1.4
+**Last Updated**: February 28, 2026 (v0.2.36)
 **Next Review**: Quarterly or as deferred items are implemented
 
 **Recent Updates**:
+- v0.2.36: Added lifecycle sprint deferrals (D-R1 through D-R5) from `lifecycle-roadmap-decisions.md` — self-service platform exit, configurable timeouts, GDPR content erasure all explicitly deferred.
 - v0.2.17: Marked Permission Inheritance as RESOLVED (D5/D7/D10/D12). Marked Subgroups design as RESOLVED (D7/D9/D10/D11/D15). Marked Group-to-Group Relationships design as RESOLVED (D7/D11/D21). Updated Notifications (IMPLEMENTED v0.2.14), Forum (PARTIALLY IMPLEMENTED v0.2.14), DM (IMPLEMENTED v0.2.15).
 - v0.2.10: No new deferred decisions (journey enrollment completed as planned)
 - v0.2.9: Error handling implemented (was not deferred, added proactively)

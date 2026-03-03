@@ -23,32 +23,15 @@
 
 ---
 
-## Current State — What's Broken
+## State at Time of Analysis (Feb 28, 2026) — ALL FIXED
 
-### Security Gap: Non-Public Journey Access
-- `journeys_select_published` RLS only checks `is_published = true` — NOT `is_public`
-- Anyone who knows a non-public journey's UUID can read it and enroll
-- `EnrollmentModal` has zero `is_public` gating
-- **This must be fixed before any Non-Public Journey feature (including freezing) is meaningful**
+The following gaps were identified during the analysis session. All were fixed across Sprints 0–4.
 
-### Missing Schema: `groups.status` Column
-- Leave-group needs `active/closed/archived/suspended` — column doesn't exist
-- No migration written yet
-
-### Wrong Ownership: Predefined Journeys
-- 8 predefined journeys owned by a random user's personal group (legacy seed)
-- No "FringeIsland Journeys" group exists
-- Until fixed, the distinction between "platform journey" and "group non-public journey" is untestable
-
-### Frozen Enrollment is Cosmetic Only
-- `'frozen'` exists in the CHECK constraint but nothing sets it
-- JourneyPlayer doesn't check for frozen status — a frozen user can still play
-- No RLS enforcement on frozen enrollments
-
-### Smart Notifications Don't Exist
-- Leave-group Track 1 requires actionable notifications (Yes/No buttons)
-- Current notification system (v0.2.14) has 7 passive types only
-- No `action_type`, `action_data`, or `action_taken` columns
+- ~~Security Gap: Non-Public Journey Access~~ → Fixed in Sprint 0 (v0.2.32)
+- ~~Missing Schema: `groups.status` Column~~ → Fixed in Sprint 1 (v0.2.33)
+- ~~Wrong Ownership: Predefined Journeys~~ → Fixed in Sprint 1 (v0.2.33)
+- ~~Frozen Enrollment is Cosmetic Only~~ → Fixed in Sprint 0 (v0.2.32)
+- ~~Smart Notifications Don't Exist~~ → Fixed in Sprint 3 (v0.2.35)
 
 ---
 
@@ -64,23 +47,23 @@
 
 ### C. Journey Created & Enrolled
 `Journey created (created_by_group_id) -> published -> user enrolls (personal group) or Steward enrolls group -> JourneyPlayer -> progress tracked -> completed`
-**Status: Working, but non-public access control is broken (see above).**
+**Status: ✅ WORKING.** Non-public access control fixed in Sprint 0 (v0.2.32).
 
 ### D. Member Leaves Engagement Group
 `Confirmation -> membership deleted -> roles cascade -> non-public enrollments frozen -> forum anonymised -> Steward(s) notified`
-**Status: NOT IMPLEMENTED. Spec complete. Multiple schema gaps block it.**
+**Status: ✅ IMPLEMENTED.** Sprint 2 (v0.2.34).
 
 ### E. Sole Steward Leaves
 `Track 1: Nominate successor (ranked list, sequential invitations, smart notifications) OR Track 2: Hand to DeusEx immediately -> pending invitations transferred -> exit completes`
-**Status: NOT IMPLEMENTED. Depends on smart notifications for Track 1.**
+**Status: ✅ IMPLEMENTED.** Track 2 in Sprint 2 (v0.2.34), Track 1 in Sprint 3 (v0.2.35).
 
 ### F. Last Member Leaves (Group Closure)
 `groups.status -> 'closed' -> all enrollments frozen -> non-public journeys transferred to DeusEx -> DeusEx notified`
-**Status: NOT IMPLEMENTED. Depends on groups.status column.**
+**Status: ✅ IMPLEMENTED.** Sprint 2 (v0.2.34).
 
 ### G. User Leaves Platform
 `Cascade leave from all groups (applying Track D/E per group) -> account decommission`
-**Status: NOT IMPLEMENTED. Admin-only deletion exists. No self-service exit.**
+**Status: ✅ IMPLEMENTED.** Admin-assisted cascade exit in Sprint 4 (v0.2.36). Self-service deferred.
 
 ### H. Group Joins Another Group
 `Schema supports it. has_permission() works. Tests exist. NO UI. No circularity prevention trigger.`

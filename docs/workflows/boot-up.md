@@ -10,7 +10,7 @@
 | File | EXACT Path | Required? |
 |------|-----------|-----------|
 | **Project Status** | `PROJECT_STATUS.md` | Always |
-| **What's Next** | `docs/planning/NEXT.md` | Always |
+| **Sprint Tracker** | `SPRINT.md` | Always |
 | **Roadmap** | `docs/planning/ROADMAP.md` | Always |
 | **Lifecycle Decisions** | `docs/planning/lifecycle-roadmap-decisions.md` | If sprinting |
 | **Vision** | `docs/VISION.md` | Optional |
@@ -34,7 +34,8 @@ Booting up FringeIsland v[VERSION]
 Current focus: [from PROJECT_STATUS.md]
 Active tasks: [list]
 Blockers: [None / list]
-Next priorities: [from NEXT.md]
+Active sprint: [work stream name + TDD phase from SPRINT.md]
+Next sprint: [from SPRINT.md "Next Sprint" section]
 ```
 
 ### 2. Check Git Status
@@ -80,7 +81,7 @@ Present ready state and suggest work items from PROJECT_STATUS.md. Remind: TDD f
 **Do NOT:** launch parallel agents, skip planning for "simple" features, or proceed without user approval.
 
 **TDD workflow reminder (Phases 0-7):**
-0. Verify feature context → 1. Behavior spec → 2. Failing tests (RED) → 3. Design → 4. Implement (GREEN) → 5. UI → 6. Verify → 7. Document
+0. Feature context → 1. Behaviors → 2. Write tests → 3. Run tests RED → 4. Design → 5. Implement GREEN → 6. Verify → 7. Document
 
 Each phase completes fully before the next begins. No parallel execution.
 
@@ -91,5 +92,5 @@ Each phase completes fully before the next begins. No parallel execution.
 - **Close-down:** `docs/workflows/close-down.md`
 - **Feature development (TDD):** `docs/workflows/feature-development.md`
 - **Project status:** `PROJECT_STATUS.md`
-- **What's next:** `docs/planning/NEXT.md`
+- **Sprint tracker:** `SPRINT.md`
 - **Agent contexts:** `docs/agents/contexts/`

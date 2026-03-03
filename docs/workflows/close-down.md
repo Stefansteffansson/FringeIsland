@@ -10,7 +10,7 @@
 | File | EXACT Path | When to Update |
 |------|-----------|----------------|
 | **Project Status** | `PROJECT_STATUS.md` | Always |
-| **What's Next** | `docs/planning/NEXT.md` | Always |
+| **Sprint Tracker** | `SPRINT.md` | Always |
 | **Roadmap** | `docs/planning/ROADMAP.md` | If phase milestone hit |
 | **Product Spec** | `docs/planning/PRODUCT_SPEC.md` | If scope changed |
 | **Deferred Decisions** | `docs/planning/DEFERRED_DECISIONS.md` | If new deferrals |
@@ -44,7 +44,7 @@ For each domain worked in, append discoveries to `docs/agents/learnings/[domain]
 
 **A. PROJECT_STATUS.md (always):** Update date, focus, active tasks, test counts, last session summary, next priorities.
 
-**B. NEXT.md (always):** Update `docs/planning/NEXT.md` with current priorities.
+**B. SPRINT.md (always):** Update `SPRINT.md` — tick off completed sprint steps, update active TDD phase, update "Next Sprint" if priorities shifted.
 
 **C. Behavior specs (if tested):** Mark behaviors as verified in `docs/specs/behaviors/[domain].md` with test results and checked acceptance criteria.
 
@@ -95,7 +95,7 @@ Summary: [what was done]
 Test status: [X passing / Y failing]
 Updated: [list of docs updated]
 Git: [commit hash / not committed]
-Next priorities: [from NEXT.md]
+Sprint status: [active work stream + phase + steps completed/remaining, from SPRINT.md]
 ```
 
 ---
@@ -105,5 +105,5 @@ Next priorities: [from NEXT.md]
 - **Boot-up:** `docs/workflows/boot-up.md`
 - **Feature development (TDD):** `docs/workflows/feature-development.md`
 - **Project status:** `PROJECT_STATUS.md`
-- **What's next:** `docs/planning/NEXT.md`
+- **Sprint tracker:** `SPRINT.md`
 - **Session bridges:** `docs/planning/sessions/`

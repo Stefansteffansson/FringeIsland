@@ -1,37 +1,14 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-03-03 (Architecture Baseline + live DB validation)
+**Last Updated:** 2026-03-03 (Documentation restructuring — overlap elimination + SPRINT.md)
 **Current Version:** 0.2.36
 **Active Branch:** main
 
 ---
 
-## What We're Working On NOW
+## Active Sprint
 
-**Current Focus:** ALL 5 LIFECYCLE SPRINTS COMPLETE — Phase 1.6 Polish & Launch is next
-
-**Key Docs:**
-- `docs/planning/lifecycle-roadmap-decisions.md` — **Single source of truth** for sprint structure and decisions
-- `docs/features/implemented/platform-exit.md` — Sprint 4 feature doc (COMPLETE)
-- `docs/specs/behaviors/platform-exit.md` — B-EXIT-001 through B-EXIT-004
-
-**Active Tasks:**
-- [x] **Sprint 4 — Platform Exit** ✅ DONE — admin_exit_user_from_platform RPC, admin UI button, 10 new tests, v0.2.36
-- [x] **Sprint 3 — Smart Notifications + Steward Nomination** ✅ DONE — F3 (schema) + F3-UI (actionable bell) + F3-Handler (RPC) + L4 (nomination flow), 19 new tests, v0.2.35
-- [x] **Sprint 2 — Leave Group Core** ✅ DONE — L1 + L2 + L3, 17 new tests, v0.2.34
-- [x] **Sprint 1 — Foundation Schema** ✅ DONE — F1 + F2, 19 new tests, v0.2.33
-- [x] **Sprint 0 — Security Fixes** ✅ DONE — S1-S4, 19 new tests, v0.2.32
-
-**Blocked/Waiting:**
-- None
-
-**Previous Features (COMPLETE):**
-- [x] **Sprint 0 — Security Fixes** ✅ v0.2.32
-- [x] **Personal Group RLS Visibility Fix** ✅ v0.2.31
-- [x] **Display Name / Nickname System** ✅ v0.2.30
-- [x] **Performance Optimization** ✅ All tiers (1A-3B)
-- [x] **DeusEx Admin Foundation** ✅ v0.2.21-v0.2.25
-- [x] **D15 Universal Group Pattern** ✅ v0.2.29
+See `SPRINT.md` for current work streams, TDD phase, and sprint step plan.
 
 ---
 
@@ -80,7 +57,8 @@
 - `CLAUDE.md` - Technical patterns and current implementation (auto-loaded)
 - `README.md` - Project overview and setup
 - `CHANGELOG.md` - Version history
-- `docs/planning/ROADMAP.md` - **Phase progress, priorities, what's next**
+- `SPRINT.md` - **Active sprint, TDD phase, and next sprint backlog**
+- `docs/planning/ROADMAP.md` - **Phase progress and milestone history**
 - `docs/planning/DEFERRED_DECISIONS.md` - **Why we didn't build X (prevents feature creep)**
 
 **For Specific Work:**
@@ -90,7 +68,7 @@
 - **Admin feature (complete):** `docs/features/implemented/deusex-admin-foundation.md`
 - **Lifecycle roadmap:** `docs/planning/lifecycle-roadmap-decisions.md` ← **NEW** (5 sprints, 5 decisions)
 - **Architecture baseline:** `docs/architecture/ARCHITECTURE_BASELINE.md` ← **NEW** (6-phase analysis, live-validated)
-- **Architecture decisions:** `docs/architecture/ARCHITECTURE.md`
+- **Architecture decisions:** `docs/architecture/ARCHITECTURE_OVERVIEW.md`
 - **Planning context:** `docs/planning/ROADMAP.md` + `docs/planning/DEFERRED_DECISIONS.md`
 
 **Agent System (two-tier, 7 agents — see `docs/agents/README.md`):**
@@ -102,18 +80,20 @@
 
 ## Last Session Summary
 
-**Date:** 2026-03-03 (Architecture Baseline + live DB validation)
+**Date:** 2026-03-03 (Documentation restructuring — overlap elimination + SPRINT.md)
 **Summary:**
-- Created comprehensive 6-phase Architecture Baseline (`docs/architecture/ARCHITECTURE_BASELINE.md`, 1,456 lines)
-- Phase 1: Application layer (31 routes, component hierarchy, state management)
-- Phase 2: Database layer (19 tables, 27 RPCs, 27 triggers, 55 RLS policies, 32 indexes)
-- Phase 3: API boundary (~130 Supabase calls, 2 API routes, 5 Realtime channels)
-- Phase 4: Cross-layer journey traces (3 flows with mermaid sequence diagrams)
-- Phase 5: Architectural observations (4 coupling hotspots, 7 SP boundaries, 6 risks)
-- Phase 6: BDD connection points (8 Gherkin scenarios, 6 evolution candidates)
-- Validated live Supabase database against migration files — zero schema drift
-- 11 documentation corrections applied (2 missing RPCs, 1 missing trigger, count errors)
-- Schema Drift Report added as §2.10
+- Comprehensive doc restructuring: gave each file ONE job, eliminated overlap across 16 files
+- README.md rewritten (403→155 lines): GitHub landing page only, removed duplicated roadmap/schema/features
+- INDEX.md rewritten (249→128 lines): navigation hub only, removed status/tips sections
+- Created SPRINT.md (new operational heartbeat): multi-stream TDD phase tracking, replaces NEXT.md
+- Deleted NEXT.md (fully absorbed by SPRINT.md)
+- Slimmed PROJECT_STATUS.md: removed "Working On NOW" + "Next Priorities" sections → pointer to SPRINT.md
+- Fixed stale terminology across 4 planning docs: Group Leader→Steward, Travel Guide→Guide (15+ edits)
+- Fixed TDD phase numbering mismatch between CLAUDE.md, boot-up.md vs canonical feature-development.md
+- Added phase summary table to feature-development.md
+- Updated 9 files with NEXT.md→SPRINT.md references (CLAUDE.md, boot-up, close-down, feature-dev, sprint-agent, INDEX, ROADMAP, MEMORY.md)
+- Fixed lifecycle-roadmap-decisions.md: all 5 tracks marked ✅ IMPLEMENTED (were misleadingly "NOT IMPLEMENTED")
+- Fixed PRODUCT_SPEC.md Non-Goals (messaging IS implemented) and Iteration Plan (Phase 1.5→Phase 2)
 
 **Previous Sessions:**
 - 2026-03-03: Architecture Baseline + live DB validation (zero drift, 11 corrections)
@@ -138,28 +118,8 @@
 
 ---
 
-## Next Priorities
+## Known Issues
 
-**See `docs/features/implemented/performance-optimization.md` for full plan**
-
-**Display Name / Nickname System COMPLETE** ✅
-
-**Sprint 1 — Foundation Schema COMPLETE** ✅ (v0.2.33)
-
-**Sprint 2 — Leave Group Core COMPLETE** ✅ (v0.2.34)
-
-**Sprint 3 — Smart Notifications + Steward Nomination COMPLETE** ✅ (v0.2.35)
-
-**Sprint 4 — Platform Exit COMPLETE** ✅ (v0.2.36)
-
-**ALL 5 LIFECYCLE SPRINTS COMPLETE.** Full user/group lifecycle is now implemented.
-
-**Next — Phase 1.6 Polish and Launch:**
-1. Mobile responsiveness audit
-2. User onboarding flow
-3. ~~E2E tests (Playwright)~~ ✅ Setup complete (7 starter tests), workflow integration deferred
-
-**Known Issues:**
 - **Orphan groups after hard delete** — groups lose their last Steward (no admin, no one can manage). Needs stewardship transfer UI.
 - `app/admin/fix-orphans/page.tsx` uses `alert()` (should use ConfirmModal)
 - Hydration mismatch warning in `AuthForm.tsx:60` (cosmetic, non-blocking)
@@ -168,9 +128,7 @@
 - `signOut({ scope: 'local' })` broken in supabase-js 2.91.0 — makes server call despite docs saying local-only
 - Console 403 errors on force-logout redirect (browser-level network logs, not visible to end users)
 
-**What We're NOT Building Yet:**
-- See `docs/planning/DEFERRED_DECISIONS.md` for rationale on deferred features
-- Prevents scope creep and keeps focus on MVP
+**What We're NOT Building Yet:** See `docs/planning/DEFERRED_DECISIONS.md`
 
 ---
 
@@ -197,4 +155,4 @@
 
 ---
 
-**This file is the entry point for AI assistants. Update after each significant session.**
+**Update this file after each significant session.**

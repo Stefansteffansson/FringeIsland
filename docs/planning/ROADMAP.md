@@ -2,7 +2,7 @@
 
 **Version:** 2.0
 **Last Updated:** February 28, 2026
-**Links:** [Vision](../VISION.md) | [Product Spec](PRODUCT_SPEC.md) | [Features](../features/) | [What's Next](NEXT.md)
+**Links:** [Vision](../VISION.md) | [Product Spec](PRODUCT_SPEC.md) | [Features](../features/) | [Sprint Tracker](../../SPRINT.md)
 
 This document defines **WHEN** features are built. See [Product Spec](PRODUCT_SPEC.md) for **WHAT** and [Vision](../VISION.md) for **WHY**. For current status, see [PROJECT_STATUS.md](../../PROJECT_STATUS.md). For version history, see [CHANGELOG.md](../../CHANGELOG.md).
 

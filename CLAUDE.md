@@ -21,7 +21,7 @@ FringeIsland is an edutainment platform for group-based personal development thr
 **Trigger:** "boot up", "start session", or any variation
 **Action:** Read and follow `docs/workflows/boot-up.md` EXACTLY — use EXACT file paths from its table
 
-Key files the workflow reads: `PROJECT_STATUS.md`, `docs/planning/NEXT.md`, `docs/planning/ROADMAP.md`
+Key files the workflow reads: `PROJECT_STATUS.md`, `SPRINT.md`, `docs/planning/ROADMAP.md`
 
 **If user skips boot-up** (jumps to a task): remind them and offer to run it first.
 
@@ -30,7 +30,7 @@ Key files the workflow reads: `PROJECT_STATUS.md`, `docs/planning/NEXT.md`, `doc
 **Trigger:** "thanks", "done", "that's all", wrapping up, or after completing major work
 **Action:** Proactively suggest close-down, then follow `docs/workflows/close-down.md` EXACTLY
 
-Must update: `PROJECT_STATUS.md` (always), `docs/planning/NEXT.md` (always), `docs/planning/ROADMAP.md` (if significant progress)
+Must update: `PROJECT_STATUS.md` (always), `SPRINT.md` (always), `docs/planning/ROADMAP.md` (if significant progress)
 
 ### Feature Work — Hand off to Sprint Agent
 
@@ -56,7 +56,7 @@ When user selects feature work after boot-up, load `docs/agents/contexts/sprint-
 
 **Canonical workflow:** `docs/workflows/feature-development.md` (8 phases, 0–7, with hard STOP gates)
 
-**Phase summary:** 0-Verify context → 1-Behavior specs → 2-Failing tests → 3-Design → 4-Database → 5-UI → 6-Verify GREEN → 7-Document
+**Phase summary:** 0-Feature context → 1-Behaviors → 2-Write tests → 3-Run tests RED → 4-Design → 5-Implement GREEN → 6-Verify → 7-Document
 
 ### Database Migrations (correct commands)
 
@@ -88,7 +88,7 @@ bash supabase-cli.sh migration list
 | What | Where |
 |------|-------|
 | Current state & blockers | `PROJECT_STATUS.md` |
-| Quick "what's next" | `docs/planning/NEXT.md` |
+| Active sprint + what's next | `SPRINT.md` |
 | Phase roadmap | `docs/planning/ROADMAP.md` |
 | Product scope (what/why) | `docs/planning/PRODUCT_SPEC.md` |
 | Vision | `docs/VISION.md` |

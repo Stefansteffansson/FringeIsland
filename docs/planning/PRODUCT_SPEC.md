@@ -46,7 +46,7 @@ Vision (Why) → Product Spec (What) → Roadmap (When) → Features (How) → B
 - Goal: Follow structured journeys with group support
 - Success: Completes journeys, feels growth, stays engaged
 
-### Secondary Persona: Group Leader (Marcus)
+### Secondary Persona: Steward (Marcus)
 **"I want to develop my team together."**
 
 - Age: 30-50
@@ -55,13 +55,13 @@ Vision (Why) → Product Spec (What) → Roadmap (When) → Features (How) → B
 - Goal: Guide group through relevant development journeys
 - Success: Team completes journeys together, improves cohesion
 
-### Tertiary Persona: Travel Guide (future)
+### Tertiary Persona: Guide (future)
 **"I want to facilitate group learning experiences."**
 
 - Age: 25-55
 - Context: Coach, facilitator, experienced practitioner
 - Pain: Limited tools for guiding group journeys
-- Goal: Co-facilitate journeys with group leaders
+- Goal: Co-facilitate journeys with Stewards
 - Success: Groups complete journeys with guidance (Phase 2)
 
 ---
@@ -81,9 +81,10 @@ Vision (Why) → Product Spec (What) → Roadmap (When) → Features (How) → B
 - Social elements integrated, not tacked on
 
 ### 3. Roles Drive Capabilities
-- Leaders: Manage group, invite members, assign roles, enroll group
+- Stewards: Manage group, invite members, assign roles, enroll group
 - Members: Participate, complete content, leave group
-- Guides (future): Co-facilitate, mentor, support
+- Guides: Co-facilitate, mentor, support
+- Observers: View content without participating
 
 ### 4. Simplicity Over Features
 - Clear navigation, minimal clicks
@@ -138,7 +139,7 @@ Vision (Why) → Product Spec (What) → Roadmap (When) → Features (How) → B
 
 **Features:**
 - Individual enrollment (solo learning)
-- Group enrollment (group leaders only)
+- Group enrollment (Stewards only)
 - Enrollment status tracking
 - "My Journeys" page showing enrolled journeys
 - Separate tabs for individual vs. group journeys
@@ -161,12 +162,12 @@ Vision (Why) → Product Spec (What) → Roadmap (When) → Features (How) → B
 
 **Acceptance Criteria:**
 - Any authenticated user can create groups
-- Creator automatically becomes Group Leader
+- Creator automatically becomes Steward
 - Group settings: visibility, member list display
 - Groups visible on "My Groups" page
 
 #### 5. Member Management
-**User Story:** As a group leader, I can invite, accept, and remove members so that I can build my group.
+**User Story:** As a Steward, I can invite, accept, and remove members so that I can build my group.
 
 **Features:**
 - Invite members by email (leaders only)
@@ -183,18 +184,18 @@ Vision (Why) → Product Spec (What) → Roadmap (When) → Features (How) → B
 - Last leader protection (cannot remove last leader)
 
 #### 6. Role Management
-**User Story:** As a group leader, I can assign roles to members so that I can organize my group effectively.
+**User Story:** As a Steward, I can assign roles to members so that I can organize my group effectively.
 
 **Features:**
-- Assign "Group Leader" role to members
+- Assign roles (Steward, Guide, Member, Observer) to members
 - Remove roles from members
-- Multiple users can have Group Leader role
-- Role-based permissions (leaders can edit groups, invite, assign roles)
+- Multiple users can have Steward role
+- RBAC: 4 roles, 31 permissions, `has_permission()` SQL function
 
 **Acceptance Criteria:**
-- Only leaders can assign/remove roles
-- Database trigger prevents removing last leader
-- UI hides role removal when last leader
+- Only Stewards can assign/remove roles
+- Database trigger prevents removing last Steward
+- UI hides role removal when last Steward
 - Immediate UI updates after role changes
 
 #### 7. Navigation & Layout
@@ -229,7 +230,7 @@ The following features were originally out of scope for v1.0 but have been imple
 
 **Phase 2+ Features:**
 - User-created journeys and journey marketplace
-- Travel Guide role (full implementation)
+- Guide role (full implementation)
 - Advanced group features (subgroups/groups-join-groups UI)
 - Completion certificates
 - Activity feeds
@@ -318,7 +319,7 @@ The following features were originally out of scope for v1.0 but have been imple
 ### Flow 2: Creating and Building a Group
 1. User clicks "Create Group"
 2. Fills form: name, description, visibility settings
-3. Group created, user becomes Group Leader
+3. Group created, user becomes Steward
 4. Invited to add members via email
 5. Members receive invitations, accept/decline
 6. Group is ready for journey enrollment
@@ -332,7 +333,7 @@ The following features were originally out of scope for v1.0 but have been imple
 6. Enrollment created, journey appears in "My Journeys"
 
 ### Flow 4: Enrolling a Group in a Journey
-1. Group Leader browses journey catalog
+1. Steward browses journey catalog
 2. Views journey details
 3. Clicks "Enroll in Journey"
 4. Selects "Enroll as Group" → picks their group
@@ -340,10 +341,10 @@ The following features were originally out of scope for v1.0 but have been imple
 6. All group members see journey in "My Journeys" under "Group Journeys" tab
 
 ### Flow 5: Managing Group Roles
-1. Group Leader views group details page
+1. Steward views group details page
 2. Sees member list with current roles
 3. Clicks "Manage Roles" for a member
-4. Assigns/removes "Group Leader" role
+4. Assigns/removes roles
 5. UI updates immediately
 6. Member gains/loses leader capabilities
 
@@ -426,10 +427,10 @@ The following features were originally out of scope for v1.0 but have been imple
 - No advanced analytics (v1.0)
 
 ### Not a Social Network
-- No news feed (v1.0)
-- No likes/comments (v1.0)
+- No news feed
+- No likes/reactions on posts (v1.0)
 - No friend connections (only group memberships)
-- No messaging (v1.0 - deferred to Phase 1.5)
+- ✅ Group forums and direct messaging implemented (v0.2.14–v0.2.15)
 
 ### Not a Marketplace (Yet)
 - No paid journeys (v1.0)
@@ -453,8 +454,8 @@ The following features were originally out of scope for v1.0 but have been imple
 1. Gather user feedback (surveys, interviews, usage data)
 2. Validate core assumptions (journey metaphor, group learning)
 3. Identify top-requested features
-4. Prioritize Phase 1.5 features based on data
-5. Update this spec for v1.5 / v2.0
+4. Prioritize Phase 2 features based on data
+5. Update this spec for v2.0
 
 **Key Questions to Answer:**
 - Does the journey metaphor resonate with users?
@@ -472,7 +473,7 @@ The following features were originally out of scope for v1.0 but have been imple
 - **[Deferred Decisions](DEFERRED_DECISIONS.md)** - What we're NOT building (and why)
 - **[Feature Docs](../features/implemented/)** - Detailed feature specifications
 - **[Behavior Specs](../specs/behaviors/)** - Rules that govern features
-- **[Architecture](../architecture/ARCHITECTURE.md)** - Technical design
+- **[Architecture](../architecture/ARCHITECTURE_OVERVIEW.md)** - Technical design
 
 ---
 

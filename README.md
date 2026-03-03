@@ -1,253 +1,39 @@
 # FringeIsland
 
-**Version:** 0.2.10
-**Last Updated:** February 9, 2026
+**Version:** 0.2.36 | **Updated:** March 2026 | **Phase 1:** 95% complete
 
-Educational and training platform for personal development, leadership training, and team/organizational development.
+An edutainment platform for group-based personal development through structured learning journeys. Users travel solo or in groups on predefined journeys guided by role-based experiences — Stewards lead, Guides facilitate, Members participate, and Observers watch.
 
----
-
-## 🚀 Current Status
-
-**Phase 1: Foundation - 85% Complete**
-
-**Testing:** 29 integration tests, 29 passing (100% coverage on critical behaviors)
-
-### ✅ Completed Features
-
-#### Authentication & User Management
-- ✅ User signup with email validation
-- ✅ User login with session management
-- ✅ Protected routes with middleware
-- ✅ AuthContext for global auth state
-- ✅ Logout functionality
-
-#### Profile Management
-- ✅ View user profile (`/profile`)
-- ✅ Edit profile (name, bio) (`/profile/edit`)
-- ✅ Avatar upload with image optimization
-- ✅ Profile picture display throughout app
-
-#### Group Management
-- ✅ Create new groups (`/groups/create`)
-- ✅ View all user's groups (`/groups`)
-- ✅ View group details (`/groups/[id]`)
-- ✅ **Edit group settings** (`/groups/[id]/edit`) - v0.2.7
-- ✅ Public/private group settings
-- ✅ Custom group labels
-- ✅ Member list visibility controls
-
-#### Member Management
-- ✅ **Invite members by email** (leaders only)
-- ✅ **Accept/decline invitations** (`/invitations`)
-- ✅ **Leave groups** (all members)
-- ✅ **Remove members** (leaders only)
-- ✅ **Last leader protection** (database trigger)
-- ✅ Real-time member count updates
-- ✅ Smooth animations (no browser alerts)
-
-#### Role Management (v0.2.6.2)
-- ✅ **Assign roles to members** (via AssignRoleModal)
-- ✅ **Promote to Group Leader**
-- ✅ **Remove roles** with last leader protection
-- ✅ **Multiple roles per member**
-- ✅ Real-time role updates in UI
-
-#### Journey System (NEW in v0.2.8) 🎉
-- ✅ **Journey catalog page** (`/journeys`)
-  - Search by title and description
-  - Filter by difficulty (beginner, intermediate, advanced)
-  - Filter by topic/tags
-  - Responsive grid layout
-  - Results counter
-- ✅ **Journey detail page** (`/journeys/[id]`)
-  - Beautiful hero section with gradient
-  - Two-tab interface (Overview & Curriculum)
-  - Expandable step list with details
-  - Sticky sidebar with metadata
-  - Breadcrumb navigation
-- ✅ **8 predefined journeys**
-  - Leadership Fundamentals (180 min, Beginner)
-  - Effective Communication Skills (240 min, Beginner)
-  - Building High-Performance Teams (300 min, Intermediate)
-  - Personal Development Kickstart (150 min, Beginner)
-  - Strategic Decision Making (270 min, Advanced)
-  - Emotional Intelligence at Work (210 min, Intermediate)
-  - Agile Team Collaboration (200 min, Intermediate)
-  - Resilience and Stress Management (180 min, Beginner)
-- ✅ **TypeScript types** (`lib/types/journey.ts`)
-- ✅ **Navigation link** (Journeys 🗺️)
-
-#### Navigation & UX
-- ✅ **Global navigation bar** (persistent across pages)
-- ✅ **Real-time invitation badge** (shows pending count)
-- ✅ **User menu dropdown** (avatar, profile, logout)
-- ✅ **Active page indicators**
-- ✅ **Auto-updating navigation** (refreshes on data changes)
-- ✅ **Beautiful confirmation modals** (replaced all alerts)
-- ✅ **Responsive design** (mobile & desktop)
-
-#### Error Handling (NEW in v0.2.9) 🛡️
-- ✅ **Error Boundaries** - Prevent app crashes
-- ✅ **Custom error pages** - User-friendly error messages
-- ✅ **404 page** - Branded "Island Not Found" page
-- ✅ **Recovery options** - "Try Again" and "Go Home" buttons
-- ✅ **Development mode** - Detailed error information for debugging
-
-
-#### Journey Enrollment (NEW in v0.2.10) 🎯
-- ✅ **Enroll in journeys individually** (solo learning)
-- ✅ **Enroll groups in journeys** (Group Leaders only)
-- ✅ **My Journeys page** (`/my-journeys`)
-  - Two tabs: Individual Journeys & Group Journeys
-  - Journey cards with status badges
-  - Continue/Review buttons
-- ✅ **Enrollment status tracking** (prevents dual enrollment)
-- ✅ **Beautiful enrollment modal** with validation
-
-### 🚧 In Progress
-- Journey content delivery (step-by-step navigation)
-- Progress tracking
-
-### 📋 Upcoming Features
-- Journey step completion
-- Travel Guide progress views
-- Communication features (Phase 1.5: forums, messaging)
-- User-created journeys (Phase 2)
+FringeIsland is a sub-project within the **FringeIsland World** — an Alternative Reality Edutainment platform where people can Live, Grow, and Matter. See [VISION.md](docs/VISION.md) for the full vision.
 
 ---
 
-## 🗃️ Tech Stack
+## 🚀 Tech Stack
 
-- **Framework:** Next.js 16.1 with App Router
+- **Framework:** Next.js 16.1 (App Router)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
-- **Backend:** Supabase (PostgreSQL + Auth + Storage)
-- **Testing:** Jest + React Testing Library (29 tests, 100% passing)
-- **Development:** Test-Driven Development (TDD) with behavior specifications
-- **Deployment:** (TBD)
-
----
-
-## 📂 Project Structure
-
-```
-FringeIsland/
-├── app/
-│   ├── groups/
-│   │   ├── [id]/
-│   │   │   ├── page.tsx          # Group detail page
-│   │   │   └── edit/
-│   │   │       └── page.tsx      # Edit group
-│   │   ├── create/
-│   │   │   └── page.tsx          # Create group
-│   │   └── page.tsx              # Groups list
-│   ├── invitations/
-│   │   └── page.tsx              # Invitations page
-│   ├── journeys/                 # NEW in v0.2.8
-│   │   ├── [id]/
-│   │   │   └── page.tsx          # Journey detail page
-│   │   └── page.tsx              # Journey catalog
-│   ├── login/
-│   │   └── page.tsx              # Login page
-│   ├── profile/
-│   │   ├── edit/
-│   │   │   └── page.tsx          # Edit profile
-│   │   └── page.tsx              # View profile
-│   ├── signup/
-│   │   └── page.tsx              # Signup page
-│   ├── layout.tsx                # Root layout with Navigation
-│   └── page.tsx                  # Home page
-├── components/
-│   ├── auth/
-│   │   ├── AuthContext.tsx       # Authentication context
-│   │   └── AuthForm.tsx          # Login/signup forms
-│   ├── groups/
-│   │   ├── GroupCreateForm.tsx   # Group creation form
-│   │   ├── InviteMemberModal.tsx # Invite members modal
-│   │   └── AssignRoleModal.tsx   # Assign roles modal
-│   ├── profile/
-│   │   ├── AvatarUpload.tsx      # Avatar upload component
-│   │   └── ProfileEditForm.tsx   # Profile edit form
-│   ├── ui/
-│   │   └── ConfirmModal.tsx      # Reusable modal
-│   └── Navigation.tsx            # Global navigation bar
-├── lib/
-│   ├── auth/
-│   │   └── AuthContext.tsx       # Auth context provider
-│   ├── supabase/
-│   │   ├── client.ts             # Supabase client
-│   │   └── server.ts             # Server-side Supabase
-│   └── types/
-│       └── journey.ts            # Journey types (NEW in v0.2.8)
-├── supabase/
-│   └── migrations/               # SQL migration files (9 total)
-├── public/                       # Static assets
-├── CHANGELOG.md                  # Version history
-├── CLAUDE.md                     # AI context documentation
-└── README.md                     # This file
-```
-
----
-
-## 📊 Database Schema
-
-### Core Tables (13 total)
-
-**Users & Authentication:**
-- `users` - User profiles and metadata
-- `auth.users` - Supabase authentication (managed)
-
-**Groups & Memberships:**
-- `groups` - Group information
-- `group_memberships` - User-group relationships (with status: active/invited/frozen)
-- `group_roles` - Available roles (Group Leader, Member, etc.)
-- `user_group_roles` - User role assignments per group
-
-**Journeys:** (NEW in v0.2.8)
-- `journeys` - Journey definitions with JSONB content
-- `journey_enrollments` - User journey participation
-
-**Other:**
-- `permissions` - System permissions (40 seeded)
-- `role_templates` - Role blueprints (5 seeded)
-- `group_templates` - Group blueprints (4 seeded)
-- `role_template_permissions` - Role-permission mappings
-- `group_template_roles` - Template-role mappings
-- `group_role_permissions` - Role permissions
-
-**Database Migrations:** 9 total
-1. `20260120_initial_schema.sql` - Initial setup
-2. `20260123_fix_user_trigger_and_rls.sql` - User lifecycle
-3-7. Group RLS policies and member management
-8. Last leader protection trigger
-9. **`20260127_seed_predefined_journeys.sql` - 8 journeys (NEW)**
+- **Backend:** Supabase (PostgreSQL, Auth, Storage, Realtime)
+- **Database:** 19 tables with RLS on every table
+- **Testing:** Jest (659 tests: integration + unit) + Playwright (7 E2E tests)
+- **Methodology:** Test-Driven Development (TDD) — behaviors first, then failing tests, then implementation
 
 ---
 
 ## 🔒 Security
 
-### Row Level Security (RLS)
-All tables have comprehensive RLS policies:
-- Users can only see their own data
-- Group members can view their groups
-- Public groups visible to all
-- Leaders can manage their groups
-- Invitations protected per user
-- Last leader protection via database trigger
-
-### Authentication
-- Supabase Auth with email/password
-- Session management with AuthContext
-- Protected routes via middleware
-- Automatic redirect for unauthenticated users
+- **Row Level Security (RLS)** on all 19 tables — users can only access data they're authorized for
+- **Supabase Auth** with email/password and session management
+- **Protected routes** via `proxy.ts` (Next.js 16 pattern, not middleware)
+- **RBAC** — 4 roles (Steward, Guide, Member, Observer), 31 permissions, `has_permission()` SQL function
+- **Admin isolation** — `is_platform_admin()` SECURITY DEFINER function for admin-level RLS checks
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 - Supabase account
 
@@ -272,9 +58,11 @@ All tables have comprehensive RLS policies:
    ```
 
 4. **Run database migrations**
-   - Run SQL files in `supabase/migrations/` in order (1-9)
-   - Or use Supabase CLI: `supabase db push`
-   - **NEW Migration #9:** `20260127_seed_predefined_journeys.sql` (v0.2.8)
+   ```bash
+   # Apply migrations in order using the Supabase CLI
+   bash supabase-cli.sh migration list        # See what needs applying
+   node scripts/apply-migration-temp.js <migration_file>  # Apply one
+   ```
 
 5. **Start development server**
    ```bash
@@ -288,90 +76,44 @@ All tables have comprehensive RLS policies:
 
 ---
 
-## 📝 Recent Changes
+## 🧪 Testing
 
-### v0.2.8 - Journey Catalog & Browsing (January 27, 2026)
+```bash
+# Domain-specific tests (fast, during development)
+npm run test:integration:auth
+npm run test:integration:groups
+npm run test:integration:journeys
+npm run test:integration:rls
+npm run test:integration:rbac
+npm run test:integration:admin
+npm run test:integration:communication
+npm run test:integration:security
 
-**Journey System - Part 1:**
-- Journey catalog page at `/journeys` with grid layout
-- Search functionality (title and description)
-- Filter by difficulty (beginner, intermediate, advanced)
-- Filter by topic/tags with results counter
-- Journey detail page at `/journeys/[id]` with:
-  - Hero section with gradient background
-  - Breadcrumb navigation
-  - Two tabs: Overview and Curriculum
-  - Expandable step list showing all journey steps
-  - Sticky sidebar with journey metadata
-  - "Enroll in Journey" button (placeholder for now)
+# Full integration suite (~8 min)
+npm run test:integration
 
-**8 Predefined Journeys:**
-- Leadership Fundamentals (180 min, Beginner)
-- Effective Communication Skills (240 min, Beginner)
-- Building High-Performance Teams (300 min, Intermediate)
-- Personal Development Kickstart (150 min, Beginner)
-- Strategic Decision Making (270 min, Advanced)
-- Emotional Intelligence at Work (210 min, Intermediate)
-- Agile Team Collaboration (200 min, Intermediate)
-- Resilience and Stress Management (180 min, Beginner)
+# Quick regression check (stops on first failure)
+npm run test:integration:quick
 
-**Technical:**
-- New migration #9: `20260127_seed_predefined_journeys.sql`
-- TypeScript types in `lib/types/journey.ts`
-- Navigation link added (Journeys 🗺️)
-- Journey content stored as JSONB with structured steps
-- All journeys marked as published and public
-- Responsive design with Tailwind CSS
-
-### v0.2.7 - Edit Group & Invite Members (January 26, 2026)
-
-**Edit Group Functionality:**
-- New edit page at `/groups/[id]/edit` for Group Leaders
-- Edit group name, description, label
-- Toggle public/private and member list visibility
-- Form validation with error handling
-- Authorization checks (Group Leaders only)
-
-**Invite Members Integration:**
-- Connected InviteMemberModal to group detail page
-- "Invite Now" button (replaces "Coming Soon")
-- Email-based invitations with validation
-- Automatic member list refresh
-
-See [CHANGELOG.md](./CHANGELOG.md) for complete version history.
+# E2E tests (requires dev server on localhost:3000)
+npm run test:e2e
+```
 
 ---
 
-## 🗺️ Roadmap
+## 📍 Where to Find Things
 
-### Phase 1: Foundation (Current - 75% complete)
-- ✅ Authentication system
-- ✅ Profile management
-- ✅ Group creation & editing
-- ✅ Member management
-- ✅ Role management
-- ✅ Navigation system
-- ✅ **Journey catalog & browsing (NEW in v0.2.8)**
-- ⏳ Journey enrollment
-- ⏳ Journey content delivery
-
-### Phase 2: Journey Experience
-- Journey progress tracking
-- Facilitator/Travel Guide tools
-- Group journey features
-- Completion tracking
-
-### Phase 3: Advanced Features
-- User-created journeys
-- Journey marketplace
-- Dynamic/adaptive journeys
-- Analytics and reporting
-
-### Phase 4: Communication & Community
-- Forums and messaging
-- Notifications
-- Team collaboration tools
-- Feedback systems
+| What | Where |
+|------|-------|
+| Current state & blockers | [PROJECT_STATUS.md](PROJECT_STATUS.md) |
+| Version history | [CHANGELOG.md](CHANGELOG.md) |
+| Phase roadmap | [docs/planning/ROADMAP.md](docs/planning/ROADMAP.md) |
+| Vision & intent | [docs/VISION.md](docs/VISION.md) |
+| AI assistant context | [CLAUDE.md](CLAUDE.md) |
+| All documentation | [docs/INDEX.md](docs/INDEX.md) |
+| Product specification | [docs/planning/PRODUCT_SPEC.md](docs/planning/PRODUCT_SPEC.md) |
+| Architecture baseline | [docs/architecture/ARCHITECTURE_BASELINE.md](docs/architecture/ARCHITECTURE_BASELINE.md) |
+| Deferred decisions | [docs/planning/DEFERRED_DECISIONS.md](docs/planning/DEFERRED_DECISIONS.md) |
 
 ---
 
