@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-03-03 (Doc drift prevention + existing drift fix)
+**Last Updated:** 2026-03-07 (MCP config migration)
 **Current Version:** 0.2.36
 **Active Branch:** main
 
@@ -80,21 +80,16 @@ See `SPRINT.md` for current work streams, TDD phase, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-03-03 (Doc drift prevention + existing drift fix)
+**Date:** 2026-03-07 (MCP config migration)
 **Summary:**
-- Built 3-layer documentation drift prevention system across workflow files:
-  - Phase 4 STOP gate: affected-docs list requirement; Phase 7: cross-reference audit step
-  - Close-down: added D2 cross-cutting consistency step, architecture/database doc rows, widened trigger conditions
-  - Sprint Agent retrospective: added doc health check as step 4, added quality gate
-- Created standalone `docs/workflows/doc-health-check.md` workflow (terminology, schema, acceptance criteria checks)
-- Referenced new workflow in 7 index/navigation files (CLAUDE.md, INDEX.md, agents/README.md, PROJECT_STATUS.md, boot-up, close-down, feature-development)
-- Fixed ~130+ instances of existing documentation drift across 17 active documents:
-  - Terminology: "Group Leader"→"Steward", "Travel Guide"→"Guide" in all behavior specs, architecture docs, database docs, agent playbooks
-  - Schema: user_id→member_group_id, created_by_user_id→created_by_group_id, assigned_by_user_id→assigned_by_group_id
-  - Code patterns: isLeader→hasPermission() in agent playbooks, activity catalog, agent journals
-  - Checked unchecked acceptance criteria for implemented features (groups.md, d15-hardening.md, rbac.md Sub-Sprint 1)
-  - Updated AUTHORIZATION.md from pre-RBAC to post-RBAC state
-  - Fixed architect-agent.md: RBAC marked complete, file paths corrected, table count updated
+- Migrated MCP server config from old `.claude/mcpservers.json` to proper `.claude/mcp.json` format
+- Added both Supabase and SQLite MCP servers to new config
+- Requires Claude Code restart to activate MCP tools
+
+**Previous Session:** 2026-03-03 (Doc drift prevention + existing drift fix)
+- Built 3-layer documentation drift prevention system across workflow files
+- Created standalone `docs/workflows/doc-health-check.md` workflow
+- Fixed ~130+ instances of existing documentation drift across 17 active documents
 
 **Previous Sessions:**
 - 2026-03-03: Documentation restructuring — overlap elimination + SPRINT.md
