@@ -44,7 +44,7 @@ Phase 7: Document ◀──GATE── Phase 6: Verify ◀──GATE── Phase 
 This workflow sits at the bottom of the BDD hierarchy. Every feature should be traceable upward:
 
 ```
-Vision (docs/VISION.md)           → WHY we're building this
+Vision (docs/vision/VISION.md)     → WHY we're building this
 Product Spec (docs/planning/PRODUCT_SPEC.md) → WHAT we're building
 Roadmap (docs/planning/ROADMAP.md)           → WHEN we're building it
 Features (docs/features/)                    → User-facing functionality
@@ -298,7 +298,7 @@ describe('B-[DOMAIN]-[NUM]: [Behavior Name]', () => {
 **Done when:**
 - [ ] All documentation is current
 - [ ] Cross-reference audit complete — no doc on the affected-docs list has uncorrected drift
-- [ ] Feature is traceable upward: `docs/VISION.md` → `docs/planning/PRODUCT_SPEC.md` → `docs/features/` → `docs/specs/behaviors/` → `tests/integration/` → `app/` (verified, not assumed)
+- [ ] Feature is traceable upward: `docs/vision/VISION.md` → `docs/planning/PRODUCT_SPEC.md` → `docs/features/` → `docs/specs/behaviors/` → `tests/integration/` → `app/` (verified, not assumed)
 
 ---
 

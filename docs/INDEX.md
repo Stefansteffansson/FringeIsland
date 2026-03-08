@@ -12,7 +12,7 @@ Master navigation for all FringeIsland documentation. For current project state,
 |--------------|----------|
 | See active sprint + what's next | [SPRINT.md](../SPRINT.md) |
 | See current state & blockers | [PROJECT_STATUS.md](../PROJECT_STATUS.md) |
-| Understand WHY we're building this | [VISION.md](VISION.md) |
+| Understand WHY we're building this | [VISION.md](vision/VISION.md) |
 | See WHAT we're building | [planning/PRODUCT_SPEC.md](planning/PRODUCT_SPEC.md) |
 | Understand technical patterns | [CLAUDE.md](../CLAUDE.md) |
 | Set up the project | [implementation/INSTALLATION.md](implementation/INSTALLATION.md) |
@@ -32,7 +32,7 @@ Master navigation for all FringeIsland documentation. For current project state,
 
 ### 🎯 Vision & Planning (`/docs/`)
 
-- **[VISION.md](VISION.md)** — Vision, intent, and core beliefs
+- **[VISION.md](vision/VISION.md)** — Vision, intent, and core beliefs
 - **[planning/PRODUCT_SPEC.md](planning/PRODUCT_SPEC.md)** — Product specification for v1.0
 - **[planning/ROADMAP.md](planning/ROADMAP.md)** — Development phases and timeline
 - **[SPRINT.md](../SPRINT.md)** — Active sprint tracker, TDD phase, next sprint backlog
@@ -106,7 +106,7 @@ Two-tier agent structure with continuous learning (7 agents).
 
 ### New Developer Onboarding
 1. [PROJECT_STATUS.md](../PROJECT_STATUS.md) — Current state
-2. [VISION.md](VISION.md) — Why FringeIsland exists
+2. [VISION.md](vision/VISION.md) — Why FringeIsland exists
 3. [planning/PRODUCT_SPEC.md](planning/PRODUCT_SPEC.md) — What we're building
 4. [README.md](../README.md) — Project overview and setup
 5. [architecture/ARCHITECTURE_OVERVIEW.md](architecture/ARCHITECTURE_OVERVIEW.md) — System design
@@ -117,7 +117,7 @@ Two-tier agent structure with continuous learning (7 agents).
 
 ### New AI Agent Onboarding
 1. [PROJECT_STATUS.md](../PROJECT_STATUS.md) — Current state
-2. [VISION.md](VISION.md) — Why we're building this
+2. [VISION.md](vision/VISION.md) — Why we're building this
 3. [CLAUDE.md](../CLAUDE.md) — Technical patterns (auto-loaded)
 4. [workflows/feature-development.md](workflows/feature-development.md) — Development process
 5. [agents/contexts/\[your-domain\]-agent.md](agents/contexts/) — Your focused context

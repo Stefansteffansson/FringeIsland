@@ -4,7 +4,7 @@
 
 An edutainment platform for group-based personal development through structured learning journeys. Users travel solo or in groups on predefined journeys guided by role-based experiences — Stewards lead, Guides facilitate, Members participate, and Observers watch.
 
-FringeIsland is a sub-project within the **FringeIsland World** — an Alternative Reality Edutainment platform where people can Live, Grow, and Matter. See [VISION.md](docs/VISION.md) for the full vision.
+FringeIsland is a sub-project within the **FringeIsland World** — an Alternative Reality Edutainment platform where people can Live, Grow, and Matter. See [VISION.md](docs/vision/VISION.md) for the full vision.
 
 ---
 
@@ -108,7 +108,7 @@ npm run test:e2e
 | Current state & blockers | [PROJECT_STATUS.md](PROJECT_STATUS.md) |
 | Version history | [CHANGELOG.md](CHANGELOG.md) |
 | Phase roadmap | [docs/planning/ROADMAP.md](docs/planning/ROADMAP.md) |
-| Vision & intent | [docs/VISION.md](docs/VISION.md) |
+| Vision & intent | [docs/vision/VISION.md](docs/vision/VISION.md) |
 | AI assistant context | [CLAUDE.md](CLAUDE.md) |
 | All documentation | [docs/INDEX.md](docs/INDEX.md) |
 | Product specification | [docs/planning/PRODUCT_SPEC.md](docs/planning/PRODUCT_SPEC.md) |

@@ -13,7 +13,7 @@
 | **Sprint Tracker** | `SPRINT.md` | Always |
 | **Roadmap** | `docs/planning/ROADMAP.md` | Always |
 | **Lifecycle Decisions** | `docs/planning/lifecycle-roadmap-decisions.md` | If sprinting |
-| **Vision** | `docs/VISION.md` | Optional |
+| **Vision** | `docs/vision/VISION.md` | Optional |
 | **Product Spec** | `docs/planning/PRODUCT_SPEC.md` | Optional |
 | **Deferred Decisions** | `docs/planning/DEFERRED_DECISIONS.md` | Optional |
 

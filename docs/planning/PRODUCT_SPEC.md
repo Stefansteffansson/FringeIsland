@@ -3,13 +3,13 @@
 **Version:** 1.1
 **Last Updated:** February 28, 2026
 **Status:** Living document - v1.0 MVP scope (Phase 1: 95% complete)
-**Links:** [Vision](../VISION.md) | [Roadmap](ROADMAP.md) | [Features](../features/)
+**Links:** [Vision](../vision/VISION.md) | [Roadmap](ROADMAP.md) | [Features](../features/)
 
 ---
 
 ## 📋 Document Purpose
 
-This document defines **what we're building** for FringeIsland v1.0 (MVP). It translates the [vision](../VISION.md) into concrete features, user stories, and acceptance criteria.
+This document defines **what we're building** for FringeIsland v1.0 (MVP). It translates the [vision](../vision/VISION.md) into concrete features, user stories, and acceptance criteria.
 
 **Hierarchy:**
 ```
@@ -468,7 +468,7 @@ The following features were originally out of scope for v1.0 but have been imple
 
 ## 📚 Related Documents
 
-- **[Vision](../VISION.md)** - Why FringeIsland exists
+- **[Vision](../vision/VISION.md)** - Why FringeIsland exists
 - **[Roadmap](ROADMAP.md)** - When features are being built
 - **[Deferred Decisions](DEFERRED_DECISIONS.md)** - What we're NOT building (and why)
 - **[Feature Docs](../features/implemented/)** - Detailed feature specifications
