@@ -22,7 +22,7 @@ config({ path: resolve(__dirname, '../.env.local') });
 
 /** Delete a group safely: pre-delete journeys (RESTRICT FK), then delete group. */
 async function deleteGroup(
-  admin: ReturnType<typeof createClient>,
+  admin: ReturnType<typeof createClient<any, any, any>>,
   groupId: string
 ): Promise<boolean> {
   await admin.from('journeys').delete().eq('created_by_group_id', groupId);
@@ -55,7 +55,7 @@ export default async function globalTeardown() {
     return;
   }
 
-  const testUsers = authList.users.filter(
+  const testUsers = (authList.users as Array<{ id: string; email?: string }>).filter(
     (u) => u.email && u.email.endsWith('@fringeisland.test')
   );
 

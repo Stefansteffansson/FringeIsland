@@ -23,7 +23,7 @@ export function generateE2EEmail(prefix = 'e2e-user') {
 }
 
 export async function createE2EUser(
-  admin: ReturnType<typeof createClient>,
+  admin: ReturnType<typeof createAdminClient>,
   email: string,
   password = E2E_PASSWORD
 ) {
@@ -38,11 +38,11 @@ export async function createE2EUser(
 }
 
 export async function deleteE2EUser(
-  admin: ReturnType<typeof createClient>,
+  admin: ReturnType<typeof createAdminClient>,
   email: string
 ) {
   const { data: authList } = await admin.auth.admin.listUsers({ perPage: 1000 });
-  const authUser = authList?.users.find((u) => u.email === email);
+  const authUser = (authList?.users as Array<{ id: string; email?: string }>)?.find((u) => u.email === email);
   if (!authUser) return;
 
   // FK-safe cleanup: journeys -> personal group -> auth user
