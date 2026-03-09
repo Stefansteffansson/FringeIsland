@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-03-07 (MCP config migration)
+**Last Updated:** 2026-03-09 (Vision docs integration + Vercel build fix)
 **Current Version:** 0.2.36
 **Active Branch:** main
 
@@ -70,6 +70,8 @@ See `SPRINT.md` for current work streams, TDD phase, and sprint step plan.
 - **Architecture baseline:** `docs/architecture/ARCHITECTURE_BASELINE.md` ← **NEW** (6-phase analysis, live-validated)
 - **Architecture decisions:** `docs/architecture/ARCHITECTURE_OVERVIEW.md`
 - **Planning context:** `docs/planning/ROADMAP.md` + `docs/planning/DEFERRED_DECISIONS.md`
+- **Vision documents:** `docs/vision/VISION.md` + `docs/vision/MANIFESTO.md` + `docs/vision/CONTRIBUTION_ARCHITECTURE.md` ← **NEW**
+- **Vision session decisions:** `docs/planning/VISION_DECISIONS.md`
 
 **Agent System (two-tier, 7 agents — see `docs/agents/README.md`):**
 - **Tier 1 — Domain:** `database-agent.md`, `ui-agent.md`, `integration-agent.md`, `test-agent.md`
@@ -80,18 +82,20 @@ See `SPRINT.md` for current work streams, TDD phase, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-03-07 (MCP config migration)
+**Date:** 2026-03-09 (Vision docs integration + Vercel build fix)
 **Summary:**
+- Fixed Vercel build failure: supabase-js 2.91.0 type errors in 3 E2E test helper files
+- Verified Supabase MCP connection — listed all 19 tables successfully
+- Integrated 3 new vision documents: `docs/vision/VISION.md`, `docs/vision/MANIFESTO.md`, `docs/vision/CONTRIBUTION_ARCHITECTURE.md`
+- Renamed `FRINGEISLAND-VISION.md` → `docs/planning/VISION_DECISIONS.md`
+- Updated 20+ references across 7 active files (CLAUDE.md, README, INDEX, boot-up, feature-dev, ROADMAP, PRODUCT_SPEC)
+
+**Previous Session:** 2026-03-07 (MCP config migration)
 - Migrated MCP server config from old `.claude/mcpservers.json` to proper `.claude/mcp.json` format
 - Added both Supabase and SQLite MCP servers to new config
-- Requires Claude Code restart to activate MCP tools
-
-**Previous Session:** 2026-03-03 (Doc drift prevention + existing drift fix)
-- Built 3-layer documentation drift prevention system across workflow files
-- Created standalone `docs/workflows/doc-health-check.md` workflow
-- Fixed ~130+ instances of existing documentation drift across 17 active documents
 
 **Previous Sessions:**
+- 2026-03-03: Doc drift prevention + existing drift fix (~130 instances across 17 docs)
 - 2026-03-03: Documentation restructuring — overlap elimination + SPRINT.md
 - 2026-03-03: Architecture Baseline + live DB validation (zero drift, 11 corrections)
 - 2026-02-28: Documentation restructuring (CLAUDE.md, workflows, ROADMAP, NEXT.md, archives)
