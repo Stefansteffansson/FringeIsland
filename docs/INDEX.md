@@ -12,7 +12,7 @@ Master navigation for all FringeIsland documentation. For current project state,
 |--------------|----------|
 | See active sprint + what's next | [SPRINT.md](../SPRINT.md) |
 | See current state & blockers | [PROJECT_STATUS.md](../PROJECT_STATUS.md) |
-| Understand WHY we're building this | [VISION.md](vision/VISION.md) |
+| Understand WHY we're building this | [VISION.md](vision/VISION.md) + [MANIFESTO.md](vision/MANIFESTO.md) |
 | See WHAT we're building | [planning/PRODUCT_SPEC.md](planning/PRODUCT_SPEC.md) |
 | Understand technical patterns | [CLAUDE.md](../CLAUDE.md) |
 | Set up the project | [implementation/INSTALLATION.md](implementation/INSTALLATION.md) |
@@ -30,14 +30,20 @@ Master navigation for all FringeIsland documentation. For current project state,
 
 ## 📚 Documentation Structure
 
-### 🎯 Vision & Planning (`/docs/`)
+### 🌍 Vision (`/docs/vision/`)
 
-- **[VISION.md](vision/VISION.md)** — Vision, intent, and core beliefs
+- **[VISION.md](vision/VISION.md)** — North star vision document — the WHY behind everything
+- **[MANIFESTO.md](vision/MANIFESTO.md)** — The FringeIsland Manifesto — 11 principles (Story over Data, Curiosity over Certainty, etc.)
+- **[CONTRIBUTION_ARCHITECTURE.md](vision/CONTRIBUTION_ARCHITECTURE.md)** — Who can build what — 4 contributor groups, 5 contribution types
+
+### 🎯 Planning (`/docs/planning/`)
+
 - **[planning/PRODUCT_SPEC.md](planning/PRODUCT_SPEC.md)** — Product specification for v1.0
 - **[planning/ROADMAP.md](planning/ROADMAP.md)** — Development phases and timeline
 - **[SPRINT.md](../SPRINT.md)** — Active sprint tracker, TDD phase, next sprint backlog
 - **[planning/DEFERRED_DECISIONS.md](planning/DEFERRED_DECISIONS.md)** — What we're NOT building yet
 - **[planning/lifecycle-roadmap-decisions.md](planning/lifecycle-roadmap-decisions.md)** — Lifecycle sprint structure and decisions
+- **[planning/VISION_DECISIONS.md](planning/VISION_DECISIONS.md)** — Locked decisions and open questions from vision sessions
 
 ### 🏗️ Architecture (`/docs/architecture/`)
 

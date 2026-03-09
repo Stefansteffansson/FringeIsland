@@ -92,6 +92,9 @@ bash supabase-cli.sh migration list
 | Phase roadmap | `docs/planning/ROADMAP.md` |
 | Product scope (what/why) | `docs/planning/PRODUCT_SPEC.md` |
 | Vision | `docs/vision/VISION.md` |
+| Manifesto | `docs/vision/MANIFESTO.md` |
+| Contribution architecture | `docs/vision/CONTRIBUTION_ARCHITECTURE.md` |
+| Vision session decisions | `docs/planning/VISION_DECISIONS.md` |
 | Deferred decisions | `docs/planning/DEFERRED_DECISIONS.md` |
 | Lifecycle sprint decisions | `docs/planning/lifecycle-roadmap-decisions.md` |
 | Feature docs | `docs/features/implemented/` |

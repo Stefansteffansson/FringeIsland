@@ -109,6 +109,8 @@ npm run test:e2e
 | Version history | [CHANGELOG.md](CHANGELOG.md) |
 | Phase roadmap | [docs/planning/ROADMAP.md](docs/planning/ROADMAP.md) |
 | Vision & intent | [docs/vision/VISION.md](docs/vision/VISION.md) |
+| Manifesto | [docs/vision/MANIFESTO.md](docs/vision/MANIFESTO.md) |
+| Contribution architecture | [docs/vision/CONTRIBUTION_ARCHITECTURE.md](docs/vision/CONTRIBUTION_ARCHITECTURE.md) |
 | AI assistant context | [CLAUDE.md](CLAUDE.md) |
 | All documentation | [docs/INDEX.md](docs/INDEX.md) |
 | Product specification | [docs/planning/PRODUCT_SPEC.md](docs/planning/PRODUCT_SPEC.md) |
