@@ -94,6 +94,7 @@ bash supabase-cli.sh migration list
 | Vision | `docs/vision/VISION.md` |
 | Manifesto | `docs/vision/MANIFESTO.md` |
 | Contribution architecture | `docs/vision/CONTRIBUTION_ARCHITECTURE.md` |
+| Products & platform | `docs/vision/PRODUCTS_AND_PLATFORM.md` |
 | Vision session decisions | `docs/planning/VISION_DECISIONS.md` |
 | Deferred decisions | `docs/planning/DEFERRED_DECISIONS.md` |
 | Lifecycle sprint decisions | `docs/planning/lifecycle-roadmap-decisions.md` |

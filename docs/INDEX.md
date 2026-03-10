@@ -35,6 +35,7 @@ Master navigation for all FringeIsland documentation. For current project state,
 - **[VISION.md](vision/VISION.md)** — North star vision document — the WHY behind everything
 - **[MANIFESTO.md](vision/MANIFESTO.md)** — The FringeIsland Manifesto — 11 principles (Story over Data, Curiosity over Certainty, etc.)
 - **[CONTRIBUTION_ARCHITECTURE.md](vision/CONTRIBUTION_ARCHITECTURE.md)** — Who can build what — 4 contributor groups, 5 contribution types
+- **[PRODUCTS_AND_PLATFORM.md](vision/PRODUCTS_AND_PLATFORM.md)** — Full product ecosystem — digital products, physical products, events, platform strategy, device approach
 
 ### 🎯 Planning (`/docs/planning/`)
 

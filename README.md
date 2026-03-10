@@ -111,6 +111,7 @@ npm run test:e2e
 | Vision & intent | [docs/vision/VISION.md](docs/vision/VISION.md) |
 | Manifesto | [docs/vision/MANIFESTO.md](docs/vision/MANIFESTO.md) |
 | Contribution architecture | [docs/vision/CONTRIBUTION_ARCHITECTURE.md](docs/vision/CONTRIBUTION_ARCHITECTURE.md) |
+| Products & platform strategy | [docs/vision/PRODUCTS_AND_PLATFORM.md](docs/vision/PRODUCTS_AND_PLATFORM.md) |
 | AI assistant context | [CLAUDE.md](CLAUDE.md) |
 | All documentation | [docs/INDEX.md](docs/INDEX.md) |
 | Product specification | [docs/planning/PRODUCT_SPEC.md](docs/planning/PRODUCT_SPEC.md) |

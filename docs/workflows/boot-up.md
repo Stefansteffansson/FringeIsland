@@ -16,6 +16,7 @@
 | **Vision** | `docs/vision/VISION.md` | Optional |
 | **Manifesto** | `docs/vision/MANIFESTO.md` | Optional |
 | **Contribution Architecture** | `docs/vision/CONTRIBUTION_ARCHITECTURE.md` | Optional |
+| **Products & Platform** | `docs/vision/PRODUCTS_AND_PLATFORM.md` | Optional |
 | **Product Spec** | `docs/planning/PRODUCT_SPEC.md` | Optional |
 | **Deferred Decisions** | `docs/planning/DEFERRED_DECISIONS.md` | Optional |
 
