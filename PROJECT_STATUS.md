@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-03-14 (Architecture documentation integration)
+**Last Updated:** 2026-03-14 (ROADMAP.md outdated notice)
 **Current Version:** 0.2.36
 **Active Branch:** main
 
@@ -83,13 +83,17 @@ See `SPRINT.md` for current work streams, TDD phase, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-03-14 (Architecture documentation integration)
+**Date:** 2026-03-14 (ROADMAP.md outdated notice)
 **Summary:**
+- Added outdated/pending-rewrite notice to top of `docs/planning/ROADMAP.md`, pointing to `PRODUCTS_AND_PLATFORM.md` and `ARCHITECTURE_ANATOMY.md`
+- Rewrite deferred until after Journey specification session
+
+**Previous Session:** 2026-03-14 (Architecture documentation integration)
 - Integrated new architecture docs: `ARCHITECTURE_ANATOMY.md` (primary), `ARCHITECTURE_DECISIONS.md` (ADRs), `ARCHITECTURE_ANATOMY_DIAGRAM.svg`
 - Renamed `ARCHITECTURE_OVERVIEW.md` → `ARCHITECTURE_DECISIONS_LEGACY.md`; old baseline archived to `docs/architecture/archive/`
 - Regenerated `ARCHITECTURE_BASELINE.md` — complete rewrite structured around L0–L7 anatomy layers, 5 verticals, Platform API ring, Ferd completion summary
 - Updated CLAUDE.md with wave model (Ferd/Hamn), API-first pattern (ADR-009), ARCHITECTURE_ANATOMY.md as primary reference
-- Updated 10 files replacing stale ARCHITECTURE_OVERVIEW.md references (README, INDEX, agent playbooks, workflows, feature docs)
+- Updated 10 files replacing stale ARCHITECTURE_OVERVIEW.md references
 
 **Previous Session:** 2026-03-10 (PRODUCTS_AND_PLATFORM.md reference integration)
 - Integrated references to new `docs/vision/PRODUCTS_AND_PLATFORM.md` across 6 files

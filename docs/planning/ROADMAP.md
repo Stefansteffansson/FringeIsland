@@ -1,3 +1,8 @@
+> ⚠️ This document is outdated and pending a full rewrite.
+> For current platform strategy see docs/vision/PRODUCTS_AND_PLATFORM.md.
+> For current architecture see docs/architecture/ARCHITECTURE_ANATOMY.md.
+> The rewrite will happen after the Journey specification session.
+
 # FringeIsland Roadmap
 
 **Version:** 2.0
