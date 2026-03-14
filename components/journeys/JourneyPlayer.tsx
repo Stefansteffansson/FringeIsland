@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Journey, PlayerEnrollment, JourneyProgressData } from '@/lib/types/journey';
 import StepSidebar from './StepSidebar';
@@ -31,6 +32,7 @@ function getInitialStepIndex(
 }
 
 export default function JourneyPlayer({ journey, enrollment, onJourneyComplete }: JourneyPlayerProps) {
+  const router = useRouter();
   const supabase = createClient();
   const steps = journey.content?.steps || [];
 
@@ -175,6 +177,9 @@ export default function JourneyPlayer({ journey, enrollment, onJourneyComplete }
 
     if (!isLastStep) {
       await navigateToStep(currentStepIndex + 1);
+    } else if (isReviewMode || isFrozen) {
+      // "Finish Review" / "End of Review" — navigate back to My Journeys
+      router.push('/my-journeys');
     }
   };
 
