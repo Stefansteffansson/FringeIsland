@@ -115,7 +115,10 @@ npm run test:e2e
 | AI assistant context | [CLAUDE.md](CLAUDE.md) |
 | All documentation | [docs/INDEX.md](docs/INDEX.md) |
 | Product specification | [docs/planning/PRODUCT_SPEC.md](docs/planning/PRODUCT_SPEC.md) |
-| Architecture baseline | [docs/architecture/ARCHITECTURE_BASELINE.md](docs/architecture/ARCHITECTURE_BASELINE.md) |
+| Architecture anatomy (primary) | [docs/architecture/ARCHITECTURE_ANATOMY.md](docs/architecture/ARCHITECTURE_ANATOMY.md) |
+| Architecture decisions (ADRs) | [docs/architecture/ARCHITECTURE_DECISIONS.md](docs/architecture/ARCHITECTURE_DECISIONS.md) |
+| Architecture baseline (live) | [docs/architecture/ARCHITECTURE_BASELINE.md](docs/architecture/ARCHITECTURE_BASELINE.md) |
+| Database schema | [docs/architecture/DATABASE_SCHEMA.md](docs/architecture/DATABASE_SCHEMA.md) |
 | Deferred decisions | [docs/planning/DEFERRED_DECISIONS.md](docs/planning/DEFERRED_DECISIONS.md) |
 
 ---

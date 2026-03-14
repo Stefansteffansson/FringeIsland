@@ -292,7 +292,7 @@ describe('B-[DOMAIN]-[NUM]: [Behavior Name]', () => {
 4. Update `CHANGELOG.md` if version bumped
 5. Update `CLAUDE.md` if new patterns established
 6. Update feature doc with implementation details
-7. Cross-reference audit — work through the affected-docs list from Phase 4. For each doc: open it, verify terminology, schema references, RLS rules, acceptance criteria, and role names still match reality. Apply corrections. If no affected-docs list exists (e.g., hotfix), audit behavior specs for the domain, the domain feature doc, and `docs/architecture/ARCHITECTURE_OVERVIEW.md` as minimum.
+7. Cross-reference audit — work through the affected-docs list from Phase 4. For each doc: open it, verify terminology, schema references, RLS rules, acceptance criteria, and role names still match reality. Apply corrections. If no affected-docs list exists (e.g., hotfix), audit behavior specs for the domain, the domain feature doc, and `docs/architecture/ARCHITECTURE_ANATOMY.md` as minimum.
 8. Create session bridge if significant work
 
 **Done when:**

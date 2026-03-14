@@ -52,7 +52,7 @@ For each domain worked in, append discoveries to `docs/agents/learnings/[domain]
 
 **D. Feature docs (if updated):** Link verified behaviors in `docs/features/implemented/[feature].md`.
 
-**D2. Cross-cutting consistency (if any terminology, schema, or role change was made):** Check docs outside the domain worked in. Check `docs/architecture/ARCHITECTURE_OVERVIEW.md` for stale role names or schema references. Check `docs/architecture/AUTHORIZATION.md` and `docs/database/rls-policies.md` if RLS changed. Check behavior specs in other domains that reference the changed concept (e.g., a rename from "Group Leader" to "Steward" touches every spec that used the old term).
+**D2. Cross-cutting consistency (if any terminology, schema, or role change was made):** Check docs outside the domain worked in. Check `docs/architecture/ARCHITECTURE_ANATOMY.md` for stale role names or schema references. Check `docs/architecture/AUTHORIZATION.md` and `docs/database/rls-policies.md` if RLS changed. Check behavior specs in other domains that reference the changed concept (e.g., a rename from "Group Leader" to "Steward" touches every spec that used the old term).
 
 **E. ROADMAP.md (if phase milestone hit):** Update phase status, completion %, deliverables. Path: `docs/planning/ROADMAP.md` (not root!).
 

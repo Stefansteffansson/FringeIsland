@@ -473,7 +473,8 @@ The following features were originally out of scope for v1.0 but have been imple
 - **[Deferred Decisions](DEFERRED_DECISIONS.md)** - What we're NOT building (and why)
 - **[Feature Docs](../features/implemented/)** - Detailed feature specifications
 - **[Behavior Specs](../specs/behaviors/)** - Rules that govern features
-- **[Architecture](../architecture/ARCHITECTURE_OVERVIEW.md)** - Technical design
+- **[Architecture Anatomy](../architecture/ARCHITECTURE_ANATOMY.md)** - Layered platform anatomy (L0-L7)
+- **[Architecture Decisions](../architecture/ARCHITECTURE_DECISIONS.md)** - ADRs with full reasoning
 
 ---
 

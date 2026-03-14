@@ -17,8 +17,9 @@ Master navigation for all FringeIsland documentation. For current project state,
 | Understand technical patterns | [CLAUDE.md](../CLAUDE.md) |
 | Set up the project | [implementation/INSTALLATION.md](implementation/INSTALLATION.md) |
 | See what changed | [CHANGELOG.md](../CHANGELOG.md) |
-| Understand the architecture | [architecture/ARCHITECTURE_OVERVIEW.md](architecture/ARCHITECTURE_OVERVIEW.md) |
-| See architecture baseline (live-validated) | [architecture/ARCHITECTURE_BASELINE.md](architecture/ARCHITECTURE_BASELINE.md) |
+| Understand the architecture | [architecture/ARCHITECTURE_ANATOMY.md](architecture/ARCHITECTURE_ANATOMY.md) (primary) |
+| See architecture decisions (ADRs) | [architecture/ARCHITECTURE_DECISIONS.md](architecture/ARCHITECTURE_DECISIONS.md) |
+| See architecture baseline (live) | [architecture/ARCHITECTURE_BASELINE.md](architecture/ARCHITECTURE_BASELINE.md) |
 | Work on database | [database/schema-overview.md](database/schema-overview.md) + [agents/contexts/database-agent.md](agents/contexts/database-agent.md) |
 | Build a feature (TDD) | [workflows/feature-development.md](workflows/feature-development.md) + [features/](features/) + [specs/behaviors/](specs/behaviors/) |
 | See the roadmap | [planning/ROADMAP.md](planning/ROADMAP.md) |
@@ -48,8 +49,11 @@ Master navigation for all FringeIsland documentation. For current project state,
 
 ### 🏗️ Architecture (`/docs/architecture/`)
 
-- **[ARCHITECTURE_OVERVIEW.md](architecture/ARCHITECTURE_OVERVIEW.md)** — System design and patterns
-- **[ARCHITECTURE_BASELINE.md](architecture/ARCHITECTURE_BASELINE.md)** — 6-phase analysis, live-validated against Supabase
+- **[ARCHITECTURE_ANATOMY.md](architecture/ARCHITECTURE_ANATOMY.md)** — Primary reference: layered anatomy (L0-L7), verticals, Platform API ring
+- **[ARCHITECTURE_DECISIONS.md](architecture/ARCHITECTURE_DECISIONS.md)** — ADRs with full reasoning (ADR-001 through ADR-024)
+- **[ARCHITECTURE_BASELINE.md](architecture/ARCHITECTURE_BASELINE.md)** — Live codebase inventory mapped to anatomy layers
+- **[ARCHITECTURE_DECISIONS_LEGACY.md](architecture/ARCHITECTURE_DECISIONS_LEGACY.md)** — Historical decisions from pre-anatomy phase
+- **[DATABASE_SCHEMA.md](architecture/DATABASE_SCHEMA.md)** — Complete PostgreSQL schema with RLS policies
 - **[AUTHORIZATION.md](architecture/AUTHORIZATION.md)** — Authorization model and RLS policies
 - **[DOMAIN_ENTITIES.md](architecture/DOMAIN_ENTITIES.md)** — Domain model and entity relationships
 
@@ -116,7 +120,7 @@ Two-tier agent structure with continuous learning (7 agents).
 2. [VISION.md](vision/VISION.md) — Why FringeIsland exists
 3. [planning/PRODUCT_SPEC.md](planning/PRODUCT_SPEC.md) — What we're building
 4. [README.md](../README.md) — Project overview and setup
-5. [architecture/ARCHITECTURE_OVERVIEW.md](architecture/ARCHITECTURE_OVERVIEW.md) — System design
+5. [architecture/ARCHITECTURE_ANATOMY.md](architecture/ARCHITECTURE_ANATOMY.md) — Layered anatomy (primary)
 6. [database/schema-overview.md](database/schema-overview.md) — Data model
 7. [workflows/feature-development.md](workflows/feature-development.md) — How we develop (TDD)
 8. [implementation/INSTALLATION.md](implementation/INSTALLATION.md) — Setup environment

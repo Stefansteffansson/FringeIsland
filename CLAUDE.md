@@ -40,10 +40,15 @@ When user selects feature work after boot-up, load `docs/agents/contexts/sprint-
 
 ## Architecture (Patterns, not code)
 
+**Primary reference:** `docs/architecture/ARCHITECTURE_ANATOMY.md` — the layered anatomy (L0–L7, 5 verticals, Platform API ring). Read this before generating or modifying code. ADRs with full reasoning in `docs/architecture/ARCHITECTURE_DECISIONS.md`. Live implementation state in `docs/architecture/ARCHITECTURE_BASELINE.md`.
+
+**Wave model (not phases):** The platform evolves in overlapping waves. **Ferd** (current web platform, Wave 1) → **Hamn** (full FringeIsland experience, Wave 2). See `docs/vision/PRODUCTS_AND_PLATFORM.md`.
+
 - **Auth:** Client-side via AuthContext + useAuth() hook; proxy.ts for protected routes (Next.js 16, not middleware.ts)
 - **Components:** App Router; client components marked `'use client'`; reusable UI in `/components/ui/`
 - **State:** React Context for auth; local state for components; `refreshNavigation` custom event for cross-component updates
 - **DB access:** Supabase client (`lib/supabase/client.ts`) for browser, server client (`lib/supabase/server.ts`) for RSC
+- **API-first (ADR-009):** Business logic belongs in API routes (`/api/...`), not server components. Frontend calls the API; the API calls the database. Build every feature as if iOS/Android already exist. Pattern: `Database → API route → Frontend component`. Never: `Database → Frontend component directly`.
 - **Security:** RLS on all 19 tables; triggers for business logic; `is_platform_admin()` SECURITY DEFINER for admin checks
 - **RBAC:** 4 roles (Steward, Guide, Member, Observer), 31 permissions, `has_permission()` function
 - **UI rules:** Never use browser `alert()`/`confirm()` — always use `ConfirmModal`. Always show loading states. Update ALL related state after data changes (members + roles + isLeader).
@@ -89,12 +94,19 @@ bash supabase-cli.sh migration list
 |------|-------|
 | Current state & blockers | `PROJECT_STATUS.md` |
 | Active sprint + what's next | `SPRINT.md` |
-| Phase roadmap | `docs/planning/ROADMAP.md` |
+| Wave roadmap | `docs/planning/ROADMAP.md` |
 | Product scope (what/why) | `docs/planning/PRODUCT_SPEC.md` |
 | Vision | `docs/vision/VISION.md` |
 | Manifesto | `docs/vision/MANIFESTO.md` |
 | Contribution architecture | `docs/vision/CONTRIBUTION_ARCHITECTURE.md` |
-| Products & platform | `docs/vision/PRODUCTS_AND_PLATFORM.md` |
+| Products & platform (waves) | `docs/vision/PRODUCTS_AND_PLATFORM.md` |
+| **Architecture anatomy (primary)** | `docs/architecture/ARCHITECTURE_ANATOMY.md` |
+| Architecture decisions (ADRs) | `docs/architecture/ARCHITECTURE_DECISIONS.md` |
+| Architecture baseline (live) | `docs/architecture/ARCHITECTURE_BASELINE.md` |
+| Architecture decisions (legacy) | `docs/architecture/ARCHITECTURE_DECISIONS_LEGACY.md` |
+| Database schema | `docs/architecture/DATABASE_SCHEMA.md` |
+| Authorization model | `docs/architecture/AUTHORIZATION.md` |
+| Domain entities | `docs/architecture/DOMAIN_ENTITIES.md` |
 | Vision session decisions | `docs/planning/VISION_DECISIONS.md` |
 | Deferred decisions | `docs/planning/DEFERRED_DECISIONS.md` |
 | Lifecycle sprint decisions | `docs/planning/lifecycle-roadmap-decisions.md` |

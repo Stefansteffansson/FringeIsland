@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-03-10 (PRODUCTS_AND_PLATFORM.md reference integration)
+**Last Updated:** 2026-03-14 (Architecture documentation integration)
 **Current Version:** 0.2.36
 **Active Branch:** main
 
@@ -68,7 +68,8 @@ See `SPRINT.md` for current work streams, TDD phase, and sprint step plan.
 - **Admin feature (complete):** `docs/features/implemented/deusex-admin-foundation.md`
 - **Lifecycle roadmap:** `docs/planning/lifecycle-roadmap-decisions.md` ← **NEW** (5 sprints, 5 decisions)
 - **Architecture baseline:** `docs/architecture/ARCHITECTURE_BASELINE.md` ← **NEW** (6-phase analysis, live-validated)
-- **Architecture decisions:** `docs/architecture/ARCHITECTURE_OVERVIEW.md`
+- **Architecture anatomy (primary):** `docs/architecture/ARCHITECTURE_ANATOMY.md`
+- **Architecture decisions (ADRs):** `docs/architecture/ARCHITECTURE_DECISIONS.md`
 - **Planning context:** `docs/planning/ROADMAP.md` + `docs/planning/DEFERRED_DECISIONS.md`
 - **Vision documents:** `docs/vision/VISION.md` + `docs/vision/MANIFESTO.md` + `docs/vision/CONTRIBUTION_ARCHITECTURE.md` + `docs/vision/PRODUCTS_AND_PLATFORM.md`
 - **Vision session decisions:** `docs/planning/VISION_DECISIONS.md`
@@ -82,10 +83,16 @@ See `SPRINT.md` for current work streams, TDD phase, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-03-10 (PRODUCTS_AND_PLATFORM.md reference integration)
+**Date:** 2026-03-14 (Architecture documentation integration)
 **Summary:**
+- Integrated new architecture docs: `ARCHITECTURE_ANATOMY.md` (primary), `ARCHITECTURE_DECISIONS.md` (ADRs), `ARCHITECTURE_ANATOMY_DIAGRAM.svg`
+- Renamed `ARCHITECTURE_OVERVIEW.md` → `ARCHITECTURE_DECISIONS_LEGACY.md`; old baseline archived to `docs/architecture/archive/`
+- Regenerated `ARCHITECTURE_BASELINE.md` — complete rewrite structured around L0–L7 anatomy layers, 5 verticals, Platform API ring, Ferd completion summary
+- Updated CLAUDE.md with wave model (Ferd/Hamn), API-first pattern (ADR-009), ARCHITECTURE_ANATOMY.md as primary reference
+- Updated 10 files replacing stale ARCHITECTURE_OVERVIEW.md references (README, INDEX, agent playbooks, workflows, feature docs)
+
+**Previous Session:** 2026-03-10 (PRODUCTS_AND_PLATFORM.md reference integration)
 - Integrated references to new `docs/vision/PRODUCTS_AND_PLATFORM.md` across 6 files
-- Updated: README.md, CLAUDE.md, DEFERRED_DECISIONS.md, PROJECT_STATUS.md, docs/INDEX.md, docs/workflows/boot-up.md
 - Audited all docs for missing/broken references to the new vision document
 
 **Previous Session:** 2026-03-09 (Vision docs integration + Vercel build fix)
