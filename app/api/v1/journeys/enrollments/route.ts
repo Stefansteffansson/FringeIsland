@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
         )
       `)
       .in('group_id', groupIds)
-      .eq('status', 'active')
+      .in('status', ['active', 'completed', 'paused', 'frozen'])
       .order('enrolled_at', { ascending: false });
 
     if (fetchError) {
