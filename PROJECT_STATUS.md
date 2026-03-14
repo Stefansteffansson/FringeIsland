@@ -88,6 +88,8 @@ See `SPRINT.md` for current work streams, TDD phase, and sprint step plan.
 - Created 3 API routes for journey enrollment: POST/DELETE `/api/v1/journeys/[id]/enroll`, GET `/api/v1/journeys/enrollments`
 - Refactored `EnrollmentModal.tsx`, journey detail page, and My Journeys page to call API routes instead of direct Supabase access
 - All enrollment writes now go through API routes per ADR-009 (API-first)
+- Fixed: enrollments API was filtering `status='active'` only — completed/paused/frozen journeys were missing from My Journeys
+- Fixed: "Finish Review" button on last step of completed/frozen journeys was a no-op — now navigates to `/my-journeys`
 - Updated CHANGELOG.md, bumped version to v0.2.37
 
 **Previous Session:** 2026-03-14 (ROADMAP.md outdated notice)
