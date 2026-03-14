@@ -120,85 +120,28 @@ export default function EnrollmentModal({
       setLoading(true);
       setError(null);
 
-      if (enrollmentType === 'individual') {
-        // First, get user's group IDs
-        const { data: userGroups } = await supabase
-          .from('group_memberships')
-          .select('group_id')
-          .eq('member_group_id', userProfile.personal_group_id)
-          .eq('status', 'active');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        setError('You must be logged in to enroll.');
+        return;
+      }
 
-        const groupIds = userGroups?.map(g => g.group_id) || [];
+      const response = await fetch(`/api/v1/journeys/${journeyId}/enroll`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          enrollmentType,
+          ...(enrollmentType === 'group' ? { groupId: selectedGroupId } : {}),
+        }),
+      });
 
-        // Check if user is already enrolled via a group
-        let existingGroupEnrollment = null;
-        if (groupIds.length > 0) {
-          const { data } = await supabase
-            .from('journey_enrollments')
-            .select('id, groups!journey_enrollments_group_id_fkey(name)')
-            .eq('journey_id', journeyId)
-            .in('group_id', groupIds)
-            .maybeSingle();
+      const result = await response.json();
 
-          existingGroupEnrollment = data;
-        }
-
-        if (existingGroupEnrollment) {
-          throw new Error(`You are already enrolled via your group: ${(existingGroupEnrollment as any).groups.name}`);
-        }
-
-        // Enroll individual (personal group = the user)
-        const { error: enrollError } = await supabase
-          .from('journey_enrollments')
-          .insert({
-            journey_id: journeyId,
-            group_id: userProfile.personal_group_id,
-            enrolled_by_group_id: userProfile.personal_group_id,
-            status: 'active',
-            progress_data: {},
-          });
-
-        if (enrollError) {
-          if (enrollError.code === '23505') {
-            throw new Error('You are already enrolled in this journey.');
-          }
-          throw enrollError;
-        }
-      } else {
-        // Group enrollment
-        if (!selectedGroupId) {
-          throw new Error('Please select a group.');
-        }
-
-        // Check if group is already enrolled
-        const { data: existingEnrollment } = await supabase
-          .from('journey_enrollments')
-          .select('id')
-          .eq('journey_id', journeyId)
-          .eq('group_id', selectedGroupId)
-          .maybeSingle();
-
-        if (existingEnrollment) {
-          throw new Error('This group is already enrolled in this journey.');
-        }
-
-        // Enroll group
-        const { error: enrollError } = await supabase
-          .from('journey_enrollments')
-          .insert({
-            journey_id: journeyId,
-            group_id: selectedGroupId,
-            enrolled_by_group_id: userProfile.personal_group_id,
-            status: 'active',
-            progress_data: {},
-          });
-
-        if (enrollError) {
-          if (enrollError.code === '23505') {
-            throw new Error('This group is already enrolled in this journey.');
-          }
-          throw enrollError;
-        }
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to enroll. Please try again.');
       }
 
       setSuccess(true);
@@ -208,8 +151,7 @@ export default function EnrollmentModal({
       }, 1500);
     } catch (err: any) {
       console.error('Error enrolling:', err);
-      const errorMessage = err.message || err.error_description || err.hint || 'Failed to enroll. Please try again.';
-      setError(errorMessage);
+      setError(err.message || 'Failed to enroll. Please try again.');
     } finally {
       setLoading(false);
     }

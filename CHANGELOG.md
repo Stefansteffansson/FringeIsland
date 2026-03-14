@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Journey Enrollment API Routes (ADR-009 compliance)** — Created API-first enrollment routes, refactored all frontend components to use them instead of direct Supabase access.
+  - **`POST /api/v1/journeys/[id]/enroll`** — Enroll individual (personal group) or group in a journey. Validates auth, checks for duplicate enrollments, enforces `enroll_group_in_journey` permission via `has_permission()` for group enrollments. Returns 201 with enrollment record.
+  - **`GET /api/v1/journeys/enrollments`** — Returns all active enrollments for the current user (individual + via group memberships). Includes journey details (title, description, difficulty, duration) and group name. Tags each enrollment as `individual` or `group`.
+  - **`DELETE /api/v1/journeys/[id]/enroll`** — Unenroll from a journey (sets status to `paused`). Supports individual and group unenrollment with permission checks.
+  - **Refactored:** `EnrollmentModal.tsx` — enrollment writes now go through POST API route instead of direct Supabase inserts.
+  - **Refactored:** `app/journeys/[id]/page.tsx` — enrollment status check now uses GET enrollments API route.
+  - **Refactored:** `app/my-journeys/page.tsx` — fetches all enrollments via GET API route instead of 3 direct Supabase queries.
+  - All routes follow existing auth pattern: JWT Bearer token → service client → `has_permission()` RPC.
+
 - **Sprint 4 — Platform Exit (v0.2.36)** — Admin-assisted cascade exit from all engagement groups + decommission.
   - **`admin_exit_user_from_platform(p_target_user_id)` RPC** — SECURITY DEFINER function iterates all active engagement group memberships for target user. Applies per-group logic: L1 (regular leave) for regular members, L2 (sole Steward → DeusEx handover) for sole Stewards, L3 (group closure) for last member. L4 nomination explicitly skipped (admin exit always uses L2). After all groups processed: user decommissioned (`is_decommissioned=true`, `is_active=false`), auth sessions deleted, audit log entry created.
   - **Safety guards:** Self-exit blocked, already-decommissioned users rejected, DeusEx members (platform admins) rejected, non-admin callers rejected.

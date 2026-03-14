@@ -60,88 +60,43 @@ export default function MyJourneysPage() {
       setLoading(true);
       setError(null);
 
-      // Fetch individual enrollments
-      const { data: individualData, error: individualError } = await supabase
-        .from('journey_enrollments')
-        .select(`
-          id,
-          journey_id,
-          status,
-          enrolled_at,
-          progress_data,
-          journeys (
-            id,
-            title,
-            description,
-            difficulty_level,
-            estimated_duration_minutes
-          )
-        `)
-        .eq('group_id', userProfile.personal_group_id)
-        .not('journeys', 'is', null)
-        .order('enrolled_at', { ascending: false });
-
-      if (individualError) throw individualError;
-
-      // Get user's group IDs first
-      const { data: userGroups } = await supabase
-        .from('group_memberships')
-        .select('group_id')
-        .eq('member_group_id', userProfile.personal_group_id)
-        .eq('status', 'active');
-
-      const groupIds = userGroups?.map(g => g.group_id) || [];
-
-      // Fetch group enrollments (only if user belongs to groups)
-      let groupData = null;
-      if (groupIds.length > 0) {
-        const { data, error: groupError } = await supabase
-          .from('journey_enrollments')
-          .select(`
-            id,
-            journey_id,
-            status,
-            enrolled_at,
-            progress_data,
-            journeys (
-              id,
-              title,
-              description,
-              difficulty_level,
-              estimated_duration_minutes
-            ),
-            groups!group_id (
-              id,
-              name
-            )
-          `)
-          .in('group_id', groupIds)
-          .not('journeys', 'is', null)
-          .not('groups!group_id', 'is', null)
-          .order('enrolled_at', { ascending: false });
-
-        if (groupError) throw groupError;
-        groupData = data;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        setError('You must be logged in to view your journeys.');
+        return;
       }
 
-      // Map the data to match our interface (journeys -> journey, groups -> group)
-      const mappedIndividual = (individualData || [])
-        .filter((e: any) => e.journeys)
+      const response = await fetch('/api/v1/journeys/enrollments', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to load your journeys.');
+      }
+
+      const result = await response.json();
+      const enrollments = result.data || [];
+
+      // Split into individual and group enrollments, mapping nested data
+      const individual = enrollments
+        .filter((e: any) => e.enrollmentType === 'individual' && e.journeys)
         .map((e: any) => ({
           ...e,
           journey: e.journeys,
         }));
 
-      const mappedGroup = (groupData || [])
-        .filter((e: any) => e.journeys && e.groups)
+      const group = enrollments
+        .filter((e: any) => e.enrollmentType === 'group' && e.journeys && e.groups)
         .map((e: any) => ({
           ...e,
           journey: e.journeys,
           group: e.groups,
         }));
 
-      setIndividualJourneys(mappedIndividual);
-      setGroupJourneys(mappedGroup);
+      setIndividualJourneys(individual);
+      setGroupJourneys(group);
     } catch (err: any) {
       console.error('Error fetching enrollments:', err);
       setError('Failed to load your journeys. Please try again.');

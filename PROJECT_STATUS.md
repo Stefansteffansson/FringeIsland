@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-03-14 (ROADMAP.md outdated notice)
+**Last Updated:** 2026-03-14 (Journey Enrollment API routes)
 **Current Version:** 0.2.36
 **Active Branch:** main
 
@@ -17,7 +17,7 @@ See `SPRINT.md` for current work streams, TDD phase, and sprint step plan.
 - **Phase:** ALL 5 LIFECYCLE SPRINTS COMPLETE — Phase 1.6 Polish & Launch is next
 - **Total Tables:** 19 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
 - **Total Migrations:** 16 active + 71 archived
-- **Recent Version:** v0.2.36 (Sprint 4 — Platform Exit)
+- **Recent Version:** v0.2.37 (Journey Enrollment API routes)
 - **Test Coverage:** 550 integration + 99 unit + 4 setup = **659 Jest tests** (655/659 pass, 4 pre-existing flaky) + **7 Playwright E2E tests** ✅
 - **Behaviors Documented:** 105 (101 previous + 4 Sprint 4: B-EXIT-001, B-EXIT-002, B-EXIT-003, B-EXIT-004) ✅
 - **Feature Docs:** 18 implemented + 0 active + 1 planned design + 1 roadmap (lifecycle decisions)
@@ -83,8 +83,14 @@ See `SPRINT.md` for current work streams, TDD phase, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-03-14 (ROADMAP.md outdated notice)
+**Date:** 2026-03-14 (Journey Enrollment API routes — ADR-009 compliance)
 **Summary:**
+- Created 3 API routes for journey enrollment: POST/DELETE `/api/v1/journeys/[id]/enroll`, GET `/api/v1/journeys/enrollments`
+- Refactored `EnrollmentModal.tsx`, journey detail page, and My Journeys page to call API routes instead of direct Supabase access
+- All enrollment writes now go through API routes per ADR-009 (API-first)
+- Updated CHANGELOG.md, bumped version to v0.2.37
+
+**Previous Session:** 2026-03-14 (ROADMAP.md outdated notice)
 - Added outdated/pending-rewrite notice to top of `docs/planning/ROADMAP.md`, pointing to `PRODUCTS_AND_PLATFORM.md` and `ARCHITECTURE_ANATOMY.md`
 - Rewrite deferred until after Journey specification session
 

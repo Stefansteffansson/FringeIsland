@@ -1,6 +1,6 @@
 # CLAUDE.md — AI Context for FringeIsland
 
-**Version:** 0.2.36 | **Updated:** February 28, 2026 | **Phase 1:** 95% complete
+**Version:** 0.2.37 | **Updated:** March 14, 2026 | **Phase 1:** 95% complete
 
 ---
 

@@ -50,61 +50,42 @@ export default function JourneyDetailPage() {
     try {
       setCheckingEnrollment(true);
 
-      // Check individual enrollment
-      const { data: individualEnrollment } = await supabase
-        .from('journey_enrollments')
-        .select('id')
-        .eq('journey_id', journeyId)
-        .eq('group_id', userProfile.personal_group_id)
-        .maybeSingle();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
 
-      if (individualEnrollment) {
-        setEnrollmentInfo({
-          isEnrolled: true,
-          enrollmentType: 'individual',
-        });
-        return;
-      }
-
-      // First, get all group IDs the user belongs to
-      const { data: userGroups } = await supabase
-        .from('group_memberships')
-        .select('group_id')
-        .eq('member_group_id', userProfile.personal_group_id)
-        .eq('status', 'active');
-
-      const groupIds = userGroups?.map(g => g.group_id) || [];
-
-      // Check group enrollment (only if user belongs to any groups)
-      let groupEnrollments = null;
-      if (groupIds.length > 0) {
-        const { data } = await supabase
-          .from('journey_enrollments')
-          .select(`
-            id,
-            groups!journey_enrollments_group_id_fkey(id, name)
-          `)
-          .eq('journey_id', journeyId)
-          .in('group_id', groupIds);
-
-        groupEnrollments = data;
-      }
-
-      if (groupEnrollments && groupEnrollments.length > 0) {
-        const enrollment = groupEnrollments[0] as any;
-        setEnrollmentInfo({
-          isEnrolled: true,
-          enrollmentType: 'group',
-          groupName: enrollment.groups.name,
-        });
-        return;
-      }
-
-      // Not enrolled
-      setEnrollmentInfo({
-        isEnrolled: false,
-        enrollmentType: null,
+      const response = await fetch('/api/v1/journeys/enrollments', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
       });
+
+      if (!response.ok) {
+        console.error('Error fetching enrollments:', response.statusText);
+        return;
+      }
+
+      const result = await response.json();
+      const enrollments = result.data || [];
+
+      // Find enrollment for this specific journey
+      const thisJourneyEnrollment = enrollments.find(
+        (e: any) => e.journey_id === journeyId
+      );
+
+      if (thisJourneyEnrollment) {
+        setEnrollmentInfo({
+          isEnrolled: true,
+          enrollmentType: thisJourneyEnrollment.enrollmentType,
+          groupName: thisJourneyEnrollment.enrollmentType === 'group'
+            ? thisJourneyEnrollment.groups?.name
+            : undefined,
+        });
+      } else {
+        setEnrollmentInfo({
+          isEnrolled: false,
+          enrollmentType: null,
+        });
+      }
     } catch (err) {
       console.error('Error checking enrollment:', err);
     } finally {

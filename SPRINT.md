@@ -1,7 +1,7 @@
 # SPRINT.md — Active Sprint Tracker
 
 **Last Updated:** 2026-03-14
-**Version:** v0.2.36
+**Version:** v0.2.37
 
 ---
 
