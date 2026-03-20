@@ -8,6 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Journey Designer Discovery Session 01** (2026-03-20) — Foundational conceptual session establishing vocabulary, cosmology, and data model concepts for the FringeIsland journey system.
+  - **Traveler** defined as any entity capable of embarking on a journey — decoupled from user accounts
+  - **The Whisp** (renamed from "Vessel") — each member's personal future self, inhabiting the Other Side. Dual nature: Encounter + Companion
+  - **Whisperers** — collective name for all Whisps walking the Other Side
+  - **Three Worlds** cosmology — Ordinary World, Safe Harbour (FringeIsland), The Other Side
+  - **Four route types** — Fixed (curriculum), Hybrid (guided-adaptive), Traveler-Initiated (personal quest), AI-Generative (universe-driven)
+  - **Universal step grammar** — Present → Ask → Change, operating at two levels: Nodes (waypoints) and Beats (atomic units)
+  - **Six content families** — Witness, Reflect, Decide, Act, Encounter, Rest
+  - **The Road** as first-class object between nodes — co-owned by designer (conditions) and universe (content)
+  - **Encounter family** — two dimensions: Origin (planned/emergent/triggered) × Other (NPC/FIM/group/inner self/Whisp)
+  - **Companion model** — Traveler + Companionship Record (consistent with Universal Group architecture)
+  - **Pacing system** — node duration (4 types), road duration (3 modes), journey completion (4 triggers), journey states: active/paused/complete/integrated
+  - **Session doc:** `docs/planning/sessions/2026-03-20-JOURNEY_DESIGNER_SESSION.md`
+
+### Changed
+- **ROADMAP.md rewritten to v3.0** — Replaced obsolete Phase 1/2/3/4 model with Wave 1 (Ferd) / Wave 2 (Hamn) / Wave 3 / Wave 3+ framing per `PRODUCTS_AND_PLATFORM.md`. Ferd completion history preserved. Journey Designer positioned as central Wave 2 concern with Session 01 vocabulary integrated.
+- **DEFERRED_DECISIONS.md updated to v1.5** — Added 4 items explicitly parked in Session 01: Seasons and Episodes, NPC behaviour authoring, Whisp practical UX, Three Worlds UI design. All deferred to Wave 2 (Hamn) specification sessions.
+
 - **Journey Enrollment API Routes (ADR-009 compliance)** — Created API-first enrollment routes, refactored all frontend components to use them instead of direct Supabase access.
   - **`POST /api/v1/journeys/[id]/enroll`** — Enroll individual (personal group) or group in a journey. Validates auth, checks for duplicate enrollments, enforces `enroll_group_in_journey` permission via `has_permission()` for group enrollments. Returns 201 with enrollment record.
   - **`GET /api/v1/journeys/enrollments`** — Returns all active enrollments for the current user (individual + via group memberships). Includes journey details (title, description, difficulty, duration) and group name. Tags each enrollment as `individual` or `group`.

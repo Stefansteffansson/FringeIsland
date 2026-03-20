@@ -691,6 +691,85 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 ---
 
+## Journey Designer — Parked from Session 01
+
+*These items were explicitly parked during the Journey Designer Discovery Session 01 (March 20, 2026). Each requires a dedicated specification session before implementation. See `docs/planning/sessions/2026-03-20-JOURNEY_DESIGNER_SESSION.md` for full context.*
+
+### Seasons and Episodes
+
+**Topic**: The temporal narrative structure of the FringeIsland universe — storytelling arcs that drive Type 4 (AI-Generative) journeys and animate The Other Side.
+
+**Context**: Session 01 established that the FringeIsland universe is driven by Immersive Edutainment where "tainment" means character-driven, Hero's Journey-structured narrative. Seasons and Episodes are the temporal structure of that narrative, especially relevant for Type 4 journeys and The Other Side. The concept was raised but deliberately not explored — it is too large and consequential to be a side conversation.
+
+**Decision**: Parked for a dedicated design session. The journey data model accommodates Seasons and Episodes in reserved fields (`narrative_state` JSON on journeys) without requiring them to be specified now.
+
+**Deferred To**: Wave 2 (Hamn) — dedicated specification session before any narrative system implementation.
+
+**Notes for Future Session**:
+- How do Seasons structure the passage of time in the FringeIsland world?
+- How do Episodes create shared narrative moments across the community?
+- How do Seasons interact with Type 4 journey generation?
+- What is the relationship between Seasons and the Whisp's accumulation?
+
+---
+
+### NPC Behaviour Authoring
+
+**Topic**: The mechanism by which NPCs are calibrated to serve their developmental function — drawing travelers toward their growth zone without pushing them into the panic zone.
+
+**Context**: Session 01 established that NPCs are not decorative — they are calibrated agents of productive discomfort, targeting the growth zone using a three-zone model (comfort/growth/panic). The developmental *intention* is clear, but the *mechanism* is not. Is it prompt engineering? A behaviour graph? A learning model? Who authors NPC behaviour and at what layer?
+
+**Decision**: Parked. The NPC concept is foundational to the Encounter content family and the Road system, but the authoring and calibration mechanism requires its own design thread.
+
+**Deferred To**: Wave 2 (Hamn) — dedicated specification session. Prerequisite for any NPC implementation.
+
+**Notes for Future Session**:
+- Who authors NPC behaviour — journey designers, world architects, or the AI layer?
+- How is NPC calibration tested and tuned?
+- How do NPCs maintain personality continuity across encounters with the same traveler?
+- How do NPC arcs (their own journeys) interact with the traveler's journey?
+- What feedback loops exist between NPC interactions and calibration quality?
+
+---
+
+### The Whisp's Practical UI Experience
+
+**Topic**: How a member actually experiences their Whisp on the platform day-to-day — visibility, interaction, growth signals.
+
+**Context**: Session 01 defined the Whisp conceptually (personal future self, dual nature as Encounter and Companion, permanent presence) and architecturally (Traveler + Companionship Record). What remains unspecified is the *felt experience* — what the member sees, hears, or senses. The Whisp begins nearly silent and becomes more coherent over time, but the practical UX of that progression has not been designed.
+
+**Decision**: Parked. The Whisp is the most intimate concept in FringeIsland and its UX deserves focused attention, not a side conversation.
+
+**Deferred To**: Wave 2 (Hamn) — dedicated specification session. Prerequisite for Whisp implementation.
+
+**Notes for Future Session**:
+- Is the Whisp visible? Does it have a visual representation?
+- How does the member first encounter their Whisp during onboarding?
+- What does the Whisp "whispering back" look like in practice — notifications, ambient presence, structured encounters?
+- How does the member perceive the Whisp's growth as it fills over time?
+- How is the Whisp surfaced without being intrusive — honouring the non-judgment principle?
+
+---
+
+### Three Worlds UI Design
+
+**Topic**: How the Three Worlds (Ordinary World, Safe Harbour, The Other Side) manifest in the platform's user interface — visual language, world transitions, spatial experience.
+
+**Context**: Session 01 established the Three Worlds as the Hero's Journey made spatial — departure, ordeal, return. Each world has distinct character, purpose, and emotional register. The journey designer needs spatial context (where does this journey begin, where does it take the traveler, where does it end?). But the UI/UX design of how world transitions are *felt* by the member has not been explored.
+
+**Decision**: Parked. The Three Worlds structure is foundational to the platform's identity and requires dedicated visual/UX design work.
+
+**Deferred To**: Wave 2 (Hamn) — dedicated design session. Prerequisite for Hamn visual identity.
+
+**Notes for Future Session**:
+- Does the platform look different in each world? (Colour, typography, ambient elements)
+- Is crossing between worlds a felt transition or a transparent one?
+- How does the Safe Harbour feel different from The Other Side?
+- How does the ordinary world (off-platform) connect back — notifications, prompts, integration moments?
+- How do the Three Worlds relate to the existing L0-L7 architecture layers?
+
+---
+
 ## Process Notes
 
 ### How to Use This Document
@@ -716,11 +795,12 @@ When deferring a new decision:
 
 ---
 
-**Document Version**: 1.4
-**Last Updated**: February 28, 2026 (v0.2.36)
+**Document Version**: 1.5
+**Last Updated**: March 20, 2026 (Journey Designer Session 01)
 **Next Review**: Quarterly or as deferred items are implemented
 
 **Recent Updates**:
+- Session 01 (2026-03-20): Added 4 parked items from Journey Designer Discovery Session — Seasons and Episodes, NPC behaviour authoring, Whisp practical UX, Three Worlds UI design. All deferred to Wave 2 (Hamn) specification sessions.
 - v0.2.36: Added lifecycle sprint deferrals (D-R1 through D-R5) from `lifecycle-roadmap-decisions.md` — self-service platform exit, configurable timeouts, GDPR content erasure all explicitly deferred.
 - v0.2.17: Marked Permission Inheritance as RESOLVED (D5/D7/D10/D12). Marked Subgroups design as RESOLVED (D7/D9/D10/D11/D15). Marked Group-to-Group Relationships design as RESOLVED (D7/D11/D21). Updated Notifications (IMPLEMENTED v0.2.14), Forum (PARTIALLY IMPLEMENTED v0.2.14), DM (IMPLEMENTED v0.2.15).
 - v0.2.10: No new deferred decisions (journey enrollment completed as planned)
