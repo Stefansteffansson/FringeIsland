@@ -22,7 +22,7 @@ Core Tables:
 ├── group_role_permissions     # Permissions for group role instances
 └── user_group_roles           # User role assignments in groups
 
-Future Tables (Phase 2+):
+Implemented Tables (added post-launch):
 ├── forum_posts
 ├── messages
 ├── journey_progress
@@ -37,19 +37,19 @@ Future Tables (Phase 2+):
 ### Phase 1: Utility Functions
 1. `update_updated_at_column()` - Trigger function for timestamp updates
 
-### Phase 2: Base Tables (No Foreign Key Dependencies)
+### Step 2: Base Tables (No Foreign Key Dependencies)
 2. `users` - User accounts (references auth.users from Supabase Auth)
 3. `permissions` - System-defined capabilities
 4. `role_templates` - Role blueprints
 5. `group_templates` - Group blueprints
 
-### Phase 3: Core Tables (With Foreign Key Dependencies)
+### Step 3: Core Tables (With Foreign Key Dependencies)
 6. `groups` - Organizational units (depends on: users, group_templates)
 7. `group_memberships` - Membership tracking (depends on: users, groups)
 8. `journeys` - Learning experiences (depends on: users)
 9. `journey_enrollments` - Journey participation (depends on: journeys, users, groups)
 
-### Phase 4: Authorization Junction Tables
+### Step 4: Authorization Junction Tables
 10. `role_template_permissions` - Role-permission mappings (depends on: role_templates, permissions)
 11. `group_template_roles` - Template-role mappings (depends on: group_templates, role_templates)
 12. `group_roles` - Group-specific roles (depends on: groups, role_templates)
@@ -1140,9 +1140,9 @@ Use the provided `fringeisland_migration.sql` file which contains all tables, in
 If migrating manually, follow this sequence:
 
 1. **Phase 1:** Utility functions
-2. **Phase 2:** Base tables (users, permissions, role_templates, group_templates)
-3. **Phase 3:** Core tables with dependencies (groups, group_memberships, journeys, journey_enrollments)
-4. **Phase 4:** Authorization junction tables
+2. **Step 2:** Base tables (users, permissions, role_templates, group_templates)
+3. **Step 3:** Core tables with dependencies (groups, group_memberships, journeys, journey_enrollments)
+4. **Step 4:** Authorization junction tables
 5. **Phase 5:** Seed data (permissions, role templates, group templates)
 6. **Phase 6:** Enable RLS and create policies
 7. **🆕 Phase 7 (v0.2.5):** Create last leader protection trigger

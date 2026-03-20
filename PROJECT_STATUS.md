@@ -8,7 +8,7 @@
 
 ## Active Sprint
 
-See `SPRINT.md` for current work streams, TDD phase, and sprint step plan.
+See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ---
 
@@ -57,7 +57,7 @@ See `SPRINT.md` for current work streams, TDD phase, and sprint step plan.
 - `CLAUDE.md` - Technical patterns and current implementation (auto-loaded)
 - `README.md` - Project overview and setup
 - `CHANGELOG.md` - Version history
-- `SPRINT.md` - **Active sprint, TDD phase, and next sprint backlog**
+- `SPRINT.md` - **Active sprint, TDD stage, and next sprint backlog**
 - `docs/planning/ROADMAP.md` - **Phase progress and milestone history**
 - `docs/planning/DEFERRED_DECISIONS.md` - **Why we didn't build X (prevents feature creep)**
 

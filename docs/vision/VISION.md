@@ -261,7 +261,7 @@ FringeIsland sustains itself through five revenue streams, chosen because each a
 
 **Events.** Online seasonal events, regional community gatherings, and ultimately an annual FringeIsland Summit — where the community assembles, the world is celebrated, and the next season begins. Events serve multiple functions at once: revenue, belonging, visibility, and the discovery of new Dreamineers.
 
-**Endowment.** The long-horizon ambition. A permanent investment fund whose returns sustain the Foundation in perpetuity — protecting FringeIsland from the financial instability that threatens even the most beloved open communities. This is a Phase 3 goal, built toward from the beginning by directing surplus to the reserve rather than distributing it.
+**Endowment.** The long-horizon ambition. A permanent investment fund whose returns sustain the Foundation in perpetuity — protecting FringeIsland from the financial instability that threatens even the most beloved open communities. This is a Wave 3 goal, built toward from the beginning by directing surplus to the reserve rather than distributing it.
 
 ### The Founding Moment — Kickstarter
 
@@ -287,13 +287,13 @@ The web platform currently in development is a proof of concept — a demonstrat
 
 The platform is built in phases, each phase validated before the next begins. The vision drives each phase — not the other way around.
 
-**Phase 1 — Web Platform as Hub**
+**Wave 1 (Ferd) — Web Platform as Hub**
 The web platform is the primary interface: identity, profiles, home gardens, groups, journey browsing, forums, contribution tools. Optimised as a Progressive Web App for mobile access. Discord serves as a temporary community scaffold — deliberately temporary. It will be retired when the platform is ready to hold the community itself.
 
-**Phase 2 — Full PWA**
+**Wave 2 (Hamn) — Full PWA**
 Push notifications for episode drops and narrative events. Basic AR experiments through camera access — location-based, QR-triggered world moments. Offline access to journey content. Discord retired. The community lives fully on FringeIsland's own platform. The marketplace launches.
 
-**Phase 3 — Native Apps and Full AR**
+**Wave 3 — Native Apps and Full AR**
 Native iOS and Android apps built with validated knowledge of what the AR layer actually needs. The web platform remains — as the primary home for deep work, contribution, and desktop-first experiences. The native apps are the experiential layer: immersive, mobile, world-blending.
 
 ### The Broader Ecosystem

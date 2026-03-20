@@ -2,7 +2,7 @@
 
 **Version:** 1.1
 **Last Updated:** February 28, 2026
-**Status:** Living document - v1.0 MVP scope (Phase 1: 95% complete)
+**Status:** Living document - v1.0 MVP scope (Wave 1 / Ferd: 95% complete)
 **Links:** [Vision](../vision/VISION.md) | [Roadmap](ROADMAP.md) | [Features](../features/)
 
 ---
@@ -62,7 +62,7 @@ Vision (Why) → Product Spec (What) → Roadmap (When) → Features (How) → B
 - Context: Coach, facilitator, experienced practitioner
 - Pain: Limited tools for guiding group journeys
 - Goal: Co-facilitate journeys with Stewards
-- Success: Groups complete journeys with guidance (Phase 2)
+- Success: Groups complete journeys with guidance (Wave 2 / Hamn)
 
 ---
 
@@ -228,14 +228,14 @@ The following features were originally out of scope for v1.0 but have been imple
 
 ### Still Out of Scope
 
-**Phase 2+ Features:**
+**Wave 2 (Hamn)+ Features:**
 - User-created journeys and journey marketplace
 - Guide role (full implementation)
 - Advanced group features (subgroups/groups-join-groups UI)
 - Completion certificates
 - Activity feeds
 
-**Phase 3+ Features:**
+**Wave 3+ Features:**
 - Dynamic/adaptive journeys
 - AI-powered recommendations
 - Personalized content paths
@@ -434,14 +434,14 @@ The following features were originally out of scope for v1.0 but have been imple
 
 ### Not a Marketplace (Yet)
 - No paid journeys (v1.0)
-- No user-created journeys (v1.0 - Phase 2)
-- No creator tools (Phase 2)
+- No user-created journeys (v1.0 - Wave 2 / Hamn)
+- No creator tools (Wave 2 / Hamn)
 - No revenue features (v1.0 is free to use)
 
 ### Not Fully Adaptive (Yet)
-- No AI-powered personalization (Phase 3)
-- No dynamic content adjustment (Phase 3)
-- No recommendation engine (Phase 3)
+- No AI-powered personalization (Wave 3)
+- No dynamic content adjustment (Wave 3)
+- No recommendation engine (Wave 3)
 - Journeys are predefined, static (v1.0)
 
 ---
@@ -454,7 +454,7 @@ The following features were originally out of scope for v1.0 but have been imple
 1. Gather user feedback (surveys, interviews, usage data)
 2. Validate core assumptions (journey metaphor, group learning)
 3. Identify top-requested features
-4. Prioritize Phase 2 features based on data
+4. Prioritize Wave 2 (Hamn) features based on data
 5. Update this spec for v2.0
 
 **Key Questions to Answer:**
@@ -490,7 +490,7 @@ The following features were originally out of scope for v1.0 but have been imple
 **Owner:** Product team (currently: Stefan + AI assistant)
 **Review Cadence:** After each major phase completion
 **Version History:**
-- v1.1 (Feb 28, 2026): Updated status — Phase 1.4-1.5e all complete, technical specs updated
+- v1.1 (Feb 28, 2026): Updated status — Wave 1 phases 1.4–1.5e all complete, technical specs updated
 - v1.0 (Feb 9, 2026): Initial product spec for v1.0 MVP
 
 ---

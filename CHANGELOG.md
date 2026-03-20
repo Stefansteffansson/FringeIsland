@@ -1038,38 +1038,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## Project Phases
+## Project Waves
 
-### Phase 1: Foundation ✅ 75% COMPLETE
-**Timeline**: January 2026
+> This section previously used a Phase 1/2/3/4 model. The project now uses a wave model. For current roadmap and wave status, see [docs/planning/ROADMAP.md](docs/planning/ROADMAP.md) and [docs/vision/PRODUCTS_AND_PLATFORM.md](docs/vision/PRODUCTS_AND_PLATFORM.md).
 
-- [x] Complete architecture planning
-- [x] Design database schema
-- [x] Implement database
-- [x] Set up development environment
-- [x] Initialize Next.js project
-- [x] Implement authentication system
-- [x] User profile management
-- [x] Group management (create, edit, members, roles)
-- [x] **Journey catalog and browsing** ✅ NEW (v0.2.8)
-- [ ] Journey enrollment and content delivery
-- [ ] Communication features
-
-### Phase 2: User-Generated Content 
-**Timeline**: Q2 2026
-- User-created journeys
-- Journey marketplace
-- Advanced customization
-
-### Phase 3: Dynamic Journeys
-**Timeline**: Q3 2026
-- Adaptive learning paths
-- AI-powered recommendations
-
-### Phase 4: Developer Platform
-**Timeline**: Q4 2026
-- Public API
-- SDK and integrations
+- **Wave 1 (Ferd):** Core web platform — ~95% complete as of v0.2.37
+- **Wave 2 (Hamn):** Full FringeIsland experience — planning phase
 
 ---
 

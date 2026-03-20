@@ -197,7 +197,7 @@ Invalid:
 
 - **Scenario:** Rapid-fire messages (User A sends 5 messages quickly)
   - **Behavior:** One notification per message (5 notifications created)
-  - **Why:** Each message is an independent event; notification batching is deferred to Phase 2+
+  - **Why:** Each message is an independent event; notification batching is deferred to Wave 2 (Hamn)+
 
 - **Scenario:** Recipient has the conversation open (already reading)
   - **Behavior:** Notification is still created (read status is handled separately by the UI)
@@ -269,7 +269,7 @@ Invalid:
 
 **Test Coverage:** 6 / 6 behaviors tested ✅ (19 integration tests in `tests/integration/communication/messaging.test.ts`)
 
-**Design Decisions (resolved in Phase 3):**
+**Design Decisions (resolved in Stage 3):**
 - Read tracking: per-conversation with `last_read_at` per participant ✅
 - Conversation table structure: two FK columns (`participant_1`, `participant_2`) with sorted order ✅
 - Unique constraint: `CHECK (participant_1 < participant_2)` + `UNIQUE(participant_1, participant_2)` ✅

@@ -43,14 +43,14 @@ When a user receives a new message, a notification is created (type: `new_direct
 - Real-time message delivery via Supabase Realtime
 
 ### Out of Scope (deferred)
-- Group chat / multi-user conversations — Phase 2+
-- File/image attachments — Phase 2+
-- Message editing after send — Phase 2+
-- Message deletion — Phase 2+ (soft delete pattern exists in forum_posts if needed)
-- Typing indicators — Phase 2+
-- Message search — Phase 2+
-- Block/mute users — Phase 2+
-- Message reactions (emoji) — Phase 2+
+- Group chat / multi-user conversations — Wave 2 (Hamn)+
+- File/image attachments — Wave 2 (Hamn)+
+- Message editing after send — Wave 2 (Hamn)+
+- Message deletion — Wave 2 (Hamn)+ (soft delete pattern exists in forum_posts if needed)
+- Typing indicators — Wave 2 (Hamn)+
+- Message search — Wave 2 (Hamn)+
+- Block/mute users — Wave 2 (Hamn)+
+- Message reactions (emoji) — Wave 2 (Hamn)+
 
 ---
 

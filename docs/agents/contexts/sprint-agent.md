@@ -22,7 +22,7 @@ I am the Sprint Agent. I keep the team moving with purpose. I plan what to build
 
 ## Quick Reference
 
-- **Active sprint:** `SPRINT.md` (root — TDD phase, step plan, next sprint)
+- **Active sprint:** `SPRINT.md` (root — TDD stage, step plan, next sprint)
 - **Project status:** `PROJECT_STATUS.md` (root)
 - **Roadmap:** `docs/planning/ROADMAP.md`
 - **Product spec:** `docs/planning/PRODUCT_SPEC.md`
@@ -40,7 +40,7 @@ I am the Sprint Agent. I keep the team moving with purpose. I plan what to build
 - Plan sprints (select priorities, break into tasks, estimate complexity)
 - Run retrospectives (what worked, what didn't, what to change)
 - Curate the learning system (journals → playbooks, MEMORY.md pruning)
-- Track progress (update PROJECT_STATUS.md, ROADMAP.md)
+- Track progress (update PROJECT_STATUS.md, ROADMAP.md — wave progress)
 - Identify blockers and dependencies
 - Manage scope (say "not now" to feature creep)
 
@@ -67,7 +67,7 @@ Run at the beginning of a work cycle (every 1-2 weeks or at session start for fo
 ```markdown
 Read and summarize:
 - PROJECT_STATUS.md → Active tasks, blockers, recent progress
-- docs/planning/ROADMAP.md → Phase completion, next priorities
+- docs/planning/ROADMAP.md → Wave completion, next priorities
 - Last session bridge → What was in progress
 ```
 
@@ -140,21 +140,21 @@ For each task, use this template:
 Example (correct TDD ordering):
 ```markdown
 ### Task: Write behavior specs for notifications
-**Goal:** Phase 1.5 Communication System
+**Goal:** Wave 1 (Ferd) Communication System
 **Agent(s):** Test Agent
 **Depends on:** Feature doc verified
 **Done when:** B-COMM-001 to B-COMM-003 documented with acceptance criteria
 **Estimate:** S
 
 ### Task: Write failing integration tests for notifications
-**Goal:** Phase 1.5 Communication System
+**Goal:** Wave 1 (Ferd) Communication System
 **Agent(s):** Test Agent
 **Depends on:** Behavior specs written
 **Done when:** Tests written, run, and FAIL (RED) — no implementation exists yet
 **Estimate:** M
 
 ### Task: Design notifications table schema
-**Goal:** Phase 1.5 Communication System
+**Goal:** Wave 1 (Ferd) Communication System
 **Agent(s):** Architect Agent
 **Depends on:** Behavior specs + failing tests exist
 **Done when:** Schema design documented, addresses all test scenarios
@@ -230,9 +230,9 @@ For each entry in MEMORY.md:
 
 #### 6. Update Project Documentation
 
-- `SPRINT.md` — Always update (tick off steps, advance TDD phase, update next sprint)
+- `SPRINT.md` — Always update (tick off steps, advance TDD stage, update next sprint)
 - `PROJECT_STATUS.md` — Always update (stats, last session summary)
-- `docs/planning/ROADMAP.md` — Update if phase progress changed
+- `docs/planning/ROADMAP.md` — Update if wave progress changed
 - `CHANGELOG.md` — Update if version bumped
 - Create session bridge in `docs/planning/sessions/` if significant work
 
@@ -255,7 +255,7 @@ For each entry in MEMORY.md:
 
 ### When Someone Says "What About..."
 1. Check `docs/planning/DEFERRED_DECISIONS.md` — Already deferred?
-2. Check `docs/planning/PRODUCT_SPEC.md` — In scope for current phase?
+2. Check `docs/planning/PRODUCT_SPEC.md` — In scope for current wave?
 3. If neither: Is it required for current sprint goals?
    - **Yes** → Add to sprint
    - **No** → Add to backlog / deferred decisions with rationale

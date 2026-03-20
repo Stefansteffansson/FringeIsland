@@ -77,7 +77,7 @@ FringeIsland is **not a product — it is a movement with an ecosystem.** The we
 
 - A game / games
 - Physical representations of FI worlds
-- iOS and Android native apps (Phase 3)
+- iOS and Android native apps (Wave 2 / Hamn)
 - Physical meetups, training camps, getaways
 - 3D printed physical representations of member homes, gardens, avatars, items
 - AR/mixed reality layer blending digital and physical worlds
@@ -156,19 +156,19 @@ Members can engage anywhere on this spectrum:
 
 **Three-phase approach:**
 
-### Phase 1 — Now (Web Platform as Hub)
+### Wave 1 (Ferd) — Now (Web Platform as Hub)
 - Web platform handles: identity, profiles, home gardens, groups, journey browsing, community forums, contribution tools
 - Optimised as a **PWA (Progressive Web App)** for basic mobile access
 - **Discord used temporarily** as community campfire scaffold — explicitly a temporary scaffold, not the permanent home
 - Tech stack: Next.js 16.1, TypeScript, Tailwind CSS, Supabase/PostgreSQL (already in progress at v0.2.7)
 
-### Phase 2 — Near Term (Full PWA)
+### Wave 2 (Hamn) — Near Term (Full PWA)
 - Camera access for **basic AR experiments** (location-based, QR-triggered world moments)
 - **Push notifications** for episode drops and narrative events
 - **Offline access** to journey content
 - Discord retired — all community moves into the owned FringeIsland platform
 
-### Phase 3 — When Validated (Native Apps)
+### Wave 3 — When Validated (Native Apps)
 - Full **native iOS and Android apps** for complete AR/mixed reality experience
 - Built with validated knowledge of what the AR layer needs
 - Native apps become the **primary experience layer**
@@ -218,13 +218,15 @@ Key open source governance models understood:
 
 ## THE WEB PLATFORM — CURRENT STATE
 
+> **Note:** This is a historical snapshot from Session 1 (January 26, 2026). Current state: v0.2.37, Wave 1 (Ferd) ~95% complete. See `PROJECT_STATUS.md` for live status.
+
 - **Version:** v0.2.7 (as of January 26, 2026)
-- **Phase:** 1.3 complete, 70% through Phase 1
+- **Wave:** 1.3 complete, 70% through Wave 1 (Ferd)
 - **Tech Stack:** Next.js 16.1, TypeScript, Tailwind CSS, Supabase/PostgreSQL
 - **Database:** 13 tables, 8 migrations, Row Level Security policies
 - **Completed features:** Authentication, user profiles with avatar upload, group management (create/edit/invite/roles), navigation bar, modal systems
 - **Current default landing:** /groups
-- **Next milestone:** Phase 1.4 — Journey System (catalog, browsing, search, filtering, enrollment)
+- **Next milestone:** Wave 1, Phase 1.4 — Journey System (catalog, browsing, search, filtering, enrollment)
 - **Repository:** GitHub — Stefansteffansson/FringeIsland
 
 ---

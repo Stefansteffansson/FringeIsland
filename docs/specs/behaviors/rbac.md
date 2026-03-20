@@ -543,7 +543,7 @@
 
 - **Scenario:** User's role is changed by another Steward while they're viewing the page
   - **Behavior:** Permissions don't update until `refreshNavigation` event or page reload
-  - **Why:** No real-time subscription yet (Phase 2 feature)
+  - **Why:** No real-time subscription yet (Wave 2 (Hamn) feature)
 
 - **Scenario:** Hook is called with `groupId = null` (e.g., on a non-group page)
   - **Behavior:** Returns only Tier 1 (system group) permissions, no Tier 2

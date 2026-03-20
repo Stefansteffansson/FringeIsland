@@ -216,7 +216,7 @@ This is a display-layer concern handled by ForumSection component's membership c
 - ~~Smart notification schema and UI~~ — **IMPLEMENTED (v0.2.35, Sprint 3).** See [smart-notifications.md](./smart-notifications.md).
 - ~~Platform exit cascade (Sprint 4)~~ — **IMPLEMENTED (v0.2.36, Sprint 4).** See [platform-exit.md](./platform-exit.md).
 - Self-service account deletion
-- Group-joins-group leave flows (Phase 2)
+- Group-joins-group leave flows (Wave 2 (Hamn))
 
 ---
 

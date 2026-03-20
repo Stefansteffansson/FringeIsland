@@ -59,9 +59,9 @@ When user selects feature work after boot-up, load `docs/agents/contexts/sprint-
 
 **Hard rule:** Behaviors → failing tests (RED) → design → implement (GREEN). Tests MUST fail before implementation begins.
 
-**Canonical workflow:** `docs/workflows/feature-development.md` (8 phases, 0–7, with hard STOP gates)
+**Canonical workflow:** `docs/workflows/feature-development.md` (8 stages, 0–7, with hard STOP gates)
 
-**Phase summary:** 0-Feature context → 1-Behaviors → 2-Write tests → 3-Run tests RED → 4-Design → 5-Implement GREEN → 6-Verify → 7-Document
+**Stage summary:** 0-Feature context → 1-Behaviors → 2-Write tests → 3-Run tests RED → 4-Design → 5-Implement GREEN → 6-Verify → 7-Document
 
 ### Database Migrations (correct commands)
 

@@ -82,7 +82,7 @@
 - [x] Sign in with valid credentials succeeds if is_active=true
 - [x] Sign in with valid credentials blocked if is_active=false (AuthContext auto-signs-out + returns error)
 - [x] Auth context checks is_active after sign in via profile query
-- [ ] Inactive users redirected to account reactivation page (deferred — Phase 2)
+- [ ] Inactive users redirected to account reactivation page (deferred — Wave 2 (Hamn))
 
 **Examples:**
 
@@ -110,7 +110,7 @@
 
 **Testing Priority:** 🔴 CRITICAL (security, prevents deleted users from accessing)
 
-**Status:** ✅ IMPLEMENTED (v0.2.12) — reactivation page deferred to Phase 2
+**Status:** ✅ IMPLEMENTED (v0.2.12) — reactivation page deferred to Wave 2 (Hamn)
 
 **History:**
 - 2026-01-24: Implemented (v0.1.0) - is_active flag
@@ -304,4 +304,4 @@
 **Next Behaviors to Document:**
 - B-AUTH-006: Password Reset Flow
 - B-AUTH-007: Email Verification (if implemented)
-- B-AUTH-008: OAuth Integration (deferred to Phase 2)
+- B-AUTH-008: OAuth Integration (deferred to Wave 2 (Hamn))

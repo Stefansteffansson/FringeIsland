@@ -60,7 +60,7 @@ The world bleeding into physical reality. FringeIsland moments triggered in the 
 ### 4. The Game
 The most immersive digital expression of the world. A graphically rich game-engine experience — built in Unreal Engine or equivalent — bringing the three realms to life at the highest fidelity. Runs across desktop, console, mobile, and VR/AR headsets.
 
-*Phase 3+ ambition. Built on a validated, thriving community.*
+*Wave 3+ ambition. Built on a validated, thriving community.*
 
 ---
 
@@ -108,7 +108,7 @@ The flagship annual event. Where the full community assembles — members, Dream
 
 The Summit is not just an event — it is a founding ritual. It happens once a year and marks the passage of time in the FringeIsland world.
 
-*Phase 3 ambition. First edition to be planned when the community is ready.*
+*Wave 3 ambition. First edition to be planned when the community is ready.*
 
 ---
 
@@ -202,10 +202,10 @@ Deep work device. Content creation, world-building, journey design, narrative ar
 **Tablet — significant for 30+ and 50+**
 iPad especially popular in older demographics. The web platform and native apps both need to work beautifully on tablet.
 
-**Console — Phase 3+**
+**Console — Wave 3+**
 PlayStation, Xbox, Nintendo Switch. The game reaches console audiences who may never have encountered FringeIsland through web or mobile.
 
-**VR/AR Headsets — Phase 3+**
+**VR/AR Headsets — Wave 3+**
 Apple Vision Pro, Meta Quest and successors. The most immersive possible expression of the three realms.
 
 ### A Member's Day

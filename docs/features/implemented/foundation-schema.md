@@ -115,7 +115,7 @@ The "FringeIsland Journeys" group functions like a normal engagement group that 
 
 - **F1 RLS change affects all group queries:** The `AND status = 'active'` filter is added to existing SELECT policies. Must verify that no existing queries break (e.g., admin queries, group creation flows, invitation flows).
 - **F2 touches seed data:** The 8 predefined journeys are referenced by existing enrollments in test data. The migration must handle FK relationships correctly.
-- **F2 group creation without a creator:** ✅ RESOLVED — `created_by_group_id` set to DeusEx group ID. This prevents the globalTeardown orphan sweep (Phase 3 deletes engagement groups with `created_by_group_id IS NULL`).
+- **F2 group creation without a creator:** ✅ RESOLVED — `created_by_group_id` set to DeusEx group ID. This prevents the globalTeardown orphan sweep (Step 3 deletes engagement groups with `created_by_group_id IS NULL`).
 
 ---
 

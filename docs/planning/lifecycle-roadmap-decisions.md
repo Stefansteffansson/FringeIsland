@@ -67,7 +67,7 @@ The following gaps were identified during the analysis session. All were fixed a
 
 ### H. Group Joins Another Group
 `Schema supports it. has_permission() works. Tests exist. NO UI. No circularity prevention trigger.`
-**Status: Phase 2. Does NOT block leave-group (limited to personal-groups-leaving-engagement-groups).**
+**Status: Wave 2 (Hamn). Does NOT block leave-group (limited to personal-groups-leaving-engagement-groups).**
 
 ---
 
@@ -215,7 +215,7 @@ Each item below is explicitly deferred. This section prevents scope creep and en
 
 ### DEFERRED: Self-Service Platform Exit UI
 **What:** A user-facing "Leave FringeIsland" page where users can delete their own account.
-**When:** After leave-group v1 is complete and tested. Possibly Phase 1.6 polish or Phase 2.
+**When:** After leave-group v1 is complete and tested. Possibly Phase 1.6 polish or Wave 2 (Hamn).
 **Prerequisite:** Leave-group core (Sprint 2) must be fully working first. GDPR/legal review of data retention.
 **Current alternative:** Admin-assisted deactivation via the admin panel.
 
@@ -238,7 +238,7 @@ Each item below is explicitly deferred. This section prevents scope creep and en
 
 ### DEFERRED: Groups-Join-Groups UI
 **What:** UI for engagement groups to join other engagement groups. Circularity prevention trigger (D11). Group-level leave flow (engagement group leaves parent group).
-**When:** Phase 2.
+**When:** Wave 2 (Hamn).
 **Current state:** Schema supports it, `has_permission()` works for engagement group actors, integration tests exist. No UI, no circularity trigger.
 **Scope exclusion for leave-group:** "This feature covers personal groups leaving engagement groups only. Engagement-group-leaves-engagement-group is out of scope."
 

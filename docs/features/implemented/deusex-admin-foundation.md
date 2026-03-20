@@ -31,7 +31,7 @@ The DeusEx system group exists with all 42 permissions (Tier 1 resolution). This
 | 3 | Last-member protection | DB trigger (same pattern as Steward) | Proven pattern, consistent enforcement |
 | 4 | Admin panel | Minimal `/admin` now (Phase 1.6) | Enough to manage the platform; grows later |
 | 5 | DeusEx member management | In the admin panel | Self-service for DeusEx members |
-| 6 | Tiered admin access | Deferred to Phase 2+ | One tier (DeusEx = full access) is sufficient now |
+| 6 | Tiered admin access | Deferred to Wave 2 (Hamn)+ | One tier (DeusEx = full access) is sufficient now |
 | 7 | Users panel rename | "Active Users" → "Users" | Shows all users, not just active. Count reflects current filter state. |
 | 8 | Default user visibility | Active + inactive visible, decommissioned hidden | Admins should see inactive accounts. Decommissioned are permanently removed — hidden by default with toggle to show. |
 | 9 | Selection model | Toggle-click + Shift+range, cross-page persistence | Simple interaction: click toggles, Shift for range. Selection survives page navigation. |

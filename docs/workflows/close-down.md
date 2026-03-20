@@ -11,7 +11,7 @@
 |------|-----------|----------------|
 | **Project Status** | `PROJECT_STATUS.md` | Always |
 | **Sprint Tracker** | `SPRINT.md` | Always |
-| **Roadmap** | `docs/planning/ROADMAP.md` | If phase milestone hit |
+| **Roadmap** | `docs/planning/ROADMAP.md` | If wave milestone hit |
 | **Product Spec** | `docs/planning/PRODUCT_SPEC.md` | If scope changed |
 | **Deferred Decisions** | `docs/planning/DEFERRED_DECISIONS.md` | If new deferrals |
 | **Behavior Specs** | `docs/specs/behaviors/[domain].md` | If behaviors tested, OR if a cross-cutting change (terminology, schema, roles) affects specs in other domains |
@@ -46,7 +46,7 @@ For each domain worked in, append discoveries to `docs/agents/learnings/[domain]
 
 **A. PROJECT_STATUS.md (always):** Update date, focus, active tasks, test counts, last session summary, next priorities.
 
-**B. SPRINT.md (always):** Update `SPRINT.md` — tick off completed sprint steps, update active TDD phase, update "Next Sprint" if priorities shifted.
+**B. SPRINT.md (always):** Update `SPRINT.md` — tick off completed sprint steps, update active TDD stage, update "Next Sprint" if priorities shifted.
 
 **C. Behavior specs (if tested):** Mark behaviors as verified in `docs/specs/behaviors/[domain].md` with test results and checked acceptance criteria.
 
@@ -54,7 +54,7 @@ For each domain worked in, append discoveries to `docs/agents/learnings/[domain]
 
 **D2. Cross-cutting consistency (if any terminology, schema, or role change was made):** Check docs outside the domain worked in. Check `docs/architecture/ARCHITECTURE_ANATOMY.md` for stale role names or schema references. Check `docs/architecture/AUTHORIZATION.md` and `docs/database/rls-policies.md` if RLS changed. Check behavior specs in other domains that reference the changed concept (e.g., a rename from "Group Leader" to "Steward" touches every spec that used the old term).
 
-**E. ROADMAP.md (if phase milestone hit):** Update phase status, completion %, deliverables. Path: `docs/planning/ROADMAP.md` (not root!).
+**E. ROADMAP.md (if wave milestone hit):** Update wave/milestone status, completion %, deliverables. Path: `docs/planning/ROADMAP.md` (not root!).
 
 **F. PRODUCT_SPEC.md (if scope changed):** Update features, criteria, or personas.
 
@@ -99,7 +99,7 @@ Summary: [what was done]
 Test status: [X passing / Y failing]
 Updated: [list of docs updated]
 Git: [commit hash / not committed]
-Sprint status: [active work stream + phase + steps completed/remaining, from SPRINT.md]
+Sprint status: [active work stream + TDD stage + steps completed/remaining, from SPRINT.md]
 ```
 
 ---

@@ -8,13 +8,13 @@
 
 ## Overview
 
-Every new feature follows eight phases (0–7) with **hard STOP gates** between them. No phase may begin until the previous phase's gate is passed. This prevents schema-first design and ensures TDD compliance.
+Every new feature follows eight stages (0–7) with **hard STOP gates** between them. No stage may begin until the previous stage's gate is passed. This prevents schema-first design and ensures TDD compliance.
 
-This document is the single source of truth for the development process. It combines the phase structure (what order) with the TDD reference material (how to implement each phase).
+This document is the single source of truth for the development process. It combines the stage structure (what order) with the TDD reference material (how to implement each stage).
 
-**⛔ CRITICAL: Every STOP gate is a USER CHECKPOINT.** The AI must present what was accomplished and ask the user for permission to proceed. These are conversations with the user, not internal AI checkpoints. Never proceed to the next phase without explicit user approval.
+**⛔ CRITICAL: Every STOP gate is a USER CHECKPOINT.** The AI must present what was accomplished and ask the user for permission to proceed. These are conversations with the user, not internal AI checkpoints. Never proceed to the next stage without explicit user approval.
 
-| Phase | Name | What it means |
+| Stage | Name | What it means |
 |-------|------|---------------|
 | 0 | Feature Context | Confirm the feature is in scope; create/update the feature doc |
 | 1 | Behaviors | Write behavior specs — the rules this feature must obey |
@@ -26,17 +26,17 @@ This document is the single source of truth for the development process. It comb
 | 7 | Document | Update PROJECT_STATUS, CHANGELOG, feature docs, behavior specs |
 
 ```
-Phase 0: Feature Context ──GATE──▶ Phase 1: Behaviors ──GATE──▶ Phase 2: Write Tests
+Stage 0: Feature Context ──GATE──▶ Stage 1: Behaviors ──GATE──▶ Stage 2: Write Tests
     │                                                                       │
     │                                                                     GATE
     │                                                                       │
     │                                                                       ▼
-    │                                                              Phase 3: Run Tests RED
+    │                                                              Stage 3: Run Tests RED
     │                                                              (tests MUST fail)
     │                                                                       │
     ▼                                                                     GATE
                                                                             │
-Phase 7: Document ◀──GATE── Phase 6: Verify ◀──GATE── Phase 5: Implement GREEN ◀──GATE── Phase 4: Design
+Stage 7: Document ◀──GATE── Stage 6: Verify ◀──GATE── Stage 5: Implement GREEN ◀──GATE── Stage 4: Design
 ```
 
 ### BDD Hierarchy
@@ -55,7 +55,7 @@ Implementation (app/, components/)           → Code that passes tests
 
 ---
 
-## Phase 0: Feature Context
+## Stage 0: Feature Context
 
 **Owner:** Sprint Agent (or whoever initiates the feature)
 
@@ -63,21 +63,21 @@ Implementation (app/, components/)           → Code that passes tests
 1. Verify feature is listed in `docs/planning/PRODUCT_SPEC.md`
 2. Check `docs/planning/DEFERRED_DECISIONS.md` — has this been deferred?
 3. Create or update feature doc in `docs/features/`
-4. Identify which milestone/phase this belongs to
+4. Identify which milestone/wave this belongs to
 
-**⛔ STOP GATE → Phase 1:**
-- [ ] Feature is in scope for the current phase
+**⛔ STOP GATE → Stage 1:**
+- [ ] Feature is in scope for the current wave/milestone
 - [ ] Feature doc exists with clear description of what users can do
-- [ ] **Ask user:** "Phase 0 complete. Feature doc is ready. Shall I proceed to Phase 1 (behavior specs)?"
+- [ ] **Ask user:** "Stage 0 complete. Feature doc is ready. Shall I proceed to Stage 1 (behavior specs)?"
 
 ---
 
-## Phase 1: Behaviors
+## Stage 1: Behaviors
 
 **Owner:** Test Agent
 
 **Actions:**
-1. Read the feature doc from Phase 0
+1. Read the feature doc from Stage 0
 2. Write behavior specs in `docs/specs/behaviors/[domain].md`
 3. For each behavior, document:
    - Rule (one sentence invariant)
@@ -124,22 +124,22 @@ Invalid:
 **Testing Priority:** CRITICAL / HIGH / MEDIUM / LOW
 ```
 
-**⛔ STOP GATE → Phase 2:**
+**⛔ STOP GATE → Stage 2:**
 - [ ] All behaviors for this feature are documented with IDs (B-XXX-NNN)
 - [ ] Acceptance criteria are specific and testable
 - [ ] Edge cases are identified
-- [ ] **Ask user:** "Phase 1 complete. Behavior specs written. Shall I proceed to Phase 2 (write failing tests)?"
+- [ ] **Ask user:** "Stage 1 complete. Behavior specs written. Shall I proceed to Stage 2 (write failing tests)?"
 
 ---
 
-## Phase 2: Write Tests
+## Stage 2: Write Tests
 
 **Owner:** Test Agent
 
 **Actions:**
 1. Write integration tests in `tests/integration/[domain]/[feature].test.ts`
 2. Tests should cover all CRITICAL and HIGH behaviors
-3. Do NOT run tests yet — that is Phase 3
+3. Do NOT run tests yet — that is Stage 3
 
 **Test Structure:**
 ```typescript
@@ -185,14 +185,14 @@ describe('B-[DOMAIN]-[NUM]: [Behavior Name]', () => {
 - Use `describe()` for behaviors, `it()` for specific scenarios
 - Test both negative (should block) and positive (should allow) cases
 
-**⛔ STOP GATE → Phase 3:**
+**⛔ STOP GATE → Stage 3:**
 - [ ] Integration tests are written for all CRITICAL/HIGH behaviors
 - [ ] Test code is syntactically valid
-- [ ] **Ask user:** "Phase 2 complete. Tests written. Shall I proceed to Phase 3 (run tests to confirm RED)?"
+- [ ] **Ask user:** "Stage 2 complete. Tests written. Shall I proceed to Stage 3 (run tests to confirm RED)?"
 
 ---
 
-## Phase 3: Run Tests — RED
+## Stage 3: Run Tests — RED
 
 **Owner:** Test Agent
 
@@ -202,23 +202,23 @@ describe('B-[DOMAIN]-[NUM]: [Behavior Name]', () => {
 3. Review each failure message — they should be clear and actionable
 4. If any test passes unexpectedly, investigate: the test is wrong or the feature already exists
 
-**⛔ STOP GATE → Phase 4:**
+**⛔ STOP GATE → Stage 4:**
 - [ ] Tests have been run
 - [ ] Tests FAIL (RED) — if they pass, the test is wrong or the feature already exists
 - [ ] Test failure messages are clear and actionable
 - [ ] Failure count and summary reported to user
-- [ ] **Ask user:** "Phase 3 complete. N tests failing (RED). Shall I proceed to Phase 4 (design)?"
+- [ ] **Ask user:** "Stage 3 complete. N tests failing (RED). Shall I proceed to Stage 4 (design)?"
 
 **If tests pass immediately:** STOP. The test is not testing what you think. Fix the test and re-run before proceeding.
 
 ---
 
-## Phase 4: Design
+## Stage 4: Design
 
 **Owner:** Architect Agent
 
 **Actions:**
-1. **First: Verify Phase 3 gate is passed** (failing tests exist)
+1. **First: Verify Stage 3 gate is passed** (failing tests exist)
 2. Read behavior specs and failing tests to understand requirements
 3. Design schema (tables, relationships, constraints, indexes)
 4. Design RLS strategy (SELECT, INSERT, UPDATE, DELETE)
@@ -226,18 +226,18 @@ describe('B-[DOMAIN]-[NUM]: [Behavior Name]', () => {
 6. Document the design with migration plan
 7. Verify design addresses all scenarios from the failing tests
 
-**⛔ STOP GATE → Phase 5:**
-- [ ] Failing tests from Phase 3 exist (verified, not assumed)
+**⛔ STOP GATE → Stage 5:**
+- [ ] Failing tests from Stage 3 exist (verified, not assumed)
 - [ ] Design is documented
 - [ ] Schema changes have migration SQL drafted
 - [ ] RLS strategy covers all CRUD operations
 - [ ] Design addresses all failing test scenarios
-- [ ] Affected docs identified — list every existing doc (behavior specs, feature docs, architecture docs, database docs, CLAUDE.md) that this design will invalidate or require updating. Attach this list to the design output for Phase 7.
-- [ ] **Ask user:** "Phase 4 complete. Design documented. Shall I proceed to Phase 5 (implement)?"
+- [ ] Affected docs identified — list every existing doc (behavior specs, feature docs, architecture docs, database docs, CLAUDE.md) that this design will invalidate or require updating. Attach this list to the design output for Stage 7.
+- [ ] **Ask user:** "Stage 4 complete. Design documented. Shall I proceed to Stage 5 (implement)?"
 
 ---
 
-## Phase 5: Implement GREEN
+## Stage 5: Implement GREEN
 
 **Owner:** Database Agent, UI Agent, Integration Agent
 
@@ -254,14 +254,14 @@ describe('B-[DOMAIN]-[NUM]: [Behavior Name]', () => {
    - Supabase queries, state management
    - Run tests — all should now pass
 
-**⛔ STOP GATE → Phase 6:**
-- [ ] All tests from Phase 3 now PASS (GREEN)
+**⛔ STOP GATE → Stage 6:**
+- [ ] All tests from Stage 3 now PASS (GREEN)
 - [ ] No new test failures introduced
-- [ ] **Ask user:** "Phase 5 complete. All tests pass (GREEN). Shall I proceed to Phase 6 (verify/QA)?"
+- [ ] **Ask user:** "Stage 5 complete. All tests pass (GREEN). Shall I proceed to Stage 6 (verify/QA)?"
 
 ---
 
-## Phase 6: Verify
+## Stage 6: Verify
 
 **Owner:** QA/Review Agent + Test Agent
 
@@ -273,26 +273,26 @@ describe('B-[DOMAIN]-[NUM]: [Behavior Name]', () => {
 5. Review for pattern consistency
 6. Manual smoke test if UI changes are involved
 
-**⛔ STOP GATE → Phase 7:**
+**⛔ STOP GATE → Stage 7:**
 - [ ] All tests pass (run twice)
 - [ ] No security issues identified
 - [ ] Code follows established patterns
-- [ ] **Ask user:** "Phase 6 complete. QA verified. Shall I proceed to Phase 7 (document)?"
+- [ ] **Ask user:** "Stage 6 complete. QA verified. Shall I proceed to Stage 7 (document)?"
 
 ---
 
-## Phase 7: Document
+## Stage 7: Document
 
 **Owner:** Sprint Agent (or implementing agent)
 
 **Actions:**
 1. Update behavior specs — mark as verified with test links
 2. Update `PROJECT_STATUS.md`
-3. Update `SPRINT.md` — tick off completed steps, update TDD phase, update "Next Sprint" if priorities shifted
+3. Update `SPRINT.md` — tick off completed steps, update TDD stage, update "Next Sprint" if priorities shifted
 4. Update `CHANGELOG.md` if version bumped
 5. Update `CLAUDE.md` if new patterns established
 6. Update feature doc with implementation details
-7. Cross-reference audit — work through the affected-docs list from Phase 4. For each doc: open it, verify terminology, schema references, RLS rules, acceptance criteria, and role names still match reality. Apply corrections. If no affected-docs list exists (e.g., hotfix), audit behavior specs for the domain, the domain feature doc, and `docs/architecture/ARCHITECTURE_ANATOMY.md` as minimum.
+7. Cross-reference audit — work through the affected-docs list from Stage 4. For each doc: open it, verify terminology, schema references, RLS rules, acceptance criteria, and role names still match reality. Apply corrections. If no affected-docs list exists (e.g., hotfix), audit behavior specs for the domain, the domain feature doc, and `docs/architecture/ARCHITECTURE_ANATOMY.md` as minimum.
 8. Create session bridge if significant work
 
 **Done when:**
@@ -304,7 +304,7 @@ describe('B-[DOMAIN]-[NUM]: [Behavior Name]', () => {
 
 ## Quick Reference: Who Does What
 
-| Phase | Agent | Key Output |
+| Stage | Agent | Key Output |
 |-------|-------|------------|
 | 0. Context | Sprint | Feature doc |
 | 1. Behaviors | Test | Behavior specs (B-XXX-NNN) |
@@ -319,11 +319,11 @@ describe('B-[DOMAIN]-[NUM]: [Behavior Name]', () => {
 
 ## Anti-Patterns (What NOT to Do)
 
-1. **Schema-first design** — Designing tables before behaviors/tests exist. The fix is the hard gate at Phase 4.
+1. **Schema-first design** — Designing tables before behaviors/tests exist. The fix is the hard gate at Stage 4.
 2. **Tests last** — Writing tests after implementation. Tests written after code tend to verify the implementation rather than the behavior.
-3. **Skipping Phase 2-3** — "We'll add tests later." Later never comes, or the tests are weak.
-4. **Skipping the RED step** — Writing tests (Phase 2) but not running them to confirm failure (Phase 3) before designing. If you don't see tests fail, you don't know they're testing anything real.
-5. **Design without test evidence** — The Architect Agent must see actual failing tests from Phase 3, not just behavior specs.
+3. **Skipping Stage 2-3** — "We'll add tests later." Later never comes, or the tests are weak.
+4. **Skipping the RED step** — Writing tests (Stage 2) but not running them to confirm failure (Stage 3) before designing. If you don't see tests fail, you don't know they're testing anything real.
+5. **Design without test evidence** — The Architect Agent must see actual failing tests from Stage 3, not just behavior specs.
 6. **Implementing without design** — Jumping from tests to code without a design review leads to ad-hoc schema decisions.
 
 ---

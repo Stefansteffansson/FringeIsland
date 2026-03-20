@@ -598,14 +598,14 @@ const mapped = data.map(e => ({ ...e, journey: e.journeys }));
 
 ## Not Yet Implemented
 
-### Journey Management (Phase 2)
+### Journey Management (Wave 2 — Hamn)
 - User-created journeys (journey builder)
 - Journey templates and duplication
 - Collaborative authoring
 - Journey marketplace
 - Version control
 
-### Advanced Features (Phase 3)
+### Advanced Features (Wave 3)
 - Branching journeys (non-linear paths)
 - Dynamic/adaptive content
 - Prerequisites and dependencies

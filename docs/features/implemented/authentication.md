@@ -323,7 +323,7 @@ All admin operations require `manage_all_groups` permission (DeusEx system group
 
 - OAuth / social authentication (Google, GitHub)
 - Two-factor authentication (2FA)
-- Password reset UI (deferred to Phase 2)
+- Password reset UI (deferred to Wave 2 (Hamn))
 - Email verification requirement (email confirmation disabled for MVP)
 - Magic link authentication
 - SSO / SAML integration

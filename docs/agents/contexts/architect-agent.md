@@ -71,7 +71,7 @@ I am the Architect Agent. I design systems AFTER behaviors and failing tests exi
 
 **If ANY are missing → STOP. Hand back to Test Agent. Do NOT proceed with design.**
 
-This is a hard gate, not a suggestion. Designing without failing tests has caused schema-first plans twice (Phase 1.5-A, Phase 1.5-B). The fix is to never start design without test evidence.
+This is a hard gate, not a suggestion. Designing without failing tests has caused schema-first plans twice (Wave 1, Stage 1.5-A and 1.5-B). The fix is to never start design without test evidence.
 
 ---
 

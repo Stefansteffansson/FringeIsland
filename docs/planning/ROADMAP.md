@@ -40,9 +40,9 @@ See [Products & Platform](../vision/PRODUCTS_AND_PLATFORM.md) for full wave defi
 
 **Tech stack**: Next.js 16.1, TypeScript, Tailwind CSS, Supabase/PostgreSQL
 
-### Completed Sub-Phases
+### Completed Milestones
 
-| Sub-Phase | Scope | Version | Status |
+| Milestone | Scope | Version | Status |
 |-----------|-------|---------|--------|
 | **1.1** Core Infrastructure | Next.js, Supabase, Auth, Schema, RLS | v0.1.0–v0.2.1 | DONE |
 | **1.2** User Management | Profiles, avatar upload, bio | v0.2.2 | DONE |

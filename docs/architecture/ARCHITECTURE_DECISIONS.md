@@ -576,7 +576,7 @@ The following architectural decisions have been identified but deliberately left
 | Marketplace plugin extension points | Hamn specification session | Requires Contribution Architecture detail session |
 | Native app architecture | Hamn specification session | Requires validation of what AR layer actually needs |
 | Game engine integration | Wave 3+ session | Built on validated, thriving community |
-| Endowment fund structure | Phase 3 session | Foundation formally established in Wave 3 |
+| Endowment fund structure | Wave 3 session | Foundation formally established in Wave 3 |
 
 ---
 

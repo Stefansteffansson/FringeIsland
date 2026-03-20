@@ -1,5 +1,7 @@
 # FringeIsland Architecture
 
+> ⚠️ This document is superseded. For current architecture see ARCHITECTURE_ANATOMY.md and ARCHITECTURE_DECISIONS.md.
+
 ## Overview
 
 FringeIsland is an educational platform built on three foundational concepts:

@@ -1,6 +1,6 @@
 # Deferred Decisions
 
-This document tracks design decisions, features, and questions that have been deferred to later phases of FringeIsland development. Each item includes context, rationale for deferral, and notes for future implementation.
+This document tracks design decisions, features, and questions that have been deferred to later waves of FringeIsland development. Each item includes context, rationale for deferral, and notes for future implementation.
 
 ## Format
 
@@ -8,7 +8,7 @@ Each deferred decision includes:
 - **Topic**: What question or feature is deferred
 - **Context**: Why this came up
 - **Decision**: What was decided for now
-- **Deferred To**: Which phase to revisit
+- **Deferred To**: Which wave to revisit
 - **Notes**: Important considerations for future implementation
 
 ---
@@ -19,7 +19,7 @@ Each deferred decision includes:
 
 **Topic**: How should permissions flow between parent and child groups in hierarchical structures?
 
-**Status:** **RESOLVED** by RBAC design decisions D5, D7, D10, D12 (February 2026). See `docs/features/planned/dynamic-permissions-system.md`.
+**Status:** **RESOLVED** by RBAC design decisions D5, D7, D10, D12 (February 2026). See `docs/features/implemented/dynamic-permissions-system.md`.
 
 **Resolution:**
 - **D5 (Two-Tier Scoping):** System group permissions always active; context group permissions scoped to that group only. No automatic "bleeding" of permissions.
@@ -42,9 +42,9 @@ Each deferred decision includes:
 - Editing your own journeys vs. collaborative editing
 - Publishing vs. unpublishing journeys
 
-**Decision**: Use simple `create_journey`, `edit_journey`, `publish_journey` permissions for Phase 1.
+**Decision**: Use simple `create_journey`, `edit_journey`, `publish_journey` permissions for Wave 1 (Ferd).
 
-**Deferred To**: Phase 2 (when user-created journeys are implemented)
+**Deferred To**: Wave 2 (Hamn) (when user-created journeys are implemented)
 
 **Notes for Future Implementation**:
 
@@ -75,14 +75,14 @@ Journey Collaboration:
 
 **Why This Matters:**
 
-In Phase 2, user-generated content creates new scenarios:
+In Wave 2 (Hamn), user-generated content creates new scenarios:
 - **Quality Control**: Maybe only certain users can publish to public marketplace
 - **Collaboration**: Different editing rights for collaborators vs. owners
 - **Monetization**: If paid journeys exist, publishing permissions become sensitive
 - **IP Protection**: Users may want granular control over who can duplicate/edit
 
 **Before Implementation:**
-- Observe how users actually create/edit journeys in Phase 1
+- Observe how users actually create/edit journeys in Wave 1 (Ferd)
 - Identify pain points with coarse permissions
 - Survey users on desired granularity
 - Design permission UI that doesn't overwhelm users
@@ -95,7 +95,7 @@ In Phase 2, user-generated content creates new scenarios:
 
 **Topic**: How should users manage complex relationships when groups are members of other groups?
 
-**Status:** **Design RESOLVED** by RBAC decisions D7, D11, D21 (February 2026). **UI still deferred.** See `docs/features/planned/dynamic-permissions-system.md`.
+**Status:** **Design RESOLVED** by RBAC decisions D7, D11, D21 (February 2026). **UI still deferred.** See `docs/features/implemented/dynamic-permissions-system.md`.
 
 **What's resolved (design + schema):**
 - **D7:** Universal group-to-group membership model. Personal groups and engagement groups use the same joining mechanism.
@@ -103,7 +103,7 @@ In Phase 2, user-generated content creates new scenarios:
 - **D21:** Joining groups get Member role by default. Host Steward can promote/restrict.
 - **D15:** Schema migrated, engagement group as member verified by integration tests, `has_permission()` is type-agnostic.
 
-**What's still deferred (UI, Phase 2+):**
+**What's still deferred (UI, Wave 2 (Hamn)+):**
 - Group-joins-group request/acceptance UI (⚠️ **requires D11 circularity trigger first**)
 - Hierarchy visualization (tree view, breadcrumbs)
 - Attribution display ("Mogwai in 'Alpha'" chain)
@@ -115,9 +115,9 @@ In Phase 2, user-generated content creates new scenarios:
 
 **Topic**: Should Phase 1.3 include the ability for groups to have other groups as members?
 
-**Original Decision (Jan 26, 2026)**: Defer subgroups to Phase 2.
+**Original Decision (Jan 26, 2026)**: Defer subgroups to Wave 2 (Hamn).
 
-**Status:** **Design RESOLVED** by RBAC decisions D7, D9, D10, D11, D15 (February 2026). **UI still deferred to Phase 2.** See `docs/features/planned/dynamic-permissions-system.md`.
+**Status:** **Design RESOLVED** by RBAC decisions D7, D9, D10, D11, D15 (February 2026). **UI still deferred to Wave 2 (Hamn).** See `docs/features/implemented/dynamic-permissions-system.md`.
 
 **What's resolved (design + schema):**
 - **D7:** Universal group-to-group membership model (personal groups and engagement groups use same mechanism)
@@ -134,7 +134,7 @@ In Phase 2, user-generated content creates new scenarios:
 - ✅ System groups created (FI Members, Visitor, Deusex)
 - ✅ Permission catalog (41 permissions) and template permissions (57 rows)
 
-**What's still deferred (UI, Phase 2+):**
+**What's still deferred (UI, Wave 2 (Hamn)+):**
 - Group-joins-group request/acceptance UI
 - Hierarchy visualization (tree view, breadcrumbs)
 - Attribution display ("Mogwai in 'Alpha'" chain)
@@ -161,11 +161,11 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Topic**: How should journeys adapt their paths based on user actions during the journey?
 
-**Context**: Phase 3 introduces dynamic/adaptive journeys where the path can change based on what users do. This requires a significant architectural shift from linear journeys.
+**Context**: Wave 3 introduces dynamic/adaptive journeys where the path can change based on what users do. This requires a significant architectural shift from linear journeys.
 
-**Decision**: Phase 1 and 2 use linear (A→B) journey structure. Dynamic journeys are Phase 3.
+**Decision**: Wave 1 (Ferd) and Wave 2 (Hamn) use linear (A→B) journey structure. Dynamic journeys are Wave 3.
 
-**Deferred To**: Phase 3 (Dynamic Journeys)
+**Deferred To**: Wave 3 (Dynamic Journeys)
 
 **Notes for Future Implementation**:
 
@@ -173,10 +173,10 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 1. **Journey Structure**
    ```
-   Linear (Phase 1-2):
+   Linear (Wave 1–2):
    Step 1 → Step 2 → Step 3 → Complete
-   
-   Dynamic (Phase 3):
+
+   Dynamic (Wave 3):
    Step 1 → [Conditional Logic] → Step 2A or Step 2B
                                   → Step 3
                                   → Complete
@@ -224,9 +224,9 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Context**: Journey creators may want to update content, but users are mid-journey. Do they see old or new version?
 
-**Decision**: Phase 1 doesn't support journey updates. Phase 2+ handles versioning.
+**Decision**: Wave 1 (Ferd) doesn't support journey updates. Wave 2 (Hamn)+ handles versioning.
 
-**Deferred To**: Phase 2
+**Deferred To**: Wave 2 (Hamn)
 
 **Options to Consider:**
 
@@ -264,11 +264,11 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Topic**: How do users find journeys relevant to their needs?
 
-**Context**: Phase 1 has basic journey list. Phase 2+ needs sophisticated discovery.
+**Context**: Wave 1 (Ferd) has basic journey list. Wave 2 (Hamn)+ needs sophisticated discovery.
 
-**Decision**: Simple list/browse for Phase 1. Advanced discovery in Phase 2.
+**Decision**: Simple list/browse for Wave 1 (Ferd). Advanced discovery in Wave 2 (Hamn).
 
-**Deferred To**: Phase 2
+**Deferred To**: Wave 2 (Hamn)
 
 **Discovery Methods:**
 
@@ -325,9 +325,9 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Context**: Platform is web-based (responsive). Native apps could improve experience. High-level platform strategy, device approach, and the relationship between digital products, physical products, events, and the game are addressed in [`docs/vision/PRODUCTS_AND_PLATFORM.md`](../vision/PRODUCTS_AND_PLATFORM.md).
 
-**Decision**: Web-first for Phase 1. Consider mobile apps based on demand.
+**Decision**: Web-first for Wave 1 (Ferd). Consider mobile apps based on demand.
 
-**Deferred To**: Phase 2+ (if user demand is high)
+**Deferred To**: Wave 2 (Hamn)+ (if user demand is high)
 
 **Options:**
 
@@ -367,7 +367,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Context**: Accessibility is important but requires significant effort to do well.
 
-**Decision**: Basic accessibility for Phase 1. Enhanced features as needed.
+**Decision**: Basic accessibility for Wave 1 (Ferd). Enhanced features as needed.
 
 **Deferred To**: Ongoing (continuous improvement)
 
@@ -381,13 +381,13 @@ The schema allows any group to join any group — nothing prevents A → B → A
 - Captions for videos
 - Focus indicators
 
-**Phase 1 Basics:**
+**Wave 1 (Ferd) Basics:**
 - Semantic HTML
 - ARIA labels where needed
 - Keyboard shortcuts
 - Responsive text sizing
 
-**Phase 2+ Enhancements:**
+**Wave 2 (Hamn)+ Enhancements:**
 - High contrast mode
 - Dyslexia-friendly fonts
 - Audio descriptions
@@ -446,11 +446,11 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Topic**: What analytics should the platform provide to different user types?
 
-**Context**: Phase 1 has basic analytics. Users may want deeper insights.
+**Context**: Wave 1 (Ferd) has basic analytics. Users may want deeper insights.
 
-**Decision**: Basic analytics in Phase 1. Advanced dashboard in Phase 2+.
+**Decision**: Basic analytics in Wave 1 (Ferd). Advanced dashboard in Wave 2 (Hamn)+.
 
-**Deferred To**: Phase 2
+**Deferred To**: Wave 2 (Hamn)
 
 **Analytics by User Type:**
 
@@ -505,9 +505,9 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Context**: Initially launching in English. International expansion may require i18n.
 
-**Decision**: English-only for Phase 1. i18n in later phase if expanding internationally.
+**Decision**: English-only for Wave 1 (Ferd). i18n in later waves if expanding internationally.
 
-**Deferred To**: Post-Phase 1 (based on international demand)
+**Deferred To**: Post-Wave 1 (based on international demand)
 
 **Scope of i18n:**
 
@@ -552,9 +552,9 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Topic**: What additional security features are needed?
 
-**Context**: Phase 1 has basic auth + RLS. Additional security for sensitive use cases.
+**Context**: Wave 1 (Ferd) has basic auth + RLS. Additional security for sensitive use cases.
 
-**Decision**: Standard security for Phase 1. Enhanced features as needed.
+**Decision**: Standard security for Wave 1 (Ferd). Enhanced features as needed.
 
 **Deferred To**: Based on customer requirements
 
@@ -601,7 +601,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Topic**: What optimizations are needed for scale?
 
-**Context**: Phase 1 targets hundreds of users. Future phases need thousands+.
+**Context**: Wave 1 (Ferd) targets hundreds of users. Future waves need thousands+.
 
 **Decision**: Optimize for correctness first, performance second. Scale when needed.
 
@@ -654,11 +654,11 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Topic**: How will FringeIsland generate revenue?
 
-**Context**: Phase 1 focus is product-market fit. Monetization comes later.
+**Context**: Wave 1 (Ferd) focus is product-market fit. Monetization comes later.
 
 **Decision**: Determine monetization strategy after validating product.
 
-**Deferred To**: Phase 2+ (once product validated)
+**Deferred To**: Wave 2 (Hamn)+ (once product validated)
 
 **Monetization Options:**
 

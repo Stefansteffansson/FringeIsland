@@ -37,7 +37,7 @@ Booting up FringeIsland v[VERSION]
 Current focus: [from PROJECT_STATUS.md]
 Active tasks: [list]
 Blockers: [None / list]
-Active sprint: [work stream name + TDD phase from SPRINT.md]
+Active sprint: [work stream name + TDD stage from SPRINT.md]
 Next sprint: [from SPRINT.md "Next Sprint" section]
 ```
 
@@ -65,7 +65,7 @@ CLAUDE.md is auto-loaded. Optionally load based on work type:
 | Specific feature | `docs/features/implemented/[feature].md` |
 | Testing/TDD | `docs/specs/behaviors/[domain].md` + `docs/workflows/feature-development.md` |
 
-**If building new feature:** verify feature context first (Phase 0 of TDD workflow) — check PRODUCT_SPEC.md for scope, check if feature doc exists. If missing, create it first or ask user. Follow the BDD hierarchy: Vision → Product Spec → Roadmap → Features → Behaviors → Tests → Code.
+**If building new feature:** verify feature context first (Stage 0 of TDD workflow) — check PRODUCT_SPEC.md for scope, check if feature doc exists. If missing, create it first or ask user. Follow the BDD hierarchy: Vision → Product Spec → Roadmap → Features → Behaviors → Tests → Code.
 
 ### 5. Ask User
 
@@ -83,10 +83,10 @@ Present ready state and suggest work items from PROJECT_STATUS.md. Remind: TDD f
 
 **Do NOT:** launch parallel agents, skip planning for "simple" features, or proceed without user approval.
 
-**TDD workflow reminder (Phases 0-7):**
+**TDD workflow reminder (Stages 0-7):**
 0. Feature context → 1. Behaviors → 2. Write tests → 3. Run tests RED → 4. Design → 5. Implement GREEN → 6. Verify → 7. Document
 
-Each phase completes fully before the next begins. No parallel execution.
+Each stage completes fully before the next begins. No parallel execution.
 
 ---
 
