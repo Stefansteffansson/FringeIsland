@@ -1,7 +1,7 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-03-14 (Journey Enrollment API routes)
-**Current Version:** 0.2.36
+**Last Updated:** 2026-03-20 (Journey Designer Session 01 integration + terminology sweep)
+**Current Version:** 0.2.37
 **Active Branch:** main
 
 ---
@@ -14,7 +14,7 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ## Quick Stats
 
-- **Phase:** ALL 5 LIFECYCLE SPRINTS COMPLETE — Phase 1.6 Polish & Launch is next
+- **Wave:** ALL 5 LIFECYCLE SPRINTS COMPLETE — Ferd 1.6 Polish & Launch is next
 - **Total Tables:** 19 (PostgreSQL via Supabase) - **ALL with RLS enabled** ✅
 - **Total Migrations:** 16 active + 71 archived
 - **Recent Version:** v0.2.37 (Journey Enrollment API routes)
@@ -83,8 +83,16 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-03-14 (Journey Enrollment API routes — ADR-009 compliance)
+**Date:** 2026-03-20 (Journey Designer Session 01 integration + terminology sweep)
 **Summary:**
+- Integrated Journey Designer Discovery Session 01 into project docs (ROADMAP.md, DEFERRED_DECISIONS.md, CHANGELOG.md)
+- Rewrote ROADMAP.md (v3.0) — replaced Phase 1/2/3/4 model with Wave 1 (Ferd) / Wave 2 (Hamn) / Wave 3 / Wave 3+ framing
+- Added 4 Session 01 parked items to DEFERRED_DECISIONS.md: Seasons and Episodes, NPC behaviour authoring, Whisp practical UX, Three Worlds UI design
+- Established terminology hierarchy: Wave > Milestone > Sprint > Stage
+- Full terminology sweep across 32 files: Phase→Wave, TDD Phase→Stage, Sub-phase→Milestone, fixed 3 broken links
+- Two commits: `b51457b` (Session 01 integration), `2cc29ba` (terminology sweep)
+
+**Previous Session:** 2026-03-14 (Journey Enrollment API routes — ADR-009 compliance)
 - Created 3 API routes for journey enrollment: POST/DELETE `/api/v1/journeys/[id]/enroll`, GET `/api/v1/journeys/enrollments`
 - Refactored `EnrollmentModal.tsx`, journey detail page, and My Journeys page to call API routes instead of direct Supabase access
 - All enrollment writes now go through API routes per ADR-009 (API-first)

@@ -1,6 +1,6 @@
 # SPRINT.md — Active Sprint Tracker
 
-**Last Updated:** 2026-03-14
+**Last Updated:** 2026-03-20
 **Version:** v0.2.37
 
 ---
@@ -19,7 +19,7 @@
 **Feature / Work Package:** Phase 1.6 Polish & Launch
 **TDD Stage:** N/A — no active feature sprint in progress
 **Status:** Planning / Ready to start
-**Session Bridge:** `docs/planning/sessions/2026-03-03-architecture-baseline-live-validation.md`
+**Session Bridge:** `docs/planning/sessions/2026-03-20-JOURNEY_DESIGNER_SESSION.md`
 
 ### Sprint Plan
 
