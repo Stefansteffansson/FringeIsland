@@ -1,7 +1,7 @@
 # Session Close-Down Workflow
 
 **Purpose:** Standard procedure for ending a work session on FringeIsland
-**Last Updated:** February 28, 2026
+**Last Updated:** March 20, 2026
 
 ---
 
@@ -16,7 +16,8 @@
 | **Deferred Decisions** | `docs/planning/DEFERRED_DECISIONS.md` | If new deferrals |
 | **Behavior Specs** | `docs/specs/behaviors/[domain].md` | If behaviors tested, OR if a cross-cutting change (terminology, schema, roles) affects specs in other domains |
 | **Feature Docs** | `docs/features/implemented/[feature].md` | If feature updated, OR if a cross-cutting change invalidates sections in related feature docs |
-| **Architecture Docs** | `docs/architecture/[doc].md` | If schema, RLS, auth flow, or system design changed |
+| **Architecture Docs** | `docs/architecture/[doc].md` (incl. `ARCHITECTURE_ANATOMY.md`, `ARCHITECTURE_DECISIONS.md`) | If schema, RLS, auth flow, system design, or new ADRs |
+| **Vision Docs** | `docs/vision/[doc].md` (incl. `PRODUCTS_AND_PLATFORM.md`) | If product strategy, wave model, or vision changed |
 | **Database Docs** | `docs/database/[doc].md` | If tables, columns, migrations, or RLS policies changed |
 | **Session Bridge** | `docs/planning/sessions/YYYY-MM-DD-description.md` | If significant work |
 

@@ -1,7 +1,7 @@
 # Session Boot-Up Workflow
 
 **Purpose:** Standard procedure for starting a work session on FringeIsland
-**Last Updated:** February 28, 2026
+**Last Updated:** March 20, 2026
 
 ---
 
@@ -13,6 +13,8 @@
 | **Sprint Tracker** | `SPRINT.md` | Always |
 | **Roadmap** | `docs/planning/ROADMAP.md` | Always |
 | **Lifecycle Decisions** | `docs/planning/lifecycle-roadmap-decisions.md` | If sprinting |
+| **Architecture Anatomy** | `docs/architecture/ARCHITECTURE_ANATOMY.md` | If architecture/design work |
+| **Architecture Decisions** | `docs/architecture/ARCHITECTURE_DECISIONS.md` | If architecture/design work |
 | **Vision** | `docs/vision/VISION.md` | Optional |
 | **Manifesto** | `docs/vision/MANIFESTO.md` | Optional |
 | **Contribution Architecture** | `docs/vision/CONTRIBUTION_ARCHITECTURE.md` | Optional |
@@ -28,7 +30,7 @@ If a file read fails: report the error immediately, use Glob to find it, update 
 
 ### 1. Read Current Status
 
-Read the 3 required files. Extract from PROJECT_STATUS.md: current version, focus, active tasks, blockers, next priorities. Quick-scan ROADMAP.md for phase completion % and immediate priorities.
+Read the 3 required files. Extract from PROJECT_STATUS.md: current version, focus, active tasks, blockers, next priorities. Quick-scan ROADMAP.md for wave completion % and immediate priorities.
 
 **Report:**
 ```
@@ -62,6 +64,8 @@ CLAUDE.md is auto-loaded. Optionally load based on work type:
 | Database | `docs/agents/contexts/database-agent.md` |
 | UI | `docs/agents/contexts/ui-agent.md` |
 | Feature (full-stack) | `docs/agents/contexts/integration-agent.md` + `architect-agent.md` |
+| Architecture/Design | `docs/architecture/ARCHITECTURE_ANATOMY.md` + `ARCHITECTURE_DECISIONS.md` |
+| Vision/Design session | `docs/vision/PRODUCTS_AND_PLATFORM.md` + relevant session bridge in `docs/planning/sessions/` |
 | Specific feature | `docs/features/implemented/[feature].md` |
 | Testing/TDD | `docs/specs/behaviors/[domain].md` + `docs/workflows/feature-development.md` |
 

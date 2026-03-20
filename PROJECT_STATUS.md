@@ -83,8 +83,15 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-03-20 (Journey Designer Session 01 integration + terminology sweep)
+**Date:** 2026-03-20 (Workflow docs review + update)
 **Summary:**
+- Reviewed boot-up.md and close-down.md for terminology, references, and completeness
+- Fixed stale "phase" → "wave" terminology in boot-up.md
+- Added ARCHITECTURE_ANATOMY.md, ARCHITECTURE_DECISIONS.md, and PRODUCTS_AND_PLATFORM.md references to both workflow files
+- Added Architecture/Design and Vision/Design session rows to boot-up Load Context table
+- Updated dates on both workflow files
+
+**Previous Session:** 2026-03-20 (Journey Designer Session 01 integration + terminology sweep)
 - Integrated Journey Designer Discovery Session 01 into project docs (ROADMAP.md, DEFERRED_DECISIONS.md, CHANGELOG.md)
 - Rewrote ROADMAP.md (v3.0) — replaced Phase 1/2/3/4 model with Wave 1 (Ferd) / Wave 2 (Hamn) / Wave 3 / Wave 3+ framing
 - Added 4 Session 01 parked items to DEFERRED_DECISIONS.md: Seasons and Episodes, NPC behaviour authoring, Whisp practical UX, Three Worlds UI design
