@@ -1,6 +1,6 @@
 # FringeIsland Documentation Index
 
-**Version:** 0.2.36 | **Updated:** March 2026
+**Version:** 0.2.37 | **Updated:** March 2026
 
 Master navigation for all FringeIsland documentation. For current project state, see [PROJECT_STATUS.md](../PROJECT_STATUS.md).
 
@@ -85,7 +85,15 @@ Master navigation for all FringeIsland documentation. For current project state,
 - **[ROADMAP.md](planning/ROADMAP.md)** — Feature roadmap and development phases
 - **[DEFERRED_DECISIONS.md](planning/DEFERRED_DECISIONS.md)** — What we're NOT building yet
 - **[sessions/](planning/sessions/)** — Session bridges and development notes
+  - **[2026-03-20-JOURNEY_DESIGNER_SESSION.md](planning/sessions/2026-03-20-JOURNEY_DESIGNER_SESSION.md)** — Journey Designer Discovery Session 01
+  - **[2026-03-25-JOURNEY_DESIGNER_SESSION_02_1.md](planning/sessions/2026-03-25-JOURNEY_DESIGNER_SESSION_02_1.md)** — Journey Designer Session 02 Part 1
+  - **[Claude AI session bridge documents/](planning/sessions/Claude%20AI%20session%20bridge%20documents/)** — Early-stage session bridges and summaries (Sessions 1-4)
+  - **[archive/](planning/sessions/archive/)** — Archived session bridges from earlier sprints
 - **[archive/](planning/archive/)** — Historical/meta documentation
+
+### 🔬 Research (`/docs/research/`)
+
+- **[What_Fills_a_Life_Human_Flourishing.md](research/What_Fills_a_Life_Human_Flourishing.md)** — Research on human flourishing — foundational theory informing FringeIsland's journey design
 
 ### 🤖 Agent System (`/docs/agents/`)
 

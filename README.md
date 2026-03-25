@@ -1,6 +1,6 @@
 # FringeIsland
 
-**Version:** 0.2.36 | **Updated:** March 2026 | **Phase 1:** 95% complete
+**Version:** 0.2.37 | **Updated:** March 2026 | **Phase 1:** 95% complete
 
 An edutainment platform for group-based personal development through structured learning journeys. Users travel solo or in groups on predefined journeys guided by role-based experiences — Stewards lead, Guides facilitate, Members participate, and Observers watch.
 
@@ -120,6 +120,8 @@ npm run test:e2e
 | Architecture baseline (live) | [docs/architecture/ARCHITECTURE_BASELINE.md](docs/architecture/ARCHITECTURE_BASELINE.md) |
 | Database schema | [docs/architecture/DATABASE_SCHEMA.md](docs/architecture/DATABASE_SCHEMA.md) |
 | Deferred decisions | [docs/planning/DEFERRED_DECISIONS.md](docs/planning/DEFERRED_DECISIONS.md) |
+| Journey Designer sessions | [docs/planning/sessions/](docs/planning/sessions/) |
+| Research (human flourishing) | [docs/research/What_Fills_a_Life_Human_Flourishing.md](docs/research/What_Fills_a_Life_Human_Flourishing.md) |
 
 ---
 

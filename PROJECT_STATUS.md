@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-03-20 (Journey Designer Session 01 integration + terminology sweep)
+**Last Updated:** 2026-03-25 (Doc references update — sessions + research folder)
 **Current Version:** 0.2.37
 **Active Branch:** main
 
@@ -83,8 +83,15 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-03-20 (Workflow docs review + update)
+**Date:** 2026-03-25 (Doc references update — sessions + research folder)
 **Summary:**
+- Added references to Journey Designer Session 02 Part 1 and new `docs/research/` folder
+- Updated `docs/INDEX.md`: expanded sessions listing, added Research section with human flourishing doc
+- Updated `README.md`: added sessions and research to "Where to Find Things" table
+- Updated `CLAUDE.md`: added sessions and research to document map
+- Version bumps to 0.2.37 in INDEX.md and README.md
+
+**Previous Session:** 2026-03-20 (Workflow docs review + update)
 - Reviewed boot-up.md and close-down.md for terminology, references, and completeness
 - Fixed stale "phase" → "wave" terminology in boot-up.md
 - Added ARCHITECTURE_ANATOMY.md, ARCHITECTURE_DECISIONS.md, and PRODUCTS_AND_PLATFORM.md references to both workflow files

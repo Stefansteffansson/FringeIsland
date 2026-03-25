@@ -117,6 +117,8 @@ bash supabase-cli.sh migration list
 | TDD + feature workflow | `docs/workflows/feature-development.md` |
 | Boot-up / Close-down | `docs/workflows/boot-up.md`, `docs/workflows/close-down.md` |
 | Doc health check | `docs/workflows/doc-health-check.md` |
+| Journey Designer sessions | `docs/planning/sessions/` |
+| Research (human flourishing) | `docs/research/What_Fills_a_Life_Human_Flourishing.md` |
 
 ---
 
