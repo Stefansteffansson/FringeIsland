@@ -691,44 +691,25 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 ---
 
-## Journey Designer — Parked from Sessions 01-03
+## Journey Designer — Parked from Session 01
 
-*These items were explicitly parked during Journey Designer Discovery Sessions 01-03 (March 2026). Each requires a dedicated specification session before implementation. See session documents in `docs/planning/sessions/` for full context.*
+*These items were explicitly parked during the Journey Designer Discovery Session 01 (March 20, 2026). Each requires a dedicated specification session before implementation. See `docs/planning/sessions/2026-03-20-JOURNEY_DESIGNER_SESSION.md` for full context.*
 
-### Seasons and Episodes — PARTIALLY RESOLVED
+### Seasons and Episodes
 
 **Topic**: The temporal narrative structure of the FringeIsland universe — storytelling arcs that drive Type 4 (AI-Generative) journeys and animate The Other Side.
 
-**Status**: **PARTIALLY RESOLVED** by Session 02 and Session 03 (March 2026). Conceptual architecture established. Detailed mechanics and Episode delivery deferred.
+**Context**: Session 01 established that the FringeIsland universe is driven by Immersive Edutainment where "tainment" means character-driven, Hero's Journey-structured narrative. Seasons and Episodes are the temporal structure of that narrative, especially relevant for Type 4 journeys and The Other Side. The concept was raised but deliberately not explored — it is too large and consequential to be a side conversation.
 
-**What's resolved (Sessions 02-03):**
-- ✅ **Architecture**: 4 Seasons per year (3 months each), 12 Episodes per Season (weekly)
-- ✅ **Authorship**: Universal calendar + Adaptive AI (Weaver-AI collaboration)
-- ✅ **Nature**: Seasons = serialized storytelling (like Westworld), Episodes = weekly story beats
-- ✅ **Design principle**: Stories first, themes underneath — learning emerges implicitly
-- ✅ **Accessibility**: Seasons are universal themes (not difficulty levels), experienced differently by each FIM
-- ✅ **Persistence**: Seasons remain accessible indefinitely (library model)
-- ✅ **Episode-Journey relationship**: Episodes inspire/trigger journeys but are not themselves journeys
-- ✅ **Immersive Edutainment**: Immersive (AR + game layer) + Educational (growth themes) + Entertainment (narrative)
+**Decision**: Parked for a dedicated design session. The journey data model accommodates Seasons and Episodes in reserved fields (`narrative_state` JSON on journeys) without requiring them to be specified now.
 
-**What's still deferred (Session 03):**
-- Episode delivery methods (text/video/AR/live events specifics)
-- FIM agency in Episodes (fixed/branching/personalized narrative)
-- Episode independence (must experience in order vs. can jump in mid-Season)
-- Respawning's detailed relationship to Episodes
+**Deferred To**: Wave 2 (Hamn) — dedicated specification session before any narrative system implementation.
 
-**What's deferred to Dreamineer/Weaver community:**
-- Specific narrative design patterns
-- Balance of Episode content types
-- Community influence on Episode outcomes
-
-**Deferred To**: Wave 2 (Hamn) — dedicated specification sessions for Episode delivery mechanics and Weaver tooling.
-
-**Notes for Future Sessions**:
-- Episodes are narrative containers, not gameplay — they tell stories that trigger journey opportunities
-- Each Episode advances the Season's story arc (12-week narrative)
-- FIMs experience Episodes participatorily, not passively (immersive, not just watching)
-- Some Episodes may change respawn behavior or void dynamics (mechanics TBD)
+**Notes for Future Session**:
+- How do Seasons structure the passage of time in the FringeIsland world?
+- How do Episodes create shared narrative moments across the community?
+- How do Seasons interact with Type 4 journey generation?
+- What is the relationship between Seasons and the Whisp's accumulation?
 
 ---
 
@@ -748,83 +729,6 @@ The schema allows any group to join any group — nothing prevents A → B → A
 - How do NPCs maintain personality continuity across encounters with the same traveler?
 - How do NPC arcs (their own journeys) interact with the traveler's journey?
 - What feedback loops exist between NPC interactions and calibration quality?
-
----
-
-### FringeIsland Universe Design and AR Void Visualization — NEW FROM SESSION 03
-
-**Topic**: Visual/experiential design of the FringeIsland universe, the void, and AR overlay system.
-
-**Context**: Session 03 established that the void is the gap between who you are and who you know yourself to be, existing across three dimensions (1/1+1/1+community). AR overlays ordinary world to show void state. But the *visual language* — what FringeIsland looks like, what the void looks like, how AR displays all this — requires understanding the full universe design first.
-
-**Decision**: Deferred to dedicated universe design session. Cannot design AR visualization without establishing visual/aesthetic coherence of the entire FringeIsland world.
-
-**Deferred To**: Wave 2 (Hamn) — dedicated universe design session. Prerequisite for AR implementation and Whisp visibility design.
-
-**Notes for Future Session**:
-- What does FringeIsland (the Safe Harbour) actually look like? (regions, architecture, elements)
-- What does the void look like as environment/landscape? (abstract vs. literal vs. symbolic)
-- How do the three void dimensions (1/1+1/1+community) manifest visually?
-- How does AR overlay work? (anywhere vs. geofenced vs. context-triggered)
-- How is distance/gap to FringeIsland perceived in AR? (visual metaphors, spatial representation)
-- Can FIMs see their own Whisp in AR? (first-person vs. third-person perspective)
-- Can FIMs see other Whisps in the void? (solo vs. visible to others)
-- What is the visual language that makes all this coherent?
-
-**Key Established Principles (Session 03)**:
-- Vast void: AR shows void itself, FringeIsland obscured
-- Shrinking void: Both void and FringeIsland visible, overlapping
-- Collapsed void: FringeIsland completely overlays ordinary world
-- AR becomes progress indicator (phenomenological, not gamified)
-
----
-
-### Respawning Mechanics — NEW FROM SESSION 03
-
-**Topic**: The detailed mechanics of Whisp "death" and respawn in the void.
-
-**Context**: Session 03 established the Edge of Tomorrow model conceptually — Whisp dies → respawns → retains insight from failure → learns → tries again. Respawning is information-rich (not punishment), reveals current limits/immunities/patterns, builds mastery through repetition. But the detailed mechanics are unspecified.
-
-**Decision**: Deferred to dedicated specification session. Edge of Tomorrow framing is locked, mechanics need detailed design.
-
-**Deferred To**: Wave 2 (Hamn) — dedicated specification session. May require multiple sessions (respawn triggers, respawn locations, information revelation, Episode integration, Immunity to Change connection).
-
-**Notes for Future Session**:
-- What triggers respawn? (What counts as Whisp "death" in the void?)
-- Where do you respawn? (Same place? Checkpoint? Safe Harbour?)
-- What information is revealed through respawn? (Mechanics of insight delivery)
-- How do Episodes change respawn behavior? (Void adaptation, narrative justification)
-- What is the visual/experiential moment of respawning? (UI/UX design)
-- How does respawning connect to Immunity to Change (Kegan)? (Hidden commitments revealed through failure patterns)
-- How does respawn frequency/consequence change with Whisp fullness?
-- Is there a cost/consequence to respawning beyond lost progress?
-
-**Key Established Principles (Session 03)**:
-- Respawning is the learning mechanism (failure = information)
-- Each death reveals something about current limits
-- Mastery builds through accumulated attempts
-- Fits "failure is information, not punishment" principle
-
----
-
-### Whisp Encounter Phenomenology — CARRIED FROM SESSION 02
-
-**Topic**: What a Whisp Encounter actually looks and feels like at different stages of Whisp fullness.
-
-**Context**: The Whisp is each FIM's personal future self — their instrument in the void. Session 02 established that the Whisp begins nearly empty and fills over time as the FIM gathers self-knowledge. Session 03 established the three-dimensional void model but did not address encounter phenomenology (Goal 2 from Session 03 bridge, carried from Session 02).
-
-**Decision**: Parked from Session 02, remained parked in Session 03. Requires dedicated exploration.
-
-**Deferred To**: Wave 2 (Hamn) — dedicated specification session. Will benefit from universe design work (understanding what encounters look like visually/experientially).
-
-**Notes for Future Session**:
-- What does a Whisp Encounter actually look and feel like?
-- How does encounter quality change with Whisp fullness (empty/mid/full)?
-- What is the texture of a genuine encounter beat? (Present → Ask → Change in Encounter family)
-- How does Theory U's "presencing" map to FringeIsland encounters?
-- What distinguishes a profound encounter from a superficial one?
-- How do encounters differ across the three void dimensions (1 vs. 1+1 vs. 1+community)?
-- What role do encounters play in Episode narrative vs. standalone journeys?
 
 ---
 
@@ -891,12 +795,11 @@ When deferring a new decision:
 
 ---
 
-**Document Version**: 1.6
-**Last Updated**: March 27, 2026 (Journey Designer Session 03)
+**Document Version**: 1.5
+**Last Updated**: March 20, 2026 (Journey Designer Session 01)
 **Next Review**: Quarterly or as deferred items are implemented
 
 **Recent Updates**:
-- Session 03 (2026-03-27): Marked Seasons and Episodes as PARTIALLY RESOLVED (conceptual architecture established). Added 3 new deferrals: FringeIsland Universe Design & AR Void Visualization, Respawning Mechanics, Whisp Encounter Phenomenology (carried from Session 02). All deferred to Wave 2 (Hamn) specification sessions.
 - Session 01 (2026-03-20): Added 4 parked items from Journey Designer Discovery Session — Seasons and Episodes, NPC behaviour authoring, Whisp practical UX, Three Worlds UI design. All deferred to Wave 2 (Hamn) specification sessions.
 - v0.2.36: Added lifecycle sprint deferrals (D-R1 through D-R5) from `lifecycle-roadmap-decisions.md` — self-service platform exit, configurable timeouts, GDPR content erasure all explicitly deferred.
 - v0.2.17: Marked Permission Inheritance as RESOLVED (D5/D7/D10/D12). Marked Subgroups design as RESOLVED (D7/D9/D10/D11/D15). Marked Group-to-Group Relationships design as RESOLVED (D7/D11/D21). Updated Notifications (IMPLEMENTED v0.2.14), Forum (PARTIALLY IMPLEMENTED v0.2.14), DM (IMPLEMENTED v0.2.15).
