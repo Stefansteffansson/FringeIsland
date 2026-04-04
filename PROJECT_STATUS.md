@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-03-25 (Doc references update — sessions + research folder)
+**Last Updated:** 2026-04-05 (Requirements doc accuracy fixes)
 **Current Version:** 0.2.37
 **Active Branch:** main
 
@@ -83,8 +83,18 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-03-25 (Doc references update — sessions + research folder)
+**Date:** 2026-04-05 (Feature inventory + Requirements accuracy fixes)
 **Summary:**
+- Created `docs/planning/ACTUAL_STATE.md` — complete feature inventory and gap analysis (~500 lines)
+  - Executive summary: ~45% of intended architecture implemented
+  - Key findings: ADR-009 massively violated (~40+ direct writes, only 4 API routes), permission enforcement shallow (8/39 enforced), email is stub only, no GDPR
+- Applied 12 accuracy fixes to `docs/planning/REQUIREMENTS-ferd-complete.md`:
+  - Phase 1.4 → Wave Ferd 1.6, removed false email template claims, adjusted 5 completeness percentages
+  - Added missing FR-L1-009 (Display Name/Nickname system), added self-serve vs admin note
+  - Fixed broken Related Documents paths, updated summary statistics (97 total requirements)
+- Reviewed and corrected `docs/planning/CLAUDE_CODE_HANDOFF-ferd-feature-inventory.md` (handoff plan)
+
+**Previous Session:** 2026-03-25 (Doc references update — sessions + research folder)
 - Added references to Journey Designer Session 02 Part 1 and new `docs/research/` folder
 - Updated `docs/INDEX.md`: expanded sessions listing, added Research section with human flourishing doc
 - Updated `README.md`: added sessions and research to "Where to Find Things" table
