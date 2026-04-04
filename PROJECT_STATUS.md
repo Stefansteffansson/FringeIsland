@@ -83,8 +83,22 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-04-05 (Feature inventory + Requirements accuracy fixes)
+**Date:** 2026-04-05 (Documentation restructuring — Phase 1-2: Mapping)
 **Summary:**
+- Planned three-tier documentation restructuring (Universe / Products / Implementation)
+- Created complete file inventory: 139 .md files + 1 .svg (~2.3 MB total)
+- Analyzed all 23 ADRs: 22 universe-level, 1 Ferd-specific (ADR-023)
+- Created MIGRATION_MAPPING.md v2 (approved by Stefan):
+  - 56 simple moves, 41 move+rename, 23 ADR extractions, 26 INDEX files to create
+  - 35 files archived across 10 distributed `_archive/` folders
+  - Feature docs get FR-/AR-/NF- prefix convention
+  - 5 empty placeholders deleted, 5 root files updated
+  - ~200-300 cross-reference link updates needed
+- Created MIGRATION_RISKS.md (3 high, 4 medium, 4 low risks identified)
+- **Next session:** Execute Phase 3 (create folders, move files, split ADRs, create INDEX files, update cross-refs)
+- Planning artifacts: `docs/refactor_docs/MIGRATION_MAPPING.md`, `docs/refactor_docs/MIGRATION_RISKS.md`, `docs/DOCS_INVENTORY.md`
+
+**Previous Session:** 2026-04-05 (Feature inventory + Requirements accuracy fixes)
 - Created `docs/planning/ACTUAL_STATE.md` — complete feature inventory and gap analysis (~500 lines)
   - Executive summary: ~45% of intended architecture implemented
   - Key findings: ADR-009 massively violated (~40+ direct writes, only 4 API routes), permission enforcement shallow (8/39 enforced), email is stub only, no GDPR
