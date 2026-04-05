@@ -1,6 +1,6 @@
 # CLAUDE.md — AI Context for FringeIsland
 
-**Version:** 0.2.37 | **Updated:** March 14, 2026 | **Phase 1:** 95% complete
+**Version:** 0.2.37 | **Updated:** April 5, 2026 | **Wave 1 (Ferd):** 95% complete
 
 ---
 
@@ -19,30 +19,30 @@ FringeIsland is an edutainment platform for group-based personal development thr
 ### Boot-Up — Start of every session
 
 **Trigger:** "boot up", "start session", or any variation
-**Action:** Read and follow `docs/workflows/boot-up.md` EXACTLY — use EXACT file paths from its table
+**Action:** Read and follow `docs/products/ferd/development/BOOT_UP.md` EXACTLY — use EXACT file paths from its table
 
-Key files the workflow reads: `PROJECT_STATUS.md`, `SPRINT.md`, `docs/planning/ROADMAP.md`
+Key files the workflow reads: `PROJECT_STATUS.md`, `SPRINT.md`, `docs/products/ferd/planning/ROADMAP.md`
 
 **If user skips boot-up** (jumps to a task): remind them and offer to run it first.
 
 ### Close-Down — End of every session
 
 **Trigger:** "thanks", "done", "that's all", wrapping up, or after completing major work
-**Action:** Proactively suggest close-down, then follow `docs/workflows/close-down.md` EXACTLY
+**Action:** Proactively suggest close-down, then follow `docs/products/ferd/development/CLOSE_DOWN.md` EXACTLY
 
-Must update: `PROJECT_STATUS.md` (always), `SPRINT.md` (always), `docs/planning/ROADMAP.md` (if significant progress)
+Must update: `PROJECT_STATUS.md` (always), `SPRINT.md` (always), `docs/products/ferd/planning/ROADMAP.md` (if significant progress)
 
 ### Feature Work — Hand off to Sprint Agent
 
-When user selects feature work after boot-up, load `docs/agents/contexts/sprint-agent.md` and `docs/workflows/feature-development.md`. Sprint Agent creates a sequential plan; each step requires user approval before proceeding. No parallel agent launches.
+When user selects feature work after boot-up, load `docs/products/ferd/development/agents/contexts/sprint-agent.md` and `docs/products/ferd/development/WORKFLOW.md`. Sprint Agent creates a sequential plan; each step requires user approval before proceeding. No parallel agent launches.
 
 ---
 
 ## Architecture (Patterns, not code)
 
-**Primary reference:** `docs/architecture/ARCHITECTURE_ANATOMY.md` — the layered anatomy (L0–L7, 5 verticals, Platform API ring). Read this before generating or modifying code. ADRs with full reasoning in `docs/architecture/ARCHITECTURE_DECISIONS.md`. Live implementation state in `docs/architecture/ARCHITECTURE_BASELINE.md`.
+**Primary reference:** `docs/universe/architecture/ARCHITECTURE_ANATOMY.md` — the layered anatomy (L0–L7, 5 verticals, Platform API ring). Read this before generating or modifying code. ADRs (22 universe + 1 Ferd) in `docs/universe/decisions/`. Live implementation state in `docs/implementation/ferd/baseline/BASELINE.md`.
 
-**Wave model (not phases):** The platform evolves in overlapping waves. **Ferd** (current web platform, Wave 1) → **Hamn** (full FringeIsland experience, Wave 2). See `docs/vision/PRODUCTS_AND_PLATFORM.md`.
+**Wave model (not phases):** The platform evolves in overlapping waves. **Ferd** (current web platform, Wave 1) → **Hamn** (full FringeIsland experience, Wave 2). See `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md`.
 
 - **Auth:** Client-side via AuthContext + useAuth() hook; proxy.ts for protected routes (Next.js 16, not middleware.ts)
 - **Components:** App Router; client components marked `'use client'`; reusable UI in `/components/ui/`
@@ -59,7 +59,7 @@ When user selects feature work after boot-up, load `docs/agents/contexts/sprint-
 
 **Hard rule:** Behaviors → failing tests (RED) → design → implement (GREEN). Tests MUST fail before implementation begins.
 
-**Canonical workflow:** `docs/workflows/feature-development.md` (8 stages, 0–7, with hard STOP gates)
+**Canonical workflow:** `docs/products/ferd/development/WORKFLOW.md` (8 stages, 0–7, with hard STOP gates)
 
 **Stage summary:** 0-Feature context → 1-Behaviors → 2-Write tests → 3-Run tests RED → 4-Design → 5-Implement GREEN → 6-Verify → 7-Document
 
@@ -90,35 +90,44 @@ bash supabase-cli.sh migration list
 
 ## Document Map — Where to find things
 
+**Three-tier structure:** `docs/universe/` (shared foundations) > `docs/products/` (product-specific) > `docs/implementation/` (live code state). Full navigation: `docs/INDEX.md`.
+
 | What | Where |
 |------|-------|
 | Current state & blockers | `PROJECT_STATUS.md` |
 | Active sprint + what's next | `SPRINT.md` |
-| Wave roadmap | `docs/planning/ROADMAP.md` |
-| Product scope (what/why) | `docs/planning/PRODUCT_SPEC.md` |
-| Vision | `docs/vision/VISION.md` |
-| Manifesto | `docs/vision/MANIFESTO.md` |
-| Contribution architecture | `docs/vision/CONTRIBUTION_ARCHITECTURE.md` |
-| Products & platform (waves) | `docs/vision/PRODUCTS_AND_PLATFORM.md` |
-| **Architecture anatomy (primary)** | `docs/architecture/ARCHITECTURE_ANATOMY.md` |
-| Architecture decisions (ADRs) | `docs/architecture/ARCHITECTURE_DECISIONS.md` |
-| Architecture baseline (live) | `docs/architecture/ARCHITECTURE_BASELINE.md` |
-| Architecture decisions (legacy) | `docs/architecture/ARCHITECTURE_DECISIONS_LEGACY.md` |
-| Database schema | `docs/architecture/DATABASE_SCHEMA.md` |
-| Authorization model | `docs/architecture/AUTHORIZATION.md` |
-| Domain entities | `docs/architecture/DOMAIN_ENTITIES.md` |
-| Vision session decisions | `docs/planning/VISION_DECISIONS.md` |
-| Deferred decisions | `docs/planning/DEFERRED_DECISIONS.md` |
-| Lifecycle sprint decisions | `docs/planning/lifecycle-roadmap-decisions.md` |
-| Feature docs | `docs/features/implemented/` |
-| Behavior specs | `docs/specs/behaviors/` |
-| Agent playbooks | `docs/agents/contexts/` (7 agents) |
-| Agent journals | `docs/agents/learnings/` |
-| TDD + feature workflow | `docs/workflows/feature-development.md` |
-| Boot-up / Close-down | `docs/workflows/boot-up.md`, `docs/workflows/close-down.md` |
-| Doc health check | `docs/workflows/doc-health-check.md` |
-| Journey Designer sessions | `docs/planning/sessions/` |
-| Research (human flourishing) | `docs/research/What_Fills_a_Life_Human_Flourishing.md` |
+| **Universe Tier** | |
+| Vision | `docs/universe/vision/VISION.md` |
+| Manifesto | `docs/universe/vision/MANIFESTO.md` |
+| Products & platform (waves) | `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md` |
+| Contribution architecture | `docs/universe/strategy/CONTRIBUTION_ARCHITECTURE.md` |
+| **Architecture anatomy (primary)** | `docs/universe/architecture/ARCHITECTURE_ANATOMY.md` |
+| Domain entities | `docs/universe/architecture/DOMAIN_ENTITIES.md` |
+| Architecture decisions (ADRs) | `docs/universe/decisions/` (22 universe-level) |
+| Vision session decisions | `docs/universe/vision/VISION_DECISIONS.md` |
+| Research (human flourishing) | `docs/universe/research/` |
+| **Products Tier — Ferd** | |
+| Product scope (what/why) | `docs/products/ferd/specification/PRODUCT_SPEC.md` |
+| Requirements (97 total) | `docs/products/ferd/specification/REQUIREMENTS.md` |
+| Wave roadmap | `docs/products/ferd/planning/ROADMAP.md` |
+| Deferred decisions | `docs/products/ferd/planning/DEFERRED.md` |
+| Lifecycle sprint decisions | `docs/products/ferd/planning/LIFECYCLE_DECISIONS.md` |
+| Ferd ADRs | `docs/products/ferd/architecture/decisions/` (1 Ferd-specific) |
+| Feature docs | `docs/products/ferd/development/features/` (FR-/AR-/NF- prefixed) |
+| Behavior specs | `docs/products/ferd/development/specs/` |
+| Agent playbooks | `docs/products/ferd/development/agents/contexts/` (7 agents) |
+| Agent journals | `docs/products/ferd/development/agents/learnings/` |
+| TDD + feature workflow | `docs/products/ferd/development/WORKFLOW.md` |
+| Boot-up / Close-down | `docs/products/ferd/development/BOOT_UP.md`, `CLOSE_DOWN.md` |
+| Doc health check | `docs/products/ferd/development/DOC_HEALTH_CHECK.md` |
+| Journey Designer sessions | `docs/products/ferd/sessions/` |
+| **Implementation Tier** | |
+| Database schema | `docs/implementation/shared/DATABASE_CURRENT.md` |
+| Schema overview | `docs/implementation/shared/SCHEMA_OVERVIEW.md` |
+| Authorization / RLS | `docs/implementation/shared/AUTH_SYSTEM.md`, `RLS_POLICIES.md` |
+| Architecture baseline (live) | `docs/implementation/ferd/baseline/BASELINE.md` |
+| Actual state / gap analysis | `docs/implementation/ferd/baseline/ACTUAL_STATE.md` |
+| Status / Kanban | `docs/implementation/ferd/status/KANBAN.md` |
 
 ---
 

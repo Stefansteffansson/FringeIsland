@@ -19,7 +19,7 @@
 **Feature / Work Package:** Phase 1.6 Polish & Launch
 **TDD Stage:** N/A — no active feature sprint in progress
 **Status:** Planning / Ready to start
-**Session Bridge:** `docs/planning/sessions/2026-03-20-JOURNEY_DESIGNER_SESSION.md`
+**Session Bridge:** `docs/products/ferd/sessions/2026-03-20-SESSION-01-journey-designer.md`
 
 ### Sprint Plan
 
@@ -71,7 +71,7 @@ After Ferd 1.6 ships:
 | 2 | Hamn M2 — Journey Marketplace | Publishing workflow, browse, ratings |
 | 3 | Hamn M3 — Enhanced Collaboration | Co-creation, groups-join-groups UI |
 
-See `docs/planning/ROADMAP.md` for Wave 2 (Hamn) and beyond and `docs/planning/DEFERRED_DECISIONS.md` for deferred scope.
+See `docs/products/ferd/planning/ROADMAP.md` for Wave 2 (Hamn) and beyond and `docs/products/ferd/planning/DEFERRED.md` for deferred scope.
 
 ---
 
@@ -87,4 +87,4 @@ See `docs/planning/ROADMAP.md` for Wave 2 (Hamn) and beyond and `docs/planning/D
 
 ---
 
-**Related:** `PROJECT_STATUS.md` | `docs/planning/ROADMAP.md` | `docs/workflows/feature-development.md`
+**Related:** `PROJECT_STATUS.md` | `docs/products/ferd/planning/ROADMAP.md` | `docs/products/ferd/development/WORKFLOW.md`

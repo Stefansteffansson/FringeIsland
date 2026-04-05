@@ -1,154 +1,94 @@
-# FringeIsland Documentation Index
+# FringeIsland Documentation
 
-**Version:** 0.2.37 | **Updated:** March 2026
+**Version:** 0.2.37 | **Updated:** April 2026
 
-Master navigation for all FringeIsland documentation. For current project state, see [PROJECT_STATUS.md](../PROJECT_STATUS.md).
+Three-tier documentation architecture: Universe (shared foundations) > Products (product-specific) > Implementation (live code state).
 
 ---
 
-## 🎯 Quick Navigation
+## Quick Navigation
 
 | I want to... | Go to... |
 |--------------|----------|
 | See active sprint + what's next | [SPRINT.md](../SPRINT.md) |
 | See current state & blockers | [PROJECT_STATUS.md](../PROJECT_STATUS.md) |
-| Understand WHY we're building this | [VISION.md](vision/VISION.md) + [MANIFESTO.md](vision/MANIFESTO.md) |
-| See WHAT we're building | [planning/PRODUCT_SPEC.md](planning/PRODUCT_SPEC.md) |
-| Understand technical patterns | [CLAUDE.md](../CLAUDE.md) |
-| Set up the project | [implementation/INSTALLATION.md](implementation/INSTALLATION.md) |
+| Understand WHY we're building this | [universe/vision/VISION.md](universe/vision/VISION.md) |
+| See WHAT we're building (Ferd) | [products/ferd/specification/PRODUCT_SPEC.md](products/ferd/specification/PRODUCT_SPEC.md) |
+| Understand the architecture | [universe/architecture/ARCHITECTURE_ANATOMY.md](universe/architecture/ARCHITECTURE_ANATOMY.md) |
+| See architecture decisions (ADRs) | [universe/decisions/](universe/decisions/) (22 universe) + [products/ferd/architecture/decisions/](products/ferd/architecture/decisions/) (1 Ferd) |
+| See the roadmap | [products/ferd/planning/ROADMAP.md](products/ferd/planning/ROADMAP.md) |
+| Work on database | [implementation/shared/SCHEMA_OVERVIEW.md](implementation/shared/SCHEMA_OVERVIEW.md) |
+| Build a feature (TDD) | [products/ferd/development/WORKFLOW.md](products/ferd/development/WORKFLOW.md) |
+| See feature docs | [products/ferd/development/features/](products/ferd/development/features/) |
+| See behavior specs | [products/ferd/development/specs/](products/ferd/development/specs/) |
+| Start a work session | [products/ferd/development/BOOT_UP.md](products/ferd/development/BOOT_UP.md) |
+| End a work session | [products/ferd/development/CLOSE_DOWN.md](products/ferd/development/CLOSE_DOWN.md) |
+| Set up the project | [implementation/ferd/baseline/INSTALLATION.md](implementation/ferd/baseline/INSTALLATION.md) |
 | See what changed | [CHANGELOG.md](../CHANGELOG.md) |
-| Understand the architecture | [architecture/ARCHITECTURE_ANATOMY.md](architecture/ARCHITECTURE_ANATOMY.md) (primary) |
-| See architecture decisions (ADRs) | [architecture/ARCHITECTURE_DECISIONS.md](architecture/ARCHITECTURE_DECISIONS.md) |
-| See architecture baseline (live) | [architecture/ARCHITECTURE_BASELINE.md](architecture/ARCHITECTURE_BASELINE.md) |
-| Work on database | [database/schema-overview.md](database/schema-overview.md) + [agents/contexts/database-agent.md](agents/contexts/database-agent.md) |
-| Build a feature (TDD) | [workflows/feature-development.md](workflows/feature-development.md) + [features/](features/) + [specs/behaviors/](specs/behaviors/) |
-| See the roadmap | [planning/ROADMAP.md](planning/ROADMAP.md) |
-| See lifecycle sprint decisions | [planning/lifecycle-roadmap-decisions.md](planning/lifecycle-roadmap-decisions.md) |
-| Start a work session | [workflows/boot-up.md](workflows/boot-up.md) |
-| End a work session | [workflows/close-down.md](workflows/close-down.md) |
+| Understand technical patterns | [CLAUDE.md](../CLAUDE.md) |
 
 ---
 
-## 📚 Documentation Structure
+## Tier 1: Universe — Shared Foundations
 
-### 🌍 Vision (`/docs/vision/`)
+Product-agnostic vision, strategy, architecture, research, and binding decisions.
 
-- **[VISION.md](vision/VISION.md)** — North star vision document — the WHY behind everything
-- **[MANIFESTO.md](vision/MANIFESTO.md)** — The FringeIsland Manifesto — 11 principles (Story over Data, Curiosity over Certainty, etc.)
-- **[CONTRIBUTION_ARCHITECTURE.md](vision/CONTRIBUTION_ARCHITECTURE.md)** — Who can build what — 4 contributor groups, 5 contribution types
-- **[PRODUCTS_AND_PLATFORM.md](vision/PRODUCTS_AND_PLATFORM.md)** — Full product ecosystem — digital products, physical products, events, platform strategy, device approach
-
-### 🎯 Planning (`/docs/planning/`)
-
-- **[planning/PRODUCT_SPEC.md](planning/PRODUCT_SPEC.md)** — Product specification for v1.0
-- **[planning/ROADMAP.md](planning/ROADMAP.md)** — Development phases and timeline
-- **[SPRINT.md](../SPRINT.md)** — Active sprint tracker, TDD phase, next sprint backlog
-- **[planning/DEFERRED_DECISIONS.md](planning/DEFERRED_DECISIONS.md)** — What we're NOT building yet
-- **[planning/lifecycle-roadmap-decisions.md](planning/lifecycle-roadmap-decisions.md)** — Lifecycle sprint structure and decisions
-- **[planning/VISION_DECISIONS.md](planning/VISION_DECISIONS.md)** — Locked decisions and open questions from vision sessions
-
-### 🏗️ Architecture (`/docs/architecture/`)
-
-- **[ARCHITECTURE_ANATOMY.md](architecture/ARCHITECTURE_ANATOMY.md)** — Primary reference: layered anatomy (L0-L7), verticals, Platform API ring
-- **[ARCHITECTURE_DECISIONS.md](architecture/ARCHITECTURE_DECISIONS.md)** — ADRs with full reasoning (ADR-001 through ADR-024)
-- **[ARCHITECTURE_BASELINE.md](architecture/ARCHITECTURE_BASELINE.md)** — Live codebase inventory mapped to anatomy layers
-- **[ARCHITECTURE_DECISIONS_LEGACY.md](architecture/ARCHITECTURE_DECISIONS_LEGACY.md)** — Historical decisions from pre-anatomy phase
-- **[DATABASE_SCHEMA.md](architecture/DATABASE_SCHEMA.md)** — Complete PostgreSQL schema with RLS policies
-- **[AUTHORIZATION.md](architecture/AUTHORIZATION.md)** — Authorization model and RLS policies
-- **[DOMAIN_ENTITIES.md](architecture/DOMAIN_ENTITIES.md)** — Domain model and entity relationships
-
-### 🗄️ Database (`/docs/database/`)
-
-- **[schema-overview.md](database/schema-overview.md)** — Complete database schema reference
-- **[migrations-log.md](database/migrations-log.md)** — Migration history with notes
-- **[rls-policies.md](database/rls-policies.md)** — Row Level Security documentation
-
-### 🔧 Implementation (`/docs/implementation/`)
-
-- **[INSTALLATION.md](implementation/INSTALLATION.md)** — Project setup and installation
-- **[AUTH_IMPLEMENTATION.md](implementation/AUTH_IMPLEMENTATION.md)** — Authentication system details
-
-### ✨ Features (`/docs/features/`)
-
-- **[implemented/](features/implemented/)** — Completed features with documentation
-- **[in-progress/](features/in-progress/)** — Features currently under development
-- **[planned/](features/planned/)** — Future features and specifications
-
-### 📋 Specifications (`/docs/specs/`)
-
-- **[behaviors/](specs/behaviors/)** — 105 documented behaviors (rules & constraints)
-- See: [feature-development.md](workflows/feature-development.md) for how behavior specs fit into the TDD workflow
-
-### 📝 Planning & History (`/docs/planning/`)
-
-- **[PRODUCT_SPEC.md](planning/PRODUCT_SPEC.md)** — Product specification
-- **[ROADMAP.md](planning/ROADMAP.md)** — Feature roadmap and development phases
-- **[DEFERRED_DECISIONS.md](planning/DEFERRED_DECISIONS.md)** — What we're NOT building yet
-- **[sessions/](planning/sessions/)** — Session bridges and development notes
-  - **[2026-03-20-JOURNEY_DESIGNER_SESSION.md](planning/sessions/2026-03-20-JOURNEY_DESIGNER_SESSION.md)** — Journey Designer Discovery Session 01
-  - **[2026-03-25-JOURNEY_DESIGNER_SESSION_02_1.md](planning/sessions/2026-03-25-JOURNEY_DESIGNER_SESSION_02_1.md)** — Journey Designer Session 02 Part 1
-  - **[Claude AI session bridge documents/](planning/sessions/Claude%20AI%20session%20bridge%20documents/)** — Early-stage session bridges and summaries (Sessions 1-4)
-  - **[archive/](planning/sessions/archive/)** — Archived session bridges from earlier sprints
-- **[archive/](planning/archive/)** — Historical/meta documentation
-
-### 🔬 Research (`/docs/research/`)
-
-- **[What_Fills_a_Life_Human_Flourishing.md](research/What_Fills_a_Life_Human_Flourishing.md)** — Research on human flourishing — foundational theory informing FringeIsland's journey design
-
-### 🤖 Agent System (`/docs/agents/`)
-
-Two-tier agent structure with continuous learning (7 agents).
-
-**Tier 1 — Domain Agents:**
-- **[database-agent.md](agents/contexts/database-agent.md)** — Schema, migrations, RLS, triggers
-- **[ui-agent.md](agents/contexts/ui-agent.md)** — Components, styling, UX patterns
-- **[integration-agent.md](agents/contexts/integration-agent.md)** — Data flow, queries, state management
-- **[test-agent.md](agents/contexts/test-agent.md)** — Behavior specs, test writing, coverage
-
-**Tier 2 — Process Agents:**
-- **[architect-agent.md](agents/contexts/architect-agent.md)** — System design, technical decisions
-- **[qa-agent.md](agents/contexts/qa-agent.md)** — Code review, security audit, pattern compliance
-- **[sprint-agent.md](agents/contexts/sprint-agent.md)** — Planning, retrospectives, knowledge curation
-
-**Overview:** [agents/README.md](agents/README.md) | **Journals:** [agents/learnings/](agents/learnings/)
-
-### 🔄 Workflows (`/docs/workflows/`)
-
-- **[boot-up.md](workflows/boot-up.md)** — How to start a work session
-- **[close-down.md](workflows/close-down.md)** — How to end a session and create handoffs
-- **[feature-development.md](workflows/feature-development.md)** — TDD feature workflow (8 phases, 0-7)
-- **[doc-health-check.md](workflows/doc-health-check.md)** — Periodic audit for terminology, schema, and acceptance criteria drift
+| Folder | Purpose |
+|--------|---------|
+| [universe/vision/](universe/vision/) | Core vision, manifesto, locked decisions |
+| [universe/strategy/](universe/strategy/) | Multi-product wave model, contribution architecture |
+| [universe/architecture/](universe/architecture/) | L0-L7 layered anatomy, domain entities |
+| [universe/research/](universe/research/) | Human flourishing, Theory U, adult development |
+| [universe/decisions/](universe/decisions/) | 22 universe-level ADRs |
 
 ---
 
-## 🎓 Learning Paths
+## Tier 2: Products — Product-Specific
+
+Each product has its own specification, architecture, planning, sessions, and development docs.
+
+### Ferd (Wave 1 — 95% complete)
+
+| Folder | Purpose |
+|--------|---------|
+| [products/ferd/specification/](products/ferd/specification/) | Product spec, requirements (97), activity catalog |
+| [products/ferd/architecture/](products/ferd/architecture/) | Lifecycle flows, design reviews, Ferd ADRs |
+| [products/ferd/planning/](products/ferd/planning/) | Roadmap, deferred decisions, lifecycle decisions |
+| [products/ferd/sessions/](products/ferd/sessions/) | Session logs (vision, design, sprint, journey designer) |
+| [products/ferd/development/](products/ferd/development/) | Workflows, agents, behavior specs, feature docs |
+
+---
+
+## Tier 3: Implementation — Live Code State
+
+Shared infrastructure and product-specific implementation details.
+
+| Folder | Purpose |
+|--------|---------|
+| [implementation/shared/](implementation/shared/) | Database schema, RLS, auth, migrations |
+| [implementation/ferd/](implementation/ferd/) | Baseline, status tracking, testing |
+
+---
+
+## Learning Paths
 
 ### New Developer Onboarding
 1. [PROJECT_STATUS.md](../PROJECT_STATUS.md) — Current state
-2. [VISION.md](vision/VISION.md) — Why FringeIsland exists
-3. [planning/PRODUCT_SPEC.md](planning/PRODUCT_SPEC.md) — What we're building
-4. [README.md](../README.md) — Project overview and setup
-5. [architecture/ARCHITECTURE_ANATOMY.md](architecture/ARCHITECTURE_ANATOMY.md) — Layered anatomy (primary)
-6. [database/schema-overview.md](database/schema-overview.md) — Data model
-7. [workflows/feature-development.md](workflows/feature-development.md) — How we develop (TDD)
-8. [implementation/INSTALLATION.md](implementation/INSTALLATION.md) — Setup environment
-9. [planning/ROADMAP.md](planning/ROADMAP.md) — What's next
+2. [universe/vision/VISION.md](universe/vision/VISION.md) — Why FringeIsland exists
+3. [products/ferd/specification/PRODUCT_SPEC.md](products/ferd/specification/PRODUCT_SPEC.md) — What we're building
+4. [universe/architecture/ARCHITECTURE_ANATOMY.md](universe/architecture/ARCHITECTURE_ANATOMY.md) — Architecture
+5. [implementation/shared/SCHEMA_OVERVIEW.md](implementation/shared/SCHEMA_OVERVIEW.md) — Data model
+6. [products/ferd/development/WORKFLOW.md](products/ferd/development/WORKFLOW.md) — How we develop (TDD)
+7. [implementation/ferd/baseline/INSTALLATION.md](implementation/ferd/baseline/INSTALLATION.md) — Setup
 
 ### New AI Agent Onboarding
-1. [PROJECT_STATUS.md](../PROJECT_STATUS.md) — Current state
-2. [VISION.md](vision/VISION.md) — Why we're building this
-3. [CLAUDE.md](../CLAUDE.md) — Technical patterns (auto-loaded)
-4. [workflows/feature-development.md](workflows/feature-development.md) — Development process
-5. [agents/contexts/\[your-domain\]-agent.md](agents/contexts/) — Your focused context
-6. Relevant feature docs from [features/implemented/](features/implemented/)
-7. Behavior specs from [specs/behaviors/](specs/behaviors/)
-
-### Understanding a Specific Feature
-1. Check [features/implemented/\[feature-name\].md](features/implemented/) for overview
-2. Read [CLAUDE.md](../CLAUDE.md) for implementation patterns
-3. Check [database/schema-overview.md](database/schema-overview.md) for data model
-4. See [CHANGELOG.md](../CHANGELOG.md) for when it was added
+1. [CLAUDE.md](../CLAUDE.md) — Technical patterns (auto-loaded)
+2. [products/ferd/development/BOOT_UP.md](products/ferd/development/BOOT_UP.md) — Session start
+3. [products/ferd/development/agents/contexts/](products/ferd/development/agents/contexts/) — Your agent playbook
+4. [products/ferd/development/WORKFLOW.md](products/ferd/development/WORKFLOW.md) — TDD workflow
+5. [products/ferd/development/specs/](products/ferd/development/specs/) — Behavior specs
+6. [products/ferd/development/features/](products/ferd/development/features/) — Feature docs
 
 ---
 
-**This index is the doc navigation hub — it tells you WHERE to look. For current state, see [PROJECT_STATUS.md](../PROJECT_STATUS.md). For AI routing, see [CLAUDE.md](../CLAUDE.md).**
+**This is the documentation hub. For current state: [PROJECT_STATUS.md](../PROJECT_STATUS.md). For AI routing: [CLAUDE.md](../CLAUDE.md).**

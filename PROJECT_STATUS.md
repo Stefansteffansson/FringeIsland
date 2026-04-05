@@ -58,26 +58,26 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 - `README.md` - Project overview and setup
 - `CHANGELOG.md` - Version history
 - `SPRINT.md` - **Active sprint, TDD stage, and next sprint backlog**
-- `docs/planning/ROADMAP.md` - **Phase progress and milestone history**
-- `docs/planning/DEFERRED_DECISIONS.md` - **Why we didn't build X (prevents feature creep)**
+- `docs/products/ferd/planning/ROADMAP.md` - **Wave progress and milestone history**
+- `docs/products/ferd/planning/DEFERRED.md` - **Why we didn't build X (prevents feature creep)**
 
 **For Specific Work:**
-- **Database work:** `docs/database/schema-overview.md`
-- **Feature development:** `docs/features/implemented/[feature-name].md`
-- **Latest feature:** `docs/features/implemented/platform-exit.md` ← **LATEST**
-- **Admin feature (complete):** `docs/features/implemented/deusex-admin-foundation.md`
-- **Lifecycle roadmap:** `docs/planning/lifecycle-roadmap-decisions.md` ← **NEW** (5 sprints, 5 decisions)
-- **Architecture baseline:** `docs/architecture/ARCHITECTURE_BASELINE.md` ← **NEW** (6-phase analysis, live-validated)
-- **Architecture anatomy (primary):** `docs/architecture/ARCHITECTURE_ANATOMY.md`
-- **Architecture decisions (ADRs):** `docs/architecture/ARCHITECTURE_DECISIONS.md`
-- **Planning context:** `docs/planning/ROADMAP.md` + `docs/planning/DEFERRED_DECISIONS.md`
-- **Vision documents:** `docs/vision/VISION.md` + `docs/vision/MANIFESTO.md` + `docs/vision/CONTRIBUTION_ARCHITECTURE.md` + `docs/vision/PRODUCTS_AND_PLATFORM.md`
-- **Vision session decisions:** `docs/planning/VISION_DECISIONS.md`
+- **Documentation hub:** `docs/INDEX.md` — three-tier navigation (universe/products/implementation)
+- **Database work:** `docs/implementation/shared/SCHEMA_OVERVIEW.md`
+- **Feature development:** `docs/products/ferd/development/features/` (FR-/AR-/NF- prefixed)
+- **Latest feature:** `docs/products/ferd/development/features/FR-platform-exit.md`
+- **Lifecycle roadmap:** `docs/products/ferd/planning/LIFECYCLE_DECISIONS.md` (5 sprints, 5 decisions)
+- **Architecture baseline:** `docs/implementation/ferd/baseline/BASELINE.md` (live-validated)
+- **Architecture anatomy (primary):** `docs/universe/architecture/ARCHITECTURE_ANATOMY.md`
+- **Architecture decisions (ADRs):** `docs/universe/decisions/` (22 universe) + `docs/products/ferd/architecture/decisions/` (1 Ferd)
+- **Planning context:** `docs/products/ferd/planning/ROADMAP.md` + `docs/products/ferd/planning/DEFERRED.md`
+- **Vision documents:** `docs/universe/vision/` + `docs/universe/strategy/`
+- **Vision session decisions:** `docs/universe/vision/VISION_DECISIONS.md`
 
-**Agent System (two-tier, 7 agents — see `docs/agents/README.md`):**
+**Agent System (two-tier, 7 agents — see `docs/products/ferd/development/agents/README.md`):**
 - **Tier 1 — Domain:** `database-agent.md`, `ui-agent.md`, `integration-agent.md`, `test-agent.md`
 - **Tier 2 — Process:** `architect-agent.md`, `qa-agent.md`, `sprint-agent.md`
-- **Learning journals:** `docs/agents/learnings/*.md` (one per domain)
+- **Learning journals:** `docs/products/ferd/development/agents/learnings/*.md` (one per domain)
 
 ---
 

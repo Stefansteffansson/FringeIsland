@@ -1,10 +1,10 @@
 # FringeIsland
 
-**Version:** 0.2.37 | **Updated:** March 2026 | **Phase 1:** 95% complete
+**Version:** 0.2.37 | **Updated:** April 2026 | **Wave 1 (Ferd):** 95% complete
 
 An edutainment platform for group-based personal development through structured learning journeys. Users travel solo or in groups on predefined journeys guided by role-based experiences — Stewards lead, Guides facilitate, Members participate, and Observers watch.
 
-FringeIsland is a sub-project within the **FringeIsland World** — an Alternative Reality Edutainment platform where people can Live, Grow, and Matter. See [VISION.md](docs/vision/VISION.md) for the full vision.
+FringeIsland is a sub-project within the **FringeIsland World** — an Alternative Reality Edutainment platform where people can Live, Grow, and Matter. See [VISION.md](docs/universe/vision/VISION.md) for the full vision.
 
 ---
 
@@ -103,25 +103,30 @@ npm run test:e2e
 
 ## 📍 Where to Find Things
 
+Documentation is organized in three tiers: **Universe** (shared foundations) > **Products** (product-specific) > **Implementation** (live code state). See [docs/INDEX.md](docs/INDEX.md) for full navigation.
+
 | What | Where |
 |------|-------|
 | Current state & blockers | [PROJECT_STATUS.md](PROJECT_STATUS.md) |
 | Version history | [CHANGELOG.md](CHANGELOG.md) |
-| Phase roadmap | [docs/planning/ROADMAP.md](docs/planning/ROADMAP.md) |
-| Vision & intent | [docs/vision/VISION.md](docs/vision/VISION.md) |
-| Manifesto | [docs/vision/MANIFESTO.md](docs/vision/MANIFESTO.md) |
-| Contribution architecture | [docs/vision/CONTRIBUTION_ARCHITECTURE.md](docs/vision/CONTRIBUTION_ARCHITECTURE.md) |
-| Products & platform strategy | [docs/vision/PRODUCTS_AND_PLATFORM.md](docs/vision/PRODUCTS_AND_PLATFORM.md) |
 | AI assistant context | [CLAUDE.md](CLAUDE.md) |
-| All documentation | [docs/INDEX.md](docs/INDEX.md) |
-| Product specification | [docs/planning/PRODUCT_SPEC.md](docs/planning/PRODUCT_SPEC.md) |
-| Architecture anatomy (primary) | [docs/architecture/ARCHITECTURE_ANATOMY.md](docs/architecture/ARCHITECTURE_ANATOMY.md) |
-| Architecture decisions (ADRs) | [docs/architecture/ARCHITECTURE_DECISIONS.md](docs/architecture/ARCHITECTURE_DECISIONS.md) |
-| Architecture baseline (live) | [docs/architecture/ARCHITECTURE_BASELINE.md](docs/architecture/ARCHITECTURE_BASELINE.md) |
-| Database schema | [docs/architecture/DATABASE_SCHEMA.md](docs/architecture/DATABASE_SCHEMA.md) |
-| Deferred decisions | [docs/planning/DEFERRED_DECISIONS.md](docs/planning/DEFERRED_DECISIONS.md) |
-| Journey Designer sessions | [docs/planning/sessions/](docs/planning/sessions/) |
-| Research (human flourishing) | [docs/research/What_Fills_a_Life_Human_Flourishing.md](docs/research/What_Fills_a_Life_Human_Flourishing.md) |
+| Documentation hub | [docs/INDEX.md](docs/INDEX.md) |
+| **Universe** | |
+| Vision & intent | [docs/universe/vision/VISION.md](docs/universe/vision/VISION.md) |
+| Manifesto | [docs/universe/vision/MANIFESTO.md](docs/universe/vision/MANIFESTO.md) |
+| Products & platform strategy | [docs/universe/strategy/PRODUCTS_AND_PLATFORM.md](docs/universe/strategy/PRODUCTS_AND_PLATFORM.md) |
+| Architecture anatomy (primary) | [docs/universe/architecture/ARCHITECTURE_ANATOMY.md](docs/universe/architecture/ARCHITECTURE_ANATOMY.md) |
+| Architecture decisions (ADRs) | [docs/universe/decisions/](docs/universe/decisions/) |
+| Research | [docs/universe/research/](docs/universe/research/) |
+| **Ferd (Wave 1)** | |
+| Product specification | [docs/products/ferd/specification/PRODUCT_SPEC.md](docs/products/ferd/specification/PRODUCT_SPEC.md) |
+| Wave roadmap | [docs/products/ferd/planning/ROADMAP.md](docs/products/ferd/planning/ROADMAP.md) |
+| Deferred decisions | [docs/products/ferd/planning/DEFERRED.md](docs/products/ferd/planning/DEFERRED.md) |
+| Feature docs | [docs/products/ferd/development/features/](docs/products/ferd/development/features/) |
+| Journey Designer sessions | [docs/products/ferd/sessions/](docs/products/ferd/sessions/) |
+| **Implementation** | |
+| Database schema | [docs/implementation/shared/DATABASE_CURRENT.md](docs/implementation/shared/DATABASE_CURRENT.md) |
+| Architecture baseline (live) | [docs/implementation/ferd/baseline/BASELINE.md](docs/implementation/ferd/baseline/BASELINE.md) |
 
 ---
 
