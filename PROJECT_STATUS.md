@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-04-05 (VISION.md v0.2 — session integration)
+**Last Updated:** 2026-04-05 (Hamn folder structure + reference sweep)
 **Current Version:** 0.2.37
 **Active Branch:** main
 
@@ -84,8 +84,13 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-04-05 (VISION.md v0.2 — session integration + platform strategy alignment)
+**Date:** 2026-04-05 (VISION.md v0.2 + Hamn folder structure + reference sweep)
 **Summary:**
+- Created `docs/products/hamn/` folder structure (11 directories mirroring Ferd: architecture, development, planning, sessions, specification)
+- Updated 10 files with Hamn references (INDEX files, CLAUDE.md, README.md, PROJECT_STATUS.md, SPRINT.md, CHANGELOG.md, session log)
+- Fixed broken CHANGELOG.md links to pre-restructure paths
+- Deep scan confirmed all .md files now consistently reference Hamn where appropriate
+- Three commits: `95cfce9` (folder structure + 6 files), `a006afe` (4 remaining fixes)
 - Updated `docs/universe/vision/VISION.md` from v0.1 to v0.2 (129 insertions, 27 deletions):
   - Integrated journey designer session discoveries (Sessions 01-03): three-dimensional void model, Whisp as instrument (replacing avatar-as-mirror), Three Perspectives framework expanding three questions to nine
   - Expanded research foundation (SDT, Ryff, Keyes, Frankl, Kegan, Bandura, ikigai, etc.)
