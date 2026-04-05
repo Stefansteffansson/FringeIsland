@@ -3,7 +3,7 @@
 **Database:** PostgreSQL via Supabase
 **Last Updated:** February 4, 2026
 
-For complete RLS policy details, see `docs/architecture/AUTHORIZATION.md`.
+For complete RLS policy details, see `./AUTH_SYSTEM.md`.
 
 This document provides a quick reference for RLS policies.
 
@@ -18,7 +18,7 @@ This document provides a quick reference for RLS policies.
 
 ## Quick Reference
 
-See `docs/architecture/AUTHORIZATION.md` for full policy documentation.
+See `./AUTH_SYSTEM.md` for full policy documentation.
 
 **Key Principles:**
 - Users see only their own data
@@ -29,4 +29,4 @@ See `docs/architecture/AUTHORIZATION.md` for full policy documentation.
 
 ---
 
-**For detailed policy documentation, see:** `docs/architecture/AUTHORIZATION.md`
+**For detailed policy documentation, see:** `./AUTH_SYSTEM.md`

@@ -24,12 +24,12 @@ I am the Sprint Agent. I keep the team moving with purpose. I plan what to build
 
 - **Active sprint:** `SPRINT.md` (root — TDD stage, step plan, next sprint)
 - **Project status:** `PROJECT_STATUS.md` (root)
-- **Roadmap:** `docs/planning/ROADMAP.md`
-- **Product spec:** `docs/planning/PRODUCT_SPEC.md`
-- **Deferred decisions:** `docs/planning/DEFERRED_DECISIONS.md`
-- **Session history:** `docs/planning/sessions/`
-- **Agent journals:** `docs/agents/learnings/`
-- **Agent playbooks:** `docs/agents/contexts/`
+- **Roadmap:** `docs/products/ferd/planning/ROADMAP.md`
+- **Product spec:** `docs/products/ferd/specification/PRODUCT_SPEC.md`
+- **Deferred decisions:** `docs/products/ferd/planning/DEFERRED.md`
+- **Session history:** `docs/products/ferd/sessions/`
+- **Agent journals:** `docs/products/ferd/development/agents/learnings/`
+- **Agent playbooks:** `docs/products/ferd/development/agents/contexts/`
 - **MEMORY.md:** `~/.claude/projects/.../memory/MEMORY.md` (150-line hard cap)
 
 ---
@@ -67,7 +67,7 @@ Run at the beginning of a work cycle (every 1-2 weeks or at session start for fo
 ```markdown
 Read and summarize:
 - PROJECT_STATUS.md → Active tasks, blockers, recent progress
-- docs/planning/ROADMAP.md → Wave completion, next priorities
+- docs/products/ferd/planning/ROADMAP.md → Wave completion, next priorities
 - Last session bridge → What was in progress
 ```
 
@@ -194,7 +194,7 @@ Run at the end of a work cycle or when a significant milestone is reached:
 
 **This is the critical step.** For each agent journal:
 
-1. Read `docs/agents/learnings/[domain].md`
+1. Read `docs/products/ferd/development/agents/learnings/[domain].md`
 2. For each entry:
    - **Confirmed across multiple uses?** → Promote to playbook, mark as "Promoted ✅"
    - **Still unverified?** → Leave in journal
@@ -203,12 +203,12 @@ Run at the end of a work cycle or when a significant milestone is reached:
 
 #### 4. Doc Health Check
 
-**Full workflow:** `docs/workflows/doc-health-check.md`
+**Full workflow:** `docs/products/ferd/development/DOC_HEALTH_CHECK.md`
 
 Three questions before moving on:
 
 1. **Terminology drift:** Were any role names, entity names, or permission names changed this sprint? → If yes: list every behavior spec and feature doc that uses the old name. Update them.
-2. **Schema drift:** Were any tables added, columns dropped, or RLS policies changed? → If yes: check `docs/database/schema-overview.md`, `docs/database/rls-policies.md`, and `docs/architecture/DATABASE_SCHEMA.md` for accuracy.
+2. **Schema drift:** Were any tables added, columns dropped, or RLS policies changed? → If yes: check `docs/implementation/shared/SCHEMA_OVERVIEW.md`, `docs/implementation/shared/RLS_POLICIES.md`, and `docs/implementation/shared/DATABASE_CURRENT.md` for accuracy.
 3. **Unchecked acceptance criteria:** Are there behavior specs with `- [ ]` checkboxes for features that are fully implemented and tested? → If yes: verify the linked test passes and check the box.
 
 Skip only if this sprint had no schema changes, no renames, and no new test passes.
@@ -232,9 +232,9 @@ For each entry in MEMORY.md:
 
 - `SPRINT.md` — Always update (tick off steps, advance TDD stage, update next sprint)
 - `PROJECT_STATUS.md` — Always update (stats, last session summary)
-- `docs/planning/ROADMAP.md` — Update if wave progress changed
+- `docs/products/ferd/planning/ROADMAP.md` — Update if wave progress changed
 - `CHANGELOG.md` — Update if version bumped
-- Create session bridge in `docs/planning/sessions/` if significant work
+- Create session bridge in `docs/products/ferd/sessions/` if significant work
 
 ---
 
@@ -254,8 +254,8 @@ For each entry in MEMORY.md:
 ## Scope Management
 
 ### When Someone Says "What About..."
-1. Check `docs/planning/DEFERRED_DECISIONS.md` — Already deferred?
-2. Check `docs/planning/PRODUCT_SPEC.md` — In scope for current wave?
+1. Check `docs/products/ferd/planning/DEFERRED.md` — Already deferred?
+2. Check `docs/products/ferd/specification/PRODUCT_SPEC.md` — In scope for current wave?
 3. If neither: Is it required for current sprint goals?
    - **Yes** → Add to sprint
    - **No** → Add to backlog / deferred decisions with rationale
@@ -288,20 +288,20 @@ My work is done when:
 ## Learning Protocol
 
 When working in this domain:
-1. Check `docs/agents/learnings/sprints.md` for process insights
+1. Check `docs/products/ferd/development/agents/learnings/sprints.md` for process insights
 2. During retrospectives, capture process improvements
 3. At close-down, update MEMORY.md if process rules changed
 
-Journal location: `docs/agents/learnings/sprints.md`
+Journal location: `docs/products/ferd/development/agents/learnings/sprints.md`
 Last curated: 2026-02-13 (initial)
 
 ---
 
 ## Related Documentation
 
-- **Boot-up workflow:** `docs/workflows/boot-up.md`
-- **Close-down workflow:** `docs/workflows/close-down.md`
-- **TDD + feature workflow:** `docs/workflows/feature-development.md`
-- **Feature development workflow:** `docs/workflows/feature-development.md`
-- **Session bridges:** `docs/planning/sessions/`
-- **Deferred decisions:** `docs/planning/DEFERRED_DECISIONS.md`
+- **Boot-up workflow:** `docs/products/ferd/development/BOOT_UP.md`
+- **Close-down workflow:** `docs/products/ferd/development/CLOSE_DOWN.md`
+- **TDD + feature workflow:** `docs/products/ferd/development/WORKFLOW.md`
+- **Feature development workflow:** `docs/products/ferd/development/WORKFLOW.md`
+- **Session bridges:** `docs/products/ferd/sessions/`
+- **Deferred decisions:** `docs/products/ferd/planning/DEFERRED.md`

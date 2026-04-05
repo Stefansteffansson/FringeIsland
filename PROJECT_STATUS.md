@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-04-05 (Product specification review — Ferd + Hamn)
+**Last Updated:** 2026-04-05 (Requirements review + doc health overhaul)
 **Current Version:** 0.2.37
 **Active Branch:** main
 
@@ -72,7 +72,7 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 - **Architecture decisions (ADRs):** `docs/universe/decisions/` (22 universe) + `docs/products/ferd/architecture/decisions/` (1 Ferd)
 - **Planning context:** `docs/products/ferd/planning/ROADMAP.md` + `docs/products/ferd/planning/DEFERRED.md`
 - **Vision documents:** `docs/universe/vision/` + `docs/universe/strategy/`
-- **Hamn (Wave 2) docs:** `docs/products/hamn/INDEX.md` — folder structure established, awaiting specification
+- **Hamn (Wave 2) docs:** `docs/products/hamn/INDEX.md` — product spec + 82 requirements + deferred decisions
 - **Vision session decisions:** `docs/universe/vision/VISION_DECISIONS.md`
 
 **Agent System (two-tier, 7 agents — see `docs/products/ferd/development/agents/README.md`):**
@@ -84,23 +84,24 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-04-05 (Product specification review — Ferd + Hamn)
+**Date:** 2026-04-05 (Requirements review + doc health overhaul)
 **Summary:**
-- Major product specification review session covering both Ferd (Wave 1) and Hamn (Wave 2)
-- Created Hamn specification scaffold: PRODUCT_SPEC.md (v0.2, all sections filled), REQUIREMENTS.md (structure only), INDEX.md
-- Added 8 new features to Ferd PRODUCT_SPEC.md (v1.2): visitor/shadow experience with taster journeys, profile_data table, travel log/journal, i18n framework, block/report users, group DMs, basic announcements, three void dimensions as UX design lens
-- Created universe-level infrastructure:
-  - `docs/universe/processes/` — deferral protocol (two-sided acceptance workflow), planning protocol (research-first sequence)
-  - `docs/universe/community/` — 9 community open questions (cold-start, Dreamineer recruitment, Council governance, Foundation, etc.)
-  - `docs/universe/strategy/OPEN_QUESTIONS.md` — 3 cross-wave questions (codebase evolution, Kickstarter deps, naming)
-- Created per-product research files: Ferd RESEARCH.md (5 investigations), Hamn RESEARCH.md (8 investigations)
-- Created Hamn DEFERRED.md (7 items deferred to Wave 3/3+)
-- Researched vision/strategy docs → produced `docs/products/hamn/VISION_TO_SPEC_MAPPING.md` (working reference)
-- Resolved 14 vision-to-spec gaps, reviewed 16 Hamn themes, captured 12 strategic questions
-- Calibrated Ferd DEFERRED.md: 11 items accepted by Hamn, 1 re-deferred to Wave 3 (Whisp respawning)
-- Updated CLAUDE.md document map with 7 new entries
-- Updated INDEX files: universe, Hamn, Ferd planning
+- Rewrote Ferd PRODUCT_SPEC.md v1.2 → v2.0 (clean "what & why" document, removed duplicative content)
+- Updated Ferd REQUIREMENTS.md: 5 status corrections, 3 new requirements (97→100 total), added binding architecture rule
+- **Key decision:** ALL architecture compliance (AR-001 through AR-004) elevated to 🔥 LAUNCH BLOCKER — must complete pre-launch
+- Populated Hamn REQUIREMENTS.md from scratch: 82 requirements across L0–L7 + V1–V5 + NFRs + ARs
+- Added Whisp Respawning Mechanics to Hamn DEFERRED.md (re-deferred Ferd → Hamn → Wave 3)
+- Rewrote DOC_HEALTH_CHECK.md: expanded from 3 to 6 audit sections (added path drift, cross-doc consistency, architecture compliance)
+- Fixed ~80 stale path references across ~25 files (post-restructuring drift)
+- Updated CLAUDE.md (requirements count, Hamn entries, binding rule) and README.md (added requirements to nav table)
+- Permission count discrepancy flagged: CLAUDE.md says 31, REQUIREMENTS.md says 39 — needs DB verification
 - No code changes, no tests needed
+
+**Previous Session:** 2026-04-05 (Product specification review — Ferd + Hamn)
+- Created Hamn specification scaffold, added 8 new features to Ferd PRODUCT_SPEC v1.2
+- Created universe-level infrastructure (processes, community, strategy open questions)
+- Created per-product research files, Hamn DEFERRED.md (7 items)
+- Calibrated Ferd DEFERRED.md: 11 items accepted by Hamn, 1 re-deferred to Wave 3
 
 **Previous Session:** 2026-04-05 (VISION.md v0.2 + Hamn folder structure + reference sweep)
 - Created `docs/products/hamn/` folder structure (11 directories mirroring Ferd)
@@ -129,14 +130,14 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 - Full file inventory (139 files), ADR analysis, risk assessment
 
 **Previous Session:** 2026-04-05 (Feature inventory + Requirements accuracy fixes)
-- Created `docs/planning/ACTUAL_STATE.md` — complete feature inventory and gap analysis (~500 lines)
+- Created `docs/implementation/ferd/baseline/ACTUAL_STATE.md` — complete feature inventory and gap analysis (~500 lines)
   - Executive summary: ~45% of intended architecture implemented
   - Key findings: ADR-009 massively violated (~40+ direct writes, only 4 API routes), permission enforcement shallow (8/39 enforced), email is stub only, no GDPR
-- Applied 12 accuracy fixes to `docs/planning/REQUIREMENTS-ferd-complete.md`:
+- Applied 12 accuracy fixes to `docs/products/ferd/specification/REQUIREMENTS.md`:
   - Phase 1.4 → Wave Ferd 1.6, removed false email template claims, adjusted 5 completeness percentages
   - Added missing FR-L1-009 (Display Name/Nickname system), added self-serve vs admin note
   - Fixed broken Related Documents paths, updated summary statistics (97 total requirements)
-- Reviewed and corrected `docs/planning/CLAUDE_CODE_HANDOFF-ferd-feature-inventory.md` (handoff plan)
+- Reviewed and corrected `docs/products/ferd/development/_archive/2026-04-05-refactor-planning/CLAUDE_CODE_HANDOFF-ferd-feature-inventory.md` (handoff plan, now archived)
 
 **Previous Session:** 2026-03-25 (Doc references update — sessions + research folder)
 - Added references to Journey Designer Session 02 Part 1 and new `docs/research/` folder

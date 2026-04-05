@@ -317,9 +317,9 @@ supabase db push
 
 ## Related Documentation
 
-- **Schema overview:** `docs/database/schema-overview.md`
-- **RLS policies:** `docs/database/rls-policies.md`
-- **Full schema SQL:** `docs/architecture/DATABASE_SCHEMA.md`
+- **Schema overview:** `./SCHEMA_OVERVIEW.md`
+- **RLS policies:** `./RLS_POLICIES.md`
+- **Full schema SQL:** `./DATABASE_CURRENT.md`
 
 ---
 

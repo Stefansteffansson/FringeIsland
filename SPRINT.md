@@ -1,6 +1,6 @@
 # SPRINT.md — Active Sprint Tracker
 
-**Last Updated:** 2026-04-05 (product spec review session)
+**Last Updated:** 2026-04-05 (requirements review + doc health overhaul)
 **Version:** v0.2.37
 
 ---
@@ -8,7 +8,7 @@
 ## How to Read This File
 
 - **One section per active work stream.** Most of the time there is one. Add more for parallel work.
-- **TDD Stage** — where we are in the 0-7 lifecycle (see `docs/workflows/feature-development.md`).
+- **TDD Stage** — where we are in the 0-7 lifecycle (see `docs/products/ferd/development/WORKFLOW.md`).
 - **Sprint Plan** — steps with status. Tick off as work completes. Update on close-down.
 - **Next Sprint** — what we start after the current sprint finishes.
 
@@ -25,18 +25,22 @@
 
 | # | Step | Owner | Status |
 |---|------|-------|--------|
-| 1 | Mobile responsiveness audit | UI Agent | Not started |
-| 2 | User onboarding flow (TDD stages 0-7) | Sprint Agent | Not started |
-| 3 | Visitor/shadow experience + taster journeys (TDD) | Sprint Agent | Not started |
-| 4 | profile_data table (ADR-U005) + travel log (TDD) | Sprint Agent | Not started |
-| 5 | i18n framework — string externalization | Integration Agent | Not started |
-| 6 | Block/report users (TDD) | Sprint Agent | Not started |
-| 7 | Group DMs (TDD) | Sprint Agent | Not started |
-| 8 | Basic announcements (TDD) | Sprint Agent | Not started |
-| 9 | Expand E2E test coverage beyond 7 starter tests | Test Agent | Not started |
-| 10 | Fix known issues: orphan groups, alert() in fix-orphans, hydration warning | Integration Agent | Not started |
-| 11 | Beta testing setup — invite 10-20 users | — | Not started |
-| 12 | Error monitoring (Sentry) | Integration Agent | Not started |
+| 1 | 🔥 AR-001: ADR-009 API-first compliance (refactor ~40+ direct writes) | Architect + Integration | Not started |
+| 2 | 🔥 AR-002: Permission enforcement (39 defined, 8 enforced → full coverage) | Architect + Integration | Not started |
+| 3 | 🔥 AR-003: Layer boundary compliance (L0–L7 audit) | Architect | Not started |
+| 4 | 🔥 AR-004: Vertical coverage (admin, notifications, observability hooks) | Architect + Integration | Not started |
+| 5 | Mobile responsiveness audit | UI Agent | Not started |
+| 6 | User onboarding flow (TDD stages 0-7) | Sprint Agent | Not started |
+| 7 | Visitor/shadow experience + taster journeys (TDD) | Sprint Agent | Not started |
+| 8 | profile_data table (ADR-U005) + travel log (TDD) | Sprint Agent | Not started |
+| 9 | i18n framework — string externalization | Integration Agent | Not started |
+| 10 | Block/report users (TDD) | Sprint Agent | Not started |
+| 11 | Group DMs (TDD) | Sprint Agent | Not started |
+| 12 | Basic announcements (TDD) | Sprint Agent | Not started |
+| 13 | Expand E2E test coverage beyond 7 starter tests | Test Agent | Not started |
+| 14 | Fix known issues: orphan groups, alert() in fix-orphans, hydration warning | Integration Agent | Not started |
+| 15 | Beta testing setup — invite 10-20 users | — | Not started |
+| 16 | Error monitoring (Sentry) | Integration Agent | Not started |
 
 ### Blockers
 
@@ -52,7 +56,7 @@ To add a parallel work stream, copy this template:
 **Feature / Work Package:** [Name]
 **TDD Stage:** [0-7 or N/A]
 **Status:** [Planning | In progress | Blocked | Complete]
-**Session Bridge:** `docs/planning/sessions/YYYY-MM-DD-description.md`
+**Session Bridge:** `docs/products/ferd/sessions/YYYY-MM-DD-description.md`
 
 ### Sprint Plan
 

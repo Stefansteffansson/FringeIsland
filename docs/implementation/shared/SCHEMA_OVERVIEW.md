@@ -4,7 +4,7 @@
 **Last Updated:** February 4, 2026
 **Database:** PostgreSQL via Supabase
 
-This document provides a high-level overview of the FringeIsland database schema. For complete SQL definitions, see `docs/architecture/DATABASE_SCHEMA.md`.
+This document provides a high-level overview of the FringeIsland database schema. For complete SQL definitions, see `./DATABASE_CURRENT.md`.
 
 ---
 
@@ -131,7 +131,7 @@ Future Tables (Phase 2+):
 
 ## 🔒 Security (RLS Policies)
 
-All tables have comprehensive Row Level Security policies. See `docs/database/rls-policies.md` for details.
+All tables have comprehensive Row Level Security policies. See `./RLS_POLICIES.md` for details.
 
 **Key Security Principles:**
 - Users can only see their own data
@@ -168,7 +168,7 @@ Prevents removing the last Steward from a group
 
 ## 📈 Migration History
 
-See `docs/database/migrations-log.md` for complete history.
+See `./MIGRATIONS_LOG.md` for complete history.
 
 **Applied Migrations (10 total):**
 1. `20260120_initial_schema.sql` - Initial 13-table setup
@@ -205,11 +205,11 @@ See `docs/database/migrations-log.md` for complete history.
 
 ## 📚 Related Documentation
 
-- **Full schema SQL:** `docs/architecture/DATABASE_SCHEMA.md`
-- **RLS policies:** `docs/database/rls-policies.md`
-- **Migration log:** `docs/database/migrations-log.md`
-- **Domain entities:** `docs/architecture/DOMAIN_ENTITIES.md`
-- **Authorization model:** `docs/architecture/AUTHORIZATION.md`
+- **Full schema SQL:** `./DATABASE_CURRENT.md`
+- **RLS policies:** `./RLS_POLICIES.md`
+- **Migration log:** `./MIGRATIONS_LOG.md`
+- **Domain entities:** `../../universe/architecture/DOMAIN_ENTITIES.md`
+- **Authorization model:** `./AUTH_SYSTEM.md`
 
 ---
 
@@ -242,4 +242,4 @@ const canManageMembers = hasPermission('manage_members');
 
 ---
 
-**For database-specific work, also read:** `docs/agents/contexts/database-agent.md`
+**For database-specific work, also read:** `../../products/ferd/development/agents/contexts/database-agent.md`

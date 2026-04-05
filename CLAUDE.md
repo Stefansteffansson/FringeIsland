@@ -48,7 +48,7 @@ When user selects feature work after boot-up, load `docs/products/ferd/developme
 - **Components:** App Router; client components marked `'use client'`; reusable UI in `/components/ui/`
 - **State:** React Context for auth; local state for components; `refreshNavigation` custom event for cross-component updates
 - **DB access:** Supabase client (`lib/supabase/client.ts`) for browser, server client (`lib/supabase/server.ts`) for RSC
-- **API-first (ADR-009):** Business logic belongs in API routes (`/api/...`), not server components. Frontend calls the API; the API calls the database. Build every feature as if iOS/Android already exist. Pattern: `Database → API route → Frontend component`. Never: `Database → Frontend component directly`.
+- **API-first (ADR-009):** Business logic belongs in API routes (`/api/...`), not server components. Frontend calls the API; the API calls the database. Build every feature as if iOS/Android already exist. Pattern: `Database → API route → Frontend component`. Never: `Database → Frontend component directly`. **Binding rule (2026-04-05):** All new Ferd 1.6 features must follow the architecture anatomy. Existing ADR-009 violations must be refactored pre-launch. See REQUIREMENTS.md "Binding Architecture Rule".
 - **Security:** RLS on all 19 tables; triggers for business logic; `is_platform_admin()` SECURITY DEFINER for admin checks
 - **RBAC:** 4 roles (Steward, Guide, Member, Observer), 31 permissions, `has_permission()` function
 - **UI rules:** Never use browser `alert()`/`confirm()` — always use `ConfirmModal`. Always show loading states. Update ALL related state after data changes (members + roles + isLeader).
@@ -111,7 +111,7 @@ bash supabase-cli.sh migration list
 | Cross-wave open questions | `docs/universe/strategy/OPEN_QUESTIONS.md` |
 | **Products Tier — Ferd** | |
 | Product scope (what/why) | `docs/products/ferd/specification/PRODUCT_SPEC.md` |
-| Requirements (97 total) | `docs/products/ferd/specification/REQUIREMENTS.md` |
+| Requirements (100 total) | `docs/products/ferd/specification/REQUIREMENTS.md` |
 | Wave roadmap | `docs/products/ferd/planning/ROADMAP.md` |
 | Deferred decisions | `docs/products/ferd/planning/DEFERRED.md` |
 | Lifecycle sprint decisions | `docs/products/ferd/planning/LIFECYCLE_DECISIONS.md` |
@@ -129,6 +129,8 @@ bash supabase-cli.sh migration list
 | Hamn product docs (Wave 2) | `docs/products/hamn/INDEX.md` |
 | Hamn product spec | `docs/products/hamn/specification/PRODUCT_SPEC.md` |
 | Hamn requirements | `docs/products/hamn/specification/REQUIREMENTS.md` |
+| Hamn requirements (82 total) | `docs/products/hamn/specification/REQUIREMENTS.md` |
+| Hamn deferred decisions | `docs/products/hamn/planning/DEFERRED.md` |
 | Hamn research / open investigations | `docs/products/hamn/planning/RESEARCH.md` |
 | **Implementation Tier** | |
 | Database schema | `docs/implementation/shared/DATABASE_CURRENT.md` |

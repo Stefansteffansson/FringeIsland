@@ -120,6 +120,7 @@ Documentation is organized in three tiers: **Universe** (shared foundations) > *
 | Research | [docs/universe/research/](docs/universe/research/) |
 | **Ferd (Wave 1)** | |
 | Product specification | [docs/products/ferd/specification/PRODUCT_SPEC.md](docs/products/ferd/specification/PRODUCT_SPEC.md) |
+| Requirements (100 items) | [docs/products/ferd/specification/REQUIREMENTS.md](docs/products/ferd/specification/REQUIREMENTS.md) |
 | Wave roadmap | [docs/products/ferd/planning/ROADMAP.md](docs/products/ferd/planning/ROADMAP.md) |
 | Deferred decisions | [docs/products/ferd/planning/DEFERRED.md](docs/products/ferd/planning/DEFERRED.md) |
 | Feature docs | [docs/products/ferd/development/features/](docs/products/ferd/development/features/) |
@@ -128,6 +129,8 @@ Documentation is organized in three tiers: **Universe** (shared foundations) > *
 | Journey Designer sessions | [docs/products/ferd/sessions/](docs/products/ferd/sessions/) |
 | **Hamn (Wave 2)** | |
 | Hamn product docs | [docs/products/hamn/INDEX.md](docs/products/hamn/INDEX.md) |
+| Hamn product spec | [docs/products/hamn/specification/PRODUCT_SPEC.md](docs/products/hamn/specification/PRODUCT_SPEC.md) |
+| Hamn requirements (82 items) | [docs/products/hamn/specification/REQUIREMENTS.md](docs/products/hamn/specification/REQUIREMENTS.md) |
 | **Implementation** | |
 | Database schema | [docs/implementation/shared/DATABASE_CURRENT.md](docs/implementation/shared/DATABASE_CURRENT.md) |
 | Architecture baseline (live) | [docs/implementation/ferd/baseline/BASELINE.md](docs/implementation/ferd/baseline/BASELINE.md) |

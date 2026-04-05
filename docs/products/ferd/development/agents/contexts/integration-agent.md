@@ -4,7 +4,7 @@
 **For:** Connecting backend data to frontend components, implementing business logic
 **Last Updated:** February 13, 2026
 
-**Replaces:** `archive/feature-agent.md` (the 8-phase workflow moved to `docs/workflows/feature-development.md`)
+**Replaces:** `archive/feature-agent.md` (the 8-phase workflow moved to `docs/products/ferd/development/WORKFLOW.md`)
 
 ---
 
@@ -308,4 +308,4 @@ Last curated: 2026-02-13 (initial)
 - **Database Agent:** `docs/agents/contexts/database-agent.md`
 - **UI Agent:** `docs/agents/contexts/ui-agent.md`
 - **Feature docs:** `docs/features/implemented/`
-- **Feature dev workflow:** `docs/workflows/feature-development.md`
+- **Feature dev workflow:** `docs/products/ferd/development/WORKFLOW.md`

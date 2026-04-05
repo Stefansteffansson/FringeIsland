@@ -13,7 +13,7 @@
 | [AUTH_IMPLEMENTATION.md](./AUTH_IMPLEMENTATION.md) | Auth implementation details |
 | [AUTH_IMPLEMENTATION_SUMMARY.md](./AUTH_IMPLEMENTATION_SUMMARY.md) | Auth implementation summary |
 | [INSTALLATION.md](./INSTALLATION.md) | Development environment setup |
-| [REFERENCES_SHARED.md](./REFERENCES_SHARED.md) | Pointers to shared infrastructure docs |
+
 
 ---
 

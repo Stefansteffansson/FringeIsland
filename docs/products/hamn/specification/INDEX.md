@@ -16,5 +16,5 @@
 ## Related
 
 - [Hamn Planning](../planning/) — When requirements get built
-- [Hamn Features](../development/features/) — Implemented feature docs
+- [Hamn Features](../development/features/) — Feature docs *(scaffold — empty, pending specification sessions)*
 - [Hamn Index](../INDEX.md)

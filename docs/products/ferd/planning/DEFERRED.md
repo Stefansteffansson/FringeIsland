@@ -702,7 +702,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 ## Journey Designer — Parked from Sessions 01-03
 
-*These items were explicitly parked during Journey Designer Discovery Sessions 01-03 (March 2026). Each requires a dedicated specification session before implementation. See session documents in `docs/planning/sessions/` for full context.*
+*These items were explicitly parked during Journey Designer Discovery Sessions 01-03 (March 2026). Each requires a dedicated specification session before implementation. See session documents in `docs/products/ferd/sessions/` for full context.*
 
 ### Seasons and Episodes — PARTIALLY RESOLVED
 

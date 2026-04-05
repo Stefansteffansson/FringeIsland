@@ -70,8 +70,8 @@ All sections can be expanded/collapsed by clicking the header:
 
 The dashboard automatically reads from:
 - `PROJECT_STATUS.md` - Current status, tasks, stats, last session
-- `docs/planning/ROADMAP.md` - Phase progress and roadmap
-- `docs/planning/DEFERRED_DECISIONS.md` - Deferred features
+- `docs/products/ferd/planning/ROADMAP.md` - Phase progress and roadmap
+- `docs/products/ferd/planning/DEFERRED.md` - Deferred features
 - Git commands - Branch, commits, clean status
 
 ## 🔄 Updating the Dashboard

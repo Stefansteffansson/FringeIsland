@@ -159,6 +159,28 @@ Each deferred decision includes:
 
 ---
 
+## Intelligence
+
+### Whisp Respawning Mechanics
+
+**Topic**: What happens when a Whisp "dies" or becomes incoherent, and how it can be reborn or reset.
+
+**Context**: Re-deferred from Ferd (originally deferred from Ferd to Hamn, now re-deferred to Wave 3). The Whisp respawning concept requires a mature Whisp fidelity model and encounter system before the edge case of respawning can be meaningfully designed.
+
+**Decision**: Hamn builds the Whisp system (HR-L7-001, HR-L7-003) without respawning mechanics. Respawning deferred until Whisp behavior is validated with real users.
+
+**Status**: Re-deferred → Wave 3 (originally Ferd → Hamn → Wave 3)
+
+**Deferred To**: Wave 3
+
+**Notes for Future Implementation**:
+- Requires validated Whisp fidelity model (HR-L7-003) as prerequisite
+- Consider: full reset vs gradual recovery vs rebirth narrative
+- User research needed on how members experience Whisp degradation
+- Ties into the broader question of AI companion lifecycle management
+
+---
+
 ## Related Documents
 
 | Document | Purpose |

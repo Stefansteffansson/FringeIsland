@@ -8,7 +8,7 @@
 
 | Document | Purpose |
 |----------|---------|
-| [PRODUCT_SPEC.md](./PRODUCT_SPEC.md) | Ferd product scope and MVP definition |
+| [PRODUCT_SPEC.md](./PRODUCT_SPEC.md) | Ferd product definition — what it is and why |
 | [REQUIREMENTS.md](./REQUIREMENTS.md) | Complete Ferd requirements (97 total) |
 | [ACTIVITY_CATALOG.md](./ACTIVITY_CATALOG.md) | User action catalog, maps to RBAC permissions |
 

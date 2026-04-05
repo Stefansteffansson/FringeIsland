@@ -76,8 +76,8 @@ The dashboard:
 ## 📝 Data Sources
 
 - `PROJECT_STATUS.md` - Current status, tasks, stats
-- `docs/planning/ROADMAP.md` - Phase progress, roadmap
-- `docs/planning/DEFERRED_DECISIONS.md` - Deferred features
+- `docs/products/ferd/planning/ROADMAP.md` - Phase progress, roadmap
+- `docs/products/ferd/planning/DEFERRED.md` - Deferred features
 - Git commands - Branch, commits, status
 
 ## 🛠️ Customization

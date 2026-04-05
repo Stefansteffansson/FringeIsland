@@ -191,8 +191,8 @@ Every agent playbook follows this structure:
 
 ## Related Documentation
 
-- **Workflows:** `docs/workflows/` (boot-up, close-down, feature development, doc health check)
-- **Behavior specs:** `docs/specs/behaviors/`
-- **Feature docs:** `docs/features/`
+- **Workflows:** `docs/products/ferd/development/` (boot-up, close-down, feature development, doc health check)
+- **Behavior specs:** `docs/products/ferd/development/specs/behaviors/`
+- **Feature docs:** `docs/products/ferd/development/features/`
 - **Project status:** `PROJECT_STATUS.md`
 - **Technical patterns:** `CLAUDE.md`

@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Encounter family** — two dimensions: Origin (planned/emergent/triggered) × Other (NPC/FIM/group/inner self/Whisp)
   - **Companion model** — Traveler + Companionship Record (consistent with Universal Group architecture)
   - **Pacing system** — node duration (4 types), road duration (3 modes), journey completion (4 triggers), journey states: active/paused/complete/integrated
-  - **Session doc:** `docs/planning/sessions/2026-03-20-JOURNEY_DESIGNER_SESSION.md`
+  - **Session doc:** `docs/products/ferd/sessions/2026-03-20-JOURNEY_DESIGNER_SESSION.md`
 
 ### Changed
 - **ROADMAP.md rewritten to v3.0** — Replaced obsolete Phase 1/2/3/4 model with Wave 1 (Ferd) / Wave 2 (Hamn) / Wave 3 / Wave 3+ framing per `PRODUCTS_AND_PLATFORM.md`. Ferd completion history preserved. Journey Designer positioned as central Wave 2 concern with Session 01 vocabulary integrated.

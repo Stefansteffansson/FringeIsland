@@ -10,7 +10,7 @@ This document describes the anatomy of the FringeIsland platform — what it is 
 
 **Before implementing any feature:** identify which layers and verticals it touches. A feature that touches L5 Communication without L3 Experience engine being solid will need to be rebuilt.
 
-**Before making any architectural change:** read the relevant decisions in `ARCHITECTURE_DECISIONS.md`. Every element here has reasoning behind it.
+**Before making any architectural change:** read the relevant decisions in `../decisions/INDEX.md`. Every element here has reasoning behind it.
 
 **For Claude Code:** read this document before generating or modifying any code. The layer a piece of functionality belongs to determines how it is built and what it can depend on.
 
@@ -520,15 +520,14 @@ The anatomy dictates the build order. You cannot build a layer before everything
 
 | Document | Purpose |
 |----------|---------|
-| `ARCHITECTURE_DECISIONS.md` | Why each architectural decision was made — ADRs with full reasoning |
-| `ARCHITECTURE_BASELINE.md` | Current implementation state — tables, routes, components mapped to anatomy layers |
-| `ARCHITECTURE_DECISIONS_LEGACY.md` | Historical decisions from pre-anatomy phase — ADR-001 through ADR-006 |
-| `DATABASE_SCHEMA.md` | Complete PostgreSQL schema with RLS policies |
-| `AUTHORIZATION.md` | Authorization model detail — has_permission(), RLS patterns |
-| `docs/vision/VISION.md` | The north star — why FringeIsland exists |
-| `docs/vision/MANIFESTO.md` | The values — what FringeIsland believes |
-| `docs/vision/CONTRIBUTION_ARCHITECTURE.md` | Who can build what — visitor through Foundation |
+| `../decisions/INDEX.md` | Why each architectural decision was made — ADRs with full reasoning |
+| `../../implementation/ferd/baseline/BASELINE.md` | Current implementation state — tables, routes, components mapped to anatomy layers |
+| `../../implementation/shared/DATABASE_CURRENT.md` | Complete PostgreSQL schema with RLS policies |
+| `../../implementation/shared/AUTH_SYSTEM.md` | Authorization model detail — has_permission(), RLS patterns |
+| `../vision/VISION.md` | The north star — why FringeIsland exists |
+| `../vision/MANIFESTO.md` | The values — what FringeIsland believes |
+| `../strategy/CONTRIBUTION_ARCHITECTURE.md` | Who can build what — visitor through Foundation |
 
 ---
 
-*This document is locked at v1.0. Changes to the anatomy require deliberate architectural review and updates to ARCHITECTURE_DECISIONS.md. The anatomy is a living contract — it evolves as FringeIsland grows, but never casually.*
+*This document is locked at v1.0. Changes to the anatomy require deliberate architectural review and updates to the architecture decisions (`../decisions/`). The anatomy is a living contract — it evolves as FringeIsland grows, but never casually.*

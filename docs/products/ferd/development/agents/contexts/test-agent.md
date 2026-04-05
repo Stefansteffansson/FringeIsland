@@ -297,7 +297,7 @@ node scripts/cleanup-test-data.js              # purge
 ## Related Documentation
 
 - **Behavior spec template:** `docs/specs/behaviors/_template.md`
-- **TDD workflow:** `docs/workflows/tdd-workflow.md`
+- **TDD workflow:** `docs/products/ferd/development/WORKFLOW.md`
 - **Test helpers:** `tests/helpers/supabase.ts`
 - **Test fixtures:** `tests/helpers/fixtures.ts`
 - **Suite setup:** `tests/integration/suite-setup.ts`

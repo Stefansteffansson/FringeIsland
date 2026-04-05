@@ -2,8 +2,8 @@
 
 **Version:** v0.2.37  
 **Wave:** Ferd 1.6 (Polish & Launch)  
-**Last Updated:** 2026-04-04  
-**Based on:** ACTUAL_STATE.md analysis by Claude Code (Opus 4.6)
+**Last Updated:** 2026-04-05  
+**Based on:** ACTUAL_STATE.md analysis + PRODUCT_SPEC v2.0 alignment
 
 ---
 
@@ -14,6 +14,21 @@ This document defines **all requirements** for Ferd, the Wave 1 web platform. Re
 - 📋 **Functional Requirements** — What the system does (features)
 - ⚙️ **Non-Functional Requirements** — How well it performs (quality attributes)
 - 🏗️ **Architectural Requirements** — Technical debt and compliance
+
+---
+
+## Binding Architecture Rule (Ferd 1.6+)
+
+**All new features must follow the architecture anatomy.** Decided 2026-04-05.
+
+Every new Ferd 1.6 feature (FR-L1-004, FR-L1-005, FR-L1-010, FR-L5-006, FR-L5-009, FR-L5-010, and any future additions) must be built with:
+
+1. **API routes for all write operations** — ADR-009 compliance. No direct Supabase writes from .tsx files.
+2. **Proper layer boundaries** — L0 (infra) < L1 (identity) < L2 (organisation) < L3 (experience). No layer skipping.
+3. **Permission enforcement** — every gated action must check permissions in both RLS and frontend.
+4. **Vertical coverage** — V1 (admin), V3 (notifications) hooks included from the start, not bolted on later.
+
+Existing code with ADR-009 violations must be refactored pre-launch (see AR-001). New code must not add to the debt. The codebase must follow the architecture anatomy before Ferd ships.
 
 ---
 
@@ -34,36 +49,36 @@ This document defines **all requirements** for Ferd, the Wave 1 web platform. Re
 
 | Category | Total | ✅ Done | 🔄 In Progress | 📋 Planned | ⏸️ Deferred | 🚨 Broken |
 |----------|-------|---------|----------------|------------|-------------|-----------|
-| **📋 Functional** | 74 | 33 (45%) | 13 (18%) | 5 (7%) | 22 (30%) | 1 (1%) |
-| **⚙️ Non-Functional** | 18 | 8 (44%) | 6 (33%) | 1 (6%) | 3 (17%) | 0 |
+| **📋 Functional** | 77 | 33 (43%) | 14 (18%) | 12 (16%) | 18 (23%) | 0 |
+| **⚙️ Non-Functional** | 18 | 8 (44%) | 6 (33%) | 2 (11%) | 2 (11%) | 0 |
 | **🏗️ Architectural** | 5 | 0 | 3 (60%) | 2 (40%) | 0 | 0 |
-| **TOTAL** | **97** | **41** | **22** | **8** | **25** | **1** |
+| **TOTAL** | **100** | **41** | **23** | **16** | **20** | **0** |
 
 ### By Layer/Vertical
 
-| Layer/Vertical | Total | ✅ Done | 🔄 In Progress | Deferred |
-|----------------|-------|---------|----------------|----------|
-| L0 Infrastructure | 7 | 4 | 1 | 2 |
-| L1 Identity | 9 | 4 | 1 | 4 |
-| L2 Organisation | 15 | 9 | 4 | 2 |
-| L3 Experience Engine | 12 | 4 | 4 | 4 |
-| L4 Content | 5 | 0 | 0 | 5 |
-| L5 Communication | 8 | 4 | 1 | 3 |
-| L6 Discovery | 3 | 0 | 0 | 3 |
-| L7 Intelligence | 3 | 0 | 0 | 3 |
-| V1 Administration | 18 | 6 | 4 | 8 |
-| V2 Privacy/GDPR | 6 | 0 | 1 | 5 |
-| V3 Notifications | 5 | 2 | 1 | 1 |
-| V4 Observability | 4 | 1 | 2 | 1 |
-| V5 Transactions | 5 | 0 | 0 | 5 |
+| Layer/Vertical | Total | ✅ Done | 🔄 In Progress | 📋 Planned | ⏸️ Deferred |
+|----------------|-------|---------|----------------|------------|-------------|
+| L0 Infrastructure | 7 | 4 | 1 | 1 | 1 |
+| L1 Identity | 10 | 4 | 1 | 3 | 2 |
+| L2 Organisation | 15 | 9 | 4 | 0 | 2 |
+| L3 Experience Engine | 12 | 4 | 4 | 0 | 4 |
+| L4 Content | 5 | 0 | 0 | 0 | 5 |
+| L5 Communication | 10 | 4 | 1 | 3 | 2 |
+| L6 Discovery | 3 | 0 | 0 | 0 | 3 |
+| L7 Intelligence | 3 | 0 | 0 | 0 | 3 |
+| V1 Administration | 18 | 6 | 4 | 0 | 8 |
+| V2 Privacy/GDPR | 6 | 0 | 1 | 0 | 5 |
+| V3 Notifications | 5 | 2 | 1 | 1 | 1 |
+| V4 Observability | 4 | 1 | 2 | 0 | 1 |
+| V5 Transactions | 5 | 0 | 0 | 0 | 5 |
 
 ### Critical Issues
 
 | Severity | Count | Items |
 |----------|-------|-------|
-| 🚨 **CRITICAL** | 3 | Email delivery broken, ADR-009 violations (40+), Accessibility gaps |
-| ⚠️ **HIGH** | 5 | Permission enforcement shallow, API surface 15%, No audit log viewer, Browser alert() calls, Admin god-file |
-| 📋 **MEDIUM** | 8 | Group deletion cascade, Journey Designer missing, GDPR compliance, etc. |
+| 🚨 **CRITICAL** | 3 | Email delivery broken (FR-L0-008), ADR-009 violations (40+), Accessibility gaps |
+| ⚠️ **HIGH** | 6 | Permission enforcement shallow (21%), API surface 15%, No audit log viewer, Browser alert() calls, Admin god-file, Block/report users missing (safety) |
+| 📋 **MEDIUM** | 8 | Group deletion cascade, GDPR compliance, Group DMs, Announcements, i18n framework, etc. |
 
 ---
 
@@ -235,23 +250,26 @@ This document defines **all requirements** for Ferd, the Wave 1 web platform. Re
 
 ---
 
-### FR-L0-009: Internationalization (i18n) Configuration
-**Status:** ⏸️ Deferred  
-**Reason:** Wave 2 (Hamn)
+### FR-L0-009: Internationalization (i18n) Framework
+**Status:** 📋 Planned  
+**Completeness:** 0%
 
-**Description:** Next.js i18n routing, translation file structure, locale management.
+**Description:** i18n library integration with Next.js 16 App Router, string externalization, locale file structure. English as default locale; additional languages added in Hamn.
 
 **Current:**
 - ❌ No `next.config.js` i18n
 - ❌ No translation files
 - ❌ Strings not externalized
 
-**Why Deferred:**
-- Ferd launches English-only
-- Retrofitting i18n costs 3-5x more than building from start
-- Better added to Hamn architecture from day one
+**Scope (Ferd):**
+- i18n library integration (e.g., next-intl)
+- All user-facing strings extracted to locale files
+- English locale complete
+- Language switching infrastructure in place (even if only English available)
 
-**Revisit:** Hamn M1
+**Note:** Retrofitting i18n is 3-5x more expensive than building from start. Doing the framework now (Ferd 1.6) avoids that cost for Hamn.
+
+**Priority:** MEDIUM (Ferd 1.6)
 
 ---
 
@@ -329,42 +347,58 @@ Email/password sufficient. Social login adds complexity without clear value for 
 
 ---
 
-### FR-L1-004: Visitor/Temporary Profiles
-**Status:** ⏸️ Deferred  
-**Reason:** Wave 2 (Hamn) feature
+### FR-L1-004: Visitor/Shadow Experience
+**Status:** 📋 Planned  
+**Completeness:** 0%
 
-**Description:** Anonymous Supabase sessions with temporary profiles (`users.is_temporary = true`).
+**Description:** Anonymous browsing and taster journeys without account creation. Visitors get temporary sessions/profiles, can try curated taster journeys, and convert to full accounts with all progress carried forward.
 
-**Why Deferred:**
-- No code currently depends on this
-- "Shadow experience" is Hamn differentiator
-- Ferd can launch without it
+**Current:**
+- ❌ No anonymous sign-in flow
+- ❌ No temporary profiles
+- ❌ No taster journeys defined
+- ✅ Supabase anonymous sign-in configured (not wired up)
 
-**Revisit:** Hamn M1
+**Acceptance Criteria:**
+- Visitors can browse journey catalog without signup
+- Taster journeys (curated subset) playable without account
+- Temporary profile data persists across session
+- On registration, all visitor data carries forward (no data loss)
+- RLS policies handle anonymous/temporary sessions securely
+- Clear conversion prompts at natural engagement points
 
-**See:** ACTUAL_STATE.md — "No forward-dependency violations"
+**Dependencies:**
+- FR-L0-006 (pg_cron) — cleanup job for abandoned temporary profiles
+
+**Priority:** HIGH (Ferd 1.6 — key differentiator for user acquisition)
 
 ---
 
 ### FR-L1-005: profile_data Table (Dynamic Profile Data)
-**Status:** ⏸️ Deferred  
-**Reason:** Not needed until assessment/reflection step types built
+**Status:** 📋 Planned  
+**Completeness:** 0%
 
-**Description:** Flexible key-value table for assessments, reflections, insights, intentions.
+**Description:** Flexible data storage for journey engagement, reflections, assessments, and insights. Foundation for travel log, L7 Intelligence, and Whisp fidelity model.
 
-**Schema (defined in anatomy):**
+**Schema (defined in ADR-U005):**
 ```sql
 profile_data (
   user_id, bucket, source, source_id, content jsonb, visibility
 )
 ```
 
-**Why Deferred:**
-- No journey steps currently write to this
-- Foundation for L7 Intelligence
-- Will be needed when building assessment/reflection steps
+**Acceptance Criteria:**
+- Schema implemented per ADR-U005
+- RLS policies tested (private by default, owner-read, admin-read)
+- Admin actions (decommission, hard delete) cascade correctly
+- Basic data population from journey engagement validated
+- Integration with travel log (FR-L1-010)
 
-**Revisit:** When implementing assessment/reflection step types
+**Dependencies:**
+- Required by: FR-L1-010 (Travel Log), FR-L3-009 (Assessment step type)
+- Foundation for: L7 Intelligence (Hamn)
+
+**Priority:** HIGH (Ferd 1.6 — enables travel log and reflection features)
 
 ---
 
@@ -439,7 +473,28 @@ profile_data (
 - Implemented in v0.2.30
 - Full TDD sprint documented
 
-**See:** `docs/features/implemented/display-name-nickname.md`
+**See:** `docs/products/ferd/development/features/FR-display-name-system.md`
+
+---
+
+### FR-L1-010: Travel Log / Journal
+**Status:** 📋 Planned  
+**Completeness:** 0%
+
+**Description:** Personal record of journey progress, completions, and reflections. Members can view their growth over time through a chronological log of their journey history.
+
+**Acceptance Criteria:**
+- Members can view their complete journey history (enrollments, progress, completions)
+- Reflection entries tied to journey steps (stored in profile_data)
+- Private by default (viewable only by the member unless explicitly shared)
+- Chronological and journey-grouped views available
+- Travel log accessible from profile page
+
+**Dependencies:**
+- FR-L1-005 (profile_data table) — reflections stored in profile_data
+- FR-L3-006 (Journey Progress Tracking) — sources progress data
+
+**Priority:** MEDIUM (Ferd 1.6)
 
 ---
 
@@ -554,8 +609,8 @@ profile_data (
 ---
 
 ### FR-L2-007: Group Invitations
-**Status:** 🚨 Broken  
-**Completeness:** 60% (UI works, email broken)
+**Status:** 🔄 In Progress  
+**Completeness:** 75% (UI + notifications work, email delivery broken)
 
 **What Works:**
 - ✅ Steward can generate invite
@@ -1187,16 +1242,23 @@ profile_data (
 
 ---
 
-### FR-L5-006: Steward Announcements
-**Status:** ⏸️ Deferred  
-**Reason:** Not critical for Ferd
+### FR-L5-006: Basic Announcements
+**Status:** 📋 Planned  
+**Completeness:** 0%
 
-**Description:** Stewards can broadcast announcements to all group members.
+**Description:** Stewards can send one-to-many announcements within their group. Announcements are distinct from forum posts — visually distinguished, notification-generating, and browsable.
 
 **Current Workaround:**
-- Can use forum for announcements
+- Can use forum for announcements (no visual distinction, no guaranteed notification)
 
-**Revisit:** Hamn
+**Acceptance Criteria:**
+- Only Stewards can create announcements (permission gated)
+- All group members receive notification on new announcement
+- Announcements persist and are browsable in group view
+- Visually distinguished from regular forum posts
+- Announcements appear in group tab or dedicated section
+
+**Priority:** MEDIUM (Ferd 1.6)
 
 ---
 
@@ -1227,6 +1289,60 @@ profile_data (
 - ❌ No moderation queue
 
 **Revisit:** When building V1 moderation features
+
+---
+
+### FR-L5-009: Group DMs (Multi-Party Messaging)
+**Status:** 📋 Planned  
+**Completeness:** 0%
+
+**Description:** Multi-party direct message conversations. Extends the existing 1:1 DM system to support 2+ participants.
+
+**Current:**
+- ✅ 1:1 DM system fully functional (FR-L5-001)
+- ❌ No multi-party conversations
+- ❌ No participant management for conversations
+
+**Acceptance Criteria:**
+- Create group DM with 2+ members
+- Add/remove participants (creator or any participant)
+- Same features as 1:1 DM (read tracking, Realtime push)
+- Group DMs appear in inbox alongside 1:1 conversations
+- Members can leave group DMs
+- Maximum participant limit defined (e.g., 20)
+
+**Dependencies:**
+- FR-L5-001 (Direct Messaging) — extends existing DM infrastructure
+
+**Priority:** MEDIUM (Ferd 1.6)
+
+---
+
+### FR-L5-010: Block/Report Users
+**Status:** 📋 Planned  
+**Completeness:** 0%
+
+**Description:** Members can block other users (hiding their content) and report users for admin review. Core safety feature.
+
+**Current:**
+- ❌ No blocking capability
+- ❌ No reporting capability
+- ✅ Stewards can moderate forum posts (partial workaround)
+- ✅ Admin can deactivate users (after-the-fact remedy)
+
+**Acceptance Criteria:**
+- Block a user: hides their DMs, forum posts, and member list entries from the blocker
+- Blocked users cannot send DMs to the blocker
+- Report a user: flags for admin review with context
+- Report categories: harassment, spam, inappropriate content, other
+- Reports reach admin dashboard (ties into V1 admin features)
+- No notification sent to the reported/blocked user
+- Report includes context (which interaction triggered it)
+
+**Dependencies:**
+- FR-V1-016 (Content Moderation Queue) — reports feed into moderation (can launch blocking without full queue)
+
+**Priority:** HIGH (Ferd 1.6 — safety feature for launch)
 
 ---
 
@@ -2316,21 +2432,25 @@ profile_data (
 ---
 
 ### NFR-U-004: Internationalization (i18n)
-**Status:** ⏸️ Deferred  
-**Reason:** Wave 2 (Hamn)
+**Status:** 📋 Planned (framework only)  
+**Completeness:** 0%
 
-**Requirements:**
-- Multiple language support
-- Locale-aware formatting (dates, numbers)
+**Requirements (Ferd — framework):**
+- i18n library integrated with Next.js 16 App Router
+- All user-facing strings externalized to locale files
+- English locale complete
+- Locale-aware date/number formatting infrastructure
+
+**Requirements (Hamn — full):**
+- Multiple language support (additional locales)
 - RTL support
+- Translation management workflow
 
 **Current:**
 - ❌ No i18n configuration
 - ❌ Strings not externalized
 
-**Revisit:** Hamn M1
-
-**See:** FR-L0-009 (i18n Configuration)
+**See:** FR-L0-009 (i18n Framework)
 
 ---
 
@@ -2561,7 +2681,7 @@ profile_data (
 - Effort: 3-4 days
 
 **Total Effort:** 2-3 weeks  
-**Priority:** 🔥 IMMEDIATE (after launch blockers fixed)
+**Priority:** 🔥 LAUNCH BLOCKER — must be completed before Ferd ships (decided 2026-04-05)
 
 **See:** ACTUAL_STATE.md — "ADR-009 massively violated"
 
@@ -2601,7 +2721,7 @@ profile_data (
 3. Priority: Journey + Communication permissions
 
 **Effort:** 1-2 weeks  
-**Priority:** ⚠️ HIGH
+**Priority:** 🔥 LAUNCH BLOCKER — must be completed before Ferd ships (decided 2026-04-05)
 
 **See:** ACTUAL_STATE.md — Permission enforcement table
 
@@ -2635,8 +2755,7 @@ profile_data (
 - Keep triggers simple (insert only, no complex logic)
 - Move logic to application layer
 
-**Priority:** 📋 LOW (functional, not urgent)  
-**Revisit:** During API route creation (AR-001)
+**Priority:** 🔥 LAUNCH BLOCKER — refactor during API route creation (AR-001) (decided 2026-04-05)
 
 ---
 
@@ -2658,7 +2777,7 @@ profile_data (
 3. Move business logic to lib functions
 
 **Effort:** 1 week (part of AR-001 work)  
-**Priority:** ⚠️ HIGH (security + maintainability)
+**Priority:** 🔥 LAUNCH BLOCKER — part of AR-001 (decided 2026-04-05)
 
 ---
 
@@ -2710,8 +2829,8 @@ profile_data (
 
 ---
 
-**Last Updated:** 2026-04-04  
+**Last Updated:** 2026-04-05  
 **Maintained By:** Stefan Stefansson  
-**Source:** ACTUAL_STATE.md analysis by Claude Code (Opus 4.6)  
-**Total Requirements:** 97 (74 Functional, 18 Non-Functional, 5 Architectural)  
+**Source:** ACTUAL_STATE.md analysis by Claude Code (Opus 4.6), updated with PRODUCT_SPEC v2.0 alignment  
+**Total Requirements:** 100 (77 Functional, 18 Non-Functional, 5 Architectural)  
 **Vertical Requirements:** 38 (V1: 18, V2: 6, V3: 5, V4: 4, V5: 5)

@@ -211,7 +211,7 @@ Fixed 7 comments across 4 test files to reflect D15 column renames and Steward t
 
 ## Reference
 
-- **Pre-D15 schema snapshot:** `docs/database/schema-export-pre-d15.md`
+- **Pre-D15 schema snapshot:** *(archived — no longer available)*
 - **RBAC design (D1-D22):** `docs/features/implemented/dynamic-permissions-system.md`
 - **Archived migrations:** `supabase/migrations/archive/` (71 files)
 - **RBAC design session notes:** `docs/planning/sessions/2026-02-11-rbac-design-complete.md`

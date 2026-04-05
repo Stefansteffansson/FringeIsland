@@ -8,11 +8,11 @@ Hamn is the evolved FringeIsland platform — where the full member experience t
 
 | Folder | Contents |
 |--------|----------|
-| `architecture/decisions/` | Hamn-specific ADRs |
-| `development/agents/contexts/` | Agent playbooks |
-| `development/agents/learnings/` | Agent journals |
-| `development/features/` | Feature docs (FR-/AR-/NF- prefixed) |
-| `development/specs/` | Behavior specifications |
+| `architecture/decisions/` | Hamn-specific ADRs *(scaffold — empty)* |
+| `development/agents/contexts/` | Agent playbooks *(scaffold — empty)* |
+| `development/agents/learnings/` | Agent journals *(scaffold — empty)* |
+| `development/features/` | Feature docs (FR-/AR-/NF- prefixed) *(scaffold — empty)* |
+| `development/specs/` | Behavior specifications *(scaffold — empty)* |
 | `planning/` | Research, roadmap, deferred decisions |
-| `sessions/` | Design and discovery session bridges |
+| `sessions/` | Design and discovery session bridges *(scaffold — empty)* |
 | `specification/` | Product spec, requirements |
