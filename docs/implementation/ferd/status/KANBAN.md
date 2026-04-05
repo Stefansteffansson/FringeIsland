@@ -15,9 +15,7 @@
 
 ## In Progress
 
-| Item | Type | Notes |
-|------|------|-------|
-| Documentation restructuring | Maintenance | Three-tier migration underway |
+*No items currently in progress.*
 
 ## Next Sprint (Ferd 1.6)
 
