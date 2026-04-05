@@ -1,7 +1,7 @@
 # Session Close-Down Workflow
 
 **Purpose:** Standard procedure for ending a work session on FringeIsland
-**Last Updated:** March 20, 2026
+**Last Updated:** April 5, 2026
 
 ---
 
@@ -59,7 +59,11 @@ For each domain worked in, append discoveries to `docs/products/ferd/development
 
 **F. PRODUCT_SPEC.md (if scope changed):** Update features, criteria, or personas.
 
-**G. DEFERRED_DECISIONS.md (if new deferrals):** Add entry with topic, rationale, and version.
+**G. DEFERRED.md (if new deferrals):** Add entry with topic, rationale, and version.
+
+**H. KANBAN.md (if requirements status changed):** Update `docs/implementation/ferd/status/KANBAN.md` — move items between columns (Immediate / In Progress / Next Sprint / Backlog / Deferred).
+
+**I. INDEX files (if new files created):** If you created a new feature doc, session bridge, spec, or ADR, add it to the relevant INDEX.md in that folder (e.g., `docs/products/ferd/development/features/INDEX.md`).
 
 Show diff to user for approval.
 

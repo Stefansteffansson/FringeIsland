@@ -123,6 +123,8 @@ Documentation is organized in three tiers: **Universe** (shared foundations) > *
 | Wave roadmap | [docs/products/ferd/planning/ROADMAP.md](docs/products/ferd/planning/ROADMAP.md) |
 | Deferred decisions | [docs/products/ferd/planning/DEFERRED.md](docs/products/ferd/planning/DEFERRED.md) |
 | Feature docs | [docs/products/ferd/development/features/](docs/products/ferd/development/features/) |
+| Behavior specs | [docs/products/ferd/development/specs/](docs/products/ferd/development/specs/) |
+| TDD workflow | [docs/products/ferd/development/WORKFLOW.md](docs/products/ferd/development/WORKFLOW.md) |
 | Journey Designer sessions | [docs/products/ferd/sessions/](docs/products/ferd/sessions/) |
 | **Implementation** | |
 | Database schema | [docs/implementation/shared/DATABASE_CURRENT.md](docs/implementation/shared/DATABASE_CURRENT.md) |

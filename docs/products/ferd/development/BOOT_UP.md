@@ -1,7 +1,7 @@
 # Session Boot-Up Workflow
 
 **Purpose:** Standard procedure for starting a work session on FringeIsland
-**Last Updated:** March 20, 2026
+**Last Updated:** April 5, 2026
 
 ---
 
@@ -21,6 +21,8 @@
 | **Products & Platform** | `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md` | Optional |
 | **Product Spec** | `docs/products/ferd/specification/PRODUCT_SPEC.md` | Optional |
 | **Deferred Decisions** | `docs/products/ferd/planning/DEFERRED.md` | Optional |
+| **Kanban Board** | `docs/implementation/ferd/status/KANBAN.md` | Optional |
+| **Actual State / Gaps** | `docs/implementation/ferd/baseline/ACTUAL_STATE.md` | Optional |
 
 If a file read fails: report the error immediately, use Glob to find it, update this table.
 
@@ -69,7 +71,7 @@ CLAUDE.md is auto-loaded. Optionally load based on work type:
 | Specific feature | `docs/products/ferd/development/features/[feature].md` |
 | Testing/TDD | `docs/products/ferd/development/specs/[domain].md` + `docs/products/ferd/development/WORKFLOW.md` |
 
-**If building new feature:** verify feature context first (Stage 0 of TDD workflow) — check PRODUCT_SPEC.md for scope, check if feature doc exists. If missing, create it first or ask user. Follow the BDD hierarchy: Vision → Product Spec → Roadmap → Features → Behaviors → Tests → Code.
+**If building new feature:** verify feature context first (Stage 0 of TDD workflow) — check `docs/products/ferd/specification/PRODUCT_SPEC.md` for scope, check if feature doc exists in `docs/products/ferd/development/features/`. If missing, create it first or ask user. Follow the BDD hierarchy: Vision → Product Spec → Roadmap → Features → Behaviors → Tests → Code.
 
 ### 5. Ask User
 
