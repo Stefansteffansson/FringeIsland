@@ -72,6 +72,7 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 - **Architecture decisions (ADRs):** `docs/universe/decisions/` (22 universe) + `docs/products/ferd/architecture/decisions/` (1 Ferd)
 - **Planning context:** `docs/products/ferd/planning/ROADMAP.md` + `docs/products/ferd/planning/DEFERRED.md`
 - **Vision documents:** `docs/universe/vision/` + `docs/universe/strategy/`
+- **Hamn (Wave 2) docs:** `docs/products/hamn/INDEX.md` — folder structure established, awaiting specification
 - **Vision session decisions:** `docs/universe/vision/VISION_DECISIONS.md`
 
 **Agent System (two-tier, 7 agents — see `docs/products/ferd/development/agents/README.md`):**

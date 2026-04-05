@@ -121,6 +121,8 @@ bash supabase-cli.sh migration list
 | Boot-up / Close-down | `docs/products/ferd/development/BOOT_UP.md`, `CLOSE_DOWN.md` |
 | Doc health check | `docs/products/ferd/development/DOC_HEALTH_CHECK.md` |
 | Journey Designer sessions | `docs/products/ferd/sessions/` |
+| **Products Tier — Hamn** | |
+| Hamn product docs (Wave 2) | `docs/products/hamn/INDEX.md` |
 | **Implementation Tier** | |
 | Database schema | `docs/implementation/shared/DATABASE_CURRENT.md` |
 | Schema overview | `docs/implementation/shared/SCHEMA_OVERVIEW.md` |

@@ -126,6 +126,8 @@ Documentation is organized in three tiers: **Universe** (shared foundations) > *
 | Behavior specs | [docs/products/ferd/development/specs/](docs/products/ferd/development/specs/) |
 | TDD workflow | [docs/products/ferd/development/WORKFLOW.md](docs/products/ferd/development/WORKFLOW.md) |
 | Journey Designer sessions | [docs/products/ferd/sessions/](docs/products/ferd/sessions/) |
+| **Hamn (Wave 2)** | |
+| Hamn product docs | [docs/products/hamn/INDEX.md](docs/products/hamn/INDEX.md) |
 | **Implementation** | |
 | Database schema | [docs/implementation/shared/DATABASE_CURRENT.md](docs/implementation/shared/DATABASE_CURRENT.md) |
 | Architecture baseline (live) | [docs/implementation/ferd/baseline/BASELINE.md](docs/implementation/ferd/baseline/BASELINE.md) |

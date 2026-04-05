@@ -9,8 +9,9 @@
 | Product | Wave | Status | Description |
 |---------|------|--------|-------------|
 | [Ferd](./ferd/) | Wave 1 | 95% complete | Web platform — groups, journeys, RBAC, admin |
+| [Hamn](./hamn/) | Wave 2 | Not started | Full FringeIsland experience — avatar, garden, narrative, native apps |
 
-*Future products (Hamn, Game) will get their own folders when specification begins.*
+*Game will get its own folder when specification begins.*
 
 ---
 
