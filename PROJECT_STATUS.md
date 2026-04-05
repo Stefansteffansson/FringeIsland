@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-04-05 (Requirements doc accuracy fixes)
+**Last Updated:** 2026-04-05 (VISION.md v0.2 — session integration)
 **Current Version:** 0.2.37
 **Active Branch:** main
 
@@ -83,8 +83,19 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-04-05 (Documentation restructuring — Phase 3: Execution + Audit)
+**Date:** 2026-04-05 (VISION.md v0.2 — session integration + platform strategy alignment)
 **Summary:**
+- Updated `docs/universe/vision/VISION.md` from v0.1 to v0.2 (129 insertions, 27 deletions):
+  - Integrated journey designer session discoveries (Sessions 01-03): three-dimensional void model, Whisp as instrument (replacing avatar-as-mirror), Three Perspectives framework expanding three questions to nine
+  - Expanded research foundation (SDT, Ryff, Keyes, Frankl, Kegan, Bandura, ikigai, etc.)
+  - Added "stories first, themes underneath" principle to Edutainment section
+  - Honest acknowledgment that Homebody path addresses individual void only; relational/communal require others
+  - Complete rewrite of Part Seven aligned with `PRODUCTS_AND_PLATFORM.md` v0.2 (fixed native apps wave, added Wave 3+ Game, Hero's Journey arc, experimentation layer)
+  - Restructured Part Eight into: Resolved Through Discovery (6 items), Still Open — And What They Block (7 questions with Ferd/Hamn/Wave 3 blocking info), Scope Boundaries (6 ambiguities)
+- Analysis identified 8 Ferd/Hamn/Wave 3 scope boundary ambiguities now documented in VISION.md
+- One commit: `564ccab`
+
+**Previous Session:** 2026-04-05 (Documentation restructuring — Phase 3: Execution + Audit)
 - Executed three-tier documentation restructuring (219 files changed):
   - 97 files moved (56 simple + 41 renamed) into universe/, products/ferd/, implementation/
   - 23 ADRs extracted from monolithic file into individual ADR-U0XX/ADR-F001 files
@@ -206,22 +217,22 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 - `signOut({ scope: 'local' })` broken in supabase-js 2.91.0 — makes server call despite docs saying local-only
 - Console 403 errors on force-logout redirect (browser-level network logs, not visible to end users)
 
-**What We're NOT Building Yet:** See `docs/planning/DEFERRED_DECISIONS.md`
+**What We're NOT Building Yet:** See `docs/products/ferd/planning/DEFERRED.md`
 
 ---
 
 ## Development Workflows
 
 **Starting a new session?**
-- Read: `docs/workflows/boot-up.md`
+- Read: `docs/products/ferd/development/BOOT_UP.md`
 - Or ask: "Boot up FringeIsland"
 
 **Ending your session?**
-- Read: `docs/workflows/close-down.md`
+- Read: `docs/products/ferd/development/CLOSE_DOWN.md`
 - Or ask: "Close down session"
 
 **Checking doc drift?**
-- Read: `docs/workflows/doc-health-check.md`
+- Read: `docs/products/ferd/development/DOC_HEALTH_CHECK.md`
 
 ---
 
