@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-04-05 (Hamn folder structure + reference sweep)
+**Last Updated:** 2026-04-05 (Product specification review — Ferd + Hamn)
 **Current Version:** 0.2.37
 **Active Branch:** main
 
@@ -84,22 +84,29 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-04-05 (VISION.md v0.2 + Hamn folder structure + reference sweep)
+**Date:** 2026-04-05 (Product specification review — Ferd + Hamn)
 **Summary:**
-- Created `docs/products/hamn/` folder structure (11 directories mirroring Ferd: architecture, development, planning, sessions, specification)
-- Updated 10 files with Hamn references (INDEX files, CLAUDE.md, README.md, PROJECT_STATUS.md, SPRINT.md, CHANGELOG.md, session log)
-- Fixed broken CHANGELOG.md links to pre-restructure paths
-- Deep scan confirmed all .md files now consistently reference Hamn where appropriate
-- Three commits: `95cfce9` (folder structure + 6 files), `a006afe` (4 remaining fixes)
-- Updated `docs/universe/vision/VISION.md` from v0.1 to v0.2 (129 insertions, 27 deletions):
-  - Integrated journey designer session discoveries (Sessions 01-03): three-dimensional void model, Whisp as instrument (replacing avatar-as-mirror), Three Perspectives framework expanding three questions to nine
-  - Expanded research foundation (SDT, Ryff, Keyes, Frankl, Kegan, Bandura, ikigai, etc.)
-  - Added "stories first, themes underneath" principle to Edutainment section
-  - Honest acknowledgment that Homebody path addresses individual void only; relational/communal require others
-  - Complete rewrite of Part Seven aligned with `PRODUCTS_AND_PLATFORM.md` v0.2 (fixed native apps wave, added Wave 3+ Game, Hero's Journey arc, experimentation layer)
-  - Restructured Part Eight into: Resolved Through Discovery (6 items), Still Open — And What They Block (7 questions with Ferd/Hamn/Wave 3 blocking info), Scope Boundaries (6 ambiguities)
-- Analysis identified 8 Ferd/Hamn/Wave 3 scope boundary ambiguities now documented in VISION.md
-- One commit: `564ccab`
+- Major product specification review session covering both Ferd (Wave 1) and Hamn (Wave 2)
+- Created Hamn specification scaffold: PRODUCT_SPEC.md (v0.2, all sections filled), REQUIREMENTS.md (structure only), INDEX.md
+- Added 8 new features to Ferd PRODUCT_SPEC.md (v1.2): visitor/shadow experience with taster journeys, profile_data table, travel log/journal, i18n framework, block/report users, group DMs, basic announcements, three void dimensions as UX design lens
+- Created universe-level infrastructure:
+  - `docs/universe/processes/` — deferral protocol (two-sided acceptance workflow), planning protocol (research-first sequence)
+  - `docs/universe/community/` — 9 community open questions (cold-start, Dreamineer recruitment, Council governance, Foundation, etc.)
+  - `docs/universe/strategy/OPEN_QUESTIONS.md` — 3 cross-wave questions (codebase evolution, Kickstarter deps, naming)
+- Created per-product research files: Ferd RESEARCH.md (5 investigations), Hamn RESEARCH.md (8 investigations)
+- Created Hamn DEFERRED.md (7 items deferred to Wave 3/3+)
+- Researched vision/strategy docs → produced `docs/products/hamn/VISION_TO_SPEC_MAPPING.md` (working reference)
+- Resolved 14 vision-to-spec gaps, reviewed 16 Hamn themes, captured 12 strategic questions
+- Calibrated Ferd DEFERRED.md: 11 items accepted by Hamn, 1 re-deferred to Wave 3 (Whisp respawning)
+- Updated CLAUDE.md document map with 7 new entries
+- Updated INDEX files: universe, Hamn, Ferd planning
+- No code changes, no tests needed
+
+**Previous Session:** 2026-04-05 (VISION.md v0.2 + Hamn folder structure + reference sweep)
+- Created `docs/products/hamn/` folder structure (11 directories mirroring Ferd)
+- Updated 10 files with Hamn references
+- Updated VISION.md from v0.1 to v0.2 (129 insertions, 27 deletions)
+- Three commits: `95cfce9`, `a006afe`, `564ccab`
 
 **Previous Session:** 2026-04-05 (Documentation restructuring — Phase 3: Execution + Audit)
 - Executed three-tier documentation restructuring (219 files changed):

@@ -1,6 +1,6 @@
 # SPRINT.md — Active Sprint Tracker
 
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-05 (product spec review session)
 **Version:** v0.2.37
 
 ---
@@ -27,10 +27,16 @@
 |---|------|-------|--------|
 | 1 | Mobile responsiveness audit | UI Agent | Not started |
 | 2 | User onboarding flow (TDD stages 0-7) | Sprint Agent | Not started |
-| 3 | Expand E2E test coverage beyond 7 starter tests | Test Agent | Not started |
-| 4 | Fix known issues: orphan groups, alert() in fix-orphans, hydration warning | Integration Agent | Not started |
-| 5 | Beta testing setup — invite 10-20 users | — | Not started |
-| 6 | Error monitoring (Sentry) | Integration Agent | Not started |
+| 3 | Visitor/shadow experience + taster journeys (TDD) | Sprint Agent | Not started |
+| 4 | profile_data table (ADR-U005) + travel log (TDD) | Sprint Agent | Not started |
+| 5 | i18n framework — string externalization | Integration Agent | Not started |
+| 6 | Block/report users (TDD) | Sprint Agent | Not started |
+| 7 | Group DMs (TDD) | Sprint Agent | Not started |
+| 8 | Basic announcements (TDD) | Sprint Agent | Not started |
+| 9 | Expand E2E test coverage beyond 7 starter tests | Test Agent | Not started |
+| 10 | Fix known issues: orphan groups, alert() in fix-orphans, hydration warning | Integration Agent | Not started |
+| 11 | Beta testing setup — invite 10-20 users | — | Not started |
+| 12 | Error monitoring (Sentry) | Integration Agent | Not started |
 
 ### Blockers
 

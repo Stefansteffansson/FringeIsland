@@ -2,6 +2,8 @@
 
 This document tracks design decisions, features, and questions that have been deferred to later waves of FringeIsland development. Each item includes context, rationale for deferral, and notes for future implementation.
 
+For the deferral protocol (two-sided acceptance workflow), see [Deferral Protocol](../../../universe/processes/DEFERRAL_PROTOCOL.md).
+
 ## Format
 
 Each deferred decision includes:
@@ -9,6 +11,7 @@ Each deferred decision includes:
 - **Context**: Why this came up
 - **Decision**: What was decided for now
 - **Deferred To**: Which wave to revisit
+- **Status**: Proposed → [receiver] | Accepted by [receiver] | Re-deferred | Resolved
 - **Notes**: Important considerations for future implementation
 
 ---
@@ -36,6 +39,7 @@ Each deferred decision includes:
 ### Journey Creation Granularity
 
 **Topic**: Should there be separate permissions for different types of journey creation/editing?
+**Status:** Accepted by Hamn → Hamn PRODUCT_SPEC.md §1 Journey Designer
 
 **Context**: During permission list definition, the question arose whether we need fine-grained permissions like:
 - Creating journeys from scratch vs. duplicating existing ones
@@ -221,6 +225,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 ### Journey Versioning and Updates
 
 **Topic**: How should we handle updates to journeys that users are actively taking?
+**Status:** Accepted by Hamn → Hamn PRODUCT_SPEC.md M1 milestone
 
 **Context**: Journey creators may want to update content, but users are mid-journey. Do they see old or new version?
 
@@ -263,6 +268,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 ### Journey Discovery and Search
 
 **Topic**: How do users find journeys relevant to their needs?
+**Status:** Accepted by Hamn → Hamn PRODUCT_SPEC.md §5 Marketplace + M2 milestone
 
 **Context**: Wave 1 (Ferd) has basic journey list. Wave 2 (Hamn)+ needs sophisticated discovery.
 
@@ -322,6 +328,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 ### Mobile Application
 
 **Topic**: Should FringeIsland have native mobile apps?
+**Status:** Accepted by Hamn → Hamn PRODUCT_SPEC.md §4 Native Apps
 
 **Context**: Platform is web-based (responsive). Native apps could improve experience. High-level platform strategy, device approach, and the relationship between digital products, physical products, events, and the game are addressed in [`docs/universe/strategy/PRODUCTS_AND_PLATFORM.md`](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md).
 
@@ -445,6 +452,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 ### Advanced Analytics Dashboard
 
 **Topic**: What analytics should the platform provide to different user types?
+**Status:** Accepted by Hamn → confirmed during spec review session 2026-04-05
 
 **Context**: Wave 1 (Ferd) has basic analytics. Users may want deeper insights.
 
@@ -653,6 +661,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 ### Monetization Strategy
 
 **Topic**: How will FringeIsland generate revenue?
+**Status:** Accepted by Hamn → Hamn PRODUCT_SPEC.md (Ferd = free tier baseline, Hamn defines premium)
 
 **Context**: Wave 1 (Ferd) focus is product-market fit. Monetization comes later.
 
@@ -700,6 +709,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 **Topic**: The temporal narrative structure of the FringeIsland universe — storytelling arcs that drive Type 4 (AI-Generative) journeys and animate The Other Side.
 
 **Status**: **PARTIALLY RESOLVED** by Session 02 and Session 03 (March 2026). Conceptual architecture established. Detailed mechanics and Episode delivery deferred.
+**Status:** Accepted by Hamn → Hamn RESEARCH.md RQ-H-005 (wave assignment under investigation)
 
 **What's resolved (Sessions 02-03):**
 - ✅ **Architecture**: 4 Seasons per year (3 months each), 12 Episodes per Season (weekly)
@@ -735,6 +745,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 ### NPC Behaviour Authoring
 
 **Topic**: The mechanism by which NPCs are calibrated to serve their developmental function — drawing travelers toward their growth zone without pushing them into the panic zone.
+**Status:** Accepted by Hamn → Hamn RESEARCH.md RQ-H-003
 
 **Context**: Session 01 established that NPCs are not decorative — they are calibrated agents of productive discomfort, targeting the growth zone using a three-zone model (comfort/growth/panic). The developmental *intention* is clear, but the *mechanism* is not. Is it prompt engineering? A behaviour graph? A learning model? Who authors NPC behaviour and at what layer?
 
@@ -754,6 +765,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 ### FringeIsland Universe Design and AR Void Visualization — NEW FROM SESSION 03
 
 **Topic**: Visual/experiential design of the FringeIsland universe, the void, and AR overlay system.
+**Status:** Accepted by Hamn (basic AR experiments) → full AR re-deferred to Wave 3 via Hamn DEFERRED.md
 
 **Context**: Session 03 established that the void is the gap between who you are and who you know yourself to be, existing across three dimensions (1/1+1/1+community). AR overlays ordinary world to show void state. But the *visual language* — what FringeIsland looks like, what the void looks like, how AR displays all this — requires understanding the full universe design first.
 
@@ -782,12 +794,13 @@ The schema allows any group to join any group — nothing prevents A → B → A
 ### Respawning Mechanics — NEW FROM SESSION 03
 
 **Topic**: The detailed mechanics of Whisp "death" and respawn in the void.
+**Status:** Re-deferred by Hamn → Wave 3 via Hamn DEFERRED.md
 
 **Context**: Session 03 established the Edge of Tomorrow model conceptually — Whisp dies → respawns → retains insight from failure → learns → tries again. Respawning is information-rich (not punishment), reveals current limits/immunities/patterns, builds mastery through repetition. But the detailed mechanics are unspecified.
 
 **Decision**: Deferred to dedicated specification session. Edge of Tomorrow framing is locked, mechanics need detailed design.
 
-**Deferred To**: Wave 2 (Hamn) — dedicated specification session. May require multiple sessions (respawn triggers, respawn locations, information revelation, Episode integration, Immunity to Change connection).
+**Deferred To**: Wave 3 (re-deferred from Hamn, 2026-04-05)
 
 **Notes for Future Session**:
 - What triggers respawn? (What counts as Whisp "death" in the void?)
@@ -810,6 +823,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 ### Whisp Encounter Phenomenology — CARRIED FROM SESSION 02
 
 **Topic**: What a Whisp Encounter actually looks and feels like at different stages of Whisp fullness.
+**Status:** Accepted by Hamn → Hamn PRODUCT_SPEC.md §2 Whisp System
 
 **Context**: The Whisp is each FIM's personal future self — their instrument in the void. Session 02 established that the Whisp begins nearly empty and fills over time as the FIM gathers self-knowledge. Session 03 established the three-dimensional void model but did not address encounter phenomenology (Goal 2 from Session 03 bridge, carried from Session 02).
 
@@ -831,6 +845,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 ### The Whisp's Practical UI Experience
 
 **Topic**: How a member actually experiences their Whisp on the platform day-to-day — visibility, interaction, growth signals.
+**Status:** Accepted by Hamn → Hamn PRODUCT_SPEC.md §2 Whisp System
 
 **Context**: Session 01 defined the Whisp conceptually (personal future self, dual nature as Encounter and Companion, permanent presence) and architecturally (Traveler + Companionship Record). What remains unspecified is the *felt experience* — what the member sees, hears, or senses. The Whisp begins nearly silent and becomes more coherent over time, but the practical UX of that progression has not been designed.
 
@@ -850,6 +865,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 ### Three Worlds UI Design
 
 **Topic**: How the Three Worlds (Ordinary World, Safe Harbour, The Other Side) manifest in the platform's user interface — visual language, world transitions, spatial experience.
+**Status:** Accepted by Hamn → Hamn PRODUCT_SPEC.md UX Principle §1 Three Worlds, Felt Transitions
 
 **Context**: Session 01 established the Three Worlds as the Hero's Journey made spatial — departure, ordeal, return. Each world has distinct character, purpose, and emotional register. The journey designer needs spatial context (where does this journey begin, where does it take the traveler, where does it end?). But the UI/UX design of how world transitions are *felt* by the member has not been explored.
 
@@ -891,11 +907,12 @@ When deferring a new decision:
 
 ---
 
-**Document Version**: 1.6
-**Last Updated**: March 27, 2026 (Journey Designer Session 03)
+**Document Version**: 1.7
+**Last Updated**: April 5, 2026 (Hamn deferral acceptance sweep)
 **Next Review**: Quarterly or as deferred items are implemented
 
 **Recent Updates**:
+- v1.7 (2026-04-05): Hamn deferral acceptance sweep — marked 13 items with acceptance status. Added deferral protocol reference. Added Status field to format section. Respawning Mechanics re-deferred to Wave 3.
 - Session 03 (2026-03-27): Marked Seasons and Episodes as PARTIALLY RESOLVED (conceptual architecture established). Added 3 new deferrals: FringeIsland Universe Design & AR Void Visualization, Respawning Mechanics, Whisp Encounter Phenomenology (carried from Session 02). All deferred to Wave 2 (Hamn) specification sessions.
 - Session 01 (2026-03-20): Added 4 parked items from Journey Designer Discovery Session — Seasons and Episodes, NPC behaviour authoring, Whisp practical UX, Three Worlds UI design. All deferred to Wave 2 (Hamn) specification sessions.
 - v0.2.36: Added lifecycle sprint deferrals (D-R1 through D-R5) from `lifecycle-roadmap-decisions.md` — self-service platform exit, configurable timeouts, GDPR content erasure all explicitly deferred.

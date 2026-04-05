@@ -13,6 +13,8 @@
 | [architecture/](./architecture/) | L0-L7 layered anatomy, domain entities |
 | [research/](./research/) | Human flourishing, Theory U, adult development |
 | [decisions/](./decisions/) | 22 universe-level Architecture Decision Records |
+| [processes/](./processes/) | Cross-product workflows (deferral protocol, planning protocol) |
+| [community/](./community/) | Community and organizational concerns (governance, recruitment, culture) |
 
 ---
 

@@ -1,6 +1,6 @@
 # Hamn (Wave 2) — Product Documentation
 
-**Status:** Not started — folder structure established, awaiting specification work.
+**Status:** Specification scaffold in place — themes placed, details pending specification sessions and research.
 
 Hamn is the evolved FringeIsland platform — where the full member experience takes shape. See `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md` for the wave model.
 
@@ -13,6 +13,6 @@ Hamn is the evolved FringeIsland platform — where the full member experience t
 | `development/agents/learnings/` | Agent journals |
 | `development/features/` | Feature docs (FR-/AR-/NF- prefixed) |
 | `development/specs/` | Behavior specifications |
-| `planning/` | Roadmap, deferred decisions, lifecycle decisions |
+| `planning/` | Research, roadmap, deferred decisions |
 | `sessions/` | Design and discovery session bridges |
 | `specification/` | Product spec, requirements |

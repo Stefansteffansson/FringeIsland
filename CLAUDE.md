@@ -106,12 +106,16 @@ bash supabase-cli.sh migration list
 | Architecture decisions (ADRs) | `docs/universe/decisions/` (22 universe-level) |
 | Vision session decisions | `docs/universe/vision/VISION_DECISIONS.md` |
 | Research (human flourishing) | `docs/universe/research/` |
+| Cross-product processes | `docs/universe/processes/` (deferral protocol, planning protocol) |
+| Community & governance | `docs/universe/community/` (open questions, organizational concerns) |
+| Cross-wave open questions | `docs/universe/strategy/OPEN_QUESTIONS.md` |
 | **Products Tier — Ferd** | |
 | Product scope (what/why) | `docs/products/ferd/specification/PRODUCT_SPEC.md` |
 | Requirements (97 total) | `docs/products/ferd/specification/REQUIREMENTS.md` |
 | Wave roadmap | `docs/products/ferd/planning/ROADMAP.md` |
 | Deferred decisions | `docs/products/ferd/planning/DEFERRED.md` |
 | Lifecycle sprint decisions | `docs/products/ferd/planning/LIFECYCLE_DECISIONS.md` |
+| Ferd research / open investigations | `docs/products/ferd/planning/RESEARCH.md` |
 | Ferd ADRs | `docs/products/ferd/architecture/decisions/` (1 Ferd-specific) |
 | Feature docs | `docs/products/ferd/development/features/` (FR-/AR-/NF- prefixed) |
 | Behavior specs | `docs/products/ferd/development/specs/` |
@@ -123,6 +127,9 @@ bash supabase-cli.sh migration list
 | Journey Designer sessions | `docs/products/ferd/sessions/` |
 | **Products Tier — Hamn** | |
 | Hamn product docs (Wave 2) | `docs/products/hamn/INDEX.md` |
+| Hamn product spec | `docs/products/hamn/specification/PRODUCT_SPEC.md` |
+| Hamn requirements | `docs/products/hamn/specification/REQUIREMENTS.md` |
+| Hamn research / open investigations | `docs/products/hamn/planning/RESEARCH.md` |
 | **Implementation Tier** | |
 | Database schema | `docs/implementation/shared/DATABASE_CURRENT.md` |
 | Schema overview | `docs/implementation/shared/SCHEMA_OVERVIEW.md` |

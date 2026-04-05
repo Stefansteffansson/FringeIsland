@@ -1,8 +1,8 @@
 # FringeIsland - Product Specification
 
-**Version:** 1.1
-**Last Updated:** February 28, 2026
-**Status:** Living document - v1.0 MVP scope (Wave 1 / Ferd: 95% complete)
+**Version:** 1.2
+**Last Updated:** April 5, 2026
+**Status:** Living document - v1.0 MVP scope (Wave 1 / Ferd: 95% complete, spec expanded with visitor experience, i18n, safety features)
 **Links:** [Vision](../../../universe/vision/VISION.md) | [Roadmap](../planning/ROADMAP.md) | [Features](../development/features/)
 
 ---
@@ -91,6 +91,12 @@ Vision (Why) → Product Spec (What) → Roadmap (When) → Features (How) → B
 - Essential features only (v1.0)
 - Progressive disclosure of complexity
 - Mobile-responsive, clean design
+
+### 5. Three Void Dimensions as Design Lens
+- Individual void (1): gap between who I am and who I know myself to be — served by solo journeys, reflections, travel log
+- Relational void (1+1): gap between how I relate and how I could relate — served by DMs, pair activities, group journeys
+- Communal void (1+community): gap between how I belong and how I could belong — served by group membership, forums, announcements
+- Every feature should be evaluated against all three dimensions
 
 ---
 
@@ -213,6 +219,112 @@ Vision (Why) → Product Spec (What) → Roadmap (When) → Features (How) → B
 - Mobile-friendly (hamburger menu or compact)
 - Real-time invitation count updates
 - Current page visually distinct
+
+#### 8. Visitor/Shadow Experience
+**User Story:** As a potential member, I can browse the platform and try taster journeys without creating an account, so I can experience FringeIsland before committing.
+
+**Features:**
+- Anonymous browsing of journey catalog
+- Temporary session/profile for visitors
+- Taster journeys (curated subset playable without account)
+- Garden door glimpse (preview of what awaits on registration)
+- Seamless conversion to full account with all progress carried forward
+
+**Acceptance Criteria:**
+- Visitors can browse journeys and try tasters without signup
+- Temporary profile data persists across session
+- On registration, all visitor data carries forward (no data loss)
+- RLS policies handle anonymous/temporary sessions securely
+- Clear conversion prompts at natural engagement points
+
+#### 9. profile_data Table (Dynamic Profile Data)
+**User Story:** As the platform, I store flexible member data (journey engagement, reflections, assessments) in a structured way that supports current features and future expansion.
+
+**Features:**
+- Flexible data buckets per ADR-U005
+- Journey engagement data storage
+- Integration with admin lifecycle (decommission/delete cascades)
+- RLS policies for profile_data access
+
+**Acceptance Criteria:**
+- Schema implemented per ADR-U005
+- RLS policies tested
+- Admin actions (decommission, hard delete) cascade correctly
+- Basic data population from journey engagement validated
+
+#### 10. Travel Log / Journal
+**User Story:** As a member, I can view my journey history and personal reflections so I can track my growth over time.
+
+**Features:**
+- Personal record of journey progress and completions
+- Reflection entries tied to journey steps
+- Private by default
+- Chronological and journey-grouped views
+
+**Acceptance Criteria:**
+- Members can view their complete journey history
+- Reflections stored in profile_data
+- Travel log accessible from profile
+- Privacy: viewable only by the member (unless explicitly shared)
+
+#### 11. Internationalization Framework
+**User Story:** As the platform, all user-facing strings are externalized to locale files so the platform can support multiple languages in the future.
+
+**Features:**
+- i18n library integration with Next.js 16 App Router
+- All user-facing strings extracted to locale files
+- English as default locale
+- Infrastructure ready for additional languages (added in Hamn)
+
+**Acceptance Criteria:**
+- No hardcoded user-facing strings in components
+- Locale file structure established
+- English locale complete
+- Language switching infrastructure in place (even if only English available)
+
+#### 12. Block/Report Users
+**User Story:** As a member, I can block or report other users for safety so I feel secure on the platform.
+
+**Features:**
+- Block a user (hides their content from you)
+- Report a user (flags for admin review)
+- Report categories (harassment, spam, inappropriate content)
+- Admin queue for reviewing reports
+
+**Acceptance Criteria:**
+- Blocked users cannot send DMs or appear in member lists for the blocker
+- Reports reach admin dashboard
+- Report includes context (where the interaction happened)
+- No notification to the reported user
+
+#### 13. Group DMs
+**User Story:** As a member, I can have multi-party direct message conversations so I can communicate with several people at once.
+
+**Features:**
+- Create group DM with 2+ members
+- Add/remove participants
+- Same features as 1:1 DM (read tracking, Realtime)
+
+**Acceptance Criteria:**
+- Group DMs appear in inbox alongside 1:1 conversations
+- All participants see messages in real-time
+- Members can leave group DMs
+- Maximum participant limit defined
+
+#### 14. Basic Announcements
+**User Story:** As a Steward, I can send announcements to my group so important information reaches all members.
+
+**Features:**
+- One-to-many messaging within a group
+- Role-controlled (Stewards only)
+- Announcements visible in group view
+- Notification generated for all group members
+
+**Acceptance Criteria:**
+- Only Stewards can create announcements
+- All group members receive notification
+- Announcements persist and are browsable
+- Distinguished visually from regular forum posts
 
 ### Delivered Beyond Original v1.0 Scope
 
@@ -475,6 +587,8 @@ The following features were originally out of scope for v1.0 but have been imple
 - **[Behavior Specs](../development/specs/)** - Rules that govern features
 - **[Architecture Anatomy](../../../universe/architecture/ARCHITECTURE_ANATOMY.md)** - Layered platform anatomy (L0-L7)
 - **[Architecture Decisions](../../../universe/decisions/INDEX.md)** - ADRs with full reasoning
+- **[Research](../planning/RESEARCH.md)** - Open investigations for Ferd
+- **[Processes](../../../universe/processes/)** - Cross-product workflows (deferral, planning)
 
 ---
 
@@ -490,6 +604,7 @@ The following features were originally out of scope for v1.0 but have been imple
 **Owner:** Product team (currently: Stefan + AI assistant)
 **Review Cadence:** After each major phase completion
 **Version History:**
+- v1.2 (Apr 5, 2026): Expanded scope — visitor experience, profile_data, travel log, i18n, block/report, group DMs, announcements; added three void dimensions UX principle
 - v1.1 (Feb 28, 2026): Updated status — Wave 1 phases 1.4–1.5e all complete, technical specs updated
 - v1.0 (Feb 9, 2026): Initial product spec for v1.0 MVP
 
