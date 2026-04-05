@@ -71,7 +71,7 @@ After Ferd 1.6 ships:
 | 2 | Hamn M2 — Journey Marketplace | Publishing workflow, browse, ratings |
 | 3 | Hamn M3 — Enhanced Collaboration | Co-creation, groups-join-groups UI |
 
-See `docs/products/ferd/planning/ROADMAP.md` for Wave 2 (Hamn) and beyond and `docs/products/ferd/planning/DEFERRED.md` for deferred scope.
+See `docs/products/ferd/planning/ROADMAP.md` for Wave 2 (Hamn) and beyond, `docs/products/ferd/planning/DEFERRED.md` for deferred scope, and `docs/products/hamn/INDEX.md` for Hamn product docs.
 
 ---
 

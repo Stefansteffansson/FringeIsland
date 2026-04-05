@@ -1040,7 +1040,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Project Waves
 
-> This section previously used a Phase 1/2/3/4 model. The project now uses a wave model. For current roadmap and wave status, see [docs/planning/ROADMAP.md](docs/planning/ROADMAP.md) and [docs/vision/PRODUCTS_AND_PLATFORM.md](docs/vision/PRODUCTS_AND_PLATFORM.md).
+> This section previously used a Phase 1/2/3/4 model. The project now uses a wave model. For current roadmap and wave status, see [docs/products/ferd/planning/ROADMAP.md](docs/products/ferd/planning/ROADMAP.md) and [docs/universe/strategy/PRODUCTS_AND_PLATFORM.md](docs/universe/strategy/PRODUCTS_AND_PLATFORM.md).
 
 - **Wave 1 (Ferd):** Core web platform — ~95% complete as of v0.2.37
 - **Wave 2 (Hamn):** Full FringeIsland experience — planning phase

@@ -37,4 +37,4 @@ Post-migration audit verified BOOT_UP.md, CLOSE_DOWN.md, README.md, and CLAUDE.m
 ## Next Steps
 
 - Ferd 1.6 sprint work can now begin with clean documentation structure
-- Future products (Hamn) will get `docs/products/hamn/` when specification starts
+- Hamn folder structure (`docs/products/hamn/`) established — awaiting specification content
