@@ -1,5 +1,5 @@
 # FringeIsland — Vision Document
-*Version 0.1 — March 2026*
+*Version 0.2 — April 2026*
 *Author: Stefan Stefansson*
 *Status: Living document — for personal review and iteration*
 
@@ -48,6 +48,9 @@ It is a declaration of what we are building, why it matters, and the principles 
    - [The Platform Follows the Vision](#the-platform-follows-the-vision)
    - [The Broader Ecosystem](#the-broader-ecosystem)
 8. [Part Eight — What We Are Still Discovering](#part-eight--what-we-are-still-discovering)
+   - [Resolved Through Discovery](#resolved-through-discovery)
+   - [Still Open — And What They Block](#still-open--and-what-they-block)
+   - [Scope Boundaries — Where the Lines Are Unclear](#scope-boundaries--where-the-lines-are-unclear)
 9. [Closing](#closing)
 
 ---
@@ -107,7 +110,7 @@ FringeIsland lives at the intersection of three things that are usually kept apa
 
 **Immersive** — an alternative reality world with its own geography, narrative, characters, seasons and rules. A place you can actually inhabit, not just visit. Inspired by the worlds of The Matrix, Inception, Westworld, Limitless, Under the Dome — stories that create a reality alongside reality and use it to reveal something true.
 
-**Educational** — grounded in research-based frameworks for self-understanding. Not lectures. Not courses. Tools woven into the fabric of the experience: the Big 5/OCEAN personality model, VIA Character Strengths, Erin Meyer's Culture Map, and others. The island teaches without feeling like teaching.
+**Educational** — grounded in research-based frameworks for self-understanding and human flourishing. Not lectures. Not courses. Tools woven into the fabric of the experience — drawing on self-determination theory (Deci & Ryan), psychological well-being (Ryff), flourishing (Keyes), meaning-making (Frankl, Steger), adult development (Kegan), self-efficacy (Bandura), belonging (Baumeister & Leary), the Harvard Study of Adult Development, attachment theory, and authentic ikigai research — alongside personality models like the Big 5/OCEAN, VIA Character Strengths, and Erin Meyer's Culture Map. The island teaches without feeling like teaching — stories first, themes underneath. A member could engage purely for the story and still have a valuable experience. But for those who look deeper, the educational scaffolding is always there.
 
 **Entertainment** — experienced as story. Seasons and episodes. An A-plot, B-stories, sub-plots. The world has a mythology, a mystery, an unfolding. Members don't just use FringeIsland — they experience it. And through that experience, something real changes.
 
@@ -117,39 +120,60 @@ The word we use for this combination is **Immersive Edutainment**. It is not a c
 
 FringeIsland exists across three realms:
 
-**Earth** — the ordinary world. Where members live. The departure point.
+**Earth** — the Ordinary World. Where members live. The departure point.
 
-**Fringe Island** — the alternative world. The island itself. Where the story unfolds, where the journey happens, where the self is explored and gradually revealed. It has its own landscape, its own communities, its own lore.
+**Fringe Island** — the Safe Harbour. The alternative world. Where the story unfolds, where the journey happens, where the self is explored and gradually revealed. It has its own landscape, its own communities, its own lore.
 
-**The Other Side** — the deeper mystery. What lies beyond the island's edges. A space that narrative reaches toward but does not yet fully reveal.
+**The Other Side** — not a place beyond the island's edges, but the void *between* the two worlds. The gap between who you are and who you know yourself to be. It is the deeper mystery — not distant and spatial, but intimate and personal. Every member carries their own Other Side. The narrative reaches toward it. The journey is the act of crossing into it, again and again.
 
-The story runs in **Seasons and Episodes** — S1:E1, S1:E2, and so on. Each season has an arc. Each episode advances it. The Dreamineers create and weave the content. Members experience it, contribute to it, and through their engagement, shape its trajectory.
+The void has three dimensions, mirroring the three ways we exist in the world:
+
+- **The individual void (1)** — the gap between who I am and who I know myself to be. This can be explored alone.
+- **The relational void (1+1)** — the gap between how I relate and how I could relate. This requires another person.
+- **The communal void (1+community)** — the gap between how I belong and how I could belong. This requires a community.
+
+The individual dimension can be collapsed through solo work. The relational and communal dimensions cannot — they require genuine human connection. This is not an add-on. It is structural. FringeIsland is built so that full development requires other people.
+
+The story runs in **Seasons and Episodes** — S1:E1, S1:E2, and so on. Four Seasons per year, twelve Episodes per Season, following both a universal calendar shared by all members and an adaptive layer personalised by AI. Each season has an arc. Each episode advances it. The Dreamineers create and weave the content. Members experience it, contribute to it, and through their engagement, shape its trajectory.
 
 ### The Red Thread — From Empty to Whole
 
 Every member arrives on FringeIsland as an undefined soul.
 
-Their avatar begins completely empty. No identity. No character. No story yet. That emptiness is not a limitation — it is the invitation. The whole point.
+They are given a **Whisp** — not an avatar, but an instrument. The Whisp is the member's agency projected into the world. It begins empty — no identity, no character, no story yet. That emptiness is not a limitation. It is the invitation. The whole point.
 
-Through narrative, challenge, reflection and connection, the avatar gradually becomes a mirror of the member's true self. Not a curated self. Not a performed self. The actual self — values, strengths, blindspots, desires, fears, edges. The three instruments that shape this journey are:
+The Whisp is not a mirror reflecting back who you are. It is an instrument you learn to play. Through narrative, challenge, reflection and connection, the Whisp gains fidelity — becoming a richer, more responsive expression of the member's engagement with the world. The fuller the Whisp, the more it can do, the deeper it can reach. Filling it is not passive self-discovery — it is skill development through practice.
 
-**Who am I?** — Research-based tools for self-understanding. The Big 5/OCEAN model. VIA Character Strengths. Culture Map. Not tests that categorise you, but tools that illuminate you.
+Three questions shape this journey. But each question exists across three perspectives — the individual, the relational, and the communal — making the developmental surface far wider than it first appears:
 
-**What do I want?** — Purpose, values and vision discovery. What matters. What you're moving toward. The difference between what you've been told to want and what actually calls you.
+**Who am I?** — Research-based tools for self-understanding. Not tests that categorise you, but tools that illuminate you.
+- *As an individual (1):* What are my values, strengths, blindspots, edges?
+- *In relationship (1+1):* How do I show up with another person? What patterns do I carry?
+- *In community (1+community):* What role do I play in the groups I belong to? What do I contribute?
+
+**What do I want?** — Purpose, values and vision discovery. The difference between what you've been told to want and what actually calls you.
+- *As an individual:* What matters to me? What am I moving toward?
+- *In relationship:* What kind of connections do I want to build?
+- *In community:* What kind of world do I want to help create?
 
 **How do I get there?** — Skills, habits, relationships and pathways. The practical architecture of becoming.
+- *As an individual:* What practices and disciplines will carry me?
+- *In relationship:* How do I learn to be present with another person?
+- *In community:* How do I contribute to something larger than myself?
 
-This is the red thread. It runs through everything — every journey, every episode, every group, every conversation. You can engage with it lightly or deeply. You can move through it quickly or slowly. But it is always there: the invitation to know yourself more honestly.
+This is the red thread. It runs through everything — every journey, every episode, every group, every conversation. You can engage with it lightly or deeply. You can move through it quickly or slowly. But it is always there: the invitation to know yourself more honestly — alone, with others, and as part of something larger.
 
 ### The Engagement Spectrum
 
 Members engage with FringeIsland along a natural spectrum. No one position is more valid than another.
 
-At one end: the **Homebody** — who tends their inner garden, builds their digital home, reflects quietly, and never ventures far into the wider narrative. This is a complete and valuable way to inhabit FringeIsland.
+At one end: the **Homebody** — who tends their inner garden, builds their digital home, reflects quietly, and never ventures far into the wider narrative. This is a genuinely valuable way to inhabit FringeIsland. The Homebody can do deep individual work — collapsing their personal void through reflection, journaling, and solo journeys.
 
-At the other: the **Explorer** — deep in narrative arcs, seasonal episodes, quests, group dynamics, community contribution, world-building. Living in FringeIsland as a genuine second world. And beyond even that: those who press further still, toward the edges of the island and whatever lies beyond — toward **The Other Side**, the deeper mystery that the world holds but does not yet fully reveal.
+At the other: the **Explorer** — deep in narrative arcs, seasonal episodes, quests, group dynamics, community contribution, world-building. Living in FringeIsland as a genuine second world. Explorers naturally engage the relational and communal dimensions of the void — the dimensions that require other people.
 
-Between them: infinite gradations. Every path leads to growth. Every position on the spectrum is welcome.
+And beyond even that: those who press further still, toward the edges of the island and into **The Other Side** — the personal void that the world holds but does not yet fully reveal.
+
+Between them: infinite gradations. Every path leads to growth. Every position on the spectrum is welcome. But it is worth naming honestly: the relational and communal void dimensions cannot be collapsed alone. A member who never engages with others can still grow — but the full developmental arc of FringeIsland opens only through connection. This is not a judgment of the Homebody path. It is the nature of the model. The island invites, but does not force.
 
 ---
 
@@ -285,22 +309,49 @@ The campaign launches after the full ecosystem vision is set. Not before. Its de
 
 The web platform currently in development is a proof of concept — a demonstration that the technical foundation is viable. It does not define or constrain what FringeIsland becomes.
 
-The platform is built in phases, each phase validated before the next begins. The vision drives each phase — not the other way around.
+The platform follows the vision — never the other way around. If the vision demands a different architecture or technology, the platform rebuilds around that. The evolution follows the arc of the Hero's Journey — the same arc that every member lives inside the world itself:
 
-**Wave 1 (Ferd) — Web Platform as Hub**
-The web platform is the primary interface: identity, profiles, home gardens, groups, journey browsing, forums, contribution tools. Optimised as a Progressive Web App for mobile access. Discord serves as a temporary community scaffold — deliberately temporary. It will be retired when the platform is ready to hold the community itself.
+*Departure → Harbour → Shore → Passage → Home*
 
-**Wave 2 (Hamn) — Full PWA**
-Push notifications for episode drops and narrative events. Basic AR experiments through camera access — location-based, QR-triggered world moments. Offline access to journey content. Discord retired. The community lives fully on FringeIsland's own platform. The marketplace launches.
+Each wave is a step in that arc. The world is being built the same way members are invited to build themselves — one honest step at a time.
 
-**Wave 3 — Native Apps and Full AR**
-Native iOS and Android apps built with validated knowledge of what the AR layer actually needs. The web platform remains — as the primary home for deep work, contribution, and desktop-first experiences. The native apps are the experiential layer: immersive, mobile, world-blending.
+**Wave 1 — Ferd (Departure)**
+*Prove the ground is solid.*
+
+The web platform is the primary interface: groups, journeys, Steward-led experiences, profiles, forums, direct messaging. Discord serves as a temporary community scaffold — deliberately temporary. It will be retired when the platform is ready to hold the community itself.
+
+Ferd is not yet the full FringeIsland world. It does not have the avatar, the garden, the narrative, the three realms. But it is the seed from which everything grows. It proves two things: that the builder can build, and that the journey metaphor is real.
+
+**Wave 2 — Hamn (Harbour)**
+*The island comes alive.*
+
+The web platform evolves into Hamn — the full FringeIsland member experience takes shape. Avatar, garden, narrative, the three questions alive in every corner of the platform. The Dreamineer community forms. The marketplace launches — journeys, experiences, content, physical products. Dreamineer studio tools enable web and desktop content creation. Discord is retired. The community lives fully on its own platform.
+
+Native iOS and Android apps launch alongside Hamn. The 18–29 primary audience expects native mobile — no friction or they leave. The apps are the on-the-go companion: episode notifications, quick journey activities, garden check-ins, community moments.
+
+Basic AR experiments begin — location-based, camera-triggered world moments. The island starts bleeding into physical reality. Online seasonal events begin. World artefacts and printed materials become available in the marketplace.
+
+**Wave 3 — The World Expands**
+*The world extends beyond the screen and into physical space.*
+
+Full AR and mixed reality layer. Physical products deepened — a broader range of artefacts and materials. Regional gatherings growing organically. Training camps and getaways begin. The annual FringeIsland Summit — the flagship event where the full community assembles and the next season is launched.
+
+The FringeIsland Foundation is formally established. The endowment seed fund begins — the long-horizon protection against the financial instability that threatens even the most beloved open communities.
+
+**Wave 3+ — The Game**
+*The world at full fidelity.*
+
+A graphically rich game-engine experience — built in Unreal Engine or equivalent — bringing the three realms to life at the highest fidelity. Runs across desktop, console, mobile, and VR/AR headsets. Dreamineer game tools enable world-building within the game engine. Physical game expressions emerge. The line between platform, game, and physical world begins to dissolve.
+
+The game is earned, not assumed. It is built on a validated, thriving community — not before.
 
 ### The Broader Ecosystem
 
 The platform is one node. The ecosystem extends further:
 
-A game — or games — that bring the world to life in interactive form. Physical representations of FringeIsland worlds. 3D-printed artefacts: member homes, gardens, avatars, items — digital identity made physical. Physical meetups, training camps, retreats. An AR layer that places elements of the island in the real world. A marketplace of Dreamineer-created experiences, tools and objects. An annual Summit where the community meets in person and the next season is launched.
+Digital products — the web platform, native apps, the AR layer, the game. Physical products — 3D-printed artefacts of member homes, gardens, and avatars; printed journals, maps, and narrative companions; merchandise that carries the world into everyday life. Experiences — online seasonal events, regional gatherings, training camps and getaways, the annual Summit. Every physical product should feel like a piece of the FringeIsland world — not a branded item.
+
+Throughout all waves, a lightweight experimentation layer runs in parallel. New ideas — features, narrative concepts, community mechanics, AR experiments, physical product concepts — are tested cheaply before being built properly. Lower polish is acceptable here. The purpose is validation, not production. This layer is never retired. It is how FringeIsland stays alive and curious.
 
 The ecosystem is not a product roadmap. It is a living organism — growing as the community grows, shaped by the Dreamineers who build it, held by the Foundation that protects it.
 
@@ -308,15 +359,65 @@ The ecosystem is not a product roadmap. It is a living organism — growing as t
 
 ## Part Eight — What We Are Still Discovering
 
-FringeIsland is not finished being imagined. Four areas require dedicated exploration before the full picture is complete:
+FringeIsland is not finished being imagined. The journey designer sessions (March 2026) have deepened our understanding of the world significantly — but they have also opened new questions that must be answered before certain parts of the platform can be built.
 
-**The Contribution Architecture** — How the platform opens itself to contribution. What can be built by anyone, what requires Dreamineer status, what is held only by the Foundation and Council. The rules of creative openness.
+### Resolved Through Discovery
 
-**The FringeIsland Manifesto** — The direction-setting principles of the movement. In the spirit of the Agile Manifesto: not rules, but orientations. X over Y. Showing direction, not fixing destination. Some anchors are already clear: member privacy over commercial opportunity. Personal growth over performance metrics. Open contribution over closed gatekeeping. Direction over rigid destination. Community ownership over corporate control. Safe experimentation over fear of failure. Lived experience over passive consumption.
+These areas were open in v0.1 and have since been substantially explored:
 
-**The First Experience — Season One, Episode One** — The founding narrative. The story that members first enter. The mystery, the conflict, the world that comes to life for the first time. This is the creative work that will define everything that follows.
+**The Contribution Architecture** — Now documented separately. How the platform opens itself to contribution — what can be built by anyone, what requires Dreamineer status, what is held only by the Foundation and Council.
+
+**The FringeIsland Manifesto** — Now documented separately. Direction-setting principles in the spirit of the Agile Manifesto: not rules, but orientations. Member privacy over commercial opportunity. Personal growth over performance metrics. Open contribution over closed gatekeeping. Lived experience over passive consumption.
+
+**The Three-Dimensional Void** — Discovered in Session 03. The core developmental model: every member carries a personal void with three dimensions (individual, relational, communal). This underpins the Whisp, the Other Side, Seasons and Episodes, and the engagement spectrum.
+
+**The Whisp** — Discovered in Session 02, deepened in Session 03. The member's instrument in the world. Dual nature: Encounter (meeting your future self) and Companion (permanent presence). Fullness determines fidelity of response.
+
+**The Research Foundation** — Session 02 produced a five-dimensional flourishing architecture grounded in self-determination theory, psychological well-being, meaning-making, adult development, belonging, and authentic ikigai research. This replaces the earlier, narrower framework list.
+
+**Seasons and Episodes Architecture** — Partially resolved in Session 03. Four Seasons per year, twelve Episodes per Season, universal calendar plus adaptive AI personalisation. Design principle: stories first, themes underneath.
+
+### Still Open — And What They Block
+
+These questions remain unanswered. Each one blocks specific work.
+
+**The First Experience — How does the first hour actually work?**
+The founding narrative. The story that members first enter. The mystery, the conflict, the world that comes to life for the first time. Four deep design sessions have explored what FringeIsland *is* — none have designed what a new member actually *does* when they arrive. This is the single highest-risk gap: everything else is irrelevant if the first experience does not work.
+*Blocks: Ferd user onboarding flow, Hamn "Journey Zero" onboarding journey, Kickstarter campaign design.*
+
+**AI Feasibility — What does the AI actually need to do, and can it?**
+The sessions assume load-bearing AI capabilities: adaptive season personalisation per member, NPC calibration to growth zones, AI-generative Type 4 journeys, void-responsive content delivery. None of this has been validated against what current or near-future AI can deliver at the quality required. The Experience Engine (L3 in the architecture) is the architectural linchpin and remains unbuilt.
+*Blocks: Hamn adaptive content delivery, Type 4 journeys (Wave 3), NPC implementation, Weaver-AI collaboration tools.*
+
+**The Cold-Start Problem — What happens when the community is small?**
+The three-dimensional void requires real relationships (1+1) and real community (1+community). In early months with a small member base, these dimensions may be structurally unsolvable through human connection alone. The world can be pre-populated with AI-generated activity, but the quality of collapsing a relationship void requires actual human relationships, not NPC interactions.
+*Blocks: Ferd beta testing strategy, Hamn communal features, void-based content delivery.*
+
+**Who Is the Weaver, Concretely?**
+Weavers are described as "experience architects" who stitch Maker content into coherent journeys and collaborate with AI on season production. But no session has explored what a Weaver actually does in practice — what tools they need, what the authoring interface looks like, how many Weavers are needed for a single season. The Weaver is the most load-bearing creative role in the system and the least defined.
+*Blocks: Hamn Dreamineer studio tools, Season production pipeline, marketplace design.*
+
+**The Whisp in Wave 1 — How is it represented without AR?**
+The Whisp's most vivid expressions — AR overlay, void visualisation, fullness-as-fidelity — all depend on technology slated for Wave 2 or later. Ferd is a web platform. If the Whisp is the emotional core of FringeIsland, its Wave 1 expression must be compelling even in a browser. That design problem is entirely untouched.
+*Blocks: Ferd Whisp representation (if attempted before Hamn), Hamn Whisp MVP design.*
+
+**NPC Behaviour Authoring — What mechanism?**
+NPCs are central to the world, but the authoring mechanism is unspecified. Prompt engineering? Behaviour graphs? Learning models? This is prerequisite for any NPC implementation.
+*Blocks: Hamn NPC system, AI-driven seasonal content.*
 
 **The Kickstarter Campaign** — The story, the tiers, the video, the funding goal, the pre-launch strategy. To be designed with the same care as the world itself.
+*Blocks: Public launch timing, founding Dreamineer recruitment, initial funding.*
+
+### Scope Boundaries — Where the Lines Are Unclear
+
+The wave model (Ferd → Hamn → Wave 3 → Wave 3+) is well-defined for core deliverables but has areas of ambiguity. These are documented here so they can be resolved deliberately, not by accident:
+
+- **Seasons and Episodes:** Specification deferred to Hamn sessions, but not explicitly listed as a Hamn deliverable. Implementation wave unclear.
+- **AR boundary:** "Basic AR experiments" begin in Hamn, "full AR" is Wave 3. What counts as "basic" is not defined.
+- **Type 3-4 journeys:** The Journey Designer ships in Hamn, but Types 3-4 are only "fully operational" in Wave 3. Does the Hamn tool support authoring them even if they don't run yet?
+- **Void cosmology implementation:** The three-dimensional void model is foundational to the Whisp, AR, Seasons, and the Other Side — but no document assigns its implementation to a specific wave.
+- **Three Perspectives naming:** The 1 / 1+1 / 1+community framework is established, but its FringeIsland-native naming is explicitly unresolved and "not to be forced."
+- **Whisp specification dependencies:** The Whisp is a Hamn deliverable, but three prerequisite specifications (practical UI, encounter phenomenology, fullness model) are all deferred to future sessions.
 
 ---
 
@@ -340,4 +441,5 @@ That is what we are building.
 
 *This document will be updated as the vision evolves. It is a living record of what FringeIsland is and intends to become — not a fixed artefact, but a trusted companion to the work.*
 
-*Version 0.1 — March 2026*
+*Version 0.1 — March 2026 — Initial vision*
+*Version 0.2 — April 2026 — Integrated journey designer session discoveries (Sessions 01-03): three-dimensional void model, Whisp as instrument, Three Perspectives framework, expanded research foundation, honest Homebody acknowledgment. Aligned Part Seven with Products & Platform Strategy v0.2. Expanded Part Eight with open questions, blocking dependencies, and scope boundary ambiguities.*
