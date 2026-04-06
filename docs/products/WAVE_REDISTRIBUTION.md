@@ -3,6 +3,8 @@
 **Created:** 2026-04-06
 **Purpose:** Items previously assigned to old Wave 2 (Hamn) or Wave 3 / Wave 3+ that need assigning to a wave in the new arc: Ferd → Eid → Hamn → Heim → Brim → Urd
 
+*Note: The 'Previous Wave' column shows the old wave assignment before the 6-wave restructuring (ADR-U022 amendment). 'Wave 2 (Hamn)' means old Wave 2 — Hamn is now Wave 3.*
+
 These items have been temporarily labelled "Wave TBD — pending work package redistribution" in their source files. This document is the triage list for a separate redistribution session.
 
 ---

@@ -74,7 +74,7 @@ Should return: 10
 INSERT INTO sessions (date, version, focus, summary, bridge_file)
 VALUES ('2026-02-04', 'v0.2.10', 'Documentation Restructuring',
         'Complete reorganization of project docs',
-        'docs/planning/sessions/2026-02-04-restructuring.md');
+        'docs/products/ferd/sessions/2026-02-04-restructuring.md');
 ```
 
 ### View recent sessions

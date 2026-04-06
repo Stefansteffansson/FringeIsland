@@ -204,7 +204,7 @@
 - [x] Non-Stewards get permission denied error
 - [x] Stewards can update: name, description, label, is_public, show_member_list
 - [x] Non-Stewards cannot UPDATE even via API
-- [ ] Changes are logged (deferred — audit trail, Wave 2 (Hamn))
+- [ ] Changes are logged (deferred — audit trail, Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md))
 
 **Examples:**
 
@@ -256,7 +256,7 @@
 - [x] Deletion cascades to: memberships, roles, enrollments, forums ✅ TESTED
 - [ ] Confirmation modal warns about data loss (deferred — Danger Zone UI exists but no confirmation modal yet)
 - [ ] Cannot delete group with active journey enrollments (deferred — future safeguard)
-- [ ] Deletion is logged (deferred — audit trail, Wave 2 (Hamn))
+- [ ] Deletion is logged (deferred — audit trail, Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md))
 
 **Examples:**
 

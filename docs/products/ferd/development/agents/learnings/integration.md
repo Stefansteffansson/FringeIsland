@@ -2,7 +2,7 @@
 
 **Purpose:** Running log of discoveries about data flow, queries, state management, and wiring.
 **Curated by:** Sprint Agent during retrospectives
-**Promotion:** Confirmed patterns → `docs/agents/contexts/integration-agent.md` (playbook)
+**Promotion:** Confirmed patterns → `docs/products/ferd/development/agents/contexts/integration-agent.md` (playbook)
 
 ---
 

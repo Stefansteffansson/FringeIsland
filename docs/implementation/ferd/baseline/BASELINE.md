@@ -501,7 +501,7 @@ Nothing in L7 is implemented. This is correct — L7 depends on all lower layers
 |---------|-------|
 | **Structured logging** | No structured event logs beyond audit trail |
 | **Metrics** | No performance metrics collection |
-| **Error tracking** | No Sentry or equivalent. Listed in Phase 1.6 sprint plan |
+| **Error tracking** | No Sentry or equivalent. Listed in Ferd 1.6 sprint plan |
 | **Member-facing audit** | Audit trail is admin-only; not exposed to members (Privacy vertical need) |
 
 ---
@@ -571,7 +571,7 @@ The Ferd codebase primarily uses the **Supabase client (PostgREST)** for data ac
 |---------|------------------|-------|
 | **Formal design system** | Design System | No documented visual language, colour palette, typography scale |
 | **i18n (ADR-013)** | Design System | Strings hardcoded in components. No translation keys |
-| **a11y (ADR-013)** | Design System | Basic semantic HTML. No formal WCAG 2.1 AA audit. Listed in Phase 1.6 |
+| **a11y (ADR-013)** | Design System | Basic semantic HTML. No formal WCAG 2.1 AA audit. Listed in Ferd 1.6 |
 | **World aesthetic** | Design System | FringeIsland visual identity not yet applied |
 | **World-specific elements** | Design System | Garden, avatar, journey step presentation — wave TBD, pending work package redistribution (see WAVE_REDISTRIBUTION.md) |
 
@@ -629,8 +629,8 @@ The Ferd codebase primarily uses the **Supabase client (PostgREST)** for data ac
 | **L7 Intelligence** | Not started | — | AI Mentor, profile accumulation, insights | Correctly empty — depends on all lower layers |
 | **V: Administration** | Strong | User lifecycle (soft/hard delete, decommission, exit), DeusEx, audit | Content moderation, group archive, reactivation | Content moderation needed for Hamn (wave TBD) |
 | **V: Privacy** | Minimal | RLS enforcement, display name privacy | GDPR rights, consent, data map, AI handling | Needs dedicated work before public launch |
-| **V: Notifications** | Strong | 7 types, Realtime, actionable, bell UI | Email delivery, push, preferences | Email service is Phase 1.6 priority |
-| **V: Observability** | Partial | Admin audit log | Structured logs, metrics, error tracking | Sentry is Phase 1.6 priority |
+| **V: Notifications** | Strong | 7 types, Realtime, actionable, bell UI | Email delivery, push, preferences | Email service is Ferd 1.6 priority |
+| **V: Observability** | Partial | Admin audit log | Structured logs, metrics, error tracking | Sentry is Ferd 1.6 priority |
 | **V: Transactions** | Not started | — | Stripe Connect, subscriptions, marketplace | Correctly empty for Ferd |
 | **Platform API** | Thin | 2 API routes (admin) | API-first pattern, versioning, rate limiting | Major gap — direct Supabase calls need API wrapping |
 | **Design System** | Informal | Tailwind, 2 UI components | Formal system, i18n, a11y, world aesthetic | i18n/a11y are ADR-013 constraints |

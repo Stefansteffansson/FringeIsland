@@ -51,7 +51,7 @@ Completed Sprint 1: Foundation Schema using the full TDD workflow (Phases 0-7). 
 - `docs/specs/behaviors/journeys.md` — Added B-JRN-008
 - `PROJECT_STATUS.md` — Sprint 1 complete, v0.2.33
 - `CHANGELOG.md` — Sprint 1 entry
-- `docs/planning/ROADMAP.md` — Sprint tracker updated
+- `docs/products/ferd/planning/ROADMAP.md` — Sprint tracker updated
 - `docs/agents/learnings/database.md` — 3 new entries
 - `docs/agents/learnings/testing.md` — 2 new entries
 

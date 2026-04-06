@@ -1,7 +1,7 @@
 # DeusEx Admin Foundation
 
 **Status:** ✅ Implemented (v0.2.21–v0.2.25)
-**Phase:** 1.6 — Admin Foundation
+**Phase:** Ferd 1.6 — Admin Foundation
 **Last Updated:** February 28, 2026
 
 ---
@@ -29,9 +29,9 @@ The DeusEx system group exists with all 42 permissions (Tier 1 resolution). This
 | 1 | Auto-grant new permissions to DeusEx | DB trigger on `INSERT INTO permissions` | DeusEx must always have ALL permissions — manual adds are error-prone |
 | 2 | Bootstrap first member | `deusex@fringeisland.com` via migration | Deterministic, auditable, no manual SQL |
 | 3 | Last-member protection | DB trigger (same pattern as Steward) | Proven pattern, consistent enforcement |
-| 4 | Admin panel | Minimal `/admin` now (Phase 1.6) | Enough to manage the platform; grows later |
+| 4 | Admin panel | Minimal `/admin` now (Ferd 1.6) | Enough to manage the platform; grows later |
 | 5 | DeusEx member management | In the admin panel | Self-service for DeusEx members |
-| 6 | Tiered admin access | Deferred to Wave 2 (Hamn)+ | One tier (DeusEx = full access) is sufficient now |
+| 6 | Tiered admin access | Deferred to Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md) | One tier (DeusEx = full access) is sufficient now |
 | 7 | Users panel rename | "Active Users" → "Users" | Shows all users, not just active. Count reflects current filter state. |
 | 8 | Default user visibility | Active + inactive visible, decommissioned hidden | Admins should see inactive accounts. Decommissioned are permanently removed — hidden by default with toggle to show. |
 | 9 | Selection model | Toggle-click + Shift+range, cross-page persistence | Simple interaction: click toggles, Shift for range. Selection survives page navigation. |
@@ -90,7 +90,7 @@ The DeusEx system group exists with all 42 permissions (Tier 1 resolution). This
 | B-ADMIN-018 | Admin Remove from Group | ✅ DB + Tests (5 tests) |
 | B-ADMIN-019 | Admin Force Logout | ✅ DB + Tests (6 tests) |
 
-Full specs: `docs/specs/behaviors/admin.md`
+Full specs: `docs/products/ferd/development/specs/admin.md`
 
 ---
 

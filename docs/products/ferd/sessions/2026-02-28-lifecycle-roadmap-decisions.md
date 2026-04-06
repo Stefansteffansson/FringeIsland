@@ -44,7 +44,7 @@ No code changes — documentation and planning only.
 
 ### Created
 - `docs/planning/lifecycle-roadmap-decisions.md` — **Single source of truth** for sprint structure
-- `docs/planning/sessions/2026-02-28-lifecycle-roadmap-decisions.md` — This session bridge
+- `docs/products/ferd/sessions/2026-02-28-lifecycle-roadmap-decisions.md` — This session bridge
 
 ### Modified
 - `docs/features/planned/leave_group_feature_review.md` — 9 tweaks applied
@@ -57,7 +57,7 @@ No code changes — documentation and planning only.
 - `docs/features/implemented/notification-system.md` — Status update
 - `docs/features/implemented/performance-optimization.md` — Status update
 - `PROJECT_STATUS.md` — Session summary, sprint priorities
-- `docs/planning/ROADMAP.md` — Fixed stale links, added lifecycle roadmap reference
+- `docs/products/ferd/planning/ROADMAP.md` — Fixed stale links, added lifecycle roadmap reference
 
 ### Moved (renamed)
 - `docs/features/active/deusex-admin-foundation.md` → `implemented/`

@@ -177,7 +177,7 @@ The schema includes a `group_template_roles` junction table intended to map each
 
 **Currently, the app only creates the Steward role** (hardcoded lookup by name). The Guide and Member role instances are NOT created at group initialization. They are created on demand when a Steward later assigns those roles (which creates the `group_roles` row implicitly via the assignment flow — actually, `group_roles` must exist before assignment, so roles are added manually by a Steward or by future template expansion).
 
-Full template-driven role initialization is deferred to Wave 2 (Hamn).
+Full template-driven role initialization is deferred to Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md).
 
 **Related Behaviors:**
 - B-ROL-001: Role Assignment Permissions (bootstrap path depends on this initialization)
@@ -286,4 +286,4 @@ USING (
 - B-ROL-003 SELECT visibility: 2 tests in `tests/integration/groups/role-assignment.test.ts` ✅
 
 **Next Behaviors to Document:**
-- B-ROL-004: Role Permission Inheritance (what a role allows — deferred to Wave 2 (Hamn))
+- B-ROL-004: Role Permission Inheritance (what a role allows — deferred to Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md))

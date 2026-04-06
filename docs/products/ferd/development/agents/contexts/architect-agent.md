@@ -183,8 +183,8 @@ When making architectural decisions, document them:
 ```
 
 Key decisions are recorded in:
-- `docs/planning/ROADMAP.md` → Decision Log section
-- `docs/features/planned/` → Design documents
+- `docs/products/ferd/planning/ROADMAP.md` → Decision Log section
+- `docs/products/ferd/development/features/` → Design documents
 - MEMORY.md → Cross-cutting decisions (index only)
 
 ---
@@ -212,7 +212,7 @@ journey_enrollments ← user/group enrollment (JSONB progress_data)
 - Added `permission_sets` table + `role_permission_sets` join
 - Added `has_permission()` function replacing `isLeader` checks — **COMPLETE (RBAC Sub-Sprint 1)**
 - Auto-create personal groups on signup
-- See full design: `docs/features/implemented/dynamic-permissions-system.md`
+- See full design: `docs/products/ferd/development/features/AR-dynamic-permissions-system.md`
 
 ---
 
@@ -247,7 +247,7 @@ My work is done when:
 ## Learning Protocol
 
 When working in this domain:
-1. Check `docs/agents/learnings/architecture.md` for recent discoveries
+1. Check `docs/products/ferd/development/agents/learnings/architecture.md` for recent discoveries
 2. During work, append new findings to the journal
 3. At close-down, flag any cross-cutting learnings for MEMORY.md
 

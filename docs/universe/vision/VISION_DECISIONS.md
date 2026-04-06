@@ -226,7 +226,7 @@ Key open source governance models understood:
 - **Database:** 13 tables, 8 migrations, Row Level Security policies
 - **Completed features:** Authentication, user profiles with avatar upload, group management (create/edit/invite/roles), navigation bar, modal systems
 - **Current default landing:** /groups
-- **Next milestone:** Wave 1, Phase 1.4 — Journey System (catalog, browsing, search, filtering, enrollment)
+- **Next milestone:** Wave 1, Ferd 1.4 — Journey System (catalog, browsing, search, filtering, enrollment)
 - **Repository:** GitHub — Stefansteffansson/FringeIsland
 
 ---

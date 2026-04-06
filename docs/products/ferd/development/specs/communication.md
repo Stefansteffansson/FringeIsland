@@ -2,7 +2,7 @@
 
 > **Purpose:** Document the fundamental rules and guarantees for in-app notifications and group forums.
 > **Domain Code:** COMM
-> **Phase:** 1.5-A
+> **Phase:** Ferd 1.5-A
 
 ---
 
@@ -62,7 +62,7 @@
 **Testing Priority:** 🔴 CRITICAL (core communication infrastructure)
 
 **History:**
-- 2026-02-14: Implemented (Phase 1.5-A) — notification system migration applied
+- 2026-02-14: Implemented (Ferd 1.5-A) — notification system migration applied
 
 ---
 
@@ -117,7 +117,7 @@
 **Testing Priority:** 🔴 CRITICAL (privacy, security)
 
 **History:**
-- 2026-02-14: Implemented (Phase 1.5-A)
+- 2026-02-14: Implemented (Ferd 1.5-A)
 
 ---
 
@@ -166,7 +166,7 @@
 **Testing Priority:** 🟡 HIGH (core UX feature)
 
 **History:**
-- 2026-02-14: Implemented (Phase 1.5-A)
+- 2026-02-14: Implemented (Ferd 1.5-A)
 
 ---
 
@@ -218,7 +218,7 @@
 **Testing Priority:** 🔴 CRITICAL (core forum functionality)
 
 **History:**
-- 2026-02-14: Implemented (Phase 1.5-A)
+- 2026-02-14: Implemented (Ferd 1.5-A)
 
 ---
 
@@ -270,7 +270,7 @@
 **Testing Priority:** 🔴 CRITICAL (data integrity, threading constraint)
 
 **History:**
-- 2026-02-14: Implemented (Phase 1.5-A)
+- 2026-02-14: Implemented (Ferd 1.5-A)
 
 ---
 
@@ -321,7 +321,7 @@
 **Testing Priority:** 🟡 HIGH (moderation, security boundary)
 
 **History:**
-- 2026-02-14: Implemented (Phase 1.5-A)
+- 2026-02-14: Implemented (Ferd 1.5-A)
 
 ---
 
@@ -373,7 +373,7 @@
 **Testing Priority:** 🔴 CRITICAL (privacy, security — prevents data leakage)
 
 **History:**
-- 2026-02-14: Implemented (Phase 1.5-A)
+- 2026-02-14: Implemented (Ferd 1.5-A)
 
 ---
 

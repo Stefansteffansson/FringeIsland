@@ -38,7 +38,7 @@ The RBAC system has three distinct layers, each with different rules about what 
 
 Permissions represent actual enforced code paths in the application. `invite_members` exists because there's a UI button, a Supabase insert, and an RLS policy behind it. A permission only makes sense if the application knows how to check and enforce it.
 
-**Users cannot create new permissions.** There is no code path behind a user-invented `do_magic_thing`. New permissions emerge **only** when developers build new features (e.g., Phase 1.5 adds communication → `moderate_forum` becomes enforceable).
+**Users cannot create new permissions.** There is no code path behind a user-invented `do_magic_thing`. New permissions emerge **only** when developers build new features (e.g., Ferd 1.5 adds communication → `moderate_forum` becomes enforceable).
 
 The `permissions` table is a **system catalog** that grows with the codebase, not with user actions.
 
@@ -503,7 +503,7 @@ Before allowing Group A to join Group B, the system walks B's membership chain u
 - **Engagement group A joins engagement group B:** On acceptance, all users in Group A receive an in-app notification that they now belong to Group B.
 - **Group B is notified** that Group A has joined (group-level "news flash"), but this is NOT pushed to all individual users in Group B.
 
-**Implication:** The communication/messaging system (Phase 1.5) is not just a social feature — it's **infrastructure** for the membership and permissions system. Its priority may need to increase.
+**Implication:** The communication/messaging system (Ferd 1.5) is not just a social feature — it's **infrastructure** for the membership and permissions system. Its priority may need to increase.
 
 ### D14: Role Selector — "Act as..." UI Filter (Resolved 2026-02-11)
 

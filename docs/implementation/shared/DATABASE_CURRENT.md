@@ -1206,4 +1206,4 @@ If migrating manually, follow this sequence:
 **Document Version**: 2.1  
 **Last Updated**: January 26, 2026 (v0.2.5)  
 **Changes from v2.0**: Added v0.2.5 member management features (status constraint, trigger, 6 RLS policies, workflows)  
-**Next Review**: After completing Phase 1.4 (Journey System)
+**Next Review**: After completing Ferd 1.4 (Journey System)

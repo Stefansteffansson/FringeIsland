@@ -2,7 +2,7 @@
 
 > **Purpose:** Document the fundamental rules and guarantees for the display name / nickname system.
 > **Domain Code:** DISP
-> **Feature Doc:** `docs/features/implemented/display-name-system.md`
+> **Feature Doc:** `docs/products/ferd/development/features/FR-display-name-system.md`
 
 ---
 

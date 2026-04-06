@@ -254,7 +254,7 @@
 
 - **Scenario:** User enrolled via group — who tracks progress?
   - **Behavior:** Progress tracked per enrollment record (group_id based)
-  - **Why:** Group enrollment = shared journey; individual's progress tracked separately within group context (Wave 2 (Hamn) consideration)
+  - **Why:** Group enrollment = shared journey; individual's progress tracked separately within group context (Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md) consideration)
   - **Current MVP:** Group enrollment tracks progress at group level via progress_data
 
 - **Scenario:** User exits mid-step (closes browser)
@@ -347,7 +347,7 @@
 
 - **Scenario:** User enrolled via group — does each member track their own progress?
   - **Behavior:** MVP: single progress_data per group enrollment record
-  - **Future (Wave 2 (Hamn)):** Per-member progress tracking within group journey
+  - **Future (Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md)):** Per-member progress tracking within group journey
   - **Why:** MVP simplicity; group progress as a unit
 
 **Related Behaviors:**
@@ -589,6 +589,6 @@
 - **Last updated:** 2026-02-28
 
 **Next Behaviors to Document (Future Phases):**
-- B-JRN-009: Group Progress Visibility (Guide can see member progress) - Wave 2 (Hamn)
+- B-JRN-009: Group Progress Visibility (Guide can see member progress) - Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md)
 - B-JRN-010: Journey Unenrollment Rules
 - B-JRN-011: Journey Access After Unenrollment

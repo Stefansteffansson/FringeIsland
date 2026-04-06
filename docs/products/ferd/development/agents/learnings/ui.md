@@ -2,7 +2,7 @@
 
 **Purpose:** Running log of component, styling, and UX discoveries.
 **Curated by:** Sprint Agent during retrospectives
-**Promotion:** Confirmed patterns → `docs/agents/contexts/ui-agent.md` (playbook)
+**Promotion:** Confirmed patterns → `docs/products/ferd/development/agents/contexts/ui-agent.md` (playbook)
 
 ---
 

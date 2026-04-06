@@ -95,12 +95,12 @@ Agents learn through a three-layer system:
 ### Layer 1: Playbooks (stable, curated)
 The agent context files themselves. Contain **proven patterns** confirmed across multiple uses. Updated deliberately during Sprint retrospectives.
 
-**Location:** `docs/agents/contexts/[agent].md`
+**Location:** `docs/products/ferd/development/agents/contexts/[agent].md`
 
 ### Layer 2: Journals (running, append-only)
 Each agent has a companion learning log. Discoveries are appended during work. Low friction, fast capture.
 
-**Location:** `docs/agents/learnings/[domain].md`
+**Location:** `docs/products/ferd/development/agents/learnings/[domain].md`
 
 | Domain | Journal File |
 |--------|-------------|

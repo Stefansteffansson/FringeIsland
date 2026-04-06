@@ -34,7 +34,7 @@ The evolution of the FringeIsland platform follows the arc of the Hero's Journey
 
 This is not a coincidence. It is the deepest possible alignment between the platform and its purpose: the platform's own story is the member's story.
 
-*Departure → Harbour → Shore → Passage → Home*
+*Departure → Passage → Harbour → Home → Edge → Fate*
 
 Each product, each release, each phase is a step in that arc. The world is being built the same way members are invited to build themselves — one honest step at a time, in the right direction, open to what the journey reveals.
 
@@ -55,7 +55,7 @@ The on-the-go companion. The world in your pocket. Episode notifications, quick 
 ### 3. AR Layer
 The world bleeding into physical reality. FringeIsland moments triggered in the real world — through location, camera, context. The island and ordinary life overlapping.
 
-*Begins as experiments in later waves. Deepens through subsequent phases.*
+*Begins as experiments in later waves. Deepens through subsequent waves.*
 
 ### 4. The Game
 The most immersive digital expression of the world. A graphically rich game-engine experience — built in Unreal Engine or equivalent — bringing the three realms to life at the highest fidelity. Runs across desktop, console, mobile, and VR/AR headsets.
@@ -91,7 +91,7 @@ A board game, card game or other physical game format that brings elements of th
 ### 1. Online Seasonal Events
 Digital events tied to the narrative seasons — episode launches, world celebrations, community milestones. Accessible to all members regardless of location. The heartbeat of the community calendar.
 
-*Begins in Hamn.*
+*Begins in Wave 3 (Hamn).*
 
 ### 2. Regional Gatherings
 In-person community meetups organised by members and Dreamineers in their own regions. Informal, community-led, values-aligned. The 50+ demographic is a particular strength here — experienced community builders who bring warmth and depth to in-person gatherings.
@@ -108,13 +108,13 @@ The flagship annual event. Where the full community assembles — members, Dream
 
 The Summit is not just an event — it is a founding ritual. It happens once a year and marks the passage of time in the FringeIsland world.
 
-*Wave 3 ambition. First edition to be planned when the community is ready.*
+*Wave 4 (Heim) ambition. First edition to be planned when the community is ready.*
 
 ---
 
 ## Part Four — The Web Platform in Detail
 
-The web platform has a name for each of its two founding chapters. Future releases will be named as they arrive — not before.
+The web platform evolves across six named waves. Each wave has a name that reflects the arc of the journey.
 
 ### Ferd — *Departure*
 *The current web platform. Where the journey begins.*

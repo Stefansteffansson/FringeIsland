@@ -2,7 +2,7 @@
 
 > **Purpose:** Document the fundamental rules and guarantees for the Role-Based Access Control system.
 > **Domain Code:** RBAC
-> **Design Reference:** `docs/features/implemented/dynamic-permissions-system.md` (D1-D22)
+> **Design Reference:** `docs/products/ferd/development/features/AR-dynamic-permissions-system.md` (D1-D22)
 > **Sub-Sprint:** 1 — Schema Foundation
 
 ---
@@ -543,7 +543,7 @@
 
 - **Scenario:** User's role is changed by another Steward while they're viewing the page
   - **Behavior:** Permissions don't update until `refreshNavigation` event or page reload
-  - **Why:** No real-time subscription yet (Wave 2 (Hamn) feature)
+  - **Why:** No real-time subscription yet (Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md) feature)
 
 - **Scenario:** Hook is called with `groupId = null` (e.g., on a non-group page)
   - **Behavior:** Returns only Tier 1 (system group) permissions, no Tier 2

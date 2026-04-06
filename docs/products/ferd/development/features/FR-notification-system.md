@@ -4,7 +4,7 @@
 **Author:** Architect Agent
 **Date:** February 14, 2026
 **Last Updated:** February 28, 2026 (Sprint 3 — smart notification schema, RPCs, UI)
-**Phase:** 1.5-A (Infrastructure for RBAC/Communication)
+**Phase:** Ferd 1.5-A (Infrastructure for RBAC/Communication)
 **Related:** [Dynamic Permissions System](./AR-dynamic-permissions-system.md) (D13) | [Platform Exit](./FR-platform-exit.md) | [ARCHITECTURE](../../../../universe/architecture/ARCHITECTURE_ANATOMY.md)
 
 ---
@@ -70,7 +70,7 @@ CREATE TABLE notifications (
 ### Design Decisions
 
 **Why no `notification_preferences` table (yet)?**
-For Phase 1.5-A, all notification types are delivered to all users. Preferences (mute a group, disable a type) add complexity with minimal value when the system has <100 users. When preferences are needed, add a `notification_preferences` table with `(user_id, type, enabled)` rows. The `notifications` table design is forward-compatible -- the notification creation function can check preferences before inserting.
+For Ferd 1.5-A, all notification types are delivered to all users. Preferences (mute a group, disable a type) add complexity with minimal value when the system has <100 users. When preferences are needed, add a `notification_preferences` table with `(user_id, type, enabled)` rows. The `notifications` table design is forward-compatible -- the notification creation function can check preferences before inserting.
 
 **Why pre-rendered `title` and `body`?**
 Alternative: store only type + payload, render in the UI. Problem: if group names or user names change after notification creation, the notification text would retroactively change, which is confusing. Pre-rendering at creation time captures the state at the moment of the event. The `payload` JSONB still has IDs for navigation/linking.

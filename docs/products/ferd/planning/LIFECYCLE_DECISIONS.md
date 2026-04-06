@@ -181,7 +181,7 @@ Each decision below was discussed and confirmed on 2026-02-28. These are not sug
 **What this means:**
 - Sprint 2 (leave-group core) builds only the group-level leaving flows
 - Sprint 4 (platform exit) builds a lightweight cascade: an admin-facing "exit user from all groups" action, NOT a self-service UI
-- Self-service account deletion / "Delete my account" button is deferred to a future polish sprint (Phase 1.6 or later)
+- Self-service account deletion / "Delete my account" button is deferred to a future polish sprint (Ferd 1.6 or later)
 - The existing `admin_decommission_user()` and `admin_hard_delete_user()` RPCs remain the only account termination mechanisms
 
 **Why:** Self-service platform exit requires careful GDPR/legal considerations, additional UI flows, and abuse prevention. Admin-assisted is safer for v1 and keeps scope manageable. The group-level stewardship transfer machinery (which is the hard part) is fully self-service regardless.
@@ -215,7 +215,7 @@ Each item below is explicitly deferred. This section prevents scope creep and en
 
 ### DEFERRED: Self-Service Platform Exit UI
 **What:** A user-facing "Leave FringeIsland" page where users can delete their own account.
-**When:** After leave-group v1 is complete and tested. Possibly Phase 1.6 polish or Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md).
+**When:** After leave-group v1 is complete and tested. Possibly Ferd 1.6 polish or Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md).
 **Prerequisite:** Leave-group core (Sprint 2) must be fully working first. GDPR/legal review of data retention.
 **Current alternative:** Admin-assisted deactivation via the admin panel.
 
@@ -305,7 +305,7 @@ Each item below is explicitly deferred. This section prevents scope creep and en
 - ✅ Audit log with detailed per-group metadata
 - NOT self-service — admin panel only
 **Depends on:** Sprint 2 + Sprint 3 complete (all leave-group tracks working)
-**Feature doc:** `docs/features/implemented/platform-exit.md` | **Behaviors:** B-EXIT-001 through B-EXIT-004
+**Feature doc:** `docs/products/ferd/development/features/FR-platform-exit.md` | **Behaviors:** B-EXIT-001 through B-EXIT-004
 
 ---
 

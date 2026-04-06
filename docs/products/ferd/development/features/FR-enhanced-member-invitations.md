@@ -52,8 +52,8 @@ CREATE TABLE public.pending_email_invitations (
 
 ## Behavior Specs
 
-- **B-GRP-006:** User Search Typeahead — `docs/specs/behaviors/groups.md`
-- **B-INV-001:** Pending Email Invitations — `docs/specs/behaviors/invitations.md`
+- **B-GRP-006:** User Search Typeahead — `docs/products/ferd/development/specs/groups.md`
+- **B-INV-001:** Pending Email Invitations — `docs/products/ferd/development/specs/invitations.md`
 
 ---
 
@@ -68,8 +68,8 @@ CREATE TABLE public.pending_email_invitations (
 
 | File | Purpose |
 |------|---------|
-| `docs/features/implemented/enhanced-member-invitations.md` | This feature doc |
-| `docs/specs/behaviors/invitations.md` | B-INV-001 behavior spec |
+| `docs/products/ferd/development/features/FR-enhanced-member-invitations.md` | This feature doc |
+| `docs/products/ferd/development/specs/invitations.md` | B-INV-001 behavior spec |
 | `supabase/migrations/20260223140126_enhanced_member_invitations.sql` | New table + trigger update |
 | `lib/email/send.ts` | Email service abstraction (console.log) |
 | `app/api/invitations/send-email/route.ts` | Server-side email send endpoint |
@@ -84,7 +84,7 @@ When a sole Steward leaves a group via L2 (DeusEx handover), pending email invit
 - This ensures invitations remain valid and can still be claimed by new users at signup
 - The invitation now appears as sent by "FringeIsland" (DeusEx) rather than the departed Steward
 
-See `docs/features/implemented/leave-group-core.md` for full details.
+See `docs/products/ferd/development/features/FR-leave-group-core.md` for full details.
 
 ---
 
@@ -94,4 +94,4 @@ See `docs/features/implemented/leave-group-core.md` for full details.
 |------|--------|
 | `components/groups/InviteMemberModal.tsx` | Typeahead search + two-flow invite logic |
 | `app/groups/[id]/page.tsx` | Pass `existingMemberGroupIds` prop to modal |
-| `docs/specs/behaviors/groups.md` | Add B-GRP-006 |
+| `docs/products/ferd/development/specs/groups.md` | Add B-GRP-006 |

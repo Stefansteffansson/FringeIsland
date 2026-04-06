@@ -75,7 +75,7 @@ Default UX assumes group context. Solo enrollment available but not the primary 
 
 ### 3. Roles Drive Capabilities
 - **Steward** — manages group, invites members, assigns roles, enrolls group in journeys
-- **Guide** — co-facilitates, mentors, supports (full tools in Hamn)
+- **Guide** — co-facilitates, mentors, supports (full tools in Wave 3 — Hamn)
 - **Member** — participates, completes content, communicates
 - **Observer** — views content without active participation
 
@@ -143,7 +143,7 @@ These features complete the Ferd experience before public launch:
 - **Visitor/shadow experience** — anonymous browsing, taster journeys, seamless conversion to full account
 - **profile_data table** — flexible data storage for journey engagement, reflections, assessments (per ADR-U005)
 - **Travel log / journal** — personal record of journey history, reflections, growth over time
-- **i18n framework** — string externalization, locale file structure, English default (additional languages in Hamn)
+- **i18n framework** — string externalization, locale file structure, English default (additional languages in Wave 3 — Hamn)
 - **Block/report users** — block unwanted contact, report users for admin review
 - **Group DMs** — multi-party direct message conversations
 - **Basic announcements** — Steward-to-group one-to-many messaging
@@ -159,7 +159,7 @@ These features complete the Ferd experience before public launch:
 - Permission enforcement completion (8/39 enforced, needs full coverage)
 - Beta testing with 10-20 users
 
-### Out of Scope (Hamn / Wave TBD+)
+### Out of Scope (Wave 2+ — see WAVE_REDISTRIBUTION.md)
 
 These are explicitly **not** part of Ferd. See [DEFERRED.md](../planning/DEFERRED.md) for rationale.
 

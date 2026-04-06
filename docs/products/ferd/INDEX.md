@@ -11,7 +11,7 @@
 
 | Folder | Purpose |
 |--------|---------|
-| [specification/](./specification/) | Product spec, requirements (97 total), activity catalog |
+| [specification/](./specification/) | Product spec, requirements (100 total), activity catalog |
 | [architecture/](./architecture/) | Ferd-specific architecture, lifecycle flows, design reviews |
 | [planning/](./planning/) | Roadmap, deferred decisions, lifecycle decisions |
 | [sessions/](./sessions/) | Session logs — vision, design, sprint, journey designer |

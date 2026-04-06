@@ -52,7 +52,7 @@ Each product has its own specification, architecture, planning, sessions, and de
 
 | Folder | Purpose |
 |--------|---------|
-| [products/ferd/specification/](products/ferd/specification/) | Product spec, requirements (97), activity catalog |
+| [products/ferd/specification/](products/ferd/specification/) | Product spec, requirements (100), activity catalog |
 | [products/ferd/architecture/](products/ferd/architecture/) | Lifecycle flows, design reviews, Ferd ADRs |
 | [products/ferd/planning/](products/ferd/planning/) | Roadmap, deferred decisions, lifecycle decisions |
 | [products/ferd/sessions/](products/ferd/sessions/) | Session logs (vision, design, sprint, journey designer) |

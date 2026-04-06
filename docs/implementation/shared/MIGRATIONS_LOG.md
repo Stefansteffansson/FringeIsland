@@ -282,13 +282,13 @@ supabase db push
 
 ## Upcoming Migrations (Planned)
 
-### Phase 1.5 - Communication
+### Ferd 1.5 - Communication
 - `journey_progress` table for step-by-step tracking
 - `forum_posts` table for group discussions
 - `messages` table for direct messaging
 - `notifications` table for user alerts
 
-### Phase 2 - Advanced Features
+### Post-Ferd - Advanced Features (wave TBD)
 - `journey_collaborators` for multi-author journeys
 - `feedback` table for journey ratings
 - `analytics_events` for user activity tracking

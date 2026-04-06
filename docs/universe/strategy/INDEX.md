@@ -8,7 +8,7 @@
 
 | Document | Purpose |
 |----------|---------|
-| [PRODUCTS_AND_PLATFORM.md](./PRODUCTS_AND_PLATFORM.md) | Multi-product wave model (Ferd → Hamn → Game) |
+| [PRODUCTS_AND_PLATFORM.md](./PRODUCTS_AND_PLATFORM.md) | Multi-product wave model (Ferd → Eid → Hamn → Heim → Brim → Urd) |
 | [CONTRIBUTION_ARCHITECTURE.md](./CONTRIBUTION_ARCHITECTURE.md) | Ecosystem contribution and Dreamineer model |
 
 ---

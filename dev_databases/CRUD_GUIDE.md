@@ -212,7 +212,7 @@ node manage_features.js
 - **completed**: Fully implemented and working
 - **in-progress**: Currently being developed
 - **planned**: Scheduled for future implementation
-- **deferred**: Postponed to later phase
+- **deferred**: Postponed to later wave
 - **deprecated**: No longer used/maintained
 
 ## 🎨 JSON Fields

@@ -34,7 +34,7 @@ Core Tables (13):
 ├── group_role_permissions     # Group role permissions
 └── user_group_roles           # User role assignments
 
-Future Tables (Phase 2+):
+Future Tables (post-Ferd waves):
 ├── forum_posts               # Group discussions
 ├── messages                  # Direct messaging
 ├── journey_progress          # Step-by-step progress
@@ -69,7 +69,7 @@ Future Tables (Phase 2+):
 **Relationships:**
 - Links users to groups
 - Tracks who added the member
-- Supports subgroup membership (Phase 2)
+- Supports subgroup membership (wave TBD)
 
 ### journeys
 **Purpose:** Learning experience definitions with structured content
@@ -186,7 +186,7 @@ See `./MIGRATIONS_LOG.md` for complete history.
 
 ## 🎯 Current State
 
-**Phase 1.4 - Journey System (85% complete)**
+**Ferd 1.4 - Journey System (85% complete)**
 
 **Implemented:**
 - ✅ User authentication and profiles

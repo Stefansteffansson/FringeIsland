@@ -623,7 +623,7 @@ app/
 ## 📚 Related Documentation
 
 - **Technical patterns:** `CLAUDE.md`
-- **Feature implementations:** `docs/features/implemented/`
+- **Feature implementations:** `docs/products/ferd/development/features/`
 - **Component examples:** Check existing components in `components/`
 
 ---
@@ -654,11 +654,11 @@ app/
 ## Learning Protocol
 
 When working in this domain:
-1. Check `docs/agents/learnings/ui.md` for recent discoveries
+1. Check `docs/products/ferd/development/agents/learnings/ui.md` for recent discoveries
 2. During work, append new findings to the journal
 3. At close-down, flag any cross-cutting learnings for MEMORY.md
 
-Journal location: `docs/agents/learnings/ui.md`
+Journal location: `docs/products/ferd/development/agents/learnings/ui.md`
 Last curated: 2026-02-13 (initial)
 
 ---

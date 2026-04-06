@@ -31,7 +31,7 @@ See [Products & Platform](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md) f
 2. **User-Centric**: Validate features with real users before building
 3. **Technical Excellence**: Clean architecture, comprehensive tests, good documentation
 4. **Flexible Foundation**: Build systems that can evolve (avoid rigid assumptions)
-5. **TDD Mandatory**: Behaviors > Failing tests (RED) > Implement (GREEN). See `docs/workflows/feature-development.md`
+5. **TDD Mandatory**: Behaviors > Failing tests (RED) > Implement (GREEN). See `docs/products/ferd/development/WORKFLOW.md`
 6. **Lock the Pattern, Not the Content**: Extensibility patterns are stable; specific content types are data inserts, not schema migrations (Session 01 principle)
 
 ---
@@ -56,8 +56,8 @@ See [Products & Platform](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md) f
 | **1.5d** Performance | 8-tier optimization (indexes, batching, caching) | v0.2.26–v0.2.28 | DONE |
 | **1.5e** Lifecycle | 5 sprints: security, schema, leave-group, notifications, exit | v0.2.32–v0.2.36 | DONE |
 
-See `docs/features/implemented/` for detailed feature documentation.
-See `docs/planning/lifecycle-roadmap-decisions.md` for lifecycle sprint details and binding decisions.
+See `docs/products/ferd/development/features/` for detailed feature documentation.
+See `docs/products/ferd/planning/LIFECYCLE_DECISIONS.md` for lifecycle sprint details and binding decisions.
 
 ### Ferd 1.6: Polish and Launch — IN PROGRESS
 
@@ -88,7 +88,7 @@ See `SPRINT.md` for the active sprint plan and step-by-step status.
 
 ## Waves 2–6: Pending Work Package Redistribution
 
-The detailed content previously held in this roadmap for Wave 2 (Hamn), Wave 3, and Wave 3+ has not yet been redistributed across the new 6-wave arc (Eid → Hamn → Heim → Brim → Urd). That redistribution is a dedicated planning activity.
+The detailed content previously held in this roadmap for the old wave model (pre-ADR-U022 amendment) has not yet been redistributed across the new 6-wave arc (Eid → Hamn → Heim → Brim → Urd). That redistribution is a dedicated planning activity.
 
 Until work packages are formally assigned, all post-Ferd items are captured in [WAVE_REDISTRIBUTION.md](./WAVE_REDISTRIBUTION.md). Wave assignments for those items are **Wave TBD — pending work package redistribution**.
 
@@ -144,8 +144,8 @@ See [DEFERRED.md](./DEFERRED.md) for detailed rationale on what was deliberately
 ## Post-Launch Priorities (Ferd)
 
 **First 30 Days:** Monitor errors, rapid bug fixes, onboarding improvements
-**First 90 Days:** Feature refinements, 5+ new journeys, case studies, plan Wave 2+
-**First Year:** Complete Wave 2+ foundation, 500+ active users, Dreamineer program launched
+**First 90 Days:** Feature refinements, 5+ new journeys, case studies, plan post-Ferd waves
+**First Year:** Complete post-Ferd foundations, 500+ active users, Dreamineer program launched
 
 ---
 
@@ -167,4 +167,4 @@ See [DEFERRED.md](./DEFERRED.md) for detailed rationale on what was deliberately
 ---
 
 **Document Version**: 3.0
-**Next Review**: After Ferd 1.6 launch or when Wave 2+ specification sessions begin
+**Next Review**: After Ferd 1.6 launch or when Eid specification sessions begin

@@ -306,7 +306,7 @@ Surfaces to update (in priority order):
 - **Per-group display names** — this is a platform-wide preference, not per-group
 - **Name history / audit trail** — not tracking previous nicknames
 - **Nickname uniqueness** — multiple users can have the same nickname (they are identified by personal group ID, not name)
-- **Profanity filtering** — not in Phase 1.6
+- **Profanity filtering** — not in Ferd 1.6
 - **Notification preferences for name changes** — no notifications when someone changes their display name
 
 ---

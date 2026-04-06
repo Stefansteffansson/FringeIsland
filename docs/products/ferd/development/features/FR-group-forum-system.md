@@ -11,7 +11,7 @@
 
 ## Context
 
-Phase 1.5-A adds group forums alongside the notification system. Forums enable group members to discuss topics within their group. The design uses flat two-level threading (posts + direct replies only) and an RBAC-compatible permission stub for forward compatibility.
+Ferd 1.5-A adds group forums alongside the notification system. Forums enable group members to discuss topics within their group. The design uses flat two-level threading (posts + direct replies only) and an RBAC-compatible permission stub for forward compatibility.
 
 ---
 

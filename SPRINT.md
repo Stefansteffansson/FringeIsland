@@ -14,9 +14,9 @@
 
 ---
 
-## Work Stream 1 — Phase 1.6: Polish & Launch
+## Work Stream 1 — Ferd 1.6: Polish & Launch
 
-**Feature / Work Package:** Phase 1.6 Polish & Launch
+**Feature / Work Package:** Ferd 1.6 Polish & Launch
 **TDD Stage:** N/A — no active feature sprint in progress
 **Status:** Planning / Ready to start
 **Session Bridge:** `docs/products/ferd/sessions/2026-03-20-SESSION-01-journey-designer.md`

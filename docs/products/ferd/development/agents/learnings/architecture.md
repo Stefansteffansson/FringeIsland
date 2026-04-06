@@ -2,7 +2,7 @@
 
 **Purpose:** Running log of design discoveries, pattern insights, and architectural lessons.
 **Curated by:** Sprint Agent during retrospectives
-**Promotion:** Confirmed patterns → `docs/agents/contexts/architect-agent.md` (playbook)
+**Promotion:** Confirmed patterns → `docs/products/ferd/development/agents/contexts/architect-agent.md` (playbook)
 
 ---
 

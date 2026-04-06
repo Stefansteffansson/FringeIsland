@@ -34,7 +34,7 @@ Invalid:
 
 - **Scenario:** Very long message content
   - **Behavior:** Allowed (TEXT type has no length limit by default)
-  - **Why:** No business requirement to limit message length in Phase 1.5-B
+  - **Why:** No business requirement to limit message length in Ferd 1.5-B
 
 - **Scenario:** User sends message to themselves
   - **Behavior:** Allowed if a self-conversation exists (no business rule prevents it)
@@ -197,7 +197,7 @@ Invalid:
 
 - **Scenario:** Rapid-fire messages (User A sends 5 messages quickly)
   - **Behavior:** One notification per message (5 notifications created)
-  - **Why:** Each message is an independent event; notification batching is deferred to Wave 2 (Hamn)+
+  - **Why:** Each message is an independent event; notification batching is deferred to Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md)
 
 - **Scenario:** Recipient has the conversation open (already reading)
   - **Behavior:** Notification is still created (read status is handled separately by the UI)
@@ -259,7 +259,7 @@ Invalid:
 
 ## Notes
 
-**Planned Behaviors (Phase 1.5-B):**
+**Planned Behaviors (Ferd 1.5-B):**
 - B-MSG-001: Send a Direct Message (RLS INSERT)
 - B-MSG-002: Message Privacy (RLS SELECT)
 - B-MSG-003: Conversation Creation and Uniqueness (unique constraint)

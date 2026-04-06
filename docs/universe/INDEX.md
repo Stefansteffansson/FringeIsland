@@ -20,6 +20,6 @@
 
 ## Related
 
-- [Products Tier](../products/) — Product-specific docs (Ferd, Hamn)
+- [Products Tier](../products/) — Product-specific docs (Ferd, Eid, Hamn, Heim, Brim, Urd)
 - [Implementation Tier](../implementation/) — Live code state, shared infrastructure
 - [Root Index](../INDEX.md)

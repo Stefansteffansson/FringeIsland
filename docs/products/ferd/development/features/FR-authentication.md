@@ -288,9 +288,9 @@ All admin operations require `manage_all_groups` permission (DeusEx system group
 
 ### Behavior Specs
 
-- `docs/specs/behaviors/authentication.md` — Sign-up, sign-in, sign-out, session management behaviors
-- `docs/specs/behaviors/admin.md` — Admin user lifecycle behaviors (activate, deactivate, decommission, hard-delete)
-- `docs/specs/behaviors/display-name.md` — Display name / nickname behaviors (B-DISP-001 through B-DISP-011)
+- `docs/products/ferd/development/specs/authentication.md` — Sign-up, sign-in, sign-out, session management behaviors
+- `docs/products/ferd/development/specs/admin.md` — Admin user lifecycle behaviors (activate, deactivate, decommission, hard-delete)
+- `docs/products/ferd/development/specs/display-name.md` — Display name / nickname behaviors (B-DISP-001 through B-DISP-011)
 
 ### Integration Tests
 
@@ -323,7 +323,7 @@ All admin operations require `manage_all_groups` permission (DeusEx system group
 
 - OAuth / social authentication (Google, GitHub)
 - Two-factor authentication (2FA)
-- Password reset UI (deferred to Wave 2 (Hamn))
+- Password reset UI (deferred to Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md))
 - Email verification requirement (email confirmation disabled for MVP)
 - Magic link authentication
 - SSO / SAML integration
@@ -332,11 +332,11 @@ All admin operations require `manage_all_groups` permission (DeusEx system group
 
 ## Related Documentation
 
-- **Display name system:** `docs/features/implemented/display-name-system.md`
-- **Group management:** `docs/features/implemented/group-management.md`
-- **RBAC design:** `docs/features/implemented/dynamic-permissions-system.md`
-- **Behavior specs:** `docs/specs/behaviors/authentication.md`, `docs/specs/behaviors/admin.md`, `docs/specs/behaviors/platform-exit.md`
-- **Platform exit:** `docs/features/implemented/platform-exit.md` (decommission + force-logout after admin exit)
+- **Display name system:** `docs/products/ferd/development/features/FR-display-name-system.md`
+- **Group management:** `docs/products/ferd/development/features/FR-group-management.md`
+- **RBAC design:** `docs/products/ferd/development/features/AR-dynamic-permissions-system.md`
+- **Behavior specs:** `docs/products/ferd/development/specs/authentication.md`, `docs/products/ferd/development/specs/admin.md`, `docs/products/ferd/development/specs/platform-exit.md`
+- **Platform exit:** `docs/products/ferd/development/features/FR-platform-exit.md` (decommission + force-logout after admin exit)
 - **D15 base migration:** `supabase/migrations/20260222000000_rebuild_universal_group_pattern.sql`
 - **RC7 admin fixes:** `supabase/migrations/20260223171200_fix_rc7_admin_user_ops.sql`
 - **Display name migration:** `supabase/migrations/20260227095615_add_display_name_system.sql`

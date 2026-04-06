@@ -22,8 +22,8 @@ A beautiful, dark-themed local web dashboard for tracking project status and dev
 
 ### Phase Timeline (Full Width)
 A visual timeline showing all development phases:
-- **Phase 1.1 - 1.6** subphases with individual status
-- **Phase 2, 3, 4** upcoming phases
+- **Ferd 1.1 - 1.6** milestones with individual status
+- **Waves 2–6 (Eid → Urd)** upcoming waves
 - Color-coded: Green (complete), Blue/Purple (in progress), Gray (upcoming)
 - Overall Phase 1 progress percentage
 - Animated pulse on current phase

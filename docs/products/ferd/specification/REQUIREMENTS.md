@@ -1936,7 +1936,7 @@ profile_data (
 **Channels:**
 - ✅ **In-app:** Real-time via Supabase subscriptions (DONE)
 - 🚨 **Email:** No templates, delivery is console.log stub (NOT STARTED)
-- ⏸️ **Push (mobile):** Native app push notifications (DEFERRED to Hamn)
+- ⏸️ **Push (mobile):** Native app push notifications (DEFERRED to Wave TBD — pending redistribution)
 - ⏸️ **SMS:** SMS notifications (DEFERRED to wave TBD)
 
 **Current:**
@@ -2669,7 +2669,7 @@ profile_data (
 - Admin routes (user management, audit log, DeusEx)
 - Effort: 2-3 days
 
-**Phase 2 (Week 2) — Core Features:**
+**Ferd implementation phase 2 (Week 2) — Core Features:**
 - Groups (CRUD, invitations)
 - Profile (edit, avatar upload)
 - Effort: 3-4 days

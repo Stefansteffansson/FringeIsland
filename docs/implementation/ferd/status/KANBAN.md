@@ -38,7 +38,7 @@
 | WCAG 2.1 AA accessibility | Accessibility | Basic semantic HTML only |
 | i18n / string externalization | i18n | English only currently |
 
-## Deferred (Hamn / Wave 2+)
+## Deferred (Wave TBD — see WAVE_REDISTRIBUTION.md)
 
 | Item | Type | Notes |
 |------|------|-------|

@@ -22,7 +22,7 @@ Each deferred decision includes:
 
 **Topic**: How should permissions flow between parent and child groups in hierarchical structures?
 
-**Status:** **RESOLVED** by RBAC design decisions D5, D7, D10, D12 (February 2026). See `docs/features/implemented/dynamic-permissions-system.md`.
+**Status:** **RESOLVED** by RBAC design decisions D5, D7, D10, D12 (February 2026). See `docs/products/ferd/development/features/AR-dynamic-permissions-system.md`.
 
 **Resolution:**
 - **D5 (Two-Tier Scoping):** System group permissions always active; context group permissions scoped to that group only. No automatic "bleeding" of permissions.
@@ -39,7 +39,7 @@ Each deferred decision includes:
 ### Journey Creation Granularity
 
 **Topic**: Should there be separate permissions for different types of journey creation/editing?
-**Status:** Accepted by Hamn → Hamn PRODUCT_SPEC.md §1 Journey Designer
+**Status:** Wave TBD — pending redistribution (old Hamn Wave 2 scope archived)
 
 **Context**: During permission list definition, the question arose whether we need fine-grained permissions like:
 - Creating journeys from scratch vs. duplicating existing ones
@@ -99,7 +99,7 @@ In Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md)
 
 **Topic**: How should users manage complex relationships when groups are members of other groups?
 
-**Status:** **Design RESOLVED** by RBAC decisions D7, D11, D21 (February 2026). **UI still deferred.** See `docs/features/implemented/dynamic-permissions-system.md`.
+**Status:** **Design RESOLVED** by RBAC decisions D7, D11, D21 (February 2026). **UI still deferred.** See `docs/products/ferd/development/features/AR-dynamic-permissions-system.md`.
 
 **What's resolved (design + schema):**
 - **D7:** Universal group-to-group membership model. Personal groups and engagement groups use the same joining mechanism.
@@ -121,7 +121,7 @@ In Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md)
 
 **Original Decision (Jan 26, 2026)**: Defer subgroups to Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md).
 
-**Status:** **Design RESOLVED** by RBAC decisions D7, D9, D10, D11, D15 (February 2026). **UI still deferred to Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md).** See `docs/features/implemented/dynamic-permissions-system.md`.
+**Status:** **Design RESOLVED** by RBAC decisions D7, D9, D10, D11, D15 (February 2026). **UI still deferred to Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md).** See `docs/products/ferd/development/features/AR-dynamic-permissions-system.md`.
 
 **What's resolved (design + schema):**
 - **D7:** Universal group-to-group membership model (personal groups and engagement groups use same mechanism)
@@ -225,7 +225,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 ### Journey Versioning and Updates
 
 **Topic**: How should we handle updates to journeys that users are actively taking?
-**Status:** Accepted by Hamn → Hamn PRODUCT_SPEC.md M1 milestone
+**Status:** Wave TBD — pending redistribution (old Hamn Wave 2 scope archived)
 
 **Context**: Journey creators may want to update content, but users are mid-journey. Do they see old or new version?
 

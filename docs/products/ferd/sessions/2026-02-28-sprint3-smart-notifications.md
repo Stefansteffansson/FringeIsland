@@ -42,13 +42,13 @@ Sprint 3 adds smart (actionable) notifications to the existing passive notificat
 - `tests/integration/groups/stewardship-nomination.test.ts` — 8 tests
 - `docs/features/implemented/smart-notifications.md` — Feature doc (moved from active/)
 - `docs/specs/behaviors/notifications.md` — B-NOTIF-001, B-NOTIF-002, B-NOTIF-003
-- `docs/planning/sessions/2026-02-28-sprint3-smart-notifications.md` — This session bridge
+- `docs/products/ferd/sessions/2026-02-28-sprint3-smart-notifications.md` — This session bridge
 
 ### Files Modified
 - `lib/notifications/NotificationContext.tsx` — `handleAction()` method, Notification interface
 - `components/notifications/NotificationBell.tsx` — Accept/Decline buttons, actioned/expired badges
 - `docs/specs/behaviors/groups.md` — B-GRP-011 (Stewardship Nomination)
-- `CHANGELOG.md`, `PROJECT_STATUS.md`, `docs/planning/ROADMAP.md`, `docs/planning/lifecycle-sprint-plan.md`
+- `CHANGELOG.md`, `PROJECT_STATUS.md`, `docs/products/ferd/planning/ROADMAP.md`, `docs/products/ferd/planning/LIFECYCLE_DECISIONS.md`
 - `docs/features/implemented/notification-system.md` — Sprint 3 columns, types, RPCs
 - `docs/features/implemented/group-management.md` — New RPCs, behaviors, version history
 - `docs/features/implemented/leave-group-core.md` — Known Limitation #2 resolved

@@ -58,7 +58,7 @@ admin_exit_user_from_platform(p_target_user_id UUID) → JSONB
 - **B-EXIT-003:** Safety guards (self, decommissioned, admin)
 - **B-EXIT-004:** Audit trail
 
-See `docs/specs/behaviors/platform-exit.md` for full specs.
+See `docs/products/ferd/development/specs/platform-exit.md` for full specs.
 
 ## Test Coverage
 
@@ -75,14 +75,14 @@ See `docs/specs/behaviors/platform-exit.md` for full specs.
 |------|---------|
 | `supabase/migrations/20260228144747_sprint4_platform_exit.sql` | RPC definition |
 | `tests/integration/admin/platform-exit.test.ts` | 10 integration tests |
-| `docs/specs/behaviors/platform-exit.md` | Behavior specifications |
+| `docs/products/ferd/development/specs/platform-exit.md` | Behavior specifications |
 | `lib/admin/action-bar-logic.ts` | Added `exit_platform` action |
 | `components/admin/UserActionBar.tsx` | Added "Exit Platform" button label |
 | `app/admin/page.tsx` | Added execute function + handleAction case |
 
 ## Cross-References
 
-- **Leave Group Core (Sprint 2):** `docs/features/implemented/leave-group-core.md` — L1/L2/L3 logic
-- **Smart Notifications (Sprint 3):** `docs/features/implemented/smart-notifications.md` — L4 nomination (not used here)
+- **Leave Group Core (Sprint 2):** `docs/products/ferd/development/features/FR-leave-group-core.md` — L1/L2/L3 logic
+- **Smart Notifications (Sprint 3):** `docs/products/ferd/development/features/AR-smart-notifications.md` — L4 nomination (not used here)
 - **Lifecycle Roadmap:** `docs/planning/lifecycle-roadmap-decisions.md` — Sprint 4 scope
-- **Admin Foundation:** `docs/features/implemented/deusex-admin-foundation.md` — Admin panel architecture
+- **Admin Foundation:** `docs/products/ferd/development/features/AR-deusex-admin-foundation.md` — Admin panel architecture

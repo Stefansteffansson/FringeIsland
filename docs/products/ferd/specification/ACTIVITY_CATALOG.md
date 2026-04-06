@@ -87,7 +87,7 @@ roles
  |   +- roles.assign.leader              # Promote to "Steward"
  |- roles.remove                         # Remove a role from a member
  |                                       #   (blocked by trigger if last Steward)
- +- roles.manage                         # (Phase 2: custom role creation)
+ +- roles.manage                         # (Ferd phase 2: custom role creation)
      |- roles.manage.create              # Create a custom role for the group
      |- roles.manage.edit                # Edit a custom role's permissions
      +- roles.manage.delete              # Delete a custom role
@@ -237,6 +237,6 @@ How the ~73 leaf activities map to the 41 implemented permissions (D22):
 | `groups.leave` | Unrestricted for members; handled by `leave_group()` RPC |
 | `groups.view.details` | Tied to membership/public via RLS; no permission needed |
 | `members.invitation.accept/decline` | User-scoped (always own invitations); no permission needed |
-| `roles.manage.*` | Deferred to Phase 2 (custom role creation) |
+| `roles.manage.*` | Deferred to later Ferd milestone (custom role creation) |
 | `enrollments.progress.navigate/resume` | Implicit in having access to the journey player |
 | `communication.messaging.view/manage` | Not yet implemented |

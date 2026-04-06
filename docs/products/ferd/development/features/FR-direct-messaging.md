@@ -1,15 +1,15 @@
 # Direct Messaging System
 
 **Status:** ✅ Implemented (v0.2.15)
-**Phase:** 1.5-B (Communication - Direct Messaging)
+**Phase:** Ferd 1.5-B (Communication - Direct Messaging)
 **Date:** February 15, 2026
-**Dependencies:** Notification system (Phase 1.5-A, complete), existing user/auth infrastructure
+**Dependencies:** Notification system (Ferd 1.5-A, complete), existing user/auth infrastructure
 
 ---
 
 ## Context
 
-Phase 1.5-B adds direct messaging between users. This is 1:1 private communication — not group chat (deferred). The notification system from Phase 1.5-A will be leveraged to alert users of new messages.
+Ferd 1.5-B adds direct messaging between users. This is 1:1 private communication — not group chat (deferred). The notification system from Ferd 1.5-A will be leveraged to alert users of new messages.
 
 Direct messaging is also infrastructure for RBAC (D13): membership flow conversations, Steward-to-member communication, and group-joins-group coordination all require private user-to-user messaging.
 
@@ -33,7 +33,7 @@ When a user receives a new message, a notification is created (type: `new_direct
 
 ## Scope
 
-### In Scope (Phase 1.5-B)
+### In Scope (Ferd 1.5-B)
 - 1:1 text messaging between any two users
 - Conversation list (inbox) at `/messages`
 - Conversation detail view at `/messages/[conversationId]`
@@ -43,14 +43,14 @@ When a user receives a new message, a notification is created (type: `new_direct
 - Real-time message delivery via Supabase Realtime
 
 ### Out of Scope (deferred)
-- Group chat / multi-user conversations — Wave 2 (Hamn)+
-- File/image attachments — Wave 2 (Hamn)+
-- Message editing after send — Wave 2 (Hamn)+
-- Message deletion — Wave 2 (Hamn)+ (soft delete pattern exists in forum_posts if needed)
-- Typing indicators — Wave 2 (Hamn)+
-- Message search — Wave 2 (Hamn)+
-- Block/mute users — Wave 2 (Hamn)+
-- Message reactions (emoji) — Wave 2 (Hamn)+
+- Group chat / multi-user conversations — Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md)
+- File/image attachments — Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md)
+- Message editing after send — Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md)
+- Message deletion — Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md) (soft delete pattern exists in forum_posts if needed)
+- Typing indicators — Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md)
+- Message search — Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md)
+- Block/mute users — Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md)
+- Message reactions (emoji) — Wave TBD — pending redistribution (see WAVE_REDISTRIBUTION.md)
 
 ---
 
@@ -104,7 +104,7 @@ Two tables (implemented v0.2.15):
 
 ## Integration Points
 
-### Notification System (Phase 1.5-A)
+### Notification System (Ferd 1.5-A)
 - New message triggers a `new_direct_message` notification via SECURITY DEFINER function
 - Payload includes: sender name, message preview (truncated), conversation ID
 - **Note:** The `new_direct_message` notification type is not yet listed in the [Notification System](./FR-notification-system.md) type registry — it should be added there.
