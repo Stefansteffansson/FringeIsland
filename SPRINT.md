@@ -1,6 +1,6 @@
 # SPRINT.md — Active Sprint Tracker
 
-**Last Updated:** 2026-04-05 (requirements review + doc health overhaul)
+**Last Updated:** 2026-04-06 (6-wave saga arc defined, docs/products/ restructuring in progress)
 **Version:** v0.2.37
 
 ---
@@ -81,7 +81,7 @@ After Ferd 1.6 ships:
 | 2 | Hamn M2 — Journey Marketplace | Publishing workflow, browse, ratings |
 | 3 | Hamn M3 — Enhanced Collaboration | Co-creation, groups-join-groups UI |
 
-See `docs/products/ferd/planning/ROADMAP.md` for Wave 2 (Hamn) and beyond, `docs/products/ferd/planning/DEFERRED.md` for deferred scope, and `docs/products/hamn/INDEX.md` for Hamn product docs.
+See `docs/products/ferd/planning/ROADMAP.md` for wave roadmap, `docs/products/ferd/planning/DEFERRED.md` for deferred scope, `docs/products/INDEX.md` for all waves, and `docs/products/WAVE_REDISTRIBUTION.md` for items pending wave assignment.
 
 ---
 

@@ -426,10 +426,11 @@ Multiple frontend clients connect to the same backend anatomy through the Platfo
 | Frontend | Wave | Primary context |
 |----------|------|----------------|
 | Web platform (Ferd) | Wave 1 — now | Deep work, reflection, Dreamineer creation |
-| Web platform (Hamn) | Wave 2 | Full FringeIsland member experience |
-| iOS native app | Wave 2 — Hamn | On-the-go, notifications, quick engagement |
-| Android native app | Wave 2 — Hamn | On-the-go, notifications, quick engagement |
-| Game | Wave 3+ | Immersive three-realm experience, Unreal Engine |
+| Web platform (Eid) | Wave 2 | wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) |
+| Web platform (Hamn) | Wave 3 | wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) |
+| iOS native app | wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) | On-the-go, notifications, quick engagement |
+| Android native app | wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) | On-the-go, notifications, quick engagement |
+| Game | wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) | Immersive three-realm experience, Unreal Engine |
 
 **The same world, different entry points:**
 A member might use the web platform for deep reflection in the evening, the iOS app for a journey activity during their commute, and the game on a weekend to explore The Other Side. The backend anatomy serves all of them identically. The design system makes them feel like the same world.
@@ -509,7 +510,8 @@ The anatomy dictates the build order. You cannot build a layer before everything
 | Feature flag | Database-stored on/off switch for features. Lives in L0. |
 | Journey Zero | First journey every new member walks. Onboarding as a journey. |
 | Ferd | Current web platform. Departure point. Wave 1. |
-| Hamn | Evolved FringeIsland experience platform. Wave 2. |
+| Eid | Next wave of the FringeIsland platform. Wave 2. |
+| Hamn | Evolved FringeIsland experience platform. Wave 3. |
 | Platform API ring | Contract between backend anatomy and all frontends |
 | → | Marks a known future concern within an existing element — grows over time |
 | ADR | Architecture Decision Record — documented decision with context and reasoning |

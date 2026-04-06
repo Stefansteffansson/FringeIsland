@@ -48,7 +48,7 @@ Each deferred decision includes:
 
 **Decision**: Use simple `create_journey`, `edit_journey`, `publish_journey` permissions for Wave 1 (Ferd).
 
-**Deferred To**: Wave 2 (Hamn) (when user-created journeys are implemented)
+**Deferred To**: Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) (when user-created journeys are implemented)
 
 **Notes for Future Implementation**:
 
@@ -79,7 +79,7 @@ Journey Collaboration:
 
 **Why This Matters:**
 
-In Wave 2 (Hamn), user-generated content creates new scenarios:
+In Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md), user-generated content creates new scenarios:
 - **Quality Control**: Maybe only certain users can publish to public marketplace
 - **Collaboration**: Different editing rights for collaborators vs. owners
 - **Monetization**: If paid journeys exist, publishing permissions become sensitive
@@ -107,7 +107,7 @@ In Wave 2 (Hamn), user-generated content creates new scenarios:
 - **D21:** Joining groups get Member role by default. Host Steward can promote/restrict.
 - **D15:** Schema migrated, engagement group as member verified by integration tests, `has_permission()` is type-agnostic.
 
-**What's still deferred (UI, Wave 2 (Hamn)+):**
+**What's still deferred (UI, Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md)+):**
 - Group-joins-group request/acceptance UI (⚠️ **requires D11 circularity trigger first**)
 - Hierarchy visualization (tree view, breadcrumbs)
 - Attribution display ("Mogwai in 'Alpha'" chain)
@@ -119,9 +119,9 @@ In Wave 2 (Hamn), user-generated content creates new scenarios:
 
 **Topic**: Should Phase 1.3 include the ability for groups to have other groups as members?
 
-**Original Decision (Jan 26, 2026)**: Defer subgroups to Wave 2 (Hamn).
+**Original Decision (Jan 26, 2026)**: Defer subgroups to Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md).
 
-**Status:** **Design RESOLVED** by RBAC decisions D7, D9, D10, D11, D15 (February 2026). **UI still deferred to Wave 2 (Hamn).** See `docs/features/implemented/dynamic-permissions-system.md`.
+**Status:** **Design RESOLVED** by RBAC decisions D7, D9, D10, D11, D15 (February 2026). **UI still deferred to Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md).** See `docs/features/implemented/dynamic-permissions-system.md`.
 
 **What's resolved (design + schema):**
 - **D7:** Universal group-to-group membership model (personal groups and engagement groups use same mechanism)
@@ -138,7 +138,7 @@ In Wave 2 (Hamn), user-generated content creates new scenarios:
 - ✅ System groups created (FI Members, Visitor, Deusex)
 - ✅ Permission catalog (41 permissions) and template permissions (57 rows)
 
-**What's still deferred (UI, Wave 2 (Hamn)+):**
+**What's still deferred (UI, Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md)+):**
 - Group-joins-group request/acceptance UI
 - Hierarchy visualization (tree view, breadcrumbs)
 - Attribution display ("Mogwai in 'Alpha'" chain)
@@ -165,11 +165,11 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Topic**: How should journeys adapt their paths based on user actions during the journey?
 
-**Context**: Wave 3 introduces dynamic/adaptive journeys where the path can change based on what users do. This requires a significant architectural shift from linear journeys.
+**Context**: A future wave introduces dynamic/adaptive journeys where the path can change based on what users do. This requires a significant architectural shift from linear journeys.
 
-**Decision**: Wave 1 (Ferd) and Wave 2 (Hamn) use linear (A→B) journey structure. Dynamic journeys are Wave 3.
+**Decision**: Wave 1 (Ferd) uses linear (A→B) journey structure. Dynamic journeys are Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md).
 
-**Deferred To**: Wave 3 (Dynamic Journeys)
+**Deferred To**: Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) (Dynamic Journeys)
 
 **Notes for Future Implementation**:
 
@@ -177,10 +177,10 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 1. **Journey Structure**
    ```
-   Linear (Wave 1–2):
+   Linear (Wave 1):
    Step 1 → Step 2 → Step 3 → Complete
 
-   Dynamic (Wave 3):
+   Dynamic (Wave TBD):
    Step 1 → [Conditional Logic] → Step 2A or Step 2B
                                   → Step 3
                                   → Complete
@@ -229,9 +229,9 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Context**: Journey creators may want to update content, but users are mid-journey. Do they see old or new version?
 
-**Decision**: Wave 1 (Ferd) doesn't support journey updates. Wave 2 (Hamn)+ handles versioning.
+**Decision**: Wave 1 (Ferd) doesn't support journey updates. Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md)+ handles versioning.
 
-**Deferred To**: Wave 2 (Hamn)
+**Deferred To**: Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md)
 
 **Options to Consider:**
 
@@ -270,11 +270,11 @@ The schema allows any group to join any group — nothing prevents A → B → A
 **Topic**: How do users find journeys relevant to their needs?
 **Status:** Accepted by Hamn → Hamn PRODUCT_SPEC.md §5 Marketplace + M2 milestone
 
-**Context**: Wave 1 (Ferd) has basic journey list. Wave 2 (Hamn)+ needs sophisticated discovery.
+**Context**: Wave 1 (Ferd) has basic journey list. Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md)+ needs sophisticated discovery.
 
-**Decision**: Simple list/browse for Wave 1 (Ferd). Advanced discovery in Wave 2 (Hamn).
+**Decision**: Simple list/browse for Wave 1 (Ferd). Advanced discovery in Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md).
 
-**Deferred To**: Wave 2 (Hamn)
+**Deferred To**: Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md)
 
 **Discovery Methods:**
 
@@ -334,7 +334,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Decision**: Web-first for Wave 1 (Ferd). Consider mobile apps based on demand.
 
-**Deferred To**: Wave 2 (Hamn)+ (if user demand is high)
+**Deferred To**: Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md)+ (if user demand is high)
 
 **Options:**
 
@@ -394,7 +394,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 - Keyboard shortcuts
 - Responsive text sizing
 
-**Wave 2 (Hamn)+ Enhancements:**
+**Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md)+ Enhancements:**
 - High contrast mode
 - Dyslexia-friendly fonts
 - Audio descriptions
@@ -456,9 +456,9 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Context**: Wave 1 (Ferd) has basic analytics. Users may want deeper insights.
 
-**Decision**: Basic analytics in Wave 1 (Ferd). Advanced dashboard in Wave 2 (Hamn)+.
+**Decision**: Basic analytics in Wave 1 (Ferd). Advanced dashboard in Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md)+.
 
-**Deferred To**: Wave 2 (Hamn)
+**Deferred To**: Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md)
 
 **Analytics by User Type:**
 
@@ -667,7 +667,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Decision**: Determine monetization strategy after validating product.
 
-**Deferred To**: Wave 2 (Hamn)+ (once product validated)
+**Deferred To**: Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md)+ (once product validated)
 
 **Monetization Options:**
 
@@ -732,7 +732,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 - Balance of Episode content types
 - Community influence on Episode outcomes
 
-**Deferred To**: Wave 2 (Hamn) — dedicated specification sessions for Episode delivery mechanics and Weaver tooling.
+**Deferred To**: Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) — dedicated specification sessions for Episode delivery mechanics and Weaver tooling.
 
 **Notes for Future Sessions**:
 - Episodes are narrative containers, not gameplay — they tell stories that trigger journey opportunities
@@ -751,7 +751,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Decision**: Parked. The NPC concept is foundational to the Encounter content family and the Road system, but the authoring and calibration mechanism requires its own design thread.
 
-**Deferred To**: Wave 2 (Hamn) — dedicated specification session. Prerequisite for any NPC implementation.
+**Deferred To**: Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) — dedicated specification session. Prerequisite for any NPC implementation.
 
 **Notes for Future Session**:
 - Who authors NPC behaviour — journey designers, world architects, or the AI layer?
@@ -765,13 +765,13 @@ The schema allows any group to join any group — nothing prevents A → B → A
 ### FringeIsland Universe Design and AR Void Visualization — NEW FROM SESSION 03
 
 **Topic**: Visual/experiential design of the FringeIsland universe, the void, and AR overlay system.
-**Status:** Accepted by Hamn (basic AR experiments) → full AR re-deferred to Wave 3 via Hamn DEFERRED.md
+**Status:** Accepted by Hamn (basic AR experiments) → full AR re-deferred to Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) via Hamn DEFERRED.md
 
 **Context**: Session 03 established that the void is the gap between who you are and who you know yourself to be, existing across three dimensions (1/1+1/1+community). AR overlays ordinary world to show void state. But the *visual language* — what FringeIsland looks like, what the void looks like, how AR displays all this — requires understanding the full universe design first.
 
 **Decision**: Deferred to dedicated universe design session. Cannot design AR visualization without establishing visual/aesthetic coherence of the entire FringeIsland world.
 
-**Deferred To**: Wave 2 (Hamn) — dedicated universe design session. Prerequisite for AR implementation and Whisp visibility design.
+**Deferred To**: Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) — dedicated universe design session. Prerequisite for AR implementation and Whisp visibility design.
 
 **Notes for Future Session**:
 - What does FringeIsland (the Safe Harbour) actually look like? (regions, architecture, elements)
@@ -794,13 +794,13 @@ The schema allows any group to join any group — nothing prevents A → B → A
 ### Respawning Mechanics — NEW FROM SESSION 03
 
 **Topic**: The detailed mechanics of Whisp "death" and respawn in the void.
-**Status:** Re-deferred by Hamn → Wave 3 via Hamn DEFERRED.md
+**Status:** Re-deferred by Hamn → Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) via Hamn DEFERRED.md
 
 **Context**: Session 03 established the Edge of Tomorrow model conceptually — Whisp dies → respawns → retains insight from failure → learns → tries again. Respawning is information-rich (not punishment), reveals current limits/immunities/patterns, builds mastery through repetition. But the detailed mechanics are unspecified.
 
 **Decision**: Deferred to dedicated specification session. Edge of Tomorrow framing is locked, mechanics need detailed design.
 
-**Deferred To**: Wave 3 (re-deferred from Hamn, 2026-04-05)
+**Deferred To**: Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) (re-deferred from Hamn, 2026-04-05)
 
 **Notes for Future Session**:
 - What triggers respawn? (What counts as Whisp "death" in the void?)
@@ -829,7 +829,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Decision**: Parked from Session 02, remained parked in Session 03. Requires dedicated exploration.
 
-**Deferred To**: Wave 2 (Hamn) — dedicated specification session. Will benefit from universe design work (understanding what encounters look like visually/experientially).
+**Deferred To**: Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) — dedicated specification session. Will benefit from universe design work (understanding what encounters look like visually/experientially).
 
 **Notes for Future Session**:
 - What does a Whisp Encounter actually look and feel like?
@@ -851,7 +851,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Decision**: Parked. The Whisp is the most intimate concept in FringeIsland and its UX deserves focused attention, not a side conversation.
 
-**Deferred To**: Wave 2 (Hamn) — dedicated specification session. Prerequisite for Whisp implementation.
+**Deferred To**: Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) — dedicated specification session. Prerequisite for Whisp implementation.
 
 **Notes for Future Session**:
 - Is the Whisp visible? Does it have a visual representation?
@@ -871,7 +871,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Decision**: Parked. The Three Worlds structure is foundational to the platform's identity and requires dedicated visual/UX design work.
 
-**Deferred To**: Wave 2 (Hamn) — dedicated design session. Prerequisite for Hamn visual identity.
+**Deferred To**: Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) — dedicated design session. Prerequisite for Hamn visual identity.
 
 **Notes for Future Session**:
 - Does the platform look different in each world? (Colour, typography, ambient elements)
@@ -912,9 +912,9 @@ When deferring a new decision:
 **Next Review**: Quarterly or as deferred items are implemented
 
 **Recent Updates**:
-- v1.7 (2026-04-05): Hamn deferral acceptance sweep — marked 13 items with acceptance status. Added deferral protocol reference. Added Status field to format section. Respawning Mechanics re-deferred to Wave 3.
-- Session 03 (2026-03-27): Marked Seasons and Episodes as PARTIALLY RESOLVED (conceptual architecture established). Added 3 new deferrals: FringeIsland Universe Design & AR Void Visualization, Respawning Mechanics, Whisp Encounter Phenomenology (carried from Session 02). All deferred to Wave 2 (Hamn) specification sessions.
-- Session 01 (2026-03-20): Added 4 parked items from Journey Designer Discovery Session — Seasons and Episodes, NPC behaviour authoring, Whisp practical UX, Three Worlds UI design. All deferred to Wave 2 (Hamn) specification sessions.
+- v1.7 (2026-04-05): Hamn deferral acceptance sweep — marked 13 items with acceptance status. Added deferral protocol reference. Added Status field to format section. Respawning Mechanics re-deferred to Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md).
+- Session 03 (2026-03-27): Marked Seasons and Episodes as PARTIALLY RESOLVED (conceptual architecture established). Added 3 new deferrals: FringeIsland Universe Design & AR Void Visualization, Respawning Mechanics, Whisp Encounter Phenomenology (carried from Session 02). All deferred to Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) specification sessions.
+- Session 01 (2026-03-20): Added 4 parked items from Journey Designer Discovery Session — Seasons and Episodes, NPC behaviour authoring, Whisp practical UX, Three Worlds UI design. All deferred to Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) specification sessions.
 - v0.2.36: Added lifecycle sprint deferrals (D-R1 through D-R5) from `lifecycle-roadmap-decisions.md` — self-service platform exit, configurable timeouts, GDPR content erasure all explicitly deferred.
 - v0.2.17: Marked Permission Inheritance as RESOLVED (D5/D7/D10/D12). Marked Subgroups design as RESOLVED (D7/D9/D10/D11/D15). Marked Group-to-Group Relationships design as RESOLVED (D7/D11/D21). Updated Notifications (IMPLEMENTED v0.2.14), Forum (PARTIALLY IMPLEMENTED v0.2.14), DM (IMPLEMENTED v0.2.15).
 - v0.2.10: No new deferred decisions (journey enrollment completed as planned)

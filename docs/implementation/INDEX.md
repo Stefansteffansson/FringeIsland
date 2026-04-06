@@ -10,7 +10,8 @@
 |--------|---------|
 | [shared/](./shared/) | Shared backend infrastructure — database schema, RLS, auth |
 | [ferd/](./ferd/) | Ferd-specific implementation — baseline, status, testing |
-| hamn/ (future) | Hamn-specific implementation — created when Wave 2 development begins |
+| eid/ (future) | Eid-specific implementation — created when Wave 2 development begins |
+| hamn/ (future) | Hamn-specific implementation — created when Wave 3 development begins |
 
 ---
 

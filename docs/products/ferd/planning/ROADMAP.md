@@ -15,9 +15,11 @@ FringeIsland evolves in overlapping waves — each beginning before the previous
 | Wave | Name | Goal | Status |
 |------|------|------|--------|
 | **1** | **Ferd** (Departure) | Prove the ground is solid — journey foundation, groups, roles, core platform | **95%** — Ferd 1.6 (Polish & Launch) remaining |
-| **2** | **Hamn** (Harbour) | The island comes alive — Journey Designer, Whisps, Dreamineers, marketplace, native apps | Not started — conceptual foundation established (Session 01) |
-| **3** | The World Expands | AR/mixed reality, physical products, regional gatherings, Summit, Foundation | Not started |
-| **3+** | The Game | Full-fidelity Unreal Engine experience across desktop, console, mobile, VR/AR | Not started |
+| **2** | **Eid** | Scope TBD | Not started |
+| **3** | **Hamn** (Harbour) | Design system, accessibility, UX/UI redesign | Not started |
+| **4** | **Heim** | Scope TBD | Not started |
+| **5** | **Brim** | Scope TBD | Not started |
+| **6** | **Urd** (Beyond) | Scope TBD | Not started |
 
 See [Products & Platform](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md) for full wave definitions, device strategy, and product family details.
 
@@ -84,114 +86,13 @@ See `SPRINT.md` for the active sprint plan and step-by-step status.
 
 ---
 
-## Wave 2: Hamn — Conceptual Foundation Established
+## Waves 2–6: Pending Work Package Redistribution
 
-**Goal**: The island comes alive. The full FringeIsland member experience takes shape — Journey Designer, Whisps, Dreamineers, marketplace, narrative. Discord is retired. The community lives fully on its own platform. Native iOS and Android apps launch alongside Hamn.
+The detailed content previously held in this roadmap for Wave 2 (Hamn), Wave 3, and Wave 3+ has not yet been redistributed across the new 6-wave arc (Eid → Hamn → Heim → Brim → Urd). That redistribution is a dedicated planning activity.
 
-**Conceptual foundation**: [Journey Designer Session 01](../sessions/2026-03-20-SESSION-01-journey-designer.md) established the vocabulary, cosmology, and foundational data model concepts for the journey system. This is the prerequisite for all Hamn specification and implementation work.
+Until work packages are formally assigned, all post-Ferd items are captured in [WAVE_REDISTRIBUTION.md](./WAVE_REDISTRIBUTION.md). Wave assignments for those items are **Wave TBD — pending work package redistribution**.
 
-### Journey Designer
-
-The central creative tool for Hamn. Three authoring modes for three creative roles:
-
-- **Author** — building specific routes (Type 1 Fixed + Type 2 Hybrid journeys)
-- **Terrain Builder** — creating possibility spaces for traveler-initiated journeys (Type 3)
-- **World Architect** — defining narrative rules and cosmological structure for AI-generative journeys (Type 4)
-
-**Foundational concepts established in Session 01:**
-- Universal step grammar: Present > Ask > Change (two-level: nodes + beats)
-- Six content families: Witness, Reflect, Decide, Act, Encounter, Rest
-- The Road as first-class object between nodes (designer sets conditions, universe fills content)
-- Encounter family with two dimensions: Origin (planned/emergent/triggered) x Other (NPC/FIM/group/inner self/Whisp)
-- Companion model: Traveler + Companionship Record (consistent with Universal Group architecture)
-- Pacing system: node duration (4 types), road duration (3 modes), journey completion (4 triggers)
-- Journey states: active, paused, complete, integrated
-
-**Specification sessions needed before implementation:**
-- Session 02+: Seasons and Episodes, Whisp practical UX, Three Worlds UI design, NPC behaviour authoring
-- Step type specification (required before L3 Experience Engine work)
-- Journey Designer data model (builds on Session 01 vocabulary)
-
-### The Whisp and Whisperers
-
-Each member's personal future self — the Whisp — inhabiting the Other Side. Dual nature: Encounter (active structured meeting with future self) and Companion (permanent silent presence). Whisperers are the collective — all Whisps walking the Other Side together.
-
-**Prerequisite**: L1 `profile_data` table, AI provider integration (L0), Whisp practical UX specification session.
-
-### Three Worlds
-
-The platform manifests across three worlds: the Ordinary World (everyday life), the Safe Harbour (FringeIsland — reflection, safety, becoming), and the Other Side (deeper water — narrative, challenge, Whisperers). UI design session needed to determine how world transitions are experienced.
-
-### Dreamineer Ecosystem
-
-- Dreamineer marketplace — journeys, experiences, content, physical products
-- Dreamineer studio tools — web/desktop content creation
-- Journey publishing workflow (public/private/unlisted)
-- Ratings and reviews
-
-### Native Apps
-
-- iOS native app — primary mobile experience
-- Android native app — primary mobile experience
-- Requires API-first refactoring (ADR-009 compliance across all features)
-
-### Additional Hamn Deliverables
-
-- Visitor/shadow experience (L1 — anonymous entry, garden door metaphor)
-- Journey Zero (onboarding journey)
-- Content moderation (required for Dreamineer-created content)
-- Email delivery service (replacing simulated stubs)
-- Groups-join-groups UI (requires D11 circularity trigger first)
-- Online seasonal events
-- Basic AR experiments
-
-**Success Criteria:**
-- Journey Designer operational for Type 1 and Type 2 journeys
-- Dreamineer marketplace live with user-created journeys
-- Native apps launched
-- Discord retired — community fully on-platform
-- Whisp system functional at minimum viable depth
-
----
-
-## Wave 3: The World Expands
-
-**Goal**: The world extends beyond the screen into physical space. AI-powered journey types become operational.
-
-- Full AR/mixed reality layer
-- Physical products — world artefacts, printed materials, merchandise
-- Regional gatherings growing organically
-- Training camps and getaways
-- Annual FringeIsland Summit — first edition
-- FringeIsland Foundation formally established
-- Type 3 (Traveler-Initiated) and Type 4 (AI-Generative) journeys fully operational
-- AI Mentor (L7 Intelligence layer)
-- Dynamic journey paths — branching logic engine
-- Advanced analytics and recommendations
-
-**Success Criteria:**
-- AR layer functional
-- Physical products available through marketplace
-- First Summit held
-- AI-Generative journeys live
-- Foundation established
-
----
-
-## Wave 3+: The Game
-
-**Goal**: The most immersive digital expression of the FringeIsland world.
-
-- FringeIsland Game — Unreal Engine, three worlds rendered in full fidelity
-- Runs across: desktop, console, mobile, VR/AR headsets
-- Dreamineer game tools — world-building within the game engine
-- Physical game expressions
-- The line between platform, game and physical world begins to dissolve
-
-**Success Criteria:**
-- Game launched on at least two platforms
-- Three worlds navigable
-- Dreamineer game tools available
+The 6-wave arc is defined in [ADR-U022](../../../universe/decisions/ADR-U022-named-waves.md).
 
 ---
 
@@ -199,15 +100,15 @@ The platform manifests across three worlds: the Ordinary World (everyday life), 
 
 These capabilities evolve continuously across waves rather than belonging to a single wave:
 
-| Concern | Ferd (current) | Hamn | Wave 3+ |
-|---------|---------------|------|---------|
-| **API-first (ADR-009)** | 5 API routes, mostly direct Supabase | Full API coverage | Public developer API |
-| **Accessibility** | Basic semantic HTML | WCAG 2.1 AA audit | Ongoing improvement |
-| **i18n** | English only | String externalization | Multi-language |
-| **Privacy/GDPR** | RLS + display names | Full rights (access, erasure, portability) | Consent management, AI data handling |
-| **Security** | Auth + RLS + RBAC | MFA, SSO, security audit | SOC 2, compliance certifications |
-| **Performance** | 8-tier optimization | Monitoring, CDN | Horizontal scaling |
-| **Monetization** | Free | First paid tiers + Dreamineer marketplace | Organizational licensing |
+| Concern | Ferd (current) | Post-Ferd (TBD) |
+|---------|---------------|-----------------|
+| **API-first (ADR-009)** | 5 API routes, mostly direct Supabase | Full API coverage → Public developer API |
+| **Accessibility** | Basic semantic HTML | WCAG 2.1 AA audit → Ongoing improvement |
+| **i18n** | English only | String externalization → Multi-language |
+| **Privacy/GDPR** | RLS + display names | Full rights (access, erasure, portability) → Consent management, AI data handling |
+| **Security** | Auth + RLS + RBAC | MFA, SSO, security audit → SOC 2, compliance certifications |
+| **Performance** | 8-tier optimization | Monitoring, CDN → Horizontal scaling |
+| **Monetization** | Free | First paid tiers + Dreamineer marketplace → Organizational licensing |
 
 See [DEFERRED.md](./DEFERRED.md) for detailed rationale on what was deliberately deferred and when to revisit.
 
@@ -215,14 +116,14 @@ See [DEFERRED.md](./DEFERRED.md) for detailed rationale on what was deliberately
 
 ## Success Metrics by Wave
 
-| Metric | Ferd | Hamn | Wave 3+ |
-|--------|------|------|---------|
-| Users | 100+ | 500+ | 1000+ |
-| Groups | 10+ | 50+ | 100+ |
-| Journeys | 8 predefined | 100+ Dreamineer-created | 10+ AI-generative |
-| Retention | 70%+ (week 2) | 75%+ | 80%+ |
-| Native apps | — | iOS + Android | + Game |
-| Integrations | — | Marketplace | 5+ third-party |
+| Metric | Ferd | Post-Ferd (TBD) |
+|--------|------|-----------------|
+| Users | 100+ | 500+ → 1000+ |
+| Groups | 10+ | 50+ → 100+ |
+| Journeys | 8 predefined | 100+ Dreamineer-created → 10+ AI-generative |
+| Retention | 70%+ (week 2) | 75%+ → 80%+ |
+| Native apps | — | iOS + Android → + Game |
+| Integrations | — | Marketplace → 5+ third-party |
 
 ---
 
@@ -243,8 +144,8 @@ See [DEFERRED.md](./DEFERRED.md) for detailed rationale on what was deliberately
 ## Post-Launch Priorities (Ferd)
 
 **First 30 Days:** Monitor errors, rapid bug fixes, onboarding improvements
-**First 90 Days:** Feature refinements, 5+ new journeys, case studies, plan Hamn
-**First Year:** Complete Hamn foundation, 500+ active users, Dreamineer program launched
+**First 90 Days:** Feature refinements, 5+ new journeys, case studies, plan Wave 2+
+**First Year:** Complete Wave 2+ foundation, 500+ active users, Dreamineer program launched
 
 ---
 
@@ -266,4 +167,4 @@ See [DEFERRED.md](./DEFERRED.md) for detailed rationale on what was deliberately
 ---
 
 **Document Version**: 3.0
-**Next Review**: After Ferd 1.6 launch or when Hamn specification sessions begin
+**Next Review**: After Ferd 1.6 launch or when Wave 2+ specification sessions begin

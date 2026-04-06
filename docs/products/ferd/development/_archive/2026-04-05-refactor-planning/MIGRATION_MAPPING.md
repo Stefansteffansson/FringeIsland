@@ -133,7 +133,7 @@ All old directories are emptied and deleted after migration:
 | ADR-019 | `ADR-U019-deusex-authority-last-resort.md` | DeusEx steward safeguard |
 | ADR-020 | `ADR-U020-pairs-are-groups.md` | No special entity for pairs |
 | ADR-021 | `ADR-U021-forum-anonymisation-soft-flag.md` | Display logic, never mutate data |
-| ADR-022 | `ADR-U022-ferd-hamn-named-waves.md` | Wave-based product evolution |
+| ADR-022 | `ADR-U022-named-waves.md` | Named waves — saga arc (Ferd → Eid → Hamn → Heim → Brim → Urd) |
 
 ### /docs/universe/decisions/_archive/
 

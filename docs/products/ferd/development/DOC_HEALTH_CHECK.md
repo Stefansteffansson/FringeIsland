@@ -38,7 +38,7 @@
    - `CLAUDE.md`, `PROJECT_STATUS.md`, `SPRINT.md` — root files
 3. For each hit: update to the new term, preserving surrounding context
 4. Verify no code references use the old name (search `app/`, `components/`, `lib/`)
-5. Check Hamn docs too: `docs/products/hamn/**/*.md`
+5. Check Hamn docs too (Wave 3): `docs/products/hamn/**/*.md`
 
 **Skip if:** No renames happened this sprint.
 
@@ -181,7 +181,7 @@ docs/
   universe/          — shared foundations (vision, architecture, strategy, decisions, processes, community, research)
   products/
     ferd/            — Wave 1 web platform (specification, planning, development, sessions)
-    hamn/            — Wave 2 full experience (specification, planning, development)
+    hamn/            — Wave 3 full experience (specification, planning, development)
   implementation/
     shared/          — cross-product (schema, RLS, auth, migrations)
     ferd/            — Ferd-specific (baseline, status, changelog, testing)

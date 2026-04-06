@@ -605,7 +605,7 @@ const mapped = data.map(e => ({ ...e, journey: e.journeys }));
 - Journey marketplace
 - Version control
 
-### Advanced Features (Wave 3)
+### Advanced Features (wave TBD)
 - Branching journeys (non-linear paths)
 - Dynamic/adaptive content
 - Prerequisites and dependencies

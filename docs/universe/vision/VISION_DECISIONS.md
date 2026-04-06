@@ -77,7 +77,7 @@ FringeIsland is **not a product — it is a movement with an ecosystem.** The we
 
 - A game / games
 - Physical representations of FI worlds
-- iOS and Android native apps (Wave 2 / Hamn)
+- iOS and Android native apps (wave TBD — pending redistribution)
 - Physical meetups, training camps, getaways
 - 3D printed physical representations of member homes, gardens, avatars, items
 - AR/mixed reality layer blending digital and physical worlds
@@ -162,13 +162,13 @@ Members can engage anywhere on this spectrum:
 - **Discord used temporarily** as community campfire scaffold — explicitly a temporary scaffold, not the permanent home
 - Tech stack: Next.js 16.1, TypeScript, Tailwind CSS, Supabase/PostgreSQL (already in progress at v0.2.7)
 
-### Wave 2 (Hamn) — Near Term (Full PWA)
+### Post-Ferd — Near Term (wave TBD — pending redistribution)
 - Camera access for **basic AR experiments** (location-based, QR-triggered world moments)
 - **Push notifications** for episode drops and narrative events
 - **Offline access** to journey content
 - Discord retired — all community moves into the owned FringeIsland platform
 
-### Wave 3 — When Validated (Native Apps)
+### Wave TBD — When Validated (Native Apps)
 - Full **native iOS and Android apps** for complete AR/mixed reality experience
 - Built with validated knowledge of what the AR layer needs
 - Native apps become the **primary experience layer**

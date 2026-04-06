@@ -42,7 +42,7 @@ When user selects feature work after boot-up, load `docs/products/ferd/developme
 
 **Primary reference:** `docs/universe/architecture/ARCHITECTURE_ANATOMY.md` — the layered anatomy (L0–L7, 5 verticals, Platform API ring). Read this before generating or modifying code. ADRs (22 universe + 1 Ferd) in `docs/universe/decisions/`. Live implementation state in `docs/implementation/ferd/baseline/BASELINE.md`.
 
-**Wave model (not phases):** The platform evolves in overlapping waves. **Ferd** (current web platform, Wave 1) → **Hamn** (full FringeIsland experience, Wave 2). See `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md`.
+**Wave model (not phases):** The platform evolves in six named waves: **Ferd** (Wave 1) → **Eid** (Wave 2) → **Hamn** (Wave 3) → **Heim** (Wave 4) → **Brim** (Wave 5) → **Urd** (Beyond). See `docs/universe/decisions/ADR-U022-named-waves.md` and `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md`.
 
 - **Auth:** Client-side via AuthContext + useAuth() hook; proxy.ts for protected routes (Next.js 16, not middleware.ts)
 - **Components:** App Router; client components marked `'use client'`; reusable UI in `/components/ui/`
@@ -125,13 +125,14 @@ bash supabase-cli.sh migration list
 | Boot-up / Close-down | `docs/products/ferd/development/BOOT_UP.md`, `CLOSE_DOWN.md` |
 | Doc health check | `docs/products/ferd/development/DOC_HEALTH_CHECK.md` |
 | Journey Designer sessions | `docs/products/ferd/sessions/` |
-| **Products Tier — Hamn** | |
-| Hamn product docs (Wave 2) | `docs/products/hamn/INDEX.md` |
-| Hamn product spec | `docs/products/hamn/specification/PRODUCT_SPEC.md` |
-| Hamn requirements | `docs/products/hamn/specification/REQUIREMENTS.md` |
-| Hamn requirements (82 total) | `docs/products/hamn/specification/REQUIREMENTS.md` |
-| Hamn deferred decisions | `docs/products/hamn/planning/DEFERRED.md` |
-| Hamn research / open investigations | `docs/products/hamn/planning/RESEARCH.md` |
+| **Products Tier — All Waves** | |
+| Products index (6 waves) | `docs/products/INDEX.md` |
+| Eid product docs (Wave 2) | `docs/products/eid/INDEX.md` |
+| Hamn product docs (Wave 3) | `docs/products/hamn/INDEX.md` |
+| Heim product docs (Wave 4) | `docs/products/heim/INDEX.md` |
+| Brim product docs (Wave 5) | `docs/products/brim/INDEX.md` |
+| Urd product docs (Beyond) | `docs/products/urd/INDEX.md` |
+| Wave redistribution (pending) | `docs/products/WAVE_REDISTRIBUTION.md` |
 | **Implementation Tier** | |
 | Database schema | `docs/implementation/shared/DATABASE_CURRENT.md` |
 | Schema overview | `docs/implementation/shared/SCHEMA_OVERVIEW.md` |

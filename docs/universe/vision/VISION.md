@@ -285,7 +285,7 @@ FringeIsland sustains itself through five revenue streams, chosen because each a
 
 **Events.** Online seasonal events, regional community gatherings, and ultimately an annual FringeIsland Summit — where the community assembles, the world is celebrated, and the next season begins. Events serve multiple functions at once: revenue, belonging, visibility, and the discovery of new Dreamineers.
 
-**Endowment.** The long-horizon ambition. A permanent investment fund whose returns sustain the Foundation in perpetuity — protecting FringeIsland from the financial instability that threatens even the most beloved open communities. This is a Wave 3 goal, built toward from the beginning by directing surplus to the reserve rather than distributing it.
+**Endowment.** The long-horizon ambition. A permanent investment fund whose returns sustain the Foundation in perpetuity — protecting FringeIsland from the financial instability that threatens even the most beloved open communities. This is a Wave TBD goal — pending work package redistribution (see [WAVE_REDISTRIBUTION.md](../../products/WAVE_REDISTRIBUTION.md)), built toward from the beginning by directing surplus to the reserve rather than distributing it.
 
 ### The Founding Moment — Kickstarter
 
@@ -322,28 +322,32 @@ The web platform is the primary interface: groups, journeys, Steward-led experie
 
 Ferd is not yet the full FringeIsland world. It does not have the avatar, the garden, the narrative, the three realms. But it is the seed from which everything grows. It proves two things: that the builder can build, and that the journey metaphor is real.
 
-**Wave 2 — Hamn (Harbour)**
-*The island comes alive.*
+**Wave 2 — Eid (Passage, crossing)**
+*You navigate the passage.*
 
-The web platform evolves into Hamn — the full FringeIsland member experience takes shape. Avatar, garden, narrative, the three questions alive in every corner of the platform. The Dreamineer community forms. The marketplace launches — journeys, experiences, content, physical products. Dreamineer studio tools enable web and desktop content creation. Discord is retired. The community lives fully on its own platform.
+Wave TBD — pending work package redistribution (see [WAVE_REDISTRIBUTION.md](../../products/WAVE_REDISTRIBUTION.md)).
 
-Native iOS and Android apps launch alongside Hamn. The 18–29 primary audience expects native mobile — no friction or they leave. The apps are the on-the-go companion: episode notifications, quick journey activities, garden check-ins, community moments.
+**Wave 3 — Hamn (Harbour)**
+*You find harbour.*
 
-Basic AR experiments begin — location-based, camera-triggered world moments. The island starts bleeding into physical reality. Online seasonal events begin. World artefacts and printed materials become available in the marketplace.
+Wave TBD — pending work package redistribution. Scope: design system, accessibility, UX/UI redesign.
 
-**Wave 3 — The World Expands**
-*The world extends beyond the screen and into physical space.*
+**Wave 4 — Heim (Home)**
+*You arrive home.*
 
-Full AR and mixed reality layer. Physical products deepened — a broader range of artefacts and materials. Regional gatherings growing organically. Training camps and getaways begin. The annual FringeIsland Summit — the flagship event where the full community assembles and the next season is launched.
+Wave TBD — pending work package redistribution.
 
-The FringeIsland Foundation is formally established. The endowment seed fund begins — the long-horizon protection against the financial instability that threatens even the most beloved open communities.
+**Wave 5 — Brim (Edge, horizon)**
+*You stand at the edge, gazing outward.*
 
-**Wave 3+ — The Game**
-*The world at full fidelity.*
+Wave TBD — pending work package redistribution.
 
-A graphically rich game-engine experience — built in Unreal Engine or equivalent — bringing the three realms to life at the highest fidelity. Runs across desktop, console, mobile, and VR/AR headsets. Dreamineer game tools enable world-building within the game engine. Physical game expressions emerge. The line between platform, game, and physical world begins to dissolve.
+**Beyond — Urd (Fate, origin)**
+*You touch something older than the journey itself.*
 
-The game is earned, not assumed. It is built on a validated, thriving community — not before.
+Wave TBD — pending work package redistribution.
+
+> **Note:** The content previously in Waves 2–3+ (journey creation, marketplace, native apps, AR, game engine) needs redistributing across the new six-wave arc. See [ADR-U022](../../universe/decisions/ADR-U022-named-waves.md) for the naming rationale and [WAVE_REDISTRIBUTION.md](../../products/WAVE_REDISTRIBUTION.md) for the full triage list.
 
 ### The Broader Ecosystem
 
@@ -387,7 +391,7 @@ The founding narrative. The story that members first enter. The mystery, the con
 
 **AI Feasibility — What does the AI actually need to do, and can it?**
 The sessions assume load-bearing AI capabilities: adaptive season personalisation per member, NPC calibration to growth zones, AI-generative Type 4 journeys, void-responsive content delivery. None of this has been validated against what current or near-future AI can deliver at the quality required. The Experience Engine (L3 in the architecture) is the architectural linchpin and remains unbuilt.
-*Blocks: Hamn adaptive content delivery, Type 4 journeys (Wave 3), NPC implementation, Weaver-AI collaboration tools.*
+*Blocks: Hamn adaptive content delivery, Type 4 journeys (wave TBD), NPC implementation, Weaver-AI collaboration tools.*
 
 **The Cold-Start Problem — What happens when the community is small?**
 The three-dimensional void requires real relationships (1+1) and real community (1+community). In early months with a small member base, these dimensions may be structurally unsolvable through human connection alone. The world can be pre-populated with AI-generated activity, but the quality of collapsing a relationship void requires actual human relationships, not NPC interactions.
@@ -398,7 +402,7 @@ Weavers are described as "experience architects" who stitch Maker content into c
 *Blocks: Hamn Dreamineer studio tools, Season production pipeline, marketplace design.*
 
 **The Whisp in Wave 1 — How is it represented without AR?**
-The Whisp's most vivid expressions — AR overlay, void visualisation, fullness-as-fidelity — all depend on technology slated for Wave 2 or later. Ferd is a web platform. If the Whisp is the emotional core of FringeIsland, its Wave 1 expression must be compelling even in a browser. That design problem is entirely untouched.
+The Whisp's most vivid expressions — AR overlay, void visualisation, fullness-as-fidelity — all depend on technology slated for later waves (wave TBD — see [WAVE_REDISTRIBUTION.md](../../products/WAVE_REDISTRIBUTION.md)). Ferd is a web platform. If the Whisp is the emotional core of FringeIsland, its Wave 1 expression must be compelling even in a browser. That design problem is entirely untouched.
 *Blocks: Ferd Whisp representation (if attempted before Hamn), Hamn Whisp MVP design.*
 
 **NPC Behaviour Authoring — What mechanism?**
@@ -410,14 +414,16 @@ NPCs are central to the world, but the authoring mechanism is unspecified. Promp
 
 ### Scope Boundaries — Where the Lines Are Unclear
 
-The wave model (Ferd → Hamn → Wave 3 → Wave 3+) is well-defined for core deliverables but has areas of ambiguity. These are documented here so they can be resolved deliberately, not by accident:
+The wave model (Ferd → Eid → Hamn → Heim → Brim → Urd) is well-defined for Ferd but wave assignments for later deliverables are pending redistribution. Areas of ambiguity include:
 
-- **Seasons and Episodes:** Specification deferred to Hamn sessions, but not explicitly listed as a Hamn deliverable. Implementation wave unclear.
-- **AR boundary:** "Basic AR experiments" begin in Hamn, "full AR" is Wave 3. What counts as "basic" is not defined.
-- **Type 3-4 journeys:** The Journey Designer ships in Hamn, but Types 3-4 are only "fully operational" in Wave 3. Does the Hamn tool support authoring them even if they don't run yet?
-- **Void cosmology implementation:** The three-dimensional void model is foundational to the Whisp, AR, Seasons, and the Other Side — but no document assigns its implementation to a specific wave.
+- **Seasons and Episodes:** Specification deferred — implementation wave TBD.
+- **AR boundary:** "Basic AR experiments" vs "full AR" — wave assignment TBD.
+- **Type 3-4 journeys:** Journey Designer authoring vs full operation — wave assignment TBD.
+- **Void cosmology implementation:** Foundational to Whisp, AR, Seasons, and the Other Side — wave assignment TBD.
 - **Three Perspectives naming:** The 1 / 1+1 / 1+community framework is established, but its FringeIsland-native naming is explicitly unresolved and "not to be forced."
-- **Whisp specification dependencies:** The Whisp is a Hamn deliverable, but three prerequisite specifications (practical UI, encounter phenomenology, fullness model) are all deferred to future sessions.
+- **Whisp specification dependencies:** Three prerequisite specifications (practical UI, encounter phenomenology, fullness model) are all deferred to future sessions — wave assignment TBD.
+
+See [WAVE_REDISTRIBUTION.md](../../products/WAVE_REDISTRIBUTION.md) for the full triage list.
 
 ---
 

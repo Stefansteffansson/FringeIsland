@@ -216,7 +216,7 @@ The [Ferd Completion Summary](#ferd-completion-summary) at the end provides a pe
 | Element | Notes |
 |---------|-------|
 | **Circularity prevention (D11)** | Designed but NOT implemented. Required before group-joins-group UI ships |
-| **Groups-join-groups UI** | Schema supports it; UI deferred to Wave 2 (Hamn). See [DEFERRED.md](../../../products/ferd/planning/DEFERRED.md) |
+| **Groups-join-groups UI** | Schema supports it; UI deferred. See [DEFERRED.md](../../../products/ferd/planning/DEFERRED.md) — wave TBD, pending work package redistribution (see WAVE_REDISTRIBUTION.md) |
 | **Hierarchy visualisation** | Tree view, breadcrumbs — deferred |
 
 ---
@@ -259,7 +259,7 @@ The [Ferd Completion Summary](#ferd-completion-summary) at the end provides a pe
 
 | Element | Anatomy reference | Notes |
 |---------|------------------|-------|
-| **Journey designer** | L3 | Dreamineer-facing creation tool — Wave 2 (Hamn) |
+| **Journey designer** | L3 | Dreamineer-facing creation tool — wave TBD, pending work package redistribution (see WAVE_REDISTRIBUTION.md) |
 | **Step types (Tier 1 & 2)** | L3 / ADR-008 | Currently JSONB `content` field. Extensible step type system not yet built. Requires dedicated specification session |
 | **Journey Zero** | L3 | Onboarding journey — deferred to Journey spec session |
 
@@ -267,9 +267,9 @@ The [Ferd Completion Summary](#ferd-completion-summary) at the end provides a pe
 
 | Element | Reference | Reason |
 |---------|-----------|--------|
-| **Dynamic journey paths** | [DEFERRED.md](../../../products/ferd/planning/DEFERRED.md) | Wave 3 — requires branching logic engine |
-| **Journey versioning** | [DEFERRED.md](../../../products/ferd/planning/DEFERRED.md) | Wave 2 — snapshot vs. latest decision needed |
-| **User-created journeys** | [DEFERRED.md](../../../products/ferd/planning/DEFERRED.md) | Wave 2 — marketplace dependency |
+| **Dynamic journey paths** | [DEFERRED.md](../../../products/ferd/planning/DEFERRED.md) | Wave TBD — requires branching logic engine (see WAVE_REDISTRIBUTION.md) |
+| **Journey versioning** | [DEFERRED.md](../../../products/ferd/planning/DEFERRED.md) | Wave TBD — snapshot vs. latest decision needed (see WAVE_REDISTRIBUTION.md) |
+| **User-created journeys** | [DEFERRED.md](../../../products/ferd/planning/DEFERRED.md) | Wave TBD — marketplace dependency (see WAVE_REDISTRIBUTION.md) |
 
 ---
 
@@ -364,14 +364,14 @@ The [Ferd Completion Summary](#ferd-completion-summary) at the end provides a pe
 |---------|------------------|-------|
 | **Full-text search** | L6 | PostgreSQL tsvector not yet configured for journeys/content |
 | **Recommendations** | L6 | Requires L3 progress data + L1 profile_data |
-| **Marketplace browsing** | L6 | Wave 2 (Hamn) — Dreamineer marketplace |
+| **Marketplace browsing** | L6 | Wave TBD — Dreamineer marketplace (see WAVE_REDISTRIBUTION.md) |
 | **Search index** | L6 | Future concern — PostgreSQL tsvector → dedicated service |
 
 ### Deliberately Deferred
 
 | Element | Reference |
 |---------|-----------|
-| Advanced journey discovery | [DEFERRED.md](../../../products/ferd/planning/DEFERRED.md) — Wave 2 |
+| Advanced journey discovery | [DEFERRED.md](../../../products/ferd/planning/DEFERRED.md) — wave TBD, pending work package redistribution (see WAVE_REDISTRIBUTION.md) |
 | Personalised recommendations | [DEFERRED.md](../../../products/ferd/planning/DEFERRED.md) — requires profile_data |
 
 ---
@@ -396,7 +396,7 @@ Nothing in L7 is implemented. This is correct — L7 depends on all lower layers
 
 | Element | Reference |
 |---------|-----------|
-| Avatar and parallel self mechanic | [Architecture Decisions](../../../universe/decisions/) — Hamn spec session |
+| Avatar and parallel self mechanic | [Architecture Decisions](../../../universe/decisions/) — Hamn spec session (wave TBD, see WAVE_REDISTRIBUTION.md) |
 | AI data handling and GDPR consent | [Architecture Decisions](../../../universe/decisions/) — Privacy vertical |
 
 ---
@@ -428,7 +428,7 @@ Nothing in L7 is implemented. This is correct — L7 depends on all lower layers
 
 | Element | Notes |
 |---------|-------|
-| **Content moderation** | Trivial in Ferd (Foundation-created content). Required for Hamn (Dreamineer content) |
+| **Content moderation** | Trivial in Ferd (Foundation-created content). Required for Hamn (Dreamineer content) — wave TBD, pending work package redistribution (see WAVE_REDISTRIBUTION.md) |
 | **Group archive** | State exists in schema; no UI or cascade spec |
 | **User reactivation cascade** | Decommission is implemented; full reactivation cascade is not specified |
 
@@ -478,7 +478,7 @@ Nothing in L7 is implemented. This is correct — L7 depends on all lower layers
 | Element | Notes |
 |---------|-------|
 | **Email delivery** | Simulated only (`lib/email/send.ts`). No Resend/Postmark integration |
-| **Push notifications** | APNS/FCM — Wave 2 (Hamn) with native apps |
+| **Push notifications** | APNS/FCM — wave TBD, pending work package redistribution (see WAVE_REDISTRIBUTION.md) |
 | **Per-type preferences** | Deferred per [DEFERRED.md](../../../products/ferd/planning/DEFERRED.md) |
 | **Digest summaries** | Deferred per [DEFERRED.md](../../../products/ferd/planning/DEFERRED.md) |
 
@@ -518,8 +518,8 @@ Nothing. This vertical is correctly a placeholder in Ferd per ADR-011.
 
 | Element | Notes |
 |---------|-------|
-| **Stripe Connect** | Not integrated. First tier subscription in late Ferd or Hamn |
-| **Marketplace payments** | Wave 2 (Hamn) — Dreamineer marketplace |
+| **Stripe Connect** | Not integrated. First tier subscription in late Ferd or later |
+| **Marketplace payments** | Wave TBD — Dreamineer marketplace (see WAVE_REDISTRIBUTION.md) |
 | **Entitlement management** | No subscription or purchase logic |
 
 ---
@@ -548,7 +548,7 @@ The Ferd codebase primarily uses the **Supabase client (PostgREST)** for data ac
 | **API versioning** | ADR-015 | No `/api/v1/` prefix on existing routes |
 | **Rate limiting** | Platform API ring | No rate limiting on API routes |
 | **Authentication middleware** | Platform API ring | JWT validation happens via Supabase client, not API middleware |
-| **Extension surface** | Platform API ring | Plugin connection points — Wave 2 (Hamn) |
+| **Extension surface** | Platform API ring | Plugin connection points — wave TBD, pending work package redistribution (see WAVE_REDISTRIBUTION.md) |
 
 ---
 
@@ -573,7 +573,7 @@ The Ferd codebase primarily uses the **Supabase client (PostgREST)** for data ac
 | **i18n (ADR-013)** | Design System | Strings hardcoded in components. No translation keys |
 | **a11y (ADR-013)** | Design System | Basic semantic HTML. No formal WCAG 2.1 AA audit. Listed in Phase 1.6 |
 | **World aesthetic** | Design System | FringeIsland visual identity not yet applied |
-| **World-specific elements** | Design System | Garden, avatar, journey step presentation — Wave 2 (Hamn) |
+| **World-specific elements** | Design System | Garden, avatar, journey step presentation — wave TBD, pending work package redistribution (see WAVE_REDISTRIBUTION.md) |
 
 ---
 
@@ -589,10 +589,10 @@ The Ferd codebase primarily uses the **Supabase client (PostgREST)** for data ac
 
 | Frontend | Wave | Notes |
 |----------|------|-------|
-| Web platform (Hamn) | Wave 2 | Evolution of Ferd with full FringeIsland experience |
-| iOS native app | Wave 2 | Requires API-first refactoring |
-| Android native app | Wave 2 | Requires API-first refactoring |
-| Game | Wave 3+ | Unreal Engine — built on validated community |
+| Web platform (Hamn) | Wave TBD | Evolution of Ferd with full FringeIsland experience (see WAVE_REDISTRIBUTION.md) |
+| iOS native app | Wave TBD | Requires API-first refactoring (see WAVE_REDISTRIBUTION.md) |
+| Android native app | Wave TBD | Requires API-first refactoring (see WAVE_REDISTRIBUTION.md) |
+| Game | Wave TBD | Unreal Engine — built on validated community (see WAVE_REDISTRIBUTION.md) |
 
 ---
 
@@ -619,7 +619,7 @@ The Ferd codebase primarily uses the **Supabase client (PostgREST)** for data ac
 
 | Layer / Vertical | Status | Implemented | Placeholder | Key gap |
 |-----------------|--------|-------------|-------------|---------|
-| **L0 Infrastructure** | Solid | Supabase, PostgreSQL, Auth, RLS, Storage, Realtime | Feature flags, i18n, email service, AI provider, pg_cron | Feature flags needed for Ferd→Hamn transition |
+| **L0 Infrastructure** | Solid | Supabase, PostgreSQL, Auth, RLS, Storage, Realtime | Feature flags, i18n, email service, AI provider, pg_cron | Feature flags needed for Ferd→next-wave transition |
 | **L1 Identity** | Mostly complete | Permanent identity, profiles, display names, sessions | Visitor/shadow, profile_data table | Visitor experience blocks L3 Journey Zero |
 | **L2 Organisation** | Complete | Groups, memberships, RBAC (31 perms, 4 roles), DeusEx, invitation/leave/nomination | Circularity trigger (D11), groups-join-groups UI | D11 must ship before group-joins-group UI |
 | **L3 Experience** | Partial | Journey catalogue, enrolments, progress, player UI | Journey designer, step types, Journey Zero | **Linchpin** — step type spec session needed |
@@ -627,7 +627,7 @@ The Ferd codebase primarily uses the **Supabase client (PostgREST)** for data ac
 | **L5 Communication** | Mostly complete | DM, forums (flat threading), forum anonymisation | Announcements, activity feed | Announcements needed for Steward→group messaging |
 | **L6 Discovery** | Minimal | Basic journey listing, user search | Full-text search, recommendations, marketplace | Blocked by L3 spec + community scale |
 | **L7 Intelligence** | Not started | — | AI Mentor, profile accumulation, insights | Correctly empty — depends on all lower layers |
-| **V: Administration** | Strong | User lifecycle (soft/hard delete, decommission, exit), DeusEx, audit | Content moderation, group archive, reactivation | Content moderation needed for Hamn |
+| **V: Administration** | Strong | User lifecycle (soft/hard delete, decommission, exit), DeusEx, audit | Content moderation, group archive, reactivation | Content moderation needed for Hamn (wave TBD) |
 | **V: Privacy** | Minimal | RLS enforcement, display name privacy | GDPR rights, consent, data map, AI handling | Needs dedicated work before public launch |
 | **V: Notifications** | Strong | 7 types, Realtime, actionable, bell UI | Email delivery, push, preferences | Email service is Phase 1.6 priority |
 | **V: Observability** | Partial | Admin audit log | Structured logs, metrics, error tracking | Sentry is Phase 1.6 priority |
@@ -661,7 +661,7 @@ The Ferd codebase primarily uses the **Supabase client (PostgREST)** for data ac
 | [AUTH_SYSTEM.md](../../shared/AUTH_SYSTEM.md) | Authorization model detail |
 | [DOMAIN_ENTITIES.md](../../../universe/architecture/DOMAIN_ENTITIES.md) | Core business entities |
 | [DEFERRED.md](../../../products/ferd/planning/DEFERRED.md) | What we deliberately chose not to build |
-| [PRODUCTS_AND_PLATFORM.md](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md) | Wave model — Ferd and Hamn |
+| [PRODUCTS_AND_PLATFORM.md](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md) | Wave model — 6-wave saga arc (see ADR-U022) |
 
 ---
 

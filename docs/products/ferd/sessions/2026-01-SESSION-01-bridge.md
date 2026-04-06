@@ -1,3 +1,7 @@
+> **Note:** This session predates ADR-U022 (2026-04-06).
+> Wave references in this document use the original numbering.
+> Current canonical wave arc: Ferd → Eid → Hamn → Heim → Brim → Urd.
+
 # FringeIsland — Session Bridge
 *Created: March 2026 — End of Vision & Specification Session 3*
 *Purpose: Carry context into the next fresh chat session*

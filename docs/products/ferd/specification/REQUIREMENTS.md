@@ -37,7 +37,7 @@ Existing code with ADR-009 violations must be refactored pre-launch (see AR-001)
 - ✅ **Done** — Implemented, tested, functional
 - 🔄 **In Progress** — Partially implemented or being refined
 - 📋 **Planned** — In backlog for Ferd (Wave 1)
-- ⏸️ **Deferred** — Postponed to Hamn (Wave 2) or later
+- ⏸️ **Deferred** — Postponed to Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md)
 - 🚨 **Broken** — Exists but not functional (needs immediate fix)
 - ❌ **Rejected** — Decided not to implement
 
@@ -1382,7 +1382,7 @@ profile_data (
 
 **Description:** Browse contributed journeys in marketplace.
 
-**Revisit:** Wave 3+
+**Revisit:** Wave TBD — pending work package redistribution
 
 ---
 
@@ -1937,7 +1937,7 @@ profile_data (
 - ✅ **In-app:** Real-time via Supabase subscriptions (DONE)
 - 🚨 **Email:** No templates, delivery is console.log stub (NOT STARTED)
 - ⏸️ **Push (mobile):** Native app push notifications (DEFERRED to Hamn)
-- ⏸️ **SMS:** SMS notifications (DEFERRED to Wave 3+)
+- ⏸️ **SMS:** SMS notifications (DEFERRED to wave TBD)
 
 **Current:**
 - ✅ In-app notifications work perfectly

@@ -55,12 +55,12 @@ The on-the-go companion. The world in your pocket. Episode notifications, quick 
 ### 3. AR Layer
 The world bleeding into physical reality. FringeIsland moments triggered in the real world — through location, camera, context. The island and ordinary life overlapping.
 
-*Begins as experiments in Hamn. Deepens through later phases.*
+*Begins as experiments in later waves. Deepens through subsequent phases.*
 
 ### 4. The Game
 The most immersive digital expression of the world. A graphically rich game-engine experience — built in Unreal Engine or equivalent — bringing the three realms to life at the highest fidelity. Runs across desktop, console, mobile, and VR/AR headsets.
 
-*Wave 3+ ambition. Built on a validated, thriving community.*
+*Wave TBD ambition. Built on a validated, thriving community.*
 
 ---
 
@@ -128,14 +128,32 @@ Ferd is not yet the full FringeIsland world. It does not have the avatar, the ga
 
 *Tech stack: Next.js, TypeScript, Tailwind CSS, Supabase/PostgreSQL*
 
+### Eid — *Passage, crossing*
+*You navigate the passage.*
+
+Scope TBD — pending work package redistribution (see [WAVE_REDISTRIBUTION.md](../../products/WAVE_REDISTRIBUTION.md)).
+
 ### Hamn — *Harbour*
-*The evolved platform. Where FringeIsland truly comes alive.*
+*You find harbour.*
 
-Hamn is where members first properly arrive on the island. The full FringeIsland member experience takes shape — avatar, garden, narrative, the three questions alive in every corner of the platform. The Dreamineer community forms. The marketplace launches. Discord is retired. The community lives fully on its own platform.
+Hamn is Wave 3 — design system, accessibility, UX/UI redesign. Scope TBD — pending work package redistribution.
 
-Hamn is not a replacement for Ferd — it is Ferd grown into something larger. The same platform, transformed. The harbour where the world becomes real.
+*Previous Hamn scope (journey creation, marketplace, native apps) archived and pending redistribution across the new wave arc.*
 
-*Native iOS and Android apps launch alongside Hamn.*
+### Heim — *Home*
+*You arrive home.*
+
+Scope TBD — pending work package redistribution.
+
+### Brim — *Edge, surf, horizon*
+*You stand at the edge, gazing outward.*
+
+Scope TBD — pending work package redistribution.
+
+### Urd — *Fate, origin, what has become*
+*You touch something older than the journey itself.*
+
+Scope TBD — pending work package redistribution.
 
 ---
 
@@ -152,38 +170,13 @@ Phases overlap. Each wave begins building before the previous is complete. Nothi
 - First Dreamineers recruited
 - Free tier + first paid membership tier + voluntary donations
 
-### Wave 2 — Hamn
-*The island comes alive.*
+### Wave 2 — Eid (Passage, crossing)
+### Wave 3 — Hamn (Harbour)
+### Wave 4 — Heim (Home)
+### Wave 5 — Brim (Edge, horizon)
+### Beyond — Urd (Fate, origin)
 
-- Web platform evolves into Hamn — full FringeIsland member experience
-- Native iOS app — primary mobile experience
-- Native Android app — primary mobile experience
-- Dreamineer marketplace — journeys, experiences, content, physical products
-- Dreamineer studio tools — web/desktop content creation
-- Basic AR experiments — location-based, camera-triggered world moments
-- Discord retired
-- Online seasonal events begin
-- World artefacts and printed materials available in marketplace
-
-### Wave 3 — The World Expands
-*The world extends beyond the screen and into physical space.*
-
-- Full AR/mixed reality layer
-- Physical products deepened — broader range of artefacts and materials
-- Regional gatherings growing organically
-- Training camps and getaways begin
-- Annual FringeIsland Summit — first edition
-- FringeIsland Foundation formally established
-- Endowment seed fund begins
-
-### Wave 3+ — The Game
-*The world at full fidelity.*
-
-- FringeIsland Game — Unreal Engine, three realms rendered in full
-- Runs across: desktop, console, mobile, VR/AR headsets
-- Dreamineer game tools — world-building within the game engine
-- Physical game expressions explore
-- The line between platform, game and physical world begins to dissolve
+*Wave 2–6 deliverables are pending work package redistribution. The content previously listed under Waves 2–3+ (journey creation, marketplace, native apps, AR, game engine) needs assigning to the new six-wave arc. See [WAVE_REDISTRIBUTION.md](../../products/WAVE_REDISTRIBUTION.md) for the full triage list and [ADR-U022](../decisions/ADR-U022-named-waves.md) for the naming rationale.*
 
 ---
 
@@ -202,10 +195,10 @@ Deep work device. Content creation, world-building, journey design, narrative ar
 **Tablet — significant for 30+ and 50+**
 iPad especially popular in older demographics. The web platform and native apps both need to work beautifully on tablet.
 
-**Console — Wave 3+**
+**Console — wave TBD**
 PlayStation, Xbox, Nintendo Switch. The game reaches console audiences who may never have encountered FringeIsland through web or mobile.
 
-**VR/AR Headsets — Wave 3+**
+**VR/AR Headsets — wave TBD**
 Apple Vision Pro, Meta Quest and successors. The most immersive possible expression of the three realms.
 
 ### A Member's Day
@@ -265,4 +258,4 @@ The game-engine experience is built on a validated, thriving community — not b
 
 ---
 
-*This document will be updated as the product family evolves. Future release names beyond Hamn will be added as they are decided. Non-software product details will be fleshed out in dedicated exploration sessions as the community matures.*
+*This document will be updated as the product family evolves. The six-wave arc (Ferd → Eid → Hamn → Heim → Brim → Urd) is defined in [ADR-U022](../decisions/ADR-U022-named-waves.md). Non-software product details will be fleshed out in dedicated exploration sessions as the community matures.*

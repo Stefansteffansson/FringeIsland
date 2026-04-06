@@ -14,7 +14,7 @@ Three-tier documentation architecture: Universe (shared foundations) > Products 
 | See current state & blockers | [PROJECT_STATUS.md](../PROJECT_STATUS.md) |
 | Understand WHY we're building this | [universe/vision/VISION.md](universe/vision/VISION.md) |
 | See WHAT we're building (Ferd) | [products/ferd/specification/PRODUCT_SPEC.md](products/ferd/specification/PRODUCT_SPEC.md) |
-| See Hamn (Wave 2) docs | [products/hamn/INDEX.md](products/hamn/INDEX.md) |
+| See all waves (6-wave arc) | [products/INDEX.md](products/INDEX.md) |
 | Understand the architecture | [universe/architecture/ARCHITECTURE_ANATOMY.md](universe/architecture/ARCHITECTURE_ANATOMY.md) |
 | See architecture decisions (ADRs) | [universe/decisions/](universe/decisions/) (22 universe) + [products/ferd/architecture/decisions/](products/ferd/architecture/decisions/) (1 Ferd) |
 | See the roadmap | [products/ferd/planning/ROADMAP.md](products/ferd/planning/ROADMAP.md) |
@@ -58,11 +58,15 @@ Each product has its own specification, architecture, planning, sessions, and de
 | [products/ferd/sessions/](products/ferd/sessions/) | Session logs (vision, design, sprint, journey designer) |
 | [products/ferd/development/](products/ferd/development/) | Workflows, agents, behavior specs, feature docs |
 
-### Hamn (Wave 2 — Not started)
+### Waves 2–6 (Not started)
 
 | Folder | Purpose |
 |--------|---------|
-| [products/hamn/](products/hamn/) | Hamn product docs — folder structure established, awaiting specification |
+| [products/eid/](products/eid/) | Eid (Wave 2) — scaffold only |
+| [products/hamn/](products/hamn/) | Hamn (Wave 3) — scaffold only (old Wave 2 content archived) |
+| [products/heim/](products/heim/) | Heim (Wave 4) — scaffold only |
+| [products/brim/](products/brim/) | Brim (Wave 5) — scaffold only |
+| [products/urd/](products/urd/) | Urd (Beyond) — scaffold only |
 
 ---
 

@@ -31,7 +31,7 @@
 | [ADR-U019](./ADR-U019-deusex-authority-last-resort.md) | DeusEx as authority of last resort |
 | [ADR-U020](./ADR-U020-pairs-are-groups.md) | Pairs are groups |
 | [ADR-U021](./ADR-U021-forum-anonymisation-soft-flag.md) | Forum anonymisation — soft flag |
-| [ADR-U022](./ADR-U022-ferd-hamn-named-waves.md) | Ferd and Hamn as named waves |
+| [ADR-U022](./ADR-U022-named-waves.md) | Named waves — the full saga arc (Ferd → Eid → Hamn → Heim → Brim → Urd) |
 
 ---
 

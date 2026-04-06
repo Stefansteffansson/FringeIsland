@@ -236,7 +236,7 @@ FringeIsland is built around six core domain entities:
 2. **Reusable**: Same journey can be used by multiple users/groups
 3. **Solo and Collaborative**: Supports both individual and group enrollment
 4. **Publication Workflow**: Draft → Published → (Optional) Unpublished
-5. **Type Evolution**: Predefined (Wave 1/Ferd) → User-created (Wave 2/Hamn) → Dynamic (Wave 3)
+5. **Type Evolution**: Predefined (Wave 1/Ferd) → User-created (wave TBD — pending redistribution) → Dynamic (wave TBD — pending redistribution)
 6. **Creator Permissions**: Only creator (or platform admin) can edit journey
 7. **Freezing**: Journeys can be frozen to prevent changes during active use
 

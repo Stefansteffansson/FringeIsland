@@ -56,7 +56,7 @@ Age 30-50. Team lead or informal leader. Generic training programs don't fit. Ne
 ### Tertiary: Guide (Astrid)
 *"I want to facilitate group learning experiences."*
 
-Age 25-55. Coach, facilitator, or experienced practitioner. Limited tools for guiding group journeys. Needs to co-facilitate journeys alongside Stewards. Success = groups complete journeys with meaningful guidance. Guide role is implemented in RBAC but full facilitation tools are Wave 2 (Hamn).
+Age 25-55. Coach, facilitator, or experienced practitioner. Limited tools for guiding group journeys. Needs to co-facilitate journeys alongside Stewards. Success = groups complete journeys with meaningful guidance. Guide role is implemented in RBAC but full facilitation tools are Wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md).
 
 ### Emerging: Visitor (unnamed)
 *"I'm curious but not ready to commit."*
@@ -159,7 +159,7 @@ These features complete the Ferd experience before public launch:
 - Permission enforcement completion (8/39 enforced, needs full coverage)
 - Beta testing with 10-20 users
 
-### Out of Scope (Hamn / Wave 2+)
+### Out of Scope (Hamn / Wave TBD+)
 
 These are explicitly **not** part of Ferd. See [DEFERRED.md](../planning/DEFERRED.md) for rationale.
 

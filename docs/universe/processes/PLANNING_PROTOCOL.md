@@ -57,7 +57,7 @@ Experimentation is a permanent discipline, not a phase. At every scale:
 
 - **Ferd (small user base):** Ship to beta users, iterate based on direct feedback
 - **Hamn (growing user base):** Feature flags, A/B testing, staged rollouts
-- **Wave 3+ (large user base):** Formal experimentation framework, data-driven decisions
+- **Later waves (large user base):** Formal experimentation framework, data-driven decisions
 
 The principle is constant: validate before you commit. The tooling evolves with the user base.
 

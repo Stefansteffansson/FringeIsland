@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-04-05 (Requirements review + doc health overhaul)
+**Last Updated:** 2026-04-06 (6-wave saga arc + ADR-U022 + restructuring prep)
 **Current Version:** 0.2.37
 **Active Branch:** main
 
@@ -72,7 +72,8 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 - **Architecture decisions (ADRs):** `docs/universe/decisions/` (22 universe) + `docs/products/ferd/architecture/decisions/` (1 Ferd)
 - **Planning context:** `docs/products/ferd/planning/ROADMAP.md` + `docs/products/ferd/planning/DEFERRED.md`
 - **Vision documents:** `docs/universe/vision/` + `docs/universe/strategy/`
-- **Hamn (Wave 2) docs:** `docs/products/hamn/INDEX.md` — product spec + 82 requirements + deferred decisions
+- **All waves (6-wave arc):** `docs/products/INDEX.md` — Ferd → Eid → Hamn → Heim → Brim → Urd
+- **Wave redistribution:** `docs/products/WAVE_REDISTRIBUTION.md` — items pending wave assignment
 - **Vision session decisions:** `docs/universe/vision/VISION_DECISIONS.md`
 
 **Agent System (two-tier, 7 agents — see `docs/products/ferd/development/agents/README.md`):**
@@ -84,8 +85,18 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-04-05 (Requirements review + doc health overhaul)
+**Date:** 2026-04-06 (6-wave saga arc + ADR-U022 + restructuring prep)
 **Summary:**
+- **Key decision:** Defined 6-wave saga arc — Ferd → Eid → Hamn → Heim → Brim → Urd (Old Norse journey metaphor)
+- Rewrote ADR-U022: expanded from 2-wave (Ferd/Hamn) to 6-wave definition with mythology context and amendment history
+- Renamed ADR-U022 file: `ADR-U022-ferd-hamn-named-waves.md` → `ADR-U022-named-waves.md`, updated 2 cross-references
+- Audited ARCHITECTURE_ANATOMY.md: all 9 file links valid, 20+ stale wave references identified (deferred to redistribution)
+- Created `folders.md` (repo folder structure), `files.md` (Ferd file listing), `files2.md` (Hamn file listing)
+- Deep analysis of all ~33 files with Wave 3/3+ references (~95 line changes mapped)
+- Began docs/products/ restructuring plan (6-wave folder structure) — interrupted, detailed prompt prepared for next session
+- No code changes, no tests needed
+
+**Previous Session:** 2026-04-05 (Requirements review + doc health overhaul)
 - Rewrote Ferd PRODUCT_SPEC.md v1.2 → v2.0 (clean "what & why" document, removed duplicative content)
 - Updated Ferd REQUIREMENTS.md: 5 status corrections, 3 new requirements (97→100 total), added binding architecture rule
 - **Key decision:** ALL architecture compliance (AR-001 through AR-004) elevated to 🔥 LAUNCH BLOCKER — must complete pre-launch

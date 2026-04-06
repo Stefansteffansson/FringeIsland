@@ -127,10 +127,10 @@ Documentation is organized in three tiers: **Universe** (shared foundations) > *
 | Behavior specs | [docs/products/ferd/development/specs/](docs/products/ferd/development/specs/) |
 | TDD workflow | [docs/products/ferd/development/WORKFLOW.md](docs/products/ferd/development/WORKFLOW.md) |
 | Journey Designer sessions | [docs/products/ferd/sessions/](docs/products/ferd/sessions/) |
-| **Hamn (Wave 2)** | |
-| Hamn product docs | [docs/products/hamn/INDEX.md](docs/products/hamn/INDEX.md) |
-| Hamn product spec | [docs/products/hamn/specification/PRODUCT_SPEC.md](docs/products/hamn/specification/PRODUCT_SPEC.md) |
-| Hamn requirements (82 items) | [docs/products/hamn/specification/REQUIREMENTS.md](docs/products/hamn/specification/REQUIREMENTS.md) |
+| **All Waves (6-wave saga arc)** | |
+| Products index (all waves) | [docs/products/INDEX.md](docs/products/INDEX.md) |
+| Hamn product docs (Wave 3) | [docs/products/hamn/INDEX.md](docs/products/hamn/INDEX.md) |
+| Wave redistribution (pending) | [docs/products/WAVE_REDISTRIBUTION.md](docs/products/WAVE_REDISTRIBUTION.md) |
 | **Implementation** | |
 | Database schema | [docs/implementation/shared/DATABASE_CURRENT.md](docs/implementation/shared/DATABASE_CURRENT.md) |
 | Architecture baseline (live) | [docs/implementation/ferd/baseline/BASELINE.md](docs/implementation/ferd/baseline/BASELINE.md) |
