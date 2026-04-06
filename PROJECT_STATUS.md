@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-04-06 (6-wave saga arc + ADR-U022 + restructuring prep)
+**Last Updated:** 2026-04-06 (6-wave docs/products/ restructuring executed)
 **Current Version:** 0.2.37
 **Active Branch:** main
 
@@ -85,8 +85,21 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-04-06 (6-wave saga arc + ADR-U022 + restructuring prep)
+**Date:** 2026-04-06 (6-wave docs/products/ restructuring executed)
 **Summary:**
+- **Executed full docs/products/ restructuring** for 6-wave arc (Ferd → Eid → Hamn → Heim → Brim → Urd)
+- Created scaffold folders for `eid/`, `heim/`, `brim/`, `urd/` with standard template (INDEX.md + .gitkeep files)
+- Archived old Hamn Wave 2 content to `hamn/_archive/2026-04-06-wave2-content/` (6 files: PRODUCT_SPEC, REQUIREMENTS, DEFERRED, RESEARCH, VISION_TO_SPEC_MAPPING, INDEX)
+- Rebuilt `hamn/` as Wave 3 (design system, accessibility, UX/UI redesign)
+- Created `docs/products/WAVE_REDISTRIBUTION.md` — triage list of ~60 items pending wave assignment
+- Updated ~40 files: wave labels ("Wave 2 (Hamn)" → correct references), cross-references, session headers
+- Added ADR-U022 header notes to 4 active session files (historical content preserved)
+- Updated products/INDEX.md with full 6-wave table
+- Created `folders_and_files.md` (complete Ferd file listing)
+- 105 files changed, commit `d8e8a94`, pushed to main
+- No code changes, no tests needed
+
+**Previous Session:** 2026-04-06 (6-wave saga arc + ADR-U022 + restructuring prep)
 - **Key decision:** Defined 6-wave saga arc — Ferd → Eid → Hamn → Heim → Brim → Urd (Old Norse journey metaphor)
 - Rewrote ADR-U022: expanded from 2-wave (Ferd/Hamn) to 6-wave definition with mythology context and amendment history
 - Renamed ADR-U022 file: `ADR-U022-ferd-hamn-named-waves.md` → `ADR-U022-named-waves.md`, updated 2 cross-references

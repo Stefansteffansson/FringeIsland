@@ -1,6 +1,6 @@
 # SPRINT.md — Active Sprint Tracker
 
-**Last Updated:** 2026-04-06 (6-wave saga arc defined, docs/products/ restructuring in progress)
+**Last Updated:** 2026-04-06 (6-wave docs/products/ restructuring complete)
 **Version:** v0.2.37
 
 ---
