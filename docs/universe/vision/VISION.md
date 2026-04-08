@@ -285,7 +285,7 @@ FringeIsland sustains itself through five revenue streams, chosen because each a
 
 **Events.** Online seasonal events, regional community gatherings, and ultimately an annual FringeIsland Summit — where the community assembles, the world is celebrated, and the next season begins. Events serve multiple functions at once: revenue, belonging, visibility, and the discovery of new Dreamineers.
 
-**Endowment.** The long-horizon ambition. A permanent investment fund whose returns sustain the Foundation in perpetuity — protecting FringeIsland from the financial instability that threatens even the most beloved open communities. This is a Wave TBD goal — pending work package redistribution (see [WAVE_REDISTRIBUTION.md](../../products/WAVE_REDISTRIBUTION.md)), built toward from the beginning by directing surplus to the reserve rather than distributing it.
+**Endowment.** The long-horizon ambition. A permanent investment fund whose returns sustain the Foundation in perpetuity — protecting FringeIsland from the financial instability that threatens even the most beloved open communities. This is a **Beyond-Urd goal** — built toward from the beginning by directing surplus to the reserve rather than distributing it.
 
 ### The Founding Moment — Kickstarter
 
@@ -325,29 +325,29 @@ Ferd is not yet the full FringeIsland world. It does not have the avatar, the ga
 **Wave 2 — Eid (Passage, crossing)**
 *You navigate the passage.*
 
-Wave TBD — pending work package redistribution (see [WAVE_REDISTRIBUTION.md](../../products/WAVE_REDISTRIBUTION.md)).
+Journey Studio v.1 — user-created journeys, journey discovery & search, journey versioning, journey creation granularity. First Whisp specifications: encounter phenomenology and practical UI experience.
 
 **Wave 3 — Hamn (Harbour)**
 *You find harbour.*
 
-Wave TBD — pending work package redistribution. Scope: design system, accessibility, UX/UI redesign.
+Design system, accessibility (WCAG 2.1 AA + enhancements), and UX/UI redesign of the generic web app interface. *Hamn does not define the Three Worlds visual identity — that is later, Urd-level work.*
 
 **Wave 4 — Heim (Home)**
 *You arrive home.*
 
-Wave TBD — pending work package redistribution.
+FringeIsland universe design — what the Safe Harbour actually looks like, regions, architecture, visual language. Dynamic journey paths (branching, conditional logic). Foundation work for the void and AR layers in Brim.
 
 **Wave 5 — Brim (Edge, horizon)**
 *You stand at the edge, gazing outward.*
 
-Wave TBD — pending work package redistribution.
+AR void visualization — overlaying ordinary world with the three-dimensional void. Native iOS and Android apps (on-the-go companion to the web platform).
 
 **Beyond — Urd (Fate, origin)**
 *You touch something older than the journey itself.*
 
-Wave TBD — pending work package redistribution.
+Three Worlds UI design (felt transitions across Ordinary World / Safe Harbour / The Other Side), Seasons and Episodes mechanics, NPC behaviour authoring, respawning mechanics, advanced analytics dashboard, monetization at scale, the Endowment, the game itself (Unreal Engine three-realm runtime), and distribution to consoles and VR/AR headsets.
 
-> **Note:** The content previously in Waves 2–3+ (journey creation, marketplace, native apps, AR, game engine) needs redistributing across the new six-wave arc. See [ADR-U022](../../universe/decisions/ADR-U022-named-waves.md) for the naming rationale and [WAVE_REDISTRIBUTION.md](../../products/WAVE_REDISTRIBUTION.md) for the full triage list.
+> **Note:** The wave redistribution from the old 2-wave model was completed on 2026-04-07. See [DEFERRED.md](../../products/ferd/planning/DEFERRED.md) for item-level wave assignments and [ADR-U022](../decisions/ADR-U022-named-waves.md) for the naming rationale.
 
 ### The Broader Ecosystem
 
@@ -391,7 +391,7 @@ The founding narrative. The story that members first enter. The mystery, the con
 
 **AI Feasibility — What does the AI actually need to do, and can it?**
 The sessions assume load-bearing AI capabilities: adaptive season personalisation per member, NPC calibration to growth zones, AI-generative Type 4 journeys, void-responsive content delivery. None of this has been validated against what current or near-future AI can deliver at the quality required. The Experience Engine (L3 in the architecture) is the architectural linchpin and remains unbuilt.
-*Blocks: Hamn adaptive content delivery, Type 4 journeys (wave TBD), NPC implementation, Weaver-AI collaboration tools.*
+*Blocks: Heim dynamic journey paths, Type 4 (AI-generative) journeys, NPC implementation (Urd), Weaver-AI collaboration tools.*
 
 **The Cold-Start Problem — What happens when the community is small?**
 The three-dimensional void requires real relationships (1+1) and real community (1+community). In early months with a small member base, these dimensions may be structurally unsolvable through human connection alone. The world can be pre-populated with AI-generated activity, but the quality of collapsing a relationship void requires actual human relationships, not NPC interactions.
@@ -402,8 +402,8 @@ Weavers are described as "experience architects" who stitch Maker content into c
 *Blocks: Hamn Dreamineer studio tools, Season production pipeline, marketplace design.*
 
 **The Whisp in Wave 1 — How is it represented without AR?**
-The Whisp's most vivid expressions — AR overlay, void visualisation, fullness-as-fidelity — all depend on technology slated for later waves (wave TBD — see [WAVE_REDISTRIBUTION.md](../../products/WAVE_REDISTRIBUTION.md)). Ferd is a web platform. If the Whisp is the emotional core of FringeIsland, its Wave 1 expression must be compelling even in a browser. That design problem is entirely untouched.
-*Blocks: Ferd Whisp representation (if attempted before Hamn), Hamn Whisp MVP design.*
+The Whisp's most vivid expressions — AR overlay (Brim), void visualisation (Brim), fullness-as-fidelity — all depend on technology slated for later waves. Ferd is a web platform; Eid will introduce the first Whisp encounter phenomenology and practical UI specifications. If the Whisp is the emotional core of FringeIsland, its Wave 1 / Wave 2 expressions must be compelling even in a browser. That design problem is entirely untouched.
+*Blocks: Ferd Whisp representation (if attempted before Eid), Eid Whisp MVP design.*
 
 **NPC Behaviour Authoring — What mechanism?**
 NPCs are central to the world, but the authoring mechanism is unspecified. Prompt engineering? Behaviour graphs? Learning models? This is prerequisite for any NPC implementation.
@@ -412,18 +412,15 @@ NPCs are central to the world, but the authoring mechanism is unspecified. Promp
 **The Kickstarter Campaign** — The story, the tiers, the video, the funding goal, the pre-launch strategy. To be designed with the same care as the world itself.
 *Blocks: Public launch timing, founding Dreamineer recruitment, initial funding.*
 
-### Scope Boundaries — Where the Lines Are Unclear
+### Scope Boundaries — Where the Lines Remain Unclear
 
-The wave model (Ferd → Eid → Hamn → Heim → Brim → Urd) is well-defined for Ferd but wave assignments for later deliverables are pending redistribution. Areas of ambiguity include:
+The wave model (Ferd → Eid → Hamn → Heim → Brim → Urd) is now assigned at the work-package level (redistribution complete 2026-04-07). The remaining unresolved items are not wave-assignment questions but conceptual/naming questions:
 
-- **Seasons and Episodes:** Specification deferred — implementation wave TBD.
-- **AR boundary:** "Basic AR experiments" vs "full AR" — wave assignment TBD.
-- **Type 3-4 journeys:** Journey Designer authoring vs full operation — wave assignment TBD.
-- **Void cosmology implementation:** Foundational to Whisp, AR, Seasons, and the Other Side — wave assignment TBD.
 - **Three Perspectives naming:** The 1 / 1+1 / 1+community framework is established, but its FringeIsland-native naming is explicitly unresolved and "not to be forced."
-- **Whisp specification dependencies:** Three prerequisite specifications (practical UI, encounter phenomenology, fullness model) are all deferred to future sessions — wave assignment TBD.
+- **Type 3-4 journeys vs. dynamic journeys:** Wave 4 (Heim) introduces dynamic/branching journey paths. The relationship between these and "Type 3-4" generative journeys (an Urd-level concept) needs reconciling.
+- **Whisp fullness model:** The encounter phenomenology (Eid) and practical UI (Eid) are now scheduled, but the fullness-as-fidelity progression model itself still needs its own session.
 
-See [WAVE_REDISTRIBUTION.md](../../products/WAVE_REDISTRIBUTION.md) for the full triage list.
+See [DEFERRED.md](../../products/ferd/planning/DEFERRED.md) for item-level wave assignments.
 
 ---
 

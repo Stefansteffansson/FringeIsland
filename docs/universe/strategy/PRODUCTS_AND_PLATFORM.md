@@ -60,7 +60,7 @@ The world bleeding into physical reality. FringeIsland moments triggered in the 
 ### 4. The Game
 The most immersive digital expression of the world. A graphically rich game-engine experience — built in Unreal Engine or equivalent — bringing the three realms to life at the highest fidelity. Runs across desktop, console, mobile, and VR/AR headsets.
 
-*Wave TBD ambition. Built on a validated, thriving community.*
+*Beyond-Urd ambition. Built on a validated, thriving community.*
 
 ---
 
@@ -131,29 +131,27 @@ Ferd is not yet the full FringeIsland world. It does not have the avatar, the ga
 ### Eid — *Passage, crossing*
 *You navigate the passage.*
 
-Scope TBD — pending work package redistribution (see [WAVE_REDISTRIBUTION.md](../../products/WAVE_REDISTRIBUTION.md)).
+Journey Studio v.1 — user-created journeys, journey discovery & search, journey versioning, journey creation granularity. First Whisp specifications (encounter phenomenology, practical UI experience).
 
 ### Hamn — *Harbour*
 *You find harbour.*
 
-Hamn is Wave 3 — design system, accessibility, UX/UI redesign. Scope TBD — pending work package redistribution.
-
-*Previous Hamn scope (journey creation, marketplace, native apps) archived and pending redistribution across the new wave arc.*
+Design system, accessibility (WCAG 2.1 AA + enhancements), and UX/UI redesign of the generic web app interface. *Hamn does not define the Three Worlds visual identity — that is later, Urd-level work.*
 
 ### Heim — *Home*
 *You arrive home.*
 
-Scope TBD — pending work package redistribution.
+FringeIsland universe design — what the Safe Harbour actually looks like, regions, architecture, visual language. Dynamic journey paths (branching, conditional logic). Foundation for the void and AR layers in Brim.
 
 ### Brim — *Edge, surf, horizon*
 *You stand at the edge, gazing outward.*
 
-Scope TBD — pending work package redistribution.
+AR void visualization — overlaying ordinary world with the three-dimensional void. Native iOS and Android apps (on-the-go companion to the web platform).
 
 ### Urd — *Fate, origin, what has become*
 *You touch something older than the journey itself.*
 
-Scope TBD — pending work package redistribution.
+Three Worlds UI design (felt transitions across Ordinary World / Safe Harbour / The Other Side), Seasons and Episodes mechanics, NPC behaviour authoring, respawning mechanics, advanced analytics, monetization at scale, the Endowment, and the game itself (Unreal Engine three-realm runtime). Beyond Urd: distribution to consoles and VR/AR headsets.
 
 ---
 
@@ -176,7 +174,7 @@ Phases overlap. Each wave begins building before the previous is complete. Nothi
 ### Wave 5 — Brim (Edge, horizon)
 ### Beyond — Urd (Fate, origin)
 
-*Wave 2–6 deliverables are pending work package redistribution. The content previously listed under Waves 2–3+ (journey creation, marketplace, native apps, AR, game engine) needs assigning to the new six-wave arc. See [WAVE_REDISTRIBUTION.md](../../products/WAVE_REDISTRIBUTION.md) for the full triage list and [ADR-U022](../decisions/ADR-U022-named-waves.md) for the naming rationale.*
+*Wave redistribution from the old 2-wave model was completed on 2026-04-07. See [DEFERRED.md](../../products/ferd/planning/DEFERRED.md) for item-level wave assignments and [ADR-U022](../decisions/ADR-U022-named-waves.md) for the naming rationale.*
 
 ---
 
@@ -195,11 +193,11 @@ Deep work device. Content creation, world-building, journey design, narrative ar
 **Tablet — significant for 30+ and 50+**
 iPad especially popular in older demographics. The web platform and native apps both need to work beautifully on tablet.
 
-**Console — wave TBD**
-PlayStation, Xbox, Nintendo Switch. The game reaches console audiences who may never have encountered FringeIsland through web or mobile.
+**Console — Beyond Urd**
+PlayStation, Xbox, Nintendo Switch. The game reaches console audiences who may never have encountered FringeIsland through web or mobile. Distributed after the game itself ships.
 
-**VR/AR Headsets — wave TBD**
-Apple Vision Pro, Meta Quest and successors. The most immersive possible expression of the three realms.
+**VR/AR Headsets — Beyond Urd**
+Apple Vision Pro, Meta Quest and successors. The most immersive possible expression of the three realms. Distributed after the game itself ships.
 
 ### A Member's Day
 A member might move across products in a single day:

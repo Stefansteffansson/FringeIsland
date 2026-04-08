@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-04-06 (6-wave docs/products/ restructuring executed)
+**Last Updated:** 2026-04-08 (wave redistribution complete + roadmap coverage audit)
 **Current Version:** 0.2.37
 **Active Branch:** main
 
@@ -73,7 +73,7 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 - **Planning context:** `docs/products/ferd/planning/ROADMAP.md` + `docs/products/ferd/planning/DEFERRED.md`
 - **Vision documents:** `docs/universe/vision/` + `docs/universe/strategy/`
 - **All waves (6-wave arc):** `docs/products/INDEX.md` — Ferd → Eid → Hamn → Heim → Brim → Urd
-- **Wave redistribution:** `docs/products/WAVE_REDISTRIBUTION.md` — items pending wave assignment
+- **Wave redistribution (archived):** `docs/products/_archive/2026-04-07-WAVE_REDISTRIBUTION-completed.md` — final decisions table
 - **Vision session decisions:** `docs/universe/vision/VISION_DECISIONS.md`
 
 **Agent System (two-tier, 7 agents — see `docs/products/ferd/development/agents/README.md`):**
@@ -85,7 +85,23 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-04-06 (6-wave docs/products/ restructuring executed)
+**Date:** 2026-04-07/08 (Wave redistribution decisions + roadmap coverage audit)
+**Summary:**
+- **Completed WAVE_REDISTRIBUTION.md triage** — made wave-assignment decisions for all ~25 previously-TBD items across DEFERRED.md, ROADMAP.md, VISION.md, PRODUCTS_AND_PLATFORM.md, and ARCHITECTURE_ANATOMY.md
+- **Key decisions:**
+  - Items 2+3 (Group-to-Group Relationships UI, Subgroups / Groups-Join-Groups) **pulled back into Ferd 1.6** — added to `SPRINT.md` as Steps 15 (D11 circularity trigger, hard prerequisite) and 16 (groups-join-groups UI)
+  - Eid: Journey Creation Granularity, Journey Versioning, Journey Discovery & Search, Whisp Encounter Phenomenology, Whisp Practical UI
+  - Heim: Dynamic Journey Path Changes, FringeIsland Universe Design
+  - Brim: AR Void Visualization, Mobile (iOS/Android) apps
+  - Urd: Three Worlds UI, Seasons & Episodes mechanics, NPC Behaviour, Respawning, Analytics, Monetization
+  - Beyond Urd: Endowment, Console distribution, VR/AR headsets, the Game runtime
+- **Hamn scope clarification** (load-bearing): Hamn = design system + a11y + UX/UI redesign of generic web app interface. Hamn does **NOT** define Three Worlds visual identity (that's Urd). Propagated to `ARCHITECTURE_ANATOMY.md` (~14 references), `PRODUCTS_AND_PLATFORM.md`, `VISION.md`, `DEFERRED.md`, and saved to memory (`memory/hamn_scope.md`)
+- **Source file edits:** DEFERRED.md (v1.8, 17 items updated, 2 deleted, 1 split), ROADMAP.md, VISION.md, PRODUCTS_AND_PLATFORM.md, ARCHITECTURE_ANATOMY.md, SPRINT.md (Steps 15-16 added, dates updated)
+- **Archived:** `docs/products/WAVE_REDISTRIBUTION.md` → `docs/products/_archive/2026-04-07-WAVE_REDISTRIBUTION-completed.md` with full Final Decisions Summary table
+- **Roadmap coverage audit:** Verified DEFERRED.md items vs wave planning docs. Found: only Ferd has a `ROADMAP.md`; post-Ferd waves use `INDEX.md` + `planning/study/*.md` (study questions, not commitments). Coverage gaps: **Eid** (5 items not individually named), **Urd** (5 of 6 items missing), **Brim** (AR framing partial). Recommendations captured but **not yet actioned** — next session will address multi-product challenge (web / iOS / Android / game) which directly shapes these missing wave roadmaps
+- No code changes, no tests needed
+
+**Previous Session:** 2026-04-06 (6-wave docs/products/ restructuring executed)
 **Summary:**
 - **Executed full docs/products/ restructuring** for 6-wave arc (Ferd → Eid → Hamn → Heim → Brim → Urd)
 - Created scaffold folders for `eid/`, `heim/`, `brim/`, `urd/` with standard template (INDEX.md + .gitkeep files)

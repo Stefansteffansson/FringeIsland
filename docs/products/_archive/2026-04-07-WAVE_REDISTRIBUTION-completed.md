@@ -1,11 +1,48 @@
-# Wave Redistribution — Pending Assignment
+# Wave Redistribution — COMPLETED 2026-04-07
+
+> **Status:** ✅ **COMPLETE.** This document is archived for historical reference. All items below have been redistributed across the new 6-wave arc (Ferd → Eid → Hamn → Heim → Brim → Urd). See [DEFERRED.md](../ferd/planning/DEFERRED.md) for current item-level wave assignments.
 
 **Created:** 2026-04-06
-**Purpose:** Items previously assigned to old Wave 2 (Hamn) or Wave 3 / Wave 3+ that need assigning to a wave in the new arc: Ferd → Eid → Hamn → Heim → Brim → Urd
+**Completed:** 2026-04-07
+**Purpose (historical):** Items previously assigned to old Wave 2 (Hamn) or Wave 3 / Wave 3+ that needed assigning to a wave in the new arc.
 
-*Note: The 'Previous Wave' column shows the old wave assignment before the 6-wave restructuring (ADR-U022 amendment). 'Wave 2 (Hamn)' means old Wave 2 — Hamn is now Wave 3.*
+## Final Decisions Summary
 
-These items have been temporarily labelled "Wave TBD — pending work package redistribution" in their source files. This document is the triage list for a separate redistribution session.
+| Source | Item | Final Wave |
+|---|---|---|
+| DEFERRED.md | Journey Creation Granularity | Eid (Wave 2) |
+| DEFERRED.md | Group-to-Group Relationships UI | **Ferd (Wave 1)** — pulled back, moved to SPRINT.md |
+| DEFERRED.md | Subgroups / Groups-Join-Groups | **Ferd (Wave 1)** — pulled back, moved to SPRINT.md |
+| DEFERRED.md | Dynamic Journey Path Changes | Heim (Wave 4) |
+| DEFERRED.md | Journey Versioning and Updates | Eid (Wave 2) |
+| DEFERRED.md | Journey Discovery and Search | Eid (Wave 2) — re-deferred from Hamn |
+| DEFERRED.md | Mobile Application | Brim (Wave 5) — re-deferred from Hamn |
+| DEFERRED.md | Accessibility (a11y) enhancements | Hamn (Wave 3) |
+| DEFERRED.md | Advanced Analytics Dashboard | Urd (Beyond) — re-deferred from Hamn |
+| DEFERRED.md | Monetization Strategy | Urd / Beyond Urd — re-deferred from Hamn |
+| DEFERRED.md | Seasons and Episodes | Urd (Beyond) — re-deferred from Hamn |
+| DEFERRED.md | NPC Behaviour Authoring | Urd (Beyond) — re-deferred from Hamn |
+| DEFERRED.md | FringeIsland Universe Design | Heim (Wave 4) — split from combined item |
+| DEFERRED.md | AR Void Visualization | Brim (Wave 5) — split from combined item |
+| DEFERRED.md | Respawning Mechanics | Urd (Beyond) — re-deferred from Hamn |
+| DEFERRED.md | Whisp Encounter Phenomenology | Eid (Wave 2) — re-deferred from Hamn |
+| DEFERRED.md | Whisp Practical UI Experience | Eid (Wave 2) — re-deferred from Hamn |
+| DEFERRED.md | Three Worlds UI Design | Urd (Beyond) — re-deferred from Hamn |
+| VISION.md | Endowment | Beyond Urd |
+| PRODUCTS_AND_PLATFORM.md | Console (PS/Xbox/Switch) | Beyond Urd |
+| PRODUCTS_AND_PLATFORM.md | VR/AR Headsets (Vision Pro/Quest) | Beyond Urd |
+| ARCHITECTURE_ANATOMY.md | iOS native app | Brim (Wave 5) |
+| ARCHITECTURE_ANATOMY.md | Android native app | Brim (Wave 5) |
+| ARCHITECTURE_ANATOMY.md | Game (Unreal Engine) | Beyond Urd |
+| ROADMAP.md (6 items) | All items | Stale — source content already removed during 2026-04-06 restructuring |
+
+**Scope clarification:** Hamn (Wave 3) is the design system / accessibility / UX/UI redesign of the **generic web app interface**. It does NOT define the Three Worlds visual identity (that is Urd-level work). It does NOT include marketplace, journey creation, or native apps (those moved elsewhere).
+
+---
+
+## Original Triage Document (preserved below for historical reference)
+
+These items had been temporarily labelled "Wave TBD — pending work package redistribution" in their source files. This document was the triage list for a separate redistribution session.
 
 ---
 

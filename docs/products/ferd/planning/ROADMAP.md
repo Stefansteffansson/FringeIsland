@@ -86,11 +86,11 @@ See `SPRINT.md` for the active sprint plan and step-by-step status.
 
 ---
 
-## Waves 2–6: Pending Work Package Redistribution
+## Waves 2–6: Post-Ferd Wave Arc
 
-The detailed content previously held in this roadmap for the old wave model (pre-ADR-U022 amendment) has not yet been redistributed across the new 6-wave arc (Eid → Hamn → Heim → Brim → Urd). That redistribution is a dedicated planning activity.
+The post-Ferd waves of the 6-wave arc (Eid → Hamn → Heim → Brim → Urd) are scoped at a high level here. Detailed deliverables live in each wave's dedicated documentation under `docs/products/<wave>/` and in `DEFERRED.md`.
 
-Until work packages are formally assigned, all post-Ferd items are captured in [WAVE_REDISTRIBUTION.md](./WAVE_REDISTRIBUTION.md). Wave assignments for those items are **Wave TBD — pending work package redistribution**.
+Wave redistribution from the old 2-wave model was completed on 2026-04-07. See [DEFERRED.md](./DEFERRED.md) for item-level wave assignments.
 
 The 6-wave arc is defined in [ADR-U022](../../../universe/decisions/ADR-U022-named-waves.md).
 

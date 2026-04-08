@@ -52,7 +52,7 @@ The fundamental rule: **nothing at a higher layer can exist without everything b
 
 **Critical constraint:** RLS policies are the security enforcement layer. No application code should bypass RLS except through explicitly designated SECURITY DEFINER functions. Every table has RLS enabled.
 
-**Feature flags** live in L0 as a simple database table. A helper function reads flag state. This enables features to be deployed but not yet visible — essential for the Ferd → Hamn transition and for testing in production.
+**Feature flags** live in L0 as a simple database table. A helper function reads flag state. This enables features to be deployed but not yet visible — essential for the Ferd → Eid transition and for testing in production.
 
 **i18n** is a constraint, not a feature. All user-facing strings must be externalised to translation files from day one. Retrofitting internationalisation costs 3-5x more than building it correctly initially.
 
@@ -176,16 +176,16 @@ Onboarding is not a feature — it is a journey. Journey Zero is the first journ
 | Journal | Free-form member writing |
 | Media | Images, video, audio assets |
 | Assets | 3D models, downloadable files, attachments |
-| i18n strings → | User-facing text externalised to translation files (grows in Hamn) |
+| i18n strings → | User-facing text externalised to translation files from Ferd onwards (i18n framework prepared from the start, grows progressively as new features land in later waves) |
 
 **i18n constraint:**
 All user-facing strings in L4 — narrative text, prompt questions, assessment labels — must be externalised to translation files, not hardcoded in components or database records. This is a build constraint, not a feature. It applies from day one even if FringeIsland launches in English only.
 
 **Media and assets:**
-For Ferd, media lives in Supabase Storage (L0). Basic image upload and retrieval. In Hamn, as the Dreamineer marketplace grows and video content increases, a dedicated media delivery strategy (CDN, video transcoding) becomes necessary. This is flagged as a future concern — `→` — but the L0 Storage foundation is correct for now.
+For Ferd, media lives in Supabase Storage (L0). Basic image upload and retrieval. In Eid, as Journey Studio v.1 introduces user-created journeys and the Dreamineer marketplace grows and video content increases, a dedicated media delivery strategy (CDN, video transcoding) becomes necessary. This is flagged as a future concern — `→` — but the L0 Storage foundation is correct for now.
 
 **Content moderation:**
-In Ferd, content is Foundation-created — moderation is trivial. In Hamn, Dreamineer-created content requires a moderation workflow. This is a cross-cutting concern handled by the Administration vertical, not a separate layer. The anatomy supports it — no structural change needed.
+In Ferd, content is Foundation-created — moderation is trivial. In Eid, Dreamineer-created content (Journey Studio v.1) requires a moderation workflow. This is a cross-cutting concern handled by the Administration vertical, not a separate layer. The anatomy supports it — no structural change needed.
 
 **What L4 depends on:** L0 (storage), L1 (content belongs to members or is authored by Dreamineers), L3 (content lives inside journeys).
 
@@ -219,10 +219,10 @@ Supabase provides real-time subscriptions via PostgreSQL LISTEN/NOTIFY. Activity
 | Search | Full-text search across journeys, groups, members, content |
 | Recommendations | Surface relevant journeys and groups based on member profile and activity |
 | Marketplace browsing | Browse Dreamineer-created journeys, experiences, physical products |
-| Search index → | Dedicated search infrastructure (grows from PostgreSQL tsvector in Ferd to dedicated service in Hamn) |
+| Search index → | Dedicated search infrastructure (grows from PostgreSQL tsvector in Ferd to dedicated service in Eid as part of Journey Studio v.1 discovery) |
 
 **Search infrastructure:**
-For Ferd, PostgreSQL's built-in full-text search (`tsvector`, `tsquery`) is sufficient. As the journey catalogue, member directory and marketplace grow in Hamn, a dedicated search service (Algolia, Meilisearch, or scaled PostgreSQL) becomes necessary. This is flagged as a future concern — `→`.
+For Ferd, PostgreSQL's built-in full-text search (`tsvector`, `tsquery`) is sufficient. As the journey catalogue, member directory and marketplace grow in Eid (Journey Studio v.1), a dedicated search service (Algolia, Meilisearch, or scaled PostgreSQL) becomes necessary. This is flagged as a future concern — `→`.
 
 **Recommendations depend on data:**
 Meaningful recommendations require L3 journey progress data, L1 profile_data (assessments, interests), and aggregated behaviour across members. Recommendations are impossible to build correctly before L3 is solid. Discovery is correctly placed above the Experience engine in the layer stack.
@@ -242,7 +242,7 @@ Visitors can browse the marketplace and preview journeys in L6. They cannot enro
 | AI Mentor | Opt-in conversational companion. Contextually aware. Privacy-first. |
 | Profile accumulation | Aggregation of profile_data into a coherent member portrait |
 | Insights | Patterns surfaced from journey engagement and reflection over time |
-| AI provider → | External AI API dependency — grows in capability and privacy significance in Hamn |
+| AI provider → | External AI API dependency — grows in capability and privacy significance progressively across post-Ferd waves (Whisp encounters in Eid, NPC behaviour and Type 4 generative journeys in Urd) |
 
 **The AI Mentor:**
 The AI Mentor is not an external guide. It is the member's parallel self — a companion from a universe where they never found the answers either. It asks genuine questions born from its own incompleteness, which accidentally ask exactly what the member needs to hear.
@@ -255,7 +255,7 @@ Implementation principles:
 - Member can reset or delete Mentor memory at any time
 - Consent managed through the Privacy vertical
 
-For Ferd, the AI Mentor foundation is built: privacy controls, consent model, context storage in profile_data. The full narrative expression (parallel self mechanic) lives in Hamn.
+For Ferd, the AI Mentor foundation is built: privacy controls, consent model, context storage in profile_data. The first narrative expression of the parallel self mechanic (Whisp encounter phenomenology and practical UI) lives in Eid; deeper expressions (NPCs, Seasons, Type 4 generative journeys) live in Urd.
 
 **AI provider dependency:**
 The AI Mentor calls an external AI provider. This is a L0-level external service dependency — like Stripe for Transactions. Member reflection data sent to an AI provider requires explicit consent (Privacy vertical) and data processing agreements (GDPR). The AI provider must be named in L0 and the Privacy vertical must explicitly cover AI data handling.
@@ -285,7 +285,7 @@ Administration manages state changes that cascade across multiple layers simulta
 
 **DeusEx authority:** DeusEx is the actor of last resort in the Administration vertical. Operations that no regular role can perform — emergency stewardship transfer, platform-level data correction — are executed by DeusEx members.
 
-**Moderation** lives in Administration. In Ferd, content is Foundation-controlled and moderation is trivial. In Hamn, Dreamineer-created content requires a moderation workflow — review, approve, reject, remove — all administered through this vertical.
+**Moderation** lives in Administration. In Ferd, content is Foundation-controlled and moderation is trivial. In Eid, Dreamineer-created content (Journey Studio v.1) requires a moderation workflow — review, approve, reject, remove — all administered through this vertical.
 
 ---
 
@@ -319,7 +319,7 @@ Notifications observe events across every layer and deliver signals to members. 
 **Delivery channels:**
 - In-app notification centre — bell icon, aggregates relevant activity
 - Email — transactional only in Ferd (registration, account events). No marketing without explicit consent.
-- Push notifications → — APNS (iOS) and FCM (Android) when native apps launch in Hamn
+- Push notifications → — APNS (iOS) and FCM (Android) when native apps launch in Brim
 
 **Communication relationships served:**
 - DM — one-to-one personal signal
@@ -358,7 +358,7 @@ Transactions are cross-cutting entitlement events driven by Stripe webhooks. A p
 FringeIsland never builds payment logic. Stripe Connect handles marketplace payments — a buyer pays, Stripe splits revenue between the Foundation (platform %) and the creator automatically. FringeIsland stores only: Stripe payment reference, entitlement unlocked, creator earning record.
 
 **Ferd scope:**
-Transactions vertical is a placeholder in Ferd — architecture present, not implemented. The first tier subscription (free → paid) may introduce a basic Stripe integration in late Ferd. Full marketplace launches in Hamn.
+Transactions vertical is a placeholder in Ferd — architecture present, not implemented. The first tier subscription (free → paid) may introduce a basic Stripe integration in late Ferd. Basic marketplace launches in Eid (Journey Studio v.1). Full monetization at scale lives in Urd.
 
 **Transactions vertical vs Administration vertical:**
 Both are cross-cutting but operated by different actors. Administration is human-operated lifecycle events. Transactions are automated Stripe-driven entitlement events. They are separate verticals precisely because they have different actors, different triggers, and different consequence patterns.
@@ -373,16 +373,16 @@ The Platform API ring is the contract between the backend anatomy and every fron
 
 **Now (Ferd):** Frontend contract. The web platform calls these API routes. Every piece of functionality is accessible through a clean `/api/...` route. Business logic lives in API routes, not in Next.js server components or page files. The frontend calls the API — it does not reach into the database directly.
 
-**Later (Hamn):** Extension surface. Native iOS and Android apps call the same API routes. Dreamineer plugins connect through defined extension points. Third-party integrations connect via webhooks.
+**Post-Ferd:** Extension surface emerges in Eid (Dreamineer plugins connect through defined extension points alongside Journey Studio v.1). Native iOS and Android apps in Brim call the same API routes. Third-party integrations connect via webhooks.
 
 **API-first principle:**
 Every Ferd feature is built as if iOS and Android already exist. The API is designed to serve multiple clients without redesign. This costs almost nothing to get right now and is very expensive to fix later.
 
 **The ring includes:**
 - Rate limiting — protecting the system from abuse and ensuring fair usage
-- API versioning — enabling the API to evolve from Ferd to Hamn without breaking existing clients (`/api/v1/`, `/api/v2/`)
+- API versioning — enabling the API to evolve from Ferd through later waves without breaking existing clients (`/api/v1/`, `/api/v2/`)
 - Authentication middleware — JWT validation on every request
-- Extension surface → — plugin connection points, defined in Hamn
+- Extension surface → — plugin connection points, defined in Eid alongside Journey Studio v.1
 
 **Pattern — always follow this:**
 ```
@@ -426,11 +426,11 @@ Multiple frontend clients connect to the same backend anatomy through the Platfo
 | Frontend | Wave | Primary context |
 |----------|------|----------------|
 | Web platform (Ferd) | Wave 1 — now | Deep work, reflection, Dreamineer creation |
-| Web platform (Eid) | Wave 2 | wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) |
-| Web platform (Hamn) | Wave 3 | wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) |
-| iOS native app | wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) | On-the-go, notifications, quick engagement |
-| Android native app | wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) | On-the-go, notifications, quick engagement |
-| Game | wave TBD — pending work package redistribution (see WAVE_REDISTRIBUTION.md) | Immersive three-realm experience, Unreal Engine |
+| Web platform (Eid) | Wave 2 | Journey Studio v.1, first Whisp specifications |
+| Web platform (Hamn) | Wave 3 | Design system, accessibility, UX/UI redesign of the generic web app interface |
+| iOS native app | Wave 5 — Brim | On-the-go, notifications, quick engagement |
+| Android native app | Wave 5 — Brim | On-the-go, notifications, quick engagement |
+| Game | Beyond Urd | Immersive three-realm experience, Unreal Engine |
 
 **The same world, different entry points:**
 A member might use the web platform for deep reflection in the evening, the iOS app for a journey activity during their commute, and the game on a weekend to explore The Other Side. The backend anatomy serves all of them identically. The design system makes them feel like the same world.
@@ -473,14 +473,14 @@ The anatomy dictates the build order. You cannot build a layer before everything
 - L4 — Content
 - L5 — Communication (partial already exists)
 - L6 — Discovery
-- L7 — Intelligence (foundation in Ferd, full expression in Hamn)
+- L7 — Intelligence (foundation in Ferd, Whisp expression in Eid, deeper expression in Urd)
 
 **Verticals to implement progressively:**
 - Administration — implement cascade specs as each lifecycle event is built
 - Privacy — implement consent and erasure as each data-generating feature is built
 - Notifications — implement as L5 communication features are built
 - Observability — implement audit logging from day one, error tracking from first deploy
-- Transactions — placeholder in Ferd, implement in Hamn
+- Transactions — placeholder in Ferd, basic marketplace in Eid, full monetization at scale in Urd
 
 ---
 
@@ -511,7 +511,7 @@ The anatomy dictates the build order. You cannot build a layer before everything
 | Journey Zero | First journey every new member walks. Onboarding as a journey. |
 | Ferd | Current web platform. Departure point. Wave 1. |
 | Eid | Next wave of the FringeIsland platform. Wave 2. |
-| Hamn | Evolved FringeIsland experience platform. Wave 3. |
+| Hamn | Wave 3 — design system, accessibility, and UX/UI redesign of the generic web app interface. Does NOT define the Three Worlds visual identity (that is Urd-level work). |
 | Platform API ring | Contract between backend anatomy and all frontends |
 | → | Marks a known future concern within an existing element — grows over time |
 | ADR | Architecture Decision Record — documented decision with context and reasoning |

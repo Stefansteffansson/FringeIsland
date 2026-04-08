@@ -1,6 +1,6 @@
 # SPRINT.md — Active Sprint Tracker
 
-**Last Updated:** 2026-04-06 (6-wave docs/products/ restructuring complete)
+**Last Updated:** 2026-04-07 (wave redistribution complete; groups-join-groups UI pulled back into Ferd 1.6)
 **Version:** v0.2.37
 
 ---
@@ -39,8 +39,10 @@
 | 12 | Basic announcements (TDD) | Sprint Agent | Not started |
 | 13 | Expand E2E test coverage beyond 7 starter tests | Test Agent | Not started |
 | 14 | Fix known issues: orphan groups, alert() in fix-orphans, hydration warning | Integration Agent | Not started |
-| 15 | Beta testing setup — invite 10-20 users | — | Not started |
-| 16 | Error monitoring (Sentry) | Integration Agent | Not started |
+| 15 | D11 circularity prevention trigger (hard prerequisite for #16) | Database Agent | Not started |
+| 16 | Group-to-Group Relationships UI / Subgroups (groups-join-groups) — pulled back from Wave 3 on 2026-04-07 | Sprint Agent | Not started |
+| 17 | Beta testing setup — invite 10-20 users | — | Not started |
+| 18 | Error monitoring (Sentry) | Integration Agent | Not started |
 
 ### Blockers
 
@@ -79,9 +81,9 @@ After Ferd 1.6 ships:
 |----------|------|-------|
 | 1 | Hamn M1 — Journey Creation Tools | Visual editor, step types, rich text |
 | 2 | Hamn M2 — Journey Marketplace | Publishing workflow, browse, ratings |
-| 3 | Hamn M3 — Enhanced Collaboration | Co-creation, groups-join-groups UI |
+| 3 | Hamn M3 — Enhanced Collaboration | Co-creation features (groups-join-groups UI pulled back into Ferd 1.6) |
 
-See `docs/products/ferd/planning/ROADMAP.md` for wave roadmap, `docs/products/ferd/planning/DEFERRED.md` for deferred scope, `docs/products/INDEX.md` for all waves, and `docs/products/WAVE_REDISTRIBUTION.md` for items pending wave assignment.
+See `docs/products/ferd/planning/ROADMAP.md` for wave roadmap, `docs/products/ferd/planning/DEFERRED.md` for deferred scope, and `docs/products/INDEX.md` for all waves. (Wave redistribution completed 2026-04-07 — see `docs/products/_archive/2026-04-07-WAVE_REDISTRIBUTION-completed.md`.)
 
 ---
 
