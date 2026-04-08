@@ -60,7 +60,7 @@ Every work item has a type. The type determines which template to use, which DoD
 
 | Type | What it is | Template | Notes |
 |------|-----------|----------|-------|
-| **feature** | Functional requirement, user-facing | `../templates/prd.md` + `../templates/user-story.md` | Tag with product (`ferd`/`hamn`/etc.) |
+| **feature** | Functional requirement, user-facing | `../templates/prd.md` + `../templates/user-story.md` | Tag with product (`web`/`ios`/etc.) |
 | **nfr** | Non-functional / quality attribute (performance, security, a11y) | `../templates/prd.md` | Often produced by a vertical owner |
 | **architectural** | Technical decision or infrastructure change | `../templates/adr.md` | Always produces an ADR |
 | **spike** | Time-boxed research / exploration | `../templates/research-spike.md` | Output is findings + follow-up items |
@@ -177,7 +177,7 @@ Every backlog item carries four tags. Without tags, prioritisation across the ec
 
 | Tag | Values |
 |-----|--------|
-| **Product** | `ferd` · `hamn` · `ios` · `android` · `game` · `journey-designer` · `universe-designer` · `arc-designer` · `platform-core` · `platform-domain` · `design-system` |
+| **Product** | `web` · `ios` · `android` · `game` · `journey-designer` · `universe-designer` · `arc-designer` · `platform-core` · `platform-domain` · `design-system` |
 | **Type** | `feature` · `nfr` · `architectural` · `spike` · `bug` · `tech-debt` · `process` |
 | **Maturity** | `0-raw` · `1-concept` · `2-explored` · `3-specified` · `4-ready` |
 | **Domain service** *(if applicable)* | `world-model` · `narrative` · `experience` · `content` · `communication` · `discovery` · `intelligence` · `extension` |
@@ -188,7 +188,7 @@ In `backlog/discovery.md` and `backlog/product.md`, write tags as a single line 
 
 ```
 ## Add group polls
-**Tags:** product:ferd · type:feature · maturity:2-explored · domain-service:communication
+**Tags:** product:web · type:feature · maturity:2-explored · domain-service:communication
 
 [item description...]
 ```

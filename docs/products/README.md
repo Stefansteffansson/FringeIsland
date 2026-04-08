@@ -3,7 +3,7 @@
 One folder per product surface that members or creators actually touch. A *product* is a deployable surface (web, mobile, game). Studios live in their own peer folder. Waves are time phases, NOT products.
 
 ## What counts as a product
-Web (Ferd → Hamn), iOS, Android, Game.
+Web, iOS, Android, Game. Each is a deployable client surface; what they expose evolves wave by wave (see `../ecosystem/`).
 
 ## Per-product files
 - `DESCRIPTION.md` — outward-facing identity (template: `../templates/product-description.md`)
