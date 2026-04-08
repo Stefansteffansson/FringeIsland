@@ -14,6 +14,23 @@ FringeIsland is an edutainment platform for group-based personal development thr
 
 ---
 
+## Doc Structure — In Transition (April 2026)
+
+The repository documentation is being restructured into a multi-product ecosystem layout. Two structures coexist:
+
+- **`docs/old_*/`** (`old_universe/`, `old_products/`, `old_implementation/`, `old_INDEX.md`) — current source of truth. Boot-up, sessions, agent contexts, and all live work still reference these paths.
+- **`docs/{ecosystem,products,studios,platform,architecture,planning,research,design-system,templates,verticals}/`** — new ecosystem layout, scaffolded. Will be populated phase by phase. Not yet authoritative.
+
+**Restructure phase status:**
+- ✅ Phase 1 — folder structure + README stubs
+- ⬜ Phase 2 — `docs/planning/PROCESS.md` (way of working)
+- ⬜ Phase 3 — templates in `docs/templates/`
+- ⬜ Phase 4 — content migration from `old_*` → new
+
+Until Phase 4 is complete, **the boot-up workflow and document map below still point at `docs/old_*/`** — the old structure is still the source of truth for active work.
+
+---
+
 ## Session Management (Read First!)
 
 ### Boot-Up — Start of every session
