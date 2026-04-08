@@ -92,6 +92,18 @@ Every work item has a type. The type determines which template to use, which DoD
   - Update the relevant roadmaps (`docs/ecosystem/ECOSYSTEM_ROADMAP.md`, product roadmaps, `docs/platform/core/ROADMAP.md`)
   - Run retrospective for the cycle that just ended (template: `../templates/retrospective.md`)
 
+### Wave overlap rule (locked)
+
+Only **one wave's items may be in Specify (Level 3) or Build (Level 5) at any time.** The next wave's items may be in Concept (Level 1) or Study/Explored (Level 2) while the current wave is building — but they cannot advance to Specified until the current wave's Build phase is complete.
+
+This is a hard cut on Build and a soft overlap on Concept/Study. It exists to prevent half-finished waves from accumulating and to keep the maturity pipeline coherent across the six-wave saga arc (Ferd → Eid → Hamn → Heim → Brim → Urd). It is a **locked decision** — to be recorded as an ADR when `docs/architecture/decisions/` is populated.
+
+### Wave transition
+
+When a wave completes (last Build item reaches Done), it triggers:
+- A **wave retrospective** (use `../templates/retrospective.md`, scope = entire wave, not just last cycle)
+- An **ecosystem roadmap update** (`docs/ecosystem/ECOSYSTEM_ROADMAP.md`) reflecting the wave transition and unlocking the next wave's items to advance past Level 2
+
 ### Why this shape
 
 - **Cycles + cooldown** — gives a forcing function to ship and a buffer to absorb spillover, fix bugs, and rest. Without cooldown, every cycle's overflow becomes the next cycle's starting debt.
@@ -164,6 +176,7 @@ This is the trigger → artifact map. Whenever you find yourself starting work, 
 | Research needed before specifying | Research spike | `../templates/research-spike.md` | `../research/{topic}.md` |
 | Cycle starts | Cycle plan | `../templates/cycle-plan.md` | `cycles/cycle-current.md` |
 | Cycle ends | Retrospective | `../templates/retrospective.md` | `cycles/retro-YYYY-MM-DD.md` |
+| Wave completes (last Build item Done) | Wave retrospective + ecosystem roadmap update | `../templates/retrospective.md` (wave-scoped) | `cycles/retro-wave-{name}.md` + edit `../ecosystem/ECOSYSTEM_ROADMAP.md` |
 | Cross-cutting vertical concern needs specifying | Vertical spec | `../templates/vertical-spec.md` | `../verticals/{name}.md` |
 | Ecosystem vision changes | Update VISION.md | (no template — constitutional) | `../ecosystem/VISION.md` |
 
@@ -181,6 +194,7 @@ Every backlog item carries four tags. Without tags, prioritisation across the ec
 | **Type** | `feature` · `nfr` · `architectural` · `spike` · `bug` · `tech-debt` · `process` |
 | **Maturity** | `0-raw` · `1-concept` · `2-explored` · `3-specified` · `4-ready` |
 | **Domain service** *(if applicable)* | `world-model` · `narrative` · `experience` · `content` · `communication` · `discovery` · `intelligence` · `extension` |
+| **Wave** *(optional)* | `ferd` · `eid` · `hamn` · `heim` · `brim` · `urd` — separate from and in addition to the product/studio/platform tag |
 
 ### Tag format
 
