@@ -59,12 +59,12 @@ Comprehensive requirements accuracy check and documentation health overhaul acro
 
 ## Files Changed
 
-- `docs/products/ferd/specification/PRODUCT_SPEC.md` (rewrite)
-- `docs/products/ferd/specification/REQUIREMENTS.md` (8 edits)
-- `docs/products/ferd/specification/INDEX.md` (description fix)
-- `docs/products/hamn/specification/REQUIREMENTS.md` (rewrite)
-- `docs/products/hamn/planning/DEFERRED.md` (new section)
-- `docs/products/ferd/development/DOC_HEALTH_CHECK.md` (rewrite)
+- `docs/old_products/ferd/specification/PRODUCT_SPEC.md` (rewrite)
+- `docs/old_products/ferd/specification/REQUIREMENTS.md` (8 edits)
+- `docs/old_products/ferd/specification/INDEX.md` (description fix)
+- `docs/old_products/hamn/specification/REQUIREMENTS.md` (rewrite)
+- `docs/old_products/hamn/planning/DEFERRED.md` (new section)
+- `docs/old_products/ferd/development/DOC_HEALTH_CHECK.md` (rewrite)
 - `CLAUDE.md` (3 edits)
 - `README.md` (1 edit)
 - `PROJECT_STATUS.md` (close-down)

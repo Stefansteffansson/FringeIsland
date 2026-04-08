@@ -1,6 +1,6 @@
 # Shared Database Schema (PostgreSQL)
 
-**Location:** `/docs/implementation/shared/DATABASE_CURRENT.md`
+**Location:** `/docs/old_implementation/shared/DATABASE_CURRENT.md`
 
 **Scope:** ALL PRODUCTS (Ferd, Hamn, iOS, Android)
 
@@ -94,7 +94,7 @@ This document describes the PostgreSQL database schema shared by all FringeIslan
 - Private/invite_only readable by members only
 - Only Stewards can update group
 
-**See:** [Universal Group Pattern in Ferd ANATOMY.md](/docs/products/ferd/architecture/ANATOMY.md#universal-group-pattern)
+**See:** [Universal Group Pattern in Ferd ANATOMY.md](/docs/old_products/ferd/architecture/ANATOMY.md#universal-group-pattern)
 
 ---
 
@@ -121,7 +121,7 @@ This document describes the PostgreSQL database schema shared by all FringeIslan
 - Stewards can read all roles in their groups
 - Stewards can assign/change roles
 
-**See:** [ADR-F007: Three-Layer Permission Model](/docs/products/ferd/architecture/DECISIONS.md#ADR-F007)
+**See:** [ADR-F007: Three-Layer Permission Model](/docs/old_products/ferd/architecture/DECISIONS.md#ADR-F007)
 
 ---
 
@@ -266,7 +266,7 @@ VALUES (
 );
 ```
 
-**See:** [ADR-F009: Profile Data as Flexible Key-Value Store](/docs/products/ferd/architecture/DECISIONS.md#ADR-F009)
+**See:** [ADR-F009: Profile Data as Flexible Key-Value Store](/docs/old_products/ferd/architecture/DECISIONS.md#ADR-F009)
 
 ---
 
@@ -332,31 +332,31 @@ SELECT has_permission(
 **API:** Next.js API routes query via Supabase  
 **Frontend:** React components query via Supabase client
 
-**See:** [Ferd Baseline](/docs/implementation/ferd/baseline/INDEX.md)
+**See:** [Ferd Baseline](/docs/old_implementation/ferd/baseline/INDEX.md)
 
 ### Hamn (Evolved Web)
 **Client:** Supabase JS (same as Ferd)  
 **Changes:** May add new tables/columns as Hamn evolves
 
-**See:** [Hamn Baseline](/docs/implementation/hamn/baseline/INDEX.md)
+**See:** [Hamn Baseline](/docs/old_implementation/hamn/baseline/INDEX.md)
 
 ### iOS App
 **Client:** Supabase Swift  
 **Queries:** Same tables, different client library
 
-**See:** [iOS Baseline](/docs/implementation/ios-app/baseline/INDEX.md)
+**See:** [iOS Baseline](/docs/old_implementation/ios-app/baseline/INDEX.md)
 
 ### Android App
 **Client:** Supabase Kotlin  
 **Queries:** Same tables, different client library
 
-**See:** [Android Baseline](/docs/implementation/android-app/baseline/INDEX.md)
+**See:** [Android Baseline](/docs/old_implementation/android-app/baseline/INDEX.md)
 
 ---
 
 ## Related Documentation
 
-**Architecture:** [Ferd ANATOMY.md](/docs/products/ferd/architecture/ANATOMY.md)  
+**Architecture:** [Ferd ANATOMY.md](/docs/old_products/ferd/architecture/ANATOMY.md)  
 **RLS Policies:** [RLS_POLICIES.md](./RLS_POLICIES.md)  
 **Auth System:** [AUTH_SYSTEM.md](./AUTH_SYSTEM.md)  
 **Supabase Config:** [SUPABASE_CONFIG.md](./SUPABASE_CONFIG.md)

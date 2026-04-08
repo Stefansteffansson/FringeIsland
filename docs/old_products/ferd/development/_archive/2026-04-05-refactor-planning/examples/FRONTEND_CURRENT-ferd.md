@@ -1,6 +1,6 @@
 # Ferd Frontend Baseline
 
-**Location:** `/docs/implementation/ferd/baseline/FRONTEND_CURRENT.md`
+**Location:** `/docs/old_implementation/ferd/baseline/FRONTEND_CURRENT.md`
 
 **Scope:** Ferd Web App ONLY (frontend code)
 
@@ -413,7 +413,7 @@ export type Database = {
 - Typography: Inter font family
 - Spacing: Tailwind defaults
 
-**See:** [Design System](/docs/products/ferd/architecture/DESIGN_SYSTEM.md)
+**See:** [Design System](/docs/old_products/ferd/architecture/DESIGN_SYSTEM.md)
 
 ---
 
@@ -473,8 +473,8 @@ export type Database = {
 - [References to Shared](./REFERENCES_SHARED.md)
 
 **Product Docs:**
-- [Ferd Architecture](/docs/products/ferd/architecture/ANATOMY.md)
-- [Ferd Requirements](/docs/products/ferd/specification/REQUIREMENTS.md)
+- [Ferd Architecture](/docs/old_products/ferd/architecture/ANATOMY.md)
+- [Ferd Requirements](/docs/old_products/ferd/specification/REQUIREMENTS.md)
 
 ---
 

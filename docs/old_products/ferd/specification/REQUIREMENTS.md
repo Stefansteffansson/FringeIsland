@@ -473,7 +473,7 @@ profile_data (
 - Implemented in v0.2.30
 - Full TDD sprint documented
 
-**See:** `docs/products/ferd/development/features/FR-display-name-system.md`
+**See:** `docs/old_products/ferd/development/features/FR-display-name-system.md`
 
 ---
 
@@ -2811,12 +2811,12 @@ profile_data (
 ## Related Documents
 
 **Analysis:**
-- [ACTUAL_STATE.md](../../../implementation/ferd/baseline/ACTUAL_STATE.md) — Claude Code analysis (source of truth)
+- [ACTUAL_STATE.md](../../../old_implementation/ferd/baseline/ACTUAL_STATE.md) — Claude Code analysis (source of truth)
 
 **Architecture:**
-- [ARCHITECTURE_ANATOMY.md](../../../universe/architecture/ARCHITECTURE_ANATOMY.md) — Layered model (L0-L7, V1-V5)
-- [Architecture Decisions](../../../universe/decisions/INDEX.md) — 24 locked ADRs
-- [ARCHITECTURE_BASELINE.md](../../../implementation/ferd/baseline/BASELINE.md) — Live implementation state
+- [ARCHITECTURE_ANATOMY.md](../../../old_universe/architecture/ARCHITECTURE_ANATOMY.md) — Layered model (L0-L7, V1-V5)
+- [Architecture Decisions](../../../old_universe/decisions/INDEX.md) — 24 locked ADRs
+- [ARCHITECTURE_BASELINE.md](../../../old_implementation/ferd/baseline/BASELINE.md) — Live implementation state
 
 **Planning:**
 - [ROADMAP.md](../planning/ROADMAP.md) — Wave roadmap and milestones

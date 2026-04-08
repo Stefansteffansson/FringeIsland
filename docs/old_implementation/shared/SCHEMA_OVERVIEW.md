@@ -208,7 +208,7 @@ See `./MIGRATIONS_LOG.md` for complete history.
 - **Full schema SQL:** `./DATABASE_CURRENT.md`
 - **RLS policies:** `./RLS_POLICIES.md`
 - **Migration log:** `./MIGRATIONS_LOG.md`
-- **Domain entities:** `../../universe/architecture/DOMAIN_ENTITIES.md`
+- **Domain entities:** `../../old_universe/architecture/DOMAIN_ENTITIES.md`
 - **Authorization model:** `./AUTH_SYSTEM.md`
 
 ---
@@ -242,4 +242,4 @@ const canManageMembers = hasPermission('manage_members');
 
 ---
 
-**For database-specific work, also read:** `../../products/ferd/development/agents/contexts/database-agent.md`
+**For database-specific work, also read:** `../../old_products/ferd/development/agents/contexts/database-agent.md`

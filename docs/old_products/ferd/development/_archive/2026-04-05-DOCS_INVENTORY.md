@@ -23,7 +23,7 @@
 
 | File | Size | Description |
 |------|------|-------------|
-| `docs/INDEX.md` | 10 KB | Master navigation index for all FringeIsland documentation with quick-nav table |
+| `docs/old_INDEX.md` | 10 KB | Master navigation index for all FringeIsland documentation with quick-nav table |
 
 ---
 
@@ -161,13 +161,13 @@
 
 ---
 
-## docs/implementation/
+## docs/old_implementation/
 
 | File | Size | Description |
 |------|------|-------------|
-| `docs/implementation/AUTH_IMPLEMENTATION.md` | 6 KB | Authentication implementation: file structure, component details, integration guide |
-| `docs/implementation/AUTH_IMPLEMENTATION_SUMMARY.md` | 6 KB | Authentication implementation summary: what was built, completion status |
-| `docs/implementation/INSTALLATION.md` | 5 KB | Authentication system installation guide: step-by-step setup instructions |
+| `docs/old_implementation/AUTH_IMPLEMENTATION.md` | 6 KB | Authentication implementation: file structure, component details, integration guide |
+| `docs/old_implementation/AUTH_IMPLEMENTATION_SUMMARY.md` | 6 KB | Authentication implementation summary: what was built, completion status |
+| `docs/old_implementation/INSTALLATION.md` | 5 KB | Authentication system installation guide: step-by-step setup instructions |
 
 ---
 
@@ -335,7 +335,7 @@
 | `docs/design-reviews/` | 1 | 9 KB |
 | `docs/features/implemented/` | 16 | 261 KB |
 | `docs/flows/` | 1 | 16 KB |
-| `docs/implementation/` | 3 | 17 KB |
+| `docs/old_implementation/` | 3 | 17 KB |
 | `docs/planning/` (non-archive, non-session) | 8 | 217 KB |
 | `docs/planning/archive/` | 6 | 149 KB |
 | `docs/planning/sessions/` (active) | 16 | 174 KB |

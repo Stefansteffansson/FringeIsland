@@ -4,7 +4,7 @@
 **For:** Connecting backend data to frontend components, implementing business logic
 **Last Updated:** February 13, 2026
 
-**Replaces:** `archive/feature-agent.md` (the 8-phase workflow moved to `docs/products/ferd/development/WORKFLOW.md`)
+**Replaces:** `archive/feature-agent.md` (the 8-phase workflow moved to `docs/old_products/ferd/development/WORKFLOW.md`)
 
 ---
 
@@ -293,11 +293,11 @@ My work is done when:
 ## Learning Protocol
 
 When working in this domain:
-1. Check `docs/products/ferd/development/agents/learnings/integration.md` for recent discoveries
+1. Check `docs/old_products/ferd/development/agents/learnings/integration.md` for recent discoveries
 2. During work, append new findings to the journal
 3. At close-down, flag any cross-cutting learnings for MEMORY.md
 
-Journal location: `docs/products/ferd/development/agents/learnings/integration.md`
+Journal location: `docs/old_products/ferd/development/agents/learnings/integration.md`
 Last curated: 2026-02-13 (initial)
 
 ---
@@ -305,7 +305,7 @@ Last curated: 2026-02-13 (initial)
 ## Related Documentation
 
 - **CLAUDE.md** — Full technical patterns and code examples
-- **Database Agent:** `docs/products/ferd/development/agents/contexts/database-agent.md`
-- **UI Agent:** `docs/products/ferd/development/agents/contexts/ui-agent.md`
-- **Feature docs:** `docs/products/ferd/development/features/`
-- **Feature dev workflow:** `docs/products/ferd/development/WORKFLOW.md`
+- **Database Agent:** `docs/old_products/ferd/development/agents/contexts/database-agent.md`
+- **UI Agent:** `docs/old_products/ferd/development/agents/contexts/ui-agent.md`
+- **Feature docs:** `docs/old_products/ferd/development/features/`
+- **Feature dev workflow:** `docs/old_products/ferd/development/WORKFLOW.md`

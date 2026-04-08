@@ -57,7 +57,7 @@ Also discussed agent execution models (sequential vs parallel), Claude Code Agen
 - `docs/agents/contexts/ui-agent.md` — Added Boundaries + Learning Protocol
 - `docs/workflows/close-down.md` — Added step 3, renumbered steps
 - `docs/workflows/boot-up.md` — 5 feature-agent refs → integration/architect
-- `docs/INDEX.md` — 3-agent list → 7-agent two-tier structure
+- `docs/old_INDEX.md` — 3-agent list → 7-agent two-tier structure
 - `PROJECT_STATUS.md` — Agent system references, last session summary
 - `MEMORY.md` — Restructured as pure index (78 lines)
 

@@ -69,7 +69,7 @@ Located in `/examples/` folder:
 
 ## The Three Tiers
 
-### TIER 1: Universe (`/docs/universe/`)
+### TIER 1: Universe (`/docs/old_universe/`)
 **Purpose:** Ecosystem-wide vision, strategy, worldbuilding
 
 **Characteristics:**
@@ -83,7 +83,7 @@ Located in `/examples/` folder:
 
 ---
 
-### TIER 2: Products (`/docs/products/{product}/`)
+### TIER 2: Products (`/docs/old_products/{product}/`)
 **Purpose:** Product-specific specification, architecture, planning
 
 **Characteristics:**
@@ -97,7 +97,7 @@ Located in `/examples/` folder:
 
 ---
 
-### TIER 3: Implementation (`/docs/implementation/`)
+### TIER 3: Implementation (`/docs/old_implementation/`)
 **Purpose:** Current state tracking, status, handover
 
 **Characteristics:**

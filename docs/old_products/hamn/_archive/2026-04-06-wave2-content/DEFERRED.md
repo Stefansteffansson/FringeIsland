@@ -4,7 +4,7 @@
 
 This document tracks design decisions, features, and questions that have been deferred from Hamn (Wave 2) to later waves. Each item includes context, rationale for deferral, and notes for future implementation.
 
-For the deferral protocol (two-sided acceptance workflow), see [Deferral Protocol](../../../universe/processes/DEFERRAL_PROTOCOL.md).
+For the deferral protocol (two-sided acceptance workflow), see [Deferral Protocol](../../../old_universe/processes/DEFERRAL_PROTOCOL.md).
 
 ## Format
 
@@ -185,8 +185,8 @@ Each deferred decision includes:
 
 | Document | Purpose |
 |----------|---------|
-| [Deferral Protocol](../../../universe/processes/DEFERRAL_PROTOCOL.md) | Two-sided deferral workflow |
+| [Deferral Protocol](../../../old_universe/processes/DEFERRAL_PROTOCOL.md) | Two-sided deferral workflow |
 | [Ferd Deferred](../../ferd/planning/DEFERRED.md) | Wave 1 deferrals (many accepted by Hamn) |
 | [Hamn Research](./RESEARCH.md) | Open investigations |
 | [Hamn Product Spec](../specification/PRODUCT_SPEC.md) | What Hamn is building |
-| [Cross-wave Open Questions](../../../universe/strategy/OPEN_QUESTIONS.md) | Unowned strategic questions |
+| [Cross-wave Open Questions](../../../old_universe/strategy/OPEN_QUESTIONS.md) | Unowned strategic questions |

@@ -23,11 +23,11 @@ I am the Architect Agent. I design systems AFTER behaviors and failing tests exi
 
 ## Quick Reference
 
-- **Architecture doc:** `docs/universe/architecture/ARCHITECTURE_ANATOMY.md`
-- **Schema overview:** `docs/implementation/shared/SCHEMA_OVERVIEW.md`
-- **Product spec:** `docs/products/ferd/specification/PRODUCT_SPEC.md`
-- **Deferred decisions:** `docs/products/ferd/planning/DEFERRED.md`
-- **RBAC design:** `docs/products/ferd/development/features/AR-dynamic-permissions-system.md`
+- **Architecture doc:** `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md`
+- **Schema overview:** `docs/old_implementation/shared/SCHEMA_OVERVIEW.md`
+- **Product spec:** `docs/old_products/ferd/specification/PRODUCT_SPEC.md`
+- **Deferred decisions:** `docs/old_products/ferd/planning/DEFERRED.md`
+- **RBAC design:** `docs/old_products/ferd/development/features/AR-dynamic-permissions-system.md`
 - **Migration files:** `supabase/migrations/`
 - **Current tables:** 19 (PostgreSQL via Supabase, all with RLS)
 - **Tech stack:** Next.js 16.1, TypeScript, Tailwind CSS, Supabase
@@ -65,7 +65,7 @@ I am the Architect Agent. I design systems AFTER behaviors and failing tests exi
 ### ⛔ PRE-CONDITION (HARD GATE)
 
 **Before ANY design work, verify ALL of the following exist:**
-- [ ] Behavior specs exist for this feature (in `docs/products/ferd/development/specs/behaviors/`)
+- [ ] Behavior specs exist for this feature (in `docs/old_products/ferd/development/specs/behaviors/`)
 - [ ] Integration tests are written (in `tests/integration/`)
 - [ ] Tests have been run and confirmed to FAIL (RED)
 
@@ -78,9 +78,9 @@ This is a hard gate, not a suggestion. Designing without failing tests has cause
 ### 1. Understand the Requirement
 
 Before designing anything:
-- Read `docs/products/ferd/specification/PRODUCT_SPEC.md` — is this feature in scope?
-- Read `docs/products/ferd/planning/DEFERRED.md` — has this been deferred?
-- Read `docs/products/ferd/development/features/` — has this been designed already?
+- Read `docs/old_products/ferd/specification/PRODUCT_SPEC.md` — is this feature in scope?
+- Read `docs/old_products/ferd/planning/DEFERRED.md` — has this been deferred?
+- Read `docs/old_products/ferd/development/features/` — has this been designed already?
 - Read relevant behavior specs — what rules must the design support?
 
 ### 2. Survey the Current System
@@ -183,8 +183,8 @@ When making architectural decisions, document them:
 ```
 
 Key decisions are recorded in:
-- `docs/products/ferd/planning/ROADMAP.md` → Decision Log section
-- `docs/products/ferd/development/features/` → Design documents
+- `docs/old_products/ferd/planning/ROADMAP.md` → Decision Log section
+- `docs/old_products/ferd/development/features/` → Design documents
 - MEMORY.md → Cross-cutting decisions (index only)
 
 ---
@@ -212,7 +212,7 @@ journey_enrollments ← user/group enrollment (JSONB progress_data)
 - Added `permission_sets` table + `role_permission_sets` join
 - Added `has_permission()` function replacing `isLeader` checks — **COMPLETE (RBAC Sub-Sprint 1)**
 - Auto-create personal groups on signup
-- See full design: `docs/products/ferd/development/features/AR-dynamic-permissions-system.md`
+- See full design: `docs/old_products/ferd/development/features/AR-dynamic-permissions-system.md`
 
 ---
 
@@ -247,21 +247,21 @@ My work is done when:
 ## Learning Protocol
 
 When working in this domain:
-1. Check `docs/products/ferd/development/agents/learnings/architecture.md` for recent discoveries
+1. Check `docs/old_products/ferd/development/agents/learnings/architecture.md` for recent discoveries
 2. During work, append new findings to the journal
 3. At close-down, flag any cross-cutting learnings for MEMORY.md
 
-Journal location: `docs/products/ferd/development/agents/learnings/architecture.md`
+Journal location: `docs/old_products/ferd/development/agents/learnings/architecture.md`
 Last curated: 2026-02-13 (initial)
 
 ---
 
 ## Related Documentation
 
-- **Architecture:** `docs/universe/architecture/ARCHITECTURE_ANATOMY.md`
-- **Database schema:** `docs/implementation/shared/SCHEMA_OVERVIEW.md`
-- **Product spec:** `docs/products/ferd/specification/PRODUCT_SPEC.md`
-- **RBAC design:** `docs/products/ferd/development/features/AR-dynamic-permissions-system.md`
-- **Deferred decisions:** `docs/products/ferd/planning/DEFERRED.md`
+- **Architecture:** `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md`
+- **Database schema:** `docs/old_implementation/shared/SCHEMA_OVERVIEW.md`
+- **Product spec:** `docs/old_products/ferd/specification/PRODUCT_SPEC.md`
+- **RBAC design:** `docs/old_products/ferd/development/features/AR-dynamic-permissions-system.md`
+- **Deferred decisions:** `docs/old_products/ferd/planning/DEFERRED.md`
 - **Migration files:** `supabase/migrations/`
-- **Database Agent:** `docs/products/ferd/development/agents/contexts/database-agent.md` (implementation partner)
+- **Database Agent:** `docs/old_products/ferd/development/agents/contexts/database-agent.md` (implementation partner)

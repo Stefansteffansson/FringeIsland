@@ -131,7 +131,7 @@ Stefan is the founder and sole developer, working via a vibe coding methodology 
 - `README.md` — new architecture doc links
 - `CLAUDE.md` — anatomy as primary ref, wave model, API-first pattern (ADR-009)
 - `PROJECT_STATUS.md` — stale refs cleaned
-- `docs/INDEX.md` — stale refs cleaned
+- `docs/old_INDEX.md` — stale refs cleaned
 - `docs/agents/contexts/architect-agent.md` — stale refs cleaned
 - `docs/workflows/close-down.md` — stale refs cleaned
 - `docs/workflows/feature-development.md` — stale refs cleaned

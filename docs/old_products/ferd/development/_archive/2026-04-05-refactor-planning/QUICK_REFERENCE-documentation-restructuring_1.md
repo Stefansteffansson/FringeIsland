@@ -212,7 +212,7 @@ git restore docs/  # Undo everything
 ## Success Looks Like
 
 ✅ Run `ls docs/` → See universe/, products/, implementation/  
-✅ Open `docs/INDEX.md` → Clear navigation  
+✅ Open `docs/old_INDEX.md` → Clear navigation  
 ✅ Find REQUIREMENTS.md → In `products/ferd/requirements/`  
 ✅ Check CLAUDE.md → References new paths  
 ✅ No broken links  

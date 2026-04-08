@@ -28,17 +28,17 @@
 
 1. List the old > new terms (e.g., `Group Leader > Steward`, `Phase > Wave`)
 2. Search for the **old** term across these locations:
-   - `docs/products/ferd/development/specs/behaviors/*.md` — behavior specs
-   - `docs/products/ferd/development/features/*.md` — feature docs
-   - `docs/universe/architecture/*.md` — architecture docs
-   - `docs/implementation/shared/*.md` — database and schema docs
-   - `docs/products/ferd/specification/*.md` — product spec and requirements
-   - `docs/products/ferd/planning/*.md` — roadmap, deferred, research
-   - `docs/products/ferd/development/agents/contexts/*.md` — agent playbooks
+   - `docs/old_products/ferd/development/specs/behaviors/*.md` — behavior specs
+   - `docs/old_products/ferd/development/features/*.md` — feature docs
+   - `docs/old_universe/architecture/*.md` — architecture docs
+   - `docs/old_implementation/shared/*.md` — database and schema docs
+   - `docs/old_products/ferd/specification/*.md` — product spec and requirements
+   - `docs/old_products/ferd/planning/*.md` — roadmap, deferred, research
+   - `docs/old_products/ferd/development/agents/contexts/*.md` — agent playbooks
    - `CLAUDE.md`, `PROJECT_STATUS.md`, `SPRINT.md` — root files
 3. For each hit: update to the new term, preserving surrounding context
 4. Verify no code references use the old name (search `app/`, `components/`, `lib/`)
-5. Check Hamn docs too (Wave 3): `docs/products/hamn/**/*.md`
+5. Check Hamn docs too (Wave 3): `docs/old_products/hamn/**/*.md`
 
 **Skip if:** No renames happened this sprint.
 
@@ -52,13 +52,13 @@
 
 1. List the schema changes (table/column/policy + what changed)
 2. Check these docs for accuracy:
-   - `docs/implementation/shared/SCHEMA_OVERVIEW.md` — table and column descriptions
-   - `docs/implementation/shared/RLS_POLICIES.md` — RLS policy listing
-   - `docs/implementation/shared/DATABASE_CURRENT.md` — full schema reference
-   - `docs/implementation/shared/AUTH_SYSTEM.md` — auth flow and RLS strategy
+   - `docs/old_implementation/shared/SCHEMA_OVERVIEW.md` — table and column descriptions
+   - `docs/old_implementation/shared/RLS_POLICIES.md` — RLS policy listing
+   - `docs/old_implementation/shared/DATABASE_CURRENT.md` — full schema reference
+   - `docs/old_implementation/shared/AUTH_SYSTEM.md` — auth flow and RLS strategy
 3. For each doc: verify the described schema matches the actual database
 4. If a doc references a dropped column, removed policy, or renamed table — fix it
-5. Check `docs/products/ferd/specification/REQUIREMENTS.md` — update completeness percentages if relevant
+5. Check `docs/old_products/ferd/specification/REQUIREMENTS.md` — update completeness percentages if relevant
 
 **Skip if:** No schema changes happened this sprint.
 
@@ -70,7 +70,7 @@
 
 **If yes:**
 
-1. For each behavior spec in `docs/products/ferd/development/specs/behaviors/*.md`:
+1. For each behavior spec in `docs/old_products/ferd/development/specs/behaviors/*.md`:
    - Find unchecked `- [ ]` acceptance criteria
    - Check if the linked tests pass: `npm run test:integration:[domain]`
    - If implemented and tests pass: check the box (`- [x]`)
@@ -89,14 +89,14 @@
 
 1. Identify the old path > new path mapping for each moved/renamed file
 2. Search ALL active .md files for the old path pattern. Common stale patterns to check:
-   - Old `docs/planning/` > new `docs/products/ferd/planning/` or `docs/products/ferd/specification/`
-   - Old `docs/features/` > new `docs/products/ferd/development/features/`
-   - Old `docs/specs/` > new `docs/products/ferd/development/specs/`
-   - Old `docs/workflows/` > new `docs/products/ferd/development/`
-   - Old `docs/agents/` > new `docs/products/ferd/development/agents/`
-   - Old `docs/architecture/` > new `docs/universe/architecture/`
-   - Old `docs/database/` > new `docs/implementation/shared/`
-   - Old `docs/vision/` > new `docs/universe/vision/`
+   - Old `docs/planning/` > new `docs/old_products/ferd/planning/` or `docs/old_products/ferd/specification/`
+   - Old `docs/features/` > new `docs/old_products/ferd/development/features/`
+   - Old `docs/specs/` > new `docs/old_products/ferd/development/specs/`
+   - Old `docs/workflows/` > new `docs/old_products/ferd/development/`
+   - Old `docs/agents/` > new `docs/old_products/ferd/development/agents/`
+   - Old `docs/architecture/` > new `docs/old_universe/architecture/`
+   - Old `docs/database/` > new `docs/old_implementation/shared/`
+   - Old `docs/vision/` > new `docs/old_universe/vision/`
    - Any renamed files (e.g., `DEFERRED_DECISIONS.md` > `DEFERRED.md`)
 3. **EXCLUDE** files in `_archive/` and `sessions/` directories — those are historical records
 4. Fix all stale references in active files
@@ -146,7 +146,7 @@ Run a grep for known old path prefixes across all active .md files. If any match
 3. Check layer boundaries — does new code access the correct layers without skipping?
 4. Check vertical coverage — do new features have admin, notification, and observability hooks?
 
-**Reference:** `docs/universe/architecture/ARCHITECTURE_ANATOMY.md`, `docs/products/ferd/specification/REQUIREMENTS.md` (Binding Architecture Rule)
+**Reference:** `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md`, `docs/old_products/ferd/specification/REQUIREMENTS.md` (Binding Architecture Rule)
 
 **Skip if:** No code changes this sprint (documentation-only sessions).
 
@@ -187,13 +187,13 @@ docs/
     ferd/            — Ferd-specific (baseline, status, changelog, testing)
 ```
 
-Full navigation: `docs/INDEX.md`
+Full navigation: `docs/old_INDEX.md`
 
 ---
 
 ## Related
 
-- **Sprint Agent retrospective step 4:** `docs/products/ferd/development/agents/contexts/sprint-agent.md`
-- **Close-down consistency check:** `docs/products/ferd/development/CLOSE_DOWN.md`
-- **Stage 7 cross-reference audit:** `docs/products/ferd/development/WORKFLOW.md` (per-feature audit at completion)
-- **Doc structure navigation:** `docs/INDEX.md`
+- **Sprint Agent retrospective step 4:** `docs/old_products/ferd/development/agents/contexts/sprint-agent.md`
+- **Close-down consistency check:** `docs/old_products/ferd/development/CLOSE_DOWN.md`
+- **Stage 7 cross-reference audit:** `docs/old_products/ferd/development/WORKFLOW.md` (per-feature audit at completion)
+- **Doc structure navigation:** `docs/old_INDEX.md`

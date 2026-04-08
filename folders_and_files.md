@@ -1,4 +1,4 @@
-# docs/products/ferd/ — Complete Folder and File Listing
+# docs/old_products/ferd/ — Complete Folder and File Listing
 
 **Generated:** 2026-04-06
 **Wave:** Ferd (Wave 1)

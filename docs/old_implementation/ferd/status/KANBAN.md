@@ -1,7 +1,7 @@
 # Ferd Kanban Board
 
 **Last Updated:** 2026-04-05
-**Source:** [REQUIREMENTS.md](../../products/ferd/specification/REQUIREMENTS.md) + [ACTUAL_STATE.md](../baseline/ACTUAL_STATE.md)
+**Source:** [REQUIREMENTS.md](../../old_products/ferd/specification/REQUIREMENTS.md) + [ACTUAL_STATE.md](../baseline/ACTUAL_STATE.md)
 
 ---
 
@@ -54,4 +54,4 @@
 
 - [Sprint Tracker](../../../../SPRINT.md) — Active sprint details
 - [Project Status](../../../../PROJECT_STATUS.md) — Current state
-- [Deferred Decisions](../../../products/ferd/planning/DEFERRED.md) — Why items are deferred
+- [Deferred Decisions](../../../old_products/ferd/planning/DEFERRED.md) — Why items are deferred

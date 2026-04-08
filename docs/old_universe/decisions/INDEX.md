@@ -38,5 +38,5 @@
 ## Related
 
 - [Universe Architecture](../architecture/) — The anatomy these decisions support
-- [Ferd Decisions](../../products/ferd/architecture/decisions/) — Ferd-specific ADRs
+- [Ferd Decisions](../../old_products/ferd/architecture/decisions/) — Ferd-specific ADRs
 - [Universe Index](../INDEX.md)

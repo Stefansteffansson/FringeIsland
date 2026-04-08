@@ -11,18 +11,18 @@
 |------|-----------|-----------|
 | **Project Status** | `PROJECT_STATUS.md` | Always |
 | **Sprint Tracker** | `SPRINT.md` | Always |
-| **Roadmap** | `docs/products/ferd/planning/ROADMAP.md` | Always |
-| **Lifecycle Decisions** | `docs/products/ferd/planning/LIFECYCLE_DECISIONS.md` | If sprinting |
-| **Architecture Anatomy** | `docs/universe/architecture/ARCHITECTURE_ANATOMY.md` | If architecture/design work |
-| **Architecture Decisions** | `docs/universe/decisions/` | If architecture/design work |
-| **Vision** | `docs/universe/vision/VISION.md` | Optional |
-| **Manifesto** | `docs/universe/vision/MANIFESTO.md` | Optional |
-| **Contribution Architecture** | `docs/universe/strategy/CONTRIBUTION_ARCHITECTURE.md` | Optional |
-| **Products & Platform** | `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md` | Optional |
-| **Product Spec** | `docs/products/ferd/specification/PRODUCT_SPEC.md` | Optional |
-| **Deferred Decisions** | `docs/products/ferd/planning/DEFERRED.md` | Optional |
-| **Kanban Board** | `docs/implementation/ferd/status/KANBAN.md` | Optional |
-| **Actual State / Gaps** | `docs/implementation/ferd/baseline/ACTUAL_STATE.md` | Optional |
+| **Roadmap** | `docs/old_products/ferd/planning/ROADMAP.md` | Always |
+| **Lifecycle Decisions** | `docs/old_products/ferd/planning/LIFECYCLE_DECISIONS.md` | If sprinting |
+| **Architecture Anatomy** | `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md` | If architecture/design work |
+| **Architecture Decisions** | `docs/old_universe/decisions/` | If architecture/design work |
+| **Vision** | `docs/old_universe/vision/VISION.md` | Optional |
+| **Manifesto** | `docs/old_universe/vision/MANIFESTO.md` | Optional |
+| **Contribution Architecture** | `docs/old_universe/strategy/CONTRIBUTION_ARCHITECTURE.md` | Optional |
+| **Products & Platform** | `docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md` | Optional |
+| **Product Spec** | `docs/old_products/ferd/specification/PRODUCT_SPEC.md` | Optional |
+| **Deferred Decisions** | `docs/old_products/ferd/planning/DEFERRED.md` | Optional |
+| **Kanban Board** | `docs/old_implementation/ferd/status/KANBAN.md` | Optional |
+| **Actual State / Gaps** | `docs/old_implementation/ferd/baseline/ACTUAL_STATE.md` | Optional |
 
 If a file read fails: report the error immediately, use Glob to find it, update this table.
 
@@ -63,15 +63,15 @@ CLAUDE.md is auto-loaded. Optionally load based on work type:
 
 | Work type | Load |
 |-----------|------|
-| Database | `docs/products/ferd/development/agents/contexts/database-agent.md` |
-| UI | `docs/products/ferd/development/agents/contexts/ui-agent.md` |
-| Feature (full-stack) | `docs/products/ferd/development/agents/contexts/integration-agent.md` + `architect-agent.md` |
-| Architecture/Design | `docs/universe/architecture/ARCHITECTURE_ANATOMY.md` + `docs/universe/decisions/` |
-| Vision/Design session | `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md` + relevant session in `docs/products/ferd/sessions/` |
-| Specific feature | `docs/products/ferd/development/features/[feature].md` |
-| Testing/TDD | `docs/products/ferd/development/specs/[domain].md` + `docs/products/ferd/development/WORKFLOW.md` |
+| Database | `docs/old_products/ferd/development/agents/contexts/database-agent.md` |
+| UI | `docs/old_products/ferd/development/agents/contexts/ui-agent.md` |
+| Feature (full-stack) | `docs/old_products/ferd/development/agents/contexts/integration-agent.md` + `architect-agent.md` |
+| Architecture/Design | `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md` + `docs/old_universe/decisions/` |
+| Vision/Design session | `docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md` + relevant session in `docs/old_products/ferd/sessions/` |
+| Specific feature | `docs/old_products/ferd/development/features/[feature].md` |
+| Testing/TDD | `docs/old_products/ferd/development/specs/[domain].md` + `docs/old_products/ferd/development/WORKFLOW.md` |
 
-**If building new feature:** verify feature context first (Stage 0 of TDD workflow) — check `docs/products/ferd/specification/PRODUCT_SPEC.md` for scope, check if feature doc exists in `docs/products/ferd/development/features/`. If missing, create it first or ask user. Follow the BDD hierarchy: Vision → Product Spec → Roadmap → Features → Behaviors → Tests → Code.
+**If building new feature:** verify feature context first (Stage 0 of TDD workflow) — check `docs/old_products/ferd/specification/PRODUCT_SPEC.md` for scope, check if feature doc exists in `docs/old_products/ferd/development/features/`. If missing, create it first or ask user. Follow the BDD hierarchy: Vision → Product Spec → Roadmap → Features → Behaviors → Tests → Code.
 
 ### 5. Ask User
 
@@ -81,8 +81,8 @@ Present ready state and suggest work items from PROJECT_STATUS.md. Remind: TDD f
 
 **When user selects feature work, hand off immediately. Do NOT explore the codebase or plan on your own.**
 
-1. Load `docs/products/ferd/development/agents/contexts/sprint-agent.md`
-2. Load `docs/products/ferd/development/WORKFLOW.md`
+1. Load `docs/old_products/ferd/development/agents/contexts/sprint-agent.md`
+2. Load `docs/old_products/ferd/development/WORKFLOW.md`
 3. Sprint Agent creates sequential plan with user checkpoints
 4. Present plan to user for approval BEFORE executing any step
 5. Execute one step at a time — ask permission between each
@@ -98,9 +98,9 @@ Each stage completes fully before the next begins. No parallel execution.
 
 ## Related
 
-- **Close-down:** `docs/products/ferd/development/CLOSE_DOWN.md`
-- **Feature development (TDD):** `docs/products/ferd/development/WORKFLOW.md`
-- **Doc health check:** `docs/products/ferd/development/DOC_HEALTH_CHECK.md`
+- **Close-down:** `docs/old_products/ferd/development/CLOSE_DOWN.md`
+- **Feature development (TDD):** `docs/old_products/ferd/development/WORKFLOW.md`
+- **Doc health check:** `docs/old_products/ferd/development/DOC_HEALTH_CHECK.md`
 - **Project status:** `PROJECT_STATUS.md`
 - **Sprint tracker:** `SPRINT.md`
-- **Agent contexts:** `docs/products/ferd/development/agents/contexts/`
+- **Agent contexts:** `docs/old_products/ferd/development/agents/contexts/`

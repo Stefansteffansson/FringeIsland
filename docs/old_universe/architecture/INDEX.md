@@ -17,5 +17,5 @@
 ## Related
 
 - [Universe Decisions](../decisions/) — Why these architectural choices were made
-- [Ferd Architecture](../../products/ferd/architecture/) — Ferd-specific architecture
+- [Ferd Architecture](../../old_products/ferd/architecture/) — Ferd-specific architecture
 - [Universe Index](../INDEX.md)

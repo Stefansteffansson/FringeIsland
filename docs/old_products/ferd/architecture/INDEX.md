@@ -16,6 +16,6 @@
 
 ## Related
 
-- [Universe Architecture](../../../universe/architecture/) — Shared L0-L7 anatomy
-- [Universe Decisions](../../../universe/decisions/) — Universe-level ADRs (22)
+- [Universe Architecture](../../../old_universe/architecture/) — Shared L0-L7 anatomy
+- [Universe Decisions](../../../old_universe/decisions/) — Universe-level ADRs (22)
 - [Ferd Index](../INDEX.md)

@@ -2,7 +2,7 @@
 
 **Purpose:** Running log of process insights, planning patterns, and retrospective outcomes.
 **Curated by:** Sprint Agent (self) during retrospectives
-**Promotion:** Confirmed process patterns → `docs/products/ferd/development/agents/contexts/sprint-agent.md` (playbook)
+**Promotion:** Confirmed process patterns → `docs/old_products/ferd/development/agents/contexts/sprint-agent.md` (playbook)
 
 ---
 
@@ -24,14 +24,14 @@ Full workflow: 8 behavior specs → 47 tests (15 RED) → design → 2 migration
 Sprint process established. Key insights from project history:
 - XL tasks (like RBAC design) should be split across sessions with checkpoints
 - Boot-up/close-down workflows prevent context loss between sessions
-- Session bridges in docs/products/ferd/sessions/ provide continuity
+- Session bridges in docs/old_products/ferd/sessions/ provide continuity
 - MEMORY.md must stay under 150 lines (200-line system limit minus buffer)
 
 → Promoted to playbook? ✅ (all in Sprint Workflow + Scope Management)
 
 ### 2026-02-16: Write Tests vs Run Tests split (workflow improvement)
 - Separating "write tests" (Phase 2) from "run tests to confirm RED" (Phase 3) caught a real insight: UI migration tests pass immediately (GREEN) because the infrastructure already exists. This is correct and expected for migration sub-sprints — the tests serve as safety nets, not TDD in the classical sense.
-- Updated both `docs/products/ferd/development/WORKFLOW.md` and `docs/products/ferd/development/agents/contexts/sprint-agent.md` with the split. The workflow now has 7 phases (was 6).
+- Updated both `docs/old_products/ferd/development/WORKFLOW.md` and `docs/old_products/ferd/development/agents/contexts/sprint-agent.md` with the split. The workflow now has 7 phases (was 6).
 → Promoted to playbook? ✅ (already applied to sprint-agent.md and feature-development.md)
 
 ---
@@ -47,7 +47,7 @@ Sprint process established. Key insights from project history:
 
 **MANDATORY RULE — TDD ordering for ALL future sprints:**
 1. Feature doc (verify in Product Spec, create/update feature doc)
-2. Behavior specs (B-XXX-NNN in docs/products/ferd/development/specs/)
+2. Behavior specs (B-XXX-NNN in docs/old_products/ferd/development/specs/)
 3. Integration tests written and run — MUST FAIL (RED)
 4. THEN Architect designs schema/system
 5. THEN Database Agent implements migrations

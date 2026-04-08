@@ -152,7 +152,7 @@ Example 2: Multi-parent Membership
 
 ### 3. Authorization System
 
-**Three-Layer Permission Model** (22 design decisions, D1-D22 — see [full RBAC design](../../../products/ferd/development/features/AR-dynamic-permissions-system.md)):
+**Three-Layer Permission Model** (22 design decisions, D1-D22 — see [full RBAC design](../../../old_products/ferd/development/features/AR-dynamic-permissions-system.md)):
 
 ```
 1. PERMISSIONS (31 atomic capabilities, system-defined)
@@ -332,7 +332,7 @@ Question: Can Stefan view Alice's progress in a journey?
 
 ### Row Level Security (RLS)
 
-All 19 database tables use Supabase Row Level Security policies to enforce authorization at the database level. See [ARCHITECTURE_BASELINE.md](../../../implementation/ferd/baseline/BASELINE.md) for the full policy inventory.
+All 19 database tables use Supabase Row Level Security policies to enforce authorization at the database level. See [ARCHITECTURE_BASELINE.md](../../../old_implementation/ferd/baseline/BASELINE.md) for the full policy inventory.
 
 **Key RLS Patterns:**
 
@@ -367,7 +367,7 @@ Critical indexes for performance:
 - Role permission checks (group_id, user_id)
 - Journey enrollments (user_id, journey_id, group_id)
 
-See [DATABASE_SCHEMA.md](../../../implementation/shared/DATABASE_CURRENT.md) for complete index strategy.
+See [DATABASE_SCHEMA.md](../../../old_implementation/shared/DATABASE_CURRENT.md) for complete index strategy.
 
 ### Caching Strategy
 
@@ -441,4 +441,4 @@ See `docs/features/implemented/` for detailed feature documentation.
 
 **Document Version**: 2.0
 **Last Updated**: March 2026
-**See also**: [ARCHITECTURE_BASELINE.md](../../../implementation/ferd/baseline/BASELINE.md) for full inventory (tables, routes, providers, migrations)
+**See also**: [ARCHITECTURE_BASELINE.md](../../../old_implementation/ferd/baseline/BASELINE.md) for full inventory (tables, routes, providers, migrations)

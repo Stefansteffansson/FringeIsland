@@ -37,7 +37,7 @@
 
 All stale references to `ARCHITECTURE_OVERVIEW.md` cleaned up across:
 - `PROJECT_STATUS.md`
-- `docs/INDEX.md`
+- `docs/old_INDEX.md`
 - `docs/agents/contexts/architect-agent.md`
 - `docs/workflows/close-down.md`
 - `docs/workflows/feature-development.md`

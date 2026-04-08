@@ -26,6 +26,6 @@
 ## Related
 
 - [Products Index](../INDEX.md)
-- [ADR-U022 — Named Waves](../../universe/decisions/ADR-U022-named-waves.md)
-- [Products & Platform Strategy](../../universe/strategy/PRODUCTS_AND_PLATFORM.md)
+- [ADR-U022 — Named Waves](../../old_universe/decisions/ADR-U022-named-waves.md)
+- [Products & Platform Strategy](../../old_universe/strategy/PRODUCTS_AND_PLATFORM.md)
 - [Wave Redistribution](../WAVE_REDISTRIBUTION.md) — items pending wave assignment

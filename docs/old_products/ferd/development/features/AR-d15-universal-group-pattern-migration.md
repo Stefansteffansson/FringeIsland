@@ -3,7 +3,7 @@
 **Status:** COMPLETE
 **Version:** v0.2.29 (schema rebuild) + v0.2.29-fix (residual fixes)
 **Completed:** February 22, 2026
-**Design Doc:** `docs/products/ferd/development/features/AR-dynamic-permissions-system.md` (Decision D15)
+**Design Doc:** `docs/old_products/ferd/development/features/AR-dynamic-permissions-system.md` (Decision D15)
 
 ---
 
@@ -204,14 +204,14 @@ Fixed 7 comments across 4 test files to reflect D15 column renames and Steward t
 
 ### Behavior Specs
 
-- `docs/products/ferd/development/specs/d15-hardening.md` — B-D15-001 through B-D15-005
-- `docs/products/ferd/development/specs/authentication.md` — Updated B-AUTH-001 criteria
+- `docs/old_products/ferd/development/specs/d15-hardening.md` — B-D15-001 through B-D15-005
+- `docs/old_products/ferd/development/specs/authentication.md` — Updated B-AUTH-001 criteria
 
 ---
 
 ## Reference
 
 - **Pre-D15 schema snapshot:** *(archived — no longer available)*
-- **RBAC design (D1-D22):** `docs/products/ferd/development/features/AR-dynamic-permissions-system.md`
+- **RBAC design (D1-D22):** `docs/old_products/ferd/development/features/AR-dynamic-permissions-system.md`
 - **Archived migrations:** `supabase/migrations/archive/` (71 files)
 - **RBAC design session notes:** `docs/planning/sessions/2026-02-11-rbac-design-complete.md`

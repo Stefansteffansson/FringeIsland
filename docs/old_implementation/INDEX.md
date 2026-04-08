@@ -17,6 +17,6 @@
 
 ## Related
 
-- [Universe Tier](../universe/) — Architectural foundations
-- [Products Tier](../products/) — Product specifications and planning
+- [Universe Tier](../old_universe/) — Architectural foundations
+- [Products Tier](../old_products/) — Product specifications and planning
 - [Root Index](../INDEX.md)

@@ -459,12 +459,12 @@ CREATE POLICY "pending_invitations_delete"
 
 ### Behavior Specs
 
-- `docs/products/ferd/development/specs/groups.md` — Group creation, visibility, editing, deletion, leave-group behaviors (B-GRP-008, B-GRP-009, B-GRP-010), stewardship nomination (B-GRP-011)
-- `docs/products/ferd/development/specs/invitations.md` — Invitation lifecycle behaviors
-- `docs/products/ferd/development/specs/roles.md` — Role assignment and management behaviors
-- `docs/products/ferd/development/specs/rbac.md` — RBAC permission resolution behaviors
-- `docs/products/ferd/development/specs/d15-hardening.md` — D15-specific edge cases and hardening
-- `docs/products/ferd/development/specs/admin.md` — Admin group management behaviors
+- `docs/old_products/ferd/development/specs/groups.md` — Group creation, visibility, editing, deletion, leave-group behaviors (B-GRP-008, B-GRP-009, B-GRP-010), stewardship nomination (B-GRP-011)
+- `docs/old_products/ferd/development/specs/invitations.md` — Invitation lifecycle behaviors
+- `docs/old_products/ferd/development/specs/roles.md` — Role assignment and management behaviors
+- `docs/old_products/ferd/development/specs/rbac.md` — RBAC permission resolution behaviors
+- `docs/old_products/ferd/development/specs/d15-hardening.md` — D15-specific edge cases and hardening
+- `docs/old_products/ferd/development/specs/admin.md` — Admin group management behaviors
 
 ### Integration Tests
 
@@ -515,15 +515,15 @@ CREATE POLICY "pending_invitations_delete"
 
 ## Related Documentation
 
-- **Authentication:** `docs/products/ferd/development/features/FR-authentication.md`
-- **Display name system:** `docs/products/ferd/development/features/FR-display-name-system.md`
-- **RBAC design:** `docs/products/ferd/development/features/AR-dynamic-permissions-system.md`
-- **Leave Group Core:** `docs/products/ferd/development/features/FR-leave-group-core.md`
-- **Smart Notifications:** `docs/products/ferd/development/features/AR-smart-notifications.md`
-- **Platform Exit:** `docs/products/ferd/development/features/FR-platform-exit.md`
-- **Foundation Schema:** `docs/products/ferd/development/features/AR-foundation-schema.md`
+- **Authentication:** `docs/old_products/ferd/development/features/FR-authentication.md`
+- **Display name system:** `docs/old_products/ferd/development/features/FR-display-name-system.md`
+- **RBAC design:** `docs/old_products/ferd/development/features/AR-dynamic-permissions-system.md`
+- **Leave Group Core:** `docs/old_products/ferd/development/features/FR-leave-group-core.md`
+- **Smart Notifications:** `docs/old_products/ferd/development/features/AR-smart-notifications.md`
+- **Platform Exit:** `docs/old_products/ferd/development/features/FR-platform-exit.md`
+- **Foundation Schema:** `docs/old_products/ferd/development/features/AR-foundation-schema.md`
 - **Leave Group Review (archived):** `docs/archive/leave_group_feature_review.md`
-- **Behavior specs:** `docs/products/ferd/development/specs/groups.md`, `docs/products/ferd/development/specs/invitations.md`, `docs/products/ferd/development/specs/rbac.md`
+- **Behavior specs:** `docs/old_products/ferd/development/specs/groups.md`, `docs/old_products/ferd/development/specs/invitations.md`, `docs/old_products/ferd/development/specs/rbac.md`
 - **D15 base migration:** `supabase/migrations/20260222000000_rebuild_universal_group_pattern.sql`
 - **RC7 admin fixes:** `supabase/migrations/20260223171200_fix_rc7_admin_user_ops.sql`
 - **Pending email invitations:** `supabase/migrations/20260223140126_enhanced_member_invitations.sql`

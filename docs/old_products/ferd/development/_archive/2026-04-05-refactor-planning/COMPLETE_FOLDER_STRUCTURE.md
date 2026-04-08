@@ -45,7 +45,7 @@ FringeIsland/                      # GitHub repo root
 
 ## TIER 1: Universe Documentation
 
-**Location:** `/docs/universe/`
+**Location:** `/docs/old_universe/`
 
 **Purpose:** Defines FringeIsland as an ecosystem — independent of any specific product.
 
@@ -58,7 +58,7 @@ FringeIsland/                      # GitHub repo root
 ### Complete Structure
 
 ```
-/docs/universe/
+/docs/old_universe/
 │
 ├── INDEX.md                                    # Universe docs navigation hub
 │
@@ -135,7 +135,7 @@ FringeIsland/                      # GitHub repo root
 
 ## TIER 2: Product Documentation
 
-**Location:** `/docs/products/{product-name}/`
+**Location:** `/docs/old_products/{product-name}/`
 
 **Purpose:** Specification, architecture, and planning for individual products.
 
@@ -148,7 +148,7 @@ FringeIsland/                      # GitHub repo root
 ### Template Structure (Replicated for Each Product)
 
 ```
-/docs/products/{product-name}/
+/docs/old_products/{product-name}/
 │
 ├── INDEX.md                                    # Product overview
 │
@@ -200,7 +200,7 @@ FringeIsland/                      # GitHub repo root
 ### Products in Ecosystem
 
 ```
-/docs/products/
+/docs/old_products/
 │
 ├── INDEX.md                                    # All products overview
 │
@@ -224,7 +224,7 @@ FringeIsland/                      # GitHub repo root
 
 ## TIER 3: Implementation Documentation (HYBRID BASELINE)
 
-**Location:** `/docs/implementation/`
+**Location:** `/docs/old_implementation/`
 
 **Purpose:** Track current state, status, handover — with hybrid baseline.
 
@@ -239,7 +239,7 @@ FringeIsland/                      # GitHub repo root
 ### Complete Structure
 
 ```
-/docs/implementation/
+/docs/old_implementation/
 │
 ├── INDEX.md                                    # Implementation overview
 │
@@ -461,14 +461,14 @@ Example: `2026-03-01-ROADMAP.md`
 
 ### Agent Loading: "Implement Journey Enrollment in Ferd"
 
-**Step 1:** `/docs/products/ferd/INDEX.md` (~500 tokens)  
-**Step 2:** `/docs/products/ferd/planning/CURRENT_PHASE.md` (~800 tokens)  
-**Step 3:** `/docs/implementation/ferd/handover/NEXT_SESSION_PLAN.md` (~1000 tokens)  
-**Step 4:** `/docs/products/ferd/specification/REQUIREMENTS.md#FR-008` (~400 tokens)  
-**Step 5:** `/docs/implementation/shared/DATABASE_CURRENT.md` (journeys section) (~400 tokens)  
-**Step 6:** `/docs/implementation/ferd/baseline/API_ROUTES_CURRENT.md` (journeys) (~300 tokens)  
-**Step 7:** `/docs/products/ferd/architecture/ANATOMY.md#L3` (~600 tokens)  
-**Step 8:** `/docs/implementation/ferd/testing/bdd-scenarios/journeys.feature` (~400 tokens)
+**Step 1:** `/docs/old_products/ferd/INDEX.md` (~500 tokens)  
+**Step 2:** `/docs/old_products/ferd/planning/CURRENT_PHASE.md` (~800 tokens)  
+**Step 3:** `/docs/old_implementation/ferd/handover/NEXT_SESSION_PLAN.md` (~1000 tokens)  
+**Step 4:** `/docs/old_products/ferd/specification/REQUIREMENTS.md#FR-008` (~400 tokens)  
+**Step 5:** `/docs/old_implementation/shared/DATABASE_CURRENT.md` (journeys section) (~400 tokens)  
+**Step 6:** `/docs/old_implementation/ferd/baseline/API_ROUTES_CURRENT.md` (journeys) (~300 tokens)  
+**Step 7:** `/docs/old_products/ferd/architecture/ANATOMY.md#L3` (~600 tokens)  
+**Step 8:** `/docs/old_implementation/ferd/testing/bdd-scenarios/journeys.feature` (~400 tokens)
 
 **Total:** ~4,400 tokens (vs 80,000+)
 
@@ -502,7 +502,7 @@ Every folder = ~70 INDEX.md files
 
 **If you already implemented per-product baselines:**
 
-1. Create `/docs/implementation/shared/`
+1. Create `/docs/old_implementation/shared/`
 2. Move `/ferd/baseline/DATABASE_CURRENT.md` → `/shared/DATABASE_CURRENT.md`
 3. Create new files in `/shared/`: AUTH_SYSTEM.md, RLS_POLICIES.md, SUPABASE_CONFIG.md
 4. Update `/ferd/baseline/` to remove database content

@@ -52,7 +52,7 @@ Users must be able to register for a FringeIsland account using email and passwo
 Uses Supabase Auth. See [ADR-F001](../architecture/DECISIONS.md#ADR-F001).
 
 **BDD Scenarios:**  
-See [authentication.feature](../../implementation/ferd/testing/bdd-scenarios/authentication.feature)
+See [authentication.feature](../../old_implementation/ferd/testing/bdd-scenarios/authentication.feature)
 
 ---
 
@@ -78,7 +78,7 @@ Visitors must be able to access FringeIsland anonymously with a temporary profil
 Implements the "shadow experience" from Universe vision. See [ADR-F004](../architecture/DECISIONS.md#ADR-F004).
 
 **BDD Scenarios:**  
-To be written in [visitor-experience.feature](../../implementation/ferd/testing/bdd-scenarios/visitor-experience.feature)
+To be written in [visitor-experience.feature](../../old_implementation/ferd/testing/bdd-scenarios/visitor-experience.feature)
 
 ---
 
@@ -116,7 +116,7 @@ Users must be able to create groups for organizing collective journeys.
 Implements Universal Group Pattern. See [ADR-F006](../architecture/DECISIONS.md#ADR-F006).
 
 **BDD Scenarios:**  
-See [groups.feature](../../implementation/ferd/testing/bdd-scenarios/groups.feature)
+See [groups.feature](../../old_implementation/ferd/testing/bdd-scenarios/groups.feature)
 
 ---
 
@@ -143,7 +143,7 @@ Stewards must be able to invite members to their groups.
 Uses token-based invite system. See [WIP: ADR-F018](../architecture/DECISIONS.md).
 
 **BDD Scenarios:**  
-In progress: [group-invitations.feature](../../implementation/ferd/testing/bdd-scenarios/group-invitations.feature)
+In progress: [group-invitations.feature](../../old_implementation/ferd/testing/bdd-scenarios/group-invitations.feature)
 
 **Current Blockers:**  
 None
@@ -171,7 +171,7 @@ Stewards must be able to assign and customize roles within their groups.
 Three-layer permission model. See [ADR-F007](../architecture/DECISIONS.md#ADR-F007).
 
 **BDD Scenarios:**  
-See [roles-and-permissions.feature](../../implementation/ferd/testing/bdd-scenarios/roles-and-permissions.feature)
+See [roles-and-permissions.feature](../../old_implementation/ferd/testing/bdd-scenarios/roles-and-permissions.feature)
 
 ---
 
@@ -199,7 +199,7 @@ Users must be able to browse available journeys in a catalog.
 Uses journey metadata from L4 Content layer. See [ANATOMY.md L3](../architecture/ANATOMY.md#L3-experience-engine).
 
 **BDD Scenarios:**  
-In progress: [journey-catalog.feature](../../implementation/ferd/testing/bdd-scenarios/journey-catalog.feature)
+In progress: [journey-catalog.feature](../../old_implementation/ferd/testing/bdd-scenarios/journey-catalog.feature)
 
 **Current Blockers:**  
 None
@@ -227,7 +227,7 @@ Users must be able to enroll in journeys (individual or group enrollment).
 L3 Experience Engine. Step type framework must be defined first. See [Sessions 01-03](../sessions/INDEX.md).
 
 **BDD Scenarios:**  
-To be written: [journey-enrollment.feature](../../implementation/ferd/testing/bdd-scenarios/journey-enrollment.feature)
+To be written: [journey-enrollment.feature](../../old_implementation/ferd/testing/bdd-scenarios/journey-enrollment.feature)
 
 ---
 
@@ -278,7 +278,7 @@ Users must be able to edit their profile information.
 Uses Supabase Storage with RLS policies. See [ADR-F005](../architecture/DECISIONS.md#ADR-F005).
 
 **BDD Scenarios:**  
-See [profile-management.feature](../../implementation/ferd/testing/bdd-scenarios/profile-management.feature)
+See [profile-management.feature](../../old_implementation/ferd/testing/bdd-scenarios/profile-management.feature)
 
 ---
 
@@ -356,7 +356,7 @@ Pages must load within acceptable time limits to ensure good user experience.
 Using Lighthouse CI in deployment pipeline.
 
 **Current Status:**  
-Most pages meet criteria. Journey catalog needs optimization (tracked in [TECHNICAL_DEBT.md](../../implementation/ferd/handover/TECHNICAL_DEBT.md)).
+Most pages meet criteria. Journey catalog needs optimization (tracked in [TECHNICAL_DEBT.md](../../old_implementation/ferd/handover/TECHNICAL_DEBT.md)).
 
 ---
 
@@ -530,8 +530,8 @@ Use this template when adding new requirements:
 - [BACKLOG.md](../planning/BACKLOG.md) — Prioritized upcoming work
 
 **Implementation:**
-- [KANBAN.md](../../implementation/ferd/status/KANBAN.md) — Visual status board
-- [BDD Scenarios](../../implementation/ferd/testing/bdd-scenarios/) — Executable specifications
+- [KANBAN.md](../../old_implementation/ferd/status/KANBAN.md) — Visual status board
+- [BDD Scenarios](../../old_implementation/ferd/testing/bdd-scenarios/) — Executable specifications
 
 ---
 

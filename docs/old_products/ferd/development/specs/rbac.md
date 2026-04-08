@@ -2,7 +2,7 @@
 
 > **Purpose:** Document the fundamental rules and guarantees for the Role-Based Access Control system.
 > **Domain Code:** RBAC
-> **Design Reference:** `docs/products/ferd/development/features/AR-dynamic-permissions-system.md` (D1-D22)
+> **Design Reference:** `docs/old_products/ferd/development/features/AR-dynamic-permissions-system.md` (D1-D22)
 > **Sub-Sprint:** 1 — Schema Foundation
 
 ---

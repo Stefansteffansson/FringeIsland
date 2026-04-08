@@ -2,7 +2,7 @@
 
 **Purpose:** Product-specific documentation. Each wave has its own specification, architecture, planning, sessions, and development docs.
 
-See [ADR-U022](../universe/decisions/ADR-U022-named-waves.md) for the naming rationale and saga arc narrative.
+See [ADR-U022](../old_universe/decisions/ADR-U022-named-waves.md) for the naming rationale and saga arc narrative.
 
 ---
 
@@ -29,8 +29,8 @@ See [ADR-U022](../universe/decisions/ADR-U022-named-waves.md) for the naming rat
 
 ## Related
 
-- [ADR-U022 — Named Waves](../universe/decisions/ADR-U022-named-waves.md)
+- [ADR-U022 — Named Waves](../old_universe/decisions/ADR-U022-named-waves.md)
 - [Wave Redistribution](./WAVE_REDISTRIBUTION.md) — items pending wave assignment
-- [Universe Tier](../universe/) — Shared foundations
-- [Implementation Tier](../implementation/) — Live code state
+- [Universe Tier](../old_universe/) — Shared foundations
+- [Implementation Tier](../old_implementation/) — Live code state
 - [Root Index](../INDEX.md)

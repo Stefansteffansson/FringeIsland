@@ -19,5 +19,5 @@
 ## Related
 
 - [Ferd Implementation](../ferd/) — Ferd-specific code state
-- [Universe Architecture](../../universe/architecture/) — Architectural anatomy
+- [Universe Architecture](../../old_universe/architecture/) — Architectural anatomy
 - [Implementation Index](../INDEX.md)

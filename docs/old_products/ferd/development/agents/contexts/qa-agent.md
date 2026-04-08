@@ -23,7 +23,7 @@ I am the QA/Review Agent. I look at finished work with fresh eyes and ask: "Is t
 ## Quick Reference
 
 - **Project patterns:** `CLAUDE.md`
-- **Behavior specs:** `docs/products/ferd/development/specs/`
+- **Behavior specs:** `docs/old_products/ferd/development/specs/`
 - **Existing tests:** `tests/integration/`
 - **RLS policies:** Check via `supabase/migrations/`
 - **Run tests:** `npm run test:integration`
@@ -106,7 +106,7 @@ For every table affected by the change:
 ### Regression Check
 
 - [ ] Existing tests still pass (`npm run test:integration`)
-- [ ] Related behaviors from `docs/products/ferd/development/specs/` not broken
+- [ ] Related behaviors from `docs/old_products/ferd/development/specs/` not broken
 - [ ] Navigation still works (links, active states)
 - [ ] Auth flow unaffected (login, logout, session)
 
@@ -160,7 +160,7 @@ For every table affected by the change:
 6. Verify migration is reversible (or document why not)
 
 ### For New Features
-1. Check behavior spec exists in `docs/products/ferd/development/specs/`
+1. Check behavior spec exists in `docs/old_products/ferd/development/specs/`
 2. Check tests exist for critical behaviors
 3. Run full review checklist
 4. Test as: authenticated user, unauthorized user, unauthenticated user
@@ -203,11 +203,11 @@ My review is complete when:
 ## Learning Protocol
 
 When working in this domain:
-1. Check `docs/products/ferd/development/agents/learnings/qa.md` for known recurring issues
+1. Check `docs/old_products/ferd/development/agents/learnings/qa.md` for known recurring issues
 2. During reviews, append new findings to the journal
 3. At close-down, flag recurring issues for Sprint Agent retrospective
 
-Journal location: `docs/products/ferd/development/agents/learnings/qa.md`
+Journal location: `docs/old_products/ferd/development/agents/learnings/qa.md`
 Last curated: 2026-02-13 (initial)
 
 ---
@@ -215,8 +215,8 @@ Last curated: 2026-02-13 (initial)
 ## Related Documentation
 
 - **Project patterns:** `CLAUDE.md`
-- **Behavior specs:** `docs/products/ferd/development/specs/`
+- **Behavior specs:** `docs/old_products/ferd/development/specs/`
 - **Test infrastructure:** `tests/helpers/supabase.ts`
 - **Migration files:** `supabase/migrations/`
-- **RLS patterns:** `docs/products/ferd/development/agents/contexts/database-agent.md`
-- **Integration patterns:** `docs/products/ferd/development/agents/contexts/integration-agent.md`
+- **RLS patterns:** `docs/old_products/ferd/development/agents/contexts/database-agent.md`
+- **Integration patterns:** `docs/old_products/ferd/development/agents/contexts/integration-agent.md`

@@ -24,38 +24,38 @@ These files contain "Wave 2 (Hamn)" or "deferred to Hamn" where Hamn was meant a
 
 | File | Lines | Current Text | Proposed Change |
 |------|-------|-------------|-----------------|
-| `docs/products/ferd/development/specs/groups.md` | ~207, ~259 | "deferred — audit trail, Wave 2 (Hamn)" | → "deferred — audit trail, Wave TBD (see WAVE_REDISTRIBUTION.md)" |
-| `docs/products/ferd/development/specs/authentication.md` | ~85 | "deferred — Wave 2 (Hamn)" | → "deferred — Wave TBD (see WAVE_REDISTRIBUTION.md)" |
-| `docs/products/ferd/development/specs/authentication.md` | ~113 | "reactivation page deferred to Wave 2 (Hamn)" | → "deferred to Wave TBD" |
-| `docs/products/ferd/development/specs/authentication.md` | ~307 | "B-AUTH-008: OAuth Integration (deferred to Wave 2 (Hamn))" | → "deferred to Wave TBD" |
-| `docs/products/ferd/development/specs/journeys.md` | ~257, ~350, ~592 | "Wave 2 (Hamn) consideration", "Future (Wave 2 (Hamn))" | → "Wave TBD (see WAVE_REDISTRIBUTION.md)" |
-| `docs/products/ferd/development/specs/messaging.md` | ~200 | "notification batching is deferred to Wave 2 (Hamn)+" | → "deferred to Wave TBD" |
-| `docs/products/ferd/development/specs/roles.md` | ~180 | "deferred to Wave 2 (Hamn)" | → "deferred to Wave TBD" |
-| `docs/products/ferd/development/specs/roles.md` | ~289 | "deferred to Wave 2 (Hamn)" | → "deferred to Wave TBD" |
+| `docs/old_products/ferd/development/specs/groups.md` | ~207, ~259 | "deferred — audit trail, Wave 2 (Hamn)" | → "deferred — audit trail, Wave TBD (see WAVE_REDISTRIBUTION.md)" |
+| `docs/old_products/ferd/development/specs/authentication.md` | ~85 | "deferred — Wave 2 (Hamn)" | → "deferred — Wave TBD (see WAVE_REDISTRIBUTION.md)" |
+| `docs/old_products/ferd/development/specs/authentication.md` | ~113 | "reactivation page deferred to Wave 2 (Hamn)" | → "deferred to Wave TBD" |
+| `docs/old_products/ferd/development/specs/authentication.md` | ~307 | "B-AUTH-008: OAuth Integration (deferred to Wave 2 (Hamn))" | → "deferred to Wave TBD" |
+| `docs/old_products/ferd/development/specs/journeys.md` | ~257, ~350, ~592 | "Wave 2 (Hamn) consideration", "Future (Wave 2 (Hamn))" | → "Wave TBD (see WAVE_REDISTRIBUTION.md)" |
+| `docs/old_products/ferd/development/specs/messaging.md` | ~200 | "notification batching is deferred to Wave 2 (Hamn)+" | → "deferred to Wave TBD" |
+| `docs/old_products/ferd/development/specs/roles.md` | ~180 | "deferred to Wave 2 (Hamn)" | → "deferred to Wave TBD" |
+| `docs/old_products/ferd/development/specs/roles.md` | ~289 | "deferred to Wave 2 (Hamn)" | → "deferred to Wave TBD" |
 
 ### A2. Feature Docs (active, read by agents)
 
 | File | Lines | Current Text | Proposed Change |
 |------|-------|-------------|-----------------|
-| `docs/products/ferd/development/features/FR-authentication.md` | ~326 | "Password reset UI (deferred to Wave 2 (Hamn))" | → "deferred to Wave TBD" |
-| `docs/products/ferd/development/features/AR-deusex-admin-foundation.md` | ~34 | "Deferred to Wave 2 (Hamn)+" | → "Deferred to Wave TBD" |
+| `docs/old_products/ferd/development/features/FR-authentication.md` | ~326 | "Password reset UI (deferred to Wave 2 (Hamn))" | → "deferred to Wave TBD" |
+| `docs/old_products/ferd/development/features/AR-deusex-admin-foundation.md` | ~34 | "Deferred to Wave 2 (Hamn)+" | → "Deferred to Wave TBD" |
 
 ### A3. Planning Docs (active, read during boot-up)
 
 | File | Lines | Current Text | Proposed Change |
 |------|-------|-------------|-----------------|
-| `docs/products/ferd/planning/DEFERRED.md` | ~42 | "Accepted by Hamn → Hamn PRODUCT_SPEC.md §1 Journey Designer" | → "Wave TBD — pending redistribution (old Hamn scope archived)" |
-| `docs/products/ferd/planning/DEFERRED.md` | ~228 | "Accepted by Hamn → Hamn PRODUCT_SPEC.md M1 milestone" | → "Wave TBD — pending redistribution" |
-| `docs/products/ferd/planning/ROADMAP.md` | ~91 | "Wave 2 (Hamn), Wave 3, and Wave 3+" | → rewrite to reference the old model correctly |
-| `docs/products/ferd/planning/ROADMAP.md` | ~147-148 | "plan Wave 2+", "Complete Wave 2+ foundation" | → "plan Eid+" or "plan post-Ferd waves" |
-| `docs/products/ferd/planning/ROADMAP.md` | ~170 | "when Wave 2+ specification sessions begin" | → "when Eid specification sessions begin" |
+| `docs/old_products/ferd/planning/DEFERRED.md` | ~42 | "Accepted by Hamn → Hamn PRODUCT_SPEC.md §1 Journey Designer" | → "Wave TBD — pending redistribution (old Hamn scope archived)" |
+| `docs/old_products/ferd/planning/DEFERRED.md` | ~228 | "Accepted by Hamn → Hamn PRODUCT_SPEC.md M1 milestone" | → "Wave TBD — pending redistribution" |
+| `docs/old_products/ferd/planning/ROADMAP.md` | ~91 | "Wave 2 (Hamn), Wave 3, and Wave 3+" | → rewrite to reference the old model correctly |
+| `docs/old_products/ferd/planning/ROADMAP.md` | ~147-148 | "plan Wave 2+", "Complete Wave 2+ foundation" | → "plan Eid+" or "plan post-Ferd waves" |
+| `docs/old_products/ferd/planning/ROADMAP.md` | ~170 | "when Wave 2+ specification sessions begin" | → "when Eid specification sessions begin" |
 
 ### A4. Status/Tracking Docs
 
 | File | Lines | Current Text | Proposed Change |
 |------|-------|-------------|-----------------|
-| `docs/implementation/ferd/status/KANBAN.md` | ~41 | "## Deferred (Hamn / Wave 2+)" | → "## Deferred (Wave TBD — see WAVE_REDISTRIBUTION.md)" |
-| `docs/products/ferd/specification/REQUIREMENTS.md` | ~1939 | "DEFERRED to Hamn" | → "DEFERRED to Wave TBD" |
+| `docs/old_implementation/ferd/status/KANBAN.md` | ~41 | "## Deferred (Hamn / Wave 2+)" | → "## Deferred (Wave TBD — see WAVE_REDISTRIBUTION.md)" |
+| `docs/old_products/ferd/specification/REQUIREMENTS.md` | ~1939 | "DEFERRED to Hamn" | → "DEFERRED to Wave TBD" |
 
 ### A5. Active Session Files (historical content, but not in _archive/)
 
@@ -63,11 +63,11 @@ These session files contain old wave models in their body text. Most already hav
 
 | File | Lines | Issue |
 |------|-------|-------|
-| `docs/products/ferd/sessions/2026-02-SESSION-03-architecture-summary.md` | ~295 | "Wave 1 (Ferd) → Wave 2 (Hamn) → Wave 3 → Wave 3+ (Game)" |
-| `docs/products/ferd/sessions/2026-02-SESSION-03-architecture-journey-summary.md` | ~237 | Same old 4-wave model |
-| `docs/products/ferd/sessions/2026-01-SESSION-01-bridge.md` | ~35-36, ~145 | "Wave 2: Hamn", old Wave 3/3+ |
-| `docs/products/ferd/sessions/2026-02-SESSION-03-bridge.md` | ~87, ~157 | "Game (Wave 3+)", implies Hamn = Wave 2 |
-| `docs/products/ferd/sessions/2026-03-25-SESSION-02-journey-designer.md` | ~239, ~263, ~277, ~292 | "later wave (Hamn or beyond)" — meant old Wave 2 Hamn |
+| `docs/old_products/ferd/sessions/2026-02-SESSION-03-architecture-summary.md` | ~295 | "Wave 1 (Ferd) → Wave 2 (Hamn) → Wave 3 → Wave 3+ (Game)" |
+| `docs/old_products/ferd/sessions/2026-02-SESSION-03-architecture-journey-summary.md` | ~237 | Same old 4-wave model |
+| `docs/old_products/ferd/sessions/2026-01-SESSION-01-bridge.md` | ~35-36, ~145 | "Wave 2: Hamn", old Wave 3/3+ |
+| `docs/old_products/ferd/sessions/2026-02-SESSION-03-bridge.md` | ~87, ~157 | "Game (Wave 3+)", implies Hamn = Wave 2 |
+| `docs/old_products/ferd/sessions/2026-03-25-SESSION-02-journey-designer.md` | ~239, ~263, ~277, ~292 | "later wave (Hamn or beyond)" — meant old Wave 2 Hamn |
 
 ---
 
@@ -77,12 +77,12 @@ These say "Hamn" without specifying which wave — readers may assume it's still
 
 | File | Line | Current Text | Proposed Change |
 |------|------|-------------|-----------------|
-| `docs/products/ferd/specification/PRODUCT_SPEC.md` | ~78 | "(full tools in Hamn)" | → "(full tools in Wave 3 — Hamn)" |
-| `docs/products/ferd/specification/PRODUCT_SPEC.md` | ~146 | "(additional languages in Hamn)" | → "(additional languages in Wave 3 — Hamn)" |
-| `docs/products/ferd/specification/PRODUCT_SPEC.md` | ~162 | "Out of Scope (Hamn / Wave TBD+)" | → "Out of Scope (Wave 2+ — see WAVE_REDISTRIBUTION.md)" |
-| `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md` | ~94 | "*Begins in Hamn.*" (Online Seasonal Events) | → "*Begins in Wave 3 (Hamn).*" |
-| `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md` | ~111 | "*Wave 3 ambition.*" (Annual Summit) | Verify this is correct — was this "Wave 3" in the old numbering? If so → needs updating |
-| `docs/products/ferd/planning/ROADMAP.md` | ~163 | "Hamn journey system" | → "Wave 3 (Hamn) journey system" or remove Hamn reference |
+| `docs/old_products/ferd/specification/PRODUCT_SPEC.md` | ~78 | "(full tools in Hamn)" | → "(full tools in Wave 3 — Hamn)" |
+| `docs/old_products/ferd/specification/PRODUCT_SPEC.md` | ~146 | "(additional languages in Hamn)" | → "(additional languages in Wave 3 — Hamn)" |
+| `docs/old_products/ferd/specification/PRODUCT_SPEC.md` | ~162 | "Out of Scope (Hamn / Wave TBD+)" | → "Out of Scope (Wave 2+ — see WAVE_REDISTRIBUTION.md)" |
+| `docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md` | ~94 | "*Begins in Hamn.*" (Online Seasonal Events) | → "*Begins in Wave 3 (Hamn).*" |
+| `docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md` | ~111 | "*Wave 3 ambition.*" (Annual Summit) | Verify this is correct — was this "Wave 3" in the old numbering? If so → needs updating |
+| `docs/old_products/ferd/planning/ROADMAP.md` | ~163 | "Hamn journey system" | → "Wave 3 (Hamn) journey system" or remove Hamn reference |
 
 ---
 
@@ -94,21 +94,21 @@ These reference paths from the old folder structure that no longer exist.
 
 | File | Stale Path | Correct Path |
 |------|-----------|-------------|
-| `docs/products/ferd/planning/ROADMAP.md:35` | `docs/workflows/feature-development.md` | `docs/products/ferd/development/WORKFLOW.md` |
-| `docs/products/ferd/planning/ROADMAP.md:59` | `docs/features/implemented/` | `docs/products/ferd/development/features/` |
-| `docs/products/ferd/planning/ROADMAP.md:60` | `docs/planning/lifecycle-roadmap-decisions.md` | `docs/products/ferd/planning/LIFECYCLE_DECISIONS.md` |
-| `docs/products/ferd/planning/DEFERRED.md:25` | `docs/features/implemented/dynamic-permissions-system.md` | `docs/products/ferd/development/features/AR-dynamic-permissions-system.md` |
-| `docs/products/ferd/planning/DEFERRED.md:102` | `docs/features/implemented/dynamic-permissions-system.md` | (same as above) |
-| `docs/products/ferd/planning/DEFERRED.md:124` | `docs/features/implemented/dynamic-permissions-system.md` | (same as above) |
-| `docs/products/ferd/planning/LIFECYCLE_DECISIONS.md:308` | `docs/features/implemented/platform-exit.md` | `docs/products/ferd/development/features/FR-platform-exit.md` |
+| `docs/old_products/ferd/planning/ROADMAP.md:35` | `docs/workflows/feature-development.md` | `docs/old_products/ferd/development/WORKFLOW.md` |
+| `docs/old_products/ferd/planning/ROADMAP.md:59` | `docs/features/implemented/` | `docs/old_products/ferd/development/features/` |
+| `docs/old_products/ferd/planning/ROADMAP.md:60` | `docs/planning/lifecycle-roadmap-decisions.md` | `docs/old_products/ferd/planning/LIFECYCLE_DECISIONS.md` |
+| `docs/old_products/ferd/planning/DEFERRED.md:25` | `docs/features/implemented/dynamic-permissions-system.md` | `docs/old_products/ferd/development/features/AR-dynamic-permissions-system.md` |
+| `docs/old_products/ferd/planning/DEFERRED.md:102` | `docs/features/implemented/dynamic-permissions-system.md` | (same as above) |
+| `docs/old_products/ferd/planning/DEFERRED.md:124` | `docs/features/implemented/dynamic-permissions-system.md` | (same as above) |
+| `docs/old_products/ferd/planning/LIFECYCLE_DECISIONS.md:308` | `docs/features/implemented/platform-exit.md` | `docs/old_products/ferd/development/features/FR-platform-exit.md` |
 
 ### C1b. Behavior specs — stale `docs/features/` paths
 
 | File | Stale Path | Correct Path |
 |------|-----------|-------------|
-| `docs/products/ferd/development/specs/rbac.md:5` | `docs/features/implemented/dynamic-permissions-system.md` | `docs/products/ferd/development/features/AR-dynamic-permissions-system.md` |
-| `docs/products/ferd/development/specs/display-name.md:5` | `docs/features/implemented/display-name-system.md` | `docs/products/ferd/development/features/FR-display-name-system.md` |
-| `docs/products/ferd/development/specs/admin.md:5` | `docs/features/implemented/deusex-admin-foundation.md` | `docs/products/ferd/development/features/AR-deusex-admin-foundation.md` |
+| `docs/old_products/ferd/development/specs/rbac.md:5` | `docs/features/implemented/dynamic-permissions-system.md` | `docs/old_products/ferd/development/features/AR-dynamic-permissions-system.md` |
+| `docs/old_products/ferd/development/specs/display-name.md:5` | `docs/features/implemented/display-name-system.md` | `docs/old_products/ferd/development/features/FR-display-name-system.md` |
+| `docs/old_products/ferd/development/specs/admin.md:5` | `docs/features/implemented/deusex-admin-foundation.md` | `docs/old_products/ferd/development/features/AR-deusex-admin-foundation.md` |
 
 ### C1c. Agent playbooks — stale `docs/agents/` paths (~21 references)
 
@@ -116,7 +116,7 @@ The agent system's own internal cross-references were never updated after the mo
 
 | File | Lines | Stale Pattern | Correct Pattern |
 |------|-------|--------------|-----------------|
-| `agents/README.md` | ~98, ~103 | `docs/agents/contexts/`, `docs/agents/learnings/` | `docs/products/ferd/development/agents/contexts/`, `.../learnings/` |
+| `agents/README.md` | ~98, ~103 | `docs/agents/contexts/`, `docs/agents/learnings/` | `docs/old_products/ferd/development/agents/contexts/`, `.../learnings/` |
 | `agents/contexts/ui-agent.md` | ~626, ~657, ~661 | `docs/features/implemented/`, `docs/agents/learnings/ui.md` | corrected paths |
 | `agents/contexts/test-agent.md` | ~26, ~27, ~75, ~258, ~262, ~299, ~306 | `docs/specs/behaviors/`, `docs/agents/learnings/testing.md` | corrected paths |
 | `agents/contexts/qa-agent.md` | ~26, ~109, ~163, ~206, ~210, ~218, ~221, ~222 | `docs/specs/behaviors/`, `docs/agents/learnings/qa.md`, `docs/agents/contexts/` | corrected paths |
@@ -129,7 +129,7 @@ The agent system's own internal cross-references were never updated after the mo
 | `agents/learnings/architecture.md` | ~5 | `docs/agents/contexts/architect-agent.md` | corrected path |
 | `agents/learnings/integration.md` | ~5 | `docs/agents/contexts/integration-agent.md` | corrected path |
 
-*(All paths above are relative to `docs/products/ferd/development/`)*
+*(All paths above are relative to `docs/old_products/ferd/development/`)*
 
 ### C1d. Feature docs — stale cross-references to `docs/features/` and `docs/specs/` (~45 references)
 
@@ -147,7 +147,7 @@ Feature docs reference each other and behavior specs using pre-restructuring pat
 | `features/AR-d15-universal-group-pattern-migration.md` | ~4 | `docs/features/implemented/`, `docs/specs/behaviors/` |
 | `features/AR-smart-notifications.md` | ~6 | `docs/specs/behaviors/` |
 
-*(All paths above are relative to `docs/products/ferd/development/`)*
+*(All paths above are relative to `docs/old_products/ferd/development/`)*
 
 ### C2. Session files with stale self-references (lower priority — historical context)
 
@@ -155,12 +155,12 @@ These session files reference their own old location. They are not in `_archive/
 
 | File | Stale Path |
 |------|-----------|
-| `docs/products/ferd/sessions/2026-02-27-display-name-system.md:44` | `docs/planning/sessions/2026-02-27-...` |
-| `docs/products/ferd/sessions/2026-02-27-leave-group-feature-review.md:47` | `docs/planning/sessions/2026-02-27-...` |
-| `docs/products/ferd/sessions/2026-02-28-lifecycle-roadmap-decisions.md:47,60` | `docs/planning/sessions/...`, `docs/planning/ROADMAP.md` |
-| `docs/products/ferd/sessions/2026-02-28-sprint1-foundation-schema.md:54` | `docs/planning/ROADMAP.md` |
-| `docs/products/ferd/sessions/2026-02-28-sprint2-leave-group-core.md:54,59` | `docs/planning/sessions/...`, `docs/planning/ROADMAP.md` |
-| `docs/products/ferd/sessions/2026-02-28-sprint3-smart-notifications.md:45,51` | `docs/planning/sessions/...`, `docs/planning/ROADMAP.md` |
+| `docs/old_products/ferd/sessions/2026-02-27-display-name-system.md:44` | `docs/planning/sessions/2026-02-27-...` |
+| `docs/old_products/ferd/sessions/2026-02-27-leave-group-feature-review.md:47` | `docs/planning/sessions/2026-02-27-...` |
+| `docs/old_products/ferd/sessions/2026-02-28-lifecycle-roadmap-decisions.md:47,60` | `docs/planning/sessions/...`, `docs/planning/ROADMAP.md` |
+| `docs/old_products/ferd/sessions/2026-02-28-sprint1-foundation-schema.md:54` | `docs/planning/ROADMAP.md` |
+| `docs/old_products/ferd/sessions/2026-02-28-sprint2-leave-group-core.md:54,59` | `docs/planning/sessions/...`, `docs/planning/ROADMAP.md` |
+| `docs/old_products/ferd/sessions/2026-02-28-sprint3-smart-notifications.md:45,51` | `docs/planning/sessions/...`, `docs/planning/ROADMAP.md` |
 
 ---
 
@@ -171,16 +171,16 @@ These use "Phase 1.x" instead of "Ferd 1.x" or "Milestone 1.x". The March 20 ter
 | File | Issue | Proposed Change |
 |------|-------|-----------------|
 | `SPRINT.md:17,19` | "Phase 1.6: Polish & Launch" | → "Ferd 1.6: Polish & Launch" |
-| `docs/implementation/shared/MIGRATIONS_LOG.md:285,291` | "Phase 1.5 - Communication", "Phase 2 - Advanced Features" | → "Ferd 1.5", and "Phase 2" → wave name |
-| `docs/implementation/shared/SCHEMA_OVERVIEW.md:37,72,189` | "Future Tables (Phase 2+)", "Phase 2", "Phase 1.4" | → Phase 2 references → wave names |
-| `docs/implementation/shared/DATABASE_CURRENT.md:1209` | "After completing Phase 1.4" | → "After completing Ferd 1.4" |
-| `docs/implementation/ferd/status/DASHBOARD.md:25-28` | "Phase 1.1 - 1.6 subphases", "Phase 2, 3, 4 upcoming phases" | → "Ferd 1.1 - 1.6 milestones", "Wave 2-6" |
-| `docs/implementation/ferd/baseline/BASELINE.md:504,574,632,633` | "Phase 1.6" (4 occurrences) | → "Ferd 1.6" |
-| `docs/implementation/ferd/baseline/AUTH_IMPLEMENTATION_SUMMARY.md:4,139,173,196` | "Phase 2 - Core Platform" | → clarify these are Ferd internal milestones, not waves |
-| `docs/universe/vision/VISION_DECISIONS.md:229` | "Wave 1, Phase 1.4" | → "Wave 1, Ferd 1.4" |
-| `docs/products/ferd/specification/ACTIVITY_CATALOG.md:90,240` | "Phase 2 (custom role creation)" | → clarify wave or Ferd milestone |
+| `docs/old_implementation/shared/MIGRATIONS_LOG.md:285,291` | "Phase 1.5 - Communication", "Phase 2 - Advanced Features" | → "Ferd 1.5", and "Phase 2" → wave name |
+| `docs/old_implementation/shared/SCHEMA_OVERVIEW.md:37,72,189` | "Future Tables (Phase 2+)", "Phase 2", "Phase 1.4" | → Phase 2 references → wave names |
+| `docs/old_implementation/shared/DATABASE_CURRENT.md:1209` | "After completing Phase 1.4" | → "After completing Ferd 1.4" |
+| `docs/old_implementation/ferd/status/DASHBOARD.md:25-28` | "Phase 1.1 - 1.6 subphases", "Phase 2, 3, 4 upcoming phases" | → "Ferd 1.1 - 1.6 milestones", "Wave 2-6" |
+| `docs/old_implementation/ferd/baseline/BASELINE.md:504,574,632,633` | "Phase 1.6" (4 occurrences) | → "Ferd 1.6" |
+| `docs/old_implementation/ferd/baseline/AUTH_IMPLEMENTATION_SUMMARY.md:4,139,173,196` | "Phase 2 - Core Platform" | → clarify these are Ferd internal milestones, not waves |
+| `docs/old_universe/vision/VISION_DECISIONS.md:229` | "Wave 1, Phase 1.4" | → "Wave 1, Ferd 1.4" |
+| `docs/old_products/ferd/specification/ACTIVITY_CATALOG.md:90,240` | "Phase 2 (custom role creation)" | → clarify wave or Ferd milestone |
 | `dev_databases/CRUD_GUIDE.md:215` | "Postponed to later phase" | → "Postponed to later wave" |
-| `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md:58` | "Deepens through subsequent **phases**" | → "subsequent **waves**" |
+| `docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md:58` | "Deepens through subsequent **phases**" | → "subsequent **waves**" |
 
 **Note:** CHANGELOG.md has many "Phase 1.x" references but these are **historical entries** — I recommend leaving them as-is since they describe what was said/done at the time.
 
@@ -192,13 +192,13 @@ These use "Phase 1.x" instead of "Ferd 1.x" or "Milestone 1.x". The March 20 ter
 |------|-------|-----------------|
 | ~37 | Hero's Journey arc says "Departure → Harbour → Shore → Passage → Home" — **doesn't match wave order** (Ferd → Eid → Hamn → Heim → Brim → Urd) | Rewrite to match actual wave arc |
 | ~117 | "two founding chapters" | → "six named waves" or rewrite section |
-| ~173-178 | Waves 2-6 are stub headers with no content | Add brief descriptions matching `docs/products/ROADMAP.md` or note "see ROADMAP.md" |
+| ~173-178 | Waves 2-6 are stub headers with no content | Add brief descriptions matching `docs/old_products/ROADMAP.md` or note "see ROADMAP.md" |
 
 ---
 
 ## Category F: WAVE_REDISTRIBUTION.md — "Wave 2 (Hamn)" Labels (DECISION NEEDED)
 
-`docs/products/WAVE_REDISTRIBUTION.md` has ~13 entries showing "Wave 2 (Hamn)" in the "Previous Wave" column. These are **correct in context** — they show where items **used to be**. But the column header should make this explicit.
+`docs/old_products/WAVE_REDISTRIBUTION.md` has ~13 entries showing "Wave 2 (Hamn)" in the "Previous Wave" column. These are **correct in context** — they show where items **used to be**. But the column header should make this explicit.
 
 **Proposed:** Add a note: "Previous Wave column shows the old wave assignment before the 6-wave restructuring."
 
@@ -210,23 +210,23 @@ These use "Phase 1.x" instead of "Ferd 1.x" or "Milestone 1.x". The March 20 ter
 
 | Line | Issue | Proposed Change |
 |------|-------|-----------------|
-| Memory section | References `docs/agents/README.md` | → `docs/products/ferd/development/agents/README.md` |
-| Memory section | References `docs/agents/contexts/` | → `docs/products/ferd/development/agents/contexts/` |
-| RBAC section | References `docs/features/implemented/dynamic-permissions-system.md` | → `docs/products/ferd/development/features/AR-dynamic-permissions-system.md` |
+| Memory section | References `docs/agents/README.md` | → `docs/old_products/ferd/development/agents/README.md` |
+| Memory section | References `docs/agents/contexts/` | → `docs/old_products/ferd/development/agents/contexts/` |
+| RBAC section | References `docs/features/implemented/dynamic-permissions-system.md` | → `docs/old_products/ferd/development/features/AR-dynamic-permissions-system.md` |
 
 ### MEMORY.md (user's ~/.claude project memory)
 
 | Line | Issue | Proposed Change |
 |------|-------|-----------------|
-| Agent System section | `docs/agents/README.md` | → `docs/products/ferd/development/agents/README.md` |
-| Agent System section | `docs/agents/contexts/*.md` | → `docs/products/ferd/development/agents/contexts/*.md` |
-| Agent System section | `docs/agents/learnings/*.md` | → `docs/products/ferd/development/agents/learnings/*.md` |
-| Key File Paths section | `docs/agents/README.md` | → `docs/products/ferd/development/agents/README.md` |
-| Key File Paths section | `docs/agents/contexts/` | → `docs/products/ferd/development/agents/contexts/` |
-| Key File Paths section | `docs/agents/learnings/` | → `docs/products/ferd/development/agents/learnings/` |
-| Key File Paths section | `docs/features/implemented/` | → `docs/products/ferd/development/features/` |
-| Key File Paths section | `docs/workflows/` | → `docs/products/ferd/development/` |
-| Key File Paths section | `docs/specs/behaviors/` | → `docs/products/ferd/development/specs/` |
+| Agent System section | `docs/agents/README.md` | → `docs/old_products/ferd/development/agents/README.md` |
+| Agent System section | `docs/agents/contexts/*.md` | → `docs/old_products/ferd/development/agents/contexts/*.md` |
+| Agent System section | `docs/agents/learnings/*.md` | → `docs/old_products/ferd/development/agents/learnings/*.md` |
+| Key File Paths section | `docs/agents/README.md` | → `docs/old_products/ferd/development/agents/README.md` |
+| Key File Paths section | `docs/agents/contexts/` | → `docs/old_products/ferd/development/agents/contexts/` |
+| Key File Paths section | `docs/agents/learnings/` | → `docs/old_products/ferd/development/agents/learnings/` |
+| Key File Paths section | `docs/features/implemented/` | → `docs/old_products/ferd/development/features/` |
+| Key File Paths section | `docs/workflows/` | → `docs/old_products/ferd/development/` |
+| Key File Paths section | `docs/specs/behaviors/` | → `docs/old_products/ferd/development/specs/` |
 
 ---
 
@@ -234,13 +234,13 @@ These use "Phase 1.x" instead of "Ferd 1.x" or "Milestone 1.x". The March 20 ter
 
 ### H1. `_archive/` folders — historical record, do not modify
 
-- All files under `docs/products/ferd/sessions/_archive/`
-- All files under `docs/products/ferd/planning/_archive/`
-- All files under `docs/products/ferd/development/_archive/`
-- All files under `docs/products/hamn/_archive/`
-- All files under `docs/universe/decisions/_archive/`
-- All files under `docs/implementation/shared/_archive/`
-- All files under `docs/implementation/ferd/baseline/_archive/`
+- All files under `docs/old_products/ferd/sessions/_archive/`
+- All files under `docs/old_products/ferd/planning/_archive/`
+- All files under `docs/old_products/ferd/development/_archive/`
+- All files under `docs/old_products/hamn/_archive/`
+- All files under `docs/old_universe/decisions/_archive/`
+- All files under `docs/old_implementation/shared/_archive/`
+- All files under `docs/old_implementation/ferd/baseline/_archive/`
 
 ### H2. CHANGELOG.md — historical log
 

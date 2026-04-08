@@ -72,24 +72,24 @@ For each file in the inventory, determine:
 
 **ADRs:** Split by scope
 - Current: `ARCHITECTURE_DECISIONS.md` (24 ADRs)
-- Universe ADRs (U001-U00X) → `/docs/universe/decisions/`
-- Ferd ADRs (F001-F00X) → `/docs/products/ferd/architecture/decisions/`
+- Universe ADRs (U001-U00X) → `/docs/old_universe/decisions/`
+- Ferd ADRs (F001-F00X) → `/docs/old_products/ferd/architecture/decisions/`
 - You decide the split based on content (is it ecosystem-wide or Ferd-specific?)
 
 **Sessions:** Rename with dates
 - Current: `JOURNEY_DESIGNER_SESSION_04.md`
-- New: `2026-03-XX-SESSION-04-journey-designer.md` → `/docs/products/ferd/planning/sessions/`
+- New: `2026-03-XX-SESSION-04-journey-designer.md` → `/docs/old_products/ferd/planning/sessions/`
 - Use file modified date if session date not in content
 
 **Baseline Docs:**
 - Current: May have `ARCHITECTURE_BASELINE.md` or similar
-- Shared backend → `/docs/implementation/shared/`
-- Ferd frontend → `/docs/implementation/ferd/baseline/`
+- Shared backend → `/docs/old_implementation/shared/`
+- Ferd frontend → `/docs/old_implementation/ferd/baseline/`
 
 **Research Reports:** (if they exist)
-- Theory U report → `/docs/universe/research/theory-u/`
-- Ikigai report → `/docs/universe/research/human-flourishing/`
-- Kegan report → `/docs/universe/research/adult-development/`
+- Theory U report → `/docs/old_universe/research/theory-u/`
+- Ikigai report → `/docs/old_universe/research/human-flourishing/`
+- Kegan report → `/docs/old_universe/research/adult-development/`
 
 **Output:** `MIGRATION_MAPPING.md` in this format:
 
@@ -103,25 +103,25 @@ For each file in the inventory, determine:
 
 ## Universe Tier
 
-### /docs/universe/vision/
+### /docs/old_universe/vision/
 
 | Current Location | New Location | Action | Rationale |
 |------------------|--------------|--------|-----------|
-| `/docs/VISION.md` | `/docs/universe/vision/VISION.md` | move | Core vision doc |
-| `/docs/planning/MANIFESTO.md` | `/docs/universe/vision/MANIFESTO.md` | move | Values document |
+| `/docs/VISION.md` | `/docs/old_universe/vision/VISION.md` | move | Core vision doc |
+| `/docs/planning/MANIFESTO.md` | `/docs/old_universe/vision/MANIFESTO.md` | move | Values document |
 
-### /docs/universe/architecture/
-
-| Current Location | New Location | Action | Rationale |
-|------------------|--------------|--------|-----------|
-| `/docs/planning/ARCHITECTURE_ANATOMY.md` | `/docs/universe/architecture/ARCHITECTURE_ANATOMY.md` | move | Applies to all products |
-
-### /docs/universe/decisions/
+### /docs/old_universe/architecture/
 
 | Current Location | New Location | Action | Rationale |
 |------------------|--------------|--------|-----------|
-| ADR-001 from ARCHITECTURE_DECISIONS.md | `/docs/universe/decisions/ADR-U001-{slug}.md` | extract+move | Universal decision |
-| ADR-002 from ARCHITECTURE_DECISIONS.md | `/docs/universe/decisions/ADR-U002-{slug}.md` | extract+move | Universal decision |
+| `/docs/planning/ARCHITECTURE_ANATOMY.md` | `/docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md` | move | Applies to all products |
+
+### /docs/old_universe/decisions/
+
+| Current Location | New Location | Action | Rationale |
+|------------------|--------------|--------|-----------|
+| ADR-001 from ARCHITECTURE_DECISIONS.md | `/docs/old_universe/decisions/ADR-U001-{slug}.md` | extract+move | Universal decision |
+| ADR-002 from ARCHITECTURE_DECISIONS.md | `/docs/old_universe/decisions/ADR-U002-{slug}.md` | extract+move | Universal decision |
 
 [etc.]
 
@@ -129,30 +129,30 @@ For each file in the inventory, determine:
 
 ## Products Tier — Ferd
 
-### /docs/products/ferd/requirements/
+### /docs/old_products/ferd/requirements/
 
 | Current Location | New Location | Action | Rationale |
 |------------------|--------------|--------|-----------|
-| `./docs/planning/REQUIREMENTS-ferd-complete.md` | `/docs/products/ferd/requirements/REQUIREMENTS.md` | move | Main requirements doc |
+| `./docs/planning/REQUIREMENTS-ferd-complete.md` | `/docs/old_products/ferd/requirements/REQUIREMENTS.md` | move | Main requirements doc |
 
-### /docs/products/ferd/architecture/
-
-| Current Location | New Location | Action | Rationale |
-|------------------|--------------|--------|-----------|
-| (portion of ARCHITECTURE_DECISIONS.md) | `/docs/products/ferd/architecture/decisions/ADR-F001-{slug}.md` | extract+move | Ferd-specific ADR |
-
-### /docs/products/ferd/planning/
+### /docs/old_products/ferd/architecture/
 
 | Current Location | New Location | Action | Rationale |
 |------------------|--------------|--------|-----------|
-| `/docs/planning/ROADMAP.md` | `/docs/products/ferd/planning/ROADMAP.md` | move | Ferd roadmap |
-| `/docs/planning/DEFERRED_DECISIONS.md` | `/docs/products/ferd/planning/DEFERRED.md` | move+rename | Deferred features |
+| (portion of ARCHITECTURE_DECISIONS.md) | `/docs/old_products/ferd/architecture/decisions/ADR-F001-{slug}.md` | extract+move | Ferd-specific ADR |
 
-### /docs/products/ferd/planning/sessions/
+### /docs/old_products/ferd/planning/
 
 | Current Location | New Location | Action | Rationale |
 |------------------|--------------|--------|-----------|
-| `JOURNEY_DESIGNER_SESSION_04.md` | `/docs/products/ferd/planning/sessions/2026-03-XX-SESSION-04-journey-designer.md` | move+rename | Session record |
+| `/docs/planning/ROADMAP.md` | `/docs/old_products/ferd/planning/ROADMAP.md` | move | Ferd roadmap |
+| `/docs/planning/DEFERRED_DECISIONS.md` | `/docs/old_products/ferd/planning/DEFERRED.md` | move+rename | Deferred features |
+
+### /docs/old_products/ferd/planning/sessions/
+
+| Current Location | New Location | Action | Rationale |
+|------------------|--------------|--------|-----------|
+| `JOURNEY_DESIGNER_SESSION_04.md` | `/docs/old_products/ferd/planning/sessions/2026-03-XX-SESSION-04-journey-designer.md` | move+rename | Session record |
 
 [etc.]
 
@@ -160,24 +160,24 @@ For each file in the inventory, determine:
 
 ## Implementation Tier
 
-### /docs/implementation/shared/ (Backend)
+### /docs/old_implementation/shared/ (Backend)
 
 | Current Location | New Location | Action | Rationale |
 |------------------|--------------|--------|-----------|
-| `DATABASE_SCHEMA.md` (if exists) | `/docs/implementation/shared/DATABASE_CURRENT.md` | move | Shared by all products |
-| `AUTHORIZATION.md` (if exists) | `/docs/implementation/shared/AUTH_SYSTEM.md` | move | RLS shared |
+| `DATABASE_SCHEMA.md` (if exists) | `/docs/old_implementation/shared/DATABASE_CURRENT.md` | move | Shared by all products |
+| `AUTHORIZATION.md` (if exists) | `/docs/old_implementation/shared/AUTH_SYSTEM.md` | move | RLS shared |
 
-### /docs/implementation/ferd/baseline/
-
-| Current Location | New Location | Action | Rationale |
-|------------------|--------------|--------|-----------|
-| `ARCHITECTURE_BASELINE.md` (if exists) | `/docs/implementation/ferd/baseline/BASELINE.md` | regenerate | Claude Code generates new |
-
-### /docs/implementation/ferd/status/
+### /docs/old_implementation/ferd/baseline/
 
 | Current Location | New Location | Action | Rationale |
 |------------------|--------------|--------|-----------|
-| (new file) | `/docs/implementation/ferd/status/KANBAN.md` | create | Visual board (to be created) |
+| `ARCHITECTURE_BASELINE.md` (if exists) | `/docs/old_implementation/ferd/baseline/BASELINE.md` | regenerate | Claude Code generates new |
+
+### /docs/old_implementation/ferd/status/
+
+| Current Location | New Location | Action | Rationale |
+|------------------|--------------|--------|-----------|
+| (new file) | `/docs/old_implementation/ferd/status/KANBAN.md` | create | Visual board (to be created) |
 
 ---
 
@@ -233,12 +233,12 @@ I've created the migration mapping. Please review:
 Create all folders per COMPLETE_FOLDER_STRUCTURE.md:
 
 ```bash
-mkdir -p docs/universe/{vision,strategy,worldbuilding,brand,legal,architecture,research,decisions}
-mkdir -p docs/products/ferd/{specification,architecture,planning,development,sessions,research}
-mkdir -p docs/products/ferd/architecture/decisions
-mkdir -p docs/products/ferd/planning/sessions
-mkdir -p docs/implementation/{shared,cross-product,ferd}
-mkdir -p docs/implementation/ferd/{status,baseline,handover,testing,changelog}
+mkdir -p docs/old_universe/{vision,strategy,worldbuilding,brand,legal,architecture,research,decisions}
+mkdir -p docs/old_products/ferd/{specification,architecture,planning,development,sessions,research}
+mkdir -p docs/old_products/ferd/architecture/decisions
+mkdir -p docs/old_products/ferd/planning/sessions
+mkdir -p docs/old_implementation/{shared,cross-product,ferd}
+mkdir -p docs/old_implementation/ferd/{status,baseline,handover,testing,changelog}
 mkdir -p docs/_archive
 ```
 
@@ -247,11 +247,11 @@ mkdir -p docs/_archive
 **Task 3.2: Create INDEX.md Files**
 
 Create INDEX.md in each major folder using examples from uploaded files:
-- `/docs/INDEX.md` (root hub)
-- `/docs/universe/INDEX.md`
-- `/docs/products/INDEX.md`
-- `/docs/products/ferd/INDEX.md`
-- `/docs/implementation/INDEX.md`
+- `/docs/old_INDEX.md` (root hub)
+- `/docs/old_universe/INDEX.md`
+- `/docs/old_products/INDEX.md`
+- `/docs/old_products/ferd/INDEX.md`
+- `/docs/old_implementation/INDEX.md`
 - [etc. for all folders with 3+ items]
 
 **Pattern:**
@@ -283,8 +283,8 @@ Execute the migration per approved mapping:
 
 ```bash
 # Example moves (based on your mapping)
-mv docs/planning/ARCHITECTURE_ANATOMY.md docs/universe/architecture/ARCHITECTURE_ANATOMY.md
-mv docs/planning/REQUIREMENTS-ferd-complete.md docs/products/ferd/requirements/REQUIREMENTS.md
+mv docs/planning/ARCHITECTURE_ANATOMY.md docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md
+mv docs/planning/REQUIREMENTS-ferd-complete.md docs/old_products/ferd/requirements/REQUIREMENTS.md
 
 [etc. per mapping]
 ```
@@ -319,22 +319,22 @@ Then update each broken link.
 **Create these if they don't exist:**
 
 **1. ACTUAL_STATE.md**
-- **Location:** `/docs/implementation/ferd/baseline/ACTUAL_STATE.md`
+- **Location:** `/docs/old_implementation/ferd/baseline/ACTUAL_STATE.md`
 - **Content:** Copy from your previous session output (I'll provide)
 
 **2. KANBAN.md**
-- **Location:** `/docs/implementation/ferd/status/KANBAN.md`
+- **Location:** `/docs/old_implementation/ferd/status/KANBAN.md`
 - **Content:** Visual board based on REQUIREMENTS.md status
 - **Columns:** 🔥 IMMEDIATE, 🔄 In Progress, 📋 Next Sprint, 🗓️ Backlog, ⏸️ Deferred
 - **Rows:** Critical issues from ACTUAL_STATE.md + REQUIREMENTS.md
 
 **3. ROADMAP.md**
-- **Location:** `/docs/products/ferd/planning/ROADMAP.md`
+- **Location:** `/docs/old_products/ferd/planning/ROADMAP.md`
 - **Content:** Phase breakdown based on REQUIREMENTS.md
 - **Phases:** 1.4 (current), 1.5 (polish), 1.6 (API layer), 2.0 (Hamn)
 
 **4. BASELINE.md**
-- **Location:** `/docs/implementation/ferd/baseline/BASELINE.md`
+- **Location:** `/docs/old_implementation/ferd/baseline/BASELINE.md`
 - **Content:** Re-generate from codebase (you've done this before)
 
 ---
@@ -360,7 +360,7 @@ Add `_ARCHIVE_INDEX.md` listing archived files with reasons.
 
 **Update README.md:**
 - Add "Documentation Structure" section
-- Link to `/docs/INDEX.md`
+- Link to `/docs/old_INDEX.md`
 - Brief explanation of three tiers
 - How to find things
 
@@ -422,7 +422,7 @@ Create `MIGRATION_REPORT.md`:
 
 | File | Purpose | Status |
 |------|---------|--------|
-| `/docs/INDEX.md` | Root navigation | ✅ Done |
+| `/docs/old_INDEX.md` | Root navigation | ✅ Done |
 
 ### Archived Files (Y total)
 

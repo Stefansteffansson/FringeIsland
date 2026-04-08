@@ -93,7 +93,7 @@ Applies to the **entire ecosystem**, regardless of which product you're building
 - "All products use CC BY-SA for content licensing" → Universe decision
 - "The Foundation owns the FringeIsland trademark" → Universe decision
 
-**Location:** `/docs/universe/decisions/`
+**Location:** `/docs/old_universe/decisions/`
 
 ### Product-Level Decision (ADR-F00X, ADR-H00X, etc.)
 Applies to **one specific product** only.
@@ -103,7 +103,7 @@ Applies to **one specific product** only.
 - "iOS app uses SwiftUI framework" → iOS decision (ADR-I00X)
 - "Hamn implements native push notifications" → Hamn decision (ADR-H00X)
 
-**Location:** `/docs/products/{product}/architecture/DECISIONS.md`
+**Location:** `/docs/old_products/{product}/architecture/DECISIONS.md`
 
 ---
 
@@ -140,11 +140,11 @@ Universe docs provide shared context for everyone working on or contributing to 
 - [All Universe ADRs →](./decisions/INDEX.md)
 
 **Go to Products:**
-- [Ferd (Web App) →](../products/ferd/INDEX.md)
-- [All Products →](../products/INDEX.md)
+- [Ferd (Web App) →](../old_products/ferd/INDEX.md)
+- [All Products →](../old_products/INDEX.md)
 
 **See Current State:**
-- [What's Being Built Now →](../implementation/cross-product/PRIORITIES.md)
+- [What's Being Built Now →](../old_implementation/cross-product/PRIORITIES.md)
 
 ---
 

@@ -23,8 +23,8 @@ I am the Test Agent. I ensure that every feature has documented behaviors and ve
 
 - **Test framework:** Jest with `@jest/globals` imports
 - **Test location:** `tests/integration/[domain]/[feature].test.ts`
-- **Behavior specs:** `docs/products/ferd/development/specs/[domain].md`
-- **Spec template:** `docs/products/ferd/development/specs/_template.md`
+- **Behavior specs:** `docs/old_products/ferd/development/specs/[domain].md`
+- **Spec template:** `docs/old_products/ferd/development/specs/_template.md`
 - **Helpers:** `tests/helpers/supabase.ts` (clients, cleanup, fixtures)
 - **Fixtures:** `tests/helpers/fixtures.ts` (reusable test data)
 - **Suite setup:** `tests/integration/suite-setup.ts` (rate limit delays)
@@ -72,7 +72,7 @@ If I am invoked AFTER design or implementation has already started (schema desig
 
 ### 1. Document the Behavior
 
-Use the template at `docs/products/ferd/development/specs/_template.md`:
+Use the template at `docs/old_products/ferd/development/specs/_template.md`:
 
 ```markdown
 ## B-[DOMAIN]-NNN: [Behavior Name]
@@ -255,11 +255,11 @@ My work is done when:
 ## Learning Protocol
 
 When working in this domain:
-1. Check `docs/products/ferd/development/agents/learnings/testing.md` for recent discoveries
+1. Check `docs/old_products/ferd/development/agents/learnings/testing.md` for recent discoveries
 2. During work, append new findings to the journal
 3. At close-down, flag any cross-cutting learnings for MEMORY.md
 
-Journal location: `docs/products/ferd/development/agents/learnings/testing.md`
+Journal location: `docs/old_products/ferd/development/agents/learnings/testing.md`
 Last curated: 2026-02-13 (initial)
 
 ---
@@ -296,11 +296,11 @@ node scripts/cleanup-test-data.js              # purge
 
 ## Related Documentation
 
-- **Behavior spec template:** `docs/products/ferd/development/specs/_template.md`
-- **TDD workflow:** `docs/products/ferd/development/WORKFLOW.md`
+- **Behavior spec template:** `docs/old_products/ferd/development/specs/_template.md`
+- **TDD workflow:** `docs/old_products/ferd/development/WORKFLOW.md`
 - **Test helpers:** `tests/helpers/supabase.ts`
 - **Test fixtures:** `tests/helpers/fixtures.ts`
 - **Suite setup:** `tests/integration/suite-setup.ts`
 - **Global teardown:** `tests/global-teardown.ts` (auto-sweeps orphaned test data)
 - **Cleanup script:** `scripts/cleanup-test-data.js` (manual purge, `--dry-run` supported)
-- **Existing specs:** `docs/products/ferd/development/specs/authentication.md`, `groups.md`, `journeys.md`, `roles.md`
+- **Existing specs:** `docs/old_products/ferd/development/specs/authentication.md`, `groups.md`, `journeys.md`, `roles.md`

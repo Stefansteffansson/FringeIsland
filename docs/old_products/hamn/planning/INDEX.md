@@ -18,7 +18,7 @@ _Research and deferred decisions will be created when Wave 3 planning begins._
 
 ## Planning Sequence
 
-Per the [Planning Protocol](../../../universe/processes/PLANNING_PROTOCOL.md):
+Per the [Planning Protocol](../../../old_universe/processes/PLANNING_PROTOCOL.md):
 
 ```
 1. RESEARCH.md     — Investigate unknowns (not yet created)
@@ -33,6 +33,6 @@ Per the [Planning Protocol](../../../universe/processes/PLANNING_PROTOCOL.md):
 
 - [Hamn Specification](../specification/) — What we're building
 - [Hamn Index](../INDEX.md)
-- [Shared Processes](../../../universe/processes/) — Deferral protocol, planning protocol
+- [Shared Processes](../../../old_universe/processes/) — Deferral protocol, planning protocol
 - [Ferd Planning](../../ferd/planning/) — Wave 1 planning (reference)
 - [Wave Redistribution](../../WAVE_REDISTRIBUTION.md) — items pending wave assignment

@@ -152,7 +152,7 @@ This is a display-layer concern handled by ForumSection component's membership c
 
 ### Behavior Specs
 
-- `docs/products/ferd/development/specs/groups.md` — B-GRP-008 (Regular Leave), B-GRP-009 (DeusEx Handover), B-GRP-010 (Group Closure)
+- `docs/old_products/ferd/development/specs/groups.md` — B-GRP-008 (Regular Leave), B-GRP-009 (DeusEx Handover), B-GRP-010 (Group Closure)
 
 ### Integration Tests
 
@@ -194,7 +194,7 @@ This is a display-layer concern handled by ForumSection component's membership c
 |------|---------|
 | `supabase/migrations/20260228120745_sprint2_leave_group_core.sql` | `leave_group()` RPC + trigger update |
 | `tests/integration/groups/leave-group.test.ts` | 17 integration tests |
-| `docs/products/ferd/development/specs/groups.md` | B-GRP-008, B-GRP-009, B-GRP-010 |
+| `docs/old_products/ferd/development/specs/groups.md` | B-GRP-008, B-GRP-009, B-GRP-010 |
 | `docs/archive/leave_group_feature_review.md` | Full design spec (archived) |
 | `docs/planning/lifecycle-roadmap-decisions.md` | Sprint structure and decisions |
 

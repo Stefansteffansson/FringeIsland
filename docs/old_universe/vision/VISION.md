@@ -347,7 +347,7 @@ AR void visualization — overlaying ordinary world with the three-dimensional v
 
 Three Worlds UI design (felt transitions across Ordinary World / Safe Harbour / The Other Side), Seasons and Episodes mechanics, NPC behaviour authoring, respawning mechanics, advanced analytics dashboard, monetization at scale, the Endowment, the game itself (Unreal Engine three-realm runtime), and distribution to consoles and VR/AR headsets.
 
-> **Note:** The wave redistribution from the old 2-wave model was completed on 2026-04-07. See [DEFERRED.md](../../products/ferd/planning/DEFERRED.md) for item-level wave assignments and [ADR-U022](../decisions/ADR-U022-named-waves.md) for the naming rationale.
+> **Note:** The wave redistribution from the old 2-wave model was completed on 2026-04-07. See [DEFERRED.md](../../old_products/ferd/planning/DEFERRED.md) for item-level wave assignments and [ADR-U022](../decisions/ADR-U022-named-waves.md) for the naming rationale.
 
 ### The Broader Ecosystem
 
@@ -420,7 +420,7 @@ The wave model (Ferd → Eid → Hamn → Heim → Brim → Urd) is now assigned
 - **Type 3-4 journeys vs. dynamic journeys:** Wave 4 (Heim) introduces dynamic/branching journey paths. The relationship between these and "Type 3-4" generative journeys (an Urd-level concept) needs reconciling.
 - **Whisp fullness model:** The encounter phenomenology (Eid) and practical UI (Eid) are now scheduled, but the fullness-as-fidelity progression model itself still needs its own session.
 
-See [DEFERRED.md](../../products/ferd/planning/DEFERRED.md) for item-level wave assignments.
+See [DEFERRED.md](../../old_products/ferd/planning/DEFERRED.md) for item-level wave assignments.
 
 ---
 

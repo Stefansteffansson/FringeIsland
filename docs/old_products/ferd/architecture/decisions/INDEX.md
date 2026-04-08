@@ -14,5 +14,5 @@
 
 ## Related
 
-- [Universe Decisions](../../../../universe/decisions/) — Universe-level ADRs (22)
+- [Universe Decisions](../../../../old_universe/decisions/) — Universe-level ADRs (22)
 - [Ferd Architecture](../INDEX.md)

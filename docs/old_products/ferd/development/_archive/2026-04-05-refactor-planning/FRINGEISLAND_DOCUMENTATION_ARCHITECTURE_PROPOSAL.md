@@ -144,14 +144,14 @@ TIER 3: IMPLEMENTATION
 
 ## Tier 1: Universe Documentation
 
-**Location:** `/docs/universe/`
+**Location:** `/docs/old_universe/`
 
 **Purpose:** Defines what FringeIsland is as an ecosystem — independent of any specific product implementation.
 
 ### Structure
 
 ```
-/docs/universe/
+/docs/old_universe/
 ├── INDEX.md                          # Entry point - what's in universe docs
 ├── vision/
 │   ├── INDEX.md                      # Vision overview
@@ -201,14 +201,14 @@ TIER 3: IMPLEMENTATION
 
 ## Tier 2: Product Documentation
 
-**Location:** `/docs/products/{product-name}/`
+**Location:** `/docs/old_products/{product-name}/`
 
 **Purpose:** Specification, architecture, and planning for each individual product in the ecosystem.
 
 ### Structure (using Ferd as example)
 
 ```
-/docs/products/ferd/
+/docs/old_products/ferd/
 ├── INDEX.md                          # Ferd product overview
 ├── specification/
 │   ├── INDEX.md                      # Spec overview
@@ -245,7 +245,7 @@ TIER 3: IMPLEMENTATION
 ### Replicated for Each Product
 
 ```
-/docs/products/
+/docs/old_products/
 ├── ferd/          # Web app (Wave 1)
 ├── hamn/          # Evolved platform (Wave 2)
 ├── ios-app/       # Native iOS (Wave 2)
@@ -259,20 +259,20 @@ TIER 3: IMPLEMENTATION
 
 **Cross-product patterns reference universe** — If multiple products share a pattern (e.g., "all products use Three Questions framework"), that belongs in universe docs. Products reference it.
 
-**Each product is self-contained** — Should be possible to understand Ferd entirely from `/docs/products/ferd/` without reading other product docs.
+**Each product is self-contained** — Should be possible to understand Ferd entirely from `/docs/old_products/ferd/` without reading other product docs.
 
 ---
 
 ## Tier 3: Implementation Documentation
 
-**Location:** `/docs/implementation/`
+**Location:** `/docs/old_implementation/`
 
 **Purpose:** Track current state, development status, and provide handover between sessions.
 
 ### Structure
 
 ```
-/docs/implementation/
+/docs/old_implementation/
 ├── INDEX.md                          # Implementation overview
 ├── status/
 │   ├── INDEX.md                      # Status tracking overview
@@ -338,7 +338,7 @@ Every folder has an `INDEX.md` that serves as:
 2. **Navigation hub** to child folders
 3. **Context setter** — what this section contains
 
-### Example: `/docs/products/ferd/INDEX.md`
+### Example: `/docs/old_products/ferd/INDEX.md`
 
 ```markdown
 # Ferd — Web Platform Documentation
@@ -375,17 +375,17 @@ Planning session records.
 - [More →](./sessions/INDEX.md)
 
 ## Quick Links
-- [Current State →](/docs/implementation/status/CURRENT_STATE.md)
-- [Universe Vision →](/docs/universe/vision/VISION.md)
+- [Current State →](/docs/old_implementation/status/CURRENT_STATE.md)
+- [Universe Vision →](/docs/old_universe/vision/VISION.md)
 - [Ferd Roadmap →](./planning/ROADMAP.md)
 ```
 
 ### Agent Loading Pattern
 
 An agent starting a session would:
-1. Load `/docs/products/ferd/INDEX.md` (overview)
-2. Load `/docs/products/ferd/planning/CURRENT_PHASE.md` (what we're building now)
-3. Load `/docs/implementation/handover/NEXT_SESSION_PLAN.md` (what to do this session)
+1. Load `/docs/old_products/ferd/INDEX.md` (overview)
+2. Load `/docs/old_products/ferd/planning/CURRENT_PHASE.md` (what we're building now)
+3. Load `/docs/old_implementation/handover/NEXT_SESSION_PLAN.md` (what to do this session)
 4. Load specific detail files only as needed
 
 **Total tokens:** ~3,000–5,000 instead of 50,000+
@@ -399,7 +399,7 @@ You need kanban-like visibility without external tools. Status must be integrate
 
 ### The Solution: Status Metadata in Requirements
 
-**In `/docs/products/ferd/specification/REQUIREMENTS.md`:**
+**In `/docs/old_products/ferd/specification/REQUIREMENTS.md`:**
 
 ```markdown
 # Ferd — Requirements
@@ -450,7 +450,7 @@ Users must be able to...
 
 ### Automated Status Board
 
-**In `/docs/implementation/status/KANBAN.md`** (can be auto-generated from requirements):
+**In `/docs/old_implementation/status/KANBAN.md`** (can be auto-generated from requirements):
 
 ```markdown
 # Development Status Board
@@ -484,7 +484,7 @@ Last updated: 2026-04-04
 
 ### BDD Scenario Status
 
-**In `/docs/implementation/testing/bdd-scenarios/authentication.feature`:**
+**In `/docs/old_implementation/testing/bdd-scenarios/authentication.feature`:**
 
 ```gherkin
 # Status: ✅ All scenarios passing
@@ -516,17 +516,17 @@ Current: Large files (30-50KB) loaded entirely. Wastes tokens. Slows sessions.
 
 **Step 1: Load Context (Agent Start)**
 ```
-1. /docs/products/ferd/INDEX.md                     (~500 tokens)
-2. /docs/products/ferd/planning/CURRENT_PHASE.md    (~800 tokens)
-3. /docs/implementation/handover/NEXT_SESSION_PLAN.md (~1000 tokens)
+1. /docs/old_products/ferd/INDEX.md                     (~500 tokens)
+2. /docs/old_products/ferd/planning/CURRENT_PHASE.md    (~800 tokens)
+3. /docs/old_implementation/handover/NEXT_SESSION_PLAN.md (~1000 tokens)
 TOTAL: ~2300 tokens
 ```
 
 **Step 2: Load Specific Requirements**
 ```
-4. /docs/products/ferd/specification/REQUIREMENTS.md  
+4. /docs/old_products/ferd/specification/REQUIREMENTS.md  
    → Only FR-002 section                            (~400 tokens)
-5. /docs/products/ferd/architecture/ANATOMY.md
+5. /docs/old_products/ferd/architecture/ANATOMY.md
    → Only L3 Experience Engine section              (~600 tokens)
 TOTAL ADDED: ~1000 tokens
 RUNNING TOTAL: ~3300 tokens
@@ -534,7 +534,7 @@ RUNNING TOTAL: ~3300 tokens
 
 **Step 3: Load Architecture Decisions (If Needed)**
 ```
-6. /docs/products/ferd/architecture/DECISIONS.md
+6. /docs/old_products/ferd/architecture/DECISIONS.md
    → Only ADR-008 (Step type extensibility)         (~300 tokens)
 TOTAL ADDED: ~300 tokens
 RUNNING TOTAL: ~3600 tokens
@@ -542,7 +542,7 @@ RUNNING TOTAL: ~3600 tokens
 
 **Step 4: Load BDD Scenarios**
 ```
-7. /docs/implementation/testing/bdd-scenarios/journeys.feature
+7. /docs/old_implementation/testing/bdd-scenarios/journeys.feature
    → Enrollment scenarios only                      (~400 tokens)
 TOTAL ADDED: ~400 tokens
 RUNNING TOTAL: ~4000 tokens
@@ -550,7 +550,7 @@ RUNNING TOTAL: ~4000 tokens
 
 **Step 5: Load Current Baseline (Selective)**
 ```
-8. /docs/implementation/baseline/DATABASE_CURRENT.md
+8. /docs/old_implementation/baseline/DATABASE_CURRENT.md
    → Only journey-related tables                    (~600 tokens)
 TOTAL ADDED: ~600 tokens
 RUNNING TOTAL: ~4600 tokens
@@ -569,9 +569,9 @@ See [FR-002 in REQUIREMENTS.md](../specification/REQUIREMENTS.md#FR-002)
 
 **Architecture:** See [L3 Experience Engine](../architecture/ANATOMY.md#L3-experience-engine)
 
-**Status:** See [KANBAN.md](/docs/implementation/status/KANBAN.md)
+**Status:** See [KANBAN.md](/docs/old_implementation/status/KANBAN.md)
 
-**BDD Scenarios:** See [journeys.feature](/docs/implementation/testing/bdd-scenarios/journeys.feature)
+**BDD Scenarios:** See [journeys.feature](/docs/old_implementation/testing/bdd-scenarios/journeys.feature)
 ```
 
 ---
@@ -579,30 +579,30 @@ See [FR-002 in REQUIREMENTS.md](../specification/REQUIREMENTS.md#FR-002)
 ## Migration Path from Current State
 
 ### Phase 1: Create New Structure (No Content Move)
-1. Create folder structure `/docs/universe/`, `/docs/products/`, `/docs/implementation/`
+1. Create folder structure `/docs/old_universe/`, `/docs/old_products/`, `/docs/old_implementation/`
 2. Create all INDEX.md files (navigation only)
 3. **Don't move files yet**
 
 ### Phase 2: Move Universe-Level Docs
-1. Move VISION.md → `/docs/universe/vision/VISION.md`
-2. Move PRODUCTS_AND_PLATFORM.md → `/docs/universe/strategy/PRODUCTS_AND_PLATFORM.md`
-3. Move CONTRIBUTION_ARCHITECTURE.md → `/docs/universe/strategy/CONTRIBUTION_ARCHITECTURE.md`
-4. Create new universe-level ADRs in `/docs/universe/decisions/`
+1. Move VISION.md → `/docs/old_universe/vision/VISION.md`
+2. Move PRODUCTS_AND_PLATFORM.md → `/docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md`
+3. Move CONTRIBUTION_ARCHITECTURE.md → `/docs/old_universe/strategy/CONTRIBUTION_ARCHITECTURE.md`
+4. Create new universe-level ADRs in `/docs/old_universe/decisions/`
 
 ### Phase 3: Create Ferd Product Docs
-1. Create `/docs/products/ferd/INDEX.md`
-2. Move ARCHITECTURE_ANATOMY.md → `/docs/products/ferd/architecture/ANATOMY.md`
+1. Create `/docs/old_products/ferd/INDEX.md`
+2. Move ARCHITECTURE_ANATOMY.md → `/docs/old_products/ferd/architecture/ANATOMY.md`
 3. Split ARCHITECTURE_DECISIONS.md:
-   - Product ADRs → `/docs/products/ferd/architecture/DECISIONS.md`
-   - Universe ADRs → `/docs/universe/decisions/ADR-U00X.md`
+   - Product ADRs → `/docs/old_products/ferd/architecture/DECISIONS.md`
+   - Universe ADRs → `/docs/old_universe/decisions/ADR-U00X.md`
 4. Create PRODUCT_SPEC.md for Ferd
 5. Create REQUIREMENTS.md from current ROADMAP.md + features
 
 ### Phase 4: Create Implementation Tracking
-1. Create `/docs/implementation/status/CURRENT_STATE.md`
-2. Create `/docs/implementation/status/KANBAN.md`
+1. Create `/docs/old_implementation/status/CURRENT_STATE.md`
+2. Create `/docs/old_implementation/status/KANBAN.md`
 3. Add status metadata to all requirements
-4. Move ARCHITECTURE_BASELINE.md → `/docs/implementation/baseline/BASELINE.md`
+4. Move ARCHITECTURE_BASELINE.md → `/docs/old_implementation/baseline/BASELINE.md`
 
 ### Phase 5: Archive Old Files
 1. Create `/docs/_archive/` folder

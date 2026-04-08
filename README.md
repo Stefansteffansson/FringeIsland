@@ -4,7 +4,7 @@
 
 An edutainment platform for group-based personal development through structured learning journeys. Users travel solo or in groups on predefined journeys guided by role-based experiences — Stewards lead, Guides facilitate, Members participate, and Observers watch.
 
-FringeIsland is a sub-project within the **FringeIsland World** — an Alternative Reality Edutainment platform where people can Live, Grow, and Matter. See [VISION.md](docs/universe/vision/VISION.md) for the full vision.
+FringeIsland is a sub-project within the **FringeIsland World** — an Alternative Reality Edutainment platform where people can Live, Grow, and Matter. See [VISION.md](docs/old_universe/vision/VISION.md) for the full vision.
 
 ---
 
@@ -103,37 +103,37 @@ npm run test:e2e
 
 ## 📍 Where to Find Things
 
-Documentation is organized in three tiers: **Universe** (shared foundations) > **Products** (product-specific) > **Implementation** (live code state). See [docs/INDEX.md](docs/INDEX.md) for full navigation.
+Documentation is organized in three tiers: **Universe** (shared foundations) > **Products** (product-specific) > **Implementation** (live code state). See [docs/old_INDEX.md](docs/old_INDEX.md) for full navigation.
 
 | What | Where |
 |------|-------|
 | Current state & blockers | [PROJECT_STATUS.md](PROJECT_STATUS.md) |
 | Version history | [CHANGELOG.md](CHANGELOG.md) |
 | AI assistant context | [CLAUDE.md](CLAUDE.md) |
-| Documentation hub | [docs/INDEX.md](docs/INDEX.md) |
+| Documentation hub | [docs/old_INDEX.md](docs/old_INDEX.md) |
 | **Universe** | |
-| Vision & intent | [docs/universe/vision/VISION.md](docs/universe/vision/VISION.md) |
-| Manifesto | [docs/universe/vision/MANIFESTO.md](docs/universe/vision/MANIFESTO.md) |
-| Products & platform strategy | [docs/universe/strategy/PRODUCTS_AND_PLATFORM.md](docs/universe/strategy/PRODUCTS_AND_PLATFORM.md) |
-| Architecture anatomy (primary) | [docs/universe/architecture/ARCHITECTURE_ANATOMY.md](docs/universe/architecture/ARCHITECTURE_ANATOMY.md) |
-| Architecture decisions (ADRs) | [docs/universe/decisions/](docs/universe/decisions/) |
-| Research | [docs/universe/research/](docs/universe/research/) |
+| Vision & intent | [docs/old_universe/vision/VISION.md](docs/old_universe/vision/VISION.md) |
+| Manifesto | [docs/old_universe/vision/MANIFESTO.md](docs/old_universe/vision/MANIFESTO.md) |
+| Products & platform strategy | [docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md](docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md) |
+| Architecture anatomy (primary) | [docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md](docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md) |
+| Architecture decisions (ADRs) | [docs/old_universe/decisions/](docs/old_universe/decisions/) |
+| Research | [docs/old_universe/research/](docs/old_universe/research/) |
 | **Ferd (Wave 1)** | |
-| Product specification | [docs/products/ferd/specification/PRODUCT_SPEC.md](docs/products/ferd/specification/PRODUCT_SPEC.md) |
-| Requirements (100 items) | [docs/products/ferd/specification/REQUIREMENTS.md](docs/products/ferd/specification/REQUIREMENTS.md) |
-| Wave roadmap | [docs/products/ferd/planning/ROADMAP.md](docs/products/ferd/planning/ROADMAP.md) |
-| Deferred decisions | [docs/products/ferd/planning/DEFERRED.md](docs/products/ferd/planning/DEFERRED.md) |
-| Feature docs | [docs/products/ferd/development/features/](docs/products/ferd/development/features/) |
-| Behavior specs | [docs/products/ferd/development/specs/](docs/products/ferd/development/specs/) |
-| TDD workflow | [docs/products/ferd/development/WORKFLOW.md](docs/products/ferd/development/WORKFLOW.md) |
-| Journey Designer sessions | [docs/products/ferd/sessions/](docs/products/ferd/sessions/) |
+| Product specification | [docs/old_products/ferd/specification/PRODUCT_SPEC.md](docs/old_products/ferd/specification/PRODUCT_SPEC.md) |
+| Requirements (100 items) | [docs/old_products/ferd/specification/REQUIREMENTS.md](docs/old_products/ferd/specification/REQUIREMENTS.md) |
+| Wave roadmap | [docs/old_products/ferd/planning/ROADMAP.md](docs/old_products/ferd/planning/ROADMAP.md) |
+| Deferred decisions | [docs/old_products/ferd/planning/DEFERRED.md](docs/old_products/ferd/planning/DEFERRED.md) |
+| Feature docs | [docs/old_products/ferd/development/features/](docs/old_products/ferd/development/features/) |
+| Behavior specs | [docs/old_products/ferd/development/specs/](docs/old_products/ferd/development/specs/) |
+| TDD workflow | [docs/old_products/ferd/development/WORKFLOW.md](docs/old_products/ferd/development/WORKFLOW.md) |
+| Journey Designer sessions | [docs/old_products/ferd/sessions/](docs/old_products/ferd/sessions/) |
 | **All Waves (6-wave saga arc)** | |
-| Products index (all waves) | [docs/products/INDEX.md](docs/products/INDEX.md) |
-| Hamn product docs (Wave 3) | [docs/products/hamn/INDEX.md](docs/products/hamn/INDEX.md) |
-| Wave redistribution (pending) | [docs/products/WAVE_REDISTRIBUTION.md](docs/products/WAVE_REDISTRIBUTION.md) |
+| Products index (all waves) | [docs/old_products/INDEX.md](docs/old_products/INDEX.md) |
+| Hamn product docs (Wave 3) | [docs/old_products/hamn/INDEX.md](docs/old_products/hamn/INDEX.md) |
+| Wave redistribution (pending) | [docs/old_products/WAVE_REDISTRIBUTION.md](docs/old_products/WAVE_REDISTRIBUTION.md) |
 | **Implementation** | |
-| Database schema | [docs/implementation/shared/DATABASE_CURRENT.md](docs/implementation/shared/DATABASE_CURRENT.md) |
-| Architecture baseline (live) | [docs/implementation/ferd/baseline/BASELINE.md](docs/implementation/ferd/baseline/BASELINE.md) |
+| Database schema | [docs/old_implementation/shared/DATABASE_CURRENT.md](docs/old_implementation/shared/DATABASE_CURRENT.md) |
+| Architecture baseline (live) | [docs/old_implementation/ferd/baseline/BASELINE.md](docs/old_implementation/ferd/baseline/BASELINE.md) |
 
 ---
 

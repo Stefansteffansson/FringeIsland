@@ -329,7 +329,7 @@ C. DEFERRED_DECISIONS.md (if new deferrals)
 
 - **PROJECT_STATUS.md** - Day-to-day current state
 - **CHANGELOG.md** - Version history (what changed)
-- **docs/INDEX.md** - Master documentation navigation
+- **docs/old_INDEX.md** - Master documentation navigation
 - **docs/workflows/boot-up.md** - Starting a session
 - **docs/workflows/close-down.md** - Ending a session
 

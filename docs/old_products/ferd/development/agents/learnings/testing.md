@@ -2,7 +2,7 @@
 
 **Purpose:** Running log of discoveries, patterns, and lessons learned during testing work.
 **Curated by:** Sprint Agent during retrospectives
-**Promotion:** Confirmed patterns → `docs/products/ferd/development/agents/contexts/test-agent.md` (playbook)
+**Promotion:** Confirmed patterns → `docs/old_products/ferd/development/agents/contexts/test-agent.md` (playbook)
 
 ---
 

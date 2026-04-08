@@ -44,7 +44,7 @@ No application code was changed — all work was documentation refinement and on
 
 ### Created
 - `supabase/migrations/20260227120843_seed_deleted_user_sentinel_group.sql` — Seeds `[Deleted User]` system group
-- `docs/products/ferd/sessions/2026-02-27-leave-group-feature-review.md` — This session bridge
+- `docs/old_products/ferd/sessions/2026-02-27-leave-group-feature-review.md` — This session bridge
 
 ### Modified
 - `docs/features/planned/leave_group_feature_review.md` — Extensive modifications across all sections

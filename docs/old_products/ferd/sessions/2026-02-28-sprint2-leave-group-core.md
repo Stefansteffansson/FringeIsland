@@ -51,12 +51,12 @@ After Sprint 2, reviewed and updated all 15 feature documents under `docs/featur
 - `tests/integration/groups/leave-group.test.ts` — 17 integration tests
 - `docs/features/implemented/leave-group-core.md` — Feature doc (moved from active/, fully rewritten)
 - `docs/features/implemented/foundation-schema.md` — Feature doc (moved from active/)
-- `docs/products/ferd/sessions/2026-02-28-sprint2-leave-group-core.md` — This session bridge
+- `docs/old_products/ferd/sessions/2026-02-28-sprint2-leave-group-core.md` — This session bridge
 
 ### Modified
 - `CHANGELOG.md` — Sprint 2 entry
 - `PROJECT_STATUS.md` — Version, stats, session summary
-- `docs/products/ferd/planning/ROADMAP.md` — Sprint 2 complete
+- `docs/old_products/ferd/planning/ROADMAP.md` — Sprint 2 complete
 - `docs/planning/lifecycle-roadmap-decisions.md` — Sprint 2 marked complete
 - `docs/specs/behaviors/groups.md` — B-GRP-008, B-GRP-009, B-GRP-010
 - `docs/features/implemented/group-management.md` — Major update (data model, known limitations, triggers, version history)

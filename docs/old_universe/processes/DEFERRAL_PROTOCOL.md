@@ -66,7 +66,7 @@ During planning/spec sessions, the receiver reviews and decides:
   **Accepted:** [date] → See [receiver]/planning/DEFERRED.md DF-XXX
   ```
 
-- **Reject** — Item has no clear owner. Move to `docs/universe/strategy/OPEN_QUESTIONS.md`:
+- **Reject** — Item has no clear owner. Move to `docs/old_universe/strategy/OPEN_QUESTIONS.md`:
   ```markdown
   **Status:** Rejected by [receiver] → OPEN_QUESTIONS.md OQ-XXX
   **Accepted:** [date] → Unowned, needs strategic decision
@@ -79,8 +79,8 @@ During planning/spec sessions, the receiver reviews and decides:
 Each product maintains its own DEFERRED.md:
 
 ```
-docs/products/ferd/planning/DEFERRED.md     — Ferd's deferrals
-docs/products/hamn/planning/DEFERRED.md     — Hamn's deferrals
+docs/old_products/ferd/planning/DEFERRED.md     — Ferd's deferrals
+docs/old_products/hamn/planning/DEFERRED.md     — Hamn's deferrals
 ```
 
 The entry lives where the *decision to defer* was made, not where the work eventually lands.
@@ -100,6 +100,6 @@ The entry lives where the *decision to defer* was made, not where the work event
 ## Related
 
 - [Planning Protocol](./PLANNING_PROTOCOL.md)
-- [Ferd Deferred](../../products/ferd/planning/DEFERRED.md)
-- [Hamn Deferred](../../products/hamn/planning/DEFERRED.md)
+- [Ferd Deferred](../../old_products/ferd/planning/DEFERRED.md)
+- [Hamn Deferred](../../old_products/hamn/planning/DEFERRED.md)
 - [Cross-wave Open Questions](../strategy/OPEN_QUESTIONS.md)

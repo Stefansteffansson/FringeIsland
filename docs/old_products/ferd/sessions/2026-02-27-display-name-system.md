@@ -41,7 +41,7 @@ Implemented the Display Name / Nickname System in a complete 7-phase TDD sprint.
 - `docs/specs/behaviors/display-name.md` (11 behavior specs)
 - `tests/integration/users/display-name.test.ts` (16 tests)
 - `tests/integration/users/display-name-rls.test.ts` (12 tests)
-- `docs/products/ferd/sessions/2026-02-27-display-name-system.md` (this file)
+- `docs/old_products/ferd/sessions/2026-02-27-display-name-system.md` (this file)
 
 ### Files Modified
 - `lib/auth/AuthContext.tsx` — UserProfile expanded with nickname, display_preference, show_real_name, display_name; queries JOIN personal group name

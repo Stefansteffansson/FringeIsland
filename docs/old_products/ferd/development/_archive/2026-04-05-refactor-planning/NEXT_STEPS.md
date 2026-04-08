@@ -76,17 +76,17 @@ Stefan is reviewing the proposed structure and examples.
 
    ## Universe Docs
    - Current: `/docs/planning/VISION.md`
-   - New: `/docs/universe/vision/VISION.md`
+   - New: `/docs/old_universe/vision/VISION.md`
    - Action: Move + update cross-references
 
    ## Ferd Docs
    - Current: `/docs/planning/ARCHITECTURE_ANATOMY.md`
-   - New: `/docs/products/ferd/architecture/ANATOMY.md`
+   - New: `/docs/old_products/ferd/architecture/ANATOMY.md`
    - Action: Move + update cross-references
 
    ## Implementation
    - Current: `/docs/planning/ARCHITECTURE_BASELINE.md`
-   - New: `/docs/implementation/ferd/baseline/BASELINE.md`
+   - New: `/docs/old_implementation/ferd/baseline/BASELINE.md`
    - Action: Move (Claude Code generates new version)
 
    [Complete mapping for all files]

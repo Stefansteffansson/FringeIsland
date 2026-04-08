@@ -22,5 +22,5 @@
 ## Related
 
 - [Products Index](../INDEX.md)
-- [Ferd Implementation](../../implementation/ferd/) — Live baseline, status, testing
-- [Universe Architecture](../../universe/architecture/) — Shared anatomy (L0-L7)
+- [Ferd Implementation](../../old_implementation/ferd/) — Live baseline, status, testing
+- [Universe Architecture](../../old_universe/architecture/) — Shared anatomy (L0-L7)

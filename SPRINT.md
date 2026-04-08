@@ -8,7 +8,7 @@
 ## How to Read This File
 
 - **One section per active work stream.** Most of the time there is one. Add more for parallel work.
-- **TDD Stage** — where we are in the 0-7 lifecycle (see `docs/products/ferd/development/WORKFLOW.md`).
+- **TDD Stage** — where we are in the 0-7 lifecycle (see `docs/old_products/ferd/development/WORKFLOW.md`).
 - **Sprint Plan** — steps with status. Tick off as work completes. Update on close-down.
 - **Next Sprint** — what we start after the current sprint finishes.
 
@@ -19,7 +19,7 @@
 **Feature / Work Package:** Ferd 1.6 Polish & Launch
 **TDD Stage:** N/A — no active feature sprint in progress
 **Status:** Planning / Ready to start
-**Session Bridge:** `docs/products/ferd/sessions/2026-03-20-SESSION-01-journey-designer.md`
+**Session Bridge:** `docs/old_products/ferd/sessions/2026-03-20-SESSION-01-journey-designer.md`
 
 ### Sprint Plan
 
@@ -58,7 +58,7 @@ To add a parallel work stream, copy this template:
 **Feature / Work Package:** [Name]
 **TDD Stage:** [0-7 or N/A]
 **Status:** [Planning | In progress | Blocked | Complete]
-**Session Bridge:** `docs/products/ferd/sessions/YYYY-MM-DD-description.md`
+**Session Bridge:** `docs/old_products/ferd/sessions/YYYY-MM-DD-description.md`
 
 ### Sprint Plan
 
@@ -83,7 +83,7 @@ After Ferd 1.6 ships:
 | 2 | Hamn M2 — Journey Marketplace | Publishing workflow, browse, ratings |
 | 3 | Hamn M3 — Enhanced Collaboration | Co-creation features (groups-join-groups UI pulled back into Ferd 1.6) |
 
-See `docs/products/ferd/planning/ROADMAP.md` for wave roadmap, `docs/products/ferd/planning/DEFERRED.md` for deferred scope, and `docs/products/INDEX.md` for all waves. (Wave redistribution completed 2026-04-07 — see `docs/products/_archive/2026-04-07-WAVE_REDISTRIBUTION-completed.md`.)
+See `docs/old_products/ferd/planning/ROADMAP.md` for wave roadmap, `docs/old_products/ferd/planning/DEFERRED.md` for deferred scope, and `docs/old_products/INDEX.md` for all waves. (Wave redistribution completed 2026-04-07 — see `docs/old_products/_archive/2026-04-07-WAVE_REDISTRIBUTION-completed.md`.)
 
 ---
 
@@ -99,4 +99,4 @@ See `docs/products/ferd/planning/ROADMAP.md` for wave roadmap, `docs/products/fe
 
 ---
 
-**Related:** `PROJECT_STATUS.md` | `docs/products/ferd/planning/ROADMAP.md` | `docs/products/ferd/development/WORKFLOW.md`
+**Related:** `PROJECT_STATUS.md` | `docs/old_products/ferd/planning/ROADMAP.md` | `docs/old_products/ferd/development/WORKFLOW.md`

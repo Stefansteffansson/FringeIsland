@@ -47,7 +47,7 @@ Planned the restructuring of FringeIsland documentation from a flat/ad-hoc struc
 5. Create 26 INDEX.md navigation files
 6. Create KANBAN.md and REFERENCES_SHARED.md
 7. Update ~200-300 cross-references
-8. Rewrite CLAUDE.md document map, README.md, docs/INDEX.md
+8. Rewrite CLAUDE.md document map, README.md, docs/old_INDEX.md
 9. Delete 5 empty placeholders + 15 emptied old directories
 10. Run Phase 4 validation
 

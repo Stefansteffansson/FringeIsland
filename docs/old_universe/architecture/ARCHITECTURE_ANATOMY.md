@@ -523,9 +523,9 @@ The anatomy dictates the build order. You cannot build a layer before everything
 | Document | Purpose |
 |----------|---------|
 | `../decisions/INDEX.md` | Why each architectural decision was made — ADRs with full reasoning |
-| `../../implementation/ferd/baseline/BASELINE.md` | Current implementation state — tables, routes, components mapped to anatomy layers |
-| `../../implementation/shared/DATABASE_CURRENT.md` | Complete PostgreSQL schema with RLS policies |
-| `../../implementation/shared/AUTH_SYSTEM.md` | Authorization model detail — has_permission(), RLS patterns |
+| `../../old_implementation/ferd/baseline/BASELINE.md` | Current implementation state — tables, routes, components mapped to anatomy layers |
+| `../../old_implementation/shared/DATABASE_CURRENT.md` | Complete PostgreSQL schema with RLS policies |
+| `../../old_implementation/shared/AUTH_SYSTEM.md` | Authorization model detail — has_permission(), RLS patterns |
 | `../vision/VISION.md` | The north star — why FringeIsland exists |
 | `../vision/MANIFESTO.md` | The values — what FringeIsland believes |
 | `../strategy/CONTRIBUTION_ARCHITECTURE.md` | Who can build what — visitor through Foundation |

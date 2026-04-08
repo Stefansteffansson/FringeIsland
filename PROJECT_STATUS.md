@@ -58,28 +58,28 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 - `README.md` - Project overview and setup
 - `CHANGELOG.md` - Version history
 - `SPRINT.md` - **Active sprint, TDD stage, and next sprint backlog**
-- `docs/products/ferd/planning/ROADMAP.md` - **Wave progress and milestone history**
-- `docs/products/ferd/planning/DEFERRED.md` - **Why we didn't build X (prevents feature creep)**
+- `docs/old_products/ferd/planning/ROADMAP.md` - **Wave progress and milestone history**
+- `docs/old_products/ferd/planning/DEFERRED.md` - **Why we didn't build X (prevents feature creep)**
 
 **For Specific Work:**
-- **Documentation hub:** `docs/INDEX.md` — three-tier navigation (universe/products/implementation)
-- **Database work:** `docs/implementation/shared/SCHEMA_OVERVIEW.md`
-- **Feature development:** `docs/products/ferd/development/features/` (FR-/AR-/NF- prefixed)
-- **Latest feature:** `docs/products/ferd/development/features/FR-platform-exit.md`
-- **Lifecycle roadmap:** `docs/products/ferd/planning/LIFECYCLE_DECISIONS.md` (5 sprints, 5 decisions)
-- **Architecture baseline:** `docs/implementation/ferd/baseline/BASELINE.md` (live-validated)
-- **Architecture anatomy (primary):** `docs/universe/architecture/ARCHITECTURE_ANATOMY.md`
-- **Architecture decisions (ADRs):** `docs/universe/decisions/` (22 universe) + `docs/products/ferd/architecture/decisions/` (1 Ferd)
-- **Planning context:** `docs/products/ferd/planning/ROADMAP.md` + `docs/products/ferd/planning/DEFERRED.md`
-- **Vision documents:** `docs/universe/vision/` + `docs/universe/strategy/`
-- **All waves (6-wave arc):** `docs/products/INDEX.md` — Ferd → Eid → Hamn → Heim → Brim → Urd
-- **Wave redistribution (archived):** `docs/products/_archive/2026-04-07-WAVE_REDISTRIBUTION-completed.md` — final decisions table
-- **Vision session decisions:** `docs/universe/vision/VISION_DECISIONS.md`
+- **Documentation hub:** `docs/old_INDEX.md` — three-tier navigation (universe/products/implementation)
+- **Database work:** `docs/old_implementation/shared/SCHEMA_OVERVIEW.md`
+- **Feature development:** `docs/old_products/ferd/development/features/` (FR-/AR-/NF- prefixed)
+- **Latest feature:** `docs/old_products/ferd/development/features/FR-platform-exit.md`
+- **Lifecycle roadmap:** `docs/old_products/ferd/planning/LIFECYCLE_DECISIONS.md` (5 sprints, 5 decisions)
+- **Architecture baseline:** `docs/old_implementation/ferd/baseline/BASELINE.md` (live-validated)
+- **Architecture anatomy (primary):** `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md`
+- **Architecture decisions (ADRs):** `docs/old_universe/decisions/` (22 universe) + `docs/old_products/ferd/architecture/decisions/` (1 Ferd)
+- **Planning context:** `docs/old_products/ferd/planning/ROADMAP.md` + `docs/old_products/ferd/planning/DEFERRED.md`
+- **Vision documents:** `docs/old_universe/vision/` + `docs/old_universe/strategy/`
+- **All waves (6-wave arc):** `docs/old_products/INDEX.md` — Ferd → Eid → Hamn → Heim → Brim → Urd
+- **Wave redistribution (archived):** `docs/old_products/_archive/2026-04-07-WAVE_REDISTRIBUTION-completed.md` — final decisions table
+- **Vision session decisions:** `docs/old_universe/vision/VISION_DECISIONS.md`
 
-**Agent System (two-tier, 7 agents — see `docs/products/ferd/development/agents/README.md`):**
+**Agent System (two-tier, 7 agents — see `docs/old_products/ferd/development/agents/README.md`):**
 - **Tier 1 — Domain:** `database-agent.md`, `ui-agent.md`, `integration-agent.md`, `test-agent.md`
 - **Tier 2 — Process:** `architect-agent.md`, `qa-agent.md`, `sprint-agent.md`
-- **Learning journals:** `docs/products/ferd/development/agents/learnings/*.md` (one per domain)
+- **Learning journals:** `docs/old_products/ferd/development/agents/learnings/*.md` (one per domain)
 
 ---
 
@@ -97,17 +97,17 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
   - Beyond Urd: Endowment, Console distribution, VR/AR headsets, the Game runtime
 - **Hamn scope clarification** (load-bearing): Hamn = design system + a11y + UX/UI redesign of generic web app interface. Hamn does **NOT** define Three Worlds visual identity (that's Urd). Propagated to `ARCHITECTURE_ANATOMY.md` (~14 references), `PRODUCTS_AND_PLATFORM.md`, `VISION.md`, `DEFERRED.md`, and saved to memory (`memory/hamn_scope.md`)
 - **Source file edits:** DEFERRED.md (v1.8, 17 items updated, 2 deleted, 1 split), ROADMAP.md, VISION.md, PRODUCTS_AND_PLATFORM.md, ARCHITECTURE_ANATOMY.md, SPRINT.md (Steps 15-16 added, dates updated)
-- **Archived:** `docs/products/WAVE_REDISTRIBUTION.md` → `docs/products/_archive/2026-04-07-WAVE_REDISTRIBUTION-completed.md` with full Final Decisions Summary table
+- **Archived:** `docs/old_products/WAVE_REDISTRIBUTION.md` → `docs/old_products/_archive/2026-04-07-WAVE_REDISTRIBUTION-completed.md` with full Final Decisions Summary table
 - **Roadmap coverage audit:** Verified DEFERRED.md items vs wave planning docs. Found: only Ferd has a `ROADMAP.md`; post-Ferd waves use `INDEX.md` + `planning/study/*.md` (study questions, not commitments). Coverage gaps: **Eid** (5 items not individually named), **Urd** (5 of 6 items missing), **Brim** (AR framing partial). Recommendations captured but **not yet actioned** — next session will address multi-product challenge (web / iOS / Android / game) which directly shapes these missing wave roadmaps
 - No code changes, no tests needed
 
-**Previous Session:** 2026-04-06 (6-wave docs/products/ restructuring executed)
+**Previous Session:** 2026-04-06 (6-wave docs/old_products/ restructuring executed)
 **Summary:**
-- **Executed full docs/products/ restructuring** for 6-wave arc (Ferd → Eid → Hamn → Heim → Brim → Urd)
+- **Executed full docs/old_products/ restructuring** for 6-wave arc (Ferd → Eid → Hamn → Heim → Brim → Urd)
 - Created scaffold folders for `eid/`, `heim/`, `brim/`, `urd/` with standard template (INDEX.md + .gitkeep files)
 - Archived old Hamn Wave 2 content to `hamn/_archive/2026-04-06-wave2-content/` (6 files: PRODUCT_SPEC, REQUIREMENTS, DEFERRED, RESEARCH, VISION_TO_SPEC_MAPPING, INDEX)
 - Rebuilt `hamn/` as Wave 3 (design system, accessibility, UX/UI redesign)
-- Created `docs/products/WAVE_REDISTRIBUTION.md` — triage list of ~60 items pending wave assignment
+- Created `docs/old_products/WAVE_REDISTRIBUTION.md` — triage list of ~60 items pending wave assignment
 - Updated ~40 files: wave labels ("Wave 2 (Hamn)" → correct references), cross-references, session headers
 - Added ADR-U022 header notes to 4 active session files (historical content preserved)
 - Updated products/INDEX.md with full 6-wave table
@@ -122,7 +122,7 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 - Audited ARCHITECTURE_ANATOMY.md: all 9 file links valid, 20+ stale wave references identified (deferred to redistribution)
 - Created `folders.md` (repo folder structure), `files.md` (Ferd file listing), `files2.md` (Hamn file listing)
 - Deep analysis of all ~33 files with Wave 3/3+ references (~95 line changes mapped)
-- Began docs/products/ restructuring plan (6-wave folder structure) — interrupted, detailed prompt prepared for next session
+- Began docs/old_products/ restructuring plan (6-wave folder structure) — interrupted, detailed prompt prepared for next session
 - No code changes, no tests needed
 
 **Previous Session:** 2026-04-05 (Requirements review + doc health overhaul)
@@ -144,7 +144,7 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 - Calibrated Ferd DEFERRED.md: 11 items accepted by Hamn, 1 re-deferred to Wave 3
 
 **Previous Session:** 2026-04-05 (VISION.md v0.2 + Hamn folder structure + reference sweep)
-- Created `docs/products/hamn/` folder structure (11 directories mirroring Ferd)
+- Created `docs/old_products/hamn/` folder structure (11 directories mirroring Ferd)
 - Updated 10 files with Hamn references
 - Updated VISION.md from v0.1 to v0.2 (129 insertions, 27 deletions)
 - Three commits: `95cfce9`, `a006afe`, `564ccab`
@@ -157,7 +157,7 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
   - 35 files archived across 10 distributed `_archive/` folders, 5 empty placeholders deleted
   - 15 old directories removed, cross-references updated across all moved files
   - Root files updated: CLAUDE.md, README.md, PROJECT_STATUS.md, SPRINT.md
-  - Planning artifacts archived to `docs/products/ferd/development/_archive/2026-04-05-refactor-planning/`
+  - Planning artifacts archived to `docs/old_products/ferd/development/_archive/2026-04-05-refactor-planning/`
 - Audited BOOT_UP.md, CLOSE_DOWN.md, README.md, CLAUDE.md for correctness:
   - Added KANBAN.md/ACTUAL_STATE.md as optional boot-up reads
   - Added close-down steps for KANBAN.md updates and INDEX file maintenance
@@ -170,18 +170,18 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 - Full file inventory (139 files), ADR analysis, risk assessment
 
 **Previous Session:** 2026-04-05 (Feature inventory + Requirements accuracy fixes)
-- Created `docs/implementation/ferd/baseline/ACTUAL_STATE.md` — complete feature inventory and gap analysis (~500 lines)
+- Created `docs/old_implementation/ferd/baseline/ACTUAL_STATE.md` — complete feature inventory and gap analysis (~500 lines)
   - Executive summary: ~45% of intended architecture implemented
   - Key findings: ADR-009 massively violated (~40+ direct writes, only 4 API routes), permission enforcement shallow (8/39 enforced), email is stub only, no GDPR
-- Applied 12 accuracy fixes to `docs/products/ferd/specification/REQUIREMENTS.md`:
+- Applied 12 accuracy fixes to `docs/old_products/ferd/specification/REQUIREMENTS.md`:
   - Phase 1.4 → Wave Ferd 1.6, removed false email template claims, adjusted 5 completeness percentages
   - Added missing FR-L1-009 (Display Name/Nickname system), added self-serve vs admin note
   - Fixed broken Related Documents paths, updated summary statistics (97 total requirements)
-- Reviewed and corrected `docs/products/ferd/development/_archive/2026-04-05-refactor-planning/CLAUDE_CODE_HANDOFF-ferd-feature-inventory.md` (handoff plan, now archived)
+- Reviewed and corrected `docs/old_products/ferd/development/_archive/2026-04-05-refactor-planning/CLAUDE_CODE_HANDOFF-ferd-feature-inventory.md` (handoff plan, now archived)
 
 **Previous Session:** 2026-03-25 (Doc references update — sessions + research folder)
 - Added references to Journey Designer Session 02 Part 1 and new `docs/research/` folder
-- Updated `docs/INDEX.md`: expanded sessions listing, added Research section with human flourishing doc
+- Updated `docs/old_INDEX.md`: expanded sessions listing, added Research section with human flourishing doc
 - Updated `README.md`: added sessions and research to "Where to Find Things" table
 - Updated `CLAUDE.md`: added sessions and research to document map
 - Version bumps to 0.2.37 in INDEX.md and README.md
@@ -271,22 +271,22 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 - `signOut({ scope: 'local' })` broken in supabase-js 2.91.0 — makes server call despite docs saying local-only
 - Console 403 errors on force-logout redirect (browser-level network logs, not visible to end users)
 
-**What We're NOT Building Yet:** See `docs/products/ferd/planning/DEFERRED.md`
+**What We're NOT Building Yet:** See `docs/old_products/ferd/planning/DEFERRED.md`
 
 ---
 
 ## Development Workflows
 
 **Starting a new session?**
-- Read: `docs/products/ferd/development/BOOT_UP.md`
+- Read: `docs/old_products/ferd/development/BOOT_UP.md`
 - Or ask: "Boot up FringeIsland"
 
 **Ending your session?**
-- Read: `docs/products/ferd/development/CLOSE_DOWN.md`
+- Read: `docs/old_products/ferd/development/CLOSE_DOWN.md`
 - Or ask: "Close down session"
 
 **Checking doc drift?**
-- Read: `docs/products/ferd/development/DOC_HEALTH_CHECK.md`
+- Read: `docs/old_products/ferd/development/DOC_HEALTH_CHECK.md`
 
 ---
 

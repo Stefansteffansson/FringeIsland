@@ -5,7 +5,7 @@
 **Date:** February 14, 2026
 **Last Updated:** February 28, 2026 (Sprint 3 — smart notification schema, RPCs, UI)
 **Phase:** Ferd 1.5-A (Infrastructure for RBAC/Communication)
-**Related:** [Dynamic Permissions System](./AR-dynamic-permissions-system.md) (D13) | [Platform Exit](./FR-platform-exit.md) | [ARCHITECTURE](../../../../universe/architecture/ARCHITECTURE_ANATOMY.md)
+**Related:** [Dynamic Permissions System](./AR-dynamic-permissions-system.md) (D13) | [Platform Exit](./FR-platform-exit.md) | [ARCHITECTURE](../../../../old_universe/architecture/ARCHITECTURE_ANATOMY.md)
 
 ---
 

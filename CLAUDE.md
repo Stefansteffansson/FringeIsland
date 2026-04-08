@@ -19,30 +19,30 @@ FringeIsland is an edutainment platform for group-based personal development thr
 ### Boot-Up — Start of every session
 
 **Trigger:** "boot up", "start session", or any variation
-**Action:** Read and follow `docs/products/ferd/development/BOOT_UP.md` EXACTLY — use EXACT file paths from its table
+**Action:** Read and follow `docs/old_products/ferd/development/BOOT_UP.md` EXACTLY — use EXACT file paths from its table
 
-Key files the workflow reads: `PROJECT_STATUS.md`, `SPRINT.md`, `docs/products/ferd/planning/ROADMAP.md`
+Key files the workflow reads: `PROJECT_STATUS.md`, `SPRINT.md`, `docs/old_products/ferd/planning/ROADMAP.md`
 
 **If user skips boot-up** (jumps to a task): remind them and offer to run it first.
 
 ### Close-Down — End of every session
 
 **Trigger:** "thanks", "done", "that's all", wrapping up, or after completing major work
-**Action:** Proactively suggest close-down, then follow `docs/products/ferd/development/CLOSE_DOWN.md` EXACTLY
+**Action:** Proactively suggest close-down, then follow `docs/old_products/ferd/development/CLOSE_DOWN.md` EXACTLY
 
-Must update: `PROJECT_STATUS.md` (always), `SPRINT.md` (always), `docs/products/ferd/planning/ROADMAP.md` (if significant progress)
+Must update: `PROJECT_STATUS.md` (always), `SPRINT.md` (always), `docs/old_products/ferd/planning/ROADMAP.md` (if significant progress)
 
 ### Feature Work — Hand off to Sprint Agent
 
-When user selects feature work after boot-up, load `docs/products/ferd/development/agents/contexts/sprint-agent.md` and `docs/products/ferd/development/WORKFLOW.md`. Sprint Agent creates a sequential plan; each step requires user approval before proceeding. No parallel agent launches.
+When user selects feature work after boot-up, load `docs/old_products/ferd/development/agents/contexts/sprint-agent.md` and `docs/old_products/ferd/development/WORKFLOW.md`. Sprint Agent creates a sequential plan; each step requires user approval before proceeding. No parallel agent launches.
 
 ---
 
 ## Architecture (Patterns, not code)
 
-**Primary reference:** `docs/universe/architecture/ARCHITECTURE_ANATOMY.md` — the layered anatomy (L0–L7, 5 verticals, Platform API ring). Read this before generating or modifying code. ADRs (22 universe + 1 Ferd) in `docs/universe/decisions/`. Live implementation state in `docs/implementation/ferd/baseline/BASELINE.md`.
+**Primary reference:** `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md` — the layered anatomy (L0–L7, 5 verticals, Platform API ring). Read this before generating or modifying code. ADRs (22 universe + 1 Ferd) in `docs/old_universe/decisions/`. Live implementation state in `docs/old_implementation/ferd/baseline/BASELINE.md`.
 
-**Wave model (not phases):** The platform evolves in six named waves: **Ferd** (Wave 1) → **Eid** (Wave 2) → **Hamn** (Wave 3) → **Heim** (Wave 4) → **Brim** (Wave 5) → **Urd** (Beyond). See `docs/universe/decisions/ADR-U022-named-waves.md` and `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md`.
+**Wave model (not phases):** The platform evolves in six named waves: **Ferd** (Wave 1) → **Eid** (Wave 2) → **Hamn** (Wave 3) → **Heim** (Wave 4) → **Brim** (Wave 5) → **Urd** (Beyond). See `docs/old_universe/decisions/ADR-U022-named-waves.md` and `docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md`.
 
 - **Auth:** Client-side via AuthContext + useAuth() hook; proxy.ts for protected routes (Next.js 16, not middleware.ts)
 - **Components:** App Router; client components marked `'use client'`; reusable UI in `/components/ui/`
@@ -59,7 +59,7 @@ When user selects feature work after boot-up, load `docs/products/ferd/developme
 
 **Hard rule:** Behaviors → failing tests (RED) → design → implement (GREEN). Tests MUST fail before implementation begins.
 
-**Canonical workflow:** `docs/products/ferd/development/WORKFLOW.md` (8 stages, 0–7, with hard STOP gates)
+**Canonical workflow:** `docs/old_products/ferd/development/WORKFLOW.md` (8 stages, 0–7, with hard STOP gates)
 
 **Stage summary:** 0-Feature context → 1-Behaviors → 2-Write tests → 3-Run tests RED → 4-Design → 5-Implement GREEN → 6-Verify → 7-Document
 
@@ -90,56 +90,56 @@ bash supabase-cli.sh migration list
 
 ## Document Map — Where to find things
 
-**Three-tier structure:** `docs/universe/` (shared foundations) > `docs/products/` (product-specific) > `docs/implementation/` (live code state). Full navigation: `docs/INDEX.md`.
+**Three-tier structure:** `docs/old_universe/` (shared foundations) > `docs/old_products/` (product-specific) > `docs/old_implementation/` (live code state). Full navigation: `docs/old_INDEX.md`.
 
 | What | Where |
 |------|-------|
 | Current state & blockers | `PROJECT_STATUS.md` |
 | Active sprint + what's next | `SPRINT.md` |
 | **Universe Tier** | |
-| Vision | `docs/universe/vision/VISION.md` |
-| Manifesto | `docs/universe/vision/MANIFESTO.md` |
-| Products & platform (waves) | `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md` |
-| Contribution architecture | `docs/universe/strategy/CONTRIBUTION_ARCHITECTURE.md` |
-| **Architecture anatomy (primary)** | `docs/universe/architecture/ARCHITECTURE_ANATOMY.md` |
-| Domain entities | `docs/universe/architecture/DOMAIN_ENTITIES.md` |
-| Architecture decisions (ADRs) | `docs/universe/decisions/` (22 universe-level) |
-| Vision session decisions | `docs/universe/vision/VISION_DECISIONS.md` |
-| Research (human flourishing) | `docs/universe/research/` |
-| Cross-product processes | `docs/universe/processes/` (deferral protocol, planning protocol) |
-| Community & governance | `docs/universe/community/` (open questions, organizational concerns) |
-| Cross-wave open questions | `docs/universe/strategy/OPEN_QUESTIONS.md` |
+| Vision | `docs/old_universe/vision/VISION.md` |
+| Manifesto | `docs/old_universe/vision/MANIFESTO.md` |
+| Products & platform (waves) | `docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md` |
+| Contribution architecture | `docs/old_universe/strategy/CONTRIBUTION_ARCHITECTURE.md` |
+| **Architecture anatomy (primary)** | `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md` |
+| Domain entities | `docs/old_universe/architecture/DOMAIN_ENTITIES.md` |
+| Architecture decisions (ADRs) | `docs/old_universe/decisions/` (22 universe-level) |
+| Vision session decisions | `docs/old_universe/vision/VISION_DECISIONS.md` |
+| Research (human flourishing) | `docs/old_universe/research/` |
+| Cross-product processes | `docs/old_universe/processes/` (deferral protocol, planning protocol) |
+| Community & governance | `docs/old_universe/community/` (open questions, organizational concerns) |
+| Cross-wave open questions | `docs/old_universe/strategy/OPEN_QUESTIONS.md` |
 | **Products Tier — Ferd** | |
-| Product scope (what/why) | `docs/products/ferd/specification/PRODUCT_SPEC.md` |
-| Requirements (100 total) | `docs/products/ferd/specification/REQUIREMENTS.md` |
-| Wave roadmap | `docs/products/ferd/planning/ROADMAP.md` |
-| Deferred decisions | `docs/products/ferd/planning/DEFERRED.md` |
-| Lifecycle sprint decisions | `docs/products/ferd/planning/LIFECYCLE_DECISIONS.md` |
-| Ferd research / open investigations | `docs/products/ferd/planning/RESEARCH.md` |
-| Ferd ADRs | `docs/products/ferd/architecture/decisions/` (1 Ferd-specific) |
-| Feature docs | `docs/products/ferd/development/features/` (FR-/AR-/NF- prefixed) |
-| Behavior specs | `docs/products/ferd/development/specs/` |
-| Agent playbooks | `docs/products/ferd/development/agents/contexts/` (7 agents) |
-| Agent journals | `docs/products/ferd/development/agents/learnings/` |
-| TDD + feature workflow | `docs/products/ferd/development/WORKFLOW.md` |
-| Boot-up / Close-down | `docs/products/ferd/development/BOOT_UP.md`, `CLOSE_DOWN.md` |
-| Doc health check | `docs/products/ferd/development/DOC_HEALTH_CHECK.md` |
-| Journey Designer sessions | `docs/products/ferd/sessions/` |
+| Product scope (what/why) | `docs/old_products/ferd/specification/PRODUCT_SPEC.md` |
+| Requirements (100 total) | `docs/old_products/ferd/specification/REQUIREMENTS.md` |
+| Wave roadmap | `docs/old_products/ferd/planning/ROADMAP.md` |
+| Deferred decisions | `docs/old_products/ferd/planning/DEFERRED.md` |
+| Lifecycle sprint decisions | `docs/old_products/ferd/planning/LIFECYCLE_DECISIONS.md` |
+| Ferd research / open investigations | `docs/old_products/ferd/planning/RESEARCH.md` |
+| Ferd ADRs | `docs/old_products/ferd/architecture/decisions/` (1 Ferd-specific) |
+| Feature docs | `docs/old_products/ferd/development/features/` (FR-/AR-/NF- prefixed) |
+| Behavior specs | `docs/old_products/ferd/development/specs/` |
+| Agent playbooks | `docs/old_products/ferd/development/agents/contexts/` (7 agents) |
+| Agent journals | `docs/old_products/ferd/development/agents/learnings/` |
+| TDD + feature workflow | `docs/old_products/ferd/development/WORKFLOW.md` |
+| Boot-up / Close-down | `docs/old_products/ferd/development/BOOT_UP.md`, `CLOSE_DOWN.md` |
+| Doc health check | `docs/old_products/ferd/development/DOC_HEALTH_CHECK.md` |
+| Journey Designer sessions | `docs/old_products/ferd/sessions/` |
 | **Products Tier — All Waves** | |
-| Products index (6 waves) | `docs/products/INDEX.md` |
-| Eid product docs (Wave 2) | `docs/products/eid/INDEX.md` |
-| Hamn product docs (Wave 3) | `docs/products/hamn/INDEX.md` |
-| Heim product docs (Wave 4) | `docs/products/heim/INDEX.md` |
-| Brim product docs (Wave 5) | `docs/products/brim/INDEX.md` |
-| Urd product docs (Beyond) | `docs/products/urd/INDEX.md` |
-| Wave redistribution (pending) | `docs/products/WAVE_REDISTRIBUTION.md` |
+| Products index (6 waves) | `docs/old_products/INDEX.md` |
+| Eid product docs (Wave 2) | `docs/old_products/eid/INDEX.md` |
+| Hamn product docs (Wave 3) | `docs/old_products/hamn/INDEX.md` |
+| Heim product docs (Wave 4) | `docs/old_products/heim/INDEX.md` |
+| Brim product docs (Wave 5) | `docs/old_products/brim/INDEX.md` |
+| Urd product docs (Beyond) | `docs/old_products/urd/INDEX.md` |
+| Wave redistribution (pending) | `docs/old_products/WAVE_REDISTRIBUTION.md` |
 | **Implementation Tier** | |
-| Database schema | `docs/implementation/shared/DATABASE_CURRENT.md` |
-| Schema overview | `docs/implementation/shared/SCHEMA_OVERVIEW.md` |
-| Authorization / RLS | `docs/implementation/shared/AUTH_SYSTEM.md`, `RLS_POLICIES.md` |
-| Architecture baseline (live) | `docs/implementation/ferd/baseline/BASELINE.md` |
-| Actual state / gap analysis | `docs/implementation/ferd/baseline/ACTUAL_STATE.md` |
-| Status / Kanban | `docs/implementation/ferd/status/KANBAN.md` |
+| Database schema | `docs/old_implementation/shared/DATABASE_CURRENT.md` |
+| Schema overview | `docs/old_implementation/shared/SCHEMA_OVERVIEW.md` |
+| Authorization / RLS | `docs/old_implementation/shared/AUTH_SYSTEM.md`, `RLS_POLICIES.md` |
+| Architecture baseline (live) | `docs/old_implementation/ferd/baseline/BASELINE.md` |
+| Actual state / gap analysis | `docs/old_implementation/ferd/baseline/ACTUAL_STATE.md` |
+| Status / Kanban | `docs/old_implementation/ferd/status/KANBAN.md` |
 
 ---
 

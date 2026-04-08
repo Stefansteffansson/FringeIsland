@@ -18,5 +18,5 @@
 ## Related
 
 - [Shared Infrastructure](../shared/) — Database, auth, RLS
-- [Ferd Development](../../products/ferd/development/) — Workflows and feature docs
+- [Ferd Development](../../old_products/ferd/development/) — Workflows and feature docs
 - [Implementation Index](../INDEX.md)

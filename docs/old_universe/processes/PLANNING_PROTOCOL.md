@@ -66,10 +66,10 @@ The principle is constant: validate before you commit. The tooling evolves with 
 ## File Locations
 
 ```
-docs/products/ferd/planning/RESEARCH.md     — Ferd-specific investigations
-docs/products/hamn/planning/RESEARCH.md     — Hamn-specific investigations
-docs/universe/strategy/OPEN_QUESTIONS.md    — Cross-wave strategic questions
-docs/universe/community/OPEN_QUESTIONS.md   — Community/organizational questions
+docs/old_products/ferd/planning/RESEARCH.md     — Ferd-specific investigations
+docs/old_products/hamn/planning/RESEARCH.md     — Hamn-specific investigations
+docs/old_universe/strategy/OPEN_QUESTIONS.md    — Cross-wave strategic questions
+docs/old_universe/community/OPEN_QUESTIONS.md   — Community/organizational questions
 ```
 
 ---
@@ -77,7 +77,7 @@ docs/universe/community/OPEN_QUESTIONS.md   — Community/organizational questio
 ## Related
 
 - [Deferral Protocol](./DEFERRAL_PROTOCOL.md)
-- [Ferd Research](../../products/ferd/planning/RESEARCH.md)
-- [Hamn Research](../../products/hamn/planning/RESEARCH.md)
+- [Ferd Research](../../old_products/ferd/planning/RESEARCH.md)
+- [Hamn Research](../../old_products/hamn/planning/RESEARCH.md)
 - [Cross-wave Open Questions](../strategy/OPEN_QUESTIONS.md)
 - [Community Open Questions](../community/OPEN_QUESTIONS.md)

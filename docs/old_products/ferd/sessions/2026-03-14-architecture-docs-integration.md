@@ -32,7 +32,7 @@ Integrated three new architecture documents into the repository and regenerated 
    - Expanded document map with all architecture docs
 
 6. **Updated 8 additional files** replacing stale `ARCHITECTURE_OVERVIEW.md` references:
-   - PROJECT_STATUS.md, docs/INDEX.md, architect-agent.md, close-down.md, feature-development.md, PRODUCT_SPEC.md, notification-system.md
+   - PROJECT_STATUS.md, docs/old_INDEX.md, architect-agent.md, close-down.md, feature-development.md, PRODUCT_SPEC.md, notification-system.md
 
 7. **Reference audit** — verified zero stale references remain (only CHANGELOG.md retains historical mention, which is correct)
 
@@ -52,7 +52,7 @@ Integrated three new architecture documents into the repository and regenerated 
 | `CLAUDE.md` | Wave model, API-first, anatomy reference, document map |
 | `PROJECT_STATUS.md` | Updated references + session summary |
 | `SPRINT.md` | Updated timestamp |
-| `docs/INDEX.md` | Updated architecture section + learning paths |
+| `docs/old_INDEX.md` | Updated architecture section + learning paths |
 | `docs/agents/contexts/architect-agent.md` | Updated architecture reference (2 occurrences) |
 | `docs/workflows/close-down.md` | Updated architecture reference |
 | `docs/workflows/feature-development.md` | Updated architecture reference |

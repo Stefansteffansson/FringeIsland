@@ -1,6 +1,6 @@
 # Ferd References to Shared Infrastructure
 
-**Location:** `/docs/implementation/ferd/baseline/REFERENCES_SHARED.md`
+**Location:** `/docs/old_implementation/ferd/baseline/REFERENCES_SHARED.md`
 
 **Purpose:** Document how Ferd-specific code integrates with shared backend infrastructure.
 
@@ -12,14 +12,14 @@
 
 Ferd is built on **shared infrastructure** that all FringeIsland products use. This document maps Ferd-specific implementation to shared backend components.
 
-**Shared infrastructure location:** `/docs/implementation/shared/`
+**Shared infrastructure location:** `/docs/old_implementation/shared/`
 
 ---
 
 ## Database Integration
 
 ### Shared Schema
-**Location:** [/docs/implementation/shared/DATABASE_CURRENT.md](../../shared/DATABASE_CURRENT.md)
+**Location:** [/docs/old_implementation/shared/DATABASE_CURRENT.md](../../shared/DATABASE_CURRENT.md)
 
 **Tables Ferd uses:**
 - ✅ `users` — User profiles
@@ -48,7 +48,7 @@ const { data: groups } = await supabase
 ## Authentication Integration
 
 ### Shared Auth System
-**Location:** [/docs/implementation/shared/AUTH_SYSTEM.md](../../shared/AUTH_SYSTEM.md)
+**Location:** [/docs/old_implementation/shared/AUTH_SYSTEM.md](../../shared/AUTH_SYSTEM.md)
 
 **Ferd implements:**
 - Registration form → calls shared Supabase Auth
@@ -84,7 +84,7 @@ const { data, error } = await supabase.auth.signUp({
 ## Row Level Security Integration
 
 ### Shared RLS Policies
-**Location:** [/docs/implementation/shared/RLS_POLICIES.md](../../shared/RLS_POLICIES.md)
+**Location:** [/docs/old_implementation/shared/RLS_POLICIES.md](../../shared/RLS_POLICIES.md)
 
 **How Ferd benefits from RLS:**
 - Users automatically can only see their own data
@@ -119,7 +119,7 @@ const canInvite = await supabase.rpc('has_permission', {
 ## Storage Integration
 
 ### Shared Storage Buckets
-**Location:** [/docs/implementation/shared/STORAGE_BUCKETS.md](../../shared/STORAGE_BUCKETS.md)
+**Location:** [/docs/old_implementation/shared/STORAGE_BUCKETS.md](../../shared/STORAGE_BUCKETS.md)
 
 **Buckets Ferd uses:**
 - `avatars` — User and group avatars
@@ -152,7 +152,7 @@ const uploadAvatar = async (file: File) => {
 ## Backend API Integration
 
 ### Shared Edge Functions
-**Location:** [/docs/implementation/shared/BACKEND_API.md](../../shared/BACKEND_API.md)
+**Location:** [/docs/old_implementation/shared/BACKEND_API.md](../../shared/BACKEND_API.md)
 
 **Currently:** Ferd doesn't use shared Edge Functions (uses Next.js API routes)
 
@@ -170,7 +170,7 @@ const uploadAvatar = async (file: File) => {
 ## Supabase Configuration
 
 ### Shared Supabase Project
-**Location:** [/docs/implementation/shared/SUPABASE_CONFIG.md](../../shared/SUPABASE_CONFIG.md)
+**Location:** [/docs/old_implementation/shared/SUPABASE_CONFIG.md](../../shared/SUPABASE_CONFIG.md)
 
 **Ferd connects to shared Supabase:**
 ```typescript
@@ -240,7 +240,7 @@ const supabase = createClientComponentClient({
 ✅ Supabase configuration
 
 **Maintained by:** Backend Team  
-**Location:** `/docs/implementation/shared/`
+**Location:** `/docs/old_implementation/shared/`
 
 ### What's Ferd-Specific (Frontend)
 ✅ React components  
@@ -250,7 +250,7 @@ const supabase = createClientComponentClient({
 ✅ Tailwind styling  
 
 **Maintained by:** Ferd Team (Stefan)  
-**Location:** `/docs/implementation/ferd/baseline/`
+**Location:** `/docs/old_implementation/ferd/baseline/`
 
 ---
 
@@ -299,8 +299,8 @@ const supabase = createClientComponentClient({
 - [Ferd Baseline](./BASELINE.md)
 
 **Product Docs:**
-- [Ferd Architecture](/docs/products/ferd/architecture/ANATOMY.md)
-- [Ferd Requirements](/docs/products/ferd/specification/REQUIREMENTS.md)
+- [Ferd Architecture](/docs/old_products/ferd/architecture/ANATOMY.md)
+- [Ferd Requirements](/docs/old_products/ferd/specification/REQUIREMENTS.md)
 
 ---
 

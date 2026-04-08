@@ -672,6 +672,6 @@ const mapped = data.map(e => ({ ...e, journey: e.journeys }));
 ---
 
 **Related Documentation:**
-- Database schema: `docs/implementation/shared/SCHEMA_OVERVIEW.md`
-- RBAC permissions: `docs/products/ferd/development/features/AR-dynamic-permissions-system.md`
-- D15 migration: `docs/products/ferd/development/features/AR-d15-universal-group-pattern-migration.md`
+- Database schema: `docs/old_implementation/shared/SCHEMA_OVERVIEW.md`
+- RBAC permissions: `docs/old_products/ferd/development/features/AR-dynamic-permissions-system.md`
+- D15 migration: `docs/old_products/ferd/development/features/AR-d15-universal-group-pattern-migration.md`

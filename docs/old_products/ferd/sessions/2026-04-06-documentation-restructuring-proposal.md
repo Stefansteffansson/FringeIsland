@@ -1,4 +1,4 @@
-# docs/products/ Restructuring Proposal
+# docs/old_products/ Restructuring Proposal
 
 **Date:** 2026-04-06
 **Status:** DRAFT — awaiting approval before execution
@@ -12,9 +12,9 @@
 - `hamn/` content archived (old Wave 2 scope no longer matches Wave 3 Hamn)
 - Four new wave folders created: `eid/`, `heim/`, `brim/`, `urd/`
 - `hamn/` scaffold rebuilt for Wave 3 scope
-- `docs/products/INDEX.md` rewritten for all six waves
+- `docs/old_products/INDEX.md` rewritten for all six waves
 - ~50 files updated to correct "Hamn (Wave 2)" → new wave numbering
-- ~13 files updated to correct `docs/products/hamn/` path references
+- ~13 files updated to correct `docs/old_products/hamn/` path references
 
 **What stays:**
 - `ferd/` structure unchanged (no files move, no renames)
@@ -49,12 +49,12 @@ These ferd/ files contain references that will break or become incorrect:
 
 ### 2c. Ferd ROADMAP.md vs new WAVE_OVERVIEW.md
 
-**Situation:** The ferd ROADMAP.md contains a wave overview table (lines 15-21) that uses the old 4-wave model. A new `WAVE_OVERVIEW.md` could live at the docs/products/ level as a cross-product wave reference.
+**Situation:** The ferd ROADMAP.md contains a wave overview table (lines 15-21) that uses the old 4-wave model. A new `WAVE_OVERVIEW.md` could live at the docs/old_products/ level as a cross-product wave reference.
 
 **Proposal:**
 - **Keep** `ferd/planning/ROADMAP.md` as Ferd-specific — it tracks Ferd milestones 1.1–1.6 and post-launch priorities. This is product-scoped.
 - **Update** the wave overview table within ROADMAP.md to reference the 6-wave arc (brief table with links, not duplicating ADR-U022 content).
-- **Do NOT create** a separate WAVE_OVERVIEW.md at docs/products/ level — ADR-U022 is the canonical wave reference, and the products/INDEX.md table will serve as the product-level wave overview. Adding another file would create drift risk.
+- **Do NOT create** a separate WAVE_OVERVIEW.md at docs/old_products/ level — ADR-U022 is the canonical wave reference, and the products/INDEX.md table will serve as the product-level wave overview. Adding another file would create drift risk.
 
 ---
 
@@ -79,9 +79,9 @@ All substantive hamn/ files were written for the OLD Wave 2 scope (journey creat
 
 ### Archive location
 
-**Proposed:** `docs/products/hamn/_archive/2026-04-06-wave2-content/`
+**Proposed:** `docs/old_products/hamn/_archive/2026-04-06-wave2-content/`
 
-This keeps the old content within the hamn product folder for traceability, rather than a top-level `docs/products/_archive/`. Rationale: the content was written *for* Hamn — it's Hamn's history, even though the wave number changed.
+This keeps the old content within the hamn product folder for traceability, rather than a top-level `docs/old_products/_archive/`. Rationale: the content was written *for* Hamn — it's Hamn's history, even though the wave number changed.
 
 Archive structure:
 ```
@@ -121,7 +121,7 @@ Each new wave folder follows the standard template. All content files are `.gitk
 
 **eid/ (Wave 2 — Passage, crossing)**
 ```
-docs/products/eid/
+docs/old_products/eid/
 ├── INDEX.md
 ├── architecture/
 │   └── decisions/
@@ -184,8 +184,8 @@ Each wave INDEX.md follows this template:
 ## Related
 
 - [Products Index](../INDEX.md)
-- [ADR-U022 — Named Waves](../../universe/decisions/ADR-U022-named-waves.md)
-- [Products & Platform Strategy](../../universe/strategy/PRODUCTS_AND_PLATFORM.md)
+- [ADR-U022 — Named Waves](../../old_universe/decisions/ADR-U022-named-waves.md)
+- [Products & Platform Strategy](../../old_universe/strategy/PRODUCTS_AND_PLATFORM.md)
 ```
 
 ### 4d. Total new files/folders to create
@@ -203,23 +203,23 @@ Each wave INDEX.md follows this template:
 
 ## 5. CROSS-REFERENCE AUDIT
 
-### 5a. Files with `docs/products/hamn/` path references (13 files)
+### 5a. Files with `docs/old_products/hamn/` path references (13 files)
 
-These files contain links or path references to `docs/products/hamn/` that must be verified after restructuring. Since hamn/ is being rebuilt in place (not moved), most paths remain valid — but the content they point to will change.
+These files contain links or path references to `docs/old_products/hamn/` that must be verified after restructuring. Since hamn/ is being rebuilt in place (not moved), most paths remain valid — but the content they point to will change.
 
 | File | Reference | Status After Restructuring |
 |------|-----------|---------------------------|
-| `docs/INDEX.md:17` | `products/hamn/INDEX.md` — "See Hamn (Wave 2) docs" | Path valid, label needs update → "Wave 3" |
-| `docs/INDEX.md:65` | `products/hamn/` — "awaiting specification" | Label needs update |
-| `docs/implementation/INDEX.md:13` | "hamn/ (future) — created when Wave 2 development begins" | Update → "Wave 3" |
-| `docs/products/INDEX.md:12` | Hamn row — "Wave 2, Not started" | **Rewrite entire file** (see Section 6) |
-| `docs/universe/processes/PLANNING_PROTOCOL.md:70,81` | `products/hamn/planning/RESEARCH.md` | Path valid (file will be empty/new after archive) |
-| `docs/universe/processes/INDEX.md:20` | `products/hamn/planning/` | Path valid |
-| `docs/universe/processes/DEFERRAL_PROTOCOL.md:83,104` | `products/hamn/planning/DEFERRED.md` | Path valid (file will be empty/new after archive) |
-| `docs/products/ferd/development/DOC_HEALTH_CHECK.md:41,184` | `docs/products/hamn/**/*.md` — "Wave 2" label | Label needs update |
-| `docs/products/ferd/sessions/2026-04-05-documentation-restructuring-execution.md:40` | `docs/products/hamn/` — "awaiting specification content" | Historical session — leave as-is |
-| `docs/products/ferd/sessions/2026-04-05-requirements-review-doc-health.md:65-66` | hamn spec/deferred paths | Historical session — leave as-is |
-| `docs/products/ferd/development/_archive/...` (4 files) | Various hamn references | **Archive — do not update** |
+| `docs/old_INDEX.md:17` | `products/hamn/INDEX.md` — "See Hamn (Wave 2) docs" | Path valid, label needs update → "Wave 3" |
+| `docs/old_INDEX.md:65` | `products/hamn/` — "awaiting specification" | Label needs update |
+| `docs/old_implementation/INDEX.md:13` | "hamn/ (future) — created when Wave 2 development begins" | Update → "Wave 3" |
+| `docs/old_products/INDEX.md:12` | Hamn row — "Wave 2, Not started" | **Rewrite entire file** (see Section 6) |
+| `docs/old_universe/processes/PLANNING_PROTOCOL.md:70,81` | `products/hamn/planning/RESEARCH.md` | Path valid (file will be empty/new after archive) |
+| `docs/old_universe/processes/INDEX.md:20` | `products/hamn/planning/` | Path valid |
+| `docs/old_universe/processes/DEFERRAL_PROTOCOL.md:83,104` | `products/hamn/planning/DEFERRED.md` | Path valid (file will be empty/new after archive) |
+| `docs/old_products/ferd/development/DOC_HEALTH_CHECK.md:41,184` | `docs/old_products/hamn/**/*.md` — "Wave 2" label | Label needs update |
+| `docs/old_products/ferd/sessions/2026-04-05-documentation-restructuring-execution.md:40` | `docs/old_products/hamn/` — "awaiting specification content" | Historical session — leave as-is |
+| `docs/old_products/ferd/sessions/2026-04-05-requirements-review-doc-health.md:65-66` | hamn spec/deferred paths | Historical session — leave as-is |
+| `docs/old_products/ferd/development/_archive/...` (4 files) | Various hamn references | **Archive — do not update** |
 
 ### 5b. Files with stale "Hamn (Wave 2)" or old wave numbering (~50 files)
 
@@ -237,13 +237,13 @@ These files contain links or path references to `docs/products/hamn/` that must 
 
 | File | Occurrences | Action |
 |------|-------------|--------|
-| `docs/universe/vision/VISION.md` (line ~325) | "Wave 2 — Hamn" | Update to 6-wave structure |
-| `docs/universe/vision/VISION_DECISIONS.md` (lines ~80, ~165) | "Wave 2 (Hamn)" | Update |
-| `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md` (lines ~155, ~168, ~179) | Wave 2/3/3+ sections | **Major update** — rewrite wave sections for 6-wave arc |
-| `docs/universe/architecture/ARCHITECTURE_ANATOMY.md` (lines ~429-431, ~512) | "Wave 2 — Hamn" | Update to 6-wave references |
-| `docs/universe/architecture/DOMAIN_ENTITIES.md` (line ~239) | "Wave 2/Hamn" | Update |
-| `docs/INDEX.md` (lines ~17, ~61, ~65) | "Hamn (Wave 2)" | Update |
-| `docs/implementation/INDEX.md` (line ~13) | "Wave 2" | Update |
+| `docs/old_universe/vision/VISION.md` (line ~325) | "Wave 2 — Hamn" | Update to 6-wave structure |
+| `docs/old_universe/vision/VISION_DECISIONS.md` (lines ~80, ~165) | "Wave 2 (Hamn)" | Update |
+| `docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md` (lines ~155, ~168, ~179) | Wave 2/3/3+ sections | **Major update** — rewrite wave sections for 6-wave arc |
+| `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md` (lines ~429-431, ~512) | "Wave 2 — Hamn" | Update to 6-wave references |
+| `docs/old_universe/architecture/DOMAIN_ENTITIES.md` (line ~239) | "Wave 2/Hamn" | Update |
+| `docs/old_INDEX.md` (lines ~17, ~61, ~65) | "Hamn (Wave 2)" | Update |
+| `docs/old_implementation/INDEX.md` (line ~13) | "Wave 2" | Update |
 
 **Tier 3 — Ferd product docs** (see Section 2b above for full list)
 
@@ -261,7 +261,7 @@ These files contain links or path references to `docs/products/hamn/` that must 
 
 | File | Occurrences | Action |
 |------|-------------|--------|
-| `docs/implementation/ferd/baseline/BASELINE.md` | ~10 (lines ~219-592) | Update wave references |
+| `docs/old_implementation/ferd/baseline/BASELINE.md` | ~10 (lines ~219-592) | Update wave references |
 
 **Tier 5 — Archive files (DO NOT UPDATE)**
 
@@ -287,14 +287,14 @@ These files use "Wave 3" to mean the OLD unnamed expansion wave. Under the new s
 
 | File | Current Reference | Issue |
 |------|-------------------|-------|
-| `docs/universe/vision/VISION.md` (~334, ~341) | "Wave 3 — The World Expands", "Wave 3+" | Now conflicts with Hamn = Wave 3 |
-| `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md` (~168, ~179) | "Wave 3", "Wave 3+" | Same conflict |
-| `docs/products/ferd/planning/ROADMAP.md` (~157, ~181) | "Wave 3: The World Expands", "Wave 3+" | Same conflict |
-| `docs/products/hamn/planning/DEFERRED.md` (~31-174) | Items deferred to "Wave 3" | These items need reassignment |
-| `docs/products/ferd/planning/DEFERRED.md` (~168-803) | Items deferred to "Wave 3" | These items need reassignment |
-| `docs/products/hamn/specification/REQUIREMENTS.md` (~233, ~568, ~1002) | "deferred to Wave 3" | Being archived — no action needed |
-| `docs/implementation/ferd/baseline/BASELINE.md` (~270, ~595) | "Wave 3" | Needs reassignment |
-| `docs/universe/architecture/ARCHITECTURE_ANATOMY.md` (~432) | "Game — Wave 3+" | Needs reassignment |
+| `docs/old_universe/vision/VISION.md` (~334, ~341) | "Wave 3 — The World Expands", "Wave 3+" | Now conflicts with Hamn = Wave 3 |
+| `docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md` (~168, ~179) | "Wave 3", "Wave 3+" | Same conflict |
+| `docs/old_products/ferd/planning/ROADMAP.md` (~157, ~181) | "Wave 3: The World Expands", "Wave 3+" | Same conflict |
+| `docs/old_products/hamn/planning/DEFERRED.md` (~31-174) | Items deferred to "Wave 3" | These items need reassignment |
+| `docs/old_products/ferd/planning/DEFERRED.md` (~168-803) | Items deferred to "Wave 3" | These items need reassignment |
+| `docs/old_products/hamn/specification/REQUIREMENTS.md` (~233, ~568, ~1002) | "deferred to Wave 3" | Being archived — no action needed |
+| `docs/old_implementation/ferd/baseline/BASELINE.md` (~270, ~595) | "Wave 3" | Needs reassignment |
+| `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md` (~432) | "Game — Wave 3+" | Needs reassignment |
 
 **⚠️ REQUIRES HUMAN DECISION:** The old "Wave 3" and "Wave 3+" content (The World Expands, The Game) needs to be mapped to specific new waves (Heim? Brim? Urd?). This is a **scope decision**, not a mechanical rename. The restructuring can proceed without this — but these references will remain stale until the work package redistribution is completed.
 
@@ -308,7 +308,7 @@ These files use "Wave 3" to mean the OLD unnamed expansion wave. Under the new s
 **Purpose:** Product-specific documentation. Each wave has its own
 specification, architecture, planning, sessions, and development docs.
 
-See [ADR-U022](../universe/decisions/ADR-U022-named-waves.md) for the
+See [ADR-U022](../old_universe/decisions/ADR-U022-named-waves.md) for the
 naming rationale and saga arc narrative.
 
 ---
@@ -339,9 +339,9 @@ naming rationale and saga arc narrative.
 
 ## Related
 
-- [ADR-U022 — Named Waves](../universe/decisions/ADR-U022-named-waves.md)
-- [Universe Tier](../universe/) — Shared foundations
-- [Implementation Tier](../implementation/) — Live code state
+- [ADR-U022 — Named Waves](../old_universe/decisions/ADR-U022-named-waves.md)
+- [Universe Tier](../old_universe/) — Shared foundations
+- [Implementation Tier](../old_implementation/) — Live code state
 - [Root Index](../INDEX.md)
 ```
 
@@ -368,7 +368,7 @@ Updating wave references in session files rewrites history. These are records of
 
 ### 7d. Dead link in archive (INFORMATIONAL)
 
-`docs/products/ferd/development/_archive/.../DATABASE_CURRENT-shared.md` line 341 references `/docs/implementation/hamn/baseline/INDEX.md` which doesn't exist. Pre-existing issue, not caused by this restructuring. No action needed.
+`docs/old_products/ferd/development/_archive/.../DATABASE_CURRENT-shared.md` line 341 references `/docs/old_implementation/hamn/baseline/INDEX.md` which doesn't exist. Pre-existing issue, not caused by this restructuring. No action needed.
 
 ### 7e. No content loss risk (CONFIRMATION)
 
@@ -395,11 +395,11 @@ All old hamn/ content is being archived within `hamn/_archive/`, not deleted. Gi
 | B2 | Rebuild `hamn/INDEX.md` with Wave 3 label | None |
 | B3 | Update `hamn/planning/INDEX.md` and `hamn/specification/INDEX.md` labels | None |
 
-### Phase C — Update docs/products/INDEX.md
+### Phase C — Update docs/old_products/INDEX.md
 
 | Step | Action | Risk |
 |------|--------|------|
-| C1 | Replace `docs/products/INDEX.md` with new 6-wave content | None |
+| C1 | Replace `docs/old_products/INDEX.md` with new 6-wave content | None |
 
 ### Phase D — Cross-reference updates (Tier 1 — root files)
 
@@ -415,14 +415,14 @@ All old hamn/ content is being archived within `hamn/_archive/`, not deleted. Gi
 
 | Step | Action | Risk |
 |------|--------|------|
-| E1 | Update `docs/INDEX.md` | Low |
-| E2 | Update `docs/implementation/INDEX.md` | Low |
-| E3 | Update `docs/universe/vision/VISION.md` wave sections | Medium — scope decision needed |
-| E4 | Update `docs/universe/vision/VISION_DECISIONS.md` | Low |
-| E5 | Update `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md` | Medium — scope decision needed |
-| E6 | Update `docs/universe/architecture/ARCHITECTURE_ANATOMY.md` | Medium — scope decision needed |
-| E7 | Update `docs/universe/architecture/DOMAIN_ENTITIES.md` | Low |
-| E8 | Update `docs/universe/processes/` (3 files) | Low |
+| E1 | Update `docs/old_INDEX.md` | Low |
+| E2 | Update `docs/old_implementation/INDEX.md` | Low |
+| E3 | Update `docs/old_universe/vision/VISION.md` wave sections | Medium — scope decision needed |
+| E4 | Update `docs/old_universe/vision/VISION_DECISIONS.md` | Low |
+| E5 | Update `docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md` | Medium — scope decision needed |
+| E6 | Update `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md` | Medium — scope decision needed |
+| E7 | Update `docs/old_universe/architecture/DOMAIN_ENTITIES.md` | Low |
+| E8 | Update `docs/old_universe/processes/` (3 files) | Low |
 
 ### Phase F — Cross-reference updates (Tier 3 — ferd docs)
 
@@ -440,7 +440,7 @@ All old hamn/ content is being archived within `hamn/_archive/`, not deleted. Gi
 
 | Step | Action | Risk |
 |------|--------|------|
-| G1 | Update `docs/implementation/ferd/baseline/BASELINE.md` | Medium — scope decision needed |
+| G1 | Update `docs/old_implementation/ferd/baseline/BASELINE.md` | Medium — scope decision needed |
 
 ### Phase H — Verification
 

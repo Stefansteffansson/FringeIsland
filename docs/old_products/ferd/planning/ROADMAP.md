@@ -2,9 +2,9 @@
 
 **Version:** 3.0
 **Last Updated:** March 20, 2026
-**Links:** [Vision](../../../universe/vision/VISION.md) | [Products & Platform](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md) | [Product Spec](../specification/PRODUCT_SPEC.md) | [Sprint Tracker](../../../../SPRINT.md)
+**Links:** [Vision](../../../old_universe/vision/VISION.md) | [Products & Platform](../../../old_universe/strategy/PRODUCTS_AND_PLATFORM.md) | [Product Spec](../specification/PRODUCT_SPEC.md) | [Sprint Tracker](../../../../SPRINT.md)
 
-This document defines **WHEN** features are built and how the platform evolves. See [Products & Platform](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md) for the authoritative product strategy and wave model. See [Product Spec](../specification/PRODUCT_SPEC.md) for **WHAT** and [Vision](../../../universe/vision/VISION.md) for **WHY**. For current status, see [PROJECT_STATUS.md](../../../../PROJECT_STATUS.md). For version history, see [CHANGELOG.md](../../../../CHANGELOG.md).
+This document defines **WHEN** features are built and how the platform evolves. See [Products & Platform](../../../old_universe/strategy/PRODUCTS_AND_PLATFORM.md) for the authoritative product strategy and wave model. See [Product Spec](../specification/PRODUCT_SPEC.md) for **WHAT** and [Vision](../../../old_universe/vision/VISION.md) for **WHY**. For current status, see [PROJECT_STATUS.md](../../../../PROJECT_STATUS.md). For version history, see [CHANGELOG.md](../../../../CHANGELOG.md).
 
 ---
 
@@ -21,7 +21,7 @@ FringeIsland evolves in overlapping waves — each beginning before the previous
 | **5** | **Brim** | Scope TBD | Not started |
 | **6** | **Urd** (Beyond) | Scope TBD | Not started |
 
-See [Products & Platform](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md) for full wave definitions, device strategy, and product family details.
+See [Products & Platform](../../../old_universe/strategy/PRODUCTS_AND_PLATFORM.md) for full wave definitions, device strategy, and product family details.
 
 ---
 
@@ -31,7 +31,7 @@ See [Products & Platform](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md) f
 2. **User-Centric**: Validate features with real users before building
 3. **Technical Excellence**: Clean architecture, comprehensive tests, good documentation
 4. **Flexible Foundation**: Build systems that can evolve (avoid rigid assumptions)
-5. **TDD Mandatory**: Behaviors > Failing tests (RED) > Implement (GREEN). See `docs/products/ferd/development/WORKFLOW.md`
+5. **TDD Mandatory**: Behaviors > Failing tests (RED) > Implement (GREEN). See `docs/old_products/ferd/development/WORKFLOW.md`
 6. **Lock the Pattern, Not the Content**: Extensibility patterns are stable; specific content types are data inserts, not schema migrations (Session 01 principle)
 
 ---
@@ -56,8 +56,8 @@ See [Products & Platform](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md) f
 | **1.5d** Performance | 8-tier optimization (indexes, batching, caching) | v0.2.26–v0.2.28 | DONE |
 | **1.5e** Lifecycle | 5 sprints: security, schema, leave-group, notifications, exit | v0.2.32–v0.2.36 | DONE |
 
-See `docs/products/ferd/development/features/` for detailed feature documentation.
-See `docs/products/ferd/planning/LIFECYCLE_DECISIONS.md` for lifecycle sprint details and binding decisions.
+See `docs/old_products/ferd/development/features/` for detailed feature documentation.
+See `docs/old_products/ferd/planning/LIFECYCLE_DECISIONS.md` for lifecycle sprint details and binding decisions.
 
 ### Ferd 1.6: Polish and Launch — IN PROGRESS
 
@@ -88,11 +88,11 @@ See `SPRINT.md` for the active sprint plan and step-by-step status.
 
 ## Waves 2–6: Post-Ferd Wave Arc
 
-The post-Ferd waves of the 6-wave arc (Eid → Hamn → Heim → Brim → Urd) are scoped at a high level here. Detailed deliverables live in each wave's dedicated documentation under `docs/products/<wave>/` and in `DEFERRED.md`.
+The post-Ferd waves of the 6-wave arc (Eid → Hamn → Heim → Brim → Urd) are scoped at a high level here. Detailed deliverables live in each wave's dedicated documentation under `docs/old_products/<wave>/` and in `DEFERRED.md`.
 
 Wave redistribution from the old 2-wave model was completed on 2026-04-07. See [DEFERRED.md](./DEFERRED.md) for item-level wave assignments.
 
-The 6-wave arc is defined in [ADR-U022](../../../universe/decisions/ADR-U022-named-waves.md).
+The 6-wave arc is defined in [ADR-U022](../../../old_universe/decisions/ADR-U022-named-waves.md).
 
 ---
 
@@ -153,12 +153,12 @@ See [DEFERRED.md](./DEFERRED.md) for detailed rationale on what was deliberately
 
 | Document | Purpose |
 |----------|---------|
-| [Products & Platform](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md) | Authoritative product strategy and wave model |
-| [Vision](../../../universe/vision/VISION.md) | Why FringeIsland exists |
-| [Manifesto](../../../universe/vision/MANIFESTO.md) | Core values and principles |
+| [Products & Platform](../../../old_universe/strategy/PRODUCTS_AND_PLATFORM.md) | Authoritative product strategy and wave model |
+| [Vision](../../../old_universe/vision/VISION.md) | Why FringeIsland exists |
+| [Manifesto](../../../old_universe/vision/MANIFESTO.md) | Core values and principles |
 | [Product Spec](../specification/PRODUCT_SPEC.md) | What we're building |
-| [Architecture Anatomy](../../../universe/architecture/ARCHITECTURE_ANATOMY.md) | L0-L7 layers, verticals, Platform API ring |
-| [Architecture Baseline](../../../implementation/ferd/baseline/BASELINE.md) | Live implementation state mapped to anatomy |
+| [Architecture Anatomy](../../../old_universe/architecture/ARCHITECTURE_ANATOMY.md) | L0-L7 layers, verticals, Platform API ring |
+| [Architecture Baseline](../../../old_implementation/ferd/baseline/BASELINE.md) | Live implementation state mapped to anatomy |
 | [Deferred Decisions](./DEFERRED.md) | What we chose not to build yet and why |
 | [Journey Designer Session 01](../sessions/2026-03-20-SESSION-01-journey-designer.md) | Foundational vocabulary and concepts for Hamn journey system |
 | [Sprint Tracker](../../../../SPRINT.md) | Active sprint status |

@@ -2,7 +2,7 @@
 
 **Status:** Specification scaffold in place — themes placed, details pending specification sessions and research.
 
-Hamn is the evolved FringeIsland platform — where the full member experience takes shape. See `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md` for the wave model.
+Hamn is the evolved FringeIsland platform — where the full member experience takes shape. See `docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md` for the wave model.
 
 ## Navigation
 

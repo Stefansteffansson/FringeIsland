@@ -44,11 +44,11 @@ Stage 7: Document ◀──GATE── Stage 6: Verify ◀──GATE── Stage 
 This workflow sits at the bottom of the BDD hierarchy. Every feature should be traceable upward:
 
 ```
-Vision (docs/universe/vision/VISION.md)     → WHY we're building this
-Product Spec (docs/products/ferd/specification/PRODUCT_SPEC.md) → WHAT we're building
-Roadmap (docs/products/ferd/planning/ROADMAP.md)  → WHEN we're building it
-Features (docs/products/ferd/development/features/)           → User-facing functionality
-Behaviors (docs/products/ferd/development/specs/behaviors/)   → Rules that govern features ← TDD STARTS HERE
+Vision (docs/old_universe/vision/VISION.md)     → WHY we're building this
+Product Spec (docs/old_products/ferd/specification/PRODUCT_SPEC.md) → WHAT we're building
+Roadmap (docs/old_products/ferd/planning/ROADMAP.md)  → WHEN we're building it
+Features (docs/old_products/ferd/development/features/)           → User-facing functionality
+Behaviors (docs/old_products/ferd/development/specs/behaviors/)   → Rules that govern features ← TDD STARTS HERE
 Tests (tests/integration/)                   → Verify behaviors work
 Implementation (app/, components/)           → Code that passes tests
 ```
@@ -60,9 +60,9 @@ Implementation (app/, components/)           → Code that passes tests
 **Owner:** Sprint Agent (or whoever initiates the feature)
 
 **Actions:**
-1. Verify feature is listed in `docs/products/ferd/specification/PRODUCT_SPEC.md`
-2. Check `docs/products/ferd/planning/DEFERRED.md` — has this been deferred?
-3. Create or update feature doc in `docs/products/ferd/development/features/`
+1. Verify feature is listed in `docs/old_products/ferd/specification/PRODUCT_SPEC.md`
+2. Check `docs/old_products/ferd/planning/DEFERRED.md` — has this been deferred?
+3. Create or update feature doc in `docs/old_products/ferd/development/features/`
 4. Identify which milestone/wave this belongs to
 
 **⛔ STOP GATE → Stage 1:**
@@ -78,7 +78,7 @@ Implementation (app/, components/)           → Code that passes tests
 
 **Actions:**
 1. Read the feature doc from Stage 0
-2. Write behavior specs in `docs/products/ferd/development/specs/behaviors/[domain].md`
+2. Write behavior specs in `docs/old_products/ferd/development/specs/behaviors/[domain].md`
 3. For each behavior, document:
    - Rule (one sentence invariant)
    - Why (business reason)
@@ -292,13 +292,13 @@ describe('B-[DOMAIN]-[NUM]: [Behavior Name]', () => {
 4. Update `CHANGELOG.md` if version bumped
 5. Update `CLAUDE.md` if new patterns established
 6. Update feature doc with implementation details
-7. Cross-reference audit — work through the affected-docs list from Stage 4. For each doc: open it, verify terminology, schema references, RLS rules, acceptance criteria, and role names still match reality. Apply corrections. If no affected-docs list exists (e.g., hotfix), audit behavior specs for the domain, the domain feature doc, and `docs/universe/architecture/ARCHITECTURE_ANATOMY.md` as minimum.
+7. Cross-reference audit — work through the affected-docs list from Stage 4. For each doc: open it, verify terminology, schema references, RLS rules, acceptance criteria, and role names still match reality. Apply corrections. If no affected-docs list exists (e.g., hotfix), audit behavior specs for the domain, the domain feature doc, and `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md` as minimum.
 8. Create session bridge if significant work
 
 **Done when:**
 - [ ] All documentation is current
 - [ ] Cross-reference audit complete — no doc on the affected-docs list has uncorrected drift
-- [ ] Feature is traceable upward: `docs/universe/vision/VISION.md` → `docs/products/ferd/specification/PRODUCT_SPEC.md` → `docs/products/ferd/development/features/` → `docs/products/ferd/development/specs/` → `tests/integration/` → `app/` (verified, not assumed)
+- [ ] Feature is traceable upward: `docs/old_universe/vision/VISION.md` → `docs/old_products/ferd/specification/PRODUCT_SPEC.md` → `docs/old_products/ferd/development/features/` → `docs/old_products/ferd/development/specs/` → `tests/integration/` → `app/` (verified, not assumed)
 
 ---
 
@@ -522,8 +522,8 @@ npx jest tests/integration/[domain]/[feature].test.ts --runInBand --verbose
 
 ## Related Documentation
 
-- **Boot-up workflow:** `docs/products/ferd/development/BOOT_UP.md`
-- **Close-down workflow:** `docs/products/ferd/development/CLOSE_DOWN.md`
-- **Doc health check:** `docs/products/ferd/development/DOC_HEALTH_CHECK.md`
-- **Behavior spec template:** `docs/products/ferd/development/specs/behaviors/_template.md`
-- **Agent system:** `docs/products/ferd/development/agents/README.md`
+- **Boot-up workflow:** `docs/old_products/ferd/development/BOOT_UP.md`
+- **Close-down workflow:** `docs/old_products/ferd/development/CLOSE_DOWN.md`
+- **Doc health check:** `docs/old_products/ferd/development/DOC_HEALTH_CHECK.md`
+- **Behavior spec template:** `docs/old_products/ferd/development/specs/behaviors/_template.md`
+- **Agent system:** `docs/old_products/ferd/development/agents/README.md`

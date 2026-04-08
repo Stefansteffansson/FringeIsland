@@ -90,7 +90,7 @@ Historical record of planning sessions, journey designer explorations, architect
 
 **See:** [CURRENT_PHASE.md](./planning/CURRENT_PHASE.md) for details
 
-**Status:** [KANBAN →](../../implementation/ferd/status/KANBAN.md)
+**Status:** [KANBAN →](../../old_implementation/ferd/status/KANBAN.md)
 
 ---
 
@@ -114,9 +114,9 @@ Historical record of planning sessions, journey designer explorations, architect
 - [Database Schema](./architecture/DATABASE_SCHEMA.md) — Data model
 
 ### For Implementation
-- [Current State](../../implementation/ferd/status/KANBAN.md) — What's done/in-progress
-- [Baseline](../../implementation/ferd/baseline/BASELINE.md) — Technical snapshot
-- [Next Session](../../implementation/ferd/handover/NEXT_SESSION_PLAN.md) — What's next
+- [Current State](../../old_implementation/ferd/status/KANBAN.md) — What's done/in-progress
+- [Baseline](../../old_implementation/ferd/baseline/BASELINE.md) — Technical snapshot
+- [Next Session](../../old_implementation/ferd/handover/NEXT_SESSION_PLAN.md) — What's next
 
 ---
 
@@ -131,7 +131,7 @@ These decisions/docs apply **only to Ferd**, not to other products:
 - Eight-layer architecture model (other products have different architectures)
 - Specific feature requirements (FR-001, FR-002, etc.)
 
-**Location:** This folder (`/docs/products/ferd/`)
+**Location:** This folder (`/docs/old_products/ferd/`)
 
 ### What's Universe-Level
 These apply to **all products** including Ferd:
@@ -142,7 +142,7 @@ These apply to **all products** including Ferd:
 - Open source licensing model
 - Governance structure (Foundation/Council/Community)
 
-**Location:** [Universe docs](../../universe/INDEX.md)
+**Location:** [Universe docs](../../old_universe/INDEX.md)
 
 ---
 
@@ -156,21 +156,21 @@ Web platform proving the foundation. Groups, journeys, profiles, Stewards.
 ### Wave 2 — Hamn
 Ferd evolves into Hamn — full FringeIsland member experience with avatar, garden, narrative.
 
-**Status:** Planning only (see [/docs/products/hamn/](../hamn/INDEX.md))
+**Status:** Planning only (see [/docs/old_products/hamn/](../hamn/INDEX.md))
 
 ### Wave 3+
 Native apps, AR layer, game, physical products extend the ecosystem.
 
-**See:** [Universe Product Strategy](../../universe/strategy/PRODUCTS_AND_PLATFORM.md)
+**See:** [Universe Product Strategy](../../old_universe/strategy/PRODUCTS_AND_PLATFORM.md)
 
 ---
 
 ## Related Documentation
 
 ### Universe Context
-- [FringeIsland Vision](../../universe/vision/VISION.md)
-- [Product Family Strategy](../../universe/strategy/PRODUCTS_AND_PLATFORM.md)
-- [Three Questions Framework](../../universe/vision/THREE_QUESTIONS.md)
+- [FringeIsland Vision](../../old_universe/vision/VISION.md)
+- [Product Family Strategy](../../old_universe/strategy/PRODUCTS_AND_PLATFORM.md)
+- [Three Questions Framework](../../old_universe/vision/THREE_QUESTIONS.md)
 
 ### Other Products
 - [Hamn (Wave 2)](../hamn/INDEX.md)
@@ -178,9 +178,9 @@ Native apps, AR layer, game, physical products extend the ecosystem.
 - [All Products](../INDEX.md)
 
 ### Implementation Tracking
-- [Ferd Status (KANBAN)](../../implementation/ferd/status/KANBAN.md)
-- [Ferd Baseline](../../implementation/ferd/baseline/BASELINE.md)
-- [Cross-Product Status](../../implementation/cross-product/CURRENT_STATE.md)
+- [Ferd Status (KANBAN)](../../old_implementation/ferd/status/KANBAN.md)
+- [Ferd Baseline](../../old_implementation/ferd/baseline/BASELINE.md)
+- [Cross-Product Status](../../old_implementation/cross-product/CURRENT_STATE.md)
 
 ---
 

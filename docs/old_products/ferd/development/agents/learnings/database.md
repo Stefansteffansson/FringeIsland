@@ -2,7 +2,7 @@
 
 **Purpose:** Running log of schema, migration, and RLS discoveries.
 **Curated by:** Sprint Agent during retrospectives
-**Promotion:** Confirmed patterns → `docs/products/ferd/development/agents/contexts/database-agent.md` (playbook)
+**Promotion:** Confirmed patterns → `docs/old_products/ferd/development/agents/contexts/database-agent.md` (playbook)
 
 ---
 

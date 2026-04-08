@@ -90,7 +90,7 @@ The DeusEx system group exists with all 42 permissions (Tier 1 resolution). This
 | B-ADMIN-018 | Admin Remove from Group | ✅ DB + Tests (5 tests) |
 | B-ADMIN-019 | Admin Force Logout | ✅ DB + Tests (6 tests) |
 
-Full specs: `docs/products/ferd/development/specs/admin.md`
+Full specs: `docs/old_products/ferd/development/specs/admin.md`
 
 ---
 

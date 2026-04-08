@@ -79,10 +79,10 @@ When the sole Steward of a group wants to leave:
 
 | ID | Behavior | Spec |
 |----|----------|------|
-| B-NOTIF-001 | Smart Notification Schema | `docs/products/ferd/development/specs/notifications.md` |
-| B-NOTIF-002 | Actionable Notification UI | `docs/products/ferd/development/specs/notifications.md` |
-| B-NOTIF-003 | Notification Action Handler | `docs/products/ferd/development/specs/notifications.md` |
-| B-GRP-011 | Stewardship Nomination (Track 1) | `docs/products/ferd/development/specs/groups.md` |
+| B-NOTIF-001 | Smart Notification Schema | `docs/old_products/ferd/development/specs/notifications.md` |
+| B-NOTIF-002 | Actionable Notification UI | `docs/old_products/ferd/development/specs/notifications.md` |
+| B-NOTIF-003 | Notification Action Handler | `docs/old_products/ferd/development/specs/notifications.md` |
+| B-GRP-011 | Stewardship Nomination (Track 1) | `docs/old_products/ferd/development/specs/groups.md` |
 
 ---
 
@@ -116,8 +116,8 @@ Adds 5 columns + consistency constraint + pending-action index. Full DDL and col
 | `components/notifications/NotificationBell.tsx` | Accept/Decline buttons, actioned/expired badges |
 | `tests/integration/communication/smart-notifications.test.ts` | 11 tests (B-NOTIF-001, B-NOTIF-003) |
 | `tests/integration/groups/stewardship-nomination.test.ts` | 8 tests (B-GRP-011) |
-| `docs/products/ferd/development/specs/notifications.md` | B-NOTIF-001, B-NOTIF-002, B-NOTIF-003 |
-| `docs/products/ferd/development/specs/groups.md` | B-GRP-011 |
+| `docs/old_products/ferd/development/specs/notifications.md` | B-NOTIF-001, B-NOTIF-002, B-NOTIF-003 |
+| `docs/old_products/ferd/development/specs/groups.md` | B-GRP-011 |
 
 ## Test Results
 

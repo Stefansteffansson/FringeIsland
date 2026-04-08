@@ -10,9 +10,9 @@
 
 Executed the approved MIGRATION_MAPPING.md v2 — restructured all 139 documentation files from flat directories into a three-tier architecture:
 
-- **Universe** (`docs/universe/`) — product-agnostic vision, strategy, architecture, research, 22 ADRs
-- **Products** (`docs/products/ferd/`) — Ferd specification, architecture, planning, sessions, development (agents, specs, features)
-- **Implementation** (`docs/implementation/`) — shared DB/auth infrastructure, Ferd baseline/status
+- **Universe** (`docs/old_universe/`) — product-agnostic vision, strategy, architecture, research, 22 ADRs
+- **Products** (`docs/old_products/ferd/`) — Ferd specification, architecture, planning, sessions, development (agents, specs, features)
+- **Implementation** (`docs/old_implementation/`) — shared DB/auth infrastructure, Ferd baseline/status
 
 219 files changed total. All cross-references updated. Root files (CLAUDE.md, README.md, PROJECT_STATUS.md, SPRINT.md) rewritten with new paths.
 
@@ -37,4 +37,4 @@ Post-migration audit verified BOOT_UP.md, CLOSE_DOWN.md, README.md, and CLAUDE.m
 ## Next Steps
 
 - Ferd 1.6 sprint work can now begin with clean documentation structure
-- Hamn folder structure (`docs/products/hamn/`) established — awaiting specification content
+- Hamn folder structure (`docs/old_products/hamn/`) established — awaiting specification content

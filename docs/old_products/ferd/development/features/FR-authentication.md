@@ -288,9 +288,9 @@ All admin operations require `manage_all_groups` permission (DeusEx system group
 
 ### Behavior Specs
 
-- `docs/products/ferd/development/specs/authentication.md` — Sign-up, sign-in, sign-out, session management behaviors
-- `docs/products/ferd/development/specs/admin.md` — Admin user lifecycle behaviors (activate, deactivate, decommission, hard-delete)
-- `docs/products/ferd/development/specs/display-name.md` — Display name / nickname behaviors (B-DISP-001 through B-DISP-011)
+- `docs/old_products/ferd/development/specs/authentication.md` — Sign-up, sign-in, sign-out, session management behaviors
+- `docs/old_products/ferd/development/specs/admin.md` — Admin user lifecycle behaviors (activate, deactivate, decommission, hard-delete)
+- `docs/old_products/ferd/development/specs/display-name.md` — Display name / nickname behaviors (B-DISP-001 through B-DISP-011)
 
 ### Integration Tests
 
@@ -332,11 +332,11 @@ All admin operations require `manage_all_groups` permission (DeusEx system group
 
 ## Related Documentation
 
-- **Display name system:** `docs/products/ferd/development/features/FR-display-name-system.md`
-- **Group management:** `docs/products/ferd/development/features/FR-group-management.md`
-- **RBAC design:** `docs/products/ferd/development/features/AR-dynamic-permissions-system.md`
-- **Behavior specs:** `docs/products/ferd/development/specs/authentication.md`, `docs/products/ferd/development/specs/admin.md`, `docs/products/ferd/development/specs/platform-exit.md`
-- **Platform exit:** `docs/products/ferd/development/features/FR-platform-exit.md` (decommission + force-logout after admin exit)
+- **Display name system:** `docs/old_products/ferd/development/features/FR-display-name-system.md`
+- **Group management:** `docs/old_products/ferd/development/features/FR-group-management.md`
+- **RBAC design:** `docs/old_products/ferd/development/features/AR-dynamic-permissions-system.md`
+- **Behavior specs:** `docs/old_products/ferd/development/specs/authentication.md`, `docs/old_products/ferd/development/specs/admin.md`, `docs/old_products/ferd/development/specs/platform-exit.md`
+- **Platform exit:** `docs/old_products/ferd/development/features/FR-platform-exit.md` (decommission + force-logout after admin exit)
 - **D15 base migration:** `supabase/migrations/20260222000000_rebuild_universal_group_pattern.sql`
 - **RC7 admin fixes:** `supabase/migrations/20260223171200_fix_rc7_admin_user_ops.sql`
 - **Display name migration:** `supabase/migrations/20260227095615_add_display_name_system.sql`

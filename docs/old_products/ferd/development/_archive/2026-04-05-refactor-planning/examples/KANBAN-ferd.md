@@ -408,10 +408,10 @@ At current velocity, Phase 1 completion: ~6-7 weeks (mid-May 2026)
 
 ## Related Documents
 
-**Requirements:** [REQUIREMENTS.md](../../products/ferd/specification/REQUIREMENTS.md)  
-**Roadmap:** [ROADMAP.md](../../products/ferd/planning/ROADMAP.md)  
-**Current Phase:** [CURRENT_PHASE.md](../../products/ferd/planning/CURRENT_PHASE.md)  
-**Backlog:** [BACKLOG.md](../../products/ferd/planning/BACKLOG.md)  
+**Requirements:** [REQUIREMENTS.md](../../old_products/ferd/specification/REQUIREMENTS.md)  
+**Roadmap:** [ROADMAP.md](../../old_products/ferd/planning/ROADMAP.md)  
+**Current Phase:** [CURRENT_PHASE.md](../../old_products/ferd/planning/CURRENT_PHASE.md)  
+**Backlog:** [BACKLOG.md](../../old_products/ferd/planning/BACKLOG.md)  
 **Technical Debt:** [TECHNICAL_DEBT.md](../handover/TECHNICAL_DEBT.md)  
 **BDD Scenarios:** [testing/bdd-scenarios/](../testing/bdd-scenarios/)
 

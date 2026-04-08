@@ -81,7 +81,7 @@ These items had been temporarily labelled "Wave TBD — pending work package red
 | Cross-wave concern tables | Wave 2 / Wave 3+ columns | ~202, ~218 | Hamn and Wave 3+ column headers |
 | Post-launch: "plan Hamn" and "Complete Hamn foundation" | Wave 2 — Hamn | ~246-247 | Post-launch priorities |
 
-### From docs/universe/vision/VISION.md
+### From docs/old_universe/vision/VISION.md
 
 | Item | Original Label | Line | Notes |
 |------|---------------|------|-------|
@@ -92,7 +92,7 @@ These items had been temporarily labelled "Wave TBD — pending work package red
 | Whisp dependencies on Wave 2 tech | Wave 2 | ~401-402 | AR overlay, void visualization |
 | Wave ambiguities: Seasons, AR boundary, Type 3-4, Whisp spec | Wave 2-3 | ~413-420 | Unresolved scope questions |
 
-### From docs/universe/strategy/PRODUCTS_AND_PLATFORM.md
+### From docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md
 
 | Item | Original Label | Line | Notes |
 |------|---------------|------|-------|
@@ -101,7 +101,7 @@ These items had been temporarily labelled "Wave TBD — pending work package red
 | Wave 3 — The World Expands | Wave 3 | ~168-177 | Dynamic journeys, AR, game foundations |
 | Wave 3+ — The Game | Wave 3+ | ~179-210 | Console, VR/AR headsets |
 
-### From docs/universe/architecture/ARCHITECTURE_ANATOMY.md
+### From docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md
 
 | Item | Original Label | Line | Notes |
 |------|---------------|------|-------|
@@ -112,7 +112,7 @@ These items had been temporarily labelled "Wave TBD — pending work package red
 | Hamn product definition | Wave 2 | ~512 | Glossary entry |
 | Various "grows in Hamn" references | Wave 2 | ~55, 179, 185, 188, 222, 225, 245, 258, 288, 322, 361, 376, 383, 385 | Feature evolution references throughout the anatomy |
 
-### From docs/implementation/ferd/baseline/BASELINE.md
+### From docs/old_implementation/ferd/baseline/BASELINE.md
 
 | Item | Original Label | Line | Notes |
 |------|---------------|------|-------|

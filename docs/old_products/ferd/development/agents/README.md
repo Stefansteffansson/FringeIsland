@@ -95,12 +95,12 @@ Agents learn through a three-layer system:
 ### Layer 1: Playbooks (stable, curated)
 The agent context files themselves. Contain **proven patterns** confirmed across multiple uses. Updated deliberately during Sprint retrospectives.
 
-**Location:** `docs/products/ferd/development/agents/contexts/[agent].md`
+**Location:** `docs/old_products/ferd/development/agents/contexts/[agent].md`
 
 ### Layer 2: Journals (running, append-only)
 Each agent has a companion learning log. Discoveries are appended during work. Low friction, fast capture.
 
-**Location:** `docs/products/ferd/development/agents/learnings/[domain].md`
+**Location:** `docs/old_products/ferd/development/agents/learnings/[domain].md`
 
 | Domain | Journal File |
 |--------|-------------|
@@ -191,8 +191,8 @@ Every agent playbook follows this structure:
 
 ## Related Documentation
 
-- **Workflows:** `docs/products/ferd/development/` (boot-up, close-down, feature development, doc health check)
-- **Behavior specs:** `docs/products/ferd/development/specs/behaviors/`
-- **Feature docs:** `docs/products/ferd/development/features/`
+- **Workflows:** `docs/old_products/ferd/development/` (boot-up, close-down, feature development, doc health check)
+- **Behavior specs:** `docs/old_products/ferd/development/specs/behaviors/`
+- **Feature docs:** `docs/old_products/ferd/development/features/`
 - **Project status:** `PROJECT_STATUS.md`
 - **Technical patterns:** `CLAUDE.md`

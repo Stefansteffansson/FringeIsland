@@ -3,7 +3,7 @@
 **Version:** 2.0
 **Last Updated:** April 5, 2026
 **Status:** Wave 1 — 95% complete (Ferd 1.6 Polish & Launch remaining)
-**Links:** [Vision](../../../universe/vision/VISION.md) | [Requirements](./REQUIREMENTS.md) | [Roadmap](../planning/ROADMAP.md) | [Architecture](../../../universe/architecture/ARCHITECTURE_ANATOMY.md)
+**Links:** [Vision](../../../old_universe/vision/VISION.md) | [Requirements](./REQUIREMENTS.md) | [Roadmap](../planning/ROADMAP.md) | [Architecture](../../../old_universe/architecture/ARCHITECTURE_ANATOMY.md)
 
 ---
 
@@ -12,8 +12,8 @@
 This document defines **what Ferd is and why it exists**. It is the product-level view — personas, principles, feature scope, success criteria.
 
 For detailed per-feature requirements, status, and compliance tracking, see [REQUIREMENTS.md](./REQUIREMENTS.md).
-For technical architecture, see [ARCHITECTURE_ANATOMY.md](../../../universe/architecture/ARCHITECTURE_ANATOMY.md).
-For implementation state, see [ACTUAL_STATE.md](../../../implementation/ferd/baseline/ACTUAL_STATE.md).
+For technical architecture, see [ARCHITECTURE_ANATOMY.md](../../../old_universe/architecture/ARCHITECTURE_ANATOMY.md).
+For implementation state, see [ACTUAL_STATE.md](../../../old_implementation/ferd/baseline/ACTUAL_STATE.md).
 
 **Hierarchy:**
 ```
@@ -266,14 +266,14 @@ These are the questions Ferd exists to answer:
 
 | Document | Role |
 |----------|------|
-| [Vision](../../../universe/vision/VISION.md) | Why FringeIsland exists |
-| [Manifesto](../../../universe/vision/MANIFESTO.md) | Core values and principles |
-| [Products & Platform](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md) | Wave model, product family, device strategy |
+| [Vision](../../../old_universe/vision/VISION.md) | Why FringeIsland exists |
+| [Manifesto](../../../old_universe/vision/MANIFESTO.md) | Core values and principles |
+| [Products & Platform](../../../old_universe/strategy/PRODUCTS_AND_PLATFORM.md) | Wave model, product family, device strategy |
 | [Requirements](./REQUIREMENTS.md) | Detailed per-feature requirements, status, compliance |
 | [Roadmap](../planning/ROADMAP.md) | When features are built |
 | [Deferred Decisions](../planning/DEFERRED.md) | What we chose not to build and why |
-| [Architecture Anatomy](../../../universe/architecture/ARCHITECTURE_ANATOMY.md) | L0-L7 layers, verticals, Platform API ring |
-| [Actual State](../../../implementation/ferd/baseline/ACTUAL_STATE.md) | Live implementation analysis |
+| [Architecture Anatomy](../../../old_universe/architecture/ARCHITECTURE_ANATOMY.md) | L0-L7 layers, verticals, Platform API ring |
+| [Actual State](../../../old_implementation/ferd/baseline/ACTUAL_STATE.md) | Live implementation analysis |
 | [Research](../planning/RESEARCH.md) | Open investigations for Ferd |
 
 ---

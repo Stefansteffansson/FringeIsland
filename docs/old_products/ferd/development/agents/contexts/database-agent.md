@@ -35,7 +35,7 @@ group_role_permissions     # Role permissions
 user_group_roles           # User role assignments (last leader protection trigger)
 ```
 
-**Full schema:** `docs/implementation/shared/SCHEMA_OVERVIEW.md`
+**Full schema:** `docs/old_implementation/shared/SCHEMA_OVERVIEW.md`
 
 ---
 
@@ -285,9 +285,9 @@ SELECT COUNT(*) FROM notifications;
 - This confirms the migration correctly implements the designed behavior
 
 ### 4. Update Documentation
-- Add entry to `docs/implementation/shared/MIGRATIONS_LOG.md`
-- Update `docs/implementation/shared/SCHEMA_OVERVIEW.md` if new table
-- Update `docs/implementation/shared/RLS_POLICIES.md` if new policies
+- Add entry to `docs/old_implementation/shared/MIGRATIONS_LOG.md`
+- Update `docs/old_implementation/shared/SCHEMA_OVERVIEW.md` if new table
+- Update `docs/old_implementation/shared/RLS_POLICIES.md` if new policies
 
 ---
 
@@ -428,10 +428,10 @@ DELETE FROM user_group_roles WHERE id = '[last-leader-id]'; -- Should fail
 
 ## 📚 Related Documentation
 
-- **Schema overview:** `docs/implementation/shared/SCHEMA_OVERVIEW.md`
-- **Migration log:** `docs/implementation/shared/MIGRATIONS_LOG.md`
-- **Full schema SQL:** `docs/implementation/shared/DATABASE_CURRENT.md`
-- **Authorization:** `docs/implementation/shared/AUTH_SYSTEM.md`
+- **Schema overview:** `docs/old_implementation/shared/SCHEMA_OVERVIEW.md`
+- **Migration log:** `docs/old_implementation/shared/MIGRATIONS_LOG.md`
+- **Full schema SQL:** `docs/old_implementation/shared/DATABASE_CURRENT.md`
+- **Authorization:** `docs/old_implementation/shared/AUTH_SYSTEM.md`
 
 ---
 
@@ -473,11 +473,11 @@ DELETE FROM user_group_roles WHERE id = '[last-leader-id]'; -- Should fail
 ## Learning Protocol
 
 When working in this domain:
-1. Check `docs/products/ferd/development/agents/learnings/database.md` for recent discoveries
+1. Check `docs/old_products/ferd/development/agents/learnings/database.md` for recent discoveries
 2. During work, append new findings to the journal
 3. At close-down, flag any cross-cutting learnings for MEMORY.md
 
-Journal location: `docs/products/ferd/development/agents/learnings/database.md`
+Journal location: `docs/old_products/ferd/development/agents/learnings/database.md`
 Last curated: 2026-02-13 (initial)
 
 ---

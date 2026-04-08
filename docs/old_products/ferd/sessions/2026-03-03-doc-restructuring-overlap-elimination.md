@@ -49,7 +49,7 @@ Comprehensive documentation restructuring across 16 files. The driving principle
 ## Files Modified (16 total)
 
 - `README.md` (rewritten)
-- `docs/INDEX.md` (rewritten)
+- `docs/old_INDEX.md` (rewritten)
 - `SPRINT.md` (created)
 - `docs/planning/NEXT.md` (deleted)
 - `PROJECT_STATUS.md` (restructured)

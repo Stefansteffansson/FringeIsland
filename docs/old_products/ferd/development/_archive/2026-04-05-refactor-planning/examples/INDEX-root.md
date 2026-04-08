@@ -188,7 +188,7 @@ Use INDEX files as navigation hubs. They provide:
 
 ### Follow the breadcrumb trail
 ```
-docs/INDEX.md
+docs/old_INDEX.md
   → universe/INDEX.md
     → vision/INDEX.md
       → VISION.md
@@ -208,11 +208,11 @@ Files link to each other. Follow references to explore related content.
 
 ### Example: "Implement Journey Enrollment"
 ```
-1. /docs/products/ferd/INDEX.md                         (~500 tokens)
-2. /docs/products/ferd/planning/CURRENT_PHASE.md        (~800 tokens)
-3. /docs/implementation/ferd/handover/NEXT_SESSION_PLAN.md (~1000 tokens)
-4. /docs/products/ferd/specification/REQUIREMENTS.md#FR-002 (~400 tokens)
-5. /docs/products/ferd/architecture/ANATOMY.md#L3       (~600 tokens)
+1. /docs/old_products/ferd/INDEX.md                         (~500 tokens)
+2. /docs/old_products/ferd/planning/CURRENT_PHASE.md        (~800 tokens)
+3. /docs/old_implementation/ferd/handover/NEXT_SESSION_PLAN.md (~1000 tokens)
+4. /docs/old_products/ferd/specification/REQUIREMENTS.md#FR-002 (~400 tokens)
+5. /docs/old_products/ferd/architecture/ANATOMY.md#L3       (~600 tokens)
 
 Total: ~3,300 tokens (instead of 80,000+)
 ```

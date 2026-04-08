@@ -20,4 +20,4 @@
 - [Ferd Specification](../specification/) — What we're building
 - [Sprint Tracker](../../../../SPRINT.md) — Active sprint status
 - [Ferd Index](../INDEX.md)
-- [Shared Processes](../../../universe/processes/) — Deferral protocol, planning protocol
+- [Shared Processes](../../../old_universe/processes/) — Deferral protocol, planning protocol

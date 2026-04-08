@@ -43,13 +43,13 @@ Hamn does **NOT** define Three Worlds visual identity — that is Urd-level work
 
 | File | Change |
 |---|---|
-| `docs/products/ferd/planning/DEFERRED.md` | v1.7 → v1.8; 17 items updated, 2 deleted (groups-join-groups), 1 split (FringeIsland universe vs AR void) |
-| `docs/products/ferd/planning/ROADMAP.md` | Replaced pending-redistribution placeholder with "Waves 2–6: Post-Ferd Wave Arc" section pointing to DEFERRED.md |
-| `docs/universe/vision/VISION.md` | Endowment → Beyond-Urd; 5 wave headers given scope summaries; scope boundaries rewritten |
-| `docs/universe/strategy/PRODUCTS_AND_PLATFORM.md` | Console + VR/AR → Beyond Urd; 5 wave headers updated; Game "Beyond-Urd ambition" |
-| `docs/universe/architecture/ARCHITECTURE_ANATOMY.md` | Frontends table updated (iOS/Android = Brim, Game = Beyond Urd); Hamn glossary entry rewritten; ~14 scattered Hamn references updated |
+| `docs/old_products/ferd/planning/DEFERRED.md` | v1.7 → v1.8; 17 items updated, 2 deleted (groups-join-groups), 1 split (FringeIsland universe vs AR void) |
+| `docs/old_products/ferd/planning/ROADMAP.md` | Replaced pending-redistribution placeholder with "Waves 2–6: Post-Ferd Wave Arc" section pointing to DEFERRED.md |
+| `docs/old_universe/vision/VISION.md` | Endowment → Beyond-Urd; 5 wave headers given scope summaries; scope boundaries rewritten |
+| `docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md` | Console + VR/AR → Beyond Urd; 5 wave headers updated; Game "Beyond-Urd ambition" |
+| `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md` | Frontends table updated (iOS/Android = Brim, Game = Beyond Urd); Hamn glossary entry rewritten; ~14 scattered Hamn references updated |
 | `SPRINT.md` | Steps 15+16 added (D11 trigger + groups-join-groups UI); Hamn M3 backlog cleaned; stale WAVE_REDISTRIBUTION pointer replaced with archive path |
-| `docs/products/WAVE_REDISTRIBUTION.md` → `docs/products/_archive/2026-04-07-WAVE_REDISTRIBUTION-completed.md` | Archived with Final Decisions Summary table |
+| `docs/old_products/WAVE_REDISTRIBUTION.md` → `docs/old_products/_archive/2026-04-07-WAVE_REDISTRIBUTION-completed.md` | Archived with Final Decisions Summary table |
 | `memory/hamn_scope.md` | NEW — project memory for Hamn scope boundary |
 | `memory/MEMORY.md` | Added Hamn scope topic file entry |
 

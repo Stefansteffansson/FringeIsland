@@ -59,7 +59,7 @@ Successfully established a complete Behavior-Driven Development (BDD) documentat
    - Added test coverage info (29 tests, 100%)
    - Added TDD/BDD to tech stack
 
-6. **`docs/INDEX.md`**
+6. **`docs/old_INDEX.md`**
    - Added Vision & Product Spec to quick navigation
    - Added TDD workflow to workflows section
    - Added behavior specs section
@@ -106,7 +106,7 @@ Successfully established a complete Behavior-Driven Development (BDD) documentat
 ### Files Modified
 - `docs/planning/ROADMAP.md` (added BDD hierarchy, feature links)
 - `README.md` (updated version, test coverage, journey enrollment)
-- `docs/INDEX.md` (added vision/spec, updated navigation)
+- `docs/old_INDEX.md` (added vision/spec, updated navigation)
 - `docs/workflows/boot-up.md` (added vision/spec references, feature verification)
 - `docs/workflows/close-down.md` (added behavior verification, feature doc updates)
 - `PROJECT_STATUS.md` (updated last session, active tasks, next priorities)

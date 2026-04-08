@@ -16,5 +16,5 @@
 ## Related
 
 - [Universe Index](../INDEX.md)
-- [Ferd Planning](../../products/ferd/planning/)
-- [Hamn Planning](../../products/hamn/planning/)
+- [Ferd Planning](../../old_products/ferd/planning/)
+- [Hamn Planning](../../old_products/hamn/planning/)

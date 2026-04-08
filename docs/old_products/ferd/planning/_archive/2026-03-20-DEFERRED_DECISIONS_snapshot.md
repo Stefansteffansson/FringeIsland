@@ -323,7 +323,7 @@ The schema allows any group to join any group — nothing prevents A → B → A
 
 **Topic**: Should FringeIsland have native mobile apps?
 
-**Context**: Platform is web-based (responsive). Native apps could improve experience. High-level platform strategy, device approach, and the relationship between digital products, physical products, events, and the game are addressed in [`docs/universe/strategy/PRODUCTS_AND_PLATFORM.md`](../../../../universe/strategy/PRODUCTS_AND_PLATFORM.md).
+**Context**: Platform is web-based (responsive). Native apps could improve experience. High-level platform strategy, device approach, and the relationship between digital products, physical products, events, and the game are addressed in [`docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md`](../../../../old_universe/strategy/PRODUCTS_AND_PLATFORM.md).
 
 **Decision**: Web-first for Wave 1 (Ferd). Consider mobile apps based on demand.
 

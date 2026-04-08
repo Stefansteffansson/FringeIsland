@@ -305,7 +305,7 @@ Each item below is explicitly deferred. This section prevents scope creep and en
 - ✅ Audit log with detailed per-group metadata
 - NOT self-service — admin panel only
 **Depends on:** Sprint 2 + Sprint 3 complete (all leave-group tracks working)
-**Feature doc:** `docs/products/ferd/development/features/FR-platform-exit.md` | **Behaviors:** B-EXIT-001 through B-EXIT-004
+**Feature doc:** `docs/old_products/ferd/development/features/FR-platform-exit.md` | **Behaviors:** B-EXIT-001 through B-EXIT-004
 
 ---
 

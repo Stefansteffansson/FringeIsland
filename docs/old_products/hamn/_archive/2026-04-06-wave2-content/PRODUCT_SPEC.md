@@ -3,13 +3,13 @@
 **Version:** 0.2
 **Last Updated:** April 5, 2026
 **Status:** Scaffold — themes placed, details pending specification sessions and RESEARCH.md resolution
-**Links:** [Vision](../../../universe/vision/VISION.md) | [Roadmap](../../ferd/planning/ROADMAP.md) | [Features](../development/features/)
+**Links:** [Vision](../../../old_universe/vision/VISION.md) | [Roadmap](../../ferd/planning/ROADMAP.md) | [Features](../development/features/)
 
 ---
 
 ## Document Purpose
 
-This document defines **what we're building** for Hamn (Wave 2). It translates the [vision](../../../universe/vision/VISION.md) into concrete features, user stories, and acceptance criteria.
+This document defines **what we're building** for Hamn (Wave 2). It translates the [vision](../../../old_universe/vision/VISION.md) into concrete features, user stories, and acceptance criteria.
 
 **Hierarchy:**
 ```
@@ -208,7 +208,7 @@ Inherits Ferd patterns, adds:
 - **AI integration layer** — L7 Intelligence services behind API routes
 - **Multi-frontend architecture** — shared API serving web + iOS + Android
 
-See [Architecture Anatomy](../../../universe/architecture/ARCHITECTURE_ANATOMY.md) for platform-level patterns.
+See [Architecture Anatomy](../../../old_universe/architecture/ARCHITECTURE_ANATOMY.md) for platform-level patterns.
 
 ---
 
@@ -336,18 +336,18 @@ See [Architecture Anatomy](../../../universe/architecture/ARCHITECTURE_ANATOMY.m
 
 ## Related Documents
 
-- **[Vision](../../../universe/vision/VISION.md)** - Why FringeIsland exists
+- **[Vision](../../../old_universe/vision/VISION.md)** - Why FringeIsland exists
 - **[Roadmap](../../ferd/planning/ROADMAP.md)** - When features are being built
 - **[Deferred Decisions](../../ferd/planning/DEFERRED.md)** - What we're NOT building (and why)
 - **[Feature Docs](../development/features/)** - Detailed feature specifications
 - **[Behavior Specs](../development/specs/)** - Rules that govern features
-- **[Architecture Anatomy](../../../universe/architecture/ARCHITECTURE_ANATOMY.md)** - Layered platform anatomy (L0-L7)
-- **[Architecture Decisions](../../../universe/decisions/INDEX.md)** - ADRs with full reasoning
-- **[Products & Platform](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md)** - Product strategy and wave model
+- **[Architecture Anatomy](../../../old_universe/architecture/ARCHITECTURE_ANATOMY.md)** - Layered platform anatomy (L0-L7)
+- **[Architecture Decisions](../../../old_universe/decisions/INDEX.md)** - ADRs with full reasoning
+- **[Products & Platform](../../../old_universe/strategy/PRODUCTS_AND_PLATFORM.md)** - Product strategy and wave model
 - **[Ferd Product Spec](../../ferd/specification/PRODUCT_SPEC.md)** - Wave 1 product specification
 - **[Research](../planning/RESEARCH.md)** - Open investigations for Hamn
-- **[Community](../../../universe/community/)** - Community and organizational questions
-- **[Processes](../../../universe/processes/)** - Cross-product workflows (deferral, planning)
+- **[Community](../../../old_universe/community/)** - Community and organizational questions
+- **[Processes](../../../old_universe/processes/)** - Cross-product workflows (deferral, planning)
 - **[Hamn Requirements](./REQUIREMENTS.md)** - Detailed requirements (TBD)
 - **[Vision-to-Spec Mapping](../VISION_TO_SPEC_MAPPING.md)** - Analysis that informed this spec
 

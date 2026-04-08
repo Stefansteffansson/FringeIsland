@@ -2,7 +2,7 @@
 
 This document tracks design decisions, features, and questions that have been deferred to later waves of FringeIsland development. Each item includes context, rationale for deferral, and notes for future implementation.
 
-For the deferral protocol (two-sided acceptance workflow), see [Deferral Protocol](../../../universe/processes/DEFERRAL_PROTOCOL.md).
+For the deferral protocol (two-sided acceptance workflow), see [Deferral Protocol](../../../old_universe/processes/DEFERRAL_PROTOCOL.md).
 
 ## Format
 
@@ -22,7 +22,7 @@ Each deferred decision includes:
 
 **Topic**: How should permissions flow between parent and child groups in hierarchical structures?
 
-**Status:** **RESOLVED** by RBAC design decisions D5, D7, D10, D12 (February 2026). See `docs/products/ferd/development/features/AR-dynamic-permissions-system.md`.
+**Status:** **RESOLVED** by RBAC design decisions D5, D7, D10, D12 (February 2026). See `docs/old_products/ferd/development/features/AR-dynamic-permissions-system.md`.
 
 **Resolution:**
 - **D5 (Two-Tier Scoping):** System group permissions always active; context group permissions scoped to that group only. No automatic "bleeding" of permissions.
@@ -264,7 +264,7 @@ In Wave 2 (Eid), user-generated content creates new scenarios:
 **Topic**: Should FringeIsland have native mobile apps?
 **Status:** Re-accepted by Brim (Wave 5) — re-deferred from Hamn 2026-04-07
 
-**Context**: Platform is web-based (responsive). Native apps could improve experience. High-level platform strategy, device approach, and the relationship between digital products, physical products, events, and the game are addressed in [`docs/universe/strategy/PRODUCTS_AND_PLATFORM.md`](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md).
+**Context**: Platform is web-based (responsive). Native apps could improve experience. High-level platform strategy, device approach, and the relationship between digital products, physical products, events, and the game are addressed in [`docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md`](../../../old_universe/strategy/PRODUCTS_AND_PLATFORM.md).
 
 **Decision**: Web-first for Wave 1 (Ferd). Native iOS/Android apps in Wave 5 (Brim).
 
@@ -636,7 +636,7 @@ In Wave 2 (Eid), user-generated content creates new scenarios:
 
 ## Journey Designer — Parked from Sessions 01-03
 
-*These items were explicitly parked during Journey Designer Discovery Sessions 01-03 (March 2026). Each requires a dedicated specification session before implementation. See session documents in `docs/products/ferd/sessions/` for full context.*
+*These items were explicitly parked during Journey Designer Discovery Sessions 01-03 (March 2026). Each requires a dedicated specification session before implementation. See session documents in `docs/old_products/ferd/sessions/` for full context.*
 
 ### Seasons and Episodes — PARTIALLY RESOLVED
 

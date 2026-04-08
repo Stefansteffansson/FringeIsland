@@ -996,13 +996,13 @@ L7 Intelligence services behind API routes with provider abstraction.
 |----------|---------|
 | [Ferd Requirements](../../ferd/specification/REQUIREMENTS.md) | Wave 1 requirements (reference and inheritance) |
 | [Product Spec](./PRODUCT_SPEC.md) | Hamn product scope |
-| [Architecture Anatomy](../../../universe/architecture/ARCHITECTURE_ANATOMY.md) | L0-L7 layers, verticals |
-| [Products & Platform](../../../universe/strategy/PRODUCTS_AND_PLATFORM.md) | Wave model and product strategy |
+| [Architecture Anatomy](../../../old_universe/architecture/ARCHITECTURE_ANATOMY.md) | L0-L7 layers, verticals |
+| [Products & Platform](../../../old_universe/strategy/PRODUCTS_AND_PLATFORM.md) | Wave model and product strategy |
 | [Roadmap](../../ferd/planning/ROADMAP.md) | Wave progress and milestones |
 | [Hamn Deferred](../planning/DEFERRED.md) | Items deferred from Hamn to Wave 3+ |
 | [Hamn Research](../planning/RESEARCH.md) | Open investigations (8 items) |
 | [Ferd Deferred](../../ferd/planning/DEFERRED.md) | Ferd deferrals accepted by Hamn |
-| [Vision](../../../universe/vision/VISION.md) | Why FringeIsland exists |
+| [Vision](../../../old_universe/vision/VISION.md) | Why FringeIsland exists |
 | [Journey Designer Session 01](../../ferd/sessions/2026-03-20-SESSION-01-journey-designer.md) | Foundational vocabulary and concepts |
 
 ---
