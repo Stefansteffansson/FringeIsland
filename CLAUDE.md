@@ -23,7 +23,7 @@ The repository documentation is being restructured into a multi-product ecosyste
 
 **Restructure phase status:**
 - ✅ Phase 1 — folder structure + README stubs
-- ⬜ Phase 2 — `docs/planning/PROCESS.md` (way of working)
+- ✅ Phase 2 — `docs/planning/PROCESS.md` (way of working — read this for the canonical process)
 - ⬜ Phase 3 — templates in `docs/templates/`
 - ⬜ Phase 4 — content migration from `old_*` → new
 
