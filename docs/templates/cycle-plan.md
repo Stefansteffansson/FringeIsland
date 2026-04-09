@@ -50,4 +50,4 @@ What could derail this cycle. Each risk has a mitigation or a "we accept it" not
 
 ## 6. Wave check
 
-Per `../planning/PROCESS.md` §3, only one wave's items may be in Build at a time. Confirm: this cycle's items all belong to wave **{name}**. The next wave's items, if any, are in Concept or Study only.
+Waves are thematic focus buckets, not sequential gates (`../planning/PROCESS.md` §3). Items from multiple waves may coexist in a cycle. Note which wave(s) this cycle's items belong to and confirm total WIP stays within the limit of 3.

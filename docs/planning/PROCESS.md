@@ -92,17 +92,19 @@ Every work item has a type. The type determines which template to use, which DoD
   - Update the relevant roadmaps (`docs/ecosystem/ECOSYSTEM_ROADMAP.md`, product roadmaps, `docs/platform/core/ROADMAP.md`)
   - Run retrospective for the cycle that just ended (template: `../templates/retrospective.md`)
 
-### Wave overlap rule (locked)
+### Waves as thematic focus
 
-Only **one wave's items may be in Specify (Level 3) or Build (Level 5) at any time.** The next wave's items may be in Concept (Level 1) or Study/Explored (Level 2) while the current wave is building — but they cannot advance to Specified until the current wave's Build phase is complete.
+Waves (Ferd → Eid → Hamn → Heim → Brim → Urd) are **thematic focus buckets**, not sequential gates. They communicate what the ecosystem prioritises during a period — earlier waves are generally prioritised over later waves, but this is a guideline, not a rule.
 
-This is a hard cut on Build and a soft overlap on Concept/Study. It exists to prevent half-finished waves from accumulating and to keep the maturity pipeline coherent across the six-wave saga arc (Ferd → Eid → Hamn → Heim → Brim → Urd). It is a **locked decision** — to be recorded as an ADR when `docs/architecture/decisions/` is populated.
+Work from any wave can be in any maturity state (Concept, Study, Specify, Build) at any time. Waves overlap naturally: one winds down as the next builds up, and items from different waves may coexist in the same cycle. **WIP limits constrain total active work regardless of which wave items come from** — that's the real concurrency control, not wave boundaries.
+
+Wave tags (`ferd`, `eid`, `hamn`, etc.) are used for filtering, prioritisation, and strategic overview — see Section 7. They are not permissions.
 
 ### Wave transition
 
-When a wave completes (last Build item reaches Done), it triggers:
+When a wave's core work is substantially complete, it triggers:
 - A **wave retrospective** (use `../templates/retrospective.md`, scope = entire wave, not just last cycle)
-- An **ecosystem roadmap update** (`docs/ecosystem/ECOSYSTEM_ROADMAP.md`) reflecting the wave transition and unlocking the next wave's items to advance past Level 2
+- An **ecosystem roadmap update** (`docs/ecosystem/ECOSYSTEM_ROADMAP.md`) reflecting the shift in strategic focus
 
 ### Why this shape
 

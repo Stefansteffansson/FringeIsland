@@ -32,7 +32,7 @@ What is conceptually committed but not yet shaped. Items here are typically at m
 
 ## Wave alignment
 
-Which wave(s) this product participates in, and which items belong to which wave. See `../../planning/PROCESS.md` §3 ("Wave overlap rule") — only one wave's items may be in Build at a time.
+Which wave(s) this product participates in, and which items belong to which wave. Waves are thematic focus buckets that may overlap — see `../../planning/PROCESS.md` §3 ("Waves as thematic focus"). Earlier waves are generally prioritised; WIP limits constrain total active work.
 
 | Wave | Items |
 |------|-------|
