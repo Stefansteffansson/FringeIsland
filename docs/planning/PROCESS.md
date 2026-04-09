@@ -60,7 +60,7 @@ Every work item has a type. The type determines which template to use, which DoD
 
 | Type | What it is | Template | Notes |
 |------|-----------|----------|-------|
-| **feature** | Functional requirement, user-facing | `../templates/prd.md` + `../templates/user-story.md` | Tag with product (`web`/`ios`/etc.) |
+| **feature** | Functional requirement, user-facing | `../templates/prd.md` + `../templates/user-story.md` | Tag with product (`hub`/`gimbal`/etc.) |
 | **nfr** | Non-functional / quality attribute (performance, security, a11y) | `../templates/prd.md` | Often produced by a vertical owner |
 | **architectural** | Technical decision or infrastructure change | `../templates/adr.md` | Always produces an ADR |
 | **spike** | Time-boxed research / exploration | `../templates/research-spike.md` | Output is findings + follow-up items |
@@ -192,11 +192,13 @@ Every backlog item carries four tags. Without tags, prioritisation across the ec
 
 | Tag | Values |
 |-----|--------|
-| **Product** | `web` · `ios` · `android` · `game` · `journey-designer` · `universe-designer` · `arc-designer` · `platform-core` · `platform-domain` · `design-system` |
+| **Product** | `hub` · `gimbal` · `game` · `journey-designer` · `universe-designer` · `arc-designer` · `platform-core` · `platform-domain` · `design-system` |
 | **Type** | `feature` · `nfr` · `architectural` · `spike` · `bug` · `tech-debt` · `process` |
 | **Maturity** | `0-raw` · `1-concept` · `2-explored` · `3-specified` · `4-ready` |
 | **Domain service** *(if applicable)* | `world-model` · `narrative` · `experience` · `content` · `communication` · `discovery` · `intelligence` · `extension` |
 | **Wave** *(optional)* | `ferd` · `eid` · `hamn` · `heim` · `brim` · `urd` — separate from and in addition to the product/studio/platform tag |
+
+> **Gimbal platform sub-tags:** For platform-specific work on The Gimbal, use `gimbal:ios` or `gimbal:android` in the Product tag. For work that applies to both platforms, use `gimbal` alone.
 
 ### Tag format
 
@@ -204,7 +206,7 @@ In `backlog/discovery.md` and `backlog/product.md`, write tags as a single line 
 
 ```
 ## Add group polls
-**Tags:** product:web · type:feature · maturity:2-explored · domain-service:communication
+**Tags:** product:hub · type:feature · maturity:2-explored · domain-service:communication
 
 [item description...]
 ```

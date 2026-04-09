@@ -1,9 +1,12 @@
 # Products
 
-One folder per product surface that members or creators actually touch. A *product* is a deployable surface (web, mobile, game). Studios live in their own peer folder. Waves are time phases, NOT products.
+One folder per product that members or creators actually touch. Studios live in their own peer folder. Waves are time phases, NOT products.
 
-## What counts as a product
-Web, iOS, Android, Game. Each is a deployable client surface; what they expose evolves wave by wave (see `../ecosystem/`).
+## Products
+
+- **The Hub** (`hub/`) — the full browser-based FringeIsland experience. The web platform where FIMs explore journeys, manage groups, reflect, and connect.
+- **The Gimbal** (`gimbal/`) — mobile app, one product across iOS and Android. The Whisp's stabilizing instrument in the Ordinary World — AR overlay, navigation, journal, messaging, inventory. Shared product description at `gimbal/` level; platform-specific implementation docs in `ios/` and `android/` subfolders.
+- **The Game** (`game/`) — placeholder until named.
 
 ## Per-product files
 - `DESCRIPTION.md` — outward-facing identity (template: `../templates/product-description.md`)
