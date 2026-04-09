@@ -1,6 +1,6 @@
 # FringeIsland - Current Status
 
-**Last Updated:** 2026-04-08 (wave redistribution complete + roadmap coverage audit)
+**Last Updated:** 2026-04-09 (doc restructure Phases 1–3 complete, product names locked)
 **Current Version:** 0.2.37
 **Active Branch:** main
 
@@ -85,7 +85,20 @@ See `SPRINT.md` for current work streams, TDD stage, and sprint step plan.
 
 ## Last Session Summary
 
-**Date:** 2026-04-07/08 (Wave redistribution decisions + roadmap coverage audit)
+**Date:** 2026-04-08/09 (Doc restructure Phases 1–3 + product naming + ecosystem architecture)
+**Summary:**
+- **Ecosystem Architecture Session** — deep architectural redesign producing Ecosystem Anatomy v2 (three tiers: Surfaces / Domain Services / Platform Core). Session bridge: `docs/old_products/ferd/sessions/2026-04-08-ECOSYSTEM-ARCHITECTURE-SESSION-BRIDGE.md`
+- **Doc restructure Phase 1** — scaffolded new `docs/` ecosystem layout (26 folders, 18 READMEs, 8 .gitkeep files). Parked all old docs as `docs/old_*/` with full git history preserved (119 files, 1092 reference rewrites)
+- **Doc restructure Phase 2** — wrote `docs/planning/PROCESS.md` (canonical way of working: maturity pipeline, work item types, Shaped Personal Kanban cadence, DoR, DoD, document lifecycle, backlog tagging)
+- **Doc restructure Phase 3** — created 13 templates in `docs/templates/` + 5 vertical scaffolds in `docs/verticals/` (V1–V5)
+- **Product names locked:** The Hub (`hub/`), The Gimbal (`gimbal/{ios/,android/}`), The Game (`game/`). Tags use short form (hub, gimbal, game). Gimbal sub-tags: `gimbal:ios`, `gimbal:android`
+- **Wave model revised:** waves are thematic focus buckets with full overlap permitted (revoked hard-cut-on-Build rule). WIP limits constrain total active work, not wave boundaries
+- **PROCESS.md patches:** wave overlap → thematic focus, wave tags added to backlog tagging, wave-completion trigger added to document lifecycle
+- **Phase 4 handoff prepared:** `docs/TMP/2026-04-09-PHASE4-HANDOFF.md` with 322-file migration inventory
+- No code changes, no tests needed
+- 12 commits pushed to main
+
+**Previous Session:** 2026-04-07/08 (Wave redistribution decisions + roadmap coverage audit)
 **Summary:**
 - **Completed WAVE_REDISTRIBUTION.md triage** — made wave-assignment decisions for all ~25 previously-TBD items across DEFERRED.md, ROADMAP.md, VISION.md, PRODUCTS_AND_PLATFORM.md, and ARCHITECTURE_ANATOMY.md
 - **Key decisions:**

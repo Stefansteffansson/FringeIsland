@@ -1,6 +1,6 @@
 # SPRINT.md — Active Sprint Tracker
 
-**Last Updated:** 2026-04-07 (wave redistribution complete; groups-join-groups UI pulled back into Ferd 1.6)
+**Last Updated:** 2026-04-09 (doc restructure Phases 1–3 complete; no sprint step changes)
 **Version:** v0.2.37
 
 ---
