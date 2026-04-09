@@ -175,4 +175,26 @@ bash supabase-cli.sh migration list
 
 ---
 
+## Documentation structure (updated 2026-04-09)
+- `docs/` has two trees: ecosystem (what we're building) and planning (how we're building it)
+- Features live under their product: `docs/products/hub/features/FEAT-H001-*.md`
+- Tasks live in backlog: `docs/planning/backlog/tasks/TASK-NNN.md`
+- Waves define strategic focus: `docs/planning/waves/ferd.md`
+- Start at `docs/README.md` for navigation
+
+## Skills (updated 2026-04-09)
+- `ecosystem-decomposition` — decompose vision → product → feature → story → task
+- `feature-development` — take a feature spec and implement it
+- `wave-planning` — define wave scope and verify completion
+
+## Context loading order
+1. Read CLAUDE.md (this file) — project overview + nav
+2. Read docs/README.md — documentation map
+3. Read the specific product/service README.md — area overview
+4. Read the feature spec — full spec for the task
+5. Read the task file — specific implementation work
+Never load all features at once — load only what you're working on.
+
+---
+
 **This file is a routing document — it tells you WHERE to look, not HOW to code. Code patterns are in the codebase; detailed specs are in agent playbooks and behavior docs.**
