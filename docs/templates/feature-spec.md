@@ -42,3 +42,13 @@ Which platform core or domain service capabilities does this require?
 
 ## Cross-product impact
 Does this affect sibling products? If yes, how?
+
+## Vertical impact
+
+For each vertical, state the impact or write "None" — do not leave blank.
+
+- **Privacy/GDPR:** Does this feature collect, store, or process personal data? Consent requirements? Right to deletion implications?
+- **Notifications:** Does this feature trigger notifications? Which channels (in-app, email, push)? User preference controls needed?
+- **Administration:** Does this feature require DeusEx oversight or moderation capabilities? Lifecycle management needs?
+- **Observability:** Does this feature need audit logging? What events should be tracked? Error monitoring considerations?
+- **Transactions:** Does this feature involve payments, subscriptions, or financial data?

@@ -44,6 +44,7 @@ Start at `docs/README.md` for the full map. Key entry points:
 - Follow API-first principle (ADR-U009)
 - Update CHANGELOG.md for user-visible changes
 - Read the product/service CLAUDE.md before touching that area
+- Complete the Vertical Impact section in every feature spec — no vertical left blank
 
 ### Ask first
 - Database schema changes (new tables, columns, RLS)

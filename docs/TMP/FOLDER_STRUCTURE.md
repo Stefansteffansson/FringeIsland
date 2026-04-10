@@ -1,6 +1,6 @@
 # FringeIsland — Folder Structure
 
-**Generated:** 2026-04-09
+**Generated:** 2026-04-10
 
 ---
 
@@ -52,6 +52,7 @@
 - `docs/TMP/2026-04-09-ECOSYSTEM-STRUCTURE-SESSION-BRIDGE.md`
 - `docs/TMP/2026-04-09-PHASE4-HANDOFF.md`
 - `docs/TMP/DOMAIN_SERVICE_DEPENDENCIES.svg`
+- `docs/TMP/ECOSYSTEM-STRUCTURE-PROGRESS.md`
 - `docs/TMP/ECOSYSTEM_ANATOMY_V2.svg`
 - `docs/TMP/ECOSYSTEM_ANATOMY_V3.svg`
 - `docs/TMP/EXECUTION-PLAN-DOC-RESTRUCTURE.md`
@@ -62,7 +63,12 @@
 - `docs/TMP/Solo-Developers-Guide-to-Systematic-Web-Development.docx`
 - `docs/TMP/The solo developer's complete guide to systematic web development.md`
 - `docs/TMP/compass_artifact_wf-de7ff18d-f708-4e19-93b9-051801b344d1_text_markdown.md`
+- `docs/TMP/ecosystem-session/MANIFESTO.md`
+- `docs/TMP/ecosystem-session/VISION.md`
 - `docs/TMP/multi-product-ecosystem-management_2.md`
+- `docs/TMP/skills/FINAL-ecosystem-decomposition-SKILL.md`
+- `docs/TMP/skills/FINAL-feature-development-SKILL.md`
+- `docs/TMP/skills/FINAL-wave-planning-SKILL.md`
 - `docs/TMP/test`
 - `docs/architecture/README.md`
 - `docs/architecture/decisions/PENDING.md`
@@ -436,7 +442,6 @@
 - `docs/templates/cycle-plan.md`
 - `docs/templates/domain-service-spec.md`
 - `docs/templates/feature-spec.md`
-- `docs/templates/prd.md`
 - `docs/templates/product-description.md`
 - `docs/templates/product-roadmap.md`
 - `docs/templates/product-specification.md`
