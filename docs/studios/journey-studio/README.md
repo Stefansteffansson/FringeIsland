@@ -1,6 +1,6 @@
-# Journey Designer
+# Journey Studio
 
-The creator tool for designing, building, and publishing journeys. Dreamineers use Journey Designer to craft step-by-step learning experiences.
+The full lifecycle environment for designing, building, publishing, and managing journeys. Dreamineers use Journey Studio to craft step-by-step learning experiences.
 
 ## Structure
 

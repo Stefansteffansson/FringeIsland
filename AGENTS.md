@@ -34,7 +34,7 @@ Start at `docs/README.md` for the full map. Key entry points:
 - `users.full_name` not `display_name`
 - Use ConfirmModal, never browser alerts
 - Conventional commits: `feat(hub): ...`, `fix(platform): ...`
-- Feature IDs: FEAT-H=Hub, G=Gimbal, P=Platform, D=Domain, JD/UD/AD=Studios
+- Feature IDs: PC=Platform Core, PD=Platform Domain, H=Hub, G=Gimbal, JS=Journey Studio, US=Universe Studio, AS=Arc Studio, DS=Design System, V=Verticals
 
 ## Boundaries
 
@@ -45,6 +45,7 @@ Start at `docs/README.md` for the full map. Key entry points:
 - Update CHANGELOG.md for user-visible changes
 - Read the product/service CLAUDE.md before touching that area
 - Complete the Vertical Impact section in every feature spec — no vertical left blank
+- Verify extensibility — no hardcoded enums, sealed type systems, or closed permission sets in new features
 
 ### Ask first
 - Database schema changes (new tables, columns, RLS)

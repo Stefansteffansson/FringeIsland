@@ -111,8 +111,14 @@ Documentation is organized in three tiers: **Universe** (shared foundations) > *
 | Version history | [CHANGELOG.md](CHANGELOG.md) |
 | AI assistant context | [CLAUDE.md](CLAUDE.md) |
 | Documentation hub | [docs/old_INDEX.md](docs/old_INDEX.md) |
-| **Universe** | |
-| Vision & intent | [docs/old_universe/vision/VISION.md](docs/old_universe/vision/VISION.md) |
+| **Ecosystem (new tree)** | |
+| Ecosystem vision | [docs/ecosystem/VISION.md](docs/ecosystem/VISION.md) |
+| Hub product description | [docs/products/hub/DESCRIPTION.md](docs/products/hub/DESCRIPTION.md) |
+| Ferd capability map | [docs/planning/waves/FERD-CAPABILITY-MAP.md](docs/planning/waves/FERD-CAPABILITY-MAP.md) |
+| Analysis reference docs | [docs/planning/reference/](docs/planning/reference/) |
+| Session records | [docs/planning/sessions/](docs/planning/sessions/) |
+| **Universe (legacy — source of truth until Phase 4)** | |
+| Vision & intent (legacy) | [docs/old_universe/vision/VISION.md](docs/old_universe/vision/VISION.md) |
 | Manifesto | [docs/old_universe/vision/MANIFESTO.md](docs/old_universe/vision/MANIFESTO.md) |
 | Products & platform strategy | [docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md](docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md) |
 | Architecture anatomy (primary) | [docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md](docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md) |

@@ -4,9 +4,9 @@ Authoring tools used by Dreamineers and Weavers to create FringeIsland content. 
 
 | Studio | Writes to |
 |---|---|
-| Universe Designer | World Model (DS-1) |
-| Arc Designer | Narrative Engine (DS-2) |
-| Journey Designer | Experience Engine (DS-3) |
+| Universe Studio | World Model (DS-1) |
+| Arc Studio | Narrative Engine (DS-2) |
+| Journey Studio | Experience Engine (DS-3) |
 
 ## Per-studio files
 - `DESCRIPTION.md` — template `../templates/studio-description.md`

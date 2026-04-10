@@ -28,7 +28,7 @@ The conviction. Why this product, and not the dozen alternatives the user could 
 ## How it relates to the ecosystem
 
 - **Domain services it consumes:** {DS-1, DS-3, ...}
-- **Studios it depends on:** {Journey Designer, ...}
+- **Studios it depends on:** {Journey Studio, ...}
 - **Sibling products it shares users with:** ...
 - **Where it sits in the wave arc:** {wave name(s) and what evolves in each}
 

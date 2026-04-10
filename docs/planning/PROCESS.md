@@ -192,7 +192,7 @@ Every backlog item carries four tags. Without tags, prioritisation across the ec
 
 | Tag | Values |
 |-----|--------|
-| **Product** | `hub` · `gimbal` · `game` · `journey-designer` · `universe-designer` · `arc-designer` · `platform-core` · `platform-domain` · `design-system` |
+| **Product** | `hub` · `gimbal` · `game` · `journey-studio` · `universe-studio` · `arc-studio` · `platform-core` · `platform-domain` · `design-system` |
 | **Type** | `feature` · `nfr` · `architectural` · `spike` · `bug` · `tech-debt` · `process` |
 | **Maturity** | `0-raw` · `1-concept` · `2-explored` · `3-specified` · `4-ready` |
 | **Domain service** *(if applicable)* | `world-model` · `narrative` · `experience` · `content` · `communication` · `discovery` · `intelligence` · `extension` |

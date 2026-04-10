@@ -39,7 +39,7 @@ Who is allowed in. How creator status is granted. How it can be revoked.
 
 ## Relationship to other Studios
 
-If this Studio's output is consumed by another Studio (e.g., Universe Designer's lore feeds Arc Designer's narrative), document the handoff here.
+If this Studio's output is consumed by another Studio (e.g., Universe Studio's lore feeds Arc Studio's narrative), document the handoff here.
 
 ---
 

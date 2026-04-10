@@ -1,6 +1,6 @@
-# Universe Designer
+# Arc Studio
 
-The creator tool for designing world structure, lore, and narrative arcs that journeys live within.
+The full lifecycle environment for designing, managing, and evolving character arcs and personal development progressions.
 
 ## Structure
 

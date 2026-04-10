@@ -15,7 +15,7 @@ Documentation is organized into two conceptual trees:
 | `ecosystem/` | Ecosystem-level vision, identity, and cross-product narrative |
 | `products/` | Product surfaces: The Hub (web), The Gimbal (mobile), The Game |
 | `platform/` | Shared infrastructure: Platform Core + Domain Services |
-| `studios/` | Creator tools: Journey Designer, Universe Designer, Arc Designer |
+| `studios/` | Creator tools: Journey Studio, Universe Studio, Arc Studio |
 | `design-system/` | Shared UI components, tokens, patterns |
 | `verticals/` | Cross-cutting concerns: admin, notifications, observability, privacy, transactions |
 | `architecture/` | ADRs, architecture decisions, system-wide patterns |
@@ -54,8 +54,13 @@ Never load all features at once — load only what you're working on.
 
 ## Key Entry Points
 
+- **Ecosystem vision:** `ecosystem/VISION.md`
+- **Hub description:** `products/hub/DESCRIPTION.md`
 - **Way of working:** `planning/PROCESS.md`
 - **Current wave:** `planning/waves/ferd.md`
+- **Ferd capability map:** `planning/waves/FERD-CAPABILITY-MAP.md`
+- **Reference documents:** `planning/reference/` (gap analyses, current-state snapshots)
+- **Session records:** `planning/sessions/`
 - **Products overview:** `products/README.md`
 - **Platform overview:** `platform/README.md`
 - **Studios overview:** `studios/README.md`
