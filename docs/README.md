@@ -26,9 +26,10 @@ Documentation is organized into two conceptual trees:
 |-----------|---------|
 | `planning/waves/` | Strategic focus periods (Ferd → Eid → Hamn → Heim → Brim → Urd) |
 | `planning/cycles/` | Shape Up betting cycles (2-3 weeks + cooldown) |
-| `planning/backlog/` | Work items and task files |
+| `planning/backlog/` | Work items and task files (tasks ephemeral, deleted after retro) |
 | `planning/sessions/` | Design and decision session records |
 | `planning/retrospectives/` | Cycle and wave retrospectives |
+| `planning/reference/` | Gap analyses, current-state snapshots, anatomy diagrams |
 | `planning/PROCESS.md` | Canonical way of working |
 
 ### Shared — Serves Both Trees
@@ -71,11 +72,11 @@ Never load all features at once — load only what you're working on.
 
 ## Legacy Documentation (old_*/)
 
-The `old_universe/`, `old_products/`, and `old_implementation/` directories contain the previous documentation structure. These are the **current source of truth** for active Ferd development until content migration (Phase 4) is complete.
+The `old_universe/`, `old_products/`, and `old_implementation/` directories contain the previous documentation structure. These remain the source of truth for content not yet migrated (notably the 22 ADRs in `old_universe/decisions/`).
 
 - **Boot-up workflow:** `old_products/ferd/development/BOOT_UP.md`
 - **Close-down workflow:** `old_products/ferd/development/CLOSE_DOWN.md`
-- **Sprint tracker:** see root `SPRINT.md`
+- **ADRs (pending migration):** `old_universe/decisions/`
 - **Full legacy navigation:** `old_INDEX.md`
 
 Do NOT delete old_*/ directories — they contain authoritative content awaiting migration.

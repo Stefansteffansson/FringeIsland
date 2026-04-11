@@ -27,10 +27,10 @@ The conviction. Why this product, and not the dozen alternatives the user could 
 
 ## How it relates to the ecosystem
 
-- **Domain services it consumes:** {DS-1, DS-3, ...}
-- **Studios it depends on:** {Journey Studio, ...}
-- **Sibling products it shares users with:** ...
-- **Where it sits in the wave arc:** {wave name(s) and what evolves in each}
+- **Domain services it consumes:** {world-model | narrative-engine | experience-engine | content | communication | discovery | intelligence}
+- **Studios it depends on:** {Journey Studio (JS) | Universe Studio (US) | Arc Studio (AS)}
+- **Sibling products it shares users with:** {Hub (H) | Gimbal (G) | Game (GM)}
+- **Where it sits in the wave arc:** {ferd | eid | hamn | heim | brim | urd — and what evolves in each}
 
 ## Promises
 

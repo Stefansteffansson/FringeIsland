@@ -1,11 +1,18 @@
 # Vertical — V{N}: {Vertical name}
 
-**Status:** Draft · Active · Stable
-**Owner:** {name}
-**Last updated:** YYYY-MM-DD
-**Tier:** Cross-cutting
+<!-- Valid verticals: V1 Administration | V2 Privacy/GDPR | V3 Notifications | V4 Observability | V5 Transactions -->
 
-> A "vertical" is a concern that touches every layer of the ecosystem anatomy — Platform Core, Domain Services, and Surfaces. Verticals are *not* services. They are obligations that every service and every surface must fulfil. There are five: V1 Administration & Moderation, V2 Privacy & GDPR, V3 Notifications, V4 Observability, V5 Transactions.
+---
+id: V{N}
+name: {Administration | Privacy/GDPR | Notifications | Observability | Transactions}
+owner: {name or team}
+consumers: all  # verticals are obligations on every tier — Platform Core, Domain Services, and Surfaces
+status: {draft | active | stable}
+last_updated: YYYY-MM-DD
+tier: Cross-cutting
+---
+
+> A "vertical" is a concern that touches every layer of the ecosystem anatomy — Platform Core, Domain Services, and Surfaces. Verticals are *not* services. They are obligations that every service and every surface must fulfil. There are five: V1 Administration, V2 Privacy/GDPR, V3 Notifications, V4 Observability, V5 Transactions.
 
 ---
 

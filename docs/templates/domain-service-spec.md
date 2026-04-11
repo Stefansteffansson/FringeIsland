@@ -1,10 +1,17 @@
 # Domain Service — {Service name} (DS-{N})
 
-**Status:** Proposed · Active · Stable · Deprecated
-**Owner:** {name}
-**Last updated:** YYYY-MM-DD
-**Tier:** Domain Services
-**Tags:** domain-service:{slug}
+<!-- Valid service slugs: world-model | narrative-engine | experience-engine | content | communication | discovery | intelligence -->
+
+---
+slug: {world-model | narrative-engine | experience-engine | content | communication | discovery | intelligence}
+owner: platform/domain/{slug}
+consumers: [{hub} | {gimbal} | {game} | {studio/journey-studio} | {studio/universe-studio} | {studio/arc-studio}]
+status: {proposed | active | stable | deprecated}
+last_updated: YYYY-MM-DD
+tier: Domain Services
+tags: [domain-service:{slug}]
+feature_prefix: PD  # FEAT-PD### for features owned by this service
+---
 
 > One file per FringeIsland-specific domain service. Domain services sit between Platform Core (domain-agnostic) and Surfaces (products + studios). They expose contracts that anything in the Surfaces tier may consume.
 
@@ -35,7 +42,7 @@ The operations this service exposes. For each: name, inputs, outputs, errors, au
 
 ## 4. Internal dependencies (consumed *from* this service)
 
-What this service depends on. Allowed dependencies: Platform Core, services below it in the dependency rules (`../../old_products/ferd/sessions/2026-04-08-ECOSYSTEM-ARCHITECTURE-SESSION-BRIDGE.md`).
+What this service depends on. Allowed dependencies: Platform Core, services below it in the dependency rules (`../planning/sessions/SESSION-BRIDGE-2026-04-10.md` and `../planning/reference/`).
 
 - Platform Core: {Identity, Organisation, Governance, Infrastructure}
 - Other domain services: {DS-N — for what}
@@ -56,8 +63,8 @@ Tables, columns, indexes, RLS posture. Reference migration files where applicabl
 
 How this service handles each vertical (`../verticals/`):
 
-- **V1 Administration & Moderation:** ...
-- **V2 Privacy & GDPR:** ...
+- **V1 Administration:** ...
+- **V2 Privacy/GDPR:** ...
 - **V3 Notifications:** ...
 - **V4 Observability:** ...
 - **V5 Transactions:** ...

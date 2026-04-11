@@ -5,13 +5,13 @@
 **Last updated:** YYYY-MM-DD
 **Writes to:** {DS-N: domain service name}
 
-> A Studio is an authoring surface for *creators* (Dreamineers, Weavers, Guides), not consumers. Each Studio writes to exactly one Domain Service. Studios serve different personas than Products and have different permissions, UI conventions, and review processes.
+> A Studio is the lifecycle surface where *creators* (Dreamineers, Weavers, Guides) **design, deploy, manage, and retire** their work — not just author it. Each Studio writes to exactly one Domain Service. Studios serve different personas than Products and have different permissions, UI conventions, and review processes.
 
 ---
 
 ## What it is
 
-One paragraph for someone who has never used this Studio. What does a creator come here to do?
+One paragraph for someone who has never used this Studio. What does a creator come here to do across the full lifecycle (design → deploy → manage → retire)?
 
 ## Who uses it
 
@@ -25,9 +25,9 @@ The artifacts this Studio creates and where they land in the system.
 |----------|--------|-----------|-------------|
 | ... | ... | DS-{N} | {services / surfaces} |
 
-## Authoring philosophy
+## Studio philosophy
 
-How creation is supposed to *feel* in this Studio. (Stålenhag-style mood-first authoring? Structured form filling? Visual node graph?) This shapes UX decisions more than any feature list.
+How the creative lifecycle is supposed to *feel* in this Studio — across design, deployment, ongoing management, and retirement. (Stålenhag-style mood-first authoring? Structured form filling? Visual node graph? How does a creator manage what they've shipped, or sunset something gracefully?) This shapes UX decisions more than any feature list.
 
 ## Constraints it enforces
 

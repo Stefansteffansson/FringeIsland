@@ -1,9 +1,11 @@
-# Features — Domain Services
+# Features — Platform Domain Services
 
-Feature specifications for platform domain services. Each feature uses the Shape Up pitch format with BDD stories.
+Feature specifications for the seven Platform Domain services (DS-1 World Model, DS-2 Narrative Engine, DS-3 Experience Engine, DS-4 Content, DS-5 Communication, DS-6 Discovery, DS-7 Intelligence). Each feature uses the Shape Up pitch format with BDD stories embedded as Given/When/Then acceptance criteria.
 
+**Feature ID prefix:** `PD` (e.g., `FEAT-PD001-world-model.md`)
 **Template:** `../../../templates/feature-spec.md`
-**Naming:** `FEAT-D{NNN}-{slug}.md` (e.g., FEAT-D001-world-model.md)
+
+Most domain services are not yet built. See `../../../planning/waves/FERD-CAPABILITY-MAP.md` for current implementation status across the ecosystem.
 
 ## Feature index
 

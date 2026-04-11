@@ -6,10 +6,10 @@ title: {Task title}
 status: {todo | in_progress | review | done | blocked}
 assigned_to: {person or agent name}
 priority: {low | medium | high | critical}
-feature: {FEAT-ID}
-product: {hub | gimbal | game | platform-core | platform-domain | journey-studio | universe-studio | arc-studio | design-system}
-tier: {products/hub | platform/core | platform/domain | studios/journey-studio | ...}
+feature: {FEAT-{PREFIX}{NNN}}  # e.g. FEAT-PC001, FEAT-PD001, FEAT-H001, FEAT-G001, FEAT-GM001, FEAT-JS001, FEAT-US001, FEAT-AS001
+owner: {platform/core/infrastructure | platform/core/identity | platform/core/organisation | platform/core/governance | platform/domain/experience-engine | platform/domain/content | platform/domain/communication | platform/domain/world-model | platform/domain/narrative-engine | platform/domain/discovery | platform/domain/intelligence | hub | gimbal | game | studio/journey-studio | studio/universe-studio | studio/arc-studio | design-system}
 wave: {ferd | eid | hamn | heim | brim | urd}
+cycle: {cycle name or number, if scheduled}
 depends_on: [{TASK-IDs}]
 estimated_hours: {number}
 ---
