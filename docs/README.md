@@ -4,40 +4,87 @@
 
 ---
 
-## Two-Tree Structure
+## Structure
 
-Documentation is organized into two conceptual trees:
+```
+docs/
+├── README.md                              ← you are here
+│
+│   ── Tree 1: Ecosystem — What We're Building ──
+│
+├── ecosystem/                             ← vision, values, strategy, explorations
+│   ├── VISION.md                          ← constitutional — the north star
+│   ├── MANIFESTO.md                       ← constitutional — founding principles
+│   ├── strategy/                          ← stable directional documents
+│   └── thinking/                          ← open questions, explorations, legacy mining
+│
+├── products/                              ← product surfaces FIMs touch
+│   ├── hub/                               ← The Hub (web) — active in Ferd
+│   ├── gimbal/                            ← The Gimbal (mobile) — planned
+│   └── game/                              ← The Game — scope TBD
+│
+├── platform/                              ← shared infrastructure
+│   ├── core/                              ← Platform Core (Infrastructure, Identity, Organisation, Governance)
+│   ├── domain/                            ← Domain Services (7 services + Extension System)
+│   └── extensions/                        ← Extension System contracts
+│
+├── studios/                               ← creator tools for Dreamineers
+│   ├── journey-studio/                    ← journey authoring + lifecycle
+│   ├── universe-studio/                   ← world-building
+│   └── arc-studio/                        ← seasons + episodes
+│
+├── design-system/                         ← shared UI components, tokens, patterns
+│
+├── verticals/                             ← cross-cutting concerns
+│   ├── (admin, notifications, observability, privacy, transactions)
+│
+├── architecture/                          ← structural models + binding decisions
+│   ├── ARCHITECTURE_ANATOMY_V1.md         ← L0-L7 anatomy (archived reference)
+│   ├── DOMAIN_ENTITIES.md                 ← core domain model
+│   ├── ECOSYSTEM_ANATOMY_V3.svg           ← current anatomy diagram
+│   ├── DOMAIN_SERVICE_DEPENDENCIES.svg    ← dependency flow
+│   └── decisions/                         ← ADRs (22 pending migration)
+│
+├── research/                              ← all research reports (domain + methodology)
+│
+│   ── Tree 2: Planning — How We're Building It ──
+│
+├── planning/
+│   ├── PROCESS.md                         ← canonical way of working
+│   ├── DEFERRAL_PROTOCOL.md               ← cross-wave deferrals (under review)
+│   ├── PLANNING_PROTOCOL.md               ← research-first sequence (under review)
+│   ├── waves/                             ← strategic focus periods (Ferd → Urd)
+│   ├── cycles/                            ← Shape Up betting cycles
+│   ├── backlog/                           ← work items + ephemeral tasks
+│   ├── sessions/                          ← session bridge documents
+│   ├── retrospectives/                    ← cycle + wave retrospectives
+│   └── reference/                         ← point-in-time snapshots (gap analyses, etc.)
+│
+│   ── Shared ──
+│
+├── templates/                             ← file templates for features, tasks, waves, ADRs
+│
+│   ── Legacy (source of truth until migrated) ──
+│
+├── old_universe/                          ← mostly decommissioned — only ADRs remain
+├── old_products/                          ← not yet migrated
+├── old_implementation/                    ← not yet migrated
+└── old_INDEX.md                           ← legacy navigation
+```
 
-### Tree 1: Ecosystem — What We're Building (permanent, structural)
+---
 
-| Directory | Purpose |
-|-----------|---------|
-| `ecosystem/` | Ecosystem-level vision, identity, and cross-product narrative |
-| `products/` | Product surfaces: The Hub (web), The Gimbal (mobile), The Game |
-| `platform/` | Shared infrastructure: Platform Core + Domain Services |
-| `studios/` | Creator tools: Journey Studio, Universe Studio, Arc Studio |
-| `design-system/` | Shared UI components, tokens, patterns |
-| `verticals/` | Cross-cutting concerns: admin, notifications, observability, privacy, transactions |
-| `architecture/` | ADRs, architecture decisions, system-wide patterns |
+## Directory Purpose Guide
 
-### Tree 2: Planning — How We're Building It (temporal, operational)
-
-| Directory | Purpose |
-|-----------|---------|
-| `planning/waves/` | Strategic focus periods (Ferd → Eid → Hamn → Heim → Brim → Urd) |
-| `planning/cycles/` | Shape Up betting cycles (2-3 weeks + cooldown) |
-| `planning/backlog/` | Work items and task files (tasks ephemeral, deleted after retro) |
-| `planning/sessions/` | Design and decision session records |
-| `planning/retrospectives/` | Cycle and wave retrospectives |
-| `planning/reference/` | Gap analyses, current-state snapshots, anatomy diagrams |
-| `planning/PROCESS.md` | Canonical way of working |
-
-### Shared — Serves Both Trees
-
-| Directory | Purpose |
-|-----------|---------|
-| `research/` | Research reports, studies, references |
-| `templates/` | File templates for features, tasks, waves, ADRs, etc. |
+| Directory | What belongs here | What does NOT belong here |
+|-----------|-------------------|--------------------------|
+| `ecosystem/` | Strategic, philosophical, cross-product — "what is FringeIsland?" | Technical architecture, service specs, planning artifacts |
+| `ecosystem/strategy/` | Stable directional documents — product family, contributor model | Open questions, exploratory thinking (→ ecosystem/thinking/) |
+| `ecosystem/thinking/` | Open questions, explorations, legacy content being mined | Stable strategy (→ ecosystem/strategy/), research (→ research/) |
+| `architecture/` | Structural models, binding decisions (ADRs), dependency diagrams | Service descriptions, feature specs, planning snapshots |
+| `platform/` | Service descriptions, feature specs, API contracts | Binding decisions (→ architecture), ecosystem strategy (→ ecosystem) |
+| `planning/reference/` | Point-in-time snapshots that inform planning cycles | Permanent structural models (→ architecture), ecosystem strategy (→ ecosystem) |
+| `research/` | Research reports and studies, regardless of topic | Strategy documents (→ ecosystem), decisions (→ architecture) |
 
 ---
 
@@ -56,27 +103,20 @@ Never load all features at once — load only what you're working on.
 ## Key Entry Points
 
 - **Ecosystem vision:** `ecosystem/VISION.md`
+- **Products & platform strategy:** `ecosystem/strategy/PRODUCTS_AND_PLATFORM.md`
 - **Hub description:** `products/hub/DESCRIPTION.md`
 - **Way of working:** `planning/PROCESS.md`
 - **Current wave:** `planning/waves/ferd.md`
 - **Ferd capability map:** `planning/waves/FERD-CAPABILITY-MAP.md`
-- **Reference documents:** `planning/reference/` (gap analyses, current-state snapshots)
-- **Session records:** `planning/sessions/`
-- **Products overview:** `products/README.md`
-- **Platform overview:** `platform/README.md`
-- **Studios overview:** `studios/README.md`
-- **Templates:** `templates/README.md`
 - **Architecture decisions:** `architecture/decisions/`
+- **Domain entity model:** `architecture/DOMAIN_ENTITIES.md`
 
 ---
 
 ## Legacy Documentation (old_*/)
 
-The `old_universe/`, `old_products/`, and `old_implementation/` directories contain the previous documentation structure. These remain the source of truth for content not yet migrated (notably the 22 ADRs in `old_universe/decisions/`).
+The `old_products/` and `old_implementation/` directories contain the previous documentation structure. These remain the source of truth for content not yet migrated.
 
-- **Boot-up workflow:** `old_products/ferd/development/BOOT_UP.md`
-- **Close-down workflow:** `old_products/ferd/development/CLOSE_DOWN.md`
-- **ADRs (pending migration):** `old_universe/decisions/`
-- **Full legacy navigation:** `old_INDEX.md`
+The `old_universe/` directory is partially decommissioned (April 2026). Only the 22 ADRs remain in `old_universe/decisions/` pending a dedicated migration step.
 
 Do NOT delete old_*/ directories — they contain authoritative content awaiting migration.

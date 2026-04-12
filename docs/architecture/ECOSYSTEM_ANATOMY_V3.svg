@@ -17,19 +17,15 @@
 
   <!-- Products -->
   <rect x="40" y="50" width="138" height="50" rx="6" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
-  <text x="109" y="68" text-anchor="middle" class="th" fill="#2C2C2A">Web</text>
-  <text x="109" y="84" text-anchor="middle" class="ts" fill="#5F5E5A">Ferd / Hamn</text>
+  <text x="109" y="68" text-anchor="middle" class="th" fill="#2C2C2A">The Hub</text>
+  <text x="109" y="84" text-anchor="middle" class="ts" fill="#5F5E5A">Web</text>
 
-  <rect x="186" y="50" width="90" height="50" rx="6" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
-  <text x="231" y="68" text-anchor="middle" class="th" fill="#2C2C2A">iOS</text>
-  <text x="231" y="84" text-anchor="middle" class="ts" fill="#5F5E5A">Hamn+</text>
+  <rect x="186" y="50" width="196" height="50" rx="6" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+  <text x="284" y="68" text-anchor="middle" class="th" fill="#2C2C2A">The Gimbal</text>
+  <text x="284" y="84" text-anchor="middle" class="ts" fill="#5F5E5A">iOS + Android</text>
 
-  <rect x="284" y="50" width="100" height="50" rx="6" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
-  <text x="334" y="68" text-anchor="middle" class="th" fill="#2C2C2A">Android</text>
-  <text x="334" y="84" text-anchor="middle" class="ts" fill="#5F5E5A">Hamn+</text>
-
-  <rect x="392" y="50" width="72" height="50" rx="6" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
-  <text x="428" y="72" text-anchor="middle" class="th" fill="#2C2C2A">Game</text>
+  <rect x="390" y="50" width="74" height="50" rx="6" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+  <text x="427" y="72" text-anchor="middle" class="th" fill="#2C2C2A">The Game</text>
 
   <!-- Studios -->
   <rect x="472" y="50" width="168" height="50" rx="6" fill="#FAECE7" stroke="#D85A30" stroke-width="0.5"/>
@@ -136,6 +132,6 @@
   <text x="576" y="902" text-anchor="middle" class="ts" fill="#173404">Transactions</text>
 
   <!-- Title and version -->
-  <text x="340" y="950" text-anchor="middle" font-size="11" fill="#888780" font-family="Arial, sans-serif">FringeIsland Ecosystem Anatomy v2 — April 2026</text>
+  <text x="340" y="950" text-anchor="middle" font-size="11" fill="#888780" font-family="Arial, sans-serif">FringeIsland Ecosystem Anatomy v2.1 — April 2026</text>
   <text x="340" y="966" text-anchor="middle" font-size="11" fill="#888780" font-family="Arial, sans-serif">Designed for open-source extensibility and parallel contribution</text>
 </svg>

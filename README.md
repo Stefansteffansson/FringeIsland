@@ -4,11 +4,11 @@
 
 An edutainment platform for group-based personal development through structured learning journeys. Users travel solo or in groups on predefined journeys guided by role-based experiences — Stewards lead, Guides facilitate, Members participate, and Observers watch.
 
-FringeIsland is a sub-project within the **FringeIsland World** — an Alternative Reality Edutainment platform where people can Live, Grow, and Matter. See [VISION.md](docs/old_universe/vision/VISION.md) for the full vision.
+FringeIsland is a sub-project within the **FringeIsland World** — an Alternative Reality Edutainment platform where people can Live, Grow, and Matter. See [VISION.md](docs/ecosystem/VISION.md) for the full vision.
 
 ---
 
-## 🚀 Tech Stack
+## Tech Stack
 
 - **Framework:** Next.js 16.1 (App Router)
 - **Language:** TypeScript
@@ -20,7 +20,7 @@ FringeIsland is a sub-project within the **FringeIsland World** — an Alternati
 
 ---
 
-## 🔒 Security
+## Security
 
 - **Row Level Security (RLS)** on all 19 tables — users can only access data they're authorized for
 - **Supabase Auth** with email/password and session management
@@ -30,7 +30,7 @@ FringeIsland is a sub-project within the **FringeIsland World** — an Alternati
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js 18+
@@ -39,132 +39,46 @@ FringeIsland is a sub-project within the **FringeIsland World** — an Alternati
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Stefansteffansson/FringeIsland.git
-   cd FringeIsland
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-   Create `.env.local`:
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
-
-4. **Run database migrations**
-   ```bash
-   # Apply migrations in order using the Supabase CLI
-   bash supabase-cli.sh migration list        # See what needs applying
-   node scripts/apply-migration-temp.js <migration_file>  # Apply one
-   ```
-
-5. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-6. **Open in browser**
-   ```
-   http://localhost:3000
-   ```
+1. Clone the repository
+2. `npm install`
+3. Create `.env.local` with Supabase credentials
+4. Apply database migrations
+5. `npm run dev`
+6. Open `http://localhost:3000`
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
-# Domain-specific tests (fast, during development)
-npm run test:integration:auth
-npm run test:integration:groups
-npm run test:integration:journeys
-npm run test:integration:rls
-npm run test:integration:rbac
-npm run test:integration:admin
-npm run test:integration:communication
-npm run test:integration:security
-
-# Full integration suite (~8 min)
-npm run test:integration
-
-# Quick regression check (stops on first failure)
-npm run test:integration:quick
-
-# E2E tests (requires dev server on localhost:3000)
-npm run test:e2e
+npm run test:integration:auth       # Auth tests
+npm run test:integration:groups     # Group tests
+npm run test:integration:journeys   # Journey tests
+npm run test:integration            # Full suite (~8 min)
+npm run test:integration:quick      # Stops on first failure
+npm run test:e2e                    # E2E (requires dev server)
 ```
 
 ---
 
-## 📍 Where to Find Things
+## Documentation
 
-Documentation is organized in three tiers: **Universe** (shared foundations) > **Products** (product-specific) > **Implementation** (live code state). See [docs/old_INDEX.md](docs/old_INDEX.md) for full navigation.
+Start at [docs/README.md](docs/README.md) for the full navigation map. Key entry points:
 
 | What | Where |
 |------|-------|
-| Current state & blockers | [PROJECT_STATUS.md](PROJECT_STATUS.md) |
-| Version history | [CHANGELOG.md](CHANGELOG.md) |
-| AI assistant context | [CLAUDE.md](CLAUDE.md) |
-| Documentation hub | [docs/old_INDEX.md](docs/old_INDEX.md) |
-| **Ecosystem (new tree)** | |
+| Documentation hub | [docs/README.md](docs/README.md) |
 | Ecosystem vision | [docs/ecosystem/VISION.md](docs/ecosystem/VISION.md) |
-| Hub product description | [docs/products/hub/DESCRIPTION.md](docs/products/hub/DESCRIPTION.md) |
-| Ferd capability map | [docs/planning/waves/FERD-CAPABILITY-MAP.md](docs/planning/waves/FERD-CAPABILITY-MAP.md) |
-| Analysis reference docs | [docs/planning/reference/](docs/planning/reference/) |
-| Session records | [docs/planning/sessions/](docs/planning/sessions/) |
-| **Universe (legacy — source of truth until Phase 4)** | |
-| Vision & intent (legacy) | [docs/old_universe/vision/VISION.md](docs/old_universe/vision/VISION.md) |
-| Manifesto | [docs/old_universe/vision/MANIFESTO.md](docs/old_universe/vision/MANIFESTO.md) |
-| Products & platform strategy | [docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md](docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md) |
-| Architecture anatomy (primary) | [docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md](docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md) |
-| Architecture decisions (ADRs) | [docs/old_universe/decisions/](docs/old_universe/decisions/) |
-| Research | [docs/old_universe/research/](docs/old_universe/research/) |
-| **Ferd (Wave 1)** | |
-| Product specification | [docs/old_products/ferd/specification/PRODUCT_SPEC.md](docs/old_products/ferd/specification/PRODUCT_SPEC.md) |
-| Requirements (100 items) | [docs/old_products/ferd/specification/REQUIREMENTS.md](docs/old_products/ferd/specification/REQUIREMENTS.md) |
-| Wave roadmap | [docs/old_products/ferd/planning/ROADMAP.md](docs/old_products/ferd/planning/ROADMAP.md) |
-| Deferred decisions | [docs/old_products/ferd/planning/DEFERRED.md](docs/old_products/ferd/planning/DEFERRED.md) |
-| Feature docs | [docs/old_products/ferd/development/features/](docs/old_products/ferd/development/features/) |
-| Behavior specs | [docs/old_products/ferd/development/specs/](docs/old_products/ferd/development/specs/) |
-| TDD workflow | [docs/old_products/ferd/development/WORKFLOW.md](docs/old_products/ferd/development/WORKFLOW.md) |
-| Journey Designer sessions | [docs/old_products/ferd/sessions/](docs/old_products/ferd/sessions/) |
-| **All Waves (6-wave saga arc)** | |
-| Products index (all waves) | [docs/old_products/INDEX.md](docs/old_products/INDEX.md) |
-| Hamn product docs (Wave 3) | [docs/old_products/hamn/INDEX.md](docs/old_products/hamn/INDEX.md) |
-| Wave redistribution (pending) | [docs/old_products/WAVE_REDISTRIBUTION.md](docs/old_products/WAVE_REDISTRIBUTION.md) |
-| **Implementation** | |
-| Database schema | [docs/old_implementation/shared/DATABASE_CURRENT.md](docs/old_implementation/shared/DATABASE_CURRENT.md) |
-| Architecture baseline (live) | [docs/old_implementation/ferd/baseline/BASELINE.md](docs/old_implementation/ferd/baseline/BASELINE.md) |
+| AI agent context | [AGENTS.md](AGENTS.md) |
+| AI assistant context | [CLAUDE.md](CLAUDE.md) |
+| Version history | [CHANGELOG.md](CHANGELOG.md) |
 
 ---
 
-## 🤝 Contributing
-
-This is a private project. For questions or suggestions, contact the development team.
-
----
-
-## 📄 License
+## License
 
 Proprietary - All rights reserved
 
 ---
 
-## 👥 Team
-
-- **Stefan Steffansson** - Project Lead & Developer
-
----
-
-## 📧 Contact
-
-For questions or support, contact: [Your contact information]
-
----
-
-**Built with ❤️ using Next.js, TypeScript, and Supabase**
+**Built with Next.js, TypeScript, and Supabase**

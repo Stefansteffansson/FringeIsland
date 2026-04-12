@@ -1,13 +1,46 @@
 # Research
 
-Time-boxed research artifacts and AI-generated study reports. Created when a work item needs investigation before it can be specified.
+**Purpose:** All research reports, studies, and investigations — whether about the FringeIsland domain (human development, flourishing, facilitation theory) or about methodology (ecosystem management, solo development practices).
 
-**Template:** `../templates/research-spike.md`
+**This is for:** Any document that answers "what did we learn from studying something?" Research informs decisions across ecosystem, architecture, and planning — but the research itself lives here regardless of which area it feeds.
 
-## Existing research files
+**This is NOT for:** Ecosystem strategy documents (→ `docs/ecosystem/`), architectural decisions (→ `docs/architecture/`), or point-in-time planning snapshots (→ `docs/planning/reference/`).
 
-- `Multi-Product-Ecosystem-Management-FringeIsland rev 2.docx` — multi-product ecosystem management (revision 2)
-- `Multi-Product-Ecosystem-Management-FringeIsland.docx` — multi-product ecosystem management (original)
-- `multi-product-ecosystem-management_2.md` — markdown companion to the multi-product ecosystem research
-- `Solo-Developers-Guide-to-Systematic-Web-Development.docx` — solo developer's complete guide to systematic web development
-- `The solo developer's complete guide to systematic web development.md` — markdown companion to the solo developer guide
+---
+
+## Structure
+
+```
+docs/research/
+├── README.md                                              ← you are here
+│
+├── Kegan_ITC_Research_Report.md                           ← adult development, Immunity to Change
+├── What_Fills_a_Life_v1.md                                ← human flourishing frameworks (v1)
+├── What_Fills_a_Life_v2.md                                ← human flourishing frameworks (v2, most complete)
+├── Theory_U_Research_Report.md                            ← Theory U, facilitation methodology
+│
+├── multi-product-ecosystem-management_2.md                ← ecosystem management methodology
+├── Multi-Product-Ecosystem-Management-FringeIsland.docx   ← ecosystem management (original)
+├── Multi-Product-Ecosystem-Management-FringeIsland rev 2.docx  ← ecosystem management (revision 2)
+│
+├── The solo developer's complete guide to...md            ← solo development practices
+└── Solo-Developers-Guide-to-Systematic-Web-Development.docx   ← solo development (docx)
+```
+
+---
+
+## Domain research (human development and flourishing)
+
+| Document | Topic | Size |
+|----------|-------|------|
+| Kegan_ITC_Research_Report.md | Kegan's Immunity to Change framework, adult development theory | 36 KB |
+| What_Fills_a_Life_v1.md | Human flourishing frameworks (v1) | 38 KB |
+| What_Fills_a_Life_v2.md | Human flourishing frameworks (v2 — most complete) | 62 KB |
+| Theory_U_Research_Report.md | Otto Scharmer's Theory U, facilitation methodology | 39 KB |
+
+## Methodology research
+
+| Document | Topic |
+|----------|-------|
+| multi-product-ecosystem-management_2.md | Multi-product ecosystem management |
+| The solo developer's complete guide...md | Solo developer's guide to systematic web development |

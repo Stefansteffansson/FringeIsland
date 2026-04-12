@@ -1,6 +1,6 @@
 # CLAUDE.md — AI Context for FringeIsland
 
-**Version:** 0.2.37 | **Updated:** April 5, 2026 | **Wave 1 (Ferd):** 95% complete
+**Version:** 0.2.37 | **Updated:** April 12, 2026 | **Wave 1 (Ferd):** 95% complete
 
 ---
 
@@ -18,16 +18,13 @@ FringeIsland is an edutainment platform for group-based personal development thr
 
 The repository documentation is being restructured into a multi-product ecosystem layout. Two structures coexist:
 
-- **`docs/old_*/`** (`old_universe/`, `old_products/`, `old_implementation/`, `old_INDEX.md`) — current source of truth. Boot-up, sessions, agent contexts, and all live work still reference these paths.
-- **`docs/{ecosystem,products,studios,platform,architecture,planning,research,design-system,templates,verticals}/`** — new ecosystem layout, scaffolded. Will be populated phase by phase. Not yet authoritative.
+- **`docs/old_*/`** (`old_universe/`, `old_products/`, `old_implementation/`, `old_INDEX.md`) — partially migrated. Boot-up, sessions, agent contexts, and all live work still reference `old_products/` and `old_implementation/` paths.
+- **`docs/{ecosystem,products,studios,platform,architecture,planning,research,design-system,templates,verticals}/`** — new ecosystem layout. Ecosystem, architecture, research, and planning content is now authoritative here.
 
-**Restructure phase status:**
-- ✅ Phase 1 — folder structure + README stubs
-- ✅ Phase 2 — `docs/planning/PROCESS.md` (way of working — read this for the canonical process)
-- ✅ Phase 3 — 13 templates in `docs/templates/` + 5 vertical scaffolds in `docs/verticals/`
-- ⬜ Phase 4 — content migration from `old_*` → new
-
-Until Phase 4 is complete, **the boot-up workflow and document map below still point at `docs/old_*/`** — the old structure is still the source of truth for active work.
+**Migration status (April 12, 2026):**
+- ✅ `old_universe/` — mostly decommissioned. Vision, manifesto, strategy, architecture, research, processes migrated. Only 22 ADRs remain in `old_universe/decisions/` pending dedicated migration.
+- ⬜ `old_products/` — not yet migrated. Boot-up, sessions, agent contexts still reference these paths.
+- ⬜ `old_implementation/` — not yet migrated.
 
 ---
 
@@ -57,15 +54,22 @@ When user selects feature work after boot-up, load `docs/old_products/ferd/devel
 
 ## Architecture (Patterns, not code)
 
-**Primary reference:** `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md` — the layered anatomy (L0–L7, 5 verticals, Platform API ring). Read this before generating or modifying code. ADRs (22 universe + 1 Ferd) in `docs/old_universe/decisions/`. Live implementation state in `docs/old_implementation/ferd/baseline/BASELINE.md`.
+**Primary references (new tree):**
+- `docs/architecture/ARCHITECTURE_ANATOMY_V1.md` — original layered anatomy (L0-L7, 5 verticals, Platform API ring). Conceptually superseded by Platform Core / Domain Services decomposition but contains unique rationale.
+- `docs/architecture/DOMAIN_ENTITIES.md` — core domain model (entities, relationships, business rules)
+- `docs/architecture/ECOSYSTEM_ANATOMY_V3.svg` — current ecosystem anatomy diagram
+- `docs/architecture/DOMAIN_SERVICE_DEPENDENCIES.svg` — dependency flow diagram
+- `docs/architecture/decisions/` — ADRs (22 pending migration from `docs/old_universe/decisions/`)
 
-**Wave model (not phases):** The platform evolves in six named waves: **Ferd** (Wave 1) → **Eid** (Wave 2) → **Hamn** (Wave 3) → **Heim** (Wave 4) → **Brim** (Wave 5) → **Urd** (Beyond). See `docs/old_universe/decisions/ADR-U022-named-waves.md` and `docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md`.
+**Live implementation state:** `docs/old_implementation/ferd/baseline/BASELINE.md`
+
+**Wave model (not phases):** The platform evolves in six named waves: **Ferd** (Wave 1) → **Eid** (Wave 2) → **Hamn** (Wave 3) → **Heim** (Wave 4) → **Brim** (Wave 5) → **Urd** (Beyond). See ADR-U022 in `docs/old_universe/decisions/`.
 
 - **Auth:** Client-side via AuthContext + useAuth() hook; proxy.ts for protected routes (Next.js 16, not middleware.ts)
 - **Components:** App Router; client components marked `'use client'`; reusable UI in `/components/ui/`
 - **State:** React Context for auth; local state for components; `refreshNavigation` custom event for cross-component updates
 - **DB access:** Supabase client (`lib/supabase/client.ts`) for browser, server client (`lib/supabase/server.ts`) for RSC
-- **API-first (ADR-009):** Business logic belongs in API routes (`/api/...`), not server components. Frontend calls the API; the API calls the database. Build every feature as if iOS/Android already exist. Pattern: `Database → API route → Frontend component`. Never: `Database → Frontend component directly`. **Binding rule (2026-04-05):** All new Ferd 1.6 features must follow the architecture anatomy. Existing ADR-009 violations must be refactored pre-launch. See REQUIREMENTS.md "Binding Architecture Rule".
+- **API-first (ADR-009):** Business logic belongs in API routes (`/api/...`), not server components. Frontend calls the API; the API calls the database. Build every feature as if iOS/Android already exist. Pattern: `Database → API route → Frontend component`. Never: `Database → Frontend component directly`.
 - **Security:** RLS on all 19 tables; triggers for business logic; `is_platform_admin()` SECURITY DEFINER for admin checks
 - **RBAC:** 4 roles (Steward, Guide, Member, Observer), 31 permissions, `has_permission()` function
 - **UI rules:** Never use browser `alert()`/`confirm()` — always use `ConfirmModal`. Always show loading states. Update ALL related state after data changes (members + roles + isLeader).
@@ -107,56 +111,50 @@ bash supabase-cli.sh migration list
 
 ## Document Map — Where to find things
 
-**Three-tier structure:** `docs/old_universe/` (shared foundations) > `docs/old_products/` (product-specific) > `docs/old_implementation/` (live code state). Full navigation: `docs/old_INDEX.md`.
+Start at `docs/README.md` for the full navigation map.
 
 | What | Where |
 |------|-------|
 | Current state & blockers | `PROJECT_STATUS.md` |
 | Active sprint + what's next | `SPRINT.md` |
-| **Universe Tier** | |
-| Vision | `docs/old_universe/vision/VISION.md` |
-| Manifesto | `docs/old_universe/vision/MANIFESTO.md` |
-| Products & platform (waves) | `docs/old_universe/strategy/PRODUCTS_AND_PLATFORM.md` |
-| Contribution architecture | `docs/old_universe/strategy/CONTRIBUTION_ARCHITECTURE.md` |
-| **Architecture anatomy (primary)** | `docs/old_universe/architecture/ARCHITECTURE_ANATOMY.md` |
-| Domain entities | `docs/old_universe/architecture/DOMAIN_ENTITIES.md` |
-| Architecture decisions (ADRs) | `docs/old_universe/decisions/` (22 universe-level) |
-| Vision session decisions | `docs/old_universe/vision/VISION_DECISIONS.md` |
-| Research (human flourishing) | `docs/old_universe/research/` |
-| Cross-product processes | `docs/old_universe/processes/` (deferral protocol, planning protocol) |
-| Community & governance | `docs/old_universe/community/` (open questions, organizational concerns) |
-| Cross-wave open questions | `docs/old_universe/strategy/OPEN_QUESTIONS.md` |
-| **Products Tier — Ferd** | |
+| **Ecosystem (new tree — authoritative)** | |
+| Vision (constitutional) | `docs/ecosystem/VISION.md` |
+| Manifesto | `docs/ecosystem/MANIFESTO.md` |
+| Products & platform strategy | `docs/ecosystem/strategy/PRODUCTS_AND_PLATFORM.md` |
+| Contribution architecture | `docs/ecosystem/strategy/CONTRIBUTION_ARCHITECTURE.md` |
+| Community open questions | `docs/ecosystem/thinking/COMMUNITY_OPEN_QUESTIONS.md` |
+| **Architecture (new tree — authoritative)** | |
+| Architecture anatomy (v1 reference) | `docs/architecture/ARCHITECTURE_ANATOMY_V1.md` |
+| Domain entities | `docs/architecture/DOMAIN_ENTITIES.md` |
+| Ecosystem anatomy diagram | `docs/architecture/ECOSYSTEM_ANATOMY_V3.svg` |
+| Dependency diagram | `docs/architecture/DOMAIN_SERVICE_DEPENDENCIES.svg` |
+| ADRs (22 — pending migration) | `docs/old_universe/decisions/` |
+| **Research (new tree — authoritative)** | |
+| Kegan / adult development | `docs/research/Kegan_ITC_Research_Report.md` |
+| Human flourishing (v1, v2) | `docs/research/What_Fills_a_Life_v1.md`, `v2.md` |
+| Theory U | `docs/research/Theory_U_Research_Report.md` |
+| **Planning (new tree — authoritative)** | |
+| Way of working | `docs/planning/PROCESS.md` |
+| Deferral protocol | `docs/planning/DEFERRAL_PROTOCOL.md` |
+| Planning protocol | `docs/planning/PLANNING_PROTOCOL.md` |
+| Current wave (Ferd) | `docs/planning/waves/ferd.md` |
+| Ferd capability map | `docs/planning/waves/FERD-CAPABILITY-MAP.md` |
+| Reference snapshots | `docs/planning/reference/` |
+| Session records | `docs/planning/sessions/` |
+| **Products Tier — Ferd (old tree — still authoritative)** | |
 | Product scope (what/why) | `docs/old_products/ferd/specification/PRODUCT_SPEC.md` |
 | Requirements (100 total) | `docs/old_products/ferd/specification/REQUIREMENTS.md` |
 | Wave roadmap | `docs/old_products/ferd/planning/ROADMAP.md` |
 | Deferred decisions | `docs/old_products/ferd/planning/DEFERRED.md` |
-| Lifecycle sprint decisions | `docs/old_products/ferd/planning/LIFECYCLE_DECISIONS.md` |
-| Ferd research / open investigations | `docs/old_products/ferd/planning/RESEARCH.md` |
-| Ferd ADRs | `docs/old_products/ferd/architecture/decisions/` (1 Ferd-specific) |
-| Feature docs | `docs/old_products/ferd/development/features/` (FR-/AR-/NF- prefixed) |
+| Feature docs | `docs/old_products/ferd/development/features/` |
 | Behavior specs | `docs/old_products/ferd/development/specs/` |
-| Agent playbooks | `docs/old_products/ferd/development/agents/contexts/` (7 agents) |
-| Agent journals | `docs/old_products/ferd/development/agents/learnings/` |
+| Agent playbooks | `docs/old_products/ferd/development/agents/contexts/` |
 | TDD + feature workflow | `docs/old_products/ferd/development/WORKFLOW.md` |
 | Boot-up / Close-down | `docs/old_products/ferd/development/BOOT_UP.md`, `CLOSE_DOWN.md` |
-| Doc health check | `docs/old_products/ferd/development/DOC_HEALTH_CHECK.md` |
-| Journey Designer sessions | `docs/old_products/ferd/sessions/` |
-| **Products Tier — All Waves** | |
-| Products index (6 waves) | `docs/old_products/INDEX.md` |
-| Eid product docs (Wave 2) | `docs/old_products/eid/INDEX.md` |
-| Hamn product docs (Wave 3) | `docs/old_products/hamn/INDEX.md` |
-| Heim product docs (Wave 4) | `docs/old_products/heim/INDEX.md` |
-| Brim product docs (Wave 5) | `docs/old_products/brim/INDEX.md` |
-| Urd product docs (Beyond) | `docs/old_products/urd/INDEX.md` |
-| Wave redistribution (pending) | `docs/old_products/WAVE_REDISTRIBUTION.md` |
-| **Implementation Tier** | |
+| **Implementation Tier (old tree — still authoritative)** | |
 | Database schema | `docs/old_implementation/shared/DATABASE_CURRENT.md` |
-| Schema overview | `docs/old_implementation/shared/SCHEMA_OVERVIEW.md` |
-| Authorization / RLS | `docs/old_implementation/shared/AUTH_SYSTEM.md`, `RLS_POLICIES.md` |
+| Authorization / RLS | `docs/old_implementation/shared/AUTH_SYSTEM.md` |
 | Architecture baseline (live) | `docs/old_implementation/ferd/baseline/BASELINE.md` |
-| Actual state / gap analysis | `docs/old_implementation/ferd/baseline/ACTUAL_STATE.md` |
-| Status / Kanban | `docs/old_implementation/ferd/status/KANBAN.md` |
 
 ---
 
@@ -175,12 +173,22 @@ bash supabase-cli.sh migration list
 
 ---
 
-## Documentation structure (updated 2026-04-09)
+## Documentation structure (updated 2026-04-12)
 - `docs/` has two trees: ecosystem (what we're building) and planning (how we're building it)
+- `docs/ecosystem/` has three layers: constitutional (VISION, MANIFESTO), strategy/ (stable direction), thinking/ (explorations)
 - Features live under their product: `docs/products/hub/features/FEAT-H001-*.md`
 - Tasks live in backlog: `docs/planning/backlog/tasks/TASK-NNN.md`
 - Waves define strategic focus: `docs/planning/waves/ferd.md`
 - Start at `docs/README.md` for navigation
+
+## Directory purpose guide
+- `docs/ecosystem/` — strategic, philosophical, cross-product ("what is FringeIsland?")
+- `docs/ecosystem/strategy/` — stable directional documents (product family, contributors)
+- `docs/ecosystem/thinking/` — open questions, explorations, legacy content being mined
+- `docs/architecture/` — structural models, binding decisions, dependency diagrams
+- `docs/platform/` — service descriptions, feature specs, API contracts
+- `docs/planning/reference/` — point-in-time snapshots informing planning cycles
+- `docs/research/` — all research reports regardless of topic
 
 ## Skills (updated 2026-04-09)
 - `ecosystem-decomposition` — decompose vision → product → feature → story → task

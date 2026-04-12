@@ -1,5 +1,8 @@
 # Session bridge — {topic}
 
+**Filename convention:** `YYYY-MM-DD_-_{TOPIC}.md` (date first, then descriptive text)
+**Example:** `2026-04-12_-_SESSION-BRIDGE.md`
+
 **Date:** YYYY-MM-DD
 **Session type:** {planning · architecture · design · debug · research · review}
 **Status:** {Open / Closed / Decisions pending}

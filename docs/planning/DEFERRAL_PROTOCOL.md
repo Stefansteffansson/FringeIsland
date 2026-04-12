@@ -1,5 +1,7 @@
 # Deferral Protocol
 
+> **⚠ REVIEW NEEDED (migrated 2026-04-12):** This file was migrated from `old_universe/processes/`. File paths and format predate the new planning structure. Stefan wants to challenge what should be brought forward into our new way of working. Review alongside PROCESS.md update.
+
 **Version:** 1.0
 **Last Updated:** April 5, 2026
 **Purpose:** Ensures deferred work items don't fall between products. Every deferral requires acceptance by the receiving product.
@@ -66,7 +68,7 @@ During planning/spec sessions, the receiver reviews and decides:
   **Accepted:** [date] → See [receiver]/planning/DEFERRED.md DF-XXX
   ```
 
-- **Reject** — Item has no clear owner. Move to `docs/old_universe/strategy/OPEN_QUESTIONS.md`:
+- **Reject** — Item has no clear owner. Move to ecosystem open questions:
   ```markdown
   **Status:** Rejected by [receiver] → OPEN_QUESTIONS.md OQ-XXX
   **Accepted:** [date] → Unowned, needs strategic decision
@@ -100,6 +102,4 @@ The entry lives where the *decision to defer* was made, not where the work event
 ## Related
 
 - [Planning Protocol](./PLANNING_PROTOCOL.md)
-- [Ferd Deferred](../../old_products/ferd/planning/DEFERRED.md)
-- [Hamn Deferred](../../old_products/hamn/planning/DEFERRED.md)
-- [Cross-wave Open Questions](../strategy/OPEN_QUESTIONS.md)
+- [Process](./PROCESS.md)

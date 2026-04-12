@@ -1,5 +1,7 @@
 # Planning Protocol
 
+> **⚠ REVIEW NEEDED (migrated 2026-04-12):** This file was migrated from `old_universe/processes/`. File paths and format predate the new planning structure. Stefan wants to challenge what should be brought forward into our new way of working. Review alongside PROCESS.md update (Shape Up mechanisms).
+
 **Version:** 1.0
 **Last Updated:** April 5, 2026
 **Purpose:** Defines the planning sequence for new products/waves. Research before roadmap. Lessons learned from Ferd.
@@ -63,21 +65,7 @@ The principle is constant: validate before you commit. The tooling evolves with 
 
 ---
 
-## File Locations
-
-```
-docs/old_products/ferd/planning/RESEARCH.md     — Ferd-specific investigations
-docs/old_products/hamn/planning/RESEARCH.md     — Hamn-specific investigations
-docs/old_universe/strategy/OPEN_QUESTIONS.md    — Cross-wave strategic questions
-docs/old_universe/community/OPEN_QUESTIONS.md   — Community/organizational questions
-```
-
----
-
 ## Related
 
 - [Deferral Protocol](./DEFERRAL_PROTOCOL.md)
-- [Ferd Research](../../old_products/ferd/planning/RESEARCH.md)
-- [Hamn Research](../../old_products/hamn/planning/RESEARCH.md)
-- [Cross-wave Open Questions](../strategy/OPEN_QUESTIONS.md)
-- [Community Open Questions](../community/OPEN_QUESTIONS.md)
+- [Process](./PROCESS.md)
