@@ -12,11 +12,19 @@ docs/
 │
 │   ── Tree 1: Ecosystem — What We're Building ──
 │
-├── ecosystem/                             ← vision, values, strategy, explorations
+├── ecosystem/                             ← vision, values, strategy, universe, explorations
 │   ├── VISION.md                          ← constitutional — the north star
 │   ├── MANIFESTO.md                       ← constitutional — founding principles
+│   ├── universe/                          ← what the world is and how it works
+│   │   ├── cosmology/                     ← Three Worlds and their relationships
+│   │   ├── personal-growth/                   ← red thread, engagement spectrum, void
+│   │   ├── beings/                        ← Whisp, NPCs, Dreamineers-as-world-roles
+│   │   ├── narrative/                     ← seasons, episodes, journeys
+│   │   ├── community/                     ← community dynamics, roles in practice
+│   │   └── kickstarter/                   ← the founding moment: Season Zero
 │   ├── strategy/                          ← stable directional documents
 │   └── thinking/                          ← open questions, explorations, legacy mining
+│       ├── OPEN_QUESTIONS.md               ← ecosystem-level open questions
 │
 ├── products/                              ← product surfaces FIMs touch
 │   ├── hub/                               ← The Hub (web) — active in Ferd
@@ -51,8 +59,6 @@ docs/
 │
 ├── planning/
 │   ├── PROCESS.md                         ← canonical way of working
-│   ├── DEFERRAL_PROTOCOL.md               ← cross-wave deferrals (under review)
-│   ├── PLANNING_PROTOCOL.md               ← research-first sequence (under review)
 │   ├── waves/                             ← strategic focus periods (Ferd → Urd)
 │   ├── cycles/                            ← Shape Up betting cycles
 │   ├── backlog/                           ← work items + ephemeral tasks
@@ -66,7 +72,7 @@ docs/
 │
 │   ── Legacy (source of truth until migrated) ──
 │
-├── old_universe/                          ← decommissioned — delete pending (ADRs migrated)
+├── old_universe/                          ← DELETED (April 2026) — ADRs migrated to architecture/decisions/
 ├── old_products/                          ← not yet migrated
 ├── old_implementation/                    ← not yet migrated
 └── old_INDEX.md                           ← legacy navigation
@@ -79,6 +85,7 @@ docs/
 | Directory | What belongs here | What does NOT belong here |
 |-----------|-------------------|--------------------------|
 | `ecosystem/` | Strategic, philosophical, cross-product — "what is FringeIsland?" | Technical architecture, service specs, planning artifacts |
+| `ecosystem/universe/` | Universe design — cosmology, developmental mechanics, narrative, beings, community | Technical service specs (→ platform/), open questions (→ thinking/) |
 | `ecosystem/strategy/` | Stable directional documents — product family, contributor model | Open questions, exploratory thinking (→ ecosystem/thinking/) |
 | `ecosystem/thinking/` | Open questions, explorations, legacy content being mined | Stable strategy (→ ecosystem/strategy/), research (→ research/) |
 | `architecture/` | Structural models, binding decisions (ADRs), dependency diagrams | Service descriptions, feature specs, planning snapshots |
@@ -103,6 +110,7 @@ Never load all features at once — load only what you're working on.
 ## Key Entry Points
 
 - **Ecosystem vision:** `ecosystem/VISION.md`
+- **Universe design:** `ecosystem/universe/`
 - **Products & platform strategy:** `ecosystem/strategy/PRODUCTS_AND_PLATFORM.md`
 - **Hub description:** `products/hub/DESCRIPTION.md`
 - **Way of working:** `planning/PROCESS.md`
@@ -117,6 +125,6 @@ Never load all features at once — load only what you're working on.
 
 The `old_products/` and `old_implementation/` directories contain the previous documentation structure. These remain the source of truth for content not yet migrated.
 
-The `old_universe/` directory is fully decommissioned (April 2026). All 22 ADRs have been migrated to `architecture/decisions/`. The directory and its contents can be deleted.
+The `old_universe/` directory was deleted in April 2026. All 22 ADRs were migrated to `architecture/decisions/`.
 
 Do NOT delete `old_products/` or `old_implementation/` — they contain authoritative content awaiting migration.

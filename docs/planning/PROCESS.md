@@ -52,6 +52,10 @@ Every piece of work — feature, bug, spike, decision — moves through the same
 
 **Items at any maturity can be parked in `backlog/icebox.md`** when they're correct but not currently relevant. Icebox items are reviewed at cycle boundaries.
 
+### Why the pipeline matters
+
+The pipeline exists because of a lesson learned: Ferd's roadmap was built before proper research, leading to architectural assumptions that weren't validated and scope decisions made without sufficient investigation. For all future products and waves, research (maturity 2) must genuinely precede specification (maturity 3). The pipeline enforces this — an item cannot be specified until it has been explored, and it cannot be explored without naming risks and sketching an approach. Skipping ahead is how bad assumptions get baked in.
+
 ---
 
 ## Section 2 — Work item types
@@ -105,6 +109,16 @@ Wave tags (`ferd`, `eid`, `hamn`, etc.) are used for filtering, prioritisation, 
 When a wave's core work is substantially complete, it triggers:
 - A **wave retrospective** (use `../templates/retrospective.md`, scope = entire wave, not just last cycle)
 - An **ecosystem roadmap update** (`docs/ecosystem/ECOSYSTEM_ROADMAP.md`) reflecting the shift in strategic focus
+
+### Deferred and cross-wave work
+
+Work that doesn't fit the current wave or cycle is handled through the existing maturity pipeline — not a separate deferral process. The mechanisms:
+
+- **Backlog with wave tags** — items tagged for a later wave stay in the backlog at whatever maturity they've reached. They are visible, filterable, and advance through the pipeline whenever someone works on them.
+- **Icebox** — items that are correct but not currently relevant are parked in `backlog/icebox.md` and reviewed at cycle boundaries.
+- **Betting table** — items that aren't bet on stay in the backlog. No formal "deferral" is needed — the betting table is the prioritisation mechanism.
+
+The principle: **a deferred item is not done until someone owns it.** When work is moved to a later wave, it must have a clear wave tag and enough context (in its backlog entry or PRD) that a future contributor can pick it up without re-litigating the original decision. Items that have no clear owner after review surface in `../ecosystem/thinking/OPEN_QUESTIONS.md` for strategic resolution.
 
 ### Why this shape
 

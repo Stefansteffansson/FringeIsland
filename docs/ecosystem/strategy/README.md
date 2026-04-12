@@ -14,7 +14,9 @@
 docs/ecosystem/strategy/
 ├── README.md                              ← you are here
 ├── PRODUCTS_AND_PLATFORM.md               ← full product family vision (needs review)
-└── CONTRIBUTION_ARCHITECTURE.md           ← contributor groups + boundaries (needs review)
+├── CONTRIBUTION_ARCHITECTURE.md           ← contributor groups + boundaries (needs review)
+├── BUSINESS_MODEL.md                      ← revenue streams, corporate independence
+└── IP_AND_LICENSING.md                    ← three-layer licensing (code, content, marketplace)
 ```
 
 ---
@@ -25,3 +27,5 @@ docs/ecosystem/strategy/
 |----------|---------|--------|
 | PRODUCTS_AND_PLATFORM.md | Full product family vision: digital products, physical products, events, device strategy, experimentation layer, six-wave detail | Needs review and update — some wave detail is stale |
 | CONTRIBUTION_ARCHITECTURE.md | Four contributor groups (Visitor, Member, Dreamineer, Council/Foundation), five contribution types, garden door principle, what is never open to contribution | Needs review and update |
+| BUSINESS_MODEL.md | Five revenue streams (subscriptions, donations, marketplace, events, endowment), corporate independence (no VC, no sponsors) | Extracted from founding vision |
+| IP_AND_LICENSING.md | Three-layer licensing: MIT/Apache for code, CC BY-SA + CLA for content, commercial licence for marketplace products | Extracted from founding vision |

@@ -1,6 +1,6 @@
-# Community — Open Questions
+# Ecosystem — Open Questions
 
-**Last Updated:** April 5, 2026
+**Last Updated:** April 12, 2026
 
 ---
 
@@ -35,6 +35,20 @@
 **Raised:** 2026-04-05
 **Blocks:** Marketplace viability, Dreamineer ecosystem
 **Context:** Hamn needs Dreamineer-created content to be alive, but Dreamineers need tools and a community to create content. What is the bootstrap strategy?
+
+### CQ-010: The First Experience — What Happens in the First Hour?
+**Status:** Open
+**Scope:** Ferd, Hamn
+**Raised:** 2026-04-12 (extracted from OLD_VISION.md)
+**Blocks:** Ferd user onboarding flow, Hamn "Journey Zero" onboarding journey, Kickstarter campaign design
+**Context:** Four deep design sessions have explored what FringeIsland *is* — none have designed what a new member actually *does* when they arrive. The founding narrative, the story that members first enter, the mystery, the conflict, the world that comes to life for the first time. This is the single highest-risk gap: everything else is irrelevant if the first experience does not work.
+
+### CQ-011: AI Feasibility — What Does the AI Actually Need to Do?
+**Status:** Open
+**Scope:** Heim, Urd
+**Raised:** 2026-04-12 (extracted from OLD_VISION.md)
+**Blocks:** Heim dynamic journey paths, Type 4 (AI-generative) journeys, NPC implementation (Urd), Weaver-AI collaboration tools
+**Context:** The vision assumes load-bearing AI capabilities: adaptive season personalisation per member, NPC calibration to growth zones, AI-generative Type 4 journeys, void-responsive content delivery. None of this has been validated against what current or near-future AI can deliver at the quality required. The Experience Engine is the architectural linchpin and remains unbuilt.
 
 ---
 
@@ -85,6 +99,20 @@
 **Raised:** 2026-04-05
 **Blocks:** Nothing immediate
 **Context:** VISION.md highlights 50+ as "a particularly important role" for wisdom-sharing. How do we attract and empower them? Is the Guide role sufficient or do we need a Mentor/Elder concept?
+
+### CQ-012: Whisp Representation in Ferd/Eid — Without AR
+**Status:** Parked
+**Scope:** Ferd, Eid
+**Raised:** 2026-04-12 (extracted from OLD_VISION.md)
+**Blocks:** Ferd Whisp representation (if attempted before Eid), Eid Whisp MVP design
+**Context:** The Whisp's most vivid expressions — AR overlay (Brim), void visualisation (Brim), fullness-as-fidelity — all depend on technology slated for later waves. Ferd is a web platform; Eid will introduce the first Whisp encounter phenomenology and practical UI specifications. If the Whisp is the emotional core of FringeIsland, its Wave 1/Wave 2 expressions must be compelling even in a browser. That design problem is entirely untouched.
+
+### CQ-013: NPC Behaviour Authoring Mechanism
+**Status:** Parked
+**Scope:** Hamn, Urd
+**Raised:** 2026-04-12 (extracted from OLD_VISION.md)
+**Blocks:** Hamn NPC system, AI-driven seasonal content
+**Context:** NPCs are central to the world, but the authoring mechanism is unspecified. Prompt engineering? Behaviour graphs? Learning models? This is prerequisite for any NPC implementation.
 
 ---
 

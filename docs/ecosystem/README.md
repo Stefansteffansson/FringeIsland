@@ -1,8 +1,8 @@
 # Ecosystem
 
-**Purpose:** Everything that defines FringeIsland as a universe and ecosystem — vision, values, strategy, and the shape of the whole.
+**Purpose:** Everything that defines FringeIsland as a universe and ecosystem — vision, values, strategy, universe design, and the shape of the whole.
 
-**This is for:** Constitutional documents, ecosystem strategy, and exploratory thinking that answers "what is FringeIsland and how does the whole thing fit together?" Strategic, philosophical, cross-product, foundational.
+**This is for:** Constitutional documents, ecosystem strategy, universe design, and exploratory thinking that answers "what is FringeIsland and how does the whole thing fit together?" Strategic, philosophical, cross-product, foundational.
 
 **This is NOT for:** Technical architecture and binding decisions (→ `docs/architecture/`), service or product descriptions (→ `docs/platform/`, `docs/products/`), operational planning (→ `docs/planning/`), or research reports (→ `docs/research/`).
 
@@ -16,21 +16,24 @@ docs/ecosystem/
 ├── VISION.md                              ← constitutional — the north star
 ├── MANIFESTO.md                           ← constitutional — founding principles
 │
+├── universe/                              ← what the FringeIsland world is and how it works
+│   ├── README.md                          ← universe overview
+│   ├── cosmology/                         ← Three Worlds and their relationships
+│   ├── personal-growth/                   ← red thread, engagement spectrum, void dimensions
+│   ├── beings/                            ← Whisp, NPCs, Dreamineers-as-world-roles
+│   ├── narrative/                         ← seasons, episodes, journeys, first experience
+│   └── community/                         ← community dynamics, Kickstarter founding moment
+│
 ├── strategy/                              ← how the ecosystem is shaped (stable, directional)
 │   ├── README.md                          ← strategy overview
 │   ├── PRODUCTS_AND_PLATFORM.md           ← full product family vision
 │   └── CONTRIBUTION_ARCHITECTURE.md       ← contributor groups + boundaries
 │
-├── thinking/                              ← working ideas, explorations, open questions
-│   ├── README.md                          ← index of active thinking
-│   ├── COMMUNITY_OPEN_QUESTIONS.md        ← 9 open questions
-│   ├── OLD_VISION.md                      ← legacy, pending content extraction
-│   └── OLD_VISION_DECISIONS.md            ← legacy, pending review
-│
-└── (future subdirectories as topics grow)
-    ├── whisp/                             ← when Whisp thinking accumulates
-    ├── community/                         ← governance, Dreamineer council
-    └── kickstarter/                       ← campaign planning
+└── thinking/                              ← working ideas, explorations, open questions
+    ├── README.md                          ← index of active thinking
+    ├── COMMUNITY_OPEN_QUESTIONS.md        ← open questions (needs triage)
+    ├── OLD_VISION.md                      ← legacy, content extraction in progress
+    └── OLD_VISION_DECISIONS.md            ← legacy, pending review
 ```
 
 ---
@@ -39,20 +42,29 @@ docs/ecosystem/
 
 1. Start here — this README gives you the map
 2. `VISION.md` and `MANIFESTO.md` — the constitutional foundation
-3. `strategy/` — how the ecosystem is shaped (product family, contributors)
-4. `thinking/` — open questions and exploratory work
+3. `universe/` — what the world is and how it works
+4. `strategy/` — how the ecosystem is shaped (product family, contributors)
+5. `thinking/` — open questions and exploratory work
 
 ---
 
-## Graduation path
+## Graduation paths
 
-When something in `thinking/` matures into a clear position, it moves to `strategy/` or gets absorbed into a constitutional document.
+- When something in `thinking/` matures into universe design (how the world works) → moves to `universe/`
+- When something in `thinking/` matures into strategic direction (how the ecosystem is shaped) → moves to `strategy/`
+- When something in `thinking/` reaches constitutional significance → absorbed into `VISION.md` or `MANIFESTO.md`
 
 ---
 
-## World Model
+## Relationship between layers
 
-World Model depth (Three Worlds, Whisp, lore) lives in `../platform/domain/world-model/` — directory to be created in a future session.
+- `VISION.md` **constrains** — it says what FringeIsland is and isn't
+- `MANIFESTO.md` **inspires** — it says what we value
+- `universe/` **imagines** — it says how the world actually works
+- `strategy/` **directs** — it says how the ecosystem is structured
+- `thinking/` **explores** — it holds questions not yet answered
+
+---
 
 ## Templates
 

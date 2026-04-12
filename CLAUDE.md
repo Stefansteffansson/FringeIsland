@@ -18,11 +18,13 @@ FringeIsland is an edutainment platform for group-based personal development thr
 
 The repository documentation is being restructured into a multi-product ecosystem layout. Two structures coexist:
 
-- **`docs/old_*/`** (`old_universe/`, `old_products/`, `old_implementation/`, `old_INDEX.md`) — partially migrated. Boot-up, sessions, agent contexts, and all live work still reference `old_products/` and `old_implementation/` paths.
-- **`docs/{ecosystem,products,studios,platform,architecture,planning,research,design-system,templates,verticals}/`** — new ecosystem layout. Ecosystem, architecture, research, and planning content is now authoritative here.
+- **`docs/old_*/`** (`old_products/`, `old_implementation/`, `old_INDEX.md`) — partially migrated. Boot-up, sessions, agent contexts, and all live work still reference `old_products/` and `old_implementation/` paths.
+- **`docs/{ecosystem,products,studios,platform,architecture,planning,research,design-system,templates,verticals}/`** — new ecosystem layout. Ecosystem, architecture, research, planning, and universe design content is now authoritative here.
 
 **Migration status (April 12, 2026):**
-- ✅ `old_universe/` — fully decommissioned. All content migrated including 24 ADRs (U001-U024) now in `docs/architecture/decisions/`. Directory can be deleted.
+- ✅ `old_universe/` — deleted. All 24 ADRs (U001-U024) in `docs/architecture/decisions/`.
+- ✅ `OLD_VISION.md`, `OLD_VISION_DECISIONS.md` — deleted. All unique content extracted to `docs/ecosystem/universe/`, `docs/ecosystem/strategy/`, `docs/ecosystem/thinking/OPEN_QUESTIONS.md`, and `docs/ecosystem/VISION.md`.
+- ✅ `DEFERRAL_PROTOCOL.md`, `PLANNING_PROTOCOL.md` — deleted. Principles absorbed into `docs/planning/PROCESS.md`.
 - ⬜ `old_products/` — not yet migrated. Boot-up, sessions, agent contexts still reference these paths.
 - ⬜ `old_implementation/` — not yet migrated.
 
@@ -120,9 +122,12 @@ Start at `docs/README.md` for the full navigation map.
 | **Ecosystem (new tree — authoritative)** | |
 | Vision (constitutional) | `docs/ecosystem/VISION.md` |
 | Manifesto | `docs/ecosystem/MANIFESTO.md` |
+| Universe design | `docs/ecosystem/universe/` |
 | Products & platform strategy | `docs/ecosystem/strategy/PRODUCTS_AND_PLATFORM.md` |
+| Business model | `docs/ecosystem/strategy/BUSINESS_MODEL.md` |
+| IP & licensing | `docs/ecosystem/strategy/IP_AND_LICENSING.md` |
 | Contribution architecture | `docs/ecosystem/strategy/CONTRIBUTION_ARCHITECTURE.md` |
-| Community open questions | `docs/ecosystem/thinking/COMMUNITY_OPEN_QUESTIONS.md` |
+| Open questions | `docs/ecosystem/thinking/OPEN_QUESTIONS.md` |
 | **Architecture (new tree — authoritative)** | |
 | Architecture anatomy (v1 reference) | `docs/architecture/ARCHITECTURE_ANATOMY_V1.md` |
 | Domain entities | `docs/architecture/DOMAIN_ENTITIES.md` |
@@ -135,8 +140,6 @@ Start at `docs/README.md` for the full navigation map.
 | Theory U | `docs/research/Theory_U_Research_Report.md` |
 | **Planning (new tree — authoritative)** | |
 | Way of working | `docs/planning/PROCESS.md` |
-| Deferral protocol | `docs/planning/DEFERRAL_PROTOCOL.md` |
-| Planning protocol | `docs/planning/PLANNING_PROTOCOL.md` |
 | Current wave (Ferd) | `docs/planning/waves/ferd.md` |
 | Ferd capability map | `docs/planning/waves/FERD-CAPABILITY-MAP.md` |
 | Reference snapshots | `docs/planning/reference/` |
@@ -175,7 +178,8 @@ Start at `docs/README.md` for the full navigation map.
 
 ## Documentation structure (updated 2026-04-12)
 - `docs/` has two trees: ecosystem (what we're building) and planning (how we're building it)
-- `docs/ecosystem/` has three layers: constitutional (VISION, MANIFESTO), strategy/ (stable direction), thinking/ (explorations)
+- `docs/ecosystem/` has four layers: constitutional (VISION, MANIFESTO), universe/ (what the world is and how it works), strategy/ (stable direction), thinking/ (explorations)
+- `docs/ecosystem/universe/` holds universe design: cosmology, personal-growth, beings, narrative, community, kickstarter
 - Features live under their product: `docs/products/hub/features/FEAT-H001-*.md`
 - Tasks live in backlog: `docs/planning/backlog/tasks/TASK-NNN.md`
 - Waves define strategic focus: `docs/planning/waves/ferd.md`

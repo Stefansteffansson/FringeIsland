@@ -1,7 +1,14 @@
 # FringeIsland — Vision
 
 **Status:** Constitutional document
-**Version:** 1.0
+**Version:** 1.1
+
+---
+
+> *En värld med friska vindar och varma ljuspunkter.*
+> *A world of fresh winds and warm points of light.*
+
+> *To equip people, groups and communities with the best tools and capabilities to live, grow and matter — in a balanced and harmonious way.*
 
 ---
 
@@ -33,7 +40,7 @@ An immersive edutainment platform where personal development happens through liv
 - *The Safe Harbour* — FringeIsland itself. A place of reflection, sharing, and becoming. Safe, not comfortable.
 - *The Other Side* — deeper water. Where narrative, challenge, and transformation live. Seasons and episodes unfold here.
 
-→ *See [World Model](../platform/domain/world-model/) for creative depth on each world.*
+→ *See [Universe](./universe/) for creative depth on each world.*
 
 **The Whisp** — each FIM's personal future self. Not an answer-giver but a perceptual lens, operating across all three worlds as companion voice, perceptual richness, and active instrument.
 
@@ -74,4 +81,4 @@ The ecosystem consists of **products** (surfaces FIMs touch), **platform service
 
 ---
 
-*This document constrains. The [Manifesto](./MANIFESTO.md) inspires. The [World Model](../platform/domain/world-model/) imagines. Together they define FringeIsland.*
+*This document constrains. The [Manifesto](./MANIFESTO.md) inspires. The [Universe](./universe/) imagines. Together they define FringeIsland.*
