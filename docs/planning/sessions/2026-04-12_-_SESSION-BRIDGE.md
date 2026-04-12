@@ -71,23 +71,37 @@ All empty directories in old_universe were automatically removed when their last
 - strategy/OPEN_QUESTIONS.md (resolved/irrelevant)
 - vision/MANIFESTO.md (already migrated)
 
-### 7. README updates (9 files)
+### 7. README updates (11 files) — all with annotated tree views
+
+All READMEs now follow a consistent pattern: purpose statement, "this is for" / "this is NOT for" boundary, annotated tree view (`├──` with `← description`), then additional detail.
 
 | File | What changed |
 |------|-------------|
-| docs/architecture/README.md | Rewritten with purpose + boundary statement, full contents table |
-| docs/ecosystem/README.md | Three-layer structure: constitutional, strategy/, thinking/ with reading order |
-| docs/ecosystem/strategy/README.md | Created — purpose + boundary + contents |
-| docs/ecosystem/thinking/README.md | Created — purpose + graduation path + contents |
-| docs/platform/README.md | Purpose + boundary statement added |
-| docs/planning/reference/README.md | Created with purpose + boundary |
-| docs/research/README.md | Rewritten: domain research + methodology research sections |
-| docs/README.md | Full rewrite: directory purpose guide with ecosystem subfolders, updated entry points |
-| README.md (root) | Vision link fixed, simplified |
+| docs/README.md | Full rewrite: annotated tree of entire docs/ structure, directory purpose guide, updated entry points |
+| docs/ecosystem/README.md | Three-layer structure with annotated tree, reading order, graduation path |
+| docs/ecosystem/strategy/README.md | Created — purpose + boundary + annotated tree |
+| docs/ecosystem/thinking/README.md | Created — purpose + graduation path + annotated tree |
+| docs/architecture/README.md | Rewritten with annotated tree, key documents table |
+| docs/platform/README.md | Purpose + boundary + annotated tree + two-tier diagram |
+| docs/products/README.md | Annotated tree + feature prefix table |
+| docs/planning/README.md | Annotated tree of full planning structure |
+| docs/planning/reference/README.md | Created — purpose + annotated tree |
+| docs/research/README.md | Annotated tree, domain + methodology sections |
+| docs/templates/README.md | Annotated tree, updated session bridge output path |
 
-### 8. CLAUDE.md updated
+### 8. Template updates (2 files)
 
-Document map fully updated to new paths including ecosystem/strategy/ and ecosystem/thinking/ subpaths. Directory purpose guide expanded with ecosystem subfolders. Documentation structure section updated.
+| File | What changed |
+|------|-------------|
+| docs/templates/session-bridge.md | Added filename convention (`YYYY-MM-DD_-_{TOPIC}.md`) and example at top |
+| docs/templates/README.md | Added annotated tree view, updated session bridge output path to match new naming |
+
+### 9. Navigation file updates
+
+| File | What changed |
+|------|-------------|
+| README.md (root) | Vision link updated to docs/ecosystem/VISION.md, simplified |
+| CLAUDE.md | Document map fully updated to ecosystem/strategy/ and ecosystem/thinking/ paths, directory purpose guide expanded, documentation structure section updated |
 
 ---
 
@@ -100,6 +114,7 @@ Document map fully updated to new paths including ecosystem/strategy/ and ecosys
 5. **DOMAIN_ENTITIES.md → architecture:** structural model, not service description
 6. **Research scope clarified:** all research regardless of topic
 7. **Session bridge naming:** date first, then descriptive text (e.g. `2026-04-12_-_SESSION-BRIDGE.md`)
+8. **README standard:** all READMEs use purpose + boundary + annotated tree view pattern
 
 ---
 
@@ -139,7 +154,9 @@ If this conversation is lost, the essential new information:
 - Ecosystem three-layer structure: constitutional (root) → strategy/ (stable) → thinking/ (exploratory)
 - Diagrams now in docs/architecture/ (moved from planning/reference/)
 - old_universe/ reduced to just decisions/ folder with 22 ADRs
-- CLAUDE.md, docs/README.md, root README.md, and 6 additional READMEs all updated
+- All READMEs now use purpose + boundary + annotated tree view pattern
+- CLAUDE.md, docs/README.md, root README.md all updated with correct paths
+- 2 templates updated (session-bridge naming, templates/README tree view)
 - 7 files migrated with "needs review" notes
 - ADR migration deferred to dedicated step per Stefan's request
 - Session bridge naming: date first (e.g. `2026-04-12_-_SESSION-BRIDGE.md`)

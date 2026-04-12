@@ -22,7 +22,7 @@ The repository documentation is being restructured into a multi-product ecosyste
 - **`docs/{ecosystem,products,studios,platform,architecture,planning,research,design-system,templates,verticals}/`** — new ecosystem layout. Ecosystem, architecture, research, and planning content is now authoritative here.
 
 **Migration status (April 12, 2026):**
-- ✅ `old_universe/` — mostly decommissioned. Vision, manifesto, strategy, architecture, research, processes migrated. Only 22 ADRs remain in `old_universe/decisions/` pending dedicated migration.
+- ✅ `old_universe/` — fully decommissioned. All content migrated including 24 ADRs (U001-U024) now in `docs/architecture/decisions/`. Directory can be deleted.
 - ⬜ `old_products/` — not yet migrated. Boot-up, sessions, agent contexts still reference these paths.
 - ⬜ `old_implementation/` — not yet migrated.
 
@@ -59,11 +59,11 @@ When user selects feature work after boot-up, load `docs/old_products/ferd/devel
 - `docs/architecture/DOMAIN_ENTITIES.md` — core domain model (entities, relationships, business rules)
 - `docs/architecture/ECOSYSTEM_ANATOMY_V3.svg` — current ecosystem anatomy diagram
 - `docs/architecture/DOMAIN_SERVICE_DEPENDENCIES.svg` — dependency flow diagram
-- `docs/architecture/decisions/` — ADRs (22 pending migration from `docs/old_universe/decisions/`)
+- `docs/architecture/decisions/` — 24 ADRs (U001-U024, all migrated)
 
 **Live implementation state:** `docs/old_implementation/ferd/baseline/BASELINE.md`
 
-**Wave model (not phases):** The platform evolves in six named waves: **Ferd** (Wave 1) → **Eid** (Wave 2) → **Hamn** (Wave 3) → **Heim** (Wave 4) → **Brim** (Wave 5) → **Urd** (Beyond). See ADR-U022 in `docs/old_universe/decisions/`.
+**Wave model (not phases):** The platform evolves in six named waves: **Ferd** (Wave 1) → **Eid** (Wave 2) → **Hamn** (Wave 3) → **Heim** (Wave 4) → **Brim** (Wave 5) → **Urd** (Beyond). Waves are thematic focus buckets, not sequential gates — see ADR-U022 (naming) and ADR-U024 (operational semantics) in `docs/architecture/decisions/`.
 
 - **Auth:** Client-side via AuthContext + useAuth() hook; proxy.ts for protected routes (Next.js 16, not middleware.ts)
 - **Components:** App Router; client components marked `'use client'`; reusable UI in `/components/ui/`
@@ -128,7 +128,7 @@ Start at `docs/README.md` for the full navigation map.
 | Domain entities | `docs/architecture/DOMAIN_ENTITIES.md` |
 | Ecosystem anatomy diagram | `docs/architecture/ECOSYSTEM_ANATOMY_V3.svg` |
 | Dependency diagram | `docs/architecture/DOMAIN_SERVICE_DEPENDENCIES.svg` |
-| ADRs (22 — pending migration) | `docs/old_universe/decisions/` |
+| ADRs (24 — all migrated) | `docs/architecture/decisions/` |
 | **Research (new tree — authoritative)** | |
 | Kegan / adult development | `docs/research/Kegan_ITC_Research_Report.md` |
 | Human flourishing (v1, v2) | `docs/research/What_Fills_a_Life_v1.md`, `v2.md` |

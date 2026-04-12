@@ -43,7 +43,7 @@ docs/
 │   ├── DOMAIN_ENTITIES.md                 ← core domain model
 │   ├── ECOSYSTEM_ANATOMY_V3.svg           ← current anatomy diagram
 │   ├── DOMAIN_SERVICE_DEPENDENCIES.svg    ← dependency flow
-│   └── decisions/                         ← ADRs (22 pending migration)
+│   └── decisions/                         ← ADRs (24 — U001-U024)
 │
 ├── research/                              ← all research reports (domain + methodology)
 │
@@ -66,7 +66,7 @@ docs/
 │
 │   ── Legacy (source of truth until migrated) ──
 │
-├── old_universe/                          ← mostly decommissioned — only ADRs remain
+├── old_universe/                          ← decommissioned — delete pending (ADRs migrated)
 ├── old_products/                          ← not yet migrated
 ├── old_implementation/                    ← not yet migrated
 └── old_INDEX.md                           ← legacy navigation
@@ -117,6 +117,6 @@ Never load all features at once — load only what you're working on.
 
 The `old_products/` and `old_implementation/` directories contain the previous documentation structure. These remain the source of truth for content not yet migrated.
 
-The `old_universe/` directory is partially decommissioned (April 2026). Only the 22 ADRs remain in `old_universe/decisions/` pending a dedicated migration step.
+The `old_universe/` directory is fully decommissioned (April 2026). All 22 ADRs have been migrated to `architecture/decisions/`. The directory and its contents can be deleted.
 
-Do NOT delete old_*/ directories — they contain authoritative content awaiting migration.
+Do NOT delete `old_products/` or `old_implementation/` — they contain authoritative content awaiting migration.

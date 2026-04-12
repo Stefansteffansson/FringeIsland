@@ -19,9 +19,10 @@ docs/architecture/
 ├── DOMAIN_SERVICE_DEPENDENCIES.svg        ← domain service dependency flow
 │
 └── decisions/                             ← Architecture Decision Records (ADRs)
-    ├── README.md                          ← ADR index and migration status
-    ├── PENDING.md                         ← placeholder
-    └── (ADR-U001–U022 pending migration from old_universe/decisions/)
+    ├── README.md                          ← ADR index with full table
+    ├── ADR-U001 through ADR-U022          ← migrated from old_universe (April 2026)
+    ├── ADR-U023                           ← Platform Core / Domain Services decomposition
+    └── ADR-U024                           ← Wave model semantics
 ```
 
 ---
@@ -30,7 +31,8 @@ docs/architecture/
 
 | Document | Purpose |
 |----------|---------|
-| ARCHITECTURE_ANATOMY_V1.md | Original L0-L7 layered anatomy. Conceptually superseded by Platform Core / Domain Services decomposition, but contains unique rationale (build order, vertical descriptions, cascade principle). Kept as architectural history. |
+| ARCHITECTURE_ANATOMY_V1.md | Original L0-L7 layered anatomy. Superseded by ADR-U023 (Platform Core / Domain Services decomposition), but contains unique rationale (build order, vertical descriptions, cascade principle). Kept as architectural history. |
 | DOMAIN_ENTITIES.md | Core domain model: User, Group, Journey, Role, Permission, Enrollment. Entity properties, relationships, business rules, state transitions. The only place these are documented. |
 | ECOSYSTEM_ANATOMY_V3.svg | Current ecosystem anatomy — Platform Core, Domain Services, Products, Studios, Verticals |
 | DOMAIN_SERVICE_DEPENDENCIES.svg | How domain services depend on each other and on Platform Core |
+| decisions/README.md | Full ADR index — 24 ADRs (U001-U024) |

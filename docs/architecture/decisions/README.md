@@ -1,37 +1,46 @@
 # Architecture Decision Records (ADRs)
 
-One file per significant architectural decision, MADR format. Numbered sequentially: `NNNN-title.md`.
+One file per significant architectural decision, MADR format. Numbered sequentially: `ADR-UNNNN-title.md`.
 
 **Template:** `../../templates/adr.md`
-**Status values:** Proposed / Accepted / Superseded by ADR-NNNN.
+**Status values:** Proposed / Accepted / Superseded by ADR-UNNNN / Deprecated
 
-## Migration status
+---
 
-ADRs `ADR-U001` through `ADR-U022` are pending migration from `../../old_universe/decisions/` to this directory. Until migration completes, the source of truth for ADRs is `../../old_universe/decisions/`.
+## ADR Index
 
-## Existing ADRs (in `../../old_universe/decisions/`)
+| ID | Title | Status | Tags |
+|----|-------|--------|------|
+| ADR-U001 | [Layered anatomy framework](ADR-U001-layered-anatomy-framework.md) | Superseded by ADR-U023 | platform-core |
+| ADR-U002 | [Five cross-cutting verticals](ADR-U002-five-cross-cutting-verticals.md) | Accepted | vertical |
+| ADR-U003 | [Supabase backend platform](ADR-U003-supabase-backend-platform.md) | Accepted | platform-core |
+| ADR-U004 | [Visitor anonymous sign-in](ADR-U004-visitor-anonymous-sign-in.md) | Accepted | platform-core |
+| ADR-U005 | [Profile data flexible table](ADR-U005-profile-data-flexible-table.md) | Accepted | platform-core |
+| ADR-U006 | [Universal Group Pattern](ADR-U006-universal-group-pattern.md) | Accepted | platform-core |
+| ADR-U007 | [Three-layer permission model](ADR-U007-three-layer-permission-model.md) | Accepted | platform-core |
+| ADR-U008 | [Step type extensibility](ADR-U008-step-type-extensibility.md) | Accepted | domain-service |
+| ADR-U009 | [API-first frontend-agnostic](ADR-U009-api-first-frontend-agnostic.md) | Accepted | platform-core |
+| ADR-U010 | [Privacy dedicated vertical](ADR-U010-privacy-dedicated-vertical.md) | Accepted | vertical |
+| ADR-U011 | [Transactions Stripe Connect](ADR-U011-transactions-stripe-connect.md) | Accepted | vertical |
+| ADR-U012 | [Observability dedicated vertical](ADR-U012-observability-dedicated-vertical.md) | Accepted | vertical |
+| ADR-U013 | [Design system i18n a11y](ADR-U013-design-system-i18n-a11y.md) | Accepted | design-system |
+| ADR-U014 | [Feature flags infrastructure](ADR-U014-feature-flags-infrastructure.md) | Accepted | platform-core |
+| ADR-U015 | [API versioning](ADR-U015-api-versioning.md) | Accepted | platform-core |
+| ADR-U016 | [Cascade specification first](ADR-U016-cascade-specification-first.md) | Accepted | platform-core |
+| ADR-U017 | [Journeys content templates](ADR-U017-journeys-content-templates.md) | Accepted | domain-service |
+| ADR-U018 | [No hardcoded group types](ADR-U018-no-hardcoded-group-types.md) | Accepted | platform-core |
+| ADR-U019 | [DeusEx authority last resort](ADR-U019-deusex-authority-last-resort.md) | Accepted | platform-core |
+| ADR-U020 | [Pairs are groups](ADR-U020-pairs-are-groups.md) | Accepted | platform-core |
+| ADR-U021 | [Forum anonymisation soft flag](ADR-U021-forum-anonymisation-soft-flag.md) | Accepted | domain-service |
+| ADR-U022 | [Named waves](ADR-U022-named-waves.md) | Accepted | platform-core |
+| ADR-U023 | [Platform Core / Domain Services decomposition](ADR-U023-platform-core-domain-services-decomposition.md) | Accepted | platform-core · domain-service |
+| ADR-U024 | [Wave model semantics](ADR-U024-wave-model-semantics.md) | Accepted | platform-core |
 
-| ID | Title |
-|----|-------|
-| ADR-U001 | Layered Anatomy Framework |
-| ADR-U002 | Five Cross-Cutting Verticals |
-| ADR-U003 | Supabase Backend Platform |
-| ADR-U004 | Visitor Anonymous Sign-In |
-| ADR-U005 | Profile Data Flexible Table |
-| ADR-U006 | Universal Group Pattern |
-| ADR-U007 | Three-Layer Permission Model |
-| ADR-U008 | Step Type Extensibility |
-| ADR-U009 | API-First Frontend-Agnostic |
-| ADR-U010 | Privacy Dedicated Vertical |
-| ADR-U011 | Transactions Stripe Connect |
-| ADR-U012 | Observability Dedicated Vertical |
-| ADR-U013 | Design System i18n a11y |
-| ADR-U014 | Feature Flags Infrastructure |
-| ADR-U015 | API Versioning |
-| ADR-U016 | Cascade Specification First |
-| ADR-U017 | Journeys Content Templates |
-| ADR-U018 | No Hardcoded Group Types |
-| ADR-U019 | DeusEx Authority of Last Resort |
-| ADR-U020 | Pairs Are Groups |
-| ADR-U021 | Forum Anonymisation Soft Flag |
-| ADR-U022 | Named Waves |
+---
+
+## Conventions
+
+- ADRs are append-only — when a decision changes, add a new ADR that supersedes the old one. Never edit history.
+- ADR-U001 through U022 were extracted from a monolithic `ARCHITECTURE_DECISIONS.md` on 2026-04-05. They retain their original narrative structure with standardised headers added.
+- ADR-U023 onward use the full MADR template format.
+- All new ADRs use the template at `../../templates/adr.md`.
