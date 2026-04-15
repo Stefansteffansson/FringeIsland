@@ -114,6 +114,13 @@
 **Blocks:** Hamn NPC system, AI-driven seasonal content
 **Context:** NPCs are central to the world, but the authoring mechanism is unspecified. Prompt engineering? Behaviour graphs? Learning models? This is prerequisite for any NPC implementation.
 
+### CQ-014: Visitor Experience — What Can Visitors Do?
+**Status:** Open
+**Scope:** Ferd
+**Raised:** 2026-04-14 (extracted from hamn VISION_TO_SPEC_MAPPING.md)
+**Blocks:** Ferd visitor implementation, onboarding funnel design
+**Context:** ADR-U004 locks the technical approach (anonymous sign-in, temporary profiles, pg_cron cleanup). But the product-level visitor experience is unspecified: what pages/content are visible to non-authenticated visitors? What constitutes a "taster journey"? What is the garden glimpse? What carries forward on registration? This needs a feature spec before implementation.
+
 ---
 
 ## Resolved
