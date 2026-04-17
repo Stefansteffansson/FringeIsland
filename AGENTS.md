@@ -46,6 +46,7 @@ Start at `docs/README.md` for the full map. Key entry points:
 - Read the product/service CLAUDE.md before touching that area
 - Complete the Vertical Impact section in every feature spec — no vertical left blank
 - Verify extensibility — no hardcoded enums, sealed type systems, or closed permission sets in new features
+- When a search or lookup returns a negative result (not found, no matches, empty), cross-check with a direct listing or independent method before logging it as missing, absent, or non-existent
 
 ### Ask first
 - Database schema changes (new tables, columns, RLS)
