@@ -1,13 +1,29 @@
 # Retrospectives
 
-Cycle retrospectives and wave retrospectives. **The permanent learning artifacts** — individual tasks get deleted after the retro is committed, but the retro itself stays forever.
+Weekly, cycle, wave, and quarterly retrospectives. **The permanent learning artifacts** — ephemeral task files get deleted after the cycle retro is committed, but the retro itself stays forever.
 
-A retro is written:
+All four scales use the same template: [`../../templates/retrospective.md`](../../templates/retrospective.md). Scope determines depth, not structure — a weekly retro is lighter than a quarterly audit, but the sections are the same.
 
-- **After each cycle** — captures what worked, what didn't, and what to change in the next cycle.
-- **After each wave** — wider lens, captures what the wave taught about the ecosystem and the way of working.
+## The four scales
 
-**Template:** [`../../templates/retrospective.md`](../../templates/retrospective.md)
-**Naming:** `retro-YYYY-MM-DD.md` for cycle retros, `retro-wave-{name}.md` for wave retros
+| Scale | When it's written | Filename | Scope |
+|-------|-------------------|----------|-------|
+| **Weekly Three Ls** | ~30 min Friday | `weekly-YYYY-MM-DD.md` | Liked / Learned / Lacked for the past week. The smallest retrospective that still produces signal. Not optional even when "nothing happened." |
+| **Cycle retrospective** | ~2 hrs, end of each cycle | `retro-YYYY-MM-DD.md` | What worked, what didn't, what to change for the next cycle. Feeds into the next cycle's betting table. |
+| **Wave retrospective** | End of each wave (when last Build item is Done) | `retro-wave-{name}.md` | Wider lens: what the wave taught about the ecosystem and the way of working. Triggers the ecosystem roadmap update. |
+| **Quarterly process audit** | Once per quarter | `audit-YYYY-Q#.md` | The "is the process still serving us?" pass. Asks: what did I skip? what's missing? what can be automated? Same template as a retro, wider scope. |
+
+## Why one template for all four
+
+The shape of useful reflection doesn't change with the time scale. Three Ls, metrics, decisions, process changes, and action items are equally relevant whether you're looking back at a week, a cycle, a wave, or a quarter. Keeping everything in one template and one directory means the learning trail is a single searchable chronological record — grep patterns work across scales, and writing a quarterly audit becomes "read the last 12 weekly retros, the last 3–4 cycle retros, and synthesise."
+
+## Naming patterns at a glance
+
+```
+weekly-2026-04-17.md             ← weekly Three Ls
+retro-2026-04-30.md              ← cycle retro (dated by cycle-end)
+retro-wave-ferd.md               ← wave retro (named by wave)
+audit-2026-Q2.md                 ← quarterly process audit
+```
 
 _No retrospectives yet._

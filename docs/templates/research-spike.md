@@ -17,7 +17,7 @@ The single question this spike is trying to answer. If you can't write it as one
 
 ## Why it matters
 
-What downstream decision is blocked on the answer? Which PRD, ADR, or work item is waiting?
+What downstream decision is blocked on the answer? Which feature spec, ADR, or work item is waiting?
 
 ## Hypotheses
 
@@ -43,7 +43,7 @@ Given the findings, what should happen next? One of:
 
 ## Follow-up work items
 
-Anything this spike spawns goes here, ready to be added to `../planning/backlog/discovery.md`:
+Anything this spike spawns goes here, ready to be filed as feature specs or tasks:
 
 - [ ] {item} — type:{...} · maturity:1-concept
 - [ ] {item} — type:{...} · maturity:1-concept

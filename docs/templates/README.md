@@ -26,8 +26,7 @@ docs/templates/
 ├── vertical-spec.md                       ← cross-cutting vertical specification
 │
 │   ── Features + Work ──
-├── feature-spec.md                        ← Shape Up pitch + BDD stories
-├── user-story.md                          ← standalone story (when too large to embed)
+├── feature-spec.md                        ← Shape Up pitch + BDD stories (stories embedded inline)
 ├── task.md                                ← ephemeral implementation task
 │
 │   ── Planning ──
@@ -46,8 +45,7 @@ docs/templates/
 
 | Template | Use when | Output goes in |
 |----------|----------|----------------|
-| [`feature-spec.md`](./feature-spec.md) | A capability is ready to spec (Shape Up pitch + BDD) | `../{owner}/features/FEAT-{PREFIX}{NNN}-{slug}.md` |
-| [`user-story.md`](./user-story.md) | A story is large enough for its own file | Inline in feature, or standalone |
+| [`feature-spec.md`](./feature-spec.md) | A capability is ready to spec (Shape Up pitch + BDD). Stories are embedded inline. | `../{owner}/features/FEAT-{PREFIX}{NNN}-{slug}.md` |
 | [`task.md`](./task.md) | Feature reaches maturity 4-ready, pulled into cycle | `../planning/backlog/tasks/TASK-{NNN}.md` |
 | [`adr.md`](./adr.md) | Significant architectural decision taken | `../architecture/decisions/NNNN-{title}.md` |
 | [`research-spike.md`](./research-spike.md) | Time-boxed research before specifying | `../research/{topic}.md` |

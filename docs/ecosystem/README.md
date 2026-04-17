@@ -27,13 +27,14 @@ docs/ecosystem/
 ├── strategy/                              ← how the ecosystem is shaped (stable, directional)
 │   ├── README.md                          ← strategy overview
 │   ├── PRODUCTS_AND_PLATFORM.md           ← full product family vision
-│   └── CONTRIBUTION_ARCHITECTURE.md       ← contributor groups + boundaries
+│   ├── CONTRIBUTION_ARCHITECTURE.md       ← contributor groups + boundaries
+│   ├── BUSINESS_MODEL.md                  ← business model design
+│   ├── EXPERIENCE_PRINCIPLES.md           ← experience design principles
+│   └── IP_AND_LICENSING.md               ← intellectual property + licensing
 │
 └── thinking/                              ← working ideas, explorations, open questions
     ├── README.md                          ← index of active thinking
-    ├── COMMUNITY_OPEN_QUESTIONS.md        ← open questions (needs triage)
-    ├── OLD_VISION.md                      ← legacy, content extraction in progress
-    └── OLD_VISION_DECISIONS.md            ← legacy, pending review
+    └── OPEN_QUESTIONS.md                  ← ecosystem-level open questions
 ```
 
 ---

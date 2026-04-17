@@ -61,21 +61,14 @@ docs/
 │   ├── PROCESS.md                         ← canonical way of working
 │   ├── waves/                             ← strategic focus periods (Ferd → Urd)
 │   ├── cycles/                            ← Shape Up betting cycles
-│   ├── backlog/                           ← work items + ephemeral tasks
+│   ├── backlog/                           ← ephemeral TASK-*.md files for the active cycle
 │   ├── sessions/                          ← session bridge documents
-│   ├── retrospectives/                    ← cycle + wave retrospectives
+│   ├── retrospectives/                    ← weekly / cycle / wave / quarterly audit retros
 │   └── reference/                         ← point-in-time snapshots (gap analyses, etc.)
 │
 │   ── Shared ──
 │
-├── templates/                             ← file templates for features, tasks, waves, ADRs
-│
-│   ── Legacy (source of truth until migrated) ──
-│
-├── old_universe/                          ← DELETED (April 2026) — ADRs migrated to architecture/decisions/
-├── old_products/                          ← not yet migrated
-├── old_implementation/                    ← not yet migrated
-└── old_INDEX.md                           ← legacy navigation
+└── templates/                             ← file templates for features, tasks, waves, ADRs
 ```
 
 ---
@@ -121,10 +114,12 @@ Never load all features at once — load only what you're working on.
 
 ---
 
-## Legacy Documentation (old_*/)
+## Legacy Documentation
 
-The `old_products/` and `old_implementation/` directories contain the previous documentation structure. These remain the source of truth for content not yet migrated.
+The `old_universe/`, `old_products/`, and `old_implementation/` directories no longer exist. Their content has been migrated into the active trees above:
 
-The `old_universe/` directory was deleted in April 2026. All 22 ADRs were migrated to `architecture/decisions/`.
+- `old_universe/` — deleted April 2026. All 24 ADRs (U001–U024) migrated to `architecture/decisions/`; universe design content migrated to `ecosystem/universe/`.
+- `old_products/` — deleted April 2026 (legacy-migration session). Product scope, requirements, roadmap, and feature docs migrated into `products/hub/` and associated planning/backlog/reference files.
+- `old_implementation/` — deleted April 2026. Implementation state is now read directly from the codebase (migrations, schema, code) rather than from snapshot files; reference snapshots that still matter live under `planning/reference/`.
 
-Do NOT delete `old_products/` or `old_implementation/` — they contain authoritative content awaiting migration.
+Historical references to `old_products/` or `old_implementation/` paths in current docs are drift — flag them or fix them. The `doc-health-check` skill (Sections 3.5 and 3.6) catches this automatically at cycle boundaries.

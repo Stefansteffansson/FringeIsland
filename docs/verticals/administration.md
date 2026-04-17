@@ -1,6 +1,6 @@
 # Vertical — V1: Administration & Moderation
 
-**Status:** Draft (Phase 3 scaffold)
+**Status:** Draft (scaffold — Ferd)
 **Owner:** Stefan
 **Last updated:** 2026-04-08
 **Tier:** Cross-cutting
@@ -25,7 +25,7 @@ Without administration, the platform is ungovernable. This vertical guarantees t
 ## 3. Obligations on each tier
 
 ### Platform Core
-*To be filled in during Phase 4 from existing admin implementation.* See `../old_implementation/shared/AUTH_SYSTEM.md`.
+*To be filled in as the vertical's obligations are refined from the existing admin implementation. Read the live code and migrations directly for the current state.*
 
 ### Domain Services
 Each domain service must expose: list-all (admin scope), force-edit, force-delete, audit-log-emit.
@@ -44,11 +44,11 @@ Each surface must surface admin actions behind the platform-admin permission gat
 
 - `is_platform_admin()` SECURITY DEFINER helper (existing)
 - DeusEx system group (existing)
-- Audit log table (Phase 4 — currently partial)
+- Audit log table (currently partial — to be refined as the tooling matures)
 
 ## 6. Failure modes
 
-*To be filled in during Phase 4.*
+*To be filled in as the vertical's tooling and failure cases mature.*
 
 ## 7. Open questions
 
@@ -58,4 +58,4 @@ Each surface must surface admin actions behind the platform-admin permission gat
 
 ---
 
-*Phase 3 scaffold. Real content migrates from `../old_*` in Phase 4.*
+*Scaffold — refine in place as the vertical's tooling, failure modes, and open questions resolve. Treat as a living document; amend via `type:process` work items (see PROCESS.md §8).*

@@ -11,17 +11,17 @@
 
 ## NOW (in the current cycle)
 
-What is actually being built right now. Each item links to its PRD or work item.
+What is actually being built right now. Each item links to its feature spec or task.
 
-- [ ] {item} — link to PRD
-- [ ] {item} — link to PRD
+- [ ] {item} — link to feature spec
+- [ ] {item} — link to feature spec
 
 ## NEXT (the next 1–2 cycles)
 
 What is shaped, ready, and queued. Items here have passed Definition of Ready (`../../planning/PROCESS.md` §4) but haven't been pulled into a cycle yet.
 
-- {item} — link to PRD
-- {item} — link to PRD
+- {item} — link to feature spec
+- {item} — link to feature spec
 
 ## LATER (beyond the horizon)
 

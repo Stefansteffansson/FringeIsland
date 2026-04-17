@@ -42,7 +42,7 @@ The operations this service exposes. For each: name, inputs, outputs, errors, au
 
 ## 4. Internal dependencies (consumed *from* this service)
 
-What this service depends on. Allowed dependencies: Platform Core, services below it in the dependency rules (`../planning/sessions/SESSION-BRIDGE-2026-04-10.md` and `../planning/reference/`).
+What this service depends on. Allowed dependencies: Platform Core, services below it in the dependency rules (`../planning/sessions/2026-04-10_-_SESSION-BRIDGE.md` and `../planning/reference/`).
 
 - Platform Core: {Identity, Organisation, Governance, Infrastructure}
 - Other domain services: {DS-N — for what}

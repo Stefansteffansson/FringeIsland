@@ -1,6 +1,6 @@
 # Vertical — V2: Privacy, GDPR & AI Consent
 
-**Status:** Draft (Phase 3 scaffold)
+**Status:** Draft (scaffold — Ferd)
 **Owner:** Stefan
 **Last updated:** 2026-04-08
 **Tier:** Cross-cutting
@@ -50,13 +50,13 @@ Trust is the precondition for everything else FringeIsland tries to do. Privacy 
 
 ## 5. Tooling and infrastructure
 
-- Consent store (Phase 4 — currently partial)
-- Export pipeline (Phase 4 — to be designed)
-- Erasure cascade (Phase 4 — to be designed)
+- Consent store (currently partial — to be refined as the tooling matures)
+- Export pipeline (to be designed)
+- Erasure cascade (to be designed)
 
 ## 6. Failure modes
 
-*To be filled in during Phase 4.*
+*To be filled in as the vertical's tooling and failure cases mature.*
 
 ## 7. Open questions
 
@@ -66,4 +66,4 @@ Trust is the precondition for everything else FringeIsland tries to do. Privacy 
 
 ---
 
-*Phase 3 scaffold. Real content migrates from `../old_*` in Phase 4.*
+*Scaffold — refine in place as the vertical's tooling, failure modes, and open questions resolve. Treat as a living document; amend via `type:process` work items (see PROCESS.md §8).*

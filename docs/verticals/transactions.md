@@ -1,6 +1,6 @@
 # Vertical — V5: Transactions
 
-**Status:** Draft (Phase 3 scaffold)
+**Status:** Draft (scaffold — Ferd)
 **Owner:** Stefan
 **Last updated:** 2026-04-08
 **Tier:** Cross-cutting
@@ -49,13 +49,13 @@ Mishandled money is the fastest way to destroy trust. Mishandled tax is the fast
 ## 5. Tooling and infrastructure
 
 - Payment provider: Stripe (planned)
-- Ledger (Phase 4 — to be designed)
-- Tax engine (Phase 4 — likely Stripe Tax to start)
-- Invoicing pipeline (Phase 4 — to be designed)
+- Ledger (to be designed)
+- Tax engine (likely Stripe Tax to start)
+- Invoicing pipeline (to be designed)
 
 ## 6. Failure modes
 
-*To be filled in during Phase 4.*
+*To be filled in as the vertical's tooling and failure cases mature.*
 
 ## 7. Open questions
 
@@ -65,4 +65,4 @@ Mishandled money is the fastest way to destroy trust. Mishandled tax is the fast
 
 ---
 
-*Phase 3 scaffold. Real content migrates from `../old_*` in Phase 4.*
+*Scaffold — refine in place as the vertical's tooling, failure modes, and open questions resolve. Treat as a living document; amend via `type:process` work items (see PROCESS.md §8).*

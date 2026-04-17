@@ -1,6 +1,6 @@
 # Vertical — V4: Observability
 
-**Status:** Draft (Phase 3 scaffold)
+**Status:** Draft (scaffold — Ferd)
 **Owner:** Stefan
 **Last updated:** 2026-04-08
 **Tier:** Cross-cutting
@@ -48,15 +48,15 @@ Operating a multi-product ecosystem with extensions and 50+ contributors is impo
 
 ## 5. Tooling and infrastructure
 
-- Logger (Phase 4 — currently console-based)
-- Metrics backend (Phase 4 — to be selected)
-- Tracer (Phase 4 — to be selected)
-- Audit log table (Phase 4 — currently partial)
-- Error reporter (Phase 4 — to be selected)
+- Logger (currently console-based — to be refined as the tooling matures)
+- Metrics backend (to be selected)
+- Tracer (to be selected)
+- Audit log table (currently partial — to be refined)
+- Error reporter (to be selected)
 
 ## 6. Failure modes
 
-*To be filled in during Phase 4.*
+*To be filled in as the vertical's tooling and failure cases mature.*
 
 ## 7. Open questions
 
@@ -66,4 +66,4 @@ Operating a multi-product ecosystem with extensions and 50+ contributors is impo
 
 ---
 
-*Phase 3 scaffold. Real content migrates from `../old_*` in Phase 4.*
+*Scaffold — refine in place as the vertical's tooling, failure modes, and open questions resolve. Treat as a living document; amend via `type:process` work items (see PROCESS.md §8).*

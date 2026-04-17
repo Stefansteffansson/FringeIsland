@@ -2,7 +2,7 @@
 
 **Status:** Authoritative way of working
 **Audience:** Anyone building, designing, deciding, or contributing
-**Companion docs:** `../ecosystem/VISION.md` (the why) · `../templates/` (reusable shapes) · `../architecture/ARCHITECTURE_ANATOMY.md` (the what)
+**Companion docs:** `../ecosystem/VISION.md` (the why) · `../templates/` (reusable shapes) · `../architecture/ARCHITECTURE_ANATOMY_V1.md` (the what)
 
 This document is the single canonical reference for how work moves from idea to shipped code at FringeIsland. Read it once, then return to it whenever you're not sure what to do next.
 
@@ -12,7 +12,9 @@ It is **descriptive of the current process**, not aspirational. When the process
 
 ## Section 1 — Work item lifecycle
 
-Every piece of work — feature, bug, spike, decision — moves through the same maturity pipeline. An item enters at level 0 and is only built once it has reached level 4. Items that can't reach level 4 stay parked until they can.
+Every piece of work — feature, bug, spike, decision — moves through the same maturity pipeline. An item enters at level 0 and is only built once it has reached level 4. Items that can't reach level 4 stay where they are until they can.
+
+Under Model A (locked 2026-04-17), **feature-shaped items live as `FEAT-*.md` files in the ecosystem tree under their owner** at every maturity level from 0 to 6. The same file carries the item from raw idea through done — its state is tracked in YAML frontmatter (`maturity: 0-raw` … `maturity: 6-done`), not by which folder it sits in.
 
 ### Visual flow
 
@@ -20,37 +22,57 @@ Every piece of work — feature, bug, spike, decision — moves through the same
    ┌────────────┐    ┌────────────┐    ┌────────────┐    ┌────────────┐    ┌────────────┐
    │ 0 RAW IDEA │ →  │ 1 CONCEPT  │ →  │ 2 EXPLORED │ →  │3 SPECIFIED │ →  │  4 READY   │
    └────────────┘    └────────────┘    └────────────┘    └────────────┘    └────────────┘
-       one              problem          research            user             DoR
-     sentence           +  who           sketched           stories          met
-                        benefits         approach           +  PRD
+       one              problem          research            stories            DoR
+     sentence           +  who           sketched           +  Given/         met
+                        benefits         approach           When/Then
 
-     ─── lives in backlog/discovery.md ───┤├── lives in backlog/product.md ───────┤
-                                                                                  │
-                                                                                  ▼
-                                                                          ┌────────────┐    ┌────────────┐
-                                                                          │ 5 IN CYCLE │ →  │   6 DONE   │
-                                                                          └────────────┘    └────────────┘
-                                                                            pulled            DoD
-                                                                            into              met
-                                                                            cycle
-                                                                          ─── lives in cycles/cycle-current.md ───
+     ─── all levels 0–4 live in `docs/{owner}/features/FEAT-*.md` with YAML `maturity:` ─────┤
+                                                                                      │
+                                                                                      ▼
+                                                                              ┌────────────┐    ┌────────────┐
+                                                                              │ 5 IN CYCLE │ →  │   6 DONE   │
+                                                                              └────────────┘    └────────────┘
+                                                                                pulled            DoD
+                                                                                into              met
+                                                                                cycle
+                                                                              ─── same feature-spec file, updated maturity + Implementation notes ───
+                                                                                  tasks live in `docs/planning/backlog/tasks/TASK-*.md`
 ```
 
 ### Maturity table
 
 | Level | Name | Meaning | Where it lives | Who advances it |
 |-------|------|---------|----------------|-----------------|
-| 0 | Raw idea | One sentence — "wouldn't it be cool if..." | `backlog/discovery.md` | Anyone |
-| 1 | Concept | Problem identified, who benefits, rough shape | `backlog/discovery.md` | Product owner |
-| 2 | Explored | Research done, approach sketched, risks named | `backlog/discovery.md` → `backlog/product.md` | Product owner + research |
-| 3 | Specified | User stories with acceptance criteria + PRD | `backlog/product.md` + `prds/prd-*.md` | Product owner |
-| 4 | Ready | All questions answered, estimable, DoR met | `backlog/product.md` (tagged "ready") | Product owner confirms DoR |
-| 5 | In cycle | Pulled into the active build cycle | `cycles/cycle-current.md` | Developer |
-| 6 | Done | Implemented, tested, deployed, DoD met | `cycles/cycle-current.md` (marked done) | Developer confirms DoD |
+| 0 | Raw idea | One sentence — "wouldn't it be cool if..." | `docs/{owner}/features/FEAT-*.md` with `maturity: 0-raw` | Anyone |
+| 1 | Concept | Problem identified, who benefits, rough shape | same file, `maturity: 1-concept` | Product owner |
+| 2 | Explored | Research done, approach sketched, risks named | same file, `maturity: 2-explored` | Product owner + research |
+| 3 | Specified | Stories with Given/When/Then acceptance criteria in place | same file, `maturity: 3-specified` | Product owner |
+| 4 | Ready | All questions answered, estimable, DoR met | same file, `maturity: 4-ready` | Product owner confirms DoR |
+| 5 | In cycle | Pulled into the active build cycle; tasks generated | same file, `maturity: 5-in-cycle` + `docs/planning/backlog/tasks/TASK-*.md` | Developer |
+| 6 | Done | Implemented, tested, deployed, DoD met | same file, `maturity: 6-done` with Implementation notes filled in | Developer confirms DoD |
+
+**Where `{owner}` is one of:** `products/hub`, `products/gimbal`, `products/game`, `platform/core/{tier}`, `platform/domain`, `studios/{name}`, `design-system`, `verticals`. The owner is also declared in the feature spec's YAML `owner:` field.
+
+**The ecosystem tree is the catalogue, not the backlog.** `docs/planning/backlog/` holds only ephemeral TASK-*.md files (work-in-motion for the current cycle). Feature specs are never duplicated into the planning tree — they live permanently under their owner.
 
 **Movement is one-directional in normal operation.** Items only move backwards when something is wrong (e.g., a "Ready" item turns out to have an unanswered question and drops back to Level 3 until the question is resolved).
 
-**Items at any maturity can be parked in `backlog/icebox.md`** when they're correct but not currently relevant. Icebox items are reviewed at cycle boundaries.
+### Parking work (the icebox mechanism)
+
+Under Model A, the icebox is **a YAML frontmatter flag on a feature spec**, not a separate file. An item at any maturity level (0–6) can be parked by adding:
+
+```yaml
+parked: true
+parked_reason: Priority shifted to Eid wave; revisit when Ferd ships.
+```
+
+**Key properties:**
+
+- Maturity and parked are orthogonal. A feature can be parked at maturity 3 and un-parked later at maturity 3 — parking does not regress maturity.
+- `parked_reason` is required when `parked: true`. This prevents parking decisions from getting lost over time.
+- Absent frontmatter, or `parked: false`, means the item is active in the pipeline.
+- Parked items are reviewed at cycle boundaries (see Section 3 and the `doc-health-check` skill). For each parked item: evaluate whether `parked_reason` still holds; decide to un-park or keep parked.
+- A single grep for `parked: true` across `docs/` returns the full icebox across the ecosystem — no separate file to maintain.
 
 ### Why the pipeline matters
 
@@ -64,13 +86,15 @@ Every work item has a type. The type determines which template to use, which DoD
 
 | Type | What it is | Template | Notes |
 |------|-----------|----------|-------|
-| **feature** | Functional requirement, user-facing | `../templates/prd.md` + `../templates/user-story.md` | Tag with product (`hub`/`gimbal`/etc.) |
-| **nfr** | Non-functional / quality attribute (performance, security, a11y) | `../templates/prd.md` | Often produced by a vertical owner |
+| **feature** | Functional requirement, user-facing | `../templates/feature-spec.md` | Stories are embedded inline with Given/When/Then. Tag with product (`hub`/`gimbal`/etc.). |
+| **nfr** | Non-functional / quality attribute (performance, security, a11y) | `../templates/feature-spec.md` | Often produced by a vertical owner. Same shape as a feature; stories frame the quality attribute. |
 | **architectural** | Technical decision or infrastructure change | `../templates/adr.md` | Always produces an ADR |
 | **spike** | Time-boxed research / exploration | `../templates/research-spike.md` | Output is findings + follow-up items |
-| **bug** | Defect in existing functionality | (lightweight — backlog entry only, no PRD unless complex) | Bypasses maturity 0–2 if obvious |
-| **tech-debt** | Known shortcut that needs addressing | `../templates/prd.md` (lightweight) | Allocate ~15-20% of cycle capacity |
+| **bug** | Defect in existing functionality | (lightweight — backlog entry only, no feature spec unless complex) | Bypasses maturity 0–2 if obvious |
+| **tech-debt** | Known shortcut that needs addressing | `../templates/feature-spec.md` (lightweight) | Allocate ~15–20% of cycle capacity |
 | **process** | Change to the way of working itself | (this file gets updated) | See Section 8 |
+
+**Why `feature-spec.md` covers feature, nfr, and tech-debt:** FringeIsland uses a single canonical spec shape — a feature spec with stories embedded inline (Model A, locked 2026-04-17). There is no separate PRD + user-story file pair. Whether an item is a new capability, a quality attribute, or paying down debt, the artifact has the same structure: problem, solution sketch, stories with Given/When/Then acceptance criteria, and vertical impact. Maturity is tracked in YAML frontmatter (0-raw → 6-done), not by which file or folder the item lives in.
 
 ---
 
@@ -92,8 +116,10 @@ Every work item has a type. The type determines which template to use, which DoD
   - Adjust the current cycle plan if the week revealed new information
 - **Cycle boundary (~2 hrs):**
   - Shape 1–2 bets for the next cycle (Shape Up style)
+  - **Tech-debt / NFR / process allocation:** At least one bet per cycle should be a tech-debt, NFR, or process item — unless the backlog genuinely contains none. The "unless" matters: don't invent debt to meet a quota. But absent a deliberate allocation, feature work consistently crowds out quality work, and the ecosystem degrades in ways that aren't visible until they're expensive.
   - Review metrics (cycle time, throughput, deployment frequency)
   - Update the relevant roadmaps (`docs/ecosystem/ECOSYSTEM_ROADMAP.md`, product roadmaps, `docs/platform/core/ROADMAP.md`)
+  - Run the `doc-health-check` skill (`.claude/skills/doc-health-check/SKILL.md`) to verify ecosystem docs are clean — stale paths, terminology drift, README indexes out of sync, missing DESCRIPTION.md for active entities, unfilled Implementation notes on 6-done specs, parked items whose `parked_reason` no longer holds
   - Run retrospective for the cycle that just ended (template: `../templates/retrospective.md`)
 
 ### Waves as thematic focus
@@ -114,11 +140,11 @@ When a wave's core work is substantially complete, it triggers:
 
 Work that doesn't fit the current wave or cycle is handled through the existing maturity pipeline — not a separate deferral process. The mechanisms:
 
-- **Backlog with wave tags** — items tagged for a later wave stay in the backlog at whatever maturity they've reached. They are visible, filterable, and advance through the pipeline whenever someone works on them.
-- **Icebox** — items that are correct but not currently relevant are parked in `backlog/icebox.md` and reviewed at cycle boundaries.
+- **Backlog with wave tags** — items tagged for a later wave stay as feature specs in the ecosystem tree at whatever maturity they've reached. They are visible, filterable, and advance through the pipeline whenever someone works on them.
+- **Icebox (YAML flag)** — items that are correct but not currently relevant get `parked: true` + `parked_reason` added to their feature spec frontmatter. See Section 1. Parked items are reviewed at cycle boundaries.
 - **Betting table** — items that aren't bet on stay in the backlog. No formal "deferral" is needed — the betting table is the prioritisation mechanism.
 
-The principle: **a deferred item is not done until someone owns it.** When work is moved to a later wave, it must have a clear wave tag and enough context (in its backlog entry or PRD) that a future contributor can pick it up without re-litigating the original decision. Items that have no clear owner after review surface in `../ecosystem/thinking/OPEN_QUESTIONS.md` for strategic resolution.
+The principle: **a deferred item is not done until someone owns it.** When work is moved to a later wave, it must have a clear wave tag and enough context (in its feature spec) that a future contributor can pick it up without re-litigating the original decision. Items that have no clear owner after review surface in `../ecosystem/thinking/OPEN_QUESTIONS.md` for strategic resolution.
 
 ### Why this shape
 
@@ -186,17 +212,66 @@ This is the trigger → artifact map. Whenever you find yourself starting work, 
 | Product enters active development | Product Specification + Roadmap | `../templates/product-specification.md` + `../templates/product-roadmap.md` | `../products/{name}/` |
 | New domain service scoped | Domain Service Specification | `../templates/domain-service-spec.md` | `../platform/domain/{name}.md` |
 | New Studio scoped | Studio Description | `../templates/studio-description.md` | `../studios/{name}/DESCRIPTION.md` |
-| Major feature reaches maturity 3 (Specified) | PRD | `../templates/prd.md` | `prds/prd-{slug}.md` |
+| Feature enters the pipeline (maturity 0-raw or higher) | Feature spec (stories embedded) | `../templates/feature-spec.md` | `../{owner}/features/FEAT-{PREFIX}{NNN}-{slug}.md` |
 | Significant architectural decision is taken | ADR | `../templates/adr.md` | `../architecture/decisions/NNNN-{title}.md` |
 | Planning / design session with Claude | Session bridge | `../templates/session-bridge.md` | `sessions/YYYY-MM-DD-{topic}.md` |
 | Research needed before specifying | Research spike | `../templates/research-spike.md` | `../research/{topic}.md` |
 | Cycle starts | Cycle plan | `../templates/cycle-plan.md` | `cycles/cycle-current.md` |
-| Cycle ends | Retrospective | `../templates/retrospective.md` | `cycles/retro-YYYY-MM-DD.md` |
-| Wave completes (last Build item Done) | Wave retrospective + ecosystem roadmap update | `../templates/retrospective.md` (wave-scoped) | `cycles/retro-wave-{name}.md` + edit `../ecosystem/ECOSYSTEM_ROADMAP.md` |
+| Cycle ends | Retrospective | `../templates/retrospective.md` | `retrospectives/retro-YYYY-MM-DD.md` |
+| Wave completes (last Build item Done) | Wave retrospective + ecosystem roadmap update | `../templates/retrospective.md` (wave-scoped) | `retrospectives/retro-wave-{name}.md` + edit `../ecosystem/ECOSYSTEM_ROADMAP.md` |
 | Cross-cutting vertical concern needs specifying | Vertical spec | `../templates/vertical-spec.md` | `../verticals/{name}.md` |
 | Ecosystem vision changes | Update VISION.md | (no template — constitutional) | `../ecosystem/VISION.md` |
 
-If your trigger isn't in this table, it's either too small for a document (just put it in the backlog) or it's a new kind of work that should be added to this table.
+**A single feature spec covers maturity 0 through 6.** There is no separate PRD artifact. The same `FEAT-*.md` file is created when an idea first lands (maturity 0-raw or 1-concept) and carries that feature all the way through implementation (maturity 6-done with Implementation notes). The YAML `maturity:` field tracks the state — you do not create a new document when a feature reaches maturity 3.
+
+**Where the execution mechanics live: in the skills.** This section lists what artifacts exist and when they appear. The step-by-step mechanics of how work actually moves through the pipeline — how a feature gets decomposed, how tasks are generated from stories, how context is loaded during implementation, how wave progress is tracked — live in `.claude/skills/`. The strategic shape stays in this document; the operational choreography lives in the skill files. See the "Skills as the execution layer" section below for the four skills and when each fires.
+
+If your trigger isn't in this table, it's either too small for a document (just put it in the backlog as a task) or it's a new kind of work that should be added to this table.
+
+---
+
+## Section 6.5 — Skills as the execution layer
+
+PROCESS.md is the strategic document: cadence, pipeline, quality gates, meta-process. It deliberately does **not** contain the step-by-step mechanics of how work actually gets done. Those mechanics live in four skills under `.claude/skills/`. The separation is intentional (DECISION-02, 2026-04-17): strategic rhythm changes slowly, operational choreography changes faster, and merging them produces a 1500-line monolith that nobody reads end-to-end.
+
+When an agent (or a human) picks up real work, the skills are what they load. PROCESS.md tells them *what* to do and *when*; the skills tell them *how*.
+
+### The four skills
+
+**`ecosystem-decomposition`** — `.claude/skills/ecosystem-decomposition/SKILL.md`
+
+The core methodology skill. Fires when someone asks to decompose, break down, spec out, map capabilities, scope a wave, write a product/service/studio description, or take a feature from a vague concept down to a ready-to-build spec. Operates at five levels (Vision → Entities → Capabilities → Features → Tasks) and can be entered at any level. Produces everything from VISION.md edits down to maturity-4 feature specs with stories. This skill owns the vertical trace from the top of the ecosystem to the point where implementation begins.
+
+**`feature-development`** — `.claude/skills/feature-development/SKILL.md`
+
+The execution skill. Fires when a feature is at maturity 4-ready and someone says "build it," "implement FEAT-X", "start working on this feature," or references a specific TASK-*. Picks up the spec, generates tasks from stories if they don't exist yet, loads the right context progressively (root CLAUDE.md → AGENTS.md → tier CLAUDE.md → owner README → feature spec → task), writes code against acceptance criteria, runs lint and tests, updates the feature's maturity to `6-done`, fills in Implementation notes, and cleans up the ephemeral task files. This skill owns the day-to-day work that turns specs into shipped code.
+
+**`wave-planning`** — `.claude/skills/wave-planning/SKILL.md`
+
+The wave-tracking skill. Fires when someone asks for wave status, wave progress, what's left in a wave, whether a wave is complete, or to define/update wave scope and completion criteria. Cross-cuts the ecosystem because a wave references features that live under many different owners. Produces wave-spec documents, wave progress reports, and wave retrospective scopes. This skill is how "are we done with Ferd?" gets answered concretely rather than by gut feel.
+
+**`doc-health-check`** — `.claude/skills/doc-health-check/SKILL.md`
+
+The documentation-quality skill. Fires at every cycle boundary as part of the cooldown ritual (per Section 3), and on-demand after any cross-cutting change — renames, terminology shifts, schema migrations, folder restructures. Runs six checks: terminology drift, schema drift, path + README sync, parked-items review, maturity consistency, entity coverage. Produces a summary that gets pasted into the cycle retrospective. This skill is the safety net that stops documentation rot from accumulating until it becomes a restructure project.
+
+### How the skills fit together
+
+A feature's life, mapped to skills:
+
+```
+   ecosystem-decomposition                feature-development              doc-health-check
+ ┌─────────────────────────────┐        ┌────────────────────────┐       ┌────────────────────────┐
+ │  Maturity 0 → 1 → 2 → 3 → 4   │ -----→ │  Maturity 4 → 5 → 6    │ ----→ │  Verifies the trail  │
+ │  spec written under owner     │        │  tasks + code + done  │       │  at cycle boundary   │
+ └─────────────────────────────┘        └────────────────────────┘       └────────────────────────┘
+                                                                                ▲
+                                                                                │
+           wave-planning  — cross-cuts: reports on all active features at once ─┘
+```
+
+### Adding a new skill
+
+A skill is added when an execution pattern recurs often enough that documenting the mechanics once saves writing them each time, and when the mechanics are specific enough to describe as a step-by-step workflow (rather than just a principle). Proposed skill additions go through the same `type:process` work-item pipeline as PROCESS.md changes themselves. Skills should be scoped tightly — if a skill's description runs longer than a page, it's probably two skills pretending to be one.
 
 ---
 
@@ -208,7 +283,7 @@ Every backlog item carries four tags. Without tags, prioritisation across the ec
 |-----|--------|
 | **Product** | `hub` · `gimbal` · `game` · `journey-studio` · `universe-studio` · `arc-studio` · `platform-core` · `platform-domain` · `design-system` |
 | **Type** | `feature` · `nfr` · `architectural` · `spike` · `bug` · `tech-debt` · `process` |
-| **Maturity** | `0-raw` · `1-concept` · `2-explored` · `3-specified` · `4-ready` |
+| **Maturity** | `0-raw` · `1-concept` · `2-explored` · `3-specified` · `4-ready` · `5-in-cycle` · `6-done` |
 | **Domain service** *(if applicable)* | `world-model` · `narrative` · `experience` · `content` · `communication` · `discovery` · `intelligence` · `extension` |
 | **Wave** *(optional)* | `ferd` · `eid` · `hamn` · `heim` · `brim` · `urd` — separate from and in addition to the product/studio/platform tag |
 
@@ -216,7 +291,7 @@ Every backlog item carries four tags. Without tags, prioritisation across the ec
 
 ### Tag format
 
-In `backlog/discovery.md` and `backlog/product.md`, write tags as a single line beneath the item title:
+In feature specs, tags are declared in YAML frontmatter (`owner`, `consumers`, `wave`, `maturity`). For free-form backlog annotations (e.g., in TASK-*.md files, in session notes, in discussion), write tags as a single line beneath the item title:
 
 ```
 ## Add group polls
@@ -225,7 +300,7 @@ In `backlog/discovery.md` and `backlog/product.md`, write tags as a single line 
 [item description...]
 ```
 
-Tags are required. An untagged item is invisible — it cannot be prioritised, filtered, or assigned to a cycle.
+Tags are required on any item that needs to be found later. An untagged item is invisible — it cannot be prioritised, filtered, or assigned to a cycle.
 
 ---
 
@@ -237,10 +312,12 @@ The process is not sacred. It exists to serve the work, not the other way around
 
 1. **Process changes are work items** — type `process`. They go through the same maturity pipeline.
 2. **PROCESS.md is versioned alongside code** — every change is a normal git commit with a clear "why."
-3. **Quarterly process audit** — once per quarter, ask:
+3. **Quarterly process audit** — once per quarter, write an audit using the retrospective template (`../templates/retrospective.md`) at `retrospectives/audit-YYYY-Q#.md` (e.g., `audit-2026-Q2.md`). The audit asks:
    - What did I skip? (and why — was the rule wrong, or was I wrong?)
    - What's missing? (something we did informally that should be codified)
    - What can be automated? (a checklist that became a script, a template that became a generator)
+   
+   The audit is the same shape as a cycle retro but scoped to an entire quarter — no separate template is needed.
 4. **The process must survive continuous refinement** — adding structure should never erase existing tracking. If a new rule makes an old artifact obsolete, archive the old artifact rather than deleting it.
 5. **No hidden process** — if you're following an unwritten rule, write it down here.
 
@@ -256,14 +333,15 @@ Everything else — cadence, durations, retrospective format, document templates
 
 ## Quick reference
 
-- **Where do I put a new idea?** `backlog/discovery.md`, with tags
-- **Where do I write a feature spec?** `prds/prd-{slug}.md`, using `../templates/prd.md`
+- **Where do I put a new idea?** Create a feature spec at maturity 0-raw under its owner: `../{owner}/features/FEAT-{PREFIX}{NNN}-{slug}.md`, using `../templates/feature-spec.md`. If ownership is unclear, park it in `../ecosystem/thinking/OPEN_QUESTIONS.md` until it's clear where it belongs.
+- **Where do I write a feature spec?** `../{owner}/features/FEAT-{PREFIX}{NNN}-{slug}.md`, using `../templates/feature-spec.md`. The same file carries the feature from maturity 0 through 6.
 - **Where do I record a decision?** `../architecture/decisions/NNNN-{title}.md`, using `../templates/adr.md`
-- **Where do I find what I'm working on this cycle?** `cycles/cycle-current.md`
-- **Where do I park something I don't want to forget but can't act on?** `backlog/icebox.md`
+- **Where do I find what I'm working on this cycle?** `cycles/cycle-current.md` + the TASK-*.md files in `backlog/tasks/`
+- **Where do I park something I don't want to forget but can't act on?** Add `parked: true` and `parked_reason: {explanation}` to the feature spec's YAML frontmatter. No separate icebox file.
 - **Where do I document a session with Claude?** `sessions/YYYY-MM-DD-{topic}.md`
+- **How does a feature actually get built day-to-day?** Use the `feature-development` skill (`.claude/skills/feature-development/SKILL.md`). See the "Skills as the execution layer" section.
 - **What's the way of working?** This file.
 
 ---
 
-**Last updated:** April 2026 — Phase 2 of the doc restructure. See `../../CLAUDE.md` for restructure phase status.
+**Last updated:** 2026-04-17 — way-of-working refactor Session 1 (Tier 1 cleanup + Tier 2 structural additions). See `../../CLAUDE.md` for the project entry point and `../planning/sessions/2026-04-17_-_SESSION-1-TIER-1-CLEANUP.md` for the refactor's execution log.

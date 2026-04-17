@@ -7,6 +7,11 @@ owner: {platform/core/infrastructure | platform/core/identity | platform/core/or
 consumers: [{hub} | {gimbal} | {game} | {studio/journey-studio} | {studio/universe-studio} | {studio/arc-studio}]
 wave: {ferd | eid | hamn | heim | brim | urd}
 maturity: {0-raw | 1-concept | 2-explored | 3-specified | 4-ready | 5-in-cycle | 6-done}
+# Optional parking fields (the icebox mechanism under Model A).
+# Omit both fields when the feature is active. When parked, BOTH must be set.
+# Maturity and parked are orthogonal — parking does not regress maturity.
+# parked: true
+# parked_reason: {Short explanation — e.g., "Priority shifted to Eid wave; revisit when Ferd ships."}
 ---
 
 ## Problem

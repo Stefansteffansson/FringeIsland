@@ -174,7 +174,7 @@ Phases overlap. Each wave begins building before the previous is complete. Nothi
 ### Wave 5 — Brim (Edge, horizon)
 ### Beyond — Urd (Fate, origin)
 
-*Wave redistribution from the old 2-wave model was completed on 2026-04-07. See [DEFERRED.md](../../old_products/ferd/planning/DEFERRED.md) for item-level wave assignments and [ADR-U022](../decisions/ADR-U022-named-waves.md) for the naming rationale.*
+*Wave redistribution from the old 2-wave model was completed on 2026-04-07. See the [2026-04-07 wave-redistribution session bridge](../../planning/sessions/2026-04-07-wave-redistribution.md) for the item-level redistribution decisions and [ADR-U022](../../architecture/decisions/ADR-U022-named-waves.md) for the naming rationale.*
 
 ---
 

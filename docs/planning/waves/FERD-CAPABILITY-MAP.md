@@ -171,7 +171,7 @@
 
 | ID | Capability | Status | % | Depends on | Notes |
 |----|-----------|--------|---|------------|-------|
-| 108 | Privacy / GDPR compliance | Partial | 15 | 14-18 | `docs/verticals/privacy.md` scaffold exists (Phase 3). No consent store, no data export, no PII scrubbing, no self-service exit. Hard delete exists for right-to-erasure (admin-initiated only). Forum anonymisation via ADR-U021. |
+| 108 | Privacy / GDPR compliance | Partial | 15 | 14-18 | `docs/verticals/privacy.md` scaffold exists (wave Ferd). No consent store, no data export, no PII scrubbing, no self-service exit. Hard delete exists for right-to-erasure (admin-initiated only). Forum anonymisation via ADR-U021. |
 | 109 | Observability | Partial | 30 | 41, 49 | Audit log table + triggers exist. No audit log viewer. No login audit trail. No system health dashboard. No error tracking integration. |
 | 110 | Administration | Partial | 50 | 36-50 | User management panel functional. DeusEx member management done. Fix-orphans utility done. Missing: group admin, journey admin, audit viewer, moderation, system group views. |
 
