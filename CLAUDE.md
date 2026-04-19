@@ -156,19 +156,4 @@ Hard-won lessons; read once, remember forever.
 
 ---
 
-## Directory purpose guide (ecosystem vs. planning)
-
-| Directory | What belongs here | What does NOT |
-|-----------|-------------------|---------------|
-| `docs/ecosystem/` | Strategic, philosophical, cross-product — "what is FringeIsland?" | Technical architecture, service specs, planning artifacts |
-| `docs/ecosystem/universe/` | Universe design — cosmology, beings, narrative, community | Service specs (→ platform/), open questions (→ thinking/) |
-| `docs/ecosystem/strategy/` | Stable directional documents — product family, contributors | Open questions (→ thinking/), research (→ research/) |
-| `docs/ecosystem/thinking/` | Open questions, explorations, items awaiting clear ownership | Stable strategy (→ strategy/), research (→ research/) |
-| `docs/architecture/` | Structural models, binding decisions (ADRs), dependency diagrams | Service descriptions, feature specs, planning snapshots |
-| `docs/platform/` | Service descriptions, feature specs, API contracts | Binding decisions (→ architecture/), ecosystem strategy (→ ecosystem/) |
-| `docs/planning/reference/` | Point-in-time snapshots informing planning cycles | Permanent structural models (→ architecture/) |
-| `docs/research/` | Research reports regardless of topic | Strategy (→ ecosystem/), decisions (→ architecture/) |
-
----
-
 **This file is a routing document — WHERE to look, not HOW to code.** Code patterns live in the codebase. Operational mechanics live in the skills. Strategic rhythm lives in PROCESS.md.
