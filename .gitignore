@@ -27,7 +27,8 @@ build
 
 # MCP Configuration (contains sensitive keys)
 .mcp.json
-.claude/
+.claude/*
+!.claude/skills/
 
 # SQLite databases (local development)
 *.db
