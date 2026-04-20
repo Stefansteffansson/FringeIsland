@@ -1,6 +1,6 @@
 # Gaps register
 
-**Status:** eighteen known documentation and design gaps across the FringeIsland development system as of 2026-04-19.
+**Status:** seventeen known documentation and design gaps across the FringeIsland development system as of 2026-04-19.
 
 **Purpose:** a single place to see every gap flagged in the [how-we-work](./README.md) chapters, grouped by axis, with suggested resolution and priority.
 
@@ -19,7 +19,6 @@
 | G-05 | Cadence | Review queue not operationalized | **High** | Extend PROCESS.md or `feature-development` skill with review handoff protocol |
 | G-06 | Cadence | Multi-agent task locking | **High** | ADR + `assigned_to` atomicity rule in `feature-development` skill |
 | G-07 | Cadence | Ferd DoD empty | Medium | Populate `docs/planning/waves/ferd.md` DoD section |
-| G-08 | Cadence | PROCESS.md §3 WIP drift | Low | One-word fix: "doing" → "review" |
 | G-09 | Execution (kanban) | Refinement ritual undocumented | Medium | Extend `ecosystem-decomposition` skill with the refinement activity (not just artifacts) |
 | G-10 | Execution (kanban) | Board mechanic unchosen | Medium | Decision + documentation: pick a tool (GitHub Projects / Linear / MD-query / …) |
 | G-11 | Execution (build) | TDD overstated vs risk-based | Low | Reconcile root CLAUDE.md and the research report — ADR or doc fix |
@@ -73,11 +72,6 @@ WIP is a personal-kanban construct. At 50+ parallel contributors — the stated 
 The wave-spec template has the DoD shape. `docs/planning/waves/ferd.md` has not had the Ferd-specific criteria populated. Without it, "are we done with Ferd?" cannot be answered concretely.
 
 *Proposed fix:* populate the DoD section in `docs/planning/waves/ferd.md`. This is the natural work product of a session using the `wave-planning` skill. Suggested timing: during the cooldown before Eid begins ramping up.
-
-**G-08 — PROCESS.md §3 WIP placement drift.** **Low-effort, high-conceptual value.**
-Research intent (from "AI Agents Broke the Sprint" in `docs/research/`): WIP at review stage. PROCESS.md §3 current text: "WIP limit: 3 items in doing at any time." One-word fix.
-
-*Proposed fix:* edit PROCESS.md §3: "in doing" → "in review". Same commit, update the "What to adjust first" section if it references the original wording. Add a CHANGELOG entry noting the clarification.
 
 ### Execution — chapters 03 and 04
 
@@ -161,7 +155,6 @@ Three `AGENTS.md` files exist: `/AGENTS.md` (canonical for Claude), `configs/cod
 - G-18 Research pathway under-specified
 
 **Low priority** (single-word fixes or edge cases):
-- G-08 PROCESS.md §3 WIP drift
 - G-11 TDD overstated vs risk-based
 - G-17 AGENTS.md precedence across tools
 

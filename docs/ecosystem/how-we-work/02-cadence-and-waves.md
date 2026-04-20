@@ -29,7 +29,7 @@ Wave tags on feature specs (`wave: ferd` / `wave: eid` / etc.) are used for filt
 The cadence is a hybrid: Personal Kanban's continuous flow for daily execution, plus Shape Up's strategic shaping at cycle boundaries. The shape:
 
 - **3-week build cycles with 1-week cooldowns between them.** Cooldown is not downtime — it's where bug fixing, tech debt, process refinement, and shaping of next cycle's bets happen. Without cooldown, every cycle's overflow becomes the next cycle's starting debt.
-- **WIP limit of 3 at the REVIEW stage** — not at the doing stage. Parallelism during build is fine; review is the real bottleneck. This comes from the research report "AI Agents Broke the Sprint" that informed PROCESS.md, though note that PROCESS.md §3 still currently says "WIP limit: 3 items in doing at any time" — that's a drift item flagged in [`gaps.md`](./gaps.md).
+- **WIP limit of 3 at the REVIEW stage** — not at the doing stage. Parallelism during build is fine; review is the real bottleneck. This comes from the research report "AI Agents Broke the Sprint" that informed PROCESS.md, and is reflected directly in PROCESS.md §3.
 - **Daily practice (~8 minutes total)** — morning intention (what's the one thing to ship today?), end-of-day log (what was done, what was learned, what's blocked).
 - **Weekly Three Ls retro (~30 minutes, Friday)** — Liked / Learned / Lacked. Not optional even in quiet weeks.
 - **Cycle boundary (~2 hours)** — retrospective for the cycle ending; betting table for the cycle starting; doc-health-check invocation; metrics review.
@@ -55,7 +55,7 @@ Because waves are thematic and cycles are operational, a single cycle can legiti
 
 ## Gaps flagged on this axis
 
-Five gaps, consolidated in [`gaps.md`](./gaps.md):
+Four gaps, consolidated in [`gaps.md`](./gaps.md):
 
 **Wave ↔ roadmap relationship.** PROCESS.md §3 references ecosystem, product, and platform roadmaps alongside the wave model. The relationship is unresolved: do waves duplicate roadmaps, complement them, or replace them? If `ECOSYSTEM_ROADMAP.md` lists "NOW: Ferd / NEXT: Eid / LATER: Hamn," it duplicates the waves band; if it lists features in NOW/NEXT/LATER buckets independent of wave grouping, it's a third band on this axis that the current diagram doesn't show.
 
@@ -64,8 +64,6 @@ Five gaps, consolidated in [`gaps.md`](./gaps.md):
 **Multi-agent task locking.** WIP is a personal-kanban construct. At 50+ parallel contributors, two agents can independently pick up the same `TASK-*.md`. The `assigned_to` field is the obvious lock primitive, but no atomicity rule or collision-detection mechanism is documented.
 
 **Ferd DoD empty.** The wave-spec template has the Definition of Done shape (feature completeness, quality gates, documentation, retrospective). `docs/planning/waves/ferd.md` has not had these boxes filled with Ferd-specific criteria. This matters because "are we done with Ferd?" cannot be answered concretely without a Ferd-specific DoD — which is exactly the question the wave-planning skill is meant to answer.
-
-**PROCESS.md §3 WIP placement drift.** The canonical intent (from the research report that informed PROCESS.md) is WIP at the review stage. PROCESS.md §3 currently reads "WIP limit: 3 items in doing." This is a one-word fix but matters because it changes what the rule enforces — build parallelism vs review bandwidth.
 
 ## Canonical sources
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 860" role="img" font-family="'Inter', 'Anthropic Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
 <title>The horizontal time axis — six waves as equal-length overlapping bars continuing the staircase, cycles and cooldowns as the operational rhythm, and four nested retrospective scales</title>
-<desc>Top band shows six named waves (Ferd, Eid, Hamn, Heim, Brim, Urd) as equal-length staggered bars across a left-to-right time axis, each offset one step further right from the previous. Each bar has title on first line and thematic focus on second line. Middle band shows the cycle-cooldown rhythm. A WIP limit marker clarifies it applies to review stage. Bottom section shows the four retro scales nesting from daily intention through weekly Three Ls, cycle retro, and wave retro. Four dashed red gaps flag unresolved items and a drift note.</desc>
+<desc>Top band shows six named waves (Ferd, Eid, Hamn, Heim, Brim, Urd) as equal-length staggered bars across a left-to-right time axis, each offset one step further right from the previous. Each bar has title on first line and thematic focus on second line. Middle band shows the cycle-cooldown rhythm. A WIP limit marker clarifies it applies to review stage. Bottom section shows the four retro scales nesting from daily intention through weekly Three Ls, cycle retro, and wave retro. Three dashed red gaps flag unresolved items.</desc>
 <style>
   .t  { font-size: 14px; fill: #3d3d3a; font-weight: 400; }
   .ts { font-size: 12px; fill: #5f5e5a; font-weight: 400; }
@@ -147,5 +147,5 @@
 <text class="ts" x="40" y="788" fill="#5F5E5A">Quarterly process audit — same template, scope = entire quarter (PROCESS.md §8)</text>
 
 <text class="ts" x="40" y="820" fill="#A32D2D">Gaps (see prose): wave ↔ roadmap relationship · review queue not operationalized ·</text>
-<text class="ts" x="40" y="836" fill="#A32D2D">multi-agent task locking · Ferd DoD empty · PROCESS.md §3 still says WIP at doing — drift</text>
+<text class="ts" x="40" y="836" fill="#A32D2D">multi-agent task locking · Ferd DoD empty</text>
 </svg>

@@ -106,7 +106,7 @@ Every work item has a type. The type determines which template to use, which DoD
 ### Recommended starting cadence
 
 - **3-week build cycles** with a **1-week cooldown** between cycles
-- **WIP limit:** 3 items in "doing" at any time (anything beyond gets blocked or returned)
+- **WIP limit:** 3 items in "review" at any time (anything beyond gets blocked or returned)
 - **Daily practice (~8 min):**
   - Morning: write a one-sentence intention for the day
   - End of day: log what was done, what was learned, what's blocked
@@ -127,7 +127,7 @@ Every work item has a type. The type determines which template to use, which DoD
 
 Waves (Ferd → Eid → Hamn → Heim → Brim → Urd) are **thematic focus buckets**, not sequential gates. They communicate what the ecosystem prioritises during a period — earlier waves are generally prioritised over later waves, but this is a guideline, not a rule.
 
-Work from any wave can be in any maturity state (Concept, Study, Specify, Build) at any time. Waves overlap naturally: one winds down as the next builds up, and items from different waves may coexist in the same cycle. **WIP limits constrain total active work regardless of which wave items come from** — that's the real concurrency control, not wave boundaries.
+Work from any wave can be in any maturity state (Concept, Study, Specify, Build) at any time. Waves overlap naturally: one winds down as the next builds up, and items from different waves may coexist in the same cycle. **The review-stage WIP limit constrains throughput across all active work regardless of which wave items come from** — that's the real enforcement mechanism, not wave boundaries.
 
 Wave tags (`ferd`, `eid`, `hamn`, etc.) are used for filtering, prioritisation, and strategic overview — see Section 7. They are not permissions.
 
@@ -150,7 +150,7 @@ The principle: **a deferred item is not done until someone owns it.** When work 
 ### Why this shape
 
 - **Cycles + cooldown** — gives a forcing function to ship and a buffer to absorb spillover, fix bugs, and rest. Without cooldown, every cycle's overflow becomes the next cycle's starting debt.
-- **WIP limit of 3** — concurrent work multiplies cognitive load nonlinearly. Three is the empirical sweet spot for solo and small-team work.
+- **WIP limit of 3 at review** — review is serialised human attention; it can't be parallelised the way build work can. Review is the real bottleneck, so that's where the limit bites. Parallelism during build is fine; throughput is gated at review. Three in review is the empirical sweet spot for solo and small-team work.
 - **Daily intention + log** — replaces the "where was I?" startup tax with a 30-second read.
 - **Weekly Three Ls** — the smallest retrospective that still produces signal. Not optional even when "nothing happened."
 - **Cycle boundary** — the only time you allow yourself to zoom out. Without it, urgent work eats important work.
@@ -158,7 +158,7 @@ The principle: **a deferred item is not done until someone owns it.** When work 
 ### What to adjust first
 
 If something is wrong, this is the order to try changes in:
-1. **Lower the WIP limit** before lengthening cycles. Most cadence pain is concurrency pain in disguise.
+1. **Lower the review-stage WIP limit** before lengthening cycles. Most cadence pain is review-queue pain in disguise — things piling up waiting for review rather than too many things being worked on.
 2. **Shorten cycles** if you keep underestimating; **lengthen cycles** if shaping repeatedly fails to fit.
 3. **Compress the daily practice** before dropping it. Even 60 seconds beats zero.
 4. **Move the weekly retro** to a different day before skipping it.
@@ -345,4 +345,4 @@ Everything else — cadence, durations, retrospective format, document templates
 
 ---
 
-**Last updated:** 2026-04-17 — way-of-working refactor Session 1 (Tier 1 cleanup + Tier 2 structural additions). See `../../CLAUDE.md` for the project entry point and `../planning/sessions/2026-04-17_-_SESSION-1-TIER-1-CLEANUP.md` for the refactor's execution log.
+**Last updated:** 2026-04-19 — gap review hook added to §3 cycle boundary; WIP limit in §3 corrected from "doing" to "review" (closing G-08); follow-on rewording of three §3 passages (wave paragraph, "Why this shape" rationale, "What to adjust first" item 1) to align with review-stage WIP framing. Previous update: 2026-04-17 way-of-working refactor Session 1 (Tier 1 cleanup + Tier 2 structural additions). See `../../CLAUDE.md` for the project entry point and `../planning/sessions/2026-04-17_-_SESSION-1-TIER-1-CLEANUP.md` for the refactor's execution log.
