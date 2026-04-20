@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FringeIsland — How We Work</title>
+<style>
+  :root {
+    --bg: #fdfcf7;
+    --surface: #ffffff;
+    --surface-2: #f1efe8;
+    --surface-hover: #e8e5db;
+    --text: #3d3d3a;
+    --text-muted: #5f5e5a;
+    --text-subtle: #888780;
+    --border: rgba(0,0,0,0.12);
+    --border-strong: rgba(0,0,0,0.2);
+    --red: #A32D2D;
+    --red-bg: #FCEBEB;
+    --red-bg-2: #F7D5D5;
+    --amber: #BA7517;
+    --amber-bg: #FAF3E5;
+    --green-bg: #EDF3E0;
+    --accent: #534AB7;
+    --accent-bg: #EEEDFE;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1f1e1b;
+      --surface: #2a2926;
+      --surface-2: #3a3934;
+      --surface-hover: #45443f;
+      --text: #e8e6de;
+      --text-muted: #c2c0b6;
+      --text-subtle: #9c9a92;
+      --border: rgba(255,255,255,0.12);
+      --border-strong: rgba(255,255,255,0.2);
+      --red: #F09595;
+      --red-bg: #501313;
+      --red-bg-2: #6a1d1d;
+      --amber: #EF9F27;
+      --amber-bg: #4a3a10;
+      --green-bg: #2f3e1a;
+      --accent: #AFA9EC;
+      --accent-bg: #3C3489;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', 'Anthropic Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+  }
+  header.page-header {
+    padding: 2.5rem 2rem 1.25rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  header.page-header h1 {
+    font-size: 28px;
+    font-weight: 500;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
+  }
+  header.page-header p.lede {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 15px;
+  }
+
+  /* Tab bar */
+  nav.tabs {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  nav.tabs button {
+    flex: 0 0 auto;
+    padding: 0.75rem 1.15rem;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    white-space: nowrap;
+    margin-bottom: -1px;
+    border-radius: 6px 6px 0 0;
+  }
+  nav.tabs button:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+  nav.tabs button[aria-selected="true"] {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: transparent;
+  }
+  nav.tabs button .tab-num {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--text-subtle);
+    margin-right: 0.4rem;
+    font-weight: 400;
+  }
+  nav.tabs button[aria-selected="true"] .tab-num {
+    color: var(--accent);
+  }
+
+  /* Panels */
+  main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  .panel {
+    display: none;
+    animation: fadeIn 0.2s ease-out;
+  }
+  .panel[data-active="true"] {
+    display: block;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .panel h2 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
+  }
+  .panel .panel-meta {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 1.5rem;
+  }
+  .panel h3 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  .panel p {
+    color: var(--text-muted);
+    margin: 0.75rem 0;
+  }
+  .panel p strong { color: var(--text); font-weight: 500; }
+  .panel ul {
+    color: var(--text-muted);
+    padding-left: 1.5rem;
+  }
+  .panel li {
+    margin: 0.35rem 0;
+  }
+
+  .svg-frame {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 1.25rem 0 1.75rem;
+    overflow-x: auto;
+  }
+  .svg-frame object {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Callout box */
+  .callout {
+    background: var(--amber-bg);
+    border-left: 3px solid var(--amber);
+    padding: 0.75rem 1rem;
+    margin: 1.25rem 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  /* Gap cards */
+  .gap-list {
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .gap-list li {
+    margin-bottom: 0.6rem;
+  }
+  .gap-card {
+    background: var(--red-bg);
+    border: 1px solid var(--red);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .gap-card summary {
+    padding: 0.65rem 1rem;
+    cursor: pointer;
+    color: var(--red);
+    font-size: 14px;
+    font-weight: 500;
+    list-style: none;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+  .gap-card summary::-webkit-details-marker { display: none; }
+  .gap-card summary::after {
+    content: '+';
+    font-size: 18px;
+    color: var(--red);
+    line-height: 1;
+    transition: transform 0.15s;
+    flex: 0 0 auto;
+  }
+  .gap-card[open] summary::after { content: '–'; }
+  .gap-card summary:hover { background: var(--red-bg-2); }
+  .gap-card .gap-body {
+    padding: 0 1rem 0.9rem;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .gap-body p { margin: 0.5rem 0; color: var(--text); }
+  .gap-body .gap-fix {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--red);
+    color: var(--text-muted);
+  }
+  .pri-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-left: auto;
+    margin-right: 0.6rem;
+    flex: 0 0 auto;
+  }
+  .pri-high { background: var(--red); color: white; }
+  .pri-med  { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber); }
+  .pri-low  { background: var(--green-bg); color: #3B6D11; border: 1px solid #3B6D11; }
+  @media (prefers-color-scheme: dark) {
+    .pri-low { color: #97C459; border-color: #97C459; }
+  }
+
+  /* Gaps table (gaps panel) */
+  .gaps-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 14px;
+  }
+  .gaps-table th {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    background: var(--surface-2);
+    color: var(--text);
+    font-weight: 500;
+    border-bottom: 2px solid var(--border-strong);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .gaps-table td {
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .gaps-table td.id-cell {
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    width: 72px;
+  }
+  .gaps-table td.axis-cell {
+    color: var(--text-subtle);
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .gaps-table td.gap-name {
+    color: var(--text);
+  }
+  .gaps-table td.pri-cell {
+    width: 80px;
+    text-align: right;
+  }
+  .gaps-table tr:hover td {
+    background: var(--surface-2);
+  }
+
+  /* Priority summary strip (overview tab) */
+  .pri-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .pri-card {
+    border-radius: 10px;
+    padding: 1rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+  }
+  .pri-card.high { background: var(--red-bg); border-color: var(--red); }
+  .pri-card h4 {
+    margin: 0 0 0.5rem;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .pri-card.high h4 { color: var(--red); }
+  .pri-card .count {
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1;
+    margin: 0.25rem 0 0.5rem;
+  }
+  .pri-card .count-hint {
+    font-size: 12px;
+    color: var(--text-subtle);
+  }
+
+  /* Footer */
+  footer {
+    max-width: 1000px;
+    margin: 3rem auto 2rem;
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-subtle);
+    font-size: 13px;
+  }
+  footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  footer a:hover { color: var(--text); }
+
+  a.chapter-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-size: 14px;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+  }
+  .file-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 13px;
+  }
+  .file-link:hover { text-decoration: underline; }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    header.page-header, main { padding-left: 1rem; padding-right: 1rem; }
+    nav.tabs { padding: 0 1rem; }
+    .pri-strip { grid-template-columns: 1fr; }
+    .gaps-table td.axis-cell { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <h1>How we work</h1>
+  <p class="lede">The FringeIsland development system — four axes, five diagrams, eighteen flagged gaps. Click any gap card to expand its commentary.</p>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Chapters">
+  <button role="tab" aria-selected="true"  aria-controls="panel-overview" id="tab-overview" data-tab="overview"><span class="tab-num">0</span>Overview</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-ch1"      id="tab-ch1"      data-tab="ch1"><span class="tab-num">1</span>Decomposition</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-ch2"      id="tab-ch2"      data-tab="ch2"><span class="tab-num">2</span>Cadence &amp; waves</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-ch3"      id="tab-ch3"      data-tab="ch3"><span class="tab-num">3</span>Kanban</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-ch4"      id="tab-ch4"      data-tab="ch4"><span class="tab-num">4</span>Build loop</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-ch5"      id="tab-ch5"      data-tab="ch5"><span class="tab-num">5</span>Agent routing</button>
+  <button role="tab" aria-selected="false" aria-controls="panel-gaps"     id="tab-gaps"     data-tab="gaps"><span class="tab-num">✻</span>Gaps register</button>
+</nav>
+
+<main>
+
+<!-- ======================= OVERVIEW ======================= -->
+<section class="panel" data-active="true" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
+  <h2>Overview</h2>
+  <p class="panel-meta">How this document is organised · what the four axes are · how to navigate</p>
+
+  <p>This document describes how FringeIsland is actually developed — end-to-end, from ecosystem purpose down to shipped code. It has two purposes: a self-orientation aid for the sole developer, and onboarding material for future contributors.</p>
+
+  <p>The development system has <strong>four axes</strong>. Each lives on its own tab with a diagram and prose. You can read them in any order, but the order below is the one that builds understanding fastest.</p>
+
+  <h3>The four axes</h3>
+  <ul>
+    <li><strong>Decomposition cascade</strong> (tab 1) — the <em>vertical</em> axis. Vision → Entities → Capabilities → Features → Tasks.</li>
+    <li><strong>Cadence and waves</strong> (tab 2) — the <em>horizontal</em> axis. How time is structured: cycles, cooldowns, the six waves, retros.</li>
+    <li><strong>Execution</strong> (tabs 3 and 4) — the <em>work-level</em> axis. Part 1: how items get refined and onto the board. Part 2: the per-task build loop.</li>
+    <li><strong>Agent routing</strong> (tab 5) — the <em>entry</em> axis. How an agent or human enters the system and builds context progressively.</li>
+  </ul>
+
+  <h3>On gaps</h3>
+  <p>The system has known documentation and design gaps. They are flagged inline in each chapter and consolidated on the Gaps tab. They are surfaced honestly because the primary reader (Stefan) is using this document to spot what's missing. Future contributors should treat the gap list as a to-do, not a stable description of the system.</p>
+  <p>As of 2026-04-19 there are eighteen flagged gaps. None block current solo-operator work. All compound as the system scales toward the 50-plus-contributor target.</p>
+
+  <div class="pri-strip">
+    <div class="pri-card high">
+      <h4>High priority</h4>
+      <div class="count">4</div>
+      <div class="count-hint">Compound silently or block scale</div>
+    </div>
+    <div class="pri-card">
+      <h4>Medium priority</h4>
+      <div class="count">11</div>
+      <div class="count-hint">Affect clarity &amp; onboarding</div>
+    </div>
+    <div class="pri-card">
+      <h4>Low priority</h4>
+      <div class="count">3</div>
+      <div class="count-hint">Edge cases or one-word fixes</div>
+    </div>
+  </div>
+
+  <h3>Companion documents</h3>
+  <p>Each chapter has a full-prose markdown companion alongside this interactive view:
+    <a href="./01-decomposition.md" class="file-link">01</a> ·
+    <a href="./02-cadence-and-waves.md" class="file-link">02</a> ·
+    <a href="./03-execution-kanban.md" class="file-link">03</a> ·
+    <a href="./04-execution-build-loop.md" class="file-link">04</a> ·
+    <a href="./05-agent-routing.md" class="file-link">05</a> ·
+    consolidated <a href="./gaps.md" class="file-link">gaps register</a>.
+    A shareable Word document of the whole set is at <a href="./FringeIsland-how-we-work.docx" class="file-link">FringeIsland-how-we-work.docx</a>.
+  </p>
+</section>
+
+<!-- ======================= CHAPTER 1 ======================= -->
+<section class="panel" id="panel-ch1" role="tabpanel" aria-labelledby="tab-ch1">
+  <h2>1 — Decomposition cascade</h2>
+  <p class="panel-meta">The vertical axis · from ecosystem vision down to the tasks that ship</p>
+
+  <div class="svg-frame"><object data="./assets/01-decomposition-cascade.svg" type="image/svg+xml" aria-label="Decomposition cascade"></object></div>
+
+  <p>Work descends through five levels: <strong>Vision → Entities → Capabilities → Features → Tasks</strong>. Five verticals thread through every level as cross-cutting obligations, not a sixth level. The same <code>FEAT-*.md</code> file carries a feature from maturity 0 through 6.</p>
+
+  <div class="callout">The verticals thread the whole cascade because they derive their authority from vision-level principles (e.g. <em>Privacy over commercial opportunity</em>). Every feature spec addresses all five — no blanks.</div>
+
+  <h3>Gaps on this axis</h3>
+  <ul class="gap-list">
+    <li><details class="gap-card"><summary><span>G-01 · Whisp architectural placement (L2)</span><span class="pri-tag pri-med">Medium</span></summary><div class="gap-body">
+      <p>Vision names Whisp as a core structural concept, operating across all three worlds as companion voice, perceptual richness, and active instrument. At L2 none of the current entities owns Whisp. Natural candidates: Intelligence (DS-7), World Model (DS-1), or a cross-service abstraction.</p>
+      <p>Every Whisp-involving feature has no routing to an owner — it falls into <code>OPEN_QUESTIONS.md</code> by default.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> ADR that assigns Whisp to an existing domain service, creates a new one, or locks "Whisp is cross-cutting; its features are paired specs between Intelligence and World Model."</p>
+    </div></details></li>
+
+    <li><details class="gap-card"><summary><span>G-02 · Cross-product feature sync (L4)</span><span class="pri-tag pri-med">Medium</span></summary><div class="gap-body">
+      <p>The <code>ecosystem-decomposition</code> skill defines the paired-spec pattern (Hub UI + Platform data model, linked via "Platform dependencies"). The linking is named; the synchronization is not. When FEAT-H005 changes its acceptance criteria, nothing alerts FEAT-PD003's owner.</p>
+      <p>The DoR check fires once at spec creation; nothing fires afterwards.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> extend <code>ecosystem-decomposition</code> skill with a "cross-product sync" procedure, ideally invoked during <code>doc-health-check</code> at cycle boundaries.</p>
+    </div></details></li>
+
+    <li><details class="gap-card"><summary><span>G-03 · Vertical specs are scaffolds (cross-cut)</span><span class="pri-tag pri-high">High</span></summary><div class="gap-body">
+      <p><strong>The highest-priority gap in the whole document.</strong></p>
+      <p>Five vertical spec files exist. Their §1 (Purpose) and §2 (Scope) are written. Their §3 (tier-specific obligations), §4 (cross-cutting checklists that feed DoD), §5 (tooling), and §6 (failure modes) are all marked "currently partial — to be refined."</p>
+      <p>Meanwhile, every feature spec is forced to complete a Vertical Impact section against those stubs. Authors necessarily invent implicit definitions. Those definitions diverge across specs. When the vertical specs are eventually populated, a subset of shipped features will be out of compliance with the newly-explicit rules.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> populate §3 through §6 of each of the five vertical specs. Probably a full cycle's work. Suggested order: Privacy → Observability → Administration → Notifications → Transactions.</p>
+    </div></details></li>
+  </ul>
+  <a class="chapter-link" href="./01-decomposition.md">Read the full chapter →</a>
+</section>
+
+<!-- ======================= CHAPTER 2 ======================= -->
+<section class="panel" id="panel-ch2" role="tabpanel" aria-labelledby="tab-ch2">
+  <h2>2 — Cadence and waves</h2>
+  <p class="panel-meta">The horizontal axis · how time is structured</p>
+
+  <div class="svg-frame"><object data="./assets/02-cadence-and-waves.svg" type="image/svg+xml" aria-label="Cadence and waves"></object></div>
+
+  <p>Three bands operating at different frequencies. <strong>Waves</strong> are thematic focus buckets that overlap in time — not sequential gates. <strong>Cycles</strong> are the operational rhythm: 3-week build + 1-week cooldown. <strong>Retros</strong> nest at four scales — daily, weekly, cycle, wave — reusing one template.</p>
+
+  <div class="callout">Items from any wave can coexist in a single cycle. What enforces concurrency is the WIP limit (3 items at the review stage), not wave boundaries.</div>
+
+  <h3>Gaps on this axis</h3>
+  <ul class="gap-list">
+    <li><details class="gap-card"><summary><span>G-04 · Wave ↔ roadmap relationship</span><span class="pri-tag pri-med">Medium</span></summary><div class="gap-body">
+      <p>PROCESS.md §3 references ecosystem, product, and platform roadmaps alongside the wave model. If ECOSYSTEM_ROADMAP.md shows "NOW: Ferd / NEXT: Eid / LATER: Hamn" it duplicates the waves band. If it shows NOW/NEXT/LATER features independent of wave grouping, it's a separate planning layer.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> session decision during cooldown. Three options: (a) waves replace roadmaps, (b) roadmaps are NOW/NEXT/LATER within waves, (c) they are orthogonal.</p>
+    </div></details></li>
+
+    <li><details class="gap-card"><summary><span>G-05 · Review queue not operationalized</span><span class="pri-tag pri-high">High</span></summary><div class="gap-body">
+      <p>Tasks have <code>status: review</code> and <code>assigned_to</code> in frontmatter. No document describes how a reviewer is chosen, how a task flows from in_progress to review to approved, or how the WIP-at-review rule actually bites. The bottleneck has no enforcement mechanism.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> extend <code>feature-development</code> skill with a Review section covering reviewer assignment, review checklist, review outcomes, and WIP enforcement.</p>
+    </div></details></li>
+
+    <li><details class="gap-card"><summary><span>G-06 · Multi-agent task locking</span><span class="pri-tag pri-high">High</span></summary><div class="gap-body">
+      <p>WIP is a personal-kanban construct. At the 50+ parallel contributors target, two agents can independently pick up the same <code>TASK-*.md</code>. The <code>assigned_to</code> field is the obvious lock primitive; no atomicity rule or collision detection is specified.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> ADR on multi-agent task acquisition. Probably (a) <code>assigned_to</code> empty-or-self-only rule, (b) explicit claim step in <code>feature-development</code> skill, (c) optional TASK-LOCK primitive for high-contention cases.</p>
+    </div></details></li>
+
+    <li><details class="gap-card"><summary><span>G-07 · Ferd DoD empty</span><span class="pri-tag pri-med">Medium</span></summary><div class="gap-body">
+      <p>Wave-spec template has the DoD shape. <code>docs/planning/waves/ferd.md</code> has not had Ferd-specific criteria populated. "Are we done with Ferd?" cannot be answered concretely.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> populate the DoD section using the <code>wave-planning</code> skill. Timing: during the cooldown before Eid ramps up.</p>
+    </div></details></li>
+
+    <li><details class="gap-card"><summary><span>G-08 · PROCESS.md §3 WIP drift</span><span class="pri-tag pri-low">Low</span></summary><div class="gap-body">
+      <p>Research intent: WIP at review stage. PROCESS.md §3 current text: "WIP limit: 3 items in doing at any time." One-word fix.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> edit PROCESS.md §3: "in doing" → "in review". CHANGELOG entry.</p>
+    </div></details></li>
+  </ul>
+  <a class="chapter-link" href="./02-cadence-and-waves.md">Read the full chapter →</a>
+</section>
+
+<!-- ======================= CHAPTER 3 ======================= -->
+<section class="panel" id="panel-ch3" role="tabpanel" aria-labelledby="tab-ch3">
+  <h2>3 — Execution: backlog refinement and the kanban board</h2>
+  <p class="panel-meta">Part 1 of the execution axis · where work lives before and during a cycle</p>
+
+  <div class="svg-frame"><object data="./assets/03-kanban-and-refinement.svg" type="image/svg+xml" aria-label="Kanban and refinement"></object></div>
+
+  <p>Two stages stacked: progressive elaboration (<strong>maturity 0→4</strong> as same-file evolution) feeds the six-column kanban board. On the board, the same feature spec continues advancing — <strong>5-in-cycle</strong> when pulled into a cycle, <strong>6-done</strong> when all its tasks pass DoD.</p>
+
+  <h3>The full pipeline: 0→6 on one file</h3>
+  <p><strong>Refinement (0→4) — product owner's lane.</strong> The diagram's top row. Research before specification; DoR is the gate into the board.</p>
+  <p><strong>On-board (5→6) — developer's lane.</strong> The diagram's bottom row.</p>
+  <ul>
+    <li><strong>5 In cycle</strong> — the YAML flag on <code>FEAT-*.md</code> flips from <code>4-ready</code> to <code>5-in-cycle</code> when a cycle pulls the item. <code>TASK-*.md</code> files are generated. Maturity 5 spans the Doing and Review columns — a task can be in Review while its parent feature is still at 5-in-cycle.</li>
+    <li><strong>6 Done</strong> — when every task on the feature passes DoD, the developer flips the YAML to <code>6-done</code> and fills in the <strong>Implementation notes</strong> section (what was built, where, key files, RPCs, decisions). The spec has reshaped itself from <em>proposal</em> into <em>record</em>. Task files are deleted after the cycle retrospective commits.</li>
+  </ul>
+
+  <div class="callout"><strong>Maturity and kanban columns are orthogonal.</strong> Maturity is a flag on the feature spec (one per feature). Kanban columns are <code>status:</code> on task files (many per feature). A feature reaches 5-in-cycle when any of its tasks enters Doing; it reaches 6-done only when all its tasks are Done <em>and</em> Implementation notes are written.</div>
+
+  <h3>Gaps on this axis</h3>
+  <ul class="gap-list">
+    <li><details class="gap-card"><summary><span>G-09 · Refinement ritual undocumented</span><span class="pri-tag pri-med">Medium</span></summary><div class="gap-body">
+      <p>Maturity levels are named; how items actually get refined 0→4 in practice is not. Is it a recurring meeting, a solo shaping session, a back-and-forth with Claude?</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> extend <code>ecosystem-decomposition</code> skill with a refinement section. Likely: 0→1 is solo articulation; 1→2 is research (spike or research doc); 2→3 is story writing with Given/When/Then; 3→4 is DoR pass.</p>
+    </div></details></li>
+
+    <li><details class="gap-card"><summary><span>G-10 · Board mechanic unchosen</span><span class="pri-tag pri-med">Medium</span></summary><div class="gap-body">
+      <p>Six columns depicted; no document says where the board physically lives. GitHub Projects? Linear? A markdown table? A query over YAML frontmatter?</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> session decision. Separate two timeframes — current-state tool (markdown table + grep over YAML is probably enough) and scale tool (flag for Eid or later wave-boundary decision).</p>
+    </div></details></li>
+
+    <li><details class="gap-card"><summary><span>G-14 · Discovery 0→2 flow orphaned</span><span class="pri-tag pri-med">Medium</span></summary><div class="gap-body">
+      <p>The <code>ecosystem-decomposition</code> skill covers levels 1-5 as artifacts. The 0→1 transition (raw idea to concept) and 1→2 transition (concept to explored) have no explicit home.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> add a level-0 section to the <code>ecosystem-decomposition</code> skill covering capture, articulation, and exploration.</p>
+    </div></details></li>
+
+    <li><details class="gap-card"><summary><span>G-18 · Research pathway under-specified</span><span class="pri-tag pri-med">Medium</span></summary><div class="gap-body">
+      <p>Three research mechanisms exist but aren't unified: (1) maturity-2 as a research stage on a feature spec; (2) <code>type:spike</code> as a work-item type with its own template; (3) <code>docs/research/</code> holding long-form research reports.</p>
+      <p>Missing: when does a question warrant a spike vs a research report? How do spike findings flow back into affected feature specs? How do research-report conclusions become ADRs, skill updates, or new features?</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> add a Research pathway section to <code>ecosystem-decomposition</code> skill or PROCESS.md §6 distinguishing spike (cycle-scoped) from research report (wave- or cross-wave-scoped), and describing how findings feed back to affected specs.</p>
+    </div></details></li>
+  </ul>
+  <a class="chapter-link" href="./03-execution-kanban.md">Read the full chapter →</a>
+</section>
+
+<!-- ======================= CHAPTER 4 ======================= -->
+<section class="panel" id="panel-ch4" role="tabpanel" aria-labelledby="tab-ch4">
+  <h2>4 — Execution: the per-task build loop</h2>
+  <p class="panel-meta">Part 2 of the execution axis · what happens when a task moves into Doing</p>
+
+  <div class="svg-frame"><object data="./assets/04-build-loop-and-testing.svg" type="image/svg+xml" aria-label="Build loop and testing"></object></div>
+
+  <p><strong>Research → Plan → Annotate → Implement</strong> is the canonical working pattern with an AI coding agent. Markdown files serve as shared mutable state between Stefan and the agent. One Given/When/Then scenario in the feature spec feeds three test layers. The Testing Trophy shape has integration tests as the biggest band.</p>
+
+  <div class="callout">"Don't implement yet" is the guard phrase that prevents the agent from jumping to code before the plan is approved.</div>
+
+  <h3>Gaps on this axis</h3>
+  <ul class="gap-list">
+    <li><details class="gap-card"><summary><span>G-11 · TDD overstated vs risk-based</span><span class="pri-tag pri-low">Low</span></summary><div class="gap-body">
+      <p>Root <code>CLAUDE.md</code> mandates TDD. The research report permits risk-based testing as an alternative. The stricter version was inherited without an explicit decision.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> either (a) drop the strict TDD mandate to match the research, or (b) keep it and justify the stricter position in an ADR. Low priority — the tension is small in practice.</p>
+    </div></details></li>
+
+    <li><details class="gap-card"><summary><span>G-12 · Given/When/Then to test translation</span><span class="pri-tag pri-high">High</span></summary><div class="gap-body">
+      <p>The feature-spec template requires Given/When/Then scenarios. Jest, Playwright, and pgTAP exist in the stack. No document describes how a scenario in a feature spec becomes a concrete test case.</p>
+      <p>The single highest-leverage practice from the research — one artifact serving as spec, tests, and AI prompt — has no documented translation mechanic.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> extend <code>feature-development</code> skill with a "scenarios to tests" section. A worked example showing the same scenario landing in a unit test, integration test, and E2E test.</p>
+    </div></details></li>
+
+    <li><details class="gap-card"><summary><span>G-13 · Build hygiene unspecified</span><span class="pri-tag pri-med">Medium</span></summary><div class="gap-body">
+      <p>No branching strategy. No commit cadence beyond "conventional commits". No PR shape. No guidance on when to open, how to structure, who reviews. At 50+ contributors the absence is load-bearing.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> extend <code>feature-development</code> skill with a Build Hygiene section covering branching, commit cadence, PR shape. Likely needs an ADR for the branching strategy.</p>
+    </div></details></li>
+  </ul>
+  <a class="chapter-link" href="./04-execution-build-loop.md">Read the full chapter →</a>
+</section>
+
+<!-- ======================= CHAPTER 5 ======================= -->
+<section class="panel" id="panel-ch5" role="tabpanel" aria-labelledby="tab-ch5">
+  <h2>5 — Agent routing</h2>
+  <p class="panel-meta">The routing axis · how an agent enters the system and builds context</p>
+
+  <div class="svg-frame"><object data="./assets/05-agent-routing.svg" type="image/svg+xml" aria-label="Agent routing"></object></div>
+
+  <p>Eight steps of progressive context loading: <strong>root CLAUDE.md → AGENTS.md → PROCESS.md → matched skill → tier CLAUDE.md → owner README → feature spec → task file</strong>. At step 4, pick one of the four skills (<code>ecosystem-decomposition</code>, <code>feature-development</code>, <code>wave-planning</code>, <code>doc-health-check</code>). Never load everything at once.</p>
+
+  <div class="callout">Tell: new contributors should be able to start useful work within 30 minutes of opening the repo. The eight-step path is tuned to make that possible.</div>
+
+  <h3>Gaps on this axis</h3>
+  <ul class="gap-list">
+    <li><details class="gap-card"><summary><span>G-15 · Cross-tier entry order</span><span class="pri-tag pri-med">Medium</span></summary><div class="gap-body">
+      <p>Step 5 says "the tier CLAUDE.md for where the work lives." For cross-tier features (Hub UI + Platform data model), which tier loads first is undefined. Wrong order means less-relevant constraints get internalized first.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> rule in root <code>CLAUDE.md</code> or <code>feature-development</code> skill — e.g. "For cross-tier tasks, load the consumer tier first, then the provider tier."</p>
+    </div></details></li>
+
+    <li><details class="gap-card"><summary><span>G-16 · Skill chaining undocumented</span><span class="pri-tag pri-med">Medium</span></summary><div class="gap-body">
+      <p>Most real work crosses skills. <code>ecosystem-decomposition</code> to write a spec, then <code>feature-development</code> to build it. <code>feature-development</code> to mark 6-done, then <code>doc-health-check</code> to verify. The chains are currently tacit.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> add a "common chains" section to PROCESS.md §6.5 or to root <code>CLAUDE.md</code>. Name the three or four chains that matter most.</p>
+    </div></details></li>
+
+    <li><details class="gap-card"><summary><span>G-17 · AGENTS.md precedence across tools</span><span class="pri-tag pri-low">Low</span></summary><div class="gap-body">
+      <p>Three AGENTS.md files exist: <code>/AGENTS.md</code> (canonical for Claude), <code>configs/codex/AGENTS.md</code>, <code>configs/opencode/AGENTS.md</code>. No precedence rule.</p>
+      <p class="gap-fix"><strong>Proposed fix:</strong> ADR declaring <code>/AGENTS.md</code> canonical; tool-specific copies must not contradict. Add a <code>doc-health-check</code> comparison at cycle boundary.</p>
+    </div></details></li>
+  </ul>
+  <a class="chapter-link" href="./05-agent-routing.md">Read the full chapter →</a>
+</section>
+
+<!-- ======================= GAPS REGISTER ======================= -->
+<section class="panel" id="panel-gaps" role="tabpanel" aria-labelledby="tab-gaps">
+  <h2>Consolidated gaps register</h2>
+  <p class="panel-meta">All 18 flagged gaps in one view · sortable by priority</p>
+
+  <p>When a gap is resolved, it is removed both here and from the relevant chapter. New gaps surfaced in later sessions are added with the next sequential ID.</p>
+
+  <table class="gaps-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Axis</th>
+        <th>Gap</th>
+        <th class="pri-cell">Priority</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="id-cell">G-03</td><td class="axis-cell">Decomposition</td><td class="gap-name">Vertical specs are scaffolds</td><td class="pri-cell"><span class="pri-tag pri-high">High</span></td></tr>
+      <tr><td class="id-cell">G-05</td><td class="axis-cell">Cadence</td><td class="gap-name">Review queue not operationalized</td><td class="pri-cell"><span class="pri-tag pri-high">High</span></td></tr>
+      <tr><td class="id-cell">G-06</td><td class="axis-cell">Cadence</td><td class="gap-name">Multi-agent task locking</td><td class="pri-cell"><span class="pri-tag pri-high">High</span></td></tr>
+      <tr><td class="id-cell">G-12</td><td class="axis-cell">Build loop</td><td class="gap-name">Given/When/Then to test translation</td><td class="pri-cell"><span class="pri-tag pri-high">High</span></td></tr>
+      <tr><td class="id-cell">G-01</td><td class="axis-cell">Decomposition</td><td class="gap-name">Whisp architectural placement</td><td class="pri-cell"><span class="pri-tag pri-med">Medium</span></td></tr>
+      <tr><td class="id-cell">G-02</td><td class="axis-cell">Decomposition</td><td class="gap-name">Cross-product feature sync</td><td class="pri-cell"><span class="pri-tag pri-med">Medium</span></td></tr>
+      <tr><td class="id-cell">G-04</td><td class="axis-cell">Cadence</td><td class="gap-name">Wave ↔ roadmap relationship</td><td class="pri-cell"><span class="pri-tag pri-med">Medium</span></td></tr>
+      <tr><td class="id-cell">G-07</td><td class="axis-cell">Cadence</td><td class="gap-name">Ferd DoD empty</td><td class="pri-cell"><span class="pri-tag pri-med">Medium</span></td></tr>
+      <tr><td class="id-cell">G-09</td><td class="axis-cell">Kanban</td><td class="gap-name">Refinement ritual undocumented</td><td class="pri-cell"><span class="pri-tag pri-med">Medium</span></td></tr>
+      <tr><td class="id-cell">G-10</td><td class="axis-cell">Kanban</td><td class="gap-name">Board mechanic unchosen</td><td class="pri-cell"><span class="pri-tag pri-med">Medium</span></td></tr>
+      <tr><td class="id-cell">G-13</td><td class="axis-cell">Build loop</td><td class="gap-name">Build hygiene unspecified</td><td class="pri-cell"><span class="pri-tag pri-med">Medium</span></td></tr>
+      <tr><td class="id-cell">G-14</td><td class="axis-cell">Kanban</td><td class="gap-name">Discovery 0→2 flow orphaned</td><td class="pri-cell"><span class="pri-tag pri-med">Medium</span></td></tr>
+      <tr><td class="id-cell">G-15</td><td class="axis-cell">Agent routing</td><td class="gap-name">Cross-tier entry order</td><td class="pri-cell"><span class="pri-tag pri-med">Medium</span></td></tr>
+      <tr><td class="id-cell">G-16</td><td class="axis-cell">Agent routing</td><td class="gap-name">Skill chaining undocumented</td><td class="pri-cell"><span class="pri-tag pri-med">Medium</span></td></tr>
+      <tr><td class="id-cell">G-18</td><td class="axis-cell">Research</td><td class="gap-name">Research pathway under-specified</td><td class="pri-cell"><span class="pri-tag pri-med">Medium</span></td></tr>
+      <tr><td class="id-cell">G-08</td><td class="axis-cell">Cadence</td><td class="gap-name">PROCESS.md §3 WIP drift</td><td class="pri-cell"><span class="pri-tag pri-low">Low</span></td></tr>
+      <tr><td class="id-cell">G-11</td><td class="axis-cell">Build loop</td><td class="gap-name">TDD overstated vs risk-based</td><td class="pri-cell"><span class="pri-tag pri-low">Low</span></td></tr>
+      <tr><td class="id-cell">G-17</td><td class="axis-cell">Agent routing</td><td class="gap-name">AGENTS.md precedence across tools</td><td class="pri-cell"><span class="pri-tag pri-low">Low</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>The pattern visible across the register</h3>
+  <p>Strong bookends (vision at the top; DoD at the bottom), weak middle (how items move through maturity, how specs translate to tests, how the build loop is documented, how review actually handshakes). Seven of the seventeen gaps are middle-layer gaps. This is not accidental — it reflects an ecosystem that has invested heavily in strategic scaffolding and lightly in tactical scaffolding.</p>
+  <p>The highest-leverage single move is probably expanding the <code>feature-development</code> skill to cover the build loop, the Given/When/Then to test translation, and build hygiene. Three gaps closed by one skill expansion.</p>
+
+  <a class="chapter-link" href="./gaps.md">Read the full register with fix details →</a>
+</section>
+
+</main>
+
+<footer>
+  <p>
+    Authored 2026-04-19. Living document — updated when canonical sources change.
+    Canonical sources:
+    <a href="../VISION.md">VISION.md</a> ·
+    <a href="../../planning/PROCESS.md">PROCESS.md</a> ·
+    <a href="../../../.claude/skills/">skills</a> ·
+    <a href="../../../CLAUDE.md">root CLAUDE.md</a> ·
+    <a href="../../../AGENTS.md">AGENTS.md</a>
+  </p>
+</footer>
+
+<script>
+(function() {
+  const tabs = document.querySelectorAll('nav.tabs button[role="tab"]');
+  const panels = document.querySelectorAll('main .panel');
+
+  function activate(tabId, pushHash) {
+    tabs.forEach(t => {
+      const isActive = t.dataset.tab === tabId;
+      t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      if (isActive) t.focus({ preventScroll: true });
+    });
+    panels.forEach(p => {
+      p.setAttribute('data-active', p.id === 'panel-' + tabId ? 'true' : 'false');
+    });
+    if (pushHash) {
+      history.replaceState(null, '', '#' + tabId);
+    }
+    // Scroll to top of content area on tab change
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  tabs.forEach(t => {
+    t.addEventListener('click', () => activate(t.dataset.tab, true));
+    t.addEventListener('keydown', e => {
+      const arr = Array.from(tabs);
+      const i = arr.indexOf(t);
+      if (e.key === 'ArrowRight') { e.preventDefault(); activate(arr[(i + 1) % arr.length].dataset.tab, true); }
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); activate(arr[(i - 1 + arr.length) % arr.length].dataset.tab, true); }
+      if (e.key === 'Home')       { e.preventDefault(); activate(arr[0].dataset.tab, true); }
+      if (e.key === 'End')        { e.preventDefault(); activate(arr[arr.length - 1].dataset.tab, true); }
+    });
+  });
+
+  // Honour hash on load (e.g. #ch3)
+  const initial = window.location.hash.replace('#', '');
+  const valid = ['overview', 'ch1', 'ch2', 'ch3', 'ch4', 'ch5', 'gaps'];
+  if (valid.includes(initial)) {
+    activate(initial, false);
+  }
+
+  // React to back/forward navigation
+  window.addEventListener('hashchange', () => {
+    const h = window.location.hash.replace('#', '');
+    if (valid.includes(h)) activate(h, false);
+  });
+})();
+</script>
+
+</body>
+</html>

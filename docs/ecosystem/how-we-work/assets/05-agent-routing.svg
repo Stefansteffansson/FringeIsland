@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 1020" role="img" font-family="'Inter', 'Anthropic Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+<title>Agent routing axis — eight-step context loading order on the left, four-skill selector on the right, converging into task-level work with three documented gaps</title>
+<desc>Left column shows the sequential context loading order from root CLAUDE.md through eight steps down to task. Right column shows the four skills as a selector, followed by the five tier CLAUDE.md file paths. Three dashed red gaps at the bottom flag routing ambiguities around cross-tier entry, skill chaining, and AGENTS.md precedence.</desc>
+<style>
+  .t  { font-size: 14px; fill: #3d3d3a; font-weight: 400; }
+  .ts { font-size: 12px; fill: #5f5e5a; font-weight: 400; }
+  .th { font-size: 14px; fill: #3d3d3a; font-weight: 500; }
+  .c-purple rect { fill: #EEEDFE; stroke: #534AB7; }
+  .c-purple .t, .c-purple .ts, .c-purple .th { fill: #3C3489; }
+  .c-purple .th { fill: #26215C; }
+  .c-teal rect { fill: #E1F5EE; stroke: #0F6E56; }
+  .c-teal .t, .c-teal .ts, .c-teal .th { fill: #085041; }
+  .c-teal .th { fill: #04342C; }
+  .c-blue rect { fill: #E6F1FB; stroke: #185FA5; }
+  .c-blue .t, .c-blue .ts, .c-blue .th { fill: #0C447C; }
+  .c-blue .th { fill: #042C53; }
+  @media (prefers-color-scheme: dark) {
+    .t  { fill: #c2c0b6; }
+    .ts { fill: #9c9a92; }
+    .th { fill: #c2c0b6; }
+    .c-purple rect { fill: #3C3489; stroke: #AFA9EC; }
+    .c-purple .t, .c-purple .ts, .c-purple .th { fill: #CECBF6; }
+    .c-purple .th { fill: #EEEDFE; }
+    .c-teal rect { fill: #085041; stroke: #5DCAA5; }
+    .c-teal .t, .c-teal .ts, .c-teal .th { fill: #9FE1CB; }
+    .c-teal .th { fill: #E1F5EE; }
+    .c-blue rect { fill: #0C447C; stroke: #85B7EB; }
+    .c-blue .t, .c-blue .ts, .c-blue .th { fill: #B5D4F4; }
+    .c-blue .th { fill: #E6F1FB; }
+  }
+</style>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<text class="th" x="40" y="32">Agent routing axis</text>
+<text class="ts" x="40" y="50">How an agent enters the system and builds context. Load progressively — never everything at once.</text>
+
+<text class="th" x="40" y="92">Context loading order</text>
+<text class="ts" x="40" y="108">Sequential. Each step delta from the last. Stop when you have enough.</text>
+
+<g class="c-purple"><rect x="40" y="128" width="280" height="52" rx="6" stroke-width="0.5"/>
+<text class="th" x="54" y="150">1 · Root CLAUDE.md</text>
+<text class="ts" x="54" y="170">Project orientation + routing table.</text></g>
+<line x1="180" y1="180" x2="180" y2="196" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-purple"><rect x="40" y="196" width="280" height="52" rx="6" stroke-width="0.5"/>
+<text class="th" x="54" y="218">2 · AGENTS.md</text>
+<text class="ts" x="54" y="238">Always-do / ask-first / never-do.</text></g>
+<line x1="180" y1="248" x2="180" y2="264" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-purple"><rect x="40" y="264" width="280" height="52" rx="6" stroke-width="0.5"/>
+<text class="th" x="54" y="286">3 · PROCESS.md</text>
+<text class="ts" x="54" y="306">Cadence, DoR, DoD, tagging.</text></g>
+<line x1="180" y1="316" x2="180" y2="332" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-teal"><rect x="40" y="332" width="280" height="52" rx="6" stroke-width="0.5"/>
+<text class="th" x="54" y="354">4 · Matched skill</text>
+<text class="ts" x="54" y="374">One of four — see selector →</text></g>
+<line x1="180" y1="384" x2="180" y2="400" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-blue"><rect x="40" y="400" width="280" height="52" rx="6" stroke-width="0.5"/>
+<text class="th" x="54" y="422">5 · Tier CLAUDE.md</text>
+<text class="ts" x="54" y="442">Products · Platform · Studios · DS · V.</text></g>
+<line x1="180" y1="452" x2="180" y2="468" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-blue"><rect x="40" y="468" width="280" height="52" rx="6" stroke-width="0.5"/>
+<text class="th" x="54" y="490">6 · Owner README.md</text>
+<text class="ts" x="54" y="510">Entity-level overview.</text></g>
+<line x1="180" y1="520" x2="180" y2="536" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-blue"><rect x="40" y="536" width="280" height="52" rx="6" stroke-width="0.5"/>
+<text class="th" x="54" y="558">7 · Feature spec</text>
+<text class="ts" x="54" y="578">FEAT-*.md — the thing being built.</text></g>
+<line x1="180" y1="588" x2="180" y2="604" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-blue"><rect x="40" y="604" width="280" height="52" rx="6" stroke-width="0.5"/>
+<text class="th" x="54" y="626">8 · Task file</text>
+<text class="ts" x="54" y="646">TASK-*.md — today's focused work.</text></g>
+
+<text class="th" x="360" y="128">Skill selector — the four skills</text>
+<text class="ts" x="360" y="144">Load one that matches the task, not all four.</text>
+
+<g class="c-teal"><rect x="360" y="160" width="280" height="64" rx="6" stroke-width="0.5"/>
+<text class="th" x="374" y="182">ecosystem-decomposition</text>
+<text class="ts" x="374" y="202">Vision → entity → capability → feature.</text>
+<text class="ts" x="374" y="218">Scoping · spec-writing · mapping.</text></g>
+
+<g class="c-teal"><rect x="360" y="236" width="280" height="64" rx="6" stroke-width="0.5"/>
+<text class="th" x="374" y="258">feature-development</text>
+<text class="ts" x="374" y="278">Spec at maturity 4 → shipped code.</text>
+<text class="ts" x="374" y="294">Implementing · building · coding.</text></g>
+
+<g class="c-teal"><rect x="360" y="312" width="280" height="64" rx="6" stroke-width="0.5"/>
+<text class="th" x="374" y="334">wave-planning</text>
+<text class="ts" x="374" y="354">Wave scope, progress, DoD, retro.</text>
+<text class="ts" x="374" y="370">"What's left in Ferd?"</text></g>
+
+<g class="c-teal"><rect x="360" y="388" width="280" height="64" rx="6" stroke-width="0.5"/>
+<text class="th" x="374" y="410">doc-health-check</text>
+<text class="ts" x="374" y="430">Drift audit across the doc tree.</text>
+<text class="ts" x="374" y="446">Cycle boundary · cross-cutting change.</text></g>
+
+<text class="ts" x="360" y="476" fill="#5F5E5A">Skills are the how; PROCESS.md is the what/when.</text>
+<text class="ts" x="360" y="492" fill="#5F5E5A">PROCESS.md §6.5 codifies the split (DECISION-02).</text>
+
+<text class="th" x="360" y="530">Tier CLAUDE.md files (step 5)</text>
+<text class="ts" x="360" y="546">Each is a delta from root CLAUDE.md.</text>
+
+<g class="c-blue"><rect x="360" y="562" width="280" height="100" rx="6" stroke-width="0.5"/>
+<text class="ts" x="374" y="582">docs/products/CLAUDE.md</text>
+<text class="ts" x="374" y="600">docs/platform/CLAUDE.md</text>
+<text class="ts" x="374" y="618">docs/studios/CLAUDE.md</text>
+<text class="ts" x="374" y="636">docs/design-system/CLAUDE.md</text>
+<text class="ts" x="374" y="654">docs/verticals/CLAUDE.md</text></g>
+
+<text class="th" x="40" y="706">Gaps in what's actually documented</text>
+
+<g><rect x="40" y="720" width="195" height="92" rx="8" fill="none" stroke="#A32D2D" stroke-width="1" stroke-dasharray="4 3"/>
+<text class="ts" x="50" y="738" fill="#A32D2D">GAP 10 — Entry confusion</text>
+<text class="ts" x="50" y="756" fill="#A32D2D">When a task cuts across tiers</text>
+<text class="ts" x="50" y="772" fill="#A32D2D">(Hub + Platform), which tier</text>
+<text class="ts" x="50" y="788" fill="#A32D2D">CLAUDE.md loads first is</text>
+<text class="ts" x="50" y="804" fill="#A32D2D">undefined.</text></g>
+
+<g><rect x="242" y="720" width="195" height="92" rx="8" fill="none" stroke="#A32D2D" stroke-width="1" stroke-dasharray="4 3"/>
+<text class="ts" x="252" y="738" fill="#A32D2D">GAP 11 — Skill chaining</text>
+<text class="ts" x="252" y="756" fill="#A32D2D">A feature often crosses decomp</text>
+<text class="ts" x="252" y="772" fill="#A32D2D">→ development → doc-health.</text>
+<text class="ts" x="252" y="788" fill="#A32D2D">No "load one then next" rule</text>
+<text class="ts" x="252" y="804" fill="#A32D2D">is written.</text></g>
+
+<g><rect x="444" y="720" width="196" height="92" rx="8" fill="none" stroke="#A32D2D" stroke-width="1" stroke-dasharray="4 3"/>
+<text class="ts" x="454" y="738" fill="#A32D2D">GAP 12 — AGENTS.md overlap</text>
+<text class="ts" x="454" y="756" fill="#A32D2D">Three AGENTS.md files (root +</text>
+<text class="ts" x="454" y="772" fill="#A32D2D">configs/codex + configs/opencode).</text>
+<text class="ts" x="454" y="788" fill="#A32D2D">Precedence between tool-specific</text>
+<text class="ts" x="454" y="804" fill="#A32D2D">copies unclear.</text></g>
+
+<text class="ts" x="40" y="848" fill="#5F5E5A">Canonical paths for each step:</text>
+<text class="ts" x="40" y="866" fill="#5F5E5A">1: /CLAUDE.md · 2: /AGENTS.md · 3: docs/planning/PROCESS.md</text>
+<text class="ts" x="40" y="884" fill="#5F5E5A">4: .claude/skills/{name}/SKILL.md · 5: docs/{tier}/CLAUDE.md</text>
+<text class="ts" x="40" y="902" fill="#5F5E5A">6: docs/{owner}/README.md · 7: docs/{owner}/features/FEAT-*.md</text>
+<text class="ts" x="40" y="920" fill="#5F5E5A">8: docs/planning/backlog/tasks/TASK-*.md</text>
+
+<text class="ts" x="40" y="956" fill="#5F5E5A">The routing above is canonical for Claude. Codex and Opencode have their own AGENTS.md</text>
+<text class="ts" x="40" y="974" fill="#5F5E5A">under configs/ — those files are not currently synchronized with the routing described here.</text>
+</svg>

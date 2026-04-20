@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 860" role="img" font-family="'Inter', 'Anthropic Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+<title>The horizontal time axis — six waves as equal-length overlapping bars continuing the staircase, cycles and cooldowns as the operational rhythm, and four nested retrospective scales</title>
+<desc>Top band shows six named waves (Ferd, Eid, Hamn, Heim, Brim, Urd) as equal-length staggered bars across a left-to-right time axis, each offset one step further right from the previous. Each bar has title on first line and thematic focus on second line. Middle band shows the cycle-cooldown rhythm. A WIP limit marker clarifies it applies to review stage. Bottom section shows the four retro scales nesting from daily intention through weekly Three Ls, cycle retro, and wave retro. Four dashed red gaps flag unresolved items and a drift note.</desc>
+<style>
+  .t  { font-size: 14px; fill: #3d3d3a; font-weight: 400; }
+  .ts { font-size: 12px; fill: #5f5e5a; font-weight: 400; }
+  .th { font-size: 14px; fill: #3d3d3a; font-weight: 500; }
+  .c-teal rect { fill: #E1F5EE; stroke: #0F6E56; }
+  .c-teal .t, .c-teal .ts, .c-teal .th { fill: #085041; }
+  .c-teal .th { fill: #04342C; }
+  .c-purple rect { fill: #EEEDFE; stroke: #534AB7; }
+  .c-purple .t, .c-purple .ts, .c-purple .th { fill: #3C3489; }
+  .c-purple .th { fill: #26215C; }
+  .c-coral rect { fill: #FAECE7; stroke: #993C1D; }
+  .c-coral .t, .c-coral .ts, .c-coral .th { fill: #712B13; }
+  .c-coral .th { fill: #4A1B0C; }
+  .c-pink rect { fill: #FBEAF0; stroke: #993556; }
+  .c-pink .t, .c-pink .ts, .c-pink .th { fill: #72243E; }
+  .c-pink .th { fill: #4B1528; }
+  .c-blue rect { fill: #E6F1FB; stroke: #185FA5; }
+  .c-blue .t, .c-blue .ts, .c-blue .th { fill: #0C447C; }
+  .c-blue .th { fill: #042C53; }
+  .c-gray rect { fill: #F1EFE8; stroke: #5F5E5A; }
+  .c-gray .t, .c-gray .ts, .c-gray .th { fill: #444441; }
+  .c-gray .th { fill: #2C2C2A; }
+  @media (prefers-color-scheme: dark) {
+    .t  { fill: #c2c0b6; }
+    .ts { fill: #9c9a92; }
+    .th { fill: #c2c0b6; }
+    .c-teal rect { fill: #085041; stroke: #5DCAA5; }
+    .c-teal .t, .c-teal .ts, .c-teal .th { fill: #9FE1CB; }
+    .c-teal .th { fill: #E1F5EE; }
+    .c-purple rect { fill: #3C3489; stroke: #AFA9EC; }
+    .c-purple .t, .c-purple .ts, .c-purple .th { fill: #CECBF6; }
+    .c-purple .th { fill: #EEEDFE; }
+    .c-coral rect { fill: #712B13; stroke: #F0997B; }
+    .c-coral .t, .c-coral .ts, .c-coral .th { fill: #F5C4B3; }
+    .c-coral .th { fill: #FAECE7; }
+    .c-pink rect { fill: #72243E; stroke: #ED93B1; }
+    .c-pink .t, .c-pink .ts, .c-pink .th { fill: #F4C0D1; }
+    .c-pink .th { fill: #FBEAF0; }
+    .c-blue rect { fill: #0C447C; stroke: #85B7EB; }
+    .c-blue .t, .c-blue .ts, .c-blue .th { fill: #B5D4F4; }
+    .c-blue .th { fill: #E6F1FB; }
+    .c-gray rect { fill: #444441; stroke: #B4B2A9; }
+    .c-gray .t, .c-gray .ts, .c-gray .th { fill: #D3D1C7; }
+    .c-gray .th { fill: #F1EFE8; }
+  }
+</style>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<text class="th" x="40" y="32">Horizontal axis — cadence and waves</text>
+<text class="ts" x="40" y="50">Time flows left to right. Waves overlap; cycles march; retros nest.</text>
+
+<text class="th" x="40" y="92">Waves — thematic focus buckets</text>
+<text class="ts" x="40" y="108">Earlier waves generally prioritised. Not sequential gates — they overlap.</text>
+
+<line x1="40" y1="128" x2="640" y2="128" stroke="#888780" stroke-width="0.5"/>
+<text class="ts" x="40" y="122" fill="#888780">now</text>
+<text class="ts" x="640" y="122" text-anchor="end" fill="#888780">future</text>
+
+<g class="c-teal">
+<rect x="40" y="136" width="160" height="48" rx="6" stroke-width="0.5"/>
+<text class="th" x="54" y="156">Ferd — voyage</text>
+<text class="ts" x="54" y="174">foundation</text>
+</g>
+<g class="c-purple">
+<rect x="128" y="192" width="160" height="48" rx="6" stroke-width="0.5"/>
+<text class="th" x="142" y="212">Eid — narrow passage</text>
+<text class="ts" x="142" y="230">design tools + narrative</text>
+</g>
+<g class="c-coral">
+<rect x="216" y="248" width="160" height="48" rx="6" stroke-width="0.5"/>
+<text class="th" x="230" y="268">Hamn — harbour</text>
+<text class="ts" x="230" y="286">mobile + polish</text>
+</g>
+<g class="c-pink">
+<rect x="304" y="304" width="160" height="48" rx="6" stroke-width="0.5"/>
+<text class="th" x="318" y="324">Heim — home</text>
+<text class="ts" x="318" y="342">community + world</text>
+</g>
+<g class="c-blue">
+<rect x="392" y="360" width="160" height="48" rx="6" stroke-width="0.5"/>
+<text class="th" x="406" y="380">Brim — horizon</text>
+<text class="ts" x="406" y="398">discovery + growth</text>
+</g>
+<g class="c-gray">
+<rect x="480" y="416" width="160" height="48" rx="6" stroke-width="0.5"/>
+<text class="th" x="494" y="436">Urd — deep well</text>
+<text class="ts" x="494" y="454">AI + depth</text>
+</g>
+
+<text class="ts" x="40" y="494" fill="#888780">Bar lengths and offsets are illustrative — actual durations are not yet planned.</text>
+
+<text class="th" x="40" y="530">Cycle rhythm — Shaped Personal Kanban</text>
+<text class="ts" x="40" y="546">Recommended starting cadence. Mutable — adjust when reality fights the rhythm.</text>
+
+<g class="c-teal"><rect x="40" y="562" width="110" height="44" rx="6" stroke-width="0.5"/>
+<text class="th" x="95" y="582" text-anchor="middle">Cycle</text>
+<text class="ts" x="95" y="600" text-anchor="middle">3 weeks · build</text></g>
+<g class="c-gray"><rect x="150" y="562" width="50" height="44" rx="6" stroke-width="0.5"/>
+<text class="ts" x="175" y="582" text-anchor="middle">Cool-</text>
+<text class="ts" x="175" y="600" text-anchor="middle">down</text></g>
+<g class="c-teal"><rect x="200" y="562" width="110" height="44" rx="6" stroke-width="0.5"/>
+<text class="th" x="255" y="582" text-anchor="middle">Cycle</text>
+<text class="ts" x="255" y="600" text-anchor="middle">3 weeks · build</text></g>
+<g class="c-gray"><rect x="310" y="562" width="50" height="44" rx="6" stroke-width="0.5"/>
+<text class="ts" x="335" y="582" text-anchor="middle">Cool-</text>
+<text class="ts" x="335" y="600" text-anchor="middle">down</text></g>
+<g class="c-teal"><rect x="360" y="562" width="110" height="44" rx="6" stroke-width="0.5"/>
+<text class="th" x="415" y="582" text-anchor="middle">Cycle</text>
+<text class="ts" x="415" y="600" text-anchor="middle">3 weeks · build</text></g>
+<g class="c-gray"><rect x="470" y="562" width="50" height="44" rx="6" stroke-width="0.5"/>
+<text class="ts" x="495" y="582" text-anchor="middle">Cool-</text>
+<text class="ts" x="495" y="600" text-anchor="middle">down</text></g>
+<g class="c-teal"><rect x="520" y="562" width="110" height="44" rx="6" stroke-width="0.5"/>
+<text class="th" x="575" y="582" text-anchor="middle">Cycle</text>
+<text class="ts" x="575" y="600" text-anchor="middle">3 weeks · build</text></g>
+
+<text class="ts" x="40" y="632" fill="#5F5E5A">WIP limit 3 at REVIEW stage — parallelism during build is fine; review is the bottleneck</text>
+<text class="ts" x="40" y="648" fill="#5F5E5A">Items from any wave can coexist in a single cycle</text>
+
+<text class="th" x="40" y="688">Retro cadence — four scales, one template</text>
+<text class="ts" x="40" y="704">Each retro nests inside the next. Template: docs/templates/retrospective.md</text>
+
+<g class="c-blue"><rect x="40" y="720" width="140" height="48" rx="6" stroke-width="0.5"/>
+<text class="th" x="110" y="740" text-anchor="middle">Daily</text>
+<text class="ts" x="110" y="758" text-anchor="middle">intention + log ~8 min</text></g>
+<line x1="180" y1="744" x2="200" y2="744" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<g class="c-blue"><rect x="200" y="720" width="140" height="48" rx="6" stroke-width="0.5"/>
+<text class="th" x="270" y="740" text-anchor="middle">Weekly</text>
+<text class="ts" x="270" y="758" text-anchor="middle">Three Ls ~30 min</text></g>
+<line x1="340" y1="744" x2="360" y2="744" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<g class="c-blue"><rect x="360" y="720" width="140" height="48" rx="6" stroke-width="0.5"/>
+<text class="th" x="430" y="740" text-anchor="middle">Cycle</text>
+<text class="ts" x="430" y="758" text-anchor="middle">retro + bets ~2 hr</text></g>
+<line x1="500" y1="744" x2="520" y2="744" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<g class="c-blue"><rect x="520" y="720" width="120" height="48" rx="6" stroke-width="0.5"/>
+<text class="th" x="580" y="740" text-anchor="middle">Wave</text>
+<text class="ts" x="580" y="758" text-anchor="middle">retro at transition</text></g>
+
+<text class="ts" x="40" y="788" fill="#5F5E5A">Quarterly process audit — same template, scope = entire quarter (PROCESS.md §8)</text>
+
+<text class="ts" x="40" y="820" fill="#A32D2D">Gaps (see prose): wave ↔ roadmap relationship · review queue not operationalized ·</text>
+<text class="ts" x="40" y="836" fill="#A32D2D">multi-agent task locking · Ferd DoD empty · PROCESS.md §3 still says WIP at doing — drift</text>
+</svg>

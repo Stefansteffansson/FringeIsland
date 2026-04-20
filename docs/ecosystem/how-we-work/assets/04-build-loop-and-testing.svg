@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 800" role="img" font-family="'Inter', 'Anthropic Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+<title>Execution axis part 4b — per-task build loop showing research plan annotate implement, given-when-then acceptance criteria feeding three test layers, and Testing Trophy with Integration as the largest layer</title>
+<desc>Build loop shown as four linked boxes. Given When Then as the central source feeding unit integration and end-to-end tests. Testing Trophy drawn with Integration as the widest band, Static analysis as base, E2E and DB tests as narrower layers. Three gap boxes flag TDD overstated, Given-When-Then to test translation missing, and build hygiene undocumented.</desc>
+<style>
+  .t  { font-size: 14px; fill: #3d3d3a; font-weight: 400; }
+  .ts { font-size: 12px; fill: #5f5e5a; font-weight: 400; }
+  .th { font-size: 14px; fill: #3d3d3a; font-weight: 500; }
+  .c-teal rect { fill: #E1F5EE; stroke: #0F6E56; }
+  .c-teal .t, .c-teal .ts, .c-teal .th { fill: #085041; }
+  .c-teal .th { fill: #04342C; }
+  .c-purple rect { fill: #EEEDFE; stroke: #534AB7; }
+  .c-purple .t, .c-purple .ts, .c-purple .th { fill: #3C3489; }
+  .c-purple .th { fill: #26215C; }
+  .c-coral rect { fill: #FAECE7; stroke: #993C1D; }
+  .c-coral .t, .c-coral .ts, .c-coral .th { fill: #712B13; }
+  .c-coral .th { fill: #4A1B0C; }
+  .c-blue rect { fill: #E6F1FB; stroke: #185FA5; }
+  .c-blue .t, .c-blue .ts, .c-blue .th { fill: #0C447C; }
+  .c-blue .th { fill: #042C53; }
+  .c-gray rect { fill: #F1EFE8; stroke: #5F5E5A; }
+  .c-gray .t, .c-gray .ts, .c-gray .th { fill: #444441; }
+  .c-gray .th { fill: #2C2C2A; }
+  @media (prefers-color-scheme: dark) {
+    .t  { fill: #c2c0b6; }
+    .ts { fill: #9c9a92; }
+    .th { fill: #c2c0b6; }
+    .c-teal rect { fill: #085041; stroke: #5DCAA5; }
+    .c-teal .t, .c-teal .ts, .c-teal .th { fill: #9FE1CB; }
+    .c-teal .th { fill: #E1F5EE; }
+    .c-purple rect { fill: #3C3489; stroke: #AFA9EC; }
+    .c-purple .t, .c-purple .ts, .c-purple .th { fill: #CECBF6; }
+    .c-purple .th { fill: #EEEDFE; }
+    .c-coral rect { fill: #712B13; stroke: #F0997B; }
+    .c-coral .t, .c-coral .ts, .c-coral .th { fill: #F5C4B3; }
+    .c-coral .th { fill: #FAECE7; }
+    .c-blue rect { fill: #0C447C; stroke: #85B7EB; }
+    .c-blue .t, .c-blue .ts, .c-blue .th { fill: #B5D4F4; }
+    .c-blue .th { fill: #E6F1FB; }
+    .c-gray rect { fill: #444441; stroke: #B4B2A9; }
+    .c-gray .t, .c-gray .ts, .c-gray .th { fill: #D3D1C7; }
+    .c-gray .th { fill: #F1EFE8; }
+  }
+</style>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<text class="th" x="40" y="32">Execution axis — part 4b</text>
+<text class="ts" x="40" y="50">Per-task build loop. What happens once a TASK-*.md moves into Doing.</text>
+
+<text class="th" x="40" y="92">Build loop — research, plan, annotate, implement</text>
+<text class="ts" x="40" y="108">Markdown files serve as shared mutable state between Stefan and the AI agent.</text>
+
+<g class="c-teal"><rect x="40" y="128" width="140" height="68" rx="8" stroke-width="0.5"/>
+<text class="th" x="110" y="150" text-anchor="middle">1. Research</text>
+<text class="ts" x="110" y="170" text-anchor="middle">agent reads</text>
+<text class="ts" x="110" y="186" text-anchor="middle">codebase, writes findings</text></g>
+<line x1="180" y1="162" x2="208" y2="162" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-teal"><rect x="208" y="128" width="140" height="68" rx="8" stroke-width="0.5"/>
+<text class="th" x="278" y="150" text-anchor="middle">2. Plan</text>
+<text class="ts" x="278" y="170" text-anchor="middle">implementation plan,</text>
+<text class="ts" x="278" y="186" text-anchor="middle">code snippets</text></g>
+<line x1="348" y1="162" x2="376" y2="162" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-teal"><rect x="376" y="128" width="140" height="68" rx="8" stroke-width="0.5"/>
+<text class="th" x="446" y="150" text-anchor="middle">3. Annotate</text>
+<text class="ts" x="446" y="170" text-anchor="middle">Stefan adds inline</text>
+<text class="ts" x="446" y="186" text-anchor="middle">notes, approves</text></g>
+<line x1="516" y1="162" x2="544" y2="162" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-teal"><rect x="544" y="128" width="96" height="68" rx="8" stroke-width="0.5"/>
+<text class="th" x="592" y="150" text-anchor="middle">4. Implement</text>
+<text class="ts" x="592" y="170" text-anchor="middle">agent builds</text>
+<text class="ts" x="592" y="186" text-anchor="middle">against plan</text></g>
+
+<text class="ts" x="40" y="218" fill="#5F5E5A">"Don't implement yet" is the guard phrase that prevents jumping to code before approval.</text>
+
+<text class="th" x="40" y="258">Given/When/Then drives tests at every layer</text>
+<text class="ts" x="40" y="274">One BDD scenario in the feature spec → three possible test sites.</text>
+
+<g class="c-purple"><rect x="40" y="294" width="600" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="58" y="316">Feature spec story — Given / When / Then</text>
+<text class="ts" x="58" y="336">FEAT-*.md contains the canonical Given/When/Then. Same source feeds all three test layers.</text></g>
+
+<line x1="150" y1="350" x2="150" y2="378" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<line x1="340" y1="350" x2="340" y2="378" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<line x1="530" y1="350" x2="530" y2="378" stroke="#3d3d3a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<g class="c-coral"><rect x="40" y="378" width="200" height="76" rx="8" stroke-width="0.5"/>
+<text class="th" x="140" y="400" text-anchor="middle">Unit tests (TDD)</text>
+<text class="ts" x="140" y="420" text-anchor="middle">key logic, hardest-to-</text>
+<text class="ts" x="140" y="436" text-anchor="middle">debug paths. Jest.</text></g>
+
+<g class="c-coral"><rect x="244" y="378" width="200" height="76" rx="8" stroke-width="0.5"/>
+<text class="th" x="344" y="400" text-anchor="middle">Integration (BDD-style)</text>
+<text class="ts" x="344" y="420" text-anchor="middle">API routes + DB. Largest</text>
+<text class="ts" x="344" y="436" text-anchor="middle">layer per Testing Trophy.</text></g>
+
+<g class="c-coral"><rect x="448" y="378" width="192" height="76" rx="8" stroke-width="0.5"/>
+<text class="th" x="544" y="400" text-anchor="middle">E2E (critical paths)</text>
+<text class="ts" x="544" y="420" text-anchor="middle">signup → core flow.</text>
+<text class="ts" x="544" y="436" text-anchor="middle">Playwright.</text></g>
+
+<text class="th" x="40" y="492">Testing Trophy — relative effort per layer</text>
+<text class="ts" x="40" y="508">Risk-based: always auth, payments, RLS, mutations. Skip purely presentational.</text>
+
+<g class="c-blue"><rect x="40" y="528" width="600" height="32" rx="6" stroke-width="0.5"/>
+<text class="th" x="340" y="549" text-anchor="middle">Integration tests — the largest layer (most of your time)</text></g>
+<g class="c-teal"><rect x="100" y="564" width="480" height="32" rx="6" stroke-width="0.5"/>
+<text class="th" x="340" y="585" text-anchor="middle">DB tests (pgTAP) — RLS critical, Supabase-specific</text></g>
+<g class="c-teal"><rect x="160" y="600" width="360" height="32" rx="6" stroke-width="0.5"/>
+<text class="th" x="340" y="621" text-anchor="middle">E2E (Playwright) — critical paths only</text></g>
+<g class="c-gray"><rect x="220" y="636" width="240" height="32" rx="6" stroke-width="0.5"/>
+<text class="th" x="340" y="657" text-anchor="middle">Static analysis — TS strict + ESLint</text></g>
+
+<text class="ts" x="40" y="694" fill="#5F5E5A">Static analysis is the cheapest ceiling; integration tests are where actual coverage lives.</text>
+
+<g><rect x="40" y="712" width="195" height="76" rx="8" fill="none" stroke="#A32D2D" stroke-width="1" stroke-dasharray="4 3"/>
+<text class="ts" x="50" y="730" fill="#A32D2D">GAP 7 — TDD is overstated</text>
+<text class="ts" x="50" y="748" fill="#A32D2D">CLAUDE.md: "TDD is mandatory."</text>
+<text class="ts" x="50" y="764" fill="#A32D2D">Research allows risk-based.</text>
+<text class="ts" x="50" y="780" fill="#A32D2D">Reconcile or justify.</text></g>
+
+<g><rect x="242" y="712" width="195" height="76" rx="8" fill="none" stroke="#A32D2D" stroke-width="1" stroke-dasharray="4 3"/>
+<text class="ts" x="252" y="730" fill="#A32D2D">GAP 8 — G/W/T to test</text>
+<text class="ts" x="252" y="748" fill="#A32D2D">No skill describes translating</text>
+<text class="ts" x="252" y="764" fill="#A32D2D">a scenario into a Jest or</text>
+<text class="ts" x="252" y="780" fill="#A32D2D">Playwright test. Orphaned.</text></g>
+
+<g><rect x="444" y="712" width="196" height="76" rx="8" fill="none" stroke="#A32D2D" stroke-width="1" stroke-dasharray="4 3"/>
+<text class="ts" x="454" y="730" fill="#A32D2D">GAP 9 — build hygiene</text>
+<text class="ts" x="454" y="748" fill="#A32D2D">No branching strategy, no</text>
+<text class="ts" x="454" y="764" fill="#A32D2D">commit cadence, no PR shape</text>
+<text class="ts" x="454" y="780" fill="#A32D2D">described anywhere.</text></g>
+</svg>
