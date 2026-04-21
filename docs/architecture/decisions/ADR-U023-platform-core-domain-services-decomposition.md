@@ -85,5 +85,5 @@ Platform Core
 - Supersedes: [ADR-U001 — Layered anatomy framework](ADR-U001-layered-anatomy-framework.md)
 - Related: [ADR-U002 — Five cross-cutting verticals](ADR-U002-five-cross-cutting-verticals.md) (unchanged)
 - Related: [ARCHITECTURE_ANATOMY_V1.md](../ARCHITECTURE_ANATOMY_V1.md) (archived L0-L7 reference)
-- Related: [ECOSYSTEM_ANATOMY_V3.svg](../ECOSYSTEM_ANATOMY_V3.svg) (current visual)
+- Related: [ECOSYSTEM_ANATOMY_V4.svg](../ECOSYSTEM_ANATOMY_V4.svg) (current visual)
 - Related: [ADR-U009 — API-first, frontend-agnostic](ADR-U009-api-first-frontend-agnostic.md) (contract boundaries build on this)

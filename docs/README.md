@@ -49,7 +49,7 @@ docs/
 ├── architecture/                          ← structural models + binding decisions
 │   ├── ARCHITECTURE_ANATOMY_V1.md         ← L0-L7 anatomy (archived reference)
 │   ├── DOMAIN_ENTITIES.md                 ← core domain model
-│   ├── ECOSYSTEM_ANATOMY_V3.svg           ← current anatomy diagram
+│   ├── ECOSYSTEM_ANATOMY_V4.svg           ← current anatomy diagram
 │   ├── DOMAIN_SERVICE_DEPENDENCIES.svg    ← dependency flow
 │   └── decisions/                         ← ADRs (24 — U001-U024)
 │
