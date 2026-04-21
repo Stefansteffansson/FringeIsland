@@ -103,10 +103,6 @@ Non-gap open items:
 
 ## Open items
 
-### Immediate
-- [ ] Commit this session's work to git (suggested commit message is in the session chat transcript; includes the how-we-work set, the PROCESS.md §3 Gap review bullet, the G-08 closure, and the footer bump)
-- [ ] Drop `FringeIsland-how-we-work.docx` into `docs/ecosystem/how-we-work/` manually after download
-
 ### Near-term
 - [ ] Ferd capability map (Level 3 of ecosystem-decomposition cascade) — the originally queued next-in-sequence work
 - [ ] G-07 Ferd DoD population — natural companion to the capability map

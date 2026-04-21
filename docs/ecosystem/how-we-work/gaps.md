@@ -160,4 +160,4 @@ Three `AGENTS.md` files exist: `/AGENTS.md` (canonical for Claude), `configs/cod
 
 ---
 
-*Last updated 2026-04-19. Originating session bridge: `docs/planning/sessions/2026-04-19_-_HOW-WE-WORK-SESSION.md` (pending).*
+*Last updated 2026-04-19. Originating session bridge: `docs/planning/sessions/2026-04-19_-_HOW-WE-WORK-SESSION.md`.*

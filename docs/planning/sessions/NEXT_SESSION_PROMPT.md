@@ -1,51 +1,45 @@
-We are continuing the FringeIsland documentation restructuring. Please read these files first to get context:
+We are continuing FringeIsland development. The last session produced the `docs/ecosystem/how-we-work/` documentation set and established the Gap Review ritual in PROCESS.md §3.
 
-1. `docs/planning/sessions/2026-04-15_-_LEGACY-MIGRATION-PRODUCTS-IMPLEMENTATION.md` — what we did last session
-2. `docs/README.md` — current documentation map (needs updating)
-3. `CLAUDE.md` — project conventions (WARNING: severely broken — most path references point to deleted files)
-4. `docs/planning/PROCESS.md` — canonical way of working
+## Read first (in this order)
 
-**Context:** Last session we fully decommissioned `docs/old_products/` (178 files), `docs/old_implementation/` (19 files), and `docs/old_INDEX.md`. The legacy documentation is gone. Two new files were created: `docs/ecosystem/universe/community/member-archetypes.md` and `docs/ecosystem/strategy/EXPERIENCE_PRINCIPLES.md`. CQ-014 was added to OPEN_QUESTIONS.md. 31 study docs were migrated to `docs/planning/waves/studies/`. 34 session records were migrated to `docs/planning/sessions/`.
+1. **`docs/planning/sessions/2026-04-19_-_HOW-WE-WORK-SESSION.md`** — session bridge, primary orientation artifact. Read this first.
+2. **`docs/ecosystem/how-we-work/README.md`** and skim the five chapters — to internalize the development system Stefan uses.
+3. **`docs/ecosystem/how-we-work/gaps.md`** — 17 flagged gaps, priority-ordered. Now a named input to the cycle-boundary betting ritual.
+4. **`docs/planning/PROCESS.md`** §1, §3 — the canonical way of working. §3 was materially updated 2026-04-19 (Gap Review ritual added; WIP framing aligned to review-stage throughout).
 
-**Critical state:** CLAUDE.md is severely broken. Nearly every path in §Session Management, §Document Map, and §Architecture points to deleted files. This must be fixed before any development work can happen, because CC reads CLAUDE.md at the start of every session.
+## Repo state
 
----
+All work from the 2026-04-19 session is committed. Start the session with a clean working tree.
 
-## This session's tasks (in priority order):
+If `git status` shows uncommitted changes you didn't make, stop and ask Stefan before doing anything — someone else may be working in the repo or the commit didn't land cleanly.
 
-### 1. Rewrite CLAUDE.md
+## Recommended next-in-sequence work
 
-This is the critical path. CLAUDE.md needs a full rewrite to reflect the new documentation structure. Key changes:
+**Ferd capability map (Level 3 of the `ecosystem-decomposition` skill's five-level cascade).** This has been queued since the 2026-04-10 session and was deferred twice — first for the way-of-working refactor, then for the how-we-work documentation detour. It is the natural next substantive work item.
 
-- **§Session Management** — boot-up/close-down workflow references all point to deleted files. Stefan moved BOOT_UP.md, CLOSE_DOWN.md, WORKFLOW.md, DOC_HEALTH_CHECK.md to a workflows folder — find them and decide: rewrite these for the new structure, or absorb their process into CLAUDE.md/PROCESS.md?
-- **§Doc Structure — In Transition** — migration is complete. Remove the "in transition" framing. Describe the current (final) structure.
-- **§Architecture** — remove references to deleted implementation docs (DATABASE_CURRENT.md, AUTH_SYSTEM.md, BASELINE.md). Note: these are generated on demand by CC reading the live codebase, not maintained as files.
-- **§Document Map** — remove entire "Products Tier — Ferd (old tree)" and "Implementation Tier (old tree)" sections. Replace with references to the new structure.
-- **§Development Workflow** — update WORKFLOW.md path reference. Update or remove agent context references.
-- Add references to new files: member-archetypes.md, EXPERIENCE_PRINCIPLES.md, wave studies
-- Remove every `old_products/`, `old_implementation/`, and `old_universe/` reference throughout
+The capability map decomposes the Ferd wave's locked scope (group-in-group, self-service exit, audit log viewer, content moderation, GDPR consent store, data export, feature flags, Journal, forums, DM, journey progress/pause/leave/resume/completion) into named capabilities with dependency chains and owner routing. Output lands at `docs/planning/waves/FERD-CAPABILITY-MAP.md`.
 
-### 2. Update docs/README.md
+Load the `wave-planning` and `ecosystem-decomposition` skills before starting. Don't load all four skills — progressive context loading per agent-routing chapter of how-we-work.
 
-- Remove the legacy section referencing old_products and old_implementation
-- Update the tree view to reflect current state (no more old_* directories)
-- Verify all paths in the tree are correct
+**Natural companion work:** G-07 Ferd DoD population. The capability map answers "what's in Ferd"; the DoD answers "when is Ferd done." They want to be written in sequence, probably the capability map first so the DoD has something concrete to measure completeness against.
 
-### 3. Discuss the path to known state
+## Alternative work items (if Ferd capability map isn't the right pull)
 
-Last session we locked the sequence for establishing what Hub needs in Ferd:
+- **G-03 (high priority)** — populate §3–§6 of the five vertical specs. A full cycle's worth of work. Would address the compounding risk that features currently fill in Vertical Impact sections against stubs.
+- **G-05, G-06 (high priority)** — review queue operationalization + multi-agent task locking. Both related to scaling the execution axis toward 50+ contributors.
+- **G-12 (high priority)** — Given/When/Then to test translation. Extends `feature-development` skill with the scenarios-to-tests mechanic.
 
-1. Hub Product Specification — what the Hub *should* be (from Description + Vision)
-2. Ferd scoping — which parts are in scope for Ferd
-3. Feature specs / PRDs — intended behavior per feature
-4. Code review against specs — delta with four states: fully correct, partially implemented, missing, implemented wrong
-5. Delta work — through normal BDD/TDD cycles
+## Key constraints
 
-After CLAUDE.md and README.md are fixed, we should discuss when and how to start this sequence — specifically whether to write the Hub Specification in this session or defer it.
+- Architecture-first, deliberate, one question at a time. Stefan prefers explicit "locked" confirmations before moving forward on substantive decisions.
+- Dry-run-review-apply pattern for substantive edits: use `fringeisland:edit_file` with `dryRun: true` first, show the diff, wait for approval.
+- Stefan drops binaries (docx, images) into the repo manually after download; MCP can't write binaries.
+- The `how-we-work/` documentation set is a living artifact. When its state changes, update all five surfaces: chapter markdown, gaps.md, SVG if the change is structural, index.html, docx (rebuild if needed). The Gap Review ritual in PROCESS.md §3 is the cycle-boundary mechanism that keeps the register honest.
+
+## Cadence as of this file
+
+Current cadence per PROCESS.md §3: 3-week build cycles + 1-week cooldown, WIP 3 at review, daily intention+log, weekly Three Ls, cycle boundary with betting table + Gap Review + doc-health-check + retrospective. Cadence is explicitly mutable — if it stops fitting reality, PROCESS.md §3 is the thing to update.
 
 ---
 
-## Key constraints:
-- Don't modify or delete anything without my confirmation
-- CLAUDE.md changes should be reviewed section by section before committing
-- The workflow docs (BOOT_UP etc.) need to be located first — Stefan moved them but the new location hasn't been recorded
+*This prompt supersedes all previous versions. Last rewritten 2026-04-19 during session close.*
