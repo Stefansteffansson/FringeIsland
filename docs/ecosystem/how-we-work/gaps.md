@@ -1,6 +1,6 @@
 # Gaps register
 
-**Status:** seventeen known documentation and design gaps across the FringeIsland development system as of 2026-04-19.
+**Status:** twenty-one known documentation and design gaps across the FringeIsland development system as of 2026-04-22.
 
 **Purpose:** a single place to see every gap flagged in the [how-we-work](./README.md) chapters, grouped by axis, with suggested resolution and priority.
 
@@ -29,6 +29,10 @@
 | G-16 | Agent routing | Skill chaining undocumented | Medium | Add a "common chains" section to PROCESS.md §6.5 or root CLAUDE.md |
 | G-17 | Agent routing | AGENTS.md precedence across tools | Low | ADR on tool-specific AGENTS.md precedence; tool-specific copies derive from root |
 | G-18 | Execution (research) | Research pathway under-specified | Medium | Unify maturity-2, spike, and research-report mechanisms; describe how research enters the backlog and how findings feed specs |
+| G-19 | Cadence (horizontal) | Wave-planning skill needs structural review | Medium | Run a structural review of `wave-planning` skill parallel to the 2026-04-22 review of `ecosystem-decomposition`; define its Sources, upstream dependencies, write scope, and boundary with the vertical axis |
+| G-20 | Decomposition (downstream) | Reconciliation activity has no defined home | Medium | Decide where reconciliation lives (own skill / mode inside `feature-development` / named workflow); currently named only in prose in the `ecosystem-decomposition` skill |
+| G-21 | Decomposition (L4) | Feature-inventory summary in SPECIFICATION.md has no maintenance discipline | Medium | Add a discipline (in `feature-development` skill + `doc-health-check`) that ensures the L4-owned feature-inventory summary stays current as FEAT-*.md files change |
+| G-22 | Decomposition (cross-level) | Legacy pre-refactor FEAT-*.md need absorb-and-delete discipline | Medium | Add a discipline to the ecosystem-decomposition skill: when L3 runs fresh on an entity with legacy FEAT-*.md files, inspirational insight is absorbed into L1/L2/L3 first, then legacy specs are deleted in the same commit that lands new L4 specs |
 
 ---
 
@@ -114,6 +118,21 @@ The gap compounds as waves mature. Ferd is foundation work where most research w
 
 *Proposed fix:* add a Research pathway section to `ecosystem-decomposition` skill or PROCESS.md §6 that: (a) distinguishes spike (cycle-scoped, produces follow-up items) from research report (wave-scoped or cross-wave, produces principles); (b) describes how a question becomes a spike (it's a `type: spike` backlog item); (c) describes how spike findings feed back — affected feature specs are updated, follow-up items become new feature specs at maturity 0-1; (d) describes when to escalate a spike to a research report (cross-wave significance, architectural implications, external-facing strategy). Consider whether `research-spike.md` template should gain a "Feeds into" field.
 
+**G-20 — Reconciliation activity has no defined home (decomposition, downstream).**
+The 2026-04-22 rewrite of the `ecosystem-decomposition` skill locked that **reconciliation is a separate activity, downstream of derivation** — L3 and L4 produce authoritative output derived fresh from upstream, and existing artifacts (pre-refactor specs, current code) are compared against that authoritative output as a distinct activity. The skill names two reconciliations: inventory-against-existing-specs (run after fresh L3) and spec-against-code (run after L4). But the activity itself has no skill, no workflow, and no named home. It currently runs as a named activity in whatever skill context is active when it's needed, which is not sustainable at fifty contributors.
+
+*Proposed fix:* session decision to pick a home. Three plausible options — (a) own skill (`reconciliation` or similar), (b) mode inside `feature-development` since spec-against-code reconciliation produces cycle work, (c) embed reconciliation mechanics inside `ecosystem-decomposition` as a post-derivation section. Option (b) is probably the natural fit for spec-against-code; option (c) might work for inventory-against-existing-specs. Leaning toward: defer the decision until reconciliation has actually run once in practice, which will inform its shape. Flag this gap when wave 1's first reconciliation happens.
+
+**G-21 — Feature-inventory summary in SPECIFICATION.md has no maintenance discipline (decomposition, L4).**
+The 2026-04-22 rewrite established that SPECIFICATION.md has three sections under different authority — L2 owns identity/boundaries/technical shape, L3 owns the capability inventory, L4 owns the feature-inventory summary. L4 is expected to update the feature-inventory summary whenever a FEAT-*.md file is created, advances in maturity, or is deleted. But no mechanism ensures this actually happens. A developer writing a feature spec at maturity 2-explored, or advancing one to 4-ready, may fail to update the corresponding summary row, and the drift will accumulate silently.
+
+*Proposed fix:* (a) add the maintenance discipline to the `feature-development` skill — updating the feature-inventory summary is part of the spec-write/update workflow; (b) add a `doc-health-check` check that compares the set of FEAT-*.md files under `{entity}/features/` against the feature-inventory summary in `{entity}/SPECIFICATION.md` and flags drift at every cycle boundary.
+
+**G-22 — Legacy pre-refactor FEAT-*.md need absorb-and-delete discipline (decomposition, cross-level).**
+The 2026-04-22 rewrite locked Resolution A and choice (a): L4 derives feature specs fresh from L3's inventory and reads zero pre-refactor FEAT-*.md files; any inspirational value from the legacy specs is absorbed upstream (at L2 or the start of L3) into DESCRIPTION.md, SPECIFICATION.md, or the capability inventory before L4 runs; legacy specs are then deleted as part of the commit that lands the new L4 specs. This discipline is described in the skill but has no enforcement. Without it, someone may run L3 on an entity with legacy specs, produce a fresh capability inventory, and leave the legacy FEAT-*.md files in place "just in case" — re-introducing the exact contamination the discipline is designed to prevent.
+
+*Proposed fix:* (a) make the absorb-and-delete step an explicit substep in the skill's Level 3 section (currently it's only named in the cross-skill prose about inspirational input); (b) add a `doc-health-check` check for "entities where L3 has recently run that still have legacy FEAT-*.md files" — the check triggers on the signal that a SPECIFICATION.md capability-inventory section was updated in the last cycle.
+
 ### Agent routing — chapter 05
 
 **G-15 — Cross-tier entry order.**
@@ -153,6 +172,10 @@ Three `AGENTS.md` files exist: `/AGENTS.md` (canonical for Claude), `configs/cod
 - G-15 Cross-tier entry order
 - G-16 Skill chaining undocumented
 - G-18 Research pathway under-specified
+- G-19 Wave-planning skill needs structural review
+- G-20 Reconciliation activity has no defined home
+- G-21 Feature-inventory summary in SPECIFICATION.md has no maintenance discipline
+- G-22 Legacy pre-refactor FEAT-*.md need absorb-and-delete discipline
 
 **Low priority** (single-word fixes or edge cases):
 - G-11 TDD overstated vs risk-based
@@ -160,4 +183,4 @@ Three `AGENTS.md` files exist: `/AGENTS.md` (canonical for Claude), `configs/cod
 
 ---
 
-*Last updated 2026-04-19. Originating session bridge: `docs/planning/sessions/2026-04-19_-_HOW-WE-WORK-SESSION.md`.*
+*Last updated 2026-04-22. Originating session bridges: `docs/planning/sessions/2026-04-19_-_HOW-WE-WORK-SESSION.md` (G-01 through G-18); `docs/planning/sessions/2026-04-22_-_DECOMPOSITION-SKILL-REFACTOR.md` (G-19 through G-22).*

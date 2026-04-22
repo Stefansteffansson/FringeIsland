@@ -47,13 +47,17 @@ The ecosystem is made of products, platform services, studios, a design system, 
 - **Design System** — shared visual language
 - **Verticals** — the five cross-cutting obligations
 
-Each active entity has a `DESCRIPTION.md` (what and why, outward-facing) and, as it enters active development, a `SPECIFICATION.md` (how it works, inward-facing) and a `ROADMAP.md`. The split is governed by the `ecosystem-decomposition` skill §2.
+Each active entity has a `DESCRIPTION.md` (what and why, outward-facing) and, as it enters active development, a `SPECIFICATION.md` (how it works, inward-facing) and a `ROADMAP.md`. The split is governed by the `ecosystem-decomposition` skill §2. Note that `SPECIFICATION.md` holds sections authored by different levels under different authority — L2 owns identity/boundaries/technical shape, L3 owns the capability inventory, L4 owns the feature-inventory summary. See the skill's "Ownership of SPECIFICATION.md is shared across levels" section for the full partition.
 
 ### L3 — Capabilities
 
-The most-skipped level and the one whose absence causes the most pain. L3 is the analytical work of mapping what capabilities a wave, a product, or a user journey actually needs — and which entity owns each. It produces an output (a capability map with dependency chains) that feeds both wave scoping and feature creation.
+The most-skipped level and the one whose absence causes the most pain. L3 is the authoritative derivation of what an entity should do — its capability space, internal ownership, internal and external dependencies, and vertical impact. It runs **per entity** (or per set of entities when the work is legitimately cross-entity) and produces the entity's capability inventory, which lives in the capability-inventory section of the entity's `SPECIFICATION.md`.
 
-The canonical worked example is `docs/planning/waves/FERD-CAPABILITY-MAP.md`, which maps every Ferd-scoped capability to an owner, a dependency chain, and a status. Without this step, you cannot know whether you have the prerequisites in place to specify a feature: you cannot write the Hub's journey-enrollment UI feature spec until the Experience Engine's journey-enrollment API feature spec exists.
+L3 derives the inventory fresh from L1 (Vision) and L2 (entity definition). It does not read existing feature specs or code during derivation — those would contaminate the authority flow. Any comparison between the authoritative inventory and existing artifacts is a separate activity called **reconciliation**, downstream of L3.
+
+The discipline matters at any scale, but becomes load-bearing as contributor count grows: without a clean capability inventory, cross-entity dependencies become implicit, features get written without knowing what prerequisites exist, and boundaries between sibling entities drift. L3 is what lets the other levels trust the ecosystem they inherit.
+
+See the `ecosystem-decomposition` skill §"Level 3 — Capabilities" for the full mechanics, and the skill's "Reconciliation is a separate activity" section for the relationship between L3 and downstream comparison against existing artifacts.
 
 ### L4 — Features (with stories embedded)
 
