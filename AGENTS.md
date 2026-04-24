@@ -36,6 +36,20 @@ Start at `docs/README.md` for the full map. Key entry points:
 - Conventional commits: `feat(hub): ...`, `fix(platform): ...`
 - Feature IDs: PC=Platform Core, PD=Platform Domain, H=Hub, G=Gimbal, GM=The Game, JS=Journey Studio, US=Universe Studio, AS=Arc Studio, DS=Design System, V=Verticals
 
+## Execution environment
+
+This repo is worked on from two AI environments with different shell contexts:
+
+- **Claude Code** uses its `Bash` tool — runs commands through bash (via Git for Windows `bash.exe` on Windows hosts). Unix tools (`ls`, `cat`, `grep`, `find`, `sed`, `awk`) are available. Use the `.sh` scripts: `supabase-cli.sh`, not `supabase-cli.bat`.
+- **Claude Desktop** runs shell commands via the super-shell MCP server, which uses PowerShell on Windows. Only Windows-native commands are on the default whitelist — prefer `dir`, `type`, `findstr` over `ls`, `cat`, `grep`. Use the `.bat` scripts: `supabase-cli.bat`, not `supabase-cli.sh`.
+
+For FringeIsland-specific work in Claude Desktop, prefer the dedicated MCPs over super-shell:
+- `fringeisland` (filesystem MCP) — read/write/list files in the repo
+- `fringeisland-git` (git MCP) — inspect commits, diffs, branches
+- `super-shell` — reserve for system-level or ad-hoc commands
+
+Developer tools (`git`, `npm`, `node`, `mmdc`) require approval when called via super-shell. The super-shell whitelist does not persist across Claude Desktop restarts; see `docs/tooling/SUPER_SHELL.md` for details.
+
 ## Boundaries
 
 ### Always do
