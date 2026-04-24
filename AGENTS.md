@@ -48,7 +48,7 @@ For FringeIsland-specific work in Claude Desktop, prefer the dedicated MCPs over
 - `fringeisland-git` (git MCP) — inspect commits, diffs, branches
 - `super-shell` — reserve for system-level or ad-hoc commands
 
-Developer tools (`git`, `npm`, `node`, `mmdc`) require approval when called via super-shell. The super-shell whitelist does not persist across Claude Desktop restarts; see `docs/tooling/SUPER_SHELL.md` for details.
+Developer tools (`git`, `npm`, `node`, `mmdc`) require approval when called via super-shell. Super-shell has two operational quirks worth knowing: the whitelist does not persist across Claude Desktop restarts, and commands that exit non-zero (including `grep`/`findstr` on empty searches) surface as "Command failed" with stdout discarded. Prefer the filesystem MCP or a PowerShell terminal for text searches.
 
 ## Boundaries
 
