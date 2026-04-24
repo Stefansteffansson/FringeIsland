@@ -1,0 +1,49 @@
+## Ferd
+
+Fundamentals:
+- Authentication, Visitors and Members
+- Sign up, sign in, sign out and leave FringeIsland eco-system
+- Groups
+- Roles
+- Permissions and sets of permissions
+- Internationalization 
+- Journals, i.e., logbooks for note taking, ideas, thoughts etc.
+- Journeys
+
+Communications:
+- Forums, basic functionality
+- Notifications (permission to send is set by group->roles->permission)
+- Direct Messages, between any number of individuals (add and remove individuals is possible)
+
+Administration:
+- Administration of the platform, i.e., CRUD Members/Groups/Roles/Sets of permission/Journeys
+- Done by special group named "DeusEx" and with the role "DesuEx" which has permissions to the whole system (i.e., root access)
+
+## Eid
+- The "Whisp", definition and functionality
+- Journey Studio v1.0, addressing joureys in the "real world"
+
+## Hamn
+- Eco-system "Design system"
+- Eco-system "Accessability"
+- Review and update UX/UI
+
+## Heim
+- "FringeIsland" and "My garden", definition and functionality
+- Universe Studio v1.0, adding "FringeIsland" to the FringeIsland augumented reality universe
+- Journey Studio v2.0, adding journeys in "FringeIsland" + "dynamic journey paths"
+
+## Brim
+- The "Void", definition and functionality
+- Journey Studio v3.0, adding journeys in the "Void"
+- Universe Studio v2.0, adding "Void" to the FringeIsland augumented reality universe
+- "The Gimbal" v1.0, native iOS and Android with the 3 x worlds 
+
+## Urd
+- Arc Studio v1.0, the studio where narratives through seasons and episodes are developed
+- FringeIsland Studio v1.0, = Platform that integrates the Journey Studio + Universe Studio + Arc Studio
+- Marketplace for assets in the FringeIsland Universe (i.e, FringeIsland and the Void)
+- Analytics, heat-maps and statistics that supports FringeIsland eco-system development and FringeIsland members
+
+## Urd+
+- "The Game" (made in with Unreal Engine?)

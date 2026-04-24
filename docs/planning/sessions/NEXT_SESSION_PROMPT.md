@@ -1,45 +1,80 @@
-We are continuing FringeIsland development. The last session produced the `docs/ecosystem/how-we-work/` documentation set and established the Gap Review ritual in PROCESS.md §3.
+We are continuing FringeIsland development. The last session landed a substantial
+refactor of the ecosystem-decomposition skill, separating the vertical decomposition
+axis from horizontal wave-planning. This session continues strictly on the vertical
+axis.
 
 ## Read first (in this order)
 
-1. **`docs/planning/sessions/2026-04-19_-_HOW-WE-WORK-SESSION.md`** — session bridge, primary orientation artifact. Read this first.
-2. **`docs/ecosystem/how-we-work/README.md`** and skim the five chapters — to internalize the development system Stefan uses.
-3. **`docs/ecosystem/how-we-work/gaps.md`** — 17 flagged gaps, priority-ordered. Now a named input to the cycle-boundary betting ritual.
-4. **`docs/planning/PROCESS.md`** §1, §3 — the canonical way of working. §3 was materially updated 2026-04-19 (Gap Review ritual added; WIP framing aligned to review-stage throughout).
+1. **`docs/planning/sessions/2026-04-22_-_DECOMPOSITION-SKILL-REFACTOR.md`** — session
+   bridge, primary orientation artifact. Read this first.
+2. **`.claude/skills/ecosystem-decomposition/SKILL.md`** — the rewritten skill. This
+   is the canonical reference for all decomposition work going forward.
+3. **`docs/ecosystem/how-we-work/gaps.md`** — 21 flagged gaps, priority-ordered.
+   G-19 through G-22 were added this session.
+4. **`docs/planning/PROCESS.md`** §6 and §6.5 — the axis-separation wording and the
+   pointer to the skill's per-level source map.
 
 ## Repo state
 
-All work from the 2026-04-19 session is committed. Start the session with a clean working tree.
+All work from the 2026-04-22 session is committed. Start with a clean working tree.
 
-If `git status` shows uncommitted changes you didn't make, stop and ask Stefan before doing anything — someone else may be working in the repo or the commit didn't land cleanly.
+If `git status` shows uncommitted changes you didn't make, stop and ask before doing
+anything.
 
-## Recommended next-in-sequence work
+## Recommended next-in-sequence work (strictly vertical axis)
 
-**Ferd capability map (Level 3 of the `ecosystem-decomposition` skill's five-level cascade).** This has been queued since the 2026-04-10 session and was deferred twice — first for the way-of-working refactor, then for the how-we-work documentation detour. It is the natural next substantive work item.
+**Commit 3: template restructure.** The session identified that
+`docs/templates/product-specification.md` and `docs/templates/domain-service-spec.md`
+need explicit section boundaries for L2, L3, and L4 authorship (per the locked
+"SPECIFICATION.md ownership is shared" decision). This is scoped, small, and required
+by any future L3 run on any entity. Load the ecosystem-decomposition skill before
+starting.
 
-The capability map decomposes the Ferd wave's locked scope (group-in-group, self-service exit, audit log viewer, content moderation, GDPR consent store, data export, feature flags, Journal, forums, DM, journey progress/pause/leave/resume/completion) into named capabilities with dependency chains and owner routing. Output lands at `docs/planning/waves/FERD-CAPABILITY-MAP.md`.
+**Companion work — L2 compliance audit.** For every named entity (all products, four
+Platform Core tiers, seven domain services, three studios, design system, five
+verticals), check which of DESCRIPTION.md / SPECIFICATION.md / ROADMAP.md exist and
+in what state. This is a pure L2-state check against the current repo. Useful context
+for any subsequent decomposition work.
 
-Load the `wave-planning` and `ecosystem-decomposition` skills before starting. Don't load all four skills — progressive context loading per agent-routing chapter of how-we-work.
+## Alternative vertical-axis work items
 
-**Natural companion work:** G-07 Ferd DoD population. The capability map answers "what's in Ferd"; the DoD answers "when is Ferd done." They want to be written in sequence, probably the capability map first so the DoD has something concrete to measure completeness against.
+- **G-21** — feature-inventory summary in SPECIFICATION.md has no maintenance
+  discipline. Operationalize it in the `feature-development` skill and
+  `doc-health-check`.
+- **G-22** — legacy pre-refactor FEAT-*.md files need the absorb-and-delete
+  discipline made an explicit substep in the skill's L3 section, plus a
+  `doc-health-check` verification.
+- **G-03** — populate the five vertical specs beyond their current scaffold state.
+  Every L3 run currently surfaces these as soft-pause remarks; populating them
+  would close the feedback loop.
 
-## Alternative work items (if Ferd capability map isn't the right pull)
+## Out of scope this session
 
-- **G-03 (high priority)** — populate §3–§6 of the five vertical specs. A full cycle's worth of work. Would address the compounding risk that features currently fill in Vertical Impact sections against stubs.
-- **G-05, G-06 (high priority)** — review queue operationalization + multi-agent task locking. Both related to scaling the execution axis toward 50+ contributors.
-- **G-12 (high priority)** — Given/When/Then to test translation. Extends `feature-development` skill with the scenarios-to-tests mechanic.
+Do NOT work on horizontal-axis items. The following are explicitly deferred and
+should not be picked up without a separate explicit decision:
+
+- Wave scoping, wave progress, wave DoD, any wave-specific capability mapping
+- G-19 (wave-planning skill structural review)
+- Anything under `docs/planning/waves/`
+- Cycle planning, cooldown work, kanban mechanics
+
+If any vertical-axis work surfaces a question that could only be answered by a
+horizontal-axis decision, pause and flag it rather than reaching for a
+horizontal-axis artifact to resolve it.
 
 ## Key constraints
 
-- Architecture-first, deliberate, one question at a time. Stefan prefers explicit "locked" confirmations before moving forward on substantive decisions.
-- Dry-run-review-apply pattern for substantive edits: use `fringeisland:edit_file` with `dryRun: true` first, show the diff, wait for approval.
-- Stefan drops binaries (docx, images) into the repo manually after download; MCP can't write binaries.
-- The `how-we-work/` documentation set is a living artifact. When its state changes, update all five surfaces: chapter markdown, gaps.md, SVG if the change is structural, index.html, docx (rebuild if needed). The Gap Review ritual in PROCESS.md §3 is the cycle-boundary mechanism that keeps the register honest.
-
-## Cadence as of this file
-
-Current cadence per PROCESS.md §3: 3-week build cycles + 1-week cooldown, WIP 3 at review, daily intention+log, weekly Three Ls, cycle boundary with betting table + Gap Review + doc-health-check + retrospective. Cadence is explicitly mutable — if it stops fitting reality, PROCESS.md §3 is the thing to update.
+- Architecture-first, deliberate, one question at a time. Explicit "locked"
+  confirmations before moving forward on substantive decisions.
+- Dry-run-review-apply pattern for substantive edits: use `fringeisland:edit_file`
+  with `dryRun: true` first, show the diff, wait for approval.
+- The 2026-04-22 session caught four horizontal-axis contaminations in the
+  vertical-axis work. The pattern: reaching backward to existing artifacts
+  (existing features, existing code, existing wave scopes) instead of deriving
+  fresh from upstream authority. If you're about to read or reference something
+  from below the level you're writing at, stop. If you're about to reach across
+  to a horizontal-axis artifact, stop harder.
 
 ---
 
-*This prompt supersedes all previous versions. Last rewritten 2026-04-19 during session close.*
+*This prompt supersedes all previous versions. Last rewritten 2026-04-22 during session close.*
