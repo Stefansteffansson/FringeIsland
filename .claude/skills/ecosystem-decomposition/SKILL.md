@@ -268,7 +268,7 @@ L4 reads zero pre-refactor FEAT-*.md files.
 
 - **FEAT-*.md files** under `docs/{owner}/features/` — entirely. Includes YAML frontmatter (id, title, owner, consumers, wave, maturity), body content at the current maturity, and implementation notes at 6-done.
 - **`{owner}/features/README.md`** — the feature index.
-- **The feature-inventory summary section of `{entity}/SPECIFICATION.md`** — L4's reconciliation output against L3's capability inventory. Shows which capabilities have specs, at what maturity, and which remain unspecified. Updated whenever a FEAT-*.md file is created, advances in maturity, or is deleted.
+- **The feature-inventory summary section of `{entity}/SPECIFICATION.md`** — L4's reconciliation output against L3's capability inventory. Shows which capabilities have specs, at what maturity, and which remain unspecified. Updated **in the same commit** as any FEAT-*.md change that affects it — spec creation, maturity advance (including 4→5, 5→6), deletion, or retroactive spec write. Updates triggered by maturity 4→5 and 5→6 transitions happen during the `feature-development` skill's execution; the update is still L4's property, the skill just carries it out. The `doc-health-check` skill §8 verifies this section reflects the actual state of `features/` at cycle boundaries.
 
 L4 does NOT touch: DESCRIPTION.md (L2), capability-inventory section of SPECIFICATION.md (L3), TASK-*.md files (L5), anything outside its owner's directory (except the feature-inventory summary in the entity's SPECIFICATION.md).
 
@@ -282,9 +282,10 @@ The YAML `wave:` tag is populated by wave-planning work, not by L4. L4 may leave
 
 ### When L4 runs
 
-- A fresh L3 derivation has landed for an entity — full feature-spec layer is written from scratch. **All pre-refactor FEAT-*.md files for that entity are deleted** as part of the same commit that lands the new specs. Git history preserves the originals.
-- L3 has been revised for specific capabilities — L4 runs on those capabilities only.
-- A feature needs to advance in maturity (2 → 3 → 4).
+- A fresh L3 derivation has landed for an entity — full feature-spec layer is written from scratch. **All pre-refactor FEAT-*.md files for that entity are deleted** as part of the same commit that lands the new specs (per Resolution A / (a) — see "Reconciliation is a separate activity" below). Git history preserves the originals. The feature-inventory summary in SPECIFICATION.md is replaced wholesale to reflect the new spec set.
+- L3 has been revised for specific capabilities — L4 runs on those capabilities only. Affected rows in the feature-inventory summary are updated in the same commit.
+- A feature needs to advance in maturity (2 → 3 → 4). The feature-inventory summary row for that feature is updated in the same commit.
+- A feature advances through maturity 4 → 5 or 5 → 6. These transitions are carried out by the `feature-development` skill (task creation at 4→5, Implementation notes at 5→6), but the summary-row update is still part of that work.
 - Implementation notes need to be written after a feature reaches 6-done.
 
 Not triggered by: cycle start (L5 decomposes ready features into tasks), code change (reconciliation produces work, which may be tasks or spec revisions — but code does not cause L4 to run spontaneously).

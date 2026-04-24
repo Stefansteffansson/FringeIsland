@@ -59,7 +59,7 @@ For each story in the feature spec, create one or more tasks.
 - [ ] Technical notes reference specific files and patterns
 - [ ] Verification steps describe how to confirm it's done
 
-After creating tasks, update the feature maturity to `5-in-cycle`.
+After creating tasks, update the feature maturity to `5-in-cycle`. In the **same commit**, update the feature-inventory summary row in the parent entity's `SPECIFICATION.md` (§L4) to reflect the new maturity. This keeps the entity-level summary honest about what's in flight. Per the `ecosystem-decomposition` skill L4 write scope, this is L4's property; `feature-development` is the operational layer carrying the update out.
 
 ### Step 4: Implement
 
@@ -82,6 +82,7 @@ For each task:
 After all tasks for a story are done:
 - Verify the story's Given/When/Then acceptance criteria end-to-end
 - If all stories in the feature are complete, update feature maturity to `6-done`
+- In the **same commit** as the maturity change, update the feature-inventory summary row in the parent entity's `SPECIFICATION.md` (§L4) to reflect `6-done`. Per the `ecosystem-decomposition` skill L4 write scope, this is L4's property; `feature-development` is the operational layer carrying the update out. The `doc-health-check` skill §8 verifies the summary matches the actual state of `features/` at cycle boundaries — miss this step and the check will flag drift.
 - Update the `features/README.md` index
 - Update `CHANGELOG.md` if the change is user-visible
 

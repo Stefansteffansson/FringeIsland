@@ -37,6 +37,7 @@ The skill has nine sections. Three (1.5, 3.5, 3.6) exist to catch drift introduc
 | After a wave transition or significant scope shift | Section 4 (Parked items) + Section 5 (Maturity consistency) |
 | After a feature ships (maturity → `6-done`) | Section 5 (Maturity consistency) applied to just that feature |
 | **After scoping a new product/studio/service, or writing a feature spec that references pending structural docs** | Section 7 (Expected placeholders) — and update Section 7's registry in the same session |
+| **After a feature is created, advances in maturity, or is deleted** | Section 8 (Feature-inventory summary consistency) |
 | On-demand, any time | Any subset — the skill is cheap to invoke partially |
 
 **Skip a section** when nothing has triggered it since the last run. Don't skip all eight just because the cycle was quiet — a quiet cycle is still worth 15 minutes of checking. **Never skip Section 1.5 or 3.6 after a refactor session** — those are the sections that catch the drift a refactor is most likely to introduce.
@@ -431,8 +432,54 @@ This section is the explicit protection.
 - **Section 3 (path + README sync)** — when a markdown link points at a registry entry, the "target exists" check passes. The link is valid scaffolding. Record it as such.
 - **Section 3.6 (references to deleted files)** — before adding a filename to the deleted-file table, confirm it is not a registry entry. An expected placeholder that has never existed is not a deleted file.
 - **Section 6 (entity coverage)** — missing `DESCRIPTION.md` / `SPECIFICATION.md` / `ROADMAP.md` for an entity whose files are in the registry is **not** a gap flagged as critical. It is a pending item, reported in the entity-coverage summary line as "pending (registry)" rather than "gap."
+- **Section 8 (feature-inventory summary consistency)** — if an entity's `SPECIFICATION.md` is in the registry (not yet authored), Section 8's consistency check does not run for that entity. The feature-inventory summary cannot drift from its parent file if the parent file does not yet exist. Report as "pending (registry)" in the Section 8 summary line.
 
 **Skip if:** No new architectural placeholders have been introduced, no registry entries have been authored (and thus need removal), and no entity has moved from "planned" to "active" since the last check. Default is to run the registry review briefly — it's cheap, and the erosion loop it prevents is expensive.
+
+---
+
+## Section 8 — Feature-inventory summary consistency
+
+**Question:** For each active entity, does the feature-inventory summary section in its `SPECIFICATION.md` (§L4) accurately reflect the actual state of `FEAT-*.md` files under that entity's `features/` directory?
+
+The L4 feature-inventory summary is a reconciliation output maintained by the `ecosystem-decomposition` skill (L4 write scope) and updated operationally by the `feature-development` skill at maturity transitions 4→5 and 5→6. Closes the prevention loop for G-21 by detecting drift that prevention missed.
+
+### What counts as drift
+
+Four drift signals, in descending order of severity:
+
+1. **Feature-on-disk, not-in-summary.** A `FEAT-*.md` file exists under `{entity}/features/` that has no corresponding row in the summary. Either the spec was created and the summary not updated, or the summary was never written. Critical finding.
+2. **Summary row, no-feature-on-disk.** The summary lists `FEAT-XYZ` but no such file exists under `features/`. Either the spec was deleted and the summary not updated, or the summary references a spec that never existed. Critical finding. Cross-check against the absorb-and-delete discipline (G-22) — if the spec was correctly deleted as part of a fresh L3 run, the summary row should also have been removed.
+3. **Maturity column out of sync.** A summary row exists, a matching `FEAT-*.md` exists, but the summary's Maturity column disagrees with the spec's YAML `maturity:` field. Most often caused by maturity 4→5 or 5→6 transitions where the `feature-development` skill's step was missed. Finding; severity depends on the direction of drift (summary claims `6-done` but spec says `4-ready` is more misleading than the reverse).
+4. **Capability-row missing or stale.** A capability in the §L3 inventory has no row (either no-spec-yet row with em-dashes, or a feature-spec row); or a capability has been removed from §L3 but its row survives in the summary. Lower severity; often a signal that L4 hasn't run for capabilities added in the most recent L3 revision.
+
+### Procedure
+
+1. **Enumerate active entities** that have both a `features/` directory with at least one `FEAT-*.md` file AND a `SPECIFICATION.md` file. Entities whose `SPECIFICATION.md` is in Section 7's registry are skipped (report as "pending (registry)" per the registry interaction note above).
+2. For each such entity:
+   - List `{entity}/features/FEAT-*.md` from disk. Extract the spec ID and YAML `maturity:` from each.
+   - Parse the feature-inventory summary section of `{entity}/SPECIFICATION.md` (§L4). Extract rows.
+   - Compute the four drift signals above by comparing the two sets:
+     - (1) files on disk not in summary — by spec ID
+     - (2) rows in summary with spec ID but no file on disk
+     - (3) matching rows where summary Maturity ≠ spec `maturity:`
+     - (4) rows with blank or em-dash capability mapping, or capabilities in §L3 with no row in §L4
+3. For each drift signal:
+   - **Fix in-place** if the fix is obvious: add a missing row from the spec's YAML, update a stale Maturity column value, remove a row for a non-existent spec.
+   - **Flag as backlog item** if the fix requires judgement: e.g., summary row for a spec that correctly should not exist (was absorb-and-delete applied correctly?), or §L3 and §L4 diverge in ways that suggest L4 hasn't run for recent L3 changes.
+4. **Cross-reference G-21** in the output. If consistent drift is found, surface whether the drift came through the `feature-development` skill's maturity-transition step (Steps 3 and 5 of that skill) or through the `ecosystem-decomposition` skill's L4 write (creation / deletion / advance 0→4) — the pattern tells us where prevention is weakest.
+
+### What this section does NOT do
+
+- Does not verify that each summary row's entry is correctly *placed* under its capability in the summary table (that's L4's authorial judgement; the check verifies presence and maturity, not organisation).
+- Does not verify that the §L3 capability inventory itself is current (that's L3's property — fresh derivation is not a drift-repair concern).
+- Does not verify that FEAT-*.md files have the correct owner's directory (Section 3 path-reference covers that if a feature is misplaced).
+
+### Interaction with the feature-inventory template language
+
+The templates (`product-specification.md`, `domain-service-spec.md`, `vertical-spec.md`) each name G-21 explicitly in the §L4 authorship note: "Maintenance discipline is tracked as G-21 — the `doc-health-check` skill verifies this section reflects the current state of `features/`." Section 8 is the verification that closes the reference.
+
+**Skip if:** No entity has had a FEAT-*.md created, advanced in maturity, deleted, or otherwise changed since the last check. Default is to run briefly — the check is cheap per entity.
 
 ---
 
@@ -454,6 +501,7 @@ Sections run:
 5.   Maturity consistency          — [N specs checked / N drift items / N critical (e.g., 6-done with empty Implementation notes) / skipped: <reason>]
 6.   Entity coverage               — [N entities checked / N gaps flagged / N pending-per-registry / clean / skipped: <reason>]
 7.   Expected placeholders         — [N registry entries reviewed / N newly authored (removed from registry) / N newly introduced (added) / N still pending / clean / skipped: <reason>]
+8.   Feature-inventory summary     — [N entities checked / N drift items / N fixed in-place / N flagged as backlog / N entities pending (registry) / clean / skipped: <reason>]
 
 Critical findings (sections 1.5, 3.5, 3.6, or 5 with active-directive / empty-6-done hits — **excluding** registry entries per Section 7):
 - <file>:<line> — <short description> — <fix applied in-place | backlog item created>
@@ -492,9 +540,10 @@ The rule of thumb: if fixing it takes more than 5 minutes or requires thinking, 
 - **PROCESS.md §1** — Model A pipeline + `parked` YAML mechanism (Section 4 of this skill operates on it)
 - **PROCESS.md §6** — trigger-artifact map (Section 6 of this skill checks coverage against it)
 - **PROCESS.md §6.5** — Skills as the execution layer (Section 1.5 and 3.6 of this skill depend on the skills-over-workflows transition being complete)
-- **`ecosystem-decomposition` skill** — defines what each entity needs at Level 2 (Section 6 enforces it)
-- **`feature-development` skill** — responsible for setting `maturity: 6-done` correctly with Implementation notes filled in (Section 5 catches failures)
+- **`ecosystem-decomposition` skill** — defines what each entity needs at Level 2 (Section 6 enforces it); defines the feature-inventory summary as L4's write scope (Section 8 enforces it)
+- **`feature-development` skill** — responsible for setting `maturity: 6-done` correctly with Implementation notes filled in (Section 5 catches failures); responsible for updating the feature-inventory summary row at maturity 4→5 and 5→6 transitions (Section 8 catches failures)
 - **AGENTS.md** — cross-check rule: when a grep returns no hits, confirm with a direct listing before concluding something is absent. Section 3.6 applies this rule explicitly (cross-check the deleted-files table against disk every run).
+- **`docs/ecosystem/how-we-work/gaps.md`** — G-21 (feature-inventory summary maintenance) is the gap Section 8 closes; G-22 (legacy spec absorb-and-delete) is cross-referenced by Section 8 signal (2).
 
 ## Known gaps / skill calibration
 
