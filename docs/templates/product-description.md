@@ -1,9 +1,15 @@
 # {Product name} — Description
 
-**Surface type:** Web · iOS · Android · Game
-**Status:** Concept · Active · Maintained · Sunset
-**Owner:** {name}
-**Last updated:** YYYY-MM-DD
+---
+slug: {hub | gimbal | game}
+owner: products/{slug}
+surface_type: {web | ios | android | game}
+status: {concept | active | maintained | sunset}
+last_updated: YYYY-MM-DD
+tier: Surfaces
+tags: [product:{slug}]
+feature_prefix: {H | G | GM}  # H=Hub, G=Gimbal, GM=Game — used for FEAT-*.md file naming
+---
 
 > The outward-facing identity of a product surface. This document is for someone who has *never heard of* this product. It explains what it is, who it's for, and where its boundaries are. Build details belong in `SPECIFICATION.md`.
 
