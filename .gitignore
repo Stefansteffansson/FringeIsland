@@ -66,3 +66,9 @@ tests/e2e/.auth/*.json
 # Supabase
 supabase/.temp/
 .supabase/
+
+# Office lock files
+~$*
+
+# Scratch / temporary docs
+docs/TMP/
