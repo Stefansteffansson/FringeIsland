@@ -5,15 +5,15 @@
 **Session type:** Vertical-axis work — completion of next-in-sequence verticals migration; mid-session pivot into forward planning
 **Participants:** Stefan + Claude (Opus 4.7 via Claude.ai)
 **Commits landed (pushed to origin/main):**
-- `{hash}` — docs(verticals): migrate administration to L2/L3/L4 SPECIFICATION shape
-- `{hash}` — docs(verticals): migrate privacy to L2/L3/L4 SPECIFICATION shape
-- `{hash}` — docs(verticals): migrate notifications to L2/L3/L4 SPECIFICATION shape
-- `{hash}` — docs(verticals): migrate observability to L2/L3/L4 SPECIFICATION shape
-- `{hash}` — docs(verticals): migrate transactions to L2/L3/L4 SPECIFICATION shape
-- `{hash}` — docs(verticals): update README.md to reflect new directory structure
-- `{hash}` — docs(verticals): update CLAUDE.md to reflect new SPECIFICATION shape
-- `{hash}` — docs(sessions): remove stale NEXT_SESSION_PROMPT.md
-- `{hash}` — docs(sessions): add 2026-04-26 verticals migration and forward plan bridge
+- `11a0066` — docs(verticals): migrate administration to L2/L3/L4 SPECIFICATION shape
+- `13dee32` — docs(verticals): migrate privacy to L2/L3/L4 SPECIFICATION shape
+- `ff40d1d` — docs(verticals): migrate notifications to L2/L3/L4 SPECIFICATION shape
+- `e6b8864` — docs(verticals): migrate observability to L2/L3/L4 SPECIFICATION shape
+- `af20487` — docs(verticals): migrate transactions to L2/L3/L4 SPECIFICATION shape
+- `321765f` — docs(verticals): update README.md to reflect new directory structure
+- `d058104` — docs(verticals): update CLAUDE.md to reflect new SPECIFICATION shape
+- `baa010c` — docs(sessions): remove stale NEXT_SESSION_PROMPT.md
+- `5bf755d` — docs(sessions): add 2026-04-26 verticals migration and forward plan bridge
 
 ---
 

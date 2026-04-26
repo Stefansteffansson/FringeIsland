@@ -1,6 +1,6 @@
 # Gaps register
 
-**Status:** twenty-four known documentation and design gaps across the FringeIsland development system as of 2026-04-24.
+**Status:** twenty-six known documentation and design gaps across the FringeIsland development system as of 2026-04-26.
 
 **Purpose:** a single place to see every gap flagged in the [how-we-work](./README.md) chapters, grouped by axis, with suggested resolution and priority.
 
@@ -36,6 +36,7 @@
 | G-23 | Documentation hygiene | Stale references to superseded authorities across the repo | Medium | Grep-pass audit for references to `2026-04-10_-_SESSION-BRIDGE.md` as a dependency-rule authority and for lingering ADR-U001 L0–L7 references; repoint each hit to ADR-U023 or the V4 anatomy as appropriate |
 | G-24 | Decomposition (L2) | Missing SPECIFICATION templates for studios / Platform Core tiers / Design System | Medium | Design decision per entity category: reuse `product-specification.md` or `domain-service-spec.md` where the shape fits, or author new templates where it doesn't; then restructure each to the L2/L3/L4 partition matching the 2026-04-22 ownership split |
 | G-25 | Documentation tooling | How-we-work rendered views drift between markdown updates | Medium | Closed-loop mechanism (make target / pre-commit hook / `doc-health-check` extension) that detects when the canonical docx or `index.html` is older than any `how-we-work/*.md` source; README also needs correction (names `.docx` as canonical when `_3.docx` is current) |
+| G-26 | Decomposition (skill) | `ecosystem-decomposition` skill recognises only two L3 content-type variants | Low | Update the skill to acknowledge three L3 content-type variants (capability / obligation / vocabulary) once the design system template is authored |
 
 ---
 
@@ -153,6 +154,13 @@ The `how-we-work/` directory contains canonical markdown chapters (five files, c
 
 *Proposed fix:* a closed-loop mechanism. Candidate approaches — (a) a make target / npm script that regenerates all rendered views from markdown (pandoc for docx, a simple script for index.html), invoked on-demand or via pre-commit hook; (b) a `doc-health-check` Section-9-candidate that compares mtimes of rendered views against the markdown sources and flags any rendered view older than any source; (c) both. The README also needs correction to name `_3.docx` as canonical (or the canonical naming convention needs rethinking so there's no numbered suffix on the authoritative file). Low-cost to implement; compounds silently otherwise.
 
+### Decomposition cascade — skill mechanics
+
+**G-26 — `ecosystem-decomposition` skill recognises only two L3 content-type variants (decomposition, skill mechanics).**
+The `ecosystem-decomposition` skill currently names two L3 content-type variants: **Capability inventory** (used by products, studios, and domain services) and **Obligation inventory** (used by verticals, where L3 levies obligations on other entities' capabilities rather than owning capabilities of its own). The 2026-04-26 Block A.2 decision locked a third variant: **Vocabulary inventory** for the design system, where L3 inventories tokens, components, and patterns rather than capabilities. The L2/L3/L4 partition skeleton is universal across all variants; only the content-type at L3 changes by entity kind. The skill currently doesn't acknowledge this third variant, which means contributors authoring the design system SPECIFICATION won't have skill-level support for the vocabulary-inventory shape — they'll have to reverse-engineer it from the template alone.
+
+*Proposed fix:* update the `ecosystem-decomposition` skill to name three L3 content-type variants (capability / obligation / vocabulary), with a brief note on which entity kinds use which. Best handled when the design system template is actually authored — at that point the variant becomes load-bearing and the skill edit can reference the concrete template. Low priority because the documentation system already encodes the variant via the new template; the skill update is for clarity and contributor onboarding, not correctness.
+
 ### Agent routing — chapter 05
 
 **G-15 — Cross-tier entry order.**
@@ -203,7 +211,8 @@ Three `AGENTS.md` files exist: `/AGENTS.md` (canonical for Claude), `configs/cod
 **Low priority** (single-word fixes or edge cases):
 - G-11 TDD overstated vs risk-based
 - G-17 AGENTS.md precedence across tools
+- G-26 `ecosystem-decomposition` skill recognises only two L3 content-type variants
 
 ---
 
-*Last updated 2026-04-24. Originating session bridges: `docs/planning/sessions/2026-04-19_-_HOW-WE-WORK-SESSION.md` (G-01 through G-18); `docs/planning/sessions/2026-04-22_-_DECOMPOSITION-SKILL-REFACTOR.md` (G-19 through G-22); `docs/planning/sessions/2026-04-24_-_L2-COMPLIANCE-AUDIT.md` (G-23 through G-25).*
+*Last updated 2026-04-26. Originating session bridges: `docs/planning/sessions/2026-04-19_-_HOW-WE-WORK-SESSION.md` (G-01 through G-18); `docs/planning/sessions/2026-04-22_-_DECOMPOSITION-SKILL-REFACTOR.md` (G-19 through G-22); `docs/planning/sessions/2026-04-24_-_L2-COMPLIANCE-AUDIT.md` (G-23 through G-25); `docs/planning/sessions/2026-04-26_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` (G-26).*
