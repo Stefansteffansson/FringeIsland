@@ -74,6 +74,9 @@ The Hub intentionally does **not**:
 - Domain Services — Discovery (future: search, recommendations)
 - Domain Services — Intelligence (future: AI mentor, profile accumulation)
 
+**Does not consume (by design):**
+- Domain Services — Extension System (meta-module for runtime extension; not a product-surface concern)
+
 ---
 
 *For technical state and feature inventory, see [SPECIFICATION.md](./SPECIFICATION.md) (when written).*
