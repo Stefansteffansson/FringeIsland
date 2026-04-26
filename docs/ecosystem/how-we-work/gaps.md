@@ -1,6 +1,6 @@
 # Gaps register
 
-**Status:** twenty-four known documentation and design gaps across the FringeIsland development system as of 2026-04-26.
+**Status:** twenty-six known documentation and design gaps across the FringeIsland development system as of 2026-04-26.
 
 **Purpose:** a single place to see every gap flagged in the [how-we-work](./README.md) chapters, grouped by axis, with suggested resolution and priority.
 
@@ -35,6 +35,8 @@
 | G-22 | Decomposition (cross-level) | Legacy pre-refactor FEAT-*.md need absorb-and-delete discipline | Medium | Add a discipline to the ecosystem-decomposition skill: when L3 runs fresh on an entity with legacy FEAT-*.md files, inspirational insight is absorbed into L1/L2/L3 first, then legacy specs are deleted in the same commit that lands new L4 specs |
 | G-23 | Documentation hygiene | Stale references to superseded authorities across the repo | Medium | Grep-pass audit for references to `2026-04-10_-_SESSION-BRIDGE.md` as a dependency-rule authority and for lingering ADR-U001 L0–L7 references; repoint each hit to ADR-U023 or the V4 anatomy as appropriate |
 | G-25 | Documentation tooling | How-we-work rendered views drift between markdown updates | Medium | Closed-loop mechanism (make target / pre-commit hook / `doc-health-check` extension) that detects when the canonical docx or `index.html` is older than any `how-we-work/*.md` source; README also needs correction (names `.docx` as canonical when `_3.docx` is current) |
+| G-27 | Documentation hygiene | `PRODUCTS_AND_PLATFORM.md` staleness vs. authoritative status | Medium | The `ecosystem-decomposition` skill names this strategy doc as authoritative L2 read context. The file is dated March 2026 / Version 0.2 / "Living document" and was authored before ADR-U022 (named waves), ADR-U023 (Platform Core / Domain Services decomposition), ADR-U024 (wave model semantics), and the Block A template additions. A freshness pass is needed: re-read against current ADRs, update or annotate sections that are now superseded, decide whether the doc remains authoritative or is reframed as historical strategy with current strategy split out. |
+| G-28 | Documentation hygiene | Trust-disk-over-memory as a cross-cutting discipline | Low | Two related rules already exist in different skills: (a) the AGENTS.md cross-check rule referenced by `doc-health-check` §3.6 ("when a grep returns no hits, confirm with a direct listing before concluding something is absent"), and (b) the citation-verification rule added to `ecosystem-decomposition`'s Quality checklist on 2026-04-26 ("every cited file path was verified against a directory listing before commit"). Both are forms of "trust disk over memory." Candidate consolidation: promote a single, named principle to root `AGENTS.md` or root `CLAUDE.md` so it can be referenced from any skill rather than restated. |
 
 ---
 
@@ -147,6 +149,16 @@ The `how-we-work/` directory contains canonical markdown chapters (five files, c
 
 *Proposed fix:* a closed-loop mechanism. Candidate approaches — (a) a make target / npm script that regenerates all rendered views from markdown (pandoc for docx, a simple script for index.html), invoked on-demand or via pre-commit hook; (b) a `doc-health-check` Section-9-candidate that compares mtimes of rendered views against the markdown sources and flags any rendered view older than any source; (c) both. The README also needs correction to name `_3.docx` as canonical (or the canonical naming convention needs rethinking so there's no numbered suffix on the authoritative file). Low-cost to implement; compounds silently otherwise.
 
+**G-27 — `PRODUCTS_AND_PLATFORM.md` staleness vs. authoritative status (documentation hygiene).**
+The `ecosystem-decomposition` skill names `docs/ecosystem/strategy/PRODUCTS_AND_PLATFORM.md` as authoritative L2 read context. The file is dated *Version 0.2 — March 2026* with status "Living document." Several of its claims predate locked architectural decisions: the wave names are present (Ferd, Eid, Hamn, Heim, Brim, Urd) but the underlying anatomy framing (Platform Core / Domain Services split per ADR-U023, the seven-domain-service decomposition, the Surfaces tier per V4) is not reflected. The doc is internally consistent and historically valuable, but it is being read by L2 authors as authoritative *current* strategy when in fact parts of it predate the current model. Surfaced during the 2026-04-26 Hub L2 walk — the doc was used for context but its staleness was visible.
+
+*Proposed fix:* a freshness pass. Re-read against ADR-U022 (named waves), ADR-U023 (Platform Core / Domain Services decomposition), ADR-U024 (wave model semantics), and the Block A templates that landed 2026-04-26. Either (a) update the doc inline with a clear "Updated 2026-04-XX against ADR-U023/U024" note, or (b) reframe the doc as historical strategy with a pointer to a successor authoritative-strategy doc, or (c) split it: keep historical narrative (Hero's Journey arc, family-of-products framing) as evergreen, separate the time-sensitive wave/anatomy claims into a current-state doc that references the locked ADRs. One focused session.
+
+**G-28 — Trust-disk-over-memory as a cross-cutting discipline (documentation hygiene).**
+Two related rules already exist in different skills: (a) the AGENTS.md cross-check rule referenced by `doc-health-check` §3.6 ("when a grep returns no hits, confirm with a direct listing before concluding something is absent"), and (b) the citation-verification rule added to `ecosystem-decomposition`'s Quality checklist on 2026-04-26 ("every cited file path was verified against a directory listing before commit; never inferred from a description, a memory of the filename, or another document's citation"). Both are forms of "trust disk over memory." The pattern recurred in the 2026-04-26 Hub L2 walk: three ADR filenames were inferred from descriptions and got the wrong filename in each case. The verification step caught all three before commit, but the failure mode is generic enough to deserve a single named principle.
+
+*Proposed fix:* promote a single principle to root `AGENTS.md` or root `CLAUDE.md`, named (proposal: "trust disk over memory" or "verify before cite"), so per-skill restatements can reference one canonical rule rather than each independently restate it. The two existing per-skill rules then become applications of the principle rather than independent inventions. Low-cost; high-leverage if it prevents the same failure recurring under a different surface.
+
 ### Agent routing — chapter 05
 
 **G-15 — Cross-tier entry order.**
@@ -192,11 +204,13 @@ Three `AGENTS.md` files exist: `/AGENTS.md` (canonical for Claude), `configs/cod
 - G-22 Legacy pre-refactor FEAT-*.md need absorb-and-delete discipline
 - G-23 Stale references to superseded authorities
 - G-25 How-we-work rendered views drift
+- G-27 `PRODUCTS_AND_PLATFORM.md` staleness vs. authoritative status
 
 **Low priority** (single-word fixes or edge cases):
 - G-11 TDD overstated vs risk-based
 - G-17 AGENTS.md precedence across tools
+- G-28 Trust-disk-over-memory as a cross-cutting discipline
 
 ---
 
-*Last updated 2026-04-26. Originating session bridges: `docs/planning/sessions/2026-04-19_-_HOW-WE-WORK-SESSION.md` (G-01 through G-18); `docs/planning/sessions/2026-04-22_-_DECOMPOSITION-SKILL-REFACTOR.md` (G-19 through G-22); `docs/planning/sessions/2026-04-24_-_L2-COMPLIANCE-AUDIT.md` (G-23 through G-25). G-26 was added in `docs/planning/sessions/2026-04-26_02_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` and closed in `docs/planning/sessions/2026-04-26_06_-_BLOCK-A2-AUTHOR-DESIGN-SYSTEM-TEMPLATE.md`. G-24 was closed in the same A.2-author bridge after Block A completed (all three previously-missing templates were authored across the 2026-04-26 session chain).*
+*Last updated 2026-04-26. Originating session bridges: `docs/planning/sessions/2026-04-19_-_HOW-WE-WORK-SESSION.md` (G-01 through G-18); `docs/planning/sessions/2026-04-22_-_DECOMPOSITION-SKILL-REFACTOR.md` (G-19 through G-22); `docs/planning/sessions/2026-04-24_-_L2-COMPLIANCE-AUDIT.md` (G-23 through G-25). G-26 was added in `docs/planning/sessions/2026-04-26_02_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` and closed in `docs/planning/sessions/2026-04-26_06_-_BLOCK-A2-AUTHOR-DESIGN-SYSTEM-TEMPLATE.md`. G-24 was closed in the same A.2-author bridge after Block A completed (all three previously-missing templates were authored across the 2026-04-26 session chain). G-27 and G-28 were added in `docs/planning/sessions/2026-04-26_07_-_BLOCK-B1-HUB-L2.md` (the Hub L2 walk session). ID numbering is monotonic — closed IDs are not reused.*
