@@ -23,6 +23,7 @@ docs/templates/
 ├── product-roadmap.md                     ← NOW/NEXT/LATER view
 ├── domain-service-spec.md                 ← domain service specification
 ├── studio-description.md                  ← studio identity + lifecycle
+├── studio-specification.md                ← inward-facing studio build spec
 ├── vertical-spec.md                       ← cross-cutting vertical specification
 │
 │   ── Features + Work ──
@@ -54,6 +55,7 @@ docs/templates/
 | [`product-roadmap.md`](./product-roadmap.md) | Product needs a NOW/NEXT/LATER view | `../products/{name}/ROADMAP.md` |
 | [`domain-service-spec.md`](./domain-service-spec.md) | New domain service scoped | `../platform/domain/{name}.md` |
 | [`studio-description.md`](./studio-description.md) | New Studio scoped | `../studios/{name}/DESCRIPTION.md` |
+| [`studio-specification.md`](./studio-specification.md) | Studio enters active development | `../studios/{name}/SPECIFICATION.md` |
 | [`vertical-spec.md`](./vertical-spec.md) | Cross-cutting vertical needs specifying | `../verticals/{name}.md` |
 | [`wave-spec.md`](./wave-spec.md) | Defining or updating a wave | `../planning/waves/{wave}.md` |
 | [`cycle-plan.md`](./cycle-plan.md) | New build cycle starts | `../planning/cycles/cycle-current.md` |
