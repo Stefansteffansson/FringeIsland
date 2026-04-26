@@ -431,6 +431,7 @@ Entries related to waves (wave scoping, wave progress, wave DoD) are NOT in this
 - [ ] Vertical impact section is complete — no blanks, every vertical addressed or marked "None"
 - [ ] Extensibility addressed — no hardcoded enums, no sealed type systems, no closed permission sets
 - [ ] No wave or horizontal-axis references have leaked into vertical-axis output
+- [ ] Every cited file path (ADR, skill, sibling spec, template, anatomy diagram) was verified against a directory listing before commit — never inferred from a description, a memory of the filename, or another document's citation. Filenames drift; directory listings are ground truth.
 
 ## References
 

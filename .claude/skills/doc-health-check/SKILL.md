@@ -214,11 +214,14 @@ For each README in this list:
 
 ### Procedure — broken cross-references
 
-1. Scan for markdown link targets that don't resolve:
-   - Relative links to `.md` files — verify target exists
-   - Links to sections (`#anchor`) — verify the heading still exists in the target file
-   - Links to skill files — verify `.claude/skills/{name}/SKILL.md` exists
-2. For each broken link, fix the target or remove the link.
+1. Scan the active tree for markdown link targets that don't resolve:
+   - **Relative links to `.md` files** — verify the target file exists at the cited path. ADR citations, skill citations, sibling-spec citations, and template citations are particularly prone to this failure mode: filenames drift over time and authors often cite a filename inferred from the file's *description* rather than verified from a directory listing.
+   - **Links to sections** (`#anchor`) — verify the heading still exists in the target file.
+   - **Links to skill files** — verify `.claude/skills/{name}/SKILL.md` exists.
+   - **Links to anatomy diagrams or other binary architecture artifacts** — verify the file exists at the cited path.
+2. Cross-check expected-placeholder targets against Section 7's registry. A relative link to a registry entry is scaffolding, not a broken cross-reference — record under "Placeholders confirmed scaffolding," not under critical findings.
+3. For each genuinely broken link, fix the target or remove the link. When fixing, **verify the corrected filename against a directory listing** — do not infer it from another stale citation.
+4. **Watch for citation-by-inference patterns.** When the same wrong filename appears in multiple files, the failure mode was usually "author A cited the filename from memory; authors B, C, D copied A's citation without verifying." Surface multi-hit broken-link clusters as a finding worth its own line in the output — they suggest a citation discipline gap, not just an isolated drift.
 
 **Skip if:** No files moved, no READMEs touched, and no new features/docs added.
 
