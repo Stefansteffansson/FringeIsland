@@ -1,6 +1,6 @@
 # Gaps register
 
-**Status:** twenty-six known documentation and design gaps across the FringeIsland development system as of 2026-04-26.
+**Status:** twenty-four known documentation and design gaps across the FringeIsland development system as of 2026-04-26.
 
 **Purpose:** a single place to see every gap flagged in the [how-we-work](./README.md) chapters, grouped by axis, with suggested resolution and priority.
 
@@ -34,9 +34,7 @@
 | G-21 | Decomposition (L4) | Feature-inventory summary in SPECIFICATION.md has no maintenance discipline | Medium | Add a discipline (in `feature-development` skill + `doc-health-check`) that ensures the L4-owned feature-inventory summary stays current as FEAT-*.md files change |
 | G-22 | Decomposition (cross-level) | Legacy pre-refactor FEAT-*.md need absorb-and-delete discipline | Medium | Add a discipline to the ecosystem-decomposition skill: when L3 runs fresh on an entity with legacy FEAT-*.md files, inspirational insight is absorbed into L1/L2/L3 first, then legacy specs are deleted in the same commit that lands new L4 specs |
 | G-23 | Documentation hygiene | Stale references to superseded authorities across the repo | Medium | Grep-pass audit for references to `2026-04-10_-_SESSION-BRIDGE.md` as a dependency-rule authority and for lingering ADR-U001 L0–L7 references; repoint each hit to ADR-U023 or the V4 anatomy as appropriate |
-| G-24 | Decomposition (L2) | Missing SPECIFICATION templates for studios / Platform Core tiers / Design System | Medium | Design decision per entity category: reuse `product-specification.md` or `domain-service-spec.md` where the shape fits, or author new templates where it doesn't; then restructure each to the L2/L3/L4 partition matching the 2026-04-22 ownership split |
 | G-25 | Documentation tooling | How-we-work rendered views drift between markdown updates | Medium | Closed-loop mechanism (make target / pre-commit hook / `doc-health-check` extension) that detects when the canonical docx or `index.html` is older than any `how-we-work/*.md` source; README also needs correction (names `.docx` as canonical when `_3.docx` is current) |
-| G-26 | Decomposition (skill) | `ecosystem-decomposition` skill recognises only two L3 content-type variants | Low | Update the skill to acknowledge three L3 content-type variants (capability / obligation / vocabulary) once the design system template is authored |
 
 ---
 
@@ -137,11 +135,6 @@ The 2026-04-22 rewrite locked Resolution A and choice (a): L4 derives feature sp
 
 *Proposed fix:* (a) make the absorb-and-delete step an explicit substep in the skill's Level 3 section (currently it's only named in the cross-skill prose about inspirational input); (b) add a `doc-health-check` check for "entities where L3 has recently run that still have legacy FEAT-*.md files" — the check triggers on the signal that a SPECIFICATION.md capability-inventory section was updated in the last cycle.
 
-**G-24 — Missing SPECIFICATION templates for studios / Platform Core tiers / Design System (decomposition, L2).**
-As of 2026-04-24, `docs/templates/` contains `product-specification.md` and `domain-service-spec.md` restructured to the L2/L3/L4 ownership split, and a similarly restructured `vertical-spec.md` for verticals' compact single-file form. Three entity categories have no SPECIFICATION template at all: studios (have only `studio-description.md`), Platform Core tiers (no templates, no directories yet), and Design System (no templates). The L2 compliance audit on 2026-04-24 surfaced this as a structural gap: when those entities eventually need a SPECIFICATION.md, they will either force-fit an existing template or someone will author a new one ad-hoc, neither of which preserves the locked L2/L3/L4 ownership split cleanly.
-
-*Proposed fix:* session decision per entity category. Three candidate moves — (a) reuse `domain-service-spec.md` for Platform Core tiers on the grounds that they have similar contract-plus-storage shapes; (b) adapt `product-specification.md` or author a new `studio-specification.md` for studios on the grounds that studios have full product-lifecycle content plus an author-facing authoring surface; (c) author a new `design-system-specification.md` because design system's content profile (tokens, components, patterns) differs from both products and services. Each new template needs the L2/L3/L4 partition matching the 2026-04-22 ownership split. Deferred until the entity categories actually need specifications written.
-
 **G-23 — Stale references to superseded authorities across the repo (documentation hygiene).**
 ADR-U023 (2026-04-12) locked the current ecosystem anatomy and superseded the earlier L0–L7 tier model from ADR-U001. During Commit 3 on 2026-04-24, a stale reference was caught in `docs/templates/domain-service-spec.md` pointing at `docs/planning/sessions/2026-04-10_-_SESSION-BRIDGE.md` as the authority for domain-service dependency rules. That session bridge is a valid historical artifact, but it is no longer the authority — ADR-U023 is. A single repo-wide audit would likely surface several such references across docs, session bridges, CLAUDE.md files, skills, and the how-we-work chapters. Not urgent (nothing breaks; a reader pointed at the April 10 bridge still gets accurate historical context) but a silent drift surface that compounds over time.
 
@@ -153,13 +146,6 @@ ADR-U023 (2026-04-12) locked the current ecosystem anatomy and superseded the ea
 The `how-we-work/` directory contains canonical markdown chapters (five files, chapter 01 through chapter 05) and rendered views of those chapters: `FringeIsland-how-we-work.docx`, `FringeIsland-how-we-work_2.docx`, `FringeIsland-how-we-work_3.docx` (currently canonical per user), and `index.html`. The README's living-document discipline says "update the relevant chapter first, then re-check cross-references" — markdown is authoritative. But no mechanism detects when rendered views have fallen behind the markdown source. Symptoms as of 2026-04-24: the README names the unsuffixed `.docx` as canonical when `_3.docx` is actually current; `_2.docx` is an untracked intermediate; regenerating `_3.docx` after a markdown edit is a manual step with no reminder.
 
 *Proposed fix:* a closed-loop mechanism. Candidate approaches — (a) a make target / npm script that regenerates all rendered views from markdown (pandoc for docx, a simple script for index.html), invoked on-demand or via pre-commit hook; (b) a `doc-health-check` Section-9-candidate that compares mtimes of rendered views against the markdown sources and flags any rendered view older than any source; (c) both. The README also needs correction to name `_3.docx` as canonical (or the canonical naming convention needs rethinking so there's no numbered suffix on the authoritative file). Low-cost to implement; compounds silently otherwise.
-
-### Decomposition cascade — skill mechanics
-
-**G-26 — `ecosystem-decomposition` skill recognises only two L3 content-type variants (decomposition, skill mechanics).**
-The `ecosystem-decomposition` skill currently names two L3 content-type variants: **Capability inventory** (used by products, studios, and domain services) and **Obligation inventory** (used by verticals, where L3 levies obligations on other entities' capabilities rather than owning capabilities of its own). The 2026-04-26 Block A.2 decision locked a third variant: **Vocabulary inventory** for the design system, where L3 inventories tokens, components, and patterns rather than capabilities. The L2/L3/L4 partition skeleton is universal across all variants; only the content-type at L3 changes by entity kind. The skill currently doesn't acknowledge this third variant, which means contributors authoring the design system SPECIFICATION won't have skill-level support for the vocabulary-inventory shape — they'll have to reverse-engineer it from the template alone.
-
-*Proposed fix:* update the `ecosystem-decomposition` skill to name three L3 content-type variants (capability / obligation / vocabulary), with a brief note on which entity kinds use which. Best handled when the design system template is actually authored — at that point the variant becomes load-bearing and the skill edit can reference the concrete template. Low priority because the documentation system already encodes the variant via the new template; the skill update is for clarity and contributor onboarding, not correctness.
 
 ### Agent routing — chapter 05
 
@@ -205,14 +191,12 @@ Three `AGENTS.md` files exist: `/AGENTS.md` (canonical for Claude), `configs/cod
 - G-21 Feature-inventory summary in SPECIFICATION.md has no maintenance discipline
 - G-22 Legacy pre-refactor FEAT-*.md need absorb-and-delete discipline
 - G-23 Stale references to superseded authorities
-- G-24 Missing SPECIFICATION templates for studios / Platform Core tiers / Design System
 - G-25 How-we-work rendered views drift
 
 **Low priority** (single-word fixes or edge cases):
 - G-11 TDD overstated vs risk-based
 - G-17 AGENTS.md precedence across tools
-- G-26 `ecosystem-decomposition` skill recognises only two L3 content-type variants
 
 ---
 
-*Last updated 2026-04-26. Originating session bridges: `docs/planning/sessions/2026-04-19_-_HOW-WE-WORK-SESSION.md` (G-01 through G-18); `docs/planning/sessions/2026-04-22_-_DECOMPOSITION-SKILL-REFACTOR.md` (G-19 through G-22); `docs/planning/sessions/2026-04-24_-_L2-COMPLIANCE-AUDIT.md` (G-23 through G-25); `docs/planning/sessions/2026-04-26_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` (G-26).*
+*Last updated 2026-04-26. Originating session bridges: `docs/planning/sessions/2026-04-19_-_HOW-WE-WORK-SESSION.md` (G-01 through G-18); `docs/planning/sessions/2026-04-22_-_DECOMPOSITION-SKILL-REFACTOR.md` (G-19 through G-22); `docs/planning/sessions/2026-04-24_-_L2-COMPLIANCE-AUDIT.md` (G-23 through G-25). G-26 was added in `docs/planning/sessions/2026-04-26_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` and closed in `docs/planning/sessions/2026-04-26_-_BLOCK-A2-AUTHOR-DESIGN-SYSTEM-TEMPLATE.md`. G-24 was closed in the same A.2-author bridge after Block A completed (all three previously-missing templates were authored across the 2026-04-26 session chain).*

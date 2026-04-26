@@ -25,6 +25,7 @@ docs/templates/
 ├── platform-core-spec.md                  ← Platform Core area specification
 ├── studio-description.md                  ← studio identity + lifecycle
 ├── studio-specification.md                ← inward-facing studio build spec
+├── design-system-specification.md         ← design-system tier specification
 ├── vertical-spec.md                       ← cross-cutting vertical specification
 │
 │   ── Features + Work ──
@@ -58,6 +59,7 @@ docs/templates/
 | [`platform-core-spec.md`](./platform-core-spec.md) | Platform Core area enters active development | `../platform/core/{area}-specification.md` |
 | [`studio-description.md`](./studio-description.md) | New Studio scoped | `../studios/{name}/DESCRIPTION.md` |
 | [`studio-specification.md`](./studio-specification.md) | Studio enters active development | `../studios/{name}/SPECIFICATION.md` |
+| [`design-system-specification.md`](./design-system-specification.md) | Design system enters active development | `../design-system/SPECIFICATION.md` |
 | [`vertical-spec.md`](./vertical-spec.md) | Cross-cutting vertical needs specifying | `../verticals/{name}.md` |
 | [`wave-spec.md`](./wave-spec.md) | Defining or updating a wave | `../planning/waves/{wave}.md` |
 | [`cycle-plan.md`](./cycle-plan.md) | New build cycle starts | `../planning/cycles/cycle-current.md` |

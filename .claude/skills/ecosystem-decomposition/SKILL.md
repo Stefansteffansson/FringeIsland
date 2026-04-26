@@ -162,12 +162,26 @@ L3 reads DESCRIPTION.md to know what the entity *is* (identity and boundaries), 
 
 ---
 
-## Level 3 — Capabilities
+## Level 3 — Capabilities (or obligations, or vocabulary — see L3 content-type variants below)
 
-**Activity:** Authoritatively stating what an entity should do — its capability space, internal ownership, internal and external dependencies, and vertical impact.
+**Activity:** Authoritatively stating what an entity should do — its inventory at L3, internal ownership, internal and external dependencies, and vertical impact.
 **Frequency:** Per entity, on entry points (entity entering active development; DESCRIPTION.md materially revised; architectural shift redrawing boundaries).
 
 L3 runs per entity by default. Per-set invocations (e.g., all domain services at once) are valid when the work is legitimately cross-entity — boundary coherence across a category. Name the set explicitly when invoking in this mode.
+
+### L3 content-type variants
+
+The L3 inventory takes one of three shapes, depending on what kind of entity it describes. The position in the document is the same (§L3 in SPECIFICATION.md); the *content type* differs because of what the entity structurally is. The L2/L3/L4 partition skeleton is universal across all entity kinds; only L3's content type varies.
+
+| Variant | Used by | What the inventory contains | Template |
+|---|---|---|---|
+| **Capability inventory** | Products, Studios, Domain Services, Platform Core areas | Caller-facing operations the entity provides. Each row: a capability with internal owner, internal/external dependencies, vertical impact. | `docs/templates/product-specification.md`, `docs/templates/studio-specification.md`, `docs/templates/domain-service-spec.md`, `docs/templates/platform-core-spec.md` |
+| **Obligation inventory** | Verticals | Rules the vertical levies on every other entity. The inventory does not own capabilities of its own — it specifies what other entities must do. | `docs/templates/vertical-spec.md` |
+| **Vocabulary inventory** | Design System | Three sub-inventories — tokens, components, patterns — each with its own attribute shape. The entity owns a vocabulary that consumers compose into their own capabilities. | `docs/templates/design-system-specification.md` |
+
+The rest of this Level 3 section uses *capability* as the running example (since four of the six entity kinds use it), but the same upstream-thinking, read-context, write-scope, and downstream-handoff rules apply to all three variants. The structural difference is what the inventory contains, not how it is derived or whose authority owns it.
+
+The vocabulary variant is the newest of the three; G-26 in `docs/ecosystem/how-we-work/gaps.md` tracks its acknowledgement here. With this section in place, G-26 is closed.
 
 ### Upstream-thinking dependencies
 
@@ -423,8 +437,12 @@ Entries related to waves (wave scoping, wave progress, wave DoD) are NOT in this
 - `docs/templates/feature-spec.md` — feature spec template
 - `docs/templates/task.md` — task template
 - `docs/templates/product-description.md` — product description template
-- `docs/templates/product-specification.md` — product specification template (sections split by owning level)
-- `docs/templates/domain-service-spec.md` — domain service template (sections split by owning level)
+- `docs/templates/product-specification.md` — product specification template (sections split by owning level; L3 = capability inventory)
+- `docs/templates/domain-service-spec.md` — domain service template (sections split by owning level; L3 = capability inventory)
+- `docs/templates/platform-core-spec.md` — Platform Core area template (sections split by owning level; L3 = capability inventory)
 - `docs/templates/studio-description.md` — studio description template
+- `docs/templates/studio-specification.md` — studio specification template (sections split by owning level; L3 = capability inventory with lifecycle-stage column)
+- `docs/templates/design-system-specification.md` — design-system specification template (sections split by owning level; L3 = vocabulary inventory — tokens / components / patterns)
+- `docs/templates/vertical-spec.md` — vertical specification template (sections split by owning level; L3 = obligation inventory)
 - `.claude/skills/wave-planning/SKILL.md` — horizontal-axis counterpart for wave scoping, selection, and progress reporting
 - `.claude/skills/feature-development/SKILL.md` — execution skill for building features from 4-ready onward
