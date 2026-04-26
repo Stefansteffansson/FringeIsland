@@ -22,6 +22,7 @@ docs/templates/
 ├── product-specification.md               ← inward-facing build spec
 ├── product-roadmap.md                     ← NOW/NEXT/LATER view
 ├── domain-service-spec.md                 ← domain service specification
+├── platform-core-spec.md                  ← Platform Core area specification
 ├── studio-description.md                  ← studio identity + lifecycle
 ├── studio-specification.md                ← inward-facing studio build spec
 ├── vertical-spec.md                       ← cross-cutting vertical specification
@@ -54,6 +55,7 @@ docs/templates/
 | [`product-specification.md`](./product-specification.md) | Product enters active development | `../products/{name}/SPECIFICATION.md` |
 | [`product-roadmap.md`](./product-roadmap.md) | Product needs a NOW/NEXT/LATER view | `../products/{name}/ROADMAP.md` |
 | [`domain-service-spec.md`](./domain-service-spec.md) | New domain service scoped | `../platform/domain/{name}.md` |
+| [`platform-core-spec.md`](./platform-core-spec.md) | Platform Core area enters active development | `../platform/core/{area}-specification.md` |
 | [`studio-description.md`](./studio-description.md) | New Studio scoped | `../studios/{name}/DESCRIPTION.md` |
 | [`studio-specification.md`](./studio-specification.md) | Studio enters active development | `../studios/{name}/SPECIFICATION.md` |
 | [`vertical-spec.md`](./vertical-spec.md) | Cross-cutting vertical needs specifying | `../verticals/{name}.md` |

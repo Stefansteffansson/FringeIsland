@@ -13,6 +13,11 @@ Domain-agnostic foundation that all of FringeIsland is built on. Rarely changed,
 
 ## Files
 
-- `features/` — feature specs using `FEAT-PC*` IDs
-- `SPECIFICATION.md` — overview spec _(to be written)_
-- `ROADMAP.md` — Platform Core slice of NOW/NEXT/LATER _(to be written)_
+- `features/` — shared `FEAT-PC*` feature specs across all four areas. Each feature is owned by exactly one area; ownership is recorded in the owning area's SPECIFICATION.md L4 feature-inventory summary (locked 2026-04-26).
+- `infrastructure-specification.md` — PC-1 area spec _(to be written)_
+- `identity-specification.md` — PC-2 area spec _(to be written)_
+- `organisation-specification.md` — PC-3 area spec _(to be written)_
+- `governance-specification.md` — PC-4 area spec _(to be written)_
+- `ROADMAP.md` — PC-wide NOW/NEXT/LATER view across all four areas _(to be written)_
+
+Use the [`platform-core-spec.md`](../../templates/platform-core-spec.md) template when authoring an area specification.
