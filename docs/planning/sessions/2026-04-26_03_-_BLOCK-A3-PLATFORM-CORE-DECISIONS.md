@@ -1,6 +1,6 @@
 # Session Bridge — Block A.3 Platform Core template-shape decisions
 
-**Filename convention:** `YYYY-MM-DD_-_{TOPIC}.md`
+**Filename convention:** `YYYY-MM-DD_NN_-_{TOPIC}.md` (date + 2-digit sequence within the day)
 **Date:** 2026-04-26
 **Session type:** Vertical-axis work — Block A.3 of the forward agenda. Decision-only session per the locked option (c) from the prior bridges.
 **Participants:** Stefan + Claude (Opus 4.7 via Claude.ai)
@@ -8,8 +8,8 @@
 - (none — no edits applied to repo this session beyond writing this bridge; `core/README.md` update deferred to authoring session)
 
 **Prior bridges in this 2026-04-26 chain (chronological):**
-1. `2026-04-26_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md` — locked the Block A → Block B → Block C structure and the decision-first sequencing.
-2. `2026-04-26_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` — settled A.1 (Studio: adaptation) and A.2 (Design System: genuinely new). Added G-26 to the gaps register.
+1. `2026-04-26_01_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md` — locked the Block A → Block B → Block C structure and the decision-first sequencing.
+2. `2026-04-26_02_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` — settled A.1 (Studio: adaptation) and A.2 (Design System: genuinely new). Added G-26 to the gaps register.
 3. **This bridge** — settles A.3 (Platform Core: adaptation, with three sub-decisions).
 
 ---
@@ -164,7 +164,7 @@ Block C is on the other side of Block B and shouldn't be planned in detail until
 
 ## What's out of scope and deferred
 
-**Next-in-sequence (primary next work):** Either (a) Block B entity choice followed by the matching authoring session, or (b) one of the three Block A template-authoring sessions (preferred order in absence of a Block B prior: A.1 Studio → A.3 Platform Core → A.2 Design System). Read first: this bridge, the prior bridge (`2026-04-26_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md`), the verticals-migration bridge (`2026-04-26_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md`), and the existing template the new template is adapting from (e.g., `docs/templates/domain-service-spec.md` for A.3-author).
+**Next-in-sequence (primary next work):** Either (a) Block B entity choice followed by the matching authoring session, or (b) one of the three Block A template-authoring sessions (preferred order in absence of a Block B prior: A.1 Studio → A.3 Platform Core → A.2 Design System). Read first: this bridge, the prior bridge (`2026-04-26_02_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md`), the verticals-migration bridge (`2026-04-26_01_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md`), and the existing template the new template is adapting from (e.g., `docs/templates/domain-service-spec.md` for A.3-author).
 
 **Deferred this session (vertical-axis):**
 - A.1-author — `docs/templates/studio-specification.md`
@@ -218,7 +218,7 @@ The next session enters one of two paths. Path A: pick the Block B entity (the e
 
 If Path A: read this bridge §"Block B" first; then read VISION.md, the chosen entity's existing CLAUDE.md and any partial DESCRIPTION.md, ADR-U023 (the canonical anatomy), ADR-U002 (the five verticals), the gaps register entries that the entity is likely to brush against (G-03 if it touches verticals; G-12 if it goes deep into feature implementation; others as relevant); then read the matching Block A template's adaptation source (`product-specification.md` for A.1, `domain-service-spec.md` for A.3, neither for A.2 since it's genuinely new).
 
-If Path B: read this bridge §"Recommended next-in-sequence" first; then read the matching Block A bridge (A.1 and A.2 in `2026-04-26_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md`, A.3 in this bridge); then read the source template being adapted (where applicable). Author the new template file. Do NOT walk a real entity through it during the authoring session — authoring and walking are separate sessions.
+If Path B: read this bridge §"Recommended next-in-sequence" first; then read the matching Block A bridge (A.1 and A.2 in `2026-04-26_02_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md`, A.3 in this bridge); then read the source template being adapted (where applicable). Author the new template file. Do NOT walk a real entity through it during the authoring session — authoring and walking are separate sessions.
 
 In either path: the load-bearing endpoint is **Block B — the Vision→Task vertical exercise**. Every Block A authoring session is in service of Block B. If a Block A authoring session starts feeling like template-elegance work disconnected from "will this hold up under a real walk" — pause and refocus.
 

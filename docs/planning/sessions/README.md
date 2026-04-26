@@ -3,7 +3,7 @@
 Session bridge documents from planning, design, and review sessions. They capture decisions, locked choices, and the handoff context needed for the next session — so the next agent can pick up without re-reading a transcript.
 
 - **Template:** [`../../templates/session-bridge.md`](../../templates/session-bridge.md)
-- **Naming convention:** `YYYY-MM-DD_-_{TOPIC}.md` (date first, separator `_-_`, then descriptive uppercase-kebab topic — e.g. `2026-04-17_-_SESSION-1-TIER-1-CLEANUP.md`).
+- **Naming convention:** `YYYY-MM-DD_NN_-_{TOPIC}.md` (date + 2-digit sequence within the day, separator `_-_`, then descriptive uppercase-kebab topic — e.g. `2026-04-26_01_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md`). The `_NN_` sequence keeps multi-bridge days sorted chronologically; for days with one bridge, use `_01_`. Forward-looking from 2026-04-26; older single-bridge files use the prior `YYYY-MM-DD_-_{TOPIC}.md` form.
 
 Sessions are historical records. Once committed, they are **not rewritten** — subsequent decisions supersede them rather than editing them. The `doc-health-check` skill excludes `sessions/` from its edit-targets for this reason.
 

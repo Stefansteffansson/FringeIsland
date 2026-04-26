@@ -1,7 +1,9 @@
 # Session bridge — {topic}
 
-**Filename convention:** `YYYY-MM-DD_-_{TOPIC}.md` (date first, then descriptive text)
-**Example:** `2026-04-12_-_SESSION-BRIDGE.md`
+**Filename convention:** `YYYY-MM-DD_NN_-_{TOPIC}.md` (date + 2-digit sequence within the day, then descriptive text)
+**Example:** `2026-04-26_01_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md`
+
+*The `_NN_` sequence (01, 02, 03, ...) keeps multi-bridge days sorted chronologically within the directory listing. For days with only one bridge, use `_01_`. The convention is forward-looking (locked 2026-04-26); single-bridge files predating this lock may use the older `YYYY-MM-DD_-_{TOPIC}.md` form.*
 
 **Date:** YYYY-MM-DD
 **Session type:** {planning · architecture · design · debug · research · review}

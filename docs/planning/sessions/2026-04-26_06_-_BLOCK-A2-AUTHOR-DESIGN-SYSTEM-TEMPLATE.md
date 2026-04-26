@@ -1,6 +1,6 @@
 # Session Bridge — Block A.2 Design System template authored
 
-**Filename convention:** `YYYY-MM-DD_-_{TOPIC}.md`
+**Filename convention:** `YYYY-MM-DD_NN_-_{TOPIC}.md` (date + 2-digit sequence within the day)
 **Date:** 2026-04-26
 **Session type:** Vertical-axis work — Block A.2-author. Template-authoring session per the locked sequence (B: A.1 → A.3 → A.2) from earlier bridges of the same day. **Final session of Block A.**
 **Participants:** Stefan + Claude (Opus 4.7 via Claude.ai)
@@ -13,11 +13,11 @@
 - Modified: `docs/ecosystem/how-we-work/gaps.md` (G-26 closed and removed; G-24 closed and removed at end of session after Stefan confirmed; status count twenty-six → twenty-four; originating-sources line acknowledges both closes)
 
 **Prior bridges in this 2026-04-26 chain (chronological):**
-1. `2026-04-26_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md` — locked Block A → Block B → Block C structure and decision-first sequencing.
-2. `2026-04-26_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` — settled A.1 (Studio: adaptation) and A.2 (Design System: genuinely new). Added G-26.
-3. `2026-04-26_-_BLOCK-A3-PLATFORM-CORE-DECISIONS.md` — settled A.3 with three sub-decisions (per-area unit, flat layout, PC-wide ROADMAP, adaptation template).
-4. `2026-04-26_-_BLOCK-A1-AUTHOR-STUDIO-TEMPLATE.md` — A.1-author session: `studio-specification.md` written.
-5. `2026-04-26_-_BLOCK-A3-AUTHOR-PLATFORM-CORE-TEMPLATE.md` — A.3-author session: `platform-core-spec.md` written, `core/README.md` cleaned up.
+1. `2026-04-26_01_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md` — locked Block A → Block B → Block C structure and decision-first sequencing.
+2. `2026-04-26_02_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` — settled A.1 (Studio: adaptation) and A.2 (Design System: genuinely new). Added G-26.
+3. `2026-04-26_03_-_BLOCK-A3-PLATFORM-CORE-DECISIONS.md` — settled A.3 with three sub-decisions (per-area unit, flat layout, PC-wide ROADMAP, adaptation template).
+4. `2026-04-26_04_-_BLOCK-A1-AUTHOR-STUDIO-TEMPLATE.md` — A.1-author session: `studio-specification.md` written.
+5. `2026-04-26_05_-_BLOCK-A3-AUTHOR-PLATFORM-CORE-TEMPLATE.md` — A.3-author session: `platform-core-spec.md` written, `core/README.md` cleaned up.
 6. **This bridge** — A.2-author session: `design-system-specification.md` written, `design-system/README.md` cleaned up, G-26 closed in same session.
 
 ---
@@ -188,7 +188,7 @@ High-priority gap resolution: G-03, G-05, G-06, G-12. Sequencing informed by whi
 
 ## What's out of scope and deferred
 
-**Next-in-sequence (primary next work):** Block B start. Vision → Task vertical exercise for one chosen entity. Read first: this bridge, `2026-04-26_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md` (Block A → B → C structure), the chosen entity's `DESCRIPTION.md` and tier `CLAUDE.md`, the relevant template, `docs/architecture/ECOSYSTEM_ANATOMY_V4.svg` + ADR-U023, and `docs/ecosystem/VISION.md`.
+**Next-in-sequence (primary next work):** Block B start. Vision → Task vertical exercise for one chosen entity. Read first: this bridge, `2026-04-26_01_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md` (Block A → B → C structure), the chosen entity's `DESCRIPTION.md` and tier `CLAUDE.md`, the relevant template, `docs/architecture/ECOSYSTEM_ANATOMY_V4.svg` + ADR-U023, and `docs/ecosystem/VISION.md`.
 
 **Deferred this session (vertical-axis):**
 - Cosmology-drift sweep across `design-system/CLAUDE.md`, `studios/CLAUDE.md`, and any other reference files — deferred per Stefan's call ("more time to think this through")
@@ -247,7 +247,7 @@ The session is the first concrete test of the L2/L3/L4 partition skeleton, the t
 
 Read first, in order:
 1. This bridge (orientation, including the cosmology-drift watch-point and the gap-pattern reversal).
-2. `2026-04-26_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md` — Block A → B → C structure.
+2. `2026-04-26_01_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md` — Block A → B → C structure.
 3. The chosen entity's `DESCRIPTION.md`, tier `CLAUDE.md`, and any existing `SPECIFICATION.md` content.
 4. The relevant template (`product-specification.md`, `studio-specification.md`, `platform-core-spec.md`, `design-system-specification.md`, `domain-service-spec.md`, or `vertical-spec.md`).
 5. `docs/architecture/ECOSYSTEM_ANATOMY_V4.svg` and ADR-U023.

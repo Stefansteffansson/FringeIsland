@@ -1,6 +1,6 @@
 # Session Bridge — Verticals migration and forward plan
 
-**Filename convention:** `YYYY-MM-DD_-_{TOPIC}.md`
+**Filename convention:** `YYYY-MM-DD_NN_-_{TOPIC}.md` (date + 2-digit sequence within the day)
 **Date:** 2026-04-26
 **Session type:** Vertical-axis work — completion of next-in-sequence verticals migration; mid-session pivot into forward planning
 **Participants:** Stefan + Claude (Opus 4.7 via Claude.ai)

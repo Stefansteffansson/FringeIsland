@@ -1,8 +1,8 @@
 # Session Bridge — Block A.1 and A.2 template-shape decisions
 
-**Filename convention:** `YYYY-MM-DD_-_{TOPIC}.md`
+**Filename convention:** `YYYY-MM-DD_NN_-_{TOPIC}.md` (date + 2-digit sequence within the day)
 **Date:** 2026-04-26
-**Session type:** Vertical-axis work — Block A.1 and A.2 of the forward agenda locked in the prior session bridge (`2026-04-26_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md`); decision-only sessions per option (c).
+**Session type:** Vertical-axis work — Block A.1 and A.2 of the forward agenda locked in the prior session bridge (`2026-04-26_01_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md`); decision-only sessions per option (c).
 **Participants:** Stefan + Claude (Opus 4.7 via Claude.ai)
 **Commits landed (pushed to origin/main):**
 - (gaps register edit applied via MCP — G-26 added; not yet committed at session close)
@@ -154,7 +154,7 @@ High-priority gap resolution: G-03, G-05, G-06, G-12. Sequencing informed by whi
 
 ## What's out of scope and deferred
 
-**Next-in-sequence (primary next work):** Block A.3 — settle the Platform Core tier template shape question. Decision-first session with the structural prior question handled first ("is a tier the right unit of decomposition?"). Read first: this bridge, the prior bridge (`2026-04-26_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md`), `docs/platform/CLAUDE.md`, ADR-U023 (the canonical anatomy), and `ECOSYSTEM_ANATOMY_V4.svg`.
+**Next-in-sequence (primary next work):** Block A.3 — settle the Platform Core tier template shape question. Decision-first session with the structural prior question handled first ("is a tier the right unit of decomposition?"). Read first: this bridge, the prior bridge (`2026-04-26_01_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md`), `docs/platform/CLAUDE.md`, ADR-U023 (the canonical anatomy), and `ECOSYSTEM_ANATOMY_V4.svg`.
 
 **Deferred this session (vertical-axis):**
 - A.1 authoring session — `studio-specification.md`
@@ -203,7 +203,7 @@ Per the principle locked in the prior session: bridges are permanent, prompts ar
 
 The next session is Block A.3 — settle the Platform Core tier SPECIFICATION template shape question. Decision-first per the locked option (c). Two questions to answer in priority order: (1) is a Platform Core *tier* (PC-1 through PC-4) the right unit of decomposition for SPECIFICATION authorship, or is the unit a capability under a tier (e.g., Auth as a unit under PC-2 Identity)? (2) given the answer to (1), is the SPECIFICATION template a clone of `domain-service-spec.md`, an adaptation, or genuinely new?
 
-Read this bridge §"Forward agenda — Recommended next-in-sequence" first; then read the prior bridge (`2026-04-26_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md`) §"Forward agenda — A.3 Platform Core tier SPECIFICATION template" for the prior context already pulled; then read `docs/platform/CLAUDE.md`, ADR-U023 (the canonical anatomy decision), and `docs/templates/domain-service-spec.md` for the existing closest-template comparison. Surface any prior session material on Platform Core decomposition via `conversation_search` if not already in context. Do NOT author any template in this session. Decision only.
+Read this bridge §"Forward agenda — Recommended next-in-sequence" first; then read the prior bridge (`2026-04-26_01_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md`) §"Forward agenda — A.3 Platform Core tier SPECIFICATION template" for the prior context already pulled; then read `docs/platform/CLAUDE.md`, ADR-U023 (the canonical anatomy decision), and `docs/templates/domain-service-spec.md` for the existing closest-template comparison. Surface any prior session material on Platform Core decomposition via `conversation_search` if not already in context. Do NOT author any template in this session. Decision only.
 
 If the session ends with both questions settled, the next bridge documents the decisions and points at authoring sessions as next-in-sequence (in any order). If the unit-of-decomposition question alone takes the full session, the bridge documents that decision and points at the template-shape question as next-in-sequence.
 

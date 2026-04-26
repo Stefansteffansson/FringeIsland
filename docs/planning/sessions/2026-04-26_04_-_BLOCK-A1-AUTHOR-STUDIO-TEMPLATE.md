@@ -1,6 +1,6 @@
 # Session Bridge — Block A.1 Studio template authored
 
-**Filename convention:** `YYYY-MM-DD_-_{TOPIC}.md`
+**Filename convention:** `YYYY-MM-DD_NN_-_{TOPIC}.md` (date + 2-digit sequence within the day)
 **Date:** 2026-04-26
 **Session type:** Vertical-axis work — Block A.1-author. Template-authoring session per the locked sequence (B: A.1 → A.3 → A.2) from the prior bridge of the same day.
 **Participants:** Stefan + Claude (Opus 4.7 via Claude.ai)
@@ -10,9 +10,9 @@
 - Modified: `docs/templates/README.md` (index entry + tree entry for the new template)
 
 **Prior bridges in this 2026-04-26 chain (chronological):**
-1. `2026-04-26_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md` — locked Block A → Block B → Block C structure and decision-first sequencing.
-2. `2026-04-26_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` — settled A.1 (Studio: adaptation) and A.2 (Design System: genuinely new). Added G-26.
-3. `2026-04-26_-_BLOCK-A3-PLATFORM-CORE-TEMPLATE-DECISIONS.md` — settled A.3 with three sub-decisions (per-area unit, flat layout, PC-wide ROADMAP, adaptation template).
+1. `2026-04-26_01_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md` — locked Block A → Block B → Block C structure and decision-first sequencing.
+2. `2026-04-26_02_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` — settled A.1 (Studio: adaptation) and A.2 (Design System: genuinely new). Added G-26.
+3. `2026-04-26_03_-_BLOCK-A3-PLATFORM-CORE-TEMPLATE-DECISIONS.md` — settled A.3 with three sub-decisions (per-area unit, flat layout, PC-wide ROADMAP, adaptation template).
 4. **This bridge** — A.1-author session: `studio-specification.md` written.
 
 ---
@@ -97,7 +97,7 @@ Path B sequence locked at session start: **A.1 (this session) → A.3 → A.2.**
 
 ### Recommended next-in-sequence: A.3-author
 
-Author `docs/templates/platform-core-spec.md` per the decisions in `2026-04-26_-_BLOCK-A3-PLATFORM-CORE-TEMPLATE-DECISIONS.md`. Adaptation source: `domain-service-spec.md`. Provisional L2 reworks (per the A.3 decisions bridge):
+Author `docs/templates/platform-core-spec.md` per the decisions in `2026-04-26_03_-_BLOCK-A3-PLATFORM-CORE-TEMPLATE-DECISIONS.md`. Adaptation source: `domain-service-spec.md`. Provisional L2 reworks (per the A.3 decisions bridge):
 - §1 Purpose — kept
 - §2 Concepts — kept (entities the area owns, where persisted)
 - §3 reframed: "Contract surface — what this area exposes and to whom" (Internal API consumed by Domain Services, with PC-1 Infrastructure as the special case exposing primitives consumed by every tier rather than a conventional API surface)
@@ -115,7 +115,7 @@ L3 content type: capability inventory (no new variant — confirmed at decision 
 
 ### Then A.2-author
 
-Author `docs/templates/design-system-specification.md` per the decisions in `2026-04-26_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md`. Genuinely new — the largest authoring lift. Three sub-inventories with different attribute shapes (tokens, components, patterns). L3 content type: vocabulary inventory (the third G-26 variant). After A.2 lands, update `ecosystem-decomposition` skill to acknowledge all three L3 content-type variants — closes G-26.
+Author `docs/templates/design-system-specification.md` per the decisions in `2026-04-26_02_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md`. Genuinely new — the largest authoring lift. Three sub-inventories with different attribute shapes (tokens, components, patterns). L3 content type: vocabulary inventory (the third G-26 variant). After A.2 lands, update `ecosystem-decomposition` skill to acknowledge all three L3 content-type variants — closes G-26.
 
 ### Then Block B
 
@@ -147,7 +147,7 @@ Vision → Task vertical exercise. The load-bearing endpoint that all this templ
 
 ## What's out of scope and deferred
 
-**Next-in-sequence (primary next work):** A.3-author session — `docs/templates/platform-core-spec.md`. Read first: this bridge, `2026-04-26_-_BLOCK-A3-PLATFORM-CORE-TEMPLATE-DECISIONS.md`, `docs/templates/domain-service-spec.md` (adaptation source), `docs/platform/CLAUDE.md` (tier-level rules to encode), `docs/platform/core/README.md` (the area structure).
+**Next-in-sequence (primary next work):** A.3-author session — `docs/templates/platform-core-spec.md`. Read first: this bridge, `2026-04-26_03_-_BLOCK-A3-PLATFORM-CORE-TEMPLATE-DECISIONS.md`, `docs/templates/domain-service-spec.md` (adaptation source), `docs/platform/CLAUDE.md` (tier-level rules to encode), `docs/platform/core/README.md` (the area structure).
 
 **Deferred this session (vertical-axis):**
 - A.3-author — `docs/templates/platform-core-spec.md`
@@ -201,7 +201,7 @@ The next session is A.3-author — write `docs/templates/platform-core-spec.md`.
 
 Read first, in order:
 1. This bridge (orientation, including the L2 expansion pattern).
-2. `2026-04-26_-_BLOCK-A3-PLATFORM-CORE-TEMPLATE-DECISIONS.md` (the locked decisions and the provisional L2 reworks).
+2. `2026-04-26_03_-_BLOCK-A3-PLATFORM-CORE-TEMPLATE-DECISIONS.md` (the locked decisions and the provisional L2 reworks).
 3. `docs/templates/domain-service-spec.md` (adaptation source).
 4. `docs/platform/CLAUDE.md` (tier-level rules to encode in the template — particularly "Platform Core changes are rare by design" which becomes §7 Stability posture).
 5. `docs/platform/core/README.md` (current area structure; check the stale pre-commitment).

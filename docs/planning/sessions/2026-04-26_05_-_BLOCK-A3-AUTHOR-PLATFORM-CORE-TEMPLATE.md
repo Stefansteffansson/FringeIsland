@@ -1,6 +1,6 @@
 # Session Bridge — Block A.3 Platform Core template authored
 
-**Filename convention:** `YYYY-MM-DD_-_{TOPIC}.md`
+**Filename convention:** `YYYY-MM-DD_NN_-_{TOPIC}.md` (date + 2-digit sequence within the day)
 **Date:** 2026-04-26
 **Session type:** Vertical-axis work — Block A.3-author. Template-authoring session per the locked sequence (B: A.1 → A.3 → A.2) from earlier bridges of the same day.
 **Participants:** Stefan + Claude (Opus 4.7 via Claude.ai)
@@ -11,10 +11,10 @@
 - Modified: `docs/platform/core/README.md` (replaced stale single-SPECIFICATION.md pre-commitment with four per-area files; named the shared `features/` directory routing rule; pointer to the new template)
 
 **Prior bridges in this 2026-04-26 chain (chronological):**
-1. `2026-04-26_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md` — locked Block A → Block B → Block C structure and decision-first sequencing.
-2. `2026-04-26_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` — settled A.1 (Studio: adaptation) and A.2 (Design System: genuinely new). Added G-26.
-3. `2026-04-26_-_BLOCK-A3-PLATFORM-CORE-DECISIONS.md` — settled A.3 with three sub-decisions (per-area unit, flat layout, PC-wide ROADMAP, adaptation template).
-4. `2026-04-26_-_BLOCK-A1-AUTHOR-STUDIO-TEMPLATE.md` — A.1-author session: `studio-specification.md` written.
+1. `2026-04-26_01_-_VERTICALS-MIGRATION-AND-FORWARD-PLAN.md` — locked Block A → Block B → Block C structure and decision-first sequencing.
+2. `2026-04-26_02_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` — settled A.1 (Studio: adaptation) and A.2 (Design System: genuinely new). Added G-26.
+3. `2026-04-26_03_-_BLOCK-A3-PLATFORM-CORE-DECISIONS.md` — settled A.3 with three sub-decisions (per-area unit, flat layout, PC-wide ROADMAP, adaptation template).
+4. `2026-04-26_04_-_BLOCK-A1-AUTHOR-STUDIO-TEMPLATE.md` — A.1-author session: `studio-specification.md` written.
 5. **This bridge** — A.3-author session: `platform-core-spec.md` written and `core/README.md` cleaned up.
 
 ---
@@ -152,7 +152,7 @@ Vision → Task vertical exercise. The load-bearing endpoint that all this templ
 
 ## What's out of scope and deferred
 
-**Next-in-sequence (primary next work):** A.2-author session — `docs/templates/design-system-specification.md`. Read first: this bridge, `2026-04-26_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md`, the existing studio and Platform Core templates as reference points for partition-skeleton fidelity, `docs/design-system/CLAUDE.md` (tier-level rules to encode), and any existing `design-system/README.md` that names the area structure.
+**Next-in-sequence (primary next work):** A.2-author session — `docs/templates/design-system-specification.md`. Read first: this bridge, `2026-04-26_02_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md`, the existing studio and Platform Core templates as reference points for partition-skeleton fidelity, `docs/design-system/CLAUDE.md` (tier-level rules to encode), and any existing `design-system/README.md` that names the area structure.
 
 **Deferred this session (vertical-axis):**
 - A.2-author — `docs/templates/design-system-specification.md`
@@ -215,8 +215,8 @@ After A.2 lands, the immediate G-26 closure work is small but real: update `ecos
 
 Read first, in order:
 1. This bridge (orientation, including the load-bearing-rule-as-anti-pattern-catch principle and the §6 Auth & authz judgement call).
-2. `2026-04-26_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` (the locked A.2 decisions, particularly the genuinely-new framing and the vocabulary-inventory L3 content type).
-3. `2026-04-26_-_BLOCK-A1-AUTHOR-STUDIO-TEMPLATE.md` and this bridge for the partition-skeleton-transfer pattern.
+2. `2026-04-26_02_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` (the locked A.2 decisions, particularly the genuinely-new framing and the vocabulary-inventory L3 content type).
+3. `2026-04-26_04_-_BLOCK-A1-AUTHOR-STUDIO-TEMPLATE.md` and this bridge for the partition-skeleton-transfer pattern.
 4. `docs/design-system/CLAUDE.md` (tier-level rules to encode in the template — this is the primary content source for L2).
 5. `docs/design-system/README.md` if it exists (current area structure; check for stale pre-commitments to clean up).
 6. `docs/templates/studio-specification.md` and `docs/templates/platform-core-spec.md` (partition-skeleton reference only — not content sources; do not adapt their L2 sections, design fresh).
