@@ -407,7 +407,6 @@ This section is the explicit protection.
 |------|---------|-------------------|---------------|
 | `docs/ecosystem/ECOSYSTEM_ROADMAP.md` | Ecosystem-level NOW/NEXT/LATER roadmap | Referenced by `wave-planning` skill, `product-roadmap.md` template, `wave-spec.md` template, PROCESS.md §3 cycle-boundary checklist, PROCESS.md §6 trigger table | T3.5 (deferred at 2026-04-17 WoW review) |
 | `docs/platform/DEPENDENCIES.md` | Cross-service dependency table | Referenced by `docs/platform/README.md`, `docs/platform/CLAUDE.md` Where-to-go-next | T4.1 (deferred at 2026-04-17 WoW review) |
-| `docs/products/hub/SPECIFICATION.md` | Hub technical build spec | Referenced by `products/hub/DESCRIPTION.md`, `products/hub/README.md`, `docs/products/CLAUDE.md` | T3.3 (deferred at 2026-04-17 WoW review) |
 | `docs/products/hub/ROADMAP.md` | Hub NOW/NEXT/LATER | Referenced by `products/hub/DESCRIPTION.md`, `products/hub/README.md` | T3.4 (deferred at 2026-04-17 WoW review) |
 | `docs/products/gimbal/DESCRIPTION.md` | Gimbal product identity | Expected per `products/gimbal/README.md`; product is planned, not yet scoped | Pending — wave Eid+ |
 | `docs/products/gimbal/SPECIFICATION.md` | Gimbal build spec | Expected per product-tier pattern | Pending — wave Eid+ |
