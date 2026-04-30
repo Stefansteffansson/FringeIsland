@@ -50,6 +50,21 @@ For FringeIsland-specific work in Claude Desktop, prefer the dedicated MCPs over
 
 Developer tools (`git`, `npm`, `node`, `mmdc`) require approval when called via super-shell. Super-shell has two operational quirks worth knowing: the whitelist does not persist across Claude Desktop restarts, and commands that exit non-zero (including `grep`/`findstr` on empty searches) surface as "Command failed" with stdout discarded. Prefer the filesystem MCP or a PowerShell terminal for text searches.
 
+### File operations on the repository
+
+When writing, editing, or reading files in this repository from Claude.ai or Claude Desktop, **always use the `fringeisland` MCP tools**:
+
+- `fringeisland:write_file` — create or overwrite a file at an absolute repo path.
+- `fringeisland:edit_file` — apply line-based edits (supports `dryRun: true` for preview before apply).
+- `fringeisland:read_text_file` / `fringeisland:read_multiple_files` — read repo files.
+- `fringeisland:list_directory` / `fringeisland:directory_tree` — inspect repo structure.
+
+**Never use the Anthropic computer-use file tools (`create_file`, `view`, `str_replace`, `bash_tool`) for repository files.** Those tools write to an ephemeral sandbox at `/home/claude` (or the platform equivalent), not to the repository on disk. They will report success and the file will appear to exist, but it will not be present in the repo, will not show up in `git status`, and will not survive the session. The `fringeisland:` MCP tools are the only path to durable repo writes.
+
+This rule was surfaced when an autonomous session reached for `create_file` to author a session bridge late in a long session. The failure was caught by `git_status` showing the file untracked, but the recovery cost tool calls and attention. The rule prevents recurrence: name-shape confusion ("create a new file" → `create_file`) is real under cognitive load, and the explicit prohibition gives a discipline to invoke when the wrong tool feels natural.
+
+The Anthropic computer-use tools have legitimate uses for sandbox-side analysis, intermediate transformations, or dry-run staging — but anything that needs to land in the repo goes through `fringeisland:`.
+
 ## Boundaries
 
 ### Always do
