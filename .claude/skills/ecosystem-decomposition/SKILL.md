@@ -274,6 +274,38 @@ Two downstream activities consume L3's output, independently:
 
 L3 does not care which runs first or which runs at all. Its authority is stated and stable; downstream consumers measure against it.
 
+### Stress-test pass — code-informed completeness probe during L3 authoring
+
+The L3 capability inventory derives cold from L1 + L2. Cold derivation alone, however, cannot determine which L2-committed capabilities are *implemented* and which are merely *planned* — that information lives in code, not in upstream sources. The architecture-derived inventory will therefore default-classify every capability as current-commitment, which is wrong for any L2-committed capability that the codebase has not yet realised. The stress-test pass is the structural fix for this: a code-informed comparison run after cold derivation but before the inventory is committed, which produces forward-commitment classification grounded in empirical state.
+
+The pattern has three steps and a strict ordering:
+
+1. **Architecture-derived inventory.** Author the candidate inventory cold from L1 + L2 with no reference to existing artifacts. Output is the candidate authoritative L3 section.
+2. **Code-informed stress-test pass.** Open existing artifacts (codebase, feature description files, working specs) as adversarial input. Compare candidate against artifacts. Produce a structured delta in three classes (see below).
+3. **Adjudication.** Reconcile the delta. The candidate inventory is updated only where the architecture *agrees*, never because the code says so. Code that has no architectural home becomes a finding, not a feature.
+
+Direction of authority is preserved across the pattern. The candidate artifact comes first; code stress-tests it; code never sources it. The pattern is deliberately named *stress-test*, not *derivation* — *derivation* would license sourcing capabilities from code; *stress-test* only licenses noticing when the candidate is incomplete, wrong, or under-classified.
+
+The delta produced by the stress-test pass has three structurally distinct output classes:
+
+| Class | Meaning | Downstream handling |
+|---|---|---|
+| **Confirms** | Architecture-derived item has a clear empirical analogue | Logged for traceability; used to refine forward-commitment classification (current vs partial-forward vs full-forward) for the candidate row; no further action |
+| **Entity-internal delta** | Architecture-derived item without analogue (gap), or empirical thing that maps to a candidate item with a different shape | Reconciled into the candidate artifact under L3 author's judgment |
+| **Cross-entity findings** | Empirical artifact has a thing that doesn't map to the candidate at all *and* doesn't belong inside this entity — it belongs in another entity's L3 | Routed via the lateral-routing mechanism (G-29 — pending resolution; meanwhile, recorded as caveats in the inventory's Sources-status block) |
+
+The cross-entity output class is what turns the stress-test pass from "efficient delta-detection" into "structural-completeness probe." When the L3 stress-test for one entity surfaces something that belongs in another entity, the finding must not be silently dropped; it has to land somewhere structured for that other entity's future L3 work to inherit. Cold derivation can also produce cross-entity findings ad-hoc when L1 + L2 surface unmet architectural claims; the stress-test pass is the *primary structured generator* of such findings, but not the only one.
+
+Three further notes on operating the pattern:
+
+- **The comparison instrument should be the most direct code-grounded artifact available.** When a corpus has been synthesised twice (once into capability clusters, once into the entity's internal-area structure), the first synthesis is the better comparison instrument because the second synthesis tests layout concordance more than empirical concordance.
+- **Forward-commitment classification is three-way, not binary.** Current-commitment / partial forward-commitment within the active wave / full forward-commitment beyond the active wave. The three-way classification has implications for wave-planning (which rows count as in-scope) and L4 derivation timing (forward-commitment rows can't be feature-spec'd until upstream activates).
+- **Backward-edits to closed areas pause for review.** Once a sub-section of the candidate inventory has been adjudicated, structural changes to it during a later area's adjudication wait for explicit review at the parent scope. Without this discipline, mid-session backward-edits drift the inventory out from under prior decisions.
+
+The pattern was first practised during Block B.2 (Hub L3 capability inventory authoring, 2026-04-30), which produced seven methodology observations that elevated the pattern from a per-session judgment to a named step. Cascade-plan Session 4 (tier-CLAUDE content audit, applying the stress-test against the codebase rather than a capability synthesis) is the natural second instance and a load-test for the named pattern.
+
+Distinction from the reconciliation activity below: reconciliation is a *downstream* activity that compares the *committed* L3 inventory against existing specs and code as a separate work product. The stress-test pass is *part of L3 authoring* — it runs before the inventory is committed and ensures the committed inventory is honestly classified. The two activities do different work: stress-test fixes classification before commit; reconciliation produces a delta after commit. Both can produce cross-entity findings; both route them via G-29.
+
 ---
 
 ## Level 4 — Features (with Stories embedded)
