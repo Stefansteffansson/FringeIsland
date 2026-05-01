@@ -43,12 +43,28 @@ The way of working is not described in this file. It lives in one canonical docu
 2. [`AGENTS.md`](AGENTS.md) — boundaries (always-do / ask-first / never-do).
 3. [`docs/planning/PROCESS.md`](docs/planning/PROCESS.md) — way of working (skim once; return as needed).
 4. The skill that matches the task (see table above).
-5. The **tier-level `CLAUDE.md`** for where the work lives — [`docs/products/CLAUDE.md`](docs/products/CLAUDE.md), [`docs/platform/CLAUDE.md`](docs/platform/CLAUDE.md), [`docs/studios/CLAUDE.md`](docs/studios/CLAUDE.md), [`docs/design-system/CLAUDE.md`](docs/design-system/CLAUDE.md), or [`docs/verticals/CLAUDE.md`](docs/verticals/CLAUDE.md). Each tier file is a delta from this file: it contains the tier-specific rules, verticals obligations, and gotchas that only matter when working in that subtree.
+5. The **tier-level `CLAUDE.md`** for where the work lives — [`docs/products/CLAUDE.md`](docs/products/CLAUDE.md), [`docs/platform/CLAUDE.md`](docs/platform/CLAUDE.md), [`docs/studios/CLAUDE.md`](docs/studios/CLAUDE.md), [`docs/design-system/CLAUDE.md`](docs/design-system/CLAUDE.md), or [`docs/verticals/CLAUDE.md`](docs/verticals/CLAUDE.md), plus any sub-tier and entity `CLAUDE.md` files in the cascade. See "Agent context cascade" below for the structure. Each tier file is a delta from this file: it contains the tier-specific rules, verticals obligations, and gotchas that only matter when working in that subtree.
 6. The owner's `README.md` — the specific product / service / studio / vertical.
 7. The specific feature spec (if one is already in play).
 8. The task file (if assigned a specific TASK-*.md).
 
 Load progressively. Never load all features at once — pull only what the task actually needs.
+
+---
+
+## Agent context cascade
+
+Each `CLAUDE.md` in the cascade adds only the rules specific to its level. No level repeats what an upper level covers; no level holds rules that belong deeper. The cascade mirrors the architectural decomposition (root → tier → sub-tier where applicable → entity → sub-entity where divergence is sharp). Full mechanism in [`ecosystem-decomposition`](.claude/skills/ecosystem-decomposition/SKILL.md); the five-row content policy below is canonical.
+
+| Level | Must contain | May contain | Must not contain |
+|---|---|---|---|
+| **Root** (`./CLAUDE.md`) | Universal rules; routing pointers (load order, doc map, skill table); the cascade policy below | Stack-wide "current state" descriptions where one entity dominates today | Entity-specific gotchas; tier-specific rules that have a downstream home |
+| **Tier** (`docs/{tier}/CLAUDE.md`) | Rules applying to every entity in the tier; how the five verticals apply at this tier; cross-tier relationships | Current-only generalisations when only one entity is active | Entity-specific stack details, URLs, key formats, gotchas, single-entity configurations |
+| **Sub-tier** (`docs/platform/{sub-tier}/CLAUDE.md`, only at platform) | Rules distinguishing the sub-tier from sibling sub-tiers (e.g., Core's stability-zone rules vs Domain's iteration-zone rules); contracts bounding the sub-tier | Rules shared by all entities under the sub-tier | Rules that apply equally to sibling sub-tiers (those are tier); single-entity rules |
+| **Entity** (`docs/{tier}/{entity}/CLAUDE.md`) | Rules specific to this entity (gotchas, technical stack, tooling instantiations, single-entity configurations); load-order line | Sub-entity hints when divergence isn't sharp enough to warrant a sub-entity file | Tier-applicable rules (move up); sharply-diverging sub-entity rules (move down) |
+| **Sub-entity** (`docs/{tier}/{entity}/{sub-entity}/CLAUDE.md`, opt-in by divergence) | Rules specific to this sub-entity that genuinely diverge from siblings or the parent (canonical case: Gimbal-iOS vs Gimbal-Android) | Toolchain or platform-runtime particulars | Rules already in the parent entity (they're inherited) |
+
+The `doc-health-check` skill verifies cascade integrity at cycle boundaries (Section 9): presence, content categorisation, load-order pointer integrity. Soft flags drive review; hard fails are critical findings.
 
 ---
 
