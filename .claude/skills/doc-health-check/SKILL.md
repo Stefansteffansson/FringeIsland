@@ -417,6 +417,18 @@ This section is the explicit protection.
 | `docs/products/game/DESCRIPTION.md` | Game product identity | Expected per `products/game/README.md`; scope TBD | Pending — wave TBD |
 | `docs/platform/core/SPECIFICATION.md` | Platform Core technical spec | Referenced by PROCESS.md §5 DoD ("Platform Specification updates for shared API surface changes") | Pending |
 | `docs/platform/core/ROADMAP.md` | Platform Core roadmap | Expected per platform-tier pattern | Pending |
+| `docs/platform/core/infrastructure/CLAUDE.md` | PC-1 Infrastructure entity-level CLAUDE.md | Referenced by `docs/platform/core/CLAUDE.md` Where-to-go-next four-areas pointer | Pending — when L2 specification is authored |
+| `docs/platform/core/identity/CLAUDE.md` | PC-2 Identity entity-level CLAUDE.md | Referenced by `docs/platform/core/CLAUDE.md` Where-to-go-next four-areas pointer | Pending — when L2 specification is authored |
+| `docs/platform/core/organisation/CLAUDE.md` | PC-3 Organisation entity-level CLAUDE.md | Referenced by `docs/platform/core/CLAUDE.md` Where-to-go-next four-areas pointer | Pending — when L2 specification is authored |
+| `docs/platform/core/governance/CLAUDE.md` | PC-4 Governance entity-level CLAUDE.md | Referenced by `docs/platform/core/CLAUDE.md` Where-to-go-next four-areas pointer | Pending — when L2 specification is authored |
+| `docs/platform/domain/world-model/CLAUDE.md` | DS-1 World Model entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
+| `docs/platform/domain/narrative-engine/CLAUDE.md` | DS-2 Narrative Engine entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
+| `docs/platform/domain/experience-engine/CLAUDE.md` | DS-3 Experience Engine entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
+| `docs/platform/domain/content/CLAUDE.md` | DS-4 Content entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
+| `docs/platform/domain/communication/CLAUDE.md` | DS-5 Communication entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
+| `docs/platform/domain/discovery/CLAUDE.md` | DS-6 Discovery entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
+| `docs/platform/domain/intelligence/CLAUDE.md` | DS-7 Intelligence entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
+| `docs/platform/extensions/CLAUDE.md` | Extension System entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next, `docs/platform/CLAUDE.md` Where-to-go-next | Pending — when L2 specification is authored |
 | `docs/studios/journey-studio/DESCRIPTION.md` | Journey Studio identity | Expected per `studios/journey-studio/README.md` ("to be written") | Pending — wave Eid+ |
 | `docs/studios/journey-studio/SPECIFICATION.md` | Journey Studio build spec | Expected per `studios/journey-studio/README.md` ("to be written") | Pending — wave Eid+ |
 | `docs/studios/universe-studio/DESCRIPTION.md` | Universe Studio identity | Expected per `studios/universe-studio/README.md` ("to be written") | Pending — wave Eid+ |
