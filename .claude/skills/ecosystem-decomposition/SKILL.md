@@ -39,6 +39,28 @@ Waves reference features — they don't contain them, and they don't drive their
 
 A level describes *what kind of work is being done* — the question it answers, the thinking required. Files are containers; a single file may hold sections authored by different levels. For example, SPECIFICATION.md holds L2-authored sections (identity, boundaries, technical shape), an L3-authored section (capability inventory), and an L4-authored section (feature-inventory summary). Each level writes the parts of files that fall under its authority, and reads whatever files hold relevant thinking. This is why "does L3 read L4?" is a malformed question — L3 reads files; what matters is whether L3's derivation is contaminated by content authored at or below its own level. The discipline is about *what authority flows where*, not *which files get opened*.
 
+## Agent context cascade
+
+Agents descending the directory tree load context progressively: each level's `CLAUDE.md` adds only the rules specific to that level. No level repeats what an upper level already covers; no level holds rules that belong deeper. The cascade is monotonically informative — every step adds signal, never noise.
+
+The cascade mirrors the architectural decomposition. Whatever the L2 entity inventory and ADR-U023 define as a unit gets its own `CLAUDE.md` when that entity is active. Five levels:
+
+| Level | Lives at | Examples |
+|---|---|---|
+| Root | `./CLAUDE.md` | Universal project rules |
+| Tier | `docs/{tier}/CLAUDE.md` | products, platform, studios, design-system, verticals |
+| Sub-tier (only at platform) | `docs/platform/{sub-tier}/CLAUDE.md` | core/, domain/, extensions/ |
+| Entity | `docs/{tier}/{entity}/CLAUDE.md` | hub, gimbal, journey-studio, privacy, identity, ... |
+| Sub-entity (where divergence is sharp) | `docs/{tier}/{entity}/{sub-entity}/CLAUDE.md` | gimbal/ios/, gimbal/android/ |
+
+Sub-entity `CLAUDE.md` files are written only when the sub-entities have genuinely divergent rules — Gimbal-iOS and Gimbal-Android are the canonical case (separate codebases). Sub-entity is opt-in by divergence; it is not authored speculatively.
+
+Design system is a tier-only entity — the layer has no entities below it. The existing `docs/design-system/CLAUDE.md` *is* the entity CLAUDE; no separate entity-level file is needed.
+
+The four-row content policy (must contain / may contain / must not contain at each level) is canonical in root `CLAUDE.md`. Tier and entity `CLAUDE.md` authors check against it. The `doc-health-check` skill verifies cascade integrity at cycle boundaries: presence (every active entity has a `CLAUDE.md`), categorisation (entity-specific patterns flagged at tier level for review), and load-order pointers.
+
+The principle's load-bearing case is autonomous-sub-agent scaling. A sub-agent working in a single entity should load the entity's rules without inheriting siblings' rules as bloat. The cascade enforces this; without it, every entity-specific rule lifted to tier level costs every sibling's sub-agent on every load.
+
 ## The decomposition hierarchy
 
 ```
@@ -129,6 +151,7 @@ L2 reads Vision to know what categories of entities exist and what principles ev
 - `{entity}/DESCRIPTION.md` — entirely.
 - The identity, boundaries, and technical-shape sections of `{entity}/SPECIFICATION.md` (§1 Surface / §2 Architecture position / §3 Auth & authorization / §4 Data ownership / §5 Public API surface / §6 Cross-product contracts / §7 Operational concerns / §8 Open spec questions in the current template).
 - `{entity}/ROADMAP.md` — the roadmap file is entity-owned; L2 may produce it when the entity enters active development.
+- `{entity}/CLAUDE.md` — the entity's agent-context file. L2-owned because its content is derivative of the entity's identity and technical shape. Substantive when the entity has entity-specific rules, gotchas, or tooling instantiations; a minimal stub pointing upward to the tier file when the entity has no rules beyond what tier covers. See "Agent context cascade" above for the cascade structure and the four-row content policy.
 - Updates to `docs/README.md` structure map when a new entity is added.
 
 L2 does NOT own or touch the capability-inventory section of SPECIFICATION.md (L3's property) or the feature-inventory summary section of SPECIFICATION.md (L4's property).
@@ -432,6 +455,7 @@ Entries related to waves (wave scoping, wave progress, wave DoD) are NOT in this
 - [ ] Extensibility addressed — no hardcoded enums, no sealed type systems, no closed permission sets
 - [ ] No wave or horizontal-axis references have leaked into vertical-axis output
 - [ ] Every cited file path (ADR, skill, sibling spec, template, anatomy diagram) was verified against a directory listing before commit — never inferred from a description, a memory of the filename, or another document's citation. Filenames drift; directory listings are ground truth.
+- [ ] Every active entity has a `CLAUDE.md` (substantive or minimal stub stating the entity has no rules beyond tier). Sub-entities have a `CLAUDE.md` only when their rules diverge from the entity. The cascade is verified by `doc-health-check`.
 
 ## References
 
