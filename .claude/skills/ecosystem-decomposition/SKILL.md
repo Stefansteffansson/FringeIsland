@@ -57,7 +57,7 @@ Sub-entity `CLAUDE.md` files are written only when the sub-entities have genuine
 
 Design system is a tier-only entity — the layer has no entities below it. The existing `docs/design-system/CLAUDE.md` *is* the entity CLAUDE; no separate entity-level file is needed.
 
-The four-row content policy (must contain / may contain / must not contain at each level) is canonical in root `CLAUDE.md`. Tier and entity `CLAUDE.md` authors check against it. The `doc-health-check` skill verifies cascade integrity at cycle boundaries: presence (every active entity has a `CLAUDE.md`), categorisation (entity-specific patterns flagged at tier level for review), and load-order pointers.
+The five-row content policy (must contain / may contain / must not contain at each level) is canonical in root `CLAUDE.md`. Tier and entity `CLAUDE.md` authors check against it. The `doc-health-check` skill verifies cascade integrity at cycle boundaries: presence (every active entity has a `CLAUDE.md`), categorisation (entity-specific patterns flagged at tier level for review), and load-order pointers.
 
 The principle's load-bearing case is autonomous-sub-agent scaling. A sub-agent working in a single entity should load the entity's rules without inheriting siblings' rules as bloat. The cascade enforces this; without it, every entity-specific rule lifted to tier level costs every sibling's sub-agent on every load.
 
@@ -151,7 +151,7 @@ L2 reads Vision to know what categories of entities exist and what principles ev
 - `{entity}/DESCRIPTION.md` — entirely.
 - The identity, boundaries, and technical-shape sections of `{entity}/SPECIFICATION.md` (§1 Surface / §2 Architecture position / §3 Auth & authorization / §4 Data ownership / §5 Public API surface / §6 Cross-product contracts / §7 Operational concerns / §8 Open spec questions in the current template).
 - `{entity}/ROADMAP.md` — the roadmap file is entity-owned; L2 may produce it when the entity enters active development.
-- `{entity}/CLAUDE.md` — the entity's agent-context file. L2-owned because its content is derivative of the entity's identity and technical shape. Substantive when the entity has entity-specific rules, gotchas, or tooling instantiations; a minimal stub pointing upward to the tier file when the entity has no rules beyond what tier covers. See "Agent context cascade" above for the cascade structure and the four-row content policy.
+- `{entity}/CLAUDE.md` — the entity's agent-context file. L2-owned because its content is derivative of the entity's identity and technical shape. Substantive when the entity has entity-specific rules, gotchas, or tooling instantiations; a minimal stub pointing upward to the tier file when the entity has no rules beyond what tier covers. See "Agent context cascade" above for the cascade structure and the five-row content policy.
 - Updates to `docs/README.md` structure map when a new entity is added.
 
 L2 does NOT own or touch the capability-inventory section of SPECIFICATION.md (L3's property) or the feature-inventory summary section of SPECIFICATION.md (L4's property).

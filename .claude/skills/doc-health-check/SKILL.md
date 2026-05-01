@@ -492,7 +492,7 @@ The templates (`product-specification.md`, `domain-service-spec.md`, `vertical-s
 
 **Question:** Does the agent-context cascade hold? Every active entity has a `CLAUDE.md`; tier files don't carry entity-specific rules; load-order pointers resolve.
 
-The cascade is named in `ecosystem-decomposition` skill ("Agent context cascade" section) and policed by the four-row content policy in root `CLAUDE.md`. This section verifies the cascade in three dimensions: presence, content categorisation, and load-order integrity. Cheap checks (presence/absence, pointer resolution) are hard fails; expensive checks (content miscategorisation) are soft flags for human review.
+The cascade is named in `ecosystem-decomposition` skill ("Agent context cascade" section) and policed by the five-row content policy in root `CLAUDE.md`. This section verifies the cascade in three dimensions: presence, content categorisation, and load-order integrity. Cheap checks (presence/absence, pointer resolution) are hard fails; expensive checks (content miscategorisation) are soft flags for human review.
 
 ### Procedure — presence check
 
@@ -505,7 +505,7 @@ Genuinely missing files (active entity, no `CLAUDE.md`, not in registry) are cri
 
 ### Procedure — content categorisation check
 
-This is a soft-flag check. The four-row content policy in root `CLAUDE.md` defines what each level must, may, and must not contain; this procedure surfaces likely violations for human review.
+This is a soft-flag check. The five-row content policy in root `CLAUDE.md` defines what each level must, may, and must not contain; this procedure surfaces likely violations for human review.
 
 1. For each tier `CLAUDE.md`, scan for entity-specific patterns. Heuristic flags include: entity-named headers (e.g., "Hub-specific gotchas" in `products/CLAUDE.md`), tier-singular language ("our Hub", "the Hub" referenced as if it were the only product), or technical-stack references that apply only to one entity (`useAuth()` and `proxy.ts` are web-stack; `sb_publishable_*` is Hub-specific; tier files mentioning these without explicit "only for entity X" framing are flagged).
 2. For each entity `CLAUDE.md`, scan for sibling-generalisable patterns. Heuristic flags include: rules phrased without entity-specific anchoring (a rule that applies to every product belongs in the tier file, not the entity file), or duplications of tier-file content (the entity file should read as a delta from tier, not a restatement).
