@@ -8,11 +8,13 @@ description: >
   verify documentation consistency, check for references to deleted files, find active references
   into archived trees (old_products, old_universe, old_implementation), check for obsoleted
   concepts or retired workflows (Sprint Agent, boot-up ritual, PRD as an artifact, etc.), or
-  validate that the active tree is consistent with the latest architectural decisions.
+  validate that the active tree is consistent with the latest architectural decisions, or
+  verify the CLAUDE.md cascade (entity-CLAUDE coverage, tier-file content categorisation, load-order pointer integrity).
   Also fires automatically at cycle boundaries (part of the cooldown-week ritual, per
   PROCESS.md §3) and on-demand after any cross-cutting change — renames, terminology shifts,
-  schema migrations, folder restructures, tree archivings, file deletions, or ADR-triggered
-  document moves. Produces a summary suitable for pasting into the cycle retrospective.
+  schema migrations, folder restructures, tree archivings, file deletions, ADR-triggered
+  document moves, or CLAUDE.md authoring/restructuring. Produces a summary suitable for
+  pasting into the cycle retrospective.
 ---
 
 # Doc Health Check
@@ -21,7 +23,7 @@ This skill performs a periodic audit of the FringeIsland documentation tree to c
 
 The skill is the execution layer for the "Continuous learning and quality" goal (B2) as it applies to documentation. PROCESS.md §3 names the cycle boundary as the baseline cadence; this skill runs the checks.
 
-The skill has nine sections. Three (1.5, 3.5, 3.6) exist to catch drift introduced by decisions — concept retirements, tree archivings, file deletions. One (7) protects architectural scaffolding from being pruned as drift: intentional placeholders (files the design expects to exist but that haven't been authored yet) are registered there so references to them are correctly read as scaffolding rather than broken links. These four sections — 1.5, 3.5, 3.6, and 7 — were the gaps that caused the 2026-04-17 first-invocation miss on root `CLAUDE.md` and the sub-folder `CLAUDE.md` erosion concern.
+The skill has ten sections. Three (1.5, 3.5, 3.6) exist to catch drift introduced by decisions — concept retirements, tree archivings, file deletions. One (7) protects architectural scaffolding from being pruned as drift: intentional placeholders (files the design expects to exist but that haven't been authored yet) are registered there so references to them are correctly read as scaffolding rather than broken links. These four sections — 1.5, 3.5, 3.6, and 7 — were the gaps that caused the 2026-04-17 first-invocation miss on root `CLAUDE.md` and the sub-folder `CLAUDE.md` erosion concern.
 
 ## When to run
 
@@ -38,9 +40,10 @@ The skill has nine sections. Three (1.5, 3.5, 3.6) exist to catch drift introduc
 | After a feature ships (maturity → `6-done`) | Section 5 (Maturity consistency) applied to just that feature |
 | **After scoping a new product/studio/service, or writing a feature spec that references pending structural docs** | Section 7 (Expected placeholders) — and update Section 7's registry in the same session |
 | **After a feature is created, advances in maturity, or is deleted** | Section 8 (Feature-inventory summary consistency) |
+| **After authoring or restructuring any `CLAUDE.md` file** | Section 9 (CLAUDE.md cascade consistency) |
 | On-demand, any time | Any subset — the skill is cheap to invoke partially |
 
-**Skip a section** when nothing has triggered it since the last run. Don't skip all eight just because the cycle was quiet — a quiet cycle is still worth 15 minutes of checking. **Never skip Section 1.5 or 3.6 after a refactor session** — those are the sections that catch the drift a refactor is most likely to introduce.
+**Skip a section** when nothing has triggered it since the last run. Don't skip all ten just because the cycle was quiet — a quiet cycle is still worth 15 minutes of checking. **Never skip Section 1.5 or 3.6 after a refactor session** — those are the sections that catch the drift a refactor is most likely to introduce.
 
 ## Scope
 
@@ -485,6 +488,45 @@ The templates (`product-specification.md`, `domain-service-spec.md`, `vertical-s
 
 ---
 
+## Section 9 — CLAUDE.md cascade consistency
+
+**Question:** Does the agent-context cascade hold? Every active entity has a `CLAUDE.md`; tier files don't carry entity-specific rules; load-order pointers resolve.
+
+The cascade is named in `ecosystem-decomposition` skill ("Agent context cascade" section) and policed by the four-row content policy in root `CLAUDE.md`. This section verifies the cascade in three dimensions: presence, content categorisation, and load-order integrity. Cheap checks (presence/absence, pointer resolution) are hard fails; expensive checks (content miscategorisation) are soft flags for human review.
+
+### Procedure — presence check
+
+1. List active entities under each tier: `docs/products/{name}/`, `docs/platform/core/{component}/` (if instantiated), `docs/platform/domain/{service}/` (if instantiated), `docs/studios/{name}/`, `docs/verticals/{name}/`. Design system is tier-only; the existing `docs/design-system/CLAUDE.md` *is* its entity CLAUDE.
+2. For each active entity, check that `{tier}/{entity}/CLAUDE.md` exists.
+3. **Cross-check absences against Section 7's expected-placeholders registry before flagging.** A `CLAUDE.md` listed in the registry is scaffolding, not drift — record it under "Placeholders confirmed scaffolding" in the output summary, not under critical findings.
+4. For sub-entities with genuinely divergent rules (Gimbal-iOS, Gimbal-Android — separate codebases per `gimbal/README.md`), check that `{tier}/{entity}/{sub-entity}/CLAUDE.md` exists. Sub-entity CLAUDE.md files are opt-in by divergence; absence is only a finding if the sub-entity is named in the parent entity's CLAUDE.md as having divergent rules.
+
+Genuinely missing files (active entity, no `CLAUDE.md`, not in registry) are critical findings.
+
+### Procedure — content categorisation check
+
+This is a soft-flag check. The four-row content policy in root `CLAUDE.md` defines what each level must, may, and must not contain; this procedure surfaces likely violations for human review.
+
+1. For each tier `CLAUDE.md`, scan for entity-specific patterns. Heuristic flags include: entity-named headers (e.g., "Hub-specific gotchas" in `products/CLAUDE.md`), tier-singular language ("our Hub", "the Hub" referenced as if it were the only product), or technical-stack references that apply only to one entity (`useAuth()` and `proxy.ts` are web-stack; `sb_publishable_*` is Hub-specific; tier files mentioning these without explicit "only for entity X" framing are flagged).
+2. For each entity `CLAUDE.md`, scan for sibling-generalisable patterns. Heuristic flags include: rules phrased without entity-specific anchoring (a rule that applies to every product belongs in the tier file, not the entity file), or duplications of tier-file content (the entity file should read as a delta from tier, not a restatement).
+3. Surface flags as soft findings. Each one needs human judgment: is the pattern genuinely miscategorised, or is it correctly placed and just visually similar to a miscategorisation pattern? Soft findings drive review at cycle boundaries; they don't auto-fix.
+
+The reference standard: G-30 in `gaps.md` documents the known categorisation problems in `products/CLAUDE.md` and `platform/CLAUDE.md` as of 2026-05-01. Cascade-plan Session 4 is the resolution session for those known problems; Section 9 catches future drift after that resolution.
+
+### Procedure — load-order integrity check
+
+1. For each `CLAUDE.md` in the cascade (root, tier, sub-tier where applicable, entity, sub-entity), verify the file's load-order line cites real upstream files. Tier files cite root `CLAUDE.md` and `AGENTS.md`; entity files cite tier `CLAUDE.md`; sub-entity files cite entity `CLAUDE.md`.
+2. Apply the citation-verification rule (`ecosystem-decomposition` Quality checklist; G-28): every cited file path is verified against a directory listing, never inferred from another document's citation.
+3. Broken pointers are critical findings — the cascade is only as strong as its weakest pointer.
+
+### Adding to this section
+
+When the cascade structure changes (new tier, new sub-tier convention, new sub-entity divergence), update this section's procedures alongside the change. Same discipline as Sections 1.5, 3.6, and 7 — the section's value depends on it being fed.
+
+**Skip if:** No `CLAUDE.md` files have been authored, restructured, or moved since the last check, AND no new entities have entered active development. Default is to run the presence check briefly — it's cheap, and the cascade-erosion failure mode it prevents is structural.
+
+---
+
 ## Output format
 
 After running the check, produce a summary in this shape. Paste it into the cycle retrospective under a "Doc health" heading, or into `SESSION_NOTES.md` if run on-demand.
@@ -504,6 +546,7 @@ Sections run:
 6.   Entity coverage               — [N entities checked / N gaps flagged / N pending-per-registry / clean / skipped: <reason>]
 7.   Expected placeholders         — [N registry entries reviewed / N newly authored (removed from registry) / N newly introduced (added) / N still pending / clean / skipped: <reason>]
 8.   Feature-inventory summary     — [N entities checked / N drift items / N fixed in-place / N flagged as backlog / N entities pending (registry) / clean / skipped: <reason>]
+9.   CLAUDE.md cascade consistency — [N entities checked / N missing CLAUDE.md / N pending (registry) / N content-categorisation soft flags / N load-order pointer breaks / clean / skipped: <reason>]
 
 Critical findings (sections 1.5, 3.5, 3.6, or 5 with active-directive / empty-6-done hits — **excluding** registry entries per Section 7):
 - <file>:<line> — <short description> — <fix applied in-place | backlog item created>
@@ -542,10 +585,10 @@ The rule of thumb: if fixing it takes more than 5 minutes or requires thinking, 
 - **PROCESS.md §1** — Model A pipeline + `parked` YAML mechanism (Section 4 of this skill operates on it)
 - **PROCESS.md §6** — trigger-artifact map (Section 6 of this skill checks coverage against it)
 - **PROCESS.md §6.5** — Skills as the execution layer (Section 1.5 and 3.6 of this skill depend on the skills-over-workflows transition being complete)
-- **`ecosystem-decomposition` skill** — defines what each entity needs at Level 2 (Section 6 enforces it); defines the feature-inventory summary as L4's write scope (Section 8 enforces it)
+- **`ecosystem-decomposition` skill** — defines what each entity needs at Level 2 (Section 6 enforces it); defines the feature-inventory summary as L4's write scope (Section 8 enforces it); defines the agent context cascade (Section 9 verifies cascade integrity)
 - **`feature-development` skill** — responsible for setting `maturity: 6-done` correctly with Implementation notes filled in (Section 5 catches failures); responsible for updating the feature-inventory summary row at maturity 4→5 and 5→6 transitions (Section 8 catches failures)
 - **AGENTS.md** — cross-check rule: when a grep returns no hits, confirm with a direct listing before concluding something is absent. Section 3.6 applies this rule explicitly (cross-check the deleted-files table against disk every run).
-- **`docs/ecosystem/how-we-work/gaps.md`** — G-21 (feature-inventory summary maintenance) is the gap Section 8 closes; G-22 (legacy spec absorb-and-delete) is cross-referenced by Section 8 signal (2).
+- **`docs/ecosystem/how-we-work/gaps.md`** — G-21 (feature-inventory summary maintenance) is the gap Section 8 closes; G-22 (legacy spec absorb-and-delete) is cross-referenced by Section 8 signal (2); G-29 (lateral routing for cross-entity findings) and G-30 (tier-CLAUDE miscategorisation) are referenced by Section 9 as the routing target and the reference standard for content categorisation.
 
 ## Known gaps / skill calibration
 
