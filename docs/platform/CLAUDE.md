@@ -12,6 +12,8 @@ Platform is the **strictest tier** in the ecosystem. Everything above it — pro
 
 Platform work splits into two stability zones (ADR-U023): **Platform Core** (Infrastructure, Identity, Organisation, Governance) changes rarely and is reviewed heavily; **Platform Domain** (seven services + Extension System) changes more often but within stable contract boundaries. The dependency direction is strictly one-way: Domain depends on Core; Core never depends upward on Domain. Products and studios depend on the Platform API; they never bypass it to touch the database directly.
 
+*This framing lives at tier because it's intra-tier sibling content — describing the relationship between Core and Domain, owned by neither alone. The five-row content policy in root [`CLAUDE.md`](../../CLAUDE.md) names tier-level content as including cross-tier relationships; intra-tier sibling relationships are the same shape of content (a relationship between architectural units the file is responsible for) and extend the policy's coverage by analogous reading. Platform is the only tier in the ecosystem that currently has sub-tiers, so this question only arises here — the policy's silence on intra-tier sibling relationships isn't a gap, it's the policy correctly not over-specifying for a case that appears at one tier. §"Rules that only apply at this tier" carries the operational consequence — "Dependency direction is strictly one-way" — for the same reason and at the same level.*
+
 Platform work is almost always paired with work at another tier — a platform capability is specified and built to be consumed by a product, studio, or extension. Platform features that nothing consumes are a smell.
 
 ---
