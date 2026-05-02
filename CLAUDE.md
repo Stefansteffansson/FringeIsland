@@ -115,7 +115,7 @@ The codebase already reflects these patterns — this list is orientation for ag
 - **Wave model (not phases):** Six named waves — **Ferd** → **Eid** → **Hamn** → **Heim** → **Brim** → **Urd**. Thematic focus buckets, not sequential gates (see ADR-U022 naming, ADR-U024 operational semantics).
 - **Five verticals (obligations on every tier):** Administration · Privacy/GDPR · Notifications · Observability · Transactions (ADR-U002). Verticals are not services — they are cross-cutting obligations that every platform service, product, studio, and design-system component must fulfil. Every feature spec has a mandatory Vertical Impact section (see AGENTS.md). The tier-level `CLAUDE.md` files describe how each vertical applies to their tier specifically.
 - **API-first (ADR-U009):** Business logic belongs in API routes (`/api/...`), not server components. Build every feature as if iOS/Android already exist: `Database → API route → Frontend component`. Never `Database → Frontend component directly`.
-- **Auth:** Client-side via `AuthContext` + `useAuth()` hook; `proxy.ts` for protected routes (Next.js 16 — not `middleware.ts`).
+- **Auth:** Each product wires its own client-side auth context backed by Supabase Auth. Product-specific details live in the product's `CLAUDE.md` — for the Hub, see [`docs/products/hub/CLAUDE.md`](docs/products/hub/CLAUDE.md).
 - **Components:** App Router; client components marked `'use client'`; reusable UI in `/components/ui/`.
 - **State:** React Context for auth; local state for components; `refreshNavigation` custom event for cross-component updates.
 - **DB access:** Supabase client (`lib/supabase/client.ts`) for browser, server client (`lib/supabase/server.ts`) for RSC.
