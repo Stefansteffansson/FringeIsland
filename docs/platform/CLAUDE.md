@@ -56,6 +56,28 @@ The five verticals (ADR-U002) are obligations on every tier. Here's what each re
 
 ---
 
+## Database migrations
+
+Schema changes — new tables, altered columns, new indexes, new RLS policies, new triggers — flow through the supabase-CLI workflow. Per §Rules above, schema changes set task status to `review`, not `done`; the workflow below is what gets executed before review.
+
+**Prerequisite — use the bash form, never the `.bat` form.** `supabase-cli.sh` is the canonical entry point; Claude Code runs in bash.
+
+```bash
+# 1. Create migration
+bash supabase-cli.sh migration new add_my_feature
+# 2. Edit the generated SQL file in supabase/migrations/
+# 3. Apply migration
+node scripts/apply-migration-temp.js <timestamp>_name.sql
+# 4. Mark as applied
+bash supabase-cli.sh migration repair --status applied <timestamp>
+# 5. Verify
+bash supabase-cli.sh migration list
+```
+
+The two-step apply-then-mark-as-applied sequence is intentional: `apply-migration-temp.js` runs the SQL against the database, and the `repair --status applied` step records that the migration is now part of the project's applied history. Skipping the repair step leaves the migration in pending state in the migration log even though the schema has already been mutated; future migration runs then attempt re-applying.
+
+---
+
 ## Where to go next
 
 - **Feature ID prefixes at this tier:** `PC` (Platform Core), `PD` (Platform Domain). See `core/README.md` and `domain/README.md`.

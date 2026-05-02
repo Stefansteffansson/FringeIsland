@@ -124,22 +124,6 @@ The codebase already reflects these patterns — this list is orientation for ag
 
 TDD is mandatory. The day-to-day mechanics — how to read a feature spec, generate tasks from stories, write failing tests, implement, and mark maturity `6-done` — live in the [`feature-development`](.claude/skills/feature-development/SKILL.md) skill. Load it when you're about to build.
 
-### Database migrations
-
-```bash
-# 1. Create migration
-bash supabase-cli.sh migration new add_my_feature
-# 2. Edit the generated SQL file in supabase/migrations/
-# 3. Apply migration
-node scripts/apply-migration-temp.js <timestamp>_name.sql
-# 4. Mark as applied
-bash supabase-cli.sh migration repair --status applied <timestamp>
-# 5. Verify
-bash supabase-cli.sh migration list
-```
-
-**Use `supabase-cli.sh`, never `supabase-cli.bat`** — Claude Code runs in bash.
-
 ### Testing
 
 - **During dev:** `npm run test:integration:<domain>` (domains: `auth`, `groups`, `journeys`, `rls`, `rbac`, `admin`, `communication`, `security`).
