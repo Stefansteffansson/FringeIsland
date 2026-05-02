@@ -39,7 +39,6 @@ The five verticals (ADR-U002) are obligations on every tier. Here's what each re
 - **Contract changes trigger ADRs.** Changing the signature or semantics of a Platform API or Internal API endpoint is an architectural decision. Write the ADR before the change — not after. ADRs are append-only (ADR-U023 supersedes U001; it doesn't edit U001).
 - **API versioning is mandatory from day one (ADR-U015).** Every API route lives under `/api/v1/...`. Breaking changes introduce `/api/v2/...`; old versions are maintained until all clients migrate. Retrofitting versioning is expensive; adding it is free.
 - **Never hardcode role names in SQL or application code.** Use `has_permission(user_id, group_id, permission_name)` (ADR-U007). Role templates exist so groups can customise; hardcoded checks break that customisation silently.
-- **Platform Core changes are rare by design.** If a product feature wants a change to Platform Core, the default answer is "model it in a Domain Service or via the Extension System first." Core changes require the strongest justification.
 
 ---
 
