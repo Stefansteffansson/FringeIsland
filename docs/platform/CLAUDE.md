@@ -78,6 +78,20 @@ The two-step apply-then-mark-as-applied sequence is intentional: `apply-migratio
 
 ---
 
+## Testing
+
+Integration tests exercise platform-tier code — database constraints, RLS policies, SQL function behaviour, API route handlers — through Jest. The integration suite runs against a real Supabase instance (not mocks) so the tests catch behaviours that only surface against the actual Postgres + RLS stack (PG17 RLS complexity ceiling, INSERT…RETURNING dual-policy evaluation, cascade trigger interactions — see §Gotchas).
+
+**During dev:** `npm run test:integration:<domain>` runs the slice you're working on. Domains: `auth`, `groups`, `journeys`, `rls`, `rbac`, `admin`, `communication`, `security`. Domain names refer to what the *code under test* manages, not which tier the tests exercise — every `test:integration:<domain>` is a platform-tier integration test (DB + API + RLS), even when the domain name appears product-flavoured.
+
+**Before commit:** `npm run test:integration` runs the full suite with `--runInBand --verbose`. Run in background — the suite hits a real database and is not fast.
+
+**Quick regression:** `npm run test:integration:quick` adds `--bail` so it stops on first failure. Useful when iterating on a fix that should pass everything.
+
+UI testing (Hub-side, via Playwright) lives at the Hub — see [`../products/hub/CLAUDE.md`](../products/hub/CLAUDE.md).
+
+---
+
 ## Where to go next
 
 - **Feature ID prefixes at this tier:** `PC` (Platform Core), `PD` (Platform Domain). See `core/README.md` and `domain/README.md`.

@@ -124,13 +124,6 @@ The codebase already reflects these patterns — this list is orientation for ag
 
 TDD is mandatory. The day-to-day mechanics — how to read a feature spec, generate tasks from stories, write failing tests, implement, and mark maturity `6-done` — live in the [`feature-development`](.claude/skills/feature-development/SKILL.md) skill. Load it when you're about to build.
 
-### Testing
-
-- **During dev:** `npm run test:integration:<domain>` (domains: `auth`, `groups`, `journeys`, `rls`, `rbac`, `admin`, `communication`, `security`).
-- **Before commit:** `npm run test:integration` — full suite; run in background.
-- **Quick regression:** `npm run test:integration:quick` — stops on first failure.
-- **E2E:** `npm run test:e2e` — Playwright; requires dev server on `localhost:3000`.
-
 ---
 
 ## Critical gotchas

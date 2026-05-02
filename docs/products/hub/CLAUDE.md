@@ -49,6 +49,19 @@ Hard-won lessons; read once, remember forever. Grouped by cluster — React idio
 
 ---
 
+## Testing
+
+UI testing for the Hub uses Playwright — `npm run test:e2e`. Variants:
+
+- `npm run test:e2e` — headless run; the standard form for CI and "did anything break?" sweeps.
+- `npm run test:e2e:ui` — interactive runner; useful when iterating on a single spec.
+- `npm run test:e2e:headed` — runs in a visible browser; use when behaviour differs between headless and headed (rare but happens).
+- `npm run test:e2e:debug` — pauses at each step; for stepping through a flaky test.
+
+All E2E commands require the dev server on `localhost:3000` — start it before running. Platform-tier integration tests (database, RLS, API routes) live at the platform tier — see [`../../platform/CLAUDE.md`](../../platform/CLAUDE.md).
+
+---
+
 ## Where to go next
 
 - **Feature ID prefix at this entity:** `H` (Hub). See [`README.md`](./README.md) and [`features/`](./features/).
