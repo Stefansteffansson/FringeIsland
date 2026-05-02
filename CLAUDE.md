@@ -156,18 +156,7 @@ bash supabase-cli.sh migration list
 
 ## Critical gotchas
 
-Hard-won lessons; read once, remember forever.
-
-- **PostgREST INSERT…RETURNING:** Triggers BOTH INSERT and SELECT policies. Include creator check in SELECT.
-- **Nested RLS:** Subqueries in policies hit RLS on referenced tables. Use SECURITY DEFINER to bypass.
-- **SECURITY DEFINER:** Helper functions only. Never for user-data mutations. Always `search_path = ''`.
-- **Circular RLS:** If function F queries table T and F is used in T's SELECT policy → infinite recursion. Fix: make F SECURITY DEFINER.
-- **Admin RLS:** Use `is_platform_admin()`, not `has_permission()`. Complex PLPGSQL fails in PG17 RLS.
-- **Supabase SSR deadlock:** Never make DB queries inside `onAuthStateChange` — set state only; query in a separate `useEffect`.
-- **Policy name mismatch:** `DROP POLICY IF EXISTS` with the wrong name silently succeeds, leaving the old policy active.
-- **Cookies:** `@supabase/ssr` cookies are chunked/encoded. API routes: pass JWT via `Authorization: Bearer` header.
-- **Timestamps:** Supabase uses `+00:00`, JS uses `Z`. Compare as `new Date().getTime()`.
-- **PostgreSQL CHECK constraints:** Cannot contain subqueries. Use triggers instead when validation needs one.
+Tier-specific gotchas live with the tier they apply to — see [`docs/platform/CLAUDE.md`](docs/platform/CLAUDE.md) for platform-tier (Postgres, RLS, migrations) and [`docs/products/hub/CLAUDE.md`](docs/products/hub/CLAUDE.md) for Hub-stack.
 
 ---
 
