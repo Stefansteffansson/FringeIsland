@@ -17,7 +17,7 @@ feature_prefix: PC  # FEAT-PC### for features owned by this area
 
 **Authorship note.** This file is authored across three decomposition levels (see `.claude/skills/ecosystem-decomposition/SKILL.md`). L2 owns the identity, boundaries, and technical shape (§L2 below). L3 owns the capability inventory (§L3). L4 owns the feature-inventory summary (§L4). No level modifies a section owned by another. The `doc-health-check` skill verifies section boundaries hold.
 
-**Platform Core tier note.** This template is the Platform Core adaptation of the L2/L3/L4 partition skeleton shared with `domain-service-spec.md`, `product-specification.md`, and `studio-specification.md`. Three Platform Core-specific properties earn dedicated treatment in L2 — the strict upward-only PC-1 → PC-4 dependency chain (§4), the contract surface as Internal API consumed by Domain Services rather than the Platform API consumed by Surfaces (§3), and the area's stability posture (§7) per `docs/platform/CLAUDE.md` ("Platform Core changes are rare by design") and ADR-U023. L3 uses the **capability inventory** content type, same as products, studios, and domain services. PC-4 Governance is the one area where the capability-inventory shape is worth checking against actual content — its policy-enforcement flavour may want surfacing in the vertical-impact column rather than as a separate L3 variant; see the §L3 framing.
+**Platform Core tier note.** This template is the Platform Core adaptation of the L2/L3/L4 partition skeleton shared with `domain-service-spec.md`, `product-specification.md`, and `studio-specification.md`. Three Platform Core-specific properties earn dedicated treatment in L2 — the strict upward-only PC-1 → PC-4 dependency chain (§4), the contract surface as Internal API consumed by Domain Services rather than the Platform API consumed by Surfaces (§3), and the area's stability posture (§7) per `docs/platform/core/CLAUDE.md` ("Platform Core changes are rare by design") and ADR-U023. L3 uses the **capability inventory** content type, same as products, studios, and domain services. PC-4 Governance is the one area where the capability-inventory shape is worth checking against actual content — its policy-enforcement flavour may want surfacing in the vertical-impact column rather than as a separate L3 variant; see the §L3 framing.
 
 ---
 
@@ -121,7 +121,7 @@ For this area specifically, document:
 
 ### 7. Stability posture
 
-Per `docs/platform/CLAUDE.md` ("Platform Core changes are rare by design") and ADR-U023, Platform Core sits at the highest blast-radius layer in the ecosystem. A change here propagates to every tier above. This section names *how rare* "rarely" is for this area, *what triggers* a change, and *what review escalation* looks like.
+Per `docs/platform/core/CLAUDE.md` ("Platform Core changes are rare by design") and ADR-U023, Platform Core sits at the highest blast-radius layer in the ecosystem. A change here propagates to every tier above. This section names *how rare* "rarely" is for this area, *what triggers* a change, and *what review escalation* looks like.
 
 This is per area, not generic — Infrastructure changes are typically wave-boundary events (foundational schema patterns, RLS conventions); Governance changes typically require an ADR (audit format, moderation rules, platform-wide policies); Identity and Organisation sit somewhere between.
 
@@ -130,7 +130,7 @@ This is per area, not generic — Infrastructure changes are typically wave-boun
 | **Change cadence** | {wave-boundary only · ADR-required · per-cycle with review · ...} |
 | **Triggers a change** | {what kinds of pressures legitimately trigger a change here — e.g., new vertical obligation, scale ceiling hit, ADR superseded, security finding} |
 | **Review escalation** | {who reviews · what evidence is required · whether a migration window is needed} |
-| **Default answer to "we want to change this"** | {per `platform/CLAUDE.md`: typically "model it in a Domain Service or via the Extension System first." State the area-specific version of this.} |
+| **Default answer to "we want to change this"** | {per `platform/core/CLAUDE.md`: typically "model it in a Domain Service or via the Extension System first." State the area-specific version of this.} |
 | **Deprecation pathway** | {how a contract is deprecated when it does change — versioning posture, migration window, notification to consumers} |
 
 If a feature spec proposes work in this area, the spec must address the stability posture — what triggered the change, what review the change requires, what the deprecation pathway is for any contract being replaced. Features that don't address it fail DoR.
