@@ -89,7 +89,7 @@ The highest-leverage improvement available is probably **expanding the `feature-
 - [`.claude/skills/feature-development/SKILL.md`](../../../.claude/skills/feature-development/SKILL.md) — the execution skill
 - [`docs/templates/feature-spec.md`](../../templates/feature-spec.md) — Given/When/Then shape
 - [`docs/research/The solo developer's complete guide to systematic web development.md`](../../research/The%20solo%20developer%27s%20complete%20guide%20to%20systematic%20web%20development.md) — research behind the build loop and the Testing Trophy
-- [`/CLAUDE.md`](../../../CLAUDE.md) — TDD mandate, testing commands, critical gotchas
+- [`/CLAUDE.md`](../../../CLAUDE.md) — TDD mandate, testing commands
 
 ---
 
