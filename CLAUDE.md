@@ -118,7 +118,6 @@ The codebase already reflects these patterns — this list is orientation for ag
 - **Auth:** Each product wires its own client-side auth context backed by Supabase Auth. Product-specific details live in the product's `CLAUDE.md` — for the Hub, see [`docs/products/hub/CLAUDE.md`](docs/products/hub/CLAUDE.md).
 - **State:** Each product uses stack-appropriate primitives for local and shared state; cross-component coordination uses the product's canonical mechanism. For the Hub, see [`docs/products/hub/CLAUDE.md`](docs/products/hub/CLAUDE.md).
 - **Security:** RLS on every table; triggers for business logic requiring subqueries; `is_platform_admin()` SECURITY DEFINER for admin-level RLS.
-- **RBAC:** Four roles (Steward, Guide, Member, Observer); permission checks via `has_permission()` SQL function.
 
 ---
 
