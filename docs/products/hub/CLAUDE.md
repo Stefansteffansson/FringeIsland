@@ -38,7 +38,7 @@ Hard-won lessons; read once, remember forever. Grouped by cluster — React idio
 
 **Supabase facts (key format and channel scope).**
 
-- **Supabase publishable keys use the `sb_publishable_*` format.** The legacy `eyJ...` JWT-shaped publishable key is deprecated; the current SDK and Supabase documentation use the prefixed form. Environment configuration referencing `eyJ...` for the publishable key is stale — replace with `sb_publishable_*`. The service-role key (server-side, never sent to the browser) is a separate concern and is not used by the Hub directly.
+- **Supabase publishable keys use the `sb_publishable_*` format.** The legacy `eyJ...` JWT-shaped publishable key is deprecated; the current SDK and Supabase documentation use the prefixed form. Environment configuration referencing `eyJ...` for the publishable key is stale — replace with `sb_publishable_*`. This rule is Hub-specific because the Hub is the only product that ships a Supabase client SDK directly — Gimbal will use platform-native networking, the Game's runtime is TBD, so the key-format concern attaches to Hub even though the underlying fact is Supabase-platform-wide. The service-role key (server-side, never sent to the browser) is a separate concern and is not used by the Hub directly.
 - **Realtime channel scope is two channels, not "realtime in general"** — see Rules above. Treating Supabase realtime as a general-purpose broadcast bus would broaden the data-access surface beyond what the Hub commits to and would break the "no table reads" rule the moment a third channel started attaching to a table.
 
 ---
