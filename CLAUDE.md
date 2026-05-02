@@ -167,7 +167,6 @@ Hard-won lessons; read once, remember forever.
 - **Policy name mismatch:** `DROP POLICY IF EXISTS` with the wrong name silently succeeds, leaving the old policy active.
 - **Cookies:** `@supabase/ssr` cookies are chunked/encoded. API routes: pass JWT via `Authorization: Bearer` header.
 - **Timestamps:** Supabase uses `+00:00`, JS uses `Z`. Compare as `new Date().getTime()`.
-- **Next.js 16:** Uses `proxy.ts`, not `middleware.ts`.
 - **PostgreSQL CHECK constraints:** Cannot contain subqueries. Use triggers instead when validation needs one.
 
 ---

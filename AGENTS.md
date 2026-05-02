@@ -30,7 +30,6 @@ Start at `docs/README.md` for the full map. Key entry points:
 - Way of working: `docs/planning/PROCESS.md`
 
 ## Conventions
-- Use `proxy.ts` not `middleware.ts` (Next.js 16)
 - `users.full_name` not `display_name`
 - Use ConfirmModal, never browser alerts
 - Conventional commits: `feat(hub): ...`, `fix(platform): ...`
