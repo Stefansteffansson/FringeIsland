@@ -117,7 +117,6 @@ The codebase already reflects these patterns — this list is orientation for ag
 - **API-first (ADR-U009):** Build every feature as if iOS/Android already exist: `Database → API route → Frontend component`. Never `Database → Frontend component directly`.
 - **Auth:** Each product wires its own client-side auth context backed by Supabase Auth. Product-specific details live in the product's `CLAUDE.md` — for the Hub, see [`docs/products/hub/CLAUDE.md`](docs/products/hub/CLAUDE.md).
 - **State:** Each product uses stack-appropriate primitives for local and shared state; cross-component coordination uses the product's canonical mechanism. For the Hub, see [`docs/products/hub/CLAUDE.md`](docs/products/hub/CLAUDE.md).
-- **Security:** RLS on every table; triggers for business logic requiring subqueries; `is_platform_admin()` SECURITY DEFINER for admin-level RLS.
 
 ---
 
