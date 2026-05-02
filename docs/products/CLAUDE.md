@@ -39,7 +39,6 @@ The five verticals (ADR-U002) are obligations on every tier. Here's what each re
 
 ## Gotchas (tier-specific)
 
-- **`useAuth()` silently fails in server components.** The auth context requires a client component — no clear error when you get this wrong; the hook just returns nothing. Any component that calls `useAuth()` must be marked `'use client'`.
 - **`refreshNavigation` is the canonical cross-component update mechanism.** Components that don't share a parent (e.g., nav list refreshing after a role change elsewhere) coordinate through this custom event. Don't invent new cross-component mechanisms without checking if this one already covers it.
 - **Hub is Ferd-present but Gimbal-future-aware.** If you're adding a feature to the Hub that has obvious mobile implications, at minimum write a one-line note in the feature spec's Cross-product impact section. The Gimbal team (= future you) will thank you.
 - **Role-specific UI branching:** don't branch on role string equality (`role === 'steward'`). Branch on the permission (`has_permission(user, 'invite_member')`). Roles can be renamed or reorganised; permissions are stable contracts.
