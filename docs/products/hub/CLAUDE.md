@@ -66,6 +66,7 @@ All E2E commands require the dev server on `localhost:3000` — start it before 
 
 - **Feature ID prefix at this entity:** `H` (Hub). See [`README.md`](./README.md) and [`features/`](./features/).
 - **Identity and boundaries:** [`DESCRIPTION.md`](./DESCRIPTION.md) — what the Hub is, who it serves, what it intentionally does not do.
+- **Reader tours of the L3 inventory:** [`tours/HUMAN.md`](./tours/HUMAN.md) (uncredentialed audience — what the Hub does, in plain language) and [`tours/TECHNICAL.md`](./tours/TECHNICAL.md) (contributor prerequisite — the capability inventory, scannable).
 - **Technical shape:** [`SPECIFICATION.md`](./SPECIFICATION.md) — §L2 §1 (Surface) for the tech stack, §L2 §3 (Auth & authorization) for the auth model, §L2 §4 (Data ownership) for the data-access posture and realtime channel scope, §L3 for the capability inventory.
 - **Tier file (read first per load order):** [`../CLAUDE.md`](../CLAUDE.md) — every products-tier rule (API-first, cross-product by default, paired specs, visitors-before-members, permission resolution via `has_permission`) applies here without restatement.
 - **Sibling product entities:** [`../gimbal/`](../gimbal/) (planned, not Next.js) · [`../game/`](../game/) (scope TBD).

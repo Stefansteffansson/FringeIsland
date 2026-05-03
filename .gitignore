@@ -73,3 +73,10 @@ supabase/.temp/
 
 # Scratch / temporary docs
 docs/TMP/
+
+# Reader-tour distribution artefacts (markdown is source of truth; .docx not committed)
+docs/products/**/*.docx
+docs/platform/**/*.docx
+docs/studios/**/*.docx
+docs/design-system/**/*.docx
+docs/verticals/**/*.docx

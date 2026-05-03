@@ -19,6 +19,7 @@ docs/products/
 │   ├── DESCRIPTION.md                     ← FIM-facing identity
 │   ├── SPECIFICATION.md                   ← inward-facing build spec (when written)
 │   ├── ROADMAP.md                         ← product roadmap (when written)
+│   ├── tours/                             ← post-§L3 reader tours (HUMAN + TECHNICAL)
 │   └── features/                          ← feature specs (prefix: H)
 │
 ├── gimbal/                                ← The Gimbal — mobile app (iOS + Android, planned)

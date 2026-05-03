@@ -8,7 +8,8 @@ The full browser-based FringeIsland experience. The web platform where FIMs expl
 ## Structure
 
 - [`DESCRIPTION.md`](./DESCRIPTION.md) — Outward-facing product identity (primary identity document)
-- [`SPECIFICATION.md`](./SPECIFICATION.md) — Inward-facing build spec (L2 sections populated; L3/L4 sections pending dedicated authoring sessions)
+- [`SPECIFICATION.md`](./SPECIFICATION.md) — Inward-facing build spec (L2 and L3 sections populated; L4 section pending)
+- [`tours/`](./tours/) — Post-§L3 reader tours: [`HUMAN.md`](./tours/HUMAN.md) (uncredentialed audience) and [`TECHNICAL.md`](./tours/TECHNICAL.md) (contributor prerequisite)
 - `features/` — Feature specifications using `FEAT-H*` IDs (retroactive `6-done` specs being written first to capture already-shipped Hub functionality)
 - `ROADMAP.md` — Product slice of NOW/NEXT/LATER _(to be written)_
 
