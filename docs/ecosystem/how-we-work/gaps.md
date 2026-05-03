@@ -157,6 +157,13 @@ The 2026-04-30 stress-test pattern bridge (`docs/planning/sessions/2026-04-30_01
 
 **Connection to G-29:** G-29 covers the routing mechanism for cross-entity findings; G-31 covers naming their producer. Resolutions are complementary; either can land first. G-31 lands in cascade-plan Session 1 (this commit); G-29's resolution session is deferred until cascade-plan Session 4 produces the second instance of cross-entity findings against which to design the routing mechanism.
 
+**G-32 — Entities with shipped §L3 lacking reader tours — backfill obligation (decomposition, post-L3 maturity gate).**
+The 2026-05-03 reader-tours-promotion session named two reader tours (HUMAN, TECHNICAL) under `{entity}/tours/` as a post-§L3 maturity gate, registered in the `ecosystem-decomposition` skill and PROCESS.md §6. The gate applies to every entity in the ecosystem; first-instance execution landed for Hub in the same session. Entities that ship §L3 without producing both tours are out of compliance with the gate. Hub: resolved in same-session execution; remaining entities pending §L3 maturity. The gap exists as a forward marker — when the second entity ships §L3, this gap surfaces the backfill obligation; if a future entity ships §L3 without producing tours, this gap surfaces the regression.
+
+*Proposed fix:* per-entity backfill triggered when §L3 lands. The `doc-health-check` skill is the natural enforcement point — at cycle boundaries, flag any entity with §L3 present and `tours/HUMAN.md` or `tours/TECHNICAL.md` absent.
+
+*Methodology connection:* the second-entity instance that triggers this gap's first non-Hub resolution is also the n=2 instance for tour internal-shape convergence (per the `ecosystem-decomposition` skill's Reader-tours subsection). When this gap fires for the second time, both questions resolve together.
+
 ### Documentation tooling (cross-cut)
 
 **G-25 — How-we-work rendered views drift between markdown updates (documentation tooling).**

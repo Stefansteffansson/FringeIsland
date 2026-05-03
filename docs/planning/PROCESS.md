@@ -211,6 +211,7 @@ This is the trigger → artifact map. Whenever you find yourself starting work, 
 |---------|-----------------|----------|----------|
 | New product surface identified (e.g., a new platform target) | Product Description | `../templates/product-description.md` | `../products/{name}/DESCRIPTION.md` |
 | Product enters active development | Product Specification + Roadmap | `../templates/product-specification.md` + `../templates/product-roadmap.md` | `../products/{name}/` |
+| §L3 of {entity}/SPECIFICATION.md lands | Two reader tours (HUMAN.md, TECHNICAL.md) | (none — internal structure entity-specific) | `../{tier}/{entity}/tours/` |
 | New domain service scoped | Domain Service Specification | `../templates/domain-service-spec.md` | `../platform/domain/{name}.md` |
 | New Studio scoped | Studio Description | `../templates/studio-description.md` | `../studios/{name}/DESCRIPTION.md` |
 | Feature enters the pipeline (maturity 0-raw or higher) | Feature spec (stories embedded) | `../templates/feature-spec.md` | `../{owner}/features/FEAT-{PREFIX}{NNN}-{slug}.md` |
@@ -230,6 +231,8 @@ This table is the **forward direction** — a trigger happens, and an artifact i
 **Where the execution mechanics live: in the skills.** This section lists what artifacts exist and when they appear. The step-by-step mechanics of how work actually moves through the pipeline — how a feature gets decomposed, how tasks are generated from stories, how context is loaded during implementation, how wave progress is tracked — live in `.claude/skills/`. The strategic shape stays in this document; the operational choreography lives in the skill files. See the "Skills as the execution layer" section below for the four skills and when each fires.
 
 If your trigger isn't in this table, it's either too small for a document (just put it in the backlog as a task) or it's a new kind of work that should be added to this table.
+
+**Reader tours are a post-§L3 maturity gate.** Each entity that ships §L3 owes two tours — HUMAN admitting an uncredentialed audience, TECHNICAL admitting a contributor prerequisite — under `{entity}/tours/`. Markdown is the source of truth; `.docx` exports are distribution artefacts and are not committed. Mechanics live in the `ecosystem-decomposition` skill's "Reader tours" subsection.
 
 ---
 

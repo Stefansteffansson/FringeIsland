@@ -306,6 +306,16 @@ The pattern was first practised during Block B.2 (Hub L3 capability inventory au
 
 Distinction from the reconciliation activity below: reconciliation is a *downstream* activity that compares the *committed* L3 inventory against existing specs and code as a separate work product. The stress-test pass is *part of L3 authoring* — it runs before the inventory is committed and ensures the committed inventory is honestly classified. The two activities do different work: stress-test fixes classification before commit; reconciliation produces a delta after commit. Both can produce cross-entity findings; both route them via G-29.
 
+### Reader tours — post-§L3 maturity gate
+
+After §L3 lands and is committed, the entity is not done. Two reader tours follow as a maturity gate before the entity is treated as L3-mature: a HUMAN tour admitting an uncredentialed audience, and a TECHNICAL tour admitting a contributor prerequisite. Both live as markdown files in a `tours/` subdirectory at the entity root: `{entity}/tours/HUMAN.md` and `{entity}/tours/TECHNICAL.md`. Markdown is the source of truth; `.docx` exports are distribution artefacts and are not committed.
+
+Tours are an exposition layer over §L3 — they re-present the inventory in two voices. They do not replace DESCRIPTION.md (which remains a derivation source) and do not modify §L3. The HUMAN tour is the artefact a non-technical reader meets the entity through; the TECHNICAL tour is the artefact a contributor scans before opening SPECIFICATION.md.
+
+**Internal structure of each tour is determined per-entity based on the entity's legibility needs.** The Hub instance (the first instance, 2026-05-03) organised both tours by internal area; whether that organisation generalises will be informed by the second instance, since Platform's legibility problems differ structurally from Hub's. Internal-shape convergence (or non-convergence) is determined by the second instance, on the same n=2 discipline applied to stress-test-pass promotion elsewhere in this document.
+
+**Backfill obligation for entities with already-shipped §L3.** Tracked as G-32 in `docs/ecosystem/how-we-work/gaps.md`.
+
 ---
 
 ## Level 4 — Features (with Stories embedded)
