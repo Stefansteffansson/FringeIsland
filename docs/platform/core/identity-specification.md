@@ -1,0 +1,407 @@
+# Platform Core — Identity (PC-2)
+
+<!-- Valid area slugs: infrastructure | identity | organisation | governance -->
+
+---
+slug: identity
+owner: platform/core/identity
+consumers: [platform/domain/{any DS}, products/{any}, studios/{any}]
+status: proposed
+last_updated: 2026-05-04
+tier: Platform Core
+tags: [platform-core:identity]
+feature_prefix: PC
+---
+
+> One file per Platform Core area. Platform Core is the domain-agnostic foundation everything else depends on. Each area (Infrastructure, Identity, Organisation, Governance) has its own SPECIFICATION.md; there is no PC-wide SPECIFICATION.md (locked 2026-04-26). This file is the inward-facing build spec for PC-2 Identity.
+
+**Authorship note.** L2 owns the identity, boundaries, and technical shape (§L2). L3 owns the capability inventory (§L3). L4 owns the feature-inventory summary (§L4). Sections are not modified across levels. The `doc-health-check` skill verifies section boundaries.
+
+**Phase 2 / entity 2 derivation note.** This spec is the PC-2 instantiation of the L1 to L3 cold-derivation flow used at PC-1. Step 1 (this file as initially landed) was cold-derived from L1 ground (root `CLAUDE.md`, `docs/platform/CLAUDE.md`), L2 inventory line ("Identity (PC-2) — Auth, profiles, sessions, Journal" in `docs/platform/core/README.md`), `docs/platform/core/CLAUDE.md` (sub-tier framing), ADR-U023 (Core/Domain decomposition), and the platform-core-spec template — without reading `supabase/migrations/`, `lib/`, `app/api/`, any existing `FEAT-PC2-*` file, or the body of `infrastructure-specification.md` beyond the Finding #5 pickup line carried forward (the partition statement: "PC-2 owns session lifecycle and authenticated-context handoff; PC-1 owns connection-role conventions"). Steps 2 (code-informed stress-test) and 3 (adjudication) follow under §L3.
+
+---
+
+## L2 — Identity, boundaries, and technical shape
+
+*L2 authorship. Derived from Vision, the platform-tier `CLAUDE.md`, and the ecosystem anatomy (ADR-U023). Revised when the area's boundaries, contract surface, dependencies, or stability posture change. Changes here are rare by design — see §7.*
+
+### 1. Purpose
+
+PC-2 Identity owns the answer to *who is this actor right now?* at every point of interaction with the platform. It is the area that turns an arriving request into an authenticated user with a session, a canonical profile record, and a stable `user_id` that every other tier uses to attribute work. Identity is **domain-agnostic** in the Platform Core sense: sign-in, session lifecycle, profile state, and user existence are not FringeIsland-specific concerns — they would be present in any multi-user platform serving content over time. PC-2 does *not* own permissions or group membership (PC-3 Organisation), audit or DeusEx (PC-4 Governance), the connection-role conventions themselves (PC-1 Infrastructure — see §6 for the partition), or any domain-scope content (Domain Services).
+
+### 2. Concepts
+
+| Entity | Definition | Persisted in |
+|--------|------------|--------------|
+| User | Canonical identity record for a person who has signed up. Holds the stable `user_id` foreign-keyed by every other tier when attributing work to an actor. Lifecycle states: pending-confirmation, active, soft-deleted, platform-exit. | Supabase Auth substrate (`auth.users`) — provider-managed, exposed by `user_id` UUID. |
+| Profile | The Platform Core-owned record attached to a User holding identity-scope attributes the platform itself manages (display name, handle/slug, avatar reference, locale, account status). Strictly bounded to identity-scope; domain-scope attributes (interests, learning history, role preferences) belong in Domain Service profile-extension tables. | Platform Core-owned `public.users` table (Step 2 finding C2-1 — no separate `profiles` table; identity columns live on `users` alongside the C3-2 PC-3-scope `personal_group_id` column, pending factoring per §6). |
+| Session | A time-bounded credential binding a request to a User. Created at sign-in, refreshed by middleware, terminated at sign-out or expiry. The session is what produces the *authenticated context* PC-1 Finding #5 names. | Supabase Auth substrate; surfaced to consuming code via `@supabase/ssr` cookie shape and the `Authorization: Bearer <jwt>` header on Internal API calls. |
+| Authenticated context | The runtime principal a request operates under, derived from a valid session. PC-2 publishes this context to every other area; downstream code does not re-derive it. | Per-request, in process memory; SQL-side via `auth.uid()`. |
+| user_id contract surface | The `user_id UUID` column-shape and FK constraint pattern that every other tier uses to point at a User. Treated as a contract, not just a column convention — changes propagate to every table in every tier. | Schema-level convention published by PC-2; consumed by every PC-3, PC-4, Domain Service, product, and studio table. |
+
+### 3. Contract surface — what this area exposes and to whom
+
+PC-2's current contract surface is the Supabase Auth substrate consumed via SDK by Surfaces, plus the SQL-side identity projection (`auth.uid()`) and the cookie-refresh middleware code that produces session continuity. The platform-tier rule "API routes authenticate via the `Authorization: Bearer <jwt>` header" stands as forward-looking discipline; today, no PC-2-owned `/api/v1/auth/*` or `/api/v1/profile/*` routes exist (see §7 Stability posture for the directional future state and the FEAT-PC2 pickup candidate to wrap the Auth substrate behind that surface).
+
+#### Surface shape
+
+- **Supabase Auth substrate consumed via SDK (current canonical contract surface).** Surfaces (Hub, Gimbal, Game) call the Supabase Auth API directly through `@supabase/ssr` clients (`createBrowserClient` from `lib/supabase/client.ts`, `createServerClient` from `lib/supabase/server.ts`). Operations are documented below in SDK-shape. Domain Services and other server-side consumers receive the authenticated context indirectly via the cookie-refresh middleware (next bullet).
+- **Cookie-refresh middleware code** (`lib/supabase/middleware.ts` exporting `updateSession()`). Reads cookies via `getAll`, refreshes the session via `auth.getUser()`, writes refreshed cookies back via `setAll`. **Latent at runtime pending F-Q4b research-spike resolution** — code shape exists in `lib/supabase/middleware.ts`, invoked from `proxy.ts` at repo root (renamed from `middleware.ts` in commit `68e544a`, 2026-01-21, citing "Next.js 16 compatibility"). Whether Next.js 16 auto-discovers `proxy.ts` as middleware is unverified; if it does not, cookie-refresh is silently disabled at runtime. The cookie-refresh handoff claim holds in code shape independent of spike outcome.
+- **`auth.uid()` SQL-side identity projection (canonical).** Supabase-provided "current authenticated user_id" function. PC-2 publishes this as the canonical "current user" surface for all RLS policies platform-wide; 96 references across `supabase/migrations/` confirm uptake.
+- **`get_current_user_profile_id()` SQL helper.** Existing SECURITY DEFINER convenience returning the profile id for `auth.uid()`. Documented as a primitive other areas may consume; full-row variant is a FEAT-PC2 candidate (see §7).
+- **Profile materialization trigger** — `handle_new_user()`, AFTER INSERT on `auth.users`. SECURITY DEFINER, `SET search_path = ''`. Materializes the user-row in `public.users` and (today, per the PC-2 / PC-3 seam — see §6 partition note and §5) also performs PC-3 cascade work (personal group, memberships, Myself role, FringeIsland Members enrollment). Documented as a primitive other areas may not bypass.
+
+#### Schema-level contracts
+
+- **`user_id UUID` shape.** Every table in every tier that attributes data to an actor uses `user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE ...`. The `ON DELETE` clause is part of the contract — set per consumer table per ADR-U016 cascade-spec discipline; the column shape itself is fixed by PC-2.
+- **Profile read shape.** The shape of the user-row PC-2 returns through `get_current_user_profile_id()` (and through any future PC-2-owned API surface) — bounded to identity-scope columns.
+
+#### Operations (SDK-shape today; see §7 for the directional API-route shape)
+
+#### Operation: `signIn` — `supabase.auth.signInWithPassword(...)` (also `signInWithOAuth`, `signInWithOtp`)
+- **Purpose:** Authenticate an existing user; produce a session and authenticated context.
+- **Inputs:** `{ email, password }` (or OAuth provider, or magic-link OTP request).
+- **Outputs:** `{ data: { user, session }, error }` — `session` carries the JWT bundle; `user` is the `auth.users` row.
+- **Errors:** Surfaced via the `error` object — invalid credentials, account not confirmed, rate-limited.
+- **Auth context:** Public (anon connection role) at call time; authenticated context published via cookies on success.
+- **RLS posture:** Caller-supplied identifier lookup runs through Supabase Auth substrate (no PC-2 RLS); subsequent reads use `auth.uid()` per platform RLS conventions.
+- **Directional API-route shape:** `POST /api/v1/auth/sign-in` per §7.
+
+#### Operation: `signUp` — `supabase.auth.signUp(...)`
+- **Purpose:** Create a new User and (today, per the seam-trigger documented in §5) materialize the user-row plus PC-3 cascade work — personal group, memberships, Myself role, FringeIsland Members enrollment — in one transactional flow.
+- **Inputs:** `{ email, password, options: { data: <initial profile fields> } }`.
+- **Outputs:** `{ data: { user, session }, error }` — `session` may be null pending email confirmation per Supabase Auth policy.
+- **Errors:** Surfaced via `error` — identifier in use, weak credential, signup-disabled.
+- **Auth context:** Public (anon).
+- **RLS posture:** `auth.users` INSERT triggers `handle_new_user()` (SECURITY DEFINER, `search_path = ''`); user-row INSERT and PC-3 cascade work happen inside the trigger; transactional invariant preserved.
+- **Directional API-route shape:** `POST /api/v1/auth/sign-up` per §7.
+
+#### Operation: `signOut` — `supabase.auth.signOut()`
+- **Purpose:** Terminate the current session.
+- **Inputs:** none (uses current session).
+- **Outputs:** `{ error }`.
+- **Errors:** Idempotent — succeeds on no active session.
+- **Auth context:** Authenticated.
+- **RLS posture:** Session-substrate operation; no PC-2 table writes.
+- **Directional API-route shape:** `POST /api/v1/auth/sign-out` per §7.
+
+#### Operation: `refreshSession` — `supabase.auth.getUser()` invoked from middleware
+- **Purpose:** Refresh the current session if expired; extend cookie lifetime.
+- **Inputs:** none (reads from cookies).
+- **Outputs:** `{ data: { user }, error }`; refreshed cookies written back via `setAll`.
+- **Errors:** `refresh_token_not_found` (no session) — handled gracefully by `updateSession()`.
+- **Auth context:** Carries its own credential (refresh JWT in cookies).
+- **RLS posture:** Session-substrate operation.
+- **Directional API-route shape:** `POST /api/v1/auth/refresh` per §7.
+- **Wiring note:** Today this is invoked from `lib/supabase/middleware.ts:updateSession()`, exported and called from `proxy.ts` at repo root. Whether Next.js 16 auto-discovers `proxy.ts` as middleware is the F-Q4b research-spike question.
+
+#### Operation: `getCurrentUser` — `supabase.auth.getUser()` (from any client)
+- **Purpose:** Return the User of the currently authenticated principal.
+- **Inputs:** none.
+- **Outputs:** `{ data: { user }, error }`.
+- **Errors:** No session → `user` is null.
+- **Auth context:** Authenticated.
+- **RLS posture:** Reads from session substrate; profile-row joins use `auth.uid()` and `get_current_user_profile_id()`.
+- **Directional API-route shape:** `GET /api/v1/auth/me` per §7.
+- **Note:** `getUser()` validates the JWT against the Supabase Auth server per request; `getSession()` reads cookies without validation. PC-2 uses `getUser()` in middleware for security; Surfaces may use either depending on context. Pattern-of-use across the codebase is not yet audited.
+
+#### Operation: `updateProfile` — direct Supabase client UPDATE on `public.users` (no PC-2-owned helper today)
+- **Purpose:** Update the authenticated user's own identity-scope profile fields.
+- **Inputs:** `supabase.from('users').update({ ...identity_scope_fields }).eq('auth_user_id', user.id)`.
+- **Outputs:** the updated row.
+- **Errors:** RLS denial if not own-row; no column-level identity-vs-domain gating today (see RLS posture).
+- **Auth context:** Authenticated.
+- **RLS posture:** Own-row UPDATE policy (`auth.uid() = auth_user_id`); column-level identity-scope-vs-domain-scope gating is not enforced today — addressed by future `PATCH /api/v1/profile/me` route per §7. The Q2 (Profiles depth boundary) latent finding directly affects what the gating boundary looks like when it lands.
+- **Directional API-route shape:** `PATCH /api/v1/profile/me` per §7 — would gate identity-scope vs domain-scope at the route level rather than relying on RLS column-set discipline alone.
+
+### 4. Internal dependencies — strict upward-only chain
+
+```
+PC-1 Infrastructure ──► PC-2 Identity ──► PC-3 Organisation ──► PC-4 Governance
+```
+
+PC-2 depends only on PC-1.
+
+#### What this area depends on (within Platform Core)
+
+| Upstream area | What this area consumes | Used for |
+|---|---|---|
+| PC-1 Infrastructure | Connection-role conventions (`anon`, `authenticated`, `service_role`) | Every PC-2 operation operates under one of these roles. PC-2's session-lifecycle code is what *produces* the `authenticated` context; PC-1 owns what each role is *allowed to do operationally*. |
+| PC-1 Infrastructure | RLS policy primitives and the platform-wide RLS-from-day-one discipline | Every PC-2 table has RLS; PC-2 follows PC-1's policy patterns rather than reinventing them. |
+| PC-1 Infrastructure | SECURITY DEFINER + `search_path = ''` discipline | The profile materialization trigger and any PC-2 helper SQL functions follow this discipline. |
+| PC-1 Infrastructure | Trigger pattern conventions (BEFORE/AFTER, idempotency, naming) | The auth-to-profile materialization trigger uses these conventions. |
+| PC-1 Infrastructure | Migration discipline (timestamp order, never rewrite applied) | Profile and identity schema changes follow this. |
+| PC-1 Infrastructure | Feature-flag accessors (if a staged auth change requires gating) | Conditional dependency — used when an auth surface change is rolled out behind a flag. |
+
+#### What this area does NOT depend on
+
+- **PC-3 Organisation.** PC-2 does not consume `has_permission(...)`, group membership, or role templates. Role-name *vocabulary* is published by PC-2; role-to-permission *resolution* is consumed *from* PC-3 by every other area, never by PC-2.
+- **PC-4 Governance.** PC-2 has no DeusEx-only operations and emits no audit events of its own (audit consumption is via PC-4 conventions; PC-2 emits the events that PC-4 records, but does not depend on PC-4 to do so).
+- **Any Domain Service.** A capability in PC-2 that needed something from a Domain Service would be a structural error.
+
+### 5. Storage & schema
+
+PC-2 owns one core schema artifact and consumes one provider-managed substrate. The disk-realized shape is documented per Step 2 findings.
+
+- **`public.users` table (PC-2-owned).** Row per User, FK `auth_user_id` to `auth.users(id)` with `ON DELETE CASCADE` (the user-row follows User lifecycle). Identity-scope columns: `auth_user_id`, `email`, `full_name`, `avatar_url`, `bio`, `is_active`, `is_decommissioned`, `nickname`. **Carries one PC-3-scope column today: `personal_group_id UUID`** (FK to PC-3 `public.groups`, materialized by the seam-trigger below). Per Step 2 finding C3-2, this column is a structural inversion (PC-2 schema with FK to PC-3) and is queued in the Step 3 PC-3 pickup as part of the `handle_new_user` factoring candidate. RLS posture: SELECT own-row + admin-override; UPDATE own-row + admin-override (column-level identity-vs-domain gating not enforced today — see §3 `updateProfile` operation and §8 Q2); INSERT only via the SECURITY DEFINER materialization trigger (no direct INSERT permitted from any role).
+- **`auth.users` substrate (Supabase-managed).** PC-2 does not own the schema, but owns the *contract* on consumption: every other tier reads `user_id` via FK to `auth.users(id)`; nothing else queries `auth.users` directly except via SECURITY DEFINER helpers PC-2 publishes (`get_current_user_profile_id()` today).
+- **`handle_new_user()` seam-trigger.** AFTER INSERT on `auth.users` runs `handle_new_user()` (SECURITY DEFINER, `SET search_path = ''`). Today the trigger executes both PC-2 and PC-3 work transactionally: (i) INSERTs the user-row in `public.users` (PC-2); (ii) creates the personal group in `public.groups` (PC-3); (iii) inserts the user-group link; (iv) creates self-membership; (v) instantiates a "Myself" role on the personal group; (vi) enrolls the user in the FringeIsland Members system group; (vii) claims any pending invitations addressed to the email. The composed invariant — "no User exists without a user-row in `public.users` + personal group + memberships + Myself role" — is preserved by the single transaction. Per Step 2 finding C3-1, this is an accepted seam at this spec; the FEAT-PC2 / PC-3 factoring pickup (per ADR-U016 cascade-spec discipline) would separate PC-2 emission from PC-3 cascade response in a future revision. PC-2's PC-2-scope invariant alone — "no User exists without a user-row in `public.users`" — would survive the factoring; the composed PC-3 invariant becomes PC-3's responsibility.
+- **Sessions.** Not a PC-2 table. Sessions live in the Supabase Auth substrate. PC-2 owns the *conventions* on session-cookie shape and the middleware code that refreshes them (`lib/supabase/middleware.ts:updateSession()`, runtime wiring pending F-Q4b research-spike resolution, see §3 cookie-refresh middleware bullet and §6), but no schema artifact.
+- **Role-name canonicalization.** *Removed from PC-2 per Step 2 finding C3-3.* Role names live in PC-3's `role_templates` table. Carries to PC-3 derivation; sub-tier `docs/platform/core/CLAUDE.md` temporary anchor needs revision.
+- **Journal.** *Removed from PC-2 per Step 3 Q1 adjudication.* Carries to whichever Domain Service receives Journal (TBD).
+
+PG17 RLS gotcha applies to any PC-2 SECURITY DEFINER helper used in policies — keep bodies minimal; reserve in-group permission checks for the future PC-3 `has_permission()` (currently latent — Step 2 finding C3-4).
+
+### 6. Authentication & authorization
+
+This section documents two partitions: (i) the PC-1 / PC-2 partition pre-loaded from PC-1 Finding #5; and (ii) the PC-2 / PC-3 partition surfaced by Step 2 finding C3-1 (`handle_new_user` seam-trigger).
+
+**PC-1 / PC-2 partition (substrate vs mechanism).**
+
+- **PC-1 owns the connection-role conventions** — what `anon`, `authenticated`, and `service_role` are allowed to do operationally on the database (RLS posture defaults; what each role can SELECT/INSERT/UPDATE/DELETE without explicit policy). The substrate-vs-mechanism partition: **PC-1 publishes role conventions as substrate; PC-2 publishes the session lifecycle and authenticated-context handoff that causes a request to arrive as the `authenticated` role with a known User identity.** Neither area is the request itself — both publish primitives that the request flows through.
+- **PC-2 owns the auth surface itself** — sign-in, sign-up, session creation, session-refresh middleware code, sign-out, and the resulting **session lifecycle**. The session lifecycle produces the `authenticated` connection role at the database boundary. PC-2 also owns the **authenticated-context handoff**: publishing the runtime principal to every other area that asks "who is the actor on this request?"
+- **The handoff is realized today on three observable surfaces, with cookies as the canonical platform-side handoff** (per Step 2 finding F-Q4a):
+  - **Cookies — canonical platform-side handoff.** `@supabase/ssr` clients produce and consume cookies; the cookie-refresh middleware code in `lib/supabase/middleware.ts:updateSession()` refreshes the session per request when wired. Whether Next.js auto-discovers this as middleware (via `proxy.ts` at repo root, named non-conventionally per the 2026-01-21 "Next.js 16 compatibility" rename) is the F-Q4b research-spike question. The canonical-handoff claim holds in code shape independent of spike outcome.
+  - **`auth.uid()` — canonical SQL-side projection.** RLS policies and SECURITY DEFINER helpers consume `auth.uid()` to attribute data to actors. 96 references across `supabase/migrations/` confirm uptake.
+  - **`Authorization: Bearer <jwt>` — selective consumption pattern.** Used in 5 specific routes (`app/api/admin/users/route.ts`, `app/api/invitations/send-email/route.ts`, `app/api/v1/journeys/enrollments/route.ts`, `app/api/v1/journeys/[id]/enroll/route.ts`, `lib/admin/admin-users-query.ts`) for Surface-side workflows that act on a User's behalf without relying on cookie-derived context (admin operations, invitation sends, journey enrollments). Not the platform-wide identity handoff. The platform-tier rule "API routes authenticate via `Authorization: Bearer <jwt>`" stands as forward-looking discipline applicable when PC-2-owned `/api/v1/auth/*` routes are introduced (see §7).
+- **The Supabase client wiring sits at the PC-1 / PC-2 seam.** Code that constructs Supabase clients with `createBrowserClient`, `createServerClient`, or service-role escalation operates exactly at this seam: PC-2's session-lifecycle mechanisms run through PC-1's connection-role substrate.
+
+**PC-2 / PC-3 partition (User-lifecycle initiation vs membership/role cascade response).**
+
+- **PC-2 owns User-lifecycle initiation.** Sign-in and sign-up operations produce the User identity and the authenticated context. The User row in `public.users` and the session bundle are PC-2 outputs.
+- **PC-3 owns membership / role cascade response.** Personal-group bootstrap, self-membership, Myself-role instantiation, and FringeIsland Members system-group enrollment are PC-3 cascade-response work. Today these are materialized inside the same transaction as User creation (see §5 for the seam-trigger discussion); a factoring pickup — FEAT-level "factor `handle_new_user` per ADR-U016" — is a candidate for the Step 3 PC-3 pickup queue. If accepted, it would separate PC-2 emission from PC-3 cascade response per ADR-U016.
+- **The four FringeIsland roles (Steward, Guide, Member, Observer) and `has_permission(user_id, group_id, permission_name)` are PC-3, not PC-2** (per ADR-U007 and Step 2 findings C3-3 + C3-4). Role names live in PC-3's `role_templates` table; `has_permission()` is latent in PC-3 today (RLS uses `auth.uid()` directly with policy-specific logic; RBAC realized via direct triggers like `prevent_last_leader_removal()`). The sub-tier `docs/platform/core/CLAUDE.md` temporary anchor (which currently states "the four FringeIsland roles ... live in Platform Core's Identity area (PC-2)") needs revision; the Step 3 carry-forward to PC-3 derivation includes a sub-tier-CLAUDE-revision pickup.
+- **DeusEx and platform-admin operations are PC-4 Governance.** PC-2 has no DeusEx-only operations. If PC-4 ever needs to issue an authenticated session as another User (impersonation for support / moderation), the mechanism is cross-area — see §8 Q6 (carries forward to PC-4 derivation).
+
+**API-side auth contract (today vs directional).** Today, no PC-2-owned API routes exist; identity flows through SDK + cookies + `auth.uid()` per the surfaces above. When the directional `/api/v1/auth/*` and `/api/v1/profile/*` routes land (see §7 pickup candidate), they carry `Authorization: Bearer <jwt>` per the platform-tier rule. Cookie-based session state is a Surface-internal SDK concern (the Hub uses `@supabase/ssr` chunked cookies; future Surfaces may differ); the future API surface will not depend on cookie shape.
+
+### 7. Stability posture
+
+| Aspect | This area's posture |
+|---|---|
+| **Change cadence** | ADR-required for any change to the auth surface (sign-in/sign-up/session-refresh contract) or to the profile schema's identity-scope column set. Wave-boundary-only for the `user_id` contract surface — changing it ripples to every table in every tier. |
+| **Triggers a change** | New auth method (SSO, passkey, OAuth provider); new identity-scope attribute that becomes platform-canonical (rare); a security finding against the session lifecycle; a vertical-obligation change that re-shapes the consent capture at sign-up; a platform-wide identifier shape change (extremely rare). |
+| **Review escalation** | Schema-touching = `review` status per platform-tier rule. Auth-surface contract changes = ADR + Internal API version bump (per the sub-tier rule that even in-tree consumers require ADR + version bump) + DeusEx-acknowledged migration window. Profile column additions (identity-scope) follow the cascade-spec-first discipline (ADR-U016). |
+| **Default answer to "we want to change this"** | "Model it as a Domain Service profile-extension first." If the attribute is domain-scope (interests, learning history, role preferences), it belongs in a Domain Service. PC-2's profiles table is intentionally narrow. The bar for adding to PC-2 is "this attribute is identity-scope and domain-agnostic" — not "this is convenient." |
+| **Deprecation pathway** | For the SDK-shape contract today (no PC-2-owned API routes — see §3 and the directional subsection below): deprecation is bounded by Supabase Auth substrate version policy; PC-2 has no independent deprecation control until the directional API-route wrap lands. For the directional state: API endpoints under `/api/v1/auth/...`; breaking changes introduce `/api/v2/auth/...` with both versions live until all Surfaces have migrated. Old session tokens issued by `/v1` continue to validate through the deprecation window. The `user_id` contract surface has no deprecation pathway short of a wave-boundary platform-wide migration; it is treated as permanent. |
+
+**Directional future state — Internal API wrap (FEAT-PC2 pickup candidate).**
+
+PC-2 today exposes its operations through the Supabase Auth substrate consumed via SDK (see §3 Surface shape). The platform-tier rule "API routes authenticate via the `Authorization: Bearer <jwt>` header" anticipates a future state in which PC-2 owns explicit `/api/v1/auth/*` and `/api/v1/profile/*` routes wrapping the Auth substrate. This wrap is **directional**, not current — the routes do not exist on disk today (per Step 2 finding F-Q4c).
+
+**Pickup candidate:** FEAT-PC2 "Wrap Supabase Auth substrate behind `/api/v1/auth/*` and `/api/v1/profile/*` per platform-tier `Authorization: Bearer` rule." When this FEAT lands, §3's SDK-shape operations graduate to API-route shape; the deprecation-pathway row above engages (the SDK-shape becomes internal-implementation; the API surface becomes the contract). The wrap also enables route-level identity-scope vs domain-scope gating on profile updates (`PATCH /api/v1/profile/me`), supplementing today's RLS column-set discipline.
+
+A feature spec proposing PC-2 work must address what triggered the change, what review escalation it requires, and what the deprecation pathway is for any contract being replaced. Features that don't address it fail DoR.
+
+### 8. Open spec questions
+
+- **Q1 — Journal ownership and L2-line altitude mix. [Adjudicated 2026-05-04 at Step 3.]** Step 2 finding C1-1 confirmed zero Journal substrate on disk; cold-derivation reading ("identity-primitives only; Journal is domain-scope") holds without disk-evidence override. **Disposition:** L2-line revision recommended in `docs/platform/core/README.md` — drop Journal from the PC-2 line. Routing: carry-forward to whichever Domain Service receives Journal (Content or Intelligence; final assignment pending Domain Service scope-pinning, see Step 3 Carry-forward block). The sub-tier `docs/platform/core/CLAUDE.md` is silent on Journal and needs no revision.
+- **Q2 — Profiles depth boundary. [Partially adjudicated 2026-05-04 at Step 3.]** Cold derivation proposed: identity-scope = display name, handle/slug, avatar reference, locale, account status; domain-scope = interests, learning history, role preferences, journey progress. Step 2 finding C2-1 confirmed identity-scope columns on `public.users` (`auth_user_id`, `email`, `full_name`, `avatar_url`, `bio`, `is_active`, `is_decommissioned`, `nickname`) — partial alignment with cold-derivation list (`bio` was not on the cold-derived list; `locale` is not on disk). The boundary itself remains **latent for full ratification** until Domain Service scope-pinning happens (a Phase 4+ activity); the column-level gating mechanism is also latent (see §3 `updateProfile` and §7 directional API-route shape). No Step 3 §-edit beyond §5 disposition above.
+- **Q3 — Role-name vocabulary anchor location. [Adjudicated 2026-05-04 at Step 3.]** Step 2 finding C3-3 settles this: role names live on disk in PC-3's `role_templates` table (TEXT values), not in any PC-2 enum or constant table. The cold-derivation alternative reading wins. **Disposition:** the four roles + `has_permission()` (latent per C3-4) are PC-3 in their entirety — vocabulary and resolution alike. Sub-tier `docs/platform/core/CLAUDE.md` temporary anchor needs revision; carry-forward to PC-3 derivation includes the sub-tier-CLAUDE-revision pickup. PC-2 spec drops the role-name vocabulary from §2 (Plan C) / §3 (Plan A absorbed) / §6 (Plan A absorbed).
+- **Q4 — Authenticated-context handoff mechanics. [Adjudicated 2026-05-04 at Step 3.]** Step 2 surfaced the F-Q4 cluster (F-Q4a Bearer-vs-cookies inversion; F-Q4b proxy.ts wiring uncertainty; F-Q4c no API routes exist). **Disposition:** §3 and §6 reshape committed at Step 3 Plan A — cookies = canonical platform-side handoff; `auth.uid()` = canonical SQL-side projection; Bearer = selective consumption pattern (5 specific routes); SDK against Supabase Auth substrate = current contract surface; `/api/v1/auth/*` wrap = directional future state per §7. **Open carry-forward:** F-Q4b research-spike — does Next.js 16 auto-discover `proxy.ts` as middleware? See Step 3 items-not-in-pickup.
+- **Q5 — Sign-up orchestration shape. [Adjudicated 2026-05-04 at Step 3.]** Step 2 finding C1-3 confirmed `handle_new_user()` exists with full discipline (SECURITY DEFINER, `search_path = ''`, AFTER INSERT). Step 2 finding C3-1 surfaced that the trigger does both PC-2 and PC-3 cascade work in one transaction. **Disposition (per Step 3 Plan A and Plan C §5):** accept-seam at this spec; §5 documents the seam-trigger and composed invariant; §6 documents the PC-2 / PC-3 partition. The factoring pickup (FEAT-level "factor `handle_new_user` per ADR-U016") is queued in the Step 3 PC-3 pickup. PC-2's own invariant ("no User exists without a user-row in `public.users`") is preserved transactionally.
+- **Q6 — DeusEx user-impersonation mechanism. [Carries to PC-4 derivation.]** Cross-area question — see Step 3 PC-4 pickup. No PC-2 §-edit; carry-forward documented.
+- **Q7 — Account lifecycle cascades. [Latent.]** No Step 3 disposition; cascade-categories enumeration deferred to a future PC-2 revision when User-lifecycle FEAT-PC2 work begins. The cascade-spec template-fill happens at FEAT-PC2 maturity per ADR-U016.
+
+---
+
+## L3 — Capability inventory
+
+*L3 authorship. Derived fresh from L1 (Vision) and L2 (§L2 above) at this step. Not derived from feature specs or code at Step 1.*
+
+### Capabilities
+
+| Capability | Internal area | Depends on (internal) | Depends on (external, upstream PC only) | Vertical impact |
+|---|---|---|---|---|
+| Sign-in flow | PC-2 | user_id contract surface | PC-1 (connection-role substrate, RLS primitives) | Privacy (consent state honored); Observability (sign-in event with actor + outcome); Notifications (suspicious-login or welcome-back trigger) |
+| Sign-up flow | PC-2 | Profile materialization trigger; user_id contract surface | PC-1 (auth-trigger pattern, SECURITY DEFINER discipline) | Privacy (initial consent capture is part of the flow); Observability (sign-up event); Administration (account-creation lifecycle event); Notifications (welcome / verification trigger) |
+| Session refresh | PC-2 | Sign-in flow (continues a session it produced) | PC-1 (connection-role substrate, middleware pattern) | Observability (refresh-failure event) |
+| Sign-out | PC-2 | Authenticated-context publication | PC-1 (connection-role substrate) | Observability (sign-out event) |
+| Profile CRUD (own-row) | PC-2 | user_id contract surface | PC-1 (RLS posture, own-row policy pattern) | Privacy (FIM data); Administration (display-name / handle changes are lifecycle events with downstream cascade) |
+| Profile materialization trigger | PC-2 | — | PC-1 (SECURITY DEFINER + `search_path = ''` discipline; AFTER INSERT trigger pattern) | Administration (User-creation cascade); Privacy (profile row creation captures consent linkage) |
+| Authenticated-context publication | PC-2 | Sign-in flow; Session refresh | PC-1 (connection-role substrate, `auth.uid()` SQL primitive) | Observability (every authenticated request carries the published actor) |
+| user_id contract surface | PC-2 | — | PC-1 (schema and RLS conventions) | All five — `user_id` is the actor identifier on every event everywhere across the platform |
+| Role-name vocabulary canonicalization | PC-2 | — | — | None directly (consumed by PC-3 for permission resolution) |
+| Account lifecycle state machine | PC-2 | user_id contract surface; Profile CRUD | PC-1 (migration discipline, RLS) | Administration (lifecycle cascade per ADR-U016); Privacy (consent state evolves with state); Observability; Notifications (state-transition triggers) |
+
+### Dependency chain
+
+**Within PC-2:**
+- *Foundational:* `user_id contract surface` is depended on by every other PC-2 capability.
+- *Sign-in pathway:* `Sign-in flow` produces a session; `Authenticated-context publication` carries the session forward; `Session refresh` extends; `Sign-out` terminates.
+- *Sign-up pathway:* `Sign-up flow` orchestrates User creation; `Profile materialization trigger` runs; `Authenticated-context publication` activates; `Profile CRUD (own-row)` becomes available.
+- *Identity vocabulary:* `Role-name vocabulary canonicalization` is independent and consumed externally (by PC-3) rather than by PC-2 internals.
+- *Lifecycle:* `Account lifecycle state machine` operates over `user_id contract surface` and uses `Profile CRUD`; transitions emit cascade triggers per the verticals.
+
+**Cross-area (upstream only, per §4):** Every PC-2 capability ultimately consumes PC-1's connection-role substrate and RLS primitives. PC-2 has no downstream dependencies inside Platform Core.
+
+### External dependencies
+
+| Source | Capability consumed | Consuming PC-2 capability |
+|---|---|---|
+| PC-1 Infrastructure | Connection-role substrate (`anon`, `authenticated`, `service_role` conventions) | Every PC-2 operation |
+| PC-1 Infrastructure | RLS policy primitives (own-row pattern, admin-override pattern) | Profile CRUD, Account lifecycle state machine, Profile materialization trigger |
+| PC-1 Infrastructure | SECURITY DEFINER + `search_path = ''` discipline | Profile materialization trigger; any PC-2 SQL helper |
+| PC-1 Infrastructure | AFTER INSERT trigger pattern | Profile materialization trigger |
+| PC-1 Infrastructure | Migration discipline | All PC-2 schema work |
+| PC-1 Infrastructure | Feature-flag accessors (conditional) | Sign-in flow / Sign-up flow when an auth-method change is rolled out behind a flag |
+| Vertical: Privacy | Consent-state shape (capture and propagation) | Sign-up flow, Profile CRUD, Account lifecycle state machine |
+| Vertical: Observability | Event shape (request ID, actor, outcome) | Every PC-2 operation that emits an observability event |
+| Vertical: Administration | Cascade-spec format per ADR-U016 | Account lifecycle state machine, Profile CRUD (display-name / handle changes) |
+| Vertical: Notifications | Notification-trigger shape | Sign-up (welcome / verification), Sign-in (suspicious-login), Account lifecycle (state-transition triggers) |
+
+**Disallowed sources confirmed:** No PC-2 capability depends on PC-3, PC-4, any Domain Service, any Product, any Studio, or the Design System.
+
+### Sources-status block
+
+- **L1 ground (root `CLAUDE.md`, `docs/platform/CLAUDE.md`):** solid. Vision questions and platform-tier rules consumed without gap.
+- **L2 inventory line ("Identity (PC-2) — Auth, profiles, sessions, Journal"):** **possibly miswritten upstream**. Surfaces §8 Q1 as **L2-line-revision candidate** (higher-altitude flag, not an entity-internal delta). Does not block this spec's authoring; resolution is downstream.
+- **Sub-tier `docs/platform/core/CLAUDE.md`:** solid. Includes the temporary anchor naming PC-2 as the home of the four roles + `has_permission()` — partition refined in §6 (role names = PC-2 vocabulary; `has_permission()` resolution = PC-3 per ADR-U007). Sub-tier anchor should migrate when PC-3's L2 spec is authored.
+- **ADR-U023 (Core/Domain decomposition):** solid for partition framing. Silent on Identity-specific properties — Identity is one of four named areas, no Identity-specific carve-out in the ADR. No gap.
+- **ADR-U007 (three-layer permission model):** referenced for the role/permission partition. Body not read at Step 1 (spec applied as cited per cold-derivation discipline). If Step 2 surfaces a partition disagreement against the ADR, escalates as cross-area finding.
+- **PC-1 Finding #5 (pre-loaded carry-forward):** consumed verbatim and resolved into §6. Partition statement holds: PC-2 owns session lifecycle and authenticated-context handoff; PC-1 owns connection-role conventions.
+- **No sibling spec text read.** PC-1 spec body (`infrastructure-specification.md`) was forbidden at Step 1 except for the Finding #5 pickup line.
+- **No code, migrations, app routes, or FEAT-PC2-* files read.** Forbidden at Step 1 per phase plan.
+
+---
+
+### Step 2 — code-informed stress-test findings
+
+*Step 2 landed 2026-05-04 in the same session as Step 1 (Phase 2 / entity 2). Pattern at n=3 (standing methodology). Q4 was the §8 priority and surfaced a three-finding cluster (F-Q4a + F-Q4b + F-Q4c) that materially reshapes §3 and §6 at Step 3 — see PW-3 for sequencing. State-read scope: `supabase/migrations/`, `lib/supabase/`, `app/api/`, `proxy.ts`, `next.config.ts`, `docs/platform/core/features/` (FEAT-PC2-* inventory: empty).*
+
+#### Class 1 — Confirms (cold derivation matches disk)
+
+- **C1-1 — Journal substrate absent.** Grep across `supabase/migrations/`, `app/`, and `lib/` returns zero Journal-related code, table, migration, or API route. §8 Q1 cold-derivation reading ("identity-primitives only; Journal is domain-scope") is consistent with disk reality. Q1 adjudication therefore proceeds at spec-level (L2-line altitude) at Step 3 without disk-evidence override either way.
+- **C1-2 — `auth.uid()` is canonical SQL-side identity projection.** 96 references across RLS policies in `supabase/migrations/`. Confirms cold-derivation §3 SQL primitive claim and §6 handoff statement on the SQL side.
+- **C1-3 — `handle_new_user()` trigger exists with discipline.** AFTER INSERT on `auth.users`; `LANGUAGE plpgsql`; `SECURITY DEFINER`; `SET search_path = ''`. Confirms §5 trigger pattern, §3 primitive listing, and the platform-tier SECURITY DEFINER discipline. (See C3-1 for the cross-entity finding about what the trigger does *beyond* profile materialization.)
+- **C1-4 — Cookie-refresh middleware code shape exists.** `lib/supabase/middleware.ts` exports `updateSession()` matching the canonical `@supabase/ssr` shape (cookies `getAll`/`setAll`, `auth.getUser()` to refresh, returns the response with cookies attached). Confirms §6 statement that cookie-based session state is realized via `@supabase/ssr`. (See F-Q4b for the wiring caveat — the code exists, the registration is ambiguous.)
+- **C1-5 — `auth.users` consumed by FK convention.** Migrations reference `REFERENCES auth.users(id)` with explicit `ON DELETE` clauses per consumer table. Confirms §3 schema-level contract for the `user_id UUID` shape and §5 framing of `auth.users` as substrate-with-contract-on-consumption.
+
+#### Class 2 — Entity-internal delta (cold-derived shape needs revision; stays in PC-2)
+
+- **C2-1 — Profiles table is `public.users`.** No separate `profiles` table exists. Identity columns (`auth_user_id`, `email`, `full_name`, `avatar_url`, `bio`, `is_active`, `is_decommissioned`, `nickname`) live on `public.users`. Step 3 must rename "profiles" → "users" in §5 storage and update the Profile entity's "Persisted in" cell in §2. Identity-scope columns confirmed; the additional `personal_group_id UUID` column on the same table is a Class 3 finding (C3-2), not a Class 2 column-list issue.
+- **C2-2 — `current_user_profile()` proposal back-out.** §3 proposed a SECURITY DEFINER helper `current_user_profile()` returning the profile row. Disk has a near-cousin: `get_current_user_profile_id()` returning profile id only. Per §3's stated back-out path, Step 3 dispositions to either (a) rename the §3 entry to `get_current_user_profile_id()` (existing) and remove the row-returning shape, or (b) elevate the full-row variant to a FEAT-PC2 candidate with cascade-spec-first per ADR-U016. The "proposed" tag does not survive past Step 3 in either disposition. **Methodology trace:** per the §3 back-out clause established at Step 1 bounce 2 — the next entity's cold derivation should know that "proposed" tags require a stated back-out path.
+- **F-Q4a — Bearer vs cookies inversion in §3 / §6.** Cold derivation framed `Authorization: Bearer <jwt>` as the canonical contract surface and cookies as "Surface-internal." Disk inverts this: cookies (managed by the `@supabase/ssr`-shaped middleware code in `lib/supabase/middleware.ts`) are the canonical handoff for general identity context across the codebase; Bearer JWT exists in 5 specific routes (`app/api/admin/users/route.ts`, `app/api/invitations/send-email/route.ts`, `app/api/v1/journeys/enrollments/route.ts`, `app/api/v1/journeys/[id]/enroll/route.ts`, `lib/admin/admin-users-query.ts`) for selective Surface-side workflows acting on a User's behalf. Step 3 reshapes §3 and §6 to: cookie-refresh middleware = canonical handoff (intended); `auth.uid()` = canonical SQL-side projection; Bearer = pattern for specific Surface-side workflows that act on a User's behalf without relying on cookie-derived context (admin, invitations, journey enrollments), not the platform-wide identity handoff. The platform-tier rule "API routes authenticate via the `Authorization: Bearer <jwt>` header" stands as a forward-looking discipline; F-Q4c surfaces the gap.
+- **F-Q4c — No `/api/v1/auth/*` or `/api/v1/profile/*` routes exist; current contract surface is the Supabase Auth substrate via SDK.** Cold derivation §3 listed six API operations (`signIn`, `signUp`, `signOut`, `refreshSession`, `getCurrentUser`, `updateProfile`) as conventional API endpoints. None exist. Identity is consumed by clients via the Supabase SDK directly against the Supabase Auth substrate. **Step 3 disposition:** §3 reframes the **current** contract surface as (i) Supabase Auth substrate operations consumed via SDK from Surfaces, (ii) `auth.uid()` SQL projection (canonical), (iii) cookie-refresh middleware (latent per F-Q4b). The six `/api/v1/auth/*` operations get demoted from "current contract surface" in §3 to a **directional future state** entry in §7 Stability posture, with a FEAT-PC2 pickup candidate "wrap Auth substrate behind `/api/v1/auth/*` per the platform-tier `Authorization: Bearer` rule" placed in the Step 3 pickup list. See PW-2 for the methodology observation this finding compounds against (third shape beyond latent/delta).
+
+#### Class 3 — Cross-entity findings (capability or surface belongs elsewhere)
+
+*Carry-forward channel for findings adjacent to secrets / credentials substrate routes via the Phase-2 close-out / candidate-ADR / tier-shape-revision channel established at PC-1 Finding #4 — not a separate escalation path. None of the findings below are credentials-adjacent; the channel is named for completeness.*
+
+- **F-Q4b — Cookie-refresh middleware authored but not wired (Next.js auto-discovery).** The Next.js convention requires a file literally named `middleware.ts` (or `src/middleware.ts`) at repo root, exporting a function named `middleware` (or default export). Neither exists. Instead, `proxy.ts` at repo root mimics the middleware shape exactly — same `matcher` config, calls `updateSession(request)` from `lib/supabase/middleware.ts` — but is named `proxy.ts` with function `proxy`. Next.js does NOT auto-discover this. Cookie-refresh-per-request is therefore **coded but not running** as Next.js middleware. **Classification (latent-deliberate vs delta-bug) deferred to Step 3 pending `git log` of `proxy.ts` creation.** If renamed deliberately, the finding is latent (intentional disable; reason TBD); if created from a template with the convention missed, the finding is delta-bug. F-Q4a and F-Q4c read against the *intended* canonical handoff (cookies + middleware) and are unaffected by the disposition of this question.
+- **C3-1 — `handle_new_user()` crosses the PC-2 / PC-3 seam.** The trigger does much more than materialize a profile: it (i) inserts into `public.users` (PC-2), (ii) creates a personal group in `public.groups` (PC-3), (iii) inserts the user-group link, (iv) creates self-membership, (v) instantiates a "Myself" role on the personal group, (vi) enrolls the user in the FringeIsland Members system group, (vii) claims any pending invitations addressed to the email. The PC-2 invariant "no User exists without a Profile" therefore composes today with a PC-3 invariant "no User exists without personal group + memberships + Myself role." **Step 3 disposition (per bounce):** accept-seam at this spec; §6 documents the partition (PC-2 owns User-lifecycle initiation; PC-3 owns membership / role cascade response); §5 documents that today's `handle_new_user` is a seam-trigger executing both sides transactionally and preserving the composed invariant. **Pickup-list candidate:** FEAT-level "factor `handle_new_user` into PC-2 emission + PC-3 cascade response per ADR-U016 cascade-spec discipline." Carry-forward to PC-3 derivation as primary cascade-response work.
+- **C3-2 — `personal_group_id UUID` is a PC-3-scope column on the PC-2 `users` table.** The `users` table holds an FK to PC-3 `public.groups`, materialized by C3-1's trigger. Per §4 dependency chain, PC-2 → PC-3 dependencies are forbidden (chain is upward-only). The presence of `personal_group_id` on `users` is therefore a structural inversion: PC-2 schema has knowledge of PC-3 schema. **Step 3 disposition:** include in the same factoring candidate as C3-1 (the column is the seam-marker; factoring the trigger likely also relocates or eliminates the column, possibly into a join table owned by PC-3). Carry-forward to PC-3 derivation.
+- **C3-3 — Role-name vocabulary lives in PC-3, not PC-2.** Cold derivation §2 / §6 placed the four role-name vocabulary (Steward, Guide, Member, Observer) at PC-2 as Identity vocabulary, with PC-3 owning resolution. Disk: no enum or named-constant table for role names in PC-2; instead, role names are TEXT values in PC-3's `role_templates` table (e.g., `'Steward Role Template'`, `'Myself'`). **Step 3 disposition:** §2 Concepts removes the "Role-name vocabulary" entity row, §3 removes the "Role-name vocabulary" schema-level contract bullet, §6 removes the "Role names = PC-2 vocabulary" sentence; all of those move to PC-3. The sub-tier `docs/platform/core/CLAUDE.md` temporary anchor (which states "the four FringeIsland roles ... live in Platform Core's Identity area (PC-2)") needs revision: the four roles + `has_permission()` should be anchored at PC-3, not PC-2. Carry-forward to PC-3 derivation. Adjudicates §8 Q3.
+- **C3-4 — `has_permission()` not built yet — latent in PC-3, not PC-2.** Cold derivation followed ADR-U007 to place `has_permission(user_id, group_id, permission_name)` in PC-3 (per the §6 partition statement). Disk: no such function exists. RLS uses `auth.uid()` directly (96 refs); RBAC is realized by direct triggers like `prevent_last_leader_removal()`. **Step 3 disposition:** flag as **latent in PC-3** — the ADR-U007 pattern is not yet implemented; the cold-derivation partition statement holds at the spec level (the function *will* live in PC-3 when built) but disk currently has neither PC-2 nor PC-3 instantiation. No Step 3 edit to PC-2 §6 needed beyond noting the latency in the carry-forward. Carry-forward to PC-3 derivation as a primary capability to specify.
+
+#### Phase-wide observations (passing — not Class 1/2/3 against PC-2)
+
+- **PW-1 — Schema-predates-partition.** A recurring class of finding emerged at PC-2: existing schema entities (the `users` table with `personal_group_id`, the `handle_new_user` trigger, the PC-3 `role_templates` table) appear to have been built before the PC-1 / PC-2 / PC-3 / PC-4 partition was articulated, and therefore don't map cleanly onto cold-derivation's cuts. The shape is consistent: entities-with-foreign-area-fields (C3-2: `personal_group_id` on `users`), triggers-crossing-seams (C3-1: `handle_new_user`), vocabulary-in-wrong-area (C3-3: role names in PC-3 not PC-2). This is **distinct from PC-1 Finding #4** (which was substrate-tier confusion: app-tier code adjacent to credentials misread as database-tier substrate). PW-1 is **temporal-shape mismatch**: the partition is newer than the schema. **Provisional status:** recorded against PC-2. Promotion expected at PC-3 given that C3-1, C3-2, C3-3, C3-4 all carry-forward there with the same temporal-shape signature; PW-1 functions as the pre-staged finding for that Phase 2 close-out promotion. **Add as 4th A-candidate to the program-level ledger:** "Schema-predates-partition as recurring finding class."
+- **PW-2 — Methodology candidate: "speculative" as a third shape beyond latent and delta.** Watch flag (b) carried forward from PC-1 named the latent-vs-delta distinction. F-Q4c surfaces a third shape that fits neither cleanly: cold-derivation hypothesized that PC-2 owns six `/api/v1/auth/*` operations as the contract surface; disk supports neither presence (latent: "the spec names what's intended but not yet built — the hypothesis is correct, just not yet executed") nor revision (delta: "the cold-derived shape is wrong; here's the corrected shape"). Instead, the disk evidence shows a *different* contract surface (Supabase Auth substrate via SDK, not PC-2 API routes) and the cold-derivation hypothesis is **directional** — it may yet be built and is appropriate as a future state, but it is not the current contract surface, nor is it a delta correction to one. Call this third shape **speculative**: "cold-derivation hypothesis disk doesn't currently support, framed as directional future state, with FEAT-level pickup candidate to actually realize it." **Compounding observation against A-candidate #1** (latent-vs-delta distinction). If PC-3 derivation surfaces the same shape, promote at Phase 2 close-out — the latent/delta dichotomy may need a third bucket.
+- **PW-3 — Step 3 sequencing.** Per bounce 5, Step 3 adjudication priority is the Q4 cluster (F-Q4a + F-Q4b + F-Q4c) — the most consequential edit pass, entity-internal reshaping of §3 and §6. Q1 (Journal) is L2-line altitude and adjudicates separately at higher altitude (escalation to `docs/platform/core/README.md` revision rather than a spec-internal §-edit). Q5 / Q2 / Q3 (resolved by C3-1, C2-1, C3-3 respectively) are §5 / §6 edits at smaller scope and apply after the Q4 cluster lands. C2-2 (`current_user_profile()` back-out) is a one-line disposition during the §3 Q4-cluster reshape. C3-4 (`has_permission()` latent in PC-3) requires no PC-2 §-edit beyond the carry-forward.
+
+### Step 3 — Adjudication outputs
+
+*Step 3 landed 2026-05-04 in the same session as Steps 1 and 2 (Phase 2 / entity 2). Sequenced per PW-3: Plan A (Q4 cluster reshape) committed first; Plans B + C + D batched for the remaining entity-internal edits and the §L3 outputs below. README revision committed as a separate third commit. §1, §4, §7 (Stability posture rows other than Deprecation pathway) are unchanged by Step 3; the Q4 cluster reshape touched §3 and §6 plus §7's deprecation row + directional subsection. Plan B touched §2 (Journal entity-row drop), §8 (Q1 adjudicated), L3 capabilities table (Journal row drop). Plan C touched §2 (Profile row update + Role-name row drop), §5 (rewrite for C2-1 / C3-1 / C3-2 / C3-3 disposition), §8 (Q2 / Q3 / Q4 / Q5 / Q6 / Q7 updates). Plan C had no §6 edits — Plan A's §6 rewrite absorbed the C3-1 / C3-3 / C3-4 dispositions.*
+
+#### Pickup lists
+
+*Each pickup is keyed by receiving entity. Receiving entities: PC-3 Organisation (next in chain — primary recipient), PC-4 Governance (Phase 2 entity 4), Domain Service receiving Journal (TBD pending Domain Service scope-pinning), and program-level (the `doc-health-check` skill or the next cycle retrospective).*
+
+##### Pickup → PC-3 Organisation
+
+PC-3's cold derivation should treat the items below as Step 1 inputs alongside its own L2 line ("Groups, memberships, roles, permissions" in `docs/platform/core/README.md`).
+
+1. **Factor `handle_new_user` per ADR-U016 (FEAT-level pickup candidate).** Today's seam-trigger (per Step 2 finding C3-1, documented in §5 and §6) executes both PC-2 user-row INSERT and PC-3 cascade work (personal group, memberships, "Myself" role, FringeIsland Members enrollment, pending-invitation claim) transactionally. Factoring candidate: PC-2 emits a `User-created` cascade event; PC-3 listens and runs the cascade response in a separate transaction (or tightly-coupled subsequent transaction) with cascade-spec-first discipline per ADR-U016. PC-3 owns whether the factoring is accepted, deferred (accept-seam-permanently with the partition documented bilaterally), or escalated as an ADR.
+2. **Relocate `personal_group_id UUID` off `public.users` (companion to item 1).** Today's `users.personal_group_id` is a PC-2 column with FK to PC-3 `public.groups` — a structural inversion of the §4 dependency chain. The factoring candidate likely also relocates this column, possibly into a join table owned by PC-3 (e.g., `personal_group_memberships`) or onto the personal group itself. PC-3 derivation should pin which.
+3. **Role-name vocabulary canonicalization.** The four FringeIsland role names (Steward, Guide, Member, Observer) live on disk as TEXT values in PC-3's `role_templates` table — Step 2 finding C3-3. PC-2 cold derivation initially placed them at PC-2 (per the sub-tier `docs/platform/core/CLAUDE.md` temporary anchor); Step 2 disk evidence settles the partition at PC-3. PC-3 derivation should: (a) document the role-name vocabulary as a PC-3 §2 / §3 / §5 concept; (b) determine the canonical artifact shape (TEXT enum, PG ENUM, named-constant table); (c) note that the platform-tier "never hardcode role names" rule consumes this canonicalization.
+4. **Implement `has_permission(user_id, group_id, permission_name)` per ADR-U007 (latent capability).** Step 2 finding C3-4: the function does not exist on disk; RLS uses `auth.uid()` directly with policy-specific logic; RBAC realized via direct triggers like `prevent_last_leader_removal()`. PC-2's cold derivation followed ADR-U007 and placed `has_permission()` at PC-3. PC-3 derivation should §3-list this as a primary capability, §5-pin its location and signature, and §8-flag whether the ADR-U007 pattern is fully implemented or whether the existing direct-RLS pattern stands as alternative.
+5. **Sub-tier `docs/platform/core/CLAUDE.md` temporary-anchor revision.** The current sub-tier file states: "The four FringeIsland roles and `has_permission()` live in Platform Core's Identity area (PC-2)." Step 2 findings C3-3 + C3-4 settle the partition at PC-3, not PC-2. When PC-3's L2 spec is authored, the sub-tier CLAUDE.md anchor should migrate to PC-3's entity-level CLAUDE.md per the cascade policy in root `CLAUDE.md`. **Routing:** PC-3 derivation includes the sub-tier-CLAUDE-revision in its commit batch.
+6. **L2-line altitude pre-stress-test.** PC-3's L2 line ("Groups, memberships, roles, permissions") has not yet been stress-tested for altitude mix. PC-2's experience: the Journal item in PC-2's L2 line was a domain-scope feature mistakenly named at Platform Core. PC-3 cold derivation should explicitly stress-test its L2 line for altitude mix at Step 1 and surface the result in §L3 sources-status — *Are "Groups, memberships, roles, permissions" all domain-agnostic identity-organization primitives, or does any read as domain-scope?* If any item reads as domain-scope, surface as L2-line-revision candidate per the watch-flag-(b) discipline (PW-2).
+7. **Phase-wide observation PW-1 promotion-watch.** PW-1 ("schema-predates-partition") is recorded provisionally at PC-2 and pre-staged for promotion at PC-3. PC-3 derivation will likely surface the same shape: existing schema entities (`groups`, `group_memberships`, `group_roles`, `user_group_roles`, `role_templates`, the `prevent_last_leader_removal()` trigger) appear to predate the PC-1/PC-2/PC-3/PC-4 partition. If PC-3 confirms recurrence, promote PW-1 to a named program-level pattern at Phase 2 close-out. **Disposition cue:** record at PC-3 §L3 sources-status block whether PW-1's signature is present in PC-3 disk evidence.
+8. **Phase-wide observation PW-2 promotion-watch.** PW-2 ("speculative" as third shape beyond latent and delta) was surfaced at PC-2's F-Q4c. PC-3 derivation will likely surface speculative cold-derivation hypotheses too (probable candidates: PC-3 hypothesizing API endpoints for groups/memberships that don't exist on disk). If recurrence appears, promote at Phase 2 close-out — A-candidate #1 (latent-vs-delta distinction) gains a third bucket.
+
+##### Pickup → PC-4 Governance
+
+1. **Q6 — DeusEx user-impersonation mechanism (cross-area Step-1 candidate question).** Does PC-4 DeusEx ever issue an authenticated session as another User (impersonation for support / moderation), or does it only operate via SECURITY DEFINER bypass of RLS? PC-2 owns the session-issuance path; PC-4 owns the authority to invoke it. If impersonation is a real operation, the partition needs to be specified jointly. PC-4 derivation should §1 / §6 address this.
+
+##### Pickup → Domain Service receiving Journal (TBD)
+
+*Final assignment pending Domain Service scope-pinning. Candidate services: Content (if Journal is content-creation-shaped), Intelligence (if Journal is reflective-AI-shaped), or a new dedicated Journal service. Routing decision to be made when Phase 4 Domain Service derivation begins.*
+
+1. **Journal capability scope and ownership.** PC-2 cold derivation read Journal as a domain-scope feature (FringeIsland-specific reflective practice tied to the "Who am I? What do I want? How do I get there?" vision questions). Step 2 confirmed zero Journal substrate on disk (no migration, no API route, no code reference). The receiving Domain Service should: (a) define Journal as a first-class capability with its own §3 contract surface; (b) document the FK relationship to `public.users` (PC-2 publishes the `user_id` contract); (c) address the five verticals per ADR-U002 (Privacy is load-bearing — Journal entries are FIM data; Administration cascade-spec for User soft-delete is mandatory per ADR-U016).
+2. **L2-line revision in `docs/platform/core/README.md`.** The current line "Identity (PC-2) — Auth, profiles, sessions, Journal" was the trigger for this finding. Revised line per Step 3 commit: "Identity (PC-2) — Authentication, sessions, profiles, user_id contract." When the receiving Domain Service is named, that service's README inventory line gains "Journal" (or its renamed equivalent).
+
+##### Pickup → Program-level (next cycle retrospective or `doc-health-check` skill)
+
+1. **A-candidate #4 — "Schema-predates-partition" as recurring finding class.** Per PW-1. Provisional at PC-2; promote at PC-3 if signature recurs. Adds to the program-level A-candidate ledger.
+2. **A-candidate #1 compounding observation — "speculative" as a third shape beyond latent and delta.** Per PW-2. Compounds against the existing latent-vs-delta distinction; if PC-3 surfaces the same shape at F-Q4c-equivalent, promote at Phase 2 close-out.
+3. **F-Q4b research-spike (cookie-refresh middleware wiring) — assign owner at next cycle retrospective; default to PC-2 backlog if not picked up. Cross-reference: Items not in pickup list, item 1.**
+4. **A-candidate #5 — Multi-Edit parallel gates may display prompts sequentially in the harness UI, creating a false-positive emission-failure signal under pre-emit count discipline. Real emission failures (PC-2 Step 3 attempts 1+2) and false-positive UI-sequencing declines (attempt 3) are distinct failure modes; both share the same countermeasure (sub-batch-of-1). Promote at PC-3 if either shape recurs.**
+
+#### Items not in any pickup list
+
+1. **F-Q4b research-spike — does Next.js 16 auto-discover `proxy.ts` as middleware, and was the 2026-01-21 migration premise correct?** Two-part outcome required: (a) is session-refresh wired today; (b) was the migration premise (commit `68e544a`, "Migrated middleware.ts to proxy.ts for Next.js 16 compatibility") correct. Spike type: Next.js documentation lookup + runtime test. **Owner: routed to program-level pickup for next-cycle retrospective assignment.** Consequences if (a) = no: cookie-refresh is silently disabled at runtime; F-Q4a's "canonical handoff" claim holds in code-shape but not at runtime; FEAT-PC2 candidate to rename `proxy.ts` → `middleware.ts` (or wire `proxy.ts` via an alternative mechanism if Next.js 16 supports it). Consequences if (b) = no: the rename was an oversight; document the correction. Consequences if (a) = yes and (b) = correct: latent-deliberate stands; document the convention shift in PC-1's API-routing notes if appropriate.
+2. **Q7 — Account lifecycle cascades latent.** Soft-delete, platform-exit, and account-confirmation transition cascade-categories are deferred to a future PC-2 revision when User-lifecycle FEAT-PC2 work begins. Cascade-spec template-fill happens at FEAT-PC2 maturity per ADR-U016; PC-2 §8 carries Q7 forward as latent.
+3. **Q2 partial-adjudication — Profiles depth boundary full ratification.** Identity-scope column list partially confirmed at Step 2 (C2-1) but full ratification depends on Domain Service scope-pinning (Phase 4+). PC-2 §8 carries Q2 forward as partially-adjudicated.
+
+#### Carry-forward to receiving entity authors
+
+*The carry-forward blocks below are written for the receiving entity's cold derivation to read first as Step 1 input. Each block is self-contained; reading PC-2's full spec is not required.*
+
+##### To PC-3 Organisation author (next entity in chain)
+
+PC-2 derivation surfaced four cross-entity findings that are Step 1 inputs for PC-3:
+
+1. **Today's `handle_new_user` AFTER INSERT trigger on `auth.users` is a PC-2 / PC-3 seam-trigger.** It executes user-row INSERT (PC-2), then in the same transaction creates a personal group in `public.groups` (PC-3), inserts the user-group link, creates self-membership, instantiates a "Myself" role on the personal group, enrolls the user in the FringeIsland Members system group, and claims any pending invitations addressed to the email. The composed invariant "no User exists without a user-row in `public.users` + personal group + memberships + Myself role" is preserved transactionally. PC-2 accepts the seam at its spec; PC-3 should decide whether to: (a) accept the seam permanently and document the partition bilaterally; (b) factor into PC-2 emission + PC-3 cascade response per ADR-U016 (the factoring pickup); or (c) escalate as an ADR if the factoring touches the §4 dependency chain semantics.
+2. **`public.users` carries a `personal_group_id UUID` column today** — a structural inversion of the strict-upward §4 chain (PC-2 schema with FK to PC-3 `public.groups`). PC-3 derivation should specify whether the factoring relocates this column (companion to finding 1), and if so, into what artifact (join table on PC-3 side, attribute on the personal group, etc.).
+3. **The four FringeIsland role names (Steward, Guide, Member, Observer) live in PC-3, not PC-2.** Disk evidence: TEXT values in `role_templates` table, no PG ENUM. PC-2 had originally cold-derived role-name vocabulary as a PC-2 concept (per the sub-tier `docs/platform/core/CLAUDE.md` temporary anchor); Step 2 disk evidence settles the partition at PC-3. PC-3 derivation should §2 / §3 / §5 the role-name vocabulary as PC-3-owned, determine the canonical artifact shape, and address ADR-U007 in §6.
+4. **`has_permission(user_id, group_id, permission_name)` does not exist on disk; ADR-U007 pattern is latent in PC-3.** RLS today uses `auth.uid()` directly with policy-specific logic; RBAC realized via direct triggers (e.g., `prevent_last_leader_removal()`). PC-3 derivation should §3-list `has_permission()` as a primary capability, pin its signature and location in §5, and §8-flag whether ADR-U007's permission-resolution pattern is implemented in full or whether the existing direct-RLS pattern stands as the alternative.
+
+**Two phase-wide watches** PC-3 should record at its §L3 sources-status block:
+- **PW-1 (schema-predates-partition).** PC-2 surfaced this as a recurring class of finding. PC-3's existing schema (groups, memberships, roles, permissions tables; the `prevent_last_leader_removal()` trigger; etc.) is highly likely to show the same temporal-shape mismatch. If PC-3 confirms recurrence, promote PW-1 to a named program-level pattern at Phase 2 close-out.
+- **PW-2 (speculative as third shape).** PC-2 surfaced "speculative" as a candidate third shape beyond the latent-vs-delta distinction. If PC-3 cold-derivation produces hypotheses that disk doesn't currently support but are appropriate as directional future state (likely candidates: PC-3 hypothesizing API endpoints for groups/memberships), tag them as speculative and record. Promote at Phase 2 close-out if recurrence confirms.
+
+**Sub-tier `docs/platform/core/CLAUDE.md` revision** belongs in PC-3's commit batch when its L2 spec is authored: the temporary anchor naming PC-2 as the home of the four roles + `has_permission()` should migrate to PC-3's entity-level CLAUDE.md per the cascade policy.
+
+**L2-line discipline** — PC-3's L2 line in `docs/platform/core/README.md` is "Groups, memberships, roles, permissions." PC-2's L2 line was revised at Step 3 to drop a misplaced domain-scope item (Journal). PC-3 derivation should stress-test its own line for the same shape — are all four items domain-agnostic identity-organization primitives, or does any item read as domain-scope?
+
+##### To PC-4 Governance author (Phase 2 entity 4)
+
+PC-2 surfaced one cross-entity question for PC-4 derivation:
+
+**DeusEx user-impersonation mechanism.** Does PC-4 DeusEx ever issue an authenticated session as another User (impersonation for support / moderation), or does it only operate via SECURITY DEFINER bypass of RLS? The session-issuance path lives in PC-2 (sign-in / sign-up / session-refresh); the authority to invoke session-issuance-as-another-user lives in PC-4. If impersonation is a real operation, the partition is bilateral: PC-2 publishes a session-issuance-as-another-user primitive consumed only by PC-4; PC-4 publishes the authority and audit-trail discipline. If impersonation is not a real operation (PC-4 only bypasses RLS via SECURITY DEFINER without session impersonation), document the absence so future Surfaces don't assume otherwise. PC-4 derivation should §1 (Purpose) and §6 (Auth & authz) address this question.
+
+##### To Domain Service receiving Journal (TBD — Content / Intelligence / new service)
+
+The receiving Domain Service author should treat Journal as a first-class capability that was originally mis-located at Platform Core's Identity area:
+
+**Journal scope and ownership.** Journal is the FringeIsland-specific reflective practice tied to the vision questions ("Who am I? What do I want? How do I get there?"). PC-2 cold derivation read Journal as a domain-scope feature, and Step 2 confirmed zero Journal substrate on disk. The receiving Domain Service should: (a) define Journal as a first-class capability with its own §3 contract surface; (b) document the FK relationship to `public.users` (PC-2 publishes the `user_id` contract); (c) address the five verticals per ADR-U002 — Privacy is load-bearing (Journal entries are FIM data), Administration cascade-spec for User soft-delete is mandatory per ADR-U016, Notifications likely apply (Journal-prompt triggers, milestone reminders), Observability standard, Transactions probably none.
+
+**L2-line cross-reference.** PC-2's revised L2 line in `docs/platform/core/README.md` no longer names Journal. The receiving Domain Service's README inventory line should add Journal (or its renamed equivalent) when assigned.
+
+---
+
+## L4 — Feature inventory summary
+
+*L4 authorship. Reconciliation output against L3's capability inventory. Updated whenever a `FEAT-PC###.md` file under `docs/platform/core/features/` that this area owns a capability for is created, advances in maturity, or is deleted. Maintenance discipline tracked as G-21.*
+
+### Summary
+
+*To be authored at L4 reconciliation. Cold-derivation Steps 1–3 do not populate L4.*
+
+| Capability (from §L3) | Feature spec | Maturity | Notes |
+|---|---|---|---|
+| ... | ... | ... | ... |
+
+### Capabilities without specs
+
+*To be authored.*
+
+### Features without capabilities
+
+*To be authored.*
+
+---
+
+*See `.claude/skills/ecosystem-decomposition/SKILL.md` for the authoritative mechanics of each level. See `docs/platform/CLAUDE.md` for the platform-tier obligations this template encodes.*
