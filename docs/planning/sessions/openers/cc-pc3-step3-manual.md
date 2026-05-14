@@ -30,7 +30,7 @@ Then verify against disk per Tripwire #4:
 - ADRs at `docs/architecture/decisions/` — confirm ADR-U006, ADR-U007, ADR-U018 NOT yet amended (still at pre-Step-3 state).
 - **PC-2 spec un-amended on disk** (no Experiment A substance findings folded in; that's post-Experiment-B amendment work). **If this verification fails, Experiment B comparison-phase is compromised — pause and surface.**
 - **OLDFEAT integrity check.** Pre-refactor feature archive at `docs/TMP/OLDFEAT/` remains unread on the manual side. If `git log` or `git diff` against that directory indicates accidental reads / modifications since the prior session, pause and surface — the bouncing-partner blindness invariant is at stake.
-- This session-opener file existence (`cc-pc3-step3-manual.md`) and the predecessor bridge file existence (`docs/planning/sessions/2026-05-13_02_-_PC3-STEP2-LANDED.md`).
+- This session-opener file existence (`docs/planning/sessions/openers/cc-pc3-step3-manual.md`) and the predecessor bridge file existence (`docs/planning/sessions/2026-05-13_02_-_PC3-STEP2-LANDED.md`).
 
 ## Work scope
 
