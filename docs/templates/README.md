@@ -38,6 +38,10 @@ docs/templates/
 ├── retrospective.md                       ← cycle or wave retrospective
 ├── session-bridge.md                      ← session artifact for continuity
 │
+│   ── Session openers ──
+├── autonomous-l1-l3-session-opener.md     ← autonomous L1→L3 entity-derivation run
+├── spec-amendment-session.md              ← scope-locked fold-back into an existing spec
+│
 │   ── Research ──
 └── research-spike.md                      ← time-boxed investigation
 ```
@@ -65,6 +69,8 @@ docs/templates/
 | [`cycle-plan.md`](./cycle-plan.md) | New build cycle starts | `../planning/cycles/cycle-current.md` |
 | [`retrospective.md`](./retrospective.md) | Cycle or wave retro | `../planning/retrospectives/retro-{scope}-{date}.md` |
 | [`session-bridge.md`](./session-bridge.md) | Planning/design session with Claude | `../planning/sessions/YYYY-MM-DD_-_{TOPIC}.md` |
+| [`autonomous-l1-l3-session-opener.md`](./autonomous-l1-l3-session-opener.md) | Authoring a per-instance opener for an autonomous CC run of L1→L3 derivation on a single entity | `../planning/sessions/openers/cc-{entity-short-name}-autonomous.md` |
+| [`spec-amendment-session.md`](./spec-amendment-session.md) | Authoring a per-instance opener for a scope-locked fold-back of pre-enumerated findings into an already-derived canonical spec | `../planning/sessions/openers/cc-{spec-short-name}-amendment.md` |
 
 ---
 

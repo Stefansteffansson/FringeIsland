@@ -2,7 +2,7 @@
 
 **Purpose:** track every entity slated for autonomous L1→L3 derivation, plus phase landmarks, plus amendment sessions that fold deferred Experiment A + Experiment B findings into canonical specs. Updated at each entity-entry / amendment-entry (mark `In flight`) and entity-close / amendment-close (mark `Done`, link to bridges, record §13 + template revision status where applicable).
 
-**Canonical template:** [`docs/templates/autonomous-l1-l3-session-opener.md`](../../../templates/autonomous-l1-l3-session-opener.md).
+**Canonical templates:** [`docs/templates/autonomous-l1-l3-session-opener.md`](../../../templates/autonomous-l1-l3-session-opener.md) for autonomous L1→L3 runs; [`docs/templates/spec-amendment-session.md`](../../../templates/spec-amendment-session.md) for amendment sessions.
 
 **Procedure:** see [`README.md`](./README.md) for the authoring + execution workflow.
 
@@ -82,13 +82,13 @@
 
 ## Amendment sessions
 
-*Per-spec amendment sessions fold deferred Experiment A + Experiment B findings into canonical specs. Distinct work shape from autonomous L1→L3 runs — known scope (the findings to fold are enumerated in advance), one spec file per session, commit shape mirrors PC-3 Step 3 (spec amendment + ADR amendments where Q-resolutions warrant + closing bridge). Provenance citations are mandatory: each amendment commit names the source bridge (Experiment A bridge `2026-05-04_03_-_…`, Experiment B comparison-phase bridge `2026-05-14_03_-_…`, or PC-3 closing bridge `2026-05-14_02_-_…`) that surfaced the finding.*
+*Per-spec amendment sessions fold deferred Experiment A + Experiment B findings into canonical specs per the [`docs/templates/spec-amendment-session.md`](../../../templates/spec-amendment-session.md) template. Distinct work shape from autonomous L1→L3 runs — known scope (the findings to fold are enumerated in advance), one spec file per session, three-phase shape (fold-back → Q-resolution + L3 Step 3 → ADR amendments) mirroring PC-3 Step 3 precedent. Provenance citations are mandatory: each amendment commit names the source bridge (Experiment A bridge `2026-05-04_03_-_…`, Experiment B comparison-phase bridge `2026-05-14_03_-_…`, or PC-3 closing bridge `2026-05-14_02_-_…`) that surfaced the finding.*
 
-| Spec | Status | Pending findings | Sequenced | Closing bridge |
-|---|---|---|---|---|
-| PC-2 Identity | **Next** | Experiment A Group A (D1+X2, D2, D4) + Group B (C1.6, X4, X5 reframe) + PC-3 Q6 display-name coupling + Experiment B D3 multi-role memberships if PC-2-relevant | Before PC-4 entry | (to author) |
-| PC-1 Infrastructure | Pending | X5 two-tier centralization reframe per PC-3 §L3 Step 2 C3-2 + Finding #4 Phase-2 close-out adjudication preparation | After PC-4 entry | (to author) |
-| OLDFEAT reconciliation | Pending | 18 pre-refactor artifacts in `docs/TMP/OLDFEAT/` — reconcile against current canonical specs; absorb-and-delete per G-22 if applicable | Anytime; not blocking | (to author) |
+| Spec | Status | Pending findings | Sequenced | Closing bridge | §13 captured | Template revision |
+|---|---|---|---|---|---|---|
+| PC-2 Identity | **Next** | Experiment A Group A (D1+X2, D2, D4) + Group B (C1.6, X4, X5 reframe) + PC-3 Q6 display-name coupling + Experiment B D3 multi-role memberships if PC-2-relevant | Before PC-4 entry | (to author) | (pending) | (pending) |
+| PC-1 Infrastructure | Pending | X5 two-tier centralization reframe per PC-3 §L3 Step 2 C3-2 + Finding #4 Phase-2 close-out adjudication preparation | After PC-4 entry | (to author) | (pending) | (pending) |
+| OLDFEAT reconciliation | Pending | 18 pre-refactor artifacts in `docs/TMP/OLDFEAT/` — reconcile against current canonical specs; absorb-and-delete per G-22 if applicable | Anytime; not blocking | (to author) | (pending) | (pending) |
 
 *Three additional homes for findings already exist and are not tracked here:*
 - *Carry-forward priors in the template's §7 (P-O1, D7, X3, X5, Finding #4, multi-role memberships D3 as Step 1 watch) — already absorbed into the template; no separate amendment work needed.*
@@ -103,3 +103,4 @@
 |---|---|
 | 2026-05-14 | Initial authoring. Captures PC-1/PC-2/PC-3 + Hub as Done (pre-template); marks PC-4 as Next. |
 | 2026-05-14 | Add Amendment sessions table (PC-2 / PC-1 / OLDFEAT reconciliation). PC-4 status moved from Next to "Pending PC-2 amendment" — PC-2 amendment session is the new Next item. Top-of-file purpose statement broadened to cover both autonomous L1→L3 runs and amendment sessions. |
+| 2026-05-15 | Amendment sessions table gains §13 captured + Template revision columns mirroring the autonomous-runs tables; PC-2 / PC-1 / OLDFEAT rows seeded `(pending)` in both. Intro paragraph cites the new [`spec-amendment-session.md`](../../../templates/spec-amendment-session.md) canonical template and the three-phase work shape. Top-of-file Canonical template line broadened to name both templates. |
