@@ -644,6 +644,161 @@ These aren't competing modes — they can exist alongside each other, or even wi
 
 ---
 
+## 23. "Alternative Reality" as a logbook term; ARG and analog-horror reference set
+
+**Statement:**
+> We shall also take into our log book of ideas the term "Alternative Reality". Next to this I'd like to mention a few "games" or puzzles like: I love bees / The Beast (2001) / Year Zero (2007) / The Art of the Heist (2005) / Portal 2 ARG (2010) / Cicada 3301 / The Sun Vanished / Local58. These alternative realities blurs the line between reality and fiction which can be an interesting twist to our FringeIsland universe.
+
+**Held:**
+
+**New logbook term: "Alternative Reality".**
+- Added to the idea logbook as a named concept for FringeIsland.
+- The unifying property of the cited references: they blur the line between reality and fiction.
+- This blurring is flagged as an interesting twist for the FringeIsland universe — resonant with the parallel-reality framing (Statements 10-11) and the geocaching/hidden-layer feeling (Statement 10).
+
+**The reference set (Alternate Reality Games / ARGs and adjacent web-mysteries):**
+
+These split into two distinct families, and the distinction matters for FringeIsland.
+
+*Family 1 — authored ARGs (the 42 Entertainment lineage and kin):* professionally designed, narratively rich, collaborative experiences with hidden "puppet-masters" running the story.
+- **The Beast (2001)** — the ARG widely credited as the first of the form, created by Microsoft's team (the group that became 42 Entertainment) to promote the film *A.I. Artificial Intelligence*. Established the template: a fiction distributed across real websites, phone numbers, and emails, solved collaboratively.
+- **I Love Bees (2004)** — 42 Entertainment, marketing Halo 2. A beekeeper's website apparently hacked by a fractured AI from the future; players solved puzzles, then answered ringing payphones at GPS coordinates to unlock an audio drama. Drew millions of participants. The benchmark for collective, real-world-threaded ARG storytelling.
+- **The Art of the Heist (2005)** — ARG marketing campaign (Audi A3 launch), built around a stolen car and an unfolding art-heist mystery played out across real and online spaces.
+- **Year Zero (2007)** — 42 Entertainment, built around the Nine Inch Nails concept album. A dystopian near-future (2022) seeded through hidden messages, leaked websites, and USB drives left at concerts. Notable for fiction emerging from physical artifacts in the real world.
+- **Portal 2 ARG (2010)** — Valve's pre-launch ARG ("Potato Sack"), tying a set of indie games and hidden content into a community puzzle-solving effort that ultimately advanced the Portal 2 release.
+
+*Family 2 — emergent / ambient web-mysteries and analog horror:* either genuinely unexplained, or fiction that seeps into the ordinary world without announcing itself as a game.
+- **Cicada 3301 (2012-2014)** — three rounds of extraordinarily hard puzzles posted under the name "3301", focused on cryptography, steganography, and internet anonymity. Stated intent: to recruit intelligent individuals. Authorship never confirmed; the 2014 puzzle remains unsolved. Genuinely mysterious rather than a marketing artifact.
+- **The Sun Vanished** — a social-media-native interactive fiction / ARG built around an apocalyptic premise (the sun disappears), unfolding through the feed of an ordinary person in real time.
+- **Local58** — Kris Straub's analog-horror series presented as the broadcast archive of a fictional local TV station. Ambient dread delivered through the texture of familiar media rather than overt puzzles.
+
+**Two opposite directions of reality-fiction blur:**
+- The authored ARGs (Family 1) pull the player *into* a constructed world — the player crosses toward the fiction.
+- The analog-horror / ambient mysteries (Family 2) seep fiction *out* into the player's ordinary world — the fiction crosses toward the player.
+- This maps onto FringeIsland's two topological registers (Statement 11):
+  - The **overlaid register** (FringeIsland layered onto the ordinary world via Gimbal) resembles analog-horror seepage — the fiction appearing in your real surroundings.
+  - The **beyond register** (places past the thresholds) resembles ARG immersion — the player crossing into a constructed elsewhere.
+- FringeIsland may want both directions deliberately: fiction that seeps in, and thresholds that pull through.
+
+**Observations:**
+- Several of these (The Beast, I Love Bees, Year Zero) share the 42 Entertainment lineage — a coherent design tradition worth studying as a body, not just individually.
+- The collaborative, collective-intelligence dimension recurs across the authored ARGs: thousands of strangers swapping pieces, co-creating understanding. This resonates with FringeIsland's group/community perspective (Statement 9 / Journey Studio's three modes) and the role of Dreamineers and Creators (Statement 13).
+- The payphone/GPS mechanic of I Love Bees is an early precursor to exactly the location-anchored, real-world-threaded experience the Gimbal enables (Statement 10).
+- Cicada 3301's "epiphany" framing and recruitment-by-puzzle structure resonate with FringeIsland's earned-access design (Statement 17: Whisp quality anchored to self-disclosure) — though FringeIsland's gate is self-disclosure rather than cryptographic skill.
+- Caution worth noting for the universe's ethics: some of these (Cicada especially) carry an air of secrecy, exclusion, and even unease. FringeIsland's stated warmth, voluntariness, and meta-safety (Statements 5, 19) mean the *aesthetic* of mystery can be borrowed without the *exclusionary or anxious* undertones.
+
+---
+
+## 24. AI as extension of human capability; dreaming sessions; bidirectional guard railing
+
+**Statements (across the AI-collaboration exchange):**
+> [On the ARG / AI-era opportunity:] FringeIsland with the support from AI could spin up new web sites and apps almost autonomous, change these when needed and integrate these elements with real world happenings and also happenings in the FringeIsland world.
+>
+> [Reframe:] What if we see it in the eyes of AI and humans collaborating in the creation process but with humans having the last say and also that AI will never jeopardize integrity, privacy nor the final creativity of the human brain? Seeing AI more as an extension to the human capabilities to speed things up but also to give additional perspectives and ideas based on a broad spectrum of inputs that humans would never manage themselves?
+>
+> [Additions:] In stage 1 / human first we can stage "dreaming sessions" where we facilitate ideation and the early steps of design thinking. I'd like to introduce the word "guard railing" as we need to make sure that humans are the one behind the wheels and because of this we need to pay attention to guard rails for AI.
+
+**Held:**
+
+**AI as extension of human capability (not as autonomous worker).**
+- The framing moves from a *quantity* question (how much autonomy does AI get?) to a *relationship* question (what is AI for?).
+- AI is an extension of human capability — the same category as a telescope extending sight or a calculator extending arithmetic. There is no autonomy dial to ration, because authorship was never delegated.
+- Two distinct functions:
+  - **Speed.** AI collapses production cost — the constraint the original ARG studios (Statement 23) never escaped. Spinning up sites, in-world documents, NPC voices, images, audio, micro-apps becomes hours, not months.
+  - **Breadth of perspective.** AI surfaces framings, ideas, and references from a span no individual human could hold — not to decide, but to *widen the choice set the human is choosing from*. The human's judgment stays sovereign; the space that judgment operates over grows.
+- Consistent with established principles: AI-first but human-first (Statement 13), constant change as steady state (Statement 13), the universe continuously made (Statement 13).
+
+**The last say is authorship, not a veto.**
+- Final say is not a safety control bolted on at the end. It is the *location of authorship*.
+- The creative act *is* the choosing, shaping, and rejecting. AI can generate a thousand candidate doors into the beyond-register; the Dreamineer deciding *this* door, here, feeling *this* way, is where the creativity lives.
+- Everything before the last say is raw material. The last say is the work.
+- This also makes rarity intrinsic (resolves the Statement-23 scarcity tension): nothing ships that a human did not choose to ship, so the hand-placed feeling survives by construction — the human placed it, with AI's help reaching further.
+
+**Protect the first thought, not only the last say.**
+- The subtle risk is not AI overriding the human. It is AI *anchoring* the human — showing seven good-enough options so the human's own harder-won eighth is never born.
+- Sequence matters: **human intent first → AI expansion second → human selection third.**
+- Maps onto Theory U (Statement 9): sensing and presencing *before* downloading existing patterns. The blank page does useful work; the originating intention must form before the field fills.
+
+**Dreaming sessions (the Stage-1 ritual that protects the first thought).**
+- In Stage 1 / human-first, FringeIsland stages **dreaming sessions**: facilitated ideation and the early steps of design thinking, done human-first, before the field is expanded by AI.
+- This is the operational guarantee behind "protect the first thought" — a protected space for human divergence before AI offers options.
+- Lands on existing foundations: the top-left of Theory U (open divergence before convergence) and design thinking's front end (empathise / define / ideate before prototype).
+- Vocabulary resonance: Dreamineers run dreaming sessions. Namer and named align.
+- Important nuance: a dreaming session is *facilitated*. AI may be present — but in a **facilitator** role (asking, prompting, holding structure) rather than a **generator** role (proposing content). AI-as-facilitator-of-human-divergence is categorically different from AI-as-source-of-options.
+
+**Guard railing (bidirectional, human-authored).**
+
+The driving metaphor: the human is behind the wheel (authorship, last say, first thought). "Guard railing" is the safety system around that. Crucially, it points in **two directions**, and both are needed:
+
+- **Rails that constrain AI (keep AI in its lane).**
+  - *Plain meaning:* stop AI from overstepping.
+  - AI does not act without human sign-off, does not touch privacy, does not ship unreviewed work, does not pre-empt the human's originating intention.
+  - Protects: human authorship, integrity, privacy.
+  - Analogy: rules that keep the passenger from grabbing the wheel.
+
+- **Rails that protect the human driver (catch the human before a drift becomes harm).**
+  - *Plain meaning:* on a real road, guard rails don't constrain the driver — they stop a moment of error or a sharp curve from becoming a fatal drop. Here, AI helps catch the *human's* blind spots, fatigue, or over-confidence.
+  - AI flags, for example: "this scene may land as genuinely frightening rather than playfully ambiguous"; "this real-world location raises a safety concern"; "you've shipped six dark episodes in a row — intentional?"
+  - Protects: the human's *own* stated values, served back to them — especially under scale and time pressure.
+  - Analogy: the rail on the cliff edge that saves the driver who is still, fully, the one driving.
+
+- **Why FringeIsland specifically needs both.** The universe deliberately includes a hostile pole — traps, betrayal, cold, death (Statement 12); deliberately blurs reality and fiction (Statement 23); deliberately pushes FIMs toward the growth zone (Statement 19). Each is a curve in the road where a well-meaning human author could drift from "productive challenge" into "actual harm." The second kind of rail is how AI helps humans honour the meta-safety and voluntariness commitments the humans themselves set.
+
+- **The rails are always human-authored.** If AI defined its own guard rails, authorship of the constraints would have been handed to the thing being constrained. Guard rails are a Stage-1 human-first artifact: humans decide what the rails are; AI then operates within them and helps enforce them, including back upon the humans.
+
+**The stage model emerging:**
+- **Stage 1 — human-first:** dreaming sessions (originating intention, divergence). Guard rails authored here.
+- **Stage 2 — AI expansion:** speed and breadth of perspective, within the human-authored rails.
+- **Stage 3 — human last say:** selection, shaping, authorship.
+- All three stages run inside the bidirectional, human-authored guard-rail system.
+
+**Sharpened principle:**
+> AI is an extension of human capability — it speeds production and widens the space of perspectives beyond what any individual could hold, while authorship, integrity, privacy, and the originating creative intention remain wholly human. The human's first thought opens the work; AI expands the field; the human's last say closes it. Guard rails — human-authored and bidirectional — keep AI in its lane and help the human stay on the road they themselves chose.
+
+**Note on potential graduation:** this principle (and the dreaming-session ritual and guard-railing concept) may be constitutional rather than merely exploratory. Candidate for graduation beyond the discovery log — possibly into VISION/MANIFESTO territory or a dedicated principles document — when reconciliation happens.
+
+---
+
+## 25. World-builder references: Mats Akerman (Den Svagiska Unionen) and Simon Stalenhag
+
+**Statement:**
+> [I'd like to add references to people who have developed their own worlds:] Mats Akerman - Den Svagiska Unionen / Simon Stalenhag
+
+**Held:**
+
+Two references to individuals who have each built an entire coherent world — and notably, both are Swedish artists, suggesting a cultural lineage FringeIsland sits within.
+
+**Mats Akerman — Den Svagiska Unionen.**
+- Swedish painter, draughtsman, and graphic artist (born 1956, Stockholm).
+- His entire body of work is built around one invented world: Den Svagiska Unionen — a fictional country/union rendered across painting, drawings, maps, comics, diagrams, tables, films, objects, and texts.
+- The world has specific named states, cities, transit systems, and history — internally consistent down to the smallest alley across countless paintings and maps.
+- Aesthetic: a vanished 1950s/60s — rain-wet streets, neon glow, sun filtered through a fluttering curtain. Familiar yet nowhere anyone has actually been.
+- Carried by a recurring protagonist, **Rocco Rivarossi**, who functions almost as a heteronym: at times the work is "signed" by Rocco, as if the character, not Akerman, is the author. The world is narrated through Rocco's eyes.
+- Akerman has an academic background (philosophy, history of ideas, art history, history), which gives the world historical resonance — including its own political factions and populist currents echoing our world's complexity.
+- Books: *Retur* (2003), *A la prima* (2010), *Sallsamheter i den Svagiska Unionen* (2020).
+- Telling detail: Akerman describes walking the streets of his own invented capital (Sveaborg / Primaborgen) and wondering what is around the corner — *discovering* his own world rather than only inventing it.
+
+**Simon Stalenhag.**
+- Swedish artist and worldbuilder, already named in FringeIsland project foundations as the inspiration for Universe Studio's "Stalenhag-inspired multimedia worldbuilding."
+- Known for paintings that overlay speculative/retro-futurist technology (robots, decaying megastructures, alternate-history machinery) onto utterly ordinary, recognisable Swedish 1980s/90s landscapes.
+- Works: *Tales from the Loop*, *Things from the Flood*, *The Electric State* — each a painted world with accompanying narrative text, later adapted (tabletop RPG, TV).
+- The signature move: the extraordinary sitting quietly inside the mundane. The uncanny is *in* the everyday field, not in a separate fantasy realm.
+
+**Why these two matter for FringeIsland (held analysis):**
+
+- **Both overlay the fantastical onto the familiar — exactly FringeIsland's overlaid register (Statement 10).** Stalenhag puts robots in the Swedish field; Akerman renders a 50s that feels like memory. Neither builds a wholly separate fantasy world divorced from the recognisable; both *haunt the ordinary*. This is precisely the "two worlds, same coordinates" structure (Statement 10) and the geocaching feeling of a hidden layer in familiar places.
+- **Both are single-author coherent worlds built across many media.** Painting + maps + text + objects + film (Akerman); painting + prose + adaptation (Stalenhag). This is the multimedia worldbuilding Universe Studio is meant to enable — but done by *one* deeply committed author, which sets a quality bar for what a Dreamineer's world could feel like.
+- **Akerman's Rocco Rivarossi prefigures the Whisp/NPC relationship.** A character through whom the world is seen and even "authored" — a being with enough autonomy that the creator follows him rather than only directing him. Resonates with the Whisp as the FIM's avatar (Statement 22) and with NPCs as genuine agents (Statement 15).
+- **Akerman "discovering" his own world** echoes the Statement-2 dynamic where the Whisp's curiosity reveals the human to themselves — here the worldbuilder is revealed to themselves through the world they build. Creation as discovery, not only construction.
+- **Both hold historical/emotional depth, not just surface aesthetic.** Akerman's academic grounding gives his world real socio-political texture; Stalenhag's melancholy gives his a genuine emotional register. Consistent with the hierarchy humans > stories > world (Statement 13) and the full tonal range (Statement 12) — the aesthetic serves something deeper.
+
+**Observations:**
+- Stalenhag is already canonical inspiration in project foundations (Universe Studio). Akerman is a new reference this session — and a strong one, arguably an even closer fit for the *whole-world-across-all-media* ambition than Stalenhag, given the maps, transit systems, named geography, and in-world authorship.
+- Both being Swedish is worth noting given the founder's context. There may be a distinctly Nordic sensibility to FringeIsland's aesthetic lineage — the uncanny-in-the-everyday, melancholy light, quiet rather than spectacular fantasy.
+- These are *aspirational quality references* for what a single Dreamineer's coherent world can be, distinct from the *experiential/structural* references (the ARGs, Statement 23) which are about how a world is delivered and played. Worth keeping the two reference families distinct: ARGs = how the world reaches people; Akerman/Stalenhag = how deep and coherent a single authored world can be.
+
+---
+
 ## Patterns emerging so far
 
 *(Updated as the session continues.)*
@@ -691,6 +846,18 @@ These aren't competing modes — they can exist alongside each other, or even wi
 - **Home base is a worldbuilding primitive.** If used, every journey/season/episode that supports home-base respawn has a place defined as the safe return point. This becomes part of the world's furniture, with phenomenological and narrative weight.
 - **The FIM–Whisp pairing is a Jake-and-Avatar pairing.** Two layers of being: the FIM (always safe, persists) and the Whisp (the projection that walks FringeIsland, can be harmed, respawns). The Gimbal is the link between them. The FIM is dual-located: body in the ordinary world, Whisp-self in FringeIsland.
 - **Felt stakes do not require existential risk.** Jake cares about his Avatar even though Jake is safe. The FIM cares about their Whisp even though the FIM cannot be broken. Caring about the projection is what gives the experience weight; safety of the source is what makes that caring possible without harm.
+- **"Alternative Reality" is a logbook term and a design lineage.** FringeIsland draws on the ARG tradition (The Beast, I Love Bees, Year Zero, The Art of the Heist, Portal 2 ARG) and adjacent web-mysteries / analog horror (Cicada 3301, The Sun Vanished, Local58). The common thread: blurring reality and fiction.
+- **Reality-fiction blur runs in two directions.** Authored ARGs pull the player into a constructed world (toward the beyond register); analog-horror seeps fiction into the ordinary world (toward the overlaid register). FringeIsland can deliberately use both.
+- **Collective intelligence is part of the form.** ARGs thrive on strangers co-creating understanding. This resonates with FringeIsland's community perspective and its Dreamineer/Creator contributor model.
+- **Borrow the mystery aesthetic, not the exclusion.** Some references carry secrecy, exclusivity, and unease. FringeIsland keeps the allure of a hidden layer while preserving warmth, voluntariness, and meta-safety.
+- **AI is an extension of human capability, not an autonomous worker.** Two functions: speed (collapsing production cost) and breadth (perspectives beyond any individual's reach). The human points the telescope; AI extends the sight. No autonomy to ration because authorship was never delegated.
+- **The last say is authorship; the first thought is sacred.** The creative act is the choosing. Sequence is human intent first, AI expansion second, human selection third. AI must never anchor or pre-empt the human's originating intention.
+- **Dreaming sessions protect the first thought.** A Stage-1, human-first ritual of facilitated ideation and early design thinking, run before AI expands the field. AI may facilitate (ask, prompt, hold structure) but does not generate content in this phase. Dreamineers run dreaming sessions.
+- **Guard railing is bidirectional and human-authored.** Rails that constrain AI (keep AI in its lane: no acting without sign-off, no privacy breach, no unreviewed shipping, no pre-empting human intent) AND rails that protect the human driver (AI catches the human's blind spots and helps honour the human's own safety/voluntariness commitments). Both kinds of rails are authored by humans, never by AI.
+- **The creation stage model.** Stage 1 human-first (dreaming) → Stage 2 AI expansion (speed + breadth) → Stage 3 human last say (selection/authorship), all inside human-authored bidirectional guard rails.
+- **World-builder quality references: Akerman and Stalenhag.** Two Swedish artists who each built an entire coherent world across multiple media (Den Svagiska Unionen; Tales from the Loop / The Electric State). Both overlay the fantastical onto the familiar — the uncanny haunting the ordinary — matching FringeIsland's overlaid register. They set a quality and coherence bar for what a single Dreamineer's authored world can be.
+- **Two distinct reference families.** Experiential/structural references (ARGs — how a world reaches and is played by people, Statement 23) vs. authored-world references (Akerman, Stalenhag — how deep and coherent a single authored world can be, Statement 25). FringeIsland draws on both, for different things.
+- **A Nordic uncanny-in-the-everyday sensibility.** Both world-builder references are Swedish and share a quiet, melancholic, familiar-yet-strange aesthetic. A candidate aesthetic lineage for FringeIsland — fantasy that haunts the ordinary rather than replacing it.
 
 ---
 
@@ -786,3 +953,19 @@ Noted for reconciliation when concepts graduate to `../../universe/`:
 - How visible the Whisp's body / form is to the FIM — does the FIM see a third-person Whisp-figure, or experience FringeIsland in first person through the Whisp's perception?
 - Whether multiple Whisps of multiple FIMs can perceive each other in FringeIsland, and what that looks like (Avatar shows Avatars seeing other Avatars; can Whisps see other Whisps?).
 - Whether the Avatar metaphor changes how Shadows are understood (a Shadow may be a being without a fully-formed Avatar; or it may be a Jake without yet having an Avatar at all).
+- Which ARG mechanics FringeIsland actually adopts: location-anchored clues, collaborative puzzle-solving, real-world artifacts, distributed-media storytelling, in-fiction characters that respond in real time?
+- Whether "Alternative Reality" becomes the canonical name for the FringeIsland-world layer, or stays a design-lineage reference distinct from the universe's internal vocabulary (parallel reality, overlay, beyond register).
+- How to preserve reality-fiction blur without ever deceiving the FIM in a harmful way — the line between immersive ambiguity and genuine confusion, especially given meta-safety and voluntariness.
+- Whether collective ARG-style mysteries are an ecosystem-wide layer (all FIMs solving something together) or scoped to specific journeys/seasons.
+- Whether NPCs (Statement 15) can serve as the in-fiction "characters who respond" that the authored ARGs used to such effect (the Operator, the Sleeping Princess in I Love Bees).
+- How dreaming sessions are actually run — solo Dreamineer, group, FIM-facing? Tooling? Where in Universe Studio do they live?
+- Where the line sits between AI-as-facilitator and AI-as-generator inside a dreaming session — can AI ask questions without its questions themselves anchoring the human?
+- Who authors guard rails, at what level (ecosystem-wide constitutional rails vs. per-story rails vs. per-Dreamineer rails), and how they are versioned and enforced.
+- How the second kind of guard rail (AI catching the human) is surfaced without becoming nannying or undermining the human's authority — tone, frequency, dismissability.
+- Whether guard rails are themselves subject to the stage model (human dreams the rails, AI expands rail options, human selects) — i.e. the rails are authored by the same process they govern.
+- How "integrate with real-world happenings" is bounded by safety (physical safety of FIMs sent to real places; reality-fiction blur not curdling into genuine fear or confusion; privacy of real-world data feeding the experience).
+- Whether the stage model (human-first → AI expansion → human last say) is specific to creation/authoring, or also describes the FIM's own in-world experience with their Whisp.
+- Whether FringeIsland's aesthetic lineage is deliberately Nordic / uncanny-in-the-everyday (Akerman, Stalenhag), or whether that is one influence among many.
+- Whether a single Dreamineer can/should author a whole coherent world (Akerman model) or whether FringeIsland worlds are inherently collaborative — and how the quality bar set by single-author worlds is met collaboratively.
+- Whether in-world authored characters (Akerman's Rocco Rivarossi as near-heteronym) are a model for how NPCs or even Whisps can carry narrative authorship within the fiction.
+- How "creation as discovery" (the worldbuilder finding their own world) might be designed for, not just hoped for, inside Universe Studio.
