@@ -1,12 +1,12 @@
 # Universe Discovery — Session 01
 
 **Date:** 2026-05-18
-**Status:** Paused — resumes Wednesday 2026-05-20
+**Status:** In progress (resumed Wednesday 2026-05-20)
 **Participants:** Stefan (Founder), Claude.ai
 **Focus:** Opening exploration of the FringeIsland universe. Starting clean, no prior definitions carried in. The Whisp as inner dialogue; the FIM–Whisp relationship; flourishing research anchors; the FringeIsland world as parallel reality with two topological registers; full tonal range as narrative backdrop; Universe Studio as overarching creative frame; NPCs and Shadows; assessment-as-dialogue and the five-senses metaphor; signature journeys; respawn topologies and the Jake/Avatar metaphor.
 
-**Statements captured:** 22 (Opening frame + Statements 1–22).
-**Last edited:** 2026-05-18, after Statement 22 (FIM–Whisp as Jake–Avatar pairing).
+**Statements captured:** 27 (Opening frame + Statements 1–27).
+**Last edited:** 2026-05-20, after Statement 27 (the Void as transit-medium and separation-axis; the FIM–Whisp cord; anchoring to objects; two-tier severance recovery; cooperative cord-healing; FIM body safe-but-mobile; bodily distance vs. Void distance).
 
 ---
 
@@ -797,6 +797,149 @@ Two references to individuals who have each built an entire coherent world — a
 - Both being Swedish is worth noting given the founder's context. There may be a distinctly Nordic sensibility to FringeIsland's aesthetic lineage — the uncanny-in-the-everyday, melancholy light, quiet rather than spectacular fantasy.
 - These are *aspirational quality references* for what a single Dreamineer's coherent world can be, distinct from the *experiential/structural* references (the ARGs, Statement 23) which are about how a world is delivered and played. Worth keeping the two reference families distinct: ARGs = how the world reaches people; Akerman/Stalenhag = how deep and coherent a single authored world can be.
 
+## 26. Worlds topology locked: Ordinary World, the Shimmer, the Fringe (near side and Beyond); FringeIsland as collective island and safe harbor; per-FIM private places; the Tree and glowing glass balls
+
+**Statement (locking decisions, today 2026-05-20):**
+> Today we shall lock:
+> - The ordinary world (where we act in our daily life)
+> - The shimmer which is the membrane / divide between the ordinary world and the fringe.
+> - The fringe has a "near side" and "beyond". Both of these are on the other side of the shimmer.
+> - FringeIsland is an "island" in the fringe where each FIM can relax, chill and have a good time as well as spend time contemplating and just "be". This sometimes get called the FIM's safe harbor. It is not yet defined if FringeIsland is in the fringe's near side or in the beyond. We'll figure that out soon.
+> - I'll outline what we mean by "the void" soon.
+>
+> The safe harbor can be seen as the place equal to "this is within my comfort zone" and the further away from FringeIsland (the FIM's safe "home") we get, the more we get into the growth zone and eventually we end up in the panic zone.
+>
+> Each FIM meet in the friendly and collective FringeIsland — a common place in the fringe for all FIMs. In FringeIsland each FIM also has their own very private place away from the collective. The private places cannot be reached by anyone except the owning FIM and the FIMs they invite to their home/garden/place. A private place you yourself decide who can visit and which parts you give access to. Each FIM decides what they do with their private place: contemplate in solitude, keep a room to invite guests, grow flowers and things in their garden. To be explored further. For now: there is a big tree in the bursting little sea village/town of FringeIsland with hanging glowing glass balls. Each glowing glass ball represents a FIM and his/her entrance to their private place. How one skims through the balls to find/identify friends is open. The tree is the official "portal" between FringeIsland and all private FIM places; everyone visiting a FIM friend travels through a specific glowing glass ball. How one travels through the balls is open.
+
+**Held — the worlds topology, now LOCKED (with two deliberate deferrals):**
+
+**1. The Ordinary World.** Where we act in daily life. Home ground. (Consistent with the opening frame and Statement 10.)
+
+**2. The Shimmer.** The membrane / divide between the Ordinary World and the Fringe. The perceptual interface between the two.
+- The Shimmer is the *edge* in the ecotone sense — the fertile boundary where the two worlds meet. (Earlier discussion: "the most beautiful flowers grow in the fringe between the dirt road and the big woods." The Shimmer is that edge; the Fringe is what grows from it.)
+- Resolves the "fringe = edge?" question: an *edge* is a line (the Shimmer); a *fringe* is the inhabited band beside it (the Fringe). Distinct, and both needed.
+- Perception *through* the Shimmer scales with how developed / full the Whisp is (ties directly to Statements 17–18: more self-disclosure → sharper perception). The Shimmer gives the disclosure-unlocks-perception mechanic a *place to happen*.
+- The Whisp is the faculty of perception; the Gimbal is the device; the Shimmer is the thing perceived — the visible interface between worlds.
+
+**3. The Fringe.** The whole created universe on the far side of the Shimmer. "FringeIsland Universe" encapsulates everything from directly on top of the Ordinary World all the way to the far Beyond. Two reaches, both past the Shimmer:
+- **Near side** — visible *through* the Shimmer; tied to Ordinary-World coordinates (supersedes the earlier working term "overlay" / "overlaid register"). Clarity scales with Whisp development.
+- **Beyond** — *not* tied to any worldly coordinates; reached through doors / passages / rabbit holes (supersedes the earlier working term "beyond register"). The far reach.
+
+**4. FringeIsland (the island).** An *island in the Fringe*. The friendly, collective, common place where every FIM can relax, chill, have a good time, contemplate, and just *be*.
+- Sometimes called the FIM's **safe harbor**.
+- **DEFERRED:** whether FringeIsland sits in the Fringe's near side or in the Beyond is explicitly not yet decided. To be resolved soon.
+- Recovers the founder's original seed — an island in the fringe as a safe place to relax, reflect, regain energy, not perform, just be — which had drifted out of frame as the session emphasised the tonal/danger pole. Its return *completes* the topology: growth needs a safe base to venture from and return to.
+
+**5. The Void.** Reserved. To be outlined soon. (Placeholder only — do not assume placement or nature yet. May relate to the topology or sit on a different axis; unknown.)
+
+**The comfort/growth/panic gradient is now spatial.**
+- Safe harbor = "this is within my comfort zone."
+- Distance *from* FringeIsland (the FIM's safe home) maps to the move: comfort zone → growth zone → panic zone.
+- This renders the developmental model (Statement 19) as literal geography: how far the FIM ventures from home *is* how much growth pressure they are under.
+- The Whisp's "push gently toward the growth zone, never panic" becomes a statement about how far it walks the FIM from the island.
+- Breath-rhythm: venture out (growth, challenge) and return home (safety, reflection). Safety and challenge alternating — the developmental cadence the flourishing research describes.
+
+**Two distinct kinds of place inside FringeIsland — collective and private.**
+- **Collective FringeIsland** — the friendly shared village/town, common to all FIMs. The commons.
+- **Per-FIM private places** — each FIM also has their *own* private place (home / garden / house) away from the collective.
+  - Unreachable except by the owning FIM and those they explicitly invite.
+  - **Granular permission:** the FIM decides *who* may visit *and which parts* they may access.
+  - The FIM decides what their private place is *for*: solitary contemplation; a room for guests; a garden to grow things; etc. (To be explored further.)
+  - This is the spatial expression of the privacy-first / voluntariness principles (Statements 5, 13). "Everything is voluntary" rendered as architecture.
+- So FringeIsland is simultaneously a **commons** and the **gateway to many private worlds**. (Answers the prior open question: it is *both* one shared harbor *and* per-FIM private places — not either/or.)
+
+**The Tree and the glowing glass balls (the portal).**
+- In the bursting little sea-village/town of FringeIsland stands a **great tree** hung with **glowing glass balls**.
+- Each **glass ball = one FIM**, and is the **entrance to that FIM's private place**.
+- The Tree is the official **portal** between collective FringeIsland and all private FIM places.
+- Every visit to a FIM friend travels *through* that friend's specific glowing glass ball.
+- **OPEN (logged, not resolved):**
+  - How one skims/searches the balls to find or identify friends.
+  - How one actually *travels through* a ball.
+  - The fuller definition of what a private place contains and how it is shaped.
+
+**Naming note (flagged, not yet locked):**
+- "home" is good enough to reference the FIM's private place for now — intuitive, already in use.
+- Watch one collision: "safe harbor" (collective island / comfort-zone feeling) vs. "home" (the FIM's private place). Almost the same idea, but the harbor is collective and the home is private. Keep them distinct so the commons-vs-private line stays crisp.
+
+**Reconciliation flag (for graduation, not now):**
+- The project's *existing* cosmology (prior work) used the Three Worlds: Ordinary World / Safe Harbour / Other Side, plus "the Void."
+- Today's lock introduces the **Shimmer** and the **Fringe (near side / Beyond)** as new structure, and uses "safe harbor" for the FringeIsland island.
+- Whether today's "safe harbor" *is* the existing cosmology's "Safe Harbour" — and how the Fringe near-side/Beyond maps onto the existing "Other Side" — is a deliberate reconciliation decision to make at graduation. Flagged so the alignment is conscious, not accidental.
+- This whole topology diverges from / refines earlier definitions. Per session discipline, divergence is permitted; reconciliation happens at graduation.
+
+## 27. The Void: the cord, anchoring, severance recovery, cooperative healing, and the safe-but-mobile FIM
+
+**Note on truth-direction (per Stefan, 2026-05-20):** This discovery work is the *emerging source of truth*. The project's earlier cosmology writings are held away for now and are *not* a constraint on what is discovered here. At reconciliation, the earlier writings are to be challenged *against* this — not the reverse. Where they conflict, this is the candidate truth and the older material must justify itself or yield.
+
+**Statements (the Void mechanic, assembled across this exchange):**
+> When a FIM enters the fringe, their whisp anchors their journey at places and they continue. The twist: IF the connecting cord between the FIM and their whisp gets cut, the whisp suffers and might die in the worst case. The FIM and their whisp need to retreat and find each other again before they can continue together. If you go too far without anchoring your whisp you need to start all over from the very start; but if you're lucky you might only need to meet up and synch again at the last anchor and start from there. Remember 1+1 and 1+community? FIMs can support each other by strengthening each other's FIM-vs-whisp cords — like healing the cord if/when needed. This cord can be very visible in the beginning, but we will also discuss how the cord does not become a distraction for FIMs. The whisp travels through the "void" when leaving the FIM — necessary but a bit dangerous.
+>
+> As soon as the FIM lets their whisp leave, their whisp is in the void. Practically, the whisp is in the void from just outside the FIM's head/skull all the way to wherever the whisp journeys — in the ordinary world as well as beyond the shimmer (the fringe's far side and the beyond).
+>
+> Anchoring means the FIM/whisp anchors the cord that connects them to whatever objects we later decide are okay to be used as anchoring points.
+>
+> The FIM travels together with their whisp but only "mentally" while they remain safe in the ordinary world. This does not mean the FIM cannot move around in the ordinary world. They can — and by this they also experience the shimmer from different angles and the near side of the fringe through the shimmer from different geographical locations.
+
+**Held:**
+
+**The Void is a medium and an axis, not a region of the map.**
+- The Void is *where the Whisp is* the instant it leaves the FIM — from just outside the FIM's skull, along the whole length of the cord, to wherever the Whisp journeys.
+- It spans *across* the worlds topology (Statement 26): a Whisp out in the Ordinary World (near-side overlay), across the Shimmer in the Fringe's far side, or in the Beyond — is in the Void the entire time.
+- The Void is therefore **orthogonal to the Ordinary/Shimmer/Fringe topology**, not a slot within it. It is the axis of *separation itself* — the condition of the Whisp being out-of-body, suspended on the cord.
+- The other worlds answer *where* the Whisp has travelled. The Void is the *fact that it has left the FIM* and is now exposed on the lifeline, anywhere along its length.
+- Relationship to the Shimmer (resolves the prior open question by dissolving it): the Shimmer and the Void are *different axes*. The Shimmer is a boundary crossed to change worlds (Ordinary → Fringe). The Void is the medium the Whisp hangs in the whole time it is separated from the FIM, regardless of which world it is currently in. A Whisp pointing at a field in the Ordinary World is *already* in the Void; it simply has not also crossed the Shimmer yet.
+
+**The cord: the FIM-Whisp lifeline.**
+- The cord physically connects the FIM (body-side, safe) to the Whisp (out in the Void).
+- It runs through the Void for its entire length and is exposed the whole way.
+- **If the cord is cut, the Whisp suffers and may die** in the worst case.
+- Consistent with meta-safety (Statement 19): it is the *Whisp* (the avatar/projection, Statement 22) at risk, never the FIM. The universe gains genuine peril without ever endangering the human. What can be lost is the projected self, the relationship, the progress — not the person.
+
+**Anchoring is a concrete act: fastening the cord to objects.**
+- Anchoring is not an abstract checkpoint or auto-save. The FIM/Whisp *physically anchors the cord to objects* in the world.
+- Which objects qualify as valid anchor points is **open** — to be decided later.
+- Like a climber clipping protection along a route, or a diver tying off a line at stations. (Image 1 — the climber clipped into protection up the pitch — is the truest of the five reference images to this mechanic.)
+- The anchor-objects are the "protection" on the route; their placement governs how safely a stretch can be travelled.
+
+**Two-tier severance recovery.**
+- **Unanchored overreach** — if the FIM ventured too far without anchoring and the cord is cut: start over *from the very beginning*. (Severe.)
+- **Anchored** — if anchored along the way: fall back only to the *last anchor* and resume from there. (Graceful.)
+- This *is* the nested/scaled respawn from Statement 21 (home base vs. episode-repeat), now given a cause (cord severance) and a currency (how diligently the FIM anchored). The respawn topology and the cord mechanic fuse into one coherent system.
+- Makes **anchoring a discipline**: consolidate before advancing; do not overreach. A growth lesson encoded as mechanic, rhyming with the comfort→growth→panic gradient (Statement 26) — venturing far without consolidating *is* panic-zone overshoot, now with a concrete consequence.
+
+**Recovery as reunion.** When severed, the FIM and Whisp must *retreat and find each other again* before continuing together. Recovery is framed as re-meeting and re-syncing, not respawning a dead avatar from nothing.
+
+**Cooperative cord-healing (the 1+1 / 1+community payoff).**
+- FIMs can **strengthen and heal each other's FIM-Whisp cords**.
+- The Three Perspectives (Statement 9) become a cooperative survival mechanic: relationships and community are *what keep your Whisp alive when you are stretched too thin*.
+- The social layer gains a *survival function*, not only a social one. Groups have reason to travel the dangerous reaches together — to hold each other's lifelines.
+- The most concrete expression yet of "we flourish through relationship and community": here, literally, others can save the part of you that is at risk.
+
+**The FIM is safe but mobile (Avatar structure, Statement 22, refined).**
+- The FIM journeys *with* the Whisp, but only *mentally* — the FIM's attention, experience, and presence go out along the cord; the FIM's *body* never leaves the Ordinary World and never enters danger. "Together" = experiential co-presence, not joint physical relocation.
+- The Whisp is the one *in* the Void, exposed on the cord; the FIM accompanies mentally, safe. (Jake experiences Pandora fully while his body lies safe in the pod; the cord/Void is the link that makes the "as if" real.)
+- **Body-safe does not mean body-still.** The FIM can physically move around the Ordinary World during a journey, with perceptual consequences:
+  - Moving the body changes the *angle* on the Shimmer — the FIM sees the membrane from different vantage points.
+  - Moving to different *geographical locations* changes what near-side Fringe is visible through the Shimmer from *there*.
+  - The FIM's real-world body becomes a roving vantage/camera into the near side.
+- This integrates the geocaching feeling and the Gimbal's location-anchored AR (Statement 10) with the cord/Void model: the near side is coordinate-tied *because* the FIM's mobile body is the point those coordinates are read from. Physically relocating *is* how you reposition your view into the near-side Fringe.
+
+**Near side vs. Beyond, with respect to the body (CONFIRMED):**
+- **Near side** — coordinate-tied. The FIM's bodily location in the Ordinary World matters; moving the body moves the view. The body is mobile and its position is meaningful.
+- **The Beyond** — *not* coordinate-tied. The FIM's bodily location no longer governs what is seen there; the Whisp has ventured past where Ordinary-World geography maps onto anything.
+
+**Two distinct distances (CONFIRMED) — do not conflate.**
+- **Bodily distance** — how far the FIM physically walks in the Ordinary World. Cheap, safe; repositions the near-side view.
+- **Void distance** — how far the Whisp has ventured out along the cord, away from the FIM. *This* is the distance that carries risk and that drives the growth/panic gradient (Statement 26).
+- You can stand physically still and send your Whisp deep into the Void (far out on the cord), or walk a mile in the Ordinary World with your Whisp staying close.
+- **The dangerous, growth-bearing distance is Void distance, not bodily distance.** "Far from the safe harbor" (comfort → growth → panic) means far out on the cord into the Void — not far from home on foot.
+
+**Observations:**
+- Danger is *pervasive along the cord*, not localised to a threshold. The Whisp is exposed the whole time it is out. The Beyond is dangerous not because "the Beyond is scary" but because it is *farther out along the cord, deeper into the Void* — more lifeline exposed between the safe FIM and the venturing Whisp. Void-depth and the spatial growth/panic gradient (Statement 26) are the *same axis*, measured from the safe body outward.
+- The cord-visibility arc may double as a *developmental signal*. The cord is very visible early (when the Whisp relationship is new and must be felt) and should recede as it matures so as not to distract. This mirrors the graduation/internalisation arc (Statements 6–7): early on the FIM is highly aware of the Whisp as separate (cord visible); as they mature, the connection becomes second-nature (cord recedes). Possibly not only a UX concession but an internalisation cue. (Held as possibility, not claim.)
+- Anchor-object placement is a worldbuilding lever for Dreamineers — effectively laying protection on a route. Sparse-anchor regions = riskier/more committing; richly-anchored regions = safer/more forgiving. (Candidate difficulty lever; not yet locked.)
+
 ---
 
 ## Patterns emerging so far
@@ -858,6 +1001,20 @@ Two references to individuals who have each built an entire coherent world — a
 - **World-builder quality references: Akerman and Stalenhag.** Two Swedish artists who each built an entire coherent world across multiple media (Den Svagiska Unionen; Tales from the Loop / The Electric State). Both overlay the fantastical onto the familiar — the uncanny haunting the ordinary — matching FringeIsland's overlaid register. They set a quality and coherence bar for what a single Dreamineer's authored world can be.
 - **Two distinct reference families.** Experiential/structural references (ARGs — how a world reaches and is played by people, Statement 23) vs. authored-world references (Akerman, Stalenhag — how deep and coherent a single authored world can be, Statement 25). FringeIsland draws on both, for different things.
 - **A Nordic uncanny-in-the-everyday sensibility.** Both world-builder references are Swedish and share a quiet, melancholic, familiar-yet-strange aesthetic. A candidate aesthetic lineage for FringeIsland — fantasy that haunts the ordinary rather than replacing it.
+- **The worlds topology (locked 2026-05-20).** Ordinary World → the Shimmer (membrane/edge) → the Fringe, which has a near side (coordinate-tied, seen through the Shimmer) and the Beyond (untethered, reached through thresholds). The Shimmer is the edge (a line); the Fringe is the inhabited band beside it. "FringeIsland Universe" spans the whole Fringe, near to far. The Void is reserved, to be defined.
+- **The Shimmer gives the disclosure-perception mechanic a place to happen.** Clarity of perception through the Shimmer scales with how full the Whisp is (Statements 17–18). Whisp = faculty of perception; Gimbal = device; Shimmer = the interface perceived.
+- **The comfort/growth/panic gradient is spatial.** Distance from FringeIsland (the safe harbor) = depth into the growth zone. Venture out for challenge, return home for safety — the developmental breath-rhythm rendered as geography.
+- **FringeIsland is both commons and gateway to private worlds.** A collective island/village shared by all FIMs, AND the portal to each FIM's own private place. The private place has granular, FIM-controlled permissions — privacy and voluntariness (Statements 5, 13) rendered as architecture.
+- **The Tree and glowing glass balls are the portal.** A great tree in the FringeIsland sea-village, hung with glowing glass balls; each ball is one FIM and the entrance to their private place. Visiting a friend means travelling through their ball. (How to skim/search the balls, and how travel works, are open.)
+- **Fringe is not edge.** An edge is a line (the Shimmer); a fringe is the inhabited width beside it (the Fringe). The project is named for the inhabited band, not the boundary — a place you dwell in, not merely cross.
+- **The Void is an axis of separation, not a region.** The Void is wherever the Whisp is once it leaves the FIM's skull — the whole length of the cord, across the Ordinary World, the Shimmer, the Fringe's far side, and the Beyond. Orthogonal to the worlds topology: the worlds say *where* the Whisp travelled; the Void is the *fact that it left the FIM* and hangs exposed on the lifeline.
+- **The cord is the lifeline; cutting it endangers the Whisp, never the FIM.** Genuine peril (the Whisp suffers / may die) that fully preserves meta-safety (Statement 19) — the human is always safe body-side. What is at stake is the projection, the relationship, the progress.
+- **Anchoring is fastening the cord to objects.** A concrete act, like clipping protection on a climb — not an abstract checkpoint. Two-tier recovery: unanchored overreach → restart from the very beginning; anchored → fall back to the last anchor. The cord mechanic and the Statement-21 nested respawn are one system.
+- **Anchoring is a discipline that encodes a growth lesson.** Consolidate before advancing; do not overreach. Venturing far without anchoring is panic-zone overshoot with a concrete consequence.
+- **Cooperative cord-healing gives the social layer a survival function.** FIMs can strengthen/heal each other's cords (1+1, 1+community). Relationships and community literally keep your Whisp alive when you are stretched thin — the most concrete expression yet of flourishing-through-others.
+- **The FIM is safe but mobile.** The FIM journeys mentally with the Whisp while the body stays safe in the Ordinary World — but the body can move, and moving it changes the angle on the Shimmer and which near-side Fringe is visible from that location. The body is a roving vantage into the near side.
+- **Two distances, only one of them dangerous.** Bodily distance (Ordinary-world walking — safe, repositions the near-side view) vs. Void distance (how far the Whisp ventures on the cord — carries risk and drives the growth/panic gradient). "Far from the safe harbor" means deep into the Void, not far on foot.
+- **Truth-direction is fixed.** This discovery work is the emerging source of truth; the earlier cosmology is held away and, at reconciliation, is challenged *against* this — not the reverse.
 
 ---
 
@@ -969,3 +1126,23 @@ Noted for reconciliation when concepts graduate to `../../universe/`:
 - Whether a single Dreamineer can/should author a whole coherent world (Akerman model) or whether FringeIsland worlds are inherently collaborative — and how the quality bar set by single-author worlds is met collaboratively.
 - Whether in-world authored characters (Akerman's Rocco Rivarossi as near-heteronym) are a model for how NPCs or even Whisps can carry narrative authorship within the fiction.
 - How "creation as discovery" (the worldbuilder finding their own world) might be designed for, not just hoped for, inside Universe Studio.
+- Whether FringeIsland (the island) sits in the Fringe's near side or in the Beyond — explicitly deferred in Statement 26.
+- What "the Void" is — reserved in Statement 26, to be outlined soon. Whether it sits within the topology (e.g. a region of the Beyond) or on a different axis entirely.
+- How one skims/searches the glowing glass balls on the Tree to find or identify friends.
+- How one actually travels *through* a glass ball into a FIM's private place.
+- The fuller definition of a private place — what it contains, how it is shaped, what a FIM can build/grow/keep there, and how the granular visit/access permissions work in practice.
+- Whether the Shimmer is uniform or varies (places where it is thinner/thicker, clearer/murkier) and whether Dreamineers can shape it.
+- How the spatial comfort/growth/panic gradient is actually rendered — is "distance from FringeIsland" literal travel distance in the Fringe, narrative distance, or felt distance?
+- Reconciliation: whether today's "safe harbor" is the existing cosmology's "Safe Harbour," and how the Fringe near-side/Beyond maps onto the existing "Other Side" and "the Void." (Decision deferred to graduation.)
+- Whether "home" (private place) and "safe harbor" (collective island) need fully distinct names before graduation, or whether the collective/private context keeps them clear.
+- Whether each FIM's private place is *in* collective FringeIsland (a house in the village) or *reached from* it via the Tree (a separate pocket-space behind the glass ball) — the Tree-as-portal framing suggests the latter, but this is not yet locked.
+- Which objects can serve as valid cord anchor points (Statement 27) — explicitly deferred.
+- What can *cut* the cord — hostile actors (NPCs? other FIMs?), environmental hazards, venturing too far, time, the FIM's own choices? The threat model for severance is undefined.
+- How cord-healing between FIMs works mechanically — proximity, deliberate action, a shared ritual, the Whisps cooperating? And whether a FIM can heal a stranger's cord or only an invited/known FIM's.
+- How the cord is kept meaningful early yet non-distracting later — and whether its fading visibility is a deliberate internalisation/graduation signal (Statements 6–7) rather than only a UX concession.
+- Whether anchor-object density is a deliberate difficulty lever (sparse = committing/risky, rich = forgiving) that Dreamineers tune, like protection on a climbing route.
+- What "the Whisp suffers" looks like short of death — degraded quality, lost contents, pain, partial memory loss? The gradient between a strained cord and a cut one.
+- How a severed/recovering Whisp relates to the Statement-17 "Whisp quality / contents" — does severance cost disclosure-progress, or only journey-progress?
+- Whether the Beyond, being uncoordinated, still requires the FIM's body to be *somewhere* in the Ordinary World (just no longer governing the view), or whether deep-Beyond journeys change the FIM's bodily situation (e.g. needing stillness/safety like the lying bodies in the reference images).
+- How the FIM's bodily mobility in the Ordinary World is reconciled with real-world safety (a FIM walking around while mentally journeying — echoing the Statement-24 concern about FIMs sent to real places).
+- Whether the Void itself contains anything (is it empty transit, or are there things *in* the Void between anchors?), and whether the Void is ever a place of encounter rather than only of exposure.
