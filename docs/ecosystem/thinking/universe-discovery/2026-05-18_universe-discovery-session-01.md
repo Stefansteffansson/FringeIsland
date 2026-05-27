@@ -1,12 +1,12 @@
 # Universe Discovery — Session 01
 
 **Date:** 2026-05-18
-**Status:** Paused — resumes next session. (Statement 28 open thread resolved: Live / Grow / Matter dance together — simultaneous balance, not a sequence.)
+**Status:** In progress (resumed 2026-05-27)
 **Participants:** Stefan (Founder), Claude.ai
 **Focus:** Opening exploration of the FringeIsland universe. Starting clean, no prior definitions carried in. The Whisp as inner dialogue; the FIM–Whisp relationship; flourishing research anchors; the FringeIsland world as parallel reality with two topological registers; full tonal range as narrative backdrop; Universe Studio as overarching creative frame; NPCs and Shadows; assessment-as-dialogue and the five-senses metaphor; signature journeys; respawn topologies and the Jake/Avatar metaphor.
 
-**Statements captured:** 28 (Opening frame + Statements 1–28).
-**Last edited:** 2026-05-25, after Statement 28 (Live / Grow / Matter as foundational drives; responsiveness-not-tightness; the two-pole structure of Matter; the layered informed-by-not-equal-to relationship to SDT and PERMA+).
+**Statements captured:** 30 (Opening frame + Statements 1–30).
+**Last edited:** 2026-05-27, after Statement 30 (NPCs as layered, depth-on-demand composites: body / culture / character; refines Statement 15; includes World Studio hard/soft split and the Anthropologist/Teller/Wayfinder scale separation).
 
 ---
 
@@ -1002,6 +1002,120 @@ Live/Grow/Matter and the scientific frameworks operate at *different altitudes* 
 
 **Open (RESOLVED 2026-05-25):** Live / Grow / Matter **dance together** — held in simultaneous *balance*, not a developmental *sequence*. The argument is decisive: none of the three is ever "complete," so there are no completable rungs for a ladder — a sequence is structurally impossible. Moreover the three are *mutually constituting*: living fully makes you teachable (feeds Grow); growing gives you something to contribute (feeds Matter); mattering makes the moment worth savouring (feeds Live). Pull one out and the other two wobble — the same corrective-pairing seen in Live (indulgence without Grow) and Grow (grind without Live), now extended to all three. **Implication for the Whisp:** it does not walk a FIM *up* through the drives in order; it senses which drive is currently *starved* and gently leans the journey toward restoring balance — a dance partner keeping all three in motion, not a guide marching up a staircase.
 
+## 29. Role taxonomy: FIM as base identity; Dreamineer as permission-gated authorial modes; the enterprise-stewardship plane
+
+**Statements (assembled across this exchange):**
+> Roles as of now:
+> - Dreamineers (umbrella):
+>   - Creators — creators of "things" in the FringeIsland world, using World Studio
+>   - Anthropologists — creators of cultures, customs, and beliefs of societies in FringeIsland
+>   - Tellers — crafting stories using Arc Studio
+>   - Wayfinders — crafting journeys using Journey Studio
+> - FringeIsland Members (FIMs) — who experience the FringeIsland universe.
+> - Universeers — caring for: the constituency across the whole Universe; the eco-system product portfolio; the community; economy; legal.
+> - The FringeIsland Council — caring for all major decisions concerning FringeIsland and its connection to partners etc.
+> Probably many more roles (e.g. a "Guide" who accompanies FIMs on joint journeys; a "Steward" who cares for groups of FIMs).
+>
+> [On structure:] Maybe the Dreamineers are actually outside the FringeIsland universe, as it is these people who *create* the immersive universe FIMs act within? A "Creator" is most likely (or always?) also a FIM. Same for the other Dreamineer roles. ("Dreamineers" is loosely drawn from Disney's "Imagineers.")
+>
+> [Locked:] I agree FIM is the base identity, while Universeers/Council are the genuinely separate "stewarding the enterprise" plane. And not every FIM has access to the three studios — only FIMs with specific Dreamineer authorities defined by group and role permissions, just like the ones already defined for the FringeIsland platform.
+
+**Held:**
+
+**The central correction: roles are *modes a person occupies*, not *kinds of people*.**
+- "Is a Dreamineer inside or outside the universe?" is the wrong axis. The Dreamineer is not at a different *location* (inside vs. outside the fiction) but in a different *stance toward* the universe.
+- **FIM stance = immersed:** in the world, Whisp out on the cord, living it from within (Statements 22, 27).
+- **Dreamineer stance = authorial:** stepped to the workbench (a Studio) to shape what others — and one's own future immersed self — will experience.
+- Same person, same universe, two relationships to it. A FIM moves fluidly between immersed and authorial stances.
+- Echoes the authorial-vs-experiential structure already locked in Statement 24 (dreaming sessions, "first thought," human-first shaping). "Dreamineer" and "dreaming sessions" share a root deliberately: **the Dreamineer is a FIM in their authorial, dream-it-into-being stance.**
+
+**FIM is the base identity (LOCKED).**
+- Every participant is a FIM — the base membership, the person with a Whisp.
+- You cannot build FringeIsland from truly outside it; to create *for* the world you must be a member *of* it. (Resolves "most likely or always?" → effectively always.)
+- Dreamineer / Guide / Steward are things a FIM *does*, not things a FIM *is instead of* being a FIM.
+
+**Authorial mode (Dreamineer) is permission-gated (LOCKED).**
+- The Dreamineer authority is **NOT open to every FIM.** It is an authority a FIM holds, granted via **group and role permissions** — the *same mechanism already defined for the FringeIsland platform* (cf. the platform role ladder: Member / Steward / Dreamineer / DeusEx; group-to-group membership; has_permission resolution).
+- "Becoming a Dreamineer" is not a separate identity; it is a FIM acquiring the role/permission that unlocks a Studio. Entering a Studio is a permission check.
+- **One mechanism, two faces:** the fiction layer (universe-facing role language) and the platform layer (technical permission primitives) are the *same system seen from two sides*, not two parallel systems to keep in sync. Strong coherence — the universe vocabulary and the technical substrate align.
+- Rhymes with Shadow→FIM transcendence (Statement 16): progression from "FIM who experiences" to "FIM who also authors" is a permission/role transition, not a change of being.
+
+**The four Dreamineer specialisations (each gates a Studio):**
+- **Creator** → **World Studio** — "things" in the FringeIsland world.
+- **Teller** → **Arc Studio** — stories (seasons / episodes).
+- **Wayfinder** → **Journey Studio** — journeys (alone / pairs / group).
+- **Anthropologist** → *Studio not yet assigned* — cultures, customs, beliefs of FringeIsland societies. (See open thread: which Studio? World Studio, a fourth Studio, or split across World and Arc?)
+- Note the near-perfect 1:1 role-to-tool mapping for three of four; the Anthropologist is the one gap.
+
+**Two distinct planes (the corrected two-plane model).**
+- **Plane 1 — the FIM and their modes (all relating to the universe itself):**
+  - *Experiential mode:* the FIM journeying (base).
+  - *Authorial modes:* the Dreamineer specialisations (Creator, Anthropologist, Teller, Wayfinder), permission-gated.
+  - *Support modes (emerging family, provisional):* **Guide** (accompanies FIMs on joint journeys), **Steward** (cares for groups of FIMs). Same logic — FIM-modes gated by permission.
+- **Plane 2 — enterprise stewardship (genuinely separate; caring for the *continuation of the endeavour*, not a stance toward the fiction):**
+  - **Universeers** — care domains: constituency across the whole Universe; the eco-system product portfolio; the community; economy; legal.
+  - **The FringeIsland Council** — all major decisions concerning FringeIsland and its connection to partners, etc.
+  - These people may (ideally do) also hold FIM identity, but the *role* is about the enterprise, not the fiction.
+- The correct dividing line is **"modes of being a FIM (relating to the universe)" vs. "stewarding the project that sustains the universe"** — NOT "in-world vs. out-of-world people." This redraws the earlier (wrong) sketch that put Dreamineers "outside": they are firmly on the FIM plane, as a mode.
+
+**"Dreamineers" from Disney's "Imagineers" (lineage, worth recording).**
+- Disney's Imagineers build the immersive world guests move through — exactly the authorial stance.
+- The deliberate shift *Imagine → Dream* ties the builder-role to "dreaming sessions" (Statement 24) and to the dream-register of the universe (the Whisp; the glowing glass balls on the Tree; the contemplative safe harbor).
+- Where Disney's Imagineers build a theme park, FringeIsland's Dreamineers build a *world for becoming*. The rename encodes the difference in purpose.
+
+**Naming-register note (flagged, not resolved).** Three builder roles are coined/evocative (Dreamineer, Teller, Wayfinder); two are plain real-world titles (Creator, Anthropologist). "Anthropologist" especially is a literal academic discipline sitting among invented words. Conscious choice to make later: do all in-world roles want FringeIsland-native coinages, or is the mixed register deliberate?
+
+## 30. NPCs as layered, depth-on-demand composites (builds on Statement 29; refines Statement 15)
+
+**Builds directly on Statement 29 (role taxonomy) and refines Statement 15 (NPCs as agents, not scenery).** Two role-refinements discussed on the way to this (World Studio's hard/soft split, and the Anthropologist/Teller/Wayfinder scale separation) are captured here as the foundation the NPC model rests on.
+
+**Statements (assembled across this exchange):**
+> Maybe Creators and Anthropologists are two sides of the work in World Studio? Creators = the "hard" side (3D models, terrains, water, rivers, mountains, sky, portals, etc.); Anthropologists = the "soft" side (culture, heritage, customs, people, the countries, etc.).
+>
+> Is the Anthropologist more interested in groups than in individual persons? Is there a tension between Anthropologists and Tellers (who define stories where humans play a very important role), or can we separate the purpose of each role elegantly?
+>
+> What does this mean for NPCs? Maybe NPCs need to be considered by all three roles — Creators + Anthropologists + Tellers — so the NPC gets the depth they deserve, *when depth is needed*.
+
+**Held:**
+
+**Refinement A — World Studio has two faces: Creator (hard) and Anthropologist (soft).**
+- **Creator = hard / physical worldbuilding:** 3D models, terrain, water, rivers, mountains, sky, portals — the physical substrate.
+- **Anthropologist = soft / cultural worldbuilding:** culture, heritage, customs, peoples, countries — the cultural substrate.
+- These are two halves of *one* discipline, not two disciplines: terrain without culture is a stage set; culture without terrain is a history book with no ground. Interdependent (a river decides where cities grow; a culture decides whether the river is sacred).
+- Both live in **World Studio**. This closes the Statement-29 gap (Anthropologist had no Studio): World Studio = Creator (hard) + Anthropologist (soft). Studios stay three; Dreamineer specialisations are four; World Studio honestly holds two.
+- Rhymes with the recurring hard/soft pattern in the universe (Whisp outer/inner; Matter external/internal pole; world backdrop/narrative). Possibly also a thematic echo: the platform integrates a person's hard exterior and soft interior, and World Studio builds worlds the same way — making-of-worlds rhymes with making-of-selves. (Poetry more than mechanism; noted lightly.)
+
+**Refinement B — the human appears at three scales, one per role. No collision; a clean zoom.**
+- **Anthropologist — the *typical* (collective scale).** Native scale is the *people/culture*. Defines what is generally true: how a society lives, believes, marries, mourns, governs. Output = a *pattern* / cultural template. Individuals matter as *typical members*, not unique souls. Answers: "What is it like to be one of these people?" (in general).
+- **Teller — the *particular* (story scale, Arc Studio).** Takes an individual (often drawn from an Anthropologist's culture) and gives them a *specific* name, history, wound, desire, and arc *for a narrative*. Output = a character in motion. Answers: "What happens to this specific person, and why does it matter?"
+- **Wayfinder — the *personal* (the FIM's own journey, Journey Studio).** Authors not other people but the *path the real human walks*. Answers: "What does the FIM themselves experience and become?"
+- The three magnifications: **people-of-the-world (Anthropologist) → people-of-a-story (Teller) → the-FIM (Wayfinder).** Collective → individual-in-story → the self.
+- **The Anthropologist/Teller relationship is supply, not competition.** The Anthropologist builds the cultural soil; the Teller grows specific characters from it. The Anthropologist makes the Teller's people *believable*; the Teller makes the Anthropologist's culture *vivid* through a particular life. They feed each other.
+- **The seam (intent test):** if a human exists to *illustrate how a culture works* → Anthropologist (a role/type within a people). If a human exists to *carry a story's events and change through them* → Teller (a named individual with an arc). The studio boundary holds because the Anthropologist's humans are *world-substrate* (standing state, World Studio) while the Teller's humans are *narrative agents* (unfolding events, Arc Studio) — the figure/ground distinction of Statement 12 applied to people: Anthropologist paints the ground, Teller moves figures across it.
+
+**The NPC model — layered, depth-on-demand (this refines Statement 15).**
+
+An NPC is a **world-inhabitant composed of up to three authorial layers**, added in proportion to the depth the NPC's role demands:
+- **Body layer — Creator (World Studio):** physical presence, appearance, how it looks and moves. Nearly every NPC needs something here.
+- **Culture layer — Anthropologist (World Studio):** where the NPC sits in a people; customs, dress, speech, belief, typical behaviour. Makes the NPC *belong somewhere*.
+- **Character layer — Teller (Arc Studio):** a specific name, history, wound, desire, arc; narrative function. Makes the NPC a *someone* rather than a *somebody*.
+
+Depth is **additive**, and "*when depth is needed*" is the governing principle. A spectrum results:
+- **Background figure** (fisherman on the dock, crowd member): *Creator only*, perhaps a light *Anthropologist* touch so they dress/move like their culture. No Teller. Scenery-with-belonging — no name, no wound.
+- **Culturally-significant figure** (village elder, harbour master, a recurring type): *Creator + Anthropologist*. Embodies their people richly; behaves true to custom; feels real as "one of these people" — but is still a *role*, not a character with an arc.
+- **Story-critical figure** (the betrayer this episode, the mentor, the one whose choice turns the narrative): *Creator + Anthropologist + Teller*. Full depth — a body, rooted in a culture, *and* a specific named individual with history and arc. All three layers, because the FIM will *feel* them.
+
+**So: the deepest NPCs need all three roles; most do not. Depth is a resource, spent where it earns its keep.**
+
+**Definition (refines Statement 15):** *An NPC is a world-inhabitant composed of up to three authorial layers — body (Creator, World Studio), culture (Anthropologist, World Studio), and character (Teller, Arc Studio) — with layers added in proportion to the depth the NPC's role demands. Background NPCs may be body-only or body-plus-culture; story-critical NPCs receive all three. Depth is allocated where it earns its keep.* Statement 15's flat "NPCs are agents, not scenery" is superseded: NPCs are a *composite* whose nature depends on which layers are present — and some NPCs *are* effectively scenery-with-belonging (which is fine and intended).
+
+**Observations:**
+- **An NPC can gain depth over time — move from ground to figure.** A villager you passed for episodes (ground: Creator + light Anthropologist) can become pivotal (a Teller adds the character layer). The figure/ground distinction (Statement 12) operates at the level of the individual being, and beings can cross it when a story reaches for them.
+- **The studio handoff is the seam.** An NPC is built in World Studio as an inhabitant (body + culture) and *promoted* into Arc Studio's care (character layer) when narrative needs it. World-inhabitant becomes character at exactly this boundary.
+- **NPC test for role allocation:** scenery-of-culture → Creator (+ Anthropologist); agent-of-story → add Teller. Whether an NPC needs the Teller layer depends on whether it is part of the world's standing texture or an agent in a story.
+
+**Open (the collaboration seam, not resolved):** *who decides* how much depth an NPC gets, and *when*? If a Teller writing an episode needs a background villager to suddenly matter, do they reach back into World Studio (Creator + Anthropologist) to deepen an existing inhabitant, or author the new depth themselves in Arc Studio? This is the inter-Studio *collaboration protocol* (who hands off to whom, when) — a workflow/tooling decision downstream of the universe definition. Same seam as the "who builds a person" question raised under Statement 29.
+
 ---
 
 ## Patterns emerging so far
@@ -1083,6 +1197,15 @@ Live/Grow/Matter and the scientific frameworks operate at *different altitudes* 
 - **Matter has two poles, bridged by influence.** Internal pole (I feel I matter — within my control) = freedom and security; external pole (mattering to others / a higher cause) = contribution and connection. The internal anchor makes you free; the external reaching makes you not alone. You contribute within your power and hold the outcome lightly. The architecture already holds both poles.
 - **The nested triads cohere.** Live/Grow/Matter (drives) under Who/What/How (questions) under 1 / 1+1 / 1+community (perspectives). The same shapes recur across layers — a sign of internal coherence.
 - **Plain-language foundation, science as substrate (informed-by, not equal-to).** Live/Grow/Matter is the human-facing aspiration; SDT/PERMA+/Big Five/etc. are the validated instrumentation beneath. Always "resonant with," never "equals" — so overlap reads as corroboration, not contradiction. This also future-proofs the foundation as the science evolves.
+- **Roles are modes, not castes.** FIM is the base identity (everyone with a Whisp). Dreamineer (and Guide, Steward) are *stances a FIM occupies* — authorial / support modes — not separate kinds of people. The immersed FIM and the authorial Dreamineer are the same person in different relationships to the universe.
+- **Authorial access is permission-gated by the platform's own mechanism.** Becoming a Dreamineer = a FIM acquiring a group/role permission that unlocks a Studio — the same primitives the FringeIsland platform already runs on. Fiction-layer role language and platform-layer permissions are one system seen from two sides.
+- **Two role planes, drawn at the right line.** Plane 1: modes of being a FIM (experiential / authorial-Dreamineer / support-Guide-Steward) — all relating to the universe. Plane 2: enterprise stewardship (Universeers, the Council) — sustaining the project that produces the universe. The line is universe-relation vs. enterprise-stewardship, NOT in-world vs. out-of-world people.
+- **Role-to-Studio mapping.** Creator→World, Teller→Arc, Wayfinder→Journey; Anthropologist’s Studio still open. Near-1:1 by design.
+- **"Dreamineer" from Disney’s "Imagineer," Imagine→Dream.** The rename ties the builder-role to dreaming sessions (Statement 24) and the dream-register of the universe; Disney builds a theme park, Dreamineers build a world for becoming.
+- **World Studio has two faces: Creator (hard) and Anthropologist (soft).** Hard = physical substrate (terrain, water, sky, portals, 3D models); soft = cultural substrate (peoples, customs, beliefs, countries). Two halves of one discipline; closes the Statement-29 role-to-Studio gap.
+- **The human appears at three scales, one per role.** Anthropologist = the typical (people-of-the-world, World Studio); Teller = the particular (people-of-a-story, Arc Studio); Wayfinder = the personal (the FIM, Journey Studio). Collective → individual-in-story → the self. Anthropologist supplies the soil; Teller grows the character from it — supply, not competition.
+- **NPCs are layered, depth-on-demand composites.** Body (Creator) + culture (Anthropologist) + character (Teller), added in proportion to the depth needed. Background NPCs = body (+ light culture); story-critical NPCs = all three. Depth is a resource spent where it earns its keep; an NPC can gain depth (move ground→figure) when a story reaches for it. Refines Statement 15.
+- **The hard/soft (outer/inner) pattern recurs across the universe.** Whisp outer/inner; Matter external/internal pole; world backdrop/narrative; World Studio hard/soft. A consistent structural signature — things in FringeIsland tend to have a structural-outer aspect and an experiential-inner aspect.
 
 ---
 
@@ -1222,3 +1345,13 @@ Noted for reconciliation when concepts graduate to `../../universe/`:
 - How (and whether) Live / Grow / Matter is ever surfaced explicitly to FIMs, or whether — like the assessments dissolved into dialogue (Statement 18) — it stays beneath the surface as felt aspiration rather than stated doctrine.
 - The precise scientific citations to stand behind the "informed by" claims when this graduates (SDT: Deci & Ryan; PERMA: Seligman; flow: Csikszentmihalyi; mattering: Rosenberg; meaning: Frankl; planned happenstance: Krumboltz; dichotomy of control: Epictetus) — to be verified and properly referenced at graduation, not asserted from memory.
 - **Lineage breadcrumb (file quietly, do NOT foreground):** the principle that *experiential knowledge is not reducible to propositional knowledge* — that you must *live* something to truly know it, not merely be told about it — is the philosophical justification underpinning the assessment-dissolving mechanic (Statement 18), the five-senses model (Statement 18), and felt-stakes-over-stated-lessons (Statement 12). It is arguably what "Live" (Statement 28) points at: presence is Mary outside the room; knowing-about-your-life is Mary inside it. This intuition is what philosophers call **the knowledge argument (Frank Jackson's "Mary's Room," 1982)**. DECISION: keep the *principle* (state it plainly, in human language); hold the *citation* lightly. Mary's Room is named here only as citable lineage for a future contributor to find — it is NOT to appear in the human-facing layer, is NOT a statement of its own, and the foundation must NOT lean on it (it is a contested thought experiment; FringeIsland needs only the design intuition, not the metaphysical claim). Same discipline as the SDT/PERMA+ "informed by, not equal to" rule (Statement 28). Revisit at graduation, footnote-tier at most.
+- Which Studio the **Anthropologist** uses (Statement 29): World Studio, a not-yet-named fourth Studio, or split across World and Arc? The one gap in the otherwise 1:1 role-to-Studio mapping.
+- Whether the in-world role names should be register-consistent (Statement 29): coined/evocative (Dreamineer, Teller, Wayfinder) vs. plain titles (Creator, Anthropologist). Does "Anthropologist" (and "Creator") eventually want a FringeIsland-native name, or is the mix deliberate?
+- The full FIM-support mode family beyond Guide and Steward (Statement 29) — "probably many more roles." What is the complete set, and what does each care for?
+- How a FIM *acquires* a Dreamineer authority (Statement 29) — earned through journeying? granted by Stewards/Universeers? application? A progression like Shadow→FIM (Statement 16)? The route into authorial mode is undefined.
+- How the in-world role language (Dreamineer, Teller, etc.) maps onto the existing *platform* role ladder (Member / Steward / Dreamineer / DeusEx) — reconciliation needed, since "Steward" and "Dreamineer" already appear in both vocabularies and may or may not mean the same thing.
+- Whether Universeers and the Council are *required* to also be FIMs, or whether enterprise-stewardship can be held by non-members (Statement 29 assumes they ideally are FIMs, but it is not locked).
+- The internal structure of Universeers (five care-domains: constituency, portfolio, community, economy, legal) — are these five sub-roles, five committees, or one role with five concerns? And how the Council relates to the Universeers (oversight? overlap? distinct?).
+- The inter-Studio **collaboration protocol** (Statement 30): who decides how much depth an NPC gets, and when? If a Teller needs a background villager to suddenly matter, do they reach back into World Studio to deepen an existing inhabitant, or author the new depth in Arc Studio? (Same seam as "who builds a person" under Statement 29.) A workflow/tooling decision downstream of the universe definition.
+- Whether the Anthropologist ever authors *named, specific* individuals (a historical founder, a living legendary figure of a culture), or whether every named specific human is always a Teller's job — i.e. exactly where the World/Arc line falls for special individuals. (Raised but not locked in Statement 30.)
+- How a being that needs to *act* (an NPC with behaviour, per Statement 15) draws on roles beyond body+culture+character — does dynamic behaviour pull in a Wayfinder or Teller, or is "behaviour" a fourth layer the model doesn't yet name?
