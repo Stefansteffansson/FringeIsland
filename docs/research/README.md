@@ -19,6 +19,9 @@ docs/research/
 ├── What_Fills_a_Life_v2.md                                ← human flourishing frameworks (v2, most complete)
 ├── Theory_U_Research_Report.md                            ← Theory U, facilitation methodology
 │
+├── Portal_Fantasy_Research_Report.md                      ← portals across books/film/theatre/games/folklore (54 entries)
+├── Parallel_Worlds_Research_Report.md                     ← parallel/alternative worlds across five media (22 entries)
+│
 ├── multi-product-ecosystem-management_2.md                ← ecosystem management methodology
 ├── Multi-Product-Ecosystem-Management-FringeIsland.docx   ← ecosystem management (original)
 ├── Multi-Product-Ecosystem-Management-FringeIsland rev 2.docx  ← ecosystem management (revision 2)
@@ -37,6 +40,15 @@ docs/research/
 | What_Fills_a_Life_v1.md | Human flourishing frameworks (v1) | 38 KB |
 | What_Fills_a_Life_v2.md | Human flourishing frameworks (v2 — most complete) | 62 KB |
 | Theory_U_Research_Report.md | Otto Scharmer's Theory U, facilitation methodology | 39 KB |
+
+## Universe / worldbuilding research
+
+External cross-media research surveys that feed the universe-discovery work (see `../ecosystem/thinking/universe-discovery/`).
+
+| Document | Topic |
+|----------|-------|
+| Portal_Fantasy_Research_Report.md | Cross-media study of portals in books, film, theatre, games, and folklore (54 entries; strict-to-loose spectrum) |
+| Parallel_Worlds_Research_Report.md | Survey of parallel/alternative realities across five media (22 entries; flavour taxonomy of portal / parallel-timeline / mirror / mythic-otherworld / simulated-reality) |
 
 ## Methodology research
 
