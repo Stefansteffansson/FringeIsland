@@ -19,7 +19,7 @@
 
 | Session | Date | Focus | Status |
 |---------|------|-------|--------|
-| [Session 01](./2026-05-18_universe-discovery-session-01.md) | 2026-05-18 | Foundations: Whisp as inner dialogue and avatar; two-register universe topology; full tonal range; Universe Studio frame; Shadows, NPCs, Dreamineers, Creators; assessment-as-dialogue; signature journeys; respawn and the Jake/Avatar metaphor | In progress, resumed 2026-05-29 (Statements 31–36: the Fringe reshaped — two co-located places, world-genesis, cords and branches) |
+| [Session 01](./2026-05-18_universe-discovery-session-01.md) | 2026-05-18 | Foundations: Whisp as inner dialogue and avatar; two-register universe topology; full tonal range; Universe Studio frame; Shadows, NPCs, Dreamineers, Creators; assessment-as-dialogue; signature journeys; respawn and the Jake/Avatar metaphor | In progress, resumed 2026-06-01 (Statements 37-40: balls glow equal while the cord carries health, the branches are the visible crown, every FIM and Shadow has their own Whisp and cord with only the ball granted at transcendence, and the seed / portal / anchor mechanics); prior resume 2026-05-29 (Statements 31-36: the Fringe reshaped) |
 
 ---
 
