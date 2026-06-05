@@ -1,14 +1,16 @@
 # Universe Discovery — Session 01
 
 **Date:** 2026-05-18
-**Status:** In progress (resumed 2026-06-01)
+**Status:** In progress (resumed 2026-06-05)
 **Participants:** Stefan (Founder), Claude.ai
 **Focus:** Opening exploration of the FringeIsland universe. Starting clean, no prior definitions carried in. The Whisp as inner dialogue; the FIM–Whisp relationship; flourishing research anchors; the FringeIsland world as parallel reality with two topological registers; full tonal range as narrative backdrop; Universe Studio as overarching creative frame; NPCs and Shadows; assessment-as-dialogue and the five-senses metaphor; signature journeys; respawn topologies and the Jake/Avatar metaphor.
 
-**Statements captured:** 40 (Opening frame + Statements 1-40).
-**Last edited:** 2026-06-01, after Statement 40. The 2026-05-29 resume reshaped the worlds topology locked in Statement 26: the Fringe becomes two co-located places — place 2 (warm) and place 3 (hostile) — behind the one Shimmer (Statement 31); the near sides are coupled, the same coordinates seen two ways (32); the home portal travels with the FIM and FringeIsland-the-village is placed in the Beyond of place 2 (33); only the FIM's own glass ball is inviolable, the rest of place 2 is tendable under the rule "gardening, not guarding" (34); the world grows from the balls and their bonds, and place 2 is revived place 3 (35); the FIM-Whisp cord and the FIM-FIM branch are two distinct, interlocking bonds (36). Per session discipline, Statements 12, 26, 27 are not edited; 31–36 supersede or refine them by addition.
+**Statements captured:** 46 (Opening frame + Statements 1-46).
+**Last edited:** 2026-06-05, after Statement 46. The 2026-05-29 resume reshaped the worlds topology locked in Statement 26: the Fringe becomes two co-located places — place 2 (warm) and place 3 (hostile) — behind the one Shimmer (Statement 31); the near sides are coupled, the same coordinates seen two ways (32); the home portal travels with the FIM and FringeIsland-the-village is placed in the Beyond of place 2 (33); only the FIM's own glass ball is inviolable, the rest of place 2 is tendable under the rule "gardening, not guarding" (34); the world grows from the balls and their bonds, and place 2 is revived place 3 (35); the FIM-Whisp cord and the FIM-FIM branch are two distinct, interlocking bonds (36). Per session discipline, Statements 12, 26, 27 are not edited; 31–36 supersede or refine them by addition.
 
 The 2026-06-01 resume adds Statements 37-40: all FIM balls glow equal while the cord carries health, visible to friends along a grown branch (37); the branches are the visible crown and their glow is a relationship's aliveness (38); every FIM and Shadow has their own Whisp and cord, and only the ball is granted at transcendence (39); and place 3 is reached through Ordinary-World field portals anchored by seeds budded from the home ball, a danger-portal needs a seed on its edge to pass, a closing portal leaves the cord dead or stuck, and the FIM sets the cord length as the dial of meta-safety (40). Statements 37-40 refine or extend 16, 22, 26, 27, 32, 34, 35, 36 by addition only; none of those is edited.
+
+The 2026-06-05 resume turns to the product/ecosystem layer — what the named products (Hub, Gimbal, Game, the three studios) are and what lands where — and adds Statements 41-46 that the product questions forced open: "the village" as the working name for the safe harbor (41); the glowing glass ball as a two-zone gateway, the inside to the private home and the rim to the village (42); the private home as a self-chosen, inviolable, selectively shareable representation of where the FIM feels safest (43); the home furnished with the personal-scope slice of World Studio and evolving as the FIM grows (44); anchoring as the real gate — near side (body-anchored, Shadow-open) versus Beyond (ball- or seed-anchored, FIM-only), which makes the village FIM-only (45); and Shadow access via anonymous auth with ephemeral, erased-on-inactivity data, transcendence being the persistence-and-consent threshold (46). A "Product / ecosystem layer (design locks)" section records the device-independent affordance model, feature-grain affordance-keying, the console (governance by scope), and the Game as depth-not-product. Statements 41-46 and the product locks extend earlier material by addition; none is edited.
 
 ---
 
@@ -1294,6 +1296,101 @@ Depth is **additive**, and "*when depth is needed*" is the governing principle. 
 
 ---
 
+## 2026-06-05 resume — the product/ecosystem layer; village, home, ball-UI, and Shadow refinements
+
+This resume turns from the universe-fiction to the **product/ecosystem layer** — what the named products (Hub, Gimbal, Game, and the three studios) are, and what lands where — and, in doing so, adds Statements 41-46 of fiction that the product questions forced into the open. Worked as a Claude.ai bouncing session: a hypothesis was built, dry-run against the locked capabilities and the edge cases, and the loose threads resolved one at a time. Per session discipline, no prior statement is edited; the product locks and Statements 41-46 extend earlier material by addition. Reconciliation with `../../universe/` and the planning tree is the next session's work (see the bridge).
+
+### Product / ecosystem layer (design locks)
+
+- **Not clones; one shared core plus a situation-specific surface.** ADR-U023 already makes every product a client over one Platform API, so the brain is shared by design; products differ only at the surface, by the FIM's situation. This dissolves "are they just clones on different devices."
+- **"Gimbal" and "Hub" name two affordance *profiles*, not two devices.** Two axes: a *physical-world membrane* (camera, LiDAR, GPS, mic, AR display, hands-free, portability — perception and capture) and a *canvas/tooling membrane* (screen size, precision input, keyboard, file system, external plugins). Devices are points in that space: phone (high physical / low canvas), laptop (low / high), tablet (high / medium, the convergence device), AR glasses (max physical + immersion). Capabilities key to required affordances and light up on any device that offers them — device-independent and future-proof against new hardware.
+- **Affordance-keying is at *feature* grain (dry-run thread #4, LOCKED).** A product is a bundle of features, each keyed to a small, fixed, coarse affordance set (e.g. sensors / comfortable-canvas / precision-input / none); a feature appears wherever its affordances exist. *Chosen restriction is allowed* (Option A): a feature may be scoped to richer-affordance devices on purpose, but every restriction must be named by its affordance, never by whim. Forced exclusivity is then automatic, with no per-device bookkeeping. Forward consequence: each feature spec carries its required-affordance as metadata, beside the Model A `maturity:` field. Rationale across development / maintenance / admin established A as cheaper and more sustainable, and a natural partner to affordance-keying.
+- **The Game is depth, not a product.** It is a depth setting of journeys inside the one lived experience. Revisit trigger: a journey needs fidelity, an engine, or a play surface the mobile/web stack cannot render (AR glasses are a strong candidate to spark a real Game).
+- **The Studios are a role-gated authoring mode inside the experience (threads #2, #3 absorbed).** Three feature-bundles — World, Arc, Journey — under the Universe Studio umbrella, reachable from both profiles per affordance: World Studio has a capture-foot on sensors, its deep edit needs the canvas; Arc and Journey lean canvas with light mobile review. Each journey declares its required affordances at authoring time. World Studio access tiers by *scope* (Statement 44).
+- **The console — governance by scope (dry-run thread #1, LOCKED).** Community-scoped care (a Steward moderating their own group) stays woven in-place in the FIM experience; universe-scoped governance (DeusEx / Universeers — economy, portfolio, legal) gets its own back-of-house surface, working name *the console* (fiction name deferred). Ferd routing: content reporting/moderation in-place; audit-log viewer and feature flags to the console; self-service platform-exit stays in-experience (a Member leaving). Transactions split likewise: a Member buying is in-experience, economy management is on the console.
+- **Placement rule (final form).** Each feature declares the affordances it requires; it appears on any device that offers them; chosen restrictions are named by affordance. The Gimbal-capture to Hub-refine pipeline (scan a real object on the phone, refine it on the canvas) proves the products are complementary, not clones — two ends of one workflow.
+- **Shadow is one status across surfaces, not a product (dry-run thread #5).** Near-side only; gated by *affordance* (AR needs sensors) and by *status* (the ball gates the Beyond). The lived thing is "being-in-FringeIsland (Shadow + FIM)."
+- **Dry-run status.** Seven loose threads were surfaced and worked: #1 governance and #4 parity locked directly; #2 journeys, #3 studios, #5 Shadows, and the #7 ends (Transactions, voice input, Observability-as-infra) closed or absorbed by #1 and #4; #6 (reconciliation against the existing writings) is the next phase, carried by the bridge.
+
+---
+
+## 41. "The village" as the working name for the FringeIsland safe harbor
+
+**Statement:**
+> We can in future sessions refer to the FringeIsland safe harbor as "the village" for now.
+
+**Held:**
+- "The village" is adopted as the working name for the safe-harbor commons in the Beyond of place 2 (Statements 26, 33). Provisional and revisitable; not yet canonical.
+
+---
+
+## 42. The glowing glass ball has an inside and an outer rim — tap in for home, tap the rim for the village
+
+**Statement:**
+> In the Gimbal or on the Hub there is a graphical visualization of the glowing glass ball. For a FIM the ball has an inside and an outer rim. Pressing the inside transports the FIM to their private home/garden (the glowing glass ball). Pressing the outer rim transports them to the village of FringeIsland, where they interact and socialise with other FIMs and maybe NPCs.
+
+**Held:**
+- The ball is the single home-gateway with two zones: the **inside** is the private home (self / 1); the **rim** is the shared village (self-in-community). It absorbs the home portal — the ball *is* the gateway, no separate door.
+- The geometry is intuitive: centre = inward/private, edge = outward/social. It recurs the universe's inner/outer signature and encodes the Three Perspectives spatially.
+- Mirrors across both affordance profiles (a non-sensor feature).
+
+---
+
+## 43. The private home is a self-chosen representation of where the FIM feels safest — inviolable, selectively shareable
+
+**Statement:**
+> Each FIM has a private home, represented by a self-chosen visualization of how it looks — a field or garden of flowers and grass with small pathways, a small den up in the attic on the roof somewhere unknown, a house on top of a trunk reaching above the clouds. The home is visualized by where the FIM feels most safe, and a place to be creative and feel free. It is the most private place, locked only to the specific FIM. A FIM can however selectively invite other FIMs to their whole home or parts of it — all decided by the FIM themselves.
+
+**Held:**
+- The home is a spatial self-portrait — the "Who am I?" question answered in scenery rather than words.
+- "Inviolable" (Statement 34) means **default-locked**: the FIM holds the only key. **Invitation** is that key used selectively — whole home or chosen parts, granted and revocable.
+- Selective invitation to whole-or-parts is a real granular access-control feature (per-region permissions, richer than open/closed), riding the permission/group model and the Privacy vertical.
+
+---
+
+## 44. The home is furnished with the personal-scope slice of World Studio, and evolves as the FIM grows
+
+**Statement:**
+> Each FIM uses parts of World Studio to furnish their private home. And the home will likely evolve as the FIM grows and the Whisp fills.
+
+**Held:**
+- **World Studio access tiers by scope.** Furnishing your own home (inviolable, affects no one else) is open to every FIM; authoring the shared world stays Dreamineer/Creator-gated. The same "gate by scope" law as governance (this resume's thread #1).
+- Plausible Dreamineer on-ramp (offered, not locked): home-creation as the training ground, with Dreamineer authority being that same creative capacity extended to the commons.
+- The living home is a growth-mirror — FIM-authored and/or Whisp-prompted — reinforcing "the Whisp fills by the human growing" (Statement 17).
+
+---
+
+## 45. Anchoring is universal for leaving the near side — the gate is near-side vs Beyond, not safe vs dangerous
+
+**Statement:**
+> Portals to the far side of place 2 do need seeds, so "no seed for the village" does not really hold. Are we starting to erode the whole seed-versus-portal concept by having no seeds needed for the village?
+
+**Held (resolution):**
+- The gate was never safe-vs-dangerous (place 2 vs place 3). It is **near-side vs Beyond**, gated by the **anchor**:
+  - **Near side** (place 2 and place 3 both): coupled to ordinary-world coordinates, so the FIM's physical body is the anchor (Statement 32). No seed; Shadow-open.
+  - **Beyond of place 2** (home / village): not coordinate-tied, so the **ball is the permanent anchor-root** (Statement 39). Reached via the always-on home portal — no fresh seed. FIM-only.
+  - **Into place 3** (deeper, hostile): **fresh seeds** budded from the ball, planted along the route. FIM-only.
+- Anchor permanence runs body -> ball -> disposable seeds. Only the near side is anchor-free, because reality holds you there. The concept tightens rather than erodes.
+- **Correction of an in-session suggestion:** an earlier idea this session that "a Shadow can visit the village as a guest" is wrong — a Shadow has no ball, hence no anchor in any Beyond, so the village is **FIM-only**. A Shadow is confined to the near-side warm overlay; transcendence (gaining the ball) is what opens the village.
+
+---
+
+## 46. Shadow access and data — anonymous auth, ephemeral state, erased on inactivity; transcendence is the persistence-and-consent threshold
+
+**Statement:**
+> A Shadow needs anonymous auth to access parts of the FringeIsland system, but actual private data will be lost if a session ends before the Shadow transcends to become a FIM. If for this reason some data is stored server-side for a while we need to care for that, but the important statement is that the data is erased soon after a Shadow has been inactive or purposely closed their activities at FringeIsland.
+
+**Held:**
+- **Anonymous authentication** — a server-issued anonymous identity, no PII. A Shadow needs server access to perceive the shared near-side world at all, so pure client-only is not viable; the privacy protection is ephemerality, not refusing to store.
+- A Shadow's own **private data is ephemeral** — no durability past session-end unless they transcend.
+- **Transcendence is the persistence-and-consent threshold:** only on becoming a FIM (consent captured) does data bind durably; the migration must be atomic so a last-moment joiner is not erased mid-rescue.
+- **Erasure discipline:** transient server-side Shadow data is erased soon after inactivity or an explicit close — short TTL plus an explicit-erase path. Scope: the Shadow's own generated data (Whisp dialogue is the most sensitive class), not the shared-world content merely read.
+- Care points (deferred): the exact TTL / inactivity threshold (a Privacy-vertical / Identity config) and migration atomicity. Not legal advice; aligns with data-minimization and storage-limitation, and Whisp dialogue should be treated as potentially personal data regardless of anonymity.
+
+**Refines / extends:** Statements 16, 26, 33, 34, 39, 40 (Shadow status, the safe harbour, the home portal, the inviolable ball and tendable commons, transcendence grants the ball, seeds and anchoring) by addition; none is edited.
+
+---
+
 ## Patterns emerging so far
 
 *(Updated as the session continues.)*
@@ -1388,6 +1485,9 @@ Depth is **additive**, and "*when depth is needed*" is the governing principle. 
 - **The Whisp is universal; the ball is earned.** Everyone, Shadow or FIM, has their own Whisp and cord (the inner voice). Transcendence grants only the ball, which is the home base, seed-source, and anchor-root that opens the dangerous Beyond. The Shadow lock is intrinsic (no ball, no purchase), not a fence.
 - **Anchoring is world-genesis at small scale.** Seeds budded from the home ball, planted along a route into place 3, are both climbing-protection and patches of place-2 life reclaimed from the dead ground. The macro genesis (Statement 35) and the micro venture are the same gesture.
 - **The cord is the FIM's dial.** The FIM sets how far the Whisp may go; risk is depth times protection; the peril is opt-in. Meta-safety, voluntariness, and human-last-say expressed at the level of the lifeline. "Stuck" is the rare failure where the dial jams, and rescue along a branch is its answer.
+- **Products are situations, not devices.** What lands in Hub, Gimbal, Game, or a studio is decided by the FIM's situation and the affordances at hand, not by the device; the brain is one shared core (ADR-U023), so the products are complementary surfaces, not clones.
+- **Gate by scope recurs as a system law.** Governance (community vs universe) and World Studio access (your own home vs the shared world) both open at personal scope and gate at shared/public scope. One rule resolving two unrelated threads marks it as structural, not incidental.
+- **The inner/outer signature reaches the home.** The ball's private inside and communal rim is the same outer/inner pattern as the Whisp, Matter (external/internal), world (backdrop/narrative), and World Studio (hard/soft) — now in the FIM's own home, and spatially encoding the Three Perspectives.
 
 ---
 
@@ -1402,6 +1502,7 @@ Noted for reconciliation when concepts graduate to `../../universe/`:
 - The decision is explicit: divergence is permitted. Reconciliation happens at promotion time.
 - **2026-05-29 resume (Statements 31–36) — topology reshaped.** The single Fringe of Statement 26 becomes two co-located places (place 2 warm, place 3 hostile) behind the one Shimmer; the *collective* safe-harbor of Statement 26 is superseded (only each FIM's own glass ball is inviolable; the commons is grown and tendable); FringeIsland-the-village is placed in the Beyond of place 2 (resolving 26's deferred question); Statement 12's tonal binary is reconciled as two poles of one continuum; and Statement 27's cord gains a distinct sibling, the FIM-to-FIM branch. Per the discipline above, none of Statements 12, 26, 27 is edited; Statements 31–36 supersede or refine them by addition, and reconciliation with `../../universe/` happens at graduation.
 - **2026-06-01 resume (Statements 37-40) - balls, cords, branches, Shadows, and the seed/portal mechanics.** All FIM balls glow equal (the equality principle; the considered ball-brightness-as-fullness idea is paused), and the variable signal moves to the cord as health (colour and integrity), visible to friends only along a grown branch for cooperative healing (37). The branches are the visible crown and their glow is a relationship's aliveness (38). Every FIM and Shadow has their own Whisp and cord; only the ball is granted at transcendence, and the ball is the home base, seed-source, and anchor-root (39). Place 3 is reachable through Ordinary-World field portals, anchored by seeds budded from the home ball that are both protection and reclaimed living ground; a danger-portal requires a seed on its edge to pass (which hard-locks Shadows out and marks the way home); a closing portal leaves the cord dead (seed destroyed) or stuck (living seed, reopenable); and the FIM sets the cord length as the dial of voluntariness and meta-safety (40). Per the discipline above, none of Statements 16, 22, 26, 27, 32, 34, 35, 36 is edited; Statements 37-40 refine or extend them by addition, and reconciliation with `../../universe/` happens at graduation.
+- **2026-06-05 resume (Statements 41-46 + product/ecosystem layer) - the products, and village/home/Shadow refinements.** The product/ecosystem model is new relative to the existing planning and architecture writings and will need reconciliation: ADR-U023 frames products as clients over the Platform API, but the affordance-*profile* reading of "Gimbal" and "Hub" (two membranes, device-independent, feature-grain affordance-keying) is not yet in those docs; "the console" as a distinct universe-governance surface is new; the April-10 Hub DESCRIPTION.md fixes the role ladder (Member / Steward / Dreamineer / DeusEx) and calls the Hub "FIM-facing" — to be squared with the two-profiles reading and the scope-based governance and authoring gates; and "the village" is a new working name for the safe harbour. Per the discipline above, nothing in VISION.md, the manifesto, the universe writings, or Hub DESCRIPTION.md is edited here; reconciliation is the next session's explicit task (see the bridge).
 
 ---
 
@@ -1412,6 +1513,8 @@ Noted for reconciliation when concepts graduate to `../../universe/`:
 **Resolved / answered in the 2026-05-29 resume (see Statements 31–36):** whether the beyond-register is one place or many (two co-located places); how tonal range is distributed (co-located, the dark face reachable by crossing); whether FringeIsland sits in the near side or the Beyond (the Beyond of place 2); what the Void contains and the cord-severance threat model (place 3 / the un-growing); the onboarding worry (a newcomer inherits the grown crown). The original threads remain logged below; the new statements carry the resolutions.
 
 **Resolved / answered in the 2026-06-01 resume (see Statements 37-40):** how a FIM perceives the Whisp's quality changing, and what "the Whisp suffers" looks like short of death, are now carried by the cord's colour and integrity, the strained-to-cut gradient (Statement 37); how one skims the balls to find friends, and in part how one travels through them, is following your own branches (Statement 38); whether a Shadow has any access to a Whisp is answered yes, their own Whisp and cord, with only the ball withheld (Statement 39); and which objects qualify as cord anchor points is answered as seeds budded from the home ball (Statement 40). Still open by choice: whether anchor-seeds are consumed on use or effectively endless (Statement 40).
+
+**Resolved / answered in the 2026-06-05 resume (product/ecosystem layer + Statements 41-46):** what the Hub is in the parallel-world framing (the long-open thread below) — it is the inner-facing affordance profile, the ball's inside; whether the studios are tools or products — a role-gated authoring mode; how a FIM acquires Dreamineer authority is partially addressed (home-creation as the on-ramp, Statement 44, offered not locked); and the product-layer questions of clones-vs-differentiation, device proliferation (tablet, AR glasses), and the Shadow access/consent shape are carried by the product locks and Statements 41-46 above. The older threads remain logged below; the new material carries the resolutions. Inline re-tagging of individual bullets is deferred, per the G-33 separate-corrective-pass discipline.
 
 **G-33 cleaning pass (2026-05-29):** every Open thread below has now been classified against all 36 statements and tagged inline. Nothing is deleted and the original append-order is preserved, so the audit trail of what was open and when it closed stays intact. Tags: **[RESOLVED -> Statement N]** (fully answered by a later statement); **[PARTIAL -> Statement N | open: ...]** (materially addressed, with a named remainder still open); **[STILL OPEN]** / **[STILL OPEN -> deferred per Statement N]** (no statement yet bears on it, or it is explicitly deferred or parked, typically to graduation). Tally: 20 RESOLVED, 65 PARTIAL, 45 STILL OPEN. Note: the Live/Grow/Matter balance-vs-sequence thread, previously logged as explicitly deferred, is now tagged RESOLVED -- Statement 28 carries its inline 2026-05-25 resolution.
 
