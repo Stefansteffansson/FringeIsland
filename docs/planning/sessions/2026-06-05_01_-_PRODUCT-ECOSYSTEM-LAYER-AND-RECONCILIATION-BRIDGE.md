@@ -40,6 +40,16 @@ All detail lives in the 2026-06-05 resume of the universe-discovery Session 01 f
 
 Two phases, in order. **Phase 1 must complete before Phase 2 starts.**
 
+### Refinement (2026-06-05, forward note)
+
+Added after this bridge was first committed, at Stefan's request. This supersedes the two-phase framing in the Phase 1 / Phase 2 subsections below; those are retained intact as the original record. Net change: split into two sessions, a purpose-scoped inventory, a CC bootstrap, and named gated deliverables.
+
+1. **Split into two sessions.** Inventory and challenge are each a full session's work; bundled, they yield a shallow pass at both. The next session is the map only, ending with a ratified inventory; the challenge is the session after.
+2. **Scope the inventory by purpose, not exhaustiveness.** Map only files that assert what FringeIsland *is* or how it *works* (universe, products, roles, cosmology, platform behaviour). Skip pure process / tooling / planning files unless they describe the thing. This keeps Phase 1 from becoming a repo-wide crawl (Tripwire #6).
+3. **Bootstrap with CC, not memory or `search_files`.** Open Phase 1 with a CC prompt that emits (a) the full `docs/` tree and (b) a grep for a fixed term list - Hub, Gimbal, Game, studio, village, safe harbour, console, Shadow, FIM, Whisp, ball, affordance, Dreamineer, DeusEx, transcend, anchor/seed, portal. Claude.ai organizes the raw output. Avoids the recursive-search trap and memory drift.
+4. **Phase 1 deliverable (named).** A concept -> where-described map (which file carries each concept, at what status: canonical / thinking / planning); a gap list in three buckets - (i) locks/statements with no home, (ii) docs that are stale or contradict the locked set, (iii) implied-but-missing files; and one explicit finding: does a single canonical "what FringeIsland is" description exist, or is it emergent across files? Treat the map as a session snapshot, not a new maintained state-doc (generate-on-demand principle).
+5. **Phase 2 deliverable (named) and gated.** A statement-driven reconciliation register: each of Statements 1-46 + the product locks -> {reflected / stale / contradicts / missing, proposed resolution, graduate-or-defer}, cross-checked doc-driven for staleness. Output is the register for ratification; canonical edits to VISION / manifesto / Hub-DESCRIPTION / universe happen only on ratified items, at graduation. The session does not rewrite canon from not-yet-ratified discovery.
+
 ### Phase 1 - Inventory and map (analyse before challenging)
 
 Before complementing or challenging anything, build a map of what already exists and where:
@@ -131,3 +141,28 @@ to a full-description reconciliation session (inventory-then-challenge).
 Not in scope: the pre-existing working-tree changes to CLAUDE.md and
 docs/planning/sessions/openers/cc-execute-prompt.md are unrelated and left unstaged.
 ```
+
+---
+
+## Refinement (2026-06-05, forward note)
+
+Added after this bridge was first committed (forward-only; the Phase 1 / Phase 2 text above is left intact). It sharpens the next-session plan and names what the reconciliation produces - because the capability descent (PC-1..PC-4 derived; DS-1..DS-7 pending) will later be validated against the reconciled description.
+
+**Split into two sessions.** The map and the challenge are each a full session; bundled they yield a shallow pass at both.
+
+**Session A - the map.**
+- Scope by purpose: inventory only files that assert what FringeIsland *is* or how it *works* (universe, products, roles, cosmology, platform behaviour). Skip pure process/tooling/planning unless it describes the thing.
+- Bootstrap with CC, not memory or `search_files`: have CC emit (a) the full `docs/` tree and (b) a grep for a fixed term list (Hub, Gimbal, Game, studio, village, safe harbour, console, Shadow, FIM, Whisp, ball, affordance, Dreamineer, DeusEx, transcend, anchor/seed, portal). Claude.ai organizes the raw output.
+- Deliverable: a concept -> where-described map (file + status: canonical / thinking / planning); a gap list in three buckets - (i) locks/statements with no home, (ii) docs stale or contradicting the locked set, (iii) implied-but-missing files; and one explicit finding - does a single canonical "what FringeIsland is" description exist, or is it emergent across files? The map is a session snapshot, not a maintained state-doc.
+
+**Session B - the challenge.** Statement-driven spine: each of Statements 1-46 + the product locks -> {reflected / stale / contradicts / missing, proposed resolution, graduate-or-defer}, cross-checked doc-driven for staleness. Session B produces two artifacts:
+
+1. **A ratified, reconciled description** of what FringeIsland is and how it works - divergences resolved into one coherent picture, each marked graduate-now or defer. Canonical edits (VISION / manifesto / universe / Hub DESCRIPTION) happen only on ratified items, at graduation; the session does not rewrite canon from not-yet-ratified discovery. Whether this lands as one description doc or as the existing set is decided by Session A's canonical-description finding.
+2. **A descent-impact register** - the artifact that feeds the later validation of the L1->L3 capability descent. For every reconciled point that bears on the architecture, an entry naming the capability area it touches (PC-1..PC-4, DS-1..DS-7, a vertical, the Products / Platform API layer) and whether it **confirms / revises / adds-to** that capability, split into:
+   - **Already-derived** (PC-1..PC-4 L1->L3 complete): points needing a re-check or revision of work already done.
+   - **Not-yet-derived** (DS-1 World Model next, then DS-2..DS-7): new constraints the upcoming derivations must honour from the start, so they are derived right rather than re-derived.
+   - Seeds already visible: the required-affordance metadata field on feature specs (a template change touching every spec); the console's home in PC-4 Governance / the Admin vertical; governance-by-scope in PC-4; Shadow anonymous-auth + ephemeral erasure in PC-2 Identity + the Privacy vertical; the home/village per-region permissions across PC-2 / PC-3 / DS-1 World Model / Privacy; studios-as-mode + World-Studio personal-vs-shared scope across the studios products / DS-1 / PC-2.
+
+**Sequencing decision this surfaces.** With the descent-impact register in hand, decide on evidence whether to pause the Domain-Service descent (DS-1 is next) until reconciliation lands - so DS-1..DS-7 derive on solid ground - or let DS-1 proceed now and re-check it against the register afterward. Expectation: the reconciled description should mostly *confirm* the existing descent with targeted revisions (ADR-U023 still holds; affordance profiles refine the Products layer; the console likely slots into existing Governance/Admin), not force a teardown.
+
+**Net chain:** Session A (map) -> Session B (reconciled description + descent-impact register) -> later validation/correction of the descent against the register (re-check PC-1..PC-4; constrain DS-1..DS-7).
