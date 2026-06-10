@@ -57,6 +57,10 @@ docs/
 │
 ├── research/                              ← all research reports (domain + methodology)
 │
+├── novel/                                 ← fiction layer — thriller set in the universe (not a canon source)
+│   ├── STORY-BIBLE.md                     ← premise, cast, canon-conformance register, chapter outline
+│   └── chapters/                          ← one file per chapter
+│
 │   ── Tree 2: Planning — How We're Building It ──
 │
 ├── planning/
@@ -87,6 +91,7 @@ docs/
 | `platform/` | Service descriptions, feature specs, API contracts | Binding decisions (→ architecture), ecosystem strategy (→ ecosystem) |
 | `planning/reference/` | Point-in-time snapshots that inform planning cycles | Permanent structural models (→ architecture), ecosystem strategy (→ ecosystem) |
 | `research/` | Research reports and studies, regardless of topic | Strategy documents (→ ecosystem), decisions (→ architecture) |
+| `novel/` | Fiction layer — narrative work set in the universe; canon-conformant but never canon-defining | Universe canon (→ ecosystem/universe/ + discovery), specs, planning artifacts |
 
 ---
 
