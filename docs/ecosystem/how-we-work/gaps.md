@@ -1,6 +1,6 @@
 # Gaps register
 
-**Status:** twenty-seven known documentation and design gaps across the FringeIsland development system as of 2026-05-16.
+**Status:** twenty-seven known documentation and design gaps across the FringeIsland development system as of 2026-06-10.
 
 **Purpose:** a single place to see every gap flagged in the [how-we-work](./README.md) chapters, grouped by axis, with suggested resolution and priority.
 
@@ -31,7 +31,6 @@
 | G-18 | Execution (research) | Research pathway under-specified | Medium | Unify maturity-2, spike, and research-report mechanisms; describe how research enters the backlog and how findings feed specs |
 | G-19 | Cadence (horizontal) | Wave-planning skill needs structural review | Medium | Run a structural review of `wave-planning` skill parallel to the 2026-04-22 review of `ecosystem-decomposition`; define its Sources, upstream dependencies, write scope, and boundary with the vertical axis |
 | G-20 | Decomposition (downstream) | Reconciliation activity has no defined home | Medium | Decide where reconciliation lives (own skill / mode inside `feature-development` / named workflow); currently named only in prose in the `ecosystem-decomposition` skill |
-| G-21 | Decomposition (L4) | Feature-inventory summary in SPECIFICATION.md has no maintenance discipline | Medium | Add a discipline (in `feature-development` skill + `doc-health-check`) that ensures the L4-owned feature-inventory summary stays current as FEAT-*.md files change |
 | G-22 | Decomposition (cross-level) | Legacy pre-refactor FEAT-*.md need absorb-and-delete discipline | Medium | Add a discipline to the ecosystem-decomposition skill: when L3 runs fresh on an entity with legacy FEAT-*.md files, inspirational insight is absorbed into L1/L2/L3 first, then legacy specs are deleted in the same commit that lands new L4 specs |
 | G-23 | Documentation hygiene | Stale references to superseded authorities across the repo | Medium | Grep-pass audit for references to `2026-04-10_-_SESSION-BRIDGE.md` as a dependency-rule authority and for lingering ADR-U001 L0–L7 references; repoint each hit to ADR-U023 or the V4 anatomy as appropriate |
 | G-25 | Documentation tooling | How-we-work rendered views drift between markdown updates | Medium | Closed-loop mechanism (make target / pre-commit hook / `doc-health-check` extension) that detects when the canonical docx or `index.html` is older than any `how-we-work/*.md` source; README also needs correction (names `.docx` as canonical when `_3.docx` is current) |
@@ -39,6 +38,7 @@
 | G-28 | Documentation hygiene | Trust-disk-over-memory as a cross-cutting discipline | Low | Two related rules already exist in different skills: (a) the AGENTS.md cross-check rule referenced by `doc-health-check` §3.6 ("when a grep returns no hits, confirm with a direct listing before concluding something is absent"), and (b) the citation-verification rule added to `ecosystem-decomposition`'s Quality checklist on 2026-04-26 ("every cited file path was verified against a directory listing before commit"). Both are forms of "trust disk over memory." Candidate consolidation: promote a single, named principle to root `AGENTS.md` or root `CLAUDE.md` so it can be referenced from any skill rather than restated. |
 | G-29 | Decomposition (lateral) | Lateral routing for cross-entity findings produced by L3 stress-test passes | Medium | Design a routing mechanism that captures expected-dependency claims surfaced by an entity's L3 derivation and surfaces them to the targeted entity's pickup list before that entity's L3 runs |
 | G-30 | Agent routing | Tier CLAUDE.md files contain miscategorised entity-specific content | Medium | Walk each tier `CLAUDE.md` against the five-row content policy in root `CLAUDE.md`; migrate Hub-specific rules out of `products/CLAUDE.md` and Core/Domain-specific guidance out of `platform/CLAUDE.md` into entity- or sub-tier-level files |
+| G-32 | Decomposition (post-L3 gate) | Entities with shipped §L3 lacking reader tours — backfill obligation | Medium | Per-entity backfill when §L3 lands; `doc-health-check` flags entities with §L3 present and `tours/HUMAN.md` or `tours/TECHNICAL.md` absent |
 
 ---
 
@@ -85,6 +85,11 @@ The wave-spec template has the DoD shape. `docs/planning/waves/ferd.md` has not 
 
 *Proposed fix:* populate the DoD section in `docs/planning/waves/ferd.md`. This is the natural work product of a session using the `wave-planning` skill. Suggested timing: during the cooldown before Eid begins ramping up.
 
+**G-19 — Wave-planning skill needs structural review (cadence, horizontal).**
+The 2026-04-22 session rebuilt the `ecosystem-decomposition` skill around explicit per-level Sources, upstream dependencies, and write scope. The `wave-planning` skill — the horizontal-axis counterpart — has not had the same structural review: its Sources, upstream dependencies, write scope, and boundary with the vertical axis are undefined. The skill's own description names this gap; the self-reference resolves when the review runs.
+
+*Proposed fix:* run a structural review of `wave-planning` parallel to the 2026-04-22 review of `ecosystem-decomposition` — define its Sources, upstream dependencies, write scope, and boundary with the vertical axis.
+
 ### Execution — chapters 03 and 04
 
 **G-09 — Refinement ritual undocumented.**
@@ -130,11 +135,6 @@ The gap compounds as waves mature. Ferd is foundation work where most research w
 The 2026-04-22 rewrite of the `ecosystem-decomposition` skill locked that **reconciliation is a separate activity, downstream of derivation** — L3 and L4 produce authoritative output derived fresh from upstream, and existing artifacts (pre-refactor specs, current code) are compared against that authoritative output as a distinct activity. The skill names two reconciliations: inventory-against-existing-specs (run after fresh L3) and spec-against-code (run after L4). But the activity itself has no skill, no workflow, and no named home. It currently runs as a named activity in whatever skill context is active when it's needed, which is not sustainable at fifty contributors.
 
 *Proposed fix:* session decision to pick a home. Three plausible options — (a) own skill (`reconciliation` or similar), (b) mode inside `feature-development` since spec-against-code reconciliation produces cycle work, (c) embed reconciliation mechanics inside `ecosystem-decomposition` as a post-derivation section. Option (b) is probably the natural fit for spec-against-code; option (c) might work for inventory-against-existing-specs. Leaning toward: defer the decision until reconciliation has actually run once in practice, which will inform its shape. Flag this gap when wave 1's first reconciliation happens.
-
-**G-21 — Feature-inventory summary in SPECIFICATION.md has no maintenance discipline (decomposition, L4).**
-The 2026-04-22 rewrite established that SPECIFICATION.md has three sections under different authority — L2 owns identity/boundaries/technical shape, L3 owns the capability inventory, L4 owns the feature-inventory summary. L4 is expected to update the feature-inventory summary whenever a FEAT-*.md file is created, advances in maturity, or is deleted. But no mechanism ensures this actually happens. A developer writing a feature spec at maturity 2-explored, or advancing one to 4-ready, may fail to update the corresponding summary row, and the drift will accumulate silently.
-
-*Proposed fix:* (a) add the maintenance discipline to the `feature-development` skill — updating the feature-inventory summary is part of the spec-write/update workflow; (b) add a `doc-health-check` check that compares the set of FEAT-*.md files under `{entity}/features/` against the feature-inventory summary in `{entity}/SPECIFICATION.md` and flags drift at every cycle boundary.
 
 **G-22 — Legacy pre-refactor FEAT-*.md need absorb-and-delete discipline (decomposition, cross-level).**
 The 2026-04-22 rewrite locked Resolution A and choice (a): L4 derives feature specs fresh from L3's inventory and reads zero pre-refactor FEAT-*.md files; any inspirational value from the legacy specs is absorbed upstream (at L2 or the start of L3) into DESCRIPTION.md, SPECIFICATION.md, or the capability inventory before L4 runs; legacy specs are then deleted as part of the commit that lands the new L4 specs. This discipline is described in the skill but has no enforcement. Without it, someone may run L3 on an entity with legacy specs, produce a fresh capability inventory, and leave the legacy FEAT-*.md files in place "just in case" — re-introducing the exact contamination the discipline is designed to prevent.
@@ -221,13 +221,13 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 - G-18 Research pathway under-specified
 - G-19 Wave-planning skill needs structural review
 - G-20 Reconciliation activity has no defined home
-- G-21 Feature-inventory summary in SPECIFICATION.md has no maintenance discipline
 - G-22 Legacy pre-refactor FEAT-*.md need absorb-and-delete discipline
 - G-23 Stale references to superseded authorities
 - G-25 How-we-work rendered views drift
 - G-27 `PRODUCTS_AND_PLATFORM.md` staleness vs. authoritative status
 - G-29 Lateral routing for cross-entity findings produced by L3 stress-test passes
 - G-30 Tier CLAUDE.md files contain miscategorised entity-specific content
+- G-32 Entities with shipped §L3 lacking reader tours — backfill obligation
 
 **Low priority** (single-word fixes or edge cases):
 - G-11 TDD overstated vs risk-based
@@ -237,3 +237,5 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 ---
 
 *Last updated 2026-05-29 (G-33 added during the universe-discovery Session 01 resume, commit 3548b98, and closed the same day by the G-33 cleaning pass that classified all 130 Open-thread bullets against the 36 statements and tagged them inline: 20 RESOLVED, 65 PARTIAL, 45 STILL OPEN). Originating session bridges: `docs/planning/sessions/2026-04-19_-_HOW-WE-WORK-SESSION.md` (G-01 through G-18); `docs/planning/sessions/2026-04-22_-_DECOMPOSITION-SKILL-REFACTOR.md` (G-19 through G-22); `docs/planning/sessions/2026-04-24_-_L2-COMPLIANCE-AUDIT.md` (G-23 through G-25). G-26 was added in `docs/planning/sessions/2026-04-26_02_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` and closed in `docs/planning/sessions/2026-04-26_06_-_BLOCK-A2-AUTHOR-DESIGN-SYSTEM-TEMPLATE.md`. G-24 was closed in the same A.2-author bridge after Block A completed (all three previously-missing templates were authored across the 2026-04-26 session chain). G-27 and G-28 were added in `docs/planning/sessions/2026-04-26_07_-_BLOCK-B1-HUB-L2.md` (the Hub L2 walk session). G-29 has dual lineage: first registered in concept as G-NN in `docs/planning/sessions/2026-04-28_01_-_BLOCK-B2-HUB-L3.md` (the B.2 resumption bridge — surfacing the lateral-drift problem during L3 capability authoring), then sharpened in `docs/planning/sessions/2026-04-30_01_-_CODE-INFORMED-STRESS-TEST-PATTERN.md` (the stress-test pattern bridge — re-scoping the gap's resolution to handle the structured output of a named methodology step rather than ad-hoc surprises), and registered as G-29 during Block B.2 resumption (cascade-plan Session 1 had not yet landed at registration time, so G-29 was the next available number rather than G-32). G-30 and G-31 were both registered in cascade-plan Session 1 (`docs/planning/sessions/2026-05-01_01_-_CASCADE-SESSION-1.md` — to be authored at session close): G-30 was anticipated by the 2026-04-27 cascade-plan bridge as the tier-CLAUDE miscategorisation gap to register in Session 1; G-31 was drafted in the 2026-04-30 stress-test pattern bridge as the gap covering the pattern's promotion to skill text, with the cascade-plan bridge having sequenced it as deferred until two-instance evidence — Session 1 lands G-31's *registration* alongside its *resolution* against the closing-bridge Observations A–G evidence rather than waiting for Session 4. ID numbering is monotonic — closed IDs are not reused.*
+
+*Updated 2026-06-10: register housekeeping — G-32 added to the quick index and priority summary (described in the body since the 2026-05-03 reader-tours session but missing from both); G-19 given a body entry (index-only since 2026-04-22); G-21 closed — its proposed fix is implemented: the `feature-development` skill carries the same-commit summary update at maturity transitions 4→5 and 5→6, and `doc-health-check` Section 8 verifies consistency at cycle boundaries. References that named G-21 by ID (six specification templates, doc-health-check Section 8) were repointed to the implemented discipline in the same pass.*

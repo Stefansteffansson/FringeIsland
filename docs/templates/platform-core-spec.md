@@ -185,7 +185,7 @@ The `ecosystem-decomposition` skill's prerequisite-check pause mechanic produces
 
 ## L4 — Feature inventory summary
 
-*L4 authorship. Reconciliation output against L3's capability inventory. Updated whenever a `FEAT-PC###.md` file under the shared `docs/platform/core/features/` directory that this area owns a capability for is created, advances in maturity, or is deleted. Maintenance discipline is tracked as G-21 — the `doc-health-check` skill verifies this section reflects the current state of `features/`.*
+*L4 authorship. Reconciliation output against L3's capability inventory. Updated whenever a `FEAT-PC###.md` file under the shared `docs/platform/core/features/` directory that this area owns a capability for is created, advances in maturity, or is deleted. Maintenance discipline: the `feature-development` skill updates this section in the same commit as any maturity transition; the `doc-health-check` skill (Section 8) verifies it reflects the current state of `features/`.*
 
 **Note on shared `features/` directory.** The four Platform Core areas share a single `docs/platform/core/features/` directory (locked 2026-04-26: flat layout, single shared features directory). Each `FEAT-PC###.md` is routed to its owning area via the L4 feature-inventory summary in that area's SPECIFICATION.md. A feature may appear in only one area's L4 summary — the owning area. If a feature legitimately spans areas (e.g., a permission-model change touching PC-2 and PC-3), one area is named owner and the other is named in Platform dependencies in the feature spec; do not list the same FEAT-PC### in two areas' L4 summaries.
 

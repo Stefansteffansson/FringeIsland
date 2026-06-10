@@ -479,7 +479,7 @@ This section is the explicit protection.
 
 **Question:** For each active entity, does the feature-inventory summary section in its `SPECIFICATION.md` (§L4) accurately reflect the actual state of `FEAT-*.md` files under that entity's `features/` directory?
 
-The L4 feature-inventory summary is a reconciliation output maintained by the `ecosystem-decomposition` skill (L4 write scope) and updated operationally by the `feature-development` skill at maturity transitions 4→5 and 5→6. Closes the prevention loop for G-21 by detecting drift that prevention missed.
+The L4 feature-inventory summary is a reconciliation output maintained by the `ecosystem-decomposition` skill (L4 write scope) and updated operationally by the `feature-development` skill at maturity transitions 4→5 and 5→6. Closes the prevention loop for the feature-inventory maintenance discipline (formerly G-21, closed 2026-06-10) by detecting drift that prevention missed.
 
 ### What counts as drift
 
@@ -504,7 +504,7 @@ Four drift signals, in descending order of severity:
 3. For each drift signal:
    - **Fix in-place** if the fix is obvious: add a missing row from the spec's YAML, update a stale Maturity column value, remove a row for a non-existent spec.
    - **Flag as backlog item** if the fix requires judgement: e.g., summary row for a spec that correctly should not exist (was absorb-and-delete applied correctly?), or §L3 and §L4 diverge in ways that suggest L4 hasn't run for recent L3 changes.
-4. **Cross-reference G-21** in the output. If consistent drift is found, surface whether the drift came through the `feature-development` skill's maturity-transition step (Steps 3 and 5 of that skill) or through the `ecosystem-decomposition` skill's L4 write (creation / deletion / advance 0→4) — the pattern tells us where prevention is weakest.
+4. **Cross-reference the maintenance discipline (formerly G-21)** in the output. If consistent drift is found, surface whether the drift came through the `feature-development` skill's maturity-transition step (Steps 3 and 5 of that skill) or through the `ecosystem-decomposition` skill's L4 write (creation / deletion / advance 0→4) — the pattern tells us where prevention is weakest.
 
 ### What this section does NOT do
 
@@ -514,7 +514,7 @@ Four drift signals, in descending order of severity:
 
 ### Interaction with the feature-inventory template language
 
-The templates (`product-specification.md`, `domain-service-spec.md`, `vertical-spec.md`) each name G-21 explicitly in the §L4 authorship note: "Maintenance discipline is tracked as G-21 — the `doc-health-check` skill verifies this section reflects the current state of `features/`." Section 8 is the verification that closes the reference.
+The specification templates (`product-specification.md`, `domain-service-spec.md`, `platform-core-spec.md`, `studio-specification.md`, `design-system-specification.md`, `vertical-spec.md`) each point the §L4 authorship note at this check: "Maintenance discipline: the `feature-development` skill updates this section in the same commit as any maturity transition; the `doc-health-check` skill (Section 8) verifies it reflects the current state of `features/`." Section 8 is the verification that closes the reference.
 
 **Skip if:** No entity has had a FEAT-*.md created, advanced in maturity, deleted, or otherwise changed since the last check. Default is to run briefly — the check is cheap per entity.
 
@@ -620,7 +620,7 @@ The rule of thumb: if fixing it takes more than 5 minutes or requires thinking, 
 - **`ecosystem-decomposition` skill** — defines what each entity needs at Level 2 (Section 6 enforces it); defines the feature-inventory summary as L4's write scope (Section 8 enforces it); defines the agent context cascade (Section 9 verifies cascade integrity)
 - **`feature-development` skill** — responsible for setting `maturity: 6-done` correctly with Implementation notes filled in (Section 5 catches failures); responsible for updating the feature-inventory summary row at maturity 4→5 and 5→6 transitions (Section 8 catches failures)
 - **AGENTS.md** — cross-check rule: when a grep returns no hits, confirm with a direct listing before concluding something is absent. Section 3.6 applies this rule explicitly (cross-check the deleted-files table against disk every run).
-- **`docs/ecosystem/how-we-work/gaps.md`** — G-21 (feature-inventory summary maintenance) is the gap Section 8 closes; G-22 (legacy spec absorb-and-delete) is cross-referenced by Section 8 signal (2); G-29 (lateral routing for cross-entity findings) and G-30 (tier-CLAUDE miscategorisation) are referenced by Section 9 as the routing target and the reference standard for content categorisation.
+- **`docs/ecosystem/how-we-work/gaps.md`** — the feature-inventory maintenance discipline (formerly G-21, closed 2026-06-10) is what Section 8 verifies; G-22 (legacy spec absorb-and-delete) is cross-referenced by Section 8 signal (2); G-29 (lateral routing for cross-entity findings) and G-30 (tier-CLAUDE miscategorisation) are referenced by Section 9 as the routing target and the reference standard for content categorisation.
 
 ## Known gaps / skill calibration
 

@@ -367,7 +367,7 @@ The closing bridge at `docs/planning/sessions/{INSTANCE-DATE}_NN_-_{SPEC-SHORT-N
 - **Cross-spec implications.** If a finding has implications for another spec, route to that spec's pickup-list channel rather than amending here. Example: a PC-2 amendment finding that implies a PC-1 amendment routes to the PC-1 amendment's `Pending findings` column in STATUS.md.
 - **OLDFEAT blindness invariant.** Confirm at session-open whether it still applies (default: yes until explicit disposition). For amendment sessions specifically, OLDFEAT is typically out-of-scope by §3 even if the blindness invariant has been lifted — the amendment's evidence scope is the source bridges, not OLDFEAT.
 - **Downstream entity work.** Amendment sessions do NOT touch downstream entity work (FEAT-{SPEC-SHORT-NAME}-* feature specs; code; tests). Fold-back is to the canonical spec only.
-- **Doc-hygiene out of scope.** Doc-health-check pickups (G-21, etc.) are out-of-scope for amendment work; the amendment folds the substantive findings, not doc-hygiene cleanup. Doc-hygiene runs as separate cycle work per PROCESS.md.
+- **Doc-hygiene out of scope.** Doc-health-check pickups (G-22, etc.) are out-of-scope for amendment work; the amendment folds the substantive findings, not doc-hygiene cleanup. Doc-hygiene runs as separate cycle work per PROCESS.md.
 
 ---
 
