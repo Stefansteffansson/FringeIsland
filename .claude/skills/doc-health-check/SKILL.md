@@ -52,6 +52,20 @@ The skill has ten sections. Three (1.5, 3.5, 3.6) exist to catch drift introduce
 - Root files: `README.md`, `AGENTS.md`, `CLAUDE.md`, per-tier `CLAUDE.md` files
 - Skill files under `.claude/skills/*/SKILL.md`
 - Templates under `docs/templates/`
+- **Assertion-bearing diagrams (`.svg`)** — their text labels and `<title>`/`<desc>` elements are detection AND edit targets; see the registry below
+
+**Assertion-bearing diagrams (registry — feed it like the Section 1.5 / 3.6 tables; added 2026-06-10):**
+
+| Diagram | What it asserts |
+|---------|-----------------|
+| `docs/architecture/ECOSYSTEM_ANATOMY_V5.svg` | The entity anatomy: products (equipment profiles), Universe Studio + children, DS-1..DS-7, PC-1..PC-4, verticals |
+| `docs/architecture/DOMAIN_SERVICE_DEPENDENCIES.svg` | Domain-service dependency arrows + studio write-paths |
+| `docs/ecosystem/how-we-work/assets/01-decomposition-cascade.svg` | The L1-L5 vertical axis + its own gap notes (incl. the open Whisp L2-placement gap) |
+
+Three rules, learned from the 2026-06-05 Session A sweep initially MISSING the SVGs (caught 2026-06-07):
+1. Every Section 1 and 1.5 sweep includes `*.svg` (the grep blocks below do this).
+2. Every assertion-bearing SVG carries a current `<title>` + `<desc>` whose prose summarizes its assertions — the single greppable source of truth lives INSIDE the artifact. **No `.md` twin files** (duplicated truth drifts).
+3. A new diagram that asserts structure is added to this registry in the same session that creates it.
 
 **Out of scope (don't edit):**
 - Anything under `docs/old_universe/`, `docs/old_products/`, `docs/old_implementation/` — these are archived; drift is fine
@@ -88,7 +102,7 @@ Common drift patterns to watch for:
 2. For each pair, grep the active tree for the old term:
    ```
    grep -rniI "<old term>" docs/ .claude/skills/ AGENTS.md CLAUDE.md README.md \
-     --include="*.md" \
+     --include="*.md" --include="*.svg" \
      --exclude-dir=old_universe --exclude-dir=old_products --exclude-dir=old_implementation \
      --exclude-dir=sessions --exclude-dir=retrospectives \
      --exclude=".claude/skills/doc-health-check/SKILL.md" \
@@ -135,7 +149,7 @@ This is subtler than Section 1 because there's no "old term → new term" mappin
 1. For each row in the table above, grep the active tree for the keyword(s):
    ```
    grep -rniI "<keyword>" docs/ .claude/skills/ AGENTS.md CLAUDE.md README.md CHANGELOG.md \
-     --include="*.md" \
+     --include="*.md" --include="*.svg" \
      --exclude-dir=sessions --exclude-dir=retrospectives \
      --exclude=".claude/skills/doc-health-check/SKILL.md" \
      --exclude="CHANGELOG.md"
