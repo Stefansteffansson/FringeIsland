@@ -18,4 +18,15 @@ ADR topics identified but not yet written. Promote using `../../templates/adr.md
 
 ---
 
+## DS-3 rename — "Experience Engine" -> journey-named (decide at the DS-3 descent)
+
+**Identified:** 2026-06-10 (DS-1 descent session, anatomy/naming challenge; noted for the DS-3 descent at Stefan's direction — not executed now).
+**The problem:** since ADR-U025, *experience* is identity-layer vocabulary ("one experience, one shared core"; products as surfaces of one experience; studios as a mode inside it). DS-3's name collides with the platform's biggest word while owning something much narrower: journeys, steps, progress, enrolments. Fails the vocabulary-vetting bar (newcomer intuition + collision check), and the collision grew as canon matured.
+**The candidate:** rename to **Journey Engine** (or plain **Journeys**) — *journey* is the exact canon word for what DS-3 owns, and it makes the studio affinity legible (Journey Studio -> Journey Engine, as World Studio -> World Model).
+**Decide alongside:** the "Engine" suffix asymmetry — only DS-2 Narrative Engine and DS-3 carry it; either both keep it or both drop it ("Narrative" / "Journeys").
+**Ripple when executed:** domain README service line; `docs/templates/domain-service-spec.md` slug enum (`experience-engine`); domain `CLAUDE.md` enumerations; STATUS.md pipeline row; ECOSYSTEM_ANATOMY_V5 + DOMAIN_SERVICE_DEPENDENCIES SVGs; register-style label sweeps. Cheapest before DS specs multiply — weigh timing at DS-3 entry.
+**Related watch-items (no action, recorded 2026-06-10):** DS-1 "World Model" collides mildly with AI-vocabulary "world model"; DS-6 "Discovery" collides with "the universe-discovery" log (decide at DS-6's charter re-derivation); DS-7 "Intelligence" kept deliberately — renaming it "Whisp" would break the cosmology-neutral naming lock platform entities honour.
+
+---
+
 *(ADR-U027 and ADR-U028 were promoted on 2026-06-10, batch G-3.)*
