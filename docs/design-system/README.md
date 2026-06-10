@@ -1,10 +1,10 @@
 # Design System
 
-The design system is **not yet specified**. This directory will contain the shared visual language, components, and world aesthetic that all surfaces (The Hub, The Gimbal, The Game, the Studios) draw from.
+The design system is **not yet specified**. This directory will contain the shared visual language, components, and world aesthetic that all surfaces draw from: the two equipment profiles of the one experience — The Hub (the canvas surface) and The Gimbal (the senses surface) — and the Studios (ADR-U025, ADR-U026).
 
 **Feature ID prefix:** `DS`
 
-When work begins, expect: tokens (colour, type, spacing), component contracts, accessibility rules (WCAG 2.1 AA), theming, motion, and the visual identity for the Three Worlds.
+When work begins, expect: tokens (colour, type, spacing), component contracts, accessibility rules (WCAG 2.1 AA), theming, motion, and the visual identity for the worlds (per the cosmology core, `../ecosystem/universe/cosmology/README.md`).
 
 ## Structure (when active)
 
@@ -26,5 +26,5 @@ The design system follows the **vertical pattern**: one `SPECIFICATION.md` for t
 
 ## Related
 
-- **Consumers:** every Surface — Hub, Gimbal, Game, Journey Studio, Universe Studio, Arc Studio.
+- **Consumers:** every Surface — The Hub and The Gimbal (the two equipment profiles), and the Studios under Universe Studio (World, Arc, Journey).
 - **ADRs:** U002 (five verticals) · U009 (API-first — design-system components consume the Platform API via the product, never directly) · U013 (i18n and a11y as constraints) · U023 (canonical anatomy).

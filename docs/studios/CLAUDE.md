@@ -8,11 +8,19 @@
 
 ## What makes this tier different
 
-Studios serve **Dreamineers**, not FIMs. Dreamineers are the creator community — they design, deploy, manage, and retire the journeys, universes, and narrative arcs that the rest of FringeIsland experiences. Everything about a Studio is shaped by that fact: different personas, different permissions, different review processes, different UI conventions than Products use.
+Studios are a **role-gated authoring mode inside the one experience, not products** ([ADR-U026](../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md)). A studio serves the FIM in their authorial stance — a **Dreamineer** specialisation — and entering one is a permission check against the platform's own group/role mechanism (ADR-U006, ADR-U007). The gates, per the [roles core](../ecosystem/universe/roles/README.md):
+
+| Dreamineer specialisation | Studio |
+|---|---|
+| Creator + Anthropologist | World Studio |
+| Teller | Arc Studio |
+| Wayfinder | Journey Studio |
+
+World Studio access additionally tiers by **scope**: the personal-scope slice (furnishing your own home) is open to every FIM; shared-world authoring is Dreamineer-gated. Dreamineers design, deploy, manage, and retire the world, stories, and journeys the rest of FringeIsland experiences. Everything about a Studio is shaped by that fact: different permissions, different review processes, different UI conventions than the product shells use.
 
 Studios are **full lifecycle** environments, not just authoring tools. A Studio feature that handles authoring but leaves deployment, management, or retirement unspecified is incomplete by design. "Design → deploy → manage → retire" is the cycle every Studio capability must account for. Content that goes in must also be able to come out — deprecation, archival, takeover, and retirement are first-class concerns, not afterthoughts.
 
-Each Studio **writes to exactly one Domain Service**: Journey Studio → Experience Engine (DS-3), Universe Studio → World Model (DS-1), Arc Studio → Narrative Engine (DS-2). This is a hard constraint, not a guideline. A Studio feature that wants to write to a second Domain Service is a sign the feature belongs in a different Studio (or that a new Studio is needed). Journey Studio and Universe Studio are scoped from **Eid** onward; Arc Studio is **Urd**-wave and not in active development before then.
+**Universe Studio is the parent entity** (ADR-U026): the umbrella over the three studios AND the **binding frame** — coherence across worldbuilding, narrative, and journeys is held at its level. The tree nests to match: `universe-studio/{world-studio/, arc-studio/, journey-studio/}`. Each sub-studio **writes to exactly one Domain Service**: World Studio → World Model (DS-1), Arc Studio → Narrative Engine (DS-2), Journey Studio → Experience Engine (DS-3). This is a hard constraint, not a guideline. A Studio feature that wants to write to a second Domain Service is a sign the feature belongs in a different Studio (or that a new Studio is needed). Journey Studio and the Universe Studio umbrella are scoped from **Eid** onward; Arc Studio is **Urd**-wave and not in active development before then.
 
 ---
 
@@ -30,7 +38,7 @@ The five verticals (ADR-U002) are obligations on every tier. Here's what each re
 
 ## Rules that only apply at this tier
 
-- **One Studio writes to one Domain Service — without exception.** Journey Studio writes to Experience Engine. Universe Studio writes to World Model. Arc Studio writes to Narrative Engine. If a feature spec needs to write to a second service, either split the feature or scope a new Studio. Don't work around this by having a Studio feature "read and transform" content that belongs in a different service's territory.
+- **One sub-studio writes to one Domain Service — without exception.** World Studio writes to World Model. Arc Studio writes to Narrative Engine. Journey Studio writes to Experience Engine. If a feature spec needs to write to a second service, either split the feature or scope a new Studio. Don't work around this by having a Studio feature "read and transform" content that belongs in a different service's territory.
 - **Full lifecycle or incomplete.** Every Studio feature spec must address what happens at each lifecycle stage: design (creation), deploy (publishing), manage (updates + moderation + enrolment oversight), retire (deprecation + archival + FIM impact). A feature that handles one or two stages without naming the others is under-specified.
 - **Content can always come out.** Deprecation, archival, and retirement are mandatory concerns. A Studio that accepts creator content without an explicit retirement path is a trap — creators lose trust, and the platform accumulates orphaned content that nobody can cleanly remove. Feature specs that introduce new content types name the retirement pathway in the same spec.
 - **Dreamineer permissions are group-role-based, not Studio-role-based.** Creator status is a group membership + role, resolved by Platform Core via `has_permission(...)` (ADR-U007). The Studio surface asks "can this FIM create a journey?" — it doesn't compute "is this a Dreamineer?" locally. Creator status can be granted, revoked, or restricted group-by-group, and the Studio must honour that.
@@ -44,15 +52,15 @@ The five verticals (ADR-U002) are obligations on every tier. Here's what each re
 
 - **Draft vs published is not just a status field.** Draft content is private to the creator (and optional collaborators); published content is visible to consumers via the Platform API. RLS, caching, and the Platform API all behave differently for the two states. Studio features that change the draft/published state must account for cache invalidation, RLS transitions, and any downstream notifications.
 - **Preview surfaces consume real data but must not leak real identities.** Creator previews of how content will appear to FIMs should look real but must not expose PII of actual FIMs who haven't opted into preview participation. Use synthetic or opted-in personas for preview rendering.
-- **Cross-studio content references are constrained.** A journey (Journey Studio) may reference a universe concept (Universe Studio) or narrative arc (Arc Studio), but the reference is one-way: the journey reads the universe, not the reverse. Universe content doesn't know which journeys reference it. This keeps the seven Domain Services loosely coupled — preserve the direction in every cross-studio feature.
-- **Arc Studio is Urd-scope — don't anticipate its contracts.** Journey Studio and Universe Studio must not hard-code assumptions about how Arc Studio will shape seasons and episodes. When a Journey Studio feature touches narrative structure, leave room for Arc Studio to own that structure later rather than baking it in now.
+- **Cross-studio content references are constrained.** A journey (Journey Studio) may reference a world concept (World Studio) or narrative arc (Arc Studio), but the reference is one-way: the journey reads the world, not the reverse. World content doesn't know which journeys reference it. This keeps the seven Domain Services loosely coupled — preserve the direction in every cross-studio feature.
+- **Arc Studio is Urd-scope — don't anticipate its contracts.** Journey Studio and World Studio must not hard-code assumptions about how Arc Studio will shape seasons and episodes. When a Journey Studio feature touches narrative structure, leave room for Arc Studio to own that structure later rather than baking it in now.
 
 ---
 
 ## Where to go next
 
-- **Feature ID prefixes at this tier:** `JS` (Journey Studio), `US` (Universe Studio), `AS` (Arc Studio). See `docs/studios/README.md`.
-- **Studios:** [`journey-studio/`](./journey-studio/) (writes to Experience Engine, Eid+) · [`universe-studio/`](./universe-studio/) (writes to World Model, Eid+) · [`arc-studio/`](./arc-studio/) (writes to Narrative Engine, Urd).
-- **Relevant ADRs:** U002 (five verticals) · U007 (three-layer permission model) · U008 (step type extensibility) · U009 (API-first) · U017 (journeys as content templates) · U022 (named waves) · U024 (wave model semantics).
+- **Feature ID prefixes at this tier:** `WS` (World Studio), `AS` (Arc Studio), `JS` (Journey Studio), `US` (Universe Studio — umbrella-level features only). See `docs/studios/README.md`.
+- **Studios:** [`universe-studio/`](./universe-studio/) (parent: umbrella + binding frame) containing [`world-studio/`](./universe-studio/world-studio/) (writes to World Model), [`arc-studio/`](./universe-studio/arc-studio/) (writes to Narrative Engine, Urd) and [`journey-studio/`](./universe-studio/journey-studio/) (writes to Experience Engine, Eid+).
+- **Relevant ADRs:** U002 (five verticals) · U007 (three-layer permission model) · U008 (step type extensibility) · U009 (API-first) · U017 (journeys as content templates) · U022 (named waves) · U024 (wave model semantics) · U025 (products as equipment profiles) · U026 (studio decomposition — Universe Studio as parent).
 - **Relevant skills:** [`ecosystem-decomposition`](../../.claude/skills/ecosystem-decomposition/SKILL.md) when writing a Studio DESCRIPTION or feature spec; [`feature-development`](../../.claude/skills/feature-development/SKILL.md) when implementing a maturity-4 feature.
 - **Sibling tier CLAUDE.md files:** [`../platform/CLAUDE.md`](../platform/CLAUDE.md) (when a Studio feature needs new capability in its target Domain Service) · [`../products/CLAUDE.md`](../products/CLAUDE.md) (when a product surface consumes Studio-authored content).

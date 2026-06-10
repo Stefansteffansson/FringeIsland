@@ -1,6 +1,6 @@
 # The Hub
 
-The full browser-based FringeIsland experience. The web platform where FIMs explore journeys, manage groups, reflect, and connect. **The active product in the Ferd wave.**
+**The canvas surface** of the one FringeIsland experience — the equipment profile built on screen room, keyboard, precision input, and file system (ADR-U025). It ships today as the web app: where FIMs explore journeys, manage groups, reflect, and connect, with the refinement and depth a desk affords. **The active product in the Ferd wave.**
 
 **Stack:** Next.js 16.1 App Router, TypeScript, Tailwind CSS, Supabase
 **Feature ID prefix:** `H`

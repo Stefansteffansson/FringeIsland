@@ -3,7 +3,7 @@
 ---
 slug: design-system
 owner: design-system
-consumers: [products/hub, products/gimbal, products/game, studios/journey-studio, studios/universe-studio, studios/arc-studio]
+consumers: [products/hub, products/gimbal, studios/universe-studio, studios/universe-studio/world-studio, studios/universe-studio/arc-studio, studios/universe-studio/journey-studio]
 status: {proposed | active | stable}
 last_updated: YYYY-MM-DD
 tier: Surfaces
@@ -11,7 +11,7 @@ tags: [design-system]
 feature_prefix: DS  # FEAT-DS### for design-system features
 ---
 
-> The single inward-facing build spec for the design system. The design system is the shared visual language consumed by every Surface — Hub, Gimbal, Game, and the three Studios. There is one `SPECIFICATION.md` for the entire tier (locked 2026-04-26: vertical pattern — no DESCRIPTION.md, no separate ROADMAP.md until warranted). This file folds L2 (identity, distribution, versioning, constraints, contracts, theming, operations, open questions), L3 (vocabulary inventory — tokens, components, patterns), and L4 (feature-inventory summary) into one document.
+> The single inward-facing build spec for the design system. The design system is the shared visual language consumed by every Surface — the Hub and the Gimbal (the two equipment profiles, ADR-U025) and the Studios under Universe Studio (ADR-U026). There is one `SPECIFICATION.md` for the entire tier (locked 2026-04-26: vertical pattern — no DESCRIPTION.md, no separate ROADMAP.md until warranted). This file folds L2 (identity, distribution, versioning, constraints, contracts, theming, operations, open questions), L3 (vocabulary inventory — tokens, components, patterns), and L4 (feature-inventory summary) into one document.
 
 **Authorship note.** This file is authored across three decomposition levels (see `.claude/skills/ecosystem-decomposition/SKILL.md`). L2 owns the identity, boundaries, and technical shape (§L2 below). L3 owns the **vocabulary inventory** (§L3). L4 owns the feature-inventory summary (§L4). No level modifies a section owned by another. The `doc-health-check` skill verifies section boundaries hold.
 
@@ -29,9 +29,9 @@ The design-system tier has properties no other tier has: every Surface depends o
 
 The design system is the **shared visual language** that every FringeIsland Surface speaks. One paragraph naming what it is and what it explicitly is not.
 
-- **Is:** the canonical vocabulary of tokens, components, and patterns that Hub, Gimbal, Game, and the three Studios all consume to render their interfaces. Owns the visual identity, motion language, and accessibility posture of the family as a whole.
-- **Is not:** a Hub UI library. A component that "feels right in Hub" but doesn't fit Gimbal's viewport, the Game's aesthetic, or a Studio's denser creator workflow is a *bug*, not a Hub-specific feature. The design system is consumed by every Surface; designing for one and assuming the rest will adapt is a category error per `docs/design-system/CLAUDE.md`.
-- **Is not:** three visual languages. There are three worlds (Ordinary World, FringeIsland, Void), and they inform mood, motion, and atmosphere — but the design system is **one** vocabulary that serves all three via theming, not three forked vocabularies. See §7 Three Worlds and theming for the mechanism.
+- **Is:** the canonical vocabulary of tokens, components, and patterns that the Hub, the Gimbal, and the Studios all consume to render their interfaces. Owns the visual identity, motion language, and accessibility posture of the family as a whole.
+- **Is not:** a Hub UI library. A component that "feels right in Hub" but doesn't fit Gimbal's viewport, a device at another point in equipment space, or a Studio's denser creator workflow is a *bug*, not a Hub-specific feature. The design system is consumed by every Surface; designing for one and assuming the rest will adapt is a category error per `docs/design-system/CLAUDE.md`.
+- **Is not:** several visual languages. The places of the worlds topology (per the cosmology core, `../ecosystem/universe/cosmology/README.md`) inform mood, motion, and atmosphere — but the design system is **one** vocabulary that serves them all via theming, not forked vocabularies. See §7 for the theming mechanism.
 - **Is not:** a product utility. The design system has the highest blast radius in the ecosystem — a token change ripples to every Surface simultaneously. That blast radius is what justifies the tier-specific stability discipline in §4.
 
 ### 2. Architecture position
@@ -39,7 +39,7 @@ The design system is the **shared visual language** that every FringeIsland Surf
 Where this tier sits in the ecosystem anatomy (`../architecture/ECOSYSTEM_ANATOMY_V4.svg`, ADR-U023):
 
 - **Tier:** Surfaces (Design System) — peer to Products and Studios within the Surfaces tier.
-- **Consumed by:** every Surface entity — Hub, Gimbal (iOS + Android), Game, Journey Studio, Universe Studio, Arc Studio. The consumer set is closed at the Surface tier; Domain Services and Platform Core areas do not render UI directly and therefore do not consume design-system primitives.
+- **Consumed by:** every Surface entity — the Hub and the Gimbal (the two equipment profiles; native iOS/Android are the Gimbal's shipping targets, not entities), and the Studios under Universe Studio (World, Arc, Journey). The consumer set is closed at the Surface tier; Domain Services and Platform Core areas do not render UI directly and therefore do not consume design-system primitives.
 - **Verticals it must satisfy:** all five (Administration · Privacy · Notifications · Observability · Transactions) per ADR-U002. Design-system-tier obligations are summarised in `docs/design-system/CLAUDE.md` §"Verticals: obligations on this tier"; per-component / per-pattern detail lives in §L3.
 - **Wave scope:** scoped but not yet active; expected to crystallise from Eid wave onward. Until then, this specification documents the discipline that will apply.
 
@@ -107,9 +107,9 @@ The two-way contract between the design system and its consumers. Mirror of the 
 
 Breaking either side of this contract is a structural failure — a Surface bespoke-ing a primitive is as much a violation as a design-system breaking-change without a migration story.
 
-### 7. Three Worlds and theming
+### 7. The worlds and theming
 
-There are three worlds in FringeIsland's cosmology — **Ordinary World, FringeIsland, and the Void** — and they affect mood, motion, and atmosphere in the rendered experience. The load-bearing rule from `docs/design-system/CLAUDE.md`: *the Three Worlds inform the visual language, but the design system is not three visual languages.* Theming is the mechanism that makes that rule satisfiable.
+The places of FringeIsland's worlds topology (per the cosmology core, `../ecosystem/universe/cosmology/README.md` — the Ordinary World, the Fringe, the village) affect mood, motion, and atmosphere in the rendered experience. The load-bearing rule from `docs/design-system/CLAUDE.md`: *the worlds inform the visual language, but the design system is not several visual languages.* Theming is the mechanism that makes that rule satisfiable.
 
 This section earns its own L2 surface because it is the load-bearing answer to a question every component author and every Surface engineer will eventually ask: *"how do I make this feel like the Void?"* Folding the answer into §5 Constraints would bury it; folding it into §3 Distribution would miss the point. The answer is: through tokens and theme primitives, never by forking the component.
 
@@ -163,7 +163,7 @@ The atomic vocabulary. Tokens are named values for colour, type, spacing, motion
 | ... | colour \| type \| spacing \| motion \| elevation \| radius | per-world \| per-mode \| fixed | ... | components / patterns that consume this token | ... |
 
 **Themability values:**
-- *per-world* — value differs across the three worlds; world-specific theme bundles override the default.
+- *per-world* — value differs across the worlds' places; world-specific theme bundles override the default.
 - *per-mode* — value differs across modes orthogonal to world (dark mode, high contrast, reduced motion).
 - *fixed* — value is the same in every theme; the token name exists for semantic clarity, not for variation.
 

@@ -8,9 +8,9 @@
 
 ## What makes this tier different
 
-Products are **surfaces** — the places where FIMs actually touch FringeIsland. The Hub (web), The Gimbal (mobile, planned), and The Game (placeholder) are the three products. All product work is constrained by two facts: products *consume* the Platform API but don't *define* it, and every FIM-facing experience must work across all planned products eventually. Writing a feature that only makes sense on web is a bug, not a shortcut.
+Products are **equipment profiles** of the one FringeIsland experience, not devices ([ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md)). There are two: **The Hub — the canvas surface** (screen room, keyboard, precision input, file system) and **The Gimbal — the senses surface** (camera, LiDAR, GPS, mic, AR, portability). Devices (phone, laptop, tablet, AR glasses) are points in equipment space; a surface lights up on any device whose equipment matches. The Game is not a product — it is a depth setting of journeys (ADR-U025). All product work is constrained by two facts: products *consume* the Platform API but don't *define* it, and products own only their **shell** (navigation, rendering, packaging, chrome) — experience features belong to their capabilities and are placed by equipment, never by device.
 
-Products serve **FIMs** (members), **Visitors** (pre-signup), **Stewards** (group leaders), **Dreamineers** (as members, not as authors — their authoring home is in Studios), and **DeusEx** (platform admins). Each has different permissions and different UI affordances. Products do not serve under-18s — that's a hard scope boundary (see [`hub/DESCRIPTION.md`](./hub/DESCRIPTION.md)).
+Products serve everyone in the one experience — **Shadows** (anonymous entrants) and **FIMs** (the base identity), wearing whatever per-group role applies (**Steward / Guide / Participant / Observer**), in whatever mode (experiential or authorial — a **Dreamineer's** authoring home is in Studios), plus the enterprise plane (**Universeers / the Council / DeusEx**). The canonical role taxonomy lives in [`docs/ecosystem/universe/roles/README.md`](../ecosystem/universe/roles/README.md) — point there, don't restate it. Each role has different permissions and different UI affordances. Products do not serve under-18s — that's a hard scope boundary (see [`hub/DESCRIPTION.md`](./hub/DESCRIPTION.md)).
 
 ---
 
@@ -29,25 +29,25 @@ The five verticals (ADR-U002) are obligations on every tier. Here's what each re
 ## Rules that only apply at this tier
 
 - **API-first, no exceptions.** Products call the Platform API. Products never access the database directly (ADR-U009). If you're writing a product feature that needs data the Platform API doesn't expose, stop — you need a paired platform feature spec first. Don't work around the API by adding product-tier database access.
-- **Every feature is cross-product by default.** Build as if all three products already exist. A Hub-only solution that "we'll port to Gimbal later" is a Hub-only solution forever. If a feature genuinely can't generalise (e.g., depends on web-only capability), state that explicitly in the feature spec's No-gos section with rationale.
+- **Features are placed by equipment, not by product (the placement rule, ADR-U025).** Every feature spec declares `requires-equipment:` (`sensors | comfortable-canvas | precision-input | none`) and appears on any device offering that equipment. A chosen restriction is allowed, but it must be named by its equipment, never by device or whim. The question "is this a Hub feature or a Gimbal feature?" is retired; the question is "what equipment does it need?" Only shell features (navigation, rendering, packaging) belong to a product.
 - **UI conventions span all products.** Always show loading states — never present a frozen UI to the user. After a data change, update ALL related UI state together; partial updates leave the UI inconsistent. These conventions exist so Hub and Gimbal feel like the same product family — inventing a one-off pattern for a single product is drift. Use the shared pattern or extend it for everyone.
 - **Permissions come from Platform Core, not from product code.** Product UI asks `has_permission(...)` — it doesn't compute permissions locally. Product-tier permission logic is a sign that something belongs in Platform Core / Organisation, not in the product.
 - **Cross-product features require paired specs.** A Hub UI feature that relies on a new platform capability is actually two features: the Hub spec (prefix `H`) consuming the capability, and the platform spec (`PC` or `PD`) providing it. Both reference each other in their "Platform dependencies" and "Cross-product impact" sections.
-- **Visitors before members (where applicable).** Anonymous sessions are first-class (ADR-U004). If a feature can be offered to visitors meaningfully, design for visitors first and let members inherit; don't gate everything behind sign-up.
+- **Shadows before FIMs (where applicable).** Anonymous sessions are first-class (ADR-U004; the anonymous entrant is canonically the **Shadow** — see the roles core). If a feature can be offered to Shadows meaningfully, design for Shadows first and let FIMs inherit; don't gate everything behind transcendence (sign-up).
 
 ---
 
 ## Gotchas (tier-specific)
 
-- **Hub is Ferd-present but Gimbal-future-aware.** If you're adding a feature to the Hub that has obvious mobile implications, at minimum write a one-line note in the feature spec's Cross-product impact section. The Gimbal team (= future you) will thank you.
+- **Hub is Ferd-present but Gimbal-future-aware.** The Hub ships today; the Gimbal is planned. If a feature you're building against the Hub shell has an obvious senses-surface life (capture, location, AR), at minimum write a one-line note in the feature spec's Cross-product impact section — and check its `requires-equipment:` value is honest, not defaulted.
 - **Role-specific UI branching:** don't branch on role string equality (`role === 'steward'`). Branch on the permission (`has_permission(user, 'invite_member')`). Roles can be renamed or reorganised; permissions are stable contracts.
 
 ---
 
 ## Where to go next
 
-- **Feature ID prefixes at this tier:** `H` (Hub), `G` (Gimbal), `GM` (Game). See `docs/products/README.md`.
-- **Products:** [`hub/`](./hub/) · [`gimbal/`](./gimbal/) · [`game/`](./game/) — each has its own `README.md` + `DESCRIPTION.md`, and (when active) `SPECIFICATION.md` + `ROADMAP.md`.
-- **Relevant ADRs:** U002 (five verticals) · U004 (visitor anonymous sign-in) · U007 (three-layer permission model) · U009 (API-first) · U018 (no hardcoded group types) · U022 (named waves) · U024 (wave model semantics).
+- **Feature ID prefixes at this tier:** `H` (Hub) and `G` (Gimbal), shell features only; `GM` is retired. See `docs/products/README.md`.
+- **Products:** [`hub/`](./hub/) · [`gimbal/`](./gimbal/) — each has its own `README.md` + `DESCRIPTION.md`, and (when active) `SPECIFICATION.md` + `ROADMAP.md`.
+- **Relevant ADRs:** U002 (five verticals) · U004 (anonymous sign-in — the Shadow) · U007 (three-layer permission model) · U009 (API-first) · U018 (no hardcoded group types) · U022 (named waves) · U024 (wave model semantics) · U025 (products as equipment profiles).
 - **Relevant skills:** [`feature-development`](../../.claude/skills/feature-development/SKILL.md) when implementing a maturity-4 feature; [`ecosystem-decomposition`](../../.claude/skills/ecosystem-decomposition/SKILL.md) when writing or advancing a spec.
 - **Sibling tier CLAUDE.md files:** [`../platform/CLAUDE.md`](../platform/CLAUDE.md) (when writing the paired platform feature) · [`../design-system/CLAUDE.md`](../design-system/CLAUDE.md) (when touching shared UI components).

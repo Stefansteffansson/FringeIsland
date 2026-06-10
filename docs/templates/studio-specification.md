@@ -1,13 +1,13 @@
 # {Studio name} — Specification
 
 ---
-slug: {journey-studio | universe-studio | arc-studio}
+slug: {universe-studio | universe-studio/world-studio | universe-studio/arc-studio | universe-studio/journey-studio}
 owner: studios/{slug}
 status: {draft | active | frozen}
 last_updated: YYYY-MM-DD
 tier: Surfaces
 tags: [studio:{slug}]
-feature_prefix: {JS | US | AS}  # JS=Journey Studio, US=Universe Studio, AS=Arc Studio — used for FEAT-*.md file naming
+feature_prefix: {US | WS | AS | JS}  # US=Universe Studio (umbrella/binding-frame), WS=World Studio, AS=Arc Studio, JS=Journey Studio (ADR-U026) — used for FEAT-*.md file naming
 target_domain_service: {DS-1 World Model | DS-2 Narrative Engine | DS-3 Experience Engine}
 ---
 
@@ -42,8 +42,8 @@ Where this studio sits in the ecosystem anatomy (`../../architecture/ECOSYSTEM_A
 - **Domain Services read (not written):** {list with the operations called — e.g., reading universe lore from World Model from inside Journey Studio}
 - **Platform Core capabilities used:** {PC-1 Infrastructure · PC-2 Identity · PC-3 Organisation · PC-4 Governance — which, and for what (typically: PC-2 for creator authentication and `has_permission()` checks; PC-1 for RLS posture on draft content)}
 - **Verticals it must satisfy:** all five (Administration · Privacy · Notifications · Observability · Transactions) per ADR-U002. Studio-tier obligations are summarised in `docs/studios/CLAUDE.md` §"Verticals: obligations on this tier"; per-capability detail lives in §L3.
-- **Sibling studios it relates to:** {one-way references — e.g., Journey Studio reads Universe Studio's lore. The reference direction is one-way per `docs/studios/CLAUDE.md` "Cross-studio content references are constrained" rule.}
-- **Wave scope:** {Eid+ for Journey/Universe Studio · Urd for Arc Studio · ...}
+- **Sibling studios it relates to:** {one-way references — e.g., Journey Studio reads World Studio's lore. The reference direction is one-way per `docs/studios/CLAUDE.md` "Cross-studio content references are constrained" rule; coherence across the set is held at the Universe Studio (parent) level per ADR-U026.}
+- **Wave scope:** {Eid+ for Journey/World Studio · Urd for Arc Studio · ...}
 
 ### 3. Lifecycle commitment
 
@@ -93,7 +93,7 @@ If a feature spec under this studio needs to write to a *second* Domain Service,
 Per `docs/studios/CLAUDE.md` "Studios enforce constraints on creators; they don't trust creator input": the World Model, cosmological canon, and platform safety bar are enforced at save, at publish, and at every lifecycle transition — not only once. This section names *which* constraints this studio enforces and *where* they fire.
 
 - **World Model constraints:** {canonical entities, locked relationships, world-state rules this studio must not violate}
-- **Cosmological canon constraints:** {Three Worlds boundaries, Whisp interactions, locked cosmology this studio respects}
+- **Cosmological canon constraints:** {worlds-topology boundaries per the cosmology core, Whisp interactions, locked cosmology this studio respects}
 - **Platform safety / quality bar:** {moderation hooks, content-policy validation, reporting integration}
 - **Where each constraint fires:** save · publish · republish · cross-reference resolution · retirement
 - **What happens when a constraint fails:** {error surfaced to creator, draft saved with violation flag, publish blocked, etc.}
@@ -106,7 +106,7 @@ Studios reference each other one-way per `docs/studios/CLAUDE.md`: a journey may
 
 - **What this studio reads from sibling studios:** {entity, read path, freshness expectation, what happens when the upstream changes}
 - **What this studio's content makes available to sibling studios** (one-way, via the target Domain Service's read API): {semantic shape, stability guarantees}
-- **Anti-coupling rules:** anything this studio explicitly does *not* assume about a sibling — particularly relevant for Journey Studio and Universe Studio not anticipating Arc Studio's contracts before Urd lands.
+- **Anti-coupling rules:** anything this studio explicitly does *not* assume about a sibling — particularly relevant for Journey Studio and World Studio not anticipating Arc Studio's contracts before Urd lands.
 
 Breaking changes to anything sibling studios already consume trigger an ADR.
 

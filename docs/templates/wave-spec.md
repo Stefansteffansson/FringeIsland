@@ -20,25 +20,26 @@ Feature ID prefixes:
 - PD = Platform Domain Service (FEAT-PD###)
 - H  = Hub                     (FEAT-H###)
 - G  = Gimbal                  (FEAT-G###)
-- GM = Game                    (FEAT-GM###)
-- JS = Journey Studio          (FEAT-JS###)
-- US = Universe Studio         (FEAT-US###)
+- WS = World Studio            (FEAT-WS###)
 - AS = Arc Studio              (FEAT-AS###)
+- JS = Journey Studio          (FEAT-JS###)
+- US = Universe Studio         (FEAT-US### — umbrella level only)
+(GM is retired — the Game is depth, not a product; ADR-U025. H/G cover shell features only.)
 -->
 
 ### Products
 - [ ] [FEAT-H{NNN}: {title}](link-to-feature-spec) — Hub
 - [ ] [FEAT-G{NNN}: {title}](link-to-feature-spec) — Gimbal
-- [ ] [FEAT-GM{NNN}: {title}](link-to-feature-spec) — Game
 
 ### Platform
 - [ ] [FEAT-PC{NNN}: {title}](link-to-feature-spec) — Platform Core ({identity | organisation | governance | infrastructure})
 - [ ] [FEAT-PD{NNN}: {title}](link-to-feature-spec) — Platform Domain ({world-model | narrative-engine | experience-engine | content | communication | discovery | intelligence})
 
-### Studios
-- [ ] [FEAT-JS{NNN}: {title}](link-to-feature-spec) — Journey Studio
-- [ ] [FEAT-US{NNN}: {title}](link-to-feature-spec) — Universe Studio
+### Studios (World, Arc, Journey under Universe Studio — ADR-U026)
+- [ ] [FEAT-WS{NNN}: {title}](link-to-feature-spec) — World Studio
 - [ ] [FEAT-AS{NNN}: {title}](link-to-feature-spec) — Arc Studio
+- [ ] [FEAT-JS{NNN}: {title}](link-to-feature-spec) — Journey Studio
+- [ ] [FEAT-US{NNN}: {title}](link-to-feature-spec) — Universe Studio (umbrella level)
 
 ## Wave completion criteria (Definition of Done)
 

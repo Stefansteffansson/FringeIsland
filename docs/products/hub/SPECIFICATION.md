@@ -42,7 +42,7 @@ feature_prefix: H
 Where the Hub sits in the ecosystem anatomy ([`../../architecture/ECOSYSTEM_ANATOMY_V4.svg`](../../architecture/ECOSYSTEM_ANATOMY_V4.svg), [ADR-U023](../../architecture/decisions/ADR-U023-platform-core-domain-services-decomposition.md)):
 
 - **Tier:** Surfaces (Products).
-- **Sibling Surfaces:** the Gimbal (mobile, planned), the Game (placeholder), the three Studios (Journey Studio, Universe Studio, Arc Studio), and the Design System (consumed for shared visual language).
+- **Sibling Surfaces:** the Gimbal (the senses surface, planned; the Hub is the canvas surface — the two equipment profiles of the one experience, [ADR-U025](../../architecture/decisions/ADR-U025-products-as-equipment-profiles.md)), the Studios (World, Arc, and Journey Studios under Universe Studio as parent, [ADR-U026](../../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md)), and the Design System (consumed for shared visual language).
 
 **Domain services consumed (currently):**
 
@@ -69,17 +69,20 @@ Where the Hub sits in the ecosystem anatomy ([`../../architecture/ECOSYSTEM_ANAT
 
 ### 3. Authentication & authorization
 
-**Sign-in surface.** Sign-in flows are owned by Platform Core / Identity (PC-2). The Hub renders the sign-in screen and surrounding navigation, but the credential exchange itself is a Platform API call. Visitors arrive via anonymous session ([ADR-U004](../../architecture/decisions/ADR-U004-visitor-anonymous-sign-in.md)) — visitor activity and preferences accumulate against the anonymous session and transfer into a full member account upon sign-up. The Hub treats visitor → FIM as a soft transition, not a wall.
+**Sign-in surface.** Sign-in flows are owned by Platform Core / Identity (PC-2). The Hub renders the sign-in screen and surrounding navigation, but the credential exchange itself is a Platform API call. Shadows (the anonymous entrants — the canonical name for what ADR-U004 calls visitors) arrive via anonymous session ([ADR-U004](../../architecture/decisions/ADR-U004-visitor-anonymous-sign-in.md)) — their activity and preferences accumulate against the anonymous session and transfer into a FIM account upon sign-up. The Hub treats Shadow → FIM as a soft transition, not a wall.
 
-**Roles served by the Hub:**
+**Identity states and roles served by the Hub** (canonical taxonomy: [`docs/ecosystem/universe/roles/README.md`](../../ecosystem/universe/roles/README.md) — identity states Shadow/FIM; per-group roles Steward/Guide/Participant/Observer; Dreamineer as the authorial mode; enterprise plane Universeers/Council/DeusEx):
 
-| Role | Source of authority | Hub responsibility |
+| Identity state / role | Source of authority | Hub responsibility |
 |---|---|---|
-| **Visitor** | Anonymous session (ADR-U004) | Browse, explore, begin participating; render the sign-up upgrade path |
-| **Member (FIM)** | Membership in any non-system group | Default authenticated experience — journeys, forums, messages, Journal, profile |
-| **Steward** | Role granted via group leadership | Member affordances plus group leadership UI (invite, role assignment, group enrollment, moderation) |
-| **Dreamineer** | Role granted via Dreamineer system group | Member affordances plus cross-ecosystem community participation; their authoring lives in Studios, not the Hub |
-| **DeusEx** | Membership in the DeusEx system group | Platform-administration UI (member management, group lifecycle, role oversight, threat response, data hygiene) |
+| **Shadow** | Anonymous session (ADR-U004) | Browse, explore, begin participating; render the sign-up upgrade path |
+| **FIM** | The base authenticated identity ("Member" is the platform-technical synonym) | Default authenticated experience — journeys, forums, messages, Journal, profile |
+| **Steward** (per-group role) | Role granted via group leadership | FIM affordances plus group leadership UI (invite, role assignment, group enrollment, moderation) |
+| **Guide** (per-group role) | Role granted within a group | FIM affordances plus joint-journey facilitation UI |
+| **Participant** (per-group role) | Default per-group role (ratified rename of the group role "Member") | Takes part in the group's journeys and forums |
+| **Observer** (per-group role) | Role granted within a group | Watches |
+| **Dreamineer** (authorial mode) | Authority granted via group/role permission | FIM affordances plus cross-ecosystem community participation; their authoring lives in Studios, not the Hub |
+| **DeusEx** (enterprise plane) | Membership in the DeusEx root-admin group | Platform-administration UI (member management, group lifecycle, role oversight, threat response, data hygiene) |
 
 **Permission resolution.** The Hub never computes permissions locally. Every permission decision is a Platform API call through `has_permission(...)` (resolved in PC-3 Organisation). Per the tier rule in [`../CLAUDE.md`](../CLAUDE.md): UI branches on the *permission*, not on the role string. Roles can be renamed or reorganised; permissions are stable contracts. The three-layer permission model is locked by [ADR-U007](../../architecture/decisions/ADR-U007-three-layer-permission-model.md).
 
@@ -103,7 +106,7 @@ Where the Hub sits in the ecosystem anatomy ([`../../architecture/ECOSYSTEM_ANAT
 
 ### 5. Public API surface
 
-**The Hub exposes no public API.** It is a consumer surface — it calls the Platform API and renders results. Sibling Surfaces (Gimbal, Game, Studios) consume the same Platform API directly; they do not call the Hub.
+**The Hub exposes no public API.** It is a consumer surface — it calls the Platform API and renders results. Sibling Surfaces (the Gimbal, the Studios) consume the same Platform API directly; they do not call the Hub.
 
 If a future need arises for the Hub to expose data or operations to a sibling Surface, that need would be implemented as a new Platform API capability rather than as a Hub-owned API. The discipline in [`../CLAUDE.md`](../CLAUDE.md) ("permissions come from Platform Core, not from product code") generalises: shared product behaviour belongs in Platform Core, not in any one product.
 
@@ -111,9 +114,9 @@ For the Platform API surface itself, see [`../../platform/`](../../platform/) an
 
 ### 6. Cross-product contracts
 
-The Hub's siblings are the Gimbal, the Game, the three Studios, and the Design System.
+The Hub's siblings are the Gimbal (the senses surface), the Studios (under Universe Studio), and the Design System.
 
-**Contract pattern (locked at the tier level, see [`../CLAUDE.md`](../CLAUDE.md)):** every Hub feature is cross-product by default. A Hub-only solution that "we'll port to the Gimbal later" is a Hub-only solution forever. Where a feature genuinely cannot generalise (depends on a web-only capability), the No-gos section of the feature spec must state so explicitly with rationale.
+**Contract pattern (locked at the tier level, see [`../CLAUDE.md`](../CLAUDE.md), and by [ADR-U025](../../architecture/decisions/ADR-U025-products-as-equipment-profiles.md)):** features are placed by equipment, not by product. Every feature spec declares `requires-equipment:` and appears on any device offering that equipment; the Hub carries the features keyed to canvas equipment. Where a feature is deliberately restricted, the restriction must be named by its equipment (e.g., `precision-input`), never by device, in the feature spec's No-gos section with rationale. Only shell features (navigation, rendering, packaging) are Hub-owned.
 
 **Paired-spec discipline.** A Hub UI feature that depends on a new platform capability is two features: the Hub spec (`FEAT-H*`) consuming the capability, and the platform spec (`FEAT-PC*` or `FEAT-PD*`) providing it. Both reference each other in their "Platform dependencies" and "Cross-product impact" sections. Synchronisation between paired specs is currently a known gap (G-02) — there is no automatic mechanism that alerts the platform spec owner when the Hub-side acceptance criteria change.
 
@@ -121,7 +124,7 @@ The Hub's siblings are the Gimbal, the Game, the three Studios, and the Design S
 
 **Design System consumption.** The Hub consumes the Design System's tokens, components, and patterns. Per the design-system tier rules, the Hub is committed to consuming Design System primitives over hardcoded styles, and the Design System is committed to honouring additive-over-breaking change discipline. Specific consumption commitments will be detailed in §L3 once both inventories are populated.
 
-**Visitors before members.** Where a feature can be offered to visitors meaningfully, design for visitors first and let members inherit. Anonymous sessions are first-class (ADR-U004). This is a tier-level rule that the Hub honours by default.
+**Shadows before FIMs.** Where a feature can be offered to Shadows meaningfully, design for Shadows first and let FIMs inherit. Anonymous sessions are first-class (ADR-U004). This is a tier-level rule that the Hub honours by default.
 
 ### 7. Operational concerns
 
@@ -148,9 +151,9 @@ The Hub's siblings are the Gimbal, the Game, the three Studios, and the Design S
 
 Listed in priority order. Each is a candidate for resolution by an ADR, a research spike, or a future authoring session.
 
-- **The Three Worlds cosmology naming.** [VISION.md](../../ecosystem/VISION.md) names the three worlds as *Ordinary World, Safe Harbour, The Other Side*. A drift-correction proposed in a 2026-04-26 session bridge offered an alternative naming (*Ordinary World, FringeIsland, the Void*). The constitutional authority and the proposed correction disagree. This is a constitutional question, not a Hub question — but the Hub references the Three Worlds (visitor experience, future Whisp presence, Three Worlds atmosphere) and so inherits the unresolved naming. Deferred per Stefan's call for further thinking-through time. Until resolved, the Hub's user-facing copy and DESCRIPTION.md continue to use the VISION.md naming.
+- **The worlds cosmology naming — resolved (2026-06-10).** The Three Worlds model (*Ordinary World, Safe Harbour, The Other Side*) is superseded by the worlds topology in the cosmology core, [`docs/ecosystem/universe/cosmology/README.md`](../../ecosystem/universe/cosmology/README.md): the safe-harbour commons is **the village**, in the Beyond of the warm place. The Hub's user-facing copy and DESCRIPTION.md follow the cosmology core; this spec points there rather than restating the topology.
 
-- **RBAC role-to-screen mapping.** The Hub renders different screens for Visitor, Member, Steward, Dreamineer, and DeusEx roles, but the per-screen permission requirements are not yet documented in any one place. Currently each component asks `has_permission(...)` for the specific permission it needs. A consolidated mapping (which roles see which screens) would strengthen the auth model's surface and ease onboarding. Candidate for an L3-scoped clarification once the capability inventory exists, or for a dedicated document.
+- **RBAC role-to-screen mapping.** The Hub renders different screens for Shadows, FIMs, the per-group roles (Steward / Guide / Participant / Observer), Dreamineers, and DeusEx, but the per-screen permission requirements are not yet documented in any one place. Currently each component asks `has_permission(...)` for the specific permission it needs. A consolidated mapping (which roles see which screens) would strengthen the auth model's surface and ease onboarding. Candidate for an L3-scoped clarification once the capability inventory exists, or for a dedicated document.
 
 - **Transitive group resolution beyond depth 1.** All memberships are group-to-group, and the schema supports group-in-group. But `has_permission()` only resolves at depth 1 today. Transitive resolution and circularity prevention are noted as upcoming work in the user-memory horizon. Hub features that would need transitive resolution must surface this in their Platform dependencies section until the platform capability exists.
 
@@ -176,12 +179,12 @@ The template's prescribed five columns (Capability, Internal area, Depends on (i
 
 #### A-IDN — Identity, Onboarding & Profile (12 capabilities)
 
-The Hub provides each FIM — visitor or member — with a stable, persistent identity, with a soft conversion path between visitor and member, and with a private workspace for reflection that no one but the member can see. Privacy and consent capabilities are interleaved into A-IDN rather than living in a separate area; see the Sources-status block for the OQ-1 disposition.
+The Hub provides each person — Shadow or FIM — with a stable, persistent identity, with a soft conversion path from Shadow to FIM, and with a private workspace for reflection that no one but the FIM can see. Privacy and consent capabilities are interleaved into A-IDN rather than living in a separate area; see the Sources-status block for the OQ-1 disposition.
 
 | ID | Capability | Internal area | Depends on (internal) | Depends on (external) | Founding question(s) | Dimension(s) | Vertical impact |
 |---|---|---|---|---|---|---|---|
-| IDN-1 `*` | Provide anonymous visitor identity on arrival | A-IDN | — | PC-2 (anonymous session per ADR-U004), PC-3 (proto personal group) | Who am I? | 1 | V2, V4 |
-| IDN-2 `*` | Convert visitor to authenticated FIM identity | A-IDN | IDN-1 | PC-2, PC-3, DS-3 (triggers carry-over of in-flight journey enrolment owned by JRN-5) | Who am I?, What do I want? | 1 | V2, V3, V4 |
+| IDN-1 `*` | Provide anonymous Shadow identity on arrival | A-IDN | — | PC-2 (anonymous session per ADR-U004), PC-3 (proto personal group) | Who am I? | 1 | V2, V4 |
+| IDN-2 `*` | Convert Shadow to authenticated FIM identity | A-IDN | IDN-1 | PC-2, PC-3, DS-3 (triggers carry-over of in-flight journey enrolment owned by JRN-5) | Who am I?, What do I want? | 1 | V2, V3, V4 |
 | IDN-3 | Provide authenticated, persistent FIM identity (sign in, sign out, refresh) | A-IDN | IDN-2 | PC-2 | Who am I? | 1 | V2, V4 |
 | IDN-4 | Render and edit member profile (full name, avatar, bio, display name) | A-IDN | IDN-3 | PC-2, PC-3 (display name and personal group naming are coupled) | Who am I? | 1 | V2, V4 |
 | IDN-5 `*` | Provide private personal Journal surface | A-IDN | IDN-3 | PC-2 (Journal primitive) | Who am I?, What do I want? | 1 | V2, V4 |
@@ -229,7 +232,7 @@ Journeys are the primary developmental experience per VISION.md. The Hub renders
 | JRN-2 | View journey detail | A-JRN | JRN-1 | DS-3, DS-4 (preview content) | What do I want?, How do I get there? | 1, 1+Community | V2, V4 |
 | JRN-3 | Enrol self in a journey (individual) | A-JRN | IDN-3, JRN-2 | DS-3, PC-3 (personal group as enrolling entity) | What do I want?, How do I get there? | 1 | V2, V3, V4 |
 | JRN-4 | Enrol an engagement group in a journey | A-JRN | GRP-1, GRP-8, JRN-2 | DS-3, PC-3 | What do I want?, How do I get there? | 1+Community | V2, V3, V4 |
-| JRN-5 `*` | Preserve in-flight journey enrolment across visitor→FIM conversion | A-JRN | JRN-3, IDN-2 | DS-3 (anonymous-session enrolment carry-over), PC-2 (session binding) | How do I get there? | 1 | V2, V4 |
+| JRN-5 `*` | Preserve in-flight journey enrolment across Shadow→FIM conversion | A-JRN | JRN-3, IDN-2 | DS-3 (anonymous-session enrolment carry-over), PC-2 (session binding) | How do I get there? | 1 | V2, V4 |
 | JRN-6 | Render the journey player | A-JRN | JRN-3, JRN-4 | DS-3, DS-4 | How do I get there? | 1, 1+Community | V2, V4 |
 | JRN-7 | Walk steps with linear navigation (previous / next) | A-JRN | JRN-6 | DS-3 | How do I get there? | 1, 1+Community | V4 |
 | JRN-8 | Mark step complete and enforce required-step gating | A-JRN | JRN-6 | DS-3 | How do I get there? | 1, 1+Community | V4 |
@@ -415,7 +418,7 @@ Remarks recording prerequisite-check pauses, methodology observations, and cross
 **Outstanding caveats.**
 - **Outward dependency claims are claims-from-the-consumer.** External-deps cells in the capability table represent the Hub's commitments to consume capabilities from other entities. Reciprocal commitments from the targeted entities (PC-1, PC-2, PC-3, PC-4, DS-1, DS-3, DS-4, DS-5, DS-6, DS-7, V3) are pending. The four cross-entity findings explicitly routed to G-29 are the highest-priority cases; the routine consumption claims (PC-3 group lifecycle, DS-3 enrolment, DS-5 messaging) are reciprocally implicit but not yet formally affirmed in the targeted entities' L3 inventories. The G-29 lateral-routing mechanism, when designed, will provide the structured handoff for these claims.
 - **G-03 vertical specs scaffold caveat.** §L3's per-row Vertical Impact column references V1 Administration, V2 Privacy, V3 Notifications, V4 Observability, V5 Transactions. Per the gaps register, the vertical specs' §§3-6 are scaffolds (G-03, highest-priority gap). Vertical impact assignments here use the locked vertical names but cannot reference specific obligation IDs that don't yet exist. When G-03 resolves, vertical impact entries can be enriched.
-- **Cosmology naming Open question.** §L2 §8's first open question (Three Worlds cosmology naming) remains deferred per Stefan's call. Capability names in this §L3 are cosmology-neutral; user-facing copy carries cosmology language at the feature-spec level.
+- **Cosmology naming Open question.** §L2 §8's first open question (the worlds cosmology naming) is resolved (2026-06-10): the cosmology core supersedes the Three Worlds model. Capability names in this §L3 are cosmology-neutral; user-facing copy carries cosmology language at the feature-spec level, sourced from [`docs/ecosystem/universe/cosmology/README.md`](../../ecosystem/universe/cosmology/README.md).
 - **L2 §2 "Domain services not yet consumed" list.** This list correctly identifies DS-1, DS-2, DS-6, DS-7 as not-yet-consumed; full forward-commitment rows in this §L3 (all of A-COI; DIS-3, DIS-4, DIS-5) honour that list. During cold derivation, JRN-15 originally claimed a DS-2 dep; the JRN-15 split (per area-level discipline) dissolved the claim as a derivation false-positive. The §L2 §2 list stands; no L2 revision implied by this §L3.
 - **Namespace-collision check (B.2 bridge).** The B.2 bridge worried that DS-1..DS-7 might collide between Domain Services (per ADR-U023) and Design System surfaces. Resolution: ADR-U023 doesn't number Design System components; the Design System uses `FEAT-DS###` for feature specs and a vocabulary inventory (tokens / components / patterns) at L3, with no numbered surface IDs. The DS-1..DS-7 numbering in this §L3 unambiguously refers to Domain Services. No collision; no disambiguation needed.
 

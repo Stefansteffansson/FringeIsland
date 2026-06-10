@@ -5,7 +5,7 @@
 **Last updated:** YYYY-MM-DD
 **Writes to:** {DS-N: domain service name}
 
-> A Studio is the lifecycle surface where *creators* (Dreamineers, Weavers, Guides) **design, deploy, manage, and retire** their work — not just author it. Each Studio writes to exactly one Domain Service. Studios serve different personas than Products and have different permissions, UI conventions, and review processes.
+> A Studio is the lifecycle surface where *Dreamineers* (FIMs in their authorial mode — Creator, Anthropologist, Teller, Wayfinder) **design, deploy, manage, and retire** their work — not just author it. The studios are World, Arc, and Journey Studio under Universe Studio as parent and binding frame (ADR-U026); each writes to exactly one Domain Service. Studios are a role-gated authoring mode inside the one experience and have different permissions, UI conventions, and review processes than the experiential default.
 
 ---
 
@@ -39,7 +39,7 @@ Who is allowed in. How creator status is granted. How it can be revoked.
 
 ## Relationship to other Studios
 
-If this Studio's output is consumed by another Studio (e.g., Universe Studio's lore feeds Arc Studio's narrative), document the handoff here.
+If this Studio's output is consumed by another Studio (e.g., World Studio's lore feeds Arc Studio's narrative), document the handoff here. Coherence across the set is held at the Universe Studio (parent) level — ADR-U026.
 
 ---
 

@@ -15,7 +15,7 @@ Next.js 16.1 App Router, TypeScript, Tailwind CSS, Supabase/PostgreSQL
 
 ## Project structure
 - `docs/` — all documentation, split into ecosystem (what) and planning (how)
-- `docs/products/hub/` — The Hub (web platform) specs and features
+- `docs/products/hub/` — The Hub (canvas-surface equipment profile, ADR-U025) shell specs and features
 - `docs/platform/` — shared platform infrastructure
 - `docs/planning/` — waves, cycles, backlog, sessions
 - `app/`, `components/`, `lib/` — application source code
@@ -33,7 +33,7 @@ Start at `docs/README.md` for the full map. Key entry points:
 - `users.full_name` not `display_name`
 - Use ConfirmModal, never browser alerts
 - Conventional commits: `feat(hub): ...`, `fix(platform): ...`
-- Feature IDs: PC=Platform Core, PD=Platform Domain, H=Hub, G=Gimbal, GM=The Game, JS=Journey Studio, US=Universe Studio, AS=Arc Studio, DS=Design System, V=Verticals
+- Feature IDs: PC=Platform Core, PD=Platform Domain, H=Hub shell, G=Gimbal shell, WS=World Studio, AS=Arc Studio, JS=Journey Studio, US=Universe Studio (umbrella level), DS=Design System, V=Verticals. GM is retired — the Game is a depth setting of journeys, not a product (ADR-U025). H and G cover product-shell features only; experience features carry their capability owner's prefix.
 
 ## Execution environment
 

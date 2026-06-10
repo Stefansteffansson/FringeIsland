@@ -3,10 +3,13 @@
 ---
 id: FEAT-{PREFIX}{NNN}
 title: {Feature title}
-owner: {platform/core/infrastructure | platform/core/identity | platform/core/organisation | platform/core/governance | platform/domain/experience-engine | platform/domain/content | platform/domain/communication | platform/domain/world-model | platform/domain/narrative-engine | platform/domain/discovery | platform/domain/intelligence | hub | gimbal | game | studio/journey-studio | studio/universe-studio | studio/arc-studio | design-system}
-consumers: [{hub} | {gimbal} | {game} | {studio/journey-studio} | {studio/universe-studio} | {studio/arc-studio}]
+owner: {platform/core/infrastructure | platform/core/identity | platform/core/organisation | platform/core/governance | platform/domain/experience-engine | platform/domain/content | platform/domain/communication | platform/domain/world-model | platform/domain/narrative-engine | platform/domain/discovery | platform/domain/intelligence | hub | gimbal | studio/universe-studio | studio/universe-studio/world-studio | studio/universe-studio/arc-studio | studio/universe-studio/journey-studio | design-system}
+consumers: [{hub} | {gimbal} | {studio/universe-studio} | {studio/universe-studio/world-studio} | {studio/universe-studio/arc-studio} | {studio/universe-studio/journey-studio}]
 wave: {ferd | eid | hamn | heim | brim | urd}
 maturity: {0-raw | 1-concept | 2-explored | 3-specified | 4-ready | 5-in-cycle | 6-done}
+requires-equipment: {sensors | comfortable-canvas | precision-input | none}
+# Placement rule (ADR-U025): a feature appears on any device offering its required equipment;
+# a chosen restriction must be named by its equipment, never by device.
 # Optional parking fields (the icebox mechanism under Model A).
 # Omit both fields when the feature is active. When parked, BOTH must be set.
 # Maturity and parked are orthogonal — parking does not regress maturity.
@@ -53,7 +56,7 @@ As a {role}, I want {capability}, so that {benefit}.
 Which platform core or domain service capabilities does this require?
 
 ## Cross-product impact
-Does this affect sibling products (Hub, Gimbal, Game, Studios)? If yes, how?
+Does this affect sibling surfaces (Hub, Gimbal, Studios)? If yes, how?
 
 ## Vertical impact
 

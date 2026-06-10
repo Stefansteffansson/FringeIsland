@@ -15,10 +15,12 @@ docs/
 ├── ecosystem/                             ← vision, values, strategy, universe, explorations
 │   ├── VISION.md                          ← constitutional — the north star
 │   ├── MANIFESTO.md                       ← constitutional — founding principles
+│   ├── PRINCIPLES-AI.md                   ← constitutional — how FringeIsland creates with AI
 │   ├── universe/                          ← what the world is and how it works
-│   │   ├── cosmology/                     ← Three Worlds and their relationships
-│   │   ├── personal-growth/                   ← red thread, engagement spectrum, void
-│   │   ├── beings/                        ← Whisp, NPCs, Dreamineers-as-world-roles
+│   │   ├── cosmology/                     ← the worlds topology (canonical core)
+│   │   ├── personal-growth/               ← red thread, engagement spectrum, privacy model
+│   │   ├── beings/                        ← Whisp, NPCs (canonical core)
+│   │   ├── roles/                         ← the canonical role taxonomy (the spine)
 │   │   ├── narrative/                     ← seasons, episodes, journeys
 │   │   ├── community/                     ← community dynamics, roles in practice
 │   │   └── kickstarter/                   ← the founding moment: Season Zero
@@ -26,20 +28,20 @@ docs/
 │   └── thinking/                          ← open questions, explorations, legacy mining
 │       ├── OPEN_QUESTIONS.md               ← ecosystem-level open questions
 │
-├── products/                              ← product surfaces FIMs touch
-│   ├── hub/                               ← The Hub (web) — active in Ferd
-│   ├── gimbal/                            ← The Gimbal (mobile) — planned
-│   └── game/                              ← The Game — scope TBD
+├── products/                              ← equipment profiles of the one experience (ADR-U025)
+│   ├── hub/                               ← The Hub — the canvas surface (active in Ferd)
+│   └── gimbal/                            ← The Gimbal — the senses surface
 │
 ├── platform/                              ← shared infrastructure
 │   ├── core/                              ← Platform Core (Infrastructure, Identity, Organisation, Governance)
 │   ├── domain/                            ← Domain Services (7 services + Extension System)
 │   └── extensions/                        ← Extension System contracts
 │
-├── studios/                               ← creator tools for Dreamineers
-│   ├── journey-studio/                    ← journey authoring + lifecycle
-│   ├── universe-studio/                   ← world-building
-│   └── arc-studio/                        ← seasons + episodes
+├── studios/                               ← role-gated authoring mode (ADR-U026)
+│   └── universe-studio/                   ← parent: umbrella + binding frame
+│       ├── world-studio/                  ← the world: terrain + culture
+│       ├── arc-studio/                    ← stories: seasons + episodes
+│       └── journey-studio/                ← journeys: alone / pairs / group
 │
 ├── design-system/                         ← shared UI components, tokens, patterns
 │
@@ -51,7 +53,7 @@ docs/
 │   ├── DOMAIN_ENTITIES.md                 ← core domain model
 │   ├── ECOSYSTEM_ANATOMY_V4.svg           ← current anatomy diagram
 │   ├── DOMAIN_SERVICE_DEPENDENCIES.svg    ← dependency flow
-│   └── decisions/                         ← ADRs (24 — U001-U024)
+│   └── decisions/                         ← ADRs (26 — U001-U026)
 │
 ├── research/                              ← all research reports (domain + methodology)
 │

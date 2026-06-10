@@ -1,14 +1,14 @@
 # {Product name} — Description
 
 ---
-slug: {hub | gimbal | game}
+slug: {hub | gimbal}
 owner: products/{slug}
-surface_type: {web | ios | android | game}
+equipment_profile: {canvas | senses}  # The Hub = the canvas surface, The Gimbal = the senses surface (ADR-U025)
 status: {concept | active | maintained | sunset}
 last_updated: YYYY-MM-DD
 tier: Surfaces
 tags: [product:{slug}]
-feature_prefix: {H | G | GM}  # H=Hub, G=Gimbal, GM=Game — used for FEAT-*.md file naming
+feature_prefix: {H | G}  # H=Hub, G=Gimbal — shell features only (ADR-U025); used for FEAT-*.md file naming
 ---
 
 > The outward-facing identity of a product surface. This document is for someone who has *never heard of* this product. It explains what it is, who it's for, and where its boundaries are. Build details belong in `SPECIFICATION.md`.
@@ -34,8 +34,8 @@ The conviction. Why this product, and not the dozen alternatives the user could 
 ## How it relates to the ecosystem
 
 - **Domain services it consumes:** {world-model | narrative-engine | experience-engine | content | communication | discovery | intelligence}
-- **Studios it depends on:** {Journey Studio (JS) | Universe Studio (US) | Arc Studio (AS)}
-- **Sibling products it shares users with:** {Hub (H) | Gimbal (G) | Game (GM)}
+- **Studios it depends on:** {Universe Studio (US, parent/binding frame) | World Studio (WS) | Arc Studio (AS) | Journey Studio (JS)}
+- **Sibling product it shares users with:** {Hub (H) | Gimbal (G)} — the two equipment profiles of the one experience (ADR-U025)
 - **Where it sits in the wave arc:** {ferd | eid | hamn | heim | brim | urd — and what evolves in each}
 
 ## Promises

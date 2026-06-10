@@ -1,13 +1,13 @@
 # {Product name} — Specification
 
 ---
-slug: {hub | gimbal | game}
+slug: {hub | gimbal}
 owner: products/{slug}
 status: {draft | active | frozen}
 last_updated: YYYY-MM-DD
 tier: Surfaces
 tags: [product:{slug}]
-feature_prefix: {H | G | GM}  # H=Hub, G=Gimbal, GM=Game — used for FEAT-*.md file naming
+feature_prefix: {H | G}  # H=Hub, G=Gimbal — shell features only (ADR-U025); used for FEAT-*.md file naming
 ---
 
 > The inward-facing build spec for a product surface. For developers who need to know how the thing actually works, what it depends on, and what its contracts are. Identity and "why" live in `DESCRIPTION.md` — don't repeat them here. Companion files: `DESCRIPTION.md` (outward-facing), `ROADMAP.md`.
@@ -22,7 +22,7 @@ feature_prefix: {H | G | GM}  # H=Hub, G=Gimbal, GM=Game — used for FEAT-*.md 
 
 ### 1. Surface
 
-- **Platform target:** {Next.js web · iOS native · Android native · Unity game · ...}
+- **Shipping targets:** {Next.js web · iOS native · Android native · ...} — shipping targets of the one surface; devices are points in equipment space, not entities (ADR-U025)
 - **Repo location:** {paths within the monorepo, or external repo URL}
 - **Build / deploy pipeline:** {summary or link}
 - **Environments:** {dev, preview, prod URLs / TestFlight / etc.}
