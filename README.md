@@ -2,9 +2,9 @@
 
 **Version:** 0.2.37 | **Updated:** April 2026 | **Wave 1 (Ferd):** 95% complete
 
-An edutainment platform for group-based personal development through structured learning journeys. Users travel solo or in groups on predefined journeys guided by role-based experiences — Stewards lead, Guides facilitate, Members participate, and Observers watch.
+An edutainment platform for group-based personal development through structured learning journeys. Users travel solo or in groups on predefined journeys guided by role-based experiences — per-group roles: Stewards lead, Guides facilitate, Participants take part, and Observers watch. Identity runs Shadow → FIM; Dreamineer is the permission-gated authorial mode (Creator, Anthropologist, Teller, Wayfinder); enterprise stewardship sits with the Universeers, the FringeIsland Council, and DeusEx. See the [roles core](docs/ecosystem/universe/roles/README.md).
 
-FringeIsland is a sub-project within the **FringeIsland World** — an Alternative Reality Edutainment platform where people can Live, Grow, and Matter. See [VISION.md](docs/ecosystem/VISION.md) for the full vision.
+FringeIsland is **one lived experience** over a shared core, where people can Live, Grow, and Matter. Products are equipment profiles of that experience — **The Hub** (the canvas surface, web) and **The Gimbal** (the senses surface, mobile); the Game is a depth setting of journeys, not a product (ADR-U025). Authoring happens in studios under **Universe Studio** as parent — World, Arc, and Journey Studios (ADR-U026). See [VISION.md](docs/ecosystem/VISION.md) for the full vision.
 
 ---
 
@@ -25,7 +25,7 @@ FringeIsland is a sub-project within the **FringeIsland World** — an Alternati
 - **Row Level Security (RLS)** on all 19 tables — users can only access data they're authorized for
 - **Supabase Auth** with email/password and session management
 - **Protected routes** via `proxy.ts` (Next.js 16 pattern, not middleware)
-- **RBAC** — 4 roles (Steward, Guide, Member, Observer), 31 permissions, `has_permission()` SQL function
+- **RBAC** — 4 per-group roles (Steward, Guide, Participant — still named `Member` in the current schema — Observer), 31 permissions, `has_permission()` SQL function
 - **Admin isolation** — `is_platform_admin()` SECURITY DEFINER function for admin-level RLS checks
 
 ---

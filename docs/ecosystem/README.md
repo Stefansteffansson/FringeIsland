@@ -18,9 +18,10 @@ docs/ecosystem/
 │
 ├── universe/                              ← what the FringeIsland world is and how it works
 │   ├── README.md                          ← universe overview
-│   ├── cosmology/                         ← Three Worlds and their relationships
-│   ├── personal-growth/                   ← red thread, engagement spectrum, void dimensions
-│   ├── beings/                            ← Whisp, NPCs, Dreamineers-as-world-roles
+│   ├── cosmology/                         ← the worlds topology (canonical core)
+│   ├── roles/                             ← the role taxonomy (canonical core)
+│   ├── personal-growth/                   ← red thread, engagement spectrum, privacy model
+│   ├── beings/                            ← Whisp, NPCs (canonical core)
 │   ├── narrative/                         ← seasons, episodes, journeys, first experience
 │   └── community/                         ← community dynamics, Kickstarter founding moment
 │

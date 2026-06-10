@@ -1,5 +1,5 @@
 # FringeIsland — Products & Platform Strategy
-*Version 0.2 — March 2026*
+*Version 0.3 — updated 2026-06-10 (reconciliation Session B: equipment profiles, Game-as-depth per ADR-U025; cosmology naming per the canonical core)*
 *Status: Living document — evolves as the ecosystem matures*
 
 ---
@@ -17,7 +17,7 @@ The phases described here are not hard cuts. They are waves — each one beginni
 ## Table of Contents
 
 1. [The Guiding Metaphor — The Hero's Journey](#the-guiding-metaphor--the-heros-journey)
-2. [Part One — Digital Products](#part-one--digital-products)
+2. [Part One — Digital Surfaces](#part-one--digital-surfaces)
 3. [Part Two — Physical Products](#part-two--physical-products)
 4. [Part Three — Experiences & Events](#part-three--experiences--events)
 5. [Part Four — The Web Platform in Detail](#part-four--the-web-platform-in-detail)
@@ -40,27 +40,22 @@ Each product, each release, each phase is a step in that arc. The world is being
 
 ---
 
-## Part One — Digital Products
+## Part One — Digital Surfaces
 
-### 1. Web Platform
-The deep work home. Where you go to reflect, build, create, and engage with the full depth of the FringeIsland experience. The permanent hub of the ecosystem — for members doing inner work and for Dreamineers building the world.
+There is one FringeIsland experience over one shared core. Its digital surfaces are defined by **equipment profiles, not devices** (ADR-U025): a feature declares the equipment it requires and appears on any device that offers it.
+
+### 1. The Hub — the canvas surface
+The deep work home. Screen room, keyboard, precision input, file system. Where you go to reflect, build, create, and engage with the full depth of the FringeIsland experience — for members doing inner work and for Dreamineers building the world. Ships today as the web platform.
 
 *Exists across all phases. Never retired.*
 
-### 2. Native Mobile Apps — iOS and Android
-The on-the-go companion. The world in your pocket. Episode notifications, quick journey activities, garden check-ins, community moments. Designed to feel truly native — not a website wrapped in an app.
+### 2. The Gimbal — the senses surface
+The world in your pocket and in your hands. Camera, GPS, microphone, AR display, portability — perception and capture, out in the world. Episode notifications, quick journey activities, garden check-ins, community moments, and the AR layer: the Fringe's near side seen through the Shimmer, the world bleeding into physical reality through location, camera, and context. Ships as native mobile apps, designed to feel truly native — not a website wrapped in an app.
 
-*The 18–29 primary audience expects native mobile from the start. No friction or they leave.*
+*The 18–29 primary audience expects native mobile from the start. No friction or they leave. The AR layer begins as experiments in later waves and deepens through subsequent ones.*
 
-### 3. AR Layer
-The world bleeding into physical reality. FringeIsland moments triggered in the real world — through location, camera, context. The island and ordinary life overlapping.
-
-*Begins as experiments in later waves. Deepens through subsequent waves.*
-
-### 4. The Game
-The most immersive digital expression of the world. A graphically rich game-engine experience — built in Unreal Engine or equivalent — bringing the three realms to life at the highest fidelity. Runs across desktop, console, mobile, and VR/AR headsets.
-
-*Beyond-Urd ambition. Built on a validated, thriving community.*
+### 3. Depth — not a product
+There is no Game product. Depth is a setting of journeys inside the one lived experience. **Revisit trigger (ADR-U025):** if a journey ever needs fidelity, an engine, or a play surface the mobile/web stack cannot render (AR glasses are a strong candidate spark), a game-engine runtime is built for that journey class — on a validated, thriving community, never before.
 
 ---
 
@@ -104,7 +99,7 @@ Immersive multi-day experiences — retreats, camps, getaways — where members 
 *Details to be defined. A future exploration.*
 
 ### 4. The Annual FringeIsland Summit
-The flagship annual event. Where the full community assembles — members, Dreamineers, the Council, the Foundation. The world is celebrated, the next season is launched, the community comes alive in physical space.
+The flagship annual event. Where the full community assembles — members, Dreamineers, the Council, the Universeers. The world is celebrated, the next season is launched, the community comes alive in physical space.
 
 The Summit is not just an event — it is a founding ritual. It happens once a year and marks the passage of time in the FringeIsland world.
 
@@ -136,22 +131,22 @@ Journey Studio v.1 — user-created journeys, journey discovery & search, journe
 ### Hamn — *Harbour*
 *You find harbour.*
 
-Design system, accessibility (WCAG 2.1 AA + enhancements), and UX/UI redesign of the generic web app interface. *Hamn does not define the Three Worlds visual identity — that is later, Urd-level work.*
+Design system, accessibility (WCAG 2.1 AA + enhancements), and UX/UI redesign of the generic web app interface. *Hamn does not define the worlds' visual identity — that is later, Urd-level work.*
 
 ### Heim — *Home*
 *You arrive home.*
 
-FringeIsland universe design — what the Safe Harbour actually looks like, regions, architecture, visual language. Dynamic journey paths (branching, conditional logic). Foundation for the void and AR layers in Brim.
+FringeIsland universe design — what the village and the warm place actually look like, regions, architecture, visual language (per the [cosmology core](../universe/cosmology/)). Dynamic journey paths (branching, conditional logic). Foundation for the cord/Void and AR layers in Brim.
 
 ### Brim — *Edge, surf, horizon*
 *You stand at the edge, gazing outward.*
 
-AR void visualization — overlaying ordinary world with the three-dimensional void. Native iOS and Android apps (on-the-go companion to the web platform).
+AR near-side visualization — the Fringe seen through the Shimmer at the member's real-world coordinates, with the cord and the Void rendered per the cosmology core. The Gimbal ships native on iOS and Android (the senses surface alongside the Hub).
 
 ### Urd — *Fate, origin, what has become*
 *You touch something older than the journey itself.*
 
-Three Worlds UI design (felt transitions across Ordinary World / Safe Harbour / The Other Side), Seasons and Episodes mechanics, NPC behaviour authoring, respawning mechanics, advanced analytics, monetization at scale, the Endowment, and the game itself (Unreal Engine three-realm runtime). Beyond Urd: distribution to consoles and VR/AR headsets.
+Worlds UI design (felt transitions across the Ordinary World, the Shimmer, the Fringe's places and reaches — per the cosmology core), Seasons and Episodes mechanics, NPC behaviour authoring, respawning mechanics, advanced analytics, monetization at scale, the Endowment — and, if the depth revisit trigger has fired (ADR-U025), the game-engine journey runtime. Beyond Urd: distribution of that runtime to consoles and VR/AR headsets.
 
 ---
 
@@ -164,7 +159,7 @@ Phases overlap. Each wave begins building before the previous is complete. Nothi
 
 - Web platform (Ferd) — journey foundation, groups, Stewards, profiles
 - Discord — temporary community scaffold
-- Visitor/shadow experience — glimpse the island before arriving
+- Shadow experience — glimpse the island before arriving (anonymous, ephemeral; transcendence is the threshold)
 - First Dreamineers recruited
 - Free tier + first paid membership tier + voluntary donations
 
@@ -193,18 +188,18 @@ Deep work device. Content creation, world-building, journey design, narrative ar
 **Tablet — significant for 30+ and 50+**
 iPad especially popular in older demographics. The web platform and native apps both need to work beautifully on tablet.
 
-**Console — Beyond Urd**
-PlayStation, Xbox, Nintendo Switch. The game reaches console audiences who may never have encountered FringeIsland through web or mobile. Distributed after the game itself ships.
+**Console — Beyond Urd, only if depth demands it**
+PlayStation, Xbox, Nintendo Switch. If the depth revisit trigger fires (ADR-U025), the game-engine journey runtime reaches console audiences who may never have encountered FringeIsland through web or mobile.
 
 **VR/AR Headsets — Beyond Urd**
-Apple Vision Pro, Meta Quest and successors. The most immersive possible expression of the three realms. Distributed after the game itself ships.
+Apple Vision Pro, Meta Quest and successors. Maximal senses equipment plus immersion — the strongest candidate spark for the depth trigger.
 
 ### A Member's Day
 A member might move across products in a single day:
 - *Morning* — iOS notification, new episode dropped
 - *Commute* — quick journey activity on the phone
 - *Evening* — deep reflection session on the web platform
-- *Weekend* — an hour in the game exploring The Other Side
+- *Weekend* — an hour deep in a journey, far out on the cord in the Fringe
 - *Once a year* — the Summit, in person, with the community
 
 ### A Dreamineer's Day
@@ -251,8 +246,8 @@ Every event serves belonging, discovery and world celebration — not just the b
 **The experimentation layer never stops.**
 FringeIsland stays alive by testing ideas cheaply before building them properly.
 
-**The game is earned, not assumed.**
-The game-engine experience is built on a validated, thriving community — not before.
+**Depth is earned, not assumed.**
+There is no Game product. A game-engine runtime is built only when a journey demands what the web/mobile stack cannot render (the ADR-U025 revisit trigger) — and on a validated, thriving community, not before.
 
 ---
 

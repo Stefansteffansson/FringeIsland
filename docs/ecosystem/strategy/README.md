@@ -25,7 +25,7 @@ docs/ecosystem/strategy/
 
 | Document | Purpose | Status |
 |----------|---------|--------|
-| PRODUCTS_AND_PLATFORM.md | Full product family vision: digital products, physical products, events, device strategy, experimentation layer, six-wave detail | Needs review and update — some wave detail is stale |
-| CONTRIBUTION_ARCHITECTURE.md | Four contributor groups (Visitor, Member, Dreamineer, Council/Foundation), five contribution types, garden door principle, what is never open to contribution | Needs review and update |
+| PRODUCTS_AND_PLATFORM.md | Full product family vision: digital surfaces (equipment profiles per ADR-U025), physical products, events, device strategy, experimentation layer, six-wave detail | Aligned at reconciliation Session B (2026-06-10) |
+| CONTRIBUTION_ARCHITECTURE.md | Contributor groups (Shadows, FIMs, Dreamineer specialisations, enterprise stewardship), five contribution types, garden door principle, what is never open to contribution | Aligned at reconciliation Session B (2026-06-10) |
 | BUSINESS_MODEL.md | Five revenue streams (subscriptions, donations, marketplace, events, endowment), corporate independence (no VC, no sponsors) | Extracted from founding vision |
 | IP_AND_LICENSING.md | Three-layer licensing: MIT/Apache for code, CC BY-SA + CLA for content, commercial licence for marketplace products | Extracted from founding vision |

@@ -42,7 +42,7 @@ The Explorer seeks meaning through structured experiences. Seasonal episodes, na
 
 **Relationship to FringeIsland:** Create, shape, contribute.
 
-The Dreamineer has wisdom and content to share — a coach, educator, creative professional, or passionate community member. No existing platform combines narrative, structure, and community in a way that lets her build meaningful experiences for others. She wants tools that match her creative ambition.
+A note on the name: in the canonical role taxonomy ([roles](../roles/README.md)), Dreamineer is not a kind of person but the authorial *mode* a FIM occupies — permission-gated, with four specialisations (Creator, Anthropologist, Teller, Wayfinder), each gating a studio. This archetype describes the FIM who is drawn to that mode. She has wisdom and content to share — a coach, educator, creative professional, or passionate community member. No existing platform combines narrative, structure, and community in a way that lets her build meaningful experiences for others. She wants tools that match her creative ambition.
 
 **Success looks like:** Published journeys with active enrollments, positive reviews, sustainable creative contribution.
 
@@ -55,7 +55,7 @@ The Dreamineer has wisdom and content to share — a coach, educator, creative p
 - Are these the right three archetypes, or do they need refinement based on real user research?
 - Should they have FringeIsland-native names rather than generic labels?
 - How do these archetypes inform feature prioritisation — does each wave serve a primary archetype?
-- How does a member's archetype evolve over time — is there a natural progression (Homebody → Explorer → Dreamineer)?
+- How does a member's archetype evolve over time — is there a natural progression (Homebody → Explorer → Dreamineer)? (Note: roles are modes, not a ladder — movement between them is fluid, per the [roles core](../roles/README.md).)
 - How do archetypes relate to the engagement spectrum (Homebody ↔ Explorer) described in the vision?
 
 ---

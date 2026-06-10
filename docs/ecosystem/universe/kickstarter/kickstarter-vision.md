@@ -28,7 +28,7 @@ The campaign speaks to two audiences at once:
 
 The founding Dreamineer cohort — the people who self-select by backing at the world-builder tier — is the most valuable thing the campaign will produce. More valuable than the funding. More valuable than the member count.
 
-They are the seed of the Dreamineer Council. The first creative community. The people who will shape what FringeIsland becomes before the wider world arrives.
+They are the first Dreamineers — the seed of the world's authorial community. The first creative community. (Dreamineer is an authorial mode, not a governing body; enterprise stewardship sits with the Universeers, the FringeIsland Council, and DeusEx — see the [roles core](../roles/README.md).) The people who will shape what FringeIsland becomes before the wider world arrives.
 
 ---
 

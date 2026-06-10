@@ -91,3 +91,5 @@ FringeIsland was not built to be sold. It was built to last — as a world that 
 ---
 
 *This manifesto is a living document. It will evolve as FringeIsland grows and as the community earns new wisdom about what it means to build a world worth belonging to.*
+
+*How FringeIsland creates with AI — humans first, always — is stated in the constitutional [AI Principles](./PRINCIPLES-AI.md).*

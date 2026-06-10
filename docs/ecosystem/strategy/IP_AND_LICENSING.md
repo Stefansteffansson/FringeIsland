@@ -54,7 +54,7 @@ Regardless of licence layer, the following are held permanently by the Foundatio
 - The red thread — the three questions, the fundamental purpose
 - Member data and privacy architecture
 - The brand and world identity — name, visual identity, canonical lore
-- The governance structure — Foundation, Council, Community
+- The governance structure — the Foundation as legal holder, with enterprise stewardship by the Universeers, the FringeIsland Council, and DeusEx (see the [roles core](../universe/roles/README.md))
 
 → *See [CONTRIBUTION_ARCHITECTURE.md](./CONTRIBUTION_ARCHITECTURE.md) §What Is Never Open to Contribution for the full list.*
 

@@ -1,7 +1,7 @@
 # Privacy Model — Avatar and Personal Data
 
-**Status:** Extracted from founding vision (April 2026)
-**Source:** OLD_VISION_DECISIONS.md
+**Status:** Extracted from founding vision (April 2026); aligned to the discovery at reconciliation Session B (2026-06-10 — home per-region sharing S43, Shadow ephemerality S46)
+**Source:** OLD_VISION_DECISIONS.md; universe-discovery Session 01
 
 ---
 
@@ -18,11 +18,11 @@ What happens on FringeIsland is yours. Your inner journey, your discoveries, the
 A FIM's inner journey is private from the start. No opt-in required — privacy is the baseline.
 
 What is private by default:
-- Avatar's inner journey and self-discovery progress
-- Home and garden
+- The inner journey and self-discovery progress
+- Home and garden (the inviolable ball — the FIM holds the only key; see the [cosmology core](../cosmology/README.md))
 - Journal entries
 - Assessment results and developmental data
-- Void dimension progress
+- Cord health and the Whisp's filling (visible to a friend only along a grown branch — glanceable, invited, self first)
 
 ### Selectively shared
 
@@ -30,7 +30,7 @@ The FIM chooses what to reveal, to whom, and when. Sharing is always voluntary a
 
 - Share with specific individuals (1+1)
 - Share with specific groups (1+community)
-- Choose which aspects to reveal — you can share your garden without sharing your journal, or share assessment results with one person but not another
+- Choose which aspects — or which regions of your home — to reveal: you can share your garden without sharing your journal, open one room to a friend and keep the rest locked (S43), or share assessment results with one person but not another
 - Revocable — what was shared can be unshared
 
 ### Transparently shared
@@ -51,10 +51,11 @@ Even within transparently shared groups, the FIM retains control over what they 
 
 - The platform must never surface private data without explicit FIM action
 - Sharing controls must be granular — per-aspect, per-audience, per-timeframe
-- The Whisp's internal state (fullness, void dimensions) is private unless the FIM chooses otherwise
+- The Whisp's internal state (fullness, cord health) is private unless the FIM chooses otherwise
+- A Shadow's own data is ephemeral: anonymous auth, no PII, erased soon after inactivity or explicit close; transcendence is the persistence-and-consent threshold, and the migration is atomic (S46)
 - Group Stewards cannot see members' private developmental data
 - No aggregate data derived from private journeys is visible to other FIMs
-- Anonymised aggregate data may be explored only with explicit informed consent, responsible handling, and clear member benefit — under Foundation and Council stewardship
+- Anonymised aggregate data may be explored only with explicit informed consent, responsible handling, and clear member benefit — under enterprise stewardship (the Universeers and the FringeIsland Council, with the Foundation as legal holder; see the [roles core](../roles/README.md))
 
 ---
 
