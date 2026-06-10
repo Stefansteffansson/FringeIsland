@@ -1,7 +1,7 @@
 # CLAUDE.md — AI Context for FringeIsland
 
-**Last updated:** 2026-04-17 (post way-of-working refactor — Session 1).
-**Reflects:** Model A (feature specs with embedded stories in the ecosystem tree; no PRDs); four skills as the execution layer; `old_universe/`, `old_products/`, and `old_implementation/` all deleted.
+**Last updated:** 2026-06-10 (reconciliation Session B).
+**Reflects:** Model A (feature specs with embedded stories in the ecosystem tree; no PRDs); four skills as the execution layer; the reconciled entity model — products as equipment profiles with the Game as depth (ADR-U025), studios nested under Universe Studio with World Studio added (ADR-U026), the Shadow lifecycle (ADR-U027), governance by scope (ADR-U028) — and the canonical cosmology and roles cores under `docs/ecosystem/universe/`.
 
 This file is the project's entry point for AI agents. It tells you WHERE to look and WHICH skill to load — it does not try to describe every mechanic.
 
@@ -9,7 +9,7 @@ This file is the project's entry point for AI agents. It tells you WHERE to look
 
 ## Project overview
 
-FringeIsland is an edutainment platform for group-based personal development built around three questions: **Who am I? What do I want? How do I get there?** Users travel solo or in groups on structured journeys, guided by role-based experiences (Stewards lead, Guides facilitate, Members participate, Observers watch).
+FringeIsland is an edutainment platform for group-based personal development built around three questions: **Who am I? What do I want? How do I get there?** Users travel solo or in groups on structured journeys, guided by role-based experiences (Stewards lead, Guides facilitate, Participants take part, Observers watch).
 
 **Stack:** Next.js 16.1 (App Router), TypeScript, Tailwind CSS, Supabase (PostgreSQL).
 **Testing:** Jest (integration + unit) + Playwright (E2E).
@@ -62,7 +62,7 @@ Each `CLAUDE.md` in the cascade adds only the rules specific to its level. No le
 | **Tier** (`docs/{tier}/CLAUDE.md`) | Rules applying to every entity in the tier; how the five verticals apply at this tier; cross-tier relationships | Current-only generalisations when only one entity is active | Entity-specific stack details, URLs, key formats, gotchas, single-entity configurations |
 | **Sub-tier** (`docs/platform/{sub-tier}/CLAUDE.md`, only at platform) | Rules distinguishing the sub-tier from sibling sub-tiers (e.g., Core's stability-zone rules vs Domain's iteration-zone rules); contracts bounding the sub-tier | Rules shared by all entities under the sub-tier | Rules that apply equally to sibling sub-tiers (those are tier); single-entity rules |
 | **Entity** (`docs/{tier}/{entity}/CLAUDE.md`) | Rules specific to this entity (gotchas, technical stack, tooling instantiations, single-entity configurations); load-order line | Sub-entity hints when divergence isn't sharp enough to warrant a sub-entity file | Tier-applicable rules (move up); sharply-diverging sub-entity rules (move down) |
-| **Sub-entity** (`docs/{tier}/{entity}/{sub-entity}/CLAUDE.md`, opt-in by divergence) | Rules specific to this sub-entity that genuinely diverge from siblings or the parent (canonical case: Gimbal-iOS vs Gimbal-Android) | Toolchain or platform-runtime particulars | Rules already in the parent entity (they're inherited) |
+| **Sub-entity** (`docs/{tier}/{entity}/{sub-entity}/CLAUDE.md`, opt-in by divergence) | Rules specific to this sub-entity that genuinely diverge from siblings or the parent (canonical case: `universe-studio`'s children `world-studio` / `arc-studio` / `journey-studio`, ADR-U026) | Toolchain or platform-runtime particulars | Rules already in the parent entity (they're inherited) |
 
 The `doc-health-check` skill verifies cascade integrity at cycle boundaries (Section 9): presence, content categorisation, load-order pointer integrity. Soft flags drive review; hard fails are critical findings.
 
@@ -79,15 +79,17 @@ Start at [`docs/README.md`](docs/README.md) for the full navigation map. Everyth
 | Vision (constitutional) | [`docs/ecosystem/VISION.md`](docs/ecosystem/VISION.md) |
 | Manifesto | [`docs/ecosystem/MANIFESTO.md`](docs/ecosystem/MANIFESTO.md) |
 | Universe design (cosmology, beings, narrative, …) | [`docs/ecosystem/universe/`](docs/ecosystem/universe/) |
+| Worlds topology (canonical core) | [`docs/ecosystem/universe/cosmology/`](docs/ecosystem/universe/cosmology/) |
+| Role taxonomy (canonical core) | [`docs/ecosystem/universe/roles/`](docs/ecosystem/universe/roles/) |
+| AI principles (constitutional) | [`docs/ecosystem/PRINCIPLES-AI.md`](docs/ecosystem/PRINCIPLES-AI.md) |
 | Products & platform strategy | [`docs/ecosystem/strategy/PRODUCTS_AND_PLATFORM.md`](docs/ecosystem/strategy/PRODUCTS_AND_PLATFORM.md) |
 | Open questions | [`docs/ecosystem/thinking/OPEN_QUESTIONS.md`](docs/ecosystem/thinking/OPEN_QUESTIONS.md) |
 | **Products, platform, studios** | |
-| The Hub (web) | [`docs/products/hub/`](docs/products/hub/) |
-| The Gimbal (mobile, planned) | [`docs/products/gimbal/`](docs/products/gimbal/) |
-| The Game (scope TBD) | [`docs/products/game/`](docs/products/game/) |
+| The Hub (canvas surface — equipment profile, ADR-U025) | [`docs/products/hub/`](docs/products/hub/) |
+| The Gimbal (senses surface — equipment profile, ADR-U025) | [`docs/products/gimbal/`](docs/products/gimbal/) |
 | Platform Core (Infrastructure / Identity / Organisation / Governance) | [`docs/platform/core/`](docs/platform/core/) |
 | Platform Domain Services (World Model, Narrative, Experience, …) | [`docs/platform/domain/`](docs/platform/domain/) |
-| Studios (Journey, Universe, Arc) | [`docs/studios/`](docs/studios/) |
+| Studios (World, Arc, Journey under Universe Studio) | [`docs/studios/`](docs/studios/) |
 | Design system | [`docs/design-system/`](docs/design-system/) |
 | Cross-cutting verticals | [`docs/verticals/`](docs/verticals/) |
 | **Architecture** | |
@@ -114,7 +116,7 @@ The codebase already reflects these patterns — this list is orientation for ag
 - **Two trees, never mixed:** `docs/ecosystem/`, `docs/products/`, `docs/platform/`, `docs/studios/`, `docs/design-system/`, `docs/verticals/`, `docs/architecture/` (the ecosystem tree — WHAT) versus `docs/planning/` (the planning tree — HOW). Features live in the ecosystem tree under their owner; tasks and cycles live in the planning tree.
 - **Wave model (not phases):** Six named waves — **Ferd** → **Eid** → **Hamn** → **Heim** → **Brim** → **Urd**. Thematic focus buckets, not sequential gates (see ADR-U022 naming, ADR-U024 operational semantics).
 - **Five verticals (obligations on every tier):** Administration · Privacy/GDPR · Notifications · Observability · Transactions (ADR-U002). Verticals are not services — they are cross-cutting obligations that every platform service, product, studio, and design-system component must fulfil. Every feature spec has a mandatory Vertical Impact section (see AGENTS.md). The tier-level `CLAUDE.md` files describe how each vertical applies to their tier specifically.
-- **API-first (ADR-U009):** Build every feature as if iOS/Android already exist: `Database → API route → Frontend component`. Never `Database → Frontend component directly`.
+- **API-first (ADR-U009):** Build every feature as if every other client surface already exists (the Gimbal shell as much as the Hub shell): `Database → API route → Frontend component`. Never `Database → Frontend component directly`.
 - **Auth:** Each product wires its own client-side auth context backed by Supabase Auth. Product-specific details live in the product's `CLAUDE.md` — for the Hub, see [`docs/products/hub/CLAUDE.md`](docs/products/hub/CLAUDE.md).
 - **State:** Each product uses stack-appropriate primitives for local and shared state; cross-component coordination uses the product's canonical mechanism. For the Hub, see [`docs/products/hub/CLAUDE.md`](docs/products/hub/CLAUDE.md).
 

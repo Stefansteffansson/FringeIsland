@@ -80,3 +80,6 @@ docs/platform/**/*.docx
 docs/studios/**/*.docx
 docs/design-system/**/*.docx
 docs/verticals/**/*.docx
+
+# Machine-local Claude Code instructions (auto-loaded, never committed)
+CLAUDE.local.md
