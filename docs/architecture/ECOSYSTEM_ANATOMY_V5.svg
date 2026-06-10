@@ -157,7 +157,7 @@
   <text x="556" y="88" text-anchor="middle" class="ts">World, Arc, Journey</text>
 </g>
 
-<text x="40" y="124" class="caption">Products — equipment profiles (ADR-U025); the Game is a depth setting, not a product</text>
+<text x="40" y="124" class="caption">Products — equipment profiles (ADR-U025)</text>
 <text x="556" y="124" text-anchor="middle" class="caption">Dreamineers (authoring mode)</text>
 
 <!-- =========================================================
@@ -322,6 +322,7 @@
      ========================================================= -->
 <text x="340" y="980" text-anchor="middle" class="caption">FringeIsland Ecosystem Anatomy v2.3 — June 2026 (reconciliation Session B: ADR-U025/U026/U027/U028)</text>
 <text x="340" y="996" text-anchor="middle" class="caption">Designed for open-source extensibility and parallel contribution</text>
+<text x="340" y="1012" text-anchor="middle" class="caption">The Game is a depth setting of journeys, not a product (ADR-U025). The Whisp's L2 owner is an open decision — deliberately absent from DS-1.</text>
 <!-- =========================================================
      VERTICAL THREADS — right-column channel (per ADR-U002).
      ========================================================= -->
