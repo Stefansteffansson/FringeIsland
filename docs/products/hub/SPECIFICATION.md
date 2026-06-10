@@ -52,7 +52,7 @@ Where the Hub sits in the ecosystem anatomy ([`../../architecture/ECOSYSTEM_ANAT
 | Content | Media and asset delivery (narrative blocks, images, embedded media within journeys) |
 | Communication | Forums, direct messages (1-1 and group), activity feeds, notification delivery |
 
-**Domain services not yet consumed** (will be consumed in later waves; see [`DESCRIPTION.md`](./DESCRIPTION.md) "Relationship to ecosystem"): World Model, Narrative Engine, Discovery, Intelligence.
+**Domain services not yet consumed** (will be consumed in later waves; see [`DESCRIPTION.md`](./DESCRIPTION.md) "Relationship to ecosystem"): World Model, Narrative, Discovery, Intelligence.
 
 **Domain services not consumed by design:** Extension System (meta-module for runtime extension; not a product-surface concern).
 

@@ -75,7 +75,7 @@ The Hub intentionally does **not**:
 
 **Does not consume (yet):**
 - Domain Services — World Model (future: Whisp presence, the worlds' atmosphere — see the cosmology core)
-- Domain Services — Narrative Engine (future: seasons and episodes)
+- Domain Services — Narrative (future: seasons and episodes)
 - Domain Services — Discovery (future: search, recommendations)
 - Domain Services — Intelligence (future: AI mentor, profile accumulation)
 

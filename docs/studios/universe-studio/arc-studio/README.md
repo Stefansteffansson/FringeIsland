@@ -3,7 +3,7 @@
 **Entity:** Studio (child of [Universe Studio](../README.md), per [ADR-U026](../../../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md))
 **Gate:** Teller — entering Arc Studio is a permission check against the Teller authority, a Dreamineer specialisation (see the [roles core](../../../ecosystem/universe/roles/README.md))
 **Feature ID prefix:** `AS`
-**Writes to:** Narrative Engine (DS-2)
+**Writes to:** Narrative (DS-2)
 **Wave:** Urd — Arc Studio is Urd-wave scope and is not in active development before then.
 
 The full lifecycle environment for **stories** — design, deploy, manage, retire. Arc Studio is

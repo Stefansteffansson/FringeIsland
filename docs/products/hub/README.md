@@ -15,4 +15,4 @@
 
 ## Architecture
 
-The Hub consumes Platform Core (Infrastructure, Identity, Organisation, Governance) and Domain Services (World Model, Narrative Engine, Experience Engine, Content, Communication, Discovery, Intelligence) **via the Platform API** — never by talking to the database directly. See `../../platform/README.md` and ADR-U009 (API-first frontend-agnostic) for details.
+The Hub consumes Platform Core (Infrastructure, Identity, Organisation, Governance) and Domain Services (World Model, Narrative, Experience Engine, Content, Communication, Discovery, Intelligence) **via the Platform API** — never by talking to the database directly. See `../../platform/README.md` and ADR-U009 (API-first frontend-agnostic) for details.

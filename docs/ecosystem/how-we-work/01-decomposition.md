@@ -42,7 +42,7 @@ The ecosystem is made of products, platform services, studios, a design system, 
 
 - **Products** (surfaces FIMs touch): The Hub, The Gimbal, The Game
 - **Platform Core** (domain-agnostic foundation): Infrastructure, Identity, Organisation, Governance
-- **Domain Services** (FringeIsland-specific): World Model, Narrative Engine, Experience Engine, Content, Communication, Discovery, Intelligence, Extension System
+- **Domain Services** (FringeIsland-specific): World Model, Narrative, Experience Engine, Content, Communication, Discovery, Intelligence, Extension System
 - **Studios** (full lifecycle environments for Dreamineers): Journey Studio, Universe Studio, Arc Studio
 - **Design System** — shared visual language
 - **Verticals** — the five cross-cutting obligations

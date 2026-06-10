@@ -95,7 +95,7 @@ UI testing (Hub-side, via Playwright) lives at the Hub — see [`../products/hub
 ## Where to go next
 
 - **Feature ID prefixes at this tier:** `PC` (Platform Core), `PD` (Platform Domain). See `core/README.md` and `domain/README.md`.
-- **Sub-areas:** [`core/`](./core/) (Infrastructure, Identity, Organisation, Governance) · [`domain/`](./domain/) (World Model, Narrative Engine, Experience Engine, Content, Communication, Discovery, Intelligence, Extension System) · [`extensions/`](./extensions/) (Extension System contracts).
+- **Sub-areas:** [`core/`](./core/) (Infrastructure, Identity, Organisation, Governance) · [`domain/`](./domain/) (World Model, Narrative, Experience Engine, Content, Communication, Discovery, Intelligence, Extension System) · [`extensions/`](./extensions/) (Extension System contracts).
 - **Cross-service dependencies:** `DEPENDENCIES.md` (pending, T4.1) will hold the dependency table. Until written, apply the one-way rule (Domain → Core, never reverse) and check the Internal API contract in the service spec.
 - **Relevant ADRs:** U002 (five verticals) · U006 (universal group pattern) · U007 (three-layer permission model) · U009 (API-first) · U015 (API versioning) · U016 (cascade specification first) · U023 (Platform Core / Domain Services decomposition) · U024 (wave model semantics).
 - **Relevant skills:** [`feature-development`](../../.claude/skills/feature-development/SKILL.md) when implementing a maturity-4 feature; [`ecosystem-decomposition`](../../.claude/skills/ecosystem-decomposition/SKILL.md) when writing or advancing a spec.

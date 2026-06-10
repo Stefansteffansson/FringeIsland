@@ -1,11 +1,11 @@
 # Domain Service — World Model (DS-1)
 
-<!-- Valid service slugs: world-model | narrative-engine | experience-engine | content | communication | discovery | intelligence -->
+<!-- Valid service slugs: world-model | narrative | experience-engine | content | communication | discovery | intelligence -->
 
 ---
 slug: world-model
 owner: platform/domain/world-model
-consumers: [products/hub, products/gimbal, studios/universe-studio/world-studio, studios/universe-studio/arc-studio, studios/universe-studio/journey-studio, platform/domain/narrative-engine, platform/domain/experience-engine, platform/domain/communication, platform/domain/discovery, platform/domain/intelligence]
+consumers: [products/hub, products/gimbal, studios/universe-studio/world-studio, studios/universe-studio/arc-studio, studios/universe-studio/journey-studio, platform/domain/narrative, platform/domain/experience-engine, platform/domain/communication, platform/domain/discovery, platform/domain/intelligence]
 status: proposed
 last_updated: 2026-06-10
 tier: Domain Services
@@ -48,7 +48,7 @@ The domain entities this service owns. No DS-1 schema exists on disk at this der
 | World-state | Per-region grown/receded state of the tendable world. Place 2 is revived place 3 — the same ground alive/glowing (tended) vs dead/black (un-grown or receded). Only each FIM's own ball is inviolable; everything else can recede if untended. Nothing is permanently destroyed (service-level invariant). | DS-1 tables |
 | Private home | The FIM's self-chosen representation of where they feel safest; reached via the ball's inside-zone; furnished with the personal-scope slice of World Studio (open to every FIM); evolves as the FIM grows. Default-locked; the FIM holds the only key. | DS-1 tables |
 | Home share-grant | Per-region, per-audience, revocable sharing of the private home (S43; ownership ratified at Phase 0): region → audience (a FIM or group, resolved via PC-3's audience primitive), granted/revoked, default-locked. DS-1 enforces at the read path. | DS-1 tables |
-| NPC world-layer | The body (Creator-authored) and culture (Anthropologist-authored) layers of an NPC placed in the world. The character layer is DS-2's (Teller; the World → Arc promotion seam; collaboration protocol is an open thread per the beings core). | DS-1 tables |
+| NPC world-layer | The body (Creator-authored) and culture (Anthropologist-authored) layers of an NPC placed in the world. The character layer is DS-2's (Teller; the World → Arc promotion seam — resolved at the DS-2 descent, §8 Q4: DS-2-owned rows reference these rows by ID, no DS-1 write). | DS-1 tables |
 | Lore entry | A canonical world-fact (names, history of the world as world, not as story). Thin at this derivation; shape is an open question (§8 Q5). | DS-1 tables |
 
 ### 3. Public contract (consumed by Surfaces)
@@ -110,7 +110,7 @@ These are not feature behaviours; they are properties every DS-1 capability and 
 - **Q1 — Ordinary-World coordinate substrate.** The near side is coordinate-tied and the body is a roving vantage (S27): what coordinate grain, what geo-indexing, and — critically — what privacy posture for body-position data, which is among the most sensitive classes the platform will hold. Routes to the Privacy vertical + the Gimbal's sensors equipment; a research spike candidate before any FEAT-PD touches near-side resolution.
 - **Q2 — Recession mechanics.** What drives world-state recession (elapsed time, absence of tending acts, a blend), at what cadence (pg_cron tick shape), and how tuned so it never reads as punishment (invariant 4). Design question with Vision-principle stakes; resolves at FEAT-PD maturity for the tendable-world capability.
 - **Q3 — Branch formation and decay.** What creates a branch (an explicit mutual gesture, accumulated shared experience via DS-3 signals, both)? Cold lean recorded: a branch is a DS-1 world-entity referencing two FIMs via their personal groups — it is *not* a PC-3 group (a branch has world-properties: glow, crown position, route function; PC-3 supplies only the identity primitives). Formation/decay inputs likely arrive as events from DS-3/DS-5 consumers calling DS-1's contract. Needs ratification when the first branch FEAT-PD is specified.
-- **Q4 — The World → Arc NPC promotion seam.** Who may add the character layer to a world-placed NPC, and how the handoff is recorded (the inter-studio collaboration protocol is an open thread per the beings core, S30). Joint question with DS-2's descent.
+- **Q4 — The World → Arc NPC promotion seam.** Who may add the character layer to a world-placed NPC, and how the handoff is recorded (the inter-studio collaboration protocol is an open thread per the beings core, S30). Joint question with DS-2's descent. **Resolved 2026-06-10 (DS-2 descent, ratified by Stefan):** a **Teller** promotes (PC-3 `has_permission()` against the Teller role template — the Arc Studio entry check, ADR-U026); the promotion is recorded as a **DS-2-owned character-layer row plus promotion record referencing this service's NPC world-layer row by ID** — additive, no DS-1 write, no DS-1 schema change; DS-1 remains unaware of which NPCs carry character layers (DS-2 consumes DS-1, never the reverse). The wider inter-studio collaboration protocol (S30) remains open as DS-2's §8 Q6, refining at studio decomposition. See `narrative.md` (§2, §3, §L3 Sources-status).
 - **Q5 — Lore's shape.** Registry of world-facts in DS-1 vs narrative content in DS-2/DS-4. Thin row kept in the inventory; shape resolves on first demand.
 - **Q6 — Place 3's name.** Deferred in canon (cosmology core); a naming-register item, not a DS-1 blocker.
 - **Q7 — Salience-channel input contract.** The exact shape of DS-7's maturity feed onto the cord (push event vs derived read) — settled at DS-7's descent against the Whisp-split decision (PENDING.md).

@@ -19,7 +19,7 @@ this level; everything specific to one studio lives in that child.
 - **[World Studio](./world-studio/)** — the world itself: physical substrate (Creators) +
   cultural substrate (Anthropologists). Writes to DS-1 World Model. Prefix `WS`.
 - **[Arc Studio](./arc-studio/)** — stories: seasons and episodes; the NPC character layer.
-  Tellers. Writes to DS-2 Narrative Engine. Prefix `AS`.
+  Tellers. Writes to DS-2 Narrative. Prefix `AS`.
 - **[Journey Studio](./journey-studio/)** — journeys: alone / pairs / group. Wayfinders. Writes
   to DS-3 Experience Engine. Prefix `JS`.
 

@@ -1,9 +1,9 @@
 # Domain Service — {Service name} (DS-{N})
 
-<!-- Valid service slugs: world-model | narrative-engine | experience-engine | content | communication | discovery | intelligence -->
+<!-- Valid service slugs: world-model | narrative | experience-engine | content | communication | discovery | intelligence -->
 
 ---
-slug: {world-model | narrative-engine | experience-engine | content | communication | discovery | intelligence}
+slug: {world-model | narrative | experience-engine | content | communication | discovery | intelligence}
 owner: platform/domain/{slug}
 consumers: [{products/hub} | {products/gimbal} | {studios/universe-studio/world-studio} | {studios/universe-studio/arc-studio} | {studios/universe-studio/journey-studio} | {platform/domain/<sibling-service>}]  # per ADR-U025 (no Game entity) and ADR-U026 (studios nested under universe-studio); sibling Domain Services may appear as Internal-API consumers
 status: {proposed | active | stable | deprecated}

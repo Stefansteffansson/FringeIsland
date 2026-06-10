@@ -5,7 +5,7 @@
 ---
 slug: infrastructure
 owner: platform/core/infrastructure
-consumers: [platform/domain/world-model, platform/domain/narrative-engine, platform/domain/experience-engine, platform/domain/content, platform/domain/communication, platform/domain/discovery, platform/domain/intelligence, platform/extensions, products/hub, products/gimbal, studios/universe-studio/world-studio, studios/universe-studio/arc-studio, studios/universe-studio/journey-studio, design-system]
+consumers: [platform/domain/world-model, platform/domain/narrative, platform/domain/experience-engine, platform/domain/content, platform/domain/communication, platform/domain/discovery, platform/domain/intelligence, platform/extensions, products/hub, products/gimbal, studios/universe-studio/world-studio, studios/universe-studio/arc-studio, studios/universe-studio/journey-studio, design-system]
 status: proposed
 last_updated: 2026-06-10
 tier: Platform Core

@@ -1,6 +1,6 @@
 <svg width="680" height="620" viewBox="0 0 680 620" xmlns="http://www.w3.org/2000/svg" role="img">
   <title>Domain service dependencies — who reads from whom</title>
-  <desc>Dependency flow between the seven FringeIsland Domain Services, revised at reconciliation Session B (2026-06-10). World Model (DS-1) constrains everything below it and is written by World Studio (ADR-U026); Narrative Engine (DS-2, written by Arc Studio) and Content (DS-4, shared resource) feed Experience Engine (DS-3, written by Journey Studio); Experience feeds Communication (DS-5), Discovery (DS-6), and Intelligence (DS-7); Intelligence also reads Discovery and the Extension System; all services register plugin contracts with the Extension System; everything sits above the Internal API boundary on Platform Core (Organisation, Identity, Infrastructure, Governance). Studios — World, Arc, Journey — are children of Universe Studio (ADR-U026); each writes to its domain service.</desc>
+  <desc>Dependency flow between the seven FringeIsland Domain Services, revised at reconciliation Session B (2026-06-10). World Model (DS-1) constrains everything below it and is written by World Studio (ADR-U026); Narrative (DS-2, written by Arc Studio) and Content (DS-4, shared resource) feed Experience Engine (DS-3, written by Journey Studio); Experience feeds Communication (DS-5), Discovery (DS-6), and Intelligence (DS-7); Intelligence also reads Discovery and the Extension System; all services register plugin contracts with the Extension System; everything sits above the Internal API boundary on Platform Core (Organisation, Identity, Infrastructure, Governance). Studios — World, Arc, Journey — are children of Universe Studio (ADR-U026); each writes to its domain service.</desc>
   <defs>
     <style>
       text { font-family: Arial, sans-serif; }
@@ -25,9 +25,9 @@
   <line x1="280" y1="98" x2="200" y2="138" stroke="#7F77DD" stroke-width="0.5" fill="none" marker-end="url(#arrow)"/>
   <line x1="400" y1="98" x2="480" y2="138" stroke="#7F77DD" stroke-width="0.5" fill="none" marker-end="url(#arrow)"/>
 
-  <!-- DS-2: Narrative Engine -->
+  <!-- DS-2: Narrative -->
   <rect x="100" y="140" width="200" height="52" rx="8" fill="#FAECE7" stroke="#D85A30" stroke-width="0.5"/>
-  <text x="200" y="158" text-anchor="middle" class="th" fill="#712B13">Narrative engine</text>
+  <text x="200" y="158" text-anchor="middle" class="th" fill="#712B13">Narrative</text>
   <text x="200" y="176" text-anchor="middle" class="ts" fill="#993C1D">Seasons, episodes, arcs</text>
   <text x="40" y="166" class="ts" fill="#888780">Arc Studio</text>
   <text x="40" y="180" class="ts" fill="#888780">writes</text>

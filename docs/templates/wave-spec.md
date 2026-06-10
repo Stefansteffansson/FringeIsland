@@ -33,7 +33,7 @@ Feature ID prefixes:
 
 ### Platform
 - [ ] [FEAT-PC{NNN}: {title}](link-to-feature-spec) — Platform Core ({identity | organisation | governance | infrastructure})
-- [ ] [FEAT-PD{NNN}: {title}](link-to-feature-spec) — Platform Domain ({world-model | narrative-engine | experience-engine | content | communication | discovery | intelligence})
+- [ ] [FEAT-PD{NNN}: {title}](link-to-feature-spec) — Platform Domain ({world-model | narrative | experience-engine | content | communication | discovery | intelligence})
 
 ### Studios (World, Arc, Journey under Universe Studio — ADR-U026)
 - [ ] [FEAT-WS{NNN}: {title}](link-to-feature-spec) — World Studio

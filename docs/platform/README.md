@@ -38,7 +38,7 @@ docs/platform/
                        Platform API (contract)
               ┌──────────────────┴─────────────────────┐
               │           Platform Domain (PD)         │
-              │   World Model · Narrative Engine ·     │
+              │   World Model · Narrative ·            │
               │   Experience Engine · Content ·        │
               │   Communication · Discovery ·          │
               │   Intelligence · Extension System      │

@@ -47,7 +47,7 @@ Where this tier sits in the ecosystem anatomy (`../architecture/ECOSYSTEM_ANATOM
 
 The design system's dependency posture is uniquely thin and worth naming explicitly — same anti-pattern-catch shape as the platform-core template's §4:
 
-- **No Domain Services.** The design system does not consume any domain-service capability. Components do not call DS-1 World Model, DS-2 Narrative Engine, or any other Domain Service. If a component appears to need domain data, the *consumer* fetches it and passes it in as a prop.
+- **No Domain Services.** The design system does not consume any domain-service capability. Components do not call DS-1 World Model, DS-2 Narrative, or any other Domain Service. If a component appears to need domain data, the *consumer* fetches it and passes it in as a prop.
 - **No Platform Core areas directly.** The design system does not call `has_permission()`, does not query Platform Core tables, does not consume Platform Core APIs. Auth-aware components (e.g., `<FimName />`) accept the resolved state as a prop; the consumer does the platform-tier resolution.
 - **No product-specific behaviour.** A component that branches internally on which product is rendering it is a coupling error. Per-product variation is expressed through props or composition, never through `if (product === 'hub')`.
 
