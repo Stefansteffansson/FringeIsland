@@ -194,3 +194,41 @@ Then: unpause DS-1.
 2. **ADR-U027 and ADR-U028** scopes confirmed as named in `decisions/PENDING.md`. Land in G-3.
 3. **Planning-tree treatment:** annotate-supersede banners (no rewrites of temporal records).
 4. **Batch order** G-1 -> G-2 -> G-3 -> G-4 confirmed; DS-1 unpauses after G-2 + G-3.
+
+---
+
+## 6. Execution record and handoff (appended at session close, 2026-06-10)
+
+All four batches were executed and committed the same day:
+
+| What | Commit | Size |
+|---|---|---|
+| Steps 1-2: ADR-U025/U026 + the cosmology and roles cores | a6101ad | 6 files |
+| Register ratified (Sections 1-5) | 814cefc | 2 files |
+| G-1 ecosystem identity surface | 1708057 | 18 files |
+| G-2 structure (trees, templates, agent context) | 50a5dae | 44 files |
+| G-3 architecture + platform specs (incl. ADR-U027/U028) | 0bda3ef | 15 files |
+| G-4 diagrams (ECOSYSTEM_ANATOMY_V5) + planning banners | 12dfea0 | 35 files |
+
+Each batch was verified by term-sweep before commit (retired names, superseded cosmology, GM/Game,
+ios-android sub-entities, visitor-as-identity); stragglers found by the sweeps were fixed in-batch.
+
+**Handoff / open items:**
+
+1. **Root `CLAUDE.md` is uncommitted by design.** It carries ratified G-2 edits (doc-map rows,
+   cascade sub-entity canonical case, API-first wording, Participants) mixed with pre-existing
+   unrelated working-tree changes from before this session - Stefan splits or commits it whole.
+2. **DS-1 (World Model) descent: UNPAUSE condition met.** G-2 and G-3 are applied; DS-1 derives
+   from the cosmology core plus this register's Section 3 DS-1 row.
+3. **CODE stays set aside** (ratified 2026-06-07). Code-side items when that target opens:
+   Visitor -> Shadow rename, the `Member` role-template seed -> Participant, the flat
+   `platform_admin` -> scope-split, the ADR-U027 lifecycle build (TTL sweep, atomic migration).
+4. **Flagged residue (process tier, outside this register's scope):**
+   `docs/ecosystem/how-we-work/index.html` (rendered copy) and
+   `assets/01-decomposition-cascade.svg` still quote the old VISION Whisp wording; the cascade
+   SVG's Whisp-placement (L2 owner) gap is genuinely still open. The four skills under
+   `.claude/skills/` may want equipment-model content beyond the V5-reference fix - that is
+   way-of-working maintenance, not reconciliation.
+5. **A `doc-health-check` run is recommended** - this session fired every one of that skill's
+   on-demand triggers (renames, deletions, schema-adjacent spec changes, folder restructure,
+   CLAUDE.md restructuring).
