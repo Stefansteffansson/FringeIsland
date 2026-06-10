@@ -35,6 +35,8 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 | ADR-U022 | [Named waves](ADR-U022-named-waves.md) | Accepted | platform-core |
 | ADR-U023 | [Platform Core / Domain Services decomposition](ADR-U023-platform-core-domain-services-decomposition.md) | Accepted | platform-core · domain-service |
 | ADR-U024 | [Wave model semantics](ADR-U024-wave-model-semantics.md) | Accepted | platform-core |
+| ADR-U025 | [Products as equipment profiles](ADR-U025-products-as-equipment-profiles.md) | Accepted | product |
+| ADR-U026 | [Studio decomposition — Universe Studio as parent](ADR-U026-studio-decomposition-universe-studio-parent.md) | Accepted | studio |
 
 ---
 

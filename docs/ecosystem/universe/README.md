@@ -23,9 +23,10 @@ This is the puzzle — pieces placed as they are defined, gaps visible where the
 ```
 docs/ecosystem/universe/
 ├── README.md                ← you are here
-├── cosmology/               ← the Three Worlds and their relationships
-├── personal-growth/         ← how growth works: red thread, engagement, void
-├── beings/                  ← entities that inhabit the world: Whisp, NPCs, roles
+├── cosmology/               ← the worlds topology: Ordinary World, Shimmer, Fringe, Void
+├── roles/                   ← the role taxonomy: identity states, FIM modes, enterprise plane
+├── personal-growth/         ← how growth works: red thread, engagement spectrum
+├── beings/                  ← entities that inhabit the world: Whisp, NPCs
 ├── narrative/               ← how story works: seasons, episodes, journeys
 └── community/               ← community dynamics, founding moments, roles in practice
 └── kickstarter/             ← the founding moment: Season Zero
@@ -37,9 +38,10 @@ docs/ecosystem/universe/
 
 | Area | What it covers | Status |
 |------|---------------|--------|
-| [cosmology/](./cosmology/) | The Three Worlds (Ordinary World, Safe Harbour, The Other Side), their boundaries, transitions, and felt qualities | Placeholder — awaiting extraction from founding documents |
-| [personal-growth/](./personal-growth/) | The red thread (three questions × three perspectives), the engagement spectrum (Homebody → Explorer), the void and its three dimensions | Placeholder — awaiting extraction |
-| [beings/](./beings/) | The Whisp (instrument, fullness, fidelity), NPCs, Dreamineer roles as world-inhabitants (Makers, Weavers, Skalds) | Placeholder — awaiting specification |
+| [cosmology/](./cosmology/) | The worlds topology — Ordinary World, the Shimmer, the Fringe (place 2 + place 3, near side + Beyond), the Void and the cord, the village/Tree/balls | Canonical core (ratified 2026-06-10) |
+| [roles/](./roles/) | The role taxonomy — identity states (Shadow/FIM, transcendence), FIM modes (experiential, Dreamineer specialisations, support roles), the enterprise plane (Universeers, Council, DeusEx, the Console) | Canonical core (ratified 2026-06-10) |
+| [personal-growth/](./personal-growth/) | The red thread (three questions × three perspectives), the engagement spectrum (Homebody → Explorer); for the Void see cosmology/ | Placeholder — awaiting extraction |
+| [beings/](./beings/) | The Whisp (instrument, fullness, fidelity), NPCs as layered composites; for roles see roles/ | Stale — Whisp framing and retired role names await correction against the discovery (see roles/) |
 | [narrative/](./narrative/) | Seasons and episodes, journey route types, content families, the first experience | Placeholder — awaiting specification |
 | [community/](./community/) | Community dynamics, the founding Dreamineer cohort, roles in practice | Placeholder — awaiting specification |
 | [kickstarter/](./kickstarter/) | The Kickstarter as Season Zero — campaign as founding moment, arrival rituals, dual audience | Extracted |
