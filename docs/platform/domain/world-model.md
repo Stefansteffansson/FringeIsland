@@ -17,7 +17,7 @@ feature_prefix: PD  # FEAT-PD### for features owned by this service
 
 **Authorship note.** This file is authored across three decomposition levels (see `.claude/skills/ecosystem-decomposition/SKILL.md`). L2 owns the identity, boundaries, and technical shape (§L2 below). L3 owns the capability inventory (§L3). L4 owns the feature-inventory summary (§L4). No level modifies a section owned by another.
 
-**Derivation note (this draft).** Step 1 (cold derivation) authored 2026-06-10 in the DS-1 descent session, after the Phase 0 PC re-check gate closed (`docs/planning/sessions/2026-06-10_01_-_DS1-DESCENT-PHASE0-DELTA.md`). Authority chain: `docs/ecosystem/VISION.md` v1.2 (L1) + the cosmology core `docs/ecosystem/universe/cosmology/README.md` (**ground truth — every capability below traces to it**) + the roles and beings cores + the Session B conformance register Section 3 DS-1 row + ADR-U023/U025/U026/U027/U028 + the three decisions ratified this session (the S43 home-sharing seam, ball-grant placement, and the Whisp-split decision in `docs/architecture/decisions/PENDING.md`). Code, migrations, and feature specs were **not read**, per the cold-derivation discipline. Step 2 (code-informed stress-test pass) and Step 3 (adjudication) follow per the standing L3 pattern; forward-commitment classification is deferred to Step 2.
+**Derivation note (this draft).** Step 1 (cold derivation) authored 2026-06-10 in the DS-1 descent session, after the Phase 0 PC re-check gate closed (`docs/planning/sessions/2026-06-10_01_-_DS1-DESCENT-PHASE0-DELTA.md`). Authority chain: `docs/ecosystem/VISION.md` v1.2 (L1) + the cosmology core `docs/ecosystem/universe/cosmology/README.md` (**ground truth — every capability below traces to it**) + the roles and beings cores + the Session B conformance register Section 3 DS-1 row + ADR-U023/U025/U026/U027/U028 + the three decisions ratified this session (the S43 home-sharing seam, ball-grant placement, and the Whisp-split decision in `docs/architecture/decisions/PENDING.md`). Code, migrations, and feature specs were **not read** at Step 1, per the cold-derivation discipline. Step 2 (code-informed stress-test, same day) and Step 3 (adjudication) are recorded at the foot of §L3: zero empirical DS-1 artifacts exist; the inventory stands unchanged with all rows classified full forward-commitment.
 
 ---
 
@@ -191,7 +191,24 @@ Cross-referenced per the template rule: the scheduled-job substrate row was **ad
 - **Vertical specs:** Privacy is substantive (S43/Shadow obligations landed at G-3); Administration/Transactions corrected at G-3; Notifications/Observability remain scaffold-tier — proceeded with remark per G-03 (`docs/ecosystem/how-we-work/gaps.md`).
 - **No sibling DS spec exists** (DS-1 is the first Domain Service derivation): boundary claims against DS-2..DS-7 are provisional per the sibling-undefined soft-pause rule — recorded as a remark; each sibling's descent re-checks its DS-1 boundary.
 - **No code, migrations, or FEAT-* files read** at Step 1, per the cold-derivation discipline. Step 2 stress-test + forward-commitment classification pending (expectation: most rows full-forward — no DS-1 code is believed to exist; Step 2 verifies rather than assumes).
-- **Template staleness noted (cross-entity finding):** `docs/templates/domain-service-spec.md` frontmatter comment still enumerates `{game}` as a consumer and omits `world-studio` — missed by the G-2 template sweep (register §2.4 listed only product/studio/design-system templates). Routed as a doc-health pickup.
+- **Template staleness noted (cross-entity finding):** `docs/templates/domain-service-spec.md` frontmatter comment still enumerates `{game}` as a consumer and omits `world-studio` — missed by the G-2 template sweep (register §2.4 listed only product/studio/design-system templates). Fixed in the Phase 1 commit of the DS-1 descent session.
+
+### Step 2 — code-informed stress-test findings
+
+*Run 2026-06-10 (same session, after Step 1 commit `cde6ffb`), per the standing pattern. Sweep scope: `supabase/migrations/` (chronological, cumulative-forward per A#8), `lib/`, `app/`, `components/`, type definitions. Term set: the full DS-1 vocabulary (world/place/region/topology/fringe/shimmer/void; ball/branch/crown/tree; cord/whisp/avatar; seed/anchor/portal; home/village; lore/npc; garden/tend/recede) plus the retired-model terms (safe harbour, three worlds).*
+
+- **Zero DS-1 domain artifacts exist on disk.** The end-state schema is 18 tables (`users`, `permissions`, `role_templates`, `group_templates`, `groups`, `group_memberships`, `journeys`, `journey_enrollments`, `role_template_permissions`, `group_template_roles`, `group_roles`, `group_role_permissions`, `user_group_roles`, `notifications`, `forum_posts`, `conversations`, `direct_messages`, `admin_audit_log`) — all PC-2 / PC-3 / PC-4 / DS-3 / DS-5 territory. No table, function, trigger, or RLS policy carries world/spatial/lore/avatar-state semantics.
+- **Noise classes excluded (recorded so the next reader doesn't re-litigate):** FringeIsland branding strings; the `Home()` route component and "Go Home" UI (shell, not the private-home concept); database *seeding* migrations (e.g. `20260127_seed_predefined_journeys.sql` — populate journeys/roles, not anchor-seeds); git-branch parsing in dashboard code; `groups.avatar_url` (`20260222131712` — a profile picture column, not avatar world-presence).
+- **No stale retired-model terms in code** (safe harbour / three worlds absent) — the CODE correction target carries no DS-1-vocabulary debt on top of its known items.
+- **Cross-entity findings: none.** Nothing in code maps to the candidate inventory differently than Step 1 stated, and nothing world-adjacent belongs to another entity's L3.
+
+### Step 3 — adjudication
+
+Zero-delta adjudication: the Step 1 candidate inventory is **committed unchanged** — no row added, removed, reshaped, or re-owned by Step 2 evidence (the architecture-derived inventory met no contradicting empirical analogue).
+
+**Forward-commitment classification (per the three-way discipline):** all eighteen capabilities are **full forward-commitment relative to code** — no capability has any empirical analogue. Whether any DS-1 row falls inside the active wave's scope is a wave-planning determination (horizontal axis), not an L3 output; the classification here records only the empirical floor: nothing is current-commitment, nothing is partially realised.
+
+**Buildable-order implication confirmed:** the §L3 dependency chain stands as the build order from a clean slate; the first FEAT-PD candidates remain Places & topology state and Ball lifecycle (the latter gated on PC-2's transcendence-event contract, which is itself FEAT-PC2-pending per PC-2 §9).
 
 ---
 

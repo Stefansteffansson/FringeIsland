@@ -25,6 +25,6 @@ DS-1 owns the **state of the created universe** and sits at the **bottom of the 
 
 ## Where to go next
 
-- **The service spec:** [`../world-model.md`](../world-model.md) — L2 identity + §7 invariants + §L3 capability inventory (Step 1 cold derivation 2026-06-10; Step 2 stress-test pending).
+- **The service spec:** [`../world-model.md`](../world-model.md) — L2 identity + §7 invariants + §L3 capability inventory (Steps 1-3 complete 2026-06-10; zero-delta stress-test — all capabilities full forward-commitment, nothing exists in code yet).
 - **Ground truth:** the cosmology core; roles core (scope tiers, Dreamineer gating); beings core (the Whisp's two faces, NPC layers).
 - **Relevant decisions:** ADR-U023 (anatomy) · ADR-U025/U026 (entities; World Studio writes → DS-1) · ADR-U027 (Shadow lifecycle) · ADR-U028 (governance by scope) · the Whisp-split ADR candidate in [`PENDING.md`](../../../architecture/decisions/PENDING.md).

@@ -78,3 +78,19 @@ Reader tours + L4 follow per the maturity gates.
 CODE stays set aside as a correction target. ASCII-only labels held. No new assertion-bearing
 diagrams were created (nothing joins the doc-health diagrams registry). The 2026-04 Hub L3
 working set was not used as derivation input. Sessions remained append-only.
+
+---
+
+## In-session addendum (same day, after "move on"): Steps 2-3 landed; naming decisions parked
+
+1. **DS-1 Step 2 (code-informed stress-test) + Step 3 (adjudication) executed in-session** and
+   recorded at the foot of the spec's §L3: **zero DS-1 domain artifacts exist in code** (18-table
+   end-state schema, all PC-2/PC-3/PC-4/DS-3/DS-5 territory; no stale retired-model terms; noise
+   classes recorded). Zero-delta adjudication — the inventory committed unchanged; **all eighteen
+   capabilities full forward-commitment**. Handoff item 1 of this bridge is thereby CLOSED;
+   DS-1's derivation is complete (reader tours remain a later maturity gate per G-32 practice).
+2. **Naming challenge outcome (Stefan):** PC names all confirmed; **DS-3's rename
+   (Experience Engine -> journey-named, plus the Engine-suffix asymmetry) parked in
+   `decisions/PENDING.md` for the DS-3 descent** (commit `e86e5be`); DS-1/DS-6/DS-7 naming
+   watch-items recorded there with no action.
+3. STATUS.md: DS-1 row -> **Done**; DS-2 Narrative Engine -> **Next**.

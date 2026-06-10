@@ -34,8 +34,8 @@
 
 | Entity | Type | Status | Opener instance | Closing bridge | §13 captured | Template revision |
 |---|---|---|---|---|---|---|
-| DS-1 World Model | Domain Service | **In flight** (Step 1 landed 2026-06-10; Steps 2-3 pending) | [`archive/ds1-world-model-descent-opener.md`](./archive/ds1-world-model-descent-opener.md) (custom two-phase opener, not the autonomous template) | [`2026-06-10_02_-_DS1-DESCENT-PHASE0-PHASE1-LANDED.md`](../2026-06-10_02_-_DS1-DESCENT-PHASE0-PHASE1-LANDED.md) (Step 1 bridge; entity-close bridge follows Steps 2-3) | n/a (custom opener) | n/a (custom opener) |
-| DS-2 Narrative Engine | Domain Service | Pending DS-1 | — | — | (pending) | (pending) |
+| DS-1 World Model | Domain Service | **Done** (Steps 1-3 landed 2026-06-10, same session; zero-delta stress-test) | [`archive/ds1-world-model-descent-opener.md`](./archive/ds1-world-model-descent-opener.md) (custom two-phase opener, not the autonomous template) | [`2026-06-10_02_-_DS1-DESCENT-PHASE0-PHASE1-LANDED.md`](../2026-06-10_02_-_DS1-DESCENT-PHASE0-PHASE1-LANDED.md) (+ in-session addendum covering Steps 2-3) | n/a (custom opener) | n/a (custom opener) |
+| DS-2 Narrative Engine | Domain Service | Next (DS-1 done; numeric order per the table note) | — | — | (pending) | (pending) |
 | DS-3 Experience Engine | Domain Service | Pending DS-1 | — | — | (pending) | (pending) |
 | DS-4 Content | Domain Service | Pending DS-1 | — | — | (pending) | (pending) |
 | DS-5 Communication | Domain Service | Pending DS-1 | — | — | (pending) | (pending) |
