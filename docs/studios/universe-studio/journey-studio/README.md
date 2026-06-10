@@ -3,7 +3,7 @@
 **Entity:** Studio (child of [Universe Studio](../README.md), per [ADR-U026](../../../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md))
 **Gate:** Wayfinder — entering Journey Studio is a permission check against the Wayfinder authority, a Dreamineer specialisation (see the [roles core](../../../ecosystem/universe/roles/README.md))
 **Feature ID prefix:** `JS`
-**Writes to:** Experience Engine (DS-3) — Journey Studio is the authoring + management surface; Experience Engine is the runtime that delivers journeys to FIMs.
+**Writes to:** Journeys (DS-3) — Journey Studio is the authoring + management surface; Journeys is the runtime that delivers journeys to FIMs.
 
 The full lifecycle environment for **journeys** — design, deploy, manage, retire. Wayfinders use
 Journey Studio to craft journeys — alone / pairs / group — and to manage published journeys over

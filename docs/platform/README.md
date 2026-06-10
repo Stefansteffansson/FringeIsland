@@ -39,7 +39,7 @@ docs/platform/
               ┌──────────────────┴─────────────────────┐
               │           Platform Domain (PD)         │
               │   World Model · Narrative ·            │
-              │   Experience Engine · Content ·        │
+              │   Journeys · Content ·                 │
               │   Communication · Discovery ·          │
               │   Intelligence · Extension System      │
               └──────────────────┬─────────────────────┘

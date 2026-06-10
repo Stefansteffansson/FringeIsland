@@ -48,7 +48,7 @@ Where the Hub sits in the ecosystem anatomy ([`../../architecture/ECOSYSTEM_ANAT
 
 | Domain service | What the Hub calls it for |
 |---|---|
-| Experience Engine | Journey enrollment, journey progress (start, pause, resume, leave, complete), content delivery to enrolled members |
+| Journeys | Journey enrollment, journey progress (start, pause, resume, leave, complete), content delivery to enrolled members |
 | Content | Media and asset delivery (narrative blocks, images, embedded media within journeys) |
 | Communication | Forums, direct messages (1-1 and group), activity feeds, notification delivery |
 
@@ -362,8 +362,8 @@ Capabilities consumed from other entities. Each entry names the source entity, t
 | PC-2 Identity | Per-device session inventory and remote-sign-out RPC | A-IDN (IDN-11) | **Cross-entity finding routed to G-29** — capability gap flagged in capabilities.md; PC-2 reciprocation needed |
 | PC-4 Governance | Audit log entries, GDPR consent state, data export request flow, feature flags | A-IDN (IDN-6, IDN-7, IDN-8), A-NTF (NTF-10), A-ADM (multiple) | Mixed |
 | DS-1 World Model | Whisp internal state primitives | A-COI (COI-6) | **Full forward-commitment** — not yet in Hub consumption posture |
-| DS-3 Experience Engine | Journey enrolment, progress, content delivery, frozen-state semantics, step-type catalogue | A-JRN (most rows), A-DIS (DIS-1, DIS-2 catalogue listing in Ferd) | Mostly current-commitment |
-| DS-3 Experience Engine | Catalogue listing with Ferd-acceptable filters and metadata | A-DIS (DIS-1, DIS-2) | **Cross-entity finding routed to G-29** — basic browse confirmed; specific shape needs reciprocation |
+| DS-3 Journeys | Journey enrolment, progress, content delivery, frozen-state semantics, step-type catalogue | A-JRN (most rows), A-DIS (DIS-1, DIS-2 catalogue listing in Ferd) | Mostly current-commitment |
+| DS-3 Journeys | Catalogue listing with Ferd-acceptable filters and metadata | A-DIS (DIS-1, DIS-2) | **Cross-entity finding routed to G-29** — basic browse confirmed; specific shape needs reciprocation |
 | DS-4 Content | Media and asset delivery | A-JRN (JRN-2, JRN-13, JRN-18), A-GRP (MEM-8 asset disposition) | Current-commitment |
 | DS-5 Communication | Direct messaging, forums, real-time delivery, activity feed event substrate | A-COM (most rows), A-NTF (NTF-1, NTF-9), A-DIS (DIS-7) | Current-commitment for DM and forum substrate; partial-forward for activity feed aggregation |
 | DS-6 Discovery | Search, ranking, recommendations | A-DIS (all rows), A-GRP (MEM-1 member search), A-ADM (ADM-2 member search ranking) | Mostly **full forward-commitment**; ranking partial-forward for catalogue rows |

@@ -1,11 +1,11 @@
 # Domain Service — World Model (DS-1)
 
-<!-- Valid service slugs: world-model | narrative | experience-engine | content | communication | discovery | intelligence -->
+<!-- Valid service slugs: world-model | narrative | journeys | content | communication | discovery | intelligence -->
 
 ---
 slug: world-model
 owner: platform/domain/world-model
-consumers: [products/hub, products/gimbal, studios/universe-studio/world-studio, studios/universe-studio/arc-studio, studios/universe-studio/journey-studio, platform/domain/narrative, platform/domain/experience-engine, platform/domain/communication, platform/domain/discovery, platform/domain/intelligence]
+consumers: [products/hub, products/gimbal, studios/universe-studio/world-studio, studios/universe-studio/arc-studio, studios/universe-studio/journey-studio, platform/domain/narrative, platform/domain/journeys, platform/domain/communication, platform/domain/discovery, platform/domain/intelligence]
 status: proposed
 last_updated: 2026-06-10
 tier: Domain Services

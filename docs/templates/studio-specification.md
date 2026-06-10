@@ -8,7 +8,7 @@ last_updated: YYYY-MM-DD
 tier: Surfaces
 tags: [studio:{slug}]
 feature_prefix: {US | WS | AS | JS}  # US=Universe Studio (umbrella/binding-frame), WS=World Studio, AS=Arc Studio, JS=Journey Studio (ADR-U026) — used for FEAT-*.md file naming
-target_domain_service: {DS-1 World Model | DS-2 Narrative | DS-3 Experience Engine}
+target_domain_service: {DS-1 World Model | DS-2 Narrative | DS-3 Journeys}
 ---
 
 > The inward-facing build spec for a studio surface. For developers who need to know how the thing actually works, what it depends on, and what its contracts are. Identity and "why" live in `DESCRIPTION.md` — don't repeat them here. Companion files: `DESCRIPTION.md` (outward-facing).

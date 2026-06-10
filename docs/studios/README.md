@@ -37,7 +37,7 @@ every FIM; authoring the shared world is Dreamineer-gated (ADR-U026).
 ## Domain-service affinities and equipment
 
 Each sub-studio leans on exactly one Domain Service: World Studio -> World Model (DS-1); Arc
-Studio -> Narrative (DS-2); Journey Studio -> Experience Engine (DS-3). Studio surfaces key
+Studio -> Narrative (DS-2); Journey Studio -> Journeys (DS-3). Studio surfaces key
 to equipment, never devices (ADR-U025): World Studio has a capture-foot on `sensors` and its deep
 edit on `comfortable-canvas`; Arc and Journey Studios lean canvas with light mobile review.
 

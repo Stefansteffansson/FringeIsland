@@ -1,0 +1,259 @@
+# Domain Service — Journeys (DS-3)
+
+<!-- Valid service slugs: world-model | narrative | journeys | content | communication | discovery | intelligence -->
+
+---
+slug: journeys
+owner: platform/domain/journeys
+consumers: [products/hub, products/gimbal, studios/universe-studio/journey-studio, platform/domain/communication, platform/domain/discovery, platform/domain/intelligence]
+status: proposed
+last_updated: 2026-06-10
+tier: Domain Services
+tags: [domain-service:journeys]
+feature_prefix: PD  # FEAT-PD### for features owned by this service
+---
+
+> One file per FringeIsland-specific domain service. Domain services sit between Platform Core (domain-agnostic) and Surfaces (products + studios). They expose contracts that anything in the Surfaces tier may consume.
+
+**Authorship note.** This file is authored across three decomposition levels (see `.claude/skills/ecosystem-decomposition/SKILL.md`). L2 owns the identity, boundaries, and technical shape (§L2 below). L3 owns the capability inventory (§L3). L4 owns the feature-inventory summary (§L4). No level modifies a section owned by another.
+
+**Naming note.** This service was inventoried as "DS-3 Experience Engine" (`experience-engine`). The rename parked in `docs/architecture/decisions/PENDING.md` (identified at the DS-1 descent: since ADR-U025, *experience* is identity-layer vocabulary, and the name collided with the platform's biggest word while owning something narrower) was ratified by Stefan at this session's FIRST DECISION: DS-3 is **Journeys** (`journeys`), the suffix-free, journey-named form the entry anticipated — the Engine-suffix half was already decided at the DS-2 descent (drops on both). The rename ripple (template slug enum, domain README line, domain CLAUDE.md enumerations, STATUS.md row, SVG labels, register-style sweeps) lands in this session's commits per the sweep-then-enumerate discipline.
+
+**Derivation note (this draft).** Step 1 (cold derivation) authored 2026-06-10 in the DS-3 descent session (opener: `docs/planning/sessions/openers/ds3-experience-engine-descent-opener.md`). Authority chain: root + platform + domain `CLAUDE.md` cascade (L1) + the domain README L2 inventory line + the **personal-growth core** `docs/ecosystem/universe/personal-growth/README.md` with its extracted sub-pages (three-questions, engagement-spectrum, privacy-model) + the **narrative core** (the respawn section and the planned `journeys.md` line: route types and content families are canon from that line) + the cosmology core (sections 8 and 10 — severance and the Void-distance growth gradient) + the roles core (Wayfinder gating; the per-group support roles) + the beings core (FIM/Shadow as travellers) + universe-discovery S19 (signature journey vs charter trip) + the Session B conformance register Section 3 DS-3 row + ADR-U023/U025/U026/U027/U028 + ADR-U017 (journeys as content templates) + ADR-U020 (pairs are groups) + ADR-U008/U018 (Ferd non-closure; step-type extensibility) + the carry-forward priors from the DS-1 and DS-2 closing bridges. Three sibling seams were re-checked and ratified this session (DS-2 §8 Q1 per-FIM pacing → DS-3; DS-2 §8 Q2 loop runtime state → DS-3; the respawn three-way split confirmed from the DS-3 side — see §1 and §L3 Sources-status). Code, migrations, and feature specs were **not read** at Step 1, per the cold-derivation discipline. Step 2 (code-informed stress-test) and Step 3 (adjudication) are recorded at the foot of §L3.
+
+---
+
+## L2 — Identity, boundaries, and technical shape
+
+*L2 authorship. Derived from Vision and the ecosystem anatomy (ADR-U023 as amended by ADR-U025/U026). Revised when the service's boundaries, public contract, or dependencies change.*
+
+### 1. Purpose
+
+DS-3 Journeys owns the **structured travel of travellers through the experience** — the journey as a content template (ADR-U017), its steps, the enrolments through which groups of every size travel it (solo via the personal group, pairs, groups — ADR-U020), per-traveller progress, and the **delivery runtime** that composes what the siblings declare into a lived, personalised experience. That is: journeys with their route types (Fixed, Hybrid, Traveler-Initiated, AI-Generative — per the narrative core's journeys line), step structure (kinds data-driven from day one, ADR-U008), required-equipment declarations made at authoring (ADR-U025), and depth settings (the Game is a depth of journeys, not a product — ADR-U025); attachment into DS-2's season/episode frame; **respawn delivery** — the experience of rewinding and resuming, composing DS-1's position resolution with DS-2's topology, return-shape, texture, and persistence declarations; **loop runtime state** (the live state of a running loop — ratified this session as DS-3's, resolving DS-2 §8 Q2); and **signature-vs-charter personalisation** (universe-discovery S19) — the bespoke shaping of a journey that deepens only with the FIM's voluntary disclosure breadth, including per-FIM adaptive pacing over DS-2's universal calendar (ratified this session, resolving DS-2 §8 Q1). The personal-growth core is its developmental ground truth: journeys are the vehicle of the three questions across the three perspectives, and the growth gradient they deliver is **Void distance on the cord, never bodily distance** (cosmology section 10).
+
+DS-3 is **not**: narrative structure (DS-2 Narrative — seasons, episodes, beats, loop *declarations*; DS-3 composes what DS-2 declares and never authors story structure); respawn *position* resolution, severance mechanics, cord state, or world state (DS-1 World Model — DS-1 resolves *where* a severed Whisp resumes; DS-3 delivers the experience of resuming); media, assets, or content blocks (DS-4 Content — steps reference content opaquely by ID); conversation or feeds, including journey-scoped social surfaces (DS-5 Communication — DS-5 consumes enrolment context, DS-3 holds no conversational state); search, recommendation, or the marketplace over published journeys (DS-6 Discovery — DS-6 reads the published catalog); the Whisp in any face and the personalisation *intelligence* itself (DS-7 Intelligence — DS-7 reads journey context and feeds personalisation input through DS-3's own contract, the same call direction as the DS-1 salience channel; the Whisp split is decided and DS-3 owns no face); group and pair identity, membership, or permission resolution (PC-3 — enrolment parties are PC-3 groups, consumed not redefined); and Journey Studio itself (a role-gated authoring mode per ADR-U026 — DS-3 is the service Journey Studio writes to, not the surface).
+
+### 2. Concepts
+
+The domain entities this service owns. Journey-vocabulary substrate is known to exist on disk from the DS-1/DS-2 descents' Step 2 records (carry-forward knowledge, not a Step 1 read); Step 2 stress-tests the candidate against it. Persistence entries name the substrate intent; specific schema is L4 work (the platform rules apply from day one: every table RLS, no exceptions).
+
+| Entity | Definition | Persisted in |
+|--------|-----------|--------------|
+| Journey | A content template for structured travel (ADR-U017 — never an organisational node): carries route type (Fixed, Hybrid, Traveler-Initiated, AI-Generative — data-driven registry), perspective affinity (alone / pair / group), required-equipment declaration (ADR-U025, declared at authoring), depth setting, and a draft/published lifecycle. Journey kinds data-driven (Ferd non-closure). Realized substrate (Step 2) carries the pre-canon vocabulary `journey_type` {predefined, user_created, dynamic} as a CHECK list — the canon route-type registry is the forward shape; the mapping (and Hybrid's absence) reconciles at FEAT-PD time, the CHECK-list closure at the code correction target. | DS-3 tables (realized: `public.journeys`, D15 rebuild lineage; schema evolution is L4) |
+| Step | The unit of experience within a journey, sequenced. The step **kind** is a discriminator on a shared base structure, extensible without schema redesign (ADR-U008 — the single most important architectural decision for journey content). Steps reference DS-4 content blocks **opaquely by ID**. The step-kind vocabulary and the narrative core's content families (Witness, Reflect, Decide, Act, Encounter, Rest) are reconciled at the ADR-U008 step-type specification session (§8 Q1). Realized substrate (Step 2): steps live as JSONB `content.steps[]` inside the journey row with a `type` discriminator — the U008 shared-base shape, but with a sealed three-value TS union ({content, activity, assessment}) that joins Q1's vocabulary reconciliation. | DS-3 tables (realized: `journeys.content` JSONB; row-vs-JSONB grain is L4) |
+| Equipment requirement | The per-journey (and, where step-grain matters, per-step) declaration of required equipment from the ADR-U025 coarse set (`sensors | comfortable-canvas | precision-input | none`). Named by equipment, never by device. | DS-3 tables |
+| Depth setting | The journey's depth registry entry — how deep the rendered experience goes; **the Game is a depth setting, not a product** (ADR-U025; its revisit trigger lives in that ADR). Depth kinds data-driven. | DS-3 tables |
+| Season/episode attachment | The declaration attaching a journey into DS-2's narrative frame (which episode or season a journey belongs to or runs alongside), referencing DS-2 rows **opaquely by ID**. Attachment kinds data-driven (§8 Q4). | DS-3 tables |
+| Enrolment | A party's participation in a journey: the party is always a PC-3 group — the personal group for solo travel, a two-member group for pairs (ADR-U020), a group for group journeys. Enrolment lifecycle states data-driven. Groups enrol in journeys; journeys are never groups (ADR-U017). | DS-3 tables |
+| Progress | Per-enrolment, per-traveller, per-step advancement state — developmental data, private by default (privacy core). Never comparative across FIMs (§7 invariant 8). Realized substrate (Step 2): `progress_data` JSONB on the enrolment row only — per-enrolment grain; the per-traveller grain within group enrolments is forward commitment (invariants 4 + 8 require it before group journeys carry developmental state). | DS-3 tables (realized: `journey_enrollments.progress_data`) |
+| Loop runtime state | The live state of a running loop: the current round of a round-bounded group loop, who is mid-rewind, the loop's position within its declared topology. DS-3-owned (ratified this session, resolving DS-2 §8 Q2) — composing DS-2's declarations; carries the personal-data weight, including ADR-U027 ephemerality for Shadow loops. | DS-3 tables (Shadow loop state inherits PC-2 ephemerality) |
+| Persisted loop outcome | What survives a rewind, instantiated per DS-2's persistence-class declarations — tactical knowledge, relational insight, emotional clarity as runtime data. The declaration is DS-2's; the persisted personal data is DS-3's. | DS-3 tables |
+| Personalisation state | The signature-shaping of an enrolment (S19): which variant and pacing this FIM travels, deepening with voluntary disclosure breadth. The shaping intelligence is DS-7's, fed through DS-3's contract; DS-3 owns the applied state. Includes per-FIM adaptive pacing over DS-2's universal calendar (resolving DS-2 §8 Q1). | DS-3 tables |
+
+### 3. Public contract (consumed by Surfaces)
+
+Contract surfaces at coarse grain — operation families, not endpoint signatures. Per the framework-provided-contract-mechanisms discipline (A#9), the realized HTTP layer is expected to be PostgREST RPC + RLS-gated reads unless a three-justification case warrants a custom route; resolution is Step 2 / L4 work. Auth on every operation resolves the actor via the repo's four-hop actor chain (P-O1: `auth.uid()` → `users` → `personal_group_id`); all role gating rides `has_permission()` against TEXT-keyed `role_templates` rows (D7 — Wayfinder for authoring; Steward / Guide / Participant / Observer within enrolled groups), never hardcoded role names.
+
+- **Catalog reads** — published journeys with route type, perspective affinity, equipment requirements, depth setting, and narrative attachment. Published structure is shared-world state (DS-6 consumes it for discovery; surfaces render it); status and equipment gating per ADR-U025/U027 decide what a given traveller can *enrol in*, not what the catalog admits exists.
+- **Enrolment operations** — enrol a party (personal group / pair / group via PC-3), read own enrolments, withdraw; lifecycle transitions. Shadow enrolment on near-side journeys is in-scope with ephemerality obligations (§8 Q2); transcendence migrates a Shadow's enrolment and progress atomically with continuity (ADR-U027 — nothing restarts).
+- **Progress operations** — advance a step, read own progress; per-traveller within group enrolments. Visibility is consent-gated per the privacy core: private by default; Stewards and Guides see only what the journey's design plus explicit consent expose; transparently-shared groups are an opt-in norm, never a default.
+- **Delivery runtime** — resolve the current experience for an enrolment: the current step composed with DS-2 plot reads, DS-4 content references (opaque), the journey's personalisation state, and the depth setting.
+- **Loop and respawn delivery** — enter a declared loop; deliver the rewind: compose DS-1's respawn-position resolution with DS-2's return-shape, texture, and topology declarations into the resumed experience; apply persistence classes (what survives lands as DS-3 runtime data); expose loop runtime state at design-scoped grain (who is mid-rewind in a round-bounded group loop — §8 Q6).
+- **Journey authoring write-path (Journey Studio, ADR-U026)** — create and revise journeys, steps, equipment declarations, depth settings, narrative attachments. Wayfinder-gated; journeys declare required equipment at authoring (ADR-U025 — a declaration the write-path enforces as mandatory, not optional metadata); draft state is studio-scoped; all authoring audited per PC-4 discipline.
+- **Personalisation input seam (DS-7-fed)** — DS-7 feeds signature-shaping input through this contract (DS-7 calls DS-3; DS-3 never depends on DS-7 — the DS-1 salience-channel direction pattern). Personalisation deepens only with voluntary disclosure breadth; the contract exposes no coercion surface.
+
+Consumers: **Journey Studio writes → DS-3**; the Hub and Gimbal surfaces read and deliver; DS-5 consumes enrolment context for journey-scoped communication surfaces; DS-6 consumes the published catalog for discovery (no counts, no rankings — the anti-leaderboard guardrail holds at the source); DS-7 reads journey context where the Whisp speaks into a journey and feeds the personalisation seam. Equipment-keying is **feature-grain at the surfaces** (ADR-U025) — but journey-grain equipment *declarations* are DS-3 data (journeys declare required equipment at authoring); DS-3 exposes one contract regardless of equipment profile.
+
+### 4. Internal dependencies (consumed *from* this service)
+
+Allowed dependencies per ADR-U023: Platform Core, and other domain services below this one in the dependency rules.
+
+- **Platform Core:**
+  - **PC-1 Infrastructure** — RLS substrate; SECURITY DEFINER discipline; migration discipline; **scheduled-job substrate (pg_cron)** for day-bounded loop ticks and participation in the Shadow TTL sweep; feature-flag substrate (staged rollout of authoring and delivery surfaces).
+  - **PC-2 Identity** — identity-status gate (Shadow/FIM) and the four-hop actor chain on every actor-touching operation; the **transcendence lifecycle event with atomic migration** (a Shadow's enrolments, progress, and loop state transfer with continuity — composed invariant with PC-2's migration, cascade-spec'd per ADR-U016); **Shadow ephemerality rules** (Shadow-generated DS-3 state inherits the TTL-erasure obligations of ADR-U027).
+  - **PC-3 Organisation** — the party primitive (personal groups / pairs / groups per ADR-U006/U007/U020) for enrolment; `has_permission()` with the Wayfinder template for authoring and the Steward / Guide / Participant / Observer templates for in-journey role gating (all TEXT-keyed per D7).
+  - **PC-4 Governance** — admin operations and audit-log discipline for journey-admin interventions and all authoring writes (consumed, not redefined).
+- **Other domain services:**
+  - **DS-1 World Model** — respawn-position resolution (consumed at respawn delivery; DS-1 resolves, DS-3 delivers); Void-distance reads (the growth gradient journeys deliver is Void distance on the cord — cosmology section 10).
+  - **DS-2 Narrative** — plot reads (an episode's beats in sequence, for delivery composition); loop-structure reads (topology declarations, return shapes, textures, persistence classes — the primary consumption seam DS-2 named); the universal-calendar frame (season/episode attachment; per-FIM pacing composes over it).
+  - **DS-4 Content is referenced opaquely only** (steps → content-block IDs; DS-4 owns the content; DS-3 never calls DS-4 — the standing reference-direction pattern).
+
+### 5. Extension points
+
+The **step-kind system is this service's canonical extension surface** (ADR-U008): new step kinds must slot in without rebuilding the core data model — a discriminator on a shared base structure, never a table per type. Formal plugin contracts (Dreamineer-authored step kinds, custom renderers) are Extension System work in a later wave; Ferd architecture leaves them openable. The Ferd non-closure discipline applies throughout: route types, step kinds, content families, depth settings (including the Game), attachment kinds, enrolment lifecycle states, and personalisation-variant kinds are **data-driven registries, never sealed enums**.
+
+### 6. Storage & schema
+
+**Realized substrate (Step 2, this session):** `public.journeys` and `public.journey_enrollments` exist, created in the D15 rebuild (`20260222000000_rebuild_universal_group_pattern.sql`) — RLS enabled with published-select, own/group select, individual/group insert, and own/group update policies, all riding `get_current_personal_group_id()` (P-O1) and `has_permission(..., 'enroll_group_in_journey')` (D7); two SECURITY DEFINER helpers (`is_enrolled_in_journey`, `is_journey_enrollable` — sprint0, the recursion-trap class); lifecycle cascade semantics live in sprint2/3/4 (enrolment freeze on leave/exit, sentinel-group reassignment, non-public-journey transfer to DeusEx); the 8 predefined journeys were lost at the D15 rebuild and re-seeded at sprint1 under the "FringeIsland Journeys" engagement group. Two custom v1 routes exist (`app/api/v1/journeys/...` — the enroll route is the A#9 three-justification case, and its open-coded service-role plumbing is routed to the PC-1 Finding #4 channel). Realized CHECK-listed vocabularies (`journey_type`, `difficulty_level`, `status`) and sealed TS unions are closure patterns relative to §5 — registry-ization is forward work at the code correction target. Substrate commitments that bind L4:
+
+- Every DS-3 table has RLS from day one. **Published** journey structure is broadly readable (catalog reads; DS-6 discovery; Shadows perceive what exists). **Enrolment, progress, loop runtime state, persisted loop outcomes, and personalisation state are personal data** — row-grain RLS on the traveller's own rows; group-enrolment visibility is consent- and design-gated; **Stewards and Guides cannot read a member's private developmental data** (privacy core — enforced at the database layer, not product-filtered).
+- **Draft** authoring state is Wayfinder/studio-scoped via lifecycle state at the row grain.
+- Shadow-generated DS-3 state (a Shadow's enrolment, progress, loop state) carries the PC-2 TTL-erasure path; the pg_cron substrate is the sweep mechanism; the transcendence migration is atomic with a mid-migration guard (ADR-U027), cascade-spec'd per ADR-U016 jointly with PC-2 before implementation.
+- Steps reference DS-4 content blocks by ID only; narrative attachments reference DS-2 rows by ID only; no foreign service's schema is redefined or written here.
+- All kind/state vocabularies (route, step kind, content family, depth, attachment, enrolment state, personalisation variant) are registry tables, not CHECK-listed enums (§5; ADR-U008/U018).
+- Journey retirement and enrolment-bearing lifecycle events participate in the ADR-U016 cascade discipline: a cascade spec exists before any retirement or account-lifecycle mechanics are implemented (enrolment disposition at platform exit included).
+
+### 7. Service-level invariants (the guardrails as architecture)
+
+These are not feature behaviours; they are properties every DS-3 capability and every future FEAT-PD spec must preserve. Violating one is an architecture bug, not a product decision.
+
+1. **Meta-safety in delivery.** Every delivered loop honours the guaranteed return shape DS-2 declared — no delivery may strand a traveller outside the containing arc, and the FIM is never the thing at risk. Delivery composes the safety frame; it never weakens it.
+2. **Growth pressure is Void distance.** The comfort → growth → panic gradient a journey delivers maps to Void distance on the cord (DS-1-read), never to bodily distance, and pushes cautiously toward the growth zone, never the panic zone (S19).
+3. **Voluntariness.** Everything is opt-in: no journey advances without the traveller's action, no disclosure is coerced, and personalisation deepens only with voluntary disclosure breadth — Immunity to Change is the ethical compass for personalisation (S19). The island invites, but does not force.
+4. **Developmental privacy.** Progress, reflections, and loop outcomes are private by default. Stewards and Guides cannot see a member's private developmental data; transparently-shared groups are an explicit opt-in norm and never forfeit per-contribution control (privacy core, three tiers).
+5. **Entertainment-first; scaffolding invisible.** DS-3's contract exposes no didactic, assessment, or "lesson" surface; the developmental scaffolding (the 9-cell matrix, the research base) stays structural and invisible. A traveller could journey purely for the story and still have a valuable experience.
+6. **Non-closure.** Every kind- and state-vocabulary in this service is a data-driven registry (ADR-U008/U018). The step-kind system is extensible from day one; sealing any vocabulary is an architecture bug.
+7. **Transcendence continuity.** A Shadow's journey experience transfers into the FIM account atomically and with continuity — nothing restarts, and a last-moment joiner is never erased mid-migration (ADR-U027).
+8. **No comparative-progress surface.** Progress is never comparative across FIMs — no leaderboards, no rankings, no "behind/ahead" framing, to any consumer including studios and admin. A Homebody is not behind an Explorer (engagement-spectrum core); every position on the spectrum is welcome, structurally.
+
+### 8. Open spec questions
+
+- **Q1 — Step-kind vs content-family vocabulary** *(speculative-third-shape)*. ADR-U008 names Tier-1 step types (narrative, reflection, assessment, choice, activity, journal, checklist); the narrative core's journeys line names content families (Witness, Reflect, Decide, Act, Encounter, Rest); and Step 2 surfaced a third, realized vocabulary — the TS `StepType` union {content, activity, assessment} live in `journeys.content` JSONB. Are families a classification dimension on step kinds, the kinds themselves under canon names, or two registries with a mapping — and how does the realized three-value set migrate? Cold lean: one step-kind registry with content family as a data-driven dimension. Resolves at the **step-type specification session ADR-U008 mandates** before significant implementation (now triply motivated).
+- **Q2 — Shadow enrolment posture and the first experience.** Shadows travel the near side with their own Whisp and cord; the founding first-hour narrative (`first-experience.md`, unwritten — the canon's named highest-risk gap) is plausibly a Shadow-side journey. What journey grain is open to Shadows (near-side journeys only — intrinsic, not a fence), and how does the first experience instantiate? Joint with the first-experience canon work; ephemerality obligations apply regardless.
+- **Q3 — The AI-Generative route seam with DS-7.** For AI-Generative journeys, where does Wayfinder authorship end and generation intelligence begin — does DS-7 author through the same Wayfinder-gated write-path, or through a distinct generation seam with its own audit posture? Resolves at the DS-7 descent (which also owns the Whisp-split ADR promotion).
+- **Q4 — Journey-vs-episode attachment grain.** How journeys attach into DS-2's frame: per-episode journeys, season-spanning journeys, journeys running alongside the calendar unattached — attachment kinds are data-driven, but the legitimate kind set and its semantics firm up jointly with DS-2's calendar at FEAT-PD time.
+- **Q5 — Personalisation-state shape.** Whether a signature variant is stored as per-enrolment deltas over the template, generated journey instances, or a composition layer at delivery time — L4 work, after the DS-7 input-seam contract firms.
+- **Q6 — Group-loop runtime visibility.** Who sees whom mid-rewind in a round-bounded group loop — design-scoped visibility within invariants 4 and 8 (a round-state is operational, not developmental, data; but the boundary needs care). FEAT-PD time.
+- **Q7 — Step content references vs narrative beats.** A journey step references DS-4 content blocks opaquely; episode beats (DS-2) do the same. Whether a step may also reference a DS-2 beat directly (journey delivering story) or always composes via the episode frame at delivery — cold lean: composition at delivery, no step→beat references. Confirms at the DS-4 descent (joint with DS-2 §8 Q8 and Q3's three-way boundary).
+- **Q8 — Guide/Steward in-journey authority surface.** What a Guide may do to a running group journey (pause, adapt pacing, skip a step for the group) and what a Steward may do to enrolments — gated via PC-3 templates, bounded by invariants 3 and 4. FEAT-PD time.
+
+---
+
+## L3 — Capability inventory
+
+*L3 authorship. Derived fresh from L1 and L2 (§L2 above) at this step — Step 1 cold derivation; Step 2 (code-informed stress-test) and Step 3 (adjudication) follow per the standing pattern. L3 does not read existing feature specs or code during derivation.*
+
+### Capabilities
+
+| Capability | Internal area | Depends on (internal) | Depends on (external) | Vertical impact |
+|---|---|---|---|---|
+| Journey registry & route types | Journey structure | — | PC-1 (schema/RLS substrate) | Observability (authoring/lifecycle events) |
+| Step registry & step-kind system | Journey structure | Journey registry & route types | PC-1; DS-4 reference-only (opaque content-block IDs, no call dependency) | Observability (authoring/sequencing events). ADR-U008 binds: kinds data-driven, the canonical extension surface |
+| Equipment-requirement declaration | Journey structure | Journey registry & route types | PC-1 (ADR-U025 equipment vocabulary as data) | Observability (declaration events) |
+| Depth-setting registry | Journey structure | Journey registry & route types | PC-1 | Observability (registry edits). Non-closure: the Game is a registry row, never an enum |
+| Season/episode attachment | Journey structure | Journey registry & route types | DS-2 (calendar frame, opaque season/episode refs) | Observability (attachment events) |
+| Journey authoring write-path (Journey Studio) | Authoring | every Journey-structure capability | PC-3 (`has_permission()` against the Wayfinder template, D7; four-hop actor chain, P-O1); PC-4 (audit discipline) | Administration (authoring audited); Observability (write-path events); Privacy (draft state is studio-scoped, not personal data) |
+| Enrolment lifecycle | Enrolment | Journey registry & route types | PC-2 (identity-status gate); PC-3 (party primitive: personal group / pair / group per ADR-U017/U020) | Privacy (enrolment is FIM data); Observability (lifecycle events); Notifications (enrolment-event triggers); Administration (enrolment disposition in account-lifecycle cascades per ADR-U016) |
+| Shadow enrolment & transcendence continuity | Enrolment | Enrolment lifecycle | PC-2 (ADR-U027 TTL-erasure + atomic transcendence migration) | Privacy (ephemerality obligations on Shadow journey data); Administration (atomicity cascade-spec'd jointly with PC-2 per ADR-U016) |
+| Progress tracking | Progress & delivery | Enrolment lifecycle; Step registry & step-kind system | PC-1 | Privacy (developmental data — private by default; Steward/Guide non-visibility; invariants 4 + 8 bind every row); Observability (progress events); Notifications (milestone triggers — gentle, never comparative) |
+| Delivery runtime | Progress & delivery | Progress tracking; Season/episode attachment | DS-2 (plot reads); DS-4 reference-only (opaque) | Observability (delivery-resolution events) |
+| Loop runtime state | Loop & respawn delivery | Delivery runtime | DS-2 (loop-structure declarations) | Privacy (per-traveller runtime state; ADR-U027 ephemerality for Shadow loops — the personal-data weight lands here, resolving DS-2 Q2); Observability (loop events) |
+| Respawn delivery | Loop & respawn delivery | Loop runtime state | DS-1 (respawn-position resolution); DS-2 (return shapes, textures) | Observability (respawn-delivery events first-class) |
+| Loop-persistence application | Loop & respawn delivery | Loop runtime state; Respawn delivery | DS-2 (persistence-class declarations) | Privacy (persisted loop outcomes are personal data — DS-3's, never DS-2's) |
+| Signature personalisation application | Personalisation | Delivery runtime; Enrolment lifecycle | DS-7-fed input seam (through this service's contract — no DS-7 dependency); DS-1 (Void-distance / growth-gradient reads) | Privacy (voluntary-disclosure-driven; consent posture per the privacy core; invariant 3 binds); Observability (personalisation events) |
+| Adaptive per-FIM pacing | Personalisation | Signature personalisation application; Season/episode attachment | DS-2 (universal-calendar reads) | Privacy (per-FIM pacing state); Observability (pacing events). Resolves DS-2 Q1: the calendar stays universal in DS-2; pacing is delivery-side |
+
+**Transactions vertical:** no DS-3 capability touches Transactions at this derivation — journeys hold no entitlements and sell nothing; a member buying is in-experience platform-tier work, economy management is Console-scoped (ADR-U028), and the marketplace is DS-6's surface. Recorded explicitly rather than left blank.
+
+### Dependency chain
+
+Buildable order within DS-3:
+
+1. **Journey registry & route types** — the foundation; everything references the journey template.
+2. **Step registry & step-kind system**, **Equipment-requirement declaration**, **Depth-setting registry** — over the registry; independently buildable against it (the step-kind system gates on the ADR-U008 step-type specification session).
+3. **Season/episode attachment** — over the registry; needs DS-2's calendar contract stable.
+4. **Journey authoring write-path** — integrates every journey-structure capability; PC-3 Wayfinder gating + PC-4 audit bind it end-to-end.
+5. **Enrolment lifecycle** — over the registry; needs PC-3's party primitive.
+6. **Shadow enrolment & transcendence continuity** — over enrolment; needs PC-2's transcendence-event contract (cascade-spec'd before build).
+7. **Progress tracking** — over enrolment + steps.
+8. **Delivery runtime** — over progress + attachment; composes DS-2 plot reads.
+9. **Loop runtime state** — over delivery; consumes DS-2 loop declarations.
+10. **Respawn delivery** — over loop runtime; composes DS-1 position resolution.
+11. **Loop-persistence application** — over loop runtime + respawn delivery.
+12. **Signature personalisation application** — over delivery + enrolment; the DS-7 input seam can land late (charter-trip delivery works without it — personalisation is additive by design).
+13. **Adaptive per-FIM pacing** — over personalisation + attachment; last, composing the universal calendar.
+
+### External dependencies
+
+| Source | Capability consumed | Consuming DS-3 capability |
+|---|---|---|
+| PC-1 Infrastructure | RLS substrate; SECURITY DEFINER + `search_path = ''` discipline; migration discipline | every DS-3 capability |
+| PC-1 Infrastructure | Scheduled-job substrate (pg_cron) | Loop runtime state (day-bounded loop ticks); Shadow enrolment (TTL sweep participation) |
+| PC-1 Infrastructure | Feature-flag substrate | Journey authoring write-path; Delivery runtime (staged rollout) |
+| PC-2 Identity | Identity-status gate (Shadow/FIM); four-hop actor chain | every actor-touching capability |
+| PC-2 Identity | Transcendence lifecycle event (atomic migration per ADR-U027) | Shadow enrolment & transcendence continuity (composed atomicity invariant per §6) |
+| PC-2 Identity | Shadow ephemerality (TTL + explicit-erase per ADR-U027) | Shadow enrolment; Loop runtime state (Shadow loops) |
+| PC-3 Organisation | Party primitive (personal groups / pairs / groups, ADR-U006/U007/U020) | Enrolment lifecycle |
+| PC-3 Organisation | `has_permission()` + role templates (Wayfinder; Steward / Guide / Participant / Observer — D7) | Journey authoring write-path; Progress tracking (visibility gating); Delivery runtime (in-journey role gating) |
+| PC-4 Governance | Admin-operation + audit-log discipline | Journey authoring write-path; Enrolment lifecycle (admin interventions) |
+| DS-1 World Model | Respawn-position resolution (severance two-tier outcome) | Respawn delivery |
+| DS-1 World Model | Void-distance reads (the growth gradient) | Signature personalisation application |
+| DS-2 Narrative | Plot reads (episode beats in sequence) | Delivery runtime |
+| DS-2 Narrative | Loop-structure reads (topology, return shape, texture, persistence classes) | Loop runtime state; Respawn delivery; Loop-persistence application |
+| DS-2 Narrative | Universal-calendar frame | Season/episode attachment; Adaptive per-FIM pacing |
+| Vertical: Privacy | Developmental-data obligations (private by default; Steward non-visibility; three visibility tiers); Shadow-data obligations | Progress tracking; Loop runtime state; Loop-persistence application; Personalisation capabilities; Shadow enrolment |
+| Vertical: Observability | Event shape (request ID, actor, outcome) | every event-emitting capability |
+| Vertical: Administration | Cascade-spec format per ADR-U016 | Enrolment lifecycle; Shadow enrolment (transcendence atomicity); journey retirement |
+| Vertical: Notifications | Notification-trigger shape | Enrolment lifecycle; Progress tracking (milestone triggers) |
+
+Cross-referenced per the template rule: DS-2's plot reads, loop-structure reads, and calendar reads exist in `narrative.md` §3 (which names loop-structure reads as "the primary DS-3 consumption seam" — verified this session); DS-1's respawn-position resolution and Void-distance consumption exist in `world-model.md` §3 (the Severance & respawn resolution family names DS-3 as delivery owner; the consumers line names DS-3's Void-distance consumption — verified). The PC-2 transcendence event, PC-3 party/`has_permission()` rows, PC-1 pg_cron substrate, and PC-4 audit discipline exist in those inventories (verified across the PC chain at prior descents). **Consumers, not dependencies** (direction guard): Journey Studio writes through the write-path; the Hub and Gimbal read and deliver; DS-5 consumes enrolment context; DS-6 consumes the published catalog; DS-7 reads journey context and feeds the personalisation seam by calling DS-3. DS-3 depends on DS-1 and DS-2 only within Domain.
+
+### Sources-status block
+
+- **Personal-growth core (developmental ground truth):** solid — the three extracted sub-pages (three-questions with the 9-cell matrix and Live/Grow/Matter, engagement-spectrum, privacy-model) consumed without gap; the matrix and spectrum stay structural (invariants 5 + 8), never contract surfaces.
+- **Narrative core:** the respawn section is solid (ratified 2026-06-10). The `journeys.md` sub-page is **unwritten**: route types (Fixed, Hybrid, Traveler-Initiated, AI-Generative) and content families (Witness, Reflect, Decide, Act, Encounter, Rest) are canon from the core's planned sub-page line; proceeded with remark — §8 Q1 carries the vocabulary reconciliation, and the ADR-U008 step-type specification session is the named resolution venue. `first-experience.md` is also unwritten (the canon's named highest-risk gap) — §8 Q2 carries the Shadow-side first-experience posture.
+- **Cosmology core (sections 8 + 10):** solid — severance two-tier recovery consumed as DS-1's (DS-3 delivers, never resolves); the Void-distance growth gradient consumed as the delivery invariant (invariant 2).
+- **Roles core:** solid — Wayfinder gating (Journey Studio, ADR-U026) and the per-group support roles (Steward / Guide / Participant / Observer) consumed via PC-3 primitives per D7.
+- **Universe-discovery S19 (signature journey vs charter trip):** consumed directly from the discovery log (the personal-growth core does not yet carry it as a sub-page) — personalisation scales with voluntary disclosure breadth; Immunity to Change as the ethical compass (invariant 3).
+- **Session B register Section 3 DS-3 row:** consumed as the derivation constraint set (equipment declared at authoring; growth gradient = Void distance; signature-vs-charter personalisation; respawn delivery).
+- **Whisp split (decided — consumed, not reopened):** DS-3 owns no Whisp face; DS-7 feeds personalisation and reads journey context through DS-3's contract (`decisions/PENDING.md`).
+- **FIRST DECISION (this session):** DS-3 lands as **Journeys** (`journeys.md`, slug `journeys`), ratified by Stefan 2026-06-10 per the PENDING.md rename entry (suffix half pre-decided at DS-2); the rename ripple executes in this session's commits via the sweep-then-enumerate discipline.
+- **Seam re-checks (this session, ratified):** (1) **DS-2 §8 Q1 resolved** — the universal calendar stays DS-2's; per-FIM adaptive pacing is DS-3's (Adaptive per-FIM pacing capability); (2) **DS-2 §8 Q2 resolved** — loop runtime state is DS-3's, consuming DS-2 declarations; the personal-data weight and ADR-U027 Shadow-loop obligations land here (DS-2 stays personal-state-free); both amendments to `narrative.md` §8 land in this session's commits as the sanctioned cross-entity edits; (3) **respawn three-way split confirmed from the DS-3 side** — DS-1 position / DS-2 structure / DS-3 delivery; neither sibling's text needs revision.
+- **L2-line altitude:** the domain README line "Journeys, steps, progress, enrolments" predates ADR-U025 and the Session B canon — it omits equipment declaration, depth/the Game, respawn delivery, loop runtime, personalisation, and calendar attachment. Revised at Step 3 of this run (folds into the rename edit).
+- **Sibling specs:** DS-1 and DS-2 exist and were consulted **only** for the named seams (boundary input, not capability source). DS-4..DS-7 remain undefined: boundary claims against them (Q3, Q5, Q7; the DS-5/DS-6/DS-7 consumer lines) are provisional per the sibling-undefined soft-pause rule — each sibling's descent re-checks its DS-3 boundary.
+- **Vertical specs:** Privacy substantive; Administration/Transactions corrected at G-3; Notifications/Observability remain scaffold-tier — proceeded with remark per G-03 (`docs/ecosystem/how-we-work/gaps.md`).
+- **ADR-U017 + ADR-U020 joined the authority chain at session state-read** (the opener's ADR enumeration omitted them — routed to the opener-authoring lifecycle via §13); ADR-U017's journeys-are-content-templates is the structural spine of the Enrolment area.
+- **No code, migrations, or FEAT-* files read** at Step 1, per the cold-derivation discipline. The Step 2 expectation (journey substrate exists; first non-zero-delta Step 2; PW-1 fires) **was stated in advance and held exactly** — see the Step 2 block below: five Class 2 deltas folded back inline per the canonical-run fold-back rule, two Class 3 findings routed to pickups, zero cold-position retractions.
+
+### Step 2 — code-informed stress-test findings
+
+*Run 2026-06-10 (same session, after the Step 1 checkpoint ratification), per the standing pattern. Sweep scope: `supabase/migrations/` in cumulative-forward order (A#8) — 19 current + 71 archived files, traced through drop (`20260221000000`) → rebuild (`20260222000000`) → sprint0-4 — plus `lib/` (hooks, types, admin, supabase — directory scope-surveys before deep reads), `app/`, `components/`, and journey-grain `tests/`. Term set: {journey, enrollment, enrolment, step_type/step_kind, progress, depth, equipment, witness, wayfinder, game, respawn, season, episode} case-insensitive with word boundaries. Enumeration claims are scoped to these patterns and paths, not "anywhere."*
+
+- **DS-3 is the first Domain Service with realized substrate** — the first non-zero-delta Step 2 of the Domain descents, as the Sources-status expectation stated in advance. `public.journeys` + `public.journey_enrollments` (D15 rebuild), seven RLS policies on P-O1's four-hop chain, `enroll_group_in_journey` permission gating via `has_permission()` (D7), two sprint0 SECURITY DEFINER helpers, lifecycle cascade semantics in sprint2/3/4, `lib/types/journey.ts`, the JourneyPlayer surface family (18 app/component files), 23 journey-touching test files, and two custom v1 API routes.
+- **Class 1 confirms:** ADR-U017/U020 realized exactly (`group_id` always set; personal group = individual enrolment; `enrolled_by_group_id` audit column); A#9 confirmed (PostgREST/supabase-js direct + RLS as the bulk surface; the enroll route is the three-justification custom-route case); ADR-U008's discriminator-on-shared-base realized as JSONB `content.steps[].type`; the candidate's ADR-U016 Administration rows have live analogues (freeze-on-leave, sentinel reassignment, DeusEx transfer).
+- **Class 2 deltas (five, folded back inline at §2/§6/§8 Q1):** per-enrolment-only progress grain (per-traveller is forward); `journey_type` pre-canon vocabulary vs the canon route-type registry (dual reading recorded: historical-transition AND surface-idiomatic; Hybrid unrepresented); CHECK-list + sealed-TS-union closure patterns (the discriminator column is permitted per ADR-U018(a); the CHECK list is the closure — routed to the code correction target); the third step vocabulary joining Q1; catalog metadata (difficulty/duration/tags) realized but un-derived (L4 detail).
+- **Class 3 cross-entity findings (two):** (1) PC-4/PC-3-tier lifecycle functions directly UPDATE DS-3 tables (`fix_rc7_admin_user_ops` reassignment; sprint2/3/4 freeze + transfer) — first DS-side anchors for the cross-tier-write substrate question (publish primitives vs direct writes); routed to pickup. (2) The enroll route open-codes service-role construction (Gap A) + JWT-verify/profile-resolve plumbing (Gap B) — a clean X5 / PC-1 Finding #4 two-tier-centralization instance; routed to pickup. The realized `has_permission` signature matches the PC-3-amended shape — no new X3 drift.
+- **PW status:** PW-1 fired as predicted (journeys schema predates the partition; D15 lineage). PW-MARCH1 fired **in recovered form** — the 8 predefined journeys were lost at the D15 rebuild and re-seeded at sprint1 with the loss documented in-migration (asymmetric-recovery class, recovered; the first PW-MARCH1 instance with a clean in-window recovery record).
+- **Noise classes excluded (recorded so the next reader doesn't re-litigate):** `depth` = forum thread-depth exception (1 hit, rebuild L900); "FI Members enrollment" in `handle_new_user()` (group membership, not journey enrolment); FringeIsland branding strings. Narrative vocabulary (respawn/season/episode) in code: zero — the structure/delivery boundary carries no code debt.
+- **Cold-position retraction rate: zero** (the cross-DS tracking series: PC-4: 7 across 9 clusters; DS-1: zero; DS-2: zero; **DS-3: zero at the first code-rich entity** — code presence produced five Class 2 deltas, not retractions; carry-forward priors absorbed what would otherwise have been retraction surface). One in-cluster tooling retraction recorded for the methodology capture: a silently-failing `find` briefly claimed zero API routes; the term-sweep caught it (the listing-commands discipline, vindicated mid-run).
+
+### Step 3 — adjudication
+
+Non-zero-delta adjudication, the program's first: five Class 2 deltas folded inline into §2/§6/§8 (the Step 2 block above documents the journey; §1–§8 read as the destination per the canonical-run fold-back rule). No capability row was added, removed, or re-owned — the deltas enriched grain and recorded realized shapes; the architecture-derived inventory met no contradicting empirical analogue.
+
+**Forward-commitment classification (per the three-way discipline) — the program's first mixed profile:**
+
+- **Partially realized (six):** Journey registry & route types (table + catalog surfaces; pre-canon vocabulary); Step registry & step-kind system (JSONB shared-base + sealed three-value union; registry forward); Enrolment lifecycle (the richest realization — RLS, lifecycle states, cascade semantics); Progress tracking (per-enrolment grain only); Delivery runtime (JourneyPlayer + `current_step_id`; composition with DS-2 entirely forward); Journey authoring write-path (`user_created` type + creator-group column exist; Wayfinder/studio gating entirely forward).
+- **Full forward-commitment (nine):** Equipment-requirement declaration; Depth-setting registry; Season/episode attachment; Shadow enrolment & transcendence continuity; Loop runtime state; Respawn delivery; Loop-persistence application; Signature personalisation application; Adaptive per-FIM pacing.
+
+Whether any DS-3 row falls inside the active wave's scope is a wave-planning determination (horizontal axis), not an L3 output; the classification records the empirical floor.
+
+**Q-resolution slate:** all eight §8 questions are deferred-routed as written in each entry (Q1 → the ADR-U008 step-type specification session, now carrying three vocabularies; Q2 → first-experience canon work; Q3 → DS-7 descent; Q7 → DS-4 descent; Q4/Q5/Q6/Q8 → FEAT-PD/L4 time). The three seam questions this descent owned were ratified at Step 1 (Sources-status above): DS-2 §8 Q1 and Q2 resolved into DS-3 (the sanctioned `narrative.md` amendments land in this session's commits); the respawn three-way split confirmed with neither sibling's text revised.
+
+**Buildable-order implication confirmed:** the §L3 dependency chain stands; the realized substrate already covers the chain's first steps (registry + enrolment foundations), making Progress-grain and the step-kind registry the first FEAT-PD candidates when DS-3 enters build — both gated on the ADR-U008 step-type specification session.
+
+---
+
+## L4 — Feature inventory summary
+
+*L4 authorship. Reconciliation output against L3's capability inventory. Updated whenever a `FEAT-PD###.md` file under this service's `features/` directory is created, advances in maturity, or is deleted. Maintenance discipline: the `feature-development` skill updates this section in the same commit as any maturity transition; the `doc-health-check` skill (Section 8) verifies it reflects the current state of `features/`.*
+
+### Summary
+
+No FEAT-PD feature specs exist for DS-3 at this derivation.
+
+| Capability (from §L3) | Feature spec | Maturity | Notes |
+|---|---|---|---|
+| *(all fifteen capabilities)* | — | — | No specs yet; L4 runs follow L3 stabilisation (Step 2/3) and wave-planning pull |
+
+### Capabilities without specs
+
+All §L3 capabilities. First candidates when DS-3 enters build: Journey registry & route types and Enrolment lifecycle (the dependency-chain foundations) — with the step-kind system gated on the ADR-U008 step-type specification session.
+
+### Features without capabilities
+
+None — no FEAT-PD files exist under `features/`.
+
+---
+
+*See `.claude/skills/ecosystem-decomposition/SKILL.md` for the authoritative mechanics of each level, including the prerequisite-check pause behaviour and the reconciliation-is-downstream principle.*

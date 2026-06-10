@@ -65,7 +65,7 @@ The Hub intentionally does **not**:
 **Consumes:**
 - Platform Core — Identity (auth, profiles, sessions, personal Journal)
 - Platform Core — Organisation (groups, memberships, roles, permissions)
-- Domain Services — Experience Engine (journey enrollment, progress, content delivery)
+- Domain Services — Journeys (journey enrollment, progress, content delivery)
 - Domain Services — Content (media, assets, narrative blocks)
 - Domain Services — Communication (forums, direct messaging, activity feeds)
 - Design System (shared components, visual language)

@@ -1,11 +1,11 @@
 # Domain Service — Narrative (DS-2)
 
-<!-- Valid service slugs: world-model | narrative | experience-engine | content | communication | discovery | intelligence -->
+<!-- Valid service slugs: world-model | narrative | journeys | content | communication | discovery | intelligence -->
 
 ---
 slug: narrative
 owner: platform/domain/narrative
-consumers: [products/hub, products/gimbal, studios/universe-studio/arc-studio, studios/universe-studio/journey-studio, platform/domain/experience-engine, platform/domain/discovery, platform/domain/intelligence]
+consumers: [products/hub, products/gimbal, studios/universe-studio/arc-studio, studios/universe-studio/journey-studio, platform/domain/journeys, platform/domain/discovery, platform/domain/intelligence]
 status: proposed
 last_updated: 2026-06-10
 tier: Domain Services
@@ -103,8 +103,8 @@ These are not feature behaviours; they are properties every DS-2 capability and 
 
 ### 8. Open spec questions
 
-- **Q1 — Adaptive-calendar personalisation ownership** *(speculative-third-shape)*. The narrative core's seasons-and-episodes line names "universal calendar plus adaptive AI personalisation." The universal calendar is DS-2's; who owns the adaptive per-FIM pacing — DS-3 (delivery pacing, alongside its signature-vs-charter personalisation per the register DS-3 row), DS-7 (intelligence feeding DS-3), or a DS-2 calendar-variant surface? Cold lean: DS-2 stays universal; personalisation is delivery-side. Resolves at the DS-3 descent.
-- **Q2 — Loop runtime state ownership.** A running loop's live state (the current round of a round-bounded group loop; who is mid-rewind) — cold lean: DS-3 runtime consuming DS-2 declarations, consistent with the resolution-vs-structure-vs-delivery three-way split. Confirm at the DS-3 descent. The three-perspectives dimension (alone / pair / group) folds in here: topology kinds carry their perspective affinity as data, delivery composes.
+- **Q1 — Adaptive-calendar personalisation ownership** *(speculative-third-shape)*. The narrative core's seasons-and-episodes line names "universal calendar plus adaptive AI personalisation." The universal calendar is DS-2's; who owns the adaptive per-FIM pacing — DS-3 (delivery pacing, alongside its signature-vs-charter personalisation per the register DS-3 row), DS-7 (intelligence feeding DS-3), or a DS-2 calendar-variant surface? Cold lean: DS-2 stays universal; personalisation is delivery-side. Resolves at the DS-3 descent. **Resolved 2026-06-10 (DS-3 descent, ratified by Stefan): the cold lean confirmed — the universal calendar stays DS-2's; adaptive per-FIM pacing is DS-3's (Adaptive per-FIM pacing capability in `journeys.md` §L3, composing this service's universal-calendar reads), with the shaping intelligence DS-7-fed through DS-3's own contract. See `journeys.md` §2 (Personalisation state row), §L3 Sources-status.**
+- **Q2 — Loop runtime state ownership.** A running loop's live state (the current round of a round-bounded group loop; who is mid-rewind) — cold lean: DS-3 runtime consuming DS-2 declarations, consistent with the resolution-vs-structure-vs-delivery three-way split. Confirm at the DS-3 descent. The three-perspectives dimension (alone / pair / group) folds in here: topology kinds carry their perspective affinity as data, delivery composes. **Resolved 2026-06-10 (DS-3 descent, ratified by Stefan): the cold lean confirmed — loop runtime state is DS-3's (Loop runtime state capability in `journeys.md` §L3), consuming this service's declarations; the personal-data weight and the ADR-U027 Shadow-loop ephemerality obligations land in DS-3, and DS-2 stays free of per-FIM/per-Shadow personal state. See `journeys.md` §2 (Loop runtime state row), §7 invariant 1, §L3 Sources-status.**
 - **Q3 — Mythology and the unfolding vs DS-1 lore vs DS-4 content.** The world "has a mythology, a mystery, an unfolding" (narrative core). Where world-fact ends (DS-1 lore registry, its §8 Q5) and story-canon begins (DS-2), and where both end and content blocks begin (DS-4), is a three-way boundary. Joint question with DS-1 Q5; firms at the DS-4 descent.
 - **Q4 — Loop-persistence declaration grain** *(speculative-third-shape)*. Are persistence classes declared per texture, per topology declaration, per episode, or per beat? Cold lean: per topology declaration with texture defaults. Resolves at FEAT-PD maturity for the loop-structure area.
 - **Q5 — Character-layer data shape detail.** The ratified seam fixes the direction (DS-2 rows referencing DS-1 NPC world-layer IDs); the row shape (one row per layered NPC vs versioned layers as an NPC deepens across episodes) is L4 work.

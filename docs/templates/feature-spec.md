@@ -3,7 +3,7 @@
 ---
 id: FEAT-{PREFIX}{NNN}
 title: {Feature title}
-owner: {platform/core/infrastructure | platform/core/identity | platform/core/organisation | platform/core/governance | platform/domain/experience-engine | platform/domain/content | platform/domain/communication | platform/domain/world-model | platform/domain/narrative | platform/domain/discovery | platform/domain/intelligence | hub | gimbal | studio/universe-studio | studio/universe-studio/world-studio | studio/universe-studio/arc-studio | studio/universe-studio/journey-studio | design-system}
+owner: {platform/core/infrastructure | platform/core/identity | platform/core/organisation | platform/core/governance | platform/domain/journeys | platform/domain/content | platform/domain/communication | platform/domain/world-model | platform/domain/narrative | platform/domain/discovery | platform/domain/intelligence | hub | gimbal | studio/universe-studio | studio/universe-studio/world-studio | studio/universe-studio/arc-studio | studio/universe-studio/journey-studio | design-system}
 consumers: [{hub} | {gimbal} | {studio/universe-studio} | {studio/universe-studio/world-studio} | {studio/universe-studio/arc-studio} | {studio/universe-studio/journey-studio}]
 wave: {ferd | eid | hamn | heim | brim | urd}
 maturity: {0-raw | 1-concept | 2-explored | 3-specified | 4-ready | 5-in-cycle | 6-done}

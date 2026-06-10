@@ -33,7 +33,7 @@ The conviction. Why this product, and not the dozen alternatives the user could 
 
 ## How it relates to the ecosystem
 
-- **Domain services it consumes:** {world-model | narrative | experience-engine | content | communication | discovery | intelligence}
+- **Domain services it consumes:** {world-model | narrative | journeys | content | communication | discovery | intelligence}
 - **Studios it depends on:** {Universe Studio (US, parent/binding frame) | World Studio (WS) | Arc Studio (AS) | Journey Studio (JS)}
 - **Sibling product it shares users with:** {Hub (H) | Gimbal (G)} — the two equipment profiles of the one experience (ADR-U025)
 - **Where it sits in the wave arc:** {ferd | eid | hamn | heim | brim | urd — and what evolves in each}

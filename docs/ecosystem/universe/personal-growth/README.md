@@ -25,4 +25,4 @@ This directory documents the structural concepts that underpin that scaffolding.
 
 ---
 
-*These concepts are foundational to the Journey Studio, the Whisp, and the Experience Engine. They inform what the platform builds — but they are described here as universe design, not software specification.*
+*These concepts are foundational to the Journey Studio, the Whisp, and DS-3 Journeys. They inform what the platform builds — but they are described here as universe design, not software specification.*

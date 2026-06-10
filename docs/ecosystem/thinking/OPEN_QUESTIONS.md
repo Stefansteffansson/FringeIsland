@@ -48,7 +48,7 @@
 **Scope:** Heim, Urd
 **Raised:** 2026-04-12 (extracted from OLD_VISION.md)
 **Blocks:** Heim dynamic journey paths, Type 4 (AI-generative) journeys, NPC implementation (Urd), Weaver-AI collaboration tools
-**Context:** The vision assumes load-bearing AI capabilities: adaptive season personalisation per member, NPC calibration to growth zones, AI-generative Type 4 journeys, void-responsive content delivery. None of this has been validated against what current or near-future AI can deliver at the quality required. The Experience Engine is the architectural linchpin and remains unbuilt.
+**Context:** The vision assumes load-bearing AI capabilities: adaptive season personalisation per member, NPC calibration to growth zones, AI-generative Type 4 journeys, void-responsive content delivery. None of this has been validated against what current or near-future AI can deliver at the quality required. DS-3 Journeys (formerly "Journeys") is the architectural linchpin and remains unbuilt.
 
 ---
 

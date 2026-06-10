@@ -86,7 +86,7 @@
 | 49 | Login/session audit trail | Not started | 0 | PC-1 | No record of login events, IP addresses, device info, or failed login attempts. |
 | 50 | Fix orphaned groups utility | Done | 100 | 28 | `/admin/fix-orphans` page. Finds/fixes groups without a Steward. |
 
-### Domain Services -- Experience Engine (DS-3)
+### Domain Services -- Journeys (DS-3)
 
 | ID | Capability | Status | % | Depends on | Notes |
 |----|-----------|--------|---|------------|-------|
@@ -222,7 +222,7 @@ PC-1 (Infrastructure)
  |    +-> 47 (Hard delete guard)
  |    +-> 49 (Login audit trail)
  |
- +-> DS-3 (Experience Engine)
+ +-> DS-3 (Journeys)
  |    |
  |    +-> 55 (Individual enroll) --> 57 (Content delivery) --> 58 (Progress)
  |    |                          --> 62 (Completion)
@@ -340,7 +340,7 @@ These features are built and working but have no feature specification:
 | Platform Core -- Identity (PC-2) | 4 | 1 | 4 | **9** |
 | Platform Core -- Organisation (PC-3) | 9 | 2 | 6 | **17** |
 | Platform Core -- Governance (PC-4) | 3 | 1 | 11 | **15** |
-| Domain Services -- Experience Engine (DS-3) | 3 | 4 | 5 | **12** |
+| Domain Services -- Journeys (DS-3) | 3 | 4 | 5 | **12** |
 | Domain Services -- Content (DS-4) | 0 | 2 | 1 | **3** |
 | Domain Services -- Communication (DS-5) | 1 | 3 | 5 | **9** |
 | Hub UI | 8 | 5 | 14 | **27** |
