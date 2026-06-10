@@ -1,8 +1,9 @@
 ---
 title: Refresh docs/planning/sessions/README.md index (5 of 91 files listed)
-status: todo
-assigned_to: unassigned
+status: done
+assigned_to: Claude (CC), ratified by Stefan
 priority: low
+completed: 2026-06-10
 feature: none (doc hygiene — raised by doc-health-check 2026-06-10)
 owner: planning
 wave: ferd
@@ -28,3 +29,12 @@ so the count-lag check can be taught to accept it.
 
 The README either matches the directory or declares its curation policy explicitly; the
 doc-health-check skill's known-gap #4 note is updated if (b) is chosen.
+
+## Resolution (2026-06-10)
+
+Option (b) — and the README turned out to already declare explicit curation ("the directory
+listing is the canonical index"), so the count-lag finding was stale highlights, not a policy gap.
+Fixed: the highlights list refreshed (Session B register, Session A map, and the 2026-06-05 bridge
+added on top of the April entries). The doc-health-check skill's known-gap #4 now states that
+explicitly-curated READMEs pass the count check by policy, with a staleness check on the
+highlights instead.

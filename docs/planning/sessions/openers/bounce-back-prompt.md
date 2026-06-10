@@ -1,0 +1,5 @@
+## PROMPTS FOR CC and C.ai BOUNCE-BACK
+What prompt shall we use when starting up our new CaludeCode CLI session and also what prompt shall we use to start up the new bounce-back Claude.ai Chat session?
+
+## BOUNCE-BACK PROMPT
+I'm running a session in ClaudeCode CLI. I want our current session in here (Claude.ai chat that is) to serve as a "bounce-back" session where I discuss the ClaudeCodes outputs, questions and requests with you. This means that when I paste text into this Claude.ai chat session your task is to read it, analyze it and then come with a short and concrete answer back to me. You have quite a bit of autonomy to select a preferred way forward based on your knowledge about our FringeIsland projewct and what I paste from ClaudCode CLI. Whenever possible you will come back to me in here with a preferred prompt that I easily can copy and past back to ClaudeCode CLI (you give me the prompt in a windows with the copy-icon up tp the right). We want this bouncing-back session and the work in ClaudeCode CLI to be as effective as possible and run as quickly as possible. Okay?

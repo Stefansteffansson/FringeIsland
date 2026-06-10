@@ -11,8 +11,11 @@ Sessions are historical records. Once committed, they are **not rewritten** — 
 
 The full set of session files lives in this directory and can be listed directly (e.g. `ls docs/planning/sessions/`). Maintaining a curated index here would go out of date within weeks; the directory listing is the canonical index.
 
-Recent highlights worth knowing about:
+Recent highlights worth knowing about (refreshed 2026-06-10):
 
+- [`2026-06-10_-_SESSION-B-CONFORMANCE-REGISTER.md`](./2026-06-10_-_SESSION-B-CONFORMANCE-REGISTER.md) — **the reconciliation register**: Statements 1-46 reconciled against the repo, four correction batches executed (ADR-U025-U028, the cosmology + roles cores), execution record + handoff (DS-1 unpause condition met).
+- [`2026-06-05_02_-_SESSION-A-REPO-MAP.md`](./2026-06-05_02_-_SESSION-A-REPO-MAP.md) — the repo-wide map that fed Session B (concept -> where, gap buckets, unified role model).
+- [`2026-06-05_01_-_PRODUCT-ECOSYSTEM-LAYER-AND-RECONCILIATION-BRIDGE.md`](./2026-06-05_01_-_PRODUCT-ECOSYSTEM-LAYER-AND-RECONCILIATION-BRIDGE.md) — the bridge that framed the Session A -> Session B pipeline.
 - [`2026-04-17_-_SESSION-1-TIER-1-CLEANUP.md`](./2026-04-17_-_SESSION-1-TIER-1-CLEANUP.md) — way-of-working refactor Session 1 (Tier 1 cleanup + Tier 2 structural additions).
 - [`2026-04-17_-_WAY-OF-WORKING-REVIEW.md`](./2026-04-17_-_WAY-OF-WORKING-REVIEW.md) — the 11 locked decisions driving the refactor.
 - [`2026-04-15_-_LEGACY-MIGRATION-PRODUCTS-IMPLEMENTATION.md`](./2026-04-15_-_LEGACY-MIGRATION-PRODUCTS-IMPLEMENTATION.md) — `old_products/` + `old_implementation/` decommission.
