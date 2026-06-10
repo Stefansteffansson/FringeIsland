@@ -32,7 +32,7 @@ Every feature spec template (`docs/templates/feature-spec.md`) mandates a **Vert
 
 ### L1 — Vision
 
-The constitutional document. Changes rarely and only through deliberate locked decisions. One page. The current VISION.md is precisely this: short, principled, orienting. It names the three founding questions (*Who am I? What do I want? How do I get there?*), the Three Worlds cosmology, the Whisp, the non-negotiable principles, and the ecosystem's intentional boundaries (what FringeIsland is *not*).
+The constitutional document. Changes rarely and only through deliberate locked decisions. One page. The current VISION.md (v1.2) is precisely this: short, principled, orienting. It names the three founding questions (*Who am I? What do I want? How do I get there?*), the worlds cosmology (the Ordinary World, the Shimmer, the Fringe, the Void — canonical in the cosmology core, which supersedes the retired Three Worlds model), the Whisp, the non-negotiable principles, and the ecosystem's intentional boundaries (what FringeIsland is *not*).
 
 Supporting documents at this level include [`MANIFESTO.md`](../MANIFESTO.md) (the cultural companion), [`universe/`](../universe/) (creative depth on each world), and [`thinking/OPEN_QUESTIONS.md`](../thinking/OPEN_QUESTIONS.md) (the parking lot for questions whose ownership isn't yet clear).
 

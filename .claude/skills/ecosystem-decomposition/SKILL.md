@@ -108,7 +108,7 @@ None. Vision is constitutional — there is no level above it.
 
 ### Output
 
-VISION.md. One page. Contains purpose (the three founding questions), character statement, structural concepts (FIM, Three Worlds, Whisp, Three Dimensions, Dreamineers), non-negotiable principles, ecosystem boundaries, and ecosystem composition.
+VISION.md. One page. Contains purpose (the three founding questions), character statement, structural concepts (FIM with the Shadow-to-FIM transcendence threshold, the worlds, the Whisp, Three Perspectives, Dreamineers — per VISION v1.2, aligned to the canonical cores), non-negotiable principles, ecosystem boundaries, and ecosystem composition.
 
 Does not contain: specific entity descriptions (L2), capability lists (L3), feature specs (L4), roadmaps or wave scopes (planning tree), technical architecture (architecture tree).
 

@@ -18,7 +18,7 @@ Two steps, both inside a single CC terminal session opened in `D:/WebDev/GitHub/
 
 Paste into CC the contents of [`cc-create-opener-prompt.md`](./cc-create-opener-prompt.md), or this verbatim:
 
-> *Read `docs/planning/sessions/openers/STATUS.md`. Find the first row marked `Next`. Author the opener instance for that entity per the template at `docs/templates/autonomous-l1-l3-session-opener.md`, by reading the template's §0 substitution markers and filling each one against the current program state (latest predecessor bridge, current tip SHA, entity-specific carry-forward block from the predecessor's pickup list). Write the result to `docs/planning/sessions/openers/cc-{entity-short-name}-autonomous.md`. Delete §0 from the instance (only needed during authoring). Commit as a small `chore(planning)` commit with one file. Then update STATUS.md to mark the entity `In flight`, fill in its Opener instance column, and commit STATUS.md as a separate small commit.*
+> *Read `docs/planning/sessions/openers/STATUS.md`. Find the first row marked `Next`. Author the opener instance for that entity per the template at `docs/templates/autonomous-l1-l3-session-opener.md`, by reading the template's §0 substitution markers and filling each one against the current program state (latest predecessor bridge, current tip SHA, entity-specific carry-forward block from the predecessor's pickup list). Write the result to `docs/planning/sessions/openers/{entity-slug}-descent-opener.md` (entity-descriptive convention; named by the PRE-rename name when the descent is rename-bearing). Delete §0 from the instance (only needed during authoring). Commit as a small `chore(planning)` commit with one file. Then update STATUS.md to mark the entity `In flight`, fill in its Opener instance column, and commit STATUS.md as a separate small commit.*
 
 CC reads the template + bridges, produces the filled-in instance, commits it, updates STATUS.md, commits STATUS.md. Two small commits. No push.
 
@@ -26,7 +26,7 @@ CC reads the template + bridges, produces the filled-in instance, commits it, up
 
 Optionally `/clear` CC's context to start fresh for the run. Then paste the contents of [`cc-execute-prompt.md`](./cc-execute-prompt.md), or this verbatim:
 
-> *Read `docs/planning/sessions/openers/cc-{entity-short-name}-autonomous.md` and proceed.*
+> *Read `docs/planning/sessions/openers/{entity-slug}-descent-opener.md` and proceed.*
 
 CC runs §1 pre-flight, §2 state-read, §5a Step 1 cold derivation, surfaces the §5a checkpoint, waits for your ratification, then proceeds through Step 2, Step 3, §13 post-run capture, and the closing bridge per the template.
 
@@ -41,8 +41,8 @@ When the closing bridge has landed, update STATUS.md to mark the entity `Done`, 
 - `STATUS.md` — pipeline status across all entities and amendment sessions.
 - `cc-create-opener-prompt.md` — the generic Step 1 prompt; paste into CC verbatim to author the next opener.
 - `cc-execute-prompt.md` — the generic Step 2 prompt; paste into CC verbatim to execute a freshly-authored opener.
-- `cc-{entity-short-name}-autonomous.md` — per-entity opener instances (authored at entity entry; one per entity; e.g. `cc-pc4-autonomous.md` when PC-4 enters).
-- `archive/` — historical openers from before the template existed: PC-3 chain + Experiment B + non-experiment PC-3 prep.
+- `{entity-slug}-descent-opener.md` — per-entity opener instances (authored at entity entry; one per entity; e.g. `ds2-narrative-engine-descent-opener.md`). Moved to `archive/` once the entity's closing bridge lands.
+- `archive/` — executed and superseded openers: the pre-template PC-3 chain + Experiment B + prep, the executed PC-era `cc-*` instances, and executed per-entity descent openers.
 
 ---
 

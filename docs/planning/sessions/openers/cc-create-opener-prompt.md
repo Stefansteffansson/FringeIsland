@@ -8,9 +8,10 @@ and git log for the current tip SHA.
 
 Surface the filled-in instance for review BEFORE writing to disk.
 After ratification, write to
-docs/planning/sessions/openers/cc-{entity-short-name}-autonomous.md,
-delete §0 from the instance, commit as a small chore(planning)
-commit with one file.
+docs/planning/sessions/openers/{entity-slug}-descent-opener.md
+(entity-descriptive convention; named by the PRE-rename name when
+the descent is rename-bearing), delete §0 from the instance, commit
+as a small chore(planning) commit with one file.
 
 Then update STATUS.md: mark the entity In flight, fill in the
 Opener instance column. Commit STATUS.md as a separate small
