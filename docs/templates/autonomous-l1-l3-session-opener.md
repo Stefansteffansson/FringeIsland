@@ -2,7 +2,7 @@
 
 **Template path:** `docs/templates/autonomous-l1-l3-session-opener.md`
 **Per-instance landing path:** `docs/planning/sessions/openers/{instance-filename}.md`
-**Instance filename convention:** `cc-{entity-short-name}-autonomous.md` (e.g. `cc-pc4-autonomous.md`)
+**Instance filename convention:** `{entity-slug}-descent-opener.md` — entity-descriptive, self-describing in directory listings (DS-2 + DS-3 precedent; named by the PRE-rename name when the descent is rename-bearing). The older `cc-{entity-short-name}-autonomous.md` form survives only in archived PC-era instances.
 
 > Per-instance session-opener for an autonomous CC run executing L1→L3 derivation for a single entity, end-to-end. Encodes the three-step shape (cold derivation → code-informed stress-test → adjudication) with the disciplines, priors, and scope expansions that the manual-track + autonomous-track comparison phase of Experiment B established as load-bearing. Authoring an instance: copy this template to its landing path, substitute every `{CURLY-BRACED}` marker, delete inapplicable sections, then have the autonomous CC session read the instance file as its first action.
 
@@ -13,6 +13,7 @@
 | Revised after | Date | Change summary |
 |---|---|---|
 | Template authored | {YYYY-MM-DD} | Initial template; substance, scope, and discipline carry-forwards from Experiment A + Experiment B comparison phase + the PC-3 chain (Steps 1–3 + closing bridges). |
+| DS-3 Journeys close (third instance; first on the revised template) | 2026-06-10 | All eight `1de43ad` revisions held cleanly as template text at the first code-rich Domain Service. LANDED with second-instance evidence: §5b naming-drift dual-reading (PC-4 candidate #5; fired at DS-3 `journey_type` + the SVG case-variant catch); §5a rename-bearing sweep-then-enumerate (DS-2 + DS-3 ripple under-count data); §10 single-session commit cadence (DS-2 tension + DS-3 clean run); header instance-filename convention (entity-descriptive, DS-2 §13 recommendation + DS-3 second use). RIDING: #4 migration-name-as-shorthand (still no decisive firing at n=3 opportunities). New n=1 watches riding opener instances: empty-result verification (a silently-failing `find` claimed zero API routes; a second method caught it — verify empty listings before claiming absence) and ADR-enumeration-by-grep at opener authoring (DS-3's opener omitted ADR-U017/U020; enumerate binding ADRs by sweeping the decisions index for the entity's domain nouns, not from the predecessor's list). Provenance: DS-3 closing bridge. |
 | DS-2 Narrative close (second instance) | 2026-06-10 | Adjudicates the seven PC-4 first-instance candidates (PC-4 closing bridge `2026-05-15_03` + DS-2 closing bridge as provenance): LANDED — §5b cluster-cadence self-reflection-not-gate text (#1), §5b directory-level scope-survey (#2), §5a A#5 per-phase cadence (#3), §13 retraction-rate tracking series (#6), §6 entity-type-agnostic shape note (#7). RIDING opener instances — migration-name-as-shorthand (#4) and three-casing dual-reading (#5), neither fired at DS-2 (no second-instance evidence). Also landed with two-instance evidence: §3 canonical-cores authority-chain extension for cosmology-bound entities (DS-1 + DS-2); §1 Check 5 template-baseline check (PC-4 + DS-2); §1 Check 4 genericized to instance-enumerated tree state (PC-3 amendment revision + DS-2 instance precedent); §5b `lib/utils/supabase/` path corrected to `lib/supabase/`. |
 
 *Revision discipline: after each entity-close that uses an instance of this template, the closing bridge's "Template revision disposition" section adjudicates whether the run's post-run methodology capture (instance §13 below) surfaced durable findings warranting a template amendment. Amendments commit as small `chore(templates)` deltas citing the entity-close bridge as provenance.*
@@ -119,6 +120,8 @@ PC-3 ran as a split-session (Steps 1+2+3 across three sessions). PC-1 and PC-2 r
 
 **Single-Write vs split-Edit at Step 1.** Single Write of the full spec is preferred for autonomous runs (per PC-3 autonomous-track precedent: one commit, 539 lines). If multi-Edit work is needed, sub-batch-of-1 cadence applies (see §6). **A#5 cadence applies per-phase, not per-session:** A#5 can fire at Step 3 fold-back work even when Step 1 was single-Write (PC-4: single-Write Step 1, 29 sub-batch-of-1 Edits at Step 3); the §13 verdict accounts for per-phase cadence shape.
 
+**Rename-bearing runs: sweep-then-enumerate.** When an entity rename executes in-run, the ripple enumeration source is a **repo-wide label sweep across all casings** of the old name, classified into living-doc edits vs append-only exclusions (session records, ADRs, archived references, the discovery log) — with any a-priori ripple list used only as a completeness floor, never as the enumeration. A-priori lists under-count by 3-4x (DS-2: floor 6, actual 22; DS-3: floor 7, actual 28 living files plus a case-variant catch). Mechanical label replacements may run as one scoped, grep-verified sed batch (DS-2 precedent); prose-sensitive sites get individual Edits.
+
 ---
 
 ## §5b Step 2 — code-informed stress-test pass
@@ -136,6 +139,7 @@ PC-3 ran as a split-session (Steps 1+2+3 across three sessions). PC-1 and PC-2 r
 - **createClient survey.** `app/api/*` survey of every `createClient` instance. PC-3 found 5 sites / 6 instances (5 service-role-using routes, one with 2 createClient calls). Per-route survey: which permissions gate the route, what business logic justifies the custom route over PostgREST RPC, whether the auth-flow plumbing is duplicated.
 - **Type drift.** `lib/types/*` — drift between TypeScript type definitions and disk reality (often by omission rather than commission; PC-3 found `display_preference` aligned but `group_type` / `status` missing from `lib/types/group.ts`).
 - **Mop-up greps.** For each disk-anchor pattern surfaced in cold draft, run targeted greps to confirm enumeration scope. Per SS-16 / SS-17 discipline (enumeration-claim-scoping): state the patterns searched + report scope as "no hits within [patterns]" rather than "no hits anywhere."
+- **Naming-drift dual-reading.** For any naming-drift finding (realized vocabulary differing from canon vocabulary), record BOTH the historical-transition reading (pre-canon names that predate the current model) and the surface-idiomatic reading (platform-technical vs canon-facing convention) rather than a single by-design-or-by-accident verdict. Watch case-variant labels too — sweep patterns must cover all casings (DS-3: SVG labels read "Experience engine", matching neither "Experience Engine" nor "experience-engine"; an SS-17 sub-shape B instance caught only by a bare-stem check). (PC-4 candidate #5; second-instance evidence at DS-3 `journey_type`.)
 
 **Step 2 cadence — cluster batch-and-report.** PC-3 introduced cluster batch-and-report at Step 2 (vs PC-1/PC-2 single-pass). It worked. Recommended for autonomous runs:
 
@@ -246,7 +250,7 @@ All durable disciplines from PC-1 / PC-2 / Experiment A / Experiment B / PC-3 ch
 
 Per-entity commit count depends on session shape:
 
-**Single-session autonomous run (one Write shape):** 2–5 commits expected — (i) combined spec write covering Step 1 + Step 2 + Step 3 outputs; (ii) entity-level CLAUDE.md creation (if not pre-existing); (iii) N ADR amendment commits per Q-resolutions requiring ADR work (sub-batch-of-1 across ADRs); (iv) closing bridge.
+**Single-session autonomous run (one Write shape):** 2–5 commits expected — (i) combined spec write covering Step 1 + Step 2 + Step 3 outputs; (ii) entity-level CLAUDE.md creation (if not pre-existing); (iii) N ADR amendment commits per Q-resolutions requiring ADR work (sub-batch-of-1 across ADRs); (iv) closing bridge. **Single-session commit cadence:** the ratified Step 1 Write is held uncommitted until Step 3 ratification, so commit (i) is genuinely the combined Steps 1+2+3 spec commit — "commit at phase gates" means ratification gates, not intermediate file states (DS-2 surfaced the tension; DS-3 ran clean with this stated explicitly).
 
 **Multi-session autonomous run (split across sessions per PC-3 precedent):** 5–8 commits expected — Step 1 spec write + Step-1-landed bridge + Step 2 spec amendment + Step-2-landed bridge + Step 3 spec amendment + N ADR amendments + closing bridge.
 
