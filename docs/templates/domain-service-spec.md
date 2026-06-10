@@ -5,7 +5,7 @@
 ---
 slug: {world-model | narrative-engine | experience-engine | content | communication | discovery | intelligence}
 owner: platform/domain/{slug}
-consumers: [{hub} | {gimbal} | {game} | {studio/journey-studio} | {studio/universe-studio} | {studio/arc-studio}]
+consumers: [{products/hub} | {products/gimbal} | {studios/universe-studio/world-studio} | {studios/universe-studio/arc-studio} | {studios/universe-studio/journey-studio} | {platform/domain/<sibling-service>}]  # per ADR-U025 (no Game entity) and ADR-U026 (studios nested under universe-studio); sibling Domain Services may appear as Internal-API consumers
 status: {proposed | active | stable | deprecated}
 last_updated: YYYY-MM-DD
 tier: Domain Services
