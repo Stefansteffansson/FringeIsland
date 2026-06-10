@@ -20,7 +20,7 @@ The **Extension System** sits within the Platform Domain layer. It defines the c
 
 ## Dependencies
 
-For the dependency graph between domain services, see `../../planning/reference/DOMAIN_SERVICE_DEPENDENCIES.svg`.
+For the dependency graph between domain services, see `../../architecture/DOMAIN_SERVICE_DEPENDENCIES.svg`.
 
 ## Files
 
