@@ -4,7 +4,7 @@
 
 **Purpose:** a single navigable description of the FringeIsland development system, intended both as a self-orientation aid for Stefan and as onboarding material for future contributors.
 
-**Status:** living document. Reflects the state of the ecosystem as of 2026-04-19. Updated whenever a canonical source (PROCESS.md, a skill, a tier CLAUDE.md, an ADR) changes materially.
+**Status:** living document. Reflects the state of the ecosystem as of 2026-06-10. Updated whenever a canonical source (PROCESS.md, a skill, a CLAUDE.md in the cascade, an ADR) changes materially.
 
 ---
 
@@ -18,13 +18,13 @@ The development system has four axes. Each axis is described in its own chapter 
 4. **[Execution — the build loop](./04-execution-build-loop.md)** — what happens when a task is being worked on. Research, plan, annotate, implement. BDD and TDD.
 5. **[Agent routing](./05-agent-routing.md)** — how an agent or human enters the system and builds context. The routing axis that wraps everything else.
 
-An interactive version of all five diagrams with click-to-expand gap commentary is available at [`index.html`](./index.html) — open it in a browser. A shareable Word document of the whole set is at [`FringeIsland-how-we-work.docx`](./FringeIsland-how-we-work.docx).
+An interactive version of all five diagrams with click-to-expand gap commentary is available at [`index.html`](./index.html) — open it in a browser. A shareable Word document of the whole set is at [`FringeIsland-how-we-work_4.docx`](./FringeIsland-how-we-work_4.docx) (revision 4 — the current canonical render; earlier `_N.docx` files are superseded).
 
 ## Gaps
 
 The system has known documentation and design gaps. They are flagged inline in each chapter and consolidated in [`gaps.md`](./gaps.md). The gaps are surfaced honestly because the primary audience for this document (Stefan) is using it to spot what's missing. Future contributors should treat the gap list as a to-do, not a stable description of the system.
 
-As of this writing, there are seventeen flagged gaps across the four axes. None of them is blocking current solo-operator work. All of them compound as the system scales toward the fifty-plus-contributor target.
+As of 2026-06-10, there are twenty-seven flagged gaps. None of them is blocking current solo-operator work. All of them compound as the system scales toward the fifty-plus-contributor target.
 
 ## Canonical sources this document is built on
 
@@ -34,9 +34,9 @@ This document is a view onto the canonical sources. When they change, this docum
 - `docs/planning/PROCESS.md` — way of working (strategic layer)
 - `.claude/skills/*/SKILL.md` — the four skills (execution layer)
 - `/CLAUDE.md`, `/AGENTS.md` — root orientation and boundaries
-- `docs/{tier}/CLAUDE.md` — tier-specific guidance (five files)
+- `docs/{tier}/CLAUDE.md` and the deeper cascade files (sub-tier, entity, sub-entity) — twenty files as of 2026-06-10
 - `docs/templates/*.md` — the reusable shapes
-- `docs/architecture/decisions/*.md` — ADRs, especially U002 (verticals), U022/U023/U024 (architecture), and any decisions referenced inline
+- `docs/architecture/decisions/*.md` — ADRs, especially U002 (verticals), U022/U023/U024 (waves and anatomy), U025–U028 (the reconciled entity model), and any decisions referenced inline
 
 ## Document structure
 
@@ -49,8 +49,8 @@ how-we-work/
 ├── 03-execution-kanban.md            kanban + refinement
 ├── 04-execution-build-loop.md        per-task build loop
 ├── 05-agent-routing.md               routing axis
-├── gaps.md                           consolidated 17-gap register
-├── FringeIsland-how-we-work.docx     standalone Word doc
+├── gaps.md                           consolidated gaps register
+├── FringeIsland-how-we-work_4.docx   standalone Word doc (current revision)
 └── assets/                           diagrams as standalone SVG files
     ├── 01-decomposition-cascade.svg
     ├── 02-cadence-and-waves.svg
@@ -71,4 +71,4 @@ When updating this document:
 
 ---
 
-*Authored in session 2026-04-19. Last updated 2026-04-19.*
+*Authored in session 2026-04-19. Last updated 2026-06-10 (revision 4 render; gaps-register housekeeping; chapter 05 cascade update).*
