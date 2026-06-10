@@ -7,7 +7,7 @@ slug: infrastructure
 owner: platform/core/infrastructure
 consumers: [platform/domain/world-model, platform/domain/narrative-engine, platform/domain/experience-engine, platform/domain/content, platform/domain/communication, platform/domain/discovery, platform/domain/intelligence, platform/extensions, products/hub, products/gimbal, studios/universe-studio/world-studio, studios/universe-studio/arc-studio, studios/universe-studio/journey-studio, design-system]
 status: proposed
-last_updated: 2026-05-16
+last_updated: 2026-06-10
 tier: Platform Core
 tags: [platform-core:infrastructure]
 feature_prefix: PC
@@ -62,6 +62,7 @@ PC-1 is a special case (per template §3 note). Most of what it exposes is **not
   - RLS-by-default discipline — every Platform Core table has an RLS policy from day one (no exceptions; ADR-U023, `platform/CLAUDE.md`).
   - `SECURITY DEFINER` template with `search_path = ''` — the canonical shape for any privilege-escalating function.
   - Feature-flag accessor (function or convention) consulted from SQL or app code to evaluate a flag.
+  - Scheduled-job substrate (pg_cron) — the canonical scheduler convention for recurring database jobs (added 2026-06-10, DS-1 descent Phase 0). PC-1 owns the extension enablement, job naming conventions, and the discipline that sweep jobs honour consumer-declared guards; job definitions themselves are owned by the consuming area (e.g., PC-2's Shadow TTL sweep per ADR-U004/U027, which must honour the explicit-erase path and the mid-migration guard).
   - Trigger conventions — the patterns and naming for validation triggers and audit-substrate triggers. **Post-PC-4 codification (PC-1 amendment, 2026-05-16):** Finding #3 reframes from "trigger-as-primitive for audit-log writes" to "audit-write discipline mechanism-agnostic at substrate; three coexisting patterns at PC-4 with differing integrity properties: (a) SECURITY DEFINER direct-INSERT in admin RPC bodies (function-owner-controlled tamper-resistance; 5 disk sites); (b) SECURITY DEFINER trigger-mediated audit with admin-gating (function-owner-controlled tamper-resistance; 2 trigger functions); (c) anon-key client RLS-gated INSERT at UI tier (RLS-gated but field-content-trusted; 7 disk sites)" per PC-4 §L3 Step 2 C2-5. The trigger convention remains a PC-1 substrate primitive consumed by pattern (b); patterns (a) and (c) consume PC-1's SECURITY DEFINER discipline + RLS substrate respectively, not the trigger primitive.
 - **Schema-level contracts:**
   - `feature_flags` table schema (columns, RLS posture) is a PC-1 contract consumed by every tier.
@@ -167,6 +168,7 @@ L2-level questions surfaced during this cold derivation. Each is a candidate res
 | **Trigger-based validation** | PC-1 | Schema management | — | Observability *(audit-substrate triggers consumed by PC-4)*; Privacy *(validation may enforce privacy invariants)* |
 | **Object storage substrate** | PC-1 | RLS substrate *(bucket access mirrors RLS shape)* | — | Privacy *(object access control)*; Administration *(bucket administration)*; Transactions *(signed-URL lifecycle)* |
 | **Feature-flag substrate** | PC-1 | Schema management *(flag table)*; RLS substrate *(flag-table RLS)* | — | Administration *(the central admin substrate — flag toggle is administrative)*; Observability *(flag-evaluation telemetry)* |
+| **Scheduled-job substrate (pg_cron)** *(added 2026-06-10, DS-1 descent Phase 0 — closes the dangling PC-2 external-dependency cite "pg_cron cleanup mechanism per ADR-U004"; real-as-need — the ADR-U004 cleanup mechanism predates this row)* | PC-1 | Database-extension management *(pg_cron is an enabled extension)*; Schema management *(job definitions ride the migration discipline)* | — | Administration *(job creation/alteration is admin-gated)*; Observability *(job-run outcomes traceable — a silent sweep failure is an observability gap)*; Privacy *(TTL-erasure sweeps, e.g. the Shadow lifecycle per ADR-U027, ride this substrate)* |
 | **Connection-role substrate** | PC-1 | RLS substrate *(role determines RLS evaluation)* | — | Privacy *(role posture determines privacy-invariant evaluation)*; Administration *(`service_role` is admin-only)* |
 | **Database-extension management** | PC-1 | Schema management *(extensions enabled via initial migration)* | — | Observability *(extension version pinning produces deterministic incident reproduction)*; Administration *(extension enablement is admin-gated)* |
 
@@ -186,6 +188,7 @@ Within-PC-1 dependency order — capabilities become buildable in this order:
 6. **Database-extension management** — depends on Schema management (extensions enabled via the initial migration).
 7. **Object storage substrate** — depends on RLS substrate (bucket access mirrors RLS shape).
 8. **Feature-flag substrate** — depends on Schema management (flag table) and RLS substrate (flag-table RLS).
+9. **Scheduled-job substrate (pg_cron)** — depends on Database-extension management (pg_cron enablement) and Schema management (job definitions ride the migration discipline).
 
 Cross-area dependencies are **none** — PC-1 has no upstream within Platform Core.
 
@@ -195,7 +198,7 @@ Capabilities PC-1 consumes from upstream Platform Core areas: **none**. PC-1 is 
 
 PC-1's "external dependencies" at this tier take the inverted form noted in the template — Platform Core is the *enabler* for vertical obligations rather than a consumer of them. The verticals that depend on PC-1 enablement:
 
-- **Privacy** depends on PC-1's RLS substrate, privilege-escalation discipline, object-storage access control, and connection-role substrate.
+- **Privacy** depends on PC-1's RLS substrate, privilege-escalation discipline, object-storage access control, connection-role substrate, and scheduled-job substrate (TTL-erasure sweeps per ADR-U027).
 - **Administration** depends on PC-1's feature-flag substrate, connection-role substrate (`service_role`), schema-management workflow, and extension-management gate.
 - **Observability** depends on PC-1's migration-log substrate, trigger-based validation hooks, privilege-escalation logging, and feature-flag evaluation telemetry.
 - **Transactions** depends on PC-1's PostgreSQL substrate (ACID, transactional correctness) and on object-storage signed-URL lifecycle for transactional file operations.
