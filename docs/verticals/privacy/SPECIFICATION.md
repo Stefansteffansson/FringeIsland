@@ -8,7 +8,7 @@ name: Privacy/GDPR
 owner: Stefan
 consumers: all  # verticals are obligations on every tier — Platform Core, Domain Services, and Surfaces
 status: draft
-last_updated: 2026-04-26
+last_updated: 2026-06-10
 tier: Cross-cutting
 ---
 
@@ -39,6 +39,8 @@ Personal data protection is non-negotiable. This vertical guarantees that every 
 - Records of processing (GDPR Art. 30)
 - Sub-processor list maintained and disclosed
 - Cross-border transfer posture
+- Shadow (anonymous entrant) data minimisation and ephemerality (ADR-U027)
+- Per-region, per-audience, revocable sharing of the FIM's private home (universe-discovery S43)
 
 ### 3. Tooling and infrastructure
 
@@ -70,12 +72,17 @@ The rules this vertical imposes on each tier of the anatomy. These are what ever
 
 - Identity service stores consent state per user, per category
 - Storage layer respects deletion requests cascading through all owned data
+- Shadow data minimisation (ADR-U027): the anonymous entrant (Shadow) receives a server-issued anonymous identity with no PII; no personal data is collected beyond what the Shadow itself generates in-session
+- Shadow ephemerality (ADR-U027): the Shadow's own generated data is erased on a short TTL after inactivity and on explicit close (explicit-erase path); the exact TTL/inactivity threshold is a configuration this vertical owns jointly with PC-2 Identity (deferred by design). Shared-world content merely read by the Shadow is out of scope
+- Whisp dialogue is treated as potentially personal data regardless of the Shadow's anonymity — it is the most sensitive class of Shadow-generated data and carries full minimisation and erasure obligations
+- Transcendence consent-capture (ADR-U027): becoming a FIM is the one moment Shadow data binds durably; consent is captured atomically with the data migration, and a last-moment joiner must not be erased mid-migration (the TTL sweep honours the explicit-erase path and the mid-migration guard)
 
 #### Domain Services
 
 - Each service declares which personal data it stores and the lawful basis
 - Each service implements export and erasure for its owned data
 - The Intelligence service (DS-7) carries an additional obligation: AI-derived data is also user data
+- The service owning the FIM's private home enforces granular sharing (universe-discovery S43; see `../../ecosystem/universe/personal-growth/privacy-model.md`): per-region, per-audience, and revocable — the FIM can open one room to one audience and keep the rest locked, and the FIM holds the only key by default
 
 #### Surfaces (Products · Studios · Design System)
 
@@ -91,6 +98,8 @@ A short, machine-checkable checklist a developer can run against any new feature
 - [ ] New personal data field has an erasure path
 - [ ] New AI feature has an opt-out
 - [ ] New collection point has a privacy notice
+- [ ] New Shadow-touching feature preserves ephemerality (TTL after inactivity + explicit-erase path; no durable Shadow data outside the transcendence path)
+- [ ] New home-content surface honours per-region, per-audience, revocable sharing (S43)
 
 ### Sources-status block
 

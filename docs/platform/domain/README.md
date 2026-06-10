@@ -6,7 +6,7 @@ The seven FringeIsland-specific modules that sit on top of Platform Core. Each i
 
 ## The seven services
 
-- **DS-1 World Model** (`world-model.md`) — Universe, Three Worlds, Whisp, lore
+- **DS-1 World Model** (`world-model.md`) — Universe, the worlds topology (the Ordinary World, the Shimmer, the Fringe's two places — each with a near side and a Beyond — and the Void; ground truth: [`../../ecosystem/universe/cosmology/README.md`](../../ecosystem/universe/cosmology/README.md), which supersedes the retired "Three Worlds" model), Whisp, lore
 - **DS-2 Narrative Engine** (`narrative-engine.md`) — Seasons, episodes, story beats
 - **DS-3 Experience Engine** (`experience-engine.md`) — Journeys, steps, progress, enrolments
 - **DS-4 Content** (`content.md`) — Media, assets, narrative blocks

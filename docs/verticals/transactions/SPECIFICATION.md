@@ -8,7 +8,7 @@ name: Transactions
 owner: Stefan
 consumers: all  # verticals are obligations on every tier — Platform Core, Domain Services, and Surfaces
 status: draft
-last_updated: 2026-04-26
+last_updated: 2026-06-10
 tier: Cross-cutting
 ---
 
@@ -28,15 +28,26 @@ Note that verticals use an **Obligation inventory** at L3 rather than a Capabili
 
 Money flows through the platform — paid journeys, group subscriptions, creator payouts, marketplace fees. This vertical defines the shared transaction substrate so that any service that touches money does so safely, auditably, and consistently. Mishandled money is the fastest way to destroy trust. Mishandled tax is the fastest way to destroy a company. This vertical guarantees that every transaction is recorded, reconciled, and compliant.
 
+Per ADR-U028 (governance by scope, ratified 2026-06-10), transactions split by **scope**. A member **buying** — journey enrolment, premium, subscriptions, one-off purchases — is **in-experience**: the purchase affordance lives where the member already is. Economy **management** — pricing, payouts, marketplace operations — is **universe-scoped** and lives on **the Console**, the back-of-house surface (working name; fiction name deferred). The Console is a surface, not a new permission system: one permission mechanism throughout (the universal group pattern, ADR-U006/U007).
+
 ### 2. Scope
 
+Scoped per ADR-U028 — member-facing flows in-experience vs economy management on the Console:
+
+**Substrate (scope-neutral):**
 - Payment provider integration (Stripe and successors)
-- Subscription lifecycle (create, upgrade, downgrade, pause, cancel, refund)
-- One-off purchases
-- Creator payouts
 - Tax handling (VAT, sales tax, withholding)
 - Invoicing
 - Reconciliation against the platform's own ledger
+
+**In-experience (a member buying):**
+- Subscription lifecycle (create, upgrade, downgrade, pause, cancel, refund)
+- One-off purchases (including journey enrolment and premium)
+
+**Universe-scoped economy management (the Console):**
+- Pricing operations
+- Creator payouts
+- Marketplace operations
 - Dispute and chargeback handling
 
 ### 3. Tooling and infrastructure
@@ -80,6 +91,7 @@ The rules this vertical imposes on each tier of the anatomy. These are what ever
 
 - Each surface that initiates a transaction shows price, currency, tax breakdown, and refund policy *before* confirmation
 - Each surface respects the user's billing region
+- Member-facing purchase flows (enrolment, premium, subscriptions) are in-experience; economy-management surfaces (pricing, payouts, marketplace operations) are universe-scoped and live on the Console (ADR-U028) — never woven into the member experience
 
 ### 7. Cross-cutting checklists
 

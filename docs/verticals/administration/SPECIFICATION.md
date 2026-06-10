@@ -8,7 +8,7 @@ name: Administration
 owner: Stefan
 consumers: all  # verticals are obligations on every tier — Platform Core, Domain Services, and Surfaces
 status: draft
-last_updated: 2026-04-26
+last_updated: 2026-06-10
 tier: Cross-cutting
 ---
 
@@ -28,20 +28,31 @@ Note that verticals use an **Obligation inventory** at L3 rather than a Capabili
 
 Administration covers platform-level operator capabilities (user management, group management, content moderation, abuse response). Every domain service and surface must expose the hooks that admins need to inspect, intervene, and remediate. Without administration, the platform is ungovernable. This vertical guarantees that operators always have the tools to keep the platform safe, lawful, and consistent with the cosmological constitution — without requiring database surgery.
 
+Per ADR-U028 (governance by scope, ratified 2026-06-10), administration is not one undifferentiated operator plane — it splits by **scope**. **Community-scoped care** (a Steward moderating their own group, a Guide facilitating their journey) stays **woven in-place** in the FIM experience: the affordance appears where the care happens, with no admin-panel detour. **Universe-scoped administration** (platform operations, portfolio, economy, legal) lives on **the Console** — the back-of-house surface and the home of universe-scoped admin ("the Console" is the working name; the fiction name is deferred). The Console is a surface, not a new permission system: one permission mechanism throughout (the universal group pattern, ADR-U006/U007).
+
 ### 2. Scope
 
-- Platform admin role assignment (DeusEx system group)
+Scoped per ADR-U028 — in-place community-care affordances vs Console surfaces:
+
+**In-place community care (woven into the FIM experience):**
+- Content reporting and moderation affordances where the care happens (flagging, in-group moderation by Stewards/Guides) — Ferd routing: in-place
+- Appeal flows initiated in-experience
+- Self-service platform-exit stays in-experience (a member leaving is not an admin act)
+
+**Universe-scoped administration (the Console):**
+- Platform admin role assignment (DeusEx system group; enterprise-plane seats — Universeers, the FringeIsland Council, DeusEx — per ADR-U028)
 - User account inspection, suspension, deletion
 - Group inspection, takeover, dissolution
-- Content moderation (review queues, flagging, takedown)
-- Audit trail of every administrative action
-- Appeal flows
+- Content-moderation operations (review queues, takedown)
+- Audit trail of every administrative action; the audit-log viewer is a Console surface — Ferd routing: Console
+- Feature flags — Ferd routing: Console
 
 ### 3. Tooling and infrastructure
 
 - `is_platform_admin()` SECURITY DEFINER helper (existing)
 - DeusEx system group (existing)
 - Audit log table (currently partial — to be refined as the tooling matures)
+- The Console (working name; planned per ADR-U028) — the back-of-house surface housing universe-scoped admin tooling (audit-log viewer, feature flags per the Ferd routing)
 
 ### 4. Failure modes
 
@@ -75,6 +86,8 @@ Each domain service must expose: list-all (admin scope), force-edit, force-delet
 
 Each surface must surface admin actions behind the platform-admin permission gate, never client-side hidden.
 
+Each surface routes admin affordances by scope (ADR-U028): community-scoped care affordances appear in-place in the FIM experience (where the care happens); universe-scoped admin surfaces (audit-log viewer, feature flags, economy/portfolio/legal operations) appear only on the Console, never woven into the member experience.
+
 ### 7. Cross-cutting checklists
 
 A short, machine-checkable checklist a developer can run against any new feature to confirm it satisfies this vertical. These checklists feed into Definition of Done (`../../planning/PROCESS.md` §5) and are the per-feature-rule distillation of the obligations above.
@@ -83,6 +96,7 @@ A short, machine-checkable checklist a developer can run against any new feature
 - [ ] New mutation emits an audit-log entry on the admin path
 - [ ] New surface respects `is_platform_admin()` for admin affordances
 - [ ] Destructive admin actions require a confirm modal (never `window.confirm`)
+- [ ] New admin affordance is routed by scope (ADR-U028): community-scoped care in-place; universe-scoped on the Console
 
 ### Sources-status block
 

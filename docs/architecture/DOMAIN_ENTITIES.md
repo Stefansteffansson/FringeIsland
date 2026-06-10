@@ -6,7 +6,7 @@ This document defines the core business entities in FringeIsland, their properti
 
 FringeIsland is built around six core domain entities:
 
-1. **User** - Individual people using the platform
+1. **User** - Individual people using the platform. Canonically this entity is the **FIM** (the base identity); "Member" is the platform-technical synonym for FIM and is used for nothing else. The anonymous, ephemeral **Shadow** identity state precedes the FIM and transcends into it (ADR-U027). Identity-state and role naming follows the roles core: [`../ecosystem/universe/roles/README.md`](../ecosystem/universe/roles/README.md).
 2. **Group** - Flexible organizational units
 3. **Journey** - Structured learning experiences
 4. **Role** - Collections of permissions (templates and instances)
@@ -54,7 +54,7 @@ FringeIsland is built around six core domain entities:
 
 ### 1. User
 
-**Description**: Individual person with an account on FringeIsland.
+**Description**: Individual person with an account on FringeIsland — the **FIM** (base identity) record in the canonical identity-state model ("Member" is the platform-technical synonym for FIM). The anonymous **Shadow** state (server-issued anonymous identity, ephemeral own-data) precedes this record and becomes it at transcendence (ADR-U027); the Shadow lifecycle is specified at PC-2 Identity. See the roles core ([`../ecosystem/universe/roles/README.md`](../ecosystem/universe/roles/README.md)) for the full taxonomy.
 
 **Properties:**
 
@@ -341,7 +341,7 @@ FringeIsland is built around six core domain entities:
 - Platform Admin Role Template
 - Steward Role Template
 - Guide Role Template
-- Member Role Template
+- Participant Role Template *(per-group role renamed from "Member", ratified 2026-06-10 — "Member" remains purely the platform synonym for FIM; see the roles core, [`../ecosystem/universe/roles/README.md`](../ecosystem/universe/roles/README.md). The on-disk `role_templates` TEXT value still says "Member"; the code/data rename is deferred with the code correction target.)*
 - Observer Role Template
 
 ---
@@ -522,12 +522,12 @@ FringeIsland is built around six core domain entities:
 
 2. Stefan creates "Marketing Team" group
    └─> Group entity created
-   └─> Group roles created (Admin, Guide, Member)
+   └─> Group roles created (Admin, Guide, Participant)
    └─> Stefan assigned Steward role
 
 3. Stefan invites Alice to Marketing Team
    └─> Group membership created (Alice → Marketing Team)
-   └─> Alice assigned Member role
+   └─> Alice assigned Participant role
 
 4. Stefan enrolls Marketing Team in "Leadership Fundamentals" journey
    └─> Enrollment entity created (group enrollment)

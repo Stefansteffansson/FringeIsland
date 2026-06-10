@@ -2,6 +2,15 @@
 *Version 1.0 — March 2026*
 *Status: Locked. Changes require deliberate architectural review.*
 
+> **HISTORICAL v1 REFERENCE — superseded; do not author new work against this document.**
+> Banner added 2026-06-10 (Session B conformance, register batch G-3). The decomposition described
+> below is superseded by ADR-U023 (Platform Core / Domain Services decomposition) and revised by
+> ADR-U025, ADR-U026, ADR-U027, and ADR-U028. Role and visitor terminology inside is era-correct
+> but retired — the canonical identity states and role taxonomy (Shadow, FIM, the per-group roles
+> Steward / Guide / Participant / Observer, the Dreamineer specialisations) live in the roles core:
+> [`../ecosystem/universe/roles/README.md`](../ecosystem/universe/roles/README.md). The body below
+> is a historical record and is deliberately left unedited.
+
 ---
 
 ## How to Use This Document
