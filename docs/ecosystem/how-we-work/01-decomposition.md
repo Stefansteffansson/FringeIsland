@@ -75,11 +75,7 @@ Tasks are created only for features at maturity 4-ready or higher. One task = on
 
 ## Gaps flagged on this axis
 
-Three gaps are marked on the diagram. Each is discussed in detail in [`gaps.md`](./gaps.md); the short version is here.
-
-**Whisp placement (L2).** The Vision names Whisp as a core structural concept — "each FIM's personal future self", operating across all Three Worlds as companion voice, perceptual richness, and active instrument. Descending to L2, none of the current entities owns Whisp. The natural candidates are Intelligence (DS-7), World Model (DS-1), or a cross-service abstraction. The ambiguity means features involving Whisp have no routing to an owner.
-
-*(2026-06-10: VISION.md has since been revised - the Whisp is canonically the FIM's own inner dialogue, see the beings core. The L2-placement gap itself remains open.)*
+Two gaps are marked on the diagram. Each is discussed in detail in [`gaps.md`](./gaps.md); the short version is here. *(A third — Whisp placement at L2, formerly G-01 — was resolved 2026-06-10 at the DS-1 descent: ownership splits by face, DS-1 World Model owning the Whisp's world-presence (cord, Void distance, anchoring, severance) and DS-7 Intelligence owning the being (dialogue, filling, internalisation); see `docs/architecture/decisions/PENDING.md` and `docs/platform/domain/world-model.md`.)*
 
 **Cross-product feature sync (L4).** The `ecosystem-decomposition` skill says paired specs are created and linked for cross-cutting capabilities (Hub UI + Platform data model). What it doesn't say is how the paired specs stay synchronized as either evolves. There's no mechanism for catching the drift when FEAT-H005 changes its acceptance criteria and FEAT-PD003 should change with it.
 

@@ -1,6 +1,6 @@
 # Gaps register
 
-**Status:** twenty-seven known documentation and design gaps across the FringeIsland development system as of 2026-06-10.
+**Status:** twenty-six known documentation and design gaps across the FringeIsland development system as of 2026-06-10.
 
 **Purpose:** a single place to see every gap flagged in the [how-we-work](./README.md) chapters, grouped by axis, with suggested resolution and priority.
 
@@ -12,7 +12,6 @@
 
 | ID | Axis | Gap | Priority | Proposed fix |
 |----|------|-----|----------|--------------|
-| G-01 | Decomposition (L2) | Whisp architectural placement | Medium | ADR or session decision to assign Whisp to Intelligence, World Model, or a new cross-service abstraction |
 | G-02 | Decomposition (L4) | Cross-product feature sync | Medium | Extend `ecosystem-decomposition` skill with paired-spec sync protocol |
 | G-03 | Decomposition (cross-cut) | Vertical specs are scaffolds | **High** | Populate §3 through §6 of each of the five vertical specs |
 | G-04 | Cadence | Wave ↔ roadmap relationship | Medium | Session decision: do waves replace, duplicate, or complement roadmaps? |
@@ -45,13 +44,6 @@
 ## Grouped by axis
 
 ### Decomposition cascade — chapter 01
-
-**G-01 — Whisp architectural placement (L2).**
-VISION.md names Whisp as a core structural concept: "each FIM's personal future self … perceptual lens, operating across all three worlds as companion voice, perceptual richness, and active instrument." The L2 entity inventory (per `ecosystem-decomposition` skill) lists 3 products, 4 platform-core components, 7 domain services, 3 studios, design system, and verticals. None of them owns Whisp. Natural candidates are Intelligence (DS-7), World Model (DS-1), or a cross-service abstraction. Every Whisp-involving feature currently has no routing to an owner; it falls into `OPEN_QUESTIONS.md` by default. Acceptable as a temporary pattern, problematic as permanent.
-
-*(2026-06-10: VISION.md has since been revised - the Whisp is canonically the FIM's own inner dialogue, see the beings core. The L2-placement gap itself remains open.)*
-
-*Proposed fix:* ADR (draft as ADR-U025 or similar) that either assigns Whisp to an existing domain service, creates a new one, or explicitly locks "Whisp is cross-cutting; its features are paired specs between Intelligence and World Model."
 
 **G-02 — Cross-product feature sync (L4).**
 The `ecosystem-decomposition` skill defines the paired-spec pattern: "A single capability often spans multiple owners (e.g., Hub UI + Platform data model). Create separate feature specs for each owner and link them via 'Platform dependencies' and 'Cross-product impact.'" The linking is named; the synchronization is not. When FEAT-H005 changes its acceptance criteria, nothing alerts FEAT-PD003's owner that a consumer assumption has changed. The DoR check fires once at spec creation; nothing fires afterwards.
@@ -208,7 +200,6 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 - G-12 Given/When/Then to test translation
 
 **Medium priority** (affects clarity and contributor onboarding but not blocking today):
-- G-01 Whisp architectural placement
 - G-02 Cross-product feature sync
 - G-04 Wave ↔ roadmap relationship
 - G-07 Ferd DoD empty
@@ -239,3 +230,5 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 *Last updated 2026-05-29 (G-33 added during the universe-discovery Session 01 resume, commit 3548b98, and closed the same day by the G-33 cleaning pass that classified all 130 Open-thread bullets against the 36 statements and tagged them inline: 20 RESOLVED, 65 PARTIAL, 45 STILL OPEN). Originating session bridges: `docs/planning/sessions/2026-04-19_-_HOW-WE-WORK-SESSION.md` (G-01 through G-18); `docs/planning/sessions/2026-04-22_-_DECOMPOSITION-SKILL-REFACTOR.md` (G-19 through G-22); `docs/planning/sessions/2026-04-24_-_L2-COMPLIANCE-AUDIT.md` (G-23 through G-25). G-26 was added in `docs/planning/sessions/2026-04-26_02_-_BLOCK-A1-A2-TEMPLATE-DECISIONS.md` and closed in `docs/planning/sessions/2026-04-26_06_-_BLOCK-A2-AUTHOR-DESIGN-SYSTEM-TEMPLATE.md`. G-24 was closed in the same A.2-author bridge after Block A completed (all three previously-missing templates were authored across the 2026-04-26 session chain). G-27 and G-28 were added in `docs/planning/sessions/2026-04-26_07_-_BLOCK-B1-HUB-L2.md` (the Hub L2 walk session). G-29 has dual lineage: first registered in concept as G-NN in `docs/planning/sessions/2026-04-28_01_-_BLOCK-B2-HUB-L3.md` (the B.2 resumption bridge — surfacing the lateral-drift problem during L3 capability authoring), then sharpened in `docs/planning/sessions/2026-04-30_01_-_CODE-INFORMED-STRESS-TEST-PATTERN.md` (the stress-test pattern bridge — re-scoping the gap's resolution to handle the structured output of a named methodology step rather than ad-hoc surprises), and registered as G-29 during Block B.2 resumption (cascade-plan Session 1 had not yet landed at registration time, so G-29 was the next available number rather than G-32). G-30 and G-31 were both registered in cascade-plan Session 1 (`docs/planning/sessions/2026-05-01_01_-_CASCADE-SESSION-1.md` — to be authored at session close): G-30 was anticipated by the 2026-04-27 cascade-plan bridge as the tier-CLAUDE miscategorisation gap to register in Session 1; G-31 was drafted in the 2026-04-30 stress-test pattern bridge as the gap covering the pattern's promotion to skill text, with the cascade-plan bridge having sequenced it as deferred until two-instance evidence — Session 1 lands G-31's *registration* alongside its *resolution* against the closing-bridge Observations A–G evidence rather than waiting for Session 4. ID numbering is monotonic — closed IDs are not reused.*
 
 *Updated 2026-06-10: register housekeeping — G-32 added to the quick index and priority summary (described in the body since the 2026-05-03 reader-tours session but missing from both); G-19 given a body entry (index-only since 2026-04-22); G-21 closed — its proposed fix is implemented: the `feature-development` skill carries the same-commit summary update at maturity transitions 4→5 and 5→6, and `doc-health-check` Section 8 verifies consistency at cycle boundaries. References that named G-21 by ID (six specification templates, doc-health-check Section 8, and — caught by the post-change health check — the instantiated entity specifications, verticals CLAUDE.md, and verticals feature-READMEs) were repointed to the implemented discipline in the same pass.*
+
+*Updated 2026-06-10 (later the same day): G-01 closed — its proposed fix happened: the DS-1 descent session ratified the Whisp L2-owner decision (split by face: DS-1 World Model owns world-presence — cord, Void distance, anchoring, severance; DS-7 Intelligence owns the being — dialogue, filling, senses, internalisation; DS-7 consumes DS-1). Recorded as an ADR candidate in `docs/architecture/decisions/PENDING.md` (promote at the DS-7 descent) and instantiated in `docs/platform/domain/world-model.md` + `world-model/CLAUDE.md`. The chapter-01 callout and the cascade-SVG gap box were updated to resolved in the same health-check pass; the rendered views (index.html, docx) remain on the accepted G-25 deferral.*

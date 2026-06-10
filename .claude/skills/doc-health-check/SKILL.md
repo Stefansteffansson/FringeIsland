@@ -60,7 +60,7 @@ The skill has ten sections. Three (1.5, 3.5, 3.6) exist to catch drift introduce
 |---------|-----------------|
 | `docs/architecture/ECOSYSTEM_ANATOMY_V5.svg` | The entity anatomy: products (equipment profiles), Universe Studio + children, DS-1..DS-7, PC-1..PC-4, verticals |
 | `docs/architecture/DOMAIN_SERVICE_DEPENDENCIES.svg` | Domain-service dependency arrows + studio write-paths |
-| `docs/ecosystem/how-we-work/assets/01-decomposition-cascade.svg` | The L1-L5 vertical axis + its own gap notes (incl. the open Whisp L2-placement gap) |
+| `docs/ecosystem/how-we-work/assets/01-decomposition-cascade.svg` | The L1-L5 vertical axis + its own gap notes (two open: G-02 sync, G-03 scaffolds; the Whisp L2-placement gap shows as RESOLVED 2026-06-10 per the split-by-face decision in `decisions/PENDING.md`) |
 
 Three rules, learned from the 2026-06-05 Session A sweep initially MISSING the SVGs (caught 2026-06-07):
 1. Every Section 1 and 1.5 sweep includes `*.svg` (the grep blocks below do this).
@@ -439,7 +439,6 @@ This section is the explicit protection.
 | `docs/platform/core/ROADMAP.md` | Platform Core roadmap | Expected per platform-tier pattern | Pending |
 | `docs/platform/core/infrastructure/CLAUDE.md` | PC-1 Infrastructure entity-level CLAUDE.md | Referenced by `docs/platform/core/CLAUDE.md` Where-to-go-next four-areas pointer | Pending — when area-specific rules warrant a delta |
 | `docs/platform/core/identity/CLAUDE.md` | PC-2 Identity entity-level CLAUDE.md | Referenced by `docs/platform/core/CLAUDE.md` Where-to-go-next four-areas pointer | Pending — when area-specific rules warrant a delta |
-| `docs/platform/domain/world-model/CLAUDE.md` | DS-1 World Model entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
 | `docs/platform/domain/narrative-engine/CLAUDE.md` | DS-2 Narrative Engine entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
 | `docs/platform/domain/experience-engine/CLAUDE.md` | DS-3 Experience Engine entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
 | `docs/platform/domain/content/CLAUDE.md` | DS-4 Content entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
