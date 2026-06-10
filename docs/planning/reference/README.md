@@ -17,7 +17,6 @@ docs/planning/reference/
 ├── GROUP-MODEL-CURRENT-STATE.md           ← group model assessment (April 2026)
 ├── PLATFORM-EXIT-GAP-ANALYSIS.md          ← platform exit gaps (April 2026)
 ├── FOLDER_STRUCTURE.md                    ← repo folder structure snapshot (April 2026)
-├── 2026-04-12-things-to-check.md          ← doc-disposition checklist (April 2026; from docs/TMP)
 ├── legacy-feature-docs/                   ← pre-Model-A Ferd feature docs (historical evidence; from docs/TMP/OLDFEAT)
 └── 2026-04_hub-l3-working-set/            ← Hub L3 derivation working inputs (April 2026; superseded-model caveat inside)
 ```
