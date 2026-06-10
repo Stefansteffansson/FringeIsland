@@ -29,7 +29,7 @@ feature_prefix: {H | G}  # H=Hub, G=Gimbal — shell features only (ADR-U025); u
 
 ### 2. Architecture position
 
-Where this product sits in the ecosystem anatomy (`../../architecture/ECOSYSTEM_ANATOMY_V4.svg`, ADR-U023):
+Where this product sits in the ecosystem anatomy (`../../architecture/ECOSYSTEM_ANATOMY_V5.svg`, ADR-U023):
 
 - **Tier:** Surfaces (Products)
 - **Domain services consumed:** {list with the operations called}

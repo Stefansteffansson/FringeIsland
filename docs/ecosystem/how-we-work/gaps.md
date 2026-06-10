@@ -49,6 +49,8 @@
 **G-01 — Whisp architectural placement (L2).**
 VISION.md names Whisp as a core structural concept: "each FIM's personal future self … perceptual lens, operating across all three worlds as companion voice, perceptual richness, and active instrument." The L2 entity inventory (per `ecosystem-decomposition` skill) lists 3 products, 4 platform-core components, 7 domain services, 3 studios, design system, and verticals. None of them owns Whisp. Natural candidates are Intelligence (DS-7), World Model (DS-1), or a cross-service abstraction. Every Whisp-involving feature currently has no routing to an owner; it falls into `OPEN_QUESTIONS.md` by default. Acceptable as a temporary pattern, problematic as permanent.
 
+*(2026-06-10: VISION.md has since been revised - the Whisp is canonically the FIM's own inner dialogue, see the beings core. The L2-placement gap itself remains open.)*
+
 *Proposed fix:* ADR (draft as ADR-U025 or similar) that either assigns Whisp to an existing domain service, creates a new one, or explicitly locks "Whisp is cross-cutting; its features are paired specs between Intelligence and World Model."
 
 **G-02 — Cross-product feature sync (L4).**

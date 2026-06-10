@@ -1,5 +1,12 @@
 # FringeIsland World
 
+> **SUPERSEDED-MODEL NOTICE (2026-06-10, reconciliation Session B).** This is a temporal
+> planning record, preserved as written. The three-dimension world model (real world / Void /
+> FringeIsland) it describes has since been superseded by the canonical cores and ADRs: see
+> `docs/ecosystem/universe/cosmology/README.md`, `docs/ecosystem/universe/roles/README.md`,
+> ADR-U025 (products as equipment profiles; the Game is depth), and ADR-U026 (Universe Studio
+> as parent; World Studio). Where this file conflicts with those, they win.
+
 **Wave:** Heim
 **Category:** Features
 **Status:** 🔴 Needs concept work

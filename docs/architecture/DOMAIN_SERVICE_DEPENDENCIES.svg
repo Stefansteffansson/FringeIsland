@@ -17,7 +17,7 @@
   <rect x="200" y="46" width="280" height="52" rx="8" fill="#CECBF6" stroke="#7F77DD" stroke-width="0.5"/>
   <text x="340" y="64" text-anchor="middle" class="th" fill="#26215C">World model</text>
   <text x="340" y="82" text-anchor="middle" class="ts" fill="#534AB7">Constrains everything below</text>
-  <text x="520" y="72" class="ts" fill="#888780">Universe Studio writes</text>
+  <text x="520" y="72" class="ts" fill="#888780">World Studio writes</text>
 
   <!-- Arrows from World Model -->
   <line x1="280" y1="98" x2="200" y2="138" stroke="#7F77DD" stroke-width="0.5" fill="none" marker-end="url(#arrow)"/>
@@ -84,4 +84,7 @@
   <!-- Platform Core -->
   <rect x="100" y="564" width="480" height="36" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
   <text x="340" y="586" text-anchor="middle" class="th" fill="#04342C">Platform core — Organisation, Identity, Infrastructure, Governance</text>
+
+  <!-- Studio note (ADR-U026) -->
+  <text x="340" y="614" text-anchor="middle" class="ts" fill="#888780">Studios — World, Arc, Journey — are children of Universe Studio (ADR-U026); each writes to its domain service.</text>
 </svg>

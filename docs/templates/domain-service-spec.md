@@ -21,7 +21,7 @@ feature_prefix: PD  # FEAT-PD### for features owned by this service
 
 ## L2 — Identity, boundaries, and technical shape
 
-*L2 authorship. Derived from Vision and the ecosystem anatomy (`../../architecture/ECOSYSTEM_ANATOMY_V4.svg`, ADR-U023). Revised when the service's boundaries, public contract, or dependencies change.*
+*L2 authorship. Derived from Vision and the ecosystem anatomy (`../../architecture/ECOSYSTEM_ANATOMY_V5.svg`, ADR-U023). Revised when the service's boundaries, public contract, or dependencies change.*
 
 ### 1. Purpose
 

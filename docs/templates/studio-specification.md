@@ -35,7 +35,7 @@ The authoring and lifecycle surface this studio exposes to creators.
 
 ### 2. Architecture position
 
-Where this studio sits in the ecosystem anatomy (`../../architecture/ECOSYSTEM_ANATOMY_V4.svg`, ADR-U023):
+Where this studio sits in the ecosystem anatomy (`../../architecture/ECOSYSTEM_ANATOMY_V5.svg`, ADR-U023):
 
 - **Tier:** Surfaces (Studios)
 - **Target Domain Service:** {DS-N: name} — this studio writes to this service. **Exactly one.** See §5 below for the contract.
