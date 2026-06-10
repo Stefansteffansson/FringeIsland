@@ -42,7 +42,7 @@ Derived fresh from L1 (Vision) and L2 (the L2 sections above) whenever the verti
 
 ### L4 — Feature inventory summary (vertical-owned features)
 
-Reconciliation output against L3's obligation inventory, scoped specifically to V-prefix features — infrastructure or tooling that this vertical owns as a shipped deliverable. **Often sparse by design**: most obligations are satisfied by other owners' features via their own L3 Vertical Impact subsections, not by V-prefix features of the vertical's own. Updated whenever a `FEAT-V###.md` file under this vertical's `features/` directory is created, advances in maturity, or is deleted (G-21 discipline).
+Reconciliation output against L3's obligation inventory, scoped specifically to V-prefix features — infrastructure or tooling that this vertical owns as a shipped deliverable. **Often sparse by design**: most obligations are satisfied by other owners' features via their own L3 Vertical Impact subsections, not by V-prefix features of the vertical's own. Updated whenever a `FEAT-V###.md` file under this vertical's `features/` directory is created, advances in maturity, or is deleted (feature-inventory maintenance discipline; `doc-health-check` Section 8).
 
 - **Summary of vertical-owned features** — Table mapping obligations to V-prefix feature specs, with maturity column. If the vertical owns no V-prefix features (the common case for now), this section is a single fallback line stating that all obligations are satisfied by other owners' features.
 - **Obligations without shared infrastructure** — Obligations from §L3 that cannot currently be satisfied by shared tooling. A smell signal: each obligation listed here is a candidate for a future V-prefix feature.

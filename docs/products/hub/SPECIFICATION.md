@@ -428,7 +428,7 @@ Remarks recording prerequisite-check pauses, methodology observations, and cross
 
 ## L4 — Feature inventory summary
 
-*L4 authorship. Reconciliation output against L3's capability inventory. Updated whenever a `FEAT-*.md` file under this entity's `features/` directory is created, advances in maturity, or is deleted. Maintenance discipline is tracked as G-21 — the `doc-health-check` skill verifies this section reflects the current state of `features/`.*
+*L4 authorship. Reconciliation output against L3's capability inventory. Updated whenever a `FEAT-*.md` file under this entity's `features/` directory is created, advances in maturity, or is deleted. Maintenance discipline: the `feature-development` skill updates this section in the same commit as any maturity transition; the `doc-health-check` skill (Section 8) verifies it reflects the current state of `features/`.*
 
 *Pending — will be populated after §L3 is authored. The summary will list every `FEAT-H*` spec under [`./features/`](./features/) with its maturity and the capability it serves.*
 

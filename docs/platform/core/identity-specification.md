@@ -465,7 +465,7 @@ PC-2's existing bullet-prose Sources-status block (above) is preserved verbatim 
 
 ## L4 — Feature inventory summary
 
-*L4 authorship. Reconciliation output against L3's capability inventory. Updated whenever a `FEAT-PC###.md` file under `docs/platform/core/features/` that this area owns a capability for is created, advances in maturity, or is deleted. Maintenance discipline tracked as G-21.*
+*L4 authorship. Reconciliation output against L3's capability inventory. Updated whenever a `FEAT-PC###.md` file under `docs/platform/core/features/` that this area owns a capability for is created, advances in maturity, or is deleted. Maintenance discipline: the `feature-development` skill updates this section in the same commit as any maturity transition; the `doc-health-check` skill (Section 8) verifies it.*
 
 ### Summary
 

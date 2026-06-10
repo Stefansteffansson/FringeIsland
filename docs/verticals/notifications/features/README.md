@@ -5,7 +5,7 @@ Feature specifications for the Notifications vertical. V-prefix features are inf
 **Feature ID prefix:** `V` (e.g., `FEAT-V001-{slug}.md`)
 **Template:** `../../../templates/feature-spec.md`
 
-When a V-prefix feature is added, removed, or advances in maturity, the parent `../SPECIFICATION.md` §L4 summary table is updated in the same commit (G-21 discipline).
+When a V-prefix feature is added, removed, or advances in maturity, the parent `../SPECIFICATION.md` §L4 summary table is updated in the same commit (feature-inventory maintenance discipline; `doc-health-check` Section 8).
 
 ## Feature index
 

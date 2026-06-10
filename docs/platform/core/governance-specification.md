@@ -490,23 +490,23 @@ Cumulative-forward read order applied within each cluster (A-candidate #8 cumula
 - **5 Phase-wide observations (PW-1 through PW-5)** captured at Step 2 block; routed as Sources-status amendments (SS-5 through SS-8) + Phase 2 close-out methodology inputs.
 - **8 Sources-status block extensions (SS-1 through SS-8)** appended at Step 2; recorded as part of §L3 Sources-status block.
 - **Phase 3 (ADR amendments): ZERO commits at PC-4 close** per provisional-zero stance ratified at end-of-Step-2 surface. PC-4 architectural surfaces stand without amendment; cross-entity findings route to PC-1 / PC-3 amendment-list pickups at Phase 2 close-out, not to PC-4-tier ADR amendments.
-- **PC-4 Governance L1→L3 derivation completes at this commit.** Entity derivation finishes here; PC-4 implementation via FEAT-PC-* feature specs + code is downstream and not in scope for Phase 2. §L4 reconciliation is downstream maintenance per G-21 (`doc-health-check` skill verifies §L4 reflects the current state of `features/`); not Step 3 scope. **Phase 2 closes after PC-4 entity close; Phase 2 close-out arrives as separate session.**
+- **PC-4 Governance L1→L3 derivation completes at this commit.** Entity derivation finishes here; PC-4 implementation via FEAT-PC-* feature specs + code is downstream and not in scope for Phase 2. §L4 reconciliation is downstream maintenance per the feature-inventory maintenance discipline (`doc-health-check` Section 8 verifies §L4 reflects the current state of `features/`); not Step 3 scope. **Phase 2 closes after PC-4 entity close; Phase 2 close-out arrives as separate session.**
 
 ---
 
 ## L4 — Feature inventory summary
 
-*L4 authorship. Reconciliation output against L3's capability inventory. Updated whenever a `FEAT-PC###.md` file under `docs/platform/core/features/` that this area owns a capability for is created, advances in maturity, or is deleted. Maintenance discipline is tracked as G-21 — the `doc-health-check` skill verifies this section reflects the current state of `features/`.*
+*L4 authorship. Reconciliation output against L3's capability inventory. Updated whenever a `FEAT-PC###.md` file under `docs/platform/core/features/` that this area owns a capability for is created, advances in maturity, or is deleted. Maintenance discipline: the `feature-development` skill updates this section in the same commit as any maturity transition; the `doc-health-check` skill (Section 8) verifies it reflects the current state of `features/`.*
 
 **Note on shared `features/` directory.** The four Platform Core areas share a single `docs/platform/core/features/` directory (locked 2026-04-26: flat layout, single shared features directory). Each `FEAT-PC###.md` is routed to its owning area via the L4 feature-inventory summary in that area's SPECIFICATION.md. A feature may appear in only one area's L4 summary — the owning area.
 
 ### Summary
 
-Zero FEAT-PC-* feature specs assigned to PC-4 within canonical `docs/platform/core/features/` scope at this commit. All 9 §L3 capabilities are unimplemented at the FEAT-PC-* tier today; reconciliation downstream per G-21 maintenance discipline (the `doc-health-check` skill verifies this section as FEAT-PC-* specs land).
+Zero FEAT-PC-* feature specs assigned to PC-4 within canonical `docs/platform/core/features/` scope at this commit. All 9 §L3 capabilities are unimplemented at the FEAT-PC-* tier today; reconciliation downstream per the feature-inventory maintenance discipline (the `doc-health-check` skill verifies this section as FEAT-PC-* specs land).
 
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
-| *(all 9 capabilities — see §L3 Capabilities inventory)* | — | — | No FEAT-PC-* spec assigned to PC-4 in `features/` at this commit; G-21 downstream |
+| *(all 9 capabilities — see §L3 Capabilities inventory)* | — | — | No FEAT-PC-* spec assigned to PC-4 in `features/` at this commit; feature-inventory reconciliation downstream |
 
 ### Capabilities without specs
 
