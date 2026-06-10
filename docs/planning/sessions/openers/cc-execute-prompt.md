@@ -1,1 +1,0 @@
-Read the opener instance you just authored and proceed.
