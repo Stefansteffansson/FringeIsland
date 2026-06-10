@@ -83,3 +83,8 @@ docs/verticals/**/*.docx
 
 # Machine-local Claude Code instructions (auto-loaded, never committed)
 CLAUDE.local.md
+
+# Skills-CLI junctions into .agents/skills/ (machine-local NTFS links; real content
+# is committed under .agents/skills/, provenance in skills-lock.json)
+.claude/skills/supabase/
+.claude/skills/supabase-postgres-best-practices/
