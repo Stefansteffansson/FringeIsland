@@ -45,7 +45,7 @@ OLDFEAT preserved per Stefan's explicit instruction.
 | `docs/TMP/OLDFEAT/**` (16 feature docs + INDEX + _archive) | `docs/planning/reference/legacy-feature-docs/` (+ provenance README) |
 | `capability-foundation.md`, `hub-l3-input.md`, `prose.md`, `capabilities.md`, `ARCHITECTURE_ANATOMY_DIAGRAM.svg` | `docs/planning/reference/2026-04_hub-l3-working-set/` (+ provenance README with superseded-model caveat; NOT derivation input for DS-1) |
 | `Things to check.md` | `docs/planning/reference/2026-04-12-things-to-check.md` (Stefan: worth a skim for still-live intentions) |
-| `OLD-UNIVERSE-REVIEW-PROMPT.md` | `docs/planning/sessions/openers/` |
+| `OLD-UNIVERSE-REVIEW-PROMPT.md` | `docs/planning/sessions/openers/archive/` (archived with the other executed openers, 2026-06-10) |
 | `prompts.md` | `docs/planning/sessions/openers/bounce-back-prompt.md` |
 
 `docs/planning/reference/README.md` index updated. `docs/TMP/` removed.

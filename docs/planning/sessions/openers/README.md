@@ -6,7 +6,7 @@ The canonical template for autonomous L1→L3 openers lives at [`docs/templates/
 
 The pipeline status across all entities and amendment sessions is tracked in [`STATUS.md`](./STATUS.md).
 
-Historical openers from before the template existed (PC-3 chain + Experiment B + non-experiment PC-3 prep) are preserved in [`archive/`](./archive/) for provenance.
+Executed and superseded openers are preserved in [`archive/`](./archive/) for provenance: the pre-template chain (PC-3 chain + Experiment B + non-experiment PC-3 prep), the executed PC-1..PC-4 amendment/autonomous instances, the old-universe review prompt, and the reconciliation Session B opener (2026-06-09). Only live artifacts stay at this level: the next session's opener, the reusable prompts (`cc-create-opener-prompt.md`, `bounce-back-prompt.md`), `STATUS.md`, and this README.
 
 ---
 
