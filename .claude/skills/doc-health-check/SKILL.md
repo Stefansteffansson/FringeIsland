@@ -124,6 +124,11 @@ This is subtler than Section 1 because there's no "old term → new term" mappin
 | **Four workflow files** (`BOOT_UP.md`, `CLOSE_DOWN.md`, `DOC_HEALTH_CHECK.md` old, `WORKFLOW.md`) | Standalone workflow markdown files | Deleted 2026-04-17; replaced by skills. The containing directory `docs/planning/workflows/` was also deleted. | See Section 3.6 for the deleted-file check |
 | **`docs/planning/workflows/` directory** | Home for operational-playbook markdown files | Deleted 2026-04-17; skills under `.claude/skills/` are the canonical execution-mechanics home (per DECISION-02). Directory no longer exists on disk. | `planning/workflows`, `workflows/` (when referring to the planning subdirectory) |
 | **Phase 1/2/3/4 model** | Sequential phase progression for the platform | Superseded by Wave model (Ferd → Eid → … → Urd) | "Phase 1", "Phase 2", "Phase 1.5", "phase timeline" (outside wave context) |
+| **The Game as a product** (added 2026-06-10) | Third product entity (Unreal Engine, prefix GM, `docs/products/game/`) | Retired by ADR-U025 — the Game is a depth setting of journeys, not a product; GM prefix retired | "The Game" as a current product, `FEAT-GM`, `products/game` |
+| **Device sub-entities** (added 2026-06-10) | `gimbal/ios/` + `gimbal/android/` as cascade sub-entities | Dissolved by ADR-U025 — devices are points in equipment space; native builds are shipping targets of the one Gimbal surface | `gimbal/ios`, `gimbal/android`, "Gimbal-iOS vs Gimbal-Android" as the sub-entity canonical case |
+| **Sibling-studios model** (added 2026-06-10) | Journey/Universe/Arc as three sibling studios; Universe Studio excluding Arc; "FringeIsland Studio" as the world-authoring tool | Superseded by ADR-U026 — Universe Studio is the parent/binding frame over World, Arc, Journey Studios | "three studios" as siblings, "FringeIsland Studio", flat `docs/studios/{name}` paths |
+| **Three Worlds cosmology** (added 2026-06-10) | Ordinary World / Safe Harbour / The Other Side as the cosmological frame; the "three-dimensional void" | Superseded by the cosmology core (`docs/ecosystem/universe/cosmology/README.md`, ratified Session B): Ordinary World -> Shimmer -> Fringe (place 2 + place 3, near side + Beyond); the Void as the axis of separation | "Three Worlds", "Safe Harbour" (as a world), "The Other Side", "void dimensions" |
+| **"Affordance" as the device-capability term** (added 2026-06-10) | The discovery log's term for what features require from devices | Renamed to **equipment** in canon (ADR-U025); plain-English "affordance" (UI affordances) remains fine | `affordance` used as the technical keying term (not ordinary UI prose) |
 
 ### Procedure
 
@@ -284,6 +289,8 @@ This is different from Section 3 (README sync) because it doesn't require knowin
 | `SPRINT.md` | April 11 2026 | Repo root | Cycles (PROCESS.md §3); per-cycle content in `docs/planning/cycles/cycle-current.md` |
 | `ROADMAP.md` (old, repo-root or old_products tree) | April 11 2026 | Repo root + `docs/old_products/ferd/planning/` | Product-specific `ROADMAP.md` files under `docs/products/{name}/` (when written) + ecosystem roadmap (when written) |
 | `sprint-agent.md` | Retired with agent-playbook model | `docs/old_products/ferd/development/agents/contexts/` | `feature-development` skill |
+| `docs/products/game/README.md` + `CLAUDE.md` + `features/README.md` | Session B G-2 (2026-06-10, commit 50a5dae) | `docs/products/game/` (directory deleted) | ADR-U025 + `PRODUCTS_AND_PLATFORM.md` carry the Game-as-depth lock and revisit trigger |
+| `docs/products/gimbal/ios/README.md` + `docs/products/gimbal/android/README.md` | Session B G-2 (2026-06-10, commit 50a5dae) | `docs/products/gimbal/{ios,android}/` (directories deleted) | `docs/products/gimbal/` (the one senses surface; native iOS/Android are shipping targets, ADR-U025) |
 
 ### Procedure
 
@@ -414,13 +421,10 @@ This section is the explicit protection.
 | `docs/products/gimbal/DESCRIPTION.md` | Gimbal product identity | Expected per `products/gimbal/README.md`; product is planned, not yet scoped | Pending — wave Eid+ |
 | `docs/products/gimbal/SPECIFICATION.md` | Gimbal build spec | Expected per product-tier pattern | Pending — wave Eid+ |
 | `docs/products/gimbal/ROADMAP.md` | Gimbal roadmap | Expected per product-tier pattern | Pending — wave Eid+ |
-| `docs/products/game/DESCRIPTION.md` | Game product identity | Expected per `products/game/README.md`; scope TBD | Pending — wave TBD |
 | `docs/platform/core/SPECIFICATION.md` | Platform Core technical spec | Referenced by PROCESS.md §5 DoD ("Platform Specification updates for shared API surface changes") | Pending |
 | `docs/platform/core/ROADMAP.md` | Platform Core roadmap | Expected per platform-tier pattern | Pending |
-| `docs/platform/core/infrastructure/CLAUDE.md` | PC-1 Infrastructure entity-level CLAUDE.md | Referenced by `docs/platform/core/CLAUDE.md` Where-to-go-next four-areas pointer | Pending — when L2 specification is authored |
-| `docs/platform/core/identity/CLAUDE.md` | PC-2 Identity entity-level CLAUDE.md | Referenced by `docs/platform/core/CLAUDE.md` Where-to-go-next four-areas pointer | Pending — when L2 specification is authored |
-| `docs/platform/core/organisation/CLAUDE.md` | PC-3 Organisation entity-level CLAUDE.md | Referenced by `docs/platform/core/CLAUDE.md` Where-to-go-next four-areas pointer | Pending — when L2 specification is authored |
-| `docs/platform/core/governance/CLAUDE.md` | PC-4 Governance entity-level CLAUDE.md | Referenced by `docs/platform/core/CLAUDE.md` Where-to-go-next four-areas pointer | Pending — when L2 specification is authored |
+| `docs/platform/core/infrastructure/CLAUDE.md` | PC-1 Infrastructure entity-level CLAUDE.md | Referenced by `docs/platform/core/CLAUDE.md` Where-to-go-next four-areas pointer | Pending — when area-specific rules warrant a delta |
+| `docs/platform/core/identity/CLAUDE.md` | PC-2 Identity entity-level CLAUDE.md | Referenced by `docs/platform/core/CLAUDE.md` Where-to-go-next four-areas pointer | Pending — when area-specific rules warrant a delta |
 | `docs/platform/domain/world-model/CLAUDE.md` | DS-1 World Model entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
 | `docs/platform/domain/narrative-engine/CLAUDE.md` | DS-2 Narrative Engine entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
 | `docs/platform/domain/experience-engine/CLAUDE.md` | DS-3 Experience Engine entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
@@ -429,12 +433,14 @@ This section is the explicit protection.
 | `docs/platform/domain/discovery/CLAUDE.md` | DS-6 Discovery entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
 | `docs/platform/domain/intelligence/CLAUDE.md` | DS-7 Intelligence entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
 | `docs/platform/extensions/CLAUDE.md` | Extension System entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next, `docs/platform/CLAUDE.md` Where-to-go-next | Pending — when L2 specification is authored |
-| `docs/studios/journey-studio/DESCRIPTION.md` | Journey Studio identity | Expected per `studios/journey-studio/README.md` ("to be written") | Pending — wave Eid+ |
-| `docs/studios/journey-studio/SPECIFICATION.md` | Journey Studio build spec | Expected per `studios/journey-studio/README.md` ("to be written") | Pending — wave Eid+ |
-| `docs/studios/universe-studio/DESCRIPTION.md` | Universe Studio identity | Expected per `studios/universe-studio/README.md` ("to be written") | Pending — wave Eid+ |
-| `docs/studios/universe-studio/SPECIFICATION.md` | Universe Studio build spec | Expected per `studios/universe-studio/README.md` ("to be written") | Pending — wave Eid+ |
-| `docs/studios/arc-studio/DESCRIPTION.md` | Arc Studio identity | Expected per `studios/arc-studio/README.md` ("to be written") | Pending — wave Urd |
-| `docs/studios/arc-studio/SPECIFICATION.md` | Arc Studio build spec | Expected per `studios/arc-studio/README.md` ("to be written") | Pending — wave Urd |
+| `docs/studios/universe-studio/DESCRIPTION.md` | Universe Studio (parent) identity | Expected per `studios/universe-studio/README.md`; parent entity per ADR-U026 | Pending — wave Eid+ |
+| `docs/studios/universe-studio/SPECIFICATION.md` | Universe Studio (parent) build spec | Expected per studio-tier pattern | Pending — wave Eid+ |
+| `docs/studios/universe-studio/world-studio/DESCRIPTION.md` | World Studio identity | Entity created 2026-06-10 (ADR-U026); README exists, DESCRIPTION pending | Pending — wave Heim+ |
+| `docs/studios/universe-studio/world-studio/SPECIFICATION.md` | World Studio build spec | Expected per studio-tier pattern | Pending — wave Heim+ |
+| `docs/studios/universe-studio/journey-studio/DESCRIPTION.md` | Journey Studio identity | Expected per its README ("to be written"); path nested per ADR-U026 | Pending — wave Eid+ |
+| `docs/studios/universe-studio/journey-studio/SPECIFICATION.md` | Journey Studio build spec | Expected per its README ("to be written") | Pending — wave Eid+ |
+| `docs/studios/universe-studio/arc-studio/DESCRIPTION.md` | Arc Studio identity | Expected per its README ("to be written"); path nested per ADR-U026 | Pending — wave Urd |
+| `docs/studios/universe-studio/arc-studio/SPECIFICATION.md` | Arc Studio build spec | Expected per its README ("to be written") | Pending — wave Urd |
 
 ### Procedure
 
@@ -511,7 +517,7 @@ The cascade is named in `ecosystem-decomposition` skill ("Agent context cascade"
 1. List active entities under each tier: `docs/products/{name}/`, `docs/platform/core/{component}/` (if instantiated), `docs/platform/domain/{service}/` (if instantiated), `docs/studios/{name}/`, `docs/verticals/{name}/`. Design system is tier-only; the existing `docs/design-system/CLAUDE.md` *is* its entity CLAUDE.
 2. For each active entity, check that `{tier}/{entity}/CLAUDE.md` exists.
 3. **Cross-check absences against Section 7's expected-placeholders registry before flagging.** A `CLAUDE.md` listed in the registry is scaffolding, not drift — record it under "Placeholders confirmed scaffolding" in the output summary, not under critical findings.
-4. For sub-entities with genuinely divergent rules (Gimbal-iOS, Gimbal-Android — separate codebases per `gimbal/README.md`), check that `{tier}/{entity}/{sub-entity}/CLAUDE.md` exists. Sub-entity CLAUDE.md files are opt-in by divergence; absence is only a finding if the sub-entity is named in the parent entity's CLAUDE.md as having divergent rules.
+4. For sub-entities with genuinely divergent rules (the canonical case since ADR-U026: Universe Studio's children `world-studio` / `arc-studio` / `journey-studio` — all three have CLAUDE.md files), check that `{tier}/{entity}/{sub-entity}/CLAUDE.md` exists. Sub-entity CLAUDE.md files are opt-in by divergence; absence is only a finding if the sub-entity is named in the parent entity's CLAUDE.md as having divergent rules. (The former canonical case, Gimbal-iOS vs Gimbal-Android, was dissolved by ADR-U025.)
 
 Genuinely missing files (active entity, no `CLAUDE.md`, not in registry) are critical findings.
 

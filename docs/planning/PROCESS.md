@@ -51,7 +51,7 @@ Under Model A (locked 2026-04-17), **feature-shaped items live as `FEAT-*.md` fi
 | 5 | In cycle | Pulled into the active build cycle; tasks generated | same file, `maturity: 5-in-cycle` + `docs/planning/backlog/tasks/TASK-*.md` | Developer |
 | 6 | Done | Implemented, tested, deployed, DoD met | same file, `maturity: 6-done` with Implementation notes filled in | Developer confirms DoD |
 
-**Where `{owner}` is one of:** `products/hub`, `products/gimbal`, `products/game`, `platform/core/{tier}`, `platform/domain`, `studios/{name}`, `design-system`, `verticals`. The owner is also declared in the feature spec's YAML `owner:` field.
+**Where `{owner}` is one of:** `products/hub`, `products/gimbal`, `platform/core/{tier}`, `platform/domain`, `studios/universe-studio/{name}` (or `studios/universe-studio` for umbrella-level features), `design-system`, `verticals`. (The Game is not an owner — it is a depth setting, ADR-U025.) The owner is also declared in the feature spec's YAML `owner:` field.
 
 **The ecosystem tree is the catalogue, not the backlog.** `docs/planning/backlog/` holds only ephemeral TASK-*.md files (work-in-motion for the current cycle). Feature specs are never duplicated into the planning tree — they live permanently under their owner.
 

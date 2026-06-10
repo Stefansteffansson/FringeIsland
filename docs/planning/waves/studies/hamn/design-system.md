@@ -1,5 +1,10 @@
 # Design System
 
+> **SUPERSEDED-MODEL NOTICE (2026-06-10, reconciliation Session B).** This is a temporal
+> planning record, preserved as written. The "three worlds - real world / Void / FringeIsland"
+> framing it references has since been superseded by the canonical cosmology core: see
+> `docs/ecosystem/universe/cosmology/README.md`. Where this file conflicts with it, the core wins.
+
 **Wave:** Hamn
 **Category:** Features
 **Status:** 🔴 Needs concept work

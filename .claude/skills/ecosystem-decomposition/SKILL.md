@@ -51,9 +51,9 @@ The cascade mirrors the architectural decomposition. Whatever the L2 entity inve
 | Tier | `docs/{tier}/CLAUDE.md` | products, platform, studios, design-system, verticals |
 | Sub-tier (only at platform) | `docs/platform/{sub-tier}/CLAUDE.md` | core/, domain/, extensions/ |
 | Entity | `docs/{tier}/{entity}/CLAUDE.md` | hub, gimbal, journey-studio, privacy, identity, ... |
-| Sub-entity (where divergence is sharp) | `docs/{tier}/{entity}/{sub-entity}/CLAUDE.md` | gimbal/ios/, gimbal/android/ |
+| Sub-entity (where divergence is sharp) | `docs/{tier}/{entity}/{sub-entity}/CLAUDE.md` | universe-studio/world-studio/, universe-studio/arc-studio/, universe-studio/journey-studio/ |
 
-Sub-entity `CLAUDE.md` files are written only when the sub-entities have genuinely divergent rules — Gimbal-iOS and Gimbal-Android are the canonical case (separate codebases). Sub-entity is opt-in by divergence; it is not authored speculatively.
+Sub-entity `CLAUDE.md` files are written only when the sub-entities have genuinely divergent rules — Universe Studio's children (World, Arc, Journey Studios, ADR-U026) are the canonical case. Sub-entity is opt-in by divergence; it is not authored speculatively. (The former canonical case, Gimbal-iOS vs Gimbal-Android, was dissolved by ADR-U025 — devices are points in equipment space, not entities.)
 
 Design system is a tier-only entity — the layer has no entities below it. The existing `docs/design-system/CLAUDE.md` *is* the entity CLAUDE; no separate entity-level file is needed.
 
@@ -99,7 +99,7 @@ None. Vision is constitutional — there is no level above it.
 ### Read context
 
 - `docs/ecosystem/MANIFESTO.md` — the cultural and values companion; consult to keep Vision and Manifesto in harmony.
-- `docs/ecosystem/universe/` — world-building content that Vision references as structural concepts (Three Worlds, the Whisp). Consult for naming and conceptual alignment.
+- `docs/ecosystem/universe/` — world-building content that Vision references as structural concepts (the worlds topology and role taxonomy — canonical cores under `cosmology/` and `roles/` — and the Whisp, `beings/`). Consult for naming and conceptual alignment.
 - `docs/ecosystem/thinking/OPEN_QUESTIONS.md` — ecosystem-level open questions that may inform revisions.
 
 ### Write scope
