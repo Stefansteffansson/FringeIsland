@@ -13,7 +13,7 @@
 | Revised after | Date | Change summary |
 |---|---|---|
 | Template authored | {YYYY-MM-DD} | Initial template; substance, scope, and discipline carry-forwards from Experiment A + Experiment B comparison phase + the PC-3 chain (Steps 1–3 + closing bridges). |
-| ... | ... | ... |
+| DS-2 Narrative close (second instance) | 2026-06-10 | Adjudicates the seven PC-4 first-instance candidates (PC-4 closing bridge `2026-05-15_03` + DS-2 closing bridge as provenance): LANDED — §5b cluster-cadence self-reflection-not-gate text (#1), §5b directory-level scope-survey (#2), §5a A#5 per-phase cadence (#3), §13 retraction-rate tracking series (#6), §6 entity-type-agnostic shape note (#7). RIDING opener instances — migration-name-as-shorthand (#4) and three-casing dual-reading (#5), neither fired at DS-2 (no second-instance evidence). Also landed with two-instance evidence: §3 canonical-cores authority-chain extension for cosmology-bound entities (DS-1 + DS-2); §1 Check 5 template-baseline check (PC-4 + DS-2); §1 Check 4 genericized to instance-enumerated tree state (PC-3 amendment revision + DS-2 instance precedent); §5b `lib/utils/supabase/` path corrected to `lib/supabase/`. |
 
 *Revision discipline: after each entity-close that uses an instance of this template, the closing bridge's "Template revision disposition" section adjudicates whether the run's post-run methodology capture (instance §13 below) surfaced durable findings warranting a template amendment. Amendments commit as small `chore(templates)` deltas citing the entity-close bridge as provenance.*
 
@@ -41,14 +41,15 @@ Delete this `§0` section from the instance after substitution is complete.
 
 ## §1 Pre-flight checks — STOP
 
-Before any state-read or substantive action, run all four checks. Hard-fail on any deviation; report findings and wait for the human's adjudication before proceeding.
+Before any state-read or substantive action, run all five checks. Hard-fail on any deviation; report findings and wait for the human's adjudication before proceeding.
 
 1. **Working directory.** Run `pwd`. Expected: `/d/WebDev/GitHub/FringeIsland` (or equivalent Windows-style absolute path resolving to the same location). Hard-fail if otherwise.
 2. **Current branch.** Run `git branch --show-current`. Expected: `main`. Hard-fail if otherwise.
 3. **Tip commit.** Run `git log --oneline -1`. Expected: tip at or after `{PREDECESSOR-TIP-SHA}` (the predecessor bridge's commit, or any subsequent commit added by the human between sessions). Hard-fail if tip is earlier.
-4. **Working tree state.** Run `git status`. Expected: `CLAUDE.md` modified-unstaged (pre-existing across sessions; outside scope; acceptable). No other modifications. No untracked files in `docs/platform/`, `docs/architecture/decisions/`, `docs/planning/sessions/`, or `{SPEC-OUTPUT-PATH}`'s parent directory. Hard-fail on any other modification or untracked file.
+4. **Working tree state.** Run `git status`. Expected state is **enumerated explicitly by the instance author** (per the PC-3 amendment check-4 enumeration-completeness revision): the default expectation is **clean**; any acceptable pre-existing modification or known re-occurrence shape (e.g. a plugin re-injecting a block into a tracked file) is named in the instance with its ratified disposition. Hard-fail on any modification or untracked file not named, especially in `docs/platform/`, `docs/architecture/decisions/`, `docs/planning/sessions/`, or `{SPEC-OUTPUT-PATH}`'s parent directory.
+5. **Autonomous template at expected baseline.** Run `git log --oneline -1 -- docs/templates/autonomous-l1-l3-session-opener.md`. Expected: most-recent-touch at the commit the instance names. Hard-fail if earlier (template missing or rolled back); **soft-flag if later** — a template revision landed between opener-authoring and session-open; surface the delta and adjudicate before proceeding. (Carried at PC-4 + DS-2 instances; earned its place per PC-4 §13.)
 
-After all four pass, report each check's outcome and proceed to §2.
+After all five pass, report each check's outcome and proceed to §2.
 
 ---
 
@@ -78,6 +79,7 @@ The authoritative inputs for Step 1 are exactly these — no more, no less:
 
 - **L1:** root `CLAUDE.md` + `docs/{tier}/CLAUDE.md`
 - **Sub-tier** (Platform only): `docs/platform/{core|domain|extensions}/CLAUDE.md`
+- **Canonical cores (cosmology-bound entities — Domain Services, Studios, Products):** the canonical cores under `docs/ecosystem/universe/` (cosmology, roles, beings, narrative) ARE derivation input with hard precedence, plus the universe-discovery files where the cores cite them (DS-1 + DS-2 precedent). The PC-shaped chain omits them because Platform Core is cosmology-neutral; instance authors include the cores the entity's substance touches.
 - **L2 inventory line:** `{L2-INVENTORY-LINE}` from the parent `README.md`
 - **Architectural authority:** ADR-U023 (Platform Core / Domain Services decomposition) + any ADR specifically constraining this entity
 - **Template:** `{TEMPLATE-PATH}`
@@ -115,7 +117,7 @@ PC-3 ran as a split-session (Steps 1+2+3 across three sessions). PC-1 and PC-2 r
 
 **Step 1 checkpoint surfacing.** After the candidate spec is composed (§1–§8 + §L3 capability inventory + Sources-status block + dependency chain + external dependencies), pause and surface a structured summary to the human BEFORE the first Write. The summary names: capability count by internal area; the L2-line altitude finding (if any); the §8 open questions count; any prior carry-forward whose application was non-obvious; any speculative-third-shape hypothesis tagged for Step 2; any drift from the template that the entity's substance required. Wait for ratification before Write.
 
-**Single-Write vs split-Edit at Step 1.** Single Write of the full spec is preferred for autonomous runs (per PC-3 autonomous-track precedent: one commit, 539 lines). If multi-Edit work is needed, sub-batch-of-1 cadence applies (see §6).
+**Single-Write vs split-Edit at Step 1.** Single Write of the full spec is preferred for autonomous runs (per PC-3 autonomous-track precedent: one commit, 539 lines). If multi-Edit work is needed, sub-batch-of-1 cadence applies (see §6). **A#5 cadence applies per-phase, not per-session:** A#5 can fire at Step 3 fold-back work even when Step 1 was single-Write (PC-4: single-Write Step 1, 29 sub-batch-of-1 Edits at Step 3); the §13 verdict accounts for per-phase cadence shape.
 
 ---
 
@@ -137,9 +139,9 @@ PC-3 ran as a split-session (Steps 1+2+3 across three sessions). PC-1 and PC-2 r
 
 **Step 2 cadence — cluster batch-and-report.** PC-3 introduced cluster batch-and-report at Step 2 (vs PC-1/PC-2 single-pass). It worked. Recommended for autonomous runs:
 
-- Open one cluster at a time (e.g. Cluster A = migrations 1–6 at first date range; Cluster B = migrations 7–11 at second date range; Cluster lib-1 = `lib/hooks/` + `lib/utils/supabase/`; Cluster api-1 = `app/api/*` createClient survey).
-- After each cluster, compose findings against the candidate spec and surface the cluster's three-class output (Class 1 confirms / Class 2 entity-internal deltas / Class 3 cross-entity findings) BEFORE opening the next cluster.
-- Cluster-by-cluster surfacing is the autonomous-run substitute for the bouncing-partner cycle's per-cluster ratification — it produces a structured pause that catches retractions early.
+- Open one cluster at a time (e.g. Cluster A = migrations 1–6 at first date range; Cluster B = migrations 7–11 at second date range; Cluster lib-1 = `lib/hooks/` + `lib/supabase/`; Cluster api-1 = `app/api/*` createClient survey).
+- After each cluster, compose the cluster's three-class output (Class 1 confirms / Class 2 entity-internal deltas / Class 3 cross-entity findings) as **CC self-reflection discipline** — it catches retractions early and informs next-cluster scope. Per-cluster composition is NOT a human ratification gate; the CC proceeds between clusters without ratification (autonomous-track posture). Surface **ONCE at end-of-Step-2** with the full §L3 Step 2 block + the structured checkpoint summary below.
+- **Directory-level scope-survey before deep-read.** Directory-name-as-shorthand is insufficient for tier-scope determination (PC-4's `lib/admin/` was 25% governance-tier; paths named in opener instances can themselves be stale). Run a scope survey (file listing + per-file one-line classification) at directory level before claiming any directory as this entity's territory — the directory-level analogue of the Cluster S structural survey at entity level.
 
 **Two retractions to watch for, both surfaced at PC-3 Step 2 via the cumulative-forward + framework-mechanism disciplines:**
 
@@ -185,6 +187,8 @@ The bouncing-partner cycle in manual-track runs catches a class of errors (oldTe
 - **Listing commands use explicit counts.** State-read pass commands that list directories use `ls dir/ | wc -l` or full `ls dir/`, never `head`-truncated previews. PC-3 Step 3 caught a near-miss where `ls docs/TMP/OLDFEAT/ | head -3` produced an enumeration-scope claim of "3 files" against a directory of 18.
 
 **Methodology-framing space.** Autonomous runs can reach meta-altitude observations (Experiment A predicted they couldn't; PC-3 autonomous side disproved this — its P-O1 promotion framing was sharper than manual side's). The template does not prescribe how to be sharp, but it makes space for it: surface methodology-framing observations alongside substance findings throughout the run, not only at §13 post-run capture.
+
+*Durable shape note:* the §6 discipline set has held without modification across entity types and code-presence extremes (PC-4: code-rich Platform Core; DS-2: near-zero-code Domain Service) — treat it as entity-type-agnostic.
 
 ---
 
@@ -285,6 +289,8 @@ The five prompts:
 5. **Any new A-candidate or PW-class methodology observation worth promotion-watching?** Patterns that appeared at this entity for the first time, or recurrences of existing watches that warrant promotion.
 
 The post-run capture is structural reflection, not informal aside. Its length scales with run scope — a single-session entity might produce a half-page; a complex multi-session entity might produce two pages. Brevity is fine when there is genuinely nothing to surface; padding is not.
+
+**Also record the run's cold-position retraction rate at Step 2** for the cross-entity tracking series (PC-4: 7 retractions across 9 clusters; DS-1: zero-delta; DS-2: zero) — the emerging signal is that retraction rate tracks the entity's code presence; the autonomous-vs-manual track hypothesis needs a code-rich entity to test further.
 
 ---
 
