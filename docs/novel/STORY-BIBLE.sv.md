@@ -269,6 +269,18 @@ rapporterar "klart", men registrerar vad han inte hörde: ett plask.
 brinner två lyktor där det förr var en. Och någonstans i plats 3 har ett
 kvarter fortfarande ljuset tänt — och någon säljer biljetter.
 
+### Avvikelser från översikten — utkast 1 (framåtloggade)
+
+Utkastet avviker från beatsen ovan; utkastet gäller. Se den engelska
+bibelns §7 ("Outline deviations — draft 1") för fullständig lista:
+flyttad lägenhetsgenomsökning (4→5), sammanslagna beats 22/23,
+gisslan korrigerad från Ruben till Sigrid (24), Svartholmen-återkomsten
+inleder 25, omnumrerat slutspel 30–34 (Kesslers vilande cord från 1985
+är ett nytt utkast-frö), samt utkast-uppfinningar som behålls:
+hårdlinjeringen (kroppslig övergång, endast fiktionslager),
+cord-som-citat-läsningen av vänd spegeln, Skoog som Speculums ovetande
+siste väktare, och gömstället i accessionsregistret 1651–1660.
+
 ---
 
 ## 8. Produktionsplan

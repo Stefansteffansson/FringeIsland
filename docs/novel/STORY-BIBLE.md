@@ -259,6 +259,29 @@ but registers what he didn't hear: a splash.
 harbor, two lanterns burn where one used to. And somewhere in place 3,
 one district still has its lights on — and someone is selling tickets.
 
+### Outline deviations — draft 1 (forward-logged)
+
+The draft (chapters committed 2fe74d5 → onward) departs from the beats
+above in these ways; the draft wins:
+
+- Ch 4→5: the searched-apartment discovery moved to the ch 5 opening.
+- Ch 22/23: the EKO imitation test (mother's voice, the half-second
+  buffer) absorbed into ch 22; ch 23 repurposed as the sanctuary /
+  harbor-council chapter where vänd spegeln is introduced.
+- Ch 24: hostage corrected from Ruben (present on the quay) to Sigrid.
+- Ch 25: opens with the Svartholmen return through the ring (swept
+  island, the ferryman playing card) before the Skeppsbron parley.
+- Ch 30–34 renumbering: the turn fires in ch 31 (The Propagation);
+  ch 32 is the vault fire incl. the Ferryman's turn; ch 33 the arrest
+  and the Ferryman's exit; ch 34 Kessler's Whisp in custody (his
+  dormant 1985 cord — new plant, invented in draft).
+- Invented in draft, kept: the founder-era hardline ring performing
+  bodily crossing (one-of-a-kind artifact, fiction-layer only); the
+  cord-as-citation reading of vänd spegeln; Skoog as the Speculum's
+  unknowing last keeper (the E.S. reliquary board); the Speculum
+  hidden inside the acquisitions register Theol. Q 117 → Förteckning
+  öfver inkomne skrifter 1651–1660.
+
 ---
 
 ## 8. Production plan
