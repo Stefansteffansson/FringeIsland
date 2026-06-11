@@ -1,6 +1,6 @@
 # Ecosystem — Open Questions
 
-**Last Updated:** April 12, 2026
+**Last Updated:** June 11, 2026
 
 ---
 
@@ -113,6 +113,13 @@
 **Raised:** 2026-04-12 (extracted from OLD_VISION.md)
 **Blocks:** Hamn NPC system, AI-driven seasonal content
 **Context:** NPCs are central to the world, but the authoring mechanism is unspecified. Prompt engineering? Behaviour graphs? Learning models? This is prerequisite for any NPC implementation.
+
+### CQ-015: Hub Rebuild-vs-Evolve — Today's Hub Is Pre-Canon Scaffolding
+**Status:** Parked — revisit when the first FEAT-PD work realizes Platform API operations
+**Scope:** Ferd, Eid
+**Raised:** 2026-06-11 (post-DS-7 descent; all seven Domain Service specs now exist)
+**Blocks:** Nothing immediate; shapes how every FEAT-PD feature's Hub surface gets built
+**Context:** Today's Hub pervasively predates the reconciled canon and the U023 partition: measured 2026-06-11, product code holds **165 direct table call sites** via the Supabase client (`app/` 93, `components/` 60, `lib/` 12) versus 19 RPC calls and 6 API-route fetches — an ~8:1 inversion of the U009 API-first posture — plus the recorded canon debts (pre-canon journey vocabulary, inline step content vs DS-4 blocks, questionnaire assessment steps vs S17, the client-side catalog filter vs DS-6, no U025 equipment-keying, design system not extracted). The Hub is therefore best understood as a **working Ferd-era prototype that validated the substrate and serves as its test harness** — scaffolding, not the product the specs describe. Rebuilding it *now* has a sequencing problem: the Domain Service contracts it should consume are specified but not realized, so a fresh Hub would have nothing to build against. Decision deferred until the first FEAT-PD contracts exist, when three options become concrete: (a) evolve in place (untangle the 165 sites), (b) fresh thin shell over real contracts (the Hub is small — ~26 pages, 33 components; the engineering value lives in the substrate underneath, which survives either way), (c) **per-slice strangler — the default candidate**: as each Domain Service contract lands, rebuild the corresponding Hub slice against it and delete the old code. Related: the Platform API reference question (operation-grain docs accumulate per FEAT spec; consolidate at latest before Gimbal entry).
 
 ### CQ-014: Visitor Experience — What Can Visitors Do?
 **Status:** Open — narrowed
