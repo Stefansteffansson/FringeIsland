@@ -17,3 +17,4 @@ the novel is corrected forward.
 | `STORY-BIBLE.md` | Premise, cast, canon-conformance register, style rules, full chapter outline, production plan |
 | `STORY-BIBLE.sv.md` | Swedish translation of the story bible (locked universe terms kept in English) |
 | `chapters/` | One markdown file per chapter (`00-prologue.md` … `37-epilogue.md`) |
+| `chapters-sv/` | Swedish translation of the manuscript, chapter by chapter (in progress) |
