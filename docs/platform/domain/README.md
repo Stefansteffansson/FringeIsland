@@ -16,7 +16,7 @@ The seven FringeIsland-specific modules that sit on top of Platform Core. Each i
 
 ## Extension System
 
-The **Extension System** sits within the Platform Domain layer. It defines the contracts that allow new step types, group types, role types, and content types to be added without modifying Platform Core. See `../extensions/`.
+The **Extension System** sits within the Platform Domain layer. It defines the contracts that allow new step types, group types, role types, and content types — and every other kind-vocabulary the services' §5 extension points enumerate — to be added without modifying Platform Core. Specified at [`../extensions/SPECIFICATION.md`](../extensions/SPECIFICATION.md) (L1→L3 derivation 2026-06-11; the build is future-wave, with the Ferd non-closure obligations active now). See `../extensions/`.
 
 ## Dependencies
 

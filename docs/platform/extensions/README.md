@@ -16,4 +16,5 @@ See ADR-U008 (Step Type Extensibility) and ADR-U018 (No Hardcoded Group Types) f
 
 ## Files
 
-- `SPECIFICATION.md` — Extension System contracts and patterns _(to be written when work begins)_
+- [`SPECIFICATION.md`](./SPECIFICATION.md) — Extension System contracts and patterns, plus the Ferd non-closure obligations (L1→L3 derivation landed 2026-06-11; the build remains future-wave per the constraint above)
+- [`CLAUDE.md`](./CLAUDE.md) — entity-level agent context

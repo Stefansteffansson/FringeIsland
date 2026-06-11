@@ -64,14 +64,14 @@ Consumers: the Hub and Gimbal surface the dialogue, own-state, accumulation-cont
 
 ### 5. Extension points
 
-Plugin contracts registered with the Extension System (provisional — the Extension System's own derivation is next in the queue; the sibling-provisional rule applies):
+Plugin contracts registered with the Extension System (ratified from the owned side at the Extension System descent, 2026-06-11 — the four registries below are kind-registry instances under its contract families; see [`../extensions/SPECIFICATION.md`](../extensions/SPECIFICATION.md)):
 
 | Extension point | Interface | Lifecycle |
 |----------------|-----------|-----------|
 | Bucket kinds | New profile-data bucket types as registry rows (U005/U018 — no migration to add a bucket) | Registry insert; Ferd non-closure |
 | Sense kinds | The senses model's channel registry (five at canon; the registry, not a sealed enum, is the shape — U018) | Registry insert |
 | Rail kinds | Guard-rail definition types (both directions) | Registry insert; rails themselves always human-authored |
-| Dialogue-context providers | Context intake shapes for the dialogue runtime (which sibling contexts the Whisp may draw on) | Provisional against the Extension System derivation |
+| Dialogue-context providers | Context intake shapes for the dialogue runtime (which sibling contexts the Whisp may draw on) | Ratified as an extension-point declaration at the Extension System descent (2026-06-11) |
 
 ### 6. Storage & schema
 
@@ -157,7 +157,7 @@ Cross-referenced per the template rule: DS-1's salience-channel input line exist
 - **The Whisp split** consumed from `decisions/PENDING.md` (ratified at DS-1); promoted to a numbered ADR in this descent's close batch — the first PENDING-to-ADR promotion of the descent series. Nothing in this derivation contradicted the split. `world-model.md`'s "promotion pending" Sources-status remark updates when the ADR lands.
 - **ADR-U005 is an unrealized lock** (corrected inheritance): the DS-6 bridge described `profile_data` as realized substrate; dual-method verification at this descent's opener authoring found zero realizations anywhere (live migrations, archive, seeds, lib, app). Law-stands-unrealized handling per the DS-5 ADR-U021 precedent.
 - **PRINCIPLES-AI.md enters a Domain Service authority chain for the first time** (constitutional; the guard-railing law and the staged human-first sequence are derivation input — the register row's "guard railing" foot traces to it, not to any ADR).
-- **Sibling-provisional rule:** the Extension System remains undefined — §5's plugin contracts are provisional against its derivation (next in the queue). The six landed-sibling consumer lines against DS-7 were re-checked at this descent: all six confirmed (world-model salience; narrative context reads; journeys personalisation seam; content context/write line; communication context reads — with the owned posture stated; discovery facet reads).
+- **Sibling-provisional rule (resolved 2026-06-11):** the Extension System's derivation landed ([`../extensions/SPECIFICATION.md`](../extensions/SPECIFICATION.md)); §5's plugin contracts were re-checked from the owned side and ratified — the provisional tag is lifted. The six landed-sibling consumer lines against DS-7 were re-checked at the DS-7 descent: all six confirmed (world-model salience; narrative context reads; journeys personalisation seam; content context/write line; communication context reads — with the owned posture stated; discovery facet reads).
 - **Register row consumed in full:** "Whisp dialogue; assessments dissolved (validity question open); starved-drive sensing (S28); guard railing" — each foot maps to a capability area; the validity question stays open at §8 Q2 by design.
 
 *Note: no status column in the capability table. Status (shipped / in flight / not started / retroactive needed) is a reconciliation output, not a derivation output — see §L4 and G-20.*
