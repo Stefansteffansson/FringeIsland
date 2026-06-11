@@ -1,143 +1,84 @@
-Author the Extension System descent session-opener, then execute it. This is
-the eighth instance of the autonomous L1->L3 template, run in the collapsed
-author-then-execute shape (DS-3/DS-5/DS-6/DS-7 precedent). The Extension
-System is the LAST entity in Platform Domain — the Phase 3 close-out follows
-it, and this run's closing bridge must assemble the close-out's complete
-agenda.
+Run the Phase 3 close-out. This is a PHASE LANDMARK session, not an entity
+descent: per the Phase 2 close-out precedent
+(docs/planning/sessions/2026-05-16_01_-_PC-PHASE-2-CLOSE-OUT-LANDED.md), it
+runs as a DIRECT ADJUDICATION-WALK against an accumulated agenda — no opener
+instance is authored, no autonomous L1->L3 template applies, no cold
+derivation, no Step 2 stress-test. Each agenda item surfaces to Stefan with
+evidence and a recommendation; his call lands or routes it.
 
-PART 1 — AUTHOR THE OPENER
+THE AGENDA IS ASSEMBLED AND COMPLETE in the Extension System closing bridge:
+docs/planning/sessions/2026-06-11_03_-_EXTENSION-SYSTEM-LANDED.md, section
+"THE PHASE 3 CLOSE-OUT AGENDA (assembled, complete)". Read that section as
+the work order. Its eight items, with disposition shapes:
 
-Follow docs/planning/sessions/openers/README.md Step 1. Author from
-docs/templates/autonomous-l1-l3-session-opener.md at baseline 766e134
-(unchanged — NO revision landed at DS-5, DS-6, or DS-7). Land at
-docs/planning/sessions/openers/extension-system-descent-opener.md; mark the
-Extension System row In flight in openers/STATUS.md before executing. The
-archived DS-7 opener (openers/archive/ds7-intelligence-descent-opener.md) is
-the structural precedent — carry forward its Check 4 two-shape encoding and
-Section 2/3 conventions.
+1. The four-rider adjudication slate (full-series evidence, n-finals in the
+   bridge): #4 migration-name-as-shorthand (n=8, 1 firing — promote to
+   template text or retire); tier-CLAUDE-as-L1-boundary-authority (n=4, 2
+   fires — opener-practice vs template §3 text); seeds-directory-in-
+   canonical-table-reads (n=3, 3 productive fires — the strongest §5b
+   candidate); constitutional-docs slot (n=2, 2 fires — a standing §3 slot).
+   Each adjudicated landing is its own small chore(templates) commit citing
+   the closing bridges as provenance, updating the template's Revision
+   history table in the same commit (template:
+   docs/templates/autonomous-l1-l3-session-opener.md, baseline 766e134 —
+   verify most-recent-touch before editing).
+2. The completed retraction-rate series (PC-4 7/9; DS-1..DS-7 + Extension
+   System all 0) — record the series verdict; consider whether the
+   calibrated-opener explanation deserves template or skill text.
+3. THE VERTICAL-TEMPLATE DECISION (routed here in STATUS.md's Verticals
+   note): autonomous L1->L3 template as-is vs obligation-inventory variant
+   for the five verticals. The Extension System's entity-shape adjudication
+   (a named pre-Step-1 gate adjudicating template shape + landing path) is
+   direct precedent — consider adopting that gate shape rather than forking
+   the template. Outcome updates the five vertical rows' "Pending; template
+   applicability TBD" status in STATUS.md.
+4. The vertical obligation inventories: confirm sequencing (Privacy ->
+   Observability -> Administration -> Notifications -> Transactions per
+   G-03) and mark Privacy as Next if the template question resolves.
+5. CQ-015 (Hub rebuild-vs-evolve) — confirm it stays parked in
+   OPEN_QUESTIONS.md until FEAT-PD contracts realize; no action expected.
+6. PC-1 Finding #4 + the avatars-bucket routing — re-confirm routing
+   (FEAT-PC-* / PC-1 channel); no execution expected at the close-out.
+7. The cross-tier-write channel (DS-3-anchored) — same: confirm routing.
+8. From the Extension System run: the U016 Extension-cascade-slot question
+   (routed to the build wave; the close-out MAY pre-land a U016 Option-A
+   amendment if adjudicated worthwhile — surface the trade-off); the
+   tool-level empty-result catch-class consolidation (three instances across
+   two runs: the -o artifact twice, the piped-exit-code artifact named —
+   promotion-grade for template §6 text); the entity-shape-adjudication-gate
+   candidacy (template text vs opener practice).
 
-The opener must encode:
+Also on the walk (Phase 2 precedent: close-outs reframe pickups and may fold
+named disciplines into skills): whether any rider landing also belongs in
+the ecosystem-decomposition skill's "Named disciplines" sub-section (the
+Phase 2 shape, commit e9c8a54 precedent).
 
-1. Substantive predecessor: the DS-7 closing bridge
-   (docs/planning/sessions/2026-06-11_02_-_DS7-LANDED.md) — inherit its
-   "Extension System (next entity; its opener must inherit)" pickup block in
-   full. The headline inheritance: ALL SEVEN DS SPECS NOW EXIST, so the
-   sibling-provisional rule INVERTS — this derivation re-checks every
-   service's §5 extension-point claims from the owned side (each landed
-   spec's §5 block; DS-7's four registries — bucket kinds, sense kinds, rail
-   kinds, dialogue-context providers, intelligence.md §5 — are explicitly
-   provisional against this run).
-2. ENTITY-SHAPE ADJUDICATION AT AUTHORING (the DS-7 bridge's
-   template-applicability check): the Extension System is "Platform Domain —
-   extensions", NOT a numbered DS. The domain-service-spec slug enum
-   excludes it, and docs/platform/extensions/README.md names its spec
-   artifact as SPECIFICATION.md ("to be written when work begins"). The
-   opener must adjudicate and surface to Stefan: which spec template applies
-   (domain-service-spec variant vs the SPECIFICATION.md shape the README
-   names) and where the spec lands (candidate:
-   docs/platform/extensions/SPECIFICATION.md). Do not silently force the DS
-   template.
-3. WAVE-DEFERRED LAW: extensions/README.md locks "Future-wave scope — not
-   Ferd. The Extension System will not be built in the Ferd wave." The
-   derivation specifies contracts, patterns, and the Ferd non-closure
-   obligations (the DS-6 marketplace shape, applied entity-wide); expect ALL
-   capabilities full-forward. The BUILD is NOT this run's work. The Ferd
-   constraint text (no hardcoded enums, no sealed type systems, no closed
-   permission sets) and the domain sub-tier CLAUDE.md's closure-recognition
-   authoring discipline are derivation input.
-4. Pre-flight: tip at or after f5bc380 (the DS-7 close batch + post-session
-   planning commits end there; origin is pushed to it); template
-   most-recent-touch at 766e134 exactly (Check 5);
-   /d/WebDev/GitHub/FringeIsland on branch main (Checks 1-2).
-5. Check 4 names the same two acceptable shapes: (a) the root CLAUDE.md
-   context-mode re-injection (disposition: discard; the classifier denied
-   git restore at the DS-7 session — Edit-removal is the sanctioned
-   fallback, twice precedented); (b) concurrent docs/novel/ activity
-   (commits 007b9a5, 4f00fac, 4019e32 precedent; the Swedish translation is
-   marked complete at 4019e32 — the writer may be dormant, keep the shape
-   named anyway). Anything else unnamed in docs/platform/,
-   docs/architecture/decisions/, docs/planning/sessions/: hard-fail.
-6. NO FIRST DECISION expected: PENDING.md carries no Extension System item
-   (only the DS-1 name watch-item remains open; the Whisp entry is PROMOTED
-   history — cite ADR-U029, not PENDING). The conformance register Section 3
-   has NO Extension System row (verified at prompt authoring — its only
-   "extension" hits are the S24 AI-as-extension row, unrelated): the
-   work-order seeds are the extensions README itself, ADR-U008 + ADR-U018
-   (THE locks), ADR-U023's Extension System naming, and the seven specs' §5
-   blocks. First ratification gate is the Step 1 checkpoint, plus the
-   entity-shape adjudication from item 2 if it needs Stefan's call.
-7. Enumerate binding ADRs by sweeping docs/architecture/decisions/ for the
-   entity's domain nouns (extension/plugin/registr/hook/step.type/contract/
-   sandbox/lifecycle) — verify attributed text against the ADR files
-   (citation-precision, template text). Preliminary file-level evidence from
-   prompt authoring: U023 (extension + plugin), U025 (plugin), U018 + U007 +
-   U004 (registr), U008 + U017 (step type), U011 ("hook" — verify the sense;
-   likely webhook, a false-positive candidate). Also sweep the tier and
-   sub-tier CLAUDE.md files (the n=3 watch — known content: the domain
-   sub-tier file carries the Ferd non-closure as authoring discipline plus
-   the closure-pattern gotcha) AND supabase/seeds/ (the n=2 seeds rule,
-   instance rule). Check the constitutional-docs slot (n=1 from DS-7) at
-   authoring: does PRINCIPLES-AI/VISION/MANIFESTO touch this entity's
-   substance? (Plausible hook: the README's "social contract between core
-   and community" line.)
-8. Step 2 expectation, stated for verification — CALIBRATE AT AUTHORING,
-   DON'T INHERIT (the DS-7 corrected-inheritance lesson: pickup-block claims
-   are memory, not disk). Expect near-zero with named substrate of BOTH
-   polarities: the realized closure VIOLATION (lib/types/journey.ts
-   StepType three-value sealed union; journeys.journey_type CHECK list —
-   both recorded correction targets at DS-3) and the realized non-closure
-   COMPLIANCE (PC-3's data-driven type registries: role_templates,
-   group_templates, group_template_roles, permissions tables — U018 honoured
-   in substrate). "plugin" has zero code hits; "extension" one false
-   positive (file-extension sense, AvatarUpload.tsx). Known sandbox tooling
-   artifact (DS-7 §13): the sandbox grep's -o flag silently returns empty —
-   use -n/file-level methods; empty-result dual-method binds. Record the
-   retraction-rate point (series: PC-4 7/9; DS-1 through DS-7 all 0).
-9. Riding watches: #4 migration-name-as-shorthand (n=7, 1 firing — the
-   close-out adjudicates; this run still classifies any touched migration by
-   content); tier-CLAUDE-as-L1-boundary-authority (n=3, apply as instance
-   rule); seeds-directory sweep (n=2, item 7 above); constitutional-docs
-   slot (n=1, item 7 above). Sandboxed sweeps for Step 2; Cluster S
-   structural survey first.
-10. SETTLED — do not re-litigate: the Whisp split (ADR-U029); the DS-7 seam
-    resolutions (salience as push; generation through DS-4's gated
-    write-path with distinct audit posture; no Whisp-carried messages;
-    declared-interests-only signal supply at Ferd); the notifications
-    boundary (vertical/DS-5/products); the attachment seam (DS-4 assets by
-    ID); profile/avatar media (PC-substrate); the feed-vs-recommendation
-    boundary (DS-6); the anti-leaderboard guardrail (invariant, enforced at
-    sources); equipment-keying (feature-grain at surfaces, U025).
-11. NOT this run's work: building the Extension System (future-wave lock,
-    item 3); the Phase 3 close-out itself — but this run's closing bridge
-    MUST assemble the close-out's complete agenda in its carry-forward
-    section: the four-rider adjudication slate (#4 n-final; tier-CLAUDE
-    n-final; seeds rule n-final; constitutional-docs slot n-final), the
-    completed retraction-rate series, and the vertical-template question
-    (routed to the close-out agenda in STATUS.md's Verticals note,
-    2026-06-11); the vertical obligation inventories; CQ-015 (the Hub
-    rebuild-vs-evolve question — parked in OPEN_QUESTIONS.md until FEAT-PD
-    contracts realize); PC-1 Finding #4 and the avatars-bucket routing; the
-    cross-tier-write channel.
+Pre-flight (adapted — no opener exists): repo
+/d/WebDev/GitHub/FringeIsland on branch main; tip at or after 68d8e76
+(origin is pushed to it; this prompt's own commit is an acceptable
+intervener). Working-tree shapes that remain acceptable: (a) the root
+CLAUDE.md context-mode re-injection (disposition: discard via Edit-removal /
+content-rewrite — thrice precedented; a stat-noise M flag from CRLF may
+persist, judge by git diff emptiness); (b) concurrent docs/novel/ activity
+(do not read, modify, or commit). Anything else unnamed in docs/platform/,
+docs/architecture/decisions/, docs/templates/, docs/planning/sessions/:
+surface and wait.
 
-PART 2 — EXECUTE
+Disciplines that carry: trust disk over memory (re-verify every n-count and
+citation against the bridges before asserting); verify-before-asserting on
+commit shapes; ASCII-only labels; empty-result dual-method on any sweep;
+sessions append-only; no re-litigation of settled classifications (the
+Extension System bridge's Carry-forward confirmations section lists them).
 
-Proceed from the authored opener's Section 1 pre-flight checks. Trust disk
-over memory; material divergence halts, non-material citation corrections
-bundle into the Step 1 gate. Ratification gates come to Stefan: the
-entity-shape adjudication (item 2) if surfaced, then the Step 1 / Step 2 /
-Step 3 checkpoints. Single-session expected with split fallback. The
-ratified Step 1 Write is held uncommitted until Step 3. Close batch per the
-template: spec commit (+ any ratified sibling §5 re-check edits) + entity
-CLAUDE.md at docs/platform/extensions/CLAUDE.md with same-commit doc-health
-registry-row removal (.claude/skills/doc-health-check/SKILL.md Section 7
-carries the extensions/CLAUDE.md row, line ~442 at prompt authoring) +
-closing bridge with Section 13 capture AND the assembled Phase 3 close-out
-agenda + the opener archived + STATUS.md close. NO push to origin — Stefan
-dispositions push.
+Close shape (Phase 2 precedent): a closing bridge at
+docs/planning/sessions/2026-06-NN_NN_-_PHASE-3-CLOSE-OUT-LANDED.md with
+per-item dispositions + methodology observations as bridge-prose; N small
+template/skill amendment commits as adjudicated; STATUS.md close (close-out
+row -> Done; vertical rows updated per item 3/4; revision-log entry). NO
+push to origin — Stefan dispositions push.
 
-Staleness note: the tip anchor f5bc380 is the only fact here that goes stale
-if commits land before the next session — Check 3's "at or after" form
-tolerates novel-path and pipeline commits; anything new in docs/platform/ or
-docs/architecture/decisions/ should be named to the next session. The
-doc-health registry line number (~442) is approximate by design — locate the
-row by content, not line.
+Staleness note: the tip anchor 68d8e76 goes stale if commits land before
+the session — "at or after" tolerates novel-path and prompt commits;
+anything new in docs/platform/ or docs/templates/ should be named to the
+session. The verticals order citation (G-03) lives in
+docs/ecosystem/how-we-work/gaps.md — verify at session, don't inherit.
