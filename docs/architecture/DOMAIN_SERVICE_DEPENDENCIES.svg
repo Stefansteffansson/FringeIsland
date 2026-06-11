@@ -1,6 +1,6 @@
 <svg width="680" height="620" viewBox="0 0 680 620" xmlns="http://www.w3.org/2000/svg" role="img">
   <title>Domain service dependencies — who reads from whom</title>
-  <desc>Dependency flow between the seven FringeIsland Domain Services, revised at reconciliation Session B (2026-06-10). World Model (DS-1) constrains everything below it and is written by World Studio (ADR-U026); Narrative (DS-2, written by Arc Studio) and Content (DS-4, shared resource) feed Journeys (DS-3, written by Journey Studio); Journeys feeds Communication (DS-5), Discovery (DS-6), and Intelligence (DS-7); Intelligence also reads Discovery and the Extension System; all services register plugin contracts with the Extension System; everything sits above the Internal API boundary on Platform Core (Organisation, Identity, Infrastructure, Governance). Studios — World, Arc, Journey — are children of Universe Studio (ADR-U026); each writes to its domain service.</desc>
+  <desc>Dependency flow between the seven FringeIsland Domain Services, revised at reconciliation Session B (2026-06-10). World Model (DS-1) constrains everything below it and is written by World Studio (ADR-U026); Narrative (DS-2, written by Arc Studio) and Content (DS-4, shared resource) feed Journeys (DS-3, written by Journey Studio); Journeys feeds Communication (DS-5), Discovery (DS-6), and Intelligence (DS-7); Narrative, Content, and Communication also feed Discovery — published structure, the published registry, and scope-gated content for search indexing (the DS-6 charter, 2026-06-11; Discovery reads published state only and holds no World Model dependency — people-finding is branch-routed in World Model); Intelligence also reads Discovery and the Extension System; all services register plugin contracts with the Extension System; everything sits above the Internal API boundary on Platform Core (Organisation, Identity, Infrastructure, Governance). Studios — World, Arc, Journey — are children of Universe Studio (ADR-U026); each writes to its domain service.</desc>
   <defs>
     <style>
       text { font-family: Arial, sans-serif; }
@@ -64,6 +64,11 @@
   <rect x="256" y="382" width="170" height="52" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
   <text x="341" y="400" text-anchor="middle" class="th" fill="#2C2C2A">Discovery</text>
   <text x="341" y="418" text-anchor="middle" class="ts" fill="#5F5E5A">Search, marketplace</text>
+
+  <!-- Arrows into Discovery (DS-6 reads published state — added at the DS-6 descent, 2026-06-11) -->
+  <path d="M300 178 L370 178 L370 378" stroke="#993C1D" stroke-width="0.5" fill="none" marker-end="url(#arrow)"/>
+  <line x1="440" y1="192" x2="395" y2="378" stroke="#185FA5" stroke-width="0.5" fill="none" marker-end="url(#arrow)"/>
+  <line x1="212" y1="408" x2="252" y2="408" stroke="#888780" stroke-width="0.5" fill="none" marker-end="url(#arrow)"/>
 
   <!-- DS-7: Intelligence -->
   <rect x="472" y="312" width="170" height="52" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
