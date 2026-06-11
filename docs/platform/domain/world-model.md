@@ -66,7 +66,7 @@ Contract surfaces at coarse grain — operation families, not endpoint signature
 - **Home operations** — furnish (personal-scope write-path); read (share-state-enforced); grant/revoke a region to an audience (PC-3 audience primitive).
 - **Ball grant at transcendence** — consumes PC-2's transcendence lifecycle event (placement ratified at Phase 0); creates the ball atomically with the FIM's arrival in the Tree.
 
-Consumers: **World Studio writes → DS-1**; the Hub and Gimbal surfaces read; DS-2 reads NPC world-layers and place state; DS-3 consumes respawn resolution and Void-distance (the growth gradient is Void distance, not bodily distance); DS-5 consumes the branch gate; DS-6 consumes branch-routes for navigation; DS-7 reads/feeds cord channels. Equipment-keying is **feature-grain at the surfaces** (ADR-U025), never on platform capabilities — DS-1 exposes one contract regardless of equipment profile.
+Consumers: **World Studio writes → DS-1**; the Hub and Gimbal surfaces read; DS-2 reads NPC world-layers and place state; DS-3 consumes respawn resolution and Void-distance (the growth gradient is Void distance, not bodily distance); DS-5 consumes the branch gate; DS-7 reads/feeds cord channels. (The provisional "DS-6 consumes branch-routes for navigation" line was revised at the DS-6 descent, 2026-06-11: people/social navigation is branch-routed product-tier consumption of DS-1 directly — DS-6 indexes things, not FIMs, and holds no DS-1 dependency.) Equipment-keying is **feature-grain at the surfaces** (ADR-U025), never on platform capabilities — DS-1 exposes one contract regardless of equipment profile.
 
 ### 4. Internal dependencies (consumed *from* this service)
 
