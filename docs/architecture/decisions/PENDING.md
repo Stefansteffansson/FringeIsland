@@ -15,6 +15,7 @@ ADR topics identified but not yet written. Promote using `../../templates/adr.md
 - **Dependency direction:** DS-7 consumes DS-1 (the intelligence acts in the world; the world never depends on the intelligence). The entity stays canonical in the beings core; neither service owns "the Whisp" outright.
 
 **Why ADR-grade:** draws a Domain-Service boundary (ADR-U023 territory). An eighth Whisp service was considered and rejected: it would own almost no data of its own — a thin orchestrator over DS-1 + DS-7 state. Promote when the DS-7 descent runs (the second consumer of the boundary), using `../../templates/adr.md`.
+**PROMOTED (appended 2026-06-11, DS-7 descent, ratified by Stefan):** this entry is **ADR-U029** (`ADR-U029-whisp-ownership-split-by-face.md`) — the first PENDING-to-ADR promotion of the descent series. The promotion executed the parked candidate verbatim in substance; the DS-7 derivation surfaced nothing contradicting the split, and the salience-channel shape resolved as a push through DS-1's contract (`world-model.md` §8 Q7 / `intelligence.md` §8 Q3). This entry is thereby fully resolved.
 
 ---
 
