@@ -439,7 +439,6 @@ This section is the explicit protection.
 | `docs/platform/core/ROADMAP.md` | Platform Core roadmap | Expected per platform-tier pattern | Pending |
 | `docs/platform/core/infrastructure/CLAUDE.md` | PC-1 Infrastructure entity-level CLAUDE.md | Referenced by `docs/platform/core/CLAUDE.md` Where-to-go-next four-areas pointer | Pending — when area-specific rules warrant a delta |
 | `docs/platform/core/identity/CLAUDE.md` | PC-2 Identity entity-level CLAUDE.md | Referenced by `docs/platform/core/CLAUDE.md` Where-to-go-next four-areas pointer | Pending — when area-specific rules warrant a delta |
-| `docs/platform/domain/discovery/CLAUDE.md` | DS-6 Discovery entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
 | `docs/platform/domain/intelligence/CLAUDE.md` | DS-7 Intelligence entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next seven-services pointer | Pending — when L2 specification is authored |
 | `docs/platform/extensions/CLAUDE.md` | Extension System entity-level CLAUDE.md | Referenced by `docs/platform/domain/CLAUDE.md` Where-to-go-next, `docs/platform/CLAUDE.md` Where-to-go-next | Pending — when L2 specification is authored |
 | `docs/studios/universe-studio/DESCRIPTION.md` | Universe Studio (parent) identity | Expected per `studios/universe-studio/README.md`; parent entity per ADR-U026 | Pending — wave Eid+ |

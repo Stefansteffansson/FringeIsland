@@ -1,0 +1,32 @@
+# CLAUDE.md — DS-6 Discovery
+
+**Applies to:** anything under `docs/platform/domain/discovery*` and the corresponding code when it exists (no DS-6 substrate is realized today — zero tables, zero API routes, no `lib/discovery/`; the realized journey-catalog filter at `app/journeys/page.tsx` is product-tier evolution debt, not DS-6 code).
+**Load order:** root [`CLAUDE.md`](../../../../CLAUDE.md) → [`AGENTS.md`](../../../../AGENTS.md) → [`PROCESS.md`](../../../planning/PROCESS.md) → the skill matching the task → [`../../CLAUDE.md`](../../CLAUDE.md) (platform tier) → [`../CLAUDE.md`](../CLAUDE.md) (domain sub-tier) → **this file** → [`../discovery.md`](../discovery.md) (the service spec) → the feature spec.
+**Reads as a delta.** Assumes root, platform-tier, and domain sub-tier `CLAUDE.md` are already loaded. Contains only what's specific to DS-6.
+
+---
+
+## What makes this entity different
+
+DS-6 owns **how travellers find things in the published shared world** — catalog search (the journey catalog, narrative published structure, published content; communication content scope-gated), affinity-shaped recommendations, and the marketplace surface (Hamn-wave, ADR-U011) — and **indexes things, never FIMs**. The charter was re-derived at its 2026-06 descent (the DS-1 anatomy-challenge watch): people-finding and social navigation are OUT — branch-routed in DS-1's crown (cosmology S38: own branches legible, the wider crown ambient), so **DS-6 holds no DS-1 dependency at all**. The name survived its PENDING.md collision watch-item (vs the universe-discovery log) — when prose says "the discovery", check which one it means. **DS-6 is fully forward-committed**: zero realized substrate (verified at the descent, dual-method), all thirteen capabilities full-forward; it sits at the top of the published-read chain, consuming DS-2/3/4/5 read-only and being consumed by no sibling.
+
+## Rules that only apply at this entity
+
+- **The nine service-level invariants in the spec's §7 are architecture, not features.** The load-bearing ones: published-only surface (visibility mirrors the source, never broader; removal is a cascade obligation per ADR-U016's "Discovery: [what happens to visibility/search]" slot, not best-effort); **no counts, no rankings, no popularity — anywhere** (recommendations are affinity-shaped over declared facets, never comparative, never "trending"; the schema itself must be incapable of carrying a leaderboard); **people are not discoverable** (no people search, no people recommendations, no member directories — ever); action gates stay at the source (the catalog admits what is published; enrolment/equipment/status gating is the source's law); the marketplace surface sells nothing (rails/splits/entitlements are Transactions-vertical work per ADR-U011; economy management is Console-scoped per ADR-U028). A feature spec or migration violating one fails review.
+- **The feed-vs-recommendation boundary is resolved (2026-06-11) — don't re-derive it.** Any selection beyond chronology + scope filters is DS-6's; a "relevant to you" surface is never DS-5's, even embedded in feed UI (`communication.md` §8 Q4 records the same resolution from DS-5's side).
+- **Resolve the §8 Q1 architecture question before building any search substrate.** The framework query surface (PostgREST filtering over published source state) is the realized shape (A#9, fourth confirming entity); a dedicated index is the speculative third shape — it must earn its way in at the first FEAT-PD discovery feature, not be assumed.
+- **DS-6 is the first Domain Service with substantive Transactions vertical impact** (the two marketplace capabilities). The Transactions vertical spec is scaffold-tier (G-03) — marketplace FEAT work re-checks the obligation inventory when that vertical's derivation lands.
+
+## Gotchas
+
+- **"Catalog" carries two senses on disk.** Canon's catalog (journeys.md, discovery.md) is the published-journey catalog; the D15 rebuild's "Catalog tables" comment means reference/template tables (`role_templates`, `group_templates`, …). Context disambiguates; don't let a grep for one sense collect the other.
+- **The browse gating already exists at PC-3 tier** — `browse_journey_catalog` and `browse_public_groups` live in `supabase/seeds/01_permissions.sql` (granted down to the Visitor "Guest" role — the anon-parity posture realized). Permission canonical definitions live in **seeds, not migrations** (relocated at D15); `lib/constants/permissions.ts`'s header still points at migrations (stale, noted at the descent).
+- **"Marketplace" vocabulary was deliberately retired at D15** (the archived initial schema's permission descriptions said "to marketplace"; live seeds don't). The substrate deliberately awaits Hamn — don't read its absence as a gap to fill early.
+- **The realized journey facets are pre-canon** (`difficulty_level`/`tags`/`estimated_duration_minutes` vs canon's route type/perspective affinity/equipment/depth — ADR-U025 vocabulary). That's DS-3's evolution territory; DS-6 consumes whatever facets DS-3 publishes — don't pin DS-6 contracts to the pre-canon set.
+- **Shadow discovery parity, not exclusion:** Shadows perceive the real published shared world (ADR-U027 — ephemerality, not refusal-to-serve); FIM-only reaches stay out of Shadow-visible surfaces because their sources never publish them anon-readably, not because DS-6 fences them. Shadow-generated search traces inherit TTL-erasure.
+
+## Where to go next
+
+- **The service spec:** [`../discovery.md`](../discovery.md) — L2 identity + §7 invariants + §L3 capability inventory (Steps 1-3 complete 2026-06-11; all thirteen capabilities full-forward; zero cold retractions; FIRST DECISION record at §L3 Step 3).
+- **Ground truth:** the cosmology core (S38 — branches as the visible crown; own branches legible, no rankings, no counts; branch-routed people-finding) + the Session B register DS-6 row (navigation by own branches; anti-leaderboard guardrails).
+- **Relevant decisions:** ADR-U023 (anatomy) · ADR-U011 (the marketplace lock — Hamn+, Stripe Connect; surface here, rails Transactions) · ADR-U016 (cascade first — the "Discovery:" slot) · ADR-U018 (kind registries never sealed) · ADR-U002 (verticals law) · ADR-U025/U026/U027/U028 (equipment-grain; no studio writes; Shadow lifecycle; governance by scope) · the resolved DS-6 naming watch-item in [`PENDING.md`](../../../architecture/decisions/PENDING.md).
