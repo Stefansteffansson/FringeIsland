@@ -13,6 +13,7 @@
 | Revised after | Date | Change summary |
 |---|---|---|
 | Template authored | {YYYY-MM-DD} | Initial template; substance, scope, and discipline carry-forwards from Experiment A + Experiment B comparison phase + the PC-3 chain (Steps 1–3 + closing bridges). |
+| Phase 3 close-out (verticals decision) | 2026-06-12 | LANDED §4 **entity-shape adjudication gate** as standing pre-Step-1 template text (Extension System precedent — the gate absorbed the first non-DS entity's variance without a template fork; adopted for the five verticals in place of an obligation-inventory variant; subsumes STATUS.md's "template applicability TBD" status value). Provenance: Extension System closing bridge + the Phase 3 close-out vertical-template adjudication. |
 | Phase 3 close-out (series verdict) | 2026-06-12 | LANDED §13 **retraction-rate series verdict** — the completed series (PC-4 7/9; DS-1..DS-7 + Extension System all 0) supersedes the stale "tracks code presence" line: rate tracks opener calibration / prior coverage. Per-run recording retained. Provenance: DS-2..DS-7 + Extension System closing bridges. |
 | Phase 3 close-out (rider slate, full-series evidence) | 2026-06-12 | LANDED §3 **constitutional-docs standing slot** (n=2, 2 fires — PRINCIPLES-AI.md at DS-7; the MANIFESTO's community-ownership principle at the Extension System). Provenance: DS-7 + Extension System closing bridges. |
 | Phase 3 close-out (rider slate, full-series evidence) | 2026-06-12 | LANDED §5b **seeds-directory-in-canonical-table-reads** (n=3, fired productively every time — DS-7 authoring, DS-7 Step 2, the Extension System run; the 44-row permission catalog's point of definition at `supabase/seeds/01_permissions.sql`). Provenance: DS-6 + DS-7 + Extension System closing bridges. |
@@ -100,6 +101,8 @@ The authoritative inputs for Step 1 are exactly these — no more, no less:
 ## §4 Three-step work shape
 
 PC-3 ran as a split-session (Steps 1+2+3 across three sessions). PC-1 and PC-2 ran single-session. Autonomous runs may take either shape; the template is shape-agnostic. What's required is that all three steps land, in order, with the checkpoints below.
+
+**Entity-shape adjudication gate (pre-Step-1, named).** For entities whose template fit or landing path is not already settled (any entity outside the domain-service-spec slug enum: verticals, studios, products, design system), the run's first ratification gate adjudicates entity shape BEFORE Step 1: surface the evidence (what the owning README names the artifact, which template's section skeleton applies, where the spec lands) together with the authoring lean; the human's ratification fixes the template shape + landing path, with deviations named in-file as structural variants on the proven skeleton. Precedent: the Extension System ran this gate cleanly as the first non-DS entity (spec at `docs/platform/extensions/SPECIFICATION.md` on the DS-spec skeleton, slug enum untouched). This gate subsumes STATUS.md's "Pending; template applicability TBD" status value. (Landed at Phase 3 close-out.)
 
 ---
 
