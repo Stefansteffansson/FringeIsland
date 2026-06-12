@@ -135,3 +135,5 @@ Tier-specific gotchas live with the tier they apply to — see [`docs/platform/C
 ---
 
 **This file is a routing document — WHERE to look, not HOW to code.** Code patterns live in the codebase. Operational mechanics live in the skills. Strategic rhythm lives in PROCESS.md.
+
+*Tooling note: the context-mode plugin's routing rules live in `CLAUDE.local.md` (private, not checked in) and are injected per-session by its hooks. This mention of context-mode is deliberate — the plugin's launcher appends its rules block to any project `CLAUDE.md` that doesn't contain the string "context-mode"; this line keeps this tracked file stable.*
