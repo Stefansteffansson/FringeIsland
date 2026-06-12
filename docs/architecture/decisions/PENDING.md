@@ -41,6 +41,7 @@ ADR topics identified but not yet written. Promote using `../../templates/adr.md
 **Why it exists:** RC7 replaced "broken" `has_permission()`-based Tier-1 RLS policies — the archived policies passed a profile id where the rebuilt function expects an acting group id (signature-drift family); the function itself likely works when called with the right key. Diagnose before fixing.
 **Why ADR-grade:** clarifies ADR-U028 (DeusEx as the root-admin group) — group membership is the *container*, the role's permission set is the *authority*. Candidate U028 clarification or standalone ADR.
 **When:** adjudicate at the V1 Administration derivation (next in G-03 order, which owns admin-access semantics) or before the first feature that builds on `is_platform_admin()` (practically: the Console work, ADR-U028 Ferd routing), whichever comes first. The code fix is mechanical — one SECURITY DEFINER function body rewritten to check a designated permission via the Tier-1 walk.
+**PROMOTED-AS-AMENDMENT (appended 2026-06-12, V1 Administration descent, ratified by Stefan):** this entry landed as the ADR-U028 amendment "Root-admin authority is role-based" (2026-06-12) — the clarification option the entry named, executed at its named adjudication point (the V1 derivation, which carries the principle as V1 §6 Platform Core's first obligation and §4's admin-authority-divergence failure mode). The code fix remains downstream implementation work; the diagnose-before-fixing note is carried into the amendment. This entry is thereby fully resolved.
 
 ---
 

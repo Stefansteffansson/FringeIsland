@@ -98,6 +98,31 @@ care and universe operations stop sharing one undifferentiated admin plane?"*
 - Cons: Over-structure; contradicts ADR-U025 (no new product entities; the Console is a surface
   of the one experience's back-of-house, not a third profile).
 
+## Amendment — 2026-06-12: root-admin authority is role-based
+
+Clarification of decision point 2's DeusEx formulation, ratified at the V4 Observability descent
+(2026-06-12, parked at PENDING) and adjudicated at the V1 Administration derivation: **group
+membership is the *container*; the role's permission set is the *authority*.** Platform-admin
+capability flows from holding the role whose permission set grants administration — the
+group + role + permission walk (ADR-U006/U007); membership in DeusEx alone confers nothing.
+
+The realized `is_platform_admin()` (live since `20260223171200_fix_rc7_admin_user_ops.sql`; ~20
+call sites, ~9 RLS policies) is a name-based membership proxy that skips the role walk. The
+divergence is reachable today: the data model is complete (the seeded DeusEx role holds all
+permissions; `auto_assign_deusex_role_on_accept` couples membership to role), but role removal is
+possible while membership persists. The proxy is a documented deviation, not a second authority
+model. The code fix is mechanical — one SECURITY DEFINER function body rewritten to check a
+designated permission via the Tier-1 walk — and is downstream implementation work (practically:
+the Console work per the Ferd routing). Diagnose before fixing: RC7 replaced "broken"
+`has_permission()`-based Tier-1 policies that passed a profile id where the rebuilt function
+expects an acting group id (signature-drift family); the function itself likely works when called
+with the right key.
+
+Provenance: V4 Observability descent Step 2 audit-log characterization (principle ratified by
+Stefan, 2026-06-12; parked at `PENDING.md`, commit `0c1902c`); adjudicated and landed at the V1
+Administration derivation (2026-06-12), whose §6 Platform Core carries the principle as its first
+obligation and whose §4 names the divergence as a failure mode.
+
 ## Links
 
 - Extends: [ADR-U019](ADR-U019-deusex-authority-last-resort.md)
