@@ -13,6 +13,7 @@
 | Revised after | Date | Change summary |
 |---|---|---|
 | Template authored | {YYYY-MM-DD} | Initial template; substance, scope, and discipline carry-forwards from Experiment A + Experiment B comparison phase + the PC-3 chain (Steps 1–3 + closing bridges). |
+| Phase 3 close-out (series verdict) | 2026-06-12 | LANDED §13 **retraction-rate series verdict** — the completed series (PC-4 7/9; DS-1..DS-7 + Extension System all 0) supersedes the stale "tracks code presence" line: rate tracks opener calibration / prior coverage. Per-run recording retained. Provenance: DS-2..DS-7 + Extension System closing bridges. |
 | Phase 3 close-out (rider slate, full-series evidence) | 2026-06-12 | LANDED §3 **constitutional-docs standing slot** (n=2, 2 fires — PRINCIPLES-AI.md at DS-7; the MANIFESTO's community-ownership principle at the Extension System). Provenance: DS-7 + Extension System closing bridges. |
 | Phase 3 close-out (rider slate, full-series evidence) | 2026-06-12 | LANDED §5b **seeds-directory-in-canonical-table-reads** (n=3, fired productively every time — DS-7 authoring, DS-7 Step 2, the Extension System run; the 44-row permission catalog's point of definition at `supabase/seeds/01_permissions.sql`). Provenance: DS-6 + DS-7 + Extension System closing bridges. |
 | Phase 3 close-out (rider slate, full-series evidence) | 2026-06-12 | LANDED §3 **tier/sub-tier-CLAUDE domain-noun sweep** (tier-CLAUDE-as-L1-boundary-authority; n=4, 2 fires — DS-5; the Extension System's domain sub-tier boundary law, the watch's strongest instance). Provenance: DS-5 + DS-6 + DS-7 + Extension System closing bridges. |
@@ -301,7 +302,7 @@ The five prompts:
 
 The post-run capture is structural reflection, not informal aside. Its length scales with run scope — a single-session entity might produce a half-page; a complex multi-session entity might produce two pages. Brevity is fine when there is genuinely nothing to surface; padding is not.
 
-**Also record the run's cold-position retraction rate at Step 2** for the cross-entity tracking series (PC-4: 7 retractions across 9 clusters; DS-1: zero-delta; DS-2: zero) — the emerging signal is that retraction rate tracks the entity's code presence; the autonomous-vs-manual track hypothesis needs a code-rich entity to test further.
+**Also record the run's cold-position retraction rate at Step 2** for the cross-entity tracking series. **Series verdict (Phase 3 close-out, 2026-06-12):** PC-4 7/9; DS-1 through DS-7 and the Extension System all zero. Retraction rate tracked opener calibration / prior coverage, not code presence — the only non-zero run was the cold first instance; the code-rich entities (DS-3, DS-5) produced Class 2 deltas, not retractions, against calibrated openers. Keep recording the rate per run; a non-zero rate against a calibrated opener is now signal, not noise.
 
 ---
 
