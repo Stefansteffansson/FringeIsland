@@ -308,7 +308,7 @@ Distinction from the reconciliation activity below: reconciliation is a *downstr
 
 ### Named disciplines (ratified at n=4)
 
-Five disciplines surfaced repeatedly across PC-1, PC-2, PC-3, and PC-4 L1→L3 derivations and are now named for L3 authors to apply from the start. Each was promotion-watched across at least three entities; Phase 2 close-out (2026-05-16) ratified all five.
+Five disciplines surfaced repeatedly across PC-1, PC-2, PC-3, and PC-4 L1→L3 derivations and are now named for L3 authors to apply from the start. Each was promotion-watched across at least three entities; Phase 2 close-out (2026-05-16) ratified all five. Three more were promotion-watched across the Domain Services descents and the five vertical derivations; the verticals close-out (2026-06-12) ratified them.
 
 **Cumulative-forward read order (A#8).** When stress-testing a cold derivation against `supabase/migrations/`, read migrations in chronological order from earliest to latest. A function or table that appears absent in one migration may be defined in a later one; single-snapshot reads will produce false-positive "doesn't exist" findings. Ratified at PC-3 Step 2 (`is_platform_admin()` retraction); confirmed tier-agnostic at PC-4 (applies at TS-tier consumer chains too).
 
@@ -319,6 +319,12 @@ Five disciplines surfaced repeatedly across PC-1, PC-2, PC-3, and PC-4 L1→L3 d
 **Schema-predates-partition (PW-1).** Existing schema entities (tables, functions, triggers, RLS policies) predate the Platform Core / Domain Services partition. When stress-testing cold derivations against schema, expect mismatches between entity-partition lines and schema-cut lines. Mismatches are temporal, not architectural defects — do not reach for ADR amendments or migration splits. Document as Step 2 findings; route through normal pickup channels. Ratified across PC-2, PC-3, PC-4 Step 2 (D15 monolithic rebuild commit `ce58227` crosses PC-1/PC-3/PC-4/DS-* boundaries in 2,223 lines).
 
 **Repo-specific actor primitive (P-O1).** Cold derivation drifts toward Supabase-canonical `auth.uid()` as the actor. This repo overrides — the actor is the caller's personal group ID, resolved through a four-hop chain (`auth.uid()` → `users.auth_user_id` → `users.id` → `users.personal_group_id`). At Step 1, write §3 contract surface and §6 auth-and-authz against the four-hop chain, not `auth.uid()` directly. Ratified at PC-3 + PC-4 Step 2.
+
+**Seeds directory in canonical-table reads.** The live database state is migrations plus `supabase/seeds/` together. Permission catalogs, system groups, and other seed-defined rows have their realized point of definition in `supabase/seeds/*.sql`, not in migrations — a migrations-only read or sweep produces false zeros (the 44-row permission catalog; the `[Deleted User]` sentinel wiring; the V5 `publish_journey` probe). When enumerating realized substrate, include the seeds directory in the read set and in every search scope. Ratified at the verticals close-out (n=5: DS-7 ×2, Extension System, V2, V5).
+
+**Constitutional-docs authority slot.** Every L1→L3 derivation consumes the three constitutional documents (VISION.md, MANIFESTO.md, PRINCIPLES-AI.md) as a standing authority-chain slot — checking each for both mandate-sided and constraint-sided force on the entity, and recording a verified zero when one doesn't bind. Fired at all five vertical derivations (full three-doc consumption at V2; inverted-constraint at V4; both-sided at V1; constraint-sided at V3/V5) after first firing at DS-7 and the Extension System. Ratified at the verticals close-out (n=7).
+
+**Step-1 realization claims need a disk anchor.** A cold derivation that claims any capability, tooling, or substrate is *realized* must carry a disk anchor (a verified file/line or calibration-block entry) — or explicitly mark the claim design-locked / lock-only / unrealized. ADR and migration prose is not evidence of realization ("a pg_cron job cleans up" with pg_cron zero on disk; "immutable audit log" prose over a rebuilt table with a live mutation path; "may introduce basic Stripe integration" with zero Stripe substrate). Ratified at the verticals close-out (n=5: the V2 retraction as the without-case; V4 decisive prevention; V1/V3/V5 clean holds at pre-named traps).
 
 ### Reader tours — post-§L3 maturity gate
 
