@@ -193,6 +193,7 @@ A work item is done when **every** applicable box is checked. "Applicable" matte
 - [ ] **Key logic unit-tested** (the parts that would be hardest to debug after a regression)
 - [ ] **Mobile responsive** — manual check on a small viewport for any UI change
 - [ ] **Supabase RLS policies applied** — every new table or new access pattern has explicit row-level security
+- [ ] **Vertical checklists pass** — the feature satisfies each applicable cross-cutting checklist in the five vertical specs (`docs/verticals/*/SPECIFICATION.md` §7)
 - [ ] **Builds without errors** locally and in CI
 - [ ] **Deployed to preview environment and verified** — not just merged
 - [ ] **README and/or CHANGELOG updated** if user-visible behavior changed
