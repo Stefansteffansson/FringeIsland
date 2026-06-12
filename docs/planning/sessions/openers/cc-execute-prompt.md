@@ -1,1 +1,1 @@
-Read `docs/planning/sessions/openers/privacy-descent-opener.md` and proceed.
+Read `docs/planning/sessions/openers/observability-descent-opener.md` and proceed.
