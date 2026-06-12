@@ -33,4 +33,15 @@ ADR topics identified but not yet written. Promote using `../../templates/adr.md
 
 ---
 
+## Root-admin authority is role-based — `is_platform_admin()` must walk the permission set
+
+**Identified:** 2026-06-12 (V4 Observability descent, Step 2 audit-log characterization; principle ratified by Stefan).
+**The principle:** platform-admin capability flows from holding the role whose permission set grants administration (group + role + permissions, the `has_permission()` walk); membership in DeusEx alone confers nothing.
+**The deviation:** `is_platform_admin()` (live since `20260223171200_fix_rc7_admin_user_ops.sql`; ~20 call sites, ~9 RLS policies including `admin_audit_log`) checks membership-in-DeusEx by group name and skips the role walk. The divergence is reachable today: the data model is complete (seeds wire a DeusEx role holding ALL permissions; `auto_assign_deusex_role_on_accept` couples membership to role), but role removal is possible while membership persists — a role-stripped DeusEx member loses admin per `has_permission()` yet keeps it at every proxy site.
+**Why it exists:** RC7 replaced "broken" `has_permission()`-based Tier-1 RLS policies — the archived policies passed a profile id where the rebuilt function expects an acting group id (signature-drift family); the function itself likely works when called with the right key. Diagnose before fixing.
+**Why ADR-grade:** clarifies ADR-U028 (DeusEx as the root-admin group) — group membership is the *container*, the role's permission set is the *authority*. Candidate U028 clarification or standalone ADR.
+**When:** adjudicate at the V1 Administration derivation (next in G-03 order, which owns admin-access semantics) or before the first feature that builds on `is_platform_admin()` (practically: the Console work, ADR-U028 Ferd routing), whichever comes first. The code fix is mechanical — one SECURITY DEFINER function body rewritten to check a designated permission via the Tier-1 walk.
+
+---
+
 *(ADR-U027 and ADR-U028 were promoted on 2026-06-10, batch G-3.)*
