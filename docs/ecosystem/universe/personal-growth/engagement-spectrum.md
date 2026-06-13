@@ -44,4 +44,4 @@ The island invites, but does not force.
 
 ---
 
-*See [void-dimensions.md](./void-dimensions.md) (planned) for the three-dimensional void model. See [three-questions.md](./three-questions.md) (planned) for the red thread mapped across all three perspectives.*
+*See [three-questions.md](./three-questions.md) for the red thread mapped across all three perspectives. The Void is defined in the [cosmology core](../cosmology/README.md) — the axis of separation along the cord (the once-planned three-dimensional "void-dimensions" model is superseded and will not be written).*

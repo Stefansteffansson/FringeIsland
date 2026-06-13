@@ -21,8 +21,6 @@ This directory documents the structural concepts that underpin that scaffolding.
 | [three-questions.md](./three-questions.md) | The red thread — three questions mapped across three perspectives (individual, relational, communal), producing the 9-cell developmental matrix | Extracted |
 | [engagement-spectrum.md](./engagement-spectrum.md) | The Homebody → Explorer spectrum and its developmental implications | Extracted |
 | [privacy-model.md](./privacy-model.md) | Three tiers of avatar/personal data visibility: private by default, selectively shared, transparently shared | Extracted |
-| *(planned)* `void-dimensions.md` | The three-dimensional void (1 / 1+1 / 1+community) and what it means to collapse each dimension | Awaiting extraction |
-
 ---
 
 *These concepts are foundational to the Journey Studio, the Whisp, and DS-3 Journeys. They inform what the platform builds — but they are described here as universe design, not software specification.*
