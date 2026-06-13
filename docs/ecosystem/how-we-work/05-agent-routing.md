@@ -82,7 +82,6 @@ Three gaps, consolidated in [`gaps.md`](./gaps.md):
 - [`docs/planning/PROCESS.md`](../../planning/PROCESS.md) — WHAT and WHEN, §6.5 for the skills-PROCESS split
 - [`.claude/skills/`](../../../.claude/skills/) — the four skills
 - [`docs/products/CLAUDE.md`](../../products/CLAUDE.md), [`docs/platform/CLAUDE.md`](../../platform/CLAUDE.md), [`docs/studios/CLAUDE.md`](../../studios/CLAUDE.md), [`docs/design-system/CLAUDE.md`](../../design-system/CLAUDE.md), [`docs/verticals/CLAUDE.md`](../../verticals/CLAUDE.md) — the five tier deltas, plus the sub-tier, entity, and sub-entity `CLAUDE.md` files beneath them (twenty files as of 2026-06-10)
-- [`configs/codex/AGENTS.md`](../../../configs/codex/AGENTS.md), [`configs/opencode/AGENTS.md`](../../../configs/opencode/AGENTS.md) — tool-specific copies (not synchronized with root)
 
 ---
 

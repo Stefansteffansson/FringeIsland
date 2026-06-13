@@ -4,7 +4,7 @@ Docs in this folder describe how the development environment is configured for w
 
 ## Contents
 
-- [`SUPER_SHELL.md`](./SUPER_SHELL.md) — Super Shell MCP operational contract: whitelist tiers, known gotchas, PATH requirements.
+_No tooling docs yet — add them here as the development environment is documented._
 
 ## What belongs here
 
