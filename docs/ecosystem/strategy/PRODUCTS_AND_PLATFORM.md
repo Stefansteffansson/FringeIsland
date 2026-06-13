@@ -251,4 +251,4 @@ There is no Game product. A game-engine runtime is built only when a journey dem
 
 ---
 
-*This document will be updated as the product family evolves. The six-wave arc (Ferd → Eid → Hamn → Heim → Brim → Urd) is defined in [ADR-U022](../decisions/ADR-U022-named-waves.md). Non-software product details will be fleshed out in dedicated exploration sessions as the community matures.*
+*This document will be updated as the product family evolves. The six-wave arc (Ferd → Eid → Hamn → Heim → Brim → Urd) is defined in [ADR-U022](../../architecture/decisions/ADR-U022-named-waves.md). Non-software product details will be fleshed out in dedicated exploration sessions as the community matures.*

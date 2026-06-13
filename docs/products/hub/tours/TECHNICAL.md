@@ -583,4 +583,4 @@ The Hub is structured around the questions it is trying to help its members answ
 
 ---
 
-*This is a derivative of SPECIFICATION.md §L3 and not authoritative. For the canonical inventory, see [SPECIFICATION.md §L3](./SPECIFICATION.md#l3--capability-inventory).*
+*This is a derivative of SPECIFICATION.md §L3 and not authoritative. For the canonical inventory, see [SPECIFICATION.md §L3](../SPECIFICATION.md#l3--capability-inventory).*

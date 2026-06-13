@@ -15,6 +15,7 @@ docs/ecosystem/
 ├── README.md                              ← you are here
 ├── VISION.md                              ← constitutional — the north star
 ├── MANIFESTO.md                           ← constitutional — founding principles
+├── PRINCIPLES-AI.md                       ← constitutional — AI principles
 │
 ├── universe/                              ← what the FringeIsland world is and how it works
 │   ├── README.md                          ← universe overview

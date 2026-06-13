@@ -205,4 +205,4 @@ What the platform offers, in plain language, is a place that is structured but n
 
 ---
 
-*This is a derivative of §L3 and not authoritative; for the canonical inventory, see [SPECIFICATION.md §L3](./SPECIFICATION.md#l3--capability-inventory).*
+*This is a derivative of §L3 and not authoritative; for the canonical inventory, see [SPECIFICATION.md §L3](../SPECIFICATION.md#l3--capability-inventory).*
