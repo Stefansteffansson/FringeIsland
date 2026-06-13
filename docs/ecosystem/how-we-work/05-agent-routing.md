@@ -67,13 +67,11 @@ A tell for whether the axis is healthy: new contributors should be able to start
 
 ## Gaps flagged on this axis
 
-Three gaps, consolidated in [`gaps.md`](./gaps.md):
+Two gaps, consolidated in [`gaps.md`](./gaps.md):
 
 **GAP 10 — Cross-tier entry confusion.** Step 5 of the load order says "the tier `CLAUDE.md` for where the work lives." When a feature legitimately spans two tiers — a Hub UI feature paired with a Platform Domain data model feature — which tier `CLAUDE.md` loads first is undefined. The two files have different tier-specific rules and different verticals obligations; loading them in the wrong order means the agent internalizes the less-relevant constraints first. This is the routing-layer equivalent of the cross-product feature sync gap from chapter 1.
 
 **GAP 11 — Skill chaining undocumented.** Most real work crosses skills. Scoping a new Ferd feature uses `ecosystem-decomposition` to author the spec, then `feature-development` to build it. Closing a cycle uses `feature-development` to finalise maturity 6-done specs, then `doc-health-check` to verify the trail. The four skills are described as discrete tools; the real workflow chains them. No document says "after X, load Y." The chains are currently tacit.
-
-**GAP 12 — AGENTS.md precedence across tools.** The repo has three `AGENTS.md` files: `/AGENTS.md` (canonical), `configs/codex/AGENTS.md` (Codex CLI), `configs/opencode/AGENTS.md` (Opencode). If someone contributes using Codex or Opencode, their tool-specific `AGENTS.md` could drift from the canonical one. No precedence rule is written — does root win? Most-specific? Last-loaded? For an ecosystem designed for 50+ contributors using whichever agent tool they prefer, this is a real precedence question.
 
 ## Canonical sources
 

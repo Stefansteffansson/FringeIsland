@@ -25,9 +25,7 @@
 | G-13 | Execution (build) | Build hygiene unspecified | Medium | Document branching, commit cadence, PR shape in `feature-development` skill |
 | G-14 | Execution (kanban) | Discovery 0→2 flow orphaned | Medium | Extend `ecosystem-decomposition` skill with explicit idea-to-explored transition |
 | G-15 | Agent routing | Cross-tier entry order | Medium | Rule in root CLAUDE.md or skill: which tier CLAUDE.md loads first for cross-tier work |
-| G-16 | Agent routing | Skill chaining undocumented | Medium | Add a "common chains" section to PROCESS.md §6.5 or root CLAUDE.md |
-| G-17 | Agent routing | AGENTS.md precedence across tools | Low | ADR on tool-specific AGENTS.md precedence; tool-specific copies derive from root |
-| G-18 | Execution (research) | Research pathway under-specified | Medium | Unify maturity-2, spike, and research-report mechanisms; describe how research enters the backlog and how findings feed specs |
+| G-16 | Agent routing | Skill chaining undocumented | Medium | Add a "common chains" section to PROCESS.md §6.5 or root CLAUDE.md || G-18 | Execution (research) | Research pathway under-specified | Medium | Unify maturity-2, spike, and research-report mechanisms; describe how research enters the backlog and how findings feed specs |
 | G-19 | Cadence (horizontal) | Wave-planning skill needs structural review | Medium | Run a structural review of `wave-planning` skill parallel to the 2026-04-22 review of `ecosystem-decomposition`; define its Sources, upstream dependencies, write scope, and boundary with the vertical axis |
 | G-20 | Decomposition (downstream) | Reconciliation activity has no defined home | Medium | Decide where reconciliation lives (own skill / mode inside `feature-development` / named workflow); currently named only in prose in the `ecosystem-decomposition` skill |
 | G-22 | Decomposition (cross-level) | Legacy pre-refactor FEAT-*.md need absorb-and-delete discipline | Medium | Add a discipline to the ecosystem-decomposition skill: when L3 runs fresh on an entity with legacy FEAT-*.md files, inspirational insight is absorbed into L1/L2/L3 first, then legacy specs are deleted in the same commit that lands new L4 specs |
@@ -178,12 +176,6 @@ Step 5 of the load order says "the tier `CLAUDE.md` for where the work lives." F
 Real work crosses skills. `ecosystem-decomposition` to write a spec, then `feature-development` to build it. `feature-development` to mark 6-done, then `doc-health-check` to verify. The four skills are described as discrete; the chains are implicit.
 
 *Proposed fix:* add a "common chains" section to PROCESS.md §6.5 or to root `CLAUDE.md`. Name the three or four chains that matter most. Example: "Specifying and building a new feature: load `ecosystem-decomposition` → write spec → advance to maturity 4 → unload skill → load `feature-development` → implement."
-
-**G-17 — AGENTS.md precedence across tools.**
-Three `AGENTS.md` files exist: `/AGENTS.md` (canonical for Claude), `configs/codex/AGENTS.md`, `configs/opencode/AGENTS.md`. No precedence rule between them.
-
-*Proposed fix:* ADR declaring `/AGENTS.md` as the canonical source; tool-specific copies are derivatives that must not contradict the canonical. Add a `doc-health-check` check at cycle boundary comparing the tool-specific AGENTS.md files against the root one and flagging any divergent rules. Low priority until Codex or Opencode becomes the primary tool for a given contributor.
-
 **G-30 — Tier CLAUDE.md files contain miscategorised entity-specific content (agent routing).**
 The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGENT-CONTEXT-CASCADE-PLAN.md`) surfaced that `docs/products/CLAUDE.md` carries Hub-specific rules (`useAuth()`, `refreshNavigation`, `proxy.ts`, `sb_publishable_*` key format, realtime-channel narrowing) as if they were product-tier rules. They aren't, strictly — they're Hub rules sitting at tier level because Hub is the only active product. Similarly, `docs/platform/CLAUDE.md` folds Core-specific and Domain-specific guidance together despite ADR-U023 naming them as categorically different stability zones. The miscategorisation is invisible today (Hub is the only product loading `products/CLAUDE.md`), but every future Gimbal sub-agent loads Hub-specific bloat as if it were product-tier truth — and a future Gimbal-iOS sub-agent loads even more, web-stack rules irrelevant to native iOS. The cost compounds with every load every time once additional entities go active.
 
@@ -221,9 +213,7 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 - G-32 Entities with shipped §L3 lacking reader tours — backfill obligation
 
 **Low priority** (single-word fixes or edge cases):
-- G-11 TDD overstated vs risk-based
-- G-17 AGENTS.md precedence across tools
-- G-28 Trust-disk-over-memory as a cross-cutting discipline
+- G-11 TDD overstated vs risk-based- G-28 Trust-disk-over-memory as a cross-cutting discipline
 
 ---
 
