@@ -24,11 +24,11 @@ FringeIsland feel like more than a platform.
 ## Contents
 
 ### Features
-→ [The Whisp](./features/whisp.md)
-→ [Journey Studio v.1](./features/journey-studio-v1.md)
+→ [The Whisp](./whisp.md)
+→ [Journey Studio v.1](./journey-studio-v1.md)
 
 ### Architecture
-→ [Minimal Design Foundation](./architecture/minimal-design-foundation.md)
+→ [Minimal Design Foundation](./minimal-design-foundation.md)
 
 ---
 

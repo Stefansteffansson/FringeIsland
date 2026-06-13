@@ -35,11 +35,11 @@ FringeIsland becomes a living, storied universe.
 ## Contents
 
 ### Features
-→ [Arc Studio v.1](./features/arc-studio-v1.md)
-→ [Journey Studio v.4](./features/journey-studio-v4.md)
-→ [FringeIsland Studio v.3](./features/fringeisland-studio-v3.md)
-→ [iOS Mobile App v.1](./features/ios-app-v1.md)
-→ [Android Mobile App v.1](./features/android-app-v1.md)
+→ [Arc Studio v.1](./arc-studio-v1.md)
+→ [Journey Studio v.4](./journey-studio-v4.md)
+→ [FringeIsland Studio v.3](./fringeisland-studio-v3.md)
+→ [iOS Mobile App v.1](./ios-app-v1.md)
+→ [Android Mobile App v.1](./android-app-v1.md)
 
 ---
 

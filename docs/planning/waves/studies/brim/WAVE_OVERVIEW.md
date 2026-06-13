@@ -35,11 +35,11 @@ FringeIsland universe becomes fully three-dimensional.
 ## Contents
 
 ### Features
-→ [The Void](./features/void.md)
-→ [Journey Studio v.3](./features/journey-studio-v3.md)
-→ [FringeIsland Studio v.2](./features/fringeisland-studio-v2.md)
-→ [iOS Mobile App v.01](./features/ios-app-v01.md)
-→ [Android Mobile App v.01](./features/android-app-v01.md)
+→ [The Void](./void.md)
+→ [Journey Studio v.3](./journey-studio-v3.md)
+→ [FringeIsland Studio v.2](./fringeisland-studio-v2.md)
+→ [iOS Mobile App v.01](./ios-app-v01.md)
+→ [Android Mobile App v.01](./android-app-v01.md)
 
 ---
 

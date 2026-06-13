@@ -33,10 +33,10 @@ their first authoring tool for the FringeIsland environment itself.
 ## Contents
 
 ### Features
-→ [FringeIsland World](./features/fringeisland-world.md)
-→ [My Garden](./features/my-garden.md)
-→ [Journey Studio v.2](./features/journey-studio-v2.md)
-→ [FringeIsland Studio v.1](./features/fringeisland-studio-v1.md)
+→ [FringeIsland World](./fringeisland-world.md)
+→ [My Garden](./my-garden.md)
+→ [Journey Studio v.2](./journey-studio-v2.md)
+→ [FringeIsland Studio v.1](./fringeisland-studio-v1.md)
 
 ---
 

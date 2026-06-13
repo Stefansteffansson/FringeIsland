@@ -32,28 +32,28 @@ with no architectural violations in the codebase.
 ## Contents
 
 ### Architecture & System Anatomy
-→ [System Anatomy (L0–L7)](./architecture/system-anatomy.md)
-→ [API Ring](./architecture/api-ring.md)
-→ [Verticals](./architecture/verticals.md)
-→ [Architecture Conformance Audit](./architecture/conformance-audit.md)
+→ [System Anatomy (L0–L7)](./system-anatomy.md)
+→ [API Ring](./api-ring.md)
+→ [Verticals](./verticals.md)
+→ [Architecture Conformance Audit](./conformance-audit.md)
 
 ### Authentication
-→ [Authentication](./authentication/authentication.md)
+→ [Authentication](./authentication.md)
 
 ### General
-→ [Members](./features/members.md)
-→ [Groups](./features/groups.md)
-→ [Roles & Permissions](./features/roles-permissions.md)
-→ [Journeys](./features/journeys.md)
-→ [Journals](./features/journals.md)
+→ [Members](./members.md)
+→ [Groups](./groups.md)
+→ [Roles & Permissions](./roles-permissions.md)
+→ [Journeys](./journeys.md)
+→ [Journals](./journals.md)
 
 ### Communication
-→ [Direct Messaging](./communication/direct-messaging.md)
-→ [Forum](./communication/forum.md)
-→ [Notifications](./communication/notifications.md)
+→ [Direct Messaging](./direct-messaging.md)
+→ [Forum](./forum.md)
+→ [Notifications](./notifications.md)
 
 ### Internationalisation
-→ [Multi-language Support](./internationalisation/internationalisation.md)
+→ [Multi-language Support](./internationalisation.md)
 
 ---
 

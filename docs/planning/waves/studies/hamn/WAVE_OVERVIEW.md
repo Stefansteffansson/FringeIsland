@@ -33,9 +33,9 @@ it is meant to be.
 ## Contents
 
 ### Features
-→ [Design System](./features/design-system.md)
-→ [Accessibility System](./features/accessibility-system.md)
-→ [UX/UI Redesign](./features/uxui-redesign.md)
+→ [Design System](./design-system.md)
+→ [Accessibility System](./accessibility-system.md)
+→ [UX/UI Redesign](./uxui-redesign.md)
 
 ---
 
