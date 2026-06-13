@@ -29,7 +29,8 @@ docs/research/
 ├── The solo developer's complete guide to...md            ← solo development practices
 ├── Solo-Developers-Guide-to-Systematic-Web-Development.docx   ← solo development (docx)
 │
-└── breach-response-design.md                              ← GDPR Art. 33/34 breach-response design record (five-vertical)
+├── breach-response-design.md                              ← GDPR Art. 33/34 breach-response design record (five-vertical)
+└── universe-to-spec-manifestation.md                      ← how universe/ + thinking/ concepts map onto the entity specs
 ```
 
 ---
@@ -66,3 +67,4 @@ Cross-cutting design records produced by joint-design spikes — the design live
 | Document | Topic |
 |----------|-------|
 | breach-response-design.md | GDPR Art. 33/34 breach-response process across all five verticals (detect -> assess -> clock -> notify authority -> notify members -> record); design record for the obligations landed in V1/V2/V3/V4 §5/§6 |
+| universe-to-spec-manifestation.md | Snapshot map of how `ecosystem/universe/` + `ecosystem/thinking/` concepts are (or aren't) realized as capabilities in the entity SPECIFICATIONs; grades each concept STRONG/PARTIAL/ABSENT and names the prioritized gaps |

@@ -39,4 +39,5 @@ When concepts from these sessions reach stable form and move into `../../univers
 
 | Concept | Source session(s) | Promoted to | Date |
 |---------|-------------------|-------------|------|
-| *(none yet)* | | | |
+| Worlds topology (Ordinary World / Shimmer / Fringe; the Void as axis; cord, balls, branches, seeds, anchoring, portals, severance & respawn; the comfort→growth→panic gradient) | Session 01 (S-numbers cited in the core) | [`../../universe/cosmology/README.md`](../../universe/cosmology/README.md) — canonical core (supersedes the Three Worlds model) | 2026-06-10 (Session B) |
+| Role taxonomy (Shadow → FIM transcendence; Steward / Guide / Participant / Observer; Universeers / Council / DeusEx / Console; Dreamineer sub-roles) | Session 01 (S16, S29-30, S39, S44, S46) + 2026-06-05 product locks | [`../../universe/roles/README.md`](../../universe/roles/README.md) — canonical core | 2026-06-10 (Session B) |
