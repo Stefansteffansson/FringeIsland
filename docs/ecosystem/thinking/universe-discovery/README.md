@@ -35,9 +35,17 @@ Exploratory outputs from non-session conversations. Not decisions; not statement
 
 ## Graduation tracker
 
-When concepts from these sessions reach stable form and move into `../../universe/`, note the move here.
+When a concept from these sessions reaches stable form and moves into canon — a `../../universe/` core, or an ADR when the concept is an architectural decision — record the move here. The discovery notes are never canon; the "Canonical home" below is the single source of truth for each concept. (Verified complete against the canonical cores and the discovery-sourced ADRs on 2026-06-14.)
 
-| Concept | Source session(s) | Promoted to | Date |
-|---------|-------------------|-------------|------|
-| Worlds topology (Ordinary World / Shimmer / Fringe; the Void as axis; cord, balls, branches, seeds, anchoring, portals, severance & respawn; the comfort→growth→panic gradient) | Session 01 (S-numbers cited in the core) | [`../../universe/cosmology/README.md`](../../universe/cosmology/README.md) — canonical core (supersedes the Three Worlds model) | 2026-06-10 (Session B) |
-| Role taxonomy (Shadow → FIM transcendence; Steward / Guide / Participant / Observer; Universeers / Council / DeusEx / Console; Dreamineer sub-roles) | Session 01 (S16, S29-30, S39, S44, S46) + 2026-06-05 product locks | [`../../universe/roles/README.md`](../../universe/roles/README.md) — canonical core | 2026-06-10 (Session B) |
+| Concept | Source | Canonical home (single source of truth) | Type | Date |
+|---------|--------|------------------------------------------|------|------|
+| Worlds topology (Ordinary World / Shimmer / Fringe; the Void as axis; cord, balls, branches, seeds, anchoring, portals, severance & respawn; the comfort→growth→panic gradient) | Session 01 (S-numbers cited in the core) | [`../../universe/cosmology/README.md`](../../universe/cosmology/README.md) (supersedes the Three Worlds model) | universe core | 2026-06-10 |
+| Role taxonomy (Shadow → FIM transcendence; Steward / Guide / Participant / Observer; Universeers / Council / DeusEx / Console; Dreamineer sub-roles) | Session 01 (S16, S29-30, S39, S44, S46) + 2026-06-05 product locks | [`../../universe/roles/README.md`](../../universe/roles/README.md) | universe core | 2026-06-10 |
+| The Whisp (inner dialogue, fills-by-growth, dissolved assessment, senses, internalisation) + NPCs as layered composites | Session 01 (S1-9, S15, S17-18, S22, S30) | [`../../universe/beings/README.md`](../../universe/beings/README.md) | universe core | 2026-06-10 |
+| Respawn — "the loop is the medium" | Session 01 (S19-21) | [`../../universe/narrative/README.md`](../../universe/narrative/README.md) (Respawn section; remainder still placeholder) | universe section (partial) | 2026-06-10 |
+| Products as equipment profiles; the Game as journey-depth | 2026-06-05 product locks | [ADR-U025](../../../architecture/decisions/ADR-U025-products-as-equipment-profiles.md) | ADR | 2026-06-10 |
+| Studio decomposition — Universe Studio parent + World Studio | Session 01 (S13-14, S29-30, S44) + 2026-06-05 locks | [ADR-U026](../../../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md) | ADR | 2026-06-10 |
+| Shadow identity lifecycle (anon auth, ephemerality, transcendence) | Session 01 (S16, S39, S45, S46) | [ADR-U027](../../../architecture/decisions/ADR-U027-shadow-identity-lifecycle.md) | ADR | 2026-06-10 |
+| Governance by scope (Console, Universeers, DeusEx) | Session 01 (S29) + 2026-06-05 locks | [ADR-U028](../../../architecture/decisions/ADR-U028-governance-by-scope.md) | ADR | 2026-06-10 |
+
+**Not yet graduated — still open, no firm canonical home yet (do not treat as settled truth):** the rest of `narrative/` beyond respawn (content families, journey route types as universe canon), the first-hour / first experience, community formation / cold-start, and the Kickstarter / founding-moment design. These remain in discovery or as open questions ([`../OPEN_QUESTIONS.md`](../OPEN_QUESTIONS.md)) until a session crystallizes them.
