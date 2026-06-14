@@ -20,6 +20,20 @@
 | Session | Date | Focus | Status |
 |---------|------|-------|--------|
 | [Session 01](./2026-05-18_universe-discovery-session-01.md) | 2026-05-18 | Foundations: Whisp as inner dialogue and avatar; two-register universe topology; full tonal range; Universe Studio frame; Shadows, NPCs, Dreamineers, Creators; assessment-as-dialogue; signature journeys; respawn and the Jake/Avatar metaphor | In progress, resumed 2026-06-05 (product/ecosystem layer + Statements 41-46: products are situations not devices and Gimbal/Hub are two affordance profiles, the glowing glass ball is a two-zone home/village gateway, the self-chosen inviolable private home, anchoring as the near-side/Beyond gate making the village FIM-only, and Shadow anonymous-auth with ephemeral erased-on-inactivity data); resumed 2026-06-01 (Statements 37-40: balls glow equal while the cord carries health, the branches are the visible crown, every FIM and Shadow has their own Whisp and cord with only the ball granted at transcendence, and the seed / portal / anchor mechanics); prior resume 2026-05-29 (Statements 31-36: the Fringe reshaped) |
+| [Session 02](./2026-06-14_universe-discovery-session-02.md) | 2026-06-14 | The first hour / first experience — the new-arrival journey from first touch through (possibly) Shadow→FIM transcendence; the universe's named highest-risk gap (CQ-010) | Open — scaffolded, not yet run |
+
+---
+
+## Discovery backlog (open topics awaiting sessions)
+
+These concepts are named in the universe design and in [`../OPEN_QUESTIONS.md`](../OPEN_QUESTIONS.md) but have **no firm canonical home yet** (they also appear in the "not yet graduated" note under the graduation tracker below). Each needs its own discovery session to crystallise before it can graduate. The first-hour topic is scaffolded as Session 02; the rest are not yet scheduled.
+
+| Topic | Why it needs a session | Status |
+|-------|------------------------|--------|
+| The first hour / first experience | The universe's named highest-risk gap; DS-3 Journeys and `narrative/` are waiting on it (CQ-010) | **Session 02 scaffolded** (running first) |
+| Narrative beyond respawn | Content families, journey route types, and arc/episode design as universe canon — only the respawn section is ratified so far | Not yet scheduled |
+| Community formation / cold-start | How the relational and communal layers work when few members are present (CQ-001, CQ-002, CQ-003) | Not yet scheduled |
+| Kickstarter / founding moment | The "Season Zero" launch, arrival rituals, and the founding Dreamineer cohort (currently an old-vision sketch only) | Not yet scheduled |
 
 ---
 
