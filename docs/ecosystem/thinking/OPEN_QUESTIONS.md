@@ -37,11 +37,13 @@
 **Context:** Hamn needs Dreamineer-created content to be alive, but Dreamineers need tools and a community to create content. What is the bootstrap strategy?
 
 ### CQ-010: The First Experience — What Happens in the First Hour?
-**Status:** Open
+**Status:** Open — deferred (premature until universe-mechanics fundamentals are firm; see note)
 **Scope:** Ferd, Hamn
 **Raised:** 2026-04-12 (extracted from OLD_VISION.md)
 **Blocks:** Ferd user onboarding flow, Hamn "Journey Zero" onboarding journey, Kickstarter campaign design
+**Blocked by:** the universe-mechanics fundamentals (how the near and far ends of place 2 and place 3 actually look and function) — tracked in the [discovery backlog](universe-discovery/README.md#discovery-backlog-open-topics-awaiting-sessions).
 **Context:** Four deep design sessions have explored what FringeIsland *is* — none have designed what a new member actually *does* when they arrive. The founding narrative, the story that members first enter, the mystery, the conflict, the world that comes to life for the first time. This is the single highest-risk gap: everything else is irrelevant if the first experience does not work.
+**Sequencing note (2026-06-14, Stefan):** a dedicated discovery session for the first hour was scaffolded and then withdrawn the same day as premature. The opening is too consequential to choreograph before the universe's own mechanics are firm. It returns to active design only after those fundamentals are on paper — fundamentals first, experience after.
 
 ### CQ-011: AI Feasibility — What Does the AI Actually Need to Do?
 **Status:** Open
