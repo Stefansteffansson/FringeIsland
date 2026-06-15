@@ -1,0 +1,133 @@
+{
+  "title": "FringeIsland — Project Dashboard",
+  "subtitle": "A derived overview. Panels are a snapshot from the last generate; the file viewer is always live.",
+  "panels": [
+    {
+      "id": "start-here",
+      "title": "Start Here",
+      "blurb": "Entry points, and where everything lives.",
+      "blocks": [
+        { "type": "links", "label": "Key documents", "items": [
+          { "label": "Project entry — CLAUDE.md", "path": "CLAUDE.md" },
+          { "label": "Way of working — PROCESS.md", "path": "docs/planning/PROCESS.md" },
+          { "label": "Current wave — Ferd", "path": "docs/planning/waves/ferd.md" },
+          { "label": "Docs map — README.md", "path": "docs/README.md" }
+        ] },
+        { "type": "folders", "label": "What lives where (docs/)" }
+      ]
+    },
+    {
+      "id": "fundament",
+      "title": "The Fundament — what FringeIsland is",
+      "blurb": "Vision, manifesto, and the universe in brief.",
+      "blocks": [
+        { "type": "intro", "label": "Vision", "path": "docs/ecosystem/VISION.md" },
+        { "type": "intro", "label": "Manifesto", "path": "docs/ecosystem/MANIFESTO.md" },
+        { "type": "intro", "label": "AI principles", "path": "docs/ecosystem/PRINCIPLES-AI.md" },
+        { "type": "intro", "label": "Cosmology (canonical core)", "path": "docs/ecosystem/universe/cosmology/README.md" },
+        { "type": "intro", "label": "Roles (canonical core)", "path": "docs/ecosystem/universe/roles/README.md" },
+        { "type": "intro", "label": "Beings — the Whisp & NPCs (canonical core)", "path": "docs/ecosystem/universe/beings/README.md" }
+      ]
+    },
+    {
+      "id": "architecture",
+      "title": "How It's Built — architecture",
+      "blurb": "The structure, the entity model, the decisions.",
+      "blocks": [
+        { "type": "svg", "label": "Ecosystem anatomy", "path": "docs/architecture/ECOSYSTEM_ANATOMY_V5.svg" },
+        { "type": "entities", "label": "What each part is", "groups": [
+          { "label": "Platform Core", "items": [
+            { "label": "PC-1 Infrastructure", "path": "docs/platform/core/infrastructure-specification.md" },
+            { "label": "PC-2 Identity", "path": "docs/platform/core/identity-specification.md" },
+            { "label": "PC-3 Organisation", "path": "docs/platform/core/organisation-specification.md" },
+            { "label": "PC-4 Governance", "path": "docs/platform/core/governance-specification.md" }
+          ] },
+          { "label": "Domain Services", "items": [
+            { "label": "DS-1 World Model", "path": "docs/platform/domain/world-model.md" },
+            { "label": "DS-2 Narrative", "path": "docs/platform/domain/narrative.md" },
+            { "label": "DS-3 Journeys", "path": "docs/platform/domain/journeys.md" },
+            { "label": "DS-4 Content", "path": "docs/platform/domain/content.md" },
+            { "label": "DS-5 Communication", "path": "docs/platform/domain/communication.md" },
+            { "label": "DS-6 Discovery", "path": "docs/platform/domain/discovery.md" },
+            { "label": "DS-7 Intelligence", "path": "docs/platform/domain/intelligence.md" },
+            { "label": "Extension System", "path": "docs/platform/extensions/SPECIFICATION.md" }
+          ] },
+          { "label": "Surfaces (products)", "items": [
+            { "label": "The Hub", "path": "docs/products/hub/DESCRIPTION.md" },
+            { "label": "The Gimbal", "path": "docs/products/gimbal/README.md" }
+          ] },
+          { "label": "Verticals", "items": [
+            { "label": "V1 Administration", "path": "docs/verticals/administration/SPECIFICATION.md" },
+            { "label": "V2 Privacy / GDPR", "path": "docs/verticals/privacy/SPECIFICATION.md" },
+            { "label": "V3 Notifications", "path": "docs/verticals/notifications/SPECIFICATION.md" },
+            { "label": "V4 Observability", "path": "docs/verticals/observability/SPECIFICATION.md" },
+            { "label": "V5 Transactions", "path": "docs/verticals/transactions/SPECIFICATION.md" }
+          ] }
+        ] },
+        { "type": "intro", "label": "Domain entities", "path": "docs/architecture/DOMAIN_ENTITIES.md" },
+        { "type": "adrs", "label": "Architecture decisions (ADRs)" }
+      ]
+    },
+    {
+      "id": "how-we-work",
+      "title": "How We Work — the process",
+      "blurb": "Pipeline, cadence, skills, and the spec-evolution loop.",
+      "blocks": [
+        { "type": "intro", "label": "PROCESS.md", "path": "docs/planning/PROCESS.md" },
+        { "type": "toc", "label": "Process sections", "path": "docs/planning/PROCESS.md" },
+        { "type": "entities", "label": "The five chapters (how-we-work guide)", "groups": [
+          { "label": "", "items": [
+            { "label": "01 — Decomposition", "path": "docs/ecosystem/how-we-work/01-decomposition.md" },
+            { "label": "02 — Cadence and waves", "path": "docs/ecosystem/how-we-work/02-cadence-and-waves.md" },
+            { "label": "03 — Execution: kanban", "path": "docs/ecosystem/how-we-work/03-execution-kanban.md" },
+            { "label": "04 — Execution: build loop", "path": "docs/ecosystem/how-we-work/04-execution-build-loop.md" },
+            { "label": "05 — Agent routing", "path": "docs/ecosystem/how-we-work/05-agent-routing.md" }
+          ] }
+        ] },
+        { "type": "entities", "label": "The four skills (execution layer)", "groups": [
+          { "label": "", "items": [
+            { "label": "ecosystem-decomposition", "path": ".claude/skills/ecosystem-decomposition/SKILL.md" },
+            { "label": "feature-development", "path": ".claude/skills/feature-development/SKILL.md" },
+            { "label": "wave-planning", "path": ".claude/skills/wave-planning/SKILL.md" },
+            { "label": "doc-health-check", "path": ".claude/skills/doc-health-check/SKILL.md" }
+          ] }
+        ] },
+        { "type": "links", "label": "Deep dive", "items": [
+          { "label": "How We Work — guide", "path": "docs/ecosystem/how-we-work/README.md" },
+          { "label": "How We Work — interactive diagrams", "path": "docs/ecosystem/how-we-work/index.html" }
+        ] },
+        { "type": "svg", "label": "Decomposition cascade", "path": "docs/ecosystem/how-we-work/assets/01-decomposition-cascade.svg" }
+      ]
+    },
+    {
+      "id": "where-we-are",
+      "title": "Where We Are — current state",
+      "blurb": "Specs vs. build, and the gap between them.",
+      "blocks": [
+        { "type": "section", "label": "Current initiative — Hub v2", "path": "docs/planning/hub-v2/README.md", "heading": "## Current status" },
+        { "type": "metrics", "label": "Build snapshot (live)" },
+        { "type": "section", "label": "Design-vs-build", "path": "docs/research/universe-to-spec-manifestation.md", "heading": "## Headline" },
+        { "type": "links", "label": "Pipeline status", "items": [
+          { "label": "Pipeline STATUS", "path": "docs/planning/sessions/openers/STATUS.md" },
+          { "label": "Ferd capability map", "path": "docs/planning/waves/FERD-CAPABILITY-MAP.md" }
+        ] }
+      ]
+    },
+    {
+      "id": "focus-horizon",
+      "title": "Focus & Horizon — now and open",
+      "blurb": "What we're on, what's open, what's ahead.",
+      "blocks": [
+        { "type": "section", "label": "Current focus — Hub v2", "path": "docs/planning/hub-v2/README.md", "heading": "## Current status" },
+        { "type": "links", "label": "Hub v2 rebuild", "items": [
+          { "label": "Hub v2 — the plan", "path": "docs/planning/hub-v2/README.md" },
+          { "label": "ADR-U030 — rebuild decision", "path": "docs/architecture/decisions/ADR-U030-hub-v2-greenfield-rebuild.md" }
+        ] },
+        { "type": "section", "label": "Discovery backlog", "path": "docs/ecosystem/thinking/universe-discovery/README.md", "heading": "## Discovery backlog (open topics awaiting sessions)" },
+        { "type": "cqs", "label": "Open questions", "path": "docs/ecosystem/thinking/OPEN_QUESTIONS.md" },
+        { "type": "waves", "label": "Wave roadmap" },
+        { "type": "activity", "label": "Recent activity" }
+      ]
+    }
+  ]
+}

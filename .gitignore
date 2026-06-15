@@ -74,6 +74,9 @@ supabase/.temp/
 # Scratch / temporary docs
 docs/TMP/
 
+# Generated project dashboard (regenerate with `npm run dashboard`; generator lives in scripts/dashboard/)
+docs/dashboard/
+
 # Reader-tour distribution artefacts (markdown is source of truth; .docx not committed)
 docs/products/**/*.docx
 docs/platform/**/*.docx
