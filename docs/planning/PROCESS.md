@@ -338,6 +338,23 @@ Everything else — cadence, durations, retrospective format, document templates
 
 ---
 
+## Section 9 — Build-informed spec evolution (the feedback loop)
+
+Specs are servants of end-user value, not cages. Building will reveal things the specs got wrong, left out, or that harm the member — and the way of working must metabolise that learning rather than resist it. "Ratified" means *stable enough to build on*, never *immutable*. This loop is how a build-time learning flows back into a spec or an ADR.
+
+1. **Ratified ≠ frozen.** Every spec and ADR carries a status; "Canonical / Ratified" means current best truth — build against it, change it deliberately. Even ADRs evolve, via amendment or a superseding ADR (precedent: ADR-U002 amendment, ADR-U028 root-admin amendment).
+2. **Capture findings at the moment of discovery — cheaply, and never silently.** When building reveals a spec that is wrong, incomplete, or harms the member, log a one-line finding where the work is (the feature spec's notes, or the task), tagged with the upstream spec/ADR it bears on. Don't halt the build; note the deviation and keep moving. **A silent deviation is the real failure** — it is how drift accumulates.
+3. **Triage the finding:** *local* (only this code → fix here, note it) · *upstream-bearing* (contradicts/extends a PC/DS/vertical spec or an ADR → route to that owner) · *open question* (needs a decision or more thought → `../ecosystem/thinking/OPEN_QUESTIONS.md`).
+4. **Amend now vs. batch.** Load-bearing or blocking findings amend the owning spec immediately; small, non-blocking ones batch to the cooldown/cycle boundary (the consolidate-at-close-out pattern). Either way, recorded — never silent.
+5. **Amend with provenance, don't rewrite.** A change appends the new decision, cites the build-learning that drove it and the date, and marks what it supersedes. ADRs get an amendment block or a superseding ADR.
+6. **Propagate via the cascade.** When a spec changes, check its downstream consumers — other specs, surface specs, the vertical checklists, the CLAUDE.md cascade. Tools: the `doc-health-check` skill and the "template change → grep instances" discipline.
+7. **Reconcile on a heartbeat.** The cooldown/cycle boundary (§3) is the standing point to fold batched findings into specs, run doc-health, and update OPEN_QUESTIONS. Match the heartbeat to the learning rate — tight early in a new build, lengthening as it stabilises.
+8. **The tie-breaker is end-user value.** When a validated build-learning conflicts with a spec, the spec yields — update it to match the better understanding, and write down why. The spec exists to serve the value; the value never bends to preserve the spec.
+
+This loop is the *reconciliation* half of the decomposition method (the `ecosystem-decomposition` skill keeps derivation clean and separate; this is the downstream activity, made continuous). It is the way of working for the Hub v2 rebuild (`hub-v2/README.md`).
+
+---
+
 ## Quick reference
 
 - **Where do I put a new idea?** Create a feature spec at maturity 0-raw under its owner: `../{owner}/features/FEAT-{PREFIX}{NNN}-{slug}.md`, using `../templates/feature-spec.md`. If ownership is unclear, park it in `../ecosystem/thinking/OPEN_QUESTIONS.md` until it's clear where it belongs.
@@ -351,4 +368,4 @@ Everything else — cadence, durations, retrospective format, document templates
 
 ---
 
-**Last updated:** 2026-04-22 — §6 pointer to per-level source-document map added; §6.5 paragraphs for `ecosystem-decomposition` and `wave-planning` revised to make the vertical/horizontal axis separation explicit. Follows substantial rewrite of `.claude/skills/ecosystem-decomposition/SKILL.md` in the same session. Previous update: 2026-04-19 — gap review hook added to §3 cycle boundary; WIP limit in §3 corrected from "doing" to "review" (closing G-08); follow-on rewording of three §3 passages (wave paragraph, "Why this shape" rationale, "What to adjust first" item 1) to align with review-stage WIP framing. Previous update: 2026-04-17 way-of-working refactor Session 1 (Tier 1 cleanup + Tier 2 structural additions). See `../../CLAUDE.md` for the project entry point and `../planning/sessions/2026-04-17_-_SESSION-1-TIER-1-CLEANUP.md` for the refactor's execution log.
+**Last updated:** 2026-06-15 — §9 added: the build-informed spec-evolution loop (living specs, build-learnings reconciled back, end-user value as tie-breaker), authored for the Hub v2 rebuild. Previous update: 2026-04-22 — §6 pointer to per-level source-document map added; §6.5 paragraphs for `ecosystem-decomposition` and `wave-planning` revised to make the vertical/horizontal axis separation explicit. Follows substantial rewrite of `.claude/skills/ecosystem-decomposition/SKILL.md` in the same session. Previous update: 2026-04-19 — gap review hook added to §3 cycle boundary; WIP limit in §3 corrected from "doing" to "review" (closing G-08); follow-on rewording of three §3 passages (wave paragraph, "Why this shape" rationale, "What to adjust first" item 1) to align with review-stage WIP framing. Previous update: 2026-04-17 way-of-working refactor Session 1 (Tier 1 cleanup + Tier 2 structural additions). See `../../CLAUDE.md` for the project entry point and `../planning/sessions/2026-04-17_-_SESSION-1-TIER-1-CLEANUP.md` for the refactor's execution log.

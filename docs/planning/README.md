@@ -21,6 +21,8 @@ docs/planning/
 │
 ├── cycles/                                ← Shape Up betting cycles (2-3 weeks + cooldown)
 │
+├── hub-v2/                                ← Hub v2 rebuild initiative — plan + substrate-audit + per-slice notes
+│
 ├── backlog/                               ← ephemeral TASK-*.md files for the active cycle
 │
 ├── sessions/                              ← design and decision session bridges

@@ -117,7 +117,7 @@
 **Context:** NPCs are central to the world, but the authoring mechanism is unspecified. Prompt engineering? Behaviour graphs? Learning models? This is prerequisite for any NPC implementation.
 
 ### CQ-015: Hub Rebuild-vs-Evolve — Today's Hub Is Pre-Canon Scaffolding
-**Status:** Parked — revisit when the first FEAT-PD work realizes Platform API operations
+**Status:** RESOLVED (2026-06-15, ADR-U030) — greenfield rebuild on a curated substrate (new app/API/frontend true to the anatomy; DB substrate reused/adapted; old MVP frozen as reference/oracle; built area by area). Plan: [`docs/planning/hub-v2/`](../../planning/hub-v2/README.md). Option (c)'s per-slice framing was reshaped to greenfield-per-area once pre-launch (no users → strangler's keep-live benefit is moot).
 **Scope:** Ferd, Eid
 **Raised:** 2026-06-11 (post-DS-7 descent; all seven Domain Service specs now exist)
 **Blocks:** Nothing immediate; shapes how every FEAT-PD feature's Hub surface gets built
