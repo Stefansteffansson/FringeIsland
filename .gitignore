@@ -30,6 +30,7 @@ build
 .mcp.json
 .claude/*
 !.claude/skills/
+!.claude/settings.json
 
 # SQLite databases (local development)
 *.db
