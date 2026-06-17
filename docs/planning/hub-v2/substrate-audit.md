@@ -117,7 +117,7 @@ Per-table policy sets (by command) are catalogued in the query record; richest s
 | `01_permissions.sql` | **Conformant** | The 44-row permission catalog — PC-3 canon authority; the stable contract surface. |
 | `02_role_templates.sql` | **Conformant** | Layer-1/2 role templates. |
 | `03_group_templates.sql` | **Conformant** | Group archetypes. |
-| `04_system_groups.sql` | **Conformant** | DeusEx root-admin group, FringeIsland Journeys group, `[Deleted User]` sentinel — all canon (U019/U028 DeusEx; sentinel author for content reassignment). |
+| `04_system_groups.sql` | **Conformant** (vocabulary *adapt*) | The 4 system groups: `DeusEx` (root-admin), `FringeIsland Members` (Tier-1 baseline), `[Deleted User]` (sentinel author for content reassignment), and `Visitor` — all canon-aligned (U019/U028 DeusEx). **Adapt:** `Visitor` + its `Guest` role are a *vestigial pre-canon Shadow shell* (no lifecycle behind them — see [behaviour-inventory](./behaviour-inventory.md) + the Shadow gap below); rename to **Shadow** on build. (`FringeIsland Journeys`, which owns the predefined journeys, is an *engagement* group, not a system group.) |
 | `05_professional_pathfinders.sql` | **Adapt** | Bootstrapped predefined-journey content (Journey Studio + DS-3/DS-4 authority). Carries forward, but its inline-content shape adapts with the `journeys.content` externalisation. |
 
 ---

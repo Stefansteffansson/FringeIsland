@@ -8,14 +8,14 @@
 
 ## Current status
 
-**Phase 0 — Locking the decision.** The greenfield rebuild is decided and recorded (ADR-U030); the next step is **Phase 1**: refresh the Hub DESCRIPTION + SPECIFICATION against today's architecture, audit the database substrate, and inventory the old Hub's behaviour. No v2 code has been written yet. The old Hub MVP stays frozen as a reference and behavioural oracle.
+**Phase 1 — Target & inheritance (deliverables complete, 2026-06-17; gate review pending).** All three Phase-1 outputs exist: the refreshed Hub [DESCRIPTION](../../products/hub/DESCRIPTION.md) + [SPECIFICATION](../../products/hub/SPECIFICATION.md) (§L3 re-grounded anchor-neutral; U027/U028 reconciled), the [substrate audit](./substrate-audit.md) (substrate is canon-true and carries forward almost wholesale; the Shadow lifecycle is the one substantial gap), and the [behaviour inventory](./behaviour-inventory.md) (the old suite's ~650 tests catalogued as the v2 oracle, with coverage map + silences). No v2 code yet; the old Hub MVP stays frozen as the behavioural oracle. **Next:** the Phase-1 gate (review the three outputs together), then Phase 2.
 
 ## Phases at a glance
 
 | Phase | What it does | Status |
 |---|---|---|
 | 0 — Lock the decision | Record the rebuild decision (ADR-U030); confirm pre-launch | **Done** |
-| 1 — Target & inheritance | Refresh the Hub spec; audit the DB substrate; inventory old behaviours | **Next (active)** |
+| 1 — Target & inheritance | Refresh the Hub spec; audit the DB substrate; inventory old behaviours | **Deliverables done; gate review pending** |
 | 2 — Clean foundation | Walking skeleton: API-first layering, verticals baseline, design system, auth | Upcoming |
 | 3 — Build area by area | Identity → Groups → Journeys → Communication → Notifications → Platform-Ops | Upcoming |
 | 4 — Cutover & retire | Replace every area, then freeze and delete the old Hub | Upcoming |
