@@ -84,6 +84,6 @@ The Hub intentionally does **not**:
 
 ---
 
-*For technical state and feature inventory, see [SPECIFICATION.md](./SPECIFICATION.md) (when written).*
+*For technical state and feature inventory, see [SPECIFICATION.md](./SPECIFICATION.md).*
 *For the product roadmap, see [ROADMAP.md](./ROADMAP.md) (when written).*
 *For feature specs, see [features/](./features/).*

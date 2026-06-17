@@ -3,8 +3,8 @@
 ---
 slug: hub
 owner: products/hub
-status: draft
-last_updated: 2026-04-26
+status: active
+last_updated: 2026-06-17
 tier: Surfaces
 tags: [product:hub]
 feature_prefix: H
@@ -14,7 +14,7 @@ feature_prefix: H
 
 **Authorship note.** This file is authored across three decomposition levels (see [`.claude/skills/ecosystem-decomposition/SKILL.md`](../../../.claude/skills/ecosystem-decomposition/SKILL.md)). L2 owns the identity, boundaries, and technical shape (§L2 below). L3 owns the capability inventory (§L3). L4 owns the feature-inventory summary (§L4). No level modifies a section owned by another. The `doc-health-check` skill verifies section boundaries hold.
 
-**Current authorship state:** L2 sections are populated. §L3 and §L4 are placeholders awaiting their own authoring sessions.
+**Current authorship state:** §L2, §L3 (capability inventory), and the §L4 feature-inventory summary are all authored. §L3 was re-grounded for the Hub v2 greenfield rebuild (ADR-U030) — see the §L3 intro and Sources-status block.
 
 ---
 
@@ -69,7 +69,7 @@ Where the Hub sits in the ecosystem anatomy ([`../../architecture/ECOSYSTEM_ANAT
 
 ### 3. Authentication & authorization
 
-**Sign-in surface.** Sign-in flows are owned by Platform Core / Identity (PC-2). The Hub renders the sign-in screen and surrounding navigation, but the credential exchange itself is a Platform API call. Shadows (the anonymous entrants — the canonical name for what ADR-U004 calls visitors) arrive via anonymous session ([ADR-U004](../../architecture/decisions/ADR-U004-visitor-anonymous-sign-in.md)) — their activity and preferences accumulate against the anonymous session and transfer into a FIM account upon sign-up. The Hub treats Shadow → FIM as a soft transition, not a wall.
+**Sign-in surface.** Sign-in flows are owned by Platform Core / Identity (PC-2). The Hub renders the sign-in screen and surrounding navigation, but the credential exchange itself is a Platform API call. Shadows (the anonymous entrants — the canonical name for what ADR-U004 calls visitors) arrive via anonymous session ([ADR-U004](../../architecture/decisions/ADR-U004-visitor-anonymous-sign-in.md)) — their activity and preferences accumulate against the anonymous session and transfer into a FIM account upon sign-up. The Hub treats Shadow → FIM as a soft transition, not a wall. Per [ADR-U027](../../architecture/decisions/ADR-U027-shadow-identity-lifecycle.md), the Shadow's own generated data is ephemeral (erased after inactivity or explicit close — a Privacy-vertical / PC-2 configuration), and transcendence is the persistence-and-consent threshold: becoming a FIM is the one moment data binds durably — consent is captured and the session transfers into the FIM account atomically, with continuity (nothing restarts).
 
 **Identity states and roles served by the Hub** (canonical taxonomy: [`docs/ecosystem/universe/roles/README.md`](../../ecosystem/universe/roles/README.md) — identity states Shadow/FIM; per-group roles Steward/Guide/Participant/Observer; Dreamineer as the authorial mode; enterprise plane Universeers/Council/DeusEx):
 
@@ -82,7 +82,7 @@ Where the Hub sits in the ecosystem anatomy ([`../../architecture/ECOSYSTEM_ANAT
 | **Participant** (per-group role) | Default per-group role (ratified rename of the group role "Member") | Takes part in the group's journeys and forums |
 | **Observer** (per-group role) | Role granted within a group | Watches |
 | **Dreamineer** (authorial mode) | Authority granted via group/role permission | FIM affordances plus cross-ecosystem community participation; their authoring lives in Studios, not the Hub |
-| **DeusEx** (enterprise plane) | Membership in the DeusEx root-admin group | Platform-administration UI (member management, group lifecycle, role oversight, threat response, data hygiene) |
+| **DeusEx** (enterprise plane) | Membership in the DeusEx root-admin group | Universe-scope platform operations under governance-by-scope ([ADR-U028](../../architecture/decisions/ADR-U028-governance-by-scope.md)): content moderation and self-service exit stay woven in-place; the audit-log viewer, feature flags, and economy management route to **the Console** (surface status — own entity vs Hub-shell bundle — deferred per U028/U025) |
 
 **Permission resolution.** The Hub never computes permissions locally. Every permission decision is a Platform API call through `has_permission(...)` (resolved in PC-3 Organisation). Per the tier rule in [`../CLAUDE.md`](../CLAUDE.md): UI branches on the *permission*, not on the role string. Roles can be renamed or reorganised; permissions are stable contracts. The three-layer permission model is locked by [ADR-U007](../../architecture/decisions/ADR-U007-three-layer-permission-model.md).
 
@@ -169,11 +169,11 @@ Listed in priority order. Each is a candidate for resolution by an ADR, a resear
 
 *L3 authorship. Derived fresh from L1 (Vision) and L2 (§L2 above) whenever the entity enters active development, has its boundaries materially revised, or is affected by an architectural change. L3 does not read existing feature specs or code during derivation — see the `ecosystem-decomposition` skill's "Reconciliation is a separate activity, downstream of derivation" section.*
 
-*This §L3 was authored in two phases per the code-informed stress-test pattern locked in [`../../planning/sessions/2026-04-30_01_-_CODE-INFORMED-STRESS-TEST-PATTERN.md`](../../planning/sessions/2026-04-30_01_-_CODE-INFORMED-STRESS-TEST-PATTERN.md): a cold-derivation pass produced the candidate capability inventory from L1 + L2 + DESCRIPTION + the eight-area decomposition; a stress-test pass against [`docs/TMP/capabilities.md`](../../TMP/capabilities.md) (the Ferd-current synthesis of the OLDFEAT corpus) classified each capability's activation timing as current-commitment, partial forward-commitment within Ferd, or full forward-commitment beyond Ferd; an adjudication step reconciled the resulting delta. The candidate inventory survived empirical pressure without structural revision. See the Sources-status block for the methodology deliverables this authoring produced.*
+*This §L3 was authored in two phases per the code-informed stress-test pattern locked in [`../../planning/sessions/2026-04-30_01_-_CODE-INFORMED-STRESS-TEST-PATTERN.md`](../../planning/sessions/2026-04-30_01_-_CODE-INFORMED-STRESS-TEST-PATTERN.md): a cold-derivation pass produced the candidate capability inventory from L1 + L2 + DESCRIPTION + the eight-area decomposition; a stress-test pass against [`docs/TMP/capabilities.md`](../../TMP/capabilities.md) (the Ferd-current synthesis of the OLDFEAT corpus) classified each capability's activation timing as current-commitment, partial forward-commitment within Ferd, or full forward-commitment beyond Ferd; an adjudication step reconciled the resulting delta. The candidate inventory survived empirical pressure without structural revision. The per-row forward-commitment annotations that pass produced were retired in the 2026-06-17 ADR-U030 re-grounding (the inventory is now anchor-neutral — see the note under "### Capabilities" below). See the Sources-status block for the methodology deliverables this authoring produced.*
 
 ### Capabilities
 
-Capability rows are annotated with forward-commitment markers. An unannotated row is **current-commitment** — the capability is implemented in the running system per [`docs/TMP/capabilities.md`](../../TMP/capabilities.md). A row marked with `*` is **partial forward-commitment within Ferd** — the capability is architecturally committed by L1 / L2 / ADRs but not yet implemented in the running system; activation is expected within Ferd. A row marked with `**` is **full forward-commitment beyond Ferd** — the capability depends on a Domain Service not yet entering Hub consumption posture (DS-1 World Model, DS-6 Discovery, or DS-7 Intelligence per §L2's "Domain services not yet consumed" list); activation is post-Ferd.
+**Anchor-neutral inventory (re-grounded 2026-06-17, ADR-U030).** This inventory states *what the Hub should do* — full stop. It carries no implementation-status or activation-timing annotations. The earlier version (2026-04-30) tagged each row with a three-way forward-commitment marker anchored to *"implemented in the running system per `docs/TMP/capabilities.md`"* — i.e. the old Hub MVP. ADR-U030 retires that MVP (greenfield v2), so an "implemented in the running system" anchor no longer means "v2 has it." Per the [`ecosystem-decomposition`](../../../.claude/skills/ecosystem-decomposition/SKILL.md) skill's no-status rule (status is a reconciliation output, not a derivation output), that information now lives downstream: *does the old Hub do this?* → the **behaviour inventory**; *does the substrate support it?* → the **substrate audit**; *in what order does v2 build it?* → **ROADMAP** / wave-planning.
 
 The template's prescribed five columns (Capability, Internal area, Depends on (internal), Depends on (external), Vertical impact) are joined by two columns added per a deliberate template deviation locked in the B.2 resumption bridge: **Founding question(s) served** (one or more of *Who am I? · What do I want? · How do I get there?* per VISION.md) and **Dimension(s) engaged** (one or more of *1 · 1+1 · 1+Community* per VISION.md's Three Dimensions). Both columns make Vision traceability explicit at the row level. The deviation is flagged in the Sources-status block as a candidate for template-wide elevation when the next entity-L3 derivation runs.
 
@@ -183,18 +183,18 @@ The Hub provides each person — Shadow or FIM — with a stable, persistent ide
 
 | ID | Capability | Internal area | Depends on (internal) | Depends on (external) | Founding question(s) | Dimension(s) | Vertical impact |
 |---|---|---|---|---|---|---|---|
-| IDN-1 `*` | Provide anonymous Shadow identity on arrival | A-IDN | — | PC-2 (anonymous session per ADR-U004), PC-3 (proto personal group) | Who am I? | 1 | V2, V4 |
-| IDN-2 `*` | Convert Shadow to authenticated FIM identity | A-IDN | IDN-1 | PC-2, PC-3, DS-3 (triggers carry-over of in-flight journey enrolment owned by JRN-5) | Who am I?, What do I want? | 1 | V2, V3, V4 |
+| IDN-1 | Provide anonymous Shadow identity on arrival | A-IDN | — | PC-2 (anonymous session per ADR-U004), PC-3 (proto personal group) | Who am I? | 1 | V2, V4 |
+| IDN-2 | Convert Shadow to authenticated FIM identity | A-IDN | IDN-1 | PC-2, PC-3, PC-4 (consent capture at transcendence per ADR-U027), DS-3 (triggers carry-over of in-flight journey enrolment owned by JRN-5) | Who am I?, What do I want? | 1 | V2, V3, V4 |
 | IDN-3 | Provide authenticated, persistent FIM identity (sign in, sign out, refresh) | A-IDN | IDN-2 | PC-2 | Who am I? | 1 | V2, V4 |
 | IDN-4 | Render and edit member profile (full name, avatar, bio, display name) | A-IDN | IDN-3 | PC-2, PC-3 (display name and personal group naming are coupled) | Who am I? | 1 | V2, V4 |
-| IDN-5 `*` | Provide private personal Journal surface | A-IDN | IDN-3 | PC-2 (Journal primitive) | Who am I?, What do I want? | 1 | V2, V4 |
-| IDN-6 `*` | Render member-visible consent state and consent history | A-IDN | IDN-3 | PC-4 | Who am I? | 1 | V2, V4 |
-| IDN-7 `*` | Update granular consent decisions and sharing controls | A-IDN | IDN-6 | PC-4, PC-3 | Who am I? | 1, 1+1, 1+Community | V2, V4 |
-| IDN-8 `*` | Request and receive complete data export | A-IDN | IDN-3 | PC-4 | Who am I? | 1 | V2, V4 |
+| IDN-5 | Provide private personal Journal surface | A-IDN | IDN-3 | PC-2 (Journal primitive) | Who am I?, What do I want? | 1 | V2, V4 |
+| IDN-6 | Render member-visible consent state and consent history | A-IDN | IDN-3 | PC-4 | Who am I? | 1 | V2, V4 |
+| IDN-7 | Update granular consent decisions and sharing controls | A-IDN | IDN-6 | PC-4, PC-3 | Who am I? | 1, 1+1, 1+Community | V2, V4 |
+| IDN-8 | Request and receive complete data export | A-IDN | IDN-3 | PC-4 | Who am I? | 1 | V2, V4 |
 | IDN-9 | Render account state to the member (active / deactivated / decommissioned) | A-IDN | IDN-3 | PC-2, PC-4 | Who am I? | 1 | V1, V4 |
-| IDN-10 `*` | Initiate self-service exit / deletion request | A-IDN | IDN-3, IDN-9 | PC-2, PC-4, PC-3 (group-membership cascade), DS-3 (enrolment freeze trigger), DS-5 (forum content disposition) | Who am I? | 1, 1+1, 1+Community | V1, V2, V3, V4 |
-| IDN-11 `*` | Render and manage per-device sessions (active sessions list, remote sign-out) | A-IDN | IDN-3 | PC-2 (session inventory and remote-sign-out RPC — cross-entity finding routed to G-29) | Who am I? | 1 | V2, V4 |
-| IDN-12 `*` | Self-service account reactivation | A-IDN | IDN-9 | PC-2 (state transition), PC-4 (audit) | Who am I? | 1 | V1, V2, V4 |
+| IDN-10 | Initiate self-service exit / deletion request | A-IDN | IDN-3, IDN-9 | PC-2, PC-4, PC-3 (group-membership cascade), DS-3 (enrolment freeze trigger), DS-5 (forum content disposition) | Who am I? | 1, 1+1, 1+Community | V1, V2, V3, V4 |
+| IDN-11 | Render and manage per-device sessions (active sessions list, remote sign-out) | A-IDN | IDN-3 | PC-2 (session inventory and remote-sign-out RPC — cross-entity finding routed to G-29) | Who am I? | 1 | V2, V4 |
+| IDN-12 | Self-service account reactivation | A-IDN | IDN-9 | PC-2 (state transition), PC-4 (audit) | Who am I? | 1 | V1, V2, V4 |
 
 #### A-GRP — Groups & Belonging (19 capabilities)
 
@@ -210,7 +210,7 @@ Groups are the primary social container per DESCRIPTION.md. The Hub lets a membe
 | GRP-6 | Apply foundational role templates and define custom roles within a group | A-GRP | GRP-1 | PC-3 | What do I want? | 1+Community | V1, V4 |
 | GRP-7 | Manage member roles (assign / remove / change) | A-GRP | GRP-1, GRP-6 | PC-3 | What do I want? | 1+1, 1+Community | V1, V3, V4 |
 | GRP-8 | Render "act as" context selector and effective permissions for the current actor | A-GRP | GRP-4 | PC-3 (canonical permission resolution) | Who am I?, How do I get there? | 1, 1+Community | V4 |
-| GRP-9 `*` | Delete an engagement group (Steward action, distinct from MEM-8 last-member closure on intent grounds) | A-GRP | GRP-1, GRP-7 | PC-3, DS-3 (cascade enrolment freeze), DS-5 (forum content disposition) | What do I want? | 1+Community | V1, V2, V3, V4 |
+| GRP-9 | Delete an engagement group (Steward action, distinct from MEM-8 last-member closure on intent grounds) | A-GRP | GRP-1, GRP-7 | PC-3, DS-3 (cascade enrolment freeze), DS-5 (forum content disposition) | What do I want? | 1+Community | V1, V2, V3, V4 |
 | MEM-1 | Invite an existing FIM to a group (with member search) | A-GRP | GRP-1, GRP-6 | PC-3, DS-6 (member search) | What do I want? | 1+Community | V1, V2, V3, V4 |
 | MEM-2 | Invite a non-FIM by email (pending invitation, auto-claim on signup) | A-GRP | GRP-1, GRP-6 | PC-3, PC-2 (auto-claim binding), V3 (outbound channel) | What do I want? | 1+Community | V1, V2, V3, V4 |
 | MEM-3 | Accept or decline an invitation | A-GRP | MEM-1 or MEM-2 | PC-3 | What do I want? | 1+Community | V3, V4 |
@@ -232,7 +232,7 @@ Journeys are the primary developmental experience per VISION.md. The Hub renders
 | JRN-2 | View journey detail | A-JRN | JRN-1 | DS-3, DS-4 (preview content) | What do I want?, How do I get there? | 1, 1+Community | V2, V4 |
 | JRN-3 | Enrol self in a journey (individual) | A-JRN | IDN-3, JRN-2 | DS-3, PC-3 (personal group as enrolling entity) | What do I want?, How do I get there? | 1 | V2, V3, V4 |
 | JRN-4 | Enrol an engagement group in a journey | A-JRN | GRP-1, GRP-8, JRN-2 | DS-3, PC-3 | What do I want?, How do I get there? | 1+Community | V2, V3, V4 |
-| JRN-5 `*` | Preserve in-flight journey enrolment across Shadow→FIM conversion | A-JRN | JRN-3, IDN-2 | DS-3 (anonymous-session enrolment carry-over), PC-2 (session binding) | How do I get there? | 1 | V2, V4 |
+| JRN-5 | Preserve in-flight journey enrolment across Shadow→FIM conversion | A-JRN | JRN-3, IDN-2 | DS-3 (anonymous-session enrolment carry-over), PC-2 (session binding) | How do I get there? | 1 | V2, V4 |
 | JRN-6 | Render the journey player | A-JRN | JRN-3, JRN-4 | DS-3, DS-4 | How do I get there? | 1, 1+Community | V2, V4 |
 | JRN-7 | Walk steps with linear navigation (previous / next) | A-JRN | JRN-6 | DS-3 | How do I get there? | 1, 1+Community | V4 |
 | JRN-8 | Mark step complete and enforce required-step gating | A-JRN | JRN-6 | DS-3 | How do I get there? | 1, 1+Community | V4 |
@@ -242,9 +242,9 @@ Journeys are the primary developmental experience per VISION.md. The Hub renders
 | JRN-12 | Detect and mark journey completion when all required steps done | A-JRN | JRN-8 | DS-3 | How do I get there? | 1, 1+Community | V3, V4 |
 | JRN-13 | Render review mode for completed journeys | A-JRN | JRN-12 | DS-3, DS-4 | Who am I?, How do I get there? | 1, 1+Community | V4 |
 | JRN-14 | Render frozen-enrolment read-only mode with explanation | A-JRN | JRN-6, MEM-* (cross-area dependency on the membership-lifecycle exit cluster) | DS-3 (frozen-state semantics), PC-3 (group-context-disappearance trigger) | How do I get there? | 1+Community | V2, V3, V4 |
-| JRN-15 `*` | Detect first-arrival state and auto-launch a designated journey | A-JRN | IDN-3 | DS-3 (enrolment trigger), PC-2 (first-arrival state from session history) | Who am I? | 1 | V3, V4 |
-| JRN-16 `*` | Render group-level progress (role-gated) | A-JRN | JRN-4, GRP-8 | DS-3, PC-3 | How do I get there? | 1+Community | V2, V4 |
-| JRN-17 `*` | Render per-member progress within a group (role-gated, privacy-respecting) | A-JRN | JRN-4, GRP-8 | DS-3, PC-3, PC-4 (visibility consent) | How do I get there? | 1+Community | V2, V4 |
+| JRN-15 | Detect first-arrival state and auto-launch a designated journey | A-JRN | IDN-3 | DS-3 (enrolment trigger), PC-2 (first-arrival state from session history) | Who am I? | 1 | V3, V4 |
+| JRN-16 | Render group-level progress (role-gated) | A-JRN | JRN-4, GRP-8 | DS-3, PC-3 | How do I get there? | 1+Community | V2, V4 |
+| JRN-17 | Render per-member progress within a group (role-gated, privacy-respecting) | A-JRN | JRN-4, GRP-8 | DS-3, PC-3, PC-4 (visibility consent) | How do I get there? | 1+Community | V2, V4 |
 | JRN-18 | Render every foundational step type DS-3 publishes | A-JRN | JRN-6 | DS-3 (step-type catalogue authority), DS-4 (step content) | Who am I?, What do I want?, How do I get there? | 1, 1+1, 1+Community | V2, V4 |
 
 #### A-COM — Communication & Community (15 capabilities)
@@ -261,12 +261,12 @@ Communication spans 1+1 (DM), 1+Community (forum), and 1→many (announcements),
 | COM-6a | Post top-level forum message (role-gated) | A-COM | COM-5 | DS-5, PC-3 | What do I want? | 1+Community | V1, V3, V4 |
 | COM-6b | Reply to forum message (role-gated) | A-COM | COM-5, COM-6a | DS-5, PC-3 | What do I want? | 1+Community | V1, V3, V4 |
 | COM-7 | Moderate forum content (role-gated to Steward) | A-COM | COM-5, COM-6a, COM-6b | DS-5, PC-3 | What do I want? | 1+Community | V1, V4 |
-| COM-8 `*` | Send a Steward announcement to a group (1→many) | A-COM | GRP-8 | DS-5, V3 (delivery to group members) | What do I want? | 1+Community | V1, V3, V4 |
-| COM-9 `*` | Send a platform-wide admin announcement (1→all) | A-COM | A-ADM | DS-5, V3 | What do I want? | 1+Community | V1, V3, V4 |
+| COM-8 | Send a Steward announcement to a group (1→many) | A-COM | GRP-8 | DS-5, V3 (delivery to group members) | What do I want? | 1+Community | V1, V3, V4 |
+| COM-9 | Send a platform-wide admin announcement (1→all) | A-COM | A-ADM | DS-5, V3 | What do I want? | 1+Community | V1, V3, V4 |
 | COM-10 | Receive real-time updates for messages, forum posts, and activity events | A-COM | COM-1, COM-5 | DS-5 (real-time primitive), PC-1 (Supabase realtime channel infrastructure — load-bearing per §L2 §4) | What do I want? | 1+1, 1+Community | V4 |
 | COM-11 | Reconcile missed messages and forum updates on reconnect | A-COM | COM-10 | DS-5 | What do I want? | 1+1, 1+Community | V4 |
-| COM-12 `*` | Edit or delete own message or post within configurable window | A-COM | COM-1, COM-6a, COM-6b | DS-5 | What do I want? | 1+1, 1+Community | V2, V4 |
-| COM-13 `*` | Submit content report from forum or DM surface | A-COM | COM-3, COM-6a, COM-6b | DS-5, PC-4, A-ADM (moderation queue) | What do I want? | 1+1, 1+Community | V1, V2, V4 |
+| COM-12 | Edit or delete own message or post within configurable window | A-COM | COM-1, COM-6a, COM-6b | DS-5 | What do I want? | 1+1, 1+Community | V2, V4 |
+| COM-13 | Submit content report from forum or DM surface | A-COM | COM-3, COM-6a, COM-6b | DS-5, PC-4, A-ADM (moderation queue) | What do I want? | 1+1, 1+Community | V1, V2, V4 |
 | COM-14 | Render former-member attribution at content-display layer | A-COM | MEM-9, COM-3, COM-5 | DS-5, PC-3 | Who am I?, What do I want? | 1+1, 1+Community | V2, V4 |
 
 #### A-NTF — Notifications & Inbox (10 capabilities)
@@ -277,102 +277,110 @@ Notifications are the connective tissue. The Hub renders them, lets the member a
 |---|---|---|---|---|---|---|---|
 | NTF-1 | Receive and render passive notifications | A-NTF | IDN-3 | DS-5 (delivery substrate), V3 (notification copy and routing) | What do I want? | 1, 1+1, 1+Community | V3, V4 |
 | NTF-2 | Render notification bell with unread count | A-NTF | NTF-1 | V3 | What do I want? | 1, 1+1, 1+Community | V4 |
-| NTF-3 `*` | Render notification inbox / history surface | A-NTF | NTF-1 | V3 | What do I want? | 1, 1+1, 1+Community | V4 |
+| NTF-3 | Render notification inbox / history surface | A-NTF | NTF-1 | V3 | What do I want? | 1, 1+1, 1+Community | V4 |
 | NTF-4 | Receive and render smart (actionable) notifications | A-NTF | NTF-1 | V3, DS-5 | What do I want? | 1+1, 1+Community | V3, V4 |
 | NTF-5 | Render typed-action UI (Accept/Decline and other action types) | A-NTF | NTF-4 | V3 | What do I want? | 1+1, 1+Community | V3, V4 |
 | NTF-6 | Submit response to smart notification with server-side dispatch to handler | A-NTF | NTF-5 | V3, PC-4 (audit), downstream domain (PC-3 for stewardship transfer, A-GRP for invitation acceptance, A-COM for moderation-decision communication) | What do I want? | 1+1, 1+Community | V3, V4 |
 | NTF-7 | Track per-notification read state | A-NTF | NTF-1 | V3 | What do I want? | 1, 1+1, 1+Community | V4 |
 | NTF-8 | Resolve expired smart notifications lazily on view | A-NTF | NTF-4 | V3 | What do I want? | 1+1, 1+Community | V3, V4 |
 | NTF-9 | Reconcile missed notifications on client reconnect | A-NTF | NTF-1 | V3, DS-5, PC-1 (Supabase realtime — load-bearing per §L2 §4) | What do I want? | 1, 1+1, 1+Community | V4 |
-| NTF-10 `*` | Configure notification preferences per category and channel | A-NTF | IDN-7 | V3, PC-4 (preference persistence) | What do I want? | 1, 1+1, 1+Community | V2, V3, V4 |
+| NTF-10 | Configure notification preferences per category and channel | A-NTF | IDN-7 | V3, PC-4 (preference persistence) | What do I want? | 1, 1+1, 1+Community | V2, V3, V4 |
 
-#### A-COI — Companion & Insight (7 capabilities, all full forward-commitment)
+#### A-COI — Companion & Insight (7 capabilities)
 
-The Hub provides surfaces for the member's companion intelligence — opt-in Mentor and Whisp expressions — without imposing them and without surfacing private internal state to anyone but the member. **All A-COI capabilities are full forward-commitment** (`**`): DS-1 World Model and DS-7 Intelligence are not yet in Hub consumption posture per §L2's "Domain services not yet consumed" list. Activation is post-Ferd.
-
-| ID | Capability | Internal area | Depends on (internal) | Depends on (external) | Founding question(s) | Dimension(s) | Vertical impact |
-|---|---|---|---|---|---|---|---|
-| COI-1 `**` | Configure global opt-in / opt-out for AI Mentor | A-COI | IDN-7 | DS-7 (mentor lifecycle), PC-4 (consent persistence) | Who am I?, What do I want? | 1 | V2, V4 |
-| COI-2 `**` | Configure per-context invocation preferences (per-journey-step granularity) | A-COI | COI-1 | DS-7, PC-4 | Who am I?, What do I want? | 1 | V2, V4 |
-| COI-3 `**` | Render Mentor presence within a journey step (when invited by step content and member opted in) | A-COI | JRN-6, COI-1, COI-2 | DS-7, DS-3 (step-level Mentor invitation hook) | Who am I?, How do I get there? | 1 | V2, V4 |
-| COI-4 `**` | Render standalone Mentor conversation surface | A-COI | COI-1 | DS-7 | Who am I?, How do I get there? | 1 | V2, V4 |
-| COI-5 `**` | Reset or delete Mentor memory at member's request | A-COI | COI-1 | DS-7, PC-4 (deletion audit) | Who am I? | 1 | V1, V2, V4 |
-| COI-6 `**` | Render Whisp internal-state surface (private to the member) | A-COI | IDN-3 | DS-1 (Whisp world-model), DS-7 (perceptual aggregation) | Who am I? | 1 | V2, V4 |
-| COI-7 `**` | Render private insight portrait aggregated from member's engagement | A-COI | IDN-3, JRN-* (wildcard area-dependency convention; see Sources-status) | DS-7 (insight aggregation), PC-4 (visibility — always-private) | Who am I?, What do I want? | 1 | V2, V4 |
-
-#### A-DIS — Discovery & Direction-Finding (7 capabilities, mixed forward-commitment)
-
-The Hub renders discovery surfaces; the underlying logic (search, ranking, recommendations) lives in DS-6. A-DIS spans all three forward-commitment classes: zero current-commitment rows, four partial-forward-within-Ferd rows (DIS-1, DIS-2, DIS-6, DIS-7), three full-forward-beyond-Ferd rows (DIS-3, DIS-4, DIS-5).
+The Hub provides surfaces for the member's companion intelligence — opt-in Mentor and Whisp expressions — without imposing them and without surfacing private internal state to anyone but the member. Every A-COI capability depends on DS-1 World Model and/or DS-7 Intelligence, which §L2's "Domain services not yet consumed" list places outside the Hub's current consumption posture; A-COI therefore builds only once those services enter consumption (sequencing tracked in ROADMAP, not here).
 
 | ID | Capability | Internal area | Depends on (internal) | Depends on (external) | Founding question(s) | Dimension(s) | Vertical impact |
 |---|---|---|---|---|---|---|---|
-| DIS-1 `*` | Render journey catalogue surface | A-DIS | — | DS-3 (catalogue listing in Ferd; cross-entity finding routed to G-29 for shape-reciprocation), DS-6 (ranking; full forward-commitment) | What do I want?, How do I get there? | 1, 1+Community | V2, V4 |
-| DIS-2 `*` | Render group browse surface (publicly-visible groups) | A-DIS | GRP-3 | DS-3 (group listing in Ferd), DS-6 (ranking; full forward-commitment), PC-3 (visibility filtering) | What do I want? | 1+Community | V2, V4 |
-| DIS-3 `**` | Render member-search surface (only opted-in members) | A-DIS | DIS-6 | DS-6 (search index; full forward-commitment), PC-3 (consent filtering) | What do I want? | 1+1, 1+Community | V2, V4 |
-| DIS-4 `**` | Render recommendations surface (opt-in, explained) | A-DIS | IDN-7 | DS-6, DS-7 (full forward-commitment both) | What do I want?, How do I get there? | 1, 1+Community | V2, V4 |
-| DIS-5 `**` | Surface "why this recommendation" explanation alongside each recommendation | A-DIS | DIS-4 | DS-6, DS-7 (full forward-commitment both) | What do I want? | 1, 1+Community | V2, V4 |
-| DIS-6 `*` | Configure member's own discoverability defaults (per-aspect, per-audience) | A-DIS | IDN-7 | PC-3, PC-4 | Who am I? | 1, 1+1, 1+Community | V2, V4 |
-| DIS-7 `*` | Render activity feed (aggregated ambient surface) | A-DIS | GRP-4, COM-1, COM-5 | DS-5 (event substrate), DS-6 (ranking; full forward-commitment), PC-3 (visibility filtering) | What do I want? | 1+Community | V2, V4 |
+| COI-1 | Configure global opt-in / opt-out for AI Mentor | A-COI | IDN-7 | DS-7 (mentor lifecycle), PC-4 (consent persistence) | Who am I?, What do I want? | 1 | V2, V4 |
+| COI-2 | Configure per-context invocation preferences (per-journey-step granularity) | A-COI | COI-1 | DS-7, PC-4 | Who am I?, What do I want? | 1 | V2, V4 |
+| COI-3 | Render Mentor presence within a journey step (when invited by step content and member opted in) | A-COI | JRN-6, COI-1, COI-2 | DS-7, DS-3 (step-level Mentor invitation hook) | Who am I?, How do I get there? | 1 | V2, V4 |
+| COI-4 | Render standalone Mentor conversation surface | A-COI | COI-1 | DS-7 | Who am I?, How do I get there? | 1 | V2, V4 |
+| COI-5 | Reset or delete Mentor memory at member's request | A-COI | COI-1 | DS-7, PC-4 (deletion audit) | Who am I? | 1 | V1, V2, V4 |
+| COI-6 | Render Whisp internal-state surface (private to the member) | A-COI | IDN-3 | DS-1 (Whisp world-model), DS-7 (perceptual aggregation) | Who am I? | 1 | V2, V4 |
+| COI-7 | Render private insight portrait aggregated from member's engagement | A-COI | IDN-3, JRN-* (wildcard area-dependency convention; see Sources-status) | DS-7 (insight aggregation), PC-4 (visibility — always-private) | Who am I?, What do I want? | 1 | V2, V4 |
+
+#### A-DIS — Discovery & Direction-Finding (7 capabilities)
+
+The Hub renders discovery surfaces; the underlying logic (search, ranking, recommendations) lives in DS-6. Per-row external dependencies are stated in the table below; build sequencing relative to DS-6 and the §L2 not-yet-consumed list is a ROADMAP concern, not stated here.
+
+| ID | Capability | Internal area | Depends on (internal) | Depends on (external) | Founding question(s) | Dimension(s) | Vertical impact |
+|---|---|---|---|---|---|---|---|
+| DIS-1 | Render journey catalogue surface | A-DIS | — | DS-3 (catalogue listing in Ferd; cross-entity finding routed to G-29 for shape-reciprocation), DS-6 (ranking) | What do I want?, How do I get there? | 1, 1+Community | V2, V4 |
+| DIS-2 | Render group browse surface (publicly-visible groups) | A-DIS | GRP-3 | DS-3 (group listing in Ferd), DS-6 (ranking), PC-3 (visibility filtering) | What do I want? | 1+Community | V2, V4 |
+| DIS-3 | Render member-search surface (only opted-in members) | A-DIS | DIS-6 | DS-6 (search index), PC-3 (consent filtering) | What do I want? | 1+1, 1+Community | V2, V4 |
+| DIS-4 | Render recommendations surface (opt-in, explained) | A-DIS | IDN-7 | DS-6, DS-7 | What do I want?, How do I get there? | 1, 1+Community | V2, V4 |
+| DIS-5 | Surface "why this recommendation" explanation alongside each recommendation | A-DIS | DIS-4 | DS-6, DS-7 | What do I want? | 1, 1+Community | V2, V4 |
+| DIS-6 | Configure member's own discoverability defaults (per-aspect, per-audience) | A-DIS | IDN-7 | PC-3, PC-4 | Who am I? | 1, 1+1, 1+Community | V2, V4 |
+| DIS-7 | Render activity feed (aggregated ambient surface) | A-DIS | GRP-4, COM-1, COM-5 | DS-5 (event substrate), DS-6 (ranking), PC-3 (visibility filtering) | What do I want? | 1+Community | V2, V4 |
 
 #### A-ADM — Platform Operations (17 capabilities, meta-area)
 
 DeusEx-scoped operations. **A-ADM is a meta-area**: zero capabilities serve the founding questions directly, because admin actions are *about keeping the platform healthy* rather than about identity-work, want-finding, or directional progress for the admin actor. The platform exists to serve members' founding-question work; A-ADM serves the founding questions transitively, by keeping the platform operational. This is the only area in the inventory with the meta-area shape; structurally honest finding (see Sources-status, methodology observation #13).
 
+Per governance-by-scope ([ADR-U028](../../architecture/decisions/ADR-U028-governance-by-scope.md)), A-ADM's universe-scope operations route by capability: content moderation (ADM-10/11) stays woven in-place in the FIM experience, while the audit-log viewer (ADM-13, ADM-16), feature flags (ADM-15), and economy management route to **the Console** — a back-of-house surface whose status as its own entity vs a Hub-shell feature bundle is a deferred decomposition decision (U028/U025). The A-ADM rows are retained in this inventory pending that decision; none are relocated yet.
+
 | ID | Capability | Internal area | Depends on (internal) | Depends on (external) | Founding question(s) | Dimension(s) | Vertical impact |
 |---|---|---|---|---|---|---|---|
 | ADM-1 | Render admin dashboard with platform statistics | A-ADM | GRP-8 | PC-1 (statistics aggregation — load-bearing infrastructure commitment), PC-3, PC-4 | — | 1+Community | V1, V4 |
-| ADM-2 | Search, filter, and list members at platform scope | A-ADM | ADM-1 | PC-3, DS-6 (member search; partial forward-commitment for ranking) | — | 1+Community | V1, V2, V4 |
+| ADM-2 | Search, filter, and list members at platform scope | A-ADM | ADM-1 | PC-3, DS-6 (member search ranking) | — | 1+Community | V1, V2, V4 |
 | ADM-3 | Activate, deactivate, or decommission a member account (reversible vs. irreversible) | A-ADM | ADM-2 | PC-2, PC-4 | — | 1+Community | V1, V2, V3, V4 |
 | ADM-4 | Hard-delete a member with content reassignment to sentinel author | A-ADM | ADM-2 | PC-2, PC-3, PC-4, DS-3 (enrolment cleanup), DS-5 (forum reassignment) | — | 1+Community | V1, V2, V4 |
 | ADM-5 | Force-logout a member's active sessions | A-ADM | ADM-2 | PC-2, V3 (session-broadcast) | — | 1+Community | V1, V4 |
 | ADM-6 | Sweep a member from every group on the platform (auto-routing through MEM-5/MEM-6/MEM-7/MEM-8) | A-ADM | ADM-2, MEM-5, MEM-6, MEM-7, MEM-8 | PC-2, PC-3, PC-4, DS-3, DS-5 | — | 1+Community | V1, V2, V3, V4 |
 | ADM-7 | Bulk-action selected members (within a safe action subset) | A-ADM | ADM-2 | PC-3, PC-4 | — | 1+Community | V1, V4 |
-| ADM-8 `*` | Render group administration view (cross-platform group list and detail) | A-ADM | ADM-1 | PC-3 | — | 1+Community | V1, V4 |
-| ADM-9 `*` | Suspend, reassign, or reactivate a group at platform scope | A-ADM | ADM-8, GRP-5 | PC-3 | — | 1+Community | V1, V4 |
-| ADM-10 `*` | Render content-moderation queue (incoming reports across the platform) | A-ADM | COM-13 | PC-4 | — | 1+Community | V1, V4 |
-| ADM-11 `*` | Triage and resolve content reports (with action dispatch and resolution communication) | A-ADM | ADM-10 | PC-4, DS-5 (resolution communication channel), PC-3 (member-state changes if escalating) | — | 1+Community | V1, V3, V4 |
+| ADM-8 | Render group administration view (cross-platform group list and detail) | A-ADM | ADM-1 | PC-3 | — | 1+Community | V1, V4 |
+| ADM-9 | Suspend, reassign, or reactivate a group at platform scope | A-ADM | ADM-8, GRP-5 | PC-3 | — | 1+Community | V1, V4 |
+| ADM-10 | Render content-moderation queue (incoming reports across the platform) | A-ADM | COM-13 | PC-4 | — | 1+Community | V1, V4 |
+| ADM-11 | Triage and resolve content reports (with action dispatch and resolution communication) | A-ADM | ADM-10 | PC-4, DS-5 (resolution communication channel), PC-3 (member-state changes if escalating) | — | 1+Community | V1, V3, V4 |
 | ADM-12 | Manage Platform Administrator membership (add and remove with last-administrator protection) | A-ADM | ADM-1 | PC-3 | — | 1+Community | V1, V4 |
-| ADM-13 `*` | Render auto-grant verification view (filtered audit log surface specific to permission-catalogue auto-grants) | A-ADM | ADM-16 | PC-3 (auto-grant trigger — cross-entity finding routed to G-29 for surface-publication reciprocation), PC-4 (audit log entries) | — | 1+Community | V1, V4 |
-| ADM-14 `*` | Configure platform policy (versioned, reversible) | A-ADM | ADM-1 | PC-4 | — | 1+Community | V1, V4 |
-| ADM-15 `*` | Manage feature flags (create, toggle, scope) | A-ADM | ADM-1 | PC-4 | — | 1+Community | V1, V4 |
-| ADM-16 `*` | Render platform-scope audit log surface | A-ADM | ADM-1 | PC-4 | — | 1+Community | V1, V4 |
+| ADM-13 | Render auto-grant verification view (filtered audit log surface specific to permission-catalogue auto-grants) | A-ADM | ADM-16 | PC-3 (auto-grant trigger — cross-entity finding routed to G-29 for surface-publication reciprocation), PC-4 (audit log entries) | — | 1+Community | V1, V4 |
+| ADM-14 | Configure platform policy (versioned, reversible) | A-ADM | ADM-1 | PC-4 | — | 1+Community | V1, V4 |
+| ADM-15 | Manage feature flags (create, toggle, scope) | A-ADM | ADM-1 | PC-4 | — | 1+Community | V1, V4 |
+| ADM-16 | Render platform-scope audit log surface | A-ADM | ADM-1 | PC-4 | — | 1+Community | V1, V4 |
 | ADM-17 | Render and manage role templates and the permission catalogue (DeusEx-scope CRUD) | A-ADM | ADM-1, ADM-13 | PC-3 (role-template + permission-catalogue authority) | — | 1+Community | V1, V4 |
 
 ### Dependency chain
 
-The build order across areas reflects the layered structure of the Hub's developmental experience and the dependency graph between areas. A-IDN is the foundation — every other area's first row depends on IDN-3 (authenticated FIM identity) directly or transitively. A-GRP is the social substrate — once members exist, groups are the container that makes 1+Community participation possible, and journey enrolment, communication, and discovery all depend on group-context affordances (GRP-1, GRP-4, GRP-8 in particular). A-JRN builds on top of A-IDN and A-GRP — the journey player is only meaningful for an enrolled member acting in a (personal or engagement) group context. A-COM operates in parallel with A-JRN once A-GRP is in place — communication is its own destination dimension and doesn't gate on journey work. A-NTF is connective tissue across the prior areas and depends on real-time delivery primitives shared with A-COM. A-COI is forward-deferred entirely — it activates only when DS-1 World Model and DS-7 Intelligence enter Hub consumption posture (post-Ferd). A-DIS spans current and forward states — zero current-commitment rows; the catalogue and group-browse surfaces have Ferd-degraded forms via DS-3 + PC-3 fallbacks while DS-6 ranking is forward-commitment, and recommendations + member search are full forward-commitment beyond Ferd. A-ADM is current-commitment foundational — admin operations are platform-health work that must be in place from launch even though several rows (ADM-8 through ADM-11, ADM-13 through ADM-16) are partial-forward within Ferd as their respective surfaces get built out.
+The build order across areas reflects the layered structure of the Hub's developmental experience and the dependency graph between areas. A-IDN is the foundation — every other area's first row depends on IDN-3 (authenticated FIM identity) directly or transitively. A-GRP is the social substrate — once members exist, groups are the container that makes 1+Community participation possible, and journey enrolment, communication, and discovery all depend on group-context affordances (GRP-1, GRP-4, GRP-8 in particular). A-JRN builds on top of A-IDN and A-GRP — the journey player is only meaningful for an enrolled member acting in a (personal or engagement) group context. A-COM operates in parallel with A-JRN once A-GRP is in place — communication is its own destination dimension and doesn't gate on journey work. A-NTF is connective tissue across the prior areas and depends on real-time delivery primitives shared with A-COM. A-COI depends entirely on DS-1 World Model and DS-7 Intelligence, which §L2 lists as not-yet-consumed — it builds only once those services enter consumption. A-DIS depends on DS-6 Discovery (also on §L2's not-yet-consumed list); the catalogue and group-browse surfaces have degraded forms via DS-3 + PC-3 fallbacks while DS-6 ranking is unavailable, and member search and recommendations additionally depend on DS-6 / DS-7. A-ADM is foundational platform-health work needed from launch. Build sequencing across and within areas (which rows land in which wave) is a ROADMAP / wave-planning concern, not stated here.
 
-The dependency chain has one important cross-area nuance: **A-COM and A-NTF share a real-time delivery substrate** (DS-5 + PC-1 Supabase realtime channels per §L2 §4). COM-10 and NTF-9 both depend on that substrate; their reconciliation rows (COM-11, NTF-9 itself) handle the same class of degradation. The substrate is current-commitment; A-COM and A-NTF activate together for real-time delivery but their feature-spec authoring can proceed in parallel.
+The dependency chain has one important cross-area nuance: **A-COM and A-NTF share a real-time delivery substrate** (DS-5 + PC-1 Supabase realtime channels per §L2 §4). COM-10 and NTF-9 both depend on that substrate; their reconciliation rows (COM-11, NTF-9 itself) handle the same class of degradation. A-COM and A-NTF activate together for real-time delivery but their feature-spec authoring can proceed in parallel.
 
 ### External dependencies
 
 Capabilities consumed from other entities. Each entry names the source entity, the consumed capability shape, and the consuming Hub internal area(s).
 
-| Source entity | Consumed capability shape | Consuming Hub internal area(s) | Activation timing |
+| Source entity | Consumed capability shape | Consuming Hub internal area(s) | Consumption notes |
 |---|---|---|---|
-| PC-1 Infrastructure | Supabase realtime channel infrastructure (load-bearing per §L2 §4; not universal substrate) | A-COM (COM-10), A-NTF (NTF-9) | Current-commitment |
-| PC-1 Infrastructure | Statistics aggregation primitive | A-ADM (ADM-1) | Current-commitment |
-| PC-2 Identity | Authentication, sessions, profile primitives | A-IDN (IDN-1..IDN-4, IDN-9..IDN-12), A-ADM (ADM-3..ADM-6) | Mixed (current for sign-in; partial-forward for per-device sessions and reactivation) |
-| PC-2 Identity | Anonymous session per ADR-U004 | A-IDN (IDN-1, IDN-2), A-JRN (JRN-5) | Partial forward-commitment within Ferd |
-| PC-2 Identity | Personal Journal primitive | A-IDN (IDN-5) | Partial forward-commitment within Ferd |
-| PC-3 Organisation | Group lifecycle, memberships, role assignment | A-GRP (most rows), A-JRN (JRN-3, JRN-4 enrolment), A-COM (forum role-gating), A-ADM (group lifecycle, admin membership) | Mostly current-commitment |
-| PC-3 Organisation | Permission resolution `has_permission()` | A-GRP (GRP-8), all role-gated capabilities | Current-commitment |
+| PC-1 Infrastructure | Supabase realtime channel infrastructure (load-bearing per §L2 §4; not universal substrate) | A-COM (COM-10), A-NTF (NTF-9) | — |
+| PC-1 Infrastructure | Statistics aggregation primitive | A-ADM (ADM-1) | — |
+| PC-2 Identity | Authentication, sessions, profile primitives | A-IDN (IDN-1..IDN-4, IDN-9..IDN-12), A-ADM (ADM-3..ADM-6) | — |
+| PC-2 Identity | Anonymous session per ADR-U004 | A-IDN (IDN-1, IDN-2), A-JRN (JRN-5) | — |
+| PC-2 Identity | Personal Journal primitive | A-IDN (IDN-5) | — |
+| PC-3 Organisation | Group lifecycle, memberships, role assignment | A-GRP (most rows), A-JRN (JRN-3, JRN-4 enrolment), A-COM (forum role-gating), A-ADM (group lifecycle, admin membership) | — |
+| PC-3 Organisation | Permission resolution `has_permission()` | A-GRP (GRP-8), all role-gated capabilities | — |
 | PC-3 Organisation | Transitive group-of-groups resolution beyond depth 1 | A-GRP (MEM-10) | **Cross-entity finding routed to G-29** — schema supports nesting; resolution machinery is depth-1-only per §L2 §8 |
 | PC-3 Organisation | Auto-grant trigger publication for verification surface | A-ADM (ADM-13) | **Cross-entity finding routed to G-29** — trigger mechanism exists; Hub-renderable surface for verification not yet reciprocated |
 | PC-2 Identity | Per-device session inventory and remote-sign-out RPC | A-IDN (IDN-11) | **Cross-entity finding routed to G-29** — capability gap flagged in capabilities.md; PC-2 reciprocation needed |
-| PC-4 Governance | Audit log entries, GDPR consent state, data export request flow, feature flags | A-IDN (IDN-6, IDN-7, IDN-8), A-NTF (NTF-10), A-ADM (multiple) | Mixed |
-| DS-1 World Model | Whisp internal state primitives | A-COI (COI-6) | **Full forward-commitment** — not yet in Hub consumption posture |
-| DS-3 Journeys | Journey enrolment, progress, content delivery, frozen-state semantics, step-type catalogue | A-JRN (most rows), A-DIS (DIS-1, DIS-2 catalogue listing in Ferd) | Mostly current-commitment |
+| PC-4 Governance | Audit log entries, GDPR consent state, data export request flow, feature flags | A-IDN (IDN-6, IDN-7, IDN-8), A-NTF (NTF-10), A-ADM (multiple) | — |
+| DS-1 World Model | Whisp internal state primitives | A-COI (COI-6) | Not yet consumed (§L2 not-yet-consumed list) |
+| DS-3 Journeys | Journey enrolment, progress, content delivery, frozen-state semantics, step-type catalogue | A-JRN (most rows), A-DIS (DIS-1, DIS-2 catalogue listing in Ferd) | — |
 | DS-3 Journeys | Catalogue listing with Ferd-acceptable filters and metadata | A-DIS (DIS-1, DIS-2) | **Cross-entity finding routed to G-29** — basic browse confirmed; specific shape needs reciprocation |
-| DS-4 Content | Media and asset delivery | A-JRN (JRN-2, JRN-13, JRN-18), A-GRP (MEM-8 asset disposition) | Current-commitment |
-| DS-5 Communication | Direct messaging, forums, real-time delivery, activity feed event substrate | A-COM (most rows), A-NTF (NTF-1, NTF-9), A-DIS (DIS-7) | Current-commitment for DM and forum substrate; partial-forward for activity feed aggregation |
-| DS-6 Discovery | Search, ranking, recommendations | A-DIS (all rows), A-GRP (MEM-1 member search), A-ADM (ADM-2 member search ranking) | Mostly **full forward-commitment**; ranking partial-forward for catalogue rows |
-| DS-7 Intelligence | AI Mentor lifecycle, perceptual aggregation, insight aggregation | A-COI (all rows), A-DIS (DIS-4, DIS-5) | **Full forward-commitment** — not yet in Hub consumption posture |
-| V3 Notifications | Notification copy, routing, delivery, expiry semantics | A-NTF (all rows), A-COM (announcement delivery), A-GRP (MEM-2 outbound, MEM-7 succession) | Current-commitment |
+| DS-4 Content | Media and asset delivery | A-JRN (JRN-2, JRN-13, JRN-18), A-GRP (MEM-8 asset disposition) | — |
+| DS-5 Communication | Direct messaging, forums, real-time delivery, activity feed event substrate | A-COM (most rows), A-NTF (NTF-1, NTF-9), A-DIS (DIS-7) | — |
+| DS-6 Discovery | Search, ranking, recommendations | A-DIS (all rows), A-GRP (MEM-1 member search), A-ADM (ADM-2 member search ranking) | Not yet consumed (§L2 not-yet-consumed list) |
+| DS-7 Intelligence | AI Mentor lifecycle, perceptual aggregation, insight aggregation | A-COI (all rows), A-DIS (DIS-4, DIS-5) | Not yet consumed (§L2 not-yet-consumed list) |
+| V3 Notifications | Notification copy, routing, delivery, expiry semantics | A-NTF (all rows), A-COM (announcement delivery), A-GRP (MEM-2 outbound, MEM-7 succession) | — |
 
 ### Sources-status block
 
 Remarks recording prerequisite-check pauses, methodology observations, and cross-entity findings produced during this §L3 authoring. Each entry references the gap or open question it relates to, where applicable.
+
+**2026-06-17 re-grounding (ADR-U030 Hub v2 greenfield rebuild).**
+- **Anchor-neutralisation (Option A).** The per-row forward-commitment annotations (`*` / `**`) and the External-dependencies "Activation timing" column were retired. They were anchored to "implemented in the running system per `docs/TMP/capabilities.md`" — the old Hub MVP that ADR-U030 retires. Per the no-status rule, implementation/activation status now lives downstream (behaviour inventory, substrate audit, ROADMAP). The eight-area structure and ~100 rows were unchanged — the re-grounding removed status, not capabilities. The historical authoring record below (Observations A–G, the stress-test methodology) is preserved as provenance, not as live classification.
+- **ADR-U027 (Shadow lifecycle) reflected.** §L2 §3 now records Shadow data ephemerality (erase-on-inactivity/close) and atomic transcendence as the persistence-and-consent threshold; IDN-2 gains a PC-4 dependency (consent capture at transcendence).
+- **ADR-U028 (governance by scope) recorded.** §L2 §3's DeusEx row and the A-ADM intro now carry the locked Ferd routing: content moderation + self-service exit stay woven in-place; the audit-log viewer (ADM-13/16), feature flags (ADM-15), and economy management route to the Console. No rows relocated — the Console's status (own entity vs Hub-shell bundle) is a deferred decomposition decision (U028/U025).
+- **DS reciprocation now possible.** All seven Domain Service L3 inventories now exist (`docs/platform/domain/*.md`), so the Hub's external-dependency claims (marked "reciprocation pending" below) can now be reconciled against them. That row-by-row reconciliation is deferred to the Phase-1 substrate-audit deliverable and the G-29 lateral-routing mechanism; it was not done in this re-grounding.
 
 **Authoring methodology.**
 - This §L3 was authored using the code-informed stress-test pattern locked in [`../../planning/sessions/2026-04-30_01_-_CODE-INFORMED-STRESS-TEST-PATTERN.md`](../../planning/sessions/2026-04-30_01_-_CODE-INFORMED-STRESS-TEST-PATTERN.md): cold derivation from L1 + L2 + DESCRIPTION + the eight-area decomposition produced a candidate inventory of 100 capabilities; a stress-test pass against [`docs/TMP/capabilities.md`](../../TMP/capabilities.md) (the Ferd-current synthesis of the OLDFEAT corpus) classified each row's activation timing; an adjudication step reconciled the resulting delta. The candidate inventory survived empirical pressure without structural revision — eight areas hold, ~100 rows hold, the four true misses surfaced by the stress-test (GRP-9 group deletion, IDN-11 per-device sessions, IDN-12 self-service reactivation, ADM-17 role-template management) integrated cleanly into existing areas.
@@ -389,7 +397,7 @@ Remarks recording prerequisite-check pauses, methodology observations, and cross
 **Conventions used.**
 - **PC-1 naming rule.** PC-1 is named in external-deps cells only when load-bearing for a specific Hub-side architectural commitment, not as universal substrate. Two qualifying patterns emerged: realtime-channel reads (COM-10, NTF-9) and statistics aggregation primitive (ADM-1). Naming PC-1 universally would dilute the column's diagnostic value.
 - **Wildcard area-dependency convention.** `AREA-*` (e.g., `JRN-*` on COI-7, `MEM-*` on JRN-14) indicates dependency on the aggregate of an area, not on any specific capability row. Used where the consuming capability operates over the full set rather than a discrete instance. Two instances in the inventory.
-- **Forward-commitment annotation convention.** `*` = partial forward-commitment within Ferd; `**` = full forward-commitment beyond Ferd; unannotated = current-commitment. ASCII markers per the user-memory rule against Greek letters and non-ASCII typographic symbols.
+- **Forward-commitment annotation convention (RETIRED 2026-06-17, ADR-U030).** The original §L3 marked rows `*` (partial forward-commitment within Ferd) / `**` (full forward-commitment beyond Ferd) / unannotated (current-commitment), anchored to the old Hub MVP's running state. The greenfield rebuild retires that anchor; the inventory is now anchor-neutral, and implementation/activation status lives in the behaviour inventory, substrate audit, and ROADMAP. The ASCII-marker choice (no Greek letters or non-ASCII typographic symbols, per the user-memory rule) remains the standing convention for any future annotation.
 - **Two-column template deviation.** Founding-question(s) and Dimension(s) columns added beyond the template's prescribed five. Both columns make Vision traceability explicit at the row level. The deviation is a candidate for template-wide elevation when the next entity-L3 derivation runs (cascade-plan Session 3 territory).
 
 **Open questions resolved during authoring.**
@@ -419,7 +427,7 @@ Remarks recording prerequisite-check pauses, methodology observations, and cross
 - **Outward dependency claims are claims-from-the-consumer.** External-deps cells in the capability table represent the Hub's commitments to consume capabilities from other entities. Reciprocal commitments from the targeted entities (PC-1, PC-2, PC-3, PC-4, DS-1, DS-3, DS-4, DS-5, DS-6, DS-7, V3) are pending. The four cross-entity findings explicitly routed to G-29 are the highest-priority cases; the routine consumption claims (PC-3 group lifecycle, DS-3 enrolment, DS-5 messaging) are reciprocally implicit but not yet formally affirmed in the targeted entities' L3 inventories. The G-29 lateral-routing mechanism, when designed, will provide the structured handoff for these claims.
 - **G-03 vertical specs scaffold caveat.** §L3's per-row Vertical Impact column references V1 Administration, V2 Privacy, V3 Notifications, V4 Observability, V5 Transactions. Per the gaps register, the vertical specs' §§3-6 are scaffolds (G-03, highest-priority gap). Vertical impact assignments here use the locked vertical names but cannot reference specific obligation IDs that don't yet exist. When G-03 resolves, vertical impact entries can be enriched.
 - **Cosmology naming Open question.** §L2 §8's first open question (the worlds cosmology naming) is resolved (2026-06-10): the cosmology core supersedes the Three Worlds model. Capability names in this §L3 are cosmology-neutral; user-facing copy carries cosmology language at the feature-spec level, sourced from [`docs/ecosystem/universe/cosmology/README.md`](../../ecosystem/universe/cosmology/README.md).
-- **L2 §2 "Domain services not yet consumed" list.** This list correctly identifies DS-1, DS-2, DS-6, DS-7 as not-yet-consumed; full forward-commitment rows in this §L3 (all of A-COI; DIS-3, DIS-4, DIS-5) honour that list. During cold derivation, JRN-15 originally claimed a DS-2 dep; the JRN-15 split (per area-level discipline) dissolved the claim as a derivation false-positive. The §L2 §2 list stands; no L2 revision implied by this §L3.
+- **L2 §2 "Domain services not yet consumed" list.** This list correctly identifies DS-1, DS-2, DS-6, DS-7 as not-yet-consumed; the rows depending on those services (all of A-COI; DIS-3, DIS-4, DIS-5) honour that list. During cold derivation, JRN-15 originally claimed a DS-2 dep; the JRN-15 split (per area-level discipline) dissolved the claim as a derivation false-positive. The §L2 §2 list stands; no L2 revision implied by this §L3.
 - **Namespace-collision check (B.2 bridge).** The B.2 bridge worried that DS-1..DS-7 might collide between Domain Services (per ADR-U023) and Design System surfaces. Resolution: ADR-U023 doesn't number Design System components; the Design System uses `FEAT-DS###` for feature specs and a vocabulary inventory (tokens / components / patterns) at L3, with no numbered surface IDs. The DS-1..DS-7 numbering in this §L3 unambiguously refers to Domain Services. No collision; no disambiguation needed.
 
 *Note: no status column in the capability table. Status (shipped / in flight / not started / retroactive needed) is a reconciliation output, not a derivation output — see §L4 and G-20.*
