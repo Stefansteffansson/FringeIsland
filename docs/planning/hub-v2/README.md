@@ -10,6 +10,18 @@
 
 **Phase 0 — Locking the decision.** The greenfield rebuild is decided and recorded (ADR-U030); the next step is **Phase 1**: refresh the Hub DESCRIPTION + SPECIFICATION against today's architecture, audit the database substrate, and inventory the old Hub's behaviour. No v2 code has been written yet. The old Hub MVP stays frozen as a reference and behavioural oracle.
 
+## Phases at a glance
+
+| Phase | What it does | Status |
+|---|---|---|
+| 0 — Lock the decision | Record the rebuild decision (ADR-U030); confirm pre-launch | **Done** |
+| 1 — Target & inheritance | Refresh the Hub spec; audit the DB substrate; inventory old behaviours | **Next (active)** |
+| 2 — Clean foundation | Walking skeleton: API-first layering, verticals baseline, design system, auth | Upcoming |
+| 3 — Build area by area | Identity → Groups → Journeys → Communication → Notifications → Platform-Ops | Upcoming |
+| 4 — Cutover & retire | Replace every area, then freeze and delete the old Hub | Upcoming |
+
+*(Full detail with per-phase gates in Part 2 below. Update the Status column as phases complete.)*
+
 ---
 
 ## Part 1 — In plain words
@@ -29,18 +41,33 @@
 ## Part 2 — The plan (phases, each with a gate)
 
 **Phase 0 — Lock the decision.** Record the greenfield-rebuild decision (ADR-U030); confirm pre-launch / no users (so the old Hub can be frozen with no live migration). *Gate: ADR ratified; CQ-015 un-parked.* ✅ done.
+- **Uses:** [PROCESS §9](../PROCESS.md) (spec-evolution loop); the [ADR template](../../templates/adr.md).
+- **Inputs:** CQ-015 (the parked question); ADRs U009 / U023 / U025; the v1 violation measurements.
+- **Outputs:** [ADR-U030](../../architecture/decisions/ADR-U030-hub-v2-greenfield-rebuild.md); this plan; the CQ-015 resolution.
 
 **Phase 1 — Know the target and the inheritance.**
 - Refresh the Hub `DESCRIPTION.md` + `SPECIFICATION.md` against the reconciled model = the "should-be" v2 (good-enough and changeable; the loop below corrects it as we build).
-- **Substrate audit:** tag every table/function/RLS policy *conformant / adapt / replace* against `DOMAIN_ENTITIES.md` + the 4 Platform Core specs + the 7 Domain Service specs + the 5 verticals' §6/§7 obligations + the anatomy and relevant ADRs (U009 API-first, U012 observability).
+- **Substrate audit:** tag every table/function/RLS policy *conformant / adapt / replace*.
 - **Behaviour inventory:** catalogue what the old Hub's ~69 tests guarantee — the oracle for "v2 must still do this."
+- **Uses:** [`ecosystem-decomposition`](../../../.claude/skills/ecosystem-decomposition/SKILL.md) (re-derive the Hub spec) + chapter [01 Decomposition](../../ecosystem/how-we-work/01-decomposition.md); [`doc-health-check`](../../../.claude/skills/doc-health-check/SKILL.md).
+- **Inputs:** [VISION](../../ecosystem/VISION.md) / MANIFESTO / PRINCIPLES-AI; the universe cores (cosmology, roles, beings); the 4 Platform Core specs; the 7 [Domain Service specs](../../platform/domain/); the 5 [vertical specs](../../verticals/) (§6/§7 obligations); [DOMAIN_ENTITIES](../../architecture/DOMAIN_ENTITIES.md); ADRs U009/U012/U025; the existing [Hub SPECIFICATION](../../products/hub/SPECIFICATION.md) (for the Step-2 reconcile); the DB substrate (`supabase/migrations/`); the old Hub's tests (`tests/`).
+- **Outputs:** refreshed [Hub DESCRIPTION](../../products/hub/DESCRIPTION.md) + [SPECIFICATION](../../products/hub/SPECIFICATION.md); `./substrate-audit.md`; `./behaviour-inventory.md`.
 *Gate: refreshed spec + audit + behaviour inventory reviewed.*
 
 **Phase 2 — Lay the clean foundation (a walking skeleton).** Stand up the v2 app with the non-negotiables present from line one: API-first layering (DB → API → frontend), the five vertical obligations wired into the baseline, the design system extracted as its own layer, equipment-keying (U025), and the identity/auth bootstrap + test harness. *Gate: one thin slice (e.g. sign in → land on your home) runs end-to-end through DB→API→frontend, vertical obligations met, tests green.*
+- **Uses:** [`feature-development`](../../../.claude/skills/feature-development/SKILL.md) + chapters [03 Kanban](../../ecosystem/how-we-work/03-execution-kanban.md) / [04 Build loop](../../ecosystem/how-we-work/04-execution-build-loop.md).
+- **Inputs:** the refreshed Hub spec; the 5 vertical §6/§7 checklists; the [design-system](../../design-system/) spec (extract); PC Identity + Infrastructure specs; ADR-U009/U025; the substrate-audit tags.
+- **Outputs:** the v2 app skeleton (`app/` + API layer + design-system layer + auth + test harness); the first walking-skeleton `FEAT-H###` spec under [`hub/features/`](../../products/hub/features/); any adapted migrations (`supabase/migrations/`).
 
 **Phase 3 — Build area by area, in dependency order.** Identity/Onboarding → Groups → Journeys → Communication → Notifications → Platform-Ops. Each area: feature spec → realise the platform/Domain-Service API contract beneath it (reusing/adapting the substrate) → frontend consuming it **via API only** → TDD seeded from the ported behaviours → vertical checklists pass → retire the old area. *Gate per area: feature DoD + vertical checklist + tests green.*
+- **Uses:** [`feature-development`](../../../.claude/skills/feature-development/SKILL.md) per area; chapters 03/04; [`doc-health-check`](../../../.claude/skills/doc-health-check/SKILL.md) at each reconcile.
+- **Inputs (per area):** that area's capability rows (refreshed Hub spec); the relevant [Domain Service spec(s)](../../platform/domain/) for its contract (e.g. DS-3 Journeys for the Journeys area); the vertical checklists; the substrate-audit tags; the behaviour inventory (ported tests).
+- **Outputs (per area):** `FEAT-H###` specs in [`hub/features/`](../../products/hub/features/); the realised API contract + frontend + tests; retired old-area code; per-slice notes here (`./`).
 
 **Phase 4 — Cutover and retire.** When every area is replaced, cut over and archive/delete the old Hub. *Gate: v2 is the Hub.*
+- **Uses:** [`doc-health-check`](../../../.claude/skills/doc-health-check/SKILL.md); [`wave-planning`](../../../.claude/skills/wave-planning/SKILL.md) (wave DoD).
+- **Inputs:** all area completions; the old Hub code.
+- **Outputs:** the cutover; old Hub archived/deleted; a closing session bridge (`../sessions/`); STATUS + wave updates.
 
 ---
 

@@ -13,7 +13,8 @@
           { "label": "Current wave — Ferd", "path": "docs/planning/waves/ferd.md" },
           { "label": "Docs map — README.md", "path": "docs/README.md" }
         ] },
-        { "type": "folders", "label": "What lives where (docs/)" }
+        { "type": "folders", "label": "What lives where (docs/)" },
+        { "type": "intro", "label": "About this dashboard — how to refresh", "path": "scripts/dashboard/README.md" }
       ]
     },
     {
@@ -26,7 +27,22 @@
         { "type": "intro", "label": "AI principles", "path": "docs/ecosystem/PRINCIPLES-AI.md" },
         { "type": "intro", "label": "Cosmology (canonical core)", "path": "docs/ecosystem/universe/cosmology/README.md" },
         { "type": "intro", "label": "Roles (canonical core)", "path": "docs/ecosystem/universe/roles/README.md" },
-        { "type": "intro", "label": "Beings — the Whisp & NPCs (canonical core)", "path": "docs/ecosystem/universe/beings/README.md" }
+        { "type": "intro", "label": "Beings — the Whisp & NPCs (canonical core)", "path": "docs/ecosystem/universe/beings/README.md" },
+        { "type": "group", "note": "**research/** (study the world)  →  feeds  →  **thinking/** (generate our ideas)  →  graduates  →  **universe/** (canon)", "blocks": [
+          { "type": "links", "label": "Foundations — research", "items": [
+            { "label": "Kegan & Immunity to Change — how adults grow", "path": "docs/research/Kegan_ITC_Research_Report.md" },
+            { "label": "What Fills a Life — human flourishing", "path": "docs/research/What_Fills_a_Life_v2.md" },
+            { "label": "Theory U — facilitation methodology", "path": "docs/research/Theory_U_Research_Report.md" },
+            { "label": "Portal Fantasy — cross-media portals", "path": "docs/research/Portal_Fantasy_Research_Report.md" },
+            { "label": "Parallel Worlds — alternative realities", "path": "docs/research/Parallel_Worlds_Research_Report.md" }
+          ] },
+          { "type": "links", "label": "Thinking & discovery", "items": [
+            { "label": "Thinking — index", "path": "docs/ecosystem/thinking/README.md" },
+            { "label": "Universe discovery — sessions, graduation tracker, backlog", "path": "docs/ecosystem/thinking/universe-discovery/README.md" },
+            { "label": "Open questions (CQ register)", "path": "docs/ecosystem/thinking/OPEN_QUESTIONS.md" },
+            { "label": "Universe → spec manifestation map", "path": "docs/research/universe-to-spec-manifestation.md" }
+          ] }
+        ] }
       ]
     },
     {
@@ -96,21 +112,11 @@
           { "label": "How We Work — guide", "path": "docs/ecosystem/how-we-work/README.md" },
           { "label": "How We Work — interactive diagrams", "path": "docs/ecosystem/how-we-work/index.html" }
         ] },
+        { "type": "links", "label": "Background research (methodology)", "items": [
+          { "label": "Multi-product ecosystem management", "path": "docs/research/multi-product-ecosystem-management_2.md" },
+          { "label": "Solo developer's guide to systematic web development", "path": "docs/research/The solo developer's complete guide to systematic web development.md" }
+        ] },
         { "type": "svg", "label": "Decomposition cascade", "path": "docs/ecosystem/how-we-work/assets/01-decomposition-cascade.svg" }
-      ]
-    },
-    {
-      "id": "where-we-are",
-      "title": "Where We Are — current state",
-      "blurb": "Specs vs. build, and the gap between them.",
-      "blocks": [
-        { "type": "section", "label": "Current initiative — Hub v2", "path": "docs/planning/hub-v2/README.md", "heading": "## Current status" },
-        { "type": "metrics", "label": "Build snapshot (live)" },
-        { "type": "section", "label": "Design-vs-build", "path": "docs/research/universe-to-spec-manifestation.md", "heading": "## Headline" },
-        { "type": "links", "label": "Pipeline status", "items": [
-          { "label": "Pipeline STATUS", "path": "docs/planning/sessions/openers/STATUS.md" },
-          { "label": "Ferd capability map", "path": "docs/planning/waves/FERD-CAPABILITY-MAP.md" }
-        ] }
       ]
     },
     {
@@ -118,7 +124,7 @@
       "title": "Focus & Horizon — now and open",
       "blurb": "What we're on, what's open, what's ahead.",
       "blocks": [
-        { "type": "section", "label": "Current focus — Hub v2", "path": "docs/planning/hub-v2/README.md", "heading": "## Current status" },
+        { "type": "section", "label": "Hub v2 — phases (where we are)", "path": "docs/planning/hub-v2/README.md", "heading": "## Phases at a glance" },
         { "type": "links", "label": "Hub v2 rebuild", "items": [
           { "label": "Hub v2 — the plan", "path": "docs/planning/hub-v2/README.md" },
           { "label": "ADR-U030 — rebuild decision", "path": "docs/architecture/decisions/ADR-U030-hub-v2-greenfield-rebuild.md" }
@@ -127,6 +133,19 @@
         { "type": "cqs", "label": "Open questions", "path": "docs/ecosystem/thinking/OPEN_QUESTIONS.md" },
         { "type": "waves", "label": "Wave roadmap" },
         { "type": "activity", "label": "Recent activity" }
+      ]
+    },
+    {
+      "id": "where-we-are",
+      "title": "Where We Are — current state",
+      "blurb": "Specs vs. build, and the gap between them.",
+      "blocks": [
+        { "type": "metrics", "label": "Build snapshot (live)" },
+        { "type": "section", "label": "Design-vs-build", "path": "docs/research/universe-to-spec-manifestation.md", "heading": "## Headline" },
+        { "type": "links", "label": "Pipeline status", "items": [
+          { "label": "Pipeline STATUS", "path": "docs/planning/sessions/openers/STATUS.md" },
+          { "label": "Ferd capability map", "path": "docs/planning/waves/FERD-CAPABILITY-MAP.md" }
+        ] }
       ]
     }
   ]

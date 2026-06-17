@@ -259,11 +259,23 @@ const RENDERERS = {
   toc: blockToc, adrs: blockAdrs, cqs: blockCqs, waves: blockWaves,
   metrics: blockMetrics, activity: blockActivity, svg: blockSvg
 };
+function blockGroup(b) {
+  const note = b.note ? `<div class="group-note">${md2html(b.note)}</div>` : '';
+  const inner = (b.blocks || []).map((cb) => {
+    let body = '';
+    try { body = (RENDERERS[cb.type] || (() => ''))(cb); } catch (e) { body = `<div class="note">${esc(e.message)}</div>`; }
+    const lbl = cb.label ? `<div class="block-label">${esc(cb.label)}</div>` : '';
+    return `<div class="group-item">${lbl}${body}</div>`;
+  }).join('');
+  return `<section class="block group">${note}${inner}</section>`;
+}
 function renderBlock(b) {
+  if (b.type === 'group') return blockGroup(b);
   let body;
   try { body = (RENDERERS[b.type] || (() => `<div class="note">Unknown block: ${esc(b.type)}</div>`))(b); }
   catch (e) { body = `<div class="note">Error rendering ${esc(b.type)}: ${esc(e.message)}</div>`; }
-  return `<section class="block"><div class="block-label">${esc(b.label || '')}</div>${body}</section>`;
+  const label = b.label ? `<div class="block-label">${esc(b.label)}</div>` : '';
+  return `<section class="block">${label}${body}</section>`;
 }
 
 function buildFileIndex() {
@@ -307,6 +319,12 @@ main{max-width:920px;margin:0 auto;padding:28px 32px 80px}
 .pane>.blurb{margin:0 0 26px;color:var(--subtle);font-size:14px}
 .block{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin:0 0 18px}
 .block-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700;margin-bottom:10px}
+.group{border-color:var(--accent);border-width:2px;background:var(--surface-2)}
+.group-note{font-size:14.5px;font-weight:600;color:var(--text);margin:2px 0 16px;text-align:center;line-height:1.55}
+.group-note p{margin:0}
+.group-note code{background:var(--surface);padding:1px 5px;border-radius:4px}
+.group-item{margin:0 0 16px}
+.group-item:last-child{margin-bottom:0}
 .excerpt{font-size:14px;color:var(--text);overflow-wrap:anywhere}
 .excerpt :is(h1,h2,h3){font-size:15px;margin:.5em 0;color:var(--text)}
 .excerpt p{margin:.5em 0;color:var(--muted)}
