@@ -3,6 +3,7 @@
 **Date:** 2026-06-17
 **Session type:** planning / architecture
 **Status:** Closed — Phase 1 deliverables landed; the Phase-1 **gate review** is the open item.
+**↳ Continued in a new session (post-reboot):** resume here — start at the **Phase-1 gate** (read order + locked/open state in "For the next session" below). Nothing is in-flight; all work is committed.
 **Participants:** Stefan + Claude
 
 > Picks up from `2026-06-17_-_DASHBOARD-AND-HUB-V2-SESSION.md`. This session executed all three Phase-1 deliverables of the Hub v2 rebuild ([plan](../hub-v2/README.md), [ADR-U030](../../architecture/decisions/ADR-U030-hub-v2-greenfield-rebuild.md)).
