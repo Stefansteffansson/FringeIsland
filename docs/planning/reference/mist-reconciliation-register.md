@@ -92,6 +92,8 @@ These are accepted (not superseded) ADR bodies. Recommended treatment: **pointer
 
 ### Cluster 5 - Domain services (7 specs + CLAUDE files + README)
 
+> **CLUSTER 5 COMPLETE (2026-06-21).** All 15 files (7 specs + 7 CLAUDE.md + domain README) renamed via two mechanical rules: `Shadow` -> `Mist` (170 occurrences) and `U027` -> `U031` (70 occurrences, incl. compound ADR lists and `U027/S46` shorthand). Pure token substitution (diff balanced 123/123). The data-layer ephemerality posture these specs model carries forward unchanged under U031; the new presence/assessment-ephemerality mechanics live at the source (identity spec §9 / privacy vertical), not restated here. Delegated to a subagent; verified by CC via independent `git grep` (zero Shadow/U027 remain) + diff spot-check. No lowercase `shadow`, no `.md` link breakage, every `Shadow` was the entrant sense.
+
 Mechanically uniform: noun swap **Shadow -> Mist** and cross-ref **ADR-U027 -> ADR-U031**. The ephemerality claims themselves are canon-true and carry forward (U031 preserves U027's posture and widens it). NEEDS-MECHANICS is light here (mostly the presence/assessment-ephemerality extension where a spec models data-layer ephemerality). RENAME (+ light NEEDS-MECHANICS).
 
 - [ ] `docs/platform/domain/README.md` (3: :11,:12,:13) - Shadow-to-FIM transcendence continuity; Shadow-capture / Shadow-communication ephemerality.

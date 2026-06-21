@@ -19,12 +19,12 @@ DS-1 owns the **state of the created universe** and sits at the **bottom of the 
 
 ## Gotchas
 
-- **Shadow-generated DS-1 state is ephemeral.** A Shadow has a Whisp and cord (universal, S39), so DS-1 holds Shadow data — cord position at minimum. It inherits ADR-U027's TTL-erasure and explicit-erase obligations and joins the PC-1 scheduled-job sweep path. Forgetting this turns DS-1 into a Shadow-data durability leak.
-- **Shared-world reads must work for `anon`.** Shadows perceive the real shared near-side world (ADR-U027: ephemerality, not refusal to serve). RLS posture: shared-world state anon-readable; Beyond-scoped state FIM-gated intrinsically; per-FIM state own-row.
-- **Ball-grant is inside the transcendence atomicity boundary.** A FIM must never exist without their ball, nor a ball without its FIM — composed invariant with PC-2's atomic migration (ADR-U027), cascade-spec'd per ADR-U016 before implementation.
+- **Mist-generated DS-1 state is ephemeral.** A Mist has a Whisp and cord (universal, S39), so DS-1 holds Mist data — cord position at minimum. It inherits ADR-U031's TTL-erasure and explicit-erase obligations and joins the PC-1 scheduled-job sweep path. Forgetting this turns DS-1 into a Mist-data durability leak.
+- **Shared-world reads must work for `anon`.** Mists perceive the real shared near-side world (ADR-U031: ephemerality, not refusal to serve). RLS posture: shared-world state anon-readable; Beyond-scoped state FIM-gated intrinsically; per-FIM state own-row.
+- **Ball-grant is inside the transcendence atomicity boundary.** A FIM must never exist without their ball, nor a ball without its FIM — composed invariant with PC-2's atomic migration (ADR-U031), cascade-spec'd per ADR-U016 before implementation.
 
 ## Where to go next
 
 - **The service spec:** [`../world-model.md`](../world-model.md) — L2 identity + §7 invariants + §L3 capability inventory (Steps 1-3 complete 2026-06-10; zero-delta stress-test — all capabilities full forward-commitment, nothing exists in code yet).
 - **Ground truth:** the cosmology core; roles core (scope tiers, Dreamineer gating); beings core (the Whisp's two faces, NPC layers).
-- **Relevant decisions:** ADR-U023 (anatomy) · ADR-U025/U026 (entities; World Studio writes → DS-1) · ADR-U027 (Shadow lifecycle) · ADR-U028 (governance by scope) · the Whisp-split ADR candidate in [`PENDING.md`](../../../architecture/decisions/PENDING.md).
+- **Relevant decisions:** ADR-U023 (anatomy) · ADR-U025/U026 (entities; World Studio writes → DS-1) · ADR-U031 (Mist lifecycle) · ADR-U028 (governance by scope) · the Whisp-split ADR candidate in [`PENDING.md`](../../../architecture/decisions/PENDING.md).

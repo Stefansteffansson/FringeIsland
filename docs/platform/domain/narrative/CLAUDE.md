@@ -20,8 +20,8 @@ DS-2 owns the **structure of story** — seasons/episodes, plot, loop structure,
 
 ## Gotchas
 
-- **Published vs draft is an RLS posture, not a UI filter.** Published narrative structure is anon-readable shared-world state (stories stand alone as entertainment; Shadows experience the near side); draft/unpublished authoring state is Teller/studio-scoped at the row grain via lifecycle state. Conflating the two either leaks drafts or breaks Shadow story access.
-- **DS-2 holds no per-FIM or per-Shadow personal state at this derivation** — structure plus Dreamineer authorship attribution only. If a future capability adds per-Shadow state, it inherits ADR-U027 TTL-erasure obligations on arrival; don't add it casually.
+- **Published vs draft is an RLS posture, not a UI filter.** Published narrative structure is anon-readable shared-world state (stories stand alone as entertainment; Mists experience the near side); draft/unpublished authoring state is Teller/studio-scoped at the row grain via lifecycle state. Conflating the two either leaks drafts or breaks Mist story access.
+- **DS-2 holds no per-FIM or per-Mist personal state at this derivation** — structure plus Dreamineer authorship attribution only. If a future capability adds per-Mist state, it inherits ADR-U031 TTL-erasure obligations on arrival; don't add it casually.
 - **Calendar rollover is a pg_cron consumer.** Season/episode transitions ride PC-1's scheduled-job substrate and emit notification triggers (episode-goes-current is FIM-visible state change). A rollover without its trigger is an incomplete feature per the platform-tier Notifications obligation.
 - **Episode retirement is a lifecycle event.** Cascade spec per ADR-U016 before any retirement mechanics are implemented — beats, arc threading, loop declarations, and character-layer references all hang off episodes.
 

@@ -17,7 +17,7 @@ feature_prefix: PD  # FEAT-PD### for features owned by this service
 
 **Authorship note.** This file is authored across three decomposition levels (see `.claude/skills/ecosystem-decomposition/SKILL.md`). L2 owns the identity, boundaries, and technical shape (§L2 below). L3 owns the capability inventory (§L3). L4 owns the feature-inventory summary (§L4). No level modifies a section owned by another.
 
-**Derivation note (this draft).** Step 1 (cold derivation) authored 2026-06-10 in the DS-1 descent session, after the Phase 0 PC re-check gate closed (`docs/planning/sessions/2026-06-10_01_-_DS1-DESCENT-PHASE0-DELTA.md`). Authority chain: `docs/ecosystem/VISION.md` v1.2 (L1) + the cosmology core `docs/ecosystem/universe/cosmology/README.md` (**ground truth — every capability below traces to it**) + the roles and beings cores + the Session B conformance register Section 3 DS-1 row + ADR-U023/U025/U026/U027/U028 + the three decisions ratified this session (the S43 home-sharing seam, ball-grant placement, and the Whisp-split decision in `docs/architecture/decisions/PENDING.md`). Code, migrations, and feature specs were **not read** at Step 1, per the cold-derivation discipline. Step 2 (code-informed stress-test, same day) and Step 3 (adjudication) are recorded at the foot of §L3: zero empirical DS-1 artifacts exist; the inventory stands unchanged with all rows classified full forward-commitment.
+**Derivation note (this draft).** Step 1 (cold derivation) authored 2026-06-10 in the DS-1 descent session, after the Phase 0 PC re-check gate closed (`docs/planning/sessions/2026-06-10_01_-_DS1-DESCENT-PHASE0-DELTA.md`). Authority chain: `docs/ecosystem/VISION.md` v1.2 (L1) + the cosmology core `docs/ecosystem/universe/cosmology/README.md` (**ground truth — every capability below traces to it**) + the roles and beings cores + the Session B conformance register Section 3 DS-1 row + ADR-U023/U025/U026/U031/U028 + the three decisions ratified this session (the S43 home-sharing seam, ball-grant placement, and the Whisp-split decision in `docs/architecture/decisions/PENDING.md`). Code, migrations, and feature specs were **not read** at Step 1, per the cold-derivation discipline. Step 2 (code-informed stress-test, same day) and Step 3 (adjudication) are recorded at the foot of §L3: zero empirical DS-1 artifacts exist; the inventory stands unchanged with all rows classified full forward-commitment.
 
 ---
 
@@ -42,8 +42,8 @@ The domain entities this service owns. No DS-1 schema exists on disk at this der
 | Coupling | The near-side correspondence between place 2 and place 3: the same Ordinary-World coordinates seen two ways (the patch eating flowers and the machine drilling are the same wound). Healing in place 2 routes through acting on the cause in place 3. | DS-1 tables |
 | Ball | One per FIM, granted at transcendence; permanent root anchor; two-zone gateway (inside → private home, rim → village); always one step away beside the FIM in the Ordinary World. **All balls glow equal — no variable signal ever attaches to a ball** (service-level invariant). | DS-1 tables |
 | Branch | A FIM-FIM bond as crown topology — the social graph *is* the Tree. Carries glow (the relationship's aliveness); thins when untended, recoverable when tended; never kills a Whisp (cord vs branch, never collapsed into one). Branches are the routes: following your own branches is how you find your friends among the balls. | DS-1 tables |
-| Cord world-presence | Per-Whisp world-state (universal — Shadows have cords too): length (the dial, held by the FIM), Void distance (how far the Whisp has ventured), the **health** luminosity channel (colour/integrity: whole vs frayed, steady vs flickering), and the rendered **salience** channel (maturity-driven; the *value* is DS-7-derived and fed through DS-1's contract — DS-7 consumes DS-1, never the reverse). Stuck/dead outcomes from closing portals are cord states. | DS-1 tables (Shadow cord state inherits PC-2 ephemerality) |
-| Seed | Anchor object budded from the FIM's ball; planted along a route into place 3; at once climbing-protection and a patch of place-2 life reclaimed (anchoring and growing the world are the same gesture). Threshold seed = a route's anchor-zero at a danger portal. Alive or destroyed. Seeds need a ball — the Shadow lock on deep place 3 is intrinsic. | DS-1 tables |
+| Cord world-presence | Per-Whisp world-state (universal — Mists have cords too): length (the dial, held by the FIM), Void distance (how far the Whisp has ventured), the **health** luminosity channel (colour/integrity: whole vs frayed, steady vs flickering), and the rendered **salience** channel (maturity-driven; the *value* is DS-7-derived and fed through DS-1's contract — DS-7 consumes DS-1, never the reverse). Stuck/dead outcomes from closing portals are cord states. | DS-1 tables (Mist cord state inherits PC-2 ephemerality) |
+| Seed | Anchor object budded from the FIM's ball; planted along a route into place 3; at once climbing-protection and a patch of place-2 life reclaimed (anchoring and growing the world are the same gesture). Threshold seed = a route's anchor-zero at a danger portal. Alive or destroyed. Seeds need a ball — the Mist lock on deep place 3 is intrinsic. | DS-1 tables |
 | Portal | A crossing: the always-on home portal (the ball absorbs it), field portals into place 3 (seeded), danger portals (seed-to-pass: a seed dropped on the edge is required to cross). A closing portal leaves the cord dead (seed destroyed) or stuck (living seed: length frozen, reopenable, rescuable by a friend along a branch). | DS-1 tables |
 | World-state | Per-region grown/receded state of the tendable world. Place 2 is revived place 3 — the same ground alive/glowing (tended) vs dead/black (un-grown or receded). Only each FIM's own ball is inviolable; everything else can recede if untended. Nothing is permanently destroyed (service-level invariant). | DS-1 tables |
 | Private home | The FIM's self-chosen representation of where they feel safest; reached via the ball's inside-zone; furnished with the personal-scope slice of World Studio (open to every FIM); evolves as the FIM grows. Default-locked; the FIM holds the only key. | DS-1 tables |
@@ -53,9 +53,9 @@ The domain entities this service owns. No DS-1 schema exists on disk at this der
 
 ### 3. Public contract (consumed by Surfaces)
 
-Contract surfaces at coarse grain — operation families, not endpoint signatures. Per the framework-provided-contract-mechanisms discipline (A#9), the realized HTTP layer is expected to be PostgREST RPC + RLS-gated reads unless a three-justification case (cross-table transactional mutations, external calls, multi-step composition) warrants a custom route; that resolution is Step 2 / L4 work, not cold-derivable. Auth on every operation resolves the actor via the repo's four-hop actor chain (P-O1: `auth.uid()` → `users` → `personal_group_id`) and the identity-status gate (Shadow/FIM) — status gating is **intrinsic** (no ball → no Beyond), not a permission fence.
+Contract surfaces at coarse grain — operation families, not endpoint signatures. Per the framework-provided-contract-mechanisms discipline (A#9), the realized HTTP layer is expected to be PostgREST RPC + RLS-gated reads unless a three-justification case (cross-table transactional mutations, external calls, multi-step composition) warrants a custom route; that resolution is Step 2 / L4 work, not cold-derivable. Auth on every operation resolves the actor via the repo's four-hop actor chain (P-O1: `auth.uid()` → `users` → `personal_group_id`) and the identity-status gate (Mist/FIM) — status gating is **intrinsic** (no ball → no Beyond), not a permission fence.
 
-- **Topology reads** — resolve the place graph; resolve near-side views from Ordinary-World coordinates (both places; coupling resolution: trace a place-2 wound to its place-3 cause). Open to Shadows and FIMs (near side is anchor-free).
+- **Topology reads** — resolve the place graph; resolve near-side views from Ordinary-World coordinates (both places; coupling resolution: trace a place-2 wound to its place-3 cause). Open to Mists and FIMs (near side is anchor-free).
 - **Tree reads** — own branches (legible: glow, aliveness, routes to friends' balls); the ambient crown (**no counts, no rankings, no aggregate-comparison surface — ever**); own ball state.
 - **Ball gateway** — enter via inside (→ private home) or rim (→ village). FIM-only intrinsically.
 - **Cord operations** — set the dial (FIM holds it: pay out / reel in); read own cord state; read a friend's cord health **only along a grown branch** (glanceable not diagnostic, invited not imposed, self first — the branch-gated visibility that DS-5 consumes); salience-channel input (DS-7-fed).
@@ -74,7 +74,7 @@ Allowed dependencies per ADR-U023: Platform Core, and other domain services belo
 
 - **Platform Core:**
   - **PC-1 Infrastructure** — RLS substrate; SECURITY DEFINER discipline; migration discipline; trigger-based validation; **scheduled-job substrate (pg_cron)** for world-state recession ticks and branch-glow decay (added to PC-1 at this session's Phase 0); object storage conventions (for placed-asset references); feature-flag substrate.
-  - **PC-2 Identity** — identity-status gate (Shadow/FIM); the transcendence lifecycle event (ball grant attaches to it); `user_id` contract; **Shadow ephemerality rules** (a Shadow's cord state is Shadow-generated data and inherits the TTL-erasure obligations of ADR-U027).
+  - **PC-2 Identity** — identity-status gate (Mist/FIM); the transcendence lifecycle event (ball grant attaches to it); `user_id` contract; **Mist ephemerality rules** (a Mist's cord state is Mist-generated data and inherits the TTL-erasure obligations of ADR-U031).
   - **PC-3 Organisation** — the audience primitive (personal groups / groups per ADR-U006/U007); `has_permission()` for Dreamineer gating and home share-grants; the Dreamineer role templates (Creator, Anthropologist).
   - **PC-4 Governance** — admin operations and audit-log discipline for world-admin interventions (consumed, not redefined).
 - **Other domain services: none.** DS-1 sits at the bottom of the Domain dependency order; the other six services consume it. Placed 3D/media assets are referenced **opaquely by ID** (DS-4 owns the assets; DS-1 never calls DS-4 — the reference direction keeps DS-1 dependency-free within Domain). The cord's salience channel is DS-7-*fed* through DS-1's own contract (DS-7 → DS-1 call direction), not a DS-1 dependency on DS-7.
@@ -87,11 +87,11 @@ None exposed at this derivation. The Ferd non-closure discipline applies through
 
 No DS-1 tables exist on disk at this derivation (cold statement; Step 2 confirms). Substrate commitments that bind L4:
 
-- Every DS-1 table has RLS from day one. Shared-world state (topology, world-state, the crown's ambient shape) is **readable by `anon`** — Shadows perceive the real shared near-side world (ADR-U027: the privacy protection is ephemerality, not refusing to serve) — while Beyond-scoped reads gate on FIM status intrinsically.
+- Every DS-1 table has RLS from day one. Shared-world state (topology, world-state, the crown's ambient shape) is **readable by `anon`** — Mists perceive the real shared near-side world (ADR-U031: the privacy protection is ephemerality, not refusing to serve) — while Beyond-scoped reads gate on FIM status intrinsically.
 - Write paths are studio/owner-gated: shared-world writes check Dreamineer authority via `has_permission()`; home writes check self; cord/seed writes check own-Whisp.
-- Shadow-generated DS-1 state (a Shadow's cord position) carries the PC-2 TTL-erasure path — the Phase 0 scheduled-job substrate is the sweep mechanism.
+- Mist-generated DS-1 state (a Mist's cord position) carries the PC-2 TTL-erasure path — the Phase 0 scheduled-job substrate is the sweep mechanism.
 - Per-region world-state and share-grants are row-grain (region rows), not JSON blobs, so RLS can enforce the S43 read path at the database layer.
-- Ball-grant participates in the transcendence migration's **atomicity** (ADR-U027): a FIM must never exist without their ball, nor a ball without its FIM — composed invariant with PC-2's migration, cascade-spec'd per ADR-U016 before implementation.
+- Ball-grant participates in the transcendence migration's **atomicity** (ADR-U031): a FIM must never exist without their ball, nor a ball without its FIM — composed invariant with PC-2's migration, cascade-spec'd per ADR-U016 before implementation.
 
 ### 7. Service-level invariants (the guardrails as architecture)
 
@@ -102,7 +102,7 @@ These are not feature behaviours; they are properties every DS-1 capability and 
 3. **Inviolable ball and home.** Only each FIM's own ball is inviolable; the home is default-locked and the FIM holds the only key. No admin or Dreamineer write-path overrides this short of PC-4's authority-of-last-resort discipline (auditable, ADR-U019/U028).
 4. **Gardening, not guarding.** Nothing in the tendable world is permanently destroyed; the worst case is *not yet grown* or *receded*, recoverable the moment care resumes. Recession mechanics must be gentle, forgiving, approach-motivated — no loss-aversion mechanics (Vision principle 6: growth is delight, not deficiency).
 5. **Meta-safety.** The FIM is never the thing at risk. Only the Whisp's world-presence carries stakes; severance recovery is reunion, and the severe tier (start over) exists only for unanchored overreach the FIM opted into (risk = depth × protection, the dial is theirs).
-6. **The anchor gate is intrinsic.** Near side: anchor-free, open to Shadows and FIMs. Beyond of place 2: ball required. Deep place 3: seeds required. These are structural facts of the world, never permission fences to be toggled.
+6. **The anchor gate is intrinsic.** Near side: anchor-free, open to Mists and FIMs. Beyond of place 2: ball required. Deep place 3: seeds required. These are structural facts of the world, never permission fences to be toggled.
 7. **Cord and branch never collapse into one.** The inward lifeline and the relational bond are distinct entities with distinct stakes; no capability may model one as a variant of the other.
 
 ### 8. Open spec questions
@@ -126,14 +126,14 @@ These are not feature behaviours; they are properties every DS-1 capability and 
 | Capability | Internal area | Depends on (internal) | Depends on (external) | Vertical impact |
 |---|---|---|---|---|
 | Places & topology state | Topology | — | PC-1 (schema/RLS substrate) | Observability (topology reads traceable); Privacy (topology itself is shared-world, not FIM data) |
-| Near-side coordinate resolution | Topology | Places & topology state | PC-1 (RLS, anon-readable shared world); PC-2 (status: open to Shadow + FIM) | Privacy (body-position data — most sensitive class; §8 Q1); Observability (resolution events) |
+| Near-side coordinate resolution | Topology | Places & topology state | PC-1 (RLS, anon-readable shared world); PC-2 (status: open to Mist + FIM) | Privacy (body-position data — most sensitive class; §8 Q1); Observability (resolution events) |
 | Place-coupling resolution | Topology | Places & topology state; Near-side coordinate resolution | PC-1 | Observability (wound-trace events) |
 | Portal registry & crossing | Topology | Places & topology state; Seed lifecycle (danger portals); Ball lifecycle (home portal) | PC-2 (intrinsic status gate: Beyond is FIM-only) | Observability (crossing events); Privacy (crossing history is FIM data) |
 | Ball lifecycle | The Tree | Places & topology state (village) | PC-2 (transcendence lifecycle event — grant attaches atomically, Phase 0 ratified placement; `user_id` contract); PC-1 (trigger discipline) | Administration (ball participates in account-lifecycle cascades per ADR-U016 — exit/decommission must specify ball disposition); Privacy (the ball is FIM data); Observability (grant events); Notifications (transcendence/ball-grant trigger) |
 | Two-zone gateway resolution | The Tree | Ball lifecycle; Private home structure (inside); Places & topology state (village, rim) | PC-2 (FIM-only) | Observability (gateway events) |
 | Branch (crown) state | The Tree | Ball lifecycle | PC-3 (the two parties via personal groups); PC-1 (scheduled-job substrate for glow decay per §8 Q3) | Privacy (relationship data is FIM data — both parties'); Observability (branch lifecycle events); Notifications (tend-invitation triggers — gentle per invariant 4, never guilt mechanics) |
 | Branch-gated visibility resolution | The Tree | Branch (crown) state; Cord state & the dial | PC-3 (permission substrate) | Privacy (the consent surface for cord-health sharing: glanceable / invited / self-first); Observability (gate evaluations on denial recorded) |
-| Cord state & the dial | Whisp presence | Places & topology state (the Void axis) | PC-2 (universal: Shadow + FIM; Shadow cord state inherits TTL-erasure per ADR-U027); PC-1 (sweep substrate) | Privacy (cord state is FIM/Shadow data; Shadow ephemerality); Observability (dial/venture events) |
+| Cord state & the dial | Whisp presence | Places & topology state (the Void axis) | PC-2 (universal: Mist + FIM; Mist cord state inherits TTL-erasure per ADR-U031); PC-1 (sweep substrate) | Privacy (cord state is FIM/Mist data; Mist ephemerality); Observability (dial/venture events) |
 | Severance & respawn resolution | Whisp presence | Cord state & the dial; Anchor-chain resolution; Branch (crown) state (rescue-by-friend) | PC-1 | Observability (severance events first-class); Notifications (rescue-possible trigger along a branch — invited, not imposed) |
 | Seed lifecycle | Anchoring | Ball lifecycle | PC-2 (FIM-only intrinsically: seeds need a ball) | Observability (bud/plant/destroy events) |
 | Anchor-chain resolution | Anchoring | Seed lifecycle; Ball lifecycle; Places & topology state | PC-1 | Observability (anchor-state reads on severance) |
@@ -155,7 +155,7 @@ Buildable order within DS-1:
 3. **Ball lifecycle** — needs PC-2's transcendence event contract; unlocks the Tree and everything FIM-anchored.
 4. **Two-zone gateway resolution**, **Branch (crown) state**, **Seed lifecycle** — over balls.
 5. **Anchor-chain resolution** — over seeds + balls; **Portal registry & crossing** — over anchor mechanics.
-6. **Cord state & the dial** — over the Void axis (buildable from step 1 for Shadows; full anchor semantics need step 5).
+6. **Cord state & the dial** — over the Void axis (buildable from step 1 for Mists; full anchor semantics need step 5).
 7. **Severance & respawn resolution** and **Branch-gated visibility resolution** — over cord + anchors + branches.
 8. **Tendable world-state** — over topology + seeds; **World authoring write-path** — over topology + world-state; **NPC world-layer registry** — over the write-path.
 9. **Private home structure** — over ball gateway; **Home share-state & enforcement** — over home structure + PC-3 audience primitive.
@@ -166,15 +166,15 @@ Buildable order within DS-1:
 | Source | Capability consumed | Consuming DS-1 capability |
 |---|---|---|
 | PC-1 Infrastructure | RLS substrate; SECURITY DEFINER + `search_path = ''` discipline; migration discipline; trigger-based validation | every DS-1 capability |
-| PC-1 Infrastructure | Scheduled-job substrate (pg_cron — added at this session's Phase 0) | Tendable world-state (recession ticks); Branch state (glow decay); Cord state (Shadow TTL sweep participation) |
+| PC-1 Infrastructure | Scheduled-job substrate (pg_cron — added at this session's Phase 0) | Tendable world-state (recession ticks); Branch state (glow decay); Cord state (Mist TTL sweep participation) |
 | PC-1 Infrastructure | Object-storage conventions | World authoring write-path (placed-asset references) |
-| PC-2 Identity | Identity-status gate (Shadow/FIM); `user_id` contract; four-hop actor chain | every actor-touching capability |
-| PC-2 Identity | Transcendence lifecycle event (atomic migration per ADR-U027) | Ball lifecycle (grant attaches; composed atomicity invariant per §6) |
-| PC-2 Identity | Shadow ephemerality (TTL + explicit-erase per ADR-U027) | Cord state & the dial (Shadow cord state) |
+| PC-2 Identity | Identity-status gate (Mist/FIM); `user_id` contract; four-hop actor chain | every actor-touching capability |
+| PC-2 Identity | Transcendence lifecycle event (atomic migration per ADR-U031) | Ball lifecycle (grant attaches; composed atomicity invariant per §6) |
+| PC-2 Identity | Mist ephemerality (TTL + explicit-erase per ADR-U031) | Cord state & the dial (Mist cord state) |
 | PC-3 Organisation | Audience primitive (personal groups / groups, ADR-U006/U007) | Home share-state & enforcement; Branch state (party identity) |
 | PC-3 Organisation | `has_permission()` + Dreamineer role templates (Creator, Anthropologist) | World authoring write-path; NPC world-layer registry |
 | PC-4 Governance | Admin-operation + audit-log discipline | World authoring write-path; Tendable world-state (admin interventions) |
-| Vertical: Privacy | S43 obligation set; Shadow-data obligations; body-position posture (Q1) | Home share-state; Cord state; Near-side coordinate resolution |
+| Vertical: Privacy | S43 obligation set; Mist-data obligations; body-position posture (Q1) | Home share-state; Cord state; Near-side coordinate resolution |
 | Vertical: Observability | Event shape (request ID, actor, outcome) | every event-emitting capability |
 | Vertical: Administration | Cascade-spec format per ADR-U016 | Ball lifecycle; Private home structure (account-lifecycle disposition) |
 | Vertical: Notifications | Notification-trigger shape | Ball lifecycle; Branch state; Severance resolution; Home share-state |
@@ -188,7 +188,7 @@ Cross-referenced per the template rule: the scheduled-job substrate row was **ad
 - **Roles + beings cores:** solid — scope tiers, Dreamineer gating, Whisp two-faces partition consumed.
 - **Session B register Section 3 DS-1 row + Phase 0 delta record:** consumed as the derivation constraint set (S43 seam, ball-grant placement, PC re-check verdicts).
 - **Whisp-split decision:** ratified at this service's descent; **promoted to ADR-U029 at the DS-7 descent (2026-06-11)** — the DS-7 derivation surfaced nothing contradicting the split; the Whisp-presence area here stands as derived. (Originally recorded in `decisions/PENDING.md` as an ADR candidate, promotion pending.)
-- **Vertical specs:** Privacy is substantive (S43/Shadow obligations landed at G-3); Administration/Transactions corrected at G-3; Notifications/Observability remain scaffold-tier — proceeded with remark per G-03 (`docs/ecosystem/how-we-work/gaps.md`).
+- **Vertical specs:** Privacy is substantive (S43/Mist obligations landed at G-3); Administration/Transactions corrected at G-3; Notifications/Observability remain scaffold-tier — proceeded with remark per G-03 (`docs/ecosystem/how-we-work/gaps.md`).
 - **No sibling DS spec exists** (DS-1 is the first Domain Service derivation): boundary claims against DS-2..DS-7 are provisional per the sibling-undefined soft-pause rule — recorded as a remark; each sibling's descent re-checks its DS-1 boundary.
 - **No code, migrations, or FEAT-* files read** at Step 1, per the cold-derivation discipline. Step 2 stress-test + forward-commitment classification pending (expectation: most rows full-forward — no DS-1 code is believed to exist; Step 2 verifies rather than assumes).
 - **Template staleness noted (cross-entity finding):** `docs/templates/domain-service-spec.md` frontmatter comment still enumerates `{game}` as a consumer and omits `world-studio` — missed by the G-2 template sweep (register §2.4 listed only product/studio/design-system templates). Fixed in the Phase 1 commit of the DS-1 descent session.
