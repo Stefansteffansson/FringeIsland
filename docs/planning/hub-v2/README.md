@@ -8,7 +8,7 @@
 
 ## Current status
 
-**Phase 1 — Target & inheritance (deliverables complete, 2026-06-17; gate review pending).** All three Phase-1 outputs exist: the refreshed Hub [DESCRIPTION](../../products/hub/DESCRIPTION.md) + [SPECIFICATION](../../products/hub/SPECIFICATION.md) (§L3 re-grounded anchor-neutral; U027/U028 reconciled), the [substrate audit](./substrate-audit.md) (substrate is canon-true and carries forward almost wholesale; the Shadow lifecycle is the one substantial gap), and the [behaviour inventory](./behaviour-inventory.md) (the old suite's ~650 tests catalogued as the v2 oracle, with coverage map + silences). No v2 code yet; the old Hub MVP stays frozen as the behavioural oracle. **Next:** the Phase-1 gate (review the three outputs together), then Phase 2.
+**Phase 1 — Target & inheritance (deliverables complete, 2026-06-17; gate review pending).** All three Phase-1 outputs exist: the refreshed Hub [DESCRIPTION](../../products/hub/DESCRIPTION.md) + [SPECIFICATION](../../products/hub/SPECIFICATION.md) (§L3 re-grounded anchor-neutral; U031/U028 reconciled), the [substrate audit](./substrate-audit.md) (substrate is canon-true and carries forward almost wholesale; the Mist lifecycle is the one substantial gap), and the [behaviour inventory](./behaviour-inventory.md) (the old suite's ~650 tests catalogued as the v2 oracle, with coverage map + silences). No v2 code yet; the old Hub MVP stays frozen as the behavioural oracle. **Next:** the Phase-1 gate (review the three outputs together), then Phase 2.
 
 ## Phases at a glance
 

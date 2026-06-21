@@ -92,14 +92,14 @@ Three Domain Services are not yet in Hub consumption posture — **DS-1**, **DS-
 
 **12 capabilities.** Foundation area. Every other area depends transitively on IDN-3 (authenticated FIM identity). Privacy and consent capabilities are interleaved here rather than living in a separate area; the experiential argument (members don't experience privacy as separate from identity) and the empirical evidence both support the merge.
 
-The Hub provides each person — Shadow or FIM — with a stable, persistent identity, a soft transcendence path between Shadow and FIM, and a private workspace for reflection that no one but the FIM can see.
+The Hub provides each person — Mist or FIM — with a stable, persistent identity, a soft transcendence path between Mist and FIM, and a private workspace for reflection that no one but the FIM can see.
 
 ### Capabilities
 
 | ID | Capability | FC | Founding Q |
 |----|------------|----|-----------:|
-| IDN-1 | Anonymous Shadow identity on arrival | Partial-Ferd | WAI |
-| IDN-2 | Convert Shadow to authenticated FIM identity (transcendence) | Partial-Ferd | WAI · WDIW |
+| IDN-1 | Anonymous Mist identity on arrival | Partial-Ferd | WAI |
+| IDN-2 | Convert Mist to authenticated FIM identity (transcendence) | Partial-Ferd | WAI · WDIW |
 | IDN-3 | Authenticated, persistent FIM identity (sign in / out / refresh) | Current | WAI |
 | IDN-4 | Render and edit member profile | Current | WAI |
 | IDN-5 | Private personal Journal surface | Partial-Ferd | WAI · WDIW |
@@ -116,7 +116,7 @@ The Hub provides each person — Shadow or FIM — with a stable, persistent ide
 - **PC-2 Identity** is the dominant external dependency: authentication, sessions, profile primitives, anonymous-session machinery (ADR-U004), Journal primitive.
 - **PC-4 Governance** for consent state, audit, data-export request flow.
 - **PC-3 Organisation** appears in IDN-4 (display name and personal group naming are coupled), IDN-7, and IDN-10 (group-membership cascade on deletion).
-- **DS-3 Experience** in IDN-2 and IDN-10 — Shadow→FIM transcendence carries in-flight enrolments forward; deletion freezes them.
+- **DS-3 Experience** in IDN-2 and IDN-10 — Mist→FIM transcendence carries in-flight enrolments forward; deletion freezes them.
 - **DS-5 Communication** in IDN-10 — forum-content disposition during exit.
 
 ### Cross-entity findings
@@ -202,7 +202,7 @@ This area is fundamentally about the question **what do I want?** — specifical
 | JRN-2 | View journey detail | Current | WDIW · HDGT |
 | JRN-3 | Enrol self in a journey (individual) | Current | WDIW · HDGT |
 | JRN-4 | Enrol an engagement group in a journey | Current | WDIW · HDGT |
-| JRN-5 | Preserve in-flight enrolment across Shadow→FIM transcendence | Partial-Ferd | HDGT |
+| JRN-5 | Preserve in-flight enrolment across Mist→FIM transcendence | Partial-Ferd | HDGT |
 | JRN-6 | Render the journey player | Current | HDGT |
 | JRN-7 | Walk steps with linear navigation (previous / next) | Current | HDGT |
 | JRN-8 | Mark step complete and enforce required-step gating | Current | HDGT |

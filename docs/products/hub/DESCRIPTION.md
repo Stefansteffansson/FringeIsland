@@ -18,7 +18,7 @@ The Hub is where you land. It is not where you author.
 
 The canonical role taxonomy lives in [`docs/ecosystem/universe/roles/README.md`](../../ecosystem/universe/roles/README.md) — this section names who the Hub serves; the roles core defines them.
 
-**Shadows** — the anonymous entrants (the identity state before transcendence). Shadows can browse, explore, and begin participating before creating an account. Their activity and preferences accumulate via anonymous sessions (ADR-U004) and transfer seamlessly into a FIM account upon sign-up. The Shadow-to-FIM transition is a soft threshold, not a wall.
+**Mists** — the anonymous entrants (the identity state before transcendence). Mists can browse, explore, and begin participating before creating an account. Their activity and preferences accumulate via anonymous sessions (ADR-U004) and transfer seamlessly into a FIM account upon sign-up. The Mist-to-FIM transition is a soft threshold, not a wall.
 
 **FIMs (FringeIsland Members)** — anyone 18 or older with an account; the base identity. Under-18s are outside scope for legal reasons. Every FIM can browse, enroll, experience journeys, participate in forums, exchange messages (1-1 and 1-many), keep a personal Journal, and track progress. Within a given group, a FIM wears a per-group role:
 

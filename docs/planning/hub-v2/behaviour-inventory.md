@@ -119,7 +119,7 @@ For each area: **STRONG** = port the guarantees as failing tests first, then bui
 
 **Protected routes & sessions (B-AUTH-003/004/005)** — authenticated users access own profile + their groups; can update only their own profile; can search others by email; access blocked after sign-out; session persists across requests, carries an expiry, clears fully on sign-out (token invalidated; already-signed-out handled).
 
-**Maps to Hub §L3:** IDN-3 (auth/session) + the auth contract underpinning GRP/MEM. **Strength: STRONG** for the FIM path. **Shadow/anonymous: NONE** — the auth oracle assumes a credentialed user with an active profile; no guest/anonymous/Shadow entry exists.
+**Maps to Hub §L3:** IDN-3 (auth/session) + the auth contract underpinning GRP/MEM. **Strength: STRONG** for the FIM path. **Mist/anonymous: NONE** — the auth oracle assumes a credentialed user with an active profile; no guest/anonymous/Mist entry exists.
 
 ---
 
@@ -135,7 +135,7 @@ For each area: **STRONG** = port the guarantees as failing tests first, then bui
 
 **Status/complete (B-JRN-007/008)** — status CHECK-constrained to `active|completed|paused|frozen`; completion sets `completed_at` once and is readable from "My Journeys" (can't complete another's); 8 predefined journeys owned by the public **"FI Journeys"** engagement group (DeusEx Steward); ownership migration preserves enrollments. *Frozen read-only semantics live in the **security** suite (B-SEC-003/004), not here; pause/leave have no dedicated lifecycle tests.*
 
-**Maps to Hub §L3:** JRN catalog/detail/enroll/progress/resume/complete/publish. **Strength: STRONG** (frozen via security suite). **Shadow→FIM in-flight carry-over (JRN-5): NONE.** **Canon signal:** content is inline JSONB (`version`, `structure:"linear"`, `steps[]` of types content/activity/assessment) — matches the substrate **adapt** (inline → DS-4 blocks).
+**Maps to Hub §L3:** JRN catalog/detail/enroll/progress/resume/complete/publish. **Strength: STRONG** (frozen via security suite). **Mist→FIM in-flight carry-over (JRN-5): NONE.** **Canon signal:** content is inline JSONB (`version`, `structure:"linear"`, `steps[]` of types content/activity/assessment) — matches the substrate **adapt** (inline → DS-4 blocks).
 
 ### Communication (A-COM, DS-5)
 
@@ -167,10 +167,10 @@ The `tests/unit/` suite is **three pure-logic admin modules** (no DB/network) fo
 
 ## Cross-cutting findings
 
-1. **The Shadow lifecycle has NO oracle and only a vestigial substrate shell.** No test exercises an anonymous/Shadow actor or anonymous sign-in (confirmed across the auth, groups, and journeys suites). The substrate carries a `Visitor` **system group** + a `Guest` group role (pre-canon Shadow naming) but **no `is_temporary`, no ephemerality, no pg_cron** ([substrate-audit](./substrate-audit.md)). → IDN-1, IDN-2, JRN-5 (Shadow→FIM carry-over) are **build-new from canon** (U004/U027); do not infer from the old code.
+1. **The Mist lifecycle has NO oracle and only a vestigial substrate shell.** No test exercises an anonymous/Mist actor or anonymous sign-in (confirmed across the auth, groups, and journeys suites). The substrate carries a `Visitor` **system group** + a `Guest` group role (pre-canon Mist naming) but **no `is_temporary`, no ephemerality, no pg_cron** ([substrate-audit](./substrate-audit.md)). → IDN-1, IDN-2, JRN-5 (Mist→FIM carry-over) are **build-new from canon** (U004/U031); do not infer from the old code.
 2. **Group-keyed authorship / four-hop actor is the suite's spine** — DMs (`sender_group_id`), forum (`author_group_id`), `has_permission(p_acting_group_id, …)`, display identity from the personal-group name. This is heavily oracled and matches the substrate; v2 must preserve it byte-for-byte.
 3. **Hard invariants the oracle locks** (port these as guard tests): last-Steward protection (survives rename), last-DeusEx floor, append-only audit log, frozen-enrollment immutability (read-preserving, self-unfreeze-proof, service-role-only unfreeze), template-copy independence, anti-escalation, decommission-preserves-history, RLS direct-ID-access prevention, instant membership-status-driven access revocation, flat-threading trigger.
-4. **Vocabulary drift (data layer vs canon)** — `Visitor`/`Guest` → **Shadow**; role template `Member` → **Participant** (already ratified in §L2 §3); "Group Leader"/"Travel Guide" → Steward/Guide (already renamed in-suite). v2 build should rename consistently (an **adapt**, not a behaviour change).
+4. **Vocabulary drift (data layer vs canon)** — `Visitor`/`Guest` → **Mist**; role template `Member` → **Participant** (already ratified in §L2 §3); "Group Leader"/"Travel Guide" → Steward/Guide (already renamed in-suite). v2 build should rename consistently (an **adapt**, not a behaviour change).
 5. **Oracle silences (specify fresh from canon, NOT from code):** consent state/history + granular consent + data export (IDN-6/7/8); private Journal (IDN-5); **sentinel-author reassignment** of orphaned content (hard-delete is a true cascade in the oracle); **former-member attribution** (COM-14/MEM-9); **real-time push** delivery (polling-approximated only); per-device session **inventory** (IDN-11 — force-logout exists, member-facing inventory doesn't); all of A-COI and A-DIS recommendations/DS-6.
 6. **Inline journey content** is oracled as the live model (`content` JSONB) — Phase 3 must decide the inline→DS-4 externalisation deliberately (the substrate **adapt**), and re-point the progress/step tests accordingly.
 
@@ -186,8 +186,8 @@ The `tests/unit/` suite is **three pure-logic admin modules** (no DB/network) fo
 | **A-ADM Platform operations** | **STRONG** | Audit, force-logout, admin notify/DM, user lifecycle, DeusEx, platform-exit, bulk-action UI logic. *U028 routing applies.* |
 | **A-COM Communication** | **STRONG** | DM, conversations/inbox, forum, moderation, notifications. *Gaps: former-member attribution, real-time push.* |
 | **A-NTF Notifications** | **STRONG** | Delivery, privacy, read-state, smart/actionable. |
-| **A-JRN Journeys** | **STRONG** | Catalog, enroll (indiv+group), progress, resume, complete, frozen (security suite), publish. *Gaps: Shadow carry-over (JRN-5); inline→DS-4 decision; pause/leave lifecycle thin.* |
-| **A-IDN Identity** | **PARTIAL** | Auth/session/profile/display-name/account-state STRONG; **consent/export/Journal NONE; Shadow NONE; per-device session inventory NONE.** |
+| **A-JRN Journeys** | **STRONG** | Catalog, enroll (indiv+group), progress, resume, complete, frozen (security suite), publish. *Gaps: Mist carry-over (JRN-5); inline→DS-4 decision; pause/leave lifecycle thin.* |
+| **A-IDN Identity** | **PARTIAL** | Auth/session/profile/display-name/account-state STRONG; **consent/export/Journal NONE; Mist NONE; per-device session inventory NONE.** |
 | **A-DIS Discovery** | **PARTIAL** | Journey catalog + member search oracled; recommendations/DS-6 NONE. |
 | **A-COI Companion & Insight** | **NONE** | No substrate, no tests — post-Ferd (DS-1/DS-7). |
 
@@ -196,7 +196,7 @@ The `tests/unit/` suite is **three pure-logic admin modules** (no DB/network) fo
 ## Handoff to Phase 2 / Phase 3
 
 - **Phase 2 walking skeleton** (sign-in → land on `/groups`): the e2e specs already define the contract (auth gate + `/groups` landing); the auth/session/RLS guarantees are STRONG and portable. Identity bootstrap can stand on the conformant substrate immediately.
-- **Phase 3 per area:** seed TDD from the STRONG/PARTIAL guarantees above (by test-ID), build to green over the conformant substrate, and treat every **NONE/silence** as a fresh specification task against the refreshed Hub §L3 + canon. The **Shadow lifecycle is the one area that is simultaneously a substrate gap and an oracle silence** — it gets the most deliberate fresh design (U004/U027), and nothing about it should be back-derived from the frozen MVP.
+- **Phase 3 per area:** seed TDD from the STRONG/PARTIAL guarantees above (by test-ID), build to green over the conformant substrate, and treat every **NONE/silence** as a fresh specification task against the refreshed Hub §L3 + canon. The **Mist lifecycle is the one area that is simultaneously a substrate gap and an oracle silence** — it gets the most deliberate fresh design (U004/U031), and nothing about it should be back-derived from the frozen MVP.
 
 ---
 

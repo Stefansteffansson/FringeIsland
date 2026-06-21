@@ -69,13 +69,13 @@ Where the Hub sits in the ecosystem anatomy ([`../../architecture/ECOSYSTEM_ANAT
 
 ### 3. Authentication & authorization
 
-**Sign-in surface.** Sign-in flows are owned by Platform Core / Identity (PC-2). The Hub renders the sign-in screen and surrounding navigation, but the credential exchange itself is a Platform API call. Shadows (the anonymous entrants — the canonical name for what ADR-U004 calls visitors) arrive via anonymous session ([ADR-U004](../../architecture/decisions/ADR-U004-visitor-anonymous-sign-in.md)) — their activity and preferences accumulate against the anonymous session and transfer into a FIM account upon sign-up. The Hub treats Shadow → FIM as a soft transition, not a wall. Per [ADR-U027](../../architecture/decisions/ADR-U027-shadow-identity-lifecycle.md), the Shadow's own generated data is ephemeral (erased after inactivity or explicit close — a Privacy-vertical / PC-2 configuration), and transcendence is the persistence-and-consent threshold: becoming a FIM is the one moment data binds durably — consent is captured and the session transfers into the FIM account atomically, with continuity (nothing restarts).
+**Sign-in surface.** Sign-in flows are owned by Platform Core / Identity (PC-2). The Hub renders the sign-in screen and surrounding navigation, but the credential exchange itself is a Platform API call. Mists (the anonymous entrants — the canonical name for what ADR-U004 calls visitors) arrive via anonymous session ([ADR-U004](../../architecture/decisions/ADR-U004-visitor-anonymous-sign-in.md)) — their activity and preferences accumulate against the anonymous session and transfer into a FIM account upon sign-up. The Hub treats Mist → FIM as a soft transition, not a wall. Per [ADR-U031](../../architecture/decisions/ADR-U031-mist-identity-lifecycle.md), the Mist's own generated data is ephemeral (erased after inactivity or explicit close — a Privacy-vertical / PC-2 configuration), and transcendence (metamorphosis) is the persistence-and-consent threshold: becoming a FIM is the one moment data binds durably — consent is captured and the session transfers into the FIM account atomically, with continuity (nothing restarts).
 
-**Identity states and roles served by the Hub** (canonical taxonomy: [`docs/ecosystem/universe/roles/README.md`](../../ecosystem/universe/roles/README.md) — identity states Shadow/FIM; per-group roles Steward/Guide/Participant/Observer; Dreamineer as the authorial mode; enterprise plane Universeers/Council/DeusEx):
+**Identity states and roles served by the Hub** (canonical taxonomy: [`docs/ecosystem/universe/roles/README.md`](../../ecosystem/universe/roles/README.md) — identity states Mist/FIM; per-group roles Steward/Guide/Participant/Observer; Dreamineer as the authorial mode; enterprise plane Universeers/Council/DeusEx):
 
 | Identity state / role | Source of authority | Hub responsibility |
 |---|---|---|
-| **Shadow** | Anonymous session (ADR-U004) | Browse, explore, begin participating; render the sign-up upgrade path |
+| **Mist** | Anonymous session (ADR-U004) | Browse, explore, begin participating; render the sign-up upgrade path |
 | **FIM** | The base authenticated identity ("Member" is the platform-technical synonym) | Default authenticated experience — journeys, forums, messages, Journal, profile |
 | **Steward** (per-group role) | Role granted via group leadership | FIM affordances plus group leadership UI (invite, role assignment, group enrollment, moderation) |
 | **Guide** (per-group role) | Role granted within a group | FIM affordances plus joint-journey facilitation UI |
@@ -124,7 +124,7 @@ The Hub's siblings are the Gimbal (the senses surface), the Studios (under Unive
 
 **Design System consumption.** The Hub consumes the Design System's tokens, components, and patterns. Per the design-system tier rules, the Hub is committed to consuming Design System primitives over hardcoded styles, and the Design System is committed to honouring additive-over-breaking change discipline. Specific consumption commitments will be detailed in §L3 once both inventories are populated.
 
-**Shadows before FIMs.** Where a feature can be offered to Shadows meaningfully, design for Shadows first and let FIMs inherit. Anonymous sessions are first-class (ADR-U004). This is a tier-level rule that the Hub honours by default.
+**Mists before FIMs.** Where a feature can be offered to Mists meaningfully, design for Mists first and let FIMs inherit. Anonymous sessions are first-class (ADR-U004). This is a tier-level rule that the Hub honours by default.
 
 ### 7. Operational concerns
 
@@ -153,7 +153,7 @@ Listed in priority order. Each is a candidate for resolution by an ADR, a resear
 
 - **The worlds cosmology naming — resolved (2026-06-10).** The Three Worlds model (*Ordinary World, Safe Harbour, The Other Side*) is superseded by the worlds topology in the cosmology core, [`docs/ecosystem/universe/cosmology/README.md`](../../ecosystem/universe/cosmology/README.md): the safe-harbour commons is **the village**, in the Beyond of the warm place. The Hub's user-facing copy and DESCRIPTION.md follow the cosmology core; this spec points there rather than restating the topology.
 
-- **RBAC role-to-screen mapping.** The Hub renders different screens for Shadows, FIMs, the per-group roles (Steward / Guide / Participant / Observer), Dreamineers, and DeusEx, but the per-screen permission requirements are not yet documented in any one place. Currently each component asks `has_permission(...)` for the specific permission it needs. A consolidated mapping (which roles see which screens) would strengthen the auth model's surface and ease onboarding. Candidate for an L3-scoped clarification once the capability inventory exists, or for a dedicated document.
+- **RBAC role-to-screen mapping.** The Hub renders different screens for Mists, FIMs, the per-group roles (Steward / Guide / Participant / Observer), Dreamineers, and DeusEx, but the per-screen permission requirements are not yet documented in any one place. Currently each component asks `has_permission(...)` for the specific permission it needs. A consolidated mapping (which roles see which screens) would strengthen the auth model's surface and ease onboarding. Candidate for an L3-scoped clarification once the capability inventory exists, or for a dedicated document.
 
 - **Transitive group resolution beyond depth 1.** All memberships are group-to-group, and the schema supports group-in-group. But `has_permission()` only resolves at depth 1 today. Transitive resolution and circularity prevention are noted as upcoming work in the user-memory horizon. Hub features that would need transitive resolution must surface this in their Platform dependencies section until the platform capability exists.
 
@@ -179,12 +179,12 @@ The template's prescribed five columns (Capability, Internal area, Depends on (i
 
 #### A-IDN — Identity, Onboarding & Profile (12 capabilities)
 
-The Hub provides each person — Shadow or FIM — with a stable, persistent identity, with a soft conversion path from Shadow to FIM, and with a private workspace for reflection that no one but the FIM can see. Privacy and consent capabilities are interleaved into A-IDN rather than living in a separate area; see the Sources-status block for the OQ-1 disposition.
+The Hub provides each person — Mist or FIM — with a stable, persistent identity, with a soft conversion path from Mist to FIM, and with a private workspace for reflection that no one but the FIM can see. Privacy and consent capabilities are interleaved into A-IDN rather than living in a separate area; see the Sources-status block for the OQ-1 disposition.
 
 | ID | Capability | Internal area | Depends on (internal) | Depends on (external) | Founding question(s) | Dimension(s) | Vertical impact |
 |---|---|---|---|---|---|---|---|
-| IDN-1 | Provide anonymous Shadow identity on arrival | A-IDN | — | PC-2 (anonymous session per ADR-U004), PC-3 (proto personal group) | Who am I? | 1 | V2, V4 |
-| IDN-2 | Convert Shadow to authenticated FIM identity | A-IDN | IDN-1 | PC-2, PC-3, PC-4 (consent capture at transcendence per ADR-U027), DS-3 (triggers carry-over of in-flight journey enrolment owned by JRN-5) | Who am I?, What do I want? | 1 | V2, V3, V4 |
+| IDN-1 | Provide anonymous Mist identity on arrival | A-IDN | — | PC-2 (anonymous session per ADR-U004), PC-3 (proto personal group) | Who am I? | 1 | V2, V4 |
+| IDN-2 | Convert Mist to authenticated FIM identity | A-IDN | IDN-1 | PC-2, PC-3, PC-4 (consent capture at transcendence per ADR-U031), DS-3 (triggers carry-over of in-flight journey enrolment owned by JRN-5) | Who am I?, What do I want? | 1 | V2, V3, V4 |
 | IDN-3 | Provide authenticated, persistent FIM identity (sign in, sign out, refresh) | A-IDN | IDN-2 | PC-2 | Who am I? | 1 | V2, V4 |
 | IDN-4 | Render and edit member profile (full name, avatar, bio, display name) | A-IDN | IDN-3 | PC-2, PC-3 (display name and personal group naming are coupled) | Who am I? | 1 | V2, V4 |
 | IDN-5 | Provide private personal Journal surface | A-IDN | IDN-3 | PC-2 (Journal primitive) | Who am I?, What do I want? | 1 | V2, V4 |
@@ -232,7 +232,7 @@ Journeys are the primary developmental experience per VISION.md. The Hub renders
 | JRN-2 | View journey detail | A-JRN | JRN-1 | DS-3, DS-4 (preview content) | What do I want?, How do I get there? | 1, 1+Community | V2, V4 |
 | JRN-3 | Enrol self in a journey (individual) | A-JRN | IDN-3, JRN-2 | DS-3, PC-3 (personal group as enrolling entity) | What do I want?, How do I get there? | 1 | V2, V3, V4 |
 | JRN-4 | Enrol an engagement group in a journey | A-JRN | GRP-1, GRP-8, JRN-2 | DS-3, PC-3 | What do I want?, How do I get there? | 1+Community | V2, V3, V4 |
-| JRN-5 | Preserve in-flight journey enrolment across Shadow→FIM conversion | A-JRN | JRN-3, IDN-2 | DS-3 (anonymous-session enrolment carry-over), PC-2 (session binding) | How do I get there? | 1 | V2, V4 |
+| JRN-5 | Preserve in-flight journey enrolment across Mist→FIM conversion | A-JRN | JRN-3, IDN-2 | DS-3 (anonymous-session enrolment carry-over), PC-2 (session binding) | How do I get there? | 1 | V2, V4 |
 | JRN-6 | Render the journey player | A-JRN | JRN-3, JRN-4 | DS-3, DS-4 | How do I get there? | 1, 1+Community | V2, V4 |
 | JRN-7 | Walk steps with linear navigation (previous / next) | A-JRN | JRN-6 | DS-3 | How do I get there? | 1, 1+Community | V4 |
 | JRN-8 | Mark step complete and enforce required-step gating | A-JRN | JRN-6 | DS-3 | How do I get there? | 1, 1+Community | V4 |
@@ -378,7 +378,7 @@ Remarks recording prerequisite-check pauses, methodology observations, and cross
 
 **2026-06-17 re-grounding (ADR-U030 Hub v2 greenfield rebuild).**
 - **Anchor-neutralisation (Option A).** The per-row forward-commitment annotations (`*` / `**`) and the External-dependencies "Activation timing" column were retired. They were anchored to "implemented in the running system per `docs/TMP/capabilities.md`" — the old Hub MVP that ADR-U030 retires. Per the no-status rule, implementation/activation status now lives downstream (behaviour inventory, substrate audit, ROADMAP). The eight-area structure and ~100 rows were unchanged — the re-grounding removed status, not capabilities. The historical authoring record below (Observations A–G, the stress-test methodology) is preserved as provenance, not as live classification.
-- **ADR-U027 (Shadow lifecycle) reflected.** §L2 §3 now records Shadow data ephemerality (erase-on-inactivity/close) and atomic transcendence as the persistence-and-consent threshold; IDN-2 gains a PC-4 dependency (consent capture at transcendence).
+- **ADR-U031 (Mist lifecycle) reflected.** §L2 §3 now records Mist data ephemerality (erase-on-inactivity/close) and atomic transcendence as the persistence-and-consent threshold; IDN-2 gains a PC-4 dependency (consent capture at transcendence).
 - **ADR-U028 (governance by scope) recorded.** §L2 §3's DeusEx row and the A-ADM intro now carry the locked Ferd routing: content moderation + self-service exit stay woven in-place; the audit-log viewer (ADM-13/16), feature flags (ADM-15), and economy management route to the Console. No rows relocated — the Console's status (own entity vs Hub-shell bundle) is a deferred decomposition decision (U028/U025).
 - **DS reciprocation now possible.** All seven Domain Service L3 inventories now exist (`docs/platform/domain/*.md`), so the Hub's external-dependency claims (marked "reciprocation pending" below) can now be reconciled against them. That row-by-row reconciliation is deferred to the Phase-1 substrate-audit deliverable and the G-29 lateral-routing mechanism; it was not done in this re-grounding.
 

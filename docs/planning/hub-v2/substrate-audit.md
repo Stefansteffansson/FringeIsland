@@ -26,7 +26,7 @@
 ## Headline findings
 
 1. **The substrate is strikingly canon-true and carries forward wholesale.** Domain tables are consistently **group-keyed** — `actor_group_id`, `author_group_id`, `recipient_group_id`, `enrolled_by_group_id`, `created_by_group_id` — so **D15 (no `user_id` in domain tables) is already honored**. The only `user`-named column anywhere is `users.auth_user_id`, the correct anchor of the **P-O1 four-hop actor chain** (`auth.uid()` → `users.auth_user_id` → `users.id` → `users.personal_group_id`). `has_permission(p_acting_group_id, p_context_group_id, p_permission_name)` is the **exact** canon contract. Every table has RLS enabled. This validates the U030 thesis: *the violations live in the app tier, not the database.*
-2. **The Shadow lifecycle (U004/U027) is unrealized — the single biggest substrate gap.** `users` models signed-up FIMs only: there is **no `is_temporary`/Shadow flag**, and **pg_cron is not installed**, so the ephemeral-data cleanup U027 describes has **no realization**. This is *exactly* the problem U027's Context states. → **build-new** (see Gaps).
+2. **The Mist lifecycle (U004/U031) is unrealized — the single biggest substrate gap.** `users` models signed-up FIMs only: there is **no `is_temporary`/Mist flag**, and **pg_cron is not installed**, so the ephemeral-data cleanup U031 describes has **no realization**. This is *exactly* the problem U031's Context states. → **build-new** (see Gaps).
 3. **Inline journey content is the one clear table-level `adapt`.** `journeys.content jsonb` holds step content inline (`journey_type` is only `'predefined'`); canon (DS-4 Content blocks) externalises it. The 8 predefined journeys + `professional_pathfinders` seed embody the pre-canon model. → **adapt** (journeys table + journey seeds).
 4. **Partition-crossing is temporal, not a defect (PW-1).** The 19 tables span PC-2/PC-3/PC-4 and DS-3/DS-5 cleanly by concern; no ADR amendment or migration split is implied — Phase 3 realizes each service's contract *over* the existing tables.
 5. **DS reciprocation handoff.** The refreshed Hub §L3 left external-dependency claims "reciprocation pending"; with the 7 DS L3 inventories now existing, the substrate side of that reconciliation is captured here per-table (owning service column) and routed to G-29 where a contract gap exists.
@@ -41,7 +41,7 @@ Grouped by owning service per the U023 partition (PW-1: the table predates the c
 
 | Table | Owner | Tag | Rationale |
 |---|---|---|---|
-| `users` | PC-2 | **Adapt** | Core identity, group-anchored (`personal_group_id`), display-name system (`nickname`, `display_preference`, `show_real_name`), account state (`is_active`, `is_decommissioned`). Sound — but models FIMs only; **adapt to add the Shadow identity state** (U027) and an ephemerality path. |
+| `users` | PC-2 | **Adapt** | Core identity, group-anchored (`personal_group_id`), display-name system (`nickname`, `display_preference`, `show_real_name`), account state (`is_active`, `is_decommissioned`). Sound — but models FIMs only; **adapt to add the Mist identity state** (U031) and an ephemerality path. |
 
 ### PC-3 Organisation (universal group pattern, U006/U007)
 
@@ -89,7 +89,7 @@ Almost all are `SECURITY DEFINER` (the RLS-first + PostgREST-RPC contract patter
 |---|---|---|---|
 | **Permission machinery (PC-3)** | `has_permission`, `get_user_permissions`, `can_assign_role`, `get_group_id_for_role`, `get_permission_name`, `copy_template_permissions_on_role_create`, `auto_grant_permission_to_deusex` | **Conformant** | The canon three-layer contract (U007). `has_permission` signature is exact. |
 | **Actor resolution (P-O1)** | `get_current_personal_group_id`, `get_current_user_profile_id` | **Conformant** | The four-hop chain anchor functions. |
-| **Identity / user lifecycle (PC-2)** | `handle_new_user`, `handle_user_deletion`, `sync_personal_group_display_name`, `enforce_personal_group_id_immutability`, `validate_user_group_role` | **Adapt** | Sound for FIMs; **no anonymous/Shadow onboarding path** — `handle_new_user` assumes a signed-up auth user. Adapt to admit the Shadow state (U027). |
+| **Identity / user lifecycle (PC-2)** | `handle_new_user`, `handle_user_deletion`, `sync_personal_group_display_name`, `enforce_personal_group_id_immutability`, `validate_user_group_role` | **Adapt** | Sound for FIMs; **no anonymous/Mist onboarding path** — `handle_new_user` assumes a signed-up auth user. Adapt to admit the Mist state (U031). |
 | **Membership lifecycle (PC-3)** | `is_active_group_member`, `is_invited_group_member`, `is_group_creator`, `group_has_leader`, `leave_group`, `auto_assign_member_role_on_accept`, `auto_assign_deusex_role_on_accept`, `prevent_last_leader_removal`, `prevent_last_deusex_role_removal`, `prevent_last_deusex_membership_removal`, `get_group_member_counts` | **Conformant** | Invariants (last-leader, last-DeusEx) and lifecycle are canon-true. |
 | **Stewardship / succession** | `nominate_steward`, `_handle_stewardship_nomination_action` | **Conformant** | Hub MEM-7 leadership transfer. |
 | **Admin ops (PC-4 / A-ADM)** | `admin_decommission_user`, `admin_exit_user_from_platform`, `admin_hard_delete_user`, `admin_update_user_status`, `admin_force_logout`, `admin_send_notification`, `audit_admin_membership_change`, `audit_admin_message_send`, `is_platform_admin`, `enforce_decommission_invariant` | **Conformant** | Admin acting on members by `target_user_id` is acceptable (admin domain). **U028:** several feed Console-routed surfaces (audit viewer, flags) — a Phase-3 placement decision, not a substrate change. |
@@ -98,7 +98,7 @@ Almost all are `SECURITY DEFINER` (the RLS-first + PostgREST-RPC contract patter
 | **Journeys (DS-3)** | `is_enrolled_in_journey`, `is_journey_enrollable` | **Conformant** | Enrollment gates; the *content* adapt lives on the `journeys` table, not here. |
 | **Utility** | `update_updated_at_column` | **Conformant** | Generic `updated_at` trigger. |
 
-**Function tally:** 47 conformant · 6 adapt (the PC-2 identity-lifecycle group, pending Shadow admission) · 0 replace.
+**Function tally:** 47 conformant · 6 adapt (the PC-2 identity-lifecycle group, pending Mist admission) · 0 replace.
 
 ---
 
@@ -106,7 +106,7 @@ Almost all are `SECURITY DEFINER` (the RLS-first + PostgREST-RPC contract patter
 
 **Layer tag: Conformant.** Every table has RLS enabled; the pattern is uniform and canon-true (V4 RLS-first): read/write split by command, permission-gated via `has_permission`/membership helpers, admin paths separated (`*_admin`), bootstrap paths isolated (`memberships_insert_bootstrap`). Reference/seed tables expose read-only `auth_read_*` policies. No policy grants direct table mutation outside the permission model.
 
-Per-table policy sets (by command) are catalogued in the query record; richest surfaces are `group_memberships` (8) and `journey_enrollments` (6). **Scoping decision (not a silent cap):** policy `USING`/`WITH CHECK` clauses were **not** individually re-derived in this audit — each policy's internal correctness is re-verified when its table's area is rebuilt in Phase 3 (TDD seeded from the behaviour inventory). No policy is tagged *replace* on current evidence; the Shadow gap (below) will *add* policies, not rewrite existing ones.
+Per-table policy sets (by command) are catalogued in the query record; richest surfaces are `group_memberships` (8) and `journey_enrollments` (6). **Scoping decision (not a silent cap):** policy `USING`/`WITH CHECK` clauses were **not** individually re-derived in this audit — each policy's internal correctness is re-verified when its table's area is rebuilt in Phase 3 (TDD seeded from the behaviour inventory). No policy is tagged *replace* on current evidence; the Mist gap (below) will *add* policies, not rewrite existing ones.
 
 ---
 
@@ -117,7 +117,7 @@ Per-table policy sets (by command) are catalogued in the query record; richest s
 | `01_permissions.sql` | **Conformant** | The 44-row permission catalog — PC-3 canon authority; the stable contract surface. |
 | `02_role_templates.sql` | **Conformant** | Layer-1/2 role templates. |
 | `03_group_templates.sql` | **Conformant** | Group archetypes. |
-| `04_system_groups.sql` | **Conformant** (vocabulary *adapt*) | The 4 system groups: `DeusEx` (root-admin), `FringeIsland Members` (Tier-1 baseline), `[Deleted User]` (sentinel author for content reassignment), and `Visitor` — all canon-aligned (U019/U028 DeusEx). **Adapt:** `Visitor` + its `Guest` role are a *vestigial pre-canon Shadow shell* (no lifecycle behind them — see [behaviour-inventory](./behaviour-inventory.md) + the Shadow gap below); rename to **Shadow** on build. (`FringeIsland Journeys`, which owns the predefined journeys, is an *engagement* group, not a system group.) |
+| `04_system_groups.sql` | **Conformant** (vocabulary *adapt*) | The 4 system groups: `DeusEx` (root-admin), `FringeIsland Members` (Tier-1 baseline), `[Deleted User]` (sentinel author for content reassignment), and `Visitor` — all canon-aligned (U019/U028 DeusEx). **Adapt:** `Visitor` + its `Guest` role are a *vestigial pre-canon Mist shell* (no lifecycle behind them — see [behaviour-inventory](./behaviour-inventory.md) + the Mist gap below); rename to **Mist** on build. (`FringeIsland Journeys`, which owns the predefined journeys, is an *engagement* group, not a system group.) |
 | `05_professional_pathfinders.sql` | **Adapt** | Bootstrapped predefined-journey content (Journey Studio + DS-3/DS-4 authority). Carries forward, but its inline-content shape adapts with the `journeys.content` externalisation. |
 
 ---
@@ -126,8 +126,8 @@ Per-table policy sets (by command) are catalogued in the query record; richest s
 
 | Gap | Canon | Disposition |
 |---|---|---|
-| **Shadow identity state** | U004, U027 | **Build-new.** `users` has no `is_temporary`/Shadow flag; `handle_new_user` assumes signed-up auth. Add the Shadow state + the atomic Shadow→FIM transcendence (consent capture, continuity) the refreshed §L2 §3 / IDN-2 now specify. |
-| **Shadow data ephemerality (TTL / erase-on-close)** | U027 | **Build-new.** **pg_cron is not installed** (`pg_extension` has no `pg_cron`); there is no scheduled cleanup. The TTL/inactivity threshold is a Privacy-vertical / PC-2 config (deferred by design) but the *mechanism* is absent. |
+| **Mist identity state** | U004, U031 | **Build-new.** `users` has no `is_temporary`/Mist flag; `handle_new_user` assumes signed-up auth. Add the Mist state + the atomic Mist→FIM transcendence (consent capture, continuity) the refreshed §L2 §3 / IDN-2 now specify. |
+| **Mist data ephemerality (TTL / erase-on-close)** | U031 | **Build-new.** **pg_cron is not installed** (`pg_extension` has no `pg_cron`); there is no scheduled cleanup. The TTL/inactivity threshold is a Privacy-vertical / PC-2 config (deferred by design) but the *mechanism* is absent. |
 | **Journey content as DS-4 blocks** | DS-4 | **Adapt** (tracked above) — externalise `journeys.content`. |
 | **DS reciprocation of Hub external-dep claims** | DS-1..DS-7 L3 | The substrate confirms the consumer side for DS-3/DS-5/PC-2/PC-3/PC-4. Open contract gaps (per Hub §L3, routed to **G-29**): PC-2 per-device session inventory + remote-sign-out (IDN-11) — `admin_force_logout` exists but no member-facing session inventory; PC-3 transitive group-of-groups depth>1 (MEM-10); DS-6 Discovery surfaces (all of A-DIS) — **no DS-6 substrate exists** (consistent with §L2 not-yet-consumed). |
 | **AI Mentor / Whisp (A-COI)** | DS-1, DS-7 | No substrate — consistent with §L2 not-yet-consumed; out of Ferd scope. |
@@ -137,12 +137,12 @@ Per-table policy sets (by command) are catalogued in the query record; richest s
 ## Tally & handoff to Phase 2
 
 - **Tables:** 16 conformant · 3 adapt (`users`, `journeys`, + the journey-content model) · 0 replace.
-- **Functions:** 47 conformant · 6 adapt (PC-2 identity-lifecycle, pending Shadow admission) · 0 replace.
+- **Functions:** 47 conformant · 6 adapt (PC-2 identity-lifecycle, pending Mist admission) · 0 replace.
 - **RLS:** layer conformant; deep per-policy review deferred to per-area Phase-3 builds.
 - **Seeds:** 4 conformant · 1 adapt.
-- **Build-new:** Shadow state + ephemerality (the only substantial substrate-side new work for Ferd).
+- **Build-new:** Mist state + ephemerality (the only substantial substrate-side new work for Ferd).
 
-**Bottom line for the walking skeleton (Phase 2):** the substrate is a load-bearing asset — stand the v2 API-first layering *over it unchanged* for the identity/auth bootstrap, using `has_permission` and the four-hop actor as-is. The only substrate work that can't wait is the Shadow state (admit it in `users` + onboarding) — and even that is additive. Everything else is conformant carry; the engineering value really does live here, exactly as ADR-U030 argued.
+**Bottom line for the walking skeleton (Phase 2):** the substrate is a load-bearing asset — stand the v2 API-first layering *over it unchanged* for the identity/auth bootstrap, using `has_permission` and the four-hop actor as-is. The only substrate work that can't wait is the Mist state (admit it in `users` + onboarding) — and even that is additive. Everything else is conformant carry; the engineering value really does live here, exactly as ADR-U030 argued.
 
 ---
 

@@ -111,6 +111,8 @@ Mechanically uniform: noun swap **Shadow -> Mist** and cross-ref **ADR-U027 -> A
 
 ### Cluster 6 - Products + the Hub v2 Phase-1 trio (THE GATE BLOCKER)
 
+> **CLUSTER 6 COMPLETE (2026-06-21).** All 9 files renamed (Shadow->Mist 65, U027->U031 14). The **gate-critical trio** (Hub SPECIFICATION, substrate-audit, behaviour-inventory) is re-grounded on Mist/U031: substrate-audit/behaviour-inventory keep `Visitor`/`Guest` as **literal schema identifiers** (decision F) while their build-time rename destination correctly shifts to **Mist** ("rename `Visitor`/`Guest` -> Mist on build"; "the Mist lifecycle (U004/U031) gap"). Two CC fixes beyond the mechanical pass: (1) **broken-link repair** in SPECIFICATION.md §72 - the U027->U031 token bump had produced `ADR-U031-shadow-identity-lifecycle.md` (slug mismatch); corrected to `ADR-U031-mist-identity-lifecycle.md`; (2) light `(metamorphosis)` touch on the §72 lifecycle sentence. Delegated mechanical pass + CC review/fixes. **Hub v2 Phase-1 gate canon-dependency now cleared** (the Step-3 gate-note update is pending at close).
+
 - [ ] `docs/products/CLAUDE.md` (3: :13,:36,:51) - "Shadows before FIMs", "anonymous entrant ... Shadow" -> Mist. RENAME + NEEDS-MECHANICS (the "Shadows-before-FIMs" tier rule becomes "Mists-before-FIMs").
 - [ ] `docs/products/hub/CLAUDE.md` (2: :71,:73) - RENAME.
 - [ ] `docs/products/hub/DESCRIPTION.md` (1: :21) - RENAME + NEEDS-MECHANICS (Hub Phase-1 trio target).
