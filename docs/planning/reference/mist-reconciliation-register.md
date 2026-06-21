@@ -83,6 +83,8 @@ These are accepted (not superseded) ADR bodies. Recommended treatment: **pointer
 
 ### Cluster 4 - Platform core + the keystone spec
 
+> **CLUSTER 4 COMPLETE (2026-06-21).** identity-specification.md §9 fully re-grounded as the **Mist lifecycle (ADR-U031)** - the heaviest NEEDS-MECHANICS edit: accretion (progress-not-trait), the one-event transcendence/metamorphosis with the Path-1 interval state, presence/assessment ephemerality (no pre-consent inference, unlinkable), all folded into the four stages + Q10 + the L3 capability row + dependency chain. infrastructure-specification.md: PC-2 TTL sweep -> Mist/ADR-U031 (2 sites). Verified: only the intentional naming note (§9 line 231, recording the Shadow->place-3 reassignment) remains.
+
 - [ ] **`docs/platform/core/identity-specification.md`** (10: §9 "Shadow lifecycle" header :229 + :227,:231,:233,:235,:236,:237,:240,:262,:272) - **THE KEYSTONE SPEC. RENAME + NEEDS-MECHANICS (heavy).** This is where the lifecycle lives. Fold in: accretion (progress-not-trait), two-paths-one-gate, metamorphosis vs transcendence (decision A), presence/assessment ephemerality + unlinkability, no pre-consent inference. Rename §9 to "Mist lifecycle (ADR-U031)"; keep the U004 anonymous-auth mechanism cite.
 - [ ] `docs/platform/core/infrastructure-specification.md` (2: :65, :171) - **RENAME.** "PC-2's Shadow TTL sweep per ADR-U004/U027" -> Mist TTL sweep per ADR-U004/U031.
 
