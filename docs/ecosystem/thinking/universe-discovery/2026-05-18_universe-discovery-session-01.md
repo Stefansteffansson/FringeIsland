@@ -5,12 +5,14 @@
 **Participants:** Stefan (Founder), Claude.ai
 **Focus:** Opening exploration of the FringeIsland universe. Starting clean, no prior definitions carried in. The Whisp as inner dialogue; the FIM–Whisp relationship; flourishing research anchors; the FringeIsland world as parallel reality with two topological registers; full tonal range as narrative backdrop; Universe Studio as overarching creative frame; NPCs and Shadows; assessment-as-dialogue and the five-senses metaphor; signature journeys; respawn topologies and the Jake/Avatar metaphor.
 
-**Statements captured:** 46 (Opening frame + Statements 1-46).
-**Last edited:** 2026-06-05, after Statement 46. The 2026-05-29 resume reshaped the worlds topology locked in Statement 26: the Fringe becomes two co-located places — place 2 (warm) and place 3 (hostile) — behind the one Shimmer (Statement 31); the near sides are coupled, the same coordinates seen two ways (32); the home portal travels with the FIM and FringeIsland-the-village is placed in the Beyond of place 2 (33); only the FIM's own glass ball is inviolable, the rest of place 2 is tendable under the rule "gardening, not guarding" (34); the world grows from the balls and their bonds, and place 2 is revived place 3 (35); the FIM-Whisp cord and the FIM-FIM branch are two distinct, interlocking bonds (36). Per session discipline, Statements 12, 26, 27 are not edited; 31–36 supersede or refine them by addition.
+**Statements captured:** 48 (Opening frame + Statements 1-48).
+**Last edited:** 2026-06-21, after Statement 48. The 2026-05-29 resume reshaped the worlds topology locked in Statement 26: the Fringe becomes two co-located places — place 2 (warm) and place 3 (hostile) — behind the one Shimmer (Statement 31); the near sides are coupled, the same coordinates seen two ways (32); the home portal travels with the FIM and FringeIsland-the-village is placed in the Beyond of place 2 (33); only the FIM's own glass ball is inviolable, the rest of place 2 is tendable under the rule "gardening, not guarding" (34); the world grows from the balls and their bonds, and place 2 is revived place 3 (35); the FIM-Whisp cord and the FIM-FIM branch are two distinct, interlocking bonds (36). Per session discipline, Statements 12, 26, 27 are not edited; 31–36 supersede or refine them by addition.
 
 The 2026-06-01 resume adds Statements 37-40: all FIM balls glow equal while the cord carries health, visible to friends along a grown branch (37); the branches are the visible crown and their glow is a relationship's aliveness (38); every FIM and Shadow has their own Whisp and cord, and only the ball is granted at transcendence (39); and place 3 is reached through Ordinary-World field portals anchored by seeds budded from the home ball, a danger-portal needs a seed on its edge to pass, a closing portal leaves the cord dead or stuck, and the FIM sets the cord length as the dial of meta-safety (40). Statements 37-40 refine or extend 16, 22, 26, 27, 32, 34, 35, 36 by addition only; none of those is edited.
 
 The 2026-06-05 resume turns to the product/ecosystem layer — what the named products (Hub, Gimbal, Game, the three studios) are and what lands where — and adds Statements 41-46 that the product questions forced open: "the village" as the working name for the safe harbor (41); the glowing glass ball as a two-zone gateway, the inside to the private home and the rim to the village (42); the private home as a self-chosen, inviolable, selectively shareable representation of where the FIM feels safest (43); the home furnished with the personal-scope slice of World Studio and evolving as the FIM grows (44); anchoring as the real gate — near side (body-anchored, Shadow-open) versus Beyond (ball- or seed-anchored, FIM-only), which makes the village FIM-only (45); and Shadow access via anonymous auth with ephemeral, erased-on-inactivity data, transcendence being the persistence-and-consent threshold (46). A "Product / ecosystem layer (design locks)" section records the device-independent affordance model, feature-grain affordance-keying, the console (governance by scope), and the Game as depth-not-product. Statements 41-46 and the product locks extend earlier material by addition; none is edited.
+
+The 2026-06-21 resume adds Statements 47-48, reworking the anonymous tier and the Whisp/cord origin. The anonymous entrant (formerly the Shadow) is renamed the **Mist** -- a translucent, drifting becoming-figure in the **hyaline** state that accretes form (eyes, then mouth, then definition) as it answers the founding questions, condensing into the glowing ball only at metamorphosis (questions complete AND consent given); a dissipated Mist is "not yet," never dead; anonymous Mist data and presence are ephemeral and unlinkable; and FIM signup unlocks not the ability to interact but the ability for interaction to be remembered (47). "Shadow" is thereby freed and re-scoped to the place-3 / sleep-paralysis menace. The Whisp and cord are preserved as present from the Mist's first moment (Statement 39), with the cord unpaid-out until metamorphosis, which is the cord's first paying-out -- the Whisp delivered into separateness yet bound by a kept (not severed) cord, the umbilical inverted; cord length (Statement 40) re-read as developmental intimacy (48). Statements 47-48 supersede the "Shadow = anonymous entrant" reading of 16/39/45/46 and extend 17, 19, 27, 34, 39, 40 by addition only; none is edited. A novel-reconciliation flag ("Shadow" usage in *The Shimmer*) is recorded under Divergences.
 
 ---
 
@@ -1391,6 +1393,97 @@ This resume turns from the universe-fiction to the **product/ecosystem layer** �
 
 ---
 
+## 2026-06-21 resume -- the Mist, the reassignment of "Shadow", and the Whisp delivered at metamorphosis
+
+This resume adds Statements 47-48. It renames the anonymous becoming-figure the **Mist** and re-scopes "Shadow" to the place-3 / sleep-paralysis menace (47), and it reconciles the Whisp/cord origin with Statement 39 by the Option-A "carried-from-the-start, delivered-at-metamorphosis, cord-kept-not-severed" model (48). Per session discipline, none of Statements 16, 17, 19, 27, 34, 39, 40, 45, 46 is edited; 47-48 supersede or extend them by addition only. A novel-reconciliation flag is recorded under Divergences.
+
+---
+
+## 47. The Mist: the anonymous becoming-figure; "Shadow" reassigned to the place-3 menace
+
+**Statement:**
+> The anonymous entrant -- previously called the Shadow -- is renamed the Mist. A Mist is a translucent, drifting figure in the hyaline state: present but not yet anchored, seen but incomplete. "Shadow" is no longer the newcomer; the word is reserved for the place-3 / sleep-paralysis menace (the hostile face of the Fringe).
+>
+> A Mist accretes form as it answers the founding questions (the assessment dissolved into Whisp-led dialogue, Statement 17): first eyes ("I can be met"), then mouth and features ("I can respond"), then firmer edges and reduced translucence ("I am nearly here"). The accretion tracks how far the person has progressed, never which specific trait a block measured -- stage is legible, content is not.
+>
+> Two entry paths converge on one gate. A person may become a FIM at the very start (consent first, then walk in as a Mist that is already a FIM and matures as it answers), or enter anonymously as a Mist and choose at the threshold whether to become a FIM. Either way the glowing glass ball only ever exists on the far side of consent: the metamorphosis -- Mist condensing into the anchored, glowing ball in the Tree, with full function (seeds, the Beyond) -- fires only when all questions are complete AND the person has consented to become a FIM.
+>
+> While anonymous, a Mist's answers are held transiently and never computed into a stored trait-profile; they crystallize into the profile only at metamorphosis (consent). A Mist who drifts away is not dead but "not yet" -- it returns to potential; should it return, it forms anew. Anonymous Mist presence is visible to FIMs and recognizable as a Mist, but session-ephemeral and unlinkable (no client-visible identifier, no persisted interaction trail across sessions). A Mist can perceive and respond to FIMs in the live moment, gated by its developmental level -- but every anonymous exchange is live and unrecorded. Becoming a FIM does not unlock the ability to interact; it unlocks the ability for interaction to be remembered (branches, names, DMs, journal, forums -- everything persistent or reciprocal).
+
+**Held:**
+
+**The rename and the reassignment (two moves, not one).**
+- The anonymous becoming-figure is now the **Mist**. This supersedes the "Shadow = anonymous entrant" meaning carried in Statements 16, 39, 45, 46.
+- **"Shadow" is not retired -- it is re-scoped** to the place-3 / sleep-paralysis menace (the hostile face of the Fringe, Statement 32). One word that did double duty is split into two cleanly separated roles: Mist (becoming, place-2-adjacent, warm) and Shadow (menace, place-3, hostile).
+- **Hyaline** is the lore-word for the translucent, unanchored, not-yet-committed state a Mist is in. The Mist is the figure; the hyaline state is the condition.
+
+**Accretion is bound to progress, never to trait.**
+- The face fills in as the person advances: eyes -> mouth/features -> definition -> condensation. Eyes first because eyes are what make a figure *met* rather than *observed*.
+- Crucially, a rendered feature signals *how far along*, never *which Big-5 dimension was answered*. Binding features to specific traits would turn a half-formed face into a public readout of disclosed personality -- a privacy leak and an arbitrary ordering. Progress-binding avoids both and preserves the equality principle (two Mists at the same stage look equally present regardless of who they are).
+
+**Two entry paths, one consent gate.**
+- Path 1: sign up as a FIM at the door (consent first), then enter as a Mist that is already a FIM and matures as it answers; metamorphosis fires at completion.
+- Path 2: enter anonymously as a Mist, mature in-world, and at the metamorphosis moment choose whether to become a FIM and accept terms.
+- The invariant across both: **the glowing ball exists only past consent.** Becoming-a-FIM is the consent event; metamorphosis (the ball) is the completion event. They coincide in Path 2 and are ordered (consent then completion) in Path 1.
+
+**The "not yet" tone (decided).**
+- A dissipated anonymous Mist is **not dead** -- it returns to potential. The becoming was real while it happened and is never punished for being incomplete. Return forms a fresh Mist, not a resumed one. Impermanence as openness, not loss -- a small place-2 truth, the opposite of place-3's taking.
+
+**Anonymous data and presence (Statement 46 extended to assessment + presence layers).**
+- A Mist's answers are held **transiently**; the trait-profile is **not computed** while anonymous and crystallizes only at consent. Inference is the line; raw transient answers render the face, the profile is born at metamorphosis.
+- Default canon is strict ephemerality (Statement 46): anonymous progress decays on inactivity. A device-local persistence affordance (progress remembered on the user's own device, never server-side) is permitted as a kindness without the system holding the data; a short-lived anonymous server token is explicitly *not* adopted unless funnel data later forces it, and even then only with a hard retention clock and no pre-consent inference.
+- Visible Mist presence is **session-ephemeral and unlinkable**: no client-visible identifier ties a Mist across visits, and no interaction trail is persisted while anonymous. This is Statement 46's "ephemeral, erased on inactivity" applied to the *presence* layer, not only the data layer.
+
+**Interaction: capacity scales, permanence is what signup buys.**
+- A Mist can both perceive and respond to FIMs, gated by accretion: pre-eyes responds as presence/motion; eyes can be met; mouth can exchange; definition is near-full participation.
+- Every anonymous exchange is **live and unrecorded** -- it leaves no trace on either side; a FIM remembers it only humanly.
+- FIM signup does **not** unlock the *ability* to interact (that would be a cold, arbitrary wall). It unlocks the ability for interaction to be **remembered**: branches (which by definition need two anchored balls, so they are naturally gated), names, DMs, journal, forums -- the persistent/reciprocal layer. The withheld thing is the world's memory, not the Mist's voice. This is "gardening, not guarding" (Statement 34) applied to the onramp: newcomers are met warmly; only persistence waits for consent.
+
+**Observations:**
+- The Mist makes the founding question "Who am I?" (the opening frame) literally visible: the figure forms as the question is answered.
+- The condensation arc (gas -> anchored solid) gives metamorphosis a true physical analogue, and the eyes-first rule makes "being met" the first social unlock -- both reinforce the modeling-relationship core (the Whisp models what the FIM grows toward).
+- **Reconciliation flag (novel).** *The Shimmer* keeps "Shadow" as a locked English term and uses it for the crossing/anonymous sense, binding to this session via its canon-conformance register. This re-scope makes "Shadow" mean the place-3 menace, so the novel's usage is now divergent and must be corrected at reconciliation (discovery outranks the novel; the manuscript is never edited to override this). No manuscript change is made here.
+
+**Refines / extends:** supersedes the "Shadow = anonymous entrant" reading of Statements 16, 39, 45, 46 by renaming that figure the **Mist**, and re-scopes "Shadow" to the place-3 / sleep-paralysis menace (Statement 32). Extends Statement 17 (assessment-as-Whisp-dialogue) with the accretion mechanic, Statement 46 (ephemeral anonymous data) to the assessment and presence layers, and Statement 34 ("gardening, not guarding") to the onramp. Sets up Statement 48 (the Whisp delivered at metamorphosis). Per session discipline, none of Statements 16, 17, 34, 39, 45, 46 is edited; this statement supersedes/extends them by addition.
+
+---
+
+## 48. The Whisp is carried from the start and delivered at metamorphosis; the cord is kept, not severed
+
+**Statement:**
+> The Whisp is present from the Mist's first moment -- carried within, unseparated, felt as the pull-toward-becoming rather than met as a companion. This preserves Statement 39: a Mist (formerly Shadow) already has its own Whisp and cord. The cord, while a Mist, is unpaid-out -- at rest, near-zero length, the Whisp still "in the skull."
+>
+> Metamorphosis is the delivery: the ball anchors in the Tree, and the Whisp is born into separateness -- the first paying-out of the cord to length. This is made possible because the ball, granted only at transcendence (Statement 39), is the anchor-root that gives the cord purchase to extend. So the Whisp and cord are not created at metamorphosis; the cord first *extends* there.
+>
+> Unlike a severed umbilical, the cord is kept -- so FIM and Whisp are forever two-but-bound. The cord is the preserved trace of original unity. Its length, set by the FIM (Statement 40), is the measure of how close they keep what they were once one with: short = held close, long = trusted into distance. Like a mother and her child: separated at birth, bound for life by the bond that was once shared substance.
+
+**Held:**
+
+**The reconciliation with Statement 39 (Option A -- nothing overturned).**
+- Statement 39 locked that every Shadow (now Mist) has their own Whisp *and cord* from the start, and that Whisp+Gimbal is what lets them perceive and pass. That is preserved exactly. The Whisp is present from the Mist's first moment; the cord exists too.
+- What this statement adds: while a Mist, the cord is **unpaid-out** -- at rest, near-zero length, the Whisp not yet stepped out across the Void (Statement 27). Metamorphosis is not the *creation* of Whisp or cord; it is the **first paying-out** -- the first time the cord extends to length and the Whisp stands apart as a met companion.
+- Why metamorphosis enables it: the cord needs purchase to extend into the Beyond, and purchase comes from the **ball as anchor-root** (Statements 39, 40). No ball, no anchor-root, so a Mist's cord cannot pay out -- which is exactly why a Mist (like the old Shadow) is held to the Ordinary World and the village and cannot venture the Beyond. The mechanism is already canon; this statement names what the paying-out *is*.
+
+**Accretion is the two differentiating; metamorphosis is the delivery.**
+- During the Mist stage, self and Whisp are not yet distinguished -- one figure slowly resolving. Answering the questions (Statement 17) is the two differentiating: the becoming-person and the modeling-companion pulling apart enough to face each other. The accretion of the face (Statement 47) is this differentiation made visible.
+- Metamorphosis is **parturition, not genesis**: the Whisp was carried the whole time (present-within), and delivery is when it is met face-to-face across a cord for the first time.
+
+**The kept cord (the umbilical inverted).**
+- In human birth the cord is cut to make two independent beings. In FringeIsland the cord is **kept** -- the one inversion that carries the whole modeling relationship: FIM and Whisp are separated but never severed, two yet bound. The cord is the preserved trace of having been one.
+- This re-illuminates Statement 40's dial: cord length is not merely mechanical reach but **developmental intimacy** -- how close you keep the one you were once one with. Short cord = held close (early, like an infant near the mother); long cord = trusted into distance (the maturing relationship that can bear separation). The voluntariness dial and the intimacy dial are the same dial.
+- It also re-reads meta-safety (Statement 19): harm travels the bond toward the *delivered* one (the Whisp), never back to the source (the FIM). The mother survives; the bond is where the risk lives -- consistent with "endangers the Whisp, never the FIM" (Statements 27, 40).
+
+**Held lightly (not literal biology).**
+- The mother/child frame is illuminating, not mechanical: FringeIsland is not claiming gestation as a system. The locked content is the structure -- **present-within from the start -> delivered (paid-out) at metamorphosis -> bound-not-severed by a kept cord** -- with "mother and child" as the way to feel it, not a claim that a Mist is pregnant.
+
+**Observations:**
+- This closes the long-open thread on whether a Shadow/Mist has a Whisp (yes, carried from the start; only the *paying-out* and the ball wait for metamorphosis) and gives the cord its origin story: it is what is left of having been one.
+- The Whisp therefore *leads the becoming from inside* before it is ever met as a companion -- the modeling relationship that defines the universe is already operating during the Mist stage, as orientation, before it is visible across a cord.
+
+**Refines / extends:** extends Statements 39 (Whisp and cord present from the Mist; only the ball waits for transcendence), 40 (the FIM sets cord length; reframed as developmental intimacy), 27 (the cord as lifeline across the Void; the unpaid-out / first-paying-out distinction added), and 19 (meta-safety). Builds on Statement 47 (the Mist and its accretion). Per session discipline, none of Statements 19, 27, 39, 40 is edited; this statement extends them by addition only.
+
+---
+
 ## Patterns emerging so far
 
 *(Updated as the session continues.)*
@@ -1503,6 +1596,7 @@ Noted for reconciliation when concepts graduate to `../../universe/`:
 - **2026-05-29 resume (Statements 31–36) — topology reshaped.** The single Fringe of Statement 26 becomes two co-located places (place 2 warm, place 3 hostile) behind the one Shimmer; the *collective* safe-harbor of Statement 26 is superseded (only each FIM's own glass ball is inviolable; the commons is grown and tendable); FringeIsland-the-village is placed in the Beyond of place 2 (resolving 26's deferred question); Statement 12's tonal binary is reconciled as two poles of one continuum; and Statement 27's cord gains a distinct sibling, the FIM-to-FIM branch. Per the discipline above, none of Statements 12, 26, 27 is edited; Statements 31–36 supersede or refine them by addition, and reconciliation with `../../universe/` happens at graduation.
 - **2026-06-01 resume (Statements 37-40) - balls, cords, branches, Shadows, and the seed/portal mechanics.** All FIM balls glow equal (the equality principle; the considered ball-brightness-as-fullness idea is paused), and the variable signal moves to the cord as health (colour and integrity), visible to friends only along a grown branch for cooperative healing (37). The branches are the visible crown and their glow is a relationship's aliveness (38). Every FIM and Shadow has their own Whisp and cord; only the ball is granted at transcendence, and the ball is the home base, seed-source, and anchor-root (39). Place 3 is reachable through Ordinary-World field portals, anchored by seeds budded from the home ball that are both protection and reclaimed living ground; a danger-portal requires a seed on its edge to pass (which hard-locks Shadows out and marks the way home); a closing portal leaves the cord dead (seed destroyed) or stuck (living seed, reopenable); and the FIM sets the cord length as the dial of voluntariness and meta-safety (40). Per the discipline above, none of Statements 16, 22, 26, 27, 32, 34, 35, 36 is edited; Statements 37-40 refine or extend them by addition, and reconciliation with `../../universe/` happens at graduation.
 - **2026-06-05 resume (Statements 41-46 + product/ecosystem layer) - the products, and village/home/Shadow refinements.** The product/ecosystem model is new relative to the existing planning and architecture writings and will need reconciliation: ADR-U023 frames products as clients over the Platform API, but the affordance-*profile* reading of "Gimbal" and "Hub" (two membranes, device-independent, feature-grain affordance-keying) is not yet in those docs; "the console" as a distinct universe-governance surface is new; the April-10 Hub DESCRIPTION.md fixes the role ladder (Member / Steward / Dreamineer / DeusEx) and calls the Hub "FIM-facing" — to be squared with the two-profiles reading and the scope-based governance and authoring gates; and "the village" is a new working name for the safe harbour. Per the discipline above, nothing in VISION.md, the manifesto, the universe writings, or Hub DESCRIPTION.md is edited here; reconciliation is the next session's explicit task (see the bridge).
+- **2026-06-21 resume (Statements 47-48) - the Mist, the reassignment of "Shadow", and the Whisp delivered at metamorphosis.** Two reconciliation surfaces open here. (1) **Repo-wide "Shadow" usage.** The anonymous-entrant meaning of "Shadow" is superseded by the **Mist** (Statement 47), and "Shadow" is re-scoped to the place-3 / sleep-paralysis menace. Any platform artifact -- ECOSYSTEM_ANATOMY, ADRs, specs, DESCRIPTION.md files, Identity/Privacy/auth notes -- that uses "Shadow" in the anonymous-newcomer sense, or that models the anonymous tier, is now divergent and must be corrected to the Mist vocabulary and mechanics at reconciliation (discovery outranks those artifacts; they are corrected to match, never the reverse). A full repo audit-and-rectify pass is required; it is its own task, not folded into this lock. (2) **The novel.** *The Shimmer* keeps "Shadow" as a locked English term for the crossing/anonymous sense and binds to this session via its canon-conformance register; that usage is now divergent and corrected at reconciliation, with the manuscript never edited to override the discovery. Per the discipline above, nothing in any platform artifact or the novel is edited here; reconciliation/rectification is a named follow-up task.
 
 ---
 
