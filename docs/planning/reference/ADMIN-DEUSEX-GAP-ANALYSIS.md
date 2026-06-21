@@ -168,7 +168,7 @@ These are capabilities a production admin system would need that have no specifi
 |---|---|---|
 | **User search with advanced filters** | MEDIUM | Current search is basic text match on name/email. No filter by role, group membership, enrollment status, activity date, etc. |
 | **User profile detail view (admin)** | MEDIUM | No admin-side user detail page showing full profile, group memberships, enrollments, roles, activity history |
-| **Shadow/visitor account management** | LOW | No concept of visitor/shadow accounts exists yet (Visitor system group not created) |
+| **Mist/visitor account management** | LOW | No concept of visitor/Mist accounts exists yet (Visitor system group not created) |
 | **User export (CSV/JSON)** | LOW | No data export capability |
 | **User activity log (per-user)** | MEDIUM | `admin_audit_log` captures admin actions but there is no per-user activity timeline (logins, enrollments, group joins, etc.) |
 

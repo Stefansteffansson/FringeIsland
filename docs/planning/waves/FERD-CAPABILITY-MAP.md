@@ -4,7 +4,7 @@
 **Scope:** Everything needed for the first usable version of FringeIsland
 **Date:** 2026-04-10
 **Verified against:** Codebase at commit `6bbc0d5` (main branch)
-**Terminology note (2026-06-10):** "visitor" below reads as **Shadow** and the group-role "Member" as **Participant** (roles core, ADR-U027; the code/schema still uses the older names — rename deferred with the code correction target).
+**Terminology note (2026-06-10; updated 2026-06-21):** "visitor" below reads as **Mist** and the group-role "Member" as **Participant** (roles core, ADR-U031; the code/schema still uses the older names — rename deferred with the code correction target).
 
 ---
 

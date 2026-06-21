@@ -128,6 +128,8 @@ Mechanically uniform: noun swap **Shadow -> Mist** and cross-ref **ADR-U027 -> A
 
 ### Cluster 7 - Verticals
 
+> **CLUSTER 7 COMPLETE (2026-06-21).** privacy/SPECIFICATION.md re-grounded + WIDENED (NEEDS-MECHANICS): the §6 data-minimisation bullet now carries "no trait-profile before consent" + "session-ephemeral and unlinkable presence"; the ephemerality bullet carries the device-local-kindness / no-server-side-token posture; transcendence bullet notes transcendence = metamorphosis (one event, consent a precondition); §7 checklist widened; `Visitor` baseline-group identifier kept literal. notifications/administration/transactions: mechanical Shadow->Mist, U027->U031. Verified clean.
+
 - [ ] **`docs/verticals/privacy/SPECIFICATION.md`** (10: :42,:49,:60,:91,:92,:93,:94,:123,:137,:144) - **RENAME + NEEDS-MECHANICS.** The brief flags this specifically: the four U027 Shadow bullets + S43 in §6 are kept-verbatim and must be re-grounded on Mist/U031 (and widened to presence/assessment ephemerality, no pre-consent inference). Privacy is active and cites U027 directly.
 - [ ] `docs/verticals/notifications/SPECIFICATION.md` (4: :57,:66,:90,:129) - RENAME ("a Shadow holds no durable address" -> Mist).
 - [ ] `docs/verticals/administration/SPECIFICATION.md` (1: :113) - RENAME (remediation without identity).
@@ -136,6 +138,8 @@ Mechanically uniform: noun swap **Shadow -> Mist** and cross-ref **ADR-U027 -> A
 ---
 
 ### Cluster 8 - Planning reference + capability map
+
+> **CLUSTER 8 COMPLETE (2026-06-21).** FERD-CAPABILITY-MAP.md terminology note, OPEN_QUESTIONS.md CQ-014 note, reference/ADMIN-DEUSEX-GAP-ANALYSIS.md, reference/legacy-feature-docs/README.md - all RENAMEd (Shadow->Mist, U027->U031; `Visitor`/lowercase-visitor predecessor terms left where they name the schema/mechanism). **Decision-C resolution (thinking tree):** `universe-discovery/README.md` reads as an **exploration LOG/index** (its own Status line: "Exploration. Content here is not yet canonical"; append-only session records) - so per decision C it is **LEFT as-is**, together with `onboarding-summary` and `portal-ideas`. No pointer line added (it is a log, not a current-orientation index).
 
 - [ ] `docs/planning/waves/FERD-CAPABILITY-MAP.md:7` - terminology note "'visitor' reads as Shadow" -> Mist. RENAME.
 - [ ] `docs/planning/reference/ADMIN-DEUSEX-GAP-ANALYSIS.md:171` - "Shadow/visitor account management" -> Mist. RENAME (light).

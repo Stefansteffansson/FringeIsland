@@ -128,7 +128,7 @@
 **Scope:** Ferd
 **Raised:** 2026-04-14 (extracted from hamn VISION_TO_SPEC_MAPPING.md)
 **Blocks:** Ferd visitor implementation, onboarding funnel design
-**Note (2026-06-10):** "Visitor" is canonically the **Shadow** (roles core, ADR-U027). The question is now substantially narrowed by the reconciliation: access is intrinsic (near side open, the Beyond closed — no ball, S39/S45), data is ephemeral with transcendence as the consent threshold (S46/ADR-U027). What remains open is the product-level surface: which pages/content, the taster journey, the garden glimpse.
+**Note (2026-06-10; updated 2026-06-21):** "Visitor" is canonically the **Mist** (roles core, ADR-U031; the anonymous entrant renamed from "Shadow" per discovery S47-48). The question is now substantially narrowed by the reconciliation: access is intrinsic (near side open, the Beyond closed — no ball, S39/S45), data is ephemeral and unlinkable with transcendence (metamorphosis) as the consent threshold (S46/ADR-U031). What remains open is the product-level surface: which pages/content, the taster journey, the garden glimpse.
 **Context:** ADR-U004 locks the technical approach (anonymous sign-in, temporary profiles, pg_cron cleanup). But the product-level visitor experience is unspecified: what pages/content are visible to non-authenticated visitors? What constitutes a "taster journey"? What is the garden glimpse? What carries forward on registration? This needs a feature spec before implementation.
 
 ---
