@@ -110,7 +110,7 @@ The rules this vertical imposes on each tier of the anatomy. These are what ever
 - No judgment artifacts: no service computes or stores member-visible moderation state — strike counts, reputation marks, flags on profiles. Remediation state is between the platform and the affected member (MANIFESTO; V2's no-role-bypass is the privacy face of the same law).
 - Admin inspection of member data is purpose-bound and audited: operator access reads what the operation requires, with every access recorded (V4's data-access events); private developmental data (journals, Whisp dialogue, assessment results) is never exposed to moderation tooling by default — escalated access is a defined circumstance, not a browse capability (V2 §6).
 - Force-archive and takeover are separate flows (ADR-U019/U028): DeusEx intervention on creator content happens only in defined circumstances (abandonment, policy violation), designed explicitly per feature spec — never a generalization of owner self-service.
-- Remediation against Shadows works without identity (ADR-U027): abuse response on an anonymous session is session-scoped (terminate, block) and never demands PII — voluntariness is structural; Shadow data handled in remediation stays inside the ephemerality rules.
+- Remediation against Mists works without identity (ADR-U031): abuse response on an anonymous session is session-scoped (terminate, block) and never demands PII — voluntariness is structural; Mist data handled in remediation stays inside the ephemerality rules.
 
 #### Surfaces (Products · Studios · Design System)
 

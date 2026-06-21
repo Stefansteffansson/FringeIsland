@@ -39,14 +39,14 @@ Personal data protection is non-negotiable. This vertical guarantees that every 
 - Records of processing (GDPR Art. 30)
 - Sub-processor list maintained and disclosed
 - Cross-border transfer posture
-- Shadow (anonymous entrant) data minimisation and ephemerality (ADR-U027)
+- Mist (anonymous entrant) data minimisation and ephemerality (ADR-U031)
 - Per-region, per-audience, revocable sharing of the FIM's private home (universe-discovery S43)
 
 ### 3. Tooling and infrastructure
 
-- **Consent store (partial).** Consent state is authoritative in Platform Core: PC-2 Identity holds per-member, per-category consent. What exists today is the posture, not the tooling — no shared consent API, no per-category schema. Named waiting consumers: transcendence consent-capture (ADR-U027) and DS-7 bucket-level consent (PC-2 surface).
+- **Consent store (partial).** Consent state is authoritative in Platform Core: PC-2 Identity holds per-member, per-category consent. What exists today is the posture, not the tooling — no shared consent API, no per-category schema. Named waiting consumers: transcendence consent-capture (ADR-U031) and DS-7 bucket-level consent (PC-2 surface).
 - **Export pipeline (to be designed).** Must serve both right of access (GDPR Art. 15 — a copy of the data plus its processing context) and portability (Art. 20 — member-provided data in a structured, commonly-used, machine-readable format). Distinct rights, distinct outputs; one pipeline must not collapse them. Per-service export hooks (§6) are the feed.
-- **Erasure cascade (to be designed).** Art. 17 across every service's owned data, including AI-derived data (DS-7, scope-qualified per §5). Must reconcile with ADR-U021's no-data-mutation posture: the membership-exit soft-flag is not Art. 17 erasure — the cascade needs a regime-grade unlink/anonymise path (§5 Q4). No Shadow-path erasure mechanism is realized (the ADR-U004 pg_cron cleanup is lock-only); the one realized erasure-adjacent mechanism is the `[Deleted User]` sentinel reassignment on platform exit (seeded sentinel group + permission-gated reassignment function).
+- **Erasure cascade (to be designed).** Art. 17 across every service's owned data, including AI-derived data (DS-7, scope-qualified per §5). Must reconcile with ADR-U021's no-data-mutation posture: the membership-exit soft-flag is not Art. 17 erasure — the cascade needs a regime-grade unlink/anonymise path (§5 Q4). No Mist-path erasure mechanism is realized (the ADR-U004 pg_cron cleanup is lock-only); the one realized erasure-adjacent mechanism is the `[Deleted User]` sentinel reassignment on platform exit (seeded sentinel group + permission-gated reassignment function).
 - **Records of processing (Art. 30) — missing.** No data map exists. Per-service category/lawful-basis declarations (§6) are the input; the register itself is unowned tooling.
 - **Member-facing access trail (missing; shared with V4 Observability).** ADR-U012 splits the audit trail: Observability records data-access events, Privacy exposes them to the member. No exposure surface exists.
 
@@ -57,7 +57,7 @@ Missing shared tooling is a flag, not a failure: each gap above is a candidate e
 - **Unlawful collection.** A feature ships collecting personal data with no documented Art. 6 basis. Detected at feature-spec time by the Vertical Impact review (§7), retroactively by the Art. 30 register exercise. Recovered by stopping collection and documenting a basis or deleting the data.
 - **Consent drift.** Consent state and actual processing diverge — personalisation continues after opt-out, or an unconsented category is processed. Detectable only if consent is checked at the platform layer (PC-2 authoritative; tiers ask, never infer) and denials are observable. Recovered by halting processing and purging derived outputs where feasible.
 - **Erasure shortfall.** An Art. 17 request completes against primary rows but copies survive — logs, search indexes, AI-derived data, exports. The platform has told the member something untrue. Detected by erasure-cascade verification (owned data must be enumerable to be checkable); structural until the cascade exists. Recovered by completing the erasure and assessing the Art. 33/34 notification duty.
-- **Shadow durability leak.** Shadow-generated data survives past TTL/explicit-close; or transcendence migrates data without captured consent; or the sweep erases a mid-migration joiner. Tested platform invariants (ADR-U027): detected by sweep-correctness and migration-atomicity tests. The mid-migration case is prevention-only.
+- **Mist durability leak.** Mist-generated data survives past TTL/explicit-close; or transcendence migrates data without captured consent; or the sweep erases a mid-migration joiner. Tested platform invariants (ADR-U031): detected by sweep-correctness and migration-atomicity tests. The mid-migration case is prevention-only.
 - **Private-by-default inversion.** A surface renders private data (home region, journal, assessment result, cord health) without explicit FIM action. Detected via RLS-denial observability and component-level privacy-state handling; recovered by closing the leak, auditing the access trail, assessing Art. 33/34.
 - **Breach without notification.** A personal-data breach goes undetected or unnotified within Art. 33's 72-hour window (supervisory authority) / Art. 34 (member). Detection depends wholly on V4 Observability instrumentation; the response process does not yet exist (§5 Q5).
 
@@ -88,10 +88,10 @@ The rules this vertical imposes on each tier of the anatomy. These are what ever
 - Every table holding FIM data has RLS; every SQL function reading FIM data runs least-privilege (`SECURITY DEFINER` only when strictly required, always with `search_path = ''`); every API endpoint returning FIM data filters at the platform level — never return over-broad results for a downstream tier to filter
 - The storage layer respects erasure (Art. 17) cascading through all owned data — and erasure is verifiable: owned data must be enumerable or the cascade cannot be checked
 - Export hooks distinguish right of access (Art. 15) from portability (Art. 20) — different rights, different outputs
-- Shadow data minimisation (ADR-U027): the anonymous entrant (Shadow) receives a server-issued anonymous identity with no PII; no personal data is collected beyond what the Shadow itself generates in-session
-- Shadow ephemerality (ADR-U027): the Shadow's own generated data is erased on a short TTL after inactivity and on explicit close (explicit-erase path); the exact TTL/inactivity threshold is a configuration this vertical owns jointly with PC-2 Identity (deferred by design). Shared-world content merely read by the Shadow is out of scope
-- Whisp dialogue is treated as potentially personal data regardless of the Shadow's anonymity — it is the most sensitive class of Shadow-generated data and carries full minimisation and erasure obligations
-- Transcendence consent-capture (ADR-U027): becoming a FIM is the one moment Shadow data binds durably; consent is captured atomically with the data migration, and a last-moment joiner must not be erased mid-migration (the TTL sweep honours the explicit-erase path and the mid-migration guard)
+- Mist data minimisation (ADR-U031): the anonymous entrant (Mist) receives a server-issued anonymous identity with no PII; no personal data is collected beyond what the Mist itself generates in-session; **no trait-profile is computed before consent**, and presence is **session-ephemeral and unlinkable** (no client-visible cross-session identifier, no persisted interaction trail)
+- Mist ephemerality (ADR-U031): the Mist's own generated data is erased on a short TTL after inactivity and on explicit close (explicit-erase path); the exact TTL/inactivity threshold is a configuration this vertical owns jointly with PC-2 Identity (deferred by design). A device-local-only persistence affordance is a permitted kindness; a server-side anonymous token is not adopted without a hard retention clock and no pre-consent inference. Shared-world content merely read by the Mist is out of scope
+- Whisp dialogue is treated as potentially personal data regardless of the Mist's anonymity — it is the most sensitive class of Mist-generated data and carries full minimisation and erasure obligations
+- Transcendence consent-capture (ADR-U031): becoming a FIM is the one moment Mist data binds durably (transcendence = metamorphosis, one event with consent as a precondition); consent is captured atomically with the data migration, and a last-moment joiner must not be erased mid-migration (the TTL sweep honours the explicit-erase path and the mid-migration guard)
 - The access trail over a member's data is itself member-facing data (ADR-U012): Observability records data-access events; Privacy exposes them — "what has been done with my data?" is answered by a Platform API, not a support ticket
 
 #### Domain Services
@@ -120,7 +120,7 @@ The rules this vertical imposes on each tier of the anatomy. These are what ever
 - Transparently-shared groups capture explicit informed consent from every participant at join; openness is a norm, never a forfeiture — members retain control over what they contribute
 - Studios: attribution is creator-controlled (public, pseudonymous, or anonymous); metadata, authorship chains, collaboration records, and previews never leak a real identity without opt-in
 - Design system: components rendering FIM data resolve privacy state at the component level (the platform supplies the correct display form per viewer + viewed + settings); empty/redacted states are first-class visual states
-- No surface requires PII from a Shadow; transcendence is the only moment identity is asked for (ADR-U027 — voluntariness is structural)
+- No surface requires PII from a Mist; transcendence is the only moment identity is asked for (ADR-U031 — voluntariness is structural)
 
 ### 7. Cross-cutting checklists
 
@@ -134,14 +134,14 @@ A short, machine-checkable checklist a developer can run against any new feature
 - [ ] New AI feature honours both the AI-training and the AI-personalisation opt-out
 - [ ] New external processor (including any AI provider) is on the sub-processor list before personal data flows
 - [ ] New collection point has a privacy notice
-- [ ] New Shadow-touching feature preserves ephemerality (TTL after inactivity + explicit-erase path; no durable Shadow data outside the transcendence path)
+- [ ] New Mist-touching feature preserves ephemerality (TTL after inactivity + explicit-erase path; no durable Mist data outside the transcendence path; no pre-consent trait inference; session-ephemeral, unlinkable presence)
 - [ ] New home-content surface honours per-region, per-audience, revocable sharing (S43)
 - [ ] New visibility of one member's data to another flows from the member's sharing state, never from the viewer's role alone
 - [ ] New search/discovery indexing mirrors the membership scope of what it indexes
 
 ### Sources-status block
 
-- **2026-06-12 (L1→L3 descent, Step 2 stress-test).** Absence nouns (`consent`, `gdpr`, `erasure`, `data_export`, `opt_out`) dual-verified zero across live migrations, archive, seeds, `lib/`, `app/`; `privacy` zero live, one archive comment hit. RLS coverage 19/19 on the live table baseline (PW-5 re-verified, both methods). Shadow/anonymous-auth substrate is lock-only (ADR-U004 mechanism, U027 lifecycle: zero realization; only the seeded Visitor baseline group exists). Products tier queries Supabase directly today (53 `createClient` occurrences in `app/`) — §6's platform-side-filtering obligation is forward law; reconciliation is downstream. One Step 1 retraction corrected at Step 2: §3 had asserted the Shadow TTL sweep as realized; it is lock-only, and the realized erasure-adjacent artifact is the `[Deleted User]` sentinel reassignment.
+- **2026-06-12 (L1→L3 descent, Step 2 stress-test).** Absence nouns (`consent`, `gdpr`, `erasure`, `data_export`, `opt_out`) dual-verified zero across live migrations, archive, seeds, `lib/`, `app/`; `privacy` zero live, one archive comment hit. RLS coverage 19/19 on the live table baseline (PW-5 re-verified, both methods). Mist/anonymous-auth substrate is lock-only (ADR-U004 mechanism, U031 lifecycle: zero realization; only the seeded Visitor baseline group exists). Products tier queries Supabase directly today (53 `createClient` occurrences in `app/`) — §6's platform-side-filtering obligation is forward law; reconciliation is downstream. One Step 1 retraction corrected at Step 2: §3 had asserted the Mist TTL sweep as realized; it is lock-only, and the realized erasure-adjacent artifact is the `[Deleted User]` sentinel reassignment.
 
 *Note: no status column in the obligation table. Status (adopted / in enforcement / not yet enforced / retroactive needed) is a reconciliation output, not a derivation output — see §L4 and G-20.*
 

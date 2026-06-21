@@ -54,7 +54,7 @@ The system actor's failure profile is two-sided: V3 fails *loud* by speaking too
 - **Delivery failure unobserved.** A trigger emits but delivery silently fails — the member never knows, and neither does the platform. Delivery failures are observability events (V4: no silent drop; degradation emitted). Detected by delivery-outcome instrumentation traced to the source event; recovered by re-delivery where the moment still matters.
 - **Preference or consent bypass.** A category the member suppressed arrives anyway, or quiet hours are ignored. Preference state is consent-adjacent member state (V2); bypass is a consent violation in trust terms even when lawful. Detected by dispatcher-side preference enforcement (central, not per-emitter) and member reports; recovered by fixing the dispatch path.
 - **External-delivery content leak.** Full member content (journal text, message bodies, assessment results) rides an email out of the RLS perimeter into vendor logs the platform doesn't control. Detected by content-minimisation review of external templates; recovered by purging vendor-side where possible — prevention (summons, not substance) is the rule.
-- **Shadow durability leak.** Notification state outlives the ephemeral session (ADR-U027): a Shadow can hold no email address and no durable notification state — in-session delivery only. Detected by ephemerality verification on Shadow-linked rows; recovered by the TTL/explicit-erase sweep.
+- **Mist durability leak.** Notification state outlives the ephemeral session (ADR-U031): a Mist can hold no email address and no durable notification state — in-session delivery only. Detected by ephemerality verification on Mist-linked rows; recovered by the TTL/explicit-erase sweep.
 - **Bounce and unsubscribe ignored.** Bounced addresses and unsubscribed members keep receiving: legal exposure, sender-reputation damage that degrades *all* members' delivery, and trust destroyed at the recipient. Detected by bounce/unsubscribe webhook processing (provider-dependent, to-be-designed); recovered by suppression-list enforcement at dispatch.
 
 ### 5. Open questions
@@ -63,7 +63,7 @@ The system actor's failure profile is two-sided: V3 fails *loud* by speaking too
 2. **Per-member vs per-group preferences.** The realized `notifications` table is already group-keyed (`recipient_group_id` — the universal group pattern), so "per-member" is per-personal-group on disk. The open half: do engagement-group-scoped overrides exist (mute *this* group's journey notifications)? Resolves at preference-store design.
 3. **Email provider selection.** Joint with V2's sub-processor duty: named on the sub-processor list before personal data flows; content minimisation binds template design. The realized abstraction seam (`lib/email/send.ts`) is provider-agnostic by design. Candidate spike.
 4. **Transactional-vs-marketing lawful-basis split.** Which categories may exist at all without explicit consent? Candidate: the category catalog carries lawful basis as a field (MANIFESTO "Member privacy over commercial opportunity"; V2 lawful-basis obligations).
-5. **Shadow-facing delivery bounds.** In-session in-app only (ADR-U027) — what exactly does the bell owe a Shadow mid-session, and is undelivered Shadow notification state erased with the session? Seams with the ephemerality/TTL design.
+5. **Mist-facing delivery bounds.** In-session in-app only (ADR-U031) — what exactly does the bell owe a Mist mid-session, and is undelivered Mist notification state erased with the session? Seams with the ephemerality/TTL design.
 6. **The Art. 34 delivery-channel half.** Member breach notification: V2 §5 Q5 owns detection-to-notification process jointly with V1 (process) and V4 (detection). If V3 owns the *channel* — a lawfully-compelled category that bypasses preferences — that is a seam to design, not an obligation grab; held here as the channel half only. **Closed (2026-06-13, breach-response joint-design spike — [design record](../../research/breach-response-design.md)):** V3 owns the **channel mechanics** — the breach notice is a lawfully-compelled category (already named in the §7 checklist) that bypasses preference suppression while still publishing through the shared dispatcher — plus a **channel-compromise fallback**: when the breach may have compromised the primary delivery channel, Art. 34(3)(c) public communication applies. The member-notice **content rules** live with V2 (Art. 34 floor vs content-minimisation ceiling); V3 carries delivery, not wording.
 7. **Lifecycle-event notification semantics.** Does a membership exit notify the group (ADR-U021 keeps display honest — but does departure announce itself, or is leaving quietly a privacy interest)? A retired journey notifies enrolled FIMs through the product (studios tier law). Candidate: each lifecycle cascade spec (ADR-U016) declares its triggers; the exit case needs a privacy-aware ruling.
 
@@ -87,7 +87,7 @@ The rules this vertical imposes on each tier of the anatomy. These are what ever
 - External delivery crosses the privacy perimeter: externally-bound payloads are content-minimised (identifiers and a summons back to the platform, never full member content), and any delivery vendor is a sub-processor under V2's rules.
 - Delivery outcomes are observability events (V4): emission, routing, delivery, and failure are traced to the source event; no silent drop.
 - Admin notifications are admin acts: `admin_send_notification`-class sends are audited, human-executed (V1 §6) — the dispatcher carries the audit seam for the operator plane.
-- Shadow rule (ADR-U027): a Shadow holds no email address and no durable notification state; Shadow-facing delivery is in-session, in-app only, erased on the ephemerality schedule.
+- Mist rule (ADR-U031): a Mist holds no email address and no durable notification state; Mist-facing delivery is in-session, in-app only, erased on the ephemerality schedule.
 - Bounces and unsubscribes are platform suppression state enforced at dispatch: a bounced or unsubscribed address is never sent to again within that category's lawful basis.
 
 #### Domain Services
@@ -126,7 +126,7 @@ A short, machine-checkable checklist a developer can run against any new feature
 - [ ] External notifications carry a one-click unsubscribe/preference path
 - [ ] Delivery outcomes are observability events traced to the source event
 - [ ] Admin-initiated sends are audited admin acts
-- [ ] Shadow recipients: in-session delivery only, no durable notification state
+- [ ] Mist recipients: in-session delivery only, no durable notification state
 
 ### Sources-status block
 
