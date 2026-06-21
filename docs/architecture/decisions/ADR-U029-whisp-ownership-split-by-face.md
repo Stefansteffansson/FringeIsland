@@ -58,6 +58,6 @@ The Whisp is the highest-consequence concept in the roadmap — each FIM's inner
 
 ## Links
 
-- Related ADRs: ADR-U023 (Platform Core / Domain Services decomposition — the boundary law this decision operates within); ADR-U005 (profile_data — DS-7's accumulation shape); ADR-U027 (Shadow lifecycle — Shadows carry their own Whisp from the start).
+- Related ADRs: ADR-U023 (Platform Core / Domain Services decomposition — the boundary law this decision operates within); ADR-U005 (profile_data — DS-7's accumulation shape); ADR-U031 (Mist lifecycle — Mists carry their own Whisp from the start; supersedes ADR-U027, which called the Mist the Shadow).
 - Provenance: ratified at the DS-1 descent (bridge `docs/planning/sessions/2026-06-10_02_-_DS1-DESCENT-PHASE0-PHASE1-LANDED.md`); parked in `decisions/PENDING.md` 2026-06-10; promoted at the DS-7 descent (spec commit `255daad`, closing bridge `2026-06-11_02_-_DS7-LANDED.md`) — the DS-7 derivation surfaced nothing contradicting the split.
 - Spec anchors: `docs/platform/domain/world-model.md` (Whisp-presence area; salience channel; §8 Q7) · `docs/platform/domain/intelligence.md` (§1 being-face; §7 invariants; §8 Q3) · the beings core `docs/ecosystem/universe/beings/README.md` ("two framings, one entity").

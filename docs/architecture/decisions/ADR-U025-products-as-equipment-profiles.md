@@ -54,7 +54,8 @@ Hub/Gimbal identities as complementary surfaces, and it removes device bookkeepi
 
 ### The decision, in full
 
-1. **One experience, one shared core.** The lived thing is being-in-FringeIsland (Shadow + FIM).
+1. **One experience, one shared core.** The lived thing is being-in-FringeIsland (Mist + FIM; the Mist
+   was the Shadow, renamed per ADR-U031).
    Products are shipped surfaces of that one experience — real deliverables (a web app with a URL,
    a mobile app with a store listing), each with releases and a shell.
 

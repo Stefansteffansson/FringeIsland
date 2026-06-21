@@ -47,9 +47,9 @@ Keystone first (ADR-U031), then by authority. Clusters below are in build order.
 
 These are accepted (not superseded) ADR bodies. Recommended treatment: **pointer-edit** (correct the noun + add "(the Mist, ADR-U031)"), NOT a rewrite - see decision D.
 
-- [ ] `ADR-U025-products-as-equipment-profiles.md:57` - "(Shadow + FIM)" -> "(Mist + FIM)". RENAME (pointer).
-- [ ] `ADR-U029-whisp-ownership-split-by-face.md:61` - cross-ref "ADR-U027 (Shadow lifecycle - Shadows carry their own Whisp...)" -> "ADR-U031 (Mist lifecycle - Mists carry...)". RENAME (pointer).
-- [ ] `ADR-U004-visitor-anonymous-sign-in.md` (title + body, 1 shadow hit at :12 + the Visitor body) - **HISTORICAL-LEAVE** (predecessor ADR; "Visitor" is the era-correct mechanism name). Supersession chain U004 -> U027 -> U031 recorded in U031, not by editing U004.
+- [x] `ADR-U025-products-as-equipment-profiles.md:57` (DONE 2026-06-21) - "(Shadow + FIM)" -> "(Mist + FIM; the Mist was the Shadow, renamed per ADR-U031)". RENAME (pointer); status not flipped (D).
+- [x] `ADR-U029-whisp-ownership-split-by-face.md:61` (DONE 2026-06-21) - cross-ref -> "ADR-U031 (Mist lifecycle - Mists carry their own Whisp from the start; supersedes ADR-U027, which called the Mist the Shadow)". RENAME (pointer); status not flipped (D).
+- [x] `ADR-U004-visitor-anonymous-sign-in.md` (title + body, 1 shadow hit at :12 + the Visitor body) (DISPOSITIONED 2026-06-21: LEFT) - **HISTORICAL-LEAVE** (predecessor ADR; "Visitor" is the era-correct mechanism name). Supersession chain U004 -> U027 -> U031 recorded in U031, not by editing U004.
 
 ---
 
