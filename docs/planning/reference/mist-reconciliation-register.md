@@ -188,7 +188,33 @@ Mechanically uniform: noun swap **Shadow -> Mist** and cross-ref **ADR-U027 -> A
 
 ---
 
-## Step 2 / Step 3 (not started)
+## Step 2 (rectify) - COMPLETE (2026-06-21)
 
-- **Step 2 (rectify):** cluster-by-cluster in the order above, keystone first. Per file: dry-run, verify diff, apply (ASCII-only). One logical cluster per commit. Commit form: `docs(scope): ... (Shadow -> Mist; cites discovery S47-S48, ADR-U031)`. Register each cluster's completion here.
-- **Step 3 (close):** register gap **G-34** in `docs/ecosystem/how-we-work/gaps.md` if the pass spans >1 session; run `doc-health-check`; update the Hub v2 Phase-1 gate note; write a closing bridge; commit/push on Stefan's disposition.
+All 8 clusters rectified and committed (one logical cluster per commit), keystone first. Commits:
+`26079cf` (C0 keystone), `7049028` (C1 ADR cross-refs), `7ffa4fd` (C2 universe cores), `912f6f7`
+(C3 architecture), `0a55f8a` (C4 platform core), `935a24c` (C5 domain services), `f3da334`
+(C6 products + Hub trio), `ec54b27` (C7 verticals), `b643d17` (C8 planning) + a sweep-fix (below).
+
+**Final verification (full repo).** Total "shadow" lines 510 -> 383; every remaining hit accounted for:
+HISTORICAL (sessions 139, discovery-log 63, thinking 73, ANATOMY_V1 6, ADR-U027 body 14), NOVEL (39),
+research (14), the new ADR-U031 (25), the register itself (60), and ~10 **intentional active-tree**
+hits (provenance notes + the place-3-menace introduction + retired-names/reassignment notes + U027's
+historical index title). **Zero active-tree misses on "shadow".**
+
+**Adjacent-vocabulary sweep caught one miss the "shadow" grep could not:** `infrastructure-specification.md:201`
+cited "ADR-U027" with no "shadow" token nearby (a forward lifecycle cross-ref) - corrected to ADR-U031.
+This validates the brief's insistence on sweeping adjacent vocabulary (U027 / Visitor / transcend), not
+just the noun. Re-verified: no forward U027 lifecycle cite remains in any active spec; all residual U027
+mentions are intentional provenance/supersession or historical Session-B records.
+
+**Note on "transcendence":** retained as the platform/spec term per decision A (metamorphosis is the lore
+name for the same single event); it was NOT renamed. "Visitor"/"Guest" schema identifiers untouched
+(decision F; build-time rename destination now Mist).
+
+## Step 3 (close) - in progress
+
+- [ ] register gap **G-34** in `docs/ecosystem/how-we-work/gaps.md` if the pass spans >1 session
+- [ ] run `doc-health-check` (cross-cutting change: rename + re-scope) and fix what it flags
+- [ ] update the Hub v2 Phase-1 gate note to record the trio was re-grounded on Mist/U031
+- [ ] write a closing bridge under `docs/planning/sessions/`
+- [ ] commit/push on Stefan's disposition (MCP git cannot push; the terminal does)

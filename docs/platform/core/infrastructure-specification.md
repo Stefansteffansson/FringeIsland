@@ -198,7 +198,7 @@ Capabilities PC-1 consumes from upstream Platform Core areas: **none**. PC-1 is 
 
 PC-1's "external dependencies" at this tier take the inverted form noted in the template — Platform Core is the *enabler* for vertical obligations rather than a consumer of them. The verticals that depend on PC-1 enablement:
 
-- **Privacy** depends on PC-1's RLS substrate, privilege-escalation discipline, object-storage access control, connection-role substrate, and scheduled-job substrate (TTL-erasure sweeps per ADR-U027).
+- **Privacy** depends on PC-1's RLS substrate, privilege-escalation discipline, object-storage access control, connection-role substrate, and scheduled-job substrate (TTL-erasure sweeps per ADR-U031).
 - **Administration** depends on PC-1's feature-flag substrate, connection-role substrate (`service_role`), schema-management workflow, and extension-management gate.
 - **Observability** depends on PC-1's migration-log substrate, trigger-based validation hooks, privilege-escalation logging, and feature-flag evaluation telemetry.
 - **Transactions** depends on PC-1's PostgreSQL substrate (ACID, transactional correctness) and on object-storage signed-URL lifecycle for transactional file operations.
