@@ -211,10 +211,18 @@ mentions are intentional provenance/supersession or historical Session-B records
 name for the same single event); it was NOT renamed. "Visitor"/"Guest" schema identifiers untouched
 (decision F; build-time rename destination now Mist).
 
-## Step 3 (close) - in progress
+## Step 3 (close) - COMPLETE (2026-06-21)
 
-- [ ] register gap **G-34** in `docs/ecosystem/how-we-work/gaps.md` if the pass spans >1 session
-- [ ] run `doc-health-check` (cross-cutting change: rename + re-scope) and fix what it flags
-- [ ] update the Hub v2 Phase-1 gate note to record the trio was re-grounded on Mist/U031
-- [ ] write a closing bridge under `docs/planning/sessions/`
-- [ ] commit/push on Stefan's disposition (MCP git cannot push; the terminal does)
+- [x] **G-34 - NOT registered (decision):** the brief made it conditional on the pass spanning >1
+  session. It completed in one session and the register is fully dispositioned (named deferrals
+  permitted), so the multi-session worklist gap is unnecessary. Named deferrals tracked instead:
+  the Shadow-menace characterization (above), novel reconciliation (conformance register), and the
+  `Visitor`/`Guest` -> Mist code-correction target (decision F).
+- [x] **doc-health-check run** (commit `b72fa26`): Sec 1 clean; Sec 3 links clean (one §72 break fixed
+  in C6); Sec 9 cascade intact; Sec 10 graduation tracker updated (ADR-U031 row added, U027 marked
+  superseded); Sec 1.5 skill registry fed with the rename + two-sense rule. Pre-existing drift
+  (decisions/README.md missing U029/U030 rows) flagged for a separate pass.
+- [x] **Hub v2 Phase-1 gate note updated** (commit `b72fa26`): canon dependency cleared; gate may proceed.
+- [x] **Closing bridge written:** `docs/planning/sessions/2026-06-21_-_MIST-RECONCILIATION.md`.
+- [ ] **commit/push on Stefan's disposition** - all 12 commits are local on `main`; push pending Stefan
+  (MCP git cannot push; the terminal does).
