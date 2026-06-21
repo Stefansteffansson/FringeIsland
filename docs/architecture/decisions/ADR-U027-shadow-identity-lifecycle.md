@@ -1,9 +1,15 @@
 # ADR-U027: Shadow identity lifecycle — anonymous auth, ephemerality, transcendence
 
-**Status:** Accepted
+**Status:** Superseded by ADR-U031
 **Date:** 2026-06-10
 **Deciders:** Stefan
 **Tags:** scope:platform-core · wave:ferd
+
+> **Superseded by [ADR-U031](ADR-U031-mist-identity-lifecycle.md) (2026-06-21):** the anonymous
+> entrant — here called the **Shadow** — is renamed the **Mist**, and "Shadow" is reassigned to the
+> place-3 / sleep-paralysis menace (discovery Statements 47-48). The lifecycle below is **preserved and
+> renamed** by U031, not overturned. This body is retained intact as the record of the 2026-06-10
+> decision; do not edit it.
 
 > Extends [ADR-U004](ADR-U004-visitor-anonymous-sign-in.md) (the anonymous sign-in mechanism),
 > [ADR-U010](ADR-U010-privacy-dedicated-vertical.md), and

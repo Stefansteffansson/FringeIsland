@@ -37,8 +37,9 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 | ADR-U024 | [Wave model semantics](ADR-U024-wave-model-semantics.md) | Accepted | platform-core |
 | ADR-U025 | [Products as equipment profiles](ADR-U025-products-as-equipment-profiles.md) | Accepted | product |
 | ADR-U026 | [Studio decomposition — Universe Studio as parent](ADR-U026-studio-decomposition-universe-studio-parent.md) | Accepted | studio |
-| ADR-U027 | [Shadow identity lifecycle](ADR-U027-shadow-identity-lifecycle.md) | Accepted | platform-core |
+| ADR-U027 | [Shadow identity lifecycle](ADR-U027-shadow-identity-lifecycle.md) | Superseded by ADR-U031 | platform-core |
 | ADR-U028 | [Governance by scope](ADR-U028-governance-by-scope.md) | Accepted | platform-core · vertical |
+| ADR-U031 | [Mist identity lifecycle](ADR-U031-mist-identity-lifecycle.md) | Accepted | platform-core |
 
 ---
 
