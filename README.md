@@ -2,7 +2,7 @@
 
 **Version:** 0.2.37 | **Updated:** April 2026 | **Wave 1 (Ferd):** 95% complete
 
-An edutainment platform for group-based personal development through structured learning journeys. Users travel solo or in groups on predefined journeys guided by role-based experiences — per-group roles: Stewards lead, Guides facilitate, Participants take part, and Observers watch. Identity runs Shadow → FIM; Dreamineer is the permission-gated authorial mode (Creator, Anthropologist, Teller, Wayfinder); enterprise stewardship sits with the Universeers, the FringeIsland Council, and DeusEx. See the [roles core](docs/ecosystem/universe/roles/README.md).
+An edutainment platform for group-based personal development through structured learning journeys. Users travel solo or in groups on predefined journeys guided by role-based experiences — per-group roles: Stewards lead, Guides facilitate, Participants take part, and Observers watch. Identity runs Mist → FIM; Dreamineer is the permission-gated authorial mode (Creator, Anthropologist, Teller, Wayfinder); enterprise stewardship sits with the Universeers, the FringeIsland Council, and DeusEx. See the [roles core](docs/ecosystem/universe/roles/README.md).
 
 FringeIsland is **one lived experience** over a shared core, where people can Live, Grow, and Matter. Products are equipment profiles of that experience — **The Hub** (the canvas surface, web) and **The Gimbal** (the senses surface, mobile); the Game is a depth setting of journeys, not a product (ADR-U025). Authoring happens in studios under **Universe Studio** as parent — World, Arc, and Journey Studios (ADR-U026). See [VISION.md](docs/ecosystem/VISION.md) for the full vision.
 

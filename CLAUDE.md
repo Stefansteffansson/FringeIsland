@@ -1,7 +1,7 @@
 # CLAUDE.md — AI Context for FringeIsland
 
-**Last updated:** 2026-06-10 (reconciliation Session B).
-**Reflects:** Model A (feature specs with embedded stories in the ecosystem tree; no PRDs); four skills as the execution layer; the reconciled entity model — products as equipment profiles with the Game as depth (ADR-U025), studios nested under Universe Studio with World Studio added (ADR-U026), the Shadow lifecycle (ADR-U027), governance by scope (ADR-U028) — and the canonical cosmology and roles cores under `docs/ecosystem/universe/`.
+**Last updated:** 2026-06-21 (Mist reconciliation; prior: 2026-06-10 reconciliation Session B).
+**Reflects:** Model A (feature specs with embedded stories in the ecosystem tree; no PRDs); four skills as the execution layer; the reconciled entity model — products as equipment profiles with the Game as depth (ADR-U025), studios nested under Universe Studio with World Studio added (ADR-U026), the Mist lifecycle (ADR-U031, superseding ADR-U027 — the anonymous entrant renamed from "Shadow", which now names the place-3 menace), governance by scope (ADR-U028) — and the canonical cosmology and roles cores under `docs/ecosystem/universe/`.
 
 This file is the project's entry point for AI agents. It tells you WHERE to look and WHICH skill to load — it does not try to describe every mechanic.
 
