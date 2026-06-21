@@ -39,7 +39,7 @@ Keystone first (ADR-U031), then by authority. Clusters below are in build order.
 
 - [x] **NEW: `docs/architecture/decisions/ADR-U031-mist-identity-lifecycle.md`** (DONE 2026-06-21) - the anonymous identity is the **Mist**; "Shadow" reassigned to the place-3 menace; the U027 lifecycle (anon auth, ephemerality, atomic transcendence) **preserved and renamed**; add the accretion/consent-gate mechanics and the assessment/presence ephemerality; define transcendence (consent) vs metamorphosis (completion) per decision A; cite Statements 47-48 and predecessor U027 (which renamed U004's "Visitor").
 - [x] **`docs/architecture/decisions/ADR-U027-shadow-identity-lifecycle.md`** (13 hits) (DONE 2026-06-21) - **HISTORICAL body (LEAVE), STATUS-LINE EXCEPTION:** flip status to "Superseded by ADR-U031" + one-line pointer at top. Body stays intact as the record of what was decided. (Verdict: HISTORICAL-LEAVE + status edit.)
-- [x] **`docs/architecture/decisions/README.md:40`** (DONE 2026-06-21) - index row "ADR-U027 | Shadow identity lifecycle | Accepted" -> marked Superseded by U031; U031 row added. (RENAME, index.) **Doc-health note:** the index is missing rows for the existing ADR-U029 and ADR-U030 (pre-existing drift, unrelated to this pass) - flag for Step 3 doc-health-check.
+- [x] **`docs/architecture/decisions/README.md:40`** (DONE 2026-06-21) - index row "ADR-U027 | Shadow identity lifecycle | Accepted" -> marked Superseded by U031; U031 row added. (RENAME, index.) **Doc-health note:** the index was missing rows for ADR-U029 and ADR-U030 (pre-existing drift, unrelated to this pass) - **fixed 2026-06-21** (both rows added + the ADR count in architecture/README.md corrected to 31), in a separate cleanly-scoped commit.
 
 ---
 
@@ -221,7 +221,9 @@ name for the same single event); it was NOT renamed. "Visitor"/"Guest" schema id
 - [x] **doc-health-check run** (commit `b72fa26`): Sec 1 clean; Sec 3 links clean (one §72 break fixed
   in C6); Sec 9 cascade intact; Sec 10 graduation tracker updated (ADR-U031 row added, U027 marked
   superseded); Sec 1.5 skill registry fed with the rename + two-sense rule. Pre-existing drift
-  (decisions/README.md missing U029/U030 rows) flagged for a separate pass.
+  (decisions/README.md missing U029/U030 rows) **fixed 2026-06-21** in a separate cleanly-scoped commit
+  (both index rows added + the ADR count in architecture/README.md corrected) - thread closed, not left
+  living only in this now-closed register.
 - [x] **Hub v2 Phase-1 gate note updated** (commit `b72fa26`): canon dependency cleared; gate may proceed.
 - [x] **Closing bridge written:** `docs/planning/sessions/2026-06-21_-_MIST-RECONCILIATION.md`.
 - [ ] **commit/push on Stefan's disposition** - all 12 commits are local on `main`; push pending Stefan
