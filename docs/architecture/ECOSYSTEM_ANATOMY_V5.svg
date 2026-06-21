@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 1020" role="img" font-family="'Inter', 'Anthropic Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
 <title>FringeIsland Ecosystem Anatomy v2.3 — equipment profiles, nested studios, governance by scope</title>
-<desc>Stacked view of the FringeIsland ecosystem, revised at reconciliation Session B (2026-06-10) per ADR-U025/U026/U027/U028. From top: Design System band; Products as equipment profiles (The Hub — canvas surface; The Gimbal — senses surface; the Game is a depth setting, not a product) and Universe Studio (parent of World, Arc, and Journey Studios); Platform API contract boundary; seven Domain Services (World Model DS-1, Narrative DS-2, Journeys DS-3, Content DS-4, Communication DS-5, Discovery DS-6, Intelligence DS-7) plus the Extension System; Internal API contract boundary; four Platform Core components (Organisation PC-3, Identity PC-2 with the Shadow lifecycle, Infrastructure PC-1, Governance PC-4 with governance by scope and the Console); five cross-cutting verticals threading the full stack (Admin, Privacy/GDPR, Notifications, Observability, Transactions) with a footer annotation citing ADR-U002.</desc>
+<desc>Stacked view of the FringeIsland ecosystem, revised at reconciliation Session B (2026-06-10) per ADR-U025/U026/U027/U028. From top: Design System band; Products as equipment profiles (The Hub — canvas surface; The Gimbal — senses surface; the Game is a depth setting, not a product) and Universe Studio (parent of World, Arc, and Journey Studios); Platform API contract boundary; seven Domain Services (World Model DS-1, Narrative DS-2, Journeys DS-3, Content DS-4, Communication DS-5, Discovery DS-6, Intelligence DS-7) plus the Extension System; Internal API contract boundary; four Platform Core components (Organisation PC-3, Identity PC-2 with the Mist lifecycle, Infrastructure PC-1, Governance PC-4 with governance by scope and the Console); five cross-cutting verticals threading the full stack (Admin, Privacy/GDPR, Notifications, Observability, Transactions) with a footer annotation citing ADR-U002.</desc>
 <style>
   .t  { font-size: 14px; fill: #3d3d3a; font-weight: 400; }
   .ts { font-size: 12px; fill: #5f5e5a; font-weight: 400; }
@@ -268,7 +268,7 @@
   <rect x="354" y="634" width="270" height="56" rx="8" stroke-width="0.5"/>
   <text x="612" y="650" text-anchor="end" class="id-tag">PC-2</text>
   <text x="489" y="654" text-anchor="middle" class="th">Identity</text>
-  <text x="489" y="672" text-anchor="middle" class="ts">Auth, profile, sessions, Shadow lifecycle</text>
+  <text x="489" y="672" text-anchor="middle" class="ts">Auth, profile, sessions, Mist lifecycle</text>
 </g>
 
 <!-- PC-1: Infrastructure -->

@@ -24,7 +24,7 @@ docs/architecture/
     ├── ADR-U001 through ADR-U022          ← migrated from old_universe (April 2026)
     ├── ADR-U023                           ← Platform Core / Domain Services decomposition
     ├── ADR-U024                           ← Wave model semantics
-    └── ADR-U025 through ADR-U028          ← reconciliation Session B (equipment profiles, studio decomposition, Shadow lifecycle, governance by scope)
+    └── ADR-U025 through ADR-U028          ← reconciliation Session B (equipment profiles, studio decomposition, Mist lifecycle [U027 -> U031], governance by scope)
 ```
 
 ---
@@ -35,7 +35,7 @@ docs/architecture/
 |----------|---------|
 | ARCHITECTURE_ANATOMY_V1.md | Original L0-L7 layered anatomy. Superseded by ADR-U023 (Platform Core / Domain Services decomposition), but contains unique rationale (build order, vertical descriptions, cascade principle). Kept as architectural history. |
 | DOMAIN_ENTITIES.md | Core domain model: User, Group, Journey, Role, Permission, Enrollment. Entity properties, relationships, business rules, state transitions. The only place these are documented. |
-| ECOSYSTEM_ANATOMY_V5.svg | Current ecosystem anatomy (v2.3, June 2026) — products as equipment profiles (ADR-U025), Universe Studio as parent (ADR-U026), Shadow lifecycle in PC-2 (ADR-U027), governance by scope in PC-4 (ADR-U028). Supersedes V4. |
+| ECOSYSTEM_ANATOMY_V5.svg | Current ecosystem anatomy (v2.3, June 2026) — products as equipment profiles (ADR-U025), Universe Studio as parent (ADR-U026), Mist lifecycle in PC-2 (ADR-U031, supersedes U027), governance by scope in PC-4 (ADR-U028). Supersedes V4. |
 | ECOSYSTEM_ANATOMY_V4.svg | Superseded anatomy (v2.2, April 2026) — kept as architectural history; carries the pre-reconciliation entity model. |
 | DOMAIN_SERVICE_DEPENDENCIES.svg | How domain services depend on each other and on Platform Core; studios (children of Universe Studio, ADR-U026) write to their domain services |
 | decisions/README.md | Full ADR index — 28 ADRs (U001-U028) |

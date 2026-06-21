@@ -10,6 +10,10 @@
 > Steward / Guide / Participant / Observer, the Dreamineer specialisations) live in the roles core:
 > [`../ecosystem/universe/roles/README.md`](../ecosystem/universe/roles/README.md). The body below
 > is a historical record and is deliberately left unedited.
+>
+> **Identity-state rename (2026-06-21, ADR-U031):** the anonymous entrant called the **Shadow** below
+> is now the **Mist**; "Shadow" is reassigned to the place-3 menace. The references below are
+> era-correct and deliberately unedited.
 
 ---
 

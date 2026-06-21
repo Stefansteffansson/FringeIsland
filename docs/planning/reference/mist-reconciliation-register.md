@@ -72,6 +72,8 @@ These are accepted (not superseded) ADR bodies. Recommended treatment: **pointer
 
 ### Cluster 3 - Architecture
 
+> **CLUSTER 3 COMPLETE (2026-06-21).** ECOSYSTEM_ANATOMY_V5.svg (desc + PC-2 label -> Mist lifecycle), DOMAIN_ENTITIES.md (User entity -> Mist + ADR-U031), architecture/README.md (both index lines -> Mist/U031). ARCHITECTURE_ANATOMY_V1.md left HISTORICAL with a one-line U031 pointer in its banner (decision B); body unedited. Verified: active architecture files carry no entrant-sense "Shadow"; the remaining hits are superseded-ADR bodies, U031's own narrative, the U025/U029 pointer-edits, and the U004 predecessor - all intended.
+
 - [ ] **`docs/architecture/ECOSYSTEM_ANATOMY_V5.svg`** (2: `<desc>` :4 "Identity PC-2 with the Shadow lifecycle"; label :271 "Auth, profile, sessions, Shadow lifecycle") - **RENAME** (current canonical anatomy, June 2026 - must be corrected). "Shadow lifecycle" -> "Mist lifecycle".
 - [ ] **`docs/architecture/DOMAIN_ENTITIES.md`** (2: :9, :57) - **RENAME + NEEDS-MECHANICS.** "anonymous, ephemeral **Shadow** identity state precedes the FIM ... (ADR-U027)" -> Mist + ADR-U031.
 - [ ] `docs/architecture/README.md` (2: :27, :38) - index lines describing U027 + the V5 SVG -> Mist/U031. RENAME.
