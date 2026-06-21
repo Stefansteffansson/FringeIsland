@@ -36,7 +36,7 @@ An immersive edutainment platform where personal development happens through liv
 
 ## Structural concepts
 
-**FIM** (FringeIsland Member) — the base identity: a person with a Whisp. Entrants begin as **Shadows** (anonymous, ephemeral, near-side only) and may **transcend** into FIMs — the consent-and-persistence threshold, which grants their glowing glass ball in the Tree.
+**FIM** (FringeIsland Member) — the base identity: a person with a Whisp. Entrants begin as **Mists** (anonymous, ephemeral, unlinkable, near-side only — translucent becoming-figures that accrete form as they answer the founding questions) and **transcend** into FIMs at the persistence-and-consent threshold — also called **metamorphosis**, fired when the questions are complete and consent is given — which grants their glowing glass ball in the Tree (ADR-U031).
 
 **The worlds** — the cosmological frame: the *Ordinary World* (daily life — always present, never absent), the *Shimmer* (the membrane between), and the *Fringe* — two co-located places behind the one Shimmer: a warm, welcoming place and a hostile, cold one, two poles of a single continuum, each with a near side (tied to worldly coordinates) and a Beyond. The *village* — the safe-harbour commons with the Tree and its glowing glass balls — lies in the Beyond of the warm place. The *Void* is the axis of separation: the medium the Whisp hangs in, out on its cord.
 

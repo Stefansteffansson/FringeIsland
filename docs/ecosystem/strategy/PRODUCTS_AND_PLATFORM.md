@@ -159,7 +159,7 @@ Phases overlap. Each wave begins building before the previous is complete. Nothi
 
 - Web platform (Ferd) — journey foundation, groups, Stewards, profiles
 - Discord — temporary community scaffold
-- Shadow experience — glimpse the island before arriving (anonymous, ephemeral; transcendence is the threshold)
+- Mist experience — glimpse the island before arriving (anonymous, ephemeral, unlinkable; transcendence/metamorphosis is the threshold)
 - First Dreamineers recruited
 - Free tier + first paid membership tier + voluntary donations
 

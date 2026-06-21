@@ -52,7 +52,11 @@ The whole created universe past the Shimmer. It is two places, both overlaid on 
 Ordinary World's coordinates (S31):
 
 - **Place 2** — warm, welcoming; the flourishing the universe is *for*. The FringeIsland place.
-- **Place 3** — hostile, cold, dystopian; the anti-flourishing force. As yet unnamed.
+- **Place 3** — hostile, cold, dystopian; the anti-flourishing force. The place-3 / sleep-paralysis
+  menace is now named **the Shadow** (S47-48, ADR-U031); "Shadow" no longer refers to anonymous entrants
+  (see the **Mist**). The full nature of the Shadow — force, entity, or class — is **open**, pending the
+  dark-origin mythology work. (Place 3 itself stays unnamed; the Shadow is its menace, not the place's
+  label.)
 
 They are the two centres of gravity of **one continuous tonal spectrum** (S12, S31) — not sealed
 boxes; the "all in between" lives in the contested ground between them. "Positive/negative future"
@@ -71,7 +75,7 @@ safe-versus-dangerous (S45):
 
 | Reach | Tied to | Anchor | Open to |
 |---|---|---|---|
-| Near side (places 2 and 3) | Ordinary-World coordinates | the FIM's own body | Shadows and FIMs |
+| Near side (places 2 and 3) | Ordinary-World coordinates | the FIM's own body | Mists and FIMs |
 | Beyond of place 2 (home, village) | nothing worldly | the ball (permanent root), via the always-on home portal | FIMs only |
 | Into place 3 (the deep dark) | nothing worldly | fresh seeds budded from the ball | FIMs only |
 
@@ -102,7 +106,7 @@ diagnostic, invited not imposed, self first.
 
 - **The village** (working name, S41) is the safe-harbour commons — the bursting little sea-village
   where FIMs relax, contemplate, socialise. It sits in the **Beyond of place 2** (S33), and it is
-  **FIM-only**: a Shadow has no ball, hence no anchor in any Beyond (S45).
+  **FIM-only**: a Mist has no ball, hence no anchor in any Beyond (S45).
 - **The Tree** stands in the village, hung with **glowing glass balls**. Each ball is one FIM,
   granted at transcendence (S39). **All balls glow equal** — no one is better or worse than anyone
   else; the variable signals live on cord and branch, never on the ball (S37).
@@ -139,7 +143,7 @@ among the balls.
   from the dead ground — anchoring and growing the world are the same gesture.
 - **Seed-to-pass:** a danger-portal requires a seed dropped on its edge to cross. The threshold
   seed is the route's anchor-zero and the marked way home; the safe crossings (home portal, the
-  village) need no seed; and the rule hard-locks Shadows out, since seeds need a ball (S40, S45).
+  village) need no seed; and the rule hard-locks Mists out, since seeds need a ball (S40, S45).
 - **Severance is two-tier** (S27): anchored — fall back to the last anchor and resume; unanchored
   overreach — start over from the very beginning. Recovery is reunion: the FIM and Whisp retreat
   and find each other again.
@@ -175,13 +179,13 @@ human is never the thing at risk (S19, S22).
 
 | | Own Whisp + cord | Near side (places 2 + 3) | The village / private home | Deep place 3 |
 |---|---|---|---|---|
-| **Shadow** | yes — the Whisp is universal (S39) | yes (body-anchored) | no — no ball | no — no seeds |
+| **Mist** | yes — the Whisp is universal (S39) | yes (body-anchored) | no — no ball | no — no seeds |
 | **FIM** | yes | yes | yes (ball, granted at transcendence) | yes (seeds, at chosen risk) |
 
-A Shadow's data is ephemeral (anonymous auth, erased soon after inactivity or close); transcendence
-is the persistence-and-consent threshold and grants the ball (S46, S39). The Shadow lock on the
-Beyond is intrinsic, not a fence: you do not enter the panic zone before you have a home to return
-to.
+A Mist's data is ephemeral (anonymous auth, erased soon after inactivity or close) and its presence is
+session-ephemeral and unlinkable; transcendence (metamorphosis) is the persistence-and-consent
+threshold and grants the ball (S46, S39, S47-48). The Mist lock on the Beyond is intrinsic, not a
+fence: you do not enter the panic zone before you have a home to return to.
 
 ---
 
@@ -215,4 +219,4 @@ World Model derives from this core).
 | Anchoring, seeds, severance | S27, S40, S45 |
 | World-genesis, gardening not guarding | S28, S34, S35 |
 | Growth gradient, meta-safety | S19, S22, S26, S27 |
-| Shadow access and transcendence | S16, S39, S45, S46 |
+| Mist access and transcendence/metamorphosis; the Shadow (place-3 menace) | S16, S39, S45, S46, S47-48 |

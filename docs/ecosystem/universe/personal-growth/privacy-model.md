@@ -1,6 +1,6 @@
 # Privacy Model — Avatar and Personal Data
 
-**Status:** Extracted from founding vision (April 2026); aligned to the discovery at reconciliation Session B (2026-06-10 — home per-region sharing S43, Shadow ephemerality S46)
+**Status:** Extracted from founding vision (April 2026); aligned to the discovery at reconciliation Session B (2026-06-10 — home per-region sharing S43, Mist [formerly Shadow] ephemerality S46); re-grounded on the Mist 2026-06-21 (S47-48, ADR-U031)
 **Source:** OLD_VISION_DECISIONS.md; universe-discovery Session 01
 
 ---
@@ -52,7 +52,7 @@ Even within transparently shared groups, the FIM retains control over what they 
 - The platform must never surface private data without explicit FIM action
 - Sharing controls must be granular — per-aspect, per-audience, per-timeframe
 - The Whisp's internal state (fullness, cord health) is private unless the FIM chooses otherwise
-- A Shadow's own data is ephemeral: anonymous auth, no PII, erased soon after inactivity or explicit close; transcendence is the persistence-and-consent threshold, and the migration is atomic (S46)
+- A Mist's own data is ephemeral: anonymous auth, no PII, erased soon after inactivity or explicit close; its presence is session-ephemeral and unlinkable and no trait-profile is computed before consent; transcendence (metamorphosis) is the persistence-and-consent threshold, and the migration is atomic (S46, S47-48)
 - Group Stewards cannot see members' private developmental data
 - No aggregate data derived from private journeys is visible to other FIMs
 - Anonymised aggregate data may be explored only with explicit informed consent, responsible handling, and clear member benefit — under enterprise stewardship (the Universeers and the FringeIsland Council, with the Foundation as legal holder; see the [roles core](../roles/README.md))

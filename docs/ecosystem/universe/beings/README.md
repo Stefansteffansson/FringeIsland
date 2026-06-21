@@ -19,7 +19,7 @@ The Whisp is each FIM's own inner dialogue: unique, private, one per person (S1)
 the inner voice oriented toward growth and compassion, a sometimes-wiser counterweight to the
 unproductive, unkind voice most of us live with by default (S4).
 
-The Whisp is universal: everyone has one, Shadow or FIM, because everyone has an inner voice
+The Whisp is universal: everyone has one, Mist or FIM, because everyone has an inner voice
 (S39). What FringeIsland changes is not whether the voice exists but what it becomes.
 
 ### Empty at first; filled BY the human growing

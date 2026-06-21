@@ -17,7 +17,7 @@ incompatible "ladders" across the repo. There is no ladder. There is **an identi
 three layers**, and a person holds positions in several at once:
 
 ```
-L0  Identity state      Shadow --(transcendence)--> FIM
+L0  Identity state      Mist --(transcendence)--> FIM
 L1  FIM modes           experiential | authorial (Dreamineer) | support roles within groups
 L2  Enterprise plane    Universeers | the Council | DeusEx          (surface: the Console)
 ```
@@ -30,15 +30,26 @@ are the same system seen from two sides (S29).
 
 ## L0 — Identity states
 
-- **Shadow** — the anonymous entrant. Has their own Whisp and cord from the start (the Whisp is
-  universal — it is the inner voice, S39). Near-side only; no ball, so no Beyond and no village.
-  Anonymous auth; their own data is ephemeral, erased soon after inactivity or explicit close
-  (S46). *(Retires the platform term "Visitor".)*
+- **Mist** — the anonymous entrant: a translucent, drifting becoming-figure in the **hyaline** state
+  (present but not yet anchored, seen but incomplete). It **accretes** form as it answers the founding
+  questions — eyes, then mouth and features, then definition, then condensation — where the stage
+  tracks *how far along*, never *which* trait was answered (a privacy invariant: stage legible, content
+  private). It has its own Whisp and cord from the start (the Whisp is universal — the inner voice,
+  S39), the cord **unpaid-out** until metamorphosis. Near-side only; no ball, so no Beyond and no
+  village. Anonymous auth; its own data is ephemeral (erased soon after inactivity or explicit close,
+  S46) and its presence is **session-ephemeral and unlinkable**, with **no trait-profile computed
+  before consent**. A Mist that drifts away is **"not yet," never dead** — it returns to potential and,
+  on return, forms anew. *(Renames the former "Shadow"; retires the platform term "Visitor". Full
+  lifecycle: ADR-U031; discovery S47-48.)*
 - **FIM** — the base identity: the person with a Whisp, taking their equal place in the Tree.
   "Member" is the platform-technical synonym for FIM and is used for nothing else.
-- **Transcendence** — the Shadow -> FIM transition: the persistence-and-consent threshold. What it
-  grants is the **ball** (home base, seed-source, anchor-root); session experience transfers
-  continuously, and the migration is atomic (S16, S39, S46).
+- **Transcendence (metamorphosis)** — the Mist -> FIM transition: the persistence-and-consent
+  threshold. "Transcendence" is the platform term; "metamorphosis" the lore name (the Mist condensing
+  into the anchored, glowing **ball** — home base, seed-source, anchor-root). It is **one event** that
+  fires only when **both** all founding questions are answered **AND** consent is given; consent is a
+  precondition, not a separate earlier event (the two conditions coincide on the anonymous path; on the
+  sign-up-first path, completion is the gate). Session experience transfers continuously and the
+  migration is atomic (S16, S39, S46, S47-48; ADR-U031).
 
 Every participant is a FIM. You cannot build FringeIsland from truly outside it; to create *for*
 the world you must be a member *of* it (S29).
@@ -122,10 +133,15 @@ conformance register tracks the correction:
 
 | Retired | Canonical |
 |---|---|
-| Visitor | **Shadow** |
+| Visitor | **Mist** |
+| Shadow (as the anonymous entrant) | **Mist** (renamed 2026-06-21; ADR-U031, discovery S47-48) |
 | Member (as a per-group role) | **Participant** |
 | Makers / Weavers / Skalds | retired; the Dreamineer specialisations (Creator, Anthropologist, Teller, Wayfinder) are canonical |
 | FringeIsland Studio (planning name) | **World Studio** (ADR-U026) |
+
+**"Shadow" is reassigned, not retired:** the word now names the **place-3 / sleep-paralysis menace**
+(the hostile face of the Fringe; ADR-U031, discovery S47-48), no longer the anonymous entrant (now the
+**Mist**). It remains live canon — with a different meaning — so it is never blind-replaced.
 
 ## NPCs are not roles
 
@@ -148,7 +164,7 @@ world-inhabitants, not modes a person occupies; they live in `../beings/`.
 
 | Section | Source |
 |---|---|
-| Identity states, transcendence, the ball | S16, S39, S46 |
+| Identity states, transcendence/metamorphosis, the ball | S16, S39, S46, S47-48 |
 | Modes-not-castes, permission gating, two planes | S29 |
 | Dreamineer specialisations, three human scales, NPC layers | S29, S30 |
 | Scope-tiered World Studio access | S44, ADR-U026 |

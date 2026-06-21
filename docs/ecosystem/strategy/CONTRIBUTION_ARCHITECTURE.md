@@ -20,12 +20,12 @@ These boundaries are not about gatekeeping. They are about protecting the values
 
 *These groups are permission tiers, not castes. In the canonical role taxonomy ([roles core](../universe/roles/README.md)), roles are modes a person occupies — several at once, moved between fluidly — granted via group and role permissions. (Within a given group, the per-group support roles are Steward, Guide, Participant, and Observer — Participant, not Member, which remains purely the platform synonym for FIM.)*
 
-### Group 0 — Shadows
-A Shadow is someone who has found their way to the island but has not yet arrived fully. They move through FringeIsland like a shadow — present, sensing the atmosphere, glimpsing what is possible — but not yet leaving a permanent mark.
+### Group 0 — Mists
+A Mist is someone who has found their way to the island but has not yet arrived fully. They drift through FringeIsland like mist — present, sensing the atmosphere, glimpsing what is possible — but not yet anchored, not yet leaving a permanent mark.
 
-The Shadow experience is open-ended. There is no time limit, no pressure, no countdown. A Shadow can feel the world, explore its edges, and catch a genuine sense of what FringeIsland is. They can even glimpse the door to their own garden — sense that it exists, that it was made for them — but the door will not open, and they cannot step inside, until they arrive properly.
+The Mist experience is open-ended. There is no time limit, no pressure, no countdown. A Mist can feel the world, explore its edges, and catch a genuine sense of what FringeIsland is. They can even glimpse the door to their own garden — sense that it exists, that it was made for them — but the door will not open, and they cannot step inside, until they arrive properly.
 
-When a Shadow chooses to register, they step out of the shadows and become real on the island. Everything gathered, experienced or discovered during their visit is automatically carried into their new member profile. Nothing is lost. The door opens — and the room is already furnished with what they brought with them.
+When a Mist chooses to register, they condense into someone fully present on the island. Everything gathered, experienced or discovered during their visit is automatically carried into their new member profile. Nothing is lost. The door opens — and the room is already furnished with what they brought with them.
 
 The registration prompt is gentle and optional. It appears naturally at moments when persistence would matter — not as a demand, but as an invitation: *your garden is waiting.*
 
@@ -49,7 +49,7 @@ The enterprise-stewardship plane — the **Universeers**, the **FringeIsland Cou
 
 | Group | What they can do |
 |-------|-----------------|
-| Shadow | Sense the world — experience taster content, glimpse the narrative, feel the atmosphere. Cannot participate in or influence the story |
+| Mist | Sense the world — experience taster content, glimpse the narrative, feel the atmosphere. Cannot participate in or influence the story |
 | Member | Contribute ideas, feedback, reactions, forum discussions, personal stories that enrich the world |
 | Dreamineer | Create and publish content — narratives, episodes, world-building, challenges — within the values framework and subject to Council quality standards |
 | Council / Foundation | Define the canonical world — the core lore, the A-plot, the season arcs, the rules of the three realms. Approve what becomes part of the official world narrative |
@@ -59,7 +59,7 @@ The enterprise-stewardship plane — the **Universeers**, the **FringeIsland Cou
 
 | Group | What they can do |
 |-------|-----------------|
-| Shadow | Use the platform as a read-only experience. No persistent data stored beyond the current session |
+| Mist | Use the platform as a read-only experience. No persistent data stored beyond the current session |
 | Member | Report bugs, suggest features, participate in feedback cycles |
 | Dreamineer | Build plugins, integrations and extensions that extend the platform — subject to technical standards and values alignment |
 | Council / Foundation | Define and maintain the core platform architecture, the data model, the privacy framework, and the fundamental member experience. These are never open to external modification |
@@ -69,7 +69,7 @@ The enterprise-stewardship plane — the **Universeers**, the **FringeIsland Cou
 
 | Group | What they can do |
 |-------|-----------------|
-| Shadow | Preview journeys — sense their shape, their direction, their feel. Cannot enrol or save progress |
+| Mist | Preview journeys — sense their shape, their direction, their feel. Cannot enrol or save progress |
 | Member | Enrol in and complete experiences. Share feedback. Recommend experiences to others |
 | Dreamineer | Design and publish experiences — journeys, facilitation guides, group programmes — within the values framework. Wayfinders specifically stitch content into coherent end-to-end member journeys |
 | Council / Foundation | Define the standards and frameworks that all experiences must meet. Ensure every experience serves the red thread — the journey from empty to whole |
@@ -79,7 +79,7 @@ The enterprise-stewardship plane — the **Universeers**, the **FringeIsland Cou
 
 | Group | What they can do |
 |-------|-----------------|
-| Shadow | Browse the marketplace. Cannot purchase until registered as a member |
+| Mist | Browse the marketplace. Cannot purchase until registered as a member |
 | Member | Purchase and own physical artefacts. Share and display them in the real world |
 | Dreamineer | Design and sell physical artefacts through the marketplace — 3D-printed homes, avatars, items, world objects. Subject to brand and quality standards |
 | Council / Foundation | Define brand standards for physical representations. Protect the visual identity and world integrity of FringeIsland in physical form |
@@ -89,7 +89,7 @@ The enterprise-stewardship plane — the **Universeers**, the **FringeIsland Cou
 
 | Group | What they can do |
 |-------|-----------------|
-| Shadow | Observe community spaces — sense the warmth and belonging — but cannot participate in conversations or groups |
+| Mist | Observe community spaces — sense the warmth and belonging — but cannot participate in conversations or groups |
 | Member | Organise informal local meetups and gatherings under the FringeIsland spirit. Participate fully in community spaces |
 | Dreamineer | Design and host official FringeIsland events — online seasonal events, regional gatherings, facilitated group experiences |
 | Council / Foundation | Own and organise the annual FringeIsland Summit. Define what constitutes an official FringeIsland event versus a member-organised gathering |
@@ -98,11 +98,11 @@ The enterprise-stewardship plane — the **Universeers**, the **FringeIsland Cou
 
 ## The Garden Door — A Product Principle
 
-Every Shadow already has a garden on FringeIsland. It exists before they have claimed it.
+Every Mist already has a garden on FringeIsland. It exists before they have claimed it.
 
-As a Shadow moves through the island, they may catch a glimpse of their garden door — a sense that something is waiting for them, something that was made for them specifically. The door is there. But it will not open until they arrive.
+As a Mist drifts through the island, they may catch a glimpse of their garden door — a sense that something is waiting for them, something that was made for them specifically. The door is there. But it will not open until they arrive.
 
-When a Shadow registers, the door opens. Everything they brought with them as a shadow — every taster completed, every journey previewed, every moment of connection sensed — is already inside. Nothing is lost in the transition from shadow to arrival.
+When a Mist registers, the door opens. Everything they brought with them as a Mist — every taster completed, every journey previewed, every moment of connection sensed — is already inside. Nothing is lost in the transition from Mist to arrival.
 
 This is not a technical convenience. It is a statement about how FringeIsland sees every human being who finds their way here: *your place exists before you've decided to claim it.*
 

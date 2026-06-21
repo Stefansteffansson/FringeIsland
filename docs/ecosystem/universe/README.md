@@ -39,7 +39,7 @@ docs/ecosystem/universe/
 | Area | What it covers | Status |
 |------|---------------|--------|
 | [cosmology/](./cosmology/) | The worlds topology — Ordinary World, the Shimmer, the Fringe (place 2 + place 3, near side + Beyond), the Void and the cord, the village/Tree/balls | Canonical core (ratified 2026-06-10) |
-| [roles/](./roles/) | The role taxonomy — identity states (Shadow/FIM, transcendence), FIM modes (experiential, Dreamineer specialisations, support roles), the enterprise plane (Universeers, Council, DeusEx, the Console) | Canonical core (ratified 2026-06-10) |
+| [roles/](./roles/) | The role taxonomy — identity states (Mist/FIM, transcendence/metamorphosis), FIM modes (experiential, Dreamineer specialisations, support roles), the enterprise plane (Universeers, Council, DeusEx, the Console) | Canonical core (ratified 2026-06-10) |
 | [personal-growth/](./personal-growth/) | The red thread (three questions × three perspectives), the engagement spectrum (Homebody → Explorer); for the Void see cosmology/ | Placeholder — awaiting extraction |
 | [beings/](./beings/) | The Whisp (inner dialogue, fullness, fidelity), NPCs as layered composites; for roles see roles/ | Canonical core (rewritten 2026-06-10) |
 | [narrative/](./narrative/) | Seasons and episodes, journey route types, content families, the first experience | Partial — Respawn section canonical (2026-06-10); remainder awaiting specification |

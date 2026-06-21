@@ -55,6 +55,8 @@ These are accepted (not superseded) ADR bodies. Recommended treatment: **pointer
 
 ### Cluster 2 - Universe cores (canonical; brief item 2)
 
+> **CLUSTER 2 COMPLETE (2026-06-21).** All 10 files dispositioned. Verified by git grep: the only "Shadow" remaining in these files is the **intentional place-3-menace introduction** (cosmology README + its statement index) and **provenance/retired-names notes** (roles core; privacy-model status line). No stray entrant-sense "Shadow" remains. Cosmology points "Shadow" at the place-3 menace via a **pointer + open-clause** (Stefan, 2026-06-21): the rename's job (the word now points at place 3, not newcomers) is done, but the Shadow's **nature - force / entity / class - is left OPEN**, deferred to the dark-origin mythology work. No characterization is committed in this rename pass. See "Named open items" below.
+
 - [ ] **`docs/ecosystem/universe/roles/README.md`** (4: L0 line :20, Shadow def :33, transcendence :39, retired-names Visitor->Shadow :125) - **RENAME + NEEDS-MECHANICS.** Keystone-canonical: rewrite the Shadow definition as the **Mist** (hyaline, accretion, two paths/one gate, Whisp carried from start); change retired-names **Visitor -> Mist**; ADD a canonical entry for **Shadow = place-3 menace** and a retired-name note that old-sense "Shadow (anonymous entrant)" -> Mist.
 - [ ] **`docs/ecosystem/universe/cosmology/README.md`** (7: :57,:105,:142,:178,:181,:182,:218) - **RENAME + NEEDS-MECHANICS.** Access table + "no ball" rows -> Mist. This is also where place-3 lives: **make the place-3-menace "Shadow" sense explicit** (KEEP-target now populated).
 - [ ] `docs/ecosystem/universe/beings/README.md:22` - "everyone has one, Shadow or FIM" -> Mist or FIM. RENAME.
@@ -158,6 +160,19 @@ Mechanically uniform: noun swap **Shadow -> Mist** and cross-ref **ADR-U027 -> A
 - **D. Accepted-ADR cross-refs (U025:57, U029:61) - APPROVED:** pointer-edit, **do NOT flip their status** (not superseded, just citing a renamed thing). A light "(Shadow, now Mist per U031)" at the reference site is enough.
 - **E. Hub tours (`HUMAN.md`, `TECHNICAL.md`) - APPROVED:** RENAME. Fold in mechanics **only where a tour actually describes the tier's behaviour**; otherwise just the noun.
 - **F. Schema identifiers (Visitor/Guest) - APPROVED: no action this pass.** **Register note:** the deferred build-time rename target is now **Mist** (not Shadow) - whoever picks up the code rename (`supabase/seeds/04_system_groups.sql`; archived `20260216071649_rbac_system_groups.sql`; Hub v2 substrate-audit "rename on build") inherits **Mist** as the destination.
+
+---
+
+## Named open items / deferrals (surface at the named venue)
+
+- **Shadow menace characterization (force / entity / class) - OPEN.** This rename pass freed the word
+  "Shadow" and pointed it at the place-3 / sleep-paralysis menace, but **deliberately did not decide
+  whether the Shadow is one entity, a class of beings (as the old plural "Shadows" were), or an
+  impersonal force.** S47-48 did not settle it and it was never put to Stefan. Deferred to the
+  **dark-origin mythology work** (the place-3 origin material is parked as "being developed, not yet
+  locked"). It is load-bearing - it constrains how the dark-origin story can resolve (e.g. a singular
+  Shadow that "remembers the door was opened once before" vs. Shadows plural). Recorded here so the
+  silence reads as deliberate, not an oversight. Cosmology README carries the open-clause inline.
 
 ---
 
