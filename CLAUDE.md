@@ -95,7 +95,7 @@ Start at [`docs/README.md`](docs/README.md) for the full navigation map. Everyth
 | **Architecture** | |
 | Architecture anatomy (v1 reference) | [`docs/architecture/ARCHITECTURE_ANATOMY_V1.md`](docs/architecture/ARCHITECTURE_ANATOMY_V1.md) |
 | Domain entities | [`docs/architecture/DOMAIN_ENTITIES.md`](docs/architecture/DOMAIN_ENTITIES.md) |
-| ADRs (U001–U024, all migrated) | [`docs/architecture/decisions/`](docs/architecture/decisions/) |
+| ADRs (U001–U031) | [`docs/architecture/decisions/`](docs/architecture/decisions/) |
 | **Planning** | |
 | Current wave (Ferd) | [`docs/planning/waves/ferd.md`](docs/planning/waves/ferd.md) |
 | Ferd capability map | [`docs/planning/waves/FERD-CAPABILITY-MAP.md`](docs/planning/waves/FERD-CAPABILITY-MAP.md) |
