@@ -40,7 +40,7 @@ Supporting documents at this level include [`MANIFESTO.md`](../MANIFESTO.md) (th
 
 The ecosystem is made of products, platform services, studios, a design system, and verticals. Each is an entity with its own directory under `docs/`.
 
-- **Products** (surfaces FIMs touch): The Hub, The Gimbal, The Game
+- **Products** (surfaces FIMs touch): The Hub, The Gimbal (the Game is a depth setting of journeys, not a product — ADR-U025)
 - **Platform Core** (domain-agnostic foundation): Infrastructure, Identity, Organisation, Governance
 - **Domain Services** (FringeIsland-specific): World Model, Narrative, Journeys, Content, Communication, Discovery, Intelligence, Extension System
 - **Studios** (full lifecycle environments for Dreamineers): Journey Studio, Universe Studio, Arc Studio
