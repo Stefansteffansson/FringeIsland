@@ -132,6 +132,16 @@
 **Note (2026-06-10; updated 2026-06-21):** "Visitor" is canonically the **Mist** (roles core, ADR-U031; the anonymous entrant renamed from "Shadow" per discovery S47-48). The question is now substantially narrowed by the reconciliation: access is intrinsic (near side open, the Beyond closed — no ball, S39/S45), data is ephemeral and unlinkable with transcendence (metamorphosis) as the consent threshold (S46/ADR-U031). What remains open is the product-level surface: which pages/content, the taster journey, the garden glimpse.
 **Context:** ADR-U004 locks the technical approach (anonymous sign-in, temporary profiles, pg_cron cleanup). But the product-level visitor experience is unspecified: what pages/content are visible to non-authenticated visitors? What constitutes a "taster journey"? What is the garden glimpse? What carries forward on registration? This needs a feature spec before implementation.
 
+### CQ-016: Hub Experiential Trajectory Across Waves — and Does the DESCRIPTION Convey the Ambition?
+**Status:** Open
+**Scope:** All waves (the experiential mechanisms land Eid+; the framing question is now)
+**Raised:** 2026-06-23 (Hub Phase-1 spec review, finding F-07)
+**Blocks:** Nothing in Ferd directly. Bears on the Hub DESCRIPTION's ambition framing and the wave-staging of the Hub's experiential scope.
+**Resolved part (Stefan, 2026-06-23):** The first Hub build (Ferd, ADR-U030) is deliberately the **platform fundamentals**; the higher-purpose experiential mechanisms are added on top in later waves. This is sequencing by design, not an omission — the DESCRIPTION already defers World Model, Narrative, Discovery, and Intelligence under "Does not consume (yet)."
+**Open part:** (1) What is the Hub's intended **experiential trajectory across waves** — how and when do the deferred mechanisms layer onto the fundamentals? (2) Does the Hub **DESCRIPTION** convey the full ambition, or does it under-sell the Hub as a utility ("just a platform") rather than a doorway into the world?
+**Gap map (canon establishes -> where the Hub scope stops today; discovery-session input):** (1) entering a world vs using a tool — World Model deferred (CQ-012); (2) the Whisp as dialogue + avatar — post-Ferd (ADR-U029); (3) collective transformation — groups are containers, not developmental units (VISION principle 3, developmental interdependence); (4) narrative seasons/episodes — journeys are linear (Narrative DS deferred); (5) the commons (village, Tree, glowing glass balls) — no persistent collective-presence surface (VISION § Structural concepts, ADR-U031); (6) graduation as an exit mechanic — no mastery->graduation/carry-away path (VISION § Purpose, principle 7).
+**Resolution path:** a **discovery session** (the mechanism that produced the universe canon — see [`universe-discovery/`](./universe-discovery/)) to set the intended Hub experiential trajectory and its wave-staging, then reconcile the DESCRIPTION / §L3 / ROADMAP. Honors fundamentals-before-experience-design. Source: finding F-07 in [`../../planning/hub-v2/phase-1-review-findings.md`](../../planning/hub-v2/phase-1-review-findings.md). Related: CQ-010 (first hour), CQ-012 (Whisp representation), CQ-014 (visitor experience), CQ-015 (Hub greenfield rebuild).
+
 ---
 
 ## Resolved
