@@ -77,7 +77,7 @@ The Hub intentionally does **not**:
 - Domain Services — World Model (future: Whisp presence, the worlds' atmosphere — see the cosmology core)
 - Domain Services — Narrative (future: seasons and episodes)
 - Domain Services — Discovery (future: search, recommendations)
-- Domain Services — Intelligence (future: AI mentor, profile accumulation)
+- Domain Services — Intelligence (future: the Whisp's being-face — its dialogue and growth-driven accumulation; ADR-U029)
 
 **Does not consume (by design):**
 - Domain Services — Extension System (meta-module for runtime extension; not a product-surface concern)

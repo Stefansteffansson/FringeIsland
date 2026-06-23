@@ -101,6 +101,7 @@
 **Raised:** 2026-04-05
 **Blocks:** Nothing immediate
 **Context:** VISION.md highlights 50+ as "a particularly important role" for wisdom-sharing. How do we attract and empower them? Is the Guide role sufficient or do we need a Mentor/Elder concept?
+**Note (2026-06-22, F-04):** "Mentor/Elder" here denotes a *human* wisdom-sharing role — distinct from the FIM's AI companion, which is canonically the **Whisp** (the inner dialogue voice that mentors through warm challenge; ADR-U029, beings core), not a separate "Mentor." The Hub's Whisp representation in Ferd/Eid without AR is tracked separately as CQ-012.
 
 ### CQ-012: Whisp Representation in Ferd/Eid — Without AR
 **Status:** Parked

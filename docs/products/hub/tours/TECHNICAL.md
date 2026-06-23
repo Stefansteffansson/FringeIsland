@@ -383,36 +383,36 @@ This area is fundamentally about the question **what do I want?** — an awarene
 
 **7 capabilities. All post-Ferd.** DS-1 World Model and DS-7 Intelligence are not yet in Hub consumption posture per §L2's "Domain services not yet consumed" list. Activation is post-Ferd.
 
-The Hub provides surfaces for the member's companion intelligence — opt-in Mentor and Whisp expressions — without imposing them and without surfacing private internal state to anyone but the member.
+The Hub provides the canvas surfaces for the member's **Whisp** — the FIM's own AI-driven inner dialogue voice (the Whisp is the human; ADR-U029, beings core) — universal and voluntary, never imposed, and never exposing the member's private interior to anyone but themselves. The Whisp is dialogic and mentors through warm, caring challenge ("tough love"); "Mentor" is a function it performs, not a separate entity.
 
 ### Capabilities
 
 | ID | Capability | FC | Founding Q |
 |----|------------|----|-----------:|
-| COI-1 | Configure global opt-in / opt-out for AI Mentor | Post-Ferd | WAI · WDIW |
-| COI-2 | Configure per-context invocation preferences (per-journey-step granularity) | Post-Ferd | WAI · WDIW |
-| COI-3 | Render Mentor presence within a journey step | Post-Ferd | WAI · HDGT |
-| COI-4 | Render standalone Mentor conversation surface | Post-Ferd | WAI · HDGT |
-| COI-5 | Reset or delete Mentor memory at member's request | Post-Ferd | WAI |
-| COI-6 | Render Whisp internal-state surface (private to the member) | Post-Ferd | WAI |
-| COI-7 | Render private insight portrait aggregated from member's engagement | Post-Ferd | WAI · WDIW |
+| COI-1 | Configure the member's Whisp engagement + consent (universal Whisp — voluntary engagement, not opt-in-to-exist) | Post-Ferd | WAI · WDIW |
+| COI-2 | Configure per-context Whisp engagement preferences (per-journey-step granularity) | Post-Ferd | WAI · WDIW |
+| COI-3 | Render the Whisp's dialogic presence within a journey step | Post-Ferd | WAI · HDGT |
+| COI-4 | Render the standalone Whisp dialogue surface | Post-Ferd | WAI · HDGT |
+| COI-5 | Reset or delete the Whisp's accumulated memory (real deletion) | Post-Ferd | WAI |
+| COI-6 | Render the member's private Whisp reflective view (filling/state; the Whisp is dialogic, not a passive surface) | Post-Ferd | WAI |
+| COI-7 | Render the member's private insight portrait (aggregated from the Whisp's accumulation) | Post-Ferd | WAI · WDIW |
 
-### Two presences
+### One being, two faces
 
-The area splits into two distinct presences serving different shapes of self-understanding work.
+A-COI is not two presences but one — the **Whisp** — surfaced two ways. The Whisp is the FIM's own AI-driven inner dialogue voice (ADR-U029, beings core); per ADR-U029 the one entity is split across DS-7 (the being-face: dialogue, filling, senses, maturity) and DS-1 (the world-presence/avatar face).
 
-| Presence | Shape | Capabilities | What it offers |
-|----------|-------|--------------|----------------|
-| **Mentor** | Conversational | COI-1, COI-2, COI-3, COI-4, COI-5 | Listening, reflecting, asking the next question; opt-in, granular configuration, real deletion |
-| **Whisp** | Reflective | COI-6, COI-7 | Internal-state surface and insight portrait; private to the member; not conversational |
+| Face | Mode | Capabilities | What it offers |
+|------|------|--------------|----------------|
+| **Whisp dialogue** | Conversational | COI-1, COI-2, COI-3, COI-4, COI-5 | The FIM's own inner voice: listening, reflecting, warm challenge ("tough love"); voluntary engagement, granular config, real deletion |
+| **Whisp reflective view** | Reflective | COI-6, COI-7 | A private window onto the Whisp's filling + the insight portrait; the same being seen from another angle, not a separate thing |
 
 ### Key dependencies
 
-- **DS-7 Intelligence** (post-Ferd) for Mentor lifecycle, perceptual aggregation, insight aggregation. Every COI-* row.
-- **DS-1 World Model** (post-Ferd) for Whisp's underlying world-model (COI-6).
-- **DS-3 Experience** for the step-level Mentor invitation hook (COI-3).
+- **DS-7 Intelligence** (post-Ferd) for the Whisp's being-face — dialogue, growth-driven filling, the senses model, maturity — plus perceptual + insight aggregation. Every COI-* row (incl. COI-6's filling/state view, re-pointed from DS-1 per ADR-U029).
+- **DS-1 World Model** (post-Ferd) for the Whisp's world-presence/avatar face (ADR-U029) — surfaced by the Hub canvas only if/when applicable; open (CQ-012).
+- **DS-3 Experience** for the step-level Whisp invitation hook (COI-3).
 - **PC-4 Governance** for consent persistence (COI-1) and deletion audit (COI-5).
-- **JRN-6** (cross-area) for Mentor-in-step rendering (COI-3).
+- **JRN-6** (cross-area) for Whisp-in-step rendering (COI-3).
 - **JRN-*** (cross-area, wildcard) for COI-7 — insight portrait aggregates over the full journey-engagement set.
 
 ### Activation discipline
