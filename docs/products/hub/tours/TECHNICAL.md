@@ -40,7 +40,7 @@ Every member-facing capability serves at least one of three questions. Platform 
 | A-NTF | Notifications & Inbox | 10 | WDIW (mono-question; structurally honest) |
 | A-COI | Companion & Insight | 7 | WAI (most direct service of WAI on the platform) |
 | A-DIS | Discovery & Direction-Finding | 7 | WDIW + HDGT (hybrid) |
-| A-ADM | Platform Operations | 17 | none directly — meta-area |
+| A-ADM | Platform Operations | 18 | none directly — meta-area |
 
 ### Layering at a glance
 
@@ -471,7 +471,7 @@ This area is fundamentally about the questions **what do I want?** and **how do 
 
 ## Chapter 8 — A-ADM: Platform Operations
 
-**17 capabilities. Meta-area.** Zero capabilities serve the founding questions directly. Admin actions are about keeping the platform healthy rather than about identity-work, want-finding, or directional progress for the admin actor. The platform exists to serve members' founding-question work; A-ADM serves the founding questions transitively, by keeping the platform operational. This is the only area in the inventory with the meta-area shape.
+**18 capabilities. Meta-area.** Zero capabilities serve the founding questions directly. Admin actions are about keeping the platform healthy rather than about identity-work, want-finding, or directional progress for the admin actor. The platform exists to serve members' founding-question work; A-ADM serves the founding questions transitively, by keeping the platform operational. This is the only area in the inventory with the meta-area shape.
 
 ### Capabilities
 
@@ -494,12 +494,13 @@ This area is fundamentally about the questions **what do I want?** and **how do 
 | ADM-15 | Manage feature flags (create, toggle, scope) | Partial-Ferd | — |
 | ADM-16 | Render platform-scope audit log surface | Partial-Ferd | — |
 | ADM-17 | Render and manage role templates and the permission catalogue | Current | — |
+| ADM-18 | Remove member(s) from a specific group or groups (admin override of MEM-5, routing each exit path) | Current | — |
 
 ### Operational clusters
 
 | Cluster | Capabilities | Purpose |
 |---------|--------------|---------|
-| Member operations | ADM-3, ADM-4, ADM-5, ADM-6, ADM-7 | Account-state changes; hard-delete; session control; group sweep; bulk |
+| Member operations | ADM-3, ADM-4, ADM-5, ADM-6, ADM-7, ADM-18 | Account-state changes; hard-delete; session control; group sweep (all groups) and targeted removal from specific groups; bulk |
 | Group operations | ADM-8, ADM-9 | Cross-platform group view and intervention |
 | Moderation | ADM-10, ADM-11 | Reports queue; triage and resolution |
 | Configuration | ADM-14, ADM-15, ADM-17 | Platform policy; feature flags; role templates and permissions |
@@ -511,7 +512,7 @@ This area is fundamentally about the questions **what do I want?** and **how do 
 
 - **Last-administrator protection (ADM-12).** The platform always retains at least one administrator. The last admin cannot be removed even by mistake.
 - **Reversibility (ADM-3).** Activate, deactivate, decommission are three distinct actions with different reversibility profiles. ADM-4 (hard-delete) is the only fully irreversible member operation; it includes content reassignment to a sentinel author so conversations remain coherent.
-- **Auto-routing (ADM-6).** Sweeping a member from every group routes through MEM-5/MEM-6/MEM-7/MEM-8 rather than bypassing them, so each group's exit-path semantics are honoured.
+- **Auto-routing (ADM-6, ADM-18).** Sweeping a member from every group (ADM-6) — or removing them from specific groups (ADM-18) — routes through MEM-5/MEM-6/MEM-7/MEM-8 rather than bypassing them, so each group's exit-path semantics are honoured.
 
 ### Key dependencies
 
@@ -547,8 +548,8 @@ The Hub's L3 inventory has a shape worth naming explicitly.
 | A-NTF | 8 | 2 | 0 | 10 |
 | A-COI | 0 | 0 | 7 | 7 |
 | A-DIS | 0 | 4 | 3 | 7 |
-| A-ADM | 8 | 9 | 0 | 17 |
-| **Total** | **62** | **33** | **10** | **105** |
+| A-ADM | 9 | 9 | 0 | 18 |
+| **Total** | **63** | **33** | **10** | **106** |
 
 Roughly 60% of the inventory is current-commitment. Roughly 30% is partial-Ferd — architecturally committed and scheduled to land within the current wave. Roughly 10% is post-Ferd, gated on Domain Services (DS-1, DS-6, DS-7) entering Hub consumption posture.
 
