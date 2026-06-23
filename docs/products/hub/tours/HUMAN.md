@@ -37,8 +37,6 @@ Adjacent to the Journal sits the matter of consent — what you have agreed the 
 
 If you change your mind after deactivating or closing your account — and people often do — the Hub will eventually let you reactivate, keeping that door open in a way that respects the fact that decisions about identity are rarely once-and-for-all. One path is deliberately *not* reversible, though: a full deletion is a true erasure under GDPR — the data is gone, not archived, and there is nothing left to reactivate. Reactivation is for the reversible states; the hard delete is final by design.
 
-This area is fundamentally about the question who am I? Every other capability the Hub offers depends on this one being settled. Before you can join a group, walk a journey, or speak to anyone, the Hub needs to know who you are — and just as importantly, you need to feel that the answer to that question is held somewhere honest, somewhere private when it should be private, and somewhere reversible.
-
 ---
 
 ## Chapter 2 — Groups and Belonging
@@ -58,8 +56,6 @@ When someone has left a group, the Hub will eventually show their former contrib
 There is one more capability the Hub will eventually support: groups joining other groups. A small organisation might be a group of teams. A learning network might be a group of cohorts. The platform's data structure already permits this nesting; the resolution machinery for navigating between layers is work that will arrive when the use case becomes pressing.
 
 There is also a small surface that exists across all of this: the "act as" selector, which lets you switch between the contexts in which you currently belong. You might be a Steward in one group, a Member in another, an Observer in a third, and your effective permissions are different in each. The Hub renders this clearly, so that you always know what role you are currently inhabiting and what you can and cannot do from that position.
-
-This area is fundamentally about the question what do I want? — specifically, the part of that question that involves wanting to belong somewhere chosen, sized correctly, and structured enough that you don't have to invent it yourself.
 
 ---
 
@@ -83,8 +79,6 @@ If you are walking a journey with a group, the Hub will eventually support views
 
 The journey player also renders whatever step types the platform's content engine has been built to publish. Some steps are reading. Some are written reflection. Some are conversations between two people. Some are group exercises. The Hub commits to rendering whatever the content engine produces, faithfully and in its proper form, so that the people who design journeys can experiment with different shapes of step without having to negotiate with the player surface itself.
 
-This area is fundamentally about the question how do I get there? Identity is settled, the group is in place, and now there is somewhere to go and a structure for getting there. Journeys are the directional work of the Hub — the part that has a beginning, a middle, and an end, and that asks you to actually move.
-
 ---
 
 ## Chapter 4 — Communication
@@ -103,8 +97,6 @@ You will eventually be able to edit or delete your own messages and posts within
 
 There is one more piece of communication design worth naming. When a member leaves a group, their forum posts and messages don't disappear — they are reattributed at the display layer with a quiet former-member indicator, so that the conversation remains coherent even after the person has gone. The platform's commitment is that the historical record of what was said and when is precious, and should not be erased simply because someone has moved on.
 
-This area is fundamentally about the question what do I want? Communication on the Hub is a destination — it is the place where wanting to be heard, wanting to be in conversation, and wanting to share something meets the people you want to share it with. It is structurally honest that this area serves only that question, and not the others; communication is an end in itself, not a means.
-
 ---
 
 ## Chapter 5 — Notifications
@@ -122,8 +114,6 @@ Perhaps most importantly, the Hub will eventually let you configure what notifie
 The notification layer is also one of the two places where the Hub leans hardest on its real-time infrastructure — the same delivery substrate that powers messages and forum replies in the previous chapter. When a notification fires, you see it almost immediately. When you come back from a long offline period, the platform fills in the gaps so that your sense of what's happened is accurate without requiring you to scroll back through hours of history.
 
 What the Hub deliberately doesn't do is push for engagement. There are no streak counters in the notification bar, no haptic ploys to get you back, no manufactured urgency. The platform's view is that notifications should be a service you receive, not a leash you wear. A platform that gets this wrong becomes the place you check compulsively and resent yourself for checking; a platform that gets this right becomes the place you check when there's a reason to.
-
-This area is fundamentally about the question what do I want? Notifications, like communication, serve the wanting question alone — they are an awareness layer, the way you know what's worth your attention without having to constantly check. Whether you want to be in touch with the group, whether you want to respond to an invitation, whether you want to know that something changed — all of that is answered through this layer, and answered on terms you set.
 
 ---
 
@@ -145,8 +135,6 @@ Alongside the dialogue, the Hub offers a quieter, private reflective view — a 
 
 Further along sits the insight portrait — a longer, narrative reflection of what your engagement has revealed about you, again private, again visible only to you. The portrait is the Hub's most ambitious offering: an attempt, with your permission, to give you a coherent picture of who you have shown yourself to be. It is not a personality-test result; it is a slow accretion of attention — the Whisp's work made legible, never a verdict handed down.
 
-This area is fundamentally about the question who am I? More directly than any other area on the Hub. Identity in the first chapter handled the question structurally — your name, your account, your privacy. This chapter handles it experientially — what does the platform reflect back to you about yourself, when it has been listening for a long time and you have given it permission to do so?
-
 ---
 
 ## Chapter 7 — Discovery
@@ -166,8 +154,6 @@ Underlying the recommendation layer is your own discoverability — the configur
 Finally, the Hub will eventually offer an activity feed — an aggregated, ambient view of what is happening across the groups you belong to. New posts, new journey enrolments, new members joining. The feed is filtered by visibility, ranked over time as the platform's discovery infrastructure matures, and meant to be ignorable rather than compulsive. You look at it when you want a sense of what's going on; you don't look at it for hours.
 
 What the Hub deliberately leaves out of discovery is at least as important as what it puts in. There is no algorithmic timeline that decides what you should care about today. There is no infinite scroll designed to keep you in the surface longer than you intended. There is no engagement metric the platform optimises against your time. Discovery on the Hub is meant to do its job and then get out of the way, letting you go and walk the journey, or join the group, or send the message — whatever it was that brought you to the discovery surface in the first place.
-
-This area is fundamentally about the questions what do I want? and how do I get there? together. Discovery is hybrid in a way the other areas aren't. When you're searching for a journey, you're at a directional moment — you want to move toward something — but you don't yet know which thing. The Hub's discovery surfaces are designed for that gap between wanting and knowing.
 
 ---
 
@@ -189,7 +175,7 @@ Administrator membership itself is a sensitive matter. The Hub lets existing adm
 
 Finally, the Hub gives administrators the ability to manage the role templates and permission catalogue that govern what every other role on the platform can do. This is the deepest configuration layer — the place where the rules of the platform itself are encoded. It is touched rarely, deliberately, and with care. A change to a role template ripples through every group on the platform; a change to the permission catalogue can change the entire shape of what a particular role is allowed to do.
 
-This area does not serve the founding questions in the way the other seven do. An administrator using these surfaces is not asking who am I, what do I want, how do I get there — they are asking is the platform still healthy. The platform exists to serve the founding-question work of its members; this area exists to keep the platform alive so that that work remains possible. It is meta-work, in the truest sense, and the Hub takes the position that meta-work is also work that deserves a thoughtful surface.
+An administrator using these surfaces is doing a different kind of work from the other seven areas — not personal work, but the work of keeping the platform healthy so that everyone else's remains possible. It is meta-work, in the truest sense, and the Hub takes the position that meta-work is also work that deserves a thoughtful surface.
 
 ---
 
@@ -197,7 +183,7 @@ This area does not serve the founding questions in the way the other seven do. A
 
 The Hub is built around eight areas. Seven of them — Identity and Onboarding, Groups and Belonging, Journeys, Communication, Notifications, Companion and Insight, Discovery — are member-facing. They are the rooms where the actual work of the platform happens, where members encounter themselves, each other, and the structured experiences the platform offers. The eighth — Platform Operations — is meta. It does not serve members directly; it serves the platform itself, so that the other seven areas can keep being what they are.
 
-The shape of that division says something about how the Hub thinks of itself. Most platforms organise their architecture around features, around what the software does. The Hub organises its architecture around the questions it is trying to help its members answer, and around the work that must be done to keep those answers possible. Identity, the Companion and Insight surfaces serve the question who am I. Groups, Communication, Notifications, and parts of Discovery serve the question what do I want. Journeys and parts of Discovery serve the question how do I get there. Platform Operations serves all three transitively — by ensuring the platform remains a place where any of those questions can still be asked.
+The shape of that division says something about how the Hub thinks of itself. Most platforms organise their architecture around features — around what the software does. The Hub organises itself instead around what its members actually need: the rooms where the real work of self-understanding and belonging happens, and the quieter work that keeps those rooms inhabitable.
 
 The shape is also asymmetric in a way that matters. The Companion and Insight area is the smallest in terms of capabilities and the largest in terms of forward commitment — almost everything in it is yet to be built. This is deliberate. The most ambitious developmental work, the work that asks the platform to reflect a coherent picture of someone back to them over time, is the work that requires the most careful foundation underneath. The Hub will get there. It is not there yet.
 
