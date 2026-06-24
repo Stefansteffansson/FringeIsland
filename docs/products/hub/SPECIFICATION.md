@@ -443,7 +443,13 @@ Remarks recording prerequisite-check pauses, methodology observations, and cross
 
 *L4 authorship. Reconciliation output against L3's capability inventory. Updated whenever a `FEAT-*.md` file under this entity's `features/` directory is created, advances in maturity, or is deleted. Maintenance discipline: the `feature-development` skill updates this section in the same commit as any maturity transition; the `doc-health-check` skill (Section 8) verifies it reflects the current state of `features/`.*
 
-*Pending — will be populated after §L3 is authored. The summary will list every `FEAT-H*` spec under [`./features/`](./features/) with its maturity and the capability it serves.*
+*Seeding begun with the Hub v2 walking skeleton (Phase 2). The summary lists every `FEAT-H*` spec under [`./features/`](./features/) with its maturity and the L3 capability/capabilities it serves. Rows are added/advanced/removed in the same commit as the corresponding `FEAT-*.md` maturity transition (feature-development skill); the `doc-health-check` skill (Section 8) verifies this table against `features/`.*
+
+| Feature | Serves (L3) | Wave | Maturity | Equipment |
+|---|---|---|---|---|
+| [FEAT-H001](./features/FEAT-H001-walking-skeleton-sign-in-and-groups.md) — Walking skeleton: sign in and land on your groups | IDN-3 (sign-in, thin) · GRP-4 (member group-list read path); wires the five vertical seams (V1 audit · V2 RLS-backed fetch · V3 bell mount · V4 telemetry · V5 N/A) | Ferd | 6-done | none |
+
+**Coverage note.** FEAT-H001 is a foundation slice (architecture proof), not full IDN-3/GRP-4 coverage: it realises sign-in-of-an-existing-FIM + the group-list read path only. The remaining IDN-3 surfaces (sign-up, Mist→FIM transcendence, session edges) and GRP-4 surfaces (group detail, create/edit, membership management) are later features. The rest of §L3 remains forward-commitment, unspecced at L4 until Phase 3 reaches each area.
 
 ---
 

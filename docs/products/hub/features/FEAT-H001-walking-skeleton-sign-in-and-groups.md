@@ -6,7 +6,7 @@ title: Walking skeleton — sign in and land on your groups
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -98,3 +98,16 @@ Establishes the v2 app shell and the extracted **design-system layer** — both 
 - **Observability:** **Telemetry events** on sign-in and groups-load (feature-level, not just page views). Error states (failed sign-in, failed fetch) are observability events, never silently swallowed (V4).
 - **Transactions:** None — sign-in and a read-only group list involve no payments, subscriptions, or entitlements.
 - **Extensibility:** Introduces no new types, enums, or permission scopes. Group types stay non-hardcoded (ADR-U018) — the list renders whatever PC-3 returns; no sealed group-type set.
+
+## Implementation notes (6-done — 2026-06-24)
+
+Built under `hub/` ([ADR-U032](../../../architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)), TDD test-first, as the Phase-2 walking skeleton. The spine runs end-to-end DB -> API -> frontend and is green: **5 Jest integration tests + 5 Playwright E2E tests** (`npm run test:integration -w hub`; `npm run test:e2e -w hub`). `npm run lint -w hub` + `npm run build -w hub` clean.
+
+**Key code:**
+- **Read path (GRP-4, V2):** `hub/lib/groups/queries.ts` (`fetchMemberGroups` — PC-3 actor via `get_current_personal_group_id()` -> active `group_memberships` -> engagement `groups`, RLS-scoped at every step) exposed at `hub/app/api/groups/route.ts` (`GET`). The frontend (`hub/app/groups/page.tsx`) only `fetch`es the route — no direct table calls (ADR-U009).
+- **Auth/login (IDN-3 thin):** `hub/app/login/page.tsx` over the existing `lib/auth/AuthContext`; a client guard redirects an unauthenticated `/groups` to `/login` with the destination preserved.
+- **Design-system layer:** `hub/components/ui/` (`LoadingState`, `EmptyState`, `InlineError`, `Button`, `TextField`, `NotificationBell`) + `hub/components/shell/AppShell.tsx`.
+- **Vertical seams:** V1 `hub/app/api/auth/audit/route.ts` + `hub/lib/audit/audit.ts`; V2 RLS-backed `/api/groups`; V3 `NotificationBell` mounted in `AppShell`; V4 `hub/lib/observability/telemetry.ts` (sign-in + groups-load, failures included); V5 none (read-only + sign-in).
+- **Harness:** `hub/jest.config.js` (unit jsdom + integration node), `hub/playwright.config.ts` (storageState auth + auto dev server); helpers copy-with-corrected from the `hub-legacy/` oracle.
+
+**Deviations / deferred (build-informed loop, PROCESS §9):** the V1 audit + V4 telemetry seams are structured records, **not yet bound to the PC-4 audit substrate / PC-1 telemetry sink** (deep build = Phase-3 Identity). No `tests/unit` suite yet — the slice is covered by integration + E2E. Tasks: `TASK-H001-01..05`.

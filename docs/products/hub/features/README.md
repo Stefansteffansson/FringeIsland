@@ -11,6 +11,6 @@ Retroactive specs (maturity `6-done`) are being written first to capture already
 
 | ID | Title | Wave | Maturity | Equipment |
 |----|-------|------|----------|-----------|
-| [FEAT-H001](./FEAT-H001-walking-skeleton-sign-in-and-groups.md) | Walking skeleton — sign in and land on your groups | Ferd | 4-ready | none |
+| [FEAT-H001](./FEAT-H001-walking-skeleton-sign-in-and-groups.md) | Walking skeleton — sign in and land on your groups | Ferd | 6-done | none |
 
 The walking-skeleton slice (Phase 2 of the [Hub v2 rebuild](../../../planning/hub-v2/README.md)) is the first forward-looking spec, built fresh under `hub/` ([ADR-U032](../../../architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)). Retroactive `6-done` specs for already-shipped functionality (now frozen under `hub-legacy/`) may follow.
