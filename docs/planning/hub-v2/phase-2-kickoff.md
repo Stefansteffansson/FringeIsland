@@ -24,6 +24,24 @@ These are the Phase-2 "present from the start" requirements (README Part 2, Phas
 - **Equipment-keying** (ADR-U025) — the Hub as an equipment profile, keyed from line one.
 - **Identity / auth bootstrap + the test harness** — Supabase Auth context; Jest + Playwright green from the first slice.
 
+## Vertical readiness (snapshot, 2026-06-24)
+
+Swept across the refreshed spec, the substrate audit, and the behaviour inventory. **Four of the five verticals are build-ready; Privacy/GDPR is the one needing fresh design** — and it's the same finding as the gate's one substantive gap (the Mist lifecycle), seen from the privacy angle.
+
+| Vertical | Readiness | Basis |
+|---|---|---|
+| Administration | Ready | Audit log + admin functions conformant in substrate; oracle STRONG (A-ADM). |
+| Notifications | Ready | Notification-bell channel + Communication DS; oracle STRONG (A-NTF). |
+| Observability | Ready — wire it | Platform-Core-owned (PC-1 primitives); the Hub-side instrumentation is a Phase-2 build task, not a gap. |
+| Transactions | Ready — out of slice scope | Platform-Core-owned (Stripe, PC-1); the Hub only *initiates*. Nothing in the sign-in -> /groups slice touches it — legitimately "None, with rationale." |
+| Privacy/GDPR | Fresh design | Spec is rigorous (GDPR Art. 6/15/17/20); substrate is **thin** (consent store, export pipeline, erasure cascade unrealized; `pg_cron` absent for Mist TTL) and the oracle is **silent** on consent/export/Journal/Mist. |
+
+**What "vertical obligations met" means for slice one — wire the *seam*, not the whole vertical.** The walking skeleton proves the pattern exists from line one; it does not build all of GDPR. For the sign-in -> `/groups` path:
+
+- **Seam now (in the slice):** a consent-capture point at transcendence (Privacy); a telemetry emit on the auth action (Observability); an audit entry for the action (Administration); the notification-bell wired into the shell (Notifications). Administration and Notifications ride conformant substrate.
+- **Deep build deferred (Phase 3, Identity area):** the export pipeline, the erasure cascade, and Mist ephemerality (`pg_cron` install + TTL/erase) — known fresh design, tracked in the inherited open items below. Per-policy RLS review is also per-area Phase 3 (gate brief).
+- **Transactions:** none in this slice.
+
 ## Slice gate (Definition of Done for Phase 2)
 
 **One thin slice (sign in -> land on `/groups`) runs end-to-end through DB->API->frontend, the vertical obligations are met, and tests are green.** (README Part 2, Phase 2 gate.)
