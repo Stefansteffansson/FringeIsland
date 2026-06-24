@@ -2,11 +2,14 @@
   "name": "fringeisland",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "hub"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
+    "dev": "npm run dev -w hub",
+    "build": "npm run build -w hub",
+    "start": "npm run start -w hub",
+    "lint": "npm run lint -w hub",
     "dashboard": "node scripts/dashboard/generate.js",
     "dashboard:serve": "node scripts/dashboard/serve.js",
     "test": "jest",
