@@ -35,6 +35,7 @@ These concepts are named in the universe design and in [`../OPEN_QUESTIONS.md`](
 | Narrative beyond respawn | Content families, journey route types, and arc/episode design as universe canon — only the respawn section is ratified so far | Not yet scheduled |
 | Community formation / cold-start | How the relational and communal layers work when few members are present (CQ-001, CQ-002, CQ-003) | Not yet scheduled |
 | Kickstarter / founding moment | The "Season Zero" launch, arrival rituals, and the founding Dreamineer cohort (currently an old-vision sketch only) | Not yet scheduled |
+| Hub experiential trajectory + DESCRIPTION ambition (CQ-016) — *Hub-spec framing, not universe canon* | Routed from Phase-1 finding F-07. Two sizes: a **framing slice** (does the Hub DESCRIPTION convey the "doorway into a world" ambition, or undersell it as a utility?) and the **full trajectory design** (wave-staging the six experiential gap-map mechanisms) | **Framing slice — runnable now** (one focused session; framing, not experience-mechanics, so not blocked). **Full design — deferred**, multi-session, blocked on the universe-mechanics fundamentals above + CQ-010/012/014 |
 
 ---
 
