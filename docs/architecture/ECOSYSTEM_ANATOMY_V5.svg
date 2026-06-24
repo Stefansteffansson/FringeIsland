@@ -229,7 +229,7 @@
   <rect x="448" y="356" width="176" height="56" rx="8" stroke-width="0.5"/>
   <text x="614" y="369" text-anchor="end" class="id-tag">DS-7</text>
   <text x="536" y="383" text-anchor="middle" class="th">Intelligence</text>
-  <text x="536" y="399" text-anchor="middle" class="ts">AI mentor, insights</text>
+  <text x="536" y="399" text-anchor="middle" class="ts">Whisp, insights</text>
 </g>
 
 <!-- Extension System (no ID per ADR-U023) -->

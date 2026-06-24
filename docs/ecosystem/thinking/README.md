@@ -17,4 +17,4 @@
 
 | Document | Purpose | Status |
 |----------|---------|--------|
-| OPEN_QUESTIONS.md | Ecosystem-level open questions: bootstrapping, Dreamineer recruitment, Council governance, monetization, Foundation legal structure, content licensing, physical products, 50+ mentors, first experience, AI feasibility, Whisp representation, NPC authoring | 13 questions (CQ-001 to CQ-013) |
+| OPEN_QUESTIONS.md | Ecosystem-level open questions (CQ-numbered): e.g. bootstrapping, Dreamineer recruitment, Council governance, monetization, content licensing, first experience, AI feasibility, Whisp representation, NPC authoring, visitor experience, the Hub rebuild + its experiential scope | See the file for the current set (curated, non-exhaustive) |

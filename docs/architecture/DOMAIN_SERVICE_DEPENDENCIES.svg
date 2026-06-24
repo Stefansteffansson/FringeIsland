@@ -73,7 +73,7 @@
   <!-- DS-7: Intelligence -->
   <rect x="472" y="312" width="170" height="52" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
   <text x="557" y="330" text-anchor="middle" class="th" fill="#2C2C2A">Intelligence</text>
-  <text x="557" y="348" text-anchor="middle" class="ts" fill="#5F5E5A">AI mentor, insights</text>
+  <text x="557" y="348" text-anchor="middle" class="ts" fill="#5F5E5A">Whisp, insights</text>
 
   <!-- Arrows from Intelligence -->
   <line x1="557" y1="364" x2="400" y2="382" stroke="#888780" stroke-width="0.5" fill="none" marker-end="url(#arrow)"/>

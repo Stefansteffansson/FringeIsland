@@ -130,7 +130,7 @@ Per-table policy sets (by command) are catalogued in the query record; richest s
 | **Mist data ephemerality (TTL / erase-on-close)** | U031 | **Build-new.** **pg_cron is not installed** (`pg_extension` has no `pg_cron`); there is no scheduled cleanup. The TTL/inactivity threshold is a Privacy-vertical / PC-2 config (deferred by design) but the *mechanism* is absent. |
 | **Journey content as DS-4 blocks** | DS-4 | **Adapt** (tracked above) — externalise `journeys.content`. |
 | **DS reciprocation of Hub external-dep claims** | DS-1..DS-7 L3 | The substrate confirms the consumer side for DS-3/DS-5/PC-2/PC-3/PC-4. Open contract gaps (per Hub §L3, routed to **G-29**): PC-2 per-device session inventory + remote-sign-out (IDN-11) — `admin_force_logout` exists but no member-facing session inventory; PC-3 transitive group-of-groups depth>1 (MEM-10); DS-6 Discovery surfaces (all of A-DIS) — **no DS-6 substrate exists** (consistent with §L2 not-yet-consumed). |
-| **AI Mentor / Whisp (A-COI)** | DS-1, DS-7 | No substrate — consistent with §L2 not-yet-consumed; out of Ferd scope. |
+| **Whisp (A-COI)** | DS-1, DS-7 | No substrate — consistent with §L2 not-yet-consumed; out of Ferd scope. |
 
 ---
 
