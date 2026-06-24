@@ -1,6 +1,6 @@
 # Hub v2 — Phase 1 gate brief
 
-**For:** Stefan (gate reviewer) · **Prepared:** 2026-06-21 · **Status:** awaiting verdict
+**For:** Stefan (gate reviewer) · **Prepared:** 2026-06-21 · **Status:** PASSED 2026-06-24
 **Plan:** [Hub v2 README](./README.md) · **Decision:** [ADR-U030](../../architecture/decisions/ADR-U030-hub-v2-greenfield-rebuild.md)
 
 > **How to use this page.** Phase-1 review is a *human sign-off* (PROCESS.md: "review is serialised human attention"). You don't have to read the three source documents end-to-end — this one page summarises them against the gate's bar and gives you a recommended verdict to accept or override. The decision is yours; pick one of the three verdicts at the bottom.
@@ -68,8 +68,8 @@ This is the single substantive gap, and all three deliverables independently lan
 
 ## Your decision
 
-- [ ] **PASS** — proceed to Phase 2 (walking skeleton). *(recommended; the 2 cleanups tracked as follow-ups)*
+- [x] **PASS** — proceed to Phase 2 (walking skeleton). *(recommended; the 2 cleanups tracked as follow-ups)*
 - [ ] **PASS WITH CONDITIONS** — proceed, but name specific must-dos first: _______________
 - [ ] **RETURN** — not ready; what's missing: _______________
 
-*On a verdict, I'll record it in the README (Phase 1 → Done, Phase 2 → Active), note the decision + date, and drop a short session bridge.*
+**Verdict recorded:** ✅ **PASS** — Stefan, 2026-06-24. Phase 1 marked **Done** and Phase 2 **Active** in the [README](./README.md). The two non-blocking cleanups remain tracked as follow-ups (SPEC §L3 "42" → 44 seeded-permissions; substrate-audit "(deliverable 3, pending)" cross-ref). Phase 2 kickoff: [`phase-2-kickoff.md`](./phase-2-kickoff.md).

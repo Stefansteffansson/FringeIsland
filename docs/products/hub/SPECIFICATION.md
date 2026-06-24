@@ -421,7 +421,7 @@ Remarks recording prerequisite-check pauses, methodology observations, and cross
 
 **Cross-entity findings routed to other entities (architectural rules, content authority).**
 - D15 architectural rule (no `user_id` columns in domain tables) — PC-3 + DS-* architectural authority, not Hub L3.
-- 42 seeded permissions catalogue — PC-3 authority.
+- 44 seeded permissions catalogue — PC-3 authority.
 - `has_permission()` machinery — PC-3 authority.
 - RLS-first security pattern — PC-3 + V4 cross-cutting.
 - Step-type catalogue — DS-3 authority (Hub commits to rendering whatever DS-3 publishes; JRN-18 doesn't enumerate types).

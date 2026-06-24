@@ -1,7 +1,7 @@
 # Hub v2 — substrate audit
 
 **Status:** v1, 2026-06-17 (Phase 1, deliverable 2). Living — corrected by the build-informed spec-evolution loop ([PROCESS §9](../PROCESS.md)).
-**Plan:** [Hub v2 README](./README.md) · **Decision:** [ADR-U030](../../architecture/decisions/ADR-U030-hub-v2-greenfield-rebuild.md) · **Companion deliverables:** the refreshed [Hub SPECIFICATION](../../products/hub/SPECIFICATION.md) (deliverable 1) and `./behaviour-inventory.md` (deliverable 3, pending).
+**Plan:** [Hub v2 README](./README.md) · **Decision:** [ADR-U030](../../architecture/decisions/ADR-U030-hub-v2-greenfield-rebuild.md) · **Companion deliverables:** the refreshed [Hub SPECIFICATION](../../products/hub/SPECIFICATION.md) (deliverable 1) and the [behaviour inventory](./behaviour-inventory.md) (deliverable 3).
 
 > **What this is.** ADR-U030 keeps the **database substrate (schema, functions, RLS) as the asset we carry forward**, while the app/API/frontend are rebuilt fresh. This audit tags every realized substrate object *conformant / adapt / replace* against the reconciled canon and the refreshed Hub §L3, so Phase 2/3 know what carries, what changes, and what's missing.
 

@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-24 (session spanned 2026-06-21 → 2026-06-24)
 **Session type:** review
-**Status:** Closed — Phase-1 gate verdict + push pending (see Open items)
+**Status:** Closed — Phase-1 gate verdict **PASS** recorded 2026-06-24 (Phase 2 now Active); push pending (see Open items)
 **Participants:** Stefan + Claude
 
 > Durable artifact so the next session can pick up without re-reading the transcript.
@@ -69,13 +69,13 @@ Along the way we also fixed root `CLAUDE.md` drift (a stale ADR range), added a 
 ## Open items
 
 ### Immediate
-- [ ] Stefan's **Phase-1 gate verdict** (gate brief recommends PASS) + flip hub-v2 README (Phase 1 → Done, Phase 2 → Active)
+- [x] Stefan's **Phase-1 gate verdict** — **PASS** (2026-06-24); hub-v2 README flipped (Phase 1 → Done, Phase 2 → Active), gate brief verdict recorded, Phase 2 walking skeleton teed up ([`phase-2-kickoff.md`](../hub-v2/phase-2-kickoff.md))
 - [ ] **Push** this session's commits (local only)
 
 ### Near-term
 - [ ] **CQ-016 discovery session** — Hub experiential trajectory across waves
 - [ ] Gate-brief cleanups: SPEC "42 seeded permissions" → 44; substrate-audit "behaviour inventory (deliverable 3, pending)" → done
-- [ ] If gate PASSes: begin **Phase 2 walking skeleton**
+- [x] Gate PASSed → **Phase 2 walking skeleton** teed up ([`phase-2-kickoff.md`](../hub-v2/phase-2-kickoff.md)); build starts next session
 
 ### Deferred
 - [ ] Cascade-wide **growing-count sweep** (pointer-not-snapshot) — other hardcoded table/test/feature counts
