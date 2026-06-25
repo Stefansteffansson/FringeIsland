@@ -20,7 +20,7 @@ const customJestConfig = {
       setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
       moduleNameMapper: { '^@/(.*)$': '<rootDir>/$1' },
       transform: {
-        '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: { jsx: 'react' } }],
+        '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: { jsx: 'react-jsx' } }],
       },
     },
     {
@@ -33,7 +33,7 @@ const customJestConfig = {
       ],
       moduleNameMapper: { '^@/(.*)$': '<rootDir>/$1' },
       transform: {
-        '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: { jsx: 'react' } }],
+        '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: { jsx: 'react-jsx' } }],
       },
     },
   ],
