@@ -68,6 +68,19 @@ Two follow-ups landed after the main session (commits `d3039f6`, `a878613`):
 - **`feature-development` skill tightened** to enforce what FEAT-H002 skipped: **BDD outside-in + TDD red-first** — map each acceptance criterion to a tier (unit/integration/E2E), write the test, **confirm it fails for the right reason**, then green → refactor. **A freshly-written test that comes up green when it should be red is an anomaly → stop and surface.** Test-after coverage must be labelled honestly.
 - **FEAT-H003 autonomy (agreed):** run the red → green → refactor cycles **continuously**, surfacing only at the three gates — **anomaly** (unexpected green), **ask-first** (schema/migration, new deps, shared platform code, spec deviation), and **DoD/commit**. FEAT-H003 carries a migration, so the ask-first schema gate *will* fire.
 
+### FEAT-H003 firmness scout (2026-06-25) — verdict: PARTIALLY-READY
+
+Ran a "fundamentals before experience design" check before committing to the FEAT-H003 build. The Mist **lifecycle is firm**; what's missing is **substrate/config, not discovery**:
+
+- **Locked:** ADR-U004 (Accepted) — Supabase built-in anonymous sign-in, temporary profile flagged `is_temporary: true`, convert-to-permanent API flips the flag. ADR-U031 §9 — the 4-stage lifecycle (Entry → Access → Data → Transcendence) and a **one-event atomic transcendence** (consent is a precondition, all founding questions answered, continuity preserved, mid-migration joiner not erased). Mist = the anonymous entrant (renamed from "Shadow"); Visitor/Guest→Mist rename target is set but unscheduled.
+- **IDN-1 (anonymous Mist on arrival) — BUILDABLE as a thin slice:** Supabase anon session + `users.is_temporary` + near-side gating by status. Carries a migration (ask-first gate). Its full *ephemerality guarantee* depends on item 2 below.
+- **IDN-2 (transcendence) — BLOCKED** until these resolve (priority order; all small ADR-amendments / FEAT-PC2 decisions, not full discoveries):
+  1. **Consent substrate** — identity-spec §8 Q8/X4: zero consent/GDPR substrate on disk; no consent-state column. Needs Privacy-vertical adjudication. *Hard-blocks IDN-2.*
+  2. **Ephemerality mechanism** — §8 Q10 + **pg_cron is NOT installed**. Decide the sweep (install pg_cron vs Edge-Function-scheduled vs on-request lazy-erase) and the TTL value. *Also gates IDN-1's privacy guarantee and IDN-2's mid-migration guard.*
+  3. **Accretion-stage data shape** — §9 wants "stage legible, content private" but no stage column/field is specified (one-line data decision).
+  4. **In-flight journey carry-over** — DS-3/JRN-5: unstated whether a Mist enrolls pre-transcendence and what migrates (scopes IDN-2's migration payload).
+- **Implication:** **FEAT-H003 likely splits** — build a reduced **IDN-1** first; firm items 1–4 before **IDN-2**. The next session opens with that scoping call (items 1 & 2 likely want Stefan — consent + ephemerality are schema/ADR decisions). Sources: `ADR-U031-mist-identity-lifecycle.md`, `ADR-U004-visitor-anonymous-sign-in.md`, `identity-specification.md` §9/§8 Q8/Q10, `substrate-audit.md` Gaps, `OPEN_QUESTIONS.md`.
+
 ---
 
 ## Open items
