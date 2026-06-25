@@ -111,7 +111,9 @@ The sign-up flow is **equipment-agnostic** (`requires-equipment: none`) — it a
 
 ## Implementation notes (6-done — 2026-06-25)
 
-Built under `hub/`, TDD test-first, as the first Phase-3 (Identity) build area — **reusing the FEAT-H001 spine** (app shell, design-system layer, auth context, `/groups` read path, harness, seam libs), not re-scaffolding. The credentialed sign-up flow runs end-to-end and is green: **8 Jest integration tests** (3 new) + **9 Playwright E2E tests** (4 new); `npm run lint -w hub` + `npm run build -w hub` clean.
+Built under `hub/` as the first Phase-3 (Identity) build area — **reusing the FEAT-H001 spine** (app shell, design-system layer, auth context, `/groups` read path, harness, seam libs), not re-scaffolding. The credentialed sign-up flow runs end-to-end and is green: **8 Jest integration tests** (3 new) + **9 Playwright E2E tests** (4 new) + **8 Jest unit tests** (backfilled); `npm run lint -w hub` + `npm run build -w hub` clean.
+
+**Testing honesty (PROCESS §9).** The integration + E2E tests were written **test-alongside** and verified green in one pass — not a demonstrated red → green → refactor cycle, despite this feature's original "test-first" framing. The unit tier was **backfilled test-after** once the gap was caught (`tests/unit/lib/auth/signup.test.ts`, `tests/unit/app/signup/consent-gate.test.tsx`; 8 tests), and the `feature-development` skill was tightened so **FEAT-H003 onward enforces demonstrated-red + a unit tier**.
 
 **Flow / key code:**
 - **Sign-up lib (testable, lib-behind-route):** `hub/lib/auth/signup.ts` — `signUpFim(supabase, { email, password, displayName, consentAccepted })`. Enforces the consent gate before any creation, calls `supabase.auth.signUp({ options: { data: { display_name } } })` — the key `handle_new_user` reads is **`raw_user_meta_data.display_name`, not `full_name`** — and normalises duplicate / pending-confirmation outcomes.

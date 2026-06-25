@@ -61,16 +61,25 @@ For each story in the feature spec, create one or more tasks.
 
 After creating tasks, update the feature maturity to `5-in-cycle`. In the **same commit**, update the feature-inventory summary row in the parent entity's `SPECIFICATION.md` (§L4) to reflect the new maturity. This keeps the entity-level summary honest about what's in flight. Per the `ecosystem-decomposition` skill L4 write scope, this is L4's property; `feature-development` is the operational layer carrying the update out.
 
-### Step 4: Implement
+### Step 4: Implement (BDD outside-in, TDD red-first)
 
-For each task:
+The feature is 4-ready, so its behaviour is already specified as Given/When/Then acceptance criteria — the **BDD outer loop**. Implementation is the **TDD inner loop**: drive each criterion red → green → refactor. **Do not write implementation code before a failing test exists for the behaviour it satisfies.**
 
-1. Read the task's acceptance criteria and technical notes
-2. Implement the code
-3. Run lint and type-check: `npm run lint`
-4. Run relevant tests
-5. Verify the acceptance criteria manually if needed
-6. Update task status to `review` or `done`
+For each story, then each acceptance criterion:
+
+1. **Map the criterion to the right test tier** (keep the pyramid upright):
+   - **unit** (Jest + jsdom) — component/UI logic, branching, pure functions
+   - **integration** (Jest + node) — the real substrate / API contract
+   - **E2E** (Playwright) — the critical user journey
+
+   Push logic-heavy assertions down to the unit tier; reserve integration for the substrate contract and E2E for journeys.
+2. **Red** — write the test, tag it with the story/behaviour ID, run it, and confirm it FAILS for the right reason. Capture the red result.
+3. **Green** — implement the minimum to pass; run the test; confirm it passes.
+4. **Refactor** — clean up with the test green.
+5. Run lint/type-check (`npm run lint`) and the relevant suite.
+6. Update task status to `review` or `done`.
+
+Every acceptance criterion ends with at least one passing test that was **first seen red**. A behaviour with no failing-first test is not done. (Coverage added test-after — e.g. backfill on already-shipped code — is allowed, but must be **labelled honestly** as test-after, never claimed as TDD.)
 
 **Platform work requires extra caution:**
 - New tables MUST have RLS policies
@@ -81,6 +90,11 @@ For each task:
 
 After all tasks for a story are done:
 - Verify the story's Given/When/Then acceptance criteria end-to-end
+- **Test DoD (required before `6-done`):**
+  - every acceptance criterion has a passing test that was **demonstrated red first**
+  - the **pyramid is upright** — unit-tier coverage exists for component/logic behaviour, not only integration + E2E
+  - lint + build + the **full suite** are green
+  - the Implementation notes record the red → green evidence honestly; any test-after coverage is **labelled as such** (never claimed as test-first)
 - If all stories in the feature are complete, update feature maturity to `6-done`
 - In the **same commit** as the maturity change, update the feature-inventory summary row in the parent entity's `SPECIFICATION.md` (§L4) to reflect `6-done`. Per the `ecosystem-decomposition` skill L4 write scope, this is L4's property; `feature-development` is the operational layer carrying the update out. The `doc-health-check` skill §8 verifies the summary matches the actual state of `features/` at cycle boundaries — miss this step and the check will flag drift.
 - Update the `features/README.md` index
@@ -95,6 +109,8 @@ After all tasks for a story are done:
 
 ### Always do
 - Read the feature spec BEFORE writing any code
+- Write a failing test BEFORE the implementation it covers — demonstrate red, then green, then refactor
+- Keep the test pyramid upright — cover logic/component behaviour at the unit tier, not only via integration/E2E
 - Follow the acceptance criteria exactly — don't add unrequested scope
 - Respect the No-gos section — these are explicit exclusions
 - Run lint and type-check before committing
@@ -108,6 +124,8 @@ After all tasks for a story are done:
 
 ### Never do
 - Implement features below maturity 4 (they need more specification)
+- Write implementation code for a behaviour before a failing test exists for it
+- Claim TDD / test-first in specs, commits, or bridges when coverage was written test-after — label it honestly
 - Delete migration files
 - Modify API contracts without updating dependent feature specs
 - Skip RLS policies on new tables
