@@ -79,7 +79,7 @@ For each story, then each acceptance criterion:
 5. Run lint/type-check (`npm run lint`) and the relevant suite.
 6. Update task status to `review` or `done`.
 
-Every acceptance criterion ends with at least one passing test that was **first seen red**. A behaviour with no failing-first test is not done. (Coverage added test-after — e.g. backfill on already-shipped code — is allowed, but must be **labelled honestly** as test-after, never claimed as TDD.)
+Every acceptance criterion ends with at least one passing test that was **first seen red**. A behaviour with no failing-first test is not done. **If a freshly-written test passes the first time it runs (green when it should be red), STOP and surface it** — the test is suspect (vacuous, mis-targeted, or the behaviour already exists), and a test that never failed proves nothing; investigate before writing any implementation. (Coverage added test-after — e.g. backfill on already-shipped code — is allowed, but must be **labelled honestly** as test-after, never claimed as TDD.)
 
 **Platform work requires extra caution:**
 - New tables MUST have RLS policies
@@ -117,6 +117,7 @@ After all tasks for a story are done:
 - Update CHANGELOG.md for user-visible changes
 
 ### Ask first
+- A freshly-written test that passes when it should fail (green-at-red) — stop and surface the anomaly before writing implementation
 - Database schema changes (new tables, columns, RLS modifications)
 - Adding new npm dependencies
 - Changing shared platform code

@@ -60,6 +60,16 @@ FEAT-H002 was authored at `4-ready`, then built reusing the FEAT-H001 spine (app
 
 ---
 
+## Addendum — testing discipline + FEAT-H003 autonomy (post-commit, 2026-06-25)
+
+Two follow-ups landed after the main session (commits `d3039f6`, `a878613`):
+
+- **Unit tier backfilled** for FEAT-H002 (`tests/unit/lib/auth/signup.test.ts`, `tests/unit/app/signup/consent-gate.test.tsx`; 8 tests; the jest `unit` project switched to the `react-jsx` runtime so component `.tsx` specs compile). Full suite is now **8 unit + 8 integration + 9 E2E**.
+- **`feature-development` skill tightened** to enforce what FEAT-H002 skipped: **BDD outside-in + TDD red-first** — map each acceptance criterion to a tier (unit/integration/E2E), write the test, **confirm it fails for the right reason**, then green → refactor. **A freshly-written test that comes up green when it should be red is an anomaly → stop and surface.** Test-after coverage must be labelled honestly.
+- **FEAT-H003 autonomy (agreed):** run the red → green → refactor cycles **continuously**, surfacing only at the three gates — **anomaly** (unexpected green), **ask-first** (schema/migration, new deps, shared platform code, spec deviation), and **DoD/commit**. FEAT-H003 carries a migration, so the ask-first schema gate *will* fire.
+
+---
+
 ## Open items
 
 ### Immediate
