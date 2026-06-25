@@ -1,6 +1,7 @@
 'use client';
 
 import { Suspense, useState, type FormEvent } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { TextField } from '@/components/ui/TextField';
@@ -71,6 +72,13 @@ function LoginForm() {
       <Button type="submit" className="w-full" disabled={submitting}>
         {submitting ? 'Signing in...' : 'Sign In'}
       </Button>
+
+      <p className="mt-4 text-center text-sm text-gray-600">
+        New to FringeIsland?{' '}
+        <Link href="/signup" className="text-indigo-600 hover:underline">
+          Create an account
+        </Link>
+      </p>
     </form>
   );
 }

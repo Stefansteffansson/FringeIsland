@@ -448,8 +448,9 @@ Remarks recording prerequisite-check pauses, methodology observations, and cross
 | Feature | Serves (L3) | Wave | Maturity | Equipment |
 |---|---|---|---|---|
 | [FEAT-H001](./features/FEAT-H001-walking-skeleton-sign-in-and-groups.md) — Walking skeleton: sign in and land on your groups | IDN-3 (sign-in, thin) · GRP-4 (member group-list read path); wires the five vertical seams (V1 audit · V2 RLS-backed fetch · V3 bell mount · V4 telemetry · V5 N/A) | Ferd | 6-done | none |
+| [FEAT-H002](./features/FEAT-H002-credentialed-fim-sign-up.md) — Credentialed FIM sign-up: create your account and personal group | IDN-3 (sign-up surface) · IDN-2 (FIM outcome — authenticated FIM + personal group via `handle_new_user`: profile, "Myself" zero-perm role, "FringeIsland Members" enrolment, display defaults); begins the real V1 audit · V4 telemetry · Privacy/consent binding the skeleton left as seams | Ferd | 6-done | none |
 
-**Coverage note.** FEAT-H001 is a foundation slice (architecture proof), not full IDN-3/GRP-4 coverage: it realises sign-in-of-an-existing-FIM + the group-list read path only. The remaining IDN-3 surfaces (sign-up, Mist→FIM transcendence, session edges) and GRP-4 surfaces (group detail, create/edit, membership management) are later features. The rest of §L3 remains forward-commitment, unspecced at L4 until Phase 3 reaches each area.
+**Coverage note.** Phase 3 (Identity) builds area-by-area. FEAT-H001 is the foundation slice (architecture proof) — sign-in-of-an-existing-FIM + the group-list read path only. **FEAT-H002** adds credentialed sign-up: the account-creation flow that drives `handle_new_user` (profile + personal group + "FringeIsland Members" enrolment + display defaults) and begins the real PC-4 audit / PC-1 telemetry / Privacy-consent binding that the skeleton left as seams. Still later in A-IDN: **Mist identity + Mist→FIM transcendence** (IDN-1/IDN-2, FEAT-H003 — net-new substrate, no oracle), session edges (IDN-11), and the rest (IDN-4..IDN-12). GRP-4's group detail / create-edit / membership surfaces and the remainder of §L3 stay forward-commitment, unspecced at L4 until Phase 3 reaches each area.
 
 ---
 
