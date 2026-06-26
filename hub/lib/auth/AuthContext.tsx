@@ -1,13 +1,21 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
+import { beginMistSession, deriveIdentity, type Identity } from '@/lib/auth/mist';
+import { emitTelemetry } from '@/lib/observability/telemetry';
 
 type AuthState = {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  /**
+   * Three-state identity (FEAT-H003): sessionless / mist / fim. Derived from the
+   * auth user's `is_anonymous` flag — never queried inside the auth listener, so
+   * it cannot deadlock onAuthStateChange (Hub CLAUDE.md gotcha).
+   */
+  identity: Identity;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (
     email: string,
@@ -15,6 +23,12 @@ type AuthState = {
     displayName: string,
     consentAccepted: boolean,
   ) => Promise<{ error: string | null; pendingConfirmation?: boolean }>;
+  /**
+   * Begin acting as a Mist (FEAT-H003 STORY-2) — the lazy-materialisation facade
+   * over the seam. Emits Mist telemetry (failures included, STORY-5). On success
+   * the auth listener picks up the new anon session and `identity` becomes 'mist'.
+   */
+  beginMist: () => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
 };
 
@@ -101,12 +115,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error: null };
   }
 
+  async function beginMist(): Promise<{ error: string | null }> {
+    const { error } = await beginMistSession(supabase);
+    if (error) {
+      // V4 — a failed entry is an event, never silently swallowed (STORY-5).
+      emitTelemetry('mist.enter_failed', { reason: error });
+      return { error };
+    }
+    // V4 — Mist entry telemetry. `reaperRealised: false` records the known,
+    // bounded accumulation gap honestly (no FEAT-PC002 reaper yet, PROCESS §9).
+    emitTelemetry('mist.entered', { reaperRealised: false });
+    return { error: null };
+  }
+
   async function signOut() {
     await supabase.auth.signOut();
   }
 
+  // Derived in render (not in the auth listener) — pure, no query, no deadlock.
+  const identity = useMemo(() => deriveIdentity(user), [user]);
+
   return (
-    <AuthContext.Provider value={{ user, session, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider
+      value={{ user, session, loading, identity, signIn, signUp, beginMist, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   );

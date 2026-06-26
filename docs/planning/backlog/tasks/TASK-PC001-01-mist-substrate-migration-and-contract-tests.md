@@ -3,7 +3,7 @@
 ---
 id: TASK-PC001-01
 title: Mist substrate migration (is_temporary + handle_new_user Mist branch + Visitor→Mist rename) + PC-2 contract tests
-status: review
+status: done
 feature: FEAT-PC001
 owner: platform/core/identity
 wave: ferd

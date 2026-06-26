@@ -6,7 +6,7 @@ title: Mist anonymous-identity substrate (arrival) — the platform half of IDN-
 owner: platform/core/identity
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -131,3 +131,17 @@ Consumed by **Hub FEAT-H003** (IDN-1) — the entry UI + lazy materialisation + 
 1. **TTL/inactivity threshold + sweep mechanism** (identity-spec §8 Q10) — value, config home, pg_cron-vs-alternative, explicit-erase + mid-migration guard → **FEAT-PC002** (paired with FEAT-H004; Stefan's steer: build the reaper robustly, to industry standard).
 2. **Consent substrate** (§8 Q8 / X4) — captured at transcendence → **FEAT-PC002** / Privacy-vertical adjudication.
 3. **`handle_new_user` factoring per ADR-U016** — the PC-2-emission / PC-3-cascade split is a queued PC-3 pickup, independent of this feature.
+
+## Implementation notes (6-done — 2026-06-26)
+
+The arrival substrate (§9 stages 1-2) for the Mist lifecycle, consumed by Hub [FEAT-H003](../../../products/hub/features/FEAT-H003-mist-identity-on-arrival.md). Applied to the live DB and green; the FIM path is unregressed.
+
+**Migration:** `supabase/migrations/20260626120000_mist_anonymous_substrate.sql` (applied + repaired in history). Three additive changes, per the solution sketch: (1) `users.is_temporary boolean not null default false` (existing FIM rows backfill to `false`); (2) `handle_new_user` amended additively over the **live** body (`20260227095615_add_display_name_system.sql`, not the older `20260222000000`) — `is_temporary => COALESCE(NEW.is_anonymous, false)`, name fallback `COALESCE(display_name, email, 'Mist')`, and the Step-4 branch skipping FringeIsland Members enrolment for anon inserts; (3) seed rename `'Visitor'`→`'Mist'` group + `'Guest'`→`'Mist'` role. `users.email` made **nullable** (a Mist has no PII; UNIQUE still holds for FIMs) — the null-crash fix.
+
+**Testing honesty (PROCESS §9).** Red-first: the contract tests (`hub/tests/integration/auth/mist-substrate.test.ts`) failed before the migration and pass after — they verify the full Mist-creation cascade against the spec's ADR-U016 table (PC-2 `is_temporary` profile + no PII, PC-3 proto group with a sole-member zero-perm "Myself" role + no Members enrolment, the `'Mist'` name default, the Visitor→Mist rename) **and** the FIM path unchanged (`is_temporary=false`, real name preserved). Hub consumption + continuity + no-PII live in `mist-session.test.ts` / `mist-continuity.test.ts`.
+
+**Observability (V4) — honest seam.** The Mist-session-creation event (actor + outcome, failures included) is emitted at the app creation seam — the Hub's `beginMist` (`mist.entered` / `mist.enter_failed`, `hub/tests/unit/lib/auth/AuthContext.test.tsx`, red-first) — toward the V4 in-memory sink. The substrate itself is a SECURITY DEFINER trigger (no app-telemetry surface); the PC-1 sink is still unrealised (mirrors FEAT-H001/H002). The cascade specification (this spec) satisfies the ADR-U016 DoR.
+
+**Deferred to FEAT-PC002 (IDN-2):** the TTL/inactivity reaper (pg_cron absent), explicit-erase, GDPR-grade erasure cascade, consent substrate, and atomic Mist→FIM transcendence. The accumulation gap is live until the reaper lands — known, bounded, logged.
+
+Tasks: `TASK-PC001-01` (substrate + contract tests), `TASK-PC001-02` (cascade verification + observability + finalize).

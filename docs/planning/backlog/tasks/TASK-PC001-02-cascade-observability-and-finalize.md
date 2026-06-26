@@ -3,7 +3,7 @@
 ---
 id: TASK-PC001-02
 title: Mist-creation cascade verification + observability event + DoD finalize (6-done, §L4)
-status: todo
+status: done
 feature: FEAT-PC001
 owner: platform/core/identity
 wave: ferd

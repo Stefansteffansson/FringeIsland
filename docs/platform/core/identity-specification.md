@@ -473,7 +473,7 @@ PC-2's existing bullet-prose Sources-status block (above) is preserved verbatim 
 
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
-| Mist lifecycle (anonymous identity, §9) — **arrival slice** (stages 1-2: Entry + Access) | [FEAT-PC001](./features/FEAT-PC001-mist-anonymous-substrate.md) | 4-ready | Platform half of IDN-1: `users.is_temporary`, the `handle_new_user` Mist branch, the proto-group seam, Visitor→Mist rename. Consumed by Hub FEAT-H003. Status-driven access (Q2). |
+| Mist lifecycle (anonymous identity, §9) — **arrival slice** (stages 1-2: Entry + Access) | [FEAT-PC001](./features/FEAT-PC001-mist-anonymous-substrate.md) | 6-done | Platform half of IDN-1: `users.is_temporary`, the `handle_new_user` Mist branch, the proto-group seam, Visitor→Mist rename. Consumed by Hub FEAT-H003. Status-driven access (Q2). |
 
 ### Capabilities without specs
 

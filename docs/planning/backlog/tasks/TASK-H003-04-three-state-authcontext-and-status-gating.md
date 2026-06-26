@@ -3,7 +3,7 @@
 ---
 id: TASK-H003-04
 title: Three-state identity (sessionless / Mist / FIM) + status-driven gating
-status: todo
+status: done
 feature: FEAT-H003
 owner: hub
 wave: ferd

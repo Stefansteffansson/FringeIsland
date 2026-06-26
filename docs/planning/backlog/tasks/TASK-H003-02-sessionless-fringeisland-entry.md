@@ -3,7 +3,7 @@
 ---
 id: TASK-H003-02
 title: Sessionless FringeIsland entry — public landing, no session, no rows
-status: todo
+status: done
 feature: FEAT-H003
 owner: hub
 wave: ferd

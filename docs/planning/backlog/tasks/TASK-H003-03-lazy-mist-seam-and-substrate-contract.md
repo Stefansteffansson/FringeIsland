@@ -3,7 +3,7 @@
 ---
 id: TASK-H003-03
 title: Hub "begin acting as a Mist" seam + minimal Mist-presence landing
-status: todo
+status: done
 feature: FEAT-H003
 owner: hub
 wave: ferd

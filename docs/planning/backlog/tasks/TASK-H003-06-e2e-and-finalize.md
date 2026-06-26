@@ -3,7 +3,7 @@
 ---
 id: TASK-H003-06
 title: Mist E2E journey + DoD finalize (maturity 6-done, §L4 / README / CHANGELOG)
-status: todo
+status: done
 feature: FEAT-H003
 owner: hub
 wave: ferd

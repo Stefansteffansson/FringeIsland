@@ -6,7 +6,7 @@ title: Mist identity on arrival — the FringeIsland entry and the lazy Mist act
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -133,3 +133,24 @@ These addenda were **approved and appended** to both ADRs (dated clarification n
 2. **Mist access — status-driven** (Q2). The Mist gets the proto personal group only; near-side access is by `is_temporary` status, not a permission set / system-group enrolment (ADR-U031 "intrinsic, not a fence").
 3. **First real act — "Look around" = enter as a Mist** (Q3, "b-done-right"). It lands on a minimal-but-real Mist-presence state (identity-level), not a fake placeholder; the entry stays sessionless.
 4. **Ownership — paired platform spec** (Q4). FEAT-PC001 (Platform Core Identity) provides the substrate; FEAT-H003 (Hub) consumes it — the formal cross-tier workflow, not substrate carried inside the product feature.
+
+## Implementation notes (6-done — 2026-06-26)
+
+Third Phase-3 (Identity) build area and the first net-new-substrate one — **reusing the FEAT-H001/H002 spine** (app shell, design-system layer, auth context, harness, seam libs), not re-scaffolding. Mist arrival runs end-to-end: full Jest **41 tests / 12 suites**, Playwright **12 E2E** (3 new), `npm run lint` + `npm run build` clean. The substrate is **owned by the paired [FEAT-PC001](../../../platform/core/features/FEAT-PC001-mist-anonymous-substrate.md)**; this feature consumes it via the SDK anon sign-in (ADR-U004) and carries **no migration**.
+
+**Testing honesty (PROCESS §9).** The unit tier was the **red-first driver** (demonstrated red → green per criterion): the three-state AuthContext + `beginMist` telemetry (`tests/unit/lib/auth/AuthContext.test.tsx`), the entry page (`tests/unit/app/entry.test.tsx`), the Mist-presence landing (`tests/unit/app/mist-presence.test.tsx`). The seam (`beginMistSession`/`deriveIdentity`) was red-first the prior session. The continuity + no-PII integration (`tests/integration/auth/mist-continuity.test.ts`) is **backfill test-after, labelled as such** — the continuity guarantee is a *negative* property emergent from the applied substrate + seam, with no new Hub code to drive. The E2E (`tests/e2e/entry.spec.ts`) is the outside-in composition check (green on first full run because its constituent behaviours were already red-first at lower tiers).
+
+**Flow / key code:**
+- **Three-state identity:** `hub/lib/auth/AuthContext.tsx` exposes `identity` (= `deriveIdentity(user)`, memoised in render — never queried inside the auth listener, so no `onAuthStateChange` deadlock) and a `beginMist()` facade over the seam.
+- **Seam (prior session):** `hub/lib/auth/mist.ts` — `beginMistSession(supabase)` (anon sign-in, idempotent within a live session) + `deriveIdentity(user)` (`sessionless`/`mist`/`fim` from `is_anonymous`).
+- **Sessionless entry:** `hub/app/page.tsx` (replaces the placeholder Home) — identity-aware doors: sessionless → Sign in / Sign up / **Look around**; FIM → "Continue to your groups" (no Mist chrome); Mist → "Keep looking around". "Look around" is the deliberate enter-as-a-Mist act → `beginMist()` → `/mist`.
+- **Minimal Mist-presence landing:** `hub/app/mist/page.tsx` — identity-level only (a real beginning + the become-a-FIM CTA → `/signup`), status-gated (FIM → `/groups`, sessionless → `/`). No town, no accretion visuals (fundamentals before experience design).
+
+**Build-informed findings (PROCESS §9):**
+- **§L4 migration attribution corrected:** the Hub §L4 row previously said FEAT-H003 "carries a net-new migration" — that pre-dated the Q4 paired-spec split. FEAT-PC001 owns the migration; the row now reads "consumes the FEAT-PC001 substrate, no migration of its own."
+- **V4 telemetry** binds to the in-memory `emitTelemetry` seam (PC-1 sink unrealised, as FEAT-H001/H002): `mist.entered` on success, `mist.enter_failed` on failure — failures never swallowed.
+- **Accumulation gap recorded (honest seam):** `mist.entered` carries `reaperRealised: false`; there is no FEAT-PC002 reaper yet, so actual-actor Mist rows accumulate (known, bounded). The E2E mints anon Mists and tears them down via `cleanupAnonymousUsers` (no reaper to rely on).
+
+**Deferred to FEAT-H004 ↔ FEAT-PC002 (IDN-2):** Mist→FIM transcendence, the robust ephemerality/TTL reaper + GDPR erasure, and consent capture. The become-a-FIM CTA routes to FEAT-H002 sign-up; it does not migrate Mist data.
+
+Tasks: `TASK-H003-02..06`.

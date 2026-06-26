@@ -3,7 +3,7 @@
 ---
 id: TASK-H003-05
 title: Continuity posture (fresh-start-on-return) + V2 privacy / V4 telemetry
-status: todo
+status: done
 feature: FEAT-H003
 owner: hub
 wave: ferd
