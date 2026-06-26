@@ -13,5 +13,6 @@ Retroactive specs (maturity `6-done`) are being written first to capture already
 |----|-------|------|----------|-----------|
 | [FEAT-H001](./FEAT-H001-walking-skeleton-sign-in-and-groups.md) | Walking skeleton — sign in and land on your groups | Ferd | 6-done | none |
 | [FEAT-H002](./FEAT-H002-credentialed-fim-sign-up.md) | Credentialed FIM sign-up — create your account and personal group | Ferd | 6-done | none |
+| [FEAT-H003](./FEAT-H003-mist-identity-on-arrival.md) | Mist identity on arrival — the FringeIsland entry and the lazy Mist actor | Ferd | 5-in-cycle | none |
 
 The walking-skeleton slice (Phase 2 of the [Hub v2 rebuild](../../../planning/hub-v2/README.md)) is the first forward-looking spec, built fresh under `hub/` ([ADR-U032](../../../architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)). Retroactive `6-done` specs for already-shipped functionality (now frozen under `hub-legacy/`) may follow.

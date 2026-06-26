@@ -53,15 +53,15 @@ BEGIN
   );
 
   -- ========================================================================
-  -- 2. Visitor — anonymous/unauthenticated baseline
+  -- 2. Mist — anonymous entrant baseline (ADR-U031; formerly 'Visitor')
   -- ========================================================================
   INSERT INTO public.groups (name, group_type, is_public, show_member_list, description)
-  VALUES ('Visitor', 'system', false, false,
-    'Baseline permissions for visitors and try-it experiences.')
+  VALUES ('Mist', 'system', false, false,
+    'Baseline permissions for the Mist (anonymous entrant) and try-it experiences.')
   RETURNING id INTO v_visitor_id;
 
   INSERT INTO public.group_roles (group_id, name, description)
-  VALUES (v_visitor_id, 'Guest', 'Visitor role with minimal permissions')
+  VALUES (v_visitor_id, 'Mist', 'Mist role with minimal permissions')
   RETURNING id INTO v_visitor_guest_role_id;
 
   INSERT INTO public.group_role_permissions (group_role_id, permission_id)

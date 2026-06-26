@@ -35,6 +35,10 @@ The garden exists before it is claimed. The temporary profile is the garden wait
 - Visitor temporary profiles consume database resources — retention period must be configured
 - The conversion moment (anonymous → permanent) must be tested carefully to ensure no data loss
 
+## Clarification — 2026-06-26 (FEAT-H003, IDN-1 build)
+
+The "temporary session on arrival" is created **lazily** — at the visitor's first act that enters the shared near-side world, not on page load — so a public *FringeIsland entry* is **sessionless** and bot/bounce traffic creates no temporary profiles. A returning anonymous visitor past session expiry/cleanup is a **new** Mist (no persistent anonymous re-identification); cross-session continuity is reserved for the converted (FIM) account. The pg_cron cleanup named in *Decision* / *Consequences* is the **hard retention clock** that gates a server-side anonymous token (ADR-U031 stage 3); it is built robustly in **FEAT-H004 (IDN-2)** — pg_cron is not yet installed. (Cross-ref: ADR-U031 stage-1 / dissipation / stage-3 clarification, same date.)
+
 ## Links
 
 - Extracted from `ARCHITECTURE_DECISIONS.md` on 2026-04-05

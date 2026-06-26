@@ -163,6 +163,14 @@ especially), the place-3-menace sense of "Shadow" is made explicit so the two ne
   `Visitor`/`Guest` schema identifiers remain in code; the deferred code-correction target's
   destination is now **Mist** (not Shadow).
 
+### Clarification — 2026-06-26 (FEAT-H003, IDN-1 build)
+
+Making the entry/access boundary precise for implementation, consistent with this ADR's existing text:
+
+- A public *FringeIsland entry* (generic content) is reachable **sessionless** — no anonymous identity, no rows. Because "server access is required to perceive the shared near-side world at all" (stage 1, Entry), the Mist is materialised at the **first act that enters/perceives the shared near-side world** — lazily, not at page load — bounding anonymous-token creation to genuine entrants (bot/bounce traffic on the public entry creates nothing).
+- Cross-session return reaffirms the existing rule "on return it forms anew (a fresh Mist, not a resumed one)": a return across a true session boundary (expired/reaped session, or a different device) has **no server-side cross-session identifier**. The permitted **device-local-only kindness** (stage 3) is unchanged and is *not* built in IDN-1. The server-side anonymous token's required **hard retention clock** (TTL + reaper) is **FEAT-H004 (IDN-2)**; until it lands, the small set of actual-entrant Mist rows accumulates as a known, logged gap.
+- **Durable cross-session memory is the FIM's**, granted at transcendence — the platform-promise / manifesto-aligned conversion incentive.
+
 ## Pros and cons of each option
 
 ### Option A — Blind rename Shadow → Mist

@@ -469,19 +469,20 @@ PC-2's existing bullet-prose Sources-status block (above) is preserved verbatim 
 
 ### Summary
 
-*To be authored at L4 reconciliation. Cold-derivation Steps 1–3 do not populate L4.*
+*L4 reconciliation begun 2026-06-26 with the first forward Platform Core feature (FEAT-PC001). The shipped FIM capabilities (§L3 sign-in / sign-up / session / profile / …) remain retroactive-spec candidates, not yet forward-specced — listed under "Capabilities without specs".*
 
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
-| ... | ... | ... | ... |
+| Mist lifecycle (anonymous identity, §9) — **arrival slice** (stages 1-2: Entry + Access) | [FEAT-PC001](./features/FEAT-PC001-mist-anonymous-substrate.md) | 4-ready | Platform half of IDN-1: `users.is_temporary`, the `handle_new_user` Mist branch, the proto-group seam, Visitor→Mist rename. Consumed by Hub FEAT-H003. Status-driven access (Q2). |
 
 ### Capabilities without specs
 
-*To be authored.*
+- **Mist lifecycle — stage-3 ephemerality (TTL erasure) + stage-4 transcendence/consent** (§9; §8 Q8/Q10) — deferred to **FEAT-PC002** (paired with Hub FEAT-H004 / IDN-2).
+- **Sign-in flow · Sign-up flow · Session refresh · Sign-out · Profile CRUD · Profile materialization trigger · Authenticated-context publication · user_id contract surface · Account lifecycle state machine** — shipped substrate; retroactive `6-done` specs not yet written (forward L4 reconciliation pending).
 
 ### Features without capabilities
 
-*To be authored.*
+*None — FEAT-PC001 maps to the §L3 Mist lifecycle capability.*
 
 ---
 
