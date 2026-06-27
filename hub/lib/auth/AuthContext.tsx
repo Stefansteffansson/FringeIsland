@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 import { beginMistSession, deriveIdentity, type Identity } from '@/lib/auth/mist';
+import { TRANSCENDENCE_CONSENT_REQUIRED_ERROR } from '@/lib/auth/transcendence';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 type AuthState = {
@@ -29,6 +30,29 @@ type AuthState = {
    * the auth listener picks up the new anon session and `identity` becomes 'mist'.
    */
   beginMist: () => Promise<{ error: string | null }>;
+  /**
+   * Become a FIM in place (FEAT-H004 STORY-1/2) — convert THEN finalise. The
+   * client consent gate blocks before any conversion (STORY-2); the auth-SDK
+   * `updateUser` performs the anon->permanent conversion (same `auth.users.id`,
+   * so the Mist's proto group + journeys carry over with continuity); the
+   * FEAT-PC002 finalisation RPC is reached through the Platform API route (never
+   * a browser RPC — ADR-U009). On success the auth listener re-derives identity
+   * Mist -> FIM (`is_anonymous` flips); failure is surfaced, never swallowed.
+   */
+  transcend: (
+    email: string,
+    password: string,
+    displayName: string,
+    consentAccepted: boolean,
+  ) => Promise<{ error: string | null }>;
+  /**
+   * Say goodbye (FEAT-H004 STORY-3) — the explicit-erase farewell. Calls the
+   * FEAT-PC002 explicit-erase RPC through the Platform API route (never a browser
+   * RPC — ADR-U009), then signs out so the surface drops to the sessionless
+   * entry. A route failure is surfaced and the session is NOT dropped (the Mist
+   * remains). Offered only to a Mist (a FIM leaves via account-state/exit).
+   */
+  sayGoodbye: () => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
 };
 
@@ -129,6 +153,79 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error: null };
   }
 
+  async function transcend(
+    email: string,
+    password: string,
+    displayName: string,
+    consentAccepted: boolean,
+  ): Promise<{ error: string | null }> {
+    // Consent gate — no consent, no conversion, no finalisation (STORY-2).
+    if (!consentAccepted) {
+      emitTelemetry('transcendence.failed', { reason: 'consent_missing_client' });
+      return { error: TRANSCENDENCE_CONSENT_REQUIRED_ERROR };
+    }
+
+    // 1. Convert: anon -> permanent via the auth SDK (the narrow exception).
+    //    Preserves the same auth.users.id, so the proto group + journeys carry
+    //    over with continuity — the Hub copies no rows.
+    const { error: convertError } = await supabase.auth.updateUser({
+      email,
+      password,
+      data: { display_name: displayName },
+    });
+    if (convertError) {
+      emitTelemetry('transcendence.failed', { reason: 'conversion_error' });
+      return { error: convertError.message };
+    }
+
+    // 2. Finalise via the Platform API route (the RPC runs server-side, never in
+    //    the browser — ADR-U009). Order matters: convert, then finalise.
+    try {
+      const res = await fetch('/api/auth/transcend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ consentAccepted: true }),
+      });
+      let payload: { ok?: boolean; error?: string } | null = null;
+      try {
+        payload = await res.json();
+      } catch {
+        /* non-JSON response */
+      }
+      if (!res.ok) {
+        // No half-FIM swallow — surface the failure (the platform RPC rolled back).
+        return {
+          error: payload?.error ?? 'Could not complete becoming a FIM. Please try again.',
+        };
+      }
+    } catch {
+      return { error: 'Could not reach the server. Please try again.' };
+    }
+
+    return { error: null };
+  }
+
+  async function sayGoodbye(): Promise<{ error: string | null }> {
+    try {
+      const res = await fetch('/api/auth/farewell', { method: 'POST' });
+      let payload: { ok?: boolean; error?: string } | null = null;
+      try {
+        payload = await res.json();
+      } catch {
+        /* non-JSON response */
+      }
+      if (!res.ok) {
+        // Surface the failure — the Mist remains (no session dropped).
+        return { error: payload?.error ?? 'Could not say goodbye. Please try again.' };
+      }
+    } catch {
+      return { error: 'Could not reach the server. Please try again.' };
+    }
+    // Erased server-side — drop the local session => sessionless entry.
+    await supabase.auth.signOut();
+    return { error: null };
+  }
+
   async function signOut() {
     await supabase.auth.signOut();
   }
@@ -138,7 +235,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, session, loading, identity, signIn, signUp, beginMist, signOut }}
+      value={{
+        user,
+        session,
+        loading,
+        identity,
+        signIn,
+        signUp,
+        beginMist,
+        transcend,
+        sayGoodbye,
+        signOut,
+      }}
     >
       {children}
     </AuthContext.Provider>
