@@ -1,7 +1,7 @@
 ---
 id: TASK-PC002-05
 title: FIM account-erasure anonymise-vs-retain path + cascade-spec verification
-status: review
+status: done
 assigned_to: Claude
 priority: medium
 feature: FEAT-PC002
@@ -87,7 +87,8 @@ transcendence (`finalise_transcendence`) match at every layer. The transcendence
 cascade's Privacy row ("account-erasure becomes retention-bound") is now **realised**
 by `erase_fim_account`. No discrepancy found.
 
-**Closes the build of FEAT-PC002** (all 5 stories built, all 5 tasks green). The
-feature flips `5-in-cycle → 6-done` (+ identity §L4 row + §L3 latent→shipped cell)
-**after** Stefan clears the schema-review gate for the PC002 migration set — pending,
-not auto-flipped.
+**Closes FEAT-PC002** (all 5 stories built, all 5 tasks green). Stefan cleared the
+schema-review gate **2026-06-27**; feature flipped `5-in-cycle → 6-done` (+ identity
+§L4 row + §L3 substrate-latent→shipped cells ×3 + `features/README.md` index) in the
+closing commit. New suite 4/4 green in isolation; full-suite re-confirmation runs
+once the shared anon sign-in rate-limit window recovers (delayed background run).

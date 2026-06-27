@@ -1,7 +1,7 @@
 ---
 id: TASK-PC002-04
 title: Atomic persistence-and-consent transcendence (finalise-in-place)
-status: review
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PC002

@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-27 (build session; follows `2026-06-27_01` which landed 01-04)
 **Session type:** build (platform, TDD red-first) — the last task of FEAT-PC002
-**Status:** Open — **PC002-05 built and green**, at `review` (schema-review gate). **All 5 FEAT-PC002 tasks are now green.** Feature stays `5-in-cycle`; it flips to `6-done` only after Stefan clears the schema-review gate for the PC002 migration set (now 5 migrations). Not auto-flipped, not merged — **schema-gate carve-out**.
+**Status:** **PC002-05 built and green; schema-review gate CLEARED by Stefan (2026-06-27).** All 5 FEAT-PC002 tasks `done`; **feature flipped `5-in-cycle → 6-done`** (+ identity §L4 row + §L3 substrate-latent→shipped cells ×3 + §8 Q8/Q10 maturity + `features/README.md` index). **PR #4 merge pending** the delayed full-suite re-confirmation (anon rate-limit recovery). See §"Session close update" at the foot.
 **Participants:** Stefan + Claude
 
 > Picks up the `2026-06-27_01` bridge. Since that bridge, `idn-2-build` (01-04) was merged to `main` via PR #2 and the fuller-auto docs via PR #3; tasks 01-04 remain at `review`. This session built PC002-05 (FIM account-erasure, ADR-U034 §5) on a fresh branch off `main`, red-first.
@@ -47,3 +47,17 @@ Both FEAT-PC002 §"Cascade specification" tables verified against the shipped su
 - **If schema review passes:** flip FEAT-PC002 → `6-done` (+ §L4 row + §L3 latent→shipped + `features/README.md`) in one commit; merge the PC002 branch(es). Then FEAT-H004 (Hub half of IDN-2) is the next product layer.
 - **Read order:** this bridge -> `2026-06-27_01` bridge -> FEAT-PC002 (§"Cascade specification" + STORY-5) -> ADR-U034 §5 -> migration `20260627120000` -> `admin_hard_delete_user` (in `20260223171200_fix_rc7_admin_user_ops.sql`).
 - **Orientation:** tests `cd hub && npx jest --selectProjects integration --runInBand --testPathPatterns fim-account-erasure`; migration via `node scripts/apply-migration-temp.js <file>` then `bash supabase-cli.sh migration repair --status applied <ts>`.
+
+---
+
+## Session close update (2026-06-27)
+
+Stefan **reviewed the migration line-by-line in plain language, probed the anonymise-vs-retain design** (the genuine "an anonymised receipt can't prove a *named* person consented" tension — acknowledged: the substrate proves the *process*/audit trail, and the deletion log is the per-person defence; full anonymisation was the deliberate, privacy-pure choice, with a one-way-fingerprint alternative left on the table), and **consented to the schema + migration.**
+
+**Closure carried out (one commit on `idn-2-pc002-05`):**
+- FEAT-PC002 frontmatter `5-in-cycle → 6-done`; identity §L4 inventory row → `6-done`; `features/README.md` index `4-ready → 6-done`.
+- identity §L3 Privacy consent cells ×3: "substrate latent per §8 Q8 / X4" → "substrate shipped per ADR-U034 / FEAT-PC002 … capture for this flow still future (transcendence only)".
+- identity §8 Q8 + Q10: stale "(4-ready)" → "(6-done)"; Q8's "stays latent / §L3 cells remain accurate" clause superseded with a dated "shipped 2026-06-27" note (the live L3/L4 vs §8 tension closed). §L3-Step-3 / SS-2 historical records left verbatim per the augment-in-place discipline.
+- All 5 task files `→ done`.
+
+**Still open:** PR #4 merge waits on the delayed full-suite re-confirmation (the only prior full-run failures were `Request rate limit reached` on pre-existing anon Mist suites — environmental; the new suite is 4/4 green in isolation). A full doc-health-check at the cycle boundary remains the formal mechanism to sweep §8 open-questions reconciliation. **Next product layer: FEAT-H004 (Hub half of IDN-2).**

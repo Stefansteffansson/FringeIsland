@@ -1,7 +1,7 @@
 ---
 id: TASK-PC002-03
 title: Append-only consent-record substrate (table + RLS + append-only enforcement)
-status: review
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PC002

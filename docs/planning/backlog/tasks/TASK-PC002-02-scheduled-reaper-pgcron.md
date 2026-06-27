@@ -1,7 +1,7 @@
 ---
 id: TASK-PC002-02
 title: Scheduled ephemerality reaper (pg_cron sweep + inactivity TTL + reaper-run event)
-status: review
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PC002
