@@ -9,8 +9,22 @@
     "lint": "eslint",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration --runInBand --verbose",
-    "test:e2e": "playwright test"
+    "test:integration:quick": "jest tests/integration --runInBand --bail --verbose",
+    "test:integration:auth": "jest tests/integration/auth --runInBand --verbose",
+    "test:integration:groups": "jest tests/integration/groups --runInBand --verbose",
+    "test:integration:journeys": "jest tests/integration/journeys --runInBand --verbose",
+    "test:integration:rls": "jest tests/integration/rls --runInBand --verbose",
+    "test:integration:rbac": "jest tests/integration/rbac --runInBand --verbose",
+    "test:integration:admin": "jest tests/integration/admin --runInBand --verbose",
+    "test:integration:communication": "jest tests/integration/communication --runInBand --verbose",
+    "test:integration:security": "jest tests/integration/security --runInBand --verbose",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",
