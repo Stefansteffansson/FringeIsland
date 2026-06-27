@@ -5,6 +5,7 @@ import {
   createAdminClient,
   createTestUser,
   cleanupTestUser,
+  withAnonRateLimitRetry,
 } from '@/tests/helpers/supabase';
 
 /**
@@ -42,7 +43,7 @@ describe('FEAT-PC001 — Mist anonymous-identity substrate (arrival)', () => {
   // STORY-1 + STORY-2 + STORY-3 — anonymous sign-in materialises a Mist.
   it('materialises a Mist: is_temporary=true, proto personal group, "Mist" name default, no Members enrolment', async () => {
     const supabase = createTestClient();
-    const { data, error } = await supabase.auth.signInAnonymously();
+    const { data, error } = await withAnonRateLimitRetry(() => supabase.auth.signInAnonymously());
 
     // Precondition: anonymous sign-in must be enabled on the project (ADR-U004).
     expect(error).toBeNull();

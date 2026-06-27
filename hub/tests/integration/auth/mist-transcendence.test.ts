@@ -6,6 +6,7 @@ import {
   createTestUser,
   cleanupTestUser,
   runAdminSql,
+  withAnonRateLimitRetry,
 } from '@/tests/helpers/supabase';
 
 /**
@@ -55,7 +56,9 @@ describe('FEAT-PC002 STORY-3 — atomic persistence-and-consent transcendence', 
   it('flips is_temporary, enrols FringeIsland Members, and writes consent atomically — same personal group', async () => {
     const admin = createAdminClient();
     const mistClient = createTestClient();
-    const { data: signIn, error: signInErr } = await mistClient.auth.signInAnonymously();
+    const { data: signIn, error: signInErr } = await withAnonRateLimitRetry(() =>
+      mistClient.auth.signInAnonymously(),
+    );
     expect(signInErr).toBeNull();
     const mistId = signIn.user!.id;
     createdUserIds.push(mistId);
@@ -111,7 +114,7 @@ describe('FEAT-PC002 STORY-3 — atomic persistence-and-consent transcendence', 
   it('rolls back the whole finalisation on a partway failure — stays a valid Mist, no consent', async () => {
     const admin = createAdminClient();
     const mistClient = createTestClient();
-    const { data: signIn } = await mistClient.auth.signInAnonymously();
+    const { data: signIn } = await withAnonRateLimitRetry(() => mistClient.auth.signInAnonymously());
     const mistId = signIn.user!.id;
     createdUserIds.push(mistId);
     const before = await waitForProfile(admin, mistId);
@@ -164,7 +167,7 @@ describe('FEAT-PC002 STORY-3 — atomic persistence-and-consent transcendence', 
   it('a transcended Mist is not reaped even when inactive past the TTL', async () => {
     const admin = createAdminClient();
     const mistClient = createTestClient();
-    const { data: signIn } = await mistClient.auth.signInAnonymously();
+    const { data: signIn } = await withAnonRateLimitRetry(() => mistClient.auth.signInAnonymously());
     const mistId = signIn.user!.id;
     createdUserIds.push(mistId);
     const before = await waitForProfile(admin, mistId);

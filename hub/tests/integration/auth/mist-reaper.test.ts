@@ -6,6 +6,7 @@ import {
   createTestUser,
   cleanupTestUser,
   runAdminSql,
+  withAnonRateLimitRetry,
 } from '@/tests/helpers/supabase';
 
 /**
@@ -48,7 +49,9 @@ describe('FEAT-PC002 STORY-2 — explicit-erase cascade ("say goodbye")', () => 
   // immediately, with no orphaned child rows (ADR-U016 cascade).
   it('erases the calling Mist and its proto group with no orphaned rows', async () => {
     const supabase = createTestClient();
-    const { data: signIn, error: signInError } = await supabase.auth.signInAnonymously();
+    const { data: signIn, error: signInError } = await withAnonRateLimitRetry(() =>
+      supabase.auth.signInAnonymously(),
+    );
     expect(signInError).toBeNull();
     expect(signIn.user).not.toBeNull();
     const mistId = signIn.user!.id;
@@ -149,7 +152,9 @@ describe('FEAT-PC002 STORY-1 — scheduled reaper sweep (reap_expired_mists)', (
 
     // Inactive Mist — backdate last_sign_in_at well past the 72h TTL.
     const expiredClient = createTestClient();
-    const { data: expiredSignIn, error: e1 } = await expiredClient.auth.signInAnonymously();
+    const { data: expiredSignIn, error: e1 } = await withAnonRateLimitRetry(() =>
+      expiredClient.auth.signInAnonymously(),
+    );
     expect(e1).toBeNull();
     const expiredId = expiredSignIn.user!.id;
     createdUserIds.push(expiredId);
@@ -161,7 +166,9 @@ describe('FEAT-PC002 STORY-1 — scheduled reaper sweep (reap_expired_mists)', (
 
     // Active Mist — fresh last_sign_in_at, within the TTL.
     const activeClient = createTestClient();
-    const { data: activeSignIn, error: e2 } = await activeClient.auth.signInAnonymously();
+    const { data: activeSignIn, error: e2 } = await withAnonRateLimitRetry(() =>
+      activeClient.auth.signInAnonymously(),
+    );
     expect(e2).toBeNull();
     const activeId = activeSignIn.user!.id;
     createdUserIds.push(activeId);

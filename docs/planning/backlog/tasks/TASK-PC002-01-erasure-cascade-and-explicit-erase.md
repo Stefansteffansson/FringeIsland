@@ -1,7 +1,7 @@
 ---
 id: TASK-PC002-01
 title: Mist erasure-cascade primitive + explicit-erase RPC ("say goodbye")
-status: review
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PC002
