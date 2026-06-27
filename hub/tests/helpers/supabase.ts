@@ -136,3 +136,35 @@ export const cleanupTestGroup = async (groupId: string): Promise<void> => {
   const { error } = await admin.from('groups').delete().eq('id', groupId);
   if (error) console.error('Failed to cleanup test group:', error);
 };
+
+/**
+ * Run admin SQL via the Supabase Management API — the same channel the migration
+ * apply script uses. **Test-only**, for substrate manipulation the JS client
+ * cannot do: backdating `auth.users.last_sign_in_at` (GoTrue-managed), or reading
+ * the `cron` schema (PostgREST does not expose it). Returns result rows; throws on
+ * API/SQL error. Requires SUPABASE_ACCESS_TOKEN (present in .env.local).
+ */
+export const runAdminSql = async (
+  sql: string,
+): Promise<Array<Record<string, unknown>>> => {
+  const accessToken = process.env.SUPABASE_ACCESS_TOKEN;
+  if (!accessToken) {
+    throw new Error('runAdminSql requires SUPABASE_ACCESS_TOKEN (management API) in .env.local');
+  }
+  const ref = supabaseUrl.match(/https:\/\/([^.]+)\./)?.[1];
+  if (!ref) throw new Error(`Could not derive project ref from ${supabaseUrl}`);
+
+  const res = await fetch(`https://api.supabase.com/v1/projects/${ref}/database/query`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ query: sql }),
+  });
+  const body = await res.json();
+  if (!res.ok || (body && (body as { error?: unknown }).error)) {
+    throw new Error(`runAdminSql failed: ${JSON.stringify(body)}`);
+  }
+  return Array.isArray(body) ? (body as Array<Record<string, unknown>>) : [];
+};

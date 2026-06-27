@@ -474,7 +474,7 @@ PC-2's existing bullet-prose Sources-status block (above) is preserved verbatim 
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
 | Mist lifecycle (anonymous identity, §9) — **arrival slice** (stages 1-2: Entry + Access) | [FEAT-PC001](./features/FEAT-PC001-mist-anonymous-substrate.md) | 6-done | Platform half of IDN-1: `users.is_temporary`, the `handle_new_user` Mist branch, the proto-group seam, Visitor→Mist rename. Consumed by Hub FEAT-H003. Status-driven access (Q2). |
-| Mist lifecycle (anonymous identity, §9) — **departure + transcendence slice** (stages 3-4: ephemerality reaper + consent-bearing transcendence) | [FEAT-PC002](./features/FEAT-PC002-mist-transcendence-reaper-consent.md) | 4-ready | Platform half of IDN-2: pg_cron reaper + explicit-erase (ADR-U033), atomic persistence-and-consent transcendence (ADR-U031 stage 4), append-only consent substrate (ADR-U034). Consumed by Hub FEAT-H004. Resolves §8 Q8 / Q10 / X4. |
+| Mist lifecycle (anonymous identity, §9) — **departure + transcendence slice** (stages 3-4: ephemerality reaper + consent-bearing transcendence) | [FEAT-PC002](./features/FEAT-PC002-mist-transcendence-reaper-consent.md) | 5-in-cycle | Platform half of IDN-2: pg_cron reaper + explicit-erase (ADR-U033), atomic persistence-and-consent transcendence (ADR-U031 stage 4), append-only consent substrate (ADR-U034). Consumed by Hub FEAT-H004. Resolves §8 Q8 / Q10 / X4. |
 
 ### Capabilities without specs
 

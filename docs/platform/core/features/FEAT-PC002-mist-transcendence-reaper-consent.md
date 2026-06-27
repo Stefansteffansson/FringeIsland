@@ -6,7 +6,7 @@ title: Mist ephemerality reaper + atomic transcendence + consent substrate — t
 owner: platform/core/identity
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

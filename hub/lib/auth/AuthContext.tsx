@@ -122,9 +122,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       emitTelemetry('mist.enter_failed', { reason: error });
       return { error };
     }
-    // V4 — Mist entry telemetry. `reaperRealised: false` records the known,
-    // bounded accumulation gap honestly (no FEAT-PC002 reaper yet, PROCESS §9).
-    emitTelemetry('mist.entered', { reaperRealised: false });
+    // V4 — Mist entry telemetry. The FEAT-PC002 reaper (ADR-U033) now realises
+    // ephemerality (pg_cron sweep + explicit-erase), so the accumulation gap is
+    // closed — `reaperRealised: true`.
+    emitTelemetry('mist.entered', { reaperRealised: true });
     return { error: null };
   }
 
