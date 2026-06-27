@@ -4,7 +4,7 @@ import { createAdminClient, cleanupAnonymousUsers } from './helpers/auth';
 /**
  * FEAT-H003 (E2E) — the Mist arrival journey:
  *   sessionless entry → "Look around" → a Mist materialises → Mist-presence state
- *   → become-a-FIM CTA → /signup (the existing FEAT-H002 flow).
+ *   → become-a-FIM CTA → /become-a-fim (the FEAT-H004 in-place transcendence flow).
  *
  * Runs WITHOUT the shared storageState (fresh, unauthenticated = sessionless).
  * Each "Look around" mints an anonymous Mist; there is no FEAT-PC002 reaper yet,
@@ -36,11 +36,11 @@ test('"Look around" materialises a Mist and lands on the Mist-presence state', a
   await expect(page.getByRole('link', { name: /become a fim/i })).toBeVisible();
 });
 
-test('the become-a-FIM CTA routes to sign-up (FEAT-H002)', async ({ page }) => {
+test('the become-a-FIM CTA opens the in-place transcendence flow (FEAT-H004)', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: /look around/i }).click();
   await expect(page).toHaveURL(/\/mist/, { timeout: 20000 });
 
   await page.getByRole('link', { name: /become a fim/i }).click();
-  await expect(page).toHaveURL(/\/signup/, { timeout: 10000 });
+  await expect(page).toHaveURL(/\/become-a-fim/, { timeout: 10000 });
 });

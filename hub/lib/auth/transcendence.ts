@@ -1,0 +1,46 @@
+/**
+ * FEAT-H004 — the in-place Mist->FIM transcendence seam (consumes FEAT-PC002).
+ *
+ * `finaliseTranscendence` is the lib-behind-route wrapper over the platform
+ * `finalise_transcendence` RPC (the atomic `is_temporary => false` + FringeIsland
+ * Members enrolment + consent write). It runs SERVER-SIDE (the `/api/auth/transcend`
+ * route), AFTER the Supabase anon->permanent conversion the Hub performs
+ * client-side via the auth SDK (the narrow exception). RPCs never run from the
+ * browser (ADR-U009 / Hub CLAUDE.md narrow-exception rule) — this module does no
+ * table reads/writes, only the RPC call.
+ */
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+/** The consent policy version captured at transcendence (ADR-U034 open identifier). */
+export const TRANSCENDENCE_POLICY_VERSION = 'v1';
+
+export const TRANSCENDENCE_CONSENT_REQUIRED_ERROR =
+  'Please give your consent to become a FIM and keep your journey.';
+
+export type TranscendenceOutcome = {
+  userId: string;
+  personalGroupId: string;
+  consentId: string;
+};
+
+export async function finaliseTranscendence(
+  supabase: SupabaseClient,
+  {
+    policyVersion,
+    captureContext,
+  }: { policyVersion: string; captureContext?: Record<string, unknown> },
+): Promise<{ outcome: TranscendenceOutcome | null; error: string | null }> {
+  const { data, error } = await supabase.rpc('finalise_transcendence', {
+    p_policy_version: policyVersion,
+    p_capture_context: captureContext ?? null,
+  });
+  if (error) return { outcome: null, error: error.message };
+  return {
+    outcome: {
+      userId: data.user_id as string,
+      personalGroupId: data.personal_group_id as string,
+      consentId: data.consent_id as string,
+    },
+    error: null,
+  };
+}

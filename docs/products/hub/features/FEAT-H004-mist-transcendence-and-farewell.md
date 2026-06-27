@@ -6,7 +6,7 @@ title: Mist transcendence and farewell — in-place become-a-FIM with consent, a
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -115,6 +115,16 @@ Transcendence + farewell are **equipment-agnostic** (`requires-equipment: none`)
 - **Observability:** transcendence telemetry (actor + outcome, failures included) toward the PC-1 path (V4); continues the structured-seam binding from FEAT-H001/H002/H003; the PC-1 sink remains unrealised, so the event binds to the in-memory seam.
 - **Transactions:** **None** — becoming a FIM (or saying goodbye) involves no payment, subscription, or entitlement.
 - **Extensibility:** consent is captured against an **open purpose identifier** (FEAT-PC002 / ADR-U034) — not a sealed enum; the transcendence flow branches on **identity status** (`is_temporary` → FIM), never a hardcoded role string (products-tier `CLAUDE.md`). The farewell is offered by status, not by device.
+
+## Implementation notes (2026-06-27, `6-done`)
+
+Built across three tasks (`TASK-H004-01..03`), TDD red-first, reusing the FEAT-H001/H002/H003 spine — no re-scaffold, no migration (consumes the merged FEAT-PC002 substrate).
+
+- **TASK-H004-01 — in-place transcendence + consent gate (STORY-1/2/5).** New `hub/lib/auth/transcendence.ts` (`finaliseTranscendence` wrapping the `finalise_transcendence` RPC) behind `POST /api/auth/transcend` (server consent gate + audit/telemetry/welcome-trigger); `AuthContext.transcend` does the client-side anon→permanent `updateUser` then posts the route (convert-then-finalise); new `/become-a-fim` page (reuses the FEAT-H002 fields + a required consent control, Mist-gated); the `/mist` CTA repointed `/signup`→`/become-a-fim`. RPCs go through the route, never the browser (ADR-U009).
+- **TASK-H004-02 — the farewell (STORY-3).** New `ConfirmModal` design-system primitive (copy-with-correction from the `hub-legacy` oracle, named export + `data-testid` + `busy` state); `hub/lib/auth/farewell.ts` (`explicitEraseMist`) behind `POST /api/auth/farewell`; `AuthContext.sayGoodbye` (route → `signOut` → sessionless); the Mist-only "say goodbye" affordance on `/mist`.
+- **TASK-H004-03 — E2E + regression (STORY-1 continuity / STORY-4).** New `tests/e2e/transcendence.spec.ts` (transcendence + consent-gate + farewell journeys); the stale `entry.spec.ts` CTA assertion updated `/signup`→`/become-a-fim`; consent-aware E2E cleanup helper (`deleteTranscendedUser`).
+
+**Test evidence (all red-first; pyramid upright).** 27 new unit (component/logic: consent gate, outcome navigation, AuthContext glue, `ConfirmModal`, the two route server-gates), 4 new integration (the real anon→permanent conversion + `finaliseTranscendence` continuity/enrolment/consent; the rollback-stays-a-Mist path; `explicitEraseMist` erases a Mist / refuses a FIM), 3 new E2E journeys. Full suite green: **54 unit + 31 integration + 15 E2E**; lint + build clean. Honesty note: the "a FIM is offered no say-goodbye chrome" unit assertion is an absence guard (vacuously true before the affordance existed, meaningful after) — not test-after backfill; everything else was demonstrated red before its implementation.
 
 ## Blocking decisions (resolved 2026-06-26)
 

@@ -1,23 +1,31 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { AppShell } from '@/components/shell/AppShell';
 import { LoadingState } from '@/components/ui/LoadingState';
+import { InlineError } from '@/components/ui/InlineError';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
 /**
- * The minimal-but-real Mist-presence landing (FEAT-H003 STORY-2) — where "Look
- * around" lands. Identity-level only: a real beginning + the become-a-FIM CTA.
- * NOT a fake placeholder, and NOT the pre-designed near-side town (fundamentals
- * before experience design). Gated by status, never a role string (STORY-3): a
- * FIM has no Mist chrome and is sent on; a sessionless visitor returns to the
- * entry. Continuity (STORY-4) is framed as the FIM reward, not promised here.
+ * The minimal-but-real Mist-presence landing (FEAT-H003 STORY-2, extended by
+ * FEAT-H004). Identity-level only: a real beginning + the become-a-FIM CTA (now
+ * the in-place transcendence flow, FEAT-H004) + the "say goodbye" farewell
+ * (explicit-erase, FEAT-H004 STORY-3). NOT a fake placeholder, NOT the
+ * pre-designed near-side town (fundamentals before experience design). Gated by
+ * status, never a role string: a FIM has no Mist chrome and is sent on; a
+ * sessionless visitor returns to the entry. The farewell is offered to a Mist
+ * only and confirms through `ConfirmModal` (never `confirm()`).
  */
 export default function MistPresencePage() {
-  const { identity, loading } = useAuth();
+  const { identity, loading, sayGoodbye } = useAuth();
   const router = useRouter();
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const [farewellError, setFarewellError] = useState<string | null>(null);
 
   useEffect(() => {
     if (loading) return;
@@ -32,6 +40,21 @@ export default function MistPresencePage() {
         <LoadingState label="Finding your footing..." />
       </main>
     );
+  }
+
+  async function handleFarewell() {
+    setLeaving(true);
+    setFarewellError(null);
+    const { error } = await sayGoodbye();
+    if (error) {
+      // Surface the failure; the Mist remains (no navigation, modal closes).
+      setFarewellError(error);
+      setLeaving(false);
+      setConfirmOpen(false);
+      return;
+    }
+    // Erased — return to the sessionless entry (a later return is a new Mist).
+    router.replace('/');
   }
 
   return (
@@ -49,13 +72,44 @@ export default function MistPresencePage() {
           A Mist&rsquo;s presence isn&rsquo;t kept between visits. Want FringeIsland to remember your
           path? That lasting memory is what becoming a FIM gives you.
         </p>
+
+        {farewellError && (
+          <div className="mb-6 text-left">
+            <InlineError message={farewellError} />
+          </div>
+        )}
+
         <Link
-          href="/signup"
+          href="/become-a-fim"
           className="inline-block rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-blue-700"
         >
           Become a FIM to keep your journey
         </Link>
+
+        <p className="mt-6 text-sm text-gray-500">
+          Not staying?{' '}
+          <button
+            type="button"
+            onClick={() => setConfirmOpen(true)}
+            className="font-medium text-gray-600 underline hover:text-gray-800"
+          >
+            Say goodbye
+          </button>{' '}
+          and we&rsquo;ll erase your visit.
+        </p>
       </div>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        variant="danger"
+        title="Say goodbye?"
+        message="This erases your visit immediately and you'll return to the start. A later visit begins fresh — nothing from this one is kept."
+        confirmText="Erase my visit"
+        cancelText="Keep looking around"
+        busy={leaving}
+        onConfirm={handleFarewell}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </AppShell>
   );
 }

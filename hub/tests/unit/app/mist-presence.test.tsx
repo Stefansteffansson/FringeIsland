@@ -33,6 +33,8 @@ function mockAuth(identity: 'sessionless' | 'mist' | 'fim') {
     signIn: jest.fn(),
     signUp: jest.fn(),
     beginMist: jest.fn(),
+    transcend: jest.fn(),
+    sayGoodbye: jest.fn(),
     signOut: jest.fn(),
   } as unknown as ReturnType<typeof useAuth>);
 }
@@ -46,12 +48,17 @@ beforeEach(() => {
 });
 
 describe('FEAT-H003 STORY-2 (unit) — Mist-presence landing', () => {
-  it('shows a real beginning and the become-a-FIM CTA routing to sign-up', () => {
+  it('shows a real beginning and the become-a-FIM CTA opening the in-place flow', () => {
     mockAuth('mist');
     render(<MistPresencePage />);
 
     expect(screen.getByTestId('mist-presence')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /become a fim/i })).toHaveAttribute('href', '/signup');
+    // FEAT-H004 STORY-4: the CTA now opens the in-place transcendence flow, not a
+    // bare /signup redirect.
+    expect(screen.getByRole('link', { name: /become a fim/i })).toHaveAttribute(
+      'href',
+      '/become-a-fim',
+    );
     expect(replace).not.toHaveBeenCalled();
   });
 
