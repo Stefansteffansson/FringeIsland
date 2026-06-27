@@ -195,6 +195,9 @@ Making the entry/access boundary precise for implementation, consistent with thi
   mechanism — Visitor → Shadow → Mist) · [ADR-U025](ADR-U025-products-as-equipment-profiles.md) (status
   + equipment gating) · [ADR-U029](ADR-U029-whisp-ownership-split-by-face.md) (Mists carry their own
   Whisp from the start) · [ADR-U010](ADR-U010-privacy-dedicated-vertical.md) · [ADR-U016](ADR-U016-cascade-specification-first.md)
+- **Resolved by (IDN-2):** [ADR-U033](ADR-U033-mist-ephemerality-reaper.md) (stage-3 ephemerality
+  reaper — the deferred TTL/inactivity threshold) · [ADR-U034](ADR-U034-consent-record-substrate.md)
+  (the transcendence consent substrate).
 - **Source:** universe-discovery **Statements 47-48** (2026-06-21), preserving Statements 16, 39, 45, 46
   (`docs/ecosystem/thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md`).
 - **Reconciliation worklist:** `docs/planning/reference/mist-reconciliation-register.md`.

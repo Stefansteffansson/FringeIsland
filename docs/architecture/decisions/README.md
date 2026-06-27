@@ -42,6 +42,9 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 | ADR-U029 | [Whisp ownership split by face](ADR-U029-whisp-ownership-split-by-face.md) | Accepted | domain-service |
 | ADR-U030 | [Hub v2 greenfield rebuild](ADR-U030-hub-v2-greenfield-rebuild.md) | Accepted | product |
 | ADR-U031 | [Mist identity lifecycle](ADR-U031-mist-identity-lifecycle.md) | Accepted | platform-core |
+| ADR-U032 | [Hub v2 rebuild — coexistence via a separate clean tree](ADR-U032-hub-v2-coexistence-separate-tree.md) | Accepted | product |
+| ADR-U033 | [Scheduled reaper for Mist ephemerality — pg_cron as the platform scheduler](ADR-U033-mist-ephemerality-reaper.md) | Accepted | platform-core |
+| ADR-U034 | [Consent substrate — append-only consent records at transcendence](ADR-U034-consent-record-substrate.md) | Accepted | platform-core |
 
 ---
 

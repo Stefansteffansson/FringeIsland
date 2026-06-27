@@ -43,3 +43,4 @@ The "temporary session on arrival" is created **lazily** — at the visitor's fi
 
 - Extracted from `ARCHITECTURE_DECISIONS.md` on 2026-04-05
 - Related: [CONTRIBUTION_ARCHITECTURE.md](../../ecosystem/strategy/CONTRIBUTION_ARCHITECTURE.md)
+- **Operationalised by:** [ADR-U033](ADR-U033-mist-ephemerality-reaper.md) (the named pg_cron cleanup job, built robustly in IDN-2 / FEAT-H004 ↔ FEAT-PC002)
