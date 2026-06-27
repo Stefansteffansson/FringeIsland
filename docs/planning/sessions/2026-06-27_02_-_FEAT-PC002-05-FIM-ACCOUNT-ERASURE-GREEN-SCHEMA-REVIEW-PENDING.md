@@ -64,4 +64,4 @@ Stefan **reviewed the migration line-by-line in plain language, probed the anony
 
 **Still open:** **PR #4 ready to merge** (schema gate cleared, full suite green) — pending the merge nod. A full doc-health-check at the cycle boundary remains the formal mechanism to sweep §8 open-questions reconciliation. **Next product layer: FEAT-H004 (Hub half of IDN-2).**
 
-*Note: `npm run test:integration` from the repo **root** also sweeps the unmaintained `hub-legacy` workspace (and its babel config chokes on `import type`); run hub-scope tests from `hub/` (`cd hub && npm run test:integration`).*
+*Note (resolved by PR #5): running tests from the repo **root** now delegates to the hub workspace (`-w hub`), so it uses `hub/jest.config.js` and never collects the unmaintained `hub-legacy` tree. Originally the rootless `jest` scan swept hub-legacy in, whose babel config chokes on `import type` — hence the earlier "run from `hub/`" workaround, now unnecessary.*
