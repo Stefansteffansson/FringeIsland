@@ -9,4 +9,4 @@ You are starting a session on **FringeIsland**. (This text is injected at sessio
   - `npm run dashboard` — refresh the overview
   - run the `doc-health-check` skill if it's a cycle boundary or after cross-cutting changes (renames, deletions, schema migrations, restructures)
   - write a session bridge under `docs/planning/sessions/` if the session made decisions
-  - commit / push only on Stefan's disposition
+  - commit / push / PR / merge is **fuller-auto** (see `AGENTS.md` Boundaries): for routine low-risk changes, carry the full branch → commit → push → PR → merge (`--delete-branch`) → pull-`main` cycle without pausing. Pause only for the fuller-auto carve-outs (schema/RLS + the schema-review gate, `platform/core/`, ADRs, deps, destructive ops, and edits to steering files).
