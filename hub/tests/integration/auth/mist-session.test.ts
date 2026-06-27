@@ -1,6 +1,6 @@
 import { describe, it, expect, afterAll } from '@jest/globals';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { createTestClient, createAdminClient, cleanupTestUser } from '@/tests/helpers/supabase';
+import { createTestClient, createAdminClient, cleanupTestUser, withAnonRateLimitRetry } from '@/tests/helpers/supabase';
 import { beginMistSession } from '@/lib/auth/mist';
 
 /**
@@ -31,7 +31,7 @@ describe('FEAT-H003 STORY-2 — beginMistSession materialises a Mist (consumes F
 
   it('begins a Mist session: an is_temporary profile with a non-null personal_group_id', async () => {
     const supabase = createTestClient();
-    const result = await beginMistSession(supabase);
+    const result = await withAnonRateLimitRetry(() => beginMistSession(supabase));
 
     expect(result.error).toBeNull();
     expect(result.user).not.toBeNull();

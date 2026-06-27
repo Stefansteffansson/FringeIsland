@@ -1,6 +1,6 @@
 import { describe, it, expect, afterAll } from '@jest/globals';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { createTestClient, createAdminClient, cleanupTestUser } from '@/tests/helpers/supabase';
+import { createTestClient, createAdminClient, cleanupTestUser, withAnonRateLimitRetry } from '@/tests/helpers/supabase';
 import { beginMistSession } from '@/lib/auth/mist';
 
 /**
@@ -37,14 +37,14 @@ describe('FEAT-H003 STORY-4 — a Mist returning across a session boundary is a 
 
   it('mints distinct, unlinkable Mists for two independent sessions (no cross-session identifier)', async () => {
     // First visit — one session boundary.
-    const first = await beginMistSession(createTestClient());
+    const first = await withAnonRateLimitRetry(() => beginMistSession(createTestClient()));
     expect(first.error).toBeNull();
     expect(first.user).not.toBeNull();
     createdUserIds.push(first.user!.id);
 
     // A fresh client models a true session boundary (expired/reaped, or a
     // different device): no persisted session, so a brand-new Mist is born.
-    const second = await beginMistSession(createTestClient());
+    const second = await withAnonRateLimitRetry(() => beginMistSession(createTestClient()));
     expect(second.error).toBeNull();
     expect(second.user).not.toBeNull();
     createdUserIds.push(second.user!.id);
@@ -68,7 +68,7 @@ describe('FEAT-H003 STORY-5 — Mist entry collects no PII (data minimisation)',
   });
 
   it('materialises a Mist with no email and no real name (the "Mist" default only)', async () => {
-    const result = await beginMistSession(createTestClient());
+    const result = await withAnonRateLimitRetry(() => beginMistSession(createTestClient()));
     expect(result.error).toBeNull();
     expect(result.user).not.toBeNull();
     createdUserIds.push(result.user!.id);

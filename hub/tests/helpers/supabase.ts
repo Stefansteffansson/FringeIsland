@@ -110,6 +110,31 @@ export const signInWithRetry = async (
 };
 
 /**
+ * Retry a Supabase-style `{ error }` operation on the shared per-project
+ * anonymous-sign-in rate limit. The integration suite shares one anon budget
+ * (`rate_limit_anonymous_users`), so a burst of `signInAnonymously()` /
+ * `beginMistSession()` calls across rapid re-runs can transiently hit
+ * "Request rate limit reached". This paces with exponential backoff rather than
+ * failing the suite. On success it returns the first non-error result; if the
+ * budget is genuinely exhausted it returns the last (errored) result so the
+ * caller's own `expect(error).toBeNull()` still surfaces an honest failure.
+ *
+ * Generic over both shapes: `() => supabase.auth.signInAnonymously()` and
+ * `() => beginMistSession(supabase)` both return `{ ..., error }`.
+ */
+export const withAnonRateLimitRetry = async <T extends { error: unknown }>(
+  op: () => Promise<T>,
+  maxRetries = 5,
+): Promise<T> => {
+  let result = await op();
+  for (let attempt = 0; result.error && attempt < maxRetries - 1; attempt++) {
+    await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
+    result = await op();
+  }
+  return result;
+};
+
+/**
  * D15 cleanup chain: journeys (RESTRICT FK) → personal group (CASCADE handles
  * memberships/roles/enrollments) → auth.users (CASCADE removes public.users).
  */

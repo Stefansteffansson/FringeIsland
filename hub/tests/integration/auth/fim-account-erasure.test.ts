@@ -6,6 +6,7 @@ import {
   createTestUser,
   cleanupTestUser,
   runAdminSql,
+  withAnonRateLimitRetry,
 } from '@/tests/helpers/supabase';
 
 /**
@@ -24,19 +25,6 @@ import {
  * (is_temporary = true) — Mists go through the reaper / explicit-erase and hold
  * no consent rows; consent exists only post-transcendence. Collision-free.
  */
-
-/** Anonymous sign-in with backoff on the project's anon rate limit (the suite
- *  shares one anon budget; pace rather than fail). */
-async function signInAnonWithRetry(client: SupabaseClient, tries = 5) {
-  let lastErr: unknown;
-  for (let i = 0; i < tries; i++) {
-    const { data, error } = await client.auth.signInAnonymously();
-    if (!error) return data;
-    lastErr = error;
-    await new Promise((r) => setTimeout(r, 1000 * 2 ** i));
-  }
-  throw new Error(`signInAnonWithRetry failed: ${JSON.stringify(lastErr)}`);
-}
 
 async function waitForProfile(admin: SupabaseClient, authUserId: string, tries = 12) {
   for (let i = 0; i < tries; i++) {
@@ -126,7 +114,7 @@ describe('FEAT-PC002 STORY-5 crit-4 — FIM account-erasure: anonymise consent l
   // Helper: a Mist that transcends into a FIM carrying a transcendence consent row.
   async function transcendedFim() {
     const mistClient = createTestClient();
-    const signIn = await signInAnonWithRetry(mistClient);
+    const { data: signIn } = await withAnonRateLimitRetry(() => mistClient.auth.signInAnonymously());
     const mistAuthId = signIn.user!.id;
     createdUserIds.push(mistAuthId);
     const profile = await waitForProfile(admin, mistAuthId);
@@ -211,7 +199,7 @@ describe('FEAT-PC002 STORY-5 crit-4 — FIM account-erasure: anonymise consent l
   // pre-transcendence rows are the reaper's, hold no consent. Collision-free.
   it('refuses a Mist (pre-transcendence) — collision-free reaper/consent boundary', async () => {
     const mistClient = createTestClient();
-    const signIn = await signInAnonWithRetry(mistClient);
+    const { data: signIn } = await withAnonRateLimitRetry(() => mistClient.auth.signInAnonymously());
     const mistAuthId = signIn.user!.id;
     createdUserIds.push(mistAuthId);
     const profile = await waitForProfile(admin, mistAuthId);

@@ -90,5 +90,6 @@ by `erase_fim_account`. No discrepancy found.
 **Closes FEAT-PC002** (all 5 stories built, all 5 tasks green). Stefan cleared the
 schema-review gate **2026-06-27**; feature flipped `5-in-cycle → 6-done` (+ identity
 §L4 row + §L3 substrate-latent→shipped cells ×3 + `features/README.md` index) in the
-closing commit. New suite 4/4 green in isolation; full-suite re-confirmation runs
-once the shared anon sign-in rate-limit window recovers (delayed background run).
+closing commit. New suite 4/4 green; **full hub suite 27/27 green** after raising
+the dev `rate_limit_anonymous_users` 30→150 and adding a shared
+`withAnonRateLimitRetry` test helper across the anon-sign-in suites.
