@@ -469,20 +469,21 @@ PC-2's existing bullet-prose Sources-status block (above) is preserved verbatim 
 
 ### Summary
 
-*L4 reconciliation begun 2026-06-26 with the first forward Platform Core features (FEAT-PC001 arrival, then FEAT-PC002 departure + transcendence — the IDN-1 / IDN-2 platform halves of the §9 Mist lifecycle). The shipped FIM capabilities (§L3 sign-in / sign-up / session / profile / …) remain retroactive-spec candidates, not yet forward-specced — listed under "Capabilities without specs".*
+*L4 reconciliation begun 2026-06-26 with the first forward Platform Core features (FEAT-PC001 arrival, then FEAT-PC002 departure + transcendence — the IDN-1 / IDN-2 platform halves of the §9 Mist lifecycle), then FEAT-PC003 (the IDN-4 own-profile read/update contract). The remaining shipped FIM capabilities (§L3 sign-in / sign-up / session / …) remain retroactive-spec candidates, not yet forward-specced — listed under "Capabilities without specs".*
 
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
 | Mist lifecycle (anonymous identity, §9) — **arrival slice** (stages 1-2: Entry + Access) | [FEAT-PC001](./features/FEAT-PC001-mist-anonymous-substrate.md) | 6-done | Platform half of IDN-1: `users.is_temporary`, the `handle_new_user` Mist branch, the proto-group seam, Visitor→Mist rename. Consumed by Hub FEAT-H003. Status-driven access (Q2). |
 | Mist lifecycle (anonymous identity, §9) — **departure + transcendence slice** (stages 3-4: ephemerality reaper + consent-bearing transcendence) | [FEAT-PC002](./features/FEAT-PC002-mist-transcendence-reaper-consent.md) | 6-done | Platform half of IDN-2: pg_cron reaper + explicit-erase (ADR-U033), atomic persistence-and-consent transcendence (ADR-U031 stage 4), append-only consent substrate (ADR-U034). Consumed by Hub FEAT-H004. Resolves §8 Q8 / Q10 / X4. |
+| Self-service profile read + update (authenticated user's own identity-scope profile fields) | [FEAT-PC003](./features/FEAT-PC003-self-service-profile.md) | 4-ready | Platform half of IDN-4: own-row read + identity-scope-gated update over `public.users` (`full_name`, `nickname`, `display_preference`, `show_real_name`, `bio`, `avatar_url`), own-row UPDATE RLS (`auth.uid() = auth_user_id`) + route-level column gating; confirms the existing `sync_display_name_to_personal_group` trigger as the PC-3 personal-group-name cascade contract (§8 Q9). Consumed by Hub FEAT-H005. Avatar upload (Storage) is a forward seam. |
 
 ### Capabilities without specs
 
-- **Sign-in flow · Sign-up flow · Session refresh · Sign-out · Profile CRUD · Profile materialization trigger · Authenticated-context publication · user_id contract surface · Account lifecycle state machine** — shipped substrate; retroactive `6-done` specs not yet written (forward L4 reconciliation pending).
+- **Sign-in flow · Sign-up flow · Session refresh · Sign-out · Profile materialization trigger · Authenticated-context publication · user_id contract surface · Account lifecycle state machine** — shipped substrate; retroactive `6-done` specs not yet written (forward L4 reconciliation pending). *(Own-profile read + identity-scope update is now forward-specced as FEAT-PC003 for IDN-4; admin/cross-user profile operations remain unspecced.)*
 
 ### Features without capabilities
 
-*None — FEAT-PC001 and FEAT-PC002 both map to the §L3 Mist lifecycle capability (arrival vs departure + transcendence slices).*
+*None — FEAT-PC001 and FEAT-PC002 map to the §L3 Mist lifecycle capability (arrival vs departure + transcendence slices); FEAT-PC003 maps to the §L3 self-service profile read/update capability.*
 
 ---
 
