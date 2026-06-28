@@ -6,7 +6,7 @@ title: Self-service profile read + update — the authenticated user's own ident
 owner: platform/core/identity
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -132,3 +132,21 @@ Consumed by **Hub [FEAT-H005](../../../products/hub/features/FEAT-H005-member-pr
 1. **Own-row UPDATE RLS policy presence** — verify whether an own-row UPDATE policy on `public.users` already exists; if absent, add it (additive migration, schema-review-gated). Identity-spec §L3 records the posture as *not enforced today*.
 2. **Bio length constraint** — choose the bound (oracle used 500 chars, client-side) and decide contract-validation vs DB CHECK. Build detail; named so the omission is explicit.
 3. **Identity-scope vs domain-scope boundary** (identity-spec §8 Q2) — stays open; this contract is identity-scope only. The route-level column gating is the directional realisation of the gating §7 named.
+
+## Implementation notes (6-done — 2026-06-28)
+
+The platform half of IDN-4, consumed by Hub [FEAT-H005](../../../products/hub/features/FEAT-H005-member-profile-and-sign-out.md). Built red-first; applied to the live DB and green; the FIM and Mist-arrival paths are unregressed (full integration suite 15 suites / 41 tests green).
+
+**Contract (no schema beyond the bio CHECK).** `hub/lib/profile/queries.ts` — `fetchMyProfile` / `updateMyProfile` run as the **authenticated caller** via the cookie-based `createClient()` (`@supabase/ssr`), under the **pre-existing** `users_update_own` UPDATE policy (`auth_user_id = auth.uid()`) — Open Spec Q1 resolved: the own-row UPDATE posture was already enforced, so **no new RLS policy was needed**. Own-row *read* is enforced by route-scoping (the contract only ever resolves the caller's row); the broad `users_select_active` SELECT policy is left untouched (group-display-name reads depend on it) and makes the `UPDATE…RETURNING` readback safe. Route `GET`/`PATCH /api/profile/me` (the shipped `/api/<resource>` convention; the spec's `/api/v1/...` is directional — no v1 route exists in the new Hub yet).
+
+**Identity-scope gating is the security boundary.** `validateProfilePatch` allow-lists `IDENTITY_SCOPE_FIELDS` and rejects any other key (`is_temporary`, `personal_group_id`, …) with `ProfileValidationError` → route 400; the rejected-column path is tested. `avatar_url` is a writable text field (Storage upload still out of scope).
+
+**Bio hardened both layers (Open Spec Q2, human-approved).** DB CHECK `bio_max_length` (migration `20260628120000_feat_pc003_bio_max_length.sql`, applied + repaired in history) **+** contract validation. `PROFILE_BIO_MAX_LENGTH = 500` is the single source of truth; the SQL literal mirrors it. **Bound discrepancy (known):** the DB checks `char_length(bio) <= 500` (Unicode code points) while the contract checks JS `.length` (UTF-16 code units) — for non-BMP characters the JS `.length` is larger, so the contract is the *stricter* of the two for such input; both reject at 500 for BMP text. `PROFILE_FULL_NAME_MIN_LENGTH = 2`.
+
+**Cascade confirmed, not rebuilt (STORY-3).** The existing `sync_display_name_to_personal_group` trigger (migration `20260227095615`) is the PC-3 personal-group-name cascade contract — confirmed by integration test; no Surface/app write to `groups`.
+
+**Testing honesty (PROCESS §9).** Red-first. Unit 23/23 (`tests/unit/lib/profile/validation.test.ts`, `tests/unit/app/api/profile-me-route.test.ts`); integration read 3/3 + update 5/5 + bio-constraint 2/2 — the over-long-bio test was red by design until the migration applied, green after; full integration suite unregressed.
+
+**Observability (V4) — honest seam.** `profile.read` / `profile.updated` / `profile.update_rejected` / `profile.update_failed` (actor + outcome, failures included) at the contract seam; the PC-1 sink is still unrealised (routed to G-29), mirroring FEAT-PC001/PC002. No audit (V1) — self-service edit is not an admin action.
+
+Tasks: `TASK-PC003-01` (read + identity-scope-gated update contract), `TASK-PC003-02` (bio length DB CHECK — schema-gated).
