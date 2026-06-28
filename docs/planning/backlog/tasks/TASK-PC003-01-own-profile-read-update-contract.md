@@ -1,7 +1,7 @@
 ---
 id: TASK-PC003-01
 title: Own-profile read + identity-scope-gated update contract (lib + route)
-status: todo
+status: review
 assigned_to: Claude
 priority: high
 feature: FEAT-PC003
