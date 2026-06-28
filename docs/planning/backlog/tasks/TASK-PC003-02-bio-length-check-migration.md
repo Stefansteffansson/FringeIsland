@@ -1,7 +1,7 @@
 ---
 id: TASK-PC003-02
 title: Bio length DB CHECK constraint (defense-in-depth backstop)
-status: review
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PC003
