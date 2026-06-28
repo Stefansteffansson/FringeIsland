@@ -98,6 +98,8 @@ For each area: a brief framing paragraph, then a per-area table. Each row is int
 
 The Hub provides each person — visitor or member — with a stable, persistent identity, with a soft conversion path between visitor and member, and with a private workspace for reflection that no one but the member can see.
 
+> **SUPERSEDED SNAPSHOT (2026-04 draft) — NOT canonical.** This A-IDN list is early L3-input (IDN-1..14, with `GRP-3`/`PRV-7` deps that did not survive). The L3 author did a fresh derivation and **renumbered**: the canonical A-IDN inventory is `docs/products/hub/SPECIFICATION.md` §L3 (**IDN-1..12** — e.g. consent is IDN-6/7, sessions IDN-11, account-state/exit/reactivation IDN-9/10/12). Read that table, not this one.
+
 | ID | Capability | Internal area | Depends on (internal) | Depends on (external) | Vertical impact |
 |---|---|---|---|---|---|
 | IDN-1 | Provide a temporary identity to visitors on arrival without sign-up | A-IDN | — | PC-2 Identity (anonymous session), PC-3 Organisation (proto personal group) | V2 (no PII collection without consent), V4 (anonymous-session telemetry) |
@@ -327,6 +329,8 @@ The L3 author will resolve these during derivation. Surfaced now to save them an
 ## 7. Master appendix — transcribable inventory
 
 The single combined table for direct transcription into §L3 of `docs/products/hub/SPECIFICATION.md`. Reference rows above for any nuance not captured in this compact view.
+
+> **SUPERSEDED SNAPSHOT (2026-04 draft) — NOT canonical.** Transcription was *not* literal: the L3 author renumbered during the fresh derivation. The canonical A-IDN inventory is `docs/products/hub/SPECIFICATION.md` §L3 (**IDN-1..12**), not the IDN-1..14 below. Read that table, not this one.
 
 | ID | Capability | Internal area | Depends on (internal) | Depends on (external) | Vertical impact |
 |---|---|---|---|---|---|
