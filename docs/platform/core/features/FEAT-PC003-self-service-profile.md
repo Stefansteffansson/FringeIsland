@@ -6,7 +6,7 @@ title: Self-service profile read + update — the authenticated user's own ident
 owner: platform/core/identity
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
