@@ -51,10 +51,13 @@ export function AccountMenu() {
   const shown = label ?? user?.email ?? 'Account';
 
   async function handleSignOut() {
+    setOpen(false);
+    // Navigate to the sessionless entry FIRST, then end the session. Leaving the
+    // protected surface before auth flips to sessionless prevents that surface's
+    // own guard from racing us to `/login?redirect=...` (STORY-4 AC1: return to `/`).
+    router.push('/');
     await signOut();
     emitTelemetry('session.ended', { actor: user?.id, outcome: 'success' });
-    setOpen(false);
-    router.push('/');
   }
 
   return (
