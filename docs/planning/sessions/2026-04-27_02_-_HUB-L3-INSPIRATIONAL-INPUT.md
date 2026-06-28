@@ -98,6 +98,8 @@ For each area: a brief framing paragraph, then a per-area table. Each row is int
 
 The Hub provides each person — visitor or member — with a stable, persistent identity, with a soft conversion path between visitor and member, and with a private workspace for reflection that no one but the member can see.
 
+> **SUPERSEDED SNAPSHOT (2026-04 draft) — NOT canonical.** This A-IDN list is early L3-input (IDN-1..14). The canonical A-IDN inventory is `docs/products/hub/SPECIFICATION.md` §L3 (**IDN-1..12**, renumbered in the fresh derivation). Read that table, not this one. (Historical record — table left intact.)
+
 | ID | Capability | Internal area | Depends on (internal) | Depends on (external) | Vertical impact |
 |---|---|---|---|---|---|
 | IDN-1 | Provide a temporary identity to visitors on arrival without sign-up | A-IDN | — | PC-2 Identity (anonymous session), PC-3 Organisation (proto personal group) | V2 (no PII collection without consent), V4 (anonymous-session telemetry) |

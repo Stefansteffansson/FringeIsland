@@ -23,7 +23,7 @@ This skill performs a periodic audit of the FringeIsland documentation tree to c
 
 The skill is the execution layer for the "Continuous learning and quality" goal (B2) as it applies to documentation. PROCESS.md §3 names the cycle boundary as the baseline cadence; this skill runs the checks.
 
-The skill has ten sections. Three (1.5, 3.5, 3.6) exist to catch drift introduced by decisions — concept retirements, tree archivings, file deletions. One (7) protects architectural scaffolding from being pruned as drift: intentional placeholders (files the design expects to exist but that haven't been authored yet) are registered there so references to them are correctly read as scaffolding rather than broken links. These four sections — 1.5, 3.5, 3.6, and 7 — were the gaps that caused the 2026-04-17 first-invocation miss on root `CLAUDE.md` and the sub-folder `CLAUDE.md` erosion concern.
+The skill has eleven sections. Four (1.5, 3.5, 3.6, 3.7) exist to catch drift introduced by decisions — concept retirements, tree archivings, file deletions, and stale snapshots of renumbered inventories. One (7) protects architectural scaffolding from being pruned as drift: intentional placeholders (files the design expects to exist but that haven't been authored yet) are registered there so references to them are correctly read as scaffolding rather than broken links. These four sections — 1.5, 3.5, 3.6, and 7 — were the gaps that caused the 2026-04-17 first-invocation miss on root `CLAUDE.md` and the sub-folder `CLAUDE.md` erosion concern.
 
 ## When to run
 
@@ -36,6 +36,7 @@ The skill has ten sections. Three (1.5, 3.5, 3.6) exist to catch drift introduce
 | After a folder rename, file move, or doc restructure | Section 3 (Path references + README indexes) |
 | **After archiving a tree or major set of files** | Section 3.5 (References into archived trees) |
 | **After deleting files** | Section 3.6 (References to deleted files) — and also update Section 3.6's table in the same session |
+| **After adding a reference snapshot or session-input that restates a canonical inventory** | Section 3.7 (Snapshot drift) — and feed Section 3.7's registry in the same session |
 | After a wave transition or significant scope shift | Section 4 (Parked items) + Section 5 (Maturity consistency) |
 | After a feature ships (maturity → `6-done`) | Section 5 (Maturity consistency) applied to just that feature |
 | **After scoping a new product/studio/service, or writing a feature spec that references pending structural docs** | Section 7 (Expected placeholders) — and update Section 7's registry in the same session |
@@ -338,6 +339,41 @@ Whenever a file is deleted, add a row to the table above in the same session tha
 
 ---
 
+## Section 3.7 — Restated canonical inventories in non-canonical files (snapshot drift)
+
+**Question:** Do any non-canonical files (reference snapshots, session-input drafts) restate a canonical inventory — capability IDs (`IDN-N`, `GRP-N`, …), the ADR index, the wave list — with content that diverges from the canonical source, and without a "superseded / not-canonical" banner pointing at it?
+
+This is the complement of Sections 5 and 8, which check that *canonical* docs are internally consistent. Section 3.7 checks the other direction: that a *non-canonical* doc restating a canonical inventory cannot be mistaken for current. A draft that was an honest input at authoring time becomes a trap once the canonical inventory is renumbered — a reader, or a fact-finding sub-agent, that lands mid-file sees an authoritative-looking table and never reaches the header disclaimer.
+
+### Why this check exists
+
+(Added 2026-06-28.) A research sub-agent asked to compile the remaining A-IDN capabilities reported the **2026-04 `hub-l3-working-set` draft's IDN-1..14** as if current, instead of the canonical **IDN-1..12** in `docs/products/hub/SPECIFICATION.md` §L3 (the L3 author had renumbered in the fresh derivation). The draft self-discloses non-authority *in its header*, but its IDN tables carried no inline banner, so the agent blended the stale numbering and nearly seeded a wrong multi-cycle build plan. The orchestration fix (name one canonical source; canonical-wins; cite file:line; flag self-declared non-authoritative sources) lives with whoever dispatches the agent; this section is the doc-side guardrail that stops the trap from forming.
+
+### The canonical-inventory registry
+
+| Inventory | Canonical home | Restated in (non-canonical) |
+|-----------|----------------|------------------------------|
+| Hub capability inventory (A-IDN / A-GRP / A-* `*-N` IDs) | `docs/products/hub/SPECIFICATION.md` §L3 | `docs/planning/reference/2026-04_hub-l3-working-set/hub-l3-input.md` (banner'd 2026-06-28); `docs/planning/sessions/2026-04-27_02_-_HUB-L3-INSPIRATIONAL-INPUT.md` (banner'd 2026-06-28) |
+| Platform capability inventories (PC-*, DS-* IDs) | the relevant `docs/platform/**/*-specification.md` §L3 | (none known) |
+| ADR index | `docs/architecture/decisions/` (the files themselves) | any "ADR list" table under planning/reference |
+
+### Procedure
+
+1. Enumerate non-canonical files that restate an inventory:
+   ```
+   grep -rlnE "^\|\s*(IDN|GRP|JRN|COM|NTF|COI|DIS|ADM|PC|DS)-[0-9]+" \
+     docs/planning/reference/ docs/planning/sessions/ --include="*.md"
+   ```
+2. For each file restating an inventory in the registry:
+   - Confirm it carries a **"SUPERSEDED / NOT canonical → <canonical home>"** banner both at the top AND adjacent to each restated table. A header-only banner is insufficient — a mid-file landing misses it (that was the 2026-06-28 failure).
+   - Spot-check divergence: does the restated max-ID / row-count differ from canonical? If yes and there's no inline banner, it's an **active trap → critical finding**.
+3. Fix: add the inline banner above each unbannered restated table, pointing at the canonical home. Do **not** rewrite the historical table — annotate it. For session files (historical records, normally never edited), the inline banner is the one permitted annotation ("Historical record — table left intact").
+4. Feed the registry: when a new reference snapshot or session-input restates a canonical inventory, add a row in the same session.
+
+**Skip if:** No new reference snapshots or session-input drafts that restate a canonical inventory have been added since the last check, AND the registry's known files are all banner'd.
+
+---
+
 ## Section 4 — Parked items review
 
 **Question:** Do parked features still have a valid `parked_reason`? Is anything parked that should be un-parked?
@@ -603,6 +639,7 @@ Sections run:
 3.   Path + README sync            — [N stale refs fixed / N README updates / clean / skipped: <reason>]
 3.5  Archived-tree leak            — [N old_*/ refs found / N directive / N historical / N fixed / N flagged / clean / skipped: <reason>]
 3.6  Deleted-file refs             — [N deleted filenames checked / N directive refs found / N fixed / N flagged / clean / skipped: <reason>]
+3.7  Snapshot drift (inventories)  — [N restated-inventory files checked / N unbannered / N divergent (critical) / N fixed / clean / skipped: <reason>]
 4.   Parked items                  — [N parked features reviewed / N un-parked / N reason-updated / clean / skipped: <reason>]
 5.   Maturity consistency          — [N specs checked / N drift items / N critical (e.g., 6-done with empty Implementation notes) / skipped: <reason>]
 6.   Entity coverage               — [N entities checked / N gaps flagged / N pending-per-registry / clean / skipped: <reason>]
@@ -666,5 +703,7 @@ Session 1 of the 2026-04-17 way-of-working refactor surfaced three blind spots i
 4. **README index file-count lag.** (Surfaced 2026-04-17 Session A Step 1.) Section 3's README-sync procedure checks that every file listed in a README still exists on disk, but does not check the inverse — that every file on disk is listed in the README. `docs/planning/sessions/README.md` passed its Section 3 check despite being ~10× out of date (4 files listed, 43+ files actually present), because all 4 listed files did still exist. The inverse check — directory listing vs. README content — catches drift like this. **Mitigation:** in Section 3's README-sync procedure, add as step 2.5 after the existing steps: "Compare total README entries against directory listing count. If the ratio is off by more than ~20%, the README is lagging and needs a refresh pass even if no individual entry is broken." A stricter version would list every file on disk in the README; a lighter version tolerates curated subsets but at least flags the count gap. The lighter version is probably correct default. **(2026-06-10 refinement, TASK-DOC-002):** a README that *explicitly declares* curation — stating that the directory listing is the canonical index and the README is deliberately partial (as `docs/planning/sessions/README.md` does) — passes the count-lag check by policy; for such READMEs, check instead that the curated highlights are not stale (the newest highlighted entry should be within a wave of the newest file on disk).
 
 These gaps allowed the root `CLAUDE.md` file to pass the 2026-04-17 first-invocation check despite having nine separate stale references (four to deleted workflow files, the Sprint Agent handoff, the PRODUCT_SPEC.md + REQUIREMENTS.md model, etc.). The user caught them by eye during review. The skill has been updated; next invocation should catch all nine.
+
+**2026-06-28 — stale snapshots of renumbered inventories (Section 3.7).** A research sub-agent reported the 2026-04 `hub-l3-working-set` draft's A-IDN inventory (IDN-1..14) as current, instead of the canonical IDN-1..12 in `docs/products/hub/SPECIFICATION.md` §L3. The draft self-disclosed non-authority in its *header*, but its inline tables had no banner, so a mid-file landing (human or agent) missed the disclaimer. The blend nearly seeded a wrong multi-cycle build plan; it was caught only by an independent cross-check against the shipped feature specs' own deferred-IDN notes. Fixed by Section 3.7 (the doc-side guardrail — inline banners on each restated table) plus an orchestration rule for dispatching fact-finding agents (name one canonical source, canonical-wins, cite file:line, flag self-declared non-authoritative sources). The deeper lesson: a self-disclaimer at the top of a file does not protect against grep/agent landings deeper in it — the warning must sit beside the asset it guards.
 
 If future runs reveal further blind spots, document them here before fixing, so the pattern of the failure is captured alongside the fix.
