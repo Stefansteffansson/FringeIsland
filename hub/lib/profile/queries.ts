@@ -171,7 +171,10 @@ export async function fetchMyProfile(supabase: SupabaseClient): Promise<Profile 
     .eq('auth_user_id', user.id)
     .maybeSingle();
   if (error) throw error;
-  return (data as Profile | null) ?? null;
+  // supabase-js types a string-column `.select()` result as a union that includes
+  // GenericStringError, so a direct cast to Profile is rejected by `next build`'s
+  // type-check; narrow through `unknown` (the row shape is the PROFILE_COLUMNS set).
+  return (data as unknown as Profile | null) ?? null;
 }
 
 /**
@@ -200,5 +203,7 @@ export async function updateMyProfile(
     .select(PROFILE_COLUMNS)
     .single();
   if (error) throw error;
-  return data as Profile;
+  // See fetchMyProfile: narrow the supabase-js string-`.select()` union through
+  // `unknown` so `next build`'s type-check accepts the Profile shape.
+  return data as unknown as Profile;
 }
