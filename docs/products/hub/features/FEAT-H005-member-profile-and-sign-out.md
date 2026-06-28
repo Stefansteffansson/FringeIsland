@@ -6,7 +6,7 @@ title: Member profile and sign-out — render/edit the FIM profile (IDN-4) and t
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
