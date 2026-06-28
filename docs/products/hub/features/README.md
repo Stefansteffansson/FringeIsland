@@ -15,6 +15,6 @@ Retroactive specs (maturity `6-done`) are being written first to capture already
 | [FEAT-H002](./FEAT-H002-credentialed-fim-sign-up.md) | Credentialed FIM sign-up — create your account and personal group | Ferd | 6-done | none |
 | [FEAT-H003](./FEAT-H003-mist-identity-on-arrival.md) | Mist identity on arrival — the FringeIsland entry and the lazy Mist actor | Ferd | 6-done | none |
 | [FEAT-H004](./FEAT-H004-mist-transcendence-and-farewell.md) | Mist → FIM transcendence + the farewell — become a FIM in place, or say goodbye | Ferd | 6-done | none |
-| [FEAT-H005](./FEAT-H005-member-profile-and-sign-out.md) | Member profile + sign-out — view/edit your profile (IDN-4) and the account-menu sign-out (IDN-3 tail) | Ferd | 5-in-cycle | none |
+| [FEAT-H005](./FEAT-H005-member-profile-and-sign-out.md) | Member profile + sign-out — view/edit your profile (IDN-4) and the account-menu sign-out (IDN-3 tail) | Ferd | 6-done | none |
 
 The walking-skeleton slice (Phase 2 of the [Hub v2 rebuild](../../../planning/hub-v2/README.md)) is the first forward-looking spec, built fresh under `hub/` ([ADR-U032](../../../architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)). Retroactive `6-done` specs for already-shipped functionality (now frozen under `hub-legacy/`) may follow.

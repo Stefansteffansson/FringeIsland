@@ -1,7 +1,7 @@
 ---
 id: TASK-H005-01
 title: Profile surface — view + edit own identity-scope fields (/profile), API-first
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H005

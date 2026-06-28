@@ -1,7 +1,7 @@
 ---
 id: TASK-H005-03
 title: V4 telemetry + E2E journeys + no-regression
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H005

@@ -6,7 +6,7 @@ title: Member profile and sign-out — render/edit the FIM profile (IDN-4) and t
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -119,3 +119,23 @@ Profile + sign-out are **equipment-agnostic** (`requires-equipment: none`). The 
 - **Observability:** profile-updated and session-ended telemetry (actor + outcome, **failures included**) toward the PC-1 path (V4); continues the structured-seam binding from FEAT-H001..H004; the PC-1 sink remains unrealised, so events bind to the in-memory seam.
 - **Transactions:** **None** — viewing or editing a profile, and signing out, involve no payment, subscription, or entitlement.
 - **Extensibility:** the editor branches on **identity status** (FIM vs Mist), never a hardcoded role string (products-tier `CLAUDE.md`). The identity-scope field set is the platform's (FEAT-PC003), not a sealed list hardcoded in the Hub; `display_preference` consumes the platform's existing open value set (`real_name | nickname`) rather than inventing one. Avatar **upload** is a forward seam (Storage), left open, not stubbed.
+
+## Implementation notes (6-done — 2026-06-28)
+
+The Hub half of IDN-4 + the IDN-3 sign-out tail, consuming the paired [FEAT-PC003](../../../platform/core/features/FEAT-PC003-self-service-profile.md) read/update contract. Built red-first; full unit suite + `next build` + full E2E green; FEAT-H001..H004 unregressed. **No migration of its own.**
+
+**Surface (API-first).** `/profile` (`hub/app/profile/page.tsx`) reads via `GET /api/profile/me` and edits via `PATCH /api/profile/me` through a thin client (`hub/lib/profile/client.ts` — `fetchProfile` / `updateProfile` / pure `displayLabel`); no direct `supabase.from('users')` anywhere (ADR-U009). The editor (`hub/components/profile/ProfileEditForm.tsx`) is **copy-with-correction** from the `hub-legacy` oracle (ADR-U032): field shape, client-side validation, display-preference radios, show-real-name toggle, and bio counter preserved; the **corrected** parts are the data path (the PC003 API, not a direct write) and the dropped `userId` / `personalGroupId` / `updated_at` plumbing (the contract resolves the caller; the `set_users_updated_at` trigger stamps the time). Avatar is displayed read-only; upload (Storage) stays a forward seam.
+
+**FIM-only account menu (shell chrome).** `hub/components/shell/AccountMenu.tsx`, mounted in `AppShell`, gates on **identity status** (`identity === 'fim'`) — a Mist / sessionless visitor gets no menu and no sign-out (a Mist leaves via the FEAT-H004 farewell). The label comes from the read contract and refreshes on `refreshNavigation`.
+
+**Display-name cascade (STORY-3).** On a successful edit the form fires `refreshNavigation` **only**; the personal-group name is renamed by the platform `sync_display_name_to_personal_group` trigger (atomic with the update) — the Hub writes no group name. Proven E2E: editing the display name propagates to the account-menu label.
+
+**Sign-out (IDN-3 tail).** Wires the existing `AuthContext.signOut()`. It navigates to the sessionless entry `/` **before** ending the session, so the protected surface unmounts before auth flips and its own sessionless-guard cannot race the menu to `/login?redirect=...` (STORY-4 AC1). Protected surfaces then gate as sessionless.
+
+**Observability (V4) — honest seam.** Hub-surface events at the action seam: `profile.updated` / `profile.update_failed` (actor + outcome, failures included) on edit, `session.ended` on sign-out — the in-memory seam routed to G-29, mirroring FEAT-H001..H004 (the PC-1 sink stays unrealised). The PC003 route additionally emits the server-side profile events.
+
+**Testing honesty (PROCESS §9).** Red-first. 26 new unit tests (`client`, `ProfileEditForm`, `/profile` page, `AccountMenu`, `AppShell`) — full unit suite **103/103**; 3 Playwright journeys (view / edit+cascade / sign-out+gating) — full E2E **18/18**, no regression to FEAT-H001..H004.
+
+**Build fix carried here (PC003 regression).** The merged FEAT-PC003 `hub/lib/profile/queries.ts` cast a supabase-js string-`.select()` union (which includes `GenericStringError`) directly `as Profile` — rejected by `next build`'s type-check, so PC003 had merged **build-broken** (ts-jest + eslint don't full-type-check, so it slipped the PC003 gate). Narrowed through `unknown` in `fetchMyProfile` / `updateMyProfile`; `next build` is green again.
+
+Tasks: `TASK-H005-01` (profile surface view+edit), `TASK-H005-02` (account menu + sign-out), `TASK-H005-03` (telemetry + E2E + no-regression).
