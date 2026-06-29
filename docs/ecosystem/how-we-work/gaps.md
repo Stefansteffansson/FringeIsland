@@ -188,10 +188,12 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 
 *Proposed fix:* author the sharing-controls paired slice (a PC-3-coupled per-audience visibility substrate + a Hub surface) when Cycle B closes, or when DIS-6 / COI-1 first need it — whichever comes first. FEAT-H009 references this gap as the tracking home so the split-out half is not lost.
 
-**G-35 — PC-4 Governance §L3 does not enumerate the consent-state / GDPR / data-export / feature-flag capabilities the Hub attributes to it.**
-`docs/products/hub/SPECIFICATION.md` §L3:366 (the consumer-side cross-entity dependency table) attributes "GDPR consent state, data export request flow, feature flags" to **PC-4 Governance** for IDN-6/7/8 — and ADR-U034 plus the phase-3 plan concur. But PC-4's own §L3 capability inventory (`docs/platform/core/governance-specification.md` §L3, derived cold in Phase 2) enumerates only admin/audit/sanction/force-logout/DeusEx capabilities (plus two LATENT rows) — **no consent-state, data-export, or feature-flag row**. Surfaced 2026-06-29 while authoring the PC-4 consent contracts (FEAT-PC006/PC007): L4 is authoring features for a capability the owning entity's §L3 does not list. The consent *substrate table* (`consent_records`) is PC-2-owned (FEAT-PC002 / IDN-2); the consent-state *governance* capability is PC-4's, just unenumerated.
+**G-35 — PC-4 Governance §L3 under-enumerates the GDPR-cluster capabilities the Hub attributes to it (consent row added 2026-06-29; data-export + feature-flags remain).**
+`docs/products/hub/SPECIFICATION.md` §L3:366 (the consumer-side cross-entity dependency table) attributes "GDPR consent state, data export request flow, feature flags" to **PC-4 Governance** for IDN-6/7/8 — and ADR-U034 plus the phase-3 plan concur. PC-4's own §L3 capability inventory (`docs/platform/core/governance-specification.md` §L3, derived cold in Phase 2) had enumerated only admin/audit/sanction/force-logout/DeusEx capabilities (plus two LATENT rows). Surfaced 2026-06-29 while authoring the PC-4 consent contracts (FEAT-PC006/PC007): L4 was authoring features for a capability the owning entity's §L3 did not list. The consent *substrate table* (`consent_records`) is PC-2-owned (FEAT-PC002 / IDN-2); the consent-state *governance* capability is PC-4's.
 
-*Proposed fix:* a small L3 touch-up adding the consent-state governance capability row to PC-4 §L3 (and, while there, the data-export and feature-flag rows §L3:366 also attributes to PC-4), each with internal area PC-4, the PC-2 substrate dependency, and V2/V4 vertical impact. Low-cost; restores L3→L4 derivation integrity for the GDPR cluster. Until done, FEAT-PC006/PC007's L4 summary in `governance-specification.md` carries the note.
+**Partially closed 2026-06-29:** the **consent-state governance** capability row was added to PC-4 §L3 — a forward addition driven by ADR-U034 (which post-dates the Phase-2 derivation), not a derivation-miss correction; see the §L3 reconciliation note + FEAT-PC006/PC007's L4 summary. **Open remainder:** §L3:366 also attributes *data export request flow* (IDN-8, Cycle C) and *feature flags* to PC-4 — still unenumerated, pending their own derivation.
+
+*Proposed fix (remainder):* enumerate the data-export capability row when IDN-8 is decomposed (Cycle C), and the feature-flag capability row when its first consumer is derived — each with internal area PC-4, the relevant upstream-PC substrate dependency, and V2/V4 vertical impact. The consent portion is done.
 
 ---
 
@@ -224,7 +226,7 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 - G-30 Tier CLAUDE.md files contain miscategorised entity-specific content
 - G-32 Entities with shipped §L3 lacking reader tours — backfill obligation
 - G-34 Sharing controls (IDN-7) split out of Cycle B — no substrate yet
-- G-35 PC-4 §L3 omits the consent / export / feature-flag capabilities the Hub attributes to it
+- G-35 PC-4 §L3 under-enumerates GDPR-cluster capabilities (consent row added 2026-06-29; export + flags remain)
 
 **Low priority** (single-word fixes or edge cases):
 - G-11 TDD overstated vs risk-based- G-28 Trust-disk-over-memory as a cross-cutting discipline
@@ -238,3 +240,5 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 *Updated 2026-06-10 (later the same day): G-01 closed — its proposed fix happened: the DS-1 descent session ratified the Whisp L2-owner decision (split by face: DS-1 World Model owns world-presence — cord, Void distance, anchoring, severance; DS-7 Intelligence owns the being — dialogue, filling, senses, internalisation; DS-7 consumes DS-1). Recorded as an ADR candidate in `docs/architecture/decisions/PENDING.md` (promote at the DS-7 descent) and instantiated in `docs/platform/domain/world-model.md` + `world-model/CLAUDE.md`. The chapter-01 callout and the cascade-SVG gap box were updated to resolved in the same health-check pass; the rendered views (index.html, docx) remain on the accepted G-25 deferral.*
 
 *Updated 2026-06-29 (Cycle B consent decomposition): **G-34** (sharing-controls split out of IDN-7) and **G-35** (PC-4 §L3 omits the consent-state / data-export / feature-flag capabilities the Hub `SPECIFICATION.md` §L3:366 attributes to PC-4) registered while authoring FEAT-PC006/PC007 + FEAT-H008/H009. Next available ID is **G-36**. ID numbering is monotonic — G-33 was added and closed 2026-05-29 and is not reused.*
+
+*Updated 2026-06-29 (G-35 consent portion closed): the consent-state governance capability row was added to PC-4 §L3 (`governance-specification.md`) as a forward addition driven by ADR-U034; **G-35 narrowed** to its data-export + feature-flag remainder. G-34 unchanged.*
