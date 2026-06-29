@@ -123,3 +123,84 @@ Decision-level commitments (exact DDL, RLS, and column names are FEAT-PC002 deta
   / [ADR-U007](ADR-U007-three-layer-permission-model.md) (actor primitive) ·
   [ADR-U016](ADR-U016-cascade-specification-first.md) (cascade discipline).
 - **Implemented by:** FEAT-PC002 (substrate) ↔ FEAT-H004 (Hub) — the IDN-2 increment.
+
+---
+
+## Amendment 1 — granular-consent extension (decision dimension + purpose catalog)
+
+**Status:** Accepted
+**Date:** 2026-06-29
+**Deciders:** Stefan
+**Tags:** scope:platform-core · wave:ferd · FEAT-PC006 / FEAT-PC007 (Cycle B)
+
+> Append-only note (this ADR is not edited — ADR-U023 append-only discipline). The
+> original decision (Option A: an append-only, transcendence-scoped, extensible
+> consent substrate) stands unchanged. This amendment records the two **additive**
+> extensions that realise the "later Privacy-vertical feature built *on* this
+> substrate" that §2/§4 deferred — the member-facing grant/withdraw of granular
+> consent (IDN-6 read / IDN-7 write). Pairs **FEAT-PC006** (read) ↔ **FEAT-H008**
+> and **FEAT-PC007** (write) ↔ **FEAT-H009**.
+
+### What changes
+
+1. **`decision` column on `public.consent_records`** — `text NOT NULL DEFAULT
+   'granted'`. The original shape (§1) carried no grant/withdraw dimension; every
+   row was a positive capture. §2 deferred a state change to "a **new appended
+   record**, a later Privacy feature." FEAT-PC006/PC007 are that feature. The
+   decision dimension is **open text**, never a sealed enum or CHECK set
+   (consistent with the open-purpose driver) — the catalog's `withdrawable` flag,
+   not the column type, carries policy. A withdrawal remains a NEW appended row
+   (§2 unchanged); the column is never mutated in place. Existing transcendence
+   captures backfill to `'granted'` via the default.
+2. **`public.consent_purposes` catalog (new table)** — `key` (joins
+   `consent_records.purpose`), `label`, `description`, `withdrawable boolean`,
+   `current_policy_version text`, `sort_order`. The original §1 left `purpose` as
+   an open identifier with no metadata; the catalog is the **data-driven** home
+   for that metadata (extensibility driver: new purposes are rows, not migrations
+   or a sealed enum). RLS without exception: any authenticated member reads the
+   catalog; **no** client write (governance-managed via seed / `service_role`).
+   Seeded `transcendence` (`withdrawable = false`, the foundational consent,
+   `current_policy_version = 'v1'` to match the live `TRANSCENDENCE_POLICY_VERSION`
+   so existing captures read no drift) + `product_analytics` (`withdrawable =
+   true`, an optional purpose; seed data, not canon).
+
+### What does NOT change
+
+- **Append-only (§2).** No UPDATE/DELETE; a state change is a new row. The
+  `enforce_consent_append_only` trigger and the `consent_records_select_own` RLS
+  policy are untouched.
+- **Atomic-with-transcendence (§3); erasure interaction (§5).** Unchanged.
+- **Scope (§4) is widened intentionally.** §4 scoped IDN-2 to capture-only and
+  named "withdrawal, re-consent, multi-purpose capture" as a later feature on this
+  substrate. FEAT-PC006 (read) + FEAT-PC007 (write) are that later feature for the
+  **withdrawal + multi-purpose** parts. **Re-consent flow remains out of scope** —
+  drift is *surfaced* (`needs_reconsent = granted AND policy_version ≠
+  current_policy_version`), but no re-consent prompt or campaign is built.
+
+### Withdrawability gate (FEAT-PC007)
+
+A withdrawal-class decision (anything other than the affirmative `'granted'`) on a
+purpose whose catalog `withdrawable = false` is **refused** at the
+`record_consent_decision()` gate (raises; the route maps to 409). `'granted'` is
+always permitted for a catalogued purpose. The policy lives in the catalog (data),
+not in a sealed type. `policy_version` is stamped **server-side** from the
+catalog's `current_policy_version` at write time — never client-supplied (a client
+could otherwise lie about which policy it consented under).
+
+### Ownership note (relates to §6)
+
+§6 ratified **PC-2 (Identity)** as owner of the substrate **table**. This amendment
+is authored from **PC-4 Governance**: the member-facing consent *contract*
+(`get_own_consent_state`, `record_consent_decision`) and the *purpose catalog* are
+governance concerns (which purposes exist, which are withdrawable, the current
+policy version is a compliance fact). The `decision` column is an additive
+extension to a PC-2-owned table made from a PC-4 feature — the
+schema-predates-partition case (PW-1), routed through the normal schema-review
+gate. The table stays PC-2-owned; the consent-state governance capability is
+PC-4's (now enumerated in PC-4 §L3; G-35 narrowed to its export + feature-flag
+remainder).
+
+### Implemented by (this amendment)
+
+FEAT-PC006 — `decision` column + `consent_purposes` catalog + `get_own_consent_state()` (read) ↔ FEAT-H008 (Hub render).
+FEAT-PC007 — `record_consent_decision()` (write) ↔ FEAT-H009 (Hub grant/withdraw). Cycle B (Consent & privacy / GDPR).
