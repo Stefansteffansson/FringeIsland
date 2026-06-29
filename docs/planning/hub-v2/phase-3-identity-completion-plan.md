@@ -25,8 +25,8 @@ Descriptions + dependencies are from `SPECIFICATION.md` §L3:186–197. Platform
 
 | IDN | Capability | Internal dep | Platform half (per §L3 external deps) | Cycle |
 |-----|-----------|--------------|----------------------------------------|-------|
-| IDN-9 | Render account state (active / deactivated / decommissioned) | IDN-3 ✓ | PC-2, PC-4 (state columns exist) | **A** |
-| IDN-12 | Self-service account reactivation | IDN-9 | PC-2 (state transition), PC-4 (audit) | **A** |
+| IDN-9 | Render account state (active / deactivated / decommissioned) | IDN-3 ✓ | PC-2, PC-4 (state columns exist) | **A** (built `6-done` 2026-06-29) |
+| IDN-12 | Self-service account reactivation | IDN-9 | PC-2 (state transition), PC-4 (audit) | **A** (deferred/parked) |
 | IDN-6 | Render member-visible consent state + history | IDN-3 ✓ | PC-4 (consent store exists — PC002/ADR-U034) | **B** |
 | IDN-7 | Update granular consent decisions + sharing controls | IDN-6 | PC-4, PC-3 | **B** |
 | IDN-8 | Request + receive complete data export | IDN-3 ✓ | PC-4 (export RPC) | **C** |
@@ -42,7 +42,7 @@ Each cycle ≈ one paired slice. **Paired-platform-first:** the platform half (P
 
 | Cycle | Capabilities | Build now? | Notes / risks |
 |-------|--------------|-----------|----------------|
-| **A — Account lifecycle** | IDN-9 → IDN-12 | ✅ now | Lightest: `is_active` / `is_decommissioned` columns exist. IDN-9 is the dep foundation for IDN-12 and IDN-10. |
+| **A — Account lifecycle** | IDN-9 → IDN-12 | ✅ (split) | Lightest: `is_active` / `is_decommissioned` columns exist. IDN-9 is the dep foundation for IDN-12 and IDN-10. **Split (2026-06-29):** IDN-9 built → `6-done` (the off state realised as `suspended`, an admin hold); IDN-12 **deferred/parked** — self-service reactivation pairs with self-pause and needs a deactivation-origin field so a member can only reverse their own `paused` account, never an admin `suspended` hold. See [`./account-lifecycle-states-decision.md`](./account-lifecycle-states-decision.md). |
 | **B — Consent & privacy (GDPR)** | IDN-6 → IDN-7 | ✅ now | Consent store already exists (PC002/ADR-U034); needs a PC-4 read/update contract + UI. |
 | **C — Data export (GDPR)** | IDN-8 | ✅ now | PC-4 export RPC. Standalone. |
 | **D — Journal** | IDN-5 | ✅ now | **Confirm at decomposition:** does the PC-2 Journal substrate exist, or is it net-new (a new table → schema gate)? |

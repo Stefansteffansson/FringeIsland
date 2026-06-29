@@ -6,9 +6,17 @@ title: Render account state — the Hub surfaces the FIM's account lifecycle sta
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
+
+## Implementation notes (6-done — 2026-06-29)
+
+Realized in Cycle A (IDN-9). Authoritative deltas from the as-designed body below:
+- **Vocabulary:** the off-but-not-closed state renders as **suspended** ("Your account has been suspended by an administrator. Please contact support."), not "deactivated/paused". "Deactivated" was retired as ambiguous — see [`../../../planning/hub-v2/account-lifecycle-states-decision.md`](../../../planning/hub-v2/account-lifecycle-states-decision.md).
+- **No reactivation affordance this cycle:** the suspended surface offers NO self-reactivation (the FEAT-H007 affordance is deferred/parked with IDN-12); it offers sign-out so the member is not stranded.
+- **Architecture:** account state is resolved once per session by an `AccountStateProvider` in the root layout; an `AccountStateGate` renders the honest standalone surface INSTEAD of the chrome for a suspended/decommissioned/unknown-state FIM (so a switched-off member never hits the profile-dependent account menu). Active/Mist/sessionless pass through. A quiet "Account: active" line shows in profile settings.
+- **Tests (red->green):** unit `hub/tests/unit/components/account/AccountStateView.test.tsx` + `hub/tests/unit/lib/account/AccountStateProvider.test.tsx` (11/11); E2E `hub/tests/e2e/account-state.spec.ts` (active not interrupted, profile legibility, suspended surface, closed surface). `next build` + lint clean.
 
 ## Problem
 

@@ -52,12 +52,16 @@ export function AccountMenu() {
 
   async function handleSignOut() {
     setOpen(false);
-    // Navigate to the sessionless entry FIRST, then end the session. Leaving the
-    // protected surface before auth flips to sessionless prevents that surface's
-    // own guard from racing us to `/login?redirect=...` (STORY-4 AC1: return to `/`).
+    // Navigate to the sessionless entry FIRST (optimistic — usually lands before
+    // the guard), end the session, then replace('/') to GUARANTEE the entry even
+    // if a protected-surface guard raced us to `/login?redirect=...` during the
+    // auth flip. The account-state provider (FEAT-H006) re-renders the subtree on
+    // that flip, which can tip the race; the final replace makes the landing
+    // deterministic (STORY-4 AC1: return to `/`).
     router.push('/');
     await signOut();
     emitTelemetry('session.ended', { actor: user?.id, outcome: 'success' });
+    router.replace('/');
   }
 
   return (

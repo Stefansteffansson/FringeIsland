@@ -6,9 +6,17 @@ title: Account-state read — a self-service contract returning the caller's own
 owner: platform/core/identity
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
+
+## Implementation notes (6-done — 2026-06-29)
+
+Realized in Cycle A (IDN-9). Authoritative deltas from the as-designed body below:
+- **Vocabulary:** the off-but-not-closed state is realized as **`'suspended'`** (an admin hold), not `'deactivated'`. "Deactivated" was retired as ambiguous — see [`../../../planning/hub-v2/account-lifecycle-states-decision.md`](../../../planning/hub-v2/account-lifecycle-states-decision.md). The member-initiated `'paused'` label + self-service reactivation (IDN-12) are deferred (FEAT-PC005/FEAT-H007 parked).
+- **Contract:** realized as **`GET /api/account/state`** with `@supabase/ssr` cookie-session auth (the shipped Hub house style; `/api/v1/` + Bearer is directional, not yet realised — see `TASK-PC003-01`). Sessionless -> 401; no mapped row -> 404.
+- **Function:** `public.get_own_account_state()` (migration `20260629054349`) — `SECURITY DEFINER`, `search_path=''`, own-row via `auth.uid()`, no `is_active` filter, returns `jsonb {is_active, is_decommissioned, state}`; GRANT to `authenticated` + `service_role`.
+- **Tests (red->green):** integration `hub/tests/integration/account/account-state-read.test.ts` (6/6: three states + own-row boundary + RLS-unchanged guard + empty case); route unit `hub/tests/unit/app/api/account-state-route.test.ts` (5/5). Demonstrated red on the missing function before the gated apply.
 
 ## Problem
 
