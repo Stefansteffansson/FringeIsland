@@ -7,8 +7,14 @@ owner: hub
 consumers: [hub]
 wave: ferd
 maturity: 4-ready
+parked: true
+parked_reason: "Deferred from Cycle A (2026-06-29). Self-service reactivation pairs with self-pause and needs a deactivation-origin field so a member can only reverse their own 'paused' account, never an admin 'suspended' hold. Today the off state is only admin-produced (no self-pause exists). Unblock: add the origin field (schema gate + ADR) + build self-pause (IDN-10 seam), then gate reactivation to member-origin only. See ../../../planning/hub-v2/account-lifecycle-states-decision.md"
 requires-equipment: none
 ---
+
+## Parked — deferred from Cycle A (2026-06-29)
+
+This spec is **parked**, not retired. Self-service reactivation was found to pair with self-pause: in the current substrate the only producer of the off-but-not-closed state is an **admin hold (suspended)**, so shipping self-reactivation now would let a member reverse an admin action. It will be built once (1) a **deactivation-origin** field distinguishes member-`paused` from admin-`suspended` (Platform Core schema change — schema gate + ADR), and (2) **self-pause** exists (the IDN-10 exit/lifecycle seam) to produce a `paused` account to legitimately reactivate. Reactivation will be gated to member-origin `paused` only; `suspended` stays admin-lift-only; `decommissioned` stays terminal. See the [account-lifecycle decision record](../../../planning/hub-v2/account-lifecycle-states-decision.md).
 
 ## Problem
 
