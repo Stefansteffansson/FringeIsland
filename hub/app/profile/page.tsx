@@ -8,6 +8,7 @@ import { LoadingState } from '@/components/ui/LoadingState';
 import { InlineError } from '@/components/ui/InlineError';
 import ProfileEditForm from '@/components/profile/ProfileEditForm';
 import { fetchProfile, displayLabel } from '@/lib/profile/client';
+import { useAccountState } from '@/lib/account/AccountStateContext';
 import type { Profile } from '@/lib/profile/queries';
 
 /**
@@ -21,6 +22,7 @@ import type { Profile } from '@/lib/profile/queries';
  */
 export default function ProfilePage() {
   const { user, identity, loading: authLoading } = useAuth();
+  const { state: accountState } = useAccountState();
   const router = useRouter();
 
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -81,6 +83,12 @@ export default function ProfilePage() {
           )}
           <p className="text-sm text-gray-600">
             You appear to others as <span className="font-semibold">{displayLabel(profile)}</span>
+          </p>
+          {/* FEAT-H006 STORY-1: a quiet account-state legibility line. Only an
+              active FIM reaches /profile (a non-active FIM is intercepted by the
+              account-state gate), so this reads "Account: active". */}
+          <p className="text-xs text-gray-500" data-testid="account-state-line">
+            Account: <span className="font-medium">{accountState?.state ?? 'active'}</span>
           </p>
           <ProfileEditForm initial={profile} onSaved={setProfile} />
         </div>
