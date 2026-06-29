@@ -181,6 +181,18 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 
 *Proposed fix:* execute Session 4 of the cascade plan — once entity CLAUDE.md files exist as targets (Sessions 2 and 3), walk each tier file against the five-row content policy now in root `CLAUDE.md` and migrate miscategorised rules down to the entity or sub-tier file. Reviewable as granular commits, one migration per commit. Note: the `fringeisland:` MCP file-operations rule landed in `AGENTS.md` on 2026-04-30 (commit 2716f88) ahead of the policy table; Session 4's audit should consider whether that rule's home is still correct under the new policy, or whether part of it migrates to root `CLAUDE.md`.
 
+### Decomposition findings — Phase 3 Hub v2 (vertical axis)
+
+**G-34 — Sharing controls (IDN-7 per-audience visibility) split out of Cycle B; no substrate yet.**
+§L3 IDN-7 ("update granular consent decisions **and sharing controls**") bundles two concerns. The consent-decision half is specced and buildable now (FEAT-PC006/PC007 + FEAT-H008/H009, Cycle B). The **sharing-controls** half — per-audience visibility of the member's own aspects (the `1+1` / `1+Community` dimensions; the **PC-3** dependency) — has **no substrate today** (no sharing/visibility table; it is current-state preference data, a different grain from the append-only consent ledger), and it is the building block IDN-7 shares with DIS-6 (discoverability defaults) and COI-1 (Whisp engagement). Decomposition decision (2026-06-29): split delivery — ship the consent half in Cycle B, sequence sharing controls as their own later paired slice. §L3 IDN-7 stays one capability; only delivery is sequenced (mirrors the Cycle A IDN-9/IDN-12 split).
+
+*Proposed fix:* author the sharing-controls paired slice (a PC-3-coupled per-audience visibility substrate + a Hub surface) when Cycle B closes, or when DIS-6 / COI-1 first need it — whichever comes first. FEAT-H009 references this gap as the tracking home so the split-out half is not lost.
+
+**G-35 — PC-4 Governance §L3 does not enumerate the consent-state / GDPR / data-export / feature-flag capabilities the Hub attributes to it.**
+`docs/products/hub/SPECIFICATION.md` §L3:366 (the consumer-side cross-entity dependency table) attributes "GDPR consent state, data export request flow, feature flags" to **PC-4 Governance** for IDN-6/7/8 — and ADR-U034 plus the phase-3 plan concur. But PC-4's own §L3 capability inventory (`docs/platform/core/governance-specification.md` §L3, derived cold in Phase 2) enumerates only admin/audit/sanction/force-logout/DeusEx capabilities (plus two LATENT rows) — **no consent-state, data-export, or feature-flag row**. Surfaced 2026-06-29 while authoring the PC-4 consent contracts (FEAT-PC006/PC007): L4 is authoring features for a capability the owning entity's §L3 does not list. The consent *substrate table* (`consent_records`) is PC-2-owned (FEAT-PC002 / IDN-2); the consent-state *governance* capability is PC-4's, just unenumerated.
+
+*Proposed fix:* a small L3 touch-up adding the consent-state governance capability row to PC-4 §L3 (and, while there, the data-export and feature-flag rows §L3:366 also attributes to PC-4), each with internal area PC-4, the PC-2 substrate dependency, and V2/V4 vertical impact. Low-cost; restores L3→L4 derivation integrity for the GDPR cluster. Until done, FEAT-PC006/PC007's L4 summary in `governance-specification.md` carries the note.
+
 ---
 
 ## Priority summary
@@ -211,6 +223,8 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 - G-29 Lateral routing for cross-entity findings produced by L3 stress-test passes
 - G-30 Tier CLAUDE.md files contain miscategorised entity-specific content
 - G-32 Entities with shipped §L3 lacking reader tours — backfill obligation
+- G-34 Sharing controls (IDN-7) split out of Cycle B — no substrate yet
+- G-35 PC-4 §L3 omits the consent / export / feature-flag capabilities the Hub attributes to it
 
 **Low priority** (single-word fixes or edge cases):
 - G-11 TDD overstated vs risk-based- G-28 Trust-disk-over-memory as a cross-cutting discipline
@@ -222,3 +236,5 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 *Updated 2026-06-10: register housekeeping — G-32 added to the quick index and priority summary (described in the body since the 2026-05-03 reader-tours session but missing from both); G-19 given a body entry (index-only since 2026-04-22); G-21 closed — its proposed fix is implemented: the `feature-development` skill carries the same-commit summary update at maturity transitions 4→5 and 5→6, and `doc-health-check` Section 8 verifies consistency at cycle boundaries. References that named G-21 by ID (six specification templates, doc-health-check Section 8, and — caught by the post-change health check — the instantiated entity specifications, verticals CLAUDE.md, and verticals feature-READMEs) were repointed to the implemented discipline in the same pass.*
 
 *Updated 2026-06-10 (later the same day): G-01 closed — its proposed fix happened: the DS-1 descent session ratified the Whisp L2-owner decision (split by face: DS-1 World Model owns world-presence — cord, Void distance, anchoring, severance; DS-7 Intelligence owns the being — dialogue, filling, senses, internalisation; DS-7 consumes DS-1). Recorded as an ADR candidate in `docs/architecture/decisions/PENDING.md` (promote at the DS-7 descent) and instantiated in `docs/platform/domain/world-model.md` + `world-model/CLAUDE.md`. The chapter-01 callout and the cascade-SVG gap box were updated to resolved in the same health-check pass; the rendered views (index.html, docx) remain on the accepted G-25 deferral.*
+
+*Updated 2026-06-29 (Cycle B consent decomposition): **G-34** (sharing-controls split out of IDN-7) and **G-35** (PC-4 §L3 omits the consent-state / data-export / feature-flag capabilities the Hub `SPECIFICATION.md` §L3:366 attributes to PC-4) registered while authoring FEAT-PC006/PC007 + FEAT-H008/H009. Next available ID is **G-36**. ID numbering is monotonic — G-33 was added and closed 2026-05-29 and is not reused.*

@@ -502,15 +502,18 @@ Cumulative-forward read order applied within each cluster (A-candidate #8 cumula
 
 ### Summary
 
-Zero FEAT-PC-* feature specs assigned to PC-4 within canonical `docs/platform/core/features/` scope at this commit. All 9 §L3 capabilities are unimplemented at the FEAT-PC-* tier today; reconciliation downstream per the feature-inventory maintenance discipline (the `doc-health-check` skill verifies this section as FEAT-PC-* specs land).
+The **first PC-4 Governance feature specs** land in **Cycle B** (Phase-3 Identity completion, [plan](../../../planning/hub-v2/phase-3-identity-completion-plan.md)) — the consent/GDPR contracts consumed by Hub IDN-6/IDN-7. The remaining §L3 capabilities (admin authority, `is_platform_admin()`, admin orchestration, audit log, sanction lifecycle, force-logout, DeusEx semantics, plus the two LATENT rows) are unspecced at the FEAT-PC-* tier today; reconciliation downstream per the feature-inventory maintenance discipline (the `feature-development` skill updates this section at maturity transitions; the `doc-health-check` skill, Section 8, verifies it).
 
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
-| *(all 9 capabilities — see §L3 Capabilities inventory)* | — | — | No FEAT-PC-* spec assigned to PC-4 in `features/` at this commit; feature-inventory reconciliation downstream |
+| Consent-state / GDPR governance — member-visible consent read *(see note)* | [FEAT-PC006](./features/FEAT-PC006-member-consent-read.md) | 4-ready | Own-subject `get_own_consent_state()` (effective per purpose + full append-only history) + the granular-consent substrate (a `decision` column on the PC-2-owned `consent_records`; a seeded `consent_purposes` catalog). Platform half of Hub IDN-6 ([FEAT-H008](../../../products/hub/features/FEAT-H008-render-consent-state.md)). ADR-U034 amendment + schema gate at build. |
+| Consent-state / GDPR governance — granular decision write *(see note)* | [FEAT-PC007](./features/FEAT-PC007-consent-decision-write.md) | 4-ready | Own-subject, append-only, withdrawability-gated `record_consent_decision()` grant/withdraw. Platform half of Hub IDN-7 consent half ([FEAT-H009](../../../products/hub/features/FEAT-H009-update-consent-decisions.md)); builds on PC006's substrate. |
+
+**Note — consent-state capability enumeration (G-35).** The consent-state / GDPR governance capability these two specs realise is attributed to PC-4 by `docs/products/hub/SPECIFICATION.md` §L3:366 (the cross-entity dependency view), ADR-U034, and the phase-3 plan — but it is **not yet a discrete row in PC-4's own §L3 capability inventory** (which lists admin/audit/DeusEx capabilities only). Surfaced 2026-06-29 while authoring these specs; an L3 touch-up adding the consent-state (and likely data-export + feature-flag) capability row(s) is tracked as **G-35** in the gaps register. The substrate table (`consent_records`) is PC-2-owned (FEAT-PC002/IDN-2); the consent-state *governance* contract is PC-4. The sharing-controls half of IDN-7 is split to a later PC-3 slice (**G-34**).
 
 ### Capabilities without specs
 
-All 9 §L3 capabilities at this commit. FEAT-PC-* feature-spec authoring is downstream work, not in scope for Phase 2 (Phase 2 = entity L1→L3 derivation; PC-4 implementation arrives downstream of Phase 2 close-out).
+The seven enumerated §L3 capabilities other than consent (admin authority, `is_platform_admin()` resolution, admin operation orchestration, admin audit log, sanction state lifecycle, force-logout / session termination, DeusEx role semantics) plus the two LATENT rows (moderation primitives, platform-rule enforcement) are unspecced at the FEAT-PC-* tier; authoring is downstream as the Hub (or admin tooling) consumes each.
 
 ### Features without capabilities
 
