@@ -26,12 +26,12 @@ The root-layout `AccountStateGate` blocked **every** page on a serial `/api/acco
 
 - **Red→green (demonstrated red):** STORY-4 unit test rewritten (in-flight → optimistic children, no blocking gate) — confirmed **red** against old code (rendered "Checking your account…"), green after. Second unit test pins no-stale-surface-flash during `reload()`.
 - Full Hub unit suite **160/160**, `next build`, `lint` all clean.
-- E2E spec updated (active path asserts no "Checking your account" gate; interception cases unchanged).
+- **E2E run live (dev server + real substrate): 31/31 green** — active path asserts no "Checking your account" gate; suspended/decommissioned interception unchanged.
 
 ## Open / carry-forward
 
 1. **Live before/after measurement — NOT done** (needs Network tab / `x-vercel-id` on the deployed Hub). The change removes one serial ~80 ms round-trip from every page load; confirm the felt improvement.
-2. **E2E not re-run live** this session (needs dev server + real substrate). Run `npm run test:e2e` against `localhost:3000` before relying on it.
+2. ~~E2E not re-run live~~ **Done** — full E2E suite run live, 31/31 green (incl. the four FEAT-H006 specs).
 3. **Tier 2 (the genuine "European-fast" lever) — next:** draft an **ADR** for server-rendering the initial page with its data (Next.js RSC via the Platform API server-side — API-first preserved) + update `hub/CLAUDE.md`'s CSR lean. Collapses the client waterfall to one round-trip. (Carve-out: ADR + steering-file edit → pauses for the merge nod.)
 4. **ADR-U035 verification-note correction** (from `2026-07-01_01`, still pending): the Vercel Functions dashboard shows its saved default (`iad1`), not the `vercel.json` override — verify region via the `x-vercel-id` header. Add as an ADR addendum.
 5. **Cycle D (IDN-5 Journal)** remains the next *feature* cycle once responsiveness work is where Stefan wants it.
