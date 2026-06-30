@@ -16,8 +16,8 @@ Retroactive specs (maturity `6-done`) are being written first to capture already
 | [FEAT-H003](./FEAT-H003-mist-identity-on-arrival.md) | Mist identity on arrival — the FringeIsland entry and the lazy Mist actor | Ferd | 6-done | none |
 | [FEAT-H004](./FEAT-H004-mist-transcendence-and-farewell.md) | Mist → FIM transcendence + the farewell — become a FIM in place, or say goodbye | Ferd | 6-done | none |
 | [FEAT-H005](./FEAT-H005-member-profile-and-sign-out.md) | Member profile + sign-out — view/edit your profile (IDN-4) and the account-menu sign-out (IDN-3 tail) | Ferd | 6-done | none |
-| [FEAT-H006](./FEAT-H006-render-account-state.md) | Render account state — show the FIM whether their account is active, deactivated, or decommissioned (IDN-9) | Ferd | 6-done | none |
-| [FEAT-H007](./FEAT-H007-self-service-account-reactivation.md) | Self-service account reactivation — the FIM reactivates their own deactivated account (IDN-12) | Ferd | 4-ready (parked) | none |
+| [FEAT-H006](./FEAT-H006-render-account-state.md) | Render account state — show the FIM whether their account is active, suspended, or decommissioned (IDN-9) | Ferd | 6-done | none |
+| [FEAT-H007](./FEAT-H007-self-service-account-reactivation.md) | Self-service account reactivation — the FIM reactivates their own paused account (IDN-12) | Ferd | 4-ready (parked) | none |
 | [FEAT-H008](./FEAT-H008-render-consent-state.md) | Render consent state — show the FIM their own consent decisions and history (IDN-6) | Ferd | 6-done | none |
 | [FEAT-H009](./FEAT-H009-update-consent-decisions.md) | Update consent decisions — grant/withdraw granular consent; sharing controls split out (IDN-7 consent half) | Ferd | 6-done | none |
 

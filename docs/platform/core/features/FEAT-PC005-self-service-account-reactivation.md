@@ -1,8 +1,8 @@
-# FEAT-PC005: Self-service account reactivation — a member reactivates their own deactivated account
+# FEAT-PC005: Self-service account reactivation — a member reactivates their own paused account
 
 ---
 id: FEAT-PC005
-title: Self-service account reactivation — a member-initiated, audited transition of their own account from deactivated back to active
+title: Self-service account reactivation — a member-initiated, audited transition of their own account from paused back to active
 owner: platform/core/identity
 consumers: [hub]
 wave: ferd
@@ -18,9 +18,9 @@ This spec is **parked**, not retired. Self-service reactivation was found to pai
 
 ## Problem
 
-A FIM can be **deactivated** (`is_active=false, is_decommissioned=false`) — but there is **no self-service way back**. Every state-write on disk is admin-gated: `admin_update_user_status(target, new_is_active)` (the only reactivation path) requires `manage_all_groups`, and writes **no audit row**. A member who deactivated their own account must therefore ask an admin to be let back in, which contradicts the in-experience, member-owned framing of the lifecycle (governance-spec: "self-service platform-exit stays in-experience — a member leaving is not an admin act"; the mirror holds for return).
+A FIM can be **paused** (`is_active=false, is_decommissioned=false`) — but there is **no self-service way back**. Every state-write on disk is admin-gated: `admin_update_user_status(target, new_is_active)` (the only reactivation path) requires `manage_all_groups`, and writes **no audit row**. A member who paused their own account must therefore ask an admin to be let back in, which contradicts the in-experience, member-owned framing of the lifecycle (governance-spec: "self-service platform-exit stays in-experience — a member leaving is not an admin act"; the mirror holds for return).
 
-IDN-12 ("self-service account reactivation") closes that gap: a member-initiated, owner-gated, **audited** transition of their **own** account from deactivated back to active, with **decommissioned kept strictly terminal**. This is the platform half, consumed API-first by the Hub (FEAT-H007). It is net-new substrate — no member-initiated state-write exists today.
+IDN-12 ("self-service account reactivation") closes that gap: a member-initiated, owner-gated, **audited** transition of their **own** account from paused back to active, with **decommissioned kept strictly terminal**. This is the platform half, consumed API-first by the Hub (FEAT-H007). It is net-new substrate — no member-initiated state-write exists today.
 
 ### Why Platform Core, not a Domain Service
 
@@ -38,7 +38,7 @@ A single owner-gated, audited `SECURITY DEFINER` RPC plus an additive route:
   On success it writes an audit row using the established **inline-INSERT-via-`SECURITY DEFINER`** pattern (as `admin_exit_user_from_platform` does): `actor_group_id` = caller's personal group, `action = 'self_reactivate_account'`, `target` = the user id, before/after state in `metadata`.
 - **`POST /api/v1/account/reactivate`** (`Authorization: Bearer <jwt>`, ADR-U015 v1, ADR-U009) — additive route surfacing the RPC.
 
-The RPC is the privilege boundary: it is the *only* path by which a non-admin actor may flip `is_active`, and it can only ever flip the **caller's own** deactivated account.
+The RPC is the privilege boundary: it is the *only* path by which a non-admin actor may flip `is_active`, and it can only ever flip the **caller's own** paused account.
 
 ## Appetite
 
@@ -49,7 +49,7 @@ Small-to-moderate. One `SECURITY DEFINER` RPC (own-actor gate + decommission gua
 - **Don't let self-service touch decommissioned.** Decommissioned is terminal and stays terminal — only the existing admin hard-paths exist for that, and reversing it is explicitly out of scope. Guard it server-side and surface it as a clear rejection, not a silent failure.
 - **Don't write the audit from the client.** `admin_audit_log` INSERT RLS is `is_platform_admin()`-gated; a self-service actor fails it. The write **must** go through the `SECURITY DEFINER` RPC (definer bypasses RLS) — never a client-side insert.
 - **Don't reach for `admin_update_user_status`.** It is admin-gated and unaudited; reusing it would either require granting the member admin permission (wrong) or leave the transition unaudited (wrong). The new owner-gated RPC is the correct shape.
-- **Don't restore what was never removed.** Plain deactivation (v1) does not strip group memberships or freeze enrolments — so reactivation has nothing to "un-cascade." Keep the transition to the `is_active` flip + audit; do not invent restore logic for state that was never mutated (see the cascade spec).
+- **Don't restore what was never removed.** A plain self-pause (v1) does not strip group memberships or freeze enrolments — so reactivation has nothing to "un-cascade." Keep the transition to the `is_active` flip + audit; do not invent restore logic for state that was never mutated (see the cascade spec).
 - **Idempotency over erroring.** A double-submit (already active) should resolve as success, not a hard error — the member's intent is "be active," which is already true.
 
 ## No-gos
@@ -62,8 +62,8 @@ Small-to-moderate. One `SECURITY DEFINER` RPC (own-actor gate + decommission gua
 
 ## Stories
 
-### STORY-1: Reactivate my own deactivated account
-As the platform, I want a deactivated member to reactivate their own account, so they can return without admin intervention.
+### STORY-1: Reactivate my own paused account
+As the platform, I want a paused member to reactivate their own account, so they can return without admin intervention.
 
 **Acceptance criteria:**
 - Given the caller's own account is `is_active=false, is_decommissioned=false`, when they invoke the reactivation contract, then `is_active` is flipped to `true` and the call succeeds.
@@ -96,15 +96,15 @@ As the platform, I want every successful self-service reactivation recorded in t
 - Given a successful self-service reactivation, when it completes, then exactly one audit row is written with `actor_group_id` = the caller's personal group, `action = 'self_reactivate_account'`, `target` = the user id, and before/after state in `metadata`.
 - Given the audit write, when it is attempted, then it goes through the `SECURITY DEFINER` RPC (bypassing the `is_platform_admin()` INSERT gate) — never a client-side insert.
 
-## Cascade specification (ADR-U016) — self-service reactivation (deactivated → active)
+## Cascade specification (ADR-U016) — self-service reactivation (paused → active)
 
 | Layer | Effect of a self-service reactivation |
 |---|---|
 | **PC-2 Identity** | The caller's own `public.users.is_active` flips `false → true` under the owner-gated `SECURITY DEFINER` RPC. `is_decommissioned` is untouched and, if `true`, the transition is rejected (decommissioned is terminal; `enforce_decommission_invariant()` upheld). The row, previously hidden by `users_select_active`, becomes ordinarily visible again; `get_current_user_profile_id()` resolves once more. |
-| **PC-3 Organisation** | None to restore. Plain deactivation (v1) does not remove group memberships or alter the personal group, so reactivation has nothing to un-cascade; the member's memberships and roles are exactly as they were. |
+| **PC-3 Organisation** | None to restore. A plain self-pause (v1) does not remove group memberships or alter the personal group, so reactivation has nothing to un-cascade; the member's memberships and roles are exactly as they were. |
 | **PC-4 Governance (Observability, V4)** | One audit row written to `admin_audit_log` (`action='self_reactivate_account'`, actor = caller's personal group, before/after in `metadata`) via the inline-INSERT-in-`SECURITY DEFINER` pattern. |
-| **DS-3 Journeys** | `pending` — v1 deactivation does not freeze journey enrolments, so there is nothing to thaw today. **Forward seam:** if IDN-10's exit cascade later freezes enrolments on deactivation (DS-3), reactivation must thaw them; this row is tagged for re-entry when the Journeys area realises DS-3. |
-| **Privacy (V2)** | Reactivation re-exposes the member's own row **to themselves** (the visibility filter no longer hides it). It restores only the pre-deactivation visibility state — it does not create any new sharing of the member's data with other members. |
+| **DS-3 Journeys** | `pending` — v1 self-pause does not freeze journey enrolments, so there is nothing to thaw today. **Forward seam:** if IDN-10's exit cascade later freezes enrolments on self-pause (DS-3), reactivation must thaw them; this row is tagged for re-entry when the Journeys area realises DS-3. |
+| **Privacy (V2)** | Reactivation re-exposes the member's own row **to themselves** (the visibility filter no longer hides it). It restores only the pre-pause visibility state — it does not create any new sharing of the member's data with other members. |
 | **Administration (V1) / Notifications (V3) / Transactions** | Administration: none — self-service, no admin act. Notifications: at most a self-addressed security confirmation (see Vertical impact). Transactions: none. |
 
 ## Platform dependencies
@@ -116,23 +116,23 @@ As the platform, I want every successful self-service reactivation recorded in t
 
 ## Cross-product impact
 
-Consumed by **Hub [FEAT-H007](../../../products/hub/features/FEAT-H007-self-service-account-reactivation.md)** (IDN-12) — the reactivation affordance on the deactivated-account surface. The **Gimbal** will consume the **same** `POST /api/v1/account/reactivate` contract. The route is additive (ADR-U015) — no breaking change, no version bump. **The state-write is owned at the platform tier; the Hub cannot flip `is_active` directly (ADR-U009).**
+Consumed by **Hub [FEAT-H007](../../../products/hub/features/FEAT-H007-self-service-account-reactivation.md)** (IDN-12) — the reactivation affordance on the paused-account surface. The **Gimbal** will consume the **same** `POST /api/v1/account/reactivate` contract. The route is additive (ADR-U015) — no breaking change, no version bump. **The state-write is owned at the platform tier; the Hub cannot flip `is_active` directly (ADR-U009).**
 
 ## Stability posture (Platform Core §7)
 
-Additive: one new `SECURITY DEFINER` RPC and one new `/api/v1/` route; no existing Core signature changes, so no ADR or version bump. The RPC is a new privilege-escalation surface — it is the only non-admin path that flips `is_active` — and is documented as such in its migration comment, with its elevation bounded to: the caller's own row, deactivated → active only, decommissioned rejected.
+Additive: one new `SECURITY DEFINER` RPC and one new `/api/v1/` route; no existing Core signature changes, so no ADR or version bump. The RPC is a new privilege-escalation surface — it is the only non-admin path that flips `is_active` — and is documented as such in its migration comment, with its elevation bounded to: the caller's own row, paused → active only, decommissioned rejected.
 
 ## Vertical impact
 
-- **Privacy/GDPR:** reactivation restores the member's pre-deactivation visibility of **their own** data to themselves; it creates no new exposure to other members. The owner-gate ensures one member can never act on another's account. Right-to-erasure is unaffected (this is the return path, not deletion).
+- **Privacy/GDPR:** reactivation restores the member's pre-pause visibility of **their own** data to themselves; it creates no new exposure to other members. The owner-gate ensures one member can never act on another's account. Right-to-erasure is unaffected (this is the return path, not deletion).
 - **Notifications:** optionally a **self-addressed security confirmation** ("your account was reactivated") — a member-facing security signal, not a fan-out to other parties. v1 may emit this confirmation trigger or defer it; either way no third party is notified. (Marked as an open question below rather than left blank.)
 - **Administration:** the self-service complement of the admin lifecycle RPCs. It adds **no** admin affordance; admins retain their existing `admin_update_user_status` path independently. No DeusEx oversight is required for a member returning to their own active account.
 - **Observability:** core to the feature — every successful transition writes an `admin_audit_log` row (actor + action + before/after); the route emits structured logs (request id, actor, outcome) including the decommissioned-rejection and cross-user-rejection paths. No swallowed failures.
 - **Transactions:** None — no payment, entitlement, or financial state.
-- **Extensibility:** the `action` value (`'self_reactivate_account'`) is an **open** audit-action namespace string, not a sealed enum; new self-service lifecycle actions (e.g. a future self-service deactivation) add new action strings without schema change. No hardcoded closed set.
+- **Extensibility:** the `action` value (`'self_reactivate_account'`) is an **open** audit-action namespace string, not a sealed enum; new self-service lifecycle actions (e.g. a future self-service self-pause) add new action strings without schema change. No hardcoded closed set.
 
 ## Open spec questions
 
 1. **Audit surface — `admin_audit_log` reuse vs a distinct member-audit surface.** The existing table is named `admin_audit_log` and its INSERT RLS is `is_platform_admin()`-gated; a self-service action is mechanically clean to record there via the `SECURITY DEFINER` RPC (actor = self's personal group), but is semantically an admin-named home for a non-admin act. **Decision for schema review:** (a) reuse `admin_audit_log` with a self-service `action` namespace (path of least resistance, matches the established pattern), or (b) introduce a distinct member-facing audit/history surface. The stories are written behaviourally ("recorded to the platform audit trail with actor / action / timestamp / before-after") so this storage choice is a schema-review detail, not a 4-ready blocker.
 2. **Self-confirmation notification.** Whether v1 emits the self-addressed "account reactivated" security confirmation, and on which channel — resolve with the Notifications vertical at build.
-3. **Re-authentication posture.** Confirm at build whether a deactivated member's existing session is sufficient to call the contract, or whether reactivation should require a fresh sign-in (security posture) — interacts with how the Hub routes a deactivated FIM into FEAT-H006/H007.
+3. **Re-authentication posture.** Confirm at build whether a paused member's existing session is sufficient to call the contract, or whether reactivation should require a fresh sign-in (security posture) — interacts with how the Hub routes a paused FIM into FEAT-H006/H007.

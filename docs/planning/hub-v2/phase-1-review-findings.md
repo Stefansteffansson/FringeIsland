@@ -24,7 +24,7 @@
 
 ### F-02 — Reactivation overstated vs GDPR hard delete (Ch. 1)
 **Stefan:** "The Hub will eventually let you reactivate… the door open… decisions about identity rarely once-and-for-all" is only part true — a **hard delete is a full GDPR erasure with no reactivation**.
-**Triage:** TOUR-ONLY. Canon already distinguishes reversible (deactivate / decommission — IDN-9, IDN-12) from irreversible (ADM-4 hard delete, a true cascade; behaviour inventory confirms reactivating a decommissioned user is blocked). The tour just blurred them.
+**Triage:** TOUR-ONLY. Canon already distinguishes reversible (suspend / decommission — IDN-9, IDN-12) from irreversible (ADM-4 hard delete, a true cascade; behaviour inventory confirms reactivating a decommissioned user is blocked). The tour just blurred them.
 **Owning artifact:** `HUMAN.md`. **Disposition:** Fix — carve out hard delete as final/irreversible (GDPR).
 
 ### F-03 — "Deliberately quiet" journey player is not inherent (Ch. 3)
