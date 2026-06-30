@@ -101,6 +101,13 @@ export function AccountMenu() {
             >
               Profile
             </Link>
+            <Link
+              href="/consent"
+              onClick={() => setOpen(false)}
+              className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+            >
+              Privacy &amp; consent
+            </Link>
             <button
               type="button"
               onClick={handleSignOut}
