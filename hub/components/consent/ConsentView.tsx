@@ -30,7 +30,20 @@ function formatWhen(value: string): string {
   return new Date(value).toLocaleString();
 }
 
-function EffectiveRow({ entry }: { entry: ConsentEffectiveEntry }) {
+function EffectiveRow({
+  entry,
+  onRequestChange,
+  busy,
+}: {
+  entry: ConsentEffectiveEntry;
+  /** When provided, withdrawable purposes get a grant/withdraw control (FEAT-H009). */
+  onRequestChange?: (purpose: string, nextDecision: string) => void;
+  busy?: boolean;
+}) {
+  // The control toggles toward the opposite of the current effective decision.
+  const nextDecision = entry.decision === 'granted' ? 'withdrawn' : 'granted';
+  const actionLabel = entry.decision === 'granted' ? 'Withdraw' : 'Grant';
+
   return (
     <li
       data-testid={`consent-effective-row-${entry.purpose}`}
@@ -43,9 +56,31 @@ function EffectiveRow({ entry }: { entry: ConsentEffectiveEntry }) {
             <p className="mt-1 text-sm text-gray-600">{entry.description}</p>
           )}
         </div>
-        <span className="shrink-0 rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700">
-          {decisionLabel(entry.decision)}
-        </span>
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          <span className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700">
+            {decisionLabel(entry.decision)}
+          </span>
+          {onRequestChange &&
+            (entry.withdrawable ? (
+              <button
+                type="button"
+                data-testid={`consent-action-${entry.purpose}`}
+                onClick={() => onRequestChange(entry.purpose, nextDecision)}
+                disabled={busy}
+                className="rounded-lg border border-gray-300 px-3 py-1 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {busy ? 'Saving...' : actionLabel}
+              </button>
+            ) : (
+              // Non-withdrawable → locked: never offer an action the platform refuses.
+              <span
+                data-testid={`consent-locked-${entry.purpose}`}
+                className="text-xs text-gray-400"
+              >
+                Required
+              </span>
+            ))}
+        </div>
       </div>
       {entry.needs_reconsent && (
         <p
@@ -78,11 +113,20 @@ export function ConsentView({
   error,
   state,
   onRetry,
+  onRequestChange,
+  busyPurpose,
 }: {
   loading: boolean;
   error: string | null;
   state: ConsentState | null;
   onRetry: () => void;
+  /**
+   * FEAT-H009: when provided, withdrawable purposes get a grant/withdraw control.
+   * Omitted → the surface is read-only (FEAT-H008).
+   */
+  onRequestChange?: (purpose: string, nextDecision: string) => void;
+  /** The purpose whose decision is currently in flight (its control is disabled). */
+  busyPurpose?: string | null;
 }) {
   if (loading) {
     return <LoadingState label="Loading your consent..." />;
@@ -111,7 +155,12 @@ export function ConsentView({
         <h2 className="mb-4 text-lg font-semibold text-gray-900">What you consent to</h2>
         <ul className="space-y-3">
           {state.effective.map((entry) => (
-            <EffectiveRow key={entry.purpose} entry={entry} />
+            <EffectiveRow
+              key={entry.purpose}
+              entry={entry}
+              onRequestChange={onRequestChange}
+              busy={busyPurpose === entry.purpose}
+            />
           ))}
         </ul>
       </section>
