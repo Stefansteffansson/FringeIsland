@@ -94,3 +94,5 @@ Two alternating session types, staying one cycle ahead on specs (per the parent 
 ## After Identity
 
 Per the parent plan's dependency order: **Groups (A-GRP, 19) → Journeys (A-JRN, 18) → Communication (A-COM, 15) → Notifications (A-NTF, 10) → Platform-Ops (A-ADM, 18)**; Companion (A-COI, 7) + Discovery (A-DIS, 7) when their Domain Services (DS-1/6/7) come online; then **Phase 4** cutover. IDN-10 closes during the Journeys/Communication stretch as above.
+
+**Re-entry trigger — performance hardening (Identity → Groups boundary).** Before starting the Groups area, consult [`perf-hardening-backlog.md`](./perf-hardening-backlog.md) and pull ≥1 NFR bet from it (PROCESS.md §3). The urgent fix (compute–datastore co-location, [ADR-U035](../../architecture/decisions/ADR-U035-compute-datastore-colocation.md)) shipped 2026-06-30; the parked items P1–P4 are scale-hardening best done here — **P2 (collapse the `/groups` read into one `SECURITY DEFINER` RPC) in particular wants the Groups-area query work fresh in mind.**
