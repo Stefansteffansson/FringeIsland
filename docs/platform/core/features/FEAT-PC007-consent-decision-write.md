@@ -6,7 +6,7 @@ title: Consent decision write — an own-subject, append-only, withdrawability-g
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 ---
 
 ## Problem
@@ -136,3 +136,14 @@ Additive: one new `SECURITY DEFINER` write function and one new route. No existi
 - **Observability:** the route emits structured logs (request id, actor, purpose, decision-class, outcome); refusals (non-withdrawable, unknown purpose) are recorded, not silently swallowed. The consent ledger itself is the durable audit of *what* was decided; route logs capture *that the attempt happened*.
 - **Transactions:** None.
 - **Extensibility:** `decision` is open text; `purpose` is an open catalog (new purposes = rows); withdrawability is per-row governance data, not a hardcoded set. The withdrawability gate is policy-as-data, so new purposes (and their reversibility) need no code change.
+
+## Implementation notes (6-done — Cycle B, 2026-06-29/30)
+
+Built TDD red-first, on top of the FEAT-PC006 substrate.
+
+- **Migration** `supabase/migrations/20260630062757_feat_pc007_consent_decision_write.sql` — one `SECURITY DEFINER` function `record_consent_decision(p_purpose text, p_decision text)`, `SET search_path=''`. No new table/column/RLS/trigger (rode the PC006 schema nod, the consent-schema family). Resolves the caller's own subject via `auth.uid()` → `users` (`is_active`); validates the purpose against `consent_purposes`; **withdrawability gate** (a non-`'granted'` decision on `withdrawable=false` → refused); **effective-state idempotency** (equal-to-current = no-op, no duplicate history row); appends one row stamping `policy_version` **server-side** from the catalog; returns the updated effective entry. Append-only + `consent_records_select_own` inherited unchanged.
+- **Typed error contract** (route maps SQLSTATE → HTTP): `28000`→403 (no active subject), `22023`→422 (unknown purpose), `42501`→409 (refused withdrawal). The integration refusal tests assert the **specific** SQLSTATE so a missing function can't pass-at-red.
+- **Write lib** `recordConsentDecision()` added to `hub/lib/consent/queries.ts` (throws the `PostgrestError` with its `code` for the route to map). **Route** `POST /api/account/consent` added to the existing handler (`@supabase/ssr` cookie auth; 401 sessionless; 400 missing fields; typed-refusal mapping above; 500 otherwise; refusals recorded via V4 telemetry, never swallowed).
+- **ADR-U016 cascade** — per the spec table: ledger append (`done`); effective-read recompute (`done`); analytics-pipeline enforcement on withdrawal = forward seam (`pending` consumer obligation, no pipeline yet); notifications n/a (§L3 IDN-7 = V2,V4); membership n/a; `transcendence` refusal path (`done`).
+- **Red→green evidence (all red first):** integration `hub/tests/integration/account/consent-write.test.ts` — **7 tests** (grant + server-stamped policy version; withdraw + history retained; refused non-withdrawable `transcendence` (42501) + idempotent re-grant; unknown purpose (22023); idempotent re-submit; own-subject-only). RED on missing function → GREEN post-apply. Route unit `hub/tests/unit/app/api/account-consent-write-route.test.ts` — **7 tests** (401/400/200+telemetry/422/409/403/500), RED on missing POST handler → GREEN. Pyramid: contract at integration, route mapping at unit.
+- **Gates:** `next build` clean, `eslint` clean, full unit 129/129, account integration 25/25 (consent-read 12 + consent-write 7 + account-state 6).

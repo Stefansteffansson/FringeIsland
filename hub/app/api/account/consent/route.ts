@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { fetchOwnConsentState } from '@/lib/consent/queries';
+import { fetchOwnConsentState, recordConsentDecision } from '@/lib/consent/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 /**
@@ -44,5 +44,72 @@ export async function GET() {
       message: (err as Error).message,
     });
     return NextResponse.json({ error: 'Failed to load consent state' }, { status: 500 });
+  }
+}
+
+/**
+ * FEAT-PC007 — POST /api/account/consent (IDN-7 consent half).
+ *
+ * Records the caller's own grant/withdraw decision via the
+ * `record_consent_decision()` SECURITY DEFINER write contract (own-subject,
+ * append-only, withdrawability-gated; `policy_version` stamped server-side).
+ * Returns the updated effective entry for the purpose. Additive route
+ * (ADR-U015) — same path, new method, no version bump.
+ *
+ * Gating + typed-refusal mapping (the contract raises SQLSTATEs; the route maps
+ * them so the Hub can surface an honest message):
+ *   sessionless           → 401 (before the contract)
+ *   missing purpose/decision → 400
+ *   22023 unknown purpose → 422
+ *   42501 refused withdrawal of a non-withdrawable purpose → 409
+ *   28000 no active subject → 403
+ *   anything else         → 500 (surfaced, never swallowed)
+ */
+export async function POST(request: Request) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    emitTelemetry('account.consent_write_unauthenticated');
+    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  }
+
+  const body = (await request.json().catch(() => null)) as
+    | { purpose?: unknown; decision?: unknown }
+    | null;
+  const purpose = body?.purpose;
+  const decision = body?.decision;
+
+  if (typeof purpose !== 'string' || !purpose || typeof decision !== 'string' || !decision) {
+    emitTelemetry('account.consent_write_invalid', { actor: user.id });
+    return NextResponse.json({ error: 'purpose and decision are required' }, { status: 400 });
+  }
+
+  try {
+    const entry = await recordConsentDecision(supabase, purpose, decision);
+    emitTelemetry('account.consent_write', { actor: user.id, purpose, decision });
+    return NextResponse.json({ entry });
+  } catch (err) {
+    const code = (err as { code?: string }).code;
+    // Typed governance refusals — recorded (V4), not silently swallowed.
+    if (code === '22023' || code === '42501' || code === '28000') {
+      const status = code === '22023' ? 422 : code === '42501' ? 409 : 403;
+      emitTelemetry('account.consent_write_refused', { actor: user.id, purpose, code, status });
+      const message =
+        code === '22023'
+          ? 'Unknown consent purpose'
+          : code === '42501'
+            ? 'This consent cannot be withdrawn'
+            : 'No active account for this request';
+      return NextResponse.json({ error: message }, { status });
+    }
+    emitTelemetry('account.consent_write_failed', {
+      actor: user.id,
+      purpose,
+      message: (err as Error).message,
+    });
+    return NextResponse.json({ error: 'Failed to record consent decision' }, { status: 500 });
   }
 }
