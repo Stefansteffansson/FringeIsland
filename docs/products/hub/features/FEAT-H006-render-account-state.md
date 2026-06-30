@@ -16,7 +16,22 @@ Realized in Cycle A (IDN-9). Authoritative deltas from the as-designed body belo
 - **Vocabulary:** the off-but-not-closed state renders as **suspended** ("Your account has been suspended by an administrator. Please contact support."). The earlier ambiguous framing for this state is retired — see [`../../../planning/hub-v2/account-lifecycle-states-decision.md`](../../../planning/hub-v2/account-lifecycle-states-decision.md) (the canonical record). The member-initiated `paused` state + its self-service reactivation (IDN-12) are deferred (FEAT-H007 parked).
 - **No reactivation affordance this cycle:** the suspended surface offers NO self-reactivation (the FEAT-H007 affordance is deferred/parked with IDN-12); it offers sign-out so the member is not stranded.
 - **Architecture:** account state is resolved once per session by an `AccountStateProvider` in the root layout; an `AccountStateGate` renders the honest standalone surface INSTEAD of the chrome for a suspended/decommissioned/unknown-state FIM (so a switched-off member never hits the profile-dependent account menu). Active/Mist/sessionless pass through. A quiet "Account: active" line shows in profile settings.
-- **Tests (red->green):** unit `hub/tests/unit/components/account/AccountStateView.test.tsx` + `hub/tests/unit/lib/account/AccountStateProvider.test.tsx` (11/11); E2E `hub/tests/e2e/account-state.spec.ts` (active not interrupted, profile legibility, suspended surface, closed surface). `next build` + lint clean.
+- **Tests (red->green):** unit `hub/tests/unit/components/account/AccountStateView.test.tsx` + `hub/tests/unit/lib/account/AccountStateProvider.test.tsx`; E2E `hub/tests/e2e/account-state.spec.ts` (active not interrupted, profile legibility, suspended surface, closed surface). `next build` + lint clean.
+
+## Performance revision (6-done amendment — 2026-07-01) — the gate is non-blocking
+
+The 2026-07-01 performance investigation (region co-location, [ADR-U035](../../../architecture/decisions/ADR-U035-compute-datastore-colocation.md)) isolated the residual responsiveness cost to the **client-render waterfall**: the root-layout gate **blocked every page** on a serial `/api/account/state` round-trip *before* the page rendered and started its own fetches (`AccountStateView` `if (loading) return <LoadingState/>`). That serial gate is removed; the architecture-integrity check (perf bridge `2026-07-01_01`) confirmed this is **Hub shell rendering only** — API-first (ADR-U009) holds, Platform Core still owns the data + the FEAT-PC004 contract, the L1-L5 decomposition is untouched.
+
+**New gate semantics — optimistic, intercept-on-confirmed:**
+- While the account-state read is **in flight**, the gate renders the page **optimistically** (treats the member as active by default) — it does **not** block the whole app on the round-trip. The page's own data fetches (`/api/groups`, `/api/profile/me`) therefore fire **in parallel** with the account-state read instead of waiting behind it. (They already live in sibling components — `GroupsPage` / `AccountMenu` — so de-blocking the gate is the only change needed to parallelize them; no fetch was chained to another.)
+- The gate **intercepts only on a confirmed off-state**: `suspended` / `decommissioned` / an unknown-non-active label, or a read **error**. The standalone suspended / decommissioned / error surfaces are unchanged; the error surface still wins over the optimistic render (never silently leave a member on the active experience).
+- **Trade-off (stated deliberately):** a switched-off member may briefly see the chrome flash before the read resolves and the surface intercepts. This is acceptable because the data behind the chrome is **RLS-protected regardless** (`users_select_active` hides a suspended member's own rows — they see empty/loading states, never another member's data), and the switched-off case is rare. The honest off-state surface still wins the moment the state resolves.
+
+Captured in [`../../../planning/hub-v2/perf-hardening-backlog.md`](../../../planning/hub-v2/perf-hardening-backlog.md) as Tier 1. Maturity stays `6-done`; **STORY-4 below is revised to match** (the prior "show a blocking loading state while in flight" criterion is superseded).
+
+- **Code:** `AccountStateView.tsx` — dropped the blocking `if (loading) return <LoadingState/>` (+ its now-unused import); added `if (loading && !error) return children`. Provider/Gate unchanged (the provider still exposes `loading` for the profile "Account: active" legibility line).
+- **Tests (red->green, demonstrated red first):** the STORY-4 unit test was rewritten to assert in-flight → optimistic children with **no** blocking gate — confirmed red against the old code (rendered "Checking your account…"), green after the change; a second unit test pins the no-stale-surface-flash-during-`reload()` behaviour. Full Hub unit suite + `next build` + lint green. The E2E `STORY-1` active case adds a "no Checking-your-account gate" assertion (interception cases unchanged); E2E was **not** re-run live this session (needs the dev server + real substrate) — run before relying on it.
+- **Live before/after measurement is a manual step** (Network tab / `x-vercel-id`): the change removes one serial ~80 ms `/api/account/state` round-trip from the critical path of every page load.
 
 ## Problem
 
@@ -74,12 +89,13 @@ As a decommissioned FIM, I want an honest "this account is closed" message, so I
 - Given a signed-in FIM whose account state reads `decommissioned`, when the shell resolves, then the Hub renders a **terminal closed-account surface** — and **no** reactivation affordance is offered.
 - Given the decommissioned surface, when it renders, then it is visibly distinct from the suspended surface (terminal, not a recoverable hold).
 
-### STORY-4: Account state is loading
-As a FIM, I want a loading state while my account state is resolved, so the shell never appears frozen.
+### STORY-4: Account state resolves without blocking the shell
+As a FIM, I want the Hub to render immediately while my account state resolves in the background, so the shell never blocks on a serial round-trip and never appears frozen.
 
 **Acceptance criteria:**
-- Given the account-state read is in flight, when the data has not yet returned, then a loading state is shown — never a blank-but-interactive shell.
-- Given the account-state read fails (network/error), when it returns an error, then the Hub shows a clear retry/error state rather than silently rendering the active experience.
+- Given the account-state read is in flight, when the data has not yet returned, then the shell renders the page **optimistically** (the member is treated as active by default) — it does **not** block the whole app on a "Checking your account…" gate. The page shows its own per-surface loading states (e.g. "Loading your groups…"), never a frozen or blank-but-interactive shell. *(Revised 2026-07-01 — see the Performance revision above. Supersedes the prior "show a blocking loading state while in flight" criterion, which created a per-page render waterfall.)*
+- Given the account-state read resolves to a confirmed off-state (`suspended` / `decommissioned` / unknown-non-active), when it returns, then the account-state surface intercepts and replaces the optimistically-rendered chrome.
+- Given the account-state read fails (network/error), when it returns an error, then the Hub shows a clear retry/error state rather than silently leaving the member on the optimistic active experience.
 
 ### STORY-5: A Mist has no account-state surface
 As the Hub, I want to render no account-state surface for a Mist, so a non-durable identity is not shown FIM lifecycle states.

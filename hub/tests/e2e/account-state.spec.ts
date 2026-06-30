@@ -40,6 +40,9 @@ test.describe('FEAT-H006 — render account state', () => {
     await expect(page.getByRole('heading', { name: /my groups/i })).toBeVisible();
     await expect(page.getByTestId('account-suspended-surface')).toHaveCount(0);
     await expect(page.getByTestId('account-closed-surface')).toHaveCount(0);
+    // STORY-4 (revised 2026-07-01): the gate is non-blocking — the old serial
+    // "Checking your account…" loading screen no longer gates the page render.
+    await expect(page.getByText(/checking your account/i)).toHaveCount(0);
   });
 
   test('STORY-1: account state is legible in profile settings (Account: active)', async ({ page }) => {
