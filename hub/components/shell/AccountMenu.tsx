@@ -108,6 +108,13 @@ export function AccountMenu() {
             >
               Privacy &amp; consent
             </Link>
+            <Link
+              href="/export"
+              onClick={() => setOpen(false)}
+              className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+            >
+              Download my data
+            </Link>
             <button
               type="button"
               onClick={handleSignOut}

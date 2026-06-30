@@ -7,7 +7,7 @@ owner: hub
 consumers: [hub]
 wave: ferd
 requires-equipment: none
-maturity: 4-ready
+maturity: 6-done
 ---
 
 ## Problem
@@ -94,3 +94,12 @@ The **Gimbal** will consume the **same** `GET /api/account/export` contract for 
 - **Observability:** the Hub emits telemetry for the export request and its outcome (requested / succeeded / failed); error states are events, not silent failures (products-tier discipline).
 - **Transactions:** None.
 - **Extensibility:** the surface delivers whatever the versioned contract returns — a new section (the Journal, later areas) appears in the downloaded file with no Hub change. The Hub treats the document as opaque data it couriers, not a hardcoded client-side shape.
+
+## Implementation notes (6-done — Cycle C, 2026-06-30)
+
+Built TDD red-first, API-first against the live FEAT-PC008 contract.
+
+- **Surface** `hub/app/export/page.tsx` (the `/export` route) — FIM-only gate (sessionless → `/login?redirect=/export`; Mist → `/`; matches FEAT-H005/H006/H008), `AppShell` chrome, mounts the panel. **Entry point** added to `AccountMenu` ("Download my data" → `/export`, in the FIM-only menu). **Panel** `hub/components/account/DataExportPanel.tsx` ('use client') — the plain-language explanation + the "Download my data" action; on click it fetches the contract, hands the document to the download helper, and manages loading / error (no double-fire; a stable `aria-label` keeps the action addressable while the visible label shows "Preparing your download…"); V4 telemetry (`export.downloaded` / `export.download_failed`). **Client** `hub/lib/account/export-client.ts` (`fetchDataExport` → `GET /api/account/export`; `downloadJson` = Blob + object-URL + transient-anchor download; `DEFAULT_EXPORT_FILENAME = 'fringeisland-data-export.json'`).
+- **Faithful courier** — the Hub never parses or reshapes the document; whatever the versioned contract returns (incl. future sections) flows through to the file. No direct Supabase (ADR-U009); carries no migration of its own (assembly is platform-side, FEAT-PC008).
+- **Red→green evidence (units demonstrated red-first):** client unit `hub/tests/unit/lib/account/export-client.test.ts` — **4 tests** (fetch returns the doc / throws on non-OK; `downloadJson` Blob+anchor+filename; default filename) RED on missing module → GREEN. Panel unit `hub/tests/unit/components/account/DataExportPanel.test.tsx` — **4 tests** (explanation + action; click downloads the *exact* doc unparsed; loading + no double-fire; error + retry + downloads nothing) RED on missing component → GREEN. `AccountMenu.test.tsx` extended with the export-link assertion (RED → GREEN). E2E `hub/tests/e2e/export.spec.ts` — **3 tests** (surface visible; click triggers a `fringeisland-data-export.json` download via Playwright's download event; reach via the account menu) — journey tests **layered on the red-first units** (labelled honestly, matching FEAT-H008/H009; the orchestration logic is unit-covered).
+- **Gates:** `next build` clean (`/export` static + the route), `eslint` clean, full unit **159/159**, export E2E **3/3**.
