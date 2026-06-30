@@ -6,7 +6,7 @@ title: Member consent read — a self-service contract returning the caller's ow
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -137,3 +137,13 @@ Additive: one new column (default-backfilled), one new RLS-protected catalog tab
 
 1. **API convention reconciliation (ADR-U015).** Spec'd as `GET /api/account/consent` + `@supabase/ssr` cookie auth — the realized Hub house style (FEAT-PC003/PC004). The canonical `/api/v1/...` + `Authorization: Bearer` form (platform-tier rule + ADR-U015) is directional and not yet realised across the new Hub; a future reconciliation aligns the shipped routes with the versioned contract. Carried, not resolved here.
 2. **Catalog ownership boundary.** The `consent_purposes` catalog is authored as PC-4 Governance reference data over a PC-2-owned table. If the catalog grows policy/versioning machinery (re-consent campaigns, per-version diffs), confirm at that point whether it warrants its own governance sub-spec rather than riding the consent contracts.
+
+## Implementation notes (6-done — Cycle B, 2026-06-29)
+
+Built TDD red-first, platform-first.
+
+- **Migration** `supabase/migrations/20260629211504_feat_pc006_consent_read.sql` (schema-review gate; applied on Stefan's nod). Three additive pieces: the `decision text NOT NULL DEFAULT 'granted'` column on `public.consent_records` (existing transcendence captures backfilled `'granted'`); the `public.consent_purposes` catalog (new table → RLS `consent_purposes_select_all` SELECT-to-authenticated, no client write) seeded `transcendence` (`withdrawable=false`, `v1`) + `product_analytics` (`withdrawable=true`, `v1`); and `get_own_consent_state()` (`SECURITY DEFINER`, `SET search_path=''`, subject pinned via `get_current_personal_group_id()`, no target param). `current_policy_version='v1'` matches the live `TRANSCENDENCE_POLICY_VERSION`, so existing FIMs read `needs_reconsent=false`.
+- **ADR-U034 Amendment 1** records the `decision` column + catalog (append-only note; schema-predates-partition PW-1; re-consent flow stays out of scope, drift surfaced only).
+- **Read lib** `hub/lib/consent/queries.ts` (`fetchOwnConsentState` + `ConsentState`/`ConsentEffectiveEntry`/`ConsentHistoryEntry` types). **Route** `GET /api/account/consent` (`hub/app/api/account/consent/route.ts`, `@supabase/ssr` cookie auth; sessionless → 401; failure → 500; no 404 — the contract always returns an object).
+- **Red→green evidence (all demonstrated red first):** integration `hub/tests/integration/account/consent-read.test.ts` — **12 tests** across STORY-1…6 (effective latest-per-purpose, full append-only history newest-first, granted↔withdrawn, drift true/false, own-row-only + RLS-unchanged, catalog-driven). First run RED (`decision` column + function missing); GREEN after the migration applied. Route unit `hub/tests/unit/app/api/account-consent-route.test.ts` — **3 tests** (401 / 200+telemetry / 500), RED on missing route module → GREEN. Pyramid: substrate contract at integration, route logic at unit (no component/E2E — that is FEAT-H008, API-first).
+- **Gates:** `next build` clean (route compiles + type-checks), `eslint` clean, full unit suite 122/122, regression `test:integration:auth` 28/28 + `test:integration:account` 18/18 (consent_records consumers — transcendence/erasure — unaffected by the additive column).
