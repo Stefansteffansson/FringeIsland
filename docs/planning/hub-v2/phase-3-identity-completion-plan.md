@@ -25,7 +25,7 @@ Descriptions + dependencies are from `SPECIFICATION.md` §L3:186–197. Platform
 
 | IDN | Capability | Internal dep | Platform half (per §L3 external deps) | Cycle |
 |-----|-----------|--------------|----------------------------------------|-------|
-| IDN-9 | Render account state (active / deactivated / decommissioned) | IDN-3 ✓ | PC-2, PC-4 (state columns exist) | **A** (built `6-done` 2026-06-29) |
+| IDN-9 | Render account state (active / suspended / decommissioned) | IDN-3 ✓ | PC-2, PC-4 (state columns exist) | **A** (built `6-done` 2026-06-29) |
 | IDN-12 | Self-service account reactivation | IDN-9 | PC-2 (state transition), PC-4 (audit) | **A** (deferred/parked) |
 | IDN-6 | Render member-visible consent state + history | IDN-3 ✓ | PC-4 (consent store exists — PC002/ADR-U034) | **B** |
 | IDN-7 | Update granular consent decisions + sharing controls | IDN-6 | PC-4, PC-3 | **B** |

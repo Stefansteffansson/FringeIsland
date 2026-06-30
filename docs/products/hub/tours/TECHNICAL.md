@@ -479,7 +479,7 @@ This area is fundamentally about the questions **what do I want?** and **how do 
 |----|------------|----|-----------:|
 | ADM-1 | Render admin dashboard with platform statistics | Current | — |
 | ADM-2 | Search, filter, and list members at platform scope | Current | — |
-| ADM-3 | Activate, deactivate, or decommission a member account | Current | — |
+| ADM-3 | Activate, suspend, or decommission a member account | Current | — |
 | ADM-4 | Hard-delete a member with content reassignment to sentinel author | Current | — |
 | ADM-5 | Force-logout a member's active sessions | Current | — |
 | ADM-6 | Sweep a member from every group on the platform | Current | — |
@@ -511,7 +511,7 @@ This area is fundamentally about the questions **what do I want?** and **how do 
 ### Safety properties
 
 - **Last-administrator protection (ADM-12).** The platform always retains at least one administrator. The last admin cannot be removed even by mistake.
-- **Reversibility (ADM-3).** Activate, deactivate, decommission are three distinct actions with different reversibility profiles. ADM-4 (hard-delete) is the only fully irreversible member operation; it includes content reassignment to a sentinel author so conversations remain coherent.
+- **Reversibility (ADM-3).** Activate, suspend, decommission are three distinct actions with different reversibility profiles. ADM-4 (hard-delete) is the only fully irreversible member operation; it includes content reassignment to a sentinel author so conversations remain coherent.
 - **Auto-routing (ADM-6, ADM-18).** Sweeping a member from every group (ADM-6) — or removing them from specific groups (ADM-18) — routes through MEM-5/MEM-6/MEM-7/MEM-8 rather than bypassing them, so each group's exit-path semantics are honoured.
 
 ### Key dependencies
