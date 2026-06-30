@@ -76,12 +76,14 @@ describe('FEAT-H005 STORY-1 (unit) — the menu is a FIM affordance', () => {
 });
 
 describe('FEAT-H005 STORY-1/4 (unit) — menu contents', () => {
-  it('opens to Profile + Privacy & consent + Sign out', async () => {
+  it('opens to Profile + Privacy & consent + Download my data + Sign out', async () => {
     render(<AccountMenu />);
     await userEvent.click(screen.getByRole('button', { name: /account menu/i }));
     expect(screen.getByRole('link', { name: /profile/i })).toHaveAttribute('href', '/profile');
     // FEAT-H008: the FIM-only entry point to the consent surface.
     expect(screen.getByRole('link', { name: /privacy & consent/i })).toHaveAttribute('href', '/consent');
+    // FEAT-H010: the FIM-only entry point to the data-export surface.
+    expect(screen.getByRole('link', { name: /download my data/i })).toHaveAttribute('href', '/export');
     expect(screen.getByRole('button', { name: /sign out/i })).toBeInTheDocument();
   });
 });
