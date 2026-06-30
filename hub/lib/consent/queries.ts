@@ -66,3 +66,25 @@ export async function fetchOwnConsentState(
   // type-checks (the same posture as lib/account/queries.ts).
   return (data as unknown as ConsentState | null) ?? EMPTY_CONSENT_STATE;
 }
+
+/**
+ * Record a grant/withdraw decision via the FEAT-PC007 SECURITY DEFINER write
+ * contract. Own-subject, append-only, withdrawability-gated; `policy_version` is
+ * stamped server-side. Returns the updated effective entry for the purpose (so
+ * the caller need not immediately re-read). Throws the underlying
+ * `PostgrestError` (with its SQLSTATE `code`) on refusal so the route can map it
+ * to the right HTTP status (`22023`→422 unknown purpose, `42501`→409 refused
+ * withdrawal, `28000`→403 no active subject).
+ */
+export async function recordConsentDecision(
+  supabase: SupabaseClient,
+  purpose: string,
+  decision: string,
+): Promise<ConsentEffectiveEntry> {
+  const { data, error } = await supabase.rpc('record_consent_decision', {
+    p_purpose: purpose,
+    p_decision: decision,
+  });
+  if (error) throw error;
+  return data as unknown as ConsentEffectiveEntry;
+}
