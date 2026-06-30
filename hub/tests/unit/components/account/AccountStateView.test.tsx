@@ -44,14 +44,31 @@ describe('AccountStateView (FEAT-H006 — render account state)', () => {
     expect(screen.queryByTestId('account-suspended-surface')).not.toBeInTheDocument();
   });
 
-  it('STORY-4: while loading, a loading state shows (never a blank-but-interactive shell)', () => {
+  it('STORY-4 (revised 2026-07-01): while the read is in flight, the page renders optimistically — no blocking "Checking your account" gate', () => {
+    // Non-blocking gate (perf Tier 1): in flight (loading, no state yet, no error)
+    // the page renders immediately so the account-state read no longer serializes
+    // the page's own fetches. The blocking "Checking your account…" loading screen
+    // is gone.
     render(
       <AccountStateView identity="fim" loading error={null} state={null} onRetry={noop} onSignOut={noop}>
         {children}
       </AccountStateView>,
     );
-    expect(screen.getByTestId('loading-state')).toBeInTheDocument();
-    expect(screen.queryByTestId('app-children')).not.toBeInTheDocument();
+    expect(screen.getByTestId('app-children')).toBeInTheDocument();
+    expect(screen.queryByTestId('loading-state')).not.toBeInTheDocument();
+  });
+
+  it('STORY-4 (revised): a stale off-state does NOT flash while a reload is in flight — children render optimistically', () => {
+    // During reload() the provider sets loading=true but a previous `state` may
+    // linger; render optimistically until the fresh read settles rather than
+    // flashing the old surface.
+    render(
+      <AccountStateView identity="fim" loading error={null} state={st('suspended')} onRetry={noop} onSignOut={noop}>
+        {children}
+      </AccountStateView>,
+    );
+    expect(screen.getByTestId('app-children')).toBeInTheDocument();
+    expect(screen.queryByTestId('account-suspended-surface')).not.toBeInTheDocument();
   });
 
   it('STORY-4: on error, a retry surface shows and the active experience is NOT rendered', async () => {

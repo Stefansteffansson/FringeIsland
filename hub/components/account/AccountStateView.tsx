@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import type { Identity } from '@/lib/auth/mist';
 import type { AccountState } from '@/lib/account/queries';
-import { LoadingState } from '@/components/ui/LoadingState';
 import { AccountStateSurface } from '@/components/account/AccountStateSurface';
 
 /**
@@ -38,13 +37,16 @@ export function AccountStateView({
   // never a role string — products-tier rule). Mist/sessionless pass through.
   if (identity !== 'fim') return <>{children}</>;
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <LoadingState label="Checking your account..." />
-      </div>
-    );
-  }
+  // Non-blocking, optimistic gate (FEAT-H006 perf revision, 2026-07-01): while the
+  // account-state read is in flight we render the page immediately and let the read
+  // resolve in parallel — we do NOT block the whole app on the /api/account/state
+  // round-trip (that serial gate created a per-page render waterfall). We intercept
+  // ONLY on a confirmed off-state below. `loading` keeps a real job: during a
+  // reload() a stale `state` may linger, so render optimistically until the fresh
+  // read settles rather than flashing the old surface. The data behind the chrome is
+  // RLS-protected regardless, so a brief optimistic render for the rare switched-off
+  // member is acceptable. See docs/planning/sessions/2026-07-01_01 + the FEAT-H006 spec.
+  if (loading && !error) return <>{children}</>;
 
   if (error) {
     return (

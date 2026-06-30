@@ -35,7 +35,7 @@ Co-location fixed the *distance per hop*. A follow-up measurement isolated the *
 
 | Tier | Item | Form (no shortcuts) | Payoff |
 |---|---|---|---|
-| **T1** (next) | **De-block the account-state gate** (render optimistically; intercept only on confirmed suspended/decommissioned) + **parallelize** the page's `/api/groups` + `/api/profile/me` calls | `feature-development`: **update FEAT-H006 spec** (gate semantics) + red-first. Hub-only. | Removes the serial ~80 ms gate from every load + collapses the chain to ~1 batch. Immediate. |
+| **T1** ✅ **shipped 2026-07-01** | **De-block the account-state gate** (render optimistically; intercept only on confirmed suspended/decommissioned) + **parallelize** the page's `/api/groups` + `/api/profile/me` calls | `feature-development`: FEAT-H006 spec "Performance revision (2026-07-01)" + revised STORY-4; `AccountStateView` non-blocking (`if (loading && !error) return children`); red→green unit + `next build`/lint clean (TASK-H006-02). The two page fetches were already sibling components, so de-blocking was the only change needed. **Live before/after measurement still pending** (Network tab / `x-vercel-id`). | Removes the serial ~80 ms gate from every load. |
 | **T2** | **Server-render the initial page with its data** (Next.js RSC; data fetched via the Platform API server-side — API-first preserved) | **ADR** + `hub/CLAUDE.md` update (revisits the CSR lean) | One round-trip to a complete page — the genuine "European-fast" lever. |
 
 **Resume point + the full Tier-1 plan:** session bridge [`../sessions/2026-07-01_01_-_PERF-INVESTIGATION-COLOCATION-AND-CLIENT-RENDER-FINDING.md`](../sessions/2026-07-01_01_-_PERF-INVESTIGATION-COLOCATION-AND-CLIENT-RENDER-FINDING.md).
