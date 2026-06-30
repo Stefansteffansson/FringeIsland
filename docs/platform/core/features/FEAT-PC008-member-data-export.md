@@ -6,7 +6,7 @@ title: Member data export — a self-service contract that assembles and returns
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -137,3 +137,15 @@ Additive: one new `SECURITY DEFINER` read function, one durable export-event wri
 1. **Export-event substrate (resolve at the build-session schema-review gate).** The durable export-event record defaults to `public.admin_audit_log` (the only existing durable audit substrate, honouring the no-new-table decision). The open point is whether a *member-initiated* data-subject-rights event belongs in an *admin*-tier log — where it would appear in admin/audit viewers alongside genuine admin actions — or in a dedicated privacy / data-subject-rights event log. Decided with the migration at the schema gate; not a DoR blocker (the default is clear).
 2. **API convention reconciliation (ADR-U015).** Spec'd as `GET /api/account/export` + `@supabase/ssr` cookie auth — the realized Hub house style (FEAT-PC003/PC006/PC007). The canonical `/api/v1/...` + `Authorization: Bearer` form is directional and not yet realised across the new Hub; a future reconciliation aligns the shipped routes with the versioned contract. Carried, not resolved here.
 3. **Email source.** The subject's email is read from `auth.users`. Confirm at build whether the export should also carry any other auth-schema fields the member would consider "their data" (e.g. last-sign-in), or strictly the application-tier record.
+
+## Implementation notes (6-done — Cycle C, 2026-06-30)
+
+Built TDD red-first, platform-first.
+
+- **Migration** `supabase/migrations/20260630161155_feat_pc008_data_export.sql` (schema-review gate; applied on Stefan's nod). **One new function, no new table.** `get_own_data_export()` — PL/pgSQL, `SECURITY DEFINER`, `SET search_path=''`, **VOLATILE** (it writes the audit row, so not STABLE). Resolves the caller via `auth.uid()` → `public.users` directly (**not** `get_current_personal_group_id()`, which is `is_active`-gated) so a **suspended** member can still exercise their right of access; own-row only, no target parameter. Assembles `schema_version` / `exported_at` / `subject` / `profile` / `account_state` / `consent` (full append-only history, newest-first) / `memberships` (joined to `groups` for the name) — all Core-owned. Writes one durable `data_export` row to `public.admin_audit_log` (`actor_group_id` = the member's own personal group); the SECURITY DEFINER elevation is what permits the own-action audit write. Domain-owned data (enrolments) + the Journal are forward-seam sections (omitted in v1 — one-way Core→Domain boundary).
+- **Export-event substrate (the carried open point) — resolved to `admin_audit_log` for v1** (the existing durable audit substrate; honours the no-new-table decision). Documented in the migration + Open spec question #1; a dedicated privacy-events log stays a possible later move.
+- **Email source** — `subject.email` is the application-tier `public.users.email` (not a separate `auth.users` read); sufficient for v1 (open question #3 resolved minimally).
+- **Read lib** `hub/lib/account/export.ts` (`fetchOwnDataExport` + the `DataExport` types). **Route** `GET /api/account/export` (`hub/app/api/account/export/route.ts`, `@supabase/ssr` cookie auth; sessionless → 401; failure → 500, never a partial document) — returns the document with `Content-Disposition: attachment` so it downloads as `fringeisland-data-export.json`.
+- **Red→green evidence (all demonstrated red first):** integration `hub/tests/integration/account/data-export.test.ts` — **7 tests** across STORY-1…5 (document shape + Core sections; empty area = empty collection; full ledger newest-first; own-subject only — Alice never sees Bob's; durable export-event row; versioned + forward-seam sections omitted). First run RED (function missing from the schema cache); GREEN after the migration applied. Route unit `hub/tests/unit/app/api/account-export-route.test.ts` — **3 tests** (401 / 200 + attachment + telemetry / 500), RED on missing route module → GREEN. Pyramid: substrate contract at integration, route logic at unit (no component/E2E — that is FEAT-H010, API-first).
+- **Suite-timeout note (honest, not a logic change):** the data-export integration suite is heavier than the consent suites (cross-substrate reads + an audit write per export). Under the full-account `runInBand` sweep it runs last and brushed the default 30s ceiling on cumulative remote-DB contention (it passes in ≈19–37s). Raised this suite's timeout to 60s (`jest.setTimeout`) and moved the empty-area user create/teardown into `beforeAll`/`afterAll` hooks.
+- **Gates:** `next build` clean (route compiles + type-checks), `eslint` clean, full unit suite **151/151**, account integration **32/32** (4 suites — the consent read/write + account-state suites are regression-unaffected by the additive function).
