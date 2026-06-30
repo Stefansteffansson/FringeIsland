@@ -7,7 +7,7 @@ owner: hub
 consumers: [hub]
 wave: ferd
 requires-equipment: none
-maturity: 4-ready
+maturity: 6-done
 ---
 
 ## Problem
@@ -101,3 +101,12 @@ The **Gimbal** will consume the **same** `GET /api/account/consent` contract for
 - **Observability:** the Hub emits telemetry for the consent-view load and its outcome (success / error); error states are events, not silent failures (products-tier discipline).
 - **Transactions:** None.
 - **Extensibility:** the surface renders whatever purposes the catalog-backed contract returns — a new purpose appears with no Hub change. Decisions are rendered from open-text values the Hub treats as data (granted / withdrawn / undecided / unknown → safe default), not a hardcoded client-side enum.
+
+## Implementation notes (6-done — Cycle B, 2026-06-30)
+
+Built TDD red-first, API-first against the live FEAT-PC006 contract.
+
+- **Surface** `hub/app/consent/page.tsx` (the `/consent` route) — FIM-only gate (sessionless → `/login?redirect=/consent`; Mist → `/`; matches FEAT-H005/H006), `AppShell` chrome, mounts the panel. **Entry point** added to `AccountMenu` ("Privacy & consent" → `/consent`, FIM-only). **Container** `hub/components/consent/ConsentPanel.tsx` ('use client') owns the API-first fetch (`fetchConsentState()` → `GET /api/account/consent`) + loading/error/reload + V4 telemetry (`consent.viewed` / `consent.view_failed`). **Pure view** `hub/components/consent/ConsentView.tsx` renders effective (one row per catalogued purpose: label, decision granted/withdrawn/"Not yet decided", quiet drift hint when `needs_reconsent`) + full history newest-first. Read-only — no controls (FEAT-H009). **Client** `hub/lib/consent/client.ts` (`fetchConsentState`).
+- **No direct Supabase** — all consent data via the platform route (ADR-U009). Unknown decision values render as data (safe default), purposes are catalog-driven (a new purpose appears with no Hub change).
+- **Red→green evidence:** unit `hub/tests/unit/components/consent/ConsentView.test.tsx` — **8 tests** (loading · error+retry · effective rows + undecided label · read-only/no controls · history newest-first · drift hint shown/not-shown · only-transcendence honest non-empty) RED on missing component → GREEN. `AccountMenu.test.tsx` extended with the consent-link assertion (RED → GREEN). E2E `hub/tests/e2e/consent.spec.ts` — **4 tests** (catalog-driven effective rows · history section · read-only · reach-via-account-menu); these journey tests are **test-after** (the surface was assembled from the red-first `ConsentView` unit specs + the red-first menu-link), labelled honestly.
+- **Gates:** `next build` clean (`/consent` static + the route), `eslint` clean, full unit 137/137, consent E2E 4/4.
