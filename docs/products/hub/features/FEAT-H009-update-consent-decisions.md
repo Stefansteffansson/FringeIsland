@@ -7,7 +7,7 @@ owner: hub
 consumers: [hub]
 wave: ferd
 requires-equipment: none
-maturity: 4-ready
+maturity: 6-done
 ---
 
 ## Problem
@@ -109,3 +109,12 @@ The **Gimbal** will consume the **same** `POST /api/account/consent` contract fo
 - **Observability:** the Hub emits telemetry for each consent-change attempt, its confirmation, and success / failure / refusal outcomes (the authoritative ledger row is written platform-side by FEAT-PC007); no silent failures.
 - **Transactions:** None.
 - **Extensibility:** the controls are driven by the contract's open `withdrawable` flag and open `decision` values — a new purpose, or a new decision class, flows through the same data-driven controls without a hardcoded client-side set. Non-withdrawable purposes render locked through the same flag, not a hardcoded special-case for `transcendence`.
+
+## Implementation notes (6-done — Cycle B, 2026-06-30)
+
+Built TDD red-first, on the FEAT-H008 surface, API-first against the live FEAT-PC007 write + FEAT-PC006 re-read.
+
+- **Controls (opt-in on the existing `ConsentView`).** A new `onRequestChange` prop turns the read-only surface interactive: a `withdrawable` purpose gets a grant/withdraw control reflecting its current decision (granted → Withdraw, undecided/withdrawn → Grant); a `withdrawable=false` purpose (`transcendence`) renders **locked** ("Required", no control — the Hub never offers an action the platform refuses). The in-flight row shows a "Saving..." loading state and is disabled. **Omitting** `onRequestChange` keeps the surface read-only — preserving the FEAT-H008 invariant (unit-guarded).
+- **Orchestration (`ConsentPanel`).** Choosing a control opens a **`ConfirmModal`** (never a browser dialog — Hub convention) with grant/withdraw copy (withdrawal copy states "you can grant this again later"). On confirm it POSTs (`postConsentDecision` → `POST /api/account/consent`, FEAT-PC007) then **re-reads** effective state (FEAT-PC006 — the single source of truth; never an optimistic local flip), updating all rows together. A failure surfaces a clear inline error and leaves the decision visibly unchanged (no false success). V4 telemetry: `consent.changed` (success/failed). **Write client** `postConsentDecision()` added to `hub/lib/consent/client.ts`.
+- **Red→green evidence:** `ConsentView.controls.test.tsx` — **6 unit** (grant/withdraw/re-grant request the right decision · non-withdrawable locked · busy disabled+loading · read-only without the prop) RED → GREEN. `ConsentPanel.test.tsx` — **5 unit** orchestration (modal opens, no call yet · confirm POSTs + re-reads, no optimistic flip · withdraw copy + flow · cancel = no call · failure shows error + no flip + no re-read) RED → GREEN. E2E `consent.spec.ts` — **3 H009** (live grant→withdraw round-trip through the ConfirmModal · transcendence locked · cancel = no change), test-after the assembled surface (honestly labelled; logic driven red-first at the unit tier + PC007 integration tier). The H008 "read-only surface" *E2E* was removed (superseded — the surface is now interactive; the read-only invariant stays unit-guarded on `ConsentView` without `onRequestChange`).
+- **Gates:** `next build` clean, `eslint` clean, full unit 148/148, consent E2E 6/6 (3 H008 + 3 H009; teardown purges the round-trip's consent rows past the append-only RESTRICT FK).
