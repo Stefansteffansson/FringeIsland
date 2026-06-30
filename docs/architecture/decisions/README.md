@@ -45,6 +45,7 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 | ADR-U032 | [Hub v2 rebuild — coexistence via a separate clean tree](ADR-U032-hub-v2-coexistence-separate-tree.md) | Accepted | product |
 | ADR-U033 | [Scheduled reaper for Mist ephemerality — pg_cron as the platform scheduler](ADR-U033-mist-ephemerality-reaper.md) | Accepted | platform-core |
 | ADR-U034 | [Consent substrate — append-only consent records at transcendence](ADR-U034-consent-record-substrate.md) | Accepted | platform-core |
+| ADR-U035 | [Compute–datastore co-location — Vercel functions run in the database region](ADR-U035-compute-datastore-colocation.md) | Accepted | platform-core |
 
 ---
 
