@@ -69,12 +69,11 @@ Pin the Hub's Vercel serverless functions to **`dub1`** via a repo-committed `ve
 backend, studio services) that read this database default to the same region unless a measured reason
 says otherwise.
 
-**Operational note (verify on first deploy):** `vercel.json` lives at the path Vercel treats as the
-project **Root Directory**. This repo is a monorepo with the app in `hub/` and a root `build` script
-(`npm run build -w hub`), which indicates the Vercel Root Directory is the **repo root** — so the file is
-placed at `./vercel.json`. If the Vercel project's Root Directory is set to `hub/` instead, move the file
-to `hub/vercel.json` (Vercel reads only the one at its Root Directory; a misplaced file is silently
-ignored, not an error). Confirm the function region shows as `dub1` after redeploy.
+**Operational note.** `vercel.json` must live at the path Vercel treats as the project **Root
+Directory**. Confirmed in the Vercel dashboard (Settings → Build and Deployment, 2026-06-30): the
+`fringe-island` project's Root Directory is **`hub`** — so the file is at **`hub/vercel.json`**. Vercel
+reads only the `vercel.json` at its Root Directory. Verify after redeploy that the function region shows
+**`dub1` (Dublin)`** under Settings → Functions (it was the default `iad1` / US-East before).
 
 ## Consequences
 
