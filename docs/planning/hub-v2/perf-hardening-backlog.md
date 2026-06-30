@@ -19,11 +19,30 @@ This is a to-do list, not a spec. Each item is decomposed properly (paired specs
 
 ## L0 — Co-locate compute with the datastore — ✅ DONE (2026-06-30)
 
-`vercel.json` pins the Hub's functions to `dub1` (eu-west-1, the DB's region). [ADR-U035](../../architecture/decisions/ADR-U035-compute-datastore-colocation.md). ~700 ms → ~45 ms on `/groups`, zero architectural change. **This is why everything below is parkable** — with intra-region hops at ~1–2 ms, round-trip *count* stops being a latency emergency and becomes deliberate hardening.
+`vercel.json` pins the Hub's functions to `dub1` (eu-west-1, the DB's region). [ADR-U035](../../architecture/decisions/ADR-U035-compute-datastore-colocation.md). ~700 ms → ~45 ms on `/groups`, zero architectural change. (Confirmed live via `x-vercel-id: arn1::dub1` — the Vercel **dashboard** still shows `iad1`, its saved default, which does **not** reflect the `vercel.json` override; verify region via the response header, not the dashboard.)
 
 ---
 
-## Parked items (run between Identity → Groups)
+## Refined diagnosis (2026-07-01): the client-render pattern is now the top responsiveness lever
+
+Co-location fixed the *distance per hop*. A follow-up measurement isolated the **residual** slowness — and it is **not** the parked round-trip-count items:
+
+- Each API call is now **~80 ms** (Sweden→Dublin distance); server-side hops are intra-region (~1–2 ms).
+- **So P1/P2 are confirmed LOW latency-impact** (they shave intra-region ~2 ms hops) — they remain valuable for **Auth-service load + cleanliness at scale**, but they are **not** the responsiveness fix. Do not pull them forward for speed.
+- **The real lever is the client-render pattern.** The Hub is a client-rendered SPA, and the root layout blocks **every** page render on a serial account-state fetch: `hub/components/account/AccountStateView.tsx:41` → `if (loading) return <LoadingState/>`. So a fresh load waits ~80 ms on `/api/account/state` **before** the page renders + starts its own fetches.
+
+**Both fixes stay inside the hierarchy** (API-first / Platform ownership / decomposition intact); they change only the Hub's own shell rendering (products own their shell).
+
+| Tier | Item | Form (no shortcuts) | Payoff |
+|---|---|---|---|
+| **T1** (next) | **De-block the account-state gate** (render optimistically; intercept only on confirmed suspended/decommissioned) + **parallelize** the page's `/api/groups` + `/api/profile/me` calls | `feature-development`: **update FEAT-H006 spec** (gate semantics) + red-first. Hub-only. | Removes the serial ~80 ms gate from every load + collapses the chain to ~1 batch. Immediate. |
+| **T2** | **Server-render the initial page with its data** (Next.js RSC; data fetched via the Platform API server-side — API-first preserved) | **ADR** + `hub/CLAUDE.md` update (revisits the CSR lean) | One round-trip to a complete page — the genuine "European-fast" lever. |
+
+**Resume point + the full Tier-1 plan:** session bridge [`../sessions/2026-07-01_01_-_PERF-INVESTIGATION-COLOCATION-AND-CLIENT-RENDER-FINDING.md`](../sessions/2026-07-01_01_-_PERF-INVESTIGATION-COLOCATION-AND-CLIENT-RENDER-FINDING.md).
+
+---
+
+## Parked items (scale / cleanliness / hygiene — lower priority than T1/T2 above)
 
 | # | Item | Effort | Form (no shortcuts) | Why / payoff |
 |---|------|--------|---------------------|--------------|
