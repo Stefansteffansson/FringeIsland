@@ -1,9 +1,9 @@
 # ADR-U036: Edge runtime for the Hub's hot read routes — eliminate serverless cold-start latency (region-pinned to preserve co-location)
 
-**Status:** Proposed (flips to Accepted on merge, after the preview-deploy re-measurement confirms the region pin holds and cold starts vanish)
+**Status:** Accepted (preview-deploy re-measured 2026-07-01 — cold-start penalty eliminated + `preferredRegion='dub1'` pin confirmed held; see "Verification (done)" below). Pending production merge (PR #39).
 **Date:** 2026-07-01
 **Deciders:** Stefan
-**Tags:** scope:product · wave:ferd
+**Tags:** scope:platform-core · scope:product · wave:ferd
 
 > Architecture Decision Record (MADR-style). **Resolves** a *measured* production responsiveness problem that survived [ADR-U035](./ADR-U035-compute-datastore-colocation.md) (co-location): the Hub's Node serverless functions **cold-start (~740–790 ms)** on the first hit after an idle gap, and re-cold on every navigation that follows a pause — the felt "spinning wheel." Moves the three **hot read routes** (`/api/account/state`, `/api/profile/me`, `/api/groups`) to the **Edge runtime** (V8 isolates, ~0 ms cold start), **pinned to `dub1`** via `preferredRegion` so co-location with the Ireland database (ADR-U035) is preserved. Pure runtime topology — it changes **no** contract, schema, or anatomy (ADR-U009 API-first is untouched; business logic stays in the route handlers).
 
@@ -45,7 +45,13 @@ A measured investigation (2026-07-01, via the browser against the live `dub1` de
 
 **Chosen option: Option A**, because it eliminates the cold-start penalty *structurally* (V8 isolates don't pay the Node boot) while `preferredRegion='dub1'` keeps the function co-located with the database, so ADR-U035's intra-region hops are preserved — and the three routes are already Edge-compatible (they use only `@supabase/ssr`, `next/headers` cookies, `fetch`-based Supabase/PostgREST calls, and `console`/`Date`; no Node-only APIs).
 
-**Verification gate (why Status is Proposed):** the change ships first to a **PR preview deploy**; the same browser probe re-measures cold + warm against the preview. The ADR flips to **Accepted** and merges to production **only if** (a) the cold-start penalty is gone and (b) warm latency stays ~115 ms (confirming the `dub1` pin held) rather than ballooning to ~245 ms (which would mean the edge function ran near the user, not in Dublin). If the pin does not hold, fall back to **Option B** (warm-ping cron) or revert.
+**Verification (done — 2026-07-01, PR #39 preview deploy, browser-measured):** the same probe re-measured the preview edge routes. The cold-start penalty is **gone** — first-hit-after-deploy **313 ms** vs the Node **~740–790 ms**; steady ~130 ms. Every `x-vercel-id` read `arn1::dub1::…`, so the **`preferredRegion='dub1'` pin held** and warm stayed ~130 ms (not the ~245 ms that would signal the function ran near the user). Both gate criteria met → **Accepted**. (Had the pin not held, the fallback was Option B — warm-ping cron — or revert.)
+
+### Scope and runtime policy
+
+- **Why `scope:platform-core` too (corrects an earlier under-scoping):** these three routes implement **Platform Core** contracts — [FEAT-PC004](../../platform/core/features/FEAT-PC004-account-state-read.md) + [FEAT-PC003](../../platform/core/features/FEAT-PC003-self-service-profile.md) (Identity) and the groups read — **currently co-hosted in the Hub's Next.js app**. The runtime/region of the platform API surface is a platform-core deployment concern, not Hub chrome; this is *not* a "Hub shell only" change.
+- **Runtime policy (intentional heterogeneity — stated, not implicit):** the API surface is now split by purpose. **Hot READ paths on the critical render path → Edge + `preferredRegion='dub1'`.** **Mutations and Node-dependent routes → the default Node runtime** (the auth flows; and `/api/account/export`, which assembles a document and needs Node). New routes **default to Node**; move a route to Edge **only** when it is a hot read, and **always** with the `dub1` pin.
+- **Extraction coupling (revisit-later flag):** this decision is scoped to the platform-contract routes **as currently hosted inside the Hub app**. Whether those routes belong in the Hub at all is a **separate, parked architectural question** (2026-07-01). If that HTTP API surface later extracts to a standalone platform service, this runtime/region choice travels with it and is reconsidered there — it is not a permanent Hub property.
 
 ### Consequences
 
