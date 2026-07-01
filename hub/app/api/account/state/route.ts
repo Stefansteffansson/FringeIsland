@@ -3,6 +3,13 @@ import { createClient } from '@/lib/supabase/server';
 import { fetchOwnAccountState } from '@/lib/account/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
+// Perf (ADR-U036): run on the Edge runtime (V8 isolate, ~0ms cold start — the Node
+// lambda cold start was ~740-790ms on first hit after idle), pinned to `dub1` so
+// co-location with the Ireland DB (ADR-U035) is preserved. Keep this route's imports
+// Edge-safe (no Node-only APIs) — @supabase/ssr + next/headers cookies + fetch only.
+export const runtime = 'edge';
+export const preferredRegion = 'dub1';
+
 /**
  * FEAT-PC004 — GET /api/account/state (IDN-9).
  *
