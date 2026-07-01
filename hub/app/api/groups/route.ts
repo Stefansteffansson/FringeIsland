@@ -3,6 +3,12 @@ import { createClient } from '@/lib/supabase/server';
 import { fetchMemberGroups } from '@/lib/groups/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
+// Perf (ADR-U036): run on the Edge runtime (V8 isolate, ~0ms cold start), pinned to
+// `dub1` so co-location with the Ireland DB (ADR-U035) is preserved. Keep this route's
+// imports Edge-safe (no Node-only APIs) — @supabase/ssr + next/headers cookies + fetch.
+export const runtime = 'edge';
+export const preferredRegion = 'dub1';
+
 /**
  * GET /api/groups — the API-first read path for the member's group list
  * (ADR-U009: DB → API → frontend; the frontend never touches a table directly).
