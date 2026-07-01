@@ -82,3 +82,14 @@ A measured investigation (2026-07-01, via the browser against the live `dub1` de
 - **Related feature specs:** [FEAT-PC004](../../platform/core/features/FEAT-PC004-account-state-read.md) (`/api/account/state`), [FEAT-PC003](../../platform/core/features/FEAT-PC003-self-service-profile.md) (`/api/profile/me`), and the `/api/groups` read path.
 - **Related ADRs:** [ADR-U035](./ADR-U035-compute-datastore-colocation.md) (co-location — this preserves it), [ADR-U009](./ADR-U009-api-first-frontend-agnostic.md) (API-first — untouched).
 - **Evidence + backlog:** perf bridges [`../../planning/sessions/2026-07-01_01_-_PERF-INVESTIGATION-COLOCATION-AND-CLIENT-RENDER-FINDING.md`](../../planning/sessions/2026-07-01_01_-_PERF-INVESTIGATION-COLOCATION-AND-CLIENT-RENDER-FINDING.md) and [`../../planning/hub-v2/perf-hardening-backlog.md`](../../planning/hub-v2/perf-hardening-backlog.md).
+
+---
+
+## Addendum — 2026-07-01: `/api/account/consent` added to the Edge set (same policy)
+
+Applying the **runtime policy** above (hot reads on the render path → Edge/`dub1`), `/api/account/consent` was moved to `runtime = 'edge'` + `preferredRegion = 'dub1'`. Trigger: a user-reported symptom — navigating to **Privacy & consent** showed a long spinner while the sibling **Download-my-data** page was instant. Diagnosis: the `/consent` page fetches `GET /api/account/consent` on mount (hot read on its render path), and that route was **still on Node** (it wasn't in the original three) → it cold-started ~740 ms. The Download-my-data page fetches **nothing** on mount (it defers to the download click), so it never paid a cold start.
+
+- **GET** (FEAT-PC006 read) is the hot read the move targets.
+- **POST** (FEAT-PC007 grant/withdraw) shares the route file (runtime is per-file), so it moves too. This does **not** contradict "mutations stay on Node" — that rule is for **Node-dependent** mutations (e.g. `/api/account/export`'s document assembly); the consent POST is a single edge-safe SECURITY DEFINER RPC with no Node dependency, and it stays co-located via the `dub1` pin.
+
+This is an *application* of the accepted policy, not a new decision — no status change. Route list is now four: `account/state`, `profile/me`, `groups`, `account/consent`.
