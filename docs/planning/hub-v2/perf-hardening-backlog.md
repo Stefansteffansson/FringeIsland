@@ -35,10 +35,23 @@ Co-location fixed the *distance per hop*. A follow-up measurement isolated the *
 
 | Tier | Item | Form (no shortcuts) | Payoff |
 |---|---|---|---|
-| **T1** ✅ **shipped 2026-07-01** | **De-block the account-state gate** (render optimistically; intercept only on confirmed suspended/decommissioned) + **parallelize** the page's `/api/groups` + `/api/profile/me` calls | `feature-development`: FEAT-H006 spec "Performance revision (2026-07-01)" + revised STORY-4; `AccountStateView` non-blocking (`if (loading && !error) return children`); red→green unit + `next build`/lint clean (TASK-H006-02). The two page fetches were already sibling components, so de-blocking was the only change needed. **Live before/after measurement still pending** (Network tab / `x-vercel-id`). | Removes the serial ~80 ms gate from every load. |
-| **T2** | **Server-render the initial page with its data** (Next.js RSC; data fetched via the Platform API server-side — API-first preserved) | **ADR** + `hub/CLAUDE.md` update (revisits the CSR lean) | One round-trip to a complete page — the genuine "European-fast" lever. |
+| **T1** ✅ **shipped 2026-07-01** | **De-block the account-state gate** (render optimistically; intercept only on confirmed suspended/decommissioned) + **parallelize** the page's `/api/groups` + `/api/profile/me` calls | `feature-development`: FEAT-H006 spec "Performance revision (2026-07-01)" + revised STORY-4; `AccountStateView` non-blocking (`if (loading && !error) return children`); red→green unit + `next build`/lint clean (TASK-H006-02). The two page fetches were already sibling components, so de-blocking was the only change needed. **Measured live** (browser, 2026-07-01): the gate no longer blocks — but the residual slowness turned out to be **cold starts**, not the waterfall (see the cold-start fix below). | Removes the serial ~80 ms gate from every load. |
+| **T2** | **Server-render the initial page with its data** (Next.js RSC; data fetched via the Platform API server-side — API-first preserved) | **ADR** + `hub/CLAUDE.md` update (revisits the CSR lean) | One round-trip to a complete page. **Deprioritized 2026-07-01:** RSC does **not** fix cold starts (it runs in the same cold-startable function; a cold RSC page blocks *entirely*). The felt slowness was cold starts (fixed below), not the client waterfall — so T2 is now a nice-to-have, not the top lever. |
 
 **Resume point + the full Tier-1 plan:** session bridge [`../sessions/2026-07-01_01_-_PERF-INVESTIGATION-COLOCATION-AND-CLIENT-RENDER-FINDING.md`](../sessions/2026-07-01_01_-_PERF-INVESTIGATION-COLOCATION-AND-CLIENT-RENDER-FINDING.md).
+
+---
+
+## Cold-start fix (2026-07-01) — Edge runtime for the hot read routes ✅ SHIPPED ([ADR-U036](../../architecture/decisions/ADR-U036-edge-runtime-hot-read-routes.md), PR #39)
+
+After T1 shipped, live browser measurement of the *deployed* app found the residual "spinning wheel before each page" was **not** primarily the client-render waterfall — it was **serverless cold starts**:
+
+- The Node lambda **cold-started at ~740–790 ms** on the first hit after idle (two independent samples, minutes apart); warm was **~115 ms** (just the Sweden↔Dublin RTT). Not the DB (401s return before any query), not the network.
+- **Vercel Fluid Compute was already ON** and did not prevent it — on low traffic the function goes cold on multi-minute idle, so sporadic clicking re-pays the cold start on nearly every navigation.
+
+**Fix:** `/api/account/state`, `/api/profile/me`, `/api/groups` → `runtime = 'edge'` + `preferredRegion = 'dub1'` (V8 isolate ~0 ms cold start, pinned to Dublin so ADR-U035 co-location is preserved). **Re-measured on the PR preview AND production:** cold-start penalty **gone** (first hit **285–313 ms** vs ~740–790 ms; steady ~115 ms), every `x-vercel-id` reads `arn1::dub1` (pin held; warm did not balloon to ~245 ms). **Runtime policy:** hot reads → Edge/`dub1`; mutations + Node-dependent routes (auth flows, `/api/account/export`) → Node.
+
+**⚠ Parked (separate, bigger question — flagged 2026-07-01):** whether the platform-contract API routes should live **inside the Hub app** at all, or be realised as Supabase PostgREST RPC / an extracted platform service that every surface calls directly (Hub SPECIFICATION §4: *"sibling Surfaces consume the same Platform API directly; they do not call the Hub"*; Platform Core specs: *PostgREST RPC is canonical, custom Next.js routes are selective escape-hatches*). ADR-U036 is scoped to the routes **as currently co-hosted** and travels with them if they extract. Needs its own adjudication before more is built on the Hub-hosted-API pattern.
 
 ---
 
