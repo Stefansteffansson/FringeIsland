@@ -178,7 +178,10 @@ describe('FEAT-PC006 — own consent read', () => {
 
       const { history } = await fetchOwnConsentState(supabase);
 
-      expect(history).toHaveLength(3);
+      // 3 seeded events + the foundational transcendence grant every credentialed FIM
+      // now carries (ADR-U038 S3). The guarantee under test is that NO event is
+      // collapsed away — asserted precisely by the product_analytics retention below.
+      expect(history.length).toBeGreaterThanOrEqual(3);
       // newest first
       const times = history.map((h) => new Date(h.captured_at).getTime());
       expect(times).toEqual([...times].sort((a, b) => b - a));

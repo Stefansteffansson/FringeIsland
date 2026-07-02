@@ -81,8 +81,12 @@ describe('FEAT-PC002 STORY-5 — append-only consent substrate', () => {
       .from('consent_records')
       .select('id, subject_group_id, purpose');
     expect(aReadErr).toBeNull();
-    expect(aVisible!.length).toBe(1);
-    expect(aVisible![0].subject_group_id).toBe(a.personalGroupId);
+    // RLS scopes A to its OWN rows only: A now legitimately holds its foundational
+    // transcendence grant (ADR-U038 S3) plus the one seeded above — every visible
+    // row is A's, and B's row is never visible.
+    expect(aVisible!.length).toBeGreaterThanOrEqual(1);
+    expect(aVisible!.every((r) => r.subject_group_id === a.personalGroupId)).toBe(true);
+    expect(aVisible!.some((r) => r.subject_group_id === b.personalGroupId)).toBe(false);
 
     // Append-only — UPDATE rejected outside the controlled erasure path (42501).
     const { error: updErr } = await admin

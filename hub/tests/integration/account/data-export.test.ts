@@ -139,23 +139,27 @@ describe('FEAT-PC008 — own data export', () => {
 
   });
 
-  describe('STORY-1: empty areas read as empty collections', () => {
+  describe('STORY-1: sections are present and array-shaped (not omitted)', () => {
     let user: TestUser;
     beforeAll(async () => {
-      // a member with NO seeded consent → the consent section is [] (present, empty)
-      user = await createTestUser({ displayName: 'Empty Export' });
+      // A fresh credentialed member carries exactly the foundational transcendence
+      // grant (ADR-U038 S3) and no OTHER consent. The section is present + array-shaped
+      // (the "present, not an omission" guarantee) carrying that single grant.
+      user = await createTestUser({ displayName: 'Baseline Export' });
     });
     afterAll(async () => {
       if (user) await teardownUsers([user]);
     });
 
-    it('presents an empty area as an empty collection, not an omission', async () => {
+    it('presents the consent area as a present array carrying the foundational grant, not an omission', async () => {
       const supabase = createTestClient();
       await signInWithRetry(supabase, user.email, user.password);
 
       const doc = await fetchOwnDataExport(supabase);
       expect(Array.isArray(doc.consent)).toBe(true);
-      expect(doc.consent).toHaveLength(0);
+      expect(doc.consent).toHaveLength(1);
+      expect(doc.consent[0].purpose).toBe('transcendence');
+      expect(doc.consent[0].decision).toBe('granted');
     });
   });
 
