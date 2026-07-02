@@ -51,7 +51,7 @@ Scope of the change:
 - **Positive:** removes ~250–350 ms (warm) to ~400–750 ms (cold) from every request; static pages and RSC prefetches return at network speed, so `Link` prefetching starts working as designed (nav commits instantly); read APIs drop to roughly RTT + query.
 - **Negative:** on read paths a revoked-but-unexpired JWT is trusted until expiry (≤1 h revocation window). Accepted: reads are additionally RLS-enforced at the DB, and mutations still use the server-verified check. State it plainly: mid-session revocation no longer interrupts *reads* until token expiry.
 - **Negative:** first `getClaims()` per isolate fetches the JWKS (one small, CDN-cacheable call; cached ~10 min in-module). Negligible in practice.
-- **Neutral:** `Server-Timing: auth,query` headers added to the profile/consent GETs as verification instrumentation for this and future measurements.
+- **Neutral:** `Server-Timing: auth,query` headers added to the profile/consent GETs as verification instrumentation. Preview-measured caveat: **Vercel drops `Server-Timing` on Edge-runtime responses** (absent from the same-origin header list in the browser), so the split is not readable from the Network tab today — the code and unit assertion stay (zero cost, useful if the routes move runtimes or the platform passes it through later).
 
 ## Pros and cons of each option
 
