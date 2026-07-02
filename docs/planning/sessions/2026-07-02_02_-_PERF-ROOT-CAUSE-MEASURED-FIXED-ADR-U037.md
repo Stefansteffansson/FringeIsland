@@ -2,7 +2,8 @@
 
 **Date:** 2026-07-02
 **Session type:** deep front-end perf investigation (resumes bridge `2026-07-02_01`). **Resolved.**
-**Status:** The felt 1–4 s Profile ↔ Privacy & consent spinner is **root-caused, fixed, and re-measured on the authenticated path** (preview deployment, logged in). Merged to main (`48b001b`, PR #44); production deploy was in flight at session close.
+**Status:** The felt 1–4 s Profile ↔ Privacy & consent spinner is **root-caused, fixed, re-measured on the authenticated path** (preview deployment, logged in), and **felt-check CONFIRMED by Stefan on production** ("works great"). Merged to main (`48b001b`, PR #44).
+**Same-day follow-up (PR #46, `fc5a77f`):** **deferred loading indicator** — Stefan flagged on the felt-check that an instantly-shown spinner for a ~0.4 s wait is itself the irritation. `LoadingState` now renders nothing for its first 300 ms, then fades in (250 ms, reduced-motion honored); warm navs complete spinner-free, buttons/modals keep immediate busy feedback, `delay={0}` opts out. Red-first TDD; two prior-contract tests updated to the deferred contract.
 **Participants:** Stefan + Claude
 
 ---
@@ -45,7 +46,7 @@ Felt result measured pre-fix: **0.7–1.1 s warm, ~2.0 s after idle** (3–4 s w
 
 ## Open / follow-ups
 
-- **Stefan: felt-check production** once the main deploy lands (sign in, click Profile ↔ Consent — reconcile measured vs lived before calling it closed-closed).
+- ~~Stefan: felt-check production~~ — **DONE, confirmed** ("feels much more responsive"; the deferred-indicator follow-up #46 shipped off that check).
 - P1 residual: remaining read routes → `getClaims()` (small; at the Identity→Groups boundary with the rest of the backlog).
 - **T2 (RSC server-render) stays parked** — the trace showed the tax was per-request auth, not the fetch pattern; T2 remains the "zero spinner" endgame, scoped with the parked API-location question.
 - Consent fetch stays per-mount by design (re-read after POST is the source-of-truth rule); at ~176 ms it renders the panel fast.
