@@ -8,6 +8,11 @@ import { getTelemetrySink } from '@/lib/observability/telemetry';
  * swallowed), and emits V4 telemetry on success AND failure.
  */
 const getUser = jest.fn<() => Promise<{ data: { user: { id: string } | null } }>>();
+// ADR-U037: reads resolve identity via local JWT verification (getClaims), never
+// a per-request Auth round-trip; mutations keep the server-verified getUser.
+const getClaims = jest.fn<
+  () => Promise<{ data: { claims: { sub: string } } | null; error: null }>
+>();
 const fetchMyProfile = jest.fn<() => Promise<unknown>>();
 const updateMyProfile = jest.fn<() => Promise<unknown>>();
 
@@ -20,10 +25,16 @@ class ProfileValidationError extends Error {
 
 jest.mock('next/server', () => ({
   NextResponse: {
-    json: (body: unknown, init?: { status?: number }) => ({ status: init?.status ?? 200, body }),
+    json: (body: unknown, init?: { status?: number; headers?: Record<string, string> }) => ({
+      status: init?.status ?? 200,
+      body,
+      headers: init?.headers,
+    }),
   },
 }));
-jest.mock('@/lib/supabase/server', () => ({ createClient: async () => ({ auth: { getUser } }) }));
+jest.mock('@/lib/supabase/server', () => ({
+  createClient: async () => ({ auth: { getUser, getClaims } }),
+}));
 jest.mock('@/lib/profile/queries', () => ({
   ProfileValidationError,
   fetchMyProfile: (...args: unknown[]) =>
@@ -43,24 +54,32 @@ const emitted = (name: string, actor: string) =>
 
 beforeEach(() => {
   getUser.mockReset().mockResolvedValue({ data: { user: { id: 'u1' } } });
+  getClaims.mockReset().mockResolvedValue({ data: { claims: { sub: 'u1' } }, error: null });
   fetchMyProfile.mockReset().mockResolvedValue({ full_name: 'Ada', nickname: 'Ada' });
   updateMyProfile.mockReset().mockResolvedValue({ full_name: 'Ada', nickname: 'Ada' });
 });
 
 describe('GET /api/profile/me', () => {
-  it('returns 401 when unauthenticated', async () => {
-    getUser.mockResolvedValue({ data: { user: null } });
+  it('returns 401 when unauthenticated, without an Auth-server round-trip (ADR-U037)', async () => {
+    getClaims.mockResolvedValue({ data: null, error: null });
     const res = (await GET()) as { status: number };
     expect(res.status).toBe(401);
     expect(fetchMyProfile).not.toHaveBeenCalled();
+    expect(getUser).not.toHaveBeenCalled();
   });
 
-  it('returns 200 with the profile and emits read telemetry', async () => {
-    getUser.mockResolvedValue({ data: { user: { id: 'u-read' } } });
-    const res = (await GET()) as { status: number; body: { profile: unknown } };
+  it('returns 200 with the profile, emits read telemetry, and reports Server-Timing', async () => {
+    getClaims.mockResolvedValue({ data: { claims: { sub: 'u-read' } }, error: null });
+    const res = (await GET()) as {
+      status: number;
+      body: { profile: unknown };
+      headers?: Record<string, string>;
+    };
     expect(res.status).toBe(200);
     expect(res.body.profile).toMatchObject({ nickname: 'Ada' });
     expect(emitted('profile.read', 'u-read')).toBe(true);
+    expect(getUser).not.toHaveBeenCalled();
+    expect(res.headers?.['Server-Timing']).toMatch(/auth;dur=\d+, query;dur=\d+/);
   });
 
   it('returns 404 when the caller has no profile row', async () => {

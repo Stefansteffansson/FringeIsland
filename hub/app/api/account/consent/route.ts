@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchOwnConsentState, recordConsentDecision } from '@/lib/consent/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
@@ -29,27 +30,34 @@ export const preferredRegion = 'dub1';
  * (catalogued purposes appear undecided when the member has no rows).
  */
 export async function GET() {
+  // ADR-U037: read-path identity via local JWT verification — no Auth-server
+  // round-trip. Server-Timing instruments the auth/query split for the Network
+  // tab (this route is on the measured hot navigation path).
+  const t0 = Date.now();
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const userId = await getVerifiedUserId(supabase);
+  const tAuth = Date.now();
 
-  if (!user) {
+  if (!userId) {
     emitTelemetry('account.consent_read_unauthenticated');
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
   try {
     const consent = await fetchOwnConsentState(supabase);
+    const tQuery = Date.now();
     emitTelemetry('account.consent_read', {
-      actor: user.id,
+      actor: userId,
       purposes: consent.effective.length,
       events: consent.history.length,
     });
-    return NextResponse.json({ consent });
+    return NextResponse.json(
+      { consent },
+      { headers: { 'Server-Timing': `auth;dur=${tAuth - t0}, query;dur=${tQuery - tAuth}` } },
+    );
   } catch (err) {
     emitTelemetry('account.consent_read_failed', {
-      actor: user.id,
+      actor: userId,
       message: (err as Error).message,
     });
     return NextResponse.json({ error: 'Failed to load consent state' }, { status: 500 });

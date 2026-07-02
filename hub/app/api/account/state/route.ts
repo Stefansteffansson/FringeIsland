@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchOwnAccountState } from '@/lib/account/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
@@ -25,12 +26,12 @@ export const preferredRegion = 'dub1';
  * null). Failures are surfaced (500), never silently swallowed.
  */
 export async function GET() {
+  // ADR-U037: read-path identity via local JWT verification — no Auth-server
+  // round-trip on the hot path.
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const userId = await getVerifiedUserId(supabase);
 
-  if (!user) {
+  if (!userId) {
     emitTelemetry('account.state_read_unauthenticated');
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
@@ -38,14 +39,14 @@ export async function GET() {
   try {
     const state = await fetchOwnAccountState(supabase);
     if (!state) {
-      emitTelemetry('account.state_read_not_found', { actor: user.id });
+      emitTelemetry('account.state_read_not_found', { actor: userId });
       return NextResponse.json({ error: 'No account state' }, { status: 404 });
     }
-    emitTelemetry('account.state_read', { actor: user.id, state: state.state });
+    emitTelemetry('account.state_read', { actor: userId, state: state.state });
     return NextResponse.json({ state });
   } catch (err) {
     emitTelemetry('account.state_read_failed', {
-      actor: user.id,
+      actor: userId,
       message: (err as Error).message,
     });
     return NextResponse.json({ error: 'Failed to load account state' }, { status: 500 });

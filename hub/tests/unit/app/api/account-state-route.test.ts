@@ -9,6 +9,11 @@ import { getTelemetrySink } from '@/lib/observability/telemetry';
  * covered here by the 401 (sessionless) and 404 (no row) paths.
  */
 const getUser = jest.fn<() => Promise<{ data: { user: { id: string } | null } }>>();
+// ADR-U037: the GET resolves identity via local JWT verification (getClaims),
+// never a per-request Auth round-trip.
+const getClaims = jest.fn<
+  () => Promise<{ data: { claims: { sub: string } } | null; error: null }>
+>();
 const fetchOwnAccountState = jest.fn<() => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
@@ -16,7 +21,9 @@ jest.mock('next/server', () => ({
     json: (body: unknown, init?: { status?: number }) => ({ status: init?.status ?? 200, body }),
   },
 }));
-jest.mock('@/lib/supabase/server', () => ({ createClient: async () => ({ auth: { getUser } }) }));
+jest.mock('@/lib/supabase/server', () => ({
+  createClient: async () => ({ auth: { getUser, getClaims } }),
+}));
 jest.mock('@/lib/account/queries', () => ({
   fetchOwnAccountState: (...args: unknown[]) =>
     (fetchOwnAccountState as unknown as (...a: unknown[]) => unknown)(...args),
@@ -31,21 +38,23 @@ const emitted = (name: string, actor?: string) =>
 
 beforeEach(() => {
   getUser.mockReset().mockResolvedValue({ data: { user: { id: 'u1' } } });
+  getClaims.mockReset().mockResolvedValue({ data: { claims: { sub: 'u1' } }, error: null });
   fetchOwnAccountState
     .mockReset()
     .mockResolvedValue({ is_active: true, is_decommissioned: false, state: 'active' });
 });
 
 describe('GET /api/account/state', () => {
-  it('returns 401 when unauthenticated (STORY-5)', async () => {
-    getUser.mockResolvedValue({ data: { user: null } });
+  it('returns 401 when unauthenticated (STORY-5), without an Auth round-trip (ADR-U037)', async () => {
+    getClaims.mockResolvedValue({ data: null, error: null });
     const res = (await GET()) as { status: number };
     expect(res.status).toBe(401);
     expect(fetchOwnAccountState).not.toHaveBeenCalled();
+    expect(getUser).not.toHaveBeenCalled();
   });
 
   it('returns 200 with the state and emits read telemetry (STORY-1)', async () => {
-    getUser.mockResolvedValue({ data: { user: { id: 'u-read' } } });
+    getClaims.mockResolvedValue({ data: { claims: { sub: 'u-read' } }, error: null });
     const res = (await GET()) as { status: number; body: { state: { state: string; is_active: boolean } } };
     expect(res.status).toBe(200);
     expect(res.body.state).toMatchObject({ state: 'active', is_active: true });
@@ -71,7 +80,7 @@ describe('GET /api/account/state', () => {
   });
 
   it('maps a contract failure to 500 (surfaced, not swallowed)', async () => {
-    getUser.mockResolvedValue({ data: { user: { id: 'u-err' } } });
+    getClaims.mockResolvedValue({ data: { claims: { sub: 'u-err' } }, error: null });
     fetchOwnAccountState.mockRejectedValue(new Error('rpc exploded'));
     const res = (await GET()) as { status: number };
     expect(res.status).toBe(500);
