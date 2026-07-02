@@ -36,7 +36,10 @@ describe('FEAT-PC003 — bio length DB CHECK backstop', () => {
       .from('users')
       .update({ bio: 'x'.repeat(PROFILE_BIO_MAX_LENGTH + 1) })
       .eq('auth_user_id', user.user.id)
-      .select();
+      // Select an explicit non-sensitive column: a bare .select() returns SELECT *,
+      // which now includes the client-revoked `email` (ADR-U038 S2) and would 42501
+      // before the bio CHECK is reached, masking what this test asserts.
+      .select('bio');
     expect(error).not.toBeNull();
   });
 
@@ -48,7 +51,7 @@ describe('FEAT-PC003 — bio length DB CHECK backstop', () => {
       .from('users')
       .update({ bio: 'x'.repeat(PROFILE_BIO_MAX_LENGTH) })
       .eq('auth_user_id', user.user.id)
-      .select();
+      .select('bio');
     expect(error).toBeNull();
   });
 });

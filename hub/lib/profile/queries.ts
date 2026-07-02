@@ -69,8 +69,6 @@ export class ProfileValidationError extends Error {
   }
 }
 
-const PROFILE_COLUMNS = IDENTITY_SCOPE_FIELDS.join(', ');
-
 function isIdentityScopeField(key: string): key is IdentityScopeField {
   return (IDENTITY_SCOPE_FIELDS as readonly string[]).includes(key);
 }
@@ -155,35 +153,28 @@ export function validateProfilePatch(patch: ProfilePatch): ProfilePatch {
 }
 
 /**
- * Read the caller's own identity-scope profile. Resolves the caller via the auth
- * SDK and scopes the read to their own row; returns null when there is no
- * session or no profile row. Never exposes another user's row.
+ * Read the caller's own identity-scope profile via the platform contract
+ * `get_own_profile()` (ADR-U038 F1 — the contract lives in the substrate, not in
+ * Hub code; a sibling Surface calls the same RPC). The RPC self-scopes by
+ * `auth.uid()`, returns only the identity-scope fields (never email), and yields
+ * no rows for a sessionless caller — so this returns null with no session or no
+ * profile row, and never exposes another user's row.
  */
 export async function fetchMyProfile(supabase: SupabaseClient): Promise<Profile | null> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return null;
-
-  const { data, error } = await supabase
-    .from('users')
-    .select(PROFILE_COLUMNS)
-    .eq('auth_user_id', user.id)
-    .maybeSingle();
+  const { data, error } = await supabase.rpc('get_own_profile');
   if (error) throw error;
-  // supabase-js types a string-column `.select()` result as a union that includes
-  // GenericStringError, so a direct cast to Profile is rejected by `next build`'s
-  // type-check; narrow through `unknown` (the row shape is the PROFILE_COLUMNS set).
-  return (data as unknown as Profile | null) ?? null;
+  const row = Array.isArray(data) ? data[0] : data;
+  return (row as Profile | undefined) ?? null;
 }
 
 /**
- * Update the caller's own identity-scope fields. Validates + gates the patch,
- * then writes the caller's own row under the own-row UPDATE RLS policy. The
- * `sync_display_name_to_personal_group` trigger cascades any display-name change
- * to the personal-group name atomically — this contract writes no group name.
- * The returning select re-reads the row (the broad SELECT policy makes the
- * readback safe — no dual-policy trip).
+ * Update the caller's own identity-scope fields via the platform contract
+ * `update_own_profile()` (ADR-U038 F1). `validateProfilePatch` runs first as a
+ * client-side UX pre-check (ADR-U038: an app-layer gate is defense-in-depth, not
+ * the enforcement layer) — the RPC re-validates authoritatively and gates the
+ * writable column set at the substrate, so a sibling Surface inherits both. The
+ * `sync_display_name_to_personal_group` trigger cascades a display-name change to
+ * the personal-group name atomically inside the RPC's UPDATE.
  */
 export async function updateMyProfile(
   supabase: SupabaseClient,
@@ -191,19 +182,8 @@ export async function updateMyProfile(
 ): Promise<Profile> {
   const validated = validateProfilePatch(patch);
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new ProfileValidationError('Not authenticated.');
-
-  const { data, error } = await supabase
-    .from('users')
-    .update(validated)
-    .eq('auth_user_id', user.id)
-    .select(PROFILE_COLUMNS)
-    .single();
+  const { data, error } = await supabase.rpc('update_own_profile', { p_patch: validated });
   if (error) throw error;
-  // See fetchMyProfile: narrow the supabase-js string-`.select()` union through
-  // `unknown` so `next build`'s type-check accepts the Profile shape.
-  return data as unknown as Profile;
+  const row = Array.isArray(data) ? data[0] : data;
+  return row as Profile;
 }
