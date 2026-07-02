@@ -44,7 +44,11 @@ export async function signUpFim(
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { display_name: displayName } },
+    // consent_accepted travels in user_metadata → raw_user_meta_data, where the
+    // handle_new_user substrate gate reads it (ADR-U038 S3): a credentialed FIM is
+    // created only when consent is present, and the trigger writes the durable
+    // transcendence consent record. We only reach here past the consent gate above.
+    options: { data: { display_name: displayName, consent_accepted: 'true' } },
   });
 
   // Confirmations OFF: a duplicate email returns an error here.

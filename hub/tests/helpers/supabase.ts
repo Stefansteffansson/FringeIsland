@@ -67,7 +67,9 @@ export const createTestUser = async (options?: {
     email,
     password,
     email_confirm: true,
-    user_metadata: { display_name: displayName },
+    // consent_accepted: a credentialed FIM signup is consent-gated at the substrate
+    // (handle_new_user, ADR-U038 S3). The helper simulates a real, consented signup.
+    user_metadata: { display_name: displayName, consent_accepted: 'true' },
   });
   if (authError) throw new Error(`Failed to create test user: ${authError.message}`);
 
@@ -148,6 +150,14 @@ export const cleanupTestUser = async (userId: string): Promise<void> => {
 
   if (profile?.personal_group_id) {
     await admin.from('journeys').delete().eq('created_by_group_id', profile.personal_group_id);
+    // Consent rows FK-reference users/groups ON DELETE RESTRICT (retention, ADR-U034).
+    // A consented FIM (now incl. credentialed signups, ADR-U038 S3) can't be deleted
+    // out from under its consent proof — clear it via the controlled-erasure bypass
+    // first (test teardown is a legitimate bypass caller, same as the erasure path).
+    await runAdminSql(
+      `DO $$ BEGIN PERFORM set_config('app.consent_erasure_in_progress','true',true); ` +
+        `DELETE FROM public.consent_records WHERE subject_group_id = '${profile.personal_group_id}'; END $$;`,
+    ).catch(() => undefined);
     await admin.from('groups').delete().eq('id', profile.personal_group_id);
   }
   const { error } = await admin.auth.admin.deleteUser(userId);

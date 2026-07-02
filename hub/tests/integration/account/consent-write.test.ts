@@ -121,8 +121,9 @@ describe('FEAT-PC007 — consent decision write', () => {
   describe('STORY-3: withdrawal of a non-withdrawable purpose is refused', () => {
     let user: TestUser;
     beforeEach(async () => {
+      // A credentialed FIM already carries the foundational transcendence grant from
+      // sign-up (ADR-U038 S3) — no seed needed; this exercises the real auto-grant.
       user = await createTestUser({ displayName: 'Foundational' });
-      await seedRow(admin, user, 'transcendence', 'granted');
     });
     afterEach(async () => {
       if (user) await teardownUser(user);
@@ -169,8 +170,11 @@ describe('FEAT-PC007 — consent decision write', () => {
         recordConsentDecision(supabase, 'not_a_real_purpose', 'granted'),
       ).rejects.toMatchObject({ code: '22023' });
 
+      // The rejected write appended nothing: the unknown purpose never lands, and the
+      // ledger still holds only the foundational transcendence grant (ADR-U038 S3).
       const { history } = await fetchOwnConsentState(supabase);
-      expect(history).toHaveLength(0);
+      expect(history.some((h) => h.purpose === 'not_a_real_purpose')).toBe(false);
+      expect(history).toHaveLength(1);
     });
   });
 
