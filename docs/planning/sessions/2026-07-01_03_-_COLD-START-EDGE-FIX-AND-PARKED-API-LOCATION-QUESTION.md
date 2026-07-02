@@ -38,3 +38,15 @@ While justifying the Edge change I surfaced (and Stefan flagged to **keep for la
 - **Perf:** cold starts fixed; warm ~115 ms is the geographic floor (Sweden↔Dublin). Remaining perf items in [`../hub-v2/perf-hardening-backlog.md`](../hub-v2/perf-hardening-backlog.md) are scale/cleanliness (P1–P5), not felt latency.
 - **Cycle D (IDN-5 Journal)** remains the next *feature* cycle.
 - **Tooling note:** the Claude-in-Chrome extension (once connected — needed a full Chrome restart / reinstall) was what let us measure the SSO-protected deployment from the logged-in session. The sandbox alone hit the SSO wall.
+
+---
+
+## Follow-up (same session) — `/api/account/consent` → Edge + close ritual
+
+A user symptom sharpened the picture: **Privacy & consent spun, but Download-my-data was instant.** Diagnosis — the export page **fetches nothing on mount** (defers to the download click), while `/consent` (and `/profile`) fetch on mount; and `/api/account/consent` was the **last on-mount read still on Node** → it cold-started ~740 ms.
+
+- **Fixed:** `/api/account/consent` → `runtime='edge'` + `preferredRegion='dub1'` (PR #41, `49c7bdb`; ADR-U036 addendum). GET (PC-6 read, the target) + POST (PC-7 grant/withdraw, edge-safe RPC) both move (per-file runtime). `next build` + consent E2E 6/6 clean.
+- **Production-confirmed:** consent **373 ms cold (fresh deploy) → ~110 ms warm**, `x-vercel-id = arn1::dub1` (pin held) — was ~740 ms Node cold. **All four hot read routes** (`account/state`, `profile/me`, `groups`, `account/consent`) are now uniform on Edge/`dub1`.
+- **RSC re-elevated:** the residual ~110 ms flash on data-on-load pages (Profile, Consent) is purely the client-side on-mount fetch. Perf backlog **T2 (RSC server-render) is now the top responsiveness lever** — the real "zero spinner everywhere" fix — to be scoped alongside the parked API-location question.
+
+**Close ritual (2026-07-02):** dashboard refreshed (582 files); session-doc links verified; full `doc-health-check` not triggered (no renames/deletions/schema-migrations/restructures this session). **Final state:** `main` @ `49c7bdb`, PRs #36–#41 merged, tree clean.
