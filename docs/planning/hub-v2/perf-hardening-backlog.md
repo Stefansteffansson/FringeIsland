@@ -61,6 +61,8 @@ The felt **1–4 s** navigation slowness survived ADR-U036 because the measured 
 - Felt result: warm nav ≈ **0.7–1.1 s** spinner; after 5-min idle ≈ **2.0 s** (to 3–4 s with slower Auth / token refresh). `/export` felt instant only because it fetches nothing on mount.
 - The Profile nav fetched `/api/profile/me` **twice** per visit (AccountMenu + page, AppShell remounts per page).
 
+**Follow-up (2026-07-02, after the felt-check):** **deferred loading indicator** — `LoadingState` now renders nothing for its first **300 ms** and then fades in (delayed-spinner pattern: an immediately-flashed spinner for a ~0.4 s response draws the eye to the wait and reads slower than showing nothing). With post-fix latencies, warm navs complete spinner-free; the spinner appears only for genuine waits. Action affordances (buttons/modals) keep immediate busy feedback; `delay={0}` opts out.
+
 **Fix (ADR-U037):** `getClaims()` **local ES256 verification** (cached JWKS; zero Auth round-trip; session-refresh-when-expired preserved via `getSession`) in the proxy and the four hot read GETs — mutations keep the server-verified `getUser()`. Plus a **session-cached profile client** (kills the duplicate + per-nav re-fetch; invalidated on sign-out, re-seeded on update) and `Server-Timing` (auth/query) on the profile/consent GETs as verification instrumentation. **P1 is thereby partially realised** — pulled forward because its "low latency-impact" rating assumed dub1-local hops; the proxy pays the hop from **arn1** on every request.
 
 ---

@@ -1,5 +1,5 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import type { Profile } from '@/lib/profile/queries';
 
 /**
@@ -63,11 +63,19 @@ beforeEach(() => {
 });
 
 describe('FEAT-H005 STORY-1 (unit) — /profile for a FIM', () => {
-  it('shows a loading state while the profile is in flight', async () => {
+  it('shows a loading state once the wait outlasts the deferral window (UX revision 2026-07-02)', async () => {
+    jest.useFakeTimers();
     let resolve!: (p: Profile) => void;
     fetchProfile.mockReturnValue(new Promise<Profile>((r) => (resolve = r)));
     render(<ProfilePage />);
+    // Deferred indicator: nothing during the first ~300 ms (a fast response
+    // must complete spinner-free); the spinner is for a genuine wait only.
+    expect(screen.queryByTestId('loading-state')).not.toBeInTheDocument();
+    act(() => {
+      jest.advanceTimersByTime(300);
+    });
     expect(screen.getByTestId('loading-state')).toBeInTheDocument();
+    jest.useRealTimers();
     resolve(profile);
     await waitFor(() => expect(screen.getByTestId('edit-form')).toBeInTheDocument());
   });

@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { describe, it, expect, jest } from '@jest/globals';
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ConsentView } from '@/components/consent/ConsentView';
 import type { ConsentState } from '@/lib/consent/queries';
@@ -53,10 +53,19 @@ function makeState(over: Partial<ConsentState> = {}): ConsentState {
 }
 
 describe('ConsentView (FEAT-H008 — render consent state)', () => {
-  it('STORY-4: shows a loading state while in flight (never a frozen UI)', () => {
+  it('STORY-4: shows a loading state for a genuine wait — deferred ~300 ms so a fast response never flashes it', () => {
+    jest.useFakeTimers();
     render(<ConsentView loading error={null} state={null} onRetry={noop} />);
+    // Deferred indicator (UX revision 2026-07-02): silent window first...
+    expect(screen.queryByTestId('loading-state')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('consent-effective')).not.toBeInTheDocument();
+    act(() => {
+      jest.advanceTimersByTime(300);
+    });
+    // ...then the spinner for a wait that outlasts it (never a frozen UI).
     expect(screen.getByTestId('loading-state')).toBeInTheDocument();
     expect(screen.queryByTestId('consent-effective')).not.toBeInTheDocument();
+    jest.useRealTimers();
   });
 
   it('STORY-4: on error, shows a clear error with retry — never a silent blank', async () => {
