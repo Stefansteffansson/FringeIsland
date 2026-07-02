@@ -12,14 +12,25 @@ import { getTelemetrySink } from '@/lib/observability/telemetry';
  * exists.
  */
 const getUser = jest.fn<() => Promise<{ data: { user: { id: string } | null } }>>();
+// ADR-U037: the GET resolves identity via local JWT verification (getClaims),
+// never a per-request Auth round-trip; POST (own test file) keeps getUser.
+const getClaims = jest.fn<
+  () => Promise<{ data: { claims: { sub: string } } | null; error: null }>
+>();
 const fetchOwnConsentState = jest.fn<() => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
-    json: (body: unknown, init?: { status?: number }) => ({ status: init?.status ?? 200, body }),
+    json: (body: unknown, init?: { status?: number; headers?: Record<string, string> }) => ({
+      status: init?.status ?? 200,
+      body,
+      headers: init?.headers,
+    }),
   },
 }));
-jest.mock('@/lib/supabase/server', () => ({ createClient: async () => ({ auth: { getUser } }) }));
+jest.mock('@/lib/supabase/server', () => ({
+  createClient: async () => ({ auth: { getUser, getClaims } }),
+}));
 jest.mock('@/lib/consent/queries', () => ({
   fetchOwnConsentState: (...args: unknown[]) =>
     (fetchOwnConsentState as unknown as (...a: unknown[]) => unknown)(...args),
@@ -50,32 +61,37 @@ const SAMPLE_STATE = {
 
 beforeEach(() => {
   getUser.mockReset().mockResolvedValue({ data: { user: { id: 'u1' } } });
+  getClaims.mockReset().mockResolvedValue({ data: { claims: { sub: 'u1' } }, error: null });
   fetchOwnConsentState.mockReset().mockResolvedValue(SAMPLE_STATE);
 });
 
 describe('GET /api/account/consent', () => {
-  it('returns 401 when unauthenticated, never reaching the contract', async () => {
-    getUser.mockResolvedValue({ data: { user: null } });
+  it('returns 401 when unauthenticated, never reaching the contract, without an Auth round-trip (ADR-U037)', async () => {
+    getClaims.mockResolvedValue({ data: null, error: null });
     const res = (await GET()) as { status: number };
     expect(res.status).toBe(401);
     expect(fetchOwnConsentState).not.toHaveBeenCalled();
+    expect(getUser).not.toHaveBeenCalled();
     expect(emitted('account.consent_read_unauthenticated')).toBe(true);
   });
 
-  it('returns 200 with the consent projections and emits read telemetry', async () => {
-    getUser.mockResolvedValue({ data: { user: { id: 'u-read' } } });
+  it('returns 200 with the consent projections, emits read telemetry, and reports Server-Timing', async () => {
+    getClaims.mockResolvedValue({ data: { claims: { sub: 'u-read' } }, error: null });
     const res = (await GET()) as {
       status: number;
       body: { consent: { effective: unknown[]; history: unknown[] } };
+      headers?: Record<string, string>;
     };
     expect(res.status).toBe(200);
     expect(res.body.consent.effective).toHaveLength(1);
     expect(res.body.consent.history).toHaveLength(1);
     expect(emitted('account.consent_read', 'u-read')).toBe(true);
+    expect(getUser).not.toHaveBeenCalled();
+    expect(res.headers?.['Server-Timing']).toMatch(/auth;dur=\d+, query;dur=\d+/);
   });
 
   it('maps a contract failure to 500 (surfaced, not swallowed)', async () => {
-    getUser.mockResolvedValue({ data: { user: { id: 'u-err' } } });
+    getClaims.mockResolvedValue({ data: { claims: { sub: 'u-err' } }, error: null });
     fetchOwnConsentState.mockRejectedValue(new Error('rpc exploded'));
     const res = (await GET()) as { status: number };
     expect(res.status).toBe(500);

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getVerifiedUserId } from '@/lib/supabase/auth';
 import {
   fetchMyProfile,
   updateMyProfile,
@@ -29,26 +30,33 @@ export const preferredRegion = 'dub1';
  * the new Hub.
  */
 export async function GET() {
+  // ADR-U037: read-path identity via local JWT verification — no Auth-server
+  // round-trip. Server-Timing instruments the auth/query split for the Network
+  // tab (this route is on the measured hot navigation path).
+  const t0 = Date.now();
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const userId = await getVerifiedUserId(supabase);
+  const tAuth = Date.now();
 
-  if (!user) {
+  if (!userId) {
     emitTelemetry('profile.read_unauthenticated');
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
   try {
     const profile = await fetchMyProfile(supabase);
+    const tQuery = Date.now();
     if (!profile) {
-      emitTelemetry('profile.read_not_found', { actor: user.id });
+      emitTelemetry('profile.read_not_found', { actor: userId });
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
     }
-    emitTelemetry('profile.read', { actor: user.id });
-    return NextResponse.json({ profile });
+    emitTelemetry('profile.read', { actor: userId });
+    return NextResponse.json(
+      { profile },
+      { headers: { 'Server-Timing': `auth;dur=${tAuth - t0}, query;dur=${tQuery - tAuth}` } },
+    );
   } catch (err) {
-    emitTelemetry('profile.read_failed', { actor: user.id, message: (err as Error).message });
+    emitTelemetry('profile.read_failed', { actor: userId, message: (err as Error).message });
     return NextResponse.json({ error: 'Failed to load profile' }, { status: 500 });
   }
 }

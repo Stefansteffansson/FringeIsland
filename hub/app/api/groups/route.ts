@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchMemberGroups } from '@/lib/groups/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
@@ -15,22 +16,22 @@ export const preferredRegion = 'dub1';
  * V2: RLS scopes the read to the viewer. V4: telemetry on success AND failure.
  */
 export async function GET() {
+  // ADR-U037: read-path identity via local JWT verification — no Auth-server
+  // round-trip on the hot path.
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const userId = await getVerifiedUserId(supabase);
 
-  if (!user) {
+  if (!userId) {
     emitTelemetry('groups.load_unauthenticated');
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
   try {
     const groups = await fetchMemberGroups(supabase);
-    emitTelemetry('groups.loaded', { actor: user.id, count: groups.length });
+    emitTelemetry('groups.loaded', { actor: userId, count: groups.length });
     return NextResponse.json({ groups });
   } catch (err) {
-    emitTelemetry('groups.load_failed', { actor: user.id, message: (err as Error).message });
+    emitTelemetry('groups.load_failed', { actor: userId, message: (err as Error).message });
     return NextResponse.json({ error: 'Failed to load groups' }, { status: 500 });
   }
 }

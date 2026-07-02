@@ -23,16 +23,21 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // Refresh the session if expired. Keep this side-effect-free beyond the refresh.
+  // Refresh the session if expired, then verify the JWT LOCALLY (ES256 against
+  // a cached JWKS — ADR-U037). This runs on EVERY matched request, so it must
+  // never pay an Auth-server round-trip on the hot path: the previous
+  // `getUser()` here cost a measured ~250-750 ms per request (arn1 -> eu-west-1,
+  // even for fully static pages). `getClaims()` resolves the session via
+  // `getSession()` (which refreshes + re-sets cookies when expired) and does
+  // the signature check in WebCrypto. Keep this side-effect-free beyond the
+  // refresh.
   try {
-    await supabase.auth.getUser()
+    await supabase.auth.getClaims()
   } catch (err: unknown) {
-    const e = err as { code?: string; status?: number }
-    if (e?.code === 'refresh_token_not_found' || e?.status === 400) {
-      // harmless — no session to refresh yet
-    } else {
-      throw err
-    }
+    // The proxy must never take the whole surface down over an auth hiccup
+    // (e.g. a transient JWKS fetch failure) — every route gates its own auth.
+    // Logged, not swallowed silently.
+    console.error('proxy updateSession failed', err)
   }
 
   return supabaseResponse

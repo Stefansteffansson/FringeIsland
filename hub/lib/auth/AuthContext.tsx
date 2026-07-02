@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
+import { invalidateProfileCache } from '@/lib/profile/client';
 import { beginMistSession, deriveIdentity, type Identity } from '@/lib/auth/mist';
 import { TRANSCENDENCE_CONSENT_REQUIRED_ERROR } from '@/lib/auth/transcendence';
 import { emitTelemetry } from '@/lib/observability/telemetry';
@@ -76,6 +77,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      // Session gone (sign-out / expiry): drop the session profile cache so a
+      // later sign-in never shows another member's label. A pure local drop —
+      // no query in the listener (the onAuthStateChange deadlock gotcha holds).
+      if (!newSession) invalidateProfileCache();
       setSession(newSession);
       setUser(newSession?.user ?? null);
       setLoading(false);

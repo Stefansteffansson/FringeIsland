@@ -1,5 +1,10 @@
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
-import { fetchProfile, updateProfile, displayLabel } from '@/lib/profile/client';
+import {
+  fetchProfile,
+  updateProfile,
+  displayLabel,
+  invalidateProfileCache,
+} from '@/lib/profile/client';
 import type { Profile } from '@/lib/profile/queries';
 
 /**
@@ -23,6 +28,9 @@ const fetchMock = jest.fn<typeof fetch>();
 beforeEach(() => {
   fetchMock.mockReset();
   global.fetch = fetchMock as unknown as typeof fetch;
+  // These cases specify per-request transport behavior; start each from a clean
+  // session cache (cache semantics are specified in client-cache.test.ts).
+  invalidateProfileCache();
 });
 
 afterEach(() => {

@@ -16,14 +16,43 @@ async function errorMessage(res: Response, fallback: string): Promise<string> {
   return body?.error ?? fallback;
 }
 
-/** Read the caller's own profile via the FEAT-PC003 read contract. */
-export async function fetchProfile(): Promise<Profile> {
+// Session cache (perf revision 2026-07-02): the measured Profile navigation hit
+// /api/profile/me TWICE per visit (AccountMenu + page) and re-fetched on every
+// nav because AppShell remounts per page. One shared in-flight/resolved promise
+// removes both. Invalidation: session end (AuthContext drops it on sign-out /
+// session expiry) or an explicit `invalidateProfileCache()`; a successful
+// `updateProfile` re-seeds it with the contract's returned profile.
+let cached: Promise<Profile> | null = null;
+
+async function requestProfile(): Promise<Profile> {
   const res = await fetch('/api/profile/me');
   if (!res.ok) {
     throw new Error(await errorMessage(res, `Request failed (${res.status})`));
   }
   const data = (await res.json()) as { profile: Profile };
   return data.profile;
+}
+
+/**
+ * Read the caller's own profile via the FEAT-PC003 read contract.
+ * Session-cached: concurrent callers share one request; a resolved profile is
+ * reused across navigations. A FAILED read is never cached — the next caller
+ * retries the contract (failures surface, never stick).
+ */
+export function fetchProfile(): Promise<Profile> {
+  if (!cached) {
+    const inFlight: Promise<Profile> = requestProfile().catch((err) => {
+      if (cached === inFlight) cached = null;
+      throw err;
+    });
+    cached = inFlight;
+  }
+  return cached;
+}
+
+/** Drop the session profile cache (sign-out / session end / account switch). */
+export function invalidateProfileCache(): void {
+  cached = null;
 }
 
 /** Update the caller's own identity-scope fields via the FEAT-PC003 write contract. */
@@ -37,6 +66,9 @@ export async function updateProfile(patch: ProfilePatch): Promise<Profile> {
     throw new Error(await errorMessage(res, `Request failed (${res.status})`));
   }
   const data = (await res.json()) as { profile: Profile };
+  // The write contract returns the updated row — seed the cache so the next
+  // read (AccountMenu's refreshNavigation reload, later navs) is instant + fresh.
+  cached = Promise.resolve(data.profile);
   return data.profile;
 }
 
