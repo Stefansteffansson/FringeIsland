@@ -1,6 +1,6 @@
 # ADR-U037: Local JWT verification on the request hot path (proxy + read routes)
 
-**Status:** Proposed
+**Status:** Accepted (nod 2026-07-02)
 **Date:** 2026-07-02
 **Deciders:** Stefan + Claude (from the measured authenticated-waterfall investigation)
 **Tags:** scope:product (Hub shell + Hub-hosted platform routes) · wave:ferd
