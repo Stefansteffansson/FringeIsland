@@ -1,6 +1,6 @@
 # Hub v2 — API-boundary conformance register
 
-**Date:** 2026-07-02 · **Status:** Draft for review (Stefan) · **Session:** API-boundary compliance audit
+**Date:** 2026-07-02 · **Status:** Resolved — ADR-U038 ratified (Option A); tranche 1 (S1-S3, PR #48) + tranche 2 (F1/F2, PR #49) merged; tranche 3 (docs/process gate patches) applied. · **Session:** API-boundary compliance audit
 **Scope:** the v2 Hub only (`hub/` — app, API routes, lib, frontend), per the session's scope decision. The legacy Hub (`hub-legacy/`) is excluded: its violations are measured and adjudicated in ADR-U030 and it is a frozen oracle awaiting Phase-4 deletion.
 **Method:** canon-baseline first (§1), then every route in `hub/app/api/**` read in full, the `hub/lib/*` layer classified (thin-wrapper vs Hub-only logic), a frontend sweep for direct DB access, and substrate checks (RLS policies, triggers, RPC grants) where a verdict depended on DB-level enforcement.
 **Feeds:** the parked API-location question (bridge `2026-07-01_03`) — §4 is the evidence pack for that adjudication.

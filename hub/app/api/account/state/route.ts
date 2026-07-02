@@ -18,8 +18,9 @@ export const preferredRegion = 'dub1';
  * (active / suspended / decommissioned) via the SECURITY DEFINER contract,
  * including the suspended/decommissioned cases that ordinary RLS hides. Additive
  * route (ADR-U015) — no existing route changes, no version bump. Auth is the
- * `@supabase/ssr` cookie session (the shipped Hub house style; the spec's
- * `/api/v1/` + Bearer is directional and not yet realised — see TASK-PC003-01).
+ * `@supabase/ssr` cookie session (the shipped Hub house style). Per ADR-U038 this
+ * is a private Hub BFF route, so `/api/v1` + Bearer bind the platform surface
+ * (PostgREST RPC), not this BFF path — cookie-session + unversioned is conformant.
  *
  * STORY-5: a sessionless caller is gated here with 401 before the contract is
  * reached; a caller with no mapped account row gets 404 (the contract returns

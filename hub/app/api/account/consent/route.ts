@@ -21,8 +21,9 @@ export const preferredRegion = 'dub1';
  * (the full append-only ledger) — via the `get_own_consent_state()` SECURITY
  * DEFINER contract. Additive route (ADR-U015) — no existing route changes, no
  * version bump. Auth is the `@supabase/ssr` cookie session (the shipped Hub
- * house style, per FEAT-PC003/PC004; the spec's `/api/v1/` + Bearer is
- * directional and not yet realised — see FEAT-PC006 Open spec questions).
+ * house style, per FEAT-PC003/PC004). Per ADR-U038 this is a private Hub BFF
+ * route, so `/api/v1` + Bearer bind the platform surface (PostgREST RPC), not
+ * this BFF path — cookie-session + unversioned is conformant.
  *
  * A sessionless caller is gated here with 401 before the contract is reached
  * (the read RPC is not granted to anon). Failures are surfaced (500), never

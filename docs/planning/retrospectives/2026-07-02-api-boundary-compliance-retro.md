@@ -25,7 +25,7 @@ The v2 rebuild existed *because* v1 violated the architecture. The team wrote th
 - **RC3:** deviation capture ≠ deviation triage — code-comment "directional" notes satisfied the letter of "never silent" while bypassing PROCESS §9's triage entirely.
 - **RC4:** no DoD/checklist row for API-boundary conformance; no adversarial direct-caller test requirement paired with app-layer gates.
 
-## Proposed gate patches (steering-file edits — PENDING approval, fuller-auto carve-out)
+## Gate patches (steering-file edits — APPLIED in tranche 3, PR pending merge)
 
 - **GP1 — Fix the source:** rewrite Hub `CLAUDE.md` L23 per the §4 ADR verdict (platform contracts live platform-side; Hub routes are private BFF plumbing at most).
 - **GP2 — DoD row (feature-development skill):** for every new/changed endpoint: (a) the contract exists platform-side (RPC/RLS/trigger), (b) any custom route names its three-justification case, (c) every app-layer gate has an adversarial integration test exercising the direct PostgREST path.

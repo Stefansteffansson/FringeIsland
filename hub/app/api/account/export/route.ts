@@ -11,8 +11,9 @@ import { emitTelemetry } from '@/lib/observability/telemetry';
  * (which also records the durable export-event), and returns it as a downloadable
  * file (Content-Disposition: attachment) — the "receive" half of IDN-8's "request
  * and receive." Additive route (ADR-U015). Auth is the `@supabase/ssr` cookie
- * session (the shipped Hub house style, per FEAT-PC003/PC006/PC007; the spec's
- * `/api/v1/` + Bearer is directional — see FEAT-PC008 Open spec questions).
+ * session (the shipped Hub house style, per FEAT-PC003/PC006/PC007). Per ADR-U038
+ * this is a private Hub BFF route, so `/api/v1` + Bearer bind the platform surface
+ * (PostgREST RPC), not this BFF path — cookie-session + unversioned is conformant.
  *
  * A sessionless caller is gated here with 401 before the contract is reached.
  * Failures surface (500) and never return a partial document.

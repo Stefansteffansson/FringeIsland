@@ -95,6 +95,10 @@ After all tasks for a story are done:
   - the **pyramid is upright** — unit-tier coverage exists for component/logic behaviour, not only integration + E2E
   - lint + build + the **full suite** are green
   - the Implementation notes record the red → green evidence honestly; any test-after coverage is **labelled as such** (never claimed as test-first)
+- **API-boundary DoD (required before `6-done`, ADR-U038)** — for every new or changed endpoint:
+  - the contract is enforced **platform-side** (SECURITY DEFINER RPC / RLS / trigger / column grant), not only in a Surface route or `lib`; a Surface route may host presentation/session plumbing but is **never the sole home** of a business rule, authorization decision, or lifecycle/consent invariant;
+  - any **custom Next.js route** names which of the PC-3 §7 three justifications (cross-table mutation / external service-role call / multi-step transaction) warrants it — the default is "expose via PostgREST RPC";
+  - every **app-layer gate has an adversarial integration test** that exercises the direct PostgREST path (including an anonymous-session Mist) and proves the substrate refuses what the route refuses — not just the route. (This is the check that would have caught the ADR-U038 S1–S3 holes at build time.)
 - If all stories in the feature are complete, update feature maturity to `6-done`
 - In the **same commit** as the maturity change, update the feature-inventory summary row in the parent entity's `SPECIFICATION.md` (§L4) to reflect `6-done`. Per the `ecosystem-decomposition` skill L4 write scope, this is L4's property; `feature-development` is the operational layer carrying the update out. The `doc-health-check` skill §8 verifies the summary matches the actual state of `features/` at cycle boundaries — miss this step and the check will flag drift.
 - Update the `features/README.md` index
