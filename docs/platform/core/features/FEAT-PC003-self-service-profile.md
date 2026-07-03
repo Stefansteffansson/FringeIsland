@@ -150,3 +150,14 @@ The platform half of IDN-4, consumed by Hub [FEAT-H005](../../../products/hub/fe
 **Observability (V4) — honest seam.** `profile.read` / `profile.updated` / `profile.update_rejected` / `profile.update_failed` (actor + outcome, failures included) at the contract seam; the PC-1 sink is still unrealised (routed to G-29), mirroring FEAT-PC001/PC002. No audit (V1) — self-service edit is not an admin action.
 
 Tasks: `TASK-PC003-01` (read + identity-scope-gated update contract), `TASK-PC003-02` (bio length DB CHECK — schema-gated).
+
+---
+
+## Amendment — 2026-07-03 (ADR-U038 F1 / PR #49)
+
+The read/update contract above was originally realised in Hub code (`hub/lib/profile/queries.ts`) over a direct `.from('users')` read/write as the authenticated caller. Per **[ADR-U038](../../../architecture/decisions/ADR-U038-platform-contracts-platform-side-surface-bff.md)** (platform contracts live in the substrate; Surface routes are private BFF plumbing) it now lives platform-side as two RPCs:
+
+- `get_own_profile()` — SECURITY DEFINER, self-scoped by `auth.uid()`, returns the identity-scope fields only (never `email`).
+- `update_own_profile(jsonb)` — SECURITY INVOKER, **authoritative** identity-scope gating + field validation (ERRCODE 22023 on a bad key/value).
+
+Migration `20260702130000`. `hub/lib/profile/queries.ts` now calls these RPCs; `validateProfilePatch` remains as **client-side UX pre-validation only**. Two tranche-1 hardenings also bear on this contract (migration `20260702120000`, ADR-U038 S1/S2): client UPDATE on `public.users` is column-limited to the six identity-scope fields, and client SELECT on `users.email` is revoked. Evidence: [`../../../planning/hub-v2/api-conformance-register.md`](../../../planning/hub-v2/api-conformance-register.md) §5 (F1).
