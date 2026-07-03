@@ -3,7 +3,7 @@
 ---
 id: TASK-PC009-01
 title: Session contracts — migration (get_own_sessions + revoke_own_session) + red-first integration contract tests
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PC009

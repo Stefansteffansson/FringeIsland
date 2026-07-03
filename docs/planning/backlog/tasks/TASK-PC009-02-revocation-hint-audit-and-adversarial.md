@@ -3,7 +3,7 @@
 ---
 id: TASK-PC009-02
 title: Revocation hint — realtime.messages policies + server-emitted session_revoked + audit row + adversarial tests
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PC009
