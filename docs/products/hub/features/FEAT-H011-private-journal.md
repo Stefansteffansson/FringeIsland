@@ -6,7 +6,7 @@ title: Private journal — the Hub surface for writing, reading, editing, and de
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -18,19 +18,16 @@ IDN-5 ("Provide private personal Journal surface", `docs/products/hub/SPECIFICAT
 
 This is the Hub half of IDN-5: a journal page where a FIM writes, reads, edits, and deletes their own entries — and nothing else. All privacy rules live platform-side in FEAT-PD001 (ADR-U038); the Hub renders the experience and carries no rule the substrate doesn't already enforce. It also closes the export seam at the surface: "Download my data" comes to include the journal by composing the two platform contracts.
 
-## Solution sketch
+## Implementation notes
 
-A `/journal` route (authenticated, FIM-only): a reverse-chronological entry list with an empty state that invites the first entry; a plain editor (optional title, body); edit and delete (with confirmation) on own entries. Hub lib functions call the FEAT-PD001 RPCs directly (thin plumbing, no business logic in routes per Hub `CLAUDE.md`). Mists don't see the Journal in navigation — journaling is part of FIM life (ADR-U031 keeps Mist ephemerality out of v1); the standing account-state gate (FEAT-H006 precedent) keeps suspended members out along with the rest of the app. The "Download my data" flow (FEAT-H010) additionally fetches `get_own_journal_export()` and bundles it with the PC008 document — surface composition, one download.
+*(Built 2026-07-03, Cycle D, paired with FEAT-PD001.)*
 
-## Appetite
-
-One to two focused sessions (page, editor, list, gating, export composition), matching prior Hub-half scale (FEAT-H010).
-
-## Rabbit holes
-
-- **Editor ambition.** Plain text v1 — no rich text, no autosave choreography beyond a simple explicit save, no drafts.
-- **Journal-as-home framing.** The garden/rooms/home metaphor (S43) is future experience design; v1 is a clean page, not a metaphor build-out.
-- **Retro-editing FEAT-H010.** The export composition is specified here; H010 (6-done) gets only a short provenance amendment at close, not a reopened spec.
+- **Page:** `hub/app/journal/page.tsx` — the FEAT-H008 gate pattern (sessionless → `/login?redirect=/journal`; Mist → `/`; panel mounts only for a FIM). `hub/components/journal/JournalPanel.tsx` owns compose / edit-in-place (the composer hides while editing — one editor at a time) / ConfirmModal-gated delete / keyset "load older"; **every mutation re-reads the list** (single source of truth, the ConsentPanel discipline); a failed save surfaces an error and preserves the typed text. `AccountMenu` gained the Journal link (the menu is FIM-only by construction, so Mist nav-hiding is inherited).
+- **BFF plumbing:** `hub/app/api/journal/route.ts` (GET list / POST create) + `hub/app/api/journal/[id]/route.ts` (PATCH / DELETE) — Edge + `dub1` per ADR-U036; SQLSTATE→HTTP mapping only (42501→403, P0002→404, 22023/23514→400); telemetry content-free (bodies/titles never in events or errors). Browser client `hub/lib/journal/client.ts`.
+- **Export composition (STORY-5):** `GET /api/account/export` now composes `get_own_journal_export()` into the download as an **additive top-level `journal` key** — the PC008 platform document stays journal-free (one-way Core→Domain boundary); present-and-empty for an entry-less FIM; a journal failure fails the whole download (never a partial document). FEAT-H010 carries the matching provenance amendment.
+- **Tests:** 12 unit tests (page gate + panel behaviour) **demonstrated red first** (modules absent), then green; 3 route-composition unit tests red-first against the pre-composition route, then green; the Playwright journey (write → listed → edit → delete → empty) green against the live substrate; full E2E suite 32/32.
+- **Found-and-fixed while wiring E2E:** the E2E harness had been unable to start since the ADR-U038 tranche-1 S3 consent gate — `global-setup.ts` created the session FIM without `consent_accepted` metadata (the integration helper was updated at tranche 1; the E2E setup was missed) and `deleteE2EUser` couldn't remove a consented FIM (FK RESTRICT). Both fixed (`hub/tests/e2e/global-setup.ts`, `hub/tests/e2e/helpers/auth.ts` — consent purge under the controlled-erasure bypass); this restored the whole suite, not just the journal spec.
+- **Deviations from the task plan:** TASK-H011-01's "route-level integration tests" were replaced by route-unit + E2E coverage — route-level integration tests aren't a house pattern (no existing `/api/*` integration tests; routes are thin plumbing whose rules live in the substrate, already adversarially tested in FEAT-PD001).
 
 ## No-gos
 

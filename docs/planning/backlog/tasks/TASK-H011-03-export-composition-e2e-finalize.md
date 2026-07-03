@@ -1,7 +1,7 @@
 ---
 id: TASK-H011-03
 title: Export composition (download includes journal) + E2E + finalize 6-done
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H011

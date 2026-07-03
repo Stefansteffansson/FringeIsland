@@ -1,7 +1,7 @@
 ---
 id: TASK-H011-01
 title: Journal BFF routes — /api/journal (GET/POST) + /api/journal/[id] (PATCH/DELETE)
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H011

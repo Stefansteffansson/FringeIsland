@@ -1,7 +1,7 @@
 ---
 id: TASK-H011-02
 title: /journal page — list, editor, edit/delete, empty state, FIM-only gating
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H011

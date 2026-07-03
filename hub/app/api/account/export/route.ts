@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { fetchOwnDataExport } from '@/lib/account/export';
+import { fetchOwnJournalExport } from '@/lib/journal/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 /**
@@ -33,17 +34,27 @@ export async function GET() {
 
   try {
     const data = await fetchOwnDataExport(supabase);
+    // FEAT-H011 STORY-5: compose the FEAT-PD001 journal export as an ADDITIVE
+    // top-level key (ADR-U038 BFF composition — the platform documents stay
+    // separate; PC-4 never reads Domain). Present-and-empty for an entry-less
+    // FIM, so the file shape is stable. A journal failure fails the whole
+    // download — never a partial document.
+    const journal = await fetchOwnJournalExport(supabase);
     emitTelemetry('account.export', {
       actor: user.id,
       schema_version: data.schema_version,
       consent_events: data.consent.length,
       memberships: data.memberships.length,
+      journal_entries: journal.entries.length,
     });
-    return NextResponse.json(data, {
-      headers: {
-        'Content-Disposition': `attachment; filename="${EXPORT_FILENAME}"`,
+    return NextResponse.json(
+      { ...data, journal },
+      {
+        headers: {
+          'Content-Disposition': `attachment; filename="${EXPORT_FILENAME}"`,
+        },
       },
-    });
+    );
   } catch (err) {
     emitTelemetry('account.export_failed', {
       actor: user.id,

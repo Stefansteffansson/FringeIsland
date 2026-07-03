@@ -44,7 +44,9 @@ describe('FEAT-H002 (unit) — signUpFim branch logic', () => {
     expect(signUp).toHaveBeenCalledWith({
       email: params.email,
       password: params.password,
-      options: { data: { display_name: 'Ada Lovelace' } },
+      // consent_accepted rides along since the ADR-U038 S3 substrate gate —
+      // handle_new_user refuses a credentialed FIM without it.
+      options: { data: { display_name: 'Ada Lovelace', consent_accepted: 'true' } },
     });
   });
 

@@ -93,8 +93,10 @@ export async function deleteTranscendedUser(admin: SupabaseClient, email: string
 }
 
 /**
- * Delete a leftover E2E user by email. D15 cleanup chain: journeys (RESTRICT FK)
- * → personal group (CASCADE) → auth.users (CASCADE removes public.users).
+ * Delete a leftover E2E user by email. D15 cleanup chain: consent rows (RESTRICT
+ * FK, purged under the controlled-erasure bypass — the session FIM carries the
+ * ADR-U038 S3 signup consent) → journeys (RESTRICT FK) → personal group
+ * (CASCADE; journal entries ride this) → auth.users (CASCADE removes public.users).
  */
 export async function deleteE2EUser(admin: SupabaseClient, email: string): Promise<void> {
   const { data: profile } = await admin
@@ -104,6 +106,10 @@ export async function deleteE2EUser(admin: SupabaseClient, email: string): Promi
     .maybeSingle();
 
   if (profile?.personal_group_id) {
+    await runAdminSql(
+      `DO $$ BEGIN PERFORM set_config('app.consent_erasure_in_progress','true',true); ` +
+        `DELETE FROM public.consent_records WHERE subject_group_id = '${profile.personal_group_id}'; END $$;`,
+    ).catch(() => undefined);
     await admin.from('journeys').delete().eq('created_by_group_id', profile.personal_group_id);
     await admin.from('groups').delete().eq('id', profile.personal_group_id);
   }

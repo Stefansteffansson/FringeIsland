@@ -6,7 +6,7 @@ title: Personal Journal primitive — a private, own-subject entry store with pl
 owner: platform/domain/intelligence
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -20,30 +20,23 @@ The ecosystem is unambiguous about what the Journal is: private-by-default membe
 
 This is the platform half of IDN-5, consumed API-first by the Hub ([FEAT-H011](../../../products/hub/features/FEAT-H011-private-journal.md)) and any future surface (the Gimbal). Per ADR-U038, every rule lives platform-side: RLS, grants, and PostgREST RPCs — never a Hub route.
 
-## Solution sketch
+## Implementation notes
 
-**One new table, `public.journal_entries`:** `id` (uuid pk), owner (the caller's **personal group id** — the repo actor primitive, resolved via the four-hop chain), `title` (text, optional), `body` (text, required), `created_at` / `updated_at`. Owner FK declared so that account-erasure teardown (`admin_hard_delete_user` cascade) **hard-deletes** journal rows — private entries are never sentinel-reassigned. Exact FK target (users vs groups) settles at the schema-review gate; the binding requirement is the acceptance criterion in STORY-4.
+*(Built 2026-07-03, Cycle D. All enforcement platform-side per ADR-U038; the migration is applied to the pre-launch dev DB and the schema-review gate is exercised at the Cycle D PR.)*
 
-**No direct table access for client roles.** Base-table grants revoked from `authenticated`/`anon` (tranche-1 discipline); all access flows through SECURITY DEFINER RPCs (`SET search_path = ''`):
+**Migration `supabase/migrations/20260703084810_feat_pd001_journal_primitive.sql`** — the whole substrate in one schema-gate review:
 
-- `create_journal_entry(p_title text, p_body text)` — FIM-only: refuses when the caller is a Mist (`is_temporary`), keeping ADR-U031 ephemerality out of scope for v1.
-- `update_journal_entry(p_entry_id uuid, p_title text, p_body text)` — own rows only.
-- `delete_journal_entry(p_entry_id uuid)` — own rows only.
-- `get_own_journal_entries(p_limit int default 50, p_before timestamptz default null)` — own rows only, newest first, keyset-paginated.
-- `get_own_journal_export()` — the own-subject export contract: returns a versioned jsonb section of all the caller's entries. Follows FEAT-PC008's precedent: resolves via `auth.uid()` directly (not the `is_active`-gated helper) so a **suspended** member retains the right of access.
+- `public.journal_entries`: `id` uuid pk, `owner_group_id` uuid NOT NULL **REFERENCES `public.groups(id)` ON DELETE CASCADE** (the P-O1 actor primitive; the FK target settled at groups because `admin_hard_delete_user` hard-deletes the personal group and its sentinel-reassignment UPDATE list never names this table — private entries ride the cascade, never the sentinel), `title` (nullable, ≤300), `body` (NOT NULL, non-empty, ≤100k), `created_at`/`updated_at`. Index `(owner_group_id, created_at DESC)`.
+- RLS enabled with four own-rows policies (defense-in-depth keyed to `get_current_personal_group_id()`), **and all table grants revoked from `anon`/`authenticated`** — a direct PostgREST caller gets 42501 on every verb.
+- Five SECURITY DEFINER RPCs (`SET search_path = ''`, EXECUTE to `authenticated` only): `create_journal_entry` (FIM-only — 42501 for a Mist; active account required; 22023 empty body), `update_journal_entry` / `delete_journal_entry` (own rows; foreign **or** nonexistent id → P0002, no existence leak), `get_own_journal_entries` (newest-first, keyset `p_before`, limit clamped [1,200]; **reads survive suspension** — no `is_active` gate), `get_own_journal_export()` (versioned jsonb `{schema_version:1, exported_at, entries[]}`; resolves via `auth.uid()` directly per the PC008 precedent so a suspended member keeps Art. 15/20 access; `entries` present-and-empty, never absent).
 
-**The export seam is closed by composition, not extension.** PC-4 never reads Domain tables (one-way Core→Domain boundary), so `get_own_data_export()` is NOT extended. Instead the surface composes the two platform contracts (PC008's document + this feature's journal section) at download time — BFF composition is legitimate plumbing under ADR-U038. FEAT-H011 carries the surface story; FEAT-H010 gains a short provenance amendment at close.
+**Hub lib:** `hub/lib/journal/queries.ts` — typed wrappers over the five RPCs (the `fetchOwnDataExport` shape); consumed by FEAT-H011's BFF routes and the composed download.
 
-## Appetite
+**Tests** (`hub/tests/integration/journal/`):
+- `journal-contract.test.ts` — 11 tests, **demonstrated red first** (contracts absent: 11/11 failed on function-not-found) then green post-migration. Covers STORY-1..3 including the ADR-U038 adversarial direct-caller pass (authenticated FIM + anonymous-session Mist, all four verbs refused at the substrate).
+- `journal-erasure-export.test.ts` — 4 tests, **labelled test-after verification** (the FK cascade + export RPC shipped in the same migration by design — one schema-gate review). Proves STORY-4 end-to-end via the real `erase_fim_account` → `admin_hard_delete_user` path (zero surviving rows, none under the `[Deleted User]` sentinel) and STORY-5 incl. suspended read/export access and Alice/Bob isolation.
 
-One focused session for the platform half (migration + RPCs + adversarial direct-caller tests), matching FEAT-PC008's scale. Schema-review gate pauses the merge as usual.
-
-## Rabbit holes
-
-- **Structured/rich body.** Plain text v1. No jsonb body, no block editor format, no media. A future format migration is cheaper than a wrong structure now.
-- **Merging journal data into PC008's document server-side.** Tempting, boundary-violating (Core reading Domain). Composition happens at the surface.
-- **Mist journaling.** Would drag in TTL sweeps and transcendence carry-over semantics. FIM-only v1; the gate is one check in `create_journal_entry`.
-- **Sharing.** The S43 region-sharing model (garden vs journal vs rooms) is a real future feature with its own consent surface. Nothing in v1 may presuppose its shape beyond "entries are rows that could later carry a visibility dimension".
+**Deviations from the sketch:** none. The export seam closed by surface composition exactly as sketched (FEAT-H011 STORY-5; FEAT-H010 amended).
 
 ## No-gos
 
