@@ -1,6 +1,6 @@
 # Phase 3 — Groups (A-GRP) completion plan
 
-**Status:** Draft v1 (2026-07-03) — **awaiting the decision-board pass (§Decision board) before Cycle G-A decomposes.** Becomes the living plan for Phase 3's second area once the open decisions are settled.
+**Status:** Living plan (v1, 2026-07-03). **Decision board settled 2026-07-03** (Stefan — recommendations accepted; D1 amended by a disk finding, see the board). **Cycle G-A decomposed the same day:** [FEAT-PC010](../../platform/core/features/FEAT-PC010-group-creation-and-settings-contracts.md) (the first PC-3 feature spec) ↔ [FEAT-H013](../../products/hub/features/FEAT-H013-group-creation-and-stewardship.md), both `4-ready`. Governs Phase 3's second area.
 **Parent plan:** [`README.md`](./README.md) (Hub v2 rebuild, Phases 0–4). Pattern: [`phase-3-identity-completion-plan.md`](./phase-3-identity-completion-plan.md).
 **Wave:** Ferd. **Canonical capability inventory:** [`../../products/hub/SPECIFICATION.md`](../../products/hub/SPECIFICATION.md) §L3 (A-GRP — 19 capabilities: GRP-1..9 + MEM-1..10; there is no GRP-10..19). This plan references it; §L3 is the authority.
 
@@ -51,7 +51,7 @@ Same execution shape as Identity: platform half authored to `4-ready` and built 
 
 | Cycle | Capabilities | Notes / risks |
 |-------|--------------|----------------|
-| **G-A — Group CRUD & rendering** | GRP-1, 2, 3, 5 + GRP-4 completion | Foundation for everything. **Carries the boundary NFR bet:** perf **P2** (collapse the `/groups` read — 3 sequential queries — into one SECURITY DEFINER RPC) *is* this cycle's query work (D1). First schema-gate migration also carries the system-groups seeding fix + `Visitor`/`Guest`→Mist seed rename. GRP-4 detail view renders **without** the DS-3 enrolment summary (seam note; slot filled at the Journeys area). |
+| **G-A — Group CRUD & rendering** | GRP-1, 2, 3, 5 + GRP-4 completion | Foundation for everything. **Decomposed 2026-07-03:** [FEAT-PC010](../../platform/core/features/FEAT-PC010-group-creation-and-settings-contracts.md) ↔ [FEAT-H013](../../products/hub/features/FEAT-H013-group-creation-and-stewardship.md), both `4-ready`. The boundary NFR bet reshaped at decomposition (D1 amendment): **P2 was already realized** by the ADR-U038 tranche (`get_member_groups()` + the single-RPC route); **P3a executes alongside the G-A build** as its own hardening migration. PC010's schema-gate migration carries the contracts + the ADR-U038 direct-write narrowing on `groups` + the system-groups seeding fix + the vestigial-seed-vocabulary check. GRP-4 detail renders **without** the DS-3 enrolment summary (seam; slot filled at the Journeys area). |
 | **G-B — Roles & permissions** | GRP-6, 7, 8 | The three-layer permission substrate is Conformant and legacy-proven ("port wholesale"); the new work is the contracts + the act-as/effective-permissions surface. ADR-U007 governs the model, ADR-U018 forbids hardcoded group types. |
 | **G-C — Invitations & joining** | MEM-1, 2, 3 | Substrate exists (`status=invited` memberships, `pending_email_invitations` token + 30-day expiry + auto-claim). Two seam decisions gate scope: member search without DS-6 (**D3**), outbound email without the V3 channel (**D4**). |
 | **G-D — Membership lifecycle** | MEM-4, 5, 6 | Leave/removal cascades incl. non-public enrolment freeze already exist in the Conformant substrate — platform-tier, same reasoning that de-risked IDN-10's cascade (Identity plan §"Why the cross-area worry does not block this"). MEM-6's DS-5 attribution disposition is tagged `pending-DS-5`, not built (D2). |
@@ -63,7 +63,9 @@ Order rationale: internal deps force A → B → (C, D) → E; C and D are mutua
 
 ---
 
-## Decision board (surface-all-at-once — settle before Cycle G-A decomposes)
+## Decision board (surface-all-at-once — settled 2026-07-03)
+
+> **Settled 2026-07-03 (Stefan):** all recommendations accepted as written, with one amendment discovered at decomposition — **D1**: the P2 half of the bet turned out to be **already realized** (the 2026-07-02 ADR-U038 tranche landed `get_member_groups()` as exactly the single consolidated RPC P2 called for; `GET /api/groups` makes that one call — verified on disk + dev DB 2026-07-03, [perf backlog updated](./perf-hardening-backlog.md)). The boundary NFR bet is therefore **P3a alone**, executed alongside the Cycle G-A build as its own hardening migration through the schema gate. D6: task files return for every 4-ready feature at build. D7's gap entry landed as **G-36** in the kickoff batch.
 
 **Answered by existing canon (no action needed):**
 
