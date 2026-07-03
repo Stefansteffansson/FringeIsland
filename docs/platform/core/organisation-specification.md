@@ -447,15 +447,18 @@ Capabilities PC-3 consumes from upstream Platform Core areas:
 
 ### Summary
 
-Zero FEAT-PC-* feature specs within canonical `docs/platform/core/features/` scope at this commit (per Step 2.6 Glob, scope-bound per SS-16 / SS-17 sub-shape A discipline). All 11 §L3 capabilities are unimplemented at the FEAT-PC-* tier today; reconciliation downstream per the feature-inventory maintenance discipline (the `doc-health-check` skill verifies this section as FEAT-PC-* specs land).
+One FEAT-PC-* feature spec owned by this area at this commit — **[FEAT-PC010](./features/FEAT-PC010-group-creation-and-settings-contracts.md)** (decomposed 2026-07-03, Groups Cycle G-A per the [Groups completion plan](../../planning/hub-v2/phase-3-groups-completion-plan.md)), the first PC-3 feature. It instantiates member-facing contracts under four §L3 capabilities; the capabilities themselves remain broader than the feature (the substrate carries forward Conformant; the contracts are the new work).
 
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
-| *(all 11 capabilities — see §L3 Capabilities inventory)* | — | — | No FEAT-PC-* spec in `features/` at this commit; feature-inventory reconciliation downstream |
+| Universal Group Pattern | [FEAT-PC010](./features/FEAT-PC010-group-creation-and-settings-contracts.md) | 4-ready | `create_engagement_group()` / `get_group_detail()` / `update_group_settings()` contracts + direct-write narrowing on `public.groups` (ADR-U038) + the system-group seeding repair (C3-1 fresh-DB concern, PC-3 slice) |
+| Membership lifecycle | [FEAT-PC010](./features/FEAT-PC010-group-creation-and-settings-contracts.md) | 4-ready | Creator-bootstrap membership only (invitation/join/leave contracts are later G-cycles) |
+| Group Role lifecycle | [FEAT-PC010](./features/FEAT-PC010-group-creation-and-settings-contracts.md) | 4-ready | Role-instance materialisation at creation + creator Steward binding only (role management is Cycle G-B) |
+| Permission resolution — `has_permission()` | [FEAT-PC010](./features/FEAT-PC010-group-creation-and-settings-contracts.md) | 4-ready | Consumed (settings gate + the viewer `can_manage_settings` capability flag); the primitive itself is existing substrate |
 
 ### Capabilities without specs
 
-All 11 §L3 capabilities at this commit. FEAT-PC-* feature-spec authoring is downstream work, not in scope for Phase 2 (Phase 2 = entity L1→L3 derivation; PC-3 implementation arrives downstream of PC-4 close-out + Phase 2 close-out).
+The remaining §L3 capabilities (Personal Group bootstrap, Role Template management, Permission registry, Personal-group actor primitive, Group-membership invariants, Cascade-response for User-creation, Pending-invitation claim) have no FEAT-PC-* spec at this commit — all exist as carried-forward substrate; contracts over them arrive with the later Groups cycles (G-B roles, G-C invitations incl. the pending-claim surface, G-D membership lifecycle) per the Groups completion plan.
 
 ### Features without capabilities
 
