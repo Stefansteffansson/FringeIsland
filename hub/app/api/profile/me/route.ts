@@ -26,8 +26,10 @@ export const preferredRegion = 'dub1';
  * route — no ADR-U015 version bump.
  *
  * Route path is `/api/profile/me`, matching the shipped `/api/<resource>`
- * convention; the spec's `/api/v1/...` is directional and not yet realised in
- * the new Hub.
+ * convention. Per ADR-U038 this route is private Hub BFF plumbing, so ADR-U015
+ * `/api/v1` versioning + Bearer auth bind the PLATFORM surface (the PostgREST RPC
+ * beneath — get_own_profile / update_own_profile), not this BFF path; a
+ * cookie-session, unversioned Surface route is conformant.
  */
 export async function GET() {
   // ADR-U037: read-path identity via local JWT verification — no Auth-server

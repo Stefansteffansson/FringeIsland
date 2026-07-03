@@ -33,6 +33,7 @@ The skill has eleven sections. Four (1.5, 3.5, 3.6, 3.7) exist to catch drift in
 | After a cross-cutting terminology change (role, entity, permission, concept) | Section 1 (Terminology drift) |
 | **After a decision retires a concept, workflow, or artifact type** | Section 1.5 (Architectural drift) — and also update Section 1.5's table in the same session |
 | After a schema migration (table, column, RLS policy, trigger) | Section 2 (Schema drift) |
+| **After a build cycle that touched product or substrate code** | Section 1.6 (Unfiled deviation markers) |
 | After a folder rename, file move, or doc restructure | Section 3 (Path references + README indexes) |
 | **After archiving a tree or major set of files** | Section 3.5 (References into archived trees) |
 | **After deleting files** | Section 3.6 (References to deleted files) — and also update Section 3.6's table in the same session |
@@ -175,6 +176,29 @@ This is subtler than Section 1 because there's no "old term → new term" mappin
 Whenever a decision retires a concept, add a row to the table above in the same session that locks the decision. This is the skill's only defence against its own knowledge going stale — the table must be fed.
 
 **Skip if:** No decisions have retired concepts since the last check AND you're confident the existing table is complete. Default is to run the check; the cost is one grep per row.
+
+---
+
+## Section 1.6 — Unfiled deviation markers (code comments that should be filed deviations)
+
+**Question:** Does the codebase carry `directional` / `not yet realised` (or `for now`, `TODO: spec`) markers that record a real deviation from a spec or ADR but were never filed and triaged per `docs/planning/PROCESS.md` §9?
+
+A code comment is **not** a filed deviation (PROCESS.md §9.2): a `// directional` note satisfies the *letter* of "never silent" while bypassing triage. This is the ADR-U038 failure mode — five features carried "the spec's `/api/v1` + Bearer is directional" across DoD, and the load-bearing question underneath (were those routes even the canonical API surface?) surfaced only by accident, months later.
+
+### Procedure
+
+1. Grep the code tree for deviation markers:
+   ```
+   grep -rniI "directional\|not yet realised\|not yet realized\|TODO: *spec" \
+     hub/app hub/lib supabase/ \
+     --include="*.ts" --include="*.tsx" --include="*.sql"
+   ```
+2. For each hit, read the surrounding context and classify:
+   - **Filed** — a matching, triaged deviation exists in the owning feature spec's notes or a task (tagged local / upstream-bearing / open-question). Fine.
+   - **Unfiled** — the comment is the *only* record of the deviation. **Finding.** Either file it now (spec notes or task, with a triage tag), or — if the underlying question has since been resolved — update the comment to cite the resolving ADR/spec and drop the marker word.
+3. A marker whose underlying tension is load-bearing (e.g. "is this even the canonical surface?") is a **critical finding**, not a cleanup.
+
+**Skip if:** No product or substrate code changed since the last check.
 
 ---
 
