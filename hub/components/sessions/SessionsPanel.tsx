@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { fetchSessions, revokeSession, type DeviceSession } from '@/lib/sessions/client';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { SESSIONS_CHANGED_EVENT } from '@/lib/auth/session-guard';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { InlineError } from '@/components/ui/InlineError';
 import { LoadingState } from '@/components/ui/LoadingState';
@@ -64,6 +65,13 @@ export function SessionsPanel() {
   const [nonce, setNonce] = useState(0);
 
   const reload = useCallback(() => setNonce((n) => n + 1), []);
+
+  // The session guard nudges when ANOTHER of this member's devices is revoked
+  // (a hint on the private channel) — re-read so the open list stays truthful.
+  useEffect(() => {
+    window.addEventListener(SESSIONS_CHANGED_EVENT, reload);
+    return () => window.removeEventListener(SESSIONS_CHANGED_EVENT, reload);
+  }, [reload]);
 
   useEffect(() => {
     let active = true;

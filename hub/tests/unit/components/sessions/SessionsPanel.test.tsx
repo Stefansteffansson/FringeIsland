@@ -49,10 +49,11 @@ const OTHER: DeviceSession = {
 
 describe('FEAT-H012 — SessionsPanel (STORY-1/2)', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    fetchSessions.mockResolvedValue([CURRENT, OTHER]);
-    revokeSession.mockResolvedValue(undefined);
-    signOut.mockResolvedValue(undefined);
+    // mockReset (not clear) — drops leftover mockResolvedValueOnce queues so
+    // tests stay independent.
+    fetchSessions.mockReset().mockResolvedValue([CURRENT, OTHER]);
+    revokeSession.mockReset().mockResolvedValue(undefined);
+    signOut.mockReset().mockResolvedValue(undefined);
   });
 
   it('renders one row per session in served order, with the "This device" badge on the current one', async () => {
@@ -130,6 +131,18 @@ describe('FEAT-H012 — SessionsPanel (STORY-1/2)', () => {
     expect(await screen.findByText(/failed to sign out the session/i)).toBeInTheDocument();
     expect(screen.getAllByTestId('session-row')).toHaveLength(2);
     expect(signOut).not.toHaveBeenCalled();
+  });
+
+  it('re-reads the list when the session guard dispatches sessionsChanged (STORY-3)', async () => {
+    fetchSessions.mockResolvedValueOnce([CURRENT, OTHER]).mockResolvedValueOnce([CURRENT]);
+    render(<SessionsPanel />);
+    expect(await screen.findAllByTestId('session-row')).toHaveLength(2);
+
+    const { SESSIONS_CHANGED_EVENT } = await import('@/lib/auth/session-guard');
+    window.dispatchEvent(new Event(SESSIONS_CHANGED_EVENT));
+
+    await waitFor(() => expect(screen.getAllByTestId('session-row')).toHaveLength(1));
+    expect(fetchSessions).toHaveBeenCalledTimes(2);
   });
 
   it('a failed initial load shows an error, not a frozen or empty UI', async () => {
