@@ -6,7 +6,7 @@ title: Personal Journal primitive — a private, own-subject entry store with pl
 owner: platform/domain/intelligence
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

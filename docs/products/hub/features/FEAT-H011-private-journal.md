@@ -6,7 +6,7 @@ title: Private journal — the Hub surface for writing, reading, editing, and de
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

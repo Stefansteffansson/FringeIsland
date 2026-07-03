@@ -174,7 +174,7 @@ Cross-referenced per the template rule: DS-1's salience-channel input line exist
 
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
-| Personal Journal store | [FEAT-PD001](./features/FEAT-PD001-personal-journal-primitive.md) | 4-ready | Cycle D of the Hub v2 Phase-3 Identity plan (IDN-5's platform half); paired with the Hub surface [FEAT-H011](../../products/hub/features/FEAT-H011-private-journal.md). The first Domain-tier feature spec. |
+| Personal Journal store | [FEAT-PD001](./features/FEAT-PD001-personal-journal-primitive.md) | 5-in-cycle | Cycle D of the Hub v2 Phase-3 Identity plan (IDN-5's platform half); paired with the Hub surface [FEAT-H011](../../products/hub/features/FEAT-H011-private-journal.md). The first Domain-tier feature spec. |
 | (the other fourteen) | — | — | No FEAT-PD specs exist for them yet |
 
 ### Capabilities without specs
