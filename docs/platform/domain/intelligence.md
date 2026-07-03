@@ -118,6 +118,7 @@ Plugin contracts registered with the Extension System (ratified from the owned s
 | Profile bucket store | Profile accumulation | Consent & disclosure gating | PC-1 (schema/RLS); the U005 `profile_data` shape | Privacy (the AI-data-handling core, U010 — portability, retention); Observability (accumulation events) |
 | Consent & disclosure gating | Profile accumulation | — | PC-2 (consent surface) | Privacy (bucket-level consent; disclosure anchoring); Administration (consent-posture administration) |
 | Mist ephemerality & transcendence handling | Profile accumulation | Profile bucket store; Being-state store | PC-1 (pg_cron sweep); PC-2 (U031 lifecycle, atomic transcendence S46) | Privacy (TTL erasure; carry-over consent); Observability (lifecycle events) |
+| Personal Journal store | Profile accumulation | Consent & disclosure gating (future sharing only) | PC-1 (schema/RLS); PC-2 (identity, FIM-only gate, erasure teardown) | Privacy (private-by-default member writing; own-subject export + hard-delete erasure); Observability (content-free) |
 | Starved-drive sensing | Sensing & shaping feeds | Profile bucket store; Being-state store | — | Privacy (readings are private, never comparative); Observability (sensing events, content-free) |
 | Personalisation input feed | Sensing & shaping feeds | Starved-drive sensing; Consent & disclosure gating | DS-3 (its personalisation input contract — DS-7 calls) | Privacy (feed mirrors disclosure breadth); Observability (feed events) |
 | Salience derivation & feed | Sensing & shaping feeds | Being-state store (maturity arc) | DS-1 (its salience intake contract — DS-7 calls; §8 Q3) | Privacy (salience is FIM/Mist data rendered on the cord); Observability (feed events) |
@@ -131,7 +132,7 @@ Plugin contracts registered with the Extension System (ratified from the owned s
 
 ### Dependency chain
 
-Registries and the **being-state store** come first (everything reads or writes a Whisp's state). **Consent & disclosure gating** precedes the **profile bucket store** (no accumulation without the gate). The **dialogue runtime** needs being-state + the **dissolved-instrument engine** (which needs the bucket store for results). **Starved-drive sensing** reads accumulation; the three **shaping feeds** need sensing/maturity plus their target contracts stable (DS-1, DS-3, DS-6 — all landed). **Guard-rail enforcement** is a peer prerequisite to the dialogue runtime and generation (nothing AI-facing ships unrailed). **AI-generation orchestration** needs rails + DS-4's write-path. **Lifecycle cascades** need all stores; the **graduation lifecycle** lands last (it retires what the others build).
+Registries and the **being-state store** come first (everything reads or writes a Whisp's state). **Consent & disclosure gating** precedes the **profile bucket store** (no accumulation without the gate). The **dialogue runtime** needs being-state + the **dissolved-instrument engine** (which needs the bucket store for results). **Starved-drive sensing** reads accumulation; the three **shaping feeds** need sensing/maturity plus their target contracts stable (DS-1, DS-3, DS-6 — all landed). **Guard-rail enforcement** is a peer prerequisite to the dialogue runtime and generation (nothing AI-facing ships unrailed). **AI-generation orchestration** needs rails + DS-4's write-path. **Lifecycle cascades** need all stores; the **graduation lifecycle** lands last (it retires what the others build). The **personal Journal store** (amendment 2026-07-03) is buildable independently — it needs only Core substrate (PC-1/PC-2); its consent-gating dependency is future-sharing only.
 
 ### External dependencies
 
@@ -159,6 +160,7 @@ Cross-referenced per the template rule: DS-1's salience-channel input line exist
 - **PRINCIPLES-AI.md enters a Domain Service authority chain for the first time** (constitutional; the guard-railing law and the staged human-first sequence are derivation input — the register row's "guard railing" foot traces to it, not to any ADR).
 - **Sibling-provisional rule (resolved 2026-06-11):** the Extension System's derivation landed ([`../extensions/SPECIFICATION.md`](../extensions/SPECIFICATION.md)); §5's plugin contracts were re-checked from the owned side and ratified — the provisional tag is lifted. The six landed-sibling consumer lines against DS-7 were re-checked at the DS-7 descent: all six confirmed (world-model salience; narrative context reads; journeys personalisation seam; content context/write line; communication context reads — with the owned posture stated; discovery facet reads).
 - **Register row consumed in full:** "Whisp dialogue; assessments dissolved (validity question open); starved-drive sensing (S28); guard railing" — each foot maps to a capability area; the validity question stays open at §8 Q2 by design.
+- **Amendment (2026-07-03, ratified): the personal Journal store row.** The Journal routing adjudication — PC-2's Step 3 Q1 carry (`../core/identity-specification.md`, pickup "Domain Service receiving Journal (TBD)") — resolved to DS-7: the Journal is member-authored private reflection, adjacent to the store that already holds member-authored self-defined intentions (the U005 shape) under DS-7's strictest-privacy posture. Considered and rejected per the sub-tier discipline: DS-4 Content (capability-mismatch — its charter is universe-renderable substance served to referrers; private entries are never presented and have no referrers) and a new dedicated service (no capability-mismatch with the Profile accumulation area to justify one). Additive backward-edit to the closed inventory, reviewed and ratified by Stefan at the Cycle D decomposition session (2026-07-03).
 
 *Note: no status column in the capability table. Status (shipped / in flight / not started / retroactive needed) is a reconciliation output, not a derivation output — see §L4 and G-20.*
 
@@ -172,11 +174,12 @@ Cross-referenced per the template rule: DS-1's salience-channel input line exist
 
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
-| (all fourteen) | — | — | No FEAT-PD specs exist for DS-7 yet |
+| Personal Journal store | [FEAT-PD001](./features/FEAT-PD001-personal-journal-primitive.md) | 4-ready | Cycle D of the Hub v2 Phase-3 Identity plan (IDN-5's platform half); paired with the Hub surface [FEAT-H011](../../products/hub/features/FEAT-H011-private-journal.md). The first Domain-tier feature spec. |
+| (the other fourteen) | — | — | No FEAT-PD specs exist for them yet |
 
 ### Capabilities without specs
 
-All fourteen capabilities above. DS-7 is specification-first; no realized substrate exists (see §6 and §L3 Step 2).
+The other fourteen capabilities above. DS-7 is specification-first; beyond the Journal cycle no realized substrate exists (see §6 and §L3 Step 2).
 
 ### Features without capabilities
 
