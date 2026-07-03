@@ -26,6 +26,7 @@
     "test:integration:admin": "npm run test:integration:admin -w hub",
     "test:integration:communication": "npm run test:integration:communication -w hub",
     "test:integration:security": "npm run test:integration:security -w hub",
+    "test:integration:journal": "npm run test:integration:journal -w hub",
     "test:e2e": "npm run test:e2e -w hub",
     "test:e2e:ui": "npm run test:e2e:ui -w hub",
     "test:e2e:headed": "npm run test:e2e:headed -w hub",

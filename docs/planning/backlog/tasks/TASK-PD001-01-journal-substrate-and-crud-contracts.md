@@ -1,7 +1,7 @@
 ---
 id: TASK-PD001-01
 title: Journal substrate — journal_entries table + RLS/grants + CRUD RPCs, red-first
-status: todo
+status: review
 assigned_to: Claude
 priority: high
 feature: FEAT-PD001

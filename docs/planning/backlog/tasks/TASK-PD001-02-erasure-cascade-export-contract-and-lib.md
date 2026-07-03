@@ -1,7 +1,7 @@
 ---
 id: TASK-PD001-02
 title: Journal erasure cascade + own-subject export contract + hub lib
-status: todo
+status: review
 assigned_to: Claude
 priority: high
 feature: FEAT-PD001
