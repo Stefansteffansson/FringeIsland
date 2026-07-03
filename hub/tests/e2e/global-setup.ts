@@ -20,6 +20,11 @@ export default async function globalSetup(config: FullConfig) {
     email: SESSION_EMAIL,
     password: E2E_PASSWORD,
     email_confirm: true,
+    // consent_accepted: credentialed FIM creation is consent-gated at the
+    // substrate (handle_new_user, ADR-U038 S3) — same as the integration
+    // helper. Without it the trigger refuses ("Database error creating new
+    // user") and the whole E2E suite cannot start.
+    user_metadata: { display_name: 'E2E Session', consent_accepted: 'true' },
   });
   if (error) throw new Error(`Failed to create session user: ${error.message}`);
   console.log(`[e2e-setup] Created user: ${data.user.email}`);

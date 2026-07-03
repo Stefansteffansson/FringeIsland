@@ -10,9 +10,15 @@ import { getTelemetrySink } from '@/lib/observability/telemetry';
  * (500, never a partial document).
  *
  * Red-first: this fails to import until `app/api/account/export/route.ts` exists.
+ *
+ * Amended 2026-07-03 (FEAT-H011 STORY-5, red-first against the pre-composition
+ * route): the route now COMPOSES the FEAT-PD001 journal export into the
+ * delivered document as an additive top-level `journal` key (present-and-empty
+ * for an entry-less FIM; a journal failure fails the whole download).
  */
 const getUser = jest.fn<() => Promise<{ data: { user: { id: string } | null } }>>();
 const fetchOwnDataExport = jest.fn<() => Promise<unknown>>();
+const fetchOwnJournalExport = jest.fn<() => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -27,6 +33,10 @@ jest.mock('@/lib/supabase/server', () => ({ createClient: async () => ({ auth: {
 jest.mock('@/lib/account/export', () => ({
   fetchOwnDataExport: (...args: unknown[]) =>
     (fetchOwnDataExport as unknown as (...a: unknown[]) => unknown)(...args),
+}));
+jest.mock('@/lib/journal/queries', () => ({
+  fetchOwnJournalExport: (...args: unknown[]) =>
+    (fetchOwnJournalExport as unknown as (...a: unknown[]) => unknown)(...args),
 }));
 
 import { GET } from '@/app/api/account/export/route';
@@ -46,9 +56,12 @@ const SAMPLE_DOC = {
   memberships: [],
 };
 
+const EMPTY_JOURNAL = { schema_version: 1, exported_at: '2026-07-03T00:00:00Z', entries: [] };
+
 beforeEach(() => {
   getUser.mockReset().mockResolvedValue({ data: { user: { id: 'u1' } } });
   fetchOwnDataExport.mockReset().mockResolvedValue(SAMPLE_DOC);
+  fetchOwnJournalExport.mockReset().mockResolvedValue(EMPTY_JOURNAL);
 });
 
 describe('GET /api/account/export', () => {
@@ -81,5 +94,45 @@ describe('GET /api/account/export', () => {
     const res = (await GET()) as { status: number };
     expect(res.status).toBe(500);
     expect(emitted('account.export_failed', 'u-err')).toBe(true);
+  });
+
+  // FEAT-H011 STORY-5 — the composed download (red-first against the
+  // pre-composition route).
+
+  it('composes the journal export into the document as an additive `journal` key', async () => {
+    fetchOwnJournalExport.mockResolvedValue({
+      schema_version: 1,
+      exported_at: '2026-07-03T00:00:01Z',
+      entries: [
+        { id: 'j1', title: null, body: 'kept words', created_at: 'x', updated_at: 'x' },
+      ],
+    });
+    const res = (await GET()) as {
+      status: number;
+      body: { schema_version: number; journal: { schema_version: number; entries: unknown[] } };
+    };
+    expect(res.status).toBe(200);
+    // the core document is intact AND the journal section rides along, versioned
+    expect(res.body.schema_version).toBe(1);
+    expect(res.body.journal.schema_version).toBe(1);
+    expect(res.body.journal.entries).toHaveLength(1);
+  });
+
+  it('an entry-less FIM gets journal present-and-empty — never an omission', async () => {
+    const res = (await GET()) as {
+      body: { journal: { entries: unknown[] } };
+    };
+    expect(res.body.journal).toBeDefined();
+    expect(Array.isArray(res.body.journal.entries)).toBe(true);
+    expect(res.body.journal.entries).toHaveLength(0);
+  });
+
+  it('a journal-contract failure fails the whole download — never a partial document', async () => {
+    getUser.mockResolvedValue({ data: { user: { id: 'u-jerr' } } });
+    fetchOwnJournalExport.mockRejectedValue(new Error('journal rpc exploded'));
+    const res = (await GET()) as { status: number; body: { error?: string } };
+    expect(res.status).toBe(500);
+    expect(res.body.error).not.toContain('kept words');
+    expect(emitted('account.export_failed', 'u-jerr')).toBe(true);
   });
 });
