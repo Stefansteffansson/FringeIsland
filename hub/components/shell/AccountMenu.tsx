@@ -109,6 +109,13 @@ export function AccountMenu() {
               Journal
             </Link>
             <Link
+              href="/sessions"
+              onClick={() => setOpen(false)}
+              className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+            >
+              Sessions
+            </Link>
+            <Link
               href="/consent"
               onClick={() => setOpen(false)}
               className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"

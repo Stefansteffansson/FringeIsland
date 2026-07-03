@@ -5,6 +5,7 @@ import type { Session, User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 import { invalidateProfileCache } from '@/lib/profile/client';
 import { beginMistSession, deriveIdentity, type Identity } from '@/lib/auth/mist';
+import { useSessionGuard } from '@/lib/auth/session-guard';
 import { TRANSCENDENCE_CONSENT_REQUIRED_ERROR } from '@/lib/auth/transcendence';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
@@ -237,6 +238,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Derived in render (not in the auth listener) — pure, no query, no deadlock.
   const identity = useMemo(() => deriveIdentity(user), [user]);
+
+  // FEAT-H012: the ADR-U039 session guard — the private session-signal channel
+  // (verify-on-signal) + focus/visibility + slow-poll fallback validation. Runs
+  // on EVERY page (a revoked device isn't sitting on /sessions), which is why
+  // it lives here and not in the sessions surface.
+  useSessionGuard(supabase, session, identity);
 
   return (
     <AuthContext.Provider

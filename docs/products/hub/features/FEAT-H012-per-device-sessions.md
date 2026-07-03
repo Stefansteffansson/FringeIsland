@@ -6,7 +6,7 @@ title: Per-device sessions — the /sessions surface rendering the FIM's own ses
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -107,3 +107,13 @@ The **Gimbal** consumes the same PC009 contracts and the same channel/doctrine f
 - **Observability:** content-free telemetry on page/route/hint paths (request id, actor, outcome); revocation failures and refused subscriptions are recorded errors, never silent.
 - **Transactions:** None.
 - **Extensibility:** the device line is a presentation heuristic over the raw string (no sealed UA taxonomy); the AuthContext subscription is written as the first tenant of a doctrine-shaped mechanism (topic + handler registered, not hardcoded one-off) so notifications/DM tenants extend rather than fork it.
+
+## Implementation notes (6-done — Cycle E, 2026-07-03)
+
+Built TDD red-first over the FEAT-PC009 substrate; carries no migration of its own.
+
+- **Lib** `hub/lib/sessions/queries.ts` (typed RPC wrappers) + `hub/lib/sessions/client.ts` (browser transports over the BFF). **Routes** `GET /api/sessions` + `DELETE /api/sessions/[id]` — Edge+`dub1` (ADR-U036), `@supabase/ssr` cookie auth (GET via `getVerifiedUserId`/local claims per ADR-U037; DELETE via `getUser`), SQLSTATE→HTTP (42501→403, P0002→404), content-free telemetry (UA/IP never in events or error bodies — asserted). Route-unit **9/9**, demonstrated red (modules absent).
+- **Surface** `hub/app/sessions/page.tsx` (the /journal gate pattern; suspended FIM still served) + `hub/components/sessions/SessionsPanel.tsx` — `describeDevice()` heuristic (a few `includes` checks, raw-string honesty), rows newest-last-active with the "This device" badge, ConfirmModal-gated revoke, mutations re-read (never optimistic), current-device revoke → local `signOut()` (the page gate redirects), `sessionsChanged` listener re-reads when the guard hears another device revoked. AccountMenu link. Panel unit **9/9** red-first; page-gate unit **3/3 (labelled test-after** — authored from the journal pattern before its test).
+- **The ADR-U039 tenant** `hub/lib/auth/session-guard.ts`, wired in AuthContext: one private-topic subscription per authenticated FIM (`account:<auth_uid>:sessions`, `realtime.setAuth` before join), **verify-on-signal** (a hint naming this device triggers `getUser()`; only refusal signs out → `replaceLocation('/login')`; spoofed/stale hint = proven no-op), other-device hints dispatch `SESSIONS_CHANGED_EVENT`; fallback validation on focus/visibility + a 60s visible-tab interval (the legacy oracle's 10s poll relaxed — the hint carries immediacy; network failure is never treated as refusal). `replaceLocation` isolated in `hub/lib/auth/redirect.ts` (jsdom's location is unmockable in place). Guard unit **8/8** red-first.
+- **E2E** `hub/tests/e2e/sessions.spec.ts` — **3 tests**: sessionless gate redirect; the two-context remote sign-out (device B, parked on /groups, lands on /login after device A revokes it — the live hint path, with `bringToFront` also arming the focus fallback so the assertion is deterministic); current-device self-revoke with the distinct copy. **Suite-order find:** profile.spec's STORY-4 sign-out is scope-global and server-revokes the shared storageState session — the journey therefore runs on its own fresh sessions and revokes exactly device B (never the shared session). Related observed behaviour, accepted per ADR-U037: a GET route verified by local claims serves a revoked-session JWT until expiry — the guard/refresh path is precisely what catches it.
+- **Gates:** unit **220/220** (incl. the three suites above + page gate), integration **109/109** (`--runInBand`), **E2E 35/35**, `next build` clean, lint 0 errors (one pre-existing unrelated warning). API-boundary DoD: the contracts self-gate substrate-side with adversarial direct-`rpc()` tests (Mist, cross-user, ghost) in the PC009 suite; the routes are private-BFF presentation only.
