@@ -6,7 +6,7 @@ title: Session inventory & targeted revocation — own-subject contracts to list
 owner: platform/core/identity
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -125,3 +125,12 @@ Additive: two new `SECURITY DEFINER` functions, `realtime.messages` policies, on
 1. **Audit substrate (resolve at the build-session schema-review gate).** The `session_revoked` durable record defaults to `public.admin_audit_log` (the PC008 precedent and the only existing durable audit substrate). Same open point as PC008's: whether member-initiated security events eventually deserve a dedicated log. Decided with the migration; the default is clear.
 2. **Hint-emission failure semantics.** If `realtime.send()` errors (Realtime unavailable), the revocation itself must still commit — the hint is an accelerant, not the contract (ADR-U039 rule 5/6: the fallback validation catches it). Confirm at build whether `realtime.send()` can raise in-transaction and guard accordingly (exception-swallowing around the send only).
 3. **`ip` column fidelity.** `inet` → text conversion and whether the value reflects the original sign-in or the latest refresh (observed populated 56/56 on the dev DB). Verify at build; presentation stays Surface-side either way.
+
+## Implementation notes (6-done — Cycle E, 2026-07-03)
+
+Built TDD red-first, platform-first.
+
+- **Migration** `supabase/migrations/20260703154102_feat_pc009_session_contracts.sql` (schema-review gate; applied to dev + repaired). **Two functions, no new table.** `get_own_sessions()` — STABLE SECURITY DEFINER, `search_path=''`; FIM-only via `public.users.is_temporary IS DISTINCT FROM FALSE` (Mist → 42501); caller via `auth.uid()` directly (suspension-surviving, the PC008 pattern); `is_current` via `NULLIF(auth.jwt()->>'session_id','')::uuid` against the row PK; `ip` via `host(s.ip)`; ordered `updated_at DESC`. `revoke_own_session(p_session_id)` — VOLATILE; own-row `DELETE` (refresh tokens die by the `refresh_tokens.session_id` FK cascade); `P0002` on foreign-or-nonexistent (no existence leak; nothing emitted on failure); one durable `session_revoked` row to `admin_audit_log` (**open Q1 resolved to the default**); the ADR-U039 hint via `realtime.send({session_id}, 'session_revoked', 'account:<auth_uid>:sessions', private)` inside an exception guard (**open Q2 resolved: a hint failure can never fail the revocation**). Grants: EXECUTE to `authenticated`/`service_role` only (revoked from PUBLIC). `realtime.messages` policy `session_signal_receive_own`: authenticated RECEIVE on the own topic only; **no client send policy** — a peer cannot spoof a hint. Open Q3: `ip` renders via `host()`; interpretation stays Surface-side.
+- **Red→green evidence:** integration `hub/tests/integration/account/sessions.test.ts` — **9 tests** across STORY-1..5 demonstrated RED (functions absent from the schema cache) → GREEN post-migration. Coverage: inventory shape/order/`is_current`; targeted revoke + cascade (revoked device's `getUser()` refused while its unexpired JWT still exists — the documented window the Surface closes); P0002 both ways; current-session self-revoke; suspension survival; Mist 42501 on both contracts (the adversarial direct-caller path); hint + audit emitted exactly once per success and never on failure (asserted via `realtime.messages` rows + `admin_audit_log`); channel authorization exercised client-side (own topic SUBSCRIBED, foreign topic refused).
+- **Jest/realtime facts (for future suites):** `jest-environment-node` exposes no `WebSocket` global — the channel-auth probe passes realtime-js the `ws` transport explicitly and sets `realtime.setAuth(<jwt>)` (private channels authorize via the socket's JWT). First-ever Realtime use on the project cold-boots the tenant (partition creation observed in the service logs) — a first join during that window can close spuriously.
+

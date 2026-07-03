@@ -3,7 +3,7 @@
 ---
 id: TASK-H012-03
 title: AuthContext doctrine tenant — private-topic subscription, verify-on-signal, focus/visibility + slow-poll fallback; E2E; finalize both features
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H012

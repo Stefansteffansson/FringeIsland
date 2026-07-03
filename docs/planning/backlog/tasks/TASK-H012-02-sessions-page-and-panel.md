@@ -3,7 +3,7 @@
 ---
 id: TASK-H012-02
 title: /sessions surface — FIM-only gate, SessionsPanel inventory, ConfirmModal revoke, AccountMenu link
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H012

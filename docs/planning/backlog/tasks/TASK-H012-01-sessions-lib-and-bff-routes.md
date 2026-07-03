@@ -3,7 +3,7 @@
 ---
 id: TASK-H012-01
 title: Sessions lib + BFF routes — list + revoke, Edge+dub1, SQLSTATE→HTTP, content-free telemetry
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H012

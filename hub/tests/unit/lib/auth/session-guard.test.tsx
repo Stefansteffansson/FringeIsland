@@ -1,4 +1,4 @@
-import { describe, it, expect, jest, beforeEach, beforeAll } from '@jest/globals';
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { render, act, waitFor } from '@testing-library/react';
 import type { Session, SupabaseClient } from '@supabase/supabase-js';
 
