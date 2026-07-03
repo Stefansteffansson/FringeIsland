@@ -1,6 +1,6 @@
 # Gaps register
 
-**Status:** twenty-six known documentation and design gaps across the FringeIsland development system as of 2026-06-10.
+**Status:** twenty-eight known documentation and design gaps across the FringeIsland development system as of 2026-07-03.
 
 **Purpose:** a single place to see every gap flagged in the [how-we-work](./README.md) chapters, grouped by axis, with suggested resolution and priority.
 
@@ -36,6 +36,9 @@
 | G-29 | Decomposition (lateral) | Lateral routing for cross-entity findings produced by L3 stress-test passes | Medium | Design a routing mechanism that captures expected-dependency claims surfaced by an entity's L3 derivation and surfaces them to the targeted entity's pickup list before that entity's L3 runs |
 | G-30 | Agent routing | Tier CLAUDE.md files contain miscategorised entity-specific content | Medium | Walk each tier `CLAUDE.md` against the five-row content policy in root `CLAUDE.md`; migrate Hub-specific rules out of `products/CLAUDE.md` and Core/Domain-specific guidance out of `platform/CLAUDE.md` into entity- or sub-tier-level files |
 | G-32 | Decomposition (post-L3 gate) | Entities with shipped §L3 lacking reader tours — backfill obligation | Medium | Per-entity backfill when §L3 lands; `doc-health-check` flags entities with §L3 present and `tours/HUMAN.md` or `tours/TECHNICAL.md` absent |
+| G-34 | Decomposition (L4) | Sharing controls (IDN-7) split out of Cycle B — no substrate yet | Medium | Author the sharing-controls paired slice (PC-3-coupled per-audience visibility substrate + Hub surface) when the IDN-7 remainder, DIS-6, or COI-1 first needs it |
+| G-35 | Decomposition (L3) | PC-4 §L3 under-enumerates GDPR-cluster capabilities (feature-flags remain) | Medium | Enumerate the feature-flag capability row when its first consumer is derived |
+| G-36 | Execution (forward-seam) | IDN-10 self-service exit/deletion blocked on DS-3 + DS-5 | Medium | Execute the Identity plan's re-entry triggers (Journeys gate advances the enrollment-freeze disposition; Communication gate closes forum-content, un-parks IDN-10); author the parked IDN-10 specs by the next cooldown |
 
 ---
 
@@ -197,6 +200,11 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 
 *Proposed fix (remainder):* enumerate the feature-flag capability row when its first consumer is derived — internal area PC-4, the relevant upstream-PC substrate dependency, and V2/V4 vertical impact. The consent and data-export portions are done.
 
+**G-36 — IDN-10 (self-service exit/deletion) is a committed forward-seam blocked on DS-3 + DS-5.**
+IDN-10 is Cycle F of the Identity completion plan — committed, deferred, not dropped: blocked on the DS-3 (enrollment-freeze) and DS-5 (forum-content disposition) contracts, realised in the later Journeys / Communication areas. The plan ([`../../planning/hub-v2/phase-3-identity-completion-plan.md`](../../planning/hub-v2/phase-3-identity-completion-plan.md)) committed to four reinforcing tracking hooks; this entry is hook #4, registered 2026-07-03 after the Identity cycle retro ([retro-2026-07-03](../../planning/retrospectives/retro-2026-07-03.md)) found it — and hook #1 (the parked IDN-10 Hub + platform specs) — unplanted. Hook #1 remains to author, by the next cooldown at latest; hooks #2/#3 live as the plan's cascade-spec intent and the re-entry lines carried by the per-area gates (the Groups plan carries its line already).
+
+*Proposed fix (= close-condition):* at the Journeys gate (DS-3 realised), advance IDN-10's enrollment-freeze disposition; at the Communication gate (DS-5 realised), close the forum-content disposition, un-park and finish IDN-10, retire the old exit code — then delete this entry.
+
 ---
 
 ## Priority summary
@@ -229,6 +237,7 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 - G-32 Entities with shipped §L3 lacking reader tours — backfill obligation
 - G-34 Sharing controls (IDN-7) split out of Cycle B — no substrate yet
 - G-35 PC-4 §L3 under-enumerates GDPR-cluster capabilities (consent + data-export rows added; feature-flags remain)
+- G-36 IDN-10 self-service exit/deletion forward-seam (DS-3 + DS-5)
 
 **Low priority** (single-word fixes or edge cases):
 - G-11 TDD overstated vs risk-based- G-28 Trust-disk-over-memory as a cross-cutting discipline
@@ -246,3 +255,5 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 *Updated 2026-06-29 (G-35 consent portion closed): the consent-state governance capability row was added to PC-4 §L3 (`governance-specification.md`) as a forward addition driven by ADR-U034; **G-35 narrowed** to its data-export + feature-flag remainder. G-34 unchanged.*
 
 *Updated 2026-06-30 (G-35 data-export portion closed, Cycle C decomposition): the data-export capability row was added to PC-4 §L3 (`governance-specification.md`) as the IDN-8 capability was decomposed — realized by FEAT-PC008 ↔ FEAT-H010; **G-35 narrowed** to its feature-flag remainder only (awaiting the first feature-flag consumer's derivation). G-34 unchanged.*
+
+*Updated 2026-07-03 (Identity cycle retro → Groups kickoff): **G-36** registered — the IDN-10 forward-seam entry the Identity completion plan's hook #4 committed to, flagged as unplanted by [retro-2026-07-03](../../planning/retrospectives/retro-2026-07-03.md); the parked IDN-10 specs (hook #1) remain to author by the next cooldown. Housekeeping in the same pass: G-34/G-35 added to the quick index (body + priority summary only since 2026-06-29, the same drift G-32 once had) and the header count aligned to the live list (28). Next available ID is **G-37**.*
