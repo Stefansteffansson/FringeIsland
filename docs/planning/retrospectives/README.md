@@ -26,4 +26,7 @@ retro-wave-ferd.md               ← wave retro (named by wave)
 audit-2026-Q2.md                 ← quarterly process audit
 ```
 
-_No retrospectives yet._
+## Index
+
+- [retro-2026-07-03.md](retro-2026-07-03.md) — cycle retro, Phase-3 Identity completion (Cycles A–E + interludes); first committed cycle retro; triggered the Identity-era task sweep.
+- [2026-07-02-api-boundary-compliance-retro.md](2026-07-02-api-boundary-compliance-retro.md) — special-topic root-cause retro: why v2 code drifted from the API-boundary canon (companion to the api-conformance-register).
