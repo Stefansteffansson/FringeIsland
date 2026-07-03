@@ -1,6 +1,6 @@
 # Phase 3 — Identity (A-IDN) completion plan
 
-**Status:** Living plan (v1, 2026-06-28). Governs the back half of Phase 3's first area.
+**Status:** Complete except Cycle F (2026-07-03) — Cycles A–E built and retro'd ([retro-2026-07-03](../retrospectives/retro-2026-07-03.md)); IDN-12 parked; **IDN-10 (Cycle F) remains a live forward-seam — the re-entry triggers below stay binding.** Successor area plan: [`phase-3-groups-completion-plan.md`](./phase-3-groups-completion-plan.md). (Originally: Living plan v1, 2026-06-28.)
 **Parent plan:** [`README.md`](./README.md) (Hub v2 rebuild, Phases 0–4). This plan details Phase 3 / Identity; it does not change the phase structure.
 **Wave:** Ferd. **Canonical capability inventory:** [`../../products/hub/SPECIFICATION.md`](../../products/hub/SPECIFICATION.md) §L3 (A-IDN, IDN-1..12). This plan references it; §L3 is the authority.
 
