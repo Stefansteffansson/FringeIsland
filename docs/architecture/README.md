@@ -24,7 +24,8 @@ docs/architecture/
     ├── ADR-U001 through ADR-U022          ← migrated from old_universe (April 2026)
     ├── ADR-U023                           ← Platform Core / Domain Services decomposition
     ├── ADR-U024                           ← Wave model semantics
-    └── ADR-U025 through ADR-U028          ← reconciliation Session B (equipment profiles, studio decomposition, Mist lifecycle [U027 -> U031], governance by scope)
+    ├── ADR-U025 through ADR-U028          ← reconciliation Session B (equipment profiles, studio decomposition, Mist lifecycle [U027 -> U031], governance by scope)
+    └── ADR-U029 through ADR-U039          ← Hub v2 rebuild era (Whisp split, greenfield rebuild + coexistence, Mist lifecycle + reaper + consent, perf co-location/Edge/JWT, API-boundary doctrine, realtime socket doctrine)
 ```
 
 ---

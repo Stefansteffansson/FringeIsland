@@ -34,7 +34,7 @@ Small. One read-only surface consuming one existing platform contract, with load
 - **Don't add controls here.** This surface renders; grant/withdraw toggles are FEAT-H009. Keep H008 read-only so the read foundation is clean before controls land on it.
 - **Don't build a re-consent flow.** Surface `needs_reconsent` as a hint only; prompting/blocking re-consent is deferred (FEAT-PC006 #6).
 - **Don't hardcode the purpose list.** Render whatever purposes the contract returns from the catalog — a new purpose must appear with no Hub change (extensibility).
-- **Don't read Supabase directly.** All consent data comes through `GET /api/account/consent` (ADR-U009); the Hub's two realtime channels and auth are the only direct Supabase contacts, and this is none of them.
+- **Don't read Supabase directly.** All consent data comes through `GET /api/account/consent` (ADR-U009); the Hub's ADR-U039-governed realtime channels and auth are the only direct Supabase contacts, and this is none of them.
 - **Don't collapse history into effective.** Show both — effective is "where you are now," history is the GDPR proof trail; they are different views of the same ledger.
 - **Mind the timestamp boundary.** History timestamps are `timestamptz`; render via `new Date(value)`, don't string-compare (platform/Hub gotcha).
 

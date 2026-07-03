@@ -32,7 +32,7 @@ Small. One FIM-only affordance consuming one existing platform contract, with th
 ## Rabbit holes
 
 - **Don't parse or transform the document.** The Hub delivers what the contract returns. Re-shaping it client-side duplicates platform logic and breaks the moment the versioned document grows a section.
-- **Don't read Supabase directly.** All export data comes through `GET /api/account/export` (ADR-U009); the Hub's two realtime channels and auth are its only direct Supabase contacts, and this is none of them.
+- **Don't read Supabase directly.** All export data comes through `GET /api/account/export` (ADR-U009); the Hub's ADR-U039-governed realtime channels and auth are its only direct Supabase contacts, and this is none of them.
 - **Don't build a preview/visualiser.** v1 is "get your data as a file," not an in-app data browser. A rendered view of the export is a possible later affordance, not this slice.
 - **Don't promise async/email delivery.** The model is synchronous download (FEAT-PC008). No "we'll email you when it's ready" copy — that would describe a flow that does not exist.
 - **Mind the download UX.** Trigger a real file download (correct filename + content type); don't open raw JSON in a tab and call it done.
