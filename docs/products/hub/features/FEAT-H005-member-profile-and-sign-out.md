@@ -139,3 +139,9 @@ The Hub half of IDN-4 + the IDN-3 sign-out tail, consuming the paired [FEAT-PC00
 **Build fix carried here (PC003 regression).** The merged FEAT-PC003 `hub/lib/profile/queries.ts` cast a supabase-js string-`.select()` union (which includes `GenericStringError`) directly `as Profile` — rejected by `next build`'s type-check, so PC003 had merged **build-broken** (ts-jest + eslint don't full-type-check, so it slipped the PC003 gate). Narrowed through `unknown` in `fetchMyProfile` / `updateMyProfile`; `next build` is green again.
 
 Tasks: `TASK-H005-01` (profile surface view+edit), `TASK-H005-02` (account menu + sign-out), `TASK-H005-03` (telemetry + E2E + no-regression).
+
+---
+
+## Amendment — 2026-07-03 (ADR-U038 F1 / PR #49)
+
+The profile read/edit this surface drives now goes through the platform RPCs `get_own_profile()` / `update_own_profile(jsonb)` rather than the direct `.from('users')` calls the merged FEAT-PC003 lib used (see FEAT-PC003's 2026-07-03 amendment, ADR-U038 F1). `hub/lib/profile/queries.ts` — which `ProfileEditForm` and `AccountMenu` consume — was repointed to the RPCs; `validateProfilePatch` is now client-side UX pre-validation only. No change to this surface's components. Evidence: [`../../../planning/hub-v2/api-conformance-register.md`](../../../planning/hub-v2/api-conformance-register.md) §5 (F1).

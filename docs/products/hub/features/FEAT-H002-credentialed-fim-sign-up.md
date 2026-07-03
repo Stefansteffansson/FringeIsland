@@ -131,3 +131,9 @@ Built under `hub/` as the first Phase-3 (Identity) build area — **reusing the 
 - **Email confirmation:** the live project auto-confirms (`signUp` returns a session immediately); the `pendingConfirmation` branch is implemented and handled defensively but is dormant under the current setting.
 
 Consent: initial consent is **gated + recorded** (structured). Durable member-visible consent state / history is **IDN-6 / IDN-7** (later). Tasks: `TASK-H002-01..04`.
+
+---
+
+## Amendment — 2026-07-03 (ADR-U038 S3 / PR #48)
+
+**Sign-up consent is now enforced and durably recorded at the substrate**, superseding the "consent stays a structured seam; durable state is IDN-6/7 later" position above. The API-boundary audit found (ADR-U038 **S3**) that the consent gate lived *only* in this Hub route — a direct GoTrue `signUp` with the public anon key bypassed it entirely, and even Hub-created FIMs held no consent row once the IDN-6/7 ledger shipped. Fix (migration `20260702120100`): `handle_new_user` refuses to create a credentialed FIM without `consent_accepted` metadata (fail-closed — the auth insert rolls back) and appends one durable `transcendence` row to `consent_records` (policy_version stamped from the catalog). `signUpFim` passes the consent metadata; Mists remain exempt (consent captured at transcendence). The **V1 audit-sink gap is unchanged** (still routed to G-29) — only the *consent* recording moved to the substrate. Evidence: [`../../../planning/hub-v2/api-conformance-register.md`](../../../planning/hub-v2/api-conformance-register.md) §5 (S3).

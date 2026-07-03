@@ -111,3 +111,9 @@ Built under `hub/` ([ADR-U032](../../../architecture/decisions/ADR-U032-hub-v2-c
 - **Harness:** `hub/jest.config.js` (unit jsdom + integration node), `hub/playwright.config.ts` (storageState auth + auto dev server); helpers copy-with-corrected from the `hub-legacy/` oracle.
 
 **Deviations / deferred (build-informed loop, PROCESS §9):** the V1 audit + V4 telemetry seams are structured records, **not yet bound to the PC-4 audit substrate / PC-1 telemetry sink** (deep build = Phase-3 Identity). No `tests/unit` suite yet — the slice is covered by integration + E2E. Tasks: `TASK-H001-01..05`.
+
+---
+
+## Amendment — 2026-07-03 (ADR-U038 F2 / PR #49)
+
+The GRP-4 read path above — `fetchMemberGroups` composing `get_current_personal_group_id()` → `group_memberships` → engagement `groups` → counts in `hub/lib/groups/queries.ts` — was relocated into the platform substrate as the single `get_member_groups()` RPC (SECURITY DEFINER, self-scoped) per **[ADR-U038](../../../architecture/decisions/ADR-U038-platform-contracts-platform-side-surface-bff.md)** (F2 — the composition is a platform contract a sibling Surface inherits, not Hub client code). Migration `20260702130100`; `hub/lib/groups/queries.ts` now calls the RPC. Behaviour is unchanged (RLS-equivalent scoping; empty for a member with no engagement memberships). Evidence: [`../../../planning/hub-v2/api-conformance-register.md`](../../../planning/hub-v2/api-conformance-register.md) §5 (F2).
