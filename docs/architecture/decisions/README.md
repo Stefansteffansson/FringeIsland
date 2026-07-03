@@ -46,6 +46,10 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 | ADR-U033 | [Scheduled reaper for Mist ephemerality — pg_cron as the platform scheduler](ADR-U033-mist-ephemerality-reaper.md) | Accepted | platform-core |
 | ADR-U034 | [Consent substrate — append-only consent records at transcendence](ADR-U034-consent-record-substrate.md) | Accepted | platform-core |
 | ADR-U035 | [Compute–datastore co-location — Vercel functions run in the database region](ADR-U035-compute-datastore-colocation.md) | Accepted | platform-core |
+| ADR-U036 | [Edge runtime for the hot read routes, pinned to `dub1`](ADR-U036-edge-runtime-hot-read-routes.md) | Accepted | product |
+| ADR-U037 | [Local JWT verification on the hot path](ADR-U037-local-jwt-verification-hot-path.md) | Accepted | platform-core |
+| ADR-U038 | [Platform contracts live platform-side; Surface `app/api` is a private BFF](ADR-U038-platform-contracts-platform-side-surface-bff.md) | Accepted | platform-core |
+| ADR-U039 | [Realtime socket doctrine — private channels, server-originated hints, authorized-path reads](ADR-U039-realtime-socket-doctrine.md) | Accepted | platform-core |
 
 ---
 
