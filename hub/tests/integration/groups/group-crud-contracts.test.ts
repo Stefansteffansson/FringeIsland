@@ -106,14 +106,24 @@ describe('FEAT-PC010 — group creation & settings contracts (G-A)', () => {
         .single();
       expect(membership!.status).toBe('active');
 
-      // Creator is bound to the role whose template grants assign_roles
-      // (permission-derived Steward identification — no role-name strings).
+      // Creator is bound to BOTH the management role (template grants
+      // assign_roles — Steward) and the participation role (template grants
+      // enroll_self_in_journey — Member/Participant): permission-derived,
+      // no role-name strings. (Amendment, Stefan's decision 2026-07-04:
+      // creating a group means stewarding it AND taking part in it.)
       const { data: binding } = await admin
         .from('user_group_roles')
         .select('group_role_id')
         .eq('group_id', groupId)
         .eq('member_group_id', steward.personalGroupId);
-      expect((binding ?? []).length).toBe(1);
+      expect((binding ?? []).length).toBe(2);
+
+      const { data: canSelfEnroll } = await admin.rpc('has_permission', {
+        p_acting_group_id: steward.personalGroupId,
+        p_context_group_id: groupId,
+        p_permission_name: 'enroll_self_in_journey',
+      });
+      expect(canSelfEnroll).toBe(true);
     });
 
     it('refuses an anonymous-session Mist with 42501 (FIM-only)', async () => {
