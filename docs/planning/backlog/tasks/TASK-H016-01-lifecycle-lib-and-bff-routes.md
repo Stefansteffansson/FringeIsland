@@ -3,7 +3,7 @@
 ---
 id: TASK-H016-01
 title: lib fetchers + transports and 3 BFF route files (POST pause, POST activate, DELETE remove, POST leave) with SQLSTATE mapping and id-only telemetry + red-first route units
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H016

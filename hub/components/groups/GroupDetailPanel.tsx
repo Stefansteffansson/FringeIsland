@@ -1,7 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { assignMemberRole, removeMemberRole, updateGroupSettings } from '@/lib/groups/client';
+import {
+  activateMember,
+  assignMemberRole,
+  leaveGroup,
+  pauseMember,
+  removeGroupMember,
+  removeMemberRole,
+  updateGroupSettings,
+} from '@/lib/groups/client';
 import type { GroupDetail, GroupMemberEntry, RolesFabric, UpdateGroupSettingsInput } from '@/lib/groups/queries';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
@@ -19,7 +27,41 @@ import { ConfirmModal } from '@/components/ui/ConfirmModal';
  * payload's `roles[]`); assign/remove affordances exist iff the FABRIC
  * viewer flags say so. Refusals (the assignment-time wall, the last-Steward
  * invariant) surface in place — the chip stays, nothing is pre-computed.
+ *
+ * FEAT-H016 STORY-1/2/3 (MEM-4/5/6): member rows gain lifecycle affordances —
+ * Pause / Reactivate / Remove — gated on the caller's effective-permissions
+ * payload (three independent keys); the Paused badge renders from the
+ * payload's membership_status (paused rows appear only when the contract
+ * includes them — Open Q3). The Leave affordance is every member's own exit;
+ * the sole-Steward and last-member 409s render their honest G-E copy in
+ * place — the affordance is never hidden client-side.
  */
+
+type LifecycleAction = {
+  kind: 'pause' | 'activate' | 'remove';
+  member: GroupMemberEntry;
+};
+
+const LIFECYCLE_COPY: Record<
+  LifecycleAction['kind'],
+  { title: string; verb: string; message: (name: string, group: string) => string }
+> = {
+  pause: {
+    title: 'Pause participation',
+    verb: 'Pause',
+    message: (name, group) => `Pause ${name}'s participation in "${group}"? Their roles are kept and they can be reactivated later.`,
+  },
+  activate: {
+    title: 'Reactivate participation',
+    verb: 'Reactivate',
+    message: (name, group) => `Reactivate ${name}'s participation in "${group}"?`,
+  },
+  remove: {
+    title: 'Remove member',
+    verb: 'Remove',
+    message: (name, group) => `Remove ${name} from "${group}"? Their unfinished work in this group's private journeys is frozen.`,
+  },
+};
 
 const STATUS_STYLES: Record<string, string> = {
   closed: 'bg-gray-200 text-gray-700',
@@ -30,12 +72,18 @@ const STATUS_STYLES: Record<string, string> = {
 export function GroupDetailPanel({
   group,
   fabric = null,
+  permissions = null,
   onRefresh,
+  onLeft,
 }: {
   group: GroupDetail;
   /** FEAT-H014: the role fabric — picker options + assign/remove flags. */
   fabric?: RolesFabric | null;
+  /** FEAT-H016: the caller's effective permissions — lifecycle-affordance gating. */
+  permissions?: string[] | null;
   onRefresh: () => void;
+  /** FEAT-H016: the page's navigation after a successful leave. */
+  onLeft?: () => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [memberError, setMemberError] = useState<string | null>(null);
@@ -45,9 +93,18 @@ export function GroupDetailPanel({
     roleName: string;
   } | null>(null);
   const [removeBusy, setRemoveBusy] = useState(false);
+  const [lifecycleAction, setLifecycleAction] = useState<LifecycleAction | null>(null);
+  const [lifecycleBusy, setLifecycleBusy] = useState(false);
+  const [leaveOpen, setLeaveOpen] = useState(false);
+  const [leaveBusy, setLeaveBusy] = useState(false);
+  const [leaveError, setLeaveError] = useState<string | null>(null);
 
   const canAssign = fabric?.viewer.can_assign_roles ?? false;
   const canRemove = fabric?.viewer.can_remove_roles ?? false;
+  // FEAT-H016: three independent keys — any subset renders exactly that subset.
+  const canPauseMember = permissions?.includes('pause_members') ?? false;
+  const canActivateMember = permissions?.includes('activate_members') ?? false;
+  const canRemoveMember = permissions?.includes('remove_members') ?? false;
   const roleIdByName = new Map((fabric?.roles ?? []).map((r) => [r.name, r.id]));
   const assignable = (member: GroupMemberEntry) =>
     (fabric?.roles ?? []).filter((r) => !member.roles.includes(r.name));
@@ -77,6 +134,45 @@ export function GroupDetailPanel({
       setRemoveTarget(null);
     } finally {
       setRemoveBusy(false);
+    }
+  };
+
+  // FEAT-H016: one confirm path for the three lifecycle actions. Refusals
+  // (last-active-Steward, already-paused, self-target) surface in place via
+  // the member-error line — the row stays, nothing is pre-computed.
+  const confirmLifecycle = async () => {
+    if (!lifecycleAction) return;
+    setLifecycleBusy(true);
+    setMemberError(null);
+    const { kind, member } = lifecycleAction;
+    try {
+      if (kind === 'pause') await pauseMember(group.id, member.member_group_id);
+      else if (kind === 'activate') await activateMember(group.id, member.member_group_id);
+      else await removeGroupMember(group.id, member.member_group_id);
+      setLifecycleAction(null);
+      onRefresh();
+    } catch (err) {
+      setMemberError((err as Error).message);
+      setLifecycleAction(null);
+    } finally {
+      setLifecycleBusy(false);
+    }
+  };
+
+  // FEAT-H016 STORY-3: the member's own exit. Success hands navigation to the
+  // page (onLeft); the honest G-E refusal copy renders in place.
+  const confirmLeave = async () => {
+    setLeaveBusy(true);
+    setLeaveError(null);
+    try {
+      await leaveGroup(group.id);
+      setLeaveOpen(false);
+      onLeft?.();
+    } catch (err) {
+      setLeaveError((err as Error).message);
+      setLeaveOpen(false);
+    } finally {
+      setLeaveBusy(false);
     }
   };
 
@@ -120,15 +216,38 @@ export function GroupDetailPanel({
           {group.member_count} {group.member_count === 1 ? 'member' : 'members'}
         </p>
 
-        {group.viewer.can_manage_settings && !editing && (
-          <button
-            type="button"
-            onClick={() => setEditing(true)}
-            className="mt-4 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
-          >
-            Edit settings
-          </button>
+        {leaveError && (
+          <p role="alert" className="mt-3 text-sm text-red-600">
+            {leaveError}
+          </p>
         )}
+
+        <div className="mt-4 flex items-center gap-2">
+          {group.viewer.can_manage_settings && !editing && (
+            <button
+              type="button"
+              onClick={() => setEditing(true)}
+              className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+            >
+              Edit settings
+            </button>
+          )}
+          {group.viewer.is_member && (
+            // FEAT-H016: never hidden client-side — a sole Steward learns the
+            // honest answer from the refusal, not from a missing button.
+            <button
+              type="button"
+              data-testid="leave-group"
+              onClick={() => {
+                setLeaveError(null);
+                setLeaveOpen(true);
+              }}
+              className="rounded-lg border border-red-200 px-3 py-1.5 text-sm text-red-700 hover:bg-red-50"
+            >
+              Leave group
+            </button>
+          )}
+        </div>
       </div>
 
       {editing && (
@@ -162,6 +281,15 @@ export function GroupDetailPanel({
                   className="flex flex-wrap items-center gap-1.5"
                 >
                   <span className="text-sm text-gray-800">{m.display_name}</span>
+                  {(m.membership_status ?? 'active') === 'paused' && (
+                    // FEAT-H016: the payload's state, never client inference.
+                    <span
+                      data-testid={`paused-badge-${m.member_group_id}`}
+                      className="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-800"
+                    >
+                      Paused
+                    </span>
+                  )}
                   {(m.roles ?? []).map((roleName) => (
                     <span
                       key={roleName}
@@ -205,6 +333,39 @@ export function GroupDetailPanel({
                       ))}
                     </select>
                   )}
+                  {canPauseMember && (m.membership_status ?? 'active') === 'active' && (
+                    <button
+                      type="button"
+                      data-testid={`pause-member-${m.member_group_id}`}
+                      aria-label={`Pause ${m.display_name}`}
+                      onClick={() => setLifecycleAction({ kind: 'pause', member: m })}
+                      className="rounded border border-gray-200 px-1.5 py-1 text-xs text-gray-600 hover:bg-gray-50"
+                    >
+                      Pause
+                    </button>
+                  )}
+                  {canActivateMember && m.membership_status === 'paused' && (
+                    <button
+                      type="button"
+                      data-testid={`activate-member-${m.member_group_id}`}
+                      aria-label={`Reactivate ${m.display_name}`}
+                      onClick={() => setLifecycleAction({ kind: 'activate', member: m })}
+                      className="rounded border border-gray-200 px-1.5 py-1 text-xs text-gray-600 hover:bg-gray-50"
+                    >
+                      Reactivate
+                    </button>
+                  )}
+                  {canRemoveMember && (
+                    <button
+                      type="button"
+                      data-testid={`remove-member-${m.member_group_id}`}
+                      aria-label={`Remove ${m.display_name} from the group`}
+                      onClick={() => setLifecycleAction({ kind: 'remove', member: m })}
+                      className="rounded border border-red-200 px-1.5 py-1 text-xs text-red-600 hover:bg-red-50"
+                    >
+                      Remove
+                    </button>
+                  )}
                   <span className="text-xs text-gray-400">
                     since {new Date(m.joined_at).toLocaleDateString()}
                   </span>
@@ -227,6 +388,40 @@ export function GroupDetailPanel({
         onConfirm={() => void confirmRemove()}
         onCancel={() => {
           if (!removeBusy) setRemoveTarget(null);
+        }}
+      />
+
+      {/* FEAT-H016: the lifecycle confirmations (Remove is destructive). */}
+      <ConfirmModal
+        isOpen={lifecycleAction !== null}
+        title={lifecycleAction ? LIFECYCLE_COPY[lifecycleAction.kind].title : ''}
+        message={
+          lifecycleAction
+            ? LIFECYCLE_COPY[lifecycleAction.kind].message(
+                lifecycleAction.member.display_name,
+                group.name,
+              )
+            : ''
+        }
+        confirmText={lifecycleAction ? LIFECYCLE_COPY[lifecycleAction.kind].verb : ''}
+        variant={lifecycleAction?.kind === 'remove' ? 'danger' : 'info'}
+        busy={lifecycleBusy}
+        onConfirm={() => void confirmLifecycle()}
+        onCancel={() => {
+          if (!lifecycleBusy) setLifecycleAction(null);
+        }}
+      />
+
+      <ConfirmModal
+        isOpen={leaveOpen}
+        title="Leave group"
+        message={`Leave "${group.name}"? Your unfinished work in this group's private journeys is frozen, and rejoining needs a new invitation.`}
+        confirmText="Leave"
+        variant="danger"
+        busy={leaveBusy}
+        onConfirm={() => void confirmLeave()}
+        onCancel={() => {
+          if (!leaveBusy) setLeaveOpen(false);
         }}
       />
     </div>

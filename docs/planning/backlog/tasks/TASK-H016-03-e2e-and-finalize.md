@@ -3,7 +3,7 @@
 ---
 id: TASK-H016-03
 title: Playwright journeys (pause round-trip across two FIMs incl. the paused member's honest absence; removal; leave with the G-E refusal copy) + next build gate + 6-done paperwork
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H016

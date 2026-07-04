@@ -6,7 +6,7 @@ title: Group membership lifecycle surfaces — member-row pause/reactivate/remov
 owner: hub
 consumers: []
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -108,3 +108,12 @@ The Gimbal consumes the same contracts and refusal semantics; only composition d
 - **Observability:** STORY-5 — id-only structured events on every operation and refusal.
 - **Transactions:** None.
 - **Extensibility:** row affordances key off the payload's `membership_status` and the open permission catalog (three independent keys — any custom role holding a subset gets exactly that subset of affordances; never a role-name check); a future lifecycle state renders as a new badge value, not a rebuild; the Leave refusal rendering is copy-driven, so G-E's richer flows replace copy, not plumbing.
+
+## Implementation notes (6-done — Cycle G-D, 2026-07-04)
+
+Built TDD red-first, after the FEAT-PC013 schema-gate nod + merge (PR #71). **No migration of its own.**
+
+- **BFF (4 handlers, 3 new route files):** `POST /api/groups/[id]/members/[memberGroupId]/pause` + `POST .../activate` (two files — method semantics per verb), `DELETE /api/groups/[id]/members/[memberGroupId]` (remove — never conflated with the `/invitations/` cancels), `POST /api/groups/[id]/leave` (relays the contract's `{group_id, group_name}` payload). All Node-runtime mutations; SQLSTATE→HTTP per house map (42501→403, P0001→409 **with the message passed through — it carries the honest G-E copy**, P0002→404, else 500 content-free); id-only telemetry (`membership.pause/activate/remove/leave` + refusal variants) — member display data and the leave payload's group name never in events, canary-asserted. Transports in `lib/groups/client.ts`; contract wrappers in `lib/groups/queries.ts`; `GroupMemberEntry` gains optional `membership_status` (absent = active, tolerant).
+- **Surface:** `GroupDetailPanel` gains `permissions` + `onLeft` props. Member rows: **Pause / Reactivate / Remove** affordances gated on the three independent catalog keys from the already-fetched my-permissions read (any subset renders exactly that subset — unit-asserted per key); the **Paused badge** renders from the payload's `membership_status` (paused rows arrive only for management-key viewers — the contract decided, the panel renders). One lifecycle ConfirmModal (Remove danger-variant) + the existing member-error line for in-place refusals (row stays). **Leave group** renders for every member on the detail card — never hidden client-side; a sole Steward learns the honest answer from the 409 copy, rendered by a dedicated error line; success hands navigation to the page (`onLeft` → `router.replace('/groups')`). The page passes `permissions` into the panel; mutations ride the existing one-refresh-path (four reads, unchanged).
+- **Red→green evidence:** 34 unit tests demonstrated RED → GREEN: 13 route-units (`group-membership-routes.test.ts`, modules absent at collection) + 10 new `GroupDetailPanel` cases (affordances/badge/Leave absent; all 15 prior H013/H014 panel cases stayed green throughout). E2E: **5 new journeys** on dedicated spec-created FIMs in their own contexts (the G-B suite-isolation default) — the **pause round-trip** (the paused member's private group honestly vanishes from `/groups`, the deep link renders not-found, reactivation brings it back and it opens), the **sole-active-Steward leave refusal** (copy in place, nothing mutates), **removal** (row leaves both sides), the **regular leave** (lands on `/groups`, group gone), and the **last-member closure refusal** (the MEM-8 seam's copy). Memberships seeded substrate-side — the invitation arc is FEAT-H015's covered journey.
+- **Gates:** full unit **341/341** (52 suites); integration **210/210** (29 suites — the PC013 session run, no substrate change since); full E2E **48/48**; `next build` clean (the type gate); lint 0 errors (one pre-existing warning).

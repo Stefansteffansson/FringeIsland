@@ -15,12 +15,21 @@ import type { GroupDetail, RolesFabric } from '@/lib/groups/queries';
 const updateGroupSettings = jest.fn<(id: string, input: Record<string, unknown>) => Promise<unknown>>();
 const assignMemberRole = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 const removeMemberRole = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+// FEAT-H016 — the membership lifecycle transports.
+const pauseMember = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const activateMember = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const removeGroupMember = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const leaveGroup = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 
 jest.mock('@/lib/groups/client', () => ({
   updateGroupSettings: (id: string, input: Record<string, unknown>) =>
     updateGroupSettings(id, input),
   assignMemberRole: (...a: unknown[]) => assignMemberRole(...a),
   removeMemberRole: (...a: unknown[]) => removeMemberRole(...a),
+  pauseMember: (...a: unknown[]) => pauseMember(...a),
+  activateMember: (...a: unknown[]) => activateMember(...a),
+  removeGroupMember: (...a: unknown[]) => removeGroupMember(...a),
+  leaveGroup: (...a: unknown[]) => leaveGroup(...a),
   GroupsApiError: class GroupsApiError extends Error {
     status: number;
     constructor(message: string, status: number) {
@@ -260,5 +269,193 @@ describe('FEAT-H014 — member-list role chips + assignment (STORY-3)', () => {
     const stefan = screen.getByTestId('member-row-pg-stefan');
     expect(within(stefan).getByText('Steward Role Template')).toBeInTheDocument();
     expect(onRefresh).not.toHaveBeenCalled();
+  });
+});
+
+/**
+ * FEAT-H016 STORY-1/2/3 (unit) — membership lifecycle on the member list
+ * (MEM-4/5) + the Leave affordance (MEM-6). Affordances gate on the caller's
+ * effective-permissions payload (three independent keys); the Paused badge
+ * comes from the payload's membership_status (never client state); Remove and
+ * Leave are danger ConfirmModals; refusals surface in place; Leave hands the
+ * page its navigation via onLeft. Red-first for TASK-H016-02.
+ */
+describe('FEAT-H016 — member lifecycle actions + Leave (STORY-1/2/3)', () => {
+  const onRefresh = jest.fn();
+  const onLeft = jest.fn();
+
+  /** BASE + a paused member (the payload includes paused rows only for
+   *  management-permission viewers — the contract decided, we render). */
+  const LIFECYCLE: GroupDetail = {
+    ...BASE,
+    member_count: 2,
+    members: [
+      { ...BASE.members![0], membership_status: 'active' },
+      { ...BASE.members![1], membership_status: 'active' },
+      {
+        display_name: 'Mia',
+        joined_at: '2026-07-03T10:00:00+00:00',
+        member_group_id: 'pg-mia',
+        roles: [],
+        membership_status: 'paused',
+      },
+    ],
+  };
+  const ALL_KEYS = ['pause_members', 'activate_members', 'remove_members'];
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    pauseMember.mockResolvedValue(undefined);
+    activateMember.mockResolvedValue(undefined);
+    removeGroupMember.mockResolvedValue(undefined);
+    leaveGroup.mockResolvedValue({ group_id: 'grp-1', group_name: 'Book Circle' });
+  });
+
+  it('badges paused rows from the payload — active rows carry no badge', () => {
+    render(
+      <GroupDetailPanel group={LIFECYCLE} permissions={ALL_KEYS} onRefresh={onRefresh} />,
+    );
+    expect(screen.getByTestId('paused-badge-pg-mia')).toHaveTextContent(/paused/i);
+    expect(screen.queryByTestId('paused-badge-pg-ada')).toBeNull();
+  });
+
+  it('renders no lifecycle affordances without the keys', () => {
+    render(<GroupDetailPanel group={LIFECYCLE} permissions={null} onRefresh={onRefresh} />);
+    expect(screen.queryByTestId('pause-member-pg-ada')).toBeNull();
+    expect(screen.queryByTestId('activate-member-pg-mia')).toBeNull();
+    expect(screen.queryByTestId('remove-member-pg-ada')).toBeNull();
+  });
+
+  it('each key independently controls exactly its affordance; paused rows offer Reactivate, not Pause', () => {
+    const { rerender } = render(
+      <GroupDetailPanel
+        group={LIFECYCLE}
+        permissions={['pause_members']}
+        onRefresh={onRefresh}
+      />,
+    );
+    expect(screen.getByTestId('pause-member-pg-ada')).toBeInTheDocument();
+    expect(screen.queryByTestId('pause-member-pg-mia')).toBeNull(); // already paused
+    expect(screen.queryByTestId('activate-member-pg-mia')).toBeNull(); // wrong key
+    expect(screen.queryByTestId('remove-member-pg-ada')).toBeNull();
+
+    rerender(
+      <GroupDetailPanel
+        group={LIFECYCLE}
+        permissions={['activate_members']}
+        onRefresh={onRefresh}
+      />,
+    );
+    expect(screen.getByTestId('activate-member-pg-mia')).toBeInTheDocument();
+    expect(screen.queryByTestId('pause-member-pg-ada')).toBeNull();
+  });
+
+  it('pauses through ConfirmModal and re-reads (one refresh path)', async () => {
+    const user = userEvent.setup();
+    render(
+      <GroupDetailPanel group={LIFECYCLE} permissions={ALL_KEYS} onRefresh={onRefresh} />,
+    );
+    await user.click(screen.getByTestId('pause-member-pg-ada'));
+    await user.click(screen.getByTestId('confirm-modal-confirm'));
+    await waitFor(() => expect(pauseMember).toHaveBeenCalledWith('grp-1', 'pg-ada'));
+    expect(onRefresh).toHaveBeenCalled();
+  });
+
+  it('reactivates a paused member through ConfirmModal and re-reads', async () => {
+    const user = userEvent.setup();
+    render(
+      <GroupDetailPanel group={LIFECYCLE} permissions={ALL_KEYS} onRefresh={onRefresh} />,
+    );
+    await user.click(screen.getByTestId('activate-member-pg-mia'));
+    await user.click(screen.getByTestId('confirm-modal-confirm'));
+    await waitFor(() => expect(activateMember).toHaveBeenCalledWith('grp-1', 'pg-mia'));
+    expect(onRefresh).toHaveBeenCalled();
+  });
+
+  it('removes through the danger ConfirmModal and re-reads', async () => {
+    const user = userEvent.setup();
+    render(
+      <GroupDetailPanel group={LIFECYCLE} permissions={ALL_KEYS} onRefresh={onRefresh} />,
+    );
+    await user.click(screen.getByTestId('remove-member-pg-ada'));
+    await user.click(screen.getByTestId('confirm-modal-confirm'));
+    await waitFor(() => expect(removeGroupMember).toHaveBeenCalledWith('grp-1', 'pg-ada'));
+    expect(onRefresh).toHaveBeenCalled();
+  });
+
+  it('surfaces the last-active-Steward refusal in place — the row stays', async () => {
+    const user = userEvent.setup();
+    removeGroupMember.mockRejectedValue(
+      new GroupsApiError(
+        'cannot remove the last active Steward — assign another Steward first',
+        409,
+      ),
+    );
+    render(
+      <GroupDetailPanel group={LIFECYCLE} permissions={ALL_KEYS} onRefresh={onRefresh} />,
+    );
+    await user.click(screen.getByTestId('remove-member-pg-stefan'));
+    await user.click(screen.getByTestId('confirm-modal-confirm'));
+    await waitFor(() =>
+      expect(screen.getByRole('alert')).toHaveTextContent(/last active steward/i),
+    );
+    expect(screen.getByTestId('member-row-pg-stefan')).toBeInTheDocument();
+    expect(onRefresh).not.toHaveBeenCalled();
+  });
+
+  it('leaves through ConfirmModal and hands the page its navigation (onLeft, not onRefresh)', async () => {
+    const user = userEvent.setup();
+    render(
+      <GroupDetailPanel
+        group={LIFECYCLE}
+        permissions={null}
+        onRefresh={onRefresh}
+        onLeft={onLeft}
+      />,
+    );
+    await user.click(screen.getByTestId('leave-group'));
+    await user.click(screen.getByTestId('confirm-modal-confirm'));
+    await waitFor(() => expect(leaveGroup).toHaveBeenCalledWith('grp-1'));
+    expect(onLeft).toHaveBeenCalled();
+    expect(onRefresh).not.toHaveBeenCalled();
+  });
+
+  it('renders the honest G-E refusal copy in place when leave is refused — onLeft never fires', async () => {
+    const user = userEvent.setup();
+    leaveGroup.mockRejectedValue(
+      new GroupsApiError(
+        'cannot leave: you are the only active Steward — assign another Steward first',
+        409,
+      ),
+    );
+    render(
+      <GroupDetailPanel
+        group={LIFECYCLE}
+        permissions={null}
+        onRefresh={onRefresh}
+        onLeft={onLeft}
+      />,
+    );
+    await user.click(screen.getByTestId('leave-group'));
+    await user.click(screen.getByTestId('confirm-modal-confirm'));
+    await waitFor(() =>
+      expect(screen.getByRole('alert')).toHaveTextContent(/only active steward/i),
+    );
+    expect(onLeft).not.toHaveBeenCalled();
+  });
+
+  it('offers no Leave affordance to a non-member viewer', () => {
+    render(
+      <GroupDetailPanel
+        group={{
+          ...LIFECYCLE,
+          viewer: { is_member: false, joined_at: null, can_manage_settings: false },
+        }}
+        permissions={null}
+        onRefresh={onRefresh}
+        onLeft={onLeft}
+      />,
+    );
+    expect(screen.queryByTestId('leave-group')).toBeNull();
   });
 });

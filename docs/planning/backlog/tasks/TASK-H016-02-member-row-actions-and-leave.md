@@ -3,7 +3,7 @@
 ---
 id: TASK-H016-02
 title: GroupDetailPanel gains permission-gated Pause/Reactivate/Remove row actions with the Paused badge, and the Leave affordance with honest G-E refusal rendering; page passes permissions + navigates after leave
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H016
