@@ -6,7 +6,7 @@ title: Group role & permission contracts — role-inventory read with capability
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
@@ -135,3 +135,17 @@ Additive: six new functions, one additive jsonb extension, TRUNCATE revokes. No 
 2. **Template-derived instances' grant editing.** Default: editable (per-group customisation is the three-layer model's point), `manage_roles`-gated + anti-escalation. Confirm at the gate.
 3. **`delete_group_role` while held.** Default: refuse (explicit unbind first). Confirm at the gate.
 4. **The `grp_insert` policy's second predicate** (truncated in the audit read) — verify the exact existing definition-time check at build; the contract's check must be at least as strict.
+
+## Implementation notes (build complete, schema gate pending — Cycle G-B, 2026-07-04)
+
+Built TDD red-first, platform-first. Awaiting the schema-review nod; maturity flips to `6-done` with FEAT-H014 after the gate.
+
+- **Migration** `supabase/migrations/20260704090434_feat_pc011_role_permission_contracts.sql` (applied to dev + repaired; schema-review gate pending). **Six member-facing SECURITY DEFINER functions + one internal payload helper (`role_fabric_entry`, no client execute), no new table, no policy changes.** All actor resolution via `get_current_personal_group_id()`; writes FIM-only + active-account-only; group resolution per the G-A visibility rule (member-or-public+active, else `P0002`). `get_group_detail` replaced in full with the **additive** members extension (`member_group_id`, `roles[]`); every existing key unchanged (PC010's own suite stays green — 55/55 across the groups domain).
+- **Open Q4 resolved (verified on dev pre-build):** `grp_insert` `with_check` = `has_permission(actor, group, 'manage_roles') AND has_permission(actor, group, get_permission_name(permission_id))` — the author must themselves hold each permission they grant. The contracts enforce exactly this predicate on both grant paths (`create_group_role` custom, `set_group_role_permission` grant); recorded in the migration header.
+- **Open Q2 default carried and tested:** template-derived instances are grant-editable (`set_group_role_permission` on a Guide instance covered). **Open Q3 default carried and tested:** `delete_group_role` refuses while held (`P0001`, unbind first), refuses template-derived regardless (`42501`).
+- **Build-discovered trapdoor (gate item):** `copy_template_permissions` **auto-links by name convention** — a freshly inserted role named `X` where `role_templates` carries `'X Role Template'` is silently linked and receives that template's full grant set. A "custom" role named `Steward` would defeat definition-time anti-escalation. The contract's custom path **refuses auto-link-colliding names** (`22023`, tested). The direct-path equivalent (a `manage_roles` holder INSERTing such a name over RLS, which only checks `manage_roles`) remains in the substrate — `can_assign_role()` is the wall that stops such a role being *bound*; flagged for the gate's direct-caller question rather than unilaterally narrowed (spec posture: no policy changes).
+- **Gate item — `remove_roles` vs `assign_roles`:** the contract gates removal on `remove_roles` (the catalog's key); the existing `ugr_delete` RLS gates on `assign_roles`. A member holding `assign_roles` without `remove_roles` could unbind via the direct path what the contract refuses. Left as-is per the no-narrowing posture; surfaced for the gate.
+- **STORY-5 AC deviation (recorded honestly):** "non-member result is empty" is unsatisfiable against the substrate's own global rule (the FringeIsland Members system-group baseline contributes to every FIM's `get_user_permissions` result — the same rule AC-1 embraces). Realized as the AC's no-leak *intent*: a foreign private context returns exactly the caller's baseline, byte-indistinguishable from a nonexistent context, with no group-derived key leaking (tested both ways).
+- **Substrate observation (H014-relevant, not changed here):** the G-A bootstrap names role instances verbatim after their templates (`'Steward Role Template'`, …) — the fabric read returns those names; `update_group_role` rename is the per-group remedy. Legacy pre-G-A groups carry short names (`'Steward'`).
+- **Red→green evidence:** `hub/tests/integration/groups/role-permission-contracts.test.ts` — **32 tests**; **27 demonstrated RED** (functions absent → PGRST202; detail-extension keys absent) → GREEN post-migration, migration untouched between runs. **Labelled non-red-first by design:** STORY-5's two `get_user_permissions` asserts (existing published RPC — pinned, not introduced) and STORY-6's five direct-path asserts (the story's point is verifying the *existing* RLS — "verified, not assumed"). TRUNCATE was revoked from `anon`+`authenticated` on all three role tables and verified absent post-migration via `information_schema.table_privileges` (PostgREST exposes no TRUNCATE verb, so this is a gate-audit record, not a Jest assert).
+- **Gates:** new suite 32/32; groups domain 55/55; full integration suite **160/160** (27 suites, `--runInBand`); lint clean. The legacy `test:integration:rbac` script matches no v2 tests (empty directory pattern — not a regression; v2 role coverage is this feature's suite).
