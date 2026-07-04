@@ -3,7 +3,7 @@
 ---
 id: TASK-H015-03
 title: E2E — the invitation arc (two FIMs) + the email-invited newcomer sign-up arc + decline/cancel; next build gate; 6-done paperwork
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H015

@@ -3,7 +3,7 @@
 ---
 id: TASK-H015-02
 title: InvitationsPanel on /groups/[id] (typeahead + email invite + pending list + cancels) and MyInvitations on /groups (accept/decline) + red-first component/page units
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H015

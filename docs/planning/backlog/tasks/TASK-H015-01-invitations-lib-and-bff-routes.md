@@ -3,7 +3,7 @@
 ---
 id: TASK-H015-01
 title: Invitations BFF — GET/POST /api/groups/[id]/invitations, DELETE both cancel shapes, GET /api/groups/[id]/member-search, GET /api/me/invitations, POST accept / DELETE decline + red-first route-unit tests
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H015

@@ -6,7 +6,7 @@ title: Group invitations & joining surfaces — the invitations panel (member-se
 owner: hub
 consumers: []
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -113,3 +113,12 @@ The Gimbal consumes the same contracts and refusal semantics; only composition d
 - **Observability:** STORY-6 — id-only structured events on every operation and refusal.
 - **Transactions:** None.
 - **Extensibility:** the panel renders whatever invitation kinds the payload carries (a future claim-by-link kind adds a row shape, not a rebuild); search-result affordances key off the payload's `membership_status`, not client enums; panel visibility keys off the open permission catalog (`invite_members`), never a role name.
+
+## Implementation notes (6-done — Cycle G-C, 2026-07-04)
+
+Built TDD red-first, after the FEAT-PC012 schema-gate nod + merge (PR #68). **No migration of its own.**
+
+- **BFF (8 handlers, 5 route files):** `GET/POST /api/groups/[id]/invitations` (GET Edge+`dub1`; POST body `member_group_id` XOR `email` — mixed/empty 400 with no contract call, the contract's `kind` relayed so the panel renders what the re-read shows), `DELETE .../invitations/members/[memberGroupId]` + `DELETE .../invitations/email/[invitationId]` (the two cancel shapes, never conflated), `GET .../member-search?q=` (Edge+`dub1`, `q` relayed verbatim and **never in telemetry** — hit *count* only), `GET /api/me/invitations` (Edge+`dub1`), `POST/DELETE /api/me/invitations/[groupId]` (accept/decline — the planned `/accept` sub-path collapsed to method semantics on one file). SQLSTATE→HTTP per house map (42501→403, P0002→404, 22023→400, 23505→409, messages passed through). Transports in `lib/groups/client.ts`; contract fetchers in `lib/groups/invitations.ts`.
+- **Surface:** `InvitationsPanel` on `/groups/[id]` — **renders `null` without `invite_members` in the effective-permissions payload** (the gate lives in the panel; the page always composes it); debounced (250 ms, 2+ chars) typeahead with `membership_status`-disabled hits; invite-by-email with the **honest undispatched copy** in two places (the standing helper line and the success note — "no email is sent yet"); pending list with both kinds distinct, payload-driven Expired badge, ConfirmModal cancels. `MyInvitations` on `/groups` — self-loading section above the list (absent entirely when empty), invitation context only, Accept re-reads its list + hands the page its groups re-read (the group appears as the invitation leaves), Decline ConfirmModal-gated. The detail page's **one refresh path extends to four reads** — detail + fabric + permissions + invitations, with the invitations read **chained off the fresh permissions payload** (only an `invite_members` holder fetches it; nobody eats a 403 probe).
+- **Red→green evidence:** 31 new unit tests demonstrated RED → GREEN: 17 route-units (`group-invitations-routes.test.ts`, modules absent at collection) + 9 `InvitationsPanel` + 5 `MyInvitations` (components absent at collection). One in-flight test correction labelled honestly: the honest-copy assert re-scoped to the success note's testid (the copy legitimately appears twice — helper line + note; test precision, not behaviour). E2E: 3 new journeys on **dedicated spec-created FIMs in their own contexts** (the G-B suite-isolation default) — the invitation arc (search → invite → pending → the invitee accepts → the group appears both sides), the **email-invited newcomer** (honest copy → substrate sign-up fires the auto-claim → the invitation waits at first arrival → accept joins; the sign-up *form* is FEAT-H002's covered journey), and decline + cancel (incl. the **Open Q2 conversion live**: inviting an existing FIM's address renders as a membership invitation).
+- **Gates:** full unit **320/320** (51 suites); integration **186/186** (28 suites — the PC012 session run, no substrate change since); full E2E **43/43**; `next build` clean (the type gate); lint 0 errors (one pre-existing warning).
