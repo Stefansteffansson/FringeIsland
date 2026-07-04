@@ -6,7 +6,7 @@ title: Group creation & stewardship surfaces — the create-group flow, the grou
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -111,3 +111,13 @@ The **Gimbal** consumes the same PC010 contracts for its group surfaces; the cap
 - **Observability:** STORY-5 — content-free structured events on every meaningful action and failure; the 403/404 mappings keep substrate refusals diagnosable end-to-end.
 - **Transactions:** None.
 - **Extensibility:** status rendering is vocabulary-tolerant (no exhaustive switch); the settings form renders the contract's updatable set (additive fields extend it); the detail page composes shared primitives rather than minting group-only ones.
+
+## Implementation notes (6-done — Cycle G-A, 2026-07-04)
+
+Built TDD red-first over the FEAT-PC010 substrate; carries no migration of its own.
+
+- **Lib** `hub/lib/groups/queries.ts` (extended: `createEngagementGroup` / `fetchGroupDetail` / `updateGroupSettings` typed RPC wrappers + the `GroupDetail`/viewer types) + `hub/lib/groups/client.ts` (browser transports over the BFF; `GroupsApiError` carries the HTTP status so the page renders 404 honestly).
+- **Routes** — `POST /api/groups` (added to the existing list route file; `getUser` mutation auth) and `GET`+`PATCH /api/groups/[id]` (new file, **Edge+`dub1`** per ADR-U036; GET via local-claims identity per ADR-U037, PATCH via `getUser`). SQLSTATE→HTTP: 42501→403, P0002→404, 22023→400, else 500; telemetry id-only (group names/descriptions and member data never in events — asserted). Route-unit **13/13**, demonstrated red (the `[id]` module absent).
+- **Surface** — `CreateGroupPanel` (affordance → inline form; name required client-side as defense-in-depth; the two visibility toggles as separate controls with copy naming what each governs; success → `router.push` to the new detail), `GroupDetailPanel` (+ embedded `GroupSettingsForm`: dirty-diff partial updates — only changed fields sent; vocabulary-tolerant status badge rendered only when not `active`; member list exactly as the payload provides, honest "Member list hidden" copy when omitted; Edit affordance iff `viewer.can_manage_settings`), `hub/app/groups/[id]/page.tsx` (the journal-pattern FIM gate; 404 → house not-found — private and absent identical; mutations re-read via the shared load path), and the `/groups` list wired with the create affordance + row→detail links. Component/page unit **16/16** red-first.
+- **E2E** `hub/tests/e2e/groups.spec.ts` — **3 new tests**: the create→steward journey (create, land on detail as Steward, rename, toggle exactly group-visibility → Public chip); the non-member honesty matrix (private → "Group not found"; public+hidden-list → fields + honest copy, no list) on a spec-created second FIM; the sessionless deep-link gate. All state cleaned up. **Found-and-fixed:** `admin.createUser` for the outsider was refused by the substrate consent gate (ADR-U038 S3 — "Database error creating new user") until the `consent_accepted` metadata was supplied, global-setup's shape; the gate works.
+- **Gates:** unit **249/249** (45 suites), integration **128/128** (`--runInBand`), **E2E 38/38**, lint **0 errors** (one pre-existing unrelated warning), **`next build` clean** (the type gate). API-boundary DoD: all three contracts self-gate substrate-side with adversarial direct-caller coverage in the PC010 suite (incl. the direct INSERT/UPDATE narrowing); the routes are private-BFF presentation only.

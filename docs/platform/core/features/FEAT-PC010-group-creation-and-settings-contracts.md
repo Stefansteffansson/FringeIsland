@@ -6,7 +6,7 @@ title: Group creation & settings contracts — atomic create-engagement-group bo
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -128,3 +128,15 @@ Additive contracts plus one deliberate narrowing (direct writes on `groups`). No
 2. **Exact permission key(s) for settings management.** Read from the 44-key `permissions` catalog at build (never invented here); if no suitable key exists, adding one is a seed change through the same gate.
 3. **Member-list visibility semantic.** Default stated in STORY-2 (members always see the list; non-members of public groups see it iff `show_member_list`). Verified against the legacy oracle's behaviour at build; deviation recorded if the oracle differs.
 4. **Write-narrowing shape on `public.groups`.** Column privileges vs policy predicate vs both — decided at the schema-review gate with the direct-caller question on the table; the outcome must satisfy STORY-4's ACs either way.
+
+## Implementation notes (6-done — Cycle G-A, 2026-07-04)
+
+Built TDD red-first, platform-first.
+
+- **Migration** `supabase/migrations/20260704075547_feat_pc010_group_contracts.sql` (schema-review gate; applied to dev + repaired). **Three functions, no new table.** `create_engagement_group()` — atomic bootstrap; role instances materialise data-driven from `group_template_roles` (chosen template, or the union across all templates when none — **Open Q1 resolved**: the union equals the four foundational templates today); the existing `copy_template_permissions` trigger copies each instance's grants (no double-copy); creator binding is **permission-derived** — the instance whose template grants `assign_roles` (unique to Steward on dev; no role-name strings in SQL). `get_group_detail()` — member-or-(public+active) visibility (mirrors the RLS SELECT posture; members see any lifecycle state, GRP-5), `P0002` no-leak, viewer block with `can_manage_settings`, members via personal-group names. `update_group_settings()` — partial update (null = leave; clear with `''`), per-field keys (**Open Q2 resolved** from the catalog: `edit_group_settings` / `set_group_visibility` / `control_member_list_visibility`), returns the fresh detail. Suspended actors refused on both writes (decision-default carried).
+- **Open Q3 resolved with a refinement:** member-list inclusion is `has_permission(view_member_list)` OR (public AND `show_member_list`) — permission-faithful rather than "members always" (all four foundational templates grant `view_member_list`, so real members see it; a role-less membership doesn't). Deviation from the story's literal default, recorded here.
+- **Open Q4 resolved (narrowing shape):** privilege layer — `INSERT`/`TRUNCATE` revoked from `anon`+`authenticated` (the verified hole: the legacy `with_check` let any authenticated caller, incl. a Mist naming its own proto personal group, create an un-bootstrapped row); `UPDATE` revoked then re-granted on the settable columns only (`status`/`group_type`/`created_by_group_id` unreachable directly, even for a permitted Steward). RLS policies unchanged as defense-in-depth; DELETE deliberately untouched (GRP-9, Cycle G-E).
+- **Seeding:** idempotent `FringeIsland Members` + `DeusEx` inserts (no-op on dev). Finding: `supabase/seeds/04_system_groups.sql` already carries all four system groups post-D15 (Mist rename done; stale header comment only) — the org-spec §5 "archive-only" seeding claim is stale; **routed as a doc-health finding**, not edited mid-build. The migration closes the fresh-DB gap regardless (seeds sit outside the migration chain; no `config.toml` seed wiring).
+- **Substrate behaviour noted:** the creator binding fires the existing `notify_role_assigned` trigger (a durable "Role Assigned" notification to the creator) — legacy substrate behaviour, accepted; the Notifications area owns its future shape.
+- **Red→green evidence:** `hub/tests/integration/groups/group-crud-contracts.test.ts` — **19 tests**; **16 demonstrated RED** (functions absent → PGRST202; the FIM direct-INSERT *succeeding* proved the hole) → GREEN post-migration. **Labelled non-red-first:** the settable-column direct-UPDATE test (regression-guard — the granted path must keep working) and the STORY-5 presence assert (green-pre-migration on dev by carried state; its value is fresh-DB deployability, which dev cannot demonstrate). The Mist direct-INSERT was re-aimed mid-red at the real attack shape (`created_by` = own proto personal group) after the naive shape turned out to be refused already.
+- **Gates:** integration **128/128** (`--runInBand`, incl. the adversarial direct-caller paths per GP2); the P3a hardening migration (`20260704075549`, 14 FK covering indexes + 2 `auth_rls_initplan` wraps) rode the same session as its own migration through the same gate.

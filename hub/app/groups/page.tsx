@@ -1,12 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { AppShell } from '@/components/shell/AppShell';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { InlineError } from '@/components/ui/InlineError';
+import { CreateGroupPanel } from '@/components/groups/CreateGroupPanel';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 import type { GroupSummary } from '@/lib/groups/queries';
 
@@ -57,6 +59,12 @@ export default function GroupsPage() {
     <AppShell title="My Groups">
       <h1 className="mb-6 text-3xl font-bold text-gray-900">My Groups</h1>
 
+      {/* FEAT-H013 STORY-1 (GRP-1): create a group and land in it. Only offered
+          to a FIM — a Mist's list is empty and creation is contract-refused. */}
+      {!authLoading && user && (
+        <CreateGroupPanel onCreated={(id) => router.push(`/groups/${id}`)} />
+      )}
+
       {authLoading || loading ? (
         <LoadingState label="Loading your groups..." />
       ) : error ? (
@@ -71,7 +79,12 @@ export default function GroupsPage() {
           {groups.map((g) => (
             <li key={g.id} className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
               <div className="flex items-start justify-between">
-                <h2 className="text-lg font-semibold text-gray-800">{g.name}</h2>
+                {/* FEAT-H013: row → detail navigation (GRP-4 completion). */}
+                <h2 className="text-lg font-semibold text-gray-800">
+                  <Link href={`/groups/${g.id}`} className="hover:underline">
+                    {g.name}
+                  </Link>
+                </h2>
                 <span
                   className={`rounded px-2 py-1 text-xs font-medium ${
                     g.is_public ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'

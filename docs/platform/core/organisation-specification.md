@@ -451,10 +451,10 @@ One FEAT-PC-* feature spec owned by this area at this commit — **[FEAT-PC010](
 
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
-| Universal Group Pattern | [FEAT-PC010](./features/FEAT-PC010-group-creation-and-settings-contracts.md) | 4-ready | `create_engagement_group()` / `get_group_detail()` / `update_group_settings()` contracts + direct-write narrowing on `public.groups` (ADR-U038) + the system-group seeding repair (C3-1 fresh-DB concern, PC-3 slice) |
-| Membership lifecycle | [FEAT-PC010](./features/FEAT-PC010-group-creation-and-settings-contracts.md) | 4-ready | Creator-bootstrap membership only (invitation/join/leave contracts are later G-cycles) |
-| Group Role lifecycle | [FEAT-PC010](./features/FEAT-PC010-group-creation-and-settings-contracts.md) | 4-ready | Role-instance materialisation at creation + creator Steward binding only (role management is Cycle G-B) |
-| Permission resolution — `has_permission()` | [FEAT-PC010](./features/FEAT-PC010-group-creation-and-settings-contracts.md) | 4-ready | Consumed (settings gate + the viewer `can_manage_settings` capability flag); the primitive itself is existing substrate |
+| Universal Group Pattern | [FEAT-PC010](./features/FEAT-PC010-group-creation-and-settings-contracts.md) | 6-done | `create_engagement_group()` / `get_group_detail()` / `update_group_settings()` contracts + direct-write narrowing on `public.groups` (ADR-U038) + the system-group seeding repair (C3-1 fresh-DB concern, PC-3 slice) |
+| Membership lifecycle | [FEAT-PC010](./features/FEAT-PC010-group-creation-and-settings-contracts.md) | 6-done | Creator-bootstrap membership only (invitation/join/leave contracts are later G-cycles) |
+| Group Role lifecycle | [FEAT-PC010](./features/FEAT-PC010-group-creation-and-settings-contracts.md) | 6-done | Role-instance materialisation at creation + creator Steward binding only (role management is Cycle G-B) |
+| Permission resolution — `has_permission()` | [FEAT-PC010](./features/FEAT-PC010-group-creation-and-settings-contracts.md) | 6-done | Consumed (settings gate + the viewer `can_manage_settings` capability flag); the primitive itself is existing substrate |
 
 ### Capabilities without specs
 
