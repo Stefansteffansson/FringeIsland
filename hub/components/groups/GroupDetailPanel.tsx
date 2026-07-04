@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { updateGroupSettings } from '@/lib/groups/client';
-import type { GroupDetail, UpdateGroupSettingsInput } from '@/lib/groups/queries';
+import { assignMemberRole, removeMemberRole, updateGroupSettings } from '@/lib/groups/client';
+import type { GroupDetail, GroupMemberEntry, RolesFabric, UpdateGroupSettingsInput } from '@/lib/groups/queries';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
 /**
  * FEAT-H013 STORY-2/3/4 — the group detail panel (GRP-2/3/4/5).
@@ -13,6 +14,11 @@ import type { GroupDetail, UpdateGroupSettingsInput } from '@/lib/groups/queries
  * viewer's capability flag says so (the Hub never computes permissions) and
  * sends only the changed fields (partial update); saves re-read via
  * onRefresh, failures are non-destructive.
+ *
+ * FEAT-H014 STORY-3 (GRP-7): member entries carry role chips (the extended
+ * payload's `roles[]`); assign/remove affordances exist iff the FABRIC
+ * viewer flags say so. Refusals (the assignment-time wall, the last-Steward
+ * invariant) surface in place — the chip stays, nothing is pre-computed.
  */
 
 const STATUS_STYLES: Record<string, string> = {
@@ -23,12 +29,56 @@ const STATUS_STYLES: Record<string, string> = {
 
 export function GroupDetailPanel({
   group,
+  fabric = null,
   onRefresh,
 }: {
   group: GroupDetail;
+  /** FEAT-H014: the role fabric — picker options + assign/remove flags. */
+  fabric?: RolesFabric | null;
   onRefresh: () => void;
 }) {
   const [editing, setEditing] = useState(false);
+  const [memberError, setMemberError] = useState<string | null>(null);
+  const [removeTarget, setRemoveTarget] = useState<{
+    member: GroupMemberEntry;
+    roleId: string;
+    roleName: string;
+  } | null>(null);
+  const [removeBusy, setRemoveBusy] = useState(false);
+
+  const canAssign = fabric?.viewer.can_assign_roles ?? false;
+  const canRemove = fabric?.viewer.can_remove_roles ?? false;
+  const roleIdByName = new Map((fabric?.roles ?? []).map((r) => [r.name, r.id]));
+  const assignable = (member: GroupMemberEntry) =>
+    (fabric?.roles ?? []).filter((r) => !member.roles.includes(r.name));
+
+  const assign = async (member: GroupMemberEntry, roleId: string) => {
+    setMemberError(null);
+    try {
+      await assignMemberRole(group.id, member.member_group_id, roleId);
+      onRefresh();
+    } catch (err) {
+      // The wall's message, in place — nothing changes visually.
+      setMemberError((err as Error).message);
+    }
+  };
+
+  const confirmRemove = async () => {
+    if (!removeTarget) return;
+    setRemoveBusy(true);
+    setMemberError(null);
+    try {
+      await removeMemberRole(group.id, removeTarget.member.member_group_id, removeTarget.roleId);
+      setRemoveTarget(null);
+      onRefresh();
+    } catch (err) {
+      // The invariant's refusal (e.g. last Steward) — the chip stays.
+      setMemberError((err as Error).message);
+      setRemoveTarget(null);
+    } finally {
+      setRemoveBusy(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -94,14 +144,71 @@ export function GroupDetailPanel({
 
       <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
         <h2 className="mb-3 text-lg font-semibold text-gray-800">Members</h2>
+        {memberError && (
+          <p role="alert" className="mb-3 text-sm text-red-600">
+            {memberError}
+          </p>
+        )}
         {group.members ? (
           <ul data-testid="member-list" className="space-y-2">
             {group.members.map((m, i) => (
-              <li key={`${m.display_name}-${i}`} className="flex items-baseline justify-between">
-                <span className="text-sm text-gray-800">{m.display_name}</span>
-                <span className="text-xs text-gray-400">
-                  since {new Date(m.joined_at).toLocaleDateString()}
-                </span>
+              <li
+                key={m.member_group_id ?? `${m.display_name}-${i}`}
+                data-testid={`member-row-${m.member_group_id}`}
+                className="flex items-center justify-between gap-3"
+              >
+                <div
+                  data-testid={`member-chips-${m.member_group_id}`}
+                  className="flex flex-wrap items-center gap-1.5"
+                >
+                  <span className="text-sm text-gray-800">{m.display_name}</span>
+                  {(m.roles ?? []).map((roleName) => (
+                    <span
+                      key={roleName}
+                      className="flex items-center gap-1 rounded bg-indigo-50 px-1.5 py-0.5 text-xs text-indigo-700"
+                    >
+                      {roleName}
+                      {canRemove && roleIdByName.has(roleName) && (
+                        <button
+                          type="button"
+                          aria-label={`Remove ${roleName} from ${m.display_name}`}
+                          onClick={() =>
+                            setRemoveTarget({
+                              member: m,
+                              roleId: roleIdByName.get(roleName)!,
+                              roleName,
+                            })
+                          }
+                          className="text-indigo-400 hover:text-indigo-700"
+                        >
+                          &times;
+                        </button>
+                      )}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex items-center gap-2">
+                  {canAssign && assignable(m).length > 0 && (
+                    <select
+                      data-testid={`assign-select-${m.member_group_id}`}
+                      value=""
+                      onChange={(e) => {
+                        if (e.target.value) void assign(m, e.target.value);
+                      }}
+                      className="rounded border border-gray-200 px-1.5 py-1 text-xs text-gray-600"
+                    >
+                      <option value="">Assign role...</option>
+                      {assignable(m).map((r) => (
+                        <option key={r.id} value={r.id}>
+                          {r.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                  <span className="text-xs text-gray-400">
+                    since {new Date(m.joined_at).toLocaleDateString()}
+                  </span>
+                </div>
               </li>
             ))}
           </ul>
@@ -109,6 +216,19 @@ export function GroupDetailPanel({
           <p className="text-sm text-gray-500">Member list hidden by this group&apos;s settings.</p>
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={removeTarget !== null}
+        title="Remove role"
+        message={`Remove "${removeTarget?.roleName ?? ''}" from ${removeTarget?.member.display_name ?? ''}?`}
+        confirmText="Remove"
+        variant="danger"
+        busy={removeBusy}
+        onConfirm={() => void confirmRemove()}
+        onCancel={() => {
+          if (!removeBusy) setRemoveTarget(null);
+        }}
+      />
     </div>
   );
 }

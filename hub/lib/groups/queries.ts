@@ -44,6 +44,9 @@ export interface GroupMemberEntry {
   /** Resolves from the member's (personal) group name — never full_name. */
   display_name: string;
   joined_at: string;
+  /** FEAT-PC011 additive keys: the assignment surface's opaque handle + role chips. */
+  member_group_id: string;
+  roles: string[];
 }
 
 export interface GroupViewer {
@@ -108,6 +111,185 @@ export async function fetchGroupDetail(
   const { data, error } = await supabase.rpc('get_group_detail', { p_group_id: groupId });
   if (error) throw error;
   return data as GroupDetail;
+}
+
+/**
+ * FEAT-H014 — the Cycle G-B role contracts (FEAT-PC011). All self-gate in the
+ * substrate (permission keys, two anti-escalation walls, P0002 no-leak, the
+ * last-Steward/last-DeusEx invariants); these wrappers only shape the calls
+ * and rethrow the SQLSTATE-carrying errors for the routes to map.
+ */
+
+export interface RoleEntry {
+  id: string;
+  name: string;
+  description: string | null;
+  /** null = custom role; set = template-derived instance. */
+  created_from_role_template_id: string | null;
+  holder_count: number;
+  /** Granted permission names. */
+  permissions: string[];
+}
+
+export interface RolesViewer {
+  can_manage_roles: boolean;
+  can_assign_roles: boolean;
+  can_remove_roles: boolean;
+}
+
+export interface RolesFabric {
+  group_id: string;
+  roles: RoleEntry[];
+  viewer: RolesViewer;
+  /** The permission catalog riding the payload — the checklist's source. */
+  available_permissions: Array<{ name: string; category: string }>;
+}
+
+export interface RoleTemplateOption {
+  id: string;
+  name: string;
+  description: string | null;
+}
+
+/**
+ * The foundational role templates — platform vocabulary, RLS-readable by any
+ * authenticated client (`auth_read_role_templates`, qual TRUE). The BFF
+ * composes this into the fabric response so the add-from-template picker
+ * needs no extra round-trip; a sibling Surface reads the same table.
+ */
+export async function fetchRoleTemplates(
+  supabase: SupabaseClient,
+): Promise<RoleTemplateOption[]> {
+  const { data, error } = await supabase
+    .from('role_templates')
+    .select('id, name, description')
+    .order('name');
+  if (error) throw error;
+  return (data ?? []) as RoleTemplateOption[];
+}
+
+export interface CreateGroupRoleInput {
+  name: string;
+  description?: string | null;
+  /** Template path: grants are trigger-copied; `permissions` must be absent. */
+  role_template_id?: string | null;
+  /** Custom path: explicit grants, definition-time anti-escalation applies. */
+  permissions?: string[] | null;
+}
+
+/** GRP-6/7 read: the group's role fabric for a permitted viewer. */
+export async function fetchGroupRoles(
+  supabase: SupabaseClient,
+  groupId: string,
+): Promise<RolesFabric> {
+  const { data, error } = await supabase.rpc('get_group_roles', { p_group_id: groupId });
+  if (error) throw error;
+  return data as RolesFabric;
+}
+
+/** GRP-6: template instantiation or custom definition; returns the new role's id. */
+export async function createGroupRole(
+  supabase: SupabaseClient,
+  groupId: string,
+  input: CreateGroupRoleInput,
+): Promise<string> {
+  const { data, error } = await supabase.rpc('create_group_role', {
+    p_group_id: groupId,
+    p_name: input.name,
+    p_description: input.description ?? null,
+    p_role_template_id: input.role_template_id ?? null,
+    p_permissions: input.permissions ?? null,
+  });
+  if (error) throw error;
+  return data as string;
+}
+
+/** GRP-6: partial rename/describe; returns the fresh role entry. */
+export async function updateGroupRole(
+  supabase: SupabaseClient,
+  roleId: string,
+  input: { name?: string; description?: string },
+): Promise<RoleEntry> {
+  const { data, error } = await supabase.rpc('update_group_role', {
+    p_group_role_id: roleId,
+    p_name: input.name ?? null,
+    p_description: input.description ?? null,
+  });
+  if (error) throw error;
+  return data as RoleEntry;
+}
+
+/** GRP-6: flip one grant (anti-escalation on grant); returns the fresh entry. */
+export async function setGroupRolePermission(
+  supabase: SupabaseClient,
+  roleId: string,
+  permissionName: string,
+  granted: boolean,
+): Promise<RoleEntry> {
+  const { data, error } = await supabase.rpc('set_group_role_permission', {
+    p_group_role_id: roleId,
+    p_permission_name: permissionName,
+    p_granted: granted,
+  });
+  if (error) throw error;
+  return data as RoleEntry;
+}
+
+/** GRP-6: delete a custom, unheld role (the contract refuses otherwise). */
+export async function deleteGroupRole(supabase: SupabaseClient, roleId: string): Promise<void> {
+  const { error } = await supabase.rpc('delete_group_role', { p_group_role_id: roleId });
+  if (error) throw error;
+}
+
+/** GRP-7: assign through the anti-escalation wall; notification rides substrate-side. */
+export async function assignMemberRole(
+  supabase: SupabaseClient,
+  groupId: string,
+  memberGroupId: string,
+  roleId: string,
+): Promise<void> {
+  const { error } = await supabase.rpc('assign_member_role', {
+    p_group_id: groupId,
+    p_member_group_id: memberGroupId,
+    p_group_role_id: roleId,
+  });
+  if (error) throw error;
+}
+
+/** GRP-7: remove a binding, riding the last-Steward/last-DeusEx invariants. */
+export async function removeMemberRole(
+  supabase: SupabaseClient,
+  groupId: string,
+  memberGroupId: string,
+  roleId: string,
+): Promise<void> {
+  const { error } = await supabase.rpc('remove_member_role', {
+    p_group_id: groupId,
+    p_member_group_id: memberGroupId,
+    p_group_role_id: roleId,
+  });
+  if (error) throw error;
+}
+
+/**
+ * GRP-8: the caller's effective permissions in a group context — the existing
+ * published `get_user_permissions(acting, context)` with the caller's personal
+ * group as the actor (P-O1). No new contract (FEAT-PC011 STORY-5).
+ */
+export async function fetchMyPermissions(
+  supabase: SupabaseClient,
+  groupId: string,
+): Promise<string[]> {
+  const { data: personalGroupId, error: pgError } = await supabase.rpc(
+    'get_current_personal_group_id',
+  );
+  if (pgError) throw pgError;
+  const { data, error } = await supabase.rpc('get_user_permissions', {
+    p_acting_group_id: personalGroupId,
+    p_context_group_id: groupId,
+  });
+  if (error) throw error;
+  return (data ?? []) as string[];
 }
 
 /** GRP-2/GRP-3: partial update — omitted fields stay unchanged. */
