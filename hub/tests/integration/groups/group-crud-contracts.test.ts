@@ -10,6 +10,18 @@ import {
 } from '@/tests/helpers/supabase';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+/** The get_group_detail jsonb payload shape asserted by this suite. */
+type DetailShape = {
+  name: string;
+  description: string | null;
+  status: string;
+  is_public: boolean;
+  show_member_list: boolean;
+  member_count: number;
+  viewer: { is_member: boolean; joined_at: string | null; can_manage_settings: boolean };
+  members?: Array<{ display_name: string; joined_at: string }>;
+};
+
 /**
  * FEAT-PC010 (Groups Cycle G-A) — group creation & settings contracts.
  * Red-first: every rpc() test fails PGRST202 (functions absent) and the
@@ -169,7 +181,7 @@ describe('FEAT-PC010 — group creation & settings contracts (G-A)', () => {
       const c = await asUser(steward);
       const { data, error } = await c.rpc('get_group_detail', { p_group_id: groupId });
       expect(error).toBeNull();
-      const d = data as Record<string, any>;
+      const d = data as DetailShape;
       expect(d.name).toBe('GA Detail Cohort');
       expect(d.status).toBe('active');
       expect(Number(d.member_count)).toBeGreaterThanOrEqual(1);
@@ -189,7 +201,7 @@ describe('FEAT-PC010 — group creation & settings contracts (G-A)', () => {
       const c = await asUser(outsider);
       const { data, error } = await c.rpc('get_group_detail', { p_group_id: publicGroupId });
       expect(error).toBeNull();
-      const d = data as Record<string, any>;
+      const d = data as DetailShape;
       expect(d.name).toBe('GA Public Cohort');
       expect(d.viewer.is_member).toBe(false);
       expect(d.viewer.can_manage_settings).toBe(false);
@@ -197,7 +209,7 @@ describe('FEAT-PC010 — group creation & settings contracts (G-A)', () => {
 
       await admin.from('groups').update({ show_member_list: true }).eq('id', publicGroupId);
       const { data: after } = await c.rpc('get_group_detail', { p_group_id: publicGroupId });
-      expect((after as Record<string, any>).members).toBeDefined();
+      expect((after as DetailShape).members).toBeDefined();
     });
 
     it('raises P0002 for a non-member on a private group AND for a nonexistent id — indistinguishably', async () => {
@@ -220,7 +232,7 @@ describe('FEAT-PC010 — group creation & settings contracts (G-A)', () => {
       await admin.from('groups').update({ status: 'closed' }).eq('id', closedId);
       const { data, error } = await c.rpc('get_group_detail', { p_group_id: closedId });
       expect(error).toBeNull();
-      expect((data as Record<string, any>).status).toBe('closed');
+      expect((data as DetailShape).status).toBe('closed');
     });
 
     it('refuses a Mist with 42501', async () => {
@@ -263,7 +275,7 @@ describe('FEAT-PC010 — group creation & settings contracts (G-A)', () => {
         p_name: 'GA Settings Cohort Renamed',
       });
       expect(error).toBeNull();
-      const d = data as Record<string, any>;
+      const d = data as DetailShape;
       expect(d.name).toBe('GA Settings Cohort Renamed');
       expect(d.description).toBe('original description');
     });
@@ -275,16 +287,16 @@ describe('FEAT-PC010 — group creation & settings contracts (G-A)', () => {
         p_is_public: true,
       });
       expect(e1).toBeNull();
-      expect((after1 as Record<string, any>).is_public).toBe(true);
-      expect((after1 as Record<string, any>).show_member_list).toBe(true);
+      expect((after1 as DetailShape).is_public).toBe(true);
+      expect((after1 as DetailShape).show_member_list).toBe(true);
 
       const { data: after2, error: e2 } = await c.rpc('update_group_settings', {
         p_group_id: groupId,
         p_show_member_list: false,
       });
       expect(e2).toBeNull();
-      expect((after2 as Record<string, any>).is_public).toBe(true);
-      expect((after2 as Record<string, any>).show_member_list).toBe(false);
+      expect((after2 as DetailShape).is_public).toBe(true);
+      expect((after2 as DetailShape).show_member_list).toBe(false);
     });
 
     it('refuses a member without the settings permission (42501) and an outsider with no-leak (P0002)', async () => {

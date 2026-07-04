@@ -3,7 +3,7 @@
 ---
 id: TASK-H013-01
 title: Groups lib wrappers + the three BFF routes (create, detail, settings) with SQLSTATE mapping and content-free telemetry
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H013

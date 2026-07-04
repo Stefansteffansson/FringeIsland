@@ -3,7 +3,7 @@
 ---
 id: TASK-H013-03
 title: Groups E2E journey, full-pyramid gates, 6-done finalization (specs, §L4, indexes, CHANGELOG)
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H013

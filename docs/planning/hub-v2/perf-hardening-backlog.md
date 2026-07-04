@@ -85,6 +85,6 @@ The felt **1–4 s** navigation slowness survived ADR-U036 because the measured 
 
 ## Sequencing notes
 
-- **Order at the boundary:** P3a (zero-risk DB wins) → ~~P2~~ (realized 2026-07-02, see row) → P1 (getClaims residual) → P3b (policy consolidation, with RLS regression tests) → P4 (test isolation). P5 stays future. **Boundary bet taken 2026-07-03 (Groups kickoff, decision D1): P3a executes alongside the Cycle G-A build** as its own hardening migration through the schema gate; P1-residual/P3b/P4 stay parked.
+- **Order at the boundary:** P3a (zero-risk DB wins) → ~~P2~~ (realized 2026-07-02, see row) → P1 (getClaims residual) → P3b (policy consolidation, with RLS regression tests) → P4 (test isolation). P5 stays future. **Boundary bet taken 2026-07-03 (Groups kickoff, decision D1) and executed 2026-07-04:** P3a shipped as migration `20260704075549` alongside the Cycle G-A build (advisor-verified work-list: 14 FK covering indexes + the 2 remaining `auth_rls_initplan` wraps — the sweep was otherwise already clean); P1-residual/P3b/P4 stay parked.
 - **Re-entry trigger:** planted in [`phase-3-identity-completion-plan.md`](./phase-3-identity-completion-plan.md) §"After Identity" so this backlog is consulted before Groups work begins.
 - **Each item gets its own PR + (where noted) ADR.** Schema-touching items pause at the schema-review gate; ADRs and `platform/core/` changes pause for the merge nod.

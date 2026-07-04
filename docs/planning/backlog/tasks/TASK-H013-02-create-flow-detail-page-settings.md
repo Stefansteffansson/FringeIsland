@@ -3,7 +3,7 @@
 ---
 id: TASK-H013-02
 title: The create-group flow on /groups, the group detail page (status badge + visibility-honest member list), and the permission-gated settings editor
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H013
