@@ -174,3 +174,100 @@ export async function fetchMyPermissions(groupId: string): Promise<string[]> {
   const data = (await res.json()) as { permissions: string[] };
   return data.permissions;
 }
+
+/**
+ * FEAT-H015 — the invitation transports (Cycle G-C). Thin couriers over the
+ * FEAT-PC012-backed BFF; refusal messages surface verbatim via GroupsApiError
+ * for the panels to show in place. Email addresses render to the inviter and
+ * never enter telemetry.
+ */
+import type {
+  InviteByEmailResult,
+  MyInvitation,
+  PendingInvitations,
+  SearchHit,
+} from '@/lib/groups/invitations';
+
+export type {
+  EmailInvitation,
+  InviteByEmailResult,
+  MemberInvitation,
+  MyInvitation,
+  PendingInvitations,
+  SearchHit,
+} from '@/lib/groups/invitations';
+
+/** MEM-1 search (the D3 / DS-6 re-home seam): name-partial + exact-email, cap 8. */
+export async function searchMembers(groupId: string, query: string): Promise<SearchHit[]> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(groupId)}/member-search?q=${encodeURIComponent(query)}`,
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as SearchHit[];
+}
+
+/** MEM-1/2: invite by member_group_id XOR email; the contract may convert (Open Q2). */
+export async function sendInvite(
+  groupId: string,
+  body: { member_group_id: string } | { email: string },
+): Promise<InviteByEmailResult> {
+  const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/invitations`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as InviteByEmailResult;
+}
+
+/** STORY-3 read: the group's outstanding invitations (invite_members-gated). */
+export async function fetchGroupInvitations(groupId: string): Promise<PendingInvitations> {
+  const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/invitations`);
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as PendingInvitations;
+}
+
+export async function cancelMemberInvite(
+  groupId: string,
+  memberGroupId: string,
+): Promise<void> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(groupId)}/invitations/members/${encodeURIComponent(memberGroupId)}`,
+    { method: 'DELETE' },
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+}
+
+export async function cancelEmailInvite(
+  groupId: string,
+  invitationId: string,
+): Promise<void> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(groupId)}/invitations/email/${encodeURIComponent(invitationId)}`,
+    { method: 'DELETE' },
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+}
+
+/** MEM-3 read: the caller's own pending invitations — invitation context only. */
+export async function fetchMyInvitations(): Promise<MyInvitation[]> {
+  const res = await fetch('/api/me/invitations');
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as MyInvitation[];
+}
+
+/** MEM-3: accept — invited→active substrate-side (role auto-bind included). */
+export async function acceptInvitation(groupId: string): Promise<void> {
+  const res = await fetch(`/api/me/invitations/${encodeURIComponent(groupId)}`, {
+    method: 'POST',
+  });
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+}
+
+/** MEM-3: decline — the row leaves; re-invitation stays possible. */
+export async function declineInvitation(groupId: string): Promise<void> {
+  const res = await fetch(`/api/me/invitations/${encodeURIComponent(groupId)}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+}

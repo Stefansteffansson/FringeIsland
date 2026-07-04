@@ -9,12 +9,15 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { InlineError } from '@/components/ui/InlineError';
 import { GroupDetailPanel } from '@/components/groups/GroupDetailPanel';
 import { RolesPanel } from '@/components/groups/RolesPanel';
+import { InvitationsPanel } from '@/components/groups/InvitationsPanel';
 import { MyPermissionsPanel } from '@/components/groups/MyPermissionsPanel';
 import {
   fetchGroupDetail,
+  fetchGroupInvitations,
   fetchGroupRoles,
   fetchMyPermissions,
   GroupsApiError,
+  type PendingInvitations,
   type RolesReadResult,
 } from '@/lib/groups/client';
 import type { GroupDetail } from '@/lib/groups/queries';
@@ -46,6 +49,8 @@ export default function GroupDetailPage() {
   const [rolesError, setRolesError] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<string[] | null>(null);
   const [permissionsError, setPermissionsError] = useState<string | null>(null);
+  const [invitations, setInvitations] = useState<PendingInvitations | null>(null);
+  const [invitationsError, setInvitationsError] = useState<string | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -86,15 +91,40 @@ export default function GroupDetailPage() {
     }
   }, [groupId]);
 
+  // FEAT-H015: the pending list is meaningful only for an invite_members
+  // holder (the contract 403s everyone else — Open Q3), so the read chains off
+  // the fresh permissions payload instead of probing and eating a refusal.
+  const loadInvitations = useCallback(
+    async (perms: string[] | null) => {
+      if (!perms?.includes('invite_members')) {
+        setInvitations(null);
+        setInvitationsError(null);
+        return;
+      }
+      try {
+        setInvitations(await fetchGroupInvitations(groupId));
+        setInvitationsError(null);
+      } catch {
+        // Panel-local: the invitations panel shows this; the page stands.
+        setInvitations(null);
+        setInvitationsError('Failed to load invitations.');
+      }
+    },
+    [groupId],
+  );
+
   const loadPermissions = useCallback(async () => {
     setPermissionsError(null);
     try {
-      setPermissions(await fetchMyPermissions(groupId));
+      const perms = await fetchMyPermissions(groupId);
+      setPermissions(perms);
+      void loadInvitations(perms);
     } catch {
       setPermissions(null);
       setPermissionsError('Failed to load your permissions.');
+      setInvitations(null);
     }
-  }, [groupId]);
+  }, [groupId, loadInvitations]);
 
   // The one refresh path (FEAT-H014 STORY-4): every mutation re-reads all three.
   const loadAll = useCallback(() => {
@@ -128,6 +158,13 @@ export default function GroupDetailPage() {
             fabric={rolesData?.fabric ?? null}
             templates={rolesData?.templates ?? []}
             error={rolesError}
+            onMutated={loadAll}
+          />
+          <InvitationsPanel
+            groupId={groupId}
+            permissions={permissions}
+            pending={invitations}
+            error={invitationsError}
             onMutated={loadAll}
           />
           <MyPermissionsPanel

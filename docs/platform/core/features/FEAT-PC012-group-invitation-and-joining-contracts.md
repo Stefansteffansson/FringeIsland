@@ -6,7 +6,7 @@ title: Group invitation & joining contracts — member search (DS-6 re-home seam
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -149,3 +149,17 @@ Additive: ~9 new functions, one amendment inside the existing erasure function's
 2. **`invite_by_email` on an existing FIM's email: convert server-side.** Default: create the membership invitation instead (a stranded email row never auto-claims — sign-up is the only claim trigger); the alternative (refuse and steer to search) leaks the same existence fact with worse UX. Confirm at the gate.
 3. **Pending-list read scope: `invite_members` holders only.** The list carries third-party email addresses; ordinary members don't need it (the Surface gates the panel on the already-fetched effective-permissions read). Alternative: any member sees membership invites, only holders see email invites (split payload). Confirm at the gate.
 4. **Erasure amendment shape.** Default: hard-delete pending email invitations addressed to the erased email (they are unclaimed offers, not consent-proof — the ADR-U034 retain-pattern does not apply). Confirm at the gate.
+
+*(All four defaults confirmed at the gate — Stefan's nod on PR #68, 2026-07-04.)*
+
+## Implementation notes (6-done — Cycle G-C, 2026-07-04)
+
+Built TDD red-first, platform-first. **Schema gate passed the same day:** Stefan reviewed PR #68 (all seven gate items — Open Q1–Q4 defaults, the trigger fix, the direct-path residue, TRUNCATE hygiene) and gave the nod; merged. Consumed by FEAT-H015 (built immediately after; its notes carry the Surface half).
+
+- **Migration** `supabase/migrations/20260704144630_feat_pc012_invitation_contracts.sql` (applied to dev + repaired, gate passed). **Nine member-facing SECURITY DEFINER contracts, no new table, no policy changes.** All actor resolution via `get_current_personal_group_id()`; writes FIM-only + active-account-only; group resolution per the G-A visibility rule (member-or-public+active, else `P0002`). `invite_by_email` stores emails lowercased with a case-insensitive duplicate guard (the unique constraint alone is case-sensitive).
+- **Open Q1–Q4 defaults carried and tested:** exact-only email search (a partial-email probe test asserts the miss); existing-FIM conversion (`{kind: 'member_invitation'}` returned, no email row); `invite_members`-gated pending list (`42501` for plain members); erasure hard-delete (addressed-to rows gone, sent-by rows survive with `invited_by_group_id NULL`).
+- **Build-discovered substrate defect, fixed in the same migration (red-demonstrated by STORY-5's accept test):** `auto_assign_member_role_on_accept` looked up the default role by `name = 'Member'`, but v2-created groups (G-A bootstrap) name instances verbatim after templates (`'Member Role Template'`) — an accepted invitee silently received **no role** (zero permissions). Fixed by resolving the Member-template-derived instance via `created_from_role_template_id` (the deletion-protection rule's own key), short-name lookup kept as the legacy-group fallback. Trigger fix, not a policy change; gate item 5, accepted.
+- **Substrate reality carried:** the display identity used in search and invitation payloads is the personal-group name, which `handle_new_user` defaults to the **first word** of the display name (nickname rule) — surfaced by the first green run's failures; the suite's personas use single-token names. A suspended FIM is invitable by id (hidden from search); expiry stays predicate-based (`expires_at`), no reaper.
+- **Direct-path residue (gate item 6, accepted):** direct `pending_email_invitations` INSERT by an `invite_members` holder bypasses the contract's validation/lowercasing/conversion — worst case a stranded pending row visible only to holders; auto-claim compares `LOWER()` so case is immaterial.
+- **Red→green evidence:** `hub/tests/integration/groups/invitation-contracts.test.ts` — **26 tests**; **24 demonstrated RED** (functions absent → PGRST202; the accept test's role-binding assert red against the substrate defect) → GREEN post-migration. **Labelled non-red-first by design:** 2 of STORY-7's direct-path asserts (the story's point is verifying the *existing* RLS — "verified, not assumed"). TRUNCATE revokes (`pending_email_invitations`, `group_memberships`) verified via `information_schema.table_privileges` at the gate, not as a Jest assert (PostgREST exposes no TRUNCATE verb).
+- **Gates:** new suite 26/26; full integration **186/186** (28 suites, `--runInBand`); lint 0 errors (one pre-existing warning).
