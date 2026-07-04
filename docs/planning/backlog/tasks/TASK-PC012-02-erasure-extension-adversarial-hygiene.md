@@ -3,7 +3,7 @@
 ---
 id: TASK-PC012-02
 title: erase_fim_account amendment (pending_email_invitations, Art. 17) + ADR-U038 adversarial direct-path suite + TRUNCATE revokes on pending_email_invitations and group_memberships
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PC012
@@ -32,7 +32,7 @@ Rides TASK-PC012-01's migration. Three items:
 
 ## Technical notes
 
-Same migration as TASK-PC012-01. The erasure amendment is a full-body `CREATE OR REPLACE` of `erase_fim_account(uuid)` (email capture must precede step 4's teardown — after `admin_hard_delete_user` the users row is gone). Erasure tests live with the existing PC002 erasure suite location/patterns; direct-path tests in the invitation-contracts file (STORY-7 describe block).
+Same migration as TASK-PC012-01. The erasure amendment is a full-body `CREATE OR REPLACE` of `erase_fim_account(uuid)` (email capture must precede step 4's teardown — after `admin_hard_delete_user` the users row is gone). At build, the erasure tests landed in the invitation-contracts suite (STORY-6 describe block) reusing the fim-account-erasure suite's makePlatformAdmin pattern — one suite per feature; the existing PC002 suite stays untouched and green. Direct-path tests in the same file (STORY-7 describe block).
 
 ## Verification
 

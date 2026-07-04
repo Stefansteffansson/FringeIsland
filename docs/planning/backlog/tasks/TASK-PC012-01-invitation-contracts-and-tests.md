@@ -3,7 +3,7 @@
 ---
 id: TASK-PC012-01
 title: Invitation contracts — search_invitable_members / invite_member / invite_by_email / get_group_invitations / cancel_member_invitation / cancel_email_invitation / get_my_invitations / accept_group_invitation / decline_group_invitation + red-first integration tests
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PC012
