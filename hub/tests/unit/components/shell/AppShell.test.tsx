@@ -22,4 +22,14 @@ describe('FEAT-H005 STORY-1 (unit) — AppShell mounts the account menu', () => 
     expect(screen.getByTestId('bell')).toBeInTheDocument();
     expect(screen.getByText('content')).toBeInTheDocument();
   });
+
+  it('carries the brand mark top-left as a home link on every shell page', () => {
+    render(<AppShell title="My Groups">content</AppShell>);
+    // Stefan's request (2026-07-04): a FringeIsland mark, top-left, on all
+    // pages, leading back to the FringeIsland home (the entry greets a
+    // signed-in FIM with "Continue to your groups").
+    const brand = screen.getByRole('link', { name: /fringeisland — home/i });
+    expect(brand).toHaveAttribute('href', '/');
+    expect(screen.getByText('My Groups')).toBeInTheDocument();
+  });
 });
