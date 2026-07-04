@@ -6,7 +6,7 @@ title: Group membership lifecycle contracts — pause and reactivate a member's 
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -145,3 +145,15 @@ Mostly additive: 3 new functions, 1 replacement-in-place (`leave_group` — same
 2. **Drop the two member-exit DELETE policies** (`memberships_delete_leave`, `memberships_delete_remove`). Default: drop — the raw paths bypass freeze/role-cleanup/Steward-guards (a sole Steward can strand a group headless today); the contracts become the only client-role exits (G-A `groups`-narrowing precedent). Admin policies untouched. Cost: hub-legacy's leave/remove UI stops working against the dev DB (acceptable — frozen oracle, Phase-4 deletion). Alternative: keep as defense-in-depth (the G-B posture) and accept the bypass residue. Confirm at the gate.
 3. **Paused-row visibility: management-permission holders only.** Default: paused rows (with `membership_status`) render in `get_group_detail` only for holders of `pause_members` / `activate_members` / `remove_members`; all other viewers see the active-only list unchanged. Alternative: any `view_member_list` holder sees paused rows flagged (simpler, but exposes participation state — FIM data — to the whole list audience, including public-list viewers). Confirm at the gate.
 4. **Self-target refused on pause and remove.** Default: `P0001` — leave is the self-exit path (one flow per intent: a permitted self-remove would either dodge leave's sole-Steward/last-member refusals or have to duplicate them); self-pause at group scope has no §L3 story and adjoins parked IDN-12 at account scope. Alternative: permit self-remove as leave-with-another-name. Confirm at the gate.
+
+*(All four defaults confirmed at the gate — Stefan's nod on PR #71, 2026-07-04.)*
+
+## Implementation notes (6-done — Cycle G-D platform half, 2026-07-04)
+
+Built TDD red-first. **Schema gate passed the same day:** Stefan reviewed PR #71 (Open Q1–Q4 defaults, the two build amendments, the policy-drop audit, the direct-caller answer) and gave the nod; merged. Consumed by FEAT-H016 (Surface half; its notes carry the Hub side).
+
+- **Migration** `supabase/migrations/20260704192549_feat_pc013_membership_lifecycle_contracts.sql` (applied to dev + repaired, gate passed). `pause_member` / `activate_member` / `remove_member` + the internal-only `active_steward_count(p_group_id, p_excluding)` helper (no client execute); `leave_group` **replaced in place** (regular exit; sole-active-Steward and last-member refused `P0001` with actionable copy — the G-E re-entry points); `get_group_detail` amended additively (`membership_status`; paused rows for management-key holders); `memberships_delete_leave` + `memberships_delete_remove` **dropped** behind a `pg_policies` name-guard (refuses on a half-match). **No new table, no trigger changes.**
+- **Build findings, folded into the spec:** (1) management keys now imply member-list visibility — the minimal-permission pauser persona could otherwise pause blind; (2) the STORY-5 AC's refusal ordering was amended at build start — non-engagement ids resolve `P0002` (visibility precedes the type check; the original `P0001` would have made group ids enumerable); (3) the grant audit found legacy `leave_group` carrying EXECUTE-to-PUBLIC since sprint2 — revoked.
+- **Labelled honestly:** the regular-leave cascade asserts were green against the legacy body (carried-forward behaviour, the replacement had to keep them green); one in-flight test-expectation correction — Tier-1 platform-baseline permissions (FringeIsland Members) are context-free and rightly survive a group pause; the assert re-scoped to the group-scoped grant going dark.
+- **Red→green evidence:** `hub/tests/integration/groups/membership-lifecycle.test.ts` — **24 tests**; **21 demonstrated RED** (PGRST202 for the three absent functions + the detail key; genuine semantic reds against the legacy `leave_group` — which *executed* the DeusEx handover and closure on the suite's own fixtures where the contract now refuses) → GREEN post-migration, migration untouched between runs. 3 asserts labelled verified-not-assumed (regular-leave carry-forward, PC012 decline policy-independence, the admin policy via a promoted platform admin).
+- **Gates:** new suite 24/24; full integration **210/210** (29 suites, `--runInBand`); lint 0 errors (one pre-existing warning). SQL audit at the gate: 6 policies remain on `group_memberships` (admin pair intact), TRUNCATE = postgres + service_role only, `active_steward_count` service_role-only.

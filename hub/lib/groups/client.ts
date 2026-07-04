@@ -271,3 +271,47 @@ export async function declineInvitation(groupId: string): Promise<void> {
   });
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
 }
+
+/**
+ * FEAT-H016 — the membership lifecycle transports (Cycle G-D, FEAT-PC013).
+ * Refusal messages pass through GroupsApiError — they carry the honest G-E
+ * copy (sole-Steward / last-member) the Surface renders in place.
+ */
+
+/** MEM-4: pause a member's participation. */
+export async function pauseMember(groupId: string, memberGroupId: string): Promise<void> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(groupId)}/members/${encodeURIComponent(memberGroupId)}/pause`,
+    { method: 'POST' },
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+}
+
+/** MEM-4: reactivate a paused member. */
+export async function activateMember(groupId: string, memberGroupId: string): Promise<void> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(groupId)}/members/${encodeURIComponent(memberGroupId)}/activate`,
+    { method: 'POST' },
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+}
+
+/** MEM-5: remove a member (never conflated with invitation cancels). */
+export async function removeGroupMember(groupId: string, memberGroupId: string): Promise<void> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(groupId)}/members/${encodeURIComponent(memberGroupId)}`,
+    { method: 'DELETE' },
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+}
+
+/** MEM-6: the caller's own regular exit. */
+export async function leaveGroup(
+  groupId: string,
+): Promise<{ group_id: string; group_name: string }> {
+  const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/leave`, {
+    method: 'POST',
+  });
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as { group_id: string; group_name: string };
+}

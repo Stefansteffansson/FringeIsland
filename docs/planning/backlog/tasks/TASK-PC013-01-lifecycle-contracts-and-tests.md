@@ -3,7 +3,7 @@
 ---
 id: TASK-PC013-01
 title: Lifecycle contracts — pause_member / activate_member / remove_member / leave_group (replaced in place) + the get_group_detail membership_status amendment + red-first integration tests
-status: review
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PC013

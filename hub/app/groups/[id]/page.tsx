@@ -151,7 +151,9 @@ export default function GroupDetailPage() {
           <GroupDetailPanel
             group={group}
             fabric={rolesData?.fabric ?? null}
+            permissions={permissions}
             onRefresh={loadAll}
+            onLeft={() => router.replace('/groups')}
           />
           <RolesPanel
             groupId={groupId}

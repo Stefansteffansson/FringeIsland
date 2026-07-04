@@ -47,6 +47,12 @@ export interface GroupMemberEntry {
   /** FEAT-PC011 additive keys: the assignment surface's opaque handle + role chips. */
   member_group_id: string;
   roles: string[];
+  /**
+   * FEAT-PC013 additive key: 'active' | 'paused'. Paused rows appear only for
+   * management-permission viewers (the contract decided — Open Q3); optional
+   * for tolerance, treated as 'active' when absent.
+   */
+  membership_status?: string;
 }
 
 export interface GroupViewer {
@@ -269,6 +275,68 @@ export async function removeMemberRole(
     p_group_role_id: roleId,
   });
   if (error) throw error;
+}
+
+/**
+ * FEAT-H016 — the Cycle G-D membership lifecycle contracts (FEAT-PC013). All
+ * self-gate in the substrate (three independent permission keys, the
+ * last-active-Steward guards, P0002 no-leak, the honest G-E refusals); these
+ * wrappers only shape the calls and rethrow the SQLSTATE-carrying errors for
+ * the routes to map.
+ */
+
+/** MEM-4: pause a member's participation (active→paused; roles preserved). */
+export async function pauseMember(
+  supabase: SupabaseClient,
+  groupId: string,
+  memberGroupId: string,
+): Promise<void> {
+  const { error } = await supabase.rpc('pause_member', {
+    p_group_id: groupId,
+    p_member_group_id: memberGroupId,
+  });
+  if (error) throw error;
+}
+
+/** MEM-4: reactivate a paused member (paused→active; preserved roles resume). */
+export async function activateMember(
+  supabase: SupabaseClient,
+  groupId: string,
+  memberGroupId: string,
+): Promise<void> {
+  const { error } = await supabase.rpc('activate_member', {
+    p_group_id: groupId,
+    p_member_group_id: memberGroupId,
+  });
+  if (error) throw error;
+}
+
+/** MEM-5: remove a member — the composed cascade lives in the contract. */
+export async function removeGroupMember(
+  supabase: SupabaseClient,
+  groupId: string,
+  memberGroupId: string,
+): Promise<void> {
+  const { error } = await supabase.rpc('remove_member', {
+    p_group_id: groupId,
+    p_member_group_id: memberGroupId,
+  });
+  if (error) throw error;
+}
+
+export interface LeaveGroupResult {
+  group_id: string;
+  group_name: string;
+}
+
+/** MEM-6: the caller's own regular exit (sole-Steward/last-member refused). */
+export async function leaveGroup(
+  supabase: SupabaseClient,
+  groupId: string,
+): Promise<LeaveGroupResult> {
+  const { data, error } = await supabase.rpc('leave_group', { p_group_id: groupId });
+  if (error) throw error;
+  return data as LeaveGroupResult;
 }
 
 /**
