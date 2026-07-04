@@ -76,9 +76,12 @@ describe('FEAT-H005 STORY-1 (unit) — the menu is a FIM affordance', () => {
 });
 
 describe('FEAT-H005 STORY-1/4 (unit) — menu contents', () => {
-  it('opens to Profile + Privacy & consent + Download my data + Sign out', async () => {
+  it('opens to My groups + Profile + Privacy & consent + Download my data + Sign out', async () => {
     render(<AccountMenu />);
     await userEvent.click(screen.getByRole('button', { name: /account menu/i }));
+    // The primary destination — sign-in lands there, and the menu must lead
+    // back (found missing during G-D manual testing: no path to /groups).
+    expect(screen.getByRole('link', { name: /my groups/i })).toHaveAttribute('href', '/groups');
     expect(screen.getByRole('link', { name: /profile/i })).toHaveAttribute('href', '/profile');
     // FEAT-H008: the FIM-only entry point to the consent surface.
     expect(screen.getByRole('link', { name: /privacy & consent/i })).toHaveAttribute('href', '/consent');

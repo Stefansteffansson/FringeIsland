@@ -95,6 +95,13 @@ export function AccountMenu() {
           />
           <div className="absolute right-0 z-40 mt-2 w-48 rounded-lg border border-gray-200 bg-white py-2 shadow-xl">
             <Link
+              href="/groups"
+              onClick={() => setOpen(false)}
+              className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+            >
+              My groups
+            </Link>
+            <Link
               href="/profile"
               onClick={() => setOpen(false)}
               className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
