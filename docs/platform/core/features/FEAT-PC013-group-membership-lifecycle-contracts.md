@@ -6,7 +6,7 @@ title: Group membership lifecycle contracts — pause and reactivate a member's 
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
