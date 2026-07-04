@@ -21,6 +21,8 @@ const replace = jest.fn();
 const router = { replace, push: jest.fn() };
 
 const fetchGroupDetail = jest.fn<(id: string) => Promise<GroupDetail>>();
+const fetchGroupRoles = jest.fn<(id: string) => Promise<unknown>>();
+const fetchMyPermissions = jest.fn<(id: string) => Promise<string[]>>();
 
 jest.mock('@/lib/auth/AuthContext', () => ({ useAuth: () => authState }));
 jest.mock('next/navigation', () => ({
@@ -32,6 +34,8 @@ jest.mock('@/components/shell/AppShell', () => ({
 }));
 jest.mock('@/lib/groups/client', () => ({
   fetchGroupDetail: (id: string) => fetchGroupDetail(id),
+  fetchGroupRoles: (id: string) => fetchGroupRoles(id),
+  fetchMyPermissions: (id: string) => fetchMyPermissions(id),
   GroupsApiError: class GroupsApiError extends Error {
     status: number;
     constructor(message: string, status: number) {
@@ -41,9 +45,17 @@ jest.mock('@/lib/groups/client', () => ({
   },
 }));
 jest.mock('@/components/groups/GroupDetailPanel', () => ({
-  GroupDetailPanel: ({ group }: { group: GroupDetail }) => (
-    <div data-testid="detail-panel" data-name={group.name} />
+  GroupDetailPanel: ({ group, onRefresh }: { group: GroupDetail; onRefresh: () => void }) => (
+    <div data-testid="detail-panel" data-name={group.name}>
+      <button data-testid="stub-mutate" onClick={onRefresh} />
+    </div>
   ),
+}));
+jest.mock('@/components/groups/RolesPanel', () => ({
+  RolesPanel: () => <div data-testid="roles-panel-stub" />,
+}));
+jest.mock('@/components/groups/MyPermissionsPanel', () => ({
+  MyPermissionsPanel: () => <div data-testid="my-permissions-stub" />,
 }));
 
 import GroupDetailPage from '@/app/groups/[id]/page';
@@ -66,6 +78,8 @@ describe('FEAT-H013 — /groups/[id] page gate (STORY-2)', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     fetchGroupDetail.mockResolvedValue(DETAIL);
+    fetchGroupRoles.mockResolvedValue({ fabric: null, templates: [] });
+    fetchMyPermissions.mockResolvedValue([]);
   });
 
   it('redirects a sessionless visitor to sign-in, preserving the destination', async () => {
@@ -95,5 +109,28 @@ describe('FEAT-H013 — /groups/[id] page gate (STORY-2)', () => {
     render(<GroupDetailPage />);
     await waitFor(() => expect(screen.getByText(/group not found/i)).toBeInTheDocument());
     expect(screen.queryByTestId('detail-panel')).toBeNull();
+  });
+
+  // FEAT-H014 STORY-4 — the page composes all three reads and one refresh path.
+  it('mounts the roles + permissions panels for a FIM and re-reads all three on a mutation (FEAT-H014)', async () => {
+    authState = { user: { id: 'u1' }, identity: 'fim', loading: false };
+    render(<GroupDetailPage />);
+    await waitFor(() => expect(screen.getByTestId('detail-panel')).toBeInTheDocument());
+    expect(screen.getByTestId('roles-panel-stub')).toBeInTheDocument();
+    expect(screen.getByTestId('my-permissions-stub')).toBeInTheDocument();
+    expect(fetchGroupRoles).toHaveBeenCalledWith('grp-1');
+    expect(fetchMyPermissions).toHaveBeenCalledWith('grp-1');
+
+    const before = {
+      detail: fetchGroupDetail.mock.calls.length,
+      roles: fetchGroupRoles.mock.calls.length,
+      perms: fetchMyPermissions.mock.calls.length,
+    };
+    screen.getByTestId('stub-mutate').click();
+    await waitFor(() => {
+      expect(fetchGroupDetail.mock.calls.length).toBe(before.detail + 1);
+      expect(fetchGroupRoles.mock.calls.length).toBe(before.roles + 1);
+      expect(fetchMyPermissions.mock.calls.length).toBe(before.perms + 1);
+    });
   });
 });

@@ -6,7 +6,7 @@ title: Group role & permission contracts — role-inventory read with capability
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -136,9 +136,9 @@ Additive: six new functions, one additive jsonb extension, TRUNCATE revokes. No 
 3. **`delete_group_role` while held.** Default: refuse (explicit unbind first). Confirm at the gate.
 4. **The `grp_insert` policy's second predicate** (truncated in the audit read) — verify the exact existing definition-time check at build; the contract's check must be at least as strict.
 
-## Implementation notes (build complete, schema gate pending — Cycle G-B, 2026-07-04)
+## Implementation notes (6-done — Cycle G-B, 2026-07-04)
 
-Built TDD red-first, platform-first. Awaiting the schema-review nod; maturity flips to `6-done` with FEAT-H014 after the gate.
+Built TDD red-first, platform-first. **Schema gate passed the same day:** Stefan reviewed PR #65 (all five gate items — Open Q2/Q3 defaults, the Q4 predicate record, the auto-link trapdoor's direct-path residue, the `remove_roles`-vs-`assign_roles` divergence, the STORY-5 AC amendment) and gave the nod; STORY-5's AC-3 was amended on the PR before merge. Consumed by FEAT-H014 (built immediately after; its notes carry the Surface half).
 
 - **Migration** `supabase/migrations/20260704090434_feat_pc011_role_permission_contracts.sql` (applied to dev + repaired; schema-review gate pending). **Six member-facing SECURITY DEFINER functions + one internal payload helper (`role_fabric_entry`, no client execute), no new table, no policy changes.** All actor resolution via `get_current_personal_group_id()`; writes FIM-only + active-account-only; group resolution per the G-A visibility rule (member-or-public+active, else `P0002`). `get_group_detail` replaced in full with the **additive** members extension (`member_group_id`, `roles[]`); every existing key unchanged (PC010's own suite stays green — 55/55 across the groups domain).
 - **Open Q4 resolved (verified on dev pre-build):** `grp_insert` `with_check` = `has_permission(actor, group, 'manage_roles') AND has_permission(actor, group, get_permission_name(permission_id))` — the author must themselves hold each permission they grant. The contracts enforce exactly this predicate on both grant paths (`create_group_role` custom, `set_group_role_permission` grant); recorded in the migration header.

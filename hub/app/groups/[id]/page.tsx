@@ -8,7 +8,15 @@ import { LoadingState } from '@/components/ui/LoadingState';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { InlineError } from '@/components/ui/InlineError';
 import { GroupDetailPanel } from '@/components/groups/GroupDetailPanel';
-import { fetchGroupDetail, GroupsApiError } from '@/lib/groups/client';
+import { RolesPanel } from '@/components/groups/RolesPanel';
+import { MyPermissionsPanel } from '@/components/groups/MyPermissionsPanel';
+import {
+  fetchGroupDetail,
+  fetchGroupRoles,
+  fetchMyPermissions,
+  GroupsApiError,
+  type RolesReadResult,
+} from '@/lib/groups/client';
 import type { GroupDetail } from '@/lib/groups/queries';
 
 /**
@@ -17,7 +25,12 @@ import type { GroupDetail } from '@/lib/groups/queries';
  * the destination preserved; a Mist → the entry. The BFF's 404 renders the
  * house not-found — a private group and an absent one look identical (the
  * FEAT-PC010 no-leak rule, carried to the surface). Mutations inside the
- * panel re-read through the same load path (never optimistic).
+ * panels re-read through the same load path (never optimistic).
+ *
+ * FEAT-H014 (GRP-6/7/8): the page composes three reads — detail, role fabric
+ * (+ templates), effective permissions — with ONE refresh path (STORY-4: any
+ * mutation re-reads all three together). The fabric and permissions reads
+ * fail panel-locally (STORY-1: the rest of the page stands).
  */
 export default function GroupDetailPage() {
   const { user, identity, loading: authLoading } = useAuth();
@@ -29,6 +42,10 @@ export default function GroupDetailPage() {
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [rolesData, setRolesData] = useState<RolesReadResult | null>(null);
+  const [rolesError, setRolesError] = useState<string | null>(null);
+  const [permissions, setPermissions] = useState<string[] | null>(null);
+  const [permissionsError, setPermissionsError] = useState<string | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -58,10 +75,38 @@ export default function GroupDetailPage() {
     }
   }, [groupId]);
 
+  const loadRoles = useCallback(async () => {
+    setRolesError(null);
+    try {
+      setRolesData(await fetchGroupRoles(groupId));
+    } catch {
+      // Panel-local: the roles panel shows this; the page stands.
+      setRolesData(null);
+      setRolesError('Failed to load the roles.');
+    }
+  }, [groupId]);
+
+  const loadPermissions = useCallback(async () => {
+    setPermissionsError(null);
+    try {
+      setPermissions(await fetchMyPermissions(groupId));
+    } catch {
+      setPermissions(null);
+      setPermissionsError('Failed to load your permissions.');
+    }
+  }, [groupId]);
+
+  // The one refresh path (FEAT-H014 STORY-4): every mutation re-reads all three.
+  const loadAll = useCallback(() => {
+    void load();
+    void loadRoles();
+    void loadPermissions();
+  }, [load, loadRoles, loadPermissions]);
+
   useEffect(() => {
     if (authLoading || identity !== 'fim') return;
-    void load();
-  }, [authLoading, identity, load]);
+    loadAll();
+  }, [authLoading, identity, loadAll]);
 
   return (
     <AppShell title="Group">
@@ -72,7 +117,25 @@ export default function GroupDetailPage() {
       ) : error ? (
         <InlineError message={error} />
       ) : group ? (
-        <GroupDetailPanel group={group} onRefresh={() => void load()} />
+        <div className="space-y-6">
+          <GroupDetailPanel
+            group={group}
+            fabric={rolesData?.fabric ?? null}
+            onRefresh={loadAll}
+          />
+          <RolesPanel
+            groupId={groupId}
+            fabric={rolesData?.fabric ?? null}
+            templates={rolesData?.templates ?? []}
+            error={rolesError}
+            onMutated={loadAll}
+          />
+          <MyPermissionsPanel
+            permissions={permissions}
+            error={permissionsError}
+            onReload={() => void loadPermissions()}
+          />
+        </div>
       ) : null}
     </AppShell>
   );
