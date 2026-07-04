@@ -6,7 +6,7 @@ title: Group invitations & joining surfaces — the invitations panel (member-se
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

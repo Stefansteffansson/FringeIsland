@@ -3,7 +3,7 @@
 ---
 id: TASK-PC012-02
 title: erase_fim_account amendment (pending_email_invitations, Art. 17) + ADR-U038 adversarial direct-path suite + TRUNCATE revokes on pending_email_invitations and group_memberships
-status: review
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PC012
