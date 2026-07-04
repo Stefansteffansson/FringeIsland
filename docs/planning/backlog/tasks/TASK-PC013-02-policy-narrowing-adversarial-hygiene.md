@@ -3,7 +3,7 @@
 ---
 id: TASK-PC013-02
 title: Drop memberships_delete_leave + memberships_delete_remove (the raw exit paths that bypass the cascades) + STORY-6 adversarial direct-path suite + hygiene re-asserts
-status: review
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PC013

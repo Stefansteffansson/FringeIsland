@@ -6,7 +6,7 @@ title: Group membership lifecycle surfaces — member-row pause/reactivate/remov
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
