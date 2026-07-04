@@ -96,7 +96,7 @@ As a FIM, I want my effective permissions in a group context readable as data, s
 **Acceptance criteria:**
 - Given an active member, when the Surface calls the existing `get_user_permissions(personal_group, group)`, then it receives the caller's effective permission names — role-derived, deduplicated, with system-group grants contributing per the substrate's existing global rule.
 - Given the member list read (`get_group_detail`), when it returns, then each member entry additively carries `member_group_id` and `roles[]` so the assignment surface and role chips need no extra round-trips.
-- Given a non-member calling `get_user_permissions` for a foreign group, then the result is empty — never an error that distinguishes private from absent.
+- Given a non-member calling `get_user_permissions` for a foreign private group, then the result is byte-identical to a nonexistent group's — the caller's global baseline (system-group contributions per AC-1's rule), no group-derived key, never a distinguishing error. *(Amended at build: the original "result is empty" contradicted AC-1's global rule — the FringeIsland Members baseline contributes in every context by design; see Implementation notes.)*
 
 ### STORY-6: No path around the contracts (ADR-U038)
 As the platform, I want the direct PostgREST surface on the role tables verified against the contracts, so the two layers agree.
