@@ -6,7 +6,7 @@ title: Group creation & stewardship surfaces — the create-group flow, the grou
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

@@ -6,7 +6,7 @@ title: Group creation & settings contracts — atomic create-engagement-group bo
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
