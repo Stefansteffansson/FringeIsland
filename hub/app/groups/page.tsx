@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
@@ -9,6 +9,7 @@ import { LoadingState } from '@/components/ui/LoadingState';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { InlineError } from '@/components/ui/InlineError';
 import { CreateGroupPanel } from '@/components/groups/CreateGroupPanel';
+import { MyInvitations } from '@/components/groups/MyInvitations';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 import type { GroupSummary } from '@/lib/groups/queries';
 
@@ -20,6 +21,22 @@ export default function GroupsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const loadGroups = useCallback(async () => {
+    setError(null);
+    try {
+      // API-first: the frontend fetches /api/groups — never a direct table call.
+      const res = await fetch('/api/groups');
+      if (!res.ok) throw new Error(`Request failed (${res.status})`);
+      const data = (await res.json()) as { groups: GroupSummary[] };
+      setGroups(data.groups ?? []);
+    } catch (err) {
+      setError('Failed to load your groups.');
+      emitTelemetry('groups.client_load_failed', { message: (err as Error).message });
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (authLoading) return;
 
@@ -30,30 +47,9 @@ export default function GroupsPage() {
       return;
     }
 
-    let active = true;
-    (async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        // API-first: the frontend fetches /api/groups — never a direct table call.
-        const res = await fetch('/api/groups');
-        if (!res.ok) throw new Error(`Request failed (${res.status})`);
-        const data = (await res.json()) as { groups: GroupSummary[] };
-        if (active) setGroups(data.groups ?? []);
-      } catch (err) {
-        if (active) {
-          setError('Failed to load your groups.');
-          emitTelemetry('groups.client_load_failed', { message: (err as Error).message });
-        }
-      } finally {
-        if (active) setLoading(false);
-      }
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [user, authLoading, router]);
+    setLoading(true);
+    void loadGroups();
+  }, [user, authLoading, router, loadGroups]);
 
   return (
     <AppShell title="My Groups">
@@ -64,6 +60,11 @@ export default function GroupsPage() {
       {!authLoading && user && (
         <CreateGroupPanel onCreated={(id) => router.push(`/groups/${id}`)} />
       )}
+
+      {/* FEAT-H015 STORY-4 (MEM-3): pending invitations live where the groups
+          live — accepting re-reads the list (the group appears as the
+          invitation leaves). Absent entirely when there are none. */}
+      {!authLoading && user && <MyInvitations onAnswered={() => void loadGroups()} />}
 
       {authLoading || loading ? (
         <LoadingState label="Loading your groups..." />
