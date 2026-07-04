@@ -3,7 +3,7 @@
 ---
 id: TASK-PC010-02
 title: ADR-U038 direct-write narrowing on public.groups, idempotent system-group seeding, adversarial direct-caller coverage
-status: in_progress
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PC010

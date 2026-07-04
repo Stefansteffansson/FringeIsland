@@ -3,7 +3,7 @@
 ---
 id: TASK-PC010-01
 title: Group contracts — create_engagement_group / get_group_detail / update_group_settings + red-first integration tests
-status: in_progress
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PC010

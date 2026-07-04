@@ -3,7 +3,7 @@
 ---
 id: TASK-PERF-P3A-01
 title: P3a — add the 14 advisor-listed FK covering indexes and wrap the 2 remaining auth_rls_initplan policies
-status: in_progress
+status: review
 assigned_to: claude
 priority: medium
 feature: PERF-P3A (perf-hardening-backlog.md — the Identity→Groups boundary NFR bet, decision D1)
