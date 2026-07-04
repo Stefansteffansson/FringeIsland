@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="FringeIsland">
+  <rect width="32" height="32" rx="8" fill="#4f46e5"/>
+  <path d="M16 7l6.5 11h-13Z" fill="#ffffff"/>
+  <path d="M6 22.5q2.5-2.4 5 0t5 0t5 0t5 0" fill="none" stroke="#a5b4fc" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M9 26.5q2.5-2.4 5 0t5 0t5 0" fill="none" stroke="#818cf8" stroke-width="2.4" stroke-linecap="round"/>
+</svg>
