@@ -1,0 +1,166 @@
+# FEAT-PC014: Leadership transfer, closure, and deletion contracts — the ways a group ends or changes hands
+
+---
+id: FEAT-PC014
+title: Leadership transfer, closure, and deletion contracts — the sole Steward's nominated succession and DeusEx handover, last-member closure with content reassignment, and the Steward's deliberate deletion; the G-D honest refusals re-landed as specced flows (Groups Cycle G-E platform half)
+owner: platform/core/organisation
+consumers: [hub]
+wave: ferd
+maturity: 4-ready
+requires-equipment: none
+---
+
+## Problem
+
+Cycle G-D gave a group a **regular** way out (`leave_group`) and left two doors deliberately shut behind honest refusals: the sole active Steward is told *"assign another Steward first — leadership transfer arrives with MEM-7,"* and the last remaining member is told *"closing a group is not yet available — MEM-8."* Cycle G-E opens both, plus GRP-9's deliberate deletion. Hub §L3 **MEM-7** (leave with leadership transfer), **MEM-8** (last-member closure with content reassignment), and **GRP-9** (delete a group) all name **PC-3** as the platform dependency.
+
+Unlike G-A..G-D, the G-E substrate is not merely uneven — **parts of it are live, unspecced, and holed** (verified on disk + dev DB, 2026-07-04):
+
+- **Nominated succession exists — as a live sprint3 flow with a security hole.** `nominate_steward(p_group_id, p_nominee_ids uuid[])` + `handle_notification_action(p_notification_id, p_action)` + the internal `_handle_stewardship_nomination_action` (`20260228125730_sprint3_smart_notifications.sql`) implement ranked-nominee succession with a 7-day expiry and a DeusEx all-decline fallback. **All three carry `EXECUTE` to `anon` and `PUBLIC`** (Postgres default, confirmed in `pg_proc.proacl` on dev) and **`handle_notification_action` dispatches side effects on caller-supplied `action_data`** — a direct PostgREST caller can drive stewardship changes it should never reach. This is a live ADR-U038 hole, not a future risk.
+- **The nomination flow carries the G-C `'Member'` bug class, unfixed.** `_handle_stewardship_nomination_action` resolves the Steward role by **`name = 'Steward'` only** (no template fallback). But `create_engagement_group` (PC010) names every role instance by its **template name** — so a v2-created group's Steward role is named **`'Steward Role Template'`**, not `'Steward'`. On dev today: 8 legacy groups name it `'Steward'`, 2 v2-created groups name it `'Steward Role Template'`. On a v2 group the accept branch resolves **no** Steward role and the nominee is granted nothing — the exact defect G-C found for `auto_assign_member_role_on_accept` (`name='Member'`), still latent here.
+- **The nomination flow counts raw role rows, not active memberships.** `nominate_steward`'s sole-Steward validation and the fallback both count `user_group_roles` rows directly — blind to the status-flip blind spot G-D closed contract-side with `active_steward_count()`. A paused Steward counts as cover.
+- **Sole-Steward → DeusEx immediate handover exists only inside the replaced monolith.** The sprint2 `leave_group` `steward_handover` branch (DeusEx becomes member + Steward, pending invites transfer, leaver departs, members notified — ADR-U019) was **removed at G-D** when `leave_group` was replaced in place. It is now unreachable; its logic must be re-landed as a specced contract.
+- **Last-member closure exists only inside the replaced monolith.** The sprint2 `leave_group` `group_closure` branch (status→`'closed'`, freeze all non-public enrolments, transfer owned non-public journeys to DeusEx, notify DeusEx) was likewise removed at G-D and is now refused. It must be re-landed.
+- **Deletion is a raw RLS DELETE with a cascade problem and no reassignment.** The `groups_delete` policy (`delete_group`-gated) permits a client-role hard `DELETE` on `public.groups`; FK `ON DELETE CASCADE` would clear memberships/roles/enrolments and the `notify_group_deleted` BEFORE-DELETE trigger would fire — **but** `journeys.created_by_group_id` is `ON DELETE RESTRICT`, so a group that owns any journey **cannot be hard-deleted at all** (the DELETE errors), and where it can, forum authorship and enrolment history are destroyed with **no reassignment, no freeze**. PC010 deliberately left `groups_delete` untouched — *"GRP-9 owns deletion at Cycle G-E."*
+
+Legacy oracle: **STRONG** (behaviour inventory §A-GRP — leadership transfer with DeusEx fallback, nomination + expiry, last-member closure, last-leader protection; ADR-U019). The flows are re-derived from that oracle under current authority (contracts, house no-leak refusals, template-aware + active-membership Steward resolution, ADR-U038 direct-caller closure, DS-tagged cascade layers) — the legacy bodies are the frozen oracle in git history + `migrations/archive/`, not the source.
+
+### Why Platform Core (Organisation), not a Domain Service
+
+Every operation here mutates `group_memberships`, `user_group_roles`, and `groups` — the tables PC-3's Membership-lifecycle and Universal-Group-Pattern capabilities own and every `has_permission()` resolution reads — and each carries an ADR-U016 composed cascade (roles + enrolment freeze + content reassignment + notification rows) as one invariant. Modelling group endings anywhere else inverts the one-way Domain→Core rule. The enrolment-freeze and content-reassignment steps touch DS-3/DS-4/DS-5's future territory exactly as the Conformant legacy cascade already did — carried forward as satisfied-now / tagged-forward dispositions, re-verified at the Journeys and Communication gates (Groups plan D2).
+
+## Solution sketch
+
+Contracts over existing substrate — **no new table, no trigger changes**; two deliberate narrowings (the sprint3 grant hole; the raw `groups_delete` policy). PostgREST RPC per PC-3 §3, actor via `get_current_personal_group_id()` (P-O1). All writes FIM-only + active-account-only; group resolution per the G-A visibility rule (member-or-public+active, else **P0002** — no leak); refusals are SQLSTATEs surfaced verbatim (house map: `42501`→auth/permission, `P0002`→not-found/no-leak, `P0001`→conflict, `22023`→bad-input). Steward resolution is **template-linkage with the legacy short-name fallback** everywhere (`created_from_role_template_id = 'Steward Role Template' OR name = 'Steward'`), and Steward *counting* is **active-membership** counting via the existing internal `active_steward_count()` (PC013) — the two disciplines G-D established, applied to every G-E flow. Targets are membership/role rows treated uniformly whether the member is a FIM's personal group or a group-as-member row (ADR-U006/U020).
+
+**MEM-7 — leadership transfer (the sole active Steward's departure).** `leave_group` keeps refusing the sole-Steward case; the Steward resolves succession by one of three deliberate paths, and the departure completes as part of that resolution:
+
+- **`nominate_steward(p_group_id, p_nominee_ids uuid[])`** (MEM-7) — **replaced in place** (same name + signature as the sprint3 body; Open Q1). Sole-**active**-Steward-gated (via `active_steward_count`, not raw rows). Nominees must be distinct active members and not the caller (else `22023`); at least one required. Writes a durable actionable notification (`stewardship_nomination`, `expires_at = now()+7d`) to the first-ranked nominee carrying the ranked list in `action_data`; one nomination in flight per group (existing guard kept). House no-leak on the group. **Grant hardened** — `revoke ... from public, anon`; `grant ... to authenticated, service_role`.
+- **`respond_to_stewardship_nomination(p_notification_id, p_accept boolean)`** (MEM-7) — **new, dedicated** (replaces the caller-data-dispatch inside `handle_notification_action`; Open Q2). Only the notification's recipient may act (ownership check; else `P0002` — no leak of another's notification). Not expired, not already answered (else `P0001`). **Accept:** grant the nominee the Steward role (**template-aware** resolution — the `'Member'`-class bug fixed), then the nominator departs (freeze their non-public enrolments `'left_group'` → delete their roles → delete their membership; the existing trigger notifies `member_left`), notify the group of the new Steward. **Decline:** offer the next-ranked nominee a fresh 7-day notification, or — if the list is exhausted — the DeusEx fallback (below). Expiry is predicate-based (the `expires_at` guard); **no reaper is built** (documented honestly, like PC012's `'expired'`) — an expired nomination simply refuses response and the group keeps its Steward until re-nominated or handed over.
+- **`hand_stewardship_to_deusex(p_group_id)`** (MEM-7, ADR-U019) — **new**. The sole active Steward's immediate last-resort exit when there is no one to nominate: DeusEx becomes an active member + Steward of the group, the caller's pending invitations transfer to DeusEx, the caller's non-public enrolments freeze, the caller departs, and the members + DeusEx are notified (`stewardship_transferred` / `stewardship_required`). Shares one internal helper `_transfer_stewardship_to_deusex(p_group_id, p_departing_group_id)` with the all-decline fallback — the single re-landing of the sprint2 `steward_handover` branch.
+
+**MEM-8 — last-member closure with content reassignment.** `close_group(p_group_id)` (**new**) — the deliberate terminal act available to the group's **last active member** (else `P0001` — *"you are not the only member; leave or transfer instead"*; no `delete_group` permission required — being the last one out is the authority, mirroring the legacy auto-closure; Open Q3). Cascade, in the sprint2 `group_closure` order: status→`'closed'` first (so the last-leader trigger bypasses), freeze all active non-public enrolments owned by the group (`frozen_reason: 'group_closed'`), **reassign owned non-public journeys to DeusEx** (the substrate-proven content step) + notify DeusEx, then delete the caller's roles + membership. **DS-4 asset disposition** and **DS-5 forum disposition** are tagged cascade layers — `pending-DS-4` / `pending-DS-5`, **not built** (D2, ADR-U016 pattern); the group row remains as a `closed` tombstone so content and attribution survive for MEM-9's later authorship layer.
+
+**GRP-9 — deliberate deletion (Steward action).** `delete_group(p_group_id)` (**new**) + **drop the raw `groups_delete` RLS policy** (Open Q4). `delete_group`-permission-gated. Distinct from MEM-8 on intent grounds: the group may still hold other members; the Steward ends its existence. **Soft-terminal** (Open Q5 — the load-bearing G-E decision): status→`'archived'`, freeze every active non-public enrolment owned by the group (`'group_archived'`), reassign owned non-public journeys to DeusEx, notify every other active member in-contract (the `notify_group_deleted` trigger fires only on hard `DELETE`, which this is not), then cascade every member's departure (roles + memberships deleted; the caller last). DS-4/DS-5 disposition tagged as in MEM-8. The row survives as an `archived` tombstone — this sidesteps the `journeys … ON DELETE RESTRICT` wall a hard delete hits and preserves forum authorship for DS-5/MEM-9. The alternative (hard-delete after reassigning journeys to DeusEx) is the gate's to weigh (Open Q5).
+
+**Grant + policy hygiene (in-migration).** Revoke `anon`/`PUBLIC` execute on the sprint3 nomination surface; neutralize `handle_notification_action`'s stewardship dispatch (Open Q2); drop `groups_delete` (Open Q4). After this migration a direct PostgREST caller — including an anonymous-session Mist — can do nothing to stewardship, closure, or deletion that the contracts refuse.
+
+## Appetite
+
+Large — the cycle's heaviest, as planned. One migration: `nominate_steward` replaced-in-place; `respond_to_stewardship_nomination`, `hand_stewardship_to_deusex`, `close_group`, `delete_group` new; the `_transfer_stewardship_to_deusex` internal helper; `handle_notification_action` neutralized (Open Q2); `groups_delete` dropped (Open Q4); grant hardening. Integration tests for the nomination matrix (accept, decline→next, decline→DeusEx, expiry, self/duplicate/non-member nominees, the v2-named-Steward regression, the paused-Steward-doesn't-count regression, the anon-grant and caller-data-dispatch adversarial reds), both closure arcs, deletion with remaining members, and the direct-path adversarial suite.
+
+**First cut if it swells:** the **nomination flow (MEM-7 — `nominate_steward` + `respond_to_stewardship_nomination` + the security closure) is the core and the highest-oracle** — it ships first. **`hand_stewardship_to_deusex` + `close_group` + `delete_group`** are the content-reassignment-cascade family (they share the freeze + journeys→DeusEx + notify shape) and cut together as the fast-follow; their Hub half cuts with them.
+
+## Rabbit holes
+
+- **Don't build DS-4/DS-5.** No asset re-hosting, no forum re-authorship, no sentinel-author rewrite of forum posts — closure and deletion **tag** those dispositions (`pending-DS-4`/`pending-DS-5`) and reassign only the substrate-proven layer (non-public journeys → DeusEx). MEM-9's former-member attribution is a separate forward-seam (Communication gate).
+- **Don't reap expired nominations.** Expiry is the `expires_at` predicate on response; no cron, no reaper, no auto-DeusEx-on-timeout. An expired nomination refuses response and the Steward re-nominates or hands over. (A timeout-driven DeusEx fallback is A-NTF/ADM territory — noted, not built.)
+- **Don't hard-delete on the client path.** The `journeys … ON DELETE RESTRICT` FK means a group owning journeys cannot be hard-deleted anyway; soft-terminal (`archived`/`closed`) is the recommended shape. Admin/DeusEx hard-delete (`admin_*`) stays untouched — A-ADM territory.
+- **Don't edit the trigger walls.** `check_last_leader_removal`, `notify_group_deleted`, and the DeusEx siblings keep their bodies; the active-counting guards and the in-contract member notifications live contract-side, ahead of / instead of them (status→terminal first, so the last-leader trigger bypasses on cleanup — the sprint2 pattern verbatim).
+- **Don't invent nomination state columns.** The nomination lives entirely in the durable `notifications` row (`action_type`/`action_data`/`expires_at`/`action_taken`) — the sprint3 shape. No `nominations` table, no `nominee_rank` column on memberships.
+- **Don't touch `admin_exit_user_from_platform` or the admin policies.** Platform-scope sweeps (ADM-6/ADM-18) wrap these same exit semantics later at universe scope (ADR-U028); this feature is group-scope only.
+- **Don't let a Mist near any of it.** Every contract is FIM-only + active-account-only; the sprint3 anon/PUBLIC grants are the hole this feature closes, not a pattern to preserve.
+
+## No-gos
+
+- No group-of-groups depth beyond what MEM-10 (G-F) owns; no group-as-actor wielding (the G-F/G-29 design session).
+- No former-member attribution (MEM-9 — forward-seam on DS-5; closure/deletion only tag the disposition).
+- No admin/universe-scope overrides (ADM-6 sweep / ADM-18 targeted removal — A-ADM; `admin_exit_user_from_platform` untouched).
+- No realtime, no dispatch (ADR-U039 — durable notification rows today; push + the succession-offer email ride A-NTF/V3 later, D8).
+- No new table, no trigger changes, no enrolment *un*freeze (thaw is DS-3's when Journeys activates).
+- No timeout-driven auto-fallback, no nomination reaper.
+
+## Stories
+
+### STORY-1: Nominate a successor (MEM-7)
+As the sole active Steward who wants to leave, I want to nominate one or more members to take over in ranked order, so leadership passes by consent rather than being stranded.
+
+**Acceptance criteria:**
+- Given the sole active Steward and a list of distinct active-member nominees, when they call `nominate_steward`, then a durable `stewardship_nomination` notification (`action_type='accept_decline'`, `expires_at = now()+7d`, the ranked list + nominator in `action_data`) is written to the first nominee, and no membership or role changes yet.
+- Given a caller who is **not** the sole active Steward (co-Steward exists, or not a Steward), then `P0001` — *"regular leave applies; you are not the sole Steward"* / the not-a-Steward refusal; counted by **active membership**, so a paused co-Steward does **not** make the caller sole (regression asserted).
+- Given a nominee who is the caller, a duplicate, or not an active member, then `22023` with the specific reason; given an empty list, `22023`.
+- Given a nomination already in flight for the group, then `P0001`.
+- Given a non-member, an invisible private group, or a ghost id, then `P0002` indistinguishably (no leak); given a Mist or suspended account, `42501`.
+- Given the function's grants after this migration, then `anon` and `PUBLIC` hold no execute (adversarial red: the pre-migration anon call succeeded; post-migration it is refused).
+
+### STORY-2: Respond to a nomination — accept, decline, cascade (MEM-7)
+As a nominated member, I want to accept or decline, so succession resolves deterministically.
+
+**Acceptance criteria:**
+- Given the first nominee accepts (`respond_to_stewardship_nomination(id, true)`), then the nominee is granted the group's Steward role (resolved **template-first** — asserted on a **v2-created group whose Steward role is named `'Steward Role Template'`**, the regression that the `name='Steward'`-only legacy body failed), the nominator's non-public enrolments freeze (`'left_group'`), the nominator's roles + membership are deleted (the trigger notifies `member_left`), and the group's active members receive a `stewardship_transferred` notification.
+- Given the first nominee declines and a next-ranked nominee exists, then a fresh `stewardship_nomination` (7-day) is written to the next nominee and nothing else changes.
+- Given the last-ranked nominee declines (list exhausted), then the DeusEx fallback runs: DeusEx becomes active member + Steward, the nominator's pending invitations transfer to DeusEx, the nominator departs, and members + DeusEx are notified (`stewardship_transferred` / `stewardship_required`) — ADR-U019.
+- Given a caller who is not the notification's recipient, then `P0002` (no leak of another's notification); given an expired or already-answered nomination, `P0001`.
+
+### STORY-3: Hand stewardship to DeusEx directly (MEM-7 / ADR-U019)
+As the sole active Steward with no one to nominate, I want to hand the group to the platform and leave now, so the group is never left headless.
+
+**Acceptance criteria:**
+- Given the sole active Steward calls `hand_stewardship_to_deusex`, then DeusEx becomes an active member + Steward of the group (idempotent), the caller's pending invitations transfer to DeusEx, the caller's non-public enrolments freeze (`'left_group'`), the caller's roles + membership are deleted, and members + DeusEx receive the `stewardship_transferred` / `stewardship_required` notifications.
+- Given a caller who is not the sole active Steward, then `P0001`; given the last remaining member (no one but themselves), then `P0001` pointing at closure (`close_group`) — handing to DeusEx is for groups with members to keep.
+- Given a non-member / invisible group / ghost / Mist, then `P0002` / `42501` per the house map.
+
+### STORY-4: Close a group as its last member (MEM-8)
+As the last active member, I want to close the group deliberately, with its work preserved and reassigned, so nothing is orphaned.
+
+**Acceptance criteria:**
+- Given the last active member calls `close_group`, then in one transaction: the group status becomes `'closed'`, every active non-public enrolment owned by the group is `'frozen'` (`frozen_reason: 'group_closed'`), the group's owned non-public journeys are reassigned to DeusEx, DeusEx receives a `group_closed` notification, and the caller's roles + membership are deleted (the last-leader trigger bypasses because status is `'closed'`).
+- Given a caller who is **not** the last active member (others remain), then `P0001` — *"you are not the only member; leave or transfer instead."*
+- Given the closed group afterward, then its row persists with status `'closed'` (GRP-5 renders it; content and attribution survive for MEM-9); the DS-4 asset and DS-5 forum dispositions are **tagged `pending-DS-4`/`pending-DS-5`, not executed**.
+- Given a non-member / invisible group / ghost / Mist, then `P0002` / `42501`.
+
+### STORY-5: Delete a group deliberately (GRP-9)
+As a Steward with `delete_group`, I want to end a group that has run its course even while it has members, so the group's existence is mine to end — its members told, its work reassigned.
+
+**Acceptance criteria:**
+- Given a `delete_group` holder calls `delete_group`, then in one transaction: the group status becomes `'archived'`, every active non-public enrolment owned by the group is `'frozen'` (`frozen_reason: 'group_archived'`), owned non-public journeys are reassigned to DeusEx, every **other** active member receives a `group_deleted` notification (written in-contract), and every member's roles + membership are deleted (the caller last; the last-leader trigger bypasses because status is terminal).
+- Given a caller without `delete_group`, then `42501`; given a non-member / invisible group / ghost / Mist, then `P0002` / `42501`.
+- Given the raw path after this migration, then a direct client-role `DELETE` on `public.groups` is refused (the `groups_delete` policy is dropped — the contract is the only client-role deletion path; admin policies untouched). *(Under Open Q5's soft-terminal default the row is never hard-deleted by a client; the `archived` tombstone is the terminal state.)*
+- Given DS-4/DS-5, then their dispositions are tagged `pending-DS-4`/`pending-DS-5`, not executed.
+
+### STORY-6: No path around the transfer/closure/deletion contracts (ADR-U038)
+As the platform, I want the direct PostgREST surface to agree with the contracts, so stewardship, closure, and deletion cannot be driven off-contract.
+
+**Acceptance criteria:**
+- Given the sprint3 nomination surface after this migration, then `anon` and `PUBLIC` hold no execute on `nominate_steward` / `handle_notification_action` / `_handle_stewardship_nomination_action` (the pre-migration anon-call succeeds red; post-migration refuses), and no caller can drive a stewardship side effect by hand-crafting `action_data` (the generic-handler dispatch is neutralized — Open Q2).
+- Given a direct client-role `DELETE` on `public.groups`, then RLS refuses (Open Q4 drop); the admin policies (`admin_*`) and `admin_exit_user_from_platform` are untouched and still function (asserted).
+- Given a direct UPDATE setting `status='closed'`/`'archived'` on `public.groups`, then the PC010 column-grant narrowing already excludes `status` (re-asserted — closure/deletion happen only through the contracts).
+- Given `TRUNCATE` on `groups` / `group_memberships` / `user_group_roles` from a client role, then the privilege still does not exist (re-asserted).
+
+## Platform dependencies
+
+- **PC-3 substrate (existing, Conformant):** `group_memberships` / `user_group_roles` / `groups` + the `groups.status` CHECK (`'closed'`/`'archived'` already admitted), `has_permission()` / `get_user_permissions()` (untouched), `active_steward_count()` (PC013 internal helper — reused for every active-Steward count), the invariant triggers (`check_last_leader_removal`, `notify_group_deleted`, DeusEx siblings — untouched, bypassed via status→terminal), the `notify_invitation_declined_or_member_change` `member_left` branch, the `notifications` smart-action columns (sprint3), the seeded `delete_group` catalog key (Steward-template-held), the DeusEx system group.
+- **Sprint3 legacy surface (replaced/neutralized here):** `nominate_steward` (replaced in place), `handle_notification_action` + `_handle_stewardship_nomination_action` (neutralized — Open Q2); their anon/PUBLIC grants revoked.
+- **FEAT-PC010:** the G-A visibility rule; the `public.groups` column-grant narrowing (excludes `status` — closure/deletion ride the contracts, not a direct UPDATE); GRP-9 completes PC010's deferred `groups_delete` disposition.
+- **FEAT-PC013:** `leave_group` keeps its honest sole-Steward/last-member refusals — this feature is what those refusals now point to; `active_steward_count()` reused; the member-exit DELETE-policy precedent extends to `groups_delete`.
+- **DS-3 / DS-4 / DS-5 seams (D2):** enrolment freezes are satisfied-now cascade dispositions (re-verified at the Journeys gate); DS-4 asset and DS-5 forum dispositions are tagged-forward layers (`pending-DS-4`/`pending-DS-5`), re-entered at the Journeys / Communication gates; MEM-9 former-member attribution re-enters at the Communication gate.
+- **Schema gate.** One replacement-in-place + 4 new functions + 1 internal helper + the `handle_notification_action` neutralization + the `groups_delete` drop + grant hardening → task status `review`, explicit nod; the gate asks the direct-caller question per ADR-U038 and rules on Open Q1–Q5.
+
+## Cross-product impact
+
+Consumed by **Hub [FEAT-H017](../../../products/hub/features/FEAT-H017-leadership-transfer-and-closure.md)** (Cycle G-E Surface half); the Gimbal inherits the same contracts and refusal semantics. This feature **replaces the placeholder G-D refusal copy** — `leave_group`'s sole-Steward and last-member refusals are the seams H017's transfer/nomination and closure flows now fill (same affordance surface, real answer). The `pending-DS-4`/`pending-DS-5` tags are the Journeys/Communication gates' inheritance; MEM-9's attribution seam re-enters at Communication. ADM-6/ADM-18 later wrap these same transfer/closure/deletion semantics at universe scope (A-ADM).
+
+## Stability posture (Platform Core §7)
+
+Mostly additive with two narrowings. One replacement-in-place (`nominate_steward` — same name and signature, body hardened: template-aware + active-membership Steward resolution, house no-leak, grant tightened); 4 new functions + 1 internal helper; one neutralization (`handle_notification_action`'s stewardship dispatch removed — Open Q2); one policy drop (`groups_delete` — narrowing only). No new table, no trigger changes, no signature changes to any retained contract. Each SECURITY DEFINER function documents its elevation; bodies minimal per the PG17 ceiling. The `_transfer_stewardship_to_deusex` helper is internal-only (no client execute), mirroring `active_steward_count`.
+
+## Vertical impact
+
+- **Administration:** every ending is a complete ADR-U016 composed cascade (freeze + roles + membership + content reassignment + durable notification in one transaction); leadership transfer is permission-implicit (sole-Steward authority) and closure is last-member-implicit, both in-place per ADR-U028; deletion is `delete_group`-gated; DeusEx fallback is the ADR-U019 last resort, not a default. Reversibility: nomination is declinable and expirable; closure/deletion are terminal by intent (the `closed`/`archived` tombstone preserves content). DeusEx/admin overrides untouched, arriving with A-ADM.
+- **Privacy/GDPR:** notification rows are content-minimal (ids + group name + rank, no member PII); a nominee learns of a nomination only as its recipient (`P0002` for anyone else's notification); no new columns, no new PII; the archived/closed tombstone retains only what already existed (content preserved for the member's own future attribution — MEM-9); erasure/exit cascades (PC002, `admin_exit_user_from_platform`) unaffected.
+- **Notifications:** succession offers, transfer confirmations, closure/deletion notices, and the DeusEx `stewardship_required` all leave durable rows (the sprint3 actionable-notification shape for nominations; in-contract informational rows otherwise); **no dispatch, no push** — ADR-U039 ping-then-fetch and the V3 succession-offer email arrive with A-NTF (D8). The 7-day nominee expiry is a durable `expires_at`, honoured on response, with no reaper (honest — an expired offer refuses response).
+- **Observability:** refusals are SQLSTATEs surfaced verbatim; every transition carries provenance (`status_changed_at`; `frozen_reason`/`frozen_at` in enrolment `progress_data`; `action_taken`/`action_taken_at` on the nomination); consuming routes emit id-only telemetry (FEAT-H017). The sprint3 anon-grant and caller-data-dispatch closures are asserted as adversarial reds (the hole demonstrated before it is closed).
+- **Transactions:** None.
+- **Extensibility:** the `groups.status` CHECK is the permitted state-attribute pattern (ADR-U018) — `closed`/`archived` extend the CHECK, not an enum type; gating rides the open permission catalog (`delete_group`; the sole-Steward/last-member conditions are structural, not role-name checks — ADR-U007); the DeusEx fallback resolves the group by system-label, not a hardcoded id, per the seeding repair; contracts are uniform over group-as-member rows (ADR-U006/U020); the nomination carries an arbitrary-length ranked list; DS-4/DS-5 layers are additive tags a later cycle fills without reshaping the cascade.
+
+## Open spec questions
+
+1. **`nominate_steward` replaced in place.** *Default:* same name + signature, body hardened (template-aware + active-membership Steward resolution — closing the `'Member'`-class v2-group bug and the paused-Steward-counts blind spot — plus house no-leak refusals and the grant tightening). *Alternative:* a net-new `nominate_stewards` contract leaving the sprint3 body callable — which keeps the holed, name-only, anon-granted flow live. Nothing in v2 (hub) calls the sprint3 body (grep-verified). *Recommend the default;* confirm at the gate.
+2. **Neutralize the generic `handle_notification_action`.** *Default:* drop `handle_notification_action` + `_handle_stewardship_nomination_action` and route nomination responses solely through the dedicated `respond_to_stewardship_nomination` (cleaner authority; the generic actionable-notification handler is A-NTF's to re-derive under ADR-U039 when that area lands). *Alternative:* replace `handle_notification_action` in place — keep a generic action-recorder but strip the stewardship side-effect dispatch. Either way the anon/PUBLIC grant is revoked and the caller-data-dispatch hole closes. *Recommend the drop;* confirm at the gate.
+3. **Closure needs no permission beyond last-member-ness.** *Default:* `close_group` is available to the group's last active member with no permission gate — being the last one out is the authority (mirrors the legacy auto-closure). *Alternative:* gate it on `delete_group` too (but the last member may be a Participant who never held it, stranding the group). *Recommend the default;* confirm at the gate.
+4. **Drop the raw `groups_delete` RLS policy.** *Default:* drop — after `delete_group` the contract is the only client-role deletion path (the raw DELETE bypasses freeze/reassignment/notification and hits the `journeys` RESTRICT wall anyway; the PC013 member-exit-policy drop and the G-A `groups` narrowing are the precedents). Admin policies untouched. *Alternative:* keep as defense-in-depth. *Recommend the default;* confirm at the gate.
+5. **GRP-9 deletion is soft-terminal (`archived`), not a hard delete.** *Default (load-bearing):* `delete_group` sets status→`'archived'` + cascade + content reassignment, leaving the row as a tombstone — this sidesteps the `journeys … ON DELETE RESTRICT` wall and preserves forum authorship for DS-5/MEM-9. *Alternative:* hard-delete after reassigning owned journeys to DeusEx (satisfying RESTRICT), letting FK CASCADE clear memberships/roles/enrolments and `notify_group_deleted` fire — matches the legacy behaviour but destroys forum content irrecoverably and forecloses MEM-9 attribution on this group. *Recommend the soft-terminal default;* confirm at the gate. *(MEM-8 closure uses the same soft-terminal shape with status `'closed'` — the two terminal states keep the intents distinguishable in GRP-5.)*
+
+---
+
+*Derived fresh from `organisation-specification.md` §L3 (Membership lifecycle, Universal Group Pattern, Group Role lifecycle, Group-membership invariants) + `hub/SPECIFICATION.md` §L3 (MEM-7, MEM-8, GRP-9) under current authority. The sprint2/sprint3 legacy bodies (`migrations/archive/`, git history, behaviour-inventory §A-GRP) are the frozen oracle, not a derivation source (ADR-U019 governs the DeusEx last resort). Paired with Hub [FEAT-H017](../../../products/hub/features/FEAT-H017-leadership-transfer-and-closure.md).*
