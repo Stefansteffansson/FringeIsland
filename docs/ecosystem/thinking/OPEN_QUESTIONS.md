@@ -145,6 +145,17 @@
 
 ---
 
+### CQ-017: Off-Platform Invitation — Referral to the Platform vs. Email-as-Membership
+**Status:** In Progress — proposal drafted ([ADR-U040](../../architecture/decisions/ADR-U040-referral-not-email-membership.md), Proposed), awaiting Stefan's ratification
+**Scope:** Ferd
+**Raised:** 2026-07-05 (invitation-model design conversation, while diagnosing a duplicate-invite bug in FEAT-PC012 `invite_by_email`)
+**Blocks:** the fate of the MEM-2 "invite by email" capability (FEAT-PC012 / FEAT-H015); the successor to the Cycle G-E leadership/closure Hub work only insofar as invitation UI is reshaped; a follow-on referral feature spec
+**Context:** The G-C invitation model lets a FIM invite "by email" — which either pre-commits a group membership for a stranger (claimed at sign-up) or converts an existing account into a membership invitation. Stefan surfaced that this models a *group membership for a person who has not transcended from Mist and not accepted consent*, inverting the consent-before-membership ordering the identity model depends on (ADR-U031: group access is FIM-only by status; transcendence is the consent gate). Two framings were weighed: drop the outward path entirely (closed FIM-to-FIM graph), or re-found it as an honest **referral to the platform** — a FIM-shared invite link/code carrying a group as destination, where the recipient arrives, transcends + consents to become a FIM, and only then receives a pending group invitation to accept. The latter preserves the friend-brings-a-friend growth loop (on-theme with the product's group-journey soul) while keeping the consent gate structurally unbypassable and removing platform-sent email to non-consented third parties.
+**Recommendation (in ADR-U040):** Option C — the referral model; retire `invite_by_email`; keep name-based FIM invitation; membership never precedes transcendence-and-consent. Downstream-unsettled: referral-token mechanics, whether the platform ever dispatches email at all (the V3 seam), and the group-to-group invite (MEM-10 / G-F). Related: CQ-014 (Mist/visitor experience — the referral arrival is a new onboarding entry), CQ-010 (the first hour).
+**Note:** the immediate duplicate-invite bug (raw Postgres unique-constraint text leaking to the UI on a re-invite) is a *separate, still-wanted* fix — it applies to the name-based FIM invite regardless of this decision.
+
+---
+
 ## Resolved
 
 _No resolved items yet._
