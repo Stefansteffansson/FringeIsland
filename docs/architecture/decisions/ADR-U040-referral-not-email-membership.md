@@ -1,11 +1,11 @@
 # ADR-U040: Off-platform invitation is referral-to-the-platform, never a pre-committed group membership
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-07-05
-**Deciders:** Stefan (pending ratification) · drafted by Claude
+**Deciders:** Stefan · drafted by Claude
 **Tags:** scope:platform-core · scope:product · wave:ferd
 
-> Architecture Decision Record (MADR-style). Captures *one* decision and *why*. Proposed — it records the options and a recommendation for Stefan to react to; it is not yet ratified. Raised from a design conversation on 2026-07-05 while diagnosing a duplicate-invite bug in the Cycle G-C invitation model (FEAT-PC012 `invite_by_email`).
+> Architecture Decision Record (MADR-style). Captures *one* decision and *why*. **Ratified by Stefan 2026-07-05** (proposed and accepted the same day). Raised from a design conversation while diagnosing a duplicate-invite bug in the Cycle G-C invitation model (FEAT-PC012 `invite_by_email`). Append-only from here: a future change supersedes, never edits.
 
 ---
 
@@ -38,7 +38,7 @@ Two framings were weighed in conversation:
 
 ## Decision outcome
 
-**Recommended option (pending Stefan's ratification): Option C.** It preserves the growth loop Stefan values while making the consent-before-membership ordering structurally unbypassable, and it removes third-party email processing from the model.
+**Chosen option (ratified by Stefan, 2026-07-05): Option C.** It preserves the growth loop Stefan values while making the consent-before-membership ordering structurally unbypassable, and it removes third-party email processing from the model.
 
 Under Option C:
 

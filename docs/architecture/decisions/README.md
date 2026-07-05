@@ -50,7 +50,7 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 | ADR-U037 | [Local JWT verification on the hot path](ADR-U037-local-jwt-verification-hot-path.md) | Accepted | platform-core |
 | ADR-U038 | [Platform contracts live platform-side; Surface `app/api` is a private BFF](ADR-U038-platform-contracts-platform-side-surface-bff.md) | Accepted | platform-core |
 | ADR-U039 | [Realtime socket doctrine — private channels, server-originated hints, authorized-path reads](ADR-U039-realtime-socket-doctrine.md) | Accepted | platform-core |
-| ADR-U040 | [Off-platform invitation is referral-to-the-platform, never a pre-committed group membership](ADR-U040-referral-not-email-membership.md) | Proposed | platform-core · product |
+| ADR-U040 | [Off-platform invitation is referral-to-the-platform, never a pre-committed group membership](ADR-U040-referral-not-email-membership.md) | Accepted | platform-core · product |
 
 ---
 

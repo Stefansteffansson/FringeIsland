@@ -146,7 +146,7 @@
 ---
 
 ### CQ-017: Off-Platform Invitation — Referral to the Platform vs. Email-as-Membership
-**Status:** In Progress — proposal drafted ([ADR-U040](../../architecture/decisions/ADR-U040-referral-not-email-membership.md), Proposed), awaiting Stefan's ratification
+**Status:** Resolved (2026-07-05) — [ADR-U040](../../architecture/decisions/ADR-U040-referral-not-email-membership.md) ratified (Accepted): the email-as-membership path is retired in favour of the referral model. Implementation (the MEM-2 rebuild) is downstream decomposition/feature work.
 **Scope:** Ferd
 **Raised:** 2026-07-05 (invitation-model design conversation, while diagnosing a duplicate-invite bug in FEAT-PC012 `invite_by_email`)
 **Blocks:** the fate of the MEM-2 "invite by email" capability (FEAT-PC012 / FEAT-H015); the successor to the Cycle G-E leadership/closure Hub work only insofar as invitation UI is reshaped; a follow-on referral feature spec
