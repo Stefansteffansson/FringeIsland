@@ -3,7 +3,7 @@
 ---
 id: TASK-H017-03
 title: E2E journeys (nomination accept across FIMs, DeusEx fallback, hand-over, last-member close, Steward delete with a remaining member seeing the group vanish) + next build gate + FEAT-H017 6-done paperwork
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H017
