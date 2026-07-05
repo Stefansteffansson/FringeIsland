@@ -3,7 +3,7 @@
 ---
 id: TASK-PC013-03
 title: leave_group's last-member refusal still says closing is "not yet available" — false since FEAT-PC014 shipped close_group; copy-only function-body replacement pointing at Close
-status: review
+status: done
 assigned_to: claude
 priority: medium
 feature: FEAT-PC013
@@ -23,8 +23,8 @@ Fix: migration `20260705115243` replaces `leave_group` in place — the PC013 bo
 ## Acceptance criteria
 
 - [x] Red demonstrated against the live substrate: the carried-forward refusal test extended to assert the message contains "close the group" and not "not yet available" — received the exact stale string
-- [ ] Migration applied (`node scripts/apply-migration-temp.js 20260705115243_fix_leave_group_last_member_copy.sql` + `repair --status applied`) — **held for the schema gate; the apply was permission-gated in the build session**
-- [ ] Groups integration domain green after apply (`npm run test:integration:groups`)
+- [x] Migration applied (`node scripts/apply-migration-temp.js 20260705115243_fix_leave_group_last_member_copy.sql` + `repair --status applied`) — applied 2026-07-05 on Stefan's gate nod
+- [x] Groups integration domain green after apply — 157/157
 
 ## Verification
 
