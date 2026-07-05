@@ -4,7 +4,11 @@ import { useState } from 'react';
 import {
   activateMember,
   assignMemberRole,
+  closeGroup,
+  deleteGroup,
+  handGroupToDeusEx,
   leaveGroup,
+  nominateSteward,
   pauseMember,
   removeGroupMember,
   removeMemberRole,
@@ -73,6 +77,7 @@ export function GroupDetailPanel({
   group,
   fabric = null,
   permissions = null,
+  viewerMemberGroupId = null,
   onRefresh,
   onLeft,
 }: {
@@ -81,8 +86,12 @@ export function GroupDetailPanel({
   fabric?: RolesFabric | null;
   /** FEAT-H016: the caller's effective permissions — lifecycle-affordance gating. */
   permissions?: string[] | null;
+  /** FEAT-H017: the caller's own member_group_id (the my-permissions payload's
+   *  contract-resolved actor) — the nominate pick-list's self-exclusion. */
+  viewerMemberGroupId?: string | null;
   onRefresh: () => void;
-  /** FEAT-H016: the page's navigation after a successful leave. */
+  /** FEAT-H016/H017: the page's navigation after the caller's exit or the
+   *  group's ending (leave, hand-over, close, delete). */
   onLeft?: () => void;
 }) {
   const [editing, setEditing] = useState(false);
@@ -98,6 +107,17 @@ export function GroupDetailPanel({
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [leaveBusy, setLeaveBusy] = useState(false);
   const [leaveError, setLeaveError] = useState<string | null>(null);
+  // FEAT-H017: the transfer choice (STORY-1/3) + the endings (STORY-4/5).
+  const [transferOpen, setTransferOpen] = useState(false);
+  const [transferError, setTransferError] = useState<string | null>(null);
+  const [transferNotice, setTransferNotice] = useState<string | null>(null);
+  const [chosenNominees, setChosenNominees] = useState<GroupMemberEntry[]>([]);
+  const [nominateConfirmOpen, setNominateConfirmOpen] = useState(false);
+  const [handOverConfirmOpen, setHandOverConfirmOpen] = useState(false);
+  const [transferBusy, setTransferBusy] = useState(false);
+  const [endingAction, setEndingAction] = useState<'close' | 'delete' | null>(null);
+  const [endingBusy, setEndingBusy] = useState(false);
+  const [endingError, setEndingError] = useState<string | null>(null);
 
   const canAssign = fabric?.viewer.can_assign_roles ?? false;
   const canRemove = fabric?.viewer.can_remove_roles ?? false;
@@ -160,7 +180,10 @@ export function GroupDetailPanel({
   };
 
   // FEAT-H016 STORY-3: the member's own exit. Success hands navigation to the
-  // page (onLeft); the honest G-E refusal copy renders in place.
+  // page (onLeft); the refusal copy renders in place — and per FEAT-H017 the
+  // sole-Steward wall becomes a door: a 409 with co-members opens the
+  // transfer choice (the last-member 409's door, Close, is already on the
+  // page). The position is contract-reported, never predicted.
   const confirmLeave = async () => {
     setLeaveBusy(true);
     setLeaveError(null);
@@ -171,8 +194,80 @@ export function GroupDetailPanel({
     } catch (err) {
       setLeaveError((err as Error).message);
       setLeaveOpen(false);
+      if ((err as { status?: number }).status === 409 && group.member_count > 1) {
+        setTransferOpen(true);
+      }
     } finally {
       setLeaveBusy(false);
+    }
+  };
+
+  // FEAT-H017 STORY-1: the ordered pick-list — ACTIVE members other than the
+  // caller, sourced from the existing member list (no separate fetch).
+  const nominable = (group.members ?? []).filter(
+    (m) =>
+      (m.membership_status ?? 'active') === 'active' &&
+      m.member_group_id !== viewerMemberGroupId &&
+      !chosenNominees.some((c) => c.member_group_id === m.member_group_id),
+  );
+  const canTransfer = group.viewer.is_member && group.member_count > 1;
+  const canClose = group.viewer.is_member && group.member_count === 1;
+  const canDelete = permissions?.includes('delete_group') ?? false;
+
+  const confirmNominate = async () => {
+    setTransferBusy(true);
+    setTransferError(null);
+    try {
+      await nominateSteward(
+        group.id,
+        chosenNominees.map((c) => c.member_group_id),
+      );
+      setNominateConfirmOpen(false);
+      setTransferOpen(false);
+      setChosenNominees([]);
+      // STORY-1: no pre-empted departure — the Steward stays until acceptance.
+      setTransferNotice(
+        'The offer is out. You remain the Steward until a nominee accepts.',
+      );
+      onRefresh();
+    } catch (err) {
+      setTransferError((err as Error).message);
+      setNominateConfirmOpen(false);
+    } finally {
+      setTransferBusy(false);
+    }
+  };
+
+  const confirmHandOver = async () => {
+    setTransferBusy(true);
+    setTransferError(null);
+    try {
+      await handGroupToDeusEx(group.id);
+      setHandOverConfirmOpen(false);
+      onLeft?.();
+    } catch (err) {
+      // e.g. the last-member 409 pointing at Close — relayed in place.
+      setTransferError((err as Error).message);
+      setHandOverConfirmOpen(false);
+    } finally {
+      setTransferBusy(false);
+    }
+  };
+
+  const confirmEnding = async () => {
+    if (!endingAction) return;
+    setEndingBusy(true);
+    setEndingError(null);
+    try {
+      if (endingAction === 'close') await closeGroup(group.id);
+      else await deleteGroup(group.id);
+      setEndingAction(null);
+      onLeft?.();
+    } catch (err) {
+      setEndingError((err as Error).message);
+      setEndingAction(null);
+    } finally {
+      setEndingBusy(false);
     }
   };
 
@@ -221,6 +316,11 @@ export function GroupDetailPanel({
             {leaveError}
           </p>
         )}
+        {transferNotice && (
+          <p role="status" className="mt-3 text-sm text-emerald-700">
+            {transferNotice}
+          </p>
+        )}
 
         <div className="mt-4 flex items-center gap-2">
           {group.viewer.can_manage_settings && !editing && (
@@ -247,8 +347,120 @@ export function GroupDetailPanel({
               Leave group
             </button>
           )}
+          {canTransfer && (
+            // FEAT-H017 STORY-1/3: the explicit door into the transfer choice.
+            // Any member may open it; the contracts refuse non-sole-Stewards
+            // honestly (relayed in the flow, never predicted here).
+            <button
+              type="button"
+              data-testid="hand-over-leadership"
+              onClick={() => {
+                setTransferError(null);
+                setTransferNotice(null);
+                setTransferOpen((v) => !v);
+              }}
+              className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+            >
+              Hand over leadership
+            </button>
+          )}
         </div>
       </div>
+
+      {transferOpen && (
+        <div
+          data-testid="transfer-leadership"
+          className="rounded-xl border border-indigo-100 bg-white p-6 shadow-sm"
+        >
+          <h2 className="mb-1 text-lg font-semibold text-gray-800">Hand over leadership</h2>
+          <p className="mb-4 text-sm text-gray-600">
+            Nominate one or more members as your successor — the offer goes to them in
+            your order — or hand the group to FringeIsland as a last resort.
+          </p>
+          {transferError && (
+            <p role="alert" className="mb-3 text-sm text-red-600">
+              {transferError}
+            </p>
+          )}
+
+          <h3 className="mb-2 text-sm font-medium text-gray-700">Nominate successors</h3>
+          {chosenNominees.length > 0 && (
+            <ol data-testid="nominee-order" className="mb-3 space-y-1">
+              {chosenNominees.map((c, i) => (
+                <li
+                  key={c.member_group_id}
+                  className="flex items-center gap-2 text-sm text-gray-800"
+                >
+                  <span className="text-xs text-gray-400">{i + 1}.</span>
+                  {c.display_name}
+                  <button
+                    type="button"
+                    aria-label={`Remove ${c.display_name} from the nomination`}
+                    onClick={() =>
+                      setChosenNominees((prev) =>
+                        prev.filter((p) => p.member_group_id !== c.member_group_id),
+                      )
+                    }
+                    className="text-gray-400 hover:text-gray-700"
+                  >
+                    &times;
+                  </button>
+                </li>
+              ))}
+            </ol>
+          )}
+          {nominable.length > 0 ? (
+            <ul className="mb-3 space-y-1">
+              {nominable.map((m) => (
+                <li
+                  key={m.member_group_id}
+                  className="flex items-center justify-between gap-2 text-sm text-gray-800"
+                >
+                  {m.display_name}
+                  <button
+                    type="button"
+                    data-testid={`nominate-candidate-${m.member_group_id}`}
+                    onClick={() => setChosenNominees((prev) => [...prev, m])}
+                    className="rounded border border-gray-200 px-2 py-0.5 text-xs text-gray-600 hover:bg-gray-50"
+                  >
+                    Add
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : chosenNominees.length === 0 ? (
+            <p className="mb-3 text-sm text-gray-500">
+              No other active members to nominate.
+            </p>
+          ) : null}
+          <button
+            type="button"
+            data-testid="send-nomination"
+            disabled={chosenNominees.length === 0 || transferBusy}
+            onClick={() => setNominateConfirmOpen(true)}
+            className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+          >
+            Nominate in this order
+          </button>
+
+          <div className="mt-5 border-t border-gray-100 pt-4">
+            {/* ADR-U019: the deliberate last resort — styled as such, never primary. */}
+            <p className="mb-2 text-xs text-gray-500">
+              No one to nominate? FringeIsland can steward the group so it is never
+              left headless — and you leave.
+            </p>
+            <button
+              type="button"
+              data-testid="hand-to-deusex"
+              disabled={transferBusy}
+              onClick={() => setHandOverConfirmOpen(true)}
+              className="rounded-lg border border-amber-300 px-3 py-1.5 text-sm text-amber-800 hover:bg-amber-50 disabled:opacity-50"
+            >
+              Hand to FringeIsland
+            </button>
+          </div>
+        </div>
+      )}
 
       {editing && (
         <GroupSettingsForm
@@ -378,6 +590,53 @@ export function GroupDetailPanel({
         )}
       </div>
 
+      {(canClose || canDelete) && (
+        // FEAT-H017 STORY-4/5: the ways this group ends — distinct in copy and
+        // placement from Leave (own exit) and Remove (another member). Close
+        // offers itself only to the last member (contract-reported count);
+        // Delete only to `delete_group` holders (payload key, never a role name).
+        <div className="rounded-xl border border-red-100 bg-white p-6 shadow-sm">
+          <h2 className="mb-1 text-lg font-semibold text-gray-800">End of this group</h2>
+          <p className="mb-4 text-sm text-gray-600">
+            The group&apos;s work is preserved and reassigned — nothing a member made is
+            destroyed.
+          </p>
+          {endingError && (
+            <p role="alert" className="mb-3 text-sm text-red-600">
+              {endingError}
+            </p>
+          )}
+          <div className="flex items-center gap-2">
+            {canClose && (
+              <button
+                type="button"
+                data-testid="close-group"
+                onClick={() => {
+                  setEndingError(null);
+                  setEndingAction('close');
+                }}
+                className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+              >
+                Close this group
+              </button>
+            )}
+            {canDelete && (
+              <button
+                type="button"
+                data-testid="delete-group"
+                onClick={() => {
+                  setEndingError(null);
+                  setEndingAction('delete');
+                }}
+                className="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700"
+              >
+                Delete this group
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       <ConfirmModal
         isOpen={removeTarget !== null}
         title="Remove role"
@@ -422,6 +681,56 @@ export function GroupDetailPanel({
         onConfirm={() => void confirmLeave()}
         onCancel={() => {
           if (!leaveBusy) setLeaveOpen(false);
+        }}
+      />
+
+      {/* FEAT-H017 STORY-1: the nomination — the picked order IS the ranking. */}
+      <ConfirmModal
+        isOpen={nominateConfirmOpen}
+        title="Send the nomination?"
+        message={`Offer stewardship of "${group.name}" to ${chosenNominees
+          .map((c) => c.display_name)
+          .join(', then ')}? The offer goes to them in this order; you remain the Steward until someone accepts.`}
+        confirmText="Send nomination"
+        variant="info"
+        busy={transferBusy}
+        onConfirm={() => void confirmNominate()}
+        onCancel={() => {
+          if (!transferBusy) setNominateConfirmOpen(false);
+        }}
+      />
+
+      {/* FEAT-H017 STORY-3: the ADR-U019 last resort — deliberate, never casual. */}
+      <ConfirmModal
+        isOpen={handOverConfirmOpen}
+        title="Hand this group to FringeIsland?"
+        message={`FringeIsland will steward "${group.name}" and you will leave the group. This is the last resort — the group is never left headless.`}
+        confirmText="Hand over and leave"
+        variant="warning"
+        busy={transferBusy}
+        onConfirm={() => void confirmHandOver()}
+        onCancel={() => {
+          if (!transferBusy) setHandOverConfirmOpen(false);
+        }}
+      />
+
+      {/* FEAT-H017 STORY-4/5: Close (honest terminal act) / Delete (danger,
+          explicit) — the confirm copy carries the contract's preserve/reassign
+          guarantee, no DS-4/DS-5 detail. */}
+      <ConfirmModal
+        isOpen={endingAction !== null}
+        title={endingAction === 'delete' ? 'Delete this group?' : 'Close this group?'}
+        message={
+          endingAction === 'delete'
+            ? `Delete "${group.name}" for everyone? Members will be told, and the group's work is preserved and reassigned. This cannot be undone.`
+            : `Close "${group.name}"? Its work is preserved and reassigned — the group ends here.`
+        }
+        confirmText={endingAction === 'delete' ? 'Delete group' : 'Close group'}
+        variant={endingAction === 'delete' ? 'danger' : 'warning'}
+        busy={endingBusy}
+        onConfirm={() => void confirmEnding()}
+        onCancel={() => {
+          if (!endingBusy) setEndingAction(null);
         }}
       />
     </div>

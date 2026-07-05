@@ -34,9 +34,11 @@ export async function GET(
   const { id } = await params;
 
   try {
-    const permissions = await fetchMyPermissions(supabase, id);
+    // FEAT-H017 additive key: the caller's own member_group_id (the
+    // contract-resolved actor) rides the same read — no extra fetch.
+    const { permissions, member_group_id } = await fetchMyPermissions(supabase, id);
     emitTelemetry('roles.my_permissions', { actor: userId, group: id });
-    return NextResponse.json({ permissions });
+    return NextResponse.json({ permissions, member_group_id });
   } catch (err) {
     const code = (err as { code?: string }).code;
     if (code === '42501') {

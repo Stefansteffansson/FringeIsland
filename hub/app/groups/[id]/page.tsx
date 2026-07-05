@@ -48,6 +48,9 @@ export default function GroupDetailPage() {
   const [rolesData, setRolesData] = useState<RolesReadResult | null>(null);
   const [rolesError, setRolesError] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<string[] | null>(null);
+  // FEAT-H017: the caller's own member_group_id rides the my-permissions
+  // payload — the nominate pick-list's payload-driven self-exclusion.
+  const [viewerMemberGroupId, setViewerMemberGroupId] = useState<string | null>(null);
   const [permissionsError, setPermissionsError] = useState<string | null>(null);
   const [invitations, setInvitations] = useState<PendingInvitations | null>(null);
   const [invitationsError, setInvitationsError] = useState<string | null>(null);
@@ -116,11 +119,13 @@ export default function GroupDetailPage() {
   const loadPermissions = useCallback(async () => {
     setPermissionsError(null);
     try {
-      const perms = await fetchMyPermissions(groupId);
+      const { permissions: perms, member_group_id } = await fetchMyPermissions(groupId);
       setPermissions(perms);
+      setViewerMemberGroupId(member_group_id);
       void loadInvitations(perms);
     } catch {
       setPermissions(null);
+      setViewerMemberGroupId(null);
       setPermissionsError('Failed to load your permissions.');
       setInvitations(null);
     }
@@ -152,6 +157,7 @@ export default function GroupDetailPage() {
             group={group}
             fabric={rolesData?.fabric ?? null}
             permissions={permissions}
+            viewerMemberGroupId={viewerMemberGroupId}
             onRefresh={loadAll}
             onLeft={() => router.replace('/groups')}
           />

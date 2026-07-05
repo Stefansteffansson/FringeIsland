@@ -6,7 +6,7 @@ title: Leadership transfer, closure, and deletion surfaces — the sole Steward'
 owner: hub
 consumers: []
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -119,9 +119,15 @@ The Gimbal consumes the same contracts and refusal semantics; only composition d
 - **Transactions:** None.
 - **Extensibility:** affordances key off the my-permissions payload (`delete_group`) and the contract-reported structural position (sole Steward / last member) — never a role-name check; the nomination pick-list produces an arbitrary-length ordered id array the one contract accepts; Close/Delete copy is driven by the contract's guarantee, so DS-4/DS-5's later content-handling enriches copy, not plumbing; the pending-nomination affordance is built to re-home into the A-NTF inbox without a rewrite.
 
-## Implementation notes
+## Implementation notes (6-done — Cycle G-E Surface half, 2026-07-05)
 
-*(Filled at 6-done.)*
+Built TDD red-first over the merged FEAT-PC014 contracts (migration `20260705072252`); no migration of its own — pure Surface (ADR-U009/U038). Signatures confirmed against the migration before wiring.
+
+- **TASK-H017-01 — lib + BFF.** `lib/groups/leadership.ts` (five RPC fetchers + the scoped pending-nomination read — the RLS'd `notifications` table filtered to `stewardship_nomination`, unanswered, unexpired; no dedicated RPC exists, deliberately: RLS is the platform contract) and five handlers + `GET /api/me/nominations` (Edge+`dub1`, the H015 mine-read precedent). House SQLSTATE map with the P0001→409 **and** 22023→400 contract messages passed through verbatim (STORY-1 relays the non-member-nominee refusal in place); id-only telemetry canary-asserted — names and nominee id lists never in events (STORY-6). **Recorded deviation:** `DELETE /api/groups/[id]` rides the existing **Edge** detail route file — a route file has one runtime, and the in-file precedent ("PATCH rides the same file — single RPC, Edge-safe") covers the identical single-RPC shape; the spec's blanket "all mutations Node-runtime" line yields to the file's own convention. Red-first: both suites demonstrated red (modules absent), then staged green — fetchers (6) before routes (20).
+- **TASK-H017-02 — the flows.** The sole Steward's Leave 409 **opens the transfer choice in place** (the wall → door; duck-typed status check — position is always contract-reported, never predicted); the explicit "Hand over leadership" affordance renders for any not-alone member and leans on the contracts' refusals; the **ordered nominate pick-list** sources from the existing member list (active, non-caller — **the my-permissions read additively carries the caller's contract-resolved `member_group_id`**, so self-exclusion is payload-driven with no extra fetch; route + client + page pins updated red-first); hand-to-DeusEx styled as the deliberate ADR-U019 last resort with the last-member 409 (pointing at Close) relayed in place; **Close** renders only for the last member (contract-reported `member_count`), **Delete** only for `delete_group` holders — danger-styled, explicit ConfirmModal naming the group, distinct from Leave/Remove/Close in copy and placement. The nominee's affordance on `/groups` relays outcomes, never predicts: accept → "you are now the Steward" (the contract's guaranteed postcondition), decline → "passed on" without naming next-vs-DeusEx; the expired/answered 409 renders and the re-read resolves the affordance. Red-first: 12 panel + 5 affordance component tests (all red at collection before the props/component existed).
+- **TASK-H017-03 — E2E.** Five journeys on dedicated spec-created FIMs in their own browser contexts (8 FIMs, 4 groups — the G-B suite-isolation default): nomination-accept across FIMs (the retired sole-Steward wall exercised as the door; the nominator departs only on accept), the single-nominee decline→DeusEx fallback ("passed on" unnamed; the group persists `active` — never headless, asserted substrate-side), the direct hand-over, the last-member Close (`closed` tombstone asserted), and the Steward Delete with a remaining member finding the group gone (`archived` tombstone + their durable `group_deleted` row asserted). All five green on the first run.
+
+Evidence: unit **385/385** (43 new: 6 lib + 20 route + 17 component, all demonstrated red first; two existing pins updated red-first for the extended my-permissions payload), integration **262/262** (no platform change — full re-run), E2E **53/53** (5 new journeys; one first-sweep flake in `entry.spec`'s anon-cleanup `afterAll` hook — passed in isolation and on the full re-run); `next build` + lint clean (one pre-existing warning). **Finding, routed:** PC013's `leave_group` last-member refusal copy still says *"closing a group is not yet available"* — false since PC014 shipped `close_group`; a copy-only function-body migration is prepared separately through the schema gate (this Surface relays messages verbatim by design, so the fix is platform-side).
 
 ---
 

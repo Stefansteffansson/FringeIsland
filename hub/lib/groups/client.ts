@@ -168,11 +168,17 @@ export async function removeMemberRole(
 }
 
 /** GRP-8: the caller's effective permissions in this group (as themselves). */
-export async function fetchMyPermissions(groupId: string): Promise<string[]> {
+export async function fetchMyPermissions(groupId: string): Promise<MyPermissionsRead> {
   const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/my-permissions`);
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
-  const data = (await res.json()) as { permissions: string[] };
-  return data.permissions;
+  return (await res.json()) as MyPermissionsRead;
+}
+
+/** The my-permissions BFF payload — permissions + the caller's own
+ *  contract-resolved member_group_id (FEAT-H017 additive key). */
+export interface MyPermissionsRead {
+  permissions: string[];
+  member_group_id: string;
 }
 
 /**
@@ -314,4 +320,86 @@ export async function leaveGroup(
   });
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
   return (await res.json()) as { group_id: string; group_name: string };
+}
+
+/**
+ * FEAT-H017 — the leadership-transfer + closure transports (Cycle G-E,
+ * FEAT-PC014). Thin couriers; refusal messages surface verbatim via
+ * GroupsApiError — they carry the honest outcome copy (nomination-in-flight,
+ * last-member-close-instead, expired) the Surface renders in place.
+ */
+import type { PendingNomination } from '@/lib/groups/leadership';
+
+export type { PendingNomination } from '@/lib/groups/leadership';
+
+/** MEM-7: nominate ranked successors — the ordered ids ARE the ranking. */
+export async function nominateSteward(
+  groupId: string,
+  nomineeGroupIds: string[],
+): Promise<{ group_id: string; nominees_count: number }> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(groupId)}/nominate-steward`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nominee_group_ids: nomineeGroupIds }),
+    },
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as { group_id: string; nominees_count: number };
+}
+
+/** MEM-7: the nominee's answer — the contract routes a decline on its own. */
+export async function respondToNomination(
+  notificationId: string,
+  accept: boolean,
+): Promise<Record<string, unknown>> {
+  const res = await fetch(
+    `/api/notifications/${encodeURIComponent(notificationId)}/nomination-response`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ accept }),
+    },
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as Record<string, unknown>;
+}
+
+/** MEM-7 / ADR-U019: hand the group to FringeIsland-DeusEx and depart. */
+export async function handGroupToDeusEx(
+  groupId: string,
+): Promise<Record<string, unknown>> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(groupId)}/hand-to-deusex`,
+    { method: 'POST' },
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as Record<string, unknown>;
+}
+
+/** MEM-8: the last active member's terminal act. */
+export async function closeGroup(groupId: string): Promise<Record<string, unknown>> {
+  const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/close`, {
+    method: 'POST',
+  });
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as Record<string, unknown>;
+}
+
+/** GRP-9: the Steward's deliberate deletion — its own verb on the group
+ *  resource, never conflated with member removal or leave. */
+export async function deleteGroup(groupId: string): Promise<Record<string, unknown>> {
+  const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as Record<string, unknown>;
+}
+
+/** STORY-2 read: the caller's own pending stewardship offers (A-NTF seam). */
+export async function fetchMyNominations(): Promise<PendingNomination[]> {
+  const res = await fetch('/api/me/nominations');
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as PendingNomination[];
 }

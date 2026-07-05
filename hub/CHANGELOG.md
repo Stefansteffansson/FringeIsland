@@ -2,6 +2,15 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-07-05 — Leadership transfer, closure & deletion ([FEAT-H017](../docs/products/hub/features/FEAT-H017-leadership-transfer-and-closure.md))
+
+- **The walls became doors.** The only working Steward who tries to leave is no longer stuck at "assign another Steward first" — the same moment now opens the hand-over choice. The last member is no longer told closing "isn't available" — the Close affordance is right there on the group page.
+- **Pass leadership on, by consent.** "Hand over leadership" lets the Steward nominate one or more members *in order* — picked straight from the member list. The first nominee gets the offer (seven days to answer); nothing changes hands until someone accepts. You stay the Steward while the offer is out.
+- **Answer where your groups live.** A nominated member finds the offer at the top of My Groups with the group named and the response window shown. Accept (through a confirmation) and you are the Steward — the previous one leaves as you take over. Decline and the offer passes on; the platform decides where, and tells no tales.
+- **Never headless.** With no one to nominate, "Hand to FringeIsland" (a deliberate last resort, clearly styled as such) gives the group to FringeIsland stewardship and you leave. If every nominee declines, the same safety net catches the group automatically.
+- **Close a group that ran its course.** The last member can close the group deliberately: its work is preserved and reassigned, and the group ends cleanly.
+- **Delete a group deliberately.** Anyone holding the delete permission gets a clearly-danger-styled Delete with an explicit confirmation, distinct from Leave, Remove, and Close — members are told, the group's work is preserved and reassigned, and the group is gone from everyone's list.
+
 ## 2026-07-04 — Small fixes from live testing
 
 - **"My groups" in the account menu.** Sign-in landed on your groups, but no menu item led back there — now the menu's first entry does.
