@@ -339,6 +339,14 @@ export async function leaveGroup(
   return data as LeaveGroupResult;
 }
 
+/** GRP-8 payload + the caller's contract-resolved actor id (FEAT-H017). */
+export interface MyPermissionsPayload {
+  permissions: string[];
+  /** The caller's own (personal) group id — already resolved for the actor
+   *  call; FEAT-H017's nominate pick-list excludes the caller with it. */
+  member_group_id: string;
+}
+
 /**
  * GRP-8: the caller's effective permissions in a group context — the existing
  * published `get_user_permissions(acting, context)` with the caller's personal
@@ -347,7 +355,7 @@ export async function leaveGroup(
 export async function fetchMyPermissions(
   supabase: SupabaseClient,
   groupId: string,
-): Promise<string[]> {
+): Promise<MyPermissionsPayload> {
   const { data: personalGroupId, error: pgError } = await supabase.rpc(
     'get_current_personal_group_id',
   );
@@ -357,7 +365,10 @@ export async function fetchMyPermissions(
     p_context_group_id: groupId,
   });
   if (error) throw error;
-  return (data ?? []) as string[];
+  return {
+    permissions: (data ?? []) as string[],
+    member_group_id: personalGroupId as string,
+  };
 }
 
 /** GRP-2/GRP-3: partial update — omitted fields stay unchanged. */

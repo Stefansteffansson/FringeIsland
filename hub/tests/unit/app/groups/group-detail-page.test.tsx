@@ -22,7 +22,10 @@ const router = { replace, push: jest.fn() };
 
 const fetchGroupDetail = jest.fn<(id: string) => Promise<GroupDetail>>();
 const fetchGroupRoles = jest.fn<(id: string) => Promise<unknown>>();
-const fetchMyPermissions = jest.fn<(id: string) => Promise<string[]>>();
+// FEAT-H017: the read carries permissions + the caller's member_group_id.
+const fetchMyPermissions = jest.fn<
+  (id: string) => Promise<{ permissions: string[]; member_group_id: string }>
+>();
 
 jest.mock('@/lib/auth/AuthContext', () => ({ useAuth: () => authState }));
 jest.mock('next/navigation', () => ({
@@ -79,7 +82,7 @@ describe('FEAT-H013 — /groups/[id] page gate (STORY-2)', () => {
     jest.clearAllMocks();
     fetchGroupDetail.mockResolvedValue(DETAIL);
     fetchGroupRoles.mockResolvedValue({ fabric: null, templates: [] });
-    fetchMyPermissions.mockResolvedValue([]);
+    fetchMyPermissions.mockResolvedValue({ permissions: [], member_group_id: 'pg-viewer' });
   });
 
   it('redirects a sessionless visitor to sign-in, preserving the destination', async () => {

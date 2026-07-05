@@ -3,7 +3,7 @@
 ---
 id: TASK-H017-02
 title: The sole-Steward transfer flow (nominate pick-list / hand-to-DeusEx) on /groups/[id], the nominee's pending-nomination affordance on /groups, and the last-member Close + Steward Delete settings actions — with red-first unit tests
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H017

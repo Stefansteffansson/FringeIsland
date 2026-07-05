@@ -127,7 +127,11 @@ beforeEach(() => {
   deleteGroupRole.mockReset().mockResolvedValue(undefined);
   assignMemberRole.mockReset().mockResolvedValue(undefined);
   removeMemberRole.mockReset().mockResolvedValue(undefined);
-  fetchMyPermissions.mockReset().mockResolvedValue(['view_forum']);
+  // FEAT-H017: the read also carries the caller's contract-resolved actor id
+  // (the nominate pick-list's payload-driven self-exclusion).
+  fetchMyPermissions
+    .mockReset()
+    .mockResolvedValue({ permissions: ['view_forum'], member_group_id: 'pg-u1' });
 });
 
 describe('GET /api/groups/[id]/roles (fabric)', () => {
@@ -404,13 +408,16 @@ describe('GET /api/groups/[id]/my-permissions (GRP-8 read)', () => {
     expect(emitted('roles.my_permissions_unauthenticated')).toBe(true);
   });
 
-  it('returns 200 { permissions }, telemetry id-only', async () => {
+  it('returns 200 { permissions, member_group_id }, telemetry id-only', async () => {
     const res = (await GET_MY_PERMISSIONS(fakeRequest, idParams('grp-1'))) as {
       status: number;
-      body: { permissions: string[] };
+      body: { permissions: string[]; member_group_id: string };
     };
     expect(res.status).toBe(200);
     expect(res.body.permissions).toEqual(['view_forum']);
+    // FEAT-H017 additive key: the caller's own member_group_id (the
+    // contract-resolved actor) rides the same read — no extra fetch.
+    expect(res.body.member_group_id).toBe('pg-u1');
     expect(fetchMyPermissions).toHaveBeenCalledWith(expect.anything(), 'grp-1');
     expect(emitted('roles.my_permissions', 'u1')).toBe(true);
     expect(telemetryIsContentFree()).toBe(true);
