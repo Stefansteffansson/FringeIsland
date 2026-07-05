@@ -3,7 +3,7 @@
 ---
 id: TASK-H017-01
 title: lib/groups leadership-transfer + closure fetchers and the 5 BFF routes (nominate-steward, hand-to-deusex, nomination-response, close, delete) + the scoped pending-nomination read + red-first route-unit tests
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H017

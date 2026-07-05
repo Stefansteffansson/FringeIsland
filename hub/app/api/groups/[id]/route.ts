@@ -2,11 +2,12 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchGroupDetail, updateGroupSettings, type UpdateGroupSettingsInput } from '@/lib/groups/queries';
+import { deleteGroup } from '@/lib/groups/leadership';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 // Perf (ADR-U036): the detail read is a member-facing hot path — Edge runtime,
 // pinned to `dub1` for DB co-location (ADR-U035). Everything imported here must
-// stay Edge-safe. PATCH rides the same file (single RPC, Edge-safe).
+// stay Edge-safe. PATCH and DELETE ride the same file (single RPC, Edge-safe).
 export const runtime = 'edge';
 export const preferredRegion = 'dub1';
 
@@ -97,5 +98,58 @@ export async function PATCH(
     }
     emitTelemetry('groups.update_failed', { actor: user.id, code });
     return NextResponse.json({ error: 'Failed to update the group' }, { status: 500 });
+  }
+}
+
+/**
+ * FEAT-H017 — DELETE /api/groups/[id] (GRP-9, STORY-5).
+ *
+ * Deliberate group deletion via the FEAT-PC014 `delete_group` contract —
+ * soft-terminal `archived` (Open Q5), members notified and work reassigned
+ * substrate-side. Its own verb on the group resource: never conflated with
+ * member removal (DELETE .../members/[memberGroupId]) or leave. The
+ * permission gate (`delete_group`) refuses substrate-side; 42501 → 403,
+ * P0002 → 404, P0001 → 409 with the message through, else 500 content-free.
+ * Mutation → per-request getUser. Telemetry id-only (STORY-6).
+ */
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    emitTelemetry('groups.delete_unauthenticated');
+    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  }
+
+  const { id } = await params;
+
+  try {
+    const result = await deleteGroup(supabase, id);
+    emitTelemetry('groups.delete', { actor: user.id, group: id });
+    return NextResponse.json(result);
+  } catch (err) {
+    const { code, message } = err as { code?: string; message?: string };
+    if (code === '42501') {
+      emitTelemetry('groups.delete_refused', { actor: user.id, code });
+      return NextResponse.json({ error: message ?? 'Not permitted' }, { status: 403 });
+    }
+    if (code === 'P0002') {
+      emitTelemetry('groups.delete_missing', { actor: user.id, code });
+      return NextResponse.json({ error: 'Group not found' }, { status: 404 });
+    }
+    if (code === 'P0001') {
+      emitTelemetry('groups.delete_conflict', { actor: user.id, code });
+      return NextResponse.json(
+        { error: message ?? 'The group cannot be deleted' },
+        { status: 409 },
+      );
+    }
+    emitTelemetry('groups.delete_failed', { actor: user.id, code });
+    return NextResponse.json({ error: 'Failed to delete the group' }, { status: 500 });
   }
 }
