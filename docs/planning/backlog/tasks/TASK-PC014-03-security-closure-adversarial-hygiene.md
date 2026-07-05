@@ -3,7 +3,7 @@
 ---
 id: TASK-PC014-03
 title: Revoke anon/PUBLIC execute on the sprint3 nomination surface + neutralize handle_notification_action's caller-data stewardship dispatch (Open Q2) + drop the raw groups_delete RLS policy (Open Q4) + the STORY-6 adversarial direct-path suite + hygiene re-asserts + gate paperwork
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PC014

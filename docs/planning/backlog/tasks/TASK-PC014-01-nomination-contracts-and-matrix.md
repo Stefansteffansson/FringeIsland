@@ -3,7 +3,7 @@
 ---
 id: TASK-PC014-01
 title: nominate_steward replaced in place (template-aware + active-membership Steward resolution, house no-leak, grant hardened) + respond_to_stewardship_nomination (accept / decline→next / decline→DeusEx fallback / expiry predicate) + the _transfer_stewardship_to_deusex internal helper + red-first nomination-matrix integration tests
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PC014
