@@ -3,7 +3,7 @@
 ---
 id: TASK-PC014-02
 title: hand_stewardship_to_deusex (ADR-U019 last resort, wrapping the _transfer_stewardship_to_deusex helper) + close_group (MEM-8 last-member closure, status='closed') + delete_group (GRP-9 soft-terminal deletion, status='archived') + red-first integration tests for both closure arcs and deletion-with-remaining-members
-status: review
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PC014
