@@ -129,6 +129,15 @@ Built TDD red-first over the merged FEAT-PC014 contracts (migration `20260705072
 
 Evidence: unit **385/385** (43 new: 6 lib + 20 route + 17 component, all demonstrated red first; two existing pins updated red-first for the extended my-permissions payload), integration **262/262** (no platform change — full re-run), E2E **53/53** (5 new journeys; one first-sweep flake in `entry.spec`'s anon-cleanup `afterAll` hook — passed in isolation and on the full re-run); `next build` + lint clean (one pre-existing warning). **Finding, routed:** PC013's `leave_group` last-member refusal copy still says *"closing a group is not yet available"* — false since PC014 shipped `close_group`; a copy-only function-body migration is prepared separately through the schema gate (this Surface relays messages verbatim by design, so the fix is platform-side).
 
+### Post-6-done fixes (2026-07-05, same day — live-testing findings)
+
+The first real decline→DeusEx fallback (Stefan + Gracy) surfaced two Surface polish gaps, fixed red-first (2 reds; unit 386/386, leadership E2E 5/5 re-run, `next build` + lint clean):
+
+1. **Transfer-affordance gating.** A plain member saw "Hand over leadership" — a door the contract always refuses. It now renders only for holders of the my-permissions **`assign_roles`** key (transfer is semantically a Steward-role grant; a permission key, never a role name — the substrate still guards sole-Steward-ness).
+2. **Honest fallback copy.** The nomination confirm and the "offer is out" notice were silent about the all-decline resolution; both now name it — *if every nominee declines, the group passes to FringeIsland stewardship and you leave* (ADR-U019) — so the designed outcome never surprises.
+
+**Routed to the G-F group-as-actor session:** DeusEx, as an active member after a fallback, appears in a Steward's nominate pick-list (the payload carries no system-member flag, and a name check is out by rule). Whether DeusEx is nominatable at all is that session's territory.
+
 ---
 
 *Derived fresh from `hub/SPECIFICATION.md` §L3 (MEM-7, MEM-8, GRP-9) under current authority, API-first over the paired [FEAT-PC014](../../../platform/core/features/FEAT-PC014-leadership-transfer-and-closure-contracts.md). Retires the FEAT-H016 G-D refusal-copy seams.*

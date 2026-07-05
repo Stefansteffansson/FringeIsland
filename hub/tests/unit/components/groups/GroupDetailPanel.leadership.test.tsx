@@ -96,7 +96,9 @@ describe('FEAT-H017 — GroupDetailPanel endings & transfer', () => {
   const onRefresh = jest.fn();
   const onLeft = jest.fn();
 
-  const renderPanel = (group: GroupDetail, permissions: string[] | null = []) =>
+  // Default caller is Steward-grade: the transfer affordance keys off the
+  // my-permissions payload's `assign_roles` (transfer = a Steward-role grant).
+  const renderPanel = (group: GroupDetail, permissions: string[] | null = ['assign_roles']) =>
     render(
       <GroupDetailPanel
         group={group}
@@ -121,6 +123,18 @@ describe('FEAT-H017 — GroupDetailPanel endings & transfer', () => {
       expect(screen.getByTestId('hand-over-leadership')).toBeTruthy();
       renderPanel(SOLO);
       expect(screen.getAllByTestId('hand-over-leadership').length).toBe(1); // only the MULTI render's
+    });
+
+    it('offers the transfer door only to assign_roles holders — the payload key, never a role name', () => {
+      // A plain member is not offered a door that always refuses (live-testing
+      // finding, 2026-07-05: Gracy saw the affordance); the substrate still
+      // guards — this is noise reduction, not the rule's home.
+      renderPanel(MULTI, []);
+      expect(screen.queryByTestId('hand-over-leadership')).toBeNull();
+      renderPanel(MULTI, ['invite_members']);
+      expect(screen.queryByTestId('hand-over-leadership')).toBeNull();
+      renderPanel(MULTI, ['assign_roles']);
+      expect(screen.getByTestId('hand-over-leadership')).toBeTruthy();
     });
 
     it('opens both paths: the ordered nominate pick-list and the deliberate DeusEx hand-over', async () => {
@@ -157,11 +171,16 @@ describe('FEAT-H017 — GroupDetailPanel endings & transfer', () => {
       await user.click(screen.getByTestId('nominate-candidate-pg-ada'));
       await user.click(screen.getByTestId('send-nomination'));
       expect(nominateSteward).not.toHaveBeenCalled(); // modal first
+      // The confirm copy is honest about BOTH resolutions (live-testing
+      // finding, 2026-07-05): acceptance succession AND the all-decline
+      // FringeIsland fallback in which the nominator leaves.
+      expect(screen.getByText(/if every nominee declines/i)).toBeTruthy();
       await user.click(screen.getByRole('button', { name: /send nomination/i }));
       await waitFor(() =>
         expect(nominateSteward).toHaveBeenCalledWith('grp-1', ['pg-ben', 'pg-ada']),
       );
-      expect(await screen.findByText(/offer is out/i)).toBeTruthy();
+      const notice = await screen.findByText(/offer is out/i);
+      expect(notice.textContent).toMatch(/FringeIsland/i); // the fallback named
       expect(onRefresh).toHaveBeenCalled();
       expect(onLeft).not.toHaveBeenCalled(); // no pre-empted departure
     });

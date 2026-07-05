@@ -210,7 +210,14 @@ export function GroupDetailPanel({
       m.member_group_id !== viewerMemberGroupId &&
       !chosenNominees.some((c) => c.member_group_id === m.member_group_id),
   );
-  const canTransfer = group.viewer.is_member && group.member_count > 1;
+  // Transfer is semantically a Steward-role grant — the affordance keys off
+  // the payload's `assign_roles` (a permission key, never a role name; the
+  // contract still guards sole-Steward-ness). Live-testing finding 2026-07-05:
+  // a plain member was offered a door that always refuses.
+  const canTransfer =
+    group.viewer.is_member &&
+    group.member_count > 1 &&
+    (permissions?.includes('assign_roles') ?? false);
   const canClose = group.viewer.is_member && group.member_count === 1;
   const canDelete = permissions?.includes('delete_group') ?? false;
 
@@ -227,7 +234,7 @@ export function GroupDetailPanel({
       setChosenNominees([]);
       // STORY-1: no pre-empted departure — the Steward stays until acceptance.
       setTransferNotice(
-        'The offer is out. You remain the Steward until a nominee accepts.',
+        'The offer is out. You remain the Steward while it stands; if every nominee declines, the group passes to FringeIsland stewardship and you leave.',
       );
       onRefresh();
     } catch (err) {
@@ -690,7 +697,7 @@ export function GroupDetailPanel({
         title="Send the nomination?"
         message={`Offer stewardship of "${group.name}" to ${chosenNominees
           .map((c) => c.display_name)
-          .join(', then ')}? The offer goes to them in this order; you remain the Steward until someone accepts.`}
+          .join(', then ')}? The offer goes to them in this order; you remain the Steward while it stands. If every nominee declines, the group passes to FringeIsland stewardship and you leave.`}
         confirmText="Send nomination"
         variant="info"
         busy={transferBusy}
