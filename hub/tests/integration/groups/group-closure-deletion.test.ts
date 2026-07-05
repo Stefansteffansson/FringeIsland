@@ -276,6 +276,10 @@ describe('FEAT-PC014 — group closure and deletion contracts (G-E, MEM-8/GRP-9)
       const soloId = await seedGroup('RefusalsSolo', []);
       const lastMember = await c.rpc('leave_group', { p_group_id: soloId });
       expect(lastMember.error?.code).toBe('P0001');
+      // Post-PC014 copy (migration 20260705115243): Close exists now — the
+      // refusal points at it, never at an unavailability that is no longer true.
+      expect(lastMember.error?.message).toContain('close the group');
+      expect(lastMember.error?.message).not.toContain('not yet available');
     });
   });
 
