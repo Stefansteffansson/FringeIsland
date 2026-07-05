@@ -6,7 +6,7 @@ title: Leadership transfer, closure, and deletion surfaces — the sole Steward'
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
