@@ -6,7 +6,7 @@ title: Leadership transfer, closure, and deletion contracts — the sole Steward
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -161,9 +161,9 @@ Mostly additive with two narrowings. One replacement-in-place (`nominate_steward
 4. **Drop the raw `groups_delete` RLS policy.** *Default:* drop — after `delete_group` the contract is the only client-role deletion path (the raw DELETE bypasses freeze/reassignment/notification and hits the `journeys` RESTRICT wall anyway; the PC013 member-exit-policy drop and the G-A `groups` narrowing are the precedents). Admin policies untouched. *Alternative:* keep as defense-in-depth. *Recommend the default;* confirm at the gate.
 5. **GRP-9 deletion is soft-terminal (`archived`), not a hard delete.** *Default (load-bearing):* `delete_group` sets status→`'archived'` + cascade + content reassignment, leaving the row as a tombstone — this sidesteps the `journeys … ON DELETE RESTRICT` wall and preserves forum authorship for DS-5/MEM-9. *Alternative:* hard-delete after reassigning owned journeys to DeusEx (satisfying RESTRICT), letting FK CASCADE clear memberships/roles/enrolments and `notify_group_deleted` fire — matches the legacy behaviour but destroys forum content irrecoverably and forecloses MEM-9 attribution on this group. *Recommend the soft-terminal default;* confirm at the gate. *(MEM-8 closure uses the same soft-terminal shape with status `'closed'` — the two terminal states keep the intents distinguishable in GRP-5.)*
 
-## Implementation notes (at the schema gate, 2026-07-05 — held for Stefan's nod)
+## Implementation notes (6-done — Cycle G-E platform half, 2026-07-05)
 
-Built TDD red-first. **Schema gate pending:** the PR carries Open Q1–Q5 (defaults implemented as recommended), the three build findings below, and the ADR-U038 direct-caller answer.
+Built TDD red-first. **Schema gate passed:** Stefan reviewed PR #80 (Open Q1–Q5 defaults, the four build findings, the ADR-U038 direct-caller answer) and gave the nod — defaults and findings all approved as implemented; merged. Consumed by FEAT-H017 (Surface half; its notes carry the Hub side).
 
 - **Migration** `supabase/migrations/20260705072252_feat_pc014_leadership_transfer_closure_contracts.sql` (applied to dev + repaired; gate pending). `nominate_steward` **replaced in place** (template-aware + active-membership Steward resolution, house no-leak, 22023 nominee validation incl. the duplicate check the legacy body lacked); `respond_to_stewardship_nomination` (accept / decline→next / decline→DeusEx; **plus staleness guards** the trusting legacy dispatch lacked — group-still-active, nominator-still-member, nominee-still-member, all `P0001` mutating nothing); `_transfer_stewardship_to_deusex` internal helper (no client execute); `hand_stewardship_to_deusex`; `close_group`; `delete_group`. `handle_notification_action` + `_handle_stewardship_nomination_action` **dropped** (Open Q2 default); `groups_delete` **dropped** behind a `pg_policies` name-guard (Open Q4); anon/PUBLIC grants revoked across the surface. **No new table, no trigger changes.**
 - **Build finding 1 — spec-premise correction (gate item):** the spec's "the last-leader trigger bypasses because status is terminal" holds only for `'closed'` — the live `prevent_last_leader_removal` body admits no `'archived'` bypass. Editing the wall is a spec rabbit-hole, so `delete_group`'s cascade rides the **established transaction-local cascade flag** `app.hard_delete_in_progress` (the admin-hard-delete / PC002-erasure mechanism, honored by the wall and by the per-row notify triggers) — which also keeps the archive cascade to its single in-contract `group_deleted` notice instead of per-row `member_removed`/`role_removed` spam. Asserted by test (no noise rows post-archive).
