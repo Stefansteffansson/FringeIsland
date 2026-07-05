@@ -392,6 +392,82 @@ describe('FEAT-PC012 — group invitation & joining contracts (G-C)', () => {
   });
 
   // -------------------------------------------------------------------------
+  // STORY-2b — duplicate-invite conflicts carry a clean message (bug fix)
+  //   Red-first: the raw INSERT let the (group_id, member_group_id) unique
+  //   constraint throw, leaking 'duplicate key value violates unique
+  //   constraint "..."' to the caller and the UI. The contracts now pre-check
+  //   and raise a human, state-specific message under the SAME errcode 23505
+  //   (the code the BFF already maps to 409). The .code assertions stay green
+  //   (23505 unchanged — carried-forward); the .message assertions are the
+  //   red-first coverage this fix adds.
+  // -------------------------------------------------------------------------
+  describe('STORY-2b: duplicate invites carry a clean conflict message, never the raw constraint', () => {
+    let groupId: string;
+    const RAW = /duplicate key value|unique constraint/i;
+
+    beforeAll(async () => {
+      groupId = await seedGroup('GC S2b Duplicate Messages');
+      // invitee joins as a PAUSED member (the third conflict state)
+      const { error } = await admin.from('group_memberships').insert({
+        group_id: groupId,
+        member_group_id: invitee.personalGroupId,
+        status: 'paused',
+        added_by_group_id: steward.personalGroupId,
+      });
+      if (error) throw new Error(`S2b paused seed: ${error.message}`);
+    });
+
+    it('re-inviting an already-invited FIM: 23505 with a "pending invitation" message, not the raw constraint', async () => {
+      const c = await asUser(inviter);
+      const first = await c.rpc('invite_member', {
+        p_group_id: groupId,
+        p_member_group_id: invitee2.personalGroupId,
+      });
+      expect(first.error).toBeNull();
+      const dup = await c.rpc('invite_member', {
+        p_group_id: groupId,
+        p_member_group_id: invitee2.personalGroupId,
+      });
+      expect(dup.error?.code).toBe('23505');
+      expect(dup.error?.message ?? '').not.toMatch(RAW);
+      expect((dup.error?.message ?? '').toLowerCase()).toContain('pending invitation');
+    });
+
+    it('inviting an already-active member: 23505 with an "already a member" message, not the raw constraint', async () => {
+      const c = await asUser(inviter);
+      const dup = await c.rpc('invite_member', {
+        p_group_id: groupId,
+        p_member_group_id: plainMember.personalGroupId,
+      });
+      expect(dup.error?.code).toBe('23505');
+      expect(dup.error?.message ?? '').not.toMatch(RAW);
+      expect((dup.error?.message ?? '').toLowerCase()).toContain('already a member');
+    });
+
+    it('inviting a paused member: 23505 with a "paused" message, not the raw constraint', async () => {
+      const c = await asUser(inviter);
+      const dup = await c.rpc('invite_member', {
+        p_group_id: groupId,
+        p_member_group_id: invitee.personalGroupId,
+      });
+      expect(dup.error?.code).toBe('23505');
+      expect(dup.error?.message ?? '').not.toMatch(RAW);
+      expect((dup.error?.message ?? '').toLowerCase()).toContain('paused');
+    });
+
+    it('invite_by_email for an existing FIM who is already a member: the conversion branch also raises the clean message, not the raw constraint', async () => {
+      const c = await asUser(inviter);
+      const res = await c.rpc('invite_by_email', {
+        p_group_id: groupId,
+        p_email: plainMember.email.toUpperCase(),
+      });
+      expect(res.error?.code).toBe('23505');
+      expect(res.error?.message ?? '').not.toMatch(RAW);
+      expect((res.error?.message ?? '').toLowerCase()).toContain('already a member');
+    });
+  });
+
+  // -------------------------------------------------------------------------
   // STORY-3 — invite_by_email (durable, claimable, undispatched — D4)
   // -------------------------------------------------------------------------
   describe('STORY-3: invite by email', () => {
