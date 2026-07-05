@@ -6,7 +6,7 @@ title: Leadership transfer, closure, and deletion contracts — the sole Steward
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
