@@ -10,6 +10,8 @@ maturity: 6-done
 requires-equipment: none
 ---
 
+> **Post-6-done note (2026-07-05, [ADR-U040](../../../architecture/decisions/ADR-U040-referral-not-email-membership.md)):** the email-invite path this spec realizes (MEM-2, `invite_by_email`) is retired going forward — off-platform invitation becomes **referral-to-the-platform**, never a pre-committed membership. The shipped surface stays live until the referral-model rebuild is scoped and built (downstream decomposition, not yet scoped). Name-based FIM invitation (MEM-1/3) is unaffected.
+
 ## Problem
 
 After Cycle G-B a group has structure — but **no way in**: nobody can be invited (MEM-1/2), and nobody can see or answer an invitation (MEM-3). The Steward the bootstrap created can shape roles for members who cannot arrive.
