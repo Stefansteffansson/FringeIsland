@@ -60,7 +60,7 @@ describe('FEAT-H018 — GroupMembershipsPanel (STORY-3)', () => {
     await user.click(screen.getByTestId('accept-as-group-m1'));
     // The confirm NAMES the wielding — "answering for" the acting group.
     expect(screen.getByText(/answering for/i)).toHaveTextContent(/Familjen/);
-    await user.click(screen.getByRole('button', { name: /accept/i }));
+    await user.click(screen.getByRole('button', { name: 'Accept' }));
     expect(respondToGroupInvitationClient).toHaveBeenCalledWith('a1', 'm1', true);
     expect(onMutated).toHaveBeenCalled();
   });
@@ -79,7 +79,7 @@ describe('FEAT-H018 — GroupMembershipsPanel (STORY-3)', () => {
       />,
     );
     await user.click(screen.getByTestId('withdraw-as-group-m2'));
-    await user.click(screen.getByRole('button', { name: /withdraw/i }));
+    await user.click(screen.getByRole('button', { name: 'Yes, withdraw' }));
     expect(await screen.findByRole('alert')).toHaveTextContent(/transfer stewardship first/);
   });
 

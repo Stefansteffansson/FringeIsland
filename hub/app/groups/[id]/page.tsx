@@ -11,12 +11,19 @@ import { GroupDetailPanel } from '@/components/groups/GroupDetailPanel';
 import { RolesPanel } from '@/components/groups/RolesPanel';
 import { InvitationsPanel } from '@/components/groups/InvitationsPanel';
 import { MyPermissionsPanel } from '@/components/groups/MyPermissionsPanel';
+import { GroupMembershipsPanel } from '@/components/groups/GroupMembershipsPanel';
+import { InviteGroupPanel } from '@/components/groups/InviteGroupPanel';
 import {
+  fetchActingContexts,
   fetchGroupDetail,
   fetchGroupInvitations,
   fetchGroupRoles,
+  fetchMembershipsOf,
   fetchMyPermissions,
+  fetchMyPermissionsActingAs,
   GroupsApiError,
+  type ActingContext,
+  type ActingMembership,
   type PendingInvitations,
   type RolesReadResult,
 } from '@/lib/groups/client';
@@ -54,6 +61,13 @@ export default function GroupDetailPage() {
   const [permissionsError, setPermissionsError] = useState<string | null>(null);
   const [invitations, setInvitations] = useState<PendingInvitations | null>(null);
   const [invitationsError, setInvitationsError] = useState<string | null>(null);
+  // FEAT-H018: the wieldable groups (STORY-1), the substitution read's result,
+  // and — when THIS page is a wielded group — its memberships panel data.
+  const [actingContexts, setActingContexts] = useState<ActingContext[]>([]);
+  const [actingAs, setActingAs] = useState('myself');
+  const [actingPermissions, setActingPermissions] = useState<string[] | null>(null);
+  const [memberships, setMemberships] = useState<ActingMembership[] | null>(null);
+  const [membershipsError, setMembershipsError] = useState<string | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -131,12 +145,58 @@ export default function GroupDetailPage() {
     }
   }, [groupId, loadInvitations]);
 
-  // The one refresh path (FEAT-H014 STORY-4): every mutation re-reads all three.
+  // FEAT-H018: the acting-contexts read gates the memberships panel (no fake
+  // doors — only a wielder of THIS group sees its belongs-to panel), and the
+  // selector's group options. Panel-local failures; the page stands.
+  const loadActing = useCallback(async () => {
+    try {
+      const contexts = await fetchActingContexts();
+      setActingContexts(contexts);
+      if (contexts.some((c) => c.group_id === groupId)) {
+        try {
+          setMemberships(await fetchMembershipsOf(groupId));
+          setMembershipsError(null);
+        } catch {
+          setMemberships(null);
+          setMembershipsError('Failed to load memberships.');
+        }
+      } else {
+        setMemberships(null);
+        setMembershipsError(null);
+      }
+    } catch {
+      setActingContexts([]);
+      setMemberships(null);
+    }
+  }, [groupId]);
+
+  // FEAT-H018 STORY-1 (ADR-U041 §2a): switching the hat re-reads the panel as
+  // the chosen group — pure substitution, never mixed with the personal read.
+  const changeActingAs = useCallback(
+    async (value: string) => {
+      setActingAs(value);
+      if (value === 'myself') {
+        setActingPermissions(null);
+        return;
+      }
+      try {
+        setActingPermissions(await fetchMyPermissionsActingAs(groupId, value));
+      } catch {
+        setActingPermissions(null);
+        setPermissionsError('Failed to load the acting permissions.');
+      }
+    },
+    [groupId],
+  );
+
+  // The one refresh path (FEAT-H014 STORY-4): every mutation re-reads all
+  // reads together (FEAT-H018 adds the acting pair).
   const loadAll = useCallback(() => {
     void load();
     void loadRoles();
     void loadPermissions();
-  }, [load, loadRoles, loadPermissions]);
+    void loadActing();
+  }, [load, loadRoles, loadPermissions, loadActing]);
 
   useEffect(() => {
     if (authLoading || identity !== 'fim') return;
@@ -175,10 +235,28 @@ export default function GroupDetailPage() {
             error={invitationsError}
             onMutated={loadAll}
           />
+          {permissions?.includes('invite_members') && (
+            // FEAT-H018 STORY-2: the group-admission door, key-gated like the
+            // member invitations panel above it.
+            <InviteGroupPanel groupId={groupId} onMutated={loadAll} />
+          )}
+          {actingContexts.some((c) => c.group_id === groupId) && (
+            // FEAT-H018 STORY-3: this member wields THIS group — its
+            // belongs-to panel renders (and only then; no fake doors).
+            <GroupMembershipsPanel
+              actingGroup={{ id: groupId, name: group.name }}
+              rows={memberships}
+              error={membershipsError}
+              onMutated={loadAll}
+            />
+          )}
           <MyPermissionsPanel
-            permissions={permissions}
+            permissions={actingAs === 'myself' ? permissions : actingPermissions}
             error={permissionsError}
             onReload={() => void loadPermissions()}
+            actingContexts={actingContexts}
+            actingAs={actingAs}
+            onActAsChange={(v) => void changeActingAs(v)}
           />
         </div>
       ) : null}

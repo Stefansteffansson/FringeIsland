@@ -53,6 +53,12 @@ export interface GroupMemberEntry {
    * for tolerance, treated as 'active' when absent.
    */
   membership_status?: string;
+  /**
+   * FEAT-PC015 additive key (ADR-U041 §5, Open Q5): the member group's raw
+   * `group_type` — open set ('personal' | 'engagement' | 'system' | future
+   * values). Optional for tolerance, treated as 'personal' when absent.
+   */
+  member_group_type?: string;
 }
 
 export interface GroupViewer {
@@ -72,6 +78,13 @@ export interface GroupDetail {
   show_member_list: boolean;
   created_at: string;
   member_count: number;
+  /**
+   * FEAT-PC015 additive key (ADR-U041 §5): active members whose group_type is
+   * not 'system' — count copy and the Close affordance key on this (the
+   * caretaker is never load-bearing). Optional for tolerance; falls back to
+   * member_count when absent.
+   */
+  non_system_member_count?: number;
   viewer: GroupViewer;
   /** Present iff the contract decided the caller may see it. */
   members?: GroupMemberEntry[];

@@ -403,3 +403,102 @@ export async function fetchMyNominations(): Promise<PendingNomination[]> {
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
   return (await res.json()) as PendingNomination[];
 }
+
+/**
+ * FEAT-H018 — the group-of-groups acting transports (Cycle G-F, FEAT-PC015 /
+ * ADR-U041). Thin couriers; refusal messages surface verbatim via
+ * GroupsApiError — they carry the honest copy (cycle / duplicate /
+ * last-Steward / not-active) the Surface renders in place. Group names render
+ * to the member and never enter telemetry.
+ */
+import type { ActingContext, ActingMembership } from '@/lib/groups/acting';
+
+export type { ActingContext, ActingMembership } from '@/lib/groups/acting';
+
+/** STORY-1 read: the groups the caller may act as (direct empowerments only). */
+export async function fetchActingContexts(): Promise<ActingContext[]> {
+  const res = await fetch('/api/me/acting-contexts');
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as ActingContext[];
+}
+
+/** STORY-1: the substitution read — the acting group's powers in this group. */
+export async function fetchMyPermissionsActingAs(
+  groupId: string,
+  actingGroupId: string,
+): Promise<string[]> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(groupId)}/my-permissions?acting=${encodeURIComponent(actingGroupId)}`,
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  const data = (await res.json()) as { permissions: string[] };
+  return data.permissions;
+}
+
+/** STORY-2: the Steward's group-admission door (invite_members-gated). */
+export async function inviteGroupClient(
+  groupId: string,
+  invitedGroupId: string,
+): Promise<{ membership_id: string }> {
+  const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/invite-group`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ invited_group_id: invitedGroupId }),
+  });
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as { membership_id: string };
+}
+
+/** STORY-2: the group typeahead (cap 8 contract-side; query never in telemetry). */
+export async function searchInvitableGroupsClient(
+  groupId: string,
+  query: string,
+): Promise<Array<{ id: string; name: string }>> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(groupId)}/invitable-groups?q=${encodeURIComponent(query)}`,
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as Array<{ id: string; name: string }>;
+}
+
+/** STORY-3 read: a wielded group's memberships + pending invitations. */
+export async function fetchMembershipsOf(actingGroupId: string): Promise<ActingMembership[]> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(actingGroupId)}/acting/memberships`,
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as ActingMembership[];
+}
+
+/** STORY-3: answer an invitation as the wielded group. */
+export async function respondToGroupInvitationClient(
+  actingGroupId: string,
+  membershipId: string,
+  accept: boolean,
+): Promise<void> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(actingGroupId)}/acting/respond`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ membership_id: membershipId, accept }),
+    },
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+}
+
+/** STORY-3: withdraw the wielded group's membership (refusals verbatim). */
+export async function leaveGroupAsGroupClient(
+  actingGroupId: string,
+  contextGroupId: string,
+): Promise<void> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(actingGroupId)}/acting/leave`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ context_group_id: contextGroupId }),
+    },
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+}
