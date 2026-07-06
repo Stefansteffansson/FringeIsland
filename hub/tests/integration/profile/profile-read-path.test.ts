@@ -61,9 +61,14 @@ describe('FEAT-PC003 STORY-1 — own-profile read (own-row by construction)', ()
     expect(profile!.bio).not.toBe("Alice's bio");
   });
 
-  it('returns null when there is no session', async () => {
+  it('denies the contract to a sessionless caller (anon EXECUTE lockdown, 2026-07-06)', async () => {
+    // Defense-in-depth beyond the route's 401 gate: after the anon-EXECUTE
+    // sweep (migration 20260706201500) the `anon` role cannot execute
+    // get_own_profile at all, so a sessionless direct contract call is refused
+    // (42501) rather than resolving auth.uid()=null to an empty result. The
+    // /api/profile/me route never reaches here for a sessionless request — it
+    // 401s at getVerifiedUserId first — so this is purely the substrate guard.
     const supabase = createTestClient();
-    const profile = await fetchMyProfile(supabase);
-    expect(profile).toBeNull();
+    await expect(fetchMyProfile(supabase)).rejects.toMatchObject({ code: '42501' });
   });
 });
