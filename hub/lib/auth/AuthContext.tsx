@@ -5,6 +5,8 @@ import type { Session, User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 import { invalidateProfileCache } from '@/lib/profile/client';
 import { invalidateGroupsCache } from '@/lib/groups/client';
+import { invalidateAccountStateAdoption } from '@/lib/account/client';
+import { invalidateOverview } from '@/lib/me/overview-client';
 import { beginMistSession, deriveIdentity, type Identity } from '@/lib/auth/mist';
 import { useSessionGuard } from '@/lib/auth/session-guard';
 import { TRANSCENDENCE_CONSENT_REQUIRED_ERROR } from '@/lib/auth/transcendence';
@@ -85,6 +87,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!newSession) {
         invalidateProfileCache();
         invalidateGroupsCache();
+        invalidateAccountStateAdoption();
+        invalidateOverview();
       }
       setSession(newSession);
       setUser(newSession?.user ?? null);

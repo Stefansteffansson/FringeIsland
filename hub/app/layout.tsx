@@ -4,6 +4,7 @@ import './globals.css';
 import { AuthProvider } from '@/lib/auth/AuthContext';
 import { AccountStateProvider } from '@/lib/account/AccountStateContext';
 import { AccountStateGate } from '@/components/account/AccountStateGate';
+import { OverviewBoot } from '@/components/shell/OverviewBoot';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,6 +22,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
+          {/* ADR-U042: FIRST child inside AuthProvider — same-commit effects run
+              in traversal order, so the bootstrap bundle is adopted before
+              AccountStateProvider / AccountMenu fire their own reads. */}
+          <OverviewBoot />
           <AccountStateProvider>
             <AccountStateGate>{children}</AccountStateGate>
           </AccountStateProvider>

@@ -70,9 +70,9 @@ Plain `useState`; every mount refetches. Prior art exists and was not adopted he
 2. **Stale-while-revalidate groups cache** — DONE: `peekMyGroups`/`fetchMyGroups`/`invalidateGroupsCache` in `hub/lib/groups/client.ts` (profile-client prior art; in-memory only per the §6 conformance condition; dropped by the AuthContext listener on session end). Cache semantics: `hub/tests/unit/lib/groups/client-cache.test.ts`.
 3. **Scoped down:** `MyInvitations` / `PendingNominations` keep their direct fetches — they render `null` until loaded (never gate the spinner), and Phase 2's shared provider subsumes them; a cache there now would only add test churn. `AccountStateProvider` verified once-per-session (effect keyed on derived `identity` + `nonce`, not the user object — token refresh cannot refire it).
 
-### Phase 2 — collapse the first-paint fan-out (RC4, halves RC1 exposure)
-4. One bootstrap endpoint (e.g. `GET /api/me/overview`) returning groups + invitations + nominations + account state + profile via one RPC: one cold boot, one auth verify, one DB hop. Consumers hydrate from a shared provider.
-   - *Alternative:* convert `/groups` to a server component that prefetches during SSR and streams (fixes RC3 too, bigger pattern change). Decide in retro; recommendation below.
+### Phase 2 — collapse the first-paint fan-out (RC4, halves RC1 exposure) — **IMPLEMENTED 2026-07-06 (ADR-U042 shape; post-deploy verification pending)**
+4. Landed as the ADR-U042 BFF bundle (not the RPC this line originally sketched — see §5.1): `GET /api/me/overview` (Edge + `dub1` + `getClaims`) runs the five existing substrate reads concurrently in one invocation with per-slice envelopes; `OverviewBoot` (first child inside `AuthProvider`, so its same-commit effect wins the traversal race) fires it once per session for a FIM on the boot paths (`/`, `/login`, `/groups`); each slice is adopted by its resource client (consume-once for the list reads; the profile/account clients keep their once-per-session semantics; a bundle transport failure falls every consumer back to its standalone read). Tests: `me-overview-route.test.ts`, `overview-client.test.ts`, `OverviewBoot.test.tsx`.
+   - ~~*Alternative:* server-component prefetch~~ — non-conformant, dropped (§6).
 
 ### Phase 3 — the cold boot itself (RC1 at the root)
 5. Read Vercel function logs/metrics: actual boot durations, what runtime the `edge` routes execute on today, whether Fluid compute (instance reuse) is enabled for this project.
@@ -97,7 +97,7 @@ Plain `useState`; every mount refetches. Prior art exists and was not adopted he
 
 ## 5. Open decisions (retro input)
 
-1. ~~Phase 2 shape~~ **Resolved by conformance check:** server-component prefetch is non-conformant (ADR-U009 L16: logic lives in API routes, not server components; hub CLAUDE.md L23: server components "don't fetch from the database directly"). Bootstrap endpoint it is. Remaining sub-decision: composition as **one platform SECURITY DEFINER RPC** (recommended — FEAT-H001 finding F2 precedent, one DB round trip, sibling-inheritable) vs Hub-route fan-out to existing RPCs (defensible as "response shaping" only if the aggregate is Hub-presentation-specific).
+1. ~~Phase 2 shape~~ **Resolved — ADR-U042 (2026-07-06):** server-component prefetch is non-conformant (ADR-U009 L16; hub CLAUDE.md L23). The sub-decision landed as the **BFF parallel fan-out** (Option B), superseding this doc's earlier platform-RPC recommendation: the bundle is surface-shaped (no platform L3 owner — spans Identity + Organisation; contents churn with Hub UI), the F2 precedent covers surface-agnostic platform concepts not first-paint bundles, and the parallel fan-out's warm cost (RTT + max of the reads) ties or beats the RPC's serial execution (RTT + sum). Guardrails (bundle-only, per-slice envelopes, slice-equivalence tests, promotion rule) are canonical in ADR-U042.
 2. ~~Phase 3.7 direct-PostgREST~~ **Withdrawn** — already rejected as ADR-U038 Option B (see Phase 3 note).
 3. Perf budget: acceptable ceiling for a true first-ever cold visit (suggest < 2 s to content).
 4. Vendor question (Cloudflare etc.): contingency only; any deployment-platform move is ADR territory (ADR-U036's runtime/region policy is premised on Vercel infrastructure). If Vercel's Edge-runtime deprecation invalidates U036's premise, record an ADR addendum either way.
