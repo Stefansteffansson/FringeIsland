@@ -85,6 +85,12 @@ Plain `useState`; every mount refetches. Prior art exists and was not adopted he
    - **RC5 fixed:** client-side revisit (`/groups` → home → back) painted the list **with no spinner at all** (MutationObserver on `[data-testid="loading-state"]` across the whole transition: never appeared) while one background revalidate ran (`/api/groups` 596 ms warm). `profile/me` and `account/state` were **not** re-fetched — the session caches hold.
    - **RC1 remains, as predicted:** the fresh-deploy cold boots still cost 2.9-4.75 s TTFB per route (`account/state` 4 750 ms fired at sign-in; `groups` 4 700 ms / `invitations` 4 576 ms / `nominations` 4 648 ms / `profile` 2 946 ms in the post-redirect burst), and `/api/auth/audit` (1 166 ms cold) serializes between sign-in and the redirect. First-ever visit ≈ 7 s sign-in-click → list. This is Phase 2/3 territory (one bootstrap call; Vercel-layer confirmation).
 
+9. **Phase 2 verified live (deployment `fringe-island-b0n46lhi6`, post-PR #103, true post-login pass on a stone-cold deployment):**
+   - **RC1/RC4 collapsed:** the post-login path fired **one** `GET /api/me/overview` (1 385 ms cold — a single boot, no instance queueing) and **zero** calls to the five standalone routes; every consumer resolved from the bundle (no transport fallbacks fired). `OverviewBoot` armed on `/login` at auth-ready, before the redirect, as designed.
+   - **Sign-in click → fully painted list: ~2.4 s** (was ~7 s) — decomposed: Supabase token exchange 996 ms + `/api/auth/audit` 691 ms (the only serialized route left) + overview 1 385 ms overlapping the redirect/hydration.
+   - **Revisit unchanged-correct:** instant paint, spinner never appeared (MutationObserver), three background revalidates (`groups` / `invitations` / `nominations`) — consume-once semantics confirmed.
+   - **Remaining levers (Phase 3 / retro):** the audit hook serializes ~0.7 s between sign-in and redirect (could be made non-blocking); Vercel-layer confirmation (Fluid compute, what `edge` runtime maps to) still unexamined; suggested < 2 s first-ever budget is nearly met at ~2.4 s, of which ~1.0 s is the auth exchange itself.
+
 **Tests (TDD, red-first):** unit test asserting the groups effect fires exactly once across a simulated `getSession → INITIAL_SESSION → TOKEN_REFRESHED` event sequence (regression for RC2); contract/integration test for the bootstrap endpoint; E2E assertion on spinner-clear budget.
 
 ## 4. Expected impact
