@@ -12,45 +12,48 @@ import { CreateGroupPanel } from '@/components/groups/CreateGroupPanel';
 import { MyInvitations } from '@/components/groups/MyInvitations';
 import { PendingNominations } from '@/components/groups/PendingNominations';
 import { emitTelemetry } from '@/lib/observability/telemetry';
+import { fetchMyGroups, peekMyGroups } from '@/lib/groups/client';
 import type { GroupSummary } from '@/lib/groups/queries';
 
 export default function GroupsPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
 
-  const [groups, setGroups] = useState<GroupSummary[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Instant paint (perf revision 2026-07-06): seed from the session cache —
+  // the spinner is for a genuine first read only; a revisit renders at once
+  // and the mount's read revalidates in the background.
+  const [groups, setGroups] = useState<GroupSummary[] | null>(() => peekMyGroups());
   const [error, setError] = useState<string | null>(null);
 
   const loadGroups = useCallback(async () => {
     setError(null);
     try {
-      // API-first: the frontend fetches /api/groups — never a direct table call.
-      const res = await fetch('/api/groups');
-      if (!res.ok) throw new Error(`Request failed (${res.status})`);
-      const data = (await res.json()) as { groups: GroupSummary[] };
-      setGroups(data.groups ?? []);
+      // API-first: the read goes through /api/groups — never a direct table
+      // call. Session-cached client: concurrent callers share one request.
+      setGroups(await fetchMyGroups());
     } catch (err) {
       setError('Failed to load your groups.');
       emitTelemetry('groups.client_load_failed', { message: (err as Error).message });
-    } finally {
-      setLoading(false);
     }
   }, []);
 
+  // Keyed on the STABLE user id, never the user object — the auth listener
+  // hands out a new reference per event (INITIAL_SESSION, TOKEN_REFRESHED),
+  // and keying on the object re-fired this effect three times per cold load
+  // (measured 2026-07-06), each firing a duplicate /api/groups read.
+  const userId = user?.id ?? null;
   useEffect(() => {
     if (authLoading) return;
 
     // Client-side auth guard: send unauthenticated visitors to sign-in,
     // preserving the destination.
-    if (!user) {
+    if (!userId) {
       router.replace('/login?redirect=/groups');
       return;
     }
 
-    setLoading(true);
     void loadGroups();
-  }, [user, authLoading, router, loadGroups]);
+  }, [userId, authLoading, router, loadGroups]);
 
   return (
     <AppShell title="My Groups">
@@ -72,11 +75,11 @@ export default function GroupsPage() {
           Steward role shows on next read). Absent when there is none. */}
       {!authLoading && user && <PendingNominations onAnswered={() => void loadGroups()} />}
 
-      {authLoading || loading ? (
+      {authLoading || (!error && groups === null) ? (
         <LoadingState label="Loading your groups..." />
       ) : error ? (
         <InlineError message={error} />
-      ) : groups.length === 0 ? (
+      ) : !groups || groups.length === 0 ? (
         <EmptyState
           title="No groups yet"
           description="You're not an active member of any groups yet."

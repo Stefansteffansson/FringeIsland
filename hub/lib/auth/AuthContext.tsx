@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 import { invalidateProfileCache } from '@/lib/profile/client';
+import { invalidateGroupsCache } from '@/lib/groups/client';
 import { beginMistSession, deriveIdentity, type Identity } from '@/lib/auth/mist';
 import { useSessionGuard } from '@/lib/auth/session-guard';
 import { TRANSCENDENCE_CONSENT_REQUIRED_ERROR } from '@/lib/auth/transcendence';
@@ -78,10 +79,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      // Session gone (sign-out / expiry): drop the session profile cache so a
-      // later sign-in never shows another member's label. A pure local drop —
+      // Session gone (sign-out / expiry): drop the session caches so a later
+      // sign-in never shows another member's label or groups. Pure local drops —
       // no query in the listener (the onAuthStateChange deadlock gotcha holds).
-      if (!newSession) invalidateProfileCache();
+      if (!newSession) {
+        invalidateProfileCache();
+        invalidateGroupsCache();
+      }
       setSession(newSession);
       setUser(newSession?.user ?? null);
       setLoading(false);
