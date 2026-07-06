@@ -3,7 +3,7 @@
 ---
 id: TASK-H018-03
 title: E2E group-of-groups journey + 6-done close
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H018

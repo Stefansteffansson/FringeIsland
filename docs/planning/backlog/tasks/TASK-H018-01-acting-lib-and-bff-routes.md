@@ -3,7 +3,7 @@
 ---
 id: TASK-H018-01
 title: Acting lib wrappers + BFF routes (contexts, invite-group, respond, withdraw, memberships-of, search)
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H018

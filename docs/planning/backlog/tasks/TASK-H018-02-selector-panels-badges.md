@@ -3,7 +3,7 @@
 ---
 id: TASK-H018-02
 title: Act-as selector contexts + invite-a-group + memberships panel + badges/counts/pick-list
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H018

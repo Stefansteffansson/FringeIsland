@@ -3,7 +3,7 @@
 ---
 id: TASK-PC015-03
 title: Schema gate review + docs close for FEAT-PC015
-status: in_progress
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PC015

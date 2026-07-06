@@ -6,7 +6,7 @@ title: Group-of-groups & acting as a group
 owner: hub
 consumers: []
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -93,3 +93,13 @@ The selector-context pattern and the kind-badges are the reference implementatio
 - **Observability:** Id-only telemetry (house V4 posture); wielded acts carry no extra client logging — the audit trace is platform-side (PC015 Open Q4).
 - **Transactions:** None.
 - **Extensibility:** Badges map from the open-set `member_group_type` with a default rendering for unknown values (no sealed switch); selector contexts render whatever the read returns.
+
+## Implementation notes (6-done — Cycle G-F Surface half, 2026-07-06)
+
+Built API-first over the FEAT-PC015 contracts (schema gate PR #95); **no migration of its own**. Consumed exactly the paired surface: the key-gated reads/mutations plus the additive payload fields, tolerant readers throughout.
+
+- **Lib:** `hub/lib/groups/acting.ts` (seven RPC wrappers); client transports + additive `GroupDetail`/`GroupMemberEntry` types in `queries.ts`/`client.ts` (optional keys, `member_count` fallback).
+- **Routes (private BFF, ADR-U038):** `GET /api/me/acting-contexts` (Edge+`dub1`), `POST /api/groups/[id]/invite-group`, `GET /api/groups/[id]/invitable-groups` (Edge+`dub1`), the wielded cluster `GET|POST /api/groups/[id]/acting/{memberships,respond,leave}`, and the my-permissions `?acting=` substitution read (a read of A's powers — the wielding gate stays on the acting contracts). House SQLSTATE map; the 22023/P0001 refusal copy (cycle / duplicate / last-Steward / not-active) passes through **verbatim**; id-only telemetry (names + queries canary-asserted out).
+- **Components:** `MyPermissionsPanel` gained real contexts (the honest-v1 copy retired; substitution named: *"Acting as {A} — these are {A}'s powers here"*); `GroupMembershipsPanel` + `InviteGroupPanel` new; `GroupDetailPanel` kind badges (Group / FringeIsland; unknown types render raw — open set), counts + Close on `non_system_member_count` (tolerant fallback), persons-only pick-list. Wielded confirms name the wielding. Page gates the panels on the already-fetched reads — no fake doors, no probing.
+- **Red→green, staged (house pattern):** 3 suites red on absent modules + 7 new-behavior reds → unit **408/408** (23 new); 2 test-precision fixes (RTL name ambiguity) + 1 route guard for bare fake requests. **E2E 2/2 journeys written post-implementation as the journey tier (labelled — not TDD reds):** the full wielded arc (invite → accept-as-A with the wielding named → Group badge in B → selector substitution on B's page → withdraw) and **the Gracy case** (caretaker badge, "1 member", Close visible — the FEAT-H017:139 rider closed at the surface). Full integration **288/288**; full E2E sweep 54/55 with `profile.spec` STORY-4 flaking under the full sweep only (green 3/3 isolated — same family as the `entry.spec` watch item, bridge `_13`); `next build` + lint clean (one pre-existing warning).
+- **A depth-1 visibility note, honest by design:** a wielder who is not personally a member of B cannot browse a private B — visibility follows membership at the data layer; the wielded group's own page is the wielder's window (the belongs-to panel). Not a defect; recorded for the future transitive discussion (OQ-6).
