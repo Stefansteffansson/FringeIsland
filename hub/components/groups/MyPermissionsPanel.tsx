@@ -2,21 +2,40 @@
 
 /**
  * FEAT-H014 STORY-4 — "What I can do here" (GRP-8).
- * The caller's effective permission names as readable chips — data from the
- * existing published `get_user_permissions` read, gated nowhere client-side.
- * The act-as selector is HONESTLY v1: a real control with exactly one context
- * ("Myself") and copy naming when further contexts arrive (group-as-actor is
- * unresolved governance — PC011 Open Q1 → Cycle G-F). Never a mocked dropdown.
+ * The effective permission names as readable chips — data from the published
+ * `get_user_permissions` read, gated nowhere client-side.
+ *
+ * FEAT-H018 STORY-1 (ADR-U041 §1-2a): the act-as selector is now REAL —
+ * "Myself" plus every group from the acting-contexts read (direct
+ * empowerments only, §2d). Selecting a group re-scopes the panel to that
+ * group's effective set (pure substitution), with copy naming it. With no
+ * contexts the selector honestly offers "Myself" alone.
  */
+
+export interface ActingContextOption {
+  group_id: string;
+  name: string;
+}
+
 export function MyPermissionsPanel({
   permissions,
   error,
   onReload,
+  actingContexts = [],
+  actingAs = 'myself',
+  onActAsChange,
 }: {
   permissions: string[] | null;
   error: string | null;
   onReload: () => void;
+  /** FEAT-H018: the wieldable groups (the acting-contexts read). */
+  actingContexts?: ActingContextOption[];
+  /** 'myself' or a wieldable group's id. */
+  actingAs?: string;
+  onActAsChange?: (value: string) => void;
 }) {
+  const actingGroup = actingContexts.find((c) => c.group_id === actingAs) ?? null;
+
   return (
     <div
       data-testid="my-permissions-panel"
@@ -31,15 +50,31 @@ export function MyPermissionsPanel({
         <select
           id="act-as-select"
           data-testid="act-as-select"
-          value="myself"
-          onChange={() => onReload()}
+          value={actingAs}
+          onChange={(e) => {
+            if (onActAsChange) onActAsChange(e.target.value);
+            else onReload();
+          }}
           className="rounded-lg border border-gray-200 px-2 py-1.5 text-sm"
         >
           <option value="myself">Myself</option>
+          {actingContexts.map((c) => (
+            <option key={c.group_id} value={c.group_id}>
+              {c.name}
+            </option>
+          ))}
         </select>
-        <p className="mt-1 text-xs text-gray-400">
-          Acting as a group arrives when group-of-groups lands.
-        </p>
+        {actingGroup ? (
+          // ADR-U041 §2a — substitution, named honestly: these are the
+          // group's powers, nothing of the member's own standing mixes in.
+          <p className="mt-1 text-xs text-indigo-600">
+            Acting as {actingGroup.name} — these are {actingGroup.name}&apos;s powers here.
+          </p>
+        ) : actingContexts.length === 0 ? (
+          <p className="mt-1 text-xs text-gray-400">
+            Groups that empower you to act for them will appear here.
+          </p>
+        ) : null}
       </div>
 
       {error ? (
@@ -49,7 +84,11 @@ export function MyPermissionsPanel({
       ) : permissions === null ? (
         <p className="text-sm text-gray-500">Loading your permissions...</p>
       ) : permissions.length === 0 ? (
-        <p className="text-sm text-gray-500">You can view this group.</p>
+        <p className="text-sm text-gray-500">
+          {actingGroup
+            ? `${actingGroup.name} can view this group.`
+            : 'You can view this group.'}
+        </p>
       ) : (
         <ul className="flex flex-wrap gap-1">
           {permissions.map((p) => (

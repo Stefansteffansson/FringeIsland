@@ -2,6 +2,14 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-07-06 — Group-of-groups: a group can join a group, and act through its people ([FEAT-H018](../docs/products/hub/features/FEAT-H018-group-of-groups-and-acting-as-a-group.md))
+
+- **Invite a whole group.** Stewards who can invite members can now invite another group by search — it joins as one member, with its own voice.
+- **Act as your group.** If your group has empowered you (a new permission its Steward holds out of the box), its page shows where it belongs and its pending invitations — you accept, decline, or withdraw *as the group*, and every confirmation says so plainly. The "Acting as" selector is real now: pick a group you represent and see exactly its powers — nothing of your own mixed in.
+- **Member lists tell kinds apart.** Group members wear a "Group" badge and the FringeIsland caretaker wears its own — visible, never hidden.
+- **The last human can always close.** Counts and the Close affordance now ignore the caretaker: if you're alone in a group FringeIsland stewards, Close is yours.
+- **Only people can inherit stewardship.** The successor picker offers members who are persons — never the platform, never a group (and the platform now refuses it too).
+
 ## 2026-07-05 — Small fixes from live testing (leadership transfer)
 
 - **"Hand over leadership" only shows for those who could use it.** Plain members no longer see a transfer door the platform would always refuse — the affordance follows the role-granting permission, and the platform keeps guarding regardless.

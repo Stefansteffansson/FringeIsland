@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchMyPermissions } from '@/lib/groups/queries';
+import { fetchPermissionsActingAs } from '@/lib/groups/acting';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 // Perf (ADR-U036): loads with the group page alongside detail + fabric — a
@@ -20,7 +21,7 @@ export const preferredRegion = 'dub1';
  * identity via local JWT verification. 42501 → 403 (Mist); else 500.
  */
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const supabase = await createClient();
@@ -34,6 +35,18 @@ export async function GET(
   const { id } = await params;
 
   try {
+    // FEAT-H018 (ADR-U041 §2a): `?acting=<group>` re-scopes the read to the
+    // acting group's effective set — pure substitution, same published
+    // contract with a different acting principal. The substrate's wielding
+    // gate is NOT here (this is a read of A's powers, not an act as A); the
+    // selector only offers contexts the acting-contexts read granted.
+    const requestUrl = (request as { url?: string }).url;
+    const acting = requestUrl ? new URL(requestUrl).searchParams.get('acting') : null;
+    if (acting) {
+      const permissions = await fetchPermissionsActingAs(supabase, acting, id);
+      emitTelemetry('roles.my_permissions_acting', { actor: userId, group: id, acting });
+      return NextResponse.json({ permissions, acting_group_id: acting });
+    }
     // FEAT-H017 additive key: the caller's own member_group_id (the
     // contract-resolved actor) rides the same read — no extra fetch.
     const { permissions, member_group_id } = await fetchMyPermissions(supabase, id);

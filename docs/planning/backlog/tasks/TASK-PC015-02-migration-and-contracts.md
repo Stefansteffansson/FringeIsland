@@ -3,7 +3,7 @@
 ---
 id: TASK-PC015-02
 title: The G-F migration — act_as_group key, six contracts, nominate/get_group_detail replaced in place
-status: review
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PC015

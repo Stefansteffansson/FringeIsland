@@ -204,12 +204,19 @@ export function GroupDetailPanel({
 
   // FEAT-H017 STORY-1: the ordered pick-list — ACTIVE members other than the
   // caller, sourced from the existing member list (no separate fetch).
+  // FEAT-H018 STORY-5 (ADR-U041 §4): persons only — the substrate refuses
+  // non-personal nominees anyway; the surface never renders the door.
   const nominable = (group.members ?? []).filter(
     (m) =>
       (m.membership_status ?? 'active') === 'active' &&
+      (m.member_group_type ?? 'personal') === 'personal' &&
       m.member_group_id !== viewerMemberGroupId &&
       !chosenNominees.some((c) => c.member_group_id === m.member_group_id),
   );
+  // FEAT-H018 STORY-4 (ADR-U041 §5): counts and Close key on the non-system
+  // count — the caretaker is never load-bearing. Tolerant fallback for
+  // pre-extension payloads.
+  const effectiveMemberCount = group.non_system_member_count ?? group.member_count;
   // Transfer is semantically a Steward-role grant — the affordance keys off
   // the payload's `assign_roles` (a permission key, never a role name; the
   // contract still guards sole-Steward-ness). Live-testing finding 2026-07-05:
@@ -218,7 +225,7 @@ export function GroupDetailPanel({
     group.viewer.is_member &&
     group.member_count > 1 &&
     (permissions?.includes('assign_roles') ?? false);
-  const canClose = group.viewer.is_member && group.member_count === 1;
+  const canClose = group.viewer.is_member && effectiveMemberCount === 1;
   const canDelete = permissions?.includes('delete_group') ?? false;
 
   const confirmNominate = async () => {
@@ -315,7 +322,7 @@ export function GroupDetailPanel({
         {group.description && <p className="mt-3 text-sm text-gray-600">{group.description}</p>}
 
         <p className="mt-4 text-xs text-gray-500">
-          {group.member_count} {group.member_count === 1 ? 'member' : 'members'}
+          {effectiveMemberCount} {effectiveMemberCount === 1 ? 'member' : 'members'}
         </p>
 
         {leaveError && (
@@ -507,6 +514,25 @@ export function GroupDetailPanel({
                       className="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-800"
                     >
                       Paused
+                    </span>
+                  )}
+                  {(m.member_group_type ?? 'personal') !== 'personal' && (
+                    // FEAT-H018 STORY-4 (ADR-U041 §5): non-person members are
+                    // visible for what they are — never hidden. Open set: an
+                    // unknown group_type renders its raw value.
+                    <span
+                      data-testid={`kind-badge-${m.member_group_id}`}
+                      className={`rounded px-1.5 py-0.5 text-xs font-medium ${
+                        m.member_group_type === 'system'
+                          ? 'bg-sky-100 text-sky-800'
+                          : 'bg-violet-100 text-violet-800'
+                      }`}
+                    >
+                      {m.member_group_type === 'engagement'
+                        ? 'Group'
+                        : m.member_group_type === 'system'
+                          ? 'FringeIsland'
+                          : m.member_group_type}
                     </span>
                   )}
                   {(m.roles ?? []).map((roleName) => (
