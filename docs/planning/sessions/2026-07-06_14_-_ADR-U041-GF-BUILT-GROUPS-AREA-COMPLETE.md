@@ -41,3 +41,13 @@ ADR-U040 referral rebuild (unscoped); pre-partition SECURITY DEFINER grant sweep
 ## Close-down note
 
 `main` synced (PRs #92–#96 all resolved), no branches beyond `main`, no background processes, dashboard refreshed (631 files indexed). Migration history: dev DB current through `20260706120000`. E2E flake watch: `entry.spec` (standing) + `profile.spec` (new, once).
+
+## Addendum — same-day post-close fixes (appended 2026-07-06, before session close)
+
+Stefan's live test walk (same session, after this bridge landed) surfaced **three findings; all fixed through the gate same-day** — full record in the plan's G-F row Post-close note, both specs' Post-6-done sections, and the CHANGELOGs:
+
+1. **Selector scoping** (PR #98, migration `20260706150000`): the act-as selector offered hats with no standing, incl. the current group itself — `get_acting_contexts` context-scoped (`is_member_of_context`), Surface offers only flagged contexts, never self.
+2. **Honest acting empty-state** (PR #98): the false "can view this group" copy for a standing-less group replaced with the substrate's answer.
+3. **Revealed visibility** (PR #100, migration `20260706170000`): invited FIMs answered blind and wielders couldn't reach the host group — `get_group_detail` opens the FACE to own-invited viewers and wielders of an active member-group (ADR-U041 §2a); group names linked in both invitation surfaces. **Rider:** the verification block surfaced `get_group_detail`'s PC010-era anon EXECUTE (one of the twelve documented sweep items) — revoked in place; **the parked grant sweep shrinks by one**.
+
+**Live state at actual close:** `main` synced through **PR #100** (`0293179` + this addendum's PR), dev DB current through **`20260706170000`**, no branches, nothing held. Unit 411/411, groups domain 187/187, journeys 2/2, `next build` clean. The retro entry instruction stands unchanged: *"run the Groups area retro — read bridge 2026-07-06_14"* — feed it the three post-close findings as fresh live-testing evidence.
