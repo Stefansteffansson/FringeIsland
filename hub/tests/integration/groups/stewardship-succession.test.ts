@@ -400,7 +400,11 @@ describe('FEAT-PC014 — stewardship succession contracts (G-E, MEM-7)', () => {
       expect(res.error?.code).toBe('42501');
     });
 
-    it('a group-as-member row is a valid nominee row (ADR-U006 uniformity — carried-forward green)', async () => {
+    // Amended 2026-07-06 (FEAT-PC015 / ADR-U041 §4): the ADR-U006-uniformity
+    // posture this test carried ("any active member is a valid nominee") was
+    // deliberately reversed by the G-F design session — stewardship
+    // succession lands on people. The same fixture now proves the refusal.
+    it('a group-as-member row is NOT a valid nominee (ADR-U041 §4 — persons only)', async () => {
       const groupId = await seedGroup('NominateGroupMember', [nominee1]);
       // an engagement group as an active member row of the fixture group
       const memberGroupRows = await runAdminSql(`
@@ -420,8 +424,9 @@ describe('FEAT-PC014 — stewardship succession contracts (G-E, MEM-7)', () => {
         p_group_id: groupId,
         p_nominee_ids: [nestedId],
       });
-      expect(error).toBeNull();
-      expect(await nominationFor(nestedId, groupId)).not.toBeNull();
+      expect(error?.code).toBe('22023');
+      expect(error?.message).toContain('not a person');
+      expect(await nominationFor(nestedId, groupId)).toBeNull();
     });
   });
 

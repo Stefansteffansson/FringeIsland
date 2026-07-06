@@ -3,7 +3,7 @@
 ---
 id: TASK-PC015-02
 title: The G-F migration — act_as_group key, six contracts, nominate/get_group_detail replaced in place
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PC015
@@ -31,4 +31,4 @@ Replacements-in-place start from the current bodies (`20260705072252` for `nomin
 
 ## Verification
 
-`npm run test:integration:groups` green; `npm run test:integration:rbac` green; migration applied + repaired on dev (or apply commands recorded in the PR if the environment denies).
+`npm run test:integration:groups` green; `npm run test:integration:security` green (`test:integration:rbac` points at a directory that no longer exists — the parked cooldown cleanup item, bridge `_13`; RBAC coverage lives inside the groups suites); migration applied + repaired on dev (or apply commands recorded in the PR if the environment denies).

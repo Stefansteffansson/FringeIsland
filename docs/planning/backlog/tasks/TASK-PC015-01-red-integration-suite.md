@@ -3,7 +3,7 @@
 ---
 id: TASK-PC015-01
 title: Red-first integration suite for the G-F acting contracts
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PC015
