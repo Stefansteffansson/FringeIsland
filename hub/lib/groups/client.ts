@@ -11,6 +11,7 @@ import type {
   CreateGroupInput,
   CreateGroupRoleInput,
   GroupDetail,
+  GroupSummary,
   RoleEntry,
   RolesFabric,
   RoleTemplateOption,
@@ -21,6 +22,7 @@ export type {
   CreateGroupInput,
   CreateGroupRoleInput,
   GroupDetail,
+  GroupSummary,
   RoleEntry,
   RolesFabric,
   RoleTemplateOption,
@@ -46,6 +48,56 @@ export class GroupsApiError extends Error {
 async function throwFrom(res: Response, fallback: string): Promise<never> {
   const body = (await res.json().catch(() => null)) as { error?: string } | null;
   throw new GroupsApiError(body?.error ?? fallback, res.status);
+}
+
+// Session cache (perf revision 2026-07-06): the measured /groups first load
+// fired GET /api/groups THREE times per visit (the auth listener hands out a
+// new `user` reference per event and the page effect re-fired) and the spinner
+// gated on the LAST response. Stale-while-revalidate: `peekMyGroups` paints
+// the last resolved list instantly; `fetchMyGroups` always revalidates and
+// concurrent callers share one in-flight request. Invalidation: session end
+// (AuthContext drops it on sign-out / expiry — profile-cache prior art) or an
+// explicit `invalidateGroupsCache()`.
+let cachedGroups: GroupSummary[] | null = null;
+let groupsInFlight: Promise<GroupSummary[]> | null = null;
+
+async function requestMyGroups(): Promise<GroupSummary[]> {
+  const res = await fetch('/api/groups');
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  const data = (await res.json()) as { groups: GroupSummary[] };
+  return data.groups ?? [];
+}
+
+/** The last resolved groups list this session — instant first paint. */
+export function peekMyGroups(): GroupSummary[] | null {
+  return cachedGroups;
+}
+
+/**
+ * GRP-4 list read: the caller's active groups via `/api/groups`. Always
+ * revalidates (freshness semantics unchanged — every mount still reads the
+ * contract); concurrent callers share one request; a FAILED read is never
+ * cached — the next caller retries (failures surface, never stick).
+ */
+export function fetchMyGroups(): Promise<GroupSummary[]> {
+  if (!groupsInFlight) {
+    const inFlight: Promise<GroupSummary[]> = requestMyGroups()
+      .then((groups) => {
+        cachedGroups = groups;
+        return groups;
+      })
+      .finally(() => {
+        if (groupsInFlight === inFlight) groupsInFlight = null;
+      });
+    groupsInFlight = inFlight;
+  }
+  return groupsInFlight;
+}
+
+/** Drop the session groups cache (sign-out / session end / account switch). */
+export function invalidateGroupsCache(): void {
+  cachedGroups = null;
+  groupsInFlight = null;
 }
 
 /** GRP-1: create an engagement group; resolves to the new group's id. */
