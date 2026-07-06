@@ -6,7 +6,7 @@ title: Group-of-groups membership & acting contracts
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -120,3 +120,13 @@ Consumed by Hub FEAT-H018 API-first. The acting-context read is the seam every f
 3. **Nominee eligibility = persons only** (`group_type='personal'`), stricter than ADR-U041's system-exclusion minimum; engagement-group nominees deferred until a real need. *Default: yes.*
 4. **Audit trace as additive column.** `group_memberships.status_changed_by_group_id uuid NULL REFERENCES groups(id) ON DELETE SET NULL`, written by the wielding contracts (and available to PC013 transitions later). *Default: yes.*
 5. **Raw `member_group_type`** in payloads (open-set) rather than a mapped kind-enum. *Default: yes.*
+
+## Implementation notes (6-done — Cycle G-F platform half, 2026-07-06)
+
+Built TDD red-first. **Schema gate passed:** Stefan reviewed PR #95 (Open Q1–Q5 defaults as implemented, the four in-default build decisions, the ADR-U038 direct-caller answers) and gave the nod; merged. Consumed by FEAT-H018 (Surface half; its notes carry the Hub side).
+
+- **Migration** `supabase/migrations/20260706120000_feat_pc015_group_of_groups_acting_contracts.sql` (applied to dev + repaired). The `act_as_group` key (catalog 39→40 — the remembered 44 was the legacy count) + Steward-template seed + **instance backfill** (template changes don't propagate to instances; the verification block counts zero missed instances); the Open Q4 audit column; `invite_group` / `search_invitable_groups` / `respond_to_group_invitation` / `leave_group_as_group` / `get_acting_contexts` / `get_group_memberships_of`; `nominate_steward` + `get_group_detail` **replaced in place**. Seeds files updated for fresh-DB parity. **No new table, no trigger changes, no policy changes.** Explicit `revoke from public, anon` per function (the PC014 build-finding-4 default-privileges hazard).
+- **Red evidence:** 20/26 red for the documented reasons — including the live contract **accepting a DeusEx nominee** (error null), the exact hole FEAT-H017:139 routed here. The 6 anon-floor guards were red-phase-vacuous (absent function = error) and are labelled guards, never claimed as TDD reds; the migration verification block is the real anon-grant enforcement.
+- **Build decisions inside the defaults (gate-ratified):** invite targets are public active engagement groups only (P0002 no-enumeration for everything else); `get_acting_contexts` reads **direct empowerments only** — deliberately not `has_permission()`, so Tier-1 admin reach never floods the selector and chaining cannot exist (ADR-U041 §2d); `leave_group_as_group` refuses last-active-Steward and last-member honestly; decline deletes (PC012 shape, no durable decline trace).
+- **Canon collision, resolved same-day:** the PC014 suite's "group-as-member is a valid nominee (ADR-U006 uniformity)" test asserted the posture ADR-U041 §4 deliberately reversed; amended to pin the 22023 refusal, with a Post-6-done amendment recorded in FEAT-PC014.
+- **Suite:** `hub/tests/integration/groups/group-of-groups.test.ts` 26/26 green (one test-side fixture fix: groups create private by default; the fixture sets visibility explicitly). Full groups + security regression **190/190**. (`test:integration:rbac` is a phantom path — the parked cooldown cleanup item, bridge `_13`.)
