@@ -51,6 +51,7 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 | ADR-U038 | [Platform contracts live platform-side; Surface `app/api` is a private BFF](ADR-U038-platform-contracts-platform-side-surface-bff.md) | Accepted | platform-core |
 | ADR-U039 | [Realtime socket doctrine — private channels, server-originated hints, authorized-path reads](ADR-U039-realtime-socket-doctrine.md) | Accepted | platform-core |
 | ADR-U040 | [Off-platform invitation is referral-to-the-platform, never a pre-committed group membership](ADR-U040-referral-not-email-membership.md) | Accepted | platform-core · product |
+| ADR-U041 | [Acting as a group is a permission; representatives are always people](ADR-U041-group-representation-by-permission.md) | Accepted | platform-core · product |
 
 ---
 
