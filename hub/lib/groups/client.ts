@@ -17,6 +17,7 @@ import type {
   RoleTemplateOption,
   UpdateGroupSettingsInput,
 } from '@/lib/groups/queries';
+import { OverviewTransportError } from '@/lib/me/overview-shared';
 
 export type {
   CreateGroupInput,
@@ -73,6 +74,22 @@ export function peekMyGroups(): GroupSummary[] | null {
   return cachedGroups;
 }
 
+/** Track a read as THE session in-flight request: resolve seeds the peek
+ *  cache; settle frees the slot (a FAILED read is never cached). */
+function trackGroupsRead(read: Promise<GroupSummary[]>): Promise<GroupSummary[]> {
+  const inFlight: Promise<GroupSummary[]> = read
+    .then((groups) => {
+      cachedGroups = groups;
+      return groups;
+    })
+    .finally(() => {
+      if (groupsInFlight === inFlight) groupsInFlight = null;
+    });
+  inFlight.catch(() => {}); // an adopted read may go unconsumed; never unhandled
+  groupsInFlight = inFlight;
+  return inFlight;
+}
+
 /**
  * GRP-4 list read: the caller's active groups via `/api/groups`. Always
  * revalidates (freshness semantics unchanged — every mount still reads the
@@ -80,24 +97,39 @@ export function peekMyGroups(): GroupSummary[] | null {
  * cached — the next caller retries (failures surface, never stick).
  */
 export function fetchMyGroups(): Promise<GroupSummary[]> {
-  if (!groupsInFlight) {
-    const inFlight: Promise<GroupSummary[]> = requestMyGroups()
-      .then((groups) => {
-        cachedGroups = groups;
-        return groups;
-      })
-      .finally(() => {
-        if (groupsInFlight === inFlight) groupsInFlight = null;
-      });
-    groupsInFlight = inFlight;
+  if (adoptedGroups) {
+    const adopted = adoptedGroups;
+    adoptedGroups = null;
+    return adopted;
   }
-  return groupsInFlight;
+  return groupsInFlight ?? trackGroupsRead(requestMyGroups());
 }
 
-/** Drop the session groups cache (sign-out / session end / account switch). */
+// ADR-U042: the bundle read IS the first mount's read (consume-once) — the
+// first fetchMyGroups after adoption resolves from the bundle even if it has
+// already settled; every later read revalidates via the standalone contract.
+let adoptedGroups: Promise<GroupSummary[]> | null = null;
+
+/** ADR-U042: adopt the bootstrap bundle's groups slice as this session's
+ *  read; a bundle TRANSPORT failure falls back to the standalone contract
+ *  read (the bundle is droppable transport — guardrail 3). */
+export function adoptGroupsRead(read: Promise<GroupSummary[]>): void {
+  adoptedGroups = trackGroupsRead(
+    read.catch((err) => {
+      if (err instanceof OverviewTransportError) return requestMyGroups();
+      throw err;
+    }),
+  );
+}
+
+/** Drop the session groups cache + adopted bundle slices (sign-out /
+ *  session end / account switch). */
 export function invalidateGroupsCache(): void {
   cachedGroups = null;
   groupsInFlight = null;
+  adoptedGroups = null;
+  adoptedInvitations = null;
+  adoptedNominations = null;
 }
 
 /** GRP-1: create an engagement group; resolves to the new group's id. */
@@ -307,11 +339,36 @@ export async function cancelEmailInvite(
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
 }
 
-/** MEM-3 read: the caller's own pending invitations — invitation context only. */
-export async function fetchMyInvitations(): Promise<MyInvitation[]> {
+// ADR-U042: the bootstrap bundle may hand this session ONE adopted read per
+// list resource. Consume-once — the first mount resolves from the bundle, every
+// later read revalidates via the standalone contract (mutation flows stay fresh).
+let adoptedInvitations: Promise<MyInvitation[]> | null = null;
+let adoptedNominations: Promise<PendingNomination[]> | null = null;
+
+async function requestMyInvitations(): Promise<MyInvitation[]> {
   const res = await fetch('/api/me/invitations');
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
   return (await res.json()) as MyInvitation[];
+}
+
+/** ADR-U042: adopt the bundle's invitations slice (transport failure → standalone). */
+export function adoptMyInvitationsRead(read: Promise<MyInvitation[]>): void {
+  const guarded = read.catch((err) => {
+    if (err instanceof OverviewTransportError) return requestMyInvitations();
+    throw err;
+  });
+  guarded.catch(() => {}); // may go unconsumed; never unhandled
+  adoptedInvitations = guarded;
+}
+
+/** MEM-3 read: the caller's own pending invitations — invitation context only. */
+export async function fetchMyInvitations(): Promise<MyInvitation[]> {
+  if (adoptedInvitations) {
+    const adopted = adoptedInvitations;
+    adoptedInvitations = null;
+    return adopted;
+  }
+  return requestMyInvitations();
 }
 
 /** MEM-3: accept — invited→active substrate-side (role auto-bind included). */
@@ -449,11 +506,31 @@ export async function deleteGroup(groupId: string): Promise<Record<string, unkno
   return (await res.json()) as Record<string, unknown>;
 }
 
-/** STORY-2 read: the caller's own pending stewardship offers (A-NTF seam). */
-export async function fetchMyNominations(): Promise<PendingNomination[]> {
+async function requestMyNominations(): Promise<PendingNomination[]> {
   const res = await fetch('/api/me/nominations');
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
   return (await res.json()) as PendingNomination[];
+}
+
+/** ADR-U042: adopt the bundle's nominations slice (transport failure → standalone). */
+export function adoptMyNominationsRead(read: Promise<PendingNomination[]>): void {
+  const guarded = read.catch((err) => {
+    if (err instanceof OverviewTransportError) return requestMyNominations();
+    throw err;
+  });
+  guarded.catch(() => {}); // may go unconsumed; never unhandled
+  adoptedNominations = guarded;
+}
+
+/** STORY-2 read: the caller's own pending stewardship offers (A-NTF seam).
+ *  Consume-once adopted read first (ADR-U042), then the standalone contract. */
+export async function fetchMyNominations(): Promise<PendingNomination[]> {
+  if (adoptedNominations) {
+    const adopted = adoptedNominations;
+    adoptedNominations = null;
+    return adopted;
+  }
+  return requestMyNominations();
 }
 
 /**

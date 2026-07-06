@@ -10,6 +10,7 @@
  * error message on failure (never a silent swallow).
  */
 import type { Profile, ProfilePatch } from '@/lib/profile/queries';
+import { OverviewTransportError } from '@/lib/me/overview-shared';
 
 async function errorMessage(res: Response, fallback: string): Promise<string> {
   const body = (await res.json().catch(() => null)) as { error?: string } | null;
@@ -53,6 +54,23 @@ export function fetchProfile(): Promise<Profile> {
 /** Drop the session profile cache (sign-out / session end / account switch). */
 export function invalidateProfileCache(): void {
   cached = null;
+}
+
+/** ADR-U042: adopt the bootstrap bundle's profile slice as the session cache.
+ *  A bundle TRANSPORT failure falls back to the standalone contract read
+ *  (guardrail 3); a FAILED read is never cached — same rule as fetchProfile. */
+export function adoptProfileRead(read: Promise<Profile>): void {
+  const inFlight: Promise<Profile> = read
+    .catch((err) => {
+      if (err instanceof OverviewTransportError) return requestProfile();
+      throw err;
+    })
+    .catch((err) => {
+      if (cached === inFlight) cached = null;
+      throw err;
+    });
+  inFlight.catch(() => {}); // may go unconsumed; never unhandled
+  cached = inFlight;
 }
 
 /** Update the caller's own identity-scope fields via the FEAT-PC003 write contract. */
