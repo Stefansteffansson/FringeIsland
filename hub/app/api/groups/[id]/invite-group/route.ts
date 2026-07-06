@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { inviteGroup } from '@/lib/groups/acting';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
@@ -19,12 +18,17 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const supabase = await createClient();
-  const userId = await getVerifiedUserId(supabase);
+  // ADR-U037: a state-changing mutation verifies identity over the network
+  // (getUser), not the local-only getClaims used on hot reads.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!userId) {
+  if (!user) {
     emitTelemetry('acting.invite_group_unauthenticated');
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
+  const userId = user.id;
 
   const { id } = await params;
   const body = (await request.json().catch(() => null)) as

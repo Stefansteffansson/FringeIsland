@@ -36,11 +36,12 @@ function LoginForm() {
 
     emitTelemetry('auth.sign_in_succeeded', { email }); // V4
     // V1 audit seam — record the auth action server-side (API-first, best-effort).
-    try {
-      await fetch('/api/auth/audit', { method: 'POST' });
-    } catch {
-      /* seam is best-effort in the skeleton; never block the redirect */
-    }
+    // Fire-and-forget: the audit POST must NOT serialize before the redirect
+    // (measured ~0.7 s cold on the post-login path). The request outlives this
+    // component's unmount; failures are swallowed (best-effort seam).
+    void fetch('/api/auth/audit', { method: 'POST' }).catch(() => {
+      /* best-effort seam; never block or fail the redirect */
+    });
     router.push(redirectTo);
   }
 

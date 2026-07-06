@@ -89,11 +89,15 @@ describe('FEAT-H018 — acting BFF routes (TASK-H018-01)', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getTelemetrySink().length = 0;
+    // GET reads verify identity locally (getClaims via getVerifiedUserId);
+    // the POST mutations verify over the network (getUser) per ADR-U037.
     getVerifiedUserId.mockResolvedValue('user-1');
+    getUser.mockResolvedValue({ data: { user: { id: 'user-1' } } });
   });
 
   it('every route maps a missing session to 401', async () => {
     getVerifiedUserId.mockResolvedValue(null);
+    getUser.mockResolvedValue({ data: { user: null } });
     const results = (await Promise.all([
       ACTING_CONTEXTS(fakeRequest()),
       INVITE_GROUP(jsonRequest({ invited_group_id: 'a' }), groupParams),

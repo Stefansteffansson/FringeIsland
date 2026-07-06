@@ -6,10 +6,9 @@ import {
 } from '@/lib/journal/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Edge-safe (single SECURITY DEFINER RPCs); pinned with the sibling journal
-// route per the ADR-U036 co-location discipline.
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
+// Node runtime (ADR-U036): a mutation-only route — Edge is reserved for hot
+// render-path reads, so this route takes the default Node runtime. The sibling
+// GET /api/journal stays Edge for its read.
 
 /**
  * FEAT-H011 — PATCH/DELETE /api/journal/[id] (IDN-5, STORY-3).
