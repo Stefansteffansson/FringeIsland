@@ -28,5 +28,6 @@ audit-2026-Q2.md                 ← quarterly process audit
 
 ## Index
 
+- [retro-2026-07-06.md](retro-2026-07-06.md) — cycle retro, Phase-3 Groups area (Cycles G-A–G-F + the same-day perf/compliance/security session); the anon-EXECUTE class fix, route-policy drift, and ADR-U042 first-load lessons; triggered the Groups-era task sweep.
 - [retro-2026-07-03.md](retro-2026-07-03.md) — cycle retro, Phase-3 Identity completion (Cycles A–E + interludes); first committed cycle retro; triggered the Identity-era task sweep.
 - [2026-07-02-api-boundary-compliance-retro.md](2026-07-02-api-boundary-compliance-retro.md) — special-topic root-cause retro: why v2 code drifted from the API-boundary canon (companion to the api-conformance-register).
