@@ -17,7 +17,7 @@ export const preferredRegion = 'dub1';
  * `act_as_group` — ADR-U041 §2d; never Tier-1 reach, never a chained hop).
  * Group names render to the member and never enter telemetry.
  */
-export async function GET() {
+export async function GET(request: Request) {
   const supabase = await createClient();
   const userId = await getVerifiedUserId(supabase);
 
@@ -27,7 +27,11 @@ export async function GET() {
   }
 
   try {
-    const contexts = await fetchActingContexts(supabase);
+    // Post-6-done fix: `?context=` scopes the read — rows carry the
+    // membership flag so the Surface offers only hats with standing.
+    const requestUrl = (request as { url?: string }).url;
+    const context = requestUrl ? new URL(requestUrl).searchParams.get('context') : null;
+    const contexts = await fetchActingContexts(supabase, context ?? undefined);
     emitTelemetry('acting.contexts', { actor: userId, count: contexts.length });
     return NextResponse.json(contexts);
   } catch (err) {
