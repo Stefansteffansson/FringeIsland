@@ -79,8 +79,11 @@ Plain `useState`; every mount refetches. Prior art exists and was not adopted he
 6. By finding: enable/confirm Fluid compute; fewer distinct functions to keep warm (Phase 2 already helps); only then consider keep-warm pings (last resort).
 7. **Withdrawn (2026-07-06 conformance check):** browser-direct PostgREST reads were considered and **rejected as Option B in ADR-U038** (L34, L61-63), and `docs/products/hub/CLAUDE.md` L22 forbids browser table reads/writes outright. Pursuing this would mean reopening ADR-U038 — not proposed. (The earlier draft of this line mis-cited ADR-U038 as sanctioning the idea; corrected.)
 
-### Phase 4 — verify like ADR-U037
-8. Re-measure the real authenticated waterfall (cold, warm, and one true post-login pass) and record before/after numbers in the session bridge.
+### Phase 4 — verify like ADR-U037 — **MEASURED 2026-07-06 (post-PR #102, deployment `fringe-island-8hyj63dks`)**
+8. Re-measured the real authenticated waterfall on a fresh production deployment, network tracking armed from the first request, true post-login pass (Stefan signing in live):
+   - **RC2 fixed:** exactly **one** `GET /api/groups` on the post-login `/groups` load (was three). One each of `invitations` / `nominations` / `profile` / `account/state`.
+   - **RC5 fixed:** client-side revisit (`/groups` → home → back) painted the list **with no spinner at all** (MutationObserver on `[data-testid="loading-state"]` across the whole transition: never appeared) while one background revalidate ran (`/api/groups` 596 ms warm). `profile/me` and `account/state` were **not** re-fetched — the session caches hold.
+   - **RC1 remains, as predicted:** the fresh-deploy cold boots still cost 2.9-4.75 s TTFB per route (`account/state` 4 750 ms fired at sign-in; `groups` 4 700 ms / `invitations` 4 576 ms / `nominations` 4 648 ms / `profile` 2 946 ms in the post-redirect burst), and `/api/auth/audit` (1 166 ms cold) serializes between sign-in and the redirect. First-ever visit ≈ 7 s sign-in-click → list. This is Phase 2/3 territory (one bootstrap call; Vercel-layer confirmation).
 
 **Tests (TDD, red-first):** unit test asserting the groups effect fires exactly once across a simulated `getSession → INITIAL_SESSION → TOKEN_REFRESHED` event sequence (regression for RC2); contract/integration test for the bootstrap endpoint; E2E assertion on spinner-clear budget.
 
