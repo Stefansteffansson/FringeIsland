@@ -84,9 +84,12 @@ export function MyPermissionsPanel({
       ) : permissions === null ? (
         <p className="text-sm text-gray-500">Loading your permissions...</p>
       ) : permissions.length === 0 ? (
+        // Post-6-done fix: report what the substrate returned, never an
+        // invented floor. "You can view" stays true by construction for
+        // Myself (the page rendered); an acting group gets the plain fact.
         <p className="text-sm text-gray-500">
           {actingGroup
-            ? `${actingGroup.name} can view this group.`
+            ? `${actingGroup.name} is a member here but holds no permission grants.`
             : 'You can view this group.'}
         </p>
       ) : (

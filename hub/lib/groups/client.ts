@@ -415,9 +415,14 @@ import type { ActingContext, ActingMembership } from '@/lib/groups/acting';
 
 export type { ActingContext, ActingMembership } from '@/lib/groups/acting';
 
-/** STORY-1 read: the groups the caller may act as (direct empowerments only). */
-export async function fetchActingContexts(): Promise<ActingContext[]> {
-  const res = await fetch('/api/me/acting-contexts');
+/** STORY-1 read: the groups the caller may act as (direct empowerments only).
+ *  With a context id, rows carry the membership flag (post-6-done fix). */
+export async function fetchActingContexts(contextGroupId?: string): Promise<ActingContext[]> {
+  const res = await fetch(
+    contextGroupId
+      ? `/api/me/acting-contexts?context=${encodeURIComponent(contextGroupId)}`
+      : '/api/me/acting-contexts',
+  );
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
   return (await res.json()) as ActingContext[];
 }

@@ -371,6 +371,28 @@ describe('FEAT-PC015 — group-of-groups membership & acting contracts (ADR-U041
       await cm.auth.signOut();
     });
 
+    it('S4b: the context-scoped read flags members-of-context (post-6-done fix, 2026-07-06 live testing)', async () => {
+      // Live-testing finding: the selector offered hats with no standing. The
+      // read now takes the context and flags which wieldable groups are its
+      // active members — the Surface offers only those (self never; that
+      // exclusion is Surface-side since a group is never a member of itself).
+      const c = await asUser(stewardA);
+      const inB = await c.rpc('get_acting_contexts', { p_context_group_id: groupB });
+      expect(inB.error).toBeNull();
+      const rowInB = ((inB.data ?? []) as Array<{ group_id: string; is_member_of_context: boolean }>).find(
+        (r) => r.group_id === groupA,
+      );
+      expect(rowInB?.is_member_of_context).toBe(true); // A is active in B here (post S3-accept)
+
+      const inA = await c.rpc('get_acting_contexts', { p_context_group_id: groupA });
+      expect(inA.error).toBeNull();
+      const rowInA = ((inA.data ?? []) as Array<{ group_id: string; is_member_of_context: boolean }>).find(
+        (r) => r.group_id === groupA,
+      );
+      expect(rowInA?.is_member_of_context).toBe(false); // never a member of itself
+      await c.auth.signOut();
+    });
+
     it('S4: get_group_memberships_of is wielding-gated', async () => {
       const c = await asUser(stewardA);
       const { data, error } = await c.rpc('get_group_memberships_of', {

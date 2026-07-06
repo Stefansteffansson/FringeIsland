@@ -12,6 +12,12 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 export interface ActingContext {
   group_id: string;
   name: string;
+  /**
+   * Post-6-done fix: present when the read was context-scoped — true iff this
+   * wieldable group is an ACTIVE member of the named context. The Surface
+   * offers only flagged contexts (self is never flagged).
+   */
+  is_member_of_context?: boolean | null;
 }
 
 export interface ActingMembership {
@@ -21,9 +27,16 @@ export interface ActingMembership {
   status: string;
 }
 
-/** The act-as selector's data source: groups the caller may act as. */
-export async function fetchActingContexts(supabase: SupabaseClient): Promise<ActingContext[]> {
-  const { data, error } = await supabase.rpc('get_acting_contexts');
+/** The act-as selector's data source: groups the caller may act as. With a
+ *  context id, rows carry the membership flag the Surface filters on. */
+export async function fetchActingContexts(
+  supabase: SupabaseClient,
+  contextGroupId?: string,
+): Promise<ActingContext[]> {
+  const { data, error } = await supabase.rpc(
+    'get_acting_contexts',
+    contextGroupId ? { p_context_group_id: contextGroupId } : {},
+  );
   if (error) throw error;
   return (data ?? []) as ActingContext[];
 }

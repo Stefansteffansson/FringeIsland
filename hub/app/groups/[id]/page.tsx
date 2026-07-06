@@ -150,7 +150,10 @@ export default function GroupDetailPage() {
   // selector's group options. Panel-local failures; the page stands.
   const loadActing = useCallback(async () => {
     try {
-      const contexts = await fetchActingContexts();
+      // Context-scoped (post-6-done fix): rows carry is_member_of_context so
+      // the selector offers only hats with standing here; the full list still
+      // gates the memberships panel below.
+      const contexts = await fetchActingContexts(groupId);
       setActingContexts(contexts);
       if (contexts.some((c) => c.group_id === groupId)) {
         try {
@@ -254,7 +257,11 @@ export default function GroupDetailPage() {
             permissions={actingAs === 'myself' ? permissions : actingPermissions}
             error={permissionsError}
             onReload={() => void loadPermissions()}
-            actingContexts={actingContexts}
+            actingContexts={actingContexts.filter(
+              // Only hats with standing HERE: active members of this group,
+              // never the group itself (post-6-done fix — live testing).
+              (c) => c.group_id !== groupId && c.is_member_of_context === true,
+            )}
             actingAs={actingAs}
             onActAsChange={(v) => void changeActingAs(v)}
           />

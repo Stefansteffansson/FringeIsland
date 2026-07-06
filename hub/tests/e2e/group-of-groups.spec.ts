@@ -133,6 +133,9 @@ test.describe('FEAT-H018 — group-of-groups (Cycle G-F)', () => {
     const panel = pageA.getByTestId('group-memberships-panel');
     await expect(panel).toBeVisible({ timeout: 15000 });
     await expect(panel.getByText(`E2E GF Byalaget ${stamp}`)).toBeVisible();
+    // Post-6-done fix: on A's OWN page the selector offers no hat (a group
+    // never acts as itself) — while the wielder's memberships panel renders.
+    await expect(pageA.getByTestId('act-as-select').locator('option')).toHaveCount(1);
     const acceptButtons = panel.getByTestId(/accept-as-group-/);
     await acceptButtons.first().click();
     await expect(pageA.getByText(/you are answering for/i)).toBeVisible();

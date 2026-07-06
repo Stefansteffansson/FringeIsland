@@ -72,6 +72,22 @@ describe('FEAT-H014/H018 — MyPermissionsPanel', () => {
     expect(onActAsChange).toHaveBeenCalledWith('a1');
   });
 
+  it('acting with an empty grant set reports honestly — never "can view" (post-6-done fix)', () => {
+    render(
+      <MyPermissionsPanel
+        permissions={[]}
+        error={null}
+        onReload={onReload}
+        actingContexts={[{ group_id: 'a1', name: 'Familjen' }]}
+        actingAs="a1"
+        onActAsChange={onActAsChange}
+      />,
+    );
+    // The panel reports what the substrate returned, never an invented floor.
+    expect(screen.getByText(/Familjen is a member here but holds no permission grants/i)).toBeInTheDocument();
+    expect(screen.queryByText(/can view this group/i)).not.toBeInTheDocument();
+  });
+
   it('names the substitution while acting as a group (ADR-U041 §2a)', () => {
     render(
       <MyPermissionsPanel

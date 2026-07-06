@@ -113,6 +113,16 @@ describe('FEAT-H018 — acting BFF routes (TASK-H018-01)', () => {
     expect(telemetryIsContentFree()).toBe(true);
   });
 
+  it('GET /api/me/acting-contexts forwards ?context= to the scoped read (post-6-done fix)', async () => {
+    fetchActingContexts.mockResolvedValue([]);
+    const res = (await ACTING_CONTEXTS(
+      fakeRequest('http://x/api/me/acting-contexts?context=ctx-1'),
+    )) as RouteResponse;
+    expect(res.status).toBe(200);
+    const args = (fetchActingContexts as jest.Mock).mock.calls[0] as unknown[];
+    expect(args[1]).toBe('ctx-1');
+  });
+
   it('POST invite-group relays success and passes 22023 refusal copy through as 409', async () => {
     inviteGroup.mockResolvedValue({ membership_id: 'm1' });
     const ok = (await INVITE_GROUP(

@@ -2,6 +2,11 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-07-06 — Small fixes from live testing (acting as a group)
+
+- **The "Acting as" list only offers hats that fit.** It used to show every group you represent on every page — including the very group you were looking at, and groups with no membership there. Now it offers a group only where that group actually belongs (and never on its own page — a group doesn't act as itself).
+- **The empty state tells the truth.** "…can view this group" could appear for a group with no standing at all. The panel now says exactly what the platform answered: a member with no special grants, or nothing.
+
 ## 2026-07-06 — Group-of-groups: a group can join a group, and act through its people ([FEAT-H018](../docs/products/hub/features/FEAT-H018-group-of-groups-and-acting-as-a-group.md))
 
 - **Invite a whole group.** Stewards who can invite members can now invite another group by search — it joins as one member, with its own voice.
