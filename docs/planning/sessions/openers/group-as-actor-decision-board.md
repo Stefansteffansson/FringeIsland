@@ -96,6 +96,18 @@ The bridge `_13:26` describes G-29 as "transitive resolution beyond depth 1"; th
 
 ---
 
+## Decisions (session run 2026-07-06, in-conversation with Stefan)
+
+All calls made; output recorded as **ADR-U041** (`docs/architecture/decisions/ADR-U041-group-representation-by-permission.md`). Per item:
+
+- **DB-1 — DECIDED: O1.** Representation is a dedicated catalog permission, **`act_as_group`**, held within the acting group and granted through its roles; Steward template carries it by default; each group may widen it for itself (collision-checked: no `act_as` key exists in the catalog). Stefan probed O3 (everyone wields) and the transitive reading; both rejected — O3 as membership-as-authority (the ADR-U028 amendment's condemned pattern) plus lateral escalation, the transitive reading as OQ-6/D5 territory, not representation. "Everyone" remains available per group as a *default-grant configuration*, never a platform law.
+- **DB-2 — DECIDED: all four clauses.** Substitution; attribution to the group with an audit-level human trace (never authorship); outward-only; and a fourth clause added during the session from Stefan's A-in-B-in-C question: **no chaining — the wielding actor is always a personal group.** A group cannot be appointed another group's representative; both resolution depth and representation depth are 1.
+- **DB-3 — STOOD (answered).** D5 unchanged; wielding rule worded depth-agnostically; OQ-6 untouched.
+- **DB-4 — DECIDED: Option A.** System-type groups (`group_type = 'system'`) are not nominatable as stewardship successors; the eligibility predicate excludes them. The "hand to FringeIsland" convenience is noted as a possible future explicit feature, out of G-F scope.
+- **DB-5 — DECIDED: bundle as recommended.** Typed system-member marker in payloads (prerequisite); excluded from nominate pick-lists; shown in member lists with an honest badge; affordance-driving counts key on the non-system member count; substrate guards untouched.
+- **DB-6 — DEFAULT STOOD.** The H014 selector grows contexts (groups where the actor holds `act_as_group`) when G-F builds.
+- **DB-7 — DEFAULT STOOD.** G-F specs and ADR-U041 cite OQ-6 for depth and PC011 Open Q1 for wielding, with "routed via G-29" as provenance only; the Groups plan's MEM-10 cell gets the pointer correction at G-F decomposition.
+
 ## Sequencing after the session
 
 1. Record the calls (this file gains a "Decisions" section or the calls go straight into the ADR draft — Stefan's preference).
