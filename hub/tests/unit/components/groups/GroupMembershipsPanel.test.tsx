@@ -44,6 +44,10 @@ describe('FEAT-H018 — GroupMembershipsPanel (STORY-3)', () => {
     expect(screen.getByText('Byalaget')).toBeInTheDocument();
     expect(screen.getByText('Foreningen')).toBeInTheDocument();
     expect(screen.getByTestId('membership-status-m1')).toHaveTextContent(/invited/i);
+    // Post-6-done fix: the context group's name is a door, not a label —
+    // the wielder can visit the group their group belongs to.
+    const link = screen.getByRole('link', { name: 'Foreningen' }) as HTMLAnchorElement;
+    expect(link.getAttribute('href')).toBe('/groups/b2');
   });
 
   it('accepting names the wielding in the confirm and re-reads on success', async () => {

@@ -551,6 +551,51 @@ describe('FEAT-PC015 — group-of-groups membership & acting contracts (ADR-U041
   });
 
   // --------------------------------------------------------------------------
+  // Post-6-done — revealed visibility (2026-07-06 live testing, finding 3):
+  // a group's page opens to those it has admitted or invited — directly, or
+  // through a group they represent. The no-leak rule protects UNREVEALED
+  // groups; an invitation / admission IS the group revealing itself.
+  // --------------------------------------------------------------------------
+  describe('Post-6-done — revealed visibility', () => {
+    it('an invited viewer sees a private group\'s face', async () => {
+      const v = await seedGroup(stewardB, `GoG-V-${run}`); // private
+      await seedMembership(v, nominee.personalGroupId, stewardB, 'invited');
+      const c = await asUser(nominee);
+      const { data, error } = await c.rpc('get_group_detail', { p_group_id: v });
+      expect(error).toBeNull();
+      expect((data as { name: string }).name).toBe(`GoG-V-${run}`);
+      // The face only: private + non-member + no keys → no member list.
+      expect((data as { members?: unknown }).members).toBeUndefined();
+      await c.auth.signOut();
+    });
+
+    it('a wielder sees the private group their group belongs to', async () => {
+      const w = await seedGroup(stewardB, `GoG-W-${run}`); // private
+      await seedMembership(w, groupA, stewardB); // A active in W
+      const c = await asUser(stewardA); // wields A; personally NOT a member of W
+      const { data, error } = await c.rpc('get_group_detail', { p_group_id: w });
+      expect(error).toBeNull();
+      expect((data as { name: string }).name).toBe(`GoG-W-${run}`);
+      await c.auth.signOut();
+    });
+
+    it('no over-widening: a keyless member of A, and a stranger, stay refused (carried-forward guards)', async () => {
+      const rows = await runAdminSql(
+        `SELECT id FROM public.groups WHERE name = 'GoG-W-${run}';`,
+      );
+      const w = rows[0].id as string;
+      const cm = await asUser(memberA); // in A, but no act_as_group
+      const keyless = await cm.rpc('get_group_detail', { p_group_id: w });
+      expect(keyless.error?.code).toBe('P0002');
+      await cm.auth.signOut();
+      const cs = await asUser(memberB); // no tie to W at all
+      const stranger = await cs.rpc('get_group_detail', { p_group_id: w });
+      expect(stranger.error?.code).toBe('P0002');
+      await cs.auth.signOut();
+    });
+  });
+
+  // --------------------------------------------------------------------------
   // ADR-U038 adversarial floor: no anon EXECUTE on any new function
   // --------------------------------------------------------------------------
   describe('API boundary — anon role holds nothing', () => {

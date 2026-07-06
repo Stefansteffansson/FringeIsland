@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
 import {
   acceptInvitation,
   declineInvitation,
@@ -11,10 +12,12 @@ import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
 /**
  * FEAT-H015 STORY-4 — my invitations, above the groups list.
- * The invitation CONTEXT only (the contract returns name/description/inviter —
- * never group detail; an invited FIM cannot view a private group). Accept
- * joins and hands the page its groups re-read (one refresh — the group appears
- * as the invitation leaves); Decline is ConfirmModal-gated. No pending
+ * The invitation CONTEXT (the contract returns name/description/inviter).
+ * Post-6-done fix (2026-07-06): the group name links to the group page —
+ * the revealed-visibility amendment lets an invited FIM see the group's
+ * face before answering (look before you answer). Accept joins and hands
+ * the page its groups re-read (one refresh — the group appears as the
+ * invitation leaves); Decline is ConfirmModal-gated. No pending
  * invitations → no section at all. Auto-claimed-at-signup invitations render
  * and answer identically — this component cannot tell the difference, by design.
  */
@@ -96,7 +99,14 @@ export function MyInvitations({ onAnswered }: { onAnswered: () => void }) {
             className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-blue-100 bg-white px-4 py-3"
           >
             <div>
-              <p className="text-sm font-medium text-gray-900">{inv.group_name}</p>
+              <p className="text-sm font-medium text-gray-900">
+                <Link
+                  href={`/groups/${encodeURIComponent(inv.group_id)}`}
+                  className="hover:underline"
+                >
+                  {inv.group_name}
+                </Link>
+              </p>
               {inv.group_description && (
                 <p className="text-xs text-gray-600">{inv.group_description}</p>
               )}

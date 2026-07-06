@@ -96,4 +96,10 @@ describe('FEAT-H015 — MyInvitations (STORY-4)', () => {
     render(<MyInvitations onAnswered={onAnswered} />);
     expect(await screen.findByRole('alert')).toBeTruthy();
   });
+
+  it('the group name links to the group page (post-6-done fix — look before you answer)', async () => {
+    render(<MyInvitations onAnswered={onAnswered} />);
+    const link = (await screen.findByRole('link', { name: 'The Reading Circle' })) as HTMLAnchorElement;
+    expect(link.getAttribute('href')).toBe('/groups/grp-1');
+  });
 });

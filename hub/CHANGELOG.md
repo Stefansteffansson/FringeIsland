@@ -4,6 +4,7 @@ User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is
 
 ## 2026-07-06 — Small fixes from live testing (acting as a group)
 
+- **You can visit before you answer, and visit where your group belongs.** Group names are links now — in your invitations and in your group's memberships panel. And the platform opens the group's front page to you in both cases: an invitation or an admission means the group has already revealed itself, so you're no longer deciding blind or locked out of a group your own group belongs to. (Member lists and everything else keep their existing rules.)
 - **The "Acting as" list only offers hats that fit.** It used to show every group you represent on every page — including the very group you were looking at, and groups with no membership there. Now it offers a group only where that group actually belongs (and never on its own page — a group doesn't act as itself).
 - **The empty state tells the truth.** "…can view this group" could appear for a group with no standing at all. The panel now says exactly what the platform answered: a member with no special grants, or nothing.
 

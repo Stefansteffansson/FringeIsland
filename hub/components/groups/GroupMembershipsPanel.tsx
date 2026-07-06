@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import {
   leaveGroupAsGroupClient,
   respondToGroupInvitationClient,
@@ -118,7 +119,15 @@ export function GroupMembershipsPanel({
               className="flex items-center justify-between gap-3 text-sm text-gray-800"
             >
               <div className="flex items-center gap-2">
-                {r.name}
+                {/* Post-6-done fix: a door, not a label — the revealed-
+                    visibility amendment lets the wielder visit the group
+                    their group belongs to. */}
+                <Link
+                  href={`/groups/${encodeURIComponent(r.group_id)}`}
+                  className="hover:underline"
+                >
+                  {r.name}
+                </Link>
                 <span
                   data-testid={`membership-status-${r.membership_id}`}
                   className={`rounded px-1.5 py-0.5 text-xs font-medium ${
