@@ -3,10 +3,9 @@ import { createClient } from '@/lib/supabase/server';
 import { revokeOwnSession } from '@/lib/sessions/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Edge-safe (a single SECURITY DEFINER RPC); pinned with the sibling sessions
-// route per the ADR-U036 co-location discipline.
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
+// Node runtime (ADR-U036): a mutation-only route — Edge is reserved for hot
+// render-path reads, so this route takes the default Node runtime. The sibling
+// GET /api/sessions stays Edge for its read.
 
 /**
  * FEAT-H012 — DELETE /api/sessions/[id] (IDN-11, STORY-2).
