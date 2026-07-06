@@ -1,12 +1,13 @@
 -- ==========================================================================
--- Seed 01: Permissions Catalog (39 permissions across 6 categories)
+-- Seed 01: Permissions Catalog (40 permissions across 6 categories)
 -- ==========================================================================
 -- Must run FIRST — other seeds reference permissions by name.
 -- ==========================================================================
 
 INSERT INTO public.permissions (name, description, category) VALUES
-  -- Group Management (15)
+  -- Group Management (16)
   ('view_member_list', 'View the list of group members', 'group_management'),
+  ('act_as_group', 'Act as this group where it is a member of another group (ADR-U041 representation)', 'group_management'),
   ('view_member_profiles', 'View detailed profiles of group members', 'group_management'),
   ('invite_members', 'Invite new members to the group', 'group_management'),
   ('activate_members', 'Re-activate paused members', 'group_management'),

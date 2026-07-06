@@ -16,14 +16,14 @@ INSERT INTO public.role_templates (name, description, is_system) VALUES
 -- Role Template Permissions (D18a permission grid)
 -- ==========================================================================
 
--- Steward: 25 permissions (full group management)
+-- Steward: 26 permissions (full group management + ADR-U041 representation)
 INSERT INTO public.role_template_permissions (role_template_id, permission_id)
 SELECT rt.id, p.id
 FROM public.role_templates rt, public.permissions p
 WHERE rt.name = 'Steward Role Template'
   AND p.name IN (
-    -- Group Management (all 15)
-    'view_member_list', 'view_member_profiles', 'invite_members',
+    -- Group Management (all 16)
+    'view_member_list', 'act_as_group', 'view_member_profiles', 'invite_members',
     'activate_members', 'pause_members', 'remove_members',
     'assign_roles', 'remove_roles', 'manage_roles',
     'edit_group_settings', 'set_group_visibility',
