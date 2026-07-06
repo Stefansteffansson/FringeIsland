@@ -58,9 +58,7 @@ const seedGroup = async (steward: TestUser, name: string, isPublic = false): Pro
   const { data: groupId, error } = await c.rpc('create_engagement_group', { p_name: name });
   if (error) throw new Error(`seedGroup(${name}): ${error.message}`);
   createdGroupIds.push(groupId as string);
-  if (!isPublic) {
-    await admin.from('groups').update({ is_public: false }).eq('id', groupId);
-  }
+  await admin.from('groups').update({ is_public: isPublic }).eq('id', groupId);
   await c.auth.signOut();
   return groupId as string;
 };
