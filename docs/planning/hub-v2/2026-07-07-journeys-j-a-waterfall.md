@@ -22,6 +22,24 @@ The single largest app-side item measured anywhere on the walk is the **sign-in 
 
 **Boundary bet: DECIDED — P1-residual** (Stefan, 2026-07-07, same session as the measurement): the sign-in landing's `/api/me/overview` bundle (~870 ms of the 1 375 ms click-to-content) is the target. P3b stays parked (its DB-layer condition not met); P4 unargued-for by the data. Ships within the Journeys area; verified-or-explicitly-re-parked at the area gate per the exit checklist.
 
+## P1-residual — first investigation (same session, Stefan's authenticated tab, 3 runs each)
+
+The bundle vs its own slices, measured standalone on production:
+
+| Read | Run 1 (first hit) | Runs 2–3 (warm) |
+|---|---|---|
+| `/api/me/overview` (the bundle) | **1 374 ms** | 435 / 367 ms |
+| `/api/groups` | 446 ms | 146 / 153 ms |
+| `/api/profile/me` | 265 ms | 161 / 147 ms |
+| `/api/account/state` | 253 ms | 156 / 152 ms |
+| `/api/account/consent` | 278 ms | 143 / 314 ms |
+| `/api/me/invitations` | 233 ms | 144 / 152 ms |
+| `/api/me/nominations` | 244 ms | ~170 ms |
+
+Two facts: (1) **warm**, the bundle costs ~2.5x a single slice (~400 ms vs ~150 ms) even though its five reads run in parallel — the overhead lives in the one Edge invocation making five separate Edge→Supabase round-trips (per-call connection/TLS/auth costs that the parallelism doesn't hide); (2) the **first invocation** pays ~1.4 s — exactly what the sign-in landing eats (the 866 ms observed at J-O5 was a partially-warm case). The slices themselves are uniformly healthy.
+
+**Fix directions (open):** (a) collapse the five substrate round-trips into one `get_own_overview()` RPC — but ADR-U042 guardrail 4 explicitly defers substrate-side composition until a second surface wants the bundle, so this route needs an ADR-U042 amendment decision, not a patch; (b) connection reuse / keep-alive tuning inside the Edge invocation — experiment-shaped; (c) pre-warming is NOT a shortcut — a 401 warmup ping exercises only the isolate, not the real Edge→Supabase path (the measured-path-not-proxy lesson). Next concrete step: per-slice server-side timing via a custom response header (Vercel drops `Server-Timing` on Edge responses) to pin exactly where the ~250 ms warm overhead and the ~1 s cold penalty sit.
+
 ## Gate status
 
 J-A's pages join the area-gate protocol **measured and passing**; the J-O5 first-ever-cold scenario is measured and passing. The area gate itself (before the area retro, after J-E) re-runs this protocol across the whole area.
