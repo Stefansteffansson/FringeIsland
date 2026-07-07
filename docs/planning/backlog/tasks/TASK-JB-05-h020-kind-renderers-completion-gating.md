@@ -3,7 +3,7 @@
 ---
 id: TASK-JB-05
 title: H020 kind renderers + completion/gating UX
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H020

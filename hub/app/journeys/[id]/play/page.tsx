@@ -16,7 +16,7 @@ import {
   fetchMyJourneyEnrollments,
   JourneysApiError,
 } from '@/lib/journeys/client';
-import { peekPlayerState, fetchPlayerState, enterStep } from '@/lib/journeys/player';
+import { peekPlayerState, fetchPlayerState, enterStep, completeStep } from '@/lib/journeys/player';
 import type { PlayerState } from '@/lib/journeys/player';
 import type { MyEnrollment } from '@/lib/journeys/queries';
 
@@ -149,6 +149,18 @@ function JourneyPlayer() {
   const nextStep =
     currentIndex >= 0 && currentIndex < steps.length - 1 ? steps[currentIndex + 1] : null;
 
+  // JRN-8 gating, computed here (never in the canvas): the current step is locked
+  // by the FIRST incomplete required step with a lower order — its title names the
+  // reason. A completed step is in review posture, not locked.
+  const currentCompleted = currentStep != null && completedStepIds.has(currentStep.id);
+  const blockingPredecessor = currentStep
+    ? steps.find(
+        (s) => s.required && s.step_order < currentStep.step_order && !completedStepIds.has(s.id),
+      )
+    : undefined;
+  const currentLocked = currentStep != null && !currentCompleted && blockingPredecessor != null;
+  const lockReason = blockingPredecessor ? `Complete "${blockingPredecessor.title}" first.` : null;
+
   const saveEnter = useCallback(
     (stepId: string) => {
       if (!enrollmentId) return;
@@ -165,6 +177,29 @@ function JourneyPlayer() {
     setCurrentStepId(stepId); // optimistic paint from the in-memory payload (B5)
     saveEnter(stepId); // background auto-save — never blocks the paint
   };
+
+  // JRN-8 completion: the canvas paints the tick optimistically, then awaits this.
+  // A repeat (completed + repeatable) opens a fresh engagement first (`enter` then
+  // `complete`). A rejected `complete` propagates so the canvas rolls back / gates;
+  // a successful write reconciles to the re-read truth (rail tick, gating) — the
+  // re-read is best-effort so a failed read never undoes a landed completion.
+  const saveComplete = useCallback(
+    async (stepId: string) => {
+      if (!enrollmentId) return;
+      const target = (player?.steps ?? []).find((s) => s.id === stepId);
+      const already = (player?.instances ?? []).some((i) => i.step_id === stepId && i.completed_at);
+      if (target?.repeatable && already) {
+        await enterStep(enrollmentId, stepId);
+      }
+      await completeStep(enrollmentId, stepId);
+      try {
+        applyState(await fetchPlayerState(enrollmentId));
+      } catch {
+        /* the write landed; a failed reconcile read must not undo the mark */
+      }
+    },
+    [enrollmentId, player, applyState],
+  );
 
   const activeForJourney = (mine ?? []).filter(
     (e) => e.journey_id === journeyId && e.status === 'active',
@@ -218,7 +253,14 @@ function JourneyPlayer() {
       <div data-testid="journey-player" className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <div>
           {currentStep ? (
-            <StepCanvas step={currentStep} />
+            <StepCanvas
+              key={currentStep.id}
+              step={currentStep}
+              completed={currentCompleted}
+              locked={currentLocked}
+              lockReason={lockReason}
+              onComplete={() => saveComplete(currentStep.id)}
+            />
           ) : (
             <EmptyState title="No steps yet" description="This journey has no steps to walk." />
           )}

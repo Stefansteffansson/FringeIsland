@@ -1,21 +1,25 @@
-import { describe, it, expect } from '@jest/globals';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, jest } from '@jest/globals';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import type { PlayerStep } from '@/lib/journeys/player';
+import { StepCanvas } from '@/components/journeys/StepCanvas';
 
 /**
- * FEAT-H020 (unit) — StepCanvas is the JB-04 minimal canvas and the seam
- * TASK-JB-05 swaps for the kind-renderer registry + real completion flow. For
- * now it presents one step plainly: title, duration, a plain rendering of
- * `content.body` when present, and a DISABLED generic Complete placeholder
- * (completion is JB-05's). It must never crash on an unknown kind or a null
- * content payload (open vocabulary, JRN-18). Red-first for TASK-JB-04.
+ * FEAT-H020 STORY-3/6 (unit) — the StepCanvas renders the JRN-18 kind renderer
+ * for the step and drives the JRN-8 completion flow. Four states:
+ * (a) completable — optimistic tick on press, rollback + retry surface on failure;
+ * (b) locked — disabled affordance naming the blocking required predecessor, and
+ *     the same honest posture on a raced server P0001 (409);
+ * (c) completed non-repeatable — review posture (mark replaces the affordance);
+ * (d) completed repeatable — the ask-verb affordance is offered again.
+ * The affordance always carries the step's own `ask_verb` (never a hardcoded map).
+ * Red-first for TASK-JB-05 (the JB-04 canvas has only a disabled placeholder).
  */
 
 const STEP = (over: Partial<PlayerStep> = {}): PlayerStep => ({
   id: 's1',
   step_order: 1,
   title: 'Orient',
-  kind: 'content',
+  kind: 'narrative',
   family: 'text',
   ask_verb: 'Read',
   required: true,
@@ -25,27 +29,119 @@ const STEP = (over: Partial<PlayerStep> = {}): PlayerStep => ({
   ...over,
 });
 
-import { StepCanvas } from '@/components/journeys/StepCanvas';
-
-describe('StepCanvas — minimal step presentation (JB-04 seam)', () => {
-  it('renders the title, duration and a plain content body', () => {
-    render(<StepCanvas step={STEP()} />);
+describe('StepCanvas — presentation + kind rendering (STORY-6)', () => {
+  it('renders the title, duration and the kind renderer payload', () => {
+    render(<StepCanvas step={STEP()} completed={false} locked={false} onComplete={jest.fn()} />);
     const canvas = screen.getByTestId('step-canvas');
     expect(canvas.textContent).toContain('Orient');
     expect(canvas.textContent).toContain('10 min');
     expect(canvas.textContent).toContain('Welcome to the journey.');
+    expect(screen.getByTestId('renderer-narrative')).toBeTruthy();
   });
 
-  it('renders a DISABLED generic Complete placeholder (JB-05 owns real completion)', () => {
-    render(<StepCanvas step={STEP()} />);
-    const complete = screen.getByTestId('step-complete') as HTMLButtonElement;
-    expect(complete.disabled).toBe(true);
-  });
-
-  it('does not crash on a null content payload or an unknown kind (open vocabulary)', () => {
-    render(<StepCanvas step={STEP({ kind: 'ritual-of-the-mist', content: null })} />);
+  it('routes an unknown kind to the fallback renderer and never crashes on null content', () => {
+    render(
+      <StepCanvas
+        step={STEP({ kind: 'ritual-of-the-mist', content: null })}
+        completed={false}
+        locked={false}
+        onComplete={jest.fn()}
+      />,
+    );
     const canvas = screen.getByTestId('step-canvas');
     expect(canvas.textContent).toContain('Orient');
     expect(canvas.textContent).not.toContain('undefined');
+    expect(screen.getByTestId('renderer-fallback')).toBeTruthy();
+  });
+
+  it('labels the complete affordance with the payload ask_verb (never a hardcoded verb)', () => {
+    render(
+      <StepCanvas step={STEP({ ask_verb: 'Reflect' })} completed={false} locked={false} onComplete={jest.fn()} />,
+    );
+    expect(screen.getByTestId('step-complete').textContent).toContain('Reflect');
+  });
+});
+
+describe('StepCanvas — completion (STORY-3 state a)', () => {
+  it('optimistically paints completed on press and calls onComplete', () => {
+    const onComplete = jest.fn<() => Promise<void>>().mockReturnValue(new Promise(() => {})); // pending
+    render(<StepCanvas step={STEP()} completed={false} locked={false} onComplete={onComplete} />);
+    fireEvent.click(screen.getByTestId('step-complete'));
+    // Review posture immediately (non-repeatable): the mark replaces the affordance.
+    expect(screen.getByTestId('step-completed')).toBeTruthy();
+    expect(screen.queryByTestId('step-complete')).toBeNull();
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  });
+
+  it('rolls the tick back and offers a non-blocking retry when the save fails', async () => {
+    const onComplete = jest
+      .fn<() => Promise<void>>()
+      .mockRejectedValueOnce(Object.assign(new Error('boom'), { status: 500 }))
+      .mockResolvedValueOnce(undefined);
+    render(<StepCanvas step={STEP()} completed={false} locked={false} onComplete={onComplete} />);
+    fireEvent.click(screen.getByTestId('step-complete'));
+    await waitFor(() => expect(screen.getByTestId('complete-error')).toBeTruthy());
+    // Rolled back -> the affordance is completable again.
+    expect(screen.getByTestId('step-complete')).toBeTruthy();
+    expect(screen.queryByTestId('step-completed')).toBeNull();
+    // Retry succeeds -> the mark paints and the error clears.
+    fireEvent.click(screen.getByTestId('complete-retry'));
+    await waitFor(() => expect(screen.getByTestId('step-completed')).toBeTruthy());
+    expect(screen.queryByTestId('complete-error')).toBeNull();
+    expect(onComplete).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('StepCanvas — gating (STORY-3 state b)', () => {
+  it('locks the affordance and names the blocking predecessor', () => {
+    render(
+      <StepCanvas
+        step={STEP()}
+        completed={false}
+        locked
+        lockReason={'Complete "Orient" first.'}
+        onComplete={jest.fn()}
+      />,
+    );
+    const btn = screen.getByTestId('step-complete') as HTMLButtonElement;
+    expect(btn.disabled).toBe(true);
+    expect(screen.getByTestId('step-lock-reason').textContent).toContain('Orient');
+  });
+
+  it('renders the same locked posture when the server races a P0001 (409)', async () => {
+    const onComplete = jest
+      .fn<() => Promise<void>>()
+      .mockRejectedValueOnce(Object.assign(new Error('gated'), { status: 409 }));
+    render(<StepCanvas step={STEP()} completed={false} locked={false} onComplete={onComplete} />);
+    fireEvent.click(screen.getByTestId('step-complete'));
+    await waitFor(() =>
+      expect((screen.getByTestId('step-complete') as HTMLButtonElement).disabled).toBe(true),
+    );
+    expect(screen.getByTestId('step-lock-reason')).toBeTruthy();
+    expect(screen.queryByTestId('step-completed')).toBeNull(); // rolled back
+  });
+});
+
+describe('StepCanvas — completed posture (STORY-3 state c/d)', () => {
+  it('a completed non-repeatable step renders in review posture (mark, no affordance)', () => {
+    render(<StepCanvas step={STEP({ repeatable: false })} completed locked={false} onComplete={jest.fn()} />);
+    expect(screen.getByTestId('step-completed')).toBeTruthy();
+    expect(screen.queryByTestId('step-complete')).toBeNull();
+    // Content stays visible in review posture.
+    expect(screen.getByTestId('step-canvas').textContent).toContain('Welcome to the journey.');
+  });
+
+  it('a completed repeatable step offers the ask-verb affordance again', () => {
+    render(
+      <StepCanvas
+        step={STEP({ repeatable: true, ask_verb: 'Write an entry' })}
+        completed
+        locked={false}
+        onComplete={jest.fn()}
+      />,
+    );
+    const btn = screen.getByTestId('step-complete') as HTMLButtonElement;
+    expect(btn.disabled).toBe(false);
+    expect(btn.textContent).toContain('Write an entry');
   });
 });

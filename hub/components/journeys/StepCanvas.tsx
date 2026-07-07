@@ -1,28 +1,74 @@
+'use client';
+
+import { useState } from 'react';
 import type { PlayerStep } from '@/lib/journeys/player';
+import { getStepRenderer } from './step-renderers';
 
 /**
- * FEAT-H020 — the step canvas. THIS IS THE JB-05 SEAM: TASK-JB-05 replaces the
- * body below with the kind-renderer registry (JRN-18: registry-key -> renderer
- * with a mandatory fallback) and the real completion flow (JRN-8: the ask-verb
- * affordance + P0001 gating). JB-04 keeps it deliberately minimal — the player
- * page owns boot / resume / linear navigation / auto-save around this component,
- * so swapping the canvas body needs no change to that logic.
+ * FEAT-H020 STORY-3/6 — the step canvas. It renders the JRN-18 kind renderer for
+ * the step (registry-key -> renderer with a mandatory fallback) and drives the
+ * JRN-8 completion flow. Four states:
+ *   (a) completable — pressing paints the tick OPTIMISTICALLY, fires `onComplete`
+ *       (the page wires `completeStep`), and on failure rolls the tick back with a
+ *       non-blocking retry surface (the JB-04 auto-save indicator pattern);
+ *   (b) locked — the affordance is disabled with the reason naming the blocking
+ *       required predecessor (page-computed); a raced server P0001 (409) rolls the
+ *       optimistic tick back into this same honest posture;
+ *   (c) completed non-repeatable — review posture (content stays visible, the
+ *       completion mark replaces the affordance);
+ *   (d) completed repeatable — the ask-verb affordance is offered again (a repeat
+ *       is a fresh engagement the page re-enters then completes).
  *
- * For now: title, duration, a plain rendering of `content.body` when present,
- * and a DISABLED generic Complete placeholder. Content is open-vocabulary
- * (`kind: string`, `content: unknown`) — this must never crash on an unknown
- * kind or a null payload.
+ * The affordance always carries the step's own `ask_verb` from the payload — never
+ * a hardcoded verb map. The parent keys this component by `step.id`, so the
+ * transient optimistic/retry state resets naturally on navigation.
  */
-function stepBody(content: unknown): string | null {
-  if (content && typeof content === 'object' && 'body' in content) {
-    const body = (content as { body: unknown }).body;
-    if (typeof body === 'string') return body;
-  }
-  return null;
-}
+const LOCK_FALLBACK = 'A required step must be completed first.';
 
-export function StepCanvas({ step }: { step: PlayerStep }) {
-  const body = stepBody(step.content);
+export function StepCanvas({
+  step,
+  completed = false,
+  locked = false,
+  lockReason = null,
+  onComplete,
+}: {
+  step: PlayerStep;
+  completed?: boolean;
+  locked?: boolean;
+  lockReason?: string | null;
+  onComplete?: () => Promise<void>;
+}) {
+  const [optimistic, setOptimistic] = useState(false);
+  const [retry, setRetry] = useState(false);
+  const [raced, setRaced] = useState(false);
+
+  // Look up by open-vocabulary key and invoke the stateless renderer as a plain
+  // function (not `<Renderer/>`) — the registry values are created at module load,
+  // not during render (react-hooks/static-components).
+  const renderKind = getStepRenderer(step.kind);
+  const isCompleted = completed || optimistic;
+  const showLocked = locked || raced;
+  const verb = step.ask_verb || 'Complete';
+
+  async function handleComplete() {
+    if (!onComplete) return;
+    // Optimistic-progress scope (FEAT-H020 §Solution sketch): paint the mark now,
+    // confirm in the background, and reconcile to the re-read truth via `completed`.
+    setOptimistic(true);
+    setRetry(false);
+    setRaced(false);
+    try {
+      await onComplete();
+    } catch (err) {
+      setOptimistic(false); // roll the tick back
+      const status = (err as { status?: number } | null)?.status;
+      if (status === 409) {
+        setRaced(true); // a raced P0001 gate -> the honest locked posture
+      } else {
+        setRetry(true); // transient failure -> non-blocking retry surface
+      }
+    }
+  }
 
   return (
     <section
@@ -36,21 +82,70 @@ export function StepCanvas({ step }: { step: PlayerStep }) {
         )}
       </header>
 
-      {body && (
-        <div data-testid="step-body" className="mt-4 whitespace-pre-wrap text-sm text-gray-700">
-          {body}
-        </div>
-      )}
+      <div className="mt-4">{renderKind({ step })}</div>
 
-      {/* JB-05 replaces this placeholder with the kind's ask-verb completion. */}
-      <button
-        type="button"
-        data-testid="step-complete"
-        disabled
-        className="mt-6 cursor-not-allowed rounded-lg bg-gray-200 px-4 py-2 text-sm font-medium text-gray-500"
-      >
-        Complete
-      </button>
+      <div className="mt-6">
+        {isCompleted && !step.repeatable ? (
+          <p
+            data-testid="step-completed"
+            className="inline-flex items-center gap-2 text-sm font-medium text-green-700"
+          >
+            <span
+              aria-hidden
+              className="inline-block h-2.5 w-2.5 rounded-full bg-green-500"
+            />
+            Completed
+          </p>
+        ) : showLocked ? (
+          <div>
+            <button
+              type="button"
+              data-testid="step-complete"
+              disabled
+              className="cursor-not-allowed rounded-lg bg-gray-200 px-4 py-2 text-sm font-medium text-gray-500"
+            >
+              {verb}
+            </button>
+            <p data-testid="step-lock-reason" className="mt-2 text-xs text-amber-700">
+              {lockReason ?? LOCK_FALLBACK}
+            </p>
+          </div>
+        ) : (
+          <>
+            <button
+              type="button"
+              data-testid="step-complete"
+              onClick={handleComplete}
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            >
+              {verb}
+            </button>
+            {isCompleted && step.repeatable && (
+              <span data-testid="step-completed" className="ml-3 text-xs text-green-700">
+                Completed — {verb} again to repeat.
+              </span>
+            )}
+          </>
+        )}
+
+        {retry && (
+          <div
+            data-testid="complete-error"
+            role="status"
+            className="mt-3 flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700"
+          >
+            <span>Not saved.</span>
+            <button
+              type="button"
+              data-testid="complete-retry"
+              onClick={handleComplete}
+              className="font-medium text-amber-800 underline hover:no-underline"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+      </div>
     </section>
   );
 }

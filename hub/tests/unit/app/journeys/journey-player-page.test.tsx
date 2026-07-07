@@ -32,6 +32,7 @@ const router = { replace, push: jest.fn() };
 const fetchPlayerState = jest.fn<(id: string) => Promise<PlayerState>>();
 const peekPlayerState = jest.fn<(id: string) => PlayerState | null>();
 const enterStep = jest.fn<(e: string, s: string) => Promise<unknown>>();
+const completeStep = jest.fn<(e: string, s: string) => Promise<unknown>>();
 
 const peekJourneyCatalog = jest.fn<() => unknown[] | null>();
 const peekMyJourneyEnrollments = jest.fn<() => MyEnrollment[] | null>();
@@ -51,6 +52,7 @@ jest.mock('@/lib/journeys/player', () => ({
   fetchPlayerState: (id: string) => fetchPlayerState(id),
   peekPlayerState: (id: string) => peekPlayerState(id),
   enterStep: (e: string, s: string) => enterStep(e, s),
+  completeStep: (e: string, s: string) => completeStep(e, s),
 }));
 jest.mock('@/lib/journeys/client', () => ({
   peekJourneyCatalog: () => peekJourneyCatalog(),
@@ -96,6 +98,7 @@ beforeEach(() => {
   fetchPlayerState.mockResolvedValue(STATE());
   fetchMyJourneyEnrollments.mockResolvedValue([]);
   enterStep.mockResolvedValue({ instance_id: 'x', step_id: 's', created_at: 't', completed_at: null });
+  completeStep.mockResolvedValue({ instance_id: 'c', step_id: 's', created_at: 't', completed_at: 't' });
 });
 
 describe('STORY-1 — the FIM gate', () => {
@@ -262,5 +265,62 @@ describe('STORY-1 — non-active enrolment', () => {
     expect(screen.getByTestId('player-nonactive').textContent).toContain('frozen');
     expect(screen.queryByTestId('journey-player')).toBeNull();
     expect(screen.queryByTestId('player-next')).toBeNull();
+  });
+});
+
+describe('STORY-3 — completion wiring (optimistic tick, gating, rollback)', () => {
+  it('paints the tick optimistically before the completion contract resolves', async () => {
+    withParam();
+    completeStep.mockReturnValue(new Promise(() => {})); // never resolves -> pre-response paint
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    // Boot at s2 (Reflect); s1 is required + completed so s2 is unlocked.
+    fireEvent.click(screen.getByTestId('step-complete'));
+    expect(screen.getByTestId('step-completed')).toBeTruthy(); // optimistic, pre-response
+    expect(completeStep).toHaveBeenCalledWith('e1', 's2');
+  });
+
+  it('rolls the tick back with a retry surface when the completion contract fails', async () => {
+    withParam();
+    completeStep.mockRejectedValueOnce(Object.assign(new Error('save failed'), { status: 500 }));
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    fireEvent.click(screen.getByTestId('step-complete'));
+    await waitFor(() => expect(screen.getByTestId('complete-error')).toBeTruthy());
+    expect(screen.getByTestId('step-complete')).toBeTruthy(); // rolled back to completable
+  });
+
+  it('locks the current step and names the blocking required predecessor', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(STATE({ resume_step_id: 's3', instances: [] }));
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    // s3 is required; s1 (required) is earlier and incomplete -> locked, naming "Orient".
+    expect((screen.getByTestId('step-complete') as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByTestId('step-lock-reason').textContent).toContain('Orient');
+  });
+
+  it('reconciles from a fresh read after a successful completion (the rail tick follows)', async () => {
+    withParam();
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    // After the write lands, the page re-reads: instances now include s2.
+    fetchPlayerState.mockResolvedValue(
+      STATE({
+        instances: [
+          { instance_id: 'i1', step_id: 's1', created_at: 't', completed_at: 't' },
+          { instance_id: 'i2', step_id: 's2', created_at: 't', completed_at: 't' },
+        ],
+      }),
+    );
+    fireEvent.click(screen.getByTestId('step-complete'));
+    await waitFor(() =>
+      expect(
+        screen
+          .getByTestId('step-rail')
+          .querySelector('[data-testid="rail-step-s2"] [data-testid="rail-tick"]'),
+      ).toBeTruthy(),
+    );
+    expect(completeStep).toHaveBeenCalledWith('e1', 's2');
   });
 });
