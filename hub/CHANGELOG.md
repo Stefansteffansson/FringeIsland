@@ -9,7 +9,7 @@ User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is
 - **Progress saves itself.** Moving between steps and completing them is instant on screen; saving happens quietly behind you. If a save ever fails, a small "not saved — retry" note appears — nothing blocks, nothing is lost silently.
 - **Leave anytime, resume where you left.** Closing the player costs nothing: next time, it opens exactly where you stopped.
 - **Locked steps say why.** A step that needs an earlier required step first tells you which one — no mystery buttons, no silent refusals.
-- **Withdrawing keeps your history.** Leaving a journey no longer erases the record of the steps you walked — you can re-enrol later without your past pretending it never happened.
+- **Withdrawing keeps your history — and coming back keeps your place.** Leaving a journey no longer erases the record of the steps you walked, and if you re-enrol, you resume exactly where you were — completed steps stay completed. *(The resume-on-return half landed as a same-day fix after Stefan's read-through caught the gap.)*
 
 ## 2026-07-07 — Journeys arrive: browse, start one, take your group travelling ([FEAT-H019](../docs/products/hub/features/FEAT-H019-journey-catalogue-and-enrolment.md))
 
