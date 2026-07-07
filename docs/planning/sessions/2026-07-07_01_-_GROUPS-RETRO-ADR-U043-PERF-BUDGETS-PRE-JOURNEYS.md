@@ -1,0 +1,34 @@
+# Session bridge — Groups retro committed, ADR-U043 perf budgets locked + enforcement wired, pre-Journeys checklist complete
+
+**Date:** 2026-07-06 → 2026-07-07 (one continuous session spanning midnight)
+**Session type:** The Groups-area retro (per bridges `_14`/`_15`'s standing instruction) → Stefan's "why does perf keep regressing?" root-cause discussion → common-practice vetting of the budget → **ADR-U043 locked** → all enforcement homes wired → route-policy conformance test built → cycle-boundary doc-health run → the "next big build" model-capability discussion (open).
+**Status:** Everything merged; `main` clean and synced through **PR #111** (`14d5362`). No PRs held, no branches, nothing dangling. **No migrations this session** — dev DB unchanged at `20260706201500`. Unit **447/447** (441 + the 6 new conformance tests); dashboard refreshed (603 files).
+**Participants:** Stefan (retro commission; the recurring-perf root-cause question; budget-vetting request; B1–B6 lock; PR #110 merge nod; the next-big-build question) + Claude.
+
+---
+
+## What was done (in order)
+
+- **PR #108 — Groups-area retrospective** ([`retro-2026-07-06.md`](../retrospectives/retro-2026-07-06.md)): Cycles G-A..G-F + the perf/audit/security session. Central finding: **DoD compliance ≠ DoD sufficiency** — written rows held six for six while the un-rowed policies (grants, route policy, perf) drifted/regressed. Swept all **35 Groups-era task files** per the L5 lifecycle. Groups declared complete for Phase-3 purposes (MEM-9 the only forward-seam).
+- **PR #109 — [`Performance_Budget_Research_Report.md`](../../research/Performance_Budget_Research_Report.md):** the proposed budgets vetted against Core Web Vitals (p75, per-navigation), Nielsen 0.1/1/10 s limits, RAIL, MDN, SaaS benchmarks (best-in-class 0.8–1.1 s; 6 s "feels broken"), skeleton-vs-spinner (~30 % perceived gain). Verdict: warm/revisit rows aligned; cold flow budget slightly too strict (the ~1.0 s Supabase auth exchange is a vendor floor); interaction row + measurement protocol were missing.
+- **PR #110 — [ADR-U043](../../architecture/decisions/ADR-U043-performance-budgets.md) + every enforcement home** (held for the nod per carve-outs; Stefan nodded): the **B1–B6 budgets** (sign-in flow target 2.0 s / ceiling 2.5 s, app share ≤ 1.5 s · cold ≤ 2.5 s · warm ≤ 1.0 s · revisit = no visible loading state · interactions ≤ 200 ms · skeleton-over-spinner) + area-gate protocol (production stable domain, authenticated real path, cold + warm, ≥ 3 runs, every run within budget). Wired: `feature-spec.md` template **Performance budget section** (binds from Journeys onward, no retrofit) · `AGENTS.md` always-do row · `feature-development` **Route-policy DoD + Performance DoD** blocks · hub-v2 **per-area performance gate** (waterfall + Stefan's live walk, both before the area retro) · perf-backlog **measure-first boundary-bet rule** · perf doc §5.3 resolved.
+- **PR #111 — route-policy conformance test** (`hub/tests/unit/app/api/route-policy-conformance.test.ts`): walks all 40 route files, asserts the ADR-U036/U037 matrix (mutating file → `getUser()`; mutation-only file → never Edge; Edge file → GET + `dub1` + local claims read; GET-only Node routes consciously classified — consent-regression guard; exception lists checked for staleness). **Teeth demonstrated red** by injecting the exact G-F drift (Edge on `journal/[id]`) — failed the two matching rules, reverted, green. Its green now **replaces the manual Route-policy DoD rows** per the skill's own clause.
+
+## Doc-health (cycle boundary, rides the retro) — VERDICT: clean
+
+No hard fails, no critical findings; everything introduced in #108–#110 verified (all 13 new links resolve, both READMEs index the new files, 0 directive references to the 35 deleted task files, cascade's 28 CLAUDE.md + load-order pointers intact). **3 soft flags, all pre-existing:**
+1. `docs/studios/universe-studio/world-studio/CLAUDE.md:3` — load-order line format diverges from its arc-/journey-studio siblings (cosmetic; pointers resolve).
+2. `docs/products/hub/SPECIFICATION.md:215` (§L3 MEM-2) — still reads as go-forward email-invite; needs an inline ADR-U040 supersession pointer **when the MEM-2 referral rebuild is scoped** (L3's authorial domain).
+3. Old cosmology terms (Safe Harbour / Three Worlds / The Other Side / AI Mentor) persist only in legitimate homes (canon core, banner'd snapshots, research, novel); recommend a dedicated terminology-sweep pass at a cooldown if none has run since the 2026-06-21/24 renames.
+
+## Open — the "next big build" discussion (Stefan's word, in progress)
+
+Stefan's question: is Journeys right as the next area, given **Fable 5 is available today only** (Opus 4.8 / Sonnet 5 from tomorrow)? Claude's assessment (delivered, awaiting Stefan's call): **keep the area order — reorder the work within the day.** Journeys is both dependency-next and the design-hardest remaining area (Notifications is ADR-U039-pattern-locked; Platform-Ops sits on ADR-U028; Communication's hard piece is DS-5 authorship). Model capability concentrates in the design layer (the premise-overturning substrate audits, ADR-grade design sessions), not the gated build. Proposal: today = Journeys kickoff at full depth (substrate audit → completion plan → decision board → design sessions → first cycle's specs to `4-ready`, the first to carry the Performance-budget section; DS-5 authorship sketch only if time allows, labeled premise-to-re-audit). Build cycles run on tomorrow's models inside the hardened gates — which is what the gates are for.
+
+## Next session — entry point
+
+If Stefan aligned: **Journeys area kickoff** (design-first, per above). Feed it: the retro §5 action list, bridge `_14`'s Journeys lines (DS-3 enrolment-summary slot, `group_closed`/`group_archived` freeze re-verification, DS-4/DS-5 `pending-*` re-entry, JRN-4 buildable against `get_acting_contexts()` + the wielding walk), and the kickoff-batch items: **`get_my_pending_nominations()` contract** (schema gate), G-36/IDN-10 hooks + org-spec §5 (by cooldown). The Journeys boundary-bet must follow the new **measure-first rule** (area-gate waterfall before choosing).
+
+## Standing / parked (carried, unchanged unless noted)
+
+Retro §5 is the canonical list. Deltas this session: **grant sweep CLOSED** (absorbed by PR #105 + regression test, per retro decision); **route-policy conformance test DONE** (PR #111); budget call DONE (ADR-U043). Still standing: leadership.ts contract (kickoff batch), Stefan's two dashboard toggles, test hygiene, platform-core CHANGELOG disposition, E2E flake watch (`entry.spec` + `profile.spec`), `test:integration:rbac` cleanup, MEM-9 → Communication gate, IDN-12 + perf T2 parked, ADR-U040 referral rebuild unscoped, logo pick, launch checklist, + the 3 doc-health soft flags above.
