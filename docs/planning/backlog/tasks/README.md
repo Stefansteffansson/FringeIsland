@@ -21,9 +21,9 @@ The retrospective is the permanent learning artifact; individual tasks are ephem
 
 | Task | Feature | Depends on | Status |
 |---|---|---|---|
-| [TASK-JA-01](./TASK-JA-01-pd002-red-first-integration-suite.md) — PD002 red-first integration suite | FEAT-PD002 | — | todo |
-| [TASK-JA-02](./TASK-JA-02-pd002-pc016-schema-gate-migration.md) — the schema-gate migration (six contracts + PC016 rider + write-narrowing) | FEAT-PD002 | JA-01, JA-03 | todo |
-| [TASK-JA-03](./TASK-JA-03-pc016-red-first-tests.md) — PC016 red-first tests | FEAT-PC016 | — | todo |
+| [TASK-JA-01](./TASK-JA-01-pd002-red-first-integration-suite.md) — PD002 red-first integration suite | FEAT-PD002 | — | done |
+| [TASK-JA-02](./TASK-JA-02-pd002-pc016-schema-gate-migration.md) — the schema-gate migration (six contracts + PC016 rider + write-narrowing) | FEAT-PD002 | JA-01, JA-03 | review (schema gate) |
+| [TASK-JA-03](./TASK-JA-03-pc016-red-first-tests.md) — PC016 red-first tests | FEAT-PC016 | — | done |
 | [TASK-JA-04](./TASK-JA-04-pc016-leadership-thins.md) — leadership.ts thins to a consumer | FEAT-PC016 | JA-02 | todo |
 | [TASK-JA-05](./TASK-JA-05-h019-bff-routes-and-client-lib.md) — BFF routes + journeys client lib | FEAT-H019 | JA-02 | todo |
 | [TASK-JA-06](./TASK-JA-06-h019-catalogue-page.md) — /journeys catalogue page | FEAT-H019 | JA-05 | todo |
