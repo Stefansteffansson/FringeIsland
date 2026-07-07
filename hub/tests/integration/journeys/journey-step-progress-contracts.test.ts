@@ -6,6 +6,7 @@ import {
   cleanupTestUser,
   cleanupTestGroup,
   signInWithRetry,
+  runAdminSql,
   type TestUser,
 } from '@/tests/helpers/supabase';
 import type { SupabaseClient } from '@supabase/supabase-js';
@@ -128,7 +129,11 @@ describe('FEAT-PD003 — journey step substrate & progress contracts (J-B)', () 
     return groupId as string;
   };
 
-  /** Seed a journey with legacy content.steps[] (valid pre- and post-migration). */
+  /**
+   * Seed a journey with NO content.steps[] — post-migration the substrate lives in
+   * journey_steps rows (added by seedSteps), and catalog/detail read rows. A mixed
+   * JSONB-steps + rows state is what broke the STORY-2 sweeps, so content stays null.
+   */
   const seedJourney = async (title: string): Promise<string> => {
     const { data, error } = await admin
       .from('journeys')
@@ -142,14 +147,7 @@ describe('FEAT-PD003 — journey step substrate & progress contracts (J-B)', () 
         difficulty_level: 'beginner',
         estimated_duration_minutes: 60,
         tags: ['j-b-test'],
-        content: {
-          version: '1.0',
-          structure: 'linear',
-          steps: [
-            { id: 'legacy_1', title: 'Orient', type: 'content', duration_minutes: 10, required: true },
-            { id: 'legacy_2', title: 'Try it', type: 'activity', duration_minutes: 30, required: true },
-          ],
-        },
+        content: null,
         published_at: new Date().toISOString(),
       })
       .select('id')
@@ -238,6 +236,7 @@ describe('FEAT-PD003 — journey step substrate & progress contracts (J-B)', () 
       { title: 'Frozen A', kind: 'narrative', family: 'witness' },
       { title: 'Frozen B', kind: 'activity', family: 'act' },
     ]);
+    await seedSteps(jWithdraw, [{ title: 'Withdraw Step', kind: 'narrative', family: 'witness' }]);
     await seedSteps(jErase, [{ title: 'Solo', kind: 'narrative', family: 'witness' }]);
 
     // Enrolments through the shipped J-A contracts (exist pre-migration).
@@ -269,13 +268,17 @@ describe('FEAT-PD003 — journey step substrate & progress contracts (J-B)', () 
   }, 120000);
 
   afterAll(async () => {
-    // J-B children first (non-throwing; absent pre-migration). Deleting the fixture
-    // journeys/enrolments should cascade these, but clean explicitly to survive a
-    // RESTRICT FK too.
-    for (const id of createdJourneyIds) {
-      await admin.from('journey_step_instances').delete().eq('step_id', id).then(() => undefined, () => undefined);
+    // FK-safe order: instances (child of steps + enrolments) → steps → journeys →
+    // groups → users. Delete instances via a subquery over the fixtures' steps so a
+    // RESTRICT FK on either parent can't block the step/journey deletes.
+    if (createdJourneyIds.length) {
+      const idList = createdJourneyIds.map((id) => `'${id}'`).join(',');
+      await runAdminSql(
+        `DELETE FROM public.journey_step_instances WHERE step_id IN ` +
+          `(SELECT id FROM public.journey_steps WHERE journey_id IN (${idList}));`,
+      ).catch(() => undefined);
+      await admin.from('journey_steps').delete().in('journey_id', createdJourneyIds);
     }
-    await admin.from('journey_steps').delete().in('journey_id', createdJourneyIds).then(() => undefined, () => undefined);
     for (const id of adminEnrollmentIds) {
       await admin.from('journey_enrollments').delete().eq('id', id);
     }
@@ -387,10 +390,17 @@ describe('FEAT-PD003 — journey step substrate & progress contracts (J-B)', () 
   // STORY-2 — The legacy steps migrate mechanically (POST-state invariants)
   // ==========================================================================
   describe('STORY-2 — post-migration invariants over pre-existing journeys', () => {
-    /** Journeys that existed before the migration = all journeys minus this suite's fixtures. */
+    /**
+     * The sweeps are about MIGRATED journeys only. Exclude every test fixture — this
+     * run's AND any leftover from a prior run — by its tag, not just by this run's ids
+     * (test-authored fixtures carry no legacy_step_id and would fail the sweep).
+     */
+    const FIXTURE_TAGS = ['j-a-test', 'j-b-test'];
     const preExistingJourneyIds = async (): Promise<string[]> => {
-      const { data } = await admin.from('journeys').select('id');
-      return (data as Array<{ id: string }>).filter((j) => !createdJourneyIds.includes(j.id)).map((j) => j.id);
+      const { data } = await admin.from('journeys').select('id, tags');
+      return (data as Array<{ id: string; tags: string[] | null }>)
+        .filter((j) => !(j.tags ?? []).some((t) => FIXTURE_TAGS.includes(t)))
+        .map((j) => j.id);
     };
 
     it('every pre-existing journey has at least one journey_steps row', async () => {
@@ -607,10 +617,18 @@ describe('FEAT-PD003 — journey step substrate & progress contracts (J-B)', () 
 
     it('creates a fresh open instance when re-entering a completed REPEATABLE step (repeat = new instance)', async () => {
       // AC: "completed repeatable → new open instance (repeat = new instance, never an update)."
-      const stepId = progressSteps[2]?.id ?? GHOST; // step 3 is repeatable
       const c = await asUser(traveller);
+      // Step 3's completion is gated on the required predecessors (steps 1 & 2, correct
+      // P0001 behaviour) — clear them deterministically before exercising the repeat.
+      const { error: p0 } = await c.rpc('complete_journey_step', { p_enrollment_id: progressEnrollmentId, p_step_id: progressSteps[0]?.id ?? GHOST });
+      expect(p0).toBeNull();
+      const { error: p1 } = await c.rpc('complete_journey_step', { p_enrollment_id: progressEnrollmentId, p_step_id: progressSteps[1]?.id ?? GHOST });
+      expect(p1).toBeNull();
+
+      const stepId = progressSteps[2]?.id ?? GHOST; // step 3 is repeatable
       await c.rpc('enter_journey_step', { p_enrollment_id: progressEnrollmentId, p_step_id: stepId });
-      await c.rpc('complete_journey_step', { p_enrollment_id: progressEnrollmentId, p_step_id: stepId });
+      const { error: compErr } = await c.rpc('complete_journey_step', { p_enrollment_id: progressEnrollmentId, p_step_id: stepId });
+      expect(compErr).toBeNull();
       const { error } = await c.rpc('enter_journey_step', { p_enrollment_id: progressEnrollmentId, p_step_id: stepId });
       expect(error).toBeNull();
       const rows = await openInstances(stepId);
@@ -690,7 +708,8 @@ describe('FEAT-PD003 — journey step substrate & progress contracts (J-B)', () 
       // Fetch a step and record engagement so there is a lived instance to preserve.
       const { data: wsteps } = await admin.from('journey_steps').select('id').eq('journey_id', jWithdraw).limit(1);
       const stepId = ((wsteps as Array<{ id: string }>) ?? [])[0]?.id ?? GHOST;
-      await c.rpc('enter_journey_step', { p_enrollment_id: enrollmentId, p_step_id: stepId });
+      const { error: enterErr } = await c.rpc('enter_journey_step', { p_enrollment_id: enrollmentId, p_step_id: stepId });
+      expect(enterErr).toBeNull();
 
       const { error: wErr } = await c.rpc('withdraw_from_journey', { p_enrollment_id: enrollmentId });
       expect(wErr).toBeNull();

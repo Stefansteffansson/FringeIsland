@@ -98,12 +98,25 @@ describe('FEAT-PD002 — journey catalogue & enrolment contracts (J-A)', () => {
     return groupId as string;
   };
 
+  // ADR-U044 §3 legacy mapping — the same conversion the FEAT-PD003 data migration
+  // applied to the real seed journeys.
+  const LEGACY_STEP_MAP: Record<string, { kind: string; family: string }> = {
+    content: { kind: 'narrative', family: 'witness' },
+    activity: { kind: 'activity', family: 'act' },
+    assessment: { kind: 'assessment', family: 'reflect' },
+  };
+
   const seedJourney = async (opts: {
     title: string;
     published: boolean;
     isPublic: boolean;
     steps?: Array<{ id: string; title: string; type: string; duration_minutes: number; required: boolean }>;
   }): Promise<string> => {
+    const steps = opts.steps ?? [
+      { id: 'step_1', title: 'Orient', type: 'content', duration_minutes: 10, required: true },
+      { id: 'step_2', title: 'Try it', type: 'activity', duration_minutes: 30, required: true },
+      { id: 'step_3', title: 'Reflect', type: 'assessment', duration_minutes: 20, required: false },
+    ];
     const { data, error } = await admin
       .from('journeys')
       .insert({
@@ -116,22 +129,31 @@ describe('FEAT-PD002 — journey catalogue & enrolment contracts (J-A)', () => {
         difficulty_level: 'beginner',
         estimated_duration_minutes: 60,
         tags: ['j-a-test'],
-        content: {
-          version: '1.0',
-          structure: 'linear',
-          steps: opts.steps ?? [
-            { id: 'step_1', title: 'Orient', type: 'content', duration_minutes: 10, required: true },
-            { id: 'step_2', title: 'Try it', type: 'activity', duration_minutes: 30, required: true },
-            { id: 'step_3', title: 'Reflect', type: 'assessment', duration_minutes: 20, required: false },
-          ],
-        },
+        // FEAT-PD003: steps are journey_steps rows now — catalog/detail read rows,
+        // not content->'steps'. Seed the rows directly (no legacy_step_id: authored
+        // here, not migrated).
+        content: null,
         published_at: opts.published ? new Date().toISOString() : null,
       })
       .select('id')
       .single();
     if (error) throw new Error(`seedJourney(${opts.title}): ${error.message}`);
-    createdJourneyIds.push(data!.id as string);
-    return data!.id as string;
+    const journeyId = data!.id as string;
+    createdJourneyIds.push(journeyId);
+    const stepRows = steps.map((s, i) => ({
+      journey_id: journeyId,
+      step_order: i + 1,
+      title: s.title,
+      step_kind_key: LEGACY_STEP_MAP[s.type].kind,
+      content_family_key: LEGACY_STEP_MAP[s.type].family,
+      required: s.required,
+      repeatable: false,
+      duration_minutes: s.duration_minutes,
+      content: {},
+    }));
+    const { error: stepErr } = await admin.from('journey_steps').insert(stepRows);
+    if (stepErr) throw new Error(`seedJourney steps(${opts.title}): ${stepErr.message}`);
+    return journeyId;
   };
 
   /** Admin-seeded enrolment (service role bypasses the narrowing by design). */
@@ -180,6 +202,11 @@ describe('FEAT-PD002 — journey catalogue & enrolment contracts (J-A)', () => {
   }, 120000);
 
   afterAll(async () => {
+    // FEAT-PD003: journeys now parent journey_steps rows — delete them before the
+    // journeys to survive a RESTRICT FK (J-A creates no step-instances).
+    if (createdJourneyIds.length) {
+      await admin.from('journey_steps').delete().in('journey_id', createdJourneyIds);
+    }
     for (const id of createdJourneyIds) {
       await admin.from('journeys').delete().eq('id', id);
     }
@@ -283,7 +310,8 @@ describe('FEAT-PD002 — journey catalogue & enrolment contracts (J-A)', () => {
       expect(d.title).toBe('JA Public Journey');
       const steps = d.steps as Array<Record<string, unknown>>;
       expect(steps).toHaveLength(3);
-      expect(steps[0]).toMatchObject({ title: 'Orient', kind: 'content', duration_minutes: 10 });
+      // kind is the registry key now — re-pointed to journey_steps per FEAT-PD003.
+      expect(steps[0]).toMatchObject({ title: 'Orient', kind: 'narrative', duration_minutes: 10 });
       for (const s of steps) {
         expect(Object.keys(s).sort()).toEqual(['duration_minutes', 'kind', 'title']);
       }
@@ -526,7 +554,7 @@ describe('FEAT-PD002 — journey catalogue & enrolment contracts (J-A)', () => {
   // STORY-5 — withdraw through the same door
   // ==========================================================================
   describe('STORY-5 — withdraw_from_journey', () => {
-    it('withdraws an own individual enrolment (Q1: row deletion) and my-enrolments no longer lists it', async () => {
+    it("withdraws an own individual enrolment (Q1 revisited at J-B: terminal 'withdrawn') and my-enrolments no longer lists it", async () => {
       const c = await asUser(traveller);
       const { data: enr, error: enrErr } = await c.rpc('enroll_self_in_journey', { p_journey_id: j5 });
       expect(enrErr).toBeNull();
@@ -535,9 +563,13 @@ describe('FEAT-PD002 — journey catalogue & enrolment contracts (J-A)', () => {
       const { error } = await c.rpc('withdraw_from_journey', { p_enrollment_id: enrollmentId });
       expect(error).toBeNull();
 
-      const { data: rows } = await admin.from('journey_enrollments').select('id').eq('id', enrollmentId);
-      expect(rows).toHaveLength(0);
+      // FEAT-PD003 Q1 revisited: withdraw is a terminal status flip, not a row
+      // deletion — the row SURVIVES so its step-instances aren't cascade-destroyed.
+      const { data: rows } = await admin.from('journey_enrollments').select('id, status').eq('id', enrollmentId);
+      expect(rows).toHaveLength(1);
+      expect((rows as Array<{ status: string }>)[0].status).toBe('withdrawn');
 
+      // ...but a withdrawn enrolment is excluded from my-enrolments (Q1 exclusion).
       const { data: mine } = await c.rpc('get_my_enrollments');
       expect((mine as Array<{ journey_id: string }>).map((r) => r.journey_id)).not.toContain(j5);
     });
@@ -546,11 +578,14 @@ describe('FEAT-PD002 — journey catalogue & enrolment contracts (J-A)', () => {
       const cs = await asUser(steward);
       const { error: geErr } = await cs.rpc('enroll_group_in_journey', { p_group_id: e1, p_journey_id: j5 });
       expect(geErr).toBeNull();
+      // Pick the ACTIVE enrolment explicitly — FEAT-PD003 Q1 keeps withdrawn rows, so
+      // a lingering withdrawn row from a re-run must not be selected here.
       const { data: rows } = await admin
         .from('journey_enrollments')
         .select('id')
         .eq('journey_id', j5)
-        .eq('group_id', e1);
+        .eq('group_id', e1)
+        .eq('status', 'active');
       const groupEnrollmentId = rows![0].id as string;
 
       const cm = await asUser(member);
@@ -560,8 +595,10 @@ describe('FEAT-PD002 — journey catalogue & enrolment contracts (J-A)', () => {
 
       const { error: stewardErr } = await cs.rpc('withdraw_from_journey', { p_enrollment_id: groupEnrollmentId });
       expect(stewardErr).toBeNull();
-      const { data: after } = await admin.from('journey_enrollments').select('id').eq('id', groupEnrollmentId);
-      expect(after).toHaveLength(0);
+      // Q1 revisited: the row survives with a terminal 'withdrawn' status.
+      const { data: after } = await admin.from('journey_enrollments').select('id, status').eq('id', groupEnrollmentId);
+      expect(after).toHaveLength(1);
+      expect((after as Array<{ status: string }>)[0].status).toBe('withdrawn');
     });
 
     it('answers P0002 for an invisible enrolment and a nonexistent one, indistinguishably', async () => {
