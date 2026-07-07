@@ -3,7 +3,7 @@
 ---
 id: TASK-JA-09
 title: J-A close-out — E2E journeys, performance-budget assertions, next-build type gate, 6-done maturity
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H019

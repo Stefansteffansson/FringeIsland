@@ -120,3 +120,7 @@ Routes emit success+failure telemetry with actor — good — but `emitTelemetry
 ## 6. Verdict at a glance
 
 v2 is **dramatically healthier than v1** — the frontend is API-first clean, most contracts are real SECURITY DEFINER RPCs with REVOKE discipline, and failures surface. The residual non-compliance is concentrated and fixable: two contracts implemented Hub-side (F1, F2), the BFF-vs-Platform-API ambiguity (F3 → §4 ADR), and three substrate enforcement gaps (S1-S3) that the audit surfaced by taking B2/B3 seriously. None of it requires another rebuild; all of it fits in one correction cycle before Groups starts.
+
+## 7. Post-audit closures
+
+- **2026-07-07 (Journeys Cycle J-A) — the LOW finding closed.** `hub/lib/groups/leadership.ts` `fetchPendingNominations()` no longer derives pending-ness in client TypeScript with client-clock date math: **FEAT-PC016** landed `get_my_pending_nominations()` (the `get_my_invitations()` mirror — FIM-only, own-recipient, **server-clock** expiry; migration `20260707130821`, schema-gate nodded) and the lib thinned to a pure relay. `GET /api/me/nominations` and the `PendingNomination` payload are externally unchanged; the derivation now has exactly one home, inherited by any sibling surface.

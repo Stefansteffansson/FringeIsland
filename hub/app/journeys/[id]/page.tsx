@@ -9,8 +9,8 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { InlineError } from '@/components/ui/InlineError';
 import { JourneyEnrollmentPanel } from '@/components/journeys/JourneyEnrollmentPanel';
 import { emitTelemetry } from '@/lib/observability/telemetry';
-import { fetchJourneyDetail, JourneysApiError } from '@/lib/journeys/client';
-import type { JourneyDetail } from '@/lib/journeys/queries';
+import { fetchJourneyDetail, peekJourneyCatalog, JourneysApiError } from '@/lib/journeys/client';
+import type { JourneyCard, JourneyDetail } from '@/lib/journeys/queries';
 
 /**
  * FEAT-H019 STORY-2/3/4/5 — the /journeys/[id] detail page (JRN-2).
@@ -30,6 +30,12 @@ export default function JourneyDetailPage() {
   const journeyId = params.id;
 
   const [journey, setJourney] = useState<JourneyDetail | null>(null);
+  // B3/B4 seed (spec Performance budget): the cached catalogue card paints
+  // the header immediately; the full payload fills in. Fields only — the
+  // enrolment block and steps always wait for the real viewer-shaped payload.
+  const [seed] = useState<JourneyCard | null>(
+    () => peekJourneyCatalog()?.find((c) => c.id === journeyId) ?? null,
+  );
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -83,7 +89,15 @@ export default function JourneyDetailPage() {
   return (
     <AppShell title={journey?.title ?? 'Journeys'}>
       {authLoading || identity !== 'fim' || (!error && journey === null) ? (
-        <LoadingState label="Opening the journey..." />
+        seed && !authLoading && identity === 'fim' ? (
+          <header>
+            <h1 className="text-3xl font-bold text-gray-900">{seed.title}</h1>
+            {seed.description && <p className="mt-4 text-gray-700">{seed.description}</p>}
+            <LoadingState label="Opening the journey..." />
+          </header>
+        ) : (
+          <LoadingState label="Opening the journey..." />
+        )
       ) : error ? (
         <InlineError message={error} />
       ) : journey ? (

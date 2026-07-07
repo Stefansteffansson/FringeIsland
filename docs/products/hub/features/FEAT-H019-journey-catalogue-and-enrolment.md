@@ -6,7 +6,7 @@ title: Journey catalogue & enrolment surfaces — the /journeys catalogue, the j
 owner: hub
 consumers: []
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -137,3 +137,15 @@ The **Gimbal** consumes the same PD002 contracts for its journey surfaces; the v
 
 1. **Withdraw affordance placement** (detail page only, or also on a "my journeys" view?). Default: detail page only this cycle — `/journeys` shows the badge, the detail is where enrolment state is managed. A dedicated my-journeys view can arrive with the player (J-B) if navigation wants it.
 2. **Catalogue default order.** Default: a stable, non-ranking order (e.g. title or seeded order) — recorded at build; anything smarter is DS-6's.
+
+## Implementation notes
+
+Built Cycle J-A, 2026-07-07, consuming FEAT-PD002 API-first; carries no migration of its own (the STORY-5 payload amendment lives platform-side — see PD002's build finding: the viewer block gained `individual_enrollment` + per-`enrolled_via` withdraw handles because this spec's "affordance per the payload, never client-guessed" rule was otherwise unrenderable).
+
+**Open-question resolutions:** Q1 — withdraw affordance on the detail page only (as defaulted); a my-journeys view can ride J-B. Q2 — catalogue order is the contract's `title asc, id` (recorded in PD002's migration).
+
+**Shape:** five BFF routes — `GET /api/journeys`, `GET /api/journeys/[id]`, `GET /api/me/journeys` (Edge + `dub1` + `getVerifiedUserId`) and `POST .../enroll`, `POST .../withdraw` (Node + `getUser`) — pass the PR #111 route-policy conformance walk with **zero new exceptions**; SQLSTATE→HTTP inline per house style (P0001 messages pass through as the honest 409 copy). `hub/lib/journeys/` client rides the PR #102 session-cache pattern (shared in-flight, failed-read-never-cached, sign-out invalidation via AuthContext). New `SkeletonGrid` primitive (deferred 300 ms, B6 — no skeleton existed in `components/ui/`). The group-detail BFF composes `get_group_enrollment_summary` as an ADR-U042 `{data}|{error}` slice (`GroupJourneysSection` renders list/empty/unavailable honestly). Detail navigation seeds its header from the cached catalogue card (title paints immediately; the enrolment block always waits for the real payload).
+
+**Performance DoD (ADR-U043):** budget section bound as authored (B2/B3/B4 pages, B5 interactions, B6 rule). Asserted at the unit tier: first paint = exactly 2 reads, zero duplicate fetches across auth-event churn (the groups-page 3x-refire guard), SkeletonGrid deferral + skeleton-not-spinner. In-repo prior art checked before new plumbing (session caches, `LoadingState`, card grid). **The production waterfall (cold + warm, ≥3 runs, stable domain) rides the J-O3 area gate with Stefan's live walk — pending at 6-done, per the completion plan's area-gate protocol.**
+
+**Test evidence (red-first TDD; labelled exceptions honest):** routes/lib 19 + cache 8 unit demonstrated red (module-absent) → green; pages/panel 22 red → green; slice 4 (3 red-first, 1 carried-forward 404 guard, labelled); detail-seed 1 red → green; perf DoD rows 4 **labelled test-after** (verification of behaviour built under the STORY suites); E2E 2 journeys green (solo travel arc; the wielding walk incl. the group page's journeys section). Final: unit **509/509** (74 suites), `next build` green, lint 0 errors (3 `react-hooks/set-state-in-effect` suppressions — new-plugin lint drift, pre-existing on main's groups page; disposition routed to the J-A retro). PC016's STORY-2 rider (leadership.ts thinning) landed in this cycle's surface branch.

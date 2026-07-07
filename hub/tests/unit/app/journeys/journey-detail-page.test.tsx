@@ -38,9 +38,12 @@ jest.mock('@/components/journeys/JourneyEnrollmentPanel', () => ({
     <div data-testid="enrollment-panel" data-journey={journey.id} />
   ),
 }));
+const peekJourneyCatalog = jest.fn<() => unknown[] | null>();
+
 jest.mock('@/lib/journeys/client', () => ({
   fetchJourneyDetail: (id: string) => fetchJourneyDetail(id),
   fetchMyJourneyEnrollments: () => fetchMyJourneyEnrollments(),
+  peekJourneyCatalog: () => peekJourneyCatalog(),
   JourneysApiError: class JourneysApiError extends Error {
     status: number;
     constructor(message: string, status: number) {
@@ -74,6 +77,7 @@ describe('FEAT-H019 — /journeys/[id] page (STORY-2)', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     authState = { user: { id: 'u1' }, identity: 'fim', loading: false };
+    peekJourneyCatalog.mockReturnValue(null);
     fetchJourneyDetail.mockResolvedValue(DETAIL);
     fetchMyJourneyEnrollments.mockResolvedValue([]);
   });
@@ -106,6 +110,17 @@ describe('FEAT-H019 — /journeys/[id] page (STORY-2)', () => {
     render(<JourneyDetailPage />);
     await waitFor(() => expect(screen.getByTestId('steps-overview')).toBeTruthy());
     expect(document.body.textContent).not.toContain('undefined');
+  });
+
+  it('seeds the header from the cached catalogue card — the title paints before the payload lands (B3/B4)', async () => {
+    peekJourneyCatalog.mockReturnValue([
+      { id: 'j1', title: 'Leadership Fundamentals', description: 'Learn to lead.', difficulty_level: 'beginner', estimated_duration_minutes: 120, tags: [], step_count: 2 },
+    ]);
+    fetchJourneyDetail.mockReturnValue(new Promise(() => {})); // payload never lands
+    render(<JourneyDetailPage />);
+    expect(screen.getByText('Leadership Fundamentals')).toBeTruthy();
+    // the enrolment block waits for the real payload — never seeded affordances
+    expect(screen.queryByTestId('enrollment-panel')).toBeNull();
   });
 
   it('renders the house not-found on a BFF 404 — unpublished and absent indistinguishable', async () => {

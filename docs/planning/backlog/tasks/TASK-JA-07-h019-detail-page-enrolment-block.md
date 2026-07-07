@@ -3,7 +3,7 @@
 ---
 id: TASK-JA-07
 title: /journeys/[id] detail page — steps overview + viewer-shaped enrolment block (FEAT-H019 STORY-2/3/4/5)
-status: in_progress
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H019

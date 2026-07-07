@@ -6,7 +6,7 @@ title: Journey catalogue & enrolment contracts — catalog/detail reads with vie
 owner: platform/domain/journeys
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -148,3 +148,13 @@ N/A (no surface) — but contract shapes serve the consuming surface's budgets: 
 3. **`is_published` vs `is_public` on `journeys`.** The catalogue predicate mirrors the existing published-select RLS; what `is_public` additionally governs (if anything) is read from the substrate at build and recorded; no new semantic invented.
 4. **Write-narrowing shape on `journey_enrollments`.** Column privileges vs policy replacement vs both — decided at the schema-review gate with the direct-caller question on the table; STORY-7's ACs bind either way. (The advisor-flagged duplicate permissive policies on this table may consolidate here **only** if the J-O3 measurement points at the DB layer — else that stays P3b's.)
 5. **Notification shape for group enrolment.** Reuses the existing durable `notifications` row pattern; whether it rides a trigger or an in-contract insert is decided at build (the cross-tier-write pickup applies either way).
+
+## Implementation notes
+
+Built Cycle J-A, 2026-07-07. Migrations `20260707130821` (the schema gate — Open Q1–Q5 nodded by Stefan, "yes to all") and `20260707145549` (the build-finding amendment, gate-nodded and applied same day).
+
+**Open-question resolutions (as nodded):** Q1 — withdrawal is **row deletion** (revisit at J-B when step-instances FK to enrolments). Q2 — the oracle's semantic (B-JRN-003, `hub-legacy` enroll route) was **one-directional, app-layer detection**: self-enrol refused when an active via-group enrolment exists; group-enrol never blocked on a member's individual enrolment; the contracts home exactly that, substrate-side. Q3 — the catalogue/detail predicate mirrors `journeys_select_published` **verbatim** (`is_published AND (is_public OR owner-member OR individually-enrolled OR platform-admin)`); `is_public=false` means published-but-owner-scoped; no new semantic. Q4 — **both** (the four sprint0 write policies dropped AND `INSERT/UPDATE/DELETE` revoked from `anon, authenticated`) **plus** the partial unique index `uq_journey_enrollments_active_party` on active `(journey_id, group_id)` — the structural duplicate backstop the 2026-02-21 rebuild lost; reads stay RLS-scoped. Q5 — **in-contract durable insert** (the `nominate_steward` precedent), type `group_journey_enrollment`, fan-out to active members excluding the actor.
+
+**Build finding (gate-amended):** the v1 viewer block could not serve FEAT-H019 STORY-5's "affordance per the payload" rule — `get_journey_detail` was replaced in place additively: `individual_enrollment {enrollment_id, status}` + per-`enrolled_via` `enrollment_id`/`status`/`can_withdraw` (`unenroll_from_journey` resolved platform-side). Also bound at build: self-enrol's key resolves via `has_permission` Tier-1 (the FI Members baseline role carries `enroll_self_in_journey`; `handle_new_user` Step 7 binds every FIM — verified in seeds/04 + the signup-consent migration); group visibility (group-enrol + summary) mirrors `get_group_detail`'s full gate incl. the PC015 wields branch via the internal `_journey_party_visible()`; `get_my_enrollments` admits a materialised Mist (empty until J-E) and refuses an actorless session `42501`, never a silent empty.
+
+**Test evidence (red-first TDD):** the 35-test integration suite was demonstrated red before the migration existed (39 failed / 2 passed — the two greens are labelled existing-substrate verifications: the Mist direct-INSERT refusal and the reads-stay-RLS-scoped regression guard), green post-apply; the 2 amendment asserts were demonstrated red against the applied v1 payload, green post-amendment — **37/37**. Full integration sweep **339/339** after the base migration (no regressions). The direct-caller question's answer is recorded in the migration header and PR #116.

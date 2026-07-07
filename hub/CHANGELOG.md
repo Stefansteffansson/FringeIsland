@@ -2,6 +2,14 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-07-07 — Journeys arrive: browse, start one, take your group travelling ([FEAT-H019](../docs/products/hub/features/FEAT-H019-journey-catalogue-and-enrolment.md))
+
+- **Browse the journeys.** A new "Journeys" page (account menu) shows every published journey — what it's about, how hard, how long, and an **Enrolled** badge on the ones you're already travelling.
+- **See one whole before committing.** Each journey's page lists its steps (what kind, how long) so enrolling is an informed act. The walkable player arrives next cycle.
+- **Start alone or take a group.** *Start this journey* enrols you; *Enrol a group* appears only for groups you may actually enrol — the confirmation names the group, and every active member is notified.
+- **Withdraw deliberately.** Leaving a journey asks you to confirm; a held (frozen) enrolment says so honestly instead of offering buttons that would fail.
+- **Your group's page tells its journeys.** A new section on each group page lists what the group is travelling — and if that section ever can't load, the rest of the page still works.
+
 ## 2026-07-06 — Small fixes from live testing (acting as a group)
 
 - **You can visit before you answer, and visit where your group belongs.** Group names are links now — in your invitations and in your group's memberships panel. And the platform opens the group's front page to you in both cases: an invitation or an admission means the group has already revealed itself, so you're no longer deciding blind or locked out of a group your own group belongs to. (Member lists and everything else keep their existing rules.)
