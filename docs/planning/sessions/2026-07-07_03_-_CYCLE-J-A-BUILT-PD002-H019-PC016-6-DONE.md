@@ -26,7 +26,9 @@
 
 ## Next session — entry point
 
-**J-O3 area-gate waterfall with Stefan** (production stable domain, authenticated real path, cold + warm, ≥3 runs/scenario — plus the J-O5 first-ever-cold < 2 s scenario) **before the boundary bet is chosen** (candidates: P3b journey slice / P1-residual / P4). Then **Cycle J-B**: the ADR-U044 step-model migration (step rows + registries + step-instances; the 47 legacy seed steps migrate mechanically), progress contracts over the narrowed substrate, the player; withdraw semantics (Q1) revisited when step-instances FK to enrolments. The J-A retro rides the cycle boundary (doc-health-check due then — first Journeys boundary; the three `_01` soft flags still carry).
+**ADDENDUM (same session, after this bridge was first written):** the J-O3 waterfall RAN — every J-A scenario within budget, J-O5 at 1 375 ms / 2 000 ms; the bet was chosen (**P1-residual**) and **closed with evidence the same day** (function measured near the floor; permanent `x-overview-timing` instrumentation shipped, PR #123; see the [waterfall record](../hub-v2/2026-07-07-journeys-j-a-waterfall.md) incl. the refuted five-round-trip theory — a measure-first win). PRs through #124 merged. **The next session starts directly at Cycle J-B.**
+
+~~**J-O3 area-gate waterfall with Stefan** (production stable domain, authenticated real path, cold + warm, ≥3 runs/scenario — plus the J-O5 first-ever-cold < 2 s scenario) **before the boundary bet is chosen** (candidates: P3b journey slice / P1-residual / P4).~~ Then **Cycle J-B**: the ADR-U044 step-model migration (step rows + registries + step-instances; the 47 legacy seed steps migrate mechanically), progress contracts over the narrowed substrate, the player; withdraw semantics (Q1) revisited when step-instances FK to enrolments. The J-A retro rides the cycle boundary (doc-health-check due then — first Journeys boundary; the three `_01` soft flags still carry).
 
 ## Standing / parked (deltas from `_02`; otherwise carried unchanged)
 
