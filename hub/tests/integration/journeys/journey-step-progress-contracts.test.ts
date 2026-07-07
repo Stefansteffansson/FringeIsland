@@ -816,4 +816,182 @@ describe('FEAT-PD003 — journey step substrate & progress contracts (J-B)', () 
       expect(delErr).not.toBeNull();
     });
   });
+
+  // ==========================================================================
+  // Q1 addendum — re-enrolment REACTIVATES the withdrawn row (Stefan-caught gap)
+  // ==========================================================================
+  // Red-first against the APPLIED substrate: enroll_self/enroll_group currently
+  // INSERT a fresh row on re-enrol, orphaning the withdrawn row's completed
+  // step-instances (the player restarts at step 1). The decided fix reactivates
+  // the withdrawn row in place — same enrollment_id, status back to 'active' —
+  // so the lived record carries. Tests 1/2/4 are red-by-inequality/row-count;
+  // test 3 asserts the dual-enrolment guard still holds through reactivation
+  // (likely green-at-red — guard-confirmation).
+  describe('Q1 addendum — re-enrolment reactivates the withdrawn row', () => {
+    let jSolo: string;
+    let jGrp: string;
+    let jGuard: string;
+    let jMulti: string;
+    let soloSteps: StepRow[] = [];
+
+    beforeAll(async () => {
+      jSolo = await seedJourney('JB Reenrol Solo');
+      jGrp = await seedJourney('JB Reenrol Group');
+      jGuard = await seedJourney('JB Reenrol Guard');
+      jMulti = await seedJourney('JB Reenrol Multi');
+      soloSteps = await seedSteps(jSolo, [
+        { title: 'Solo One', kind: 'narrative', family: 'witness' },
+        { title: 'Solo Two', kind: 'activity', family: 'act' },
+      ]);
+      await seedSteps(jGrp, [
+        { title: 'Grp One', kind: 'narrative', family: 'witness' },
+        { title: 'Grp Two', kind: 'activity', family: 'act' },
+      ]);
+      await seedSteps(jGuard, [{ title: 'Guard One', kind: 'narrative', family: 'witness' }]);
+      await seedSteps(jMulti, [{ title: 'Multi One', kind: 'narrative', family: 'witness' }]);
+    }, 120000);
+
+    const enrolId = (d: unknown): string =>
+      (d as { enrollment_id?: string; id?: string }).enrollment_id ?? (d as { id: string }).id;
+
+    it('solo: re-enrol reactivates the SAME withdrawn row, preserving completed instances (resume → step 2)', async () => {
+      const c = await asUser(traveller);
+      const { data: e0, error: e0Err } = await c.rpc('enroll_self_in_journey', { p_journey_id: jSolo });
+      expect(e0Err).toBeNull();
+      const originalId = enrolId(e0);
+
+      const step1 = soloSteps[0]?.id ?? GHOST;
+      const step2 = soloSteps[1]?.id ?? GHOST;
+      const { error: enterErr } = await c.rpc('enter_journey_step', { p_enrollment_id: originalId, p_step_id: step1 });
+      expect(enterErr).toBeNull();
+      const { error: compErr } = await c.rpc('complete_journey_step', { p_enrollment_id: originalId, p_step_id: step1 });
+      expect(compErr).toBeNull();
+
+      const { error: wErr } = await c.rpc('withdraw_from_journey', { p_enrollment_id: originalId });
+      expect(wErr).toBeNull();
+      const { data: withdrawn } = await admin
+        .from('journey_enrollments')
+        .select('enrolled_at, status_changed_at')
+        .eq('id', originalId)
+        .single();
+
+      // Re-enrol → reactivation, NOT a new row.
+      const { data: e1d, error: e1Err } = await c.rpc('enroll_self_in_journey', { p_journey_id: jSolo });
+      expect(e1Err).toBeNull();
+      expect(enrolId(e1d)).toBe(originalId);
+
+      // Exactly one row for (journey, personal group), now active.
+      const { data: rows } = await admin
+        .from('journey_enrollments')
+        .select('id, status')
+        .eq('journey_id', jSolo)
+        .eq('group_id', traveller.personalGroupId);
+      expect(rows).toHaveLength(1);
+      expect((rows as Array<{ status: string }>)[0].status).toBe('active');
+
+      // The prior completed instance survived; the resume pointer skips it.
+      const { data: ps, error: psErr } = await c.rpc('get_player_state', { p_enrollment_id: originalId });
+      expect(psErr).toBeNull();
+      const state = ps as {
+        status: string;
+        instances: Array<{ step_id: string; completed_at: string | null }>;
+        resume_step_id: string;
+      };
+      expect(state.status).toBe('active');
+      const step1Inst = state.instances.find((i) => i.step_id === step1);
+      expect(step1Inst).toBeDefined();
+      expect(step1Inst!.completed_at).not.toBeNull();
+      expect(state.resume_step_id).toBe(step2);
+
+      // status_changed_at advanced on reactivation; enrolled_at is the original.
+      const { data: after } = await admin
+        .from('journey_enrollments')
+        .select('enrolled_at, status_changed_at')
+        .eq('id', originalId)
+        .single();
+      expect((after as { enrolled_at: string }).enrolled_at).toBe((withdrawn as { enrolled_at: string }).enrolled_at);
+      expect(new Date((after as { status_changed_at: string }).status_changed_at).getTime())
+        .toBeGreaterThan(new Date((withdrawn as { status_changed_at: string }).status_changed_at).getTime());
+    });
+
+    it('group: steward re-enrol reactivates the SAME withdrawn group row (single active row)', async () => {
+      const cs = await asUser(steward);
+      const { data: g0, error: g0Err } = await cs.rpc('enroll_group_in_journey', { p_group_id: e1, p_journey_id: jGrp });
+      expect(g0Err).toBeNull();
+      const originalId = enrolId(g0);
+
+      const { error: wErr } = await cs.rpc('withdraw_from_journey', { p_enrollment_id: originalId });
+      expect(wErr).toBeNull();
+
+      const { data: g1, error: g1Err } = await cs.rpc('enroll_group_in_journey', { p_group_id: e1, p_journey_id: jGrp });
+      expect(g1Err).toBeNull();
+      expect(enrolId(g1)).toBe(originalId);
+
+      const { data: rows } = await admin
+        .from('journey_enrollments')
+        .select('id, status')
+        .eq('journey_id', jGrp)
+        .eq('group_id', e1);
+      expect(rows).toHaveLength(1);
+      expect((rows as Array<{ status: string }>)[0].status).toBe('active');
+    });
+
+    it('guard preserved: self re-enrol still refused P0001 when an active via-group enrolment exists (dual-enrolment rule survives reactivation)', async () => {
+      // member withdraws a solo enrolment; their group (e1) is then actively enrolled
+      // on the SAME journey — the member's self re-enrol must still be refused, and the
+      // withdrawn solo row must NOT reactivate past the guard. Green-at-red = confirmation.
+      const cm = await asUser(member);
+      const { data: m0, error: m0Err } = await cm.rpc('enroll_self_in_journey', { p_journey_id: jGuard });
+      expect(m0Err).toBeNull();
+      const soloId = enrolId(m0);
+      const { error: wErr } = await cm.rpc('withdraw_from_journey', { p_enrollment_id: soloId });
+      expect(wErr).toBeNull();
+
+      const cs = await asUser(steward);
+      const { error: geErr } = await cs.rpc('enroll_group_in_journey', { p_group_id: e1, p_journey_id: jGuard });
+      expect(geErr).toBeNull();
+
+      const { error } = await cm.rpc('enroll_self_in_journey', { p_journey_id: jGuard });
+      expect(error).not.toBeNull();
+      expect(error!.code).toBe('P0001');
+
+      const { data: solo } = await admin.from('journey_enrollments').select('status').eq('id', soloId);
+      expect((solo as Array<{ status: string }>)[0].status).toBe('withdrawn');
+    });
+
+    it('multiple withdrawn rows: re-enrol reactivates the MOST RECENT (by status_changed_at); the other stays withdrawn; one active only', async () => {
+      // Legacy-semantics leftovers: two withdrawn rows can coexist (the active-party
+      // partial unique index only scopes actives). Re-enrol must reactivate the newest.
+      const older = new Date(Date.now() - 60_000).toISOString();
+      const newer = new Date(Date.now() - 5_000).toISOString();
+      const { data: rowA } = await admin
+        .from('journey_enrollments')
+        .insert({ journey_id: jMulti, group_id: traveller.personalGroupId, enrolled_by_group_id: traveller.personalGroupId, status: 'withdrawn', status_changed_at: older })
+        .select('id')
+        .single();
+      const { data: rowB } = await admin
+        .from('journey_enrollments')
+        .insert({ journey_id: jMulti, group_id: traveller.personalGroupId, enrolled_by_group_id: traveller.personalGroupId, status: 'withdrawn', status_changed_at: newer })
+        .select('id')
+        .single();
+      const idA = (rowA?.id as string) ?? GHOST; // older
+      const idB = (rowB?.id as string) ?? GHOST; // newer
+      adminEnrollmentIds.push(idA, idB);
+
+      const c = await asUser(traveller);
+      const { data: re, error: reErr } = await c.rpc('enroll_self_in_journey', { p_journey_id: jMulti });
+      expect(reErr).toBeNull();
+      expect(enrolId(re)).toBe(idB); // the newest withdrawn row reactivates
+
+      const { data: rows } = await admin
+        .from('journey_enrollments')
+        .select('id, status')
+        .eq('journey_id', jMulti)
+        .eq('group_id', traveller.personalGroupId);
+      const byId = Object.fromEntries((rows as Array<{ id: string; status: string }>).map((r) => [r.id, r.status]));
+      expect(byId[idB]).toBe('active');
+      expect(byId[idA]).toBe('withdrawn');
+      expect((rows as Array<{ status: string }>).filter((r) => r.status === 'active')).toHaveLength(1);
+    });
+  });
 });

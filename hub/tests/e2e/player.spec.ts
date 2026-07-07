@@ -18,8 +18,16 @@ import { createAdminClient, SESSION_EMAIL } from './helpers/auth';
  * with the reason naming it (JRN-8). Distinct journey from journeys.spec so the
  * two specs never contend for the session FIM's enrolments.
  *
- * Cleanup purges the session FIM's enrolments either side; step-instances ride the
- * enrolment's ON DELETE CASCADE (ADR-U031 erasure), so a re-run starts clean.
+ * A second arc covers the FEAT-PD003 re-enrolment amendment (Stefan's finding):
+ * walk to step 2, WITHDRAW from the detail page (the enrolment goes terminal
+ * 'withdrawn', instances survive as lived history), confirm the not-enrolled
+ * posture returns, then RE-ENROL — the substrate reactivates the SAME withdrawn
+ * row (never a fresh start), so Continue resumes at step 2 with step 1 still
+ * ticked. Withdraw-then-restart would have reset to step 1; this proves it doesn't.
+ *
+ * Cleanup purges the session FIM's enrolments after each test (the two arcs are
+ * independent); step-instances ride the enrolment's ON DELETE CASCADE (ADR-U031
+ * erasure), so a re-run starts clean.
  */
 
 const JOURNEY = 'Leadership Fundamentals';
@@ -51,7 +59,7 @@ test.describe('FEAT-H020 — journey player: enrol, walk, resume, gating', () =>
     await purgePlayerState();
   });
 
-  test.afterAll(async () => {
+  test.afterEach(async () => {
     await purgePlayerState();
   });
 
@@ -112,5 +120,53 @@ test.describe('FEAT-H020 — journey player: enrol, walk, resume, gating', () =>
     await expect(page.getByTestId('step-canvas')).toContainText(STEP3);
     await expect(page.getByTestId('step-lock-reason')).toContainText(STEP2);
     await expect(page.getByTestId('step-complete')).toBeDisabled();
+  });
+
+  test('withdraw then re-enrol reactivates the enrolment and resumes, not restarts', async ({
+    page,
+  }) => {
+    // Enrol and walk to step 2 (condensed arc from the first test).
+    await page.goto('/journeys');
+    await page.getByRole('link', { name: JOURNEY }).click();
+    await page.getByTestId('enroll-self').click();
+    await expect(page.getByTestId('enrolled-individually')).toBeVisible();
+    await page.getByTestId('continue-individual').click();
+    await page.waitForURL(/\/play\?enrollment=/);
+
+    const canvas = page.getByTestId('step-canvas');
+    await expect(canvas).toContainText(STEP1);
+    await page.getByTestId('step-complete').click();
+    await expect(page.getByTestId('rail-tick')).toHaveCount(1);
+
+    const [enterResp] = await Promise.all([
+      page.waitForResponse(
+        (r) => /\/steps\/[0-9a-f-]+\/enter$/.test(r.url()) && r.request().method() === 'POST',
+      ),
+      page.getByTestId('player-next').click(),
+    ]);
+    expect(enterResp.ok()).toBeTruthy();
+    await expect(canvas).toContainText(STEP2);
+
+    // Back on the detail page, WITHDRAW behind the destructive ConfirmModal.
+    await page.goto('/journeys');
+    await page.getByRole('link', { name: JOURNEY }).click();
+    await expect(page.getByTestId('enrolled-individually')).toBeVisible();
+    await page.getByTestId('withdraw-self').click();
+    await expect(page.getByTestId('confirm-modal')).toBeVisible();
+    await page.getByTestId('confirm-modal-confirm').click();
+
+    // The not-enrolled posture returns — the Start affordance is back.
+    await expect(page.getByTestId('enroll-self')).toBeVisible();
+    await expect(page.getByTestId('enrolled-individually')).toHaveCount(0);
+
+    // RE-ENROL. The amendment reactivates the SAME withdrawn row; instances carry.
+    await page.getByTestId('enroll-self').click();
+    await expect(page.getByTestId('enrolled-individually')).toBeVisible();
+
+    // Continue back in: the player RESUMES at step 2 (not step 1) with step 1 ticked.
+    await page.getByTestId('continue-individual').click();
+    await page.waitForURL(/\/play\?enrollment=/);
+    await expect(page.getByTestId('step-canvas')).toContainText(STEP2);
+    await expect(page.getByTestId('rail-tick')).toHaveCount(1);
   });
 });
