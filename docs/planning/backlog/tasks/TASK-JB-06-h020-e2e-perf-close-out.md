@@ -3,7 +3,7 @@
 ---
 id: TASK-JB-06
 title: H020 E2E + perf DoD rows + 6-done close-out
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H020

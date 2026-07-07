@@ -84,6 +84,49 @@ export interface GroupEnrollmentSummary {
   enrollments: Array<{ journey_id: string; title: string; status: string }>;
 }
 
+/**
+ * One player step — full node incl. the inline content payload (get_player_state;
+ * the single-round-trip player boot, FEAT-PD003). Field order mirrors the payload.
+ */
+export interface PlayerStep {
+  id: string;
+  step_order: number;
+  title: string;
+  /** Open vocabulary (ADR-U044 / JRN-18) — the step-kind registry key. Rendered via
+   *  the renderer map with a mandatory fallback; NEVER a union over registry keys. */
+  kind: string;
+  /** Open vocabulary — the content-family registry key. */
+  family: string;
+  ask_verb: string;
+  required: boolean;
+  repeatable: boolean;
+  duration_minutes: number | null;
+  /** The inline payload, pending-DS-4 (ADR-U016) — shape is per-kind; renderers narrow. */
+  content: unknown;
+}
+
+/** One of the caller's OWN step instances (get_player_state; invariant 4 — traveller-own). */
+export interface PlayerInstance {
+  instance_id: string;
+  step_id: string;
+  created_at: string;
+  completed_at: string | null;
+}
+
+/** The single-round-trip player boot payload (get_player_state). */
+export interface PlayerState {
+  enrollment_id: string;
+  /** Open vocabulary — 'active' | 'frozen' | 'completed' | ...; non-active render honest states. */
+  status: string;
+  /** Open vocabulary — 'linear' | future modes (stored data, forward shape). */
+  sequencing_mode: string;
+  journey: { id: string; title: string; description: string | null };
+  steps: PlayerStep[];
+  instances: PlayerInstance[];
+  /** Q6 resume: latest open engagement, else first incomplete step, else last step; null iff no steps. */
+  resume_step_id: string | null;
+}
+
 export async function fetchJourneyCatalog(supabase: SupabaseClient): Promise<JourneyCard[]> {
   const { data, error } = await supabase.rpc('get_journey_catalog');
   if (error) throw error;
@@ -149,4 +192,43 @@ export async function fetchGroupEnrollmentSummary(
   });
   if (error) throw error;
   return data as GroupEnrollmentSummary;
+}
+
+// --- FEAT-PD003 player contracts (the player's boot + auto-save path) ---------
+
+export async function fetchPlayerState(
+  supabase: SupabaseClient,
+  enrollmentId: string,
+): Promise<PlayerState> {
+  const { data, error } = await supabase.rpc('get_player_state', {
+    p_enrollment_id: enrollmentId,
+  });
+  if (error) throw error;
+  return data as PlayerState;
+}
+
+export async function enterJourneyStep(
+  supabase: SupabaseClient,
+  enrollmentId: string,
+  stepId: string,
+): Promise<PlayerInstance> {
+  const { data, error } = await supabase.rpc('enter_journey_step', {
+    p_enrollment_id: enrollmentId,
+    p_step_id: stepId,
+  });
+  if (error) throw error;
+  return data as PlayerInstance;
+}
+
+export async function completeJourneyStep(
+  supabase: SupabaseClient,
+  enrollmentId: string,
+  stepId: string,
+): Promise<PlayerInstance> {
+  const { data, error } = await supabase.rpc('complete_journey_step', {
+    p_enrollment_id: enrollmentId,
+    p_step_id: stepId,
+  });
+  if (error) throw error;
+  return data as PlayerInstance;
 }

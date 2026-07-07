@@ -3,7 +3,7 @@
 ---
 id: TASK-JB-04
 title: H020 player page (boot/resume/linear nav)
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H020

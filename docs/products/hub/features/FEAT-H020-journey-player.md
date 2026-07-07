@@ -6,7 +6,7 @@ title: Journey player
 owner: hub
 consumers: []
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -14,24 +14,17 @@ requires-equipment: none
 
 A FIM can browse, inspect, and enrol (FEAT-H019) — and then nothing: no surface walks the journey. JRN-6..10 + JRN-18 are the area's core experience ("How do I get there?"). The player is the Hub's B5-critical surface for the area (step navigation must paint ≤ 200 ms), and JRN-18 commits the Hub to rendering whatever the DS-3 step-kind registry publishes — an open vocabulary, never an enumerated union (the sealed TS union died with ADR-U044).
 
-## Solution sketch
+## Implementation notes
 
-- **Route:** `/journeys/[id]/play` (client page behind the FIM gate). Enrolment disambiguation: exactly one active enrolment → straight in; several (individual + via-group, the one-directional dual-enrolment case) → `?enrollment=<id>` chosen from the detail page's per-enrolment Continue affordances; no active enrolment → honest redirect to detail.
-- **Data-boot (ADR-U042):** one justified standalone read — `GET /api/journeys/enrollments/[enrollmentId]/player` → `get_player_state` — plus a session cache (`peekPlayerState`/`fetchPlayerState`, PR #102 pattern) so revisits paint per B4. The header seeds from the cached detail/catalogue card (title paints immediately). New `invalidatePlayerCache()` joins the AuthContext sign-out block.
-- **The player shell:** step canvas + linear prev/next + step rail (order, required marks, completion ticks). All steps arrive in the boot payload, so **advance is optimistic by design** — next step paints from memory (B5), while `enter` fires as a background auto-save. **Deliberate, scoped deviation from the "mutations re-read, never optimistic" client doctrine:** progress marks in the player are optimistic-with-rollback (background confirm; on failure the mark rolls back with a non-blocking retry surface); enrolment mutations elsewhere stay re-read. The completion plan mandates this ("optimistic advance, background save").
-- **Kind-driven rendering (JRN-18):** a registry-key → renderer map covering the seven seeded Tier-1 kinds (each rendering its content payload and ask-verb affordance), with a safe fallback renderer for unknown keys — new kinds must render as data, never crash.
-- **Completion + gating (JRN-8):** the complete affordance carries the kind's ask verb; a required-predecessor-gated step shows why it is locked; the server's P0001 maps to the honest 409 state client-side.
+*(Built Cycle J-B, 2026-07-07, on the FEAT-PD003 contracts. TASK-JB-03/04/05/06; commits `dc7f7c9` → close-out.)*
 
-## Appetite
+**Data path (JB-03).** Three BFF routes: `GET /api/journeys/enrollments/[enrollmentId]/player` (Edge + `dub1` + `getVerifiedUserId` → `get_player_state`, wrapped `{ player }`), `POST .../steps/[stepId]/enter` and `.../complete` (Node + `getUser`, raw instance payload). SQLSTATE→HTTP per house pattern (42501→403, P0002→404, P0001→409 message-passthrough, XX000→500 content-free). **Route-policy conformance walk green with zero new exceptions.** Client `hub/lib/journeys/player.ts`: per-enrolment session cache (shared in-flight per key, failed-read-never-cached, `peek`/`fetch`), `enterStep`/`completeStep` thin wrappers (no cache writes — the page owns optimistic state), `invalidatePlayerCache()` wired into the AuthContext sign-out block after `invalidateJourneysCache()`. Types keep the open vocabulary (`kind`/`family`/`ask_verb: string`; `content: unknown`).
 
-One to two Hub sessions after the platform half lands — routes + client lib + shell first, then renderers + E2E + perf rows. Heaviest Hub half of the area.
+**The page (JB-04).** `/journeys/[id]/play`, FIM-gated, Suspense-wrapped. Disambiguation: one active enrolment straight in · several → named chooser (`?enrollment=` pre-selects; the detail page's enrolment panel gained per-enrolment Continue deep-links) · none → honest redirect to detail. One-read boot; header seeds from the cached catalogue/detail card; canvas opens at the payload's resume pointer; `StepRail` (order/required/ticks); prev/next paint from the in-memory payload with `enterStep` fired as background auto-save — failures never block, a non-blocking "not saved — retry" indicator clears on a later success; non-active enrolments (frozen/completed/withdrawn) render one honest status panel; deferred 300 ms `PlayerSkeleton` (B6); the 3x-refire guard asserted (zero duplicate reads across auth churn). `enterStep` fires on explicit navigation, not on boot (position stays derivable — the resume pointer's first-incomplete branch covers un-entered arrivals).
 
-## Rabbit holes
+**Renderers + completion (JB-05).** `step-renderers/` registry: `Record<string, StepRenderer>` looked up by the payload's `kind` with a **mandatory fallback** (unknown kinds render title + payload + generic affordance — never a crash); seven Tier-1 renderers presenting payloads plainly; ask verbs always from the payload, never a client map. `StepCanvas` states: completable (optimistic tick, background confirm, rollback + retry on failure), locked (disabled with the blocking predecessor named; a raced server P0001 lands in the same posture), completed non-repeatable (review), completed repeatable (verb offered again; repeat = enter-then-complete). **The scoped optimistic-progress deviation is confined to player progress marks exactly as spec'd** — enrolment mutations everywhere else stay re-read.
 
-- **Renderer scope:** the seeds carry placeholder-quality content; renderers present the payload plainly per kind. No rich content authoring/preview work (DS-4 is forward).
-- **Timers** (JRN-11), **completion celebration/detection** (JRN-12/13), **frozen read-only mode** (JRN-14) — later cycles. Non-`active` enrolments get one honest state screen, not designed affordances.
-- **Auto-save failure handling:** background `enter`/`complete` failures must not block navigation — rollback + retry surface, no blocking modals, no infinite retry loops.
-- **Whisp presence in steps** (COI-3) — Communication area; do not scaffold hooks.
+**Red → green.** Every behaviour block demonstrated red first (module-absence and missing-affordance reds recorded per task: 10 routes/client, page + panel reds, 13 renderer/canvas reds) → unit project **578/578** (81 suites), lint 0 errors. The perf assertion file is **labelled test-after** (house pattern, mirrors `journeys-page-perf`). `set-state-in-effect` suppressions now 4 repo-wide (≤ 5 retro budget). E2E (`player.spec.ts`): the full arc — catalogue → detail → self-enrol → Continue → resume at step 1 → complete via the ask verb → advance (the auto-save POST asserted) → leave → re-enter → **resume at step 2 from the substrate after a full reload** → the gated step 3 locked with its reason named — **1/1, re-run clean isolated; `journeys.spec` 2/2 unchanged; zero app defects found at E2E.** `next build` green — after catching one real type-seam defect the unit tier missed (`PlayerStep` imported from `player.ts` but only exported from `queries.ts`; re-export added — the type gate earning its DoD row again). Lint 0 errors (1 pre-existing warning). **The production waterfall (player boot cold/warm + step-nav B5) deliberately rides the J-O3 area-gate protocol with Stefan's live walk — pending at 6-done, per the H019 precedent.**
 
 ## No-gos
 
