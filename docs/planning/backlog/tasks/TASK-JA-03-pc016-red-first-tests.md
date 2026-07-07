@@ -3,7 +3,7 @@
 ---
 id: TASK-JA-03
 title: FEAT-PC016 red-first integration tests — the nominee's window from the substrate clock
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PC016

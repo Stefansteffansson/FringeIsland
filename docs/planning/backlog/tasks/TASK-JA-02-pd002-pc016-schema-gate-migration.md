@@ -3,7 +3,7 @@
 ---
 id: TASK-JA-02
 title: The J-A schema-gate migration — six DS-3 contracts + the PC016 rider + enrolment-write narrowing
-status: todo
+status: review
 assigned_to: Claude
 priority: critical
 feature: FEAT-PD002

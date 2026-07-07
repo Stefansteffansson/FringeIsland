@@ -3,7 +3,7 @@
 ---
 id: TASK-JA-01
 title: FEAT-PD002 red-first integration suite — six DS-3 contracts + the adversarial direct-caller matrix
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PD002
