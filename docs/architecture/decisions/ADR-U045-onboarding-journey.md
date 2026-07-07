@@ -1,6 +1,6 @@
 # ADR-U045: The onboarding journey — one designated journey, Mist-scoped access, auto-launch with opt-out
 
-**Status:** Proposed (authored 2026-07-07; awaiting the merge nod)
+**Status:** Accepted (nod 2026-07-07)
 **Date:** 2026-07-07
 **Deciders:** Stefan (kickoff board J-O1/J-O2, ratified in-session 2026-07-07) + Claude
 **Tags:** scope:cross-cutting (DS-3 · PC-2 · Hub A-JRN) · wave:ferd

@@ -1,6 +1,6 @@
 # ADR-U044: Journey step model — the Journey Designer grammar as the schema's DNA
 
-**Status:** Proposed (authored 2026-07-07; awaiting the merge nod)
+**Status:** Accepted (nod 2026-07-07)
 **Date:** 2026-07-07
 **Deciders:** Stefan + Claude (the Journeys-area kickoff design session — this is the step-type specification session ADR-U008 mandated)
 **Tags:** scope:platform-domain (DS-3 Journeys) · wave:ferd

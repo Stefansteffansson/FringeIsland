@@ -54,8 +54,8 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 | ADR-U041 | [Acting as a group is a permission; representatives are always people](ADR-U041-group-representation-by-permission.md) | Accepted | platform-core · product |
 | ADR-U042 | [First-paint bootstrap read — a BFF bundle, not a platform RPC](ADR-U042-first-paint-bootstrap-read-bff-bundle.md) | Accepted | product |
 | ADR-U043 | [Performance budgets for user-facing surfaces (B1–B6)](ADR-U043-performance-budgets.md) | Accepted | product |
-| ADR-U044 | [Journey step model — the Journey Designer grammar as the schema's DNA](ADR-U044-journey-step-model.md) | Proposed | domain-service |
-| ADR-U045 | [The onboarding journey — one designated journey, Mist-scoped access, auto-launch with opt-out](ADR-U045-onboarding-journey.md) | Proposed | domain-service · product · platform-core |
+| ADR-U044 | [Journey step model — the Journey Designer grammar as the schema's DNA](ADR-U044-journey-step-model.md) | Accepted | domain-service |
+| ADR-U045 | [The onboarding journey — one designated journey, Mist-scoped access, auto-launch with opt-out](ADR-U045-onboarding-journey.md) | Accepted | domain-service · product · platform-core |
 
 ---
 
