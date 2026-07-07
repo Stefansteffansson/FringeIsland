@@ -27,9 +27,10 @@ const fetchPendingNominations = jest.fn<() => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
-    json: (body: unknown, init?: { status?: number }) => ({
+    json: (body: unknown, init?: { status?: number; headers?: Record<string, string> }) => ({
       status: init?.status ?? 200,
       body,
+      headers: init?.headers ?? {},
     }),
   },
 }));
@@ -59,7 +60,11 @@ jest.mock('@/lib/groups/leadership', () => ({
 
 import { GET } from '@/app/api/me/overview/route';
 
-type RouteResult = { status: number; body: Record<string, { data?: unknown; error?: string }> };
+type RouteResult = {
+  status: number;
+  body: Record<string, { data?: unknown; error?: string }>;
+  headers: Record<string, string>;
+};
 
 const PROFILE = { full_name: 'Ada Lovelace', nickname: 'Ada', display_preference: 'nickname' };
 const STATE = { state: 'active' };
@@ -108,6 +113,21 @@ describe('ADR-U042 (unit) — GET /api/me/overview', () => {
     ]) {
       expect(f).toHaveBeenCalledTimes(1);
     }
+  });
+
+  it('carries the P1-residual timing breakdown in x-overview-timing — durations only, content-free', async () => {
+    authed();
+    const res = (await GET()) as unknown as RouteResult;
+    expect(res.status).toBe(200);
+    const raw = res.headers['x-overview-timing'];
+    expect(typeof raw).toBe('string');
+    const timing = JSON.parse(raw) as Record<string, number>;
+    // invocation index + auth + all five slices + total — names and
+    // millisecond numbers only (never payload content).
+    for (const key of ['n', 'auth', 'profile', 'account_state', 'groups', 'invitations', 'nominations', 'total']) {
+      expect(typeof timing[key]).toBe('number');
+    }
+    expect(Object.values(timing).every((v) => typeof v === 'number')).toBe(true);
   });
 
   it('isolates a failed slice — the paint proceeds with the standalone message (guardrail 2)', async () => {

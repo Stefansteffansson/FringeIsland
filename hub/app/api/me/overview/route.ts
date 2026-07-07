@@ -37,12 +37,19 @@ type Slice<T> = { data: T } | { error: string };
  *  (profile 404, account-state 404, invitations 42501). */
 class SliceRefusal extends Error {}
 
+// P1-residual instrumentation (waterfall record 2026-07-07): per-isolate
+// invocation counter — n:1 marks the cold invocation whose Edge→Supabase
+// connection setup the sign-in landing pays. Isolate-scoped by construction.
+let invocationN = 0;
+
 async function readSlice<T>(
   name: string,
   actor: string,
   read: () => Promise<T>,
   failureMessage: string,
+  timings: Record<string, number>,
 ): Promise<Slice<T>> {
+  const t0 = performance.now();
   try {
     return { data: await read() };
   } catch (err) {
@@ -54,14 +61,24 @@ async function readSlice<T>(
     });
     if (err instanceof SliceRefusal) return { error: err.message };
     return { error: failureMessage };
+  } finally {
+    timings[name] = Math.round(performance.now() - t0);
   }
 }
 
 export async function GET() {
+  // P1-residual instrumentation: names + millisecond durations only — never
+  // payload content. Read by the perf measurements as `x-overview-timing`
+  // (a custom header — Vercel drops Server-Timing on Edge responses) and
+  // carried in the overview.read event for the function-log history.
+  const tStart = performance.now();
+  const timings: Record<string, number> = { n: ++invocationN };
+
   // ADR-U037: read-path identity via local JWT verification — no Auth-server
   // round-trip on the hot path.
   const supabase = await createClient();
   const userId = await getVerifiedUserId(supabase);
+  timings.auth = Math.round(performance.now() - tStart);
 
   if (!userId) {
     emitTelemetry('overview.read_unauthenticated');
@@ -78,6 +95,7 @@ export async function GET() {
         return p;
       },
       'Failed to load profile',
+      timings,
     ),
     readSlice(
       'account_state',
@@ -88,8 +106,9 @@ export async function GET() {
         return s;
       },
       'Failed to load account state',
+      timings,
     ),
-    readSlice('groups', userId, () => fetchMemberGroups(supabase), 'Failed to load groups'),
+    readSlice('groups', userId, () => fetchMemberGroups(supabase), 'Failed to load groups', timings),
     readSlice(
       'invitations',
       userId,
@@ -104,19 +123,25 @@ export async function GET() {
         }
       },
       'Failed to load invitations',
+      timings,
     ),
     readSlice(
       'nominations',
       userId,
       () => fetchPendingNominations(supabase),
       'Failed to load nominations',
+      timings,
     ),
   ]);
 
   const failed = [profile, account_state, groups, invitations, nominations].filter(
     (s) => 'error' in s,
   ).length;
-  emitTelemetry('overview.read', { actor: userId, failed });
+  timings.total = Math.round(performance.now() - tStart);
+  emitTelemetry('overview.read', { actor: userId, failed, timings });
 
-  return NextResponse.json({ profile, account_state, groups, invitations, nominations });
+  return NextResponse.json(
+    { profile, account_state, groups, invitations, nominations },
+    { headers: { 'x-overview-timing': JSON.stringify(timings) } },
+  );
 }
