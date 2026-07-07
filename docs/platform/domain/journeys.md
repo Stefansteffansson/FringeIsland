@@ -241,19 +241,18 @@ Whether any DS-3 row falls inside the active wave's scope is a wave-planning det
 
 ### Summary
 
-No FEAT-PD feature specs exist for DS-3 at this derivation.
-
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
-| *(all fifteen capabilities)* | — | — | No specs yet; L4 runs follow L3 stabilisation (Step 2/3) and wave-planning pull |
+| Journey registry & route types (read side) · Enrolment lifecycle | [FEAT-PD002](./features/FEAT-PD002-journey-catalogue-and-enrolment-contracts.md) — journey catalogue & enrolment contracts | 4-ready | Cycle J-A ([Journeys completion plan](../../planning/hub-v2/phase-3-journeys-completion-plan.md)); catalog/detail/my-enrolments reads, self- + group-enrolment, withdraw, the group enrolment-summary read, write-narrowing. Pairs with Hub [FEAT-H019](../../products/hub/features/FEAT-H019-journey-catalogue-and-enrolment.md). Route-type registry-ization deliberately deferred to the ADR-U044 pattern at a later FEAT-PD |
+| *(the other thirteen capabilities)* | — | — | Unspecced; the step-kind system and Progress tracking are Cycle J-B's (schema per [ADR-U044](../../architecture/decisions/ADR-U044-journey-step-model.md)); Mist enrolment & transcendence continuity is Cycle J-E's ([ADR-U045](../../architecture/decisions/ADR-U045-onboarding-journey.md)) |
 
 ### Capabilities without specs
 
-All §L3 capabilities. First candidates when DS-3 enters build: Journey registry & route types and Enrolment lifecycle (the dependency-chain foundations) — with the step-kind system gated on the ADR-U008 step-type specification session.
+All §L3 capabilities except the two FEAT-PD002 partially covers. Next per the Journeys completion plan: Step registry & step-kind system + Progress tracking (J-B, gated on the ADR-U044 nod), Mist enrolment & transcendence continuity (J-E, ADR-U045).
 
 ### Features without capabilities
 
-None — no FEAT-PD files exist under `features/`.
+None.
 
 ---
 
