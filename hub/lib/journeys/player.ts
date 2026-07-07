@@ -15,10 +15,10 @@
  * `fetchPlayerState` when it needs the truth. Errors carry the BFF's HTTP status
  * (the shared `JourneysApiError`) so a P0001 gate paints the honest 409 state.
  */
-import type { PlayerInstance, PlayerState } from '@/lib/journeys/queries';
+import type { PlayerInstance, PlayerState, PlayerStep } from '@/lib/journeys/queries';
 import { JourneysApiError } from '@/lib/journeys/client';
 
-export type { PlayerInstance, PlayerState };
+export type { PlayerInstance, PlayerState, PlayerStep };
 
 async function throwFrom(res: Response, fallback: string): Promise<never> {
   const body = (await res.json().catch(() => null)) as { error?: string } | null;

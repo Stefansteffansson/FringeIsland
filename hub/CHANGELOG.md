@@ -2,6 +2,15 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-07-07 — Walk your journeys: the player arrives ([FEAT-H020](../docs/products/hub/features/FEAT-H020-journey-player.md))
+
+- **Walk a journey, step by step.** Every journey you're enrolled in now has a *Continue* button that opens the player: the step you're on, front and centre, with the whole route visible in a rail beside it — what's required, what's done, where you are.
+- **Every kind of step knows how to ask.** A reading asks you to *Read*, a journal step to *Write an entry*, a checklist to *Check off* — each step's own invitation, straight from the platform. Step kinds added in the future render out of the box.
+- **Progress saves itself.** Moving between steps and completing them is instant on screen; saving happens quietly behind you. If a save ever fails, a small "not saved — retry" note appears — nothing blocks, nothing is lost silently.
+- **Leave anytime, resume where you left.** Closing the player costs nothing: next time, it opens exactly where you stopped.
+- **Locked steps say why.** A step that needs an earlier required step first tells you which one — no mystery buttons, no silent refusals.
+- **Withdrawing keeps your history.** Leaving a journey no longer erases the record of the steps you walked — you can re-enrol later without your past pretending it never happened.
+
 ## 2026-07-07 — Journeys arrive: browse, start one, take your group travelling ([FEAT-H019](../docs/products/hub/features/FEAT-H019-journey-catalogue-and-enrolment.md))
 
 - **Browse the journeys.** A new "Journeys" page (account menu) shows every published journey — what it's about, how hard, how long, and an **Enrolled** badge on the ones you're already travelling.

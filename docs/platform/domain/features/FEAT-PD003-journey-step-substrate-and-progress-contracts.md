@@ -6,7 +6,7 @@ title: Journey step substrate and per-traveller progress contracts
 owner: platform/domain/journeys
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -16,26 +16,17 @@ The player cycle (J-B: JRN-6/7/8/9/10/18) cannot build on the realized substrate
 
 Two carried obligations land here: **the FEAT-PD002 Q1 withdraw revisit** (row-deletion withdraw would cascade-destroy step-instances once they FK to enrolments) and **the contract re-point** (`get_journey_catalog.step_count` and `get_journey_detail.steps[]` read `content->'steps'` today and break the moment steps leave the JSONB — they must be re-pointed to rows in the same migration).
 
-## Solution sketch
+## Implementation notes
 
-One schema-gate migration, four moves:
+*(Built Cycle J-B, 2026-07-07. Migration `20260707190000_feat_pd003_step_substrate_progress_contracts.sql`, held at the schema gate and nodded by Stefan — "yes to all", PR #128.)*
 
-1. **Tables (ADR-U044 §2–4).** `journey_steps` (one row per step: `journey_id`, `step_order`, `title`, `step_kind_key`, `content_family_key`, `required`, `repeatable`, `unlocked_by`, `duration_minutes`, inline `content` JSONB tagged `pending-DS-4`, `legacy_step_id` for migration traceability); `step_kinds` + `content_families` registries (seed-defined, extensible without schema change — invariant 6); `journey_step_instances` (grain: `enrollment_id` × `traveller_group_id` × `step_id`; `created_at` = engagement, `completed_at` nullable; at most one open instance per triple via partial unique index).
-2. **Data migration.** Count-agnostic: every journey's `content.steps[]` expands to rows `WITH ORDINALITY`; legacy `type` maps mechanically (content → kind `narrative`/family `witness`; activity → `activity`/`act`; assessment → `assessment`/family per journey, Q3). Parity asserted per journey (row count = pre-migration `jsonb_array_length`), never a hardcoded 47 — two divergent seed sets exist (sprint1 21/21/5 vs seeds/05 17/22/8); the dev pre-check confirms which is live.
-3. **Contracts.** Re-point `get_journey_catalog` (step_count) and `get_journey_detail` (steps[], shape preserved; `kind` becomes the registry key) to rows. New own-actor contracts: `get_player_state(p_enrollment_id)` — the single-round-trip player boot (journey meta + sequencing mode + ordered steps with kind/family/ask-verb metadata and content payloads + the caller's instances + resume pointer + enrolment status); `enter_journey_step(p_enrollment_id, p_step_id)` — records engagement (the auto-save write); `complete_journey_step(p_enrollment_id, p_step_id)` — stamps completion, enforces required-predecessor gating.
-4. **Posture.** Same class treatment as J-A: no direct DML for `anon`/`authenticated` on all four new tables; read posture per Q4. `withdraw_from_journey` amended per Q1 (terminal status, instances preserved). `progress_data` demotes per Q5.
+**What was built.** The four tables exactly as sketched (`content_families` 6 canon rows · `step_kinds` 7 Tier-1 presets with `default_content_family`/`ask_verb`/`change_semantic` · `journey_steps` with the beat-record columns + `legacy_step_id` · `journey_step_instances` at the enrolment × traveller-personal-group × step grain with the open-instance partial unique index). The conversion is a **reusable service-role function** `_migrate_journey_content_steps()` — count-agnostic, parity-guarded per journey, idempotent-by-refusal; it returned **47** at apply and is now called by `seeds/05` after its legacy-shaped inserts so fresh stacks can't end up half-modelled. `get_journey_catalog`/`get_journey_detail` re-pointed to rows in the same migration (shapes preserved; `kind` = registry key). Player contracts: `get_player_state` (single-round-trip boot; payload keys pinned by the red suite: top-level `sequencing_mode`, per-step `step_order`), `enter_journey_step` (open instance = the engagement; repeat of a repeatable step = a new instance; review of completed non-repeatable records nothing), `complete_journey_step` (idempotent stamp; create-and-complete; P0001 predecessor gating), plus the internal `_enrollment_traveller_standing` helper (service-role only).
 
-## Appetite
+**Gate resolutions (Q1–Q7, all defaults nodded):** Q1 — withdraw is a **terminal `withdrawn` status** (CHECK gains one value; instances survive; ADR-U031 erasure still row-deletes and cascades) with four labelled consequence deltas: `enroll_self`/`enroll_group` blocking checks + the dual-enrolment probe and `get_my_enrollments`/detail viewer block all exclude `withdrawn`. Q2 — `journeys.sequencing_mode` column (unconstrained TEXT, only `linear` exercised), `content` NULLed per converted journey. Q3 — all five live assessment steps → family `reflect` (titles verified reflection-shaped at the gate). Q4 — steps + instances **contract-only** (RLS, zero policies, zero grants); registries SELECT-to-authenticated. Q5 — `progress_data` demoted: no new writer, retained for the PC013/PC014 `frozen_reason` metadata (deprecation comment on the column). Q6 — resume = latest open engagement → first step lacking a completed instance → last step. Q7 — via-group completion rides the party group's `complete_journey_activities` (an Observer watches, never completes); solo ungated beyond traveller standing; player contracts deliberately **not FIM-only** (ADR-U045-forward: a Mist walks the onboarding journey through these contracts at J-E).
 
-One platform session: red-first suite + the gate migration + green. The heaviest platform half of the area (new tables + data migration), deliberately paired with a Hub half that consumes it in the same cycle so payload shapes meet their consumer now (retro-2026-07-07 §4).
+**Red → green.** 24 red-first integration tests (`journey-step-progress-contracts.test.ts`), all absence-failures (10× missing table, 11× missing function, 1× missing column, 2× intended legacy-behaviour reds) → 61/61 across both journeys suites post-apply. Full integration sweep 364/365 — the single failure a Supabase-side Cloudflare 522 during fixture creation in `membership-lifecycle`, green 24/24 isolated (sweep-flake class, recorded on PR #128). **Labelled test adaptations, none weakened:** both suites' fixtures now seed native `journey_steps` rows (the legacy JSONB shape is dead); the J-A suite's withdraw tests assert the surviving terminal row per Q1; its detail test asserts `kind: 'narrative'` (registry key); STORY-2 sweeps scope to migrated journeys by tag exclusion.
 
-## Rabbit holes
-
-- **Node/Beat grouping, non-linear sequencing, Roads, pacing** — all forward shape (ADR-U044 §5). `sequencing_mode` is stored data; only `linear` is exercised. Do not build mode logic.
-- **Completion detection** (journey-level) is J-C (JRN-12). Completing the last required step does NOT flip enrolment status in J-B.
-- **Steward/Guide progress reads** are J-D (JRN-16/17, consent-gated). J-B ships traveller-own reads only — but the RLS design must not foreclose the J-D contracts.
-- **`journeys.content` consumers:** grep every `content->` usage before the gate (known: catalog `step_count`, detail `steps`, seeds); any missed reader breaks silently at migration.
-- **DS-4 externalisation:** content payloads stay inline JSONB tagged `pending-DS-4` (ADR-U016 tagged disposition). No content modelling beyond pass-through.
+**Notes for successors.** `step_id` FK is ON DELETE RESTRICT (protects lived records; journey deletion has no Ferd path). The FEAT-H010 export contract inherits step-instances as a new personal-data category at its next touch (§L4 row carries the flag). FEAT-PD002's prose says "six" own-actor contracts; the substrate defines seven (`get_group_enrollment_summary` counted separately as the G-A seam) — noted, not edited.
 
 ## No-gos
 
