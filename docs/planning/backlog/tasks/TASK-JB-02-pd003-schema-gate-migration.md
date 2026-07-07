@@ -3,7 +3,7 @@
 ---
 id: TASK-JB-02
 title: PD003 schema-gate migration (ADR-U044 substrate + player contracts)
-status: todo
+status: review
 assigned_to: Claude
 priority: critical
 feature: FEAT-PD003

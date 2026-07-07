@@ -245,3 +245,8 @@ BEGIN
   RAISE NOTICE 'Professional Pathfinders group created: %. 8 predefined journeys seeded.', v_pp_group_id;
 END;
 $$;
+
+-- FEAT-PD003 (ADR-U044): the journeys above are inserted in the legacy
+-- content.steps[] shape. Convert them to journey_steps rows (count-agnostic,
+-- parity-guarded, idempotent — refuses journeys already converted).
+SELECT public._migrate_journey_content_steps();

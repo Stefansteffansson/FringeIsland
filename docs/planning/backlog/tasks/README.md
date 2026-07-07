@@ -21,8 +21,8 @@ The retrospective is the permanent learning artifact; individual tasks are ephem
 
 | Task | Feature | Depends on | Status |
 |---|---|---|---|
-| [TASK-JB-01](./TASK-JB-01-pd003-red-first-integration-suite.md) — PD003 red-first integration suite | FEAT-PD003 | — | todo |
-| [TASK-JB-02](./TASK-JB-02-pd003-schema-gate-migration.md) — the ADR-U044 schema-gate migration (tables + registries + step migration + contracts; HELD AT THE GATE) | FEAT-PD003 | JB-01 | todo |
+| [TASK-JB-01](./TASK-JB-01-pd003-red-first-integration-suite.md) — PD003 red-first integration suite | FEAT-PD003 | — | done (24 red 2026-07-07) |
+| [TASK-JB-02](./TASK-JB-02-pd003-schema-gate-migration.md) — the ADR-U044 schema-gate migration (tables + registries + step migration + contracts; HELD AT THE GATE) | FEAT-PD003 | JB-01 | review (at the gate) |
 | [TASK-JB-03](./TASK-JB-03-h020-player-bff-and-client.md) — player BFF routes + session-cache client | FEAT-H020 | JB-02 | todo |
 | [TASK-JB-04](./TASK-JB-04-h020-player-page-boot-resume-nav.md) — player page: boot, resume, linear nav | FEAT-H020 | JB-03 | todo |
 | [TASK-JB-05](./TASK-JB-05-h020-kind-renderers-completion-gating.md) — kind renderers + completion/gating UX | FEAT-H020 | JB-04 | todo |

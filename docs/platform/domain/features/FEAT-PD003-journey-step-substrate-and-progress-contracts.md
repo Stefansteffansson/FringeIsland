@@ -6,7 +6,7 @@ title: Journey step substrate and per-traveller progress contracts
 owner: platform/domain/journeys
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
