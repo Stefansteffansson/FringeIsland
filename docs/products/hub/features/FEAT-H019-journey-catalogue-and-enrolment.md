@@ -6,7 +6,7 @@ title: Journey catalogue & enrolment surfaces — the /journeys catalogue, the j
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
