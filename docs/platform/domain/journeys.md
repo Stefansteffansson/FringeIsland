@@ -108,8 +108,8 @@ These are not feature behaviours; they are properties every DS-3 capability and 
 
 ### 8. Open spec questions
 
-- **Q1 — Step-kind vs content-family vocabulary** *(speculative-third-shape)*. ADR-U008 names Tier-1 step types (narrative, reflection, assessment, choice, activity, journal, checklist); the narrative core's journeys line names content families (Witness, Reflect, Decide, Act, Encounter, Rest); and Step 2 surfaced a third, realized vocabulary — the TS `StepType` union {content, activity, assessment} live in `journeys.content` JSONB. Are families a classification dimension on step kinds, the kinds themselves under canon names, or two registries with a mapping — and how does the realized three-value set migrate? Cold lean: one step-kind registry with content family as a data-driven dimension. Resolves at the **step-type specification session ADR-U008 mandates** before significant implementation (now triply motivated).
-- **Q2 — Mist enrolment posture and the first experience.** Mists travel the near side with their own Whisp and cord; the founding first-hour narrative (`first-experience.md`, unwritten — the canon's named highest-risk gap) is plausibly a Mist-side journey. What journey grain is open to Mists (near-side journeys only — intrinsic, not a fence), and how does the first experience instantiate? Joint with the first-experience canon work; ephemerality obligations apply regardless.
+- **Q1 — Step-kind vs content-family vocabulary** *(speculative-third-shape)*. ADR-U008 names Tier-1 step types (narrative, reflection, assessment, choice, activity, journal, checklist); the narrative core's journeys line names content families (Witness, Reflect, Decide, Act, Encounter, Rest); and Step 2 surfaced a third, realized vocabulary — the TS `StepType` union {content, activity, assessment} live in `journeys.content` JSONB. Are families a classification dimension on step kinds, the kinds themselves under canon names, or two registries with a mapping — and how does the realized three-value set migrate? Cold lean: one step-kind registry with content family as a data-driven dimension. Resolves at the **step-type specification session ADR-U008 mandates** before significant implementation (now triply motivated). **Resolved 2026-07-07 (Journeys-area kickoff — the mandated step-type specification session, ratified by Stefan): [ADR-U044](../../architecture/decisions/ADR-U044-journey-step-model.md) adopts the Journey Designer session's (2026-03-20) universal grammar — one data-driven step-kind registry with content family as a registry dimension; steps become rows (single-beat nodes); ADR-U008's Tier-1 types land as registry presets; the realized three-value union maps mechanically and is retired.**
+- **Q2 — Mist enrolment posture and the first experience.** Mists travel the near side with their own Whisp and cord; the founding first-hour narrative (`first-experience.md`, unwritten — the canon's named highest-risk gap) is plausibly a Mist-side journey. What journey grain is open to Mists (near-side journeys only — intrinsic, not a fence), and how does the first experience instantiate? Joint with the first-experience canon work; ephemerality obligations apply regardless. **Partially resolved 2026-07-07 (ratified by Stefan, [ADR-U045](../../architecture/decisions/ADR-U045-onboarding-journey.md)): the journey grain open to Mists is exactly one designated onboarding journey (designation as data, the former Journey Zero); auto-launch at first arrival for Mists and new FIMs, opt-out honored; progress carries at transcendence; forgetting rides the ADR-U031 machinery. The first-experience instantiation (the journey's real content) remains with the CQ-010 canon work — content, not mechanics.**
 - **Q3 — The AI-Generative route seam with DS-7.** For AI-Generative journeys, where does Wayfinder authorship end and generation intelligence begin — does DS-7 author through the same Wayfinder-gated write-path, or through a distinct generation seam with its own audit posture? Resolves at the DS-7 descent (which also owns the Whisp-split ADR promotion). **Resolved 2026-06-11 (DS-7 descent, ratified by Stefan, joint with content.md §8 Q8): generation authors through the same Wayfinder-gated write-path with a distinct audit posture — attributable as AI-generated, acting under the Wayfinder's authority (the last say is authorship, PRINCIPLES-AI). No distinct generation seam exists. See `intelligence.md` §8 Q4.**
 - **Q4 — Journey-vs-episode attachment grain.** How journeys attach into DS-2's frame: per-episode journeys, season-spanning journeys, journeys running alongside the calendar unattached — attachment kinds are data-driven, but the legitimate kind set and its semantics firm up jointly with DS-2's calendar at FEAT-PD time.
 - **Q5 — Personalisation-state shape.** Whether a signature variant is stored as per-enrolment deltas over the template, generated journey instances, or a composition layer at delivery time — L4 work, after the DS-7 input-seam contract firms.
@@ -204,6 +204,7 @@ Cross-referenced per the template rule: DS-2's plot reads, loop-structure reads,
 - **Vertical specs:** Privacy substantive; Administration/Transactions corrected at G-3; Notifications/Observability remain scaffold-tier — proceeded with remark per G-03 (`docs/ecosystem/how-we-work/gaps.md`).
 - **ADR-U017 + ADR-U020 joined the authority chain at session state-read** (the opener's ADR enumeration omitted them — routed to the opener-authoring lifecycle via §13); ADR-U017's journeys-are-content-templates is the structural spine of the Enrolment area.
 - **No code, migrations, or FEAT-* files read** at Step 1, per the cold-derivation discipline. The Step 2 expectation (journey substrate exists; first non-zero-delta Step 2; PW-1 fires) **was stated in advance and held exactly** — see the Step 2 block below: five Class 2 deltas folded back inline per the canonical-run fold-back rule, two Class 3 findings routed to pickups, zero cold-position retractions.
+- **Journey Designer session (2026-03-20) — recovered at the Journeys-area kickoff (2026-07-07):** the authoritative design record of the step grammar (Present → Ask → Change, Node/Beat containment, the six content families, four route types, step-instances); adopted into the authority chain by [ADR-U044](../../architecture/decisions/ADR-U044-journey-step-model.md). Consumed for journey grammar only — its world vocabulary predates the 2026-06 canon reconciliations; cosmology defers to the canon cores.
 
 ### Step 2 — code-informed stress-test findings
 
@@ -240,19 +241,18 @@ Whether any DS-3 row falls inside the active wave's scope is a wave-planning det
 
 ### Summary
 
-No FEAT-PD feature specs exist for DS-3 at this derivation.
-
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
-| *(all fifteen capabilities)* | — | — | No specs yet; L4 runs follow L3 stabilisation (Step 2/3) and wave-planning pull |
+| Journey registry & route types (read side) · Enrolment lifecycle | [FEAT-PD002](./features/FEAT-PD002-journey-catalogue-and-enrolment-contracts.md) — journey catalogue & enrolment contracts | 4-ready | Cycle J-A ([Journeys completion plan](../../planning/hub-v2/phase-3-journeys-completion-plan.md)); catalog/detail/my-enrolments reads, self- + group-enrolment, withdraw, the group enrolment-summary read, write-narrowing. Pairs with Hub [FEAT-H019](../../products/hub/features/FEAT-H019-journey-catalogue-and-enrolment.md). Route-type registry-ization deliberately deferred to the ADR-U044 pattern at a later FEAT-PD |
+| *(the other thirteen capabilities)* | — | — | Unspecced; the step-kind system and Progress tracking are Cycle J-B's (schema per [ADR-U044](../../architecture/decisions/ADR-U044-journey-step-model.md)); Mist enrolment & transcendence continuity is Cycle J-E's ([ADR-U045](../../architecture/decisions/ADR-U045-onboarding-journey.md)) |
 
 ### Capabilities without specs
 
-All §L3 capabilities. First candidates when DS-3 enters build: Journey registry & route types and Enrolment lifecycle (the dependency-chain foundations) — with the step-kind system gated on the ADR-U008 step-type specification session.
+All §L3 capabilities except the two FEAT-PD002 partially covers. Next per the Journeys completion plan: Step registry & step-kind system + Progress tracking (J-B, gated on the ADR-U044 nod), Mist enrolment & transcendence continuity (J-E, ADR-U045).
 
 ### Features without capabilities
 
-None — no FEAT-PD files exist under `features/`.
+None.
 
 ---
 
