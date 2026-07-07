@@ -68,3 +68,11 @@ For each vertical, state the impact or write "None" — do not leave blank.
 - **Observability:** Does this feature need audit logging? What events should be tracked? Error monitoring considerations?
 - **Transactions:** Does this feature involve payments, subscriptions, or financial data?
 - **Extensibility:** Does this feature introduce new types, enums, or permission scopes? If yes, are they designed to be open for extension (no hardcoded lists, no sealed sets)?
+
+## Performance budget
+
+Required for any feature with a user-facing surface (page, panel, interaction); platform-only features write "N/A (no surface)". Budget classes are defined in [ADR-U043](../architecture/decisions/ADR-U043-performance-budgets.md).
+
+- **First-paint class:** which budget rows apply (B1 sign-in flow · B2 cold nav · B3 warm nav · B4 revisit) and the page's data-boot path per ADR-U042 — overview-bundle slice · session cache · justified standalone read.
+- **Interaction class:** any interaction at risk of exceeding B5 (200 ms to next paint) and the feedback it shows within 100 ms.
+- **Loading states:** what renders while waiting (B6: < 1 s nothing needed · 1–3 s skeleton, not spinner · > 3 s treat as a defect).

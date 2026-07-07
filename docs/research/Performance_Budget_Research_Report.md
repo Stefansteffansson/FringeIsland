@@ -4,6 +4,7 @@
 **Question:** Before locking a first-paint performance budget into the feature-spec template and surface-half DoD (Groups retro §4, 2026-07-06), how do the proposed numbers — cold first-ever < 2 s, warm < 1 s, revisit instant — compare against common practice and what users in general accept?
 **Method:** Web review of the canonical standards (Google Core Web Vitals, RAIL, Nielsen/NN-g response-time limits, MDN guidance) plus SaaS-specific benchmarks and perceived-performance research. Sources linked inline; retrieved 2026-07-07.
 **Consumers:** the budget decision (perf doc §5.3, [`../planning/hub-v2/2026-07-06-groups-first-load-perf.md`](../planning/hub-v2/2026-07-06-groups-first-load-perf.md)), the `type:process` template/DoD work item from [`retro-2026-07-06.md`](../planning/retrospectives/retro-2026-07-06.md).
+**Outcome:** the §3 budget was locked unchanged on 2026-07-07 as [ADR-U043](../architecture/decisions/ADR-U043-performance-budgets.md).
 
 ---
 

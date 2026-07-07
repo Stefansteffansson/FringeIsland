@@ -73,6 +73,7 @@ The Anthropic computer-use tools have legitimate uses for sandbox-side analysis,
 - Update CHANGELOG.md for user-visible changes
 - Read the product/service CLAUDE.md before touching that area
 - Complete the Vertical Impact section in every feature spec — no vertical left blank
+- Complete the Performance budget section in every feature spec with a user-facing surface (ADR-U043: budget class + data-boot path); platform-only features write "N/A (no surface)"
 - Verify extensibility — no hardcoded enums, sealed type systems, or closed permission sets in new features
 - When a search or lookup returns a negative result (not found, no matches, empty), cross-check with a direct listing or independent method before logging it as missing, absent, or non-existent
 - **Git lifecycle — fuller-auto (Stefan, 2026-06-27 standing authorization):** for routine, low-risk changes, run the whole cycle without pausing for the merge — branch off `main`, commit (conventional), push, open the PR, then merge + clean up in one step (`gh pr merge <n> --merge --delete-branch`) and `git pull main` to sync. Don't stop to ask whether to merge; Stefan steps in only if he chooses. The "Ask first" carve-outs below still pause even under this default.

@@ -99,7 +99,14 @@ After all tasks for a story are done:
   - the contract is enforced **platform-side** (SECURITY DEFINER RPC / RLS / trigger / column grant), not only in a Surface route or `lib`; a Surface route may host presentation/session plumbing but is **never the sole home** of a business rule, authorization decision, or lifecycle/consent invariant;
   - any **custom Next.js route** names which of the PC-3 §7 three justifications (cross-table mutation / external service-role call / multi-step transaction) warrants it — the default is "expose via PostgREST RPC";
   - every **app-layer gate has an adversarial integration test** that exercises the direct PostgREST path (including an anonymous-session Mist) and proves the substrate refuses what the route refuses — not just the route. (This is the check that would have caught the ADR-U038 S1–S3 holes at build time.)
-- If all stories in the feature are complete, update feature maturity to `6-done`
+- **Route-policy DoD (required before `6-done`, ADR-U036/U037)** — for every new or changed Surface route, until the automated conformance test exists (once it does, that test green replaces these manual rows):
+  - mutating verbs (POST/PATCH/PUT/DELETE) authenticate with **`getUser()`** (server-verified) and run on the **Node runtime**;
+  - hot-path reads (render-blocking GETs) use **`getClaims()`** + Edge runtime + `preferredRegion: 'dub1'`;
+  - any deviation names its documented exception in the spec's Implementation notes. (These are the two rows that drifted in G-F and were caught only by the 2026-07-06 audit.)
+- **Performance DoD (required before `6-done` for surface halves, ADR-U043)**:
+  - the feature spec's **Performance budget** section is filled — budget class + data-boot path; a page that gates first paint on fetches joins the overview bundle or a session cache per ADR-U042, or justifies its standalone read;
+  - a test asserts the first-paint request behaviour for new pages (call count ≤ the spec's stated N, zero duplicate fetches across auth-event churn) and the loading-state rule (B6);
+  - in-repo prior art (overview bundle slices, session caches, `OverviewBoot`, skeletons) was checked before adding new fetch plumbing.
 - In the **same commit** as the maturity change, update the feature-inventory summary row in the parent entity's `SPECIFICATION.md` (§L4) to reflect `6-done`. Per the `ecosystem-decomposition` skill L4 write scope, this is L4's property; `feature-development` is the operational layer carrying the update out. The `doc-health-check` skill §8 verifies the summary matches the actual state of `features/` at cycle boundaries — miss this step and the check will flag drift.
 - Update the `features/README.md` index
 - Update `CHANGELOG.md` if the change is user-visible
