@@ -3,7 +3,7 @@
 ---
 id: TASK-JB-03
 title: H020 player BFF routes + session-cache client
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H020

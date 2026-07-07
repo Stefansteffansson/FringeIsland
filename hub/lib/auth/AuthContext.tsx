@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { invalidateProfileCache } from '@/lib/profile/client';
 import { invalidateGroupsCache } from '@/lib/groups/client';
 import { invalidateJourneysCache } from '@/lib/journeys/client';
+import { invalidatePlayerCache } from '@/lib/journeys/player';
 import { invalidateAccountStateAdoption } from '@/lib/account/client';
 import { invalidateOverview } from '@/lib/me/overview-client';
 import { beginMistSession, deriveIdentity, type Identity } from '@/lib/auth/mist';
@@ -89,6 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         invalidateProfileCache();
         invalidateGroupsCache();
         invalidateJourneysCache();
+        invalidatePlayerCache();
         invalidateAccountStateAdoption();
         invalidateOverview();
       }
