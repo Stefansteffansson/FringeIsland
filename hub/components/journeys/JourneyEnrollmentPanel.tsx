@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { InlineError } from '@/components/ui/InlineError';
 import { enrollSelf, enrollGroup, withdrawEnrollment } from '@/lib/journeys/client';
@@ -77,6 +78,16 @@ export function JourneyEnrollmentPanel({
           <span className="rounded bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
             You are on this journey
           </span>
+          {/* FEAT-H020: resume the player for this enrolment (active only). */}
+          {own?.status === 'active' && (
+            <Link
+              href={`/journeys/${journey.id}/play?enrollment=${own.enrollment_id}`}
+              data-testid="continue-individual"
+              className="ml-3 text-xs font-medium text-blue-600 hover:underline"
+            >
+              Continue
+            </Link>
+          )}
           {ownFrozen ? (
             <p data-testid="frozen-state" className="mt-2 text-xs text-gray-500">
               This enrolment is held for review and cannot be changed here.
@@ -106,6 +117,21 @@ export function JourneyEnrollmentPanel({
             Travelling via{' '}
             {journey.enrolled_via.map((g) => g.group_name).join(', ')}
           </p>
+          {/* FEAT-H020: resume the player for each active via-group enrolment. */}
+          {journey.enrolled_via
+            .filter((v): v is Required<JourneyEnrolledVia> =>
+              Boolean(v.status === 'active' && v.enrollment_id),
+            )
+            .map((v) => (
+              <Link
+                key={v.enrollment_id}
+                href={`/journeys/${journey.id}/play?enrollment=${v.enrollment_id}`}
+                data-testid="continue-via"
+                className="mt-1 mr-3 inline-block text-xs font-medium text-blue-600 hover:underline"
+              >
+                Continue {v.group_name}
+              </Link>
+            ))}
           {withdrawableVia.map((g) => (
             <button
               key={g.enrollment_id}

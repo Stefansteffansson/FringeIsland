@@ -180,3 +180,40 @@ describe('STORY-5 — withdraw deliberately', () => {
     expect(screen.getAllByTestId('frozen-state').length).toBeGreaterThan(0);
   });
 });
+
+describe('FEAT-H020 — Continue deep-links into the player (additive touch)', () => {
+  it('offers Continue on an active own enrolment, deep-linking the player with ?enrollment', () => {
+    renderPanel({
+      is_enrolled_individually: true,
+      individual_enrollment: { enrollment_id: 'e9', status: 'active' },
+    });
+    const link = screen.getByTestId('continue-individual');
+    expect(link.getAttribute('href')).toBe('/journeys/j1/play?enrollment=e9');
+  });
+
+  it('offers Continue on each active via-group enrolment, deep-linking each', () => {
+    renderPanel({
+      enrolled_via: [
+        { group_id: 'g1', group_name: 'Alpha Party', enrollment_id: 'ge1', status: 'active', can_withdraw: true },
+        { group_id: 'g2', group_name: 'Beta Party', enrollment_id: 'ge2', status: 'active', can_withdraw: false },
+      ],
+    });
+    const links = screen.getAllByTestId('continue-via');
+    expect(links.map((l) => l.getAttribute('href'))).toEqual([
+      '/journeys/j1/play?enrollment=ge1',
+      '/journeys/j1/play?enrollment=ge2',
+    ]);
+  });
+
+  it('offers NO Continue on a frozen enrolment (no active affordance to resume)', () => {
+    renderPanel({
+      is_enrolled_individually: true,
+      individual_enrollment: { enrollment_id: 'e9', status: 'frozen' },
+      enrolled_via: [
+        { group_id: 'g1', group_name: 'Alpha Party', enrollment_id: 'ge1', status: 'frozen', can_withdraw: true },
+      ],
+    });
+    expect(screen.queryByTestId('continue-individual')).toBeNull();
+    expect(screen.queryByTestId('continue-via')).toBeNull();
+  });
+});

@@ -1,0 +1,294 @@
+'use client';
+
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useAuth } from '@/lib/auth/AuthContext';
+import { AppShell } from '@/components/shell/AppShell';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { InlineError } from '@/components/ui/InlineError';
+import { StepCanvas } from '@/components/journeys/StepCanvas';
+import { StepRail } from '@/components/journeys/StepRail';
+import { PlayerSkeleton } from '@/components/journeys/PlayerSkeleton';
+import { emitTelemetry } from '@/lib/observability/telemetry';
+import {
+  peekJourneyCatalog,
+  peekMyJourneyEnrollments,
+  fetchMyJourneyEnrollments,
+  JourneysApiError,
+} from '@/lib/journeys/client';
+import { peekPlayerState, fetchPlayerState, enterStep } from '@/lib/journeys/player';
+import type { PlayerState } from '@/lib/journeys/player';
+import type { MyEnrollment } from '@/lib/journeys/queries';
+
+/**
+ * FEAT-H020 STORY-1/2/4/5 — the /journeys/[id]/play player (JRN-6/7/9/10).
+ *
+ * FIM-gated like the catalogue/detail. Enrolment resolution: `?enrollment=`
+ * pre-selects; else exactly one active enrolment goes straight in, several raise
+ * a named chooser (individual vs each via-group), none routes honestly back to
+ * the detail. Boot is ONE `fetchPlayerState` read (per-enrolment session cache,
+ * ADR-U042) with the header seeded from cache; the canvas opens at the resume
+ * pointer; the rail shows order / required / ticks. Prev/next paints from the
+ * in-memory payload (optimistic advance, B5) while `enter` fires as a background
+ * auto-save (JRN-9) whose failure surfaces a non-blocking retry and never blocks
+ * the paint. A non-active enrolment gets one honest state, no step affordances
+ * (J-C / J-D own richer treatments). STORY-3 completion + JRN-18 kind rendering
+ * are TASK-JB-05 — the `StepCanvas` seam is where they land.
+ */
+function JourneyPlayer() {
+  const { user, identity, loading: authLoading } = useAuth();
+  const router = useRouter();
+  const params = useParams<{ id: string }>();
+  const journeyId = params.id;
+  const searchParams = useSearchParams();
+  const paramEnrollment = searchParams.get('enrollment');
+
+  // `?enrollment=` pre-selects; otherwise the chooser resolves one into `picked`.
+  const [picked, setPicked] = useState<string | null>(null);
+  const enrollmentId = paramEnrollment ?? picked;
+
+  // Header seed (B3/B4): the cached player state (revisit) or catalogue card
+  // paints the title immediately while the canvas boots.
+  const [seedTitle] = useState<string | null>(
+    () =>
+      (paramEnrollment ? (peekPlayerState(paramEnrollment)?.journey.title ?? null) : null) ??
+      peekJourneyCatalog()?.find((c) => c.id === journeyId)?.title ??
+      null,
+  );
+
+  // B4 revisit: seed the canvas from the last resolved state for this enrolment.
+  const [player, setPlayer] = useState<PlayerState | null>(
+    () => (paramEnrollment ? peekPlayerState(paramEnrollment) : null),
+  );
+  const [currentStepId, setCurrentStepId] = useState<string | null>(() => {
+    const seeded = paramEnrollment ? peekPlayerState(paramEnrollment) : null;
+    return seeded ? (seeded.resume_step_id ?? seeded.steps[0]?.id ?? null) : null;
+  });
+  // Position at resume exactly once per enrolment — a background revalidate must
+  // never yank the traveller back from a step they navigated to.
+  const positioned = useRef(currentStepId !== null);
+
+  const [mine, setMine] = useState<MyEnrollment[] | null>(() => peekMyJourneyEnrollments());
+  const [error, setError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<{ stepId: string } | null>(null);
+
+  const applyState = useCallback((fresh: PlayerState) => {
+    setPlayer(fresh);
+    if (!positioned.current) {
+      setCurrentStepId(fresh.resume_step_id ?? fresh.steps[0]?.id ?? null);
+      positioned.current = true;
+    }
+  }, []);
+
+  const boot = useCallback(async () => {
+    if (enrollmentId) {
+      // One justified standalone read; the session cache de-dupes concurrent
+      // callers and paints a revisit instantly (already seeded above).
+      try {
+        applyState(await fetchPlayerState(enrollmentId));
+        setError(null);
+      } catch (err) {
+        if (err instanceof JourneysApiError && err.status === 404) {
+          router.replace(`/journeys/${journeyId}`); // honest — no broken shell
+          return;
+        }
+        setError('Failed to open the player.');
+        emitTelemetry('journey.client_player_failed', { message: (err as Error).message });
+      }
+      return;
+    }
+    // No enrolment chosen — resolve from my-enrolments (cached; revalidates).
+    try {
+      const list = peekMyJourneyEnrollments() ?? (await fetchMyJourneyEnrollments());
+      setMine(list);
+      const active = list.filter((e) => e.journey_id === journeyId && e.status === 'active');
+      if (active.length === 0) {
+        router.replace(`/journeys/${journeyId}`); // nothing active to walk
+        return;
+      }
+      if (active.length === 1) {
+        setPicked(active[0].enrollment_id); // straight in
+      }
+      // several -> the chooser renders from `mine`.
+    } catch (err) {
+      setError('Failed to open the player.');
+      emitTelemetry('journey.client_player_failed', { message: (err as Error).message });
+    }
+  }, [enrollmentId, journeyId, router, applyState]);
+
+  // Keyed on the STABLE user id + enrolment, never the user object — the auth
+  // listener hands out a new reference per event (INITIAL_SESSION /
+  // TOKEN_REFRESHED); keying on the object re-fired the effect and duplicated
+  // the read (the groups-page 3x-refire lesson, measured 2026-07-06).
+  const userId = user?.id ?? null;
+  useEffect(() => {
+    if (authLoading) return;
+    const dest = `/journeys/${journeyId}/play${paramEnrollment ? `?enrollment=${paramEnrollment}` : ''}`;
+    if (!userId || identity === 'sessionless') {
+      router.replace(`/login?redirect=${dest}`);
+      return;
+    }
+    if (identity === 'mist') {
+      router.replace('/');
+      return;
+    }
+    // react-hooks/set-state-in-effect suppression: the deliberate load-on-mount
+    // house pattern (catalogue / detail / groups) — a single `boot()` per stable
+    // (userId, enrolment) so auth-event churn fires no duplicate read.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void boot();
+  }, [userId, identity, authLoading, router, journeyId, paramEnrollment, boot]);
+
+  const steps = player?.steps ?? [];
+  const completedStepIds = new Set(
+    (player?.instances ?? []).filter((i) => i.completed_at).map((i) => i.step_id),
+  );
+  const currentIndex = steps.findIndex((s) => s.id === currentStepId);
+  const currentStep = currentIndex >= 0 ? steps[currentIndex] : null;
+  const prevStep = currentIndex > 0 ? steps[currentIndex - 1] : null;
+  const nextStep =
+    currentIndex >= 0 && currentIndex < steps.length - 1 ? steps[currentIndex + 1] : null;
+
+  const saveEnter = useCallback(
+    (stepId: string) => {
+      if (!enrollmentId) return;
+      // Background auto-save (JRN-9): never awaited on the interaction path. A
+      // failure raises the non-blocking retry; a later success clears it.
+      enterStep(enrollmentId, stepId)
+        .then(() => setSaveError((cur) => (cur?.stepId === stepId ? null : cur)))
+        .catch(() => setSaveError({ stepId }));
+    },
+    [enrollmentId],
+  );
+
+  const navigate = (stepId: string) => {
+    setCurrentStepId(stepId); // optimistic paint from the in-memory payload (B5)
+    saveEnter(stepId); // background auto-save — never blocks the paint
+  };
+
+  const activeForJourney = (mine ?? []).filter(
+    (e) => e.journey_id === journeyId && e.status === 'active',
+  );
+
+  const title = player?.journey.title ?? seedTitle ?? 'Journey';
+
+  let body: React.ReactNode;
+  if (authLoading || identity !== 'fim') {
+    body = <PlayerSkeleton />;
+  } else if (error) {
+    body = <InlineError message={error} />;
+  } else if (!enrollmentId) {
+    body =
+      activeForJourney.length > 1 ? (
+        <section data-testid="player-enrollment-chooser">
+          <p className="mb-3 text-sm text-gray-700">
+            You have more than one way onto this journey. Which would you like to continue?
+          </p>
+          <ul className="space-y-2">
+            {activeForJourney.map((e) => (
+              <li key={e.enrollment_id}>
+                <button
+                  type="button"
+                  data-testid="player-enrollment-option"
+                  onClick={() => setPicked(e.enrollment_id)}
+                  className="w-full rounded-lg border border-gray-200 px-4 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  {e.kind === 'individual' ? 'Your own travel' : (e.group_name ?? 'Via a group')}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : (
+        <PlayerSkeleton />
+      );
+  } else if (!player) {
+    body = <PlayerSkeleton />;
+  } else if (player.status !== 'active') {
+    body = (
+      <div data-testid="player-nonactive">
+        <EmptyState
+          title="This enrolment is not active"
+          description={`This enrolment is ${player.status}. You cannot walk it here right now.`}
+        />
+      </div>
+    );
+  } else {
+    body = (
+      <div data-testid="journey-player" className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+        <div>
+          {currentStep ? (
+            <StepCanvas step={currentStep} />
+          ) : (
+            <EmptyState title="No steps yet" description="This journey has no steps to walk." />
+          )}
+
+          {(prevStep || nextStep) && (
+            <div className="mt-4 flex items-center justify-between">
+              {prevStep ? (
+                <button
+                  type="button"
+                  data-testid="player-prev"
+                  onClick={() => navigate(prevStep.id)}
+                  className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Previous
+                </button>
+              ) : (
+                <span />
+              )}
+              {nextStep ? (
+                <button
+                  type="button"
+                  data-testid="player-next"
+                  onClick={() => navigate(nextStep.id)}
+                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                >
+                  Next
+                </button>
+              ) : (
+                <span />
+              )}
+            </div>
+          )}
+
+          {saveError && (
+            <div
+              data-testid="autosave-error"
+              role="status"
+              className="mt-3 flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700"
+            >
+              <span>Not saved.</span>
+              <button
+                type="button"
+                data-testid="autosave-retry"
+                onClick={() => saveEnter(saveError.stepId)}
+                className="font-medium text-amber-800 underline hover:no-underline"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+        </div>
+
+        <StepRail steps={steps} currentStepId={currentStepId} completedStepIds={completedStepIds} />
+      </div>
+    );
+  }
+
+  return (
+    <AppShell title={title}>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900">{title}</h1>
+      {body}
+    </AppShell>
+  );
+}
+
+export default function JourneyPlayerPage() {
+  // `useSearchParams` needs a Suspense boundary (Next 16 static-render rule).
+  return (
+    <Suspense fallback={null}>
+      <JourneyPlayer />
+    </Suspense>
+  );
+}
