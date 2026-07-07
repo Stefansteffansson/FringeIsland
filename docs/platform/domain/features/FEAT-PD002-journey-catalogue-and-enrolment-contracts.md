@@ -6,7 +6,7 @@ title: Journey catalogue & enrolment contracts — catalog/detail reads with vie
 owner: platform/domain/journeys
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

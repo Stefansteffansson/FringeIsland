@@ -6,7 +6,7 @@ title: get_my_pending_nominations() — the stewardship nominee's own pending-no
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
