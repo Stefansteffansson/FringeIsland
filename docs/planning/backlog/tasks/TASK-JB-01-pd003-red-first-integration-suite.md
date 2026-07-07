@@ -3,7 +3,7 @@
 ---
 id: TASK-JB-01
 title: PD003 red-first integration suite
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PD003
