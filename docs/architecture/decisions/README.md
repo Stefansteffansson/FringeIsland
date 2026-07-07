@@ -53,6 +53,7 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 | ADR-U040 | [Off-platform invitation is referral-to-the-platform, never a pre-committed group membership](ADR-U040-referral-not-email-membership.md) | Accepted | platform-core · product |
 | ADR-U041 | [Acting as a group is a permission; representatives are always people](ADR-U041-group-representation-by-permission.md) | Accepted | platform-core · product |
 | ADR-U042 | [First-paint bootstrap read — a BFF bundle, not a platform RPC](ADR-U042-first-paint-bootstrap-read-bff-bundle.md) | Accepted | product |
+| ADR-U043 | [Performance budgets for user-facing surfaces (B1–B6)](ADR-U043-performance-budgets.md) | Accepted | product |
 
 ---
 
