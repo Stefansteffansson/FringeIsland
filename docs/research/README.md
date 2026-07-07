@@ -28,6 +28,7 @@ docs/research/
 │
 ├── The solo developer's complete guide to...md            ← solo development practices
 ├── Solo-Developers-Guide-to-Systematic-Web-Development.docx   ← solo development (docx)
+├── Performance_Budget_Research_Report.md                  ← perf-budget vetting vs CWV/RAIL/Nielsen/SaaS practice
 │
 ├── breach-response-design.md                              ← GDPR Art. 33/34 breach-response design record (five-vertical)
 └── universe-to-spec-manifestation.md                      ← how universe/ + thinking/ concepts map onto the entity specs
@@ -59,6 +60,7 @@ External cross-media research surveys that feed the universe-discovery work (see
 |----------|-------|
 | multi-product-ecosystem-management_2.md | Multi-product ecosystem management |
 | The solo developer's complete guide...md | Solo developer's guide to systematic web development |
+| Performance_Budget_Research_Report.md | First-paint performance-budget vetting against Core Web Vitals, RAIL, Nielsen limits, and SaaS benchmarks; feeds the budget decision from the 2026-07-06 Groups retro |
 
 ## Design records
 
