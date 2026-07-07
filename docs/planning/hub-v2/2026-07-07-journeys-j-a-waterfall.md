@@ -20,7 +20,7 @@ The journeys pages are healthy — nothing in J-A's own surface approaches its b
 
 The single largest app-side item measured anywhere on the walk is the **sign-in landing's `/api/me/overview` bundle at ~870 ms** — the first-load residual (P1-residual territory). The once-per-deploy warm-up spikes (detail read 960 ms, first mutation 937 ms) are the only other >500 ms items; both are cold-start-class, not steady-state.
 
-**Boundary bet: OPEN — Stefan's pick** (candidates P3b journey slice / P1-residual / P4). The measurement recommends **P1-residual** (the overview bundle's ~870 ms is the biggest felt lever); recorded here either way per the measure-first rule.
+**Boundary bet: DECIDED — P1-residual** (Stefan, 2026-07-07, same session as the measurement): the sign-in landing's `/api/me/overview` bundle (~870 ms of the 1 375 ms click-to-content) is the target. P3b stays parked (its DB-layer condition not met); P4 unargued-for by the data. Ships within the Journeys area; verified-or-explicitly-re-parked at the area gate per the exit checklist.
 
 ## Gate status
 
