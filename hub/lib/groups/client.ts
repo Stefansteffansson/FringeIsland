@@ -18,6 +18,7 @@ import type {
   UpdateGroupSettingsInput,
 } from '@/lib/groups/queries';
 import { OverviewTransportError } from '@/lib/me/overview-shared';
+import type { GroupEnrollmentSummary } from '@/lib/journeys/queries';
 
 export type {
   CreateGroupInput,
@@ -146,10 +147,25 @@ export async function createGroup(input: CreateGroupInput): Promise<string> {
 
 /** GRP-4/GRP-5: the visibility-honest group detail. */
 export async function fetchGroupDetail(groupId: string): Promise<GroupDetail> {
+  const { group } = await fetchGroupDetailEnvelope(groupId);
+  return group;
+}
+
+/** FEAT-H019 STORY-6 (the GRP-4 seam): the detail response carries the
+ *  DS-3 enrolment summary as an ADR-U042 failure-isolated slice —
+ *  `{ group, enrollments: {data}|{error} }`. The group read stays canonical;
+ *  a failed slice renders an honest unavailable section, never a broken page. */
+export async function fetchGroupDetailEnvelope(groupId: string): Promise<{
+  group: GroupDetail;
+  enrollments: { data?: GroupEnrollmentSummary; error?: string };
+}> {
   const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}`);
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
-  const data = (await res.json()) as { group: GroupDetail };
-  return data.group;
+  const data = (await res.json()) as {
+    group: GroupDetail;
+    enrollments?: { data?: GroupEnrollmentSummary; error?: string };
+  };
+  return { group: data.group, enrollments: data.enrollments ?? { error: 'unavailable' } };
 }
 
 /** GRP-2/GRP-3: partial settings update; resolves to the fresh detail. */

@@ -88,20 +88,28 @@ describe('FEAT-H017 — lib/groups/leadership fetchers', () => {
   });
 
   describe('fetchPendingNominations (the scoped A-NTF seam read)', () => {
-    it('reads only stewardship_nomination rows, unanswered and unexpired', async () => {
+    // FEAT-PC016 STORY-2 (Cycle J-A): the pending derivation has exactly ONE
+    // home — the get_my_pending_nominations contract (server-clock expiry).
+    // These tests were re-pointed from the pre-PC016 table-read mechanics to
+    // the thin-relay behaviour (the 2026-07-06 audit LOW finding's closure).
+    it('relays the FEAT-PC016 contract — no table read, no filtering, no client-clock math', async () => {
       await fetchPendingNominations(supabase);
-      expect(from).toHaveBeenCalledWith('notifications');
-      expect(chainCalls.eq).toContainEqual(['type', 'stewardship_nomination']);
-      expect(chainCalls.is).toContainEqual(['action_taken', null]);
-      expect(chainCalls.gt?.[0]?.[0]).toBe('expires_at');
+      expect(rpc).toHaveBeenCalledWith('get_my_pending_nominations');
+      expect(from).not.toHaveBeenCalledWith('notifications');
     });
 
-    it('maps rows to the affordance shape from the payload the contract wrote', async () => {
-      rows.push({
-        id: 'ntf-1',
-        payload: { group_id: 'grp-1', group_name: 'Fellowship' },
-        created_at: '2026-07-05T00:00:00Z',
-        expires_at: '2026-07-12T00:00:00Z',
+    it('returns the contract payload as-is (PendingNomination-shaped by design)', async () => {
+      rpc.mockResolvedValue({
+        data: [
+          {
+            notification_id: 'ntf-1',
+            group_id: 'grp-1',
+            group_name: 'Fellowship',
+            created_at: '2026-07-05T00:00:00Z',
+            expires_at: '2026-07-12T00:00:00Z',
+          },
+        ],
+        error: null,
       });
       const pending = await fetchPendingNominations(supabase);
       expect(pending).toEqual([

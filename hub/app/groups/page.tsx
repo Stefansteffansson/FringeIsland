@@ -26,11 +26,15 @@ export default function GroupsPage() {
   const [error, setError] = useState<string | null>(null);
 
   const loadGroups = useCallback(async () => {
-    setError(null);
     try {
       // API-first: the read goes through /api/groups — never a direct table
       // call. Session-cached client: concurrent callers share one request.
-      setGroups(await fetchMyGroups());
+      // No synchronous setState before the first await (the
+      // react-hooks/set-state-in-effect rule — lint drift caught at J-A);
+      // the error resets on success.
+      const groups = await fetchMyGroups();
+      setGroups(groups);
+      setError(null);
     } catch (err) {
       setError('Failed to load your groups.');
       emitTelemetry('groups.client_load_failed', { message: (err as Error).message });
@@ -52,6 +56,12 @@ export default function GroupsPage() {
       return;
     }
 
+    // Lint drift caught at J-A: react-hooks/set-state-in-effect (new in the
+    // upgraded plugin) flags ANY effect-called local fn containing setState,
+    // even with no synchronous setState before the first await. The
+    // load-on-mount pattern is deliberate house style (session-cache seed +
+    // background revalidate); rule disposition routed to the J-A retro.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadGroups();
   }, [userId, authLoading, router, loadGroups]);
 

@@ -335,6 +335,43 @@ describe('FEAT-PD002 — journey catalogue & enrolment contracts (J-A)', () => {
       expect((data as { title: string }).title).toBe('JA Private Published Journey');
     });
 
+    // J-A build finding (gate-amended): STORY-5's "affordance per the payload,
+    // never client-guessed" requires the viewer block to carry the withdraw
+    // handles — individual_enrollment {enrollment_id, status} and, per
+    // enrolled_via entry, enrollment_id/status/can_withdraw (the
+    // unenroll_from_journey key resolved platform-side). Red against the
+    // pre-amendment payload.
+    it('carries the caller-own enrolment handle (individual_enrollment) when enrolled', async () => {
+      const c = await asUser(traveller);
+      const { data, error } = await c.rpc('get_journey_detail', { p_journey_id: j2 });
+      expect(error).toBeNull();
+      const d = data as Record<string, unknown>;
+      expect(d.is_enrolled_individually).toBe(true);
+      const own = d.individual_enrollment as { enrollment_id: string; status: string };
+      expect(own).toBeTruthy();
+      expect(typeof own.enrollment_id).toBe('string');
+      expect(own.status).toBe('active');
+    });
+
+    it('carries per-enrolled_via withdraw handles with platform-resolved can_withdraw', async () => {
+      const cm = await asUser(member);
+      const { data: mData, error: mErr } = await cm.rpc('get_journey_detail', { p_journey_id: j1 });
+      expect(mErr).toBeNull();
+      const mVia = (mData as { enrolled_via: Array<Record<string, unknown>> }).enrolled_via;
+      const mEntry = mVia.find((v) => v.group_id === e1)!;
+      expect(mEntry).toBeDefined();
+      expect(typeof mEntry.enrollment_id).toBe('string');
+      expect(mEntry.status).toBe('active');
+      expect(mEntry.can_withdraw).toBe(false); // no unenroll key in E1
+
+      const cs = await asUser(steward);
+      const { data: sData, error: sErr } = await cs.rpc('get_journey_detail', { p_journey_id: j1 });
+      expect(sErr).toBeNull();
+      const sVia = (sData as { enrolled_via: Array<Record<string, unknown>> }).enrolled_via;
+      const sEntry = sVia.find((v) => v.group_id === e1)!;
+      expect(sEntry.can_withdraw).toBe(true); // Steward template holds unenroll_from_journey
+    });
+
     it('a Mist reads a published journey; the viewer block offers nothing', async () => {
       const c = await asMist();
       const { data, error } = await c.rpc('get_journey_detail', { p_journey_id: j1 });

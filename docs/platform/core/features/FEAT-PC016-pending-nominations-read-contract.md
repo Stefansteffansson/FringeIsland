@@ -6,7 +6,7 @@ title: get_my_pending_nominations() — the stewardship nominee's own pending-no
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -85,3 +85,7 @@ N/A (no surface) — the read replaces a client-side derivation with one RPC of 
 ## Open spec questions
 
 1. **Ordering guarantee.** Default newest-first (`created_at DESC`, the invitations mirror); confirmed against the existing UI expectation at build.
+
+## Implementation notes
+
+Built Cycle J-A, 2026-07-07, riding the FEAT-PD002 schema-gate migration `20260707130821` (nodded by Stefan). `get_my_pending_nominations()` mirrors `get_my_invitations()` exactly (FIM-only guard, `search_path=''`, STABLE, `coalesce('[]')`, revoke-from-anon-explicitly grants); `group_name` resolves from the payload the PC014 nomination writer embedded (the display-identity-in-row posture); ordering `created_at DESC, id DESC`. **Red-first:** 6 integration tests demonstrated red (PGRST202, fixtures via the real `nominate_steward` writer) → green post-apply. **STORY-2:** `fetchPendingNominations()` thinned to a pure RPC relay (no table read, no filtering, no client-clock math); the two unit tests that pinned the old table-read mechanics were re-pointed at the thin-relay behaviour (labelled — the spec prescribes exactly this change); `GET /api/me/nominations` and the `PendingNomination` payload unchanged, remaining leadership tests green unchanged. The 2026-07-06 audit LOW finding is closed (recorded in `docs/planning/hub-v2/api-conformance-register.md` at the J-A close).

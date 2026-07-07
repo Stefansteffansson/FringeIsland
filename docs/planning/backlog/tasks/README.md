@@ -22,13 +22,13 @@ The retrospective is the permanent learning artifact; individual tasks are ephem
 | Task | Feature | Depends on | Status |
 |---|---|---|---|
 | [TASK-JA-01](./TASK-JA-01-pd002-red-first-integration-suite.md) — PD002 red-first integration suite | FEAT-PD002 | — | done |
-| [TASK-JA-02](./TASK-JA-02-pd002-pc016-schema-gate-migration.md) — the schema-gate migration (six contracts + PC016 rider + write-narrowing) | FEAT-PD002 | JA-01, JA-03 | review (schema gate) |
+| [TASK-JA-02](./TASK-JA-02-pd002-pc016-schema-gate-migration.md) — the schema-gate migration (six contracts + PC016 rider + write-narrowing) | FEAT-PD002 | JA-01, JA-03 | done (gate nodded 2026-07-07) |
 | [TASK-JA-03](./TASK-JA-03-pc016-red-first-tests.md) — PC016 red-first tests | FEAT-PC016 | — | done |
-| [TASK-JA-04](./TASK-JA-04-pc016-leadership-thins.md) — leadership.ts thins to a consumer | FEAT-PC016 | JA-02 | todo |
-| [TASK-JA-05](./TASK-JA-05-h019-bff-routes-and-client-lib.md) — BFF routes + journeys client lib | FEAT-H019 | JA-02 | todo |
-| [TASK-JA-06](./TASK-JA-06-h019-catalogue-page.md) — /journeys catalogue page | FEAT-H019 | JA-05 | todo |
-| [TASK-JA-07](./TASK-JA-07-h019-detail-page-enrolment-block.md) — /journeys/[id] detail + enrolment block | FEAT-H019 | JA-05 | todo |
-| [TASK-JA-08](./TASK-JA-08-h019-group-detail-summary-slice.md) — group-detail enrolment-summary slice | FEAT-H019 | JA-02 | todo |
-| [TASK-JA-09](./TASK-JA-09-h019-e2e-perf-close-out.md) — E2E + perf DoD + type gate + 6-done close-out | FEAT-H019 | JA-04, JA-06, JA-07, JA-08 | todo |
+| [TASK-JA-04](./TASK-JA-04-pc016-leadership-thins.md) — leadership.ts thins to a consumer | FEAT-PC016 | JA-02 | done |
+| [TASK-JA-05](./TASK-JA-05-h019-bff-routes-and-client-lib.md) — BFF routes + journeys client lib | FEAT-H019 | JA-02 | done |
+| [TASK-JA-06](./TASK-JA-06-h019-catalogue-page.md) — /journeys catalogue page | FEAT-H019 | JA-05 | done |
+| [TASK-JA-07](./TASK-JA-07-h019-detail-page-enrolment-block.md) — /journeys/[id] detail + enrolment block | FEAT-H019 | JA-05 | done |
+| [TASK-JA-08](./TASK-JA-08-h019-group-detail-summary-slice.md) — group-detail enrolment-summary slice | FEAT-H019 | JA-02 | done |
+| [TASK-JA-09](./TASK-JA-09-h019-e2e-perf-close-out.md) — E2E + perf DoD + type gate + 6-done close-out | FEAT-H019 | JA-04, JA-06, JA-07, JA-08 | done |
 
 *Cycle-scoped ids (`TASK-JA-NN`) — the numeric `TASK-{NNN}` counter has no live predecessor to continue from (tasks are deleted after each retro); cycle-scoped ids keep the retro traceable.*

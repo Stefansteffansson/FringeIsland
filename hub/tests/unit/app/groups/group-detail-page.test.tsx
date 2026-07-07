@@ -37,6 +37,12 @@ jest.mock('@/components/shell/AppShell', () => ({
 }));
 jest.mock('@/lib/groups/client', () => ({
   fetchGroupDetail: (id: string) => fetchGroupDetail(id),
+  // FEAT-H019 STORY-6: the page reads the slice envelope; these tests drive it
+  // through the same fetchGroupDetail mock with an empty summary slice.
+  fetchGroupDetailEnvelope: async (id: string) => ({
+    group: await fetchGroupDetail(id),
+    enrollments: { data: { count: 0, enrollments: [] } },
+  }),
   fetchGroupRoles: (id: string) => fetchGroupRoles(id),
   fetchMyPermissions: (id: string) => fetchMyPermissions(id),
   GroupsApiError: class GroupsApiError extends Error {

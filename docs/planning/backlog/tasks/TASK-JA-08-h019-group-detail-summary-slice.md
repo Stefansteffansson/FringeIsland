@@ -3,7 +3,7 @@
 ---
 id: TASK-JA-08
 title: Group-detail enrolment summary — the GRP-4 seam filled as a failure-isolated slice (FEAT-H019 STORY-6)
-status: todo
+status: done
 assigned_to: Claude
 priority: medium
 feature: FEAT-H019
