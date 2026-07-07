@@ -3,7 +3,7 @@
 ---
 id: TASK-JA-04
 title: leadership.ts thins to a contract consumer — the audit LOW finding closes (FEAT-PC016 STORY-2)
-status: todo
+status: done
 assigned_to: Claude
 priority: medium
 feature: FEAT-PC016

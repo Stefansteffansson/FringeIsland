@@ -3,7 +3,7 @@
 ---
 id: TASK-JA-06
 title: /journeys catalogue page — card grid, Enrolled badges, FIM gate, B6 skeleton (FEAT-H019 STORY-1)
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H019

@@ -13,9 +13,10 @@ import { InvitationsPanel } from '@/components/groups/InvitationsPanel';
 import { MyPermissionsPanel } from '@/components/groups/MyPermissionsPanel';
 import { GroupMembershipsPanel } from '@/components/groups/GroupMembershipsPanel';
 import { InviteGroupPanel } from '@/components/groups/InviteGroupPanel';
+import { GroupJourneysSection } from '@/components/groups/GroupJourneysSection';
 import {
   fetchActingContexts,
-  fetchGroupDetail,
+  fetchGroupDetailEnvelope,
   fetchGroupInvitations,
   fetchGroupRoles,
   fetchMembershipsOf,
@@ -28,6 +29,7 @@ import {
   type RolesReadResult,
 } from '@/lib/groups/client';
 import type { GroupDetail } from '@/lib/groups/queries';
+import type { GroupEnrollmentSummary } from '@/lib/journeys/queries';
 
 /**
  * FEAT-H013 STORY-2 — the /groups/[id] surface (GRP-4 detail · GRP-5).
@@ -49,6 +51,12 @@ export default function GroupDetailPage() {
   const groupId = params.id;
 
   const [group, setGroup] = useState<GroupDetail | null>(null);
+  // FEAT-H019 STORY-6: the enrolment-summary slice envelope rides the detail
+  // response (ADR-U042) — rendered honestly by GroupJourneysSection.
+  const [journeySlice, setJourneySlice] = useState<{
+    data?: GroupEnrollmentSummary;
+    error?: string;
+  } | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -83,8 +91,9 @@ export default function GroupDetailPage() {
   const load = useCallback(async () => {
     setError(null);
     try {
-      const detail = await fetchGroupDetail(groupId);
+      const { group: detail, enrollments } = await fetchGroupDetailEnvelope(groupId);
       setGroup(detail);
+      setJourneySlice(enrollments);
       setNotFound(false);
     } catch (err) {
       if (err instanceof GroupsApiError && err.status === 404) {
@@ -224,6 +233,8 @@ export default function GroupDetailPage() {
             onRefresh={loadAll}
             onLeft={() => router.replace('/groups')}
           />
+          {/* FEAT-H019 STORY-6: the group's journeys — the GRP-4 seam filled. */}
+          <GroupJourneysSection enrollments={journeySlice} />
           <RolesPanel
             groupId={groupId}
             fabric={rolesData?.fabric ?? null}

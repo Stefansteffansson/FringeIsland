@@ -89,30 +89,15 @@ export async function deleteGroup(
   return data as Record<string, unknown>;
 }
 
-/** STORY-2 read: the caller's own pending stewardship nominations — RLS scopes
- *  rows to the recipient; this filter scopes type + unanswered + unexpired.
- *  Re-homes into the A-NTF inbox when it lands (seam, D8). */
+/** STORY-2 read: the caller's own pending stewardship nominations via the
+ *  FEAT-PC016 contract — pending-ness (type + unanswered + SERVER-clock
+ *  expiry) is derived in exactly one home; this is a thin relay (closes the
+ *  2026-07-06 audit LOW finding). Re-homes into the A-NTF inbox when it
+ *  lands (seam, D8). */
 export async function fetchPendingNominations(
   supabase: SupabaseClient,
 ): Promise<PendingNomination[]> {
-  const { data, error } = await supabase
-    .from('notifications')
-    .select('id, payload, created_at, expires_at')
-    .eq('type', 'stewardship_nomination')
-    .is('action_taken', null)
-    .gt('expires_at', new Date().toISOString())
-    .order('created_at', { ascending: false });
+  const { data, error } = await supabase.rpc('get_my_pending_nominations');
   if (error) throw error;
-  return ((data ?? []) as Array<{
-    id: string;
-    payload: { group_id: string; group_name: string };
-    created_at: string;
-    expires_at: string;
-  }>).map((row) => ({
-    notification_id: row.id,
-    group_id: row.payload?.group_id,
-    group_name: row.payload?.group_name,
-    created_at: row.created_at,
-    expires_at: row.expires_at,
-  }));
+  return (data ?? []) as PendingNomination[];
 }

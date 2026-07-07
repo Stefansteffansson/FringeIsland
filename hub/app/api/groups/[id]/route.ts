@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchGroupDetail, updateGroupSettings, type UpdateGroupSettingsInput } from '@/lib/groups/queries';
 import { deleteGroup } from '@/lib/groups/leadership';
+import { fetchGroupEnrollmentSummary } from '@/lib/journeys/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 // Perf (ADR-U036): the detail read is a member-facing hot path — Edge runtime,
@@ -37,7 +38,22 @@ export async function GET(
   try {
     const group = await fetchGroupDetail(supabase, id);
     emitTelemetry('groups.detail', { actor: userId, group: id });
-    return NextResponse.json({ group });
+
+    // FEAT-H019 STORY-6 (the GRP-4 seam): the FEAT-PD002 enrolment-summary
+    // read composes here as an ADR-U042 failure-isolated slice — a DS-3 read
+    // beside the PC-3 group read (never a get_group_detail field, one-way
+    // rule ADR-U023). A failed slice never fails the group response; the
+    // failure is logged content-free, never swallowed (ADR-U042 §2).
+    let enrollments: { data: unknown } | { error: string };
+    try {
+      enrollments = { data: await fetchGroupEnrollmentSummary(supabase, id) };
+    } catch (sliceErr) {
+      const code = (sliceErr as { code?: string }).code;
+      emitTelemetry('groups.enrollment_slice_failed', { actor: userId, group: id, code });
+      enrollments = { error: 'unavailable' };
+    }
+
+    return NextResponse.json({ group, enrollments });
   } catch (err) {
     const code = (err as { code?: string }).code;
     if (code === 'P0002') {

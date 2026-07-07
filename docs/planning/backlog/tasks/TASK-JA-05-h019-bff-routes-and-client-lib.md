@@ -3,7 +3,7 @@
 ---
 id: TASK-JA-05
 title: FEAT-H019 BFF routes + journeys client lib — five routes, session cache, telemetry
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H019
