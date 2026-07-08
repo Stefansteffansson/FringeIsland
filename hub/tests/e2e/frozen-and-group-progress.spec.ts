@@ -248,6 +248,15 @@ test.describe('FEAT-H022 — frozen mode & group progress', () => {
     expect(shareOn.ok()).toBeTruthy();
     await expect(toggleOn).toBeChecked(); // optimistic paint (B5) held, server-confirmed
 
+    // The stale-toggle repro (Stefan's walk, 2026-07-08): a CLIENT-SIDE revisit —
+    // history pops stay in the same JS context, so the module session cache
+    // survives (a full page.goto resets it and masks the bug). The re-mounted
+    // toggle must show the server truth, not the pre-flip cached value.
+    await page.goBack(); // -> the group page, client-side
+    await page.goForward(); // -> the player remounts, same context, cache intact
+    await expect(page.getByTestId('journey-player')).toBeVisible();
+    await expect(page.getByTestId('sharing-checkbox')).toBeChecked();
+
     // The EFFECT: a fresh Steward read (full reload remounts the panel, dropping the
     // per-enrolment session cache) now surfaces the member's marks.
     await page.goto(groupUrl);
@@ -276,6 +285,13 @@ test.describe('FEAT-H022 — frozen mode & group progress', () => {
     ]);
     expect(shareOff.ok()).toBeTruthy();
     await expect(toggleOff).not.toBeChecked();
+
+    // The mirror revisit: after revoking, a client-side remount must not
+    // resurrect the pre-revoke "sharing" display from the stale cache.
+    await page.goBack();
+    await page.goForward();
+    await expect(page.getByTestId('journey-player')).toBeVisible();
+    await expect(page.getByTestId('sharing-checkbox')).not.toBeChecked();
 
     await page.goto(groupUrl);
     await expect(page.getByTestId('group-journey-progress')).toBeVisible();

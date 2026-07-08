@@ -121,10 +121,13 @@ export async function completeStep(
 
 /**
  * FEAT-H022 STORY-2 (JRN-17, traveller side) — grant/withdraw progress sharing
- * for THIS via-group enrolment. A plain background mutation: the player owns the
- * optimistic flip and reconciles to this response; a refusal rejects with the
- * BFF's status (P0001 solo → 422, P0002 → 404, 42501 → 403) so the page can roll
- * back. Returns the server-confirmed sharing state. */
+ * for THIS via-group enrolment. The toggle owns the optimistic flip; a refusal
+ * rejects with the BFF's status (P0001 solo → 422, P0002 → 404, 42501 → 403) so
+ * it can roll back. On success the SERVER-CONFIRMED value is merged into the
+ * per-enrolment session cache (the completion-moment precedent) — sharing is
+ * confirmed state, not optimistic progress, and without the write-through a
+ * client-side revisit repainted the pre-flip value from the stale cache
+ * (Stefan's walk, 2026-07-08). A failed write never touches the cache. */
 export async function setProgressSharing(
   enrollmentId: string,
   share: boolean,
@@ -135,5 +138,13 @@ export async function setProgressSharing(
     body: JSON.stringify({ share }),
   });
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
-  return (await res.json()) as { enrollment_id: string; sharing: boolean };
+  const confirmed = (await res.json()) as { enrollment_id: string; sharing: boolean };
+  const cached = cachedState.get(enrollmentId);
+  if (cached?.progress_sharing) {
+    cachedState.set(enrollmentId, {
+      ...cached,
+      progress_sharing: { ...cached.progress_sharing, sharing: confirmed.sharing },
+    });
+  }
+  return confirmed;
 }
