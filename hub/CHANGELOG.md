@@ -2,6 +2,13 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-07-08 — What froze is still yours; progress is shared only by choice ([FEAT-H022](../docs/products/hub/features/FEAT-H022-frozen-mode-and-group-progress.md))
+
+- **A frozen journey opens — read-only — and says why.** When a group closes, is archived, or you leave or are removed, the journeys you walked through it freeze rather than vanish. Opening one now shows your whole walk — every step readable, your marks and times beside them — with a banner naming what happened and when. Nothing is recorded while you look; nothing can be changed. Frozen journeys say *View* where active ones say *Continue*.
+- **Your record survives the goodbye.** Even after your membership ends, a frozen walk still lists on your journeys page and opens for you — what you lived through a group doesn't disappear with the group. (Rejoining still restores everything else, exactly as before.)
+- **Your progress is yours until you say otherwise.** On a group journey, a new control in the player lets you share your step completion marks with the group's Stewards and Guides — marks only, never your times, never anything you write. Off by default; one flip to share; one flip to take it back, effective immediately.
+- **Group leads get an honest window, never a leaderboard.** On the group's page, Stewards and Guides can open a journey's progress view: how far the walk has come, counted only across members who chose to share — and labelled so ("of 2 sharing · 5 members"). Members who haven't shared show a quiet "not shared" and contribute nothing, not even to the counts. Everyone is listed alphabetically; nobody is ranked, compared, or timed.
+
 ## 2026-07-08 — Finishing means something: completion, review, and your time ([FEAT-H021](../docs/products/hub/features/FEAT-H021-journey-completion-and-review.md))
 
 - **The arrival is marked.** Completing your last required step now concludes the journey — a quiet completion panel appears with the date and the time you gave it, and the step rail shows the whole walk done. It appears the moment the platform confirms it — never before.

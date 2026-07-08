@@ -6,7 +6,7 @@ title: Frozen-enrolment read-only mode and group progress views
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -18,22 +18,21 @@ Three renders the Hub owes the J-D contracts (JRN-14/16/17):
 2. **Group leads have no progress window.** A Steward or Guide walking a group through a journey sees nothing about how the walk is going — FEAT-PD005 now serves the consent-shaped read (JRN-16 aggregate + JRN-17 per-member), and the Hub must render it without inventing a comparative surface (invariant 8 binds the pixels, not just the payload).
 3. **Sharing has no door.** Consent is opt-in (invariant 4), so without a traveller-side control nothing is ever visible. The traveller needs a quiet, honest toggle that says exactly what it shares.
 
-## Solution sketch
+## Implementation notes
 
-- **Frozen read-only mode (JRN-14):** the player boots a frozen enrolment into the read posture the H021 review work already shaped — every step navigable through the unchanged renderer registry, own marks and times on the rail, **no background `enter`**, no completion affordances — plus a **freeze banner** above the canvas: canon-voice copy keyed on `freeze.reason` (four known reasons, verbatim-fallback for unknown ones), with `frozen_at` rendered. Cards and the detail enrolment panel show the frozen state honestly and offer **View** (the read-only door) where active rows offer Continue.
-- **The sharing control (JRN-17, traveller side):** on the player for via-group walks (`progress_sharing.available`), a labelled toggle — copy states precisely what sharing exposes (step completion marks — never times, never content, never journal) — writing through the new BFF route to `set_journey_progress_sharing`; optimistic flip, server-confirmed, rollback on failure.
-- **The group progress panel (JRN-16/17, leader side):** on the group detail page beside the existing journeys section, per group enrolment, an on-demand **Progress** view (new Edge/`dub1` BFF route → `get_group_journey_progress`): the step skeleton with aggregate completed-counts labelled by basis ("of M sharing members · N in the group"), then the member list — alphabetical always, sharing members with their marks and required-progress, non-sharing members with a quiet "not shared" — **no sorting by progress, no percentages-vs-others, no highlighting of most/least** (invariant 8 as a rendering rule). Members without `view_group_progress` never see the affordance; the route refuses as the contract does.
+*(Built Cycle J-D, 2026-07-08, on the FEAT-PD005 contracts. TASK-JD-03/04 delegated + lead-verified; PR #144. The one contract addition found at build — the panel's `enrollment_id` key — landed as the separately-nodded PD005 rider `20260708190000`.)*
 
-## Appetite
+**Data path (JD-03/04).** Additive types in `hub/lib/journeys/queries.ts` (`PlayerFreeze`/`PlayerProgressSharing` on `PlayerState`; the `GroupJourneyProgress` family; optional `enrollment_id` on the group summary entries), re-exported through `player.ts`; two new BFF routes, zero business logic route-side (ADR-U038): POST `/api/journeys/enrollments/[id]/sharing` (Node mutation) → `set_journey_progress_sharing`, GET `/api/groups/[id]/journeys/[enrollmentId]/progress` (**Edge/`dub1`**, ADR-U036) → `get_group_journey_progress`; house SQLSTATE→HTTP mapping (P0002→404, 42501→403, P0001→422); both pass the route-policy conformance matrix.
 
-One cycle, shared with FEAT-PD005 (the J-A/J-B/J-C one-day shape) — the Hub half rides once the gate PR applies.
+**Frozen read-only mode (JD-03).** Posture precedence explicit — the frozen check runs first and completion framing renders *inside* the frozen frame (a frozen-completed walk keeps its marks and times); `FreezeBanner` above the canvas (four canon-voice reason lines + verbatim fallback for unknown reasons + a null-reason fallback; `frozen_at` as "Held since"); `StepCanvas` gained `readOnly` (every completion affordance retired); navigation fires **no background `enter`** (asserted as the effect — the transport mock never called); **View** replaces Continue/Review on frozen rows at the journeys cards and the detail enrolment panel; withdrawn unchanged.
 
-## Rabbit holes
+**Sharing + panel (JD-04).** `SharingToggle` on via-group walks only — boots from the payload's `progress_sharing` with zero extra reads, optimistic flip (B5) with rollback + the standard retry surface, copy naming exactly what is exposed (step completion marks — never times, never anything written). **Labelled deviation (lead-accepted):** the toggle is suppressed inside frozen posture (`available && !frozen`) — a live consent write inside a read-only frame read as a contradiction; the platform admits it, so reversal is one line if the area gate wants payload-fidelity. `GroupJourneyProgressSection` on the group detail beside the journeys section: expand-on-demand (no group-page boot cost, deferred skeleton, session reuse), aggregate labelled "Completed · of M sharing · N members", zero-sharing renders the honest empty state, members alphabetical **as served**, sharers show per-step marks + "X of Y required" + a completed flag, non-sharers a quiet "not shared", shares-but-not-started distinct ("0 of Y required"), and no timing-shaped element anywhere. The affordance renders only for `view_group_progress` holders from the already-fetched effective-permissions read; the route refuses as the contract does. Telemetry: `player.freeze_banner_shown`, `player.sharing_flipped`/`player.sharing_set`, `group.progress_expanded`/`group.progress_loaded`.
 
-- **Freeze copy sprawl:** four reasons need four honest lines, not a copy system. One keyed map + one fallback; canon voice; done.
-- **Progress-visualization ambition:** no charts, no completion bars per member (a bar invites comparison at a glance — the marks list is the design). The aggregate row may show counts; that is the ceiling.
-- **Consent-toggle placement debates:** player-only v1 (the state boots with `get_player_state`); adding it to the detail panel means a second state source — don't.
-- **Frozen vs review posture divergence:** reuse the review-posture mechanics (navigation without `enter`, retired verbs); the delta is the banner and the entry affordance, not a third posture implementation.
+**Red → green.** Red-first per block: Block A 10 reds across 5 suites (FreezeBanner absent, readOnly/frozen-posture/View unimplemented) → green; Block B 5 suites red as module absences → green. Unit **611 → 656** (83 → 88 suites), lead-re-run; `next build` green (the type gate, lead-run); eslint 0 errors; `set-state-in-effect` suppressions unchanged at 4 (≤ 5 budget). **Labelled paired-suite adaptation (unit-only):** the H020/H021 assertions that pinned frozen to the bare non-active panel are superseded by the new posture — updated to `paused`/`withdrawn` examples; no integration tests touched.
+
+**E2E (JD-05, delegated + lead-verified).** `frozen-and-group-progress.spec.ts` — one arc: group enrol → the member walks a step → the Steward's expanded panel shows the honest zero-sharing state (`progress-empty` + "not shared") → the member shares → the **refreshed** panel shows marks + "1 of 2 required" (**the effect asserted, never the click** — retro-2026-07-08-j-c §4) → revoke → "not shared" again (immediate) → freeze (admin-seeded to the exact `close_group` terminal shape — the real closure flow would destroy the group the panel reads) → the frozen boot renders the banner naming the reason, read-only, rail navigable, **zero background `enter` POSTs asserted by request listener**, exactly one player-state read; the panel fetch fires on expand only (zero requests before). 1/1 green + all four journeys/player specs together **6/6 (lead re-run, 27.4s)** + a clean isolated re-run; zero source files touched by the E2E work (every needed test-id already existed). One transient sibling observation (a `journeys.spec` cold-route-compile miss against a 5s visibility timeout, once, non-reproducible — green on baseline, re-run, and the lead's verification) — flagged to the flake watch, not adapted. The single-session-FIM design (the Steward is also the walking member) was verified against the contract: no self-special-case exists — the Steward's own row honestly reads "not shared" until they share.
+
+**Production waterfall:** frozen boot + progress-panel expand join the J-O3 area-gate protocol with Stefan's live walk — pending at 6-done, per the H019/H020/H021 precedent.
 
 ## No-gos
 
@@ -116,6 +115,8 @@ None beyond the shared contracts — the Gimbal inherits the same consent-shaped
 
 ## Open spec questions
 
-1. **Frozen entry affordance label.** Default: **View** on frozen rows (cards + detail panel) — Continue promises writes and Review names the completed posture; a frozen walk is neither. Decided at task review unless the gate board touches it.
-2. **Progress panel placement.** Default: expandable section per enrolment inside the group detail page (beside the existing journeys section) — no new page v1; a dedicated page returns only if the panel outgrows the detail layout.
-3. **Sharing-toggle copy.** Default: one sentence naming exactly what is exposed ("your step completion marks — never your times or anything you write") + the revocation fact; final wording at task review in canon voice.
+All three decided at task review (2026-07-08, lead) and built as confirmed:
+
+1. **Frozen entry affordance label.** **View** on frozen rows (cards + detail panel) — Continue promises writes and Review names the completed posture; a frozen walk is neither. Built as confirmed.
+2. **Progress panel placement.** Expandable section per enrolment inside the group detail page (beside the existing journeys section) — no new page v1. Built as confirmed.
+3. **Sharing-toggle copy.** Shipped as drafted in canon voice ("…step completion marks — never your times, and never anything you write. You can turn this off at any time."); the freeze-banner lines likewise. Flagged for Stefan's live walk / the J-O3 gate as a copy look, not a build question.

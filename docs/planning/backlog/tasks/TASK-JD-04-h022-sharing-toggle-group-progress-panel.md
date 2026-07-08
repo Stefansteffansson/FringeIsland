@@ -3,7 +3,7 @@
 ---
 id: TASK-JD-04
 title: H022 sharing toggle + group progress panel (JRN-16/17)
-status: review
+status: done
 assigned_to: Claude (delegated session)
 priority: high
 feature: FEAT-H022

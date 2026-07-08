@@ -3,7 +3,7 @@
 ---
 id: TASK-JD-05
 title: H022 E2E, perf DoD, and J-D close-out
-status: todo
+status: done
 assigned_to: Claude (delegated session + lead verification)
 priority: high
 feature: FEAT-H022
