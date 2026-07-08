@@ -28,6 +28,7 @@ audit-2026-Q2.md                 ← quarterly process audit
 
 ## Index
 
+- [retro-2026-07-08-j-d.md](retro-2026-07-08-j-d.md) — cycle retro, Cycle J-D (group progress & frozen mode: PD005/H022 + the same-day stale-toggle fix); the cross-feature payload-walk line, the full-load-revisit lesson, the write-through-confirmed-state rule, the dossier cumulative-forward line; parked the two walkthrough edges on the J-O3 list; triggered the J-D task sweep.
 - [retro-2026-07-08-j-c.md](retro-2026-07-08-j-c.md) — cycle retro, Cycle J-C (completion & review: PD004/H021 + the same-day post-close review-button arc); the append-only-erasure, concurrency-topology, and effect-not-click lessons; chose J-O6's design-session slot (J-D→J-E boundary); triggered the J-C task sweep. (`-j-c` suffix: the date slot was taken by the J-B retro, committed the same day.)
 - [retro-2026-07-08.md](retro-2026-07-08.md) — cycle retro, Cycle J-B (the player core: PD003/H020 + the same-day Q1 re-enrolment addendum); the plain-English-walkthrough and paired-suite-adaptation-budget process changes; the 522 flake-class disposition; triggered the J-B task sweep.
 - [retro-2026-07-07.md](retro-2026-07-07.md) — cycle retro, Cycle J-A (first Journeys cycle: PD002/H019/PC016 + the same-day J-O3 waterfall and P1-residual bet); the payload-meets-consumer, oracle-overstatement, stacked-PR, and lint-rot lessons; triggered the J-A task sweep.
