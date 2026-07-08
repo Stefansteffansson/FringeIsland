@@ -689,7 +689,11 @@ describe('FEAT-PD005 — group progress, sharing consent & frozen-walk contracts
       const members = (data as Record<string, unknown>).members as Array<Record<string, unknown>>;
       const names = members.map((m) => m.display_name as string);
       expect(names).toEqual([...names].sort()); // alphabetical, never by progress
-      expect(new Set(names).size).toBe(names.length); // each exactly once
+      // Labelled adaptation (post-apply, 2026-07-08): roster uniqueness is keyed by
+      // member_group_id — display names collide legitimately (all fixture users share
+      // the helper's default name; two real members named alike must both appear).
+      const ids = members.map((m) => m.member_group_id as string);
+      expect(new Set(ids).size).toBe(ids.length); // each exactly once
     });
 
     it('admits a Guide as the second templated role', async () => {
