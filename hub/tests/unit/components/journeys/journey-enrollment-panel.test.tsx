@@ -217,3 +217,23 @@ describe('FEAT-H020 — Continue deep-links into the player (additive touch)', (
     expect(screen.queryByTestId('continue-via')).toBeNull();
   });
 });
+
+describe('FEAT-H021 STORY-4 — Review where active offers Continue (detail panel)', () => {
+  it('offers Review on a completed own enrolment, deep-linking the player (?enrollment preserved), swapping out Continue', () => {
+    renderPanel({
+      is_enrolled_individually: true,
+      individual_enrollment: { enrollment_id: 'e9', status: 'completed' },
+    });
+    const link = screen.getByTestId('review-individual');
+    expect(link.getAttribute('href')).toBe('/journeys/j1/play?enrollment=e9');
+    // Swap on status — never both.
+    expect(screen.queryByTestId('continue-individual')).toBeNull();
+  });
+
+  it('offers no Review affordance for a withdrawn journey (re-enrolment is the only door — Start renders)', () => {
+    // A withdrawn journey reads as not-individually-enrolled: the Start door, no Review.
+    renderPanel({ is_enrolled_individually: false, individual_enrollment: null });
+    expect(screen.queryByTestId('review-individual')).toBeNull();
+    expect(screen.getByTestId('enroll-self')).toBeTruthy();
+  });
+});

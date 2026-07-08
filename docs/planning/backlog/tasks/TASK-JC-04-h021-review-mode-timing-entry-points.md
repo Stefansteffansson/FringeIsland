@@ -3,7 +3,7 @@
 ---
 id: TASK-JC-04
 title: H021 review mode + timing + entry affordances
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H021

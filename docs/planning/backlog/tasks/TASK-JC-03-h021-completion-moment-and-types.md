@@ -3,7 +3,7 @@
 ---
 id: TASK-JC-03
 title: H021 completion moment + payload types
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H021

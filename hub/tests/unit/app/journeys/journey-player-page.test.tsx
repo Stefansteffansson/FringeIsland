@@ -324,3 +324,199 @@ describe('STORY-3 — completion wiring (optimistic tick, gating, rollback)', ()
     expect(completeStep).toHaveBeenCalledWith('e1', 's2');
   });
 });
+
+// --- FEAT-H021 (Cycle J-C) additions ----------------------------------------
+
+const TIMING = {
+  per_step: [{ step_id: 's1', seconds: 600 }],
+  total_seconds: 1500,
+  wall_clock: { enrolled_at: '2026-07-06T09:00:00+00:00', completed_at: '2026-07-08T10:00:00+00:00' },
+};
+const COMPLETE = {
+  traveller_completed: true,
+  traveller_completed_at: '2026-07-08T10:00:00+00:00',
+  enrollment_status: 'completed',
+  enrollment_completed_at: '2026-07-08T10:00:00+00:00',
+};
+const INCOMPLETE = {
+  traveller_completed: false,
+  traveller_completed_at: null,
+  enrollment_status: 'active',
+  enrollment_completed_at: null,
+};
+
+describe('FEAT-H021 STORY-1 — the completion moment renders on server confirm (JRN-12)', () => {
+  it('renders the completion panel (total elapsed) only after journey_completed: true lands', async () => {
+    withParam();
+    fetchPlayerState.mockReset();
+    // Boot: an active walk with timing, no completion yet -> no milestone.
+    fetchPlayerState.mockResolvedValueOnce(STATE({ timing: TIMING }));
+    // Reconcile after the completing save: the payload now reads complete.
+    fetchPlayerState.mockResolvedValue(STATE({ status: 'completed', timing: TIMING, completion: COMPLETE }));
+    completeStep.mockResolvedValue({
+      instance_id: 'c', step_id: 's2', created_at: 't', completed_at: 't',
+      journey_completed: true, completion: COMPLETE,
+    });
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    // The milestone is server-confirmed only — nothing before the save returns.
+    expect(screen.queryByTestId('journey-completion-panel')).toBeNull();
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('step-complete'));
+    });
+    await waitFor(() => expect(screen.getByTestId('journey-completion-panel')).toBeTruthy());
+    expect(screen.getByTestId('journey-completion-panel').textContent).toContain('25 min');
+    expect(screen.getByTestId('player-complete-header')).toBeTruthy();
+  });
+
+  it('shows no milestone when the completing save fails (server-confirmed only; the tick rolls back)', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(STATE({ timing: TIMING }));
+    completeStep.mockRejectedValueOnce(Object.assign(new Error('save failed'), { status: 500 }));
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('step-complete'));
+    });
+    await waitFor(() => expect(screen.getByTestId('complete-error')).toBeTruthy());
+    expect(screen.queryByTestId('journey-completion-panel')).toBeNull();
+  });
+
+  it('fires no moment on a non-final completion (journey_completed: false — the platform decides)', async () => {
+    withParam();
+    fetchPlayerState.mockReset();
+    fetchPlayerState.mockResolvedValueOnce(STATE({ timing: TIMING }));
+    fetchPlayerState.mockResolvedValue(STATE({ timing: TIMING, completion: INCOMPLETE }));
+    completeStep.mockResolvedValue({
+      instance_id: 'c', step_id: 's2', created_at: 't', completed_at: 't',
+      journey_completed: false, completion: INCOMPLETE,
+    });
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('step-complete'));
+    });
+    await waitFor(() => expect(completeStep).toHaveBeenCalled());
+    expect(screen.queryByTestId('journey-completion-panel')).toBeNull();
+  });
+});
+
+const DONE_INSTANCES = [
+  { instance_id: 'i1', step_id: 's1', created_at: 't', completed_at: 't' },
+  { instance_id: 'i2', step_id: 's2', created_at: 't', completed_at: 't' },
+  { instance_id: 'i3', step_id: 's3', created_at: 't', completed_at: 't' },
+];
+
+describe('FEAT-H021 STORY-2 — completed walks open in review (JRN-13)', () => {
+  it('boots a completed enrolment into review posture — the bare status panel is gone', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(
+      STATE({ status: 'completed', resume_step_id: 's3', timing: TIMING, completion: COMPLETE, instances: DONE_INSTANCES }),
+    );
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    // Review, not the H020 "not active" card.
+    expect(screen.queryByTestId('player-nonactive')).toBeNull();
+    expect(screen.getByTestId('journey-completion-panel')).toBeTruthy();
+    // Every step navigable via the rail; content via the same renderer registry.
+    expect(screen.getByTestId('step-rail').querySelectorAll('[data-testid^="rail-step-"]')).toHaveLength(3);
+    expect(screen.getByTestId('player-prev')).toBeTruthy();
+  });
+
+  it('review navigation records NOTHING — the background enter is suppressed (asserted)', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(
+      STATE({ status: 'completed', resume_step_id: 's3', timing: TIMING, completion: COMPLETE, instances: DONE_INSTANCES }),
+    );
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    // Boot at s3; navigating back to s2 paints, but records no engagement.
+    fireEvent.click(screen.getByTestId('player-prev'));
+    expect(screen.getByTestId('step-canvas').textContent).toContain('Reflect');
+    expect(enterStep).not.toHaveBeenCalled();
+  });
+
+  it('an explicit re-engagement verb on a repeatable step still rides the normal complete path', async () => {
+    withParam();
+    const repeatable = STATE({
+      status: 'completed',
+      resume_step_id: 's2',
+      timing: TIMING,
+      completion: COMPLETE,
+      instances: DONE_INSTANCES,
+      steps: [
+        { id: 's1', step_order: 1, title: 'Orient', kind: 'content', family: 'text', ask_verb: 'Read', required: true, repeatable: false, duration_minutes: 10, content: { body: 'Welcome' } },
+        { id: 's2', step_order: 2, title: 'Reflect', kind: 'reflection', family: 'prompt', ask_verb: 'Reflect', required: false, repeatable: true, duration_minutes: 15, content: { body: 'Consider' } },
+        { id: 's3', step_order: 3, title: 'Act', kind: 'activity', family: 'task', ask_verb: 'Do', required: true, repeatable: false, duration_minutes: 20, content: null },
+      ],
+    });
+    fetchPlayerState.mockResolvedValue(repeatable);
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    // s2 is repeatable + already complete -> the verb is offered again; pressing it
+    // rides enter-then-complete (the substrate admits it post-completion).
+    fireEvent.click(screen.getByTestId('step-complete'));
+    await waitFor(() => expect(completeStep).toHaveBeenCalledWith('e1', 's2'));
+    expect(enterStep).toHaveBeenCalledWith('e1', 's2');
+  });
+
+  it('renders review from the completion block for a via-group walk though the row stays active', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(
+      STATE({
+        status: 'active',
+        resume_step_id: 's3',
+        timing: TIMING,
+        completion: { traveller_completed: true, traveller_completed_at: 't', enrollment_status: 'active', enrollment_completed_at: null },
+        instances: DONE_INSTANCES,
+      }),
+    );
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    expect(screen.getByTestId('journey-completion-panel')).toBeTruthy();
+    expect(screen.queryByTestId('player-nonactive')).toBeNull();
+  });
+
+  it('keeps the honest status panel for frozen (even after completion) and withdrawn — review admits completed only', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(
+      STATE({ status: 'frozen', timing: TIMING, completion: { ...COMPLETE, enrollment_status: 'frozen' }, instances: DONE_INSTANCES }),
+    );
+    const { unmount } = render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('player-nonactive')).toBeTruthy());
+    expect(screen.queryByTestId('journey-completion-panel')).toBeNull();
+    unmount();
+
+    fetchPlayerState.mockResolvedValue(STATE({ status: 'withdrawn' }));
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('player-nonactive')).toBeTruthy());
+    expect(screen.queryByTestId('journey-completion-panel')).toBeNull();
+  });
+});
+
+describe('FEAT-H021 STORY-3 — per-step time on the rail in review (JRN-11)', () => {
+  it('renders per-step engagement time from the timing block; an em-dash where none accrued', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(
+      STATE({
+        status: 'completed',
+        resume_step_id: 's3',
+        completion: COMPLETE,
+        instances: DONE_INSTANCES,
+        timing: {
+          per_step: [{ step_id: 's1', seconds: 600 }, { step_id: 's3', seconds: 0 }],
+          total_seconds: 600,
+          wall_clock: { enrolled_at: '2026-07-06T09:00:00+00:00', completed_at: '2026-07-08T10:00:00+00:00' },
+        },
+      }),
+    );
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    const rail = screen.getByTestId('step-rail');
+    // s1 accrued 10 min; s2 has no entry -> em-dash; s3 has a zero-second entry -> em-dash (never "0 min").
+    expect(rail.querySelector('[data-testid="rail-time-s1"]')?.textContent).toContain('10 min');
+    expect(rail.querySelector('[data-testid="rail-time-s2"]')?.textContent).toContain('—');
+    expect(rail.querySelector('[data-testid="rail-time-s3"]')?.textContent).toContain('—');
+    expect(rail.querySelector('[data-testid="rail-time-s3"]')?.textContent).not.toContain('0 min');
+  });
+});

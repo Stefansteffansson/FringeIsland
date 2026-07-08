@@ -15,10 +15,26 @@
  * `fetchPlayerState` when it needs the truth. Errors carry the BFF's HTTP status
  * (the shared `JourneysApiError`) so a P0001 gate paints the honest 409 state.
  */
-import type { PlayerInstance, PlayerState, PlayerStep } from '@/lib/journeys/queries';
+import type {
+  PlayerInstance,
+  PlayerState,
+  PlayerStep,
+  PlayerCompletion,
+  PlayerTiming,
+  PlayerStepTiming,
+  StepCompletionResult,
+} from '@/lib/journeys/queries';
 import { JourneysApiError } from '@/lib/journeys/client';
 
-export type { PlayerInstance, PlayerState, PlayerStep };
+export type {
+  PlayerInstance,
+  PlayerState,
+  PlayerStep,
+  PlayerCompletion,
+  PlayerTiming,
+  PlayerStepTiming,
+  StepCompletionResult,
+};
 
 async function throwFrom(res: Response, fallback: string): Promise<never> {
   const body = (await res.json().catch(() => null)) as { error?: string } | null;
@@ -83,16 +99,18 @@ export async function enterStep(
 }
 
 /** JRN-8 completion: stamp passage (idempotent platform-side). Returns the
- *  instance payload; a P0001 gate/frozen refusal rejects with status 409 so the
- *  page can roll the optimistic tick back and paint the honest reason. */
+ *  instance payload PLUS the FEAT-PD004 transition flag + completion block (the
+ *  milestone learned without a refetch, JRN-12); a P0001 gate/frozen refusal
+ *  rejects with status 409 so the page can roll the optimistic tick back and
+ *  paint the honest reason. */
 export async function completeStep(
   enrollmentId: string,
   stepId: string,
-): Promise<PlayerInstance> {
+): Promise<StepCompletionResult> {
   const res = await fetch(
     `/api/journeys/enrollments/${enrollmentId}/steps/${stepId}/complete`,
     { method: 'POST' },
   );
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
-  return (await res.json()) as PlayerInstance;
+  return (await res.json()) as StepCompletionResult;
 }

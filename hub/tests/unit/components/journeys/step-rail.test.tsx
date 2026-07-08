@@ -40,4 +40,31 @@ describe('StepRail — order, required marks, completion ticks, current step', (
     const current = screen.getByTestId('step-rail').querySelector('[aria-current="step"]');
     expect(current?.getAttribute('data-testid')).toBe('rail-step-s2');
   });
+
+  it('shows no per-step time when no timing block is passed (H020 shape unchanged)', () => {
+    render(<StepRail steps={steps} currentStepId="s1" completedStepIds={new Set()} />);
+    expect(screen.getByTestId('step-rail').querySelector('[data-testid="rail-time-s1"]')).toBeNull();
+  });
+});
+
+describe('StepRail — FEAT-H021 per-step engagement time (JRN-11)', () => {
+  const timing = {
+    per_step: [{ step_id: 's1', seconds: 600 }, { step_id: 's2', seconds: 0 }],
+    total_seconds: 600,
+    wall_clock: { enrolled_at: '2026-07-06T09:00:00+00:00', completed_at: null },
+  };
+
+  it('renders each step time from the timing block (coarse), never re-derived', () => {
+    render(<StepRail steps={steps} currentStepId="s1" completedStepIds={new Set(['s1'])} timing={timing} />);
+    const rail = screen.getByTestId('step-rail');
+    expect(rail.querySelector('[data-testid="rail-time-s1"]')?.textContent).toContain('10 min');
+  });
+
+  it('renders an em-dash for a step with no accrued time — never "0 min", never fabricated', () => {
+    render(<StepRail steps={steps} currentStepId="s1" completedStepIds={new Set()} timing={timing} />);
+    const rail = screen.getByTestId('step-rail');
+    // s2 has a zero-second entry -> em-dash; a step absent from per_step -> em-dash too.
+    expect(rail.querySelector('[data-testid="rail-time-s2"]')?.textContent).toContain('—');
+    expect(rail.querySelector('[data-testid="rail-time-s2"]')?.textContent).not.toContain('0 min');
+  });
 });

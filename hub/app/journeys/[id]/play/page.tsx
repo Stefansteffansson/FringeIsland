@@ -9,6 +9,7 @@ import { InlineError } from '@/components/ui/InlineError';
 import { StepCanvas } from '@/components/journeys/StepCanvas';
 import { StepRail } from '@/components/journeys/StepRail';
 import { PlayerSkeleton } from '@/components/journeys/PlayerSkeleton';
+import { JourneyCompletionPanel } from '@/components/journeys/JourneyCompletionPanel';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 import {
   peekJourneyCatalog,
@@ -143,6 +144,18 @@ function JourneyPlayer() {
   const completedStepIds = new Set(
     (player?.instances ?? []).filter((i) => i.completed_at).map((i) => i.step_id),
   );
+
+  // FEAT-H021 (JRN-13): review posture is DERIVED per render from the payload — no
+  // client mode enum, no stored state. A `completed` enrolment, or a traveller whose
+  // OWN walk is complete while a via-group row stays `active` (completion.traveller_
+  // completed), reads as review. `frozen`/`withdrawn`/`paused` keep the honest status
+  // panel exactly as H020 ships it — review admits completed walks only.
+  const travellerComplete = player?.completion?.traveller_completed === true;
+  const inReview =
+    player != null &&
+    (player.status === 'completed' || (player.status === 'active' && travellerComplete));
+  const honestStatus = player != null && player.status !== 'active' && !inReview;
+
   const currentIndex = steps.findIndex((s) => s.id === currentStepId);
   const currentStep = currentIndex >= 0 ? steps[currentIndex] : null;
   const prevStep = currentIndex > 0 ? steps[currentIndex - 1] : null;
@@ -175,7 +188,17 @@ function JourneyPlayer() {
 
   const navigate = (stepId: string) => {
     setCurrentStepId(stepId); // optimistic paint from the in-memory payload (B5)
-    saveEnter(stepId); // background auto-save — never blocks the paint
+    // JRN-13: review posture suppresses the background enter — resume = last, so
+    // position saving is meaningless, and mere navigation must not open an engagement
+    // on a repeatable step. Explicit re-engagement verbs still ride the complete path.
+    if (!inReview) saveEnter(stepId);
+  };
+
+  // FEAT-H021 (JRN-13): the completion panel's path into review — switch focus to the
+  // first step in place (no navigation, no `enter`; the player is already in review).
+  const enterReview = () => {
+    const first = (player?.steps ?? [])[0];
+    if (first) setCurrentStepId(first.id);
   };
 
   // JRN-8 completion: the canvas paints the tick optimistically, then awaits this.
@@ -191,7 +214,16 @@ function JourneyPlayer() {
       if (target?.repeatable && already) {
         await enterStep(enrollmentId, stepId);
       }
-      await completeStep(enrollmentId, stepId);
+      const result = await completeStep(enrollmentId, stepId);
+      // JRN-12: the milestone is server-confirmed by THIS response — journey_completed
+      // marks the transition edge (never optimistic; a failed save never reaches here,
+      // so no milestone ever shows on rollback). Merge the completion block so the
+      // moment paints from the save response + the in-memory boot timing, needing no
+      // read of its own (B5). The reconcile read below then carries fresh timing.
+      if (result.journey_completed && result.completion) {
+        const completion = result.completion;
+        setPlayer((cur) => (cur ? { ...cur, completion } : cur));
+      }
       try {
         applyState(await fetchPlayerState(enrollmentId));
       } catch {
@@ -239,7 +271,7 @@ function JourneyPlayer() {
       );
   } else if (!player) {
     body = <PlayerSkeleton />;
-  } else if (player.status !== 'active') {
+  } else if (honestStatus) {
     body = (
       <div data-testid="player-nonactive">
         <EmptyState
@@ -252,6 +284,15 @@ function JourneyPlayer() {
     body = (
       <div data-testid="journey-player" className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <div>
+          {/* JRN-12: the review framing opens with the gentle completion panel — it
+              replaces the bare completed-status panel (server-confirmed only). */}
+          {inReview && (
+            <JourneyCompletionPanel
+              completion={player.completion}
+              timing={player.timing}
+              onEnterReview={enterReview}
+            />
+          )}
           {currentStep ? (
             <StepCanvas
               key={currentStep.id}
@@ -313,7 +354,12 @@ function JourneyPlayer() {
           )}
         </div>
 
-        <StepRail steps={steps} currentStepId={currentStepId} completedStepIds={completedStepIds} />
+        <StepRail
+          steps={steps}
+          currentStepId={currentStepId}
+          completedStepIds={completedStepIds}
+          timing={inReview ? player.timing : undefined}
+        />
       </div>
     );
   }
@@ -321,6 +367,11 @@ function JourneyPlayer() {
   return (
     <AppShell title={title}>
       <h1 className="mb-6 text-3xl font-bold text-gray-900">{title}</h1>
+      {inReview && (
+        <p data-testid="player-complete-header" className="-mt-4 mb-6 text-sm font-medium text-green-700">
+          Completed — this is your walk in review.
+        </p>
+      )}
       {body}
     </AppShell>
   );

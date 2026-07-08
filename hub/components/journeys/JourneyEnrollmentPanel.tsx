@@ -88,6 +88,17 @@ export function JourneyEnrollmentPanel({
               Continue
             </Link>
           )}
+          {/* FEAT-H021 STORY-4: a completed walk opens Review where an active one
+              offers Continue — the affordance swaps on status, deep-link preserved. */}
+          {own?.status === 'completed' && (
+            <Link
+              href={`/journeys/${journey.id}/play?enrollment=${own.enrollment_id}`}
+              data-testid="review-individual"
+              className="ml-3 text-xs font-medium text-blue-600 hover:underline"
+            >
+              Review
+            </Link>
+          )}
           {ownFrozen ? (
             <p data-testid="frozen-state" className="mt-2 text-xs text-gray-500">
               This enrolment is held for review and cannot be changed here.

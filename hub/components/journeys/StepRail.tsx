@@ -1,4 +1,5 @@
-import type { PlayerStep } from '@/lib/journeys/player';
+import type { PlayerStep, PlayerTiming } from '@/lib/journeys/player';
+import { stepSeconds, formatEngagementTime } from '@/lib/journeys/timing';
 
 /**
  * FEAT-H020 — the step rail: every step in step_order, a required mark on
@@ -7,15 +8,21 @@ import type { PlayerStep } from '@/lib/journeys/player';
  * assistive tech. Display-only: linear prev/next owns navigation and there is
  * no non-linear jump UX (a FEAT-H020 no-go — `open`/`gated` sequencing is
  * forward data, not a Hub affordance yet).
+ *
+ * FEAT-H021 (JRN-11): when a `timing` block is passed (review posture), each step
+ * shows its OWN accrued engagement time from the block — never re-derived, and an
+ * honest em-dash where none accrued (never "0 min").
  */
 export function StepRail({
   steps,
   currentStepId,
   completedStepIds,
+  timing,
 }: {
   steps: PlayerStep[];
   currentStepId: string | null;
   completedStepIds: Set<string>;
+  timing?: PlayerTiming;
 }) {
   return (
     <nav data-testid="step-rail" aria-label="Steps" className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
@@ -46,15 +53,25 @@ export function StepRail({
                   </span>
                 )}
               </span>
-              {isDone && (
-                <span
-                  data-testid="rail-tick"
-                  role="img"
-                  aria-label="completed"
-                  title="Completed"
-                  className="inline-block h-2.5 w-2.5 shrink-0 rounded-full bg-green-500"
-                />
-              )}
+              <span className="flex shrink-0 items-center gap-2">
+                {timing && (
+                  <span
+                    data-testid={`rail-time-${s.id}`}
+                    className="text-xs tabular-nums text-gray-400"
+                  >
+                    {formatEngagementTime(stepSeconds(timing, s.id))}
+                  </span>
+                )}
+                {isDone && (
+                  <span
+                    data-testid="rail-tick"
+                    role="img"
+                    aria-label="completed"
+                    title="Completed"
+                    className="inline-block h-2.5 w-2.5 rounded-full bg-green-500"
+                  />
+                )}
+              </span>
             </li>
           );
         })}

@@ -135,6 +135,34 @@ export default function JourneysPage() {
                   ))}
                 </p>
               )}
+              {/* FEAT-H021 STORY-4: the affordance swaps on the enrolment's own status —
+                  'completed' opens Review, 'active' Continue, 'withdrawn' neither. The
+                  deep-link preserves ?enrollment= for the dual-enrolment case. */}
+              {(mine ?? [])
+                .filter(
+                  (e) => e.journey_id === j.id && (e.status === 'active' || e.status === 'completed'),
+                )
+                .map((e) =>
+                  e.status === 'completed' ? (
+                    <Link
+                      key={e.enrollment_id}
+                      href={`/journeys/${j.id}/play?enrollment=${e.enrollment_id}`}
+                      data-testid="card-review"
+                      className="mt-4 mr-3 inline-block text-xs font-medium text-blue-600 hover:underline"
+                    >
+                      Review{e.kind === 'via_group' && e.group_name ? ` (${e.group_name})` : ''}
+                    </Link>
+                  ) : (
+                    <Link
+                      key={e.enrollment_id}
+                      href={`/journeys/${j.id}/play?enrollment=${e.enrollment_id}`}
+                      data-testid="card-continue"
+                      className="mt-4 mr-3 inline-block text-xs font-medium text-blue-600 hover:underline"
+                    >
+                      Continue{e.kind === 'via_group' && e.group_name ? ` (${e.group_name})` : ''}
+                    </Link>
+                  ),
+                )}
             </li>
           ))}
         </ul>
