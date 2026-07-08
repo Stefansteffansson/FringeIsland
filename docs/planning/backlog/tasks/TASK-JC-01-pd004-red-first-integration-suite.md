@@ -3,7 +3,7 @@
 ---
 id: TASK-JC-01
 title: PD004 red-first integration suite
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PD004
