@@ -196,10 +196,17 @@ function JourneyPlayer() {
 
   // FEAT-H021 (JRN-13): the completion panel's path into review — switch focus to the
   // first step in place (no navigation, no `enter`; the player is already in review).
+  // Post-6-done fix (Stefan's live walk, 2026-07-08): the entry also brings the canvas
+  // into view (the panel sits above it — a successful jump below the fold read as
+  // "nothing happened"), and the page hands the panel the callback only while it would
+  // do something — on the first step the affordance retires instead of sitting inert.
+  const canvasRef = useRef<HTMLDivElement | null>(null);
   const enterReview = () => {
     const first = (player?.steps ?? [])[0];
     if (first) setCurrentStepId(first.id);
+    canvasRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
   };
+  const atFirstStep = steps.length > 0 && currentStepId === steps[0].id;
 
   // JRN-8 completion: the canvas paints the tick optimistically, then awaits this.
   // A repeat (completed + repeatable) opens a fresh engagement first (`enter` then
@@ -290,21 +297,23 @@ function JourneyPlayer() {
             <JourneyCompletionPanel
               completion={player.completion}
               timing={player.timing}
-              onEnterReview={enterReview}
+              onEnterReview={atFirstStep ? undefined : enterReview}
             />
           )}
-          {currentStep ? (
-            <StepCanvas
-              key={currentStep.id}
-              step={currentStep}
-              completed={currentCompleted}
-              locked={currentLocked}
-              lockReason={lockReason}
-              onComplete={() => saveComplete(currentStep.id)}
-            />
-          ) : (
-            <EmptyState title="No steps yet" description="This journey has no steps to walk." />
-          )}
+          <div ref={canvasRef}>
+            {currentStep ? (
+              <StepCanvas
+                key={currentStep.id}
+                step={currentStep}
+                completed={currentCompleted}
+                locked={currentLocked}
+                lockReason={lockReason}
+                onComplete={() => saveComplete(currentStep.id)}
+              />
+            ) : (
+              <EmptyState title="No steps yet" description="This journey has no steps to walk." />
+            )}
+          </div>
 
           {(prevStep || nextStep) && (
             <div className="mt-4 flex items-center justify-between">

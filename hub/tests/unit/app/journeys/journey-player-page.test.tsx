@@ -436,6 +436,36 @@ describe('FEAT-H021 STORY-2 — completed walks open in review (JRN-13)', () => 
     expect(enterStep).not.toHaveBeenCalled();
   });
 
+  it('the review-entry button never renders inert — absent when the canvas already sits on the first step', async () => {
+    // Post-6-done fix (Stefan's live walk, 2026-07-08): a completed enrolment with no
+    // step-instance record (the legacy-completed shape) boots at step one — the old
+    // button rendered anyway and clicking it did nothing. No fake doors.
+    withParam();
+    fetchPlayerState.mockResolvedValue(
+      STATE({ status: 'completed', resume_step_id: 's1', timing: TIMING, completion: COMPLETE, instances: [] }),
+    );
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-completion-panel')).toBeTruthy());
+    expect(screen.queryByTestId('review-enter')).toBeNull();
+  });
+
+  it('the review entry returns the canvas to the first step, brings it into view, and retires itself', async () => {
+    const scrollSpy = jest.fn();
+    Element.prototype.scrollIntoView = scrollSpy; // jsdom has no implementation
+    withParam();
+    fetchPlayerState.mockResolvedValue(
+      STATE({ status: 'completed', resume_step_id: 's3', timing: TIMING, completion: COMPLETE, instances: DONE_INSTANCES }),
+    );
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    fireEvent.click(screen.getByTestId('review-enter'));
+    expect(screen.getByTestId('step-canvas').textContent).toContain('Orient');
+    expect(scrollSpy).toHaveBeenCalled();
+    // On the first step the affordance would be inert — it retires instead.
+    expect(screen.queryByTestId('review-enter')).toBeNull();
+    expect(enterStep).not.toHaveBeenCalled(); // review entry records nothing
+  });
+
   it('an explicit re-engagement verb on a repeatable step still rides the normal complete path', async () => {
     withParam();
     const repeatable = STATE({
