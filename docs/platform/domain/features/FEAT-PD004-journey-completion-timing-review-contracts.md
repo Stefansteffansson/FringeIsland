@@ -6,7 +6,7 @@ title: Journey completion, timing, and review-read contracts
 owner: platform/domain/journeys
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -16,27 +16,17 @@ The substrate records every step completion (FEAT-PD003) but nothing ever conclu
 
 One V3 obligation rides the detection edge: a **durable completion notification row** (the milestone a FIM cares about; push/bell delivery rides the Notifications area).
 
-## Solution sketch
+## Implementation notes
 
-No new tables, no new columns, no RLS changes — function re-issues and additive payload blocks only (the iteration-zone additive posture).
+*(Built Cycle J-C, 2026-07-08. Migration `20260708120000_feat_pd004_completion_timing_review_contracts.sql`, held at the schema gate and nodded by Stefan — "yes to all" on Q1–Q6, PR #134.)*
 
-- **Detection lives inside `complete_journey_step`, on the transition edge.** After the existing stamp logic, with the enrolment row locked (`SELECT … FOR UPDATE` taken before the stamp — serializes two travellers'/two tabs' racing finals), the function evaluates: did this traveller have ≥ 1 required step without a completed instance before this stamp, and zero after? If yes, the **traveller-completion transition** fires exactly once per (enrolment × traveller): (a) the durable notification row inserts (`type = 'journey_completed'`, recipient = the traveller's personal group, passive — no action columns); (b) **iff the traveller is the enrolment party itself** (`traveller_group_id = enrollment.group_id` — the solo walk; no group-type introspection, ADR-U018-safe), the enrolment row takes `status = 'completed'`, `completed_at = now()` (only if currently null — stamps once, ever), `status_changed_at = now()`. Via-group walks never flip the party's row (the group's aggregate is J-D's consent-gated territory); the traveller's completion is derived from instances wherever it's needed.
-- **The walk survives the milestone.** `enter_journey_step` and `complete_journey_step` loosen their status guard from `= 'active'` to `IN ('active','completed')` — a **labelled semantic delta** on the J-B contracts. Without it, the solo flip would dead-lock every optional and repeatable step the instant the last required step lands. `withdrawn`/`frozen`/`paused` still refuse exactly as today. No second transition edge is possible (the edge requires an incomplete required step *before* the call), so re-walking repeatables after completion can never re-stamp or re-notify.
-- **Timing is derived, never stored.** Time-on-step = the sum of a step's *completed engagements* (`completed_at − created_at` per instance); open engagements are excluded (walking away must cost nothing — an unbounded open engagement is not "time spent"); total elapsed = the sum over steps; the wall-clock span (`enrolled_at → completed_at`) is served alongside as a distinct number, never conflated.
-- **The payloads carry it (additive, no v-bump).** `get_player_state` gains `completion` (`{traveller_completed, traveller_completed_at, enrollment_status, enrollment_completed_at}` — traveller-grain derived, row-grain quoted) and `timing` (`{per_step: [{step_id, seconds}], total_seconds, wall_clock: {enrolled_at, completed_at}}`). `complete_journey_step`'s response gains `journey_completed` (boolean transition flag, true only on the edge) plus the same `completion` block — the Hub's background save learns the milestone without a refetch (B5-preserving). Existing keys are untouched; FEAT-H020's types tolerate additive keys by construction (`kind: string`, open payloads).
-- **Reactivation composes, untouched:** re-enrolment reactivates the withdrawn row preserving `completed_at` (the Q1 addendum), so a completed-then-withdrawn-then-re-enrolled traveller resumes with their milestone intact — `completed_at` never re-stamps, the payload's completion block is already true at boot, and no duplicate notification can fire.
+**What was built.** Exactly the sketch: three contract re-issues, zero new tables/columns/indexes/RLS. `complete_journey_step` takes the enrolment row `FOR UPDATE` before the pre-stamp edge read (re-checking status under the lock so a racing withdraw/freeze can't slip through), detects the traveller-completion transition (incomplete-required-before → none-after), and on the edge: inserts the passive `journey_completed` notification row (recipient = the traveller's personal group; payload `{journey_id, enrollment_id, journey_title}`; `group_id` = the party for context) and — iff the walker IS the party (Q2's `traveller_group_id = group_id` predicate) — concludes the enrolment (`status='completed'`, `completed_at` stamped once via `coalesce`, `status_changed_at` touched). Both walk guards loosened to `in ('active','completed')` (the labelled J-B delta — the milestone is not a lock). `get_player_state` gained the additive `completion` and `timing` blocks (completed-engagement sums per step, open engagements excluded, totals, wall-clock span served separately); `complete_journey_step`'s response gained `journey_completed` + the completion block so the Hub's background save carries the milestone with zero extra reads. One in-flight correctness fix during authoring: a late edge on a legacy-completed row re-reads the enrolment after the guarded flip (the `WHERE status='active'` UPDATE may match nothing) so the returned completion block can never null out.
 
-The consuming FEAT-H021 stories were walked against these payload shapes at decomposition (retro-2026-07-07 §4 discipline): the completion moment consumes the `complete_journey_step` transition flag; review mode and time display consume the `completion` + `timing` blocks; the Review entry points consume the already-shipped `get_my_enrollments.status`.
+**Gate resolutions (Q1–Q6, all defaults nodded):** as recorded in the Open-spec-questions section below, with dev pre-check evidence on PR #134 (7 active / 2 legacy-completed / 7 withdrawn enrolments; `journey_completed` unused among 16 live notification types; all seeded journeys all-required). The two legacy-completed rows never receive retroactive notifications (no edge can fire for them) — no backfill, by decision.
 
-## Appetite
+**Red → green.** 23 red-first integration tests (`journey-completion-timing-contracts.test.ts`): 17 red verified against the live PD003 substrate (13 missing-behaviour/missing-key + 4 intended-red on the legacy `= 'active'` guard) + 6 green pins (via-group row never flipped, terminal-state refusals, payload byte-shape, P0002 concealment) → **88/88** across the three journeys suites post-apply → full integration sweep **392/392** (37 suites), no flake. **One labelled test adaptation, zero sibling adaptations:** the STORY-3 erasure proof rides the real `erase_fim_account` path (DeusEx-called) because a bare group-delete is impossible by design — `consent_records.subject_group_id` is ON DELETE RESTRICT *and* append-only (`enforce_consent_append_only`, 42501) outside the controlled erasure path; the ADR-U034 substrate working as intended.
 
-Half the J-C cycle (platform-first, day-scale) — red suite + one migration through the schema gate. The concurrency edge is a lock, not a design project.
-
-## Rabbit holes
-
-- **Don't invent completion versioning or an epoch model.** The edge definition (incomplete-required-before, none-after, under the row lock) is sufficient; no counters, no generation columns.
-- **Don't compute timing at read time from scratch in multiple places.** One derivation, in `get_player_state`'s single round trip; the Hub formats, never re-derives.
-- **Don't touch the group-aggregate question.** Any "N of M members finished" read is J-D (consent-gated, never comparative) — even as a convenience field.
+**Notes for successors.** The STORY-1 "two racing last required steps" AC is topologically impossible under linear gating (required steps are totally ordered — one always gates the other); the suite races two parallel completes of the *same* final step, which exercises the identical row-lock serialization. A journey with zero required steps is vacuously `traveller_completed` in the payload but can never fire the edge (documented in the migration). J-D's consent-gated group-progress reads derive from the same instances grain; A-NTF delivers the durable row this feature only stores.
 
 ## No-gos
 
@@ -123,7 +113,7 @@ N/A (no surface) — but budget-load-bearing for FEAT-H021: the detection adds b
 
 ## Open spec questions
 
-All to be decided at the schema-review gate (held per the carve-outs), with dev pre-check evidence presented alongside:
+All decided at the schema-review gate (2026-07-08, Stefan: "yes to all — apply and continue", PR #134), with the dev pre-check evidence presented alongside; every default below is the ratified resolution:
 
 1. **Detection site and concurrency.** Default: inside `complete_journey_step`, edge-triggered after the stamp, with the enrolment row taken `FOR UPDATE` before the stamp so racing finals serialize (STORY-1). No trigger, no queue, no epoch model.
 2. **Solo detection predicate.** Default: `traveller_group_id = enrollment.group_id` — the walker *is* the party. No group-type introspection (ADR-U018-safe), no personal-group lookup beyond what the function already resolves.

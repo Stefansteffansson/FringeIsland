@@ -2,6 +2,14 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-07-08 — Finishing means something: completion, review, and your time ([FEAT-H021](../docs/products/hub/features/FEAT-H021-journey-completion-and-review.md))
+
+- **The arrival is marked.** Completing your last required step now concludes the journey — a quiet completion panel appears with the date and the time you gave it, and the step rail shows the whole walk done. It appears the moment the platform confirms it — never before.
+- **Two honest numbers, not one.** The panel tells you your *engagement time* (what you actually spent in the steps) and the *calendar span* (enrolled → completed) as two different things. Steps you never spent time in show a dash — never a fake "0 min".
+- **Completed journeys stay open.** Opening a finished journey gives you *review*: every step readable, your marks and times beside them, nothing recorded just for looking. Optional and repeatable steps still offer their invitation, if you want to go again — finishing is a milestone, not a lock.
+- **Review is a door, not a hunt.** Wherever your enrolments show — the journeys page, a journey's page — finished ones now say *Review* where active ones say *Continue*.
+- **Your milestone is remembered.** Completing a journey writes a durable notification for you — it will surface when the notification centre arrives in a later area.
+
 ## 2026-07-07 — Walk your journeys: the player arrives ([FEAT-H020](../docs/products/hub/features/FEAT-H020-journey-player.md))
 
 - **Walk a journey, step by step.** Every journey you're enrolled in now has a *Continue* button that opens the player: the step you're on, front and centre, with the whole route visible in a rail beside it — what's required, what's done, where you are.

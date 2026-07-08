@@ -3,7 +3,7 @@
 ---
 id: TASK-JC-05
 title: H021 E2E + perf DoD + 6-done close-out
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H021
