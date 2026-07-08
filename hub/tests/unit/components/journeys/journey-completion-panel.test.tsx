@@ -1,5 +1,5 @@
-import { describe, it, expect, jest } from '@jest/globals';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect } from '@jest/globals';
+import { render, screen } from '@testing-library/react';
 import type { PlayerCompletion, PlayerTiming } from '@/lib/journeys/player';
 import { JourneyCompletionPanel } from '@/components/journeys/JourneyCompletionPanel';
 
@@ -27,20 +27,20 @@ const COMPLETION: PlayerCompletion = {
 
 describe('JourneyCompletionPanel — the arrival', () => {
   it('renders the panel with a completion statement (an arrival, not a jackpot)', () => {
-    render(<JourneyCompletionPanel completion={COMPLETION} timing={TIMING} onEnterReview={jest.fn()} />);
+    render(<JourneyCompletionPanel completion={COMPLETION} timing={TIMING} />);
     const panel = screen.getByTestId('journey-completion-panel');
     expect(panel).toBeTruthy();
     expect(panel.textContent?.toLowerCase()).toContain('complete');
   });
 
   it('shows the total engagement time from the timing block (coarse)', () => {
-    render(<JourneyCompletionPanel completion={COMPLETION} timing={TIMING} onEnterReview={jest.fn()} />);
+    render(<JourneyCompletionPanel completion={COMPLETION} timing={TIMING} />);
     // 1500s -> 25 min, own-data engagement total.
     expect(screen.getByTestId('completion-total-time').textContent).toContain('25 min');
   });
 
   it('shows the enrolled→completed calendar span, LABELLED distinctly from engagement time', () => {
-    render(<JourneyCompletionPanel completion={COMPLETION} timing={TIMING} onEnterReview={jest.fn()} />);
+    render(<JourneyCompletionPanel completion={COMPLETION} timing={TIMING} />);
     const engagement = screen.getByTestId('completion-total-time');
     const span = screen.getByTestId('completion-calendar-span');
     expect(span.textContent).toContain('2 days');
@@ -48,17 +48,16 @@ describe('JourneyCompletionPanel — the arrival', () => {
     expect(engagement.textContent).not.toEqual(span.textContent);
   });
 
-  it('offers a path into review that fires the handler (in-page, no navigation)', () => {
-    const onEnterReview = jest.fn();
-    render(<JourneyCompletionPanel completion={COMPLETION} timing={TIMING} onEnterReview={onEnterReview} />);
-    fireEvent.click(screen.getByTestId('review-enter'));
-    expect(onEnterReview).toHaveBeenCalledTimes(1);
+  it('offers no interactive affordance — a summary, not a menu (J-O6: review substance is a routed open question)', () => {
+    render(<JourneyCompletionPanel completion={COMPLETION} timing={TIMING} />);
+    expect(screen.queryByTestId('review-enter')).toBeNull();
+    expect(screen.queryByRole('button')).toBeNull();
   });
 
   it('omits the calendar span honestly when there is no completed_at (via-group walk, row still active)', () => {
     const viaTiming: PlayerTiming = { ...TIMING, wall_clock: { enrolled_at: TIMING.wall_clock.enrolled_at, completed_at: null } };
     const viaCompletion: PlayerCompletion = { ...COMPLETION, enrollment_status: 'active', enrollment_completed_at: null };
-    render(<JourneyCompletionPanel completion={viaCompletion} timing={viaTiming} onEnterReview={jest.fn()} />);
+    render(<JourneyCompletionPanel completion={viaCompletion} timing={viaTiming} />);
     // Engagement time still shows; the calendar span is absent (never fabricated).
     expect(screen.getByTestId('completion-total-time').textContent).toContain('25 min');
     expect(screen.queryByTestId('completion-calendar-span')).toBeNull();

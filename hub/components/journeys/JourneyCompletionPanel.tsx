@@ -6,18 +6,18 @@ import { formatEngagementTime, formatCalendarSpan } from '@/lib/journeys/timing'
  * completed framing. Canon voice: an arrival, not a jackpot — no confetti, no
  * animation, existing primitives only. It states the completion, shows the traveller's
  * OWN engagement total and the enrolled→completed calendar span LABELLED as two
- * different things (never conflated; nothing comparative — invariant 8), and offers a
- * path into review (in-page, no navigation — the player itself is already in review
- * posture). Renders from the FEAT-PD004 blocks; it never re-derives time.
+ * different things (never conflated; nothing comparative — invariant 8). A summary,
+ * not a menu: it offers no affordances — review is the posture the player is already
+ * in, and prev/next is its navigation. A richer review entry returns with step-response
+ * capture (the routed J-O6 open question, completion plan 2026-07-08).
+ * Renders from the FEAT-PD004 blocks; it never re-derives time.
  */
 export function JourneyCompletionPanel({
   completion,
   timing,
-  onEnterReview,
 }: {
   completion?: PlayerCompletion;
   timing?: PlayerTiming;
-  onEnterReview?: () => void;
 }) {
   void completion; // row-grain block is carried for parity; the panel renders own time
   const calendarSpan = timing
@@ -52,17 +52,6 @@ export function JourneyCompletionPanel({
           </div>
         )}
       </dl>
-
-      {onEnterReview && (
-        <button
-          type="button"
-          data-testid="review-enter"
-          onClick={onEnterReview}
-          className="mt-5 rounded-lg border border-green-200 bg-white px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-100"
-        >
-          Review your journey
-        </button>
-      )}
     </section>
   );
 }
