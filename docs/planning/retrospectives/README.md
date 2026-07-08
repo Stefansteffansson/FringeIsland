@@ -28,6 +28,8 @@ audit-2026-Q2.md                 ← quarterly process audit
 
 ## Index
 
+- [retro-2026-07-08-j-c.md](retro-2026-07-08-j-c.md) — cycle retro, Cycle J-C (completion & review: PD004/H021 + the same-day post-close review-button arc); the append-only-erasure, concurrency-topology, and effect-not-click lessons; chose J-O6's design-session slot (J-D→J-E boundary); triggered the J-C task sweep. (`-j-c` suffix: the date slot was taken by the J-B retro, committed the same day.)
+- [retro-2026-07-08.md](retro-2026-07-08.md) — cycle retro, Cycle J-B (the player core: PD003/H020 + the same-day Q1 re-enrolment addendum); the plain-English-walkthrough and paired-suite-adaptation-budget process changes; the 522 flake-class disposition; triggered the J-B task sweep.
 - [retro-2026-07-07.md](retro-2026-07-07.md) — cycle retro, Cycle J-A (first Journeys cycle: PD002/H019/PC016 + the same-day J-O3 waterfall and P1-residual bet); the payload-meets-consumer, oracle-overstatement, stacked-PR, and lint-rot lessons; triggered the J-A task sweep.
 - [retro-2026-07-06.md](retro-2026-07-06.md) — cycle retro, Phase-3 Groups area (Cycles G-A–G-F + the same-day perf/compliance/security session); the anon-EXECUTE class fix, route-policy drift, and ADR-U042 first-load lessons; triggered the Groups-era task sweep.
 - [retro-2026-07-03.md](retro-2026-07-03.md) — cycle retro, Phase-3 Identity completion (Cycles A–E + interludes); first committed cycle retro; triggered the Identity-era task sweep.
