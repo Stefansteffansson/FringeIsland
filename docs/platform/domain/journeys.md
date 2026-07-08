@@ -251,7 +251,7 @@ Whether any DS-3 row falls inside the active wave's scope is a wave-planning det
 
 ### Capabilities without specs
 
-All §L3 capabilities except the two FEAT-PD002 partially covers, the three FEAT-PD003 advances (Step registry & step-kind system, Progress tracking, Delivery runtime — the player-boot slice), the two slices FEAT-PD004 advances further (Progress tracking — completion & timing; Delivery runtime — the review read), and the two slices FEAT-PD005 takes at 4-ready (Progress tracking — the group-progress read; Enrolment lifecycle — the frozen-walk surfacing). Next per the Journeys completion plan: Mist enrolment & transcendence continuity (J-E, ADR-U045).
+All §L3 capabilities except the two FEAT-PD002 partially covers, the three FEAT-PD003 advances (Step registry & step-kind system, Progress tracking, Delivery runtime — the player-boot slice), the two slices FEAT-PD004 advances further (Progress tracking — completion & timing; Delivery runtime — the review read), and the two slices FEAT-PD005 advanced to 6-done (Progress tracking — the group-progress read; Enrolment lifecycle — the frozen-walk surfacing). Next per the Journeys completion plan: Mist enrolment & transcendence continuity (J-E, ADR-U045).
 
 ### Features without capabilities
 
