@@ -22,6 +22,8 @@ import type {
   PlayerCompletion,
   PlayerTiming,
   PlayerStepTiming,
+  PlayerFreeze,
+  PlayerProgressSharing,
   StepCompletionResult,
 } from '@/lib/journeys/queries';
 import { JourneysApiError } from '@/lib/journeys/client';
@@ -33,6 +35,8 @@ export type {
   PlayerCompletion,
   PlayerTiming,
   PlayerStepTiming,
+  PlayerFreeze,
+  PlayerProgressSharing,
   StepCompletionResult,
 };
 
@@ -113,4 +117,23 @@ export async function completeStep(
   );
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
   return (await res.json()) as StepCompletionResult;
+}
+
+/**
+ * FEAT-H022 STORY-2 (JRN-17, traveller side) — grant/withdraw progress sharing
+ * for THIS via-group enrolment. A plain background mutation: the player owns the
+ * optimistic flip and reconciles to this response; a refusal rejects with the
+ * BFF's status (P0001 solo → 422, P0002 → 404, 42501 → 403) so the page can roll
+ * back. Returns the server-confirmed sharing state. */
+export async function setProgressSharing(
+  enrollmentId: string,
+  share: boolean,
+): Promise<{ enrollment_id: string; sharing: boolean }> {
+  const res = await fetch(`/api/journeys/enrollments/${enrollmentId}/sharing`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ share }),
+  });
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  return (await res.json()) as { enrollment_id: string; sharing: boolean };
 }

@@ -81,7 +81,18 @@ export interface MyEnrollment {
 /** The group enrolment summary (get_group_enrollment_summary) — the GRP-4 seam. */
 export interface GroupEnrollmentSummary {
   count: number;
-  enrollments: Array<{ journey_id: string; title: string; status: string }>;
+  enrollments: Array<{
+    /**
+     * Additive/optional: the enrolment handle the H022 group-progress panel
+     * keys its read on. Absent from the current get_group_enrollment_summary
+     * payload — the panel renders no expander until the summary carries it
+     * (a one-line PD002 re-issue: select `e.id as enrollment_id`).
+     */
+    enrollment_id?: string;
+    journey_id: string;
+    title: string;
+    status: string;
+  }>;
 }
 
 /**
@@ -145,6 +156,31 @@ export interface PlayerTiming {
   wall_clock: { enrolled_at: string; completed_at: string | null };
 }
 
+/**
+ * FEAT-PD005 (JRN-14) — the freeze block. Non-null ONLY for a frozen enrolment.
+ * `reason` is open vocabulary (four known values — `group_closed`,
+ * `group_archived`, `left_group`, `removed_from_group` — plus a verbatim
+ * fallback for future ones); `frozen_at` is when the membership cascade froze
+ * it. The Hub renders this read-only frame; it never sets or clears freeze
+ * (cascades own it — no unfreeze affordance, ADR-U038).
+ */
+export interface PlayerFreeze {
+  /** Open vocabulary — render tolerantly; unknown reasons fall back to the verbatim value. */
+  reason: string | null;
+  frozen_at: string | null;
+}
+
+/**
+ * FEAT-PD005 (JRN-17, traveller side) — the caller's own per-enrolment sharing
+ * state, booted with the player. `available` is false on solo walks (nothing
+ * to share to); `sharing` is the caller's own latest decision. Additive/optional
+ * against H020/H021 fixtures.
+ */
+export interface PlayerProgressSharing {
+  available: boolean;
+  sharing: boolean;
+}
+
 /** The single-round-trip player boot payload (get_player_state). */
 export interface PlayerState {
   enrollment_id: string;
@@ -161,6 +197,10 @@ export interface PlayerState {
   completion?: PlayerCompletion;
   /** FEAT-PD004 additive (JRN-11) — optional for the same reason. */
   timing?: PlayerTiming;
+  /** FEAT-PD005 additive (JRN-14) — non-null only for a frozen enrolment. Optional so H020/H021 fixtures type-check. */
+  freeze?: PlayerFreeze | null;
+  /** FEAT-PD005 additive (JRN-17) — the sharing control's boot state. Optional for the same reason. */
+  progress_sharing?: PlayerProgressSharing;
 }
 
 /**
@@ -278,4 +318,89 @@ export async function completeJourneyStep(
   });
   if (error) throw error;
   return data as PlayerInstance;
+}
+
+// --- FEAT-PD005 group-progress + sharing contracts (Cycle J-D) ----------------
+
+/** One skeleton step in the group progress read (get_group_journey_progress). */
+export interface GroupProgressStep {
+  step_id: string;
+  step_order: number;
+  title: string;
+  required: boolean;
+}
+
+/** One member's per-step completion flag — present only for a sharing member the
+ *  caller may see marks for (view_others_progress holder). */
+export interface GroupProgressMemberStep {
+  step_id: string;
+  completed: boolean;
+}
+
+/**
+ * One roster entry (consent-shaped, permission-grained). A NON-sharing member
+ * carries exactly {member_group_id, display_name, sharing:false}. A sharing
+ * member adds marks (traveller_completed / required_completed / required_total /
+ * per_step) ONLY when the caller holds view_others_progress; otherwise the marks
+ * are absent (sharing:true, no per_step). No timing key exists by design.
+ */
+export interface GroupProgressMember {
+  member_group_id: string;
+  display_name: string;
+  sharing: boolean;
+  traveller_completed?: boolean;
+  required_completed?: number;
+  required_total?: number;
+  per_step?: GroupProgressMemberStep[];
+}
+
+/** Per-step completed counts over SHARING members only (Q4); the basis served alongside. */
+export interface GroupProgressAggregateStep {
+  step_id: string;
+  completed_count: number;
+}
+
+/**
+ * The get_group_journey_progress payload (JRN-16/17). Members are alphabetical
+ * as served — the Hub never re-sorts. `members_meta` carries the honest basis
+ * (total members / sharing members). NO timing-shaped key exists (invariant 8/Q5).
+ */
+export interface GroupJourneyProgress {
+  enrollment_id: string;
+  journey: { id: string; title: string };
+  /** Open vocabulary — 'active' | 'frozen' | 'completed' | ... */
+  status: string;
+  steps: GroupProgressStep[];
+  members: GroupProgressMember[];
+  members_meta: { total: number; sharing: number };
+  aggregate: { per_step: GroupProgressAggregateStep[]; basis: string };
+}
+
+/** FEAT-PD005 STORY-2 (JRN-17 traveller side): grant/withdraw progress sharing
+ *  for one enrolment. Self-only + append-only platform-side; latest-wins. */
+export async function setJourneyProgressSharing(
+  supabase: SupabaseClient,
+  enrollmentId: string,
+  share: boolean,
+): Promise<{ enrollment_id: string; sharing: boolean }> {
+  const { data, error } = await supabase.rpc('set_journey_progress_sharing', {
+    p_enrollment_id: enrollmentId,
+    p_share: share,
+  });
+  if (error) throw error;
+  return data as { enrollment_id: string; sharing: boolean };
+}
+
+/** FEAT-PD005 STORY-3/4 (JRN-16/17): the consent-shaped group progress window —
+ *  permission-gated, consent-shaped, never comparative (all self-gated in the
+ *  contract). This wrapper only shapes the call and rethrows the SQLSTATE. */
+export async function fetchGroupJourneyProgress(
+  supabase: SupabaseClient,
+  enrollmentId: string,
+): Promise<GroupJourneyProgress> {
+  const { data, error } = await supabase.rpc('get_group_journey_progress', {
+    p_enrollment_id: enrollmentId,
+  });
+  if (error) throw error;
+  return data as GroupJourneyProgress;
 }

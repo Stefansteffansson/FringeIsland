@@ -152,3 +152,19 @@ describe('FEAT-H021 STORY-4 — Review where active offers Continue, on the card
     expect(screen.getByTestId('journey-card-j1').querySelector('[data-testid="card-review"]')).toBeNull();
   });
 });
+
+describe('FEAT-H022 STORY-1 — View opens the read-only frozen walk, on the cards', () => {
+  it('offers View on a frozen enrolment, deep-linked — never Continue or Review', async () => {
+    fetchJourneyCatalog.mockResolvedValue([CARD({ id: 'j1' })]);
+    fetchMyJourneyEnrollments.mockResolvedValue([
+      { enrollment_id: 'e1', kind: 'via_group', journey_id: 'j1', journey_title: 'Leadership Fundamentals', status: 'frozen', last_accessed_at: null, group_id: 'g1', group_name: 'Alpha Party' },
+    ]);
+    render(<JourneysPage />);
+    await waitFor(() => expect(screen.getByTestId('journeys-list')).toBeTruthy());
+    const view = screen.getByTestId('journey-card-j1').querySelector('[data-testid="card-view"]');
+    expect(view?.getAttribute('href')).toBe('/journeys/j1/play?enrollment=e1');
+    expect(view?.textContent).toContain('Alpha Party');
+    expect(screen.getByTestId('journey-card-j1').querySelector('[data-testid="card-continue"]')).toBeNull();
+    expect(screen.getByTestId('journey-card-j1').querySelector('[data-testid="card-review"]')).toBeNull();
+  });
+});

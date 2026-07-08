@@ -3,7 +3,7 @@
 ---
 id: TASK-JD-03
 title: H022 frozen read-only mode (JRN-14)
-status: todo
+status: review
 assigned_to: Claude (delegated session)
 priority: high
 feature: FEAT-H022

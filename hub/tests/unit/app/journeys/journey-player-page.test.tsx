@@ -47,6 +47,13 @@ jest.mock('next/navigation', () => ({
 jest.mock('@/components/shell/AppShell', () => ({
   AppShell: ({ children }: { children: React.ReactNode }) => <div data-testid="shell">{children}</div>,
 }));
+// FEAT-H022: the sharing toggle is exercised in its own suite; here it is a stub
+// that reflects its props, so the page test asserts only WHERE/WHEN it mounts.
+jest.mock('@/components/journeys/SharingToggle', () => ({
+  SharingToggle: (props: { enrollmentId: string; initialSharing: boolean }) => (
+    <div data-testid="sharing-toggle" data-enrollment={props.enrollmentId} data-sharing={String(props.initialSharing)} />
+  ),
+}));
 jest.mock('@/lib/observability/telemetry', () => ({ emitTelemetry: jest.fn() }));
 jest.mock('@/lib/journeys/player', () => ({
   fetchPlayerState: (id: string) => fetchPlayerState(id),
@@ -258,11 +265,13 @@ describe('STORY-2/4 — linear walk with optimistic advance + background auto-sa
 
 describe('STORY-1 — non-active enrolment', () => {
   it('renders one honest state naming the status, with no step affordances', async () => {
+    // H022 gave `frozen` its own read-only posture; `paused` stands in as the
+    // bare-panel non-active status this H020 behaviour still covers.
     withParam();
-    fetchPlayerState.mockResolvedValue(STATE({ status: 'frozen' }));
+    fetchPlayerState.mockResolvedValue(STATE({ status: 'paused' }));
     render(<JourneyPlayerPage />);
     await waitFor(() => expect(screen.getByTestId('player-nonactive')).toBeTruthy());
-    expect(screen.getByTestId('player-nonactive').textContent).toContain('frozen');
+    expect(screen.getByTestId('player-nonactive').textContent).toContain('paused');
     expect(screen.queryByTestId('journey-player')).toBeNull();
     expect(screen.queryByTestId('player-next')).toBeNull();
   });
@@ -500,20 +509,118 @@ describe('FEAT-H021 STORY-2 — completed walks open in review (JRN-13)', () => 
     expect(screen.queryByTestId('player-nonactive')).toBeNull();
   });
 
-  it('keeps the honest status panel for frozen (even after completion) and withdrawn — review admits completed only', async () => {
+  it('keeps the honest status panel for withdrawn and paused — review admits completed only (frozen is its own H022 posture)', async () => {
     withParam();
-    fetchPlayerState.mockResolvedValue(
-      STATE({ status: 'frozen', timing: TIMING, completion: { ...COMPLETE, enrollment_status: 'frozen' }, instances: DONE_INSTANCES }),
-    );
+    fetchPlayerState.mockResolvedValue(STATE({ status: 'withdrawn' }));
     const { unmount } = render(<JourneyPlayerPage />);
     await waitFor(() => expect(screen.getByTestId('player-nonactive')).toBeTruthy());
     expect(screen.queryByTestId('journey-completion-panel')).toBeNull();
     unmount();
 
-    fetchPlayerState.mockResolvedValue(STATE({ status: 'withdrawn' }));
+    fetchPlayerState.mockResolvedValue(STATE({ status: 'paused' }));
     render(<JourneyPlayerPage />);
     await waitFor(() => expect(screen.getByTestId('player-nonactive')).toBeTruthy());
     expect(screen.queryByTestId('journey-completion-panel')).toBeNull();
+  });
+});
+
+// --- FEAT-H022 (Cycle J-D) — frozen read-only mode (JRN-14) ------------------
+
+const FROZEN = (over: Partial<PlayerState> = {}): PlayerState =>
+  STATE({
+    status: 'frozen',
+    freeze: { reason: 'left_group', frozen_at: '2026-07-08T10:00:00+00:00' },
+    ...over,
+  });
+
+describe('FEAT-H022 STORY-1 — a frozen walk opens read-only and says why (JRN-14)', () => {
+  it('boots a frozen enrolment into the read-only walk with the freeze banner — never the bare status panel', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(FROZEN({ resume_step_id: 's2', instances: DONE_INSTANCES }));
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    expect(screen.queryByTestId('player-nonactive')).toBeNull();
+    // The banner names the reason (canon voice) above the canvas.
+    expect(screen.getByTestId('freeze-banner').textContent).toContain('You left');
+    // Every step navigable through the same rail/renderer registry.
+    expect(screen.getByTestId('step-rail').querySelectorAll('[data-testid^="rail-step-"]')).toHaveLength(3);
+  });
+
+  it('records NOTHING on navigation — the background enter never fires in frozen posture (asserted as the effect)', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(FROZEN({ resume_step_id: 's2', instances: DONE_INSTANCES }));
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    fireEvent.click(screen.getByTestId('player-prev'));
+    expect(screen.getByTestId('step-canvas').textContent).toContain('Orient');
+    expect(enterStep).not.toHaveBeenCalled();
+  });
+
+  it('offers no completion affordance anywhere in the frozen walk', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(FROZEN({ resume_step_id: 's2', instances: [] }));
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    expect(screen.queryByTestId('step-complete')).toBeNull();
+  });
+
+  it('renders the completion framing INSIDE the frozen posture for a walk completed before it froze (precedence: frozen wins, banner adds)', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(
+      FROZEN({ resume_step_id: 's3', timing: TIMING, completion: { ...COMPLETE, enrollment_status: 'frozen' }, instances: DONE_INSTANCES }),
+    );
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    // The banner AND the completion panel — the freeze adds to the record, never replaces it.
+    expect(screen.getByTestId('freeze-banner')).toBeTruthy();
+    expect(screen.getByTestId('journey-completion-panel')).toBeTruthy();
+    // Frozen wins over the bare review framing: the read-only walk, not player-nonactive.
+    expect(screen.queryByTestId('player-nonactive')).toBeNull();
+    expect(screen.queryByTestId('step-complete')).toBeNull();
+  });
+
+  it('renders the read-only walk for a departed member (Q9 lived-record standing) — a frozen walk that never completed', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(
+      FROZEN({
+        freeze: { reason: 'removed_from_group', frozen_at: '2026-07-08T10:00:00+00:00' },
+        resume_step_id: 's1',
+        instances: [],
+      }),
+    );
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    expect(screen.getByTestId('freeze-banner').textContent).toContain('no longer in');
+    expect(screen.queryByTestId('journey-completion-panel')).toBeNull();
+  });
+});
+
+describe('FEAT-H022 STORY-2 — the sharing toggle on the player (JRN-17 traveller side)', () => {
+  it('renders the sharing toggle for a via-group walk, booted from progress_sharing (no extra read)', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(STATE({ progress_sharing: { available: true, sharing: true } }));
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    const toggle = screen.getByTestId('sharing-toggle');
+    expect(toggle.getAttribute('data-enrollment')).toBe('e1');
+    expect(toggle.getAttribute('data-sharing')).toBe('true');
+    expect(fetchPlayerState).toHaveBeenCalledTimes(1); // the boot read only
+  });
+
+  it('renders NO sharing toggle on a solo walk (available:false)', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(STATE({ progress_sharing: { available: false, sharing: false } }));
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    expect(screen.queryByTestId('sharing-toggle')).toBeNull();
+  });
+
+  it('suppresses the sharing toggle in the read-only frozen posture (a write control has no place there)', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(FROZEN({ progress_sharing: { available: true, sharing: false } }));
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    expect(screen.queryByTestId('sharing-toggle')).toBeNull();
   });
 });
 

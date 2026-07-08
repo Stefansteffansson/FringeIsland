@@ -14,6 +14,7 @@ import { MyPermissionsPanel } from '@/components/groups/MyPermissionsPanel';
 import { GroupMembershipsPanel } from '@/components/groups/GroupMembershipsPanel';
 import { InviteGroupPanel } from '@/components/groups/InviteGroupPanel';
 import { GroupJourneysSection } from '@/components/groups/GroupJourneysSection';
+import { GroupJourneyProgressSection } from '@/components/groups/GroupJourneyProgressSection';
 import {
   fetchActingContexts,
   fetchGroupDetailEnvelope,
@@ -235,6 +236,14 @@ export default function GroupDetailPage() {
           />
           {/* FEAT-H019 STORY-6: the group's journeys — the GRP-4 seam filled. */}
           <GroupJourneysSection enrollments={journeySlice} />
+          {/* FEAT-H022 STORY-3/4: the consent-shaped group progress panel, beside
+              the journeys section. Renders only for a view_group_progress holder
+              (from the effective-permissions read already fetched above). */}
+          <GroupJourneyProgressSection
+            groupId={groupId}
+            permissions={permissions}
+            enrollments={journeySlice}
+          />
           <RolesPanel
             groupId={groupId}
             fabric={rolesData?.fabric ?? null}

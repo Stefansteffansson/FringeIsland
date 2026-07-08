@@ -237,3 +237,30 @@ describe('FEAT-H021 STORY-4 — Review where active offers Continue (detail pane
     expect(screen.getByTestId('enroll-self')).toBeTruthy();
   });
 });
+
+describe('FEAT-H022 STORY-1 — View opens the read-only frozen walk (detail panel)', () => {
+  it('offers View on a frozen own enrolment, deep-linked — never Continue or Review', () => {
+    renderPanel({
+      is_enrolled_individually: true,
+      individual_enrollment: { enrollment_id: 'e9', status: 'frozen' },
+    });
+    const link = screen.getByTestId('view-individual');
+    expect(link.getAttribute('href')).toBe('/journeys/j1/play?enrollment=e9');
+    expect(screen.queryByTestId('continue-individual')).toBeNull();
+    expect(screen.queryByTestId('review-individual')).toBeNull();
+    // The held-state note stays (no withdraw here) — View is the read-only door.
+    expect(screen.getAllByTestId('frozen-state').length).toBeGreaterThan(0);
+  });
+
+  it('offers View on each frozen via-group enrolment, deep-linked', () => {
+    renderPanel({
+      enrolled_via: [
+        { group_id: 'g1', group_name: 'Alpha Party', enrollment_id: 'ge1', status: 'frozen', can_withdraw: false },
+      ],
+    });
+    const links = screen.getAllByTestId('view-via');
+    expect(links).toHaveLength(1);
+    expect(links[0].getAttribute('href')).toBe('/journeys/j1/play?enrollment=ge1');
+    expect(links[0].textContent).toContain('Alpha Party');
+  });
+});

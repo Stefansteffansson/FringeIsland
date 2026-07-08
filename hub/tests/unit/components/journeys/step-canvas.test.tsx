@@ -122,6 +122,31 @@ describe('StepCanvas — gating (STORY-3 state b)', () => {
   });
 });
 
+describe('StepCanvas — read-only (FEAT-H022 frozen posture)', () => {
+  it('renders content but NO complete affordance, ever — a completed step shows only its mark', () => {
+    render(<StepCanvas step={STEP()} completed readOnly onComplete={jest.fn()} />);
+    expect(screen.getByTestId('step-canvas').textContent).toContain('Welcome to the journey.');
+    expect(screen.getByTestId('step-completed')).toBeTruthy();
+    expect(screen.queryByTestId('step-complete')).toBeNull();
+  });
+
+  it('an incomplete step read-only shows content with no affordance and no lock', () => {
+    render(<StepCanvas step={STEP()} completed={false} readOnly onComplete={jest.fn()} />);
+    expect(screen.getByTestId('step-canvas').textContent).toContain('Welcome to the journey.');
+    expect(screen.queryByTestId('step-complete')).toBeNull();
+    expect(screen.queryByTestId('step-completed')).toBeNull();
+    expect(screen.queryByTestId('step-lock-reason')).toBeNull();
+  });
+
+  it('suppresses the repeat affordance too — a completed repeatable step offers nothing to press', () => {
+    render(
+      <StepCanvas step={STEP({ repeatable: true, ask_verb: 'Write an entry' })} completed readOnly onComplete={jest.fn()} />,
+    );
+    expect(screen.queryByTestId('step-complete')).toBeNull();
+    expect(screen.getByTestId('step-completed')).toBeTruthy();
+  });
+});
+
 describe('StepCanvas — completed posture (STORY-3 state c/d)', () => {
   it('a completed non-repeatable step renders in review posture (mark, no affordance)', () => {
     render(<StepCanvas step={STEP({ repeatable: false })} completed locked={false} onComplete={jest.fn()} />);

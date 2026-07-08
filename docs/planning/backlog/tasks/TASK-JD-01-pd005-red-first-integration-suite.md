@@ -3,7 +3,7 @@
 ---
 id: TASK-JD-01
 title: PD005 red-first integration suite
-status: review
+status: done
 assigned_to: Claude (delegated session; lead-verified)
 priority: high
 feature: FEAT-PD005

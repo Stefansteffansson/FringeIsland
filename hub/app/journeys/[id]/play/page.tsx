@@ -10,6 +10,8 @@ import { StepCanvas } from '@/components/journeys/StepCanvas';
 import { StepRail } from '@/components/journeys/StepRail';
 import { PlayerSkeleton } from '@/components/journeys/PlayerSkeleton';
 import { JourneyCompletionPanel } from '@/components/journeys/JourneyCompletionPanel';
+import { FreezeBanner } from '@/components/journeys/FreezeBanner';
+import { SharingToggle } from '@/components/journeys/SharingToggle';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 import {
   peekJourneyCatalog,
@@ -148,13 +150,37 @@ function JourneyPlayer() {
   // FEAT-H021 (JRN-13): review posture is DERIVED per render from the payload — no
   // client mode enum, no stored state. A `completed` enrolment, or a traveller whose
   // OWN walk is complete while a via-group row stays `active` (completion.traveller_
-  // completed), reads as review. `frozen`/`withdrawn`/`paused` keep the honest status
-  // panel exactly as H020 ships it — review admits completed walks only.
+  // completed), reads as review. `withdrawn`/`paused` keep the honest status panel
+  // exactly as H020 ships it — review admits completed walks only.
+  //
+  // FEAT-H022 (JRN-14): `frozen` is its OWN posture and it WINS — derived FIRST, and
+  // review is defined to exclude it. A frozen walk reads read-only with the banner;
+  // a walk that completed before it froze shows the completion framing INSIDE the
+  // frozen frame (the banner adds to the record, never replaces it).
   const travellerComplete = player?.completion?.traveller_completed === true;
+  const isFrozen = player != null && player.status === 'frozen';
   const inReview =
+    !isFrozen &&
     player != null &&
     (player.status === 'completed' || (player.status === 'active' && travellerComplete));
-  const honestStatus = player != null && player.status !== 'active' && !inReview;
+  // Read posture (review OR frozen): navigation opens no background engagement.
+  const readPosture = inReview || isFrozen;
+  // The gentle completion framing renders in review, and inside frozen for a walk
+  // completed before it froze.
+  const showCompletion = travellerComplete && (inReview || isFrozen);
+  // paused/withdrawn keep the bare honest panel; frozen no longer falls here.
+  const honestStatus = player != null && player.status !== 'active' && !inReview && !isFrozen;
+
+  // Observability: the freeze banner render is a meaningful surface event (STORY-1),
+  // emitted once the frozen payload resolves. Telemetry only — no state, no suppression.
+  useEffect(() => {
+    if (isFrozen && enrollmentId) {
+      emitTelemetry('player.freeze_banner_shown', {
+        enrollment: enrollmentId,
+        reason: player?.freeze?.reason ?? null,
+      });
+    }
+  }, [isFrozen, enrollmentId, player?.freeze?.reason]);
 
   const currentIndex = steps.findIndex((s) => s.id === currentStepId);
   const currentStep = currentIndex >= 0 ? steps[currentIndex] : null;
@@ -188,10 +214,11 @@ function JourneyPlayer() {
 
   const navigate = (stepId: string) => {
     setCurrentStepId(stepId); // optimistic paint from the in-memory payload (B5)
-    // JRN-13: review posture suppresses the background enter — resume = last, so
-    // position saving is meaningless, and mere navigation must not open an engagement
-    // on a repeatable step. Explicit re-engagement verbs still ride the complete path.
-    if (!inReview) saveEnter(stepId);
+    // JRN-13/JRN-14: review AND frozen posture suppress the background enter — resume
+    // = last, so position saving is meaningless, mere navigation must not open an
+    // engagement, and a frozen walk records NOTHING at all. Explicit re-engagement
+    // verbs still ride the complete path (never available in frozen posture).
+    if (!readPosture) saveEnter(stepId);
   };
 
   // FEAT-H021 (JRN-13) post-6-done follow-up (Stefan, 2026-07-08): the panel's
@@ -282,9 +309,12 @@ function JourneyPlayer() {
     body = (
       <div data-testid="journey-player" className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <div>
-          {/* JRN-12: the review framing opens with the gentle completion panel — it
-              replaces the bare completed-status panel (server-confirmed only). */}
-          {inReview && (
+          {/* JRN-14: the freeze banner sits above everything — it explains the frozen
+              state and adds to the record; it never replaces the completion framing. */}
+          {isFrozen && <FreezeBanner freeze={player.freeze} />}
+          {/* JRN-12: the completion framing opens the review posture, and renders INSIDE
+              the frozen posture for a walk completed before it froze (server-confirmed). */}
+          {showCompletion && (
             <JourneyCompletionPanel
               completion={player.completion}
               timing={player.timing}
@@ -297,7 +327,9 @@ function JourneyPlayer() {
               completed={currentCompleted}
               locked={currentLocked}
               lockReason={lockReason}
-              onComplete={() => saveComplete(currentStep.id)}
+              // JRN-14: frozen posture is read-only — no completion affordance anywhere.
+              readOnly={isFrozen}
+              onComplete={isFrozen ? undefined : () => saveComplete(currentStep.id)}
             />
           ) : (
             <EmptyState title="No steps yet" description="This journey has no steps to walk." />
@@ -351,12 +383,23 @@ function JourneyPlayer() {
           )}
         </div>
 
-        <StepRail
-          steps={steps}
-          currentStepId={currentStepId}
-          completedStepIds={completedStepIds}
-          timing={inReview ? player.timing : undefined}
-        />
+        <div className="space-y-6">
+          {/* JRN-17: the consent control rides via-group walks only (progress_sharing
+              .available). It is a WRITE surface, so it has no place in the read-only
+              frozen posture — suppressed there deliberately. */}
+          {enrollmentId && player.progress_sharing?.available && !isFrozen && (
+            <SharingToggle
+              enrollmentId={enrollmentId}
+              initialSharing={player.progress_sharing.sharing}
+            />
+          )}
+          <StepRail
+            steps={steps}
+            currentStepId={currentStepId}
+            completedStepIds={completedStepIds}
+            timing={showCompletion ? player.timing : undefined}
+          />
+        </div>
       </div>
     );
   }
