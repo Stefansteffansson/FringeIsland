@@ -16,6 +16,41 @@ const GHOST = '00000000-0000-0000-0000-00000000dead';
 /** Timestamps cross the PG (`+00:00`) / JS (`Z`) boundary — compare as epoch ms. */
 const epochMs = (x: unknown): number => new Date(x as string).getTime();
 
+/** DeusEx elevation pair — the established local-helper pattern (mirrors
+ *  journal-erasure-export / fim-account-erasure): erase_fim_account is
+ *  manage_all_groups-gated and needs an authenticated caller. */
+async function makePlatformAdmin(personalGroupId: string) {
+  await runAdminSql(`
+    DO $$
+    DECLARE v_deusex uuid; v_role uuid;
+    BEGIN
+      SELECT id INTO v_deusex FROM public.groups
+        WHERE name = 'DeusEx' AND group_type = 'system';
+      SELECT id INTO v_role FROM public.group_roles
+        WHERE group_id = v_deusex AND name = 'DeusEx';
+      INSERT INTO public.group_memberships (group_id, member_group_id, added_by_group_id, status)
+        VALUES (v_deusex, '${personalGroupId}', v_deusex, 'active')
+        ON CONFLICT (group_id, member_group_id) DO UPDATE SET status = 'active';
+      INSERT INTO public.user_group_roles (member_group_id, group_id, group_role_id, assigned_by_group_id)
+        VALUES ('${personalGroupId}', v_deusex, v_role, v_deusex)
+        ON CONFLICT DO NOTHING;
+    END $$;`);
+}
+
+async function demotePlatformAdmin(personalGroupId: string) {
+  await runAdminSql(`
+    DO $$
+    DECLARE v_deusex uuid;
+    BEGIN
+      SELECT id INTO v_deusex FROM public.groups
+        WHERE name = 'DeusEx' AND group_type = 'system';
+      DELETE FROM public.user_group_roles
+        WHERE member_group_id = '${personalGroupId}' AND group_id = v_deusex;
+      DELETE FROM public.group_memberships
+        WHERE group_id = v_deusex AND member_group_id = '${personalGroupId}';
+    END $$;`).catch(() => undefined);
+}
+
 /**
  * FEAT-PD004 (Journeys Cycle J-C) — journey completion detection, timing, and
  * review-read contracts. The milestone is detected server-side inside
@@ -581,8 +616,28 @@ describe('FEAT-PD004 — journey completion, timing & review-read contracts (J-C
       const before = await completionNotifs(eraser.personalGroupId, eraseEnr);
       expect(before.length).toBe(1);
 
-      // The ADR-U031 erasure path deletes the personal group; the row must go with it.
-      await admin.from('groups').delete().eq('id', eraser.personalGroupId);
+      // Labelled adaptation (gate PR #134, post-apply): a bare group-delete cannot
+      // simulate erasure — consent_records.subject_group_id is ON DELETE RESTRICT and
+      // the rows are append-only (enforce_consent_append_only, 42501) outside the
+      // controlled path. So prove the cascade under the REAL ADR-U031 path:
+      // erase_fim_account (DeusEx-called; anonymises consent, then hard-deletes with
+      // cascades) — the personal group goes, and recipient_group_id -> groups
+      // ON DELETE CASCADE must take the notification row with it.
+      const deusex = await createTestUser({ displayName: 'JC Erasure Admin' });
+      try {
+        await makePlatformAdmin(deusex.personalGroupId);
+        const adminCaller = createTestClient();
+        await signInWithRetry(adminCaller, deusex.email, deusex.password);
+        const { data: profile } = await admin
+          .from('users').select('id').eq('auth_user_id', eraser.user.id).single();
+        const { error: eraseErr } = await adminCaller.rpc('erase_fim_account', {
+          p_user_id: profile!.id,
+        });
+        expect(eraseErr).toBeNull();
+      } finally {
+        await demotePlatformAdmin(deusex.personalGroupId);
+        await cleanupTestUser(deusex.user.id).catch(() => undefined);
+      }
       const after = await completionNotifs(eraser.personalGroupId, eraseEnr);
       expect(after.length).toBe(0);
     });
