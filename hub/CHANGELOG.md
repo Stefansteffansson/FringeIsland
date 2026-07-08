@@ -9,6 +9,7 @@ User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is
 - **Completed journeys stay open.** Opening a finished journey gives you *review*: every step readable, your marks and times beside them, nothing recorded just for looking. Optional and repeatable steps still offer their invitation, if you want to go again — finishing is a milestone, not a lock.
 - **Review is a door, not a hunt.** Wherever your enrolments show — the journeys page, a journey's page — finished ones now say *Review* where active ones say *Continue*.
 - **Your milestone is remembered.** Completing a journey writes a durable notification for you — it will surface when the notification centre arrives in a later area.
+- *(Same-day fix from live testing:)* **The "Review your journey" button now always does what it says.** It used to sit clickable-but-dead when you were already at the first step; now it appears only when it has somewhere to take you, and following it brings the step into view.
 
 ## 2026-07-07 — Walk your journeys: the player arrives ([FEAT-H020](../docs/products/hub/features/FEAT-H020-journey-player.md))
 
