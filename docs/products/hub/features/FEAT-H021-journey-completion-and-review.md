@@ -6,7 +6,7 @@ title: Journey completion and review
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -14,26 +14,17 @@ requires-equipment: none
 
 A traveller can walk to the end of a journey (FEAT-H020) and the Hub says nothing: the final required completion looks identical to every other tick, completed journeys render as a bare status panel instead of the lived walk, and the time a traveller gave to each step is recorded (FEAT-PD003 instances) but never shown. JRN-12 needs the completion moment surfaced the instant the platform confirms it; JRN-13 needs review mode — a read posture over the player, not a new surface — so a completed journey remains a place a FIM can return to ("Who am I?" is asked again in review); JRN-11 needs per-step time and total elapsed rendered, own-data-only. The Hub renders what FEAT-PD004 detects — no completion logic lives client-side (ADR-U038).
 
-## Solution sketch
+## Implementation notes
 
-Three layers over the existing player, no new routes, no BFF changes (the additive PD004 payload keys flow through the pass-through routes):
+*(Built Cycle J-C, 2026-07-08, on the FEAT-PD004 contracts. TASK-JC-03/04/05; PR #135 + the close-out PR.)*
 
-- **The completion moment (JRN-12).** The background `complete` save's response now carries `journey_completed`. On `true`, the player transitions to its completed framing: header states the completion, `StepRail` shows the full-tick state, and a **gentle completion panel** appears (canon voice — an arrival, not a jackpot; no confetti mechanics) with the total elapsed and a path into review. The milestone renders **only on server confirm** — never optimistically. The optimistic step-tick itself stays exactly as H020 ships it; a failed save rolls back the tick per the existing rollback/retry and no milestone ever shows. Non-blocking throughout (B5 holds).
-- **Review mode (JRN-13).** A completed walk boots the same player in **review posture**: all steps navigable, content rendered by the same renderer registry, per-step completion marks and times visible, navigation local-only (background `enter` auto-saves are suppressed in review — position saving is meaningless when resume = last, and mere navigation must not open instances on repeatable steps). Per-step affordances stay honest to the substrate: completed non-repeatables render their review posture (H020); incomplete optionals still offer their ask verb; repeatables offer re-engagement — an explicit verb press rides the normal complete path (create-and-complete), which the PD004 guard loosening admits. Review replaces the bare "completed" status panel; `frozen`/`withdrawn` keep the honest panel (J-D owns frozen).
-- **Time display (JRN-11).** The payload's `timing` block renders in review (per-step, on the rail/step header) and in the completion panel (total elapsed + calendar span, labelled distinctly). Steps with no accrued time show an honest em-dash, never zero. Formatting is coarse (minutes-grade; hours:minutes above one hour) — own data only, no comparison against `duration_minutes` estimates framed as judgement.
-- **Entry points.** Wherever an enrolment renders with `status`, `completed` now offers **Review** (deep-link into the player) where `active` offers Continue — the journeys page cards and the detail page's enrolment panel (additive touch, H019 precedent). A via-group traveller whose own walk is complete while the enrolment stays `active` sees Continue until boot, then the player's completion block takes over with the completed framing — the honest divergence is deliberate (the row is the party's, the walk is theirs).
+**Data path (JC-03).** Additive types in `hub/lib/journeys/queries.ts` (`PlayerCompletion`/`PlayerTiming`/`PlayerStepTiming`/`StepCompletionResult`; `completion`/`timing` optional-tolerant on `PlayerState`), re-exported through `player.ts`; `completeStep` returns `StepCompletionResult`. **Zero BFF changes** — the pass-through routes carry the additive keys untouched (verified before build). Session-cache semantics unchanged.
 
-Consuming stories were walked against the PD004 payload at decomposition: the moment ← `journey_completed` flag; review + times ← `completion`/`timing` blocks; entry points ← the shipped `get_my_enrollments.status`.
+**The moment (JC-03).** Server-confirmed only: the background save's response merges `journey_completed` + the completion block into player state; on the transition edge the player renders its completed framing — header, full-tick `StepRail`, and the in-canvas `JourneyCompletionPanel` (canon voice, existing primitives, total elapsed + calendar span labelled as two different things, a path into review) — painted from the response + the in-memory boot timing with **zero additional reads** (the perf test asserts the panel renders while the reconcile read hangs; exactly 2 reads at boot, unchanged). The optimistic step-tick + rollback/retry ship byte-identical from H020; a failed save shows no milestone; non-edge completions change nothing.
 
-## Appetite
+**Review + timing (JC-04).** Review posture is **derived per render** (`completion.traveller_completed` OR enrolment `status='completed'` — no client mode enum): all steps navigable through the unchanged renderer registry, per-step time + completion marks on the rail, the bare completed-status card replaced; `frozen`/`withdrawn`/`paused` keep the honest H020 panel. In review, navigation fires **no background `enter`** (asserted); explicit re-engagement verbs on repeatables/incomplete optionals ride the normal complete path, which the PD004 guard loosening admits. `hub/lib/journeys/timing.ts` owns formatting (coarse: minutes, h:mm ≥ 1 h; em-dash for no accrued time — never a fabricated zero; never re-derived from instances client-side). Entry points: the `/journeys` cards gained the status-conditional Continue/Review pair (cards carried neither under H020 — the detail panel was the only Continue site), and the detail enrolment panel offers Review on own-completed rows only — a via-group traveller whose walk is complete sees Continue until boot, then the player's completion block takes over (the honest divergence the spec names).
 
-Half the J-C cycle (day-scale), after the platform half applies.
-
-## Rabbit holes
-
-- **Celebration design.** One panel, existing primitives, canon voice. No new design-system components, no animation work beyond what exists.
-- **Timing typography.** Coarse formatting, one helper, done. No live-ticking timers anywhere.
-- **Review-vs-walk mode borders.** Don't build a mode machine — review posture is derived per render from the payload (`completion.traveller_completed` / terminal panel states), not stored client state.
+**Red → green.** Red-first per block: Block A 3 suites red (module absences + the completed enrolment rendering the bare non-active card) → green, +17 tests; Block B 6 red (review nav still fired `enter`; no rail times; no card/panel affordances) → green, +15. Unit **578 → 610** (81 → 83 suites), lint 0 errors, `set-state-in-effect` suppressions unchanged at 4 (≤ 5 budget). `next build` green. E2E (`player-completion-review.spec.ts`): the full arc — enrol → walk both required steps → **the milestone renders on server confirm** → full reload → Review entry from the journeys/detail surfaces → review posture (navigation with **no `enter` POST fired**, per-step times visible) → an explicit repeatable re-engagement succeeding — green, with a clean isolated re-run; `player.spec` + `journeys.spec` unchanged green. **The production waterfall (review boot + completion moment) deliberately rides the J-O3 area-gate protocol with Stefan's live walk — pending at 6-done, per the H019/H020 precedent.**
 
 ## No-gos
 
@@ -115,5 +106,5 @@ None beyond the shared contracts — the Gimbal's player will render the same `c
 
 ## Open spec questions
 
-1. **Completion-panel placement.** Default: an in-canvas panel at the top of the completed framing (not a modal — nothing to confirm, nothing blocking). Confirmed at task review before build (pure Hub surface, no gate implication).
-2. **Review suppression of `enter`.** Default: suppress background enters whenever review posture is derived (traveller-complete or enrolment `completed`); explicit verbs still ride the normal paths. Confirmed at task review before build.
+1. **Completion-panel placement.** Default confirmed at task review (2026-07-08, lead): an in-canvas panel at the top of the completed framing (not a modal — nothing to confirm, nothing blocking). Built as confirmed.
+2. **Review suppression of `enter`.** Default confirmed at task review (2026-07-08, lead): suppress background enters whenever review posture is derived (traveller-complete or enrolment `completed`); explicit verbs still ride the normal paths. Built as confirmed.
