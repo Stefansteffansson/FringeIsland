@@ -83,6 +83,10 @@ Order rationale: internal deps force A → B → (C, D) → E; C and D are mutua
 - **J-O4 — all 18 rows build in-area** (JRN-5 + JRN-15 enabled by ADR-U045; J-E is the onboarding arc).
 - **J-O5 — first-ever-cold budget: < 2 s** (Stefan, 2026-07-07). ~1.0 s is the Supabase auth-exchange vendor floor, so the app-controlled share is ≤ ~1.0 s. Recorded in the perf backlog; measured as its own scenario at the area gate. Formalises as an ADR-U043 addendum when that file is next touched.
 
+**New open question — routed post-J-C (Stefan's live walk, 2026-07-08):**
+
+- **J-O6 — step-response capture / review substance.** Review shipped honest but thin, and the root is substrate, not UI: the step grammar's **Ask collects nothing** — a Reflect step shows its prompt and a completion button; the traveller's actual reflection lives nowhere, so review can only re-show journey content plus timestamps. Stefan's product read: review has real value **only** with per-step or whole-journey substance (a summary/conclusion beyond what the rail already shows). Three candidate substance sources, not mutually exclusive: **(a) the traveller's own responses** (the Ask starts capturing — most naturally a payload on the step-instance, the "lived record" ADR-U044 §4 gestures at, or Journal entries linked to instances — the PD001 substrate exists and is private-by-construction); **(b) authored conclusions** (step/journey takeaway payloads rendered in review — DS-4 / Journey Studio content territory); **(c) DS-7 synthesis** (needs (a) first). Touches ADR-U044 forward shape, DS-3/DS-4/DS-7 boundaries, and privacy at its sharpest (responses are the most personal data in the system — invariants 4/8; feeds J-D's consent-gated reads framing, J-E first-experience/CQ-010, and the founding-questions assessment). **Disposition: design session at a boundary (the J-C retro or the pre-J-E slot), not a mid-area bolt-on.** Interim surface posture shipped 2026-07-08: the completion panel is a summary, not a menu (its "Review your journey" button removed — review is the posture the player is already in; prev/next navigates it); a richer review entry returns with this question's resolution.
+
 ## Exit checklist — the Journeys area gate (planted now)
 
 Per-area gate (parent plan): feature DoD + vertical checklists + tests green + **performance gate (ADR-U043):** cold + warm authenticated waterfall on the production stable domain (≥ 3 runs per scenario, every run within budget) **and Stefan's manual live walk — both before the area retro.** The **first-ever-cold < 2 s scenario (J-O5)** is measured alongside.
@@ -95,6 +99,7 @@ Additionally, at the A-JRN gate:
 - MEM-9 untouched (Communication-gate item; not this area's).
 - G-29 reviewed: the DS-6 catalogue-ranking seam recorded; depth>1 unchanged.
 - Boundary bet (J-O3) verified shipped or explicitly re-parked — never silently dropped.
+- **J-O6 (step-response capture / review substance) has a recorded disposition** — design session run, or explicitly re-routed with a named owner — never silently dropped.
 - The ADR-U044 registries verified non-closing (step kinds, families, route types, designation as data — Ferd non-closure); the sealed TS union is gone.
 - Route-policy conformance green over the area's new routes (the PR #111 gate replaces the manual DoD rows).
 

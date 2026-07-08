@@ -261,15 +261,20 @@ test.describe('FEAT-H021 — journey completion & review', () => {
     await expect(page.getByTestId('completion-calendar-span')).toContainText('From start to finish');
 
     // JRN-13: review navigation records nothing. Listen for enter POSTs, then walk
-    // the whole journey via the panel's in-page review path + prev/next.
+    // the whole journey back and forth with prev/next (the panel is a summary, not a
+    // menu — its review-entry button was removed post-6-done; J-O6 routed).
     const enterPosts: string[] = [];
     page.on('request', (req) => {
       if (req.method() === 'POST' && /\/steps\/[0-9a-f-]+\/enter$/.test(req.url())) {
         enterPosts.push(req.url());
       }
     });
-    await page.getByTestId('review-enter').click(); // in-page focus to step 1 (no nav, no enter)
+    await expect(page.getByTestId('review-enter')).toHaveCount(0); // no fake doors
     const reviewCanvas = page.getByTestId('step-canvas');
+    await expect(reviewCanvas).toContainText(STEP3); // boot at resume = last step
+    await page.getByTestId('player-prev').click();
+    await expect(reviewCanvas).toContainText(STEP2);
+    await page.getByTestId('player-prev').click();
     await expect(reviewCanvas).toContainText(STEP1);
     await page.getByTestId('player-next').click();
     await expect(reviewCanvas).toContainText(STEP2);
