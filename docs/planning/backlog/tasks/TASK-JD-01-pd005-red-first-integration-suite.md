@@ -3,8 +3,8 @@
 ---
 id: TASK-JD-01
 title: PD005 red-first integration suite
-status: todo
-assigned_to: Claude (delegated session)
+status: review
+assigned_to: Claude (delegated session; lead-verified)
 priority: high
 feature: FEAT-PD005
 owner: platform/domain/journeys

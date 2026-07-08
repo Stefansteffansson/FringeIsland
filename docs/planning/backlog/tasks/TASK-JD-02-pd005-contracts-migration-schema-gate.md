@@ -3,7 +3,7 @@
 ---
 id: TASK-JD-02
 title: PD005 contracts migration (schema gate)
-status: todo
+status: review
 assigned_to: Claude (lead)
 priority: high
 feature: FEAT-PD005
