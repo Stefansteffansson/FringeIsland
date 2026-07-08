@@ -29,8 +29,8 @@ beforeEach(() => {
 });
 
 describe('SharingToggle — boot state + honest copy', () => {
-  it('boots unchecked from initialSharing:false and names exactly what it shares + revocation', () => {
-    render(<SharingToggle enrollmentId="e1" initialSharing={false} />);
+  it('boots unchecked from sharing:false and names exactly what it shares + revocation', () => {
+    render(<SharingToggle enrollmentId="e1" sharing={false} />);
     expect((screen.getByTestId('sharing-checkbox') as HTMLInputElement).checked).toBe(false);
     const text = screen.getByTestId('sharing-toggle').textContent ?? '';
     expect(text).toMatch(/completion marks/i);
@@ -40,7 +40,17 @@ describe('SharingToggle — boot state + honest copy', () => {
   });
 
   it('boots checked when already sharing', () => {
-    render(<SharingToggle enrollmentId="e1" initialSharing />);
+    render(<SharingToggle enrollmentId="e1" sharing />);
+    expect((screen.getByTestId('sharing-checkbox') as HTMLInputElement).checked).toBe(true);
+  });
+
+  it('follows the truth on re-render when idle — no mount latch (the stale-toggle repro, 2026-07-08)', () => {
+    // Stefan's live walk: the player boots from the session cache and revalidates
+    // in the background; when the fresh read lands, the page re-renders with the
+    // true sharing value — the toggle must follow it, never latch the mount value.
+    const { rerender } = render(<SharingToggle enrollmentId="e1" sharing={false} />);
+    expect((screen.getByTestId('sharing-checkbox') as HTMLInputElement).checked).toBe(false);
+    rerender(<SharingToggle enrollmentId="e1" sharing />);
     expect((screen.getByTestId('sharing-checkbox') as HTMLInputElement).checked).toBe(true);
   });
 });
@@ -48,7 +58,7 @@ describe('SharingToggle — boot state + honest copy', () => {
 describe('SharingToggle — optimistic flip + telemetry', () => {
   it('paints the flip immediately (B5), writes through with (enrollmentId, next), emits telemetry', () => {
     setProgressSharing.mockReturnValue(new Promise(() => {})); // pending -> pre-response paint
-    render(<SharingToggle enrollmentId="e1" initialSharing={false} />);
+    render(<SharingToggle enrollmentId="e1" sharing={false} />);
     fireEvent.click(screen.getByTestId('sharing-checkbox'));
     expect((screen.getByTestId('sharing-checkbox') as HTMLInputElement).checked).toBe(true);
     expect(setProgressSharing).toHaveBeenCalledWith('e1', true);
@@ -59,7 +69,7 @@ describe('SharingToggle — optimistic flip + telemetry', () => {
     setProgressSharing
       .mockRejectedValueOnce(Object.assign(new Error('boom'), { status: 500 }))
       .mockResolvedValueOnce({ enrollment_id: 'e1', sharing: true });
-    render(<SharingToggle enrollmentId="e1" initialSharing={false} />);
+    render(<SharingToggle enrollmentId="e1" sharing={false} />);
     fireEvent.click(screen.getByTestId('sharing-checkbox'));
     await waitFor(() => expect(screen.getByTestId('sharing-error')).toBeTruthy());
     expect((screen.getByTestId('sharing-checkbox') as HTMLInputElement).checked).toBe(false); // rolled back

@@ -390,7 +390,7 @@ function JourneyPlayer() {
           {enrollmentId && player.progress_sharing?.available && !isFrozen && (
             <SharingToggle
               enrollmentId={enrollmentId}
-              initialSharing={player.progress_sharing.sharing}
+              sharing={player.progress_sharing.sharing}
             />
           )}
           <StepRail

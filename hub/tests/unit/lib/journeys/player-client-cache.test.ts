@@ -140,3 +140,46 @@ describe('background-save transports (no cache writes; errors carry HTTP status)
     });
   });
 });
+
+describe('FEAT-H022 sharing write-through — the confirmed flip reaches the cache (the stale-toggle fix)', () => {
+  // Stefan's live walk, 2026-07-08: the toggle re-painted the PRE-flip value on
+  // revisit because setProgressSharing wrote no cache (the "page owns optimistic
+  // progress" doctrine over-applied — sharing is server-confirmed state, not
+  // optimistic progress). The mutation now merges its CONFIRMED response into the
+  // cached entry, the completion-moment precedent (never the optimistic value).
+  const viaGroup = {
+    enrollment_id: 'eV',
+    status: 'active',
+    sequencing_mode: 'linear',
+    journey: { id: 'jV', title: 'V', description: null },
+    steps: [],
+    instances: [],
+    resume_step_id: null,
+    progress_sharing: { available: true, sharing: false },
+  };
+
+  it('setProgressSharing merges the SERVER-CONFIRMED value into the cached state', async () => {
+    fetchMock.mockResolvedValueOnce(okJson({ player: viaGroup }));
+    await player.fetchPlayerState('eV');
+    fetchMock.mockResolvedValueOnce(okJson({ enrollment_id: 'eV', sharing: true }));
+    await player.setProgressSharing('eV', true);
+    const cached = player.peekPlayerState('eV') as typeof viaGroup;
+    expect(cached.progress_sharing).toEqual({ available: true, sharing: true });
+    expect(cached.enrollment_id).toBe('eV'); // the rest of the entry survives the merge
+    expect(cached.journey).toEqual(viaGroup.journey);
+  });
+
+  it('a FAILED sharing write leaves the cache untouched', async () => {
+    fetchMock.mockResolvedValueOnce(okJson({ player: viaGroup }));
+    await player.fetchPlayerState('eV');
+    fetchMock.mockResolvedValueOnce(errJson(422, { error: 'sharing applies to group walks only' }));
+    await expect(player.setProgressSharing('eV', true)).rejects.toMatchObject({ status: 422 });
+    expect((player.peekPlayerState('eV') as typeof viaGroup).progress_sharing.sharing).toBe(false);
+  });
+
+  it('write-through never fabricates a cache entry when none exists', async () => {
+    fetchMock.mockResolvedValueOnce(okJson({ enrollment_id: 'eX', sharing: true }));
+    await player.setProgressSharing('eX', true);
+    expect(player.peekPlayerState('eX')).toBeNull();
+  });
+});

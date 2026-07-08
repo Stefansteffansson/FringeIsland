@@ -6,34 +6,41 @@ import { emitTelemetry } from '@/lib/observability/telemetry';
 
 /**
  * FEAT-H022 STORY-2 (JRN-17, traveller side) — the progress-sharing control on a
- * via-group walk. It boots from the player payload's `progress_sharing` (no extra
- * read), states EXACTLY what sharing exposes (step completion marks only — never
- * times, never anything written) with the revocation fact, and flips
- * OPTIMISTICALLY (B5): the paint is immediate, the write rides the BFF in the
- * background, and a failure rolls the flip back with a non-blocking retry. Every
- * flip emits telemetry. Consent is the traveller's own act (invariant 4).
+ * via-group walk. PROP-DRIVEN, never latched (the stale-toggle fix, 2026-07-08):
+ * the display follows the page's player state — which the boot's background
+ * revalidation keeps true — except while this mount holds a fresher fact (an
+ * optimistic flip in flight, or the last server-confirmed value). It states
+ * EXACTLY what sharing exposes (step completion marks only — never times, never
+ * anything written) with the revocation fact, and flips OPTIMISTICALLY (B5):
+ * paint immediate, write in the background, a failure rolls back to the page's
+ * truth with a non-blocking retry. Every flip emits telemetry. Consent is the
+ * traveller's own act (invariant 4).
  */
 export function SharingToggle({
   enrollmentId,
-  initialSharing,
+  sharing: sharingProp,
 }: {
   enrollmentId: string;
-  initialSharing: boolean;
+  sharing: boolean;
 }) {
-  const [sharing, setSharing] = useState(initialSharing);
+  // null = no local fact — the page's truth renders. Set optimistically on flip,
+  // then to the server-confirmed value; cleared on failure (back to the prop).
+  const [override, setOverride] = useState<boolean | null>(null);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
+  const sharing = override ?? sharingProp;
 
   const flip = async () => {
     const next = !sharing;
-    setSharing(next); // optimistic paint (B5) — ≤ 200 ms, write in the background
+    setOverride(next); // optimistic paint (B5) — ≤ 200 ms, write in the background
     setBusy(true);
     setFailed(false);
     emitTelemetry('player.sharing_flipped', { enrollment: enrollmentId, sharing: next });
     try {
-      await setProgressSharing(enrollmentId, next);
+      const confirmed = await setProgressSharing(enrollmentId, next);
+      setOverride(confirmed.sharing); // last-confirmed wins for this mount
     } catch {
-      setSharing(!next); // roll back to the pre-flip state
+      setOverride(null); // roll back to the page's truth
       setFailed(true);
     } finally {
       setBusy(false);

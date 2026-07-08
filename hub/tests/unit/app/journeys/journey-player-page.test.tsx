@@ -50,8 +50,8 @@ jest.mock('@/components/shell/AppShell', () => ({
 // FEAT-H022: the sharing toggle is exercised in its own suite; here it is a stub
 // that reflects its props, so the page test asserts only WHERE/WHEN it mounts.
 jest.mock('@/components/journeys/SharingToggle', () => ({
-  SharingToggle: (props: { enrollmentId: string; initialSharing: boolean }) => (
-    <div data-testid="sharing-toggle" data-enrollment={props.enrollmentId} data-sharing={String(props.initialSharing)} />
+  SharingToggle: (props: { enrollmentId: string; sharing: boolean }) => (
+    <div data-testid="sharing-toggle" data-enrollment={props.enrollmentId} data-sharing={String(props.sharing)} />
   ),
 }));
 jest.mock('@/lib/observability/telemetry', () => ({ emitTelemetry: jest.fn() }));
