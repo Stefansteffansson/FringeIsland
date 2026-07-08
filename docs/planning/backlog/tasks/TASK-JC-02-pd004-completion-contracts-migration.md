@@ -3,7 +3,7 @@
 ---
 id: TASK-JC-02
 title: PD004 completion & timing contracts migration (schema gate)
-status: review
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PD004

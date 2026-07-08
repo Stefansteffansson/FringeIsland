@@ -113,6 +113,38 @@ export interface PlayerInstance {
   completed_at: string | null;
 }
 
+/**
+ * FEAT-PD004 (JRN-12/13) — the traveller-grain completion block. `traveller_completed`
+ * is derived (matches the detection predicate — true for a via-group traveller even
+ * while the party's row stays active); `enrollment_status`/`enrollment_completed_at`
+ * quote the row grain. The Hub renders this; it never computes completion (ADR-U038).
+ */
+export interface PlayerCompletion {
+  traveller_completed: boolean;
+  traveller_completed_at: string | null;
+  /** Open vocabulary — the enrolment row's status ('active' | 'completed' | ...). */
+  enrollment_status: string;
+  enrollment_completed_at: string | null;
+}
+
+/** FEAT-PD004 (JRN-11) — one step's accrued engagement time, seconds, platform-derived. */
+export interface PlayerStepTiming {
+  step_id: string;
+  seconds: number;
+}
+
+/**
+ * FEAT-PD004 (JRN-11) — the timing block. Time-on-step is the sum of completed
+ * engagements only (open engagements cost nothing); `total_seconds` is the per-step
+ * sum; `wall_clock` is the enrolled→completed calendar span, a DISTINCT number never
+ * conflated with engagement time. Derived server-side; the Hub formats, never re-derives.
+ */
+export interface PlayerTiming {
+  per_step: PlayerStepTiming[];
+  total_seconds: number;
+  wall_clock: { enrolled_at: string; completed_at: string | null };
+}
+
 /** The single-round-trip player boot payload (get_player_state). */
 export interface PlayerState {
   enrollment_id: string;
@@ -125,6 +157,21 @@ export interface PlayerState {
   instances: PlayerInstance[];
   /** Q6 resume: latest open engagement, else first incomplete step, else last step; null iff no steps. */
   resume_step_id: string | null;
+  /** FEAT-PD004 additive (JRN-12/13) — optional so H020 fixtures without it type-check. */
+  completion?: PlayerCompletion;
+  /** FEAT-PD004 additive (JRN-11) — optional for the same reason. */
+  timing?: PlayerTiming;
+}
+
+/**
+ * complete_journey_step's response — the four J-B instance keys plus FEAT-PD004's
+ * additive transition flag (`journey_completed`, true ONLY on the transition edge)
+ * and the completion block, so the Hub's background save learns the milestone
+ * without a refetch (B5-preserving). Additive keys optional against the J-B shape.
+ */
+export interface StepCompletionResult extends PlayerInstance {
+  journey_completed?: boolean;
+  completion?: PlayerCompletion;
 }
 
 export async function fetchJourneyCatalog(supabase: SupabaseClient): Promise<JourneyCard[]> {

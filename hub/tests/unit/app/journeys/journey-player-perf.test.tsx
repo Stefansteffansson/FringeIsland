@@ -1,5 +1,5 @@
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, act, fireEvent, waitFor } from '@testing-library/react';
 import type { PlayerState } from '@/lib/journeys/player';
 
 /**
@@ -22,6 +22,8 @@ let authState: AuthShape;
 const router = { replace: jest.fn(), push: jest.fn() };
 const fetchPlayerState = jest.fn<(id: string) => Promise<PlayerState>>();
 const peekPlayerState = jest.fn<(id: string) => PlayerState | null>();
+const enterStep = jest.fn<(e: string, s: string) => Promise<unknown>>();
+const completeStep = jest.fn<(e: string, s: string) => Promise<unknown>>();
 
 jest.mock('@/lib/auth/AuthContext', () => ({ useAuth: () => authState }));
 jest.mock('next/navigation', () => ({
@@ -36,7 +38,8 @@ jest.mock('@/lib/observability/telemetry', () => ({ emitTelemetry: jest.fn() }))
 jest.mock('@/lib/journeys/player', () => ({
   fetchPlayerState: (id: string) => fetchPlayerState(id),
   peekPlayerState: (id: string) => peekPlayerState(id),
-  enterStep: jest.fn(),
+  enterStep: (e: string, s: string) => enterStep(e, s),
+  completeStep: (e: string, s: string) => completeStep(e, s),
 }));
 jest.mock('@/lib/journeys/client', () => ({
   peekJourneyCatalog: () => null,
@@ -102,5 +105,61 @@ describe('FEAT-H020 — the B6 loading rule (deferred player skeleton, never spi
     const sk = screen.getByTestId('player-skeleton');
     expect(sk.querySelectorAll('.animate-pulse').length).toBeGreaterThan(0);
     expect(sk.querySelector('[data-testid="loading-state"]')).toBeNull();
+  });
+});
+
+describe('FEAT-H021 STORY-5 — review + completion ride the player budgets (ADR-U043)', () => {
+  const TIMING = {
+    per_step: [{ step_id: 's1', seconds: 600 }],
+    total_seconds: 600,
+    wall_clock: { enrolled_at: '2026-07-06T09:00:00+00:00', completed_at: '2026-07-08T10:00:00+00:00' },
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    authState = { user: { id: 'u1' }, identity: 'fim', loading: false };
+    peekPlayerState.mockReturnValue(null);
+  });
+
+  it('a review-mode boot is the SAME single player-state read (no extra request for timing/completion)', async () => {
+    fetchPlayerState.mockResolvedValue({
+      ...STATE,
+      status: 'completed',
+      timing: TIMING,
+      completion: { traveller_completed: true, traveller_completed_at: 't', enrollment_status: 'completed', enrollment_completed_at: 't' },
+    });
+    render(<JourneyPlayerPage />);
+    await act(async () => {});
+    expect(fetchPlayerState).toHaveBeenCalledTimes(1);
+    expect(fetchPlayerState).toHaveBeenCalledWith('e1');
+  });
+
+  it('the completion moment paints from the completing save response — no player-state read of its own (B5)', async () => {
+    const stepped: PlayerState = {
+      ...STATE,
+      steps: [
+        { id: 's1', step_order: 1, title: 'Orient', kind: 'content', family: 'text', ask_verb: 'Read', required: true, repeatable: false, duration_minutes: 10, content: { body: 'Welcome' } },
+        { id: 's2', step_order: 2, title: 'Reflect', kind: 'reflection', family: 'prompt', ask_verb: 'Reflect', required: false, repeatable: false, duration_minutes: 15, content: { body: 'Consider' } },
+      ],
+      instances: [{ instance_id: 'i1', step_id: 's1', created_at: 't', completed_at: 't' }],
+      resume_step_id: 's2',
+      timing: TIMING,
+    };
+    fetchPlayerState.mockResolvedValueOnce(stepped); // boot read
+    fetchPlayerState.mockReturnValue(new Promise(() => {})); // the reconcile read hangs — the moment must not need it
+    completeStep.mockResolvedValue({
+      instance_id: 'c', step_id: 's2', created_at: 't', completed_at: 't',
+      journey_completed: true,
+      completion: { traveller_completed: true, traveller_completed_at: 't', enrollment_status: 'completed', enrollment_completed_at: 't' },
+    });
+    render(<JourneyPlayerPage />);
+    await act(async () => {});
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('step-complete'));
+    });
+    // The milestone painted from the save response while the reconcile read is still in flight...
+    await waitFor(() => expect(screen.getByTestId('journey-completion-panel')).toBeTruthy());
+    // ...and only the boot + the (hanging) reconcile reads fired — the moment added none.
+    expect(fetchPlayerState).toHaveBeenCalledTimes(2);
   });
 });

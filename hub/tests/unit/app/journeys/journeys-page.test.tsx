@@ -122,3 +122,33 @@ describe('FEAT-H019 — /journeys catalogue page (STORY-1)', () => {
     await waitFor(() => expect(screen.getByText(/mythic/i)).toBeTruthy());
   });
 });
+
+describe('FEAT-H021 STORY-4 — Review where active offers Continue, on the cards', () => {
+  it('offers Continue on an active enrolment and Review on a completed one — each deep-linked', async () => {
+    fetchJourneyCatalog.mockResolvedValue([CARD({ id: 'j1' }), CARD({ id: 'j2', title: 'Second' })]);
+    fetchMyJourneyEnrollments.mockResolvedValue([
+      { enrollment_id: 'e1', kind: 'individual', journey_id: 'j1', journey_title: 'Leadership Fundamentals', status: 'active', last_accessed_at: null },
+      { enrollment_id: 'e2', kind: 'individual', journey_id: 'j2', journey_title: 'Second', status: 'completed', last_accessed_at: null },
+    ]);
+    render(<JourneysPage />);
+    await waitFor(() => expect(screen.getByTestId('journeys-list')).toBeTruthy());
+    const cont = screen.getByTestId('journey-card-j1').querySelector('[data-testid="card-continue"]');
+    expect(cont?.getAttribute('href')).toBe('/journeys/j1/play?enrollment=e1');
+    const review = screen.getByTestId('journey-card-j2').querySelector('[data-testid="card-review"]');
+    expect(review?.getAttribute('href')).toBe('/journeys/j2/play?enrollment=e2');
+    // The affordance swaps on status — never both on one enrolment.
+    expect(screen.getByTestId('journey-card-j1').querySelector('[data-testid="card-review"]')).toBeNull();
+    expect(screen.getByTestId('journey-card-j2').querySelector('[data-testid="card-continue"]')).toBeNull();
+  });
+
+  it('offers neither Continue nor Review on a withdrawn enrolment (re-enrolment stays the only door)', async () => {
+    fetchJourneyCatalog.mockResolvedValue([CARD({ id: 'j1' })]);
+    fetchMyJourneyEnrollments.mockResolvedValue([
+      { enrollment_id: 'e1', kind: 'individual', journey_id: 'j1', journey_title: 'Leadership Fundamentals', status: 'withdrawn', last_accessed_at: null },
+    ]);
+    render(<JourneysPage />);
+    await waitFor(() => expect(screen.getByTestId('journeys-list')).toBeTruthy());
+    expect(screen.getByTestId('journey-card-j1').querySelector('[data-testid="card-continue"]')).toBeNull();
+    expect(screen.getByTestId('journey-card-j1').querySelector('[data-testid="card-review"]')).toBeNull();
+  });
+});
