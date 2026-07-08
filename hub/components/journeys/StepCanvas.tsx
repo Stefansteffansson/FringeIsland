@@ -22,6 +22,11 @@ import { getStepRenderer } from './step-renderers';
  * The affordance always carries the step's own `ask_verb` from the payload — never
  * a hardcoded verb map. The parent keys this component by `step.id`, so the
  * transient optimistic/retry state resets naturally on navigation.
+ *
+ * FEAT-H022 STORY-1 — `readOnly` (frozen posture) suppresses EVERY completion
+ * affordance: no verb button, no repeat, no lock (a frozen walk gates nothing —
+ * it is simply readable). A completed step still shows its mark; content always
+ * stays visible. This is stronger than review posture, which keeps the affordances.
  */
 const LOCK_FALLBACK = 'A required step must be completed first.';
 
@@ -30,12 +35,14 @@ export function StepCanvas({
   completed = false,
   locked = false,
   lockReason = null,
+  readOnly = false,
   onComplete,
 }: {
   step: PlayerStep;
   completed?: boolean;
   locked?: boolean;
   lockReason?: string | null;
+  readOnly?: boolean;
   onComplete?: () => Promise<void>;
 }) {
   const [optimistic, setOptimistic] = useState(false);
@@ -47,7 +54,7 @@ export function StepCanvas({
   // not during render (react-hooks/static-components).
   const renderKind = getStepRenderer(step.kind);
   const isCompleted = completed || optimistic;
-  const showLocked = locked || raced;
+  const showLocked = !readOnly && (locked || raced);
   const verb = step.ask_verb || 'Complete';
 
   async function handleComplete() {
@@ -85,7 +92,17 @@ export function StepCanvas({
       <div className="mt-4">{renderKind({ step })}</div>
 
       <div className="mt-6">
-        {isCompleted && !step.repeatable ? (
+        {readOnly ? (
+          isCompleted ? (
+            <p
+              data-testid="step-completed"
+              className="inline-flex items-center gap-2 text-sm font-medium text-green-700"
+            >
+              <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-full bg-green-500" />
+              Completed
+            </p>
+          ) : null
+        ) : isCompleted && !step.repeatable ? (
           <p
             data-testid="step-completed"
             className="inline-flex items-center gap-2 text-sm font-medium text-green-700"

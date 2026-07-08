@@ -99,6 +99,17 @@ export function JourneyEnrollmentPanel({
               Review
             </Link>
           )}
+          {/* FEAT-H022 STORY-1: a frozen walk opens View — the read-only door where an
+              active one offers Continue. Continue/Review never render on frozen. */}
+          {own?.status === 'frozen' && (
+            <Link
+              href={`/journeys/${journey.id}/play?enrollment=${own.enrollment_id}`}
+              data-testid="view-individual"
+              className="ml-3 text-xs font-medium text-blue-600 hover:underline"
+            >
+              View
+            </Link>
+          )}
           {ownFrozen ? (
             <p data-testid="frozen-state" className="mt-2 text-xs text-gray-500">
               This enrolment is held for review and cannot be changed here.
@@ -157,6 +168,19 @@ export function JourneyEnrollmentPanel({
               Withdraw {g.group_name}
             </button>
           ))}
+          {/* FEAT-H022 STORY-1: each frozen via-group walk opens View (read-only). */}
+          {frozenVia
+            .filter((v): v is Required<JourneyEnrolledVia> => Boolean(v.enrollment_id))
+            .map((v) => (
+              <Link
+                key={v.enrollment_id}
+                href={`/journeys/${journey.id}/play?enrollment=${v.enrollment_id}`}
+                data-testid="view-via"
+                className="mt-1 mr-3 inline-block text-xs font-medium text-blue-600 hover:underline"
+              >
+                View {v.group_name}
+              </Link>
+            ))}
           {frozenVia.length > 0 && (
             <p data-testid="frozen-state" className="mt-2 text-xs text-gray-500">
               {frozenVia.map((g) => g.group_name).join(', ')}: held for review — no changes here.

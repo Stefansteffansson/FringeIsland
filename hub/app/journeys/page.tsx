@@ -135,34 +135,40 @@ export default function JourneysPage() {
                   ))}
                 </p>
               )}
-              {/* FEAT-H021 STORY-4: the affordance swaps on the enrolment's own status —
-                  'completed' opens Review, 'active' Continue, 'withdrawn' neither. The
+              {/* FEAT-H021 STORY-4 + FEAT-H022 STORY-1: the affordance swaps on the
+                  enrolment's own status — 'completed' opens Review, 'frozen' opens View
+                  (the read-only door), 'active' Continue, 'withdrawn' neither. The
                   deep-link preserves ?enrollment= for the dual-enrolment case. */}
               {(mine ?? [])
                 .filter(
-                  (e) => e.journey_id === j.id && (e.status === 'active' || e.status === 'completed'),
+                  (e) =>
+                    e.journey_id === j.id &&
+                    (e.status === 'active' || e.status === 'completed' || e.status === 'frozen'),
                 )
-                .map((e) =>
-                  e.status === 'completed' ? (
+                .map((e) => {
+                  const suffix =
+                    e.kind === 'via_group' && e.group_name ? ` (${e.group_name})` : '';
+                  const href = `/journeys/${j.id}/play?enrollment=${e.enrollment_id}`;
+                  const label =
+                    e.status === 'completed' ? 'Review' : e.status === 'frozen' ? 'View' : 'Continue';
+                  const testId =
+                    e.status === 'completed'
+                      ? 'card-review'
+                      : e.status === 'frozen'
+                        ? 'card-view'
+                        : 'card-continue';
+                  return (
                     <Link
                       key={e.enrollment_id}
-                      href={`/journeys/${j.id}/play?enrollment=${e.enrollment_id}`}
-                      data-testid="card-review"
+                      href={href}
+                      data-testid={testId}
                       className="mt-4 mr-3 inline-block text-xs font-medium text-blue-600 hover:underline"
                     >
-                      Review{e.kind === 'via_group' && e.group_name ? ` (${e.group_name})` : ''}
+                      {label}
+                      {suffix}
                     </Link>
-                  ) : (
-                    <Link
-                      key={e.enrollment_id}
-                      href={`/journeys/${j.id}/play?enrollment=${e.enrollment_id}`}
-                      data-testid="card-continue"
-                      className="mt-4 mr-3 inline-block text-xs font-medium text-blue-600 hover:underline"
-                    >
-                      Continue{e.kind === 'via_group' && e.group_name ? ` (${e.group_name})` : ''}
-                    </Link>
-                  ),
-                )}
+                  );
+                })}
             </li>
           ))}
         </ul>
