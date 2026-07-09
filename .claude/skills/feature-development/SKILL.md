@@ -85,6 +85,11 @@ Every acceptance criterion ends with at least one passing test that was **first 
 - New tables MUST have RLS policies
 - API changes MUST be documented
 - Schema changes require human approval (set task to `review`, not `done`)
+- A schema-gate PR that changes shipped semantics **budgets sibling-suite adaptation as in-scope work**, recorded as labelled adaptations — never silent weakening (bound at J-B)
+
+**Suite-authoring rules (bound by cycle retros):**
+- **Erasure proofs use the house erasure functions first** (`erase_fim_account`, DeusEx-called) — never bare-delete simulations against append-only substrates; a refusal from a consent trigger is the substrate succeeding, not the test failing (J-C)
+- **E2E asserts the observable effect, never just the interaction** — a click without its asserted consequence is not coverage (J-C)
 
 ### Step 5: Update status
 
@@ -106,7 +111,9 @@ After all tasks for a story are done:
 - **Performance DoD (required before `6-done` for surface halves, ADR-U043)**:
   - the feature spec's **Performance budget** section is filled — budget class + data-boot path; a page that gates first paint on fetches joins the overview bundle or a session cache per ADR-U042, or justifies its standalone read;
   - a test asserts the first-paint request behaviour for new pages (call count ≤ the spec's stated N, zero duplicate fetches across auth-event churn) and the loading-state rule (B6);
-  - in-repo prior art (overview bundle slices, session caches, `OverviewBoot`, skeletons) was checked before adding new fetch plumbing.
+  - in-repo prior art (overview bundle slices, session caches, `OverviewBoot`, skeletons) was checked before adding new fetch plumbing;
+  - every recorded **cold** number states its idle depth — a cold-scenario measurement requires ≥ 20 minutes of enforced zero traffic on production with the keep-warm pinger paused; fresh-deploy and active-day samples are *shallow-cold*, a separately-labelled class that satisfies no cold scenario (ADR-U043 Amendment 1);
+  - a cycle that adds or reroutes a request on a user-facing first paint runs **one deep-cold spot measurement** of the touched page before `6-done` (one scenario, one page — the area gate remains the full pass).
 - In the **same commit** as the maturity change, update the feature-inventory summary row in the parent entity's `SPECIFICATION.md` (§L4) to reflect `6-done`. Per the `ecosystem-decomposition` skill L4 write scope, this is L4's property; `feature-development` is the operational layer carrying the update out. The `doc-health-check` skill §8 verifies the summary matches the actual state of `features/` at cycle boundaries — miss this step and the check will flag drift.
 - Update the `features/README.md` index
 - Update `CHANGELOG.md` if the change is user-visible
@@ -115,6 +122,8 @@ After all tasks for a story are done:
 
 - Ensure all code is committed with conventional commits: `feat(hub): ...` or `feat(platform): ...`
 - Tasks stay in `tasks/` until the cycle retrospective — do NOT delete them
+- **Plain-English walkthrough at cycle close** (bound at J-B, twice-proven): before (or with) the session bridge, write a short "what did we build, as a user would tell it" narrative and walk it against the shipped behaviour — explicitly asking the continuity/lifecycle questions the test tiers don't
+- **Stacked PRs: retarget the child PR's base before deleting the merged parent branch** (bound at J-A)
 
 ## Boundaries
 
@@ -126,6 +135,7 @@ After all tasks for a story are done:
 - Respect the No-gos section — these are explicit exclusions
 - Run lint and type-check before committing
 - Update CHANGELOG.md for user-visible changes
+- Walk dependency-upgrade PRs through the feature gates (lint + `next build` at minimum) before merge (bound at J-A)
 
 ### Ask first
 - A freshly-written test that passes when it should fail (green-at-red) — stop and surface the anomaly before writing implementation
