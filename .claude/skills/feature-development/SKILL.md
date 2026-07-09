@@ -85,6 +85,11 @@ Every acceptance criterion ends with at least one passing test that was **first 
 - New tables MUST have RLS policies
 - API changes MUST be documented
 - Schema changes require human approval (set task to `review`, not `done`)
+- A schema-gate PR that changes shipped semantics **budgets sibling-suite adaptation as in-scope work**, recorded as labelled adaptations — never silent weakening (bound at J-B)
+
+**Suite-authoring rules (bound by cycle retros):**
+- **Erasure proofs use the house erasure functions first** (`erase_fim_account`, DeusEx-called) — never bare-delete simulations against append-only substrates; a refusal from a consent trigger is the substrate succeeding, not the test failing (J-C)
+- **E2E asserts the observable effect, never just the interaction** — a click without its asserted consequence is not coverage (J-C)
 
 ### Step 5: Update status
 
@@ -117,6 +122,8 @@ After all tasks for a story are done:
 
 - Ensure all code is committed with conventional commits: `feat(hub): ...` or `feat(platform): ...`
 - Tasks stay in `tasks/` until the cycle retrospective — do NOT delete them
+- **Plain-English walkthrough at cycle close** (bound at J-B, twice-proven): before (or with) the session bridge, write a short "what did we build, as a user would tell it" narrative and walk it against the shipped behaviour — explicitly asking the continuity/lifecycle questions the test tiers don't
+- **Stacked PRs: retarget the child PR's base before deleting the merged parent branch** (bound at J-A)
 
 ## Boundaries
 
@@ -128,6 +135,7 @@ After all tasks for a story are done:
 - Respect the No-gos section — these are explicit exclusions
 - Run lint and type-check before committing
 - Update CHANGELOG.md for user-visible changes
+- Walk dependency-upgrade PRs through the feature gates (lint + `next build` at minimum) before merge (bound at J-A)
 
 ### Ask first
 - A freshly-written test that passes when it should fail (green-at-red) — stop and surface the anomaly before writing implementation

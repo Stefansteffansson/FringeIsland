@@ -379,6 +379,13 @@ At maturity 6-done: Implementation notes section replaces Solution sketch / Appe
 
 The YAML `wave:` tag is populated by wave-planning work, not by L4. L4 may leave the tag empty, placeholder, or set only when wave-planning has decided the wave.
 
+### Decomposition verification walks (paired specs)
+
+Bound by cycle retros (J-A n=1 → J-D n=3; structural catches at J-C and J-D):
+
+- **The payload walk.** When a platform contract spec is written ahead of its surface consumer, the decomposition session walks the consuming stories against the proposed payload shape before either spec is declared `4-ready`: every field a story renders or mutates traces to a named key in the proposed payload, and every proposed key to a consumer. Misses found at build are decomposition faults, not build riders (the `get_journey_detail` lesson; the J-D `enrollment_id` rider).
+- **Concurrency ACs get a topology check.** An acceptance criterion describing a race is checked against the ordering the substrate already imposes — if that ordering makes the described shape impossible (e.g. linear gating totally orders required steps), rewrite the AC to the race that can actually exist (J-C: "two racing last required steps" → two racing completes of the same final step).
+
 ### When L4 runs
 
 - A fresh L3 derivation has landed for an entity — full feature-spec layer is written from scratch. **All pre-refactor FEAT-*.md files for that entity are deleted** as part of the same commit that lands the new specs (per Resolution A / (a) — see "Reconciliation is a separate activity" below). Git history preserves the originals. The feature-inventory summary in SPECIFICATION.md is replaced wholesale to reflect the new spec set.
