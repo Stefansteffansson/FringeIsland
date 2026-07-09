@@ -74,3 +74,18 @@ Enforcement homes: the feature-spec **Performance budget** section (template + A
 - Vetting: [`docs/research/Performance_Budget_Research_Report.md`](../../research/Performance_Budget_Research_Report.md) (Core Web Vitals, RAIL, Nielsen, MDN, Catchpoint SaaS benchmarks — external sources cited there)
 - Related ADRs: [ADR-U035](ADR-U035-compute-datastore-colocation.md) (co-location), [ADR-U036](ADR-U036-edge-runtime-hot-read-routes.md) (runtime/region), [ADR-U037](ADR-U037-local-jwt-verification-hot-path.md) (auth verbs + measure-the-real-path), [ADR-U042](ADR-U042-first-paint-bootstrap-read-bff-bundle.md) (bootstrap bundle — the B1–B4 delivery pattern)
 - Origin: [`retro-2026-07-06.md`](../../planning/retrospectives/retro-2026-07-06.md) §4; [`2026-07-06-groups-first-load-perf.md`](../../planning/hub-v2/2026-07-06-groups-first-load-perf.md) §5.3
+
+## Amendment 1 — cold operationalized, tail rule, per-cycle spot check
+
+**Status:** Accepted
+**Date:** 2026-07-09
+
+The 2026-07-09 cold-load regression analysis ([`2026-07-09-cold-load-regression-analysis.md`](../../planning/hub-v2/2026-07-09-cold-load-regression-analysis.md)) exposed a measurement gap: the protocol required "cold + warm scenarios" without defining cold. The J-A area waterfall (2026-07-07) passed its cold scenario on samples taken ~30 minutes after deploy during an active session (~1.4 s); a timer-enforced 22.5-minute-idle pass on the same route measured **4 690 ms TTFB with 614 ms in-function** — a shallow-cold false pass. Deep-cold measured 3–5 s in every ≥15-minute-idle sample on record.
+
+Three protocol changes:
+
+1. **Cold is defined.** A cold-scenario run requires **≥ 20 minutes of zero traffic** on the production deployment (timer-enforced; the Hub's own pages and API both count as traffic, and the keep-warm pinger must be paused for the window). Every recorded cold number states its idle depth. Fresh-deploy and active-day samples are *shallow-cold* — reportable as their own labelled class, but they do not satisfy B1/B2 cold scenarios.
+2. **Tail rule.** Cold costs are bimodal under concurrent fan-out (one request rides the fresh instance; another can draw a second multi-second boot — measured 4 162 ms vs 423 ms fired concurrently). In addition to "every run within budget": **no single request in any cold run may exceed 2× its scenario budget.** A tail draw is a failure, not noise.
+3. **Per-cycle spot check.** Any cycle that adds or reroutes a request on a user-facing first paint runs **one deep-cold spot measurement** of the touched page before `6-done` (one scenario, one page — not the full gate; the area gate remains the full pass). This closes the window where an area ships user-visible for days before its gate.
+
+Enforcement-home updates required (tracked, separate nods where carved out): the `feature-development` skill's Performance DoD rows gain the idle-depth + spot-check lines; the hub-v2 per-area gate checklist gains the tail rule.
