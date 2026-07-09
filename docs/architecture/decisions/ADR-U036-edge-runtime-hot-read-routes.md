@@ -93,3 +93,16 @@ Applying the **runtime policy** above (hot reads on the render path → Edge/`du
 - **POST** (FEAT-PC007 grant/withdraw) shares the route file (runtime is per-file), so it moves too. This does **not** contradict "mutations stay on Node" — that rule is for **Node-dependent** mutations (e.g. `/api/account/export`'s document assembly); the consent POST is a single edge-safe SECURITY DEFINER RPC with no Node dependency, and it stays co-located via the `dub1` pin.
 
 This is an *application* of the accepted policy, not a new decision — no status change. Route list is now four: `account/state`, `profile/me`, `groups`, `account/consent`.
+
+## Addendum — cold-provisioning finding: premise revised, decision stands
+
+**Status:** Accepted
+**Date:** 2026-07-09
+
+Vercel deprecated standalone Edge Functions (June 2025); Edge-runtime functions now run on the unified Vercel Functions infrastructure alongside Node/Fluid, and Vercel's docs recommend migrating edge → Node.js. A measured runtime A/B (PR #148 probe twins + `x-proxy-timing`; [`2026-07-09-cold-load-regression-analysis.md`](../../planning/hub-v2/2026-07-09-cold-load-regression-analysis.md) §6) established:
+
+1. This ADR's "V8 isolate ~0 ms cold start" premise no longer holds: after ≥20 minutes of zero traffic the first request wave pays a **2.5–4.7 s environment-provisioning cost, regardless of runtime** (Edge 4 592 ms / Node 2 519 ms deep-cold, the spread being lottery variance; identical ~2.2 s shallow-cold).
+2. Once the environment is provisioned, **new instances of either runtime spin up in ~34 ms** — warm behavior is unchanged and Edge remains marginally faster in-function (54–62 ms vs 115 ms).
+3. The cold gap is closed **operationally**, not by runtime choice: the keep-warm pinger (`.github/workflows/keep-warm.yml`) holds the environment provisioned; validated live — an unauthenticated ping provisions the heavy path itself, and authenticated requests after it land ~1.2 s worst-case instead of 4–7 s.
+
+**Decision consequence:** the Edge choice for hot reads **stands** — there is no performance reason to migrate. The eventual edge→Node migration is a strategic vendor-alignment item on Vercel's deprecation clock, to be scheduled as its own decision when that clock forces it. The temporary probe twins (`/api/perf/probe-edge`, `/api/perf/probe-node`) remain as instrumented canaries until removed (target: ~2 weeks, together with their `NODE_GETS_REVIEWED` entry).
