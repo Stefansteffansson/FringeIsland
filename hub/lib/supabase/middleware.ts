@@ -1,7 +1,16 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// PERF-PROBE (2026-07-09 cold-load analysis): per-instance markers so the
+// `x-proxy-timing` header below can attribute cold latency — a fresh boot
+// resets both, so `n: 1` plus a small `age` marks the request that paid the
+// middleware cold start. Numbers only (observability §7).
+const bootedAt = Date.now()
+let invocationN = 0
+
 export async function updateSession(request: NextRequest) {
+  const probeT0 = performance.now()
+  const probeN = ++invocationN
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -39,6 +48,17 @@ export async function updateSession(request: NextRequest) {
     // Logged, not swallowed silently.
     console.error('proxy updateSession failed', err)
   }
+
+  // Set AFTER getClaims so the header survives the setAll() response swap
+  // above, and covers the full middleware duration.
+  supabaseResponse.headers.set(
+    'x-proxy-timing',
+    JSON.stringify({
+      n: probeN,
+      ms: Math.round(performance.now() - probeT0),
+      age: Date.now() - bootedAt,
+    })
+  )
 
   return supabaseResponse
 }
