@@ -36,6 +36,7 @@ const PRE_AUTH_MUTATIONS = new Set([
 ]);
 const NODE_GETS_REVIEWED = new Set([
   'account/export', // Node-dependent document assembly; click-triggered, not render-blocking (ADR-U036)
+  'perf/probe-node', // PERF-PROBE: deliberately-Node half of the cold-boot A/B (2026-07-09 analysis L1); temporary — remove with the twins at the ADR-U036 revisit close-out
 ]);
 
 const MUTATING = ['POST', 'PATCH', 'PUT', 'DELETE'];

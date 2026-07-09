@@ -1,0 +1,79 @@
+# Cold-load regression analysis — 2026-07-09
+
+**Status:** diagnosis complete; no fixes applied (analysis-only session, per Stefan's ask).
+**Symptoms (Stefan, 2026-07-09):** (1) cold sign-in → `/groups` extremely slow again; (2) `/journeys` paints its frame fast but the journey boxes sit empty for a long time; (3) `/journal` shows a spinner (shorter, but visible). Hot loads are all fast.
+**Method:** ADR-U043 protocol — production stable domain (`fringe-island.vercel.app`), authenticated real path, cold + warm; cold defined here as **22.5 minutes of zero traffic** (timer-enforced). Per-slice decomposition via the `x-overview-timing` header (PR #123).
+
+---
+
+## 1. Measured evidence
+
+### Warm (all healthy — the 07-06/07-07 fixes hold)
+
+| Page (hard load) | API calls fired | TTFBs | Notes |
+|---|---|---|---|
+| `/groups` | `GET /api/me/overview` ×1 only | 280–779 ms | ADR-U042 bundle intact; single-fire holds |
+| `/journeys` | `profile/me`, `account/state`, `journeys`, `me/journeys` | 268–372 ms | standalone fan-out (not a boot path) |
+| `/journal` | `profile/me`, `account/state`, `journal` | 257–341 ms | standalone fan-out |
+
+Warm in-function bundle cost: **113 ms** (auth 4 ms, slowest slice 109 ms). Client↔edge network constant ~167 ms. Bimodal nothing — warm is uniformly within budget (B3).
+
+### Cold (22.5 min idle, scripted sequential pass, Stefan-session cookies)
+
+| Request (in order) | Browser TTFB | In-function | Outside-function |
+|---|---|---|---|
+| `/api/me/overview` (first request) | **4 690 ms** | **614 ms** (auth 118; slices 460–495 concurrent) | **~3.9 s** |
+| `/api/journeys` ∥ `/api/me/journeys` | **4 162 ms** ∥ 423 ms | — | one request drew a **second ~4 s boot**; its concurrent sibling rode warm |
+| `/api/journal` (after the above) | 336 ms | — | rode warm |
+| Warm repeats (all four) | 159–280 ms | 113 ms | ~167 ms |
+
+Corroborating uncontrolled sample (same morning, first `/journeys` hard load of the session): `account/state` **4 783 ms** while its three concurrent siblings did 638–696 ms — same bimodal signature.
+
+## 2. Root causes
+
+**RC-A — The cold boot is ~4 s and lives OUTSIDE the function; ADR-U036's Edge premise does not hold under real idle.**
+Cold overview: TTFB 4 690 ms, in-function 614 ms → ~3.9 s is isolate/instance provisioning before the function's first line. ADR-U036 was premised on "V8 isolate ~0 ms cold start"; the 07-06 investigation already flagged (and left unexamined) *"what infrastructure the deprecated `edge` runtime actually runs on now."* That question is now load-bearing: today's boot cost is lambda-class, not isolate-class. Note the inversion: the measured **Node** cold start (2026-06-30, pre-Fluid) was 740–790 ms — **5× cheaper than today's Edge cold boot**. Timeline note: Fluid compute was enabled 2026-07-06; whether it changed Edge-route hosting behavior is part of the same vendor question.
+**Related earlier evidence, reinterpreted:** the 07-06 Phase-3.5 "boot is innocent" finding (401 probes: 153–187 ms) measured the unauthenticated fast path only; the 07-06 *authenticated* cold waterfalls (3.1–4.7 s ×5 routes, 15 min idle) and today's pass agree with each other. Deep-cold has *always* been 3–5 s; it was the shallow-cold samples that said otherwise (see RC-E).
+
+**RC-B — Concurrent fan-out multiplies the boot lottery.**
+Evidence is bimodal in every cold sample: of N concurrent cold requests, some ride a just-booted warm instance (0.3–0.7 s), others trigger an additional ~4–5 s boot (`journeys` 4 162 vs `me/journeys` 423, fired together; `account/state` 4 783 vs three siblings ~0.7 s). Best-fit model (hypothesis, not verified vendor fact): the Edge routes share deployment infrastructure; the first request boots one instance, and concurrency above its capacity spawns additional cold instances. Consequence: **every extra first-paint request is another ticket in a 4-second lottery.**
+
+**RC-C — The new pages reintroduced the fan-out that ADR-U042 killed on boot paths.**
+`OverviewBoot` arms only on `/`, `/login`, `/groups` (`hub/components/shell/OverviewBoot.tsx:12`). A hard load of `/journeys` fires **4** standalone cold requests; `/journal` fires **3**; an SPA navigation to `/journeys` fires 2. The journeys client documents its exemption deliberately (`hub/lib/journeys/client.ts` header: "navigation targets, not first-paint-at-landing — no overview-bundle slice"). The client-side patterns are all conformant (stable-key effect, shared in-flight, session caches, SkeletonGrid) — the cost is structural, not a code bug. The "empty boxes" are `SkeletonGrid` correctly waiting out a 4 s cold TTFB (B6 makes >3 s a defect regardless of skeleton).
+
+**RC-D — Journal predates the rules and was never retrofitted.**
+`hub/lib/journal/client.ts` has **no session cache** (every visit refetches → spinner on every revisit — a B4 violation by construction) and the page uses `LoadingState` (spinner), not a skeleton (B6). Built 2026-07-03; ADR-U043 landed 07-07; no retrofit sweep exists.
+
+**RC-E — Why the captured rules didn't prevent this (the process finding).**
+1. **"Cold" was never operationalized.** ADR-U043 mandates cold+warm but doesn't define minimum idle. The J-A gate's cold samples (07-07: bundle 1 374 ms, slices 233–446 ms) were taken ~30 min after deploy during an active session — shallow-cold. Every deep-cold sample on record (≥15 min idle: 07-06 and today) is 3–5 s. The gate *passed* on numbers that don't represent Stefan's morning.
+2. **The area perf gate (J-O3) runs after J-E** — J-A..J-D shipped user-visible for two days before any gate measurement was due. The per-cycle "ADR-U043 Performance rows" in DoD verify code patterns, not measured budgets.
+3. **A flagged vendor premise had no owner.** The "what does `edge` run on now" question was recorded 07-06 as needing "one confirming look" and never landed anywhere (no ADR addendum, no task).
+4. **No retrofit rule** for surfaces built before a budget ADR (Journal).
+
+**Ruled out (again):** DB/RLS (warm slices 48–109 ms, cold-with-connection 460–495 ms in-function); region (pin held all session); route code; the 07-06 fixes regressing — bundle single-fires, caches hold, audit is fire-and-forget (`hub/app/login/page.tsx:42`).
+
+## 3. Reconstruction of the three symptoms
+
+| Symptom | Reconstruction |
+|---|---|
+| Cold sign-in → `/groups` "extremely slow" | token exchange ~1.0 s (vendor floor) + hydrate ~0.9 s + **overview cold 4.7 s** (overlaps redirect) ≈ **5–6 s felt** — vs 2.4 s verified 07-06, whose cold overview sample happened to be 1.4 s (shallow-cold). B1 ceiling 2.5 s: **failed at deep-cold**. |
+| `/journeys` empty boxes | frame paints at ~0.5 s (hydration); `SkeletonGrid` then waits on 2 cold requests, one of which can draw a 4 s boot → boxes empty 4+ s. B2 ceiling 2.5 s: **failed at deep-cold**. |
+| `/journal` spinner (shorter) | 1 page-read ticket; often rides an instance already booted by a previous page → usually sub-second cold, spinner *every* visit though (no cache, B4 fail). |
+
+## 4. Candidate levers (not implemented — for the decision board)
+
+| # | Lever | Expected effect | Cost/canon |
+|---|---|---|---|
+| L1 | **Answer the vendor question** (what runs `edge` now; Vercel support ticket / docs / test deploy), then revisit ADR-U036 — possibly Node+Fluid for hot reads (measured Node cold 740–790 ms, and Fluid adds bytecode caching + warm pools) | caps the boot at <1 s instead of 4–5 s | ADR-U036 addendum territory; the decisive lever |
+| L2 | **Keep-warm ping** (cron GET every ~5 min to one hot route). Previously dismissed as a *measurement* proxy — as a *fix* it's legitimate: today's dominant term is precisely the pre-function boot a ping keeps warm | eliminates deep-cold for interactive hours at ~zero cost | config-only; cheap interim regardless of L1 |
+| L3 | **Arm `OverviewBoot` on all authenticated paths** (it's once-per-session anyway) and/or serialize a "boot barrier": let the bundle's first request boot the instance before page reads fan out | one boot lottery ticket per session instead of 2–4 per page | Hub-only; consistent with ADR-U042 guardrails |
+| L4 | **Journal retrofit**: session cache + skeleton (the groups/journeys client pattern) | B4/B6 conformance; kills the every-visit spinner | small, pattern exists |
+| L5 | **Protocol amendment (ADR-U043):** define cold = ≥20 min idle (or overnight); add a tail rule ("no single run >2× budget"); pull a per-cycle spot measurement forward instead of area-gate-only | prevents shallow-cold false passes | doc + skill DoD rows |
+
+## 5. What this does NOT reopen
+
+The 07-06/07-07 architecture holds: bundle-only composition (ADR-U042 guardrail 4 stands — the substrate RPC would still save only ~60 ms), Edge+`dub1` conformance, local-JWT reads, session caches, fire-and-forget audit. This analysis adds one vendor-layer fact those decisions were missing: the deep-cold boot is 4–5 s and bimodal under concurrency.
+
+## Appendix — session measurement log
+
+Warm page loads 06:3x–06:4x UTC (groups/journeys/journal, per-page waterfalls via Performance API); cold pass 07:0x UTC after 22.5 min enforced idle: overview 4 690 ms (in-function 614 ms), journeys pair 4 162/423 ms, journal 336 ms, warm repeats 159–280 ms. Uncontrolled morning sample: account/state 4 783 ms vs siblings 638–696 ms. All requests 200, Stefan's live session, `x-vercel-id: arn1::dub1` unchanged. Prior baselines: `2026-07-06-groups-first-load-perf.md`, `2026-07-07-journeys-j-a-waterfall.md`, ADR-U043.
