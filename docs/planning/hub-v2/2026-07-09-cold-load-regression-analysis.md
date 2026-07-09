@@ -74,6 +74,25 @@ Evidence is bimodal in every cold sample: of N concurrent cold requests, some ri
 
 The 07-06/07-07 architecture holds: bundle-only composition (ADR-U042 guardrail 4 stands — the substrate RPC would still save only ~60 ms), Edge+`dub1` conformance, local-JWT reads, session caches, fire-and-forget audit. This analysis adds one vendor-layer fact those decisions were missing: the deep-cold boot is 4–5 s and bimodal under concurrency.
 
+## 6. L1 A/B results (same day, post-PR #148 — probes + `x-proxy-timing` live)
+
+Instrumented pass, 22.5-min enforced idle, both probe twins fired concurrently, `/api/me/overview` fired ~5 s after them:
+
+| Request | TTFB | middleware (`x-proxy-timing`) | in-function (`x-probe-timing`) | unaccounted provisioning |
+|---|---|---|---|---|
+| `probe-edge` (cold) | 4 592 ms | 347 ms, n:1 fresh | 200 ms (auth 110, read 90) | **~3.9 s** |
+| `probe-node` (cold) | 2 519 ms | 322 ms, n:1 fresh (separate instance) | 667 ms (read 537) | ~1.4 s |
+| `overview` (cold instance, fired after the wave) | **497 ms** | 7 ms, n:2 warm | 286 ms | **~34 ms** |
+| both probes warm | 186–~250 ms | 3–14 ms | 54–115 ms | ≈ network |
+
+Fresh-deploy shallow-cold control (same day, deploy +3.5 min): edge 2 216 ms / node 2 223 ms — runtimes identical.
+
+**Findings (supersede the L1 framing in §4):**
+
+1. **Runtime class acquitted.** Edge and Node both pay multi-second provisioning after deep idle and are identical shallow-cold; the deep-idle spread (4.6 vs 2.5 s) matches the bimodal lottery seen all session, not a runtime difference. **An Edge→Node migration is not a cold-load fix** — ADR-U036 needs no perf-forced revisit (Vercel's deprecation direction remains a strategic reason to migrate eventually, on its own clock).
+2. **The cost is a front-loaded provisioning wave, not per-function boot.** An equally-idle Edge route (`overview`, `n:1` fresh instance) provisioned in ~34 ms once the first request wave had run. After the wave, everything — including brand-new instances — is cheap. Middleware instances are also per-wave (~300-620 ms first invocation each, concurrent requests get separate ones).
+3. **L2 keep-warm is therefore the primary fix**, not a stopgap: one request every ~5 min holds the provisioned environment and the deep-cold class disappears for interactive hours. **Validated (same day, third idle window):** an unauthenticated cookie-less ping after 22.5 min idle paid the provisioning wave itself (TTFB 3 735 ms, in-function 4 ms, middleware 9 ms → ~3.7 s provisioning), and authenticated requests 20 s later landed at 1 194/1 290 ms — the 4–5 s class gone; the residual is per-instance middleware first-invocation (~115–260 ms) + fresh Supabase connections (~380 ms in-function). The 2026-07-06 Phase-3.5 fast cold 401s (153–187 ms "after ~2 h idle") are thereby reinterpreted: those probes must have hit still-warm infrastructure — an unauth request does NOT ride a light path. Keep-warm target: `/api/me/overview` (permanent route — the probe twins are temporary), unauthenticated, with a dummy cookie header to also exercise the cookie-bearing middleware path (harmless — cannot authenticate; costs nothing if it makes no difference). Hobby-limit impact: ~8.6 K invocations/month against the 1 M cap, in-function ~4 ms per ping — negligible.
+
 ## Appendix — session measurement log
 
 Warm page loads 06:3x–06:4x UTC (groups/journeys/journal, per-page waterfalls via Performance API); cold pass 07:0x UTC after 22.5 min enforced idle: overview 4 690 ms (in-function 614 ms), journeys pair 4 162/423 ms, journal 336 ms, warm repeats 159–280 ms. Uncontrolled morning sample: account/state 4 783 ms vs siblings 638–696 ms. All requests 200, Stefan's live session, `x-vercel-id: arn1::dub1` unchanged. Prior baselines: `2026-07-06-groups-first-load-perf.md`, `2026-07-07-journeys-j-a-waterfall.md`, ADR-U043.
