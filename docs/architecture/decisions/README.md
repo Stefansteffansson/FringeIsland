@@ -56,6 +56,7 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 | ADR-U043 | [Performance budgets for user-facing surfaces (B1–B6)](ADR-U043-performance-budgets.md) | Accepted | product |
 | ADR-U044 | [Journey step model — the Journey Designer grammar as the schema's DNA](ADR-U044-journey-step-model.md) | Accepted | domain-service |
 | ADR-U045 | [The onboarding journey — one designated journey, Mist-scoped access, auto-launch with opt-out](ADR-U045-onboarding-journey.md) | Accepted | domain-service · product · platform-core |
+| ADR-U046 | [Step-response capture and review substance — the lived record realizes the Ask](ADR-U046-step-response-capture.md) | Accepted | domain-service · product |
 
 ---
 
