@@ -3,7 +3,7 @@
 ---
 id: TASK-JE-04
 title: H023 arrival orchestration (overview-bundle onboarding slice + post-paint auto-launch)
-status: todo
+status: done
 assigned_to: claude
 priority: critical
 feature: FEAT-H023
