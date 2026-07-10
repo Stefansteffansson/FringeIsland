@@ -34,9 +34,23 @@ Ratified by Stefan, 2026-07-07:
 - PC-2's first-arrival state feeds the auto-launch trigger for both entry paths; the trigger itself is Hub-side (JRN-15, per the Hub §L3 area note).
 - The first-experience canon work later replaces the placeholder content and may refine the launch UX — it does not reopen these mechanics.
 
+## Amendment 1 — the front door: unavoidable to enter, never mandatory to finish
+
+**Status:** Accepted
+**Date:** 2026-07-09 (J-E decomposition; ratified by Stefan in-session)
+
+§3 above wrote "opt-out is honored — the launch is advisable, never mandatory," citing invariant 3. At J-E decomposition Stefan surfaced that "opt-out" was blurring two different things, and tightened the decision:
+
+1. **Voluntariness governs *advancement*, not *entry*.** DS-3 invariant 3 forbids forcing a traveller to advance or complete a step — "no journey advances without the traveller's action." It does **not** grant a pre-emptive right to suppress the launch before the journey has been seen. Entering the welcome and being forced to finish it are different acts; only the second violates the invariant.
+2. **Onboarding is the front door — unavoidable to enter, never a wall.** First arrival lands the traveller *in* the onboarding journey's welcome (both entry paths). There is **no "skip it before I've seen it" toggle.** But from the welcome and every step after, the traveller may stop and navigate away to explore freely at any time — nothing is walled behind onboarding completion. Placed at the doorway, never forced through the house. This holds invariant 3 (no step advances without action) while making arrival-into-the-welcome unavoidable.
+3. **Consequence — no opt-out store.** Because there is no pre-emptive skip, no persisted "opted out" state is needed. Auto-launch fires **only when the traveller has never entered the onboarding journey** (no enrolment exists). Entering creates the enrolment, which is itself the "has arrived once" record; later visits see the enrolment and do not re-launch (the journey remains available from the traveller's own journeys list). "Have they arrived once?" is the entire signal.
+
+This refines §3's wording; it does not reopen §1/§2/§4/§5. The auto-launch, designation, carry-over, and placeholder decisions stand.
+
 ## Links
 
 - Kickoff plan + decision board: [`docs/planning/hub-v2/phase-3-journeys-completion-plan.md`](../../planning/hub-v2/phase-3-journeys-completion-plan.md) (J-O1/J-O2/J-O4)
+- J-E decomposition (this amendment's origin): [`FEAT-PD006`](../../platform/domain/features/FEAT-PD006-onboarding-designation-and-arrival-contracts.md) ↔ [`FEAT-H023`](../../products/hub/features/FEAT-H023-onboarding-arrival-and-carry-over.md)
 - DS-3 spec: [`docs/platform/domain/journeys.md`](../../platform/domain/journeys.md) (§8 Q2 — resolved to this ADR in the same batch; invariant 3)
 - ADR-U031 (Mist lifecycle + ephemerality) · ADR-U034 (transcendence consent) · ADR-U044 (step model — the placeholder journey's structure)
 - Historical record: `docs/planning/waves/studies/ferd/journeys.md` (Journey Zero); `docs/ecosystem/thinking/OPEN_QUESTIONS.md` CQ-010 (first-experience gap — content, not mechanics)
