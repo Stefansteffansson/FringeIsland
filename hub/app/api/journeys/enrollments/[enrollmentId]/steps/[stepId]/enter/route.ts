@@ -3,9 +3,6 @@ import { createClient } from '@/lib/supabase/server';
 import { enterJourneyStep } from '@/lib/journeys/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Mutation-only route — Node runtime (route-policy: mutations ride getUser and
-// stay off Edge).
-
 /**
  * FEAT-H020 — POST /api/journeys/enrollments/[enrollmentId]/steps/[stepId]/enter
  * (JRN-9, STORY-2/4). The auto-save write — records engagement (the open

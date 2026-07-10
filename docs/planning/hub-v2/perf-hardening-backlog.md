@@ -42,7 +42,7 @@ Co-location fixed the *distance per hop*. A follow-up measurement isolated the *
 
 ---
 
-## Cold-start fix (2026-07-01) — Edge runtime for the hot read routes ✅ SHIPPED ([ADR-U036](../../architecture/decisions/ADR-U036-edge-runtime-hot-read-routes.md), PR #39)
+## Cold-start fix (2026-07-01) — Edge runtime for the hot read routes ✅ SHIPPED ([ADR-U036](../../architecture/decisions/ADR-U036-edge-runtime-hot-read-routes.md), PR #39) — **superseded 2026-07-10: every route migrated edge→Node (ADR-U036 Amendment 2; the section below is the dated record of the Edge era)**
 
 After T1 shipped, live browser measurement of the *deployed* app found the residual "spinning wheel before each page" was **not** primarily the client-render waterfall — it was **serverless cold starts**:
 

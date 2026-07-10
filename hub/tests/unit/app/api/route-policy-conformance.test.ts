@@ -3,28 +3,26 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 /**
- * Route-policy conformance (ADR-U036 / ADR-U037) — the build-time gate from
- * the Groups retro (2026-07-06). Route policy that lived only in ADR prose
- * drifted within one cycle: G-F shipped getClaims-on-mutation and
+ * Route-policy conformance (ADR-U036 Amendment 2 / ADR-U037) — the build-time
+ * gate from the Groups retro (2026-07-06). Route policy that lived only in ADR
+ * prose drifted within one cycle: G-F shipped getClaims-on-mutation and
  * Edge-on-mutation-only routes, caught only by the later audit (fixed in
  * PR #106). This suite walks every hub/app/api route file and asserts the
  * matrix statically, so that drift class fails red at build time. Green here
  * replaces the manual Route-policy DoD rows in the feature-development skill.
  *
- * The matrix:
+ * The matrix (post edge→Node migration, ADR-U036 Amendment 2):
+ *  - a route file declares NO `runtime` and NO `preferredRegion` export —
+ *    every route runs on the platform-default Node runtime (Vercel deprecated
+ *    the Edge runtime; Fluid in-instance concurrency is Node-only and is the
+ *    fan-out fix). The region pin lives in hub/vercel.json alone, preserving
+ *    ADR-U035 co-location. A runtime export reappearing is policy drift;
  *  - a file exporting a mutating verb (POST/PATCH/PUT/DELETE) must call
  *    getUser() — server-verified auth where state changes (ADR-U037) — unless
  *    it is a documented pre-auth route (no session exists to verify);
- *  - a mutation-only file must NOT be on the Edge runtime — Edge is justified
- *    only by a hot read (ADR-U036; the PR #106 rule). A mutating handler may
- *    ride an Edge file only when the file also hosts a hot GET (the ADR-U036
- *    addendum consent case), and it still authenticates with getUser;
- *  - an Edge file must export a GET, pin preferredRegion='dub1', and read
- *    identity locally via getClaims()/getVerifiedUserId() (ADR-U036/U037);
- *  - a GET-only file on the Node default is legal (new routes default to
- *    Node) but must be consciously classified in NODE_GETS_REVIEWED — the
- *    consent-page regression (2026-07-01, ADR-U036 addendum) was a hot read
- *    left on Node, invisible without a classification step.
+ *  - a file exporting a GET reads identity locally via getClaims()/
+ *    getVerifiedUserId() — read paths must not pay the auth-server round-trip
+ *    (ADR-U037) — unless listed in SERVER_VERIFIED_GETS with justification.
  */
 
 const API_ROOT = path.resolve(__dirname, '../../../../app/api');
@@ -34,9 +32,8 @@ const API_ROOT = path.resolve(__dirname, '../../../../app/api');
 const PRE_AUTH_MUTATIONS = new Set([
   'auth/signup', // account creation — no session exists yet to verify
 ]);
-const NODE_GETS_REVIEWED = new Set([
-  'account/export', // Node-dependent document assembly; click-triggered, not render-blocking (ADR-U036)
-  'perf/probe-node', // PERF-PROBE: deliberately-Node half of the cold-boot A/B (2026-07-09 analysis L1); temporary — remove with the twins at the ADR-U036 revisit close-out
+const SERVER_VERIFIED_GETS = new Set([
+  'account/export', // click-triggered document assembly; deliberately server-verified with getUser() (ADR-U036)
 ]);
 
 const MUTATING = ['POST', 'PATCH', 'PUT', 'DELETE'];
@@ -44,8 +41,8 @@ const MUTATING = ['POST', 'PATCH', 'PUT', 'DELETE'];
 interface RouteInfo {
   id: string;
   methods: string[];
-  isEdge: boolean;
-  hasDub1Pin: boolean;
+  hasRuntimeExport: boolean;
+  hasRegionExport: boolean;
   hasGetUser: boolean;
   hasLocalClaimsRead: boolean;
 }
@@ -67,8 +64,8 @@ function collectRoutes(dir: string = API_ROOT): RouteInfo[] {
           .replace(/\\/g, '/')
           .replace(/\/route\.ts$/, ''),
         methods,
-        isEdge: /export\s+const\s+runtime\s*=\s*['"]edge['"]/.test(src),
-        hasDub1Pin: /export\s+const\s+preferredRegion\s*=\s*['"]dub1['"]/.test(src),
+        hasRuntimeExport: /export\s+const\s+runtime\s*=/.test(src),
+        hasRegionExport: /export\s+const\s+preferredRegion\s*=/.test(src),
         hasGetUser: src.includes('getUser('),
         hasLocalClaimsRead: src.includes('getClaims(') || src.includes('getVerifiedUserId('),
       });
@@ -80,10 +77,19 @@ function collectRoutes(dir: string = API_ROOT): RouteInfo[] {
 const routes = collectRoutes();
 const mutating = (r: RouteInfo) => r.methods.some((m) => MUTATING.includes(m));
 
-describe('route-policy conformance (ADR-U036/U037)', () => {
+describe('route-policy conformance (ADR-U036 Amendment 2 / ADR-U037)', () => {
   it('finds the API surface', () => {
     expect(routes.length).toBeGreaterThan(0);
     expect(routes.every((r) => r.methods.length > 0)).toBe(true);
+  });
+
+  it('route files declare no runtime/region exports — unified Node runtime, region pinned in vercel.json (ADR-U036 Amendment 2)', () => {
+    const violations = routes
+      .flatMap((r) => [
+        ...(r.hasRuntimeExport ? [`${r.id} declares a runtime export`] : []),
+        ...(r.hasRegionExport ? [`${r.id} declares a preferredRegion export`] : []),
+      ]);
+    expect(violations).toEqual([]);
   });
 
   it('every mutating route file authenticates with getUser() (ADR-U037)', () => {
@@ -93,39 +99,19 @@ describe('route-policy conformance (ADR-U036/U037)', () => {
     expect(violations).toEqual([]);
   });
 
-  it('mutation-only route files stay on the Node runtime (ADR-U036)', () => {
+  it('GET-exporting route files read identity locally via getClaims()/getVerifiedUserId() (ADR-U037)', () => {
     const violations = routes
-      .filter((r) => mutating(r) && !r.methods.includes('GET') && r.isEdge)
-      .map((r) => `${r.id} [${r.methods.join(',')}] is mutation-only but runs on Edge`);
-    expect(violations).toEqual([]);
-  });
-
-  it('Edge route files host a GET, pin dub1, and read identity locally (ADR-U036/U037)', () => {
-    const violations = routes
-      .filter((r) => r.isEdge)
-      .flatMap((r) => [
-        ...(!r.methods.includes('GET') ? [`${r.id} is Edge without a hot GET`] : []),
-        ...(!r.hasDub1Pin ? [`${r.id} is Edge without preferredRegion='dub1'`] : []),
-        ...(!r.hasLocalClaimsRead
-          ? [`${r.id} is Edge without getClaims()/getVerifiedUserId()`]
-          : []),
-      ]);
-    expect(violations).toEqual([]);
-  });
-
-  it('GET-only Node routes are consciously classified (consent-regression guard)', () => {
-    const unclassified = routes
-      .filter((r) => !mutating(r) && !r.isEdge && !NODE_GETS_REVIEWED.has(r.id))
-      .map(
+      .filter(
         (r) =>
-          `${r.id} is a GET on the Node default — classify it: hot render-path read (move to Edge+dub1, ADR-U036) or reviewed Node GET (add to NODE_GETS_REVIEWED with justification)`,
-      );
-    expect(unclassified).toEqual([]);
+          r.methods.includes('GET') && !SERVER_VERIFIED_GETS.has(r.id) && !r.hasLocalClaimsRead,
+      )
+      .map((r) => `${r.id} exports a GET without a local identity read`);
+    expect(violations).toEqual([]);
   });
 
   it('exception lists stay honest (no stale entries)', () => {
     const ids = new Set(routes.map((r) => r.id));
-    const stale = [...PRE_AUTH_MUTATIONS, ...NODE_GETS_REVIEWED].filter((id) => !ids.has(id));
+    const stale = [...PRE_AUTH_MUTATIONS, ...SERVER_VERIFIED_GETS].filter((id) => !ids.has(id));
     expect(stale).toEqual([]);
   });
 });

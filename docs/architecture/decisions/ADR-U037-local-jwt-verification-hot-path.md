@@ -75,5 +75,5 @@ Scope of the change:
 
 - Perf backlog: `docs/planning/hub-v2/perf-hardening-backlog.md` (P1 partially realised here; T2 remains the parked endgame)
 - Session bridges: `docs/planning/sessions/2026-07-02_01_-_RESUME-DEEP-FRONTEND-PERF-INVESTIGATION.md` (the brief + measurement-flaw warning); this session's closing bridge (measured waterfall + re-measure)
-- Related ADRs: ADR-U035 (dub1 co-location), ADR-U036 (Edge runtime for hot reads) — both stand; this ADR removes the front-door cost in front of them
+- Related ADRs: ADR-U035 (dub1 co-location) — stands; ADR-U036 (Edge runtime for hot reads) — its Edge choice was reversed by its Amendment 2 (2026-07-10, edge→Node migration); this ADR's local-verification decision is runtime-independent and stands unchanged
 - External: Supabase `getClaims()` / asymmetric JWT signing keys; `@supabase/ssr` middleware session-refresh pattern

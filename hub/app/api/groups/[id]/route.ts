@@ -6,12 +6,6 @@ import { deleteGroup } from '@/lib/groups/leadership';
 import { fetchGroupEnrollmentSummary } from '@/lib/journeys/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): the detail read is a member-facing hot path — Edge runtime,
-// pinned to `dub1` for DB co-location (ADR-U035). Everything imported here must
-// stay Edge-safe. PATCH and DELETE ride the same file (single RPC, Edge-safe).
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-H013 — GET /api/groups/[id] (GRP-4 detail · GRP-5, STORY-2).
  *

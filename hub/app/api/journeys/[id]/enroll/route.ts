@@ -3,9 +3,6 @@ import { createClient } from '@/lib/supabase/server';
 import { enrollSelfInJourney, enrollGroupInJourney } from '@/lib/journeys/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Mutation-only route — Node runtime (route-policy: mutations ride getUser
-// and stay off Edge).
-
 /**
  * FEAT-H019 — POST /api/journeys/[id]/enroll (JRN-3 + JRN-4, STORY-3/4).
  *

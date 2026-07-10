@@ -8,15 +8,10 @@ import { fetchMyInvitations } from '@/lib/groups/invitations';
 import { fetchPendingNominations } from '@/lib/groups/leadership';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): hot render-path read — Edge runtime, pinned to `dub1`
-// (ADR-U035 co-location). Keep imports Edge-safe (no Node-only APIs).
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * ADR-U042 — GET /api/me/overview, the first-paint bootstrap bundle.
  *
- * One Edge invocation, one ADR-U037 identity verification, five CONCURRENT
+ * One invocation, one ADR-U037 identity verification, five CONCURRENT
  * substrate reads — the same lib query functions the standalone routes call
  * (`/api/profile/me`, `/api/account/state`, `/api/groups`,
  * `/api/me/invitations`, `/api/me/nominations`), so each slice is
@@ -37,9 +32,9 @@ type Slice<T> = { data: T } | { error: string };
  *  (profile 404, account-state 404, invitations 42501). */
 class SliceRefusal extends Error {}
 
-// P1-residual instrumentation (waterfall record 2026-07-07): per-isolate
-// invocation counter — n:1 marks the cold invocation whose Edge→Supabase
-// connection setup the sign-in landing pays. Isolate-scoped by construction.
+// P1-residual instrumentation (waterfall record 2026-07-07): per-instance
+// invocation counter — n:1 marks the cold invocation whose function→Supabase
+// connection setup the sign-in landing pays. Instance-scoped by construction.
 let invocationN = 0;
 
 async function readSlice<T>(
@@ -69,7 +64,7 @@ async function readSlice<T>(
 export async function GET() {
   // P1-residual instrumentation: names + millisecond durations only — never
   // payload content. Read by the perf measurements as `x-overview-timing`
-  // (a custom header — Vercel drops Server-Timing on Edge responses) and
+  // (a custom header, kept so the 2026-07 timing series stays comparable) and
   // carried in the overview.read event for the function-log history.
   const tStart = performance.now();
   const timings: Record<string, number> = { n: ++invocationN };

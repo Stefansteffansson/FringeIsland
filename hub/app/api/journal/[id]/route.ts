@@ -6,10 +6,6 @@ import {
 } from '@/lib/journal/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Node runtime (ADR-U036): a mutation-only route — Edge is reserved for hot
-// render-path reads, so this route takes the default Node runtime. The sibling
-// GET /api/journal stays Edge for its read.
-
 /**
  * FEAT-H011 — PATCH/DELETE /api/journal/[id] (IDN-5, STORY-3).
  *

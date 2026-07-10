@@ -90,7 +90,7 @@ Order rationale: internal deps force A → B → (C, D) → E → F; C and D are
 
 ## Exit checklist — the Journeys area gate (planted now)
 
-Per-area gate (parent plan): feature DoD + vertical checklists + tests green + **performance gate (ADR-U043):** cold + warm authenticated waterfall on the production stable domain (≥ 3 runs per scenario, every run within budget; cold per Amendment 1 — ≥ 20 min enforced zero traffic, keep-warm pinger paused, idle depth recorded; **tail rule:** no single request in any cold run may exceed 2× its scenario budget) **and Stefan's manual live walk — both before the area retro.** The **first-ever-cold < 2 s scenario (J-O5)** is measured alongside.
+Per-area gate (parent plan): feature DoD + vertical checklists + tests green + **performance gate (ADR-U043):** cold + warm authenticated waterfall on the production stable domain (≥ 3 runs per scenario, every run within budget; cold per Amendment 1 — ≥ 20 min enforced zero traffic, no synthetic warm-up traffic (pinger retired, ADR-U036 Amendment 2), idle depth recorded; **tail rule:** no single request in any cold run may exceed 2× its scenario budget) **and Stefan's manual live walk — both before the area retro.** The **first-ever-cold < 2 s scenario (J-O5)** is measured alongside.
 
 Additionally, at the A-JRN gate:
 

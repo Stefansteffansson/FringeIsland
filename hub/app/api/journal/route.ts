@@ -7,12 +7,6 @@ import {
 } from '@/lib/journal/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036 addendum): Edge runtime + `dub1` pin — GET is the /journal
-// page's initial-render read path (the consent-route precedent). Both handlers
-// are edge-safe (single SECURITY DEFINER RPCs, no Node-only imports).
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-H011 — GET /api/journal (IDN-5).
  *

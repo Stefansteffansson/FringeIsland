@@ -4,15 +4,6 @@ import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchOwnConsentState, recordConsentDecision } from '@/lib/consent/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036 addendum): Edge runtime + `dub1` pin. GET is a hot read on the
-// /consent page's initial render path (was cold-starting ~740ms on the old Node
-// runtime — the felt delay entering Privacy & consent); Edge V8 isolates have ~0ms
-// cold start. POST (the consent grant/withdraw RPC) shares the route file and comes
-// along — it is edge-safe (a single SECURITY DEFINER RPC, no Node dependency) and
-// stays co-located via the pin. Keep this route's imports Edge-safe (no Node-only APIs).
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-PC006 — GET /api/account/consent (IDN-6).
  *

@@ -5,11 +5,6 @@ import { fetchMyPermissions } from '@/lib/groups/queries';
 import { fetchPermissionsActingAs } from '@/lib/groups/acting';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): loads with the group page alongside detail + fabric — a
-// member-facing hot read. Edge runtime, pinned to `dub1` (ADR-U035).
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-H014 — GET /api/groups/[id]/my-permissions (GRP-8, STORY-4).
  *

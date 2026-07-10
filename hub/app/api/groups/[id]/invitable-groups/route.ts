@@ -4,10 +4,7 @@ import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { searchInvitableGroups } from '@/lib/groups/acting';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): the typeahead is an interactive hot read — Edge runtime,
-// pinned to `dub1` (ADR-U035). Debounce lives client-side.
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
+// The typeahead debounce lives client-side.
 
 /**
  * FEAT-H018 — GET /api/groups/[id]/invitable-groups?q= (STORY-2 typeahead;

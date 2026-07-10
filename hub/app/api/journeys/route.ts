@@ -4,12 +4,6 @@ import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchJourneyCatalog } from '@/lib/journeys/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): the catalogue is a navigation-target hot read — Edge
-// runtime, pinned to `dub1` for DB co-location (ADR-U035). Everything
-// imported here must stay Edge-safe.
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-H019 — GET /api/journeys (JRN-1, STORY-1).
  *

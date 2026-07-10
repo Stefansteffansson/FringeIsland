@@ -1,6 +1,6 @@
 # ADR-U036: Edge runtime for the Hub's hot read routes — eliminate serverless cold-start latency (region-pinned to preserve co-location)
 
-**Status:** Accepted (preview-deploy re-measured 2026-07-01 — cold-start penalty eliminated + `preferredRegion='dub1'` pin confirmed held; see "Verification (done)" below). Pending production merge (PR #39).
+**Status:** Superseded in part by **Amendment 2** (2026-07-10) — the Edge-runtime choice is reversed (edge→Node migration; see the amendment below); ADR-U035 co-location and the ADR-U037 identity split stand. Originally: Accepted (preview-deploy re-measured 2026-07-01 — cold-start penalty eliminated + `preferredRegion='dub1'` pin confirmed held; see "Verification (done)" below).
 **Date:** 2026-07-01
 **Deciders:** Stefan
 **Tags:** scope:platform-core · scope:product · wave:ferd
@@ -106,3 +106,33 @@ Vercel deprecated standalone Edge Functions (June 2025); Edge-runtime functions 
 3. The cold gap is closed **operationally**, not by runtime choice: the keep-warm pinger (`.github/workflows/keep-warm.yml`) holds the environment provisioned; validated live — an unauthenticated ping provisions the heavy path itself, and authenticated requests after it land ~1.2 s worst-case instead of 4–7 s.
 
 **Decision consequence:** the Edge choice for hot reads **stands** — there is no performance reason to migrate. The eventual edge→Node migration is a strategic vendor-alignment item on Vercel's deprecation clock, to be scheduled as its own decision when that clock forces it. The temporary probe twins (`/api/perf/probe-edge`, `/api/perf/probe-node`) remain as instrumented canaries until removed (target: ~2 weeks, together with their `NODE_GETS_REVIEWED` entry).
+
+## Amendment 2 — 2026-07-10: edge→Node migration executed; keep-warm retired; runtime policy is now "platform default, no per-route runtime exports"
+
+**Status:** Accepted
+**Date:** 2026-07-10
+**Supersedes:** this ADR's original decision (Edge + `preferredRegion='dub1'` for hot reads) and the 2026-07-09 addendum's conclusion that there is no performance reason to migrate.
+
+### What changed since the addendum
+
+The addendum's evidence base moved twice within 24 hours ([analysis §7](../../planning/hub-v2/2026-07-09-cold-load-regression-analysis.md), [industry research](../../research/2026-07-10-cold-start-industry-research.md)):
+
+1. **Provisioning is per-instance, not per-environment.** The addendum's operational fix ("the keep-warm pinger holds the environment provisioned") did not survive measurement: a live 4-way concurrent `/journeys` boot drew three fresh ~4–5 s boots two minutes after the environment was provisioned (656 / 4 846 / 3 643 / 4 876 ms), and the L2′ experiment showed a 60-second-old warm pool missing 2/4 of a real fan-out (3 842 / 5 219 ms). A ping warms one instance; concurrency defeats it. **Pinging was retired as a strategy (2026-07-10);** the GitHub Actions workflow — which also underdelivered on cadence (10 fires in ~23 h against `*/5`) — was disabled 09:19 UTC and is **removed from the repo with this amendment**.
+2. **Vercel has deprecated the Edge runtime** and recommends migrating edge → Node "for improved performance"; Fluid's in-instance concurrency — the mitigation matched to exactly our measured fan-out failure mode — is Node-only.
+
+### Decision
+
+Migrate every Hub API route off the Edge runtime onto the platform-default Node runtime (unified Vercel Functions / Fluid). Concretely:
+
+- All per-route `export const runtime` / `export const preferredRegion` declarations are **removed** (22 route files). The region pin lives in `hub/vercel.json` (`"regions": ["dub1"]`) **alone** — ADR-U035 co-location is preserved with no per-file pin to drift.
+- The **runtime policy** flips from "hot reads → Edge, everything else → Node" to: **every route takes the platform default; a per-route runtime or region export reappearing is policy drift.** Enforcement home: the route-policy conformance test (`hub/tests/unit/app/api/route-policy-conformance.test.ts`), whose matrix this amendment flipped red-first.
+- The **ADR-U037 identity split is untouched** and remains enforced by the same test: `getUser()` where state changes; `getClaims()`/`getVerifiedUserId()` on GET paths (sole documented exception: `account/export`, click-triggered document assembly — the test's `SERVER_VERIFIED_GETS` list, which replaces the now-purposeless `NODE_GETS_REVIEWED` classification: with one runtime there is no "hot read left on the slow runtime" class to catch).
+- The **temporary probe twins** (`/api/perf/probe-edge`, `/api/perf/probe-node`) are **removed** — the runtime A/B they instrumented is concluded and recorded (addendum above + analysis §6). The middleware `x-proxy-timing` instrumentation stays for waterfall attribution.
+- **`.github/workflows/keep-warm.yml` is removed.** ADR-U043 Amendment 1's cold-definition clause "keep-warm pinger paused" becomes "no synthetic warm-up traffic"; the pointer edits in ADR-U043, the hub-v2 gate instances, FEAT-H023, and the `feature-development` skill ride this amendment's PR.
+
+### Consequences
+
+- **Positive:** one runtime, one mental model; Fluid in-instance concurrency can absorb same-instance request fan-out (Node-only — the lever the measured `/journeys` 4-way boot lottery needs); the Edge-compatibility import constraint on 22 files is gone; vendor-aligned (off the deprecated runtime before the clock forces it).
+- **Negative / accepted:** warm in-function cost is marginally higher on Node (measured 115 ms vs Edge's 54–62 ms in-function) — accepted as noise relative to the multi-second cold problem.
+- **Not fixed here:** deep-cold environment provisioning (~2.5–4.7 s first wave after ≥ 20 min idle) is runtime-independent and survives this migration. Residual levers, in ranked order (research doc): fan-out reduction on `/journeys` (L3, un-parked) and Vercel Pro scale-to-one (parked with Stefan).
+- **Verification:** the before set is the 2026-07-09 measured record (analysis §6–§7). The **after deep-cold measurement** (Amendment-1 protocol: ≥ 20 min enforced zero traffic, no synthetic warm-up traffic, idle depth recorded, authenticated walk) runs on production after this merges — and J-E (FEAT-H023) is then measured once, on the target runtime.

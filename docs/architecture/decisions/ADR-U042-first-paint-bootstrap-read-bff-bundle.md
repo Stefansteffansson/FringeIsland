@@ -37,7 +37,7 @@ The five reads are all existing platform contracts; the question is purely how t
 2. **Per-slice envelopes.** Each slice resolves to `{ data }` or `{ error }` independently; one failed slice does not fail the paint. Slice failures are logged server-side (observability §7 — structured, content-free), never silently swallowed into an empty section.
 3. **Standalone routes remain canonical and untouched.** The bundle is a transport optimization the Hub may drop at any time without contract loss.
 4. **Promotion rule.** A composition moves substrate-side (platform RPC) only when it becomes a genuine platform concept — the evidence bar: a second surface wants the *same* bundle. Until then it is Hub presentation.
-5. **Hot-read policies apply:** `runtime='edge'`, `preferredRegion='dub1'` (ADR-U036), `getClaims()` local verification (ADR-U037).
+5. **Hot-read policies apply:** the route-policy matrix as amended — platform-default Node runtime, no per-route runtime/region exports, region pinned in `hub/vercel.json` (ADR-U036 Amendment 2, 2026-07-10; originally `runtime='edge'` + `preferredRegion='dub1'`), `getClaims()` local verification (ADR-U037).
 6. **Consumer shape:** an `OverviewProvider` in the Hub shell fires the bundle once per session at auth-ready and revalidates on groups-surface mount; slices seed the existing session caches (profile, groups — PR #102) and feed `MyInvitations` / `PendingNominations` / account state, which stop self-fetching at first paint.
 
 ### Consequences

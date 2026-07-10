@@ -3,9 +3,6 @@ import { createClient } from '@/lib/supabase/server';
 import { completeJourneyStep } from '@/lib/journeys/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Mutation-only route — Node runtime (route-policy: mutations ride getUser and
-// stay off Edge).
-
 /**
  * FEAT-H020 — POST /api/journeys/enrollments/[enrollmentId]/steps/[stepId]/complete
  * (JRN-8, STORY-3). Stamps passage (idempotent platform-side). The FEAT-PD003
