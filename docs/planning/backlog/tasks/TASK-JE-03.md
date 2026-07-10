@@ -3,7 +3,7 @@
 ---
 id: TASK-JE-03
 title: Carry-over and ephemerality proofs (transcendence continuity + erasure cascade)
-status: review
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PD006

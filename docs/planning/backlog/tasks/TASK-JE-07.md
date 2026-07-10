@@ -3,7 +3,7 @@
 ---
 id: TASK-JE-07
 title: Deep-cold spot measurement of the arrival first paint (pre-6-done gate)
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H023
