@@ -114,6 +114,24 @@ Fresh-deploy shallow-cold control (same day, deploy +3.5 min): edge 2 216 ms / n
 - **New input for the ADR-U036 addendum's deferred edge→Node question:** Vercel Fluid Compute offers *in-instance concurrency* for Node functions — one warm Node instance could serve an entire fan-out where Edge isolates measurably cannot. The deferral was decided under the environment-scoped model; this does not reopen it by itself, but the next touch of that decision should weigh it.
 - GitHub Actions is retired as the scheduler regardless of lever choice (measured cadence 1.5–4 h vs the required 5 min).
 
+## 8. 2026-07-10 — edge→Node migration executed and measured: the boot lottery is gone
+
+The migration interlude ran same-day (PR #159, [ADR-U036 Amendment 2](../../architecture/decisions/ADR-U036-edge-runtime-hot-read-routes.md)): all 22 route files off Edge onto the platform-default Node runtime (Fluid), keep-warm workflow and probe twins removed, region pinned in `hub/vercel.json` alone. The **after** measurement ran under the ADR-U043 Amendment 1 protocol: deploy-complete 15:09 UTC, **22 min enforced zero traffic** (timer-enforced, no synthetic warm-up — the pinger no longer exists), then Stefan's authenticated Chrome session walked `/journeys` cold, plus two immediate reloads.
+
+| scenario | before (Edge, §7 — drawn only ~2 min after provisioning) | after (Node/Fluid, true 22-min deep-cold) |
+|---|---|---|
+| `/journeys` 4-way concurrent fan-out, per-request total | 656 / 3 643 / 4 846 / 4 876 ms — **bimodal boot lottery** | 1 328 / 1 378 / 1 483 / 1 612 ms — **unimodal band** |
+| immediate warm reload | 243–511 ms | 381–964 ms first reload (two instances still settling), then **410–429 ms** steady |
+| document TTFB | — | 28 ms cold / 6 ms warm |
+
+Readings:
+
+1. **The tail is eliminated.** Worst deep-cold request fell 4 876 → 1 612 ms (~3×), and the after-state was measured against a *deeper* idle (22 min vs 2 min post-provisioning). No request drew a multi-second boot; all four landed in a 1.3–1.6 s band — consistent with Fluid's in-instance concurrency absorbing the fan-out, the mechanism §7 predicted.
+2. **Warm behavior is unchanged within noise** (410–429 ms steady vs the 243–511 ms before-band on the identical walk).
+3. **The residual felt-cold is now client boot + one provisioning band:** the fan-out fires at ~2.3 s (client render/boot), each request costs ~1.4–1.6 s → data complete ≈ 3.9 s deep-cold worst-case, vs ≈ 7.2 s before. The remaining levers stand as ranked: **L3 fan-out reduction** (un-parked; `/journeys` still fires 4 concurrent reads — `journeys`, `me/journeys`, `profile/me`, `account/state`) and **Vercel Pro scale-to-one** (parked with Stefan). The formal budget pass stays with the J-O3 area gate.
+
 ## Appendix — session measurement log
 
 Warm page loads 06:3x–06:4x UTC (groups/journeys/journal, per-page waterfalls via Performance API); cold pass 07:0x UTC after 22.5 min enforced idle: overview 4 690 ms (in-function 614 ms), journeys pair 4 162/423 ms, journal 336 ms, warm repeats 159–280 ms. Uncontrolled morning sample: account/state 4 783 ms vs siblings 638–696 ms. All requests 200, Stefan's live session, `x-vercel-id: arn1::dub1` unchanged. Prior baselines: `2026-07-06-groups-first-load-perf.md`, `2026-07-07-journeys-j-a-waterfall.md`, ADR-U043.
+
+After-migration pass (2026-07-10, §8): deploy-complete 15:09 UTC → enforced zero traffic 15:09–15:31 (22 min) → cold `/journeys` walk 15:31: fan-out at 2 342 ms, per-request 1 328/1 378/1 483/1 612 ms; first reload 381–964 ms; second reload 410–429 ms; doc TTFB 28/6 ms. Browser Performance-API-sourced, Stefan's authenticated session.

@@ -1,0 +1,26 @@
+# Session bridge — 2026-07-10_02 — edge→Node migration interlude executed and measured; the boot lottery is gone
+
+**Session class:** the migration interlude bridge `_01` scheduled, run before the J-E build as recommended. Hub v2 Phase 3 state after this session: unchanged on features (Journeys J-A..J-D `6-done`, J-E `4-ready` unbuilt, J-F planned, J-O3 gate after J-F) — but the runtime substrate J-E will be measured on is now the target one.
+
+## What happened
+
+1. **The edge→Node migration interlude shipped whole (PR #159, merged on Stefan's nod; [ADR-U036 Amendment 2](../../architecture/decisions/ADR-U036-edge-runtime-hot-read-routes.md)).** Red-first: the route-policy conformance test flipped to the new matrix first (no `runtime`/`preferredRegion` exports anywhere; region pinned in `hub/vercel.json` alone, ADR-U035 preserved; ADR-U037 identity split untouched) — red demonstrated on all 24 export-declaring ids, then 22 route files migrated (export lines + stale Edge-era comments; zero handler logic), green. `NODE_GETS_REVIEWED` (purposeless with one runtime) replaced by `SERVER_VERIFIED_GETS` (`account/export` only). Unit suite 89/89 (662 tests), lint, `next build` all green.
+2. **Keep-warm and the probe twins are gone.** `.github/workflows/keep-warm.yml` removed (bridge `_01`'s open removal decision — closed); `/api/perf/probe-edge` + `/api/perf/probe-node` and their unit suite deleted at their documented close-out point (the ADR-U036 revisit). Middleware `x-proxy-timing` stays for attribution.
+3. **No live doc still claims Edge as current.** Repo-wide sweep: `feature-development` skill (Route-policy DoD now delegates to the conformance test — "test green **is** the DoD"; cold clause "pinger paused" → "no synthetic warm-up traffic"), hub `CLAUDE.md` gotcha rewritten, ADR-U037/U042/U043 pointer lines, ADR index status, hub-v2 README + phase-3 gate instances, FEAT-H023 spot-check clause, revision notes in `6-done` FEAT-H012/H017, perf-backlog section header. Dated records (bridges, retros, 2026-07-06/07-09 analyses, research) deliberately left as history.
+4. **The after deep-cold measurement ran under the ADR-U043 Amendment 1 protocol and the result is decisive** (recorded as [analysis §8](../hub-v2/2026-07-09-cold-load-regression-analysis.md)): deploy-complete 15:09 UTC → 22 min timer-enforced zero traffic → authenticated Chrome walk of `/journeys`. **The bimodal boot lottery is eliminated**: the 4-way concurrent fan-out drew 1 328/1 378/1 483/1 612 ms (unimodal band) vs the before-set's 656/3 643/4 846/4 876 ms — worst request ~3× better, measured against a *deeper* idle state (22 min vs the before-set's 2-min-old environment). Warm unchanged within noise (410–429 ms steady vs the 243–511 ms before-band). Felt deep-cold worst-case ≈ 3.9 s (was ≈ 7.2 s), now composed of ~2.3 s client boot before the fan-out fires + one ~1.4–1.6 s provisioning band — consistent with Fluid in-instance concurrency absorbing the fan-out, exactly the mechanism the research predicted.
+
+## Decisions (Stefan's, this session)
+
+- **PR #159 merge nod** — the interlude's carve-out bundle (ADR-U036 Amendment 2 + ADR-U037/U042/U043 pointer edits, `feature-development` SKILL.md, hub `CLAUDE.md`, workflow deletion) approved and merged as one atomic change. (Process note: the bare "go!" was not accepted by the permission layer as a merge approval; Stefan executed the merge himself via `!`-command.)
+
+## Open items / next session
+
+- **J-E build** (feature-development skill) — now on the target runtime, so H023's mandatory deep-cold spot check measures once. Standing flags from bridge `_01`: PD006's migration is a **schema-gate carve-out** (ship held at the gate with red tests + apply commands); H023 consumes API-first; the FEAT-H011 L4 Journal retrofit rides as its own task set; JE-6 touches a `6-done` spec (revision note required).
+- **J-F** (ADR-U046 capture + review substance) after J-E; then the **J-O3 area gate** under the amended protocol — the journeys fan-out note stands: the gate waterfall measures `/journeys` explicitly; the formal budget/tail pass belongs to the gate, not to §8's spot measurement.
+- **L3 fan-out reduction — un-parked, sharpened by §8:** `/journeys` still fires 4 concurrent reads (`journeys`, `me/journeys`, `profile/me`, `account/state`), and the ~2.3 s client boot before the fan-out is now the single biggest felt-cold chunk. Candidate at J-F or the area gate, per the analysis.
+- **Vercel Pro scale-to-one stays parked with Stefan** — the residual it would buy down is the ~1.4–1.6 s provisioning band inside the ~3.9 s felt deep-cold worst case.
+- **doc-health-check not run** (no cycle boundary). The interlude's deletions/terminology flip were swept in-PR (repo-wide grep for edge/dub1/keep-warm; every live-doc hit updated, dated records preserved) — next natural run stays the J-E cycle close, with that sweep as its head start.
+
+## Key numbers (for the retro)
+
+Deep-cold `/journeys` 4-way fan-out, per-request total: **before** (Edge, ~2 min post-provisioning) 656 / 3 643 / 4 846 / 4 876 ms → **after** (Node/Fluid, 22-min enforced idle) 1 328 / 1 378 / 1 483 / 1 612 ms. Warm steady 410–429 ms (before-band 243–511 ms). Doc TTFB 28 ms cold / 6 ms warm. Felt deep-cold worst ≈ 7.2 s → ≈ 3.9 s. Migration diff: 47 files, +89/−479; conformance red on 24 ids → green.
