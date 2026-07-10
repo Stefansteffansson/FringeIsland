@@ -3,7 +3,7 @@
 ---
 id: TASK-JE-02
 title: Seed the placeholder onboarding journey with native steps and takeaway seed content
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PD006

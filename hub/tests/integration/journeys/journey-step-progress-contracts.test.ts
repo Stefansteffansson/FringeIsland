@@ -443,9 +443,19 @@ describe('FEAT-PD003 — journey step substrate & progress contracts (J-B)', () 
         for (const s of js) {
           expect(kindSet.has(s.step_kind_key)).toBe(true);
           expect(famSet.has(s.content_family_key)).toBe(true);
-          expect(s.legacy_step_id).not.toBeNull(); // migrated rows carry provenance
         }
+        // Labelled adaptation (FEAT-PD006, Cycle J-E): provenance is a
+        // MIGRATED-set invariant. The PD006 seed introduced the first
+        // authored-NATIVE journey (the onboarding placeholder) whose rows
+        // carry legacy_step_id NULL by design — so the invariant is now
+        // all-or-nothing per journey: fully migrated (every row carries the
+        // JSONB id) or fully native (no row does), never a mix.
+        const withProvenance = js.filter((s) => s.legacy_step_id !== null);
+        expect([0, js.length]).toContain(withProvenance.length);
       }
+      // Sanity: the migrated legacy set still carries provenance — the native
+      // class hasn't vacuously narrowed the invariant away.
+      expect(rows.some((s) => s.legacy_step_id !== null)).toBe(true);
     });
 
     it('journeys.content is disposed per Q2 (content NULLed, sequencing_mode populated)', async () => {
