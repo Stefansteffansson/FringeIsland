@@ -8,10 +8,11 @@ import { enrollSelf } from '@/lib/journeys/client';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 // The landings where an arrival may auto-launch: the entry, sign-in
-// (auth-ready arrives here before the redirect), the groups home the redirect
-// lands on, and the Mist landing. A deep-linked traveller is never yanked out
+// (auth-ready arrives here before the redirect), the groups HOME the redirect
+// lands on (exactly — never group detail pages, the PR #166 boot-scope
+// lesson), and the Mist landing. A deep-linked traveller is never yanked out
 // of their destination — an arrival is a landing, not a page view.
-const ARRIVAL_PATHS = /^\/(?:$|login(?:\/|$)|groups(?:\/|$)|mist(?:\/|$))/;
+const ARRIVAL_PATHS = /^\/(?:$|login\/?$|groups\/?$|mist\/?$)/;
 
 // Once per session: the enrolment itself flips has_enrollment for every later
 // visit; this latch only guards the current session's auth-event churn.

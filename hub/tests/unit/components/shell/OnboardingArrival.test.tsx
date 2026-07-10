@@ -98,6 +98,15 @@ describe('FEAT-H023 — OnboardingArrival (the uniform auto-launch decision)', (
     expect(fetchOnboardingStatus).not.toHaveBeenCalled();
   });
 
+  it('never fires on a group DETAIL page — the boot-scope lesson (PR #166) applied here', () => {
+    // Same latent shape as the fixed BOOT_PATHS: 'groups(?:\/|$)' matched
+    // '/groups/<id>' too — a deep-linked never-arrived FIM opening a shared
+    // group link would have been yanked into the welcome mid-visit.
+    pathname = '/groups/9f45bf0e-926e-4df1-886e-577261c449ce';
+    render(<OnboardingArrival />);
+    expect(fetchOnboardingStatus).not.toHaveBeenCalled();
+  });
+
   it('never fires for a sessionless visitor (no actorless call) or while auth resolves', () => {
     authState = { identity: 'sessionless', loading: false };
     render(<OnboardingArrival />);
