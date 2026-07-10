@@ -6,7 +6,7 @@ title: Onboarding arrival and carry-over
 owner: hub
 consumers: []
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -18,7 +18,7 @@ The Hub has zero onboarding surface today. The platform half ([FEAT-PD006](../..
 
 ## Implementation notes
 
-*(Built Cycle J-E 2026-07-10; PR held with the paired PD006 schema-gate PR — `6-done` waits on the gate nod, the production apply + merges, and the TASK-JE-07 deep-cold spot check. Tasks TASK-JE-04/05.)*
+*(Built Cycle J-E 2026-07-10; merged same day — PR #164, stacked on the nodded #163 and retargeted per the stacked-PR rule; deployed and deep-cold-measured before `6-done`. Tasks TASK-JE-04/05/07 `done`.)*
 
 - **Data-boot decision (B1/B4, decided at build):** the arrival read rides BOTH postures — a FIM's landing consumes a new `onboarding` slice on the sign-in overview bundle (zero extra round-trips; `OverviewBoot` → `OnboardingArrival` same-commit adoption ordering), while a Mist takes the canonical standalone `GET /api/me/onboarding` (no bundle fires for a Mist; one small post-paint read). The standalone route stays canonical (ADR-U042 guardrail 3); route-policy conformance green (`getVerifiedUserId` read identity).
 - **The uniform decision:** `hub/components/shell/OnboardingArrival.tsx`, mounted after `OverviewBoot` — fires post-paint on the landing paths (`/`, `/login`, `/groups`, `/mist`) for `mist`/`fim` identities only, once per session (the latch re-arms on failure; the enrolment itself flips `has_enrollment` for every later visit). First arrival → `enrollSelf(onboarding_journey_id)` through the existing enrolment route → route into the player at the welcome; `onboarding.arrived` telemetry; a failed arrival never breaks the landing.
@@ -27,6 +27,8 @@ The Hub has zero onboarding surface today. The platform half ([FEAT-PD006](../..
 - **Tests (red-first):** 17 new unit tests demonstrated red (module absent) plus 2 labelled behaviour flips of the existing mist-redirect pins → full unit **691/691** (93 suites); lint 0 errors; `next build` green. E2E: the new `onboarding-arrival.spec.ts` (3 arcs, effects asserted — Mist arrival→welcome→leaves freely→listed→never re-launched; brand-new FIM first sign-in via the identical path; carry-over resume at the carried position) **3/3 green**; entry/transcendence specs adapted to the front-door reality (labelled); fixture FIMs across six sibling specs pre-enrolled via the new `markArrivedOnce` helper + global-setup ("arrived once" by construction — arrival flows own fresh identities). Full E2E sweep **59 passed**; the 2 remaining failures (`membership-lifecycle` regular-leave, `leadership-transfer` direct-hand-over — a departed group's name stays visible on /groups) **reproduce identically at main HEAD on a clean production build**: pre-existing, out of J-E scope, flagged for follow-up.
 - **Perf-budget conformance:** B1 — the overview one-request test extended to six consumers (labelled adaptation); single-fire across auth-event churn asserted; no render-blocking fetch added to any landing. B4 — the status is session-cached; `markOnboardingArrived` flips the fact locally so the session never refetches to avoid a re-launch. Cold spot-check (ADR-U043 Amendment 1): **pending as TASK-JE-07** — one deep-cold measurement of the arrival path on production, before `6-done`.
 - **Test-infra:** `playwright.config.ts` gained `E2E_BASE_URL` (target an alternate port when :3000 is held by a live manual-testing session); this build's E2E ran on a `next start -p 3001` production build after the :3000 dev server's compile workers wedged mid-session.
+- **Post-build, pre-6-done (same day):** the two flagged E2E failures were root-caused and fixed — `BOOT_PATHS` matched `/groups/<id>`, so a detail-page full load adopted a groups slice nobody consumed there, and a later client-side `/groups` mount consumed it STALE (consume-once), painting a departed group (**PR #166**, red-first, the two specs 10/10 green). The same latent shape in this feature's `ARRIVAL_PATHS` was fixed on the branch before merge (a deep-linked never-arrived FIM opening a shared group link would have been yanked into the welcome) — red-first, unit 693/693.
+- **Deep-cold spot check (TASK-JE-07, ADR-U043 Amendment 1) — RUN 2026-07-10:** production deploy of PR #164 (`a1dd9b2`) confirmed live 20:16:32Z; last setup traffic (measurement FIM sign-in) 20:18:41Z; **23.3 minutes enforced zero traffic**; one authenticated walk of `/groups` (an arrived-once FIM — the B1 steady state) at 20:41:58Z. Result: the landing made **exactly one API request** — `GET /api/me/overview` — whose `x-overview-timing` carried **`n:1`** (the instance's first invocation, provisioning-fresh): **server total 599 ms** (auth 185; the six concurrent slices 337–413, the new `onboarding` slice 407 among them). **Zero standalone `/api/me/onboarding` calls** (the arrival read rode the bundle — the B1 claim verified deep-cold) and **no launch fired** (URL held `/groups` — arrived-once honoured on production). Wall-to-network-idle 6.1 s (cold headless browser + full asset load — a different quantity than the §8 per-request fan-out numbers; labelled as such). The formal budget/tail pass stays with the J-O3 area gate.
 
 ## Solution sketch
 

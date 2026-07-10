@@ -6,7 +6,7 @@ title: Onboarding designation and first-arrival contracts
 owner: platform/domain/journeys
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -20,7 +20,7 @@ This is the platform half of JRN-5 + JRN-15, consumed API-first by the Hub ([FEA
 
 ## Implementation notes
 
-*(Built Cycle J-E 2026-07-10; **schema gate pending** — the PR is held for the nod. Tasks TASK-JE-01..03.)*
+*(Built Cycle J-E 2026-07-10; **gate nodded and merged the same day** — PR #163, Stefan's explicit merge go-ahead executed via the permission gate; the two migrations were applied to the production project and repaired in-session before the merge. Tasks TASK-JE-01..03 `done`.)*
 
 - **Migrations:** `20260710170000_feat_pd006_onboarding_designation_arrival_contracts.sql` (the two columns + the partial unique index + both contract touches) and `20260710171000_feat_pd006_onboarding_journey_seed.sql` (the native-seeded placeholder, 4 steps, DeusEx-owned). Applied to the dev DB and repaired in-session; the schema gate holds the merge.
 - **The gate change, surgically:** the Mist branch admits exactly the designated journey, and only that branch bypasses `has_permission` — the FIM path keeps both gates everywhere, onboarding included; Tier-1 (the context-free system-group grant via FringeIsland Members, `04_system_groups.sql:48`) is what resolves the FIM permission gate for the DeusEx-owned journey, verified at build. **One delta inside the same replacement:** the visibility disjunction gains `or j.is_onboarding_designated` — without it first-arrival enrolment dies P0002 for Mist *and* brand-new FIM (`is_public=false` and no other disjunct fires on a first arrival). The front door is unavoidable-but-unwalled (Amendment 1): out of browse, never out of reach.

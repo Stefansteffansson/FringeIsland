@@ -3,7 +3,7 @@
 ---
 id: TASK-JE-01
 title: PD006 schema + contracts migration (designation flag, Mist-scoped enroll_self_in_journey, get_onboarding_status)
-status: review
+status: done
 assigned_to: claude
 priority: critical
 feature: FEAT-PD006
