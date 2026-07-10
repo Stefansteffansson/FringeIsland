@@ -20,6 +20,19 @@ jest.mock('next/link', () => ({
   default: ({ children, href }: { children: ReactNode; href: string }) => <a href={href}>{children}</a>,
 }));
 
+// FEAT-H023 STORY-4 (J-E): the success landing reads the carried onboarding
+// status — mid-flight resumes into the player, everything else lands /groups.
+const fetchOnboardingStatus = jest.fn<
+  () => Promise<{
+    onboarding_journey_id: string | null;
+    has_enrollment: boolean;
+    has_completed: boolean;
+  }>
+>();
+jest.mock('@/lib/onboarding/client', () => ({
+  fetchOnboardingStatus: () => fetchOnboardingStatus(),
+}));
+
 const push = jest.fn();
 const replace = jest.fn();
 const transcend = jest.fn(async () => ({ error: null as string | null }));
@@ -44,6 +57,11 @@ beforeEach(() => {
   replace.mockClear();
   transcend.mockClear();
   transcend.mockResolvedValue({ error: null });
+  fetchOnboardingStatus.mockReset().mockResolvedValue({
+    onboarding_journey_id: 'jz-1',
+    has_enrollment: false,
+    has_completed: false,
+  });
   jest.mocked(useRouter).mockReturnValue({ push, replace } as unknown as ReturnType<typeof useRouter>);
 });
 
@@ -83,6 +101,45 @@ describe('FEAT-H004 STORY-1 (unit) — outcome navigation', () => {
 
     await userEvent.type(screen.getByLabelText('Full name'), 'Mae Jemison');
     await userEvent.type(screen.getByLabelText('Email'), 'mae@b.test');
+    await userEvent.type(screen.getByLabelText('Password'), 'Transcend123!@#');
+    await userEvent.click(screen.getByTestId('consent-checkbox'));
+    await userEvent.click(screen.getByRole('button', { name: /become a fim/i }));
+
+    await waitFor(() => expect(push).toHaveBeenCalledWith('/groups'));
+  });
+
+  it('resumes a mid-flight onboarding walk at the carried position (H023 STORY-4, JRN-5)', async () => {
+    // The Mist began onboarding; transcendence preserved the enrolment — the
+    // landing RESUMES (never re-enrols, never restarts): into the player, the
+    // resume pointer positions the canvas.
+    fetchOnboardingStatus.mockResolvedValue({
+      onboarding_journey_id: 'jz-1',
+      has_enrollment: true,
+      has_completed: false,
+    });
+    mockAuth('mist');
+    render(<BecomeAFimPage />);
+
+    await userEvent.type(screen.getByLabelText('Full name'), 'Mid Flight');
+    await userEvent.type(screen.getByLabelText('Email'), 'mid@b.test');
+    await userEvent.type(screen.getByLabelText('Password'), 'Transcend123!@#');
+    await userEvent.click(screen.getByTestId('consent-checkbox'));
+    await userEvent.click(screen.getByRole('button', { name: /become a fim/i }));
+
+    await waitFor(() => expect(push).toHaveBeenCalledWith('/journeys/jz-1/play'));
+  });
+
+  it('a completed walk lands on /groups (nothing to resume)', async () => {
+    fetchOnboardingStatus.mockResolvedValue({
+      onboarding_journey_id: 'jz-1',
+      has_enrollment: true,
+      has_completed: true,
+    });
+    mockAuth('mist');
+    render(<BecomeAFimPage />);
+
+    await userEvent.type(screen.getByLabelText('Full name'), 'All Done');
+    await userEvent.type(screen.getByLabelText('Email'), 'done@b.test');
     await userEvent.type(screen.getByLabelText('Password'), 'Transcend123!@#');
     await userEvent.click(screen.getByTestId('consent-checkbox'));
     await userEvent.click(screen.getByRole('button', { name: /become a fim/i }));

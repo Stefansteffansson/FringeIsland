@@ -30,6 +30,7 @@ import {
 } from '@/lib/groups/client';
 import { adoptProfileRead } from '@/lib/profile/client';
 import { adoptAccountStateRead } from '@/lib/account/client';
+import { adoptOnboardingRead, type OnboardingStatus } from '@/lib/onboarding/client';
 
 export type Slice<T> = { data: T } | { error: string };
 
@@ -39,6 +40,7 @@ export interface OverviewResponse {
   groups: Slice<GroupSummary[]>;
   invitations: Slice<MyInvitation[]>;
   nominations: Slice<PendingNomination[]>;
+  onboarding: Slice<OnboardingStatus>;
 }
 
 let latched = false;
@@ -75,6 +77,7 @@ export function prefetchOverview(): void {
   adoptGroupsRead(slice<GroupSummary[]>(bundle, 'groups'));
   adoptMyInvitationsRead(slice<MyInvitation[]>(bundle, 'invitations'));
   adoptMyNominationsRead(slice<PendingNomination[]>(bundle, 'nominations'));
+  adoptOnboardingRead(slice<OnboardingStatus>(bundle, 'onboarding')); // FEAT-H023 (B1)
 }
 
 /** Re-arm the latch (sign-out / session end / account switch). */

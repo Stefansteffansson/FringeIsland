@@ -27,19 +27,28 @@ test('the FringeIsland entry loads sessionless with three doors and no redirect'
   await expect(page.getByRole('link', { name: /sign up/i })).toBeVisible();
 });
 
-test('"Look around" materialises a Mist and lands on the Mist-presence state', async ({ page }) => {
+test('"Look around" materialises a Mist and arrives through the front door; the Mist-presence state stays reachable', async ({
+  page,
+}) => {
+  // Labelled adaptation (FEAT-H023, Cycle J-E): first arrival now auto-launches
+  // the onboarding welcome — the /mist presence state is no longer the landing,
+  // but it remains fully reachable (never a wall, never a re-launch).
   await page.goto('/');
   await page.getByRole('button', { name: /look around/i }).click();
 
-  await expect(page).toHaveURL(/\/mist/, { timeout: 20000 });
-  await expect(page.getByTestId('mist-presence')).toBeVisible();
+  await expect(page).toHaveURL(/\/journeys\/[0-9a-f-]+\/play/, { timeout: 30000 });
+
+  await page.goto('/mist');
+  await expect(page.getByTestId('mist-presence')).toBeVisible({ timeout: 15000 });
   await expect(page.getByRole('link', { name: /become a fim/i })).toBeVisible();
 });
 
 test('the become-a-FIM CTA opens the in-place transcendence flow (FEAT-H004)', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: /look around/i }).click();
-  await expect(page).toHaveURL(/\/mist/, { timeout: 20000 });
+  // FEAT-H023: let the arrival auto-launch settle, then reach the CTA from /mist.
+  await expect(page).toHaveURL(/\/journeys\/[0-9a-f-]+\/play/, { timeout: 30000 });
+  await page.goto('/mist');
 
   await page.getByRole('link', { name: /become a fim/i }).click();
   await expect(page).toHaveURL(/\/become-a-fim/, { timeout: 10000 });

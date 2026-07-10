@@ -25,16 +25,21 @@ test.afterAll(async () => {
   await cleanupAnonymousUsers(createAdminClient());
 });
 
-test('become-a-FIM in place: Mist -> credentials + consent -> /groups (continuity)', async ({
+test('become-a-FIM in place: Mist -> credentials + consent -> the carried walk RESUMES (continuity)', async ({
   page,
 }) => {
   const email = freshEmail('transcend');
   const admin = createAdminClient();
   try {
+    // Labelled adaptation (FEAT-H023, Cycle J-E): a fresh Mist now arrives
+    // THROUGH the front door — wait for the auto-launch to settle before
+    // navigating, then reach the flow from the Mist landing (no re-launch:
+    // the enrolment exists).
     await page.goto('/');
     await page.getByRole('button', { name: /look around/i }).click();
-    await expect(page).toHaveURL(/\/mist/, { timeout: 20000 });
+    await expect(page).toHaveURL(/\/journeys\/[0-9a-f-]+\/play/, { timeout: 30000 });
 
+    await page.goto('/mist');
     await page.getByRole('link', { name: /become a fim/i }).click();
     await expect(page).toHaveURL(/\/become-a-fim/, { timeout: 10000 });
 
@@ -44,10 +49,13 @@ test('become-a-FIM in place: Mist -> credentials + consent -> /groups (continuit
     await page.getByTestId('consent-checkbox').check();
     await page.getByRole('button', { name: /become a fim/i }).click();
 
-    // Continuity — the same session, continued: lands authenticated on /groups
-    // (no "welcome new user" reset; a continued-but-fresh FIM shows the empty state).
-    await expect(page).toHaveURL(/\/groups/, { timeout: 20000 });
-    await expect(page.getByText('No groups yet')).toBeVisible({ timeout: 15000 });
+    // Continuity — the same session, continued. FEAT-H023 STORY-4: the Mist
+    // was mid-onboarding, so the landing RESUMES the carried walk in the
+    // player (the /groups + "No groups yet" landing now belongs to travellers
+    // with nothing to resume — asserted in onboarding-arrival.spec's
+    // completed-walk coverage at unit tier).
+    await expect(page).toHaveURL(/\/journeys\/[0-9a-f-]+\/play/, { timeout: 20000 });
+    await expect(page.getByTestId('journey-player')).toBeVisible({ timeout: 15000 });
   } finally {
     await deleteTranscendedUser(admin, email);
   }
@@ -56,7 +64,9 @@ test('become-a-FIM in place: Mist -> credentials + consent -> /groups (continuit
 test('the consent gate blocks transcendence (no consent -> stays on the flow)', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: /look around/i }).click();
-  await expect(page).toHaveURL(/\/mist/, { timeout: 20000 });
+  // FEAT-H023: let the arrival auto-launch settle, then reach the flow.
+  await expect(page).toHaveURL(/\/journeys\/[0-9a-f-]+\/play/, { timeout: 30000 });
+  await page.goto('/mist');
   await page.getByRole('link', { name: /become a fim/i }).click();
   await expect(page).toHaveURL(/\/become-a-fim/, { timeout: 10000 });
 
@@ -73,7 +83,10 @@ test('the consent gate blocks transcendence (no consent -> stays on the flow)', 
 test('the farewell erases the Mist and returns to the sessionless entry', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: /look around/i }).click();
-  await expect(page).toHaveURL(/\/mist/, { timeout: 20000 });
+  // FEAT-H023: let the arrival auto-launch settle; the Mist landing stays
+  // reachable (no re-launch — the enrolment exists).
+  await expect(page).toHaveURL(/\/journeys\/[0-9a-f-]+\/play/, { timeout: 30000 });
+  await page.goto('/mist');
 
   await page.getByRole('button', { name: /say goodbye/i }).click();
   await expect(page.getByTestId('confirm-modal')).toBeVisible();

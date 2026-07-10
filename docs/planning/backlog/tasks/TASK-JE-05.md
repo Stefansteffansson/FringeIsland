@@ -3,7 +3,7 @@
 ---
 id: TASK-JE-05
 title: H023 front-door-never-a-wall + post-transcendence resume + E2E proofs
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H023

@@ -6,6 +6,7 @@ import { fetchOwnAccountState } from '@/lib/account/queries';
 import { fetchMemberGroups } from '@/lib/groups/queries';
 import { fetchMyInvitations } from '@/lib/groups/invitations';
 import { fetchPendingNominations } from '@/lib/groups/leadership';
+import { fetchOnboardingStatus } from '@/lib/onboarding/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 /**
@@ -80,7 +81,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  const [profile, account_state, groups, invitations, nominations] = await Promise.all([
+  const [profile, account_state, groups, invitations, nominations, onboarding] = await Promise.all([
     readSlice(
       'profile',
       userId,
@@ -127,16 +128,25 @@ export async function GET() {
       'Failed to load nominations',
       timings,
     ),
+    // FEAT-H023: the first-arrival read rides the landing (B1 — no extra
+    // round-trip); the standalone /api/me/onboarding stays canonical.
+    readSlice(
+      'onboarding',
+      userId,
+      () => fetchOnboardingStatus(supabase),
+      'Failed to load onboarding status',
+      timings,
+    ),
   ]);
 
-  const failed = [profile, account_state, groups, invitations, nominations].filter(
+  const failed = [profile, account_state, groups, invitations, nominations, onboarding].filter(
     (s) => 'error' in s,
   ).length;
   timings.total = Math.round(performance.now() - tStart);
   emitTelemetry('overview.read', { actor: userId, failed, timings });
 
   return NextResponse.json(
-    { profile, account_state, groups, invitations, nominations },
+    { profile, account_state, groups, invitations, nominations, onboarding },
     { headers: { 'x-overview-timing': JSON.stringify(timings) } },
   );
 }

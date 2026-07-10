@@ -72,10 +72,15 @@ describe('FEAT-H019 — /journeys catalogue page (STORY-1)', () => {
     await waitFor(() => expect(replace).toHaveBeenCalledWith('/login?redirect=/journeys'));
   });
 
-  it('redirects a Mist to the entry (the Mist journey surface is J-E)', async () => {
+  it('admits a Mist — their journeys list is where onboarding stays reachable (H023, ADR-U045)', async () => {
+    // J-E flips the pre-U045 redirect: a Mist walks exactly one journey
+    // (onboarding), and H023 STORY-3 requires it deliberately resumable from
+    // the journeys list. The substrate reads (catalogue, my-enrolments) are
+    // actor-gated, Mist-callable contracts.
     authState = { user: { id: 'm1' }, identity: 'mist', loading: false };
     render(<JourneysPage />);
-    await waitFor(() => expect(replace).toHaveBeenCalledWith('/'));
+    await waitFor(() => expect(fetchJourneyCatalog).toHaveBeenCalled());
+    expect(replace).not.toHaveBeenCalled();
   });
 
   it('renders the skeleton grid (never a spinner) while the first read is in flight', () => {

@@ -29,6 +29,35 @@ export default async function globalSetup(config: FullConfig) {
   if (error) throw new Error(`Failed to create session user: ${error.message}`);
   console.log(`[e2e-setup] Created user: ${data.user.email}`);
 
+  // FEAT-H023: the shared FIM has "arrived once" BY CONSTRUCTION. Without
+  // this, the first /groups landing of every run auto-launches onboarding and
+  // yanks whichever spec lands first into the player. Arrival flows are
+  // onboarding-arrival.spec's own fixtures, on fresh identities.
+  const { data: profile } = await admin
+    .from('users')
+    .select('personal_group_id')
+    .eq('auth_user_id', data.user.id)
+    .single();
+  const { data: onboarding } = await admin
+    .from('journeys')
+    .select('id')
+    .eq('is_onboarding_designated', true)
+    .maybeSingle();
+  if (profile?.personal_group_id && onboarding?.id) {
+    const { error: enrolErr } = await admin.from('journey_enrollments').insert({
+      journey_id: onboarding.id,
+      group_id: profile.personal_group_id,
+      enrolled_by_group_id: profile.personal_group_id,
+      status: 'active',
+    });
+    if (enrolErr) throw new Error(`Failed to pre-enrol session user: ${enrolErr.message}`);
+    console.log('[e2e-setup] Session user pre-enrolled in onboarding (arrived once)');
+  } else {
+    console.log(
+      '[e2e-setup] WARNING: no designated onboarding journey found — arrival will fire live',
+    );
+  }
+
   console.log('[e2e-setup] Logging in via browser...');
   const browser = await chromium.launch();
   const context = await browser.newContext();
