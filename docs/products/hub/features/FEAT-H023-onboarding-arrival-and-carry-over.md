@@ -6,7 +6,7 @@ title: Onboarding arrival and carry-over
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
