@@ -8,11 +8,6 @@ import {
 } from '@/lib/groups/invitations';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): the pending list is a group-page hot read — Edge runtime,
-// pinned to `dub1` (ADR-U035). POST rides the same file (single RPC, Edge-safe).
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-H015 — GET /api/groups/[id]/invitations (STORY-3 read).
  *

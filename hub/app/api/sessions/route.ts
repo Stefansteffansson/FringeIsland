@@ -4,12 +4,6 @@ import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchOwnSessions } from '@/lib/sessions/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036 addendum): Edge runtime + `dub1` pin — GET is the /sessions
-// page's initial-render read path (the journal-route precedent). Edge-safe
-// (a single SECURITY DEFINER RPC, no Node-only imports).
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-H012 — GET /api/sessions (IDN-11).
  *

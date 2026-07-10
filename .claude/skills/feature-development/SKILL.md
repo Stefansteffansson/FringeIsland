@@ -104,15 +104,16 @@ After all tasks for a story are done:
   - the contract is enforced **platform-side** (SECURITY DEFINER RPC / RLS / trigger / column grant), not only in a Surface route or `lib`; a Surface route may host presentation/session plumbing but is **never the sole home** of a business rule, authorization decision, or lifecycle/consent invariant;
   - any **custom Next.js route** names which of the PC-3 §7 three justifications (cross-table mutation / external service-role call / multi-step transaction) warrants it — the default is "expose via PostgREST RPC";
   - every **app-layer gate has an adversarial integration test** that exercises the direct PostgREST path (including an anonymous-session Mist) and proves the substrate refuses what the route refuses — not just the route. (This is the check that would have caught the ADR-U038 S1–S3 holes at build time.)
-- **Route-policy DoD (required before `6-done`, ADR-U036/U037)** — for every new or changed Surface route, until the automated conformance test exists (once it does, that test green replaces these manual rows):
-  - mutating verbs (POST/PATCH/PUT/DELETE) authenticate with **`getUser()`** (server-verified) and run on the **Node runtime**;
-  - hot-path reads (render-blocking GETs) use **`getClaims()`** + Edge runtime + `preferredRegion: 'dub1'`;
-  - any deviation names its documented exception in the spec's Implementation notes. (These are the two rows that drifted in G-F and were caught only by the 2026-07-06 audit.)
+- **Route-policy DoD (required before `6-done`, ADR-U036 Amendment 2 / ADR-U037)** — the automated conformance test (`hub/tests/unit/app/api/route-policy-conformance.test.ts`) is the enforcement home; that test green **is** this DoD. The matrix it asserts:
+  - route files declare **no `runtime`/`preferredRegion` exports** — every route takes the platform-default Node runtime; the region pin lives in `hub/vercel.json` alone (ADR-U035);
+  - mutating verbs (POST/PATCH/PUT/DELETE) authenticate with **`getUser()`** (server-verified);
+  - GET-exporting files read identity locally via **`getClaims()`/`getVerifiedUserId()`**;
+  - any deviation is a named entry in the test's exception lists **plus** the matching justification in the spec's Implementation notes.
 - **Performance DoD (required before `6-done` for surface halves, ADR-U043)**:
   - the feature spec's **Performance budget** section is filled — budget class + data-boot path; a page that gates first paint on fetches joins the overview bundle or a session cache per ADR-U042, or justifies its standalone read;
   - a test asserts the first-paint request behaviour for new pages (call count ≤ the spec's stated N, zero duplicate fetches across auth-event churn) and the loading-state rule (B6);
   - in-repo prior art (overview bundle slices, session caches, `OverviewBoot`, skeletons) was checked before adding new fetch plumbing;
-  - every recorded **cold** number states its idle depth — a cold-scenario measurement requires ≥ 20 minutes of enforced zero traffic on production with the keep-warm pinger paused; fresh-deploy and active-day samples are *shallow-cold*, a separately-labelled class that satisfies no cold scenario (ADR-U043 Amendment 1);
+  - every recorded **cold** number states its idle depth — a cold-scenario measurement requires ≥ 20 minutes of enforced zero traffic on production with no synthetic warm-up traffic in the window (the keep-warm pinger is retired — ADR-U036 Amendment 2); fresh-deploy and active-day samples are *shallow-cold*, a separately-labelled class that satisfies no cold scenario (ADR-U043 Amendment 1);
   - a cycle that adds or reroutes a request on a user-facing first paint runs **one deep-cold spot measurement** of the touched page before `6-done` (one scenario, one page — the area gate remains the full pass).
 - In the **same commit** as the maturity change, update the feature-inventory summary row in the parent entity's `SPECIFICATION.md` (§L4) to reflect `6-done`. Per the `ecosystem-decomposition` skill L4 write scope, this is L4's property; `feature-development` is the operational layer carrying the update out. The `doc-health-check` skill §8 verifies the summary matches the actual state of `features/` at cycle boundaries — miss this step and the check will flag drift.
 - Update the `features/README.md` index

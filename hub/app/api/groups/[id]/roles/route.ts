@@ -9,12 +9,6 @@ import {
 } from '@/lib/groups/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): the fabric read is a member-facing page-load hot path —
-// Edge runtime, pinned to `dub1` for DB co-location (ADR-U035). POST rides the
-// same file (single RPC, Edge-safe). Everything imported must stay Edge-safe.
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-H014 — GET /api/groups/[id]/roles (GRP-6/7 read, STORY-1).
  *

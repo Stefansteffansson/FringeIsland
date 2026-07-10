@@ -9,13 +9,6 @@ import {
 } from '@/lib/profile/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): run on the Edge runtime (V8 isolate, ~0ms cold start), pinned to
-// `dub1` so co-location with the Ireland DB (ADR-U035) is preserved. GET + PATCH both
-// use only Edge-safe APIs (@supabase/ssr, next/headers cookies, request.json, fetch).
-// Keep this route's imports Edge-safe (no Node-only APIs).
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-PC003 — the self-service profile contract boundary (PC-2 Identity, the
  * platform half of IDN-4). GET reads the caller's own identity-scope profile;

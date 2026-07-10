@@ -4,11 +4,6 @@ import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchGroupJourneyProgress } from '@/lib/journeys/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): the group progress panel is an expand-on-demand hot read —
-// Edge runtime, pinned to `dub1` (ADR-U035). Imports must stay Edge-safe.
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-H022 — GET /api/groups/[id]/journeys/[enrollmentId]/progress (JRN-16/17).
  *

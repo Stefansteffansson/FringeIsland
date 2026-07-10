@@ -4,11 +4,6 @@ import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchMyEnrollments } from '@/lib/journeys/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): own-enrolments is a hot read (Enrolled badges on the
-// catalogue, the withdraw affordance's enrolment ids) — Edge + `dub1`.
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-H019 — GET /api/me/journeys (STORY-1's "my journeys" read).
  *

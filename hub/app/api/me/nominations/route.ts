@@ -4,11 +4,6 @@ import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchPendingNominations } from '@/lib/groups/leadership';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): rides the /groups page load — Edge runtime, pinned to
-// `dub1` (ADR-U035).
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-H017 — GET /api/me/nominations (MEM-7, STORY-2 read).
  *

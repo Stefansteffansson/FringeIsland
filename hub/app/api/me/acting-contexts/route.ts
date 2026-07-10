@@ -4,11 +4,6 @@ import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchActingContexts } from '@/lib/groups/acting';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): loads with every group page for the act-as selector — a
-// member-facing hot read. Edge runtime, pinned to `dub1` (ADR-U035).
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-H018 — GET /api/me/acting-contexts (STORY-1).
  *

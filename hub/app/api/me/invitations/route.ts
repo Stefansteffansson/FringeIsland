@@ -4,11 +4,6 @@ import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchMyInvitations } from '@/lib/groups/invitations';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): rides the /groups page load — Edge runtime, pinned to
-// `dub1` (ADR-U035).
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-H015 — GET /api/me/invitations (STORY-4 read).
  *

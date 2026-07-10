@@ -3,9 +3,6 @@ import { createClient } from '@/lib/supabase/server';
 import { setJourneyProgressSharing } from '@/lib/journeys/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Mutation-only route — Node runtime (route-policy: mutations ride getUser and
-// stay off Edge).
-
 /**
  * FEAT-H022 — POST /api/journeys/enrollments/[enrollmentId]/sharing (JRN-17,
  * traveller side). Grant/withdraw progress sharing for THIS via-group enrolment.

@@ -4,11 +4,6 @@ import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchPlayerState } from '@/lib/journeys/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): the player boot is the B5-critical navigation-target hot
-// read — Edge runtime, pinned to `dub1` (ADR-U035). Imports must stay Edge-safe.
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-H020 — GET /api/journeys/enrollments/[enrollmentId]/player (JRN-6/10, STORY-1/5).
  *

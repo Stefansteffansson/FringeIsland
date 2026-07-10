@@ -4,11 +4,6 @@ import { getVerifiedUserId } from '@/lib/supabase/auth';
 import { fetchGroupMembershipsOf } from '@/lib/groups/acting';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
-// Perf (ADR-U036): loads with the wielded group's page — a member-facing hot
-// read. Edge runtime, pinned to `dub1` (ADR-U035).
-export const runtime = 'edge';
-export const preferredRegion = 'dub1';
-
 /**
  * FEAT-H018 — GET /api/groups/[id]/acting/memberships (STORY-3 read).
  *
