@@ -6,10 +6,15 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { prefetchOverview } from '@/lib/me/overview-client';
 
 // The post-login flow's surfaces: the landing page, sign-in (auth-ready
-// arrives here, before the redirect), and the groups home the redirect lands
-// on. A FIM deep-linking elsewhere keeps today's per-resource reads — the
-// bundle never over-fetches for a surface that doesn't render it (privacy §7).
-const BOOT_PATHS = /^\/(?:$|login(?:\/|$)|groups(?:\/|$))/;
+// arrives here, before the redirect), and the groups HOME the redirect lands
+// on — exactly, never group detail pages. A FIM deep-linking elsewhere keeps
+// today's per-resource reads — the bundle never over-fetches for a surface
+// that doesn't render it (privacy §7). Fix 2026-07-10: the old shape
+// `groups(?:\/|$)` also matched '/groups/<id>', so a full-load arrival on a
+// DETAIL page adopted a groups slice nobody consumed there; a later
+// client-side /groups mount then consumed it STALE (consume-once), painting
+// a departed group after leave/hand-over (the two E2E failures at main HEAD).
+const BOOT_PATHS = /^\/(?:$|login\/?$|groups\/?$)/;
 
 /**
  * ADR-U042 guardrail 6 — the bootstrap trigger.
