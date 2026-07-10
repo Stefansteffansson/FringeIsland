@@ -74,6 +74,18 @@ describe('ADR-U042 (unit) — OverviewBoot', () => {
     expect(prefetchOverview).not.toHaveBeenCalled();
   });
 
+  it('does not fire on a group DETAIL page — a deep link, not the groups home', () => {
+    // Fix 2026-07-10: the old regex matched '/groups/<id>' too, so a full-load
+    // arrival on a detail page adopted a groups slice NOBODY consumed there —
+    // and a later client-side /groups mount consumed it STALE (consume-once),
+    // painting a departed group after leave/hand-over flows (the two E2E
+    // failures found at main HEAD during Cycle J-E). The bundle fires on the
+    // groups HOME, never on detail deep-links (the documented privacy intent).
+    pathname = '/groups/9f45bf0e-926e-4df1-886e-577261c449ce';
+    render(<OverviewBoot />);
+    expect(prefetchOverview).not.toHaveBeenCalled();
+  });
+
   it('renders nothing', () => {
     const { container } = render(<OverviewBoot />);
     expect(container).toBeEmptyDOMElement();

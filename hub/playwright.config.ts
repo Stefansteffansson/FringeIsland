@@ -18,7 +18,10 @@ export default defineConfig({
   globalTeardown: './tests/e2e/global-teardown.ts',
 
   use: {
-    baseURL: 'http://localhost:3000',
+    // E2E_BASE_URL lets a run target an alternate port (e.g. `next start
+    // -p 3001` when the :3000 dev server is owned by a live manual-testing
+    // session — the documented coexistence friction).
+    baseURL: process.env.E2E_BASE_URL ?? 'http://localhost:3000',
     storageState: 'tests/e2e/.auth/user.json',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
