@@ -460,7 +460,7 @@ describe('FEAT-PD002 — journey catalogue & enrolment contracts (J-A)', () => {
       expect(rows).toHaveLength(0);
     });
 
-    it('refuses a Mist (42501 — ADR-U045 disposition: replaced in place at J-E)', async () => {
+    it('refuses a Mist on a non-onboarding journey (42501 — the ADR-U045 gate, realized at J-E: FIM-only everywhere but the designated onboarding journey)', async () => {
       const c = await asMist();
       const { error } = await c.rpc('enroll_self_in_journey', { p_journey_id: j1 });
       expect(error).not.toBeNull();
