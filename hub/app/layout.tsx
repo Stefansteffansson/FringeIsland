@@ -5,6 +5,7 @@ import { AuthProvider } from '@/lib/auth/AuthContext';
 import { AccountStateProvider } from '@/lib/account/AccountStateContext';
 import { AccountStateGate } from '@/components/account/AccountStateGate';
 import { OverviewBoot } from '@/components/shell/OverviewBoot';
+import { OnboardingArrival } from '@/components/shell/OnboardingArrival';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -26,6 +27,10 @@ export default function RootLayout({
               in traversal order, so the bootstrap bundle is adopted before
               AccountStateProvider / AccountMenu fire their own reads. */}
           <OverviewBoot />
+          {/* FEAT-H023: mounted AFTER OverviewBoot — same-commit effect order
+              means the bundle's onboarding slice is adopted before the arrival
+              decision reads it (zero extra round-trips for a FIM landing). */}
+          <OnboardingArrival />
           <AccountStateProvider>
             <AccountStateGate>{children}</AccountStateGate>
           </AccountStateProvider>

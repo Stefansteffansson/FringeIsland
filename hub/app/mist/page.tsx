@@ -86,6 +86,15 @@ export default function MistPresencePage() {
           Become a FIM to keep your journey
         </Link>
 
+        {/* FEAT-H023 (STORY-3): the walk stays deliberately resumable — the
+            front door never re-launches, but it is always a door. */}
+        <p className="mt-4 text-sm text-gray-600">
+          <Link href="/journeys" className="font-medium text-blue-600 underline hover:text-blue-800">
+            Your journeys
+          </Link>{' '}
+          — continue your walk whenever you choose.
+        </p>
+
         <p className="mt-6 text-sm text-gray-500">
           Not staying?{' '}
           <button

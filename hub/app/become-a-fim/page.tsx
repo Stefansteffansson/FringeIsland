@@ -11,6 +11,7 @@ import { InlineError } from '@/components/ui/InlineError';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 import { TRANSCENDENCE_POLICY_VERSION } from '@/lib/auth/transcendence';
+import { fetchOnboardingStatus } from '@/lib/onboarding/client';
 
 /**
  * FEAT-H004 — the in-place become-a-FIM flow (the real transcendence, replacing
@@ -71,7 +72,20 @@ export default function BecomeAFimPage() {
       return;
     }
 
-    // Continuity — the same session, continued; the new FIM lands on /groups.
+    // Continuity — the same session, continued. FEAT-H023 STORY-4 (JRN-5): a
+    // Mist mid-onboarding RESUMES at the carried position — the enrolment
+    // survived transcendence platform-side; the player's resume pointer
+    // positions the canvas. Never re-enrolled, never restarted. Everyone
+    // else lands on /groups (a first-arrival FIM is caught there by the
+    // uniform OnboardingArrival path).
+    const status = await fetchOnboardingStatus().catch(() => null);
+    if (status?.onboarding_journey_id && status.has_enrollment && !status.has_completed) {
+      emitTelemetry('onboarding.resumed_after_transcendence', {
+        journey: status.onboarding_journey_id,
+      });
+      router.push(`/journeys/${status.onboarding_journey_id}/play`);
+      return;
+    }
     router.push('/groups');
   }
 

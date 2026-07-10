@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { createAdminClient } from './helpers/auth';
+import { createAdminClient, markArrivedOnce } from './helpers/auth';
 
 /**
  * FEAT-H017 (E2E) — Cycle G-E: the ways a group ends or changes hands.
@@ -54,6 +54,7 @@ async function createFim(email: string, displayName: string): Promise<Fim> {
     user_metadata: { display_name: displayName, consent_accepted: 'true' },
   });
   if (error) throw error;
+  await markArrivedOnce(admin, data.user.id); // FEAT-H023: fixture FIMs have arrived once
   const pgId = await waitForPersonalGroup(data.user.id);
   return { authId: data.user.id, pgId };
 }

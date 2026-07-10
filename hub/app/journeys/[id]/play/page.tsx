@@ -131,10 +131,10 @@ function JourneyPlayer() {
       router.replace(`/login?redirect=${dest}`);
       return;
     }
-    if (identity === 'mist') {
-      router.replace('/');
-      return;
-    }
+    // FEAT-H023 (J-E): a Mist is admitted — the front door lands them IN the
+    // player (STORY-1, ADR-U045). What a Mist may boot stays enforced
+    // platform-side: get_player_state is enrolment-scoped, and a Mist can
+    // hold exactly one enrolment (the designated onboarding journey).
     // react-hooks/set-state-in-effect suppression: the deliberate load-on-mount
     // house pattern (catalogue / detail / groups) — a single `boot()` per stable
     // (userId, enrolment) so auth-event churn fires no duplicate read.
@@ -265,7 +265,9 @@ function JourneyPlayer() {
   const title = player?.journey.title ?? seedTitle ?? 'Journey';
 
   let body: React.ReactNode;
-  if (authLoading || identity !== 'fim') {
+  // FEAT-H023: a Mist renders too — the skeleton covers auth resolution and
+  // the sessionless redirect window only (the substrate scopes what boots).
+  if (authLoading || identity === 'sessionless') {
     body = <PlayerSkeleton />;
   } else if (error) {
     body = <InlineError message={error} />;

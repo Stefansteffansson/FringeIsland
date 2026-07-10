@@ -66,10 +66,10 @@ export default function JourneysPage() {
       router.replace('/login?redirect=/journeys');
       return;
     }
-    if (identity === 'mist') {
-      router.replace('/');
-      return;
-    }
+    // FEAT-H023 (J-E): a Mist is admitted — their onboarding walk must stay
+    // deliberately resumable from this list (STORY-3, ADR-U045). The reads
+    // (catalogue, my-enrolments) are actor-gated Mist-callable contracts;
+    // enrol attempts on anything but onboarding refuse 42501 platform-side.
     // react-hooks/set-state-in-effect suppression: deliberate load-on-mount
     // house pattern (see app/groups/page.tsx note; disposition at the J-A retro).
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -82,7 +82,9 @@ export default function JourneysPage() {
     <AppShell title="Journeys">
       <h1 className="mb-6 text-3xl font-bold text-gray-900">Journeys</h1>
 
-      {authLoading || identity !== 'fim' || (!error && journeys === null) ? (
+      {/* FEAT-H023: a Mist renders too (their onboarding row lives here) —
+          the skeleton covers auth resolution + the sessionless window only. */}
+      {authLoading || identity === 'sessionless' || (!error && journeys === null) ? (
         <SkeletonGrid />
       ) : error ? (
         <InlineError message={error} />

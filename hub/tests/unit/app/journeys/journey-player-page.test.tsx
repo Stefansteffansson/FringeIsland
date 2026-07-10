@@ -118,11 +118,15 @@ describe('STORY-1 — the FIM gate', () => {
     );
   });
 
-  it('redirects a Mist to the entry', async () => {
+  it('admits a Mist — the onboarding welcome renders in the ordinary player (H023, ADR-U045)', async () => {
+    // J-E flips the pre-U045 redirect: the front door lands a Mist IN the
+    // player. What a Mist may boot stays enforced platform-side (the
+    // enrolment-scoped get_player_state) — the page gate was UI-only.
     withParam();
     authState = { user: { id: 'm1' }, identity: 'mist', loading: false };
     render(<JourneyPlayerPage />);
-    await waitFor(() => expect(replace).toHaveBeenCalledWith('/'));
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    expect(replace).not.toHaveBeenCalled();
   });
 });
 

@@ -1,5 +1,5 @@
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
-import { createAdminClient } from './helpers/auth';
+import { createAdminClient, markArrivedOnce } from './helpers/auth';
 
 /**
  * FEAT-H014 (E2E) — Cycle G-B: the delegation journey (Steward shapes a
@@ -66,6 +66,7 @@ test.describe.serial('FEAT-H014 — roles & permissions (GRP-6/7/8)', () => {
       user_metadata: { display_name: 'GB Steward', consent_accepted: 'true' },
     });
     if (sErr) throw sErr;
+    await markArrivedOnce(admin, steward.user.id); // FEAT-H023: fixture FIMs have arrived once
     stewardAuthId = steward.user.id;
     stewardPgId = await waitForPersonalGroup(stewardAuthId);
 
@@ -76,6 +77,7 @@ test.describe.serial('FEAT-H014 — roles & permissions (GRP-6/7/8)', () => {
       user_metadata: { display_name: 'GB Assignee', consent_accepted: 'true' },
     });
     if (mErr) throw mErr;
+    await markArrivedOnce(admin, member.user.id); // FEAT-H023: fixture FIMs have arrived once
     memberAuthId = member.user.id;
     memberPgId = await waitForPersonalGroup(memberAuthId);
 

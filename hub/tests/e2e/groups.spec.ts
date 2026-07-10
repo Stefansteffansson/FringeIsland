@@ -20,7 +20,7 @@ test('authenticated /groups renders without redirect, with the bell mount (V3 se
  * admin client (service_role — the ADR-U038 narrowing does not bind it) and a
  * second, spec-created FIM. Everything created here is cleaned up.
  */
-import { createAdminClient } from './helpers/auth';
+import { createAdminClient, markArrivedOnce } from './helpers/auth';
 
 test.describe('FEAT-H013 — create & steward (GRP-1/2/3/5 + GRP-4 detail)', () => {
   const stamp = Date.now();
@@ -106,6 +106,7 @@ test.describe('FEAT-H013 — non-member honesty (no-leak + member-list toggle)',
       user_metadata: { display_name: 'GA Outsider', consent_accepted: 'true' },
     });
     if (error) throw error;
+    await markArrivedOnce(admin, created.user.id); // FEAT-H023: fixture FIMs have arrived once
     probeAuthId = created.user.id;
   });
 

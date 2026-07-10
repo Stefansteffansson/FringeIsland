@@ -117,3 +117,30 @@ export async function deleteE2EUser(admin: SupabaseClient, email: string): Promi
     await admin.auth.admin.deleteUser(profile.auth_user_id as string);
   }
 }
+
+/**
+ * FEAT-H023: mark a fixture FIM as having "arrived once" — pre-enrol them in
+ * the designated onboarding journey. Without this, the fixture's first
+ * /groups landing auto-launches onboarding (correct product behaviour) and
+ * yanks the spec into the player. Arrival flows belong to
+ * onboarding-arrival.spec, which uses fresh un-arrived identities.
+ */
+export async function markArrivedOnce(admin: SupabaseClient, authUserId: string): Promise<void> {
+  const { data: profile } = await admin
+    .from('users')
+    .select('personal_group_id')
+    .eq('auth_user_id', authUserId)
+    .single();
+  const { data: onboarding } = await admin
+    .from('journeys')
+    .select('id')
+    .eq('is_onboarding_designated', true)
+    .maybeSingle();
+  if (!profile?.personal_group_id || !onboarding?.id) return;
+  await admin.from('journey_enrollments').insert({
+    journey_id: onboarding.id,
+    group_id: profile.personal_group_id,
+    enrolled_by_group_id: profile.personal_group_id,
+    status: 'active',
+  });
+}
