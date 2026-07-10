@@ -22,6 +22,11 @@ const removeJournalEntry = jest.fn<(id: string) => Promise<void>>();
 
 jest.mock('@/lib/journal/client', () => ({
   fetchJournalEntries: (opts?: { before?: string }) => fetchJournalEntries(opts),
+  // Labelled adaptation (2026-07-10 retrofit): the panel now seeds from the
+  // session cache; a null peek keeps every scenario here on its original
+  // cold-load path — cache behaviour is covered by client-cache.test.ts and
+  // journal-skeleton.test.tsx.
+  peekJournalEntries: () => null,
   postJournalEntry: (t: string | null, b: string) => postJournalEntry(t, b),
   patchJournalEntry: (id: string, t: string | null, b: string) => patchJournalEntry(id, t, b),
   removeJournalEntry: (id: string) => removeJournalEntry(id),

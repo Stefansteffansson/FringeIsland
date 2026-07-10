@@ -3,7 +3,7 @@
 ---
 id: TASK-JE-06
 title: Journal retrofit: session cache + skeleton (FEAT-H011 revision — 6-done spec touch)
-status: todo
+status: done
 assigned_to: claude
 priority: medium
 feature: FEAT-H011

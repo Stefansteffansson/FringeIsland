@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useState } from 'react';
 import {
   fetchJournalEntries,
+  peekJournalEntries,
   postJournalEntry,
   patchJournalEntry,
   removeJournalEntry,
@@ -10,7 +11,7 @@ import {
 } from '@/lib/journal/client';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { InlineError } from '@/components/ui/InlineError';
-import { LoadingState } from '@/components/ui/LoadingState';
+import { SkeletonList } from '@/components/ui/SkeletonList';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 /**
@@ -103,8 +104,10 @@ function EntryForm({
 }
 
 export function JournalPanel() {
-  const [entries, setEntries] = useState<JournalEntry[]>([]);
-  const [loading, setLoading] = useState(true);
+  // B4 revisit: seed from the session cache — a warm return paints instantly
+  // while the effect's read still revalidates in the background.
+  const [entries, setEntries] = useState<JournalEntry[]>(() => peekJournalEntries() ?? []);
+  const [loading, setLoading] = useState(() => peekJournalEntries() === null);
   const [error, setError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [editor, setEditor] = useState<EditorState>({ mode: 'compose' });
@@ -119,7 +122,10 @@ export function JournalPanel() {
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
+    // Only fall back to the skeleton when there is nothing to paint (cold
+    // load, or a mutation just dropped the cache) — a warm revisit keeps the
+    // seeded list on screen through the revalidate (B4).
+    if (peekJournalEntries() === null) setLoading(true);
     setError(null);
     (async () => {
       try {
@@ -197,7 +203,7 @@ export function JournalPanel() {
     }
   }
 
-  if (loading) return <LoadingState label="Opening your journal..." />;
+  if (loading) return <SkeletonList />; // deferred skeleton, never a spinner (B6)
   if (error) {
     return (
       <div className="space-y-3">

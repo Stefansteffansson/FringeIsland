@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { AppShell } from '@/components/shell/AppShell';
-import { LoadingState } from '@/components/ui/LoadingState';
+import { SkeletonList } from '@/components/ui/SkeletonList';
 import { JournalPanel } from '@/components/journal/JournalPanel';
 
 /**
@@ -39,7 +39,7 @@ export default function JournalPage() {
         A private place to reflect. Only you can read what you write here.
       </p>
       {authLoading || identity !== 'fim' ? (
-        <LoadingState label="Opening your journal..." />
+        <SkeletonList /> // deferred skeleton, never a spinner (B6)
       ) : (
         <JournalPanel />
       )}
