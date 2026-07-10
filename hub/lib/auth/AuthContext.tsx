@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { invalidateProfileCache } from '@/lib/profile/client';
 import { invalidateGroupsCache } from '@/lib/groups/client';
 import { invalidateJourneysCache } from '@/lib/journeys/client';
+import { invalidateJournalCache } from '@/lib/journal/client';
 import { invalidatePlayerCache } from '@/lib/journeys/player';
 import { invalidateAccountStateAdoption } from '@/lib/account/client';
 import { invalidateOverview } from '@/lib/me/overview-client';
@@ -90,6 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         invalidateProfileCache();
         invalidateGroupsCache();
         invalidateJourneysCache();
+        invalidateJournalCache();
         invalidatePlayerCache();
         invalidateAccountStateAdoption();
         invalidateOverview();
