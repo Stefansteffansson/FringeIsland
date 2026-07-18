@@ -14,6 +14,14 @@
 > **Identity-state rename (2026-06-21, ADR-U031):** the anonymous entrant called the **Shadow** below
 > is now the **Mist**; "Shadow" is reassigned to the place-3 menace. The references below are
 > era-correct and deliberately unedited.
+>
+> **Whisp naming + living-anatomy pointer (2026-07-18):** the companion called the **AI Mentor** below
+> is the **Whisp** in current canon, with ownership split by face (ADR-U029: DS-1 world-presence,
+> DS-7 the being); "The Other Side" below is old-cosmology naming — the canonical worlds topology
+> lives in [`../ecosystem/universe/cosmology/`](../ecosystem/universe/cosmology/README.md). The
+> **current living anatomy** is [`ARCHITECTURE_ANATOMY.md`](ARCHITECTURE_ANATOMY.md) plus the current
+> `ECOSYSTEM_ANATOMY_*` diagram (indexed in [`README.md`](README.md)). As before, the body below is
+> era-correct and deliberately unedited.
 
 ---
 

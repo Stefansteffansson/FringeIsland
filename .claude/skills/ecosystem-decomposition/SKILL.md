@@ -141,7 +141,7 @@ L2 reads Vision to know what categories of entities exist and what principles ev
 ### Read context
 
 - `docs/ecosystem/VISION.md` — as authority on purpose.
-- `docs/architecture/ECOSYSTEM_ANATOMY_V5.svg` and its defining ADRs (ADR-U023, ADR-U002) — as authority on structure.
+- `docs/architecture/ECOSYSTEM_ANATOMY_V6.svg` and its defining ADRs (ADR-U023, ADR-U002) — as authority on structure.
 - Sibling entity DESCRIPTION.md files in the same category — for boundary coherence; your entity's boundaries are defined against its siblings.
 - `docs/ecosystem/strategy/PRODUCTS_AND_PLATFORM.md` and similar locked strategy documents.
 - Any ADR that specifically constrains this entity (e.g., ADR-U004 for visitor access when writing The Hub).
@@ -216,7 +216,7 @@ The vocabulary variant is the newest of the three; G-26 in `docs/ecosystem/how-w
 ### Read context
 
 - `{entity}/DESCRIPTION.md` and L2's sections of `{entity}/SPECIFICATION.md` — the entity's authority as defined upstream.
-- `docs/ecosystem/VISION.md`, `docs/architecture/ECOSYSTEM_ANATOMY_V5.svg`, ADR-U023, ADR-U002 — ecosystem-wide constraints.
+- `docs/ecosystem/VISION.md`, `docs/architecture/ECOSYSTEM_ANATOMY_V6.svg`, ADR-U023, ADR-U002 — ecosystem-wide constraints.
 - Sibling entities' DESCRIPTION.md — for boundary coherence (a capability that overlaps a sibling's territory is a signal of either a boundary problem or a cross-entity capability that belongs elsewhere).
 - `docs/verticals/{name}.md` — as scaffolds, per G-03 — for vertical-impact obligations.
 

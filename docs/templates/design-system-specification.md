@@ -23,7 +23,7 @@ The design-system tier has properties no other tier has: every Surface depends o
 
 ## L2 — Identity, boundaries, and technical shape
 
-*L2 authorship. Derived from Vision, the design-system-tier `CLAUDE.md`, and the ecosystem anatomy (`../architecture/ECOSYSTEM_ANATOMY_V5.svg`, ADR-U023). Revised when the design system's identity, distribution mechanism, versioning policy, constraint set, cross-surface contracts, theming model, or operational shape changes. Changes here propagate to every Surface — see §4 Versioning and stability policy.*
+*L2 authorship. Derived from Vision, the design-system-tier `CLAUDE.md`, and the ecosystem anatomy (`../architecture/ECOSYSTEM_ANATOMY_V6.svg`, ADR-U023). Revised when the design system's identity, distribution mechanism, versioning policy, constraint set, cross-surface contracts, theming model, or operational shape changes. Changes here propagate to every Surface — see §4 Versioning and stability policy.*
 
 ### 1. What it is (and what it isn't)
 
@@ -36,7 +36,7 @@ The design system is the **shared visual language** that every FringeIsland Surf
 
 ### 2. Architecture position
 
-Where this tier sits in the ecosystem anatomy (`../architecture/ECOSYSTEM_ANATOMY_V5.svg`, ADR-U023):
+Where this tier sits in the ecosystem anatomy (`../architecture/ECOSYSTEM_ANATOMY_V6.svg`, ADR-U023):
 
 - **Tier:** Surfaces (Design System) — peer to Products and Studios within the Surfaces tier.
 - **Consumed by:** every Surface entity — the Hub and the Gimbal (the two equipment profiles; native iOS/Android are the Gimbal's shipping targets, not entities), and the Studios under Universe Studio (World, Arc, Journey). The consumer set is closed at the Surface tier; Domain Services and Platform Core areas do not render UI directly and therefore do not consume design-system primitives.

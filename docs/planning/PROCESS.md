@@ -2,7 +2,7 @@
 
 **Status:** Authoritative way of working
 **Audience:** Anyone building, designing, deciding, or contributing
-**Companion docs:** `../ecosystem/VISION.md` (the why) · `../templates/` (reusable shapes) · `../architecture/ARCHITECTURE_ANATOMY_V1.md` (the what)
+**Companion docs:** `../ecosystem/VISION.md` (the why) · `../templates/` (reusable shapes) · `../architecture/ARCHITECTURE_ANATOMY.md` (the what)
 
 This document is the single canonical reference for how work moves from idea to shipped code at FringeIsland. Read it once, then return to it whenever you're not sure what to do next.
 

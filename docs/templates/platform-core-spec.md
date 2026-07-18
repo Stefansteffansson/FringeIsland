@@ -23,7 +23,7 @@ feature_prefix: PC  # FEAT-PC### for features owned by this area
 
 ## L2 — Identity, boundaries, and technical shape
 
-*L2 authorship. Derived from Vision, the platform-tier `CLAUDE.md`, and the ecosystem anatomy (`../../architecture/ECOSYSTEM_ANATOMY_V5.svg`, ADR-U023). Revised when the area's boundaries, contract surface, dependencies, or stability posture change. Changes here are rare by design — see §7.*
+*L2 authorship. Derived from Vision, the platform-tier `CLAUDE.md`, and the ecosystem anatomy (`../../architecture/ECOSYSTEM_ANATOMY_V6.svg`, ADR-U023). Revised when the area's boundaries, contract surface, dependencies, or stability posture change. Changes here are rare by design — see §7.*
 
 ### 1. Purpose
 

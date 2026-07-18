@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 1020" role="img" font-family="'Inter', 'Anthropic Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
-<title>FringeIsland Ecosystem Anatomy v2.2 — with PC/DS IDs and cross-cutting vertical threads</title>
-<desc>Stacked view of the FringeIsland ecosystem. From top: Design System band; Products (The Hub, The Gimbal, The Game) and Studios (Journey, Universe, Arc); Platform API contract boundary; seven Domain Services (World Model DS-1, Narrative Engine DS-2, Experience Engine DS-3, Content DS-4, Communication DS-5, Discovery DS-6, Intelligence DS-7) plus the Extension System; Internal API contract boundary; four Platform Core components (Organisation PC-3, Identity PC-2, Infrastructure PC-1, Governance PC-4); five cross-cutting verticals threading the full stack (Admin, Privacy/GDPR, Notifications, Observability, Transactions) with a footer annotation citing ADR-U002.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 1046" role="img" font-family="'Inter', 'Anthropic Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+<title>FringeIsland Ecosystem Anatomy v2.4 — equipment profiles, nested studios, governance by scope, the Whisp split by face</title>
+<desc>Stacked view of the FringeIsland ecosystem, revised at reconciliation Session B (2026-06-10) per ADR-U025/U026/U027/U028 and refreshed 2026-07-18 per ADR-U029 (the Whisp split by face), ADR-U031 (Mist lifecycle, superseding U027), and ADR-U038 (platform contracts enforced platform-side; product API routes are private BFF plumbing). From top: Design System band; Products as equipment profiles (The Hub — canvas surface; The Gimbal — senses surface; the Game is a depth setting, not a product) and Universe Studio (parent of World, Arc, and Journey Studios); Platform API contract boundary; seven Domain Services (World Model DS-1, Narrative DS-2, Journeys DS-3, Content DS-4, Communication DS-5, Discovery DS-6, Intelligence DS-7) plus the Extension System; Internal API contract boundary; four Platform Core components (Organisation PC-3, Identity PC-2 with the Mist lifecycle, Infrastructure PC-1, Governance PC-4 with governance by scope and the Console); five cross-cutting verticals threading the full stack (Admin, Privacy/GDPR, Notifications, Observability, Transactions) with a footer annotation citing ADR-U002.</desc>
 <style>
   .t  { font-size: 14px; fill: #3d3d3a; font-weight: 400; }
   .ts { font-size: 12px; fill: #5f5e5a; font-weight: 400; }
@@ -129,15 +129,6 @@
 </defs>
 
 <!-- =========================================================
-     VERTICAL THREADS — drawn first so they sit behind everything.
-     Run from top of the Domain Services container (y=190)
-     down to the bottom of Platform Core (y=856).
-     Five threads at x = 660, 674, 688, 702, 716
-     ========================================================= -->
-
-
-
-<!-- =========================================================
      DESIGN SYSTEM BAND
      ========================================================= -->
 <g class="band-design">
@@ -146,40 +137,35 @@
 </g>
 
 <!-- =========================================================
-     PRODUCTS (FIMs) AND STUDIOS (Creators)
+     PRODUCTS (equipment profiles, ADR-U025) AND UNIVERSE STUDIO (ADR-U026)
      ========================================================= -->
 <g class="box-product">
-  <rect x="40" y="56" width="138" height="50" rx="6" stroke-width="0.5"/>
-  <text x="109" y="74" text-anchor="middle" class="th">The Hub</text>
-  <text x="109" y="90" text-anchor="middle" class="ts">Web</text>
+  <rect x="40" y="56" width="200" height="50" rx="6" stroke-width="0.5"/>
+  <text x="140" y="74" text-anchor="middle" class="th">The Hub</text>
+  <text x="140" y="90" text-anchor="middle" class="ts">Canvas surface</text>
 </g>
 
 <g class="box-product">
-  <rect x="186" y="56" width="196" height="50" rx="6" stroke-width="0.5"/>
-  <text x="284" y="74" text-anchor="middle" class="th">The Gimbal</text>
-  <text x="284" y="90" text-anchor="middle" class="ts">iOS + Android</text>
-</g>
-
-<g class="box-product">
-  <rect x="390" y="56" width="74" height="50" rx="6" stroke-width="0.5"/>
-  <text x="427" y="78" text-anchor="middle" class="th">The Game</text>
+  <rect x="248" y="56" width="216" height="50" rx="6" stroke-width="0.5"/>
+  <text x="356" y="74" text-anchor="middle" class="th">The Gimbal</text>
+  <text x="356" y="90" text-anchor="middle" class="ts">Senses surface</text>
 </g>
 
 <g class="box-studio">
   <rect x="472" y="56" width="168" height="50" rx="6" stroke-width="0.5"/>
-  <text x="556" y="71" text-anchor="middle" class="th">Studios</text>
-  <text x="556" y="88" text-anchor="middle" class="ts">Journey, Universe, Arc</text>
+  <text x="556" y="71" text-anchor="middle" class="th">Universe Studio</text>
+  <text x="556" y="88" text-anchor="middle" class="ts">World, Arc, Journey</text>
 </g>
 
-<text x="40" y="124" class="caption">Products (FIMs)</text>
-<text x="556" y="124" text-anchor="middle" class="caption">Creators</text>
+<text x="40" y="124" class="caption">Products — equipment profiles (ADR-U025)</text>
+<text x="556" y="124" text-anchor="middle" class="caption">Dreamineers (authoring mode)</text>
 
 <!-- =========================================================
      PLATFORM API BOUNDARY
      ========================================================= -->
 <g class="band-api">
   <rect x="40" y="136" width="600" height="22" rx="4" stroke-width="1.2" stroke-dasharray="6 4"/>
-  <text x="340" y="151" text-anchor="middle" class="ts">Platform API — contract boundary, versioning, rate limiting</text>
+  <text x="340" y="151" text-anchor="middle" class="ts">Platform API — contract boundary, versioning, rate limiting (ADR-U038)</text>
 </g>
 
 <!-- =========================================================
@@ -195,22 +181,22 @@
   <rect x="60" y="216" width="280" height="56" rx="8" stroke-width="0.5"/>
   <text x="328" y="232" text-anchor="end" class="id-tag">DS-1</text>
   <text x="200" y="236" text-anchor="middle" class="th">World model</text>
-  <text x="200" y="254" text-anchor="middle" class="ts">Universe, Three Worlds, Whisp, lore</text>
+  <text x="200" y="254" text-anchor="middle" class="ts">Universe, topology, Whisp presence, lore</text>
 </g>
 
-<!-- DS-2: Narrative Engine -->
+<!-- DS-2: Narrative -->
 <g class="box-ds">
   <rect x="354" y="216" width="270" height="56" rx="8" stroke-width="0.5"/>
   <text x="612" y="232" text-anchor="end" class="id-tag">DS-2</text>
-  <text x="489" y="236" text-anchor="middle" class="th">Narrative engine</text>
-  <text x="489" y="254" text-anchor="middle" class="ts">Seasons, episodes, story beats</text>
+  <text x="489" y="236" text-anchor="middle" class="th">Narrative</text>
+  <text x="489" y="254" text-anchor="middle" class="ts">Seasons, episodes, beats, loops</text>
 </g>
 
-<!-- DS-3: Experience Engine -->
+<!-- DS-3: Journeys -->
 <g class="box-ds">
   <rect x="60" y="286" width="280" height="56" rx="8" stroke-width="0.5"/>
   <text x="328" y="302" text-anchor="end" class="id-tag">DS-3</text>
-  <text x="200" y="306" text-anchor="middle" class="th">Experience engine</text>
+  <text x="200" y="306" text-anchor="middle" class="th">Journeys</text>
   <text x="200" y="324" text-anchor="middle" class="ts">Journeys, steps, progress, enrolments</text>
 </g>
 
@@ -243,7 +229,7 @@
   <rect x="448" y="356" width="176" height="56" rx="8" stroke-width="0.5"/>
   <text x="614" y="369" text-anchor="end" class="id-tag">DS-7</text>
   <text x="536" y="383" text-anchor="middle" class="th">Intelligence</text>
-  <text x="536" y="399" text-anchor="middle" class="ts">AI mentor, insights</text>
+  <text x="536" y="399" text-anchor="middle" class="ts">Whisp (the being), insights</text>
 </g>
 
 <!-- Extension System (no ID per ADR-U023) -->
@@ -282,7 +268,7 @@
   <rect x="354" y="634" width="270" height="56" rx="8" stroke-width="0.5"/>
   <text x="612" y="650" text-anchor="end" class="id-tag">PC-2</text>
   <text x="489" y="654" text-anchor="middle" class="th">Identity</text>
-  <text x="489" y="672" text-anchor="middle" class="ts">Auth, profile, sessions</text>
+  <text x="489" y="672" text-anchor="middle" class="ts">Auth, profile, sessions, Mist lifecycle</text>
 </g>
 
 <!-- PC-1: Infrastructure -->
@@ -298,7 +284,7 @@
   <rect x="60" y="774" width="564" height="42" rx="6" stroke-width="0.5"/>
   <text x="612" y="790" text-anchor="end" class="id-tag">PC-4</text>
   <text x="342" y="790" text-anchor="middle" class="th">Governance</text>
-  <text x="342" y="806" text-anchor="middle" class="ts">DeusEx policies, platform rules, tenant configuration</text>
+  <text x="342" y="806" text-anchor="middle" class="ts">Governance by scope, the Console, DeusEx, platform rules</text>
 </g>
 
 <!-- =========================================================
@@ -334,13 +320,11 @@
 <!-- =========================================================
      TITLE AND VERSION
      ========================================================= -->
-<text x="340" y="980" text-anchor="middle" class="caption">FringeIsland Ecosystem Anatomy v2.2 — April 2026</text>
+<text x="340" y="980" text-anchor="middle" class="caption">FringeIsland Ecosystem Anatomy v2.4 — July 2026 (refresh over v2.3: ADR-U029/U031/U038)</text>
 <text x="340" y="996" text-anchor="middle" class="caption">Designed for open-source extensibility and parallel contribution</text>
+<text x="340" y="1012" text-anchor="middle" class="caption">The Game is a depth setting of journeys, not a product (ADR-U025). The Whisp is split by face (ADR-U029): DS-1 owns world-presence, DS-7 owns the being.</text>
 <!-- =========================================================
      VERTICAL THREADS — right-column channel (per ADR-U002).
-     Each vertical is shown as a colour-coded dashed line with its
-     label at the top. Threads span the full architecture height,
-     from the top of Products (y=56) to the bottom of Platform Core (y=856).
      ========================================================= -->
 <text class="vert-label vert-label-admin" x="665" y="50" text-anchor="middle">Admin</text>
 <text class="vert-label vert-label-priv"  x="697" y="50" text-anchor="middle">Priv</text>
@@ -353,5 +337,5 @@
 <line class="vert-thread vert-thread-notif" x1="729" y1="56" x2="729" y2="856"/>
 <line class="vert-thread vert-thread-obs"   x1="761" y1="56" x2="761" y2="856"/>
 <line class="vert-thread vert-thread-trans" x1="793" y1="56" x2="793" y2="856"/>
-<text x="12" y="20" font-size="12" font-weight="bold" fill="#b91c1c">SUPERSEDED — historical snapshot; current anatomy diagram: see docs/architecture/README.md</text>
+<text x="340" y="1034" text-anchor="middle" class="caption">Platform contracts are enforced platform-side — RPC/RLS below the Platform API (ADR-U038); product app/api/* routes are private BFF plumbing.</text>
 </svg>

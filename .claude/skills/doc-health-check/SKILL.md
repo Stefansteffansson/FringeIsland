@@ -44,6 +44,7 @@ The skill has eleven sections. Four (1.5, 3.5, 3.6, 3.7) exist to catch drift in
 | **After a feature is created, advances in maturity, or is deleted** | Section 8 (Feature-inventory summary consistency) |
 | **After authoring or restructuring any `CLAUDE.md` file** | Section 9 (CLAUDE.md cascade consistency) |
 | **After ratifying a `universe/` core, or adding an ADR sourced from universe-discovery** | Section 10 (Graduation-tracker completeness) — and add the matching tracker row in the same session |
+| **After adding or amending any ADR, or moving/renaming files under `docs/architecture/`** | Section 11 (Anatomy freshness) — stamp, retired vocabulary, and current-pointer checks on the living anatomy pair |
 | On-demand, any time | Any subset — the skill is cheap to invoke partially |
 
 **Skip a section** when nothing has triggered it since the last run. Don't skip all ten just because the cycle was quiet — a quiet cycle is still worth 15 minutes of checking. **Never skip Section 1.5 or 3.6 after a refactor session** — those are the sections that catch the drift a refactor is most likely to introduce.
@@ -61,7 +62,7 @@ The skill has eleven sections. Four (1.5, 3.5, 3.6, 3.7) exist to catch drift in
 
 | Diagram | What it asserts |
 |---------|-----------------|
-| `docs/architecture/ECOSYSTEM_ANATOMY_V5.svg` | The entity anatomy: products (equipment profiles), Universe Studio + children, DS-1..DS-7, PC-1..PC-4, verticals |
+| `docs/architecture/ECOSYSTEM_ANATOMY_V6.svg` | The entity anatomy: products (equipment profiles), Universe Studio + children, DS-1..DS-7, PC-1..PC-4, verticals |
 | `docs/architecture/DOMAIN_SERVICE_DEPENDENCIES.svg` | Domain-service dependency arrows + studio write-paths |
 | `docs/ecosystem/how-we-work/assets/01-decomposition-cascade.svg` | The L1-L5 vertical axis + its own gap notes (two open: G-02 sync, G-03 scaffolds; the Whisp L2-placement gap shows as RESOLVED 2026-06-10 per the split-by-face decision in `decisions/PENDING.md`) |
 
@@ -650,6 +651,26 @@ Missing rows are a one-line fix: add the row (Concept | Source | Canonical home 
 
 ---
 
+## Section 11 — Anatomy freshness (the living overview pair)
+
+**Question:** Do the living anatomy overview (`docs/architecture/ARCHITECTURE_ANATOMY.md`) and the current `ECOSYSTEM_ANATOMY_*` diagram still reflect current canon — and do all "current anatomy" pointers resolve to them?
+
+The anatomy pair is a **derived one-stop overview** — deliberately a restated inventory (Section 3.7's banner discipline applies; its header declares "derived — canon wins"). Derived documents rot silently: an ADR lands, the specs and tier docs absorb it, and the overview keeps describing the previous shape. The "Reflects decisions through: ADR-U0XX" stamp is the contract that makes the rot visible. (Added 2026-07-18 after the J-E-boundary finding that the V1 anatomy and the V4/V5 diagrams had drifted with no check watching them.)
+
+### Procedure
+
+1. **Stamp check.** Read the "Reflects decisions through" stamp at the top of `ARCHITECTURE_ANATOMY.md`. List every accepted ADR in `docs/architecture/decisions/` numbered above the stamp. For each, one glance: does it change what the overview or diagram shows (tiers, services, cores, ownership splits, contract boundaries, lifecycle states)?
+   - Anatomy-relevant ADRs newer than the stamp → **finding**: the pair needs an update pass (doc + diagram + stamp move together) — backlog item, not an inline fix.
+   - No anatomy-relevant ADRs above the stamp → move the stamp to the newest ADR with a "reviewed, no anatomy impact" note; record it in the summary.
+2. **Retired-vocabulary grep** over the living pair only (the Section 1 terminology list applies). Frozen snapshots (`ARCHITECTURE_ANATOMY_V1.md`, superseded `ECOSYSTEM_ANATOMY_V*`) are exempt from vocabulary checks — but each must carry its historical banner (MD) or SUPERSEDED watermark (SVG); a frozen snapshot without one is a finding.
+3. **Pointer integrity.** These must resolve to the living doc and the current diagram version: the root `CLAUDE.md` document-map row, `PROCESS.md`'s companion-docs line, the architecture `README.md` tree + table, and any ADR "(current visual)"-style pointers. A pointer landing on a superseded version is a finding (fix in-place).
+
+**Severity:** retired vocabulary in the living pair, or a "current anatomy" pointer resolving to a superseded snapshot, is **critical** (it misleads every future session at orientation time); a lagging stamp with anatomy-relevant ADRs outstanding is a standard finding (backlog); a stamp lagging with no anatomy impact is an inline fix.
+
+**Skip if:** no ADR has been added or amended, and nothing under `docs/architecture/` has moved or been renamed, since the last run.
+
+---
+
 ## Output format
 
 After running the check, produce a summary in this shape. Paste it into the cycle retrospective under a "Doc health" heading, or into `SESSION_NOTES.md` if run on-demand.
@@ -672,8 +693,9 @@ Sections run:
 8.   Feature-inventory summary     — [N entities checked / N drift items / N fixed in-place / N flagged as backlog / N entities pending (registry) / clean / skipped: <reason>]
 9.   CLAUDE.md cascade consistency — [N entities checked / N missing CLAUDE.md / N pending (registry) / N content-categorisation soft flags / N load-order pointer breaks / clean / skipped: <reason>]
 10.  Graduation-tracker completeness — [N cores + N discovery-ADRs checked / N missing tracker rows / N stale rows / clean / skipped: <reason>]
+11.  Anatomy freshness              — [stamp ADR-U0XX vs newest ADR-U0YY / N anatomy-relevant ADRs outstanding / N retired-vocab hits in the living pair / N stale pointers fixed / N unbannered snapshots / clean / skipped: <reason>]
 
-Critical findings (sections 1.5, 3.5, 3.6, or 5 with active-directive / empty-6-done hits — **excluding** registry entries per Section 7):
+Critical findings (sections 1.5, 3.5, 3.6, 5, or 11 with active-directive / empty-6-done / living-anatomy hits — **excluding** registry entries per Section 7):
 - <file>:<line> — <short description> — <fix applied in-place | backlog item created>
 - ...
 
