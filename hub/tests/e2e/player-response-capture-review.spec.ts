@@ -34,6 +34,13 @@ import { createAdminClient, SESSION_EMAIL } from './helpers/auth';
  * onboarding-arrival entry: a fresh sessionless context enters via "Look
  * around", writes into the onboarding journey's first capture-bearing step,
  * and sees it saved. (Mist sessions are left to the ADR-U033 reaper.)
+ *
+ * FILENAME IS LOAD-BEARING (J-F sweep finding): this spec must sort BEFORE
+ * profile.spec.ts. Profile's sign-out test globally revokes the shared
+ * session FIM's server-side session; reads keep passing afterwards (local JWT
+ * verification, ADR-U037) but getUser()-verified MUTATIONS 401. Any spec that
+ * mutates as the shared session user must run before profile — hence the
+ * player-* prefix keeping this in the player cluster.
  */
 
 const JOURNEY_TITLE = 'E2E Response Capture Arc';

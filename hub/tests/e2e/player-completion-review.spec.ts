@@ -261,15 +261,19 @@ test.describe('FEAT-H021 — journey completion & review', () => {
     await expect(page.getByTestId('completion-calendar-span')).toContainText('From start to finish');
 
     // JRN-13: review navigation records nothing. Listen for enter POSTs, then walk
-    // the whole journey back and forth with prev/next (the panel is a summary, not a
-    // menu — its review-entry button was removed post-6-done; J-O6 routed).
+    // the whole journey back and forth with prev/next.
     const enterPosts: string[] = [];
     page.on('request', (req) => {
       if (req.method() === 'POST' && /\/steps\/[0-9a-f-]+\/enter$/.test(req.url())) {
         enterPosts.push(req.url());
       }
     });
-    await expect(page.getByTestId('review-enter')).toHaveCount(0); // no fake doors
+    // ADAPTED at J-F (FEAT-H024 STORY-5, labelled): the J-C "summary, not a menu"
+    // posture is retired — review now has substance, so the panel's review entry
+    // is a REAL door. Its click path (jump to step one, nothing recorded) is
+    // covered by the H024 arc + page unit; here we pin only that it exists, and
+    // leave this spec's resume-position walk untouched.
+    await expect(page.getByTestId('review-enter')).toHaveCount(1);
     const reviewCanvas = page.getByTestId('step-canvas');
     await expect(reviewCanvas).toContainText(STEP3); // boot at resume = last step
     await page.getByTestId('player-prev').click();
