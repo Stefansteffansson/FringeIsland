@@ -3,7 +3,7 @@
 ---
 id: TASK-JF-02
 title: save_step_response — optional-always capture, orthogonal to completion, frozen/withdrawn refused
-status: review
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PD007

@@ -6,7 +6,7 @@ title: Ask capture and review substance
 owner: hub
 consumers: []
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -131,6 +131,8 @@ The Gimbal inherits the contracts unchanged (ADR-U009); a senses-surface capture
 - **Cold spot-check (ADR-U043 Amendment 1):** not required — this feature adds no request to any first-paint path (the area-gate waterfall re-verifies the whole area regardless, with J-F's substance live).
 
 ## Implementation notes (Cycle J-F build, 2026-07-18)
+
+**Gate closed 2026-07-18: the paired FEAT-PD007 gate nodded "ok merge", PR #174 merged; `6-done`.**
 
 **Surface.** `StepResponseInput` (`hub/components/journeys/StepResponseInput.tsx`) — the plain textarea, `ask_verb`-labelled, never required; background save on blur + on unmount (the save-on-navigation path: the canvas is keyed by step id, so navigating unmounts the input and a dirty draft flushes fire-and-forget); quiet Saving…/Saved/Not saved indicator with retry-keeps-the-words; `readOnly` renders the pen down. `StepCanvas` places it by `step.captures_response` alone (registry data; an unknown future kind that declares capture gets the input with zero Hub changes — unit-pinned) and renders the per-step takeaway once `completed` (page-derived — no second completion computation); frozen with no saved words renders nothing (absence silent). `JourneyCompletionPanel` gains `takeaway` + `onEnterReview` ("Look back over your journey" → step one; the J-C summary-not-menu posture retired — the H021 page unit and panel unit adapted, labelled). Page wiring in `play/page.tsx`: prefill mirrors the platform's open-else-latest targeting; the save handler mirrors the cache truth into page state so an in-mount step revisit prefills correctly.
 

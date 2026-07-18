@@ -6,7 +6,7 @@ title: Step-response capture and review-substance contracts
 owner: platform/domain/journeys
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -151,6 +151,8 @@ N/A (no surface). The player read stays a single read — the four new keys are 
 6. **Export read in-scope** — `get_own_step_instances_export()` discharges the J-C flag at J-F, before the first response exists (JF-6). The direct-caller question (ADR-U038) is asked of all three touches at the gate.
 
 ## Implementation notes (Cycle J-F build, 2026-07-18)
+
+**Gate closed 2026-07-18: nodded "ok merge", PR #174 merged; the three migrations repaired `applied` in the migration log; `6-done`.** The JF-1..JF-6 defaults and the five build-time defaults below stand as ratified.
 
 **Migrations (held at the schema gate):** `20260718090000_feat_pd007_response_substrate.sql` (JF-01: columns + registry seed), `20260718090100_feat_pd007_save_step_response.sql` (JF-02: the verb), `20260718090200_feat_pd007_player_read_walks_export_contracts.sql` (JF-03: the player-read re-issue + walks export). Applied to dev via `apply-migration-temp.js`; the three `supabase-cli.sh migration repair --status applied 202607180901{0,1,2}00`-equivalents were classifier-blocked in the autonomous session and ride the gate PR body as pending commands.
 

@@ -3,7 +3,7 @@
 ---
 id: TASK-JF-03
 title: get_player_state additive keys + private-only pins + get_own_step_instances_export
-status: review
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PD007
