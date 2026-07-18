@@ -109,11 +109,27 @@ export interface PlayerStep {
   /** Open vocabulary — the content-family registry key. */
   family: string;
   ask_verb: string;
+  /**
+   * FEAT-PD007 additive (ADR-U046) — whether this kind invites a written
+   * response. REGISTRY data: the Hub places the capture input by this flag
+   * alone, never by a kind list. Optional so pre-J-F fixtures type-check.
+   */
+  captures_response?: boolean;
   required: boolean;
   repeatable: boolean;
   duration_minutes: number | null;
   /** The inline payload, pending-DS-4 (ADR-U016) — shape is per-kind; renderers narrow. */
   content: unknown;
+}
+
+/**
+ * FEAT-PD007 (ADR-U046) — the traveller's response payload. `{body}` by
+ * convention, not constraint (free-form JSONB platform-side; future structured
+ * capture shapes ride the same key without a Hub type change).
+ */
+export interface StepResponsePayload {
+  body?: string;
+  [key: string]: unknown;
 }
 
 /** One of the caller's OWN step instances (get_player_state; invariant 4 — traveller-own). */
@@ -122,6 +138,10 @@ export interface PlayerInstance {
   step_id: string;
   created_at: string;
   completed_at: string | null;
+  /** FEAT-PD007 additive — the traveller's own words; null = never responded (or retracted). */
+  response?: StepResponsePayload | null;
+  /** FEAT-PD007 additive — when the words were last touched. */
+  response_updated_at?: string | null;
 }
 
 /**
@@ -188,7 +208,13 @@ export interface PlayerState {
   status: string;
   /** Open vocabulary — 'linear' | future modes (stored data, forward shape). */
   sequencing_mode: string;
-  journey: { id: string; title: string; description: string | null };
+  journey: {
+    id: string;
+    title: string;
+    description: string | null;
+    /** FEAT-PD007 additive — the journey-level authored closing word ({body} JSONB; the J-E seed). */
+    takeaway?: unknown;
+  };
   steps: PlayerStep[];
   instances: PlayerInstance[];
   /** Q6 resume: latest open engagement, else first incomplete step, else last step; null iff no steps. */
@@ -318,6 +344,68 @@ export async function completeJourneyStep(
   });
   if (error) throw error;
   return data as PlayerInstance;
+}
+
+// --- FEAT-PD007 response-capture + walks-export contracts (Cycle J-F) ---------
+
+/** save_step_response's return — the confirmed write for cache write-through. */
+export interface StepResponseSaveResult {
+  instance_id: string;
+  step_id: string;
+  response: StepResponsePayload | null;
+  response_updated_at: string | null;
+}
+
+/** FEAT-PD007 STORY-2/5 (ADR-U046): the optional-always capture write —
+ *  orthogonal to completion; explicit empty (null) retracts. Self-gated in the
+ *  substrate (standing, guard family, size ceiling); this wrapper only shapes
+ *  the call and rethrows the SQLSTATE for the route to map (ADR-U038). */
+export async function saveStepResponse(
+  supabase: SupabaseClient,
+  enrollmentId: string,
+  stepId: string,
+  response: StepResponsePayload | null,
+): Promise<StepResponseSaveResult> {
+  const { data, error } = await supabase.rpc('save_step_response', {
+    p_enrollment_id: enrollmentId,
+    p_step_id: stepId,
+    p_response: response,
+  });
+  if (error) throw error;
+  return data as StepResponseSaveResult;
+}
+
+/** One exported instance row in the walks export (own words + passage). */
+export interface OwnWalkStepExport {
+  step_id: string;
+  step_title: string;
+  kind: string;
+  created_at: string;
+  completed_at: string | null;
+  response: StepResponsePayload | null;
+  response_updated_at: string | null;
+}
+
+/** One exported walk — an enrolment the caller travelled, with their own instances. */
+export interface OwnWalkExport {
+  enrollment_id: string;
+  journey_id: string;
+  journey_title: string;
+  status: string;
+  enrolled_at: string;
+  completed_at: string | null;
+  steps: OwnWalkStepExport[];
+}
+
+/** FEAT-PD007 STORY-6 (JF-6; the FEAT-H010 flag): the caller's walks export —
+ *  own-subject, fixed shape, Mist-callable. Composed by the Hub export route as
+ *  the additive `journeys` key (the FEAT-H011 journal pattern). */
+export async function fetchOwnStepInstancesExport(
+  supabase: SupabaseClient,
+): Promise<OwnWalkExport[]> {
+  const { data, error } = await supabase.rpc('get_own_step_instances_export');
+  if (error) throw error;
+  return (data ?? []) as unknown as OwnWalkExport[];
 }
 
 // --- FEAT-PD005 group-progress + sharing contracts (Cycle J-D) ----------------

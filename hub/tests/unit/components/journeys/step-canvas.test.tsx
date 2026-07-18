@@ -29,6 +29,112 @@ const STEP = (over: Partial<PlayerStep> = {}): PlayerStep => ({
   ...over,
 });
 
+/**
+ * FEAT-H024 STORY-1/3/4 (red-first for TASK-JF-04/05) — the canvas places the
+ * Ask capture input by the payload's `captures_response` (the registry decides,
+ * never a kind list), and renders the per-step `content.takeaway` once the step
+ * is completed (the author's closing word arrives after the passage).
+ */
+describe('StepCanvas — the Ask capture placement (FEAT-H024 STORY-1)', () => {
+  const saveResponse = () =>
+    jest.fn<(body: string) => Promise<{ body: string }>>().mockResolvedValue({ body: 'x' });
+
+  it('renders the response input beneath the content when the payload says captures_response', () => {
+    render(
+      <StepCanvas
+        step={STEP({ kind: 'reflection', ask_verb: 'Reflect', captures_response: true })}
+        completed={false}
+        locked={false}
+        onComplete={jest.fn()}
+        responseBody=""
+        onSaveResponse={saveResponse()}
+      />,
+    );
+    expect(screen.getByTestId('response-input')).toBeTruthy();
+    expect(screen.getByTestId('response-label').textContent).toContain('Reflect');
+  });
+
+  it('renders no input when captures_response is false — the registry decides, never a kind list', () => {
+    render(
+      <StepCanvas
+        step={STEP({ kind: 'reflection', captures_response: false })}
+        completed={false}
+        locked={false}
+        onComplete={jest.fn()}
+        responseBody=""
+        onSaveResponse={saveResponse()}
+      />,
+    );
+    expect(screen.queryByTestId('response-input')).toBeNull();
+  });
+
+  it('an unknown future kind that declares capture gets the input with zero Hub changes', () => {
+    render(
+      <StepCanvas
+        step={STEP({ kind: 'ritual-of-the-mist', ask_verb: 'Offer', captures_response: true })}
+        completed={false}
+        locked={false}
+        onComplete={jest.fn()}
+        responseBody=""
+        onSaveResponse={saveResponse()}
+      />,
+    );
+    expect(screen.getByTestId('response-input')).toBeTruthy();
+    expect(screen.getByTestId('response-label').textContent).toContain('Offer');
+  });
+
+  it('frozen posture: saved words render read-only; nothing renders when nothing was written', () => {
+    const { unmount } = render(
+      <StepCanvas
+        step={STEP({ kind: 'reflection', captures_response: true })}
+        completed={false}
+        locked={false}
+        readOnly
+        responseBody="Frozen words."
+        onSaveResponse={saveResponse()}
+      />,
+    );
+    const input = screen.getByTestId('response-input') as HTMLTextAreaElement;
+    expect(input.disabled).toBe(true);
+    expect(input.value).toBe('Frozen words.');
+    unmount();
+    // Absence is silent: frozen with no saved words shows no input at all.
+    render(
+      <StepCanvas
+        step={STEP({ kind: 'reflection', captures_response: true })}
+        completed={false}
+        locked={false}
+        readOnly
+        responseBody=""
+        onSaveResponse={saveResponse()}
+      />,
+    );
+    expect(screen.queryByTestId('response-input')).toBeNull();
+  });
+});
+
+describe('StepCanvas — the per-step takeaway (FEAT-H024 STORY-4)', () => {
+  const withTakeaway = () =>
+    STEP({ content: { body: 'The prompt.', takeaway: { body: 'The closing word.' } } });
+
+  it('renders content.takeaway once the step is completed', () => {
+    render(<StepCanvas step={withTakeaway()} completed={true} locked={false} />);
+    expect(screen.getByTestId('step-takeaway').textContent).toContain('The closing word.');
+  });
+
+  it('does not render the takeaway before completion — it never front-runs the step', () => {
+    render(
+      <StepCanvas step={withTakeaway()} completed={false} locked={false} onComplete={jest.fn()} />,
+    );
+    expect(screen.queryByTestId('step-takeaway')).toBeNull();
+  });
+
+  it('absence is silent — a completed step without a takeaway renders no frame', () => {
+    render(<StepCanvas step={STEP()} completed={true} locked={false} />);
+    expect(screen.queryByTestId('step-takeaway')).toBeNull();
+  });
+});
+
 describe('StepCanvas — presentation + kind rendering (STORY-6)', () => {
   it('renders the title, duration and the kind renderer payload', () => {
     render(<StepCanvas step={STEP()} completed={false} locked={false} onComplete={jest.fn()} />);

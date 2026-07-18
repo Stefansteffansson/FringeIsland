@@ -19,7 +19,13 @@ import {
   fetchMyJourneyEnrollments,
   JourneysApiError,
 } from '@/lib/journeys/client';
-import { peekPlayerState, fetchPlayerState, enterStep, completeStep } from '@/lib/journeys/player';
+import {
+  peekPlayerState,
+  fetchPlayerState,
+  enterStep,
+  completeStep,
+  saveStepResponse,
+} from '@/lib/journeys/player';
 import type { PlayerState } from '@/lib/journeys/player';
 import type { MyEnrollment } from '@/lib/journeys/queries';
 
@@ -221,10 +227,36 @@ function JourneyPlayer() {
     if (!readPosture) saveEnter(stepId);
   };
 
-  // FEAT-H021 (JRN-13) post-6-done follow-up (Stefan, 2026-07-08): the panel's
-  // "review entry" button was removed — review is the posture the player is already
-  // in (prev/next navigates it); a richer review entry returns with step-response
-  // capture (the routed J-O6 open question in the Journeys completion plan).
+  // FEAT-H024 (J-F): the richer review entry RETURNED — the completion panel
+  // carries the journey takeaway and "Look back over your journey" (STORY-5;
+  // the J-C summary-not-menu interim posture retired, as the completion plan
+  // promised when it routed J-O6).
+
+  // FEAT-H024 STORY-1/2: the background response save (JRN-9 doctrine extended
+  // to words). The transport writes the CONFIRMED payload through to the session
+  // cache (J-D doctrine); mirroring it into page state keeps an in-mount step
+  // revisit prefilled with the truth (the canvas remounts per step key).
+  const saveResponse = useCallback(
+    async (stepId: string, body: string) => {
+      if (!enrollmentId) throw new Error('no enrolment');
+      const confirmed = await saveStepResponse(enrollmentId, stepId, body);
+      const fresh = peekPlayerState(enrollmentId);
+      if (fresh) setPlayer(fresh);
+      return confirmed;
+    },
+    [enrollmentId],
+  );
+
+  // The prefill mirrors the platform's own targeting (open-else-latest): the
+  // traveller's words for the CURRENT step, '' when unanswered.
+  const currentResponseBody = (() => {
+    if (!currentStep || !player) return '';
+    const mineForStep = player.instances.filter((i) => i.step_id === currentStep.id);
+    const open = [...mineForStep].reverse().find((i) => !i.completed_at);
+    const target = open ?? mineForStep[mineForStep.length - 1];
+    const body = target?.response?.body;
+    return typeof body === 'string' ? body : '';
+  })();
 
   // JRN-8 completion: the canvas paints the tick optimistically, then awaits this.
   // A repeat (completed + repeatable) opens a fresh engagement first (`enter` then
@@ -320,6 +352,19 @@ function JourneyPlayer() {
             <JourneyCompletionPanel
               completion={player.completion}
               timing={player.timing}
+              // FEAT-H024 STORY-4/5: the journey-level closing word + the review
+              // entry (jump back to the first step; navigation stays read-posture).
+              takeaway={player.journey.takeaway}
+              onEnterReview={
+                steps.length > 0
+                  ? () => {
+                      emitTelemetry('player.review_entered_from_panel', {
+                        enrollment: enrollmentId,
+                      });
+                      setCurrentStepId(steps[0].id);
+                    }
+                  : undefined
+              }
             />
           )}
           {currentStep ? (
@@ -332,6 +377,10 @@ function JourneyPlayer() {
               // JRN-14: frozen posture is read-only — no completion affordance anywhere.
               readOnly={isFrozen}
               onComplete={isFrozen ? undefined : () => saveComplete(currentStep.id)}
+              // FEAT-H024 STORY-1/3: the Ask capture — placement is the payload's
+              // captures_response (canvas-side); frozen renders words pen-down.
+              responseBody={currentResponseBody}
+              onSaveResponse={(body) => saveResponse(currentStep.id, body)}
             />
           ) : (
             <EmptyState title="No steps yet" description="This journey has no steps to walk." />

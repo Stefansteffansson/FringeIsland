@@ -1,5 +1,5 @@
-import { describe, it, expect } from '@jest/globals';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, jest } from '@jest/globals';
+import { render, screen, fireEvent } from '@testing-library/react';
 import type { PlayerCompletion, PlayerTiming } from '@/lib/journeys/player';
 import { JourneyCompletionPanel } from '@/components/journeys/JourneyCompletionPanel';
 
@@ -48,10 +48,37 @@ describe('JourneyCompletionPanel — the arrival', () => {
     expect(engagement.textContent).not.toEqual(span.textContent);
   });
 
-  it('offers no interactive affordance — a summary, not a menu (J-O6: review substance is a routed open question)', () => {
+  // ADAPTED at J-F (FEAT-H024 STORY-5, labelled): the J-C "summary, not a menu"
+  // posture is retired by exactly this cycle — the panel regains the review entry
+  // WHEN the page wires it. Unwired (no onEnterReview, no takeaway), the panel
+  // still renders no affordance and no empty frame.
+  it('renders no affordance and no takeaway frame when neither is wired (absence is silent)', () => {
     render(<JourneyCompletionPanel completion={COMPLETION} timing={TIMING} />);
     expect(screen.queryByTestId('review-enter')).toBeNull();
     expect(screen.queryByRole('button')).toBeNull();
+    expect(screen.queryByTestId('journey-takeaway')).toBeNull();
+  });
+
+  it('renders the journey takeaway when present (FEAT-H024 STORY-4 — the J-E seed finally served)', () => {
+    render(
+      <JourneyCompletionPanel
+        completion={COMPLETION}
+        timing={TIMING}
+        takeaway={{ body: 'Go gently from here.' }}
+      />,
+    );
+    expect(screen.getByTestId('journey-takeaway').textContent).toContain('Go gently from here.');
+  });
+
+  it('offers the review entry and fires it — the summary-not-menu posture retired (STORY-5)', () => {
+    const onEnterReview = jest.fn();
+    render(
+      <JourneyCompletionPanel completion={COMPLETION} timing={TIMING} onEnterReview={onEnterReview} />,
+    );
+    const entry = screen.getByTestId('review-enter');
+    expect(entry.textContent?.toLowerCase()).toContain('look back');
+    fireEvent.click(entry);
+    expect(onEnterReview).toHaveBeenCalledTimes(1);
   });
 
   it('omits the calendar span honestly when there is no completed_at (via-group walk, row still active)', () => {

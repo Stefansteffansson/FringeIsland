@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { fetchOwnDataExport } from '@/lib/account/export';
 import { fetchOwnJournalExport } from '@/lib/journal/queries';
+import { fetchOwnStepInstancesExport } from '@/lib/journeys/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 /**
@@ -40,15 +41,22 @@ export async function GET() {
     // FIM, so the file shape is stable. A journal failure fails the whole
     // download — never a partial document.
     const journal = await fetchOwnJournalExport(supabase);
+    // FEAT-H024 STORY-6 (FEAT-PD007 JF-6): compose the walks export as the
+    // additive `journeys` key — the FEAT-H011 journal pattern verbatim (the
+    // courier renders nothing; PC-4's document is untouched — one-way rule).
+    // Discharges the FEAT-H010 step-instances flag (owed since the J-C retro).
+    // A walks failure fails the whole download — never a partial document.
+    const journeys = await fetchOwnStepInstancesExport(supabase);
     emitTelemetry('account.export', {
       actor: user.id,
       schema_version: data.schema_version,
       consent_events: data.consent.length,
       memberships: data.memberships.length,
       journal_entries: journal.entries.length,
+      journey_walks: journeys.length,
     });
     return NextResponse.json(
-      { ...data, journal },
+      { ...data, journal, journeys },
       {
         headers: {
           'Content-Disposition': `attachment; filename="${EXPORT_FILENAME}"`,

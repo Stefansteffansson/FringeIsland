@@ -6,23 +6,42 @@ import { formatEngagementTime, formatCalendarSpan } from '@/lib/journeys/timing'
  * completed framing. Canon voice: an arrival, not a jackpot — no confetti, no
  * animation, existing primitives only. It states the completion, shows the traveller's
  * OWN engagement total and the enrolled→completed calendar span LABELLED as two
- * different things (never conflated; nothing comparative — invariant 8). A summary,
- * not a menu: it offers no affordances — review is the posture the player is already
- * in, and prev/next is its navigation. A richer review entry returns with step-response
- * capture (the routed J-O6 open question, completion plan 2026-07-08).
+ * different things (never conflated; nothing comparative — invariant 8).
  * Renders from the FEAT-PD004 blocks; it never re-derives time.
+ *
+ * FEAT-H024 STORY-4/5 (J-F): the J-C "summary, not a menu" interim posture is
+ * retired — the panel now carries the journey-level takeaway (the authored
+ * closing word of the whole walk, the J-E seed finally served) and the review
+ * entry ("Look back over your journey") when the page wires them. Absence stays
+ * silent: no takeaway → no frame; no handler → no affordance.
  */
+function takeawayBody(takeaway: unknown): string | null {
+  if (typeof takeaway === 'string' && takeaway.trim().length > 0) return takeaway;
+  if (takeaway && typeof takeaway === 'object') {
+    const body = (takeaway as Record<string, unknown>).body;
+    if (typeof body === 'string' && body.trim().length > 0) return body;
+  }
+  return null;
+}
+
 export function JourneyCompletionPanel({
   completion,
   timing,
+  takeaway,
+  onEnterReview,
 }: {
   completion?: PlayerCompletion;
   timing?: PlayerTiming;
+  /** FEAT-H024: journey.takeaway from the player payload ({body} JSONB). */
+  takeaway?: unknown;
+  /** FEAT-H024: the review entry — navigates the walk back to its first step. */
+  onEnterReview?: () => void;
 }) {
   void completion; // row-grain block is carried for parity; the panel renders own time
   const calendarSpan = timing
     ? formatCalendarSpan(timing.wall_clock.enrolled_at, timing.wall_clock.completed_at)
     : null;
+  const closing = takeawayBody(takeaway);
 
   return (
     <section
@@ -52,6 +71,26 @@ export function JourneyCompletionPanel({
           </div>
         )}
       </dl>
+
+      {closing && (
+        <div data-testid="journey-takeaway" className="mt-4 rounded-lg bg-white/70 p-4">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-green-600">
+            Takeaway
+          </p>
+          <p className="mt-1 whitespace-pre-wrap text-sm text-gray-700">{closing}</p>
+        </div>
+      )}
+
+      {onEnterReview && (
+        <button
+          type="button"
+          data-testid="review-enter"
+          onClick={onEnterReview}
+          className="mt-4 rounded-lg border border-green-200 bg-white px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-100"
+        >
+          Look back over your journey
+        </button>
+      )}
     </section>
   );
 }

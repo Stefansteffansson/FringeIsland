@@ -15,10 +15,16 @@ import { getTelemetrySink } from '@/lib/observability/telemetry';
  * route): the route now COMPOSES the FEAT-PD001 journal export into the
  * delivered document as an additive top-level `journal` key (present-and-empty
  * for an entry-less FIM; a journal failure fails the whole download).
+ *
+ * Amended 2026-07-18 (FEAT-H024 STORY-6, the same pattern): the route also
+ * composes the FEAT-PD007 walks export as the additive `journeys` key — the
+ * FEAT-H010 step-instances flag discharged. Same rules: present-and-empty for
+ * a walk-less member, a walks failure fails the whole download.
  */
 const getUser = jest.fn<() => Promise<{ data: { user: { id: string } | null } }>>();
 const fetchOwnDataExport = jest.fn<() => Promise<unknown>>();
 const fetchOwnJournalExport = jest.fn<() => Promise<unknown>>();
+const fetchOwnStepInstancesExport = jest.fn<() => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -37,6 +43,10 @@ jest.mock('@/lib/account/export', () => ({
 jest.mock('@/lib/journal/queries', () => ({
   fetchOwnJournalExport: (...args: unknown[]) =>
     (fetchOwnJournalExport as unknown as (...a: unknown[]) => unknown)(...args),
+}));
+jest.mock('@/lib/journeys/queries', () => ({
+  fetchOwnStepInstancesExport: (...args: unknown[]) =>
+    (fetchOwnStepInstancesExport as unknown as (...a: unknown[]) => unknown)(...args),
 }));
 
 import { GET } from '@/app/api/account/export/route';
@@ -62,6 +72,7 @@ beforeEach(() => {
   getUser.mockReset().mockResolvedValue({ data: { user: { id: 'u1' } } });
   fetchOwnDataExport.mockReset().mockResolvedValue(SAMPLE_DOC);
   fetchOwnJournalExport.mockReset().mockResolvedValue(EMPTY_JOURNAL);
+  fetchOwnStepInstancesExport.mockReset().mockResolvedValue([]);
 });
 
 describe('GET /api/account/export', () => {
@@ -134,5 +145,61 @@ describe('GET /api/account/export', () => {
     expect(res.status).toBe(500);
     expect(res.body.error).not.toContain('kept words');
     expect(emitted('account.export_failed', 'u-jerr')).toBe(true);
+  });
+
+  // FEAT-H024 STORY-6 (J-F) — the walks section (the FEAT-H010 flag discharged;
+  // red-first against the pre-J-F route).
+
+  it('composes the walks export into the document as an additive `journeys` key', async () => {
+    fetchOwnStepInstancesExport.mockResolvedValue([
+      {
+        enrollment_id: 'e1',
+        journey_id: 'j1',
+        journey_title: 'A walk',
+        status: 'completed',
+        enrolled_at: 'x',
+        completed_at: 'x',
+        steps: [
+          {
+            step_id: 's1',
+            step_title: 'Turn inward',
+            kind: 'reflection',
+            created_at: 'x',
+            completed_at: 'x',
+            response: { body: 'my exported words' },
+            response_updated_at: 'x',
+          },
+        ],
+      },
+    ]);
+    const res = (await GET()) as {
+      status: number;
+      body: {
+        schema_version: number;
+        journal: { entries: unknown[] };
+        journeys: Array<{ enrollment_id: string; steps: unknown[] }>;
+      };
+    };
+    expect(res.status).toBe(200);
+    // core document + journal intact AND the walks ride along
+    expect(res.body.schema_version).toBe(1);
+    expect(Array.isArray(res.body.journal.entries)).toBe(true);
+    expect(res.body.journeys).toHaveLength(1);
+    expect(res.body.journeys[0].enrollment_id).toBe('e1');
+    expect(res.body.journeys[0].steps).toHaveLength(1);
+  });
+
+  it('a walk-less member gets journeys present-and-empty — never an omission', async () => {
+    const res = (await GET()) as { body: { journeys: unknown[] } };
+    expect(Array.isArray(res.body.journeys)).toBe(true);
+    expect(res.body.journeys).toHaveLength(0);
+  });
+
+  it('a walks-contract failure fails the whole download — never a partial document', async () => {
+    getUser.mockResolvedValue({ data: { user: { id: 'u-werr' } } });
+    fetchOwnStepInstancesExport.mockRejectedValue(new Error('walks rpc exploded'));
+    const res = (await GET()) as { status: number };
+    expect(res.status).toBe(500);
+    expect(emitted('account.export_failed', 'u-werr')).toBe(true);
   });
 });
