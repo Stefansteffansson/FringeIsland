@@ -449,27 +449,25 @@ describe('FEAT-H021 STORY-2 — completed walks open in review (JRN-13)', () => 
     expect(enterStep).not.toHaveBeenCalled();
   });
 
-  it('the completion panel is a summary, not a menu — no review-entry affordance renders (J-O6 routed)', async () => {
-    // Post-6-done follow-up (Stefan, 2026-07-08): review-as-a-destination was a spec-time
-    // framing error — review is the posture the player is already in, and prev/next is
-    // its navigation. The button is removed until review has substance to enter
-    // (step-response capture — the routed J-O6 open question in the completion plan).
+  it('the completion panel offers the review entry, and it navigates back to the first step', async () => {
+    // ADAPTED at J-F (FEAT-H024 STORY-5, labelled): the J-C "summary, not a menu"
+    // interim posture is retired exactly as the completion plan promised — review
+    // now has substance to enter (responses + takeaways), so the panel regains
+    // "Look back over your journey" (jump to step one; navigation stays
+    // read-posture, so no background enter fires — asserted below).
     withParam();
     fetchPlayerState.mockResolvedValue(
       STATE({ status: 'completed', resume_step_id: 's3', timing: TIMING, completion: COMPLETE, instances: DONE_INSTANCES }),
     );
-    const { unmount } = render(<JourneyPlayerPage />);
-    await waitFor(() => expect(screen.getByTestId('journey-completion-panel')).toBeTruthy());
-    expect(screen.queryByTestId('review-enter')).toBeNull();
-    unmount();
-
-    // The legacy-completed shape (no instances, boots at step one) — same truth.
-    fetchPlayerState.mockResolvedValue(
-      STATE({ status: 'completed', resume_step_id: 's1', timing: TIMING, completion: COMPLETE, instances: [] }),
-    );
     render(<JourneyPlayerPage />);
     await waitFor(() => expect(screen.getByTestId('journey-completion-panel')).toBeTruthy());
-    expect(screen.queryByTestId('review-enter')).toBeNull();
+    const entry = screen.getByTestId('review-enter');
+    fireEvent.click(entry);
+    // Back at the walk's first step, still in review — no engagement recorded.
+    await waitFor(() =>
+      expect(screen.getByTestId('step-canvas').textContent).toContain('Orient'),
+    );
+    expect(enterStep).not.toHaveBeenCalled();
   });
 
   it('an explicit re-engagement verb on a repeatable step still rides the normal complete path', async () => {

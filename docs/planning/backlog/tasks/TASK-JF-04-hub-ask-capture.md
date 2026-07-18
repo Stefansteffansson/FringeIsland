@@ -3,7 +3,7 @@
 ---
 id: TASK-JF-04
 title: Ask capture UI in the player — optional-always input, JRN-9-doctrine save, frozen read-only
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-H024

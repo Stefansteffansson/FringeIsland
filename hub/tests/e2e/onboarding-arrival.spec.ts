@@ -105,7 +105,11 @@ test('onboarding carries across transcendence: same walk, carried position, no r
   // the player completes in place), then walk onto step 2.
   await page.getByTestId('step-complete').click();
   await expect(page.getByTestId('step-completed')).toBeVisible({ timeout: 15000 });
-  await page.getByRole('button', { name: 'Next' }).click();
+  // Selector hardening (J-F sweep finding): getByRole name-matching is substring,
+  // so 'Next' also matches the Next.js dev-tools overlay button ("Open Next.js
+  // Dev Tools") when the dev indicator is mounted — a strict-mode collision.
+  // The player's own testid is the stable handle.
+  await page.getByTestId('player-next').click();
   await expect(page.getByRole('heading', { name: 'Three questions' })).toBeVisible({ timeout: 15000 });
 
   try {

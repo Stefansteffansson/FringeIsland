@@ -852,18 +852,24 @@ describe('FEAT-PD004 — journey completion, timing & review-read contracts (J-C
       for (const key of ['enrollment_id', 'status', 'sequencing_mode', 'journey', 'steps', 'instances', 'resume_step_id']) {
         expect(d).toHaveProperty(key);
       }
+      // ADAPTED at J-F (FEAT-PD007, labelled): the four PD007 keys (journey.takeaway,
+      // steps[].captures_response, instances[].response/response_updated_at) join
+      // additively — every J-B/J-C key itself stays byte-shape-unchanged, which is
+      // what this test pins.
       const journey = d.journey as Record<string, unknown>;
-      expect(Object.keys(journey).sort()).toEqual(['description', 'id', 'title']);
+      expect(Object.keys(journey).sort()).toEqual(['description', 'id', 'takeaway', 'title']);
       const steps = d.steps as Array<Record<string, unknown>>;
       for (const s of steps) {
         expect(Object.keys(s).sort()).toEqual(
-          ['ask_verb', 'content', 'duration_minutes', 'family', 'id', 'kind', 'repeatable', 'required', 'step_order', 'title'],
+          ['ask_verb', 'captures_response', 'content', 'duration_minutes', 'family', 'id', 'kind', 'repeatable', 'required', 'step_order', 'title'],
         );
       }
       const instances = d.instances as Array<Record<string, unknown>>;
       expect(instances.length).toBeGreaterThan(0);
       for (const i of instances) {
-        expect(Object.keys(i).sort()).toEqual(['completed_at', 'created_at', 'instance_id', 'step_id']);
+        expect(Object.keys(i).sort()).toEqual([
+          'completed_at', 'created_at', 'instance_id', 'response', 'response_updated_at', 'step_id',
+        ]);
       }
     });
 

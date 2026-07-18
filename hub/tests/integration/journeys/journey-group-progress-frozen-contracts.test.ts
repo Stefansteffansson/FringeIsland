@@ -788,8 +788,10 @@ describe('FEAT-PD005 — group progress, sharing consent & frozen-walk contracts
       ]) {
         expect(d).toHaveProperty(key);
       }
+      // ADAPTED at J-F (FEAT-PD007, labelled): `takeaway` joins the journey block
+      // additively — the PD003..PD005 keys themselves stay byte-shape-unchanged.
       expect(Object.keys(d.journey as Record<string, unknown>).sort())
-        .toEqual(['description', 'id', 'title']);
+        .toEqual(['description', 'id', 'takeaway', 'title']);
       expect(Object.keys(d.completion as Record<string, unknown>).sort())
         .toEqual(['enrollment_completed_at', 'enrollment_status', 'traveller_completed', 'traveller_completed_at']);
       expect(Object.keys(d.timing as Record<string, unknown>).sort())
@@ -875,7 +877,12 @@ describe('FEAT-PD005 — group progress, sharing consent & frozen-walk contracts
       // Every instance returned belongs to the caller's own traveller grain (no leak of
       // another member's marks through the player boot).
       for (const i of instances) {
-        expect(Object.keys(i).sort()).toEqual(['completed_at', 'created_at', 'instance_id', 'step_id']);
+        // ADAPTED at J-F (FEAT-PD007, labelled): the traveller's OWN response keys
+        // join their own instances additively — still nobody else's grain, which is
+        // what this test pins.
+        expect(Object.keys(i).sort()).toEqual([
+          'completed_at', 'created_at', 'instance_id', 'response', 'response_updated_at', 'step_id',
+        ]);
       }
     });
   });

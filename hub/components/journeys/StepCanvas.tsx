@@ -3,6 +3,23 @@
 import { useState } from 'react';
 import type { PlayerStep } from '@/lib/journeys/player';
 import { getStepRenderer } from './step-renderers';
+import { StepResponseInput } from './StepResponseInput';
+
+/**
+ * FEAT-H024 STORY-4 — narrow the per-step authored takeaway out of the content
+ * payload ({body} JSONB by convention, a bare string tolerated). Absence is
+ * silent — null means no frame renders.
+ */
+function pickTakeaway(content: unknown): string | null {
+  if (!content || typeof content !== 'object') return null;
+  const takeaway = (content as Record<string, unknown>).takeaway;
+  if (typeof takeaway === 'string' && takeaway.trim().length > 0) return takeaway;
+  if (takeaway && typeof takeaway === 'object') {
+    const body = (takeaway as Record<string, unknown>).body;
+    if (typeof body === 'string' && body.trim().length > 0) return body;
+  }
+  return null;
+}
 
 /**
  * FEAT-H020 STORY-3/6 — the step canvas. It renders the JRN-18 kind renderer for
@@ -37,6 +54,8 @@ export function StepCanvas({
   lockReason = null,
   readOnly = false,
   onComplete,
+  responseBody = '',
+  onSaveResponse,
 }: {
   step: PlayerStep;
   completed?: boolean;
@@ -44,6 +63,10 @@ export function StepCanvas({
   lockReason?: string | null;
   readOnly?: boolean;
   onComplete?: () => Promise<void>;
+  /** FEAT-H024: the traveller's saved words for THIS step ('' = unanswered). */
+  responseBody?: string;
+  /** FEAT-H024: the background save transport; resolves to the confirmed body. */
+  onSaveResponse?: (body: string) => Promise<{ body: string }>;
 }) {
   const [optimistic, setOptimistic] = useState(false);
   const [retry, setRetry] = useState(false);
@@ -90,6 +113,39 @@ export function StepCanvas({
       </header>
 
       <div className="mt-4">{renderKind({ step })}</div>
+
+      {/* FEAT-H024 STORY-1/3: the Ask capture — placed by the payload's
+          captures_response alone (the registry decides, never a kind list).
+          Frozen posture (readOnly): saved words render with the pen down;
+          absence is silent (no input when nothing was written). */}
+      {step.captures_response === true &&
+        onSaveResponse &&
+        (!readOnly || responseBody.length > 0) && (
+          <StepResponseInput
+            key={`${step.id}-response`}
+            askVerb={step.ask_verb || 'Respond'}
+            initialBody={responseBody}
+            readOnly={readOnly}
+            onSave={onSaveResponse}
+          />
+        )}
+
+      {/* FEAT-H024 STORY-4: the author's closing word arrives AFTER the passage —
+          keyed on the page's completed-instance derivation, never a second
+          completion computation. Absence is silent. */}
+      {completed && pickTakeaway(step.content) && (
+        <div
+          data-testid="step-takeaway"
+          className="mt-6 rounded-lg border border-blue-100 bg-blue-50 p-4"
+        >
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-500">
+            Takeaway
+          </p>
+          <p className="mt-1 whitespace-pre-wrap text-sm text-gray-700">
+            {pickTakeaway(step.content)}
+          </p>
+        </div>
+      )}
 
       <div className="mt-6">
         {readOnly ? (

@@ -6,7 +6,7 @@ title: Ask capture and review substance
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
@@ -129,3 +129,11 @@ The Gimbal inherits the contracts unchanged (ADR-U009); a senses-surface capture
 - **Interaction class:** response saves are background writes (B5 — typing and navigation never block on them; feedback within 100 ms via the local saved/unsaved indicator). Step navigation keeps its optimistic ≤ 200 ms paint.
 - **Loading states:** none new — the input renders with the step from the payload; the export download keeps FEAT-H010's existing request → file flow (B6 unchanged).
 - **Cold spot-check (ADR-U043 Amendment 1):** not required — this feature adds no request to any first-paint path (the area-gate waterfall re-verifies the whole area regardless, with J-F's substance live).
+
+## Implementation notes (Cycle J-F build, 2026-07-18)
+
+**Surface.** `StepResponseInput` (`hub/components/journeys/StepResponseInput.tsx`) — the plain textarea, `ask_verb`-labelled, never required; background save on blur + on unmount (the save-on-navigation path: the canvas is keyed by step id, so navigating unmounts the input and a dirty draft flushes fire-and-forget); quiet Saving…/Saved/Not saved indicator with retry-keeps-the-words; `readOnly` renders the pen down. `StepCanvas` places it by `step.captures_response` alone (registry data; an unknown future kind that declares capture gets the input with zero Hub changes — unit-pinned) and renders the per-step takeaway once `completed` (page-derived — no second completion computation); frozen with no saved words renders nothing (absence silent). `JourneyCompletionPanel` gains `takeaway` + `onEnterReview` ("Look back over your journey" → step one; the J-C summary-not-menu posture retired — the H021 page unit and panel unit adapted, labelled). Page wiring in `play/page.tsx`: prefill mirrors the platform's open-else-latest targeting; the save handler mirrors the cache truth into page state so an in-mount step revisit prefills correctly.
+
+**Transport + BFF.** `saveStepResponse` (`lib/journeys/player.ts`) maps an empty/whitespace body to the platform retraction (`response: null`) and writes the CONFIRMED payload through to the per-enrolment session cache in the same handler (J-D doctrine); a save-created instance is appended open; a failed save never touches the cache. Route `app/api/journeys/enrollments/[enrollmentId]/steps/[stepId]/response/route.ts` (POST, `getUser()`, route-policy conformant): SQLSTATE→HTTP 42501→403 / P0002→404 / P0001→409 / 22001+22023→422; telemetry content-free (`player.response_saved`/`_cleared`/refusal outcomes — ids only, never words). Export route composes `get_own_step_instances_export()` as the additive `journeys` key (FEAT-H010 amended; existing sections byte-identical, unit-pinned).
+
+**Red → green evidence.** 12 Hub unit tests demonstrated red first (input component suite red on missing module; 4 canvas placement/takeaway positives; 2 panel positives; 6 transport/write-through tests), alongside their negative-space pins (no-input-when-false, takeaway-never-before-completion, absence-silent) whose meaning rides the red positives. Post-implementation: journeys units 114/114, **full unit sweep 718/718** (route-policy conformance green over the new route), lint clean, `next build` clean. **Labelled adaptations** (the J-B rule): `account-export-route.test.ts` (mocks + 3 new STORY-6 tests), `journey-player-page.test.tsx` (the summary-not-menu pin became the review-entry assertion — exactly the posture this cycle retires). **E2E**: `response-capture-review.spec.ts` — the full arc (capture → complete → per-step takeaway arrives after passage → completion panel with journey takeaway + review entry → revise in review → full-reload server truth → download carries the words) + the Mist onboarding capture, 2/2. One E2E finding worth keeping: a **completed** walk no longer resolves from a param-less `/play` (that door lists active walks only) — review re-entry carries `?enrollment=`, the H021 affordance shape; the arc asserts that path honestly.
