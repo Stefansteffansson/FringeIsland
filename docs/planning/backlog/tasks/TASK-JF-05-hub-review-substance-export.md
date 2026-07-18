@@ -3,7 +3,7 @@
 ---
 id: TASK-JF-05
 title: Review substance rendering + completion-panel review entry + the walks download section + E2E
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-H024
