@@ -1,0 +1,30 @@
+# Session bridge — 2026-07-18_02 — Cycle J-F decomposed: FEAT-PD007 ↔ FEAT-H024, both 4-ready, payload-walked
+
+**Session class:** decomposition session (`ecosystem-decomposition`, L4+L5) for **Cycle J-F — Step-response capture & review substance**, the last Journeys cycle before the J-O3 area gate, per ADR-U046 and the `_01` bridge's queue. Hub v2 Phase 3 state after this session: Journeys J-A..J-E `6-done`; **J-F decomposed** (paired specs `4-ready`, tasks cut); next session builds J-F platform-half-first through the schema gate.
+
+## What happened
+
+1. **Substrate dossier commissioned first** (delegated, cumulative-forward + seeds discipline per the homed A#8 rule). Load-bearing findings, verified against migrations latest-wins: `journey_step_instances` carries exactly six columns — no response payload (the J-F gap confirmed at the substrate); no save verb exists (`enter_journey_step` is the only auto-save write); `get_player_state` (latest: PD005) serves instances as timestamps only; the J-E takeaway seeds exist (`journeys.takeaway` PD006:51; per-step `content.takeaway` on onboarding steps 1 and 4) but **`takeaway` has zero hits in Hub code** and `journey.takeaway` is not served by the player read; the FEAT-H010 step-instances export section is owed (J-C retro flag) and the completion plan assigns it to J-F; `step_kinds` has no capture-signal column (only `ask_verb`/`change_semantic`).
+2. **[FEAT-PD007](../../platform/domain/features/FEAT-PD007-step-response-capture-contracts.md) authored to `4-ready`** — three additive columns through the schema gate (`response`/`response_updated_at` on the step-instance; `captures_response` on the registry, seeded true for the four Ask-verbed kinds), the dedicated `save_step_response` verb (optional-always, orthogonal to completion; the enter/complete guard family extends — frozen/withdrawn refuse, completed admits; open-else-latest-else-create targeting; explicit-empty clears), four byte-additive player-read keys, the private-only wall pinned (the group-progress read never carries content), and `get_own_step_instances_export()` (the H010 flag discharged before the first response exists).
+3. **[FEAT-H024](../../products/hub/features/FEAT-H024-ask-capture-and-review-substance.md) authored to `4-ready`** — the capture input placed by `captures_response` and labelled by `ask_verb` (no kind lists), JRN-9-doctrine background saves with session-cache write-through (the homed J-D doctrine applied from the start), review substance in both directions (the traveller's words, editable while the walk lives; takeaways per-step-once-completed + journey-level on the completion panel and review head), the richer review entry's return (J-C's summary-not-menu interim posture retired), frozen words read-only (JRN-14 extends), and the walks download section (FEAT-H011's composition pattern; H010 amended at build).
+4. **The payload walk ran clean at decomposition** (n=5 for the discipline; full cross-feature coverage per the homed J-D rider): every rendered/mutated field traced to a served or proposed key, and every proposed key to a consumer — including the *sibling* payloads the new surface consumes (`steps[].content.takeaway`, `ask_verb`, H021's `completion`/`timing`, H022's `freeze`). **The walk's catch:** `journey.takeaway` is seeded but unserved — PD007 adds the key (found at decomposition, not at build; the discipline paying again).
+5. **L4/L5 bookkeeping same-session:** both feature READMEs (+ the stale "H023 4-ready" prose fixed to `6-done` in the Hub README), the DS-3 `journeys.md` §L4 row + coverage para, the Hub `SPECIFICATION.md` §L4 row + coverage tail, the completion-plan header + J-F row, and TASK-JF-01..05 (3 platform, 2 hub; JF-01 ends at `review` — schema gate).
+
+## Decision board (defaults taken this session — reviewable at the schema gate before build)
+
+Settled by ADR-U046 and not re-litigated: the home (step-instance), optionality, private-only, minimal takeaways, deferred synthesis, J-F placement. Decomposition-level defaults, recorded in PD007's schema-gate section:
+
+- **JF-1 response DDL:** `response jsonb` + `response_updated_at timestamptz`, NULL = never responded; `{body}` by convention.
+- **JF-2 capture set as registry data:** `step_kinds.captures_response` (seeded true: reflection, assessment, choice, journal) — rejected alternative: inferring in Surface code (closure).
+- **JF-3 write verb:** dedicated `save_step_response`, not a parameter on enter/complete — capture is orthogonal to passage and completion, and post-completion editing needs a verb that does neither.
+- **JF-4 instance targeting:** open-else-latest-else-create; responding never flips completion.
+- **JF-5 size guard:** fixed `body` ceiling, value proposed at the gate.
+- **JF-6 export in-scope:** `get_own_step_instances_export()` + the Hub `journeys` download key discharge the H010 flag at J-F (right-of-access exists before the first word is stored).
+
+## Open items / next session
+
+1. **Build J-F** (`feature-development` skill): platform half first — TASK-JF-01 migration red-first, held at the schema gate for the explicitly-NAMED nod (JF-1..JF-6 + the ADR-U038 direct-caller question on all three touches); then JF-02/03; then the Hub half JF-04/05 API-first.
+2. **Then the J-O3 area gate** — riders standing: the journey-detail Mist seam, the enrolled-catalogue nuance, the explicit `/journeys` gate waterfall, Stefan's live walk + the formal budget/tail pass, the L3 fan-out reduction (recommendation on record: at the gate). The gate verifies J-F shipped ADR-U046 (responses captured, review rendering live, privacy posture as decided).
+3. **Parked with Stefan (unchanged):** Vercel Pro scale-to-one · logo pick · launch checklist · dashboard toggles.
+4. **doc-health:** next natural full run at the J-F cycle close — **Section 11 (anatomy freshness) fires live for the first time there.**
+5. **CQ-010 real onboarding content** (carried; the takeaway renderers this cycle builds are the surface CQ-010's authored content will land in).
