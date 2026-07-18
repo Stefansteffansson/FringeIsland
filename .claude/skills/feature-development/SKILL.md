@@ -90,6 +90,7 @@ Every acceptance criterion ends with at least one passing test that was **first 
 **Suite-authoring rules (bound by cycle retros):**
 - **Erasure proofs use the house erasure functions first** (`erase_fim_account`, DeusEx-called) — never bare-delete simulations against append-only substrates; a refusal from a consent trigger is the substrate succeeding, not the test failing (J-C)
 - **E2E asserts the observable effect, never just the interaction** — a click without its asserted consequence is not coverage (J-C)
+- **E2E revisit assertions navigate client-side in one JS context** — a full-load revisit (`page.goto`) resets module state and masks client-cache staleness; the honest revisit is in-context navigation (Link/history). Full-load revisits may exist as an additional, labelled scenario, never the only one (J-D, PR #146)
 
 ### Step 5: Update status
 
@@ -100,6 +101,7 @@ After all tasks for a story are done:
   - the **pyramid is upright** — unit-tier coverage exists for component/logic behaviour, not only integration + E2E
   - lint + build + the **full suite** are green
   - the Implementation notes record the red → green evidence honestly; any test-after coverage is **labelled as such** (never claimed as test-first)
+  - a **pre-existing failure** discovered during the cycle is verified at main HEAD on a clean build, fenced **"found (not caused)"** out of the cycle's green claim by name, and routed to its own diagnosis — never retry-masked or silently absorbed into a passing sweep (J-E, PR #166)
 - **API-boundary DoD (required before `6-done`, ADR-U038)** — for every new or changed endpoint:
   - the contract is enforced **platform-side** (SECURITY DEFINER RPC / RLS / trigger / column grant), not only in a Surface route or `lib`; a Surface route may host presentation/session plumbing but is **never the sole home** of a business rule, authorization decision, or lifecycle/consent invariant;
   - any **custom Next.js route** names which of the PC-3 §7 three justifications (cross-table mutation / external service-role call / multi-step transaction) warrants it — the default is "expose via PostgREST RPC";
