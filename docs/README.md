@@ -49,11 +49,12 @@ docs/
 │   ├── (admin, notifications, observability, privacy, transactions)
 │
 ├── architecture/                          ← structural models + binding decisions
+│   ├── ARCHITECTURE_ANATOMY.md            ← living anatomy overview (canon wins)
 │   ├── ARCHITECTURE_ANATOMY_V1.md         ← L0-L7 anatomy (archived reference)
 │   ├── DOMAIN_ENTITIES.md                 ← core domain model
-│   ├── ECOSYSTEM_ANATOMY_V5.svg           ← current anatomy diagram
+│   ├── ECOSYSTEM_ANATOMY_V6.svg           ← current anatomy diagram
 │   ├── DOMAIN_SERVICE_DEPENDENCIES.svg    ← dependency flow
-│   └── decisions/                         ← ADRs (28 — U001-U028)
+│   └── decisions/                         ← ADRs (the index README is the canonical list)
 │
 ├── research/                              ← all research reports (domain + methodology)
 │

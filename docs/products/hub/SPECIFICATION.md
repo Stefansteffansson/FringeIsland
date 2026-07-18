@@ -39,7 +39,7 @@ feature_prefix: H
 
 ### 2. Architecture position
 
-Where the Hub sits in the ecosystem anatomy ([`../../architecture/ECOSYSTEM_ANATOMY_V5.svg`](../../architecture/ECOSYSTEM_ANATOMY_V5.svg), [ADR-U023](../../architecture/decisions/ADR-U023-platform-core-domain-services-decomposition.md)):
+Where the Hub sits in the ecosystem anatomy ([`../../architecture/ECOSYSTEM_ANATOMY_V6.svg`](../../architecture/ECOSYSTEM_ANATOMY_V6.svg), [ADR-U023](../../architecture/decisions/ADR-U023-platform-core-domain-services-decomposition.md)):
 
 - **Tier:** Surfaces (Products).
 - **Sibling Surfaces:** the Gimbal (the senses surface, planned; the Hub is the canvas surface — the two equipment profiles of the one experience, [ADR-U025](../../architecture/decisions/ADR-U025-products-as-equipment-profiles.md)), the Studios (World, Arc, and Journey Studios under Universe Studio as parent, [ADR-U026](../../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md)), and the Design System (consumed for shared visual language).

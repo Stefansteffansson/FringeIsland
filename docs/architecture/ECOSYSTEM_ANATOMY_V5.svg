@@ -337,4 +337,5 @@
 <line class="vert-thread vert-thread-notif" x1="729" y1="56" x2="729" y2="856"/>
 <line class="vert-thread vert-thread-obs"   x1="761" y1="56" x2="761" y2="856"/>
 <line class="vert-thread vert-thread-trans" x1="793" y1="56" x2="793" y2="856"/>
+<text x="12" y="20" font-size="12" font-weight="bold" fill="#b91c1c">SUPERSEDED — historical snapshot; current anatomy diagram: see docs/architecture/README.md</text>
 </svg>

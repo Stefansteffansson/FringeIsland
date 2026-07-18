@@ -93,7 +93,7 @@ Start at [`docs/README.md`](docs/README.md) for the full navigation map. Everyth
 | Design system | [`docs/design-system/`](docs/design-system/) |
 | Cross-cutting verticals | [`docs/verticals/`](docs/verticals/) |
 | **Architecture** | |
-| Architecture anatomy (v1 reference) | [`docs/architecture/ARCHITECTURE_ANATOMY_V1.md`](docs/architecture/ARCHITECTURE_ANATOMY_V1.md) |
+| Architecture anatomy (living overview + diagram) | [`docs/architecture/ARCHITECTURE_ANATOMY.md`](docs/architecture/ARCHITECTURE_ANATOMY.md) |
 | Domain entities | [`docs/architecture/DOMAIN_ENTITIES.md`](docs/architecture/DOMAIN_ENTITIES.md) |
 | ADRs (architecture decision records) | [`docs/architecture/decisions/`](docs/architecture/decisions/) |
 | **Planning** | |

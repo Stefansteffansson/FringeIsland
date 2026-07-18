@@ -22,7 +22,7 @@ Note that verticals use an **Obligation inventory** at L3 rather than a Capabili
 
 ## L2 — Purpose, scope, and constitutional shape
 
-*L2 authorship. Derived from Vision (which principle does this vertical operationalise?) and the ecosystem anatomy (`../../architecture/ECOSYSTEM_ANATOMY_V5.svg`, ADR-U002). Revised when the vertical's scope, tooling, or failure profile materially changes.*
+*L2 authorship. Derived from Vision (which principle does this vertical operationalise?) and the ecosystem anatomy (`../../architecture/ECOSYSTEM_ANATOMY_V6.svg`, ADR-U002). Revised when the vertical's scope, tooling, or failure profile materially changes.*
 
 ### 1. Purpose
 
