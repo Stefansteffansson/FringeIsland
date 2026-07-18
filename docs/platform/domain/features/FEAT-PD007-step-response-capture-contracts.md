@@ -6,7 +6,7 @@ title: Step-response capture and review-substance contracts
 owner: platform/domain/journeys
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
@@ -149,3 +149,18 @@ N/A (no surface). The player read stays a single read — the four new keys are 
 4. **Instance targeting** — open-else-latest-else-create (JF-4). The gate reviews the ordering rule for repeatable steps.
 5. **Response size guard** — a fixed `body` length ceiling with a clear SQLSTATE, value proposed at the gate (JF-5).
 6. **Export read in-scope** — `get_own_step_instances_export()` discharges the J-C flag at J-F, before the first response exists (JF-6). The direct-caller question (ADR-U038) is asked of all three touches at the gate.
+
+## Implementation notes (Cycle J-F build, 2026-07-18)
+
+**Migrations (held at the schema gate):** `20260718090000_feat_pd007_response_substrate.sql` (JF-01: columns + registry seed), `20260718090100_feat_pd007_save_step_response.sql` (JF-02: the verb), `20260718090200_feat_pd007_player_read_walks_export_contracts.sql` (JF-03: the player-read re-issue + walks export). Applied to dev via `apply-migration-temp.js`; the three `supabase-cli.sh migration repair --status applied 202607180901{0,1,2}00`-equivalents were classifier-blocked in the autonomous session and ride the gate PR body as pending commands.
+
+**Red → green evidence:** the 28-test contract suite (`journey-step-response-capture-contracts.test.ts`) was authored before any migration existed and run against the PD006 substrate: **23 red / 5 passed**, the passes audited — 4 are PIN-class invariants (contract-only posture, completion-without-response, sibling isolation, direct-caller refusal) green by design. **One green-at-red anomaly caught and fixed in-session:** the `journey.takeaway` assertion used a bare `not.toBeNull()`, which `undefined` (key absent pre-migration) passes; fixed to `toHaveProperty` + non-null and re-demonstrated red before implementation. The two STORY-1 cascade proofs (transcendence carry-over, ADR-U031 erasure) are labelled proofs over existing machinery, not TDD. Post-apply: **28/28 green** first run; full journeys slice run for regression (see gate PR).
+
+**Build-time defaults added to the gate board (beyond JF-1..6):**
+- **JF-5 value proposed:** `char_length(body) <= 100000` (the PD001 journal-body precedent, `feat_pd001` line 34), refused `22001`; a 256 KiB whole-payload backstop (conventional extra keys ride — non-sealed — megabytes do not). Malformed payloads (non-object / missing `body` key / non-string body) refuse `22023` and never clear existing words (the rabbit-hole pin, tested).
+- **No `captures_response` gate on the verb** — the registry flag places surface affordances; a traveller's words are storable on any step of their own walk (the spec's solution sketch names no such refusal; refusing would make the registry a write-guard vocabulary).
+- **No via-group permission key on the verb** — responding is the traveller's own words on their own instance, ungated beyond standing like `enter` (an Observer may write privately; they still cannot complete).
+- **An explicit-empty save with no prior instance creates the open instance** (single deterministic targeting path; stamps `response_updated_at`, stores `NULL`) — same one-path shape as the store case.
+- **`save_step_response` touches `last_accessed_at`** — consistent with the sibling verbs (activity is activity).
+
+**ADR-U038 direct-caller answers (per touch):** (1) columns — the table keeps RLS-on/zero-policies/zero-grants; response content is unreachable around the verbs, pinned by test. (2) `save_step_response` — writes exactly the caller's own (enrolment × traveller × step) response under the same standing + status guards the route relies on. (3) reads — both resolve the P-O1 actor and serve only that traveller's rows; `get_group_journey_progress` is untouched and its payload carries no response key in any consent state (regex-pinned).

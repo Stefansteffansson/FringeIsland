@@ -3,7 +3,7 @@
 ---
 id: TASK-JF-01
 title: Response substrate migration — response/response_updated_at on the step-instance, captures_response on the registry
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PD007
