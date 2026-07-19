@@ -63,4 +63,6 @@ Both deep-cold runs decompose identically: **~2.7 s TTFB = instance provisioning
 
 ## Gate verdict
 
-*(pending W3 + Stefan's deep-cold disposition call)*
+**PASSED — with one labelled exception (Stefan, 2026-07-19).** Every checklist item verified; every rider resolved (two built and merged at the gate, PR #177; one ratified; one purge executed; one filed); every budget class users routinely feel passes — warm (B3), first-of-session (B2 shallow), soft-nav (B4, textbook), interactions incl. the J-F response save (B5), and the flagship **first-ever-cold sign-in at deep-cold (J-O5: 1 471 ms < 2 000 ms)**. The **labelled exception:** B2 at *true zero-traffic deep-cold* (W1 5.9 s / W2 5.2 s vs the 2.5 s letter) — the composition is ~2.7 s Vercel Hobby-tier instance provisioning (vendor floor) + app reads at their own measured floor + zero-cache assets; no app-side action exists (the J-A "measured to the floor" discipline, applied at area depth). **Revisit triggers:** real traffic making zero-traffic windows rare, or the parked **Vercel Pro scale-to-one** decision (this gate's data is its strongest argument on record). Stefan's felt verdict: "quite responsive."
+
+**The Journeys area (A-JRN) is closed.** Six cycles (J-A..J-F), six paired platform/Hub features `6-done`, the ADR-U044 step substrate + ADR-U045 front door + ADR-U046 lived record realized, privacy invariants 4+8 pinned by test at every layer. Next per the parent plan: **Communication (A-COM)** — at its open: un-park IDN-10, un-seam MEM-9.
