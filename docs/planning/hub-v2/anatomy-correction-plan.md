@@ -44,7 +44,9 @@ Deliverable: `ADR-U047-internal-api-inversion-lifecycle-facts.md` draft → **pa
 
 ### W2 — Characterization coverage (parallel with W1)
 
-Before moving anything, confirm the behavior oracle covers every cascade site: map the seven files' sites (audit AC-1 table + AC-2) to existing integration tests (enrollment freeze on removal/leave/closure/exit; journey transfer to DeusEx; Mist-erasure journey delete). Where a disposition is untested, add the characterization test now — green against current code — so W4 is provably behavior-preserving. New-behavior tests (the seam contract itself) follow red-first as usual.
+Before moving anything, confirm the behavior oracle covers every cascade site: map the audit's sites (AC-1 table + AC-2) to existing integration tests (enrollment freeze on removal/leave/closure/exit; journey transfer to DeusEx; Mist-erasure journey delete). Where a disposition is untested, add the characterization test now — green against current code — so W4 is provably behavior-preserving. New-behavior tests (the seam contract itself) follow red-first as usual.
+
+**W2 executed 2026-07-19.** The live relocation set is **nine functions across six migrations** — the sprint3 nomination handler is already dead (dropped `pc014:948`) and the sprint2 leave shape is superseded by `20260705115243`. Coverage: green today for `leave_group`, `remove_member`, the pc014 set (`_transfer_stewardship_to_deusex`, `respond_to_stewardship_nomination`, `close_group`, `delete_group`). Three gaps need green-before characterization tests (specs A–D in the W2 report): **A** `admin_exit_user_from_platform` (all 3 scenarios uncovered; no hub caller found — possibly an orphaned RPC, invoke via service role), **B** `leave_group_as_group` freeze (must pin the pc015 `status <> 'frozen'` predicate, which also freezes paused/completed — the live divergence, recorded in ADR-U047 rule 7), **C** `_erase_mist` journey-delete assertion, **D** (low) decline→DeusEx fallback freeze. Also: `delete_group` freezes with reason `'group_archived'` — the `ds3_lifecycle_group_closed` fact carries a reason parameter accordingly.
 
 ### W3 — The conformance regression test, written red-first (before W4)
 
@@ -54,7 +56,7 @@ Written **before** the relocation, this test is red against today's code — the
 
 ### W4 — Relocation migration (schema gate)
 
-One migration: create the DS-3 disposition handler(s); redefine the PC functions at the seven sites (`sprint2_leave_group_core`, `sprint3_smart_notifications` nomination handler, `sprint4_platform_exit`, pc013 `remove_member`, pc014 transfer/closure set, pc015 `leave_group_as_group`, the pc013 leave fix) to call the contract; no PC object names a DS-3 table afterwards. Suites from W2 stay green; W3 flips to green. PR held at the schema gate with the red/green evidence and apply commands in the body; **merge only on Stefan's named approval**.
+One migration: create the DS-3 disposition handler(s); redefine the **eight live core functions** (`leave_group` — current shape `20260705115243`; `remove_member` — pc013; `_transfer_stewardship_to_deusex`, `respond_to_stewardship_nomination`, `close_group`, `delete_group` — pc014; `leave_group_as_group` — pc015; `admin_exit_user_from_platform` — sprint4) to call the contract (`_erase_mist` is W5); no PC object names a DS-3 table afterwards. Suites from W2 stay green; W3 flips to green. PR held at the schema gate with the red/green evidence and apply commands in the body; **merge only on Stefan's named approval**.
 
 ### W5 — Mist-erasure hook (schema gate; may ride the W4 migration)
 
