@@ -20,8 +20,10 @@ export interface JournalEntry {
   updated_at: string;
 }
 
-/** Versioned own-subject export section — composed with the PC008 document
- *  at the surface (`journal` key), never merged platform-side. */
+/** Versioned own-subject export section. Since COR-A W8 (AC-4) the PLATFORM
+ *  composes this document into get_own_data_export()'s `journal` key itself —
+ *  this wrapper remains as the direct harness for the standalone RPC (used by
+ *  the journal-erasure/export integration tests), not as route plumbing. */
 export interface JournalExport {
   schema_version: number;
   exported_at: string;

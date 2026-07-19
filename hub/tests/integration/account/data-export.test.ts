@@ -254,15 +254,18 @@ describe('FEAT-PC008 — own data export', () => {
       if (user) await teardownUsers([user]);
     });
 
-    it('v1 carries schema_version 1 and omits the forward-seam sections (journal, enrollments)', async () => {
+    it('carries schema_version 1 with the platform-composed sections present (COR-A W8)', async () => {
       const supabase = createTestClient();
       await signInWithRetry(supabase, user.email, user.password);
 
       const doc = (await fetchOwnDataExport(supabase)) as unknown as Record<string, unknown>;
       expect(doc.schema_version).toBe(1);
-      // Domain-owned data + the Journal are forward seams — not present in v1.
-      expect(doc).not.toHaveProperty('journal');
-      expect(doc).not.toHaveProperty('enrollments');
+      // COR-A W8 (AC-4): the former forward-seam sections are composed
+      // platform-side — additive keys, no version bump (the delivered download
+      // already carried them; the composer moved, the shape did not). Full
+      // composite behaviour is covered in export-composite.test.ts.
+      expect(doc).toHaveProperty('journal');
+      expect(doc).toHaveProperty('journeys');
     });
   });
 });

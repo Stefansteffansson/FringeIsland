@@ -12,9 +12,14 @@
  * target parameter.
  *
  * The document is carried under an integer `schema_version` with named, open
- * sections; Domain-owned data (journey enrolments, …) and the Journal (IDN-5)
- * are forward-seam sections added by their areas later (§L3 scopes IDN-8 to
- * PC-4 — it does not read Domain tables). Consumers treat the document as data.
+ * sections. Since COR-A W8 (audit finding AC-4) export COMPLETENESS is the
+ * platform's contract: the former forward-seam sections — the Journal
+ * (FEAT-PD001) and the walks/step-instances dataset (FEAT-PD007) — are
+ * composed PLATFORM-side by `get_own_data_export()` itself (which calls the
+ * owning Domain contracts under the same caller identity), so one RPC returns
+ * the full GDPR export on every surface. Consumers treat the document as data;
+ * the section interfaces below are deliberately declared locally (no TS import
+ * from the journal/journeys area modules — the AC-5 plumbing rule).
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -58,10 +63,52 @@ export interface DataExportMembership {
   added_at: string;
 }
 
+/** One journal entry in the platform-composed `journal` section (FEAT-PD001). */
+export interface DataExportJournalEntry {
+  id: string;
+  title: string | null;
+  body: string;
+  created_at: string;
+  updated_at: string;
+}
+
+/** The versioned journal section — `get_own_journal_export()`'s document,
+ *  composed platform-side since COR-A W8 (present-and-empty, never absent). */
+export interface DataExportJournal {
+  schema_version: number;
+  exported_at: string;
+  entries: DataExportJournalEntry[];
+}
+
+/** One of the caller's own instance rows in an exported walk (FEAT-PD007). */
+export interface DataExportWalkStep {
+  step_id: string;
+  step_title: string;
+  kind: string;
+  created_at: string;
+  completed_at: string | null;
+  response: Record<string, unknown> | null;
+  response_updated_at: string | null;
+}
+
+/** One exported walk — an enrolment the caller travelled, with their own
+ *  instances only. The `journeys` section is `get_own_step_instances_export()`'s
+ *  fixed shape, composed platform-side since COR-A W8. */
+export interface DataExportWalk {
+  enrollment_id: string;
+  journey_id: string;
+  journey_title: string;
+  status: string;
+  enrolled_at: string;
+  completed_at: string | null;
+  steps: DataExportWalkStep[];
+}
+
 /**
- * The complete export document. `schema_version` lets a consumer branch; new
- * personal-data areas (the Journal; Domain-owned sections) are added under a
- * version bump, never by reshaping existing sections.
+ * The complete export document. `schema_version` lets a consumer branch;
+ * additive keys extend the document in place (the PC-3 §7 shape — COR-A W8
+ * added `journal` + `journeys` without a bump because the delivered download
+ * already carried them); existing sections are never reshaped.
  */
 export interface DataExport {
   schema_version: number;
@@ -71,14 +118,18 @@ export interface DataExport {
   account_state: DataExportAccountState;
   consent: DataExportConsentEntry[];
   memberships: DataExportMembership[];
+  journal: DataExportJournal;
+  journeys: DataExportWalk[];
 }
 
 /**
  * Assemble the caller's own complete data via the FEAT-PC008 SECURITY DEFINER
- * contract. The function returns the full document and writes the durable
- * export-event record as part of the same call. Throws the underlying
- * `PostgrestError` on failure so the route can surface it (500) rather than
- * hand back a partial document.
+ * contract (extended platform-side by COR-A W8 to include the journal and
+ * walks sections — completeness is the platform's, not the caller's, concern).
+ * The function returns the full document and writes the durable export-event
+ * record as part of the same call. Throws the underlying `PostgrestError` on
+ * failure so the route can surface it (500) rather than hand back a partial
+ * document.
  */
 export async function fetchOwnDataExport(
   supabase: SupabaseClient,

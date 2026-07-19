@@ -346,7 +346,11 @@ export async function completeJourneyStep(
   return data as PlayerInstance;
 }
 
-// --- FEAT-PD007 response-capture + walks-export contracts (Cycle J-F) ---------
+// --- FEAT-PD007 response-capture contracts (Cycle J-F) ------------------------
+// The walks-export RPC (get_own_step_instances_export) still lives in the
+// substrate, but since COR-A W8 the platform composes it into
+// get_own_data_export()'s `journeys` key itself — the Hub-side fetcher that
+// used to ride here was removed with the export route's 3-way merge (AC-4).
 
 /** save_step_response's return — the confirmed write for cache write-through. */
 export interface StepResponseSaveResult {
@@ -373,39 +377,6 @@ export async function saveStepResponse(
   });
   if (error) throw error;
   return data as StepResponseSaveResult;
-}
-
-/** One exported instance row in the walks export (own words + passage). */
-export interface OwnWalkStepExport {
-  step_id: string;
-  step_title: string;
-  kind: string;
-  created_at: string;
-  completed_at: string | null;
-  response: StepResponsePayload | null;
-  response_updated_at: string | null;
-}
-
-/** One exported walk — an enrolment the caller travelled, with their own instances. */
-export interface OwnWalkExport {
-  enrollment_id: string;
-  journey_id: string;
-  journey_title: string;
-  status: string;
-  enrolled_at: string;
-  completed_at: string | null;
-  steps: OwnWalkStepExport[];
-}
-
-/** FEAT-PD007 STORY-6 (JF-6; the FEAT-H010 flag): the caller's walks export —
- *  own-subject, fixed shape, Mist-callable. Composed by the Hub export route as
- *  the additive `journeys` key (the FEAT-H011 journal pattern). */
-export async function fetchOwnStepInstancesExport(
-  supabase: SupabaseClient,
-): Promise<OwnWalkExport[]> {
-  const { data, error } = await supabase.rpc('get_own_step_instances_export');
-  if (error) throw error;
-  return (data ?? []) as unknown as OwnWalkExport[];
 }
 
 // --- FEAT-PD005 group-progress + sharing contracts (Cycle J-D) ----------------
