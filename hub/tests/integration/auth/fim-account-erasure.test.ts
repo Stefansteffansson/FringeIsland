@@ -237,4 +237,94 @@ describe('FEAT-PC002 STORY-5 crit-4 — FIM account-erasure: anonymise consent l
       .single();
     expect(survivor!.is_temporary).toBe(false);
   });
+
+  // Characterization (TEST-AFTER, green-before for PR #188 / ADR-U047 Amendment 1):
+  // pins admin_hard_delete_user's DS-3 attribution reassignment — the tenth relocation
+  // site (ds3_lifecycle_user_hard_deleted). On hard-delete, the target personal group's
+  // authored journeys and the enrollments it enrolled are REASSIGNED to the [Deleted User]
+  // sentinel — not deleted, not transferred to DeusEx. journeys.created_by_group_id uses
+  // COALESCE(sentinel, caller) (migration 20260223171200 :575); journey_enrollments
+  // .enrolled_by_group_id is set to the sentinel directly, NO COALESCE (:597) — the two
+  // land identically while the sentinel is seeded (it is, migration 20260227120843).
+  // Target is a Mist, NOT a FIM: a consented FIM's raw hard-delete is blocked by the
+  // consent-FK RESTRICT (23503, pinned by the sibling test above), so it can never reach
+  // this reassignment directly; a Mist holds no consent, so admin_hard_delete_user
+  // succeeds and the sentinel reassignment is observable in isolation.
+  it('[characterization] reassigns the target group journeys + enrollments to the [Deleted User] sentinel on hard-delete', async () => {
+    // Target: a Mist (consent-exempt, so the hard-delete is not RESTRICT-blocked).
+    const mistClient = createTestClient();
+    const { data: signIn } = await withAnonRateLimitRetry(() => mistClient.auth.signInAnonymously());
+    const mistAuthId = signIn.user!.id;
+    createdUserIds.push(mistAuthId);
+    const profile = await waitForProfile(admin, mistAuthId);
+    const targetUserId = profile.id as string;
+    const targetGroupId = profile.personal_group_id as string;
+
+    // The [Deleted User] sentinel (seeded system singleton) — the reassignment destination.
+    const sentinelRows = (await runAdminSql(
+      `SELECT id FROM public.groups WHERE name = '[Deleted User]' AND group_type = 'system';`,
+    )) as Array<{ id: string }>;
+    const sentinelId = sentinelRows[0].id;
+
+    // Seed: the target group authors a non-public journey ...
+    const journeyRows = (await runAdminSql(
+      `INSERT INTO public.journeys (title, created_by_group_id, is_public, journey_type)
+       VALUES ('DS-3 characterization journey', '${targetGroupId}', false, 'user_created')
+       RETURNING id;`,
+    )) as Array<{ id: string }>;
+    const journeyId = journeyRows[0].id;
+
+    // ... and enrols a SEPARATE surviving group (the admin group) into it. The enrollment's
+    // group_id = admin group (ON DELETE CASCADE) so the row survives the personal-group
+    // teardown; only enrolled_by_group_id (the target group, ON DELETE SET NULL) changes.
+    await runAdminSql(
+      `INSERT INTO public.journey_enrollments (journey_id, group_id, enrolled_by_group_id, status)
+       VALUES ('${journeyId}', '${adminGroupId}', '${targetGroupId}', 'active');`,
+    );
+
+    // Act: hard-delete the target (same admin caller as the sibling characterization).
+    const { data: result, error } = await adminClient.rpc('admin_hard_delete_user', {
+      target_user_id: targetUserId,
+    });
+    expect(error).toBeNull();
+    expect(result.success).toBe(true);
+    erasedUserIds.add(mistAuthId);
+
+    // Journey REASSIGNED, not deleted: it survives with created_by_group_id = sentinel.
+    const { data: journey } = await admin
+      .from('journeys')
+      .select('id, created_by_group_id')
+      .eq('id', journeyId)
+      .maybeSingle();
+    expect(journey).not.toBeNull();
+    expect(journey!.created_by_group_id).toBe(sentinelId);
+
+    // Enrollment REASSIGNED, not deleted, not set-NULL: survives the CASCADE (group_id is a
+    // surviving group) with enrolled_by_group_id = sentinel (reassign-first beats SET NULL).
+    const { data: enrollment } = await admin
+      .from('journey_enrollments')
+      .select('id, enrolled_by_group_id, group_id')
+      .eq('journey_id', journeyId)
+      .maybeSingle();
+    expect(enrollment).not.toBeNull();
+    expect(enrollment!.enrolled_by_group_id).toBe(sentinelId);
+    expect(enrollment!.group_id).toBe(adminGroupId);
+
+    // Erasure completed — target user + personal group gone (file's erasure pattern).
+    const { data: goneUser } = await admin
+      .from('users')
+      .select('id')
+      .eq('auth_user_id', mistAuthId)
+      .maybeSingle();
+    expect(goneUser).toBeNull();
+    const { data: goneGroup } = await admin
+      .from('groups')
+      .select('id')
+      .eq('id', targetGroupId)
+      .maybeSingle();
+    expect(goneGroup).toBeNull();
+
+    // Best-effort teardown: drop the sentinel-owned journey (CASCADE removes the enrollment).
+    await admin.from('journeys').delete().eq('id', journeyId);
+  });
 });
