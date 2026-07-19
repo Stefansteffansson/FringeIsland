@@ -18,6 +18,7 @@ import type {
   UpdateGroupSettingsInput,
 } from '@/lib/groups/queries';
 import { OverviewTransportError } from '@/lib/me/overview-shared';
+import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
 import type { GroupEnrollmentSummary } from '@/lib/journeys/queries';
 
 export type {
@@ -132,6 +133,9 @@ export function invalidateGroupsCache(): void {
   adoptedInvitations = null;
   adoptedNominations = null;
 }
+// COR-A W9 (AC-5): session-end drop via the auth-owned registry — auth never
+// imports this module. Semantics in `lib/auth/cache-registry.ts`.
+registerCacheInvalidator(invalidateGroupsCache);
 
 /** GRP-1: create an engagement group; resolves to the new group's id. */
 export async function createGroup(input: CreateGroupInput): Promise<string> {

@@ -17,6 +17,7 @@
  * AuthContext drops the cache on session end via `invalidateJournalCache`.
  */
 import type { JournalEntry } from '@/lib/journal/queries';
+import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
 
 export type { JournalEntry } from '@/lib/journal/queries';
 
@@ -71,6 +72,10 @@ export function invalidateJournalCache(): void {
   cachedEntries = null;
   entriesInFlight = null;
 }
+// COR-A W9 (AC-5): session-end drop via the auth-owned registry — auth never
+// imports this module (DS-7 stays a leaf: nothing depends on it). Semantics in
+// `lib/auth/cache-registry.ts`.
+registerCacheInvalidator(invalidateJournalCache);
 
 export async function postJournalEntry(
   title: string | null,

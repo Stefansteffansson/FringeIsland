@@ -13,6 +13,7 @@
  * this session never re-launches without a refetch.
  */
 import { OverviewTransportError } from '@/lib/me/overview-shared';
+import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
 import type { OnboardingStatus } from '@/lib/onboarding/queries';
 
 export type { OnboardingStatus };
@@ -84,3 +85,6 @@ export function invalidateOnboardingCache(): void {
   statusInFlight = null;
   adoptedStatus = null;
 }
+// COR-A W9 (AC-5): session-end drop via the auth-owned registry — auth never
+// imports this module. Semantics in `lib/auth/cache-registry.ts`.
+registerCacheInvalidator(invalidateOnboardingCache);

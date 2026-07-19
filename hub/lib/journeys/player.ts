@@ -29,6 +29,7 @@ import type {
   StepResponseSaveResult,
 } from '@/lib/journeys/queries';
 import { JourneysApiError } from '@/lib/journeys/client';
+import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
 
 export type {
   PlayerInstance,
@@ -89,6 +90,9 @@ export function invalidatePlayerCache(): void {
   cachedState.clear();
   stateInFlight.clear();
 }
+// COR-A W9 (AC-5): session-end drop via the auth-owned registry — auth never
+// imports this module. Semantics in `lib/auth/cache-registry.ts`.
+registerCacheInvalidator(invalidatePlayerCache);
 
 // --- background-save transports (no cache writes; the page owns optimistic state) ---
 

@@ -11,6 +11,7 @@
  */
 import type { Profile, ProfilePatch } from '@/lib/profile/queries';
 import { OverviewTransportError } from '@/lib/me/overview-shared';
+import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
 
 async function errorMessage(res: Response, fallback: string): Promise<string> {
   const body = (await res.json().catch(() => null)) as { error?: string } | null;
@@ -55,6 +56,9 @@ export function fetchProfile(): Promise<Profile> {
 export function invalidateProfileCache(): void {
   cached = null;
 }
+// COR-A W9 (AC-5): session-end drop via the auth-owned registry — auth never
+// imports this module. Semantics in `lib/auth/cache-registry.ts`.
+registerCacheInvalidator(invalidateProfileCache);
 
 /** ADR-U042: adopt the bootstrap bundle's profile slice as the session cache.
  *  A bundle TRANSPORT failure falls back to the standalone contract read
