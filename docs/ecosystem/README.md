@@ -36,7 +36,8 @@ docs/ecosystem/
 │
 └── thinking/                              ← working ideas, explorations, open questions
     ├── README.md                          ← index of active thinking
-    └── OPEN_QUESTIONS.md                  ← ecosystem-level open questions
+    ├── OPEN_QUESTIONS.md                  ← ecosystem-level open questions
+    └── 2026-06-15_knowledge-base_whisp-and-universe-foundations.md  ← Whisp & universe foundations KB (exploratory)
 ```
 
 ---
