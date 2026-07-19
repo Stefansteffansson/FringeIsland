@@ -13,6 +13,7 @@
 ```
 docs/planning/reference/
 ├── README.md                              ← you are here
+├── ANATOMY-CONFORMANCE-AUDIT.md           ← full-codebase anatomy conformance audit + deviation register (July 2026; all findings dispositioned via Cycle COR-A)
 ├── ADMIN-DEUSEX-GAP-ANALYSIS.md           ← admin/DeusEx capability gaps (April 2026)
 ├── GROUP-MODEL-CURRENT-STATE.md           ← group model assessment (April 2026)
 ├── PLATFORM-EXIT-GAP-ANALYSIS.md          ← platform exit gaps (April 2026)
