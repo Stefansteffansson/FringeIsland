@@ -96,6 +96,8 @@ The durable auth-audit recorder (`recordAuditEntry` → `admin_audit_log` via SE
 
 Propose at the COR-A retro: add an area-gate DoD row — "every RPC the area shipped has its permission/lifecycle gates verified against its spec" — folding the exhaustive per-RPC assurance pass into the existing gate rhythm instead of a big-bang audit.
 
+**DECIDED YES (Stefan, 2026-07-19).** Row added to the Phase-3 area-gate DoD (hub-v2 README, Phase-3 gate); applies from A-COM onward. The retro records it.
+
 ---
 
 ## Execution order

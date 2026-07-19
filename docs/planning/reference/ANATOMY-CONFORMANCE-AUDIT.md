@@ -56,6 +56,7 @@
 **Why it matters:** the stability zone now hardcodes iteration-zone reactions. Every new core lifecycle feature (pc013→pc014→pc015 shows the growth) re-implements the freeze cascade; DS-3 can never change its enrollment-disposition policy, or be extracted, without editing core.
 **Correction direction:** define the Internal-API inversion — core emits lifecycle facts (member-removed, group-closed, user-exited); DS-3 owns a single enrollment-disposition handler that core invokes by contract (in the monolith: one DS-3-owned function/trigger seam), so no PC object names `journeys`/`journey_enrollments`. Needs a small design + ADR, then mechanical relocation of the seven sites.
 **TS mirror (no action):** the groups BFF composing journey reads (`hub/app/api/groups/[id]/route.ts:6`, `.../journeys/[enrollmentId]/progress/route.ts:4`) is legitimate cross-owner BFF aggregation per ADR-U038; listed only so the pattern is visible in one place.
+**CLOSED (2026-07-19):** ADR-U047 (+Amendment 1) ratified; migration `20260719190205` applied and merged (PR #188). Nine sites relocated to the `ds3_lifecycle_*` contract — plus a **tenth this audit missed**, `admin_hard_delete_user` (PC-4 sentinel reassignment), found by the W3 conformance gate during the build and relocated under Amendment 1. Gate green in-suite (`internal-api-conformance.test.ts`); full integration 477/477 post-apply.
 
 ### AC-2 · Major — PC-2 Mist erasure deletes DS-3 journeys directly
 
@@ -63,6 +64,7 @@
 **Evidence:** `_erase_mist` — `20260626202215_feat_pc002_mist_explicit_erase.sql:71-74`: `DELETE FROM public.journeys WHERE created_by_group_id = v_personal_group_id`, ordered before the auth-user delete because of `created_by_group_id → groups ON DELETE RESTRICT`.
 **Mitigation:** it fulfils the Privacy/GDPR vertical's erasure obligation, and the FK ordering forced *some* answer.
 **Correction direction:** same family as AC-1 — a DS-3-owned erasure hook on personal-group erasure; PC-2 stops naming domain tables. Fold into the AC-1 design.
+**CLOSED (2026-07-19):** relocated to `ds3_lifecycle_personal_group_erased` in the same migration (PR #188), FK-RESTRICT ordering preserved; pinned by the farewell characterization test.
 
 ### AC-3 · Observation (resolved by R-1, 2026-07-19) — `public.notifications` written by core and DS-3 alike
 
@@ -102,6 +104,7 @@
 ### AC-9 · Observation — Residual assurance caveat
 
 Substrate homes were verified *structurally* (zero direct writes in `hub/lib`; zero `.from(`/`.rpc(` in routes; uniform DEFINER + REVOKE/GRANT discipline; fail-closed caller resolver `get_current_user_profile_id` filtering `is_active = true`; dense in-function lifecycle guards). The ~90 RPC bodies were **not** exhaustively read to confirm each internally enforces its full documented permission gate. Confidence is high; exhaustive per-RPC gate verification remains open for a future deep pass (candidate: per-area, at each area gate).
+**DISPOSITION (2026-07-19, Stefan — COR-A W12):** standing **per-RPC gate-verification row added to the Phase-3 area-gate DoD** (hub-v2 README, Phase-3 gate), applying from A-COM onward — the assurance pass folds into the gate rhythm instead of a big-bang re-audit. The core/domain half is enforced mechanically in every suite run by `internal-api-conformance.test.ts`.
 
 ---
 
@@ -230,7 +233,7 @@ No PC-owned table carries an FK or column referencing a DS-owned table — struc
 | `lib/journal/*` | DS-7 |
 | `lib/me/*`, `app/api/me/*`, `app/api/account/export` | BFF aggregators over multiple owners — legitimate per ADR-U038 clause 1, no single owner (by design) |
 
-† `onboarding` is provisionally PC-2-adjacent (first-run experience); touches only its own contract + INFRA.
+† `onboarding` is provisionally PC-2-adjacent as an experience, but its platform contract `get_onboarding_status` (pd006) is DS-3-owned — it legitimately reads journey/enrolment tables (DS-internal direction, allowed; allowlisted as DS-owned by the conformance gate). *(Corrected 2026-07-19 — the original "touches only its own contract + INFRA" line was inaccurate.)*
 
 ---
 
