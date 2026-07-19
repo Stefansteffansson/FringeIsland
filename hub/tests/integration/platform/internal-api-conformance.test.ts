@@ -16,6 +16,11 @@ jest.setTimeout(60_000); // real-substrate suite: one Management-API catalog que
  *    No PC-owned function, trigger, or policy may reference a DS-owned table.
  *    Any function referencing DS tables must itself be DS-owned (explicit
  *    allowlist in the conformance test)."
+ * ADR-U047 Amendment 2 (2026-07-19) adds one bounded carve-out: a platform
+ * function fulfilling a cross-cutting VERTICAL obligation (ADR-U002) may
+ * compose domain services' published READ contracts — read-only, contract-only,
+ * never DS tables — declared by name in the vertical-composition allowlist
+ * below (first entry: get_own_data_export, Privacy/GDPR export, COR-A W8).
  *
  * State at authoring (2026-07-19): RED. The COR-A W4/W5 relocation migration
  * has not landed, so the ten Core lifecycle functions still author DS-3
@@ -44,11 +49,15 @@ jest.setTimeout(60_000); // real-substrate suite: one Management-API catalog que
  * Source = `pg_proc.prosrc` (the function BODY; COMMENT ON text lives in
  * pg_description, not prosrc, so it is already out of scope). We strip block
  * (/* *​/) and line (--) comments so a table named only in a code comment is not
- * a false hit, then word-boundary-match each DS table both schema-qualified and
- * bare: /\b(?:public\.)?<table>\b/i. With `search_path=''` every real reference
- * is schema-qualified, so schema-qualified matching alone is sufficient; the
- * bare arm is future-proofing. Word boundaries keep `v_journeys` (a variable)
- * and `'journeys_transferred'`/`'journey_count'` (jsonb keys) from matching.
+ * a false hit, then word-boundary-match each DS table SCHEMA-QUALIFIED:
+ * /\bpublic\.<table>\b/i. Schema-qualified-only is the correct arm, not just a
+ * sufficient one: `search_path=''` is mandatory in substrate code, so every
+ * real relation reference is schema-qualified — while a bare-name arm
+ * false-positives on jsonb KEY LITERALS that happen to equal a table name
+ * (the COR-A W8 export composite's `'journeys'` document key in
+ * get_own_data_export, PR #191, is exactly that shape). Tightened per
+ * ADR-U047 Amendment 2. Word boundaries keep `public.journeys_x`-style
+ * longer names from matching `public.journeys`.
  * CAVEAT (conservative): a `--`/`/* *​/` sequence *inside a string literal*
  * would be stripped too; no live function has that shape, so it does not bite.
  * Scanning every public `prokind='f'` row covers trigger functions as well
@@ -107,6 +116,21 @@ const DS_OWNED_ALLOWLIST = new Set<string>([
   ...DS7_JOURNAL_FUNCTIONS,
 ]);
 
+// ADR-U047 Amendment 2 — vertical-composition allowlist (a DISTINCT category,
+// never merged into the DS-owned list, so every carve-out use stays visible).
+// A platform function fulfilling a cross-cutting VERTICAL obligation (ADR-U002)
+// may compose domain services' published READ contracts: read-only,
+// contract-only (never a DS table, never a lifecycle mutation), each dataset
+// keeping its one substrate home (the composite calls, never inlines). Every
+// entry cites its vertical + obligation (Amendment 2 bound a).
+const VERTICAL_COMPOSITION_ALLOWLIST = new Set<string>([
+  // Privacy/GDPR — whole-account export completeness (Art. 15/20; audit AC-4,
+  // COR-A W8, PR #191): get_own_data_export composes get_own_journal_export()
+  // and get_own_step_instances_export() platform-side so one RPC returns the
+  // complete document on every surface.
+  'get_own_data_export',
+]);
+
 // The ten Core lifecycle functions COR-A W4/W5 relocates (ADR-U047 §"the live
 // relocation set" + Amendment 1). NOT allowlisted — they are the demonstrated-red
 // now and must drop out when the inversion migration lands. Listed only to
@@ -139,8 +163,11 @@ function stripComments(src: string): string {
 
 function referencedDsTables(body: string): string[] {
   const clean = stripComments(body);
+  // Schema-qualified only (ADR-U047 A2): search_path='' makes every real
+  // relation reference `public.<table>`; bare names in a body are key literals
+  // or identifiers, not relations (the PR #191 'journeys' jsonb key).
   return DS_TABLES.filter((t) =>
-    new RegExp(`\\b(?:public\\.)?${t}\\b`, 'i').test(clean),
+    new RegExp(`\\bpublic\\.${t}\\b`, 'i').test(clean),
   );
 }
 
@@ -164,7 +191,12 @@ describe('Internal-API inversion conformance (ADR-U047 rule 3, COR-A W3)', () =>
     const offenders = rows
       .map((r) => ({ name: r.name, args: r.args, tables: referencedDsTables(r.body ?? '') }))
       .filter((r) => r.tables.length > 0)
-      .filter((r) => !DS_OWNED_ALLOWLIST.has(r.name) && !/^ds\d+_lifecycle_/.test(r.name));
+      .filter(
+        (r) =>
+          !DS_OWNED_ALLOWLIST.has(r.name) &&
+          !VERTICAL_COMPOSITION_ALLOWLIST.has(r.name) &&
+          !/^ds\d+_lifecycle_/.test(r.name),
+      );
 
     const fmt = (o: { name: string; args: string; tables: string[] }) =>
       `  - ${o.name}(${o.args})  ->  ${o.tables.join(', ')}`;
