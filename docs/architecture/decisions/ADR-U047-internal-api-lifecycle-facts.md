@@ -1,6 +1,6 @@
 # ADR-U047: Internal API inversion — core emits lifecycle facts; domain services own their dispositions
 
-**Status:** Proposed (drafted in Cycle COR-A W1; awaiting ratification)
+**Status:** Accepted (ratified 2026-07-19, Stefan — "ok merge 182")
 **Date:** 2026-07-19
 **Deciders:** Stefan + Claude (from the [anatomy-conformance audit](../../planning/reference/ANATOMY-CONFORMANCE-AUDIT.md), findings AC-1/AC-2)
 **Tags:** scope:platform-core · scope:domain-service · wave:ferd

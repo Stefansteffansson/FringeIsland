@@ -90,7 +90,7 @@ The **step-kind system is this service's canonical extension surface** (ADR-U008
 - **Draft** authoring state is Wayfinder/studio-scoped via lifecycle state at the row grain.
 - Mist-generated DS-3 state (a Mist's enrolment, progress, loop state) carries the PC-2 TTL-erasure path; the pg_cron substrate is the sweep mechanism; the transcendence migration is atomic with a mid-migration guard (ADR-U031), cascade-spec'd per ADR-U016 jointly with PC-2 before implementation.
 - Steps reference DS-4 content blocks by ID only; narrative attachments reference DS-2 rows by ID only; no foreign service's schema is redefined or written here.
-- All kind/state vocabularies (route, step kind, content family, depth, attachment, enrolment state, personalisation variant) are registry tables, not CHECK-listed enums (§5; ADR-U008/U018).
+- All kind/state vocabularies (route, step kind, content family, depth, attachment, enrolment state, personalisation variant) are registry tables, not CHECK-listed enums (§5; ADR-U008/U018). The realized `content_families` registry table is DS-3-owned step-taxonomy vocabulary (anatomy-audit ruling R-3, 2026-07-19; revisit at DS-4 decomposition).
 - Journey retirement and enrolment-bearing lifecycle events participate in the ADR-U016 cascade discipline: a cascade spec exists before any retirement or account-lifecycle mechanics are implemented (enrolment disposition at platform exit included).
 
 ### 7. Service-level invariants (the guardrails as architecture)
