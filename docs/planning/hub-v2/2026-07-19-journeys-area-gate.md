@@ -24,6 +24,10 @@
 1. **Journey-detail Mist seam — KEEP the FIM gate, recorded as intended.** A Mist's path is the front door (the auto-launched onboarding walk), not the detail page; a detail page for journeys a Mist cannot enrol in is a fake door (the J-E fake-door-avoidance rationale ratified). Re-examine when Mist-enrollable journeys beyond onboarding exist (Eid+).
 2. **Enrolled-catalogue nuance — RATIFIED as intended semantics.** Enrolment grants catalogue visibility: your own walks are always visible to you, public or not (the substrate's visibility disjunction is the rule, not a quirk).
 3. **L3 fan-out reduction — decided from this gate's data** (see the measurement section: the `/journeys` fan-out verdict).
+4. **R4 — the Mist's continue-your-walk door (found by the live walk, approved + built as a gate rider):** the `/mist` page's "Your journeys" link used to drop a returning Mist into the browse catalogue; it now resolves their one walk and opens the player at their position (completed walks open in review). Red-first, 722/722 sweep.
+5. **R1 executed with the felt version (supersedes the morning's keep-the-bounce call):** after walking it, Stefan reversed to **open the detail read-only to Mists** — the catalogue's cards were an open shop window of silent bounces. Built as a gate rider: the Mist redirect retired; enrol/withdraw never render for Mists (FIM-only verbs — no fake doors); unenrolled Mists get the become-a-FIM invitation, enrolled Mists the continue-walk door.
+6. **R5 — production fixture-residue deletion (found by the live walk, Stefan approved):** six fake "JB Progress Journey — J-B PD003 fixture" journeys (crashed J-B test runs, published+public, visible to every visitor) deleted with their 7 enrolments (6 test-user + 1 of Stefan's own walk residue) — verified fixture-by-fixture before deletion; post-check: 0 fixtures left, the public catalogue is exactly the 8 real journeys, the onboarding designation intact. The run-unique-fixture-names hygiene item (from the J-F sweep) now explicitly covers journeys.
+7. **Ghost-session window (diagnosed from Stefan's cross-domain sightings):** a browser session outliving its reaper-erased Mist reads as 'mist' locally while every platform call fails — filed as TASK-MIST-01 (treat a resolvable-actor failure as a broken session; not gate-blocking, self-heals ≤ 1 h).
 
 ## Measurements
 
@@ -43,8 +47,20 @@ Request-count row: `/journeys` fires **4 API reads per full load** (`journeys`, 
 
 ### Deep-cold windows (one per scenario, ≥ 20 min enforced idle, n=1 labelled)
 
-*(pending — windows start when Stefan's live walk ends)*
+| Window | Scenario | Idle depth | Result | Against budget |
+|---|---|---|---|---|
+| **W1** (08:19 UTC) | `/journeys` cold full load (B2 ≤ 2.5 s) | 21.8 min zero traffic | content-ready **5 939 ms**; TTFB **2 744 ms** (instance provisioning); the 4 API reads **1 112–1 290 ms each, concurrent** — no boot lottery (shared instance, the ADR-U036-A2 Node/Fluid win confirmed); the remainder is zero-cache asset load (fresh headless browser — labelled, the J-E "different quantity" convention) | **Over the 2.5 s letter.** Composition: ~2.7 s vendor provisioning + ~1.3 s app reads + ~2 s zero-cache assets. Tail rule (per request ≤ 5 s): passes — slowest single request 2 744 ms |
+| **W2** (08:41 UTC) | journey detail cold full load (B2 ≤ 2.5 s) | 22.3 min zero traffic | content-ready **5 226 ms**; TTFB **2 731 ms**; 3 API reads **987–1 152 ms concurrent** (same shared-instance profile as W1 — no lottery) | **Over the 2.5 s letter**, same composition as W1 (provisioning + zero-cache assets dominate; app reads healthy). Tail rule: passes (slowest request 2 731 ms) |
+| **W3** (09:04 UTC) | first-ever-cold sign-in, click → content (J-O5 < 2 s) | 22.7 min zero traffic | **1 471 ms** click → groups content; auth token exchange **1 080 ms** (vendor floor) → app share **~390 ms**. The login-page paint before the click absorbed the provisioning cost, as it does for a real first visitor (the J-A S5 measurement shape) | **PASS at deep-cold, with headroom** — the flagship first-experience number holds under the strictest conditions |
+
+**R3 fan-out datum from W1:** the four `/journeys` reads at deep-cold cost ~1.2 s *each but concurrently on one instance* (≈ 1.3 s total wall, not 4×), and ~150 ms each warm. Collapsing them into one read would save ~0 at deep-cold (they share the boot) and ~0 warm (parallel, cheap). The measured pain lives in provisioning + first-visit assets, not the fan-out.
+
+## The deep-cold reading (W1 + W2, consistent)
+
+Both deep-cold runs decompose identically: **~2.7 s TTFB = instance provisioning** (the known zero-traffic floor measured since the 2026-07-09 analysis; runtime-independent, mitigated only by traffic or scale-to-one), **~1.0–1.3 s app-side reads** (concurrent on one instance — the boot lottery stays dead post-Node/Fluid, ADR-U036-A2 confirmed at gate depth), and **~1.5–2 s zero-cache asset load** (the fresh-headless-browser class, labelled per the J-E convention — a returning real user has cached assets). The app-controllable share is at its measured floor (the J-A P1-residual conclusion re-confirmed at area depth): nothing in the app's own column approaches its budget; the deep-cold misses are the **Hobby-tier zero-traffic provisioning floor**, which no app change removes. This is the same fact pattern that parked "Vercel Pro scale-to-one" on Stefan's list — the gate data is the strongest argument yet either for buying it (if felt deep-cold matters commercially) or for accepting a labelled deep-cold exception until real traffic makes true-zero-traffic rare.
+
+**R3 verdict — fan-out reduction CLOSED, not justified by data** (mirrors P3b's closure discipline): the 4 `/journeys` reads cost ~150 ms each warm and share one instance's boot deep-cold (~1.3 s wall total, not 4×); collapsing them to one read would move neither number meaningfully. The measured pain lives in provisioning and first-visit assets, not the fan-out. Closed with evidence, never silently dropped; re-opens only if a future waterfall shows the reads diverging across instances again.
 
 ## Gate verdict
 
-*(pending measurements + live walk)*
+*(pending W3 + Stefan's deep-cold disposition call)*
