@@ -479,6 +479,63 @@ describe('FEAT-PC015 — group-of-groups membership & acting contracts (ADR-U041
       expect(keyless.error?.code).toBe('42501');
       await cm.auth.signOut();
     });
+
+    // W2 characterization (COR-A / spec B) — GREEN-BEFORE for the W4 relocation.
+    // Pins the freeze predicate divergence unique to leave_group_as_group: the
+    // pc015 body freezes every enrolment with `status <> 'frozen'` (migration
+    // 20260706120000_..._group_of_groups_acting_contracts.sql:385), so a PAUSED
+    // enrolment is ALSO frozen — unlike the sprint2 leave/remove cascades which
+    // filter `status = 'active'`. Recorded as the live divergence in ADR-U047
+    // rule 7; W4's DS-3 handler must preserve it. Public-journey enrolments stay
+    // untouched (the negative control: j.is_public = false in the predicate).
+    it('S5 [characterization]: the exit cascade freezes A’s active AND paused non-public enrolments (left_group), leaving public-journey enrolments alone — the pc015 `<> frozen` divergence', async () => {
+      const parent = await seedGroup(stewardB, `GoG-P-${run}`);
+      await seedMembership(parent, groupA, stewardB); // A active in parent; not a Steward, not last
+      // Two non-public journeys owned by parent (one enrolment each, so the
+      // active + paused rows don't collide on (journey_id, group_id)) + a public
+      // journey as the negative control.
+      const npActive = await runAdminSql(
+        `INSERT INTO public.journeys (title, created_by_group_id, is_public)
+         VALUES ('GoG-NP-active', '${parent}', false) RETURNING id;`,
+      );
+      const npPaused = await runAdminSql(
+        `INSERT INTO public.journeys (title, created_by_group_id, is_public)
+         VALUES ('GoG-NP-paused', '${parent}', false) RETURNING id;`,
+      );
+      const pubJourney = await runAdminSql(
+        `INSERT INTO public.journeys (title, created_by_group_id, is_public)
+         VALUES ('GoG-PUB', '${parent}', true) RETURNING id;`,
+      );
+      const activeEnrol = await runAdminSql(
+        `INSERT INTO public.journey_enrollments (journey_id, group_id, status)
+         VALUES ('${npActive[0].id}', '${groupA}', 'active') RETURNING id;`,
+      );
+      const pausedEnrol = await runAdminSql(
+        `INSERT INTO public.journey_enrollments (journey_id, group_id, status)
+         VALUES ('${npPaused[0].id}', '${groupA}', 'paused') RETURNING id;`,
+      );
+      const publicEnrol = await runAdminSql(
+        `INSERT INTO public.journey_enrollments (journey_id, group_id, status)
+         VALUES ('${pubJourney[0].id}', '${groupA}', 'active') RETURNING id;`,
+      );
+
+      const c = await asUser(stewardA);
+      const { error } = await c.rpc('leave_group_as_group', {
+        p_group_id: parent,
+        p_acting_group_id: groupA,
+      });
+      expect(error).toBeNull();
+      await c.auth.signOut();
+
+      const states = await runAdminSql(
+        `SELECT id, status FROM public.journey_enrollments
+          WHERE id IN ('${activeEnrol[0].id}', '${pausedEnrol[0].id}', '${publicEnrol[0].id}');`,
+      );
+      const statusOf = (id: string) => states.find((r) => r.id === id)?.status;
+      expect(statusOf(activeEnrol[0].id as string)).toBe('frozen');
+      expect(statusOf(pausedEnrol[0].id as string)).toBe('frozen'); // the divergence: paused also frozen
+      expect(statusOf(publicEnrol[0].id as string)).toBe('active'); // public journey untouched
+    });
   });
 
   // --------------------------------------------------------------------------

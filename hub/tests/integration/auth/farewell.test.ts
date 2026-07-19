@@ -84,4 +84,55 @@ describe('FEAT-H004 STORY-3 — Hub farewell (consumes explicit_erase_mist)', ()
       .maybeSingle();
     expect(stillThere).not.toBeNull();
   });
+
+  // W2 characterization (COR-A / spec C) — GREEN-BEFORE for the W4/W5 relocation.
+  // Pins that _erase_mist DELETES a journey the Mist's personal (proto) group
+  // owns rather than transferring it: the FK created_by_group_id -> groups is
+  // ON DELETE RESTRICT, so the cascade must delete journeys before the group
+  // (migration 20260626202215_feat_pc002_mist_explicit_erase.sql:71-74). W5
+  // moves this delete behind the DS-3 personal_group_erased contract; the row
+  // must still be gone, not re-homed.
+  it('also erases a non-public journey the Mist proto group owns (deleted, not transferred)', async () => {
+    const admin = createAdminClient();
+    const mist = createTestClient();
+    const { data: signIn, error: signErr } = await withAnonRateLimitRetry(() =>
+      mist.auth.signInAnonymously(),
+    );
+    expect(signErr).toBeNull();
+    const authId = signIn.user!.id;
+    const before = await waitForProfile(admin, authId);
+    const groupId = before.personal_group_id as string;
+
+    const { data: journey, error: jErr } = await admin
+      .from('journeys')
+      .insert({ title: 'MistOwned', created_by_group_id: groupId, is_public: false })
+      .select('id')
+      .single();
+    expect(jErr).toBeNull();
+    const journeyId = journey!.id as string;
+
+    const { error } = await explicitEraseMist(mist);
+    expect(error).toBeNull();
+
+    // The journey is gone (RESTRICT FK forced delete-before-group), alongside
+    // the profile and the proto group.
+    const { data: journeyAfter } = await admin
+      .from('journeys')
+      .select('id')
+      .eq('id', journeyId)
+      .maybeSingle();
+    expect(journeyAfter).toBeNull();
+    const { data: profileAfter } = await admin
+      .from('users')
+      .select('id')
+      .eq('auth_user_id', authId)
+      .maybeSingle();
+    expect(profileAfter).toBeNull();
+    const { data: groupAfter } = await admin
+      .from('groups')
+      .select('id')
+      .eq('id', groupId)
+      .maybeSingle();
+    expect(groupAfter).toBeNull();
+  });
 });

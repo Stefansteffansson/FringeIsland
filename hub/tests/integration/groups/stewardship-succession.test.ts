@@ -598,6 +598,34 @@ describe('FEAT-PC014 — stewardship succession contracts (G-E, MEM-7)', () => {
       expect(required?.length ?? 0).toBeGreaterThan(0);
     });
 
+    // W2 characterization (COR-A / spec D) — GREEN-BEFORE for the W4 relocation.
+    // The exhaust-the-list DeusEx fallback departs the nominator via the same
+    // cascade as a leave: its non-public enrolment must freeze 'left_group'.
+    // Pins that disposition explicitly (the DeclineDeusEx test above does not
+    // assert it) so W4's DS-3 leadership_transferred fact preserves it.
+    it('[characterization] the DeusEx-fallback departure freezes the nominator’s own non-public enrolment (left_group)', async () => {
+      const groupId = await seedGroup('DeclineDeusExFreeze', [nominee1, plainMember]);
+      const { enrollmentId } = await seedJourneyWithEnrollment(groupId, steward.personalGroupId);
+      const nid = await nominate(groupId, [nominee1]);
+
+      const c = await asUser(nominee1);
+      const { error } = await c.rpc('respond_to_stewardship_nomination', {
+        p_notification_id: nid,
+        p_accept: false,
+      });
+      expect(error).toBeNull();
+
+      const { data: enr } = await admin
+        .from('journey_enrollments')
+        .select('status, progress_data')
+        .eq('id', enrollmentId)
+        .single();
+      expect(enr?.status).toBe('frozen');
+      expect((enr?.progress_data as Record<string, unknown>).frozen_reason).toBe('left_group');
+      // the nominator departed under the fallback
+      expect(await membershipRow(groupId, steward.personalGroupId)).toBeNull();
+    });
+
     it("responding to another member's nomination — P0002 (no leak of another's notification)", async () => {
       const groupId = await seedGroup('RespondNotYours', [nominee1, plainMember]);
       const nid = await nominate(groupId, [nominee1]);
