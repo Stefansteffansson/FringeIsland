@@ -1,6 +1,6 @@
 # Anatomy correction plan — Cycle COR-A (+ deferred homes)
 
-**Status:** Draft plan, ready to execute. Successor step to the [anatomy-conformance audit](../reference/ANATOMY-CONFORMANCE-AUDIT.md) (2026-07-19).
+**Status:** **EXECUTED 2026-07-19** — all twelve work items complete in one cycle day. ADRs U047 (+A1 fourth fact, +A2 vertical composition) and U048 ratified; migrations `20260719190205` (inversion, 10 relocations) and `20260719201718` (export composite) applied at the schema gate with named approvals; the internal-API conformance gate is live in every suite run. PR trail: #182 (ADRs) · #183 (W10) · #185/#189 (W2 tests A–E) · #186 (W7) · #187 (W11) · #188 (W3/W4/W5 + A1) · #190 (W9) · #191 (W8 + A2) · #192 (W12). Follow-ups F-1..F-5 in the [cycle retro](../retrospectives/retro-2026-07-19-cor-a.md). Successor step to the [anatomy-conformance audit](../reference/ANATOMY-CONFORMANCE-AUDIT.md) (2026-07-19).
 **Slot:** the corrective cycle runs **before the Communication area (A-COM) kicks off** — decided by Stefan 2026-07-19, so A-COM builds DS-5 on the corrected Internal-API pattern instead of compounding the crossing.
 **Wave:** Ferd. **Cycle name:** COR-A ("corrections"; not an area — the letter scheme stays free for areas).
 **Decisions already made (audit §Rulings, 2026-07-19):** R-1 `notifications` = Notifications-vertical delivery substrate (DS-5 takes routing later) · R-2 consent tables = PC-2 · R-3 `content_families` = DS-3 · Tranches I+II before A-COM.
