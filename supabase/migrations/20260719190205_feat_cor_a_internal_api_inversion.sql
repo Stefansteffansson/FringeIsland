@@ -7,11 +7,15 @@
 -- bump. Runtime behavior and performance are unchanged — the same statements
 -- execute inside a new function frame (ADR-U047 §Consequences).
 --
--- WHAT MOVES: nine Core lifecycle functions (PC-2/PC-3/PC-4) stop naming the
+-- WHAT MOVES: ten Core lifecycle functions (PC-2/PC-3/PC-4) stop naming the
 -- DS-3 tables `journeys` / `journey_enrollments` inline. Each now calls one of
--- three new DS-3-owned lifecycle-fact handlers that own the freeze / transfer /
--- delete policy. The W3 conformance test (internal-api-conformance.test.ts)
--- flips from RED (nine offenders) to GREEN when this migration is applied.
+-- four new DS-3-owned lifecycle-fact handlers that own the freeze / transfer /
+-- delete / reassign policy. The W3 conformance test (internal-api-conformance.test.ts)
+-- flips from RED (ten offenders) to GREEN when this migration is applied.
+--
+-- The tenth (admin_hard_delete_user) and its fourth fact were surfaced by the W3
+-- gate DURING W4 — the live-catalog check found a core author-site the audit's
+-- AC-1 "nine" missed (ADR-U047 Amendment 1, 2026-07-19).
 --
 -- WHAT STAYS IN CORE (deliberately, per ADR-U047):
 --   * All guards, permission checks, error messages, orderings, set_config
@@ -50,6 +54,7 @@
 --   leave_group_as_group              20260706120000 (pc015; no later redef in the fix migrations)
 --   admin_exit_user_from_platform     20260228144747 (sprint4)
 --   _erase_mist                       20260626202215 (pc002)  [W5]
+--   admin_hard_delete_user            20260223171200 (fix_rc7_admin_user_ops; supersedes 20260222 rebuild)  [A1 — fourth fact]
 
 -- ============================================================================
 -- PART 1 — DS-3 lifecycle-fact handlers (the new Internal-API contract)
@@ -208,11 +213,42 @@ $$;
 comment on function public.ds3_lifecycle_personal_group_erased(uuid) is
   'ADR-U047 DS-3 lifecycle-fact handler: hard-deletes the journeys owned by an erased personal group (Mist/FIM erasure, the pc002 shape). Core must call it BEFORE the group row delete — journeys.created_by_group_id -> groups ON DELETE RESTRICT. SECURITY DEFINER, core-internal (no client execute).';
 
+-- 1d. user hard-deleted (ADR-U047 Amendment 1) — reassign the erased personal
+--     group's owned journeys (created_by_group_id) and its enrolment attributions
+--     (enrolled_by_group_id) to the target Core resolves and passes (the
+--     [Deleted User] sentinel; Core owns that system-group convention). Core
+--     passes COALESCE(sentinel, caller) so journeys.created_by_group_id (NOT NULL)
+--     is guaranteed non-null — the inline fallback stays Core's, verbatim. Must
+--     run before the personal-group delete (created_by_group_id -> groups RESTRICT).
+create or replace function public.ds3_lifecycle_user_hard_deleted(
+  p_personal_group_id uuid,
+  p_reassign_to_group_id uuid
+) returns void
+language plpgsql
+volatile
+security definer
+set search_path = ''
+as $$
+begin
+  update public.journeys
+     set created_by_group_id = p_reassign_to_group_id
+   where created_by_group_id = p_personal_group_id;
+
+  update public.journey_enrollments
+     set enrolled_by_group_id = p_reassign_to_group_id
+   where enrolled_by_group_id = p_personal_group_id;
+end;
+$$;
+
+comment on function public.ds3_lifecycle_user_hard_deleted(uuid, uuid) is
+  'ADR-U047 Amendment 1 DS-3 lifecycle-fact handler: on account hard-delete, reassigns the erased personal group''s owned journeys (created_by_group_id) and enrolment attributions (enrolled_by_group_id) to the target Core resolves and passes ([Deleted User] sentinel; Core keeps the COALESCE-to-caller for the NOT-NULL journeys column). SECURITY DEFINER, core-internal (no client execute).';
+
 -- Core-internal contract: no client role may call the handlers directly. The
 -- definer-context Core callers (owned by the same role) retain implicit EXECUTE.
 revoke all on function public.ds3_lifecycle_member_departed(uuid, uuid, text) from public, anon, authenticated;
 revoke all on function public.ds3_lifecycle_group_closed(uuid, text) from public, anon, authenticated;
 revoke all on function public.ds3_lifecycle_personal_group_erased(uuid) from public, anon, authenticated;
+revoke all on function public.ds3_lifecycle_user_hard_deleted(uuid, uuid) from public, anon, authenticated;
 
 -- ============================================================================
 -- PART 2 — Core functions, redefined to emit facts (bodies otherwise verbatim)
@@ -1335,6 +1371,104 @@ begin
 end;
 $$;
 
+-- 2.10 admin_hard_delete_user (PC-4) [A1] — the two DS-3 reassignment statements
+--      (journeys.created_by_group_id + journey_enrollments.enrolled_by_group_id ->
+--      [Deleted User] sentinel) move into ds3_lifecycle_user_hard_deleted. Core
+--      keeps the sentinel resolution AND the COALESCE(sentinel, caller) fallback
+--      (journeys.created_by_group_id is NOT NULL) and passes the resolved target;
+--      the handler owns both reassignments. Everything else — the audit write, the
+--      forum_posts/groups/admin_audit_log/group_memberships/user_group_roles
+--      reassignments, the bypass flags, and the deletes — stays byte-equivalent in
+--      Core. The reassignment runs before the group delete (created_by_group_id ->
+--      groups RESTRICT), exactly as the inline journeys reassignment did.
+create or replace function public.admin_hard_delete_user(target_user_id uuid)
+returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_caller_group_id uuid;
+  v_target_personal_group_id uuid;
+  v_target_auth_user_id uuid;
+  v_deleted_user_group_id uuid;
+begin
+  -- Verify caller has manage_all_groups permission
+  v_caller_group_id := public.get_current_personal_group_id();
+  if not public.has_permission(v_caller_group_id, '00000000-0000-0000-0000-000000000000'::uuid, 'manage_all_groups') then
+    raise exception 'Unauthorized: manage_all_groups permission required';
+  end if;
+
+  -- Get target's personal group and auth user ID
+  select personal_group_id, auth_user_id
+  into v_target_personal_group_id, v_target_auth_user_id
+  from public.users where id = target_user_id;
+
+  if v_target_personal_group_id is null then
+    raise exception 'User not found or has no personal group';
+  end if;
+
+  -- Get [Deleted User] sentinel group
+  select id into v_deleted_user_group_id
+  from public.groups where name = '[Deleted User]' and group_type = 'system';
+
+  -- Write audit log BEFORE deletion
+  insert into public.admin_audit_log (actor_group_id, action, target, metadata)
+  values (v_caller_group_id, 'admin_hard_delete_user', target_user_id::text,
+    jsonb_build_object('target_user_id', target_user_id,
+      'target_personal_group_id', v_target_personal_group_id));
+
+  -- Reassign content to [Deleted User] sentinel (or caller if sentinel doesn't exist)
+  update public.forum_posts
+  set author_group_id = coalesce(v_deleted_user_group_id, v_caller_group_id)
+  where author_group_id = v_target_personal_group_id;
+
+  -- Reassign the target's DS-3 journeys + enrolment attributions -> the sentinel.
+  -- DS-3's own disposition now (ADR-U047 Amendment 1): Core resolves the target
+  -- (COALESCE keeps journeys.created_by_group_id NOT NULL) and passes it; DS-3
+  -- owns the reassignment. Runs before the group delete (RESTRICT), same as the
+  -- inline journeys reassignment it replaces.
+  perform public.ds3_lifecycle_user_hard_deleted(
+    v_target_personal_group_id,
+    coalesce(v_deleted_user_group_id, v_caller_group_id));
+
+  update public.groups
+  set created_by_group_id = coalesce(v_deleted_user_group_id, v_caller_group_id)
+  where created_by_group_id = v_target_personal_group_id
+    and id != v_target_personal_group_id;
+
+  update public.admin_audit_log
+  set actor_group_id = v_deleted_user_group_id
+  where actor_group_id = v_target_personal_group_id;
+
+  -- Reassign actor FKs in membership/role tables
+  update public.group_memberships
+  set added_by_group_id = v_deleted_user_group_id
+  where added_by_group_id = v_target_personal_group_id;
+
+  update public.user_group_roles
+  set assigned_by_group_id = v_deleted_user_group_id
+  where assigned_by_group_id = v_target_personal_group_id;
+
+  -- Enable bypass for immutability trigger and notification triggers (transaction-local)
+  perform set_config('app.bypass_personal_group_id_immutability', 'true', true);
+  perform set_config('app.hard_delete_in_progress', 'true', true);
+
+  -- Delete personal group (CASCADE: memberships, roles, notifications, enrollments, conversations)
+  delete from public.groups where id = v_target_personal_group_id;
+
+  -- Delete user record
+  delete from public.users where id = target_user_id;
+
+  -- Delete auth user
+  if v_target_auth_user_id is not null then
+    delete from auth.users where id = v_target_auth_user_id;
+  end if;
+
+  return jsonb_build_object('success', true, 'deleted_user_id', target_user_id);
+end;
+$$;
+
 -- ============================================================================
 -- PART 3 — Verification
 -- ============================================================================
@@ -1344,12 +1478,14 @@ $$;
 --          leave_group_as_group
 --   PC-4:  admin_exit_user_from_platform  (L1/L2 -> member_departed;
 --          L3 -> group_closed, count fed to the DeusEx notice)
+--          admin_hard_delete_user        (journeys + journey_enrollments reassign
+--          -> user_hard_deleted; A1 — the tenth site, found by the W3 gate)
 --   PC-2:  _erase_mist                    (journey delete -> personal_group_erased,
 --          W5 — call kept BEFORE the group delete for the FK RESTRICT ordering)
--- New DS-3 handlers (own the freeze/transfer/delete policy):
+-- New DS-3 handlers (own the freeze/transfer/delete/reassign policy):
 --   ds3_lifecycle_member_departed(uuid, uuid, text)
 --   ds3_lifecycle_group_closed(uuid, text) returns jsonb
 --   ds3_lifecycle_personal_group_erased(uuid)
+--   ds3_lifecycle_user_hard_deleted(uuid, uuid)   [A1]
 -- After apply: the W3 conformance test (internal-api-conformance.test.ts) flips
--- GREEN for the nine (only the tracked, out-of-scope admin_hard_delete_user
--- exception remains — see the test's KNOWN_UNRELOCATED_PC_OFFENDERS note + PR body).
+-- GREEN — all ten Core author-sites relocated; no allowlist exception ships.

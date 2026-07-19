@@ -18,10 +18,16 @@ jest.setTimeout(60_000); // real-substrate suite: one Management-API catalog que
  *    allowlist in the conformance test)."
  *
  * State at authoring (2026-07-19): RED. The COR-A W4/W5 relocation migration
- * has not landed, so the nine Core lifecycle functions still author DS-3
- * dispositions inline. When that migration lands (Core calls the three
- * ds3_lifecycle_* handlers instead of naming journeys/journey_enrollments), the
- * nine drop out and this test goes GREEN — and stays green forever as the gate.
+ * has not landed, so the ten Core lifecycle functions still author DS-3
+ * dispositions inline. When that migration lands (Core calls the four
+ * ds3_lifecycle_* handlers instead of naming journeys/journey_enrollments), all
+ * ten drop out and this test goes GREEN — and stays green forever as the gate.
+ *
+ * The tenth site — admin_hard_delete_user — was found by THIS gate during W4
+ * (it reassigns journeys/journey_enrollments to the [Deleted User] sentinel);
+ * the audit's AC-1 "nine" missed it. The migration relocates it too (ADR-U047
+ * Amendment 1's fourth fact ds3_lifecycle_user_hard_deleted). No allowlist
+ * exception ships — a standing exception is the "satisfied-now" pattern COR-A ends.
  *
  * ── Scope & sources ────────────────────────────────────────────────────────
  * DS-owned tables — audit Appendix B (ANATOMY-CONFORMANCE-AUDIT.md):
@@ -101,9 +107,12 @@ const DS_OWNED_ALLOWLIST = new Set<string>([
   ...DS7_JOURNAL_FUNCTIONS,
 ]);
 
-// The nine Core lifecycle functions COR-A W4/W5 relocates (ADR-U047 §"the live
-// relocation set"). NOT allowlisted — they are the demonstrated-red now and must
-// drop out when the inversion migration lands. Listed only to annotate the report.
+// The ten Core lifecycle functions COR-A W4/W5 relocates (ADR-U047 §"the live
+// relocation set" + Amendment 1). NOT allowlisted — they are the demonstrated-red
+// now and must drop out when the inversion migration lands. Listed only to
+// annotate the report. admin_hard_delete_user is the tenth site the W3 gate found
+// during W4 (the audit's AC-1 "nine" missed it) — relocated via the fourth fact
+// ds3_lifecycle_user_hard_deleted, NOT carried as a standing exception.
 const COR_A_W4_RELOCATION_TARGETS = new Set<string>([
   'leave_group',
   'remove_member',
@@ -114,27 +123,8 @@ const COR_A_W4_RELOCATION_TARGETS = new Set<string>([
   'leave_group_as_group',
   'admin_exit_user_from_platform',
   '_erase_mist',
+  'admin_hard_delete_user',
 ]);
-
-/**
- * KNOWN, TRACKED, OUT-OF-COR-A-SCOPE exception — PENDING a decision (see PR body).
- *
- * `admin_hard_delete_user` (PC-4 Governance; live shape from the 20260222 rebuild
- * + 20260223 fix_rc7_admin_user_ops) REASSIGNS `journeys.created_by_group_id` and
- * `journey_enrollments.enrolled_by_group_id` to the `[Deleted User]` sentinel —
- * an attribution-preservation disposition that ADR-U047's THREE facts do NOT
- * cover (member_departed = freeze, group_closed = freeze+transfer-to-DeusEx,
- * personal_group_erased = delete). Discovered 2026-07-19 against the live catalog;
- * the anatomy-conformance audit's AC-1/AC-2 "nine" did not include it (undercount).
- *
- * It therefore cannot be relocated behavior-preservingly into the existing
- * handlers within COR-A; closing it needs a NEW ds3_lifecycle_* reassignment fact
- * (ADR-U047 amendment) and most likely a Platform-Ops home (admin/console work,
- * cf. audit AC-6). Excepted here — with cause and a removal trigger — so the gate
- * can go green on the COR-A nine after W4. REMOVE this entry when the function is
- * relocated or the exception is ratified into the allowlist by decision.
- */
-const KNOWN_UNRELOCATED_PC_OFFENDERS = new Set<string>(['admin_hard_delete_user']);
 
 function stripComments(src: string): string {
   const noBlock = src.replace(/\/\*[\s\S]*?\*\//g, '');
@@ -176,18 +166,12 @@ describe('Internal-API inversion conformance (ADR-U047 rule 3, COR-A W3)', () =>
       .filter((r) => r.tables.length > 0)
       .filter((r) => !DS_OWNED_ALLOWLIST.has(r.name) && !/^ds\d+_lifecycle_/.test(r.name));
 
-    // Split for reporting: the COR-A relocation targets vs the tracked exception
-    // vs anything genuinely unexpected (a NEW crossing this gate must catch).
-    const active = offenders.filter((o) => !KNOWN_UNRELOCATED_PC_OFFENDERS.has(o.name));
-    const known = offenders.filter((o) => KNOWN_UNRELOCATED_PC_OFFENDERS.has(o.name));
-
     const fmt = (o: { name: string; args: string; tables: string[] }) =>
       `  - ${o.name}(${o.args})  ->  ${o.tables.join(', ')}`;
-    const inScope = active.filter((o) => COR_A_W4_RELOCATION_TARGETS.has(o.name));
-    const unexpected = active.filter((o) => !COR_A_W4_RELOCATION_TARGETS.has(o.name));
+    const inScope = offenders.filter((o) => COR_A_W4_RELOCATION_TARGETS.has(o.name));
+    const unexpected = offenders.filter((o) => !COR_A_W4_RELOCATION_TARGETS.has(o.name));
 
-    // Always print the full breakdown so the red evidence is complete and the
-    // tracked exception is never invisible.
+    // Print the full breakdown so the red evidence is complete.
     // eslint-disable-next-line no-console
     console.error(
       [
@@ -198,19 +182,15 @@ describe('Internal-API inversion conformance (ADR-U047 rule 3, COR-A W3)', () =>
         `  COR-A W4/W5 relocation targets — expected RED until the inversion migration lands (${inScope.length}):`,
         ...inScope.map(fmt),
         ...(unexpected.length
-          ? ['', `  UNEXPECTED crossings — NOT in COR-A scope, investigate (${unexpected.length}):`, ...unexpected.map(fmt)]
+          ? ['', `  UNEXPECTED crossings — NOT a known COR-A target, investigate (${unexpected.length}):`, ...unexpected.map(fmt)]
           : []),
-        '',
-        `  KNOWN / tracked exception — out of COR-A scope, pending decision (${known.length}):`,
-        ...known.map((o) => `${fmt(o)}   [admin_hard_delete_user: [Deleted User] sentinel reassignment — no ADR-U047 fact covers it]`),
         '',
       ].join('\n'),
     );
 
-    // The gate: no Core function outside the DS-owned allowlist (and outside the
-    // one tracked, documented exception) may reference a DS-owned table.
-    // RED now (the nine); GREEN once COR-A W4/W5 relocates them.
-    const activeReport = active.map(fmt).join('\n');
-    expect(activeReport).toBe('');
+    // The gate: no Core function outside the DS-owned allowlist may reference a
+    // DS-owned table. RED now (all ten); GREEN once COR-A W4/W5 relocates them all.
+    const report = offenders.map(fmt).join('\n');
+    expect(report).toBe('');
   });
 });

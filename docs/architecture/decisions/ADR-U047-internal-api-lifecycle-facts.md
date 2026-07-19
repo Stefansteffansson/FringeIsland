@@ -1,6 +1,6 @@
 # ADR-U047: Internal API inversion — core emits lifecycle facts; domain services own their dispositions
 
-**Status:** Accepted (ratified 2026-07-19, Stefan — "ok merge 182")
+**Status:** Accepted (ratified 2026-07-19, Stefan — "ok merge 182"). Amended 2026-07-19 (A1: fourth fact — user hard-deleted; see Amendment 1 below).
 **Date:** 2026-07-19
 **Deciders:** Stefan + Claude (from the [anatomy-conformance audit](../../planning/reference/ANATOMY-CONFORMANCE-AUDIT.md), findings AC-1/AC-2)
 **Tags:** scope:platform-core · scope:domain-service · wave:ferd
@@ -89,3 +89,31 @@ W2 characterization (2026-07-19) verified the **live** relocation set against th
 - Plan: [anatomy-correction-plan](../../planning/hub-v2/anatomy-correction-plan.md) (W1 = this ADR; W3 conformance test; W4/W5 relocation)
 - Related ADRs: U023 (platform decomposition — the direction rule), U038 (substrate-first enforcement; the BFF analogue of rule 6's trade), U048 (notifications scope exclusion), U030 (v2 rebuild)
 - Canon: ARCHITECTURE_ANATOMY §Internal API, §Platform Core; DS-3 charter (docs/platform/domain/)
+
+---
+
+## Amendment 1 (2026-07-19) — fourth fact: user hard-deleted
+
+**Status:** Accepted
+**Date:** 2026-07-19
+**Provenance (recorded honestly):** surfaced by the W3 conformance gate *during* W4 — the gate queries the live catalog, not the audit, and found a **tenth** core author-site the original decision's "nine live functions" (from audit AC-1) missed. The regression gate earning its keep on day one — catching a crossing the human audit undercounted — is precisely the value rule 3 exists to create.
+
+### What changed
+
+W2/W3 verification against the live catalog found that `admin_hard_delete_user` (PC-4 Governance; live shape = the `20260222` rebuild superseded by `20260223171200_fix_rc7_admin_user_ops`) authors a DS-3 disposition inline: on account hard-delete it **reassigns** `journeys.created_by_group_id` and `journey_enrollments.enrolled_by_group_id` from the erased personal group to the `[Deleted User]` sentinel system group (attribution preservation, so content and enrolment history survive the erasure without the deleted user's ownership). This is neither a freeze nor a delete — the three initial facts do not cover it — but it is the same shape of crossing as the other nine: a core lifecycle action triggering a DS-3 journey/enrolment disposition, historically inline because nothing gated it.
+
+### Decision — the contract gains a fourth fact
+
+| Fact function (DS-3-owned) | Signature intent | Disposition it owns |
+|---|---|---|
+| `ds3_lifecycle_user_hard_deleted(p_personal_group_id, p_reassign_to_group_id)` | core resolves the reassignment target and passes it; synchronous, same transaction | Reassign the erased personal group's owned journeys (`created_by_group_id`) and its enrolment attributions (`enrolled_by_group_id`) to the passed target |
+
+- **The sentinel convention stays in core.** Resolving the `[Deleted User]` system group is a core-owned system-group lookup (same class as DeusEx resolution): core resolves it and passes the resolved id as `p_reassign_to_group_id`; DS-3 owns only the reassignment statements. The handler knows "reassign to this group", never "the `[Deleted User]` group exists" — the fact vocabulary stays domain-agnostic.
+- **Behavior preserved verbatim.** `journeys.created_by_group_id` is `NOT NULL`, so core keeps its `COALESCE(sentinel, caller)` fallback when computing the id it passes (guaranteeing non-null); `journey_enrollments.enrolled_by_group_id` is nullable. `[Deleted User]` is a seeded system singleton, so the resolved target is non-null in every reachable state and both statements reassign to that one group exactly as the inline code did.
+- **Same discipline as facts 1–3:** SECURITY DEFINER, `search_path=''`, EXECUTE revoked from PUBLIC/anon/authenticated (core-internal, owner keeps implicit EXECUTE), synchronous same-transaction, errors propagate. The reassignment must run before the personal-group delete (the same `created_by_group_id → groups ON DELETE RESTRICT` ordering that governs fact 3).
+
+### Consequences
+
+- The W3 conformance gate now asserts **all ten** core author-sites — the day-one allowlist exception is removed. A standing "known offender" exception would be exactly the "satisfied-now" pattern (audit AC-1's own diagnosis) that COR-A exists to end, so it does not ship.
+- The initial fact vocabulary is now four, not three; the `ds{N}_lifecycle_` naming/ownership rule (rule 1) and the boundary rule (rule 3) are unchanged — the amendment adds a fact, it does not alter the rules.
+- Register note: audit AC-1's site count moves from nine to ten (the tenth found by the gate, not the audit) — for the register annotation pass.
