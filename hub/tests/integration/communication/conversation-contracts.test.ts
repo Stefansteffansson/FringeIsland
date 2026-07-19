@@ -115,11 +115,11 @@ describe('FEAT-PD008 — conversation & message contracts (C-A)', () => {
       const cm = await asUser(member);
       const co = await asUser(outsider);
       const { data: id1, error: e1 } = await cm.rpc('get_or_create_dm_conversation', {
-        p_other_user_id: pubId(outsider),
+        p_other_group_id: outsider.personalGroupId,
       });
       expect(e1).toBeNull();
       const { data: id2, error: e2 } = await co.rpc('get_or_create_dm_conversation', {
-        p_other_user_id: pubId(member),
+        p_other_group_id: member.personalGroupId,
       });
       expect(e2).toBeNull();
       expect(id2).toBe(id1);
@@ -128,7 +128,7 @@ describe('FEAT-PD008 — conversation & message contracts (C-A)', () => {
     it('refuses a conversation with yourself (22023)', async () => {
       const cm = await asUser(member);
       const { error } = await cm.rpc('get_or_create_dm_conversation', {
-        p_other_user_id: pubId(member),
+        p_other_group_id: member.personalGroupId,
       });
       expect(error?.code).toBe('22023');
     });
@@ -136,7 +136,7 @@ describe('FEAT-PD008 — conversation & message contracts (C-A)', () => {
     it('refuses a Mist caller (42501 — CB-1: communication is FIM-only)', async () => {
       const mist = await asMist();
       const { error } = await mist.rpc('get_or_create_dm_conversation', {
-        p_other_user_id: pubId(member),
+        p_other_group_id: member.personalGroupId,
       });
       expect(error?.code).toBe('42501');
       await mist.auth.signOut();
@@ -147,7 +147,7 @@ describe('FEAT-PD008 — conversation & message contracts (C-A)', () => {
       try {
         const cm = await asUser(member);
         const { error } = await cm.rpc('get_or_create_dm_conversation', {
-          p_other_user_id: pubId(bystander),
+          p_other_group_id: bystander.personalGroupId,
         });
         expect(error?.code).toBe('42501');
       } finally {
@@ -163,7 +163,7 @@ describe('FEAT-PD008 — conversation & message contracts (C-A)', () => {
     beforeAll(async () => {
       const cm = await asUser(member);
       const { data } = await cm.rpc('get_or_create_dm_conversation', {
-        p_other_user_id: pubId(outsider),
+        p_other_group_id: outsider.personalGroupId,
       });
       dmId = data as string;
     });
@@ -237,7 +237,7 @@ describe('FEAT-PD008 — conversation & message contracts (C-A)', () => {
     beforeAll(async () => {
       const cm = await asUser(member);
       const { data } = await cm.rpc('get_or_create_dm_conversation', {
-        p_other_user_id: pubId(outsider),
+        p_other_group_id: outsider.personalGroupId,
       });
       dmId = data as string;
       for (let i = 1; i <= 4; i++) {
@@ -371,7 +371,7 @@ describe('FEAT-PD008 — conversation & message contracts (C-A)', () => {
 
       const cm = await asUser(member);
       const { data: dmId } = await cm.rpc('get_or_create_dm_conversation', {
-        p_other_user_id: pubId(outsider),
+        p_other_group_id: outsider.personalGroupId,
       });
       const { error: dmJoinErr } = await cm.rpc('join_group_conversation', {
         p_conversation_id: dmId as string,
@@ -387,7 +387,7 @@ describe('FEAT-PD008 — conversation & message contracts (C-A)', () => {
     beforeAll(async () => {
       const cm = await asUser(member);
       const { data } = await cm.rpc('get_or_create_dm_conversation', {
-        p_other_user_id: pubId(outsider),
+        p_other_group_id: outsider.personalGroupId,
       });
       dmId = data as string;
     });

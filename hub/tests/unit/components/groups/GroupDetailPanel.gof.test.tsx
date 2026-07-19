@@ -12,6 +12,14 @@ import userEvent from '@testing-library/user-event';
  * anyway; the surface never renders the door). Red-first for TASK-H018-02.
  */
 
+// FEAT-H025 adaptation (labelled): the panel now carries the roster DM entry
+// (useRouter + openDm); mocked so these suites keep testing their own scope.
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
+}));
+jest.mock('@/lib/messages/client', () => ({
+  openDm: jest.fn(),
+}));
 jest.mock('@/lib/groups/client', () => ({
   activateMember: jest.fn(),
   assignMemberRole: jest.fn(),

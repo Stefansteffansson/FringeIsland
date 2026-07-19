@@ -3,7 +3,7 @@
 ---
 id: TASK-CA-05
 title: Group detail Conversations panel - list, permission-gated create, join/leave/rejoin
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-H025

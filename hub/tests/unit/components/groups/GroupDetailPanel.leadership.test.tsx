@@ -35,6 +35,14 @@ class MockGroupsApiError extends Error {
   }
 }
 
+// FEAT-H025 adaptation (labelled): the panel now carries the roster DM entry
+// (useRouter + openDm); mocked so these suites keep testing their own scope.
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
+}));
+jest.mock('@/lib/messages/client', () => ({
+  openDm: jest.fn(),
+}));
 jest.mock('@/lib/groups/client', () => ({
   updateGroupSettings: (...a: unknown[]) => updateGroupSettings(...a),
   assignMemberRole: (...a: unknown[]) => assignMemberRole(...a),

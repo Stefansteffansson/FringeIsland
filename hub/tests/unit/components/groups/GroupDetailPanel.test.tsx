@@ -21,6 +21,14 @@ const activateMember = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 const removeGroupMember = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 const leaveGroup = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 
+// FEAT-H025 adaptation (labelled): the panel now carries the roster DM entry
+// (useRouter + openDm); mocked so these suites keep testing their own scope.
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
+}));
+jest.mock('@/lib/messages/client', () => ({
+  openDm: jest.fn(),
+}));
 jest.mock('@/lib/groups/client', () => ({
   updateGroupSettings: (id: string, input: Record<string, unknown>) =>
     updateGroupSettings(id, input),
