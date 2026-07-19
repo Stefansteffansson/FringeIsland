@@ -11,6 +11,7 @@
  * Mutations re-read, never optimistic (the page re-fetches after settle).
  */
 import type { JourneyCard, JourneyDetail, MyEnrollment } from '@/lib/journeys/queries';
+import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
 
 export type { JourneyCard, JourneyDetail, MyEnrollment };
 
@@ -103,6 +104,9 @@ export function invalidateJourneysCache(): void {
   cachedEnrollments = null;
   enrollmentsInFlight = null;
 }
+// COR-A W9 (AC-5): session-end drop via the auth-owned registry — auth never
+// imports this module. Semantics in `lib/auth/cache-registry.ts`.
+registerCacheInvalidator(invalidateJourneysCache);
 
 // --- detail + mutations (uncached transports; pages re-read after settle) ----
 

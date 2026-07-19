@@ -23,6 +23,7 @@ import type { PendingNomination } from '@/lib/groups/leadership';
 import type { Profile } from '@/lib/profile/queries';
 import type { AccountState } from '@/lib/account/queries';
 import { OverviewTransportError } from '@/lib/me/overview-shared';
+import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
 import {
   adoptGroupsRead,
   adoptMyInvitationsRead,
@@ -84,3 +85,6 @@ export function prefetchOverview(): void {
 export function invalidateOverview(): void {
   latched = false;
 }
+// COR-A W9 (AC-5): session-end re-arm via the auth-owned registry — auth never
+// imports this module. Semantics in `lib/auth/cache-registry.ts`.
+registerCacheInvalidator(invalidateOverview);
