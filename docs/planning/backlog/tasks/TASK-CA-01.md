@@ -3,7 +3,7 @@
 ---
 id: TASK-CA-01
 title: Schema-gate migration - participants junction, kinds registry, messages rename, write-narrowing, publication disposition, permission seed
-status: review
+status: done
 assigned_to: claude
 priority: critical
 feature: FEAT-PD008

@@ -3,7 +3,7 @@
 ---
 id: TASK-CA-02
 title: The eight conversation/message contracts, conformance-gate DS-5 extension, red-first communication integration tests
-status: in_progress
+status: done
 assigned_to: claude
 priority: critical
 feature: FEAT-PD008
