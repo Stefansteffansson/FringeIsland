@@ -11,7 +11,13 @@
 
 ## Context and problem statement
 
-The anatomy (ADR-U023) makes Platform Core the domain-agnostic stability zone and the Internal API a one-directional boundary: domain services consume core; core never depends on domain. The 2026-07-19 conformance audit found this violated in code (structure is clean — no core table references a domain table): PC-2/PC-3/PC-4 lifecycle RPCs author DS-3 dispositions inline, naming `journeys`/`journey_enrollments` directly at seven function families across eight migrations (`sprint2_leave_group_core` → `sprint3` nomination handler → `sprint4_platform_exit` → pc013 → pc014 → pc015 → pc002 `_erase_mist`). The crossing was each time a conscious "satisfied-now" disposition (so recorded in pc013's comments) — and it grew with every lifecycle feature because nothing gated it.
+The anatomy (ADR-U023) makes Platform Core the domain-agnostic stability zone and the Internal API a one-directional boundary: domain services consume core; core never depends on domain. The 2026-07-19 conformance audit found this violated in code (structure is clean — no core table references a domain table): PC-2/PC-3/PC-4 lifecycle RPCs author DS-3 dispositions inline, naming `journeys`/`journey_enrollments` directly — historically grown across eight migrations (`sprint2_leave_group_core` → `sprint3` nomination handler → `sprint4_platform_exit` → pc013 → pc014 → pc015 → pc002 `_erase_mist`). The crossing was each time a conscious "satisfied-now" disposition (so recorded in pc013's comments) — and it grew with every lifecycle feature because nothing gated it.
+
+W2 characterization (2026-07-19) verified the **live** relocation set against the current schema: the sprint3 nomination handler was already DROPped (`pc014:948`) and the sprint2 leave shape is superseded — **nine live functions across six migrations**:
+
+- **PC-3:** `leave_group` (`20260705115243`), `remove_member` (pc013), `_transfer_stewardship_to_deusex`, `respond_to_stewardship_nomination`, `close_group`, `delete_group` (all pc014), `leave_group_as_group` (pc015)
+- **PC-4:** `admin_exit_user_from_platform` (`sprint4_platform_exit` — scenarios L1/L2 map to *member departed*, L3 to *group closed*)
+- **PC-2:** `_erase_mist` (pc002) → *personal group erased*
 
 **How should core lifecycle actions (member departs, group closes, user exits, personal group erased) trigger domain reactions without core authoring domain policy?**
 
@@ -41,7 +47,7 @@ The anatomy (ADR-U023) makes Platform Core the domain-agnostic stability zone an
 | Fact function (DS-3-owned) | Signature intent | Disposition it owns |
 |---|---|---|
 | `ds3_lifecycle_member_departed(p_group_id, p_member_group_id, p_reason)` | reason ∈ `'left_group'` \| `'removed_from_group'` \| `'left_as_group'` | Freeze the departing member's active enrolments in the group's non-public journeys; stamp `frozen_reason`/`frozen_at` |
-| `ds3_lifecycle_group_closed(p_group_id) returns jsonb` | summary includes `journey_count` | Freeze both sprint2 shapes (member enrolments in the group's non-public journeys + the group's own group-level enrolments, reason `'group_closed'`); transfer non-public journeys to DeusEx; return the summary core needs for its notification duty |
+| `ds3_lifecycle_group_closed(p_group_id, p_reason) returns jsonb` | reason ∈ `'group_closed'` (`close_group`, admin-exit L3) \| `'group_archived'` (`delete_group`); summary includes `journey_count` | Freeze both shapes (member enrolments in the group's non-public journeys + the group's own group-level enrolments, stamped with `p_reason`); transfer non-public journeys to DeusEx; return the summary core needs for its notification duty |
 | `ds3_lifecycle_personal_group_erased(p_personal_group_id)` | must run before the group row delete (FK RESTRICT), same transaction | Hard-delete journeys owned by the erased personal group (Mist/FIM erasure) |
 
 ### The rules
@@ -52,12 +58,12 @@ The anatomy (ADR-U023) makes Platform Core the domain-agnostic stability zone an
 4. **Contract stability:** these signatures are Internal-API contracts — changes follow B8 (ADR/amendment + compatibility handling), like any Internal-API change.
 5. **Scope exclusion:** writes to `public.notifications` are *not* covered — that table is the Notifications-vertical delivery substrate per [ADR-U048](ADR-U048-notifications-vertical-delivery-substrate.md); writing it from any tier is obligation-fulfilment, not a boundary crossing.
 6. **The hook direction, named honestly:** core calling `ds3_lifecycle_*` is a *knowledge* inversion, not a data dependency: core knows a stable hook signature exists (WHEN); the domain owns the reaction (WHAT). Core never reads or writes domain data, never encodes domain policy. If DS-3 were ever extracted, core ships no-op default hooks. This is the Internal API's upward-facing hook surface — the anatomy's data-direction rule (domain consumes core, never the reverse) stays fully intact.
-7. **Site-6 divergence, recorded not silently fixed:** the sprint3 nomination-leave freeze predicate (`sprint3_smart_notifications.sql:193-201`) diverges from the pc013 shape on both axes — it freezes enrolments where `je.group_id = v_group_id` (the group's, not the departing steward's) against *any* non-public journey (not only the group's own). Relocation preserves current behavior verbatim; aligning it to the pc013 shape is a behavior change requiring its own decision + test at W4.
+7. **The live predicate divergence, recorded not silently fixed:** `leave_group_as_group` freezes enrolments where `status <> 'frozen'` (`pc015:385`) — so it also freezes `paused`/`completed` enrolments — while every other live site freezes `status = 'active'` only. A W2 characterization test pins this behavior before relocation; W4 preserves it verbatim, and aligning it to the `active`-only shape is a behavior change requiring its own decision + test. (An earlier draft of this rule recorded a divergence at the sprint3 nomination handler; W2 verification showed that function was already dropped by `pc014:948` — its successor `respond_to_stewardship_nomination` uses the standard member-scoped shape.)
 
 ### Consequences
 
 - **Positive:** core is domain-agnostic again and stays that way (W3 conformance test as a permanent gate); DS-3 owns freeze/thaw policy end-to-end — the thaw work it already owns now has its other half; A-COM builds DS-5 dispositions on the same pattern (`ds5_lifecycle_*` for the pc014 pending-DS-5 tags) instead of inheriting the crossing; the service-extraction path is preserved.
-- **Negative:** one extra function frame per lifecycle action (negligible in-monolith); seven function families churn in one behavior-preserving migration (schema gate); two places to read a lifecycle flow (core action + domain disposition) — the same trade ADR-U038 accepted for the BFF, guarded the same way (discipline + gate).
+- **Negative:** one extra function frame per lifecycle action (negligible in-monolith); nine live functions churn in one behavior-preserving migration (schema gate); two places to read a lifecycle flow (core action + domain disposition) — the same trade ADR-U038 accepted for the BFF, guarded the same way (discipline + gate).
 - **Neutral:** runtime behavior and performance unchanged — the same statements execute in a new frame.
 
 ## Pros and cons of each option
