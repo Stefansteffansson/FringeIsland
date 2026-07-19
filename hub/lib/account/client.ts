@@ -9,6 +9,7 @@
  */
 import type { AccountState } from '@/lib/account/queries';
 import { OverviewTransportError } from '@/lib/me/overview-shared';
+import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
 
 export type { AccountState, KnownAccountState } from '@/lib/account/queries';
 
@@ -45,6 +46,9 @@ export function adoptAccountStateRead(read: Promise<AccountState>): void {
 export function invalidateAccountStateAdoption(): void {
   adoptedState = null;
 }
+// COR-A W9 (AC-5): session-end drop via the auth-owned registry — auth never
+// imports this module. Semantics in `lib/auth/cache-registry.ts`.
+registerCacheInvalidator(invalidateAccountStateAdoption);
 
 /** Read the caller's own account state via the FEAT-PC004 read contract.
  *  Consume-once adopted read first (ADR-U042), then the standalone contract. */

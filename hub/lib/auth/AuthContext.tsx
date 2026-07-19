@@ -3,14 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
-import { invalidateProfileCache } from '@/lib/profile/client';
-import { invalidateGroupsCache } from '@/lib/groups/client';
-import { invalidateJourneysCache } from '@/lib/journeys/client';
-import { invalidateJournalCache } from '@/lib/journal/client';
-import { invalidateOnboardingCache } from '@/lib/onboarding/client';
-import { invalidatePlayerCache } from '@/lib/journeys/player';
-import { invalidateAccountStateAdoption } from '@/lib/account/client';
-import { invalidateOverview } from '@/lib/me/overview-client';
+import { invalidateAllCaches } from '@/lib/auth/cache-registry';
 import { beginMistSession, deriveIdentity, type Identity } from '@/lib/auth/mist';
 import { useSessionGuard } from '@/lib/auth/session-guard';
 import { TRANSCENDENCE_CONSENT_REQUIRED_ERROR } from '@/lib/auth/transcendence';
@@ -88,15 +81,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Session gone (sign-out / expiry): drop the session caches so a later
       // sign-in never shows another member's label or groups. Pure local drops —
       // no query in the listener (the onAuthStateChange deadlock gotcha holds).
+      // COR-A W9 (AC-5): registry inversion — each area cache module registers
+      // its invalidator at module init and auth imports NONE of them. Only
+      // loaded modules are registered: an area never imported this session has
+      // no cache to clear, so lazy registration is correct-by-construction.
       if (!newSession) {
-        invalidateProfileCache();
-        invalidateGroupsCache();
-        invalidateJourneysCache();
-        invalidateJournalCache();
-        invalidateOnboardingCache();
-        invalidatePlayerCache();
-        invalidateAccountStateAdoption();
-        invalidateOverview();
+        invalidateAllCaches();
       }
       setSession(newSession);
       setUser(newSession?.user ?? null);
