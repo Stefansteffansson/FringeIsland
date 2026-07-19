@@ -78,12 +78,14 @@
 **Rule:** ADR-U038 clause 1 (spirit): a sibling surface must inherit contracts without re-implementing them.
 **Evidence:** `hub/app/api/account/export/route.ts:4-5,25` composes three export RPCs (`get_own_data_export` + `get_own_journal_export` + `get_own_step_instances_export`). Each RPC is substrate-owned; but *which datasets constitute a complete export* is decided only in Hub code — the Gimbal would have to replicate the 3-way merge to be GDPR-complete.
 **Correction direction:** one platform-side composite (`get_own_data_export` composing all datasets) or a platform-recorded export manifest; route becomes a thin proxy again.
+**CLOSED (2026-07-19):** `get_own_data_export()` now composes the journal and step-instance datasets platform-side by calling the owning contracts (migration `20260719201718`, PR #191, sanctioned by ADR-U047 Amendment 2's vertical-obligation-composition carve-out); the Hub route is a thin proxy again and export completeness is the platform's contract.
 
 ### AC-5 · Minor — "Nothing depends on DS-7" soft-violated in TS plumbing
 
 **Rule:** ARCHITECTURE_ANATOMY §Domain Services ("nothing depends on DS-7"). DB layer is clean — `journal_entries` has zero inbound FK/function/trigger references.
 **Evidence:** (a) `hub/app/api/account/export/route.ts:4` imports the journal export fetch (GDPR forward-seam, folds into AC-4's composite); (b) `hub/lib/auth/AuthContext.tsx:6-14` — logout cache-clear imports every area's cache module including journal's.
 **Correction direction:** registry-pattern cache invalidation (each area registers its invalidator with auth; auth stops importing area modules); export resolves via AC-4.
+**CLOSED (2026-07-19):** export half via the W8 composite (PR #191 — the route's journal import is gone); AuthContext half via the W9 cache-invalidation registry (PR #190 — all 8 area modules self-register; `AuthContext` imports only the registry). The DB layer was already clean; the TS layer now is too.
 
 ### AC-6 · Minor — Administration audit seam is console-only with a stale binding note
 
