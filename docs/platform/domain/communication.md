@@ -7,7 +7,7 @@ slug: communication
 owner: platform/domain/communication
 consumers: [products/hub, products/gimbal, platform/domain/discovery, platform/domain/intelligence]
 status: proposed
-last_updated: 2026-06-10
+last_updated: 2026-07-19
 tier: Domain Services
 tags: [domain-service:communication]
 feature_prefix: PD
@@ -35,7 +35,7 @@ DS-5 is **not**: the social graph itself (branches, the crown, branch glow are D
 
 | Entity | Definition | Persisted in |
 |--------|-----------|--------------|
-| Conversation | A bounded message exchange between participants — pair or group grain. Conversation kinds are data-driven, never a sealed enum (Ferd non-closure). Realized substrate is **pair-grain only** (`conversations`: ordered participant pair, UNIQUE, read-state inline — D15 rebuild); group grain is forward commitment. | DS-5 tables |
+| Conversation | A bounded message exchange between participants — pair or group grain. Conversation kinds are data-driven, never a sealed enum (Ferd non-closure). *(Amended 2026-07-19, A-COM C-A / CB-7: group grain moves from forward commitment to in-build — FEAT-PD008 replaces the D15 pair-column shape with a participants junction + `conversation_kinds` registry, `dm` + `group` seeded; per-participant read-state moves to the junction.)* | DS-5 tables |
 | Message | One utterance within a conversation: author, body, timestamps, optional opaque DS-4 attachment references. | DS-5 tables |
 | Forum thread | A persistent, group-scoped discussion container. Realized as a **top-level post** (`parent_post_id` NULL) with **flat replies** — the `enforce_flat_threading` trigger forbids nesting; no separate thread table exists. | DS-5 tables |
 | Forum post | One contribution within a thread (top post or reply). Retains its original `author_id` forever — attribution is display logic over current membership (ADR-U021). | DS-5 tables |
@@ -49,7 +49,7 @@ DS-5 is **not**: the social graph itself (branches, the crown, branch glow are D
 
 Contract families (operation grain firms at FEAT time; the families are the L2 commitment):
 
-- **Conversation & message operations** — open/join/leave a conversation; send a message (with optional opaque attachment references); read history; realtime subscription to new messages (Supabase Real-time substrate, ADR-U003). Writes gate by scope (participants write to their conversations; `has_permission` for group-grain operations).
+- **Conversation & message operations** — open/join/leave a conversation; send a message (with optional opaque attachment references); read history; live delivery per the **ADR-U039 socket doctrine** — server-originated content-free hints on private broadcast channels, ping-then-fetch, verify-on-signal; a hint is never an authority and the fetch is the authorized path. *(Amended 2026-07-19 at the A-COM C-A decomposition: the original "realtime subscription to new messages (Supabase Real-time substrate, ADR-U003)" predates ADR-U039, which retired the `postgres_changes` full-row-push shape for v2 — the spec yields, PROCESS §9.)* Writes gate by scope (participants write to their conversations; `has_permission` for group-grain operations).
 - **Forum operations** — create thread, post, reply within a group's forum; read gated by group membership (PC-3); **attribution resolution** — the contract serves author display via current-membership lookup, never by mutating stored rows (ADR-U021's law as contract shape).
 - **Moderation operations (community-scoped, in-place)** — the Steward's woven-in-place care surface for their own group's forums and conversations (governance by scope: community-scoped stays in the FIM experience; universe-scoped lives on the Console and is not a DS-5 contract).
 - **Feed reads** — per-FIM and per-group ambient feeds; chronological; no rankings, no counts (service-level invariant 2). Realtime subscription for live surfaces.
@@ -98,8 +98,8 @@ Verified at Step 2 (2026-06-10): the four DS-5 tables — `forum_posts`, `conver
 - **Q4 — Feed composition vs DS-6 boundary. RESOLVED at the DS-6 descent (2026-06-11, ratified):** the cold lean stands as law — **any selection beyond chronology + scope filters is DS-6's; a "relevant to you" surface is never DS-5's, even when embedded in feed UI** — it is a DS-6 recommendation surface reached through DS-6's own contract (discovery.md invariant 2 binds it to affinity-shaped, never popularity/comparative). DS-5's feed composition stays chronology + scope filters, full stop. The search-indexing consumer line (§3) was likewise confirmed from the owned side (posture per discovery.md §8 Q3).
 - **Q5 — Whisp-carried messages** *(speculative-third-shape)*. Does the Whisp ever carry FIM-to-FIM communication? Cold lean: no — the branch is the FIM-FIM channel (S36); Whisp dialogue is DS-7's being-face. Defers to DS-7's descent. **Resolved 2026-06-11 (DS-7 descent, ratified by Stefan): the cold lean confirmed from the owned side — no. The Whisp never carries FIM-to-FIM communication (`intelligence.md` §7 invariant 10); the branch is the FIM-FIM channel.**
 - **Q6 — The village-presence seam** *(speculative-third-shape)*. Ambient "who is at the Tree" awareness: presence/location is DS-1 world-state; conversation in the village is DS-5. Which service serves presence-in-social-context — DS-5 composing DS-1 reads, or DS-1 directly to surfaces? Cold lean: DS-1 owns presence; DS-5 composes it into social surfaces the same way it composes cord-health glances. Re-check against DS-1 at FEAT time.
-- **Q7 — Realtime channel authorization.** How does Supabase Real-time channel auth align with RLS so a subscriber never receives a denied row (A#9's named site)? **Step 2 verified the realized half:** subscriptions are `postgres_changes` channels (per-user channel naming, e.g. `direct_messages:${userProfileId}`), and the three realtime tables are publication-registered by migration with RLS in force — Realtime respects RLS for `postgres_changes`. The remaining question is narrowed to FEAT-time verification that filter clauses on channels never substitute for policy (filters are optimisation, RLS is the gate).
-- **Q8 — Group-conversation vs forum boundary.** A group-grain conversation and a forum thread are adjacent shapes. Cold lean: distinct kinds in one registry space — conversations are presence-shaped exchange, forums are persistent threaded discourse; the boundary is a kind property, not an enum wall. Firms at FEAT time.
+- **Q7 — Realtime channel authorization. RESOLVED by ADR-U039 (recorded 2026-07-19, A-COM C-A).** The question was asked of the `postgres_changes` shape, which ADR-U039 retired for v2: subscribers never receive rows at all — channels are **private broadcast** carrying server-originated content-free hints (RLS on `realtime.messages` gates topic receipt; the session-signal channel is the realized precedent), and the client acts via the authorized fetch path (verify-on-signal). The filter-vs-policy worry dissolves — there is no row payload for a filter to leak. The conversational tables leave the `supabase_realtime` publication at C-A (FEAT-PD008 rider); `notifications`' publication membership is dispositioned at A-NTF.
+- **Q8 — Group-conversation vs forum boundary. FIRMED 2026-07-19 (A-COM C-A / CB-7, FEAT-PD008).** The cold lean stands as built shape: distinct kinds in one registry space — the `conversation_kinds` registry (`dm`, `group` seeded; TEXT-keyed, open) carries group-grain conversations as presence-shaped exchange scoped to a PC-3 group; forums remain `forum_posts` persistent threaded discourse. The boundary is a kind property, not an enum wall; ad-hoc multi-party (non-group-scoped) conversations are a future kind row, zero schema change.
 
 ---
 
@@ -177,11 +177,14 @@ Foundations first: **conversation lifecycle** and **forum structure** stand dire
 
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
-| (all fourteen) | — | — | No FEAT-PD specs exist for DS-5 capabilities yet; realized messaging/forum/notification code predates this partition (see §L3 Step 2). |
+| Conversation lifecycle (open/join/leave; kinds data-driven) | [FEAT-PD008](./features/FEAT-PD008-conversation-and-message-contracts.md) | 4-ready | A-COM Cycle C-A; group grain realized per CB-7 (participants junction + kinds registry) |
+| Message exchange & realtime delivery | [FEAT-PD008](./features/FEAT-PD008-conversation-and-message-contracts.md) | 4-ready | **Partial:** exchange contracts only; live delivery (ADR-U039 hint layer) defers to Cycle C-C |
+| Participation & read state | [FEAT-PD008](./features/FEAT-PD008-conversation-and-message-contracts.md) | 4-ready | Read-state moves to the participants junction |
+| (remaining eleven) | — | — | No FEAT-PD specs yet; realized forum/notification code predates this partition (see §L3 Step 2). A-COM cycles C-B..C-E spec forums/attribution/moderation, routing slivers, and lifecycle cascades; feeds, cord-health glance, journey-scoped surfaces, attachments, and preferences stay forward (A-NTF / A-DIS / later). |
 
 ### Capabilities without specs
 
-All fourteen capabilities above. Candidates for future L4 runs; wave-scope determination is wave-planning's, not L3's.
+The remaining eleven above. Candidates for future L4 runs; wave-scope determination is wave-planning's, not L3's.
 
 ### Features without capabilities
 
