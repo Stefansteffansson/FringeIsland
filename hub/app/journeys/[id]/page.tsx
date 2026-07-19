@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { AppShell } from '@/components/shell/AppShell';
@@ -15,13 +16,19 @@ import type { JourneyCard, JourneyDetail } from '@/lib/journeys/queries';
 /**
  * FEAT-H019 STORY-2/3/4/5 — the /journeys/[id] detail page (JRN-2).
  *
- * FIM-only per the journal pattern. Renders the PD002 detail payload: the
- * journey fields, the steps overview (title/kind/duration — never step
- * content; the player is J-B and the primary-action slot below the header
- * is structurally reserved for its entry), and the viewer-shaped enrolment
+ * Renders the PD002 detail payload: the journey fields, the steps overview
+ * (title/kind/duration — never step content), and the viewer-shaped enrolment
  * block. A BFF 404 renders the house not-found — unpublished and absent
  * indistinguishable. Mutations re-read the whole payload (no optimism).
  * Step kinds and difficulty render vocabulary-tolerantly.
+ *
+ * J-O3 gate rider R1 (2026-07-19, Stefan's felt-walk decision): the FIM-only
+ * gate is retired — a Mist reads the detail too (the substrate's visibility
+ * disjunction is the wall; the read was never FIM-gated platform-side). For a
+ * Mist the enrolment panel never renders (enrol/withdraw are FIM-only verbs —
+ * no fake doors): an enrolled Mist gets the continue-your-walk door into the
+ * player; an unenrolled Mist gets the become-a-FIM invitation. Browse → want
+ * → transcend.
  */
 export default function JourneyDetailPage() {
   const { user, identity, loading: authLoading } = useAuth();
@@ -63,10 +70,6 @@ export default function JourneyDetailPage() {
       router.replace(`/login?redirect=/journeys/${journeyId}`);
       return;
     }
-    if (identity === 'mist') {
-      router.replace('/');
-      return;
-    }
     // react-hooks/set-state-in-effect suppression: deliberate load-on-mount
     // house pattern (see app/groups/page.tsx note; disposition at the J-A retro).
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -88,8 +91,8 @@ export default function JourneyDetailPage() {
 
   return (
     <AppShell title={journey?.title ?? 'Journeys'}>
-      {authLoading || identity !== 'fim' || (!error && journey === null) ? (
-        seed && !authLoading && identity === 'fim' ? (
+      {authLoading || (identity !== 'fim' && identity !== 'mist') || (!error && journey === null) ? (
+        seed && !authLoading && (identity === 'fim' || identity === 'mist') ? (
           <header>
             <h1 className="text-3xl font-bold text-gray-900">{seed.title}</h1>
             {seed.description && <p className="mt-4 text-gray-700">{seed.description}</p>}
@@ -151,7 +154,38 @@ export default function JourneyDetailPage() {
             </ol>
           </section>
 
-          <JourneyEnrollmentPanel journey={journey} onRefresh={() => void load()} />
+          {identity === 'fim' ? (
+            <JourneyEnrollmentPanel journey={journey} onRefresh={() => void load()} />
+          ) : journey.is_enrolled_individually && journey.individual_enrollment ? (
+            /* R1: the enrolled Mist's one true door — the walk itself (active
+               resumes; completed opens review). Never enrol/withdraw. */
+            <section className="mt-8">
+              <Link
+                data-testid="mist-continue-walk"
+                href={`/journeys/${journey.id}/play?enrollment=${journey.individual_enrollment.enrollment_id}`}
+                className="inline-block rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
+              >
+                Continue your walk
+              </Link>
+            </section>
+          ) : (
+            /* R1: the unenrolled Mist's honest door — transcendence. */
+            <section
+              data-testid="mist-transcend-invite"
+              className="mt-8 rounded-xl border border-blue-100 bg-blue-50 p-6"
+            >
+              <p className="text-sm text-gray-700">
+                Walking this journey needs a lasting presence — that&rsquo;s what becoming a FIM
+                gives you.
+              </p>
+              <Link
+                href="/become-a-fim"
+                className="mt-3 inline-block rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
+              >
+                Become a FIM to walk this journey
+              </Link>
+            </section>
+          )}
         </article>
       ) : null}
     </AppShell>

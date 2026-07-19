@@ -21,6 +21,13 @@ jest.mock('next/link', () => ({
   ),
 }));
 
+const fetchMyJourneyEnrollments = jest.fn<() => Promise<unknown[]>>();
+const peekMyJourneyEnrollments = jest.fn<() => unknown[] | null>();
+jest.mock('@/lib/journeys/client', () => ({
+  fetchMyJourneyEnrollments: () => fetchMyJourneyEnrollments(),
+  peekMyJourneyEnrollments: () => peekMyJourneyEnrollments(),
+}));
+
 const push = jest.fn();
 const replace = jest.fn();
 
@@ -42,6 +49,8 @@ function mockAuth(identity: 'sessionless' | 'mist' | 'fim') {
 beforeEach(() => {
   push.mockClear();
   replace.mockClear();
+  peekMyJourneyEnrollments.mockReturnValue(null);
+  fetchMyJourneyEnrollments.mockReset().mockResolvedValue([]);
   jest.mocked(useRouter).mockReturnValue({ push, replace } as unknown as ReturnType<
     typeof useRouter
   >);
@@ -68,6 +77,66 @@ describe('FEAT-H003 STORY-2 (unit) — Mist-presence landing', () => {
 
     // The conversion incentive: lasting memory is the FIM reward.
     expect(screen.getByTestId('mist-presence')).toHaveTextContent(/become a fim to keep your journey/i);
+  });
+});
+
+describe('J-O3 gate rider R4 (2026-07-19) — the continue-your-walk door', () => {
+  // Stefan's felt-walk finding: "Your journeys" dropped a returning Mist into
+  // the browse catalogue (their walk buried; every other card gated). The link
+  // now resolves the Mist's one walk (a Mist can hold exactly one enrolment —
+  // substrate-enforced) and goes straight into the player at their position;
+  // the catalogue stays the honest fallback when no walk exists yet.
+  it("'Your journeys' goes straight into the Mist's walk when one exists", async () => {
+    mockAuth('mist');
+    fetchMyJourneyEnrollments.mockResolvedValue([
+      {
+        enrollment_id: 'e1',
+        kind: 'individual',
+        journey_id: 'j-onboarding',
+        journey_title: 'Arrival on FringeIsland',
+        status: 'active',
+        last_accessed_at: null,
+      },
+    ]);
+    render(<MistPresencePage />);
+    await waitFor(() =>
+      expect(screen.getByRole('link', { name: /your journeys/i })).toHaveAttribute(
+        'href',
+        '/journeys/j-onboarding/play?enrollment=e1',
+      ),
+    );
+  });
+
+  it('a completed walk still opens (review posture rides the enrolment param)', async () => {
+    mockAuth('mist');
+    fetchMyJourneyEnrollments.mockResolvedValue([
+      {
+        enrollment_id: 'e2',
+        kind: 'individual',
+        journey_id: 'j-onboarding',
+        journey_title: 'Arrival on FringeIsland',
+        status: 'completed',
+        last_accessed_at: null,
+      },
+    ]);
+    render(<MistPresencePage />);
+    await waitFor(() =>
+      expect(screen.getByRole('link', { name: /your journeys/i })).toHaveAttribute(
+        'href',
+        '/journeys/j-onboarding/play?enrollment=e2',
+      ),
+    );
+  });
+
+  it('falls back to the catalogue when the Mist has no walk yet', async () => {
+    mockAuth('mist');
+    render(<MistPresencePage />);
+    await waitFor(() =>
+      expect(screen.getByRole('link', { name: /your journeys/i })).toHaveAttribute(
+        'href',
+        '/journeys',
+      ),
+    );
   });
 });
 

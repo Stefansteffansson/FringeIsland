@@ -38,6 +38,14 @@ jest.mock('@/components/journeys/JourneyEnrollmentPanel', () => ({
     <div data-testid="enrollment-panel" data-journey={journey.id} />
   ),
 }));
+jest.mock('next/link', () => ({
+  __esModule: true,
+  default: ({ children, href, ...rest }: { children: React.ReactNode; href: string }) => (
+    <a href={href} {...rest}>
+      {children}
+    </a>
+  ),
+}));
 const peekJourneyCatalog = jest.fn<() => unknown[] | null>();
 
 jest.mock('@/lib/journeys/client', () => ({
@@ -88,10 +96,37 @@ describe('FEAT-H019 — /journeys/[id] page (STORY-2)', () => {
     await waitFor(() => expect(replace).toHaveBeenCalledWith('/login?redirect=/journeys/j1'));
   });
 
-  it('redirects a Mist to the entry', async () => {
+  // ADAPTED at the J-O3 area gate (2026-07-19, Stefan's felt-walk decision —
+  // rider R1): the Mist redirect is retired; the shop window opens. A Mist
+  // reads the detail (the substrate already serves it) with the enrolment
+  // panel replaced by a become-a-FIM invitation; an enrolled Mist gets the
+  // continue-your-walk door. No withdraw/enrol affordance ever renders for a
+  // Mist (those verbs are FIM-only platform-side — no fake doors).
+  it('renders the detail read-only for a Mist — no redirect, no enrolment panel, the become-a-FIM invite', async () => {
     authState = { user: { id: 'm1' }, identity: 'mist', loading: false };
     render(<JourneyDetailPage />);
-    await waitFor(() => expect(replace).toHaveBeenCalledWith('/'));
+    await waitFor(() => expect(screen.getByText('Leadership Fundamentals')).toBeTruthy());
+    expect(replace).not.toHaveBeenCalled();
+    expect(screen.getByTestId('steps-overview').textContent).toContain('Orient');
+    expect(screen.queryByTestId('enrollment-panel')).toBeNull();
+    const invite = screen.getByTestId('mist-transcend-invite');
+    expect(invite.querySelector('a')?.getAttribute('href')).toBe('/become-a-fim');
+  });
+
+  it('an enrolled Mist gets "Continue your walk" into the player — never a withdraw affordance', async () => {
+    authState = { user: { id: 'm1' }, identity: 'mist', loading: false };
+    fetchJourneyDetail.mockResolvedValue({
+      ...DETAIL,
+      is_enrolled_individually: true,
+      individual_enrollment: { enrollment_id: 'e9', status: 'active' },
+    });
+    render(<JourneyDetailPage />);
+    await waitFor(() => expect(screen.getByTestId('mist-continue-walk')).toBeTruthy());
+    expect(screen.getByTestId('mist-continue-walk').getAttribute('href')).toBe(
+      '/journeys/j1/play?enrollment=e9',
+    );
+    expect(screen.queryByTestId('enrollment-panel')).toBeNull();
+    expect(screen.queryByTestId('mist-transcend-invite')).toBeNull();
   });
 
   it('renders the journey fields, the steps overview, and the enrolment block', async () => {
