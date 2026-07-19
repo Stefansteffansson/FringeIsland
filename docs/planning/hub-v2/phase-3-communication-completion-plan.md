@@ -1,6 +1,6 @@
 # Phase 3 — Communication (A-COM) completion plan
 
-**Status:** DRAFT v1 (2026-07-19) — decision board OPEN; Cycle C-A decomposes once it settles.
+**Status:** v2 (2026-07-19) — decision board SETTLED (Stefan, 2026-07-19): recommendations adopted on CB-1/2/3/4/5/6/8/9; **CB-7 overridden — group conversations are IN scope and build in C-A**. Cycle C-A decomposing.
 **Provenance:** four-scout terrain sweep 2026-07-19 (platform/DS-5 · substrate · surface/oracle · seams-and-dues), load-bearing facts disk-verified. Canonical-wins flags are folded in below where a source disagreed.
 
 ---
@@ -41,7 +41,7 @@ All comm substrate born whole in the D15 rebuild (`20260222000000_rebuild_univer
 
 **Oracle (behaviour-inventory §140-148, §187): STRONG for A-COM.** B-MSG-001..006 + B-COMM-004..007 live in `hub-legacy/tests/integration/communication/`; the spine (group-keyed authorship, anti-impersonation RLS, flat threading, **DMs create no notifications** — unread = Messages badge + `last_read_at`) ports byte-for-byte. **Two silences, design-not-port:** former-member attribution and real-time push (v1 only ever polled).
 
-## The 15 capabilities + area dues (from §L3, with cycle)
+## The 16 capabilities + area dues (from §L3, with cycle; COM-15 added at board settle per CB-7)
 
 | Row | Capability (compressed) | Substrate | Oracle | Cycle |
 |---|---|---|---|---|
@@ -60,6 +60,7 @@ All comm substrate born whole in the D15 rebuild (`20260222000000_rebuild_univer
 | COM-9 | Platform-wide admin announcement 1→all | NONE | PARTIAL (B-ADMIN-011/015 adjacent) | C-D |
 | COM-12 | Edit/delete own within window | PARTIAL | PARTIAL | C-D |
 | COM-13 | Content report submission | NONE | NONE | C-D |
+| COM-15 | Group conversations — create/join/leave, message, per-participant read-state (CB-7, added at board settle) | REDESIGN (1-to-1 → participants model) | NONE | C-A |
 | due | `ds5_lifecycle_*` for D2 (close/delete-group forum disposition) + Mist ephemerality + `get_own_messages_export()` | template HAVE | — | C-E |
 | due | IDN-10 self-service exit/deletion (**Identity Cycle F** — specs must be authored first) | freeze half done (DS-3) | — | C-F |
 
@@ -67,7 +68,7 @@ All comm substrate born whole in the D15 rebuild (`20260222000000_rebuild_univer
 
 ## The cycle sequence (foundation-first, paired-platform-first)
 
-- **C-A — DM core.** FEAT-PD008 (first DS-5 spec: conversation + message contracts over existing tables, write-narrowing) ↔ FEAT-H025 (Messages surface: inbox, detail, compose, read-state, badge). Riders: conformance-gate `DS_TABLES`/allowlist edit on the first DS-5 migration; DS-5 spec U039 amendment; disposition of the legacy `postgres_changes` publications.
+- **C-A — Conversations core (DM + group, CB-7).** FEAT-PD008 (first DS-5 spec: conversation + message contracts; **conversation-model redesign** — participants junction with per-participant read-state, data-driven conversation kinds `dm`/`group`, open/join/leave semantics per the DS-5 spec's own lifecycle capability; write-narrowing) ↔ FEAT-H025 (Messages surface: inbox, detail, compose, read-state, badge, group-conversation create/join/leave). Riders: conformance-gate `DS_TABLES`/allowlist edit on the first DS-5 migration; DS-5 spec U039 amendment; disposition of the legacy `postgres_changes` publications; §8 Q8 firms here (conversation kinds vs forum — one registry). Data-preserving migration: each existing 1-to-1 row emits its two participant rows carrying `last_read_at`.
 - **C-B — Forum + attribution.** Forum contracts + moderation ↔ forum surface; COM-14 renders MEM-9's attribution (ADR-U021; `'Unknown'` fallback per DS-5 §8 Q3; label per CB-9); clears the H016/H017 pending notes.
 - **C-C — Real-time + reconciliation.** Ping-then-fetch over private broadcast per U039 for DM/forum/badge; reconnect reconciliation (COM-11); channel taxonomy fixed at decomposition inside U039 rails (Q7's filter-never-substitutes-for-policy). Conventions shaped so A-NTF joins the same substrate next area (§L3 §348).
 - **C-D — Announcements, windows, reports.** New substrate per the design session (U048 split: DS-5-owned durable home + routing; delivery rows via V3 substrate); COM-12 window per CB-3; COM-13 submission + durable store with the moderation-queue *surface* forward-seamed to A-ADM per CB-4.
@@ -90,13 +91,13 @@ Settled by canon, recorded not asked: U039 realtime doctrine (spec yields) · U0
 | CB-4 | Content-reports scope (COM-13) | **Build submission + durable store now**; moderation-queue surface seams to A-ADM | build store, seam queue |
 | CB-5 | IDN-10 placement | **C-F closing cycle**, L4 authoring first (nothing exists to un-park); alternative: author specs early at C-A-time, build at C-F | C-F, author-then-build |
 | CB-6 | Suspended-member export posture (PC008 asymmetry, inherited by `get_own_messages_export`) | **Right-of-access: suspended members can export** — core-touching, pauses at the carve-out for named approval at C-E | decide at C-E gate |
-| CB-7 | Group conversations (DS-5 §8 Q8) | **Out of Ferd** — 1-to-1 stays; conversation-kind registry keeps the door open | out |
+| CB-7 | Group conversations (DS-5 §8 Q8) | ~~Out of Ferd~~ **OVERRIDDEN (Stefan): build now, in C-A.** The conversation model is redesigned once at contract-cut time: participants junction (per-participant read-state) + data-driven conversation kinds (`dm`, `group` — one registry, distinct from forum per Q8). New §L3 row COM-15 records the capability | — settled |
 | CB-8 | Real-time placement | **Own cycle C-C** after DM+forum land (one fresh U039 build for both surfaces; C-A/C-B ship without socket work) | own cycle |
 | CB-9 | Attribution label (COM-14/MEM-9) | **"Former member"** per ADR-U021; `'Unknown'` fallback | "Former member" |
 
 ## Exit checklist — the Communication area gate (planted now)
 
-- [ ] All 15 COM rows `6-done` or explicitly dispositioned on the board
+- [ ] All 16 COM rows (incl. COM-15, CB-7) `6-done` or explicitly dispositioned on the board
 - [ ] MEM-9 un-seamed and rendered; FEAT-H016/H017 `pending-DS-5` notes cleared
 - [ ] D2 executed as `ds5_lifecycle_*`; FEAT-PC014 tags updated with the U047 rename recorded
 - [ ] IDN-10 complete: specs authored, exit/deletion live and gated, old exit path retired

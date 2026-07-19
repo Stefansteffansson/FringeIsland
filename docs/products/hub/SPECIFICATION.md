@@ -247,9 +247,9 @@ Journeys are the primary developmental experience per VISION.md. The Hub renders
 | JRN-17 | Render per-member progress within a group (role-gated, privacy-respecting) | A-JRN | JRN-4, GRP-8 | DS-3, PC-3, PC-4 (visibility consent) | How do I get there? | 1+Community | V2, V4 |
 | JRN-18 | Render every foundational step type DS-3 publishes | A-JRN | JRN-6 | DS-3 (step-type catalogue authority), DS-4 (step content) | Who am I?, What do I want?, How do I get there? | 1, 1+1, 1+Community | V2, V4 |
 
-#### A-COM — Communication & Community (15 capabilities)
+#### A-COM — Communication & Community (16 capabilities)
 
-Communication spans 1+1 (DM), 1+Community (forum), and 1→many (announcements), with real-time delivery and graceful handling of historical authorship across membership changes. A-COM serves *What do I want?* exclusively — communication is a destination dimension, not a directional one; this is structurally honest, not a derivation gap (see Sources-status, methodology observation #5).
+Communication spans 1+1 (DM), 1+Community (forum and group conversations — distinct conversation kinds, one registry; COM-15 added 2026-07-19 at the A-COM board settle, CB-7), and 1→many (announcements), with real-time delivery and graceful handling of historical authorship across membership changes. A-COM serves *What do I want?* exclusively — communication is a destination dimension, not a directional one; this is structurally honest, not a derivation gap (see Sources-status, methodology observation #5).
 
 | ID | Capability | Internal area | Depends on (internal) | Depends on (external) | Founding question(s) | Dimension(s) | Vertical impact |
 |---|---|---|---|---|---|---|---|
@@ -268,6 +268,7 @@ Communication spans 1+1 (DM), 1+Community (forum), and 1→many (announcements),
 | COM-12 | Edit or delete own message or post within configurable window | A-COM | COM-1, COM-6a, COM-6b | DS-5 | What do I want? | 1+1, 1+Community | V2, V4 |
 | COM-13 | Submit content report from forum or DM surface | A-COM | COM-3, COM-6a, COM-6b | DS-5, PC-4, A-ADM (moderation queue) | What do I want? | 1+1, 1+Community | V1, V2, V4 |
 | COM-14 | Render former-member attribution at content-display layer | A-COM | MEM-9, COM-3, COM-5 | DS-5, PC-3 | Who am I?, What do I want? | 1+1, 1+Community | V2, V4 |
+| COM-15 | Participate in group conversations — create, join/leave, message, per-participant read state | A-COM | COM-1, COM-2, COM-3, COM-4, GRP-1 | DS-5 (conversation kinds registry), PC-3 | What do I want? | 1+Community | V1, V2, V4 |
 
 #### A-NTF — Notifications & Inbox (10 capabilities)
 
