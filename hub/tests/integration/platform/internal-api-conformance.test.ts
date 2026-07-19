@@ -73,6 +73,15 @@ const DS_TABLES = [
   'step_kinds',
   'content_families',
   'journal_entries',
+  // DS-5 Communication (C-A, FEAT-PD008): the conversation model.
+  // NAMED DEFERRAL: forum_posts joins at C-B — admin_hard_delete_user (Core)
+  // textually UPDATEs public.forum_posts (the sentinel reassignment, re-issued
+  // in 20260719190205); that crossing relocates to ds5_lifecycle_* in the
+  // forum cycle, and forum_posts enters this list in the same change.
+  'conversations',
+  'messages',
+  'conversation_participants',
+  'conversation_kinds',
 ] as const;
 
 // DS-3 Journeys functions — legitimately own/reference the journey tables.
@@ -111,9 +120,35 @@ const DS7_JOURNAL_FUNCTIONS = [
   'update_journal_entry',
 ];
 
+// DS-5 Communication functions (C-A, FEAT-PD008) — legitimately own/reference
+// the conversation tables. (`is_conversation_participant` is the RLS predicate,
+// reshaped over the junction; `update_conversation_last_message_at` is the
+// last-message trigger; `ds5_require_fim_actor` is the CB-1 actor gate; the
+// rest are the eight C-A contracts. `enforce_flat_threading` joins at C-B with
+// forum_posts.)
+const DS5_COMMUNICATION_FUNCTIONS = [
+  // Legacy pair-column read-state guard (D15 rebuild) — DS-5-owned; DROPPED by
+  // the C-A migration (20260719230500). Listed so the pre-apply window stays
+  // truthful; the entry goes inert once the function leaves pg_proc.
+  'can_update_conversation',
+  'create_group_conversation',
+  'ds5_require_fim_actor',
+  'get_conversation_detail',
+  'get_group_conversations',
+  'get_my_conversations',
+  'get_or_create_dm_conversation',
+  'is_conversation_participant',
+  'join_group_conversation',
+  'leave_group_conversation',
+  'mark_conversation_read',
+  'send_message',
+  'update_conversation_last_message_at',
+];
+
 const DS_OWNED_ALLOWLIST = new Set<string>([
   ...DS3_JOURNEY_FUNCTIONS,
   ...DS7_JOURNAL_FUNCTIONS,
+  ...DS5_COMMUNICATION_FUNCTIONS,
 ]);
 
 // ADR-U047 Amendment 2 — vertical-composition allowlist (a DISTINCT category,
