@@ -11,20 +11,18 @@ import { getTelemetrySink } from '@/lib/observability/telemetry';
  *
  * Red-first: this fails to import until `app/api/account/export/route.ts` exists.
  *
- * Amended 2026-07-03 (FEAT-H011 STORY-5, red-first against the pre-composition
- * route): the route now COMPOSES the FEAT-PD001 journal export into the
- * delivered document as an additive top-level `journal` key (present-and-empty
- * for an entry-less FIM; a journal failure fails the whole download).
+ * Amended 2026-07-03 (FEAT-H011 STORY-5) and 2026-07-18 (FEAT-H024 STORY-6):
+ * the route composed the journal and walks exports as additive keys.
  *
- * Amended 2026-07-18 (FEAT-H024 STORY-6, the same pattern): the route also
- * composes the FEAT-PD007 walks export as the additive `journeys` key — the
- * FEAT-H010 step-instances flag discharged. Same rules: present-and-empty for
- * a walk-less member, a walks failure fails the whole download.
+ * Amended 2026-07-19 (COR-A W8, audit finding AC-4): that BFF composition
+ * moved PLATFORM-side — `get_own_data_export()` now returns the complete
+ * document (`journal` + `journeys` included), and the route is a thin proxy
+ * again: ONE lib call, no merge, no journal/journeys imports (the export half
+ * of AC-5). The route couriers the document faithfully — the platform-composed
+ * sections ride through untouched — and has a single failure path.
  */
 const getUser = jest.fn<() => Promise<{ data: { user: { id: string } | null } }>>();
 const fetchOwnDataExport = jest.fn<() => Promise<unknown>>();
-const fetchOwnJournalExport = jest.fn<() => Promise<unknown>>();
-const fetchOwnStepInstancesExport = jest.fn<() => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -40,14 +38,6 @@ jest.mock('@/lib/account/export', () => ({
   fetchOwnDataExport: (...args: unknown[]) =>
     (fetchOwnDataExport as unknown as (...a: unknown[]) => unknown)(...args),
 }));
-jest.mock('@/lib/journal/queries', () => ({
-  fetchOwnJournalExport: (...args: unknown[]) =>
-    (fetchOwnJournalExport as unknown as (...a: unknown[]) => unknown)(...args),
-}));
-jest.mock('@/lib/journeys/queries', () => ({
-  fetchOwnStepInstancesExport: (...args: unknown[]) =>
-    (fetchOwnStepInstancesExport as unknown as (...a: unknown[]) => unknown)(...args),
-}));
 
 import { GET } from '@/app/api/account/export/route';
 
@@ -56,6 +46,8 @@ const emitted = (name: string, actor?: string) =>
     (e) => e.name === name && (actor === undefined || e.props?.actor === actor),
   );
 
+/** The platform-composed document — `journal` and `journeys` arrive IN the
+ *  document since COR-A W8; the route never assembles them. */
 const SAMPLE_DOC = {
   schema_version: 1,
   exported_at: '2026-06-30T00:00:00Z',
@@ -64,15 +56,13 @@ const SAMPLE_DOC = {
   account_state: { is_active: true, is_decommissioned: false, state: 'active' },
   consent: [],
   memberships: [],
+  journal: { schema_version: 1, exported_at: '2026-07-03T00:00:00Z', entries: [] },
+  journeys: [],
 };
-
-const EMPTY_JOURNAL = { schema_version: 1, exported_at: '2026-07-03T00:00:00Z', entries: [] };
 
 beforeEach(() => {
   getUser.mockReset().mockResolvedValue({ data: { user: { id: 'u1' } } });
   fetchOwnDataExport.mockReset().mockResolvedValue(SAMPLE_DOC);
-  fetchOwnJournalExport.mockReset().mockResolvedValue(EMPTY_JOURNAL);
-  fetchOwnStepInstancesExport.mockReset().mockResolvedValue([]);
 });
 
 describe('GET /api/account/export', () => {
@@ -99,107 +89,75 @@ describe('GET /api/account/export', () => {
     expect(emitted('account.export', 'u-exp')).toBe(true);
   });
 
-  it('maps a contract failure to 500 (surfaced, never a partial document)', async () => {
-    getUser.mockResolvedValue({ data: { user: { id: 'u-err' } } });
-    fetchOwnDataExport.mockRejectedValue(new Error('rpc exploded'));
-    const res = (await GET()) as { status: number };
-    expect(res.status).toBe(500);
-    expect(emitted('account.export_failed', 'u-err')).toBe(true);
-  });
-
-  // FEAT-H011 STORY-5 — the composed download (red-first against the
-  // pre-composition route).
-
-  it('composes the journal export into the document as an additive `journal` key', async () => {
-    fetchOwnJournalExport.mockResolvedValue({
-      schema_version: 1,
-      exported_at: '2026-07-03T00:00:01Z',
-      entries: [
-        { id: 'j1', title: null, body: 'kept words', created_at: 'x', updated_at: 'x' },
+  it('couriers the platform-composed sections untouched — ONE call, no route-side merge', async () => {
+    fetchOwnDataExport.mockResolvedValue({
+      ...SAMPLE_DOC,
+      journal: {
+        schema_version: 1,
+        exported_at: '2026-07-03T00:00:01Z',
+        entries: [
+          { id: 'j1', title: null, body: 'kept words', created_at: 'x', updated_at: 'x' },
+        ],
+      },
+      journeys: [
+        {
+          enrollment_id: 'e1',
+          journey_id: 'j1',
+          journey_title: 'A walk',
+          status: 'completed',
+          enrolled_at: 'x',
+          completed_at: 'x',
+          steps: [
+            {
+              step_id: 's1',
+              step_title: 'Turn inward',
+              kind: 'reflection',
+              created_at: 'x',
+              completed_at: 'x',
+              response: { body: 'my exported words' },
+              response_updated_at: 'x',
+            },
+          ],
+        },
       ],
     });
     const res = (await GET()) as {
       status: number;
-      body: { schema_version: number; journal: { schema_version: number; entries: unknown[] } };
-    };
-    expect(res.status).toBe(200);
-    // the core document is intact AND the journal section rides along, versioned
-    expect(res.body.schema_version).toBe(1);
-    expect(res.body.journal.schema_version).toBe(1);
-    expect(res.body.journal.entries).toHaveLength(1);
-  });
-
-  it('an entry-less FIM gets journal present-and-empty — never an omission', async () => {
-    const res = (await GET()) as {
-      body: { journal: { entries: unknown[] } };
-    };
-    expect(res.body.journal).toBeDefined();
-    expect(Array.isArray(res.body.journal.entries)).toBe(true);
-    expect(res.body.journal.entries).toHaveLength(0);
-  });
-
-  it('a journal-contract failure fails the whole download — never a partial document', async () => {
-    getUser.mockResolvedValue({ data: { user: { id: 'u-jerr' } } });
-    fetchOwnJournalExport.mockRejectedValue(new Error('journal rpc exploded'));
-    const res = (await GET()) as { status: number; body: { error?: string } };
-    expect(res.status).toBe(500);
-    expect(res.body.error).not.toContain('kept words');
-    expect(emitted('account.export_failed', 'u-jerr')).toBe(true);
-  });
-
-  // FEAT-H024 STORY-6 (J-F) — the walks section (the FEAT-H010 flag discharged;
-  // red-first against the pre-J-F route).
-
-  it('composes the walks export into the document as an additive `journeys` key', async () => {
-    fetchOwnStepInstancesExport.mockResolvedValue([
-      {
-        enrollment_id: 'e1',
-        journey_id: 'j1',
-        journey_title: 'A walk',
-        status: 'completed',
-        enrolled_at: 'x',
-        completed_at: 'x',
-        steps: [
-          {
-            step_id: 's1',
-            step_title: 'Turn inward',
-            kind: 'reflection',
-            created_at: 'x',
-            completed_at: 'x',
-            response: { body: 'my exported words' },
-            response_updated_at: 'x',
-          },
-        ],
-      },
-    ]);
-    const res = (await GET()) as {
-      status: number;
       body: {
         schema_version: number;
-        journal: { entries: unknown[] };
+        journal: { schema_version: number; entries: unknown[] };
         journeys: Array<{ enrollment_id: string; steps: unknown[] }>;
       };
     };
     expect(res.status).toBe(200);
-    // core document + journal intact AND the walks ride along
+    expect(fetchOwnDataExport).toHaveBeenCalledTimes(1);
+    // the core document is intact AND the platform-composed sections ride along
     expect(res.body.schema_version).toBe(1);
-    expect(Array.isArray(res.body.journal.entries)).toBe(true);
+    expect(res.body.journal.schema_version).toBe(1);
+    expect(res.body.journal.entries).toHaveLength(1);
     expect(res.body.journeys).toHaveLength(1);
     expect(res.body.journeys[0].enrollment_id).toBe('e1');
     expect(res.body.journeys[0].steps).toHaveLength(1);
   });
 
-  it('a walk-less member gets journeys present-and-empty — never an omission', async () => {
-    const res = (await GET()) as { body: { journeys: unknown[] } };
+  it('an entry-less, walk-less member gets both sections present-and-empty — never an omission', async () => {
+    const res = (await GET()) as {
+      body: { journal: { entries: unknown[] }; journeys: unknown[] };
+    };
+    // the platform guarantees present-and-empty; the courier must not drop them
+    expect(Array.isArray(res.body.journal.entries)).toBe(true);
+    expect(res.body.journal.entries).toHaveLength(0);
     expect(Array.isArray(res.body.journeys)).toBe(true);
     expect(res.body.journeys).toHaveLength(0);
   });
 
-  it('a walks-contract failure fails the whole download — never a partial document', async () => {
-    getUser.mockResolvedValue({ data: { user: { id: 'u-werr' } } });
-    fetchOwnStepInstancesExport.mockRejectedValue(new Error('walks rpc exploded'));
-    const res = (await GET()) as { status: number };
+  it('maps a contract failure to 500 (surfaced, never a partial document)', async () => {
+    getUser.mockResolvedValue({ data: { user: { id: 'u-err' } } });
+    fetchOwnDataExport.mockRejectedValue(new Error('rpc exploded'));
+    const res = (await GET()) as { status: number; body: { error?: string } };
     expect(res.status).toBe(500);
-    expect(emitted('account.export_failed', 'u-werr')).toBe(true);
+    // content-free failure — never an echo of document content
+    expect(res.body.error).toBe('Failed to assemble data export');
+    expect(emitted('account.export_failed', 'u-err')).toBe(true);
   });
 });

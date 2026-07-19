@@ -1,6 +1,6 @@
 # ADR-U047: Internal API inversion — core emits lifecycle facts; domain services own their dispositions
 
-**Status:** Accepted (ratified 2026-07-19, Stefan — "ok merge 182"). Amended 2026-07-19 (A1: fourth fact — user hard-deleted; see Amendment 1 below).
+**Status:** Accepted (ratified 2026-07-19, Stefan — "ok merge 182"). Amended 2026-07-19 (A1: fourth fact — user hard-deleted; A2: vertical composition; see Amendments below).
 **Date:** 2026-07-19
 **Deciders:** Stefan + Claude (from the [anatomy-conformance audit](../../planning/reference/ANATOMY-CONFORMANCE-AUDIT.md), findings AC-1/AC-2)
 **Tags:** scope:platform-core · scope:domain-service · wave:ferd
@@ -117,3 +117,33 @@ W2/W3 verification against the live catalog found that `admin_hard_delete_user` 
 - The W3 conformance gate now asserts **all ten** core author-sites — the day-one allowlist exception is removed. A standing "known offender" exception would be exactly the "satisfied-now" pattern (audit AC-1's own diagnosis) that COR-A exists to end, so it does not ship.
 - The initial fact vocabulary is now four, not three; the `ds{N}_lifecycle_` naming/ownership rule (rule 1) and the boundary rule (rule 3) are unchanged — the amendment adds a fact, it does not alter the rules.
 - Register note: audit AC-1's site count moves from nine to ten (the tenth found by the gate, not the audit) — for the register annotation pass.
+
+---
+
+## Amendment 2 (2026-07-19) — vertical-obligation composition
+
+**Status:** Accepted (rides PR #191's named schema-gate approval — one approval covers the W8 migration + this amendment, the PR #188 / Amendment 1 pattern)
+**Date:** 2026-07-19
+**Provenance (recorded honestly):** surfaced by COR-A W8 (the platform-side GDPR export composite, audit AC-4) colliding with the W3 conformance gate. W8 makes `get_own_data_export()` (PC-4) compose the journal and walks datasets by *calling* `get_own_journal_export()` (DS-7) and `get_own_step_instances_export()` (DS-3) — which rule 3 as written ("core may invoke `ds*_lifecycle_*` functions and nothing else domain-side") does not permit, even though the composition reads no DS table and mutates nothing. The rule was scoped to the lifecycle seam it was written for; the export composite exposed the class it had not yet named.
+
+### What changed — rule 3 gains one tightly-bounded carve-out
+
+A platform function that fulfils a **cross-cutting vertical obligation** (ADR-U002: Administration · Privacy/GDPR · Notifications · Observability · Transactions) may **compose domain services' published read contracts**, because a vertical obligation spans every tier *by definition* — completeness across tiers is the obligation itself. This is the **read-side mirror of ADR-U048's write-side ruling** (writing `public.notifications` from any tier is obligation-fulfilment, not a boundary crossing): there, every tier may *write into* a vertical's delivery substrate; here, a vertical's fulfilment point may *read out of* each service's own published contract.
+
+**Bounds (all three required):**
+
+- **(a) Declared, not implicit:** each such function is declared **by name** in the W3 conformance test's vertical-composition allowlist, with the vertical and the concrete obligation cited. An undeclared composition is a rule-3 violation, carve-out or not.
+- **(b) Read-only, contract-only:** the composition may only call each domain service's **own published export/read contract** — never access a DS-owned table directly, never invoke a lifecycle mutation. Rule 6's knowledge-inversion framing holds unchanged: this is a contract call, not a data dependency; core still never reads or writes domain data directly.
+- **(c) One substrate home per dataset:** the composite **calls** the owning contract, never inlines its SELECT logic — each dataset keeps exactly one substrate home (the ADR-U038 sole-home discipline).
+
+### First allowlist entry
+
+| Function | Vertical | Obligation |
+|---|---|---|
+| `get_own_data_export()` (PC-4) | Privacy/GDPR | Whole-account export completeness (Art. 15/20 right of access; audit AC-4 — one RPC returns the complete document so no surface re-implements the merge) |
+
+### Consequences
+
+- Rules 1–7 are otherwise unchanged; the lifecycle-fact vocabulary is untouched. The carve-out covers *vertical-obligation reads* only — any new lifecycle-shaped crossing still requires a new fact function, never an allowlist entry.
+- The W3 conformance test carries the allowlist as a distinct, cited category (not merged into the DS-owned list) so every carve-out use remains visible at the gate.
+- In the same change the W3 test's table matching is tightened to schema-qualified references (`public.<table>`, word-bounded): `search_path = ''` is mandatory in substrate code, so every real relation reference is schema-qualified, and bare-name matching false-positives on jsonb key literals (the W8 composite's `'journeys'` document key — PR #191).
