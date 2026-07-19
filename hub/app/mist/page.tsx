@@ -8,6 +8,8 @@ import { AppShell } from '@/components/shell/AppShell';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { InlineError } from '@/components/ui/InlineError';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { fetchMyJourneyEnrollments, peekMyJourneyEnrollments } from '@/lib/journeys/client';
+import type { MyEnrollment } from '@/lib/journeys/queries';
 
 /**
  * The minimal-but-real Mist-presence landing (FEAT-H003 STORY-2, extended by
@@ -26,6 +28,27 @@ export default function MistPresencePage() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [farewellError, setFarewellError] = useState<string | null>(null);
+  // J-O3 gate rider R4 (2026-07-19, Stefan's felt-walk finding): "Your
+  // journeys" used to drop a returning Mist into the browse catalogue (their
+  // walk buried; every other card gated). A Mist can hold exactly ONE
+  // enrolment (substrate-enforced — the designated onboarding journey), so
+  // the link resolves that walk and goes straight into the player at their
+  // position (?enrollment= admits completed walks in review posture too).
+  // The catalogue stays the honest fallback while no walk exists.
+  const [walkHref, setWalkHref] = useState('/journeys');
+  useEffect(() => {
+    if (loading || identity !== 'mist') return;
+    void (async () => {
+      try {
+        const list =
+          peekMyJourneyEnrollments() ?? ((await fetchMyJourneyEnrollments()) as MyEnrollment[]);
+        const walk = list.find((e) => e.kind === 'individual');
+        if (walk) setWalkHref(`/journeys/${walk.journey_id}/play?enrollment=${walk.enrollment_id}`);
+      } catch {
+        /* keep the catalogue fallback — the door stays a door */
+      }
+    })();
+  }, [identity, loading]);
 
   useEffect(() => {
     if (loading) return;
@@ -89,7 +112,7 @@ export default function MistPresencePage() {
         {/* FEAT-H023 (STORY-3): the walk stays deliberately resumable — the
             front door never re-launches, but it is always a door. */}
         <p className="mt-4 text-sm text-gray-600">
-          <Link href="/journeys" className="font-medium text-blue-600 underline hover:text-blue-800">
+          <Link href={walkHref} className="font-medium text-blue-600 underline hover:text-blue-800">
             Your journeys
           </Link>{' '}
           — continue your walk whenever you choose.
