@@ -57,8 +57,8 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 | ADR-U044 | [Journey step model — the Journey Designer grammar as the schema's DNA](ADR-U044-journey-step-model.md) | Accepted | domain-service |
 | ADR-U045 | [The onboarding journey — one designated journey, Mist-scoped access, auto-launch with opt-out](ADR-U045-onboarding-journey.md) | Accepted | domain-service · product · platform-core |
 | ADR-U046 | [Step-response capture and review substance — the lived record realizes the Ask](ADR-U046-step-response-capture.md) | Accepted | domain-service · product |
-| ADR-U047 | [Internal API inversion — core emits lifecycle facts; domain services own their dispositions](ADR-U047-internal-api-lifecycle-facts.md) | Proposed | platform-core · domain-service |
-| ADR-U048 | [The notifications delivery substrate is a vertical obligation; DS-5 owns routing above it](ADR-U048-notifications-vertical-delivery-substrate.md) | Proposed | vertical · domain-service · platform-core |
+| ADR-U047 | [Internal API inversion — core emits lifecycle facts; domain services own their dispositions](ADR-U047-internal-api-lifecycle-facts.md) | Accepted | platform-core · domain-service |
+| ADR-U048 | [The notifications delivery substrate is a vertical obligation; DS-5 owns routing above it](ADR-U048-notifications-vertical-delivery-substrate.md) | Accepted | vertical · domain-service · platform-core |
 
 ---
 

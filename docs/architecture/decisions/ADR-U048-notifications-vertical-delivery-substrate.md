@@ -1,6 +1,6 @@
 # ADR-U048: The notifications delivery substrate is a vertical obligation; DS-5 owns routing above it
 
-**Status:** Proposed (drafted in Cycle COR-A W6; awaiting ratification — records Stefan's ruling R-1 of 2026-07-19)
+**Status:** Accepted (ratified 2026-07-19, Stefan — records ruling R-1 of 2026-07-19)
 **Date:** 2026-07-19
 **Deciders:** Stefan (ruling) + Claude (from the [anatomy-conformance audit](../../planning/reference/ANATOMY-CONFORMANCE-AUDIT.md), finding AC-3 / ruling R-1)
 **Tags:** scope:vertical · scope:domain-service · scope:platform-core · wave:ferd

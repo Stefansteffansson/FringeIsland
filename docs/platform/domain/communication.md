@@ -40,7 +40,7 @@ DS-5 is **not**: the social graph itself (branches, the crown, branch glow are D
 | Forum thread | A persistent, group-scoped discussion container. Realized as a **top-level post** (`parent_post_id` NULL) with **flat replies** — the `enforce_flat_threading` trigger forbids nesting; no separate thread table exists. | DS-5 tables |
 | Forum post | One contribution within a thread (top post or reply). Retains its original `author_id` forever — attribution is display logic over current membership (ADR-U021). | DS-5 tables |
 | Feed event | One item of ambient social awareness composed into a feed — chronological, unranked, uncounted. Event kinds are data-driven. | DS-5 tables |
-| Notification record | A routed delivery of a trigger some layer emitted: recipient, source event, channel, delivery/read state. | DS-5 tables |
+| Notification record | A routed delivery of a trigger some layer emitted: recipient, source event, channel, delivery/read state. | **Vertical delivery substrate** (`public.notifications`, platform-side — ADR-U048): any tier writes it as obligation-fulfilment; DS-5 owns the routing layer above it |
 | Notification preference | A FIM's per-kind/per-channel delivery choices. Consent state itself stays authoritative in Platform Core. | DS-5 tables |
 | Attachment reference | An opaque DS-4 asset ID carried as message/post metadata. The artifact is DS-4's; the act of attaching is DS-5's. | DS-5 tables (reference only) |
 | Participation & read state | Per-participant conversation/thread state: membership in the conversation, unread cursors, mute. | DS-5 tables |
