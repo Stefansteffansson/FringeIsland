@@ -1,7 +1,7 @@
 # Anatomy Conformance Audit — codebase vs the anatomy documents
 
 **Date:** 2026-07-19
-**Status:** Findings recorded. The correction plan is the agreed second step — this register is its input.
+**Status:** Findings recorded. Rulings R-1/R-2/R-3 decided by Stefan 2026-07-19 (see §Rulings). Tranche scheduling decided: Tranches I+II run as a corrective cycle **before** the Communication area (A-COM). The correction plan is the agreed second step — this register is its input.
 **Scope:** `hub/` + `supabase/` (decision 2026-07-19: `hub-legacy/`, `experiments/`, `scripts/` excluded — deviations there die with the code). Test code is exempt from API-first rules.
 **Baseline (canon wins):** [`ARCHITECTURE_ANATOMY.md`](../../architecture/ARCHITECTURE_ANATOMY.md) (stamp: ADR-U046) · [`ECOSYSTEM_ANATOMY_V6.svg`](../../architecture/ECOSYSTEM_ANATOMY_V6.svg) (v2.4) · ground-truth ADRs [U002](../../architecture/decisions/ADR-U002-five-cross-cutting-verticals.md), [U009](../../architecture/decisions/ADR-U009-api-first-frontend-agnostic.md), [U023](../../architecture/decisions/ADR-U023-platform-decomposition.md), [U038](../../architecture/decisions/ADR-U038-platform-contracts-platform-side-surface-bff.md) · [`DOMAIN_SERVICE_DEPENDENCIES.svg`](../../architecture/DOMAIN_SERVICE_DEPENDENCIES.svg).
 **Predecessor:** [`hub-v2/api-conformance-register.md`](../hub-v2/api-conformance-register.md) (2026-07-02, 9 routes). This audit re-baselines it after the Groups and Journeys areas (52 route files) and extends beyond the API ring to the inner ring, ownership, dependency direction, and verticals.
@@ -64,9 +64,9 @@
 **Mitigation:** it fulfils the Privacy/GDPR vertical's erasure obligation, and the FK ordering forced *some* answer.
 **Correction direction:** same family as AC-1 — a DS-3-owned erasure hook on personal-group erasure; PC-2 stops naming domain tables. Fold into the AC-1 design.
 
-### AC-3 · Observation (Major if R-1 rules DS-5) — `public.notifications` written by core and DS-3 alike
+### AC-3 · Observation (resolved by R-1, 2026-07-19) — `public.notifications` written by core and DS-3 alike
 
-**Blocked on Ruling R-1** (who owns `notifications` — DS-5 or the Notifications vertical substrate).
+**Was blocked on Ruling R-1; R-1 is decided** — `notifications` is the Notifications-vertical delivery substrate, so these writes are compliant obligation-fulfilment. AC-3 closes as Observation; the remaining work is doc-level (Tranche II ADR/charter note). Original analysis kept below for the record.
 **Writers:** PC-3 triggers (`20260222000000_rebuild_universal_group_pattern.sql:998-1228`), PC-4 `admin_send_notification` (`rebuild:2143`), PC-3 RPCs (`pc013:169,248`; `pc014` multiple; `pc015:606`); DS-3 RPCs (`pd002 20260707130821:446`, `pd003 20260707190000:685`, `pd003 amendment 20260707213500:238`, `pd004 20260708120000:275`).
 **If R-1 = vertical substrate (recommended):** these writes are obligation-fulfilment — compliant; AC-3 closes as Observation.
 **If R-1 = DS-5-owned:** every core write is a core→domain leak and every DS-3 write a reverse DS edge (DS-3→DS-5 is not an allowed read/write direction) — a Major, multi-site relocation into a DS-5 routing contract.
@@ -113,14 +113,17 @@ The audit's only classification question that changes a verdict (drives AC-3).
 - **For DS-5:** the DS-5 charter names "notification routing and delivery" (ARCHITECTURE_ANATOMY §DS-5).
 - **For vertical substrate:** the table was born in the core foundation migration (`rebuild:214`), predates any DS-5 build, has a generic shape (`type/title/body/payload`), and is written by core and DS-3 alike — the classic write-side vertical-obligation pattern (ADR-U002), like audit/telemetry.
 - **Recommendation:** rule it the Notifications-vertical *delivery substrate* (platform-side) now; when the Communication/Notifications areas build DS-5, DS-5 takes the routing/preferences layer on top of it. Record as a short ADR or a charter note in the DS-5 file. AC-3 then closes as Observation.
+- **DECIDED (Stefan, 2026-07-19): vertical delivery substrate now; DS-5 takes the routing/preferences layer when built.** To be captured as a short ADR in Tranche II. AC-3 closed as Observation.
 
 ### R-2 — `consent_records` / `consent_purposes`: PC-2 or PC-4?
 
 Doc-level only; no code change either way. ADR-U034 already calls consent identity/governance-adjacent. **Recommendation:** PC-2 (the Mist lifecycle is PC-2) with a governance-adjacency note.
+**DECIDED (Stefan, 2026-07-19): PC-2 Identity, with a governance-adjacency note per ADR-U034.**
 
 ### R-3 — `content_families`: DS-3 or DS-4?
 
 Doc-level only. It is a SELECT-only registry of step content families seeded with the step-kind taxonomy (`pd003:49`), self-described as "narrative core vocabulary". **Recommendation:** DS-3 step-taxonomy for now; revisit when DS-4 Content materializes. (Even read as DS-4, DS-3→DS-4 is an allowed direction — non-deviating either way.)
+**DECIDED (Stefan, 2026-07-19): DS-3 step taxonomy; revisit when DS-4 Content is decomposed.**
 
 ---
 
@@ -149,7 +152,7 @@ Doc-level only. It is a SELECT-only registry of step content families seeded wit
 
 ---
 
-## Correction-plan seeds (for step 2 — grouped, not yet scheduled)
+## Correction-plan seeds (for step 2 — scheduling decided 2026-07-19: Tranches I+II run as a corrective cycle before A-COM)
 
 1. **Tranche I — Internal-API inversion (AC-1 + AC-2):** design the core-emits / DS-3-reacts seam, capture as an ADR, relocate the eight files' cascade sites. Schema-gate applies (function bodies change; behavior should not).
 2. **Tranche II — Rulings (R-1..R-3):** three decisions, ~one short ADR/charter-note each; R-1 unblocks AC-3's disposition.
@@ -210,7 +213,7 @@ No `mist/*` or `become-a-fim/*` API routes exist: Mist entry is client-side `sig
 | PC-3 Organisation | `groups`, `group_memberships`, `permissions`, `role_templates`, `group_templates`, `role_template_permissions`, `group_template_roles`, `group_roles`, `group_role_permissions`, `user_group_roles`, `pending_email_invitations` |
 | PC-4 Governance | `admin_audit_log` |
 | DS-3 Journeys | `journeys`, `journey_enrollments`, `journey_steps`, `journey_step_instances`, `step_kinds`, `content_families`* (*R-3) |
-| DS-5 / vertical (R-1) | `notifications`* (*R-1), `forum_posts`, `conversations`, `direct_messages` |
+| Notifications vertical (R-1 decided) / pre-DS-5 substrate | `notifications` (vertical delivery substrate per R-1; DS-5 routing layer later), `forum_posts`, `conversations`, `direct_messages` (pre-DS-5 communication substrate) |
 | DS-7 Intelligence | `journal_entries` |
 
 No PC-owned table carries an FK or column referencing a DS-owned table — structural layering is fully correct; AC-1/AC-2 are code-level only.
