@@ -73,6 +73,11 @@ supabase/.temp/
 # Office lock files
 ~$*
 
+# Native-addon temp copies: dot-prefixed content-hash names (e.g. .5cf45fd79f3fef6d-00000000.node)
+# extracted into the cwd at runtime by bundled tooling on Windows. Regenerable, never needed.
+# Deliberately NOT a blanket *.node — legitimate native addons are never dot-prefixed.
+.*-????????.node
+
 # Scratch / temporary docs
 docs/TMP/
 
