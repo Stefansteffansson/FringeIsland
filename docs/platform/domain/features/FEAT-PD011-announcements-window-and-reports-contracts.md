@@ -6,7 +6,7 @@ title: Announcements, windowed own-edits, and content-report contracts (COM-8/9/
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

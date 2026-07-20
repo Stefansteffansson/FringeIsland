@@ -6,7 +6,7 @@ title: Announcements on group page + home, forum edit/delete-own within the wind
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
