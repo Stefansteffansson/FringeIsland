@@ -3,7 +3,7 @@
 ---
 id: TASK-CD-02
 title: Red-first platform integration suite — window + reports (PD011 STORY-6..8)
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PD011
