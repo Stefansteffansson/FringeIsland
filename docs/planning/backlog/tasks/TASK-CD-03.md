@@ -3,7 +3,7 @@
 ---
 id: TASK-CD-03
 title: C-D migration (announcements + content_reports + windowed contracts) — SCHEMA GATE
-status: todo
+status: review
 assigned_to: claude
 priority: critical
 feature: FEAT-PD011
