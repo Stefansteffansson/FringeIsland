@@ -182,11 +182,14 @@ Foundations first: **conversation lifecycle** and **forum structure** stand dire
 | Conversation lifecycle (open/join/leave; kinds data-driven) | [FEAT-PD008](./features/FEAT-PD008-conversation-and-message-contracts.md) | 6-done | A-COM Cycle C-A; group grain realized per CB-7 (participants junction + kinds registry) |
 | Message exchange & realtime delivery | [FEAT-PD008](./features/FEAT-PD008-conversation-and-message-contracts.md) | 6-done | **Partial:** exchange contracts only; live delivery (ADR-U039 hint layer) defers to Cycle C-C |
 | Participation & read state | [FEAT-PD008](./features/FEAT-PD008-conversation-and-message-contracts.md) | 6-done | Read-state moves to the participants junction |
-| (remaining eleven) | — | — | No FEAT-PD specs yet; realized forum/notification code predates this partition (see §L3 Step 2). A-COM cycles C-B..C-E spec forums/attribution/moderation, routing slivers, and lifecycle cascades; feeds, cord-health glance, journey-scoped surfaces, attachments, and preferences stay forward (A-NTF / A-DIS / later). |
+| Group-scoped forum structure (threads, posts, replies) | [FEAT-PD009](./features/FEAT-PD009-forum-and-attribution-contracts.md) | 4-ready | A-COM Cycle C-B; contracts over the D15 substrate, write-narrowed; flat threading stays trigger-enforced |
+| Membership-status attribution display (ADR-U021) | [FEAT-PD009](./features/FEAT-PD009-forum-and-attribution-contracts.md) | 4-ready | The COM-14 ladder ("Former member" per CB-9, 'Unknown' fallback); applies to forum + conversation detail; display law, never data mutation |
+| Community-scoped moderation surface | [FEAT-PD009](./features/FEAT-PD009-forum-and-attribution-contracts.md) | 4-ready | **Partial:** soft-delete moderation contract only; reports store + queue defer to C-D (CB-4) / A-ADM |
+| (remaining eight) | — | — | No FEAT-PD specs yet; realized notification code predates this partition (see §L3 Step 2). A-COM cycles C-C..C-E spec live delivery (U039), routing slivers, and lifecycle cascades + export; feeds, cord-health glance, journey-scoped surfaces, attachments, and preferences stay forward (A-NTF / A-DIS / later). |
 
 ### Capabilities without specs
 
-The remaining eleven above. Candidates for future L4 runs; wave-scope determination is wave-planning's, not L3's.
+The remaining eight above. Candidates for future L4 runs; wave-scope determination is wave-planning's, not L3's.
 
 ### Features without capabilities
 
