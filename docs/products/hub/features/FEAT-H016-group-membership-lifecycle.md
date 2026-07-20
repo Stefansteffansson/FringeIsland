@@ -41,7 +41,7 @@ Medium — narrower than G-C (row actions + one self-affordance + 4 handlers), w
 ## No-gos
 
 - No leadership transfer or nominated succession (MEM-7 — G-E); no last-member closure (MEM-8 — G-E); no group deletion (GRP-9 — G-E).
-- No former-member attribution rendering (MEM-9 — forward-seam on DS-5, pending-DS-5 per D2).
+- Former-member attribution rendering (MEM-9) landed 2026-07-20 in [FEAT-H026](./FEAT-H026-group-forum-and-attribution.md) (Cycle C-B, over the FEAT-PD009 COM-14 ladder — ADR-U021 display law). The G-D `pending-DS-5` disposition is discharged.
 - No admin sweep or platform-scope removal surfaces (ADM-6/ADM-18 — A-ADM).
 - No self-pause of the account (IDN-12, parked) — group-scope pause targets others via the contract's rules.
 - No bulk selection, no notification UI (durable rows exist substrate-side; A-NTF renders and pushes later — D8), no realtime (ADR-U039).

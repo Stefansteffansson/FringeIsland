@@ -91,7 +91,7 @@ test.describe('FEAT-H026 — group forum & attribution', () => {
     const threadId = (await threadPost.getAttribute('data-testid'))!.replace('forum-post-', '');
     await page.getByTestId(`forum-reply-open-${threadId}`).click();
     await page.getByRole('textbox', { name: 'Reply' }).fill(REPLY);
-    await page.getByRole('button', { name: /^reply$/i }).click();
+    await page.getByTestId(`forum-reply-submit-${threadId}`).click();
     await expect(page.getByText(REPLY)).toBeVisible({ timeout: 15000 });
 
     // -- 3. moderate → tombstone in place ---------------------------------

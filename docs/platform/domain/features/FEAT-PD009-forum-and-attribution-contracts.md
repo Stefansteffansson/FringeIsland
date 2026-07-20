@@ -6,9 +6,25 @@ title: Forum & attribution contracts (group forum + membership-status display + 
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
+
+## Implementation notes
+
+**Built 2026-07-20, Cycle C-B** — schema-gate PR #210 (named approval "ok merge 210", migration `20260720120000`, applied + repaired on dev). Paired surface: FEAT-H026 (PR #212).
+
+**Red→green, honestly:** the contract suite (`hub/tests/integration/communication/forum-contracts.test.ts`) was demonstrated **18 red / 3 labelled green** pre-apply — every refusal pinned to its exact SQLSTATE (42501 / 22023 / P0002 / P0001 + the oracle message text), so an absent function could not satisfy a refusal, and the three direct-write narrowing probes red because the *live* permissive policies still allowed the write — and flipped to **21/21 green** on apply. The 3 pre-apply greens were labelled: the ADR-U047 sentinel-reassignment behavior-preservation guard (green pre- *and* post-relocation, via an admin-inserted post — proving the reassignment beats the personal-group `SET NULL`), the existing outsider/Mist forum-`SELECT` RLS, and the handler-not-a-client-surface always-refused probe. **Fixture catch at red (green-at-red, investigated + fixed):** engagement-group role instances are named by *template* name (`Member Role Template`), not `Member` — the bare-name lookup had left fixture members permission-less and masked the direct-INSERT narrowing red.
+
+**What landed (as built):**
+- `ds5_resolve_author_display(author_group_id, scope_group_id)` — the COM-14 ladder as **one substrate home** (PD009 Q1): rung 1 = a personal group with a backing `users` row + a membership row (any status) in the scope group → privacy-shaped name, `active`; rung 2 = backing row, no membership → `'Former member'` / `'former'` (name withheld; rejoin restores, no data mutation — ADR-U021); rung 3 = NULL author / no backing `users` row (the `[Deleted User]` sentinel + every system group) / resolution failure → `'Unknown'` / `'unknown'`. DM scope is NULL (resolvable-or-Unknown). REVOKE from public/anon/authenticated (internal; called by the SECURITY DEFINER reads).
+- Four contracts (SECURITY DEFINER, `search_path=''`, `ds5_require_fim_actor` first — CB-1): `get_group_forum` (top-level newest-first, keyset `p_before`, replies chronological, content withheld on tombstones, author resolved), `create_forum_post` (`post_forum_messages`), `reply_to_forum_post` (`reply_to_messages`; the `enforce_flat_threading` trigger speaks the P0001 on reply-to-a-reply), `moderate_forum_post` (`moderate_forum`, idempotent soft-delete).
+- `get_conversation_detail` re-issued: the senders map values become `{display_name, attribution}` (COM-14 applies to conversation detail too; the C-A NULL-name interim retired). PD009 Q3: tombstones keep the author header, content NULL.
+- `ds5_lifecycle_user_hard_deleted(p_personal_group_id, p_reassign_to_group_id)` — ADR-U047's **first DS-5 fact** ([Amendment 3](../../../architecture/decisions/ADR-U047-internal-api-lifecycle-facts.md), PD009 Q2): the forum sentinel reassignment relocated verbatim; `admin_hard_delete_user` re-issued byte-equivalent except the `PERFORM` (the Core carve-out under the schema gate). W2 characterization (`platform-exit` + `stewardship-succession`) re-verified behavior-preserving.
+- Write-narrowing: `forum_insert_post` / `forum_update_own` / `forum_update_moderate` dropped (exact-name, no `IF EXISTS`); `forum_select` stays. Edit-own leaves the door for the C-D windowed contract (CB-3).
+- Conformance lockstep (same PR): `DS_TABLES += forum_posts`; `DS5_COMMUNICATION_FUNCTIONS +=` the four contracts + `ds5_resolve_author_display` + `enforce_flat_threading`. RED pre-apply (live `admin_hard_delete_user` still named `forum_posts`), **green on apply** (0 Core functions reference a DS table).
+
+**Sweeps (post-apply):** integration comm forum **21/21**; full integration **522/522** (the 7 transient Supabase-Management-API connection-timeout failures in `platform-exit`/`stewardship-succession` fixture setup passed clean on re-run — found-not-caused infra flake); conformance green; unit **747** (surface half); E2E forum + messages green.
 
 ## Problem
 

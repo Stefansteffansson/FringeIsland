@@ -42,7 +42,7 @@ Large-plus — the cycle's heaviest Surface work, matching PC014. The nomination
 
 ## No-gos
 
-- No former-member attribution rendering (MEM-9 — forward-seam on DS-5, `pending-DS-5` per D2).
+- Former-member attribution rendering (MEM-9) landed 2026-07-20 in [FEAT-H026](./FEAT-H026-group-forum-and-attribution.md) (Cycle C-B, over the FEAT-PD009 COM-14 ladder — ADR-U021 display law). The G-E `pending-DS-5` disposition is discharged.
 - No admin sweep or platform-scope transfer/closure surfaces (ADM-6/ADM-18 — A-ADM).
 - No notifications inbox (A-NTF — the pending-nomination affordance is the minimal scoped exception, D8), no realtime (ADR-U039).
 - No group-of-groups actor selection (G-F/G-29 — the act-as selector stays honestly v1).
