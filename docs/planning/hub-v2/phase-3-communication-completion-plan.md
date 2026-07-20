@@ -1,6 +1,6 @@
 # Phase 3 — Communication (A-COM) completion plan
 
-**Status:** v3 (2026-07-20) — board SETTLED 2026-07-19 (recommendations adopted CB-1/2/3/4/5/6/8/9; **CB-7 overridden — group conversations in scope, built in C-A**). **Cycle C-A BUILT** (PRs #199–#204; migrations `20260719230500` + rider `20260720003000` applied at named gates): FEAT-PD008 `6-done`; FEAT-H025 complete and swept (unit 736 · integration 21/21 comm · E2E 68/68 fleet) — held at `5-in-cycle` on exactly one DoD item, the **deep-cold spot check of `/messages` on production** (ADR-U043 Amendment 1). Discovered at build, now named dues: the `admin_hard_delete_user`→`forum_posts` core crossing (C-B: relocate to `ds5_lifecycle_*`, then `forum_posts` joins `DS_TABLES`) and the widened D2 scope (C-E handlers must disposition group-kind conversations alongside forum content). Next: the spot check → H025 `6-done` → Cycle C-B (forum + attribution + MEM-9).
+**Status:** v4 (2026-07-20) — board SETTLED 2026-07-19 (recommendations adopted CB-1/2/3/4/5/6/8/9; **CB-7 overridden — group conversations in scope, built in C-A**). **Cycle C-A BUILT** (PRs #199–#204; migrations `20260719230500` + rider `20260720003000` applied at named gates): FEAT-PD008 `6-done`; FEAT-H025 complete and swept (unit 736 · integration 21/21 comm · E2E 68/68 fleet) — held at `5-in-cycle` on exactly one DoD item, the **deep-cold spot check of `/messages` on production** (ADR-U043 Amendment 1). Discovered at build, now named dues: the `admin_hard_delete_user`→`forum_posts` core crossing (C-B: relocate to `ds5_lifecycle_*`, then `forum_posts` joins `DS_TABLES`) and the widened D2 scope (C-E handlers must disposition group-kind conversations alongside forum content). Superseded progress (v4): C-B and C-C **BUILT** — live state lives in the session bridges (latest `../sessions/2026-07-20_04_-_CYCLE-C-C-BUILT-REALTIME-LIVE.md`: realtime live on both surfaces, FEAT-PD010/FEAT-H027 `6-done`). **C-D design session EXECUTED 2026-07-20 → ADR-U049 accepted** (CB-2 firmed; see the board and Design-sessions notes below). Next: C-D decomposition (COM-8/9/12/13) → build.
 **Provenance:** four-scout terrain sweep 2026-07-19 (platform/DS-5 · substrate · surface/oracle · seams-and-dues), load-bearing facts disk-verified. Canonical-wins flags are folded in below where a source disagreed.
 
 ---
@@ -77,7 +77,7 @@ All comm substrate born whole in the D15 rebuild (`20260222000000_rebuild_univer
 
 ## Design sessions
 
-One planned: **announcements & routing shape** (before C-D decomposition; ADR candidate). Firms the durable-home vs pure-fan-out question under the U048 split and partially resolves DS-5 §8 Q1 (outward delivery). Real-time needs no session — U039 is the doctrine; taxonomy is decomposition-time.
+One planned: **announcements & routing shape** (before C-D decomposition; ADR candidate). Firms the durable-home vs pure-fan-out question under the U048 split and partially resolves DS-5 §8 Q1 (outward delivery). Real-time needs no session — U039 is the doctrine; taxonomy is decomposition-time. **EXECUTED 2026-07-20 → [ADR-U049](../../architecture/decisions/ADR-U049-announcements-durable-home-routed-delivery.md) accepted** (board AD-1..AD-7 adopted as recommended; CB-2 firmed above; the derived rulings — `send_announcements` seed + existing universe gate, `admin_send_notification` kept untouched, immutable + retract — bind the C-D specs).
 
 ## Decision board — OPEN (settle before C-A decomposes)
 
@@ -86,7 +86,7 @@ Settled by canon, recorded not asked: U039 realtime doctrine (spec yields) · U0
 | # | Question | Recommendation | Default if unaddressed |
 |---|---|---|---|
 | CB-1 | Mist access to DM/forums (DS-5 §8 Q2) | **FIM-only in Ferd** — Mists see no comm surface; revisit at canon work | FIM-only |
-| CB-2 | Announcements shape (COM-8/9) | **Durable-row-first**: DS-5-owned announcements home + per-recipient V3 delivery rows; design session firms it | durable-row-first direction |
+| CB-2 | Announcements shape (COM-8/9) | **FIRMED 2026-07-20 — ADR-U049 accepted** (C-D design session, AD-1..AD-7 as recommended): durable DS-5-owned `announcements` home + per-recipient V3 delivery rows; one table, two gated contracts (U028 by construction); visibility read-time, delivery send-time; immutable + retract; §8 Q1 seam fixed (adapter ownership → A-NTF) | — settled |
 | CB-3 | Edit/delete-own window (COM-12) | **Forum-only, 15-min window; DMs stay immutable** (oracle spine, no policy churn) | forum-only, 15 min |
 | CB-4 | Content-reports scope (COM-13) | **Build submission + durable store now**; moderation-queue surface seams to A-ADM | build store, seam queue |
 | CB-5 | IDN-10 placement | **C-F closing cycle**, L4 authoring first (nothing exists to un-park); alternative: author specs early at C-A-time, build at C-F | C-F, author-then-build |
