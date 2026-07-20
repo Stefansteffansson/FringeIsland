@@ -143,7 +143,7 @@ N/A (no surface) — fan-out cost bounded and named (Rabbit holes); read contrac
 
 ## Open spec questions (resolved at the schema gate, 2026-07-20)
 
-1. **Snapshot vs erasure — RESOLVED (gate nod "ok merge #223"):** snapshots survive author hard-delete in Ferd (moderation evidence); the scrub decision is a named C-E lifecycle-due line item. Reporter-side rows die with the reporter (FK CASCADE).
+1. **Snapshot vs erasure — RESOLVED (gate nod "ok merge #223"):** snapshots survive author hard-delete in Ferd (moderation evidence); the scrub decision is a named C-E lifecycle-due line item. Reporter-side rows die with the reporter (FK CASCADE). **The scrub decision landed at the C-E board (2026-07-20, recommendations adopted): posture — snapshots are retained under legitimate-interest moderation evidence for Ferd; no scrub is built at C-E, because the resolution flow (`status` transitions) the scrub would hang on is the A-ADM queue seam. Resolution-time scrub mechanics route to A-ADM with the queue build (seam recorded in Cross-product impact). Reporter's-own-reports join the export at C-E ([FEAT-PD012](./FEAT-PD012-lifecycle-dispositions-and-export-contracts.md) STORY-4, snapshot included).**
 2. **Backfill breadth — RESOLVED:** Steward-template-derived role instances only; custom roles opt in via the roles panel.
 3. **FIM predicate — RESOLVED:** `users.is_temporary` via `auth.uid()`, copied from the live `ds5_require_fim_actor`; realized as the boolean `ds5_is_fim_actor()`.
 
