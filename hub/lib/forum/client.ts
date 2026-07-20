@@ -12,10 +12,10 @@
  * auth-owned registry (COR-A W9). No sockets, no polling — C-C brings the
  * ADR-U039 live layer.
  */
-import type { ForumPost } from '@/lib/forum/queries';
+import type { ForumPost, ForumPostRow } from '@/lib/forum/queries';
 import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
 
-export type { ForumPost, AuthorDisplay } from '@/lib/forum/queries';
+export type { ForumPost, ForumPostRow, AuthorDisplay } from '@/lib/forum/queries';
 
 async function errorMessage(res: Response, fallback: string): Promise<string> {
   const body = (await res.json().catch(() => null)) as { error?: string } | null;
@@ -112,6 +112,40 @@ export async function moderateForumPost(
   });
   if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
   const data = (await res.json()) as { post: { id: string; is_deleted: boolean } };
+  dropGroup(groupId);
+  return data.post;
+}
+
+/** FEAT-H028 COM-12 — windowed own-edit. Returns the confirmed post row-doc
+ *  (replies omitted); the section writes it through onto the matching node. A
+ *  window-edge refusal throws with the server's honest message. */
+export async function editForumPost(
+  groupId: string,
+  postId: string,
+  content: string,
+): Promise<ForumPostRow> {
+  const res = await fetch(`/api/forum/${encodeURIComponent(postId)}/edit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content }),
+  });
+  if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
+  const data = (await res.json()) as { post: ForumPostRow };
+  dropGroup(groupId);
+  return data.post;
+}
+
+/** FEAT-H028 COM-12 — windowed own-delete. Returns the confirmed tombstone
+ *  row-doc (`is_deleted` true, content null). */
+export async function deleteForumPost(
+  groupId: string,
+  postId: string,
+): Promise<ForumPostRow> {
+  const res = await fetch(`/api/forum/${encodeURIComponent(postId)}/delete`, {
+    method: 'POST',
+  });
+  if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
+  const data = (await res.json()) as { post: ForumPostRow };
   dropGroup(groupId);
   return data.post;
 }

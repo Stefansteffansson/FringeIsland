@@ -17,6 +17,7 @@ import {
 } from '@/lib/realtime/conversations-tenant';
 import { useCommChannel } from '@/lib/realtime/use-comm-channel';
 import { ReconnectingNotice } from '@/components/ui/ReconnectingNotice';
+import { ReportDialog } from '@/components/reports/ReportDialog';
 
 type PendingMessage = {
   localId: string;
@@ -128,6 +129,15 @@ export default function ConversationPage({
     [detail],
   );
 
+  // FEAT-H028 STORY-5 (COM-13): the report own-check — my personal-group id is
+  // the is_me participant's group id in the payload. A message is mine when its
+  // sender matches; Report is offered only on messages that aren't. DMs remain
+  // immutable — no edit/delete affordance is ever rendered here (STORY-4).
+  const myParticipantGroupId =
+    detail?.participants.find((p) => p.is_me)?.participant_group_id ?? null;
+  const isMyMessage = (m: ConversationMessage): boolean =>
+    m.sender_group_id !== null && m.sender_group_id === myParticipantGroupId;
+
   async function handleLoadEarlier() {
     if (!detail) return;
     const oldest = [...earlier, ...detail.messages][0];
@@ -213,9 +223,12 @@ export default function ConversationPage({
                 >
                   <p className="text-xs font-medium text-gray-500">{senderName(m.sender_group_id)}</p>
                   <p className="mt-1 whitespace-pre-wrap text-sm text-gray-900">{m.content}</p>
-                  <p className="mt-1 text-xs text-gray-400">
-                    {new Date(m.created_at).toLocaleString()}
-                  </p>
+                  <div className="mt-1 flex items-center justify-between">
+                    <p className="text-xs text-gray-400">{new Date(m.created_at).toLocaleString()}</p>
+                    {!isMyMessage(m) && (
+                      <ReportDialog targetKind="direct_message" targetId={m.id} />
+                    )}
+                  </div>
                 </li>
               ))}
               {pending.map((p) => (
