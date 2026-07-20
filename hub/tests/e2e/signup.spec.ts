@@ -43,9 +43,15 @@ test('a new FIM can sign up and lands authenticated on /groups (empty state)', a
     await page.getByTestId('consent-checkbox').check();
     await page.locator('button[type="submit"]').click();
 
-    // Lands on /groups. A brand-new FIM has only personal + system memberships
-    // (no engagement groups), so the honest landing is the empty state.
-    await expect(page).toHaveURL(/\/groups/, { timeout: 20000 });
+    // C-A adaptation (labelled): a brand-new FIM auto-launches into the
+    // designated onboarding journey at first sign-in (FEAT-H023 / JRN-15 —
+    // the front door, post-paint). The old "lands on /groups" assertion only
+    // ever passed by winning the post-paint race against the launch. Assert
+    // the real arrival, then the original intent: /groups shows the honest
+    // empty state (no re-launch — the arrived-once rule).
+    await expect(page).toHaveURL(/\/journeys\/[0-9a-f-]+\/play/, { timeout: 20000 });
+    await page.goto('/groups');
+    await expect(page).toHaveURL(/\/groups/, { timeout: 15000 });
     await expect(page.getByText('No groups yet')).toBeVisible({ timeout: 15000 });
   } finally {
     await deleteE2EUser(admin, email);

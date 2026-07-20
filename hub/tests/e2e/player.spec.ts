@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { createAdminClient, SESSION_EMAIL } from './helpers/auth';
+import { createAdminClient, SESSION_EMAIL, markArrivedOnce } from './helpers/auth';
 
 /**
  * FEAT-H020 — the journey player (JRN-6/7/8/9) end-to-end, against the live
@@ -39,13 +39,17 @@ async function purgePlayerState(): Promise<void> {
   const admin = createAdminClient();
   const { data } = await admin
     .from('users')
-    .select('personal_group_id')
+    .select('personal_group_id, auth_user_id')
     .eq('email', SESSION_EMAIL)
     .maybeSingle();
   const gid = data?.personal_group_id as string | undefined;
   if (gid) {
     // Enrolment deletion cascades journey_step_instances (the progress grain).
     await admin.from('journey_enrollments').delete().eq('group_id', gid);
+    // C-A adaptation (labelled): the purge also wipes the session FIM's
+    // onboarding enrolment (global-setup's arrived-once state) — any sibling
+    // booting /groups afterwards gets the JRN-15 auto-launch. Re-arm it.
+    if (data?.auth_user_id) await markArrivedOnce(admin, data.auth_user_id as string);
   }
 }
 

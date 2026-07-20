@@ -2,6 +2,15 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-07-20 — Talk to each other: messages arrive ([FEAT-H025](../docs/products/hub/features/FEAT-H025-messages-dm-and-group-conversations.md) · [FEAT-PD008](../docs/platform/domain/features/FEAT-PD008-conversation-and-message-contracts.md))
+
+- **Message a fellow member.** Every member on a group's roster now carries a *Message* button. One click opens the one conversation the two of you share — your history if you've talked before, a fresh page if not. There is exactly one conversation per pair, always.
+- **A Messages home.** *Messages* now sits in the header: your conversations in one list — direct and group alike — newest activity first, with a quiet dot on anything unread and a badge counting the conversations waiting for you. Unread is about what *you've* read, nothing more; messages create no notifications.
+- **Sending feels instant and stays honest.** Your message appears the moment you press Send and is quietly confirmed behind it. If a send fails, it says so — visibly, with a retry — never a silent loss.
+- **Group conversations.** A group's page now has a *Conversations* section. Those who steward or guide the group can open one; any member can step in, speak, step out, and return — your words stay yours and stay put across your absence. *(Whether someone can open one is the group's permission fabric asking the platform — roles can grant it.)*
+- **Only members, only through the door.** Conversations are for members (a Mist sees none of this), every read and write goes through the platform's contracts, and nobody outside a conversation — however they knock — can see into it.
+- *(Live updates — messages appearing without a refresh — arrive with the real-time cycle later in this area.)*
+
 ## 2026-07-08 — What froze is still yours; progress is shared only by choice ([FEAT-H022](../docs/products/hub/features/FEAT-H022-frozen-mode-and-group-progress.md))
 
 - **A frozen journey opens — read-only — and says why.** When a group closes, is archived, or you leave or are removed, the journeys you walked through it freeze rather than vanish. Opening one now shows your whole walk — every step readable, your marks and times beside them — with a banner naming what happened and when. Nothing is recorded while you look; nothing can be changed. Frozen journeys say *View* where active ones say *Continue*.

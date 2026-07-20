@@ -6,7 +6,7 @@ title: Messages — DM and group conversations
 owner: hub
 consumers: []
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -14,7 +14,17 @@ requires-equipment: none
 
 A FIM on the Hub cannot talk to anyone. The platform half (FEAT-PD008) realises the conversation contracts — pair DMs and group conversations (COM-15, CB-7) — and this feature is the canvas surface over them: COM-1 (send), COM-2 (inbox), COM-3 (detail), COM-4 (read state), COM-15 (group conversations). First messaging surface of v2; the v1 oracle (B-MSG-001..006) is STRONG and its spine carries: group-keyed authorship, one conversation per pair, inbox by recency, **unread is a badge fed by read-state — DMs create no notifications**.
 
-## Solution sketch
+## Implementation notes
+
+**Built 2026-07-20, Cycle C-A** (PRs #204 + the close PR; consumes the FEAT-PD008 contracts — carries no migration of its own; the DM-recipient rider it surfaced lives on the platform spec). **Red→green:** three unit suites demonstrated module-absent red → the full unit sweep **99 suites / 736 tests green**; E2E demonstrated failing-first through the honest chase below → **68/68 fleet green**; integration **44/501**; lint 0 errors; `next build` clean.
+
+**Where it lives:** `hub/lib/messages/` (queries + client with the inbox session cache, confirmed-write-through, W9 registration, `unreadConversationCount`), `hub/lib/messages/http.ts` (SQLSTATE→HTTP presentation), 8 BFF routes under `hub/app/api/messages/*` + `hub/app/api/groups/[id]/conversations` (route-policy walk green, zero exception entries), `hub/app/messages/` (inbox + detail), `hub/components/messages/MessagesLink.tsx` (FIM-only chrome + badge), `hub/components/groups/GroupConversationsSection.tsx` (failure-isolated panel), the roster Message action in `GroupDetailPanel`.
+
+**Performance (spot check run 2026-07-20):** deep-cold authenticated `/messages` on the production stable domain — total-to-content **5,277 ms** (doc TTFB 2,741 = the Hobby provisioning floor; `/api/messages` 1,239 ms as the single data read in a parallel burst with the chrome's two reads; tail rule passes) — **PASS under the standing J-O3 labelled deep-cold exception**; strictly better than that gate's journey pages. Warm path proven in E2E + the live production smoke. B4 revisit rides the session-cache peek; B5 send is optimistic with confirmed write-through.
+
+**Build learnings:** (1) `getByLabel('Message')` collides with the nav chrome's `aria-label="Messages"` — composer locators use the textbox role. (2) Display names resolve to the privacy-shaped label (first-name default) and the personal group carries it — fixtures assert the resolved label, never the raw metadata. (3) The E2E fleet had passed on an artificially un-arrived session FIM and a signup-vs-auto-launch race; C-A made arrived-once real fleet-wide (purge re-arm root fix + 4 labelled sibling adaptations — see the session bridge). (4) The consent gate (`handle_new_user`, ADR-U038 S3) refuses unconsented fixture signups — correctly.
+
+**What landed (as decomposed — built as designed):**
 
 - **Nav:** a **Messages** item (FIM-only — CB-1; Mists never see it) with an unread indicator = count of conversations with `has_unread`, derived from the inbox read. Client cache registers its invalidator in `hub/lib/auth/cache-registry.ts` (W9).
 - **`/messages`** — the inbox: DM and group conversations in one list, sorted by `last_message_at`, each row showing kind, display context (other FIM's privacy-respecting name / group name + title), recency, unread dot.
@@ -24,16 +34,7 @@ A FIM on the Hub cannot talk to anyone. The platform half (FEAT-PD008) realises 
 - **BFF routes** (private plumbing, ADR-U038 — never sole enforcement): `GET /api/messages`, `GET|POST /api/messages/[id]`, `POST /api/messages/[id]/read|join|leave`, `POST /api/messages/dm`, `POST /api/messages/group`, `GET /api/groups/[id]/conversations`. All enter the route-policy conformance walk automatically (mutations `getUser()`, GETs `getClaims()`; no runtime/region exports).
 - **Refresh model (C-A):** fetch on mount/navigation and after own actions; confirmed mutations write through to the session cache (the J-D rule). **No sockets, no polling loops** — C-C adds the ADR-U039 live layer for this surface and forum together (CB-8); nothing here may touch a realtime channel or add to §L2 §4's named list.
 
-## Appetite
-
-One focused build session, paired with FEAT-PD008 (platform lands first; surface consumes API-only).
-
-## Rabbit holes
-
-- Typing indicators, presence, delivery receipts — not in Ferd's A-COM scope at all.
-- Rich text / attachments — plain text only (attachments are a DS-4 seam, full-forward).
-- A member-search "new message to anyone" composer — the roster action is the C-A entry; a global picker can come with Discovery.
-- Per-message unread math — the badge counts conversations, not messages.
+**Deliberately not built** (the decomposition's fences, held): typing indicators/presence/receipts (not Ferd A-COM scope); rich text/attachments (DS-4 seam); a global "message anyone" picker (the roster action is the entry; Discovery later); per-message unread math (the badge counts conversations).
 
 ## No-gos
 
