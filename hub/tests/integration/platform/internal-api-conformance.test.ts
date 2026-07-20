@@ -159,6 +159,11 @@ const DS5_COMMUNICATION_FUNCTIONS = [
   'get_group_forum',
   'moderate_forum_post',
   'reply_to_forum_post',
+  // C-C (FEAT-PD010) — the realtime hint-emission trigger fn that fans out per
+  // active participant references public.conversation_participants. The emit
+  // helper (ds5_emit_hint) and the two forum trigger fns reference no DS table
+  // (NEW.* only), so they need no entry.
+  'ds5_emit_message_hint',
 ];
 
 const DS_OWNED_ALLOWLIST = new Set<string>([
