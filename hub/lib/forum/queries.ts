@@ -30,6 +30,11 @@ export interface ForumPost {
   replies: ForumPost[];
 }
 
+/** FEAT-H028 — the `edit_own_forum_post` / `delete_own_forum_post` result: the
+ *  post keys without `replies` (the contract omits them). The surface writes it
+ *  through onto the matching node, preserving that node's existing replies. */
+export type ForumPostRow = Omit<ForumPost, 'replies'>;
+
 export async function fetchGroupForum(
   supabase: SupabaseClient,
   groupId: string,
@@ -79,4 +84,36 @@ export async function moderateForumPostRpc(
   });
   if (error) throw error;
   return data as { id: string; is_deleted: boolean };
+}
+
+/** FEAT-H028 COM-12 — windowed own-edit. Author = me, not deleted,
+ *  `post_forum_messages` held, and created within 15 minutes (all gated
+ *  substrate-side, FEAT-PD011); a window-edge refusal raises a 42501-class
+ *  error surfaced honestly. Returns the updated post row-doc (`replies`
+ *  omitted). */
+export async function editOwnForumPostRpc(
+  supabase: SupabaseClient,
+  postId: string,
+  content: string,
+): Promise<ForumPostRow> {
+  const { data, error } = await supabase.rpc('edit_own_forum_post', {
+    p_post_id: postId,
+    p_content: content,
+  });
+  if (error) throw error;
+  return data as ForumPostRow;
+}
+
+/** FEAT-H028 COM-12 — windowed own-delete. Same gate minus content; soft-delete
+ *  (idempotent); returns the tombstone row-doc (`is_deleted` true, content
+ *  null). The existing C-C moderation-hint trigger fires on the transition. */
+export async function deleteOwnForumPostRpc(
+  supabase: SupabaseClient,
+  postId: string,
+): Promise<ForumPostRow> {
+  const { data, error } = await supabase.rpc('delete_own_forum_post', {
+    p_post_id: postId,
+  });
+  if (error) throw error;
+  return data as ForumPostRow;
 }

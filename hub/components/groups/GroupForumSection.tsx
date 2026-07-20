@@ -7,8 +7,11 @@ import {
   createForumPost,
   replyToForumPost,
   moderateForumPost,
+  editForumPost,
+  deleteForumPost,
   dropGroup,
   type ForumPost,
+  type ForumPostRow,
 } from '@/lib/forum/client';
 import { authorClassName } from '@/lib/forum/attribution';
 import { fetchMyPermissions } from '@/lib/groups/client';
@@ -16,6 +19,7 @@ import { useForumTenant, forumTopic } from '@/lib/realtime/forum-tenant';
 import { useCommChannel } from '@/lib/realtime/use-comm-channel';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { ReconnectingNotice } from '@/components/ui/ReconnectingNotice';
+import { ReportDialog } from '@/components/reports/ReportDialog';
 
 /**
  * FEAT-H026 — the group page's Forum section (COM-5/6a/6b/7/14, Cycle C-B).
@@ -29,6 +33,9 @@ import { ReconnectingNotice } from '@/components/ui/ReconnectingNotice';
  * attribution}` — 'former'/'unknown' muted, never linked. No sockets (C-C).
  */
 const PAGE = 20;
+/** FEAT-H028 COM-12 — the fixed 15-minute own-edit window (CB-3). Client-side
+ *  this only decides affordance visibility; the server owns the true edge. */
+const EDIT_WINDOW_MS = 15 * 60 * 1000;
 
 export function GroupForumSection({ groupId }: { groupId: string }) {
   const [posts, setPosts] = useState<ForumPost[] | null>(() => peekForum(groupId));
@@ -47,7 +54,38 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
   const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
   const [removeBusy, setRemoveBusy] = useState(false);
 
+  // FEAT-H028 STORY-4 (COM-12): my personal-group id (the effective-permissions
+  // member_group_id) drives the own-post check; a coarse ticker retires the
+  // window affordances client-side as 15 minutes pass (the server owns the edge).
+  const [myGroupId, setMyGroupId] = useState<string | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editDraft, setEditDraft] = useState('');
+  const [editBusy, setEditBusy] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [deleteBusy, setDeleteBusy] = useState(false);
+
   const can = (p: string) => perms.has(p);
+
+  // Own-ness is a payload fact (author_group_id vs my personal-group id) — never
+  // a role name, never a server round-trip to decide the affordance.
+  const isMine = (post: ForumPost): boolean =>
+    myGroupId !== null && post.author_group_id === myGroupId;
+
+  const canEditOwn = (post: ForumPost): boolean =>
+    !post.is_deleted && isMine(post) && now - new Date(post.created_at).getTime() < EDIT_WINDOW_MS;
+
+  const isEdited = (post: ForumPost): boolean =>
+    !post.is_deleted && new Date(post.updated_at).getTime() > new Date(post.created_at).getTime();
+
+  // Write a confirmed edit/tombstone row-doc (replies omitted) through onto the
+  // matching node, preserving that node's replies.
+  const writeThrough = (post: ForumPost, updated: ForumPostRow): ForumPost => {
+    if (post.id === updated.id) return { ...post, ...updated };
+    if (post.replies.length === 0) return post;
+    return { ...post, replies: post.replies.map((r) => writeThrough(r, updated)) };
+  };
 
   const load = useCallback(async () => {
     try {
@@ -82,15 +120,28 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
       await load();
       try {
         const p = await fetchMyPermissions(groupId);
-        if (active) setPerms(new Set(p.permissions));
+        if (active) {
+          setPerms(new Set(p.permissions));
+          setMyGroupId(p.member_group_id ?? null);
+        }
       } catch {
-        if (active) setPerms(new Set());
+        if (active) {
+          setPerms(new Set());
+          setMyGroupId(null);
+        }
       }
     })();
     return () => {
       active = false;
     };
   }, [groupId, load]);
+
+  // FEAT-H028 STORY-4: a coarse ticker so own-edit affordances disappear as the
+  // window passes even with no other interaction (the server owns the true edge).
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 30_000);
+    return () => clearInterval(t);
+  }, []);
 
   async function loadEarlier() {
     if (!posts || posts.length === 0) return;
@@ -163,6 +214,44 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
     }
   }
 
+  function openEdit(post: ForumPost) {
+    setEditingId(post.id);
+    setEditDraft(post.content ?? '');
+    setEditError(null);
+  }
+
+  async function handleEditSave(postId: string) {
+    const content = editDraft.trim();
+    if (!content) return;
+    setEditBusy(true);
+    setEditError(null);
+    try {
+      const updated = await editForumPost(groupId, postId, content); // confirmed row
+      setPosts((prev) => prev?.map((p) => writeThrough(p, updated)) ?? null);
+      setEditingId(null);
+      setEditDraft('');
+    } catch (err) {
+      // Refusal surfaced honestly; the draft edit stays in the open editor.
+      setEditError(err instanceof Error ? err.message : 'Your edit could not be saved');
+    } finally {
+      setEditBusy(false);
+    }
+  }
+
+  async function handleDeleteOwn() {
+    if (!confirmDelete) return;
+    setDeleteBusy(true);
+    try {
+      const tombstone = await deleteForumPost(groupId, confirmDelete); // confirmed tombstone
+      setPosts((prev) => prev?.map((p) => writeThrough(p, tombstone)) ?? null);
+      setConfirmDelete(null);
+    } catch (err) {
+      setPostError(err instanceof Error ? err.message : 'The post could not be deleted');
+    } finally {
+      setDeleteBusy(false);
+    }
+  }
+
   function renderPost(post: ForumPost, isReply: boolean) {
     return (
       <li key={post.id} data-testid={`forum-post-${post.id}`} className={isReply ? 'ml-6 mt-2' : ''}>
@@ -171,23 +260,96 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
             <span data-testid={`forum-author-${post.id}`} className={`text-sm ${authorClassName(post.author)}`}>
               {post.author.display_name}
             </span>
-            {!post.is_deleted && can('moderate_forum') && (
-              <button
-                type="button"
-                data-testid={`forum-remove-${post.id}`}
-                onClick={() => setConfirmRemove(post.id)}
-                className="rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50"
-              >
-                Remove
-              </button>
-            )}
+            <div className="flex items-center gap-1">
+              {/* FEAT-H028 STORY-4: my own fresh post — fix or withdraw, briefly. */}
+              {canEditOwn(post) && editingId !== post.id && (
+                <>
+                  <button
+                    type="button"
+                    data-testid={`forum-edit-${post.id}`}
+                    onClick={() => openEdit(post)}
+                    className="rounded px-2 py-1 text-xs font-medium text-indigo-700 hover:bg-indigo-50"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    data-testid={`forum-delete-${post.id}`}
+                    onClick={() => setConfirmDelete(post.id)}
+                    className="rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50"
+                  >
+                    Delete
+                  </button>
+                </>
+              )}
+              {!post.is_deleted && can('moderate_forum') && (
+                <button
+                  type="button"
+                  data-testid={`forum-remove-${post.id}`}
+                  onClick={() => setConfirmRemove(post.id)}
+                  className="rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50"
+                >
+                  Remove
+                </button>
+              )}
+              {/* FEAT-H028 STORY-5 (COM-13): report content that isn't mine. */}
+              {!post.is_deleted && !isMine(post) && (
+                <ReportDialog targetKind="forum_post" targetId={post.id} />
+              )}
+            </div>
           </div>
           {post.is_deleted ? (
             <p data-testid={`forum-tombstone-${post.id}`} className="mt-1 text-sm italic text-gray-400">
               Removed by a group moderator
             </p>
+          ) : editingId === post.id ? (
+            <div className="mt-2">
+              <textarea
+                value={editDraft}
+                onChange={(e) => setEditDraft(e.target.value)}
+                aria-label="Edit post"
+                data-testid={`forum-edit-input-${post.id}`}
+                rows={3}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              />
+              {editError && (
+                <p role="alert" className="mt-1 text-sm text-red-600">
+                  {editError}
+                </p>
+              )}
+              <div className="mt-2 flex justify-end gap-2">
+                <button
+                  type="button"
+                  data-testid={`forum-edit-cancel-${post.id}`}
+                  onClick={() => {
+                    setEditingId(null);
+                    setEditDraft('');
+                    setEditError(null);
+                  }}
+                  className="rounded-lg px-3 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  data-testid={`forum-edit-save-${post.id}`}
+                  onClick={() => handleEditSave(post.id)}
+                  disabled={editBusy || editDraft.trim() === ''}
+                  className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
           ) : (
-            <p className="mt-1 whitespace-pre-wrap text-sm text-gray-700">{post.content}</p>
+            <p className="mt-1 whitespace-pre-wrap text-sm text-gray-700">
+              {post.content}
+              {isEdited(post) && (
+                <span data-testid={`forum-edited-${post.id}`} className="ml-2 text-xs text-gray-400">
+                  (edited)
+                </span>
+              )}
+            </p>
           )}
           {!isReply && can('reply_to_messages') && (
             <button
@@ -304,6 +466,19 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
         busy={removeBusy}
         onConfirm={handleRemove}
         onCancel={() => setConfirmRemove(null)}
+      />
+
+      {/* FEAT-H028 STORY-4: own-delete — the tombstone renders exactly as a
+          moderation tombstone does, from the confirmed response. */}
+      <ConfirmModal
+        isOpen={confirmDelete !== null}
+        title="Delete this post?"
+        message="It will show as removed in the thread. This can’t be undone."
+        confirmText="Delete"
+        variant="danger"
+        busy={deleteBusy}
+        onConfirm={handleDeleteOwn}
+        onCancel={() => setConfirmDelete(null)}
       />
     </section>
   );
