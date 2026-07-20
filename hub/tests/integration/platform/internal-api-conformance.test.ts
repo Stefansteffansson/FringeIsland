@@ -82,6 +82,12 @@ const DS_TABLES = [
   'messages',
   'conversation_participants',
   'conversation_kinds',
+  // DS-5 Communication (C-B, FEAT-PD009): the group forum. Joins here in the
+  // SAME change that relocates admin_hard_delete_user's inline forum_posts
+  // UPDATE into ds5_lifecycle_user_hard_deleted and allowlists
+  // enforce_flat_threading — pre-apply this line is RED (the live Core body
+  // still names public.forum_posts); post-apply it is green.
+  'forum_posts',
 ] as const;
 
 // DS-3 Journeys functions — legitimately own/reference the journey tables.
@@ -120,12 +126,14 @@ const DS7_JOURNAL_FUNCTIONS = [
   'update_journal_entry',
 ];
 
-// DS-5 Communication functions (C-A, FEAT-PD008) — legitimately own/reference
-// the conversation tables. (`is_conversation_participant` is the RLS predicate,
+// DS-5 Communication functions — legitimately own/reference the conversation
+// and forum tables. (`is_conversation_participant` is the RLS predicate,
 // reshaped over the junction; `update_conversation_last_message_at` is the
-// last-message trigger; `ds5_require_fim_actor` is the CB-1 actor gate; the
-// rest are the eight C-A contracts. `enforce_flat_threading` joins at C-B with
-// forum_posts.)
+// last-message trigger; `ds5_require_fim_actor` is the CB-1 actor gate;
+// `enforce_flat_threading` is the forum flat-threading trigger, referencing
+// public.forum_posts; `ds5_resolve_author_display` is the COM-14 attribution
+// ladder; the rest are the C-A conversation contracts + the C-B forum contracts.
+// ds5_lifecycle_* is auto-allowed by the /^ds\d+_lifecycle_/ prefix rule.)
 const DS5_COMMUNICATION_FUNCTIONS = [
   // Legacy pair-column read-state guard (D15 rebuild) — DS-5-owned; DROPPED by
   // the C-A migration (20260719230500). Listed so the pre-apply window stays
@@ -143,6 +151,14 @@ const DS5_COMMUNICATION_FUNCTIONS = [
   'mark_conversation_read',
   'send_message',
   'update_conversation_last_message_at',
+  // C-B (FEAT-PD009) — forum contracts + the attribution ladder + the
+  // flat-threading trigger. All reference public.forum_posts.
+  'create_forum_post',
+  'ds5_resolve_author_display',
+  'enforce_flat_threading',
+  'get_group_forum',
+  'moderate_forum_post',
+  'reply_to_forum_post',
 ];
 
 const DS_OWNED_ALLOWLIST = new Set<string>([
