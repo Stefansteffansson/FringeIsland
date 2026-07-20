@@ -1,5 +1,5 @@
 -- ==========================================================================
--- Seed 01: Permissions Catalog (40 permissions across 6 categories)
+-- Seed 01: Permissions Catalog (41 permissions across 6 categories)
 -- ==========================================================================
 -- Must run FIRST — other seeds reference permissions by name.
 -- ==========================================================================
@@ -43,12 +43,13 @@ INSERT INTO public.permissions (name, description, category) VALUES
   ('view_group_progress', 'View aggregated group progress', 'journey_participation'),
   ('track_group_progress', 'Track and manage group journey progress', 'journey_participation'),
 
-  -- Communication (5)
+  -- Communication (6)
   ('view_forum', 'View group forum posts', 'communication'),
   ('post_forum_messages', 'Create new forum posts', 'communication'),
   ('reply_to_messages', 'Reply to existing forum posts', 'communication'),
   ('moderate_forum', 'Moderate forum posts (edit/delete)', 'communication'),
   ('send_direct_messages', 'Send direct messages to other users', 'communication'),
+  ('send_announcements', 'Send announcements to the whole group (COM-8; ADR-U049)', 'communication'),
 
   -- Feedback (3)
   ('provide_feedback_to_members', 'Give feedback to group members', 'feedback'),

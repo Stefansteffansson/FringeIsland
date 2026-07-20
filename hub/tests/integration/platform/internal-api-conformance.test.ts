@@ -88,6 +88,13 @@ const DS_TABLES = [
   // enforce_flat_threading — pre-apply this line is RED (the live Core body
   // still names public.forum_posts); post-apply it is green.
   'forum_posts',
+  // DS-5 Communication (C-D, FEAT-PD011): the ADR-U049 durable announcements
+  // home + the CB-4 report store. Join in the SAME PR as migration
+  // 20260720200000 (contracts-only doors; notifications stays OUT by design —
+  // ADR-U048: the delivery substrate is vertical-owned, writes are
+  // obligation-fulfilment, never crossings).
+  'announcements',
+  'content_reports',
 ] as const;
 
 // DS-3 Journeys functions — legitimately own/reference the journey tables.
@@ -164,6 +171,19 @@ const DS5_COMMUNICATION_FUNCTIONS = [
   // helper (ds5_emit_hint) and the two forum trigger fns reference no DS table
   // (NEW.* only), so they need no entry.
   'ds5_emit_message_hint',
+  // C-D (FEAT-PD011) — announcement + window + report contracts (reference
+  // public.announcements / public.forum_posts / public.content_reports /
+  // public.messages). ds5_is_fim_actor is the boolean RLS sibling of
+  // ds5_require_fim_actor (users only, listed for the same reason).
+  'send_community_announcement',
+  'send_platform_announcement',
+  'retract_announcement',
+  'get_group_announcements',
+  'get_platform_announcements',
+  'edit_own_forum_post',
+  'delete_own_forum_post',
+  'submit_content_report',
+  'ds5_is_fim_actor',
 ];
 
 const DS_OWNED_ALLOWLIST = new Set<string>([
