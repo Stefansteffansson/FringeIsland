@@ -11,6 +11,21 @@ User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is
 - **Only members, only through the door.** Conversations are for members (a Mist sees none of this), every read and write goes through the platform's contracts, and nobody outside a conversation — however they knock — can see into it.
 - *(Live updates — messages appearing without a refresh — arrive with the real-time cycle later in this area.)*
 
+## 2026-07-18 — The Ask starts collecting: your words, and the author's takeaways ([FEAT-H024](../docs/products/hub/features/FEAT-H024-ask-capture-and-review-substance.md))
+
+- **Steps that ask can now hear your answer.** A step built to ask — reflect, note, decide — offers a place for your words, labelled by its own verb. Answering is always optional: skipping costs nothing, and completing a step never demands words first.
+- **Your words save themselves, honestly.** Responses save quietly in the background; if a save fails it says so and offers retry — never a silent loss. While the walk lives, your words stay yours to change: come back any time and edit.
+- **Review gains substance from both directions.** Reviewing a journey now shows your own responses beside the steps that asked — and the author's takeaways: per-step once a step is complete, and the journey's own takeaway on the completion panel and at the head of review. The richer review door returns — now there's something behind it.
+- **Frozen walks keep your words too** — readable, never editable, like everything else behind the freeze.
+- **Your data download now includes your walks.** The "download my data" export gains a journeys section: your enrolments, the steps you walked, and the words you left in them.
+- **Private, full stop.** Nothing you write in a step ever reaches the group progress view or anyone else — progress sharing covers completion marks only, exactly as its copy has always said.
+
+## 2026-07-10 — The front door opens itself: arriving is a journey, and it survives becoming a member ([FEAT-H023](../docs/products/hub/features/FEAT-H023-onboarding-arrival-and-carry-over.md))
+
+- **Your first arrival walks you in.** Arriving at FringeIsland for the first time — anonymously as a Mist, or as a brand-new member's first sign-in — now enrols you in the onboarding journey and opens the player at its welcome. No hunting for a start button: having no enrolment yet *is* the signal that you're new, and the platform meets you there.
+- **A door, never a wall.** You can leave any step freely, nothing is walled behind finishing the walk, and once you've arrived it never launches at you again.
+- **Becoming a member keeps your place.** If you start the walk as a Mist and then transcend — sign up, become a FIM — the journey comes with you: you resume exactly where you left off, never restarted.
+
 ## 2026-07-08 — What froze is still yours; progress is shared only by choice ([FEAT-H022](../docs/products/hub/features/FEAT-H022-frozen-mode-and-group-progress.md))
 
 - **A frozen journey opens — read-only — and says why.** When a group closes, is archived, or you leave or are removed, the journeys you walked through it freeze rather than vanish. Opening one now shows your whole walk — every step readable, your marks and times beside them — with a banner naming what happened and when. Nothing is recorded while you look; nothing can be changed. Frozen journeys say *View* where active ones say *Continue*.
