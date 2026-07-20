@@ -253,9 +253,18 @@ describe('FEAT-PD010 — realtime hint emission & receipt policies (C-C)', () =>
 
       const payloads = await accountHintPayloads(alice.user.id, conv);
       expect(payloads.length).toBe(1);
-      // ids only — no content, no sender, no timestamps (key-set, not presence)
-      expect(Object.keys(payloads[0]).sort()).toEqual(['conversation_id']);
+      // ids only — no content, no sender, no timestamps (key-set, not presence).
+      // LABELLED ADAPTATION (2026-07-20, flip-green): the stored payload also
+      // carries 'id' — realtime.send() stamps its generated broadcast-row UUID
+      // into the payload (jsonb_set(payload,'{id}',generated_id); verified
+      // against realtime.send prosrc). Substrate metadata, never domain data;
+      // the content-free invariant is unchanged and still asserted exactly.
+      expect(Object.keys(payloads[0]).sort()).toEqual(['conversation_id', 'id']);
       expect(payloads[0].conversation_id).toBe(conv);
+      expect(payloads[0].id).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+      );
+      expect(payloads[0].id).not.toBe(conv);
     });
 
     it('a group-conversation send reaches active participants only — a departed participant is excluded', async () => {
@@ -319,8 +328,14 @@ describe('FEAT-PD010 — realtime hint emission & receipt policies (C-C)', () =>
       expect(await countForumHint(g1, 'forum_post_created', threadId)).toBe(1);
       const payloads = await forumHintPayloads(g1, 'forum_post_created', threadId);
       expect(payloads.length).toBe(1);
-      expect(Object.keys(payloads[0]).sort()).toEqual(['post_id']);
+      // LABELLED ADAPTATION (2026-07-20, flip-green): 'id' is the substrate-
+      // stamped broadcast-row UUID (see the STORY-1 note) — never domain data.
+      expect(Object.keys(payloads[0]).sort()).toEqual(['id', 'post_id']);
       expect(payloads[0].post_id).toBe(threadId);
+      expect(payloads[0].id).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+      );
+      expect(payloads[0].id).not.toBe(threadId);
     });
 
     it('a reply emits forum_post_created too (both are inserts)', async () => {
