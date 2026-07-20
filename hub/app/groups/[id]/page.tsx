@@ -15,6 +15,7 @@ import { GroupMembershipsPanel } from '@/components/groups/GroupMembershipsPanel
 import { InviteGroupPanel } from '@/components/groups/InviteGroupPanel';
 import { GroupJourneysSection } from '@/components/groups/GroupJourneysSection';
 import { GroupConversationsSection } from '@/components/groups/GroupConversationsSection';
+import { GroupForumSection } from '@/components/groups/GroupForumSection';
 import { GroupJourneyProgressSection } from '@/components/groups/GroupJourneyProgressSection';
 import {
   fetchActingContexts,
@@ -249,6 +250,9 @@ export default function GroupDetailPage() {
               failure-isolated slice; create renders only on the platform's
               create_group_conversations grant. */}
           <GroupConversationsSection groupId={groupId} />
+          {/* FEAT-H026 — the group forum (COM-5/6a/6b/7/14). Failure-isolated
+              slice; post/reply/remove render only on the platform's grants. */}
+          <GroupForumSection groupId={groupId} />
           <RolesPanel
             groupId={groupId}
             fabric={rolesData?.fabric ?? null}

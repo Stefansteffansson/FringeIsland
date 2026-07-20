@@ -35,6 +35,14 @@ export interface ConversationParticipant {
   is_me: boolean;
 }
 
+/** COM-14 (C-B, FEAT-PD009) — the platform-resolved attribution ladder, now
+ *  carried by the conversation-detail sender map. Shared shape with the forum
+ *  (`lib/forum/queries.ts`); the client never computes membership. */
+export interface AuthorDisplay {
+  display_name: string;
+  attribution: 'active' | 'former' | 'unknown';
+}
+
 export interface ConversationDetail {
   id: string;
   kind: string;
@@ -42,9 +50,10 @@ export interface ConversationDetail {
   group_id: string | null;
   group_name: string | null;
   messages: ConversationMessage[];
-  /** Display resolution for every sender in the page (departed/erased included;
-   *  a null value renders the 'Unknown' fallback until COM-14). */
-  senders: Record<string, string | null>;
+  /** Display resolution for every sender in the page (departed/erased included).
+   *  COM-14 (C-B): each value is the resolved `{display_name, attribution}` —
+   *  active name / 'Former member' / 'Unknown'. */
+  senders: Record<string, AuthorDisplay>;
   participants: ConversationParticipant[];
   my_last_read_at: string;
 }

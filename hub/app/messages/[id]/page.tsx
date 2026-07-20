@@ -75,7 +75,7 @@ export default function ConversationPage({
   const senderName = useCallback(
     (senderGroupId: string | null): string => {
       if (!senderGroupId) return 'Unknown';
-      return detail?.senders[senderGroupId] ?? 'Unknown';
+      return detail?.senders[senderGroupId]?.display_name ?? 'Unknown';
     },
     [detail],
   );
