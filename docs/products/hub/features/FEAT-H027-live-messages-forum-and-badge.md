@@ -6,7 +6,7 @@ title: Live updates for the inbox, the open conversation, the unread badge, and 
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

@@ -6,7 +6,7 @@ title: Realtime hint emission — server-originated content-free hints on privat
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
