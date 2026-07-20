@@ -11,6 +11,8 @@ This document collects thinkers, concepts, and ideas that inform the FringeIslan
 
 This document is intentionally **open and append-only**. New entries are added as they are discovered. Nothing is removed; superseding insights are added below prior ones with context.
 
+*Canon-conformance sweep, 2026-07-20 — adjacent items flagged in the 2026-07-19 conformance register, applied after the four-correction pass: cosmological place references normalized to the ratified lowercase form ("place 2" / "place 3", hyphenated when attributive, capitals kept only at sentence- and cell-initial positions, matching the cosmology core; place 3 remains unnamed), and "FringeIsland-the-village" corrected to the canon "the village (working name)". Mechanical casing/naming only; no entry content changed.*
+
 ---
 
 ---
@@ -18,7 +20,7 @@ This document is intentionally **open and append-only**. New entries are added a
 > **Terminology Note — "Shadow" and "the Unintegrated Self"**
 > These two terms are related but not interchangeable, and the distinction must be preserved in all FringeIsland writing.
 >
-> - **Shadow** (capitalized, proper noun) — locked to the cosmological entity/menace in Place 3. It may carry personification, agency, and collective dimensions (see the Three-Level Shadow hypothesis below) that extend beyond anything Jung described.
+> - **Shadow** (capitalized, proper noun) — locked to the cosmological entity/menace in place 3. It may carry personification, agency, and collective dimensions (see the Three-Level Shadow hypothesis below) that extend beyond anything Jung described.
 > - **the Unintegrated Self** — the psychological mechanism from Jung's work (which he himself called "the shadow" in his own writing). Within FringeIsland this is understood as *one origin* of the individual-level Shadow — not a synonym for the Shadow as a whole.
 >
 > Prior to this session, these were treated as unrelated concepts requiring strict separation to avoid confusion. This session established that they are directly connected at the individual level — see entry 19 and the Three-Level Shadow synthesis insight. The naming lock still applies: never use "shadow" (lowercase or otherwise) to refer to Jung's concept in FringeIsland documentation. Always write "the Unintegrated Self."
@@ -164,7 +166,7 @@ The Whisp does not exist to flatter. When it serves the FIM's flourishing, it ex
 **This supersedes the earlier, looser framing of "the FIM perceives the Fringe through the Whisp."** The canonical mechanic is:
 
 - The FIM **always stays safely on the Ordinary-World side** of the Shimmer.
-- The Whisp crosses into Place 2 and Place 3 **as the FIM's avatar** — becoming the FIM's sensory organs in those worlds, relaying experience back.
+- The Whisp crosses into place 2 and place 3 **as the FIM's avatar** — becoming the FIM's sensory organs in those worlds, relaying experience back.
 - The Whisp is connected back to the FIM by **the cord.**
 
 This explains the van Lommel scaffolding (entry 18) with precision: the FIM never risks what the lost government travelers risked, because the FIM never actually leaves. The Whisp is the one exposed.
@@ -548,18 +550,18 @@ Identity is the intersection of what a FIM moves toward and what they move away 
 This hypothesis is grounded in Jung's concept of the ego's Unintegrated Self — the psychological material the ego suppresses, rejects, and projects outward. Jung observed this at the individual level. FringeIsland's cosmology extends the insight structurally across the platform's 1, 1+1, 1+community architecture.
 
 **The hypothesis**
-The Shadow in Place 3 operates at three levels:
+The Shadow in place 3 operates at three levels:
 
 **Level 1 — The individual Shadow**
-The FIM's own Unintegrated Self projected into their unique pocket of Place 3. Uniquely theirs — no other FIM sees exactly this. The mechanism is grounded in Jung: projection, autonomous operation, individuation as the path through it. This is the best understood level and the anchor for the entire hypothesis.
+The FIM's own Unintegrated Self projected into their unique pocket of place 3. Uniquely theirs — no other FIM sees exactly this. The mechanism is grounded in Jung: projection, autonomous operation, individuation as the path through it. This is the best understood level and the anchor for the entire hypothesis.
 
 **Level 1+1 — The pair Shadow**
-The shared blind spot of two FIMs — what their relationship collusively suppresses in order to function. This belongs to the *between* them, not to either individual alone. Two FIMs can each have done significant individual work and still generate a pair Shadow together — because collusion operates at the relational level, not the individual level. What this looks like in Place 3, how it manifests, and how it can be integrated are genuinely open questions. Maturana's structural coupling is the closest existing frame — two systems co-evolving develop shared structures that neither contains alone.
+The shared blind spot of two FIMs — what their relationship collusively suppresses in order to function. This belongs to the *between* them, not to either individual alone. Two FIMs can each have done significant individual work and still generate a pair Shadow together — because collusion operates at the relational level, not the individual level. What this looks like in place 3, how it manifests, and how it can be integrated are genuinely open questions. Maturana's structural coupling is the closest existing frame — two systems co-evolving develop shared structures that neither contains alone.
 
 **Level 1+community — The collective Shadow**
-The community's accumulated suppressed material — what the group collectively refuses to examine; its founding myths that paper over uncomfortable truths, its shared projections, its collusive agreements about what is never discussed. This level grows and evolves as the community grows. It may also carry the unintegrated material of the government program's lost travelers — people who crossed into Place 3 without preparation and contributed their unresolved material to the landscape before any scaffolding existed to help them integrate it.
+The community's accumulated suppressed material — what the group collectively refuses to examine; its founding myths that paper over uncomfortable truths, its shared projections, its collusive agreements about what is never discussed. This level grows and evolves as the community grows. It may also carry the unintegrated material of the government program's lost travelers — people who crossed into place 3 without preparation and contributed their unresolved material to the landscape before any scaffolding existed to help them integrate it.
 
-**The symmetry with Place 2**
+**The symmetry with place 2**
 
 | Level | Place 3 Shadow | Place 2 Counterpart |
 |---|---|---|
@@ -567,10 +569,10 @@ The community's accumulated suppressed material — what the group collectively 
 | 1+1 | Pair's shared blind spot | Genuine intimacy — the examined relationship |
 | 1+community | Collective suppressed material | Community wisdom — what the group has integrated together |
 
-Place 2 and Place 3 are the same ground in two states. The psychological mechanism of that duality is integration — at all three levels simultaneously.
+Place 2 and place 3 are the same ground in two states. The psychological mechanism of that duality is integration — at all three levels simultaneously.
 
 **What remains open**
-The pair and community levels are genuine open cosmological questions. Their mechanics — how they form, how they manifest as Shadow in Place 3, and how they can be integrated — are unwritten and available for discovery by Dreamineers and FringeIsland anthropologists. This is not a gap to be filled before the platform launches. It is living cosmological territory that the community will discover by inhabiting it.
+The pair and community levels are genuine open cosmological questions. Their mechanics — how they form, how they manifest as Shadow in place 3, and how they can be integrated — are unwritten and available for discovery by Dreamineers and FringeIsland anthropologists. This is not a gap to be filled before the platform launches. It is living cosmological territory that the community will discover by inhabiting it.
 
 **A second, complementary function**
 The 1+1 and 1+community levels are not only sites where shared unintegrated material surfaces — they may also be where a FIM's **external self-awareness** becomes available (see entry 20, Eurich). Encountering how another FIM or the community actually perceives you is often exactly how a blind spot becomes visible in the first place; external self-awareness and Shadow-recognition may be two names for closely related events at these levels — one darker in framing, one more neutral, but potentially the same underlying mechanism: the self meeting a perspective it does not generate alone.
@@ -1042,7 +1044,7 @@ This may be the closest real-world example of Bateson's Learning III — where t
 | The boundary patients chose not to cross | The FIM's cord as the mechanism of return |
 | Consciousness beyond brain activity | The cosmological premise of the Fringe existing independently |
 | Long-term transformation in NDE reporters | What FIM graduation produces — irreversible vertical shift |
-| Out-of-body perception | The Gimbal's OBE state — Place 3 |
+| Out-of-body perception | The Gimbal's OBE state — place 3 |
 | The life review | McAdams' nuclear scenes at maximum intensity |
 | Disorientation on return | Why the Whisp and cord are essential — scaffolding for the return |
 
@@ -1060,7 +1062,7 @@ The government research program's lost travelers are the cautionary version — 
 
 ### 19. Carl Jung — The Unintegrated Self
 
-> **Disambiguation — critical:** Jung called this concept "the shadow" in his own writing. That term is locked in FringeIsland cosmology as the Place 3 menace and must not be used in this psychological sense anywhere in FringeIsland documentation. Throughout this entry and all FringeIsland contexts, Jung's concept is referred to exclusively as **the Unintegrated Self**. This is not merely a naming accident to be kept separate — see the Three-Level Shadow synthesis insight below, which establishes the Unintegrated Self as the psychological origin of the individual-level Shadow. The naming lock stands regardless: the proper noun "Shadow" stays reserved for the cosmological entity.
+> **Disambiguation — critical:** Jung called this concept "the shadow" in his own writing. That term is locked in FringeIsland cosmology as the place-3 menace and must not be used in this psychological sense anywhere in FringeIsland documentation. Throughout this entry and all FringeIsland contexts, Jung's concept is referred to exclusively as **the Unintegrated Self**. This is not merely a naming accident to be kept separate — see the Three-Level Shadow synthesis insight below, which establishes the Unintegrated Self as the psychological origin of the individual-level Shadow. The naming lock stands regardless: the proper noun "Shadow" stays reserved for the cosmological entity.
 
 **Who**
 Carl Gustav Jung (1875-1961), Swiss psychiatrist, founder of analytical psychology. One of the most influential psychological thinkers of the 20th century. Began as Freud's closest colleague before a significant theoretical break around 1912. His work spans psychology, mythology, alchemy, religion, and anthropology.
@@ -1126,17 +1128,17 @@ The Whisp does not know the FIM's Unintegrated Self in advance — it does not h
 This is individuation made relational — the Whisp as the stable witness to the FIM's process of becoming whole.
 
 **The three-level Shadow structure — origin and hypothesis**
-Jung's concept of the ego's Unintegrated Self — what the ego suppresses, rejects, and projects outward — is the psychological origin of the Shadow as it manifests in Place 3. This origin holds at the individual level with clarity. The FringeIsland cosmology extends this insight across the platform's 1, 1+1, 1+community architecture into a three-level hypothesis:
+Jung's concept of the ego's Unintegrated Self — what the ego suppresses, rejects, and projects outward — is the psychological origin of the Shadow as it manifests in place 3. This origin holds at the individual level with clarity. The FringeIsland cosmology extends this insight across the platform's 1, 1+1, 1+community architecture into a three-level hypothesis:
 
 | Level | Shadow manifestation | State |
 |---|---|---|
-| 1 — individual | The FIM's own Unintegrated Self projected into their unique pocket of Place 3 | Best understood — grounded in Jung |
+| 1 — individual | The FIM's own Unintegrated Self projected into their unique pocket of place 3 | Best understood — grounded in Jung |
 | 1+1 — pair | The shared blind spot of two FIMs — what their relationship colludes to suppress; belongs to the *between* them, not to either individual alone | Open — mechanics undiscovered |
 | 1+community — collective | The community's shared suppressed material — what the group collectively refuses to examine; grows and evolves as the community grows | Open — mechanics undiscovered |
 
 The pair and community levels are genuine open cosmological questions. Their mechanics are unwritten and available for discovery by Dreamineers and FringeIsland anthropologists. The individual level is the anchor — everything extends from Jung's original insight about the ego's relationship to what it cannot integrate.
 
-Place 2 and Place 3 are the same ground in two states. The state of the ground depends on the state of integration — at all three levels simultaneously.
+Place 2 and place 3 are the same ground in two states. The state of the ground depends on the state of integration — at all three levels simultaneously.
 
 ---
 
@@ -1274,7 +1276,7 @@ The 150 figure is far less statistically solid than its popular fame suggests. A
 | Sympathy group (~15) | A plausible size for closer Dreamineer cohorts or recurring small-group arcs |
 | Clan (~50) | A journey or arc aimed at belonging/ritual can scale here without losing coherence |
 | Tribe (~150) | The upper bound for genuine informal trust — relevant to how large a "community" feature can get before it needs formal structure (moderation, roles) to function at all |
-| FringeIsland-the-village (lore) | Universe Studio could size the village's population and social structure deliberately around these layers rather than an arbitrary number, giving the Beyond socially plausible texture |
+| The village (working name; lore) | Universe Studio could size the village's population and social structure deliberately around these layers rather than an arbitrary number, giving the Beyond socially plausible texture |
 | 1+community Shadow/external-awareness level | Not one undifferentiated mass — a FIM's actual "tribe" caps out well below "everyone on the platform"; design and lore should reflect that a community of thousands does not function as one Dunbar-tribe |
 
 **Where the Whisp connects**
