@@ -6,9 +6,19 @@ title: Group forum & attribution in the Hub
 owner: hub
 consumers: []
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
+
+## Implementation notes
+
+**Built 2026-07-20, Cycle C-B** (PR #212; consumes the FEAT-PD009 contracts — carries no migration of its own). The **MEM-9 un-seam lands here**: former-member attribution now renders at the content-display layer, so the Groups area's one forward-seam is closed.
+
+**Where it lives:** `hub/lib/forum/` (queries + `ForumPost`/`AuthorDisplay` types, `http.ts` SQLSTATE→HTTP with `P0001`→400, `client.ts` per-group session cache + W9 registration + confirmed write-through + mutation-drops-peek, `attribution.ts` the pure COM-14 presentation rule), 3 BFF routes (`GET|POST /api/groups/[id]/forum`, `POST /api/forum/[postId]/reply|moderate`; route-policy walk green), `hub/components/groups/GroupForumSection.tsx` slotted beside `GroupConversationsSection` on the group page. The C-A messages surface's `get_conversation_detail` sender map was upgraded to `{display_name, attribution}` in the same cycle (COM-14 renders in `/messages/[id]` too).
+
+**Red→green, honestly:** the red-first proof of C-B behaviour is the **platform contract suite** (`forum-contracts.test.ts`, demonstrated 18-red → 21/21 green on apply). The surface unit suites (`attribution.test.ts`, `GroupForumSection.test.tsx`, 11 green) are **labelled TEST-AFTER** — the section was built ahead of them (a red-first ordering slip on the surface tier, recorded honestly); they pin component logic (permission-gated affordances, optimistic post, tombstone, attribution styling, failure isolation) neither the contract suite nor E2E exercises directly. The **E2E** (`forum.spec.ts`) asserts the observable journey with in-context effects: post → reply → moderate → **former-member attribution** (admin-removes a member's membership → their post renders "Former member", the post content itself surviving — ADR-U021). Build catch: the reply open-affordance and the composer's submit both read "Reply" (Playwright strict-mode collision) — the submit became "Post reply" + a distinct testid.
+
+**Sweeps:** unit **101 suites / 747 tests**; E2E green (forum + full fleet); `next build` (type gate) clean; route-policy 5/5; lint 0 errors (2 pre-existing warnings, found-not-caused).
 
 ## Problem
 

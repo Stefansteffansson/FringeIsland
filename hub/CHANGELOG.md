@@ -2,6 +2,14 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-07-20 — A place that keeps what's said: the group forum, and names that stay honest ([FEAT-H026](../docs/products/hub/features/FEAT-H026-group-forum-and-attribution.md) · [FEAT-PD009](../docs/platform/domain/features/FEAT-PD009-forum-and-attribution-contracts.md))
+
+- **Your group has a forum now.** The group's page holds a Forum section: threads newest-first, each with its replies beneath, in the order they were written. If it ever can't load, the rest of the group page still works.
+- **Post, reply, moderate — as your role allows.** If your role lets you post, a composer is there; if it lets you reply, top-level posts offer a Reply; if you steward the group, each post carries a Remove. What you can do is the group's permission fabric answering — the button only appears when the platform says yes.
+- **Posting feels instant and stays honest.** A post or reply appears the moment you send it and is quietly confirmed behind it; a failure says so, with a retry, never a silent loss.
+- **Removed means removed, in place.** A moderator's Remove leaves the thread intact — the post becomes a plain "Removed by a group moderator" where it stood, its content gone. The thread still reads as a conversation, not a page full of holes.
+- **Names tell the current truth.** A post shows its author by who they are in the group *now*: a current member by name; someone who has left as **"Former member"** — and if they rejoin, their name comes back on its own. Nothing you wrote is ever rewritten; only how it's shown. A hard-deleted author reads as "Unknown". The same honest naming now shows in your messages, too.
+
 ## 2026-07-20 — Talk to each other: messages arrive ([FEAT-H025](../docs/products/hub/features/FEAT-H025-messages-dm-and-group-conversations.md) · [FEAT-PD008](../docs/platform/domain/features/FEAT-PD008-conversation-and-message-contracts.md))
 
 - **Message a fellow member.** Every member on a group's roster now carries a *Message* button. One click opens the one conversation the two of you share — your history if you've talked before, a fresh page if not. There is exactly one conversation per pair, always.

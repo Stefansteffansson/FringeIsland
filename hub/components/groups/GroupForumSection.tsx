@@ -194,11 +194,12 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
               />
               <button
                 type="button"
+                data-testid={`forum-reply-submit-${post.id}`}
                 onClick={() => handleReply(post.id)}
                 disabled={replyBusy || replyText.trim() === ''}
                 className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
               >
-                Reply
+                Post reply
               </button>
             </div>
           )}
