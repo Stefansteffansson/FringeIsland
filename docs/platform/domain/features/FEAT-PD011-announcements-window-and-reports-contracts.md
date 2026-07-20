@@ -6,7 +6,7 @@ title: Announcements, windowed own-edits, and content-report contracts (COM-8/9/
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -141,8 +141,16 @@ The Hub consumes everything here (FEAT-H028, paired). A-NTF inherits the deliver
 
 N/A (no surface) — fan-out cost bounded and named (Rabbit holes); read contracts are keyset-paged like `get_group_forum`.
 
-## Open spec questions (for the schema gate)
+## Open spec questions (resolved at the schema gate, 2026-07-20)
 
-1. **Snapshot vs erasure:** when a content author is hard-deleted, do `content_reports.content_snapshot` rows about their content survive (moderation-evidence legitimate interest) or get scrubbed by the lifecycle handler? Lean: survive in Ferd, scrub decision recorded as a C-E lifecycle-due line item — decide at the gate.
-2. **Backfill breadth:** `send_announcements` backfills to Steward roles only, or also to custom roles that hold `moderate_forum`? Lean: Steward-template-derived roles only; custom roles opt in via the roles panel.
-3. **Exact FIM predicate:** `ds5_is_fim_actor()` implementation copies `ds5_require_fim_actor`'s check (whatever PC-2 column it reads) — confirmed at migration authoring against the live definition.
+1. **Snapshot vs erasure — RESOLVED (gate nod "ok merge #223"):** snapshots survive author hard-delete in Ferd (moderation evidence); the scrub decision is a named C-E lifecycle-due line item. Reporter-side rows die with the reporter (FK CASCADE).
+2. **Backfill breadth — RESOLVED:** Steward-template-derived role instances only; custom roles opt in via the roles panel.
+3. **FIM predicate — RESOLVED:** `users.is_temporary` via `auth.uid()`, copied from the live `ds5_require_fim_actor`; realized as the boolean `ds5_is_fim_actor()`.
+
+## Implementation notes (6-done — Cycle C-D, 2026-07-20)
+
+- **What landed:** migration `20260720200000` (gate PR #223, nodded "ok merge #223") + rider `20260720203000` (PR #225 — function re-issues only): `announcements` (scope CHECK `community` ⇔ group present; RLS reads community-via-`is_active_group_member` / platform-via-`ds5_is_fim_actor()` / `is_platform_admin` sees all incl. retracted; zero client write policies) and `content_reports` (UNIQUE resubmit key; reporter-own + admin SELECT; zero client write policies); the `send_announcements` seed (catalog + Steward template + instance backfill; seeds files updated; the auto-grant-to-DeusEx trigger fired as designed); the eight contracts as specced — with **one flip-green correction (the rider)**: delivery rows store the announcement body — `notifications.body` is NOT NULL and the substrate's writer conventions win (ADR-U048: the delivery table does not bend to DS-5); the content-light-pointer sketch line yields.
+- **Flagged authoring decision (gate-recorded):** the 1→all fan-out excludes decommissioned accounts (terminal), includes suspended (routing does not adjudicate account state).
+- **Red→green, honestly:** 24 demonstrated red pre-apply (announcements 14 — PGRST202/PGRST205/absent-seed/42P01; window+reports 10 — PGRST202/absent-table) + 2 labelled regression greens (DM immutability; no-hint-on-content-edit). Post-apply first run **72/80** — the rider's NOT NULL catch (7 cascade fails) + **one labelled test adaptation** (the stored-hint assertion re-keyed on the `realtime.messages` `event` COLUMN + COALESCE'd payload envelope — the C-C storage-envelope precedent, mis-modeled at first writing). Final: **communication slice 80/80; conformance gate green** (`DS_TABLES` += 2, allowlist += 9, `notifications` stays out by design).
+- **The self-delete hint came free, as decomposed:** the C-C transition-gated trigger (`WHEN (OLD.is_deleted IS DISTINCT FROM NEW.is_deleted AND NEW.is_deleted)`) fires on `delete_own_forum_post`'s tombstone; content edits emit nothing (regression-held). No realtime changes of any kind.
+- **Key files:** `supabase/migrations/20260720200000_*.sql` + `20260720203000_*.sql`; `supabase/seeds/01_permissions.sql`/`02_role_templates.sql`; `hub/tests/integration/communication/announcement-contracts.test.ts` + `window-and-report-contracts.test.ts`; `hub/tests/integration/platform/internal-api-conformance.test.ts` (riders).

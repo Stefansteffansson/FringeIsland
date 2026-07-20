@@ -3,7 +3,7 @@
 ---
 id: TASK-CD-04
 title: Hub announcements sections + compose/retract (H028 STORY-1..3)
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H028

@@ -6,7 +6,7 @@ title: Announcements on group page + home, forum edit/delete-own within the wind
 owner: hub
 consumers: []
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -19,7 +19,7 @@ The platform half (FEAT-PD011, paired) gives announcements a durable home, retur
 Four surface additions, no migration of its own, consuming FEAT-PD011 API-first:
 
 - **Group page Announcements section** — a failure-isolated panel on `hub/app/groups/[id]` (the H026 Forum-section pattern): newest-first from `get_group_announcements`, keyset "load more", empty state, attribution at the content-display layer. Compose affordance rendered only on the platform's `send_announcements` grant (the H026 grant-render pattern); Retract behind ConfirmModal on the same grant, list updates from the confirmed response.
-- **Home Announcements section** — platform-scope announcements on the signed-in home (`hub/app/page.tsx`) from `get_platform_announcements`, labelled as platform announcements; absent for Mists (the contract refuses; the surface doesn't render the section). A justified standalone read (ADR-U042) with session cache + W9 registration, like the Forum section.
+- **Landing Announcements section** — platform-scope announcements on **`/groups` (the groups overview — the real signed-in FIM landing surface)** from `get_platform_announcements`, labelled as platform announcements; absent for Mists (the contract refuses; the surface doesn't render the section). A justified standalone read (ADR-U042) with session cache + W9 registration, like the Forum section. *(Corrected at build 2026-07-20: the decomposition draft said "the signed-in home (`hub/app/page.tsx`)" — that file is the public identity-aware entry, not a home; the entry's FIM affordance lands on `/groups`. A decomposition placement miss, labelled per the walk discipline.)*
 - **Forum window affordances** — on my own live posts younger than 15 minutes: Edit (inline, confirmed write-through via `edit_own_forum_post`) and Delete (ConfirmModal → `delete_own_forum_post`, tombstone rendered from the confirmed response exactly like moderation). Affordances derive from payload facts the forum read already carries (walk below); they disappear at window expiry client-side, and a race past the edge surfaces the server's refusal honestly (the optimistic-with-retry posture, H026). An "(edited)" marker renders when `updated_at > created_at`.
 - **Report affordance** — on any forum post/reply and any DM message that is not mine: a small dialog (reason required, details optional) → `submit_content_report` → confirmation toast; an idempotent resubmit reads as "already reported". No queue, no status view beyond submission confirmation this cycle (ADM-10 seam).
 
@@ -66,12 +66,12 @@ As a Steward, I want to compose and, if needed, retract an announcement on the g
 - Given a send refused by the platform (grant revoked mid-session), when it returns, then the refusal is surfaced honestly with the composed text preserved.
 
 ### STORY-3: Everyone hears the platform (COM-9 render)
-As a FIM, I want platform announcements on my home page, so universe-scoped word reaches me without a bell existing yet.
+As a FIM, I want platform announcements on my landing surface (`/groups`), so universe-scoped word reaches me without a bell existing yet.
 
 **Acceptance criteria:**
-- Given platform announcements exist, when a FIM's home loads, then the section renders them newest-first, labelled as platform announcements; empty state when none.
-- Given a Mist session, when home renders, then no announcements section (and the E2E walk shows the FIM/Mist difference).
-- Given the section's read fails, when home renders, then the rest of home is unaffected (failure isolation).
+- Given platform announcements exist, when a FIM's landing surface loads, then the section renders them newest-first, labelled as platform announcements; empty state when none.
+- Given a Mist session, when the surface renders, then no announcements section (and the E2E walk shows the FIM/Mist difference).
+- Given the section's read fails, when the landing surface renders, then the rest of the page is unaffected (failure isolation).
 
 ### STORY-4: Fifteen minutes to fix it (COM-12 surface)
 As a forum author, I want Edit and Delete on my own fresh posts, so a typo or regret has an exit — briefly.
@@ -107,8 +107,16 @@ None outward this cycle. Forward: A-NTF's bell will badge announcements from del
 - **Transactions:** None.
 - **Extensibility:** No new enums or closed sets client-side; affordances key off platform grants and payload facts, never role names (ADR-U007).
 
+## Implementation notes (6-done — Cycle C-D, 2026-07-20)
+
+- **What landed (PR #224, built red-first by a delegated builder session; verified independently):** `GroupAnnouncementsSection` (group page, above the forum; compose + Retract-behind-ConfirmModal on the `send_announcements` grant via the existing my-permissions read) + `PlatformAnnouncementsSection` on **`/groups`** (the placement correction above) + `lib/announcements/` couriers (session cache + cache-registry); window affordances grafted into `GroupForumSection` (Edit/Delete on own live posts inside 15 minutes — own-check via the my-permissions payload's `member_group_id` (FEAT-H017 additive key; AuthContext deliberately not extended), a coarse ticker retires affordances client-side, "(edited)" from `updated_at > created_at`, tombstones render exactly as moderation tombstones — including the copy "Removed by a group moderator" on self-deletes, accepted under the no-distinguishing no-go; wording observation routed to A-ADM) + `lib/forum` edit/delete couriers; `ReportDialog` (own small modal, not ConfirmModal — it collects input; inline `role=status` confirmation, no toast primitive exists in the house) on others' forum posts + DM messages, "already reported" on the idempotent resubmit; six new BFF routes (announcements group/platform/retract, forum edit/delete, reports).
+- **Red→green:** every behaviour unit-first (8 new unit suites; builder-recorded reds per test, verified by the green run: unit **115 suites / 837 tests**, lint 0 errors, source tsc clean). E2E labelled **journey verification** (the red-first proof lives at the contract + unit tiers): `announcements-window-reports.spec.ts` **4/4** — the two-context announce→read→retract walk, the platform announcement on `/groups`, the edit-window + self-delete-tombstone walk, the report + idempotent re-report walk; fresh logins per context.
+- **Three E2E authoring traps caught and fixed in-session** (all mine, spec-side): a cross-test module-state dependency (`/groups/undefined` on worker restart — tests made self-sufficient via RPC-provisioned fixture groups + serial mode), a hasText-filtered locator that stops matching mid-edit (pinned `data-testid` before mutating — the realtime.spec precedent), and a **global-scope `signOut()` in fixture provisioning that revoked the shared storageState server-side and felled 14 downstream fleet specs** — the C-C trap self-inflicted; removed (throwaway client, `persistSession: false`). Fleet after the fix: **74/75** (the 1: profile.spec STORY-4 — the pre-existing fenced flake, TASK-E2E-01, green 3/3 isolated, found-not-caused).
+- **ADR-U043 disposition: not triggered** — both sections load post-paint behind B6 skeletons as failure-isolated standalone reads (the H026 class); no first-paint request added or rerouted.
+- **Key files:** `hub/components/groups/GroupAnnouncementsSection.tsx`, `hub/components/announcements/PlatformAnnouncementsSection.tsx`, `hub/components/reports/ReportDialog.tsx`, `hub/components/groups/GroupForumSection.tsx`, `hub/lib/{announcements,reports}/`, `hub/lib/forum/{client,http,queries}.ts`, `hub/app/api/{announcements,reports}/…` + `hub/app/api/forum/[postId]/{edit,delete}/`, `hub/tests/e2e/announcements-window-reports.spec.ts`.
+
 ## Performance budget
 
-- **First-paint class:** group page unchanged (the section is a failure-isolated panel on an existing page — B3 warm nav); home gains one justified standalone read (ADR-U042) with session cache + W9 registration — B2/B3 unchanged budgets.
+- **First-paint class:** group page unchanged (the section is a failure-isolated panel on an existing page — B3 warm nav); the `/groups` landing gains one justified standalone read (ADR-U042) with session cache + W9 registration — post-paint behind a skeleton, B2/B3 budgets unchanged.
 - **Interaction class:** compose/edit/delete/report are B5 (≤ 200 ms to next paint via optimistic-with-confirmed-write-through or dialog feedback within 100 ms).
 - **Loading states:** B6 — skeletons for the two announcement sections; dialogs render instantly with inline pending states.
