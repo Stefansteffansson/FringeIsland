@@ -184,13 +184,16 @@ Foundations first: **conversation lifecycle** and **forum structure** stand dire
 | Message exchange & realtime delivery (live-delivery half) | [FEAT-PD010](./features/FEAT-PD010-realtime-hint-emission.md) | 6-done | A-COM Cycle C-C — the ADR-U039 hint layer: trigger-emitted content-free hints on `account:<auth_uid>:conversations` + `group:<group_id>:forum` (the forum channel extends the forum-structure capability's surface), `realtime.messages` receive policies (§8 Q7), no client-send door; conventions set for the A-NTF bell tenant |
 | Participation & read state | [FEAT-PD008](./features/FEAT-PD008-conversation-and-message-contracts.md) | 6-done | Read-state moves to the participants junction |
 | Group-scoped forum structure (threads, posts, replies) | [FEAT-PD009](./features/FEAT-PD009-forum-and-attribution-contracts.md) | 6-done | A-COM Cycle C-B; contracts over the D15 substrate, write-narrowed; flat threading stays trigger-enforced |
+| Group-scoped forum structure (windowed own-edit/delete sliver) | [FEAT-PD011](./features/FEAT-PD011-announcements-window-and-reports-contracts.md) | 4-ready | A-COM Cycle C-D — CB-3: `edit_own_forum_post` / `delete_own_forum_post`, 15-minute window, contracts-only door; DMs stay immutable (regression-held) |
 | Membership-status attribution display (ADR-U021) | [FEAT-PD009](./features/FEAT-PD009-forum-and-attribution-contracts.md) | 6-done | The COM-14 ladder ("Former member" per CB-9, 'Unknown' fallback); applies to forum + conversation detail; display law, never data mutation |
-| Community-scoped moderation surface | [FEAT-PD009](./features/FEAT-PD009-forum-and-attribution-contracts.md) | 6-done | **Partial:** soft-delete moderation contract only; reports store + queue defer to C-D (CB-4) / A-ADM |
-| (remaining eight) | — | — | No FEAT-PD specs yet; realized notification code predates this partition (see §L3 Step 2). A-COM cycles C-D..C-E spec routing slivers and lifecycle cascades + export (live delivery specced at C-C, FEAT-PD010 above); feeds, cord-health glance, journey-scoped surfaces, attachments, and preferences stay forward (A-NTF / A-DIS / later). |
+| Community-scoped moderation surface | [FEAT-PD009](./features/FEAT-PD009-forum-and-attribution-contracts.md) | 6-done | **Partial:** soft-delete moderation contract only; the reports store lands at C-D (next row, CB-4); the queue surface defers to A-ADM |
+| Community-scoped moderation surface (reports-store sliver) | [FEAT-PD011](./features/FEAT-PD011-announcements-window-and-reports-contracts.md) | 4-ready | A-COM Cycle C-D — `content_reports` + `submit_content_report` (snapshot-at-report, idempotent resubmit); the admin SELECT is the ADM-10 queue seam |
+| Notification routing & in-platform delivery (announcements sliver) | [FEAT-PD011](./features/FEAT-PD011-announcements-window-and-reports-contracts.md) | 4-ready | A-COM Cycle C-D — ADR-U049: durable `announcements` home + send-time fan-out of V3 delivery rows (the U048 split realized; §8 Q1 seam fixed); preferences/digest and the bell stay forward (A-NTF) |
+| (remaining seven) | — | — | No FEAT-PD specs yet; realized notification code predates this partition (see §L3 Step 2). C-E specs lifecycle cascades + Mist ephemerality + export (CB-1/CB-6); the announcements routing sliver is specced at C-D (FEAT-PD011 above, live delivery at C-C, FEAT-PD010); feeds, cord-health glance, journey-scoped surfaces, attachments, and preferences stay forward (A-NTF / A-DIS / later). |
 
 ### Capabilities without specs
 
-The remaining eight above. Candidates for future L4 runs; wave-scope determination is wave-planning's, not L3's.
+The remaining seven above. Candidates for future L4 runs; wave-scope determination is wave-planning's, not L3's.
 
 ### Features without capabilities
 
