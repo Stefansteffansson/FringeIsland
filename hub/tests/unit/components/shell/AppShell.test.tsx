@@ -9,6 +9,11 @@ import { render, screen } from '@testing-library/react';
 jest.mock('@/components/ui/NotificationBell', () => ({
   NotificationBell: () => <div data-testid="bell" />,
 }));
+// FEAT-H025 adaptation (labelled): AppShell now mounts the Messages chrome;
+// stubbed here like the bell/menu — its behaviour has its own unit suite.
+jest.mock('@/components/messages/MessagesLink', () => ({
+  MessagesLink: () => <div data-testid="messages-link-stub" />,
+}));
 jest.mock('@/components/shell/AccountMenu', () => ({
   AccountMenu: () => <div data-testid="account-menu" />,
 }));

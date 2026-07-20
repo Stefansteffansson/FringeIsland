@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { NotificationBell } from '@/components/ui/NotificationBell';
 import { AccountMenu } from '@/components/shell/AccountMenu';
+import { MessagesLink } from '@/components/messages/MessagesLink';
 
 /**
  * The authenticated Hub shell (navigation/chrome — product-owned). Mounts the
@@ -41,6 +42,9 @@ export function AppShell({ children, title }: { children: ReactNode; title?: str
           )}
         </div>
         <div className="flex items-center gap-2">
+          {/* FEAT-H025 STORY-1: FIM-only Messages chrome with the read-state
+              badge (CB-1; unread is never a notification — the oracle rule). */}
+          <MessagesLink />
           <NotificationBell />
           <AccountMenu />
         </div>

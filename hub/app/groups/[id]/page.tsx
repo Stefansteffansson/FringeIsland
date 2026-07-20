@@ -14,6 +14,7 @@ import { MyPermissionsPanel } from '@/components/groups/MyPermissionsPanel';
 import { GroupMembershipsPanel } from '@/components/groups/GroupMembershipsPanel';
 import { InviteGroupPanel } from '@/components/groups/InviteGroupPanel';
 import { GroupJourneysSection } from '@/components/groups/GroupJourneysSection';
+import { GroupConversationsSection } from '@/components/groups/GroupConversationsSection';
 import { GroupJourneyProgressSection } from '@/components/groups/GroupJourneyProgressSection';
 import {
   fetchActingContexts,
@@ -244,6 +245,10 @@ export default function GroupDetailPage() {
             permissions={permissions}
             enrollments={journeySlice}
           />
+          {/* FEAT-H025 STORY-6 (COM-15, CB-7): the group's conversations — a
+              failure-isolated slice; create renders only on the platform's
+              create_group_conversations grant. */}
+          <GroupConversationsSection groupId={groupId} />
           <RolesPanel
             groupId={groupId}
             fabric={rolesData?.fabric ?? null}

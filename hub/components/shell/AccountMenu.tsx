@@ -109,6 +109,13 @@ export function AccountMenu() {
               My groups
             </Link>
             <Link
+              href="/messages"
+              onClick={() => setOpen(false)}
+              className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+            >
+              Messages
+            </Link>
+            <Link
               href="/profile"
               onClick={() => setOpen(false)}
               className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"

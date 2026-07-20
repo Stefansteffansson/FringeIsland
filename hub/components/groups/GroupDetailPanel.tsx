@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { openDm } from '@/lib/messages/client';
 import {
   activateMember,
   assignMemberRole,
@@ -94,6 +96,7 @@ export function GroupDetailPanel({
    *  group's ending (leave, hand-over, close, delete). */
   onLeft?: () => void;
 }) {
+  const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [memberError, setMemberError] = useState<string | null>(null);
   const [removeTarget, setRemoveTarget] = useState<{
@@ -561,6 +564,27 @@ export function GroupDetailPanel({
                   ))}
                 </div>
                 <div className="flex items-center gap-2">
+                  {/* FEAT-H025 STORY-5 (COM-1): the roster DM entry — persons
+                      only, never self; the substrate enforces FIM-only (CB-1). */}
+                  {(m.member_group_type ?? 'personal') === 'personal' &&
+                    m.member_group_id &&
+                    m.member_group_id !== viewerMemberGroupId && (
+                      <button
+                        type="button"
+                        data-testid={`message-member-${m.member_group_id}`}
+                        aria-label={`Message ${m.display_name}`}
+                        onClick={() => {
+                          void openDm(m.member_group_id!)
+                            .then((cid) => router.push(`/messages/${cid}`))
+                            .catch((err: Error) =>
+                              setMemberError(err.message || 'Could not open the conversation'),
+                            );
+                        }}
+                        className="rounded border border-gray-200 px-1.5 py-1 text-xs text-gray-600 hover:bg-gray-50"
+                      >
+                        Message
+                      </button>
+                    )}
                   {canAssign && assignable(m).length > 0 && (
                     <select
                       data-testid={`assign-select-${m.member_group_id}`}
