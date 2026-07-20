@@ -11,6 +11,12 @@ import {
   type ConversationDetail,
   type ConversationMessage,
 } from '@/lib/messages/client';
+import {
+  CONVERSATIONS_CHANGED_EVENT,
+  conversationsTopic,
+} from '@/lib/realtime/conversations-tenant';
+import { useCommChannel } from '@/lib/realtime/use-comm-channel';
+import { ReconnectingNotice } from '@/components/ui/ReconnectingNotice';
 
 type PendingMessage = {
   localId: string;
@@ -54,23 +60,65 @@ export default function ConversationPage({
     }
   }, [user, identity, authLoading, router, id]);
 
+  // The one load path — a first load and a live re-read take the SAME fetch +
+  // markRead sequence, so read-marking behaviour is byte-identical either way
+  // (FEAT-H027 STORY-3). Only the failure posture differs: a first load
+  // surfaces the error; a background re-read swallows it and leaves the open
+  // conversation on screen (verify-on-signal — a refused hint is never content).
+  const loadDetail = useCallback(
+    (opts: { background: boolean; active: () => boolean }) =>
+      fetchConversationDetail(id)
+        .then((doc) => {
+          if (!opts.active()) return;
+          setDetail(doc);
+          setFailed(null);
+          markRead(id).catch(() => {}); // best-effort; the badge self-heals on next read
+        })
+        .catch((err: Error) => {
+          if (opts.active() && !opts.background) setFailed(err.message);
+        }),
+    [id],
+  );
+
   useEffect(() => {
     if (authLoading || identity !== 'fim') return;
     let active = true;
-    fetchConversationDetail(id)
-      .then((doc) => {
-        if (!active) return;
-        setDetail(doc);
-        setFailed(null);
-        markRead(id).catch(() => {}); // best-effort; the badge self-heals on next read
-      })
-      .catch((err: Error) => {
-        if (active) setFailed(err.message);
-      });
+    loadDetail({ background: false, active: () => active });
     return () => {
       active = false;
     };
-  }, [authLoading, identity, id]);
+  }, [authLoading, identity, loadDetail]);
+
+  // FEAT-H027 STORY-3: a hint naming THIS conversation re-reads through the
+  // load path above; a hint naming another conversation leaves it undisturbed
+  // (only the inbox/badge move). The re-read runs in the background — existing
+  // content stays on screen while it resolves.
+  useEffect(() => {
+    if (identity !== 'fim') return;
+    let active = true;
+    const onChanged = (e: Event) => {
+      const targeted = (e as CustomEvent<{ conversationId: string | null }>).detail?.conversationId;
+      if (targeted === id) void loadDetail({ background: true, active: () => active });
+    };
+    window.addEventListener(CONVERSATIONS_CHANGED_EVENT, onChanged);
+    return () => {
+      active = false;
+      window.removeEventListener(CONVERSATIONS_CHANGED_EVENT, onChanged);
+    };
+  }, [identity, id, loadDetail]);
+
+  // FEAT-H027 STORY-6: reconcile the open conversation on recovery / visibility
+  // regain / degraded poll — the same background load path (the hook won't fire
+  // after unmount, so no active guard is needed here). The hook also drives the
+  // quiet reconnecting affordance rendered below.
+  const reconcile = useCallback(
+    () => loadDetail({ background: true, active: () => true }),
+    [loadDetail],
+  );
+  const { reconnecting } = useCommChannel(
+    identity === 'fim' ? conversationsTopic(user?.id ?? null) : null,
+    reconcile,
+  );
 
   const senderName = useCallback(
     (senderGroupId: string | null): string => {
@@ -134,6 +182,7 @@ export default function ConversationPage({
 
   return (
     <AppShell title={title}>
+      {reconnecting && <ReconnectingNotice className="mb-3" />}
       {authLoading || identity !== 'fim' || (detail === null && failed === null) ? (
         <div className="space-y-3" aria-hidden="true" data-testid="thread-skeleton">
           <div className="h-12 w-2/3 animate-pulse rounded-xl bg-gray-100" />

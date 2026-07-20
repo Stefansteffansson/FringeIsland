@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { invalidateAllCaches } from '@/lib/auth/cache-registry';
 import { beginMistSession, deriveIdentity, type Identity } from '@/lib/auth/mist';
 import { useSessionGuard } from '@/lib/auth/session-guard';
+import { useRealtimeTenants } from '@/lib/realtime/conversations-tenant';
 import { TRANSCENDENCE_CONSENT_REQUIRED_ERROR } from '@/lib/auth/transcendence';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
@@ -250,6 +251,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // on EVERY page (a revoked device isn't sitting on /sessions), which is why
   // it lives here and not in the sessions surface.
   useSessionGuard(supabase, session, identity);
+
+  // FEAT-H027: the ADR-U039 realtime tenants — the shared channel manager's
+  // connection (armed for a FIM with a live session) + the app-wide
+  // conversations tenant (inbox / open detail / unread badge re-read on a
+  // content-free hint). Beside the session guard: same shared socket, same
+  // arming rule, same "on every page" reasoning.
+  useRealtimeTenants(supabase, session, identity);
 
   return (
     <AuthContext.Provider

@@ -3,7 +3,7 @@
 ---
 id: TASK-CC-05
 title: The page-scoped forum tenant — mount/unmount with GroupForumSection, hint → dropGroup + re-read, drafts preserved, tombstones live
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H027

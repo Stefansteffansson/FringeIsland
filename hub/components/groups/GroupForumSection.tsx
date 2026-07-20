@@ -7,11 +7,15 @@ import {
   createForumPost,
   replyToForumPost,
   moderateForumPost,
+  dropGroup,
   type ForumPost,
 } from '@/lib/forum/client';
 import { authorClassName } from '@/lib/forum/attribution';
 import { fetchMyPermissions } from '@/lib/groups/client';
+import { useForumTenant, forumTopic } from '@/lib/realtime/forum-tenant';
+import { useCommChannel } from '@/lib/realtime/use-comm-channel';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { ReconnectingNotice } from '@/components/ui/ReconnectingNotice';
 
 /**
  * FEAT-H026 — the group page's Forum section (COM-5/6a/6b/7/14, Cycle C-B).
@@ -55,6 +59,22 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
       setFailed(true);
     }
   }, [groupId]);
+
+  // FEAT-H027 STORY-4: a live forum hint drops this group's cache and re-reads
+  // the loaded window through the contract — new threads appear newest-first,
+  // moderation tombstones materialize. Refetch-don't-patch: the payload's
+  // post_id is correlation only. Composer/reply drafts are separate state, so a
+  // refresh never eats a half-written post.
+  const onForumHint = useCallback(() => {
+    dropGroup(groupId);
+    void load();
+  }, [groupId, load]);
+  useForumTenant(groupId, onForumHint);
+
+  // FEAT-H027 STORY-6: reconcile the forum on recovery / visibility regain /
+  // degraded poll — the same dropGroup + re-read a hint runs. The hook drives
+  // the quiet reconnecting affordance shown in the section header.
+  const { reconnecting } = useCommChannel(forumTopic(groupId), onForumHint);
 
   useEffect(() => {
     let active = true;
@@ -217,6 +237,7 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
       className="mt-8 rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
     >
       <h2 className="text-lg font-semibold text-gray-800">Forum</h2>
+      {reconnecting && <ReconnectingNotice className="mt-1" />}
 
       {can('post_forum_messages') && (
         <div className="mt-3">

@@ -1,13 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/AuthContext';
 import {
   fetchConversations,
   peekConversations,
+  invalidateMessagesCache,
   unreadConversationCount,
 } from '@/lib/messages/client';
+import {
+  CONVERSATIONS_CHANGED_EVENT,
+  conversationsTopic,
+} from '@/lib/realtime/conversations-tenant';
+import { useCommChannel } from '@/lib/realtime/use-comm-channel';
 
 /**
  * FEAT-H025 STORY-1 — the shell Messages chrome. A **FIM-only** affordance
@@ -20,32 +26,64 @@ import {
  * 'use client' — reads auth state (Hub gotcha: `useAuth` no-ops on the server).
  */
 export function MessagesLink() {
-  const { identity } = useAuth();
+  const { identity, user } = useAuth();
   const [unread, setUnread] = useState<number>(() =>
     unreadConversationCount(peekConversations()),
   );
 
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  const load = useCallback(async () => {
+    try {
+      const rows = await fetchConversations();
+      if (mountedRef.current) setUnread(unreadConversationCount(rows));
+    } catch {
+      if (mountedRef.current) setUnread(0); // best-effort chrome — degrade silently
+    }
+  }, []);
+
   useEffect(() => {
     if (identity !== 'fim') return;
-
+    // Initial badge read as an inline promise chain — setState lands in `.then`
+    // (async), never synchronously in the effect body (set-state-in-effect).
     let active = true;
-    const load = async () => {
-      try {
-        const rows = await fetchConversations();
-        if (active) setUnread(unreadConversationCount(rows));
-      } catch {
-        if (active) setUnread(0); // best-effort chrome — degrade silently
-      }
-    };
-    load();
+    fetchConversations()
+      .then((rows) => {
+        if (active && mountedRef.current) setUnread(unreadConversationCount(rows));
+      })
+      .catch(() => {
+        if (active && mountedRef.current) setUnread(0);
+      });
 
+    // Refresh on own-action nudges (refreshNavigation) AND on a live hint
+    // (conversationsChanged, FEAT-H027) — the badge moves without navigation.
     const onRefresh = () => load();
     window.addEventListener('refreshNavigation', onRefresh);
+    window.addEventListener(CONVERSATIONS_CHANGED_EVENT, onRefresh);
     return () => {
       active = false;
       window.removeEventListener('refreshNavigation', onRefresh);
+      window.removeEventListener(CONVERSATIONS_CHANGED_EVENT, onRefresh);
     };
-  }, [identity]);
+  }, [identity, load]);
+
+  // FEAT-H027 STORY-6: the badge reconciles with the mounted comm surfaces on
+  // recovery / visibility regain / degraded poll (invalidate + re-fetch). The
+  // badge is chrome — it participates in reconciliation but shows no indicator.
+  const reconcile = useCallback(() => {
+    invalidateMessagesCache();
+    load();
+  }, [load]);
+  useCommChannel(
+    identity === 'fim' ? conversationsTopic(user?.id ?? null) : null,
+    reconcile,
+  );
 
   if (identity !== 'fim') return null;
 
