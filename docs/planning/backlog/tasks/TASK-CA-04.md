@@ -3,7 +3,7 @@
 ---
 id: TASK-CA-04
 title: /messages inbox + /messages/[id] detail + send + roster Message action + FIM-only nav badge
-status: review
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H025

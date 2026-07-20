@@ -6,7 +6,7 @@ title: Conversation & message contracts (DM + group grain)
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -16,9 +16,13 @@ The Hub v2 has no messaging. The substrate has a proven DM core (D15 rebuild: `c
 
 This is the **first DS-5 feature spec**. Like FEAT-PD002 for DS-3, it lands the service's contract discipline: PostgREST RPC as the platform surface (A#9), writes narrowed so the contracts are the only door, and the conformance gate extended to police DS-5's tables.
 
-## Solution sketch
+## Implementation notes
 
-**Conversation-model redesign (one migration, data-preserving — pre-launch, small data):**
+**Built 2026-07-20, Cycle C-A** — schema-gate PR #203 (named approval, migration `20260719230500`) + the rider on PR #204 (named approval, migration `20260720003000`), both applied + repaired on dev. **Red→green:** the integration suite (`hub/tests/integration/communication/conversation-contracts.test.ts`) was demonstrated red pre-apply at **20 red / 1 labelled regression-guard green** — every refusal pinned to its exact SQLSTATE so an absent function could not satisfy it — and flipped to **21/21 green** on apply (and again on the rider). The conformance gate (`internal-api-conformance.test.ts`) gained `DS_TABLES` += the four conversation tables + the DS-5 function allowlist and held green pre- and post-apply (it caught the retiring `can_update_conversation` on first run — allowlisted with a retirement note, now inert).
+
+**W12 per-RPC gate verification (all eight + the actor helper):** every gate below is enforced in the function body and proven by an adversarial direct-call test (Mist included): `ds5_require_fim_actor` (42501 on no-actor/suspended/Mist — CB-1's one gate, called by every contract) · `get_my_conversations` (participant scoping in-query; STORY-1/8) · `get_conversation_detail` (participant 42501 / unknown P0002; departed-sender display resolution; STORY-2) · `send_message` (participant + non-empty 22023; STORY-3) · `get_or_create_dm_conversation` (FIM-only both sides, active-only, not-self 22023, pair-uniqueness schema-enforced under the concurrent race; STORY-4) · `create_group_conversation` (`has_permission` 42501; STORY-5) · `get_group_conversations` (membership 42501; STORY-6) · `join`/`leave_group_conversation` (membership / kind P0002 / active-participant; rejoin clears `left_at`; STORY-6) · `mark_conversation_read` (own-cursor only; STORY-7). Direct writes: no INSERT/UPDATE policies remain on any conversation table — proven 42501/zero-row (STORY-8). Sole-home-in-BFF: nothing — every rule lives platform-side.
+
+**What landed (as built):**
 
 - `conversation_kinds` — registry table (TEXT key), seeded `dm`, `group`. Never an enum (invariant 6; DS-5 §8 Q8 firms here: conversation vs forum = distinct kinds, one registry space; forums stay `forum_posts`).
 - `conversation_participants` — junction: `conversation_id` FK, `participant_group_id` FK → `groups` (personal groups — P-O1, never a user-id column), `last_read_at`, `joined_at`, `left_at NULL`. PK (conversation_id, participant_group_id). RLS from birth.
@@ -26,7 +30,7 @@ This is the **first DS-5 feature spec**. Like FEAT-PD002 for DS-3, it lands the 
 - `direct_messages` → renamed `messages` (it now carries both kinds; honest naming). Columns unchanged (`conversation_id`, `sender_group_id ON DELETE SET NULL`, non-empty `content`, `created_at`, immutable). The PC-4 `audit_admin_message_send` trigger re-created on the renamed table.
 - `can_update_conversation()` retires with the pair columns; `is_conversation_participant()` reshapes over the junction.
 - **U039 disposition rider:** `conversations` and `direct_messages`/`messages` leave the `supabase_realtime` publication (legacy postgres_changes shape, not carried into v2 — ADR-U039; `notifications`' publication membership is A-NTF's call, untouched here). The DS-5 spec's §3/§6/§8 Q7 realtime text is amended to U039 in the same batch (PROCESS §9 — the spec yields).
-- **Conformance-gate rider:** `DS_TABLES` += `conversations`, `messages`, `forum_posts`, `conversation_participants`, `conversation_kinds`; `DS_OWNED_ALLOWLIST` += the functions below (existing DS-5-owned helpers included). `notifications` stays out by design (ADR-U048).
+- **Conformance-gate rider (as built):** `DS_TABLES` += `conversations`, `messages`, `conversation_participants`, `conversation_kinds`; `DS_OWNED_ALLOWLIST` += the DS-5 functions (retiring `can_update_conversation` included, noted). **`forum_posts` deferred to C-B by name** — the build found `admin_hard_delete_user` (Core) textually updating it (see Build learnings); it joins when that crossing relocates. `notifications` stays out by design (ADR-U048).
 
 **Contracts (SECURITY DEFINER, `search_path=''`, actor = four-hop personal-group chain, granted to `authenticated`):**
 
@@ -43,16 +47,7 @@ This is the **first DS-5 feature spec**. Like FEAT-PD002 for DS-3, it lands the 
 
 Writes narrow to the contracts (the PD002 pattern): permissive v1 INSERT/UPDATE policies on the comm tables drop; participant-scoped SELECT policies remain as defense-in-depth. No custom API route touches a DS-5 table (entity rule); the Hub reaches these via its BFF.
 
-## Appetite
-
-One focused build session, paired with FEAT-H025. The migration is the deep half; the contracts are mechanical over it.
-
-## Rabbit holes
-
-- **Ad-hoc multi-party DMs** (arbitrary FIM sets outside a group) — not this feature; `group` kind is PC-3-group-scoped. A future kind row, zero schema change (that's the point of the registry).
-- **Unread *counts* per conversation** — `has_unread` boolean only; the badge is "conversations with unread", not message tallies. Keeps clear of invariant-2 adjacency and count-maintenance cost.
-- **Message search, attachments, edit/delete** — COM-12 is C-D; attachments are a DS-4 seam, full-forward.
-- **Realtime** — nothing here opens a channel. C-C builds the U039 ping-then-fetch layer for both surfaces at once (CB-8).
+**Build learnings (recorded):** (1) the gate found `admin_hard_delete_user` (Core) textually updating `public.forum_posts` — the sentinel reassignment; **named deferral:** `forum_posts` joins `DS_TABLES` at C-B when that crossing relocates to `ds5_lifecycle_*`. (2) The rider (payload-walk catch #3, found at surface build): the roster payload carries no `users.id`, so the DM recipient is keyed by personal group id (P-O1). (3) The D2/C-E disposition scope widened: group-kind conversations tied to a closing/deleting group must be dispositioned by the C-E `ds5_lifecycle_*` handlers alongside forum content. (4) Deliberately not built (held from the decomposition's rabbit-hole fences): ad-hoc multi-party DMs (a future kind row — zero schema change), per-message unread counts, search/attachments/edit-delete (C-D / DS-4 seams), and any realtime (C-C builds the U039 layer for both surfaces, CB-8).
 
 ## No-gos
 

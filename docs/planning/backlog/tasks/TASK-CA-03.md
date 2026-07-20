@@ -3,7 +3,7 @@
 ---
 id: TASK-CA-03
 title: Messages BFF routes (route-policy conformant) + client lib with session cache and W9 registration
-status: review
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H025

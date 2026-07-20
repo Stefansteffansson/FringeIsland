@@ -1,6 +1,6 @@
 # Phase 3 — Communication (A-COM) completion plan
 
-**Status:** v2 (2026-07-19) — decision board SETTLED (Stefan, 2026-07-19): recommendations adopted on CB-1/2/3/4/5/6/8/9; **CB-7 overridden — group conversations are IN scope and build in C-A**. Cycle C-A decomposing.
+**Status:** v3 (2026-07-20) — board SETTLED 2026-07-19 (recommendations adopted CB-1/2/3/4/5/6/8/9; **CB-7 overridden — group conversations in scope, built in C-A**). **Cycle C-A BUILT** (PRs #199–#204; migrations `20260719230500` + rider `20260720003000` applied at named gates): FEAT-PD008 `6-done`; FEAT-H025 complete and swept (unit 736 · integration 21/21 comm · E2E 68/68 fleet) — held at `5-in-cycle` on exactly one DoD item, the **deep-cold spot check of `/messages` on production** (ADR-U043 Amendment 1). Discovered at build, now named dues: the `admin_hard_delete_user`→`forum_posts` core crossing (C-B: relocate to `ds5_lifecycle_*`, then `forum_posts` joins `DS_TABLES`) and the widened D2 scope (C-E handlers must disposition group-kind conversations alongside forum content). Next: the spot check → H025 `6-done` → Cycle C-B (forum + attribution + MEM-9).
 **Provenance:** four-scout terrain sweep 2026-07-19 (platform/DS-5 · substrate · surface/oracle · seams-and-dues), load-bearing facts disk-verified. Canonical-wins flags are folded in below where a source disagreed.
 
 ---

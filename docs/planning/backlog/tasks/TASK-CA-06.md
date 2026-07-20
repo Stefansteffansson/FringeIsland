@@ -3,7 +3,7 @@
 ---
 id: TASK-CA-06
 title: E2E coverage, full sweeps, per-RPC W12 verification, 6-done transitions
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H025

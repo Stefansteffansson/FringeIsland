@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { createAdminClient, SESSION_EMAIL } from './helpers/auth';
+import { createAdminClient, SESSION_EMAIL, markArrivedOnce } from './helpers/auth';
 
 /**
  * FEAT-H019 — the journeys surface (JRN-1/2/3/4 + the GRP-4 seam) E2E,
@@ -20,12 +20,16 @@ async function purgeJourneyState(): Promise<void> {
   const admin = createAdminClient();
   const { data } = await admin
     .from('users')
-    .select('personal_group_id')
+    .select('personal_group_id, auth_user_id')
     .eq('email', SESSION_EMAIL)
     .maybeSingle();
   const gid = data?.personal_group_id as string | undefined;
   if (gid) {
     await admin.from('journey_enrollments').delete().eq('group_id', gid);
+    // C-A adaptation (labelled): the purge also wipes the session FIM's
+    // onboarding enrolment (global-setup's arrived-once state) — any sibling
+    // booting /groups afterwards gets the JRN-15 auto-launch. Re-arm it.
+    if (data?.auth_user_id) await markArrivedOnce(admin, data.auth_user_id as string);
   }
   await admin.from('groups').delete().eq('name', E2E_GROUP);
 }
@@ -65,9 +69,16 @@ test.describe('FEAT-H019 — journey catalogue & enrolment', () => {
     await page.getByTestId('enroll-self').click();
     await expect(page.getByTestId('enrolled-individually')).toBeVisible();
 
-    // The catalogue badge reflects the enrolment.
+    // The catalogue badge reflects the enrolment. C-A adaptation (labelled):
+    // scoped to the fixture card — the session FIM now really carries the
+    // onboarding enrolment (arrived-once re-armed after the purge), so a
+    // global badge locator honestly finds two.
     await page.goto('/journeys');
-    await expect(page.getByTestId('enrolled-badge')).toBeVisible();
+    const kickstartCard = page
+      .getByTestId('journeys-list')
+      .locator('li')
+      .filter({ has: page.getByRole('link', { name: 'Personal Development Kickstart' }) });
+    await expect(kickstartCard.getByTestId('enrolled-badge')).toBeVisible();
 
     // STORY-5: withdraw behind the destructive ConfirmModal; badge clears.
     await page.getByRole('link', { name: 'Personal Development Kickstart' }).click();
@@ -76,7 +87,14 @@ test.describe('FEAT-H019 — journey catalogue & enrolment', () => {
     await page.getByTestId('confirm-modal-confirm').click();
     await expect(page.getByTestId('enroll-self')).toBeVisible();
     await page.goto('/journeys');
-    await expect(page.getByTestId('enrolled-badge')).toHaveCount(0);
+    // C-A adaptation (labelled): scoped as above — the onboarding badge stays.
+    await expect(
+      page
+        .getByTestId('journeys-list')
+        .locator('li')
+        .filter({ has: page.getByRole('link', { name: 'Personal Development Kickstart' }) })
+        .getByTestId('enrolled-badge'),
+    ).toHaveCount(0);
   });
 
   test('the wielding walk: enrol a group, the group page tells it, withdraw the group', async ({
