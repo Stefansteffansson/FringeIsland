@@ -189,11 +189,13 @@ Foundations first: **conversation lifecycle** and **forum structure** stand dire
 | Community-scoped moderation surface | [FEAT-PD009](./features/FEAT-PD009-forum-and-attribution-contracts.md) | 6-done | **Partial:** soft-delete moderation contract only; the reports store lands at C-D (next row, CB-4); the queue surface defers to A-ADM |
 | Community-scoped moderation surface (reports-store sliver) | [FEAT-PD011](./features/FEAT-PD011-announcements-window-and-reports-contracts.md) | 6-done | A-COM Cycle C-D — `content_reports` + `submit_content_report` (snapshot-at-report, idempotent resubmit); the admin SELECT is the ADM-10 queue seam |
 | Notification routing & in-platform delivery (announcements sliver) | [FEAT-PD011](./features/FEAT-PD011-announcements-window-and-reports-contracts.md) | 6-done | A-COM Cycle C-D — ADR-U049: durable `announcements` home + send-time fan-out of V3 delivery rows (the U048 split realized; §8 Q1 seam fixed); preferences/digest and the bell stay forward (A-NTF) |
-| (remaining seven) | — | — | No FEAT-PD specs yet; realized notification code predates this partition (see §L3 Step 2). C-E specs lifecycle cascades + Mist ephemerality + export (CB-1/CB-6); the announcements routing sliver is specced at C-D (FEAT-PD011 above, live delivery at C-C, FEAT-PD010); feeds, cord-health glance, journey-scoped surfaces, attachments, and preferences stay forward (A-NTF / A-DIS / later). |
+| Communication lifecycle cascades (ADR-U016 slot) | [FEAT-PD012](./features/FEAT-PD012-lifecycle-dispositions-and-export-contracts.md) | 4-ready | A-COM Cycle C-E — D2 executed as preserve-and-seal (`ds5_lifecycle_group_closed` from `close_group`/`delete_group`, ADR-U047; group-kind conversations sealed, forum record untouched); carries the export half (`get_own_messages_export()` into the composite, CB-6 right-of-access incl. suspended — PC008 §155 closed at source). Earlier slivers: the hard-delete crossing relocated at C-B (FEAT-PD009); exit-time attribution is display law (COM-14, C-B) |
+| Mist-communication ephemerality (ADR-U031) | [FEAT-PD012](./features/FEAT-PD012-lifecycle-dispositions-and-export-contracts.md) | 4-ready | CB-1 verify-and-record: FIM-only in Ferd — `ds5_require_fim_actor()` on every write door means no Mist-authored row can exist; ephemerality satisfied by exclusion, proven adversarially (STORY-6); §8 Q2 recorded at flip-green |
+| (remaining five) | — | — | No FEAT-PD specs yet; realized notification code predates this partition (see §L3 Step 2). The announcements routing sliver is specced at C-D (FEAT-PD011 above, live delivery at C-C, FEAT-PD010); feeds, cord-health glance, journey-scoped surfaces, attachments, and preferences stay forward (A-NTF / A-DIS / later). |
 
 ### Capabilities without specs
 
-The remaining seven above. Candidates for future L4 runs; wave-scope determination is wave-planning's, not L3's.
+The remaining five above. Candidates for future L4 runs; wave-scope determination is wave-planning's, not L3's.
 
 ### Features without capabilities
 
