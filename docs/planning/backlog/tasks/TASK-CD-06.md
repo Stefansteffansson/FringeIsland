@@ -3,7 +3,7 @@
 ---
 id: TASK-CD-06
 title: C-D E2E + sweeps + close ritual
-status: todo
+status: done
 assigned_to: claude
 priority: medium
 feature: FEAT-H028

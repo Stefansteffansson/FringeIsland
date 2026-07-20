@@ -3,7 +3,7 @@
 ---
 id: TASK-CD-05
 title: Hub edit/delete-own window + reporting (H028 STORY-4..5)
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H028
