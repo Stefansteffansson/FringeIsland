@@ -11,12 +11,13 @@ import { InlineError } from '@/components/ui/InlineError';
 import { CreateGroupPanel } from '@/components/groups/CreateGroupPanel';
 import { MyInvitations } from '@/components/groups/MyInvitations';
 import { PendingNominations } from '@/components/groups/PendingNominations';
+import { PlatformAnnouncementsSection } from '@/components/announcements/PlatformAnnouncementsSection';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 import { fetchMyGroups, peekMyGroups } from '@/lib/groups/client';
 import type { GroupSummary } from '@/lib/groups/queries';
 
 export default function GroupsPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, identity, loading: authLoading } = useAuth();
   const router = useRouter();
 
   // Instant paint (perf revision 2026-07-06): seed from the session cache —
@@ -68,6 +69,11 @@ export default function GroupsPage() {
   return (
     <AppShell title="My Groups">
       <h1 className="mb-6 text-3xl font-bold text-gray-900">My Groups</h1>
+
+      {/* FEAT-H028 STORY-3 (COM-9): platform announcements where every FIM
+          passes — the entry page routes a FIM here ("Continue to your groups").
+          FIM-only; a Mist never sees the section (CB-1). */}
+      {identity === 'fim' && <PlatformAnnouncementsSection />}
 
       {/* FEAT-H013 STORY-1 (GRP-1): create a group and land in it. Only offered
           to a FIM — a Mist's list is empty and creation is contract-refused. */}
