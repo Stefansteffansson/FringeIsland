@@ -3,7 +3,7 @@
 ---
 id: TASK-CC-01
 title: Demonstrated-red integration suite for the PD010 hint layer — emission on every write path, ids-only payloads, receipt policies, no client-send door
-status: review
+status: done
 assigned_to: claude
 priority: critical
 feature: FEAT-PD010

@@ -3,7 +3,7 @@
 ---
 id: TASK-CC-02
 title: The PD010 migration — emit triggers on messages/forum_posts, emit helper(s), the two receive policies, conformance lockstep; held at the schema gate
-status: review
+status: done
 assigned_to: claude
 priority: critical
 feature: FEAT-PD010
