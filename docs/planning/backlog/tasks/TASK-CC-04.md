@@ -3,7 +3,7 @@
 ---
 id: TASK-CC-04
 title: The app-wide conversations tenant — hint → invalidate + conversationsChanged; inbox/badge/detail re-read live, verify-on-signal
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H027

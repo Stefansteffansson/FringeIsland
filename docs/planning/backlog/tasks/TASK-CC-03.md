@@ -3,7 +3,7 @@
 ---
 id: TASK-CC-03
 title: The shared ADR-U039 tenant substrate — one socket, declarative private-topic tenants, status + rejoin surface, teardown; A-NTF-ready
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H027

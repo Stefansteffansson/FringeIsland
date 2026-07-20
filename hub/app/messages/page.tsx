@@ -1,15 +1,22 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { AppShell } from '@/components/shell/AppShell';
+import { ReconnectingNotice } from '@/components/ui/ReconnectingNotice';
 import {
   fetchConversations,
   peekConversations,
+  invalidateMessagesCache,
   type ConversationSummary,
 } from '@/lib/messages/client';
+import {
+  CONVERSATIONS_CHANGED_EVENT,
+  conversationsTopic,
+} from '@/lib/realtime/conversations-tenant';
+import { useCommChannel } from '@/lib/realtime/use-comm-channel';
 
 /**
  * FEAT-H025 STORY-2 — the `/messages` inbox (COM-2). One list, both kinds,
@@ -54,8 +61,52 @@ export default function MessagesPage() {
     };
   }, [authLoading, identity]);
 
+  // Background re-read: existing content stays rendered while it runs (rows is
+  // never nulled, so no skeleton flash — a refused re-read leaves state as-is).
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+  const backgroundReRead = useCallback(() => {
+    fetchConversations()
+      .then((fresh) => {
+        if (mountedRef.current) {
+          setRows(fresh);
+          setFailed(false);
+        }
+      })
+      .catch(() => {
+        // A refused/failed re-read leaves the surface as-is (verify-on-signal).
+      });
+  }, []);
+
+  // FEAT-H027 STORY-2: a live hint re-reads in the background (the tenant
+  // already dropped the cache; this fetch is fresh).
+  useEffect(() => {
+    if (identity !== 'fim') return;
+    const onChanged = () => backgroundReRead();
+    window.addEventListener(CONVERSATIONS_CHANGED_EVENT, onChanged);
+    return () => window.removeEventListener(CONVERSATIONS_CHANGED_EVENT, onChanged);
+  }, [identity, backgroundReRead]);
+
+  // FEAT-H027 STORY-6: reconcile on recovery / visibility regain / degraded
+  // poll — invalidate (no hint preceded this) then re-read. The hook also
+  // drives the quiet reconnecting affordance below.
+  const reconcile = useCallback(() => {
+    invalidateMessagesCache();
+    backgroundReRead();
+  }, [backgroundReRead]);
+  const { reconnecting } = useCommChannel(
+    identity === 'fim' ? conversationsTopic(user?.id ?? null) : null,
+    reconcile,
+  );
+
   return (
     <AppShell title="Messages">
+      {reconnecting && <ReconnectingNotice className="mb-3" />}
       {authLoading || identity !== 'fim' ? (
         <div className="space-y-3" aria-hidden="true">
           <div className="h-16 animate-pulse rounded-xl bg-gray-100" />

@@ -66,7 +66,9 @@ export function invalidateForumCache(): void {
 }
 registerCacheInvalidator(invalidateForumCache);
 
-function dropGroup(groupId: string): void {
+/** Drop one group's forum peek + in-flight (after a write, or a live hint —
+ *  FEAT-H027 STORY-4). Exported for the page-scoped forum tenant. */
+export function dropGroup(groupId: string): void {
   cachedForum.delete(groupId);
   forumInFlight.delete(groupId);
 }
