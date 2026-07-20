@@ -236,16 +236,17 @@ describe('FEAT-PD011 — windowed own-edit/delete + content reports (C-D)', () =
       expect(gone?.content).toBeNull();
 
       // The C-C transition-gated trigger spoke on the existing channel.
+      // Labelled adaptation (the C-C envelope precedent): the event name lives
+      // in the `event` COLUMN of realtime.messages, and realtime.send() may
+      // nest the caller payload under a 'payload' key — the first-written
+      // payload::text substring assertion mis-modeled that storage envelope.
       const hints = await runAdminSql(
-        `SELECT payload::text AS p FROM realtime.messages
+        `SELECT count(*) AS n FROM realtime.messages
          WHERE topic = 'group:${g2}:forum'
-           AND inserted_at > now() - interval '2 minutes';`,
+           AND event = 'forum_post_moderated'
+           AND COALESCE(payload->'payload'->>'post_id', payload->>'post_id') = '${post.id}';`,
       );
-      expect(
-        (hints ?? []).some(
-          (r: { p: string }) => r.p.includes('forum_post_moderated') && r.p.includes(post.id),
-        ),
-      ).toBe(true);
+      expect(Number((hints?.[0] as { n: unknown }).n)).toBeGreaterThan(0);
     });
 
     it('at or past the window edge the edit and the delete refuse (42501, named as the window)', async () => {
