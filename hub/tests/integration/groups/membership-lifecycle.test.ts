@@ -13,6 +13,10 @@ import {
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 const GHOST = '00000000-0000-0000-0000-00000000dead';
+// Single token (the nickname rule below) AND run-unique (the fixture rule):
+// the personal-group name derives from the first display-name token, so a
+// spaced suffix would break the search match.
+const GD_TARGET_NAME = `GDTarget${Date.now()}`;
 
 /** Promote a personal group to platform admin (the invitation-contracts
  *  suite's pattern, reused): active DeusEx member + DeusEx role — Tier-1
@@ -260,7 +264,11 @@ describe('FEAT-PC013 — group membership lifecycle contracts (G-D)', () => {
     pauser = await createTestUser({ displayName: 'GDPauser' });
     activator = await createTestUser({ displayName: 'GDActivator' });
     remover = await createTestUser({ displayName: 'GDRemover' });
-    target = await createTestUser({ displayName: 'GDTarget' });
+    // LABELLED ADAPTATION (2026-07-20, C-C close): run-unique per the fixture
+    // rules — the fixed 'GDTarget' name + capped search_invitable_members
+    // typeahead went red once accumulated cleanup-debris crossed the cap
+    // (9 stale GDTarget users on dev; environmental, not a product change).
+    target = await createTestUser({ displayName: GD_TARGET_NAME });
     plainMember = await createTestUser({ displayName: 'GDPlain' });
     leaver = await createTestUser({ displayName: 'GDLeaver' });
     outsider = await createTestUser({ displayName: 'GDOutsider' });
@@ -550,7 +558,7 @@ describe('FEAT-PC013 — group membership lifecycle contracts (G-D)', () => {
       const c = await asUser(steward); // Steward template holds invite_members
       const { data, error } = await c.rpc('search_invitable_members', {
         p_group_id: groupId,
-        p_query: 'GDTarget',
+        p_query: GD_TARGET_NAME,
       });
       expect(error).toBeNull();
       const hit = (data as Array<{ member_group_id: string; membership_status: string | null }>).find(

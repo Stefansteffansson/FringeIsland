@@ -3,7 +3,7 @@
 ---
 id: TASK-CC-06
 title: COM-11 reconnect reconciliation + degradation states, the live E2E journeys, full sweeps, next build, 6-done transitions
-status: in_progress
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H027

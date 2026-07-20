@@ -6,7 +6,7 @@ title: Realtime hint emission — server-originated content-free hints on privat
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -125,6 +125,18 @@ N/A (no surface) — budgets bind at FEAT-H027. The contract shape serves them: 
 
 ## Open spec questions (for the schema gate)
 
-- **Q1 — forum-policy membership helper:** reuse an existing membership helper if one fits the PG17 RLS simple-body ceiling, else add a minimal SECURITY DEFINER `search_path=''` helper taking the parsed group id. Migration authoring decides; the invariant (receipt gated by current membership, policy never filter) is fixed.
-- **Q2 — emit-site shape:** one shared emit helper vs inline `realtime.send` per trigger. Authoring call; the invariants (ids-only payload, non-fatal wrap, WARNING on failure) are fixed.
-- **Q3 — moderation-event edge:** whether the AFTER UPDATE trigger conditions on the `is_deleted` transition column-level (`WHEN (OLD.is_deleted IS DISTINCT FROM NEW.is_deleted)`) or filters in the body. Authoring call; the invariant (idempotent re-moderation emits nothing) is fixed.
+All three resolved at the gate (2026-07-20, migration `20260720153000` — recorded in its header):
+
+- **Q1 — forum-policy membership helper: RESOLVED — reuse.** `public.is_active_group_member(UUID)` (D15 rebuild) fits the PG17 RLS simple-body ceiling exactly (single EXISTS keyed on `get_current_personal_group_id()`); no new helper. Refuses a Mist and a suspended member for free.
+- **Q2 — emit-site shape: RESOLVED — one shared thin helper** (`ds5_emit_hint`): the non-fatal + WARNING discipline lives in exactly one place; the message fan-out calls it per participant, giving per-emit isolation. Not the registry/queue the rabbit holes fence against.
+- **Q3 — moderation-event edge: RESOLVED — trigger-level `WHEN` clause** (`OLD.is_deleted IS DISTINCT FROM NEW.is_deleted AND NEW.is_deleted`); idempotent re-moderation is double-guarded (the C-B contract no-ops the UPDATE + the WHEN clause).
+
+## Implementation notes (6-done — Cycle C-C, 2026-07-20)
+
+**Built red-first through the schema gate** — PR #217 (held, nodded 2026-07-20 in answer to the two-PR gate table; migration `20260720153000` applied + repaired on dev). The channel-scope steering batch rode PR #215 (§L2 §4 named list + Hub CLAUDE §4 line, per the standing rule).
+
+- **What landed (as built):** `ds5_emit_hint(payload, event, topic)` — SECURITY DEFINER, non-fatal, `RAISE WARNING` on emit failure (the PC009 swallow deliberately upgraded per the platform tier's no-silent-failures law), REVOKEd from all client roles; `trg_ds5_emit_message_hint` (AFTER INSERT on `messages` — one `message_created` per **active** participant's `account:<auth_uid>:conversations` topic, sender included, departed excluded, auth uid via the P-O1 chain in reverse); `trg_ds5_emit_forum_post_hint` (AFTER INSERT on `forum_posts` → `forum_post_created` on `group:<group_id>:forum`; posts and replies alike); `trg_ds5_emit_forum_moderation_hint` (AFTER UPDATE, `WHEN`-gated → `forum_post_moderated`); receive policies `ds5_conversations_receive_own` (the session-channel shape byte-for-byte) + `ds5_forum_receive_member` (`is_active_group_member` over the topic-parsed uuid). **No client-send policy on any C-C topic** — spoofing impossible by construction. No publication changes, no new tables, no new read contracts (the decomposition payload walk held at build: zero read-contract changes needed).
+- **Red→green, honestly:** `realtime-hint-emission.test.ts` demonstrated **9 red / 3 labelled green** pre-apply (greens: the session-channel regression guard, the always-refused rpc probe — the C-B precedent shape — and the Q1 helper guard). First post-apply run **52/54**: the two "payload exactly" assertions had mis-modeled the storage envelope — `realtime.send()` stamps its generated broadcast-row UUID into the stored payload (`jsonb_set(payload,'{id}',…)`, verified against `prosrc`). Adapted as **two labelled adaptations** (key set asserted exactly as `{domain_id, id}`, `id` UUID-shaped and never a domain value — the content-free invariant unchanged and still exact) → **54/54 across the comm slice, zero migration edits**.
+- **Receipt-probe mechanics (a build finding worth keeping):** `realtime.topic()` resolves only inside Realtime's join-time authorization, so receive policies are probed via the **WebSocket subscribe path** (the sessions.test.ts precedent), not SQL SELECTs; no-client-send is a structural `pg_policies` assertion (receive policies exist + no INSERT/ALL policy). `markArrivedOnce` is an E2E-only helper — the integration comm suites use `createTestUser` (noted in the suite header).
+- **W12 / ADR-U038:** the trigger functions are uncallable (`RETURNS trigger`); the emit helper's REVOKE is proven by the always-refused probe; both receive policies proven adversarially (own/other member, active member/outsider/other-group member/Mist); the conformance gate gained `ds5_emit_message_hint` in `DS_OWNED_ALLOWLIST` and held green pre- and post-apply.
+- **Consumer:** [FEAT-H027](../../../products/hub/features/FEAT-H027-live-messages-forum-and-badge.md) (the Hub tenants + reconciliation); the A-NTF bell inherits the conventions as the third tenant (`account:<auth_uid>:notifications`, named forward-looking only).
