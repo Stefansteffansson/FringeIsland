@@ -92,7 +92,7 @@ As the platform, I want the state read to distinguish member-paused from admin-s
 As a departing FIM, I want my group memberships resolved the way the platform already resolves departures, so my leaving breaks nothing for anyone else.
 
 **Acceptance criteria:**
-- Given a FIM with a regular membership, when they delete their account, then that group sees the `member_departed('left_group')` cascade (DS-3 enrolment freeze included) and the membership + role rows are gone.
+- Given a FIM with a regular membership, when they delete their account, then their membership + role rows in that group are gone via the `member_departed('left_group')` scenario — and their own enrolments do not survive as live rows: the departure freeze is transient here, superseded in the same transaction by STORY-5's erasure (F-2). Other members' group-side record is untouched.
 - Given a FIM who is a Steward with co-members, when they delete, then the `steward_handover` scenario runs as the admin path defined it.
 - Given a FIM who is the sole member and Steward of a group, when they delete, then the group closes with **both** `ds3_lifecycle_group_closed` and `ds5_lifecycle_group_closed` (conversations sealed — the C-E seal is not skipped).
 
