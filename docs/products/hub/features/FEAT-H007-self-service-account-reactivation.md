@@ -6,7 +6,7 @@ title: Self-service account reactivation — the Hub affordance that lets a paus
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

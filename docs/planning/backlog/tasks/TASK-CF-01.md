@@ -3,7 +3,7 @@
 ---
 id: TASK-CF-01
 title: Red integration suites for FEAT-PC017 + the FEAT-PC005 origin gate, demonstrated red pre-apply
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PC017

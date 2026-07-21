@@ -3,7 +3,7 @@
 ---
 id: TASK-CF-02
 title: Author ADR-U050 (account-lifecycle state machine) + the C-F schema-gate migration; hold at the gate
-status: todo
+status: review
 assigned_to: claude
 priority: critical
 feature: FEAT-PC017
