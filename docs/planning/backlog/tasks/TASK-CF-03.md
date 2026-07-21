@@ -3,7 +3,7 @@
 ---
 id: TASK-CF-03
 title: Apply the gated migration after the named nod; flip the red suites green; run the W12 adversarial pass
-status: todo
+status: done
 assigned_to: claude
 priority: critical
 feature: FEAT-PC017

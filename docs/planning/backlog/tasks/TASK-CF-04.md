@@ -3,7 +3,7 @@
 ---
 id: TASK-CF-04
 title: Build FEAT-H029 (pause/delete) + FEAT-H007 (reactivate) + the FEAT-H006 paused branch + BFF routes
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H029

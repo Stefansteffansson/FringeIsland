@@ -3,7 +3,7 @@
 ---
 id: TASK-CF-05
 title: E2E — pause→reactivate loop and delete→farewell; then the standing fleet
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H029

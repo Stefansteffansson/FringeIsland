@@ -6,7 +6,7 @@ title: Self-service account reactivation — the Hub affordance that lets a paus
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -102,3 +102,7 @@ The **Gimbal** will consume the **same** `POST /api/v1/account/reactivate` contr
 - **Observability:** the Hub emits telemetry for the reactivation attempt, its confirmation, and success/failure outcomes (the authoritative audit row is written platform-side by FEAT-PC005); no silent failures.
 - **Transactions:** None.
 - **Extensibility:** the affordance is driven by the `state` label from FEAT-PC004 (shown only for `paused`); a future lifecycle state would gate the affordance through the same open-label switch rather than a hardcoded client-side set.
+
+## Implementation notes (6-done — Cycle C-F, 2026-07-21)
+
+Built as `hub/components/account/PausedAccountSurface.tsx`, rendered by FEAT-H006's gate at its new `paused` branch (`AccountStateView` — the payload-walk-predicted amendment; the old unknown-label probe in its unit suite moved to `'hibernating'`, labelled). The affordance sits on the paused surface with the honest "nothing was lost" copy; ConfirmModal-gated; on success the Hub **re-reads state via FEAT-PC004** (`reload()`) and lands on `/groups`; failure renders an inline error + retry on the paused surface, never a false active render; sign-out is always offered. Consumes `POST /api/account/reactivate` via `lifecycleClient.requestReactivate()` — no direct table access (ADR-U009/U038). **Evidence:** unit coverage in `PausedAccountSurface.test.tsx` + the adapted `AccountStateView.test.tsx` (**labelled test-after** — the platform half's red-first demonstration is FEAT-PC005 STORY-6 in the integration tier); the E2E absence loop (pause → paused surface → reactivate → back active with everything intact) green 3/3 isolated. STORY-2's decommissioned-no-affordance holds by construction (the terminal surface renders no reactivation) and is pinned in the view's unit suite.

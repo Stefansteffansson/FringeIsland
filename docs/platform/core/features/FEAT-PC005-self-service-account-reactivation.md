@@ -6,7 +6,7 @@ title: Self-service account reactivation — a member-initiated, audited transit
 owner: platform/core/identity
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -143,3 +143,7 @@ Additive: one new `SECURITY DEFINER` RPC and one new `/api/v1/` route; no existi
 1. **Audit surface — `admin_audit_log` reuse vs a distinct member-audit surface.** The existing table is named `admin_audit_log` and its INSERT RLS is `is_platform_admin()`-gated; a self-service action is mechanically clean to record there via the `SECURITY DEFINER` RPC (actor = self's personal group), but is semantically an admin-named home for a non-admin act. **Decision for schema review:** (a) reuse `admin_audit_log` with a self-service `action` namespace (path of least resistance, matches the established pattern), or (b) introduce a distinct member-facing audit/history surface. The stories are written behaviourally ("recorded to the platform audit trail with actor / action / timestamp / before-after") so this storage choice is a schema-review detail, not a 4-ready blocker.
 2. **Self-confirmation notification.** Whether v1 emits the self-addressed "account reactivated" security confirmation, and on which channel — resolve with the Notifications vertical at build.
 3. **Re-authentication posture.** Confirm at build whether a paused member's existing session is sufficient to call the contract, or whether reactivation should require a fresh sign-in (security posture) — interacts with how the Hub routes a paused FIM into FEAT-H006/H007.
+
+## Implementation notes (6-done — Cycle C-F, 2026-07-21)
+
+Built in the C-F gate migration `20260721161500` (nodded "ok merge #233") as a **fresh CREATE** — this spec was parked before any build, so there was no prior body to amend. Exactly the sketched shape plus the STORY-6 origin gate: own-row `SECURITY DEFINER`, no target parameter, decommissioned rejected as terminal, **`deactivation_origin='member'` required** (admin holds — including every backfilled pre-origin off row — reject), idempotent when already active, origin cleared on success, audited `self_reactivate_account` via the inline-INSERT pattern. Surfaced at `POST /api/account/reactivate` (private BFF; `getUser()`; P0001 → 409). **Evidence:** STORY-1..6 proven in the C-F integration suite (S2c/S3b — the origin gate's both sides; red-first, part of the 19-red demonstration); the E2E absence loop (pause → paused surface → reactivate → active, 3/3 isolated) proves the full member journey. **Open questions closed at build:** Q1 — (a) `admin_audit_log` reuse with the self-service action namespace, as recommended. Q2 — no self-confirmation notification in v1 (C-F board default; A-NTF's seam). Q3 — a paused member's existing session suffices (pause deliberately never touches sessions — proven by S1c and the E2E loop); no fresh sign-in demanded.
