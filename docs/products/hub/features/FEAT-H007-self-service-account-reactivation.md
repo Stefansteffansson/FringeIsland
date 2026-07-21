@@ -7,14 +7,12 @@ owner: hub
 consumers: [hub]
 wave: ferd
 maturity: 4-ready
-parked: true
-parked_reason: "Deferred from Cycle A (2026-06-29). Self-service reactivation pairs with self-pause and needs a deactivation-origin field so a member can only reverse their own 'paused' account, never an admin 'suspended' hold. Today the off state is only admin-produced (no self-pause exists). Unblock: add the origin field (schema gate + ADR) + build self-pause (IDN-10 seam), then gate reactivation to member-origin only. See ../../../planning/hub-v2/account-lifecycle-states-decision.md"
 requires-equipment: none
 ---
 
-## Parked — deferred from Cycle A (2026-06-29)
+## Un-parked — Cycle C-F (2026-07-21)
 
-This spec is **parked**, not retired. Self-service reactivation was found to pair with self-pause: in the current substrate the only producer of the off-but-not-closed state is an **admin hold (suspended)**, so shipping self-reactivation now would let a member reverse an admin action. It will be built once (1) a **deactivation-origin** field distinguishes member-`paused` from admin-`suspended` (Platform Core schema change — schema gate + ADR), and (2) **self-pause** exists (the IDN-10 exit/lifecycle seam) to produce a `paused` account to legitimately reactivate. Reactivation will be gated to member-origin `paused` only; `suspended` stays admin-lift-only; `decommissioned` stays terminal. See the [account-lifecycle decision record](../../../planning/hub-v2/account-lifecycle-states-decision.md).
+Parked from Cycle A (2026-06-29); both unblock conditions land this cycle via [FEAT-PC017](../../../platform/core/features/FEAT-PC017-account-lifecycle-self-service.md) (the `deactivation_origin` field + self-pause) and [FEAT-H029](./FEAT-H029-pause-or-delete-my-account.md) (the pause surface that produces the state this feature reverses). After the C-F origin split, `state='paused'` is **only ever member-origin** (an admin hold reads `'suspended'`), so gating the affordance on `paused` is exactly the legitimacy gate; the platform enforces it regardless (FEAT-PC005 STORY-6). The paused branch of the FEAT-H006 host surface (rendering `paused` distinctly from `suspended`, with this affordance) lands with this cycle's build. See the [account-lifecycle decision record](../../../planning/hub-v2/account-lifecycle-states-decision.md) and the C-F board (F-1).
 
 ## Problem
 
@@ -47,7 +45,7 @@ Small. One affordance + ConfirmModal on the existing paused surface, one Platfor
 
 - No reactivation of a **decommissioned** account — terminal; no affordance, and the platform rejects it regardless.
 - No reactivation of **another** member's account — the contract is own-account only; the Hub exposes no target selection.
-- No self-pause / exit / deletion initiation here (that is the later IDN-10 seam) — this feature only brings a paused account back.
+- No self-pause / exit / deletion initiation here (that is [FEAT-H029](./FEAT-H029-pause-or-delete-my-account.md), this cycle) — this feature only brings a paused account back.
 - No direct `public.users` write — Platform API only (ADR-U009).
 
 ## Stories
@@ -94,7 +92,7 @@ As a reactivated FIM, I want to be returned to my normal experience, so reactiva
 
 ## Cross-product impact
 
-The **Gimbal** will consume the **same** `POST /api/v1/account/reactivate` contract for its own reactivation UX; only the platform-side semantics are shared. Within the Hub, this feature completes Cycle A on the surface FEAT-H006 establishes; the later IDN-10 exit/deletion seam will reuse the same paused/closed surfaces as its host.
+The **Gimbal** will consume the **same** `POST /api/v1/account/reactivate` contract for its own reactivation UX; only the platform-side semantics are shared. Within the Hub, this feature completes the account-lifecycle loop on the surface FEAT-H006 establishes: [FEAT-H029](./FEAT-H029-pause-or-delete-my-account.md) (this cycle) initiates pause/delete, and this feature is the return path from paused.
 
 ## Vertical impact
 

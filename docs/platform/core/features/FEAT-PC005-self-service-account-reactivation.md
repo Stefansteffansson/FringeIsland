@@ -7,14 +7,12 @@ owner: platform/core/identity
 consumers: [hub]
 wave: ferd
 maturity: 4-ready
-parked: true
-parked_reason: "Deferred from Cycle A (2026-06-29). Self-service reactivation pairs with self-pause and needs a deactivation-origin field so a member can only reverse their own 'paused' account, never an admin 'suspended' hold. Today the off state is only admin-produced (no self-pause exists). Unblock: add the origin field (schema gate + ADR) + build self-pause (IDN-10 seam), then gate reactivation to member-origin only. See ../../../planning/hub-v2/account-lifecycle-states-decision.md"
 requires-equipment: none
 ---
 
-## Parked — deferred from Cycle A (2026-06-29)
+## Un-parked — Cycle C-F (2026-07-21)
 
-This spec is **parked**, not retired. Self-service reactivation was found to pair with self-pause: in the current substrate the only producer of the off-but-not-closed state is an **admin hold (suspended)**, so shipping self-reactivation now would let a member reverse an admin action. It will be built once (1) a **deactivation-origin** field distinguishes member-`paused` from admin-`suspended` (Platform Core schema change — schema gate + ADR), and (2) **self-pause** exists (the IDN-10 exit/lifecycle seam) to produce a `paused` account to legitimately reactivate. Reactivation will be gated to member-origin `paused` only; `suspended` stays admin-lift-only; `decommissioned` stays terminal. See the [account-lifecycle decision record](../../../planning/hub-v2/account-lifecycle-states-decision.md).
+Parked from Cycle A (2026-06-29) on two conditions; both land in this cycle via [FEAT-PC017](./FEAT-PC017-account-lifecycle-self-service.md): (1) the **`users.deactivation_origin`** field (schema gate + ADR-U050) distinguishes member-`paused` from admin-`suspended`, and (2) **self-pause** (`pause_own_account()`) is the legitimate producer of `paused`. Reactivation is therefore gated to member-origin only: `deactivation_origin='member'` flips back to active (and clears the origin field); `'admin'` rejects — suspended stays admin-lift-only; `decommissioned` stays terminal. See the [account-lifecycle decision record](../../../planning/hub-v2/account-lifecycle-states-decision.md) and the C-F board (F-1, full lifecycle slice).
 
 ## Problem
 
@@ -33,8 +31,9 @@ A single owner-gated, audited `SECURITY DEFINER` RPC plus an additive route:
 - **`reactivate_own_account()`** — `SECURITY DEFINER`, `SET search_path = ''`. Resolves the caller via the repo actor primitive (`auth.uid()` → `users.auth_user_id` → `users.id` → `users.personal_group_id`). Pre-conditions, enforced server-side:
   - caller's own row only — **no target parameter**;
   - **`is_decommissioned` must be `false`** — decommissioned is terminal; the RPC rejects (it never reverses a decommission, honouring `enforce_decommission_invariant()`);
+  - **`deactivation_origin` must be `'member'`** — the origin gate (C-F): a member-paused account flips back; an admin hold (`'admin'`, including every backfilled pre-origin off row) rejects — reactivation never reverses an admin act;
   - if already `is_active=true`, the call is an idempotent success (no-op);
-  - otherwise flip `is_active` `false → true`.
+  - otherwise flip `is_active` `false → true` and **clear `deactivation_origin`**.
   On success it writes an audit row using the established **inline-INSERT-via-`SECURITY DEFINER`** pattern (as `admin_exit_user_from_platform` does): `actor_group_id` = caller's personal group, `action = 'self_reactivate_account'`, `target` = the user id, before/after state in `metadata`.
 - **`POST /api/v1/account/reactivate`** (`Authorization: Bearer <jwt>`, ADR-U015 v1, ADR-U009) — additive route surfacing the RPC.
 
@@ -96,6 +95,13 @@ As the platform, I want every successful self-service reactivation recorded in t
 - Given a successful self-service reactivation, when it completes, then exactly one audit row is written with `actor_group_id` = the caller's personal group, `action = 'self_reactivate_account'`, `target` = the user id, and before/after state in `metadata`.
 - Given the audit write, when it is attempted, then it goes through the `SECURITY DEFINER` RPC (bypassing the `is_platform_admin()` INSERT gate) — never a client-side insert.
 
+### STORY-6: Reactivation honours the origin gate (C-F)
+As the platform, I want reactivation to reverse only member-origin pauses, so an admin hold is never self-escapable.
+
+**Acceptance criteria:**
+- Given the caller's own account is off with `deactivation_origin='member'`, when they invoke the reactivation contract, then it succeeds, `is_active=true`, and `deactivation_origin` is cleared.
+- Given the caller's own account is off with `deactivation_origin='admin'` (including backfilled pre-origin rows), when they invoke the contract, then it is rejected with no state change — the hold remains admin-lift-only.
+
 ## Cascade specification (ADR-U016) — self-service reactivation (paused → active)
 
 | Layer | Effect of a self-service reactivation |
@@ -103,7 +109,7 @@ As the platform, I want every successful self-service reactivation recorded in t
 | **PC-2 Identity** | The caller's own `public.users.is_active` flips `false → true` under the owner-gated `SECURITY DEFINER` RPC. `is_decommissioned` is untouched and, if `true`, the transition is rejected (decommissioned is terminal; `enforce_decommission_invariant()` upheld). The row, previously hidden by `users_select_active`, becomes ordinarily visible again; `get_current_user_profile_id()` resolves once more. |
 | **PC-3 Organisation** | None to restore. A plain self-pause (v1) does not remove group memberships or alter the personal group, so reactivation has nothing to un-cascade; the member's memberships and roles are exactly as they were. |
 | **PC-4 Governance (Observability, V4)** | One audit row written to `admin_audit_log` (`action='self_reactivate_account'`, actor = caller's personal group, before/after in `metadata`) via the inline-INSERT-in-`SECURITY DEFINER` pattern. |
-| **DS-3 Journeys** | `pending` — v1 self-pause does not freeze journey enrolments, so there is nothing to thaw today. **Forward seam:** if IDN-10's exit cascade later freezes enrolments on self-pause (DS-3), reactivation must thaw them; this row is tagged for re-entry when the Journeys area realises DS-3. |
+| **DS-3 Journeys** | None — **resolved at the C-F board (2026-07-21):** self-pause cascades nothing (FEAT-PC017 pause is a reversible absence — no enrolment freeze), so reactivation has nothing to thaw. The former forward-seam tag is closed. |
 | **Privacy (V2)** | Reactivation re-exposes the member's own row **to themselves** (the visibility filter no longer hides it). It restores only the pre-pause visibility state — it does not create any new sharing of the member's data with other members. |
 | **Administration (V1) / Notifications (V3) / Transactions** | Administration: none — self-service, no admin act. Notifications: at most a self-addressed security confirmation (see Vertical impact). Transactions: none. |
 
@@ -111,7 +117,8 @@ As the platform, I want every successful self-service reactivation recorded in t
 
 - **PC-4 Governance audit primitive (existing).** `public.admin_audit_log` (six columns: `id`, `actor_group_id`, `action`, `target`, `metadata`, `created_at`) and the inline-INSERT-via-`SECURITY DEFINER` write pattern proven by `admin_exit_user_from_platform`. This feature **consumes** that primitive — no new table or column.
 - **PC-2 Identity account-state substrate (existing).** `public.users.is_active` / `is_decommissioned` and `enforce_decommission_invariant()`.
-- **Sibling [FEAT-PC004](./FEAT-PC004-account-state-read.md) (account-state read).** The Hub determines reactivation eligibility by reading state via FEAT-PC004, then invokes this contract. The two are the paired platform halves of Cycle A.
+- **Sibling [FEAT-PC004](./FEAT-PC004-account-state-read.md) (account-state read).** The Hub determines reactivation eligibility by reading state via FEAT-PC004 (`state='paused'` + `deactivation_origin='member'` after the C-F extension), then invokes this contract. The two are the paired platform halves of Cycle A.
+- **Sibling [FEAT-PC017](./FEAT-PC017-account-lifecycle-self-service.md) (C-F).** Provides the `deactivation_origin` column (ADR-U050 schema gate) this contract's origin gate reads, and `pause_own_account()` — the sole legitimate producer of the state this contract reverses.
 - **The repo actor primitive (PC-2 / PC-3).** Full four-hop resolution to the caller's `personal_group_id` (needed for the audit `actor_group_id`).
 
 ## Cross-product impact
