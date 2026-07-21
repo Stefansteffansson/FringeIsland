@@ -41,18 +41,20 @@ Request-count row: `/messages` fires **2-3 API reads** per load; conversation de
 | Window | Scenario | Idle depth | Result | Against budget |
 |---|---|---|---|---|
 | **W1** (21:36 UTC) | `/messages` cold full load (B2 ≤ 2.5 s) | 21.0 min zero traffic | content-ready **5 743 ms**; TTFB **2 723 ms** (instance provisioning); 3 API reads on the shared instance; remainder zero-cache asset load (fresh headless browser — labelled, the J-gate convention) | **Over the 2.5 s letter** — same composition as the J-gate windows (~2.7 s vendor provisioning + app reads + zero-cache assets). Tail rule (per request ≤ 5 s): **PASS** — slowest single request 3 873 ms |
-| **W2** | group forum cold full load (B2 ≤ 2.5 s) | *pending* | *pending* | *pending* |
-| **W3** | conversation detail cold full load (B2 ≤ 2.5 s) | *pending* | *pending* | *pending* |
+| **W2** (21:57 UTC) | group forum cold full load (B2 ≤ 2.5 s) | 21.0 min zero traffic | content-ready **6 553 ms**; TTFB **2 731 ms**; **12 API reads** on the shared instance (the fan-out datum at deep-cold); remainder zero-cache assets (labelled) | **Over the 2.5 s letter**, same composition as W1. Tail rule: **PASS** — slowest single request **4 707 ms** (the closest approach to the 5 s tail line; the fan-out seam's cold face) |
+| **W3** (22:18 UTC) | conversation detail cold full load (B2 ≤ 2.5 s) | 21.0 min zero traffic | content-ready **6 946 ms**; TTFB **2 728 ms**; 6 API reads all ≤ **1 335 ms** (healthy concurrent profile, same as W1/W2 and the J-gate) | **Over the 2.5 s letter**, same composition — and **tail rule: FAIL** — slowest single request **5 066 ms vs the 5 000 ms line (66 ms / 1.3 % over)**. The draw is NOT an app read (all six API calls ≤ 1 335 ms); it sits in the document/zero-cache-asset column — the provisioning-dominated class the J-gate labelled. Recorded as the letter demands ("a tail draw is a failure, not noise"); disposition is the gate verdict's call |
 
 *(Context from the J-gate: the known deep-cold composition on this Hobby-tier deployment is ~2.7 s instance-provisioning TTFB + zero-cache assets; W1/W2 there ran 5.9/5.2 s against the same 2.5 s letter and passed as a labelled exception on tail-rule + composition. The same reading discipline applies here.)*
 
 ### Teardown
 
-Measurement fixtures erased in-run via the canonical D15 chain (consent-erasure bypass → groups → auth.users); post-check *pending final teardown* — target **zero residue** (the J-gate R5 discipline).
+Measurement fixtures erased in-run via the canonical D15 chain (consent-erasure bypass → groups → auth.users); post-check **zero residue** (0 gate groups, 0 gate users left — the J-gate R5 discipline held). One first-attempt fixture set was also fully erased mid-session (a ready-marker fix: the inbox renders the **nickname — the first token of a display name** — so multi-word fixture names never appear verbatim; measurement + E2E fixtures need single-token names, the existing E2E idiom).
 
 ## Gate verdict
 
-**PENDING** — awaiting the three deep-cold windows, Stefan's live walk, and Stefan's verdict. All eleven checklist items short of the measurement/walk pair are dispositioned above; the area retro follows the verdict.
+**PENDING — Stefan's live walk + verdict.** All measurement work is complete. Ten of eleven checklist items are dispositioned above; the eleventh (measurement + walk) is half-done: warm pass all-PASS, deep-cold three windows run at full protocol depth.
+
+**The one item demanding a verdict call:** W3's tail-rule FAIL — 5 066 ms vs the 5 000 ms line (1.3 % over), drawn by the document/zero-cache-asset column, not an app read (all API calls ≤ 1 335 ms across all three windows). The precedent frame: the J-gate passed with content-ready over the B2 letter as a **labelled exception** on tail-PASS + composition (provisioning floor, no app-side action exists); this gate has the same composition but one tail draw 66 ms over. The letter says a tail draw is a failure, not noise — so it is recorded as FAIL and the disposition (labelled exception extended, or gate held open on it) is Stefan's. The Vercel Pro scale-to-one datum grows again either way.
 
 ---
 

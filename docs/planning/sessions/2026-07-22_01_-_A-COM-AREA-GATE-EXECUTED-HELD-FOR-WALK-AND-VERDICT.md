@@ -1,0 +1,26 @@
+# Session bridge — 2026-07-22 (01): the A-COM area gate executed — held for Stefan's walk + verdict
+
+**Session span:** resume → the C-F close confirmed merged (PR #234) → the A-COM area-gate exit checklist (plan §98-111) executed: five parallel read-only verification scouts (checklist rows · DS-5 spec · oracle port · W12 roll-up · publications/audit/perf-precedent), every load-bearing claim disk-verified before any edit → 10 of 11 items dispositioned with evidence → the ADR-U043 measurement pass run at full protocol depth (warm all-PASS; three ≥21-min deep-cold windows; **W3 tail FAIL by 66 ms** — the session's honest headline) → gate record authored → PR **#235** opened and **HELD** (carries a migration) → this bridge.
+**Previous bridge:** `2026-07-21_02_-_CYCLE-C-F-BUILT-LIFECYCLE-SELF-SERVICE.md`.
+**Gate record (the canonical artifact):** [`../hub-v2/2026-07-21-communication-area-gate.md`](../hub-v2/2026-07-21-communication-area-gate.md) — checklist dispositions, warm + deep-cold measurements, full W12 per-RPC appendix.
+
+## What the gate walk found (all run to ground)
+
+1. **10/11 checklist items closed with evidence** (the plan's checklist now carries per-item gate annotations). Highlights: all 13 area specs `6-done` at their own maturity lines; D2 executed with the U047 rename recorded; conformance gate correct incl. `notifications`-out-by-design; export composed with PC008 §155 closed at source; publications already dispositioned at C-A (live DB verified: only `notifications` remains, justified-deferred to A-NTF per DS-5 §8 Q7 + U048 — **no migration needed**).
+2. **DS-5 spec advanced `proposed` → `active`** — the first domain-service spec ever to advance (template-sanctioned value; Hub/verticals precedent; all seven siblings still `proposed`). §8 Q6 SEAMED forward with the cold lean unpromoted; L4 gained the realisation-split summary.
+3. **Oracle parity made exact, not reworded:** the port verification found two implicit spine assertions (B-MSG-004 inbox ordering, B-MSG-005 DMs-create-zero-notifications). Added as labelled green-by-nature probes; comm integration **104/104**. Every CB-7 adaptation was already labelled — nothing silent.
+4. **W12: 30 callable RPCs walked body-vs-spec — 29 VERIFIED, zero automatic fails, one finding:** `get_own_data_export()`'s `authenticated` EXECUTE grant is live-correct but **unreproducible from source** (born ungated in PC008; the anon-lockdown swept defaults; no migration re-grants; every sibling grants explicitly). Repair migration `20260721220000` (pure GRANT, no live change) rides #235 — **schema carve-out, named nod required**.
+5. **The kickoff sweep's "stale audit note" flag was INVERTED:** the substrate-audit's `notifications` column list is correct — the sprint3 smart-notifications ALTER (`20260228125730`) is the post-rebuild ALTER the sweep missed. The plan corrected; the audit untouched.
+6. **Measurements (protocol per the J-gate precedent — n=1 deep-cold per scenario, Stefan's ratified depth call):** warm all-PASS with two flagged data — the **group page fires 12-14 API reads** and its warm loads hug the B3 1.0 s ceiling (941-993 ms; the area's fan-out seam, recorded not failed). Deep-cold W1 `/messages` 5 743 ms / W2 forum 6 553 ms / W3 detail 6 946 ms — all over the 2.5 s letter on the known ~2.7 s provisioning + zero-cache composition (the J-gate labelled-exception class), tails W1/W2 PASS, **W3 tail FAIL: 5 066 ms vs 5 000 (the draw is the document/asset column — every app read across all windows ≤ 1 335 ms)**. Fixtures created + erased in-run; **zero residue** post-checked (R5 discipline).
+7. **A fixture trap for the books:** the inbox renders the **nickname = first token of the display name** — multi-word fixture display names never appear verbatim (first measurement attempt failed on it; the E2E suites' single-token idiom is the law). Recorded in the gate record's teardown note.
+
+## Open at close — what only Stefan can do
+
+1. **The live walk** (checklist item 11, second half) — walk Messages/forum/announcements on production, before the area retro.
+2. **The gate verdict** — specifically the **W3 tail-FAIL disposition**: extend the J-gate labelled exception (same provisioning composition, 1.3 % over, app column healthy) or hold the gate open on it. Recorded as FAIL per the letter either way. The Vercel Pro scale-to-one datum grows again.
+3. **The #235 merge nod** (named — it carries migration `20260721220000`; apply + repair commands in the PR body; the GRANT is a live no-op).
+4. **Then:** the area retro (doc-health-check rides it, per the cooldown ritual) → **A-NTF opens** (inherits C-C realtime conventions, U048 delivery/routing split, D4 comes due — MEM-2 email dispatch; NTF-6 closes against COM-13's store).
+
+## Standing carries
+
+TASK-MIST-01 · TASK-DOC-003/004 · TASK-OBS-01 (A-ADM) · TASK-E2E-01 (env dimension) · Vercel scale-to-one (argument strengthened again) · logo · launch checklist · A-ADM seams (C-F F-2 physical-scrub queue, Console full-exit affordance, ADM-10 queue surface) · TASK-CF-01..06 stay in `tasks/` until the retro. Stefan's uncommitted KB edit stays on the working tree, deliberately untouched. The group-page fan-out seam (12-14 reads) joins the cooldown/A-NTF consolidation-candidate list — a seam, not a defect.
