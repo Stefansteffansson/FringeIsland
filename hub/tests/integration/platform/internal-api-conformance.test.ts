@@ -184,6 +184,11 @@ const DS5_COMMUNICATION_FUNCTIONS = [
   'delete_own_forum_post',
   'submit_content_report',
   'ds5_is_fim_actor',
+  // C-E (FEAT-PD012) — the own-communication export (references public.messages,
+  // public.conversations, public.conversation_participants, public.forum_posts,
+  // public.content_reports). The lifecycle handler needs no entry
+  // (/^ds\d+_lifecycle_/ auto-allow).
+  'get_own_messages_export',
 ];
 
 const DS_OWNED_ALLOWLIST = new Set<string>([
