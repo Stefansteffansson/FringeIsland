@@ -3,7 +3,7 @@
 ---
 id: TASK-CF-06
 title: C-F close — 6-done flips, inventories, G-36 deletion, CHANGELOG, bridge, dashboard
-status: todo
+status: done
 assigned_to: claude
 priority: medium
 feature: FEAT-PC017

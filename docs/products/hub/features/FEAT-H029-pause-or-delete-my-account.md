@@ -6,7 +6,7 @@ title: Pause or delete my account — the Hub affordances for the member-owned a
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -111,3 +111,11 @@ The **Gimbal** will consume the same `/api/v1/account/pause|delete` contracts wi
 - **First-paint class:** the account area is an existing B3-warm-nav page; this feature adds a section to it — no new data-boot path (state arrives via the existing FEAT-PC004 read).
 - **Interaction class:** modal/ceremony opens are local (< B5); the two mutations show disabled-control + loading feedback within 100 ms; the delete call's latency is masked by the ceremony's final step, and the farewell renders on confirmation, not optimistically.
 - **Loading states:** in-flight mutations show button-level loading (< 1 s typical); the farewell screen renders only on confirmed success.
+
+## Implementation notes (6-done — Cycle C-F, 2026-07-21)
+
+**Built as sketched.** Key files: `hub/components/account/AccountLifecycleSection.tsx` (profile-page section; active-only gating on the open `state` label — renders nothing until the read resolves, so no destructive-control flash), `DeleteAccountCeremony.tsx` (F-2 consequence copy, the `/api/account/export` offer before any destructive control, type-to-confirm phrase `delete my account`, single-fire disabled-in-flight), `hub/app/farewell/page.tsx` (local-scope sign-out on mount with an observable completion marker; server sessions are already dead), three thin BFF routes `hub/app/api/account/{pause,delete,reactivate}/route.ts` (`getUser()` per ADR-U037; P0001 → 409 carrying the substrate's message; V4 telemetry on every path) + `hub/lib/account/lifecycle.ts` / `lifecycleClient.ts`.
+
+**Discovery kept as design:** a stale ssr cookie re-entering `/groups` after deletion meets FEAT-H006's terminal "This account is closed" surface — the gate intercepting, not the chrome leaking (defense-in-depth proven live in the departure journey's first run). The E2E asserts either honest terminal outcome (cleared credentials → `/login`; stale cookie → the closed surface), never the active experience.
+
+**Evidence:** surface unit coverage **labelled test-after** (the surface was written spec-first from the ACs; the cycle's demonstrated-red lives at the integration tier — FEAT-PC017's suite). Unit 119 suites / 865 green; `next build` clean; lint 0 errors; route-policy conformance green. E2E `account-lifecycle.spec.ts` — the absence loop + the departure — green 3/3 isolated on a `:3001 next start` server; fleet 78/79 (the 1: profile.spec STORY-4, verified failing identically at main HEAD on a clean main build — **found (not caused)**, environment-flavored on `next start`, routed to TASK-E2E-01). E2E fixture lesson: a bare `'active'` membership insert leaves a roleless reader — the witness walks invited→active so the auto-role trigger grants the forum read.

@@ -1,6 +1,6 @@
 # Gaps register
 
-**Status:** twenty-eight known documentation and design gaps across the FringeIsland development system as of 2026-07-03.
+**Status:** twenty-seven known documentation and design gaps across the FringeIsland development system as of 2026-07-21.
 
 **Purpose:** a single place to see every gap flagged in the [how-we-work](./README.md) chapters, grouped by axis, with suggested resolution and priority.
 
@@ -38,7 +38,6 @@
 | G-32 | Decomposition (post-L3 gate) | Entities with shipped §L3 lacking reader tours — backfill obligation | Medium | Per-entity backfill when §L3 lands; `doc-health-check` flags entities with §L3 present and `tours/HUMAN.md` or `tours/TECHNICAL.md` absent |
 | G-34 | Decomposition (L4) | Sharing controls (IDN-7) split out of Cycle B — no substrate yet | Medium | Author the sharing-controls paired slice (PC-3-coupled per-audience visibility substrate + Hub surface) when the IDN-7 remainder, DIS-6, or COI-1 first needs it |
 | G-35 | Decomposition (L3) | PC-4 §L3 under-enumerates GDPR-cluster capabilities (feature-flags remain) | Medium | Enumerate the feature-flag capability row when its first consumer is derived |
-| G-36 | Execution (forward-seam) | IDN-10 self-service exit/deletion blocked on DS-3 + DS-5 | Medium | Both triggers discharged; specs authored 2026-07-21 (C-F: FEAT-PC017/FEAT-H029, PC005/H007 un-parked). Remaining: build exit/deletion live + gated, retire the old exit path — then delete this entry |
 
 ---
 
@@ -200,11 +199,6 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 
 *Proposed fix (remainder):* enumerate the feature-flag capability row when its first consumer is derived — internal area PC-4, the relevant upstream-PC substrate dependency, and V2/V4 vertical impact. The consent and data-export portions are done.
 
-**G-36 — IDN-10 (self-service exit/deletion) is a committed forward-seam blocked on DS-3 + DS-5.**
-IDN-10 is Cycle F of the Identity completion plan — committed, deferred, not dropped: blocked on the DS-3 (enrollment-freeze) and DS-5 (forum-content disposition) contracts, realised in the later Journeys / Communication areas. The plan ([`../../planning/hub-v2/phase-3-identity-completion-plan.md`](../../planning/hub-v2/phase-3-identity-completion-plan.md)) committed to four reinforcing tracking hooks; this entry is hook #4, registered 2026-07-03 after the Identity cycle retro ([retro-2026-07-03](../../planning/retrospectives/retro-2026-07-03.md)) found it — and hook #1 (the parked IDN-10 Hub + platform specs) — unplanted. Hook #1 remains to author, by the next cooldown at latest; hooks #2/#3 live as the plan's cascade-spec intent and the re-entry lines carried by the per-area gates (the Groups plan carries its line already). *Update 2026-07-21: hook #1 discharged — the IDN-10 specs are authored (FEAT-PC017 ↔ FEAT-H029, with FEAT-PC005/FEAT-H007 un-parked and origin-gated) at A-COM Cycle C-F per the C-F board; the close-condition below is now only the build + retirement.*
-
-*Proposed fix (= close-condition):* at the Journeys gate (DS-3 realised), advance IDN-10's enrollment-freeze disposition; at the Communication gate (DS-5 realised), close the forum-content disposition, un-park and finish IDN-10, retire the old exit code — then delete this entry.
-
 ---
 
 ## Priority summary
@@ -237,7 +231,6 @@ IDN-10 is Cycle F of the Identity completion plan — committed, deferred, not d
 - G-32 Entities with shipped §L3 lacking reader tours — backfill obligation
 - G-34 Sharing controls (IDN-7) split out of Cycle B — no substrate yet
 - G-35 PC-4 §L3 under-enumerates GDPR-cluster capabilities (consent + data-export rows added; feature-flags remain)
-- G-36 IDN-10 self-service exit/deletion forward-seam (DS-3 + DS-5)
 
 **Low priority** (single-word fixes or edge cases):
 - G-11 TDD overstated vs risk-based- G-28 Trust-disk-over-memory as a cross-cutting discipline
@@ -257,3 +250,5 @@ IDN-10 is Cycle F of the Identity completion plan — committed, deferred, not d
 *Updated 2026-06-30 (G-35 data-export portion closed, Cycle C decomposition): the data-export capability row was added to PC-4 §L3 (`governance-specification.md`) as the IDN-8 capability was decomposed — realized by FEAT-PC008 ↔ FEAT-H010; **G-35 narrowed** to its feature-flag remainder only (awaiting the first feature-flag consumer's derivation). G-34 unchanged.*
 
 *Updated 2026-07-03 (Identity cycle retro → Groups kickoff): **G-36** registered — the IDN-10 forward-seam entry the Identity completion plan's hook #4 committed to, flagged as unplanted by [retro-2026-07-03](../../planning/retrospectives/retro-2026-07-03.md); the parked IDN-10 specs (hook #1) remain to author by the next cooldown. Housekeeping in the same pass: G-34/G-35 added to the quick index (body + priority summary only since 2026-06-29, the same drift G-32 once had) and the header count aligned to the live list (28). Next available ID is **G-37**.*
+
+*Updated 2026-07-21 (Cycle C-F close): **G-36 deleted** — its close-condition is met in full: both re-entry triggers discharged (DS-3 at the Journeys gate, DS-5 at C-E), the IDN-10 specs authored and built (FEAT-PC017 ↔ FEAT-H029, `6-done`; FEAT-PC005/FEAT-H007 un-parked, origin-gated, `6-done`), exit/deletion live and gated (ADR-U050; migrations `20260721161500` + `20260721170000`), and the old exit path retired (`admin_exit_user_from_platform` DROPped). Header count 28 → 27. Next available ID remains **G-37**.*

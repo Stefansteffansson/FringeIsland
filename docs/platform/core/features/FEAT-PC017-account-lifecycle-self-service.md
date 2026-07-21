@@ -6,7 +6,7 @@ title: Account lifecycle self-service — member-initiated pause and terminal de
 owner: platform/core/identity
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -179,3 +179,11 @@ N/A (no surface) — the Hub half (FEAT-H029) carries the budget; both RPCs are 
 1. **Personal-group disposition at self-delete.** v1 retains the (scrubbed) `users` row and personal group as FK targets — the admin path's shape — while erasing private content classes. Full personal-group erasure à la `_erase_mist` would be tidier but adds reassignment complexity the `[Deleted User]` sentinel machinery only partially covers. **For schema review:** confirm v1 retention, with full erasure joining the A-ADM scrub queue's inheritance.
 2. **Journal erasure mechanics.** Whether `journal_entries` erasure rides an existing FK cascade or needs an explicit delete in the walk — verify at red-suite time against the PD001 substrate (build detail, not a 4-ready blocker; STORY-5's criterion is behavioural).
 3. **DM-conversation participant rows at delete.** Whether the departing member's `conversation_participants` rows are removed (their inbox ceases to exist) or retained-inert on the sealed record — the C-A/C-E substrate decides which read the export and the other party's detail view take. Behaviourally bounded by STORY-5 (other participants keep reading); resolve at red-suite time.
+
+## Implementation notes (6-done — Cycle C-F, 2026-07-21)
+
+**Substrate:** migration `20260721161500` (schema gate, nodded "ok merge #233") + repair `20260721170000` (found at flip-green: `users.nickname` is NOT NULL per the display-name system, so the scrub is the tombstone string `'[Deleted User]'`, not NULL — same no-PII semantic; the sync trigger propagates it to the personal-group name for read-time attribution). Delivered exactly as sketched: the origin column + same-migration `'admin'` backfill; `pause_own_account()`; `reactivate_own_account()` (fresh CREATE — see FEAT-PC005); `delete_own_account()` porting the retired admin path's three-scenario walk byte-stable **plus** `ds5_lifecycle_group_closed` on closure; **two new ADR-U047 fact handlers** `ds3_lifecycle_account_deleted` + `ds7_lifecycle_account_deleted` (the first ds7 handler) carrying the F-2 erasure legs so Core never touches domain tables (conformance-gate clean); sentinel reassignment via the existing `user_hard_deleted` fact; session deletion; audit rows; the `get_own_account_state()` origin split (additive `deactivation_origin` key); `DROP admin_exit_user_from_platform`.
+
+**Red→green, honestly:** 19 demonstrated red pre-apply (PGRST202 ×3 RPCs / 42703 origin fixtures / payload-key absence / retirement probe / wall-class asserts demanding post-apply 42501+P0001) + 3 labelled greens (S1c invariant-holds, S6a-pre fixture pre-condition, S8b admin-RPCs-stand) → post-apply 13/22 → **22/22** after the scrub repair, with two labelled adaptations (S5c tombstone-string; S5b queries `public.messages` — `direct_messages` RENAMEd at C-A, an A#8 catch). Suite: `hub/tests/integration/account/account-lifecycle-self-service.test.ts`. Sibling adaptations, both labelled: PC004's exact-payload-keys assert gains the origin key; the `platform-exit.test.ts` W2 characterization suite retired with its subject (its scenarios' living coverage is S4a/S4b/S4c; the absence is pinned by S8a). Full integration sweep 50 suites / 598 tests green.
+
+**Open questions resolved at build:** Q1 — v1 retains the scrubbed `users` row + personal group as FK targets (full erasure stays the admin/A-ADM path), as proposed. Q2 — journal erasure is the ds7 handler's explicit DELETE (no FK cascade exists to ride while the group survives); step instances + responses follow the enrollment delete by FK CASCADE (verified). Q3 — participant rows retained-inert; the surviving party's contract read keeps working (proven S5b via `get_conversation_detail`).

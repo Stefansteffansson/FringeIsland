@@ -41,10 +41,11 @@ describe('FEAT-PC004 — own account-state read', () => {
       expect(state!.state).toBe('active');
       expect(state!.is_active).toBe(true);
       expect(state!.is_decommissioned).toBe(false);
-      // Only the two lifecycle booleans + derived label — no profile fields,
-      // no other user's data.
+      // Only the lifecycle facts + derived label — no profile fields, no other
+      // user's data. ADAPTATION (C-F, labelled): deactivation_origin joined the
+      // payload additively (ADR-U050 origin split — null while active).
       expect(Object.keys(state!).sort()).toEqual(
-        ['is_active', 'is_decommissioned', 'state'].sort(),
+        ['is_active', 'is_decommissioned', 'deactivation_origin', 'state'].sort(),
       );
     });
   });
