@@ -155,7 +155,10 @@ test.describe('C-F — the departure (delete → farewell; the record survives)'
     await forum.getByTestId('forum-post-submit').click();
     await expect(departerPage.getByText(POST)).toBeVisible({ timeout: 15000 });
 
-    // The witness joins (seeded active — invitation flows are another spec's).
+    // The witness joins (seeded — invitation flows are another spec's). The
+    // invited -> active transition matters: the auto-role trigger assigns the
+    // Member role on that edge, and the forum read rides the role's
+    // permissions — a bare 'active' insert leaves a roleless reader.
     const { data: witness } = await admin
       .from('users')
       .select('personal_group_id')
@@ -165,8 +168,13 @@ test.describe('C-F — the departure (delete → farewell; the record survives)'
       group_id: groupId,
       member_group_id: witness!.personal_group_id,
       added_by_group_id: departerPgid,
-      status: 'active',
+      status: 'invited',
     });
+    await admin
+      .from('group_memberships')
+      .update({ status: 'active' })
+      .eq('group_id', groupId)
+      .eq('member_group_id', witness!.personal_group_id);
 
     // ── The ceremony (FEAT-H029 STORY-2): consequences, export offer,
     //    type-to-confirm — then the farewell (STORY-3).
@@ -181,9 +189,20 @@ test.describe('C-F — the departure (delete → farewell; the record survives)'
     await expect(departerPage).toHaveURL(/\/farewell/, { timeout: 30_000 });
     await expect(departerPage.getByTestId('farewell-surface')).toBeVisible();
 
-    // Signed out for good: an authenticated route no longer serves them.
+    // Signed out for good — the observable effect: the departed member can
+    // never reach the active experience again. Two honest terminal outcomes
+    // exist (both proven live in this journey's runs): cleared credentials →
+    // the /login redirect; a stale ssr cookie → H006's gate intercepts with
+    // the terminal "This account is closed" surface. Either way, no groups
+    // chrome, no data.
+    await expect(departerPage.getByTestId('farewell-signed-out')).toBeAttached({
+      timeout: 15000,
+    });
     await departerPage.goto('/groups');
-    await expect(departerPage).not.toHaveURL(/\/groups$/, { timeout: 15000 });
+    await expect(
+      departerPage.getByTestId('account-closed-surface').or(departerPage.locator('#email')),
+    ).toBeVisible({ timeout: 15000 });
+    await expect(departerPage.getByTestId('account-lifecycle-section')).not.toBeVisible();
     await departerContext.close();
 
     // ── The witness still reads the words — attributed by tombstone, never

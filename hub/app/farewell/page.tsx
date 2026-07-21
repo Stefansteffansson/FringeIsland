@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 
@@ -13,11 +13,19 @@ import { createClient } from '@/lib/supabase/client';
  * stale local state, and never flashes authenticated chrome.
  */
 export default function FarewellPage() {
+  const [signedOut, setSignedOut] = useState(false);
+
   useEffect(() => {
     const supabase = createClient();
     // Local scope: the server-side sessions are gone (the delete contract
-    // removed them); this only drops the stale cookies/storage.
-    void supabase.auth.signOut({ scope: 'local' }).catch(() => undefined);
+    // removed them); this only drops the stale cookies/storage. The marker
+    // below makes completion observable (E2E waits on it) — until it lands,
+    // a stale token re-entering the app meets H006's terminal closed surface
+    // anyway (defense-in-depth, proven by the C-F departure journey).
+    void supabase.auth
+      .signOut({ scope: 'local' })
+      .catch(() => undefined)
+      .finally(() => setSignedOut(true));
   }, []);
 
   return (
@@ -42,6 +50,7 @@ export default function FarewellPage() {
             To the shore
           </Link>
         </div>
+        {signedOut && <span data-testid="farewell-signed-out" className="sr-only" />}
       </div>
     </div>
   );
