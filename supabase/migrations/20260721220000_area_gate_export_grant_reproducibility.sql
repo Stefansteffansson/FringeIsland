@@ -1,0 +1,13 @@
+-- A-COM area gate (2026-07-21): W12 per-RPC roll-up finding — grant-reproducibility repair.
+--
+-- get_own_data_export() was born ungated in PC008 (20260630161155); the
+-- anon-lockdown sweep (20260706201500) revoked PUBLIC/anon EXECUTE and set
+-- default privileges so no function is executable without an explicit grant —
+-- but no migration ever granted this composite to authenticated. The live ACL
+-- (authenticated + service_role) is correct today, yet a from-scratch rebuild
+-- would leave the composite owner-only and break real-user export. Every
+-- sibling export contract grants explicitly (get_own_journal_export PD001,
+-- get_own_step_instances_export PD007, get_own_messages_export C-E:564);
+-- this closes the lone omission. No live behaviour change — the grant below
+-- already holds on the running database (idempotent).
+GRANT EXECUTE ON FUNCTION public.get_own_data_export() TO authenticated, service_role;

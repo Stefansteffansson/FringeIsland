@@ -23,14 +23,14 @@ Journeys (A-JRN) closed 2026-07-19 (gate PASSED — bridge `../sessions/2026-07-
 
 ## Substrate audit at kickoff (full depth, verified 2026-07-19)
 
-All comm substrate born whole in the D15 rebuild (`20260222000000_rebuild_universal_group_pattern.sql`); no post-rebuild ALTERs; all four tables RLS'd and tagged **Conformant** by the Phase-1 audit.
+All comm substrate born whole in the D15 rebuild (`20260222000000_rebuild_universal_group_pattern.sql`); one post-rebuild ALTER (`20260228125730_sprint3_smart_notifications.sql` — `notifications` gained `action_type`/`action_data`/`action_taken`/`action_taken_at`/`expires_at`, a consistency CHECK, and a pending-actions partial index; *corrected at the area gate 2026-07-21 — this sweep originally claimed "no post-rebuild ALTERs"*); all four tables RLS'd and tagged **Conformant** by the Phase-1 audit.
 
 | Object | State | Notes |
 |---|---|---|
 | `conversations` | HAVE | strictly 1-to-1 personal-group pairs (`UNIQUE(p1,p2)`, `p1<p2`); per-participant `last_read_at` = read-state; `can_update_conversation()` guards own-side-only advance |
 | `direct_messages` | HAVE | immutable — **no UPDATE/DELETE policy at all**; `sender_group_id` ON DELETE SET NULL |
 | `forum_posts` | HAVE | flat 2-level threading trigger-enforced (`enforce_flat_threading`); soft-delete `is_deleted`; edit-own with **no time window**; no DELETE policy |
-| `notifications` | HAVE (V3 substrate) | delivery substrate per U048 — not a DS-5 table; audit's column list (`action_type`/`expires_at`…) does not match the cumulative state — audit note stale, flagged |
+| `notifications` | HAVE (V3 substrate) | delivery substrate per U048 — not a DS-5 table; **staleness flag withdrawn at the area gate (2026-07-21):** the audit's column list is correct — those columns land in the sprint3 smart-notifications ALTER (`20260228125730`); this sweep's "no post-rebuild ALTERs" premise was the error, not the audit |
 | Permissions (seeds) | HAVE | `view_forum`, `post_forum_messages`, `reply_to_messages`, `moderate_forum`, `send_direct_messages` (`01_permissions.sql` §47-51) |
 | Realtime | LEGACY SHAPE | DMs/conversations/notifications in `supabase_realtime` publication (postgres_changes — the shape U039 retired); `forum_posts` unpublished; only v2 precedent = private-broadcast session-signal channel (`session-guard.ts` §100, `realtime.messages` RLS §20260703154102) |
 | Lifecycle precedent | HAVE | four `ds3_lifecycle_*` handlers in `20260719190205` — the exact template (SECURITY DEFINER, `search_path=''`, reason-param validation, REVOKE from public/anon/authenticated) |
@@ -97,18 +97,18 @@ Settled by canon, recorded not asked: U039 realtime doctrine (spec yields) · U0
 
 ## Exit checklist — the Communication area gate (planted now)
 
-- [ ] All 16 COM rows (incl. COM-15, CB-7) `6-done` or explicitly dispositioned on the board
-- [ ] MEM-9 un-seamed and rendered; FEAT-H016/H017 `pending-DS-5` notes cleared
-- [ ] D2 executed as `ds5_lifecycle_*`; FEAT-PC014 tags updated with the U047 rename recorded
+- [x] All 16 COM rows (incl. COM-15, CB-7) `6-done` or explicitly dispositioned on the board *(gate 2026-07-21: all 13 area specs read `maturity: 6-done` at their own line 9 — PD008/H025, PD009/H026, PD010/H027, PD011/H028, PD012, PC017/H029, PC005/H007)*
+- [x] MEM-9 un-seamed and rendered; FEAT-H016/H017 `pending-DS-5` notes cleared *(gate 2026-07-21: both files carry exactly one hit each — the discharge statements at H016:44/H017:45; no open seam)*
+- [x] D2 executed as `ds5_lifecycle_*`; FEAT-PC014 tags updated with the U047 rename recorded *(gate 2026-07-21: PC014 §109/§119 — both dispositions executed via `ds5_lifecycle_group_closed`, U047 naming recorded per the COR-A carry; `pending-DS-4` stands by design)*
 - [x] IDN-10 complete: specs authored, exit/deletion live and gated, old exit path retired *(C-F, 2026-07-21 — FEAT-PC017/H029 + PC005/H007 `6-done`; ADR-U050; `admin_exit_user_from_platform` DROPped; G-36 deleted)*
-- [ ] Conformance gate updated: `DS_TABLES` += comm tables; `DS_OWNED_ALLOWLIST` += DS-5 functions; `notifications` stays out (U048)
-- [ ] `get_own_messages_export()` composed into the export; suspended-member posture decided; PC008 open question closed or re-scoped
-- [ ] DS-5 spec reconciled: U039 amendment landed; §8 Q1/Q2/Q6/Q7/Q8 dispositioned; status advanced from `proposed`; feature-inventory summary shows the partial-realisation split (feeds/attachments stay forward)
-- [ ] Legacy `postgres_changes` publications for comm tables dispositioned (removed or justified) per U039
-- [ ] Oracle ported: B-MSG-001..006 + B-COMM-004..007 spine byte-for-byte; the two silences covered by fresh tests
-- [ ] W12 per-RPC verification for every RPC shipped (adversarial direct-call tests where uncovered); sole-home-in-BFF and core-referencing-domain remain automatic fails
+- [x] Conformance gate updated: `DS_TABLES` += comm tables; `DS_OWNED_ALLOWLIST` += DS-5 functions; `notifications` stays out (U048) *(gate 2026-07-21: internal-api-conformance.test.ts — conversations/messages/conversation_participants/conversation_kinds/forum_posts/announcements/content_reports in DS_TABLES; DS5 function set + `/^ds\d+_lifecycle_/` auto-allow; `notifications` out by design)*
+- [x] `get_own_messages_export()` composed into the export; suspended-member posture decided; PC008 open question closed or re-scoped *(gate 2026-07-21: C-E migration `20260721100000` — `get_own_messages_export()` incl. `reports_submitted`, composed as the `communication` section; CB-6 right-of-access; PC008 §155 CLOSED at source)*
+- [x] DS-5 spec reconciled: U039 amendment landed; §8 Q1/Q2/Q6/Q7/Q8 dispositioned; status advanced from `proposed`; feature-inventory summary shows the partial-realisation split (feeds/attachments stay forward) *(gate 2026-07-21: U039 amendments woven §3/§6/Q7 with provenance; Q1 seam-fixed, Q2/Q7/Q8 resolved, Q6 SEAMED forward at this gate; status → `active` — first domain-service spec to advance; L4 realisation-split summary added)*
+- [x] Legacy `postgres_changes` publications for comm tables dispositioned (removed or justified) per U039 *(gate 2026-07-21: comm tables REMOVED at C-A — migration `20260719230500` §179-189; live DB verified, publication now holds only `notifications`, whose membership is justified-deferred to A-NTF per DS-5 §8 Q7 + U048; zero v2 `postgres_changes` consumers)*
+- [x] Oracle ported: B-MSG-001..006 + B-COMM-004..007 spine ported, adapted to the participants model (labelled); the two silences covered by fresh tests *(gate 2026-07-21: full ID-by-ID verification — every adaptation labelled in the suite headers; the two implicit spine assertions made explicit at the gate — B-MSG-004 inbox ordering + B-MSG-005 zero-notification-rows probes added, comm suite 104/104 green; attribution + realtime silences covered by fresh C-B/C-C tests)*
+- [x] W12 per-RPC verification for every RPC shipped (adversarial direct-call tests where uncovered); sole-home-in-BFF and core-referencing-domain remain automatic fails *(gate 2026-07-21: 30 callable RPCs walked body-vs-spec — 29 VERIFIED with adversarial coverage cited, zero automatic fails (PD008 §23 "nothing sole-home-in-BFF" spot-checked; U047 conformance green-by-construction); 10 internal `ds*_` fact-handlers confirmed REVOKEd. One finding: `get_own_data_export()` EXECUTE grant live-correct but unreproducible from source — repair migration `20260721220000` rides the gate-close PR; full roll-up table in the gate record)*
 - [ ] ADR-U043 measurement pass (cold ≥20-min idle ×3 + warm, tail rule) + Stefan's live walk — both before the area retro
-- [ ] Substrate-audit stale note corrected (`notifications` column list)
+- [x] Substrate-audit stale note corrected (`notifications` column list) *(gate 2026-07-21: the flag was INVERTED — the audit's column list is correct (sprint3 ALTER `20260228125730` added the smart columns); this plan's kickoff-sweep claims corrected instead, audit untouched)*
 
 ## After Communication
 

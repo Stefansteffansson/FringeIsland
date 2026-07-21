@@ -1,0 +1,105 @@
+# The Communication area gate (A-COM) — 2026-07-21
+
+**Protocol:** the [exit checklist](./phase-3-communication-completion-plan.md) planted at area open, executed per [ADR-U043](../../architecture/decisions/ADR-U043-performance-budgets.md) + Amendment 1 and the Journeys-gate precedent ([2026-07-19](./2026-07-19-journeys-area-gate.md)): production stable domain (`fringe-island.vercel.app`), authenticated real path, headless measurement FIM created + erased in-run, warm ≥ 3 per scenario, deep-cold **one enforced-idle window (≥ 20 min zero traffic) per cold scenario, n=1, honestly labelled** (the J-gate ratified depth call), tail rule (no request > 2× scenario budget) on the cold runs, Stefan's live walk before the area retro. Verification fan-out: five parallel read-only scouts (checklist rows · DS-5 spec · oracle port · W12 roll-up · publications/audit/perf-precedent), every load-bearing claim disk-verified against its canonical file before any edit.
+
+**Production state at gate start (verified):** the Hub deployment carries C-F (`/farewell` answers 200); the one FringeIsland Supabase project carries the area's migrations through the C-F repair `20260721170000`; the `supabase_realtime` publication holds only `notifications` (live-queried).
+
+## Checklist dispositions (the planted exit checklist, walked)
+
+| Item | Disposition |
+|---|---|
+| All 16 COM rows `6-done` or dispositioned | **Verified** — all 13 area specs read `maturity: 6-done` at their own line 9 (PD008/H025 · PD009/H026 · PD010/H027 · PD011/H028 · PD012 · PC017/H029 · PC005/H007) |
+| MEM-9 un-seamed; H016/H017 notes cleared | **Verified** — exactly one `pending-DS-5` hit per file, both discharge statements (H016:44, H017:45); no open seam |
+| D2 executed as `ds5_lifecycle_*`; PC014 tags + U047 rename | **Verified** — PC014 §109/§119: both dispositions executed via `ds5_lifecycle_group_closed('group_closed'/'group_archived')`, U047 naming recorded; `pending-DS-4` stands by design (out of area scope) |
+| Conformance gate updated | **Verified** — DS_TABLES carries conversations/messages/conversation_participants/conversation_kinds/forum_posts/announcements/content_reports; DS-5 function allowlist + `/^ds\d+_lifecycle_/` auto-allow; `notifications` out by design (U048) |
+| Export composed; PC008 §155 closed | **Verified** — C-E migration `20260721100000`: `get_own_messages_export()` (incl. `reports_submitted`) composed as the `communication` section of `get_own_data_export()`; CB-6 right-of-access; PC008 §155 CLOSED at source, red→green proven |
+| DS-5 spec reconciled | **Executed at gate** — U039 amendments verified woven (§3/§6/Q7 with provenance; zero forward postgres_changes commitments); §8 Q1 seam-fixed → A-NTF, Q2/Q3/Q4/Q5/Q7/Q8 resolved, **Q6 SEAMED forward at this gate** (cold lean unpromoted, resolves against DS-1 at FEAT time); **status advanced `proposed` → `active`** — the first domain-service spec to advance, template-sanctioned value, Hub/verticals precedent; L4 gains the A-COM realisation-split summary (feeds & social surfaces / attachments / preferences stay forward — A-NTF / A-DIS / later) |
+| Legacy `postgres_changes` publications dispositioned | **Verified** — comm tables REMOVED at C-A (`20260719230500` §179-189, guarded drops); live DB confirms only `notifications` remains, justified-deferred to A-NTF (DS-5 §8 Q7 + U048); zero `postgres_changes` consumers in v2 code (all three hits are hub-legacy) |
+| Oracle ported + the two silences | **Verified, made exact at gate** — B-MSG-001..006 + B-COMM-004..007 walked ID-by-ID against the v2 suites: spine ported, adapted to the CB-7 participants model, every adaptation labelled in the suite headers (nothing silent). The two spine assertions the port had left implicit were made explicit at the gate — **B-MSG-004 inbox-ordering and B-MSG-005 zero-notification-rows probes added** (labelled green-by-nature regression guards); comm integration **104/104 green** post-addition. Both silences covered by fresh tests: former-member attribution (forum-contracts §435-514) and U039 realtime (realtime-hint-emission §239-415) |
+| W12 per-RPC verification | **Verified with one finding** — 30 callable RPCs walked body-vs-spec (Appendix A): 29 VERIFIED with adversarial coverage cited; 10 internal `ds*_` fact-handlers confirmed REVOKEd from authenticated; **zero automatic fails** (no sole-home-in-BFF — PD008 §23 verbatim, 23 BFF routes spot-checked thin; core-referencing-domain green-by-construction, U047 conformance suite). **Finding:** `get_own_data_export()` EXECUTE grant live-correct but unreproducible from source — repair migration `20260721220000` (pure GRANT, no live change) rides this gate's close PR |
+| Substrate-audit stale note | **Resolved — the flag was inverted.** The audit's `notifications` column list is correct; the sprint3 smart-notifications ALTER (`20260228125730`) is the post-rebuild ALTER the kickoff sweep missed. The plan's claims corrected; audit untouched |
+| ADR-U043 measurement + Stefan's live walk | **Measurement executed** (below); **live walk: PENDING Stefan** |
+
+## Measurements
+
+### Warm pass (headless measurement FIM, created + erased in-run; 21:15 UTC)
+
+| Scenario | Budget | Runs | Verdict |
+|---|---|---|---|
+| Sign-in click → content (shallow — second sign-in of an active window, labelled) | B1 target 2.0 s | **513 ms** (first-attempt run: 1 911 ms) | PASS |
+| `/messages` first-of-session full load | B2 ≤ 2.5 s | **289 ms** | PASS |
+| `/messages` warm repeats ×3 | B3 ≤ 1.0 s | **302 / 296 / 301 ms** | PASS |
+| Inbox row → conversation detail soft-nav | B4/B6 | **847 ms** (fresh detail read on click — the honest ping-then-fetch revisit; under the 1 s no-loading-state line) | PASS |
+| Detail full load / warm repeats ×3 | B2 / B3 | **451** / **326 / 399 / 335 ms** | PASS |
+| **Send DM → confirmed rendered** | B5 (feedback instant, optimistic → confirmed) | **260 ms** | PASS |
+| Group page (forum + panels) full load / warm ×3 | B2 / B3 | **995** / **941 / 968 / 993 ms** | PASS — **headroom thin** (warm runs hug the 1.0 s B3 ceiling; see fan-out row) |
+
+Request-count row: `/messages` fires **2-3 API reads** per load; conversation detail **3-4**; the **group page fires 12-14 API reads** per full load (group detail, members, roles, forum, conversations panel, announcements, progress, account state…) — the area's fan-out datum. Warm wall-clock stays under budget because the reads run concurrently (maxReq 318-402 ms), but this is the same shape the J-gate's R3 closed *for `/journeys` at 4 reads* — at 12-14 reads the group page is the first surface where consolidation would plausibly move the felt number. Recorded as a seam for A-NTF/cooldown, not a gate failure.
+
+### Deep-cold windows (one per scenario, ≥ 21 min enforced idle, n=1 labelled — J-gate depth call)
+
+| Window | Scenario | Idle depth | Result | Against budget |
+|---|---|---|---|---|
+| **W1** (21:36 UTC) | `/messages` cold full load (B2 ≤ 2.5 s) | 21.0 min zero traffic | content-ready **5 743 ms**; TTFB **2 723 ms** (instance provisioning); 3 API reads on the shared instance; remainder zero-cache asset load (fresh headless browser — labelled, the J-gate convention) | **Over the 2.5 s letter** — same composition as the J-gate windows (~2.7 s vendor provisioning + app reads + zero-cache assets). Tail rule (per request ≤ 5 s): **PASS** — slowest single request 3 873 ms |
+| **W2** | group forum cold full load (B2 ≤ 2.5 s) | *pending* | *pending* | *pending* |
+| **W3** | conversation detail cold full load (B2 ≤ 2.5 s) | *pending* | *pending* | *pending* |
+
+*(Context from the J-gate: the known deep-cold composition on this Hobby-tier deployment is ~2.7 s instance-provisioning TTFB + zero-cache assets; W1/W2 there ran 5.9/5.2 s against the same 2.5 s letter and passed as a labelled exception on tail-rule + composition. The same reading discipline applies here.)*
+
+### Teardown
+
+Measurement fixtures erased in-run via the canonical D15 chain (consent-erasure bypass → groups → auth.users); post-check *pending final teardown* — target **zero residue** (the J-gate R5 discipline).
+
+## Gate verdict
+
+**PENDING** — awaiting the three deep-cold windows, Stefan's live walk, and Stefan's verdict. All eleven checklist items short of the measurement/walk pair are dispositioned above; the area retro follows the verdict.
+
+---
+
+## Appendix A — W12 per-RPC gate-verification roll-up
+
+Scope: migrations `20260719230500` (C-A) → `20260721170000` (C-F repair). Body canon = latest re-issuing migration; gate canon = owning spec. **FIM** = `ds5_require_fim_actor()` (resolves personal group via `get_current_personal_group_id()`; 42501 on no-actor/suspended/Mist). **own-row** = `auth.uid()` own-subject.
+
+### Callable contracts (granted to `authenticated`)
+
+| RPC | Latest body (file:line) | Gates in body | Owning spec — match? | Adversarial/direct-call test | Verdict |
+|---|---|---|---|---|---|
+| `ds5_require_fim_actor()` | c_a `…230500:213` | actor resolve; 42501 no-actor; 42501 temporary/FIM-only | PD008 §23 CB-1 shared gate — match | conversation/forum + PD012 Mist/suspended→42501 | VERIFIED |
+| `ds5_is_fim_actor()` | c_d `…200000:54` | boolean FIM predicate for RLS | PD011 §21 — match | announcement policy path | VERIFIED |
+| `is_conversation_participant(uuid)` | c_a `…230500:114` | personal-group + participant + `left_at IS NULL` | PD008 §31 — match | via submit_content_report / RLS | VERIFIED (helper) |
+| `get_my_conversations()` | c_e `…100000:318` | FIM; in-query participant scope; `sealed_at IS NULL` | PD008 §39 — match | conversation-contracts | VERIFIED |
+| `get_conversation_detail(uuid,ts,int)` | c_b `…120000:310` | FIM; participant 42501; unknown P0002 | PD008 §40 — match | conversation-contracts (7) | VERIFIED |
+| `send_message(uuid,text)` | c_e `…100000:402` | FIM; participant 42501; empty 22023; sealed P0001 behind wall | PD008 §41 + PD012 §25 — match | conversation + lifecycle seal | VERIFIED |
+| `get_or_create_dm_conversation(uuid)` | c_a rider `…003000:16` | FIM; recipient FIM-only 42501; not-self 22023; P0002 | PD008 §42 — match | conversation-contracts (9) | VERIFIED |
+| `create_group_conversation(uuid,text)` | c_a `…230500:477` | FIM; `has_permission(create_group_conversations)` 42501 | PD008 §43 — match | conversation-contracts (2) | VERIFIED |
+| `get_group_conversations(uuid)` | c_e `…100000:368` | FIM; membership `status='active'` 42501; `sealed_at IS NULL` | PD008 §44 — match | conversation-contracts (2) | VERIFIED |
+| `join_group_conversation(uuid)` | c_e `…100000:446` | FIM; P0002; membership 42501; sealed P0001 | PD008 §45 + PD012 — match | conversation (5) + lifecycle (5) | VERIFIED |
+| `leave_group_conversation(uuid)` | c_a `…230500:577` | FIM; active-participant 42501 | PD008 §45 — match | conversation-contracts (1) | VERIFIED |
+| `mark_conversation_read(uuid)` | c_a `…230500:603` | FIM; own-cursor 42501 | PD008 story-7 — match | conversation-contracts (1) | VERIFIED |
+| `get_group_forum(uuid,ts,int)` | c_b `…120000:100` | FIM; `has_permission(view_forum)` 42501 | PD009 §41 — match | forum-contracts (1) | VERIFIED |
+| `create_forum_post(uuid,text)` | c_b `…120000:167` | FIM; `has_permission(post_forum_messages)` 42501; empty 22023 | PD009 §42 — match | forum-contracts (9) | VERIFIED |
+| `reply_to_forum_post(uuid,text)` | c_b `…120000:215` | FIM; parent P0002; `has_permission(reply_to_messages)` 42501; flat-thread P0001 | PD009 §43 — match | forum-contracts (6) | VERIFIED |
+| `moderate_forum_post(uuid)` | c_b `…120000:268` | FIM; post P0002; `has_permission(moderate_forum)` 42501; idempotent | PD009 §44 — match | forum-contracts (4) | VERIFIED |
+| `send_community_announcement(uuid,text,text)` | c_d rider `…203000:15` | FIM; `has_permission(send_announcements)` 42501; caps 22023 | PD011 §27 — match | announcement-contracts (4) | VERIFIED |
+| `send_platform_announcement(text,text)` | c_d rider `…203000:68` | FIM; `has_permission(manage_all_groups)` 42501; caps 22023 | PD011 §28 — match | announcement-contracts (3) | VERIFIED |
+| `retract_announcement(uuid)` | c_d `…200000:332` | FIM; P0002; scope-based gate 42501 | PD011 §29 — match | announcement-contracts (5) | VERIFIED |
+| `get_group_announcements(uuid,ts,int)` | c_d `…200000:390` | FIM; `is_active_group_member` 42501 | PD011 §30 — match | announcement-contracts (5) | VERIFIED |
+| `get_platform_announcements(ts,int)` | c_d `…200000:437` | FIM; own delivered-inbox scope on `v_me` | PD011 §30 — match | announcement-contracts (2) | VERIFIED |
+| `edit_own_forum_post(uuid,text)` | c_d `…200000:482` | FIM; author-only 42501; is_deleted 42501; permission 42501; 15-min window 42501; empty 22023 | PD011 §31 — match | window-and-report (7) | VERIFIED |
+| `delete_own_forum_post(uuid)` | c_d `…200000:543` | FIM; author-only 42501; permission 42501; 15-min window 42501 | PD011 §31 — match | window-and-report (5) | VERIFIED |
+| `submit_content_report(text,uuid,text,text)` | c_d `…200000:600` | FIM; reason 22023; target-visible-to-reporter else P0002; not-own 22023 | PD011 §33 — match | window-and-report (9) | VERIFIED |
+| `get_own_messages_export()` | c_e `…100000:485` | own-subject; ungated by design (CB-6 right-of-access, suspended included); 42501 no-session | PD012 §26 — match | communication-export §258 own-rows-only | VERIFIED |
+| `get_own_data_export()` | c_e `…100000:629` | own-subject; 28000 no-subject; composes `communication` key | PD012 §26 / PC008 — body match | data-export STORY-3; export-composite | **GAP** (grant reproducibility — repair `20260721220000`) |
+| `pause_own_account()` | c_f `…161500:123` | own-row; no-session; Mist/terminal reject; admin-hold reject; idempotent | PC017 §30 — match | acct-lifecycle S1/S2a + S9a anon→42501 | VERIFIED |
+| `reactivate_own_account()` | c_f `…161500:191` | own-row; Mist/terminal reject; origin gate (member-only; admin-hold reject) | PC017 §39 + PC005 story-6 — match | acct-lifecycle S2c/S3b | VERIFIED |
+| `delete_own_account()` | c_f repair `…170000:18` | own-row; no-session; Mist/terminal reject; admin-hold reject; steward-succession | PC017 §31 — match | acct-lifecycle S2b/S5/S6b + S9a anon→42501 | VERIFIED |
+| `get_own_account_state()` | c_f `…161500:561` | own-row read; bypasses `users_select_active` for own row only; origin-split | PC004 + PC017 §38 — match | acct-state-read STORY-4 no-cross-user | VERIFIED |
+
+### Internal fact-handlers (SECURITY DEFINER, REVOKEd from authenticated — not contracts)
+
+All verified `REVOKE ALL … FROM PUBLIC, anon, authenticated`: `ds5_resolve_author_display` (c_b:50) · `ds5_lifecycle_user_hard_deleted` (c_b:407) · `ds5_emit_hint` / `_message_hint` / `_forum_post_hint` / `_forum_moderation_hint` (c_c:91/123/161/188) · `ds5_lifecycle_group_closed` (c_e:52 — direct-call→42501 tested) · `ds3_lifecycle_account_deleted` (c_f:58) · `ds7_lifecycle_account_deleted` (c_f:89).
+
+### Footer
+
+- **No comm rule sole-home-in-BFF — PASS.** PD008 §23 verbatim ("Sole-home-in-BFF: nothing"); `messages/route.ts`, `account/delete/route.ts`, `reports/route.ts` spot-checked thin (auth check + one RPC + type validation/error mapping); all 23 comm/account BFF routes forward to RPCs.
+- **Core-referencing-domain — PASS (green-by-construction).** The U047 conformance suite queries live `pg_proc` and asserts no PC function names a DS table; C-F Core paths route through `ds3_/ds5_/ds7_lifecycle_*`; `get_own_data_export` sits on the explicit vertical-composition allowlist (composes DS read contracts, never DS tables).
