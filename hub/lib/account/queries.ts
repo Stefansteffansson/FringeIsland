@@ -14,15 +14,22 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**
- * Known lifecycle labels today. `state` is an OPEN string — a future label (e.g.
- * a member-initiated `'paused'`) can be returned without a breaking change, and
- * consumers render an unknown state as a safe default (ADR-U018 spirit).
+ * Known lifecycle labels today. `state` is an OPEN string — new labels arrive
+ * without a breaking change, and consumers render an unknown state as a safe
+ * default (ADR-U018 spirit). `'paused'` joined at C-F (ADR-U050): the
+ * member-origin off state, only ever produced by self-pause.
  */
-export type KnownAccountState = 'active' | 'suspended' | 'decommissioned';
+export type KnownAccountState = 'active' | 'paused' | 'suspended' | 'decommissioned';
 
 export interface AccountState {
   is_active: boolean;
   is_decommissioned: boolean;
+  /**
+   * ADR-U050 (C-F, additive): who switched the account off — 'member' |
+   * 'admin' today (open namespace), null while active. `state='paused'` is
+   * exactly the origin='member' off state.
+   */
+  deactivation_origin: string | null;
   /** Open label; known values in {@link KnownAccountState}. */
   state: string;
 }

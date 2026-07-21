@@ -7,6 +7,7 @@ import { AppShell } from '@/components/shell/AppShell';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { InlineError } from '@/components/ui/InlineError';
 import ProfileEditForm from '@/components/profile/ProfileEditForm';
+import { AccountLifecycleSection } from '@/components/account/AccountLifecycleSection';
 import { fetchProfile, displayLabel } from '@/lib/profile/client';
 import { useAccountState } from '@/lib/account/AccountStateContext';
 import type { Profile } from '@/lib/profile/queries';
@@ -91,6 +92,9 @@ export default function ProfilePage() {
             Account: <span className="font-medium">{accountState?.state ?? 'active'}</span>
           </p>
           <ProfileEditForm initial={profile} onSaved={setProfile} />
+          {/* FEAT-H029 (IDN-10, C-F): the lifecycle affordances — pause + the
+              delete ceremony. The section gates itself on state==='active'. */}
+          <AccountLifecycleSection />
         </div>
       ) : null}
     </AppShell>

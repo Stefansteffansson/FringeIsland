@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import type { Identity } from '@/lib/auth/mist';
 import type { AccountState } from '@/lib/account/queries';
 import { AccountStateSurface } from '@/components/account/AccountStateSurface';
+import { PausedAccountSurface } from '@/components/account/PausedAccountSurface';
 
 /**
  * FEAT-H006 — render account state (IDN-9). Pure branch over the resolved
@@ -10,8 +11,10 @@ import { AccountStateSurface } from '@/components/account/AccountStateSurface';
  *  - loading: a loading state (never a blank-but-interactive shell).
  *  - error: an honest retry surface — NEVER silently render the active experience.
  *  - active: the normal experience (children).
- *  - suspended: an admin hold — "contact an admin", NO self-reactivation (IDN-12
- *    is deferred until self-pause + a deactivation-origin field exist).
+ *  - paused (C-F, ADR-U050): the member's own step-away — hosts FEAT-H007's
+ *    reactivation affordance (after the origin split, 'paused' is only ever
+ *    member-origin; the platform's origin gate enforces regardless).
+ *  - suspended: an admin hold — "contact an admin", NO self-reactivation.
  *  - decommissioned: terminal, permanently closed.
  *  - unknown/future label: a safe default surface (extensibility — never crash,
  *    never fall through to the active experience).
@@ -66,6 +69,8 @@ export function AccountStateView({
     case 'active':
       // Defensive: a missing state never traps an otherwise-active member.
       return <>{children}</>;
+    case 'paused':
+      return <PausedAccountSurface onSignOut={onSignOut} />;
     case 'suspended':
       return (
         <AccountStateSurface
