@@ -355,8 +355,9 @@ describe('FEAT-PC017 — account lifecycle self-service (C-F red suite)', () => 
       expect(fp[0].content).toBe('CF forum words'); // no content rewrite (ADR-U021 read-time attribution)
       expect(fp[0].is_deleted).toBe(false);
 
+      // `messages` — direct_messages was RENAMEd in place at C-A (PD008 Q2).
       const dm = await runAdminSql(
-        `SELECT count(*)::int AS n FROM public.direct_messages
+        `SELECT count(*)::int AS n FROM public.messages
           WHERE conversation_id = '${dmConversationId}' AND content = 'CF dm words';`,
       );
       expect(dm[0].n).toBe(1);
@@ -376,7 +377,10 @@ describe('FEAT-PC017 — account lifecycle self-service (C-F red suite)', () => 
       expect(row.is_decommissioned).toBe(true);
       expect(row.is_active).toBe(false);
       expect(row.deactivation_origin).toBe('member');
-      expect(row.nickname).toBeNull();
+      // ADAPTATION (flip-green, labelled): nickname is NOT NULL (display-name
+      // system 20260227), so the scrub is the tombstone string, not NULL —
+      // repaired in migration 20260721170000. Same no-PII semantic.
+      expect(row.nickname).toBe('[Deleted User]');
       expect(row.bio).toBeNull();
     });
 
