@@ -6,7 +6,7 @@ title: Pause or delete my account — the Hub affordances for the member-owned a
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

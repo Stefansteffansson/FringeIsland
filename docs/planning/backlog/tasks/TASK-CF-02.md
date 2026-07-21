@@ -3,7 +3,7 @@
 ---
 id: TASK-CF-02
 title: Author ADR-U050 (account-lifecycle state machine) + the C-F schema-gate migration; hold at the gate
-status: todo
+status: review
 assigned_to: claude
 priority: critical
 feature: FEAT-PC017
@@ -16,7 +16,7 @@ estimated_hours: 5
 
 ## Description
 
-Author **ADR-U050** — the formal promotion of the 2026-06-29 account-lifecycle decision record (four states split by `deactivation_origin`) that the record itself mandates at build time — and the single C-F migration: `users.deactivation_origin` + backfill `'admin'` for existing off rows; `pause_own_account()`; `delete_own_account()` (three-scenario walk ported from the admin path **plus** `ds5_lifecycle_group_closed` on closure; F-2 erasure legs; decommission + scrub; session deletion; audit); `get_own_account_state()` re-issue (origin split + `deactivation_origin` key); `reactivate_own_account()` re-issue (origin gate + clear); `DROP FUNCTION admin_exit_user_from_platform`. Assemble re-issued function bodies from each function's **latest on-disk body via anchored replacements** (the C-E shape — fail-loud, verify every edit site). PR held at the schema gate for the explicitly-named nod; never bypass; apply commands in the PR body.
+Author **ADR-U050** — the formal promotion of the 2026-06-29 account-lifecycle decision record (four states split by `deactivation_origin`) that the record itself mandates at build time — and the single C-F migration: `users.deactivation_origin` + backfill `'admin'` for existing off rows; `pause_own_account()`; `delete_own_account()` (three-scenario walk ported from the admin path **plus** `ds5_lifecycle_group_closed` on closure; F-2 erasure legs; decommission + scrub; session deletion; audit); `get_own_account_state()` re-issue (origin split + `deactivation_origin` key); `reactivate_own_account()` **fresh CREATE** (PC005 was parked pre-build — no prior body exists on disk; build per the PC005 spec incl. STORY-6's origin gate + clear); `DROP FUNCTION admin_exit_user_from_platform`. Assemble re-issued function bodies from each function's **latest on-disk body via anchored replacements** (the C-E shape — fail-loud, verify every edit site). PR held at the schema gate for the explicitly-named nod; never bypass; apply commands in the PR body.
 
 ## Acceptance criteria
 
