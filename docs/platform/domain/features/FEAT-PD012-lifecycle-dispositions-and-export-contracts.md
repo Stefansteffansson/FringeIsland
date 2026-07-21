@@ -6,7 +6,7 @@ title: Lifecycle dispositions & own-communication export contracts — D2 execut
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
