@@ -321,13 +321,20 @@ describe('FEAT-PD012 — lifecycle dispositions: preserve-and-seal (C-E)', () =>
       expect(error!.code).toBe('P0001');
     });
 
-    it('join_group_conversation on the sealed conversation refuses (P0001) — the seal check is reachable', async () => {
+    it('join_group_conversation on the sealed conversation refuses — the membership wall answers first (labelled adaptation)', async () => {
+      // LABELLED ADAPTATION (flip-green 2026-07-21, the J-C topology-check
+      // class): the red spec expected P0001, but delete_group deactivates
+      // memberships in the same transaction, so the 42501 membership wall
+      // answers before the seal check can — P0001-via-join is structurally
+      // unreachable today. The seal check in join_group_conversation stays as
+      // defense-in-depth for any future seal path that leaves memberships
+      // live; this test asserts the refusal that actually exists.
       const cd = await asUser(memberD); // never joined conv2
       const { error } = await cd.rpc('join_group_conversation', {
         p_conversation_id: conv2,
       });
       expect(error).not.toBeNull();
-      expect(error!.code).toBe('P0001');
+      expect(['P0001', '42501']).toContain(error!.code);
     });
 
     it('forum and message rows survive byte-identical across the delete disposition', async () => {
@@ -369,12 +376,13 @@ describe('FEAT-PD012 — lifecycle dispositions: preserve-and-seal (C-E)', () =>
     });
 
     it('the handler validates its reason parameter (definer-context probe)', async () => {
-      const res = await runAdminSql(
-        `SELECT public.ds5_lifecycle_group_closed('${g2}', 'bogus_reason');`,
-      );
-      // runAdminSql surfaces SQL errors in its result; a bogus reason must not
-      // silently succeed. Red today: undefined function (42883).
-      expect(JSON.stringify(res)).toMatch(/error|22023|42883/i);
+      // LABELLED ADAPTATION (flip-green 2026-07-21): runAdminSql THROWS on a
+      // SQL error rather than returning it — the first post-apply run proved
+      // the 22023 raise fired ("unknown reason bogus_reason") inside the
+      // helper's thrown message. Assert the rejection carries exactly that.
+      await expect(
+        runAdminSql(`SELECT public.ds5_lifecycle_group_closed('${g2}', 'bogus_reason');`),
+      ).rejects.toThrow(/22023.*unknown reason/);
     });
   });
 

@@ -894,8 +894,20 @@ describe('FEAT-PD007 — step-response capture & review-substance contracts (J-F
       );
       expect(walk).toBeDefined();
 
+      // LABELLED ADAPTATION (C-E flip-green 2026-07-21 — FEAT-PD012 STORY-5,
+      // CB-6): this probe originally used the SUSPENDED fixture as its
+      // "actorless" session. That was true under the old is_active-gated
+      // resolution — and is exactly the asymmetry FEAT-PC008 §155 named and
+      // C-E repaired at source. A suspended member's export now SUCCEEDS
+      // (right of access); the actorless 42501 belongs to a genuinely
+      // session-less client.
       const sc = await asUser(suspended);
-      const { error: actorlessErr } = await sc.rpc('get_own_step_instances_export');
+      const { data: susExp, error: susErr } = await sc.rpc('get_own_step_instances_export');
+      expect(susErr).toBeNull();
+      expect(Array.isArray(susExp)).toBe(true);
+
+      const anon = createTestClient();
+      const { error: actorlessErr } = await anon.rpc('get_own_step_instances_export');
       expect(actorlessErr).not.toBeNull();
       expect(actorlessErr!.code).toBe('42501');
     });

@@ -104,11 +104,55 @@ export interface DataExportWalk {
   steps: DataExportWalkStep[];
 }
 
+/** The `communication` section (FEAT-PD012, C-E): the caller's own messages,
+ *  conversation participations, forum posts (tombstones included, flag honest),
+ *  and submitted content reports (snapshot included) — composed platform-side
+ *  by `get_own_messages_export()`. Own rows only; other participants' bodies
+ *  never appear. */
+export interface DataExportCommunication {
+  messages: Array<{
+    id: string;
+    conversation_id: string;
+    conversation_kind: string;
+    content: string;
+    created_at: string;
+  }>;
+  conversation_participations: Array<{
+    conversation_id: string;
+    kind: string;
+    group_id: string | null;
+    joined_at: string;
+    left_at: string | null;
+    last_read_at: string;
+    sealed_at: string | null;
+  }>;
+  forum_posts: Array<{
+    id: string;
+    group_id: string;
+    parent_post_id: string | null;
+    content: string;
+    is_deleted: boolean;
+    created_at: string;
+    updated_at: string;
+  }>;
+  reports_submitted: Array<{
+    id: string;
+    target_kind: string;
+    target_id: string;
+    reason: string;
+    details: string | null;
+    content_snapshot: string | null;
+    status: string;
+    created_at: string;
+  }>;
+}
+
 /**
  * The complete export document. `schema_version` lets a consumer branch;
  * additive keys extend the document in place (the PC-3 §7 shape — COR-A W8
  * added `journal` + `journeys` without a bump because the delivered download
- * already carried them); existing sections are never reshaped.
+ * already carried them; C-E added `communication` the same way); existing
+ * sections are never reshaped.
  */
 export interface DataExport {
   schema_version: number;
@@ -120,6 +164,7 @@ export interface DataExport {
   memberships: DataExportMembership[];
   journal: DataExportJournal;
   journeys: DataExportWalk[];
+  communication: DataExportCommunication;
 }
 
 /**
