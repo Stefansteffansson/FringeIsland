@@ -30,12 +30,19 @@ jest.mock('@/lib/account/lifecycleClient', () => ({
   requestReactivate: () => requestReactivate(),
 }));
 
+const invalidateAllCaches = jest.fn();
+jest.mock('@/lib/auth/cache-registry', () => ({
+  registerCacheInvalidator: jest.fn(),
+  invalidateAllCaches: () => invalidateAllCaches(),
+}));
+
 import { PausedAccountSurface } from '@/components/account/PausedAccountSurface';
 
 beforeEach(() => {
   requestReactivate.mockReset().mockResolvedValue(undefined);
   reload.mockClear();
   push.mockClear();
+  invalidateAllCaches.mockClear();
 });
 
 describe('PausedAccountSurface (FEAT-H007)', () => {
@@ -71,6 +78,38 @@ describe('PausedAccountSurface (FEAT-H007)', () => {
     expect(await screen.findByTestId('reactivate-error')).toHaveTextContent('admin hold');
     expect(push).not.toHaveBeenCalled();
     expect(screen.getByTestId('reactivate-account')).toBeEnabled();
+  });
+
+  /**
+   * RIDER-4 (A-COM live walk, 2026-07-22) — red-first against the live defect.
+   * Server-evidenced sequence (postgres log + audit log, 14:26:33-37 UTC): an
+   * overview-bundle read fired while PAUSED adopted 42501-refusal slices into
+   * the consume-once bootstrap cache; nothing consumed them under the gate;
+   * the post-reactivate /groups mount then consumed a stale pause-era
+   * rejection and painted "Failed to load your invitations." on a healthy
+   * account (third instance of the stale-consume-once class — see
+   * OverviewBoot's 2026-07-10 fix comment). The pause→active flip must be a
+   * cache boundary: on reactivate success, drop every registered session
+   * cache (adopted slices + the overview latch) BEFORE landing on /groups.
+   */
+  it('RIDER-4: reactivation is a cache boundary — session caches drop on success, before landing', async () => {
+    const order: string[] = [];
+    invalidateAllCaches.mockImplementation(() => order.push('invalidate'));
+    push.mockImplementation(() => order.push('push'));
+    render(<PausedAccountSurface onSignOut={() => {}} />);
+    await userEvent.click(screen.getByTestId('reactivate-account'));
+    await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
+    expect(invalidateAllCaches).toHaveBeenCalledTimes(1);
+    expect(order).toEqual(['invalidate', 'push']);
+  });
+
+  it('RIDER-4: a failed reactivation drops nothing — pause-era caches stay consistent with the gate', async () => {
+    requestReactivate.mockRejectedValue(new Error('nope'));
+    render(<PausedAccountSurface onSignOut={() => {}} />);
+    await userEvent.click(screen.getByTestId('reactivate-account'));
+    await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
+    await screen.findByTestId('reactivate-error');
+    expect(invalidateAllCaches).not.toHaveBeenCalled();
   });
 
   it('the paused member is never stranded — sign-out is offered', async () => {
