@@ -46,6 +46,8 @@ Request-count row: `/messages` fires **2-3 API reads** per load; conversation de
 
 *(Context from the J-gate: the known deep-cold composition on this Hobby-tier deployment is ~2.7 s instance-provisioning TTFB + zero-cache assets; W1/W2 there ran 5.9/5.2 s against the same 2.5 s letter and passed as a labelled exception on tail-rule + composition. The same reading discipline applies here.)*
 
+**Composition correction (empty-cache probe, 22:4x UTC — supersedes the "zero-cache asset load" attribution in the rows above and refines the J-gate convention):** the full empty-cache payload is **266 KB** (11 JS chunks = 204 KB); all assets served `x-vercel-cache: HIT` from the edge, slowest single asset 105 ms, all 18 in parallel in ~0.1 s. The post-TTFB time is NOT asset download — it is **~0.7 s JS parse + hydration (CPU), then the authenticated API waterfall firing only after hydration (~1.3 s per read on the cold function path, in waves)**. Deep-cold is a serialization problem on a cold backend: document (2.7 s) → hydrate (0.7 s) → cold reads (~1.3-2 s+) → render. Consequences: asset optimization has nothing to win; scale-to-one removes both the TTFB floor and the cold-read cost, collapsing the chain to ~1-1.5 s.
+
 ### Teardown
 
 Measurement fixtures erased in-run via the canonical D15 chain (consent-erasure bypass → groups → auth.users); post-check **zero residue** (0 gate groups, 0 gate users left — the J-gate R5 discipline held). One first-attempt fixture set was also fully erased mid-session (a ready-marker fix: the inbox renders the **nickname — the first token of a display name** — so multi-word fixture names never appear verbatim; measurement + E2E fixtures need single-token names, the existing E2E idiom).
