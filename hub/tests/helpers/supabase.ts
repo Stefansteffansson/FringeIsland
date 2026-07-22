@@ -49,6 +49,45 @@ export type TestUser = {
 };
 
 /**
+ * Known-environment-fault decorator for auth-admin failures (TASK-INT-01).
+ *
+ * The dev DB intermittently rejects the auth *admin* API with an ES256
+ * signing-key error. It is an environment fault, not a code fault — proven
+ * 2026-07-22 by control experiment: reproduced on `main` with no branch
+ * applied, while the same suite passed 24/24 minutes later, and a standalone
+ * probe using the same key created users 5/5.
+ *
+ * Raw, that error reads like "the substrate rejected my change" and costs the
+ * next person an hour of suspecting their own diff (it cost roughly that
+ * during COR-B W4). Naming it at the throw site is the cheapest possible
+ * guard — no extra requests, no added auth load. A preflight in
+ * `suite-setup.ts` was the obvious alternative and was deliberately NOT taken:
+ * `setupFilesAfterEnv` runs per test file, so a health check there would add
+ * an auth-admin call per file and increase exactly the concurrent load the
+ * fault correlates with.
+ */
+function decorateAuthAdminError(action: string, message: string): string {
+  const isSigningKeyFault =
+    /unrecognized JWT kid/i.test(message) ||
+    (/invalid JWT/i.test(message) && /ES256/i.test(message));
+
+  if (!isSigningKeyFault) return `Failed to ${action}: ${message}`;
+
+  return [
+    `Failed to ${action}: ${message}`,
+    '',
+    '  >>> KNOWN ENVIRONMENT FAULT (TASK-INT-01) — almost certainly NOT your change. <<<',
+    '  The dev DB intermittently rejects the auth admin API with this ES256 signing-key',
+    '  error. It is reproducible on `main` with no branch applied.',
+    '  Before investigating your diff:',
+    '    1. re-run this suite alone with --runInBand (it often passes),',
+    '    2. if it still fails, run the same suite on `main` as a control.',
+    '  Only if `main` is GREEN and your branch is RED is this yours.',
+    '  See docs/planning/backlog/tasks/TASK-INT-01-auth-admin-es256-flake.md',
+  ].join('\n');
+}
+
+/**
  * Create a test user, bypassing the normal signup flow. The handle_new_user()
  * trigger creates the personal group and sets personal_group_id — the user's
  * identity in the group system.
@@ -71,7 +110,7 @@ export const createTestUser = async (options?: {
     // (handle_new_user, ADR-U038 S3). The helper simulates a real, consented signup.
     user_metadata: { display_name: displayName, consent_accepted: 'true' },
   });
-  if (authError) throw new Error(`Failed to create test user: ${authError.message}`);
+  if (authError) throw new Error(decorateAuthAdminError('create test user', authError.message));
 
   const { data: profile, error: profileError } = await admin
     .from('users')
@@ -161,7 +200,7 @@ export const cleanupTestUser = async (userId: string): Promise<void> => {
     await admin.from('groups').delete().eq('id', profile.personal_group_id);
   }
   const { error } = await admin.auth.admin.deleteUser(userId);
-  if (error) console.error('Failed to cleanup test user:', error);
+  if (error) console.error(decorateAuthAdminError('cleanup test user', error.message));
 };
 
 /** Clean up a test group (CASCADE handles memberships, roles, etc.). */

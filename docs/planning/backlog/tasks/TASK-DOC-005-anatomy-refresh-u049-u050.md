@@ -23,11 +23,18 @@ Doc-health-check Section 11 finding, raised at the **A-COM area close (2026-07-2
 
 Per Section 11's severity rule this is a standard finding, not critical: the stamp lagging *with* anatomy-relevant ADRs outstanding is a backlog item, because doc + diagram + stamp must move together in one considered pass rather than being patched inline during a health check.
 
+## PARTIALLY DONE — and one premise corrected (2026-07-22, COR-B W5, PR #256)
+
+The **ADR-U049 half is done**: `ARCHITECTURE_ANATOMY.md`'s DS-5 charter row now carries the durable announcements home routed onto the delivery substrate, and the stamp moved **U048 → U049**. This was done during COR-B's doc pass by a session that had not found this task first — hence the belated reconciliation. (Prevention: a doc-health-check Section 11 finding should grep `docs/planning/backlog/tasks/` for an existing task before raising a new pass.)
+
+**Premise correction — this task treats ADR-U050 as accepted; it is not.** `ADR-U050-account-lifecycle-state-machine.md` reads `Status: Proposed (rides the C-F schema gate; Accepted on the gate's named nod)`. The anatomy is a *derived* document whose own rule is "canon wins", so absorbing a Proposed decision would make it assert something not yet ratified. **Decision (Stefan, 2026-07-22): hold U050 until the C-F gate accepts it.** The stamp line states this inline so the next reviewer does not re-derive it.
+
 ## Acceptance criteria
 
-- [ ] `ARCHITECTURE_ANATOMY.md` reflects the ADR-U049 announcements ownership split (DS-5 durable home; delivery routed to the notifications substrate) and the ADR-U050 four-state account lifecycle
-- [ ] The current `ECOSYSTEM_ANATOMY_*.svg` is updated in the same pass if either decision changes what it draws; its `<title>`/`<desc>` prose is updated with it (the in-artifact source-of-truth rule), and any superseded version carries its SUPERSEDED watermark
-- [ ] The "Reflects decisions through" stamp moves to the newest reviewed ADR
+- [x] `ARCHITECTURE_ANATOMY.md` reflects the ADR-U049 announcements ownership split (DS-5 durable home; delivery routed to the notifications substrate)
+- [x] The "Reflects decisions through" stamp moves to the newest **accepted** reviewed ADR (now U049)
+- [ ] **Blocked on ratification:** `ARCHITECTURE_ANATOMY.md` reflects the ADR-U050 four-state account lifecycle — do this in the pass that follows the C-F schema gate's named acceptance, and move the stamp to U050 in the same change
+- [ ] **Outstanding:** the current `ECOSYSTEM_ANATOMY_*.svg` is updated if either decision changes what it draws; its `<title>`/`<desc>` prose updated with it (the in-artifact source-of-truth rule), and any superseded version carries its SUPERSEDED watermark. **Not touched by W5** — the doc pass moved prose only, so the diagram may still lag U049.
 - [ ] Pointer integrity re-checked: root `CLAUDE.md` document-map row, `PROCESS.md` companion-docs line, and `docs/architecture/README.md` all resolve to the living pair (not a superseded snapshot)
 
 ## Technical notes
