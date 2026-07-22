@@ -98,3 +98,6 @@ CLAUDE.local.md
 # is committed under .agents/skills/, provenance in skills-lock.json)
 .claude/skills/supabase/
 .claude/skills/supabase-postgres-best-practices/
+
+# Scratch dirs from tooling (never source)
+git-blob-*/

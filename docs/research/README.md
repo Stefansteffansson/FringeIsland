@@ -17,6 +17,7 @@ docs/research/
 ├── Kegan_ITC_Research_Report.md                           ← adult development, Immunity to Change
 ├── What_Fills_a_Life_v1.md                                ← human flourishing frameworks (v1)
 ├── What_Fills_a_Life_v2.md                                ← human flourishing frameworks (v2, most complete)
+├── What_Fills_a_Life_Human_Flourishing_v2.docx            ← human flourishing frameworks (v2, docx original)
 ├── Theory_U_Research_Report.md                            ← Theory U, facilitation methodology
 │
 ├── Portal_Fantasy_Research_Report.md                      ← portals across books/film/theatre/games/folklore (54 entries)
