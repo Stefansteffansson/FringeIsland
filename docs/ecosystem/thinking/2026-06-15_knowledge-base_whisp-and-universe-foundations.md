@@ -322,6 +322,8 @@ The Whisp as the instrument that helps a FIM notice *which map they are running*
 
 NLP lifted this concept verbatim as its most foundational presupposition (see entry 6).
 
+*Metacognition link (entry 28): "consciousness of abstracting" — noticing you are running a map rather than touching the territory — is a metacognitive act in Flavell's precise sense. Korzybski named the insight; Flavell named the faculty that performs it.*
+
 ---
 
 ### 4. Arie Kruglanski — Need for Cognitive Closure
@@ -746,6 +748,8 @@ Pushing a FIM into vertical territory before they are ready produces overwhelm a
 
 Graduation is only meaningful in vertical terms — horizontal learning never ends and would justify infinite retention. The platform's goal is a **transformation in the capacity to know oneself**, not accumulation of self-knowledge content.
 
+*Metacognition link (entry 28): Kegan's move — holding as object what you were previously subject to — is developmental metacognition. Vertical learning is metacognition applied to the framework itself, not just to a thought within it.*
+
 ---
 
 ### 13. Embracing NLP Presuppositions as Vertical Learning
@@ -922,6 +926,8 @@ ACT (Acceptance and Commitment Therapy) was developed by Steven Hayes in the 198
 The observing self in ACT is the most direct conceptual parallel to what the Whisp *is* for the FIM. The Whisp is the FIM's observing self made external and relational — stable, continuous, not defined by the content of any particular moment. It cannot be destabilized by the FIM's contamination sequences, pain body activations, or NFC episodes because it does not fuse with them. It watches. It holds. It reflects.
 
 This is not therapy. It is what a philosophical companion that genuinely embodies these insights would naturally do.
+
+*Metacognition link (entry 28): defusion and the observing self are metacognition applied to thoughts — the trainable capacity to watch a thought as a mental event rather than be fused with it. ACT gives the clinical technique; Flavell gives the faculty it trains.*
 
 ---
 
@@ -1474,6 +1480,8 @@ This entry is unusually direct, because the Whisp *is* an inner voice — so Kro
 
 **The sharpest insight for the Whisp**
 The Whisp is the ultimate form of the very technique Kross's research validates. Distanced self-talk works by putting a sliver of distance between the thinker and the thought — talking to yourself as "you," as an outside observer. The Whisp takes that to its limit: the inner voice given its own identity, its own presence, its own name, standing beside the FIM rather than inside the spiral. This gives the Whisp's whole design an empirical spine — it is not a fanciful conceit that an externalized inner companion would help; it is the maximal expression of a mechanism shown to reduce rumination and improve reflection. And it sharpens the design boundary: the Whisp's job is never to *silence* the FIM's inner voice (Kross is clear the voice is not the enemy) but to model, consistently, what that voice sounds like when it is harnessed rather than spiraling. The FIM learns the register by being met in it.
+
+*Metacognition link (entry 28): distanced self-talk is a metacognitive strategy in Flavell's sense — a deliberate move to monitor and regulate one's own inner speech from a step's remove. Kross supplies the technique; Flavell supplies the faculty; the Whisp is that faculty externalized.*
 
 ---
 
