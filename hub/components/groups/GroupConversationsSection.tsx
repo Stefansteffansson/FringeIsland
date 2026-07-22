@@ -6,6 +6,7 @@ import {
   createGroupConversation,
   fetchGroupConversations,
   joinConversation,
+  leaveConversation,
   type GroupConversationRow,
 } from '@/lib/messages/client';
 import { fetchMyPermissions } from '@/lib/groups/client';
@@ -75,6 +76,22 @@ export function GroupConversationsSection({ groupId }: { groupId: string }) {
       router.push(`/messages/${conversationId}`);
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Could not join the conversation');
+      setBusy(null);
+    }
+  }
+
+  // Leaving stays on the group page and re-lists from the confirmed response
+  // (STORY-6: the row flips back to Join — rejoin is the same door). The
+  // history survives the absence; the platform is the gate, this is UX.
+  async function handleLeave(conversationId: string) {
+    setBusy(conversationId);
+    setActionError(null);
+    try {
+      await leaveConversation(conversationId);
+      await load();
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : 'Could not leave the conversation');
+    } finally {
       setBusy(null);
     }
   }
@@ -151,14 +168,25 @@ export function GroupConversationsSection({ groupId }: { groupId: string }) {
             >
               <span className="font-medium text-gray-800">{c.title ?? 'Conversation'}</span>
               {c.am_i_participant ? (
-                <button
-                  type="button"
-                  data-testid={`conversation-open-${c.id}`}
-                  onClick={() => router.push(`/messages/${c.id}`)}
-                  className="rounded-lg px-3 py-1.5 text-sm font-medium text-indigo-700 transition-colors hover:bg-indigo-50"
-                >
-                  Open
-                </button>
+                <span className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    data-testid={`conversation-open-${c.id}`}
+                    onClick={() => router.push(`/messages/${c.id}`)}
+                    className="rounded-lg px-3 py-1.5 text-sm font-medium text-indigo-700 transition-colors hover:bg-indigo-50"
+                  >
+                    Open
+                  </button>
+                  <button
+                    type="button"
+                    data-testid={`conversation-leave-${c.id}`}
+                    onClick={() => handleLeave(c.id)}
+                    disabled={busy === c.id}
+                    className="rounded-lg px-3 py-1.5 text-sm text-gray-500 transition-colors hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Leave
+                  </button>
+                </span>
               ) : (
                 <button
                   type="button"
