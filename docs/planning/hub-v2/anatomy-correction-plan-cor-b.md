@@ -1,6 +1,6 @@
 # Anatomy correction plan — Cycle COR-B (gate coverage)
 
-**Status:** **W1+W2+W3 EXECUTED 2026-07-22** (approved to run before A-NTF). W4 and W5 remain open by design — W4 awaits the next Groups migration, W5 rides the next doc pass. Evidence: manifest `supabase/ownership.manifest.json` (32 tables classified); gates `ownership-manifest-conformance` (5), `ownership-direction-rule` (12), `outer-ring-conformance` (10), rewired `internal-api-conformance` (1). Full unit suite 121 suites / 891 tests green; `next build` clean. **No migration, no behaviour change, no production code touched.**
+**Status:** **CYCLE COMPLETE — all five work items executed 2026-07-22.** PR trail: #254 (audit + plan) · #255 (W1/W2/W3) · #256 (W5) · #257 (W4, schema gate). All five audit-II findings closed. Evidence: manifest `supabase/ownership.manifest.json` (32 tables classified); gates `ownership-manifest-conformance` (5), `ownership-direction-rule` (12), `outer-ring-conformance` (10), rewired `internal-api-conformance` (1). Full unit suite 121 suites / 891 tests green; `next build` clean. **No migration, no behaviour change, no production code touched.**
 **Evidence base:** [`ANATOMY-CONFORMANCE-AUDIT-2.md`](../reference/ANATOMY-CONFORMANCE-AUDIT-2.md) (2026-07-22). Finding IDs `AC2-*` refer to that register; this plan does not restate its evidence.
 **Predecessor:** [`anatomy-correction-plan.md`](./anatomy-correction-plan.md) (Cycle COR-A, executed 2026-07-19) — corrected the deviations; COR-B closes what the resulting gates cannot see.
 **Wave:** Ferd. **Cycle name:** COR-B (corrections; the letter scheme stays free for areas).
@@ -111,7 +111,7 @@ W3 is the cheapest and most self-contained — a reasonable place to start if th
 - [x] `internal-api-conformance.test.ts` derives `DS_TABLES` from the manifest — no literal array
 - [x] Per-service allowlist live; an upward DS→DS reference fails red — **demonstrated on fixtures** (suite unresolvable before the rule existed; 12/12 after)
 - [x] Outer-ring gate live; a `.from(` in a client module fails red — **demonstrated on fixtures** (10/10)
-- [ ] AC2-4 closed by (a) or (b) — **open**, W4 not in this tranche
+- [x] AC2-4 closed by **path (a)** — `get_role_templates()` (PR #257). Taken immediately rather than deferred to the next Groups migration, on Stefan's call. Migration applied at the schema gate on a named approval; contract test 3/3 green. `SECURITY INVOKER`, so the `auth_read_role_templates` policy stays the enforcement point — the relocation moves the door, not the rule.
 - [x] Full suite green (121 suites / 891 unit tests); `next build` clean
 - [x] `doc-health-check` run (W5) — sections 2, 3, 3.6, 11; results below
 - [x] Audit II register annotated with dispositions
