@@ -44,12 +44,12 @@ describe('COR-B W4 / AC2-4 — get_role_templates contract', () => {
   });
 
   afterAll(async () => {
-    if (member) await cleanupTestUser(member);
+    if (member) await cleanupTestUser(member.user.id);
   });
 
   it('an authenticated member reads the template catalogue', async () => {
     const client = createTestClient();
-    await signInWithRetry(client, member);
+    await signInWithRetry(client, member.email, member.password);
 
     const { data, error } = await client.rpc('get_role_templates');
 
@@ -67,7 +67,7 @@ describe('COR-B W4 / AC2-4 — get_role_templates contract', () => {
 
   it('returns the catalogue ordered by name (the picker relies on it)', async () => {
     const client = createTestClient();
-    await signInWithRetry(client, member);
+    await signInWithRetry(client, member.email, member.password);
 
     const { data, error } = await client.rpc('get_role_templates');
     expect(error).toBeNull();
