@@ -52,13 +52,16 @@ Direct links used throughout:
 5. B: the row flips back to **Join** — that is rejoin through the same door. Opening `/messages/<id>` directly must now refuse. A: still sees the full history including B's message (history survives the absence).
 
 ## 5 — Forum + flat threading + moderation (COM-5/6/7)
-1. A: Nya gruppen #1 → forum section → new thread: title `Walk thread`, body `walk-5 opening post`.
+
+> **Script correction (2026-07-22):** an earlier draft asked for a thread "title + body". **There is no title field, by design** — `FEAT-PD009:78` scopes the forum as *"No thread titles, rich text, or attachments"*, and `forum_posts` carries `content` with no title column. The single `Start a thread...` box is correct. Script error, not a defect.
+
+1. A: Nya gruppen #1 → Forum section → type `walk-5 opening post` into **Start a thread...** → **Post**.
 2. B: open the thread → reply `walk-5 reply from Gracy` (plain Member role must be allowed to).
 3. Check: on B's reply there is **no** reply-to-this-reply affordance (threading is flat, 2 levels, trigger-enforced).
 4. A (steward): moderate/remove B's reply → expect a **tombstone** in its place ("removed by a steward" style), not a silent vanish. B reloads → sees the same tombstone.
 
 ## 6 — Own-edit window (COM-12)
-1. B: post a new thread `Walk edit test` → immediately **edit** it (inside the 15-min window) → change sticks.
+1. B: post a new thread `walk-6 edit test` → immediately **edit** it (inside the 15-min window) → change sticks.
 2. B: **delete** one of B's own posts → gone/tombstoned as designed.
 3. Check: in the DM conversation from scenario 2, messages offer **no** edit or delete affordance (DMs are immutable).
 
