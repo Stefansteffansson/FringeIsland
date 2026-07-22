@@ -171,20 +171,25 @@ export interface RoleTemplateOption {
 }
 
 /**
- * The foundational role templates — platform vocabulary, RLS-readable by any
- * authenticated client (`auth_read_role_templates`, qual TRUE). The BFF
- * composes this into the fabric response so the add-from-template picker
- * needs no extra round-trip; a sibling Surface reads the same table.
+ * The foundational role templates — platform vocabulary, read through the
+ * `get_role_templates()` contract. The BFF composes this into the fabric
+ * response so the add-from-template picker needs no extra round-trip; a
+ * sibling Surface calls the same contract rather than reproducing the table
+ * name and column list.
+ *
+ * Relocated from a direct `.from('role_templates')` read by COR-B W4 (audit II
+ * AC2-4) — the last such read in this lib. The contract is SECURITY INVOKER,
+ * so the `auth_read_role_templates` policy (qual TRUE for authenticated) is
+ * still the enforcement point; nothing about who may read what changed.
  */
 export async function fetchRoleTemplates(
   supabase: SupabaseClient,
 ): Promise<RoleTemplateOption[]> {
-  const { data, error } = await supabase
-    .from('role_templates')
-    .select('id, name, description')
-    .order('name');
+  const { data, error } = await supabase.rpc('get_role_templates');
   if (error) throw error;
-  return (data ?? []) as RoleTemplateOption[];
+  // supabase-js types `.rpc()` loosely; narrow through `unknown` so
+  // `next build` type-checks the shape the contract guarantees.
+  return (data ?? []) as unknown as RoleTemplateOption[];
 }
 
 export interface CreateGroupRoleInput {
