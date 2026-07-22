@@ -43,7 +43,7 @@ Direct links used throughout:
 ## 4 — Group conversations (COM-15)
 
 > **RIDER-1 (2026-07-22): FIXED + APPLIED.** The "New conversation" button was missing in all pre-C-A groups — the permission was seeded to role templates only, never backfilled to existing groups' role instances. Backfill applied to the live DB on Stefan's named nod; the button is there now.
-> **RIDER-2 (2026-07-22): FIXED, needs the branch preview.** There was no **Leave** affordance anywhere — contract, route and client all existed, but nothing rendered a button. Now wired into the group page's Conversations panel (participant rows read `Open | Leave`). Step 5 must be walked on the **branch preview deployment**, not production, until PR #235 merges.
+> **RIDER-2 (2026-07-22): FIXED in the branch, not yet in production.** There was no **Leave** affordance anywhere — contract, route and client all existed, but nothing rendered a button. Now wired into the group page's Conversations panel (participant rows read `Open | Leave`). Until PR #235 merges, steps 4-5 need the branch preview `https://fringe-island-d3ib4miyh-stefansteffanssons-projects.vercel.app` — **note it sits behind Vercel SSO**, so it works in your normal window (you're signed in to Vercel there) and bounces in incognito. Simplest walk: let **window A leave** and check window B keeps the history — same code path, mirrored assertion. Everything else in the walk stays on production.
 
 1. A: Nya gruppen #1 → Conversations section → **New conversation** button (top-right of the section) → title it `Walk conversation` → **Open**.
 2. B: same group page (reload is fine) → sees `Walk conversation` → **Join** → send `walk-4 from Gracy`.
