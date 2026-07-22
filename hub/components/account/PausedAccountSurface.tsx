@@ -6,6 +6,7 @@ import { AccountStateSurface } from '@/components/account/AccountStateSurface';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { useAccountState } from '@/lib/account/AccountStateContext';
 import { requestReactivate } from '@/lib/account/lifecycleClient';
+import { invalidateAllCaches } from '@/lib/auth/cache-registry';
 
 /**
  * FEAT-H007 — the paused-account surface with the reactivation affordance
@@ -31,6 +32,14 @@ export function PausedAccountSurface({ onSignOut }: { onSignOut: () => void }) {
     setError(null);
     try {
       await requestReactivate();
+      // RIDER-4 (A-COM walk): the pause→active flip is a CACHE BOUNDARY.
+      // A bootstrap read that fired while paused adopts 42501-refusal slices
+      // into the consume-once caches; if nothing consumed them under the
+      // gate, the post-reactivate landing would consume a stale pause-era
+      // rejection (the walk's "Failed to load your invitations." on a
+      // healthy account). Drop every registered session cache — adopted
+      // slices and the overview latch — so the landing reads fresh.
+      invalidateAllCaches();
       // Re-resolve state from the contract — the gate flips back to the
       // active experience; land the member on their groups/home (STORY-5).
       await reload();
