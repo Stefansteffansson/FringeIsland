@@ -130,6 +130,13 @@ describe('AccountStateView (FEAT-H006 — render account state)', () => {
     expect(screen.queryByTestId('account-suspended-surface')).not.toBeInTheDocument();
     expect(screen.queryByTestId('app-children')).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /reactivate/i })).not.toBeInTheDocument();
+    // Walk wording fix (A-COM 2026-07-22, Stefan's fix-now disposition): the
+    // account is GONE — "Sign out" would contradict the card ("sign out of
+    // what?"). The exit still ends the residual browser session (the tab is
+    // never trapped), but the closed card names the outcome, not the plumbing.
+    // Paused/suspended keep "Sign out", where a live account makes it accurate.
+    expect(screen.queryByRole('button', { name: /sign out/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /return to the front page/i })).toBeInTheDocument();
   });
 
   it('C-F (FEAT-H007 host): a paused FIM sees the paused surface WITH the reactivation affordance', () => {

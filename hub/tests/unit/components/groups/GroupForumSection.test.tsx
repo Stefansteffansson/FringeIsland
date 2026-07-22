@@ -146,7 +146,13 @@ describe('GroupForumSection', () => {
       post({ id: 'gone', is_deleted: true, content: null, author: { display_name: 'Ada', attribution: 'active' } }),
     ]);
     render(<GroupForumSection groupId="g1" />);
-    expect(await screen.findByTestId('forum-tombstone-gone')).toHaveTextContent(/removed by a group moderator/i);
+    // Walk wording fix (A-COM 2026-07-22, Stefan's fix-now disposition): the
+    // copy is NEUTRAL — self-deletes and moderation render identically (the
+    // H028 no-distinguishing no-go holds), and neither claims a moderator did
+    // it (a self-delete showing "Removed by a group moderator" was false).
+    const tombstone = await screen.findByTestId('forum-tombstone-gone');
+    expect(tombstone).toHaveTextContent(/this post was removed/i);
+    expect(tombstone).not.toHaveTextContent(/moderator/i);
   });
 
   it('renders former-member attribution muted and never as a link', async () => {
@@ -202,7 +208,7 @@ describe('GroupForumSection', () => {
     });
 
     expect(await screen.findByTestId('forum-tombstone-p1')).toHaveTextContent(
-      /removed by a group moderator/i,
+      /this post was removed/i,
     );
   });
 

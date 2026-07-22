@@ -300,7 +300,10 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
           </div>
           {post.is_deleted ? (
             <p data-testid={`forum-tombstone-${post.id}`} className="mt-1 text-sm italic text-gray-400">
-              Removed by a group moderator
+              {/* Neutral by design (walk wording fix 2026-07-22): self-deletes
+                  and moderation render identically (H028 no-distinguishing
+                  no-go), and neither claims a moderator acted. */}
+              This post was removed
             </p>
           ) : editingId === post.id ? (
             <div className="mt-2">
