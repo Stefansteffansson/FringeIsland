@@ -58,7 +58,7 @@ Direct links used throughout:
 1. A: Nya gruppen #1 → Forum section → type `walk-5 opening post` into **Start a thread...** → **Post**.
 2. B: open the thread → reply `walk-5 reply from Gracy` (plain Member role must be allowed to).
 3. Check: on B's reply there is **no** reply-to-this-reply affordance (threading is flat, 2 levels, trigger-enforced).
-4. A (steward): moderate/remove B's reply → expect a **tombstone** in its place ("removed by a steward" style), not a silent vanish. B reloads → sees the same tombstone.
+4. A (steward): moderate/remove B's reply → expect a **tombstone** in its place ("This post was removed" — neutral copy since the 2026-07-22 wording fix), not a silent vanish. B reloads → sees the same tombstone.
 
 ## 6 — Own-edit window (COM-12)
 

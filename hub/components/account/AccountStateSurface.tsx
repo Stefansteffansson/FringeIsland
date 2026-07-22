@@ -13,6 +13,7 @@ export function AccountStateSurface({
   message,
   role = 'status',
   onSignOut,
+  signOutLabel = 'Sign out',
   onRetry,
   children,
 }: {
@@ -21,6 +22,11 @@ export function AccountStateSurface({
   message: string;
   role?: 'status' | 'alert';
   onSignOut?: () => void;
+  /** The exit button's label. "Sign out" is right while an account still
+   *  exists (paused/suspended); a terminal card names the outcome instead —
+   *  the action is identical (end the residual session, back to the front
+   *  door). Walk wording fix, A-COM 2026-07-22. */
+  signOutLabel?: string;
   onRetry?: () => void;
   children?: ReactNode;
 }) {
@@ -51,7 +57,7 @@ export function AccountStateSurface({
               onClick={onSignOut}
               className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
             >
-              Sign out
+              {signOutLabel}
             </button>
           )}
         </div>

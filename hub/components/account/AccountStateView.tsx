@@ -87,6 +87,7 @@ export function AccountStateView({
           title="This account is closed"
           message="This account has been permanently closed. It can't be reopened."
           onSignOut={onSignOut}
+          signOutLabel="Return to the front page"
         />
       );
     default:
