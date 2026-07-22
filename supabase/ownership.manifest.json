@@ -1,0 +1,126 @@
+{
+  "$schema-note": "COR-B W1 (audit AC2-2). The single source for substrate ownership: which service owns each table and each public function. Read by tests/integration/platform/ownership-manifest-conformance.test.ts (completeness) and tests/integration/platform/internal-api-conformance.test.ts (the inner-ring direction rule, ADR-U047 rule 3). Adding a table without classifying it here fails the suite red. Ground truth: ADR-U023 (DS/PC decomposition), ADR-U047 (+A1, A2), ADR-U048 + ruling R-1 (notifications), rulings R-2 (consent = PC-2) and R-3 (content_families = DS-3).",
+  "version": 1,
+
+  "tables": {
+    "users": { "owner": "PC-2" },
+    "pc2_config": { "owner": "PC-2" },
+    "reaper_runs": { "owner": "PC-2" },
+    "consent_records": { "owner": "PC-2", "note": "Ruling R-2 (2026-07-19): PC-2, not PC-4." },
+    "consent_purposes": { "owner": "PC-2", "note": "Ruling R-2. Governance-managed catalog, PC-2-homed." },
+
+    "groups": { "owner": "PC-3" },
+    "group_memberships": { "owner": "PC-3" },
+    "group_roles": { "owner": "PC-3" },
+    "group_role_permissions": { "owner": "PC-3" },
+    "group_templates": { "owner": "PC-3" },
+    "group_template_roles": { "owner": "PC-3" },
+    "role_templates": { "owner": "PC-3" },
+    "role_template_permissions": { "owner": "PC-3" },
+    "user_group_roles": { "owner": "PC-3" },
+    "permissions": { "owner": "PC-3" },
+    "pending_email_invitations": { "owner": "PC-3" },
+
+    "admin_audit_log": { "owner": "PC-4" },
+
+    "journeys": { "owner": "DS-3" },
+    "journey_steps": { "owner": "DS-3" },
+    "journey_step_instances": { "owner": "DS-3" },
+    "journey_enrollments": { "owner": "DS-3" },
+    "step_kinds": { "owner": "DS-3" },
+    "content_families": { "owner": "DS-3", "note": "Ruling R-3 (2026-07-19): DS-3 for now; moves to DS-4 when Content is built." },
+
+    "conversations": { "owner": "DS-5" },
+    "messages": { "owner": "DS-5" },
+    "conversation_participants": { "owner": "DS-5" },
+    "conversation_kinds": { "owner": "DS-5" },
+    "forum_posts": { "owner": "DS-5" },
+    "announcements": { "owner": "DS-5", "note": "ADR-U049 durable announcements home." },
+    "content_reports": { "owner": "DS-5", "note": "CB-4 report store." },
+
+    "journal_entries": { "owner": "DS-7" },
+
+    "notifications": {
+      "owner": "vertical:notifications",
+      "note": "ADR-U048 + ruling R-1: the Notifications-vertical delivery substrate. Written by every tier as obligation-fulfilment, NEVER a boundary crossing (ADR-U047 rule 5). Deliberately not a DS table — the inner-ring gate must not treat writes to it as crossings. DS-5 takes the routing/preferences layer above it when built."
+    }
+  },
+
+  "functions": {
+    "DS-3": [
+      "_enrollment_traveller_read_standing",
+      "_enrollment_traveller_standing",
+      "_migrate_journey_content_steps",
+      "complete_journey_step",
+      "enroll_group_in_journey",
+      "enroll_self_in_journey",
+      "enter_journey_step",
+      "get_group_enrollment_summary",
+      "get_group_journey_progress",
+      "get_journey_catalog",
+      "get_journey_detail",
+      "get_my_enrollments",
+      "get_onboarding_status",
+      "get_own_step_instances_export",
+      "get_player_state",
+      "is_enrolled_in_journey",
+      "is_journey_enrollable",
+      "save_step_response",
+      "set_journey_progress_sharing",
+      "withdraw_from_journey"
+    ],
+    "DS-5": [
+      "create_group_conversation",
+      "ds5_require_fim_actor",
+      "ds5_is_fim_actor",
+      "ds5_resolve_author_display",
+      "ds5_emit_message_hint",
+      "get_conversation_detail",
+      "get_group_conversations",
+      "get_my_conversations",
+      "get_or_create_dm_conversation",
+      "is_conversation_participant",
+      "join_group_conversation",
+      "leave_group_conversation",
+      "mark_conversation_read",
+      "send_message",
+      "update_conversation_last_message_at",
+      "create_forum_post",
+      "enforce_flat_threading",
+      "get_group_forum",
+      "moderate_forum_post",
+      "reply_to_forum_post",
+      "edit_own_forum_post",
+      "delete_own_forum_post",
+      "send_community_announcement",
+      "send_platform_announcement",
+      "retract_announcement",
+      "get_group_announcements",
+      "get_platform_announcements",
+      "submit_content_report",
+      "get_own_messages_export"
+    ],
+    "DS-7": [
+      "create_journal_entry",
+      "delete_journal_entry",
+      "get_own_journal_entries",
+      "get_own_journal_export",
+      "update_journal_entry"
+    ]
+  },
+
+  "lifecyclePrefixRule": "^ds\\d+_lifecycle_",
+  "lifecyclePrefixNote": "ADR-U047 rule 1: the ds{N}_lifecycle_ prefix is reserved for domain-owned lifecycle-fact handlers. Auto-allowed by prefix — the owning service is read from the digit, so these need no explicit entry above.",
+
+  "exceptions": {
+    "verticalComposition": [
+      {
+        "function": "get_own_data_export",
+        "vertical": "Privacy/GDPR",
+        "citation": "ADR-U047 Amendment 2 (2026-07-19), audit AC-4, COR-A W8, PR #191. Whole-account export completeness (GDPR Art. 15/20): composes get_own_journal_export() and get_own_step_instances_export() platform-side so one RPC returns the complete document on every surface. Read-only, contract-only — calls the domain's published READ contracts, never their tables."
+      }
+    ],
+    "crossServiceReads": [],
+    "crossServiceReadsNote": "COR-B W2: a DS-N function referencing a DS-M table (M != N) must appear here AND be downward (M < N), per the anatomy's acyclic dependency rule — DS-1 at the bottom, DS-7 at the top, nothing depends on DS-7. Empty today: audit II found no live DS-to-DS reference."
+  }
+}

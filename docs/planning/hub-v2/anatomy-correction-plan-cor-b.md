@@ -1,6 +1,6 @@
 # Anatomy correction plan — Cycle COR-B (gate coverage)
 
-**Status:** DRAFT — awaiting Stefan's go.
+**Status:** **W1+W2+W3 EXECUTED 2026-07-22** (approved to run before A-NTF). W4 and W5 remain open by design — W4 awaits the next Groups migration, W5 rides the next doc pass. Evidence: manifest `supabase/ownership.manifest.json` (32 tables classified); gates `ownership-manifest-conformance` (5), `ownership-direction-rule` (12), `outer-ring-conformance` (10), rewired `internal-api-conformance` (1). Full unit suite 121 suites / 891 tests green; `next build` clean. **No migration, no behaviour change, no production code touched.**
 **Evidence base:** [`ANATOMY-CONFORMANCE-AUDIT-2.md`](../reference/ANATOMY-CONFORMANCE-AUDIT-2.md) (2026-07-22). Finding IDs `AC2-*` refer to that register; this plan does not restate its evidence.
 **Predecessor:** [`anatomy-correction-plan.md`](./anatomy-correction-plan.md) (Cycle COR-A, executed 2026-07-19) — corrected the deviations; COR-B closes what the resulting gates cannot see.
 **Wave:** Ferd. **Cycle name:** COR-B (corrections; the letter scheme stays free for areas).
@@ -107,14 +107,26 @@ W3 is the cheapest and most self-contained — a reasonable place to start if th
 
 ## Definition of Done
 
-- [ ] Manifest covers all 32 live tables; adding an unclassified table fails red (demonstrated)
-- [ ] `internal-api-conformance.test.ts` derives `DS_TABLES` from the manifest — no literal array
-- [ ] Per-service allowlist live; an upward DS→DS reference fails red (demonstrated on fixtures)
-- [ ] Outer-ring gate live; a `.from(` in a client module fails red (demonstrated)
-- [ ] AC2-4 closed by (a) or (b), recorded either way
-- [ ] Full suite green; `next build` clean
-- [ ] `doc-health-check` run; Audit II register annotated with dispositions
+- [x] Manifest covers all 32 live tables; adding an unclassified table fails red — **demonstrated** (5/5 red before the manifest existed, green after)
+- [x] `internal-api-conformance.test.ts` derives `DS_TABLES` from the manifest — no literal array
+- [x] Per-service allowlist live; an upward DS→DS reference fails red — **demonstrated on fixtures** (suite unresolvable before the rule existed; 12/12 after)
+- [x] Outer-ring gate live; a `.from(` in a client module fails red — **demonstrated on fixtures** (10/10)
+- [ ] AC2-4 closed by (a) or (b) — **open**, W4 not in this tranche
+- [x] Full suite green (121 suites / 891 unit tests); `next build` clean
+- [ ] `doc-health-check` run — **open**, rides W5
+- [x] Audit II register annotated with dispositions
 - [ ] Retro notes whether COR-B's premise held — that gate-coverage work pays before area work, not after
+
+### What the gates now catch that they did not on 2026-07-22 morning
+
+| Scenario | Before | After |
+|---|---|---|
+| New DS table added, arrays not updated | silent green | **red** — unclassified in manifest |
+| DS-5 function reads `journey_enrollments` | silent green | **red** — uncited cross-service |
+| Anything outside DS-7 reads `journal_entries` | silent green | **red** — upward crossing |
+| A dropped function left in an allowlist | silent green | **red** — stale entry |
+| `.from()` added to a client component | silent green | **red** — outer-ring violation |
+| Core writes `notifications` | green | green (ADR-U048 — correctly still not a crossing) |
 
 ## Scheduling call — the one thing this plan needs from Stefan
 
