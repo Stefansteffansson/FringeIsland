@@ -64,6 +64,18 @@ This rule was surfaced when an autonomous session reached for `create_file` to a
 
 The Anthropic computer-use tools have legitimate uses for sandbox-side analysis, intermediate transformations, or dry-run staging — but anything that needs to land in the repo goes through `fringeisland:`.
 
+## Discovery worktree (Claude.ai write surface)
+
+`D:\WebDev\GitHub\FringeIsland-discovery` is a permanent git worktree of this repo, pinned to the long-lived `discovery` branch. It exists so Claude.ai / Claude Desktop discovery sessions and Claude Code development never write into the same checkout.
+
+- **Discovery sessions (Claude.ai / Claude Desktop):** write only in the worktree, and only under `docs/ecosystem/`. Never run git there; never write to the main checkout at `D:\WebDev\GitHub\FringeIsland`.
+- **Claude Code owns all git for `discovery`.** The sweep — run at session start and again in the close ritual:
+  1. In the worktree: commit any dirty files under `docs/ecosystem/` as `docs(discovery): ...` and push.
+  2. If `discovery` is ahead of `main`: open a PR `discovery` → `main` and merge it (docs-only under `docs/ecosystem/` is routine → fuller-auto; **never delete the `discovery` branch**).
+  3. Sync back: merge `main` into `discovery` and push, so discovery sessions always see current ecosystem docs.
+- **Anomalies — surface to Stefan, don't auto-commit:** a dirty file outside `docs/ecosystem/` in the worktree; the worktree checked out on anything other than `discovery`; unexplained dirty `docs/ecosystem/` files in the main checkout (suspect a mispointed Claude.ai session).
+- Feature commits in the main checkout must never bundle discovery-tree edits.
+
 ## Boundaries
 
 ### Always do
