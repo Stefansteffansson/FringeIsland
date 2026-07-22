@@ -5,7 +5,7 @@
 **Ground truth:** [`ARCHITECTURE_ANATOMY.md`](../../architecture/ARCHITECTURE_ANATOMY.md) · [`ECOSYSTEM_ANATOMY_V6.svg`](../../architecture/ECOSYSTEM_ANATOMY_V6.svg) · ADR-U009 · ADR-U038 · ADR-U047 (+A1, A2) · ADR-U048 · ADR-U002.
 **Finding IDs are `AC2-*`** to keep the predecessor register's `AC-*` namespace intact.
 
-**Dispositions (2026-07-22):** AC2-1 **CLOSED** (COR-B W2) · AC2-2 **CLOSED** (COR-B W1) · AC2-3 **CLOSED** (COR-B W3) · AC2-4 **OPEN** (W4 deferred to the next Groups migration) · AC2-5 **OPEN** (W5 rides the next doc pass). Correction plan: [`anatomy-correction-plan-cor-b.md`](../hub-v2/anatomy-correction-plan-cor-b.md).
+**Status: CLOSED (2026-07-22)** — all five findings dispositioned in Cycle COR-B, same day as the audit. AC2-1 **CLOSED** (W2, PR #255) · AC2-2 **CLOSED** (W1, PR #255) · AC2-3 **CLOSED** (W3, PR #255) · AC2-4 **CLOSED** (W4, PR #257 — `get_role_templates()` applied at the schema gate on a named approval) · AC2-5 **CLOSED** (W5, PR #256). Correction plan: [`anatomy-correction-plan-cor-b.md`](../hub-v2/anatomy-correction-plan-cor-b.md).
 
 ---
 
