@@ -1,0 +1,65 @@
+# Integration-suite auth-admin ES256 flake — test-user creation intermittently rejected
+
+---
+id: TASK-INT-01
+title: createTestUser intermittently fails with "unrecognized JWT kid <nil> for algorithm ES256" against the dev DB — root-cause and fence
+status: todo
+assigned_to: claude
+priority: medium
+feature: none
+owner: platform/core/infrastructure
+wave: ferd
+cycle: unscheduled
+depends_on: []
+estimated_hours: 3
+---
+
+## Description
+
+Integration suites intermittently fail in `createTestUser` — the Supabase auth **admin** API — with:
+
+```
+invalid JWT: unable to parse or verify signature, token is unverifiable:
+error while executing keyfunc: unrecognized JWT kid <nil> for algorithm ES256
+```
+
+Surfaced during **COR-B W4** (2026-07-22): a parallel run of `tests/integration/groups/` reported 7 of 11 suites failing, which initially looked like the W4 migration had broken the substrate. It had not.
+
+## Evidence — it is an environment fault, not a code fault
+
+Established by control experiment. **Do not re-derive this:**
+
+| Check | Result |
+|---|---|
+| Same suite on `main`, none of the W4 changes applied | **FAILS the same way** (`membership-lifecycle`: 1 failed / 23 passed) |
+| Same suite minutes later on the W4 branch | **PASSES 24/24** — intermittent, not branch-dependent |
+| Suites affected | Include ones with no shared surface at all (`group-of-groups`, `invitation-contracts`, `membership-lifecycle`, `role-permission-contracts`) |
+| Standalone Node probe, same `SUPABASE_SERVICE_ROLE_KEY` from the same `.env.local` | **5/5 users created OK** — the key itself is valid |
+| Key shape | Correct new-style `sb_secret_*` / `sb_publishable_*` |
+
+It concentrates under concurrency, compounding the standing "never run two integration suites concurrently against the shared dev DB" rule — **but it also hit a serial `--runInBand` run**, so parallelism appears to amplify rather than cause it. Root cause not yet found.
+
+**Leading hypothesis (unverified):** the project has been migrated to asymmetric JWT signing keys (ES256) and something in the verification path flaps — either a key-rotation propagation window, or an auth rate limit surfacing as a signature error rather than a 429. Both are checkable.
+
+## Why this needs fixing rather than tolerating
+
+The failure mode is *actively misleading*. Raw, it reads as "the substrate rejected my change," which is the single most expensive wrong conclusion to hand someone mid-cycle — it cost roughly an hour during COR-B W4, and it will cost more each time a schema-gated PR is being verified, which is exactly when trust in the suites matters most.
+
+## Already fenced (partial mitigation, landed 2026-07-22)
+
+`hub/tests/helpers/supabase.ts` now decorates this specific error at the throw site with a named "KNOWN ENVIRONMENT FAULT (TASK-INT-01)" banner and the two-step triage (re-run serially; then run the control on `main`). That removes the misdiagnosis cost but **does not fix the flake** — suites still fail.
+
+A preflight health check in `tests/integration/suite-setup.ts` was considered and deliberately rejected: `setupFilesAfterEnv` runs per test file, so it would add an auth-admin call per file and increase the very load the fault correlates with.
+
+## Acceptance criteria
+
+- [ ] Root cause identified — distinguish key-rotation/propagation from rate limiting (check the Supabase auth logs for the corresponding window; check whether the project has both legacy and current signing keys active; check auth rate-limit settings against the burst a full suite run produces)
+- [ ] Either the fault is eliminated, or a deterministic mitigation is in place (e.g. bounded retry-with-backoff around `admin.auth.admin.createUser` for this *specific* signature error only — never a blanket retry, which would mask real failures)
+- [ ] A full `tests/integration/` run completes green twice consecutively
+- [ ] If the root cause turns out to be concurrency, the standing "run integration suites serially" rule is enforced mechanically (jest `maxWorkers` for the integration project) rather than remembered
+- [ ] The `decorateAuthAdminError` fence is either removed (if truly fixed) or its wording updated to match what was learned
+
+## Notes
+
+- Separate trap seen the same day, already understood — **not part of this task**: a hand-rolled probe calling `admin.auth.admin.createUser` *without* `user_metadata.consent_accepted` fails with "Database error creating new user". That is `handle_new_user` correctly enforcing the ADR-U038 S3 consent gate. Working as designed; pass the consent metadata as the helper does.
+- Related standing flake item: [`TASK-E2E-01`](./TASK-E2E-01-profile-shared-session-flake.md) (E2E shared-session flake) — different layer, same class of "intermittent, erodes trust in the suite."
