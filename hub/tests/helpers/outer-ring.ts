@@ -1,0 +1,119 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
+/**
+ * Outer-ring rule implementation (Cycle COR-B W3, audit AC2-3).
+ *
+ * ADR-U009: `Database -> API route -> Frontend component`, never
+ * `Database -> Frontend component directly`. Its consequences permit the
+ * browser Supabase client for real-time subscriptions, but not for data
+ * access — so `.channel(...)` is fine and `.from(...)` / `.rpc(...)` are not.
+ *
+ * Consumed by `tests/unit/app/outer-ring-conformance.test.ts`, which
+ * specifies the behaviour on fixtures and then sweeps the live tree.
+ */
+
+const HUB_ROOT = path.resolve(__dirname, '../..');
+const SCAN_DIRS = ['app', 'components', 'lib'];
+
+export type OuterRingViolation = { file: string; hits: string[] };
+
+/**
+ * Files permitted to reach the substrate directly from browser-reachable code.
+ * ADR-U009 allows exactly one class (real-time subscriptions); anything added
+ * here needs a reason, and the gate asserts both that the entry is still live
+ * and that it carries one.
+ *
+ * Empty today: the realtime layer uses `.channel(...)` broadcast, which is not
+ * data access, so it needs no exception.
+ */
+export const DATA_ACCESS_EXCEPTIONS: { file: string; reason: string }[] = [];
+
+/**
+ * Strip comments and string-embedded prose before matching. Mandatory: the
+ * five live ADR-U009 compliance comments contain the literal
+ * `supabase.from('users')` inside prose asserting the module does NOT do that
+ * (audit II method note, trap 2). Matching raw source reports the codebase's
+ * own documentation as violations.
+ */
+export function stripComments(src: string): string {
+  return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:])\/\/.*$/gm, '$1');
+}
+
+// Built-ins whose `.from(` is unrelated to data access.
+const BUILTIN_RECEIVERS = /(Array|Object|Buffer|Date|Set|Map|String|Number)$/;
+
+/**
+ * Direct data-access call sites in a source file. Returns readable hits like
+ * `from('users')` — empty array means conformant.
+ */
+export function findDataAccess(src: string): string[] {
+  const clean = stripComments(src);
+  const hits: string[] = [];
+
+  for (const m of clean.matchAll(/([\w.]*)\.(from|rpc)\(\s*(['"`])([^'"`]*)\3/g)) {
+    const [, receiver, method, , arg] = m;
+    // `Array.from('abc')` and friends are not table access.
+    if (method === 'from' && BUILTIN_RECEIVERS.test(receiver ?? '')) continue;
+    hits.push(`${method}('${arg}')`);
+  }
+
+  return hits;
+}
+
+/**
+ * Whether a module can end up in the browser bundle.
+ *
+ * Heuristic, and deliberately so — a precise answer needs bundler-graph
+ * analysis. Three signals, covering every module audit II named:
+ *   1. the `'use client'` directive;
+ *   2. anything under `components/` (all of it renders);
+ *   3. the repo's own browser-module naming: `lib/**\/client.ts` and
+ *      `lib/**\/*-client.ts` (the `queries.ts` / `client.ts` split is the
+ *      established server/browser convention in `hub/lib`).
+ */
+export function isClientReachable(relPath: string, src: string): boolean {
+  const p = relPath.replace(/\\/g, '/');
+  if (/^components\//.test(p)) return true;
+  if (/^lib\/.*(^|\/)(client\.ts|[\w-]+-client\.ts)$/.test(p)) return true;
+  if (/^\s*['"]use client['"]/.test(src)) return true;
+  return false;
+}
+
+function walk(dir: string, out: string[] = []): string[] {
+  if (!fs.existsSync(dir)) return out;
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (e.name === 'node_modules' || e.name === '.next') continue;
+    const full = path.join(dir, e.name);
+    if (e.isDirectory()) walk(full, out);
+    else if (/\.(ts|tsx)$/.test(e.name) && !/\.test\.tsx?$/.test(e.name)) out.push(full);
+  }
+  return out;
+}
+
+/**
+ * Sweep the browser-reachable surface. By default returns only violations;
+ * `includeClean` returns every scanned file (used by the sanity and
+ * stale-exception assertions).
+ */
+export function scanClientSurface(opts: { includeClean?: boolean } = {}): OuterRingViolation[] {
+  const results: OuterRingViolation[] = [];
+  const excepted = new Set(DATA_ACCESS_EXCEPTIONS.map((e) => e.file));
+
+  for (const dir of SCAN_DIRS) {
+    for (const abs of walk(path.join(HUB_ROOT, dir))) {
+      const rel = path.relative(HUB_ROOT, abs).replace(/\\/g, '/');
+      const src = fs.readFileSync(abs, 'utf8');
+      if (!isClientReachable(rel, src)) continue;
+
+      const hits = findDataAccess(src);
+      if (opts.includeClean) {
+        results.push({ file: rel, hits });
+      } else if (hits.length && !excepted.has(rel)) {
+        results.push({ file: rel, hits });
+      }
+    }
+  }
+
+  return results;
+}
