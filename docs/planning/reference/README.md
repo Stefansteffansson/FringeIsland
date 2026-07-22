@@ -13,7 +13,8 @@
 ```
 docs/planning/reference/
 ├── README.md                              ← you are here
-├── ANATOMY-CONFORMANCE-AUDIT.md           ← full-codebase anatomy conformance audit + deviation register (July 2026; all findings dispositioned via Cycle COR-A)
+├── ANATOMY-CONFORMANCE-AUDIT.md           ← full-codebase anatomy conformance audit + deviation register (July 2026; CLOSED — all findings dispositioned via Cycle COR-A)
+├── ANATOMY-CONFORMANCE-AUDIT-2.md         ← the delta pass (July 2026): rings found conformant; five gate-coverage findings (AC2-1..AC2-5), AC2-1..3 closed by Cycle COR-B. Carries the table-ownership map.
 ├── ADMIN-DEUSEX-GAP-ANALYSIS.md           ← admin/DeusEx capability gaps (April 2026)
 ├── GROUP-MODEL-CURRENT-STATE.md           ← group model assessment (April 2026)
 ├── PLATFORM-EXIT-GAP-ANALYSIS.md          ← platform exit gaps (April 2026)

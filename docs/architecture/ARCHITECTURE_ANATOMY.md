@@ -1,7 +1,7 @@
 # FringeIsland — Architecture Anatomy (living overview)
 
 **Status:** Living, derived overview — **canon wins.**
-**Reflects decisions through:** [ADR-U048](decisions/ADR-U048-notifications-vertical-delivery-substrate.md) (2026-07-19).
+**Reflects decisions through:** [ADR-U049](decisions/ADR-U049-announcements-durable-home-routed-delivery.md) (2026-07-20). [ADR-U050](decisions/ADR-U050-account-lifecycle-state-machine.md) is **Proposed** (rides the C-F schema gate) and is deliberately not absorbed here until it is Accepted.
 **Diagram companion:** [`ECOSYSTEM_ANATOMY_V6.svg`](ECOSYSTEM_ANATOMY_V6.svg) (v2.4) — the same anatomy as a one-page visual.
 
 > **How this document works.** This is the one-stop prose overview of what the FringeIsland ecosystem is made of and how the parts relate. It is **derived, not authoritative**: every section names its ground truth (an ADR, a canonical core under `docs/ecosystem/universe/`, or a tier README), and on any conflict the pointed-at source wins. It is kept fresh by the doc-health-check skill's anatomy-freshness section: the "Reflects decisions through" stamp above is checked against the ADR index at every cycle boundary. Predecessor: [`ARCHITECTURE_ANATOMY_V1.md`](ARCHITECTURE_ANATOMY_V1.md) (the original L0–L7 layered anatomy — frozen historical reference, superseded by ADR-U023).
@@ -55,7 +55,7 @@ Seven services, FringeIsland-specific, each owning its own data. Charters in ful
 | **DS-2 Narrative** | Seasons and episodes, plot structure (arcs, beats), respawn topologies and loop textures, the NPC character layer (ground truth: the [narrative core](../ecosystem/universe/narrative/README.md)) |
 | **DS-3 Journeys** | Journeys as content templates (equipment + depth declared at authoring), steps, enrolments and per-traveller progress, respawn delivery and loop runtime, Mist-to-FIM transcendence continuity |
 | **DS-4 Content** | Media and assets with equipment/depth renditions, narrative content blocks, the Gimbal-capture → Hub-refine pipeline state, rendering contracts, retirement cascades, Mist-capture ephemerality |
-| **DS-5 Communication** | DMs, group forums, activity feeds (ambient — no rankings), notification routing above the vertical delivery substrate (ADR-U048), journey-scoped social surfaces, communication lifecycle cascades |
+| **DS-5 Communication** | DMs, group forums, activity feeds (ambient — no rankings), the durable announcements home routed onto the delivery substrate (ADR-U049), notification routing above the vertical delivery substrate (ADR-U048), journey-scoped social surfaces, communication lifecycle cascades |
 | **DS-6 Discovery** | Search over the published world, affinity-shaped recommendations inside the anti-leaderboard guardrails, the marketplace surface |
 | **DS-7 Intelligence** | The Whisp **as a being** (ADR-U029; rails always human-authored, per [`PRINCIPLES-AI.md`](../ecosystem/PRINCIPLES-AI.md)), consent-gated profile accumulation, the personal Journal store |
 
