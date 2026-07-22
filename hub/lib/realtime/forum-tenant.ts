@@ -32,7 +32,10 @@ export function useForumTenant(groupId: string | null, onHint: () => void): void
     if (!groupId) return;
     return realtimeManager.registerTenant({
       topic: forumTopic(groupId),
-      events: ['forum_post_created', 'forum_post_moderated'],
+      // forum_post_edited: RIDER-3 (A-COM walk 2026-07-22) — the C-D edit
+      // window postdates this tenant; without the event an edit stayed stale
+      // on other members' open pages until reload.
+      events: ['forum_post_created', 'forum_post_moderated', 'forum_post_edited'],
       onHint: () => onHintRef.current(),
     });
   }, [groupId]);
