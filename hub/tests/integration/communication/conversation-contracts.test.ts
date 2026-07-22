@@ -26,6 +26,10 @@ import type { SupabaseClient } from '@supabase/supabase-js';
  * Labelled honestly (genuine greens in the red run — regression guards, not
  * red-first): the two read-scoping probes (Mist reads nothing; a bystander
  * sees no rows) verify EXISTING RLS and must stay green after the narrowing.
+ * Area-gate additions (2026-07-21, oracle-parity probes): the B-MSG-004
+ * inbox-ordering and B-MSG-005 zero-notification-rows tests are regression
+ * guards over shipped behaviour — green by nature, closing the two spine
+ * assertions the port had left implicit.
  *
  * Oracle spine carried (B-MSG-001..006): group-keyed authorship, one
  * conversation per pair, inbox by last_message_at, unread = read-state
@@ -227,6 +231,57 @@ describe('FEAT-PD008 — conversation & message contracts (C-A)', () => {
         (r) => r.id === dmId,
       );
       expect(mineM!.has_unread).toBe(true);
+    });
+
+    it('creates zero notification rows on send — unread lives in read-state, never notifications (B-MSG-005)', async () => {
+      const countFor = async (): Promise<number> => {
+        const { count, error } = await admin
+          .from('notifications')
+          .select('id', { count: 'exact', head: true })
+          .in('recipient_group_id', [member.personalGroupId, outsider.personalGroupId]);
+        expect(error).toBeNull();
+        return count ?? 0;
+      };
+      const before = await countFor();
+      const cm = await asUser(member);
+      const { error } = await cm.rpc('send_message', {
+        p_conversation_id: dmId,
+        p_content: `no notification rides this ${runTag}`,
+      });
+      expect(error).toBeNull();
+      expect(await countFor()).toBe(before);
+    });
+
+    it('orders the inbox most-recent-first by last_message_at (B-MSG-004)', async () => {
+      // Second conversation for the member: a steward DM — the bystander must
+      // stay conversation-free (the STORY-8 leak probes depend on it).
+      const cm = await asUser(member);
+      const { data: stewardDm, error: eDm } = await cm.rpc('get_or_create_dm_conversation', {
+        p_other_group_id: steward.personalGroupId,
+      });
+      expect(eDm).toBeNull();
+      const { error: e1 } = await cm.rpc('send_message', {
+        p_conversation_id: stewardDm as string,
+        p_content: `steward dm now newest ${runTag}`,
+      });
+      expect(e1).toBeNull();
+
+      const order = async (): Promise<string[]> => {
+        const { data, error } = await cm.rpc('get_my_conversations');
+        expect(error).toBeNull();
+        return (data as { conversations: Array<{ id: string }> }).conversations.map((r) => r.id);
+      };
+      const first = await order();
+      expect(first.indexOf(stewardDm as string)).toBeLessThan(first.indexOf(dmId));
+
+      // The order flips when the other conversation receives the newest message.
+      const { error: e2 } = await cm.rpc('send_message', {
+        p_conversation_id: dmId,
+        p_content: `outsider dm newest again ${runTag}`,
+      });
+      expect(e2).toBeNull();
+      const second = await order();
+      expect(second.indexOf(dmId)).toBeLessThan(second.indexOf(stewardDm as string));
     });
   });
 
@@ -444,6 +499,48 @@ describe('FEAT-PD008 — conversation & message contracts (C-A)', () => {
       expect(convs ?? []).toHaveLength(0);
       const { data: msgs } = await cb.from('messages').select('id');
       expect(msgs ?? []).toHaveLength(0);
+    });
+  });
+
+  describe('RIDER-1 (live walk 2026-07-22) — permission backfill invariant', () => {
+    // Red-first against the live defect: C-A seeded create_group_conversations
+    // into the Steward/Guide TEMPLATES only; has_permission() resolves through
+    // role INSTANCES, so every pre-C-A group lacked the grant (the walk found
+    // the "New conversation" affordance missing for a steward). Green once
+    // 20260722100000 backfills the instances; stays green for new groups
+    // because instantiation copies template grants.
+    it('every Steward/Guide-template-derived role instance holds create_group_conversations', async () => {
+      const { data: templates } = await admin
+        .from('role_templates')
+        .select('id, name')
+        .in('name', ['Steward Role Template', 'Guide Role Template']);
+      expect(templates ?? []).toHaveLength(2);
+
+      const { data: perm } = await admin
+        .from('permissions')
+        .select('id')
+        .eq('name', 'create_group_conversations')
+        .single();
+      expect(perm).not.toBeNull();
+
+      const { data: roles } = await admin
+        .from('group_roles')
+        .select('id')
+        .in(
+          'created_from_role_template_id',
+          (templates ?? []).map((t) => t.id)
+        );
+      const roleIds = (roles ?? []).map((r) => r.id);
+      expect(roleIds.length).toBeGreaterThan(0);
+
+      const { data: grants } = await admin
+        .from('group_role_permissions')
+        .select('group_role_id')
+        .eq('permission_id', perm!.id)
+        .in('group_role_id', roleIds);
+      const granted = new Set((grants ?? []).map((g) => g.group_role_id));
+      const missing = roleIds.filter((id) => !granted.has(id));
+      expect(missing).toHaveLength(0);
     });
   });
 });

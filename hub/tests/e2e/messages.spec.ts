@@ -10,8 +10,15 @@ import { createAdminClient, SESSION_EMAIL, deleteE2EUser, markArrivedOnce } from
  *     left) → the inbox lists the conversation (in-context navigation via
  *     the Messages chrome — the honest revisit, J-D rule).
  *  2. Group conversation (CB-7): the Steward's Conversations panel → New
- *     conversation → send → visible; leave via contract is covered at the
- *     integration tier — the E2E asserts the panel's join-state truth.
+ *     conversation → send → visible → leave → rejoin, history intact.
+ *     (RIDER-2, A-COM live walk 2026-07-22: this last leg used to read
+ *     "leave via contract is covered at the integration tier". That split is
+ *     sound for refusals and semantics but blind to AFFORDANCES — the leave
+ *     contract, route and client all shipped while no surface rendered a
+ *     button, and no tier crossed the surface to notice. STORY-6's acceptance
+ *     names the whole arc: "Given I join, open, leave, and rejoin, then each
+ *     transition renders from the confirmed response and my message history
+ *     survives my absence." It is walked here now.)
  * Coverage split (labelled): the Mist no-chrome/refusal cases live at the
  * unit tier (CB-1 gating) and integration tier (42501s); the E2E covers the
  * sessionless door — a deep link lands on login, not on content.
@@ -130,6 +137,8 @@ test.describe('FEAT-H025 — messages', () => {
     await panel.getByRole('button', { name: /^open$/i }).click();
     await expect(page).toHaveURL(/\/messages\/[0-9a-f-]{36}/, { timeout: 15000 });
     await expect(page.getByText(GC_TITLE)).toBeVisible({ timeout: 15000 });
+    const gcId = page.url().match(/\/messages\/([0-9a-f-]{36})/)?.[1] ?? null;
+    expect(gcId).not.toBeNull();
 
     await page.getByRole('textbox', { name: 'Message' }).fill(GC_TEXT);
     await page.getByRole('button', { name: /^send$/i }).click();
@@ -139,6 +148,24 @@ test.describe('FEAT-H025 — messages', () => {
     // the panel tells the truth about my participation (in-context return)
     await page.getByRole('link', { name: /^messages/i }).click();
     await expect(page.getByText(GC_TITLE)).toBeVisible({ timeout: 15000 });
+
+    // -- leave → rejoin, history intact (STORY-6 acceptance; RIDER-2) -------
+    await page.goto(`/groups/${createdGroupId}`);
+    await expect(panel.getByTestId(`conversation-leave-${gcId}`)).toBeVisible({ timeout: 15000 });
+    await panel.getByTestId(`conversation-leave-${gcId}`).click();
+    // renders from the CONFIRMED response: the row flips to the rejoin door
+    await expect(panel.getByTestId(`conversation-join-${gcId}`)).toBeVisible({ timeout: 15000 });
+    await expect(panel.getByTestId(`conversation-leave-${gcId}`)).toHaveCount(0);
+
+    // the absence is real at the substrate, not just in the panel's paint
+    await page.goto(`/messages/${gcId}`);
+    await expect(page.getByText(GC_TEXT)).toHaveCount(0, { timeout: 15000 });
+
+    // rejoin through the same door — my history survived my absence
+    await page.goto(`/groups/${createdGroupId}`);
+    await panel.getByTestId(`conversation-join-${gcId}`).click();
+    await expect(page).toHaveURL(new RegExp(`/messages/${gcId}`), { timeout: 15000 });
+    await expect(page.getByText(GC_TEXT)).toBeVisible({ timeout: 15000 });
   });
 
   test('the sessionless door: a /messages deep link lands on login, not content', async ({

@@ -6,8 +6,8 @@
 slug: communication
 owner: platform/domain/communication
 consumers: [products/hub, products/gimbal, platform/domain/discovery, platform/domain/intelligence]
-status: proposed
-last_updated: 2026-07-19
+status: active
+last_updated: 2026-07-21
 tier: Domain Services
 tags: [domain-service:communication]
 feature_prefix: PD
@@ -99,7 +99,7 @@ Verified at Step 2 (2026-06-10): the four DS-5 tables — `forum_posts`, `conver
 - **Q3 — The "Former Member" vocabulary. RESOLVED at Step 3 (2026-06-10): the law stands, unrealized.** Step 2 found zero "Former Member" (or any membership-based attribution display) in code — the realized fallback is `'Unknown'` when author resolution fails. ADR-U021's display law is forward commitment, not contradicted; no ADR edit needed. The vocabulary half (whether the canon-facing string becomes "Former Participant" per the roles-core rename, or stays as plain-English "member of the group") is a FEAT-time naming call under the dual-reading discipline — recorded here, not parked as an open question.
 - **Q4 — Feed composition vs DS-6 boundary. RESOLVED at the DS-6 descent (2026-06-11, ratified):** the cold lean stands as law — **any selection beyond chronology + scope filters is DS-6's; a "relevant to you" surface is never DS-5's, even when embedded in feed UI** — it is a DS-6 recommendation surface reached through DS-6's own contract (discovery.md invariant 2 binds it to affinity-shaped, never popularity/comparative). DS-5's feed composition stays chronology + scope filters, full stop. The search-indexing consumer line (§3) was likewise confirmed from the owned side (posture per discovery.md §8 Q3).
 - **Q5 — Whisp-carried messages** *(speculative-third-shape)*. Does the Whisp ever carry FIM-to-FIM communication? Cold lean: no — the branch is the FIM-FIM channel (S36); Whisp dialogue is DS-7's being-face. Defers to DS-7's descent. **Resolved 2026-06-11 (DS-7 descent, ratified by Stefan): the cold lean confirmed from the owned side — no. The Whisp never carries FIM-to-FIM communication (`intelligence.md` §7 invariant 10); the branch is the FIM-FIM channel.**
-- **Q6 — The village-presence seam** *(speculative-third-shape)*. Ambient "who is at the Tree" awareness: presence/location is DS-1 world-state; conversation in the village is DS-5. Which service serves presence-in-social-context — DS-5 composing DS-1 reads, or DS-1 directly to surfaces? Cold lean: DS-1 owns presence; DS-5 composes it into social surfaces the same way it composes cord-health glances. Re-check against DS-1 at FEAT time.
+- **Q6 — The village-presence seam** *(speculative-third-shape)*. Ambient "who is at the Tree" awareness: presence/location is DS-1 world-state; conversation in the village is DS-5. Which service serves presence-in-social-context — DS-5 composing DS-1 reads, or DS-1 directly to surfaces? Cold lean: DS-1 owns presence; DS-5 composes it into social surfaces the same way it composes cord-health glances. Re-check against DS-1 at FEAT time. **SEAMED forward at the A-COM area gate (2026-07-21):** no A-COM capability realized presence — nothing here to confirm or contradict; the cold lean stands unpromoted, and the question resolves where it already pointed: against DS-1 at FEAT time.
 - **Q7 — Realtime channel authorization. RESOLVED by ADR-U039 (recorded 2026-07-19, A-COM C-A).** The question was asked of the `postgres_changes` shape, which ADR-U039 retired for v2: subscribers never receive rows at all — channels are **private broadcast** carrying server-originated content-free hints (RLS on `realtime.messages` gates topic receipt; the session-signal channel is the realized precedent), and the client acts via the authorized fetch path (verify-on-signal). The filter-vs-policy worry dissolves — there is no row payload for a filter to leak. The conversational tables leave the `supabase_realtime` publication at C-A (FEAT-PD008 rider); `notifications`' publication membership is dispositioned at A-NTF.
 - **Q8 — Group-conversation vs forum boundary. FIRMED 2026-07-19 (A-COM C-A / CB-7, FEAT-PD008).** The cold lean stands as built shape: distinct kinds in one registry space — the `conversation_kinds` registry (`dm`, `group` seeded; TEXT-keyed, open) carries group-grain conversations as presence-shaped exchange scoped to a PC-3 group; forums remain `forum_posts` persistent threaded discourse. The boundary is a kind property, not an enum wall; ad-hoc multi-party (non-group-scoped) conversations are a future kind row, zero schema change.
 
@@ -176,6 +176,8 @@ Foundations first: **conversation lifecycle** and **forum structure** stand dire
 *L4 authorship. Reconciliation output against L3's capability inventory. Updated whenever a `FEAT-PD###.md` file under this service's `features/` directory is created, advances in maturity, or is deleted. Maintenance discipline: the `feature-development` skill updates this section in the same commit as any maturity transition; the `doc-health-check` skill (Section 8) verifies it reflects the current state of `features/`.*
 
 ### Summary
+
+**A-COM realisation split (recorded at the area gate, 2026-07-21):** the area realized Conversations & DM, Forums (incl. moderation, attribution, and the own-edit window sliver), Lifecycle & retention, live delivery per ADR-U039, and the announcements sliver of Notification routing. Feeds & social surfaces (feeds, cord-health glance, journey-scoped), Attachments, and preferences/digest stay forward — A-NTF / A-DIS / later (see the closing row).
 
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
