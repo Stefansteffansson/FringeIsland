@@ -41,7 +41,10 @@ Direct links used throughout:
 3. A: go to `/messages` (inbox) and leave it open. B: send `walk-3 again`. Expect A's inbox to reorder live — that conversation jumps to the top with an unread mark, no reload.
 
 ## 4 — Group conversations (COM-15)
-1. A: Nya gruppen #1 → conversations panel → create a conversation titled `Walk conversation`.
+
+> **RIDER-1 (2026-07-22): blocked until the backfill migration applies.** The "New conversation" button (Conversations section header, right of the heading) is missing in all pre-C-A groups — the permission was seeded to templates only, never backfilled to existing groups' roles. Fix: `20260722100000_c_a_backfill_create_group_conversations_grant.sql`, held at the schema gate on PR #235. Skip this scenario and return to it after the apply, or give the named apply nod first.
+
+1. A: Nya gruppen #1 → Conversations section → **New conversation** button (top-right of the section) → title it `Walk conversation` → **Open**.
 2. B: same group page (reload is fine) → sees `Walk conversation` → **join** → send `walk-4 from Gracy`.
 3. A: open it → reply `walk-4 from Stefan`. Both directions flow.
 4. B: **leave** the conversation → B can no longer open it; A still sees the full history.

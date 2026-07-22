@@ -62,6 +62,10 @@ Measurement fixtures erased in-run via the canonical D15 chain (consent-erasure 
 
 **Remaining before the verdict closes:** Stefan's live walk. The area retro follows.
 
+### Walk riders (live walk, 2026-07-22)
+
+**RIDER-1 — `create_group_conversations` never backfilled to pre-C-A groups (scenario 4, found by Stefan before the scenario could run).** The C-A migration (`20260719230500` §10) seeded the permission catalog row and the Steward/Guide **template** grants but not the instantiated `group_role_permissions` — and `has_permission()` resolves through role instances only. Live count at discovery: **160 role instances across 84 groups** (every pre-C-A group, including all real manual groups) lacked the grant; the "New conversation" affordance hid honestly and the RPC would have refused 42501. C-D's `send_announcements` seed one day later (`20260720200000`) carried the ratified backfill pattern (gate Q2: template-derived only) — C-A's seed simply predates it. Integration tests missed this because fixtures always create fresh groups (post-seed template instantiation). **Run to ground red-first:** invariant test added to `conversation-contracts.test.ts` (RIDER-1 describe; demonstrated red: 160 missing, 23/24 green) + repair migration `20260722100000_c_a_backfill_create_group_conversations_grant.sql` mirroring C-D's pattern — **held at the schema gate on PR #235** with the export-grant migration.
+
 ---
 
 ## Appendix A — W12 per-RPC gate-verification roll-up

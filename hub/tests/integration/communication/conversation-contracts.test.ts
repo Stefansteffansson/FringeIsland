@@ -501,4 +501,46 @@ describe('FEAT-PD008 — conversation & message contracts (C-A)', () => {
       expect(msgs ?? []).toHaveLength(0);
     });
   });
+
+  describe('RIDER-1 (live walk 2026-07-22) — permission backfill invariant', () => {
+    // Red-first against the live defect: C-A seeded create_group_conversations
+    // into the Steward/Guide TEMPLATES only; has_permission() resolves through
+    // role INSTANCES, so every pre-C-A group lacked the grant (the walk found
+    // the "New conversation" affordance missing for a steward). Green once
+    // 20260722100000 backfills the instances; stays green for new groups
+    // because instantiation copies template grants.
+    it('every Steward/Guide-template-derived role instance holds create_group_conversations', async () => {
+      const { data: templates } = await admin
+        .from('role_templates')
+        .select('id, name')
+        .in('name', ['Steward Role Template', 'Guide Role Template']);
+      expect(templates ?? []).toHaveLength(2);
+
+      const { data: perm } = await admin
+        .from('permissions')
+        .select('id')
+        .eq('name', 'create_group_conversations')
+        .single();
+      expect(perm).not.toBeNull();
+
+      const { data: roles } = await admin
+        .from('group_roles')
+        .select('id')
+        .in(
+          'created_from_role_template_id',
+          (templates ?? []).map((t) => t.id)
+        );
+      const roleIds = (roles ?? []).map((r) => r.id);
+      expect(roleIds.length).toBeGreaterThan(0);
+
+      const { data: grants } = await admin
+        .from('group_role_permissions')
+        .select('group_role_id')
+        .eq('permission_id', perm!.id)
+        .in('group_role_id', roleIds);
+      const granted = new Set((grants ?? []).map((g) => g.group_role_id));
+      const missing = roleIds.filter((id) => !granted.has(id));
+      expect(missing).toHaveLength(0);
+    });
+  });
 });
