@@ -113,8 +113,24 @@ W3 is the cheapest and most self-contained — a reasonable place to start if th
 - [x] Outer-ring gate live; a `.from(` in a client module fails red — **demonstrated on fixtures** (10/10)
 - [ ] AC2-4 closed by (a) or (b) — **open**, W4 not in this tranche
 - [x] Full suite green (121 suites / 891 unit tests); `next build` clean
-- [ ] `doc-health-check` run — **open**, rides W5
+- [x] `doc-health-check` run (W5) — sections 2, 3, 3.6, 11; results below
 - [x] Audit II register annotated with dispositions
+
+### W5 — doc pass results (2026-07-22)
+
+Fixed in place:
+- **AC2-5 closed** — predecessor Appendix A's `52 files` snapshot replaced with a pointer to the live tree and the route-policy gate that walks it.
+- **Anatomy stamp moved** U048 → **U049** (Accepted 2026-07-20). ADR-U049 had real anatomy impact and had not been absorbed: DS-5's charter row now carries the durable announcements home. ADR-U050 is **Proposed** (rides the C-F schema gate) and is deliberately left unabsorbed, stated inline so the next reviewer doesn't re-derive it.
+- **Broken ADR link** in the predecessor register: `ADR-U023-platform-decomposition.md` → `ADR-U023-platform-core-domain-services-decomposition.md`. Pre-existing, isolated (not a citation cluster — the only occurrence in the tree).
+- **README indexes** — `reference/README.md` now lists audit II; `hub-v2/README.md`'s Phase-3 gate paragraph now describes the three COR-B gates alongside COR-A's.
+- Predecessor register marked **CLOSED** with a successor pointer; AC-9 annotated with COR-B's narrowing of the residual-assurance surface.
+
+Clean:
+- Retired vocabulary in the living anatomy pair — one `Shadow` hit, correctly the place-3-menace gloss, not the entrant sense (ADR-U031).
+- Anatomy pointer integrity — the V4/V5 references in `architecture/README.md` are explicitly labelled superseded history.
+- All 53 links across the four touched documents resolve.
+
+**Reported, not fixed (needs its own pass):** `hub-v2/README.md`'s Phase-3 narrative still reads *"Now kicking off: Communication (A-COM)"* while A-COM has closed and A-NTF is next. Area-status narrative is out of W5's scope and wants the area-gate context loaded — flagged rather than patched.
 - [ ] Retro notes whether COR-B's premise held — that gate-coverage work pays before area work, not after
 
 ### What the gates now catch that they did not on 2026-07-22 morning

@@ -1,9 +1,10 @@
 # Anatomy Conformance Audit — codebase vs the anatomy documents
 
 **Date:** 2026-07-19
-**Status:** Findings recorded. Rulings R-1/R-2/R-3 decided by Stefan 2026-07-19 (see §Rulings). Tranche scheduling decided: Tranches I+II run as a corrective cycle **before** the Communication area (A-COM). The correction plan exists: [`../hub-v2/anatomy-correction-plan.md`](../hub-v2/anatomy-correction-plan.md) (Cycle COR-A, drafted 2026-07-19) — this register is its evidence base.
+**Status:** **CLOSED** — all findings dispositioned; Cycle COR-A executed 2026-07-19 ([`../hub-v2/anatomy-correction-plan.md`](../hub-v2/anatomy-correction-plan.md)), this register being its evidence base. Rulings R-1/R-2/R-3 decided by Stefan 2026-07-19 (see §Rulings). Tranche scheduling decided: Tranches I+II ran as a corrective cycle **before** the Communication area (A-COM).
+**Successor:** [`ANATOMY-CONFORMANCE-AUDIT-2.md`](./ANATOMY-CONFORMANCE-AUDIT-2.md) (2026-07-22) — the delta pass. It re-tested all seven ring invariants, found them **conformant**, and recorded five gate-*coverage* gaps (AC2-1..AC2-5); Cycle COR-B closed AC2-1..AC2-3. Two findings here gained follow-ups from it: **AC-9** (residual assurance) and **Appendix A** (stale route count, its AC2-5).
 **Scope:** `hub/` + `supabase/` (decision 2026-07-19: `hub-legacy/`, `experiments/`, `scripts/` excluded — deviations there die with the code). Test code is exempt from API-first rules.
-**Baseline (canon wins):** [`ARCHITECTURE_ANATOMY.md`](../../architecture/ARCHITECTURE_ANATOMY.md) (stamp: ADR-U046) · [`ECOSYSTEM_ANATOMY_V6.svg`](../../architecture/ECOSYSTEM_ANATOMY_V6.svg) (v2.4) · ground-truth ADRs [U002](../../architecture/decisions/ADR-U002-five-cross-cutting-verticals.md), [U009](../../architecture/decisions/ADR-U009-api-first-frontend-agnostic.md), [U023](../../architecture/decisions/ADR-U023-platform-decomposition.md), [U038](../../architecture/decisions/ADR-U038-platform-contracts-platform-side-surface-bff.md) · [`DOMAIN_SERVICE_DEPENDENCIES.svg`](../../architecture/DOMAIN_SERVICE_DEPENDENCIES.svg).
+**Baseline (canon wins):** [`ARCHITECTURE_ANATOMY.md`](../../architecture/ARCHITECTURE_ANATOMY.md) (stamp: ADR-U046) · [`ECOSYSTEM_ANATOMY_V6.svg`](../../architecture/ECOSYSTEM_ANATOMY_V6.svg) (v2.4) · ground-truth ADRs [U002](../../architecture/decisions/ADR-U002-five-cross-cutting-verticals.md), [U009](../../architecture/decisions/ADR-U009-api-first-frontend-agnostic.md), [U023](../../architecture/decisions/ADR-U023-platform-core-domain-services-decomposition.md), [U038](../../architecture/decisions/ADR-U038-platform-contracts-platform-side-surface-bff.md) · [`DOMAIN_SERVICE_DEPENDENCIES.svg`](../../architecture/DOMAIN_SERVICE_DEPENDENCIES.svg).
 **Predecessor:** [`hub-v2/api-conformance-register.md`](../hub-v2/api-conformance-register.md) (2026-07-02, 9 routes). This audit re-baselines it after the Groups and Journeys areas (52 route files) and extends beyond the API ring to the inner ring, ownership, dependency direction, and verticals.
 **Method:** five independent audit dimensions run in parallel (outer ring / substrate enforcement / ownership + inner ring / DS dependency direction / verticals + steering), each bound to named canonical sources with mandatory `file:line` citations. Every Major finding's evidence was disk-verified by the orchestrating session at the cited lines; predecessor-closure verdicts S3/F1/F2 are double-attested (route-side and substrate-side independently).
 
@@ -108,6 +109,8 @@
 Substrate homes were verified *structurally* (zero direct writes in `hub/lib`; zero `.from(`/`.rpc(` in routes; uniform DEFINER + REVOKE/GRANT discipline; fail-closed caller resolver `get_current_user_profile_id` filtering `is_active = true`; dense in-function lifecycle guards). The ~90 RPC bodies were **not** exhaustively read to confirm each internally enforces its full documented permission gate. Confidence is high; exhaustive per-RPC gate verification remains open for a future deep pass (candidate: per-area, at each area gate).
 **DISPOSITION (2026-07-19, Stefan — COR-A W12):** standing **per-RPC gate-verification row added to the Phase-3 area-gate DoD** (hub-v2 README, Phase-3 gate), applying from A-COM onward — the assurance pass folds into the gate rhythm instead of a big-bang re-audit. The core/domain half is enforced mechanically in every suite run by `internal-api-conformance.test.ts`.
 
+**FOLLOW-UP (2026-07-22, COR-B W1 — see [audit II](./ANATOMY-CONFORMANCE-AUDIT-2.md) AC2-2):** the residual-assurance surface narrowed again. This finding's own diagnosis — that mechanical enforcement covered only part of the ground and the rest rested on attentiveness — applied to the *gate's own inputs*: `DS_TABLES` and the DS function allowlists were hand-edited arrays with nothing binding them to the catalog. They now derive from `supabase/ownership.manifest.json`, whose completeness is gated (an unclassified table fails red). What remains open under AC-9 is unchanged and still real: the per-RPC *internal gate* verification, which no static check can discharge.
+
 ---
 
 ## Rulings needed (canon decisions, not code defects)
@@ -167,7 +170,9 @@ Doc-level only. It is a SELECT-only registry of step content families seeded wit
 
 ---
 
-## Appendix A — Route inventory (52 files, all cookie-session private BFF per ADR-U038 clause 3)
+## Appendix A — Route inventory (all cookie-session private BFF per ADR-U038 clause 3)
+
+> **Pointer, not snapshot (added 2026-07-22, COR-B W5 — audit II AC2-5).** This appendix was captured as "52 files" on 2026-07-19 and was stale within days (72 by 2026-07-22, as A-COM landed). The live count is the `app/api/**/route.ts` tree itself; the live *policy* conformance of every route is asserted by `hub/tests/unit/app/route-policy-conformance.test.ts`, which walks the whole surface on every run. Read the table below as a dated record of what existed at audit time, never as the current inventory.
 
 Reads verify identity via `getVerifiedUserId` (ADR-U037 `getClaims`); mutations via `supabase.auth.getUser()`. "Home" = the platform-side contract (migration short-ref: rebuild=20260222000000, pc00x/pc01x/pd00x = the feat migration carrying that contract). All are thin proxies unless noted.
 
