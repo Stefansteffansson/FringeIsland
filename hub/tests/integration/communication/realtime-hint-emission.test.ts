@@ -361,6 +361,59 @@ describe('FEAT-PD010 — realtime hint emission & receipt policies (C-C)', () =>
       // no is_deleted transition -> no AFTER UPDATE emit (Q3 WHEN clause).
       expect(await countForumHint(g1, 'forum_post_moderated', threadId)).toBe(before);
     });
+
+    /**
+     * RIDER-3 (A-COM live walk, 2026-07-22) — red-first: C-C's hint layer
+     * predates C-D's edit window ("no socket work" carry), so a content edit
+     * emitted nothing and other members' open pages kept the pre-edit text
+     * until reload. Red until 20260722170000 lands the edit trigger.
+     */
+    it('RIDER-3: an own-window edit emits one forum_post_edited; a no-op save emits nothing', async () => {
+      const ca = await asUser(alice);
+      const { data, error } = await ca.rpc('create_forum_post', {
+        p_group_id: g1,
+        p_content: `edit fixture ${runTag}`,
+      });
+      expect(error).toBeNull();
+      const postId = (data as { id: string }).id;
+
+      const { error: eErr } = await ca.rpc('edit_own_forum_post', {
+        p_post_id: postId,
+        p_content: `edited once ${runTag}`,
+      });
+      expect(eErr).toBeNull();
+      expect(await countForumHint(g1, 'forum_post_edited', postId)).toBe(1);
+      const payloads = await forumHintPayloads(g1, 'forum_post_edited', postId);
+      // same content-free envelope as the C-C events (STORY-1/2 shape).
+      expect(Object.keys(payloads[0]).sort()).toEqual(['id', 'post_id']);
+      expect(payloads[0].post_id).toBe(postId);
+
+      // A byte-identical save is an UPDATE with no content change — the WHEN
+      // clause is the idempotency guarantee (the C-C Q3 pattern).
+      const { error: nErr } = await ca.rpc('edit_own_forum_post', {
+        p_post_id: postId,
+        p_content: `edited once ${runTag}`,
+      });
+      expect(nErr).toBeNull();
+      expect(await countForumHint(g1, 'forum_post_edited', postId)).toBe(1);
+    });
+
+    it('RIDER-3: a self-delete emits forum_post_moderated only — never a spurious edit hint', async () => {
+      const ca = await asUser(alice);
+      const { data, error } = await ca.rpc('create_forum_post', {
+        p_group_id: g1,
+        p_content: `self-delete fixture ${runTag}`,
+      });
+      expect(error).toBeNull();
+      const postId = (data as { id: string }).id;
+
+      const { error: dErr } = await ca.rpc('delete_own_forum_post', { p_post_id: postId });
+      expect(dErr).toBeNull();
+      // the existing C-C transition trigger carries the tombstone live…
+      expect(await countForumHint(g1, 'forum_post_moderated', postId)).toBe(1);
+      // …and the edit trigger stays silent on a deleted row (NOT NEW.is_deleted).
+      expect(await countForumHint(g1, 'forum_post_edited', postId)).toBe(0);
+    });
   });
 
   // ---------------------------------------------------------------- STORY-3

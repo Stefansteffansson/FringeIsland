@@ -35,13 +35,16 @@ beforeEach(() => {
 });
 
 describe('FEAT-H027 — forum tenant (useForumTenant)', () => {
-  it('registers group:<G>:forum for both forum events while mounted (STORY-4)', () => {
+  it('registers group:<G>:forum for all three forum events while mounted (STORY-4; RIDER-3 adds forum_post_edited)', () => {
+    // RIDER-3 (A-COM live walk, 2026-07-22), red-first: the tenant predated the
+    // C-D edit window and never subscribed to edits — an edited post stayed
+    // stale on other members' open pages until reload.
     render(<Harness groupId="g1" onHint={jest.fn()} />);
     expect(registerTenant).toHaveBeenCalledTimes(1);
     const tenant = registerTenant.mock.calls[0][0];
     expect(tenant.topic).toBe('group:g1:forum');
     expect(tenant.events).toEqual(
-      expect.arrayContaining(['forum_post_created', 'forum_post_moderated']),
+      expect.arrayContaining(['forum_post_created', 'forum_post_moderated', 'forum_post_edited']),
     );
   });
 

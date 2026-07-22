@@ -61,16 +61,20 @@ Direct links used throughout:
 4. A (steward): moderate/remove B's reply → expect a **tombstone** in its place ("removed by a steward" style), not a silent vanish. B reloads → sees the same tombstone.
 
 ## 6 — Own-edit window (COM-12)
+
+> **RIDER-3 (2026-07-22): found here.** An in-window edit did not reach the other member's open page until reload — a C-C/C-D sequencing gap (the hint layer predates the edit window; no spec decided edits don't propagate). Fix built red-first: `forum_post_edited` trigger (migration `20260722170000`) + tenant subscription — **held at the schema gate** for the named apply/merge nod.
+
 1. B: post a new thread `walk-6 edit test` → immediately **edit** it (inside the 15-min window) → change sticks.
 2. B: **delete** one of B's own posts → gone/tombstoned as designed.
 3. Check: in the DM conversation from scenario 2, messages offer **no** edit or delete affordance (DMs are immutable).
 
 ## 7 — Announcements (COM-8/9)
+
+> **Script correction (2026-07-22, the script's third error):** steps 3-4 as originally written are not walkable — `send_platform_announcement` exists at the substrate (gate-verified) but **no surface calls it by design**: FEAT-H028:99 assigns platform-announcement compose to **A-ADM's Console**. The `/groups` "Platform announcements" panel (honest empty state) is the complete A-COM surface: read-only. Also: B receiving the group announcement only on reload is the **scheduled A-NTF deferral** (FEAT-H028 shipped "no socket work, no bell"; §99 names the bell as A-NTF's opener) — recorded as an observation, not a rider.
+
 1. A (steward): Nya gruppen #1 → announcements section → post group announcement `walk-7 group announcement`.
-2. B: group page → sees it in the group announcements section.
-3. Window C: sign in as `deusex@fringeisland.com` → post a **platform announcement** `walk-7 platform announcement` (admin affordance). A and B: open `/groups` — the platform announcements section at the overview shows it for both.
-4. C: **retract** the platform announcement. A/B reload `/groups` → it is gone. Note there is deliberately no edit — retract only.
-5. A: retract the group announcement from step 1 too (leave the walk clean).
+2. B: group page (reload) → sees it in the group announcements section.
+3. A: **retract** it (confirm modal) → B reloads → gone. Deliberately no edit — retract only.
 
 ## 8 — Content report (COM-13)
 1. B: on A's `Walk thread` opening post → **Report content** → pick a reason, add details `walk-8 report` → submit → confirmation dialog.
