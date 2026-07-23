@@ -251,8 +251,10 @@ test.describe('FEAT-H027 — live messages, forum & badge (journey verification)
     // -- B, WITHOUT navigating: the tombstone materializes live ------------
     await pageB.bringToFront();
     await expect(pageB.getByTestId(`forum-tombstone-${threadId}`)).toBeVisible({ timeout: 30_000 });
+    // Neutral tombstone copy by design (A-COM walk wording fix, 2026-07-22) —
+    // assertion realigned in A-NTF N-A (found, not caused; see forum.spec.ts).
     await expect(pageB.getByTestId(`forum-tombstone-${threadId}`)).toHaveText(
-      /removed by a group moderator/i,
+      /this post was removed/i,
     );
 
     await ctxA.close();

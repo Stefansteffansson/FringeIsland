@@ -3,7 +3,7 @@
 ---
 id: TASK-NA-05
 title: E2E notification journey, fleet sweep, FEAT-H030 to 6-done
-status: todo
+status: done
 assigned_to: claude
 priority: medium
 feature: FEAT-H030

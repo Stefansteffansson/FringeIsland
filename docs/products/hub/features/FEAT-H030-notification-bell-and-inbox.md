@@ -6,13 +6,24 @@ title: Notification bell and inbox
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
 ## Problem
 
 v2 has no notification surface at all: members cannot see invitations, role changes, stewardship events, journey milestones, or announcements that the platform has been delivering to `public.notifications` since the walking skeleton. v1's bell read the table directly from the browser (the API-first sin) and offered only a 15-item dropdown — no history page. Cycle N-A gives the Hub its passive notification surface (NTF-1/2/3/7) over the FEAT-PD013 contracts, fetch-based (realtime hint arrives N-C).
+
+## Implementation notes
+
+*(6-done, 2026-07-23 — built Cycle N-A, red-first. The solution sketch below stands as built.)*
+
+- **Where it lives:** `hub/lib/notifications/` (`queries.ts` server couriers, `client.ts` API-first browser client + unread-count session cache, `http.ts` SQLSTATE→HTTP mapper, `format.ts` pure status-chip/badge helpers); four BFF routes under `hub/app/api/notifications/` (`route.ts` GET list, `unread-count/route.ts` GET, `[id]/read/route.ts` POST, `read-all/route.ts` POST); `hub/components/notifications/` (`NotificationBell.tsx` badge+dropdown, `NotificationItem.tsx` shared kind-agnostic renderer); `hub/app/notifications/page.tsx` inbox. **The bell relocated** from `components/ui/NotificationBell.tsx` (the walking-skeleton stub, deleted) to `components/notifications/` — a feature component, the MessagesLink precedent; `AppShell` imports from the new home.
+- **ADR-U037 split honoured:** the two GET routes read identity via `getVerifiedUserId` (local claims); the two POST mutations via `getUser()` (server-verified). Route-policy conformance green.
+- **Red → green:** 24 unit tests (format 5, bell 10, inbox 9) demonstrated red module-absent, then green; 1 pure-helper + component/page tiers keep the pyramid upright. The E2E journey (`hub/tests/e2e/notifications.spec.ts`) drives a real `invitation_received` notification (Steward invites → invitee's bell badge → dropdown → mark-all → inbox history → **read-state survives a full reload**, proving server state) — green across three runs.
+- **Two unit-test stabilisations (labelled):** the inbox-page test needed a *stable* `useAuth`/`useRouter` mock reference (a fresh object each render re-fired the load effect) and an `AppShell` passthrough mock — both the messages-inbox-page precedent, not a production change.
+- **Fleet due, found-not-caused:** the full sweep surfaced two pre-existing red E2E specs (`forum.spec.ts`, `realtime.spec.ts`) asserting the *old* tombstone copy `/removed by a group moderator/i`; the copy was deliberately neutralised to "This post was removed" by A-COM commit `00c0010` (walk wording fix, 2026-07-22) without updating these assertions. Realigned to `/this post was removed/i` in this cycle (a labelled sibling-suite adaptation, not a weakening). The onboarding ES256 flake (TASK-INT-01) and a profile `toHaveURL` fleet-load flake both pass in isolation — fenced, not caused.
+- **Deferred as designed:** Accept/Decline action UI (N-B), realtime hint + reconnect (N-C), preferences (N-D), external channels/email (NB-2, ADR-U040).
 
 ## Solution sketch
 
