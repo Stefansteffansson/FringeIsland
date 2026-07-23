@@ -3,7 +3,7 @@
 ---
 id: TASK-NA-01
 title: Red integration suites for FEAT-PD013 (registries, list, count, read-state, export)
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PD013

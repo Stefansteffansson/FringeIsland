@@ -43,6 +43,15 @@
     "notifications": {
       "owner": "vertical:notifications",
       "note": "ADR-U048 + ruling R-1: the Notifications-vertical delivery substrate. Written by every tier as obligation-fulfilment, NEVER a boundary crossing (ADR-U047 rule 5). Deliberately not a DS table — the inner-ring gate must not treat writes to it as crossings. DS-5 takes the routing/preferences layer above it when built."
+    },
+
+    "notification_categories": {
+      "owner": "vertical:notifications",
+      "note": "FEAT-PD013 (N-A): the V3 §6 category catalog — vertical-levied substrate beside the delivery table (lawful basis + interruption grade). Classified with the delivery table so the notifications.type FK stays inside the vertical's own substrate; DS-5 reads it as routing input. Gate-review flag: alternative classification DS-5."
+    },
+    "notification_kinds": {
+      "owner": "vertical:notifications",
+      "note": "FEAT-PD013 (N-A): the notification-event kinds registry (kind → category). Same classification rationale as notification_categories."
     }
   },
 
@@ -98,7 +107,12 @@
       "get_group_announcements",
       "get_platform_announcements",
       "submit_content_report",
-      "get_own_messages_export"
+      "get_own_messages_export",
+      "get_own_notifications",
+      "get_own_unread_notification_count",
+      "mark_notification_read",
+      "mark_all_notifications_read",
+      "get_own_notifications_export"
     ],
     "DS-7": [
       "create_journal_entry",
