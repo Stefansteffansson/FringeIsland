@@ -159,13 +159,9 @@ A preflight health check in `tests/integration/suite-setup.ts` was considered an
 - [x] **Repo verified free of legacy JWT keys** — both `.env.local` files and all source use only the new key generation
 - [x] **Vercel env vars audited — clean** (all `sb_publishable_*`, no legacy JWT, no service-role key).
 - [x] **Legacy-key disable tried directly (2026-07-23) — did NOT fix the flake** (before/after probe above); rolled back. The remaining-consumer audit is therefore moot *for this bug* (still worth doing for its own security merit, but no longer on this task's critical path).
-- [ ] **Escalate to Supabase support** with the log evidence + the before/after experiment — the flake is platform-side and independent of every lever reachable from here. **Ticket drafted and ready to send:** [`../reference/supabase-support-es256-admin-api.md`](../reference/supabase-support-es256-admin-api.md) (fill the plan/severity placeholders, then paste into Dashboard → Support).
-- [ ] Disable the legacy `anon` / `service_role` JWT API keys once that audit is clean, and re-run the integration suites to see whether the flake survives
-- [ ] If it survives: escalate to Supabase support with the log evidence — at that point it is unambiguously platform-side
-- [ ] Either the fault is eliminated, or a deterministic mitigation is in place (e.g. bounded retry-with-backoff around `admin.auth.admin.createUser` for this *specific* signature error only — never a blanket retry, which would mask real failures)
-- [ ] A full `tests/integration/` run completes green twice consecutively
-- [ ] If the root cause turns out to be concurrency, the standing "run integration suites serially" rule is enforced mechanically (jest `maxWorkers` for the integration project) rather than remembered
-- [ ] The `decorateAuthAdminError` fence is either removed (if truly fixed) or its wording updated to match what was learned
+- [x] **Escalated to Supabase support — ticket filed 2026-07-23** via Dashboard → Support (category "APIs and client libraries" + library JavaScript + service Authentication, severity Low, project access granted). Body = [`../reference/supabase-support-es256-admin-api.md`](../reference/supabase-support-es256-admin-api.md). Reply goes to stefan.steffansson@yahoo.com.
+- [ ] **When Supabase replies — the one open action.** Apply whatever they advise, then re-measure: `cd hub && npm run probe:auth` (the permanent probe at `hub/scripts/auth-admin-es256-probe.mjs`). It prints the ES256-flake rate against the ~5-8% baseline. **Remove the `decorateAuthAdminError` fence only when the flake reads 0 across a couple of runs.** If they confirm it's a known transient with no project-side fix, keep the fence and close this task as accepted-platform-limitation.
+- [ ] (If a fix lands) A full `tests/integration/` run completes green twice consecutively, and — if the cause turns out to be concurrency — enforce the "run integration suites serially" rule mechanically (jest `maxWorkers` for the integration project) rather than by memory.
 
 ## Notes
 
