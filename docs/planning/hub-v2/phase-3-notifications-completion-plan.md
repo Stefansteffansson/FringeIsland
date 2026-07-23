@@ -1,0 +1,104 @@
+# Phase 3 — Notifications (A-NTF) completion plan
+
+**Status:** v1 (2026-07-23) — **board OPEN, kickoff sweep complete.** A-NTF is the fifth Phase-3 area (Identity, Groups, Journeys, Communication all closed). It starts on the corrected Internal-API pattern (ADR-U047/U048) and inherits the C-C real-time conventions (U039). This plan lays out the 10 NTF capabilities, the substrate they land on, the oracle, the area dues, a proposed 4-cycle sequence, and the decision board to settle before Cycle N-A decomposes. **Nothing built yet.**
+**Provenance:** four-scout terrain sweep 2026-07-23 (platform/DS-5+ADRs · substrate · surface/oracle · seams-and-dues-and-V3), load-bearing facts disk-verified; two cumulative-forward corrections folded in (see "Corrections" below). Canonical-wins flags noted inline.
+
+---
+
+## Where this picks up
+
+Communication (A-COM) closed 2026-07-22 (gate PASS with riders dispositioned — bridge `../sessions/2026-07-22_03_-_A-COM-RETRO-COMMITTED-AREA-FULLY-CLOSED-A-NTF-NEXT.md`). A-NTF inherits, settled-by-canon (recorded, not asked):
+
+- **ADR-U048 — delivery/routing split.** `public.notifications` + its delivery mechanics are the **Notifications-vertical delivery substrate**; any tier writing a delivery row is obligation-fulfilment, **not** a boundary crossing (ADR-U048:37). DS-5 owns only the **routing layer above** — routing rules, recipient preferences, digest/aggregation, channel fan-out (ADR-U048:38-39). `notifications` stays **out** of `DS_TABLES` by design.
+- **ADR-U039 — real-time doctrine.** v2 is **ping-then-fetch over private broadcast channels, hint-never-authority, durable-row-first** (ADR-U039:22-26,31). The bell channel `account:<auth_uid>:notifications` is already reserved forward-looking (`docs/products/hub/SPECIFICATION.md:38,:99`). NTF-2 (bell) and NTF-9 (reconnect) build on the C-C conventions — no fresh doctrine needed.
+- **ADR-U049 — announcements.** Durable DS-5 `announcements` home (built in C-D) + **per-recipient V3 delivery rows fanned out at send**; the bell badges off delivery rows; recipients resolved once at send-time (ADR-U049:41,43,47). The **outbound channel adapter that consumes delivery rows and never re-resolves recipients is seamed to A-NTF** (ADR-U049:16,43; DS-5 §8 **Q1** — `docs/platform/domain/communication.md:97`).
+- **ADR-U040 — no platform email to strangers (Accepted 2026-07-05, Option C).** Supersedes MEM-2 "invite by email"; the outward path is a **FIM-shared referral link**, not a platform-sent email. **Whether the platform ever sends email at all is explicitly a separate, later, own-ADR decision — Option C does not require it.** → the "D4 email due" the A-COM plan forward-pointed here is **superseded, not inherited** (see Corrections).
+- **The conformance gate** already auto-allows `/^ds\d+_lifecycle_/` and holds `notifications` out of `DS_TABLES`. When the DS-5 notification-routing contract layer lands, `DS_OWNED_ALLOWLIST` gains those functions; `notifications` itself stays out (U048).
+- **W12 + ADR-U043** — per-RPC gate verification and the cold/warm performance pass are in the area-gate DoD from this area onward.
+
+## Corrections to carried-forward premises (canonical-wins)
+
+1. **"D4 = MEM-2 outbound email dispatch comes due at A-NTF"** (A-COM plan `phase-3-communication-completion-plan.md:115`, Groups plan seam) — **SUPERSEDED by ADR-U040.** `invite_by_email` is retired; email dispatch is not required in Ferd and needs its own ADR. A-NTF ships **in-app channel only**; email is a recorded forward-deferral, not a build. (Board NB-2.)
+2. **"DS-5 §8 Q7 covers the notifications realtime publication"** (A-COM plan phrasing) — **false.** DS-5 §8 holds only Q1-Q6 (`communication.md:95-102`); the announcement-adapter seam is **§8 Q1**, and the legacy-publication disposition is already decided in **ADR-U039:31** (serves the legacy app until Phase-4 cutover), not an open DS-5 question. (Board NB-7.)
+3. **"~7 trigger-generated notification types"** (FERD capability map row 72) — **stale.** ~19 distinct `type` strings exist today across triggers/RPCs (rebuild + sprint2/3/4 + pc013/pc014 + pd002/pd004 + c-d). The category-catalog registry (NB-4) must fold all of them.
+4. **The generic `handle_notification_action` dispatcher was DROPPED** in pc014 (`20260705072252_feat_pc014_leadership_transfer_closure_contracts.sql:947`), replaced by the **dedicated** `respond_to_stewardship_nomination`. v2's live pattern is **dedicated-handler-per-action**, not a generic dispatcher — NTF-6 must be re-derived against it (NB-1).
+
+## Substrate audit at kickoff (verified 2026-07-23, migrations + seeds, cumulative-forward)
+
+`public.notifications` born whole in the D15 rebuild (`20260222000000_rebuild_universal_group_pattern.sql:214-225`: `id`, `recipient_group_id`, `type`, `title`, `body`, `payload` jsonb, `group_id`, `is_read`, `read_at`, `created_at`); one post-rebuild ALTER (`20260228125730_sprint3_smart_notifications.sql:14-32`: +`action_type`, `action_data`, `action_taken`, `action_taken_at`, `expires_at`, a `notifications_action_consistency` CHECK, a pending-actions partial index). RLS `select/update/delete _own` keyed on `get_current_personal_group_id()` (rebuild:1829-1841). Base trigger fns re-defined by the COR-A inversion migration.
+
+| Cap | Capability (compressed) | Substrate | Oracle | Cycle |
+|---|---|---|---|---|
+| NTF-1 | Receive/render passive notifications | HAVE (table + ~19 passive types) | STRONG (B-COMM-001, B-NOTIF-001, B-ADMIN-011) | N-A |
+| NTF-2 | Bell + unread count | HAVE (`is_read` + unread partial index; **no count RPC**) | STRONG (B-COMM-003; bell render untested) | N-A |
+| NTF-3 | Inbox / history surface | HAVE data (RLS select + index; **no fetch RPC; v1 had only a 15-item bell dropdown, no history page**) | PARTIAL | N-A |
+| NTF-7 | Per-notification read state | HAVE (`is_read`/`read_at` + update RLS) | STRONG (B-COMM-002/003) | N-A |
+| NTF-4 | Smart (actionable) notifications | HAVE (sprint3 action cols + CHECK + pending index) | STRONG (B-NOTIF-001) | N-B |
+| NTF-5 | Typed-action UI (Accept/Decline, +types) | HAVE backend; **UI new** (v1 rendered inline in the bell dropdown, no component test) | PARTIAL | N-B |
+| NTF-6 | Submit response + server-side dispatch | **REBUILD** (generic handler DROPPED; dedicated per-action handlers exist — NB-1) | STRONG contract (B-NOTIF-003) | N-B |
+| NTF-8 | Lazy-resolve expired smart notifs on view | PARTIAL (`expires_at` + reject-on-action only; **no sweep / mark-expired / on-view mutation**) | PARTIAL | N-B |
+| NTF-9 | Reconcile missed on reconnect | PARTIAL (realtime channel present; **no server reconciliation primitive**; v1 never websocket-tested) | SILENT | N-C |
+| NTF-10 | Per-category / per-channel preferences | **NONE** (no prefs table/column/seed anywhere) | SILENT | N-D |
+
+**Genuinely-new design (no substrate):** the **category-catalog registry** (replace free-text `type`; NB-4), **NTF-10 preferences** (table + enforcement), the **NTF-8 lazy-expiry sweep/mark**, the **NTF-9 reconnect reconciliation** primitive, the **NTF-6 dispatch re-derivation**, and explicit **unread-count / inbox-fetch RPCs** (today RLS-select only).
+
+**Oracle: STRONG for the passive + smart-contract spine, SILENT on the two design-not-port capabilities.** B-COMM-001..003 + B-NOTIF-001/003 + B-ADMIN-011 live in `hub-legacy/tests/integration/communication/` (`notifications.test.ts`, `smart-notifications.test.ts`, `admin-notification-send.test.ts`) and port the spine (trigger-driven passive delivery, own-only RLS, read-state + accurate unread count, smart-schema consistency, action-handler rejection of other's/passive/already-actioned/expired). **Two silences, design-not-port:** reconnect reconciliation (NTF-9 — v1 leaned on a `postgres_changes` subscription U039 retires; inventory L148 "real-time push: NONE") and per-category/channel preferences (NTF-10 — no table/test/UI anywhere).
+
+## V3 obligations A-NTF must fulfil (canonical: `docs/verticals/notifications/SPECIFICATION.md §6`)
+
+- **Shared dispatcher** — a central point that accepts triggers from every layer and applies preference / consent / suppression **centrally** (vertical levies, DS-5 routes, PC-1 transports). Scope-in-Ferd is NB-5.
+- **Category catalog** — every trigger declares a category from a **data-driven registry (not a sealed enum)**, each carrying a lawful basis (transactional vs consent-required). Today's gap: `notifications.type` is free TEXT, no CHECK — "preferences cannot suppress by category yet" (V3 §3). NB-4.
+- **Per-category / per-channel preferences** in Core (PC-2/PC-4); surfaces read, never own (→ NTF-10, external dep PC-4 per `SPECIFICATION.md:366`).
+- **Mist rule** — no email, no durable state; in-app in-session only. NB-8.
+- **Delivery outcomes = V4 (Observability) events; no silent drop.** External payloads content-minimised.
+- **Channels** — in-app (inbox/bell/badge/realtime) now; email (transactional + digest) **deferred per ADR-U040** (NB-2). CLAUDE.md is a stub (no rules beyond the verticals tier).
+
+## The cycle sequence (foundation-first, paired-platform-first — mirrors A-COM)
+
+- **N-A — Passive delivery core + category registry (the area's walking skeleton).** NTF-1/2/3/7. Realize the DS-5 **notification-routing contracts** (list / unread-count / mark-read / mark-all-read) over the delivery substrate; build the **category-catalog registry** (NB-4) folding the ~19 existing type strings, each tagged transactional/consent-required. Paired **FEAT-PD### (DS-5 notification contracts) ↔ FEAT-H### (notification surface: bell + unread badge + inbox/history page)**. Fetch-based (no socket work yet, per A-COM's C-A/C-B precedent). Riders: conformance-gate `DS_OWNED_ALLOWLIST` += notification RPCs (`notifications` stays out of `DS_TABLES`); DS-5 spec begins its notification-routing realisation.
+- **N-B — Smart (actionable) notifications + dispatch + expiry.** NTF-4/5/6/8. Typed-action UI (Accept/Decline + acknowledge + extensible action registry, no sealed enum); **NTF-6 re-derived per NB-1** — the action submit records `action_taken` and thin-dispatches to the **already-existing dedicated handlers** (`accept_group_invitation`/`decline_group_invitation` — pc012:522,562; `respond_to_stewardship_nomination` — pc014/cor-a; `submit_content_report` — c-d:600); NTF-8 lazy-expiry-on-view (mark expired at read-time, hide action buttons). Paired FEAT-PD### ↔ FEAT-H###.
+- **N-C — Real-time hint + reconnect reconciliation + announcement in-app adapter.** NTF-9. Ping-then-fetch over the private `account:<auth_uid>:notifications` broadcast per U039 (bell goes live); reconnect reconciliation (re-fetch unread on visibility/reconnect — a server primitive the SILENT oracle needs fresh tests for); render the **announcement `announcement`-type delivery rows** in the bell/inbox (the U049 §8 Q1 in-app adapter — NB-3). Channel taxonomy fixed at decomposition inside U039 rails.
+- **N-D — Preferences + shared dispatcher (the genuinely-new cycle).** NTF-10 (per-category/per-channel preferences, persisted via PC-4/Core, surface reads) + the **shared dispatcher** applying category+channel suppression centrally (NB-5 scope). Depends on the N-A category registry and IDN-7's preference-persistence pattern.
+
+**Area gate absorbs the standing dues** (no separate cycle): legacy realtime-publication disposition (NB-7), the email-deferral recording (NB-2), the DS-5 spec advance (notification-routing realised; digest/feeds recorded still-forward), the V3 vertical reconcile, W12 per-RPC verification, and the ADR-U043 + live-walk pass.
+
+**DS-5 realisation stays partial by design:** A-NTF realises the **notification-routing sliver** (list/mark-read/preferences/announcement in-app adapter). Digest/aggregation and outbound channel adapters (email/push) stay **forward** (Eid+); the DS-5 feature-inventory summary records the split honestly.
+
+## Design sessions
+
+One likely: **notification category-catalog + preference/dispatcher model** (before N-A decomposition; ADR candidate). It firms the data-driven category registry (lawful-basis per category), the preference shape (per-category × per-channel), and the dispatcher's Ferd scope. The NTF-6 dispatch model (NB-1) can fold into the same session. Real-time needs no session — U039 is the doctrine; taxonomy is decomposition-time.
+
+## Decision board — OPEN (settle before N-A decomposes)
+
+Settled by canon, recorded not asked: U048 delivery/routing split · U039 realtime doctrine (ping-then-fetch, `notifications` out of `DS_TABLES`) · U049 announcements durable-home + delivery-row fan-out · U040 no-platform-email-to-strangers · W12 + ADR-U043 gates in force.
+
+| # | Question | Recommendation | Default if unaddressed |
+|---|---|---|---|
+| NB-1 | NTF-6 dispatch model — generic dispatcher (rebuild the dropped `handle_notification_action`) vs dedicated-handler-per-action | **Thin-dispatch to the existing dedicated handlers.** The generic handler was deliberately DROPPED (pc014:947); all three NTF-6 targets already exist as dedicated RPCs; matches ADR-U047's per-action direction. The action UI calls the existing RPC (`accept_group_invitation` / `respond_to_stewardship_nomination` / `submit_content_report`) and the notification row records `action_taken`. `action_type`+`action_data` name which handler | thin-dispatch |
+| NB-2 | Email channel in Ferd | **In-app only; email explicitly deferred (record D4 supersession).** Per ADR-U040 email dispatch is not required and needs its own ADR; no email substrate exists (`lib/email/send.ts` is a `console.log` sim, no vendor dep). Build nothing email-shaped; record the deferral in the V3/DS-5 specs | in-app only |
+| NB-3 | Announcement outbound adapter scope (U049 §8 Q1) | **Build the in-app path only** — render `announcement`-type delivery rows in the bell/inbox (rows already fan out from C-D; bell already badges off delivery rows). External-channel (email/push) adapters deferred with email (NB-2). Settle adapter-ownership (DS-5 code vs vertical/PC-1 plumbing) at N-C decomposition | in-app only |
+| NB-4 | Category-catalog registry | **Build in N-A** — a data-driven category registry (no sealed enum) folding the ~19 existing `type` strings, each tagged transactional/consent-required; add the CHECK/FK so preferences can suppress by category. V3-mandated; unblocks NTF-10 | build in N-A |
+| NB-5 | Shared-dispatcher scope in Ferd | **Minimal** — category+channel preference suppression only (what NTF-10 needs). Quiet-hours, frequency-caps, and digest are **not** in NTF-1..10; forward to Eid+ and record the seam. Full dispatcher is over-build for Ferd | minimal |
+| NB-6 | Digest / aggregation | **Forward (Eid+)** — DS-5 owns it per U048 but it is absent from the Hub §L3 NTF rows; record the split in the DS-5 summary | forward |
+| NB-7 | Legacy `notifications` realtime publication membership | **Hold to Phase-4** per ADR-U039:31 — v2 uses ping-then-fetch (private broadcast), not `postgres_changes` on `notifications`; the publication serves only the legacy app until cutover. Dropping it now is a legacy-app regression risk for zero v2 benefit | hold to Phase-4 |
+| NB-8 | Mist notification posture | **Verify-and-record** (as A-COM's CB-1) — Mists get in-app in-session notifications only, no durable rows, no email (V3 Mist rule). Adversarial proof that the delivery/recipient path structurally excludes Mist durable rows + spec recording, not a scrub build | FIM-durable only |
+
+## Exit checklist — the Notifications area gate (planted now)
+
+- [ ] All 10 NTF rows `6-done` or explicitly dispositioned on the board.
+- [ ] Category-catalog registry live; all ~19 legacy `type` strings folded and categorised (transactional vs consent-required); free-text `type` constrained.
+- [ ] NTF-6 wired to the three real dedicated handlers (adversarial direct-call tests per handler); no generic dispatcher reintroduced unless NB-1 is overridden.
+- [ ] Announcement `announcement`-type delivery rows render in the bell/inbox (U049 §8 Q1 in-app adapter); external channel deferral recorded.
+- [ ] NTF-10 preferences live and enforced by the shared dispatcher (category+channel suppression); persisted via PC-4/Core; surface reads only.
+- [ ] Email deferral recorded in V3 + DS-5 specs (ADR-U040); no email substrate shipped.
+- [ ] Legacy `notifications` realtime publication dispositioned per NB-7 (held or dropped, decision recorded).
+- [ ] Conformance gate updated: `DS_OWNED_ALLOWLIST` += DS-5 notification RPCs; `notifications` stays out of `DS_TABLES` (U048).
+- [ ] DS-5 spec reconciled: notification-routing realised; digest/aggregation + outbound-channel adapters recorded still-forward; feature-inventory summary shows the partial-realisation split; §8 Q1 seam dispositioned.
+- [ ] Oracle ported: B-COMM-001..003 + B-NOTIF-001/003 + B-ADMIN-011 spine ported (adapted to v2 contracts, labelled); the two silences (NTF-9 reconnect, NTF-10 preferences) covered by fresh tests.
+- [ ] Mist posture (NB-8) proved and recorded.
+- [ ] W12 per-RPC verification for every RPC shipped; sole-home-in-BFF and core-referencing-domain remain automatic fails.
+- [ ] ADR-U043 measurement pass (cold >=20-min idle x3 + warm, tail rule) + Stefan's live walk — both before the area retro.
+
+## After Notifications
+
+**Platform-Ops (A-ADM)** is the last Phase-3 area. A-NTF hands it the content-report **store** (COM-13) already live — the **moderation-decision surface / triage-resolve** (ADM-11) is A-ADM's, and NTF-6's moderation-decision-communication seam closes against it there. The email-channel ADR (deferred here per NB-2) and digest/aggregation (NB-6) are Eid+ forward work, not A-ADM blockers.
