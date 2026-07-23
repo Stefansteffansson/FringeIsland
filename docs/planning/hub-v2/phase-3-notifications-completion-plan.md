@@ -1,6 +1,6 @@
 # Phase 3 — Notifications (A-NTF) completion plan
 
-**Status:** v1 (2026-07-23) — **board OPEN, kickoff sweep complete.** A-NTF is the fifth Phase-3 area (Identity, Groups, Journeys, Communication all closed). It starts on the corrected Internal-API pattern (ADR-U047/U048) and inherits the C-C real-time conventions (U039). This plan lays out the 10 NTF capabilities, the substrate they land on, the oracle, the area dues, a proposed 4-cycle sequence, and the decision board to settle before Cycle N-A decomposes. **Nothing built yet.**
+**Status:** v2 (2026-07-23) — **board SETTLED** (presented whole; NB-1..6 + NB-8 adopted as recommended; **NB-7 overridden by Stefan — drop the legacy realtime publication in N-C**, see the board row). Next: Cycle N-A decomposition (FEAT specs to 4-ready → tasks → red-first build, held at the schema gate). Prior status (v1, same day): board OPEN, kickoff sweep complete. A-NTF is the fifth Phase-3 area (Identity, Groups, Journeys, Communication all closed). It starts on the corrected Internal-API pattern (ADR-U047/U048) and inherits the C-C real-time conventions (U039).
 **Provenance:** four-scout terrain sweep 2026-07-23 (platform/DS-5+ADRs · substrate · surface/oracle · seams-and-dues-and-V3), load-bearing facts disk-verified; two cumulative-forward corrections folded in (see "Corrections" below). Canonical-wins flags noted inline.
 
 ---
@@ -68,7 +68,7 @@ Communication (A-COM) closed 2026-07-22 (gate PASS with riders dispositioned —
 
 One likely: **notification category-catalog + preference/dispatcher model** (before N-A decomposition; ADR candidate). It firms the data-driven category registry (lawful-basis per category), the preference shape (per-category × per-channel), and the dispatcher's Ferd scope. The NTF-6 dispatch model (NB-1) can fold into the same session. Real-time needs no session — U039 is the doctrine; taxonomy is decomposition-time.
 
-## Decision board — OPEN (settle before N-A decomposes)
+## Decision board — SETTLED 2026-07-23 (NB-1..6/NB-8 as recommended; NB-7 overridden)
 
 Settled by canon, recorded not asked: U048 delivery/routing split · U039 realtime doctrine (ping-then-fetch, `notifications` out of `DS_TABLES`) · U049 announcements durable-home + delivery-row fan-out · U040 no-platform-email-to-strangers · W12 + ADR-U043 gates in force.
 
