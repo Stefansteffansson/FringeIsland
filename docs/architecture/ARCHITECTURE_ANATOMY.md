@@ -2,7 +2,7 @@
 
 **Status:** Living, derived overview — **canon wins.**
 **Reflects decisions through:** [ADR-U049](decisions/ADR-U049-announcements-durable-home-routed-delivery.md) (2026-07-20). [ADR-U050](decisions/ADR-U050-account-lifecycle-state-machine.md) is **Proposed** (rides the C-F schema gate) and is deliberately not absorbed here until it is Accepted.
-**Diagram companion:** [`ECOSYSTEM_ANATOMY_V6.svg`](ECOSYSTEM_ANATOMY_V6.svg) (v2.4) — the same anatomy as a one-page visual.
+**Diagram companion:** [`ECOSYSTEM_ANATOMY_V6.svg`](ECOSYSTEM_ANATOMY_V6.svg) (v2.5) — the same anatomy as a one-page visual. Doc and diagram both reflect ADR-U049; they move together.
 
 > **How this document works.** This is the one-stop prose overview of what the FringeIsland ecosystem is made of and how the parts relate. It is **derived, not authoritative**: every section names its ground truth (an ADR, a canonical core under `docs/ecosystem/universe/`, or a tier README), and on any conflict the pointed-at source wins. It is kept fresh by the doc-health-check skill's anatomy-freshness section: the "Reflects decisions through" stamp above is checked against the ADR index at every cycle boundary. Predecessor: [`ARCHITECTURE_ANATOMY_V1.md`](ARCHITECTURE_ANATOMY_V1.md) (the original L0–L7 layered anatomy — frozen historical reference, superseded by ADR-U023).
 
