@@ -39,7 +39,35 @@ Established by control experiment. **Do not re-derive this:**
 
 It concentrates under concurrency, compounding the standing "never run two integration suites concurrently against the shared dev DB" rule — **but it also hit a serial `--runInBand` run**, so parallelism appears to amplify rather than cause it. Root cause not yet found.
 
-**Leading hypothesis (unverified):** the project has been migrated to asymmetric JWT signing keys (ES256) and something in the verification path flaps — either a key-rotation propagation window, or an auth rate limit surfacing as a signature error rather than a 429. Both are checkable.
+## Diagnosis (2026-07-23) — rate limiting RULED OUT; server-side key verification is the cause
+
+Auth-service logs pulled for the 24h window covering the failures:
+
+| Signature | Count |
+|---|---|
+| `unrecognized JWT kid <nil> for algorithm ES256` | **12** |
+| `token is unverifiable` | 12 |
+| `rate limit` / `over_request_rate` | **0** |
+| `jwks` / `signing_key` / `rotat` / `asymmetric` | 0 |
+
+Every occurrence is the same shape:
+
+```
+path: /admin/users   status: 403
+error: "token is unverifiable: error while executing keyfunc:
+        unrecognized JWT kid <nil> for algorithm ES256"
+```
+
+**What this rules out.** The original hypothesis offered two candidates; one is now dead:
+
+- **Rate limiting — RULED OUT.** Zero rate-limit events in the whole window. The 403s are credential-verification failures, not throttling.
+- **Key verification — CONFIRMED as the mechanism.** GoTrue expects an ES256-signed token carrying a `kid`, and receives one with `kid = <nil>`.
+
+**What remains open is the *why*.** The same credential succeeds far more often than it fails (successful `user_signedup` / `user_deleted` events sit in the same window, minutes apart, from the same key). A credential that is simply wrong fails 100% of the time; this one does not. That points at **server-side state, not our configuration** — most plausibly a JWT signing-key rotation that has propagated to some auth nodes and not others, so a request's success depends on which node answers it.
+
+That hypothesis is consistent with every observation (intermittent, key-valid-in-isolation 5/5, reproducible on `main`, no rate limiting) but **cannot be confirmed from inside the repo** — it needs the project's JWT signing-keys state, which lives in the Supabase dashboard.
+
+**Next concrete step (needs dashboard access — Stefan):** open *Project Settings → API Keys / JWT Keys* and check whether a signing-key migration or rotation is in progress or half-applied (a current key plus a legacy/standby key both live). If so, completing or reverting the rotation is the fix and it is entirely platform-side. If the keys are clean and settled, this task escalates to Supabase support with the log evidence above.
 
 ## Why this needs fixing rather than tolerating
 
@@ -53,7 +81,9 @@ A preflight health check in `tests/integration/suite-setup.ts` was considered an
 
 ## Acceptance criteria
 
-- [ ] Root cause identified — distinguish key-rotation/propagation from rate limiting (check the Supabase auth logs for the corresponding window; check whether the project has both legacy and current signing keys active; check auth rate-limit settings against the burst a full suite run produces)
+- [x] **Rate limiting ruled out** and the mechanism identified as server-side key verification (403 on `/admin/users`, `kid <nil>` vs expected ES256) — see Diagnosis above
+- [ ] **Signing-key state checked in the Supabase dashboard** (rotation in progress / legacy key still standby?) — the one step that needs access this repo does not have
+- [ ] Root cause confirmed or escalated to Supabase support with the log evidence
 - [ ] Either the fault is eliminated, or a deterministic mitigation is in place (e.g. bounded retry-with-backoff around `admin.auth.admin.createUser` for this *specific* signature error only — never a blanket retry, which would mask real failures)
 - [ ] A full `tests/integration/` run completes green twice consecutively
 - [ ] If the root cause turns out to be concurrency, the standing "run integration suites serially" rule is enforced mechanically (jest `maxWorkers` for the integration project) rather than remembered

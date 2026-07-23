@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 1046" role="img" font-family="'Inter', 'Anthropic Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
-<title>FringeIsland Ecosystem Anatomy v2.4 — equipment profiles, nested studios, governance by scope, the Whisp split by face</title>
-<desc>Stacked view of the FringeIsland ecosystem, revised at reconciliation Session B (2026-06-10) per ADR-U025/U026/U027/U028 and refreshed 2026-07-18 per ADR-U029 (the Whisp split by face), ADR-U031 (Mist lifecycle, superseding U027), and ADR-U038 (platform contracts enforced platform-side; product API routes are private BFF plumbing). From top: Design System band; Products as equipment profiles (The Hub — canvas surface; The Gimbal — senses surface; the Game is a depth setting, not a product) and Universe Studio (parent of World, Arc, and Journey Studios); Platform API contract boundary; seven Domain Services (World Model DS-1, Narrative DS-2, Journeys DS-3, Content DS-4, Communication DS-5, Discovery DS-6, Intelligence DS-7) plus the Extension System; Internal API contract boundary; four Platform Core components (Organisation PC-3, Identity PC-2 with the Mist lifecycle, Infrastructure PC-1, Governance PC-4 with governance by scope and the Console); five cross-cutting verticals threading the full stack (Admin, Privacy/GDPR, Notifications, Observability, Transactions) with a footer annotation citing ADR-U002.</desc>
+<title>FringeIsland Ecosystem Anatomy v2.5 — equipment profiles, nested studios, governance by scope, the Whisp split by face, announcements in DS-5</title>
+<desc>Stacked view of the FringeIsland ecosystem, revised at reconciliation Session B (2026-06-10) per ADR-U025/U026/U027/U028 and refreshed 2026-07-18 per ADR-U029 (the Whisp split by face), ADR-U031 (Mist lifecycle, superseding U027), and ADR-U038 (platform contracts enforced platform-side; product API routes are private BFF plumbing); refreshed again 2026-07-23 per ADR-U047 (the Internal API's lifecycle-fact hooks — core reaches domain only through ds{N}_lifecycle_* contracts), ADR-U048 (public.notifications is the Notifications-vertical delivery substrate, written by every tier as obligation-fulfilment; DS-5 routes above it), and ADR-U049 (announcements have a durable DS-5 home, routed onto that delivery substrate). From top: Design System band; Products as equipment profiles (The Hub — canvas surface; The Gimbal — senses surface; the Game is a depth setting, not a product) and Universe Studio (parent of World, Arc, and Journey Studios); Platform API contract boundary; seven Domain Services (World Model DS-1, Narrative DS-2, Journeys DS-3, Content DS-4, Communication DS-5, Discovery DS-6, Intelligence DS-7) plus the Extension System; Internal API contract boundary; four Platform Core components (Organisation PC-3, Identity PC-2 with the Mist lifecycle, Infrastructure PC-1, Governance PC-4 with governance by scope and the Console); five cross-cutting verticals threading the full stack (Admin, Privacy/GDPR, Notifications, Observability, Transactions) with a footer annotation citing ADR-U002.</desc>
 <style>
   .t  { font-size: 14px; fill: #3d3d3a; font-weight: 400; }
   .ts { font-size: 12px; fill: #5f5e5a; font-weight: 400; }
@@ -213,7 +213,7 @@
   <rect x="60" y="356" width="180" height="56" rx="8" stroke-width="0.5"/>
   <text x="230" y="369" text-anchor="end" class="id-tag">DS-5</text>
   <text x="150" y="383" text-anchor="middle" class="th">Communication</text>
-  <text x="150" y="399" text-anchor="middle" class="ts">DM, forums, feeds</text>
+  <text x="150" y="399" text-anchor="middle" class="ts">DM, forums, feeds, announcements</text>
 </g>
 
 <!-- DS-6: Discovery -->
@@ -320,7 +320,7 @@
 <!-- =========================================================
      TITLE AND VERSION
      ========================================================= -->
-<text x="340" y="980" text-anchor="middle" class="caption">FringeIsland Ecosystem Anatomy v2.4 — July 2026 (refresh over v2.3: ADR-U029/U031/U038)</text>
+<text x="340" y="980" text-anchor="middle" class="caption">FringeIsland Ecosystem Anatomy v2.5 — July 2026 (refresh over v2.4: ADR-U047/U048/U049)</text>
 <text x="340" y="996" text-anchor="middle" class="caption">Designed for open-source extensibility and parallel contribution</text>
 <text x="340" y="1012" text-anchor="middle" class="caption">The Game is a depth setting of journeys, not a product (ADR-U025). The Whisp is split by face (ADR-U029): DS-1 owns world-presence, DS-7 owns the being.</text>
 <!-- =========================================================
