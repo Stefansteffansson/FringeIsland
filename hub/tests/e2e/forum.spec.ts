@@ -105,8 +105,12 @@ test.describe('FEAT-H026 — group forum & attribution', () => {
     const modId = (await modPost.getAttribute('data-testid'))!.replace('forum-post-', '');
     await page.getByTestId(`forum-remove-${modId}`).click();
     await page.getByRole('dialog').getByRole('button', { name: /^remove$/i }).click();
+    // Neutral tombstone copy by design (A-COM walk wording fix, 2026-07-22):
+    // moderation and self-delete render identically and neither names a
+    // moderator (H028 no-distinguishing no-go). Assertion realigned in A-NTF
+    // N-A after the fleet surfaced this stale copy (found, not caused).
     await expect(page.getByTestId(`forum-tombstone-${modId}`)).toHaveText(
-      /removed by a group moderator/i,
+      /this post was removed/i,
       { timeout: 15000 },
     );
     await expect(page.getByText(MOD_TARGET)).toHaveCount(0);
