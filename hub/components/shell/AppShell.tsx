@@ -1,14 +1,15 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { NotificationBell } from '@/components/ui/NotificationBell';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { AccountMenu } from '@/components/shell/AccountMenu';
 import { MessagesLink } from '@/components/messages/MessagesLink';
 
 /**
  * The authenticated Hub shell (navigation/chrome — product-owned). Mounts the
  * brand mark (top-left home link on every shell page — the entry greets a
- * signed-in FIM with "Continue to your groups"), the V3 notification-bell
- * seam, and the FIM-only account menu (FEAT-H005: profile + sign-out); the
+ * signed-in FIM with "Continue to your groups"), the FIM-only notification
+ * bell (FEAT-H030: badge + dropdown + inbox), and the FIM-only account menu
+ * (FEAT-H005: profile + sign-out); the
  * menu gates itself on identity status. The mark is a text "FI" tile until a
  * real logo asset lands (public/ carries no image assets yet).
  */
@@ -45,6 +46,8 @@ export function AppShell({ children, title }: { children: ReactNode; title?: str
           {/* FEAT-H025 STORY-1: FIM-only Messages chrome with the read-state
               badge (CB-1; unread is never a notification — the oracle rule). */}
           <MessagesLink />
+          {/* FEAT-H030: FIM-only bell — unread badge + recent dropdown + the
+              /notifications inbox (NTF-2/3/7); NB-8 gates on identity. */}
           <NotificationBell />
           <AccountMenu />
         </div>
