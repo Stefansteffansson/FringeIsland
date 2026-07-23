@@ -85,6 +85,12 @@ describe('FEAT-PD013 — notification contracts & category registry (N-A)', () =
   let groupO: string; // O's group — the trigger-path invitation rides it
   const rRowIds: string[] = []; // synthetic rows for R, index-aligned to rTitle(i)
   let oRowId: string;
+  // Learned at flip-green (2026-07-23): the platform legitimately emits
+  // organic notifications at account/group creation (role_assigned via the
+  // FringeIsland Members enrolment, group_journey_enrollment via onboarding
+  // auto-enrol, Steward role_assigned at create_engagement_group). Fixture
+  // assertions are baseline-relative, never vacuum-absolute.
+  let oUnreadBaseline: number;
 
   const asUser = async (u: TestUser): Promise<SupabaseClient> => {
     const c = createTestClient();
@@ -159,6 +165,14 @@ describe('FEAT-PD013 — notification contracts & category registry (N-A)', () =
       .update({ is_active: false })
       .eq('auth_user_id', suspendedS.user.id);
     expect(susErr).toBeNull();
+
+    // O's unread baseline (2 synthetic + whatever organic emissions O's
+    // account/group creation produced) — the untouched-by-R invariant is
+    // asserted against this, not an absolute.
+    const co2 = await asUser(otherO);
+    const { data: ob, error: obErr } = await co2.rpc('get_own_unread_notification_count');
+    expect(obErr).toBeNull();
+    oUnreadBaseline = ob as number;
   });
 
   afterAll(async () => {
@@ -205,7 +219,9 @@ describe('FEAT-PD013 — notification contracts & category registry (N-A)', () =
       const { error } = await admin.from('notifications').insert({
         recipient_group_id: recipientR.personalGroupId,
         type: `bogus_${runTag}`,
-        title: 'must not land',
+        // runTag in the title so afterAll's LIKE-cleanup catches this row if
+        // the insert ever succeeds (it did at red phase, pre-FK — learned).
+        title: `must-not-land-${runTag}`,
         body: 'must not land',
       });
       expect(error).not.toBeNull();
@@ -269,11 +285,16 @@ describe('FEAT-PD013 — notification contracts & category registry (N-A)', () =
       expect(page1.length + page2.length).toBe((all as NotificationRow[]).length); // no gaps
     });
 
-    it('a member with no notifications gets an empty list', async () => {
+    it("a fresh member sees only their own organic onboarding emissions — never this suite's fixture rows (AC adjusted at flip-green: 'empty list' was a vacuum assumption; new accounts are born with organic notifications by design)", async () => {
       const cf = await asUser(freshF);
       const { data, error } = await cf.rpc('get_own_notifications', { p_limit: 50 });
       expect(error).toBeNull();
-      expect(data as NotificationRow[]).toEqual([]);
+      const rows = data as NotificationRow[];
+      expect(rows.some((r) => r.title.includes(runTag))).toBe(false); // zero fixture rows
+      // Count/list consistency for the same caller.
+      const { data: cnt, error: cntErr } = await cf.rpc('get_own_unread_notification_count');
+      expect(cntErr).toBeNull();
+      expect(cnt as number).toBe(rows.filter((r) => !r.is_read).length);
     });
 
     it('an anonymous caller is refused with a permission denial (not function-absence)', async () => {
@@ -364,7 +385,7 @@ describe('FEAT-PD013 — notification contracts & category registry (N-A)', () =
 
       const co = await asUser(otherO);
       const { data: oCount } = await co.rpc('get_own_unread_notification_count');
-      expect(oCount as number).toBe(2); // O's two rows untouched
+      expect(oCount as number).toBe(oUnreadBaseline); // O's rows untouched
     });
 
     it('write-narrowing: no user-facing UPDATE/DELETE policy remains; a direct UPDATE affects zero rows', async () => {
@@ -386,7 +407,7 @@ describe('FEAT-PD013 — notification contracts & category registry (N-A)', () =
       expect(error).toBeNull(); // RLS filters silently
       expect(updated).toEqual([]); // zero rows affected
       const { data: oCount } = await co.rpc('get_own_unread_notification_count');
-      expect(oCount as number).toBe(2); // still unread — the contract is the only door
+      expect(oCount as number).toBe(oUnreadBaseline); // still unread — the contract is the only door
     });
   });
 

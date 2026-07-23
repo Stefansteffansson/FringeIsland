@@ -6,7 +6,7 @@ title: Notification routing contracts and category registry
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -14,7 +14,18 @@ requires-equipment: none
 
 The Notifications-vertical delivery substrate (`public.notifications`, ADR-U048) is live and written to by ~19 trigger/RPC emission sites, but nothing above it exists: there is no DS-5 routing contract to list, count, or mark-read (v1 read the table directly via RLS — the exact API-first sin v2 exists to fix), `notifications.type` is free TEXT so no category law can bind it (V3 §6: "preferences cannot suppress by category yet"), and notification rows — personal data addressed to a recipient — are absent from the GDPR own-data export. A-NTF Cycle N-A realises the DS-5 notification-routing sliver (DS-5 spec §"Notification operations", `communication.md:56`) and the V3 category-catalog obligation (NB-4, board settled 2026-07-23).
 
-## Solution sketch
+## Implementation notes
+
+*(6-done, 2026-07-23 — built Cycle N-A, red-first.)*
+
+- **Migration:** `supabase/migrations/20260723120000_n_a_notification_registry_and_contracts.sql` — applied at the named schema-gate nod on PR #271 ("ok merge", 2026-07-23). Everything in the solution sketch below landed as sketched; the sketch is retained for the registry/contract shapes.
+- **Red → green evidence:** 16-test suite (`hub/tests/integration/notifications/notification-contracts.test.ts`) demonstrated red pre-migration (14 right-reason fails; the anon-refusal test tightened at red to demand 42501 so it could not pass vacuously; the partial-index check **labelled test-after** — the sprint3 index predates N-A). Post-apply: **16/16 green**; conformance gates green (internal-api, ownership-manifest, anon-execute-lockdown 6/6, outer-ring, direction-rule — 12/12 on the platform directory re-run; an initial 2-fail was transient rate-limit interference, passed in isolation and on re-run).
+- **Build-learned AC adjustment (STORY-2 AC-3):** "a member with no notifications gets an empty list" was a vacuum assumption — the platform *legitimately* emits organic notifications at account creation (`role_assigned` via the FringeIsland-Members enrolment, `group_journey_enrollment` via onboarding auto-enrol) and at group creation (Steward `role_assigned`). The AC is amended to "a fresh member sees only their own organic onboarding emissions, never another actor's rows"; fixture assertions are baseline-relative. Spec yields per PROCESS §9.
+- **Apply-time lesson:** the strict-FK pre-check caught one stray type on the dev DB — this suite's *own red-phase debris* (the FK test's bogus insert succeeded pre-FK and its title escaped the runTag cleanup). Deleted; the fixture now tags that title with the runTag.
+- **Conformance:** no hand-edited allowlist existed to update — COR-B W1 made `supabase/ownership.manifest.json` the single source; the two registry tables (`vertical:notifications`, gate-review flag noted — Stefan's nod on #271 covers the classification) and five functions (DS-5) were classified in the gate PR itself.
+- **W12 citations:** every RPC has adversarial coverage in the suite — other-actor invisibility (STORY-2), anon 42501 (STORY-2), other-actor mark no-op (STORY-4), direct-UPDATE zero-rows (STORY-4), unregistered-type FK rejection (STORY-1), suspended-member export (STORY-5).
+
+## Solution sketch (as built)
 
 One schema-gated migration, four moves:
 
@@ -64,6 +75,7 @@ As a FIM, I want to fetch my notifications newest-first with keyset pagination, 
 - Given more rows than `p_limit`, when I pass the last row's `(created_at, id)` as the keyset cursor, then I receive the next page with no gaps or duplicates.
 - Given another member's notification, when I call the contract, then that row never appears (adversarial: a second test actor's rows are invisible).
 - Given a Mist/anon caller, when the contract is called, then it is refused (REVOKE/grant posture + actor resolution).
+- ~~Given a member with no notifications, when they call the list, then it is empty~~ **AMENDED at flip-green (2026-07-23, PROCESS §9):** a fresh member's list contains only their own organic onboarding emissions (role_assigned, group_journey_enrollment — emitted by design at account creation), and never another actor's rows; list and unread count stay mutually consistent.
 
 ### STORY-3: Unread count contract
 As a FIM, I want a cheap unread count, so that the bell badge is accurate on every page.

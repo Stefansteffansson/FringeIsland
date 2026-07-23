@@ -3,7 +3,7 @@
 ---
 id: TASK-NA-03
 title: Flip the PD013 suite green; conformance-gate and manifest riders
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PD013
