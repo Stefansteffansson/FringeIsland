@@ -3,7 +3,7 @@
 ---
 id: TASK-NA-04
 title: Hub surface — BFF routes, bell + badge, dropdown, /notifications inbox
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H030

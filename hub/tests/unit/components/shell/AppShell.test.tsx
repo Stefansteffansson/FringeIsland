@@ -6,7 +6,7 @@ import { render, screen } from '@testing-library/react';
  * AppShell mounts the FIM-only AccountMenu beside the notification bell; the
  * menu does its own identity gating (covered in AccountMenu.test).
  */
-jest.mock('@/components/ui/NotificationBell', () => ({
+jest.mock('@/components/notifications/NotificationBell', () => ({
   NotificationBell: () => <div data-testid="bell" />,
 }));
 // FEAT-H025 adaptation (labelled): AppShell now mounts the Messages chrome;
