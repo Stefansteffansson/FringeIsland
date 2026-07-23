@@ -14,6 +14,25 @@ depends_on: []
 estimated_hours: 3
 ---
 
+## Impact — TEST-ONLY, no end-user or production exposure (verified 2026-07-23)
+
+**This flake cannot reach an end user.** Verified, not assumed:
+
+- **Every ES256 failure in the auth log is on the Admin API** — 11 of 12 on `/admin/users` (the 12th path-unresolved), **zero** on `/token`, `/signup`, `/user`, or any user-facing path.
+- **No runtime code calls the Admin API or the service-role client.** A grep of all of `hub/app` and `hub/lib` (excluding tests) finds no `auth.admin.*`, no service-role client, no `SUPABASE_SERVICE_ROLE_KEY` use. The single `service_role` mention (`hub/lib/profile/queries.ts:6`) is a comment stating the function deliberately does *not* use it.
+- **Real auth flows use public endpoints:** sign-up → `supabase.auth.signUp()` (`signUpFim`), anonymous Mist entry → `supabase.auth.signInAnonymously()`, sign-in → the token endpoint. None touch `/admin/users`.
+- The **only** caller of `/admin/users` is the test helper (`createTestUser` / `cleanupTestUser`) during setup/teardown.
+
+| Surface | Affected? |
+|---|---|
+| End users (sign-up / sign-in / Mist entry) | **No** |
+| Deployed web app (Vercel runtime) | **No** |
+| Integration test suite | **Yes** — ~8% of test-user creations flake |
+
+**Real cost:** developer friction and CI-trust erosion (a red run reads as "my diff broke the substrate"), not user experience. This is why the priority is `medium`, not high, and why living with the fence + a low-priority Supabase report is a defensible end state.
+
+**Watch-condition:** if a future feature has the *runtime* call the service-role Admin API (an admin console that creates/deletes users, DeusEx user-management), the flake would then touch a real user-facing path and this scoping must be re-evaluated. Nothing on the roadmap does today.
+
 ## Description
 
 Integration suites intermittently fail in `createTestUser` — the Supabase auth **admin** API — with:
@@ -140,7 +159,7 @@ A preflight health check in `tests/integration/suite-setup.ts` was considered an
 - [x] **Repo verified free of legacy JWT keys** — both `.env.local` files and all source use only the new key generation
 - [x] **Vercel env vars audited — clean** (all `sb_publishable_*`, no legacy JWT, no service-role key).
 - [x] **Legacy-key disable tried directly (2026-07-23) — did NOT fix the flake** (before/after probe above); rolled back. The remaining-consumer audit is therefore moot *for this bug* (still worth doing for its own security merit, but no longer on this task's critical path).
-- [ ] **Escalate to Supabase support** with the log evidence + the before/after experiment — the flake is platform-side and independent of every lever reachable from here
+- [ ] **Escalate to Supabase support** with the log evidence + the before/after experiment — the flake is platform-side and independent of every lever reachable from here. **Ticket drafted and ready to send:** [`../reference/supabase-support-es256-admin-api.md`](../reference/supabase-support-es256-admin-api.md) (fill the plan/severity placeholders, then paste into Dashboard → Support).
 - [ ] Disable the legacy `anon` / `service_role` JWT API keys once that audit is clean, and re-run the integration suites to see whether the flake survives
 - [ ] If it survives: escalate to Supabase support with the log evidence — at that point it is unambiguously platform-side
 - [ ] Either the fault is eliminated, or a deterministic mitigation is in place (e.g. bounded retry-with-backoff around `admin.auth.admin.createUser` for this *specific* signature error only — never a blanket retry, which would mask real failures)
