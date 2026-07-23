@@ -93,7 +93,24 @@ The failure signature is a **kid-less JWT verified against the ES256 current key
 
 So *our* callers do not present a legacy JWT. The kid-less token is being produced or resolved **inside Supabase's own verification path** — which is consistent with the flake being intermittent and unreproducible from a standalone probe.
 
-## Most promising lever (NOT yet a proven fix)
+## Experiment 2026-07-23 — legacy keys disabled and re-enabled: HYPOTHESIS DISPROVEN
+
+The lever below (disable the legacy `anon`/`service_role` JWT keys) was **tried directly** and **did not fix the flake.**
+
+Method — a concurrent admin-`createUser`/`deleteUser` probe (10-wide waves, our `sb_secret_*` key) run against production before and after toggling `PUT /v1/projects/{ref}/api-keys/legacy?enabled=…`:
+
+| State | Cycles | ES256 flakes | Rate |
+|---|---|---|---|
+| Legacy keys **enabled** (baseline) | 60 | 5 | ~8% |
+| Legacy keys **disabled** | 90 | 5 | ~6% |
+
+The rates are statistically indistinguishable at these sample sizes — **disabling the legacy keys had no effect on the flake.** So the "legacy kid-less keys keep a bad verification branch reachable" theory is **wrong**, or at least not the operative cause. The legacy keys were **re-enabled immediately** (one call, `enabled=true`); production is back to its original state, and our own `sb_secret_*` path kept working throughout (the probe never lost its ability to create/delete).
+
+**What this leaves.** The mechanism is now genuinely unexplained from our side: not rate limiting, not a half-applied rotation, and not the legacy-key coexistence. It is an intermittent kid-less-JWT rejection inside GoTrue's own verification path that persists regardless of which key generation is enabled. **This is the point to escalate to Supabase support** with: the auth-log evidence (12× `unrecognized JWT kid <nil> for algorithm ES256`, 403 on `/admin/users`, zero rate-limit events), the settled-rotation key state, and this before/after experiment showing the flake is independent of the legacy keys.
+
+The `decorateAuthAdminError` fence stays — it is the right mitigation for a platform-side intermittent fault we do not control.
+
+## Superseded lever (kept for the record) — NOT a fix
 
 **Disable the legacy `anon` / `service_role` JWT API keys** — which is what Supabase's own banner recommends independently of this bug. Rationale: the legacy keys are what keep the kid-less verification branch reachable; nothing in this repo uses them.
 
@@ -121,8 +138,9 @@ A preflight health check in `tests/integration/suite-setup.ts` was considered an
 - [x] **Rate limiting ruled out** and the mechanism identified as server-side key verification (403 on `/admin/users`, `kid <nil>` vs expected ES256) — see Diagnosis above
 - [x] **Signing-key state checked** — rotation is complete and settled (ES256 current, HS256 previous, no standby); the propagation hypothesis is withdrawn
 - [x] **Repo verified free of legacy JWT keys** — both `.env.local` files and all source use only the new key generation
-- [x] **Vercel env vars audited — clean** (all `sb_publishable_*`, no legacy JWT, no service-role key). The highest-risk consumer is confirmed safe to switch away from the legacy keys.
-- [ ] **Audit the remaining non-repo consumers** (webhooks, crons, external integrations, other machines) — the tail of the checklist above, before disabling the legacy keys
+- [x] **Vercel env vars audited — clean** (all `sb_publishable_*`, no legacy JWT, no service-role key).
+- [x] **Legacy-key disable tried directly (2026-07-23) — did NOT fix the flake** (before/after probe above); rolled back. The remaining-consumer audit is therefore moot *for this bug* (still worth doing for its own security merit, but no longer on this task's critical path).
+- [ ] **Escalate to Supabase support** with the log evidence + the before/after experiment — the flake is platform-side and independent of every lever reachable from here
 - [ ] Disable the legacy `anon` / `service_role` JWT API keys once that audit is clean, and re-run the integration suites to see whether the flake survives
 - [ ] If it survives: escalate to Supabase support with the log evidence — at that point it is unambiguously platform-side
 - [ ] Either the fault is eliminated, or a deterministic mitigation is in place (e.g. bounded retry-with-backoff around `admin.auth.admin.createUser` for this *specific* signature error only — never a blanket retry, which would mask real failures)
