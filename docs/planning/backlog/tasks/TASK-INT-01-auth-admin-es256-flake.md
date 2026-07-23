@@ -99,10 +99,10 @@ So *our* callers do not present a legacy JWT. The kid-less token is being produc
 
 **Do not flip this without checking every other consumer first.** A legacy key still set anywhere becomes an instant outage:
 
-- [ ] **Vercel project environment variables** (all environments: production / preview / development) — the highest-risk consumer by far
+- [x] **Vercel project environment variables — CHECKED CLEAN (2026-07-23).** Project `stefansteffanssons-projects/fringe-island`. All three environments (production / preview / development) carry only `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`; the anon key is the **new-generation `sb_publishable_*`** in every environment — no legacy `eyJ…` JWT anywhere. Notably there is **no `SUPABASE_SERVICE_ROLE_KEY` on Vercel at all**, which is correct: the runtime BFF uses the anon key plus the user session; the service-role key is test-only and lives only in local `.env.local`. (Verified via `vercel env pull` to the scratchpad, shapes inspected without printing key material, pulled files scrubbed immediately.)
 - [ ] any other deployment, cron, webhook, or external integration holding an `eyJ…` key
 - [ ] `hub-legacy/` if it is ever run
-- [ ] local `.env` files on any other machine
+- [ ] local `.env` files on any other machine (the two in *this* checkout are clean — see above)
 
 Only once every consumer is confirmed on `sb_publishable_*` / `sb_secret_*` is disabling the legacy keys safe. If the flake survives that, escalate to Supabase support with the log evidence above — at that point it is unambiguously platform-side.
 
@@ -121,7 +121,8 @@ A preflight health check in `tests/integration/suite-setup.ts` was considered an
 - [x] **Rate limiting ruled out** and the mechanism identified as server-side key verification (403 on `/admin/users`, `kid <nil>` vs expected ES256) — see Diagnosis above
 - [x] **Signing-key state checked** — rotation is complete and settled (ES256 current, HS256 previous, no standby); the propagation hypothesis is withdrawn
 - [x] **Repo verified free of legacy JWT keys** — both `.env.local` files and all source use only the new key generation
-- [ ] **Audit every non-repo consumer for legacy `eyJ…` keys — Vercel env vars first** (see checklist above). This is the gating step; it protects production regardless of whether it fixes the flake
+- [x] **Vercel env vars audited — clean** (all `sb_publishable_*`, no legacy JWT, no service-role key). The highest-risk consumer is confirmed safe to switch away from the legacy keys.
+- [ ] **Audit the remaining non-repo consumers** (webhooks, crons, external integrations, other machines) — the tail of the checklist above, before disabling the legacy keys
 - [ ] Disable the legacy `anon` / `service_role` JWT API keys once that audit is clean, and re-run the integration suites to see whether the flake survives
 - [ ] If it survives: escalate to Supabase support with the log evidence — at that point it is unambiguously platform-side
 - [ ] Either the fault is eliminated, or a deterministic mitigation is in place (e.g. bounded retry-with-backoff around `admin.auth.admin.createUser` for this *specific* signature error only — never a blanket retry, which would mask real failures)
