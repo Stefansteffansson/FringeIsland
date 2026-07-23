@@ -65,9 +65,46 @@ error: "token is unverifiable: error while executing keyfunc:
 
 **What remains open is the *why*.** The same credential succeeds far more often than it fails (successful `user_signedup` / `user_deleted` events sit in the same window, minutes apart, from the same key). A credential that is simply wrong fails 100% of the time; this one does not. That points at **server-side state, not our configuration** — most plausibly a JWT signing-key rotation that has propagated to some auth nodes and not others, so a request's success depends on which node answers it.
 
-That hypothesis is consistent with every observation (intermittent, key-valid-in-isolation 5/5, reproducible on `main`, no rate limiting) but **cannot be confirmed from inside the repo** — it needs the project's JWT signing-keys state, which lives in the Supabase dashboard.
+## Key state checked (2026-07-23) — the propagation hypothesis is WRONG
 
-**Next concrete step (needs dashboard access — Stefan):** open *Project Settings → API Keys / JWT Keys* and check whether a signing-key migration or rotation is in progress or half-applied (a current key plus a legacy/standby key both live). If so, completing or reverting the rotation is the fix and it is entirely platform-side. If the keys are clean and settled, this task escalates to Supabase support with the log evidence above.
+Read from the Management API and confirmed on the dashboard's *JWT Keys* page:
+
+| Status | Key ID | Type |
+|---|---|---|
+| **CURRENT KEY** | `7CEB1304-C51B-4CE0-B365-E9A6257C77FB` | ECC (P-256) — ES256 |
+| **PREVIOUS KEY** | `382775F4-8482-4A36-908A-8C6E78D38EB6` | Legacy HS256 (shared secret), rotated ~6 months ago |
+
+**No standby key. The rotation is complete and settled.** The earlier hypothesis — a rotation half-propagated across auth nodes — is **not supported and is withdrawn.** One key is in use, one is retained purely to verify not-yet-expired tokens; that is the normal, finished state.
+
+## What the evidence actually points at now
+
+The dashboard's *Legacy JWT Secret* tab states it plainly:
+
+> Legacy JWT secret … is used to **only verify** JSON Web Tokens by Supabase products. **This includes the `anon` and `service_role` JWT based API keys. Consider switching to publishable and secret API keys to disable them.**
+
+So the project still has **both** key generations live:
+
+- legacy `anon` + `service_role` — JWTs (`eyJhbGciOiJIUz…`), HS256, and critically **kid-less**
+- new `sb_publishable_*` + two `sb_secret_*` keys
+
+The failure signature is a **kid-less JWT verified against the ES256 current key** — exactly the shape a legacy HS256 API key produces. The coexistence of the two generations keeps that verification branch alive.
+
+**Repo side is already clean (verified 2026-07-23, no key material printed):** both `.env.local` files (repo root and `hub/`) carry only `sb_publishable_*` / `sb_secret_*` / `sbp_*`; no legacy `eyJ…` JWT appears in any env file, nor hardcoded anywhere under `hub/`, `supabase/`, or `scripts/`. `SUPABASE_SERVICE_ROLE_KEY` resolves to project key `fringeislandsecret` (`61a31f8f…`), type `secret`.
+
+So *our* callers do not present a legacy JWT. The kid-less token is being produced or resolved **inside Supabase's own verification path** — which is consistent with the flake being intermittent and unreproducible from a standalone probe.
+
+## Most promising lever (NOT yet a proven fix)
+
+**Disable the legacy `anon` / `service_role` JWT API keys** — which is what Supabase's own banner recommends independently of this bug. Rationale: the legacy keys are what keep the kid-less verification branch reachable; nothing in this repo uses them.
+
+**Do not flip this without checking every other consumer first.** A legacy key still set anywhere becomes an instant outage:
+
+- [ ] **Vercel project environment variables** (all environments: production / preview / development) — the highest-risk consumer by far
+- [ ] any other deployment, cron, webhook, or external integration holding an `eyJ…` key
+- [ ] `hub-legacy/` if it is ever run
+- [ ] local `.env` files on any other machine
+
+Only once every consumer is confirmed on `sb_publishable_*` / `sb_secret_*` is disabling the legacy keys safe. If the flake survives that, escalate to Supabase support with the log evidence above — at that point it is unambiguously platform-side.
 
 ## Why this needs fixing rather than tolerating
 
@@ -82,8 +119,11 @@ A preflight health check in `tests/integration/suite-setup.ts` was considered an
 ## Acceptance criteria
 
 - [x] **Rate limiting ruled out** and the mechanism identified as server-side key verification (403 on `/admin/users`, `kid <nil>` vs expected ES256) — see Diagnosis above
-- [ ] **Signing-key state checked in the Supabase dashboard** (rotation in progress / legacy key still standby?) — the one step that needs access this repo does not have
-- [ ] Root cause confirmed or escalated to Supabase support with the log evidence
+- [x] **Signing-key state checked** — rotation is complete and settled (ES256 current, HS256 previous, no standby); the propagation hypothesis is withdrawn
+- [x] **Repo verified free of legacy JWT keys** — both `.env.local` files and all source use only the new key generation
+- [ ] **Audit every non-repo consumer for legacy `eyJ…` keys — Vercel env vars first** (see checklist above). This is the gating step; it protects production regardless of whether it fixes the flake
+- [ ] Disable the legacy `anon` / `service_role` JWT API keys once that audit is clean, and re-run the integration suites to see whether the flake survives
+- [ ] If it survives: escalate to Supabase support with the log evidence — at that point it is unambiguously platform-side
 - [ ] Either the fault is eliminated, or a deterministic mitigation is in place (e.g. bounded retry-with-backoff around `admin.auth.admin.createUser` for this *specific* signature error only — never a blanket retry, which would mask real failures)
 - [ ] A full `tests/integration/` run completes green twice consecutively
 - [ ] If the root cause turns out to be concurrency, the standing "run integration suites serially" rule is enforced mechanically (jest `maxWorkers` for the integration project) rather than remembered
