@@ -3,7 +3,7 @@
 ---
 id: TASK-NA-02
 title: Migration — notification registries, FK, read/serve contracts, write-narrowing, export section
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PD013
