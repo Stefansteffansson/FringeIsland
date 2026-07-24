@@ -77,6 +77,8 @@ describe('NotificationsPage (/notifications)', () => {
     markAllNotificationsRead.mockReset();
     markAllNotificationsRead.mockResolvedValue(0);
     invalidateNotificationsCache.mockReset();
+    respondToNotification.mockReset();
+    respondToNotification.mockResolvedValue({ outcome: 'accepted' });
   });
 
   it('a sessionless visitor is sent to login', async () => {
@@ -174,6 +176,33 @@ describe('NotificationsPage (/notifications)', () => {
     await screen.findByText('Answered already');
     expect(screen.getByText(/answered by bob/i)).toBeInTheDocument();
     expect(screen.queryByTestId('notif-action-accept')).toBeNull();
+  });
+
+  // FEAT-H031 STORY-1 AC3 — the inbox owes the same honesty as the bell: a
+  // failed dispatch rolls back AND names the reason.
+  it('a failed response rolls back the row and surfaces the reason (STORY-1)', async () => {
+    fetchNotifications.mockResolvedValue([
+      row({
+        id: 'err',
+        kind: 'acting_invitation',
+        title: 'Group Invitation',
+        action_type: 'accept_decline',
+        action_data: { membership_id: 'm1' },
+      }),
+    ]);
+    respondToNotification.mockRejectedValue(new Error('That invitation was already answered.'));
+
+    render(<NotificationsPage />);
+    await screen.findByText('Group Invitation');
+    fireEvent.click(screen.getByTestId('notif-action-accept'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('confirm-modal-confirm'));
+    });
+
+    expect(await screen.findByTestId('notification-action-error-err')).toHaveTextContent(
+      /already answered/i,
+    );
+    expect(screen.getByTestId('notif-action-accept')).toBeInTheDocument();
   });
 
   it('renders an unrecognised kind with the generic renderer', async () => {

@@ -36,6 +36,9 @@ export function NotificationBell() {
   const [unread, setUnread] = useState<number>(() => peekUnreadCount() ?? 0);
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState<NotificationRow[] | null>(null);
+  /** STORY-1: the reason a dispatch failed, pinned to the row it belongs to —
+   *  a rollback with no reason is indistinguishable from "nothing happened". */
+  const [actionError, setActionError] = useState<{ id: string; message: string } | null>(null);
 
   const mountedRef = useRef(true);
   useEffect(() => {
@@ -119,6 +122,7 @@ export function NotificationBell() {
     async (row: NotificationRow, response: NotificationResponse) => {
       const outcome = response.accept ? 'accepted' : 'declined';
       const wasUnread = !row.is_read;
+      setActionError((cur) => (cur?.id === row.id ? null : cur));
       setRows((cur) =>
         cur ? cur.map((r) => (r.id === row.id ? { ...r, action_taken: outcome, is_read: true } : r)) : cur,
       );
@@ -141,10 +145,14 @@ export function NotificationBell() {
               )
             : cur,
         );
-      } catch {
+      } catch (e) {
         setRows((cur) =>
           cur ? cur.map((r) => (r.id === row.id ? { ...r, action_taken: null, is_read: row.is_read } : r)) : cur,
         );
+        setActionError({
+          id: row.id,
+          message: e instanceof Error && e.message ? e.message : 'That response could not be sent.',
+        });
         loadCount();
       }
     },
@@ -210,6 +218,15 @@ export function NotificationBell() {
                     <div className="px-3 pb-2">
                       <NotificationActions row={row} onRespond={respond} />
                     </div>
+                  )}
+                  {actionError?.id === row.id && (
+                    <p
+                      role="alert"
+                      data-testid={`notification-action-error-${row.id}`}
+                      className="px-3 pb-2 text-xs text-red-600"
+                    >
+                      {actionError.message}
+                    </p>
                   )}
                 </li>
               ))

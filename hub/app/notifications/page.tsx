@@ -33,6 +33,9 @@ export default function NotificationsPage() {
   const [failed, setFailed] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  /** STORY-1: the reason a dispatch failed, pinned to the row it belongs to —
+   *  a rollback with no reason is indistinguishable from "nothing happened". */
+  const [actionError, setActionError] = useState<{ id: string; message: string } | null>(null);
   const mountedRef = useRef(true);
 
   useEffect(() => {
@@ -103,6 +106,7 @@ export default function NotificationsPage() {
   const respond = useCallback(
     async (row: NotificationRow, response: NotificationResponse) => {
       const outcome = response.accept ? 'accepted' : 'declined';
+      setActionError((cur) => (cur?.id === row.id ? null : cur));
       setRows((cur) =>
         cur ? cur.map((r) => (r.id === row.id ? { ...r, action_taken: outcome, is_read: true } : r)) : cur,
       );
@@ -124,10 +128,14 @@ export default function NotificationsPage() {
               )
             : cur,
         );
-      } catch {
+      } catch (e) {
         setRows((cur) =>
           cur ? cur.map((r) => (r.id === row.id ? { ...r, action_taken: null } : r)) : cur,
         );
+        setActionError({
+          id: row.id,
+          message: e instanceof Error && e.message ? e.message : 'That response could not be sent.',
+        });
       }
     },
     [],
@@ -177,6 +185,15 @@ export default function NotificationsPage() {
               >
                 <NotificationItem row={row} />
                 {isActionable(row) && <NotificationActions row={row} onRespond={respond} />}
+                {actionError?.id === row.id && (
+                  <p
+                    role="alert"
+                    data-testid={`notification-action-error-${row.id}`}
+                    className="mt-2 text-xs text-red-600"
+                  >
+                    {actionError.message}
+                  </p>
+                )}
               </li>
             ))}
           </ul>

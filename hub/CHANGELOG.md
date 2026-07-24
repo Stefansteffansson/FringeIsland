@@ -2,6 +2,14 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-07-24 — Answer where you were asked ([FEAT-H031](../docs/products/hub/features/FEAT-H031-notification-typed-actions.md) · [FEAT-PD014](../docs/platform/domain/features/FEAT-PD014-actionable-notification-dispatch-and-acting-fanout.md))
+
+- **Notifications you can answer.** A notification that asks something of you now carries the answer with it: **Accept** and **Decline** sit right on the letter, in the bell and in your notifications page alike. Each asks you to confirm, then applies immediately — and if it can't go through, it says why and puts the buttons back, rather than quietly pretending.
+- **Nominations moved home.** Being nominated to lead a group used to appear in its own section above your groups. That section is gone: the nomination is a notification like everything else, deadline included — *Respond by* the date it runs out — and you answer it where you read it.
+- **Your group's invitations, answered in the same place.** When a group you lead is invited to join another, the invitation now reaches **everyone who can answer for that group**, not just one person. The group's page shows the invitation but no longer asks there — it points you to your notifications.
+- **Your co-leaders can see who answered.** Whoever gets there first answers for the group, and the others' copies stop asking and read **"Answered by [name]"**. No double answers, no wondering whether someone already handled it — and it stays true even when the answer was a decline.
+- **Answered stays answered, and expired stops asking.** A letter you've responded to shows its outcome and drops its buttons; one whose window has passed reads *Expired* and asks nothing. Reload and it's still true — this is the platform's memory, not your browser's.
+
 ## 2026-07-20 — A place that keeps what's said: the group forum, and names that stay honest ([FEAT-H026](../docs/products/hub/features/FEAT-H026-group-forum-and-attribution.md) · [FEAT-PD009](../docs/platform/domain/features/FEAT-PD009-forum-and-attribution-contracts.md))
 
 - **Your group has a forum now.** The group's page holds a Forum section: threads newest-first, each with its replies beneath, in the order they were written. If it ever can't load, the rest of the group page still works.

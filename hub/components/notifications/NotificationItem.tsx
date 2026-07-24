@@ -1,6 +1,6 @@
 import { Bell, Users, Flag, UserCog, Compass, Megaphone } from 'lucide-react';
 import type { NotificationRow } from '@/lib/notifications/queries';
-import { notificationStatusChip } from '@/lib/notifications/format';
+import { notificationStatusChip, isActionable } from '@/lib/notifications/format';
 
 /**
  * FEAT-H030 — the kind-agnostic notification row body, shared by the bell
@@ -24,6 +24,11 @@ function readableTime(iso: string): string {
   return Number.isNaN(d.getTime()) ? '' : d.toLocaleString();
 }
 
+function readableDate(iso: string): string {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString();
+}
+
 export function NotificationItem({
   row,
   now,
@@ -33,6 +38,12 @@ export function NotificationItem({
 }) {
   const Icon = CATEGORY_ICON[row.category] ?? Bell;
   const chip = notificationStatusChip(row, now);
+  // STORY-2: an actionable row still awaiting an answer carries its deadline —
+  // the window the retired PendingNominations section used to show. Once the
+  // row is answered or past `expires_at`, the chip states where it stands and
+  // the deadline stops mattering.
+  const respondBy =
+    row.expires_at != null && isActionable(row, now) ? readableDate(row.expires_at) : '';
   const chipTone =
     chip?.tone === 'done'
       ? 'bg-green-50 text-green-700'
@@ -65,6 +76,11 @@ export function NotificationItem({
           {chip && (
             <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${chipTone}`}>
               {chip.label}
+            </span>
+          )}
+          {respondBy && (
+            <span data-testid="notification-respond-by" className="text-xs text-gray-400">
+              Respond by {respondBy}
             </span>
           )}
         </div>
