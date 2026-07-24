@@ -3,7 +3,7 @@
 ---
 id: TASK-NB-03
 title: Flip-green + conformance
-status: blocked
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PD014

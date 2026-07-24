@@ -3,7 +3,7 @@
 ---
 id: TASK-NB-01
 title: Red-first actionable-notification contract suite
-status: review
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PD014
