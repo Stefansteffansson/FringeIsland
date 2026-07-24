@@ -6,7 +6,7 @@ title: Actionable-notification dispatch, acting-invitation fan-out, and converge
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -18,6 +18,17 @@ N-A (FEAT-PD013) delivered passive notifications, the read/serve contracts, and 
 - **Group-of-groups acting-invitations** (FEAT-PC015) are **not notifications at all** — `invite_group` writes a `group_memberships` row in `invited` state and `respond_to_group_invitation(p_membership_id, p_accept)` mutates that membership; the delivery FK (ADR-U048/PD013) structurally forbids an unregistered acting kind. They surface only on the bespoke `GroupMembershipsPanel`.
 
 N-B realises the DS-5 **actionable-notification framework** (ADR-U051): the `get_own_notifications` `action_data` extension, a new `acting_invitation` notification with **permission-based send-time fan-out** to the invited group's `act_as_group` holders, **first-answer-wins convergence** recorded durably on the notification rows, thin **typed-action dispatch** to the existing dedicated handlers (NB-1), and **lazy expiry-on-view** (NTF-8). Paired with FEAT-H031 (the typed-action UI).
+
+## Implementation notes
+
+*(6-done, 2026-07-24 — built Cycle N-B, red-first, merged at the schema gate as PR #276. The solution sketch below stands as built.)*
+
+- **Where it lives:** one migration, `supabase/migrations/20260724120000_n_b_actionable_notification_dispatch.sql` — **already applied to the dev DB and the migration log repaired**; do not re-apply.
+- **What it carries:** the `acting_invitation` kind registered against `invitation_received`'s category (the ADR-U048/PD013 delivery FK); `get_own_notifications` DROP+CREATE gaining `action_data` **and** NTF-8 lazy expiry-on-view (the self-healing expiry write is why the function turned `STABLE` → `VOLATILE`); `notify_invitation_received` **branching** — a GROUP (engagement) invitation fans one `acting_invitation` per `act_as_group` holder of the invited group (resolved by **permission**, never the "Steward" role name — ADR-U041), a PERSONAL invitation keeps `invitation_received` unchanged with no orphan on the group branch; `respond_to_acting_invitation` as a **thin dispatch** to the **untouched** Core `respond_to_group_invitation` (NB-1) with first-answer-wins convergence denormalised onto the durable notification rows (ADR-U051 Option A — it survives the decline that deletes the membership), `P0002` as the already-resolved backstop; `ownership.manifest.json` DS-5 `+= respond_to_acting_invitation`, with `notifications` staying out of `DS_TABLES`.
+- **Red → green:** `hub/tests/integration/notifications/actionable-notifications.test.ts` **13/13 green** (red-first, authored pre-migration with the expected red classes named in its docstring); conformance — ownership-manifest, anon-execute-lockdown, internal-api — **12/12**, plus the direction rule 12/12. Re-verified green this session with `--runInBand`.
+- **Grants:** both touched functions `REVOKE ALL … FROM PUBLIC, anon` then `GRANT EXECUTE … TO authenticated, service_role` — the anon-lockdown conformance test is the enforcement home.
+- **Confirmed end-to-end by the surface half:** FEAT-H031's `notification-actions.spec.ts` exercises this contract through a real browser session and the Hub's BFF — a two-holder fan-out, a first answer that resolves the membership, and the co-leader's row reading "Answered by [name]" re-read from the server. The convergence is therefore proven at the substrate tier (integration) *and* through the public path (E2E), not by unit stubs.
+- **Testing note (fenced, found not caused):** running the integration tier via a bare `npx jest` sweeps every suite **in parallel** against the shared dev DB and produces mass false failures; `npm run test:integration` / `--runInBand` is the correct form (the house rule — never two integration suites concurrently against the shared dev DB). The TASK-INT-01 GoTrue ES256 flake also stayed active through this session; it affects the auth-admin `createUser` fixture path only — service-role queries and the migration apply path are untouched.
 
 ## Solution sketch
 

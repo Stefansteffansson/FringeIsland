@@ -1,6 +1,6 @@
 # ADR-U051: Actionable notifications are a typed, data-driven response framework with permission-fanned shared actions
 
-**Status:** Proposed (2026-07-24 — rides the A-NTF Cycle N-B schema gate for acceptance, mirroring ADR-U050/C-F)
+**Status:** Accepted (2026-07-24 — accepted at the A-NTF Cycle N-B close, the schema gate having merged as PR #276; realized by FEAT-PD014 + FEAT-H031, both `6-done`)
 **Date:** 2026-07-24
 **Deciders:** Stefan (N-B scope correction + expansion, 2026-07-24) + Claude (N-B decomposition)
 **Tags:** scope:domain-service · scope:vertical · scope:product · wave:ferd
