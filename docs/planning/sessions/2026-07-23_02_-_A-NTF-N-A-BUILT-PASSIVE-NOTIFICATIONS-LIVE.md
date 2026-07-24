@@ -24,9 +24,16 @@ A-NTF was kicked off and its first cycle built, all in this session. The **area 
 
 NB-1 thin-dispatch to existing dedicated handlers · NB-2 in-app only, email deferred (ADR-U040) · NB-3 in-app announcement adapter only · NB-4 category registry (built in N-A) · NB-5 minimal dispatcher (N-D) · NB-6 digest forward · **NB-7 OVERRIDDEN — drop the legacy `notifications` realtime publication in N-C** (replace-then-remove, leaves `supabase_realtime` empty) · NB-8 Mist verify-and-record.
 
-## Next actual work — Cycle N-B (smart / actionable notifications)
+## Next actual work — Cycle N-B (smart / actionable notifications) — SCOPE LOCKED 2026-07-24
 
-NTF-4/5/6/8: the typed-action UI (Accept/Decline + acknowledge, extensible), **NTF-6 re-derived per NB-1** — the action submit thin-dispatches to the already-existing dedicated handlers (`accept_group_invitation`/`decline_group_invitation`, `respond_to_stewardship_nomination`, `submit_content_report`), and NTF-8 lazy-expiry-on-view. Note a pre-existing `app/api/notifications/[id]/nomination-response` route already lives under `[id]/` (from the Groups stewardship flow) — N-B should reconcile the action-dispatch surface with it. A design session on the category-catalog + dispatcher model was flagged in the plan but N-A only needed the registry; revisit whether N-B/N-D still want one.
+NTF-4/5/6/8: the typed-action UI (Accept/Decline + acknowledge, extensible), **NTF-6 re-derived per NB-1** — thin-dispatch to the already-existing dedicated handlers, and NTF-8 lazy-expiry-on-view. **Scope locked by Stefan 2026-07-24** (full detail in the completion plan's N-B bullet, [`../hub-v2/phase-3-notifications-completion-plan.md`](../hub-v2/phase-3-notifications-completion-plan.md)):
+
+1. **One schema-gate touch:** extend `get_own_notifications` to carry `action_data` (N-A withheld it; the typed-action UI needs it). Action columns already exist.
+2. **In scope — re-homed into the bell/inbox:** `stewardship_nomination` **and** the group-of-groups **acting-invitation** response (FEAT-PC015) — both `action_type`-bearing. Dispatch reuses the existing `respond_to_stewardship_nomination` + acting-respond RPCs (the pre-existing `app/api/notifications/[id]/nomination-response` route is the pattern to fold in, not duplicate).
+3. **Close the D8 seam:** **retire the bespoke `PendingNominations` section** (its header already names A-NTF as the re-home target); the inbox becomes its home.
+4. **Out of scope:** group **invitations** stay on their `my-invitations` panel (passive notification; not re-homed).
+
+The design-session flag (category-catalog + dispatcher model) is discharged for N-B — N-A already built the registry and N-B only reuses existing dispatch RPCs; the dispatcher-scope question re-opens at N-D (preferences), not N-B.
 
 ## Open threads (unchanged)
 
