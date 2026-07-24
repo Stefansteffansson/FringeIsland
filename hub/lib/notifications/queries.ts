@@ -9,8 +9,10 @@ import type { SupabaseClient } from '@supabase/supabase-js';
  * session client, so the substrate sees the real four-hop actor.
  */
 
-/** The N-A list payload (FEAT-PD013 STORY-2) — action_data / action_taken_at
- *  are deliberately absent until N-B names a consumer. */
+/** The list payload. N-A shipped through `expires_at`; N-B (FEAT-PD014) adds
+ *  `action_data` — the typed-action dispatch context (membership_id) and the
+ *  convergence record (resolved_by_name / resolved_outcome). `action_taken_at`
+ *  stays server-only (export). */
 export interface NotificationRow {
   id: string;
   kind: string;
@@ -22,6 +24,7 @@ export interface NotificationRow {
   is_read: boolean;
   read_at: string | null;
   action_type: string | null;
+  action_data: Record<string, unknown> | null;
   action_taken: string | null;
   expires_at: string | null;
 }
