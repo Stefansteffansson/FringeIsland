@@ -1,4 +1,4 @@
-# Session bridge — A-NTF Cycle N-B: closed, E2E green, PR #277 awaiting the merge nod
+# Session bridge — A-NTF Cycle N-B: closed, E2E green, merged (#277 + #278)
 
 **Date:** 2026-07-24 (session 02) · **Wave:** Ferd · **Area:** A-NTF (Notifications), Phase-3 area 5 of 6
 **Follows:** [`2026-07-24_01_-_A-NTF-N-B-PLATFORM-MERGED-HUB-BUILT-E2E-PENDING.md`](./2026-07-24_01_-_A-NTF-N-B-PLATFORM-MERGED-HUB-BUILT-E2E-PENDING.md)
@@ -7,7 +7,9 @@
 
 ## One-paragraph state
 
-The N-B **E2E phase and cycle close are done**. Both feature specs are `6-done` with Implementation notes and L4 summaries in the same commit, **ADR-U051 is Accepted**, the completion plan's N-B row is marked built, and the CHANGELOG carries the user-visible entry. E2E is **green across three specs (8 tests)**. Everything is committed and pushed on `feat/a-ntf-nb-hub-typed-actions` (PR #277, base `main`, mergeable CLEAN). **The one thing left is the merge**: the diff flips ADR-U051's status, and ADRs are a fuller-auto carve-out, so #277 is held for an explicitly-named merge nod. The close also found more than the bridge predicted — see below.
+The N-B **E2E phase and cycle close are done**. Both feature specs are `6-done` with Implementation notes and L4 summaries in the same commit, **ADR-U051 is Accepted**, the completion plan's N-B row is marked built, and the CHANGELOG carries the user-visible entry. E2E is **green across three specs (8 tests)**. **Both PRs are merged and `main` is synced at `4eed439`** — #277 (the feature + the cycle close) and #278 (the cycle-boundary doc health check + the N-C rider), each merged on Stefan's named nod because the diffs touched an ADR status and a steering file respectively. Working tree clean, no open PRs, `discovery` re-synced. **N-B is closed; nothing is in flight.** The close found more than the previous bridge predicted — see below.
+
+*(Written mid-session while #277 was still held, then completed at the merge. The sections below were accurate when written; this paragraph and the ritual checklist carry the final state.)*
 
 ## What the close found (beyond the planned scope)
 
@@ -31,7 +33,7 @@ The previous bridge said the Hub half was "code-complete". Three things said oth
 
 ## Key facts the next session needs
 
-- **PR #277 is open, base `main`, mergeable CLEAN, and pushed.** No retargeting needed — the parent #276 already merged and the base is `main`. Held only for the ADR carve-out nod.
+- **Nothing is in flight.** #277 and #278 are both merged (squash, branches deleted); `main` is at `4eed439`; `discovery` matches; no open PRs. **Start N-C from a clean tree.**
 - **The migration `20260724120000` is already applied to the dev DB + log repaired** — do NOT re-apply.
 - **`npx jest` with no path runs the integration tier in PARALLEL against the shared dev DB and produces mass false failures** (447 in this session, all environmental). Use `npm run test:unit` / `npm run test:integration` (`--runInBand`). This cost real time — don't repeat it.
 - **`npx tsc --noEmit` is not a gate this repo passes:** ~1241 pre-existing errors repo-wide (jest-dom matcher types absent from the root tsconfig) in files this branch never touched. `next build` is the type gate.
