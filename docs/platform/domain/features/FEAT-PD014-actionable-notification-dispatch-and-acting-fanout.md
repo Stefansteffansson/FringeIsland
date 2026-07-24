@@ -6,7 +6,7 @@ title: Actionable-notification dispatch, acting-invitation fan-out, and converge
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

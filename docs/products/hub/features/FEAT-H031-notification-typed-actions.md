@@ -6,7 +6,7 @@ title: Notification typed actions (Accept/Decline in the bell)
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

@@ -112,7 +112,8 @@
       "get_own_unread_notification_count",
       "mark_notification_read",
       "mark_all_notifications_read",
-      "get_own_notifications_export"
+      "get_own_notifications_export",
+      "respond_to_acting_invitation"
     ],
     "DS-7": [
       "create_journal_entry",
