@@ -5,10 +5,11 @@ import { createAdminClient, markArrivedOnce } from './helpers/auth';
  * FEAT-H018 (E2E) — Cycle G-F: group-of-groups, wielded end-to-end.
  *
  * Journey 1 (STORY-1/2/3): a Steward invites a group; the invited group's
- * wielder finds the pending invitation on ITS page, accepts AS the group
- * (the confirm names the wielding), sees the "Group" badge appear in the
- * context group's member list, flips the act-as selector to the group on the
- * context page (substitution named honestly), then withdraws.
+ * wielder finds the pending invitation read-only on ITS page and answers it in
+ * the notification bell (the N-B fold — FEAT-H031 moved the acting answer out
+ * of the memberships panel), sees the "Group" badge appear in the context
+ * group's member list, flips the act-as selector to the group on the context
+ * page (substitution named honestly), then withdraws.
  *
  * Journey 2 (STORY-4, the Gracy case): a lone human sharing a group with the
  * FringeIsland caretaker sees the honest badge, the non-system count, and the
@@ -129,7 +130,10 @@ test.describe('FEAT-H018 — group-of-groups (Cycle G-F)', () => {
       timeout: 15000,
     });
 
-    // STORY-3 — A's wielder answers on A's page; the confirm names the wielding.
+    // STORY-3 — A's wielder answers. N-B (FEAT-H031) MOVED the answer: the
+    // panel's accept/decline-as-group buttons were folded away, so A's page now
+    // carries the invited row read-only and points at the notifications; the
+    // acting-invitation is answered in the bell.
     await pageA.goto(`/groups/${groupA}`);
     const panel = pageA.getByTestId('group-memberships-panel');
     await expect(panel).toBeVisible({ timeout: 15000 });
@@ -137,10 +141,32 @@ test.describe('FEAT-H018 — group-of-groups (Cycle G-F)', () => {
     // Post-6-done fix: on A's OWN page the selector offers no hat (a group
     // never acts as itself) — while the wielder's memberships panel renders.
     await expect(pageA.getByTestId('act-as-select').locator('option')).toHaveCount(1);
-    const acceptButtons = panel.getByTestId(/accept-as-group-/);
-    await acceptButtons.first().click();
-    await expect(pageA.getByText(/you are answering for/i)).toBeVisible();
-    await pageA.getByRole('button', { name: 'Accept', exact: true }).click();
+    // The fold, asserted both ways: the pointer is there, the buttons are not.
+    await expect(panel.getByTestId(/respond-in-notifications-/).first()).toBeVisible();
+    await expect(panel.getByTestId(/accept-as-group-/)).toHaveCount(0);
+
+    // The answer itself, in the bell (FEAT-H031 STORY-3).
+    await pageA.getByTestId('notification-bell').click();
+    const dropdown = pageA.getByTestId('notification-dropdown');
+    await expect(
+      dropdown.getByText(new RegExp(`E2E GF Familjen ${stamp}.*has been invited to join`, 'i')),
+    ).toBeVisible({ timeout: 15000 });
+    // Wait for the dispatch to actually land before navigating — a `goto` on
+    // the heels of the click aborts the in-flight POST and the invitation
+    // silently stays `invited`.
+    const dispatched = pageA.waitForResponse(
+      (r) => r.url().includes('/acting-response') && r.request().method() === 'POST',
+    );
+    await dropdown.getByTestId('notif-action-accept').first().click();
+    await pageA.getByTestId('confirm-modal-confirm').click();
+    const dispatchRes = await dispatched;
+    expect(
+      dispatchRes.status(),
+      `acting-response returned ${dispatchRes.status()}`,
+    ).toBe(200);
+
+    // …and A's page reflects the outcome on re-fetch (STORY-3 last criterion).
+    await pageA.goto(`/groups/${groupA}`);
     await expect(panel.getByTestId(/membership-status-/).first()).toHaveText(/active/i, {
       timeout: 15000,
     });

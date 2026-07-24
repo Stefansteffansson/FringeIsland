@@ -10,12 +10,9 @@ import userEvent from '@testing-library/user-event';
  * renders verbatim in place. Red-first for TASK-H018-02.
  */
 
-const respondToGroupInvitationClient = jest.fn<() => Promise<unknown>>();
 const leaveGroupAsGroupClient = jest.fn<() => Promise<unknown>>();
 
 jest.mock('@/lib/groups/client', () => ({
-  respondToGroupInvitationClient: (...a: unknown[]) =>
-    (respondToGroupInvitationClient as unknown as (...x: unknown[]) => unknown)(...a),
   leaveGroupAsGroupClient: (...a: unknown[]) =>
     (leaveGroupAsGroupClient as unknown as (...x: unknown[]) => unknown)(...a),
 }));
@@ -50,9 +47,10 @@ describe('FEAT-H018 — GroupMembershipsPanel (STORY-3)', () => {
     expect(link.getAttribute('href')).toBe('/groups/b2');
   });
 
-  it('accepting names the wielding in the confirm and re-reads on success', async () => {
-    const user = userEvent.setup();
-    respondToGroupInvitationClient.mockResolvedValue({});
+  // FEAT-H031 (N-B): the acting-invitation RESPONSE folded to the bell/inbox
+  // (fanned to the invited group's act_as_group holders). An invited membership
+  // renders a read-only pointer here — no accept/decline buttons in the panel.
+  it('an invited membership points to the bell — no accept/decline in the panel', () => {
     render(
       <GroupMembershipsPanel
         actingGroup={{ id: 'a1', name: 'Familjen' }}
@@ -61,12 +59,9 @@ describe('FEAT-H018 — GroupMembershipsPanel (STORY-3)', () => {
         onMutated={onMutated}
       />,
     );
-    await user.click(screen.getByTestId('accept-as-group-m1'));
-    // The confirm NAMES the wielding — "answering for" the acting group.
-    expect(screen.getByText(/answering for/i)).toHaveTextContent(/Familjen/);
-    await user.click(screen.getByRole('button', { name: 'Accept' }));
-    expect(respondToGroupInvitationClient).toHaveBeenCalledWith('a1', 'm1', true);
-    expect(onMutated).toHaveBeenCalled();
+    expect(screen.getByTestId('respond-in-notifications-m1')).toHaveTextContent(/notifications/i);
+    expect(screen.queryByTestId('accept-as-group-m1')).toBeNull();
+    expect(screen.queryByTestId('decline-as-group-m1')).toBeNull();
   });
 
   it('withdraw renders the contract refusal verbatim in place', async () => {

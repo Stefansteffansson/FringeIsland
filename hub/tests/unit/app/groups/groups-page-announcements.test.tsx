@@ -30,7 +30,6 @@ jest.mock('@/components/shell/AppShell', () => ({
 }));
 jest.mock('@/components/groups/CreateGroupPanel', () => ({ CreateGroupPanel: () => null }));
 jest.mock('@/components/groups/MyInvitations', () => ({ MyInvitations: () => null }));
-jest.mock('@/components/groups/PendingNominations', () => ({ PendingNominations: () => null }));
 jest.mock('@/components/announcements/PlatformAnnouncementsSection', () => ({
   PlatformAnnouncementsSection: () => <div data-testid="platform-announcements-mounted" />,
 }));

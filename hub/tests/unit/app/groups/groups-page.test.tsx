@@ -47,9 +47,6 @@ jest.mock('@/components/groups/CreateGroupPanel', () => ({
 jest.mock('@/components/groups/MyInvitations', () => ({
   MyInvitations: () => null,
 }));
-jest.mock('@/components/groups/PendingNominations', () => ({
-  PendingNominations: () => null,
-}));
 
 import GroupsPage from '@/app/groups/page';
 

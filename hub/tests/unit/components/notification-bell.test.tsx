@@ -22,6 +22,7 @@ const peekUnreadCount = jest.fn<number | null, []>(() => null);
 const markNotificationRead = jest.fn<Promise<void>, [string]>();
 const markAllNotificationsRead = jest.fn<Promise<number>, []>();
 const invalidateNotificationsCache = jest.fn();
+const respondToNotification = jest.fn<Promise<unknown>, [unknown, boolean]>();
 jest.mock('@/lib/notifications/client', () => ({
   fetchNotifications: (opts?: unknown) => fetchNotifications(opts),
   fetchUnreadCount: () => fetchUnreadCount(),
@@ -29,6 +30,7 @@ jest.mock('@/lib/notifications/client', () => ({
   markNotificationRead: (id: string) => markNotificationRead(id),
   markAllNotificationsRead: () => markAllNotificationsRead(),
   invalidateNotificationsCache: () => invalidateNotificationsCache(),
+  respondToNotification: (row: unknown, accept: boolean) => respondToNotification(row, accept),
 }));
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -65,6 +67,8 @@ describe('NotificationBell', () => {
     markAllNotificationsRead.mockReset();
     markAllNotificationsRead.mockResolvedValue(0);
     invalidateNotificationsCache.mockReset();
+    respondToNotification.mockReset();
+    respondToNotification.mockResolvedValue({ outcome: 'accepted' });
     fetchNotifications.mockResolvedValue([]);
   });
 
@@ -169,6 +173,38 @@ describe('NotificationBell', () => {
     await waitFor(() =>
       expect(screen.queryByTestId('notification-unread-badge')).toBeNull(),
     );
+  });
+
+  // FEAT-H031 STORY-1 AC3 — a failed dispatch must roll back AND say why.
+  // A silent rollback looks identical to "nothing happened", which is exactly
+  // the divergence the criterion forbids.
+  it('a failed response rolls back the row and surfaces the reason (STORY-1)', async () => {
+    fetchUnreadCount.mockResolvedValue(1);
+    fetchNotifications.mockResolvedValue([
+      row({
+        id: 'nErr',
+        kind: 'acting_invitation',
+        title: 'Group Invitation',
+        action_type: 'accept_decline',
+      }),
+    ]);
+    respondToNotification.mockRejectedValue(new Error('That invitation was already answered.'));
+
+    render(<NotificationBell />);
+    await waitFor(() => expect(fetchUnreadCount).toHaveBeenCalled());
+    fireEvent.click(screen.getByTestId('notification-bell'));
+
+    fireEvent.click(await screen.findByTestId('notif-action-accept'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('confirm-modal-confirm'));
+    });
+
+    // The reason is on screen…
+    expect(await screen.findByTestId('notification-action-error-nErr')).toHaveTextContent(
+      /already answered/i,
+    );
+    // …and the affordance is back (rolled back to actionable, not stuck resolved).
+    expect(screen.getByTestId('notif-action-accept')).toBeInTheDocument();
   });
 
   it('renders an unrecognised kind safely (generic title/body, no crash)', async () => {

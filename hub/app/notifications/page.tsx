@@ -5,14 +5,17 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { AppShell } from '@/components/shell/AppShell';
 import { NotificationItem } from '@/components/notifications/NotificationItem';
+import { NotificationActions } from '@/components/notifications/NotificationActions';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { InlineError } from '@/components/ui/InlineError';
 import { SkeletonList } from '@/components/ui/SkeletonList';
 import {
   fetchNotifications,
   markAllNotificationsRead,
+  respondToNotification,
   type NotificationRow,
 } from '@/lib/notifications/client';
+import { isActionable, type NotificationResponse } from '@/lib/notifications/format';
 
 /**
  * FEAT-H030 STORY-3 — the `/notifications` inbox/history (NTF-3). The full
@@ -30,6 +33,9 @@ export default function NotificationsPage() {
   const [failed, setFailed] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  /** STORY-1: the reason a dispatch failed, pinned to the row it belongs to —
+   *  a rollback with no reason is indistinguishable from "nothing happened". */
+  const [actionError, setActionError] = useState<{ id: string; message: string } | null>(null);
   const mountedRef = useRef(true);
 
   useEffect(() => {
@@ -95,6 +101,46 @@ export default function NotificationsPage() {
     }
   }, []);
 
+  // Typed-action response (NTF-5/6) — optimistic resolve, reconcile the outcome
+  // + resolver from the server, roll back to actionable on failure.
+  const respond = useCallback(
+    async (row: NotificationRow, response: NotificationResponse) => {
+      const outcome = response.accept ? 'accepted' : 'declined';
+      setActionError((cur) => (cur?.id === row.id ? null : cur));
+      setRows((cur) =>
+        cur ? cur.map((r) => (r.id === row.id ? { ...r, action_taken: outcome, is_read: true } : r)) : cur,
+      );
+      try {
+        const result = await respondToNotification(row, response.accept);
+        setRows((cur) =>
+          cur
+            ? cur.map((r) =>
+                r.id === row.id
+                  ? {
+                      ...r,
+                      action_taken: result.outcome ?? outcome,
+                      action_data: {
+                        ...(r.action_data ?? {}),
+                        ...(result.resolved_by_name ? { resolved_by_name: result.resolved_by_name } : {}),
+                      },
+                    }
+                  : r,
+              )
+            : cur,
+        );
+      } catch (e) {
+        setRows((cur) =>
+          cur ? cur.map((r) => (r.id === row.id ? { ...r, action_taken: null } : r)) : cur,
+        );
+        setActionError({
+          id: row.id,
+          message: e instanceof Error && e.message ? e.message : 'That response could not be sent.',
+        });
+      }
+    },
+    [],
+  );
+
   if (authLoading || identity === 'sessionless' || identity === 'mist') {
     return (
       <AppShell title="Notifications">
@@ -138,6 +184,16 @@ export default function NotificationsPage() {
                 className="px-4 py-3"
               >
                 <NotificationItem row={row} />
+                {isActionable(row) && <NotificationActions row={row} onRespond={respond} />}
+                {actionError?.id === row.id && (
+                  <p
+                    role="alert"
+                    data-testid={`notification-action-error-${row.id}`}
+                    className="mt-2 text-xs text-red-600"
+                  >
+                    {actionError.message}
+                  </p>
+                )}
               </li>
             ))}
           </ul>

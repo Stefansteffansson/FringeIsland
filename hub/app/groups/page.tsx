@@ -10,7 +10,6 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { InlineError } from '@/components/ui/InlineError';
 import { CreateGroupPanel } from '@/components/groups/CreateGroupPanel';
 import { MyInvitations } from '@/components/groups/MyInvitations';
-import { PendingNominations } from '@/components/groups/PendingNominations';
 import { PlatformAnnouncementsSection } from '@/components/announcements/PlatformAnnouncementsSection';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 import { fetchMyGroups, peekMyGroups } from '@/lib/groups/client';
@@ -86,10 +85,9 @@ export default function GroupsPage() {
           invitation leaves). Absent entirely when there are none. */}
       {!authLoading && user && <MyInvitations onAnswered={() => void loadGroups()} />}
 
-      {/* FEAT-H017 STORY-2 (MEM-7): a pending stewardship offer answers here —
-          the scoped A-NTF seam. Accepting re-reads the list (the caller's new
-          Steward role shows on next read). Absent when there is none. */}
-      {!authLoading && user && <PendingNominations onAnswered={() => void loadGroups()} />}
+      {/* FEAT-H031 (N-B): the bespoke PendingNominations section retired here —
+          stewardship offers now answer in the notification bell/inbox (the D8
+          re-home closed). Group invitations (MyInvitations, above) stay in place. */}
 
       {authLoading || (!error && groups === null) ? (
         <LoadingState label="Loading your groups..." />

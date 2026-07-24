@@ -9,6 +9,10 @@ import { createAdminClient, markArrivedOnce } from './helpers/auth';
  * asserted substrate-side). The two G-D honest refusals are exercised as the
  * flows they became.
  *
+ * N-B update (FEAT-H031): nominations are answered in the notification bell.
+ * The bespoke `PendingNominations` section on /groups was retired, so both
+ * nomination journeys below assert it is gone and act through the bell.
+ *
  * Session isolation: dedicated spec-created FIMs in their own browser
  * contexts (the G-B suite-isolation default — shared-session refresh-token
  * contention broke earlier runs). Memberships seed substrate-side (the
@@ -155,15 +159,29 @@ test.describe.serial('FEAT-H017 — leadership transfer, closure & deletion (MEM
       timeout: 15000,
     });
 
-    // Bruno finds the offer on /groups — with the window shown — and accepts.
+    // Bruno finds the offer in his BELL and accepts. N-B (FEAT-H031) retired
+    // the bespoke PendingNominations section on /groups — the notification is
+    // now the nomination's only home (STORY-2).
     const brunoCtx = await browser.newContext();
     const brunoPage = await brunoCtx.newPage();
     await signIn(brunoPage, fims.bruno.email);
-    await expect(brunoPage.getByTestId('pending-nominations')).toBeVisible({ timeout: 15000 });
-    await expect(brunoPage.getByText(/respond by/i)).toBeVisible();
-    await brunoPage.locator('[data-testid^="accept-nomination-"]').click();
+    await expect(brunoPage.getByTestId('pending-nominations')).toHaveCount(0);
+    await brunoPage.getByTestId('notification-bell').click();
+    const brunoDropdown = brunoPage.getByTestId('notification-dropdown');
+    await expect(brunoDropdown.getByText('Stewardship Nomination')).toBeVisible({
+      timeout: 15000,
+    });
+    // The response window travelled with the fold (STORY-2 AC1).
+    await expect(brunoDropdown.getByTestId('notification-respond-by')).toBeVisible();
+    const brunoDispatched = brunoPage.waitForResponse(
+      (r) => r.url().includes('/nomination-response') && r.request().method() === 'POST',
+    );
+    await brunoDropdown.getByTestId('notif-action-accept').first().click();
     await brunoPage.getByTestId('confirm-modal-confirm').click();
-    await expect(brunoPage.getByText(/you are now the steward/i)).toBeVisible({
+    const brunoRes = await brunoDispatched;
+    expect(brunoRes.status(), `nomination-response returned ${brunoRes.status()}`).toBe(200);
+    // The observable effect, not the click: the row resolves and stops asking.
+    await expect(brunoDropdown.getByTestId('notif-action-accept')).toHaveCount(0, {
       timeout: 15000,
     });
 
@@ -200,19 +218,37 @@ test.describe.serial('FEAT-H017 — leadership transfer, closure & deletion (MEM
     await brunoPage.getByTestId('confirm-modal-confirm').click();
     await expect(brunoPage.getByText(/offer is out/i)).toBeVisible({ timeout: 15000 });
 
-    // Freja declines — the only nominee, so the contract routes to DeusEx.
+    // Freja declines in her bell — the only nominee, so the contract routes to
+    // DeusEx (N-B: the nomination's home is the notification, not a panel).
     const frejaCtx = await browser.newContext();
     const frejaPage = await frejaCtx.newPage();
     await signIn(frejaPage, fims.freja.email);
-    await expect(frejaPage.getByTestId('pending-nominations')).toBeVisible({ timeout: 15000 });
-    await frejaPage.locator('[data-testid^="decline-nomination-"]').click();
-    await frejaPage.getByTestId('confirm-modal-confirm').click();
-    const passedOn = frejaPage.getByText(/passed on/i);
-    await expect(passedOn).toBeVisible({ timeout: 15000 });
-    // The Surface never names the routing (next nominee vs FringeIsland).
-    await expect(frejaPage.getByTestId('pending-nominations')).not.toContainText(
-      /FringeIsland|DeusEx/i,
+    await expect(frejaPage.getByTestId('pending-nominations')).toHaveCount(0);
+    await frejaPage.getByTestId('notification-bell').click();
+    const frejaDropdown = frejaPage.getByTestId('notification-dropdown');
+    await expect(frejaDropdown.getByText('Stewardship Nomination')).toBeVisible({
+      timeout: 15000,
+    });
+    const frejaDispatched = frejaPage.waitForResponse(
+      (r) => r.url().includes('/nomination-response') && r.request().method() === 'POST',
     );
+    await frejaDropdown.getByTestId('notif-action-decline').first().click();
+    await frejaPage.getByTestId('confirm-modal-confirm').click();
+    const frejaRes = await frejaDispatched;
+    expect(frejaRes.status(), `nomination-response returned ${frejaRes.status()}`).toBe(200);
+    // The observable effect: the row resolves and stops asking.
+    await expect(frejaDropdown.getByTestId('notif-action-decline')).toHaveCount(0, {
+      timeout: 15000,
+    });
+    // The Surface still never names the routing (next nominee vs FringeIsland).
+    // Scoped to the nomination's OWN row, as the retired panel assertion was:
+    // the dropdown at large legitimately carries unrelated notices that name
+    // FringeIsland (e.g. the "FringeIsland Members" role assignment).
+    const nominationRow = frejaDropdown
+      .locator('li')
+      .filter({ hasText: 'Stewardship Nomination' })
+      .first();
+    await expect(nominationRow).not.toContainText(/FringeIsland|DeusEx/i);
 
     // The fallback resolved: the nominator departed, the group persists for Freja.
     await brunoPage.goto('/groups');

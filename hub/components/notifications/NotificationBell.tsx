@@ -11,10 +11,12 @@ import {
   peekUnreadCount,
   markNotificationRead,
   markAllNotificationsRead,
+  respondToNotification,
   type NotificationRow,
 } from '@/lib/notifications/client';
-import { formatBadgeCount } from '@/lib/notifications/format';
+import { formatBadgeCount, isActionable, type NotificationResponse } from '@/lib/notifications/format';
 import { NotificationItem } from '@/components/notifications/NotificationItem';
+import { NotificationActions } from '@/components/notifications/NotificationActions';
 
 /**
  * FEAT-H030 — the shell notification bell (NTF-2/3/7). A **FIM-only** affordance
@@ -34,6 +36,9 @@ export function NotificationBell() {
   const [unread, setUnread] = useState<number>(() => peekUnreadCount() ?? 0);
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState<NotificationRow[] | null>(null);
+  /** STORY-1: the reason a dispatch failed, pinned to the row it belongs to —
+   *  a rollback with no reason is indistinguishable from "nothing happened". */
+  const [actionError, setActionError] = useState<{ id: string; message: string } | null>(null);
 
   const mountedRef = useRef(true);
   useEffect(() => {
@@ -109,6 +114,51 @@ export function NotificationBell() {
     }
   }, [loadCount]);
 
+  // Typed-action response (NTF-5/6): optimistically resolve the row (buttons
+  // vanish via isActionable=false), then reconcile the outcome + resolver from
+  // the server; roll back to actionable on failure. The handler swallows errors
+  // so NotificationActions always resolves.
+  const respond = useCallback(
+    async (row: NotificationRow, response: NotificationResponse) => {
+      const outcome = response.accept ? 'accepted' : 'declined';
+      const wasUnread = !row.is_read;
+      setActionError((cur) => (cur?.id === row.id ? null : cur));
+      setRows((cur) =>
+        cur ? cur.map((r) => (r.id === row.id ? { ...r, action_taken: outcome, is_read: true } : r)) : cur,
+      );
+      if (wasUnread) setUnread((n) => Math.max(0, n - 1));
+      try {
+        const result = await respondToNotification(row, response.accept);
+        setRows((cur) =>
+          cur
+            ? cur.map((r) =>
+                r.id === row.id
+                  ? {
+                      ...r,
+                      action_taken: result.outcome ?? outcome,
+                      action_data: {
+                        ...(r.action_data ?? {}),
+                        ...(result.resolved_by_name ? { resolved_by_name: result.resolved_by_name } : {}),
+                      },
+                    }
+                  : r,
+              )
+            : cur,
+        );
+      } catch (e) {
+        setRows((cur) =>
+          cur ? cur.map((r) => (r.id === row.id ? { ...r, action_taken: null, is_read: row.is_read } : r)) : cur,
+        );
+        setActionError({
+          id: row.id,
+          message: e instanceof Error && e.message ? e.message : 'That response could not be sent.',
+        });
+        loadCount();
+      }
+    },
+    [loadCount],
+  );
+
   if (identity !== 'fim') return null;
 
   return (
@@ -164,6 +214,20 @@ export function NotificationBell() {
                   >
                     <NotificationItem row={row} />
                   </button>
+                  {isActionable(row) && (
+                    <div className="px-3 pb-2">
+                      <NotificationActions row={row} onRespond={respond} />
+                    </div>
+                  )}
+                  {actionError?.id === row.id && (
+                    <p
+                      role="alert"
+                      data-testid={`notification-action-error-${row.id}`}
+                      className="px-3 pb-2 text-xs text-red-600"
+                    >
+                      {actionError.message}
+                    </p>
+                  )}
                 </li>
               ))
             )}
