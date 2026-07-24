@@ -3,7 +3,7 @@
 ---
 id: TASK-NB-02
 title: Actionable-notification dispatch + acting fan-out migration
-status: review
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PD014

@@ -40,7 +40,7 @@ The previous bridge said the Hub half was "code-complete". Three things said oth
 
 ## Open threads (carried)
 
-- **Follow-up, named at the close:** N-B deleted `PendingNominations`, the only consumer of the `/api/me/overview` bundle's `nominations` slice. The bundle still computes `get_my_pending_nominations` on every `/groups` first paint and ships a slice nothing reads (`fetchMyNominations` has no production caller left). Dead weight on a first-paint read, contrary to the ADR-U042/U043 posture — deliberately out of the N-B diff, wants a home in N-C/N-D.
+- **Follow-up, named at the close — ROUTED TO N-C (Stefan, 2026-07-24):** N-B deleted `PendingNominations`, the only consumer of the `/api/me/overview` bundle's `nominations` slice. The bundle still computes `get_my_pending_nominations` on every `/groups` first paint and ships a slice nothing reads (`fetchMyNominations` has no production caller left). Dead weight on a first-paint read, contrary to the ADR-U042/U043 posture. Recorded as an N-C rider in the completion plan.
 - **Two lifecycle facts surfaced by the plain-English walk** (both correct, both named so they aren't rediscovered as bugs): a holder who loses `act_as_group` between fan-out and answering is refused `42501` and **now sees why** (the AC3 fix earning its keep); and **send-time fan-out (ADR-U049) means a leader added after the invitation gets no letter** — "everyone who can answer" is true as of the invite, not continuously.
 - **TASK-INT-01** ES256 flake — still parked, awaiting Supabase. Actively flickering.
 - **ADR-U050** — still `Proposed`, riding the C-F schema gate (TASK-DOC-005).
@@ -53,7 +53,26 @@ The previous bridge said the Hub half was "code-complete". Three things said oth
 - [x] Completion plan N-B row marked built; TASK-NB-05 `done` with an outcome section
 - [x] CHANGELOG entry (the plain-English walkthrough)
 - [x] Session bridge (this file)
-- [x] Discovery sweep — worktree clean and in sync with `main`; **re-run after the merge** so the moved `main` lands back on `discovery`
-- [ ] `npm run dashboard` refresh
-- [ ] **Merge PR #277** (held for the ADR carve-out nod), then sync `main`
-- [ ] `doc-health-check` — cycle boundary; run after the merge
+- [x] `npm run dashboard` refresh
+- [x] **PR #277 merged** (squash, branch deleted) on Stefan's named nod, 2026-07-24 — `main` synced at `904baf3`
+- [x] Discovery sweep — re-run after the merge; `discovery` re-synced with the moved `main`
+- [x] `doc-health-check` — cycle boundary (results below)
+
+## Doc health check — 2026-07-24 — cycle boundary (A-NTF N-B close)
+
+Sections run: 1.5, 1.6, 3 (links), 3.6, 5, 8, 11. Skipped: 1 (no renames), 2 (schema landed + documented last session), 3.5, 3.7, 4, 6, 7, 9, 10 (no triggers).
+
+**Fixed in place**
+- **Task-status lag (4 files).** TASK-NB-01/02 sat at `review`, NB-03 at `blocked` (the schema gate — long since merged), NB-04 at `todo` — all four shipped in #276/#277. Set to `done`; NB-04's acceptance boxes ticked.
+- **Section 1.5 table fed.** Added a row for the concept this cycle retired — *answering outside the notification surface* (`PendingNominations`, the panel's Accept/Decline) — with the sense-classification note, so future sweeps read surviving hits correctly.
+- **FEAT-PC016 consumer status.** Its only surface consumer was deleted this cycle; the contract is live but reached solely through the orphaned bundle slice. Annotated so it isn't read as actively consumed, pointing at the N-C rider.
+- **Anatomy stamp (Section 11).** Moved to ADR-U051 with an explicit *reviewed, no anatomy impact* note — U051 fixes a DS-5 contract family's shape, not any tier/service/boundary the overview draws. ADR-U050 remains deliberately unabsorbed while Proposed.
+
+**Critical finding — pre-existing, routed not patched**
+- `FEAT-PC002` declares `6-done` with **no Implementation notes section at all** (Section 5's named critical shape). Closed in an earlier cycle (`5cdd77b`), untouched by A-NTF — fenced out of the N-B green claim. Writing the notes needs that cycle's build context, so it went to **TASK-DOC-006** rather than being patched blind. That task also asks for a whole-tree Section 5 pass, since one absent-notes case suggests the check hadn't been run against every `6-done` spec.
+
+**Clean**
+- **1.6** — the six `directional` hits are all the substring in "one-**directional** dual-enrolment refusal". No unfiled deviation markers.
+- **5 / 8** — both N-B specs `6-done` with substantive Implementation notes; all four inventory rows (hub SPECIFICATION §L4, both features/README indexes, the DS-5 realisation row) agree with disk.
+- **3** — every relative link in the specs touched this cycle resolves.
+- **3.6** — `PendingNominations.tsx` and its test confirmed absent from disk; no active doc presents either panel as a current place to answer.
