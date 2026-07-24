@@ -2,10 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import {
-  leaveGroupAsGroupClient,
-  respondToGroupInvitationClient,
-} from '@/lib/groups/client';
+import { leaveGroupAsGroupClient } from '@/lib/groups/client';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
 /**
@@ -26,9 +23,10 @@ export interface ActingMembershipRow {
   status: string;
 }
 
-type PendingAct =
-  | { kind: 'respond'; row: ActingMembershipRow; accept: boolean }
-  | { kind: 'withdraw'; row: ActingMembershipRow };
+// FEAT-H031 (N-B): the acting-invitation RESPONSE (accept/decline) folded to the
+// notification bell/inbox — this panel keeps only the wielded Withdraw and the
+// read-only invited status. Reconciles with the bell on re-fetch (no realtime).
+type PendingAct = { kind: 'withdraw'; row: ActingMembershipRow };
 
 export function GroupMembershipsPanel({
   actingGroup,
@@ -50,11 +48,7 @@ export function GroupMembershipsPanel({
     setBusy(true);
     setActError(null);
     try {
-      if (act.kind === 'respond') {
-        await respondToGroupInvitationClient(actingGroup.id, act.row.membership_id, act.accept);
-      } else {
-        await leaveGroupAsGroupClient(actingGroup.id, act.row.group_id);
-      }
+      await leaveGroupAsGroupClient(actingGroup.id, act.row.group_id);
       setAct(null);
       onMutated();
     } catch (err) {
@@ -65,27 +59,12 @@ export function GroupMembershipsPanel({
     }
   };
 
-  const copy = (a: PendingAct): { title: string; message: string; verb: string } => {
-    // The confirm names the wielding: the member is answering FOR the group.
-    if (a.kind === 'respond') {
-      return a.accept
-        ? {
-            title: 'Accept as the group?',
-            message: `You are answering for ${actingGroup.name}: accept membership of "${a.row.name}"? ${actingGroup.name} joins as a member.`,
-            verb: 'Accept',
-          }
-        : {
-            title: 'Decline as the group?',
-            message: `You are answering for ${actingGroup.name}: decline the invitation from "${a.row.name}"?`,
-            verb: 'Decline',
-          };
-    }
-    return {
-      title: 'Withdraw the group?',
-      message: `You are acting for ${actingGroup.name}: withdraw its membership of "${a.row.name}"? Its unfinished work in that group's private journeys is frozen.`,
-      verb: 'Yes, withdraw',
-    };
-  };
+  // The confirm names the wielding: the member is acting FOR the group.
+  const copy = (a: PendingAct): { title: string; message: string; verb: string } => ({
+    title: 'Withdraw the group?',
+    message: `You are acting for ${actingGroup.name}: withdraw its membership of "${a.row.name}"? Its unfinished work in that group's private journeys is frozen.`,
+    verb: 'Yes, withdraw',
+  });
 
   return (
     <div
@@ -141,30 +120,14 @@ export function GroupMembershipsPanel({
               </div>
               <div className="flex items-center gap-2">
                 {r.status === 'invited' ? (
-                  <>
-                    <button
-                      type="button"
-                      data-testid={`accept-as-group-${r.membership_id}`}
-                      onClick={() => {
-                        setActError(null);
-                        setAct({ kind: 'respond', row: r, accept: true });
-                      }}
-                      className="rounded border border-indigo-200 px-2 py-0.5 text-xs text-indigo-700 hover:bg-indigo-50"
-                    >
-                      Accept as {actingGroup.name}
-                    </button>
-                    <button
-                      type="button"
-                      data-testid={`decline-as-group-${r.membership_id}`}
-                      onClick={() => {
-                        setActError(null);
-                        setAct({ kind: 'respond', row: r, accept: false });
-                      }}
-                      className="rounded border border-gray-200 px-2 py-0.5 text-xs text-gray-600 hover:bg-gray-50"
-                    >
-                      Decline
-                    </button>
-                  </>
+                  // FEAT-H031: the acting-invitation is answered in the bell/inbox
+                  // now (fanned to the group's act_as_group holders) — read-only here.
+                  <span
+                    data-testid={`respond-in-notifications-${r.membership_id}`}
+                    className="text-xs text-gray-400"
+                  >
+                    Answer in your notifications
+                  </span>
                 ) : (
                   <button
                     type="button"
