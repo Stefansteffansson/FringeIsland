@@ -121,6 +121,7 @@ Every work item has a type. The type determines which template to use, which DoD
   - Review metrics (cycle time, throughput, deployment frequency)
   - Update the relevant roadmaps (`docs/ecosystem/ECOSYSTEM_ROADMAP.md`, product roadmaps, `docs/platform/core/ROADMAP.md`)
   - Run the `doc-health-check` skill (`.claude/skills/doc-health-check/SKILL.md`) to verify ecosystem docs are clean — stale paths, terminology drift, README indexes out of sync, missing DESCRIPTION.md for active entities, unfilled Implementation notes on 6-done specs, parked items whose `parked_reason` no longer holds
+  - **Backlog triage:** walk the open tasks in `backlog/tasks/` (including the standing-tasks table in its `README.md`). For each: still valid? still the right priority? Any task that has survived two boundaries is either bet on, re-scoped, or dropped with a reason — not silently carried a third time. Without a read-point, filing becomes a way of forgetting: FEAT-PC002's missing Implementation notes were filed at the A-JRN boundary, ignored, then *re-filed as a new task* at the next boundary (2026-07-24) because nobody read the backlog the finding was already sitting in.
   - Regenerate the project dashboard (`npm run dashboard`) so its snapshot panels reflect the current state — see [`../../scripts/dashboard/README.md`](../../scripts/dashboard/README.md). It is a derived view: the file viewer is always live, but the overview panels are a snapshot from the last generate.
   - Run retrospective for the cycle that just ended (template: `../templates/retrospective.md`)
 
