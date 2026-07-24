@@ -76,3 +76,20 @@ export async function markAllNotificationsReadRpc(
   if (error) throw error;
   return (data as number) ?? 0;
 }
+
+/** FEAT-PD014 — respond to an acting-invitation notification. Thin dispatch to
+ *  the DS-5 `respond_to_acting_invitation` contract (which calls the untouched
+ *  Core handler + converges the fan-out); the substrate resolves the caller and
+ *  reads membership_id from the row's action_data (NB-1). */
+export async function respondToActingInvitationRpc(
+  supabase: SupabaseClient,
+  notificationId: string,
+  accept: boolean,
+): Promise<unknown> {
+  const { data, error } = await supabase.rpc('respond_to_acting_invitation', {
+    p_notification_id: notificationId,
+    p_accept: accept,
+  });
+  if (error) throw error;
+  return data;
+}

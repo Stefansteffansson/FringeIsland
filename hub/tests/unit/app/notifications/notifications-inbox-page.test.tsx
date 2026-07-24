@@ -29,11 +29,13 @@ const fetchNotifications = jest.fn<Promise<unknown>, [unknown?]>();
 const markNotificationRead = jest.fn<Promise<void>, [string]>();
 const markAllNotificationsRead = jest.fn<Promise<number>, []>();
 const invalidateNotificationsCache = jest.fn();
+const respondToNotification = jest.fn<Promise<unknown>, [unknown, boolean]>();
 jest.mock('@/lib/notifications/client', () => ({
   fetchNotifications: (opts?: unknown) => fetchNotifications(opts),
   markNotificationRead: (id: string) => markNotificationRead(id),
   markAllNotificationsRead: () => markAllNotificationsRead(),
   invalidateNotificationsCache: () => invalidateNotificationsCache(),
+  respondToNotification: (row: unknown, accept: boolean) => respondToNotification(row, accept),
 }));
 
 // Isolate the page from the shell chrome (the bell + its own client deps) —
@@ -133,12 +135,18 @@ describe('NotificationsPage (/notifications)', () => {
     expect(read).toHaveAttribute('data-read', 'true');
   });
 
-  it('an actionable row shows a status chip and no action buttons', async () => {
+  // Adapted for N-B (FEAT-H031): N-A asserted actionable rows render NO action
+  // buttons (the UI was deferred). N-B adds the typed-action affordance — an
+  // unresolved actionable row now shows the "Awaiting response" chip AND the
+  // data-driven Accept/Decline buttons.
+  it('an actionable, unresolved row shows the status chip AND the typed-action buttons (N-B)', async () => {
     fetchNotifications.mockResolvedValue([
       row({
         id: 'act',
+        kind: 'acting_invitation',
         title: 'Nominate',
         action_type: 'accept_decline',
+        action_data: { membership_id: 'm1' },
         action_taken: null,
         expires_at: null,
       }),
@@ -146,7 +154,26 @@ describe('NotificationsPage (/notifications)', () => {
     render(<NotificationsPage />);
     await screen.findByText('Nominate');
     expect(screen.getByText(/awaiting response/i)).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /accept|decline/i })).toBeNull();
+    expect(screen.getByTestId('notif-action-accept')).toBeInTheDocument();
+    expect(screen.getByTestId('notif-action-decline')).toBeInTheDocument();
+  });
+
+  it('a resolved actionable row shows no buttons (buttons gone once answered)', async () => {
+    fetchNotifications.mockResolvedValue([
+      row({
+        id: 'done',
+        kind: 'acting_invitation',
+        title: 'Answered already',
+        action_type: 'accept_decline',
+        action_data: { resolved_by_name: 'Bob Smith' },
+        action_taken: 'accepted',
+        expires_at: null,
+      }),
+    ]);
+    render(<NotificationsPage />);
+    await screen.findByText('Answered already');
+    expect(screen.getByText(/answered by bob/i)).toBeInTheDocument();
+    expect(screen.queryByTestId('notif-action-accept')).toBeNull();
   });
 
   it('renders an unrecognised kind with the generic renderer', async () => {

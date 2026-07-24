@@ -5,14 +5,17 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { AppShell } from '@/components/shell/AppShell';
 import { NotificationItem } from '@/components/notifications/NotificationItem';
+import { NotificationActions } from '@/components/notifications/NotificationActions';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { InlineError } from '@/components/ui/InlineError';
 import { SkeletonList } from '@/components/ui/SkeletonList';
 import {
   fetchNotifications,
   markAllNotificationsRead,
+  respondToNotification,
   type NotificationRow,
 } from '@/lib/notifications/client';
+import { isActionable, type NotificationResponse } from '@/lib/notifications/format';
 
 /**
  * FEAT-H030 STORY-3 — the `/notifications` inbox/history (NTF-3). The full
@@ -95,6 +98,41 @@ export default function NotificationsPage() {
     }
   }, []);
 
+  // Typed-action response (NTF-5/6) — optimistic resolve, reconcile the outcome
+  // + resolver from the server, roll back to actionable on failure.
+  const respond = useCallback(
+    async (row: NotificationRow, response: NotificationResponse) => {
+      const outcome = response.accept ? 'accepted' : 'declined';
+      setRows((cur) =>
+        cur ? cur.map((r) => (r.id === row.id ? { ...r, action_taken: outcome, is_read: true } : r)) : cur,
+      );
+      try {
+        const result = await respondToNotification(row, response.accept);
+        setRows((cur) =>
+          cur
+            ? cur.map((r) =>
+                r.id === row.id
+                  ? {
+                      ...r,
+                      action_taken: result.outcome ?? outcome,
+                      action_data: {
+                        ...(r.action_data ?? {}),
+                        ...(result.resolved_by_name ? { resolved_by_name: result.resolved_by_name } : {}),
+                      },
+                    }
+                  : r,
+              )
+            : cur,
+        );
+      } catch {
+        setRows((cur) =>
+          cur ? cur.map((r) => (r.id === row.id ? { ...r, action_taken: null } : r)) : cur,
+        );
+      }
+    },
+    [],
+  );
+
   if (authLoading || identity === 'sessionless' || identity === 'mist') {
     return (
       <AppShell title="Notifications">
@@ -138,6 +176,7 @@ export default function NotificationsPage() {
                 className="px-4 py-3"
               >
                 <NotificationItem row={row} />
+                {isActionable(row) && <NotificationActions row={row} onRespond={respond} />}
               </li>
             ))}
           </ul>
