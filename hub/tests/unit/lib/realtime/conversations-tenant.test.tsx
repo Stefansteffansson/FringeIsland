@@ -70,10 +70,21 @@ describe('FEAT-H027 — conversations tenant (useRealtimeTenants)', () => {
       userId: 'uid-1',
       armed: true,
     });
-    expect(registerTenant).toHaveBeenCalledTimes(1);
+    // ADAPTED at A-NTF N-C (FEAT-H032): `useRealtimeTenants` now registers TWO
+    // tenants on the one socket — conversations (C-C) and notifications (N-C).
+    // Strengthened rather than relaxed: the count is still exact, and both
+    // topics are pinned by name, so a third tenant appearing silently still
+    // fails this test.
+    expect(registerTenant).toHaveBeenCalledTimes(2);
+    const topics = registerTenant.mock.calls.map((c) => c[0].topic);
+    expect(topics).toEqual(['account:uid-1:conversations', 'account:uid-1:notifications']);
+
     const tenant = registerTenant.mock.calls[0][0];
     expect(tenant.topic).toBe('account:uid-1:conversations');
     expect(tenant.events).toContain('message_created');
+
+    const notifTenant = registerTenant.mock.calls[1][0];
+    expect(notifTenant.events).toContain('notification');
   });
 
   it('registers no tenant for a Mist or a sessionless visitor (STORY-2)', () => {
@@ -118,6 +129,9 @@ describe('FEAT-H027 — conversations tenant (useRealtimeTenants)', () => {
   it('unregisters the tenant on sign-out / unmount (STORY-7)', () => {
     const { unmount } = render(<Harness session={makeSession('uid-1')} identity="fim" />);
     unmount();
-    expect(unregister).toHaveBeenCalledTimes(1);
+    // ADAPTED at N-C: both tenants tear down on sign-out, so both teardowns
+    // run. STORY-7's guarantee is unchanged — nothing survives the identity
+    // change — and asserting the exact count keeps a leaked subscription visible.
+    expect(unregister).toHaveBeenCalledTimes(2);
   });
 });

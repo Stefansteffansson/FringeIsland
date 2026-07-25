@@ -5,6 +5,7 @@ import type { Session, SupabaseClient } from '@supabase/supabase-js';
 import type { Identity } from '@/lib/auth/mist';
 import { realtimeManager, type Tenant } from '@/lib/realtime/manager';
 import { invalidateMessagesCache } from '@/lib/messages/client';
+import { registerNotificationsTenant } from '@/lib/realtime/notifications-tenant';
 
 /**
  * FEAT-H027 (TASK-CC-04) — the app-wide conversations tenant.
@@ -85,5 +86,13 @@ export function useRealtimeTenants(
   useEffect(() => {
     if (!armed || !userId) return;
     return realtimeManager.registerTenant(conversationsTenant(userId));
+  }, [armed, userId]);
+
+  // FEAT-H032 (N-C): the notifications tenant joins on the SAME socket, under
+  // the same arming rule. Registration is the whole integration — the manager
+  // is untouched, exactly as FEAT-H027 STORY-1 designed.
+  useEffect(() => {
+    if (!armed || !userId) return;
+    return registerNotificationsTenant(userId);
   }, [armed, userId]);
 }
