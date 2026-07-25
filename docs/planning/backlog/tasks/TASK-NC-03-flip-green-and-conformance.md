@@ -3,7 +3,7 @@
 ---
 id: TASK-NC-03
 title: "N-C: flip green, conformance, and the fan-out write-path check"
-status: blocked
+status: in_progress
 assigned_to: claude
 priority: high
 feature: FEAT-PD015
@@ -18,7 +18,11 @@ estimated_hours: 3
 
 Take the TASK-NC-01 suite from red to green against the applied migration, run the conformance gate, and verify the write-path cost the fan-out budget claims.
 
-> **BLOCKED 2026-07-25 by `TASK-INT-01` (the dev-DB auth-admin ES256 flake), not by this cycle's work.**
+> **UNBLOCKED 2026-07-25 — the FEAT-PD015 suite is 26/26 GREEN.** Every red-first assertion flipped, and the 7 guards held. Attribution recorded honestly below; the rest of this task (conformance gate, full integration sweep, write-path cost) is still owed.
+>
+> **The retry fix is NOT what unblocked it.** The green run logged **zero** ES256 occurrences, so the retry never fired. Supabase confirmed a platform Auth incident (status page `cqjl192cn8sz`, 2026-07-25 14:11–14:45 UTC) and deployed a fix. **Caveat worth carrying:** our first ES256 hit was **2026-07-22**, three days before their window, and the blocked runs here were ~16:30–17:15 UTC — *after* they declared it resolved. So their window reflects when they noticed, not the fault's full span; treat "resolved" as needing several clean days, not assumed.
+>
+> ~~**BLOCKED 2026-07-25 by `TASK-INT-01` (the dev-DB auth-admin ES256 flake), not by this cycle's work.**~~ *(historical — kept so the diagnosis trail is legible)*
 > The migration **is applied** and all four changes are verified directly by SQL (`ds5_config` seeded + RLS deny-all with zero policies, `trg_notify_notification_hint` present, four `realtime.messages` receive policies all SELECT-only, `supabase_realtime` **empty**, the policy confirmed initplan-wrapped, the trigger function confirmed to contain no `RAISE EXCEPTION`).
 > What cannot run is the **suite**: three consecutive runs died in `beforeAll` with 52 `unrecognized JWT kid <nil> for algorithm ES256` errors before any assertion executed. Both prescribed diagnostics were performed — re-run alone with `--runInBand` (three times), and a control suite (`notification-contracts.test.ts`, untouched by this diff) which **also** showed ES256 and failed 1/16 in the same window. Fenced **found (not caused)**.
 > **Root cause of the blocking severity:** `createTestUser` has **no retry wrapper**, unlike `signInWithRetry` and `withAnonRateLimitRetry` in the same helper module. One flaky admin call therefore fails an entire suite's `beforeAll` rather than one test. Adding a bounded retry there is the obvious fix and would unblock this cycle — but it is shared test infrastructure and belongs to `TASK-INT-01`, so it is **recommended, not done here** (ask-first: changing shared code).
