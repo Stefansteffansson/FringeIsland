@@ -72,6 +72,7 @@ Sections run: 1.5, 1.6, 3 (links), 3.6, 5, 8, 11. Skipped: 1 (no renames), 2 (sc
 
 **Critical finding — pre-existing, routed not patched**
 - `FEAT-PC002` declares `6-done` with **no Implementation notes section at all** (Section 5's named critical shape). Closed in an earlier cycle (`5cdd77b`), untouched by A-NTF — fenced out of the N-B green claim. Writing the notes needs that cycle's build context, so it went to **TASK-DOC-006** rather than being patched blind. That task also asks for a whole-tree Section 5 pass, since one absent-notes case suggests the check hadn't been run against every `6-done` spec.
+  - **Superseded 2026-07-25 (PR #280).** `TASK-DOC-006` no longer exists — it was a **duplicate** of `TASK-DOC-004`, filed for the same finding at the A-JRN boundary six days earlier and open in the standing-tasks table the whole time. This run re-found the finding without checking the backlog. The notes are now backfilled, the whole-tree pass is done (62 `6-done` specs, PC002 the only hit), DOC-004 is `done`, and DOC-006 is deleted. See [`2026-07-25_01`](./2026-07-25_01_-_PC002-NOTES-BACKFILLED-DOC-HEALTH-REFIND-RULE.md).
 
 **Clean**
 - **1.6** — the six `directional` hits are all the substring in "one-**directional** dual-enrolment refusal". No unfiled deviation markers.
