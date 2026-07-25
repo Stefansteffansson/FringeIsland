@@ -5,6 +5,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Bell } from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { useCommChannel } from '@/lib/realtime/use-comm-channel';
+import {
+  notificationsTopic,
+  NOTIFICATIONS_CHANGED_EVENT,
+} from '@/lib/realtime/notifications-tenant';
 import {
   fetchNotifications,
   fetchUnreadCount,
@@ -24,14 +29,22 @@ import { NotificationActions } from '@/components/notifications/NotificationActi
  * status, never a role string). The badge counts unread via the FEAT-PD013
  * `get_own_unread_notification_count` contract; the dropdown shows the recent
  * 15 (unread visually distinct), marks-on-click, marks-all, and links to the
- * full inbox. Fetch-based, best-effort chrome — a failed read degrades to a
- * plain bell, never an error surface. No sockets/polling until N-C (ADR-U039).
+ * full inbox. Best-effort chrome — a failed read degrades to a plain bell,
+ * never an error surface.
+ *
+ * FEAT-H032 (N-C, NTF-9) made it LIVE: the app-wide notifications tenant is
+ * registered in AuthContext, and this component reconciles on its
+ * `notificationsChanged` event, on socket recovery, and on tab-visibility
+ * regain (`useCommChannel`). Every visible change still comes from an
+ * authorized contract re-read — a hint is never painted (ADR-U039:24), so a
+ * forged or misdelivered one changes nothing here. When the socket is away the
+ * bell degrades to exactly its pre-N-C fetch behaviour and says so quietly.
  * 'use client' — reads auth state (Hub gotcha: `useAuth` no-ops on the server).
  */
 const RECENT_LIMIT = 15;
 
 export function NotificationBell() {
-  const { identity } = useAuth();
+  const { identity, user } = useAuth();
   const router = useRouter();
   const [unread, setUnread] = useState<number>(() => peekUnreadCount() ?? 0);
   const [open, setOpen] = useState(false);
@@ -39,6 +52,13 @@ export function NotificationBell() {
   /** STORY-1: the reason a dispatch failed, pinned to the row it belongs to —
    *  a rollback with no reason is indistinguishable from "nothing happened". */
   const [actionError, setActionError] = useState<{ id: string; message: string } | null>(null);
+
+  /** `open` in a ref so `reconcile` reads the live value without being
+   *  re-created on every toggle (which would churn the listener effect). */
+  const openRef = useRef(false);
+  useEffect(() => {
+    openRef.current = open;
+  }, [open]);
 
   const mountedRef = useRef(true);
   useEffect(() => {
@@ -58,13 +78,48 @@ export function NotificationBell() {
       });
   }, []);
 
+  /** NTF-9 reconciliation: re-read the badge, and the open dropdown too — a
+   *  panel left open while hints arrive must not show a stale list. Used for
+   *  the live hint, for socket recovery, and for tab-visibility regain alike;
+   *  the re-read is the SAME authorized contract call the bell always makes
+   *  (verify-on-signal — nothing is ever painted from a hint payload). */
+  const reconcile = useCallback(() => {
+    loadCount();
+    if (openRef.current) {
+      fetchNotifications({ limit: RECENT_LIMIT })
+        .then((r) => {
+          if (mountedRef.current) setRows(r);
+        })
+        .catch(() => undefined); // the badge is still correct; list stays as-is
+    }
+  }, [loadCount]);
+
   useEffect(() => {
     if (identity !== 'fim') return;
     loadCount();
     const onRefresh = () => loadCount();
+    // FEAT-H032 (N-C): the live path. The tenant coalesces a burst of hints
+    // into one of these, so the bell re-reads once per burst, not once per hint.
+    const onNotificationsChanged = () => reconcile();
     window.addEventListener('refreshNavigation', onRefresh);
-    return () => window.removeEventListener('refreshNavigation', onRefresh);
-  }, [identity, loadCount]);
+    window.addEventListener(NOTIFICATIONS_CHANGED_EVENT, onNotificationsChanged);
+    return () => {
+      window.removeEventListener('refreshNavigation', onRefresh);
+      window.removeEventListener(NOTIFICATIONS_CHANGED_EVENT, onNotificationsChanged);
+    };
+  }, [identity, loadCount, reconcile]);
+
+  /** STORY-2: socket recovery + tab-visibility regain both reconcile, and a
+   *  channel that WAS subscribed and left that state shows the quiet degraded
+   *  affordance Hub SPECIFICATION §L2 promised for notification UIs as well as
+   *  DMs. Reuses the C-C hook unchanged — it is topic-generic despite its name,
+   *  and already encodes the no-flash-on-first-connect rule and the
+   *  visible-tab-only poll. A Mist or sessionless visitor passes a null topic
+   *  and watches nothing. */
+  const { reconnecting } = useCommChannel(
+    identity === 'fim' ? notificationsTopic(user?.id ?? null) : null,
+    reconcile,
+  );
 
   const toggle = useCallback(() => {
     setOpen((wasOpen) => {
@@ -188,7 +243,18 @@ export function NotificationBell() {
           className="absolute right-0 z-20 mt-2 w-80 rounded-lg border border-gray-200 bg-white shadow-lg"
         >
           <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2">
-            <span className="text-sm font-semibold text-gray-900">Notifications</span>
+            <span className="text-sm font-semibold text-gray-900">
+              Notifications
+              {/* NTF-9: a QUIET degraded affordance, never an error. The bell
+                  still works by fetch while the socket is away — Hub
+                  SPECIFICATION §L2: "the rest of the Hub continues to function
+                  over polling." */}
+              {reconnecting && (
+                <span className="ml-2 font-normal text-xs text-gray-400" role="status">
+                  reconnecting…
+                </span>
+              )}
+            </span>
             <button
               type="button"
               onClick={markAll}

@@ -3,7 +3,7 @@
 ---
 id: TASK-NC-04
 title: "N-C: the bell goes live — tenant registration, hint handling, reconnect reconciliation"
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-H032
