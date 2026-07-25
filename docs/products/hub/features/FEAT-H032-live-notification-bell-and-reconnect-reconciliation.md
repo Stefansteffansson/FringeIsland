@@ -6,7 +6,7 @@ title: Live notification bell, reconnect reconciliation, and the first-paint cle
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -19,47 +19,36 @@ Two more things are owed here:
 1. **Nothing reconciles after a dropped connection.** `hub/lib/realtime/manager.ts` already surfaces `onStatus(status, rejoin)` with `'subscribed' | 'reconnecting' | 'closed'` explicitly so a tenant can reconcile — no notification tenant uses it. Hub `SPECIFICATION.md` §L2 (`:143`) already *promises* that "Realtime channel disconnect → DM and notification UIs surface a reconnecting state"; the notification half of that sentence is unimplemented.
 2. **`/groups` does measurable wasted work on every load.** N-B deleted `PendingNominations`, the only consumer of the overview bundle's `nominations` slice. The lookup was never removed. Verified dead: `app/api/me/overview/route.ts` still computes it on every first paint (`:84`, `:125-128`), `lib/me/overview-client.ts:80` still adopts it, and the consumer `fetchMyNominations()` in `lib/groups/client.ts` has **zero callers**. The stored promise carries a deliberate `guarded.catch(() => {})` — *"may go unconsumed; never unhandled"* — which is exactly why it has been failing silently rather than surfacing. Every `/groups` load pays for an answer nothing reads.
 
-## Solution sketch
+## Implementation notes
 
-**The Hub-side abstraction already exists and was built for this.** `hub/lib/realtime/manager.ts` (FEAT-H027, TASK-CC-03) states its own extension contract in its docstring:
+**Built + merged 2026-07-25** across PR #288 (the first-paint cleanup), #289 (the live bell) and #290 (E2E + a leak fix). Carries **no migration** — it consumes the paired [FEAT-PD015](../../../platform/domain/features/FEAT-PD015-notification-realtime-hint-and-reconnect-reconciliation.md) contracts API-first.
 
-> *"Registration is the extension surface: the notification bell joins at A-NTF by calling `registerTenant`, with no manager edit (STORY-1)."*
+**`hub/lib/realtime/manager.ts` is UNCHANGED — verified by an empty `git diff`.** FEAT-H027's docstring promised the bell would join "by calling `registerTenant`, with no manager edit"; that held exactly.
 
-So this feature writes **no** channel plumbing: no second socket, no `.channel()` call of its own, no manager edit. It registers one tenant and wires two callbacks.
+**Two more things were already built** — the pattern of this whole cycle:
+- **`useCommChannel` is topic-generic** despite its comm-flavoured name. It already encoded recovery reconciliation, visibility regain, the visible-tab-only poll, and the no-flash-on-first-connect rule. Reused verbatim.
+- **`conversations-tenant.ts`** gave the exact declarative shape to mirror.
 
-**1. The bell becomes a tenant.** One registration on `account:<auth_uid>:notifications`, following `use-comm-channel.ts` as the hook precedent. `onHint` does the one legal thing under ADR-U039:24 — it **invalidates and re-fetches through the existing contract path** (`/api/notifications/unread-count`, and the recent window when the panel is open). It never reads the payload to paint anything. The hint says "something changed"; the authorized read says *what*.
+**What shipped**
 
-The bell lives in `AppShell`, so registration is global and there is exactly one subscription per session regardless of how many notification surfaces are mounted — the manager already guarantees one channel per topic shared across tenants. `/notifications` (the inbox page) does **not** register its own tenant; it reconciles through the same shared context.
+1. **`hub/lib/realtime/notifications-tenant.ts`** — topic keyed on the auth uid, an **open** event set, `onHint` doing exactly two things: invalidate the notifications cache and dispatch `notificationsChanged`. **Never relays payload content**, so a forged or misdelivered hint changes nothing on screen. Registered in `useRealtimeTenants` beside the conversations tenant, under the same arming rule (a Mist or sessionless visitor registers nothing).
+2. **Coalescing** (250 ms trailing window) — a burst collapses into one re-read, so the socket saving is not respent on request volume.
+3. **`NotificationBell`** reconciles on the live event, on socket recovery, and on visibility regain, and shows a **quiet** "reconnecting" note — never an error. This makes true the promise Hub `SPECIFICATION.md` §L2 `:143` already made for notification UIs as well as DMs.
+4. **STORY-4, the first-paint cleanup** — the orphaned `nominations` slice, its adoption, and the unreachable `client.ts` trio removed from every `/groups` load. `/api/me/nominations` and `fetchPendingNominations` deliberately **kept** (FEAT-H017-owned; ADR-U042 guardrail 3); `tests/unit/app/api/group-leadership-routes.test.ts` is untouched and green, and **is** the proof the contract survived. Whole-chain disposition filed as `TASK-H017-01`.
 
-**2. Reconnect reconciliation.** `onStatus` is the seam. On `'reconnecting'` the bell shows the promised degraded state; on returning to `'subscribed'` it reconciles by re-reading unread count and the recent window, because hints emitted during the gap are gone. Plus the belt-and-braces path ADR-U039:26 requires ("polling is fallback, not transport"): re-read on tab visibility and focus, so a laptop reopened after hours is correct without waiting on socket state.
+**A defect of mine, found and fixed at E2E.** The coalescing timer was module-level and nothing cancelled it on teardown — a hint arriving moments before sign-out would fire ~250 ms later and send a still-mounted bell to fetch **with a dead session**. `registerNotificationsTenant`'s teardown now cancels it (nothing survives the identity change — the STORY-7 guarantee, a module timer included), guarded by a unit test. Found while investigating an intermittent `profile.spec.ts` sign-out failure that the pre-#289 control passed 3/3; that failure is **intermittent, so causation is not proven** — the leak was real regardless, and has not recurred in 4 clean runs since.
 
-No new server contract is needed — `get_own_unread_notification_count()` and `get_own_notifications(...)` already exist and are already the bell's read path. Reconciliation is re-reading them at the right moments.
+**Labelled adaptations, never silent weakening**
+- `conversations-tenant.test.tsx` exact-count assertions moved 1→2 (two tenants now register). **Strengthened**: both topics pinned by name, both teardowns asserted, so a third tenant appearing silently still fails.
+- The overview-route test gained an **exact-set** slice↔consumer parity assertion — an orphan in either direction now fails, and the pre-cleanup code would have failed it.
 
-**3. Verify-on-signal at the surface.** A hint carrying an id the member has no right to must change nothing on screen. The bell's re-fetch is the verification: the id is never trusted, the contract is.
+**Two assertion bugs of my own, same class, twice.** I pinned an absolute badge count (`'1'`; it read `3` — the live path worked, my expectation was wrong, since the platform emits organically at account creation). I then made the counts relative but left an absolute *precondition*, which passed alone and failed in the full suite. Every E2E assertion is now a `>=` delta.
 
-**4. The first-paint cleanup.** Remove the dead nominations chain:
-- the `nominations` slice from `app/api/me/overview/route.ts` (import, the concurrent read, the destructure, the failure tally, the response object)
-- the adoption in `lib/me/overview-client.ts:30,80`
-- the now-unreachable trio in `lib/groups/client.ts`: `adoptMyNominationsRead`, `fetchMyNominations`, `requestMyNominations`, and the `adoptedNominations` module state including its reset at `:134`
-- their tests
+**Tests.** Unit: `notifications-tenant.test.ts` (9 cases, **labelled test-after**) covering coalescing, no-payload-relay, and teardown. E2E: `notifications-live.spec.ts` (5) — live arrival driven by a **real** Steward invitation with the URL asserted unchanged; offline catch-up and hidden-tab catch-up (**the ported oracle's SILENT row, never covered anywhere before**); and live-subscription survival across a client-side route change, which nothing else covers.
 
-**`/api/me/nominations` stays.** It is owned by [FEAT-H017](FEAT-H017-leadership-transfer-and-closure.md) (MEM-7 STORY-2), not by A-NTF, and ADR-U042 guardrail 3 states the standalone routes remain canonical even when the Hub stops calling them. Retiring another feature's contract from this cycle would edit that feature's spec from outside its ownership. Recorded as a follow-up against FEAT-H017 instead. *(This was put to Stefan as an open question and left unanswered; the conservative in-ownership reading is taken and flagged.)*
+**Green:** 967/967 unit (129 suites) · 86/86 E2E · `next build` clean · conformance 6/6.
 
-Two live comments point at this seam and must be reconciled rather than left dangling: `app/groups/page.tsx:88` and `components/notifications/NotificationItem.tsx:42`.
-
-## Appetite
-
-One cycle half, surface side. The registration and the two callbacks are small — the manager did the hard part. The real cost is the test surface: a live-arrival E2E, a reconnect reconciliation test (the oracle's SILENT row), and the removal's regression proof. The cleanup is subtraction and should stay subtraction; if removing the slice turns into reshaping the bundle, stop and keep the removal surgical.
-
-## Rabbit holes
-
-- **Do not edit `manager.ts`.** If the bell seems to need a manager change, the tenant shape is being misused — registration was designed as the extension surface. A manager edit here contradicts FEAT-H027's STORY-1.
-- **Do not open a second socket or call `.channel()` directly.** One socket per client (ADR-U039:21). The outer-ring conformance test (`tests/helpers/outer-ring.ts`) permits `.channel(...)` but not `.from(...)` / `.rpc(...)` — staying inside the manager keeps that guarantee automatic.
-- **Do not render from the hint payload.** The tempting shortcut — the payload has an id, so optimistically bump the badge — reintroduces exactly the trust that ADR-U039:24 forbids and makes a spoofed hint visible. Re-fetch; it is one cheap read.
-- **Do not re-fetch per hint in a burst.** A member added to several groups at once receives several hints in quick succession. Coalesce them into one read rather than firing one request per hint, or the socket saving is spent on request volume.
-- **Do not let the reconnecting state become alarming.** It is a quiet degradation, not an error — the bell still works by fetch. Hub `SPECIFICATION.md` §L2 `:143` frames it as "the rest of the Hub continues to function over polling."
-- **Do not widen the nominations cleanup into a bundle refactor.** Remove the slice; leave the bundle's shape, guardrails, and per-slice envelope machinery alone.
-- **Do not delete `/api/me/nominations`** — see Solution sketch 4.
+**Owed at close, not silently skipped:** the ADR-U043 before/after measurement of the `/groups` first paint. A deep-cold sample needs ≥20 minutes of enforced idle on a deployed environment, so it could not be taken in-session. The change removes one concurrent substrate read from a B2/B3 path; the number still has to be shown rather than asserted. Tracked on `TASK-NC-05` and in the area-gate checklist.
 
 ## No-gos
 

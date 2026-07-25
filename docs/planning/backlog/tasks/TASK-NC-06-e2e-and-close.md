@@ -3,7 +3,7 @@
 ---
 id: TASK-NC-06
 title: "N-C: E2E, the oracle's silent row, and the cycle close"
-status: review
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H032

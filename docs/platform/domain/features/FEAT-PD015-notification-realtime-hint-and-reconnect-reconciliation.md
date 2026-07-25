@@ -6,7 +6,7 @@ title: Notification realtime hint, nudge policy, and reconnect reconciliation
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -20,46 +20,34 @@ Three further gaps sit behind that:
 2. **The legacy full-row push is still live.** `public.notifications` is the **sole remaining member** of the `supabase_realtime` publication (verified on the live DB, 2026-07-25). ADR-U039:14 rejected `postgres_changes` row-pushing as the v2 mechanism and :37 rejected it as the default; C-A already removed `conversations`, `messages`, and `direct_messages` (`20260719230500:180-189`). Notifications is the last one standing, and its stated rationale — "serves the legacy app only, until Phase-4 cutover" (ADR-U039:31) — is void: nobody runs v1.
 3. **Fan-out cost is unbudgeted.** ADR-U039:46 requires the Notifications area to budget realtime volume, because a nudge costs one message per recipient. Measured on the live DB: the largest single announcement send produced **857 delivery rows to 857 recipients**, against a reachable FIM population of 1,274. A platform-wide send reaches everyone. Nudging that path scales cost with *headcount*, not with activity — and nobody waits on a platform announcement, so the immediacy buys nothing there.
 
-## Solution sketch
+## Implementation notes
 
-**Almost all of this substrate already exists.** A-COM Cycle C-C generalized the PC009 pattern; this feature adds one emit site, one receive policy, one setting, and one DROP. It builds **no** new emit helper.
+**Built + merged 2026-07-25** at the schema gate (PR #285, named approval), with conformance and the billing model recorded in #287. One migration: `supabase/migrations/20260725120000_n_c_notification_hint_and_policy.sql`. Applied to the dev DB and the migration log repaired.
 
-**1. One emit site, not thirty-eight.** `INSERT INTO public.notifications` appears at ~38 sites across 11 migrations, and there is **no trigger on the table** (verified live). Rather than touch every writer and require every future writer to remember, a single `AFTER INSERT ... FOR EACH ROW` trigger on `public.notifications` emits the hint. It catches every kind — legacy, current, and unwritten — by construction.
+**What shipped**
 
-Topic resolution follows the C-C precedent (`20260720153000:120`): `NEW.recipient_group_id` → `users.personal_group_id` → `users.auth_user_id` → `account:<auth_uid>:notifications`. A row whose recipient resolves to no FIM auth uid (a group-addressed row, a Mist) emits nothing.
+1. **`public.ds5_config`** — key/value DS-5 operational settings, mirroring `pc2_config`. **RLS enabled with ZERO policies (deny-all).** *This corrected the plan:* the task file first said "SELECT to `authenticated`", but the precedent `pc2_config` has no policies at all — the blanket schema grants are inert under RLS and only SECURITY DEFINER paths read it. Tighter, and still satisfies the platform-tier "new tables require RLS" rule. Seeded `realtime_hint_platform_announcements = 'false'`.
+2. **`notify_notification_hint()` + `trg_notify_notification_hint`** (`AFTER INSERT ... FOR EACH ROW` on `public.notifications`). SECURITY DEFINER, `search_path = ''`. Resolves recipient → `users.auth_user_id` (index-scan verified), emits `{"id": …}` on `account:<auth_uid>:notifications` via the **existing** `ds5_emit_hint` — no new helper. Suppresses when the row is a platform-scoped announcement and the config is not `'true'`; **fail-quiet**, so an absent or garbage value suppresses rather than bursting.
+3. **`ds5_notifications_receive_own`** on `realtime.messages` — the fourth receive policy, initplan-wrapped form, `FOR SELECT TO authenticated`, no send policy.
+4. **NB-7 executed** — `notifications` dropped from `supabase_realtime`; the publication is **empty**, verified on the live DB.
 
-The emit calls the **existing** `public.ds5_emit_hint(p_payload JSONB, p_event TEXT, p_topic TEXT)` (`20260720153000:91`, verified deployed) — already `private => TRUE`, already non-fatal, already revoked from `PUBLIC, anon, authenticated` (`:111`). Payload is content-free per ADR-U039:24: the row id and nothing else. No title, no body, no kind.
+**Why one trigger and not ~38 edits.** There was no trigger on `public.notifications`, and `INSERT INTO public.notifications` appears at ~38 sites across 11 migrations (delivery triggers live on *source* tables). One trigger catches every writer — legacy, current, and unwritten — by construction. Row-level rather than statement-level because both emit the same message count (each recipient needs their own private topic); granularity is not the volume lever.
 
-**2. The nudge policy is data, not code.** Following the established `pc2_config` pattern (`key / value / description / updated_at`, whose sole row documents itself as "changeable without altering `reap_expired_mists()`"), a sibling `ds5_config` table holds the notification nudge policy. Seeded with one row:
+**The nudge policy is Stefan's call, recorded as data (2026-07-25).** Platform-wide announcements default to **no nudge**; community-scoped ones nudge normally. The admin UI and the general per-category switch are **N-D's** (NB-5) — deliberately not built here.
 
-`realtime_hint_platform_announcements = 'false'`
+**Tests.** `hub/tests/integration/notifications/realtime-hint-and-policy.test.ts` — 26 tests, **19 red-first demonstrated red before the migration existed**, 7 labelled invariant guards excluded from that claim. Receipt is proved by a WebSocket subscribe probe (a SQL SELECT would deny everyone and prove nothing). The announcement branch is exercised with controlled direct inserts rather than the real senders, which fan out ~1,274 rows per call to prove the same branch.
 
-The trigger consults it and suppresses the emit when the row is a platform-scoped announcement (`NEW.type = 'announcement' AND NEW.payload->>'scope_kind' = 'platform'`). Community-scoped announcements, invitations, nominations, and every other kind nudge normally. An administrator turns platform-wide nudges on by changing one value — no deploy, no migration.
+**Two honest corrections during the build**
+- **A vacuous test caught by green-at-red.** 19 red-first written, only 18 failing. The culprit asserted "platform emits zero hints" and "the row is readable" — both true *before* the migration. Fixed with a community control so suppression must be **selective**; the note is kept in the test body.
+- **A false negative in my own assertion.** The initplan-form regex rejected *correct* policy SQL, because Postgres re-renders wrapped sub-selects with an alias and inner parens (`( SELECT (auth.uid())::text AS uid)`). Caught by checking the assertion against the applied policy rather than trusting it.
 
-Scope-awareness is required because category-level control cannot express this: `announcement` is a single kind under a single category (`platform`) covering *both* a 30-member community post and a send-to-everybody broadcast. A per-category switch would force them to share a setting.
+**Conformance.** The inner-ring gate flagged `[core-to-domain] notify_notification_hint() CORE -> ds5_config (DS-5)` — an unclassified function defaults to CORE, and Core referencing a DS-5 table breaks the one-way rule. Classified DS-5 in `supabase/ownership.manifest.json` (correct on the manifest's own terms: DS-5 owns the routing layer above the vertical's delivery substrate). `ds5_config` added to the table map. Gate 6/6.
 
-**Deliberately not built here:** the general per-category nudge switch, and any admin UI. [NB-5](../../../planning/hub-v2/phase-3-notifications-completion-plan.md) assigns category+channel suppression to N-D's shared dispatcher, which is also where the preferences UI lands. This feature ships the one control and records the generalisation as N-D's seam.
+**Found, not caused:** the ownership manifest is inconsistent about trigger functions — only 1 of 5 DS-5 trigger functions on the live DB is listed, and the shared `ds5_emit_hint` helper is absent entirely. Recorded, not silently patched.
 
-**3. A fourth receive policy.** `ds5_notifications_receive_own` on `realtime.messages`, `FOR SELECT TO authenticated`, `extension = 'broadcast'`, topic equal to the caller's own `account:<uid>:notifications`. It joins the three already live (`session_signal_receive_own`, `ds5_conversations_receive_own`, `ds5_forum_receive_member` — verified). **It must use the initplan-wrapped form** `(select realtime.topic())` / `(select auth.uid()::text)` per the perf re-issue at `20260704075549:39-44`, *not* the original PC009 shape at `20260703154102:161-168`. **No send policy** — as with every other topic, a client cannot broadcast.
+**Green:** 26/26 integration, conformance 6/6. The suite was blocked for part of the cycle by `TASK-INT-01` (the dev-DB ES256 fixture flake) — fenced found-not-caused with a control, and Supabase later confirmed an upstream Auth incident.
 
-**4. Reconnect reconciliation needs no new contract.** The existing deployed reads suffice: `get_own_unread_notification_count()` establishes the badge truth and `get_own_notifications(p_limit, ...)` re-reads the recent window. Reconciliation is a *client* behaviour (FEAT-H032) exercising already-authorized paths — exactly ADR-U039:25's "reconnect/page-load reads the table."
-
-This corrects a carried-forward premise: the completion plan describes reconnect reconciliation as "a server primitive the SILENT oracle needs fresh tests for." The audit finds the primitive already exists; what is genuinely missing is the **tests**. This feature owns those (STORY-4), not a new RPC.
-
-**5. NB-7 — drop the legacy publication membership.** `ALTER PUBLICATION supabase_realtime DROP TABLE public.notifications`, replace-then-remove: the broadcast hint ships in the same migration set, so the capability is replaced before the legacy mechanism is removed. The publication ends **empty**.
-
-## Appetite
-
-One cycle half, platform side. Small by volume — one trigger, one table, one policy, one DROP — and most of the cost is in the adversarial tests, which are the point rather than the overhead. If the fan-out volume work grows beyond stating and testing the budget, that is the signal to stop and route it to N-D's dispatcher.
-
-## Rabbit holes
-
-- **Do not rebuild the emit helper.** `ds5_emit_hint` exists, is non-fatal, and is correctly revoked. Wrapping it, forking it, or inlining `realtime.send` re-opens a settled C-C ruling (`20260720153000:44`).
-- **Do not make the trigger fatal.** A realtime failure must never roll back the durable row — that inverts ADR-U039:25 ("durable state first, push second"). `ds5_emit_hint` is already non-fatal; the trigger must not add its own raising path.
-- **Do not build a "notifications since X" read.** Keyset pagination already exists backward; a forward variant is a new contract for no gain when re-reading page 1 plus the count is one cheap indexed read.
-- **Do not reuse `pc2_config`.** It belongs to PC-2 Identity (Platform Core — a governance carve-out) and a notification nudge policy is not Identity's business. Follow the *pattern*, own the table in DS-5.
-- **Do not batch the emit into a statement-level trigger** to shave the announcement fan-out. Row-level and statement-level send the same number of messages, because each recipient needs their own private topic; statement-level only adds a set-iteration path. The volume lever is the policy toggle, not the trigger granularity.
-- **Resist widening the payload.** Every field beyond the id is a step back toward the row-pushing that ADR-U039 rejected, and a step toward a client that renders the hint instead of verifying it.
+**Unrecorded:** per-test wall-clock at close.
 
 ## No-gos
 
