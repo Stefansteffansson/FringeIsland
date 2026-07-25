@@ -11,10 +11,12 @@ jest.mock('@/lib/realtime/manager', () => ({
 import {
   notificationsTopic,
   notificationsTenant,
+  registerNotificationsTenant,
   resetNotificationHintCoalescing,
   NOTIFICATIONS_CHANGED_EVENT,
   NOTIFICATION_HINT_COALESCE_MS,
 } from '@/lib/realtime/notifications-tenant';
+import { realtimeManager } from '@/lib/realtime/manager';
 
 /**
  * FEAT-H032 (TASK-NC-04) — the notifications tenant.
@@ -126,6 +128,33 @@ describe('FEAT-H032 — notifications tenant (N-C)', () => {
       const afterFirst = invalidateNotificationsCache.mock.calls.length;
       jest.advanceTimersByTime(NOTIFICATION_HINT_COALESCE_MS);
       expect(invalidateNotificationsCache.mock.calls.length).toBeGreaterThan(afterFirst);
+    });
+  });
+
+  describe('teardown — nothing survives the identity change (STORY-7)', () => {
+    it('cancels a PENDING coalesced dispatch on unregister', () => {
+      // The leak this guards: a hint arriving moments before sign-out would
+      // otherwise fire ~250ms later and send a still-mounted bell to fetch with
+      // a dead session. Found while investigating an intermittent sign-out E2E
+      // failure that the pre-change control did not reproduce.
+      const unregisterInner = jest.fn();
+      (realtimeManager.registerTenant as jest.Mock).mockReturnValue(unregisterInner);
+
+      const listener = jest.fn();
+      window.addEventListener(NOTIFICATIONS_CHANGED_EVENT, listener);
+
+      const teardown = registerNotificationsTenant('uid-1');
+      const tenant = (realtimeManager.registerTenant as jest.Mock).mock
+        .calls[0][0] as ReturnType<typeof notificationsTenant>;
+
+      tenant.onHint({ event: 'notification', payload: { id: 'n-1' } });
+      teardown(); // sign-out lands inside the coalescing window
+
+      jest.advanceTimersByTime(NOTIFICATION_HINT_COALESCE_MS * 4);
+      expect(listener).not.toHaveBeenCalled();
+      expect(unregisterInner).toHaveBeenCalledTimes(1);
+
+      window.removeEventListener(NOTIFICATIONS_CHANGED_EVENT, listener);
     });
   });
 });

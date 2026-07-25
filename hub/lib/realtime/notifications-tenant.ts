@@ -85,7 +85,17 @@ export function notificationsTenant(userId: string): Tenant {
 
 /** Register while armed; the returned teardown unregisters on sign-out or an
  *  identity change. Called from `useRealtimeTenants` beside the conversations
- *  tenant, so both share the one socket the manager owns. */
+ *  tenant, so both share the one socket the manager owns.
+ *
+ *  The teardown ALSO cancels any pending coalesced dispatch. Without that the
+ *  timer outlives the tenant: a hint arriving moments before sign-out would
+ *  fire ~250 ms later, dispatch `notificationsChanged`, and send a still-mounted
+ *  bell to fetch with a dead session. Nothing may survive the identity change
+ *  (the FEAT-H027 STORY-7 guarantee) — a module-level timer included. */
 export function registerNotificationsTenant(userId: string): () => void {
-  return realtimeManager.registerTenant(notificationsTenant(userId));
+  const unregister = realtimeManager.registerTenant(notificationsTenant(userId));
+  return () => {
+    resetNotificationHintCoalescing();
+    unregister();
+  };
 }
