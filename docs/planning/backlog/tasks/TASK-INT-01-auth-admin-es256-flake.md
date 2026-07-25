@@ -3,7 +3,7 @@
 ---
 id: TASK-INT-01
 title: createTestUser intermittently fails with "unrecognized JWT kid <nil> for algorithm ES256" against the dev DB — root-cause and fence
-status: todo
+status: review
 assigned_to: claude
 priority: medium
 feature: none
@@ -159,6 +159,16 @@ A preflight health check in `tests/integration/suite-setup.ts` was considered an
 - [x] **Repo verified free of legacy JWT keys** — both `.env.local` files and all source use only the new key generation
 - [x] **Vercel env vars audited — clean** (all `sb_publishable_*`, no legacy JWT, no service-role key).
 - [x] **Legacy-key disable tried directly (2026-07-23) — did NOT fix the flake** (before/after probe above); rolled back. The remaining-consumer audit is therefore moot *for this bug* (still worth doing for its own security merit, but no longer on this task's critical path).
+- [x] **VENDOR CONFIRMED THE FAULT AND SHIPPED A FIX (2026-07-25).** Supabase Support replied: *"We have identified an authentication issue and have implemented a resolution."* Status page incident **`cqjl192cn8sz`** — "Authentication issues for some projects", affecting **Auth**: Investigating 14:11 UTC → Identified/fix implemented 14:21 → Monitoring 14:25 → **Resolved 14:45 UTC**, 2026-07-25. **The cause was upstream infrastructure, not our configuration** — which retrospectively vindicates every hypothesis this task disproved (key propagation, legacy-key generation, rate limiting, repo/Vercel env state were all correctly ruled out).
+
+  **Two caveats, both load-bearing — do NOT close this task on the vendor's word alone:**
+  1. **Their window does not cover our observations.** Our first ES256 hit was **2026-07-22** (COR-B W4), three days before they opened the incident. And the A-NTF N-C runs that lost 26/26 tests to it ran at roughly **16:30–17:15 UTC on 2026-07-25 — *after* their 14:45 "Resolved"**. Their timeline plausibly reflects when they *noticed*, not the fault's full span. Treat "resolved" as a claim to verify across several clean days, not a fact.
+  2. **No restart is needed or warranted.** The broken component was Supabase's Auth service, fixed on their side; our project's database does not host it, so a restart would buy downtime and nothing else. Empirical confirmation is stronger and already in hand: the FEAT-PD015 suite ran **26/26 green with zero ES256 occurrences** immediately after the fix (2026-07-25).
+
+  **Mitigation landed anyway (2026-07-25, this task's own fix):** `createTestUser` now retries the transient with bounded exponential backoff — see the entry below. It was **not** exercised in the green run (zero occurrences), so it is **not** what unblocked the cycle; it is defence in depth against a recurrence, which the caveats above make worth having.
+
+- [x] **`createTestUser` retry landed (2026-07-25).** The severity multiplier is fixed: user creation had **no** retry while its siblings `signInWithRetry` and `withAnonRateLimitRetry` did, so one flaky admin call failed an entire suite's `beforeAll` rather than one test (A-NTF N-C lost 26/26 tests, three runs running). Now retries up to 4 attempts with exponential backoff, re-rolling a caller-unpinned email each attempt so a partially-succeeded create cannot turn a transient into a duplicate-email hard failure. **Narrow by design:** only the known signature (`unrecognized JWT kid` / `token is unverifiable` / `\bES256\b`) retries; every other error still fails fast, so the retry cannot soften a real regression. Guarded by `hub/tests/unit/helpers/auth-admin-transient.test.ts` (18 cases, **labelled test-after**), whose negative cases — duplicate email, weak password, broken signup trigger, RLS refusal, rate limit — are the point of the file.
+
 - [x] **Escalated to Supabase support — ticket filed 2026-07-23** via Dashboard → Support (category "APIs and client libraries" + library JavaScript + service Authentication, severity Low, project access granted). Body = [`../reference/supabase-support-es256-admin-api.md`](../reference/supabase-support-es256-admin-api.md). Reply goes to stefan.steffansson@yahoo.com.
 - [ ] **When Supabase replies — the one open action.** Apply whatever they advise, then re-measure: `cd hub && npm run probe:auth` (the permanent probe at `hub/scripts/auth-admin-es256-probe.mjs`). It prints the ES256-flake rate against the ~5-8% baseline. **Remove the `decorateAuthAdminError` fence only when the flake reads 0 across a couple of runs.** If they confirm it's a known transient with no project-side fix, keep the fence and close this task as accepted-platform-limitation.
 - [ ] (If a fix lands) A full `tests/integration/` run completes green twice consecutively, and — if the cause turns out to be concurrency — enforce the "run integration suites serially" rule mechanically (jest `maxWorkers` for the integration project) rather than by memory.

@@ -88,43 +88,91 @@ function decorateAuthAdminError(action: string, message: string): string {
 }
 
 /**
+ * Is this the TASK-INT-01 dev-DB auth-admin transient (the ES256 signing-key
+ * fault), as opposed to a real error the test should fail on?
+ *
+ * Deliberately NARROW. A blanket retry on `createTestUser` would mask genuine
+ * regressions — a duplicate email, a rejected password, a broken
+ * `handle_new_user` trigger — by turning a hard failure into a slow one. Only
+ * the known signature is retried; everything else fails fast, exactly as before.
+ *
+ * Exported so its over-matching risk is unit-testable without touching the
+ * network (tests/unit/helpers/auth-admin-transient.test.ts).
+ */
+export const isAuthAdminTransient = (message: string): boolean =>
+  /unrecognized JWT kid/i.test(message) ||
+  /token is unverifiable/i.test(message) ||
+  /\bES256\b/.test(message);
+
+/**
  * Create a test user, bypassing the normal signup flow. The handle_new_user()
  * trigger creates the personal group and sets personal_group_id — the user's
  * identity in the group system.
+ *
+ * Retries the TASK-INT-01 ES256 transient with exponential backoff. Without
+ * this, one flaky admin call fails an entire suite's `beforeAll` rather than a
+ * single test — which is what made the flake block whole cycles (A-NTF N-C,
+ * 2026-07-25: three consecutive runs lost 26/26 tests before any assertion ran).
+ * Its sibling helpers `signInWithRetry` and `withAnonRateLimitRetry` already
+ * paced their own transients; user creation was the gap.
  */
 export const createTestUser = async (options?: {
   email?: string;
   password?: string;
   displayName?: string;
+  maxRetries?: number;
 }): Promise<TestUser> => {
   const admin = createAdminClient();
-  const email = options?.email || generateTestEmail(`${process.hrtime.bigint()}`);
   const password = options?.password || 'Test123!@#$';
   const displayName = options?.displayName || 'Test User';
+  const maxRetries = options?.maxRetries ?? 4;
 
-  const { data: authData, error: authError } = await admin.auth.admin.createUser({
-    email,
-    password,
-    email_confirm: true,
-    // consent_accepted: a credentialed FIM signup is consent-gated at the substrate
-    // (handle_new_user, ADR-U038 S3). The helper simulates a real, consented signup.
-    user_metadata: { display_name: displayName, consent_accepted: 'true' },
-  });
-  if (authError) throw new Error(decorateAuthAdminError('create test user', authError.message));
+  let email = options?.email || generateTestEmail(`${process.hrtime.bigint()}`);
+  let lastMessage = '';
 
-  const { data: profile, error: profileError } = await admin
-    .from('users')
-    .select('*')
-    .eq('auth_user_id', authData.user.id)
-    .single();
-  if (profileError) throw new Error(`Failed to fetch user profile: ${profileError.message}`);
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    const { data: authData, error: authError } = await admin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      // consent_accepted: a credentialed FIM signup is consent-gated at the substrate
+      // (handle_new_user, ADR-U038 S3). The helper simulates a real, consented signup.
+      user_metadata: { display_name: displayName, consent_accepted: 'true' },
+    });
 
-  return {
-    user: authData.user,
-    personalGroupId: profile.personal_group_id as string,
-    email,
-    password,
-  };
+    if (!authError) {
+      const { data: profile, error: profileError } = await admin
+        .from('users')
+        .select('*')
+        .eq('auth_user_id', authData.user.id)
+        .single();
+      if (profileError) throw new Error(`Failed to fetch user profile: ${profileError.message}`);
+
+      return {
+        user: authData.user,
+        personalGroupId: profile.personal_group_id as string,
+        email,
+        password,
+      };
+    }
+
+    lastMessage = authError.message;
+
+    // A real error fails immediately — the retry must never soften a regression.
+    if (!isAuthAdminTransient(lastMessage) || attempt === maxRetries) {
+      throw new Error(decorateAuthAdminError('create test user', lastMessage));
+    }
+
+    // The admin call may have created the row before failing to sign its
+    // response. Re-roll a caller-unpinned email so the retry cannot collide
+    // with its own first attempt and turn a transient into a duplicate-email
+    // hard failure.
+    if (!options?.email) email = generateTestEmail(`${process.hrtime.bigint()}`);
+    await new Promise((r) => setTimeout(r, 500 * 2 ** (attempt - 1)));
+  }
+
+  // Unreachable — the loop either returns or throws.
+  throw new Error(decorateAuthAdminError('create test user', lastMessage));
 };
 
 /**
