@@ -33,8 +33,9 @@ These carry across areas until done; they are deliberately **not** swept at a re
 |------|------|--------|
 | [TASK-MIST-01](./TASK-MIST-01-ghost-session-handling.md) | Ghost Mist sessions — a browser session outliving its erased subject | J-O3 area gate (live walk) |
 | [TASK-DOC-003](./TASK-DOC-003-domain-entities-journeys-refresh.md) | DOMAIN_ENTITIES refresh for the Journeys substrate | A-JRN doc health |
-| [TASK-DOC-004](./TASK-DOC-004-pc002-implementation-notes-backfill.md) | FEAT-PC002 Implementation notes backfill (`6-done` with an empty section) | A-JRN doc health |
 | [TASK-DOC-005](./TASK-DOC-005-anatomy-refresh-u049-u050.md) | Anatomy pair refresh through ADR-U050; move the stamp | A-COM doc health (2026-07-22) |
 | [TASK-OBS-01](./TASK-OBS-01-telemetry-sink-and-analytics-posture.md) | Telemetry sink + analytics posture (A-ADM's tenant) | A-JRN |
 | [TASK-E2E-01](./TASK-E2E-01-profile-shared-session-flake.md) | profile.spec shared-session flake (the scope-global sign-out trap) | A-JRN |
 | [TASK-FORUM-01](./TASK-FORUM-01-reply-addressing-and-collapse.md) | Forum reply collapse + addressing; the depth-cap decision + its missing rationale | A-COM live walk (2026-07-22) |
+
+**Closed, awaiting the next retro sweep:** [TASK-DOC-004](./TASK-DOC-004-pc002-implementation-notes-backfill.md) — FEAT-PC002's Implementation notes backfilled 2026-07-25, plus the whole-tree sweep it asked for (62 `6-done` specs; PC002 was the only one missing notes). `TASK-DOC-006`, a re-filing of the same finding raised at the A-NTF N-B boundary, was **deleted as a duplicate** — the audit had re-found an already-open standing task. See DOC-004's Resolution section.

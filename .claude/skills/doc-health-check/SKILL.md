@@ -445,7 +445,19 @@ For each feature spec (grep `docs/**/features/FEAT-*.md`):
 
 5. **`maturity: 5-in-cycle`** — expect: corresponding tasks exist in `docs/planning/backlog/tasks/TASK-*.md` with `feature: FEAT-{id}` in their frontmatter. Verify: at least one task file references this feature.
 
-6. **`maturity: 6-done`** — expect: Implementation notes section is filled in; Solution sketch / Appetite / Rabbit holes may be omitted per the template's retroactive mode. Verify: Implementation notes section exists and is non-empty. Flag as a critical drift item if a `6-done` spec has an empty Implementation notes section.
+6. **`maturity: 6-done`** — expect: Implementation notes section is filled in; Solution sketch / Appetite / Rabbit holes may be omitted per the template's retroactive mode. Verify: Implementation notes section exists and is non-empty. Flag as a critical drift item if a `6-done` spec has an **absent or empty** Implementation notes section.
+
+   **This check runs against every `6-done` spec in the tree on every run — never only the specs that changed in-cycle** (see the amended skip clause below). It is one command, so there is no cost argument for narrowing it:
+
+   ```bash
+   for f in $(grep -rl '^maturity: 6-done' docs/*/*/features/FEAT-*.md docs/*/*/*/features/FEAT-*.md); do
+     grep -q '^## Implementation notes' "$f" || echo "ABSENT:  $f"
+   done
+   ```
+
+   Absent and empty are the same finding class in different shapes: `ABSENT` means the heading is missing entirely (the spec ends at an earlier section), `EMPTY` means the heading exists with no prose under it. Check both — the grep above finds the first; eyeball each heading's body for the second.
+
+   **Why this is carved out of the skip clause:** an unchanged `6-done` spec is exactly the case that hides this defect. The notes were owed at close; if they were never written, nothing will ever change the spec again to pull it back into a narrowed scan. FEAT-PC002 sat undetected from 2026-06-27 to 2026-07-18 for precisely this reason, and the whole-tree sweep was not actually run until 2026-07-25 (62 specs, one hit).
 
 ### Also verify
 
@@ -454,7 +466,7 @@ For each feature spec (grep `docs/**/features/FEAT-*.md`):
 - `wave:` field names one of the six waves
 - `maturity:` value is one of the seven canonical values (`0-raw` through `6-done`)
 
-**Skip if:** No new feature specs written and no specs advanced maturity since last check.
+**Skip if:** No new feature specs written and no specs advanced maturity since last check — **except step 6, which always runs.** The `6-done`-without-notes sweep is whole-tree and unconditional; a spec that has not changed since it closed is the case this skip clause would otherwise hide forever.
 
 ---
 
@@ -704,6 +716,10 @@ Backlog items created (from critical findings):
 - <feature spec / doc> — <what needs to happen>
 - ...
 
+Re-finds (already-open backlog items this run re-surfaced — escalated, not re-filed):
+- <TASK-id> — raised <original boundary>, re-found here — priority now <N>
+- ...
+
 Placeholders confirmed scaffolding (per Section 7 registry):
 - <file>:<line> — references <registry entry> — scaffolding, not drift
 - ...
@@ -715,6 +731,16 @@ Table updates made during this run:
 Notes:
 - <any observations worth preserving for the next check>
 ```
+
+### Before filing anything: diff against the open backlog
+
+Every finding about to become a backlog item is first checked against the open tasks in `docs/planning/backlog/tasks/` — including the standing-tasks table in that folder's [`README.md`](../../../docs/planning/backlog/tasks/README.md). Grep for the feature id, the file path, and the finding's distinctive noun.
+
+- **No match** — file it normally.
+- **Match, still open** — this is a **re-find, not a new finding.** Do **not** create a second task. Instead: (a) append a dated re-find line to the existing task naming the boundary that re-surfaced it, (b) raise its `priority` one step, and (c) name it in the cycle retrospective as a *carried* item. A finding surfacing twice is evidence the backlog is not being read — a bigger problem than the finding itself, and it must not be filed away silently.
+- **Match, marked done** — either the fix regressed or the task was closed without the work being done. Say which, in the finding.
+
+**The failure this prevents:** at the A-NTF N-B boundary (2026-07-24) a run re-found FEAT-PC002's absent Implementation notes and filed `TASK-DOC-006` — a duplicate of `TASK-DOC-004`, filed at the A-JRN boundary six days earlier and sitting in the standing-tasks table the whole time. Both filings also recommended a whole-tree sweep that neither performed. Filing is not resolving, and a duplicate filing reads as diligence while erasing the age signal on the original.
 
 ### When to create backlog items vs fix in-place
 
