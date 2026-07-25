@@ -3,7 +3,7 @@
 ---
 id: TASK-NC-03
 title: "N-C: flip green, conformance, and the fan-out write-path check"
-status: todo
+status: blocked
 assigned_to: claude
 priority: high
 feature: FEAT-PD015
@@ -17,6 +17,12 @@ estimated_hours: 3
 ## Description
 
 Take the TASK-NC-01 suite from red to green against the applied migration, run the conformance gate, and verify the write-path cost the fan-out budget claims.
+
+> **BLOCKED 2026-07-25 by `TASK-INT-01` (the dev-DB auth-admin ES256 flake), not by this cycle's work.**
+> The migration **is applied** and all four changes are verified directly by SQL (`ds5_config` seeded + RLS deny-all with zero policies, `trg_notify_notification_hint` present, four `realtime.messages` receive policies all SELECT-only, `supabase_realtime` **empty**, the policy confirmed initplan-wrapped, the trigger function confirmed to contain no `RAISE EXCEPTION`).
+> What cannot run is the **suite**: three consecutive runs died in `beforeAll` with 52 `unrecognized JWT kid <nil> for algorithm ES256` errors before any assertion executed. Both prescribed diagnostics were performed — re-run alone with `--runInBand` (three times), and a control suite (`notification-contracts.test.ts`, untouched by this diff) which **also** showed ES256 and failed 1/16 in the same window. Fenced **found (not caused)**.
+> **Root cause of the blocking severity:** `createTestUser` has **no retry wrapper**, unlike `signInWithRetry` and `withAnonRateLimitRetry` in the same helper module. One flaky admin call therefore fails an entire suite's `beforeAll` rather than one test. Adding a bounded retry there is the obvious fix and would unblock this cycle — but it is shared test infrastructure and belongs to `TASK-INT-01`, so it is **recommended, not done here** (ask-first: changing shared code).
+> **Do not** interpret the substrate verification above as a green suite. Red→green is still owed.
 
 ## Acceptance criteria
 

@@ -37,6 +37,7 @@
     "forum_posts": { "owner": "DS-5" },
     "announcements": { "owner": "DS-5", "note": "ADR-U049 durable announcements home." },
     "content_reports": { "owner": "DS-5", "note": "CB-4 report store." },
+    "ds5_config": { "owner": "DS-5", "note": "FEAT-PD015 (N-C): DS-5 operational settings as data, mirroring pc2_config (which is likewise owned by its prefix's service). RLS-enabled with no policies — deny-all to clients, read only by SECURITY DEFINER paths. First key is the platform-wide-announcement nudge policy; DS-5 because the routing layer above the delivery substrate is DS-5's (see the notifications note), not the vertical's." },
 
     "journal_entries": { "owner": "DS-7" },
 

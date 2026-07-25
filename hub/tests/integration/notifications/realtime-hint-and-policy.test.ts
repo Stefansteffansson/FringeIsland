@@ -508,8 +508,17 @@ describe('FEAT-PD015 — notification realtime hint, nudge policy & reconnect (N
       `)) as SqlRows;
       expect(rows.length).toBe(1);
       const qual = String(rows[0].qual);
+      // Postgres normalises the stored qual — it re-renders the wrapped
+      // sub-selects with an alias and its own parenthesisation, e.g.
+      //   ( SELECT realtime.topic() AS topic)
+      //   ( SELECT (auth.uid())::text AS uid)
+      // so the assertion must tolerate the inner parens and the alias. An
+      // earlier, stricter regex here rejected CORRECT policy SQL — a false
+      // negative caught by comparing against the applied policy.
       expect(qual).toMatch(/\(\s*SELECT\s+realtime\.topic\(\)/i);
-      expect(qual).toMatch(/\(\s*SELECT\s+auth\.uid\(\)/i);
+      expect(qual).toMatch(/\(\s*SELECT\s+\(?auth\.uid\(\)/i);
+      // and the un-wrapped form must NOT be what shipped
+      expect(qual).not.toMatch(/(?<!SELECT\s)(?<!\()realtime\.topic\(\)\s*=/i);
     });
 
     it('GUARD (green pre- and post-apply): ds5_emit_hint is not callable by a client', async () => {

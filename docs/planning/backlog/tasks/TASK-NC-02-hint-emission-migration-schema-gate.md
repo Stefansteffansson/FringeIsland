@@ -3,7 +3,7 @@
 ---
 id: TASK-NC-02
 title: "N-C: the hint-emission migration — trigger, ds5_config, receive policy, publication DROP (SCHEMA GATE)"
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PD015
