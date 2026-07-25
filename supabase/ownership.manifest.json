@@ -114,7 +114,8 @@
       "mark_notification_read",
       "mark_all_notifications_read",
       "get_own_notifications_export",
-      "respond_to_acting_invitation"
+      "respond_to_acting_invitation",
+      "notify_notification_hint"
     ],
     "DS-7": [
       "create_journal_entry",
