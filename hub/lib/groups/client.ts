@@ -131,7 +131,6 @@ export function invalidateGroupsCache(): void {
   groupsInFlight = null;
   adoptedGroups = null;
   adoptedInvitations = null;
-  adoptedNominations = null;
 }
 // COR-A W9 (AC-5): session-end drop via the auth-owned registry — auth never
 // imports this module. Semantics in `lib/auth/cache-registry.ts`.
@@ -363,7 +362,6 @@ export async function cancelEmailInvite(
 // list resource. Consume-once — the first mount resolves from the bundle, every
 // later read revalidates via the standalone contract (mutation flows stay fresh).
 let adoptedInvitations: Promise<MyInvitation[]> | null = null;
-let adoptedNominations: Promise<PendingNomination[]> | null = null;
 
 async function requestMyInvitations(): Promise<MyInvitation[]> {
   const res = await fetch('/api/me/invitations');
@@ -457,7 +455,6 @@ export async function leaveGroup(
  * GroupsApiError — they carry the honest outcome copy (nomination-in-flight,
  * last-member-close-instead, expired) the Surface renders in place.
  */
-import type { PendingNomination } from '@/lib/groups/leadership';
 
 export type { PendingNomination } from '@/lib/groups/leadership';
 
@@ -524,33 +521,6 @@ export async function deleteGroup(groupId: string): Promise<Record<string, unkno
   });
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
   return (await res.json()) as Record<string, unknown>;
-}
-
-async function requestMyNominations(): Promise<PendingNomination[]> {
-  const res = await fetch('/api/me/nominations');
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
-  return (await res.json()) as PendingNomination[];
-}
-
-/** ADR-U042: adopt the bundle's nominations slice (transport failure → standalone). */
-export function adoptMyNominationsRead(read: Promise<PendingNomination[]>): void {
-  const guarded = read.catch((err) => {
-    if (err instanceof OverviewTransportError) return requestMyNominations();
-    throw err;
-  });
-  guarded.catch(() => {}); // may go unconsumed; never unhandled
-  adoptedNominations = guarded;
-}
-
-/** STORY-2 read: the caller's own pending stewardship offers (A-NTF seam).
- *  Consume-once adopted read first (ADR-U042), then the standalone contract. */
-export async function fetchMyNominations(): Promise<PendingNomination[]> {
-  if (adoptedNominations) {
-    const adopted = adoptedNominations;
-    adoptedNominations = null;
-    return adopted;
-  }
-  return requestMyNominations();
 }
 
 /**

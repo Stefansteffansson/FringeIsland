@@ -87,7 +87,12 @@ export default function GroupsPage() {
 
       {/* FEAT-H031 (N-B): the bespoke PendingNominations section retired here —
           stewardship offers now answer in the notification bell/inbox (the D8
-          re-home closed). Group invitations (MyInvitations, above) stay in place. */}
+          re-home closed). Group invitations (MyInvitations, above) stay in place.
+          FEAT-H032 (N-C) finished the job: the overview bundle's `nominations`
+          slice went too. N-B removed the renderer but left the read, so this
+          page kept paying for an answer nothing displayed on every first paint.
+          The standalone /api/me/nominations route is deliberately untouched
+          (ADR-U042 guardrail 3); its whole-chain disposition is TASK-H017-01. */}
 
       {authLoading || (!error && groups === null) ? (
         <LoadingState label="Loading your groups..." />

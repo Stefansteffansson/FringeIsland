@@ -7,7 +7,7 @@ import { describe, it, expect, jest, beforeEach } from '@jest/globals';
  * `prefetchOverview()` fires GET /api/me/overview once per session (module
  * latch) and hands each slice to its resource client's in-flight slot — the
  * consumers (`fetchProfile`, `fetchAccountState`, `fetchMyGroups`,
- * `fetchMyInvitations`, `fetchMyNominations`) then resolve from the bundle
+ * `fetchMyInvitations`) then resolve from the bundle
  * with ZERO additional network. Semantics under test:
  *   - adoption: five consumers, one network request total;
  *   - consume-once for the list reads (a second call revalidates via network —
@@ -24,7 +24,6 @@ import { prefetchOverview, invalidateOverview } from '@/lib/me/overview-client';
 import {
   fetchMyGroups,
   fetchMyInvitations,
-  fetchMyNominations,
   peekMyGroups,
   invalidateGroupsCache,
 } from '@/lib/groups/client';
@@ -38,7 +37,6 @@ const PROFILE = { full_name: 'Ada Lovelace', nickname: 'Ada', display_preference
 const STATE = { state: 'active' };
 const GROUPS = [{ id: 'g1', name: 'Dev Test Cohort', is_public: false, member_count: 1 }];
 const INVITATIONS = [{ group_id: 'g2', group_name: 'Nya gruppen' }];
-const NOMINATIONS = [{ notification_id: 'n1', group_name: 'Dev Test Cohort' }];
 const ONBOARDING = { onboarding_journey_id: 'jz-1', has_enrollment: true, has_completed: false };
 
 const OVERVIEW_OK = {
@@ -46,7 +44,6 @@ const OVERVIEW_OK = {
   account_state: { data: STATE },
   groups: { data: GROUPS },
   invitations: { data: INVITATIONS },
-  nominations: { data: NOMINATIONS },
   onboarding: { data: ONBOARDING },
 };
 
@@ -60,7 +57,6 @@ function routeStandalone(url: string) {
   if (url === '/api/me/onboarding') return ok({ onboarding: ONBOARDING });
   if (url === '/api/groups') return ok({ groups: GROUPS });
   if (url === '/api/me/invitations') return ok(INVITATIONS);
-  if (url === '/api/me/nominations') return ok(NOMINATIONS);
   if (url === '/api/account/state') return ok({ state: STATE });
   if (url === '/api/profile/me') return ok({ profile: PROFILE });
   throw new Error(`Unexpected fetch: ${url}`);
@@ -90,7 +86,6 @@ describe('ADR-U042 (unit) — overview adoption', () => {
     await expect(fetchAccountState()).resolves.toEqual(STATE);
     await expect(fetchMyGroups()).resolves.toEqual(GROUPS);
     await expect(fetchMyInvitations()).resolves.toEqual(INVITATIONS);
-    await expect(fetchMyNominations()).resolves.toEqual(NOMINATIONS);
     await expect(fetchOnboardingStatus()).resolves.toEqual(ONBOARDING);
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(overviewCalls()).toBe(1);

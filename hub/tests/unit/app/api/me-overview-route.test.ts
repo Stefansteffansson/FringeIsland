@@ -23,7 +23,6 @@ const fetchMyProfile = jest.fn<() => Promise<unknown>>();
 const fetchOwnAccountState = jest.fn<() => Promise<unknown>>();
 const fetchMemberGroups = jest.fn<() => Promise<unknown>>();
 const fetchMyInvitations = jest.fn<() => Promise<unknown>>();
-const fetchPendingNominations = jest.fn<() => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -53,10 +52,6 @@ jest.mock('@/lib/groups/invitations', () => ({
   fetchMyInvitations: (...a: unknown[]) =>
     (fetchMyInvitations as unknown as (...x: unknown[]) => unknown)(...a),
 }));
-jest.mock('@/lib/groups/leadership', () => ({
-  fetchPendingNominations: (...a: unknown[]) =>
-    (fetchPendingNominations as unknown as (...x: unknown[]) => unknown)(...a),
-}));
 
 import { GET } from '@/app/api/me/overview/route';
 
@@ -70,7 +65,6 @@ const PROFILE = { full_name: 'Ada Lovelace', nickname: 'Ada', display_preference
 const STATE = { state: 'active' };
 const GROUPS = [{ id: 'g1', name: 'Dev Test Cohort', is_public: false, member_count: 1 }];
 const INVITATIONS = [{ group_id: 'g2', group_name: 'Nya gruppen' }];
-const NOMINATIONS = [{ notification_id: 'n1', group_name: 'Dev Test Cohort' }];
 
 const authed = () =>
   getClaims.mockResolvedValue({ data: { claims: { sub: 'u1' } }, error: null });
@@ -82,7 +76,6 @@ beforeEach(() => {
   fetchOwnAccountState.mockReset().mockResolvedValue(STATE);
   fetchMemberGroups.mockReset().mockResolvedValue(GROUPS);
   fetchMyInvitations.mockReset().mockResolvedValue(INVITATIONS);
-  fetchPendingNominations.mockReset().mockResolvedValue(NOMINATIONS);
 });
 
 describe('ADR-U042 (unit) — GET /api/me/overview', () => {
@@ -102,14 +95,23 @@ describe('ADR-U042 (unit) — GET /api/me/overview', () => {
     expect(res.body.account_state).toEqual({ data: STATE });
     expect(res.body.groups).toEqual({ data: GROUPS });
     expect(res.body.invitations).toEqual({ data: INVITATIONS });
-    expect(res.body.nominations).toEqual({ data: NOMINATIONS });
+
+    // N-C parity (FEAT-H032 STORY-4): the bundle must serve EXACTLY the slices
+    // that have consumers — an orphan in either direction is the defect this
+    // assertion exists to catch. `nominations` was served with no consumer from
+    // the moment N-B deleted PendingNominations until N-C removed it, costing a
+    // discarded substrate read on every /groups first paint. Exact-set equality
+    // rather than a contains-check, so a future slice cannot be added without a
+    // consumer, nor a consumer left without its slice.
+    expect(Object.keys(res.body).sort()).toEqual(
+      ['account_state', 'groups', 'invitations', 'onboarding', 'profile'].sort(),
+    );
     // Each substrate read called exactly once — aggregation, no decisions.
     for (const f of [
       fetchMyProfile,
       fetchOwnAccountState,
       fetchMemberGroups,
       fetchMyInvitations,
-      fetchPendingNominations,
     ]) {
       expect(f).toHaveBeenCalledTimes(1);
     }
@@ -124,9 +126,12 @@ describe('ADR-U042 (unit) — GET /api/me/overview', () => {
     const timing = JSON.parse(raw) as Record<string, number>;
     // invocation index + auth + all five slices + total — names and
     // millisecond numbers only (never payload content).
-    for (const key of ['n', 'auth', 'profile', 'account_state', 'groups', 'invitations', 'nominations', 'total']) {
+    for (const key of ['n', 'auth', 'profile', 'account_state', 'groups', 'invitations', 'onboarding', 'total']) {
       expect(typeof timing[key]).toBe('number');
     }
+    // N-C parity: the timings must not carry a slice the bundle no longer
+    // serves. `nominations` was removed with its consumer (FEAT-H032 STORY-4).
+    expect(timing.nominations).toBeUndefined();
     expect(Object.values(timing).every((v) => typeof v === 'number')).toBe(true);
   });
 

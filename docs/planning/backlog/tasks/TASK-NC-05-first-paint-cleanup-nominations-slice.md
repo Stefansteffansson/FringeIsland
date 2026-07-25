@@ -3,7 +3,7 @@
 ---
 id: TASK-NC-05
 title: "N-C: the first-paint cleanup — retire the orphaned nominations slice, and measure it"
-status: todo
+status: review
 assigned_to: claude
 priority: medium
 feature: FEAT-H032
