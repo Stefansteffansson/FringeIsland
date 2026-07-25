@@ -18,7 +18,7 @@ estimated_hours: 4
 
 One migration carrying all four platform changes. **This task ends at `review`, never `done`** — it creates a table, a trigger, and an RLS policy, and drops a publication membership. Per the platform-tier rule, schema changes stop for human approval, and the merge unlocks only on an explicitly-named approval.
 
-**1. `public.ds5_config`** — key/value operational settings for DS-5, mirroring `pc2_config` (`key TEXT PRIMARY KEY, value TEXT NOT NULL, description TEXT, updated_at TIMESTAMPTZ`). **RLS enabled** (platform-tier rule: no exceptions, including "internal-only" tables). SELECT to `authenticated`; **no** client write policy — writes through elevated paths only. Seeded with one row:
+**1. `public.ds5_config`** — key/value operational settings for DS-5, mirroring `pc2_config` (`key TEXT PRIMARY KEY, value TEXT NOT NULL, description TEXT, updated_at TIMESTAMPTZ`). **RLS enabled with ZERO policies — deny-all.** *(Corrected 2026-07-25 from an earlier "SELECT to `authenticated`" draft: `pc2_config`, the precedent, is RLS-enabled with no policies at all. The blanket schema grants to `anon`/`authenticated` are inert because RLS denies by default, and only SECURITY DEFINER functions — which bypass RLS — read it. An operational config table needs no client reader in Ferd; the admin surface is N-D's. This is tighter than a SELECT policy and still satisfies the platform-tier "new tables require RLS" rule.)* Seeded with one row:
 
 ```
 realtime_hint_platform_announcements | false | Whether a platform-wide announcement emits per-recipient ADR-U039 hints. Default false: a platform send reaches every FIM, so hints scale with headcount, not activity (N-C, ADR-U039:46 fan-out budget). Changeable without altering notify_notification_hint().
