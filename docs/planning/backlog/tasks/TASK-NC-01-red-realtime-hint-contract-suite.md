@@ -3,7 +3,7 @@
 ---
 id: TASK-NC-01
 title: "N-C: red integration suite for the notification hint, nudge policy, and reconnect guarantees"
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PD015
