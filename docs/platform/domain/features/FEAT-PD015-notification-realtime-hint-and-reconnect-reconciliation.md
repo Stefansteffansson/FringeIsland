@@ -151,6 +151,16 @@ The Hub is the only consumer today, via the paired [FEAT-H032](../../../products
 **N/A (no surface)** — platform-only. Two budgets that are not page budgets apply and are stated here because ADR-U039:46 requires this area to carry them:
 
 - **Message-volume budget.** One nudge per recipient per notification. Measured live: the largest single announcement send produced 857 delivery rows to 857 recipients; reachable FIM population is 1,274. Against the plan allowance (2M/month free, 5M Pro), ordinary one-to-one activity is negligible; the only path that scales with headcount is the platform-wide announcement, which is suppressed by default (STORY-2). The toggle is the lever, and STORY-2's fail-quiet default means a misconfiguration cannot produce a headcount-sized burst.
+
+  **How Supabase actually counts this (verified against the pricing docs, 2026-07-25 — it is not what "only online users get it" would suggest):**
+
+  > *"A broadcast message counts as one message sent plus one message per subscribed client that receives it. For example, if you broadcast a message and 4 clients listen to it, it counts as 5 messages — 1 sent and 4 received."*
+
+  Because ADR-U039 gives every member their own private topic, **the send is per recipient, not per announcement**. A platform-wide send is therefore billed at roughly `N sends + (online subscribers) receives` — **N is charged whether or not anyone is listening**. Concretely, at today's 1,274 FIMs with ~50 online: ~1,324 messages for one announcement, of which ~1,274 are sends to members who are not there to receive them.
+
+  This **sharpens rather than changes** the default-off decision: the dominant cost tracks *headcount*, not concurrency, so "hardly anyone is online" is not a mitigation. Extrapolated, at 100k members one announcement is ~100k messages and ~20 per month exhausts the 2M free allowance.
+
+  **Named forward optimisation (N-D, not built here):** a *shared* topic for platform-wide announcements would cost `1 send + one per listener` instead of one send each — a ~25x reduction at today's scale and far more later. It is legitimate for this one case because a platform announcement's content is identical for, and visible to, every member, so the per-member privacy rationale for private topics does not bind. It is out of scope for N-C: it changes the channel taxonomy, so it needs its own decision inside the ADR-U039 rails and belongs with N-D's dispatcher work (NB-5), which is where suppression and routing policy already live.
 - **Write-path budget.** The trigger sits on the insert path of every notification, so its cost is paid by every writer including the fan-out loops. It must stay to a single indexed lookup (recipient → auth uid) plus one config read, and must add no per-row scan. A platform announcement inserting N rows must not become N × (a table scan).
 
 Loading states and interaction classes are the consumer's concern — see FEAT-H032.
