@@ -6,7 +6,7 @@ title: Notification realtime hint, nudge policy, and reconnect reconciliation
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

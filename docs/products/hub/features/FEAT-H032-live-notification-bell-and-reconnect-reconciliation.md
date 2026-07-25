@@ -6,7 +6,7 @@ title: Live notification bell, reconnect reconciliation, and the first-paint cle
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
