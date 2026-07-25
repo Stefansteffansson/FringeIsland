@@ -131,7 +131,13 @@ As a member, I want the groups page not to do work that is thrown away, so that 
 
 ## Cross-product impact
 
-None to sibling surfaces today. The Gimbal will want the same bell behaviour and inherits the topic and the doctrine unchanged — the tenant pattern is portable, and because the emit is surface-agnostic no platform change is needed when it ships. Hub `SPECIFICATION.md` §L2 §4 (`:38`, `:99`) flips `account:<auth_uid>:notifications` from forward-looking to realized, and `:143`'s reconnecting-state promise becomes true for notifications as well as DMs — both amended in this batch per the ADR-U039:33 obligation.
+None to sibling surfaces today. The Gimbal will want the same bell behaviour and inherits the topic and the doctrine unchanged — the tenant pattern is portable, and because the emit is surface-agnostic no platform change is needed when it ships.
+
+**Three documents must be amended in the same batch as the build** — ADR-U039:33 makes adding a realized channel a spec-level act, not a refactor:
+
+1. **`docs/products/hub/SPECIFICATION.md` §L2 §4** (`:38`, `:99`) — flip `account:<auth_uid>:notifications` from forward-looking to realized.
+2. **`docs/products/hub/SPECIFICATION.md` §L2** (`:143`) — its reconnecting-state promise becomes true for notification UIs as well as DMs.
+3. **`docs/products/hub/CLAUDE.md`** — its narrow-exception rule carries the same named channel list and currently reads *"the notification-bell channel `account:<auth_uid>:notifications` (forward-looking; A-NTF joins the same conventions)"*, with the rule stating explicitly that adding a channel "updates §4's named list (**and this line**) in the same batch." **This is a steering file, so that edit is a fuller-auto carve-out and pauses for the nod** — plan for it rather than discovering it at the close.
 
 ## Vertical impact
 
