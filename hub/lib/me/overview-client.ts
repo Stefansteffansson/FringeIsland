@@ -4,7 +4,7 @@
  * `prefetchOverview()` fires GET /api/me/overview once per session (module
  * latch) and hands each slice to its resource client's in-flight slot
  * (adoption): `fetchProfile`, `fetchAccountState`, `fetchMyGroups`,
- * `fetchMyInvitations`, and `fetchMyNominations` then resolve from the bundle
+ * and `fetchMyInvitations` then resolve from the bundle
  * with no additional network. The resource clients stay the only readers
  * their components know — no component imports this module.
  *
@@ -19,16 +19,11 @@
  */
 import type { GroupSummary } from '@/lib/groups/queries';
 import type { MyInvitation } from '@/lib/groups/invitations';
-import type { PendingNomination } from '@/lib/groups/leadership';
 import type { Profile } from '@/lib/profile/queries';
 import type { AccountState } from '@/lib/account/queries';
 import { OverviewTransportError } from '@/lib/me/overview-shared';
 import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
-import {
-  adoptGroupsRead,
-  adoptMyInvitationsRead,
-  adoptMyNominationsRead,
-} from '@/lib/groups/client';
+import { adoptGroupsRead, adoptMyInvitationsRead } from '@/lib/groups/client';
 import { adoptProfileRead } from '@/lib/profile/client';
 import { adoptAccountStateRead } from '@/lib/account/client';
 import { adoptOnboardingRead, type OnboardingStatus } from '@/lib/onboarding/client';
@@ -40,7 +35,6 @@ export interface OverviewResponse {
   account_state: Slice<AccountState>;
   groups: Slice<GroupSummary[]>;
   invitations: Slice<MyInvitation[]>;
-  nominations: Slice<PendingNomination[]>;
   onboarding: Slice<OnboardingStatus>;
 }
 
@@ -77,7 +71,6 @@ export function prefetchOverview(): void {
   adoptAccountStateRead(slice<AccountState>(bundle, 'account_state'));
   adoptGroupsRead(slice<GroupSummary[]>(bundle, 'groups'));
   adoptMyInvitationsRead(slice<MyInvitation[]>(bundle, 'invitations'));
-  adoptMyNominationsRead(slice<PendingNomination[]>(bundle, 'nominations'));
   adoptOnboardingRead(slice<OnboardingStatus>(bundle, 'onboarding')); // FEAT-H023 (B1)
 }
 

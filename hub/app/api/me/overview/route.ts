@@ -5,7 +5,6 @@ import { fetchMyProfile } from '@/lib/profile/queries';
 import { fetchOwnAccountState } from '@/lib/account/queries';
 import { fetchMemberGroups } from '@/lib/groups/queries';
 import { fetchMyInvitations } from '@/lib/groups/invitations';
-import { fetchPendingNominations } from '@/lib/groups/leadership';
 import { fetchOnboardingStatus } from '@/lib/onboarding/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
@@ -15,8 +14,15 @@ import { emitTelemetry } from '@/lib/observability/telemetry';
  * One invocation, one ADR-U037 identity verification, five CONCURRENT
  * substrate reads — the same lib query functions the standalone routes call
  * (`/api/profile/me`, `/api/account/state`, `/api/groups`,
- * `/api/me/invitations`, `/api/me/nominations`), so each slice is
+ * `/api/me/invitations`, `/api/me/onboarding`), so each slice is
  * payload-equivalent to its standalone read by construction.
+ *
+ * The `nominations` slice was removed in A-NTF N-C (FEAT-H032 STORY-4): N-B
+ * retired the `PendingNominations` section, its only consumer, leaving the
+ * bundle computing a read that nothing rendered on every `/groups` first paint.
+ * The standalone `/api/me/nominations` route remains canonical and untouched
+ * (guardrail 3 below); only the bundle stopped calling it. Members see their
+ * pending nominations in the bell — a different read path entirely.
  *
  * Guardrail 1 (bundle-only): this route aggregates and shapes; it never
  * decides. No filtering, no derivation, no authorization beyond what the five
@@ -81,7 +87,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  const [profile, account_state, groups, invitations, nominations, onboarding] = await Promise.all([
+  const [profile, account_state, groups, invitations, onboarding] = await Promise.all([
     readSlice(
       'profile',
       userId,
@@ -121,13 +127,6 @@ export async function GET() {
       'Failed to load invitations',
       timings,
     ),
-    readSlice(
-      'nominations',
-      userId,
-      () => fetchPendingNominations(supabase),
-      'Failed to load nominations',
-      timings,
-    ),
     // FEAT-H023: the first-arrival read rides the landing (B1 — no extra
     // round-trip); the standalone /api/me/onboarding stays canonical.
     readSlice(
@@ -139,14 +138,14 @@ export async function GET() {
     ),
   ]);
 
-  const failed = [profile, account_state, groups, invitations, nominations, onboarding].filter(
+  const failed = [profile, account_state, groups, invitations, onboarding].filter(
     (s) => 'error' in s,
   ).length;
   timings.total = Math.round(performance.now() - tStart);
   emitTelemetry('overview.read', { actor: userId, failed, timings });
 
   return NextResponse.json(
-    { profile, account_state, groups, invitations, nominations, onboarding },
+    { profile, account_state, groups, invitations, onboarding },
     { headers: { 'x-overview-timing': JSON.stringify(timings) } },
   );
 }
