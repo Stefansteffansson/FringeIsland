@@ -73,4 +73,20 @@ Doctrine untouched: this changes no convention, so no superseding ADR is needed.
 
 Measured on the dev DB at N-C: the largest single announcement produced **857 delivery rows to 857 recipients**, against a reachable population of **1,274**. So the dominant cost tracks **headcount, not concurrency** — "few members are online" is not a mitigation. N-C's response was to make the platform-wide announcement nudge an **operator toggle defaulting to off**, held as data (`ds5_config`) rather than code.
 
-**Standing implication for future tenants:** a one-to-many fan-out over per-member private topics is inherently headcount-priced. Where a message's content is identical for, and visible to, every recipient, a **shared topic** costs `1 send + one per listener` instead and is not precluded by this doctrine — the per-member privacy rationale for private topics simply does not bind that case. Named as the forward optimisation for A-NTF Cycle N-D; any such channel is still added by feature spec under §"Hub channel-scope rule".
+**Standing implication for future tenants:** a one-to-many fan-out over per-member private topics is inherently headcount-priced. Where a message's content is identical for, and visible to, every recipient, a **shared topic** costs `1 send + one per listener` instead and is not precluded by this doctrine — the per-member privacy rationale for private topics simply does not bind that case. Named as the forward optimisation for A-NTF Cycle N-D; any such channel is still added by feature spec under §"Hub channel-scope rule". — **the N-D pointer is spent; see Amendment 2.**
+
+---
+
+## Amendment 2 (2026-07-26) — the shared-topic optimisation moves to Eid; Amendment 1's N-D pointer is spent
+
+**This records a scheduling decision only. No convention changes — the doctrine and Amendment 1's cost analysis both stand exactly as written.**
+
+Amendment 1 §3 closed by naming the shared-topic optimisation "the forward optimisation for **A-NTF Cycle N-D**". **N-D has since closed without building it** (2026-07-26; PRs #294 / #295 / #296), so that pointer now aims at a finished cycle. Its home is **Eid**.
+
+**Why it was deferred** (board row ND-6, `docs/planning/hub-v2/2026-07-26-ntf-n-d-preference-home-adjudication-and-board.md:183`): **the saving is currently zero.** N-C's board row NC-2 had already made the platform-wide announcement nudge an operator toggle **defaulting to off**, held as data in `ds5_config`. So the headcount-priced fan-out Amendment 1 measured — 857 sends against a reachable population of 1,274 — **is not being paid by anyone today.** The optimisation only begins to pay once an operator flips that toggle on. Building it in N-D would have optimised a switched-off path.
+
+The second reason is this ADR's own. A shared topic **inverts the per-member privacy rationale** behind §Decision 2's private-channels-only convention. Amendment 1 already noted that rationale "simply does not bind" a message identical for and visible to every recipient — but such a channel still needs its own receive policy on `realtime.messages`, and that is a change to the channel taxonomy. It deserves its own feature spec rather than a rider on a preferences cycle.
+
+**The trigger is a number, not a date.** N-D's ND-4 shipped the operator toggle **with a live cost line** on the console, so whoever flips the switch sees the fan-out price at the moment they choose to pay it. That is the intended signal: **build the shared topic when that cost line shows a number someone actually wants smaller.** If the toggle stays off through Eid, the deferral simply renews rather than expiring into an obligation.
+
+Unchanged: any such channel is still added by feature spec under §"Hub channel-scope rule".
