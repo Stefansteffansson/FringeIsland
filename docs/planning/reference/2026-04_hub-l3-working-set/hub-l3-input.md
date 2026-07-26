@@ -200,6 +200,8 @@ Communication spans 1+1 (DM), 1+community (forum), and 1→many (announcements),
 
 Notifications are the connective tissue. The Hub renders them, lets the member act on smart ones directly, reconciles missed events, and lets the member configure how they are notified.
 
+> **SUPERSEDED SNAPSHOT (2026-04 draft) — NOT canonical.** This A-NTF list is early L3-input (NTF-1..9). The L3 author did a fresh derivation and **renumbered**, so the IDs below do **not** map onto canon: the canonical A-NTF inventory is `docs/products/hub/SPECIFICATION.md` §L3 (**NTF-1..10**). The divergence is not an off-by-one — it re-sorts the meanings. Below, `NTF-2` is *actionable notifications* and `NTF-8` is *preferences*; in canon, **NTF-2 is the bell + unread count**, actionable is **NTF-4**, and **preferences are NTF-10** (its external dependency is **DS-5**, adjudicated 2026-07-26, not the "PC-4 Governance" this draft guessed). Read that table, not this one. *(Banner added 2026-07-26 at the A-NTF N-D boundary: the file's two existing banners cover only its A-IDN tables, so this one was an unguarded trap of exactly the kind Section 3.7 was written for.)*
+
 | ID | Capability | Internal area | Depends on (internal) | Depends on (external) | Vertical impact |
 |---|---|---|---|---|---|
 | NTF-1 | Receive and render passive notifications | A-NTF | IDN-2 | V3 Notifications, DS-5 (delivery substrate) | V3, V4 |
