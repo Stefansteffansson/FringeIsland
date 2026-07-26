@@ -119,7 +119,7 @@ After all tasks for a story are done:
   - a cycle that adds or reroutes a request on a user-facing first paint runs **one deep-cold spot measurement** of the touched page before `6-done` (one scenario, one page — the area gate remains the full pass).
 - In the **same commit** as the maturity change, update the feature-inventory summary row in the parent entity's `SPECIFICATION.md` (§L4) to reflect `6-done`. Per the `ecosystem-decomposition` skill L4 write scope, this is L4's property; `feature-development` is the operational layer carrying the update out. The `doc-health-check` skill §8 verifies the summary matches the actual state of `features/` at cycle boundaries — miss this step and the check will flag drift.
 - Update the `features/README.md` index
-- Update `CHANGELOG.md` if the change is user-visible
+- Update the **CHANGELOG(s)** if the change is user-visible — **three exist and one change can owe more than one**: root `CHANGELOG.md` (the cycle entry — always), `hub/CHANGELOG.md` (if Hub-surface-visible; member-facing register, no PR numbers or test counts), `docs/platform/core/CHANGELOG.md` (if Core substrate changed). Ask *who can see this change*, don't pick the first that comes to mind — four A-NTF cycles split across two files with every checkbox honestly ticked. Canonical rule: [`PROCESS.md`](../../../docs/planning/PROCESS.md) DoD
 
 ### Step 6: Clean up
 
@@ -137,7 +137,7 @@ After all tasks for a story are done:
 - Follow the acceptance criteria exactly — don't add unrequested scope
 - Respect the No-gos section — these are explicit exclusions
 - Run lint and type-check before committing
-- Update CHANGELOG.md for user-visible changes
+- Update the CHANGELOG(s) for user-visible changes — all that are owed, not just one (see Step 5; root always, `hub/` if Hub-visible, platform-core if Core substrate)
 - Walk dependency-upgrade PRs through the feature gates (lint + `next build` at minimum) before merge (bound at J-A)
 
 ### Ask first
