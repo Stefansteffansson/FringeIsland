@@ -340,21 +340,52 @@ describe('FEAT-PD011 — windowed own-edit/delete + content reports (C-D)', () =
       expect(messages.find((m) => m.id === dmMessageId)?.content).toBe(`CDwDmTarget${runTag}`);
     });
 
-    it('regression (green in the red run, labelled): a content edit emits no forum hint — the C-C topology is INSERT + tombstone-transition only', async () => {
+    // TASK-INT-02 Finding B (2026-07-26) — this assertion was TRUE when written
+    // at C-D (2026-07-20) and was falsified the same week, deliberately, by a
+    // decision recorded upstream. The A-COM area-gate live walk (scenario 6,
+    // 2026-07-22) found that C-D's own-edit window shipped under a "no socket
+    // work" carry rule, so an edit reached other members only on reload; the
+    // repair is FEAT-PD010's RIDER-3 amendment (`docs/platform/domain/features/
+    // FEAT-PD010-realtime-hint-emission.md:26,33`) and migration
+    // `20260722170000_a_com_rider3_forum_edit_hint.sql`, which adds
+    // `trg_ds5_emit_forum_edit_hint` (AFTER UPDATE, WHEN OLD.content IS
+    // DISTINCT FROM NEW.content AND NOT NEW.is_deleted) → one
+    // `forum_post_edited` on the group topic. So the forum topology is now
+    // INSERT + edit + tombstone-transition, and `forum_post_edited` is the
+    // third event in PD010's catalogue by design.
+    //
+    // RIDER-3's own migration header names only `realtime-hint-emission.test.ts
+    // RIDER-3` as its guarded test — this sibling was never adapted, so it had
+    // failed since 2026-07-22. Verified against the deployed substrate before
+    // rewriting: a content UPDATE moved the topic's hint count by exactly +1 and
+    // the stored event is `forum_post_edited`. The assertion is therefore
+    // INVERTED to pin the new topology, not loosened — a count-unchanged guard
+    // would now be asserting a behaviour the platform deliberately dropped.
+    it('a content edit emits exactly one forum_post_edited hint — PD010 RIDER-3 topology (INSERT + edit + tombstone-transition)', async () => {
       const ca = await asUser(author);
       const post = await newPost(ca, `CDwQuiet${runTag}`);
-      const before = await runAdminSql(
-        `SELECT count(*)::int AS n FROM realtime.messages WHERE topic = 'group:${g2}:forum';`,
-      );
+      const countEdits = async () =>
+        (
+          (await runAdminSql(
+            `SELECT count(*)::int AS n FROM realtime.messages
+              WHERE topic = 'group:${g2}:forum' AND event = 'forum_post_edited';`,
+          ))?.[0] as { n: number }
+        ).n;
+
+      const before = await countEdits();
       // Direct UPDATE is write-narrowed away; this probes the trigger topology
       // via admin SQL (the only remaining update path besides the contracts).
       await runAdminSql(
         `UPDATE public.forum_posts SET content = 'CDwQuietEdit' WHERE id = '${post.id}';`,
       );
-      const after = await runAdminSql(
-        `SELECT count(*)::int AS n FROM realtime.messages WHERE topic = 'group:${g2}:forum';`,
+      expect(await countEdits()).toBe(before + 1);
+
+      // The WHEN clause is the idempotency guarantee: re-writing the same
+      // content is not a content change, so it must emit nothing further.
+      await runAdminSql(
+        `UPDATE public.forum_posts SET content = 'CDwQuietEdit' WHERE id = '${post.id}';`,
       );
-      expect((after?.[0] as { n: number }).n).toBe((before?.[0] as { n: number }).n);
+      expect(await countEdits()).toBe(before + 1);
     });
   });
 
