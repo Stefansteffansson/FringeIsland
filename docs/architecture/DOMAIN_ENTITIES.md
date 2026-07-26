@@ -1,5 +1,9 @@
 # Domain Entities
 
+**Status:** Derived inventory — **canon wins.** Where this document and a pointed-at source disagree, the ADR, canonical core, or service specification is authoritative and this file is the thing to fix.
+**Reflects decisions through:** [ADR-U046](decisions/ADR-U046-step-response-capture.md) (2026-07-09) — the Journeys step substrate and response capture, absorbed 2026-07-26. Account-lifecycle states follow [ADR-U050](decisions/ADR-U050-account-lifecycle-state-machine.md); see the User entity.
+**Freshness caveat:** entity coverage is Ferd-era. Areas that shipped after the stamp above (Communication, Notifications) may hold detail this document does not yet carry — this file is an entity-level orientation, not a schema of record. The schema of record is `supabase/migrations/`.
+
 This document defines the core business entities in FringeIsland, their properties, relationships, and business logic.
 
 ## Overview
@@ -8,7 +12,7 @@ FringeIsland is built around six core domain entities:
 
 1. **User** - Individual people using the platform. Canonically this entity is the **FIM** (the base identity); "Member" is the platform-technical synonym for FIM and is used for nothing else. The anonymous, ephemeral **Mist** identity state precedes the FIM and transcends (metamorphoses) into it (ADR-U031). Identity-state and role naming follows the roles core: [`../ecosystem/universe/roles/README.md`](../ecosystem/universe/roles/README.md).
 2. **Group** - Flexible organizational units
-3. **Journey** - Structured learning experiences
+3. **Journey** - Structured learning experiences. Steps are first-class rows (`journey_steps`) over open kind/family registries, with a per-traveller lived record (`journey_step_instances`) — see Step substrate under the Journey entity (ADR-U044, ADR-U046)
 4. **Role** - Collections of permissions (templates and instances)
 5. **Permission** - Atomic capabilities
 6. **Enrollment** - Relationship between users/groups and journeys
@@ -214,7 +218,8 @@ FringeIsland is built around six core domain entities:
 | is_published | Boolean | Yes | Published to catalog (default: false) |
 | is_public | Boolean | Yes | Publicly visible (default: false) |
 | journey_type | String | Yes | Type: predefined, user_created, dynamic |
-| content | JSONB | No | Journey structure and materials |
+| content | JSONB | No | **Legacy only (pre-ADR-U044).** Structure now lives in `journey_steps` rows; the U044 migration nulls this on conversion. Non-null = unconverted |
+| sequencing_mode | String | Yes | How steps are traversed (default `linear`; ADR-U044 — data only, linear exercised) |
 | estimated_duration_minutes | Integer | No | Estimated completion time |
 | difficulty_level | String | No | beginner, intermediate, advanced |
 | tags | String[] | No | Searchable tags |
@@ -229,6 +234,8 @@ FringeIsland is built around six core domain entities:
 | enrolled_users | User | Many-to-Many | Users enrolled (via journey_enrollments) |
 | enrolled_groups | Group | Many-to-Many | Groups enrolled (via journey_enrollments) |
 | created_by | User | Many-to-One | Journey creator |
+| steps | JourneyStep | One-to-Many | Ordered step rows (`journey_steps`) — the live structure; see Step substrate below |
+| step_instances | JourneyStepInstance | One-to-Many (via steps) | Per-traveller lived records (`journey_step_instances`), grained by enrolment × traveller personal group × step |
 
 **Business Rules:**
 
@@ -248,26 +255,35 @@ FringeIsland is built around six core domain entities:
 | user_created | 2 | User-created, published to marketplace |
 | dynamic | 3 | Adaptive paths based on user actions |
 
-**Content Structure (JSONB Schema):**
+**Step substrate** ([ADR-U044](decisions/ADR-U044-journey-step-model.md), [ADR-U046](decisions/ADR-U046-step-response-capture.md); service spec: [DS-3 Journeys](../platform/domain/journeys.md)):
+
+A journey's steps are **rows, not a JSONB blob.** `journeys.content` held a `steps[]` array until the ADR-U044 migration converted it into `journey_steps` rows and **nulled `content` on every converted journey**. A non-null `content` therefore marks an unconverted legacy row — never read it as the live shape. The step vocabulary is likewise **not** the old sealed `content | activity | assessment` union; sealed vocabularies are forbidden by [ADR-U018](decisions/ADR-U018-no-hardcoded-group-types.md).
+
+| Table | Grain | What it is |
+|---|---|---|
+| `journey_steps` | one row per step, ordered within its journey | The **single-beat node**: title, order, `required`, `repeatable`, an optional `unlocked_by` self-reference for gating, an optional duration, and an inline `content` payload tagged `pending-DS-4` until DS-4 Content gains substrate |
+| `step_kinds` · `content_families` | one row per kind / family | **Open registries, not enums.** A step names its kind by key; each kind carries its `ask_verb`, `change_semantic`, and `captures_response`. New kinds are inserted, never coded ([ADR-U008](decisions/ADR-U008-step-type-extensibility.md), ADR-U018) |
+| `journey_step_instances` | *(enrolment × traveller personal group × step)* | The per-traveller **lived record** — that this traveller passed through this step. `completed_at` marks finishing. Withdrawal flips enrolment status rather than deleting, so instances survive |
+
+**The response payload is the most personal data in the system.** `journey_step_instances.response` (JSONB, nullable) holds the traveller's own words — `{body}` by convention and deliberately *not* by constraint, so future step kinds may capture structure without a schema change. `response_updated_at` stamps every effective write, the retraction clear included. Its posture is load-bearing, not incidental:
+
+- **Private by default.** DS-3 invariants 4 and 8: reflections are never visible to Steward or Guide, and never comparative. Progress-sharing consent covers completion facts only — *you can share your garden without sharing your journal.*
+- **Contract-only.** The table has RLS enabled with **zero policies and zero grants**. A direct PostgREST caller — including a Mist holding `authenticated` — can neither read nor write it around the owning verbs ([ADR-U038](decisions/ADR-U038-platform-contracts-platform-side-surface-bff.md)).
+- **Forgotten and disclosed correctly.** Erased with the enrolment cascade ([ADR-U031](decisions/ADR-U031-mist-identity-lifecycle.md)); exported under right-of-access.
+
+**Journey content (legacy JSONB, pre-ADR-U044):**
 
 ```json
 {
   "version": "1.0",
   "structure": "linear" | "branching" | "adaptive",
-  "steps": [
-    {
-      "id": "step_1",
-      "title": "Introduction to Leadership",
-      "type": "content" | "activity" | "assessment",
-      "content": {},
-      "duration_minutes": 30,
-      "required": true
-    }
-  ],
+  "steps": [ { "id": "step_1", "title": "…", "type": "…", "duration_minutes": 30, "required": true } ],
   "resources": [],
   "metadata": {}
 }
 ```
+
+Retained only so an unconverted row is recognisable. **Do not build against this shape** — `journey_steps` is the live model.
 
 **State Transitions:**
 
@@ -288,11 +304,8 @@ FringeIsland is built around six core domain entities:
   "is_published": true,
   "is_public": true,
   "journey_type": "predefined",
-  "content": {
-    "version": "1.0",
-    "structure": "linear",
-    "steps": [...]
-  },
+  "content": null,
+  "sequencing_mode": "linear",
   "estimated_duration_minutes": 180,
   "difficulty_level": "beginner",
   "tags": ["leadership", "fundamentals", "team-building"],
