@@ -1,0 +1,86 @@
+# A-NTF gate — ADR-U043 measurement pass (2026-07-27)
+
+Closes the two measurements owed at the [A-NTF area gate](../retrospectives/retro-2026-07-26-notifications-area.md): N-C's `/groups` before/after and N-D's new `/notifications/preferences` page.
+
+**Environment:** production `fringe-island.vercel.app` · same Supabase project as dev (verified from the deployed client bundle) · authenticated real path · headless measurement FIM created and erased in-run (`perf-antf@fringeisland.test`, teardown verified: 0 auth rows, 0 profile rows, 0 leftover groups).
+**Protocol:** ADR-U043 + Amendment 1. Deep-cold = **≥ 20 min enforced zero traffic** (22 min actual, four separate windows), n honestly labelled. Completion measured to a **data-derived selector** (`groups-list`, `pref-toggle-*`) — an unauthenticated 200 only proves the static shell rendered and is not the real path.
+
+---
+
+## Headline
+
+**The cold penalty is ~5.5 s, it is paid once per session by whichever authenticated page is loaded first, and it is not page-specific.** Both measured pages fail B2 by roughly 2×. Everything warm and semi-warm passes comfortably.
+
+## Results
+
+### Deep-cold — first authenticated navigation after ≥20 min idle (session cookie alive, functions cold)
+
+| First page of session | Wall | B2 budget | Verdict |
+|---|---|---|---|
+| `/notifications/preferences` (n=1) | **5 864 ms** | ≤ 2 500 ms | **FAIL** — 2.35× |
+| `/notifications/preferences` (n=2) | **5 142 ms** | ≤ 2 500 ms | **FAIL** — 2.06× |
+| `/groups` (n=1) | **5 617 ms** | ≤ 2 500 ms | **FAIL** — 2.25× |
+
+Mean ≈ **5 541 ms**, range 5 142–5 864 ms across **two different pages**. Also > 3 s, which **B6 independently classes as a defect** regardless of B2.
+
+### Second navigation of the same session (semi-warm)
+
+| Page | Wall | Verdict |
+|---|---|---|
+| `/groups` (after preferences) | 379 ms · 389 ms | PASS |
+| `/notifications/preferences` (after groups) | 402 ms | PASS |
+
+### Sign-in flow, deep-cold
+
+| Scenario | Wall | Budget | Verdict |
+|---|---|---|---|
+| **B1** sign-in click → content painted | **2 377 ms** | target 2 000, ceiling 2 500 | **PASS** — 123 ms headroom, over target |
+
+### Warm
+
+| Scenario | Runs | Budget | Verdict |
+|---|---|---|---|
+| B3 `/groups` soft-nav ×3 | 385 / 368 / 374 ms | ≤ 1 000 ms | PASS, wide |
+| B3 `/notifications/preferences` soft-nav ×3 | 272 / 278 / 399 ms | ≤ 1 000 ms | PASS, wide |
+| B3 `/notifications/preferences` full load, **fresh context** (uncached bundles) | 937 ms | ≤ 1 000 ms | PASS — **63 ms spare** |
+
+---
+
+## The finding that matters, and the wrong answer it replaced
+
+**A returning member is slower than a new one.** B1 — a full sign-in from cold — costs **2 377 ms**. A returning member whose session is still valid, arriving after ≥20 min idle, waits **~5 500 ms** for their first page. That is **2.3× worse than signing in from scratch**, and it is the case "first-time visitor" intuition never covers.
+
+It is coherent rather than paradoxical: the sign-in flow loads `/login` *first*, which warms the document and edge path, so by the time content paints part of the stack is already hot. A restored session skips that warm-up entirely and pays full price on its first authenticated navigation.
+
+**An earlier conclusion in this pass was wrong and is retracted.** Having measured `/notifications/preferences` cold at 5 864 ms and `/groups` at 379 ms, I attributed the gap to `OverviewBoot`'s `BOOT_PATHS` gate (`components/shell/OverviewBoot.tsx:17` — the ADR-U042 bundle fires only on `/`, `/login`, `/groups`) and concluded the preferences page was slow *because* it misses the bundle. **That compared a cold number against a semi-warm one.** The control run — same protocol with `/groups` going first — returned **5 617 ms**, statistically indistinguishable from the preferences page. The bundle gate does not explain the cold cost.
+
+## What survives as an observation (correctly scoped)
+
+The fan-out facts are real; they are simply **not demonstrated to cause the cold penalty**:
+
+- `/notifications/preferences` fires **6 API reads**, **fully concurrent** — all six start at ~178 ms, each 242–302 ms warm (deterministic warm waterfall run).
+- **4 of the 6 are app-shell reads**, not the page's: `unread-count` (`NotificationBell` → `AppShell`), `messages` (`MessagesLink` → `AppShell`), `profile/me`, `account/state` (`AccountStateProvider` → `layout.tsx`). Only `preferences` and `nudge-policy` belong to the page.
+- The ADR-U042 bundle covers **5 slices** — `profile`, `account_state`, `groups`, `invitations`, `onboarding` — so it would absorb 2 of those 4. The two badge reads (`unread-count`, `messages`) **predate the bundle and were never folded in**.
+- Therefore adding a path to `BOOT_PATHS` alone takes 6 reads → 5. Only also covering the two badges takes it to **3**.
+
+Whether that materially moves the cold number is **untested**. The parked L3 ([`2026-07-09-cold-load-regression-analysis.md:113`](./2026-07-09-cold-load-regression-analysis.md)) argues it should — "fan-out is precisely what is expensive… session-caching app-boot reads so full boots don't re-fire them" — and marks itself **"un-park candidate at J-F or the area gate."** This is that gate. But the honest state is: the mechanism is plausible and documented, and this pass did not confirm it.
+
+**The cheap decisive experiment**, if it's wanted: measure a deep-cold authenticated navigation to a surface with the *fewest* possible reads. If it also lands near 5.5 s, read count is not the driver and the cost is per-session sandbox provisioning; if it lands materially lower, fan-out reduction is worth building.
+
+## Disposition against the standing exception
+
+Per the A-COM gate's standing rider (Stefan, 2026-07-22): **the cold exception never waives the measurement pass, and warm/semi-warm are the binding signal.**
+
+- **Warm: all PASS**, with wide margin except the fresh-context full load at 937 ms (63 ms under the B3 ceiling) — worth watching, the same ceiling-hugging A-COM flagged on the group page.
+- **Semi-warm: all PASS** (379–402 ms).
+- **Deep-cold B2: FAIL on both pages**, recorded as a **labelled accepted exception pre-launch**, not a release blocker.
+
+**One caveat on comparing to history:** the J-gate analysis established ≈3.9 s deep-cold worst-case for data-complete on `/journeys`. 5.5 s is worse, but that figure measured a different page and possibly a different completion definition — this should be **reconciled before anyone calls it a regression**.
+
+## Method notes (so the next pass doesn't repeat these)
+
+- **Signing in immediately before a "cold" navigation destroys it.** The sign-in warms every function it touches. A first attempt reported `/notifications/preferences` cold at **368 ms**; the corrected two-phase protocol (persist session → idle 22 min → navigate) returned **5 864 ms** on the same page. A **16× error**, in the direction of a false pass.
+- **Cold read *counts* in this harness are unreliable** (6 vs 3 captured for the same page) because the listener's capture window closes when the selector appears. The warm waterfall run is deterministic — treat that as the read inventory. Wall-clock numbers are unaffected.
+- `ResourceTiming.responseEnd` was unusable here (returned 0); durations are stamped directly from request/response events.
+- A fresh FIM has **no groups**, so `/groups` renders `EmptyState` and `data-testid="groups-list"` never appears. The fixture must own groups, or the harness measures the empty state.
+- Creating the fixture requires `user_metadata: { display_name, consent_accepted: 'true' }` — signup is consent-gated at the substrate (ADR-U038 S3). Omitting it fails with an opaque *"Database error creating new user"*.
