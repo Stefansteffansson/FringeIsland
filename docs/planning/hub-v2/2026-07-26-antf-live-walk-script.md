@@ -8,7 +8,7 @@ Companion to the [area retrospective](../retrospectives/retro-2026-07-26-notific
 
 ## Read this first
 
-1. **Scenario 1 must be first, before you sign in anywhere.** Deep-cold is spent on the very first hit of the day. If you sign in first, the two owed ADR-U043 measurements are gone until tomorrow.
+1. ~~Scenario 1 must be first, before you sign in anywhere.~~ **No longer applies — the measurements were taken headlessly on 2026-07-27. Sign in freely and start at Scenario 2.**
 2. **Do not pause, delete or decommission any account.** That is how Alice died in the A-COM walk, and she is why this script has no fourth cast member.
 3. **Record as you go** using the template at the bottom. "Felt wrong but I can't say why" is a valid and useful finding — say it anyway.
 4. Anything marked **⚑ EXPECT** is a specific prediction. If reality differs, that is a finding even if it looks harmless.
@@ -39,7 +39,18 @@ Companion to the [area retrospective](../retrospectives/retro-2026-07-26-notific
 
 ---
 
-## 1 — The two owed gate measurements (COLD — DO THIS FIRST)
+## 1 — ~~The two owed gate measurements~~ — **DONE 2026-07-27, SKIP THIS SECTION**
+
+> **You no longer need to do this, and you no longer need to protect the cold window.** Both measurements were taken headlessly on production — full record: [`2026-07-27-antf-gate-measurements.md`](./2026-07-27-antf-gate-measurements.md). **Sign in whenever you like and start at Scenario 2.**
+>
+> What was found, so you know what to expect as you walk: **warm and semi-warm are fast** (272–402 ms everywhere) — but the **first authenticated page you open after leaving the tab idle 20+ minutes will take ~5.5 seconds**. That is a known, recorded FAIL against the 2.5 s budget, accepted as a labelled pre-launch exception. It is **not page-specific** — whichever page is first pays it. So if your very first click of the morning feels slow, that is the known number, not a new bug. Everything after it should feel instant.
+>
+> One thing your eyes can still add that the harness could not: **B6 judgement** — where a load takes 1–3 s, is there a **skeleton rather than a spinner**? And does the ~5.5 s first load show *anything* useful, or a blank page? Note it under Scenario 2.
+
+<details>
+<summary>Original measurement instructions (superseded — kept for the record)</summary>
+
+### The two owed gate measurements (COLD — DO THIS FIRST)
 
 These are the last two blocking items on the A-NTF gate. **≥ 20 minutes of zero traffic** must have passed on production — no page, no API, no background tab. Both are `n=1` and honestly labelled as such; that is the ratified depth call, not a shortcut.
 
@@ -51,6 +62,8 @@ These are the last two blocking items on the A-NTF gate. **≥ 20 minutes of zer
 6. **B6 check** on all of the above: under 1 s needs no indicator; 1–3 s must show a **skeleton, not a spinner**; over 3 s is a defect regardless of the number.
 
 > If the 20-minute idle wasn't real, say so and label the numbers *shallow-cold*. A mislabelled cold number is worse than a missing one.
+
+</details>
 
 ---
 

@@ -40,7 +40,9 @@ Four migrations (`20260723`–`20260726`), **one new ADR (U051)** and **two long
 
 *Placeholder. When the walk and the measurements land, record the verdict here and link the gate document (`docs/planning/hub-v2/2026-XX-XX-notifications-area-gate.md`, following the A-COM/A-JRN pattern).*
 
-Owed at the gate: **two ADR-U043 measurements** (N-C's `/groups` before/after, N-D's new preferences page) — both need a deployed environment and a ≥20-minute enforced idle; **Stefan's live walk**; **NB-8** Mist-posture proof; **W12** per-RPC verification; **U049 §8 Q1** adapter ownership; the **email-deferral** recording; and the **DS-5 spec advance**. The standing cold-load exception applies, with its 2026-07-22 rider: the exception never waives the measurement pass, and warm/semi-warm budgets remain fully binding.
+**✅ The two ADR-U043 measurements are DONE (2026-07-27)** — full record: [`../hub-v2/2026-07-27-antf-gate-measurements.md`](../hub-v2/2026-07-27-antf-gate-measurements.md). Summary: **warm and semi-warm all PASS** (272–402 ms; the binding signal per the A-COM rider), **B1 sign-in PASS** at 2 377 ms, and **deep-cold B2 FAILS on both pages at ~5.5 s** against a 2 500 ms ceiling — recorded as a labelled accepted exception pre-launch. The finding worth carrying: **the cold penalty is not page-specific** — whichever authenticated page loads first after idle pays it, so a *returning* member (~5.5 s) is **2.3× slower than a fresh sign-in** (2 377 ms), which no "first-time visitor" framing captures. An in-pass conclusion blaming `OverviewBoot`'s `BOOT_PATHS` gate was **retracted** when the control run put `/groups` at 5 617 ms — it had compared a cold number against a semi-warm one.
+
+Still owed at the gate: **Stefan's live walk**; **NB-8** Mist-posture proof; **W12** per-RPC verification; **U049 §8 Q1** adapter ownership; the **email-deferral** recording; and the **DS-5 spec advance**. The standing cold-load exception applies, with its 2026-07-22 rider: the exception never waives the measurement pass, and warm/semi-warm budgets remain fully binding.
 
 ## Standing items into Platform-Ops (A-ADM)
 
