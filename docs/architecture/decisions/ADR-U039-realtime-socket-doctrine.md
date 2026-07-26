@@ -1,6 +1,6 @@
 # ADR-U039: Realtime socket doctrine — private channels, server-originated hints, authorized-path reads
 
-**Status:** Proposed (2026-07-03)
+**Status:** Accepted (2026-07-03; accepted 2026-07-26 after four realizations — see Amendment 1)
 **Deciders:** Stefan + Claude (Cycle E decomposition session)
 **Technical story:** IDN-11 (per-device sessions + remote sign-out) needs an instant-sign-out signal; the legacy Hub MVP solved the same problem with Supabase Realtime, and the Notifications and Communication areas will need realtime delivery next. This ADR fixes the conventions all of them share **before** the first v2 tenant ships.
 
@@ -28,7 +28,7 @@ The following doctrine binds every realtime use on every surface (Hub now; Gimba
 **Consequences for named consumers:**
 
 - **IDN-11 / FEAT-PC009 + FEAT-H012 (first tenant):** `revoke_own_session()` emits the hint on `account:<auth_user_id>:sessions`; the Hub's AuthContext subscribes, verifies-on-signal, and adds focus/visibility + slow-interval validation.
-- **Notifications area (future tenant):** ping-then-fetch on this doctrine — the insert trigger emits a hint; the client re-fetches its unread rows through the authorized read path. The legacy `postgres_changes` full-row push is **not** carried into v2. (`public.notifications` remaining in the `supabase_realtime` publication serves the legacy app only, until Phase-4 cutover.)
+- **Notifications area (future tenant):** ping-then-fetch on this doctrine — the insert trigger emits a hint; the client re-fetches its unread rows through the authorized read path. The legacy `postgres_changes` full-row push is **not** carried into v2. (`public.notifications` remaining in the `supabase_realtime` publication serves the legacy app only, until Phase-4 cutover.) — **this parenthetical is now void; see Amendment 1.**
 - **Communication area (future tenant):** same doctrine; DM delivery shape is decided in that area's decomposition, but bound to private channels + hint-not-authority.
 - **Hub channel-scope rule:** `docs/products/hub/CLAUDE.md` and Hub `SPECIFICATION.md` §L2 §4 are amended in this batch — the permitted channel list becomes doctrine-governed: channels are added by feature spec under this ADR (each addition still updates §4's named list; the session-signal channel is the first realized entry).
 
@@ -45,3 +45,32 @@ The following doctrine binds every realtime use on every surface (Hub now; Gimba
 - Each surface holds exactly one socket whose concurrent-connection cost amortizes across all tenants (sessions today; notifications, DMs later).
 - Realtime message volume counts against plan quotas (2M/month Free, 5M Pro) — hint-sized payloads and rare control events keep this negligible until Notifications-scale fan-out, which that area's decomposition must budget.
 - The doctrine is testable per tenant: a spoofed hint must provably cause no state change (verify-on-signal), and a dropped hint must provably cost only latency (durable-first + fallback validation).
+
+---
+
+## Amendment 1 (2026-07-26) — Accepted, and §"Consequences for named consumers" notifications bullet superseded
+
+**Two changes, both recording what has already happened. The original text above is left intact (ADRs are append-only); this amendment is the correction of record.**
+
+**1. Status: Proposed → Accepted.** The doctrine was written 2026-07-03 ahead of its first tenant and has now been realized **four times**, each without amending the conventions:
+
+| Realization | Channel | Cycle |
+|---|---|---|
+| FEAT-PC009 / FEAT-H012 | `account:<auth_uid>:sessions` | Identity Cycle E |
+| FEAT-PD010 / FEAT-H027 | `account:<auth_uid>:conversations` | A-COM Cycle C-C |
+| FEAT-PD010 / FEAT-H027 | `group:<group_id>:forum` | A-COM Cycle C-C |
+| FEAT-PD015 / FEAT-H032 | `account:<auth_uid>:notifications` | A-NTF Cycle N-C |
+
+Four tenants held the conventions unchanged — one socket, private channels only, server-originated content-free hints, verify-on-signal, durable-first. A document four shipped features depend on should not read "Proposed": that wording implies the conventions may still move, when they are load-bearing.
+
+**2. The notifications bullet's parenthetical is void.** It read that `public.notifications` remaining in the `supabase_realtime` publication *"serves the legacy app only, until Phase-4 cutover."* Board decision **NB-7** (Stefan, 2026-07-23) overrode that deferral and **early-executed this ADR's own Phase-4 disposition**: nobody runs v1 (pre-launch, oracle-only), the oracle is not websocket-tested, so the "serves the legacy app" rationale was already empty and deferring only planted a forgettable due.
+
+Executed in A-NTF Cycle N-C (migration `20260725120000`, schema gate PR #285): `notifications` was dropped from `supabase_realtime` in the **same migration** that established its broadcast hint — replace-then-remove, so the capability was never absent. **`supabase_realtime` is now empty**, verified on the live DB. The `postgres_changes` full-row push has no remaining member on any table, which is the end-state this ADR's rejection of that mechanism (§Alternatives considered) always implied.
+
+Doctrine untouched: this changes no convention, so no superseding ADR is needed.
+
+**3. Fan-out budget, now measured (the §Consequences volume note discharged for notifications).** That section required the Notifications area to budget realtime volume. Recorded here because it constrains every future tenant, not just this one: per Supabase's pricing, *"a broadcast message counts as one message sent plus one message per subscribed client that receives it."* Because this doctrine gives each member a **private topic**, a per-recipient fan-out is billed **one send per recipient regardless of who is listening**, plus one receive per online subscriber.
+
+Measured on the dev DB at N-C: the largest single announcement produced **857 delivery rows to 857 recipients**, against a reachable population of **1,274**. So the dominant cost tracks **headcount, not concurrency** — "few members are online" is not a mitigation. N-C's response was to make the platform-wide announcement nudge an **operator toggle defaulting to off**, held as data (`ds5_config`) rather than code.
+
+**Standing implication for future tenants:** a one-to-many fan-out over per-member private topics is inherently headcount-priced. Where a message's content is identical for, and visible to, every recipient, a **shared topic** costs `1 send + one per listener` instead and is not precluded by this doctrine — the per-member privacy rationale for private topics simply does not bind that case. Named as the forward optimisation for A-NTF Cycle N-D; any such channel is still added by feature spec under §"Hub channel-scope rule".

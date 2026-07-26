@@ -3,7 +3,7 @@
 ---
 id: TASK-NC-03
 title: "N-C: flip green, conformance, and the fan-out write-path check"
-status: in_progress
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PD015

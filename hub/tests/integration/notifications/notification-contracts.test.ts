@@ -35,9 +35,22 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 jest.setTimeout(180_000);
 
-/** The exact N-A payload keys (FEAT-PD013 STORY-2; action_data/action_taken_at
- *  deliberately excluded until N-B names their consumer). */
-const N_A_PAYLOAD_KEYS = [
+/**
+ * The exact `get_own_notifications` payload keys, verified against the deployed
+ * contract (2026-07-26).
+ *
+ * **Adapted at the A-NTF N-C close.** This was `N_A_PAYLOAD_KEYS` and pinned the
+ * pre-N-B shape, with a comment reading "action_data/action_taken_at
+ * deliberately excluded until N-B names their consumer". N-B (2026-07-24) *did*
+ * name the consumer and added `action_data` to the contract — but did not adapt
+ * this sibling assertion, so it had been failing ever since. Renamed off the
+ * cycle label because a constant called "N-A keys" holding an N-B key is a small
+ * lie that misleads the next reader.
+ *
+ * `action_taken_at` is still correctly absent: N-B withheld it from the list
+ * contract (the export carries it).
+ */
+const LIST_PAYLOAD_KEYS = [
   'id',
   'kind',
   'category',
@@ -48,6 +61,7 @@ const N_A_PAYLOAD_KEYS = [
   'is_read',
   'read_at',
   'action_type',
+  'action_data',
   'action_taken',
   'expires_at',
 ].sort();
@@ -261,8 +275,9 @@ describe('FEAT-PD013 — notification contracts & category registry (N-A)', () =
       // Ordering: newest-first.
       const times = rows.map((r) => new Date(r.created_at).getTime());
       expect([...times].sort((a, b) => b - a)).toEqual(times);
-      // Exact payload keys — no action_data/action_taken_at until N-B.
-      expect(Object.keys(rows[0]).sort()).toEqual(N_A_PAYLOAD_KEYS);
+      // Exact payload keys — `action_data` present since N-B, `action_taken_at`
+      // still withheld from the list contract.
+      expect(Object.keys(rows[0]).sort()).toEqual(LIST_PAYLOAD_KEYS);
     });
 
     it('keyset pagination: no gaps, no duplicates across pages', async () => {
