@@ -2,6 +2,23 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-07-26 — You can say no: choose what reaches you ([FEAT-H033](../docs/products/hub/features/FEAT-H033-notification-preferences-and-operator-nudge-console.md) · [FEAT-PD016](../docs/platform/domain/features/FEAT-PD016-notification-preference-contracts-and-shared-suppression-dispatcher.md))
+
+- **Turn off what you don't want to hear about.** A **Notification preferences** page now sits with your notifications: one row per kind of notification, each with a switch. Turn one off and it stops arriving — **however it was written**. There is no corner of the platform that quietly routes around your choice.
+- **There's nothing to set up.** Everything starts on, and the platform only remembers where you've chosen to differ. A new member has nothing to configure, and a new kind of notification simply arrives until you say otherwise.
+- **Some things can't be switched off, and the page says why.** Notices about your own account and your access stay on — they're how the platform tells you something has happened to *you*. Rather than showing you a greyed-out switch and leaving you to guess, the page explains it in a line, in place.
+- **Email is listed, but not switchable yet.** Email delivery hasn't shipped, so a switch for it would be a promise we can't keep. The page says so plainly, and your choice binds the day it does ship.
+- **A change that can't be saved comes back and tells you.** The switch returns to what's actually true rather than leaving you looking at a setting the platform never accepted.
+- *(For those who run the platform: the platform-wide announcement nudge now has an operator panel — and it shows what switching it on actually costs, in messages, at the moment you decide.)*
+
+## 2026-07-25 — The bell goes live: news finds you where you are ([FEAT-H032](../docs/products/hub/features/FEAT-H032-live-notification-bell-and-reconnect-reconciliation.md) · [FEAT-PD015](../docs/platform/domain/features/FEAT-PD015-notification-realtime-hint-and-reconnect-reconciliation.md))
+
+- **Notifications arrive while you're looking at something else.** Sitting on any page, your bell updates within about a second of something being written for you — no refresh, no navigating away and back. Messages and forums have been live since earlier in this area; notifications, whose whole job is telling you things, now are too.
+- **A dropped connection costs you time, never news.** If the connection goes, or you leave the tab, anything that arrived while you were away is picked up when you return or when the page next loads. Nothing is lost by not watching.
+- **And it tells you when it isn't live.** Rather than looking up to date while quietly being stale, the bell says so, quietly, while it reconnects.
+- **Nothing about a notification travels over the live connection.** The signal says only *something changed*; the notification itself is fetched through the same door as always — so what you see is always what you're allowed to see.
+- **Your groups page got lighter.** It had been fetching nominations on every load for a section that no longer exists. That work is gone.
+
 ## 2026-07-24 — Answer where you were asked ([FEAT-H031](../docs/products/hub/features/FEAT-H031-notification-typed-actions.md) · [FEAT-PD014](../docs/platform/domain/features/FEAT-PD014-actionable-notification-dispatch-and-acting-fanout.md))
 
 - **Notifications you can answer.** A notification that asks something of you now carries the answer with it: **Accept** and **Decline** sit right on the letter, in the bell and in your notifications page alike. Each asks you to confirm, then applies immediately — and if it can't go through, it says why and puts the buttons back, rather than quietly pretending.
@@ -9,6 +26,15 @@ User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is
 - **Your group's invitations, answered in the same place.** When a group you lead is invited to join another, the invitation now reaches **everyone who can answer for that group**, not just one person. The group's page shows the invitation but no longer asks there — it points you to your notifications.
 - **Your co-leaders can see who answered.** Whoever gets there first answers for the group, and the others' copies stop asking and read **"Answered by [name]"**. No double answers, no wondering whether someone already handled it — and it stays true even when the answer was a decline.
 - **Answered stays answered, and expired stops asking.** A letter you've responded to shows its outcome and drops its buttons; one whose window has passed reads *Expired* and asks nothing. Reload and it's still true — this is the platform's memory, not your browser's.
+
+## 2026-07-23 — The bell arrives: notifications you can find again ([FEAT-H030](../docs/products/hub/features/FEAT-H030-notification-bell-and-inbox.md) · [FEAT-PD013](../docs/platform/domain/features/FEAT-PD013-notification-routing-contracts-and-category-registry.md))
+
+- **A bell in the header, with a count.** It shows how many notifications you haven't read — capped at *9+* — and the count drops the moment you read one.
+- **Open it for your latest fifteen, unread first.** Clicking one marks it read and takes you where it points, or leaves you where you are when there's nowhere to go. *Mark all* is there for when you simply want it clear.
+- **A notifications page that keeps your history.** Until now, anything that scrolled out of view was gone for good. There's now a full page you can page back through, as far back as it goes.
+- **Letters that expect something of you show their state** — *Awaiting*, *Handled* or *Expired* — so you can see what still wants you. *(Answering them where you read them arrives in the entry above.)*
+- **A kind of notification the page doesn't recognise still shows up** rather than vanishing. The platform would rather tell you something arrived than silently drop it.
+- **Your data download now includes your notifications.**
 
 ## 2026-07-20 — A place that keeps what's said: the group forum, and names that stay honest ([FEAT-H026](../docs/products/hub/features/FEAT-H026-group-forum-and-attribution.md) · [FEAT-PD009](../docs/platform/domain/features/FEAT-PD009-forum-and-attribution-contracts.md))
 
