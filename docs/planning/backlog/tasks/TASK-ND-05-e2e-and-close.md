@@ -3,7 +3,7 @@
 ---
 id: TASK-ND-05
 title: E2E the mute-round-trip, close both specs to 6-done, close the A-NTF area
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-H033

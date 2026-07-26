@@ -3,7 +3,7 @@
 ---
 id: TASK-ND-03
 title: Flip the FEAT-PD016 suite green, run the conformance gate, record every adaptation honestly
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PD016
@@ -32,3 +32,9 @@ Flip TASK-ND-01's suite green against the applied migration, then run the confor
 ## Verification
 
 `cd hub && npx jest --selectProjects integration --testPathPatterns notification` green; `npx next build` clean.
+
+## Outcome (2026-07-26)
+
+Green with **zero migration edits after the first correction**, and no assertion loosened. Full sweep **690/690** (56 suites) — reconciles exactly against the 666/55 baseline: +24 tests, +1 suite, nothing else disturbed.
+
+**Two conformance gates failed on the first sweep, both caused by this cycle** and both classification misses rather than defects: the two new tables were unclassified in `supabase/ownership.manifest.json`, and `functionOwner()` defaults to `CORE`, so the operator contracts read as CORE functions touching `ds5_config` (DS-5) — flagged `core-to-domain`. Fixed by classifying; `notification_preferences` deliberately DS-5 rather than `vertical:notifications` so it lands in `dsTables()` and **is policed** by that gate. Also closed N-C's filed manifest finding (1 of 5 DS-5 trigger functions listed; `ds5_emit_hint` absent).

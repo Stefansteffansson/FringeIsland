@@ -6,7 +6,7 @@ title: Notification preference contracts & the shared suppression dispatcher
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -40,7 +40,7 @@ both:
    sites across 11 migrations** (the N-C substrate audit's count). Per-emitter
    enforcement would mean 38 edits and a permanent invitation to forget the 39th.
 
-## Solution sketch
+## Design record (the as-specified sketch, kept because it carries the adjudication)
 
 ### The preference home — adjudicated 2026-07-26 (board row ND-1)
 
@@ -170,24 +170,31 @@ Admin surface: `get_notification_nudge_policy()` → key/value/description/`nudg
 per category; `get_platform_announcement_reach()` → the integer in the cost line.
 No unconsumed keys.
 
-## Appetite
+## Implementation notes
 
-One cycle, platform half ≈ two focused sessions. The migration is the bulk; the
-contracts are the IDN-7 idiom re-applied.
+**Built 2026-07-26 (A-NTF Cycle N-D), migration `20260726120000_n_d_notification_preferences_and_dispatcher.sql`, PR #295 (held at the schema gate, merged on a named nod).** The design above shipped as written; what follows is what actually landed and what it cost.
 
-## Rabbit holes
+**As built.** `notification_channels` (open registry; `in_app` delivering, `email` not) · `notification_preferences` (own-rows-only SELECT, **no client write policy at all**) · `member_suppressible` + `nudge` on `notification_categories` (`account` seeded non-suppressible) · `ds5_may_deliver()` · `trg_ds5_apply_notification_preference` (`BEFORE INSERT` on `public.notifications`) · `notify_notification_hint` re-created with the per-category nudge check, its `ds5_config` platform branch carried forward unchanged · member contracts `get_own_notification_preferences` / `set_own_notification_preference` / `get_own_notification_preferences_export` · operator contracts `get_notification_nudge_policy` / `set_notification_nudge_policy` / `set_notification_category_nudge` / `get_platform_announcement_reach`.
 
-- **Do not build a suppression *log*.** "Which notifications were suppressed and
-  why" is a V4 telemetry question with no sink yet (`TASK-OBS-01`). The trigger emits
-  nothing per-suppression; a `RETURN NULL` is silent by design at this maturity.
-- **Do not resolve preferences per-notification at read time.** The check belongs at
-  write time, once, or the inbox pays for it on every page.
-- **Do not let `member_suppressible` drift into `lawful_basis`.** They are different
-  axes; the CHECK on `lawful_basis` stays a two-value legal dichotomy.
-- **Engagement-group-addressed rows.** `notifications.recipient_group_id` can name an
-  engagement group, not a personal group (`notify_notification_hint` already handles
-  that case by resolving to NULL). Such a row has no single member whose preference
-  applies — it must deliver, not be suppressed. Timebox: one guard clause.
+**One primitive was added that the design did not anticipate: `ds5_require_fim_subject()`.** The existing `ds5_require_fim_actor()` raises `42501` for both "no actor" and "Mist, not FIM" — but `set_own_notification_preference` also raises `42501` for "this category cannot be muted", and those two mean different things to a member (the Hub maps a policy refusal to 409 and an identity refusal to 403). Collapsing them would have left the surface unable to say which happened. So the identity refusal uses `28000`, and `42501` stays the policy refusal. Narrow helper, no change to the existing one.
+
+**The rabbit hole that turned out not to exist.** The spec budgeted "one guard clause" for engagement-group-addressed rows. None was needed: preferences are keyed by `recipient_group_id`, an engagement group can own no preference rows, so absence-means-allowed already delivers them. Asserted anyway, so a future change that *adds* a special case fails a test.
+
+**The export is additive, and that was a correction.** The first draft of the test asserted preferences inside `get_own_notifications_export()`. That contract is a shipped jsonb **array** composed into `get_own_data_export()` under `notifications` — reshaping it would have broken PC008's composite and FEAT-H010's download. **A payload-walk miss caught before the migration rather than after**, and precisely the sibling-breakage class `TASK-INT-02` had just diagnosed three times. Preferences got their own function.
+
+**Red→green, honestly.** 21 red-first assertions + 3 labelled regression guards. Pre-apply: **exactly 21 failed, 3 passed** — the count reconciled with no green-at-red. Every suppression assertion is a **pair** (muted category + unmuted sibling in the same test), because "no notification arrived" is trivially true before a dispatcher exists; that is N-C's vacuous-test trap in a stronger form.
+
+**The pair discipline earned its keep immediately.** The `admin_send_notification` pair initially passed its *muted* half for entirely the wrong reason: called as `service_role`, where `is_platform_admin()` is false, so the RPC was **refused rather than suppressed**. Only the failing "delivers when unmuted" half made the false green visible. Fixed with a real DeusEx operator fixture. Two further test-side errors, both mine: `target_user_ids` takes `users.id` while `TestUser.user` is the *auth* user (different id space — the RPC returned success with count 0), and the list contract's payload key is `kind`, not the column name `type`.
+
+**One real migration bug, found by the tests.** `RETURNS TABLE` OUT parameters share the namespace with column references, so `ON CONFLICT (category_key, …)` was ambiguous (`42702`). Switched `set_own_notification_preference` to `RETURNS jsonb` and added the `DROP FUNCTION` that a return-type change requires, so the migration stays re-runnable.
+
+**Two conformance gates failed on first sweep, both caused by this feature.** `notification_channels` and `notification_preferences` were unclassified in `supabase/ownership.manifest.json`, and `functionOwner()` defaults to `CORE`, so the two operator contracts read as CORE functions touching `ds5_config` (DS-5) — flagged `core-to-domain`. The functions were right; their classification was missing. Both tables are classified **DS-5**, and `notification_preferences` deliberately so rather than `vertical:notifications` like its FK siblings: `dsTables()` filters `/^DS-\d$/`, so a `vertical:` label would have made the table **invisible to that very gate**, and keeping Core out of this substrate is the entire point of ND-1. Classifying it DS-5 means a future Core function reaching in fails a test instead of passing unseen. Both entries carry the gate-review flag for the alternative. **Also closed a finding N-C filed and routed to the area gate**: the manifest listed only 1 of 5 DS-5 trigger functions and omitted `ds5_emit_hint` entirely — added, along with the three forum hint emitters.
+
+**Verification.** Full integration sweep **690/690** (56 suites; the 666/55 baseline + exactly this feature's suite) · new suite **25/25** · notifications slice **79/79** · unit **982/982** · ownership-manifest + internal-API conformance **6/6** · route-policy conformance **5/5** · `next build` clean · E2E **89/89**.
+
+**ADR-U038 direct-caller answer, tested rather than asserted in prose.** A member cannot INSERT, UPDATE or DELETE `notification_preferences` through PostgREST; a Mist (the anonymous session holding `authenticated`, the caller the S1/S2 holes were about) cannot either; `ds5_may_deliver` is unreachable from any client; `member_suppressible = false` outranks a row written behind the contract's back. All four are assertions, not comments.
+
+**Deliberately not built** (unchanged from the No-gos): quiet hours, frequency caps, digest, email delivery, per-group overrides, the shared-topic optimisation, and any per-suppression log — the last because there is no telemetry sink yet (`TASK-OBS-01`), and a silent `RETURN NULL` is honest at this maturity rather than half-instrumented.
 
 ## No-gos
 

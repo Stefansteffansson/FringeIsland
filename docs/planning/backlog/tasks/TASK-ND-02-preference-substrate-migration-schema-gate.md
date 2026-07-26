@@ -3,7 +3,7 @@
 ---
 id: TASK-ND-02
 title: Migration — notification_preferences, notification_channels, two category columns, ds5_may_deliver, the BEFORE INSERT dispatcher, and the preference/operator contracts
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PD016
@@ -41,3 +41,9 @@ Contents:
 ## Verification
 
 `bash supabase-cli.sh migration list` shows it applied; TASK-ND-01's suite flips green (TASK-ND-03).
+
+## Outcome (2026-07-26)
+
+Applied and repaired (`20260726120000`, local+remote confirmed). Shipped held at the gate in PR #295 and **merged on an explicitly-named nod** — the gate rule honoured.
+
+Two corrections during the build: `set_own_notification_preference` moved from `RETURNS TABLE` to `RETURNS jsonb` (OUT params collide with column references, making `ON CONFLICT (category_key, …)` ambiguous — `42702`), with the `DROP FUNCTION` a return-type change requires so the migration stays re-runnable; and `ds5_require_fim_subject()` added so `28000` (identity) and `42501` (policy) do not collapse into one refusal code.
