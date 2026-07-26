@@ -3,7 +3,7 @@
 ---
 id: TASK-INT-02
 title: Diagnose two integration reds surfaced by the N-C full sweep — stale test or real defect, per finding
-status: todo
+status: done  # both classified STALE-ASSERTION with evidence; both fixed 2026-07-26 (A-NTF N-D open)
 assigned_to: claude
 priority: medium
 feature: none
@@ -59,3 +59,100 @@ So either the C-C forum-hint topology changed (an edit now emits where it previo
 
 - Each finding's classification is recorded in this file with the evidence that settled it.
 - `cd hub && npx jest --selectProjects integration --runInBand` — 666/666, or reds fenced by name with diagnoses.
+
+---
+
+## RESOLUTION (2026-07-26, at the A-NTF N-D open)
+
+**Both findings: STALE ASSERTION. Neither is a defect. Nothing is user-facing.**
+Both were classified against the deployed substrate *before* either test was
+touched, so the fixes follow the diagnosis rather than chasing green.
+
+### Finding A — classified STALE (a scale-dependent test bug), not a backfill gap
+
+**The invariant holds.** A direct SQL set-difference over the live dev DB returned
+**0 missing of 416** Steward/Guide-template-derived role instances, and both
+templates still carry the `create_group_conversations` grant. **No role instance
+lacks the permission, so no member was ever unable to create a group
+conversation** — the user-facing possibility this task was filed to rule out is
+ruled out.
+
+**What actually failed.** The assertion is a *whole-database* invariant, so its
+input set grows with every run against the shared dev DB. It fed all 416 role
+UUIDs into one PostgREST `in.()` filter — a ~15.5 KB query string. Bisecting the
+filter width proved the mechanism:
+
+| role ids in filter | URL length | result |
+|---|---|---|
+| 50 / 150 / 200 / 250 / 300 | 2.0–11.2 KB | HTTP 200 |
+| **416** | **15.5 KB** | **`fetch failed`** — died in the proxy, never an HTTP status |
+
+supabase-js then returned `data: null`, and the test's `grants ?? []` **coalesced
+the transport failure into the empty set** — so every role read as "missing"
+(hence `Received length: 418`, i.e. *all* of them, which was itself the tell: a
+genuine backfill gap would hit a subset). The test passed at the 2026-07-22 live
+walk and rotted as the dev DB crossed roughly 350 role instances.
+
+**Fix** (`conversation-contracts.test.ts:505`): chunk the lookup at 100 ids per
+request, and **assert `error` is null instead of coalescing it away** — the
+null-swallow is what let a transport fault masquerade as a permission gap. The
+invariant is deliberately *not* narrowed to the suite's own fixtures: catching a
+backfill gap in pre-existing groups is the entire point of the guard.
+
+### Finding B — classified STALE (deliberately superseded upstream), not a regression
+
+**A content edit does emit a forum hint, by design.** `trg_ds5_emit_forum_edit_hint`
+exists on `public.forum_posts` (AFTER UPDATE, `WHEN (OLD.content IS DISTINCT FROM
+NEW.content AND NOT NEW.is_deleted)`), added by
+`20260722170000_a_com_rider3_forum_edit_hint.sql`. It is canon, not drift:
+**FEAT-PD010 RIDER-3** (`FEAT-PD010-realtime-hint-emission.md:26,33`) adds
+`forum_post_edited` as the third event in the forum catalogue, because the A-COM
+area-gate live walk (scenario 6, 2026-07-22) found C-D's own-edit window had
+shipped under a "no socket work" carry rule and an edit reached other members
+only on reload.
+
+Verified empirically before rewriting: a content `UPDATE` moved the topic's hint
+count by **exactly +1**, and the stored event is `forum_post_edited`.
+
+So the assertion was true when written at C-D (2026-07-20) and was falsified two
+days later by a deliberate repair. **RIDER-3's migration header names only
+`realtime-hint-emission.test.ts RIDER-3` as its guarded test — this sibling was
+never adapted**, so it had failed since 2026-07-22.
+
+**Fix** (`window-and-report-contracts.test.ts:343`): the assertion is **inverted,
+not loosened** — it now pins exactly one `forum_post_edited` per content change,
+scoped by `event` rather than counting the whole topic, plus a second write of
+identical content asserting the `WHEN`-clause idempotency guarantee emits nothing
+further. A count-unchanged guard would have been asserting a behaviour the
+platform deliberately dropped.
+
+### Verification
+
+- Targeted: `communication/(conversation-contracts|window-and-report-contracts)` — **36/36 green.**
+- **Full integration sweep, `npx jest --selectProjects integration --runInBand` (2026-07-26): 666 passed / 666 total, 55 suites, 0 failed** (688 s). This is the number the task set as its bar, and it matches the arithmetic of the N-C sweep exactly — that run was 663 passed + 3 failed = 666; one was fixed at the N-C close and these two here, so **the suite has no known reds left and no red is fenced-by-name.** N-D's own greens are readable as a gate.
+- Neither fix touched a migration, a contract, or an assertion's strictness: Finding A's guard is unchanged in what it asserts (and now fails loudly on transport errors instead of silently inverting them), Finding B's is strictly stronger (event-scoped, plus an idempotency case that did not exist before).
+
+### Findings raised by this task (not fixed here)
+
+1. **The same process defect, three times.** N-B changed `get_own_notifications`'
+   payload and left a sibling pinning the old shape (fixed at the N-C close);
+   A-COM RIDER-3 changed the forum emit topology and left a sibling pinning the
+   old topology (Finding B). Both were caught only by a *later* area's sweep,
+   and both first read as environment faults. **This is no longer a one-off, so
+   the house rule ("a change to shipped semantics budgets sibling-suite
+   adaptation as in-scope") needs a mechanical check, not a norm** — e.g. a
+   migration-template line requiring the author to grep the suite for
+   assertions naming the changed object/topology and list them in the header.
+   Routed to the A-NTF area retro.
+2. **`runAdminSql` has no retry and the Management API is flaky.** Finding B's
+   first reproduction failed with `upstream connect error or disconnect/reset
+   before headers` from `api.supabase.com/v1/projects/{ref}/database/query` —
+   not an assertion failure at all. My own probe hit the same endpoint
+   successfully minutes earlier, so it is intermittent. Every comm suite that
+   reads `realtime.messages` depends on this single un-retried call, so an
+   infrastructure blip presents as a substrate red. Deliberately **not** fixed
+   here (a shared-helper change touching many suites is out of this task's
+   scope); filed for the area retro alongside `TASK-INT-01`'s sibling lesson.
+3. **Test-scoped `in.()` filters are a latent class bug.** Any assertion that
+   feeds an unbounded, DB-wide id set through PostgREST will rot the same way as
+   Finding A. Worth a grep for `.in(` over id arrays that are not fixture-scoped.

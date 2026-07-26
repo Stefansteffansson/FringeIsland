@@ -509,6 +509,20 @@ describe('FEAT-PD008 — conversation & message contracts (C-A)', () => {
     // the "New conversation" affordance missing for a steward). Green once
     // 20260722100000 backfills the instances; stays green for new groups
     // because instantiation copies template grants.
+    //
+    // TASK-INT-02 Finding A (2026-07-26) — this assertion is a WHOLE-DATABASE
+    // invariant, so its input set grows with every run against the shared dev
+    // DB. At 416 role instances the grants lookup below shipped ~15.5 KB of
+    // UUIDs in a single PostgREST `in.()` query string; the request died in the
+    // proxy (`fetch failed`, never an HTTP status), supabase-js returned
+    // `data: null`, and `grants ?? []` silently became the empty set — so every
+    // role read as "missing". Proven by bisecting the filter width: n=300
+    // (11.2 KB) returned 200, n=416 (15.5 KB) threw. The invariant itself was
+    // never violated — a direct SQL set-difference showed 0 of 416 missing, so
+    // no member ever lost the affordance. Fixed by CHUNKING the lookup, which
+    // is scale-proof; deliberately NOT by narrowing the invariant to this
+    // suite's own fixtures, because catching a backfill gap in *pre-existing*
+    // groups is the whole point of the guard.
     it('every Steward/Guide-template-derived role instance holds create_group_conversations', async () => {
       const { data: templates } = await admin
         .from('role_templates')
@@ -523,22 +537,33 @@ describe('FEAT-PD008 — conversation & message contracts (C-A)', () => {
         .single();
       expect(perm).not.toBeNull();
 
-      const { data: roles } = await admin
+      const { data: roles, error: rolesError } = await admin
         .from('group_roles')
         .select('id')
         .in(
           'created_from_role_template_id',
           (templates ?? []).map((t) => t.id)
         );
+      expect(rolesError).toBeNull();
       const roleIds = (roles ?? []).map((r) => r.id);
       expect(roleIds.length).toBeGreaterThan(0);
 
-      const { data: grants } = await admin
-        .from('group_role_permissions')
-        .select('group_role_id')
-        .eq('permission_id', perm!.id)
-        .in('group_role_id', roleIds);
-      const granted = new Set((grants ?? []).map((g) => g.group_role_id));
+      // Chunked so the `in.()` query string stays well inside the proxy's
+      // header budget no matter how large the dev DB grows. Errors are asserted
+      // rather than coalesced away — a transport failure must not read as a
+      // missing grant (that inversion is what made this test rot silently).
+      const CHUNK = 100;
+      const granted = new Set<string>();
+      for (let i = 0; i < roleIds.length; i += CHUNK) {
+        const { data: grants, error: grantsError } = await admin
+          .from('group_role_permissions')
+          .select('group_role_id')
+          .eq('permission_id', perm!.id)
+          .in('group_role_id', roleIds.slice(i, i + CHUNK));
+        expect(grantsError).toBeNull();
+        for (const g of grants ?? []) granted.add(g.group_role_id);
+      }
+
       const missing = roleIds.filter((id) => !granted.has(id));
       expect(missing).toHaveLength(0);
     });
