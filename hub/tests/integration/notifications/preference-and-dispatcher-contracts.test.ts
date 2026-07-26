@@ -355,6 +355,68 @@ describe('FEAT-PD016 — notification preferences & the shared suppression dispa
       );
     });
 
+    // ADR-U038's direct-caller question, as a test rather than a migration
+    // comment. The migration header answers it in prose; prose is not a guard.
+    // A rule enforced only in a Hub route is not enforced at all, so the door a
+    // PostgREST caller can actually reach has to be proved shut.
+    it('no client can write notification_preferences directly — the contract is the only door', async () => {
+      const c = await asUser(member);
+
+      const { error: insertErr } = await c
+        .from('notification_preferences')
+        .insert({
+          recipient_group_id: member.personalGroupId,
+          category_key: MUTED_CATEGORY,
+          channel: CHANNEL_IN_APP,
+          allowed: false,
+        });
+      expect(insertErr).not.toBeNull();
+
+      // Seed a row through the substrate, then prove the member cannot mutate or
+      // remove it either — RLS grants SELECT on own rows and nothing more.
+      await rawPreference(member.personalGroupId, MUTED_CATEGORY, CHANNEL_IN_APP, false);
+
+      const { error: updateErr, count: updated } = await c
+        .from('notification_preferences')
+        .update({ allowed: true }, { count: 'exact' })
+        .eq('recipient_group_id', member.personalGroupId);
+      expect(updateErr !== null || (updated ?? 0) === 0).toBe(true);
+
+      const { error: deleteErr, count: deleted } = await c
+        .from('notification_preferences')
+        .delete({ count: 'exact' })
+        .eq('recipient_group_id', member.personalGroupId);
+      expect(deleteErr !== null || (deleted ?? 0) === 0).toBe(true);
+
+      // Still exactly as the substrate left it.
+      const after = await runAdminSql(
+        `SELECT allowed FROM public.notification_preferences
+          WHERE recipient_group_id = '${member.personalGroupId}'
+            AND category_key = '${MUTED_CATEGORY}' AND channel = '${CHANNEL_IN_APP}';`,
+      );
+      expect(after).toHaveLength(1);
+      expect((after[0] as { allowed: boolean }).allowed).toBe(false);
+
+      // And a Mist — the anonymous session holding the `authenticated` role,
+      // which is the caller ADR-U038's S1/S2 holes were about — writes nothing.
+      const mist = await asMist();
+      const { error: mistErr } = await mist
+        .from('notification_preferences')
+        .insert({
+          recipient_group_id: member.personalGroupId,
+          category_key: CONTROL_CATEGORY,
+          channel: CHANNEL_IN_APP,
+          allowed: false,
+        });
+      expect(mistErr).not.toBeNull();
+      await mist.auth.signOut();
+
+      await runAdminSql(
+        `DELETE FROM public.notification_preferences
+          WHERE recipient_group_id = '${member.personalGroupId}';`,
+      );
+    });
+
     it('a preference cannot name a category or channel the platform does not have', async () => {
       await expect(
         rawPreference(member.personalGroupId, 'no-such-category', CHANNEL_IN_APP, false),

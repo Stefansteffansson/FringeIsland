@@ -3,7 +3,7 @@
 ---
 id: TASK-ND-01
 title: Write the demonstrated-red integration suite for FEAT-PD016 (preferences, dispatcher, operator nudge policy)
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PD016
@@ -32,3 +32,9 @@ Write the integration suite for [FEAT-PD016](../../../platform/domain/features/F
 ## Verification
 
 `cd hub && npx jest --selectProjects integration --testPathPatterns notification` — red, with the count recorded in the task's outcome section.
+
+## Outcome (2026-07-26)
+
+**Demonstrated red: exactly 21 of 24 failed pre-apply**, matching the 21 red-first / 3 labelled-guard design with **no green-at-red**. The suite later grew to 25 with the ADR-U038 adversarial direct-write test (labelled test-after — it passed first run, as a guard on already-correct substrate would).
+
+The pair discipline this task mandated caught a real vacuity immediately: the `admin_send_notification` pair passed its *muted* half because the RPC was **refused** (called as `service_role`, where `is_platform_admin()` is false), not because anything was suppressed. Only its failing "delivers when unmuted" half made the false green visible. Fixed with a real DeusEx operator fixture.

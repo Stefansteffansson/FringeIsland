@@ -6,7 +6,7 @@ title: Notification preferences & the operator nudge console
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -33,7 +33,7 @@ listening** — 857 delivery rows against a reachable population of 1,274 — so
 dominant cost tracks **headcount, not concurrency**. That number currently lives in a
 session bridge. An operator flipping the toggle has no way to know what it costs.
 
-## Solution sketch
+## Design record (the as-specified sketch)
 
 **`/notifications/preferences`** — a categories × channels matrix, sitting under the
 inbox because that is where a member already goes to think about notifications
@@ -72,23 +72,25 @@ Typed-refusal mapping follows the consent route's precedent exactly: `22023` →
 `42501` → 409, `28000` → 403, sessionless → 401 before the contract, anything else →
 500 surfaced (never swallowed).
 
-## Appetite
+## Implementation notes
 
-One cycle, Hub half ≈ two focused sessions. No new state machinery — the surface is a
-read, a matrix, and an optimistic toggle.
+**Built 2026-07-26 (A-NTF Cycle N-D), PR #295.** Carries no migration; consumes [FEAT-PD016](../../../platform/domain/features/FEAT-PD016-notification-preference-contracts-and-shared-suppression-dispatcher.md) API-first.
 
-## Rabbit holes
+**As built.** `app/notifications/preferences/page.tsx` (FIM-gated, matching FEAT-H008's `/consent` shape) · `components/notifications/NotificationPreferencesPanel.tsx` (the matrix) · `components/notifications/NudgePolicyPanel.tsx` (the DeusEx console) · `lib/notifications/preferences.ts` (contracts + the pure shaping helpers) · `app/api/notifications/preferences/route.ts` (GET + PUT) · `app/api/notifications/nudge-policy/route.ts` (GET composing the policy read and the reach count, + PUT accepting either shape). Both routes mirror `app/api/account/consent/route.ts`: cookie session, the ADR-U037 identity split (`getVerifiedUserId` on reads, `getUser()` on mutations), SQLSTATE→HTTP mapping, telemetry on every path including refusals.
 
-- **Do not build a settings shell.** The Hub has no `/settings` today; inventing an
-  information architecture for one is a separate decision. This route lives under
-  `/notifications`, where its subject already lives.
-- **Do not render the matrix from client-side defaults.** The contract resolves
-  effective values server-side precisely so the surface cannot drift from them.
-- **Do not put the operator console behind a new admin route tree.** It is a gated
-  panel on a route that already exists.
-- **Optimistic rollback on a locked row.** A `member_suppressible = false` row must be
-  unclickable rather than click-then-rollback; a toggle that visibly bounces back
-  reads as a bug. Timebox: render state, not error handling.
+**Nothing in the surface hardcodes a category, channel or interruption grade.** Categories and channels are derived from the payload, so a new registry row renders with no Hub change — proved at the unit tier by feeding a category (`weather-warnings`) and a channel (`push`) that do not exist in Ferd's registry at all.
+
+**HONEST PROCESS RECORD — this half was NOT red-first, and that is a deviation.** The platform half (FEAT-PD016) was demonstrated red-first, 21 of 24 failing pre-apply. This Hub half was written implementation-first: `lib` → routes → page → components, *then* the E2E, *then* the unit tests. **All six panel unit tests and the ADR-U038 adversarial integration test passed on their first run** — green-at-red, which the `feature-development` skill says to stop and surface. Surfaced here rather than dressed up: this coverage is **test-after**, and it is not TDD. It is real coverage of real branches (one of which had none at all — see below), but the red→green evidence the DoD asks for does not exist for the Hub half. Routed to the A-NTF area retro as the cycle's process deviation.
+
+**The rollback path had zero coverage until the DoD forced the question.** E2E covers the happy round-trip; nothing covered a *failed* PUT. A silent revert would be worse than an error — the member would believe the change stuck. Now unit-tested: the toggle reverts visibly and the server's own message is shown in an `alert` role. The DoD's "keep the pyramid upright" rule is what surfaced it; without that step this would have shipped untested.
+
+**The E2E found a race that was mine, not the product's.** The first run failed 1 of 3: reloading immediately after the click outran the in-flight PUT and read back pre-mutation state. Not a defect — the control is `disabled` while the write is in flight, so a real member cannot outrun it; only a test reloading within milliseconds can. Fixed by awaiting the PUT response, which makes the assertion **stronger** than the optimistic flip alone: it now proves the contract returned 2xx rather than only that React re-rendered.
+
+**Two decisions held exactly as specified**, and both are visible in the tests: a non-suppressible category renders **locked-on with a stated reason and no control at all** (never offered, so never refused — the spec's timeboxed rabbit hole never became one), and the `email` column **does not render**, named honestly in one line.
+
+**Verification.** Unit **982/982** (131 suites — +9 helper tests, +6 panel tests) · E2E **89/89** (86 baseline + this feature's 3) · full integration sweep **690/690** · route-policy conformance **5/5** · `next build` clean.
+
+**Performance DoD — one item is OWED, not done.** The first-paint budget is met and *tested*: the panel issues exactly one read (ADR-U042 justified standalone; deliberately **not** added to the overview bundle, because a rarely-visited settings surface must not tax every page load — the N-C nominations-slice lesson applied before the mistake rather than after). The B5 interaction budget is met by construction (optimistic flip paints before the PUT). **The ADR-U043 deep-cold spot measurement for this new page has NOT been taken** — it requires ≥20 minutes of enforced zero traffic on a deployed environment, which no in-session run can provide. Tracked on `TASK-ND-05` and the A-NTF area-gate checklist, alongside N-C's still-owed `/groups` before/after. Recorded as owed rather than quietly omitted.
 
 ## No-gos
 
