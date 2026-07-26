@@ -1,6 +1,6 @@
 # ADR-U050: The account lifecycle state machine — four states split by deactivation origin
 
-**Status:** Proposed (rides the C-F schema gate; Accepted on the gate's named nod)
+**Status:** Accepted (2026-07-26 — the C-F schema gate it rode merged 2026-07-21; see Acceptance record)
 **Date:** 2026-07-21
 **Deciders:** Stefan (C-F board, F-1..F-3) · Claude (authoring)
 **Technical story:** Cycle C-F (IDN-10) — FEAT-PC017 / FEAT-PC005 / FEAT-H029 / FEAT-H007. Promotes the planning-tree [account-lifecycle decision record](../../planning/hub-v2/account-lifecycle-states-decision.md) (2026-06-29), which mandated this ADR when the `paused`/origin substrate was built.
@@ -42,3 +42,25 @@
 - **A typed `account_status` enum column** replacing the booleans — rejected: a sealed set (extensibility rule), a breaking change to every reader, and the booleans + origin derive the same truth.
 - **Origin as audit-log inference** (read the last transition's actor) — rejected: RLS/report paths would need audit reads on a hot path; the state machine must be self-contained on the row.
 - **A `pending_deletion` grace state** — rejected at the C-F board (F-3): immediate + confirm; a fifth state plus scheduler substrate is not warranted in Ferd.
+
+---
+
+## Acceptance record (2026-07-26)
+
+**This ADR's own condition had already been met; only the status line lagged.** It read *"Proposed (rides the C-F schema gate; Accepted on the gate's named nod)"* — and **that gate merged on 2026-07-21**, five days before this record. Nothing about the decision changed in the interval; the flip was simply never made. Accepted at the A-NTF area gate on Stefan's named nod, and this record states the evidence so the acceptance is not taken on the gate's say-so alone.
+
+**Every decision point above is realized on disk**, all in migration `20260721161500_c_f_account_lifecycle_self_service.sql` (on `main`, commit `f1c7451` — "Identity plan COMPLETE"):
+
+| Decision | Realization |
+|---|---|
+| §1 the origin column | `ALTER TABLE public.users ADD COLUMN deactivation_origin TEXT` (L42), with the open-namespace `COMMENT` (L44) and no client write path |
+| §2 four states, one derivation | `get_own_account_state` (L561) |
+| §3 backfill rule | `SET deactivation_origin = 'admin'` over pre-existing off rows (L52) |
+| §4 self-service transitions | `pause_own_account` (L123), `reactivate_own_account` (L191), `delete_own_account` (L257), plus the two ADR-U047 fact handlers `ds3_lifecycle_account_deleted` (L58) and `ds7_lifecycle_account_deleted` (L89) |
+| §5 retirement | `DROP FUNCTION public.admin_exit_user_from_platform` (L611) |
+
+Four feature specs closed `6-done` against it (FEAT-PC017 / FEAT-PC005 / FEAT-H029 / FEAT-H007), completing the Identity plan.
+
+**Consequence, discharged in the same pass:** `ARCHITECTURE_ANATOMY.md` had deliberately withheld this decision — its stamp read that U050 *"is **Proposed** … and is deliberately not absorbed here until it is Accepted."* That hold is now lifted and the four-state lifecycle is absorbed into the anatomy, per TASK-DOC-005.
+
+*Filed under the same reasoning as ADR-U039's Amendment 1: a document that shipped features depend on should not read "Proposed", because that wording implies the decision may still move when it is already load-bearing.*
