@@ -198,7 +198,13 @@ A work item is done when **every** applicable box is checked. "Applicable" matte
 - [ ] **Vertical checklists pass** — the feature satisfies each applicable cross-cutting checklist in the five vertical specs (`docs/verticals/*/SPECIFICATION.md` §7)
 - [ ] **Builds without errors** locally and in CI
 - [ ] **Deployed to preview environment and verified** — not just merged
-- [ ] **README and/or CHANGELOG updated** if user-visible behavior changed
+- [ ] **README updated** if user-visible behavior changed
+- [ ] **CHANGELOG updated — in every file the change is owed to.** There are **three** changelogs with different audiences, and one change can owe more than one. This checkbox is not satisfied by updating whichever comes to mind:
+  - **root `CHANGELOG.md`** — the per-cycle close entry. Owed by **every** cycle that shipped user-visible behaviour. The long narrative form under `## [Unreleased]` → `### Added`, carrying PRs, migrations, test counts and honest record.
+  - **`hub/CHANGELOG.md`** — owed when the change is visible **on the Hub surface**. Member-facing register: second person, plain English, **no** PR numbers, migrations or test counts. Heading form `## DATE — Title ([FEAT-Hxxx](…) · [FEAT-PDxxx](…))`.
+  - **`docs/platform/core/CHANGELOG.md`** — owed when **Platform Core substrate** changed. Developer-facing, not end-user.
+
+  Which ones are owed is not a judgement call — ask *who can see this change*. A Hub-visible cycle owes the first two. **Raised at the A-NTF area retro (learning 5):** this line previously read only "README and/or CHANGELOG", and across four cycles the area silently split across two files — N-B wrote only to `hub/`, N-C and N-D only to root, N-A to neither — with every close-ritual checkbox ticked and locally honest each time. This is the canonical statement; `AGENTS.md` and the `feature-development` skill point here rather than restating it.
 - [ ] **Platform Specification updated** if a shared API surface changed (`docs/platform/core/SPECIFICATION.md` or a domain service file in `docs/platform/domain/`)
 - [ ] **Complex decisions documented as ADR** (`docs/architecture/decisions/`) — if you had to choose between options, future you will thank you
 

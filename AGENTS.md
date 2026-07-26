@@ -82,7 +82,7 @@ The Anthropic computer-use tools have legitimate uses for sandbox-side analysis,
 - Run lint and type-check before committing
 - Check the relevant feature spec in the ecosystem tree before implementing
 - Follow API-first principle (ADR-U009)
-- Update CHANGELOG.md for user-visible changes
+- Update the CHANGELOG(s) for user-visible changes — there are **three**, and one change can owe more than one: root `CHANGELOG.md` (the cycle entry — always), `hub/CHANGELOG.md` (Hub-surface changes, member-facing register), `docs/platform/core/CHANGELOG.md` (Core substrate). Canonical rule and registers: [`docs/planning/PROCESS.md`](docs/planning/PROCESS.md) DoD
 - Read the product/service CLAUDE.md before touching that area
 - Complete the Vertical Impact section in every feature spec — no vertical left blank
 - Complete the Performance budget section in every feature spec with a user-facing surface (ADR-U043: budget class + data-boot path); platform-only features write "N/A (no surface)"
