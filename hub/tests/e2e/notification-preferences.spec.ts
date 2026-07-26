@@ -122,8 +122,24 @@ test.describe('FEAT-H033 — notification preferences, end to end', () => {
     const toggle = page.getByTestId(`pref-toggle-${CATEGORY}-in_app`);
     await expect(toggle).toBeVisible({ timeout: 15000 });
     await expect(toggle).toBeChecked();
+
+    // The toggle is optimistic by design — the flip paints before the PUT is
+    // issued, which is what keeps it inside the ADR-U043 B5 budget. So the
+    // response has to be awaited explicitly: reloading straight after the click
+    // races the in-flight write and reads back the pre-mutation state. (Not a
+    // product defect — the control is disabled while the write is in flight, so
+    // a real member cannot double-submit; only a test reloading within
+    // milliseconds can outrun it.) Awaiting the response also makes this a
+    // STRONGER assertion than the optimistic flip alone: it proves the contract
+    // returned 2xx, not merely that React re-rendered.
+    const saved = page.waitForResponse(
+      (r) =>
+        r.url().includes('/api/notifications/preferences') && r.request().method() === 'PUT',
+      { timeout: 15000 },
+    );
     await toggle.click();
     await expect(toggle).not.toBeChecked();
+    expect((await saved).ok()).toBe(true);
 
     // It persists across a reload — the write went through the contract, not
     // just React state.
@@ -145,8 +161,14 @@ test.describe('FEAT-H033 — notification preferences, end to end', () => {
     await page.goto('/notifications/preferences');
     const toggleAgain = page.getByTestId(`pref-toggle-${CATEGORY}-in_app`);
     await expect(toggleAgain).toBeVisible({ timeout: 15000 });
+    const restored = page.waitForResponse(
+      (r) =>
+        r.url().includes('/api/notifications/preferences') && r.request().method() === 'PUT',
+      { timeout: 15000 },
+    );
     await toggleAgain.click();
     await expect(toggleAgain).toBeChecked();
+    expect((await restored).ok()).toBe(true);
 
     const afterTitle = `NdRestored${stamp}`;
     await sendNotification(afterTitle);
