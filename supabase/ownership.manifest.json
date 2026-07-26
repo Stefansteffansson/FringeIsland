@@ -53,6 +53,14 @@
     "notification_kinds": {
       "owner": "vertical:notifications",
       "note": "FEAT-PD013 (N-A): the notification-event kinds registry (kind → category). Same classification rationale as notification_categories."
+    },
+    "notification_channels": {
+      "owner": "DS-5",
+      "note": "FEAT-PD016 (N-D): the open registry of delivery channels (in_app delivering, email stored-but-not-delivering). Classified DS-5 rather than vertical:notifications — unlike the kind/category catalogs, which describe WHAT the platform may say and are FK'd by the delivery table, this describes HOW the routing layer delivers, which is DS-5's half of the ADR-U002 boundary (the ds5_config rationale). Gate-review flag: alternative classification vertical:notifications, alongside its FK sibling notification_categories."
+    },
+    "notification_preferences": {
+      "owner": "DS-5",
+      "note": "FEAT-PD016 (N-D): per-member x per-category x per-channel preferences; absence of a row means allowed. DS-5 per the 2026-07-26 preference-home adjudication (board row ND-1), which ruled out Platform Core because the category_key FK would have pointed Core → Domain (docs/platform/CLAUDE.md:38). Deliberately classified DS-5 rather than vertical:notifications so the table lands in dsTables() and IS policed by the internal-API conformance gate: the whole point of ND-1 was keeping Core out of this substrate, so a future Core function reaching in must fail a test rather than pass unseen. Consent is unmoved (PC-2 substrate / PC-4 contract, ADR-U034)."
     }
   },
 
@@ -115,7 +123,23 @@
       "mark_all_notifications_read",
       "get_own_notifications_export",
       "respond_to_acting_invitation",
-      "notify_notification_hint"
+      "notify_notification_hint",
+
+      "ds5_emit_hint",
+      "ds5_emit_forum_post_hint",
+      "ds5_emit_forum_moderation_hint",
+      "ds5_emit_forum_edit_hint",
+
+      "ds5_require_fim_subject",
+      "ds5_may_deliver",
+      "ds5_apply_notification_preference",
+      "get_own_notification_preferences",
+      "set_own_notification_preference",
+      "get_own_notification_preferences_export",
+      "get_notification_nudge_policy",
+      "set_notification_nudge_policy",
+      "set_notification_category_nudge",
+      "get_platform_announcement_reach"
     ],
     "DS-7": [
       "create_journal_entry",
