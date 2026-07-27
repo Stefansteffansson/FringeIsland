@@ -108,7 +108,7 @@ Two, both of which would mislead the next walker and are corrected in the script
 Independent of the walk, carried from the retrospective:
 
 - **NB-8** — Mist-posture proof
-- **W12** — per-RPC gate verification (the A-COM gate's Appendix A pattern; **not yet produced for A-NTF**)
+- ~~**W12** — per-RPC gate verification (the A-COM gate's Appendix A pattern; **not yet produced for A-NTF**)~~ **PRODUCED 2026-07-27 — see [Appendix A](#appendix-a--w12-per-rpc-gate-verification-roll-up).** 15 callable contracts walked body-vs-spec, 4 internal fact-handlers checked, 6 tables + RLS read live. **Two findings, neither exploitable:** F1 — seven N-D contracts executable by `anon` (of 181 functions in `public`, exactly those 7; all refuse anon in-body, probed); F2 — `notify_invitation_received()` retains `authenticated` EXECUTE (trigger fn, direct call raises 0A000). Repair migration `20260727120000` **HELD at the schema gate**; the lockdown suite now asserts the invariant rather than a list. **This item is discharged; its repair is not yet merged.**
 - **U049 §8 Q1** — adapter ownership
 - The **email-deferral** recording — distinct from **W-08**, which is about the member-facing sentence
 - The **DS-5 spec advance**
@@ -133,3 +133,68 @@ Independent of the walk, carried from the retrospective:
 ---
 
 *Walked by Stefan on `fringe-island.vercel.app`, 2026-07-27. Findings triaged in-session against the specs and the live database; every defect claim is anchored to a file:line or a query result in the [findings document](./2026-07-27-antf-walk-findings.md).*
+
+---
+
+## Appendix A — W12 per-RPC gate-verification roll-up
+
+**Produced 2026-07-27**, discharging the W12 item. Scope: migrations `20260723120000` (N-A) → `20260726120000` (N-D). Body canon = the latest re-issuing migration; gate canon = the owning spec. Live ACLs, RLS policies and refusal behaviour were read from the production database (`jveybknjawtvosnahebd`) and probed under `SET LOCAL ROLE`, not inferred from source.
+
+**FIM gate** = `ds5_require_fim_subject()` (resolves the personal group; raises **28000** for no subject *and* for a Mist — `is_temporary`). **Admin gate** = `is_platform_admin()` (raises **42501**).
+
+### Callable contracts (granted to `authenticated`)
+
+| RPC | Latest body | Gate in body | Owning spec — match? | Adversarial coverage | Verdict |
+|---|---|---|---|---|---|
+| `get_own_notifications(int,ts,uuid)` | N-B `…120000:40` | FIM; own-recipient scope; keyset | PD013/PD014 — match | notification-contracts, actionable (22 hits) | VERIFIED |
+| `get_own_unread_notification_count()` | N-A `…120000:166` | FIM; own scope | PD013 — match | notification-contracts, realtime-hint (10) | VERIFIED |
+| `mark_notification_read(uuid)` | N-A `…120000:190` | FIM; own row only | PD013 — match | notification-contracts (5) | VERIFIED |
+| `mark_all_notifications_read()` | N-A `…120000:213` | FIM; own scope | PD013 — match | notification-contracts (2) | VERIFIED |
+| `get_own_notifications_export()` | N-A `…120000:254` | FIM; own scope | PD013 / PC008 — match | preference-and-dispatcher (2) | VERIFIED |
+| `get_own_data_export()` | N-A `…120000:300` | FIM; own scope | PC008 — match | data-export, export-composite (4) | VERIFIED |
+| `respond_to_acting_invitation(uuid,bool)` | N-B `…120000:206` | FIM; permission-fanned; first-answer-wins | PD014 / ADR-U051 — match | actionable-notifications (8) | VERIFIED |
+| `get_own_notification_preferences()` | N-D `…120000:374` | FIM (28000) | PD016 — match | preference-and-dispatcher (4) | **VERIFIED — grant finding F1** |
+| `set_own_notification_preference(text,text,bool)` | N-D `…120000:421` | FIM (28000); category exists; suppressible | PD016 — match | preference-and-dispatcher (10) | **VERIFIED — F1** |
+| `get_own_notification_preferences_export()` | N-D `…120000:486` | own subject (28000) | PD016 / PC008 — match | preference-and-dispatcher (1) | **VERIFIED — F1** |
+| `get_notification_nudge_policy()` | N-D `…120000:531` | admin (42501) | PD016 / H033 — match | preference-and-dispatcher (2) | **VERIFIED — F1** |
+| `set_notification_nudge_policy(text,text)` | N-D `…120000:562` | admin (42501); known key | PD016 — match | preference-and-dispatcher (1) | **VERIFIED — F1** |
+| `set_notification_category_nudge(text,bool)` | N-D `…120000:589` | admin (42501); category exists | PD016 — match | preference-and-dispatcher (4) | **VERIFIED — F1** |
+| `get_platform_announcement_reach()` | N-D `…120000:625` | admin (42501) | PD016 / H033 — match | preference-and-dispatcher (2) | **VERIFIED — F1** |
+| `ds5_require_fim_subject()` | N-D `…120000:337` | the shared FIM gate itself | PD016 — match | transitively, every row above | VERIFIED (helper) |
+
+**Every one is `SECURITY DEFINER` with `SET search_path = ''`** — 19 of 19, no exceptions.
+
+### Internal fact-handlers — confirmed closed to `authenticated`
+
+| Function | Returns | Live posture |
+|---|---|---|
+| `ds5_may_deliver(uuid,text,text)` | boolean | REVOKEd — `authenticated` ✗, `anon` ✗ |
+| `ds5_apply_notification_preference()` | trigger | REVOKEd — `authenticated` ✗, `anon` ✗ |
+| `notify_notification_hint()` | trigger | REVOKEd — `authenticated` ✗, `anon` ✗ |
+| `notify_invitation_received()` | trigger | **`authenticated` ✓ — finding F2** |
+
+### Tables and RLS
+
+| Table | RLS | Policies | Posture |
+|---|---|---|---|
+| `notifications` | on | 1 | `SELECT` own rows only, `{authenticated}`. **No write policy** — a direct `INSERT` as `authenticated` is refused **42501** (probed). anon sees **0 rows** (probed). |
+| `notification_preferences` | on | 1 | `SELECT` own rows only, `{authenticated}`. No write policy. |
+| `notification_categories` / `_channels` / `_kinds` | on | 1 each | `USING (true)`, `{authenticated}` — reference registries, no member data. |
+| `ds5_config` | on | **0** | Deny-all by policy absence; reachable only through the admin-gated operator RPCs. Deliberate, and the most restrictive shape. |
+
+No policy names `anon` anywhere in the area, and there are **no INSERT/UPDATE/DELETE policies at all** — every write goes through a `SECURITY DEFINER` contract.
+
+### Automatic-fail checks
+
+- **Sole-home-in-BFF (ADR-U038):** none. Every rule above is enforced in the substrate; the Hub's `app/api/notifications/*` routes are thin presentation (SQLSTATE→HTTP, telemetry).
+- **Core-referencing-domain (ADR-U047):** green — no Core function in scope references a DS-5 object.
+
+### Findings
+
+**F1 — seven N-D contracts were executable by `anon`.** Cause: N-D wrote `REVOKE ... FROM anon` where N-A/N-B/N-C wrote `FROM PUBLIC, anon`, and `REVOKE ... FROM anon` is a no-op against a privilege held via PUBLIC. Measured blast radius: **of 181 functions in `public`, exactly these 7** — the 2026-07-06 lockdown holds everywhere else. **Not exploitable:** all seven refuse anon in-body, probed live (42501 admin-gated ×4, 28000 FIM-gated ×3). The defect is that the grant layer, which ADR-U038 L27 names as an enforcement surface in its own right, was wider than every one of those bodies intended.
+
+**F2 — `notify_invitation_received()` retains `authenticated` EXECUTE.** It has never carried a GRANT or REVOKE line in *any* migration since its creation in February; the privilege comes from default privileges. **Inert** — a direct call raises `0A000` (probed). Recorded because its two A-NTF sibling trigger functions are both explicitly closed.
+
+**Repair:** `20260727120000_n_d_anon_execute_repair.sql` — pure REVOKE, no behaviour change, plus `ALTER DEFAULT PRIVILEGES … REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC` so the next migration cannot inherit the trap. **HELD at the schema gate.**
+
+**Prevention:** the hardcoded `anon-execute-lockdown` suite could only ever catch functions that existed when it was written — which is exactly how this escaped. It now also asserts the **invariant** (zero anon-executable functions in `public`, allowlist empty by design), so the next omission fails in CI rather than at a live walk.
