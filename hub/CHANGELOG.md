@@ -2,6 +2,11 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-07-27 — Signing out signs out this browser, not all your devices ([FEAT-H012](../docs/products/hub/features/FEAT-H012-per-device-sessions.md))
+
+- **"Sign out" now ends this browser only.** It used to end every device you were signed in on — so signing out on a shared computer also signed you out on your phone, with nothing to tell you it had happened. Now your other devices are left alone, which is what "sign out" means nearly everywhere else.
+- **If you do want to end everything, that's coming as its own thing.** A deliberate "Sign out everywhere" will live on your Sessions page, next to the list of devices — so you can see what you're ending before you end it. In the meantime you can already sign out any single device from that page.
+
 ## 2026-07-27 — Your notifications answer a click ([FEAT-H030](../docs/products/hub/features/FEAT-H030-notification-bell-and-inbox.md))
 
 - **Notifications on the Notifications page are things you can click again.** A notification in your inbox now opens what it's about — click the one telling you about a group and it takes you there — and clicking it marks it read. Until now the rows on that page looked interactive but did nothing at all, and there was no way to mark a single notification read from there.

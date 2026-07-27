@@ -235,12 +235,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return { error: 'Could not reach the server. Please try again.' };
     }
     // Erased server-side — drop the local session => sessionless entry.
-    await supabase.auth.signOut();
+    // `local`: a Mist is per-device and anonymous, so there is no other session
+    // this could mean; saying so explicitly keeps every call site honest.
+    await supabase.auth.signOut({ scope: 'local' });
     return { error: null };
   }
 
+  /**
+   * Deliberate sign-out — ends THIS browser, and nothing else.
+   *
+   * `signOut()` defaults to `scope: 'global'`, so this used to end the member's
+   * phone and tablet too, silently. That is the opposite of what "Sign out"
+   * means nearly everywhere — Google, Microsoft, Facebook, Apple, GitHub and
+   * Slack all treat it as device-local and put "sign out everywhere" behind a
+   * separate, explicitly named control beside a device list. Signing out is
+   * routine (a shared machine, the end of a day); ending *every* session is a
+   * security response, a different intent, and deserves to be asked for.
+   *
+   * Decided by Stefan 2026-07-27. A deliberate "Sign out everywhere" lands
+   * later on `/sessions`, which already lists devices and revokes them one at a
+   * time but has no bulk contract yet (only `DELETE /api/sessions/[id]`).
+   */
   async function signOut() {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope: 'local' });
   }
 
   // Derived in render (not in the auth listener) — pure, no query, no deadlock.
