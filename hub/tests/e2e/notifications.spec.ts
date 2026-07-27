@@ -65,10 +65,15 @@ test.describe.serial('FEAT-H030 — notification bell, dropdown & inbox (NTF-1/2
   let stewardPage: Page;
   const users: Array<{ authId: string; pgId: string }> = [];
   let groupId: string | null = null;
+  /** The invitee's personal group — notifications are addressed to it
+   *  (`recipient_group_id`), so it is the handle for re-arming unread state. */
+  let inviteePgId: string | null = null;
 
   test.beforeAll(async ({ browser }) => {
     users.push(await createFim(stewardEmail, `E2ENASteward${stamp}`));
-    users.push(await createFim(inviteeEmail, inviteeName));
+    const invitee = await createFim(inviteeEmail, inviteeName);
+    users.push(invitee);
+    inviteePgId = invitee.pgId;
 
     stewardCtx = await browser.newContext();
     stewardPage = await stewardCtx.newPage();
@@ -142,6 +147,58 @@ test.describe.serial('FEAT-H030 — notification bell, dropdown & inbox (NTF-1/2
     const reloadedRow = inviteePage.locator('[data-read]', { hasText: 'Group Invitation' });
     await expect(reloadedRow).toBeVisible({ timeout: 15000 });
     await expect(reloadedRow).toHaveAttribute('data-read', 'true');
+
+    // ── W-01 / W-02 — the inbox is a surface, not a display case ───────────
+    //
+    // Both defects escaped THIS journey, which is why they reached a live walk:
+    // above, mark-all is pressed in the BELL dropdown, and the inbox is reached
+    // only to assert history rendering. The journey never clicked an inbox row
+    // (W-01) and never checked the badge after a PAGE-side mark-all (W-02).
+    // Extended here rather than duplicated in a parallel spec, per the finding.
+    //
+    // Re-arming flips the existing row back to unread rather than inserting a
+    // synthetic one — the same technique the live walk used, so what is asserted
+    // is a real trigger-emitted notification throughout.
+    // Scoped to the invitation alone (`type` is the DB column the RPC exposes
+    // as `kind`): the invitee carries other notifications, and leaving those
+    // read makes the badge assertions exact — one unread in, zero expected out.
+    const adminRearm = createAdminClient();
+    const rearmUnread = async () => {
+      const { error } = await adminRearm
+        .from('notifications')
+        .update({ is_read: false, read_at: null })
+        .eq('recipient_group_id', inviteePgId!)
+        .eq('type', 'invitation_received');
+      if (error) throw error;
+    };
+    const badge = inviteePage.getByTestId('notification-unread-badge');
+
+    // W-01 (FEAT-H030:88 — "when I click it (dropdown or inbox)"): an unread
+    // inbox row is clickable, marks itself read, and goes where it points.
+    await rearmUnread();
+    await inviteePage.goto('/notifications');
+    await expect(badge).toBeVisible({ timeout: 15000 });
+    const unreadRow = inviteePage.locator('[data-read="false"]', { hasText: 'Group Invitation' });
+    await expect(unreadRow).toBeVisible({ timeout: 15000 });
+    await unreadRow.getByRole('button').first().click();
+
+    await expect(inviteePage).toHaveURL(new RegExp(`/groups/${groupId}`), { timeout: 15000 });
+    // The badge follows the click without a reload — the sync contract spoken.
+    await expect(badge).toBeHidden({ timeout: 15000 });
+
+    // ...and it was server state, not a local flip.
+    await inviteePage.goto('/notifications');
+    await expect(
+      inviteePage.locator('[data-read]', { hasText: 'Group Invitation' }),
+    ).toHaveAttribute('data-read', 'true', { timeout: 15000 });
+
+    // W-02 (FEAT-H030:72 — "...and the badge clears"): page-side mark-all, the
+    // control the walk found stale. No reload between the press and the assert.
+    await rearmUnread();
+    await inviteePage.goto('/notifications');
+    await expect(badge).toBeVisible({ timeout: 15000 });
+    await inviteePage.getByRole('button', { name: /mark all read/i }).click();
+    await expect(badge).toBeHidden({ timeout: 15000 });
 
     await inviteeCtx.close();
   });

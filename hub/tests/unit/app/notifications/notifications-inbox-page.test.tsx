@@ -44,6 +44,12 @@ jest.mock('@/components/shell/AppShell', () => ({
   AppShell: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+// Isolate the page from the realtime module — the page needs only the event
+// NAME from it, and pulling the tenant in would drag the socket manager along.
+jest.mock('@/lib/realtime/notifications-tenant', () => ({
+  NOTIFICATIONS_CHANGED_EVENT: 'notificationsChanged',
+}));
+
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const NotificationsPage = require('@/app/notifications/page').default as React.ComponentType;
 
@@ -229,5 +235,148 @@ describe('NotificationsPage (/notifications)', () => {
     await waitFor(() =>
       expect(screen.getByTestId('notification-row-u1')).toHaveAttribute('data-read', 'true'),
     );
+  });
+
+  // ── W-01 / W-02 — the inbox is a surface, not a display case ─────────────
+  //
+  // The A-NTF live walk (2026-07-27) found the inbox page built as a *display*
+  // over the shared row component, never wired to the bell's interaction
+  // contract. Two written acceptance criteria went unmet:
+  //   W-01 — FEAT-H030:88 "when I click it (dropdown or inbox)" — inbox rows
+  //          were inert. The bell wraps NotificationItem in a button; the page
+  //          rendered it bare. Stefan: "It's like there is nothing to click on."
+  //   W-02 — FEAT-H030:72 "...and the badge clears" — page-side mark-all wrote
+  //          correctly server-side but never dispatched the sync event, so the
+  //          bell badge sat stale until a reload.
+  //
+  // The event is the house cross-component contract (the bell listens for it);
+  // the page simply never spoke it. Every mutation the page performs must.
+
+  const clickableRow = (id: string) =>
+    screen.getByTestId(`notification-row-${id}`).querySelector('button');
+
+  it('W-01: an inbox row is clickable and marks itself read via the contract', async () => {
+    fetchNotifications.mockResolvedValue([row({ id: 'n1', title: 'Unread A', is_read: false })]);
+    render(<NotificationsPage />);
+    await screen.findByText('Unread A');
+
+    const btn = clickableRow('n1');
+    expect(btn).not.toBeNull();
+
+    await act(async () => {
+      fireEvent.click(btn!);
+    });
+
+    expect(markNotificationRead).toHaveBeenCalledWith('n1');
+    await waitFor(() =>
+      expect(screen.getByTestId('notification-row-n1')).toHaveAttribute('data-read', 'true'),
+    );
+  });
+
+  it('W-01: clicking a row that names a group navigates there', async () => {
+    fetchNotifications.mockResolvedValue([
+      row({ id: 'n1', title: 'Group Invitation', is_read: false, group_id: 'g-42' }),
+    ]);
+    render(<NotificationsPage />);
+    await screen.findByText('Group Invitation');
+
+    await act(async () => {
+      fireEvent.click(clickableRow('n1')!);
+    });
+
+    expect(push).toHaveBeenCalledWith('/groups/g-42');
+  });
+
+  it('W-01: an already-read row still navigates but does not re-mark', async () => {
+    fetchNotifications.mockResolvedValue([
+      row({ id: 'n1', title: 'Old news', is_read: true, group_id: 'g-7' }),
+    ]);
+    render(<NotificationsPage />);
+    await screen.findByText('Old news');
+
+    await act(async () => {
+      fireEvent.click(clickableRow('n1')!);
+    });
+
+    expect(markNotificationRead).not.toHaveBeenCalled();
+    expect(push).toHaveBeenCalledWith('/groups/g-7');
+  });
+
+  it('W-01: a single-row read dispatches the sync event so the badge follows', async () => {
+    const heard = jest.fn();
+    window.addEventListener('notificationsChanged', heard);
+    fetchNotifications.mockResolvedValue([row({ id: 'n1', title: 'Unread A', is_read: false })]);
+    render(<NotificationsPage />);
+    await screen.findByText('Unread A');
+
+    await act(async () => {
+      fireEvent.click(clickableRow('n1')!);
+    });
+
+    await waitFor(() => expect(heard).toHaveBeenCalled());
+    window.removeEventListener('notificationsChanged', heard);
+  });
+
+  it('W-02: page-side "Mark all read" dispatches the sync event so the badge clears', async () => {
+    const heard = jest.fn();
+    window.addEventListener('notificationsChanged', heard);
+    fetchNotifications.mockResolvedValue([
+      row({ id: 'u1', title: 'Unread A', is_read: false }),
+      row({ id: 'u2', title: 'Unread B', is_read: false }),
+    ]);
+    markAllNotificationsRead.mockResolvedValue(2);
+    render(<NotificationsPage />);
+    await screen.findByText('Unread A');
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /mark all read/i }));
+    });
+
+    await waitFor(() => expect(heard).toHaveBeenCalled());
+    window.removeEventListener('notificationsChanged', heard);
+  });
+
+  it('W-02 family: answering an actionable row also dispatches the sync event', async () => {
+    const heard = jest.fn();
+    window.addEventListener('notificationsChanged', heard);
+    fetchNotifications.mockResolvedValue([
+      row({
+        id: 'a1',
+        kind: 'acting_invitation',
+        title: 'Stewardship nomination',
+        is_read: false,
+        action_type: 'accept_decline',
+        action_data: { membership_id: 'm1' },
+        action_taken: null,
+        expires_at: null,
+      }),
+    ]);
+    render(<NotificationsPage />);
+    await screen.findByText('Stewardship nomination');
+
+    // Accept is ConfirmModal-gated (ADR-U051/U008) — the dispatch is the confirm.
+    fireEvent.click(screen.getByTestId('notif-action-accept'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('confirm-modal-confirm'));
+    });
+
+    await waitFor(() => expect(heard).toHaveBeenCalled());
+    window.removeEventListener('notificationsChanged', heard);
+  });
+
+  it('W-01: a failed single-row read still dispatches, so the badge reconciles', async () => {
+    const heard = jest.fn();
+    window.addEventListener('notificationsChanged', heard);
+    markNotificationRead.mockRejectedValue(new Error('offline'));
+    fetchNotifications.mockResolvedValue([row({ id: 'n1', title: 'Unread A', is_read: false })]);
+    render(<NotificationsPage />);
+    await screen.findByText('Unread A');
+
+    await act(async () => {
+      fireEvent.click(clickableRow('n1')!);
+    });
+
+    await waitFor(() => expect(heard).toHaveBeenCalled());
+    window.removeEventListener('notificationsChanged', heard);
   });
 });
