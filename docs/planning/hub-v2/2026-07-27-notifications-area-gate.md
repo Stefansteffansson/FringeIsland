@@ -115,7 +115,7 @@ Independent of the walk, carried from the retrospective:
 ## Follow-ups logged, not blocking
 
 - **W-03**, **W-04**, **W-07**, **W-08** — seams. **W-07** ranks first: it is the same stale-view family as W-02 and could ride the same fix.
-- **W-09** — a **DS-5 design question**, not a patch: should actionable kinds be non-suppressible, as *"Account & participation state"* already is? Or should suppression drop the *hint* while still writing the row? Testing the stranding case needs an engagement-group setup.
+- **W-09** — **DECIDED 2026-07-27, routed to the DS-5 spec advance.** The `membership` category conflates **news** (*Alice joined*, *your role changed* — nothing owed by you) with **asks** (*you have been invited* — a decision only you can make), so one switch silences both. Rule adopted: *notices about your own account and access always reach you — and so do questions that only you can answer.* **Implementation is a registry split along asks-versus-news**; the surgical `action_type IS NOT NULL` exemption was **considered and rejected**, because `invitation_received` carries no `action_type` and that is the common case — a muted member could still be invited and never told. Also: the label *"Group membership & invitations"* should name the *telling*, not the thing. **Handle together with W-04** — otherwise the letter reaches the member and still goes nowhere. Not a condition of gate closure.
 - **W-06** — a comment deletion.
 
 ## Consequences of the walk

@@ -156,7 +156,30 @@ Dev Login's unread count was manipulated to run the two-round isolation: the 7 m
 
 **Why it matters beyond the edge case.** A preference switch labelled *"Group membership & invitations"* reads as controlling **noise**. It in fact also controls **whether a member can act on real obligations**. Muting notifications about invitations silently becomes muting the ability to respond to them, and there is no indication anywhere that this trade is being made. Related to **W-04**, which found the same split from the other direction: personal invitations arrive as letters that cannot be answered where they appear.
 
-**Questions this opens for the area's design, not for this gate:** should actionable kinds be non-suppressible, like *"Account & participation state"* already is? Or should suppression drop the *hint* while still writing the row? Both are DS-5 design decisions, not defects to patch.
+### Decision — 2026-07-27 (Stefan): fix it properly, not surgically
+
+**The root problem is the category, not the switch.** `membership` currently mixes two kinds of message that members feel completely differently about:
+
+- **News** — *Alice joined*, *Bob left*, *your role changed*, *your invitation was accepted*. Something happened; nothing is owed by you.
+- **Asks** — *you have been invited*, *your group has been invited, accept or decline*. Something is owed **by you**, and only you can give it.
+
+A member who mutes *"Group membership & invitations"* means *"stop pinging me about routine churn."* Nobody means *"make me unable to answer questions addressed to me."* One bucket, one switch, both consequences.
+
+**The rule adopted**, phrased so a member can understand it in one sentence, and mirroring what the page already says for *"Account & participation state"*:
+
+> Notices about your own account and access always reach you — **and so do questions that only you can answer.**
+
+This **strengthens** the "you can say no" promise rather than weakening it: what is switched off is unambiguously noise, and what always arrives is unambiguously a decision that belongs to the member. A second blanket "you cannot turn this off" category would have read as a loophole; this does not.
+
+**Implementation: split the axis in the registry — *asks* versus *news* — so the preference surface offers control over the news and never over the asks.**
+
+**The surgical alternative was considered and REJECTED.** Exempting `action_type IS NOT NULL` from suppression in `ds5_may_deliver` is a small safe change that handles `acting_invitation` — but **`invitation_received` carries no `action_type`**, so a muted member could still be invited to a group and never told. That is the *common* case; acting invitations are the rare one. The workable rule is **"anything that asks something of you"**, which is broader than "carries buttons". Rationale for the call: the build must be robust and serve end users, not take the cheap path.
+
+**One wording change regardless of implementation.** *"Group membership & invitations"* reads as though it might govern **whether you get invited**. It governs only **whether you are told**. A label naming the telling — *"Membership news"*, *"Updates about members and roles"* — removes the ambiguity.
+
+**Handle with [[W-04]] as one conversation.** Making asks non-suppressible guarantees a member is *told* about an invitation; W-04 means a personal invitation still cannot be answered where it appears. Fixing W-09 alone yields a letter that reaches you and still goes nowhere.
+
+**Home:** the **DS-5 spec advance**, already owed at the gate. Not a defect patch, and not a condition of gate closure.
 
 ---
 
