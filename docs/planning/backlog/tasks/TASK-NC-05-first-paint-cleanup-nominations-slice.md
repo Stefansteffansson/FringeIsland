@@ -38,6 +38,22 @@ Independent of the migration, so it can proceed while TASK-NC-02 sits at the sch
 - [ ] **Measured, not asserted.** `/groups` first paint before and after, under the ADR-U043 method — this is a cleanup justified on loading-time grounds, so it must show its number. One deep-cold spot measurement of the touched page (>= 20 min enforced idle, no synthetic warm-up in the window; a fresh-deploy or active-day sample is *shallow-cold* and satisfies no cold scenario). Record the idle depth alongside the number.
 - [ ] No other bundle slice regresses.
 
+## Gate re-check — 2026-07-27
+
+The area gate's task sweep says this task must survive and asks whether its owed measurement lets it finally close. **Re-checked against the code and suites: six of seven criteria are satisfied on disk; the seventh is half-unobtainable and should not be silently ticked.**
+
+| Criterion | Verdict |
+|---|---|
+| No nominations lookup on `/groups` | **Met** — the slice is gone from `hub/app/api/me/overview/route.ts`; only the explanatory header comment remains |
+| Slice/consumer parity | **Met** — covered by `hub/tests/unit/app/api/me-overview-route.test.ts` |
+| `/api/me/nominations` still responds | **Met** — route present (deliberately left, FEAT-H017-owned); covered by `hub/tests/unit/app/api/group-leadership-routes.test.ts` |
+| The two stale comments | **Met** — both now describe the retirement rather than pointing at a live section |
+| Offers still reachable in the bell | **Met** — `hub/tests/e2e/leadership-transfer.spec.ts:168` asserts `pending-nominations` is count 0 and answers through the bell |
+| No other slice regresses | **Met** — bundle route suite green |
+| **Measured before and after** | **Half-unobtainable.** The [gate measurement pass](../../hub-v2/2026-07-27-antf-gate-measurements.md) recorded `/groups` deep-cold at **5 617 ms**, semi-warm **379/389 ms**, warm soft-nav **385/368/374 ms** — all *after* the cleanup. The **before** number cannot be taken retrospectively: the slice was already retired on production when the pass ran. What the pass did establish is that the after-number is **in band with history and shows no regression** |
+
+**Recommendation:** close this task when the gate closes, ticking six criteria and recording the seventh as *after-only, before unobtainable, no regression shown* — rather than claiming a delta that was never measured. The trio `fetchMyNominations` / `adoptMyNominationsRead` / `requestMyNominations` is confirmed **fully deleted** (zero occurrences repo-wide), which was the cleanup's actual point.
+
 ## Technical notes
 
 - `fetchMyNominations` has **zero callers** — confirmed 2026-07-25. Its deliberate `guarded.catch(() => {})` ("may go unconsumed; never unhandled") is why the dead chain never surfaced as an unhandled rejection; expect no runtime signal to guide the removal.
