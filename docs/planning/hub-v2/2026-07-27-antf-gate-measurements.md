@@ -94,7 +94,29 @@ An earlier version of this section compared 5.5 s against the 2026-07-10 figure 
 
 **A-NTF sits at the fast end of the established band.** The A-COM gate's empty-cache probe already decomposed the chain: **~2.7 s document TTFB (instance provisioning) → ~0.7 s hydration → ~1.3–2 s cold reads → render**. The "~2 s unaccounted" this pass briefly reported is the **TTFB term**, which this harness includes in its wall-clock but does not break out. Nothing is unexplained.
 
-**Consequence for this gate: the new N-D surface introduced no performance problem** — which is the question a gate measurement exists to answer. Disposition and remaining options: [`2026-07-27-cold-load-investigation-brief.md`](./2026-07-27-cold-load-investigation-brief.md).
+**Consequence for this gate: the new N-D surface introduced no performance problem** — which is the question a gate measurement exists to answer.
+
+## Disposition — closed 2026-07-27
+
+**Stefan, 2026-07-27: "the long loading time is okay for demo."** The deep-cold overshoot is accepted, extending the standing labelled exception first set at the J-gate (2026-07-19) and re-affirmed at the A-COM gate (2026-07-22). **No further investigation is commissioned.** The Vercel Pro scale-to-one purchase remains a parked pre-launch comfort decision, not a gate condition — it is the only lever measured to move the number (it removes both the TTFB floor and the cold-read cost, collapsing the chain to ~1–1.5 s), and a commercial launch leaves the Hobby tier regardless.
+
+**Warm and semi-warm remain fully binding** (the standing rider): they pass here with margin, the one tight number being the 937 ms fresh-context full load against the 1.0 s B3 ceiling.
+
+### Closed with evidence — do not reopen without new data
+
+Consolidated here so this record stands alone. Each of these cost real investigation time and was closed deliberately:
+
+| Closed | When | Why |
+|---|---|---|
+| **Fan-out reduction** | J-gate R3, 2026-07-19 | Concurrent reads **share one instance's boot** — 4 `/journeys` reads ≈ 1.3 s wall *total*, not 4×; ~150 ms each warm. *"The measured pain lives in provisioning + first-visit assets, not the fan-out."* |
+| **Asset optimization** | A-COM gate, 2026-07-21 | 266 KB total, all `x-vercel-cache: HIT`, 18 assets in ~0.1 s parallel, slowest 105 ms. Nothing to win. |
+| **Keep-warm pinging** | 2026-07-10 | Retired as a strategy. Multi-ping failed both ways; even a 60-second-old pool did not cover a 4-route boot. The cost sits in the sandbox layer, provisioned per concurrent request. |
+| **Edge runtime** | ADR-U036 Amendment 2, 2026-07-10 | Migrated off; boot lottery eliminated. Verified 2026-07-27: 79 route files, zero `export const runtime`. |
+| **DB / RLS · region · route code** | 2026-07-09 analysis | Warm slices 48–109 ms; `dub1` pin held; client patterns conformant. |
+
+**The composition, for anyone tempted to re-derive it:** document TTFB ~2.7 s (instance provisioning, ~2.73 s ± 10 ms across every window since 07-19) → hydration ~0.7 s → cold reads ~1.3–2 s → render. Serialized on a cold backend. Source: the A-COM gate's empty-cache probe, [`2026-07-21-communication-area-gate.md`](./2026-07-21-communication-area-gate.md) §Deep-cold.
+
+**Harness:** [`hub/scripts/perf-measure.mjs`](../../../hub/scripts/perf-measure.mjs) — run with no arguments for usage. It leads with the two-phase deep-cold protocol, because signing in immediately before a "cold" navigation reported **368 ms** where the correct protocol reports **5 864 ms** on the same page.
 
 ## Method notes (so the next pass doesn't repeat these)
 
