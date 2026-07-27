@@ -57,6 +57,7 @@ The root problem is the category, which conflates **news** (*Alice joined*, *you
 
 ## Where the next session starts
 
+0. **`doc-health-check` — RUN IT FIRST, before anything else.** Not "at the next cycle boundary", not "before A-ADM opens" — **the first task of the next session.** It has been owed across **four consecutive bridges**; every individual deferral was defensible and the pattern is not. It has slipped by *wording*, not by decision: each bridge filed it under a condition that never quite arrives. This entry removes the condition. Three sessions of triggers have accumulated (file creations and deletions, the gate/findings documents added here, the walk-script rewrite), and the tree should be clean before A-ADM opens a new area on top of it. **Deliberately scheduled rather than deferred, 2026-07-27.**
 1. **W-05** — highest severity, unblocks two gate criteria. Own task, outside A-NTF.
 2. **W-01 + W-02** — the gate's closing condition. One small cycle, with the N-A E2E journey extended.
 3. **Still owed at the gate, independent of the walk:** NB-8 Mist-posture proof · W12 per-RPC verification (**A-NTF has no Appendix-A roll-up yet**) · U049 §8 Q1 adapter ownership · the email-deferral recording · the DS-5 spec advance (now carrying W-09) · the 937 ms warm ceiling-hugger.
@@ -75,4 +76,4 @@ Clean. Preferences unmuted (one row platform-wide, an explicit allow), announcem
 - [x] Session bridge (this file)
 - [x] Discovery sweep — synced **0/0**
 - [x] PRs #311 and #312 merged, branches deleted, `main` at `6ab9cb9`, tree clean, no open PRs
-- [ ] **`doc-health-check` NOT run.** Two files were created this session, a named trigger. **Now owed across four consecutive bridges** — it should stop being deferred and run at the next cycle boundary, ideally before A-ADM opens.
+- [ ] **`doc-health-check` NOT run — deliberately, and now SCHEDULED rather than deferred.** Two files were created this session, a named trigger; it is owed across **four consecutive bridges**. Running it at the tail of a long session would mean triaging its findings with the least room and the most fatigue — the "locally honest checkbox" failure mode this area's own retrospective named (learning 5). **It is item 0 of the next session, unconditional.** See "Where the next session starts".
