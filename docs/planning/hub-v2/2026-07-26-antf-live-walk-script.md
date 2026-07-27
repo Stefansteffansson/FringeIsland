@@ -37,6 +37,8 @@ Companion to the [area retrospective](../retrospectives/retro-2026-07-26-notific
 
 **Starting state — verified: nobody on the platform has a single preference row.** Every switch, for every account, should read **ON**. If you find one already off before you touch anything, stop and tell me — the "absence means allowed" default is broken.
 
+> **CORRECTED 2026-07-27 — a stale precondition.** Scenarios 4, 5, 7 and 10 instruct you to *assign* Grace the **Observer Role Template** on the grounds that she has Member and Guide but not Observer. **She already holds it.** Every such sequence must therefore begin with a **remove**, then an assign. **Re-verify role state against the DB before walking — do not trust this cast table's role lists.** The account, group and permission facts held up; only the role list had drifted.
+
 ---
 
 ## 1 — ~~The two owed gate measurements~~ — **DONE 2026-07-27, SKIP THIS SECTION**
@@ -110,14 +112,23 @@ These are the last two blocking items on the A-NTF gate. **≥ 20 minutes of zer
 
 ## 6 — Typed actions: answer where you were asked (N-B)
 
-Grace has a **real pending invitation to Nya gruppen #2** sitting in the DB right now.
+> **CORRECTED 2026-07-27 — the original premise was wrong.** This section used to say Grace's pending **personal** invitation to Nya gruppen #2 would carry Accept/Decline in the inbox. It does not, and never should: [`FEAT-PD014`](../../platform/domain/features/FEAT-PD014-actionable-notification-dispatch-and-acting-fanout.md) line 40 states verbatim that a **personal invitation** keeps `invitation_received` *"unchanged (the MyInvitations path)"*. N-B brought exactly **two** answerable events into the inbox — **stewardship nominations** and **group-of-groups acting-invitations** — and the old script conflated nominations with personal invitations. **The code matches its spec; the script did not.** Walked in corrected form on 2026-07-27; see the [gate document](./2026-07-27-notifications-area-gate.md).
 
-1. B: open `/notifications`. **⚑ EXPECT** to find the Nya gruppen #2 invitation as a notification with **Accept** and **Decline** on the letter itself.
-2. **⚑ EXPECT a *Respond by* date** if it has an expiry.
-3. Click **Accept**. **⚑ EXPECT** a confirm step first, then it applies, then the buttons are replaced by the outcome.
-4. Reload. **⚑ EXPECT** the answered state persists — this is the platform's memory, not the browser's.
-5. Go to Nya gruppen #2. **⚑ EXPECT** Grace is now a member.
-6. **⚑ EXPECT nowhere in the app still shows a separate "pending nominations" panel** — that was deleted in N-B and the inbox is its only home now.
+**You need a live, unresolved actionable row, and the walk accounts may not have one.** Check first — only `stewardship_nomination` and `acting_invitation` are actionable. The cheapest generator is a **fresh stewardship nomination**, created through the UI so the real dispatch path is exercised.
+
+> ⚠️ **Know the cost before you click.** Accepting a nomination grants the **actual Steward role** *and* **removes the nominator from the group entirely** (the `leave_group` cascade verbatim — handing over leadership means leaving, not being demoted). Declining sends the offer to the next-ranked nominee, and with a sole nominee runs into the all-decline fallback to FringeIsland. **Either answer changes who owns that group — so nominate in a group nothing else in this walk depends on.**
+
+1. A (a **sole** Steward of the chosen group): open the group → **"Hand over leadership"** (the button beside "Leave group" — the panel is collapsed until you click it) → **"Nominate successors"** → pick the nominee → **"Nominate in this order"** → confirm **"Send nomination"**.
+2. B: **⚑ EXPECT the bell to rise within ~1–2 s**, no reload.
+3. B: open `/notifications`. **⚑ EXPECT** the nomination with **Accept** and **Decline** on the letter itself.
+4. **⚑ EXPECT a *Respond by* date** if it has an expiry.
+5. Click **Accept**. **⚑ EXPECT** a confirm step first, then it applies, then the buttons are replaced by the outcome.
+6. **⚑ EXPECT the bell badge to update too** — `FEAT-H031:39` says a successful response decrements the pending affordance.
+7. Reload. **⚑ EXPECT** the answered state persists — this is the platform's memory, not the browser's.
+8. **⚑ EXPECT** the nominee now holds Steward, and the nominator is **gone from the group**, not merely demoted.
+9. **⚑ EXPECT nowhere in the app still shows a separate "pending nominations" panel** — that was deleted in N-B and the inbox is its only home now. *(This line was always correct.)*
+
+**Personal invitations, for the record:** they arrive as an `invitation_received` letter with no chip and no buttons, answerable via **MyInvitations**, not the inbox. That is by design — see finding **W-04**, which questions the design rather than the behaviour.
 
 > If a dispatch ever fails, **⚑ EXPECT the reason pinned to that row and the buttons back** — never a silent revert. If you can provoke a failure, that's the single most valuable observation in this scenario.
 

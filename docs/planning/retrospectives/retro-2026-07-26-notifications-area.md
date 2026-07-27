@@ -38,11 +38,21 @@ Four migrations (`20260723`–`20260726`), **one new ADR (U051)** and **two long
 
 ## Gate — to be completed
 
-*Placeholder. When the walk and the measurements land, record the verdict here and link the gate document (`docs/planning/hub-v2/2026-XX-XX-notifications-area-gate.md`, following the A-COM/A-JRN pattern).*
+**Verdict: HELD — 2026-07-27.** Gate document: [`../hub-v2/2026-07-27-notifications-area-gate.md`](../hub-v2/2026-07-27-notifications-area-gate.md). Walk findings: [`../hub-v2/2026-07-27-antf-walk-findings.md`](../hub-v2/2026-07-27-antf-walk-findings.md).
+
+Held, not failed. **N-C and N-D passed convincingly** — live delivery, hidden-tab reconnect reconciliation, the preference model's "absence means allowed" default, the non-suppressible account category, and the operator console's privilege boundary. **Scenario 7 is the best-evidenced result of any Phase-3 walk to date**: with the membership category muted, two role changes demonstrably took effect and **no notification rows were written at all** — suppression proven at write time in the database, not merely observed on a screen, which is also why it costs no realtime.
+
+**Held on N-A**, which ships **two defects against written acceptance criteria**: **W-01** (inbox rows are inert — clicking does nothing, against `FEAT-H030:88`, which names *"dropdown or inbox"* explicitly) and **W-02** (page-side mark-all leaves the bell badge stale, against `FEAT-H030:72`). Neither is architectural. The area cannot be green while the inbox's primary interaction does not respond to a click. **Conditions to close:** both fixed, with the existing N-A E2E journey **extended** — it currently reaches the inbox only to assert history rendering, never clicking a row and never checking the badge after a page-side mark-all, which is exactly how both escaped.
+
+**Out of area and escalated separately: [W-05](../hub-v2/2026-07-27-antf-walk-findings.md) — a transient network failure signs the member out of every device.** Session guard (PC-2 / Identity), not notifications; must not be folded into A-NTF's remediation. The hazard was anticipated and the guard written — it sits in a `catch` that never fires, because `getUser()` returns its network error rather than throwing.
+
+**Two gate criteria are recorded UNTESTED, not passed** — the degraded-connection notice and the failed-save revert. Both are unreachable behind W-05 and become testable when it is fixed.
+
+**Also surfaced:** four seams (**W-03**, **W-04**, **W-07**, **W-08**), one DS-5 **design question** (**W-09** — muting a category may strand an acting invitation; mechanism verified, consequence untested), one trivial comment fix (**W-06**), and **two errors in the walk script itself** — Scenario 6's premise contradicted `FEAT-PD014:40` (the code was right, the script wrong), and a stale Observer precondition. Both corrected in the script so the next walker does not repeat today.
 
 **✅ The two ADR-U043 measurements are DONE (2026-07-27)** — full record: [`../hub-v2/2026-07-27-antf-gate-measurements.md`](../hub-v2/2026-07-27-antf-gate-measurements.md). Summary: **warm and semi-warm all PASS** (272–402 ms; the binding signal per the A-COM rider), **B1 sign-in PASS** at 2 377 ms, and **deep-cold B2 FAILS on both pages at ~5.5 s** against a 2 500 ms ceiling — recorded as a labelled accepted exception pre-launch. The finding worth carrying: **the cold penalty is not page-specific** — whichever authenticated page loads first after idle pays it, so a *returning* member (~5.5 s) is **2.3× slower than a fresh sign-in** (2 377 ms), which no "first-time visitor" framing captures. An in-pass conclusion blaming `OverviewBoot`'s `BOOT_PATHS` gate was **retracted** when the control run put `/groups` at 5 617 ms — it had compared a cold number against a semi-warm one.
 
-Still owed at the gate: **Stefan's live walk**; **NB-8** Mist-posture proof; **W12** per-RPC verification; **U049 §8 Q1** adapter ownership; the **email-deferral** recording; and the **DS-5 spec advance**. The standing cold-load exception applies, with its 2026-07-22 rider: the exception never waives the measurement pass, and warm/semi-warm budgets remain fully binding.
+~~Stefan's live walk~~ — **DONE 2026-07-27** (verdict above). Still owed at the gate: the **W-01/W-02 remediation** (the closing condition); **NB-8** Mist-posture proof; **W12** per-RPC verification (A-NTF has no Appendix-A roll-up yet); **U049 §8 Q1** adapter ownership; the **email-deferral** recording; and the **DS-5 spec advance**. The standing cold-load exception applies, with its 2026-07-22 rider: the exception never waives the measurement pass, and warm/semi-warm budgets remain fully binding.
 
 ## Standing items into Platform-Ops (A-ADM)
 
