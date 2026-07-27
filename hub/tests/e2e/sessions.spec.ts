@@ -40,10 +40,14 @@ test.describe('FEAT-H012 — per-device sessions', () => {
   }) => {
     test.setTimeout(90_000);
 
-    // Two FRESH sessions, independent of the shared storageState one (earlier
-    // specs sign out globally — profile.spec STORY-4 — which server-revokes it;
-    // the suite-order lesson from the first full run). Device B logs in LAST,
-    // so it is the newest non-current row on device A's inventory.
+    // Two FRESH sessions, independent of the shared storageState one. This was
+    // originally forced by profile.spec STORY-4 signing out GLOBALLY, which
+    // server-revoked the shared session (the suite-order lesson from the first
+    // full run). That hazard is gone as of 2026-07-27 — deliberate sign-out is
+    // now `scope: 'local'` — but fresh sessions are kept deliberately: this
+    // journey revokes sessions, and it must never revoke one another spec is
+    // relying on. Device B logs in LAST, so it is the newest non-current row on
+    // device A's inventory.
     const ctxA = await browser.newContext();
     const pageA = await loginFresh(ctxA);
     const ctxB = await browser.newContext();

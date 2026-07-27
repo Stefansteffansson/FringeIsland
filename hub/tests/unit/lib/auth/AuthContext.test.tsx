@@ -20,20 +20,32 @@ let signInAnonymouslyImpl: () => Promise<{
   error: { message: string } | null;
 }> = async () => ({ data: { user: null, session: null }, error: null });
 
-jest.mock('@/lib/supabase/client', () => ({
-  createClient: () => ({
-    auth: {
-      getSession: async () => ({ data: { session: fakeSession } }),
-      onAuthStateChange: () => ({
-        data: { subscription: { unsubscribe: () => {} } },
-      }),
-      signInAnonymously: () => signInAnonymouslyImpl(),
-      signInWithPassword: async () => ({ error: null }),
-      signOut: async () => {},
-      setSession: async () => ({ error: null }),
-    },
-  }),
-}));
+const signOutSpy = jest.fn<(opts?: { scope?: string }) => Promise<void>>();
+
+jest.mock('@/lib/supabase/client', () => {
+  // A credentialed session arms the FEAT-H012 session guard and the realtime
+  // tenants, which the sessionless/mist cases below never exercised — hence the
+  // channel surface. Inert stubs: this suite asserts context glue, not sockets.
+  const channelStub = { on: () => channelStub, subscribe: () => channelStub };
+  return {
+    createClient: () => ({
+      auth: {
+        getSession: async () => ({ data: { session: fakeSession } }),
+        onAuthStateChange: () => ({
+          data: { subscription: { unsubscribe: () => {} } },
+        }),
+        signInAnonymously: () => signInAnonymouslyImpl(),
+        signInWithPassword: async () => ({ error: null }),
+        signOut: (opts?: { scope?: string }) => signOutSpy(opts),
+        setSession: async () => ({ error: null }),
+        getUser: async () => ({ data: { user: null }, error: null }),
+      },
+      realtime: { setAuth: () => {} },
+      channel: () => channelStub,
+      removeChannel: () => {},
+    }),
+  };
+});
 
 function IdentityProbe() {
   const { identity, beginMist, loading } = useAuth();
@@ -47,7 +59,63 @@ function IdentityProbe() {
 
 beforeEach(() => {
   fakeSession = null;
+  signOutSpy.mockReset();
+  signOutSpy.mockResolvedValue(undefined);
   signInAnonymouslyImpl = async () => ({ data: { user: null, session: null }, error: null });
+});
+
+/**
+ * Sign-out scope — deliberate sign-out ends THIS browser, nothing else.
+ *
+ * `supabase.auth.signOut()` defaults to `scope: 'global'`, so signing out on a
+ * laptop also ended the member's phone and tablet — silently, with no way to
+ * tell that had happened. That is the near-universal opposite of what "Sign
+ * out" means: Google, Microsoft, Facebook, Apple, GitHub and Slack all treat it
+ * as device-local and put "sign out everywhere" behind a separate, explicitly
+ * named control next to a device list. Signing out is routine (a shared
+ * machine, the end of a day); ending every session is a *security response* and
+ * a different intent.
+ *
+ * Decided by Stefan 2026-07-27: local only; a deliberate "Sign out everywhere"
+ * lands later on `/sessions` — which already lists devices and revokes them one
+ * at a time, but has no bulk contract yet (only `DELETE /api/sessions/[id]`).
+ *
+ * This also makes the account menu consistent with the three sign-out call
+ * sites that were already local: the session guard (W-05), `farewell`, and the
+ * current-device revoke on `/sessions`.
+ */
+function SignOutProbe() {
+  const { signOut } = useAuth();
+  return <button onClick={() => signOut()}>sign out</button>;
+}
+
+describe('sign-out scope (2026-07-27 decision) — local, never global', () => {
+  it('a deliberate sign-out ends THIS browser only', async () => {
+    fakeSession = { user: { id: 'u1', is_anonymous: false } } as unknown as Session;
+    render(
+      <AuthProvider>
+        <SignOutProbe />
+      </AuthProvider>,
+    );
+    await userEvent.click(await screen.findByRole('button', { name: /sign out/i }));
+
+    await waitFor(() => expect(signOutSpy).toHaveBeenCalled());
+    expect(signOutSpy).toHaveBeenCalledWith({ scope: 'local' });
+  });
+
+  it('never calls signOut bare — a bare call is a GLOBAL sign-out by default', async () => {
+    fakeSession = { user: { id: 'u1', is_anonymous: false } } as unknown as Session;
+    render(
+      <AuthProvider>
+        <SignOutProbe />
+      </AuthProvider>,
+    );
+    await userEvent.click(await screen.findByRole('button', { name: /sign out/i }));
+
+    await waitFor(() => expect(signOutSpy).toHaveBeenCalled());
+    expect(signOutSpy).not.toHaveBeenCalledWith(undefined);
+    expect(signOutSpy.mock.calls.every(([opts]) => opts?.scope === 'local')).toBe(true);
+  });
 });
 
 describe('FEAT-H003 STORY-3 (unit) — three-state identity', () => {
