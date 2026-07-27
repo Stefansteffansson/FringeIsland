@@ -2,6 +2,11 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-07-27 — Your notifications answer a click ([FEAT-H030](../docs/products/hub/features/FEAT-H030-notification-bell-and-inbox.md))
+
+- **Notifications on the Notifications page are things you can click again.** A notification in your inbox now opens what it's about — click the one telling you about a group and it takes you there — and clicking it marks it read. Until now the rows on that page looked interactive but did nothing at all, and there was no way to mark a single notification read from there.
+- **"Mark all read" on the Notifications page now clears the bell too.** Pressing it used to tidy the list while the little number on the bell kept insisting there was unread news, until you reloaded the page. The bell now keeps up — whether you mark things read from the bell, from the page, or by answering something.
+
 ## 2026-07-27 — A moment of bad signal no longer signs you out ([FEAT-H012](../docs/products/hub/features/FEAT-H012-per-device-sessions.md))
 
 - **A dropped connection doesn't end your session any more — anywhere.** The Hub checks now and then that you're still signed in. If it couldn't reach the server to ask, it used to assume the worst and sign you out — **and not just on the device that lost signal: on every device you were signed in on.** You'd come back to "Welcome Back" with no explanation and have to find your password again. Now a failed check is treated as what it is — *no answer* — and your session is left exactly as it was. The Hub simply asks again shortly after.

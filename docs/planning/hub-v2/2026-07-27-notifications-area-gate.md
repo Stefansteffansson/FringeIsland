@@ -92,8 +92,10 @@ Two, both of which would mislead the next walker and are corrected in the script
 
 **Conditions to close:**
 
-1. **W-01** and **W-02** fixed, with the existing N-A E2E journey extended to cover an inbox-row click and a page-side mark-all badge assertion.
-2. The independently-owed items below discharged.
+1. ~~**W-01** and **W-02** fixed, with the existing N-A E2E journey extended to cover an inbox-row click and a page-side mark-all badge assertion.~~ **DISCHARGED 2026-07-27** (PR #317). Both fixed red-first; the N-A journey was **extended, not duplicated**, and now clicks an inbox row and asserts the badge after a page-side mark-all — both were demonstrated red by reverting the page. A third stale-badge path (answering an actionable row) was closed in the same pass. Hub unit 987 → 994/994, notification E2E 10/10. See [FEAT-H030's amendment](../../products/hub/features/FEAT-H030-notification-bell-and-inbox.md#amendment--w-01--w-02-the-inbox-was-a-display-case-not-a-surface-2026-07-27).
+2. The independently-owed items below discharged. **← the gate remains HELD on this alone.**
+
+**Gate status after the W-01/W-02 remediation: still HELD.** Half the closing condition is discharged; the walk-defect half. Nothing in that remediation touches the six independently-owed items below, and the gate does not close until they are.
 
 **Explicitly not conditions:** the deep-cold overshoot (standing labelled exception, closed by decision) and the out-of-area **W-05** (tracked separately, must not be folded into A-NTF's remediation).
 

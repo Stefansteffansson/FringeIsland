@@ -12,6 +12,8 @@ Feeds the gate verdict in the [area retrospective](../retrospectives/retro-2026-
 
 ## Finding W-01 — inbox rows are inert; clicking a notification does nothing
 
+> **STATUS: FIXED 2026-07-27 (PR #317).** The page now wraps each row in the bell's own button. Red-first; the N-A E2E journey was **extended** (not duplicated) to click an inbox row — demonstrated red by reverting the page, where the locator waiting for a button never resolved because there was none. See [FEAT-H030's amendment](../../products/hub/features/FEAT-H030-notification-bell-and-inbox.md).
+
 **Scenario:** 2 (extended probe) · **Grade: DEFECT** — violates a written acceptance criterion.
 
 **Observed.** On `/notifications`, clicking any non-actionable notification row produces no response at all — no navigation, no mark-read, no visual feedback. Stefan: *"It's like there is nothing to click on."* The same rows carry the unread dot and bold title, so the affordance reads as interactive.
@@ -36,6 +38,8 @@ The criterion names both surfaces explicitly. Only the dropdown implements it.
 ---
 
 ## Finding W-02 — mark-all on the inbox page leaves the bell badge stale
+
+> **STATUS: FIXED 2026-07-27 (PR #317).** Every page mutation now dispatches `NOTIFICATIONS_CHANGED_EVENT` — `markAll`, the new row `activate`, and `respond` — including on the failure path, where the bell most needs to re-read. **A third stale-badge path was closed in the same pass:** answering an actionable row marks it read, so the badge moved there too and never said so.
 
 **Scenario:** 2, step 5 · **Grade: DEFECT** — violates a written acceptance criterion.
 
@@ -240,6 +244,8 @@ The code twenty lines earlier says otherwise, and is correct — `canTransfer` (
 ---
 
 ## Finding W-05 — a transient network failure signs the member out of every device
+
+> **STATUS: FIXED 2026-07-27 (PR #316), out of area as required.** A whitelist classifier (`isSessionRefusal`) signs out only on a positive refusal — 401/403 or a genuinely missing session; network failure, 5xx, unrecognised shapes and real throws are inconclusive and leave the session untouched. Sign-out is now `{ scope: 'local' }`, which the network log below shows was the actual blast radius (`logout?scope=global`). Red-first at unit and E2E tiers, the E2E demonstrated red by reverting the fix. **The two criteria this hid — the degraded-connection notice (Scenario 5 steps 2–4) and the failed-save revert (Scenario 8 step 4) — are now testable and remain UNTESTED, not passed.**
 
 **Scenario:** 5, step 1 · **Grade: DEFECT, high severity** · **NOT an A-NTF defect** — session guard (PC-2 / Identity), surfaced by this walk. **Blocks Scenario 5.**
 

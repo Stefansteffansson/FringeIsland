@@ -11,11 +11,25 @@ import { InlineError } from '@/components/ui/InlineError';
 import { SkeletonList } from '@/components/ui/SkeletonList';
 import {
   fetchNotifications,
+  markNotificationRead,
   markAllNotificationsRead,
   respondToNotification,
   type NotificationRow,
 } from '@/lib/notifications/client';
 import { isActionable, type NotificationResponse } from '@/lib/notifications/format';
+import { NOTIFICATIONS_CHANGED_EVENT } from '@/lib/realtime/notifications-tenant';
+
+/**
+ * Tell the rest of the app the unread picture moved — the house cross-component
+ * contract the bell listens on (`refreshNavigation` / `conversationsChanged`
+ * shape). W-02: this page performed its mutations and never spoke, so the bell
+ * badge sat stale until a reload. Every mutation here announces, including the
+ * failed ones — a failed write is exactly when the bell most needs to re-read
+ * rather than trust an optimistic flip.
+ */
+function announceChange(): void {
+  window.dispatchEvent(new CustomEvent(NOTIFICATIONS_CHANGED_EVENT));
+}
 
 /**
  * FEAT-H030 STORY-3 — the `/notifications` inbox/history (NTF-3). The full
@@ -99,7 +113,34 @@ export default function NotificationsPage() {
     } catch {
       /* the optimistic flip stands; a later mount reconciles from the server */
     }
+    announceChange();
   }, []);
+
+  /**
+   * W-01 — FEAT-H030:88 names both surfaces: *"when I click it (dropdown or
+   * inbox)"*. The bell wrapped the shared row component in a button and this
+   * page rendered it bare, so inbox rows were inert — no navigation, no
+   * mark-read, no feedback, while still carrying the unread dot that reads as
+   * interactive. Same contract as `NotificationBell.activate`.
+   */
+  const activate = useCallback(
+    async (row: NotificationRow) => {
+      if (!row.is_read) {
+        // Optimistic: drop unread visually, then confirm with the server.
+        setRows((cur) =>
+          cur ? cur.map((r) => (r.id === row.id ? { ...r, is_read: true } : r)) : cur,
+        );
+        try {
+          await markNotificationRead(row.id);
+        } catch {
+          /* the optimistic flip stands; the announce lets the bell reconcile */
+        }
+        announceChange();
+      }
+      if (row.group_id) router.push(`/groups/${row.group_id}`);
+    },
+    [router],
+  );
 
   // Typed-action response (NTF-5/6) — optimistic resolve, reconcile the outcome
   // + resolver from the server, roll back to actionable on failure.
@@ -137,6 +178,9 @@ export default function NotificationsPage() {
           message: e instanceof Error && e.message ? e.message : 'That response could not be sent.',
         });
       }
+      // Answering marks the row read too, so the badge moved either way — and
+      // on failure the bell needs to re-read rather than trust the rollback.
+      announceChange();
     },
     [],
   );
@@ -181,15 +225,24 @@ export default function NotificationsPage() {
                 key={row.id}
                 data-testid={`notification-row-${row.id}`}
                 data-read={row.is_read ? 'true' : 'false'}
-                className="px-4 py-3"
               >
-                <NotificationItem row={row} />
-                {isActionable(row) && <NotificationActions row={row} onRespond={respond} />}
+                <button
+                  type="button"
+                  onClick={() => activate(row)}
+                  className={`w-full px-4 py-3 text-left hover:bg-gray-50 ${row.is_read ? '' : 'bg-indigo-50/40'}`}
+                >
+                  <NotificationItem row={row} />
+                </button>
+                {isActionable(row) && (
+                  <div className="px-4 pb-3">
+                    <NotificationActions row={row} onRespond={respond} />
+                  </div>
+                )}
                 {actionError?.id === row.id && (
                   <p
                     role="alert"
                     data-testid={`notification-action-error-${row.id}`}
-                    className="mt-2 text-xs text-red-600"
+                    className="px-4 pb-3 text-xs text-red-600"
                   >
                     {actionError.message}
                   </p>
