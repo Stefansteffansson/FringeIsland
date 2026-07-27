@@ -19,7 +19,9 @@ The retrospective is the permanent learning artifact; individual tasks are ephem
 
 ## Active tasks
 
-**A-NTF (Notifications) is in flight** — N-A, N-B and N-C are built and closed; **N-D, the area's last cycle, opened 2026-07-26**. Live cycle files: `TASK-NC-01..06`. `TASK-NC-05` is deliberately still open — it carries the **owed ADR-U043 `/groups` before/after measurement**, which needs a deployed environment and an enforced-idle window.
+**A-NTF (Notifications) — the build is complete; the area gate is HELD.** All four cycles (N-A, N-B, N-C, N-D) are built, closed and merged; N-D closed 2026-07-26. The live walk ran 2026-07-27 (nine scenarios, eight findings) and the [area gate](../../hub-v2/2026-07-27-notifications-area-gate.md) was verdicted **HELD, not failed** — it closes on W-01 + W-02 (inbox rows inert; page-side mark-all leaves the bell badge stale) plus the independently-owed gate items. Every finding with file:line evidence: [walk findings](../../hub-v2/2026-07-27-antf-walk-findings.md).
+
+Live cycle files: `TASK-NC-01..06` and `TASK-ND-01..05`, **all held pending gate closure** — they sweep at the area retro, not before. `TASK-NC-05`'s owed ADR-U043 `/groups` before/after measurement **is done** (2026-07-27), so it is the one file to re-check for closure rather than sweep.
 
 Swept **2026-07-26** at the N-D boundary (instructed, ahead of the area retro): `TASK-NA-01..05`, `TASK-NB-01..05` — both cycles built, closed and merged (N-A 2026-07-23, N-B 2026-07-24), their learnings carried in their session bridges and feature Implementation notes. **`TASK-NC-01..06` and N-D's files are held for the A-NTF area retro**, following the A-COM precedent of one sweep line per area rather than per cycle. Only prose mentions of the swept ids remain (the completion plan's status history, `TASK-H017-01`, the session bridges) — no markdown links, so nothing broke.
 
