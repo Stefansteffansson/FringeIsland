@@ -1,211 +1,154 @@
-# Cold-load investigation brief — the first authenticated page costs ~5.5 s
+# Cold load — A-NTF confirmation pass, and what is actually still open
 
-**Written:** 2026-07-27 · **For:** a dedicated investigation session, starting cold
-**Status:** open question, not a diagnosis. This brief deliberately separates *measured fact* from *hypothesis*, and records one conclusion that was already reached and **retracted**.
-
----
-
-## 1. The question
-
-On production, a member with a valid session who returns after ≥20 minutes of platform idle waits **~5.5 seconds** for their first page to become usable. Every subsequent page in that session takes **~380 ms**.
-
-The budget (ADR-U043 B2) is **≤ 2 500 ms**. We are ~2.2× over. Over 3 s also trips **B6**, which classes it a defect independent of B2.
-
-**The job:** find where those ~5.5 seconds go, and decide what — if anything — to do before launch.
-
-**What this is not:** a request to make it fast at any cost. Cold overshoot is currently an *accepted, labelled pre-launch exception*. Warm and semi-warm performance is the binding signal and it passes comfortably. This is a "understand it properly and decide deliberately" task.
+**Written:** 2026-07-27 · **Supersedes** the first version of this file (see §0)
+**Short version:** the ~5.5 s deep-cold first page is a **known, measured, composition-explained, already-dispositioned** property of the Hobby-tier deployment. The A-NTF measurements reconfirm it on two new surfaces. **There is no engineering investigation outstanding.** What remains is the commercial decision Stefan has parked since 2026-07-10.
 
 ---
 
-## 2. Measured facts (2026-07-27)
+## 0. Correction — what the first version of this brief got wrong
 
-**Protocol:** production `fringe-island.vercel.app`; authenticated real path; headless FIM created and erased in-run; completion measured to a **data-derived selector** (not a 200, which only proves the static shell rendered); deep-cold = **22 min enforced zero traffic**, four separate windows.
+The first version framed this as an open investigation with "~2.0 s unaccounted for" and a possible regression since 2026-07-10. **That was wrong, and it was wrong because I under-read the prior art.** Stefan caught it by asking whether the Hobby→Pro assessment had been taken into account. It had not.
 
-### Deep-cold — first authenticated navigation of a session
+Three specific errors, corrected below:
 
-| First page of session | Wall to usable | n |
-|---|---|---|
-| `/notifications/preferences` | **5 864 ms** | 1 |
-| `/notifications/preferences` | **5 142 ms** | 2 |
-| `/groups` | **5 617 ms** | 1 |
-
-Mean ≈ **5 541 ms**, range 5 142–5 864, across **two different pages**.
-
-### Everything else
-
-| Scenario | Measured | Budget | Verdict |
-|---|---|---|---|
-| Second navigation of same session | 379 / 389 / 402 ms | — | fine |
-| B1 sign-in click → content (deep-cold) | **2 377 ms** | ≤ 2 500 | PASS |
-| B3 warm soft-nav ×3, both pages | 272–399 ms | ≤ 1 000 | PASS |
-| B3 warm full load, fresh browser context | 937 ms | ≤ 1 000 | PASS, 63 ms spare |
-
-### The two numbers that frame everything
-
-1. **Slowest individual API request, cold: 1 298 ms and 1 485 ms.**
-2. **A full sign-in from cold (2 377 ms) is 2.3× FASTER than a returning member's first page (~5 500 ms).**
-
-Fact 2 is coherent, not paradoxical: the sign-in flow loads `/login` first, warming the document and edge path, so part of the stack is hot by the time content paints. A restored session skips that warm-up and pays full price. **The worst experience on the platform belongs to returning members, not new ones** — which no "first-time visitor" framing captures.
-
----
-
-## 3. The critical comparison — and its caveat
-
-On **2026-07-10**, immediately after the edge→Node migration (ADR-U036 Amendment 2, PR #159), a deep-cold `/journeys` walk under the same 22-minute protocol measured ([`2026-07-09-cold-load-regression-analysis.md`](./2026-07-09-cold-load-regression-analysis.md) §8):
-
-- fan-out fired at **2 342 ms** (client render/boot)
-- 4 concurrent requests: **1 328 / 1 378 / 1 483 / 1 612 ms** — a tight unimodal band, boot lottery eliminated
-- **data complete ≈ 3.9 s** deep-cold worst case (down from ≈7.2 s pre-migration)
-
-Against today's ~5.5 s, two things stand out:
-
-**A. The per-request cold cost has NOT moved.** Today's slowest cold requests (1 298, 1 485 ms) sit squarely inside the 07-10 band (1 328–1 612 ms). Whatever grew, **it is not the function boot** — the thing the edge→Node migration fixed has stayed fixed.
-
-**B. The total grew by ~1.6 s and the arithmetic no longer closes.** Using the 07-10 decomposition: 2 342 ms to fan-out + ~1 485 ms slowest request ≈ **3.8 s expected**, versus **5 864 ms measured**. That leaves **~2.0 s unaccounted for**.
-
-> ⚠️ **Caveat that must not be skipped.** This is **not** a like-for-like comparison. Different page (`/journeys` vs `/notifications/preferences`), and — more importantly — a different completion definition: 07-10 measured *data complete* from the browser Performance API; 2026-07-27 measured *navigation start → data-derived selector visible*, which includes render. Mine is larger by construction. **Do not call this a regression until §5 experiment 1 has run.**
-
----
-
-## 4. What is already ruled out — do not re-tread
-
-Each of these cost real time previously. All are documented in [`2026-07-09-cold-load-regression-analysis.md`](./2026-07-09-cold-load-regression-analysis.md).
-
-| Ruled out | Evidence |
+| First version claimed | Reality |
 |---|---|
-| **Database / RLS** | warm slices 48–109 ms; cold-with-connection 460–495 ms in-function |
-| **Region / colocation** | `dub1` pin held across all sessions (ADR-U035); `vercel.json` still pins it |
-| **Route code** | client patterns conformant — stable-key effects, shared in-flight, session caches |
-| **Edge runtime** | already migrated off. **Verified today: 79 API route files, zero `export const runtime` declarations** — all on platform-default Node/Fluid. The migration holds. |
-| **Keep-warm pinging — RETIRED AS A STRATEGY** | Single-ping holds exactly one instance; the first real fan-out sails past it. Multi-ping (L2′) was tested and **failed both ways**: pool persistence across a 4.5-min gap is a coin flip, and even a **60-second-old** pool did not cover a 4-route concurrent boot. The multi-second cost sits in the **function-sandbox layer below the middleware, provisioned per concurrent request with opaque decay**. **No pinger at sane cadence can pin that layer.** |
-| **GitHub Actions as scheduler** | measured cadence 1.5–4 h vs the required 5 min |
+| "~2.0 s unaccounted for" | Fully accounted since 2026-07-21: **~2.7 s document TTFB (instance provisioning)** — a term my harness includes but never broke out. The A-COM gate probe-corrected the whole chain. |
+| "possibly a regression vs the 07-10 baseline of 3.9 s" | **Not a regression.** The J-gate (07-19) and A-COM gate (07-21) measured **5.2–6.9 s** content-ready at the same protocol depth. My 5.1–5.9 s sits *inside* that band. The 3.9 s figure was a narrower "data complete" term, not content-ready. |
+| Proposed "Experiment 3 — does fan-out width matter?" | **Already answered and closed with evidence on 2026-07-19** (J-gate R3). Running it would re-derive a closed finding. |
 
 ---
 
-## 5. Open hypotheses, each with its falsifying experiment
+## 1. The settled picture
 
-Ranked by expected information per unit of effort. **Every deep-cold experiment costs a ≥20-minute idle window, so order matters.**
+### The composition, probe-corrected (A-COM gate, 2026-07-21)
 
-### Experiment 1 — Establish like-for-like (DO THIS FIRST)
-
-Re-measure **`/journeys`** with today's harness, same protocol.
-
-- Against the 07-10 baseline of ≈3.9 s data-complete.
-- Because the harness now records **`fanOutAt`** (when the first API request fires), this directly reproduces the 07-10 decomposition.
-- **If `/journeys` lands near 3.9 s** → the difference is page-specific and §3B's "~2 s unaccounted" is largely the selector-visible-vs-data-complete definition gap. Not a regression.
-- **If `/journeys` also lands near 5.5 s** → a genuine platform-wide regression since 07-10, and the next question is *what changed in 17 days*.
+Deep-cold is **a serialization problem on a cold backend**, not asset weight and not app code:
 
 ```
-node scripts/perf-measure.mjs signin
-# wait >= 20 min, zero traffic
-node scripts/perf-measure.mjs coldnav-path /journeys '[data-testid="journeys-list"]'
+document TTFB ~2.7 s (instance provisioning)
+  → JS parse + hydration ~0.7 s (CPU)
+    → authenticated API reads fire ONLY after hydration, ~1.3–2 s on the cold function path
+      → render
+= ~5–7 s content-ready
 ```
 
-Selector **verified** (`hub/app/journeys/page.tsx:97`). It is guarded by the same empty-state pattern that bit `/groups` — `journeys-list` renders only when `journeys.length > 0` — but the catalogue is platform-wide *published* journeys rather than the member's own, and there are **9 published (8 public)** on the shared DB, so the fixture will see them.
+The empty-cache probe settled the asset question directly: full payload **266 KB** (11 JS chunks = 204 KB), **all served `x-vercel-cache: HIT`**, slowest single asset **105 ms**, all 18 in parallel in ~0.1 s. **Asset optimization has nothing to win.**
 
-### Experiment 2 — Which term grew: client boot, or requests?
+### Every deep-cold content-ready measurement on record
 
-The harness now prints `fan-out fires @ N ms` and `unaccounted N ms` for every navigation. On any deep-cold run, read the split:
+| Date | Gate | Surface | Content-ready | TTFB |
+|---|---|---|---|---|
+| 2026-07-19 | J-gate W1 | `/journeys` | 5 939 ms | 2 744 ms |
+| 2026-07-19 | J-gate W2 | journey detail | 5 226 ms | 2 731 ms |
+| 2026-07-21 | A-COM W1 | `/messages` | 5 743 ms | 2 723 ms |
+| 2026-07-21 | A-COM W2 | group forum | 6 553 ms | 2 731 ms |
+| 2026-07-21 | A-COM W3 | conversation detail | 6 946 ms | 2 728 ms |
+| **2026-07-27** | **A-NTF** | **`/notifications/preferences`** | **5 864 / 5 142 ms** | not broken out |
+| **2026-07-27** | **A-NTF** | **`/groups`** | **5 617 ms** | not broken out |
 
-- **`fanOutAt` ≫ 2 342 ms** → the cost moved into **client boot / hydration / bundle parse**. That points at JS bundle growth over 17 days of features, and is measurable without any idle window (compare bundle sizes across deploys).
-- **`fanOutAt` ≈ 2 342 ms but `unaccounted` is large** → time is going into a **second request wave** (a dependency chain — e.g. auth resolves, *then* reads fire) or into render-after-data. A second wave would show as a bimodal spread in request start times.
+**The A-NTF numbers are unremarkable within this band** — at the *fast* end of it, in fact. The TTFB floor has been ~2.73 s ± 10 ms across every window since 07-19, which is a vendor provisioning constant, not something the app influences.
 
-This is nearly free — it rides on whatever run happens anyway.
+### The disposition, already made
 
-### Experiment 3 — Does fan-out width actually matter?
+**Stefan, 2026-07-22** (A-COM gate verdict): the deep-cold overshoots are **an accepted labelled exception**, on the explicit understanding that
 
-Deep-cold navigate to the **thinnest** authenticated surface available (fewest API reads).
+- the cause is the scale-to-zero cold chain — *not app code, not asset weight*;
+- **it largely resolves at launch anyway**: a commercial launch leaves the Hobby tier regardless (Vercel paid tier **or any other provider**), and real traffic keeps instances warm during active hours;
+- a warm-minimum instance mops up any residue if wanted;
+- **the scale-to-one purchase stays a parked pre-launch comfort decision, not a gate condition.**
 
-- **Lands near 5.5 s too** → read count is irrelevant; cost is per-session sandbox provisioning, and fan-out reduction (below) is not worth building.
-- **Lands materially lower** → fan-out reduction is the lever, and the numbers below become actionable.
-
-### Experiment 4 — Vercel Pro scale-to-one
-
-Parked with Stefan since 07-10. Would hold a warm instance at the platform level — the one thing pinging demonstrably cannot do, because it operates *at* the sandbox layer rather than trying to poke it from outside. **Cost question, not an engineering one.**
+**Standing rider:** the exception never waives the measurement pass. Warm and semi-warm remain fully binding — *"the semi-warm loading times really matter regardless of our current long cold loading times."*
 
 ---
 
-## 6. The fan-out observation — true, but its causal claim is UNTESTED
+## 2. What the A-NTF pass actually adds
 
-Recorded because it is well-evidenced and someone will otherwise rediscover it. **It is not established that this causes the cold cost** (see the retraction, §7).
+Modest, and that is the correct result:
 
-`/notifications/preferences` fires **6 API reads, fully concurrent** — all six start at ~178 ms warm, each 242–302 ms (deterministic warm waterfall run).
+1. **The two new A-NTF surfaces conform to the known floor.** N-D's brand-new preferences page introduced no new performance problem — it lands at the fast end of the established band. That is the question a gate measurement exists to answer, and the answer is clean.
+2. **Warm and semi-warm — the binding signal — pass with wide margin.** 272–402 ms across both pages; the only tight number is a fresh-context full load at **937 ms** against the 1.0 s B3 ceiling (63 ms spare), which is the same ceiling-hugging A-COM already flagged on the group page.
+3. **B1 sign-in → content, deep-cold: 2 377 ms — PASS.** Consistent with the J-gate's W3 (1 471 ms) and its explanation: the login-page paint before the click absorbs the provisioning cost, exactly as it does for a real first visitor.
+4. **A reusable harness** (`hub/scripts/perf-measure.mjs`) — previously each gate re-improvised its measurement.
 
-**Only 2 of the 6 belong to the page:**
+**One observation worth keeping**, though it follows from the known composition rather than contradicting it: a **returning member with a live session is slower than a fresh sign-in** (~5.5 s vs 2 377 ms), because the sign-in flow's login-page paint absorbs provisioning while a restored session hits an authenticated page with everything cold. The J-gate documented the mechanism; nobody had stated the consequence in those terms.
 
-| Read | Fired by | Whose? |
+---
+
+## 3. Do NOT re-investigate these
+
+Each was closed **with evidence**, and the repo's discipline is that closed things stay closed unless new data reopens them.
+
+| Closed | When | Why |
 |---|---|---|
-| `/api/notifications/preferences` | `NotificationPreferencesPanel` | page |
-| `/api/notifications/nudge-policy` | `NudgePolicyPanel` | page |
-| `/api/notifications/unread-count` | `NotificationBell` → `AppShell` | **shell** |
-| `/api/messages` | `MessagesLink` → `AppShell` | **shell** |
-| `/api/profile/me` | shell profile | **shell** |
-| `/api/account/state` | `AccountStateProvider` → `app/layout.tsx` | **shell** |
+| **Fan-out reduction (R3)** | J-gate, 2026-07-19 | The concurrent reads **share one instance's boot** — 4 `/journeys` reads cost ~1.3 s *wall total*, not 4×, and ~150 ms each warm. Collapsing them "would move neither number meaningfully. The measured pain lives in provisioning and first-visit assets, not the fan-out." **Closed with evidence, never silently.** |
+| **Asset optimization** | A-COM gate, 2026-07-21 | 266 KB, all edge-cached HITs, 18 assets in ~0.1 s parallel. Nothing to win. |
+| **Keep-warm pinging** | 2026-07-10 | Single-ping holds one instance; multi-ping tested and **failed both ways** — even a 60-second-old pool did not cover a 4-route boot. The cost sits in the sandbox layer, provisioned per concurrent request. **No pinger at sane cadence can pin it.** |
+| **Edge runtime** | ADR-U036 Amendment 2 | Migrated off 2026-07-10; boot lottery eliminated. Verified 2026-07-27: 79 route files, zero `export const runtime` declarations. Holds. |
+| **DB / RLS, region, route code** | 2026-07-09 analysis | Warm slices 48–109 ms; `dub1` pin held; client patterns conformant. |
 
-The ADR-U042 bootstrap bundle (`/api/me/overview`) carries **5 slices** — `profile`, `account_state`, `groups`, `invitations`, `onboarding` — and is **path-gated**:
-
-```
-hub/components/shell/OverviewBoot.tsx:17
-const BOOT_PATHS = /^\/(?:$|login\/?$|groups\/?$)/;
-```
-
-So on `/notifications/preferences` the bundle never fires. Two consequences:
-
-- Adding the path to `BOOT_PATHS` absorbs `profile` + `account_state` → **6 reads becomes 5**. Modest.
-- The two shell *badge* reads (`unread-count`, `messages`) **predate the bundle and were never folded into it**. Covering them too → **6 reads becomes 3**.
-
-The parked **L3 lever** argues exactly this — *"fan-out is precisely what is expensive… session-caching app-boot reads so full boots don't re-fire them"* — and marks itself **"un-park candidate at J-F or the area gate"** ([`2026-07-09-cold-load-regression-analysis.md:113`](./2026-07-09-cold-load-regression-analysis.md)). Experiment 3 is what tells you whether to build it.
+> ⚠️ **§6 of the first version of this brief argued the app-shell fan-out on `/notifications/preferences` (6 reads, 4 of them shell) was worth reducing.** Read against J-gate R3, that argument is **already refuted for the cold case** — concurrent reads share the boot. It may still be worth something for *warm* full loads (the 937 ms ceiling-hugger), but that is a B3 question at ~60 ms of headroom, not a cold-load question. Do not confuse the two.
 
 ---
 
-## 7. Retracted conclusion — recorded so it is not re-derived
+## 4. What is actually still open
 
-**Claim made and withdrawn during the 2026-07-27 pass:** *"`/notifications/preferences` is slow because it misses the `BOOT_PATHS` gate; `/groups` gets the bundle and is fast."*
+**One decision, and it is commercial, not technical.**
 
-It was built on measuring `/notifications/preferences` cold at **5 864 ms** against `/groups` at **379 ms** — but that 379 ms reading was **second-of-session (semi-warm)**. A cold number was compared against a warm one and the gap attributed to the bundle.
+**Vercel Pro scale-to-one** — parked with Stefan since 2026-07-10, "now carrying two gates' worth of data" (A-COM retro); this pass makes it three. What it buys, per the probe-corrected composition: it removes **both** the ~2.7 s TTFB floor **and** the cold-read cost, *"collapsing the chain to ~1–1.5 s."* That is the only lever measured to move the number.
 
-The control run — identical protocol, `/groups` going **first** — returned **5 617 ms**.
+The framing Stefan already set, which still holds:
 
-**The bundle gate does not explain the cold cost.** Whichever page is first pays ~5.5 s.
+- A commercial launch leaves Hobby anyway — so this is about **buying comfort earlier**, not about launch readiness.
+- Real traffic keeps instances warm in active hours, so the fix partly arrives free with users.
+- It is **not a gate condition** and no gate is blocked on it.
 
-*Lesson for whoever picks this up: in this system a page's position in the session dominates which page it is. Always compare cold-to-cold.*
+**The genuine question is therefore: is a ~5.5 s first-page wait acceptable for pre-launch demos, testing sessions, and your own daily use — for the months until launch?** That is a judgement about experience and money, and it is Stefan's alone. There is no measurement left that would change the answer.
+
+**Two small live items** (neither cold-related, both already owned elsewhere):
+
+- The **937 ms fresh-context warm full load** vs the 1.0 s B3 ceiling — 63 ms of headroom, same class as A-COM's group-page ceiling-hugging, which was already routed to A-NTF/cooldown as a live item explicitly *not* covered by the cold exception.
+- The group page's **12–14 read fan-out** at deep-cold (A-COM's datum) remains the largest on the platform — noted there as a seam, not a failure.
 
 ---
 
-## 8. Reproduction
+## 5. If a session is still wanted
 
-Harness committed at **`hub/scripts/perf-measure.mjs`** (`node scripts/perf-measure.mjs` for usage). Requires `hub/.env.local` with `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ACCESS_TOKEN`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+There is no investigation to run. If someone wants to spend a session here productively, the honest options are:
+
+1. **Decision support for scale-to-one** — pricing, what Vercel's warm-instance guarantees actually are in 2026, whether a non-Vercel host changes the arithmetic. That is research, not measurement.
+2. **Break out TTFB in the harness** so future gate passes report the composition automatically instead of re-deriving it by hand each time. Small, genuinely useful, no idle window needed to write it.
+3. **Nothing.** Defensible. The picture is settled and the disposition is made.
+
+**Do not** commission a session to "find where the 5.5 seconds go." That is answered: ~2.7 s provisioning + ~0.7 s hydration + ~1.3–2 s cold reads, serialized.
+
+---
+
+## 6. Reproduction
+
+Harness at **`hub/scripts/perf-measure.mjs`** — `node scripts/perf-measure.mjs` for usage. Requires `hub/.env.local`.
 
 ```
 node scripts/perf-measure.mjs setup      # provision FIM + 3 groups
 node scripts/perf-measure.mjs signin     # persist session (warms; unmeasured)
-#   >>> wait >= 20 min with ZERO traffic to the deployment <<<
-node scripts/perf-measure.mjs coldnav    # the real measurement
-node scripts/perf-measure.mjs warm       # warm comparison
+#   >>> wait >= 20 min with ZERO traffic <<<
+node scripts/perf-measure.mjs coldnav
+node scripts/perf-measure.mjs warm
 node scripts/perf-measure.mjs teardown   # ALWAYS
 ```
 
-### Traps that cost time on 2026-07-27 — all now guarded in the harness
+**Known gap:** the harness reports wall-clock to a data-derived selector but **does not break out document TTFB**, which is why the first version of this brief mistook the ~2.7 s provisioning term for "unaccounted" time. Anyone extending it should add TTFB capture first — see §5 item 2.
 
-1. **Signing in immediately before a "cold" navigation destroys it.** The sign-in warms every function it touches. This reported `/notifications/preferences` cold at **368 ms**; the corrected two-phase protocol reports **5 864 ms** on the same page. **A 16× error, in the direction of a false pass.** This is the single most important thing to get right.
-2. **Production shares the dev Supabase project** (`jveybknjawtvosnahebd`) — verified from the deployed client bundle. Fixtures work against production; be careful what you create.
-3. **A fresh FIM has no groups**, so `/groups` renders `EmptyState` and `data-testid="groups-list"` never appears. `setup` creates three fixture-owned groups for this reason.
-4. **Fixture creation requires `user_metadata: { display_name, consent_accepted: 'true' }`** — signup is consent-gated at the substrate (ADR-U038 S3). Omitting it fails with an opaque *"Database error creating new user"*.
-5. **Cold read *counts* are unreliable** (6 vs 3 captured for the same page): the listener's capture window closes when the selector appears. Use the `waterfall` command for the authoritative read inventory. Wall-clock timings are unaffected.
-6. **`ResourceTiming.responseEnd` returns 0** on these responses — durations are stamped from request/response events instead.
-7. **An unauthenticated 200 is not a measurement.** `/notifications/preferences` returns 200 in ~340 ms signed-out; that is the static shell, not the real path.
+Other traps, all guarded in the script: signing in immediately before a "cold" navigation destroys it (**368 ms vs 5 864 ms on the same page — a 16× error toward a false pass**); production shares the dev Supabase project; a fresh FIM has no groups so `/groups` renders `EmptyState`; fixture creation needs `consent_accepted: 'true'` (ADR-U038 S3); cold read *counts* are capture-window-dependent (use `waterfall`); `ResourceTiming.responseEnd` returns 0 here.
 
 ---
 
-## 9. Prior art
+## 7. Prior art — read in this order
 
-| Document | Why it matters |
+| Document | Why |
 |---|---|
-| [`2026-07-09-cold-load-regression-analysis.md`](./2026-07-09-cold-load-regression-analysis.md) | **Read this first.** Root causes RC-A..RC-E, the five candidate levers, the failed pinger experiments (§7), and the edge→Node migration result (§8) that is today's baseline |
-| [`2026-07-27-antf-gate-measurements.md`](./2026-07-27-antf-gate-measurements.md) | The raw measurement record this brief is drawn from |
-| [ADR-U043](../../architecture/decisions/ADR-U043-performance-budgets.md) | The budgets (B1–B6) and Amendment 1's cold definition (≥20 min enforced idle) |
-| [ADR-U036](../../architecture/decisions/ADR-U036-edge-runtime-hot-read-routes.md) | Amendment 2 reversed the Edge choice; the pinger was retired here |
-| [ADR-U042](../../architecture/decisions/ADR-U042-first-paint-bootstrap-read-bff-bundle.md) | The bootstrap-bundle pattern and its guardrails |
-| [ADR-U035](../../architecture/decisions/ADR-U035-compute-datastore-colocation.md) | Region colocation — ruled out, but the pin must stay |
-
-**Standing rider (Stefan, 2026-07-22):** the cold exception never waives the measurement pass; warm and semi-warm numbers are the binding signal — *"the semi-warm loading times really matter regardless of our current long cold loading times."*
+| [`2026-07-21-communication-area-gate.md`](./2026-07-21-communication-area-gate.md) **§Deep-cold + verdict** | **The most important single source.** The probe-corrected composition (line 49) and Stefan's disposition (line 59). |
+| [`2026-07-19-journeys-area-gate.md`](./2026-07-19-journeys-area-gate.md) | The deep-cold reading, and **R3 closing fan-out reduction with evidence**. |
+| [`2026-07-09-cold-load-regression-analysis.md`](./2026-07-09-cold-load-regression-analysis.md) | Root causes RC-A..RC-E, the failed pinger experiments, the edge→Node migration. |
+| [`2026-07-27-antf-gate-measurements.md`](./2026-07-27-antf-gate-measurements.md) | The A-NTF raw record. |
+| [ADR-U043](../../architecture/decisions/ADR-U043-performance-budgets.md) · [ADR-U036](../../architecture/decisions/ADR-U036-edge-runtime-hot-read-routes.md) · [ADR-U042](../../architecture/decisions/ADR-U042-first-paint-bootstrap-read-bff-bundle.md) · [ADR-U035](../../architecture/decisions/ADR-U035-compute-datastore-colocation.md) | Budgets; the Edge reversal; the bootstrap bundle; colocation. |

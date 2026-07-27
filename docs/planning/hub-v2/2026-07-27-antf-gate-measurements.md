@@ -54,6 +54,10 @@ It is coherent rather than paradoxical: the sign-in flow loads `/login` *first*,
 
 **An earlier conclusion in this pass was wrong and is retracted.** Having measured `/notifications/preferences` cold at 5 864 ms and `/groups` at 379 ms, I attributed the gap to `OverviewBoot`'s `BOOT_PATHS` gate (`components/shell/OverviewBoot.tsx:17` — the ADR-U042 bundle fires only on `/`, `/login`, `/groups`) and concluded the preferences page was slow *because* it misses the bundle. **That compared a cold number against a semi-warm one.** The control run — same protocol with `/groups` going first — returned **5 617 ms**, statistically indistinguishable from the preferences page. The bundle gate does not explain the cold cost.
 
+## Fan-out — a closed question, recorded here only to stop it reopening
+
+> **Corrected 2026-07-27.** The paragraphs below were written before this pass re-read the J-gate, and they treat fan-out reduction as an open lever. **It is not.** The J-gate closed it with evidence on 2026-07-19 (**R3**): the concurrent reads **share one instance's boot** — four `/journeys` reads cost ~1.3 s *wall total*, not 4×, and ~150 ms each warm — so *"collapsing them into one read would save ~0 at deep-cold… The measured pain lives in provisioning + first-visit assets, not the fan-out."* The read-inventory facts below remain accurate; the implied lever does not. Any remaining value is a **warm** B3 question (the 937 ms fresh-context load), not a cold one.
+
 ## What survives as an observation (correctly scoped)
 
 The fan-out facts are real; they are simply **not demonstrated to cause the cold penalty**:
@@ -75,7 +79,22 @@ Per the A-COM gate's standing rider (Stefan, 2026-07-22): **the cold exception n
 - **Semi-warm: all PASS** (379–402 ms).
 - **Deep-cold B2: FAIL on both pages**, recorded as a **labelled accepted exception pre-launch**, not a release blocker.
 
-**One caveat on comparing to history:** the J-gate analysis established ≈3.9 s deep-cold worst-case for data-complete on `/journeys`. 5.5 s is worse, but that figure measured a different page and possibly a different completion definition — this should be **reconciled before anyone calls it a regression**.
+**Reconciled against history (corrected 2026-07-27, after re-reading the prior gates): these numbers are IN BAND and there is no regression.**
+
+An earlier version of this section compared 5.5 s against the 2026-07-10 figure of ≈3.9 s "data complete" and flagged a possible regression. That was the wrong comparator — 3.9 s was a narrower term. The right comparator is **content-ready at gate protocol depth**, and on that basis every deep-cold measurement on record agrees:
+
+| Date | Surface | Content-ready | TTFB |
+|---|---|---|---|
+| 2026-07-19 J-gate W1 | `/journeys` | 5 939 ms | 2 744 ms |
+| 2026-07-19 J-gate W2 | journey detail | 5 226 ms | 2 731 ms |
+| 2026-07-21 A-COM W1 | `/messages` | 5 743 ms | 2 723 ms |
+| 2026-07-21 A-COM W2 | group forum | 6 553 ms | 2 731 ms |
+| 2026-07-21 A-COM W3 | conversation detail | 6 946 ms | 2 728 ms |
+| **2026-07-27 (this pass)** | preferences / groups | **5 142 – 5 864 ms** | not broken out |
+
+**A-NTF sits at the fast end of the established band.** The A-COM gate's empty-cache probe already decomposed the chain: **~2.7 s document TTFB (instance provisioning) → ~0.7 s hydration → ~1.3–2 s cold reads → render**. The "~2 s unaccounted" this pass briefly reported is the **TTFB term**, which this harness includes in its wall-clock but does not break out. Nothing is unexplained.
+
+**Consequence for this gate: the new N-D surface introduced no performance problem** — which is the question a gate measurement exists to answer. Disposition and remaining options: [`2026-07-27-cold-load-investigation-brief.md`](./2026-07-27-cold-load-investigation-brief.md).
 
 ## Method notes (so the next pass doesn't repeat these)
 
