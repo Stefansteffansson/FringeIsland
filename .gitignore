@@ -101,3 +101,7 @@ CLAUDE.local.md
 
 # Scratch dirs from tooling (never source)
 git-blob-*/
+
+# perf-measure.mjs output (local measurement runs)
+hub/scripts/perf-results.jsonl
+hub/scripts/perf-state.json
