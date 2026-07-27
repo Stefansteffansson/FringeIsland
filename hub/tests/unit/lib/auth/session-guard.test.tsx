@@ -1,6 +1,11 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { render, act, waitFor } from '@testing-library/react';
-import type { Session, SupabaseClient } from '@supabase/supabase-js';
+import type { AuthError, Session, SupabaseClient } from '@supabase/supabase-js';
+import {
+  AuthApiError,
+  AuthRetryableFetchError,
+  AuthSessionMissingError,
+} from '@supabase/supabase-js';
 
 /**
  * FEAT-H012 STORY-3/4/5 (unit) — the AuthContext session guard, the first
@@ -55,8 +60,13 @@ const channelObj: {
   subscribe: jest.fn(() => channelObj),
 };
 
-const getUser = jest.fn<() => Promise<{ error: { message: string } | null }>>();
-const authSignOut = jest.fn<() => Promise<{ error: null }>>();
+/** The auth server's refusal of a revoked session — a real typed error, because
+ *  the guard must CLASSIFY it (W-05). A plain `{ message }` object cannot
+ *  exercise the classification and is exactly how W-05 escaped. */
+const refusal = () => new AuthApiError('Session from session_id claim in JWT does not exist', 403, 'session_not_found');
+
+const getUser = jest.fn<() => Promise<{ error: AuthError | null }>>();
+const authSignOut = jest.fn<(opts?: { scope?: string }) => Promise<{ error: null }>>();
 const setAuth = jest.fn();
 const channel = jest.fn(() => channelObj);
 const removeChannel = jest.fn();
@@ -117,7 +127,7 @@ describe('FEAT-H012 — session guard (ADR-U039 first tenant)', () => {
   });
 
   it('verify-on-signal: a hint naming THIS session + auth refusal → local sign-out to /login (STORY-3)', async () => {
-    getUser.mockResolvedValue({ error: { message: 'session_not_found' } });
+    getUser.mockResolvedValue({ error: refusal() });
     render(<Harness session={makeSession('my-sess')} identity="fim" />);
 
     await act(async () => {
@@ -158,7 +168,7 @@ describe('FEAT-H012 — session guard (ADR-U039 first tenant)', () => {
   });
 
   it('fallback: revalidates when the window regains focus; a dead session signs out (STORY-4)', async () => {
-    getUser.mockResolvedValue({ error: { message: 'session_not_found' } });
+    getUser.mockResolvedValue({ error: refusal() });
     render(<Harness session={makeSession('my-sess')} identity="fim" />);
 
     await act(async () => {
@@ -167,6 +177,95 @@ describe('FEAT-H012 — session guard (ADR-U039 first tenant)', () => {
 
     await waitFor(() => expect(authSignOut).toHaveBeenCalled());
     expect(replaceMock).toHaveBeenCalledWith('/login');
+  });
+
+  // ── W-05: a hiccup is not a refusal ──────────────────────────────────────
+  //
+  // `supabase.auth.getUser()` RETURNS its network error (AuthRetryableFetchError
+  // is an AuthError, so auth-js resolves rather than throws). The guard's
+  // `catch` was therefore dead code for the one case it was written to handle,
+  // and a transient blip took the `if (error)` branch — signing the member out.
+  // Compounding it, `signOut()` defaults to `scope: 'global'`, so one device's
+  // blip ended EVERY session the member had.
+  //
+  // The posture these lock in is a WHITELIST: sign out only on a positive
+  // refusal (401/403, or the session genuinely missing). Everything else —
+  // network, 5xx, an unrecognised shape — is INCONCLUSIVE and must be inert.
+
+  it('W-05: a transient network failure is NOT a refusal — never signs out', async () => {
+    getUser.mockResolvedValue({
+      error: new AuthRetryableFetchError('Failed to fetch', 0),
+    });
+    render(<Harness session={makeSession('my-sess')} identity="fim" />);
+
+    await act(async () => {
+      broadcastHandler!({ payload: { session_id: 'my-sess' } });
+    });
+
+    await waitFor(() => expect(getUser).toHaveBeenCalled());
+    expect(authSignOut).not.toHaveBeenCalled();
+    expect(replaceMock).not.toHaveBeenCalled();
+  });
+
+  it('W-05: an inconclusive 5xx from the auth server never signs out', async () => {
+    getUser.mockResolvedValue({
+      error: new AuthApiError('unexpected_failure', 500, 'unexpected_failure'),
+    });
+    render(<Harness session={makeSession('my-sess')} identity="fim" />);
+
+    await act(async () => {
+      window.dispatchEvent(new Event('focus'));
+    });
+
+    await waitFor(() => expect(getUser).toHaveBeenCalled());
+    expect(authSignOut).not.toHaveBeenCalled();
+    expect(replaceMock).not.toHaveBeenCalled();
+  });
+
+  it('W-05: an unrecognised error shape is inconclusive, not destructive', async () => {
+    getUser.mockResolvedValue({
+      error: { message: 'something new we have never seen' } as unknown as AuthError,
+    });
+    render(<Harness session={makeSession('my-sess')} identity="fim" />);
+
+    await act(async () => {
+      window.dispatchEvent(new Event('focus'));
+    });
+
+    await waitFor(() => expect(getUser).toHaveBeenCalled());
+    expect(authSignOut).not.toHaveBeenCalled();
+    expect(replaceMock).not.toHaveBeenCalled();
+  });
+
+  it('W-05: a real refusal signs out THIS device only — never the others (scope: local)', async () => {
+    getUser.mockResolvedValue({ error: refusal() });
+    render(<Harness session={makeSession('my-sess')} identity="fim" />);
+
+    await act(async () => {
+      broadcastHandler!({ payload: { session_id: 'my-sess' } });
+    });
+
+    await waitFor(() => expect(authSignOut).toHaveBeenCalled());
+    expect(authSignOut).toHaveBeenCalledWith({ scope: 'local' });
+    expect(replaceMock).toHaveBeenCalledWith('/login');
+  });
+
+  it('W-05: a 401 and a genuinely missing session both count as refusals', async () => {
+    for (const err of [
+      new AuthApiError('invalid JWT', 401, 'bad_jwt'),
+      new AuthSessionMissingError(),
+    ]) {
+      jest.clearAllMocks();
+      getUser.mockResolvedValue({ error: err });
+      const { unmount } = render(
+        <Harness session={makeSession('my-sess')} identity="fim" />,
+      );
+      await act(async () => {
+        window.dispatchEvent(new Event('focus'));
+      });
+      await waitFor(() => expect(authSignOut).toHaveBeenCalledWith({ scope: 'local' }));
+      unmount();
+    }
   });
 
   it('fallback: the slow visible-tab interval revalidates (STORY-4)', async () => {

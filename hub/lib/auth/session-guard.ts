@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useRef } from 'react';
-import type { Session, SupabaseClient } from '@supabase/supabase-js';
+import type { AuthError, Session, SupabaseClient } from '@supabase/supabase-js';
+import { isAuthApiError, isAuthRetryableFetchError } from '@supabase/supabase-js';
 import type { Identity } from '@/lib/auth/mist';
 import { replaceLocation } from '@/lib/auth/redirect';
 import { emitTelemetry } from '@/lib/observability/telemetry';
@@ -53,6 +54,34 @@ export function sessionIdOfToken(accessToken: string | null | undefined): string
   }
 }
 
+/**
+ * Does this error mean the auth server REFUSED the session — as opposed to
+ * failing to answer at all?
+ *
+ * This is a **whitelist by construction**, and the distinction is load-bearing
+ * (W-05, found in the 2026-07-27 A-NTF live walk). `getUser()` *returns* its
+ * errors rather than throwing: `AuthRetryableFetchError` extends `AuthError`,
+ * and auth-js resolves the promise for anything `isAuthError`. So the guard's
+ * `catch` — written precisely to keep a hiccup from being read as a refusal —
+ * was dead code, and a transient network blip took the refusal branch.
+ *
+ * Signing a member out is destructive and, from their side, irreversible: they
+ * must find their credentials again. Only a *positive* refusal earns it.
+ * Network failure, 5xx, and any shape we do not recognise are INCONCLUSIVE and
+ * leave the session untouched — the fallback poll (doctrine rule 6) means an
+ * inconclusive check costs latency, never security. A blacklist would fail open
+ * on the next unfamiliar error shape; this fails closed.
+ */
+export function isSessionRefusal(error: AuthError | null | undefined): boolean {
+  if (!error) return false;
+  // The auth server never answered — say nothing about the session.
+  if (isAuthRetryableFetchError(error)) return false;
+  // It answered: only "you are not allowed" is a refusal. 5xx is not an answer.
+  if (isAuthApiError(error)) return error.status === 401 || error.status === 403;
+  // No session to check — genuinely gone, not a failure to reach the server.
+  return error.name === 'AuthSessionMissingError';
+}
+
 export function useSessionGuard(
   supabase: SupabaseClient,
   session: Session | null,
@@ -72,15 +101,32 @@ export function useSessionGuard(
       validating.current = true;
       try {
         const { error } = await supabase.auth.getUser();
-        if (error) {
+        if (isSessionRefusal(error)) {
           // The auth server refused the session — it was revoked or expired.
           emitTelemetry('sessions.guard_signed_out', { via });
-          await supabase.auth.signOut();
+          // `scope: 'local'` ends THIS device only. The default is 'global',
+          // which would end every session the member has — the W-05 blast
+          // radius. A revocation of one device is not a reason to evict the
+          // others, and the server has already dealt with the revoked one.
+          await supabase.auth.signOut({ scope: 'local' });
           // Replace so Back cannot return to the stale page (legacy oracle).
           replaceLocation('/login');
+        } else if (error) {
+          // Reached the server, or didn't, but got no verdict. Do nothing
+          // destructive — and say so out loud, because a silently swallowed
+          // inconclusive is what let W-05 hide behind a dead `catch`.
+          emitTelemetry('sessions.guard_validate_inconclusive', {
+            via,
+            reason: error.name,
+          });
         }
       } catch {
-        // Network failure is NOT a refusal — never sign out on a hiccup.
+        // A non-auth throw (getUser rethrows anything not an AuthError).
+        // Same posture: inconclusive, never destructive.
+        emitTelemetry('sessions.guard_validate_inconclusive', {
+          via,
+          reason: 'threw',
+        });
       } finally {
         validating.current = false;
       }

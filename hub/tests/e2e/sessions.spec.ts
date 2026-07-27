@@ -73,6 +73,42 @@ test.describe('FEAT-H012 — per-device sessions', () => {
     await ctxB.close();
   });
 
+  test('W-05: a transient network failure never signs the member out', async ({ browser }) => {
+    test.setTimeout(60_000);
+    const ctx = await browser.newContext();
+    const page = await loginFresh(ctx);
+
+    // The auth server becomes unreachable. `getUser()` RETURNS this failure
+    // rather than throwing (AuthRetryableFetchError is an AuthError), so the
+    // guard's `catch` never fired and the blip took the refusal branch — a
+    // GLOBAL signOut that ended every session the member had, silently,
+    // landing them on "Welcome Back — Sign in to continue your journey."
+    let attempts = 0;
+    await page.route('**/auth/v1/user**', (route) => {
+      attempts += 1;
+      return route.abort('failed');
+    });
+
+    // Fire the guard's focus/visibility fallback (ADR-U039 rule 6).
+    await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+
+    // The guard must ACTUALLY have revalidated — without this the test would
+    // pass vacuously if the guard never ran at all.
+    await expect.poll(() => attempts, { timeout: 15_000 }).toBeGreaterThan(0);
+
+    // ...and having run, it must have done nothing destructive.
+    await expect(page).toHaveURL(/\/groups/);
+    await expect(page.getByText(/Sign in to continue your journey/i)).toHaveCount(0);
+
+    // Once the network returns, the session is still alive server-side — it was
+    // never dropped, on this device or any other.
+    await page.unroute('**/auth/v1/user**');
+    await page.goto('/sessions');
+    await expect(page.getByTestId('this-device')).toBeVisible({ timeout: 15_000 });
+
+    await ctx.close();
+  });
+
   test('current-device sign-out: distinct copy, immediate local sign-out', async ({ browser }) => {
     const ctxB = await browser.newContext();
     const pageB = await loginFresh(ctxB);
