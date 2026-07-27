@@ -2,6 +2,11 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-07-27 — A moment of bad signal no longer signs you out ([FEAT-H012](../docs/products/hub/features/FEAT-H012-per-device-sessions.md))
+
+- **A dropped connection doesn't end your session any more — anywhere.** The Hub checks now and then that you're still signed in. If it couldn't reach the server to ask, it used to assume the worst and sign you out — **and not just on the device that lost signal: on every device you were signed in on.** You'd come back to "Welcome Back" with no explanation and have to find your password again. Now a failed check is treated as what it is — *no answer* — and your session is left exactly as it was. The Hub simply asks again shortly after.
+- **When you really are signed out from elsewhere, only that one device is affected.** Signing a device out from your Sessions page ends that device, and leaves your others alone.
+
 ## 2026-07-26 — You can say no: choose what reaches you ([FEAT-H033](../docs/products/hub/features/FEAT-H033-notification-preferences-and-operator-nudge-console.md) · [FEAT-PD016](../docs/platform/domain/features/FEAT-PD016-notification-preference-contracts-and-shared-suppression-dispatcher.md))
 
 - **Turn off what you don't want to hear about.** A **Notification preferences** page now sits with your notifications: one row per kind of notification, each with a switch. Turn one off and it stops arriving — **however it was written**. There is no corner of the platform that quietly routes around your choice.
