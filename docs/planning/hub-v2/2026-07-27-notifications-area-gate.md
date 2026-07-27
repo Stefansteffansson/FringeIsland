@@ -107,11 +107,11 @@ Two, both of which would mislead the next walker and are corrected in the script
 
 Independent of the walk, carried from the retrospective:
 
-- **NB-8** — Mist-posture proof
+- **NB-8** — Mist-posture proof. **RUN 2026-07-27 — PREMISE REFUTED** ([proof](./2026-07-27-antf-nb8-mist-posture-proof.md)). The delivery path does *not* structurally exclude Mist durable rows: all 6 Mists hold a `role_assigned` row from their own personal-group bootstrap, readable / mark-readable / exportable, refused only at the preference doors (`28000`) — a notification a Mist cannot silence. The realtime hint fires for them too, against `FEAT-PD015:59`. Not exploitable (self-referential, CASCADEs away on erase) and not Mist-specific (1516/1548 FIMs carry it). **The record half is discharged; the disposition is board item GB-1.**
 - ~~**W12** — per-RPC gate verification (the A-COM gate's Appendix A pattern; **not yet produced for A-NTF**)~~ **PRODUCED 2026-07-27 — see [Appendix A](#appendix-a--w12-per-rpc-gate-verification-roll-up).** 15 callable contracts walked body-vs-spec, 4 internal fact-handlers checked, 6 tables + RLS read live. **Two findings, neither exploitable:** F1 — seven N-D contracts executable by `anon` (of 181 functions in `public`, exactly those 7; all refuse anon in-body, probed); F2 — `notify_invitation_received()` retains `authenticated` EXECUTE (trigger fn, direct call raises 0A000). Repair migration `20260727120000` **HELD at the schema gate**; the lockdown suite now asserts the invariant rather than a list. **This item is discharged; its repair is not yet merged.**
-- **U049 §8 Q1** — adapter ownership
-- The **email-deferral** recording — distinct from **W-08**, which is about the member-facing sentence
-- The **DS-5 spec advance**
+- **U049 §8 Q1** — adapter ownership. **Board item GB-2.** Two facts arrived 2026-07-27: the question's own anchor (the open-coded `app/api/invitations/send-email`) lives **only in `hub-legacy/`**, the frozen oracle, so the lean was anchored to something outside the app being built; and **ADR-U038** now forbids a BFF route being the sole home of a rule, which rules that anchor out as precedent.
+- ~~The **email-deferral** recording — distinct from **W-08**, which is about the member-facing sentence~~ **RECORDED 2026-07-27** in [V3 §3](../../verticals/notifications/SPECIFICATION.md) and [DS-5 §3](../../platform/domain/communication.md): in-app is the only delivering channel, `email` is registered but stored-not-delivering so a preference binds when delivery lands, and dispatch needs its own ADR first. **"No email substrate shipped" verified literally** — Hub v2 has no `lib/email/`, no send-route, no vendor dep; the seam both specs described lives in `hub-legacy/`. **W-08 is untouched and still open.**
+- The **DS-5 spec advance** — **board item GB-3**, carrying **W-09** (the asks-versus-news split) and **W-04** (the pointer), which must move together.
 - The **937 ms warm ceiling-hugger**
 
 ## Follow-ups logged, not blocking
