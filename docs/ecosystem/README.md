@@ -34,6 +34,8 @@ docs/ecosystem/
 │   ├── EXPERIENCE_PRINCIPLES.md           ← experience design principles
 │   └── IP_AND_LICENSING.md               ← intellectual property + licensing
 │
+├── how-we-work/                           ← the way of working, illustrated (decomposition, cadence, kanban, build loop, agent routing) + `assets/` diagrams
+│
 └── thinking/                              ← working ideas, explorations, open questions
     ├── README.md                          ← index of active thinking
     ├── OPEN_QUESTIONS.md                  ← ecosystem-level open questions

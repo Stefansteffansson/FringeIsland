@@ -58,11 +58,11 @@ List each feature with its current maturity level and owner:
 ## Features in scope
 
 ### Products
-- [ ] [FEAT-H001: Authentication](../../products/hub/features/FEAT-H001-authentication.md) — Hub — maturity: 6-done
-- [ ] [FEAT-H002: Profile](../../products/hub/features/FEAT-H002-profile-management.md) — Hub — maturity: 4-ready
+- [ ] [FEAT-H0NN: {feature title}](link-to-feature-spec) — Hub — maturity: 6-done
+- [ ] [FEAT-H0NN: {feature title}](link-to-feature-spec) — Hub — maturity: 4-ready
 
 ### Platform
-- [ ] [FEAT-P001: RLS policies](../../platform/core/features/FEAT-P001-rls-policies.md) — Core — maturity: 3-specified
+- [ ] [FEAT-PC0NN: {feature title}](link-to-feature-spec) — Core — maturity: 3-specified
 ```
 
 ### Step 3: Define completion criteria

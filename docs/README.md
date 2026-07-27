@@ -75,7 +75,11 @@ docs/
 │
 │   ── Shared ──
 │
-└── templates/                             ← file templates for features, tasks, waves, ADRs
+├── templates/                             ← file templates for features, tasks, waves, ADRs
+│
+├── dashboard/                             ← generated status overview (`npm run dashboard`, then `dashboard:serve`)
+│
+└── tooling/                               ← notes on the repo's supporting tooling
 ```
 
 ---

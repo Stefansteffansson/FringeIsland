@@ -14,6 +14,7 @@
 docs/planning/
 ├── README.md                              ← you are here
 ├── PROCESS.md                             ← canonical way of working (read this first)
+├── SESSION-OPENER.md                      ← the session-start text injected by the `SessionStart` hook in `.claude/settings.json`
 │
 ├── waves/                                 ← strategic focus periods
 │   ├── ferd.md                            ← Wave 1 — current

@@ -508,7 +508,7 @@ Cumulative-forward read order applied within each cluster (A-candidate #8 cumula
 
 ### Summary
 
-The **first PC-4 Governance feature specs** land in **Cycle B** (Phase-3 Identity completion, [plan](../../../planning/hub-v2/phase-3-identity-completion-plan.md)) — the consent/GDPR contracts consumed by Hub IDN-6/IDN-7. The remaining §L3 capabilities (admin authority, `is_platform_admin()`, admin orchestration, audit log, sanction lifecycle, force-logout, DeusEx semantics, plus the two LATENT rows) are unspecced at the FEAT-PC-* tier today; reconciliation downstream per the feature-inventory maintenance discipline (the `feature-development` skill updates this section at maturity transitions; the `doc-health-check` skill, Section 8, verifies it).
+The **first PC-4 Governance feature specs** land in **Cycle B** (Phase-3 Identity completion, [plan](../../planning/hub-v2/phase-3-identity-completion-plan.md)) — the consent/GDPR contracts consumed by Hub IDN-6/IDN-7. The remaining §L3 capabilities (admin authority, `is_platform_admin()`, admin orchestration, audit log, sanction lifecycle, force-logout, DeusEx semantics, plus the two LATENT rows) are unspecced at the FEAT-PC-* tier today; reconciliation downstream per the feature-inventory maintenance discipline (the `feature-development` skill updates this section at maturity transitions; the `doc-health-check` skill, Section 8, verifies it).
 
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
