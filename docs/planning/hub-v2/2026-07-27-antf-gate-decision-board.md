@@ -1,6 +1,10 @@
 # A-NTF gate — decision board
 
-**Date:** 2026-07-27 · **Status:** OPEN, presented whole
+> **SETTLED 2026-07-27 (Stefan).** All three adopted as recommended: **GB-1 = Both** (dispatcher guard + source guard) · **GB-2 = DS-5 owns channel adapters, PC-1 owns transport substrate** · **GB-3 = split asks from news, asks non-suppressible**, with the W-04 pointer riding along.
+>
+> **One finding arrived during implementation and widens GB-3.** The board framed W-09 as a `membership` problem. It is not confined there: **there are three asks across two categories** — `invitation_received` (910 rows, `membership`, no `action_type`), `acting_invitation` (36 rows, `membership`, actionable), and **`stewardship_nomination` (802 rows, `stewardship`, actionable)**. The last is the *largest* ask population in the system and W-09 never named it, yet muting *"Stewardship & leadership transfer"* strands a leadership nomination exactly as muting *"Group membership & invitations"* strands an acting invitation. The ruled principle — *questions that only you can answer always reach you* — does not depend on which category an ask happens to sit in, so all three move. This also re-confirms why the surgical `action_type IS NOT NULL` exemption was rejected: `invitation_received`, the largest membership ask, carries none.
+
+**Date:** 2026-07-27 · **Status:** SETTLED (was: OPEN, presented whole)
 **Why one board:** these three interlock. NB-8's disposition and the W-09 split both touch the dispatcher; W-04 and W-09 must move together or the letter reaches the member and still goes nowhere.
 
 Settled by canon, recorded not asked: ADR-U040 (no platform email to strangers) · ADR-U048 (delivery/routing split) · ADR-U038 (contracts live below the Platform API, never solely in a BFF route) · W-09's *rule* is already ruled — **asks are not news**; the surgical `action_type IS NOT NULL` exemption was considered and **rejected**, because `invitation_received` carries no `action_type` and that is the common case.

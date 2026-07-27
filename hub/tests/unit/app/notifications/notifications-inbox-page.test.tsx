@@ -36,6 +36,11 @@ jest.mock('@/lib/notifications/client', () => ({
   markAllNotificationsRead: () => markAllNotificationsRead(),
   invalidateNotificationsCache: () => invalidateNotificationsCache(),
   respondToNotification: (row: unknown, accept: boolean) => respondToNotification(row, accept),
+  // The REAL routing rule, deliberately not a double (W-04) — see the same
+  // note in tests/unit/components/notification-bell.test.tsx.
+  notificationTarget: jest.requireActual<typeof import('@/lib/notifications/client')>(
+    '@/lib/notifications/client',
+  ).notificationTarget,
 }));
 
 // Isolate the page from the shell chrome (the bell + its own client deps) —
@@ -275,6 +280,28 @@ describe('NotificationsPage (/notifications)', () => {
 
   it('W-01: clicking a row that names a group navigates there', async () => {
     fetchNotifications.mockResolvedValue([
+      // ADAPTED 2026-07-27 (W-04): this asserted the GENERAL "names a group →
+      // goes there" rule while riding the base `invitation_received` kind,
+      // which now deliberately routes to its answering surface instead. The
+      // general rule is unchanged, so the fixture becomes a news kind; the
+      // invitation case gets its own test below.
+      row({ id: 'n1', kind: 'role_assigned', title: 'Role changed', is_read: false, group_id: 'g-42' }),
+    ]);
+    render(<NotificationsPage />);
+    await screen.findByText('Role changed');
+
+    await act(async () => {
+      fireEvent.click(clickableRow('n1')!);
+    });
+
+    expect(push).toHaveBeenCalledWith('/groups/g-42');
+  });
+
+  it('W-04: an invitation row goes to where it can be answered, not to the group page', async () => {
+    // The walk's complaint, on the surface it was raised against: the letter
+    // announced a decision, offered no buttons, and led to a page with no
+    // answering affordance for an invited viewer. MyInvitations is on /groups.
+    fetchNotifications.mockResolvedValue([
       row({ id: 'n1', title: 'Group Invitation', is_read: false, group_id: 'g-42' }),
     ]);
     render(<NotificationsPage />);
@@ -284,12 +311,15 @@ describe('NotificationsPage (/notifications)', () => {
       fireEvent.click(clickableRow('n1')!);
     });
 
-    expect(push).toHaveBeenCalledWith('/groups/g-42');
+    expect(push).toHaveBeenCalledWith('/groups');
+    expect(push).not.toHaveBeenCalledWith('/groups/g-42');
   });
 
   it('W-01: an already-read row still navigates but does not re-mark', async () => {
     fetchNotifications.mockResolvedValue([
-      row({ id: 'n1', title: 'Old news', is_read: true, group_id: 'g-7' }),
+      // ADAPTED 2026-07-27 (W-04): news kind, per the note above — this test is
+      // about re-marking, not about where an invitation lands.
+      row({ id: 'n1', kind: 'role_assigned', title: 'Old news', is_read: true, group_id: 'g-7' }),
     ]);
     render(<NotificationsPage />);
     await screen.findByText('Old news');

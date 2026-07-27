@@ -56,7 +56,7 @@ Three further gaps sit behind that:
 - No digest or aggregation (NB-6, forward to Eid+).
 - No change to the announcement in-app adapter — it is already realized end-to-end (see Vertical impact / Notifications).
 - No `postgres_changes` subscription reintroduced under any name.
-- No Mist realtime: Mists hold no durable notification rows (NB-8), so no topic resolves for them.
+- No Mist realtime: Mists hold no durable notification rows (NB-8), so no topic resolves for them. ***Corrected 2026-07-27 (NB-8 proof, board GB-1) — both halves of this line were false.*** *Mists **did** hold durable rows (one `role_assigned` each, from their own personal-group bootstrap), and a topic **does** resolve for them: `notify_notification_hint` looks up `users.auth_user_id` by `personal_group_id`, and a Mist has both — verified resolving for all six live Mists. The trigger's own comment made the same error, conflating "Mist" with "no `users` row"; only a **group-addressed** row (an engagement group, which no `users` row points at) resolves to NULL. **The conclusion now holds for a different and real reason:** migration `20260727180000` makes the dispatcher drop any row whose recipient is `is_temporary`, so no durable row is written — and because the hint trigger is `AFTER INSERT`, no row means no hint. The correct statement is "no row is written", never "no topic resolves". [Proof](../../../planning/hub-v2/2026-07-27-antf-nb8-mist-posture-proof.md).*
 - No change to `get_own_notifications`, `mark_notification_read`, or any N-A/N-B contract signature.
 
 ## Stories

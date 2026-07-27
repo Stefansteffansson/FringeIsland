@@ -14,6 +14,7 @@ import {
   markNotificationRead,
   markAllNotificationsRead,
   respondToNotification,
+  notificationTarget,
   type NotificationRow,
 } from '@/lib/notifications/client';
 import { isActionable, type NotificationResponse } from '@/lib/notifications/format';
@@ -137,7 +138,10 @@ export default function NotificationsPage() {
         }
         announceChange();
       }
-      if (row.group_id) router.push(`/groups/${row.group_id}`);
+      // W-04: same target rule as the bell — an invitation leads to where it
+      // can actually be answered, not to a page that only describes the group.
+      const target = notificationTarget(row);
+      if (target) router.push(target);
     },
     [router],
   );
