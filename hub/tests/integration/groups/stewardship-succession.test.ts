@@ -297,6 +297,48 @@ describe('FEAT-PC014 — stewardship succession contracts (G-E, MEM-7)', () => {
       expect(res.error?.code).toBe('P0001');
     });
 
+    // W-03 #1 (gate walk 2026-07-27) — the imperative cannot expire.
+    //
+    // The emitted body read "…Accept or decline within 7 days." Copy is
+    // server-authored and frozen at emit, and the surface is forbidden to
+    // re-word it (the V3 surfaces law), so an embedded call-to-action and an
+    // embedded deadline age badly BY CONSTRUCTION: three weeks later the row
+    // still instructs the member to act, and only a small pill says the window
+    // closed. That is a consequence of the copy law, not a Hub defect — so the
+    // fix belongs at the emit site, not the surface.
+    //
+    // The deadline is NOT lost: `expires_at` already carries it, and the surface
+    // already renders "Respond by <date>" while the row is actionable
+    // (NotificationItem.tsx:45-46). The body was duplicating a fact the
+    // machinery already held, in the one form that can never expire.
+    it('the emitted nomination body states the fact and leaves the deadline to expires_at — no imperative, no embedded window (RED pre-migration: the body ends "Accept or decline within 7 days.")', async () => {
+      const groupId = await seedGroup('NominateBodyCopy', [nominee1]);
+      const c = await asUser(steward);
+      const { error } = await c.rpc('nominate_steward', {
+        p_group_id: groupId,
+        p_nominee_ids: [nominee1.personalGroupId],
+      });
+      expect(error).toBeNull();
+
+      const row = await nominationFor(nominee1.personalGroupId, groupId);
+      expect(row).not.toBeNull();
+      const body = (row as { body: string }).body;
+
+      // The fact survives, named to the group.
+      expect(body).toMatch(/nominated as Steward of NominateBodyCopy/i);
+      // The imperative and the embedded window are gone.
+      expect(body).not.toMatch(/accept or decline/i);
+      expect(body).not.toMatch(/within \d+ days/i);
+      expect(body).not.toMatch(/respond (by|within)/i);
+
+      // And the deadline is still carried where it can actually expire.
+      const expiresAt = (row as { expires_at: string | null }).expires_at;
+      expect(expiresAt).not.toBeNull();
+      const days = (new Date(expiresAt!).getTime() - Date.now()) / 86_400_000;
+      expect(days).toBeGreaterThan(6.5);
+      expect(days).toBeLessThan(7.5);
+    });
+
     it('empty nominee list — 22023 (RED against legacy P0001 free-text)', async () => {
       const groupId = await seedGroup('NominateEmpty', [nominee1]);
       const c = await asUser(steward);

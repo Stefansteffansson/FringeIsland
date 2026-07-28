@@ -219,6 +219,23 @@ export default function GroupDetailPage() {
     loadAll();
   }, [authLoading, identity, loadAll]);
 
+  // W-07 (gate walk 2026-07-27): answering a notification changes THIS page's
+  // data — accepting a stewardship nomination grants a role here and removes a
+  // member here — but the response happens in the bell, which floats above
+  // whatever page the member is standing on. The walk caught the page still
+  // listing a member the accept had just removed, and withholding the role it
+  // had just granted, until a manual reload.
+  //
+  // `refreshNavigation` is the house channel for exactly this (MessagesLink,
+  // AccountMenu and NotificationBell all listen); the notification response now
+  // fires it, and this page re-reads the same set it reads on mount.
+  useEffect(() => {
+    if (authLoading || identity !== 'fim') return;
+    const onRefresh = () => loadAll();
+    window.addEventListener('refreshNavigation', onRefresh);
+    return () => window.removeEventListener('refreshNavigation', onRefresh);
+  }, [authLoading, identity, loadAll]);
+
   return (
     <AppShell title="Group">
       {authLoading || identity !== 'fim' || (loading && !group) ? (

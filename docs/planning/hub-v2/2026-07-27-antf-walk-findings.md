@@ -6,7 +6,23 @@ Feeds the gate verdict in the [area retrospective](../retrospectives/retro-2026-
 **Environment:** `fringe-island.vercel.app` (production stable domain), 2026-07-27.
 **Scenario 1 skipped** — measurements taken headlessly, see [`2026-07-27-antf-gate-measurements.md`](./2026-07-27-antf-gate-measurements.md).
 
-> **Status: walk in progress.** Findings are appended as they are observed. No fixes applied — all remediation goes through the normal red-first path after the walk.
+> **Status: walk complete; remediation closed 2026-07-28.** Findings were appended as observed, with no fixes applied during the walk — all remediation went through the normal red-first path afterwards.
+
+**Remediation ledger.**
+
+| Finding | State | Where |
+|---|---|---|
+| W-01 · W-02 · W-05 | **Fixed** 2026-07-27 | [session bridge](../sessions/2026-07-27_03_-_DOC-HEALTH-RUN-W05-W01-W02-FIXED-W12-FOUND-ANON-HOLE.md) |
+| W-04 | **Fixed** 2026-07-28, shipped with board GB-3 | [decision board](./2026-07-27-antf-gate-decision-board.md) |
+| W-09 | **Fixed** 2026-07-28 — and refiled first: it named `membership`, but `stewardship_nomination` (802 rows, the largest ask population) had the identical defect in a category the finding never named | board GB-3 |
+| W-06 | **Fixed** 2026-07-27 (stale comment removed) | doc-health run |
+| **W-03 · W-07 · W-08** | **Fixed 2026-07-28** — see the per-finding notes below | this session |
+
+**W-03 shipped in three parts, and they did not cost the same.** #2 (outcome-blind chip) and #3 (green is a claim) were surface-only: the outcome was sitting unread in `action_taken` the whole time, so `Handled` became `Accepted` / `Declined`, the converged sibling case became `Accepted by <name>` / `Declined by <name>`, and a new `declined` tone stops green congratulating a refusal. #1 (the imperative cannot expire) needed the emit site, not the surface — migration `20260728190000` re-issues `nominate_steward` and `respond_to_stewardship_nomination` with factual bodies, leaving the deadline to `expires_at`, which the surface already renders as *"Respond by"* for exactly as long as the row is actionable. **The 109 delivered rows carrying the old body were deliberately NOT rewritten** — rewriting a delivered notification is rewriting what the platform told someone, and an aging imperative on a row already read is the smaller wrong.
+
+**W-07's fix was the house convention, not new machinery.** `respondToNotification` now fires `refreshNavigation` on success — and only on success, because refreshing a view to assert a change that was refused is worse than the staleness it set out to fix — and `/groups/[id]` listens, re-reading the same set it reads on mount. The badge-8-vs-9+ observation recorded under W-07 is **still uninvestigated and was deliberately left alone**: the finding says the cause was never established, and guessing at it is how a second W-07 gets filed.
+
+**W-08 was one sentence with an empty referent.** "Your choice" pointed at an email setting the member had never been offered. The referent that is real — the category switches above, which govern a category however it is delivered — is now named.
 
 ---
 
@@ -63,6 +79,8 @@ The criterion names both surfaces explicitly. Only the dropdown implements it.
 ## Finding W-03 — an answered actionable row still commands the action, and hides the outcome
 
 **Scenario:** 3, step 3 · **Grade: SEAM** — the mechanism works; the join between server copy and surface state reads wrong.
+
+> **FIXED 2026-07-28, all three parts.** #2 → `Accepted` / `Declined` (and `Accepted by <name>` / `Declined by <name>` when convergence recorded a resolver); the bare `Handled` survives only where it stays honest — an outcome the surface does not recognise (U008 open set). #3 → a new `declined` tone; accept green, decline neutral, expired grey. #1 → migration `20260728190000` at the two emit sites, **no backfill of the 109 delivered rows** (recorded in the ledger above).
 
 **Observed.** Grace's `stewardship_nomination` row renders correctly and carries a green **Handled** chip — matching the DB exactly (`action_taken='declined'`, expired 2026-07-12). The chip mechanism passes. But the row reads as two contradictory statements at once:
 
@@ -197,6 +215,8 @@ This **strengthens** the "you can say no" promise rather than weakening it: what
 
 **Scenario:** 7 part 1 / 8 step 3 · **Grade: SEAM** — copy only; the behaviour it describes is correct.
 
+> **FIXED 2026-07-28.** The line now reads: *"Email delivery is not live yet, so there is nothing to switch here — the choices above cover every channel, so they will apply to it the day it arrives."* The phantom referent is gone and what actually carries forward is named. Pinned by a unit assertion on `undelivered-channel-note` so the empty referent cannot creep back.
+
 **Observed.** The foot of `/notifications/preferences` reads:
 
 > *"Email delivery is not live yet, so there is nothing to switch here — your choice will apply as soon as it is."*
@@ -212,6 +232,8 @@ The sentence refutes itself inside one clause: there is **nothing to switch**, a
 ## Finding W-07 — answering a notification does not refresh the page whose data it just changed
 
 **Scenario:** 6, step 4 · **Grade: SEAM** — no acceptance criterion covers it, but it contradicts the codebase's own established convention and leaves the screen displaying facts that are no longer true.
+
+> **FIXED 2026-07-28.** `respondToNotification` (`hub/lib/notifications/client.ts`) fires `refreshNavigation` after a successful response — the table above is now complete — and `/groups/[id]/page.tsx` listens, re-running `loadAll`. The dispatch sits deliberately **after** the ok-check: a refused response leaves the view alone, because repainting to assert a change that never happened is worse than the staleness. **The badge-8-vs-9+ observation below is untouched and still uninvestigated**, exactly as the finding asks.
 
 **Observed.** Grace, standing on `/groups/46190553-…` ("Nya gruppen 1"), accepted the stewardship nomination from the bell dropdown. The transfer succeeded server-side. The page did not change until a manual reload.
 

@@ -44,12 +44,18 @@ export function NotificationItem({
   // the deadline stops mattering.
   const respondBy =
     row.expires_at != null && isActionable(row, now) ? readableDate(row.expires_at) : '';
+  // W-03 #3 — "green is a claim". Green on a decline congratulates the member
+  // for a thing they refused; a decline is a legitimate answer, not a lesser
+  // one, so it renders neutral rather than either green or the grey that means
+  // "you ran out of time".
   const chipTone =
     chip?.tone === 'done'
       ? 'bg-green-50 text-green-700'
-      : chip?.tone === 'expired'
-        ? 'bg-gray-100 text-gray-500'
-        : 'bg-amber-50 text-amber-700';
+      : chip?.tone === 'declined'
+        ? 'bg-slate-100 text-slate-700'
+        : chip?.tone === 'expired'
+          ? 'bg-gray-100 text-gray-500'
+          : 'bg-amber-50 text-amber-700';
 
   return (
     <div className="flex items-start gap-3">

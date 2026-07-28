@@ -40,7 +40,12 @@ describe('notificationStatusChip', () => {
     expect(chip.tone).toBe('pending');
   });
 
-  it('an answered actionable notification is "Handled" (even if also expired)', () => {
+  // LABELLED SIBLING ADAPTATION (W-03 #2, 2026-07-28). This test previously
+  // asserted `label === 'Handled'` for an ACCEPTED row — which is the defect the
+  // gate walk named: accepted and declined rendered identically, so the
+  // platform's record of a meaningful choice was invisible to the person who
+  // made it. The outcome was in `action_taken` the whole time and unread.
+  it('an ACCEPTED actionable notification says so by name, and stays "done" (even if also expired)', () => {
     const chip = notificationStatusChip(
       {
         ...base,
@@ -50,8 +55,72 @@ describe('notificationStatusChip', () => {
       },
       NOW,
     ) as NotificationChip;
-    expect(chip.label).toBe('Handled');
+    expect(chip.label).toBe('Accepted');
     expect(chip.tone).toBe('done');
+  });
+
+  // W-03 #2 + #3 — the outcome is legible, and the tone stops congratulating a
+  // refusal. "Green is a claim": `done` renders green, and green on a DECLINE
+  // reads as congratulation for a thing the member declined.
+  it('a DECLINED actionable notification says "Declined" and carries its own tone, not the accepted one', () => {
+    const chip = notificationStatusChip(
+      { ...base, action_type: 'accept_decline', action_taken: 'declined' },
+      NOW,
+    ) as NotificationChip;
+    expect(chip.label).toBe('Declined');
+    expect(chip.tone).toBe('declined');
+    expect(chip.tone).not.toBe('done');
+  });
+
+  it('a converged ACCEPT names the outcome and the resolver, not just the resolver', () => {
+    const chip = notificationStatusChip(
+      {
+        ...base,
+        action_type: 'accept_decline',
+        action_taken: 'accepted',
+        action_data: { resolved_by_name: 'Bob Andersson' },
+      },
+      NOW,
+    ) as NotificationChip;
+    expect(chip.label).toBe('Accepted by Bob');
+    expect(chip.tone).toBe('done');
+  });
+
+  it('a converged DECLINE is as true as a converged accept — "Answered by Bob" hid which it was', () => {
+    const chip = notificationStatusChip(
+      {
+        ...base,
+        action_type: 'accept_decline',
+        action_taken: 'declined',
+        action_data: { resolved_by_name: 'Bob Andersson' },
+      },
+      NOW,
+    ) as NotificationChip;
+    expect(chip.label).toBe('Declined by Bob');
+    expect(chip.tone).toBe('declined');
+  });
+
+  // U008 open-set: the outcome vocabulary is not sealed. An action_taken value
+  // the surface does not recognise must render through the generic path rather
+  // than crash or assert a meaning it cannot know.
+  it('an UNRECOGNISED outcome falls back to the neutral wording, never to a guess', () => {
+    const bare = notificationStatusChip(
+      { ...base, action_type: 'accept_decline', action_taken: 'deferred' },
+      NOW,
+    ) as NotificationChip;
+    expect(bare.label).toBe('Handled');
+    expect(bare.tone).toBe('done');
+
+    const named = notificationStatusChip(
+      {
+        ...base,
+        action_type: 'accept_decline',
+        action_taken: 'deferred',
+        action_data: { resolved_by_name: 'Bob Andersson' },
+      },
+      NOW,
+    ) as NotificationChip;
+    expect(named.label).toBe('Answered by Bob');
   });
 
   it('an unanswered but past-expiry actionable notification is "Expired"', () => {

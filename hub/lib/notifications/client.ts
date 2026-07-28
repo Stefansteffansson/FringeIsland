@@ -161,5 +161,17 @@ export async function respondToNotification(
   if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
   const data = (await res.json().catch(() => ({}))) as NotificationResponseResult;
   invalidateNotificationsCache();
+  // W-07 (gate walk 2026-07-27): announce it on the house channel. A
+  // notification response is the one mutation class whose entire purpose is to
+  // change something ELSEWHERE in the app, and it was the only one that never
+  // said so — `messages/client.ts` fires this on every messages mutation and
+  // `ProfileEditForm` on a profile edit. The observed cost: after accepting a
+  // stewardship nomination the group page beneath the dropdown still listed a
+  // member the accept had just removed, and withheld the role just granted.
+  //
+  // Deliberately AFTER the ok-check: a refused response must leave the view
+  // alone. Refreshing on failure would repaint a page to assert a change that
+  // never happened, which is worse than the staleness it set out to fix.
+  window.dispatchEvent(new Event('refreshNavigation'));
   return data;
 }

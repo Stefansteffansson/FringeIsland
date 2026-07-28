@@ -8,8 +8,13 @@
 
 export interface NotificationChip {
   label: string;
-  /** Design-system tone token, not a colour — the DS grammar owns appearance. */
-  tone: 'pending' | 'done' | 'expired';
+  /** Design-system tone token, not a colour — the DS grammar owns appearance.
+   *
+   *  `declined` exists because `done` renders green, and green on a refusal
+   *  reads as congratulation for the thing the member declined (W-03 #3, gate
+   *  walk 2026-07-27). An outcome the member chose deserves a tone that does
+   *  not editorialise about the choice. */
+  tone: 'pending' | 'done' | 'declined' | 'expired';
 }
 
 interface ActionableFields {
@@ -36,9 +41,27 @@ export function notificationStatusChip(
   if (row.action_taken === 'expired') return { label: 'Expired', tone: 'expired' };
   if (row.action_taken != null) {
     const by = resolvedByName(row);
-    return by
-      ? { label: `Answered by ${firstToken(by)}`, tone: 'done' }
-      : { label: 'Handled', tone: 'done' };
+    // W-03 #2: the outcome was in `action_taken` all along and went unread, so
+    // an accept and a decline rendered identically — the platform's record of a
+    // meaningful choice was invisible to the person who made it. "Handled" is
+    // queue vocabulary; a member thinks "I said no."
+    //
+    // The vocabulary is NOT sealed (U008 open set): an outcome this surface does
+    // not recognise falls through to the neutral wording rather than being
+    // guessed at. That fallback is the pre-W-03 behaviour, kept deliberately.
+    const outcome =
+      row.action_taken === 'accepted'
+        ? { verb: 'Accepted', tone: 'done' as const }
+        : row.action_taken === 'declined'
+          ? { verb: 'Declined', tone: 'declined' as const }
+          : { verb: 'Answered', tone: 'done' as const };
+    if (by) return { label: `${outcome.verb} by ${firstToken(by)}`, tone: outcome.tone };
+    // No resolver recorded — a single-recipient nomination answered by its only
+    // recipient. "Answered" with nobody to name reads oddly, so the unrecognised
+    // branch keeps its original bare wording.
+    return outcome.verb === 'Answered'
+      ? { label: 'Handled', tone: outcome.tone }
+      : { label: outcome.verb, tone: outcome.tone };
   }
   if (row.expires_at != null && new Date(row.expires_at).getTime() < now.getTime()) {
     return { label: 'Expired', tone: 'expired' };

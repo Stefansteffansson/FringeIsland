@@ -185,7 +185,10 @@ describe('NotificationsPage (/notifications)', () => {
     ]);
     render(<NotificationsPage />);
     await screen.findByText('Answered already');
-    expect(screen.getByText(/answered by bob/i)).toBeInTheDocument();
+    // LABELLED SIBLING ADAPTATION (W-03 #2, 2026-07-28): was /answered by bob/i.
+    // The fixture's outcome is 'accepted', and the chip now says so — "Answered"
+    // named the resolver while hiding what they resolved.
+    expect(screen.getByText(/accepted by bob/i)).toBeInTheDocument();
     expect(screen.queryByTestId('notif-action-accept')).toBeNull();
   });
 

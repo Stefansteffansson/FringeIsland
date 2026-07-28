@@ -58,6 +58,47 @@ describe('respondToNotification', () => {
     expect(JSON.parse(init.body as string)).toEqual({ accept: false });
   });
 
+  // W-03 / W-07 (gate walk 2026-07-27) — the house `refreshNavigation` contract.
+  // A notification response is the one mutation class whose whole purpose is to
+  // change something ELSEWHERE in the app, and it was the only one that never
+  // announced it: `messages/client.ts:83` fires on every messages mutation and
+  // `ProfileEditForm.tsx:87` on a profile edit, but no notification response did.
+  // The walk's observed consequence: after accepting a stewardship nomination,
+  // the group page beneath the dropdown still listed a member the accept had
+  // just removed, and withheld the role just granted.
+  it('announces a successful response on refreshNavigation, so views showing the changed data can catch up', async () => {
+    const seen: string[] = [];
+    const listener = () => seen.push('refreshNavigation');
+    window.addEventListener('refreshNavigation', listener);
+    try {
+      fetchMock.mockResolvedValue({ ok: true, json: async () => ({ outcome: 'accepted' }) });
+      await respondToNotification(row('stewardship_nomination', 'x9'), true);
+      expect(seen).toEqual(['refreshNavigation']);
+    } finally {
+      window.removeEventListener('refreshNavigation', listener);
+    }
+  });
+
+  it('stays silent when the response FAILED — a stale view is better than a view refreshed to assert a change that never happened', async () => {
+    const seen: string[] = [];
+    const listener = () => seen.push('refreshNavigation');
+    window.addEventListener('refreshNavigation', listener);
+    try {
+      fetchMock.mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: async () => ({ error: 'refused' }),
+        text: async () => JSON.stringify({ error: 'refused' }),
+      });
+      await expect(
+        respondToNotification(row('stewardship_nomination', 'x9'), true),
+      ).rejects.toThrow();
+      expect(seen).toEqual([]);
+    } finally {
+      window.removeEventListener('refreshNavigation', listener);
+    }
+  });
+
   it('throws with the server error message on a non-ok response', async () => {
     fetchMock.mockResolvedValue({
       ok: false,
