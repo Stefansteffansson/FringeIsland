@@ -163,6 +163,14 @@ export const createTestUser = async (options?: {
       throw new Error(decorateAuthAdminError('create test user', lastMessage));
     }
 
+    // NEVER SILENT — same law as runAdminSql's retry below. This retry has been
+    // in place since TASK-INT-01 and said nothing, so the ES256 flake's real
+    // frequency has never been measurable. It is now.
+    console.warn(
+      `createTestUser: transient auth-admin failure, ` +
+        `retrying (attempt ${attempt}/${maxRetries}): ${lastMessage.slice(0, 200)}`,
+    );
+
     // The admin call may have created the row before failing to sign its
     // response. Re-roll a caller-unpinned email so the retry cannot collide
     // with its own first attempt and turn a transient into a duplicate-email
@@ -296,8 +304,52 @@ export const cleanupTestGroup = async (groupId: string): Promise<void> => {
  * the `cron` schema (PostgREST does not expose it). Returns result rows; throws on
  * API/SQL error. Requires SUPABASE_ACCESS_TOKEN (present in .env.local).
  */
+/**
+ * True for a management-API failure that never reached the database.
+ *
+ * TASK-INT-04. The N-D suppression PAIR test failed ~2 runs in 5 across the
+ * notifications directory and 25/25 in isolation, and the filed hypothesis was
+ * that `MUTED_KIND = 'member_left'` was implicated. The captured failure
+ * REFUTED that: there was no assertion failure at all. The run died at
+ * `rawPreference`, the PAIR test's very first line, on
+ *
+ *   upstream connect error or disconnect/reset before headers.
+ *   reset reason: connection termination
+ *
+ * — a transport failure from `api.supabase.com`, which `runAdminSql` did not
+ * retry while every sibling helper did. It looked order-dependent only because
+ * it is per-call probability times call volume: this one suite makes 25+
+ * `runAdminSql` calls and a full directory run makes many times that, so the
+ * directory hits a reset the isolated file almost never does.
+ *
+ * RETRY IS SAFE HERE, and the message is why: "reset **before headers**" means
+ * the proxy never established the upstream connection, so the statement did not
+ * execute. A retry cannot double-apply a write.
+ *
+ * Deliberately NARROW, on the `isAuthAdminTransient` model above: a genuine SQL
+ * error (bad column, constraint violation, syntax) must keep failing fast and
+ * loudly. Turning those into slow failures would be worse than the flake.
+ *
+ * SCOPE: this predicate judges only failures the API REPORTED as a JSON body.
+ * Failures that THROW — socket resets, or an HTML error page that makes
+ * `res.json()` choke — are handled structurally in `runAdminSql` and never
+ * reach this function, because a thrown error can never be a SQL answer. See
+ * the two-branch note there.
+ *
+ * Exported so its over-matching risk is unit-testable without the network.
+ */
+export const isManagementApiTransient = (message: string): boolean =>
+  /upstream connect error/i.test(message) ||
+  /disconnect\/reset before headers/i.test(message) ||
+  /connection termination/i.test(message) ||
+  /socket hang up/i.test(message) ||
+  /fetch failed/i.test(message) ||
+  /\bECONNRESET\b/.test(message) ||
+  /\bETIMEDOUT\b/.test(message);
+
 export const runAdminSql = async (
   sql: string,
+  options?: { maxRetries?: number },
 ): Promise<Array<Record<string, unknown>>> => {
   const accessToken = process.env.SUPABASE_ACCESS_TOKEN;
   if (!accessToken) {
@@ -306,17 +358,62 @@ export const runAdminSql = async (
   const ref = supabaseUrl.match(/https:\/\/([^.]+)\./)?.[1];
   if (!ref) throw new Error(`Could not derive project ref from ${supabaseUrl}`);
 
-  const res = await fetch(`https://api.supabase.com/v1/projects/${ref}/database/query`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ query: sql }),
-  });
-  const body = await res.json();
-  if (!res.ok || (body && (body as { error?: unknown }).error)) {
-    throw new Error(`runAdminSql failed: ${JSON.stringify(body)}`);
+  const maxRetries = options?.maxRetries ?? 4;
+  let lastMessage = '';
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    let body: unknown;
+    let ok = false;
+    let threw = false;
+    try {
+      const res = await fetch(`https://api.supabase.com/v1/projects/${ref}/database/query`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: sql }),
+      });
+      body = await res.json();
+      ok = res.ok && !(body && (body as { error?: unknown }).error);
+    } catch (err) {
+      threw = true;
+      body = { message: err instanceof Error ? err.message : String(err) };
+    }
+
+    if (ok) return Array.isArray(body) ? (body as Array<Record<string, unknown>>) : [];
+
+    lastMessage = JSON.stringify(body);
+    // TWO BRANCHES, and only one of them needs a pattern.
+    //
+    // A THROWN error is transient BY CONSTRUCTION and needs no matching: either
+    // fetch failed at the socket, or the proxy answered with an HTML error page
+    // and `res.json()` choked on the '<'. Postgres never answers that way — a
+    // real SQL error always arrives as a well-formed JSON body — so nothing that
+    // throws here can be a database answer we would be hiding.
+    //
+    // The first pass got this wrong: it pattern-matched the thrown branch too,
+    // and the very next verification run failed on
+    // `SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON` —
+    // the same outage wearing a different message. Adding another regex would
+    // have invited a third. Structure beats enumeration.
+    const retryable = threw || isManagementApiTransient(lastMessage);
+    if (!retryable || attempt === maxRetries) {
+      throw new Error(`runAdminSql failed: ${lastMessage}`);
+    }
+    // NEVER SILENT. A swallowed retry is indistinguishable from a healthy run,
+    // which is how the first 10-run verification streak came back "0 transients
+    // seen" without that meaning anything — the retry, if it fired, said
+    // nothing. It is also the shape that let 11 150 orphaned personal groups
+    // accumulate unnoticed (TASK-INT-03). This line is the instrument: if this
+    // flake ever changes character, the frequency is in the run log.
+    console.warn(
+      `runAdminSql: transient ${threw ? 'transport' : 'API'} failure, ` +
+        `retrying (attempt ${attempt}/${maxRetries}): ${lastMessage.slice(0, 200)}`,
+    );
+    // Exponential backoff, matching createTestUser's shape.
+    await new Promise((r) => setTimeout(r, 250 * 2 ** (attempt - 1)));
   }
-  return Array.isArray(body) ? (body as Array<Record<string, unknown>>) : [];
+
+  throw new Error(`runAdminSql failed after ${maxRetries} attempts: ${lastMessage}`);
 };
