@@ -145,7 +145,24 @@ describe('A-NTF gate — Mist posture (GB-1) and the asks-versus-news split (GB-
     ).catch(() => undefined);
     // Erase the Mist rather than merely signing it out — this suite exists
     // because Mists were leaving durable traces, so it must not leave one.
+    // Deleting the auth user CASCADEs `public.users` but NOT the personal group
+    // (groups carry no FK to users), so the group must go explicitly or this
+    // suite leaks exactly the orphan it was written to complain about. Auth
+    // first, then the group: while a `users` row still points at it, the FK's
+    // SET NULL trips the personal_group_id immutability trigger.
     if (mistAuthUid) await admin.auth.admin.deleteUser(mistAuthUid).catch(() => undefined);
+    if (mistPersonalGroupId) {
+      const { error: mistGroupErr } = await admin
+        .from('groups')
+        .delete()
+        .eq('id', mistPersonalGroupId);
+      if (mistGroupErr) {
+        console.error(
+          `mist teardown: personal group ${mistPersonalGroupId} was NOT deleted ` +
+            `(${mistGroupErr.message}) — it is now an ORPHAN.`,
+        );
+      }
+    }
     if (mistClient) await mistClient.auth.signOut();
     if (member) await cleanupTestUser(member.user.id);
   }, 60_000);

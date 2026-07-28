@@ -245,7 +245,37 @@ export const cleanupTestUser = async (userId: string): Promise<void> => {
       `DO $$ BEGIN PERFORM set_config('app.consent_erasure_in_progress','true',true); ` +
         `DELETE FROM public.consent_records WHERE subject_group_id = '${profile.personal_group_id}'; END $$;`,
     ).catch(() => undefined);
-    await admin.from('groups').delete().eq('id', profile.personal_group_id);
+    // ORDER CORRECTED 2026-07-28. This used to delete the group here, BEFORE the
+    // auth user, and ignore the result. It could never succeed: `users`
+    // references the group, so deleting it fires the FK's SET NULL on
+    // `users.personal_group_id` — which an immutability trigger rejects with
+    //   "personal_group_id cannot be changed after it has been set"
+    // The unchecked error was discarded, the auth delete on the next line then
+    // CASCADEd `public.users` away, and the group was left with nothing pointing
+    // at it: an orphan, permanently unidentifiable as anyone's.
+    //
+    // Measured before the fix: 11 150 orphaned personal groups holding 36 961
+    // unreachable notification rows, 2 248 of them created in the preceding
+    // 7 days. Retired by migration 20260728080000; this is why they stop coming.
+    //
+    // The auth user goes FIRST so `public.users` CASCADEs away, and only then is
+    // the group unreferenced and deletable.
+    const { error: authErr } = await admin.auth.admin.deleteUser(userId);
+    if (authErr) console.error(decorateAuthAdminError('cleanup test user', authErr.message));
+
+    const { error: groupErr } = await admin
+      .from('groups')
+      .delete()
+      .eq('id', profile.personal_group_id);
+    if (groupErr) {
+      // Never silent again: an ignored failure here is exactly how 11 150
+      // orphans accumulated without anyone noticing.
+      console.error(
+        `cleanup test user: personal group ${profile.personal_group_id} was NOT deleted ` +
+          `(${groupErr.message}) — it is now an ORPHAN. Fix the blocking reference.`,
+      );
+    }
+    return;
   }
   const { error } = await admin.auth.admin.deleteUser(userId);
   if (error) console.error(decorateAuthAdminError('cleanup test user', error.message));
