@@ -22,6 +22,32 @@ Raised at the A-NTF area gate (2026-07-28) while scoping the orphan cleanup.
 
 The rows were retired by migration `20260728080000`. **The groups themselves were deliberately left in place** — 8 690 are active members of real (non-personal) groups, 577 hold journey enrolments and 401 authored messages, so deleting them would cascade into real member lists and destroy message attribution (against ADR-U021's spirit). That is a separate decision with a separate blast radius.
 
+## The separate decision — MADE AND EXECUTED 2026-07-28 (migration `20260728200000`)
+
+**It was a delete, for 10 598 of 11 272.** The characterisation above was right to stop the delete and wrong about its size — both halves matter, so both are recorded.
+
+**What the blast-radius numbers actually meant, measured rather than inferred:**
+
+- *"8 690 are active members of real groups"* — **8 808 of those memberships are of ONE group**, the `FringeIsland Members` system group every account joins. Removing a departed test account from the everyone-group is not damage to a member list; it is the correct state. Exactly **two** engagement groups held an orphan (one each), and only **three** groups in total also held a live member.
+- *"401 authored messages"* — exactly **one** sat in a conversation any live user participates in.
+- **0 RESTRICT referrers** — no consent records, no authored journeys. The delete could not half-fail.
+
+**The trap that made the first strict pass say "zero are safe".** Every personal group is `created_by_group_id` / `added_by_group_id` / `assigned_by_group_id` of its own bootstrap rows, so a naive "does it attribute anything?" test keeps all 11 272. That is **self-referential attribution — the same shape NB-8 found**, where a Mist held a durable notification addressed to itself. Attribution to rows that cascade away with you is not attribution. The strict definition was wrong, not the data.
+
+**The discriminator that works:** does this orphan attribute anything that *survives* the delete?
+
+| | Count | Why |
+|---|---|---|
+| Orphaned | 11 272 | |
+| **Kept** | **674** | 195 sent a message that outlives them · 413 are the actor on an `admin_audit_log` row (audit rows never cascade — each would be a real loss) · a handful attribute a surviving group / membership / role / enrolment / notification-context |
+| **Deleted** | **10 598** | attribute nothing that survives |
+
+**Reclaimed:** 10 598 groups · 18 783 memberships · 651 notifications · 526 enrolments. Personal groups **12 946 → 2 352**; orphan share **87% → 28.7%**, and every remaining orphan is there for a stated reason rather than by neglect.
+
+**The control that mattered** — asserted in the migration, then verified independently afterwards: **messages 420, all 420 still carrying a sender.** Not one message lost its author. Audit actors (883) unchanged, forum posts unchanged, live personal groups unchanged.
+
+**An audit trail that forgets who acted is worth more than the rows it would reclaim** — which is why the 674 stay, and why "delete the orphans" was never the right instruction, only "delete the ones that attribute nothing."
+
 No end-user exposure: an orphaned group is unreachable (every read door resolves the caller via `get_current_personal_group_id()`, and with no `users` row no caller can ever resolve it). The cost is table bloat and a badly misleading denominator in any count over `groups` or `notifications`.
 
 ## What was fixed (2026-07-28)
@@ -48,7 +74,7 @@ A full `tests/integration/notifications` run still leaks **~6 personal groups**,
 - [ ] Attribute the ~4 unexplained leaks per notifications run to specific suites (the `was NOT deleted` log lines and a before/after count of `groups WHERE group_type = 'personal'` are the instrument).
 - [ ] Engagement groups created by a suite are torn down by that suite, so the sole-Steward guard is never hit at cleanup. The guard itself is unchanged.
 - [ ] A full `tests/integration` run leaks **zero** personal groups, asserted by a before/after count rather than by inspection.
-- [ ] Decide separately what to do with the 11 150 groups already orphaned — they hold live memberships, enrolments and message authorship, so this is not a delete.
+- [x] ~~Decide separately what to do with the 11 150 groups already orphaned~~ **DECIDED AND EXECUTED 2026-07-28** — migration `20260728200000`. It *was* a delete, for 10 598 of them. See below.
 
 ## Verification
 
