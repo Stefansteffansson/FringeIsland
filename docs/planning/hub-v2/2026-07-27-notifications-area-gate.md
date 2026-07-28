@@ -2,9 +2,26 @@
 
 Companion to the [area retrospective](../retrospectives/retro-2026-07-26-notifications-area.md). A-NTF was the **fifth of six** Phase-3 areas, covering cycles **N-A** (passive core), **N-B** (typed actions and acting fan-out), **N-C** (realtime hint and reconnect reconciliation) and **N-D** (preferences and the dispatcher).
 
-**Verdict: HELD.** See [Gate verdict](#gate-verdict) below.
+**Verdict: ~~HELD~~ → CLOSED 2026-07-28.** Every blocking condition is discharged. See [Gate verdict](#gate-verdict) below.
 
-Sources: the [measurement record](./2026-07-27-antf-gate-measurements.md) · the [live-walk findings](./2026-07-27-antf-walk-findings.md) · the [walk script](./2026-07-26-antf-live-walk-script.md).
+Sources: the [measurement record](./2026-07-27-antf-gate-measurements.md) · the [live-walk findings](./2026-07-27-antf-walk-findings.md) · the [walk script](./2026-07-26-antf-live-walk-script.md) · the [NB-8 Mist-posture proof](./2026-07-27-antf-nb8-mist-posture-proof.md) · the [gate decision board](./2026-07-27-antf-gate-decision-board.md) · the [warm-ceiling investigation](./2026-07-28-antf-warm-ceiling-investigation.md).
+
+## Closure summary (2026-07-28)
+
+| Condition | Disposition |
+|---|---|
+| **W-01 + W-02** — the inbox was a display case | Fixed red-first, PR #317 |
+| **W12** — per-RPC verification | Appendix A produced; found 7 anon-executable contracts, repaired by `20260727120000` |
+| **NB-8** — Mist posture | **Proof REFUTED its own premise**; fixed by `20260727180000` (board GB-1). The rule is now true by construction |
+| **U049 §8 Q1** — adapter ownership | Resolved (board GB-2): DS-5 owns adapters below the Platform API, PC-1 owns transport. Resolved-in-principle, unrealized |
+| **Email deferral** | Recorded in V3 §3 + DS-5 §3; "no email substrate shipped" verified literally |
+| **DS-5 spec advance** (W-09 + W-04) | Shipped together (board GB-3): asks split from news and made unmutable; the invitation now leads where it can be answered |
+| **937 ms warm ceiling** | **Investigated and closed as not-a-defect** — warm steady state is ~400 ms (n=10, zero over ceiling); the parked fan-out lever is **refuted by measurement** |
+| **Task sweep** | Executed — see [Task sweep](#task-sweep) |
+
+**What the gate cost, and what it bought.** Three of the six owed items turned out to be wrong rather than merely undone: NB-8's premise was false, W-09 was filed against the wrong scope (it missed `stewardship_nomination`, the largest ask population), and the 937 ms had a documented cause that measurement contradicted. A fourth — W-04 — was worse than filed: the invitation did not merely fail to point anywhere, it navigated to a page with no answering affordance at all.
+
+**Carried out of the gate, filed not buried:** [`TASK-INT-03`](../backlog/tasks/TASK-INT-03-test-fixture-orphaned-personal-groups.md) (test fixtures orphan personal groups — 11 150 of 12 687 were orphaned, holding 73% of the notifications table; the universal blocker is fixed, two residual sources are not) and [`TASK-INT-04`](../backlog/tasks/TASK-INT-04-nd-pair-suppression-intermittent.md) (the N-D PAIR test is intermittent in fleet — **filed after an earlier "flake" call was retracted by a second failure**). Also still open and non-blocking: **W-03**, **W-07**, **W-08**.
 
 ---
 
@@ -84,6 +101,8 @@ Two, both of which would mislead the next walker and are corrected in the script
 
 ## Gate verdict
 
+**~~HELD~~ → CLOSED 2026-07-28.** The remediation below was carried in full; see the [closure summary](#closure-summary-2026-07-28) at the head of this document. The original verdict and its reasoning are preserved unedited.
+
 **HELD.** Not failed — held pending a short, well-scoped remediation.
 
 **What passed convincingly.** N-C and N-D. Live delivery, reconnect reconciliation, suppression-at-write-time, the preference model's "absence means allowed" default, the non-suppressible account category with its plain-language explanation, and the operator console with its privilege boundary intact. Scenario 7 is the best-evidenced result of any Phase-3 walk to date.
@@ -95,7 +114,7 @@ Two, both of which would mislead the next walker and are corrected in the script
 1. ~~**W-01** and **W-02** fixed, with the existing N-A E2E journey extended to cover an inbox-row click and a page-side mark-all badge assertion.~~ **DISCHARGED 2026-07-27** (PR #317). Both fixed red-first; the N-A journey was **extended, not duplicated**, and now clicks an inbox row and asserts the badge after a page-side mark-all — both were demonstrated red by reverting the page. A third stale-badge path (answering an actionable row) was closed in the same pass. Hub unit 987 → 994/994, notification E2E 10/10. See [FEAT-H030's amendment](../../products/hub/features/FEAT-H030-notification-bell-and-inbox.md#amendment--w-01--w-02-the-inbox-was-a-display-case-not-a-surface-2026-07-27).
 2. The independently-owed items below discharged. **← the gate remains HELD on this alone.**
 
-**Gate status after the W-01/W-02 remediation: still HELD.** Half the closing condition is discharged; the walk-defect half. Nothing in that remediation touches the six independently-owed items below, and the gate does not close until they are.
+**Gate status after the W-01/W-02 remediation: still HELD.** Half the closing condition is discharged; the walk-defect half. Nothing in that remediation touches the six independently-owed items below, and the gate does not close until they are. ***All six were subsequently discharged (2026-07-27 / 2026-07-28) and the gate is CLOSED — see the [closure summary](#closure-summary-2026-07-28).***
 
 **Explicitly not conditions:** the deep-cold overshoot (standing labelled exception, closed by decision) and the out-of-area **W-05** (tracked separately, must not be folded into A-NTF's remediation).
 
@@ -128,7 +147,13 @@ Independent of the walk, carried from the retrospective:
 
 ## Task sweep
 
-**Still held.** `TASK-NC-01..04`, `TASK-NC-06` and `TASK-ND-01..05` remain on disk pending gate closure, per the A-COM precedent of one sweep line per area. `TASK-NC-05` must survive regardless — it carried the owed `/groups` measurement, now done, so re-check whether it can finally close.
+~~**Still held.** `TASK-NC-01..04`, `TASK-NC-06` and `TASK-ND-01..05` remain on disk pending gate closure, per the A-COM precedent of one sweep line per area. `TASK-NC-05` must survive regardless — it carried the owed `/groups` measurement, now done, so re-check whether it can finally close.~~
+
+**EXECUTED 2026-07-28** on gate closure. Swept: `TASK-NC-01..06` and `TASK-ND-01..05` (11 files), plus the four carried as *"closed, awaiting the next retro sweep"* — `TASK-DOC-003`, `TASK-DOC-004`, `TASK-DOC-005`, `TASK-INT-02`. Recorded in the [backlog README](../backlog/tasks/README.md), per the A-COM precedent of one sweep line per area.
+
+**`TASK-NC-05`'s verdict, lifted here because the file is gone.** Its re-check found **six of seven acceptance criteria met on disk**: the nominations slice is out of the overview bundle, the `fetchMyNominations` / `adoptMyNominationsRead` / `requestMyNominations` trio is confirmed deleted repo-wide, `/api/me/nominations` survives with a test (deliberately — it is FEAT-H017-owned), both stale comments are corrected, and `leadership-transfer.spec.ts:168` asserts the capability moved to the bell rather than vanishing. **The seventh is half-unobtainable and was not ticked:** it asked for `/groups` first paint *before and after*, and only after-numbers exist, because the slice was already retired on production when the measurement pass ran. What that pass did establish is that the after-number is in band with history and shows no regression. **Closed recording that honestly, rather than claiming a delta nobody measured.**
+
+**Two tasks were filed rather than swept**, both raised by this gate's own work: [`TASK-INT-03`](../backlog/tasks/TASK-INT-03-test-fixture-orphaned-personal-groups.md) (test fixtures orphan personal groups — the universal blocker is fixed, two residual sources are not) and [`TASK-INT-04`](../backlog/tasks/TASK-INT-04-nd-pair-suppression-intermittent.md) (the N-D suppression PAIR test is intermittent in fleet, green in isolation — **filed after an earlier "flake" call was retracted by a second failure**).
 
 ---
 
