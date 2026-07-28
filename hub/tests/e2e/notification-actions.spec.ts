@@ -254,7 +254,12 @@ test.describe.serial('FEAT-H031 — typed actions & co-leader convergence (N-B)'
       .filter({ hasText: new RegExp(`${invitedName}.*has been invited to join`, 'i') })
       .first();
     await expect(coleadRow).toBeVisible({ timeout: 15000 });
-    await expect(coleadRow).toContainText(new RegExp(`Answered by ${fims.lead.name}`, 'i'), {
+    // LABELLED SIBLING ADAPTATION (W-03 #2, 2026-07-28): was `Answered by …`.
+    // The lead clicked ACCEPT above, so the co-leader's copy now says which way
+    // it went, not merely that it went. "Answered by Bob" left a co-leader
+    // unable to tell from their own letter whether the group had joined or
+    // refused — the outcome was recorded and simply never rendered.
+    await expect(coleadRow).toContainText(new RegExp(`Accepted by ${fims.lead.name}`, 'i'), {
       timeout: 15000,
     });
     await expect(coleadRow.getByTestId('notif-action-accept')).toHaveCount(0);

@@ -126,6 +126,26 @@ describe('NotificationPreferencesPanel (FEAT-H033)', () => {
     expect(screen.getByText(/not live yet/i)).toBeInTheDocument();
   });
 
+  // W-08 (gate walk 2026-07-27) — the sentence refuted itself inside one clause:
+  // there is "nothing to switch", and then "your choice" is promised forward.
+  // The member has made no email choice, so the referent was empty and read as
+  // pointing at an email setting they could not find. The referent that IS real
+  // is the category switches above, which will govern email when it ships.
+  it('the non-delivering-channel line names WHICH choice carries forward — the category switches, not a setting the member never made', async () => {
+    fetchMock.mockImplementation(okRead);
+    render(<NotificationPreferencesPanel />);
+
+    const line = await screen.findByTestId('undelivered-channel-note');
+
+    // The empty referent is gone.
+    expect(line.textContent ?? '').not.toMatch(/your choice/i);
+    // What carries forward is named: the switches on this page.
+    expect(line.textContent ?? '').toMatch(/choices?\s+(above|on this page)|these switches/i);
+    // The honest facts the line already got right are kept.
+    expect(line.textContent ?? '').toMatch(/email/i);
+    expect(line.textContent ?? '').toMatch(/not live yet|isn't live yet|is not live yet/i);
+  });
+
   it('flips optimistically and sends the write', async () => {
     fetchMock.mockImplementation((url: unknown, init?: { method?: string }) =>
       init?.method === 'PUT'

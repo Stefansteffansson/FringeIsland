@@ -80,7 +80,12 @@ describe('firstToken (nickname render)', () => {
 });
 
 describe('notificationStatusChip — N-B convergence + expiry', () => {
-  it('a converged acting sibling reads "Answered by [first token]"', () => {
+  // LABELLED SIBLING ADAPTATION (W-03 #2, 2026-07-28). This asserted
+  // "Answered by Bob" for an ACCEPTED row. The convergence half is unchanged and
+  // still proved — who answered is named, by first token — but "Answered" hid
+  // WHICH way they answered, which is the defect the gate walk named: a co-leader
+  // could not tell from their own copy whether the group had joined or refused.
+  it('a converged acting sibling names the outcome AND the resolver, by first token', () => {
     const chip = notificationStatusChip(
       {
         ...base,
@@ -90,8 +95,22 @@ describe('notificationStatusChip — N-B convergence + expiry', () => {
       },
       NOW,
     ) as NotificationChip;
-    expect(chip.label).toBe('Answered by Bob');
+    expect(chip.label).toBe('Accepted by Bob');
     expect(chip.tone).toBe('done');
+  });
+
+  it('a converged acting sibling that was DECLINED says so, and does not render as an accept', () => {
+    const chip = notificationStatusChip(
+      {
+        ...base,
+        action_type: 'accept_decline',
+        action_taken: 'declined',
+        action_data: { resolved_by_name: 'Bob Smith', resolved_outcome: 'declined' },
+      },
+      NOW,
+    ) as NotificationChip;
+    expect(chip.label).toBe('Declined by Bob');
+    expect(chip.tone).toBe('declined');
   });
   it('a lazily-expired row (action_taken="expired") reads "Expired"', () => {
     const chip = notificationStatusChip(
@@ -101,9 +120,32 @@ describe('notificationStatusChip — N-B convergence + expiry', () => {
     expect(chip.label).toBe('Expired');
     expect(chip.tone).toBe('expired');
   });
-  it('a nomination handled without a resolver name still reads "Handled" (N-A preserved)', () => {
-    const chip = notificationStatusChip(
+  // LABELLED SIBLING ADAPTATION (W-03 #2, 2026-07-28). "Handled" was the N-A
+  // wording for a single-recipient nomination — there is no resolver to name
+  // because the only recipient is the answerer. But the outcome was knowable and
+  // went unsaid: a member who declined a stewardship saw the same word as one
+  // who accepted. Nobody to name is not the same as nothing to say.
+  it('a nomination answered by its only recipient names the outcome, with nobody to attribute it to', () => {
+    const accepted = notificationStatusChip(
       { ...base, kind: 'stewardship_nomination', action_type: 'accept_decline', action_taken: 'accepted' },
+      NOW,
+    ) as NotificationChip;
+    expect(accepted.label).toBe('Accepted');
+    expect(accepted.tone).toBe('done');
+
+    const declined = notificationStatusChip(
+      { ...base, kind: 'stewardship_nomination', action_type: 'accept_decline', action_taken: 'declined' },
+      NOW,
+    ) as NotificationChip;
+    expect(declined.label).toBe('Declined');
+    expect(declined.tone).toBe('declined');
+  });
+
+  // N-A's bare "Handled" survives where it is still the honest answer: an
+  // outcome this surface does not recognise (U008 open set).
+  it('an unrecognised outcome still reads "Handled" — the N-A fallback is preserved, not deleted', () => {
+    const chip = notificationStatusChip(
+      { ...base, kind: 'stewardship_nomination', action_type: 'accept_decline', action_taken: 'withdrawn' },
       NOW,
     ) as NotificationChip;
     expect(chip.label).toBe('Handled');

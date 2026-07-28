@@ -194,10 +194,18 @@ export function NotificationPreferencesPanel() {
         ))}
       </ul>
 
+      {/* W-08 (gate walk 2026-07-27): this line used to end "your choice will
+          apply as soon as it is" — refuting itself inside one clause, because
+          there is nothing to switch and so no email choice for "your choice" to
+          point at. The member went looking for a setting that does not exist.
+          The referent that IS real is the switches above, which govern a
+          category however it is delivered; naming them keeps the reassurance
+          and drops the phantom. */}
       {stored.length > 0 && (
-        <p className="mt-4 text-xs text-gray-600">
+        <p className="mt-4 text-xs text-gray-600" data-testid="undelivered-channel-note">
           {stored.join(' and ')} delivery is not live yet, so there is nothing to switch
-          here — your choice will apply as soon as it is.
+          here — the choices above cover every channel, so they will apply to it
+          the day it arrives.
         </p>
       )}
     </section>
