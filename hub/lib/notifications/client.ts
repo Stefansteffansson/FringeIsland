@@ -111,6 +111,33 @@ export function notificationDispatchRoute(kind: string, id: string): string | nu
   return segment ? `/api/notifications/${encodeURIComponent(id)}/${segment}` : null;
 }
 
+/** Where a kind is ANSWERED, when it cannot be answered in the row itself.
+ *
+ *  W-04 (walk, 2026-07-27): `invitation_received` announces a decision only the
+ *  recipient can make, but carries no Accept/Decline — and the group detail page
+ *  it navigated to has no answering affordance for an invited viewer either, so
+ *  the letter led to a dead end. Its answering surface is `MyInvitations`, which
+ *  is mounted on `/groups`, and nothing said so. The pointer has to live here
+ *  rather than in copy: notification copy is server-authored and never re-worded
+ *  by the surface (W-03's copy law).
+ *
+ *  A kind that IS answerable in the row (see DISPATCH_SEGMENTS) needs no entry —
+ *  it is answered where it is read. */
+const ANSWER_PATHS: Record<string, string> = {
+  invitation_received: '/groups',
+};
+
+/** Where activating a notification should take the member, or null to stay put.
+ *  An explicit answering surface wins over the row's group, because arriving at
+ *  a page that cannot answer the question is the defect W-04 named. */
+export function notificationTarget(
+  row: Pick<NotificationRow, 'kind' | 'group_id'>,
+): string | null {
+  const answerPath = ANSWER_PATHS[row.kind];
+  if (answerPath) return answerPath;
+  return row.group_id ? `/groups/${row.group_id}` : null;
+}
+
 export interface NotificationResponseResult {
   outcome?: string;
   resolved_by_name?: string | null;

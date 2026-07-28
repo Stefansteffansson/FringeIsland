@@ -83,11 +83,18 @@ const CHANNEL_EMAIL = 'email';
 
 // A suppressible category and a control, chosen so the pair can never collide.
 const MUTED_CATEGORY = 'membership';
-const MUTED_KIND = 'invitation_received';
+// ADAPTED 2026-07-27 (migration 20260727180000, board GB-3): this read
+// `invitation_received`, which has since left `membership` for the
+// non-suppressible `asks` category — muting `membership` can no longer silence
+// it, and that is the whole point of the split (W-09: asks are not news).
+// Re-pointed at a kind that is genuinely news and genuinely still mutable.
+const MUTED_KIND = 'member_left';
 const CONTROL_CATEGORY = 'journeys';
 const CONTROL_KIND = 'journey_completed';
-// Seeded non-suppressible: the member's own participation/access notices.
+// Seeded non-suppressible: the member's own participation/access notices, and
+// (since GB-3) the questions only the member can answer.
 const LOCKED_CATEGORY = 'account';
+const LOCKED_ASKS_CATEGORY = 'asks';
 const LOCKED_KIND = 'participation_paused';
 
 /**
@@ -323,13 +330,17 @@ describe('FEAT-PD016 — notification preferences & the shared suppression dispa
       expect(rows.every((r) => typeof r.channel_delivers === 'boolean')).toBe(true);
     });
 
-    it('member_suppressible is false for account only; nudge defaults true for every category', async () => {
+    it('member_suppressible is false for account and asks only; nudge defaults true for every category', async () => {
       const rows = (await runAdminSql(
         `SELECT key, member_suppressible, nudge FROM public.notification_categories ORDER BY key;`,
       )) as { key: string; member_suppressible: boolean; nudge: boolean }[];
 
-      const locked = rows.filter((r) => !r.member_suppressible).map((r) => r.key);
-      expect(locked).toEqual([LOCKED_CATEGORY]);
+      // ADAPTED 2026-07-27 (migration 20260727180000, board GB-3): `asks`
+      // joined `account` on the locked side. Kept as an exact-set assertion
+      // rather than a `contains` — the value of this test is that it fails when
+      // a category quietly becomes unmutable, so it must stay exhaustive.
+      const locked = rows.filter((r) => !r.member_suppressible).map((r) => r.key).sort();
+      expect(locked).toEqual([LOCKED_CATEGORY, LOCKED_ASKS_CATEGORY].sort());
       expect(rows.every((r) => r.nudge === true)).toBe(true);
       // The GDPR field is untouched — suppressibility is its own axis.
       const basis = (await runAdminSql(

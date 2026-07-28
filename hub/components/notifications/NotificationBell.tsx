@@ -17,6 +17,7 @@ import {
   markNotificationRead,
   markAllNotificationsRead,
   respondToNotification,
+  notificationTarget,
   type NotificationRow,
 } from '@/lib/notifications/client';
 import { formatBadgeCount, isActionable, type NotificationResponse } from '@/lib/notifications/format';
@@ -151,8 +152,11 @@ export function NotificationBell() {
       } catch {
         loadCount(); // reconcile on failure — never leave the badge diverged
       }
-      if (row.group_id) {
-        router.push(`/groups/${row.group_id}`);
+      // W-04: an invitation is answered on /groups, not on the group's page —
+      // which offers an invited viewer no way to answer at all.
+      const target = notificationTarget(row);
+      if (target) {
+        router.push(target);
         setOpen(false);
       }
     },

@@ -347,3 +347,19 @@ N/A (no surface) — platform contracts only. Two notes the consuming surface in
 - `get_own_notification_preferences()` returns the categories × channels matrix
   (12 rows at Ferd's registry size) in one round trip, so FEAT-H033's surface is a
   single justified standalone read per ADR-U042.
+
+---
+
+## Amendment — the Mist rule enforced, and asks split from news (A-NTF gate, 2026-07-27)
+
+Migration `20260727180000`, from the [area-gate decision board](../../../planning/hub-v2/2026-07-27-antf-gate-decision-board.md) (GB-1 + GB-3). Both changes land on this feature's dispatcher and registry, so they are recorded here rather than in a new spec.
+
+**1. The dispatcher now enforces the V3 Mist rule (GB-1b).** `ds5_apply_notification_preference()` drops any row whose recipient resolves to `users.is_temporary`. V3 §6 has always said a Mist holds *"no durable state; in-app in-session only"* — the [NB-8 proof](../../../planning/hub-v2/2026-07-27-antf-nb8-mist-posture-proof.md) found the rule was written and never enforced: every Mist held a `role_assigned` row, could read / mark-read / export it, and was refused only at the preference doors, so it could see a notification it had no way to silence. Enforcing at the `BEFORE INSERT` dispatcher rather than at the ~38 emitters is the same NC-1 reasoning this feature already used for suppression: one predicate catches every writer by construction, legacy and future. A **group-addressed** row has no `users` row pointing at it, resolves NULL, and delivers normally — the distinction `notify_notification_hint`'s comment got wrong.
+
+**2. Asks are not news (GB-3).** A new `asks` category carries `member_suppressible = false`, reusing the axis `account` already proved rather than inventing a per-kind one. Three kinds moved into it: `invitation_received`, `acting_invitation`, `stewardship_nomination`. `membership` and `stewardship` keep their switches, are now news-only, and were relabelled to name the telling.
+
+**Why not the surgical exemption.** W-09 considered exempting rows where `action_type IS NOT NULL` and rejected it; the live data is the argument. Of the three asks, the commonest — `invitation_received`, 910 rows — carries **no** `action_type`, so that exemption would have protected the two actionable asks and left the ordinary invitation exactly as strandable as before.
+
+**W-09 was filed narrower than the defect.** It named `membership`, but `stewardship_nomination` (**802 rows — the largest ask population**) sat in the equally-suppressible `stewardship` category with the identical failure mode. The ruled principle — *a question only you can answer always reaches you* — does not depend on which category an ask sits in.
+
+**`member_suppressible = false` already outranks a stored preference row** (this feature's own guarantee, tested since N-D), so an `asks` preference written behind the contract's back cannot silence anything. Dead `asks` rows are cleared by the migration so the surface never renders a switch whose state means nothing.

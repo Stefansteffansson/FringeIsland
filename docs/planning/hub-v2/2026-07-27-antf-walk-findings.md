@@ -148,6 +148,12 @@ Dev Login's unread count was manipulated to run the two-round isolation: the 7 m
 
 **Raised by:** Stefan, during Scenario 7 · **Grade: DESIGN CONCERN** — mechanism DB-verified; the worst-case consequence is a **strong inference, not yet tested**.
 
+> **STATUS: FIXED 2026-07-27** (board GB-3, migration `20260727180000`, held at the schema gate). The three asks — `invitation_received`, `acting_invitation` and **`stewardship_nomination`** — moved to an `asks` category with `member_suppressible = false`, so a question only you can answer always reaches you. `membership` and `stewardship` keep their switches and are now genuinely news-only; both were relabelled to name the telling (*"Group & membership updates"*, *"Stewardship updates"*).
+>
+> **This finding was filed narrower than the defect actually was.** It named `membership`, but `stewardship_nomination` — **802 live rows, the largest ask population in the system** — sat in the equally-suppressible `stewardship` category with the identical failure: mute it, and a leadership nomination is never written, so the only surface that can answer it never exists. The ruled principle does not depend on which category an ask happens to sit in, so all three moved together.
+>
+> The live data also re-confirms why the surgical `action_type IS NOT NULL` exemption was rejected: of the three asks, `invitation_received` is the commonest (910 rows) and carries **no** `action_type` at all.
+
 **The mechanism, verified.** `ds5_apply_notification_preference` is a `BEFORE INSERT` trigger on `public.notifications` only — it returns `NULL`, dropping the notification row. It does not touch `group_memberships`. So when a member mutes a category, the underlying events still happen and are still recorded; only the telling is suppressed. For invitations specifically: the `group_memberships` row lands as `status='invited'` exactly as normal, and the member is simply never informed.
 
 **What the `membership` category actually contains** (verified against `notification_kinds`):
@@ -284,6 +290,10 @@ The hazard was anticipated and the guard written — but placed in `catch`. `sup
 ## Finding W-04 — a personal invitation arrives as a letter with no way to answer it and no pointer to where you can
 
 **Scenario:** 6 (surfaced while resolving the above) · **Grade: SEAM** — by design per `FEAT-PD014:40`; the design is the thing worth questioning.
+
+> **STATUS: FIXED 2026-07-27** (board GB-3, shipped with W-09 as required — the letter now both arrives *and* leads somewhere). The cheapest remediation was taken: `invitation_received` now navigates to **`/groups`**, where `MyInvitations` is mounted, instead of `/groups/<id>`.
+>
+> **The old target was worse than "elsewhere" — it was a dead end.** Verified while fixing: `/groups/[id]` offers an invited viewer **no** accept/decline affordance at all, so clicking the letter took the member to a page that could only describe the group they were invited to, never let them answer. The rule lives in `notificationTarget()` (`hub/lib/notifications/client.ts`) as an answer-path map beside the existing dispatch-segment map: a kind answerable *in the row* needs no entry; a kind that is not gets its answering surface. Copy is untouched, per W-03's copy law.
 
 **Observed.** Grace's inbox carries *"Group Invitation — You have been invited to join "Nya gruppen #2" by Stefan."* It has no chip, no buttons, and — per **W-01** — cannot even be clicked. The answering surface (MyInvitations) is elsewhere and the letter does not say so.
 

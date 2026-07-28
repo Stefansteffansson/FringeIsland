@@ -31,6 +31,12 @@ jest.mock('@/lib/notifications/client', () => ({
   markAllNotificationsRead: () => markAllNotificationsRead(),
   invalidateNotificationsCache: () => invalidateNotificationsCache(),
   respondToNotification: (row: unknown, accept: boolean) => respondToNotification(row, accept),
+  // The REAL routing rule, deliberately not a double: `notificationTarget` is
+  // pure (no I/O), and W-04 is a claim about where a member lands. A stubbed
+  // target would assert only that the component calls a function.
+  notificationTarget: jest.requireActual<typeof import('@/lib/notifications/client')>(
+    '@/lib/notifications/client',
+  ).notificationTarget,
 }));
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -123,7 +129,11 @@ describe('NotificationBell', () => {
   it('clicking an unread item with a group marks it read and navigates to the group', async () => {
     fetchUnreadCount.mockResolvedValue(1);
     fetchNotifications.mockResolvedValue([
-      row({ id: 'n7', title: 'Role changed', group_id: 'g9' }),
+      // ADAPTED 2026-07-27 (W-04): the base fixture's kind is
+      // `invitation_received`, which now routes to its answering surface rather
+      // than to the group. This row is titled "Role changed" and always meant a
+      // news kind — it was riding the wrong fixture kind and passing by luck.
+      row({ id: 'n7', kind: 'role_assigned', title: 'Role changed', group_id: 'g9' }),
     ]);
     render(<NotificationBell />);
     await waitFor(() => expect(fetchUnreadCount).toHaveBeenCalled());
@@ -140,10 +150,35 @@ describe('NotificationBell', () => {
     );
   });
 
+  it('W-04: an invitation goes to where it can be ANSWERED, not to the group page that cannot answer it', async () => {
+    // The walk found `invitation_received` arriving with no Accept/Decline and
+    // no directions. Navigating to /groups/<id> made it worse: the group detail
+    // page offers an invited viewer no answering affordance at all, so the
+    // letter led to a dead end. MyInvitations is mounted on /groups.
+    fetchUnreadCount.mockResolvedValue(1);
+    fetchNotifications.mockResolvedValue([
+      row({ id: 'n9', title: 'Group Invitation', group_id: 'g9' }),
+    ]);
+    render(<NotificationBell />);
+    await waitFor(() => expect(fetchUnreadCount).toHaveBeenCalled());
+    fireEvent.click(screen.getByTestId('notification-bell'));
+    const item = await screen.findByText('Group Invitation');
+    await act(async () => {
+      fireEvent.click(item);
+    });
+    expect(markNotificationRead).toHaveBeenCalledWith('n9');
+    expect(push).toHaveBeenCalledWith('/groups');
+    expect(push).not.toHaveBeenCalledWith('/groups/g9');
+  });
+
   it('clicking an item with no group marks it read but does not navigate (no dead link)', async () => {
     fetchUnreadCount.mockResolvedValue(1);
     fetchNotifications.mockResolvedValue([
-      row({ id: 'n8', title: 'Welcome', group_id: null }),
+      // ADAPTED 2026-07-27 (W-04): was riding the base `invitation_received`
+      // kind, which now always routes to its answering surface — an invitation
+      // is answerable whether or not the row names a group. This test is about
+      // a genuinely passive, group-less row, so it now uses one.
+      row({ id: 'n8', kind: 'announcement', title: 'Welcome', group_id: null }),
     ]);
     render(<NotificationBell />);
     await waitFor(() => expect(fetchUnreadCount).toHaveBeenCalled());
