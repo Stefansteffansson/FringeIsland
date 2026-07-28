@@ -57,6 +57,20 @@ describe('FEAT-PD014 — actionable notifications: fan-out, dispatch & convergen
   const runTag = Date.now().toString(36);
   let ctxCounter = 0;
 
+  /** TASK-INT-03: every engagement group this suite creates, torn down in
+   *  afterAll BEFORE `cleanupTestUser`.
+   *
+   *  This suite was the attributed source of both orphaned personal groups per
+   *  notifications run (captured 2026-07-28, `cleanupTestUser` at :176). It
+   *  creates a fresh context group on every `freshActingInvite()` call plus one
+   *  in the personal-branch test, and tore down only `groupB` — so Alice and Bob
+   *  stayed sole Steward of the rest, `cleanupTestUser` hit the sole-Steward
+   *  guard, and their personal groups leaked.
+   *
+   *  The guard is CORRECT and is not weakened: the fix is that a suite which
+   *  creates an engagement group is the suite that deletes it. */
+  const createdGroupIds: string[] = [];
+
   let alice: TestUser; // owns each context group, invites B
   let bob: TestUser;   // B's creator-Steward — act_as_group holder #1
   let carol: TestUser; // assigned act_as_group holder #2
@@ -85,6 +99,7 @@ describe('FEAT-PD014 — actionable notifications: fan-out, dispatch & convergen
     });
     expect(gErr).toBeNull();
     const contextGroup = gid as string;
+    createdGroupIds.push(contextGroup);
     const { data: inv, error: iErr } = await ca.rpc('invite_group', {
       p_group_id: contextGroup,
       p_invited_group_id: groupB,
@@ -171,7 +186,13 @@ describe('FEAT-PD014 — actionable notifications: fan-out, dispatch & convergen
     for (const u of [alice, bob, carol, dave, eve].filter(Boolean)) {
       await admin.from('notifications').delete().eq('recipient_group_id', u.personalGroupId);
     }
+    // TASK-INT-03: every engagement group this suite made, before the users —
+    // otherwise their creators are still sole Steward and cleanupTestUser is
+    // refused, orphaning the personal group.
     if (groupB) await cleanupTestGroup(groupB);
+    for (const id of createdGroupIds) {
+      if (id) await cleanupTestGroup(id);
+    }
     for (const u of [alice, bob, carol, dave, eve].filter(Boolean)) {
       await cleanupTestUser(u.user.id);
     }
@@ -239,6 +260,7 @@ describe('FEAT-PD014 — actionable notifications: fan-out, dispatch & convergen
       const { data: gid } = await cb.rpc('create_engagement_group', {
         p_name: `NB-personal-ctx-${runTag}`,
       });
+      createdGroupIds.push(gid as string);
       const { error } = await admin.from('group_memberships').insert({
         group_id: gid as string,
         member_group_id: eve.personalGroupId,

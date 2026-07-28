@@ -3,7 +3,7 @@
 ---
 id: TASK-INT-03
 title: Test teardown leaks personal groups (sole-Steward guard + suites bypassing cleanupTestUser) — close the residual sources
-status: open
+status: done
 assigned_to: unassigned
 priority: medium
 feature: none
@@ -71,10 +71,22 @@ A full `tests/integration/notifications` run still leaks **~6 personal groups**,
 
 ## Acceptance
 
-- [ ] Attribute the ~4 unexplained leaks per notifications run to specific suites (the `was NOT deleted` log lines and a before/after count of `groups WHERE group_type = 'personal'` are the instrument).
-- [ ] Engagement groups created by a suite are torn down by that suite, so the sole-Steward guard is never hit at cleanup. The guard itself is unchanged.
-- [ ] A full `tests/integration` run leaks **zero** personal groups, asserted by a before/after count rather than by inspection.
+- [x] Attribute the leaks to specific suites — **done 2026-07-28.** The loud logging added here was the instrument, exactly as intended: the leak lines were harvested from the TASK-INT-04 capture logs at no extra cost. **The real rate was 2 per notifications run, not ~6, and all of them came from one suite**, `actionable-notifications.test.ts`. (The earlier "~6" double-counted: jest echoes the `console.error` source line, so each leak prints its message twice.)
+- [x] Engagement groups created by a suite are torn down by that suite — **done 2026-07-28.** `actionable-notifications.test.ts` creates a fresh context group on **every** `freshActingInvite()` call plus one in the personal-branch test, and tore down only `groupB`. Alice and Bob therefore stayed sole Steward of the rest, so `cleanupTestUser` was refused and their personal groups leaked. The suite now records every group it creates and deletes them all before the users. **The sole-Steward guard is untouched** — it was never the defect; being refused was the correct behaviour, and the fixture was the thing in the wrong.
+- [x] A full `tests/integration` run leaks **zero** personal groups, asserted by a before/after count rather than by inspection — **done 2026-07-29.** Bracketed run, 58 suites / **715 tests green**: orphans **689 → 689 (delta 0)** and engagement groups **429 → 429 (delta 0)**, with `leaks=0` and zero refused group cleanups in the log. Before the fixes: +2 per notifications run and +1 per full run.
 - [x] ~~Decide separately what to do with the 11 150 groups already orphaned~~ **DECIDED AND EXECUTED 2026-07-28** — migration `20260728200000`. It *was* a delete, for 10 598 of them. See below.
+
+## The second source — a different bug wearing the same error message
+
+Found only because the acceptance criterion says **full `tests/integration`**, not the notifications directory. Notifications was clean at zero across 11 runs; the whole-suite run still leaked one, from `tests/integration/groups/group-of-groups.test.ts`. **The narrower run would have let this box be ticked while it was false.**
+
+That suite was already doing the two obvious things right — it tracked every group it created and deleted them all *before* its users. The mechanism is sharper:
+
+**`user_group_roles` cascades on `member_group_id` as well as `group_id`.** So deleting a group that is the sole Steward **of another group** cascades into *that other group's* role rows — and the guard's "parent is gone, allow it" exemption (`20260228120745:32`) tests `OLD.group_id`, the group whose roles they are, which still exists. The delete is refused, `cleanupTestGroup` only logs the refusal, and the stranded Steward then fails `cleanupTestUser`.
+
+In a group-of-groups suite the later-created groups are precisely the ones the earlier groups hold roles in, so **creation-order teardown kills the parents first and strands the rest**. Fixed by tearing down in reverse creation order.
+
+Both sources were teardown-ordering faults in fixtures, and **neither was a fault in the guard** — a real member list must never lose its last Steward. Worth carrying: `cleanupTestGroup` swallows its refusal into a `console.error`, so a group that will not delete is only ever a log line. That is the same swallow-shape as the original `cleanupTestUser` defect, one level up.
 
 ## Verification
 

@@ -113,7 +113,24 @@ describe('FEAT-PC015 — group-of-groups membership & acting contracts (ADR-U041
   }, 120_000);
 
   afterAll(async () => {
-    for (const id of createdGroupIds) await cleanupTestGroup(id);
+    // TASK-INT-03: REVERSE creation order, and the reason is not obvious.
+    //
+    // `user_group_roles` cascades on `member_group_id` as well as `group_id`.
+    // So deleting a group that is the sole Steward OF ANOTHER GROUP cascades
+    // into that other group's roles — and the sole-Steward guard's "parent is
+    // gone, allow it" exemption (20260228120745:32) checks `OLD.group_id`, the
+    // group whose roles they are, which is still very much there. The delete is
+    // refused, `cleanupTestGroup` only logs it, and the group's Steward then
+    // fails `cleanupTestUser` and leaks a personal group.
+    //
+    // This suite is group-of-groups, so its later groups are precisely the ones
+    // its earlier groups hold roles in. Creation order therefore kills the
+    // parents first and strands the rest. Reverse order removes the dependents
+    // before the groups they point at.
+    //
+    // The guard is correct and untouched — a real member list must never lose
+    // its last Steward. Teardown order is the fixture's problem to solve.
+    for (const id of [...createdGroupIds].reverse()) await cleanupTestGroup(id);
     for (const id of createdUserIds) await cleanupTestUser(id);
   }, 120_000);
 
