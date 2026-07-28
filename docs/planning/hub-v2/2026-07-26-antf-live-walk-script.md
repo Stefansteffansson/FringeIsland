@@ -140,8 +140,10 @@ This is the cycle that justifies the area. Do it carefully.
 
 1. B (Grace): open `/notifications/preferences`. **⚑ EXPECT every switch ON** (verified: she has no preference rows).
 2. Note her exact bell count. Call it **N**.
-3. B: switch **OFF** → *"Group membership & invitations"*.
+3. B: switch **OFF** → ~~*"Group membership & invitations"*~~ → **now labelled *"Group & membership updates"*** (renamed 2026-07-28, migration `20260727180000` / board GB-3 — the category no longer holds invitations, so its label stopped saying so; the same rename applies to the second mute in Scenario 10 below). **The scenario itself is unaffected:** `role_removed` / `role_assigned` are news and remain in this category, and it remains mutable.
 4. A: Nya gruppen #1 → Grace → **remove** the Observer role, then **assign** it again. (Both are `membership`-category events.)
+
+> **⚑ If re-walking Scenario 7 after 2026-07-28, note what it can no longer prove.** Invitations moved to a **non-suppressible** `asks` category, so muting the category above will *not* silence `invitation_received`, `acting_invitation` or `stewardship_nomination` — by design (W-09). Use a news kind (role assigned/removed, member left) to demonstrate suppression; an ask arriving *despite* a mute is now the correct result, not a defect.
 5. B: **⚑ EXPECT the bell count to still be exactly N.** Nothing arrived. No flicker, no arrive-then-vanish.
 6. B: reload `/notifications`. **⚑ EXPECT no new rows.**
 7. B: switch the category back **ON**.
