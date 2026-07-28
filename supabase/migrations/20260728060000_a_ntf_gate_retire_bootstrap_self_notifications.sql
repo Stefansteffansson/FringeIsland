@@ -1,0 +1,42 @@
+-- ===========================================================================
+-- A-NTF area-gate remediation — retire the historical bootstrap self-rows.
+-- Authorised by Stefan 2026-07-28 ("you can also do the historical rows").
+-- Companion to 20260727180000, which stopped these being WRITTEN; this one
+-- removes the ones already on disk.
+--
+-- WHAT IS BEING DELETED. Exactly one shape: a `role_assigned` notification
+-- whose context group IS its recipient — a personal group told it has been
+-- given a role in itself, by itself. That is account-bootstrap plumbing
+-- (handle_new_user Step 6), never news, and it is the row the NB-8 proof found
+-- Mists holding in violation of the V3 Mist rule.
+--
+-- SCOPED BEFORE DELETING (live counts, 2026-07-28):
+--   12 512 rows match `type = 'role_assigned' AND group_id = recipient_group_id`
+--   of which 12 510 carry role_name "Myself" and 2 are `GateProbeSelfRole`
+--   fixtures from this gate's own red-first run. The population is homogeneous:
+--   every matching row is a self-assignment into a personal group.
+--   All 7 Mist-addressed notification rows are a SUBSET of this set, so one
+--   predicate retires both populations.
+--   24 420 legitimate `role_assigned` rows (group_id <> recipient_group_id)
+--   are NOT matched and MUST survive — a real role in a real group is real news.
+--
+-- CORRECTION TO THE APPROVAL BRIEF: this was described as "~1516 FIM rows".
+-- That figure counted only rows whose personal group still has a `users` row.
+-- The true population is 12 512. Same category of row, correctly scoped —
+-- recorded here rather than silently widened.
+--
+-- Structural predicate, not a string match: keying on `role_name = 'Myself'`
+-- would miss any renamed seed and would not catch the probe rows. This mirrors
+-- the guard in notify_role_assigned exactly, so the fix and the cleanup cannot
+-- drift apart.
+--
+-- NOT IN SCOPE, deliberately (a separate decision, not authorised here):
+--   11 107 of 12 687 personal groups (87%) have no `users` row at all, and
+--   47 866 notification rows — 73% of the table — are addressed to those
+--   orphaned groups, unreachable by any caller. Accumulated test residue.
+--   Recorded at the gate; untouched by this migration.
+-- ===========================================================================
+
+DELETE FROM public.notifications
+ WHERE type = 'role_assigned'
+   AND group_id = recipient_group_id;
