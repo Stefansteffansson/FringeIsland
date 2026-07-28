@@ -299,7 +299,20 @@ async function run(phase) {
   return results;
 }
 
-const STATE = OUT.replace('antf-perf-results.jsonl', 'antf-perf-state.json');
+// FIXED 2026-07-28 (A-NTF gate). This read:
+//   const STATE = OUT.replace('antf-perf-results.jsonl', 'antf-perf-state.json');
+// The script was renamed from `antf-perf-measure.mjs` and its results file lost
+// the `antf-` prefix, so that replace matched NOTHING and silently returned OUT
+// unchanged — making STATE and OUT the same file. `signin` wrote the Playwright
+// storage state there, then the first `measureNav` appended a JSONL result row
+// to it, and every later context creation died on
+// "Unexpected non-whitespace character after JSON".
+//
+// It survived because the multi-nav phases build their context ONCE per process,
+// so the corruption only bites the NEXT invocation — i.e. exactly when you are
+// re-measuring, which is when a deep-cold run has already spent its idle window.
+// Derive it independently rather than by string surgery on a sibling path.
+const STATE = process.env.PERF_STATE ?? join(HERE, 'perf-state.json');
 
 /**
  * B2 is "cold authenticated navigation — idle functions, first page of a
@@ -391,13 +404,19 @@ else if (cmd === 'waterfall') {
       ms: s ? Date.now() - s : -1,
     });
   });
+  // Generalised 2026-07-28 (A-NTF gate): was hardcoded to the preferences page.
+  // Attributing a slow leg needs the per-request breakdown on WHICHEVER page is
+  // hugging its ceiling — /groups turned out to be the worse of the two, and it
+  // could not be inspected at all while this only knew one path.
+  const wfPath = process.argv[3] ?? '/notifications/preferences';
+  const wfSel = process.argv[4] ?? '[data-testid^="pref-toggle-"]';
   navStart.t = Date.now();
-  await page.goto(BASE + '/notifications/preferences', { waitUntil: 'commit' });
-  await page.locator('[data-testid^="pref-toggle-"]').first().waitFor({ state: 'visible', timeout: 30000 });
+  await page.goto(BASE + wfPath, { waitUntil: 'commit' });
+  await page.locator(wfSel).first().waitFor({ state: 'visible', timeout: 30000 });
   const wall = Date.now() - navStart.t;
   await browser.close();
   rows.sort((a, b) => a.startAt - b.startAt);
-  console.log(`\n== /notifications/preferences WARM waterfall — wall ${wall} ms ==`);
+  console.log(`\n== ${wfPath} WARM waterfall — wall ${wall} ms ==`);
   console.log('  start@   dur   request');
   for (const r of rows) console.log(`  ${String(r.startAt).padStart(5)}  ${String(r.ms).padStart(5)}   ${r.url}`);
   const overlap = rows.length > 1 && rows.some((r, i) => i > 0 && r.startAt < rows[i - 1].startAt + rows[i - 1].ms - 20);
