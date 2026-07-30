@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { LoadingState } from '@/components/ui/LoadingState';
 import {
   groupPreferencesByCategory,
+  preferenceSaveFailureMessage,
   renderableChannels,
   storedOnlyChannels,
   type NotificationPreferenceCell,
@@ -106,7 +107,9 @@ export function NotificationPreferencesPanel() {
               : c,
           ),
         );
-        setSaveError((err as Error).message);
+        // A server that answered with a reason is quoted verbatim; a request
+        // that never landed gets words instead of "Failed to fetch".
+        setSaveError(preferenceSaveFailureMessage(err));
       } finally {
         setPending((p) => {
           const nextPending = new Set(p);
@@ -147,9 +150,23 @@ export function NotificationPreferencesPanel() {
           <li key={row.category_key} className="flex items-center justify-between gap-4 p-4">
             <div>
               <p className="font-medium text-gray-900">{row.category_label}</p>
+              {/* W-08's sibling (gate walk 2026-07-30): this read "Always on —
+                  these tell you about your own account and access", a sentence
+                  written for `account` back when it was the ONLY non-suppressible
+                  category. GB-3 made `asks` the second, and it inherited copy
+                  that was false about it — questions waiting for your answer are
+                  not about your account and access.
+
+                  Deliberately NOT fixed with a category -> sentence map: this
+                  file holds no category list, and adding one to explain
+                  categories would undo the very discipline the header claims.
+                  The line is now true of every non-suppressible category. The
+                  category-specific WHY belongs in the registry beside
+                  `member_suppressible`, server-authored and rendered verbatim —
+                  that is a contract change, recorded rather than smuggled in. */}
               {!row.member_suppressible && (
                 <p className="mt-1 text-xs text-gray-600">
-                  Always on — these tell you about your own account and access.
+                  Always on — this one can&rsquo;t be switched off.
                 </p>
               )}
             </div>
