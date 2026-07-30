@@ -28,8 +28,16 @@ import { NOTIFICATIONS_CHANGED_EVENT } from '@/lib/realtime/notifications-tenant
  * failed ones — a failed write is exactly when the bell most needs to re-read
  * rather than trust an optimistic flip.
  */
+/** Marks an announcement as this page's own, so its own listener can ignore it.
+ *  Without this the page answers itself: mark-all announces (for the bell),
+ *  the page hears it, re-reads, and overwrites its own optimistic flip with a
+ *  server read taken mid-write. An announcement is for the OTHER surfaces. */
+const SELF_ANNOUNCEMENT = 'notifications-inbox-page';
+
 function announceChange(): void {
-  window.dispatchEvent(new CustomEvent(NOTIFICATIONS_CHANGED_EVENT));
+  window.dispatchEvent(
+    new CustomEvent(NOTIFICATIONS_CHANGED_EVENT, { detail: SELF_ANNOUNCEMENT }),
+  );
 }
 
 /**
@@ -86,6 +94,47 @@ export default function NotificationsPage() {
       active = false;
     };
   }, [authLoading, user, identity, router]);
+
+  /** Fold a fresh first page over what is on screen.
+   *
+   *  Merge rather than replace: the member may have paged deeper with "load
+   *  more", and a live arrival must not throw those rows away. Rows already
+   *  present are refreshed in place (read-state, action outcome), genuinely new
+   *  ones are prepended — which is also the right order, since the contract
+   *  returns `created_at DESC` and anything new is newer than what we hold. */
+  const applyFresh = useCallback((fresh: NotificationRow[]) => {
+    setRows((cur) => {
+      if (!cur) return fresh;
+      const byId = new Map(fresh.map((r) => [r.id, r]));
+      const seen = new Set(cur.map((r) => r.id));
+      return [...fresh.filter((r) => !seen.has(r.id)), ...cur.map((r) => byId.get(r.id) ?? r)];
+    });
+  }, []);
+
+  /** W-02's mirror image (gate walk 2026-07-30). This page DISPATCHED
+   *  `notificationsChanged` so the bell keeps up when you mark-all here, but
+   *  never LISTENED for it — so a notification arriving live updated the bell
+   *  and left this list missing it entirely, until a reload. Observed as three
+   *  rows sitting in the bell that the inbox did not show at all.
+   *
+   *  A failed re-read is swallowed on purpose: the list on screen is still
+   *  true, and blanking it because one refresh failed would be worse than
+   *  being briefly behind. */
+  useEffect(() => {
+    if (authLoading || !user || identity !== 'fim') return;
+    const onChanged = (e: Event) => {
+      // Our own announcement, sent for the bell's benefit — answering it would
+      // overwrite this page's optimistic flip with a read taken mid-write.
+      if ((e as CustomEvent).detail === SELF_ANNOUNCEMENT) return;
+      void fetchNotifications({ limit: PAGE_SIZE })
+        .then((fresh) => {
+          if (mountedRef.current && Array.isArray(fresh)) applyFresh(fresh);
+        })
+        .catch(() => undefined);
+    };
+    window.addEventListener(NOTIFICATIONS_CHANGED_EVENT, onChanged);
+    return () => window.removeEventListener(NOTIFICATIONS_CHANGED_EVENT, onChanged);
+  }, [authLoading, user, identity, applyFresh]);
 
   const loadMore = useCallback(async () => {
     if (!rows || rows.length === 0) return;

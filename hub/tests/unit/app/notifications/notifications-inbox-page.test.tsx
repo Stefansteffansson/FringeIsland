@@ -171,6 +171,50 @@ describe('NotificationsPage (/notifications)', () => {
     expect(screen.getByTestId('notif-action-decline')).toBeInTheDocument();
   });
 
+  // Gate walk 2026-07-30 — W-02's mirror image, and a new finding.
+  //
+  // The page DISPATCHES `notificationsChanged` (so the bell keeps up when you
+  // mark-all here — the W-02 fix) but never LISTENED for it. The wiring was
+  // one-directional: live arrivals updated the bell and left this page showing
+  // a list that was missing them entirely.
+  //
+  // Observed: three notifications timestamped 9:35:35 PM sat in the bell while
+  // the inbox began at 9:08:21 AM — not sorted differently, ABSENT. Both
+  // surfaces read the same contract (`created_at DESC, id DESC`), so a sort
+  // difference could not explain it; only a stale read could.
+  it('re-reads when a live notification arrives, so the inbox stops going stale behind the bell', async () => {
+    fetchNotifications.mockResolvedValueOnce([row({ id: 'old', title: 'Older row' })]);
+    render(<NotificationsPage />);
+    await screen.findByText('Older row');
+    expect(fetchNotifications).toHaveBeenCalledTimes(1);
+
+    // A live hint lands (the tenant dispatches this on the realtime signal).
+    fetchNotifications.mockResolvedValueOnce([
+      row({ id: 'fresh', title: 'Just arrived', created_at: '2026-07-23T11:00:00Z' }),
+      row({ id: 'old', title: 'Older row' }),
+    ]);
+    await act(async () => {
+      window.dispatchEvent(new Event('notificationsChanged'));
+    });
+
+    await waitFor(() => expect(screen.getByText('Just arrived')).toBeInTheDocument());
+    // The row already on screen survives — a re-read must not blank the list.
+    expect(screen.getByText('Older row')).toBeInTheDocument();
+  });
+
+  it('stops listening once unmounted — a dispatch after teardown must not set state', async () => {
+    fetchNotifications.mockResolvedValueOnce([row({ id: 'old', title: 'Older row' })]);
+    const { unmount } = render(<NotificationsPage />);
+    await screen.findByText('Older row');
+    const callsAtUnmount = fetchNotifications.mock.calls.length;
+    unmount();
+
+    await act(async () => {
+      window.dispatchEvent(new Event('notificationsChanged'));
+    });
+    expect(fetchNotifications).toHaveBeenCalledTimes(callsAtUnmount);
+  });
+
   it('a resolved actionable row shows no buttons (buttons gone once answered)', async () => {
     fetchNotifications.mockResolvedValue([
       row({

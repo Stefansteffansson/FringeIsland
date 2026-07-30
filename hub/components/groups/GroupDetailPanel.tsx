@@ -220,6 +220,15 @@ export function GroupDetailPanel({
   // count — the caretaker is never load-bearing. Tolerant fallback for
   // pre-extension payloads.
   const effectiveMemberCount = group.non_system_member_count ?? group.member_count;
+  /** Gate walk 2026-07-30: the count above is right and stays right — but the
+   *  screen contradicted itself, reading "1 member" over a list showing two
+   *  rows, with nothing to reconcile them. The extra row is the caretaker, and
+   *  it is deliberately not counted (§5: never load-bearing). So name it
+   *  instead of inflating the count.
+   *
+   *  Keyed off the members actually RENDERED, not off the count arithmetic, so
+   *  the line always explains exactly what is on screen. */
+  const hasCaretaker = (group.members ?? []).some((m) => m.member_group_type === 'system');
   // Transfer is semantically a Steward-role grant — the affordance keys off
   // the payload's `assign_roles` (a permission key, never a role name; the
   // contract still guards sole-Steward-ness). Live-testing finding 2026-07-05:
@@ -324,8 +333,9 @@ export function GroupDetailPanel({
 
         {group.description && <p className="mt-3 text-sm text-gray-600">{group.description}</p>}
 
-        <p className="mt-4 text-xs text-gray-500">
+        <p data-testid="member-count-line" className="mt-4 text-xs text-gray-500">
           {effectiveMemberCount} {effectiveMemberCount === 1 ? 'member' : 'members'}
+          {hasCaretaker && ' · FringeIsland is looking after this group'}
         </p>
 
         {leaveError && (
