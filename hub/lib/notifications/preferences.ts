@@ -15,6 +15,36 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**
+ * What the member is told when a preference write fails.
+ *
+ * Gate walk 2026-07-30: going offline and flipping a switch showed the member
+ * the raw string **"Failed to fetch"** — a browser internal, in a red banner,
+ * where an explanation belongs. The rollback itself was right and stays exactly
+ * as it was; only what it says changes.
+ *
+ * The rule is a seam, not a blanket rewrite: a server that ANSWERED with a
+ * reason is quoted verbatim, because that reason is member-facing copy the
+ * platform authored on purpose (the H030 never-re-word-server-copy law). It is
+ * only failures that never reached a server — a dropped connection, or a bare
+ * status with no body — that get words here, because there is no server
+ * sentence to preserve.
+ */
+export function preferenceSaveFailureMessage(err: unknown): string {
+  const raw = err instanceof Error ? err.message : String(err);
+
+  // The request never landed: fetch rejects with these before any response.
+  if (/failed to fetch|networkerror|network error|load failed|fetch failed/i.test(raw)) {
+    return 'We could not reach the server, so this change was not saved and has been put back. Check your connection and try again.';
+  }
+  // A status with no body to quote — `HTTP 500` is not something to show anyone.
+  if (/^HTTP \d{3}$/.test(raw.trim())) {
+    return 'We could not save this change, so it has been put back. Please try again.';
+  }
+  // The server said why. That sentence was written for the member; keep it.
+  return raw;
+}
+
+/**
  * One cell of the categories x channels matrix, with the effective value already
  * resolved server-side — the surface never has to know that absence means
  * allowed.

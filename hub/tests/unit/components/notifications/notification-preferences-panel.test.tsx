@@ -115,6 +115,40 @@ describe('NotificationPreferencesPanel (FEAT-H033)', () => {
     expect(screen.getByText(/always on/i)).toBeInTheDocument();
   });
 
+  // Gate walk 2026-07-30 — W-08's sibling, and the same bug exactly.
+  //
+  // The locked-on explanation read "Always on — these tell you about your own
+  // account and access." That sentence was written for the ONE non-suppressible
+  // category that existed when it was written (`account`). GB-3 then made `asks`
+  // the second, and it silently inherited the copy — so "Questions waiting for
+  // your answer" told the member it was about their account and access, which it
+  // is not.
+  //
+  // The fix does NOT add a category -> sentence map: this file's own law is that
+  // it renders entirely from the payload and holds no category list. The line is
+  // instead true of every non-suppressible category. The category-specific WHY
+  // belongs in the registry beside `member_suppressible`, server-authored — a
+  // contract change, recorded rather than smuggled in here.
+  it('the locked-on explanation is true of any non-suppressible category, not just account', async () => {
+    fetchMock.mockImplementation(okRead);
+    render(<NotificationPreferencesPanel />);
+
+    await waitFor(() =>
+      expect(screen.getByTestId('pref-toggle-membership-in_app')).toBeInTheDocument(),
+    );
+
+    const locked = screen.getAllByText(/always on/i);
+    expect(locked.length).toBeGreaterThan(0);
+    for (const el of locked) {
+      const text = el.textContent ?? '';
+      // The claim that broke: not every locked category is about account access.
+      expect(text).not.toMatch(/your own account and access/i);
+      // Still explains itself rather than being a bare disabled control.
+      // Curly apostrophe is intentional in the copy — match either form.
+      expect(text).toMatch(/can(no|['’])?t be (switched|turned) off/i);
+    }
+  });
+
   it('renders no toggle for a channel that does not deliver, and names it honestly', async () => {
     fetchMock.mockImplementation(okRead);
     render(<NotificationPreferencesPanel />);
@@ -194,6 +228,28 @@ describe('NotificationPreferencesPanel (FEAT-H033)', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(
       /cannot be switched off/i,
     );
+  });
+
+  // Gate walk 2026-07-30. The rollback above was already right; this is about
+  // what it SAYS when there is no server sentence to quote. Going offline and
+  // flipping a switch put the raw browser string "Failed to fetch" in the
+  // banner — an internal, where an explanation belongs.
+  it('a request that never reached the server rolls back and explains itself in words, not "Failed to fetch"', async () => {
+    fetchMock.mockImplementation((url: unknown, init?: { method?: string }) =>
+      init?.method === 'PUT'
+        ? Promise.reject(new TypeError('Failed to fetch'))
+        : okRead(),
+    );
+    render(<NotificationPreferencesPanel />);
+
+    const toggle = await waitFor(() => screen.getByTestId('pref-toggle-membership-in_app'));
+    await userEvent.click(toggle);
+
+    await waitFor(() => expect(toggle).toBeChecked());
+    const alert = await screen.findByRole('alert');
+    expect(alert.textContent ?? '').not.toMatch(/failed to fetch/i);
+    expect(alert).toHaveTextContent(/could not reach the server/i);
+    expect(alert).toHaveTextContent(/put back/i);
   });
 
   it('surfaces a failed read instead of rendering an empty matrix', async () => {
