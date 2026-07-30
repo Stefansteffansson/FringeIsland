@@ -37,7 +37,7 @@ docs/planning/
     ├── ADMIN-DEUSEX-GAP-ANALYSIS.md       ← admin capability gaps
     ├── GROUP-MODEL-CURRENT-STATE.md       ← group model assessment
     ├── PLATFORM-EXIT-GAP-ANALYSIS.md      ← platform exit gaps
-    └── FOLDER_STRUCTURE.md                ← repo folder structure snapshot
+    └── FOLDER_STRUCTURE.md                ← repo folder structure snapshot (April 2026 — dated, not current)
 ```
 
 **Current wave:** Ferd
