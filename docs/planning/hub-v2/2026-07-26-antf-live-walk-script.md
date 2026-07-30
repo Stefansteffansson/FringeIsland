@@ -177,7 +177,7 @@ This is the cycle that justifies the area. Do it carefully.
 
 Worth confirming because it's the design claim that ties the last two cycles together.
 
-1. B: mute *"Group membership & invitations"* again.
+1. B: mute ~~*"Group membership & invitations"*~~ → **now labelled *"Group & membership updates"*** (the rename annotated at step 3 of Scenario 7 above — repeated here because a reader landing mid-file misses it).
 2. A: assign/remove Observer for Grace.
 3. B: **⚑ EXPECT not merely "no notification" but no activity at all** — no bell flicker, no transient count change, nothing arriving-and-being-removed.
 4. B: unmute when done.

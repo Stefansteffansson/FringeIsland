@@ -124,6 +124,10 @@ Hub consumes via FEAT-H030 (paired, this cycle). Gimbal/Studios: none now; the c
 - **Transactions:** None.
 - **Extensibility:** The point of the feature — two open registries, FK-enforced but registry-extensible; no sealed enums (`lawful_basis` CHECK justified as a legal dichotomy, not a kind set; `interruption_grade` open text).
 
+**Amendment 2026-07-30 — registry hygiene (migration `20260730200000`).** `na_test_kind_mrzenort` ("N-A open-registry probe") was retired from `notification_kinds`, together with the single delivery row carrying it. It was created by this feature's own STORY-1 work to prove the registry is an **open set** — a new kind needs no Hub change — and was never cleaned up, so it sat under `membership` beside the real kinds.
+
+The catalogue is read by every category listing and every *"what does this switch control"* answer, so a test row there is a wrong answer to a question the platform keeps being asked. Retired **narrowly** — one named kind, no pattern-matching on test-looking names, because that sweep is how a real kind gets deleted by a regex someone trusted. Order forced by `notifications_type_fkey`: the delivery row first, then the kind. `membership` 7 → 6; every category still populated. Found at the [2026-07-30 re-walk](../../../planning/hub-v2/2026-07-30-antf-rewalk-findings.md) (RW-06).
+
 ## Performance budget
 
 N/A (no surface). Contract-level note for the consumer: `get_own_unread_notification_count()` must stay on the partial index (STORY-3 EXPLAIN check) since FEAT-H030 calls it on every page mount.

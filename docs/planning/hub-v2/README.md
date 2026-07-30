@@ -19,7 +19,7 @@
 | 0 — Lock the decision | Record the rebuild decision (ADR-U030); confirm pre-launch | **Done** |
 | 1 — Target & inheritance | Refresh the Hub spec; audit the DB substrate; inventory old behaviours | **Done** (gate PASSED 2026-06-24) |
 | 2 — Clean foundation | Walking skeleton: API-first layering, verticals baseline, design system, auth | **Done** (FEAT-H001) |
-| 3 — Build area by area | Identity → Groups → Journeys → Communication → Notifications → Platform-Ops | **Active** (Identity, Groups, Journeys, Communication complete; Notifications kicking off — see [`phase-3-notifications-completion-plan.md`](./phase-3-notifications-completion-plan.md)) |
+| 3 — Build area by area | Identity → Groups → Journeys → Communication → Notifications → Platform-Ops | **Active** (Identity, Groups, Journeys, Communication, **Notifications** complete — A-NTF gate closed 2026-07-28, [gate](./2026-07-27-notifications-area-gate.md), fixes confirmed live at the [2026-07-30 re-walk](./2026-07-30-antf-rewalk-findings.md); **Platform-Ops next**, the sixth and last area) |
 | 4 — Cutover & retire | Replace every area, then freeze and delete the old Hub | Upcoming |
 
 *(Full detail with per-phase gates in Part 2 below. Update the Status column as phases complete.)*

@@ -180,4 +180,8 @@ Built TDD red-first. **Schema gate passed:** Stefan reviewed PR #80 (Open Q1–Q
 
 ---
 
+**Amendment 2026-07-28 — emitted copy (migration `20260728190000`).** `nominate_steward` and `respond_to_stewardship_nomination` were re-issued with **only the emitted notification body changed**: the nomination now reads *"You have been nominated as Steward of \<group\>."* — the trailing *"Accept or decline within 7 days."* is gone. Both contracts' logic, signatures, grants and 7-day `expires_at` are untouched.
+
+Why it belongs here rather than in the surface: copy is server-authored and frozen at emit, and the surface may not re-word it (the V3 surfaces law), so a body embedding **both** a call-to-action and a deadline ages badly by construction — three weeks on it still instructs, while only a status chip says the window closed. `expires_at` already carried the deadline and the surface already renders *"Respond by \<date\>"* for exactly as long as the row is actionable, so nothing was lost. Gate-walk finding **W-03 #1**; [full record](../../../planning/hub-v2/2026-07-27-antf-walk-findings.md). **The 109 already-delivered rows were deliberately not rewritten** — a delivered notification is a record of what the platform said.
+
 *Derived fresh from `organisation-specification.md` §L3 (Membership lifecycle, Universal Group Pattern, Group Role lifecycle, Group-membership invariants) + `hub/SPECIFICATION.md` §L3 (MEM-7, MEM-8, GRP-9) under current authority. The sprint2/sprint3 legacy bodies (`migrations/archive/`, git history, behaviour-inventory §A-GRP) are the frozen oracle, not a derivation source (ADR-U019 governs the DeusEx last resort). Paired with Hub [FEAT-H017](../../../products/hub/features/FEAT-H017-leadership-transfer-and-closure.md).*
