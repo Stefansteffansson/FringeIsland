@@ -107,6 +107,48 @@ describe('FEAT-H018 — GroupDetailPanel member kinds (STORY-4/5)', () => {
     expect(screen.getByText(/1 member\b/)).toBeInTheDocument();
   });
 
+  // Gate walk 2026-07-30. The count is RIGHT and stays right — ADR-U041 §5
+  // keys it (and the Close affordance) on the non-system count, because the
+  // caretaker is never load-bearing; counting FringeIsland as a member would
+  // mean a platform-held group never reaches "last member" and Close breaks.
+  //
+  // What was wrong is that the SCREEN contradicted itself: the header read
+  // "1 member" above a list showing two rows, with nothing to reconcile them.
+  // The fix explains the extra row rather than inflating the count.
+  it('names the caretaker when the list shows a row the count deliberately excludes', () => {
+    render(
+      <GroupDetailPanel
+        group={baseGroup({
+          member_count: 2,
+          non_system_member_count: 1,
+          members: [member('p1', 'Gracy', 'personal'), member('dx', 'DeusEx', 'system')],
+        })}
+        onRefresh={onRefresh}
+      />,
+    );
+    const line = screen.getByTestId('member-count-line');
+    // The people count is unchanged — this is not a recount.
+    expect(line).toHaveTextContent(/1 member\b/);
+    // ...and the second visible row is now accounted for.
+    expect(line.textContent ?? '').toMatch(/FringeIsland/i);
+  });
+
+  it('says nothing extra when every visible row is a person — no caretaker, no clause', () => {
+    render(
+      <GroupDetailPanel
+        group={baseGroup({
+          member_count: 2,
+          non_system_member_count: 2,
+          members: [member('p1', 'Gracy', 'personal'), member('p2', 'Bruno', 'personal')],
+        })}
+        onRefresh={onRefresh}
+      />,
+    );
+    const line = screen.getByTestId('member-count-line');
+    expect(line).toHaveTextContent(/2 members\b/);
+    expect(line.textContent ?? '').not.toMatch(/caretaker|FringeIsland/i);
+  });
+
   it('the Gracy case: the last human alone with the caretaker sees Close', () => {
     render(
       <GroupDetailPanel
