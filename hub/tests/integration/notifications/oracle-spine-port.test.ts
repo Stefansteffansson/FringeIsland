@@ -34,7 +34,7 @@
  *      another user's row      | stewardship-succession.test.ts:629 (P0002)
  *                              | actionable-notifications.test.ts:352
  *      passive notification    | unreachable by construction — a passive kind
- *                              | has no DISPATCH_SEGMENTS entry, so no route
+ *                              | has no dispatch_segment registered, so no route
  *                              | exists to call (lib/notifications/client.ts:102)
  *      already-actioned        | stewardship-succession.test.ts:656 (P0001)
  *                              | actionable-notifications.test.ts:337 (already)

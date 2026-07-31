@@ -13,6 +13,17 @@ import type { SupabaseClient } from '@supabase/supabase-js';
  *  `action_data` — the typed-action dispatch context (membership_id) and the
  *  convergence record (resolved_by_name / resolved_outcome). `action_taken_at`
  *  stays server-only (export). */
+/** A response the platform registers for an action_type (COR-C W3, ADR-U051 +
+ *  A1): server-authored copy + tone + the boolean the Ferd contracts take.
+ *  Wire shape — validated surface-side by `notificationResponses` before
+ *  rendering (an unrecognised intent degrades to neutral, never a crash). */
+export interface NotificationResponse {
+  key: string;
+  label: string;
+  intent: 'primary' | 'danger' | 'neutral';
+  accept: boolean;
+}
+
 export interface NotificationRow {
   id: string;
   kind: string;
@@ -27,6 +38,13 @@ export interface NotificationRow {
   action_data: Record<string, unknown> | null;
   action_taken: string | null;
   expires_at: string | null;
+  /** COR-C W3 (AC3-5): the platform-registered handler segment for an
+   *  answerable kind, or null for a passive row — from notification_kinds,
+   *  never a Hub map. */
+  dispatch_segment: string | null;
+  /** COR-C W3 (AC3-5): the platform-registered response set for the row's
+   *  action_type, or null for a passive row — from notification_action_types. */
+  responses: NotificationResponse[] | null;
 }
 
 export interface NotificationCursor {
