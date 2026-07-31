@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMA-01
 title: Execute board AB-3 — four-way split of the CORE function declaration in the ownership manifest, unclassified-fails-red, plus the pinned mechanical rule admin_* → PC-4
-status: todo
+status: done  # executed 2026-07-31 red-first; platform gates 38/38; register annotated
 assigned_to: claude
 priority: high
 feature: none  # gate/manifest work (GC-13/AC3-O5 closure), not a FEAT build

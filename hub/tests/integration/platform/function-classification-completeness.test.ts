@@ -76,6 +76,37 @@ describe('Function-classification completeness (COR-C W7, GC-1)', () => {
     expect(stale).toEqual([]);
   });
 
+  // ADM-A TASK-ADMA-01 (board AB-3; GC-13/AC3-O5). WRITTEN RED-FIRST against
+  // the flat CORE seed: the anatomy's PC-2/PC-4 split (admin holds are PC-4,
+  // self-service is PC-2) was carried by naming and prose alone. These two
+  // tests make it mechanical: the core declaration is expressed at PC
+  // granularity, and the admin_* family is pinned to PC-4 so a mislabelled
+  // admin contract cannot ride a green suite.
+  it('the core declaration is four-way split — PC-1..PC-4 keys, no flat CORE key (GC-13)', () => {
+    const m = loadManifest();
+    const keys = Object.keys(m.functions);
+    expect(keys).not.toContain('CORE');
+    for (const pc of ['PC-1', 'PC-2', 'PC-3', 'PC-4']) {
+      expect(keys).toContain(pc);
+      expect(m.functions[pc].length).toBeGreaterThan(0);
+    }
+    // Only known owner shapes may appear: PC-N, DS-N, or a vertical label.
+    const stray = keys.filter(
+      (k) => !/^PC-\d$/.test(k) && !/^DS-\d$/.test(k) && !/^vertical:/.test(k),
+    );
+    expect(stray).toEqual([]);
+  });
+
+  it('every admin_*-prefixed function is PC-4 — the anatomy pin (mechanical)', () => {
+    const m = loadManifest();
+    const misfiled = Object.entries(m.functions).flatMap(([svc, fns]) =>
+      fns.filter((f) => /^admin_/.test(f) && svc !== 'PC-4').map((f) => `${f} (${svc})`),
+    );
+    // Widening this pin requires editing this test and stating why — the
+    // GC-3 pinned-set pattern applied to the admin family.
+    expect(misfiled).toEqual([]);
+  });
+
   it('no function is claimed by two owners', () => {
     const m = loadManifest();
     const seen = new Map<string, string>();

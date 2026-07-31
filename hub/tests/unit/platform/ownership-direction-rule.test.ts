@@ -74,8 +74,15 @@ describe('ownership manifest wiring', () => {
     // ADR-U047 rule 1 — the prefix carries the owning service in its digit.
     expect(functionOwner('ds3_lifecycle_group_closed')).toBe('DS-3');
     expect(functionOwner('ds5_lifecycle_user_hard_deleted')).toBe('DS-5');
-    // Anything unclassified is Core, which is the strict default.
-    expect(functionOwner('close_group')).toBe('CORE');
+    // Since the ADM-A four-way split (TASK-ADMA-01, GC-13), classified core
+    // functions resolve to their PC area, not flat CORE.
+    expect(functionOwner('close_group')).toBe('PC-3');
+    expect(functionOwner('admin_hard_delete_user')).toBe('PC-4');
+    expect(functionOwner('reap_expired_mists')).toBe('PC-2');
+    expect(functionOwner('is_platform_admin')).toBe('PC-1');
+    // Anything unclassified still falls back to Core — the strict default
+    // (and the completeness gate fails red on it, so it cannot persist).
+    expect(functionOwner('some_function_nobody_declared')).toBe('CORE');
   });
 });
 
