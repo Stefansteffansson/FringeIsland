@@ -24,12 +24,12 @@ export function SkeletonList({ rows = 3, delay = 300 }: { rows?: number; delay?:
       {Array.from({ length: rows }, (_, i) => (
         <div
           key={i}
-          className="animate-pulse rounded-lg border border-gray-100 bg-white p-4 shadow-sm"
+          className="animate-pulse rounded-lg border border-edge-faint bg-surface p-4 shadow-sm"
         >
-          <div className="h-5 w-1/3 rounded bg-gray-200" />
-          <div className="mt-3 h-4 w-full rounded bg-gray-100" />
-          <div className="mt-2 h-4 w-5/6 rounded bg-gray-100" />
-          <div className="mt-4 h-3 w-1/4 rounded bg-gray-100" />
+          <div className="h-5 w-1/3 rounded bg-skeleton" />
+          <div className="mt-3 h-4 w-full rounded bg-skeleton-soft" />
+          <div className="mt-2 h-4 w-5/6 rounded bg-skeleton-soft" />
+          <div className="mt-4 h-3 w-1/4 rounded bg-skeleton-soft" />
         </div>
       ))}
     </div>

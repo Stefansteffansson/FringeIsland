@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { InlineError } from '@/components/ui/InlineError';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { emitTelemetry } from '@/lib/observability/telemetry';
-import { TRANSCENDENCE_POLICY_VERSION } from '@/lib/auth/transcendence';
+import { TRANSCENDENCE_POLICY_VERSION } from '@/lib/auth/transcendence-policy';
 import { fetchOnboardingStatus } from '@/lib/onboarding/client';
 
 /**

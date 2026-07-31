@@ -61,6 +61,23 @@ export function NotificationBell() {
     openRef.current = open;
   }, [open]);
 
+  /** COR-C W5 (AC3-17): Escape closes the popup and hands focus back to the
+   *  bell. The dropdown is a rich feed (row buttons, response affordances,
+   *  errors, a footer link) — a DISCLOSURE popup, not a menu; the old
+   *  role="menu" promised menu keyboarding its children could never honour. */
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open]);
+
   const mountedRef = useRef(true);
   useEffect(() => {
     mountedRef.current = true;
@@ -223,8 +240,12 @@ export function NotificationBell() {
   return (
     <div className="relative">
       <button
+        ref={triggerRef}
         type="button"
         aria-label={unread > 0 ? `Notifications — ${unread} unread` : 'Notifications'}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-controls="notification-dropdown-panel"
         data-testid="notification-bell"
         onClick={toggle}
         className="relative rounded-full p-2 hover:bg-gray-100"
@@ -242,7 +263,9 @@ export function NotificationBell() {
 
       {open && (
         <div
-          role="menu"
+          id="notification-dropdown-panel"
+          role="dialog"
+          aria-label="Notifications"
           data-testid="notification-dropdown"
           className="absolute right-0 z-20 mt-2 w-80 rounded-lg border border-gray-200 bg-white shadow-lg"
         >
@@ -253,8 +276,10 @@ export function NotificationBell() {
                   still works by fetch while the socket is away — Hub
                   SPECIFICATION §L2: "the rest of the Hub continues to function
                   over polling." */}
+              {/* COR-C W5: gray-500, not gray-400 — #9ca3af on white is 2.54:1,
+                  under the 4.5:1 AA floor for normal text; #6b7280 is 4.83:1. */}
               {reconnecting && (
-                <span className="ml-2 font-normal text-xs text-gray-400" role="status">
+                <span className="ml-2 font-normal text-xs text-gray-500" role="status">
                   reconnecting…
                 </span>
               )}
@@ -269,9 +294,9 @@ export function NotificationBell() {
           </div>
           <ul className="max-h-96 overflow-y-auto">
             {rows === null ? (
-              <li className="px-3 py-6 text-center text-sm text-gray-400">Loading…</li>
+              <li className="px-3 py-6 text-center text-sm text-gray-500">Loading…</li>
             ) : rows.length === 0 ? (
-              <li className="px-3 py-6 text-center text-sm text-gray-400">
+              <li className="px-3 py-6 text-center text-sm text-gray-500">
                 You’re all caught up.
               </li>
             ) : (

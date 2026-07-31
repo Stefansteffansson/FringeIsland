@@ -12,7 +12,7 @@ The design system has the **highest blast radius in the ecosystem**. Every produ
 
 The design system is **shared visual language**, not a product utility. It is NOT a UI library for Hub; it is the shared language that both equipment profiles — the Hub (canvas surface) and the Gimbal (senses surface) — and the Studios under Universe Studio all speak (ADR-U025, ADR-U026). Designing or changing a component means thinking about consumers you haven't met yet — the Gimbal viewport, devices at other points in equipment space (tablet, AR glasses), the Studios' denser creator workflows. A component that only feels right in Hub is a component that fragments the family.
 
-The design system is currently **not yet specified** — it's scoped but not active. When work begins (expected Eid-wave onward), the tier's identity will crystallise. For now, these rules are forward-looking: they document the discipline that will apply when the design system starts producing tokens, components, and patterns.
+The design system is **active with a scoped activation** (ruling R-6, COR-C W4, 2026-07-31 — superseding this file's earlier "scoped but not active … expected Eid-wave onward" line, which Audit III flagged as contradicted by shipped code): the Hub's `components/ui/` primitives are the design system's **Ferd-era seed**, self-described in-code as design-system primitives, and this tier's rules bind them now. Full tier build-out (component contracts, theming, the worlds' visual language) still arrives Eid-wave onward. One obligation carries a dated deferral: **i18n key-externalisation is deferred to the Eid activation point** — see [TASK-I18N-01](../planning/backlog/tasks/TASK-I18N-01-i18n-externalisation-deferred-to-eid.md). The a11y and token rules below carry no deferral and bind today (COR-C W5/W6 realize them on the seed).
 
 ---
 
@@ -54,7 +54,7 @@ The five verticals (ADR-U002) are obligations on every tier. Here's what each re
 ## Where to go next
 
 - **Feature ID prefix at this tier:** `DS` (Design System). See `docs/design-system/README.md`.
-- **Current state:** design system is scoped but not yet active. When active work begins, expect: tokens (colour, type, spacing, motion), component contracts, accessibility rules (WCAG 2.1 AA), theming, and the visual language for the worlds (cosmology core).
+- **Current state:** active with a scoped activation (ruling R-6, 2026-07-31) — the Hub `components/ui/` seed is bound by this file now; tokens and a11y land at COR-C W5/W6; i18n is deferred, dated, to Eid ([TASK-I18N-01](../planning/backlog/tasks/TASK-I18N-01-i18n-externalisation-deferred-to-eid.md)). Full build-out (component contracts, theming, the worlds' visual language) expected Eid-wave onward.
 - **Relevant ADRs:** U002 (five verticals) · U009 (API-first — design system components consume the Platform API via the product, never directly) · U013 (i18n and a11y as constraints) · U022 (named waves) · U024 (wave model semantics).
 - **Relevant skills:** [`ecosystem-decomposition`](../../.claude/skills/ecosystem-decomposition/SKILL.md) when writing DS feature specs; [`feature-development`](../../.claude/skills/feature-development/SKILL.md) when implementing them (once active).
 - **Sibling tier CLAUDE.md files:** [`../products/CLAUDE.md`](../products/CLAUDE.md) (every product consumes the design system) · [`../studios/CLAUDE.md`](../studios/CLAUDE.md) (Studios have denser creator workflows that still use design-system primitives) · [`../verticals/CLAUDE.md`](../verticals/CLAUDE.md) (vertical obligations shape component contracts).

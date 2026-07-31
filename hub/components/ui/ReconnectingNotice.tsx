@@ -9,7 +9,9 @@ export function ReconnectingNotice({ className = '' }: { className?: string }) {
     <p
       data-testid="comm-reconnecting"
       role="status"
-      className={`text-xs text-gray-400 ${className}`.trim()}
+      // COR-C W6: ink-subtle (gray-500), not gray-400 — the same AA contrast
+      // floor the W5 bell fix applied (2.54:1 -> 4.83:1 on surface).
+      className={`text-xs text-ink-subtle ${className}`.trim()}
     >
       Reconnecting…
     </p>

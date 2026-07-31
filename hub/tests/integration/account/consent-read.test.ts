@@ -64,8 +64,12 @@ async function seedConsent(
   if (error) throw error;
 }
 
-const entryFor = (
-  effective: Array<{ purpose: string }>,
+// Generic so the caller's element type flows through — the old
+// Array<{ purpose: string }> annotation NARROWED the rows and made every
+// field access a type error under `tsc --noEmit` (found at COR-C W3;
+// latent because ts-jest does not type-check).
+const entryFor = <T extends { purpose: string }>(
+  effective: T[],
   purpose: string,
 ) => effective.find((e) => e.purpose === purpose);
 

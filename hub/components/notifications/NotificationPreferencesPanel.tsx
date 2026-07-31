@@ -8,7 +8,7 @@ import {
   renderableChannels,
   storedOnlyChannels,
   type NotificationPreferenceCell,
-} from '@/lib/notifications/preferences';
+} from '@/lib/notifications/preferences-format';
 
 /**
  * FEAT-H033 — the categories x channels preference matrix (NTF-10).

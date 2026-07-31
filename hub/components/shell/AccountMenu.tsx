@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { fetchProfile, displayLabel } from '@/lib/profile/client';
 import { emitTelemetry } from '@/lib/observability/telemetry';
+import { Menu } from '@/components/ui/Menu';
 
 /**
  * FEAT-H005 — the shell account menu (IDN-4 entry + the IDN-3 sign-out tail).
@@ -20,7 +20,6 @@ import { emitTelemetry } from '@/lib/observability/telemetry';
 export function AccountMenu() {
   const { user, identity, signOut } = useAuth();
   const router = useRouter();
-  const [open, setOpen] = useState(false);
   const [label, setLabel] = useState<string | null>(null);
 
   useEffect(() => {
@@ -51,7 +50,6 @@ export function AccountMenu() {
   const shown = label ?? user?.email ?? 'Account';
 
   async function handleSignOut() {
-    setOpen(false);
     // Navigate to the sessionless entry FIRST (optimistic — usually lands before
     // the guard), end the session, then replace('/') to GUARANTEE the entry even
     // if a protected-surface guard raced us to `/login?redirect=...` during the
@@ -64,102 +62,44 @@ export function AccountMenu() {
     router.replace('/');
   }
 
+  // COR-C W5 (AC3-17): the dropdown is the shared Menu primitive — real
+  // role="menu"/menuitem semantics, roving tabindex, Escape + focus return —
+  // replacing the hand-rolled popup that promised a menu (aria-haspopup) and
+  // never rendered one.
   return (
-    <div className="relative">
-      <button
-        type="button"
-        aria-label="Account menu"
-        aria-haspopup="menu"
-        aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
-      >
-        <span
-          aria-hidden="true"
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 font-semibold text-blue-700"
-        >
-          {shown.charAt(0).toUpperCase()}
-        </span>
-        <span className="hidden sm:inline">{shown}</span>
-        <span aria-hidden="true" className="text-gray-400">
-          ▼
-        </span>
-      </button>
-
-      {open && (
+    <Menu
+      buttonAriaLabel="Account menu"
+      menuLabel="Account menu"
+      buttonContent={
         <>
-          <div
-            className="fixed inset-0 z-30"
+          <span
             aria-hidden="true"
-            onClick={() => setOpen(false)}
-          />
-          <div className="absolute right-0 z-40 mt-2 w-48 rounded-lg border border-gray-200 bg-white py-2 shadow-xl">
-            <Link
-              href="/journeys"
-              onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
-            >
-              Journeys
-            </Link>
-            <Link
-              href="/groups"
-              onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
-            >
-              My groups
-            </Link>
-            <Link
-              href="/messages"
-              onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
-            >
-              Messages
-            </Link>
-            <Link
-              href="/profile"
-              onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
-            >
-              Profile
-            </Link>
-            <Link
-              href="/journal"
-              onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
-            >
-              Journal
-            </Link>
-            <Link
-              href="/sessions"
-              onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
-            >
-              Sessions
-            </Link>
-            <Link
-              href="/consent"
-              onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
-            >
-              Privacy &amp; consent
-            </Link>
-            <Link
-              href="/export"
-              onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
-            >
-              Download my data
-            </Link>
-            <button
-              type="button"
-              onClick={handleSignOut}
-              className="block w-full px-4 py-2 text-left text-sm text-red-600 transition-colors hover:bg-red-50"
-            >
-              Sign out
-            </button>
-          </div>
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 font-semibold text-blue-700"
+          >
+            {shown.charAt(0).toUpperCase()}
+          </span>
+          <span className="hidden sm:inline">{shown}</span>
+          <span aria-hidden="true" className="text-gray-400">
+            ▼
+          </span>
         </>
-      )}
-    </div>
+      }
+      items={[
+        { key: 'journeys', label: 'Journeys', href: '/journeys' },
+        { key: 'groups', label: 'My groups', href: '/groups' },
+        { key: 'messages', label: 'Messages', href: '/messages' },
+        { key: 'profile', label: 'Profile', href: '/profile' },
+        { key: 'journal', label: 'Journal', href: '/journal' },
+        { key: 'sessions', label: 'Sessions', href: '/sessions' },
+        { key: 'consent', label: 'Privacy & consent', href: '/consent' },
+        { key: 'export', label: 'Download my data', href: '/export' },
+        {
+          key: 'sign-out',
+          label: 'Sign out',
+          onSelect: handleSignOut,
+          className: 'text-danger hover:bg-danger-soft focus:bg-danger-soft',
+        },
+      ]}
+    />
   );
 }

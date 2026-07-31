@@ -33,6 +33,11 @@ jest.setTimeout(180_000); // real-substrate suite: many users, groups, sign-ins
  *
  * Board decisions under test (C-F 2026-07-21): F-1 full slice, F-2
  * private-erase + communal-tombstone, F-3 immediate + confirm.
+ *
+ * COR-C W1 (2026-07-30, AC3-2): STORY-2's hold fixture now drives the REAL
+ * producer — admin_update_user_status() as a manage_all_groups actor — instead
+ * of hand-writing a row shape no production path creates. RED pre-W1-migration
+ * (20260730210000): the S2a/S2c origin asserts; green after.
  */
 
 const RPC_PAUSE = 'pause_own_account';
@@ -57,12 +62,63 @@ describe('FEAT-PC017 — account lifecycle self-service (C-F red suite)', () => 
       )
     )[0];
 
-  /** Admin-produced hold: off + origin 'admin' — 42703 pre-apply (named red). */
+  /** Authenticated DeusEx caller — the house manage_all_groups elevation. */
+  const makePlatformAdmin = async (personalGroupId: string): Promise<void> => {
+    await runAdminSql(`
+      DO $$
+      DECLARE v_deusex uuid; v_role uuid;
+      BEGIN
+        SELECT id INTO v_deusex FROM public.groups
+          WHERE name = 'DeusEx' AND group_type = 'system';
+        SELECT id INTO v_role FROM public.group_roles
+          WHERE group_id = v_deusex AND name = 'DeusEx';
+        INSERT INTO public.group_memberships (group_id, member_group_id, added_by_group_id, status)
+          VALUES (v_deusex, '${personalGroupId}', v_deusex, 'active')
+          ON CONFLICT (group_id, member_group_id) DO UPDATE SET status = 'active';
+        INSERT INTO public.user_group_roles (member_group_id, group_id, group_role_id, assigned_by_group_id)
+          VALUES ('${personalGroupId}', v_deusex, v_role, v_deusex)
+          ON CONFLICT DO NOTHING;
+      END $$;`);
+  };
+
+  const demotePlatformAdmin = async (personalGroupId: string): Promise<void> => {
+    await runAdminSql(`
+      DO $$
+      DECLARE v_deusex uuid;
+      BEGIN
+        SELECT id INTO v_deusex FROM public.groups
+          WHERE name = 'DeusEx' AND group_type = 'system';
+        DELETE FROM public.user_group_roles
+          WHERE member_group_id = '${personalGroupId}' AND group_id = v_deusex;
+        DELETE FROM public.group_memberships
+          WHERE group_id = v_deusex AND member_group_id = '${personalGroupId}';
+      END $$;`).catch(() => undefined);
+  };
+
+  /**
+   * COR-C W1 (AC3-2): the admin hold is imposed through the REAL producer —
+   * admin_update_user_status() as an authenticated manage_all_groups actor —
+   * never by fixture SQL. The transient actor is demoted and removed before
+   * the helper returns.
+   */
   const setAdminHold = async (authUserId: string): Promise<void> => {
-    await runAdminSql(
-      `UPDATE public.users SET is_active = false, deactivation_origin = 'admin'
-        WHERE auth_user_id = '${authUserId}';`,
-    );
+    const actor = await createTestUser({ displayName: 'Ada Adminhold' });
+    try {
+      await makePlatformAdmin(actor.personalGroupId);
+      const c = await asUser(actor);
+      const target = await runAdminSql(
+        `SELECT id FROM public.users WHERE auth_user_id = '${authUserId}';`,
+      );
+      const { error } = await c.rpc('admin_update_user_status', {
+        target_user_id: target[0].id,
+        new_is_active: false,
+      });
+      if (error) throw new Error(`producer hold fixture: ${error.message}`);
+      await c.auth.signOut();
+    } finally {
+      await demotePlatformAdmin(actor.personalGroupId);
+      await cleanupTestUser(actor.user.id);
+    }
   };
 
   const readState = async (client: SupabaseClient) => {
@@ -158,7 +214,7 @@ describe('FEAT-PC017 — account lifecycle self-service (C-F red suite)', () => 
 
     beforeAll(async () => {
       harry = await createTestUser({ displayName: 'Harry Held' });
-      await setAdminHold(harry.user.id); // RED pre-apply: 42703
+      await setAdminHold(harry.user.id); // producer-driven since COR-C W1 (AC3-2)
     });
     afterAll(async () => {
       if (harry) await cleanupTestUser(harry.user.id);
