@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMA-04
 title: Build FEAT-H034 (Hub) — gated /admin dashboard over the statistics contract; wire the four auth callers to record_auth_event and give emitTelemetry its durable leg
-status: todo
+status: done  # built 2026-07-31: unit 1068/1068, next build green, own E2E 3/3; sweep fallout adapted (menu locators) or filed (TASK-DBT-02)
 assigned_to: claude
 priority: high
 feature: FEAT-H034

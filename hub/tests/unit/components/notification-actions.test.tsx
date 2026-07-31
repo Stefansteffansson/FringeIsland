@@ -19,7 +19,7 @@ const actingRow: NotificationRow = {
   created_at: '2026-07-24T10:00:00Z',
   is_read: false,
   read_at: null,
-  action_type: 'accept_decline',
+  action_type: 'accept_decline', responses: [{ key: 'accept', label: 'Accept', accept: true, intent: 'positive' }, { key: 'decline', label: 'Decline', accept: false, intent: 'danger' }], // W3 (#347): registry-carried response set — fixture adapted at ADM-A, found-not-caused
   action_data: { membership_id: 'm1', context_group_name: 'Council' },
   action_taken: null,
   expires_at: null,
@@ -60,7 +60,7 @@ describe('NotificationActions', () => {
   it('renders nothing for a kind whose action_type has no responses (safe fallback)', () => {
     const { container } = render(
       <NotificationActions
-        row={{ ...actingRow, action_type: 'some_future_type' }}
+        row={{ ...actingRow, action_type: 'some_future_type', responses: undefined }}
         onRespond={jest.fn() as never}
       />,
     );

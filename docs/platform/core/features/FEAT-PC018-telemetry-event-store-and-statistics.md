@@ -6,7 +6,7 @@ title: Telemetry event store & platform statistics — durable content-free even
 owner: platform/core/infrastructure
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -109,3 +109,7 @@ The Hub consumes both contracts via FEAT-H034 (BFF-wrapped). The Gimbal inherits
 ## Performance budget
 
 N/A (no surface). The statistics read is consumed by FEAT-H034 under its B2/B3 page budget; computed-on-read is acceptable at current scale by measurement posture (ADR-U042/U043) — if a gate measurement ever shows it hot, pre-aggregation is a *measured* follow-up, not a default.
+
+## Implementation notes (6-done, 2026-07-31)
+
+Built exactly per the sketch as migration `20260731180000_adm_a_pc018_telemetry_store_and_statistics.sql` (PR #354, merged + applied on named approval): deny-all `telemetry_events` (RLS enabled, zero policies), the never-raises `record_telemetry_event()`, `prune_telemetry_events()` + the daily `telemetry-prune` pg_cron job (03:30, the reaper idiom), the DS-3-registered `ds3_stats_snapshot()` compose-contract, and the admin-gated `get_platform_statistics()` (typed `42501`). Suite: `hub/tests/integration/observability/telemetry-and-statistics-contracts.test.ts` — 8 demonstrated-red pre-apply (+2 refusal-shaped anon tests, vacuously green), 10/10 post-apply, including the forced-failure never-raises proof (table renamed mid-test) and the Mist-rule cascade proven by count against a probe group. Manifest riders landed in the same PR (table PC-1 + ADR-U052 §4 export exemption; functions PC-1 ×3 + DS-3 ×1 — born classified under the TASK-ADMA-01 gate). Consumed by FEAT-H034 via `GET /api/admin/statistics` + `lib/observability/telemetry-server.ts`.

@@ -13,7 +13,8 @@ test.describe('FEAT-H005 — member profile + sign-out', () => {
   test('STORY-1: open the account menu and view the profile', async ({ page }) => {
     await page.goto('/groups');
     await page.getByRole('button', { name: /account menu/i }).click();
-    await page.getByRole('link', { name: /profile/i }).click();
+    // COR-C W5 (#342): menu entries carry role="menuitem" — adapted at ADM-A, found-not-caused.
+    await page.getByRole('menuitem', { name: /profile/i }).click();
 
     await expect(page).toHaveURL(/\/profile/);
     await expect(page.getByLabel(/full name/i)).toBeVisible();
@@ -52,7 +53,8 @@ test.describe('FEAT-H005 — member profile + sign-out', () => {
   }) => {
     await page.goto('/groups');
     await page.getByRole('button', { name: /account menu/i }).click();
-    await page.getByRole('button', { name: /sign out/i }).click();
+    // COR-C W5 (#342): sign-out is a menuitem now — adapted at ADM-A, found-not-caused.
+    await page.getByRole('menuitem', { name: /sign out/i }).click();
 
     await expect(page).toHaveURL('/');
     // A protected surface now gates as for any sessionless visitor.

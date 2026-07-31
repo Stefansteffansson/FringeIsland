@@ -158,7 +158,7 @@ describe('NotificationsPage (/notifications)', () => {
         id: 'act',
         kind: 'acting_invitation',
         title: 'Nominate',
-        action_type: 'accept_decline',
+        action_type: 'accept_decline', responses: [{ key: 'accept', label: 'Accept', accept: true, intent: 'positive' }, { key: 'decline', label: 'Decline', accept: false, intent: 'danger' }], // W3 (#347): registry-carried response set — fixture adapted at ADM-A, found-not-caused
         action_data: { membership_id: 'm1' },
         action_taken: null,
         expires_at: null,
@@ -221,7 +221,7 @@ describe('NotificationsPage (/notifications)', () => {
         id: 'done',
         kind: 'acting_invitation',
         title: 'Answered already',
-        action_type: 'accept_decline',
+        action_type: 'accept_decline', responses: [{ key: 'accept', label: 'Accept', accept: true, intent: 'positive' }, { key: 'decline', label: 'Decline', accept: false, intent: 'danger' }], // W3 (#347): registry-carried response set — fixture adapted at ADM-A, found-not-caused
         action_data: { resolved_by_name: 'Bob Smith' },
         action_taken: 'accepted',
         expires_at: null,
@@ -244,7 +244,7 @@ describe('NotificationsPage (/notifications)', () => {
         id: 'err',
         kind: 'acting_invitation',
         title: 'Group Invitation',
-        action_type: 'accept_decline',
+        action_type: 'accept_decline', responses: [{ key: 'accept', label: 'Accept', accept: true, intent: 'positive' }, { key: 'decline', label: 'Decline', accept: false, intent: 'danger' }], // W3 (#347): registry-carried response set — fixture adapted at ADM-A, found-not-caused
         action_data: { membership_id: 'm1' },
       }),
     ]);
@@ -422,7 +422,7 @@ describe('NotificationsPage (/notifications)', () => {
         kind: 'acting_invitation',
         title: 'Stewardship nomination',
         is_read: false,
-        action_type: 'accept_decline',
+        action_type: 'accept_decline', responses: [{ key: 'accept', label: 'Accept', accept: true, intent: 'positive' }, { key: 'decline', label: 'Decline', accept: false, intent: 'danger' }], // W3 (#347): registry-carried response set — fixture adapted at ADM-A, found-not-caused
         action_data: { membership_id: 'm1' },
         action_taken: null,
         expires_at: null,

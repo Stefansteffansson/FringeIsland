@@ -60,7 +60,8 @@ test.describe('FEAT-H010 — download my data', () => {
   test('STORY-3: a FIM reaches the export surface from the account menu', async ({ page }) => {
     await page.goto('/groups');
     await page.getByRole('button', { name: /account menu/i }).click();
-    await page.getByRole('link', { name: /download my data/i }).click();
+    // COR-C W5 (#342): menu entries carry role="menuitem" — adapted at ADM-A, found-not-caused.
+    await page.getByRole('menuitem', { name: /download my data/i }).click();
     await expect(page).toHaveURL(/\/export$/);
     await expect(page.getByRole('button', { name: /download my data/i })).toBeVisible();
   });

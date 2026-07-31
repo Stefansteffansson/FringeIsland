@@ -11,8 +11,9 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { signUpFim } from '@/lib/auth/signup';
-import { recordAuditEntry } from '@/lib/audit/audit';
+import { recordAuditEntry, persistAuditEntry } from '@/lib/audit/audit';
 import { emitTelemetry } from '@/lib/observability/telemetry';
+import { emitDurableTelemetry } from '@/lib/observability/telemetry-server';
 
 type SignUpBody = {
   email?: string;
@@ -53,16 +54,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: result.error }, { status: 400 });
   }
 
-  // V1 audit seam — account creation + initial consent. Structured record only:
-  // admin_audit_log is admin-only (RLS), so there is no member-facing audit sink
-  // today; binding it for real needs a SECURITY DEFINER lifecycle-audit RPC
-  // (net-new substrate, out of FEAT-H002 scope). See the feature's No-gos.
+  // V1 audit seam — account creation + initial consent. Durable since ADM-A
+  // (FEAT-PC019's record_auth_event): once the sign-up yields a session, the
+  // actor exists and the row persists. The pending-confirmation edge has no
+  // session and stays mirror-only — a recorded limitation, not a silent gap
+  // (whether pre-session moments deserve durable security logging is ADM-D's
+  // open question).
   recordAuditEntry({
     actorAuthId: result.user?.id ?? null,
     action: 'account.created',
     props: { consentAccepted: true },
   });
-  emitTelemetry('auth.sign_up_succeeded', { pendingConfirmation: result.pendingConfirmation });
+  if (result.session) {
+    await persistAuditEntry(supabase, {
+      action: 'account.created',
+      metadata: { consentAccepted: true },
+    });
+    await emitDurableTelemetry(supabase, 'auth.sign_up_succeeded', {
+      pendingConfirmation: result.pendingConfirmation,
+    });
+  } else {
+    emitTelemetry('auth.sign_up_succeeded', { pendingConfirmation: result.pendingConfirmation });
+  }
 
   if (result.pendingConfirmation || !result.session) {
     return NextResponse.json({ ok: true, pendingConfirmation: true });

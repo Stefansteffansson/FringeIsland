@@ -21,6 +21,38 @@ export function AccountMenu() {
   const { user, identity, signOut } = useAuth();
   const router = useRouter();
   const [label, setLabel] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // FEAT-H034 STORY-1 — the gated admin entry. Permission-DERIVED: the
+  // platform's own refusal on the admin read decides (never a role string);
+  // probed lazily once per browser session and cached, so the shell costs
+  // every member at most one extra request per session.
+  useEffect(() => {
+    if (identity !== 'fim') return;
+    try {
+      const cached = window.sessionStorage.getItem('hub.adminEntry');
+      if (cached !== null) {
+        setIsAdmin(cached === 'yes');
+        return;
+      }
+      let active = true;
+      fetch('/api/admin/statistics')
+        .then((res) => {
+          if (!active) return;
+          const yes = res.ok;
+          window.sessionStorage.setItem('hub.adminEntry', yes ? 'yes' : 'no');
+          setIsAdmin(yes);
+        })
+        .catch(() => {
+          // Best-effort shell chrome: an unreachable probe means no entry.
+        });
+      return () => {
+        active = false;
+      };
+    } catch {
+      // sessionStorage unavailable — fall through with no entry.
+    }
+  }, [identity]);
 
   useEffect(() => {
     if (identity !== 'fim') return;
@@ -93,6 +125,7 @@ export function AccountMenu() {
         { key: 'sessions', label: 'Sessions', href: '/sessions' },
         { key: 'consent', label: 'Privacy & consent', href: '/consent' },
         { key: 'export', label: 'Download my data', href: '/export' },
+        ...(isAdmin ? [{ key: 'admin', label: 'Platform admin', href: '/admin' }] : []),
         {
           key: 'sign-out',
           label: 'Sign out',
