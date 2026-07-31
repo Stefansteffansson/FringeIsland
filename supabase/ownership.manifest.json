@@ -150,6 +150,49 @@
     ]
   },
 
+  "export": {
+    "note": "COR-C W2 (Audit III AC3-4, closing GC-5): the Art. 15/20 completeness classification. Every table above must appear here — export-completeness-invariant.test.ts fails red on an unclassified table, so a new member-data table cannot ship without an export decision. memberData:true entries name their representation in the get_own_data_export() document (or a cited exemption); memberData:false entries state why no member rows exist. Column-level completeness stays the composing contract's concern; this gate is table-level.",
+    "tables": {
+      "users": { "memberData": true, "representation": "subject + profile + account_state sections (inline core)" },
+      "pc2_config": { "memberData": false, "reason": "platform operational config; no member rows" },
+      "reaper_runs": { "memberData": false, "reason": "system reaper run log; aggregate counts, no member attribution" },
+      "consent_records": { "memberData": true, "representation": "consent section (inline core)" },
+      "consent_purposes": { "memberData": false, "reason": "governance-managed purpose catalog" },
+      "groups": { "memberData": true, "representation": "profile.display_name (the personal group IS the member's display identity) + memberships[].group_name (contextual)" },
+      "group_memberships": { "memberData": true, "representation": "memberships section (inline core)" },
+      "group_roles": { "memberData": false, "reason": "per-group role definitions; communal config, not member rows" },
+      "group_role_permissions": { "memberData": false, "reason": "role-permission config" },
+      "group_templates": { "memberData": false, "reason": "template catalog" },
+      "group_template_roles": { "memberData": false, "reason": "template catalog" },
+      "role_templates": { "memberData": false, "reason": "template catalog" },
+      "role_template_permissions": { "memberData": false, "reason": "template catalog" },
+      "user_group_roles": { "memberData": true, "representation": "roles section (inline core; added at COR-C W2 — the invariant's first catch: roles held were member data with no export path)" },
+      "permissions": { "memberData": false, "reason": "permission catalog" },
+      "pending_email_invitations": { "memberData": true, "exemption": { "reason": "transient invitation state: invitee e-mail addresses are third-party data under the own-data wall (the C-E precedent that omits reports' target_group_id); the caller-attributable act resolves into group_memberships on acceptance, which is exported", "citation": "C-E board own-data wall (20260721100000:495-501) + COR-C W2 review 2026-07-31" } },
+      "admin_audit_log": { "memberData": true, "exemption": { "reason": "operational/security log; the member-facing right-of-access shape for audit trails (own actions vs actions about the member by third-party actors) is an A-ADM design question — deferred to the A-ADM area-open design session, alongside TASK-OBS-01's sink decisions", "citation": "COR-C W2 review 2026-07-31; revisit at A-ADM area open" } },
+      "journeys": { "memberData": true, "exemption": { "reason": "communal content templates; the member's LIVED record (enrolments, steps, responses) is exported via the journeys section. Authored-template attribution becomes member-facing when authoring becomes a first-class surface (Studios) — export decision deferred to that wave", "citation": "COR-C W2 review 2026-07-31; ADR-U026 (studios own authoring)" } },
+      "journey_steps": { "memberData": false, "reason": "content structure of communal templates" },
+      "journey_step_instances": { "memberData": true, "representation": "journeys section (get_own_step_instances_export — own instances + responses)" },
+      "journey_enrollments": { "memberData": true, "representation": "journeys section (get_own_step_instances_export — enrollment context: status + timestamps)" },
+      "step_kinds": { "memberData": false, "reason": "step-kind catalog" },
+      "content_families": { "memberData": false, "reason": "content-family catalog" },
+      "conversations": { "memberData": true, "representation": "communication.conversation_participations (conversation metadata via the caller's participation rows)" },
+      "messages": { "memberData": true, "representation": "communication.messages (own-authored rows)" },
+      "conversation_participants": { "memberData": true, "representation": "communication.conversation_participations" },
+      "conversation_kinds": { "memberData": false, "reason": "conversation-kind catalog" },
+      "forum_posts": { "memberData": true, "representation": "communication.forum_posts (own-authored rows)" },
+      "announcements": { "memberData": true, "representation": "communication.authored_announcements (own-authored rows; added at COR-C W2 per Stefan's AC3-16 ruling, 2026-07-31)" },
+      "content_reports": { "memberData": true, "representation": "communication.reports_submitted (own reports; target identity omitted per the own-data wall)" },
+      "ds5_config": { "memberData": false, "reason": "DS-5 operational settings; no member rows" },
+      "journal_entries": { "memberData": true, "representation": "journal section (get_own_journal_export)" },
+      "notifications": { "memberData": true, "representation": "notifications section (get_own_notifications_export)" },
+      "notification_categories": { "memberData": false, "reason": "category registry" },
+      "notification_kinds": { "memberData": false, "reason": "kind registry" },
+      "notification_channels": { "memberData": false, "reason": "channel registry" },
+      "notification_preferences": { "memberData": true, "representation": "notification_preferences section (get_own_notification_preferences_export; composed at COR-C W2 — AC3-3, the section the audit found orphaned)" }
+    }
+  },
+
   "lifecyclePrefixRule": "^ds\\d+_lifecycle_",
   "lifecyclePrefixNote": "ADR-U047 rule 1: the ds{N}_lifecycle_ prefix is reserved for domain-owned lifecycle-fact handlers. Auto-allowed by prefix — the owning service is read from the digit, so these need no explicit entry above.",
 
@@ -158,7 +201,14 @@
       {
         "function": "get_own_data_export",
         "vertical": "Privacy/GDPR",
-        "citation": "ADR-U047 Amendment 2 (2026-07-19), audit AC-4, COR-A W8, PR #191. Whole-account export completeness (GDPR Art. 15/20): composes get_own_journal_export() and get_own_step_instances_export() platform-side so one RPC returns the complete document on every surface. Read-only, contract-only — calls the domain's published READ contracts, never their tables."
+        "citation": "ADR-U047 Amendment 2 (2026-07-19), audit AC-4, COR-A W8, PR #191; composes restructured at COR-C W2 (Audit III AC3-15 — the prose list had gone two contracts stale and nothing noticed). Whole-account export completeness (GDPR Art. 15/20): composes the contracts below platform-side so one RPC returns the complete document on every surface. Read-only, contract-only — calls the domain's published READ contracts, never their tables. The composes array is LOAD-BEARING: export-completeness-invariant.test.ts asserts the live body calls exactly this set (GC-6).",
+        "composes": [
+          "get_own_journal_export",
+          "get_own_messages_export",
+          "get_own_notification_preferences_export",
+          "get_own_notifications_export",
+          "get_own_step_instances_export"
+        ]
       }
     ],
     "crossServiceReads": [],
