@@ -37,6 +37,25 @@
 
 ---
 
+## COR-C execution ledger (2026-07-31 — annotated same-day per the AC-7 lesson)
+
+Cycle COR-C executed 2026-07-31 per the [plan](../hub-v2/anatomy-correction-plan-cor-c.md), all four W4 rulings given by Stefan ("go with recommended" + AC3-16=ADD + GC-8=ADD). Status per finding; **HELD** = built, red-demonstrated, PR held at a carve-out gate — the inline CLOSED lines land when the held PRs merge and apply.
+
+| Finding | Status | Evidence |
+|---|---|---|
+| AC3-1 / AC3-2 / AC3-13 / AC3-14 / GC-10 | **HELD at schema gate** — PR #337 (migration 20260730210000; escape reproduced end-to-end, 8 reds) | producer suite `account-lifecycle-admin-producer.test.ts` |
+| AC3-3 / AC3-4 / AC3-15 / AC3-16(ADD) / GC-5 / GC-6 / GC-14 | **HELD at schema gate** — PR #340 (migration 20260731120000; + the roles gap the invariant caught) | `export-completeness-invariant.test.ts`; manifest export section; hub-v2 README gate row |
+| AC3-5 / AC3-9 / GC-9 / GC-4 | **HELD at schema gate** — PR #341, stacked on #340 (migration 20260731140000) | `notification_action_types` registry; Hub maps collapsed; `typed-action-registry.test.ts` |
+| R-4 / GC-3 | **CLOSED** — PR #338 merged; registries DS-5; pinned vertical-set gate red-demonstrated | manifest + `ownership-manifest-conformance.test.ts` |
+| R-5 / AC3-11 / R-6 / AC3-6 / AC3-19 | **HELD (canon carve-outs)** — PR #339 (U048A1 + U051A1 amendments, DS CLAUDE.md activation, TASK-I18N-01 dated deferral, hub CLAUDE.md:20 fix, anatomy stamp) | merge on nod |
+| AC3-8 / AC3-17 / AC3-18 | **CLOSED** — PR #342 merged (useFocusTrap, Menu primitive, bell disclosure semantics, TextField wiring, contrast) | 7 reds demonstrated; unit 1046/1046 |
+| AC3-7 | **CLOSED** — PR #343 merged (@theme token seed; ui/ migrated; fork resolved to indigo) | token utilities verified in built CSS |
+| GC-1 / GC-2 / GC-7+AC3-12 / GC-8(ADD) / GC-12(token) / AC3-10 / AC3-O3 | **CLOSED** — PR #344 merged. GC-8's first run found a SECOND unlicensed edge (`notify_notification_hint`) — licensed under U048A1. GC-7's closure found three bundle-leak value-imports — fixed by pure-module splits. AC3-10's four declared in the GC-1 CORE seed | `function-classification-completeness` / `trigger-mount-conformance` / `token-gate` tests; `supabase/migrations/README.md` |
+| GC-12(a11y) / GC-11 | **HELD (deps + skill carve-outs)** — PR #345 (jest-axe gate 7/7; doc-health Section 4.5) | merge on nod |
+| GC-13 / AC3-O5 | **CARRIED** to the A-ADM area-open board, per the plan (not forced) | — |
+
+---
+
 ## Severity scale (unchanged from Audit I)
 
 **Critical** — anatomy violation with live security or correctness exposure · **Major** — structural ring/boundary/obligation violation; systemic or compounding · **Minor** — local, cheap to correct · **Observation** — watch item or cited deferral · **Ruling-needed** — canon ambiguity the code exposed; owner decision required.
