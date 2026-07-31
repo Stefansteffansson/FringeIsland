@@ -7,7 +7,7 @@ import { invalidateAllCaches } from '@/lib/auth/cache-registry';
 import { beginMistSession, deriveIdentity, type Identity } from '@/lib/auth/mist';
 import { useSessionGuard } from '@/lib/auth/session-guard';
 import { useRealtimeTenants } from '@/lib/realtime/conversations-tenant';
-import { TRANSCENDENCE_CONSENT_REQUIRED_ERROR } from '@/lib/auth/transcendence';
+import { TRANSCENDENCE_CONSENT_REQUIRED_ERROR } from '@/lib/auth/transcendence-policy';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 type AuthState = {

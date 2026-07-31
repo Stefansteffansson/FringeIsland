@@ -42,10 +42,12 @@ export type IdentityScopeField = (typeof IDENTITY_SCOPE_FIELDS)[number];
  * CHECK (`bio_max_length`, migration 20260628*) mirrors this literal — a future
  * tweak updates the constant AND adds a new additive migration.
  */
-export const PROFILE_BIO_MAX_LENGTH = 500;
+// COR-C W7 (GC-7): the validation constants live in constants.ts (pure) so
+// browser importers never value-import this rpc-bearing module. Imported for
+// the validation below and re-exported for the server-side callers.
+import { PROFILE_BIO_MAX_LENGTH, PROFILE_FULL_NAME_MIN_LENGTH } from './constants';
 
-/** Full-name minimum length (copy-with-correction from the hub-legacy oracle). */
-export const PROFILE_FULL_NAME_MIN_LENGTH = 2;
+export { PROFILE_BIO_MAX_LENGTH, PROFILE_FULL_NAME_MIN_LENGTH } from './constants';
 
 export type DisplayPreference = 'real_name' | 'nickname';
 

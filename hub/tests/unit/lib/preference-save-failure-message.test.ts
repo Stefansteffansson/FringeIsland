@@ -1,5 +1,5 @@
 import { describe, it, expect } from '@jest/globals';
-import { preferenceSaveFailureMessage } from '@/lib/notifications/preferences';
+import { preferenceSaveFailureMessage } from '@/lib/notifications/preferences-format';
 
 /**
  * Gate walk 2026-07-30 — the message a member sees when a preference write fails.
