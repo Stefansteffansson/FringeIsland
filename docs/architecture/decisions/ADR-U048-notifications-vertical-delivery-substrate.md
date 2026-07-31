@@ -64,3 +64,16 @@ The 2026-07-19 audit surfaced the collision as its only verdict-changing classif
 - Plan: [anatomy-correction-plan](../../planning/hub-v2/anatomy-correction-plan.md) (W6 = this ADR; W7 doc pass)
 - Related ADRs: U002 (the five verticals — the obligation pattern), U047 (lifecycle facts; excludes notifications writes from its scope), U023 (decomposition)
 - Canon: DS-5 charter (docs/platform/domain/); ARCHITECTURE_ANATOMY §DS-5, §verticals
+
+---
+
+## Amendment 1 (2026-07-31) — substrate-mounted routing enforcement is legitimate (Audit III ruling R-5)
+
+**Status:** Accepted (Stefan, 2026-07-31 — "go with recommended" on the COR-C W4 rulings board)
+**Trigger:** [Anatomy Conformance Audit III](../../planning/reference/ANATOMY-CONFORMANCE-AUDIT-3.md) D2-3/D4, ruling R-5. FEAT-PD016 (A-NTF Cycle N-D) mounted DS-5's preference suppression as a `BEFORE INSERT` trigger on `public.notifications` (`20260726120000:231-251`). Every tier's obligation write now executes DS-5 code inside its own transaction, and DS-5 can veto the write. This ADR described DS-5's layer as sitting *above* the substrate; a write-path veto is a third shape the original ruling did not anticipate. Both D2 and D4 independently judged the mechanism substantively right (it is the only way to apply preference centrally, and the Notifications vertical spec V3 §6 demands non-bypassable suppression) — the open question was canon wording, not code.
+
+**The amendment.** Ruling 2 gains a clause: DS-5's routing layer may enforce its routing rules **at the substrate's write edge** — trigger-mounted on `public.notifications` — when the rule must be central and non-bypassable. This is legitimate because the coupling runs to the *vertical's obligation table*, not to any domain contract: writers gain no dependency on DS-5's contracts, no call-site changes, and the delivery table still does not move.
+
+**Bounds.** (a) Mounted code enforces *routing* decisions only (may this row be delivered, on which channel) — it never authors domain semantics or rewrites payloads beyond suppression. (b) The mechanism is scoped to the vertical/DS-5 pair this ADR governs; it is not precedent for any service mounting triggers on tables it does not own. (c) Gate coverage follows the mechanism: the inner-ring gate grows **trigger-edge awareness** (Stefan, same board, closing gate gap GC-8) — COR-C W7 lands it red-first.
+
+**Anatomy impact:** the DS-5 row's "notification routing above the vertical delivery substrate" gains the write-edge clause; the stamp moves in the same batch.
