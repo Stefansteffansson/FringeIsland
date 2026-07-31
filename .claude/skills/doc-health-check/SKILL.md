@@ -432,6 +432,25 @@ Under Model A (see PROCESS.md §1), the icebox is a YAML flag, not a separate fi
 
 ---
 
+## Section 4.5 — Ownership-manifest gate-review flags (COR-C W7, Audit III GC-11)
+
+**Question:** Does `supabase/ownership.manifest.json` carry any note self-flagging an unresolved classification tension — and has each been surfaced at an area gate rather than silently carried?
+
+Precedent: the R-4 tension (`notification_kinds`/`notification_categories` vertical-vs-DS-5) sat as a "Gate-review flag:" note through one full area gate without being raised; Audit III had to find it. Flags are a legitimate carrying mechanism — this row makes sure they are *read*.
+
+### Procedure
+
+1. Grep the manifest for flag notes:
+   ```
+   grep -n "Gate-review flag" supabase/ownership.manifest.json
+   ```
+2. For each hit, record it in the health-check summary under "Open gate-review flags", with the table/function it sits on.
+3. At the next area gate (or cycle boundary, whichever first), each listed flag gets a disposition: resolved by ruling, or explicitly re-carried with the reason noted on the flag itself.
+
+**Skip if:** the grep returns nothing (the R-4 relabel of 2026-07-31 cleared the set; a clean run is expected until someone flags a new tension).
+
+---
+
 ## Section 5 — Maturity consistency
 
 **Question:** Does each feature spec's internal state match its declared YAML `maturity:`?
