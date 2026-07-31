@@ -3,13 +3,13 @@
 ---
 id: TASK-OBS-01
 title: Telemetry sink & analytics posture — durable store vs log-drain, retention, actor-linkage consent, what ADM-1 aggregates; settle at the A-ADM area-open design session
-status: todo
+status: in_progress  # board settled 2026-07-31 (AB-1a..d); ADR-U052 drafted; FEATs created; closure rides TASK-ADMA-05
 assigned_to: claude
 priority: medium
 feature: none  # design-session prep — outputs are a decision board + likely ADR + V4 spec de-scaffolding, not a FEAT build
 owner: platform/core/infrastructure
 wave: ferd
-cycle: unscheduled — slot at the A-ADM (Platform-Ops) area-open design session, or a cooldown week if one lands first
+cycle: ADM-A — landed at the A-ADM area-open design session as planned (2026-07-31); decision record ADR-U052 (Proposed, rides the ADM-A schema gate); V4 de-scaffold + closure ride TASK-ADMA-05
 depends_on: []
 estimated_hours: 3
 ---
@@ -25,10 +25,10 @@ Prepare a decision board (the G-F/C-D precedent — all decisions at once, recom
 5. **Perf-measurement continuity**: how the ADR-U043 measurement protocol's numbers (deep-cold/warm passes, area-gate walks) get recorded durably rather than living in bridges.
 
 ## Acceptance criteria
-- [ ] Decision board prepared and settled with Stefan (ADR candidate drafted if the sink decision is architectural — likely)
+- [x] Decision board prepared and settled with Stefan (A-ADM board AB-1a..d, 2026-07-31, "go with recommended"; [ADR-U052](../../../architecture/decisions/ADR-U052-telemetry-sink-and-analytics-posture.md) drafted, Proposed)
 - [ ] V4 vertical spec §§3-6 de-scaffolded per the decision (G-03 closed or explicitly narrowed)
 - [ ] The purpose/consent disposition recorded (V2 + ADR-U034)
-- [ ] Follow-on FEAT specs (if any) created under the normal decomposition path — this task itself builds nothing
+- [x] Follow-on FEAT specs created under the normal decomposition path (FEAT-PC018 / FEAT-PC019 / FEAT-H034, all 4-ready 2026-07-31) — this task itself builds nothing
 
 ## Technical notes
 Current emission sites: PC-1 instrumentation primitives; the Hub's `[telemetry]`/`[audit]` structured events (content-free discipline — the comm/journal precedents pin it). ADM-1's external-deps row in Hub §L3 names PC-1's statistics aggregation as load-bearing. The events-without-sink state is honest today because no consumer exists yet — A-ADM ends that.
