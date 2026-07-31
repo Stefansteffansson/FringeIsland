@@ -64,6 +64,12 @@ const LIST_PAYLOAD_KEYS = [
   'action_data',
   'action_taken',
   'expires_at',
+  // LABELLED SIBLING ADAPTATION (COR-C W3, 2026-07-31, AC3-5): the typed-action
+  // registry moved platform-side — the list contract now carries the row's
+  // dispatch_segment (from notification_kinds) and responses (from
+  // notification_action_types). Additive; action_taken_at stays withheld.
+  'dispatch_segment',
+  'responses',
 ].sort();
 
 type NotificationRow = {
