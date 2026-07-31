@@ -182,11 +182,16 @@ test.describe('FEAT-H033 — notification preferences, end to end', () => {
     await signIn(page, member.email);
     await page.goto('/notifications/preferences');
 
-    // `account` is seeded member_suppressible = false: stated, not a disabled
-    // mystery, and with no operable control to click.
+    // TASK-DBT-02 adjudication (canonical-wins): TWO non-suppressible
+    // categories are INTENDED data — `account`, plus `asks` since the GB-1
+    // asks split (migration 20260727180000: "exactly as it does for account").
+    // The single-category premise was stale; the surface rendered the registry
+    // faithfully. Both locked rows asserted, neither with an operable control.
     await expect(page.getByTestId('pref-locked-account-in_app')).toBeVisible({ timeout: 15000 });
     await expect(page.getByTestId('pref-toggle-account-in_app')).toHaveCount(0);
-    await expect(page.getByText(/always on/i)).toBeVisible();
+    await expect(page.getByTestId('pref-locked-asks-in_app')).toBeVisible();
+    await expect(page.getByTestId('pref-toggle-asks-in_app')).toHaveCount(0);
+    await expect(page.getByText(/always on/i)).toHaveCount(2);
 
     // Email is stored but does not deliver, so it gets no toggle anywhere —
     // asserted across every category, not just one.

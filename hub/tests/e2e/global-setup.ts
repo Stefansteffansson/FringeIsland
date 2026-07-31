@@ -6,7 +6,13 @@
  *  4. Save storageState to tests/e2e/.auth/user.json for the authed specs.
  */
 import { chromium, type FullConfig } from '@playwright/test';
-import { createAdminClient, deleteE2EUser, E2E_PASSWORD, SESSION_EMAIL } from './helpers/auth';
+import {
+  countDeusExE2ELeaks,
+  createAdminClient,
+  deleteE2EUser,
+  E2E_PASSWORD,
+  SESSION_EMAIL,
+} from './helpers/auth';
 
 export default async function globalSetup(config: FullConfig) {
   const admin = createAdminClient();
@@ -71,5 +77,13 @@ export default async function globalSetup(config: FullConfig) {
 
   await context.storageState({ path: 'tests/e2e/.auth/user.json' });
   await browser.close();
+
+  // TASK-INT-05 leak instrument: record the caretaker-membership baseline;
+  // global-teardown asserts the delta is zero (before/after count, never
+  // inspection).
+  const leakBaseline = await countDeusExE2ELeaks(admin);
+  process.env.E2E_LEAK_BASELINE = String(leakBaseline);
+  console.log(`[e2e-setup] DeusEx E2E-leak baseline: ${leakBaseline}`);
+
   console.log('[e2e-setup] Global setup complete');
 }
