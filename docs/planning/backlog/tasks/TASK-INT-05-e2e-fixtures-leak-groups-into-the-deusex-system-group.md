@@ -4,12 +4,12 @@
 id: TASK-INT-05
 title: Playwright fixtures leave groups joined to the DeusEx system group — 39 and counting
 status: open
-assigned_to: unassigned
-priority: medium
+assigned_to: claude
+priority: high
 feature: none
 owner: platform/core/organisation
 wave: ferd
-cycle: unscheduled
+cycle: ADM-B — the cycle's opening hygiene block (board AB-5 made this an in-cycle precondition: ADM-8's caretaker list is built only after the 39/42 detritus is gone and the leak is fixed red-first)
 depends_on: []
 estimated_hours: 2
 ---
