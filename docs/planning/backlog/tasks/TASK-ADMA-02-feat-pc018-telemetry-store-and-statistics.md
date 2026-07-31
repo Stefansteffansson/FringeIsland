@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMA-02
 title: Build FEAT-PC018 (PC-1) — telemetry_events + record_telemetry_event + 90-day prune + get_platform_statistics, red-first, held at the schema gate
-status: todo
+status: review  # built red-first 2026-07-31; PR held at the schema gate awaiting named approval
 assigned_to: claude
 priority: high
 feature: FEAT-PC018
