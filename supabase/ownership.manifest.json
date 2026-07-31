@@ -175,6 +175,7 @@
       "get_own_data_export",
       "prevent_last_deusex_membership_removal",
       "prevent_last_deusex_role_removal",
+      "record_auth_event",
       "record_consent_decision"
     ],
     "DS-3": [

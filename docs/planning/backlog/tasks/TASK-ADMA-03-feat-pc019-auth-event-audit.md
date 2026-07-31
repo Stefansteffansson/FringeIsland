@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMA-03
 title: Build FEAT-PC019 (PC-4) — record_auth_event SECURITY DEFINER audit-write primitive, red-first, held at the schema gate
-status: todo
+status: review  # built red-first 2026-07-31; PR held at the schema gate awaiting named approval
 assigned_to: claude
 priority: high
 feature: FEAT-PC019
