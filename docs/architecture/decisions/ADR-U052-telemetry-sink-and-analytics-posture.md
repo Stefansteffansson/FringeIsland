@@ -1,6 +1,6 @@
 # ADR-U052: Telemetry sink & analytics posture
 
-**Status:** Proposed (2026-07-31) — rides the ADM-A schema gate; promotion to Accepted at the gate merge.
+**Status:** Accepted (2026-07-31 — promoted on Stefan's explicit approval after the ADM-A schema gates merged on named approval, both migrations applied, and the realizing features FEAT-PC018/PC019/H034 reached 6-done).
 **Deciders:** Stefan (A-ADM area-open decision board, rows AB-1a..AB-1d + AB-4, settled 2026-07-31 "go with recommended").
 **Supersedes / amends:** nothing. Realizes the decision layer [ADR-U012](./ADR-U012-observability-dedicated-vertical.md) (Observability as a dedicated vertical) left open; narrows the COR-C W2 `admin_audit_log` export exemption recorded 2026-07-31.
 
