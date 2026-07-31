@@ -7,6 +7,8 @@
 
 ## READ THIS FIRST — what the next session must pick up
 
+> **SUPERSEDED same-day (2026-07-31, later in the same session):** Stefan named all five PRs; all merged (#341 recreated as **#347** after GitHub auto-closed the stacked PR on base-branch deletion), the three migrations applied (after repairing a pre-existing remote migration-history drift), full integration green post-apply, register ledger CLOSED, [retro written](../retrospectives/retro-2026-07-31-cor-c.md). **COR-C is closed; A-ADM is clear to open.** The table below is the historical held-state.
+
 **Five PRs are HELD; each unlocks only on Stefan's explicitly NAMED approval, in this order:**
 
 | PR | What | Gate class | Apply after merge |
@@ -41,5 +43,5 @@ Stefan gave the full rulings board 2026-07-31 ("go with recommended"; AC3-16 = A
 - [x] Session bridge (this file)
 - [x] `npm run dashboard` — refreshed
 - [x] Discovery sweep — run at session open (clean) and close
-- [ ] doc-health-check — deliberately deferred to the held-PR merge session (the cross-cutting changes — ADR amendments, CLAUDE.md edits, skill edit — are all in HELD PRs; running it against main now would audit a state about to change)
-- [ ] COR-C retro — written at cycle close (after the gates clear)
+- [x] doc-health-check — run at the same-day gate-close (delegated audit over the cross-cutting changes; findings dispositioned in the close summary)
+- [x] COR-C retro — [`retro-2026-07-31-cor-c.md`](../retrospectives/retro-2026-07-31-cor-c.md)

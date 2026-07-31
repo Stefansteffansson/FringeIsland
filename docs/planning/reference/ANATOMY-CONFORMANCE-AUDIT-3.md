@@ -39,19 +39,19 @@
 
 ## COR-C execution ledger (2026-07-31 — annotated same-day per the AC-7 lesson)
 
-Cycle COR-C executed 2026-07-31 per the [plan](../hub-v2/anatomy-correction-plan-cor-c.md), all four W4 rulings given by Stefan ("go with recommended" + AC3-16=ADD + GC-8=ADD). Status per finding; **HELD** = built, red-demonstrated, PR held at a carve-out gate — the inline CLOSED lines land when the held PRs merge and apply.
+Cycle COR-C executed 2026-07-31 per the [plan](../hub-v2/anatomy-correction-plan-cor-c.md), all four W4 rulings given by Stefan ("go with recommended" + AC3-16=ADD + GC-8=ADD). **Cycle CLOSED 2026-07-31:** all five held PRs merged on Stefan's named approval, the three schema migrations applied to the dev DB (after a pre-existing migration-history repair — two orphan versions reconciled to their local files), and the full integration tier green post-apply (63 suites; the two exact-payload-key pins in the N-A/N-B suites adapted, labelled, for W3's additive columns). The W1 gate diagnostic found **zero wrong-origin rows** (3 NULL-origin test-residue rows are fail-safe-covered; left untouched).
 
 | Finding | Status | Evidence |
 |---|---|---|
-| AC3-1 / AC3-2 / AC3-13 / AC3-14 / GC-10 | **HELD at schema gate** — PR #337 (migration 20260730210000; escape reproduced end-to-end, 8 reds) | producer suite `account-lifecycle-admin-producer.test.ts` |
-| AC3-3 / AC3-4 / AC3-15 / AC3-16(ADD) / GC-5 / GC-6 / GC-14 | **HELD at schema gate** — PR #340 (migration 20260731120000; + the roles gap the invariant caught) | `export-completeness-invariant.test.ts`; manifest export section; hub-v2 README gate row |
-| AC3-5 / AC3-9 / GC-9 / GC-4 | **HELD at schema gate** — PR #341, stacked on #340 (migration 20260731140000) | `notification_action_types` registry; Hub maps collapsed; `typed-action-registry.test.ts` |
+| AC3-1 / AC3-2 / AC3-13 / AC3-14 / GC-10 | **CLOSED** — PR #337 merged + migration 20260730210000 applied 2026-07-31; producer suite green post-apply; escape structurally impossible | `account-lifecycle-admin-producer.test.ts` (8 former reds green) |
+| AC3-3 / AC3-4 / AC3-15 / AC3-16(ADD) / GC-5 / GC-6 / GC-14 | **CLOSED** — PR #340 merged + migration 20260731120000 applied 2026-07-31; the three exemptions stood at the gate; the invariant's roles catch exported | `export-completeness-invariant.test.ts` green (GC-6 live-body match) |
+| AC3-5 / AC3-9 / GC-9 / GC-4 | **CLOSED** — merged as **PR #347** (GitHub auto-closed the stacked #341 when #340's base branch was deleted; identical diff) + migration 20260731140000 applied 2026-07-31 | `typed-action-registry.test.ts` green (6 former reds); N-A/N-B payload pins adapted, labelled |
 | R-4 / GC-3 | **CLOSED** — PR #338 merged; registries DS-5; pinned vertical-set gate red-demonstrated | manifest + `ownership-manifest-conformance.test.ts` |
-| R-5 / AC3-11 / R-6 / AC3-6 / AC3-19 | **HELD (canon carve-outs)** — PR #339 (U048A1 + U051A1 amendments, DS CLAUDE.md activation, TASK-I18N-01 dated deferral, hub CLAUDE.md:20 fix, anatomy stamp) | merge on nod |
+| R-5 / AC3-11 / R-6 / AC3-6 / AC3-19 | **CLOSED** — PR #339 merged 2026-07-31 (U048A1 + U051A1 amendments live; DS tier active; AC3-6 → cited Observation via TASK-I18N-01; anatomy stamp moved) | on main |
 | AC3-8 / AC3-17 / AC3-18 | **CLOSED** — PR #342 merged (useFocusTrap, Menu primitive, bell disclosure semantics, TextField wiring, contrast) | 7 reds demonstrated; unit 1046/1046 |
 | AC3-7 | **CLOSED** — PR #343 merged (@theme token seed; ui/ migrated; fork resolved to indigo) | token utilities verified in built CSS |
 | GC-1 / GC-2 / GC-7+AC3-12 / GC-8(ADD) / GC-12(token) / AC3-10 / AC3-O3 | **CLOSED** — PR #344 merged. GC-8's first run found a SECOND unlicensed edge (`notify_notification_hint`) — licensed under U048A1. GC-7's closure found three bundle-leak value-imports — fixed by pure-module splits. AC3-10's four declared in the GC-1 CORE seed | `function-classification-completeness` / `trigger-mount-conformance` / `token-gate` tests; `supabase/migrations/README.md` |
-| GC-12(a11y) / GC-11 | **HELD (deps + skill carve-outs)** — PR #345 (jest-axe gate 7/7; doc-health Section 4.5) | merge on nod |
+| GC-12(a11y) / GC-11 | **CLOSED** — PR #345 merged 2026-07-31 (jest-axe gate 7/7; doc-health Section 4.5 live) | on main |
 | GC-13 / AC3-O5 | **CARRIED** to the A-ADM area-open board, per the plan (not forced) | — |
 
 ---

@@ -36,10 +36,13 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 jest.setTimeout(240_000);
 
-/** The N-B list payload keys — N-A's set + action_data. */
+/** The list payload keys — N-A's set + action_data (N-B) + the platform-side
+ *  typed-action registry columns (LABELLED SIBLING ADAPTATION, COR-C W3
+ *  2026-07-31, AC3-5: dispatch_segment + responses ride from the registries). */
 const N_B_PAYLOAD_KEYS = [
   'id', 'kind', 'category', 'title', 'body', 'group_id', 'created_at',
   'is_read', 'read_at', 'action_type', 'action_data', 'action_taken', 'expires_at',
+  'dispatch_segment', 'responses',
 ].sort();
 
 type NotificationRow = {
