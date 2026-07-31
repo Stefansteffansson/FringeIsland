@@ -61,7 +61,8 @@ test.describe('FEAT-H008 — render consent state', () => {
   test('STORY-5: a FIM reaches the consent surface from the account menu', async ({ page }) => {
     await page.goto('/groups');
     await page.getByRole('button', { name: /account menu/i }).click();
-    await page.getByRole('link', { name: /privacy & consent/i }).click();
+    // COR-C W5 (#342): menu entries carry role="menuitem" — adapted at ADM-A, found-not-caused.
+    await page.getByRole('menuitem', { name: /privacy & consent/i }).click();
     await expect(page).toHaveURL(/\/consent$/);
     await expect(page.getByTestId('consent-effective')).toBeVisible();
   });

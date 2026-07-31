@@ -220,7 +220,7 @@ describe('NotificationBell', () => {
         id: 'nErr',
         kind: 'acting_invitation',
         title: 'Group Invitation',
-        action_type: 'accept_decline',
+        action_type: 'accept_decline', responses: [{ key: 'accept', label: 'Accept', accept: true, intent: 'positive' }, { key: 'decline', label: 'Decline', accept: false, intent: 'danger' }], // W3 (#347): registry-carried response set — fixture adapted at ADM-A, found-not-caused
       }),
     ]);
     respondToNotification.mockRejectedValue(new Error('That invitation was already answered.'));

@@ -27,3 +27,8 @@ export function emitTelemetry(name: string, props?: Record<string, unknown>): Te
 export function getTelemetrySink(): readonly TelemetryEvent[] {
   return sink;
 }
+
+// The durable leg (emitDurableTelemetry) lives in ./telemetry-server.ts — a
+// deliberate pure-module split (the COR-C GC-7 pattern): this module is
+// browser-reachable through every client component that emits, so it must
+// carry no database contract call. The outer-ring gate enforces the split.

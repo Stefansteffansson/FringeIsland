@@ -6,7 +6,7 @@ title: Durable auth-event audit binding — the SECURITY DEFINER audit-write pri
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -85,3 +85,11 @@ The Hub wires its four auth callers through this contract (FEAT-H034 STORY-3). T
 ## Performance budget
 
 N/A (no surface). The call sits on auth flows: awaited-but-non-fatal at the BFF with a single-row insert — no measurable budget impact expected; the ADR-U043 gate pass will confirm at the area gate.
+
+## Implementation notes (6-done, 2026-07-31)
+
+Built as migration `20260731190000_adm_a_pc019_auth_event_audit.sql` (PR #355, merged + applied on named approval): `record_auth_event()` exactly per the sketch — strictly additive, append-only untouched. Suite: `hub/tests/integration/auth/auth-event-audit-contracts.test.ts`, 4 demonstrated-red pre-apply (+1 refusal-shaped anon test), 5/5 post-apply. Two build findings recorded:
+1. **STORY-2 upgraded to the real farewell.** The first draft's hand-rolled teardown was refused by `enforce_consent_append_only` — the consent ledger's own guard working as designed — so the test now drives a real anonymous Mist through `record_auth_event` + `explicit_erase_mist` and read-back-proves the actor-less, content-free residue (PR #356).
+2. **Caller action-string correction.** The four live Hub actions are `auth.sign_in`, `account.created`, `identity.transcended`, `mist.explicit_erase` — this spec's earlier prose (and the migration COMMENT's examples) named `auth.sign_up`/`mist.transcend` from the audit register's summary rather than the code. No contract impact (the namespace is open TEXT by design); the wiring (FEAT-H034 STORY-3) preserves the live strings verbatim.
+
+ADM-D inherits three recorded opens: durable failed-attempt/pre-session audit, narrowing the legacy pattern-(c) INSERT policy, and the ADR-U052 §6 export-shape rewrite of the manifest entry (with ADM-16).

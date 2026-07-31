@@ -6,7 +6,7 @@ title: Admin dashboard & durable audit wiring — the permission-gated /admin en
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -92,3 +92,15 @@ The Gimbal inherits the contracts, not this shell — dashboard chrome is Hub sh
 - **First-paint class:** B2 (cold nav) / B3 (warm nav) for `/admin`; data-boot is a **justified standalone read** (admin-only surface, deliberately outside the overview bundle per ADR-U042 guardrail 3).
 - **Interaction class:** refresh affordance — feedback within 100 ms (B5); no other interactions at risk.
 - **Loading states:** skeleton tiles (B6, 1–3 s class); a load beyond 3 s is a defect to fix platform-side, not to spinner over.
+
+## Implementation notes (6-done, 2026-07-31)
+
+**Files:** `app/admin/page.tsx` + `components/admin/{AdminDashboard,StatTile}.tsx` (the trend is deliberately a semantic table, not a chart — v1 wants legible numbers); `app/api/admin/statistics/route.ts` (ADR-U037 read-path identity; 42501→404 existence-hiding map) + `lib/admin/queries.ts`; the gated menu entry in `components/shell/AccountMenu.tsx` (lazy probe of the admin read, sessionStorage-cached — at most one extra request per member per browser session; permission-derived, never a role string).
+
+**Audit wiring (STORY-3):** `lib/audit/audit.ts` gains `persistAuditEntry()` (awaited-but-non-fatal; mirror retained; `A-OPS` naming and the AC-6 TODO gone). All four callers wired with the **live** action strings (`auth.sign_in`, `account.created`, `identity.transcended`, `mist.explicit_erase`). Two ordering/content decisions surfaced at build: the **farewell persists BEFORE the erase** (the only attributable moment; the row survives actor-less per the FEAT-PC019 S2 proof), and the **sign-in email stays out of the durable row** (console mirror keeps it; durable metadata is content-free). The sign-up pending-confirmation edge stays mirror-only, recorded.
+
+**Telemetry (STORY-4):** the durable leg lives in `lib/observability/telemetry-server.ts` — a pure-module split the outer-ring gate forced red-first on its first run (the merged shape put an RPC call in browser-reachable `telemetry.ts`; the GC-7 closure caught it exactly as designed). Adopted by the four auth routes + the admin route. **Enumerated, not silently capped:** 398 `emitTelemetry` sites across 79 BFF route files remain mirror-only — bulk adoption is deliberately NOT taken here because per-request read-route events would dominate the sink's cardinality (ADR-U052 §3's budget); the adoption-criteria question is routed to the area gate.
+
+**Found-not-caused:** 7 pre-existing unit reds (3 notification suites) from COR-C W3's registry-carried response sets — fixtures predated the payload shape; control-run on clean main confirmed, adapted with labels.
+
+**Tests:** unit 1068/1068 (incl. jest-axe on the loaded dashboard; red-first for the new suites), `next build` green, E2E `admin-dashboard.spec.ts` (admin renders live numbers · sign-in's durable row end-to-end · demoted 404 shape). No migration of its own.

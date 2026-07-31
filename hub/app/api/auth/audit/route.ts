@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { recordAuditEntry } from '@/lib/audit/audit';
-import { emitTelemetry } from '@/lib/observability/telemetry';
+import { recordAuditEntry, persistAuditEntry } from '@/lib/audit/audit';
+import { emitDurableTelemetry } from '@/lib/observability/telemetry-server';
 
 /**
  * POST /api/auth/audit — V1 Administration seam for the sign-in action.
@@ -24,7 +24,10 @@ export async function POST() {
     action: 'auth.sign_in',
     props: { email: user.email },
   });
-  emitTelemetry('auth.sign_in_recorded', { actor: user.id });
+  // Durable since ADM-A (FEAT-PC019). Content-free by discipline: the email
+  // stays in the console mirror above; the durable row carries none.
+  await persistAuditEntry(supabase, { action: 'auth.sign_in' });
+  await emitDurableTelemetry(supabase, 'auth.sign_in_recorded', { actor: user.id });
 
   return NextResponse.json({ ok: true });
 }

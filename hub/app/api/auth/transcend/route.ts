@@ -10,8 +10,9 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { finaliseTranscendence, TRANSCENDENCE_POLICY_VERSION } from '@/lib/auth/transcendence';
-import { recordAuditEntry } from '@/lib/audit/audit';
+import { recordAuditEntry, persistAuditEntry } from '@/lib/audit/audit';
 import { emitTelemetry } from '@/lib/observability/telemetry';
+import { emitDurableTelemetry } from '@/lib/observability/telemetry-server';
 
 type TranscendBody = { consentAccepted?: boolean };
 
@@ -64,7 +65,12 @@ export async function POST(request: Request) {
     action: 'identity.transcended',
     props: { consentId: outcome.consentId, policyVersion: TRANSCENDENCE_POLICY_VERSION },
   });
-  emitTelemetry('transcendence.succeeded', {
+  // Durable since ADM-A (FEAT-PC019) — ids only, content-free.
+  await persistAuditEntry(supabase, {
+    action: 'identity.transcended',
+    metadata: { consentId: outcome.consentId, policyVersion: TRANSCENDENCE_POLICY_VERSION },
+  });
+  await emitDurableTelemetry(supabase, 'transcendence.succeeded', {
     actor: user.id,
     personalGroupId: outcome.personalGroupId,
     consentId: outcome.consentId,
