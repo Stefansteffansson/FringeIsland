@@ -24,6 +24,7 @@
     "test:integration:security": "jest tests/integration/security --runInBand --verbose",
     "test:integration:account": "jest tests/integration/account --runInBand --verbose",
     "test:integration:journal": "jest tests/integration/journal --runInBand --verbose",
+    "test:integration:observability": "jest tests/integration/observability --runInBand --verbose",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",

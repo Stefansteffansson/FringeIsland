@@ -23,6 +23,8 @@
 
     "admin_audit_log": { "owner": "PC-4" },
 
+    "telemetry_events": { "owner": "PC-1", "note": "ADM-A FEAT-PC018 (ADR-U052): the V4 sink. RLS deny-all (enabled, zero policies — deliberate, the ds5_config precedent); record_telemetry_event() is the only writer, get_platform_statistics() the only reader. 90-day retention via the telemetry-prune cron job." },
+
     "journeys": { "owner": "DS-3" },
     "journey_steps": { "owner": "DS-3" },
     "journey_step_instances": { "owner": "DS-3" },
@@ -72,7 +74,10 @@
 
   "functions": {
     "PC-1": [
+      "get_platform_statistics",
       "is_platform_admin",
+      "prune_telemetry_events",
+      "record_telemetry_event",
       "update_updated_at_column"
     ],
     "PC-2": [
@@ -182,6 +187,7 @@
       "_enrollment_traveller_standing",
       "_migrate_journey_content_steps",
       "complete_journey_step",
+      "ds3_stats_snapshot",
       "enroll_group_in_journey",
       "enroll_self_in_journey",
       "enter_journey_step",
@@ -281,7 +287,8 @@
       "user_group_roles": { "memberData": true, "representation": "roles section (inline core; added at COR-C W2 — the invariant's first catch: roles held were member data with no export path)" },
       "permissions": { "memberData": false, "reason": "permission catalog" },
       "pending_email_invitations": { "memberData": true, "exemption": { "reason": "transient invitation state: invitee e-mail addresses are third-party data under the own-data wall (the C-E precedent that omits reports' target_group_id); the caller-attributable act resolves into group_memberships on acceptance, which is exported", "citation": "C-E board own-data wall (20260721100000:495-501) + COR-C W2 review 2026-07-31" } },
-      "admin_audit_log": { "memberData": true, "exemption": { "reason": "operational/security log; the member-facing right-of-access shape for audit trails (own actions vs actions about the member by third-party actors) is an A-ADM design question — deferred to the A-ADM area-open design session, alongside TASK-OBS-01's sink decisions", "citation": "COR-C W2 review 2026-07-31; revisit at A-ADM area open" } },
+      "admin_audit_log": { "memberData": true, "exemption": { "reason": "operational/security log; the member-facing right-of-access shape for audit trails (own actions vs actions about the member by third-party actors) is an A-ADM design question — deferred to the A-ADM area-open design session, alongside TASK-OBS-01's sink decisions", "citation": "COR-C W2 review 2026-07-31; revisit at A-ADM area open. DECIDED at that session — ADR-U052 §6 (board AB-4): split by row direction, own-actor rows gain a representation, target-of-admin rows keep a narrowed exemption; THIS ENTRY IS REWRITTEN in cycle ADM-D with ADM-16 (A-ADM plan exit checklist carries the line)" } },
+      "telemetry_events": { "memberData": true, "exemption": { "reason": "operational telemetry under documented legitimate interest: content-free props, actor-linked by personal group, 90-day retention bound, erasure cascades with the personal group (proven in the FEAT-PC018 suite). Bounded retention + no content = no export representation", "citation": "ADR-U052 §4 (2026-07-31, A-ADM board AB-1c)" } },
       "journeys": { "memberData": true, "exemption": { "reason": "communal content templates; the member's LIVED record (enrolments, steps, responses) is exported via the journeys section. Authored-template attribution becomes member-facing when authoring becomes a first-class surface (Studios) — export decision deferred to that wave", "citation": "COR-C W2 review 2026-07-31; ADR-U026 (studios own authoring)" } },
       "journey_steps": { "memberData": false, "reason": "content structure of communal templates" },
       "journey_step_instances": { "memberData": true, "representation": "journeys section (get_own_step_instances_export — own instances + responses)" },
