@@ -4,7 +4,7 @@ import {
   renderableChannels,
   storedOnlyChannels,
   type NotificationPreferenceCell,
-} from '@/lib/notifications/preferences';
+} from '@/lib/notifications/preferences-format';
 
 /**
  * FEAT-H033 — the pure shaping helpers behind the preference matrix.

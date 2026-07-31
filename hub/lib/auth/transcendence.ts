@@ -11,11 +11,13 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-/** The consent policy version captured at transcendence (ADR-U034 open identifier). */
-export const TRANSCENDENCE_POLICY_VERSION = 'v1';
-
-export const TRANSCENDENCE_CONSENT_REQUIRED_ERROR =
-  'Please give your consent to become a FIM and keep your journey.';
+// COR-C W7 (GC-7): the policy constants live in transcendence-policy.ts (pure)
+// so browser importers never value-import this rpc-bearing module. Re-exported
+// here for the server-side callers that take both halves together.
+export {
+  TRANSCENDENCE_POLICY_VERSION,
+  TRANSCENDENCE_CONSENT_REQUIRED_ERROR,
+} from './transcendence-policy';
 
 export type TranscendenceOutcome = {
   userId: string;

@@ -3,12 +3,8 @@
 import { useState } from 'react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { updateProfile } from '@/lib/profile/client';
-import {
-  PROFILE_BIO_MAX_LENGTH,
-  PROFILE_FULL_NAME_MIN_LENGTH,
-  type DisplayPreference,
-  type Profile,
-} from '@/lib/profile/queries';
+import { PROFILE_BIO_MAX_LENGTH, PROFILE_FULL_NAME_MIN_LENGTH } from '@/lib/profile/constants';
+import type { DisplayPreference, Profile } from '@/lib/profile/queries';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 import { TextField } from '@/components/ui/TextField';
 import { Button } from '@/components/ui/Button';
