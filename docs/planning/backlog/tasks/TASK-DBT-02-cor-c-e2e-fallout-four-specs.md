@@ -3,7 +3,7 @@
 ---
 id: TASK-DBT-02
 title: Adjudicate + adapt four E2E specs failing on main since COR-C — the close ran integration/unit/build but no full E2E sweep, so the fallout sat latent until the ADM-A sweep
-status: todo
+status: done  # closed 2026-08-01 (ADM-B hygiene block): all four adjudicated canonical-wins — 1 spec-behind-W-04, 2 asks-split intended (premises reconciled), 3 joined count copy, 4 NOT transient (platform-wide .in() URL ceiling at 398 grants, fixed structurally); sweep 93/93 green twice consecutively; the E2E-at-schema-close process question stays flagged for the area gate
 assigned_to: claude
 priority: high
 feature: none  # debt — A-NTF/A-GRP surface specs vs post-COR-C canonical behavior

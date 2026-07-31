@@ -108,18 +108,17 @@ async function seedActingHolder(groupId: string, pgId: string, addedBy: string) 
     .single();
   if (pErr) throw new Error(`act_as_group permission lookup: ${pErr.message}`);
 
-  const { data: grants, error: gErr } = await admin
-    .from('group_role_permissions')
-    .select('group_role_id')
-    .eq('permission_id', perm.id)
-    .eq('granted', true);
-  if (gErr) throw new Error(`act_as_group grants lookup: ${gErr.message}`);
-
+  // TASK-DBT-02 adjudication: the old shape fetched EVERY act_as_group grant
+  // platform-wide (398 rows and growing) and stuffed the ids into one .in()
+  // — a URL that grew until undici refused it ("fetch failed", deterministic
+  // once past the ceiling, masquerading as a transient). Group-scoped
+  // embedded filter instead: tiny regardless of platform data.
   const { data: roles, error: rErr } = await admin
     .from('group_roles')
-    .select('id')
+    .select('id, group_role_permissions!inner(permission_id, granted)')
     .eq('group_id', groupId)
-    .in('id', (grants ?? []).map((g) => g.group_role_id as string));
+    .eq('group_role_permissions.permission_id', perm.id)
+    .eq('group_role_permissions.granted', true);
   if (rErr) throw new Error(`acting role lookup: ${rErr.message}`);
   if (!roles || roles.length !== 1) {
     throw new Error(`expected exactly one act_as_group role on ${groupId}, got ${roles?.length}`);

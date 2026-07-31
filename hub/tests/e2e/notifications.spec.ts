@@ -182,7 +182,12 @@ test.describe.serial('FEAT-H030 — notification bell, dropdown & inbox (NTF-1/2
     await expect(unreadRow).toBeVisible({ timeout: 15000 });
     await unreadRow.getByRole('button').first().click();
 
-    await expect(inviteePage).toHaveURL(new RegExp(`/groups/${groupId}`), { timeout: 15000 });
+    // TASK-DBT-02 adjudication (canonical-wins): W-04 made /groups the kind's
+    // ANSWER PATH — "an explicit answering surface wins over the row's group,
+    // because arriving at a page that cannot answer the question is the defect
+    // W-04 named" (client.ts). The old /groups/<id> expectation was the
+    // pre-W-04 dead end; the spec was behind canon, not the code.
+    await expect(inviteePage).toHaveURL(/\/groups$/, { timeout: 15000 });
     // The badge follows the click without a reload — the sync contract spoken.
     await expect(badge).toBeHidden({ timeout: 15000 });
 

@@ -3,7 +3,7 @@
 ---
 id: TASK-INT-05
 title: Playwright fixtures leave groups joined to the DeusEx system group — 39 and counting
-status: open
+status: done  # closed 2026-08-01 (ADM-B hygiene block): teardown per spec (throwing — the swallow decided against), leak instrument in globals, 45 relics retired, two full sweeps at delta 0
 assigned_to: claude
 priority: high
 feature: none

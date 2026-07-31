@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, cleanupE2EGroup } from './helpers/auth';
 
 /**
  * FEAT-H018 (E2E) — Cycle G-F: group-of-groups, wielded end-to-end.
@@ -99,7 +99,19 @@ async function deusExGroupId(): Promise<string> {
   return data.id as string;
 }
 
+const createdGroupIds: string[] = [];
+
 test.describe('FEAT-H018 — group-of-groups (Cycle G-F)', () => {
+  test.afterAll(async () => {
+    // TASK-INT-05: the spec that creates a group deletes it — INCLUDING the
+    // one it handed to FringeIsland (the hand-over behaviour under test is
+    // untouched; only the residue goes). Reverse creation order; a refusal
+    // THROWS and fails the suite — never a console line.
+    for (const id of [...createdGroupIds].reverse()) {
+      await cleanupE2EGroup(id);
+    }
+    createdGroupIds.length = 0;
+  });
   test('a group is invited, answers through its wielder, and withdraws (STORY-1/2/3)', async ({
     browser,
   }) => {
@@ -118,6 +130,7 @@ test.describe('FEAT-H018 — group-of-groups (Cycle G-F)', () => {
 
     const groupB = await createGroupViaUi(pageB, `E2E GF Byalaget ${stamp}`);
     const groupA = await createGroupViaUi(pageA, `E2E GF Familjen ${stamp}`);
+    createdGroupIds.push(groupB, groupA);
     await makePublic(groupA); // admission targets are public (PC015 Open Q1)
     await makePublic(groupB); // so A's wielder can visit B's page for the selector
 
@@ -207,6 +220,7 @@ test.describe('FEAT-H018 — group-of-groups (Cycle G-F)', () => {
     const page = await ctx.newPage();
     await signIn(page, fims.gracy.email);
     const groupC = await createGroupViaUi(page, `E2E GF Nya gruppen ${stamp}`);
+    createdGroupIds.push(groupC);
 
     // The caretaker joins substrate-side (the post-fallback shape).
     const deusEx = await deusExGroupId();
@@ -224,7 +238,11 @@ test.describe('FEAT-H018 — group-of-groups (Cycle G-F)', () => {
       timeout: 15000,
     });
     // Count copy keys on the non-system count: one human, one caretaker.
-    await expect(page.getByText(/^1 member$/)).toBeVisible();
+    // TASK-DBT-02 adjudication: the count and the caretaker notice render as
+    // ONE joined paragraph — "1 member · FringeIsland is looking after this
+    // group" — honest copy the ^...$-anchored locator could never match. The
+    // count anchor stays (exactly one non-system member); the suffix is free.
+    await expect(page.getByText(/^1 member\b/)).toBeVisible();
     // The last human alone with the caretaker sees Close (the retired wall).
     await expect(page.getByTestId('close-group')).toBeVisible();
 

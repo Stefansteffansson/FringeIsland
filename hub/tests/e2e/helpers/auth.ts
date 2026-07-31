@@ -125,6 +125,47 @@ export async function deleteE2EUser(admin: SupabaseClient, email: string): Promi
  * yanks the spec into the player. Arrival flows belong to
  * onboarding-arrival.spec, which uses fresh un-arrived identities.
  */
+/** TASK-INT-05 — E2E group teardown. THROWS on refusal (decided deliberately:
+ *  a teardown failure is a suite failure, never a console line — a swallowed
+ *  refusal is exactly how 39 caretaker memberships accumulated unseen).
+ *  Order mirrors the integration-tier precedent: roles, then memberships in
+ *  both directions, then enrolments, then the group row. */
+export async function cleanupE2EGroup(groupId: string): Promise<void> {
+  // The proven integration-tier path (cleanupTestGroup): owned journeys first,
+  // then the GROUP ROW — FK CASCADE takes memberships/roles/enrolments. A
+  // direct role-row delete is refused by prevent_last_leader_removal (the
+  // last-Steward wall holds even for service-role SQL — found when the first
+  // draft of this helper hit it); the cascade path is the sanctioned door.
+  await runAdminSql(`
+    DELETE FROM public.journeys WHERE created_by_group_id = '${groupId}';
+    DELETE FROM public.groups WHERE id = '${groupId}';
+  `);
+}
+
+/** TASK-INT-05 — the leak instrument: E2E-named groups holding the DeusEx
+ *  system group as a member, counted before and after a full run. Derived from
+ *  membership rows (the name filter is fixture-scoping only, never load-bearing
+ *  logic — the FEAT-PC020 rule). */
+export async function countDeusExE2ELeaks(admin: SupabaseClient): Promise<number> {
+  const { data: deusex, error: dErr } = await admin
+    .from('groups')
+    .select('id')
+    .eq('name', 'DeusEx')
+    .eq('group_type', 'system')
+    .single();
+  if (dErr) throw new Error(`DeusEx lookup: ${dErr.message}`);
+  const { count, error } = await admin
+    .from('group_memberships')
+    .select('group_id, groups!group_memberships_group_id_fkey!inner(name)', {
+      count: 'exact',
+      head: true,
+    })
+    .eq('member_group_id', deusex.id)
+    .like('groups.name', 'E2E%');
+  if (error) throw new Error(`leak count: ${error.message}`);
+  return count ?? 0;
+}
+
 export async function markArrivedOnce(admin: SupabaseClient, authUserId: string): Promise<void> {
   const { data: profile } = await admin
     .from('users')
