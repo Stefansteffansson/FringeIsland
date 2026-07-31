@@ -78,31 +78,40 @@ export function isActionable(row: ActionableFields, now: Date = new Date()): boo
   return true;
 }
 
-/** A response the surface offers on an actionable row. `accept` maps to the
- *  dispatch route's boolean body (Ferd's contracts are accept/decline-shaped). */
-export interface NotificationResponse {
-  key: string;
-  label: string;
-  intent: 'primary' | 'danger' | 'neutral';
-  accept: boolean;
-}
+import type { NotificationResponse } from '@/lib/notifications/queries';
+
+export type { NotificationResponse } from '@/lib/notifications/queries';
+
+const RESPONSE_INTENTS: ReadonlySet<string> = new Set(['primary', 'danger', 'neutral']);
 
 /**
- * Data-driven response registry keyed by `action_type` — NOT a sealed pair.
- * A new action_type (or a richer response set) is a new entry here, never a
- * component rewrite; an unrecognised action_type yields no responses, so the
- * row falls back to the passive read-only render (ADR-U051 / U008 open-set).
+ * The responses a row offers — COR-C W3 (AC3-5): the registry lives
+ * platform-side (`notification_action_types`, carried per row by
+ * `get_own_notifications`); this is a rendering-only validator, no local map.
+ * A passive row, an absent set, or a malformed entry yields no responses, so
+ * the row falls back to the read-only render (ADR-U051 / U008 open-set); an
+ * unrecognised intent degrades to 'neutral' rather than crashing the render.
  */
-const RESPONSE_SETS: Record<string, NotificationResponse[]> = {
-  accept_decline: [
-    { key: 'accept', label: 'Accept', intent: 'primary', accept: true },
-    { key: 'decline', label: 'Decline', intent: 'danger', accept: false },
-  ],
-};
-
-export function notificationResponses(actionType: string | null): NotificationResponse[] {
-  if (actionType == null) return [];
-  return RESPONSE_SETS[actionType] ?? [];
+export function notificationResponses(
+  row: Pick<ActionableFields, 'action_type'> & { responses?: unknown },
+): NotificationResponse[] {
+  if (row.action_type == null || !Array.isArray(row.responses)) return [];
+  return (row.responses as Array<Record<string, unknown> | null>)
+    .filter(
+      (r): r is Record<string, unknown> =>
+        r != null &&
+        typeof r.key === 'string' &&
+        typeof r.label === 'string' &&
+        typeof r.accept === 'boolean',
+    )
+    .map((r) => ({
+      key: r.key as string,
+      label: r.label as string,
+      accept: r.accept as boolean,
+      intent: RESPONSE_INTENTS.has(r.intent as string)
+        ? (r.intent as NotificationResponse['intent'])
+        : 'neutral',
+    }));
 }
 
 /** The first whitespace-delimited token of a display name (nickname render). */

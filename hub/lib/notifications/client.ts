@@ -96,19 +96,18 @@ export async function markAllNotificationsRead(): Promise<number> {
 
 // --- typed-action dispatch (N-B, FEAT-H031) ----------------------------------
 
-/** A notification's dedicated response-route segment, keyed by kind. NB-1
- *  thin-dispatch: the surface calls the existing dedicated handler's route, not
- *  a generic dispatcher. A kind absent here is not answerable in the bell. */
-const DISPATCH_SEGMENTS: Record<string, string> = {
-  stewardship_nomination: 'nomination-response', // FEAT-H017 route (reused)
-  acting_invitation: 'acting-response', // FEAT-H031 route (new)
-};
-
-/** The full BFF response route for a notification kind + id, or null when the
- *  kind has no dispatch route (the row renders passively). */
-export function notificationDispatchRoute(kind: string, id: string): string | null {
-  const segment = DISPATCH_SEGMENTS[kind];
-  return segment ? `/api/notifications/${encodeURIComponent(id)}/${segment}` : null;
+/** The full BFF response route for a notification row, or null when the row's
+ *  kind has no dispatch target (it renders passively). COR-C W3 (AC3-5): the
+ *  segment is PLATFORM data — `notification_kinds.dispatch_segment`, carried
+ *  per row by `get_own_notifications` — never a local kind map. NB-1
+ *  thin-dispatch: the segment names the dedicated handler's route, not a
+ *  generic dispatcher. */
+export function notificationDispatchRoute(
+  row: Pick<NotificationRow, 'id' | 'dispatch_segment'>,
+): string | null {
+  return row.dispatch_segment
+    ? `/api/notifications/${encodeURIComponent(row.id)}/${encodeURIComponent(row.dispatch_segment)}`
+    : null;
 }
 
 /** Where a kind is ANSWERED, when it cannot be answered in the row itself.
@@ -148,10 +147,10 @@ export interface NotificationResponseResult {
  *  kind to the dedicated handler and drops the unread cache on success. Throws
  *  (never silently no-ops) for an unroutable kind or a server error. */
 export async function respondToNotification(
-  row: Pick<NotificationRow, 'id' | 'kind'>,
+  row: Pick<NotificationRow, 'id' | 'kind' | 'dispatch_segment'>,
   accept: boolean,
 ): Promise<NotificationResponseResult> {
-  const route = notificationDispatchRoute(row.kind, row.id);
+  const route = notificationDispatchRoute(row);
   if (!route) throw new Error(`No response route for notification kind "${row.kind}"`);
   const res = await fetch(route, {
     method: 'POST',

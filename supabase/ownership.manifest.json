@@ -58,6 +58,10 @@
       "owner": "DS-5",
       "note": "FEAT-PD016 (N-D): the open registry of delivery channels (in_app delivering, email stored-but-not-delivering). Classified DS-5 rather than vertical:notifications — unlike the kind/category catalogs, which describe WHAT the platform may say and are FK'd by the delivery table, this describes HOW the routing layer delivers, which is DS-5's half of the ADR-U002 boundary (the ds5_config rationale). Ruling R-4 (COR-C W4, 2026-07-31) settled the family this note used to flag: all three routing registries (channels, categories, kinds) are DS-5; only the delivery table itself stays vertical:notifications."
     },
+    "notification_action_types": {
+      "owner": "DS-5",
+      "note": "COR-C W3 (ADR-U051 + Amendment 1, AC3-5): the response-set registry keyed by action_type — the typed-action layer as platform data, sibling of the kind/category catalogs. DS-5 like its registry siblings (ruling R-4's family). RLS-enabled, no policies — read only via get_own_notifications."
+    },
     "notification_preferences": {
       "owner": "DS-5",
       "note": "FEAT-PD016 (N-D): per-member x per-category x per-channel preferences; absence of a row means allowed. DS-5 per the 2026-07-26 preference-home adjudication (board row ND-1), which ruled out Platform Core because the category_key FK would have pointed Core → Domain (docs/platform/CLAUDE.md:38). Deliberately classified DS-5 rather than vertical:notifications so the table lands in dsTables() and IS policed by the internal-API conformance gate: the whole point of ND-1 was keeping Core out of this substrate, so a future Core function reaching in must fail a test rather than pass unseen. Consent is unmoved (PC-2 substrate / PC-4 contract, ADR-U034)."
@@ -291,6 +295,7 @@
       "notification_categories": { "memberData": false, "reason": "category registry" },
       "notification_kinds": { "memberData": false, "reason": "kind registry" },
       "notification_channels": { "memberData": false, "reason": "channel registry" },
+      "notification_action_types": { "memberData": false, "reason": "response-set registry (COR-C W3)" },
       "notification_preferences": { "memberData": true, "representation": "notification_preferences section (get_own_notification_preferences_export; composed at COR-C W2 — AC3-3, the section the audit found orphaned)" }
     }
   },

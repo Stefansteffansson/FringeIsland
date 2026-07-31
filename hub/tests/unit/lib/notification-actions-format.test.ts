@@ -55,18 +55,46 @@ describe('isActionable', () => {
   });
 });
 
-describe('notificationResponses (data-driven, extensible — no sealed set)', () => {
-  it('accept_decline yields Accept + Decline mapped to the accept boolean', () => {
-    const rs = notificationResponses('accept_decline');
+describe('notificationResponses (platform-registered — COR-C W3 AC3-5, no local map)', () => {
+  const PLATFORM_RESPONSES = [
+    { key: 'accept', label: 'Accept', intent: 'primary', accept: true },
+    { key: 'decline', label: 'Decline', intent: 'danger', accept: false },
+  ];
+
+  it('renders the row-carried response set mapped to the accept boolean', () => {
+    const rs = notificationResponses({
+      action_type: 'accept_decline',
+      responses: PLATFORM_RESPONSES,
+    });
     expect(rs.map((r) => r.key)).toEqual(['accept', 'decline']);
     expect(rs.find((r) => r.key === 'accept')!.accept).toBe(true);
     expect(rs.find((r) => r.key === 'decline')!.accept).toBe(false);
   });
-  it('an unrecognised action_type yields no responses (safe passive fallback)', () => {
-    expect(notificationResponses('some_future_kind')).toEqual([]);
+  it('a response set this surface has never heard of still renders — registration is platform data, not a client map', () => {
+    const rs = notificationResponses({
+      action_type: 'severity_triage',
+      responses: [{ key: 'urgent', label: 'Urgent', intent: 'danger', accept: true }],
+    });
+    expect(rs.map((r) => r.key)).toEqual(['urgent']);
   });
-  it('a null action_type yields no responses', () => {
-    expect(notificationResponses(null)).toEqual([]);
+  it('an actionable row the platform sent no responses for yields none (safe passive fallback)', () => {
+    expect(
+      notificationResponses({ action_type: 'some_future_kind', responses: null }),
+    ).toEqual([]);
+  });
+  it('a passive row yields no responses', () => {
+    expect(notificationResponses({ action_type: null, responses: null })).toEqual([]);
+  });
+  it('malformed entries are dropped and an unknown intent degrades to neutral — bad data never crashes the render', () => {
+    const rs = notificationResponses({
+      action_type: 'accept_decline',
+      responses: [
+        { key: 'ok', label: 'OK', intent: 'sparkly', accept: true },
+        { key: 42, label: 'Broken', accept: true },
+        null,
+      ],
+    });
+    expect(rs).toEqual([{ key: 'ok', label: 'OK', intent: 'neutral', accept: true }]);
   });
 });
 

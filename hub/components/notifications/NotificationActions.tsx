@@ -33,7 +33,7 @@ export function NotificationActions({
   row: NotificationRow;
   onRespond: (row: NotificationRow, response: NotificationResponse) => Promise<void>;
 }) {
-  const responses = notificationResponses(row.action_type);
+  const responses = notificationResponses(row);
   const [pending, setPending] = useState<NotificationResponse | null>(null);
   const [busy, setBusy] = useState(false);
 
