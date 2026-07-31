@@ -9,7 +9,7 @@ priority: high
 feature: none  # debt — A-NTF/A-GRP surface specs vs post-COR-C canonical behavior
 owner: hub
 wave: ferd
-cycle: unscheduled — next A-ADM cycle open or the area gate, whichever first
+cycle: ADM-B — the cycle's opening hygiene block, paired with TASK-INT-05 (Stefan, 2026-08-01, with the ADR-U052 acceptance: "plan together"); both restore a green, leak-free E2E baseline before ADM-B's own E2E lands
 depends_on: []
 estimated_hours: 4
 ---
