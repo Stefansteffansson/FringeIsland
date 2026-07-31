@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMA-05
 title: Docs tail of Cycle ADM-A — V4 Observability spec de-scaffolded per ADR-U052, PERF-MEASUREMENT-LEDGER.md seeded, TASK-OBS-01 closed
-status: todo
+status: done  # executed 2026-07-31: V4 reconciled to ADR-U052 (premise was stale — spec was already populated), ledger seeded, G-03 narrowed, TASK-OBS-01 closed
 assigned_to: claude
 priority: medium
 feature: none  # documentation obligations from ADR-U052 / board AB-1

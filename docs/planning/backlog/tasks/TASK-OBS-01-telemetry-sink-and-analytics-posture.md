@@ -3,7 +3,7 @@
 ---
 id: TASK-OBS-01
 title: Telemetry sink & analytics posture — durable store vs log-drain, retention, actor-linkage consent, what ADM-1 aggregates; settle at the A-ADM area-open design session
-status: in_progress  # board settled 2026-07-31 (AB-1a..d); ADR-U052 drafted; FEATs created; closure rides TASK-ADMA-05
+status: done  # closed 2026-07-31 via TASK-ADMA-05: ADR-U052 realized (FEAT-PC018 applied), V4 spec reconciled, ledger seeded, G-03 narrowed
 assigned_to: claude
 priority: medium
 feature: none  # design-session prep — outputs are a decision board + likely ADR + V4 spec de-scaffolding, not a FEAT build
@@ -26,8 +26,8 @@ Prepare a decision board (the G-F/C-D precedent — all decisions at once, recom
 
 ## Acceptance criteria
 - [x] Decision board prepared and settled with Stefan (A-ADM board AB-1a..d, 2026-07-31, "go with recommended"; [ADR-U052](../../../architecture/decisions/ADR-U052-telemetry-sink-and-analytics-posture.md) drafted, Proposed)
-- [ ] V4 vertical spec §§3-6 de-scaffolded per the decision (G-03 closed or explicitly narrowed)
-- [ ] The purpose/consent disposition recorded (V2 + ADR-U034)
+- [x] V4 vertical spec §§3-6 de-scaffolded per the decision (already substantively populated 2026-06-12 — the premise was stale; reconciled to ADR-U052 realizations 2026-07-31; G-03 explicitly narrowed in gaps.md)
+- [x] The purpose/consent disposition recorded (ADR-U052 §4: LI for operational, "analytics/optimization" a registered-but-dormant ADR-U034 purpose)
 - [x] Follow-on FEAT specs created under the normal decomposition path (FEAT-PC018 / FEAT-PC019 / FEAT-H034, all 4-ready 2026-07-31) — this task itself builds nothing
 
 ## Technical notes
