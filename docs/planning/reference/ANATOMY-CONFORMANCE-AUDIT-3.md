@@ -52,7 +52,7 @@ Cycle COR-C executed 2026-07-31 per the [plan](../hub-v2/anatomy-correction-plan
 | AC3-7 | **CLOSED** — PR #343 merged (@theme token seed; ui/ migrated; fork resolved to indigo) | token utilities verified in built CSS |
 | GC-1 / GC-2 / GC-7+AC3-12 / GC-8(ADD) / GC-12(token) / AC3-10 / AC3-O3 | **CLOSED** — PR #344 merged. GC-8's first run found a SECOND unlicensed edge (`notify_notification_hint`) — licensed under U048A1. GC-7's closure found three bundle-leak value-imports — fixed by pure-module splits. AC3-10's four declared in the GC-1 CORE seed | `function-classification-completeness` / `trigger-mount-conformance` / `token-gate` tests; `supabase/migrations/README.md` |
 | GC-12(a11y) / GC-11 | **CLOSED** — PR #345 merged 2026-07-31 (jest-axe gate 7/7; doc-health Section 4.5 live) | on main |
-| GC-13 / AC3-O5 | **CARRIED** to the A-ADM area-open board, per the plan (not forced) | — |
+| GC-13 / AC3-O5 | **CLOSED** — board AB-3 ruled full four-way split (2026-07-31); TASK-ADMA-01 executed same-day, red-first: the flat CORE seed split into PC-1 (2) / PC-2 (20) / PC-3 (62) / PC-4 (14) with judgment calls recorded in `functionsNote`; split + `admin_* → PC-4` pin gated; `classifyReferences` core-class widened to `CORE\|PC-\d` | `function-classification-completeness.test.ts` (2 former reds green); platform gates 38/38 |
 
 ---
 

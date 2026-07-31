@@ -128,6 +128,10 @@ export function classifyReferences(fnName: string, body: string): Violation[] {
   const m = loadOwnershipManifest();
   const clean = stripComments(body ?? '');
   const owner = functionOwner(fnName);
+  // Core-class = the four PC areas (the ADM-A GC-13 split, TASK-ADMA-01) plus
+  // the fail-closed CORE fallback for anything unclassified. All carry the
+  // strictest rule: no DS-owned table, vertical-composition carve-out excepted.
+  const coreClass = owner === 'CORE' || /^PC-\d$/.test(owner);
 
   const referenced = dsTables().filter((t) =>
     new RegExp(`\\bpublic\\.${t}\\b`, 'i').test(clean),
@@ -143,7 +147,7 @@ export function classifyReferences(fnName: string, body: string): Violation[] {
     const tOwner = tableOwner(table);
     if (!tOwner || tOwner === owner) continue; // own service — always fine
 
-    if (owner === 'CORE') {
+    if (coreClass) {
       // ADR-U047 Amendment 2: a platform function fulfilling a cross-cutting
       // vertical obligation may compose domain READ contracts. Cited per
       // function in the manifest, never a blanket Core exemption.
