@@ -29,12 +29,12 @@ export function SkeletonGrid({ cards = 6, delay = 300 }: { cards?: number; delay
       {Array.from({ length: cards }, (_, i) => (
         <div
           key={i}
-          className="animate-pulse rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
+          className="animate-pulse rounded-xl border border-edge-faint bg-surface p-6 shadow-sm"
         >
-          <div className="h-5 w-2/3 rounded bg-gray-200" />
-          <div className="mt-3 h-4 w-full rounded bg-gray-100" />
-          <div className="mt-2 h-4 w-5/6 rounded bg-gray-100" />
-          <div className="mt-4 h-3 w-1/3 rounded bg-gray-100" />
+          <div className="h-5 w-2/3 rounded bg-skeleton" />
+          <div className="mt-3 h-4 w-full rounded bg-skeleton-soft" />
+          <div className="mt-2 h-4 w-5/6 rounded bg-skeleton-soft" />
+          <div className="mt-4 h-3 w-1/3 rounded bg-skeleton-soft" />
         </div>
       ))}
     </div>

@@ -21,14 +21,14 @@ export function TextField({
   const errorId = `${fieldId}-error`;
   return (
     <div className="mb-4">
-      <label htmlFor={fieldId} className="mb-1 block text-sm font-medium text-gray-700">
+      <label htmlFor={fieldId} className="mb-1 block text-sm font-medium text-ink-mid">
         {label}
       </label>
       <input
         id={fieldId}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
-        className={`w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none ${className}`}
+        className={`w-full rounded-lg border border-edge px-3 py-2 focus:border-primary focus:outline-none ${className}`}
         {...props}
       />
       {error && (

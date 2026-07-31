@@ -19,7 +19,7 @@ export function Spinner({ className = '' }: { className?: string }) {
   return (
     <div
       aria-hidden="true"
-      className={`inline-block h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent ${className}`}
+      className={`inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent ${className}`}
     />
   );
 }
@@ -43,7 +43,7 @@ export function LoadingState({ label = 'Loading...', delay = 300 }: { label?: st
       className="hub-loading-fade-in flex flex-col items-center justify-center py-12 text-center"
     >
       <Spinner />
-      <p className="mt-4 text-gray-600">{label}</p>
+      <p className="mt-4 text-ink-muted">{label}</p>
     </div>
   );
 }

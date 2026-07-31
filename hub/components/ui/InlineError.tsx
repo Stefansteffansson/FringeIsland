@@ -6,9 +6,9 @@ export function InlineError({ message, id }: { message: string; id?: string }) {
       id={id}
       role="alert"
       data-testid="inline-error"
-      className="rounded-lg border border-red-200 bg-red-50 p-3"
+      className="rounded-lg border border-danger-edge bg-danger-soft p-3"
     >
-      <p className="text-sm text-red-600">{message}</p>
+      <p className="text-sm text-danger">{message}</p>
     </div>
   );
 }

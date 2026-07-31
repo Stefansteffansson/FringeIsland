@@ -97,7 +97,7 @@ export function AccountMenu() {
           key: 'sign-out',
           label: 'Sign out',
           onSelect: handleSignOut,
-          className: 'text-red-600 hover:bg-red-50 focus:bg-red-50',
+          className: 'text-danger hover:bg-danger-soft focus:bg-danger-soft',
         },
       ]}
     />
