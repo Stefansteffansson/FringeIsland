@@ -45,7 +45,7 @@ The failure was caught on **run 4 of 8** consecutive full-directory runs (runs 1
 
 **Why it looked order-dependent, and wasn't.** It is per-call failure probability times call volume. `preference-and-dispatcher-contracts.test.ts` alone makes **25+** `runAdminSql` calls, and a full directory run makes many times that; the isolated file makes few enough to almost never hit a reset. That reproduces the observed profile exactly — ~2 in 5 in fleet, 25/25 in isolation — with no ordering, no state leakage, and no involvement of any notification kind. Transport-error counts across the captured runs: **0, 0, 0, 1** — the 1 being the only failing run.
 
-Same class as [`TASK-INT-01`](./TASK-INT-01-dev-db-auth-admin-es256-flake.md)'s ES256 flake: an upstream dev-DB infrastructure fault, not a product defect.
+Same class as [`TASK-INT-01`](./TASK-INT-01-auth-admin-es256-flake.md)'s ES256 flake: an upstream dev-DB infrastructure fault, not a product defect.
 
 ## Fix applied
 
