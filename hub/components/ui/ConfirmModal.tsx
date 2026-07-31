@@ -58,10 +58,10 @@ export function ConfirmModal({
 
   const confirmClass =
     variant === 'danger'
-      ? 'bg-red-600 hover:bg-red-700'
+      ? 'bg-danger hover:bg-danger-hover'
       : variant === 'warning'
-        ? 'bg-yellow-600 hover:bg-yellow-700'
-        : 'bg-blue-600 hover:bg-blue-700';
+        ? 'bg-warning hover:bg-warning-hover'
+        : 'bg-primary hover:bg-primary-hover';
 
   return (
     <div
@@ -78,9 +78,9 @@ export function ConfirmModal({
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={busy ? undefined : onCancel}
       />
-      <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-        <h2 className="mb-2 text-center text-2xl font-bold text-gray-900">{title}</h2>
-        <p className="mb-6 text-center text-gray-600">{message}</p>
+      <div className="relative w-full max-w-md rounded-2xl bg-surface p-6 shadow-2xl">
+        <h2 className="mb-2 text-center text-2xl font-bold text-ink">{title}</h2>
+        <p className="mb-6 text-center text-ink-muted">{message}</p>
         <div className="flex gap-3">
           <button
             ref={cancelRef}
@@ -88,7 +88,7 @@ export function ConfirmModal({
             data-testid="confirm-modal-cancel"
             onClick={onCancel}
             disabled={busy}
-            className="flex-1 rounded-lg border-2 border-gray-300 px-4 py-3 font-semibold text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex-1 rounded-lg border-2 border-edge px-4 py-3 font-semibold text-ink-mid transition-colors hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-50"
           >
             {cancelText}
           </button>

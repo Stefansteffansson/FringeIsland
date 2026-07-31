@@ -29,20 +29,20 @@ export interface MenuEntry {
   className?: string;
 }
 
-/** Colour left to the entry (default gray) so overrides like the destructive
+/** Colour left to the entry (default ink) so overrides like the destructive
  *  sign-out row never fight the base class for the same utility slot. */
 const ITEM_CLASS =
-  'block w-full px-4 py-2 text-left text-sm transition-colors hover:bg-gray-50 focus:bg-gray-50 focus:outline-none';
+  'block w-full px-4 py-2 text-left text-sm transition-colors hover:bg-surface-muted focus:bg-surface-muted focus:outline-none';
 
 export function Menu({
   buttonContent,
   buttonAriaLabel,
   buttonClassName =
-    'flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100',
+    'flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink-mid transition-colors hover:bg-surface-hover',
   menuLabel,
   items,
   menuClassName =
-    'absolute right-0 z-40 mt-2 w-48 rounded-lg border border-gray-200 bg-white py-2 shadow-xl',
+    'absolute right-0 z-40 mt-2 w-48 rounded-lg border border-edge-soft bg-surface py-2 shadow-xl',
 }: {
   buttonContent: ReactNode;
   buttonAriaLabel: string;
@@ -135,7 +135,7 @@ export function Menu({
               const shared = {
                 role: 'menuitem' as const,
                 tabIndex: index === activeIndex ? 0 : -1,
-                className: `${ITEM_CLASS} ${item.className ?? 'text-gray-700'}`,
+                className: `${ITEM_CLASS} ${item.className ?? 'text-ink-mid'}`,
                 onFocus: () => setActiveIndex(index),
               };
               return item.href ? (
