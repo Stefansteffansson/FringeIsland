@@ -43,5 +43,14 @@ Stefan gave the full rulings board 2026-07-31 ("go with recommended"; AC3-16 = A
 - [x] Session bridge (this file)
 - [x] `npm run dashboard` — refreshed
 - [x] Discovery sweep — run at session open (clean) and close
-- [x] doc-health-check — run at the same-day gate-close (delegated audit over the cross-cutting changes; findings dispositioned in the close summary)
+- [x] doc-health-check — run at the same-day gate-close (delegated audit; 3 minor findings fixed in PR #349; Section 1.6 flagged for a follow-up run)
 - [x] COR-C retro — [`retro-2026-07-31-cor-c.md`](../retrospectives/retro-2026-07-31-cor-c.md)
+
+## Post-close addendum — audit cadence going forward (PROPOSED, Stefan to ratify)
+
+Discussed at session close (2026-07-31), not yet ratified — carry to the A-ADM area-open board or the Ferd wave boundary:
+
+- **Gates are the always-on audit** — the COR-A/B/C lattice now mechanically covers most previously-audited dimensions on every suite run.
+- **After big builds:** bounded delta-audit of un-gated corners only (new mechanism classes, canon-vs-code judgment calls), not a full six-dimension sweep.
+- **One more FULL audit after A-ADM closes** (most security-sensitive area; ends Phase 3, right before cutover), then full audits only at structural inflection points (Eid design-system build-out, new DS activations, the Gimbal).
+- **Standing rule:** every audit must convert findings into gates, or the class recurs; periodic judgment passes audit the gates themselves (the GC-table lesson).
