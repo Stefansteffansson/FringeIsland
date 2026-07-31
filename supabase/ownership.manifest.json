@@ -47,16 +47,16 @@
     },
 
     "notification_categories": {
-      "owner": "vertical:notifications",
-      "note": "FEAT-PD013 (N-A): the V3 §6 category catalog — vertical-levied substrate beside the delivery table (lawful basis + interruption grade). Classified with the delivery table so the notifications.type FK stays inside the vertical's own substrate; DS-5 reads it as routing input. Gate-review flag: alternative classification DS-5."
+      "owner": "DS-5",
+      "note": "FEAT-PD013 (N-A): the V3 §6 category catalog (lawful basis + interruption grade). Relabelled vertical:notifications → DS-5 at COR-C W4 (Audit III ruling R-4, 2026-07-31): these rows are precisely the routing inputs ds5_may_deliver reads, and ADR-U048 clause 2 assigns routing metadata to DS-5. The DS-5 label puts the table in dsTables(), so a non-DS-5 reach-in now fails the inner-ring gate — under the vertical label it sat ungated. The notifications.type FK pointing here is delivery-substrate → routing-registry, data-level and one-way; the function-body gate is unaffected by FKs."
     },
     "notification_kinds": {
-      "owner": "vertical:notifications",
-      "note": "FEAT-PD013 (N-A): the notification-event kinds registry (kind → category). Same classification rationale as notification_categories."
+      "owner": "DS-5",
+      "note": "FEAT-PD013 (N-A): the notification-event kinds registry (kind → category). Relabelled vertical:notifications → DS-5 at COR-C W4 (Audit III ruling R-4, 2026-07-31) — same rationale as notification_categories. The pinned vertical-set test in ownership-manifest-conformance.test.ts states the boundary."
     },
     "notification_channels": {
       "owner": "DS-5",
-      "note": "FEAT-PD016 (N-D): the open registry of delivery channels (in_app delivering, email stored-but-not-delivering). Classified DS-5 rather than vertical:notifications — unlike the kind/category catalogs, which describe WHAT the platform may say and are FK'd by the delivery table, this describes HOW the routing layer delivers, which is DS-5's half of the ADR-U002 boundary (the ds5_config rationale). Gate-review flag: alternative classification vertical:notifications, alongside its FK sibling notification_categories."
+      "note": "FEAT-PD016 (N-D): the open registry of delivery channels (in_app delivering, email stored-but-not-delivering). Classified DS-5 rather than vertical:notifications — unlike the kind/category catalogs, which describe WHAT the platform may say and are FK'd by the delivery table, this describes HOW the routing layer delivers, which is DS-5's half of the ADR-U002 boundary (the ds5_config rationale). Ruling R-4 (COR-C W4, 2026-07-31) settled the family this note used to flag: all three routing registries (channels, categories, kinds) are DS-5; only the delivery table itself stays vertical:notifications."
     },
     "notification_preferences": {
       "owner": "DS-5",
