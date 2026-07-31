@@ -1,11 +1,13 @@
 import { describe, it, expect, beforeAll, afterAll, jest } from '@jest/globals';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import {
+  createAdminClient,
   createTestClient,
   createTestUser,
   cleanupTestUser,
   runAdminSql,
   signInWithRetry,
+  withAnonRateLimitRetry,
   type TestUser,
 } from '@/tests/helpers/supabase';
 
@@ -103,27 +105,47 @@ describe('FEAT-PC019 — record_auth_event, the durable auth-audit primitive', (
 
   // ---------------------------------------------------------------- STORY-2
 
-  it('S2: erasure interplay — the row survives its actor PII-free (ON DELETE SET NULL, proven by read-back)', async () => {
-    const ghost = await createTestUser({ displayName: 'AdmaGhost' });
-    const ghostClient = createTestClient();
-    await signInWithRetry(ghostClient, ghost.email, ghost.password);
+  it('S2: erasure interplay — the REAL farewell path leaves the row actor-less and PII-free', async () => {
+    // Producer-real: an actual Mist, the actual explicit_erase_mist — not a
+    // hand-rolled teardown (the consent ledger's append-only trigger rightly
+    // refused the first draft's raw DELETE; only the controlled erasure path
+    // may clear it, so the controlled erasure path is what this test drives).
+    const admin = createAdminClient();
+    const mist = createTestClient();
+    const { data: signIn, error: signErr } = await withAnonRateLimitRetry(() =>
+      mist.auth.signInAnonymously(),
+    );
+    expect(signErr).toBeNull();
+    const authId = signIn.user!.id;
 
-    const { error } = await ghostClient.rpc('record_auth_event', {
+    // handle_new_user materializes the Mist profile — poll for it.
+    let pg: string | null = null;
+    for (let i = 0; i < 12 && !pg; i++) {
+      const { data } = await admin
+        .from('users')
+        .select('personal_group_id')
+        .eq('auth_user_id', authId)
+        .maybeSingle();
+      pg = (data?.personal_group_id as string | undefined) ?? null;
+      if (!pg) await new Promise((r) => setTimeout(r, 500));
+    }
+    expect(pg).not.toBeNull();
+
+    const { error } = await mist.rpc('record_auth_event', {
       p_action: 'mist.explicit_erase',
       p_metadata: MARK,
     });
     expect(error).toBeNull();
 
-    // The terminal act of every erasure path: the personal group row goes.
-    await runAdminSql(`DELETE FROM public.users WHERE id = '${ghost.user.id}';`).catch(
-      () => undefined,
-    );
-    await runAdminSql(`DELETE FROM public.groups WHERE id = '${ghost.personalGroupId}';`);
+    const { error: eraseErr } = await mist.rpc('explicit_erase_mist');
+    expect(eraseErr).toBeNull();
 
     const rows = (await runAdminSql(`
       SELECT actor_group_id, action, metadata
         FROM public.admin_audit_log
-       WHERE metadata->>'suite' = 'adma03' AND action = 'mist.explicit_erase';
+       WHERE metadata->>'suite' = 'adma03'
+         AND action = 'mist.explicit_erase'
+         AND metadata->>'probe' IS NULL;
     `)) as unknown as {
       actor_group_id: string | null;
       action: string;
@@ -132,6 +154,12 @@ describe('FEAT-PC019 — record_auth_event, the durable auth-audit primitive', (
     expect(rows).toHaveLength(1);
     expect(rows[0].actor_group_id).toBeNull(); // actor-less, not gone
     expect(rows[0].metadata).toEqual(MARK); // content-free residue only
+
+    // And the Mist itself is fully gone (no orphaned profile or group).
+    const gone = (await runAdminSql(
+      `SELECT 1 FROM public.groups WHERE id = '${pg}';`,
+    )) as unknown as unknown[];
+    expect(gone).toHaveLength(0);
   });
 
   // ---------------------------------------------------------------- STORY-3
