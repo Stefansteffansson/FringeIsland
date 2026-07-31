@@ -40,6 +40,8 @@ These carry across areas until done; they are deliberately **not** swept at a re
 | Task | What | Raised | Triage 2026-07-26 (N-D boundary) |
 |------|------|--------|----------------------------------|
 | [TASK-MIST-01](./TASK-MIST-01-ghost-session-handling.md) | Ghost Mist sessions — a browser session outliving its erased subject | J-O3 area gate (live walk) | **carry (1st)** — still valid, still A-IDN-adjacent; no boundary pressure yet |
+| [TASK-I18N-01](./TASK-I18N-01-i18n-externalisation-deferred-to-eid.md) | The dated i18n deferral Audit III AC3-6 rests on — key-based layer lands at the Eid design-system activation (ruling R-6) | COR-C W4 (2026-07-31) | added 2026-07-31 (COR-C close) — **standing**: sweeping this file re-opens AC3-6 as silently-missing |
+| [TASK-DBT-01](./TASK-DBT-01-test-tier-type-debt.md) | ~1,287 lines of latent test-tier `tsc` errors (ts-jest never type-checks; `next build` excludes tests) | COR-C W3 (2026-07-31) | added 2026-07-31 (COR-C close) — cooldown sweep or ride the A-ADM open |
 | [TASK-OBS-01](./TASK-OBS-01-telemetry-sink-and-analytics-posture.md) | Telemetry sink + analytics posture (A-ADM's tenant) | A-JRN | **BET — its gate has arrived** (see note) |
 | [TASK-E2E-01](./TASK-E2E-01-profile-shared-session-flake.md) | profile.spec shared-session flake (the scope-global sign-out trap) | A-JRN | **carry (2nd)** — N-C found and fixed a real coalescing-timer leak in this area; watch for recurrence before spending more on it |
 | [TASK-FORUM-01](./TASK-FORUM-01-reply-addressing-and-collapse.md) | Forum reply collapse + addressing; the depth-cap decision + its missing rationale | A-COM live walk (2026-07-22) | **carry (1st)** — needs a product decision, not engineering time |
