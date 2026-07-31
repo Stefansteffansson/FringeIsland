@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { submitReport, hasReported, type ReportTargetKind } from '@/lib/reports/client';
+import { useFocusTrap } from '@/components/ui/useFocusTrap';
 
 /**
  * FEAT-H028 STORY-5 — the shared content-report dialog (COM-13, Cycle C-D).
@@ -26,6 +27,12 @@ export function ReportDialog({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmation, setConfirmation] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  // COR-C W5 (AC3-8): the aria-modal focus contract — same trap as
+  // ConfirmModal. Initial focus = first focusable (the reason field);
+  // focus returns to the Report trigger on close.
+  useFocusTrap(containerRef, open);
 
   // Close on Escape (never mid-flight).
   useEffect(() => {
@@ -76,6 +83,7 @@ export function ReportDialog({
 
       {open && (
         <div
+          ref={containerRef}
           data-testid="report-dialog"
           role="dialog"
           aria-modal="true"
