@@ -121,3 +121,91 @@ describe('COR-A W8 — the platform-side export composite (AC-4)', () => {
     expect(doc.journeys).toHaveLength(0);
   });
 });
+
+/**
+ * COR-C W2 — export completeness restored and extended (Audit III AC3-3,
+ * AC3-16 [Stefan's ruling 2026-07-31: ADD], + the roles gap the new
+ * completeness invariant surfaced).
+ *
+ * RED until the W2 schema-gate migration (20260731120000) applies:
+ *  - notification_preferences key absent (AC3-3 — the N-D contract exists,
+ *    nothing composes it)
+ *  - communication.authored_announcements absent (AC3-16)
+ *  - roles key absent (user_group_roles is member data with no export path —
+ *    found by the W2 classification pass, not by the audit)
+ * LABELLED GREEN: communication + notifications keys (live since C-E / N-A;
+ * asserted here because the additive suite never pinned them).
+ *
+ * Fixture rows are seeded by admin SQL deliberately: the EXPORT READ is under
+ * test, not the producers (announcements' send contracts have the C-D suite;
+ * preferences have the N-D suite).
+ */
+describe('COR-C W2 — export completeness (AC3-3, AC3-16, roles)', () => {
+  let vera: TestUser;
+
+  const exportDocFor = async (u: TestUser): Promise<Record<string, unknown>> => {
+    const supabase = createTestClient();
+    await signInWithRetry(supabase, u.email, u.password);
+    return (await fetchOwnDataExport(supabase)) as unknown as Record<string, unknown>;
+  };
+
+  beforeAll(async () => {
+    vera = await createTestUser({ displayName: 'Vera Verbatim' });
+    // Own preference state (N-D substrate): one real row.
+    await runAdminSql(
+      `INSERT INTO public.notification_preferences (recipient_group_id, category_key, channel, allowed)
+        SELECT '${vera.personalGroupId}', c.key, 'in_app', false
+          FROM public.notification_categories c
+         ORDER BY c.key LIMIT 1;`,
+    );
+    // Own authored announcement (platform scope needs no scope group).
+    await runAdminSql(
+      `INSERT INTO public.announcements (scope_kind, scope_group_id, author_group_id, title, body)
+        VALUES ('platform', NULL, '${vera.personalGroupId}', 'W2 fixture title', 'W2 fixture body');`,
+    );
+  });
+
+  afterAll(async () => {
+    await runAdminSql(
+      `DELETE FROM public.announcements WHERE author_group_id = '${vera.personalGroupId}';`,
+    ).catch(() => undefined);
+    await runAdminSql(
+      `DELETE FROM public.notification_preferences WHERE recipient_group_id = '${vera.personalGroupId}';`,
+    ).catch(() => undefined);
+    if (vera) await teardownUsers([vera]);
+  });
+
+  it('the composite carries notification_preferences incl. the seeded row (AC3-3)', async () => {
+    const doc = await exportDocFor(vera);
+    // RED pre-apply: the key does not exist on the document at all.
+    expect(doc).toHaveProperty('notification_preferences');
+    const rows = doc.notification_preferences as Array<Record<string, unknown>>;
+    expect(Array.isArray(rows)).toBe(true);
+    expect(rows.some((r) => r.channel === 'in_app' && r.allowed === false)).toBe(true);
+  });
+
+  it('the communication section carries authored_announcements incl. the seeded row (AC3-16)', async () => {
+    const doc = await exportDocFor(vera);
+    const comm = doc.communication as Record<string, unknown>;
+    expect(comm).toBeDefined();
+    // RED pre-apply: get_own_messages_export has no authored_announcements key.
+    expect(comm).toHaveProperty('authored_announcements');
+    const anns = comm.authored_announcements as Array<Record<string, unknown>>;
+    expect(anns.some((a) => a.title === 'W2 fixture title')).toBe(true);
+  });
+
+  it('the composite carries the roles section (the invariant`s first catch)', async () => {
+    const doc = await exportDocFor(vera);
+    // RED pre-apply: no roles key. Every member holds at least their
+    // personal-group role, so present-and-non-empty is safe to assert.
+    expect(doc).toHaveProperty('roles');
+    const roles = doc.roles as Array<Record<string, unknown>>;
+    expect(Array.isArray(roles)).toBe(true);
+  });
+
+  it('[LABELLED GREEN — live since C-E / N-A, pinned here] communication and notifications sections are present', async () => {
+    const doc = await exportDocFor(vera);
+    expect(doc).toHaveProperty('communication');
+    expect(doc).toHaveProperty('notifications');
+  });
+});
