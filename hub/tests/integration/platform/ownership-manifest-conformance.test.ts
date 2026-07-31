@@ -162,4 +162,23 @@ describe('Ownership-manifest completeness (COR-B W1, audit AC2-2)', () => {
     ].map((e) => e.function);
     expect(uncited).toEqual([]);
   });
+
+  it('the vertical:*-owned table set is exactly the pinned list (COR-C W4, ruling R-4 / GC-3)', () => {
+    const m = loadManifest();
+    const verticalOwned = Object.entries(m.tables)
+      .filter(([, v]) => v.owner.startsWith('vertical:'))
+      .map(([t]) => t)
+      .sort();
+
+    // Ruling R-4 (Audit III, 2026-07-31): the delivery table is the ONLY
+    // vertical-owned substrate — ADR-U048 ruling 1. The routing registries
+    // (kinds, categories, channels) are DS-5 per U048 clause 2, which keeps
+    // them inside dsTables() and therefore inside the inner-ring gate; a
+    // vertical label takes a table OUT of that gate's sight. Widening this
+    // set removes gate coverage: do it only with a ruling, and record the
+    // reason on the new entry here.
+    expect(verticalOwned).toEqual([
+      'notifications', // ADR-U048 ruling 1 — obligation substrate, written by every tier
+    ]);
+  });
 });
