@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { useFocusTrap } from './useFocusTrap';
 
 /**
  * Design-system primitive — the Hub's confirmation modal. Every destructive or
@@ -34,6 +35,15 @@ export function ConfirmModal({
   variant = 'info',
   busy = false,
 }: ConfirmModalProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const cancelRef = useRef<HTMLButtonElement | null>(null);
+  const confirmRef = useRef<HTMLButtonElement | null>(null);
+
+  // COR-C W5 (AC3-8): the focus contract aria-modal promises — initial focus
+  // on Cancel for a destructive ask (the safe default), Confirm otherwise;
+  // Tab cycles inside; focus returns to the opener on close.
+  useFocusTrap(containerRef, isOpen, variant === 'danger' ? cancelRef : confirmRef);
+
   // Close on Escape (but never mid-flight — a busy confirm must resolve).
   useEffect(() => {
     if (!isOpen) return;
@@ -55,6 +65,7 @@ export function ConfirmModal({
 
   return (
     <div
+      ref={containerRef}
       data-testid="confirm-modal"
       role="dialog"
       aria-modal="true"
@@ -72,6 +83,7 @@ export function ConfirmModal({
         <p className="mb-6 text-center text-gray-600">{message}</p>
         <div className="flex gap-3">
           <button
+            ref={cancelRef}
             type="button"
             data-testid="confirm-modal-cancel"
             onClick={onCancel}
@@ -81,6 +93,7 @@ export function ConfirmModal({
             {cancelText}
           </button>
           <button
+            ref={confirmRef}
             type="button"
             data-testid="confirm-modal-confirm"
             onClick={onConfirm}

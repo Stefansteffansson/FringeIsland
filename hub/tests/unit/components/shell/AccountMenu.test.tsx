@@ -28,8 +28,13 @@ jest.mock('@/lib/auth/AuthContext', () => ({ useAuth: () => authState }));
 jest.mock('next/navigation', () => ({ useRouter: () => router }));
 jest.mock('next/link', () => ({
   __esModule: true,
-  default: ({ href, children }: { href: string; children: React.ReactNode }) => (
-    <a href={href}>{children}</a>
+  // Spread the rest: the Menu primitive (COR-C W5) puts role="menuitem",
+  // tabIndex, and handlers on Link items — a mock that drops them hides the
+  // exact a11y contract under test.
+  default: ({ href, children, ...rest }: { href: string; children: React.ReactNode }) => (
+    <a href={href} {...rest}>
+      {children}
+    </a>
   ),
 }));
 jest.mock('@/lib/profile/client', () => ({
@@ -75,19 +80,23 @@ describe('FEAT-H005 STORY-1 (unit) — the menu is a FIM affordance', () => {
   });
 });
 
+// LABELLED SIBLING ADAPTATION (COR-C W5, AC3-17): the dropdown is now the
+// shared Menu primitive, so every entry carries role="menuitem" (which
+// overrides the implicit link/button roles these queries used to match).
+// Same items, same hrefs, same sign-out behaviour — only the a11y role moved.
 describe('FEAT-H005 STORY-1/4 (unit) — menu contents', () => {
   it('opens to My groups + Profile + Privacy & consent + Download my data + Sign out', async () => {
     render(<AccountMenu />);
     await userEvent.click(screen.getByRole('button', { name: /account menu/i }));
     // The primary destination — sign-in lands there, and the menu must lead
     // back (found missing during G-D manual testing: no path to /groups).
-    expect(screen.getByRole('link', { name: /my groups/i })).toHaveAttribute('href', '/groups');
-    expect(screen.getByRole('link', { name: /profile/i })).toHaveAttribute('href', '/profile');
+    expect(screen.getByRole('menuitem', { name: /my groups/i })).toHaveAttribute('href', '/groups');
+    expect(screen.getByRole('menuitem', { name: /profile/i })).toHaveAttribute('href', '/profile');
     // FEAT-H008: the FIM-only entry point to the consent surface.
-    expect(screen.getByRole('link', { name: /privacy & consent/i })).toHaveAttribute('href', '/consent');
+    expect(screen.getByRole('menuitem', { name: /privacy & consent/i })).toHaveAttribute('href', '/consent');
     // FEAT-H010: the FIM-only entry point to the data-export surface.
-    expect(screen.getByRole('link', { name: /download my data/i })).toHaveAttribute('href', '/export');
-    expect(screen.getByRole('button', { name: /sign out/i })).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: /download my data/i })).toHaveAttribute('href', '/export');
+    expect(screen.getByRole('menuitem', { name: /sign out/i })).toBeInTheDocument();
   });
 });
 
@@ -95,7 +104,7 @@ describe('FEAT-H005 STORY-4/5 (unit) — sign out', () => {
   it('calls signOut, emits session.ended, and returns to the entry', async () => {
     render(<AccountMenu />);
     await userEvent.click(screen.getByRole('button', { name: /account menu/i }));
-    await userEvent.click(screen.getByRole('button', { name: /sign out/i }));
+    await userEvent.click(screen.getByRole('menuitem', { name: /sign out/i }));
 
     await waitFor(() => expect(signOut).toHaveBeenCalledTimes(1));
     expect(push).toHaveBeenCalledWith('/');
