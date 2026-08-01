@@ -777,9 +777,14 @@ describe('FEAT-PC022 — moderation + audit-read contracts (ADM-D gate)', () => 
           WHERE action LIKE 'moderation.%' ORDER BY action;`,
       )) as { action: string }[];
       expect(rows.map((r) => r.action)).toEqual(['moderation.report_resolved']);
+      // Scoped to THIS run's rows: the log is append-only and prior runs'
+      // operators were cleaned up, so their rows legitimately read NULL actor
+      // (the SET NULL anonymisation working as designed).
       const actors = (await runAdminSql(
         `SELECT count(*)::int AS n FROM public.admin_audit_log
-          WHERE action LIKE 'moderation.%' AND actor_group_id IS NULL;`,
+          WHERE action LIKE 'moderation.%'
+            AND target IN ('${r1}', '${r2}', '${r3}')
+            AND actor_group_id IS NULL;`,
       )) as { n: number }[];
       expect(actors[0].n).toBe(0);
     });
