@@ -3,7 +3,7 @@
 ---
 id: TASK-DOC-007
 title: Backfill docs/platform/core/CHANGELOG.md — entries between FEAT-PC001 (2026-06-26) and Cycle ADM-A are missing
-status: todo
+status: done
 assigned_to: unassigned
 priority: low
 feature: none
@@ -27,3 +27,7 @@ Found at the ADM-B doc-health-check (2026-08-01): the Platform Core changelog ca
 ## Verification
 
 The register reads continuously from PC001 to ADM-B with no gap note.
+
+## Resolution (2026-08-01, PR #367)
+
+Done, with one deliberate AC deviation: **17 entries** landed (PC002–PC017 per-cycle plus two audit-owned migrations the drafter flagged — the 2026-07-06 anon EXECUTE lockdown and the 2026-07-05 `leave_group` copy fix, both sourced from their migration headers; the U038 tranches entry verified against the 2026-07-03 session bridge). The gap note was **narrowed, not removed**: ~20 Core migrations from the 2026-07-19 → 07-31 area cycles belong to no PC spec and remain unrecorded here — claiming continuity before it exists is the sin the note guards against. That second backfill is [TASK-DOC-008](./TASK-DOC-008-platform-core-changelog-area-cycle-backfill.md); the note's removal is its exit.
