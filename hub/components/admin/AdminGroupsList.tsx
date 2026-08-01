@@ -39,28 +39,35 @@ export function AdminGroupsList() {
   const [filter, setFilter] = useState<FilterKey>('all');
   const [view, setView] = useState<ViewState>({ kind: 'loading' });
 
-  const load = useCallback(async (f: FilterKey) => {
-    setView({ kind: 'loading' });
+  // Pure fetch → next view; state application lives in .then callbacks so no
+  // setState is reachable synchronously from the effect
+  // (react-hooks/set-state-in-effect). The loading reset on a filter switch
+  // moved to the tab handler (event-handler sets are the sanctioned home).
+  const computeView = useCallback(async (f: FilterKey): Promise<ViewState> => {
     try {
       const res = await fetch(`/api/admin/groups?filter=${f}`);
       if (res.status === 404 || res.status === 403 || res.status === 401) {
-        setView({ kind: 'refused' });
-        return;
+        return { kind: 'refused' };
       }
       if (!res.ok) {
-        setView({ kind: 'error' });
-        return;
+        return { kind: 'error' };
       }
       const body = (await res.json()) as { groups: AdminGroupRow[] };
-      setView({ kind: 'loaded', groups: body.groups });
+      return { kind: 'loaded', groups: body.groups };
     } catch {
-      setView({ kind: 'error' });
+      return { kind: 'error' };
     }
   }, []);
 
   useEffect(() => {
-    void load(filter);
-  }, [load, filter]);
+    let active = true;
+    void computeView(filter).then((next) => {
+      if (active) setView(next);
+    });
+    return () => {
+      active = false;
+    };
+  }, [computeView, filter]);
 
   if (view.kind === 'refused') {
     return (
@@ -80,7 +87,10 @@ export function AdminGroupsList() {
             key={f.key}
             role="tab"
             aria-selected={filter === f.key}
-            onClick={() => setFilter(f.key)}
+            onClick={() => {
+              setView({ kind: 'loading' });
+              setFilter(f.key);
+            }}
             className={`rounded-full px-3 py-1 text-sm ${
               filter === f.key ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700'
             }`}
@@ -102,7 +112,10 @@ export function AdminGroupsList() {
         <div className="rounded border border-red-200 bg-red-50 p-4">
           <p className="mb-2 text-red-800">Could not load groups.</p>
           <button
-            onClick={() => void load(filter)}
+            onClick={() => {
+              setView({ kind: 'loading' });
+              void computeView(filter).then(setView);
+            }}
             className="rounded bg-red-700 px-3 py-1 text-sm text-white"
           >
             Retry
