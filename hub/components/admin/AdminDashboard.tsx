@@ -26,30 +26,37 @@ type ViewState =
 export function AdminDashboard() {
   const [view, setView] = useState<ViewState>({ kind: 'loading' });
 
-  const load = useCallback(async (refreshingFrom?: PlatformStatistics) => {
-    if (refreshingFrom) {
-      setView({ kind: 'loaded', stats: refreshingFrom, refreshing: true });
-    }
+  // Pure fetch → next view; state application lives in the callers' .then
+  // callbacks so no setState is reachable synchronously from the mount effect
+  // (react-hooks/set-state-in-effect).
+  const computeView = useCallback(async (): Promise<ViewState> => {
     try {
       const res = await fetch('/api/admin/statistics');
       if (res.status === 404 || res.status === 403 || res.status === 401) {
-        setView({ kind: 'refused' });
-        return;
+        return { kind: 'refused' };
       }
       if (!res.ok) {
-        setView({ kind: 'error' });
-        return;
+        return { kind: 'error' };
       }
       const body = (await res.json()) as { stats: PlatformStatistics };
-      setView({ kind: 'loaded', stats: body.stats, refreshing: false });
+      return { kind: 'loaded', stats: body.stats, refreshing: false };
     } catch {
-      setView({ kind: 'error' });
+      return { kind: 'error' };
     }
   }, []);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    void computeView().then(setView);
+  }, [computeView]);
+
+  // The synchronous refreshing paint is event-handler-only.
+  const refresh = useCallback(
+    (from: PlatformStatistics) => {
+      setView({ kind: 'loaded', stats: from, refreshing: true });
+      void computeView().then(setView);
+    },
+    [computeView]
+  );
 
   if (view.kind === 'loading') {
     return (
@@ -83,7 +90,7 @@ export function AdminDashboard() {
           type="button"
           onClick={() => {
             setView({ kind: 'loading' });
-            load();
+            void computeView().then(setView);
           }}
           className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
@@ -104,7 +111,7 @@ export function AdminDashboard() {
           </p>
           <button
             type="button"
-            onClick={() => load(stats)}
+            onClick={() => refresh(stats)}
             disabled={refreshing}
             className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
           >

@@ -29,29 +29,29 @@ export function AccountMenu() {
   // every member at most one extra request per session.
   useEffect(() => {
     if (identity !== 'fim') return;
-    try {
+    let active = true;
+    // Cache and probe resolve through one promise so the state set lives in
+    // the .then callback, never synchronously in the effect body
+    // (react-hooks/set-state-in-effect).
+    const resolveEntry = async (): Promise<boolean> => {
       const cached = window.sessionStorage.getItem('hub.adminEntry');
-      if (cached !== null) {
-        setIsAdmin(cached === 'yes');
-        return;
-      }
-      let active = true;
-      fetch('/api/admin/statistics')
-        .then((res) => {
-          if (!active) return;
-          const yes = res.ok;
-          window.sessionStorage.setItem('hub.adminEntry', yes ? 'yes' : 'no');
-          setIsAdmin(yes);
-        })
-        .catch(() => {
-          // Best-effort shell chrome: an unreachable probe means no entry.
-        });
-      return () => {
-        active = false;
-      };
-    } catch {
-      // sessionStorage unavailable — fall through with no entry.
-    }
+      if (cached !== null) return cached === 'yes';
+      const res = await fetch('/api/admin/statistics');
+      const yes = res.ok;
+      window.sessionStorage.setItem('hub.adminEntry', yes ? 'yes' : 'no');
+      return yes;
+    };
+    resolveEntry()
+      .then((yes) => {
+        if (active) setIsAdmin(yes);
+      })
+      .catch(() => {
+        // Best-effort shell chrome: an unreachable probe (or unavailable
+        // sessionStorage) means no entry.
+      });
+    return () => {
+      active = false;
+    };
   }, [identity]);
 
   useEffect(() => {
