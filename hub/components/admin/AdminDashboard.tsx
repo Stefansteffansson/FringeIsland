@@ -144,8 +144,9 @@ export function AdminDashboard() {
         />
       </div>
 
-      {/* FEAT-H035: administration areas — the Groups entry (ADM-8). */}
-      <nav aria-label="Administration areas">
+      {/* FEAT-H035/H036: administration areas — the Groups (ADM-8) and
+          Members (ADM-2) entries. */}
+      <nav aria-label="Administration areas" className="flex flex-wrap gap-4">
         <Link
           href="/admin/groups"
           data-testid="admin-nav-groups"
@@ -154,6 +155,16 @@ export function AdminDashboard() {
           <span className="block text-sm font-medium text-gray-900">Group administration</span>
           <span className="block text-sm text-gray-500">
             Every group on the platform — including the ones FringeIsland caretakes.
+          </span>
+        </Link>
+        <Link
+          href="/admin/members"
+          data-testid="admin-nav-members"
+          className="block max-w-xs rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover:border-gray-400"
+        >
+          <span className="block text-sm font-medium text-gray-900">Member administration</span>
+          <span className="block text-sm text-gray-500">
+            Every member at platform scope — lifecycle, sessions, and platform administrators.
           </span>
         </Link>
       </nav>

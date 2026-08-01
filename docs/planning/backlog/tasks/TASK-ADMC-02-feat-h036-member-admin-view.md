@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMC-02
 title: Build FEAT-H036 — /admin/members list + detail with the state-honest action rail, nine mutation ceremonies, dashboard card — red-first at the unit tier, fuller-auto
-status: todo
+status: done
 assigned_to: unassigned
 priority: high
 feature: FEAT-H036

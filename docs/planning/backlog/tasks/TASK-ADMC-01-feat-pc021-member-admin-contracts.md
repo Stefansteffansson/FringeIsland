@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMC-01
 title: Build FEAT-PC021 — the member read family (gate 1), then the operations family (gate 2) — red-first, both gates HELD for named approval
-status: in_progress
+status: done
 assigned_to: unassigned
 priority: high
 feature: FEAT-PC021
