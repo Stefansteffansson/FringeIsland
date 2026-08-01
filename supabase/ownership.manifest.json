@@ -171,6 +171,8 @@
       "admin_force_logout",
       "admin_get_group_detail",
       "admin_get_groups",
+      "admin_get_user_detail",
+      "admin_get_users",
       "admin_hard_delete_user",
       "admin_reactivate_group",
       "admin_reassign_group_stewardship",
