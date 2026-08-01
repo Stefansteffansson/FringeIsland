@@ -3,7 +3,7 @@
 ---
 id: TASK-DOC-008
 title: Second platform-core CHANGELOG backfill — Core substrate changes made inside area cycles (COR-A, C-A..C-E, W-cycles, N-A..N-D, A-NTF gate, COR-C W1/W2/W3), unowned by any PC spec
-status: todo
+status: done
 assigned_to: unassigned
 priority: low
 feature: none
@@ -22,10 +22,12 @@ The migration set (from the TASK-DOC-007 draft's notes): the COR-A pair (`202607
 
 ## Acceptance criteria
 
-- [ ] One entry per owning cycle/audit (the register's per-cycle precedent), each citing migration filenames and the owning record (area completion plan, conformance ledger, or paired PD/H spec).
-- [ ] Sources: migration headers + the owning cycle's records — never memory.
-- [ ] The narrowed register note removed in the same commit; the register then reads continuously PC001 → ADM-B.
+- [x] One entry per owning cycle/audit (the register's per-cycle precedent), each citing migration filenames and the owning record (area completion plan, conformance ledger, or paired PD/H spec).
+- [x] Sources: migration headers + the owning cycle's records — never memory.
+- [x] The narrowed register note removed in the same commit; the register then reads continuously PC001 → ADM-B.
 
 ## Verification
 
 `docs/platform/core/CHANGELOG.md` carries no register note; every live migration dated 2026-06-26 → 2026-07-31 is attributable to an entry.
+
+**Closed 2026-08-01:** nine backfill entries added (COR-A · C-A..C-E · A-COM gate · A-COM riders · COR-B W4 · N-A..N-D · A-NTF gate · A-NTF walk follow-ups · COR-C W1/W2/W3); the register note removed. Verified mechanically: all 31 live migrations dated 2026-07-19 → 2026-07-31 are timestamp-attributable to an entry and every relative `.md` link in the changelog resolves on disk. The verification sweep caught and fixed two omissions the task's own list had (the `20260720003000` C-A rider and `20260728060000` bootstrap-self retirement) and six mis-guessed PD spec filenames — headers and `ls`, never memory.

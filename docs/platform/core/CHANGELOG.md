@@ -2,8 +2,6 @@
 
 Substrate-level changes to Platform Core (Infrastructure, Identity, Organisation, Governance). These are developer-facing platform changes, not end-user features; each entry links the feature spec with the full implementation notes.
 
-*Register note (2026-08-01, narrowed at the TASK-DOC-007 backfill): the PC-feature span 2026-06-26 → 2026-07-21 is now fully recorded below (plus the two audit-owned migrations inside it). Core substrate changes made inside the 2026-07-19 → 2026-07-31 area cycles — the COR-A internal-API inversion pair, the A-COM C-A..C-E riders, the W-cycle contracts, the A-NTF N-A..N-D + gate migrations, and the COR-C W1/W2/W3 re-issues — remain recorded in their owning ledgers and the root `CHANGELOG.md` only; that second backfill is [TASK-DOC-008](../../planning/backlog/tasks/TASK-DOC-008-platform-core-changelog-area-cycle-backfill.md), not silently absorbed here.*
-
 ## 2026-08-01 — Member administration contracts ([FEAT-PC021](./features/FEAT-PC021-member-administration-contracts.md), Cycle ADM-C)
 
 - **The member read family (greenfield — walk finding 1):** `admin_get_users(p_filter)` — platform-scope enumeration, open filter namespace (`default` hides decommissioned per B-ADMIN-002; Mists never appear, ADR-U033), server-side `account_state` derivation, **jsonb-array return** (the first-contact row-cap finding: PostgREST db-max-rows silently truncates SET-RETURNING RPCs at 1000 and the dev DB holds 1,918 non-Mist members) · `admin_get_user_detail` — identity + origin + the active-engagement memberships array with the platform-computed `removal_scenario` (the ADM-18 picker source).
@@ -23,6 +21,41 @@ Substrate-level changes to Platform Core (Infrastructure, Identity, Organisation
 - **`record_auth_event()`** (PC-4): the durable audit-write primitive for the four member-auth moments (`auth.sign_up` / `auth.sign_in` / `identity.transcended` / `mist.explicit_erase` namespace at the callers); additive over the untouched `admin_audit_log`.
 - Migrations: `20260731180000_adm_a_pc018_telemetry_store_and_statistics.sql`, `20260731190000_adm_a_pc019_auth_event_audit.sql`. Consumed by Hub FEAT-H034.
 
+## 2026-07-30 → 31 — COR-C W1/W2/W3: Anatomy Audit III substrate corrections (no owning PC spec — entry backfilled 2026-08-01; owning record [anatomy-correction-plan-cor-c.md](../../planning/hub-v2/anatomy-correction-plan-cor-c.md) + [ANATOMY-CONFORMANCE-AUDIT-3.md](../../planning/reference/ANATOMY-CONFORMANCE-AUDIT-3.md))
+
+- **W1** (`20260730210000_cor_c_w1_admin_hold_origin.sql`) — the ADR-U050 admin half wired: `admin_update_user_status` re-issued to write `deactivation_origin` in the same statement as the flag (`'admin'` on hold — a member pause converts; NULL on release; terminal origins preserved) + FOR UPDATE on the target read; `admin_decommission_user` stamps the terminal origin. Closed AC3-1 CRITICAL (the member could walk out of an admin hold) end-to-end.
+- **W2** (`20260731120000_cor_c_w2_export_completeness.sql`) — GDPR-export completeness restored and extended (AC3-3/AC3-16): the composite's stale composes list repaired, `user_group_roles` (roles held) gains its export path, and the manifest gains the table-level `export` classification block enforced by the new completeness invariant (GC-5/GC-6).
+- **W3** (`20260731140000_cor_c_w3_typed_action_registry.sql`) — the ADR-U051 typed-action registry homed platform-side (`notification_action_types`, AC3-5/AC3-9; shape per U051 Amendment 1 — the Ferd handler family stays boolean accept/decline).
+
+## 2026-07-28 → 30 — A-NTF gate-walk follow-ups (no owning PC spec — entry backfilled 2026-08-01; owning records the gate-walk session bridges + [2026-07-27-antf-walk-findings.md](../../planning/hub-v2/2026-07-27-antf-walk-findings.md))
+
+- `20260728190000_w03_nomination_body_states_the_fact.sql` — W-03: the stewardship-nomination body's imperative copy ("Accept or decline within 7 days") replaced with fact-stating copy that cannot expire.
+- `20260728200000_retire_unattributed_orphan_personal_groups.sql` — 11,150 orphaned personal groups (no `users` row, attributing nothing surviving) retired, closing the decision parked at the gate.
+- `20260730200000_retire_na_registry_probe_kind.sql` — the `na_test_kind_mrzenort` N-A test probe removed from the live `notification_kinds` registry.
+
+## 2026-07-27 → 28 — A-NTF area gate ([area-gate record](../../planning/hub-v2/2026-07-27-notifications-area-gate.md) — entry backfilled 2026-08-01)
+
+- `20260727120000_n_d_anon_execute_repair.sql` — pure REVOKE closing the anon-EXECUTE surface N-D left open on seven contracts; found by the W12 per-RPC gate-verification roll-up on its first A-NTF run.
+- `20260727180000_a_ntf_gate_mist_posture_and_ask_split.sql` — board GB-1 + GB-3: no durable notification row may exist for a Mist (enforced once at the BEFORE INSERT dispatcher — the NC-1 precedent), `notify_role_assigned` skips personal-group self-assignment (the NB-8 durability leak's whole shape), and the asks split.
+- `20260728060000_a_ntf_gate_retire_bootstrap_self_notifications.sql` + `20260728080000_a_ntf_gate_retire_unreachable_orphan_notifications.sql` — gate hygiene: the bootstrap self-assignment rows GB-1a stopped producing, and the notification rows addressed to personal groups nobody can ever read, both retired (Stefan's numbered authorisation, 2026-07-28).
+
+## 2026-07-23 → 26 — Notification routing, dispatch, hint, and preferences (A-NTF Cycles N-A..N-D: [FEAT-PD013](../domain/features/FEAT-PD013-notification-routing-contracts-and-category-registry.md) / [FEAT-PD014](../domain/features/FEAT-PD014-actionable-notification-dispatch-and-acting-fanout.md) / [FEAT-PD015](../domain/features/FEAT-PD015-notification-realtime-hint-and-reconnect-reconciliation.md) / [FEAT-PD016](../domain/features/FEAT-PD016-notification-preference-contracts-and-shared-suppression-dispatcher.md) — entry backfilled 2026-08-01)
+
+- Core-substrate legs of the four DS-5 notification cycles, recorded here because the migrations touch shared substrate the PD specs own the narrative for: `20260723120000` (N-A — the V3 §6 category/kind registries + routing contracts), `20260724120000` (N-B — actionable dispatch + acting-invitation fan-out, ADR-U051), `20260725120000` (N-C — the ADR-U039 bell hint + nudge policy; the last fetch-only surface goes live), `20260726120000` (N-D — per-member preferences + the shared suppression dispatcher; preference home per board ND-1).
+
+## 2026-07-22 — COR-B W4: role-template catalogue read relocated to a platform contract (`20260722190000_w4_get_role_templates_contract.sql` — entry backfilled 2026-08-01; Anatomy Audit II finding AC2-4)
+
+- The BFF's direct table read of `role_templates` replaced by the `get_role_templates()` contract — the rule a route enforces alone is not enforced (ADR-U038).
+
+## 2026-07-22 — A-COM area-gate live-walk riders (RIDER-1 / RIDER-3, Stefan 2026-07-22 — entry backfilled 2026-08-01; [area-gate record](../../planning/hub-v2/2026-07-21-communication-area-gate.md))
+
+- `20260722100000_c_a_backfill_create_group_conversations_grant.sql` — RIDER-1: `create_group_conversations` backfilled to existing template-derived Steward/Guide role instances.
+- `20260722170000_a_com_rider3_forum_edit_hint.sql` — RIDER-3: a forum content edit now emits its realtime hint (`ds5_emit_forum_edit_hint`), ending the stale-until-reload window.
+
+## 2026-07-21 — A-COM area gate: export grant-reproducibility repair (`20260721220000_area_gate_export_grant_reproducibility.sql` — entry backfilled 2026-08-01; [area-gate record](../../planning/hub-v2/2026-07-21-communication-area-gate.md))
+
+- `get_own_data_export()`'s missing explicit grant (born ungated in PC008, swept by the anon lockdown, left surviving only by a pre-sweep artifact) made reproducible — found by the first W12 per-RPC roll-up.
+
 ## 2026-07-21 — Account lifecycle self-service ([FEAT-PC017](./features/FEAT-PC017-account-lifecycle-self-service.md) / [FEAT-PC005](./features/FEAT-PC005-self-service-account-reactivation.md), Cycle C-F — entry backfilled 2026-08-01)
 
 - **`users.deactivation_origin`** — the column that makes an admin hold distinguishable from a member's own pause; every pre-origin off row backfilled `'admin'` in the same migration. The `get_own_account_state()` payload gains the key additively.
@@ -30,6 +63,15 @@ Substrate-level changes to Platform Core (Infrastructure, Identity, Organisation
 - **Two new ADR-U047 fact handlers** — `ds3_lifecycle_account_deleted` + `ds7_lifecycle_account_deleted` (the first ds7 handler), carrying the erasure legs so Core never touches domain tables. `admin_exit_user_from_platform` **dropped**; sentinel reassignment rides the existing `user_hard_deleted` fact.
 - The repair migration exists because `users.nickname` is NOT NULL under the display-name system: the scrub writes the tombstone string `'[Deleted User]'` rather than NULL (same no-PII semantic), and the sync trigger propagates it to the personal-group name for read-time attribution.
 - Migrations: `20260721161500_c_f_account_lifecycle_self_service.sql`, `20260721170000_c_f_repair_delete_scrub_nickname.sql`. Consumed by Hub FEAT-H029 and FEAT-H007.
+
+## 2026-07-19 → 21 — Conversation, forum, hint, announcement, and lifecycle contracts (A-COM Cycles C-A..C-E: [FEAT-PD008](../domain/features/FEAT-PD008-conversation-and-message-contracts.md) / [FEAT-PD009](../domain/features/FEAT-PD009-forum-and-attribution-contracts.md) / [FEAT-PD010](../domain/features/FEAT-PD010-realtime-hint-emission.md) / [FEAT-PD011](../domain/features/FEAT-PD011-announcements-window-and-reports-contracts.md) / [FEAT-PD012](../domain/features/FEAT-PD012-lifecycle-dispositions-and-export-contracts.md) — entry backfilled 2026-08-01)
+
+- Core-substrate legs of the five DS-5 communication cycles, recorded here because the migrations touch shared substrate the PD specs own the narrative for: `20260719230500` + `20260720003000` (C-A — the conversation-model redesign + conversation/message contracts, and the DM-recipient-by-group rider), `20260720120000` (C-B — forum + the COM-14 attribution ladder; **re-issues `admin_hard_delete_user`** so the forum sentinel crossing comes home via `ds5_lifecycle_user_hard_deleted`, ADR-U047), `20260720153000` (C-C — the ADR-U039 realtime hint layer), `20260720200000` + `20260720203000` (C-D — durable announcements, windowed own-edits, content reports per ADR-U049, + the rider re-issue for the NOT NULL body), `20260721100000` (C-E — lifecycle dispositions incl. `ds5_lifecycle_group_closed` + the own-communication export; the D2 preserve-and-seal board ruling).
+
+## 2026-07-19 — COR-A: the Internal-API inversion + the export composite (no owning PC spec — entry backfilled 2026-08-01; owning records [anatomy-correction-plan.md](../../planning/hub-v2/anatomy-correction-plan.md) + the [COR-A retro](../../planning/retrospectives/retro-2026-07-19-cor-a.md))
+
+- `20260719190205_feat_cor_a_internal_api_inversion.sql` — W4/W5 (ADR-U047): Core emits lifecycle facts, the domain owns its dispositions — the behaviour-preserving relocation of ten core→domain crossing sites into `ds{N}_lifecycle_*` handlers.
+- `20260719201718_feat_cor_a_export_composite.sql` — W8 (audit finding AC-4): `get_own_data_export()` composes the domain's published read contracts platform-side, so one RPC returns the complete GDPR document on every surface.
 
 ## 2026-07-07 — Pending-nominations read contract ([FEAT-PC016](./features/FEAT-PC016-pending-nominations-read-contract.md), Cycle J-A — entry backfilled 2026-08-01)
 
