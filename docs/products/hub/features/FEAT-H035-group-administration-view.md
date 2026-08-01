@@ -18,7 +18,7 @@ RW-05, from the operator's chair: a group handed to FringeIsland vanishes — no
 
 - **`/admin/groups`** (list) + **`/admin/groups/[id]`** (detail) under the H034 admin section; the `/admin` dashboard gains a "Groups" navigation card. Same gate shape as H034: the platform's own refusal → 404 shape; no admin chrome for non-admins.
 - **List:** filter tabs — All · Engagement · **Platform-stewarded** (the RW-05 headline, `deusex_stewarded`) · Suspended — rendering exactly the walked FEAT-PC020 payload (status badge reuses the GRP-5 vocabulary; the count pair renders Gracy-honest: total vs non-system).
-- **Detail:** group row, counts, steward list, caretaker banner when `deusex_stewarded`; actions per state: **Suspend** / **Reactivate** (danger-styled, ConfirmModal with consequence copy), **Reassign stewardship** — a picker of the group's active human members (from the existing membership read) plus the current-steward context; confirm names exactly what changes hands.
+- **Detail:** group row, counts, steward list, caretaker banner when `deusex_stewarded`; actions per state: **Suspend** / **Reactivate** (danger-styled, ConfirmModal with consequence copy), **Reassign stewardship** — a picker of the group's active human members (from the detail read's `members` array — adjudicated 2026-08-01 after the PC020 build finding; the originally-walked `get_group_memberships_of` reads the wrong direction and is `act_as_group`-gated) plus the current-steward context; confirm names exactly what changes hands.
 - **BFF routes** (presentation-only per ADR-U038, `42501`→404): `GET /api/admin/groups?filter=`, `GET /api/admin/groups/[id]`, `POST /api/admin/groups/[id]/suspend|reactivate|reassign`. Reads on the ADR-U037 claims path; mutations on `getUser`; all emitting durable telemetry (the H034 leg).
 - Born under the COR-C lattice: tokens, jest-axe, outer-ring (lib wrapper `lib/admin/groups.ts`, `import type` only), red-first unit + E2E.
 
@@ -58,7 +58,7 @@ No bulk actions (ADM-7 deferred). No group deletion. No moderation affordances (
 
 ## Platform dependencies
 
-FEAT-PC020 (all five contracts) API-first — **no migration of its own**; the picker candidates ride the existing `get_group_memberships_of` read (walked in PC020). Gating derives from the platform's refusal, never computed Hub-side.
+FEAT-PC020 (all five contracts, incl. the `20260801130000` `members` array on detail) API-first — **no migration of its own**; the picker candidates ride the detail read's `members` key (the TASK-ADMB-02 adjudication — see PC020 Implementation notes for why the originally-walked `get_group_memberships_of` cannot serve). Gating derives from the platform's refusal, never computed Hub-side.
 
 ## Cross-product impact
 

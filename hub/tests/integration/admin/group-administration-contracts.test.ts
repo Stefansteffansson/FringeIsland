@@ -362,6 +362,37 @@ describe('FEAT-PC020 — group administration contracts (ADM-8/ADM-9, RW-05 exit
       expect(d.stewards as unknown[]).toHaveLength(0);
     });
 
+    // The members array (adjudicated at TASK-ADMB-02, Stefan 2026-08-01: the
+    // picker source — the walked get_group_memberships_of reads the wrong
+    // direction). RED between migration 20260801120000 and 20260801130000:
+    // the key is absent from the walked v1 payload.
+    it('detail carries the active human members with steward flags (the reassign picker source)', async () => {
+      const { data, error } = await adaClient.rpc('admin_get_group_detail', { p_group_id: gActive });
+      expect(error).toBeNull();
+      const members = (data as Record<string, unknown>).members as
+        | { personal_group_id: string; display_name: string; is_steward: boolean }[]
+        | undefined;
+      expect(members).toBeDefined();
+      expect(members!).toHaveLength(2);
+      expect(members!.map((m) => m.display_name).sort()).toEqual(['Mona', 'Stella']);
+      for (const m of members!) expect(m.is_steward).toBe(true);
+    });
+
+    it('a caretaker group lists only its human members — the caretaker never appears as a member row', async () => {
+      const { data, error } = await adaClient.rpc('admin_get_group_detail', {
+        p_group_id: gCaretaker,
+      });
+      expect(error).toBeNull();
+      const members = (data as Record<string, unknown>).members as
+        | { personal_group_id: string; display_name: string; is_steward: boolean }[]
+        | undefined;
+      expect(members).toBeDefined();
+      expect(members!).toHaveLength(1);
+      expect(members![0].display_name).toBe('Hilda');
+      expect(members![0].personal_group_id).toBe(hilda.personalGroupId);
+      expect(members![0].is_steward).toBe(false);
+    });
+
     it('an unknown id refuses typed P0002', async () => {
       const { error } = await adaClient.rpc('admin_get_group_detail', { p_group_id: GHOST_GROUP });
       expect(error).not.toBeNull();
