@@ -6,7 +6,7 @@ title: Member administration view — /admin/members list with honest lifecycle 
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -85,3 +85,13 @@ Gimbal inherits the contracts, not the shell. Member-facing surfaces untouched �
 - **First-paint class:** B2/B3 for `/admin/members` and detail; **justified standalone reads** (admin-only, outside the overview bundle — ADR-U042 guardrail 3).
 - **Interaction class:** filter/search and rail buttons feed back within 100 ms (B5); mutations disable-with-progress during the round trip.
 - **Loading states:** skeleton rows/blocks (B6); >3 s is a platform-side defect.
+
+## Implementation notes (built 2026-08-01, Cycle ADM-C)
+
+- **Shape:** `lib/admin/users.ts` (outer-ring wrapper, `import type` only, client injected) · eleven BFF routes (`GET /api/admin/users?filter=`, `GET /api/admin/users/[id]`, and nine `POST /api/admin/users/[id]/{suspend,reactivate,decommission,force-logout,hard-delete,platform-exit,remove-from-group,grant-admin,revoke-admin}`) · `AdminMembersList` + `AdminMemberDetail` under `components/admin/` · two `'use client'` route pages · the "Member administration" card on the `/admin` dashboard. Reads on `getVerifiedUserId` (ADR-U037 claims path), mutations on `getUser`; every success writes durable telemetry, every refusal a local emit.
+- **Red → green:** the three unit suites were demonstrated red pre-implementation (both new components module-absent; the dashboard-card cell failing — 3 failed suites) and closed green (admin component suites 55/55); full unit **1117/1117**; the route-policy and outer-ring conformance gates accepted all eleven routes and the wrapper with **zero exception entries**; `next build` green. The E2E journey (`admin-members.spec.ts`, 6 scenarios) is **labelled test-after** per the ADM-B precedent — behaviour-level red-first lives at the unit tier and in the paired PC021 gate-2 integration suite. 6/6 green, DeusEx leak instrument delta 0, row-scoped locators throughout.
+- **SQLSTATE → HTTP:** the H035 admin-plane mapping, now uniform because PC021 typed the whole family — `42501`/`P0002` → 404 (existence-hiding), `P0001` → 409 with the platform's message **verbatim** (the last-admin floor refusal renders as the platform wrote it), `22023` → 400, unknown → 500.
+- **`viewer_is_self` (BFF shaping, recorded):** the detail route computes it via `get_current_user_profile_id()` for the self-revoke ceremony copy — presentation-only per ADR-U038; the platform enforces nothing about self-revocation beyond the floor trigger, which is its own wall.
+- **Hard-delete ceremony (recorded):** the H029-class weight realized as an inline type-the-display-name panel rather than `ConfirmModal` (the modal carries no children; `DeleteAccountCeremony` is the house type-to-confirm precedent) — the sentinel consequence named, confirm disabled until the name matches; never one click lighter than self-delete.
+- **State-honesty derivations (payload facts only):** Suspend = `active` · Reactivate = `paused`/`suspended` (ceremony copy names the origin: self-pause vs admin hold) · Decommission / Force sign-out / Platform exit = non-terminal · Grant = active non-admin · Revoke = admin non-terminal · Hard delete = always · a terminal member keeps only Hard delete (STORY-2's rule); membership Remove rows render only while non-terminal.
+- **ADR-U043 numbers:** `/admin/members` + detail ride the registered area-gate perf pass (the standing owed item).

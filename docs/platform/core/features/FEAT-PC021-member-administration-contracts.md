@@ -6,7 +6,7 @@ title: Member administration contracts — platform-scope member enumeration + d
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -137,3 +137,14 @@ Hub consumes via FEAT-H036 (BFF-wrapped). Gimbal inherits the contracts. Member-
 ## Performance budget
 
 N/A (no surface). Reads are admin-only over platform-scale member counts (small pre-launch); FEAT-H036 carries the page budgets.
+
+## Implementation notes (built 2026-08-01, Cycle ADM-C)
+
+- **Closed 6-done 2026-08-01:** all three migrations applied on named approvals (PR #368 → `20260801170000` and PR #369 → `20260801180000` — gate 1 + the jsonb-array row-cap amendment, documented in §Solution; PR #372 → `20260801190000` — gate 2), history repaired. Post-apply: gate-1 suite **12/12**, gate-2 suite **28/28** (red 26/28 pre-apply — the two greens are the labelled-green invariants S3g/S8c), admin integration domain **72/72**, account domain **83/83** with the two adapted siblings flipped green, platform conformance **23/23** — all ten functions declared PC-4, gate 2's manifest entries riding the gate PR (the gate-1 lesson applied). Consumed by FEAT-H036 the same day.
+- **Gate 2 (the operations family), `20260801190000`:** four re-issues + four new contracts in one migration. The re-issue gate moved `has_permission(manage_all_groups)` → `is_platform_admin()` typed `42501` family-wide (every sibling caller elevates via DeusEx, so nothing broke); `get_current_personal_group_id()` is retained for the pattern-(a) audit actor. The STORY-3 **no-op guard compares the flag AND the would-be origin**, so the COR-C W1 pause→hold *conversion* (origin `member`→`admin` on an already-off row) still proceeds — the guard refuses only a write that would change nothing.
+- **Audit vocabulary landed:** `member.suspend` / `member.reactivate` / `member.decommission` / `member.force_logout` / `member.hard_delete` / `member.platform_exit` / `member.remove_from_group` · `platform_admin.grant` / `platform_admin.revoke`. Existing rows keep their legacy snake_case strings — the log is append-only.
+- **Sibling-assertion sweep — the fourth catch:** the C-F suite's S8a pinned `admin_exit_user_from_platform`'s NON-existence (the retirement) and would have gone red at apply unseen; adapted in the gate PR together with W1f's `/manage_all_groups|Unauthorized/i` refusal pin. Every other naming site verified and deliberately left — the full list lives in the migration header.
+- **Exit boundaries proven producer-driven:** the target's journal entry and display identity survive the exit (no F-2 legs, no scrub, no sentinel reassignment); sessions die via the same two-table pair; an admin-held target is a valid target; already-terminal refuses P0001 writing nothing.
+- **Grant path verified at build (the AC criterion):** `auto_assign_deusex_role` fires only on the invited→active UPDATE flip (`20260222000000:1363`) — the contract inserts the role row **explicitly**; that INSERT fires `notify_role_assigned` (the durable notification, composed free); revoke's role DELETE fires `notify_role_removed` (existing kind, also free).
+- **Last-admin floor technique (recorded):** the shared dev DB's founding admins cannot be thinned for real, so the STORY-7 floor cell arranges the last-admin state inside a **rolled-back forged-claims transaction** driving the real contract — the trigger's message surfaces verbatim and the rollback restores the founders, which also demonstrates the family's no-partial-state property end-to-end.
+- **Consent-FK note:** hard-delete of a consented FIM stays 23503-blocked (erase_fim_account's anonymise-then-delegate path is unchanged and composes the re-issued function transparently); the suite's fixture purges its consent rows via the trigger's sanctioned controlled-teardown setting.

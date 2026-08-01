@@ -135,4 +135,14 @@ describe('FEAT-H034 — AdminDashboard', () => {
     const card = screen.getByTestId('admin-nav-groups');
     expect(card).toHaveAttribute('href', '/admin/groups');
   });
+
+  // FEAT-H036 STORY-1 (red-first 2026-08-01): the dashboard gains the
+  // "Member administration" card — the entry to /admin/members.
+  it('FEAT-H036: the loaded dashboard offers the Member administration card', async () => {
+    fetchMock.mockResolvedValue(okResponse({ stats: STATS }));
+    render(<AdminDashboard />);
+    await screen.findByText('Members');
+    const card = screen.getByTestId('admin-nav-members');
+    expect(card).toHaveAttribute('href', '/admin/members');
+  });
 });
