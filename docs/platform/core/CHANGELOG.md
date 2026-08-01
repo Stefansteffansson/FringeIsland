@@ -2,7 +2,7 @@
 
 Substrate-level changes to Platform Core (Infrastructure, Identity, Organisation, Governance). These are developer-facing platform changes, not end-user features; each entry links the feature spec with the full implementation notes.
 
-*Register note (2026-08-01): entries between FEAT-PC001 and Cycle ADM-A are missing — Core substrate changes from those cycles were recorded in the root `CHANGELOG.md` and the feature specs only. The gap is logged as a doc-health finding; backfill is a hygiene task, not silently absorbed here.*
+*Register note (2026-08-01, narrowed at the TASK-DOC-007 backfill): the PC-feature span 2026-06-26 → 2026-07-21 is now fully recorded below (plus the two audit-owned migrations inside it). Core substrate changes made inside the 2026-07-19 → 2026-07-31 area cycles — the COR-A internal-API inversion pair, the A-COM C-A..C-E riders, the W-cycle contracts, the A-NTF N-A..N-D + gate migrations, and the COR-C W1/W2/W3 re-issues — remain recorded in their owning ledgers and the root `CHANGELOG.md` only; that second backfill is [TASK-DOC-008](../../planning/backlog/tasks/TASK-DOC-008-platform-core-changelog-area-cycle-backfill.md), not silently absorbed here.*
 
 ## 2026-08-01 — Group administration contracts ([FEAT-PC020](./features/FEAT-PC020-group-administration-contracts.md), Cycle ADM-B)
 
@@ -15,6 +15,131 @@ Substrate-level changes to Platform Core (Infrastructure, Identity, Organisation
 - **`telemetry_events`** (PC-1, ADR-U052): the V4 sink — RLS deny-all, `record_telemetry_event()` the never-raises sole writer, 90-day prune, `get_platform_statistics()` the admin-gated sole reader (versioned jsonb document).
 - **`record_auth_event()`** (PC-4): the durable audit-write primitive for the four member-auth moments (`auth.sign_up` / `auth.sign_in` / `identity.transcended` / `mist.explicit_erase` namespace at the callers); additive over the untouched `admin_audit_log`.
 - Migrations: `20260731180000_adm_a_pc018_telemetry_store_and_statistics.sql`, `20260731190000_adm_a_pc019_auth_event_audit.sql`. Consumed by Hub FEAT-H034.
+
+## 2026-07-21 — Account lifecycle self-service ([FEAT-PC017](./features/FEAT-PC017-account-lifecycle-self-service.md) / [FEAT-PC005](./features/FEAT-PC005-self-service-account-reactivation.md), Cycle C-F — entry backfilled 2026-08-01)
+
+- **`users.deactivation_origin`** — the column that makes an admin hold distinguishable from a member's own pause; every pre-origin off row backfilled `'admin'` in the same migration. The `get_own_account_state()` payload gains the key additively.
+- **Three own-row `SECURITY DEFINER` contracts:** `pause_own_account()`; `reactivate_own_account()` (a fresh CREATE — FEAT-PC005 was parked before any build, so there was no prior body to amend) gated on `deactivation_origin='member'`, terminal on decommissioned, idempotent when already active, origin cleared on success; `delete_own_account()`, porting the retired admin path's three-scenario walk byte-stable plus `ds5_lifecycle_group_closed` on closure.
+- **Two new ADR-U047 fact handlers** — `ds3_lifecycle_account_deleted` + `ds7_lifecycle_account_deleted` (the first ds7 handler), carrying the erasure legs so Core never touches domain tables. `admin_exit_user_from_platform` **dropped**; sentinel reassignment rides the existing `user_hard_deleted` fact.
+- The repair migration exists because `users.nickname` is NOT NULL under the display-name system: the scrub writes the tombstone string `'[Deleted User]'` rather than NULL (same no-PII semantic), and the sync trigger propagates it to the personal-group name for read-time attribution.
+- Migrations: `20260721161500_c_f_account_lifecycle_self_service.sql`, `20260721170000_c_f_repair_delete_scrub_nickname.sql`. Consumed by Hub FEAT-H029 and FEAT-H007.
+
+## 2026-07-07 — Pending-nominations read contract ([FEAT-PC016](./features/FEAT-PC016-pending-nominations-read-contract.md), Cycle J-A — entry backfilled 2026-08-01)
+
+- **`get_my_pending_nominations()`** — the nominee's own window, mirroring `get_my_invitations()` exactly (FIM-only guard, `search_path=''`, STABLE, `coalesce('[]')`, revoke-from-anon-explicitly grants); `group_name` resolves from the payload the FEAT-PC014 nomination writer embedded; ordering `created_at DESC, id DESC`. No new table.
+- `fetchPendingNominations()` thinned to a pure RPC relay — no table read, no client-side filtering, no client-clock math. `GET /api/me/nominations` and the `PendingNomination` payload unchanged. Closes the 2026-07-06 audit LOW finding.
+- Migration: rides the FEAT-PD002 schema-gate migration `20260707130821_feat_pd002_journey_catalogue_enrolment_contracts.sql` (no standalone PC016 migration). Consumed by the Hub via the existing `/api/me/nominations` BFF route — **note:** its only surface consumer was retired at A-NTF Cycle N-B (FEAT-H031, ADR-U051); the contract is live but currently unread.
+
+## 2026-07-06 — Anon EXECUTE lockdown (2026-07-06 compliance audit; no owning feature spec — entry backfilled 2026-08-01)
+
+- Supabase's default privileges (`pg_default_acl`) grant EXECUTE to `anon` (and PUBLIC) on every new `public` function, silently defeating the per-function `REVOKE … FROM PUBLIC` discipline applied since FEAT-PC002. The linter flagged 77 functions; live ACLs confirmed `anon=X` on `_erase_mist(uuid)` — the ungated erasure primitive whose wrapper authorizes but whose body does not — an unauthenticated arbitrary-account erasure path via `/rest/v1/rpc/_erase_mist`.
+- Demonstrated red first (`hub/tests/integration/platform/anon-execute-lockdown.test.ts`), then swept; the explicit-`anon` revoke posture hardened here is the one the PC014/PC015 entries above restate.
+- Migration: `20260706201500_security_anon_execute_lockdown.sql`. (Entry sourced from the migration header — no PC spec owns this audit slice.)
+
+## 2026-07-06 — Group-of-groups membership and acting ([FEAT-PC015](./features/FEAT-PC015-group-of-groups-membership-and-acting-contracts.md), Cycle G-F — entry backfilled 2026-08-01)
+
+- **The `act_as_group` permission key** (catalog 39 → 40) + Steward-template seed + an **instance backfill** — template changes don't propagate to instances, and the migration's verification block counts zero missed instances.
+- **Six new contracts:** `invite_group`, `search_invitable_groups`, `respond_to_group_invitation`, `leave_group_as_group`, `get_acting_contexts`, `get_group_memberships_of`; `nominate_steward` and `get_group_detail` **replaced in place**. No new table, no trigger changes, no policy changes. Explicit `revoke from public, anon` per function (the FEAT-PC014 default-privileges hazard).
+- `get_acting_contexts` reads **direct empowerments only** — deliberately not `has_permission()`, so Tier-1 admin reach never floods the selector and chaining cannot exist (ADR-U041 §2d). Invite targets are public active engagement groups only (`P0002` no-enumeration for everything else).
+- Two same-cycle follow-ups: `get_acting_contexts` became context-scoped (DROP + CREATE — the return shape gained `is_member_of_context`, the signature gained `p_context_group_id default null`; a CREATE OR REPLACE would have left the zero-arg overload alive), and `get_group_detail` gained **revealed visibility** for the caller's own `invited` membership and for wielding an active member-group (ADR-U041 §2a). The second follow-up also revoked `get_group_detail`'s PC010-era anon EXECUTE.
+- Migrations: `20260706120000_feat_pc015_group_of_groups_acting_contracts.sql`, `20260706150000_fix_pc015_scoped_acting_contexts.sql`, `20260706170000_fix_pc015_revealed_visibility.sql`. Consumed by Hub FEAT-H018.
+
+## 2026-07-05 — `leave_group` last-member copy fix (FEAT-PC013 post-6-done — entry backfilled 2026-08-01)
+
+- Copy-only replacement: the G-D last-member refusal still said "closing a group is not yet available" after Cycle G-E shipped `close_group`, and the Surface renders refusal messages verbatim (the H016 pass-through contract) — so the stale sentence sat beside the working Close affordance. Same errcode (`P0001`), same guards, same cascade; the message now mirrors `hand_stewardship_to_deusex`'s last-member shape. Grant hygiene re-asserted with explicit `anon` revokes.
+- Migration: `20260705115243_fix_leave_group_last_member_copy.sql`. (Entry sourced from the migration header.)
+
+## 2026-07-05 — Leadership transfer and closure contracts ([FEAT-PC014](./features/FEAT-PC014-leadership-transfer-and-closure-contracts.md), Cycle G-E — entry backfilled 2026-08-01)
+
+- **`nominate_steward` replaced in place** (template-aware + active-membership Steward resolution, house no-leak, `22023` nominee validation including the duplicate check the legacy body lacked) + **`respond_to_stewardship_nomination`** (accept / decline→next / decline→DeusEx) with the staleness guards the trusting legacy dispatch lacked — group-still-active, nominator-still-member, nominee-still-member, all `P0001` mutating nothing.
+- **`hand_stewardship_to_deusex`**, **`close_group`**, **`delete_group`**, and the internal `_transfer_stewardship_to_deusex` helper (no client execute). `handle_notification_action` + `_handle_stewardship_nomination_action` **dropped**; the `groups_delete` policy **dropped** behind a `pg_policies` name-guard; anon/PUBLIC grants revoked across the surface. No new table, no trigger changes.
+- `delete_group`'s cascade rides the established transaction-local flag `app.hard_delete_in_progress` rather than editing the `prevent_last_leader_removal` wall — the live wall admits no `'archived'` bypass, only `'closed'`. The flag also keeps the archive cascade to its single in-contract `group_deleted` notice instead of per-row spam.
+- **Gate-surfaced substrate hazard, now mechanised:** Supabase's `ALTER DEFAULT PRIVILEGES` grants EXECUTE to `anon`/`authenticated` on every new public function, so `revoke … from public` alone is insufficient. Fixed red-first for the PC014 surface; the same posture holds on all twelve PC010–PC013 contracts (each internally FIM-gated, so inert) and the standing pre-partition grant sweep must revoke `from anon` explicitly.
+- Migration: `20260705072252_feat_pc014_leadership_transfer_closure_contracts.sql`. Consumed by Hub FEAT-H017.
+
+## 2026-07-04 — Group membership lifecycle contracts ([FEAT-PC013](./features/FEAT-PC013-group-membership-lifecycle-contracts.md), Cycle G-D — entry backfilled 2026-08-01)
+
+- **`pause_member` / `activate_member` / `remove_member`** + the internal-only `active_steward_count(p_group_id, p_excluding)` helper (no client execute). `leave_group` **replaced in place** for the regular-exit path — sole-active-Steward and last-member refused `P0001` with actionable copy, which are the Cycle G-E re-entry points.
+- `get_group_detail` amended additively with `membership_status`; paused rows visible to management-key holders. The `memberships_delete_leave` and `memberships_delete_remove` policies **dropped** behind a `pg_policies` name-guard that refuses on a half-match. No new table, no trigger changes.
+- Management keys now imply member-list visibility (a minimal-permission pauser could otherwise pause blind), and the STORY-5 refusal ordering was amended so non-engagement ids resolve `P0002` — visibility precedes the type check, or group ids become enumerable. The grant audit found legacy `leave_group` carrying EXECUTE-to-PUBLIC since sprint2; revoked.
+- Migration: `20260704192549_feat_pc013_membership_lifecycle_contracts.sql`. Consumed by Hub FEAT-H016.
+
+## 2026-07-04 — Group invitation and joining contracts ([FEAT-PC012](./features/FEAT-PC012-group-invitation-and-joining-contracts.md), Cycle G-C — entry backfilled 2026-08-01)
+
+- **Nine member-facing `SECURITY DEFINER` contracts**, no new table, no policy changes. Actor resolution via `get_current_personal_group_id()`; writes FIM-only and active-account-only; group resolution per the G-A visibility rule. `invite_by_email` stores emails lowercased behind a case-insensitive duplicate guard (the unique constraint alone is case-sensitive).
+- **Build-discovered substrate defect, fixed in the same migration:** `auto_assign_member_role_on_accept` looked up the default role by `name = 'Member'`, but G-A-bootstrapped groups name instances verbatim after their templates (`'Member Role Template'`) — an accepted invitee silently received **no role at all**. Fixed by resolving the Member-template-derived instance via `created_from_role_template_id`, with the short-name lookup kept as the legacy-group fallback.
+- Follow-up on 2026-07-05: `invite_member` and `invite_by_email`'s conversion branch did a bare INSERT and let the unique constraint throw, so the raw `duplicate key value violates unique constraint …` text reached the UI. Both bodies replaced to pre-check the existing membership and raise a human, state-specific message (already a member / pending invitation / paused) under the **same `23505`**, with a `unique_violation` backstop so a race cannot leak the raw text. No schema change.
+- Migrations: `20260704144630_feat_pc012_invitation_contracts.sql`, `20260705090321_fix_pc012_invite_duplicate_clean_message.sql`. Consumed by Hub FEAT-H015.
+
+## 2026-07-04 — Group role and permission contracts ([FEAT-PC011](./features/FEAT-PC011-group-role-and-permission-contracts.md), Cycle G-B — entry backfilled 2026-08-01)
+
+- **Six member-facing `SECURITY DEFINER` contracts + one internal payload helper** (`role_fabric_entry`, no client execute), no new table, no policy changes. `get_group_detail` replaced in full with the **additive** members extension (`member_group_id`, `roles[]`) — every existing key unchanged.
+- The verified `grp_insert` predicate is now enforced on both grant paths: the author must themselves hold each permission they grant (`has_permission(actor, group, 'manage_roles') AND has_permission(actor, group, get_permission_name(permission_id))`), recorded in the migration header.
+- **Build-discovered trapdoor:** `copy_template_permissions` **auto-links by name convention** — a freshly inserted role named `X` where `role_templates` carries `'X Role Template'` is silently linked and receives that template's full grant set, so a "custom" role named `Steward` would defeat definition-time anti-escalation. The contract's custom path refuses auto-link-colliding names (`22023`); the direct-path equivalent remains in the substrate behind `can_assign_role()`, surfaced at the gate rather than unilaterally narrowed. A second divergence was surfaced and left as-is: the contract gates removal on `remove_roles` while the existing `ugr_delete` RLS gates on `assign_roles`.
+- TRUNCATE revoked from `anon` + `authenticated` on all three role tables (verified via `information_schema.table_privileges` — PostgREST exposes no TRUNCATE verb).
+- Migration: `20260704090434_feat_pc011_role_permission_contracts.sql`. Consumed by Hub FEAT-H014.
+
+## 2026-07-04 — Group creation and settings contracts ([FEAT-PC010](./features/FEAT-PC010-group-creation-and-settings-contracts.md), Cycle G-A — entry backfilled 2026-08-01)
+
+- **`create_engagement_group()`** — atomic bootstrap; role instances materialise data-driven from `group_template_roles` (chosen template, or the union across all templates when none), the existing `copy_template_permissions` trigger copies each instance's grants, and the creator binding is **permission-derived** via the instance whose template grants `assign_roles` — no role-name strings in SQL.
+- **`get_group_detail()`** — member-or-(public+active) visibility mirroring the RLS SELECT posture, `P0002` no-leak, viewer block with `can_manage_settings`. **`update_group_settings()`** — partial update (null leaves, `''` clears) behind per-field keys `edit_group_settings` / `set_group_visibility` / `control_member_list_visibility`. Suspended actors refused on both writes. No new table.
+- **Privilege layer narrowed:** `INSERT`/`TRUNCATE` on `groups` revoked from `anon` + `authenticated` — the verified hole was a legacy `with_check` that let any authenticated caller, including a Mist naming its own proto personal group, create an un-bootstrapped row. `UPDATE` revoked then re-granted on the settable columns only, so `status` / `group_type` / `created_by_group_id` are unreachable directly even for a permitted Steward. RLS policies left unchanged as defense-in-depth; DELETE deliberately untouched (it belongs to Cycle G-E).
+- Idempotent `FringeIsland Members` + `DeusEx` seeding inserts close the fresh-DB gap (seeds sit outside the migration chain).
+- Follow-up later the same day: the creator was bound to the management role only — a member of their own group holding no participation bundle, so the one thing a creator could not do in their own group was `enroll_self_in_journey`. `create_engagement_group()` replaced in place to additionally bind the creator to the **participation role**, permission-derived via the `enroll_self_in_journey` marker, soft-skipped when the instantiated role set carries no participation role. No signature change, no new table, no policy changes.
+- Migrations: `20260704075547_feat_pc010_group_contracts.sql`, `20260704075549_perf_p3a_fk_indexes_initplan.sql` (14 FK covering indexes + 2 `auth_rls_initplan` wraps, rode the same gate), `20260704204343_feat_pc010_amendment_creator_participant_binding.sql`. Consumed by Hub FEAT-H013.
+
+## 2026-07-03 — Session inventory and revocation ([FEAT-PC009](./features/FEAT-PC009-session-inventory-and-revocation.md), Cycle E — entry backfilled 2026-08-01)
+
+- **`get_own_sessions()`** — STABLE `SECURITY DEFINER`, `search_path=''`; FIM-only via `public.users.is_temporary IS DISTINCT FROM FALSE` (a Mist gets `42501`); caller resolved via `auth.uid()` directly so the contract survives suspension (the PC008 pattern); `is_current` derived from `NULLIF(auth.jwt()->>'session_id','')::uuid` against the row PK; `ip` rendered via `host(s.ip)`. Two functions, no new table.
+- **`revoke_own_session(p_session_id)`** — VOLATILE own-row DELETE (refresh tokens die by the `refresh_tokens.session_id` FK cascade); `P0002` on foreign-or-nonexistent with no existence leak and nothing emitted on failure; one durable `session_revoked` row to `admin_audit_log`; the ADR-U039 hint via `realtime.send` on `account:<auth_uid>:sessions` inside an exception guard, so a hint failure can never fail the revocation.
+- **`realtime.messages` policy `session_signal_receive_own`** — authenticated RECEIVE on the own topic only, and **no client send policy**, so a peer cannot spoof a hint. EXECUTE granted to `authenticated`/`service_role` only, revoked from PUBLIC.
+- Migration: `20260703154102_feat_pc009_session_contracts.sql`. Consumed by Hub FEAT-H012.
+
+## 2026-07-02 — ADR-U038 API-boundary compliance, tranches 1-3 (no single owning feature spec — entry backfilled 2026-08-01, verified against the [2026-07-03 session bridge](../../planning/sessions/2026-07-03_01_-_API-BOUNDARY-COMPLIANCE-ADR-U038-TRANCHES-1-3.md); PRs #48/#49/#50)
+
+- **Column-privilege narrowing on `public.users`** — client UPDATE limited to the six identity-scope fields and client SELECT on `users.email` revoked (the ADR-U038 S1/S2 class: RLS scopes rows but not columns, so a rule enforced only in a Surface route is not enforced at all).
+- **Sign-up consent boundary** — `handle_new_user` now gates credentialed FIM creation on consent and writes a durable `transcendence` consent row (Mists exempt), riding the FEAT-PC002 consent substrate without a schema change.
+- **Own-profile contract** — `get_own_profile()` + `update_own_profile(jsonb)`; the FEAT-PC003 profile read/update moved from direct table access to RPCs, `validateProfilePatch` kept as client-side UX pre-validation only.
+- **GRP-4 member-groups contract** — `get_member_groups()`; the member's own group-list read homed below the boundary.
+- Migrations: `20260702120000_api_boundary_users_column_privileges.sql`, `20260702120100_api_boundary_signup_consent.sql`, `20260702130000_feat_pc003_own_profile_contract.sql`, `20260702130100_grp4_member_groups_contract.sql`. Consumed by the Hub profile, sign-up, and groups surfaces.
+
+## 2026-06-30 — Member data export ([FEAT-PC008](./features/FEAT-PC008-member-data-export.md), Cycle C — entry backfilled 2026-08-01)
+
+- **`get_own_data_export()`** — one new function, no new table. PL/pgSQL, `SECURITY DEFINER`, `search_path=''`, **VOLATILE** because it writes its own audit row. Resolves the caller via `auth.uid()` → `public.users` directly rather than `get_current_personal_group_id()`, which is `is_active`-gated — so a **suspended** member can still exercise their right of access. Own-row only, no target parameter.
+- Assembles `schema_version` / `exported_at` / `subject` / `profile` / `account_state` / `consent` (full append-only history, newest-first) / `memberships`, all Core-owned; Domain-owned data and the Journal are forward-seam sections omitted in v1, honouring the one-way Core→Domain boundary.
+- **The export event resolved to `admin_audit_log` for v1** — one durable `data_export` row with `actor_group_id` set to the member's own personal group; the `SECURITY DEFINER` elevation is what permits the own-action audit write. A dedicated privacy-events log stays a possible later move.
+- Migration: `20260630161155_feat_pc008_data_export.sql`. Consumed by Hub FEAT-H010.
+
+## 2026-06-30 — Consent read and decision write ([FEAT-PC006](./features/FEAT-PC006-member-consent-read.md) / [FEAT-PC007](./features/FEAT-PC007-consent-decision-write.md), Cycle B — entry backfilled 2026-08-01)
+
+- **`consent_records.decision`** (`text NOT NULL DEFAULT 'granted'`; existing transcendence captures backfilled `'granted'`) + the **`consent_purposes` catalog** (new table, RLS `consent_purposes_select_all` SELECT-to-authenticated, no client write), seeded `transcendence` (`withdrawable=false`, `v1`) and `product_analytics` (`withdrawable=true`, `v1`).
+- **`get_own_consent_state()`** — `SECURITY DEFINER`, `search_path=''`, subject pinned via `get_current_personal_group_id()`, no target parameter. `current_policy_version='v1'` matches the live `TRANSCENDENCE_POLICY_VERSION`, so existing FIMs read `needs_reconsent=false`.
+- **`record_consent_decision(p_purpose, p_decision)`** — no new table or column (it rode the PC006 schema nod). Validates the purpose against the catalog; **withdrawability gate** (a non-`'granted'` decision on `withdrawable=false` is refused); **effective-state idempotency** (equal-to-current is a no-op, no duplicate history row); appends one row stamping `policy_version` **server-side** from the catalog. Append-only and `consent_records_select_own` inherited unchanged.
+- Typed refusals the route maps to HTTP: `28000` (no active subject), `22023` (unknown purpose), `42501` (refused withdrawal). Recorded as **ADR-U034 Amendment 1** (append-only note; the re-consent flow stays out of scope, drift surfaced only).
+- Migrations: `20260629211504_feat_pc006_consent_read.sql`, `20260630062757_feat_pc007_consent_decision_write.sql`. Consumed by Hub FEAT-H008 and FEAT-H009.
+
+## 2026-06-29 — Account-state read ([FEAT-PC004](./features/FEAT-PC004-account-state-read.md), Cycle A — entry backfilled 2026-08-01)
+
+- **`get_own_account_state()`** — `SECURITY DEFINER`, `search_path=''`, own-row via `auth.uid()`, **no `is_active` filter** (the point of the contract is that an off member can still read their own state), returning `jsonb {is_active, is_decommissioned, state}`. EXECUTE granted to `authenticated` + `service_role`. No new table.
+- **Vocabulary settled:** the off-but-not-closed state is realized as **`'suspended'`** — an admin hold. The earlier ambiguous framing is retired. The member-initiated `'paused'` label and self-service reactivation were deferred at this point (FEAT-PC005 / FEAT-H007 parked; both land at Cycle C-F).
+- Migration: `20260629054349_feat_pc004_account_state_read.sql`. Consumed by Hub FEAT-H006.
+
+## 2026-06-28 — Self-service profile ([FEAT-PC003](./features/FEAT-PC003-self-service-profile.md), IDN-4 — entry backfilled 2026-08-01)
+
+- **`bio_max_length` CHECK on `public.users`** — the only schema change; bio is hardened at both layers, with `PROFILE_BIO_MAX_LENGTH = 500` the single source of truth and the SQL literal mirroring it. Known bound discrepancy: the DB checks `char_length` (Unicode code points) while the contract checks JS `.length` (UTF-16 code units), so the contract is the stricter of the two for non-BMP input.
+- **No new RLS policy was needed** — the pre-existing `users_update_own` UPDATE policy (`auth_user_id = auth.uid()`) already enforced the own-row posture; the broad `users_select_active` SELECT policy is left untouched (group-display-name reads depend on it) and makes the `UPDATE…RETURNING` readback safe.
+- **Identity-scope gating is the security boundary** — the contract allow-lists `IDENTITY_SCOPE_FIELDS` and rejects any other key (`is_temporary`, `personal_group_id`, …).
+- **Cascade confirmed, not rebuilt:** the existing `sync_display_name_to_personal_group` trigger is the PC-3 personal-group-name cascade contract; no Surface or app write to `groups`.
+- Migration: `20260628120000_feat_pc003_bio_max_length.sql`. Consumed by Hub FEAT-H005. (The profile read/update later moved below the Platform API — see the 2026-07-02 ADR-U038 entry.)
+
+## 2026-06-27 — Mist ephemerality, transcendence, and the consent substrate ([FEAT-PC002](./features/FEAT-PC002-mist-transcendence-reaper-consent.md), IDN-2 — entry backfilled 2026-08-01)
+
+- **`consent_records`** (`subject_user_id`, `subject_group_id`, `purpose` as open text, `policy_version`, `capture_context jsonb`, `captured_at`) with a **single** policy `consent_records_select_own` and the `enforce_consent_append_only()` trigger — no write policies at all; every write arrives through a `SECURITY DEFINER` path.
+- **The ephemerality reaper** — `pc2_config` (key/value PC-2 config, RLS deny-by-default; `mist_inactivity_ttl` = 72 hours, seeded not hardcoded) + `reaper_runs` (the DB-side V4 sink, because pg_cron has no Hub to emit from) + `reap_expired_mists()` + **`pg_cron` enabled** and the `mist-reaper` job at `*/15 * * * *`. The race guard is inactivity plus `FOR UPDATE SKIP LOCKED`, not an in-flight marker column.
+- **`_erase_mist(uuid)`** — the one erasure-cascade primitive shared by the reaper and by owner-invoked `explicit_erase_mist()` (authorizes by `auth.uid()` + `is_temporary`, `42501` otherwise). Its cascade **order** is load-bearing: journeys (FK RESTRICT) → `auth.users` (CASCADE drops the profile) **before** the proto group, which dodges the `personal_group_id` ON-DELETE-SET-NULL immutability trigger.
+- **`finalise_transcendence(p_policy_version, p_capture_context)`** — one transaction: authorize, flip `is_temporary => false` **in place** (same row, same id), enrol the personal group in FringeIsland Members, write the transcendence consent record.
+- **`erase_fim_account(uuid)`** — anonymise-then-retain, admin-gated on `manage_all_groups`, then delegating teardown to the existing `admin_hard_delete_user` unmodified. Anonymise-first is **structural, not procedural**: the consent FK `ON DELETE RESTRICT` blocks a raw hard-delete (`23503`), so the subject link must be NULLed first while `purpose` / `policy_version` / `captured_at` / `capture_context` are retained intact as proof. It refuses `is_temporary = true`, so the two erasure paths cannot reach the same row by construction.
+- Migrations: `20260626202215_feat_pc002_mist_explicit_erase.sql`, `20260626204102_feat_pc002_mist_ephemerality_reaper.sql`, `20260626205412_feat_pc002_consent_substrate.sql`, `20260626205932_feat_pc002_atomic_transcendence.sql`, `20260627120000_feat_pc002_fim_account_erasure.sql`. Consumed by Hub FEAT-H004.
 
 ## 2026-06-26 — Mist anonymous-identity substrate, arrival ([FEAT-PC001](./features/FEAT-PC001-mist-anonymous-substrate.md))
 
