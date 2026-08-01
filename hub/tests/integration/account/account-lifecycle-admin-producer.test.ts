@@ -33,7 +33,12 @@ jest.setTimeout(180_000); // real-substrate suite: many users, sign-ins
  * LABELLED GREEN (green before AND after by design — never claimed as red):
  *  - W1c (AC3-13): the NULL-origin fail-safe — an off row of unknown origin
  *    reads suspended and neither self-service door opens
- *  - W1f: the manage_all_groups wall on the producer refuses a plain member
+ *  - W1f: the admin wall on the producer refuses a plain member. ADAPTED at
+ *    FEAT-PC021 gate 2 (sibling-assertion rule, migration 20260801190000):
+ *    the wall is now the typed platform-admin gate — the cell pins 42501
+ *    'platform administrator required' instead of the legacy P0001
+ *    'Unauthorized: manage_all_groups…' prose, so it is red from the
+ *    adaptation until that migration applies.
  */
 
 /** Authenticated DeusEx caller — the house manage_all_groups elevation. */
@@ -276,7 +281,7 @@ describe('COR-C W1 — ADR-U050 admin half through the real producer', () => {
     });
   });
 
-  describe('W1f [LABELLED GREEN — the manage_all_groups wall, green before and after]', () => {
+  describe('W1f — the platform-admin wall on the producer (adapted at PC021 gate 2: typed 42501)', () => {
     let mia: TestUser;
     let tia: TestUser;
     beforeAll(async () => {
@@ -295,7 +300,10 @@ describe('COR-C W1 — ADR-U050 admin half through the real producer', () => {
         new_is_active: false,
       });
       expect(error).not.toBeNull();
-      expect(error!.message).toMatch(/manage_all_groups|Unauthorized/i);
+      // PC021 gate 2 re-issue: the producer refuses with the typed
+      // platform-admin gate, not the legacy manage_all_groups prose.
+      expect(error!.code).toBe('42501');
+      expect(error!.message).toMatch(/platform administrator/i);
       const row = await lifecycleRowOf(tia.user.id);
       expect(row.is_active).toBe(true);
     });

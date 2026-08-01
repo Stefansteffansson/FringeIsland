@@ -540,14 +540,20 @@ describe('FEAT-PC017 — account lifecycle self-service (C-F red suite)', () => 
   });
 
   describe('STORY-8: the old exit path is retired; the admin lifecycle paths are not', () => {
-    it('S8a: admin_exit_user_from_platform no longer exists', async () => {
-      // RED pre-apply: the function still exists (count 1); the gate DROPs it.
+    it('S8a: the C-F retirement is superseded — FEAT-PC021 gate 2 re-derives admin_exit_user_from_platform', async () => {
+      // ADAPTED at PC021 gate 2 (sibling-assertion rule, migration
+      // 20260801190000): this cell pinned the C-F DROP (count 0). ADM-6
+      // deliberately re-derives the admin exit as a NEW contract — the walk
+      // without the F-2 erasure legs or profile scrub, admin origin, typed
+      // refusals. The retirement claim this story made now reads: the LEGACY
+      // exit stays retired; what exists is the PC021 re-derivation. Red from
+      // the adaptation until that migration applies (count 0 at head).
       const rows = await runAdminSql(
         `SELECT count(*)::int AS n FROM pg_proc p
           JOIN pg_namespace n ON n.oid = p.pronamespace
          WHERE n.nspname = 'public' AND p.proname = 'admin_exit_user_from_platform';`,
       );
-      expect(rows[0].n).toBe(0);
+      expect(rows[0].n).toBe(1);
     });
 
     it('S8b [LABELLED GREEN — invariant-holds, green before and after]: the admin lifecycle RPCs stand', async () => {
