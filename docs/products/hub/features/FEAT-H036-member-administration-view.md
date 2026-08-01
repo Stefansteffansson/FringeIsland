@@ -74,7 +74,7 @@ Gimbal inherits the contracts, not the shell. Member-facing surfaces untouched �
 ## Vertical impact
 
 - **Privacy/GDPR:** renders admin-tier member identity (display name, email, state) behind the platform's admin wall; only walked payload keys reach the client; nothing new collected.
-- **Notifications:** none new in this slice — the affected-member communication question is the recorded CB-1 deferral (per PC021); the kinds the walks fire are existing platform behavior, not surface work.
+- **Notifications:** none new in this slice — the affected-member communication question is the recorded CB-1 deferral (per PC021); the kinds the walks fire are existing platform behavior, not surface work. *(CB-1 resolved at the ADM-D board, DB-4, 2026-08-01: ADM-D ships only the `report_resolved` resolution kind — FEAT-PC022; sanction-communication kinds are deferred to Eid.)*
 - **Administration:** ADM-2/3/4/5/6/12/18 realized at the surface; every action audited platform-side; ceremony weight escalates with irreversibility.
 - **Observability:** durable telemetry on reads and mutations (the H034 leg); refusals render the platform's words visibly, never swallowed.
 - **Transactions:** none.
