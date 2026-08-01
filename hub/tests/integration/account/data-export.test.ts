@@ -111,7 +111,7 @@ describe('FEAT-PC008 — own data export', () => {
 
       const doc = await fetchOwnDataExport(supabase);
 
-      expect(doc.schema_version).toBe(1);
+      expect(doc.schema_version).toBe(2);
       expect(doc.exported_at).not.toBeNull();
       expect(doc.subject.personal_group_id).toBe(user.personalGroupId);
       expect(doc.subject.email).toBe(user.email);
@@ -254,12 +254,12 @@ describe('FEAT-PC008 — own data export', () => {
       if (user) await teardownUsers([user]);
     });
 
-    it('carries schema_version 1 with the platform-composed sections present (COR-A W8)', async () => {
+    it('carries schema_version 2 (ADM-D AB-4) with the platform-composed sections present (COR-A W8)', async () => {
       const supabase = createTestClient();
       await signInWithRetry(supabase, user.email, user.password);
 
       const doc = (await fetchOwnDataExport(supabase)) as unknown as Record<string, unknown>;
-      expect(doc.schema_version).toBe(1);
+      expect(doc.schema_version).toBe(2);
       // COR-A W8 (AC-4): the former forward-seam sections are composed
       // platform-side — additive keys, no version bump (the delivered download
       // already carried them; the composer moved, the shape did not). Full

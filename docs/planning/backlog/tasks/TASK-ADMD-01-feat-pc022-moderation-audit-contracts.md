@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMD-01
 title: Build FEAT-PC022 — the moderation family, the audit family, and the AB-4 execution in one gate — red-first, HELD for named approval
-status: todo
+status: review
 assigned_to: unassigned
 priority: high
 feature: FEAT-PC022
