@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMB-02
 title: Build FEAT-H035 (Hub) — the group administration view on the H034 shell: caretaker tab, detail, suspend/reactivate, reassign-out-of-caretakership
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H035

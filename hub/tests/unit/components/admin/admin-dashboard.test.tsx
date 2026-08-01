@@ -39,6 +39,18 @@ const errResponse = (status: number) =>
 
 let fetchMock: jest.Mock<(input: RequestInfo | URL) => Promise<Response>>;
 
+// FEAT-H035: the Groups card renders a next/link anchor; inert for H034 cases.
+jest.mock('next/link', () => {
+  return function Link({ href, children, ...rest }: { href: string; children: React.ReactNode }) {
+    return (
+      <a href={href} {...rest}>
+        {children}
+      </a>
+    );
+  };
+});
+
+import React from 'react';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 
 beforeEach(() => {
@@ -112,5 +124,15 @@ describe('FEAT-H034 — AdminDashboard', () => {
     const { container } = render(<AdminDashboard />);
     await screen.findByText('Members');
     expect(await axe(container)).toHaveNoViolations();
+  });
+
+  // FEAT-H035 STORY-1 (red-first 2026-08-01): the dashboard gains a "Groups"
+  // navigation card once loaded — the entry to /admin/groups.
+  it('FEAT-H035: the loaded dashboard offers the Groups administration card', async () => {
+    fetchMock.mockResolvedValue(okResponse({ stats: STATS }));
+    render(<AdminDashboard />);
+    await screen.findByText('Members');
+    const card = screen.getByTestId('admin-nav-groups');
+    expect(card).toHaveAttribute('href', '/admin/groups');
   });
 });
