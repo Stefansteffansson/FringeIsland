@@ -1,7 +1,7 @@
 # Backfill the Platform Core CHANGELOG register
 
 ---
-id: TASK-DOC-005
+id: TASK-DOC-007
 title: Backfill docs/platform/core/CHANGELOG.md — entries between FEAT-PC001 (2026-06-26) and Cycle ADM-A are missing
 status: todo
 assigned_to: unassigned
