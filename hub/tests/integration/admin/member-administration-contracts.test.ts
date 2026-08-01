@@ -32,6 +32,14 @@ jest.setTimeout(240_000); // real-substrate suite: seven users + a Mist, real st
  * cells (non-admin 42501, anon EXECUTE, unknown-filter 22023, ghost/Mist
  * P0002): each pins its SPECIFIC typed refusal, so at head it fails
  * function-absent rather than passing on mere error-presence.
+ *
+ * AMENDMENT RED (2026-08-01, after gate 1 applied): 3 failed / 12 — exactly
+ * the big-population filter cases (S1a default / S1c active / S1f all).
+ * PostgREST db-max-rows truncates SET-RETURNING RPCs at 1000, and the dev DB
+ * holds 1,918 non-Mist users (1,589 sorting before the axel fixture) — the
+ * first-contact finding. The 20260801180000 amendment makes admin_get_users
+ * return a jsonb ARRAY (scalar — outside the row cap; identical client
+ * shape): these 12 assertions are byte-unchanged across both reds.
  */
 
 /** Authenticated DeusEx caller — the house manage_all_groups elevation. */
