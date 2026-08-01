@@ -96,13 +96,23 @@ describe('FEAT-H034 — AdminDashboard', () => {
     expect(screen.queryByText(/forbidden|not authorized/i)).not.toBeInTheDocument();
   });
 
+  // ADAPTED at FEAT-H037 (2026-08-02): the dashboard now also fires the
+  // non-blocking open-report count fetch, so these two cells scope their
+  // sequencing to the statistics URL instead of positional once-mocks.
   it('surfaces a failed load visibly and Retry re-reads', async () => {
-    fetchMock.mockResolvedValueOnce(errResponse(500)).mockResolvedValueOnce(okResponse({ stats: STATS }));
+    const statsResponses = [errResponse(500), okResponse({ stats: STATS })];
+    fetchMock.mockImplementation((input: RequestInfo | URL) =>
+      Promise.resolve(
+        String(input).startsWith('/api/admin/reports')
+          ? okResponse({ reports: [] })
+          : (statsResponses.shift() ?? okResponse({ stats: STATS })),
+      ),
+    );
     render(<AdminDashboard />);
     expect(await screen.findByText(/could not load/i)).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: /retry/i }));
     expect(await screen.findByText('Members')).toBeInTheDocument();
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(statsResponses).toHaveLength(0); // exactly two statistics reads
   });
 
   it('Refresh re-reads and repaints from the fresh payload', async () => {
@@ -111,12 +121,19 @@ describe('FEAT-H034 — AdminDashboard', () => {
       members: { ...STATS.members, total: 43 },
       generated_at: '2026-07-31T12:05:00Z',
     };
-    fetchMock.mockResolvedValueOnce(okResponse({ stats: STATS })).mockResolvedValueOnce(okResponse({ stats: second }));
+    const statsResponses = [okResponse({ stats: STATS }), okResponse({ stats: second })];
+    fetchMock.mockImplementation((input: RequestInfo | URL) =>
+      Promise.resolve(
+        String(input).startsWith('/api/admin/reports')
+          ? okResponse({ reports: [] })
+          : (statsResponses.shift() ?? okResponse({ stats: second })),
+      ),
+    );
     render(<AdminDashboard />);
     expect(await screen.findByText('42')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: /refresh/i }));
     expect(await screen.findByText('43')).toBeInTheDocument();
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(statsResponses).toHaveLength(0); // exactly two statistics reads
   });
 
   it('is axe-clean in the loaded state (COR-C W7b gate)', async () => {
@@ -144,5 +161,35 @@ describe('FEAT-H034 — AdminDashboard', () => {
     await screen.findByText('Members');
     const card = screen.getByTestId('admin-nav-members');
     expect(card).toHaveAttribute('href', '/admin/members');
+  });
+
+  // FEAT-H037 STORY-6 (red-first 2026-08-02): the dashboard gains the
+  // Moderation card (with the open-report count from the queue read) and the
+  // Audit log card — the last two A-ADM console entries.
+  it('FEAT-H037: the loaded dashboard offers the Moderation card with the open-report count', async () => {
+    fetchMock.mockImplementation((input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url.startsWith('/api/admin/reports')) {
+        return Promise.resolve(
+          okResponse({ reports: [{ id: 'r1' }, { id: 'r2' }, { id: 'r3' }] }),
+        );
+      }
+      return Promise.resolve(okResponse({ stats: STATS }));
+    });
+    render(<AdminDashboard />);
+    await screen.findByText('Members');
+    const card = screen.getByTestId('admin-nav-moderation');
+    expect(card).toHaveAttribute('href', '/admin/moderation');
+    await waitFor(() =>
+      expect(screen.getByTestId('admin-nav-moderation-count')).toHaveTextContent('3'),
+    );
+  });
+
+  it('FEAT-H037: the loaded dashboard offers the Audit log card', async () => {
+    fetchMock.mockResolvedValue(okResponse({ stats: STATS }));
+    render(<AdminDashboard />);
+    await screen.findByText('Members');
+    const card = screen.getByTestId('admin-nav-audit');
+    expect(card).toHaveAttribute('href', '/admin/audit');
   });
 });
