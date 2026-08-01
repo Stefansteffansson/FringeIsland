@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMC-00
 title: Fix the two pre-existing react-hooks/set-state-in-effect lint errors on main (AdminDashboard.tsx:50, AccountMenu.tsx:35)
-status: todo
+status: done
 assigned_to: unassigned
 priority: medium
 feature: none
