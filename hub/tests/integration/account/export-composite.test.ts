@@ -84,8 +84,9 @@ describe('COR-A W8 — the platform-side export composite (AC-4)', () => {
 
     const doc = (await fetchOwnDataExport(supabase)) as unknown as Record<string, unknown>;
 
-    // The pre-W8 keys are intact — additive extension, schema_version unchanged.
-    expect(doc.schema_version).toBe(1);
+    // The pre-W8 keys are intact; schema_version is 2 since the ADM-D
+    // audit_trail section (AB-4 — a rights-shape change, not a mere key).
+    expect(doc.schema_version).toBe(2);
     expect(doc).toHaveProperty('subject');
     expect(doc).toHaveProperty('profile');
     expect(doc).toHaveProperty('account_state');

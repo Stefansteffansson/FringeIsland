@@ -42,7 +42,7 @@ type ExportClass = {
   memberData: boolean;
   reason?: string;
   representation?: string;
-  exemption?: { reason: string; citation: string };
+  exemption?: { reason: string; citation: string; scope?: string };
 };
 
 type Manifest = {
@@ -83,7 +83,7 @@ describe('Export-completeness invariant (COR-C W2, Audit III AC3-4)', () => {
     expect(stale).toEqual([]);
   });
 
-  it('member-data tables carry a representation XOR a cited exemption; the rest state a reason', () => {
+  it('member-data tables carry a representation XOR a cited exemption (both only under the AB-4 partial scope); the rest state a reason', () => {
     const m = loadManifest();
     const bad: string[] = [];
     for (const [t, c] of Object.entries(m.export?.tables ?? {})) {
@@ -91,7 +91,13 @@ describe('Export-completeness invariant (COR-C W2, Audit III AC3-4)', () => {
         const rep = !!c.representation?.trim();
         const ex = !!(c.exemption?.reason?.trim() && c.exemption?.citation?.trim());
         if (!rep && !ex) bad.push(`${t}: member data with neither representation nor cited exemption`);
-        if (rep && ex) bad.push(`${t}: both representation and exemption — pick one`);
+        // ADM-D (ADR-U052 §6 / board AB-4): a split-by-row-direction entry
+        // carries BOTH halves — legal exactly when the exemption is marked
+        // scope 'partial', and a partial exemption REQUIRES both halves.
+        if (rep && ex && c.exemption?.scope !== 'partial')
+          bad.push(`${t}: both representation and exemption — pick one, or mark the exemption scope 'partial' (the AB-4 split shape)`);
+        if (c.exemption?.scope === 'partial' && !(rep && ex))
+          bad.push(`${t}: a partial exemption requires both halves — the representation AND the exempt remainder`);
       } else if (!c.reason?.trim()) {
         bad.push(`${t}: classified non-member-data without a reason`);
       }

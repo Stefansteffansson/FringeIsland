@@ -70,7 +70,7 @@
     }
   },
 
-  "functionsNote": "COR-C W7 (Audit III GC-1): core BY DECLARATION, never by silent default — function-classification-completeness.test.ts fails red on any live function absent from every functions list (lifecycle-prefix functions excepted, ADR-U047 rule 1). ADM-A TASK-ADMA-01 (board AB-3, 2026-07-31) executed the GC-13/AC3-O5 ruling: the formerly-flat CORE seed is split four-way at function granularity (PC-1 Infrastructure / PC-2 Identity / PC-3 Organisation / PC-4 Governance), gated by the split + admin_*-is-PC-4 pin tests in the same file; functionOwner() still falls back to CORE for the unclassified, which fails the completeness gate — fail-closed both ways. Judgment calls recorded: is_platform_admin -> PC-1 (definition PC-1-owned per governance-spec Q3/C2-1; PC-4 owns only the DeusEx semantic); get_current_personal_group_id -> PC-3 (the actor primitive as attributed twice in governance-specification.md, though it reads PC-2 columns); get_own_consent_state / record_consent_decision / get_own_data_export -> PC-4 (the G-35 consent-governance + export capabilities, FEAT-PC006/007/008); notify_* group-event triggers -> PC-3 (PC-1 Class-3 Finding #1: dispatch is universal-group-pattern-coupled; delivery-substrate obligation, not DS-5); hand_stewardship_to_deusex/_transfer_stewardship_to_deusex -> PC-3 (FEAT-PC014 mechanics; DeusEx is receiver, not owner); sync_personal_group_display_name -> PC-2 (identity-display propagation; writes a PC-3 row by design). This key lives OUTSIDE functions: every key inside functions is iterated as an owner list by functionOwner().",
+  "functionsNote": "COR-C W7 (Audit III GC-1): core BY DECLARATION, never by silent default — function-classification-completeness.test.ts fails red on any live function absent from every functions list (lifecycle-prefix functions excepted, ADR-U047 rule 1). ADM-A TASK-ADMA-01 (board AB-3, 2026-07-31) executed the GC-13/AC3-O5 ruling: the formerly-flat CORE seed is split four-way at function granularity (PC-1 Infrastructure / PC-2 Identity / PC-3 Organisation / PC-4 Governance), gated by the split + admin_*-is-PC-4 pin tests in the same file; functionOwner() still falls back to CORE for the unclassified, which fails the completeness gate — fail-closed both ways. Judgment calls recorded: is_platform_admin -> PC-1 (definition PC-1-owned per governance-spec Q3/C2-1; PC-4 owns only the DeusEx semantic); get_current_personal_group_id -> PC-3 (the actor primitive as attributed twice in governance-specification.md, though it reads PC-2 columns); get_own_consent_state / record_consent_decision / get_own_data_export -> PC-4 (the G-35 consent-governance + export capabilities, FEAT-PC006/007/008); notify_* group-event triggers -> PC-3 (PC-1 Class-3 Finding #1: dispatch is universal-group-pattern-coupled; delivery-substrate obligation, not DS-5); notify_report_resolved -> DS-5 (ADM-D FEAT-PC022: mounts on the DS-5 report store and writes only the delivery tier — the universal-group-pattern rationale does not apply); hand_stewardship_to_deusex/_transfer_stewardship_to_deusex -> PC-3 (FEAT-PC014 mechanics; DeusEx is receiver, not owner); sync_personal_group_display_name -> PC-2 (identity-display propagation; writes a PC-3 row by design). This key lives OUTSIDE functions: every key inside functions is iterated as an owner list by functionOwner().",
 
   "functions": {
     "PC-1": [
@@ -170,6 +170,9 @@
       "admin_decommission_user",
       "admin_exit_user_from_platform",
       "admin_force_logout",
+      "admin_get_audit_log",
+      "admin_get_content_report_detail",
+      "admin_get_content_reports",
       "admin_get_group_detail",
       "admin_get_groups",
       "admin_get_user_detail",
@@ -179,6 +182,7 @@
       "admin_reactivate_group",
       "admin_reassign_group_stewardship",
       "admin_remove_member_from_group",
+      "admin_resolve_content_report",
       "admin_revoke_platform_admin",
       "admin_send_notification",
       "admin_suspend_group",
@@ -269,7 +273,8 @@
       "get_notification_nudge_policy",
       "set_notification_nudge_policy",
       "set_notification_category_nudge",
-      "get_platform_announcement_reach"
+      "get_platform_announcement_reach",
+      "notify_report_resolved"
     ],
     "DS-7": [
       "create_journal_entry",
@@ -299,7 +304,7 @@
       "user_group_roles": { "memberData": true, "representation": "roles section (inline core; added at COR-C W2 — the invariant's first catch: roles held were member data with no export path)" },
       "permissions": { "memberData": false, "reason": "permission catalog" },
       "pending_email_invitations": { "memberData": true, "exemption": { "reason": "transient invitation state: invitee e-mail addresses are third-party data under the own-data wall (the C-E precedent that omits reports' target_group_id); the caller-attributable act resolves into group_memberships on acceptance, which is exported", "citation": "C-E board own-data wall (20260721100000:495-501) + COR-C W2 review 2026-07-31" } },
-      "admin_audit_log": { "memberData": true, "exemption": { "reason": "operational/security log; the member-facing right-of-access shape for audit trails (own actions vs actions about the member by third-party actors) is an A-ADM design question — deferred to the A-ADM area-open design session, alongside TASK-OBS-01's sink decisions", "citation": "COR-C W2 review 2026-07-31; revisit at A-ADM area open. DECIDED at that session — ADR-U052 §6 (board AB-4): split by row direction, own-actor rows gain a representation, target-of-admin rows keep a narrowed exemption; THIS ENTRY IS REWRITTEN in cycle ADM-D with ADM-16 (A-ADM plan exit checklist carries the line)" } },
+      "admin_audit_log": { "memberData": true, "representation": "audit_trail section (inline core; rows where the member is the ACTOR — their own export events, the four auth moments, and any admin actions they themselves performed; split is structural, actor_group_id = self; added ADM-D FEAT-PC022)", "exemption": { "scope": "partial", "reason": "rows where the member is only the TARGET of third-party admin action stay exempt: the admin actor's identity in the row is third-party data under the own-data wall, admin actions are visible by effect on shipped surfaces (e.g. a hold renders on IDN-9), and moderation/security integrity needs no log disclosure", "citation": "ADR-U052 §6 (board AB-4, settled 2026-07-31); EXECUTED cycle ADM-D with ADM-16 — FEAT-PC022, migration 20260802120000 (audit_trail section, schema_version 2); the invariant's partial-scope branch licenses the split shape" } },
       "telemetry_events": { "memberData": true, "exemption": { "reason": "operational telemetry under documented legitimate interest: content-free props, actor-linked by personal group, 90-day retention bound, erasure cascades with the personal group (proven in the FEAT-PC018 suite). Bounded retention + no content = no export representation", "citation": "ADR-U052 §4 (2026-07-31, A-ADM board AB-1c)" } },
       "journeys": { "memberData": true, "exemption": { "reason": "communal content templates; the member's LIVED record (enrolments, steps, responses) is exported via the journeys section. Authored-template attribution becomes member-facing when authoring becomes a first-class surface (Studios) — export decision deferred to that wave", "citation": "COR-C W2 review 2026-07-31; ADR-U026 (studios own authoring)" } },
       "journey_steps": { "memberData": false, "reason": "content structure of communal templates" },
@@ -313,7 +318,7 @@
       "conversation_kinds": { "memberData": false, "reason": "conversation-kind catalog" },
       "forum_posts": { "memberData": true, "representation": "communication.forum_posts (own-authored rows)" },
       "announcements": { "memberData": true, "representation": "communication.authored_announcements (own-authored rows; added at COR-C W2 per Stefan's AC3-16 ruling, 2026-07-31)" },
-      "content_reports": { "memberData": true, "representation": "communication.reports_submitted (own reports; target identity omitted per the own-data wall)" },
+      "content_reports": { "memberData": true, "representation": "communication.reports_submitted (own reports incl. the resolution outcome — resolution_kind + resolved_at since ADM-D FEAT-PC022, the outcome the reporter was already told; target identity, resolver identity, and the admin-internal resolution_note omitted per the own-data wall)" },
       "ds5_config": { "memberData": false, "reason": "DS-5 operational settings; no member rows" },
       "journal_entries": { "memberData": true, "representation": "journal section (get_own_journal_export)" },
       "notifications": { "memberData": true, "representation": "notifications section (get_own_notifications_export)" },
