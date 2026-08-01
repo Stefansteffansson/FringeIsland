@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMB-01
 title: Build FEAT-PC020 (PC-4) — admin_get_groups/detail + the first 'suspended' producers + stewardship reassignment, red-first, held at the schema gate
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PC020

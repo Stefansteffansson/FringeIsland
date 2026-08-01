@@ -169,8 +169,13 @@
     "PC-4": [
       "admin_decommission_user",
       "admin_force_logout",
+      "admin_get_group_detail",
+      "admin_get_groups",
       "admin_hard_delete_user",
+      "admin_reactivate_group",
+      "admin_reassign_group_stewardship",
       "admin_send_notification",
+      "admin_suspend_group",
       "admin_update_user_status",
       "audit_admin_membership_change",
       "audit_admin_message_send",
