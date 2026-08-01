@@ -6,7 +6,7 @@ title: Group administration contracts — cross-platform enumeration (incl. the 
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
@@ -97,3 +97,13 @@ Hub consumes via FEAT-H035 (BFF-wrapped). Gimbal inherits the contracts. The mem
 ## Performance budget
 
 N/A (no surface). Reads are admin-only, dozens of rows; FEAT-H035 carries the page budgets.
+
+## Implementation notes (build, Cycle ADM-B — recorded at the schema gate; completed at 6-done)
+
+- **Migration:** `20260801120000_adm_b_pc020_group_administration_contracts.sql` — five functions + ACLs, strictly additive. Red demonstrated 2026-08-01 before the migration existed: 29 failed / 1 passed of 30 (`PGRST202` function-absent on every producer case; the single green is the labelled carried-forward append-only catalog pin). Suite: `hub/tests/integration/admin/group-administration-contracts.test.ts` (activates `test:integration:admin` for the first time).
+- **Audit action names (fixed at build):** `group.suspend` · `group.reactivate` · `group.reassign_stewardship` — the dotted namespace, matching the tree's NEWEST convention (PC019's `auth.*`/`mist.*`); the older mass is snake_case (`admin_hard_delete_user`, …). Decision recorded here because the tree is genuinely split.
+- **Composition finding (cumulative-forward, the §Rabbit-holes clause exercised):** `assign_member_role` cannot be composed *whole* by the admin plane — its member-or-public visibility predicate (PC011, `20260704090434:503-506`) refuses any non-member caller with `P0002` **before** its permission walls are reached, and a platform admin is definitionally outside member visibility for private groups. The permission walls themselves were verified live (2026-08-01, dev DB): DeusEx's role grants are a strict superset of the Steward template (all 34 template permissions ⊆ DeusEx's 48, `assign_roles` included), so a platform admin passes `has_permission`/`can_assign_role` via Tier-1. Resolution: `admin_reassign_group_stewardship` composes the walls individually — `can_assign_role` with the **true actor** (the fabric's own anti-escalation primitive and refusal), the fabric's active-member predicate with its own `22023`, and `prevent_last_leader_removal` verifying the caretaker teardown (a human steward exists before the delete — the wall passes legitimately, never bypassed). This is a *finding recorded*, not a wall bypassed: no wall's logic is reimplemented, and the visibility scoping keeps doing its member-plane job.
+- **Payload walk resolutions (divergences found at build):** (1) detail "status timestamps" carried by the row's `created_at`/`updated_at` — no walked consumer asked for more and no new column is in scope; (2) the §Solution "four/five" hedge settles at **five** contracts; (3) `p_new_steward_group_id` is a **personal-group id** (membership identity), matching `stewards[].personal_group_id`; (4) `stewards[]` carries **human stewards only** — the caretaker is carried by `deusex_stewarded` (walked to the H035 banner), so a caretaker group reads flag-true with an empty steward list.
+- **FINDING for FEAT-H035 (TASK-ADMB-02) — the walked picker source does not serve:** the walk (§Decomposition verification) names `get_group_memberships_of` as the reassign picker's candidate list, but that contract returns the memberships **of** the acting group (which groups it belongs to — the PC015 direction), not the members of a group, and it is `act_as_group`-gated on the acting group, which an admin does not hold. The picker needs a different source; candidates: a members array on `admin_get_group_detail` (v1.1, additive) or a dedicated admin read. To be adjudicated at TASK-ADMB-02, not patched silently here.
+- **Notifications (V3):** the reassignment grant fires the existing `notify_role_assigned` trigger, so the new steward receives the durable role-assigned notification for free; whether suspension/reassignment notifies *other* affected members remains the recorded ADM-C board question.
+- **Non-goal honoured:** no group-suspension cascade — what a suspended group refuses rides the existing status-aware reads (GRP-5's badge is vocabulary-tolerant and renders `suspended` with zero surface change, asserted through the *existing* `get_group_detail` in STORY-3).
