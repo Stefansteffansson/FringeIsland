@@ -6,7 +6,7 @@ title: Member administration contracts — platform-scope member enumeration + d
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
