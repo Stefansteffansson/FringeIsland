@@ -6,7 +6,7 @@ title: Group administration contracts — cross-platform enumeration (incl. the 
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -98,7 +98,11 @@ Hub consumes via FEAT-H035 (BFF-wrapped). Gimbal inherits the contracts. The mem
 
 N/A (no surface). Reads are admin-only, dozens of rows; FEAT-H035 carries the page budgets.
 
-## Implementation notes (build, Cycle ADM-B — recorded at the schema gate; completed at 6-done)
+## Implementation notes (built 2026-08-01, Cycle ADM-B)
+
+- **Closed 6-done 2026-08-01:** both migrations applied to the dev DB on named approvals (PR #363 → `20260801120000`, PR #364 → `20260801130000`), migration history repaired. Post-apply verification: the feature suite green **30/30** after the first migration and **32/32** after the members-array amendment; the two manifest conformance gates green 11/11 (the five functions born classified PC-4, the `admin_*` pin holding); the composed reassignment passed against the live role fabric exactly as the analytic verification predicted (`can_assign_role` with the true actor via Tier-1; `prevent_last_leader_removal` verifying the caretaker teardown). Consumed by FEAT-H035 the same day.
+
+*(The remainder of this section was recorded at the schema gate, before apply.)*
 
 - **Migration:** `20260801120000_adm_b_pc020_group_administration_contracts.sql` — five functions + ACLs, strictly additive. Red demonstrated 2026-08-01 before the migration existed: 29 failed / 1 passed of 30 (`PGRST202` function-absent on every producer case; the single green is the labelled carried-forward append-only catalog pin). Suite: `hub/tests/integration/admin/group-administration-contracts.test.ts` (activates `test:integration:admin` for the first time).
 - **Audit action names (fixed at build):** `group.suspend` · `group.reactivate` · `group.reassign_stewardship` — the dotted namespace, matching the tree's NEWEST convention (PC019's `auth.*`/`mist.*`); the older mass is snake_case (`admin_hard_delete_user`, …). Decision recorded here because the tree is genuinely split.

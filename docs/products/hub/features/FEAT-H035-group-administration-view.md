@@ -6,7 +6,7 @@ title: Group administration view — /admin/groups list with the Platform-stewar
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -78,3 +78,14 @@ Gimbal inherits the contracts, not the shell. The member-facing group pages are 
 - **First-paint class:** B2/B3 for `/admin/groups` and detail; **justified standalone reads** (admin-only surfaces, outside the overview bundle — ADR-U042 guardrail 3).
 - **Interaction class:** tab switches and action buttons give feedback within 100 ms (B5); mutations disable-with-progress during the round trip.
 - **Loading states:** skeleton rows/blocks (B6); >3 s is a platform-side defect, not a spinner occasion.
+
+## Implementation notes (built 2026-08-01, Cycle ADM-B)
+
+- **Shape:** `lib/admin/groups.ts` (outer-ring wrapper, `import type` only, client injected) · five BFF routes (`GET /api/admin/groups?filter=`, `GET/POST /api/admin/groups/[id]{,/suspend,/reactivate,/reassign}`) · `AdminGroupsList` + `AdminGroupDetail` under `components/admin/` · two `'use client'` route pages · the "Group administration" card on the `/admin` dashboard. Reads on `getVerifiedUserId` (ADR-U037 claims path), mutations on `getUser`; every success writes durable telemetry, every refusal a local emit.
+- **Red → green:** the three unit suites were demonstrated red pre-implementation (both new components module-absent; the dashboard-card test failing) and closed green 26/26; full unit 1088/1088; the route-policy and outer-ring conformance gates accepted all five routes and the wrapper with **zero exception entries**; `next build` green. The E2E journey spec (`admin-groups.spec.ts`, 4 scenarios) is **labelled test-after** — integrative journey coverage written after implementation; the behaviour-level red-first lives at the unit tier and in the paired PC020 integration suite. 4/4 green, caretaker-leak instrument delta 0.
+- **SQLSTATE → HTTP (admin plane):** `42501` and `P0002` → 404 (existence-hiding, the H034 shape); `P0001`/`23505` → 409 and `22023` → 400 with the platform's message **verbatim**; unknown → 500. The list route maps the open filter namespace's `22023` to 400 so a stale tab in an old client degrades loudly, not silently.
+- **State-honesty resolution (recorded):** Reassign renders **only** on caretaker groups — STORY-2's "active groups show Suspend and Reassign" line resolved against the contract (non-caretaker reassignment refuses `P0001`) per the same story's own "never offer what the contract will refuse" rule. Lifecycle actions render by state: active → Suspend (+Reassign iff caretaker), suspended → Reactivate, closed/archived/system → none.
+- **Picker:** candidates = the detail read's `members[]` (the TASK-ADMB-02 adjudication) filtered to non-steward active humans; the all-ineligible case renders an honest empty state, never an empty dropdown. Confirm copy names the group and the receiving member.
+- **RW-05 validated in the wild:** the moment the Platform-stewarded tab existed it surfaced three pre-existing caretaker groups on the dev DB that no surface could list before — the exact blindness the feature was specified to end.
+- **Environment note (found, not caused):** the first E2E runs hung because the session's dev server had been launched through an output-truncating pipe (`| head`), which wedged the server mid-run when the pipe closed; restarting the server with unbounded logging cleared it. No product defect involved.
+- **ADR-U043 numbers:** the `/admin/groups` measurements ride the registered area-gate perf pass (the standing owed item), per the task's Verification clause.

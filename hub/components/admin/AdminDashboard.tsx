@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
 import type { PlatformStatistics } from '@/lib/admin/queries';
 import { StatTile } from '@/components/admin/StatTile';
 
@@ -135,6 +136,20 @@ export function AdminDashboard() {
           subs={[{ label: 'completed, 30 days', value: stats.journeys.completions_30d }]}
         />
       </div>
+
+      {/* FEAT-H035: administration areas — the Groups entry (ADM-8). */}
+      <nav aria-label="Administration areas">
+        <Link
+          href="/admin/groups"
+          data-testid="admin-nav-groups"
+          className="block max-w-xs rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover:border-gray-400"
+        >
+          <span className="block text-sm font-medium text-gray-900">Group administration</span>
+          <span className="block text-sm text-gray-500">
+            Every group on the platform — including the ones FringeIsland caretakes.
+          </span>
+        </Link>
+      </nav>
 
       <section className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
         <table className="w-full text-sm">
