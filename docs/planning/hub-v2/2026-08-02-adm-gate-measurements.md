@@ -3,7 +3,7 @@
 Closes the measurement leg of the [Platform-Ops area gate](./2026-08-02-platform-ops-area-gate.md): the eight admin surfaces built across ADM-A..D, all justified standalone reads (admin-only, outside the overview bundle — ADR-U042 guardrail 3).
 
 **Environment:** production `fringe-island.vercel.app` (deploy carrying #378 verified route-by-route before measuring) · same Supabase project · authenticated real path · the measurement FIM (`perf-antf@fringeisland.test`) provisioned by the standing harness, **platform-admin-elevated for this pass**, plus one seeded open report (fabricated target — the drift-honesty render is a legitimate real read); all of it erased at teardown (report deleted, de-elevated, FIM torn down — verified).
-**Protocol:** ADR-U043 + Amendment 1 via [`hub/scripts/perf-measure.mjs`](../../hub/scripts/perf-measure.mjs) `coldnav-path`. Deep-cold = **≥ 20 min enforced zero traffic** (22.5 min actual, two separate windows: 08:34–08:56 and 08:56–09:19 UTC). Completion measured to **data-derived selectors** (`admin-nav-members`, `admin-group-row-*`, `admin-member-row-*`, `membership-row-*`, `admin-report-row-*`, `resolve-panel`, `admin-audit-row-*`).
+**Protocol:** ADR-U043 + Amendment 1 via [`hub/scripts/perf-measure.mjs`](../../../hub/scripts/perf-measure.mjs) `coldnav-path`. Deep-cold = **≥ 20 min enforced zero traffic** (22.5 min actual, two separate windows: 08:34–08:56 and 08:56–09:19 UTC). Completion measured to **data-derived selectors** (`admin-nav-members`, `admin-group-row-*`, `admin-member-row-*`, `membership-row-*`, `admin-report-row-*`, `resolve-panel`, `admin-audit-row-*`).
 
 ## Headline
 
