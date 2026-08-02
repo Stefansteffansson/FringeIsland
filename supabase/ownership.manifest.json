@@ -274,7 +274,10 @@
       "set_notification_nudge_policy",
       "set_notification_category_nudge",
       "get_platform_announcement_reach",
-      "notify_report_resolved"
+      "notify_report_resolved",
+      "ds5_moderation_list_reports",
+      "ds5_moderation_report_detail",
+      "ds5_moderation_resolve_report"
     ],
     "DS-7": [
       "create_journal_entry",

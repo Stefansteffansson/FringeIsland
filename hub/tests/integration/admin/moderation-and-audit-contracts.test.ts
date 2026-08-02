@@ -117,6 +117,11 @@ describe('FEAT-PC022 — moderation + audit-read contracts (ADM-D gate)', () => 
   let r4: string; // erased reporter's — dies with them
   let r5: string; // forum, tombstoned target, stays open
 
+  // PROFILE ids (public.users.id) — the admin contracts' target id-space.
+  // TestUser.user.id is the AUTH id; the two differ (the four-hop chain).
+  let authorProfileId: string;
+  let erasedProfileId: string;
+
   const createdAuthIds: string[] = [];
   const createdGroupIds: string[] = [];
 
@@ -241,6 +246,15 @@ describe('FEAT-PC022 — moderation + audit-read contracts (ADM-D gate)', () => 
     if (msgErr) throw new Error(`fixture message: ${msgErr.message}`);
     dmMessageId = (msg as { id: string }).id;
 
+    const profileIdOf = async (u: TestUser): Promise<string> => {
+      const rows = (await runAdminSql(
+        `SELECT id FROM public.users WHERE auth_user_id = '${u.user.id}';`,
+      )) as { id: string }[];
+      return rows[0].id;
+    };
+    authorProfileId = await profileIdOf(author);
+    erasedProfileId = await profileIdOf(erased);
+
     const cr = await asUser(reporter);
     r1 = await submitReport(cr, 'forum_post', p1, `AdmD reason r1 ${runTag}`);
     r2 = await submitReport(cr, 'direct_message', dmMessageId, `AdmD reason r2 ${runTag}`);
@@ -348,7 +362,7 @@ describe('FEAT-PC022 — moderation + audit-read contracts (ADM-D gate)', () => 
       };
       expect(d.id).toBe(r1);
       expect(d.live_target_exists).toBe(true);
-      expect(d.author_user_id).toBe(author.user.id);
+      expect(d.author_user_id).toBe(authorProfileId);
       expect(d.author_display_name).toContain('AdmDAut');
       expect(d.content_snapshot).toBe(`AdmD target one ${runTag}`);
     });
@@ -366,7 +380,7 @@ describe('FEAT-PC022 — moderation + audit-read contracts (ADM-D gate)', () => 
       const d = data as { live_target_exists: boolean; author_user_id: string | null; content_snapshot: string };
       expect(d.live_target_exists).toBe(false);
       // The row knows its author — escalation survives the tombstone.
-      expect(d.author_user_id).toBe(author.user.id);
+      expect(d.author_user_id).toBe(authorProfileId);
       // What the content said when reported — the C-D drift rule doing its job.
       expect(d.content_snapshot).toBe(`AdmD target three ${runTag}`);
     });
@@ -563,11 +577,11 @@ describe('FEAT-PC022 — moderation + audit-read contracts (ADM-D gate)', () => 
       // controlled-teardown path first (the ADM-C lesson).
       await runAdminSql(
         `SELECT set_config('app.consent_erasure_in_progress', 'true', true);
-         DELETE FROM public.consent_records WHERE user_id = '${erased.user.id}';`,
+         DELETE FROM public.consent_records WHERE subject_group_id = '${erased.personalGroupId}';`,
       );
       const co = await asUser(operator);
       const { error: delErr } = await co.rpc('admin_hard_delete_user', {
-        target_user_id: erased.user.id,
+        target_user_id: erasedProfileId,
       });
       expect(delErr).toBeNull();
 
@@ -737,12 +751,12 @@ describe('FEAT-PC022 — moderation + audit-read contracts (ADM-D gate)', () => 
     it('S7c: rows where the member is only the TARGET of admin action stay out of their trail', async () => {
       const co = await asUser(operator);
       const { error: suspendErr } = await co.rpc('admin_update_user_status', {
-        target_user_id: author.user.id,
+        target_user_id: authorProfileId,
         new_is_active: false,
       });
       expect(suspendErr).toBeNull();
       const { error: reactivateErr } = await co.rpc('admin_update_user_status', {
-        target_user_id: author.user.id,
+        target_user_id: authorProfileId,
         new_is_active: true,
       });
       expect(reactivateErr).toBeNull();
@@ -763,9 +777,14 @@ describe('FEAT-PC022 — moderation + audit-read contracts (ADM-D gate)', () => 
           WHERE action LIKE 'moderation.%' ORDER BY action;`,
       )) as { action: string }[];
       expect(rows.map((r) => r.action)).toEqual(['moderation.report_resolved']);
+      // Scoped to THIS run's rows: the log is append-only and prior runs'
+      // operators were cleaned up, so their rows legitimately read NULL actor
+      // (the SET NULL anonymisation working as designed).
       const actors = (await runAdminSql(
         `SELECT count(*)::int AS n FROM public.admin_audit_log
-          WHERE action LIKE 'moderation.%' AND actor_group_id IS NULL;`,
+          WHERE action LIKE 'moderation.%'
+            AND target IN ('${r1}', '${r2}', '${r3}')
+            AND actor_group_id IS NULL;`,
       )) as { n: number }[];
       expect(actors[0].n).toBe(0);
     });
