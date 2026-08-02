@@ -6,7 +6,7 @@ title: Moderation and audit view — /admin/moderation queue + report detail wit
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -87,3 +87,12 @@ Gimbal inherits the contracts, not the shell. Member-facing surfaces: zero code 
 - **First-paint class:** B2/B3 for all three routes; **justified standalone reads** (admin-only, outside the overview bundle — ADR-U042 guardrail 3).
 - **Interaction class:** filter/chip toggles and Load more feed back within 100 ms (B5); the resolve disables-with-progress during the round trip.
 - **Loading states:** skeleton rows/blocks (B6); >3 s is a platform-side defect.
+
+## Implementation notes (built 2026-08-02, Cycle ADM-D)
+
+- **Shape:** `lib/admin/reports.ts` + `lib/admin/audit.ts` (outer-ring wrappers, `import type` only, client injected) · four BFF routes (`GET /api/admin/reports?filter=`, `GET /api/admin/reports/[id]`, `POST /api/admin/reports/[id]/resolve`, `GET /api/admin/audit?before=&prefix=&limit=`) · `AdminModerationQueue` + `AdminReportDetail` + `AdminAuditLog` under `components/admin/` · three `'use client'` route pages · the Moderation card (with a non-blocking open-count side fetch — null renders no badge, never a fake zero) and the Audit log card on `/admin`. Reads on the ADR-U037 claims path, the resolve on `getUser`; durable telemetry throughout; the H035 SQLSTATE→HTTP map with the stale-second-resolve **409 rendered verbatim**.
+- **Red → green:** three unit suites demonstrated red pre-implementation (all three components module-absent) plus the two new dashboard cells (4 failed suites) → admin component suites **8/8, 85/85**; full unit **1147/1147**; route-policy + outer-ring conformance gates accepted all four routes and both wrappers with **zero exception entries**; `next build` green. The E2E journey (`admin-moderation.spec.ts`, 6 scenarios — dashboard cards → queue → drift-honest detail → resolve ceremony with repaint → the closure asserted platform-side → the audit chip row → demoted 404 ×3) is **labelled test-after** per the ADM-B precedent: **6/6**, leak instrument delta 0. The report fixture is arranged through the real platform doors (`create_engagement_group` → `create_forum_post` → `submit_content_report` as the fixture FIMs).
+- **The resolve panel (recorded):** a bespoke inline panel — `ConfirmModal` carries no children (the DeleteAccountCeremony class), without type-to-confirm weight (one-shot, not destructive); outcome radios + optional internal note; confirm disabled until an outcome is chosen; the consequence copy names exactly what the reporter will and will not learn ("not your name, and not this note").
+- **Environment catch (watch-item):** the long-running dev server's compile-worker pool had died ("Jest worker encountered 2 child process exceptions") — every NEW route compilation failed while already-compiled routes kept serving, which read as a code fault on the `[id]` route until the overlay was read; a server restart fixed it in one run. A dev server that predates heavy parallel jest/build load may hold a poisoned worker pool.
+- **Two labelled same-file adaptations** in the H034 dashboard suite: its positional once-mocks scoped to the statistics URL (the open-count side fetch shares `global.fetch`).
+- **ADR-U043 numbers:** `/admin/moderation` (+ detail) and `/admin/audit` ride the registered area-gate perf pass (the standing owed item).
