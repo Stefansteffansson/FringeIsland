@@ -36,7 +36,7 @@ Admin substrate at HEAD: `admin_audit_log` (PC-4, append-only, DeusEx-only read 
 | ADM-4 | Hard-delete + sentinel reassignment | HAVE (`admin_hard_delete_user`; U047 reassignment hooks) | STRONG (B-ADMIN-009) | ADM-C |
 | ADM-5 | Force-logout active sessions | HAVE (`admin_force_logout`) | STRONG (B-ADMIN-019) | ADM-C |
 | ADM-6 | Platform-wide sweep through exit paths | **BUILD FRESH** (the v1 function was DROPPED at C-F — note 4; new contract against the live MEM-5/7/8 routing) | STRONG contract spine (B-ADMIN-007 platform-exit) | ADM-C |
-| ADM-7 | Bulk-action safe subset | Singles are the substrate; selection-model oracle is component-tier | PARTIAL (B-ADMIN-013) | **defer (AB-8)** |
+| ADM-7 | Bulk-action safe subset | Singles are the substrate; selection-model oracle is component-tier | PARTIAL (B-ADMIN-013) | **defer (AB-8)** → **RE-SCOPED INTO FERD at the gate close (2026-08-02, Stefan)** |
 | ADM-8 | Group administration view (cross-platform) | **NONE** (AC3-O8: no enumerating contract) · **precondition TASK-INT-05** (DeusEx system group is 39/42 test detritus) | PARTIAL (B-ADMIN-012/016/017/018 visibility rules) | ADM-B |
 | ADM-9 | Suspend / reassign / reactivate group | **VERIFY at decomposition** (no contract identified) | PARTIAL | ADM-B |
 | ADM-10 | Moderation queue render | HAVE store (C-D `content_reports`); triage reads new | SILENT (store is v2-born; C-D contract tests cover submit/window) | ADM-D |
@@ -46,7 +46,7 @@ Admin substrate at HEAD: `admin_audit_log` (PC-4, append-only, DeusEx-only read 
 | ADM-14 | Platform policy (versioned, reversible) | NONE | SILENT | **defer (AB-8)** |
 | ADM-15 | Feature flags | NONE — and **zero flag-reading code exists in v2** · Console-routed | SILENT | **defer (AB-8)** |
 | ADM-16 | Platform-scope audit log surface | HAVE table (append-only; DeusEx-only read) · shape per AB-4 · Console-routed (AB-7) | STRONG for the table (B-ADMIN-007); surface new | ADM-D |
-| ADM-17 | Role templates + permission catalogue CRUD | Data HAVE (PC-3 seed); CRUD contracts **VERIFY** | PARTIAL | **defer (AB-8)** |
+| ADM-17 | Role templates + permission catalogue CRUD | Data HAVE (PC-3 seed); CRUD contracts **VERIFY** | PARTIAL | **defer (AB-8)** → **RE-SCOPED INTO FERD at the gate close (2026-08-02, Stefan)** |
 | ADM-18 | Targeted removal at platform scope via exit paths | Routes exist (MEM-5/7/8); override contract new | STRONG spine (B-ADMIN-016/017/018) | ADM-C |
 
 ## Vertical obligations A-ADM must fulfil
@@ -88,7 +88,7 @@ This one (the board below). One ADR candidate is near-certain: **telemetry sink 
 
 ## Deferred register — what this run deliberately does NOT build (Stefan's standing ask, 2026-07-31: restate this plainly at area close)
 
-Five of the 18 ADM capabilities are out of scope for this run (AB-8, settled as recommended). Each carries a dated deferral naming its activation point; at area close this register is presented to Stefan verbatim-in-plain-language and each row converts into an Eid backlog entry (or gets re-scoped) per his call.
+Five of the 18 ADM capabilities are out of scope for this run (AB-8, settled as recommended). Each carries a dated deferral naming its activation point; at area close this register is presented to Stefan verbatim-in-plain-language and each row converts into an Eid backlog entry (or gets re-scoped) per his call. **EXECUTED at the gate close (2026-08-02): all five rows CALLED — 13/14/15 as proposed; ADM-7 and ADM-17 RE-SCOPED INTO FERD (post-walk, one shared decomposition board; the [gate record](./2026-08-02-platform-ops-area-gate.md) §The deferred five is canonical — the table below is the 2026-07-31 state, kept for the record).**
 
 | Row | Capability (plain terms) | Why deferred (2026-07-31) | When to revisit |
 |---|---|---|---|
@@ -142,8 +142,8 @@ Five of the 18 ADM capabilities are out of scope for this run (AB-8, settled as 
 - [ ] ADR-U043 measurement pass (cold + warm, tail rule) + Stefan's live walk, both before the area retro; numbers appended to the AB-1d ledger.
 - [ ] CHANGELOGs updated (root + `hub/` + platform-core as applicable — check both before calling an entry missing).
 - [ ] The post-area **FULL anatomy audit** (AB-6) run before Phase-4 cutover; findings converted to gates.
-- [ ] **The deferred register presented to Stefan at area close, in plain language** (ADM-7/13/14/15/17 — "what this run did not do"), each row converted to an Eid backlog entry or re-scoped per his call.
+- [x] **The deferred register presented to Stefan at area close, in plain language** (ADM-7/13/14/15/17 — "what this run did not do") — **EXECUTED 2026-08-02: 13/14/15 as proposed; ADM-7 and ADM-17 re-scoped INTO Ferd** (gate record §The deferred five).
 
 ## After Platform-Ops
 
-Phase 3 ends here. What A-ADM hands forward: the Phase-4 cutover inherits a fully-audited surface (the AB-6 FULL audit is the cutover's entry condition); Eid inherits the dated deferrals (ADM-7/13/14/15/17, email-channel ADR, digest/aggregation, i18n activation per TASK-I18N-01, TASK-DBT-01 test-tier `tsc` debt); the Console entity question (U025/U028) stays open for its own decomposition.
+Phase 3 ends here. What A-ADM hands forward: the Phase-4 cutover inherits a fully-audited surface (the AB-6 FULL audit is the cutover's entry condition); Eid inherits the dated deferrals (ADM-13/14/15 per their triggers — **ADM-7 and ADM-17 were re-scoped INTO Ferd at the gate close, 2026-08-02** — plus email-channel ADR, digest/aggregation, i18n activation per TASK-I18N-01, TASK-DBT-01 test-tier `tsc` debt, and the moderation-family W-11/W-12 observations); the Console entity question (U025/U028) stays open for its own decomposition.

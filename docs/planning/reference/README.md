@@ -15,6 +15,8 @@ docs/planning/reference/
 ├── README.md                              ← you are here
 ├── ANATOMY-CONFORMANCE-AUDIT.md           ← full-codebase anatomy conformance audit + deviation register (July 2026; CLOSED — all findings dispositioned via Cycle COR-A)
 ├── ANATOMY-CONFORMANCE-AUDIT-2.md         ← the delta pass (July 2026): rings found conformant; five gate-coverage findings (AC2-1..AC2-5), AC2-1..3 closed by Cycle COR-B. Carries the table-ownership map.
+├── ANATOMY-CONFORMANCE-AUDIT-3.md         ← audit III (July 2026, Cycle COR-C): the composition column (GC-14) + findings AC3-*; cited by every per-RPC gate roll-up since
+├── PERF-MEASUREMENT-LEDGER.md             ← the durable ADR-U043 record — one row per measurement pass (ADR-U052 §5; append-only from 2026-07-31)
 ├── supabase-support-es256-admin-api.md    ← ready-to-send Supabase support ticket for the Admin-API ES256 flake (TASK-INT-01)
 ├── mist-reconciliation-register.md        ← Shadow -> Mist rename + re-scope worklist (June 2026; Step 1 ratified 2026-06-21, ADR-U031)
 ├── ADMIN-DEUSEX-GAP-ANALYSIS.md           ← admin/DeusEx capability gaps (April 2026)

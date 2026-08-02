@@ -1,7 +1,7 @@
 # A-ADM live walk — findings record (gate leg 4)
 
 **Walked:** 2026-08-02 evening → 2026-08-03 (Stefan live, Claude verifying each ceremony against the DB in real time)
-**Script:** [`2026-08-02-admin-live-walk-script.md`](./2026-08-02-admin-live-walk-script.md) · **State:** steps 1–5 COMPLETE and DB-verified; steps 6–7 (moderation resolve, audit read-back) remaining.
+**Script:** [`2026-08-02-admin-live-walk-script.md`](./2026-08-02-admin-live-walk-script.md) · **State: ALL SEVEN STEPS COMPLETE — the walk is done (2026-08-03).** Step 6: NINE of the twelve relic reports resolved (mixed dismissed/actioned; every one verified — resolution columns + `moderation.report_resolved` audit row + `report_resolved` notification timestamped to the microsecond with its audit row: the trigger → registry → dispatcher chain live; the drift-honesty render observed on genuinely vanished content; three relics deliberately left open for the hygiene sweep). Step 7: the audit read-back matched Stefan's memory of the entire walk ("all seems to work").
 
 > **STEFAN'S DIRECTIVE (2026-08-03, recorded verbatim in intent): "All these stalled and/or cached issues need to be fixed."**
 > The stall/cache family below (W-5, W-7, W-8, W-9, W-10) is therefore **committed fix work, not accept-as-observation**. Placement (which board/cycle owns each) is decided at the area retro; the ADM-7/ADM-17 board is the natural home for the admin-plane rows, the Identity/account area for the member-side rows.
@@ -27,6 +27,12 @@ Every ceremony walked landed with correct state and a correct audit row: group s
 ### Ceremony-safety finding
 
 - **W-4 — same-name doppelganger caused a live mis-grant.** Two "Stefan Steffansson" rows (`stefan@example.com`, a 2026-02 fixture, vs the real yahoo account); the grant ceremony hit the fixture first; the audit trail caught it and the revoke ceremony corrected it within minutes. **Improvement: the grant/revoke confirm should echo the unique identifier (email).**
+
+### Moderation-family observations (Stefan's bonus round — he walked reporter-side AND reviewer-side)
+
+- **W-11 — outcome-only reporter feedback confirmed live, as designed.** Stefan filed a real report as a member, resolved it as admin (actioned + internal note), and received the reporter notification: outcome class only, no reviewer identity, note never relayed — exactly what the resolve panel promises. The richer answer-back he instinctively expected is the **recorded Eid deferral** (sanction-communication kinds, board DB-4). Stays Eid unless re-scoped.
+- **W-12 — report uniqueness is lifetime, not per-open-report.** Re-reporting already-reported content is refused with honest copy ("You've already reported this." — the `one_per_reporter_target` constraint surfacing correctly). Consequence worth recording: after resolution, that reporter can NEVER re-report the same content — even if it drifts worse post-dismissal (the exact drift the snapshot exists for). Harmless pre-launch; the moderation family wants re-reportable-after-resolution or escalation semantics eventually. → Eid pile with W-11.
+- Member-side moderation state renders everywhere it should: removed posts show "This post was removed", reported posts carry the "Reported" tag, duplicate submission refused at the modal.
 
 ### Observations (recorded, no fix directive)
 

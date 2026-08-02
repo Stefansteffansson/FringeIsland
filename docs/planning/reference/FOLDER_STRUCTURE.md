@@ -1,6 +1,6 @@
 # FringeIsland — Folder Structure
 
-**Generated:** 2026-04-10
+**Generated:** 2026-04-10 · **STALENESS NOTICE (added 2026-08-03, doc-health):** this snapshot predates the v2 rebuild — it lists retired trees (`old_*/`, `SPRINT.md`, `PROJECT_STATUS.md`, `products/game/`, `gimbal/ios|android/`) that no longer exist. Historical reference only; trust the live tree, never this file.
 
 ---
 

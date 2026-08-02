@@ -1,7 +1,7 @@
 # The detail-page ceiling crossings — investigated: the pages render on time; the crossings live in the harness's completion waiter
 
 **Date:** 2026-08-02 · **Area:** A-ADM · **Gate item:** leg 1 of the gate close — the warm investigation commissioned at the [measurement pass](./2026-08-02-adm-gate-measurements.md) (Stefan, 2026-08-02)
-**Environment:** production `fringe-island.vercel.app`, authenticated real path, Playwright **1.58.2** headless Chromium. Measurement FIM re-provisioned by the standing harness, DeusEx-elevated, one seeded open report (fabricated target) — all erased at teardown, residue-verified `{fimUsers:0, reports:0, elevations:0}`. Fixture mechanics now reproducible: [`hub/scripts/perf-adm-fixture.mjs`](../../hub/scripts/perf-adm-fixture.mjs) `up|down|verify`.
+**Environment:** production `fringe-island.vercel.app`, authenticated real path, Playwright **1.58.2** headless Chromium. Measurement FIM re-provisioned by the standing harness, DeusEx-elevated, one seeded open report (fabricated target) — all erased at teardown, residue-verified `{fimUsers:0, reports:0, elevations:0}`. Fixture mechanics now reproducible: [`hub/scripts/perf-adm-fixture.mjs`](../../../hub/scripts/perf-adm-fixture.mjs) `up|down|verify`.
 
 ---
 
@@ -13,7 +13,7 @@ The commissioned scope read "bundle + hydration + the ~500 ms unaccounted slice.
 
 ## What was measured
 
-A new harness command, `breakdown <path> '<selector>'` ([`perf-measure.mjs`](../../hub/scripts/perf-measure.mjs)), tracks **every** request Playwright sees (locally stamped — ResourceTiming is unusable here, see `measureNav`), plus in-page observers: long tasks, paints, a MutationObserver stamping DOM insertion of the target selector, an rAF heartbeat, and the page-clock→harness-clock offset (measured: 1–3 ms, so the timelines align directly).
+A new harness command, `breakdown <path> '<selector>'` ([`perf-measure.mjs`](../../../hub/scripts/perf-measure.mjs)), tracks **every** request Playwright sees (locally stamped — ResourceTiming is unusable here, see `measureNav`), plus in-page observers: long tasks, paints, a MutationObserver stamping DOM insertion of the target selector, an rAF heartbeat, and the page-clock→harness-clock offset (measured: 1–3 ms, so the timelines align directly).
 
 Fresh-context segment decomposition, all runs (ms):
 
