@@ -89,3 +89,18 @@ Three protocol changes:
 3. **Per-cycle spot check.** Any cycle that adds or reroutes a request on a user-facing first paint runs **one deep-cold spot measurement** of the touched page before `6-done` (one scenario, one page — not the full gate; the area gate remains the full pass). This closes the window where an area ships user-visible for days before its gate.
 
 Enforcement-home updates required (tracked, separate nods where carved out): the `feature-development` skill's Performance DoD rows gain the idle-depth + spot-check lines; the hub-v2 per-area gate checklist gains the tail rule.
+
+## Amendment 2 — dual completion signal (the waiter is not the watch)
+
+**Status:** Accepted (Stefan, 2026-08-02, at the A-ADM gate close)
+**Date:** 2026-08-02
+
+The A-ADM warm ceiling investigation ([`2026-08-02-adm-warm-ceiling-investigation.md`](../../planning/hub-v2/2026-08-02-adm-warm-ceiling-investigation.md)) exposed a second measurement gap: the protocol's completion signal — Playwright's `locator.waitFor({state:'visible'})` — resolves **~300–470 ms after the target element is painted** in roughly 40 % of runs (bimodal; ~30–80 ms otherwise; Playwright 1.58.2, healthy rAF, idle main thread). The gate's carried B3 "crossings" (1 036–1 127 ms) measured this waiter, not the page: three-signal triangulation on the same navigations put genuine painted-visible completion at median 466 / max 733 ms across 78 runs.
+
+Three protocol changes:
+
+1. **Every measured navigation records two completion signals.** The locator wall (continuity with every prior ledger row) and an independent **box-visible wall** — a `waitForFunction` check that the data-derived selector exists with a non-empty bounding box and is not `visibility:hidden`/`display:none`, rAF-polled. The box signal is this ADR's own "painted = primary content rendered" definition measured directly, with the least machinery between the paint and the number.
+2. **Verdicts read the box signal.** Budget PASS/FAIL binds to box-visible; the locator wall stays recorded and reported beside it. Historic rows are not restated; any comparison across the 2026-08-02 boundary must name which signal it compares.
+3. **Signal divergence is a harness observation, not a page finding.** When the two signals differ by more than ~150 ms, record the divergence and move on — do not investigate the page for time the waiter added.
+
+Enforcement homes: `hub/scripts/perf-measure.mjs` — `measureNav` (implemented with this amendment, PR #383) and `breakdown` (PR #382); ledger rows from this date forward carry box-visible headline numbers.
