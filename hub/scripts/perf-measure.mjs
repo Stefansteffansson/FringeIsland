@@ -216,8 +216,29 @@ async function measureNav(page, path, selector, label, phase) {
 
   const t0 = Date.now();
   await page.goto(BASE + path, { waitUntil: 'commit' });
+  // ADR-U043 Amendment 2 (adopted 2026-08-02): record BOTH completion signals.
+  // The locator waiter carries a bimodal ~300-470 ms detection lag past paint
+  // (2026-08-02-adm-warm-ceiling-investigation.md); the box signal measures the
+  // ADR's own "data-derived selector visible" definition directly. Verdicts
+  // read boxMs; the locator wall stays recorded for continuity with old rows.
+  // (Selectors must be querySelector-compatible CSS — all current ones are.)
+  const boxWaiter = page
+    .waitForFunction(
+      (s) => {
+        const el = document.querySelector(s);
+        if (!el) return false;
+        const r = el.getBoundingClientRect();
+        const cs = getComputedStyle(el);
+        return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none';
+      },
+      selector,
+      { polling: 'raf', timeout: 30000 },
+    )
+    .then(() => Date.now() - t0)
+    .catch(() => -1);
   await page.locator(selector).first().waitFor({ state: 'visible', timeout: 30000 });
   const ms = Date.now() - t0;
+  const boxMs = await boxWaiter;
 
   page.off('request', onStart);
   page.off('response', onDone);
@@ -227,10 +248,10 @@ async function measureNav(page, path, selector, label, phase) {
   // time as: client boot before the fan-out fires (2 342 ms) + slowest request
   // (1 612 ms) ~= 3.9 s. Without fanOutAt you cannot tell which term grew.
   const fanOutAt = firstReqAt.t ? firstReqAt.t - t0 : -1;
-  const row = { phase, label, path, ms, apiReads: reqs.length, maxReqMs: maxReq, fanOutAt };
+  const row = { phase, label, path, ms, boxMs, apiReads: reqs.length, maxReqMs: maxReq, fanOutAt };
   console.log(
-    `  ${phase.toUpperCase().padEnd(5)} ${label.padEnd(34)} ${String(ms).padStart(6)} ms   ` +
-      `(fan-out fires @ ${fanOutAt} ms · ${reqs.length} api reads · slowest ${maxReq} ms · ` +
+    `  ${phase.toUpperCase().padEnd(5)} ${label.padEnd(34)} ${String(boxMs).padStart(6)} ms box-visible ` +
+      `(locator ${ms} ms · fan-out fires @ ${fanOutAt} ms · ${reqs.length} api reads · slowest ${maxReq} ms · ` +
       `unaccounted ${ms - fanOutAt - maxReq} ms)`,
   );
   appendFileSync(OUT, JSON.stringify({ ...row, at: new Date().toISOString() }) + '\n');
