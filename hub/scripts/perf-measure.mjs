@@ -422,6 +422,184 @@ else if (cmd === 'waterfall') {
   const overlap = rows.length > 1 && rows.some((r, i) => i > 0 && r.startAt < rows[i - 1].startAt + rows[i - 1].ms - 20);
   console.log(`\n  concurrency: ${overlap ? 'OVERLAPPING (fan-out)' : 'SERIALIZED (waterfall) — each read waits for the previous'}`);
 }
+else if (cmd === 'breakdown') {
+  // ADM warm investigation 2026-08-02: the detail pages' fresh-context walls are
+  // NOT read-dominated (2 reads, slowest ~300 ms warm), so the waterfall's
+  // api-only lens cannot attribute them. Track EVERY request Playwright sees,
+  // stamped locally (ResourceTiming responseEnd is 0 here — see measureNav),
+  // and mark the segments of a fresh-context load: document · bundle download ·
+  // boot gap (last pre-fan-out js end -> fan-out) · reads · render tail
+  // (last read end -> selector visible).
+  const bdPath = process.argv[3];
+  const bdSel = process.argv[4];
+  if (!bdPath || !bdSel) {
+    console.log("usage: breakdown <path> '<selector>'");
+  } else {
+    const browser = await chromium.launch();
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, storageState: STATE });
+    const page = await ctx.newPage();
+    const events = [];
+    const started = new Map();
+    const nav = { t: 0 };
+    const isApi = (u) => u.includes('/api/') || u.includes('supabase.co');
+    const classify = (req) => {
+      if (isApi(req.url())) return 'api';
+      const rt = req.resourceType();
+      if (rt === 'document') return 'doc';
+      if (rt === 'script') return 'js';
+      if (rt === 'stylesheet') return 'css';
+      if (rt === 'font') return 'font';
+      return rt === 'image' ? 'img' : 'other';
+    };
+    page.on('request', (r) => started.set(r, Date.now()));
+    const finish = (r, failed) => {
+      const s = started.get(r);
+      if (!s) return;
+      events.push({
+        kind: classify(r),
+        url: r.url().replace(BASE, '').replace(/https:\/\/[a-z0-9]+\.supabase\.co/, 'SUPABASE').slice(0, 80),
+        startAt: s - nav.t,
+        ms: Date.now() - s,
+        failed: failed || undefined,
+      });
+    };
+    page.on('requestfinished', (r) => finish(r, false));
+    page.on('requestfailed', (r) => finish(r, true));
+    // The render tail (last read end -> selector visible) is invisible to the
+    // network lens. Instrument the page itself: long tasks + paints (is the
+    // main thread busy?), a MutationObserver stamping when the selector first
+    // enters the DOM (late commit vs late detection), an rAF heartbeat (frame
+    // throttling would delay Playwright's visibility check), and the page
+    // clock's offset from the harness clock so the timelines align.
+    await ctx.addInitScript((sel) => {
+      window.__perfLog = [];
+      window.__probe = { domFoundAt: -1, boxFoundAt: -1, samples: [], maxRafGap: 0, rafCount: 0 };
+      const found = () => {
+        if (window.__probe.domFoundAt < 0 && document.querySelector(sel)) {
+          window.__probe.domFoundAt = Math.round(performance.now());
+        }
+      };
+      // document_start: documentElement does not exist yet — observe the
+      // document node itself or the whole init script dies silently.
+      new MutationObserver(found).observe(document, { childList: true, subtree: true });
+      let last = performance.now();
+      const tick = (t) => {
+        const gap = Math.round(t - last);
+        if (gap > window.__probe.maxRafGap) window.__probe.maxRafGap = gap;
+        last = t;
+        window.__probe.rafCount++;
+        found();
+        // After the element exists, sample its box each frame until it is
+        // non-empty — a zero-size window here would explain a visibility
+        // waiter resolving long after DOM insertion.
+        if (window.__probe.domFoundAt >= 0 && window.__probe.boxFoundAt < 0) {
+          const el = document.querySelector(sel);
+          if (el) {
+            const r = el.getBoundingClientRect();
+            const cs = getComputedStyle(el);
+            if (r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none') {
+              window.__probe.boxFoundAt = Math.round(t);
+            } else if (window.__probe.samples.length < 25) {
+              window.__probe.samples.push({ t: Math.round(t), w: Math.round(r.width), h: Math.round(r.height), d: cs.display, v: cs.visibility });
+            }
+          }
+        }
+      };
+      requestAnimationFrame(tick);
+      try {
+        new PerformanceObserver((l) =>
+          l.getEntries().forEach((e) => window.__perfLog.push({ type: 'longtask', at: Math.round(e.startTime), ms: Math.round(e.duration) })),
+        ).observe({ type: 'longtask', buffered: true });
+        new PerformanceObserver((l) =>
+          l.getEntries().forEach((e) => window.__perfLog.push({ type: e.name, at: Math.round(e.startTime) })),
+        ).observe({ type: 'paint', buffered: true });
+      } catch {}
+    }, bdSel);
+    try {
+      nav.t = Date.now();
+      await page.goto(BASE + bdPath, { waitUntil: 'commit' });
+      // Race an independent box-check (same visibility semantics, rAF polling)
+      // against the production waiter. If the two disagree, the gap is inside
+      // the locator machinery, not the page.
+      const boxWaiter = page
+        .waitForFunction(
+          (s) => {
+            const el = document.querySelector(s);
+            if (!el) return false;
+            const r = el.getBoundingClientRect();
+            const cs = getComputedStyle(el);
+            return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none';
+          },
+          bdSel,
+          { polling: 'raf', timeout: 30000 },
+        )
+        .then(() => Date.now() - nav.t)
+        .catch(() => -1);
+      await page.locator(bdSel).first().waitFor({ state: 'visible', timeout: 30000 });
+      const wall = Date.now() - nav.t;
+      const boxWall = await boxWaiter;
+      const inPage = await page
+        .evaluate(() => ({ log: window.__perfLog ?? [], probe: window.__probe ?? {}, dateNow: Date.now(), perfNow: performance.now() }))
+        .catch(() => ({ log: [], probe: {}, dateNow: 0, perfNow: 0 }));
+      events.sort((a, b) => a.startAt - b.startAt);
+      const end = (e) => e.startAt + e.ms;
+      const of = (k) => events.filter((e) => e.kind === k);
+      const api = of('api');
+      const js = of('js');
+      const docEnd = of('doc').length ? Math.max(...of('doc').map(end)) : -1;
+      const fanOutAt = api.length ? Math.min(...api.map((e) => e.startAt)) : -1;
+      const lastApiEnd = api.length ? Math.max(...api.map(end)) : -1;
+      // js chunks that STARTED before the fan-out — the bundle the boot waited on
+      const preFanJs = js.filter((e) => fanOutAt < 0 || e.startAt < fanOutAt);
+      const preFanJsEnd = preFanJs.length ? Math.max(...preFanJs.map(end)) : -1;
+      const bootGap = fanOutAt >= 0 && preFanJsEnd >= 0 ? fanOutAt - preFanJsEnd : -1;
+      const renderTail = lastApiEnd >= 0 ? wall - lastApiEnd : -1;
+      console.log(`\n== BREAKDOWN ${bdPath} — wall ${wall} ms (fresh context) ==`);
+      console.log('  start@   dur  kind  request');
+      for (const e of events) {
+        console.log(`  ${String(e.startAt).padStart(5)}  ${String(e.ms).padStart(5)}  ${e.kind.padEnd(5)} ${e.failed ? '!! ' : ''}${e.url}`);
+      }
+      console.log(
+        `\n  marks: doc done @ ${docEnd} · ${preFanJs.length}/${js.length} js pre-fan-out, done @ ${preFanJsEnd} · ` +
+          `fan-out @ ${fanOutAt} · boot gap ${bootGap} ms · last read end @ ${lastApiEnd} · render tail ${renderTail} ms`,
+      );
+      // In-page times are relative to the page's own timeOrigin. clockOffset
+      // (timeOrigin minus nav.t, both epoch-anchored via Date.now) aligns them
+      // to the request timeline exactly — do not eyeball the two clocks.
+      const tasks = (inPage.log ?? []).filter((e) => e.type === 'longtask');
+      const paints = (inPage.log ?? []).filter((e) => e.type !== 'longtask');
+      const clockOffset = inPage.dateNow ? Math.round(inPage.dateNow - inPage.perfNow - nav.t) : null;
+      const probe = inPage.probe ?? {};
+      const domFoundNav = probe.domFoundAt >= 0 && clockOffset != null ? probe.domFoundAt + clockOffset : -1;
+      console.log(
+        `  in-page: ${paints.map((p) => `${p.type} @ ${p.at}`).join(' · ') || 'no paint entries'}` +
+          `${tasks.length ? ` · long tasks: ${tasks.map((t) => `${t.ms}ms @ ${t.at}`).join(', ')}` : ' · no long tasks'}` +
+          ` · clock offset ${clockOffset} ms`,
+      );
+      const boxFoundNav = probe.boxFoundAt >= 0 && clockOffset != null ? probe.boxFoundAt + clockOffset : -1;
+      console.log(
+        `  probe: dom found @ ${domFoundNav} nav-clock · box non-empty @ ${boxFoundNav} · ` +
+          `waitForFunction box-visible @ ${boxWall} · locator visible @ ${wall} ` +
+          `(locator lag vs box ${boxFoundNav >= 0 ? wall - boxFoundNav : '?'} ms) · max rAF gap ${probe.maxRafGap} ms · frames ${probe.rafCount}` +
+          `${probe.samples?.length ? ` · zero-box samples: ${probe.samples.slice(0, 5).map((s) => `${s.t}:${s.w}x${s.h}/${s.d}/${s.v}`).join(' ')}` : ''}`,
+      );
+      appendFileSync(
+        OUT,
+        JSON.stringify({
+          phase: 'breakdown', path: bdPath, wall, docEnd, jsCount: js.length, preFanJsCount: preFanJs.length,
+          preFanJsEnd, fanOutAt, bootGap, apiReads: api.length, lastApiEnd, renderTail, api,
+          inPage: inPage.log, probe, clockOffset, domFoundNav, boxFoundNav, boxWall,
+          at: new Date().toISOString(),
+        }) + '\n',
+      );
+    } catch (e) {
+      await diagnose(page, 'breakdown');
+      throw e;
+    } finally {
+      await browser.close();
+    }
+  }
+}
 else if (cmd === 'coldnav-path') {
   // Generic: node perf-measure.mjs coldnav-path /journeys '[data-testid="journeys-list"]'
   // Exists chiefly for the like-for-like /journeys re-measure against the
@@ -467,6 +645,7 @@ else if (cmd === 'coldnav-path') {
   coldnav-path <path> '<selector>'   generic single cold navigation
   warm         3x soft-nav each page (signs in first, unmeasured)
   waterfall    warm request-by-request timeline for /notifications/preferences
+  breakdown <path> '<selector>'   fresh-context ALL-request timeline + segment marks
 
   DEEP-COLD PROTOCOL (ADR-U043 Amendment 1) — read before trusting any number:
     Signing in immediately before a "cold" navigation DESTROYS it: the sign-in
