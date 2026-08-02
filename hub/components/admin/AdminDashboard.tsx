@@ -25,6 +25,9 @@ type ViewState =
 
 export function AdminDashboard() {
   const [view, setView] = useState<ViewState>({ kind: 'loading' });
+  // FEAT-H037: the Moderation card's open-report count — a non-blocking side
+  // read; null renders the card without a badge (never a fake zero).
+  const [openReports, setOpenReports] = useState<number | null>(null);
 
   // Pure fetch → next view; state application lives in the callers' .then
   // callbacks so no setState is reachable synchronously from the mount effect
@@ -48,6 +51,25 @@ export function AdminDashboard() {
   useEffect(() => {
     void computeView().then(setView);
   }, [computeView]);
+
+  // FEAT-H037: the open-report count for the Moderation card. Failure or
+  // refusal simply leaves the badge off — the stats fetch owns the page shape.
+  useEffect(() => {
+    let active = true;
+    void (async () => {
+      try {
+        const res = await fetch('/api/admin/reports?filter=open');
+        if (!res.ok) return;
+        const body = (await res.json()) as { reports?: unknown[] };
+        if (active && Array.isArray(body.reports)) setOpenReports(body.reports.length);
+      } catch {
+        /* badge stays off */
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // The synchronous refreshing paint is event-handler-only.
   const refresh = useCallback(
@@ -165,6 +187,38 @@ export function AdminDashboard() {
           <span className="block text-sm font-medium text-gray-900">Member administration</span>
           <span className="block text-sm text-gray-500">
             Every member at platform scope — lifecycle, sessions, and platform administrators.
+          </span>
+        </Link>
+        {/* FEAT-H037: the Moderation (ADM-10/11) and Audit log (ADM-16)
+            entries — the last A-ADM console rows. */}
+        <Link
+          href="/admin/moderation"
+          data-testid="admin-nav-moderation"
+          className="block max-w-xs rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover:border-gray-400"
+        >
+          <span className="flex items-center gap-2 text-sm font-medium text-gray-900">
+            Moderation
+            {openReports !== null && openReports > 0 && (
+              <span
+                data-testid="admin-nav-moderation-count"
+                className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-800"
+              >
+                {openReports}
+              </span>
+            )}
+          </span>
+          <span className="block text-sm text-gray-500">
+            Content reports across the platform — triage, resolve, and tell the reporter.
+          </span>
+        </Link>
+        <Link
+          href="/admin/audit"
+          data-testid="admin-nav-audit"
+          className="block max-w-xs rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover:border-gray-400"
+        >
+          <span className="block text-sm font-medium text-gray-900">Audit log</span>
+          <span className="block text-sm text-gray-500">
+            Every admin action and auth moment, newest first — the platform&rsquo;s own trail.
           </span>
         </Link>
       </nav>

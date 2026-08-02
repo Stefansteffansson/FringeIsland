@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMD-02
 title: Build FEAT-H037 — /admin/moderation queue + detail with the resolve ceremony, /admin/audit browser, the two dashboard cards — red-first at the unit tier
-status: todo
+status: done
 assigned_to: unassigned
 priority: high
 feature: FEAT-H037
