@@ -40,6 +40,14 @@ jest.setTimeout(240_000); // real-substrate suite: seven users + a Mist, real st
  * first-contact finding. The 20260801180000 amendment makes admin_get_users
  * return a jsonb ARRAY (scalar — outside the row cap; identical client
  * shape): these 12 assertions are byte-unchanged across both reds.
+ *
+ * PC024 ADAPTATION (2026-08-03, migration 20260803210000, Cycle ADM-E): the
+ * re-issue changed the return to {users, next_cursor, generated_at} with a
+ * 200-row page cap. These cells pin FULL-POPULATION filter semantics, so the
+ * rows() helper now walks pages to exhaustion; every cell's assertions are
+ * otherwise byte-unchanged. Red at head against the single-parameter
+ * signature (PGRST202 on p_limit) for S1a-S1f; S1g/S1h/S1i stay
+ * signature-compatible (defaults) and green across the apply.
  */
 
 /** Authenticated DeusEx caller — the house manage_all_groups elevation. */
@@ -237,12 +245,28 @@ describe('FEAT-PC021 gate 1 — member administration read family (ADM-2)', () =
   });
 
   const rows = async (filter?: string): Promise<ListRow[]> => {
-    const { data, error } = await adaClient.rpc(
-      'admin_get_users',
-      filter === undefined ? {} : { p_filter: filter },
-    );
-    expect(error).toBeNull();
-    return (data ?? []) as ListRow[];
+    // PC024 (20260803210000): keyed {users, next_cursor} pages — walk to
+    // exhaustion so the full-population predicate assertions keep their
+    // original semantics.
+    const all: ListRow[] = [];
+    let cursor: { name: string; id: string } | null = null;
+    let hops = 0;
+    do {
+      const { data, error } = await adaClient.rpc('admin_get_users', {
+        ...(filter === undefined ? {} : { p_filter: filter }),
+        p_limit: 200,
+        ...(cursor ? { p_after_name: cursor.name, p_after_id: cursor.id } : {}),
+      });
+      expect(error).toBeNull();
+      const page = data as {
+        users: ListRow[];
+        next_cursor: { name: string; id: string } | null;
+      };
+      all.push(...page.users);
+      cursor = page.next_cursor;
+      hops += 1;
+    } while (cursor !== null && hops < 60);
+    return all;
   };
 
   const rowOf = (list: ListRow[], u: TestUser): ListRow | undefined =>
