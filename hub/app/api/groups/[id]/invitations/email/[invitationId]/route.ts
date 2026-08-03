@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { cancelEmailInvitation } from '@/lib/groups/invitations';
+import { availabilityRefusal } from '@/lib/groups/http';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 /**
@@ -36,6 +37,12 @@ export async function DELETE(
     return NextResponse.json({ ok: true });
   } catch (err) {
     const { code, message } = err as { code?: string; message?: string };
+    // FEAT-H038 STORY-5: a held group's frozen cancel door speaks verbatim.
+    const availability = availabilityRefusal(err);
+    if (availability) {
+      emitTelemetry('invitations.cancel_email_refused', { actor: user.id, code });
+      return availability;
+    }
     if (code === 'P0002') {
       emitTelemetry('invitations.cancel_email_missing', { actor: user.id, code });
       return NextResponse.json({ error: 'Invitation not found' }, { status: 404 });

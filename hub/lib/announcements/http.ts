@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { emitTelemetry } from '@/lib/observability/telemetry';
+import { availabilityRefusal } from '@/lib/groups/http';
 
 /**
  * FEAT-H028 — the announcements BFF's SQLSTATE -> HTTP presentation mapping
@@ -15,6 +16,10 @@ export function mapAnnouncementError(
 ): NextResponse {
   const code = (err as { code?: string }).code;
   emitTelemetry(event, { actor, code });
+  // FEAT-H038 STORY-5: the FEAT-PC023 availability refusals pass through
+  // verbatim — the canonical message is the member copy.
+  const availability = availabilityRefusal(err);
+  if (availability) return availability;
   if (code === '42501') {
     return NextResponse.json({ error: 'Not allowed' }, { status: 403 });
   }

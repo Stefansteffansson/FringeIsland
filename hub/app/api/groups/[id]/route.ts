@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getVerifiedUserId } from '@/lib/supabase/auth';
+import { availabilityRefusal } from '@/lib/groups/http';
 import { fetchGroupDetail, updateGroupSettings, type UpdateGroupSettingsInput } from '@/lib/groups/queries';
 import { deleteGroup } from '@/lib/groups/leadership';
 import { fetchGroupEnrollmentSummary } from '@/lib/journeys/queries';
@@ -94,6 +95,13 @@ export async function PATCH(
     return NextResponse.json({ group });
   } catch (err) {
     const code = (err as { code?: string }).code;
+    // FEAT-H038 STORY-5: the FEAT-PC023 availability refusals pass through
+    // verbatim — a resting/suspended group's frozen settings door speaks.
+    const availability = availabilityRefusal(err);
+    if (availability) {
+      emitTelemetry('groups.update_refused', { actor: user.id, code });
+      return availability;
+    }
     if (code === '42501') {
       emitTelemetry('groups.update_refused', { actor: user.id, code });
       return NextResponse.json({ error: 'Not permitted' }, { status: 403 });

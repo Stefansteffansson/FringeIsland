@@ -15,6 +15,18 @@ import { emitTelemetry } from '@/lib/observability/telemetry';
 import { fetchMyGroups, peekMyGroups } from '@/lib/groups/client';
 import type { GroupSummary } from '@/lib/groups/queries';
 
+// FEAT-H038 STORY-5 (FEAT-PC023): held groups stay listed and carry their
+// label. Member-surface vocabulary for the two hold modes; any other
+// non-active status renders its raw token (the CHECK can grow).
+const STATUS_LABELS: Record<string, string> = {
+  resting: 'Resting',
+  suspended: 'Suspended',
+};
+const STATUS_STYLES: Record<string, string> = {
+  resting: 'bg-sky-100 text-sky-800',
+  suspended: 'bg-red-100 text-red-700',
+};
+
 export default function GroupsPage() {
   const { user, identity, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -114,13 +126,27 @@ export default function GroupsPage() {
                     {g.name}
                   </Link>
                 </h2>
-                <span
-                  className={`rounded px-2 py-1 text-xs font-medium ${
-                    g.is_public ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                  }`}
-                >
-                  {g.is_public ? 'Public' : 'Private'}
-                </span>
+                <div className="flex items-center gap-2">
+                  {g.status && g.status !== 'active' && (
+                    // FEAT-H038 STORY-5: the two-mode label off the payload's
+                    // status — never a client-side guess.
+                    <span
+                      data-testid="group-status-badge"
+                      className={`rounded px-2 py-1 text-xs font-medium ${
+                        STATUS_STYLES[g.status] ?? 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
+                      {STATUS_LABELS[g.status] ?? g.status}
+                    </span>
+                  )}
+                  <span
+                    className={`rounded px-2 py-1 text-xs font-medium ${
+                      g.is_public ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                    }`}
+                  >
+                    {g.is_public ? 'Public' : 'Private'}
+                  </span>
+                </div>
               </div>
               {g.description && <p className="mt-2 text-sm text-gray-600">{g.description}</p>}
               <p className="mt-4 text-xs text-gray-500">

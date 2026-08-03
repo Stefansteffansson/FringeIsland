@@ -6,7 +6,7 @@ title: Group availability enforcement contracts (resting + suspended)
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 

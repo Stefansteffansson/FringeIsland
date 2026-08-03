@@ -14,7 +14,9 @@ import {
   pauseMember,
   removeGroupMember,
   removeMemberRole,
+  restGroupClient,
   updateGroupSettings,
+  wakeGroupClient,
 } from '@/lib/groups/client';
 import type { GroupDetail, GroupMemberEntry, RolesFabric, UpdateGroupSettingsInput } from '@/lib/groups/queries';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
@@ -72,7 +74,15 @@ const LIFECYCLE_COPY: Record<
 const STATUS_STYLES: Record<string, string> = {
   closed: 'bg-gray-200 text-gray-700',
   archived: 'bg-amber-100 text-amber-800',
+  resting: 'bg-sky-100 text-sky-800',
   suspended: 'bg-red-100 text-red-700',
+};
+
+// FEAT-H038 STORY-5: member-surface vocabulary for the two hold modes; every
+// other status keeps its raw token (vocabulary tolerance — the CHECK can grow).
+const STATUS_LABELS: Record<string, string> = {
+  resting: 'Resting',
+  suspended: 'Suspended',
 };
 
 export function GroupDetailPanel({
@@ -121,6 +131,10 @@ export function GroupDetailPanel({
   const [endingAction, setEndingAction] = useState<'close' | 'delete' | null>(null);
   const [endingBusy, setEndingBusy] = useState(false);
   const [endingError, setEndingError] = useState<string | null>(null);
+  // FEAT-H038 STORY-6: the steward Rest/Wake ceremony (rest_group holders).
+  const [restWakeAction, setRestWakeAction] = useState<'rest' | 'wake' | null>(null);
+  const [restWakeBusy, setRestWakeBusy] = useState(false);
+  const [restWakeError, setRestWakeError] = useState<string | null>(null);
 
   const canAssign = fabric?.viewer.can_assign_roles ?? false;
   const canRemove = fabric?.viewer.can_remove_roles ?? false;
@@ -239,6 +253,31 @@ export function GroupDetailPanel({
     (permissions?.includes('assign_roles') ?? false);
   const canClose = group.viewer.is_member && effectiveMemberCount === 1;
   const canDelete = permissions?.includes('delete_group') ?? false;
+  // FEAT-H038 STORY-5/6: the two-mode surface split is capability-flag driven
+  // (the `rest_group` key), never role-name driven. A failed permissions read
+  // defaults to non-holder — the read-only banner is the safe honest state.
+  const holdsRestGroup = permissions?.includes('rest_group') ?? false;
+  const isResting = group.status === 'resting';
+  const canRest = holdsRestGroup && group.status === 'active';
+  const canWake = holdsRestGroup && isResting;
+
+  const confirmRestWake = async () => {
+    if (!restWakeAction) return;
+    setRestWakeBusy(true);
+    setRestWakeError(null);
+    try {
+      if (restWakeAction === 'rest') await restGroupClient(group.id);
+      else await wakeGroupClient(group.id);
+      setRestWakeAction(null);
+      onRefresh();
+    } catch (err) {
+      // The contract's honest copy, in place — the state stays contract-reported.
+      setRestWakeError((err as Error).message);
+      setRestWakeAction(null);
+    } finally {
+      setRestWakeBusy(false);
+    }
+  };
 
   const confirmNominate = async () => {
     setTransferBusy(true);
@@ -318,7 +357,7 @@ export function GroupDetailPanel({
                   STATUS_STYLES[group.status] ?? 'bg-gray-100 text-gray-600'
                 }`}
               >
-                {group.status}
+                {STATUS_LABELS[group.status] ?? group.status}
               </span>
             )}
             <span
@@ -332,6 +371,24 @@ export function GroupDetailPanel({
         </div>
 
         {group.description && <p className="mt-3 text-sm text-gray-600">{group.description}</p>}
+
+        {isResting && !holdsRestGroup && (
+          // FEAT-H038 STORY-5: the read-only banner — the state, never the why.
+          // Write affordances below stay refusing-not-hidden (the house rule);
+          // the contract answers each with 'group is resting'.
+          <p
+            data-testid="resting-banner"
+            className="mt-3 rounded border border-sky-200 bg-sky-50 p-3 text-sm text-sky-900"
+          >
+            This group is resting — everything is read-only until it wakes.
+          </p>
+        )}
+
+        {restWakeError && (
+          <p role="alert" className="mt-3 text-sm text-red-600">
+            {restWakeError}
+          </p>
+        )}
 
         <p data-testid="member-count-line" className="mt-4 text-xs text-gray-500">
           {effectiveMemberCount} {effectiveMemberCount === 1 ? 'member' : 'members'}
@@ -357,6 +414,34 @@ export function GroupDetailPanel({
               className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
             >
               Edit settings
+            </button>
+          )}
+          {canRest && (
+            // FEAT-H038 STORY-6: the steward-fix hold — capability-flag driven
+            // (`rest_group`), never role-name driven. The verb is "rest".
+            <button
+              type="button"
+              data-testid="rest-group"
+              onClick={() => {
+                setRestWakeError(null);
+                setRestWakeAction('rest');
+              }}
+              className="rounded-lg border border-sky-200 px-3 py-1.5 text-sm text-sky-800 hover:bg-sky-50"
+            >
+              Rest this group
+            </button>
+          )}
+          {canWake && (
+            <button
+              type="button"
+              data-testid="wake-group"
+              onClick={() => {
+                setRestWakeError(null);
+                setRestWakeAction('wake');
+              }}
+              className="rounded-lg border border-sky-200 px-3 py-1.5 text-sm text-sky-800 hover:bg-sky-50"
+            >
+              Wake this group
             </button>
           )}
           {group.viewer.is_member && (
@@ -748,6 +833,25 @@ export function GroupDetailPanel({
         onConfirm={() => void confirmLeave()}
         onCancel={() => {
           if (!leaveBusy) setLeaveOpen(false);
+        }}
+      />
+
+      {/* FEAT-H038 STORY-6: the Rest/Wake ceremony — honest consequences, the
+          "rest" verb, never "put to rest". */}
+      <ConfirmModal
+        isOpen={restWakeAction !== null}
+        title={restWakeAction === 'wake' ? 'Wake this group?' : 'Rest this group?'}
+        message={
+          restWakeAction === 'wake'
+            ? `Wake "${group.name}"? The group returns to active and members can act again.`
+            : `Rest "${group.name}"? Members keep reading, but nothing changes while it rests — you can wake it anytime.`
+        }
+        confirmText={restWakeAction === 'wake' ? 'Wake group' : 'Rest group'}
+        variant="info"
+        busy={restWakeBusy}
+        onConfirm={() => void confirmRestWake()}
+        onCancel={() => {
+          if (!restWakeBusy) setRestWakeAction(null);
         }}
       />
 

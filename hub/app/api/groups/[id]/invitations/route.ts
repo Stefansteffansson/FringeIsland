@@ -6,6 +6,7 @@ import {
   inviteMember,
   inviteByEmail,
 } from '@/lib/groups/invitations';
+import { availabilityRefusal } from '@/lib/groups/http';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 /**
@@ -104,6 +105,13 @@ export async function POST(
     return NextResponse.json(result, { status: 201 });
   } catch (err) {
     const { code, message } = err as { code?: string; message?: string };
+    // FEAT-H038 STORY-5: the FEAT-PC023 availability refusals pass through
+    // verbatim — a held group's frozen invite door speaks.
+    const availability = availabilityRefusal(err);
+    if (availability) {
+      emitTelemetry('invitations.invite_refused', { actor: user.id, code });
+      return availability;
+    }
     if (code === '42501') {
       emitTelemetry('invitations.invite_refused', { actor: user.id, code });
       return NextResponse.json({ error: message ?? 'Not permitted' }, { status: 403 });

@@ -7,6 +7,7 @@ import {
   createGroupRole,
   type CreateGroupRoleInput,
 } from '@/lib/groups/queries';
+import { availabilityRefusal } from '@/lib/groups/http';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 /**
@@ -88,6 +89,13 @@ export async function POST(
     return NextResponse.json({ id: roleId }, { status: 201 });
   } catch (err) {
     const { code, message } = err as { code?: string; message?: string };
+    // FEAT-H038 STORY-5: the FEAT-PC023 availability refusals pass through
+    // verbatim — a held group's frozen role-definition door speaks.
+    const availability = availabilityRefusal(err);
+    if (availability) {
+      emitTelemetry('roles.create_refused', { actor: user.id, code });
+      return availability;
+    }
     if (code === '42501') {
       emitTelemetry('roles.create_refused', { actor: user.id, code });
       return NextResponse.json(

@@ -4,6 +4,7 @@ import {
   acceptGroupInvitation,
   declineGroupInvitation,
 } from '@/lib/groups/invitations';
+import { availabilityRefusal } from '@/lib/groups/http';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 /**
@@ -36,6 +37,12 @@ export async function POST(
     return NextResponse.json({ ok: true });
   } catch (err) {
     const { code, message } = err as { code?: string; message?: string };
+    // FEAT-H038 STORY-5: a held group's frozen accept door speaks verbatim.
+    const availability = availabilityRefusal(err);
+    if (availability) {
+      emitTelemetry('invitations.accept_refused', { actor: user.id, code });
+      return availability;
+    }
     if (code === 'P0002') {
       emitTelemetry('invitations.accept_missing', { actor: user.id, code });
       return NextResponse.json({ error: 'No pending invitation' }, { status: 404 });
@@ -71,6 +78,12 @@ export async function DELETE(
     return NextResponse.json({ ok: true });
   } catch (err) {
     const { code, message } = err as { code?: string; message?: string };
+    // FEAT-H038 STORY-5: declining into a held group refuses verbatim too.
+    const availability = availabilityRefusal(err);
+    if (availability) {
+      emitTelemetry('invitations.decline_refused', { actor: user.id, code });
+      return availability;
+    }
     if (code === 'P0002') {
       emitTelemetry('invitations.decline_missing', { actor: user.id, code });
       return NextResponse.json({ error: 'No pending invitation' }, { status: 404 });

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { emitTelemetry } from '@/lib/observability/telemetry';
+import { availabilityRefusal } from '@/lib/groups/http';
 
 /**
  * FEAT-H026 — the forum BFF's SQLSTATE → HTTP presentation mapping
@@ -16,6 +17,10 @@ export function mapForumError(
 ): NextResponse {
   const code = (err as { code?: string }).code;
   emitTelemetry(event, { actor, code });
+  // FEAT-H038 STORY-5: the FEAT-PC023 availability refusals pass through
+  // verbatim (409) — every other P0001 keeps the flat-threading 400 below.
+  const availability = availabilityRefusal(err);
+  if (availability) return availability;
   if (code === '42501') {
     return NextResponse.json({ error: 'Not allowed' }, { status: 403 });
   }
@@ -43,6 +48,10 @@ export function mapForumOwnMutationError(
   const code = (err as { code?: string }).code;
   const message = (err as { message?: string }).message ?? '';
   emitTelemetry(event, { actor, code });
+  // FEAT-H038 STORY-5: availability refusals pass through verbatim here too —
+  // own-edit/own-delete doors are frozen while the group is held.
+  const availability = availabilityRefusal(err);
+  if (availability) return availability;
   if (code === '42501') {
     if (/window/i.test(message)) {
       return NextResponse.json(

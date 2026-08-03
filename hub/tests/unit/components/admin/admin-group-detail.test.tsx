@@ -224,3 +224,60 @@ describe('AdminGroupDetail (FEAT-H035 STORY-2/3/4)', () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+/**
+ * FEAT-H038 STORY-6 — the admin hold ceremony gains the mode choice
+ * (FEAT-PC023: `resting` the visible steward-fix hold, `suspended` the hard
+ * hazard hold). WRITTEN RED-FIRST (2026-08-03): the component offers only
+ * Suspend/Reactivate at head — no Rest, no Wake, no resting-state actions.
+ */
+describe('AdminGroupDetail — the two-mode hold ceremony (FEAT-H038 STORY-6)', () => {
+  it('an active group offers the mode choice: Rest AND Suspend', async () => {
+    fetchMock.mockResolvedValue(okDetail(baseDetail));
+    render(<AdminGroupDetail groupId={GROUP_ID} />);
+    expect(await screen.findByTestId('rest-group')).toBeInTheDocument();
+    expect(screen.getByTestId('suspend-group')).toBeInTheDocument();
+    expect(screen.queryByTestId('wake-group')).not.toBeInTheDocument();
+  });
+
+  it('a resting group: badge shows, Wake and Suspend offered, Rest not', async () => {
+    fetchMock.mockResolvedValue(okDetail({ ...baseDetail, status: 'resting' }));
+    render(<AdminGroupDetail groupId={GROUP_ID} />);
+    expect(await screen.findByTestId('status-badge')).toHaveTextContent('resting');
+    expect(screen.getByTestId('wake-group')).toBeInTheDocument();
+    expect(screen.getByTestId('suspend-group')).toBeInTheDocument();
+    expect(screen.queryByTestId('rest-group')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('reactivate-group')).not.toBeInTheDocument();
+  });
+
+  it('the rest ceremony: ConfirmModal names the group and the consequence; confirm POSTs /rest then repaints', async () => {
+    fetchMock
+      .mockResolvedValueOnce(okDetail(baseDetail))
+      .mockResolvedValueOnce(okEmpty())
+      .mockResolvedValueOnce(okDetail({ ...baseDetail, status: 'resting' }));
+    render(<AdminGroupDetail groupId={GROUP_ID} />);
+    await userEvent.click(await screen.findByTestId('rest-group'));
+    const modal = screen.getByTestId('confirm-modal');
+    expect(modal).toHaveTextContent('Harbour Circle');
+    await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
+    expect(fetchMock.mock.calls[1][0]).toBe(`/api/admin/groups/${GROUP_ID}/rest`);
+    expect(fetchMock.mock.calls[1][1]?.method).toBe('POST');
+    expect(await screen.findByTestId('status-badge')).toHaveTextContent('resting');
+  });
+
+  it('the wake ceremony: confirm POSTs /wake then repaints to active', async () => {
+    fetchMock
+      .mockResolvedValueOnce(okDetail({ ...baseDetail, status: 'resting' }))
+      .mockResolvedValueOnce(okEmpty())
+      .mockResolvedValueOnce(okDetail(baseDetail));
+    render(<AdminGroupDetail groupId={GROUP_ID} />);
+    await userEvent.click(await screen.findByTestId('wake-group'));
+    await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
+    expect(fetchMock.mock.calls[1][0]).toBe(`/api/admin/groups/${GROUP_ID}/wake`);
+    await waitFor(() =>
+      expect(screen.queryByTestId('status-badge')).not.toBeInTheDocument(),
+    );
+  });
+});

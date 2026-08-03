@@ -16,6 +16,11 @@ export interface GroupSummary {
   is_public: boolean;
   created_at: string;
   member_count: number;
+  /**
+   * FEAT-PC023 additive key: held groups stay listed and carry their label
+   * ('active' | 'resting' | 'suspended' | the open lifecycle set).
+   */
+  status: string;
 }
 
 export async function fetchMemberGroups(supabase: SupabaseClient): Promise<GroupSummary[]> {
@@ -30,6 +35,7 @@ export async function fetchMemberGroups(supabase: SupabaseClient): Promise<Group
     is_public: g.is_public as boolean,
     created_at: g.created_at as string,
     member_count: Number(g.member_count),
+    status: (g.status as string) ?? 'active',
   }));
 }
 
@@ -90,6 +96,24 @@ export interface GroupDetail {
   members?: GroupMemberEntry[];
 }
 
+/**
+ * FEAT-PC023 STORY-7: the suspended found-but-that's-it payload — below the
+ * admin plane the contract returns exactly `{id, name, status}` for a
+ * suspended group. The Surface branches on the payload shape (the absent
+ * `viewer` key), never on a client-side guess: an admin's full payload for a
+ * suspended group renders the normal surface.
+ */
+export interface GroupDetailShell {
+  id: string;
+  name: string;
+  status: string;
+  /** Never present — the discriminant that keeps the union narrowable (a full
+   *  GroupDetail is otherwise structurally assignable to the shell). */
+  viewer?: undefined;
+}
+
+export type GroupDetailPayload = GroupDetail | GroupDetailShell;
+
 export interface CreateGroupInput {
   name: string;
   description?: string | null;
@@ -122,14 +146,32 @@ export async function createEngagementGroup(
   return data as string;
 }
 
-/** GRP-4/GRP-5: the visibility-honest detail read. */
+/** GRP-4/GRP-5: the visibility-honest detail read. FEAT-PC023: a suspended
+ *  group below the admin plane resolves to the minimal shell payload. */
 export async function fetchGroupDetail(
   supabase: SupabaseClient,
   groupId: string,
-): Promise<GroupDetail> {
+): Promise<GroupDetailPayload> {
   const { data, error } = await supabase.rpc('get_group_detail', { p_group_id: groupId });
   if (error) throw error;
-  return data as GroupDetail;
+  return data as GroupDetailPayload;
+}
+
+/**
+ * FEAT-H038 STORY-6 — the member-plane Rest/Wake transports (FEAT-PC023
+ * `rest_group()` / `wake_group()`). Both self-gate in the substrate (FIM-only,
+ * the `rest_group` permission key, P0002 no-leak, the no-path-out-of-suspended
+ * rule); these wrappers only shape the calls and rethrow the SQLSTATE-carrying
+ * errors for the routes to map.
+ */
+export async function restGroup(supabase: SupabaseClient, groupId: string): Promise<void> {
+  const { error } = await supabase.rpc('rest_group', { p_group_id: groupId });
+  if (error) throw error;
+}
+
+export async function wakeGroup(supabase: SupabaseClient, groupId: string): Promise<void> {
+  const { error } = await supabase.rpc('wake_group', { p_group_id: groupId });
+  if (error) throw error;
 }
 
 /**

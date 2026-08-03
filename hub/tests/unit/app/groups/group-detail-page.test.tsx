@@ -45,6 +45,8 @@ jest.mock('@/lib/groups/client', () => ({
   }),
   fetchGroupRoles: (id: string) => fetchGroupRoles(id),
   fetchMyPermissions: (id: string) => fetchMyPermissions(id),
+  // FEAT-H038 STORY-5: the payload-shape guard, mirrored from the real client.
+  isGroupDetailShell: (payload: GroupDetail) => !('viewer' in payload),
   GroupsApiError: class GroupsApiError extends Error {
     status: number;
     constructor(message: string, status: number) {
@@ -141,5 +143,45 @@ describe('FEAT-H013 — /groups/[id] page gate (STORY-2)', () => {
       expect(fetchGroupRoles.mock.calls.length).toBe(before.roles + 1);
       expect(fetchMyPermissions.mock.calls.length).toBe(before.perms + 1);
     });
+  });
+});
+
+/**
+ * FEAT-H038 STORY-5 (W-3 surface half) — the suspended found-but-that's-it
+ * shell. WRITTEN RED-FIRST (2026-08-03): the FEAT-PC023 contract returns the
+ * minimal `{id, name, status}` payload for a suspended group below the admin
+ * plane; the page must render the shell — name and the "Suspended" label,
+ * no content, no actions, not even Leave — never the full panel tree.
+ * The branch is payload-driven (the absent `viewer` key), never a client guess:
+ * an admin's full payload for a suspended group renders the normal surface.
+ * Red evidence 2026-08-03: the shell case fails at head; the full-payload case
+ * is a DESIGNED CONTROL — green at head (the page always renders the panel
+ * today) and meaningful as the no-overreach pin once the shell branch exists.
+ */
+describe('FEAT-H038 STORY-5 — the suspended group shell', () => {
+  it('renders the shell for the minimal payload: name + "Suspended", no panels', async () => {
+    authState = { user: { id: 'u1' }, identity: 'fim', loading: false };
+    fetchGroupDetail.mockResolvedValue({
+      id: 'grp-1',
+      name: 'Held Circle',
+      status: 'suspended',
+    } as GroupDetail);
+    render(<GroupDetailPage />);
+    const shell = await screen.findByTestId('suspended-group-shell');
+    expect(shell).toHaveTextContent('Held Circle');
+    expect(shell).toHaveTextContent('Suspended');
+    // Found-but-that's-it: no panel tree, no satellite sections, no actions.
+    expect(screen.queryByTestId('detail-panel')).toBeNull();
+    expect(screen.queryByTestId('roles-panel-stub')).toBeNull();
+    expect(screen.queryByTestId('my-permissions-stub')).toBeNull();
+    expect(shell.querySelectorAll('button')).toHaveLength(0);
+  });
+
+  it('a suspended FULL payload (the admin plane) still renders the normal surface', async () => {
+    authState = { user: { id: 'u1' }, identity: 'fim', loading: false };
+    fetchGroupDetail.mockResolvedValue({ ...DETAIL, status: 'suspended' });
+    render(<GroupDetailPage />);
+    await waitFor(() => expect(screen.getByTestId('detail-panel')).toBeInTheDocument());
+    expect(screen.queryByTestId('suspended-group-shell')).toBeNull();
   });
 });
