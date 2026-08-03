@@ -68,10 +68,17 @@ export function AdminAuditLog() {
 
   useEffect(() => {
     let active = true;
-    setView({ kind: 'loading' });
-    void computeView(prefix).then((next) => {
-      if (active) setView(next);
-    });
+    // Both state sets live in the promise chain, never synchronously in the
+    // effect body (react-hooks/set-state-in-effect — the AccountMenu idiom).
+    // Found-not-caused hygiene, HYG-A: pre-existing on main.
+    void Promise.resolve()
+      .then(() => {
+        if (active) setView({ kind: 'loading' });
+        return computeView(prefix);
+      })
+      .then((next) => {
+        if (active) setView(next);
+      });
     return () => {
       active = false;
     };

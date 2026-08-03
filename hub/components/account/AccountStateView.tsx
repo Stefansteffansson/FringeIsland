@@ -26,6 +26,7 @@ export function AccountStateView({
   state,
   onRetry,
   onSignOut,
+  onWallExit,
   children,
 }: {
   identity: Identity;
@@ -34,6 +35,10 @@ export function AccountStateView({
   state: AccountState | null;
   onRetry: () => void;
   onSignOut: () => void;
+  /** FEAT-H038 STORY-2 (W-10): the suspended wall's explicit exit —
+   *  sign-out-then-navigate to /login. Falls back to the bare sign-out when
+   *  the gate doesn't wire it (isolated renders). */
+  onWallExit?: () => void;
   children: ReactNode;
 }) {
   // Only a FIM has a durable account-lifecycle state (gate on identity status,
@@ -72,12 +77,16 @@ export function AccountStateView({
     case 'paused':
       return <PausedAccountSurface onSignOut={onSignOut} />;
     case 'suspended':
+      // W-10: the exit reads as the way out — distinct from the error body —
+      // and lands on /login (the walk found the bare sign-out parked the
+      // member on the wall's URL, the button reading as part of the error).
       return (
         <AccountStateSurface
           testId="account-suspended-surface"
           title="Your account is suspended"
           message="Your account has been suspended by an administrator. Please contact support to resolve this."
-          onSignOut={onSignOut}
+          onSignOut={onWallExit ?? onSignOut}
+          signOutLabel="Sign out to use another account"
         />
       );
     case 'decommissioned':

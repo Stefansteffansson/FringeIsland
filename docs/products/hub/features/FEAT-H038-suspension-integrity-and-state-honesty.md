@@ -6,7 +6,7 @@ title: Suspension integrity and state honesty
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
@@ -118,3 +118,13 @@ None outward. The Gimbal inherits the enforcement substrate by construction; sta
 - **First-paint class:** unchanged — B3/B4 paths gain no blocking reads (revalidation is background, stale-while-revalidate; boot path untouched, ADR-U042 slice adoption unchanged).
 - **Interaction class:** the exit affordance and profile save stay under B5 (200 ms to next paint) — mapping is synchronous; revalidation never sits on the interaction path.
 - **Loading states:** unchanged; the wall renders on confirmed state only (no flash-of-wall during re-check).
+
+## Implementation notes — tranche 1: STORY-1..4, the walk's fix family (built 2026-08-03, ahead of the PC023 apply)
+
+- **Red-first at the unit tier**, four new suites, demonstrated 16 red / 4 green of 20 at head (the 4: two designed controls — the untyped-500 collapse, the error wall's retry — and two boundary pins green-at-head vacuously, labelled in-suite): `account-menu-admin-entry-user-scope.test.tsx` (W-9) · `account-wall-explicit-exit.test.tsx` (W-10) · `profile-me-typed-refusals.test.ts` (W-8) · `account-state-revalidation.test.tsx` (W-7). Post-implementation: 20/20; full unit 1167/1167; lint 0 errors; `next build` green.
+- **W-9:** the probe verdict is cached as `hub.adminEntry:<user.id>`; the legacy unkeyed key is never read; a `registerCacheInvalidator` at module init drops every verdict (legacy key included) on the auth flip. Probe-per-session semantics stated in the component.
+- **W-10:** `AccountStateView` suspended branch gains `signOutLabel="Sign out to use another account"` + an `onWallExit` prop; the gate wires sign-out-then-navigate to `/login` (the AccountMenu idiom). Other branches keep their exits (the decommissioned "Return to the front page" landing is deliberately untouched).
+- **W-8:** the PATCH route maps typed SQLSTATE → HTTP (42501→403, P0001→409, 22023→400, P0002→404) with the substrate's canonical message passed through as member copy; telemetry `profile.update_refused` carries the code; untyped failures keep the generic 500. `ProfileEditForm` renders the mapped message unchanged (it already surfaces the response error body).
+- **W-7:** `AccountStateContext` grows `revalidate()` — throttled ≥30 s, stale-while-revalidate, never flips `loading`/`error` (the wall renders on confirmed state only) — triggered by focus/visibility return and soft-nav (`usePathname`), plus the exported `requestAccountStateRecheck()` (throttle-bypassing) now wired at the profile save path on 401/403. No fetch-wrapper refactor (the named rabbit hole).
+- **Found-not-caused hygiene (fenced by name):** two pre-existing main-branch lint errors (`react-hooks/set-state-in-effect` in `AdminAuditLog.tsx` / `AdminModerationQueue.tsx`, ADM-D era) fixed with the house promise-chain idiom; admin unit suites stay green.
+- **Deferred to the post-apply tranche:** STORY-5 (two-mode group rendering — needs `get_member_groups.status` + the typed refusals live), STORY-6 (Rest/Wake control + admin mode choice + the FEAT-H035 dated pointer), STORY-7's two E2E journeys, and the group-write mapper wiring of the W-7 re-check.

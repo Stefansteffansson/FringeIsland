@@ -84,6 +84,18 @@ export async function PATCH(request: Request) {
       emitTelemetry('profile.update_rejected', { actor: user.id, reason: err.message });
       return NextResponse.json({ error: err.message }, { status: 400 });
     }
+    // FEAT-H038 STORY-3 (W-8): typed SQLSTATE refusals map to honest HTTP
+    // (the announcements http.ts idiom — presentation only, ADR-U038; the
+    // gates live in the update_own_profile substrate). The canonical refusal
+    // message is member copy and passes through; only genuinely untyped
+    // failures stay a generic 500.
+    const code = (err as { code?: string }).code;
+    if (code === '42501' || code === 'P0001' || code === '22023' || code === 'P0002') {
+      emitTelemetry('profile.update_refused', { actor: user.id, code });
+      const status =
+        code === '42501' ? 403 : code === 'P0001' ? 409 : code === '22023' ? 400 : 404;
+      return NextResponse.json({ error: (err as Error).message }, { status });
+    }
     emitTelemetry('profile.update_failed', { actor: user.id, message: (err as Error).message });
     return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
   }
