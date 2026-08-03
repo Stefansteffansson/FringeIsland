@@ -599,19 +599,29 @@ describe('FEAT-PC014 — group closure and deletion contracts (G-E, MEM-8/GRP-9)
       expect(rows[0].n).toBe(0);
     });
 
-    it('the admin membership-DELETE policy still functions after the drop (A-ADM inherits intact — carried-forward re-assert)', async () => {
+    it('the admin membership-DELETE door is closed (ADAPTED for FEAT-PC023 STORY-10 — the closure covers the admin policies too; contracts are the admin door)', async () => {
+      // Pre-PC023 this cell re-asserted gm_delete_admin carried forward. The
+      // 20260803190000 closure dropped it with the other thirteen write
+      // policies and revoked the authenticated write grants; the admin plane
+      // acts through the audited ADM-C contracts (admin suites cover them).
       const groupId = await seedGroup('AdminIntact', [memberA]);
       await makePlatformAdmin(outsider.personalGroupId);
       try {
         const c = await asUser(outsider);
-        const { data, error } = await c
+        const { error } = await c
           .from('group_memberships')
           .delete()
           .eq('group_id', groupId)
           .eq('member_group_id', memberA.personalGroupId)
           .select('id');
-        expect(error).toBeNull();
-        expect(data?.length).toBe(1);
+        expect(error?.code).toBe('42501'); // permission denied for table (PC023)
+        const { data: still } = await admin
+          .from('group_memberships')
+          .select('status')
+          .eq('group_id', groupId)
+          .eq('member_group_id', memberA.personalGroupId)
+          .single();
+        expect(still?.status).toBe('active');
       } finally {
         await demotePlatformAdmin(outsider.personalGroupId);
       }

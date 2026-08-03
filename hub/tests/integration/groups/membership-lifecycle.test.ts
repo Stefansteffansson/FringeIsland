@@ -810,6 +810,10 @@ describe('FEAT-PC013 — group membership lifecycle contracts (G-D)', () => {
       );
     });
 
+    // ADAPTED for FEAT-PC023 STORY-10 (20260803190000): the legacy write-door
+    // closure revoked INSERT/UPDATE/DELETE from authenticated, so the refusal
+    // sharpened from RLS-filtered-to-zero-rows to a 42501 grant refusal. The
+    // pinned outcome — the row survives untouched — is unchanged.
     it('direct self-DELETE of an active membership is refused (the pre-drop bypass closes)', async () => {
       const c = await asUser(target);
       const { error } = await c
@@ -817,7 +821,7 @@ describe('FEAT-PC013 — group membership lifecycle contracts (G-D)', () => {
         .delete()
         .eq('group_id', groupId)
         .eq('member_group_id', target.personalGroupId);
-      expect(error).toBeNull(); // RLS refusal = 0 rows, not an error
+      expect(error?.code).toBe('42501'); // permission denied for table (PC023)
       expect((await membershipRow(groupId, target))?.status).toBe('active');
     });
 
@@ -828,7 +832,7 @@ describe('FEAT-PC013 — group membership lifecycle contracts (G-D)', () => {
         .delete()
         .eq('group_id', groupId)
         .eq('member_group_id', plainMember.personalGroupId);
-      expect(error).toBeNull();
+      expect(error?.code).toBe('42501'); // permission denied for table (PC023)
       expect((await membershipRow(groupId, plainMember))?.status).toBe('active');
     });
 
@@ -840,7 +844,7 @@ describe('FEAT-PC013 — group membership lifecycle contracts (G-D)', () => {
           .update({ status: 'paused' })
           .eq('group_id', groupId)
           .eq('member_group_id', target.personalGroupId);
-        expect(error).toBeNull();
+        expect(error?.code).toBe('42501'); // permission denied for table (PC023)
         expect((await membershipRow(groupId, target))?.status).toBe('active');
       }
     });
@@ -860,9 +864,13 @@ describe('FEAT-PC013 — group membership lifecycle contracts (G-D)', () => {
       expect(await membershipRow(groupId, outsider)).toBeNull();
     });
 
-    it('the admin policies stay intact (A-ADM inherits): a platform admin can direct-DELETE', async () => {
-      // seed a disposable member, promote outsider to platform admin, and
-      // exercise memberships_delete_admin through their authenticated client
+    it('the admin direct-DELETE door is closed with the rest (ADAPTED for FEAT-PC023 STORY-10 — the admin plane acts via admin_remove_member_from_group)', async () => {
+      // Pre-PC023 this cell pinned gm_delete_admin functioning. The
+      // 20260803190000 closure dropped ALL fourteen write policies and revoked
+      // the authenticated write grants — the admin plane included: platform
+      // admins act through the audited ADM-C contract
+      // (admin_remove_member_from_group, covered in the admin suites), never a
+      // raw row write.
       const disposable = await createTestUser({ displayName: 'GDDisposable' });
       createdUserIds.push(disposable.user.id);
       await admin.from('group_memberships').insert({
@@ -879,8 +887,8 @@ describe('FEAT-PC013 — group membership lifecycle contracts (G-D)', () => {
           .delete()
           .eq('group_id', groupId)
           .eq('member_group_id', disposable.personalGroupId);
-        expect(error).toBeNull();
-        expect(await membershipRow(groupId, disposable)).toBeNull();
+        expect(error?.code).toBe('42501'); // permission denied for table (PC023)
+        expect((await membershipRow(groupId, disposable))?.status).toBe('active');
       } finally {
         await demotePlatformAdmin(outsider.personalGroupId);
       }
