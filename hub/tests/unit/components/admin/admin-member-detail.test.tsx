@@ -340,3 +340,72 @@ describe('AdminMemberDetail (FEAT-H036 STORY-2..6)', () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+/**
+ * W-4 (FEAT-H039 STORY-6, Cycle ADM-E) — every member-ceremony confirm names
+ * the unique identifier (email) beside the display name, killing the
+ * doppelganger mis-target class. WRITTEN RED-FIRST (2026-08-03): at head no
+ * ceremony copy carries the email (it lives only in the identity subhead, so
+ * every assertion scopes WITHIN the modal/panel — a bare getByText would
+ * false-green on the subhead).
+ */
+describe('AdminMemberDetail — W-4 email echo (FEAT-H039 STORY-6)', () => {
+  const EMAIL = /rolf@example\.com/;
+  const inModal = () => within(screen.getByTestId('confirm-modal'));
+
+  it('suspend names the email', async () => {
+    await renderLoaded(activeDetail);
+    await userEvent.click(screen.getByTestId('suspend-member'));
+    expect(inModal().getByText(EMAIL)).toBeInTheDocument();
+  });
+
+  it('reactivate names the email (both origins)', async () => {
+    await renderLoaded(pausedDetail);
+    await userEvent.click(screen.getByTestId('reactivate-member'));
+    expect(inModal().getByText(EMAIL)).toBeInTheDocument();
+  });
+
+  it('decommission names the email', async () => {
+    await renderLoaded(activeDetail);
+    await userEvent.click(screen.getByTestId('decommission-member'));
+    expect(inModal().getByText(EMAIL)).toBeInTheDocument();
+  });
+
+  it('force sign-out names the email', async () => {
+    await renderLoaded(activeDetail);
+    await userEvent.click(screen.getByTestId('force-logout-member'));
+    expect(inModal().getByText(EMAIL)).toBeInTheDocument();
+  });
+
+  it('platform exit names the email', async () => {
+    await renderLoaded(activeDetail);
+    await userEvent.click(screen.getByTestId('platform-exit-member'));
+    expect(inModal().getByText(EMAIL)).toBeInTheDocument();
+  });
+
+  it('grant names the email', async () => {
+    await renderLoaded(activeDetail);
+    await userEvent.click(screen.getByTestId('grant-admin'));
+    expect(inModal().getByText(EMAIL)).toBeInTheDocument();
+  });
+
+  it('revoke names the email — other and self alike', async () => {
+    await renderLoaded(adminDetail);
+    await userEvent.click(screen.getByTestId('revoke-admin'));
+    expect(inModal().getByText(EMAIL)).toBeInTheDocument();
+  });
+
+  it('remove-from-group names the email', async () => {
+    await renderLoaded(activeDetail);
+    await userEvent.click(screen.getByTestId(`remove-from-group-${G_LEAVE}`));
+    expect(inModal().getByText(EMAIL)).toBeInTheDocument();
+  });
+
+  it('the hard-delete panel names the email', async () => {
+    await renderLoaded(activeDetail);
+    await userEvent.click(screen.getByTestId('hard-delete-member'));
+    expect(
+      within(screen.getByTestId('hard-delete-panel')).getByText(EMAIL),
+    ).toBeInTheDocument();
+  });
+});

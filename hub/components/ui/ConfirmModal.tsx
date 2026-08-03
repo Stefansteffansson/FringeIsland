@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { useFocusTrap } from './useFocusTrap';
 
 /**
@@ -15,7 +15,8 @@ import { useFocusTrap } from './useFocusTrap';
 export interface ConfirmModalProps {
   isOpen: boolean;
   title: string;
-  message: string;
+  /** Widened string → ReactNode (FEAT-H039): the bulk ceremony lists members. */
+  message: ReactNode;
   confirmText?: string;
   cancelText?: string;
   onConfirm: () => void;
@@ -80,7 +81,7 @@ export function ConfirmModal({
       />
       <div className="relative w-full max-w-md rounded-2xl bg-surface p-6 shadow-2xl">
         <h2 className="mb-2 text-center text-2xl font-bold text-ink">{title}</h2>
-        <p className="mb-6 text-center text-ink-muted">{message}</p>
+        <div className="mb-6 text-center text-ink-muted">{message}</div>
         <div className="flex gap-3">
           <button
             ref={cancelRef}
