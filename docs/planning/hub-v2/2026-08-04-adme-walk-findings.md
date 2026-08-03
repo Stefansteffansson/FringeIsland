@@ -47,3 +47,16 @@
 ---
 
 *Filed 2026-08-04 during the walk (session 5's follow-on); bridge: `2026-08-03_05`. WA-1's fix rides the same PR as this file; WA-4 added after the force-sign-out probe.*
+
+---
+
+## Walk verdict (2026-08-04, close of walk) — COMPLETE, walked live on production
+
+- **A (bounded list):** passed — server search, As-of/Refresh, pager. The all-ineligible bulk offer became **WA-1**, ruled (b), **fixed and re-verified in-walk** (PR #403).
+- **B (bulk with the designed refusal):** passed — partial success reported per member, refusals verbatim; bulk reactivate and force sign-out passed.
+- **C (audit cross-check):** passed mechanically — per-member rows confirmed; readability became **WA-2** (directive).
+- **D (W-4 singles):** passed — every ceremony names the email. Stefan's hard-delete question exposed **WA-3** (directive): the consent gap verified in the function body; the consented path deliberately not walked (it refuses today).
+- **The force sign-out probe** became **WA-4** (directive): the sweep proven substrate-side; instant device-side sign-out mandated.
+- **The WF-1 probe:** as-designed — group invitations answer at `/groups` until cycle N-E builds the bell path; the `role_assigned`-vs-`stewardship_nomination` distinction explained (role assignment is a fact, passive by design; the succession flow is the consent-bearing ask) — no directive.
+
+"Everything else seems to work" — Stefan, at close. Directives WA-2/WA-3/WA-4 ride the ADM-F opener's schema gate; the next session opens at ADM-F.
