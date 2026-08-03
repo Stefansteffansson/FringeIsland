@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import type { AdminUserRow, AdminUsersPage, BulkAction, BulkRowOutcome } from '@/lib/admin/users';
+import type { AdminUsersPage, BulkAction, BulkRowOutcome } from '@/lib/admin/users';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
 /**
@@ -47,6 +47,16 @@ const BULK_ACTIONS: Array<{ action: BulkAction; label: string; title: string; ve
     verb: 'Sign out',
   },
 ];
+
+// WA-1(b) (ADM-E walk rider): an action disables when NO selected member could
+// accept it — the detail rail's payload-fact derivations (FEAT-H036), never a
+// client-side re-decision of platform rules. Mixed selections stay enabled;
+// per-row outcomes remain the honesty mechanism for them (RB-2).
+const BULK_ELIGIBLE: Record<BulkAction, (accountState: string) => boolean> = {
+  suspend: (s) => s === 'active',
+  reactivate: (s) => s === 'paused' || s === 'suspended',
+  'force-logout': (s) => s !== 'decommissioned',
+};
 
 type Cursor = { name: string; id: string } | null;
 
@@ -283,16 +293,21 @@ export function AdminMembersList() {
           <span data-testid="selection-count" className="text-sm text-gray-700">
             {selected.length} selected
           </span>
-          {BULK_ACTIONS.map((b) => (
-            <button
-              key={b.action}
-              data-testid={`bulk-${b.action}`}
-              onClick={() => setBulk(b.action)}
-              className="rounded border border-gray-400 px-3 py-1 text-sm text-gray-800"
-            >
-              {b.label}
-            </button>
-          ))}
+          {BULK_ACTIONS.map((b) => {
+            const noneEligible = !selectedRows.some((u) => BULK_ELIGIBLE[b.action](u.account_state));
+            return (
+              <button
+                key={b.action}
+                data-testid={`bulk-${b.action}`}
+                disabled={noneEligible}
+                title={noneEligible ? 'No selected member can accept this action' : undefined}
+                onClick={() => setBulk(b.action)}
+                className="rounded border border-gray-400 px-3 py-1 text-sm text-gray-800 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {b.label}
+              </button>
+            );
+          })}
         </div>
       )}
 
