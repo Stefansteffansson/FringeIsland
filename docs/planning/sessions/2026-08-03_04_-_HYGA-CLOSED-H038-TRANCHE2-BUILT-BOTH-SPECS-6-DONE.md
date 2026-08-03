@@ -28,7 +28,7 @@ Two build-time gate catches worth remembering: a value export from `lib/groups/q
 
 - Full unit: **1195/1195** (154 suites) · lint **0 errors** · `next build` **green** · route-policy + outer-ring conformance green with zero new exceptions.
 - Full integration sweep (`--runInBand` vs the dev DB): **70 suites / 979 tests, all green** (29.5 min — network-bound against the remote DB; the tranche-1 void data point is now properly discharged). Includes the PC023 availability gate suite live against the applied substrate.
-- Full E2E sweep: **PENDING-FILL**
+- Full E2E sweep: **110/111 green (6.0 min), leak delta 0, both new journeys green** — the 1 red is `profile.spec` STORY-4, fenced **found (not caused)** by name: it is TASK-E2E-01's root-caused standing flake (ordering-dependent shared-session revocation), and the immediate isolated control ran **3/3 green**. Recurrence recorded in the task file — its watch condition is now met; the next boundary should schedule the 2 h fix. (Run 1 of the sweep failed 20 specs from the new account journey's own shared-session sign-out — the same trap class — fixed in-session with fixture isolation; see Decisions 1a.)
 - Performance DoD: no first-paint request added or rerouted (revalidation is background; the status key rides existing payloads; Rest/Wake are interactions) — no deep-cold spot measurement owed; the spec's budget section stands as written in tranche 1.
 - API-boundary DoD: the four new routes are pure BFF mappers over self-gating PC023 RPCs; the substrate's refusals are adversarially proven by the 117-cell availability gate suite (direct PostgREST path, applied last session).
 
@@ -61,10 +61,10 @@ Continuity questions asked and answered: a resting group's member can still **le
 
 ## Close ritual
 
-- [ ] `npm run dashboard` — **PENDING-FILL**
+- [x] `npm run dashboard` — refreshed at close (771 files indexed; rides this PR)
 - [x] doc-health-check — run at the boundary (delegated agent; full report in the session scratchpad, summary + dispositions below): **2 critical / 4 warning / 6 info**, both criticals fixed in-session
 - [x] Session bridge (this file)
 - [x] Task sweep — TASK-HYGA-01 `done` (last session), TASK-HYGA-02 `done` (this session, criteria all ticked)
 - [x] CHANGELOGs — root cycle entry + `hub/CHANGELOG.md` member-facing entry (platform-core register entry rode PR #390)
-- [ ] Discovery sweep — **PENDING-FILL**
-- [ ] PR / merge — **PENDING-FILL**
+- [x] Discovery sweep — worktree clean and synced at session open; the close sweep (merge `main` → `discovery`, push) runs after this PR merges
+- [x] PR / merge — one PR carries the whole tranche (five commits: build, cycle-close docs, doc-health fixes, the E2E fixture-isolation fix, close ritual); fuller-auto class (Hub code + routine docs — no schema, no core code, no ADR edits; the one ADR-adjacent item, U052's References line, was deliberately left untouched)
