@@ -163,21 +163,26 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
   const closures = d.memberships.filter((m) => m.removal_scenario === 'group_closure').length;
   const handovers = d.memberships.filter((m) => m.removal_scenario === 'steward_handover').length;
 
+  // W-4 (FEAT-H039): every ceremony names the unique identifier beside the
+  // display name — the doppelganger guard. Email is admin-tier data already
+  // on this screen.
+  const who = `"${d.display_name}" (${d.email ?? 'no email on record'})`;
+
   // Origin-honest reactivation copy: the ceremony names what it lifts.
   const reactivateMessage =
     d.deactivation_origin === 'member'
-      ? `Reactivate "${d.display_name}"? This lifts a pause the member set themselves.`
-      : `Reactivate "${d.display_name}"? This lifts an admin hold — the member regains access immediately.`;
+      ? `Reactivate ${who}? This lifts a pause the member set themselves.`
+      : `Reactivate ${who}? This lifts an admin hold — the member regains access immediately.`;
 
   const exitMessage =
-    `Exit "${d.display_name}" from the platform? This exits ${d.memberships.length} group${
+    `Exit ${who} from the platform? This exits ${d.memberships.length} group${
       d.memberships.length === 1 ? '' : 's'
     }: ${closures} will close, ${handovers} hand stewardship to FringeIsland. ` +
     `The account is decommissioned and sessions end. No erasure happens — the profile remains.`;
 
   const revokeMessage = view.viewerIsSelf
-    ? `Revoke your own platform administration? You will lose these pages immediately.`
-    : `Revoke platform administration from "${d.display_name}"? Their admin pages stop existing for them on their next request.`;
+    ? `Revoke your own platform administration (${d.email ?? 'no email on record'})? You will lose these pages immediately.`
+    : `Revoke platform administration from ${who}? Their admin pages stop existing for them on their next request.`;
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
@@ -336,8 +341,9 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
           className="mt-4 rounded border border-red-300 bg-red-50 p-4"
         >
           <p className="mb-2 text-sm text-red-900">
-            Hard delete permanently removes this account and their private record. Their forum
-            posts and journeys reattribute to &quot;[Deleted User]&quot;. This cannot be undone.
+            Hard delete permanently removes this account ({d.email ?? 'no email on record'}) and
+            their private record. Their forum posts and journeys reattribute to &quot;[Deleted
+            User]&quot;. This cannot be undone.
           </p>
           <label className="mb-2 block text-sm text-red-900" htmlFor="hard-delete-input">
             Type the member&apos;s display name to confirm: <strong>{d.display_name}</strong>
@@ -365,7 +371,7 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
       <ConfirmModal
         isOpen={ceremony?.kind === 'suspend'}
         title="Suspend member"
-        message={`Suspend "${d.display_name}"? They lose access until an admin reactivates the account; this hold cannot be lifted by the member.`}
+        message={`Suspend ${who}? They lose access until an admin reactivates the account; this hold cannot be lifted by the member.`}
         confirmText="Suspend"
         variant="danger"
         busy={busy}
@@ -389,7 +395,7 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
       <ConfirmModal
         isOpen={ceremony?.kind === 'decommission'}
         title="Decommission member"
-        message={`Decommission "${d.display_name}"? The account closes terminally — this cannot be undone. Memberships and history remain on record.`}
+        message={`Decommission ${who}? The account closes terminally — this cannot be undone. Memberships and history remain on record.`}
         confirmText="Decommission"
         variant="danger"
         busy={busy}
@@ -401,7 +407,7 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
       <ConfirmModal
         isOpen={ceremony?.kind === 'force-logout'}
         title="Force sign-out"
-        message={`Sign "${d.display_name}" out everywhere? Existing sessions end now; an open tab may stay signed in for a few minutes on its current token.`}
+        message={`Sign ${who} out everywhere? Existing sessions end now; an open tab may stay signed in for a few minutes on its current token.`}
         confirmText="Force sign-out"
         variant="warning"
         busy={busy}
@@ -435,7 +441,7 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
       <ConfirmModal
         isOpen={ceremony?.kind === 'grant-admin'}
         title="Grant platform administrator"
-        message={`Grant platform administration to "${d.display_name}"? They gain every admin page and action, and are notified of the role.`}
+        message={`Grant platform administration to ${who}? They gain every admin page and action, and are notified of the role.`}
         confirmText="Grant"
         variant="warning"
         busy={busy}
@@ -461,7 +467,7 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
         title="Remove from group"
         message={
           ceremony?.kind === 'remove'
-            ? `Remove "${d.display_name}" from "${ceremony.membership.group_name}"? ${
+            ? `Remove ${who} from "${ceremony.membership.group_name}"? ${
                 SCENARIO_COPY[ceremony.membership.removal_scenario] ??
                 'The platform classifies the departure when it runs.'
               }`

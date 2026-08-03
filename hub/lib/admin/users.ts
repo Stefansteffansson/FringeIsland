@@ -49,14 +49,40 @@ export async function fetchAdminUsers(
   client: SupabaseClient,
   filter: string,
 ): Promise<{ users: AdminUserRow[] | null; refused: boolean }> {
-  const { data, error } = await client.rpc('admin_get_users', { p_filter: filter });
-  if (error) {
-    if (error.code === '42501') return { users: null, refused: true };
-    return throwTyped(error);
-  }
-  // jsonb-array contract (the 20260801180000 row-cap amendment) — identical
-  // client shape to a set-returning RPC.
-  return { users: (data ?? []) as AdminUserRow[], refused: false };
+  // PC024 transition shim (FEAT-H039 tranche 1): tolerant of BOTH live
+  // contract shapes across the 20260803210000 apply — the pre-PC024 jsonb
+  // array, and the PC024 keyed page {users, next_cursor, generated_at},
+  // walked to exhaustion so the surface stays byte-identical. The FIRST call
+  // must stay old-signature-compatible (p_filter only) or the pre-apply
+  // function refuses it. Replaced by true paging in tranche 2 (TASK-ADME-02).
+  const all: AdminUserRow[] = [];
+  let cursor: { name: string; id: string } | null = null;
+  let hops = 0;
+  do {
+    const args: Record<string, unknown> = { p_filter: filter };
+    if (cursor) {
+      args.p_limit = 200;
+      args.p_after_name = cursor.name;
+      args.p_after_id = cursor.id;
+    }
+    const { data, error } = await client.rpc('admin_get_users', args);
+    if (error) {
+      if (error.code === '42501') return { users: null, refused: true };
+      return throwTyped(error);
+    }
+    if (Array.isArray(data)) {
+      // pre-PC024 array contract — the whole census in one response
+      return { users: data as AdminUserRow[], refused: false };
+    }
+    const page = data as {
+      users: AdminUserRow[] | null;
+      next_cursor: { name: string; id: string } | null;
+    };
+    all.push(...(page.users ?? []));
+    cursor = page.next_cursor ?? null;
+    hops += 1;
+  } while (cursor !== null && hops < 60);
+  return { users: all, refused: false };
 }
 
 export async function fetchAdminUserDetail(
