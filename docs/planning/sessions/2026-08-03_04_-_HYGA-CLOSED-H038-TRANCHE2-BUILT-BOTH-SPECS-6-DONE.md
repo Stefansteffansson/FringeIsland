@@ -27,7 +27,7 @@ Two build-time gate catches worth remembering: a value export from `lib/groups/q
 ## Gates (cycle close)
 
 - Full unit: **1195/1195** (154 suites) · lint **0 errors** · `next build` **green** · route-policy + outer-ring conformance green with zero new exceptions.
-- Full integration sweep (`--runInBand` vs the dev DB): **PENDING-FILL**
+- Full integration sweep (`--runInBand` vs the dev DB): **70 suites / 979 tests, all green** (29.5 min — network-bound against the remote DB; the tranche-1 void data point is now properly discharged). Includes the PC023 availability gate suite live against the applied substrate.
 - Full E2E sweep: **PENDING-FILL**
 - Performance DoD: no first-paint request added or rerouted (revalidation is background; the status key rides existing payloads; Rest/Wake are interactions) — no deep-cold spot measurement owed; the spec's budget section stands as written in tranche 1.
 - API-boundary DoD: the four new routes are pure BFF mappers over self-gating PC023 RPCs; the substrate's refusals are adversarially proven by the 117-cell availability gate suite (direct PostgREST path, applied last session).
@@ -41,6 +41,7 @@ Continuity questions asked and answered: a resting group's member can still **le
 ## Decisions / learnings this session
 
 1. **The wall-trigger choice for the account E2E is the refusal path, deliberately** — the soft-nav/focus cadence sits behind the ≥30 s throttle; the refusal-triggered re-check is the same revalidator arriving faster, and it exercises W-8 on the way. Recorded in the spec notes.
+1a. **A journey that ends in a sign-out must never run on the shared session storageState** (the TASK-E2E-01 trap class, sprung by this cycle's account journey at its first full-sweep run): the wall exit revoked the stored session server-side and 20 downstream specs failed on `getUser()` 401s while reads kept passing — the diagnostic signature to remember. Fixed with a dedicated subject FIM in a fresh context; rule stated in the spec header.
 2. **The sandbox `find` is find.exe** (memory rule re-confirmed live — silent zero on existing files); `ls`/`grep` are the reliable probes.
 3. **Dev server reuse:** port 3000 already served this checkout (left running); verified by process command line before running E2E against it.
 
