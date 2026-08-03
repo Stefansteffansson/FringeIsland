@@ -661,10 +661,11 @@ describe('FEAT-PC021 gate 2 — member administration operations family (ADM-3/4
       expect(roleRows[0].n).toBe(1); // explicit insert — the invited->active trigger never fired here
       const { data: list } = await odaClient.rpc('admin_get_users', {
         p_filter: 'platform_admins',
+        p_limit: 200, // PC024 keyed pages; platform admins are far fewer than one page
       });
-      const gerdRow = (list as Array<{ id: string; is_platform_admin: boolean }>).find(
-        (r) => r.id === gerdId,
-      );
+      const gerdRow = (
+        list as { users: Array<{ id: string; is_platform_admin: boolean }> }
+      ).users.find((r) => r.id === gerdId);
       expect(gerdRow?.is_platform_admin).toBe(true);
       expect(await notifRows(gerd.personalGroupId, 'role_assigned', deusexGroupId)).toHaveLength(1);
       expect(await auditRows('platform_admin.grant', gerdId)).toHaveLength(1);
@@ -693,9 +694,10 @@ describe('FEAT-PC021 gate 2 — member administration operations family (ADM-3/4
       expect(roleRows[0].n).toBe(0);
       const { data: list } = await odaClient.rpc('admin_get_users', {
         p_filter: 'platform_admins',
+        p_limit: 200, // PC024 keyed pages; platform admins are far fewer than one page
       });
       expect(
-        (list as Array<{ id: string }>).find((r) => r.id === gerdId),
+        (list as { users: Array<{ id: string }> }).users.find((r) => r.id === gerdId),
       ).toBeUndefined();
       expect(await auditRows('platform_admin.revoke', gerdId)).toHaveLength(1);
     });
