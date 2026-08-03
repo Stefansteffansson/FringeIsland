@@ -1,0 +1,63 @@
+# ADM-F kickoff — substrate dossier (2026-08-04)
+
+**Purpose:** the fact base for the ADM-F decomposition (ADM-17 role-template editor per the ratified RB-4/RB-5 skeleton + the walk riders WA-2/WA-3/WA-4 on the opener's schema gate). Gathered by two delegated walks at the ADM-E close so the decomposition session starts without re-running them.
+**Canonical sources:** `supabase/migrations/` read cumulative-forward + `supabase/seeds/` + `supabase/ownership.manifest.json` (platform); the `hub/` tree at HEAD (surface). Every fact cites file:line; docs were not treated as authoritative. Dossier caveat (A#8/J-D): a dossier is a snapshot — re-verify load-bearing facts at spec time if migrations have landed since.
+**Next feature IDs (directory-verified):** FEAT-PC025 · FEAT-H040.
+
+## Synthesis — what shapes the decomposition
+
+1. **CORRECTION — the catalogue is 46 seeded + 2 migration-born = 48 on a fresh DB, not the carried "44":** seed `supabase/seeds/01_permissions.sql:7` holds 46 rows; four migrations add idempotently (`act_as_group` and `send_announcements` are seed-duplicates/no-ops; `create_group_conversations` `20260719230500:196` and `rest_group` `20260803190000:111` are NET-NEW). Live-DB count unverified (derived from DML) — verify at spec time.
+2. **CORRECTION — RB-4's "exact-count pins re-shape" has almost no demolition to do:** no literal catalogue count exists in any test. `role-permission-contracts.test.ts:148,196` already derives count-at-runtime ("catalogue equals manifest"-shaped); `role-templates-contract.test.ts:59,64,76` pins shape/order only. One brittle spot: `communication/conversation-contracts.test.ts:530` filters two template rows **by name** — breaks on rename, not on add.
+3. **Template/catalogue CRUD is genuinely greenfield, and the tables are write-sealed:** zero writer functions exist (verified-zero sweep); all five tables have SELECT-only RLS (`TO authenticated USING (true)`, rebuild `:1438-1450`), no write policies ever, no table grants — service_role/definer only. The read contract is `get_role_templates()` (SECURITY INVOKER, `20260722190000:48`).
+4. **The DeusEx auto-grant is the key ADM-17 integrity constraint:** `auto_grant_permission_to_deusex()` (rebuild `:846`, AFTER INSERT on `permissions`) — any new catalogue row automatically reaches the DeusEx role. RB-4's atoms-code-owned ruling keeps the catalogue read-only to the editor, so this fires only via migrations — state it in the spec's No-gos.
+5. **Instantiation snapshot mechanics (RB-5's snapshot-now is already the physics):** `create_engagement_group` (LATEST `20260704204343:24`) copies `rt.name, rt.description, rt.id` into `group_roles` (`:72-80`); grants materialise via the `copy_template_permissions` trigger (rebuild `:1347` → `:819`). Instances carry `created_from_role_template_id` (SET NULL) — template edits never propagate to existing `group_roles` by construction.
+6. **WA-4's emission pattern exists and is per-session-id:** `revoke_own_session` (`20260703154102:86-141`) emits `PERFORM realtime.send(jsonb_build_object('session_id', p_session_id), 'session_revoked', 'account:'||v_auth_uid||':sessions', TRUE)` at `:130-135`, non-fatal-wrapped. The generalised helper to copy: `ds5_emit_hint` (`20260720153000:91`, REVOKEd from clients). **The Hub guard acts only on a matching `session_id`** (see Hub §4) — so the `admin_force_logout` amendment must SELECT the target's session ids BEFORE deleting and emit **one hint per session**, per target.
+7. **WA-2's amendment shape is a one-join mirror:** `admin_get_audit_log` (sole def `20260802120000:365-411`) already LEFT JOINs groups for `actor_display_name`; `target` echoes the bare TEXT column. Resolution = the symmetric joins (users by id → display name + email; groups by id → name; literals/unresolvable pass through), server-side, in the same jsonb_build_object.
+
+## Platform fact sheet (delegated walk, verbatim)
+
+### 1. Role-template substrate
+All five tables created in `supabase/migrations/20260222000000_rebuild_universal_group_pattern.sql`: `permissions` :48 (id, name TEXT UNIQUE, description, category TEXT NOT NULL, created_at) · `role_templates` :57 (id, name TEXT UNIQUE, description, is_system BOOL, created_at) · `group_templates` :66 (same shape) · `role_template_permissions` :160 (role_template_id FK CASCADE, permission_id FK CASCADE, granted BOOL DEFAULT true, UNIQUE pair) · `group_template_roles` :169 (group_template_id, role_template_id, is_default BOOL, UNIQUE pair). Per-group INSTANCES separate: `group_roles` :178 (group_id, name, description, `created_from_role_template_id` FK SET NULL, UNIQUE(group_id,name)) + `group_role_permissions` :189; assignments `user_group_roles` :199.
+Seeds: `01_permissions.sql:7` (46 rows, one insert) · `02_role_templates.sql:9` (4 templates: Steward/Guide/Member/Observer Role Template, all `is_system=true`; permission sets :20/:45/:60/:76). Catalogue additions by migration: `act_as_group` (`20260706120000:35`, seed-duplicate no-op) · `create_group_conversations` (`20260719230500:196`, net-new) · `send_announcements` (`20260720200000:171`, no-op) · `rest_group` (`20260803190000:111`, net-new). Fresh-DB total 48.
+
+### 2. Instantiation
+`create_engagement_group` first def `20260704075547:27`; LATEST `20260704204343:24` (signature text,text,text,boolean,boolean,uuid). Copies rt.name/description/id into group_roles (:72-80), selecting via `group_template_roles` for a chosen template or EVERY role template when none chosen. Permissions copied by trigger `copy_template_permissions` (rebuild:1347) → `copy_template_permissions_on_role_create()` (rebuild:819). Creator bindings permission-derived, never by name (management `assign_roles` hard-fail 22023; participation `enroll_self_in_journey` soft-skip). Grants pc010:298/301.
+
+### 3. CRUD on templates/catalogue — verified zero
+Sweep of INSERT/UPDATE/DELETE against all five tables: exactly 8 hits, all top-level seed/migration DML; none in any function body. RLS enabled on all five (rebuild:1418-1426); policies SELECT-only `TO authenticated USING (true)` (:1438-1450); no write policy ever; no table GRANTs → no client writes today. Read contract `get_role_templates()` SECURITY INVOKER (`20260722190000:48`; revoke :79, execute authenticated :80). Manifest: all five tables owned PC-3 (manifest:14-21), memberData:false (:306-313).
+
+### 4. Guards
+`prevent_last_deusex_role_removal()` LATEST `20260224205639:66` (hard_delete bypass; counts sibling DeusEx role rows); trigger rebuild:1340. `prevent_last_deusex_membership_removal()` LATEST rebuild:726 (no bypass); trigger rebuild:1344. `auto_grant_permission_to_deusex()` rebuild:846 (AFTER INSERT on permissions → auto-grant to DeusEx). `copy_template_permissions_on_role_create()` rebuild:819. No CHECK/trigger blocks template/catalogue mutation itself.
+
+### 5. B-RBAC count pins
+No hardcoded count anywhere in hub/tests. `role-permission-contracts.test.ts` derives `catalogCount` at runtime (:148, asserted :196). `role-templates-contract.test.ts` pins shape only (:59 length>0; :64 keys `['description','id','name']`; :76 name-sorted). Brittle-on-rename only: `communication/conversation-contracts.test.ts:530` (`.in('name', ['Steward Role Template','Guide Role Template'])`).
+
+### 6. WA-2 target — `admin_get_audit_log`
+Sole def `20260802120000:365-411`; STABLE SECURITY DEFINER search_path=''; gate is_platform_admin → 42501 ('Unauthorized' — the message drift recorded at PC024 §Problem stands); cap `LEAST(GREATEST(COALESCE(p_limit,50),1),200)`. Body: jsonb_agg over (SELECT … jsonb_build_object('id',a.id,'actor_group_id',a.actor_group_id,'actor_display_name',g.name,'action',a.action,'target',a.target,'metadata',a.metadata,'created_at',a.created_at) FROM admin_audit_log a LEFT JOIN groups g ON g.id=a.actor_group_id WHERE (p_before IS NULL OR created_at<p_before) AND (p_action_prefix IS NULL OR action LIKE p_action_prefix||'%') ORDER BY created_at DESC, id DESC LIMIT v_limit). `target` echoed raw. Comment :413; REVOKE :707; GRANT :711; manifest PC-4 (:176).
+
+### 7. WA-4 target — the hint mechanism
+`revoke_own_session(UUID)` `20260703154102:86-141`: durable audit row first (:119-125, action 'session_revoked', target 'auth.sessions'), then `PERFORM realtime.send(jsonb_build_object('session_id', p_session_id), 'session_revoked', 'account:'||v_auth_uid::text||':sessions', TRUE)` (:130-135) inside BEGIN…EXCEPTION WHEN OTHERS THEN NULL (hint failure never fails the mutation). realtime.send arg order: (payload jsonb, event text, topic text, private boolean). Receive policy `session_signal_receive_own` latest `20260704075549:40`; no client SEND policy. Generalised helper: `ds5_emit_hint(p_payload,p_event,p_topic)` `20260720153000:91` (body :104, non-fatal WARNING, REVOKEd from clients, trigger-path only per comment :114); callers ds5_emit_message_hint :123, ds5_emit_forum_post_hint :161, ds5_emit_forum_moderation_hint :188. `admin_force_logout` (`20260801190000:399`) emits NOTHING today (verified at the ADM-E walk).
+
+### 8. Caveats (agent-flagged)
+(a) The 48-permission total derives from DML reading, not a live-DB count — verify live at spec time. (b) FEAT-PC0xx docs not opened (non-authoritative). (c) hub-legacy/ not swept. (d) `03_group_templates.sql` row inventory not enumerated — pull it if ADM-17's scope touches group templates.
+
+## Hub fact sheet (delegated walk, verbatim)
+
+### 1. How roles render (FEAT-H014)
+`components/groups/RolesPanel.tsx` (GRP-6); role cards :113-119. Template vs custom = nullable `RoleEntry.created_from_role_template_id` (`lib/groups/queries.ts:184-193`); badge :118-128 ("Template"/"Custom"); delete suppressed for template-derived :146. Catalogue rides the payload: `RolesFabric.available_permissions: {name, category}[]` (queries.ts:201-207); viewer flags :195-199 — the Hub never computes permissions. Read: `get_group_roles()` RPC (queries.ts:251) via BFF `GET /api/groups/[id]/roles` composing fabric + `get_role_templates()` in one Promise.all → `{fabric, templates}` (route.ts:38-45); `RoleTemplateOption {id,name,description}` (queries.ts:209-213). Grant idiom: `grant-toggle-${p.name}` checkboxes → `setGroupRolePermission` → `onMutated()` full re-read (RolesPanel.tsx:39-47, 180-190); create via AddRoleForm, mode 'custom' | template id (:265-266). Assign/remove lives in `GroupDetailPanel.tsx` (chips :636-655; select :145-147; RPCs queries.ts:311-334).
+
+### 2. Admin precedent
+`app/admin/` = page.tsx, audit/, groups/(+[id]), members/(+[id]), moderation/(+[id]). NO roles/templates admin surface (verified). Dashboard nav = 4 hardcoded cards (`AdminDashboard.tsx:173,183,195,215`) — a new `/admin/roles` needs a 5th. 9 components in components/admin/ incl. StatTile.tsx.
+
+### 3. WA-2 surface target
+`components/admin/AdminAuditLog.tsx`: `<ul>/<li>` rows (:216-235), testid `admin-audit-row-${r.id}`; timestamp :219-221, action mono :223, `{r.actor_display_name ?? '—'}` :224, **`{r.target}` truncate mono :225**. Metadata idiom: native `<details><summary>` + `<pre>{JSON.stringify}` (:227-233), rendered only when keys exist. `AdminAuditRow.target: string` (lib/admin/audit.ts:10-19) — opaque, no kind/id split (contrast lib/admin/reports.ts:15-17). The pattern to mirror: actor resolution is server-side on the payload (audit.ts:29-40) — target resolution rides the contract, never a client join.
+
+### 4. WA-4 verification — no Hub change expected, with one constraint
+Subscription `lib/auth/session-guard.ts:145-158`: `.channel('account:${userId}:sessions', {config:{private:true}}).on('broadcast', {event:'session_revoked'})`; `realtime.setAuth(access_token)` first (:143). APP-WIDE: `useSessionGuard` at `lib/auth/AuthContext.tsx:270`, AuthProvider wraps root layout (app/layout.tsx:25); comment :265-269 states it ("Runs on EVERY page"). On signal: `payload.session_id === ownSessionId` → `validateSession('hint')` (:148-152) → `supabase.auth.getUser()`; on session refusal emits `sessions.guard_signed_out`, `signOut({scope:'local'})` (the W-05 blast-radius guard) + `replaceLocation('/login')` (:105-114); inconclusive errors non-destructive (:116-133); non-matching session_id nudges an open /sessions page (SESSIONS_CHANGED_EVENT :36). **Constraints:** the guard is armed only for `identity === 'fim'` with a live session (:91-93), and it keys on session_id — the admin amendment must broadcast ONE hint PER SESSION ID (or the focus/interval fallback catches it late).
+
+### 5. Next free Hub feature ID
+FEAT-H040 (highest existing FEAT-H039; contiguous listing).
+
+---
+
+*Compiled 2026-08-04 at the ADM-E close (session 5); the walks ran delegated with canonical-wins discipline. Bridge: `2026-08-04_01`.*
