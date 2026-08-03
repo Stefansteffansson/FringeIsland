@@ -3,7 +3,7 @@
 ---
 id: TASK-HYGA-02
 title: Implement FEAT-H038 — suspension integrity and state honesty
-status: in_progress
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H038
@@ -20,12 +20,12 @@ The Hub half of cycle HYG-A — the walk's fix family: W-9 user-scoped `hub.admi
 
 ## Acceptance criteria
 
-- [ ] All H038 stories green; each W-fix has a red-first unit pin.
-- [ ] Account E2E journey automates the walk scenario: suspend → in-session wall (no hard reload) → explicit exit → sign-in-as-other lands in the normal app.
-- [ ] Group E2E journey automates the two-mode model: steward rest → member read-only + holder exemption → steward wake → admin suspend → shell (no content leak, no leave) → admin reactivate.
-- [ ] Revalidation never blocks navigation; wall renders on confirmed state only (no flash).
-- [ ] Token + axe gates green; `next build` green (the type gate); leak delta 0.
-- [ ] STORY-1..4 may build ahead of the PC023 apply; STORY-5 lands only post-apply (needs the status key + typed refusal live).
+- [x] All H038 stories green; each W-fix has a red-first unit pin.
+- [x] Account E2E journey automates the walk scenario: suspend → in-session wall (no hard reload) → explicit exit → sign-in-as-other lands in the normal app.
+- [x] Group E2E journey automates the two-mode model: steward rest → member read-only + holder exemption → steward wake → admin suspend → shell (no content leak, no leave) → admin reactivate.
+- [x] Revalidation never blocks navigation; wall renders on confirmed state only (no flash).
+- [x] Token + axe gates green; `next build` green (the type gate); leak delta 0.
+- [x] STORY-1..4 may build ahead of the PC023 apply; STORY-5 lands only post-apply (needs the status key + typed refusal live). *(Honoured: tranche 1 built 2026-08-03 pre-apply; tranche 2 landed post-apply the same day.)*
 
 ## Technical notes
 
