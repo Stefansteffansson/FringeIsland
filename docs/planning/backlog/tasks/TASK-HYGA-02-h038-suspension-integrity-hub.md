@@ -16,12 +16,13 @@ estimated_hours: 6
 
 ## Description
 
-The Hub half of cycle HYG-A — the walk's fix family: W-9 user-scoped `hub.adminEntry` with a registered invalidator, W-10 explicit wall exit (copy + sign-out-then-navigate), W-8 typed mapping in the profile BFF route (the announcements idiom), W-7 in-session account-state revalidation (soft-nav + focus/visibility, throttled, + exported refusal-triggered re-check), and the W-3 surface half (suspended chip on the groups list; `'group is suspended'` refusal copy through the existing mappers).
+The Hub half of cycle HYG-A — the walk's fix family: W-9 user-scoped `hub.adminEntry` with a registered invalidator, W-10 explicit wall exit (copy + sign-out-then-navigate), W-8 typed mapping in the profile BFF route (the announcements idiom), W-7 in-session account-state revalidation (soft-nav + focus/visibility, throttled, + exported refusal-triggered re-check), and the two-mode W-3 surface half: status labels wherever groups render, suspended groups read-only for non-exempt members with the normal surface for exemption-holding stewards (capability-flag driven), the off-line found-but-that's-it shell (no content, no actions, no leave), honest refusal copy through the existing mappers, and the admin hold ceremony's mode choice (STORY-6; dated pointer on FEAT-H035 at build).
 
 ## Acceptance criteria
 
-- [ ] All six H038 stories green; each W-fix has a red-first unit pin.
-- [ ] E2E journey automates the walk scenario: suspend → in-session wall (no hard reload) → explicit exit → sign-in-as-other lands in the normal app.
+- [ ] All H038 stories green; each W-fix has a red-first unit pin.
+- [ ] Account E2E journey automates the walk scenario: suspend → in-session wall (no hard reload) → explicit exit → sign-in-as-other lands in the normal app.
+- [ ] Group E2E journey automates the two-mode model: suspend → member read-only + steward exemption → take off-line → shell (no content leak, no leave) → reactivate.
 - [ ] Revalidation never blocks navigation; wall renders on confirmed state only (no flash).
 - [ ] Token + axe gates green; `next build` green (the type gate); leak delta 0.
 - [ ] STORY-1..4 may build ahead of the PC023 apply; STORY-5 lands only post-apply (needs the status key + typed refusal live).

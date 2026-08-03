@@ -18,11 +18,11 @@ Stefan's live walk (2026-08-02→03) found the suspension family honest at the s
 2. **W-8 — refusals are honest but mute.** `hub/app/api/profile/me/route.ts:81-89` collapses everything non-validation to a generic 500 `"Failed to update profile"` — the typed SQLSTATE from `update_own_profile` (`hub/lib/profile/queries.ts:187-188` throws it intact) dies at `:88`. Five sibling BFF libs already have the mapping idiom (`hub/lib/announcements/http.ts:11-27` et al.); this route predates it.
 3. **W-9 — `hub.adminEntry` bleeds across users, bidirectionally (photographed).** `hub/components/shell/AccountMenu.tsx:30-55` caches the admin-entry probe verdict in sessionStorage keyed by nothing, inline in the component — the one cache that escaped the cache-registry sweep (`hub/lib/auth/cache-registry.ts`) because it doesn't live in a `lib/*/client.ts` module. Never invalidated on sign-out, sign-in, grant, or revoke.
 4. **W-10 — the suspended wall's exit is findable only by luck.** `app/layout.tsx:34-36` wraps every route in `AccountStateGate` with no allowlist, so `/login` bounces to the wall; the wall's Sign-out button (`AccountStateGate.tsx:17,27` → bare `signOut`) ends the session but never navigates — the member stays parked on the wall's URL, and the button reads as part of the error.
-5. **W-3's surface half.** The paired FEAT-PC023 gives suspension teeth; the Hub must render them — the suspended chip is impossible on the groups list today (`get_member_groups` carries no status until PC023's additive key), and the new typed refusal must reach member copy.
+5. **W-3's surface half, now two-mode.** The paired FEAT-PC023 gives suspension teeth in two states (`suspended` — the visible hold; `offline` — the hard hold; the RB-6/RB-7 amendment). The Hub must render both: the status chip is impossible on the groups list today (`get_member_groups` carries no status until PC023's additive key), an off-line group needs a found-but-that's-it shell instead of its content, suspended-group affordances must split by the exemption permission, and the typed refusals must reach member copy.
 
 ## Solution sketch
 
-Extend house patterns, never invent: the cache-registry idiom for W-9, the `mapAnnouncementError` idiom for W-8, the `AccountMenu` sign-out-then-navigate idiom for W-10, and `AccountStateContext` grows the revalidation it was built to hold for W-7 (soft-nav + visibility/focus, throttled, plus an exported refusal-triggered re-check). W-3 surfacing rides the existing BFF mappers and the list chip consumes PC023's new key.
+Extend house patterns, never invent: the cache-registry idiom for W-9, the `mapAnnouncementError` idiom for W-8, the `AccountMenu` sign-out-then-navigate idiom for W-10, and `AccountStateContext` grows the revalidation it was built to hold for W-7 (soft-nav + visibility/focus, throttled, plus an exported refusal-triggered re-check). W-3 surfacing rides the existing BFF mappers, and the status chip consumes PC023's new key in both modes: an off-line group renders a minimal shell (name + "Off-line" label, no content, no actions) from the minimal payload, while a suspended group renders by capability — steward-permission holders get the normal working surface, everyone else read-only with honest copy. The admin ceremony's mode choice rides here as STORY-6 (H035's surface, dated pointer at build).
 
 ## Appetite
 
@@ -37,6 +37,7 @@ The Hub half of cycle HYG-A, alongside FEAT-PC023. Five small, independent fixes
 ## No-gos
 
 - No sanction notifications (Eid, DB-4) — W-7 fixes staleness, not the missing bell.
+- No member-facing explanation of an off-line group's reason — the shell says the state, never the why (Eid, with the sanction-communication family).
 - No realtime suspension push (the H035/H036 refresh-based no-go stands).
 - No admin-plane changes (ADM-E/ADM-F territory).
 
@@ -72,22 +73,31 @@ As the Hub, I want in-session account-state revalidation, so that a suspended me
 - Given a write refused 401/403, when the refusal is mapped at a wired path (the profile path and the group-write mappers this cycle), then the exported re-check fires and a confirmed off-state walls the session.
 - Given an active account, when revalidation runs, then navigation is never blocked and no visible flicker occurs (background check, confirmed-state rendering only).
 
-### STORY-5: Suspended-group honesty on member surfaces (W-3 surface half)
-As a member of a suspended group, I want every surface to say so and every refusal to explain itself, so that the freeze is legible.
+### STORY-5: Suspended and off-line groups render honestly (W-3 surface half, two-mode)
+As a member, I want a held group to say what it is and refuse legibly, so that both hold modes are legible.
 
 **Acceptance criteria:**
-- Given the groups list, when a group is suspended, then its row carries the suspended chip (consuming `get_member_groups.status`, PC023 STORY-7) — parity with the detail surface.
-- Given a group-context write in a suspended group (forum post, announcement, message, enrol), when PC023's typed refusal returns, then the surface renders honest member copy naming the suspension — never a generic failure (existing `http.ts` mappers extended with the `'group is suspended'` case).
+- Given the groups list (and every surface where groups normally render), when a group is suspended or off-line, then its row carries the matching label ("Suspended" / "Off-line" — consuming `get_member_groups.status`; the off-line label copy is provisional per the amendment).
+- Given a suspended group, when a member without the exemption permission opens it, then content renders read-only with write affordances absent-or-refusing; when an exemption-holding steward opens it, then the normal working surface renders (capability-flag driven, never role-name driven).
+- Given a suspended group, when a non-exempt member's write reaches the contract anyway, then the typed refusal surfaces as honest member copy naming the suspension — never a generic failure (existing `http.ts` mappers extended).
+- Given an off-line group, when any member — steward included — opens it or deep-links into its content, then the found-but-that's-it shell renders (name + "Off-line" label, no content, no actions, not even leave) and no content leaks.
 
-### STORY-6: Wired, gated, observable
+### STORY-6: The admin ceremony chooses the mode
+As a platform admin, I want the hold ceremony to offer both modes and move groups between all three states, so that the model is operable.
+
+**Acceptance criteria:**
+- Given the group admin detail, when I open the hold ceremony, then I choose Suspend or Take off-line, the ConfirmModal names each mode's consequences honestly, and the resulting state renders on the admin surfaces.
+- Given a held group in either mode, when I reactivate (or move suspended ↔ off-line), then the transition lands, is audited platform-side, and the member surfaces reflect it on their next read. (H035's surface — dated pointer added to FEAT-H035 at build.)
+
+### STORY-7: Wired, gated, observable
 As the Hub, I want the family under the standing gates, so that the fixes stay fixed.
 
 **Acceptance criteria:**
-- Given the cycle's tests, when the suites run, then each W-fix has a red-first unit pin and the E2E journey covers suspend → in-session wall → explicit exit → sign-in-as-other (the walk's scenario, automated); token + axe green; `next build` green.
+- Given the cycle's tests, when the suites run, then each W-fix has a red-first unit pin; the account E2E journey covers suspend → in-session wall → explicit exit → sign-in-as-other (the walk's scenario, automated); the group E2E journey covers suspend → member read-only + steward exemption → take off-line → shell → reactivate; token + axe green; `next build` green.
 
 ## Platform dependencies
 
-FEAT-PC023 (paired): the typed refusal contract + canonical message, and the `get_member_groups.status` key (STORY-5 consumes both). STORY-1..4 have no platform dependency and can build ahead of the gate.
+FEAT-PC023 (paired): the two-mode status on `get_member_groups`, the off-line minimal-detail payload, the typed refusal contracts + canonical messages, the steward-exemption permission semantics, and the availability ceremonies (STORY-5/6 consume all of it). STORY-1..4 have no platform dependency and can build ahead of the gate.
 
 ## Cross-product impact
 
@@ -97,7 +107,7 @@ None outward. The Gimbal inherits the enforcement substrate by construction; sta
 
 - **Privacy/GDPR:** No new data collected. W-9's fix removes a minor cross-user state disclosure (another user's admin-entry verdict).
 - **Notifications:** None (the Eid deferral pointer stands).
-- **Administration:** None — admin surfaces untouched; the family makes admin ceremonies legible member-side.
+- **Administration:** The hold ceremony gains the mode choice (STORY-6, H035's surface carried here with a dated pointer); every availability transition audited platform-side; the rest of the family makes admin ceremonies legible member-side.
 - **Observability:** Refusal-surfacing paths keep their BFF telemetry mirror; the revalidation re-check emits no new durable events (Q2 criteria — no consumer).
 - **Transactions:** None.
 - **Extensibility:** The refusal-copy mapping keys on SQLSTATE + canonical message, open to new cases; no sealed lists.
