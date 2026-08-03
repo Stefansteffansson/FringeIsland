@@ -206,7 +206,7 @@ Groups are the primary social container per DESCRIPTION.md. The Hub lets a membe
 | GRP-2 | Edit group settings (name, description, branding) | A-GRP | GRP-1 | PC-3 | What do I want? | 1+Community | V1, V4 |
 | GRP-3 | Configure group visibility and member-list visibility independently | A-GRP | GRP-1 | PC-3 | What do I want? | 1+Community | V2, V4 |
 | GRP-4 | Render member's group list and group detail view | A-GRP | IDN-3 | PC-3, DS-3 (enrolment summary in detail view) | Who am I?, What do I want? | 1+Community | V2, V4 |
-| GRP-5 | Display group lifecycle status (active / closed / archived / suspended) | A-GRP | GRP-1 | PC-3 | What do I want? | 1+Community | V4 |
+| GRP-5 | Display group lifecycle status (active / resting / suspended / closed / archived — two-mode holds per FEAT-PC023, 2026-08-03) | A-GRP | GRP-1 | PC-3 | What do I want? | 1+Community | V4 |
 | GRP-6 | Apply foundational role templates and define custom roles within a group | A-GRP | GRP-1 | PC-3 | What do I want? | 1+Community | V1, V4 |
 | GRP-7 | Manage member roles (assign / remove / change) | A-GRP | GRP-1, GRP-6 | PC-3 | What do I want? | 1+1, 1+Community | V1, V3, V4 |
 | GRP-8 | Render "act as" context selector and effective permissions for the current actor | A-GRP | GRP-4 | PC-3 (canonical permission resolution) | Who am I?, How do I get there? | 1, 1+Community | V4 |

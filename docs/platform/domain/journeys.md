@@ -241,6 +241,8 @@ Whether any DS-3 row falls inside the active wave's scope is a wave-planning det
 
 ### Summary
 
+**Availability-guard amendment (2026-08-03, [FEAT-PC023](../core/features/FEAT-PC023-group-suspension-enforcement-contracts.md) / Cycle HYG-A):** the DS-3 group-facing write doors (`enroll_self_in_journey`'s group arm, `enroll_group_in_journey`, and the step doors `enter_journey_step` / `complete_journey_step` / `save_step_response` for group enrolments) were re-issued with the mode-aware `assert_group_writable()` guard — a held group's writes refuse typed (`P0001` `'group is resting'` / `'group is suspended'`; `rest_group` holders exempt while resting), and `get_my_enrollments` gained the additive `group_status` key. Ownership unchanged (the functions keep their DS-3 owners); the guard's semantics, door dispositions, and journey-door anchors live with FEAT-PC023 — this file deliberately does not restate them.
+
 | Capability (from §L3) | Feature spec | Maturity | Notes |
 |---|---|---|---|
 | Journey registry & route types (read side) · Enrolment lifecycle | [FEAT-PD002](./features/FEAT-PD002-journey-catalogue-and-enrolment-contracts.md) — journey catalogue & enrolment contracts | 6-done | Built Cycle J-A 2026-07-07 — ([Journeys completion plan](../../planning/hub-v2/phase-3-journeys-completion-plan.md)); catalog/detail/my-enrolments reads, self- + group-enrolment, withdraw, the group enrolment-summary read, write-narrowing. Pairs with Hub [FEAT-H019](../../products/hub/features/FEAT-H019-journey-catalogue-and-enrolment.md). Route-type registry-ization deliberately deferred to the ADR-U044 pattern at a later FEAT-PD |

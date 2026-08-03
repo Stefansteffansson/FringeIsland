@@ -141,7 +141,7 @@ The split internally is between group-shape (GRP-1..GRP-9) and member-lifecycle 
 | GRP-2 | Edit group settings (name, description, branding) | Current | WDIW |
 | GRP-3 | Configure group visibility and member-list visibility independently | Current | WDIW |
 | GRP-4 | Render member's group list and group detail view | Current | WAI · WDIW |
-| GRP-5 | Display group lifecycle status (active / closed / archived / suspended) | Current | WDIW |
+| GRP-5 | Display group lifecycle status (active / resting / suspended / closed / archived) | Current | WDIW |
 | GRP-6 | Apply foundational role templates and define custom roles | Current | WDIW |
 | GRP-7 | Manage member roles (assign / remove / change) | Current | WDIW |
 | GRP-8 | Render "act as" context selector and effective permissions | Current | WAI · HDGT |
