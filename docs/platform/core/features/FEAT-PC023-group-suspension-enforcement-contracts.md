@@ -6,7 +6,7 @@ title: Group availability enforcement contracts (resting + suspended)
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
@@ -184,6 +184,16 @@ The Hub half is FEAT-H038 (paired; carries the steward Rest/Wake control and the
 ## Performance budget
 
 N/A (no surface). The guard is one indexed row read plus, on the resting arm only, one `has_permission()` call per write (`idx_groups_status_active`); the read-policy arms add one status predicate per row — the gate's ADR-U043 pass (dual signal) verifies no surface regression.
+
+## Implementation notes (platform half built 2026-08-03, Cycle HYG-A — held at the schema gate)
+
+- **Red-first:** gate suite `hub/tests/integration/groups/group-availability-enforcement.test.ts` (117 cells), demonstrated at head 2026-08-03: **100 failed / 17 passed** — the 17 greens are exactly the labelled set: the already-guarded seven (`close_group`, `delete_group`, `hand_stewardship_to_deusex`, `invite_group`, `enroll_group_in_journey`, `nominate_steward`, `respond_to_stewardship_nomination`) + the invariant pins (DM-stays-live ×2, admin full-detail read, anon zero-rows ×2, active-control ×2, the grp_insert continuity pin, bootstrap-accept). The W-3 class demonstrated live at head: every frozen door **succeeded** against a suspended group.
+- **The enumeration settled at build (the spec's ~28 resolves):** 26 guard-frozen doors · 10 exit-family amendments (suspended-refusal only) · 12 read-door amendments · the seven already guarded · `leave_group` the 8th status-checker (the trap, amended). Door-by-door dispositions with anchors are in the migration header (`20260803190000`).
+- **Contract surface recorded for FEAT-H038:** refusal strings `'group is resting'` / `'group is suspended'` (P0001); `get_member_groups.status` (additive column, `RETURNS TABLE` forced drop+recreate+re-grant); `get_my_enrollments` group-arm rows carry **`group_status`** (key name fixed here); the suspended `get_group_detail` minimal payload is exactly `{id, name, status}`.
+- **Build resolutions (judgment calls the spec left open, each recorded):** `enroll_self_in_journey` anchors on `v_journey.created_by_group_id` with the Mist-onboarding designation branch left unwalled (ADR-U045 Amendment 1); step doors anchor on `v_enr.group_id` unconditionally (personal walks anchor on a personal group — never suspendable, `admin_suspend_group` is engagement-only); `send_message` guards only group-kind conversations via a new `v_hold_group` lookup (DMs pair-grain, the recorded verdict); `retract_announcement` guards its community branch only (the platform branch is the admin plane); exits carry an `is_platform_admin` bypass arm matching the guard's; `mark_conversation_read`-class bookkeeping left unguarded (the `is_conversation_participant` chokepoint already closes suspended conversations); `get_group_memberships_of` left untouched (it lists the acting group's own contexts — a listing, not content; the roster quarantine lands via the minimal payload, verified: no standalone Hub members route exists).
+- **Ownership manifest untouched-correctly:** the five new functions (`assert_group_writable`, `rest_group`, `wake_group`, `admin_rest_group`, `admin_wake_group`) resolve to CORE via `functionOwner()`'s fail-closed default; every re-issued DS-3/DS-5 function keeps its explicit owner; signatures byte-identical (COR-A pattern).
+- **Live-DB facts at authoring (2026-08-03):** 14 write policies live on the four legacy tables (the dossier's "13" was one under — `gm_delete_admin`/`ugr_delete_admin`/`ugr_insert_admin` vestigial admin-plane rows included in the drop; STORY-10's "zero write paths" is the binding claim); full INSERT/UPDATE/DELETE grants live for authenticated AND anon (revoked); zero relic held groups (the apply precondition already holds).
+- **Sibling-assertion sweep:** run pre-gate, zero invalidated; the deliberately-left set is named in the migration header.
 
 ## Sibling-assertion sweep (mandatory at the gate)
 
