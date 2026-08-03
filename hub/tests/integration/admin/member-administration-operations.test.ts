@@ -328,6 +328,16 @@ describe('FEAT-PC021 gate 2 — member administration operations family (ADM-3/4
             AND target IN (${targetIds.map((t) => `'${t}'`).join(', ')});`,
       ).catch(() => undefined);
     }
+    // HYG-A found-not-caused fix: hild's journey is owned by her PERSONAL
+    // group, so cleanupTestGroup (which sweeps created engagement groups)
+    // never reached it — one zero-step relic per run accumulated since
+    // 2026-08-01 and tripped PD003's global step invariant at the next FULL
+    // sweep (2026-08-03). Fixture debris cleans itself.
+    if (hildJourneyId) {
+      await runAdminSql(`DELETE FROM public.journeys WHERE id = '${hildJourneyId}';`).catch(
+        () => undefined,
+      );
+    }
     for (const gid of createdGroupIds) {
       await cleanupTestGroup(gid).catch(() => undefined);
     }

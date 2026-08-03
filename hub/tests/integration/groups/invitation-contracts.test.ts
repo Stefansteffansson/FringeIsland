@@ -921,7 +921,12 @@ describe('FEAT-PC012 — group invitation & joining contracts (G-C)', () => {
       expect(insErr).not.toBeNull();
     });
 
-    it('direct self-accept and self-decline remain RLS-permitted (substrate-consistent — the contracts compose them)', async () => {
+    it('direct self-accept is refused at the grant layer (ADAPTED for FEAT-PC023 STORY-10: the legacy write doors closed — accept_group_invitation is the only path)', async () => {
+      // Pre-PC023 this cell pinned the OPPOSITE: memberships_update_accept
+      // deliberately RLS-permitted the self-accept. The 20260803190000 closure
+      // dropped the policy and revoked the write grants, so the direct path
+      // now refuses 42501 and the SECURITY DEFINER contract is the one door
+      // (its own cells above prove it still lands memberships).
       const c = await asUser(invitee2);
       const { error } = await c
         .from('group_memberships')
@@ -930,7 +935,14 @@ describe('FEAT-PC012 — group invitation & joining contracts (G-C)', () => {
         .eq('member_group_id', invitee2.personalGroupId)
         .select()
         .single();
-      expect(error).toBeNull();
+      expect(error?.code).toBe('42501'); // permission denied for table
+      const { data: still } = await admin
+        .from('group_memberships')
+        .select('status')
+        .eq('group_id', groupId)
+        .eq('member_group_id', invitee2.personalGroupId)
+        .single();
+      expect(still?.status).toBe('invited');
     });
   });
 });
