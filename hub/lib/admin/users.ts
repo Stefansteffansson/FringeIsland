@@ -45,44 +45,74 @@ const throwTyped = (error: { code?: string; message?: string }): never => {
   throw new AdminUsersError(error.code ?? 'unknown', error.message ?? 'unknown error');
 };
 
-export async function fetchAdminUsers(
+export type AdminUsersPage = {
+  users: AdminUserRow[];
+  next_cursor: { name: string; id: string } | null;
+  generated_at: string;
+};
+
+// The Hub-fixed page size (FEAT-H039; the contract caps at 200).
+const PAGE_SIZE = 50;
+
+export async function fetchAdminUsersPage(
   client: SupabaseClient,
-  filter: string,
-): Promise<{ users: AdminUserRow[] | null; refused: boolean }> {
-  // PC024 transition shim (FEAT-H039 tranche 1): tolerant of BOTH live
-  // contract shapes across the 20260803210000 apply — the pre-PC024 jsonb
-  // array, and the PC024 keyed page {users, next_cursor, generated_at},
-  // walked to exhaustion so the surface stays byte-identical. The FIRST call
-  // must stay old-signature-compatible (p_filter only) or the pre-apply
-  // function refuses it. Replaced by true paging in tranche 2 (TASK-ADME-02).
-  const all: AdminUserRow[] = [];
-  let cursor: { name: string; id: string } | null = null;
-  let hops = 0;
-  do {
-    const args: Record<string, unknown> = { p_filter: filter };
-    if (cursor) {
-      args.p_limit = 200;
-      args.p_after_name = cursor.name;
-      args.p_after_id = cursor.id;
+  opts: {
+    filter: string;
+    search?: string | null;
+    afterName?: string | null;
+    afterId?: string | null;
+  },
+): Promise<{ page: AdminUsersPage | null; refused: boolean }> {
+  // FEAT-PC024 (20260803210000): one bounded page — composite keyset, server
+  // search. The tranche-1 census-walking shim is retired; this is the only
+  // shape.
+  const args: Record<string, unknown> = { p_filter: opts.filter, p_limit: PAGE_SIZE };
+  if (opts.search != null && opts.search !== '') args.p_search = opts.search;
+  if (opts.afterName != null && opts.afterId != null) {
+    args.p_after_name = opts.afterName;
+    args.p_after_id = opts.afterId;
+  }
+  const { data, error } = await client.rpc('admin_get_users', args);
+  if (error) {
+    if (error.code === '42501') return { page: null, refused: true };
+    return throwTyped(error);
+  }
+  return { page: data as AdminUsersPage, refused: false };
+}
+
+export type BulkAction = 'suspend' | 'reactivate' | 'force-logout';
+export type BulkRowOutcome = { id: string; ok: boolean; error?: string };
+
+/**
+ * RB-2 bulk mechanics, verbatim: the BFF loops the proven single contracts —
+ * SERIAL in the given order (FOR UPDATE calm, deterministic outcomes), a
+ * refusal never aborts the loop (partial success is honest, per-row), and
+ * force-logout calls the array contract ONE id per call so its per-call audit
+ * row becomes a per-member row (the batch shape at 20260801190000:432-434 is
+ * deliberately unused). 42501 propagates whole-call — the caller is not an
+ * admin, and the route existence-hides.
+ */
+export async function bulkAdminUserAction(
+  client: SupabaseClient,
+  action: BulkAction,
+  userIds: string[],
+): Promise<BulkRowOutcome[]> {
+  const outcomes: BulkRowOutcome[] = [];
+  for (const id of userIds) {
+    try {
+      if (action === 'suspend') await suspendAdminUser(client, id);
+      else if (action === 'reactivate') await reactivateAdminUser(client, id);
+      else await forceLogoutAdminUser(client, id);
+      outcomes.push({ id, ok: true });
+    } catch (err) {
+      if (err instanceof AdminUsersError && err.code !== '42501') {
+        outcomes.push({ id, ok: false, error: err.message });
+        continue;
+      }
+      throw err;
     }
-    const { data, error } = await client.rpc('admin_get_users', args);
-    if (error) {
-      if (error.code === '42501') return { users: null, refused: true };
-      return throwTyped(error);
-    }
-    if (Array.isArray(data)) {
-      // pre-PC024 array contract — the whole census in one response
-      return { users: data as AdminUserRow[], refused: false };
-    }
-    const page = data as {
-      users: AdminUserRow[] | null;
-      next_cursor: { name: string; id: string } | null;
-    };
-    all.push(...(page.users ?? []));
-    cursor = page.next_cursor ?? null;
-    hops += 1;
-  } while (cursor !== null && hops < 60);
-  return { users: all, refused: false };
+  }
+  return outcomes;
 }
 
 export async function fetchAdminUserDetail(

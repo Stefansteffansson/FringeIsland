@@ -6,7 +6,7 @@ title: Bulk member actions and the bounded list — server-paged + server-search
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -95,3 +95,12 @@ Gimbal inherits the contracts, not the shell. Member-facing surfaces untouched �
 - **First-paint class:** B2/B3 for `/admin/members` — justified standalone read (admin-only, ADR-U042 guardrail 3); the page-one payload replaces the ~300 KB full census.
 - **Interaction class:** checkbox/select-page/pager/search feedback within 100 ms (B5); search debounced ~300 ms then server round-trip with busy state; bulk runs disable-with-progress for the loop's duration (up to 50 serial RPCs — progress feedback, never a frozen UI).
 - **Loading states:** skeleton rows on page loads (B6); the outcome panel renders incrementally-complete results, not a spinner.
+
+## Implementation notes (built 2026-08-03, Cycle ADM-E)
+
+- **Closed 6-done 2026-08-03, built in two tranches around the PC024 schema gate:**
+  - **Tranche 1 (pre-apply, PR #400):** the shape-tolerant page-walking shim in `fetchAdminUsers` (making the apply order-independent), `ConfirmModal.message` widened `string` → `ReactNode` (message container `<p>` → `<div>` so block content is legal; string callers pinned unchanged), and the W-4 email echo across all nine member ceremonies via one `who` helper in `AdminMemberDetail`. Red-first: **11 red at head** (9 W-4 cells scoped *within* the modal — a bare `getByText` would false-green on the identity subhead — plus 2 keyed-shim cells); the ReactNode render cells labelled designed-green (ts-jest doesn't type-check; `next build` is the type gate and gates the widening).
+  - **Tranche 2 (post-apply):** `AdminMembersList` reworked to the bounded shape — `fetchAdminUsersPage` (Hub-fixed page size 50) + `bulkAdminUserAction` in `lib/admin/users.ts` (the shim retired with its suite, replaced by `users-page-and-bulk.test.ts`), the manual-encoded query string (URLSearchParams' `+`-for-space breaks cursor names), a debounced (300 ms) server search applied through a ref (pure updaters — StrictMode double-invoke discipline), Prev via a client cursor stack, As-of/Refresh from `generated_at`, selection as an insertion-ordered array (the confirm roster and POST body preserve click order), and the three bulk routes. Red-first: **19 red at head** across the reworked list suite + the lib suite.
+- **The route-policy gate caught the thin-delegate shape at first contact:** the conformance test statically requires `getUser()` visible in each mutating route file — the bulk routes restructured to authenticate in-file and hand the verified actor to the shared `handleBulkAuthed` (`lib/admin/bulk-route.ts`); zero exception entries, the gate's intent honored rather than excepted.
+- **Gates at close:** unit **1221/1221** (156 suites) · lint 0 errors · `next build` green · route-policy + outer-ring zero exceptions · E2E journey `admin-bulk-members.spec.ts` **4/4** (server search isolates fixtures → bulk suspend with the designed already-suspended refusal rendered verbatim + per-member audit rows asserted through the service-role client (the E2E `runAdminSql` helper is void — result-reading assertions go through `createAdminClient`, a harness lesson) → bulk reactivate → bulk force sign-out with per-member `metadata.target_user_ids` containment proofs).
+- **Performance:** no first-paint request added or rerouted — the same single list read now carries one bounded page (~50 rows) instead of the ~300 KB census, the W-5 stall's structural fix; interactions stay B5-class; no deep-cold spot measurement owed (the HYG-A precedent), the payload reduction recorded here as the measured win.

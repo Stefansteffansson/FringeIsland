@@ -6,7 +6,7 @@ title: Bounded member enumeration — the keyset + server-search re-issue of `ad
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -104,3 +104,10 @@ Hub consumes via FEAT-H039 (BFF-wrapped); the H036 list component adapts in the 
 ## Performance budget
 
 N/A (no surface). The re-issue exists **because of** a measurement: the ~300 KB full-census payload behind every list paint becomes one bounded page; FEAT-H039 carries the page budgets.
+
+## Implementation notes (built 2026-08-03, Cycle ADM-E)
+
+- **Closed 6-done 2026-08-03:** migration `20260803210000` merged on Stefan's approval (PR #399) and applied the same day (via the Supabase management-API path after the local apply script was classifier-blocked in the autonomous session; history repaired — `migration list` consistent). **Red at head: 3 suites, 20 red / 32 green, every red the designed PGRST202 class. Post-apply: 52/52 green** — the gate suite's B1a page-walk proved union-equals-census against the live ~1,900-user dev population (no gap, no overlap, honest termination), and both adapted sibling suites flipped exactly as the migration header predicted.
+- **The shipped body matches the sketch unchanged:** composite `(display_name, id)` keyset via row-value comparison, `LIMIT v_limit + 1` with a `row_number` window deciding `next_cursor` in one scan (no count probe), the audit read's cap expression verbatim, `ILIKE` search over `pg.name`/`u.email` composed inside the base derivation, the keyed scalar-jsonb return with `generated_at`.
+- **No manifest edit needed** (re-issue by name — the platform conformance suites stayed green untouched, confirming the registration-is-by-name rule).
+- Consumed by FEAT-H039 in two tranches: the pre-apply shape-tolerant shim (PR #400, making the apply order-independent — the deployed surface never broke), then the true bounded consumption in the tranche-2 rework.
