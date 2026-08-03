@@ -3,7 +3,7 @@
 ---
 id: TASK-ADME-02
 title: Rework /admin/members to server paging + search with As-of/Refresh, add page-scoped selection and the three-action bulk family as BFF-looped singles with per-row outcomes, and sweep the W-4 email echo across every member ceremony
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H039
@@ -20,11 +20,11 @@ Build FEAT-H039 against the applied FEAT-PC024 read: the bounded list (pager + d
 
 ## Acceptance criteria
 
-- [ ] Unit suites demonstrated red pre-implementation for the reworked list (pager, server search, selection, As-of/Refresh), the bulk bar + ceremony + outcome panel, and the ConfirmModal `ReactNode` widening (string callers pinned unchanged); all green post-build; jest-axe clean on new states.
-- [ ] Three routes `POST /api/admin/users/bulk/{suspend|reactivate|force-logout}`: `getUser` auth, 50-id cap → 400, serial loop in selection order, per-row `{id, ok, error?}` with platform messages verbatim, 200 partial-success response, durable telemetry (action + requested + succeeded); route-policy + outer-ring gates zero exceptions.
-- [ ] Per-member audit rows asserted against the real contracts (one row per acted-on member; force-logout called one-id-per-call, never the batch shape).
-- [ ] Every detail-page ceremony confirm + the hard-delete panel + the bulk listing carries display name **and email** (W-4).
-- [ ] E2E journey per STORY-7 green; full unit sweep green; lint 0; `next build` green (the type gate).
+- [x] Unit suites demonstrated red pre-implementation for the reworked list (pager, server search, selection, As-of/Refresh), the bulk bar + ceremony + outcome panel, and the ConfirmModal `ReactNode` widening (string callers pinned unchanged); all green post-build; jest-axe clean on new states.
+- [x] Three routes `POST /api/admin/users/bulk/{suspend|reactivate|force-logout}`: `getUser` auth, 50-id cap → 400, serial loop in selection order, per-row `{id, ok, error?}` with platform messages verbatim, 200 partial-success response, durable telemetry (action + requested + succeeded); route-policy + outer-ring gates zero exceptions.
+- [x] Per-member audit rows asserted against the real contracts (one row per acted-on member; force-logout called one-id-per-call, never the batch shape).
+- [x] Every detail-page ceremony confirm + the hard-delete panel + the bulk listing carries display name **and email** (W-4).
+- [x] E2E journey per STORY-7 green; full unit sweep green; lint 0; `next build` green (the type gate).
 
 ## Technical notes
 

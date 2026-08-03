@@ -2,6 +2,13 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-03 — The members console: pages, real search, and acting on many at once ([FEAT-H039](../docs/products/hub/features/FEAT-H039-bulk-member-actions-and-bounded-list.md))
+
+- **The members list loads a page, not the whole platform.** `/admin/members` used to fetch every member (~1,900 rows) behind each paint; it now loads 50 at a time with Previous/Next, and shows *As of* with a Refresh button so you know how fresh what you're looking at is.
+- **Search asks the platform.** The search box used to narrow only the rows already fetched; it now searches every member by name or email, server-side.
+- **Act on several members at once.** Select members on the page (checkboxes; the selection deliberately never spans pages) and Suspend, Reactivate, or Force sign-out the whole selection. The confirmation lists every selected member by name **and email**, and the result reports each member separately — what succeeded, and the platform's exact words for anything refused. Partial success is reported honestly, never rolled together.
+- **Every member ceremony now names the email.** Suspend, reactivate, decommission, force sign-out, platform exit, remove-from-group, grant/revoke administrator, and hard delete all echo the member's email beside the display name — so acting on the wrong same-named member is a mistake the confirmation itself catches.
+
 ## 2026-08-03 — Suspension tells the truth while you're signed in, and a group can rest ([FEAT-H038](../docs/products/hub/features/FEAT-H038-suspension-integrity-and-state-honesty.md) · [FEAT-H035](../docs/products/hub/features/FEAT-H035-group-administration-view.md))
 
 - **If your account is suspended, you find out now — not at your next reload.** Suspension used to stay invisible until you happened to reload the page; you could keep browsing on stale "active" indefinitely. The session now re-checks your account state in the background as you move around, and a refused save demands the truth immediately — the suspension notice appears where you are, without a reload.

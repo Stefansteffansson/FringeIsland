@@ -3,7 +3,7 @@
 ---
 id: TASK-ADME-01
 title: Re-issue `admin_get_users` with composite keyset, server search, and the keyed return object; adapt every named sibling; hold the gate for named approval
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PC024
@@ -20,11 +20,11 @@ Build FEAT-PC024: one migration that DROPs and re-issues `public.admin_get_users
 
 ## Acceptance criteria
 
-- [ ] Gate suite covers STORY-1..4 (page-walk equivalence, cap/floor/default, incomplete-cursor 22023, search composition, preserved laws incl. Mist exclusion + `default` hides decommissioned + `42501 'platform administrator required'` + anon EXECUTE refused, direct-PostgREST shape honesty) — demonstrated red at head, green post-apply.
-- [ ] Migration header lists **every** assertion and consumer naming `admin_get_users` (PC021 gate-1 suite cells, `hub/lib/admin/users.ts`, the H036 list suite), each marked adapted or deliberately left (STORY-5).
-- [ ] Ordering stays `display_name, id`; return stays scalar jsonb (db-max-rows escape preserved); grants unchanged.
-- [ ] No manifest edit (re-issue by name — verify conformance suites stay green).
-- [ ] PR held at the gate with red evidence + `node scripts/apply-migration-temp.js` + `supabase-cli.sh migration repair` commands in the body.
+- [x] Gate suite covers STORY-1..4 (page-walk equivalence, cap/floor/default, incomplete-cursor 22023, search composition, preserved laws incl. Mist exclusion + `default` hides decommissioned + `42501 'platform administrator required'` + anon EXECUTE refused, direct-PostgREST shape honesty) — demonstrated red at head, green post-apply.
+- [x] Migration header lists **every** assertion and consumer naming `admin_get_users` (PC021 gate-1 suite cells, `hub/lib/admin/users.ts`, the H036 list suite), each marked adapted or deliberately left (STORY-5).
+- [x] Ordering stays `display_name, id`; return stays scalar jsonb (db-max-rows escape preserved); grants unchanged.
+- [x] No manifest edit (re-issue by name — verify conformance suites stay green).
+- [x] PR held at the gate with red evidence + `node scripts/apply-migration-temp.js` + `supabase-cli.sh migration repair` commands in the body.
 
 ## Technical notes
 
