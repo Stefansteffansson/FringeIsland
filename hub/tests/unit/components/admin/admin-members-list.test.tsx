@@ -270,12 +270,14 @@ describe('AdminMembersList — the bulk family (FEAT-H039 STORY-3/4/5)', () => {
   });
 
   it('reactivate and force sign-out post to their own routes', async () => {
-    for (const [testid, path] of [
-      ['bulk-reactivate', '/api/admin/users/bulk/reactivate'],
-      ['bulk-force-logout', '/api/admin/users/bulk/force-logout'],
+    // Per-action eligible fixtures (WA-1b): reactivate needs a held member.
+    const SUSPENDED_AXEL: Row = { ...AXEL, account_state: 'suspended' };
+    for (const [testid, path, fixture] of [
+      ['bulk-reactivate', '/api/admin/users/bulk/reactivate', SUSPENDED_AXEL],
+      ['bulk-force-logout', '/api/admin/users/bulk/force-logout', AXEL],
     ] as const) {
       fetchMock.mockReset();
-      fetchMock.mockResolvedValue(okPage([AXEL]));
+      fetchMock.mockResolvedValue(okPage([fixture]));
       const { unmount } = render(<AdminMembersList />);
       await screen.findByTestId(`admin-member-row-${AXEL.id}`);
       await selectRow(AXEL);
@@ -285,6 +287,57 @@ describe('AdminMembersList — the bulk family (FEAT-H039 STORY-3/4/5)', () => {
       await screen.findByTestId('bulk-outcomes');
       expect(urlsCalled().some((u) => u === path)).toBe(true);
       unmount();
+    }
+  });
+});
+
+/**
+ * WA-1(b) (ADM-E walk rider, Stefan's ruling 2026-08-04): a bulk action
+ * disables when NO selected member could accept it — the same payload-fact
+ * derivation the detail rail uses (suspend = active · reactivate = paused/
+ * suspended · force sign-out = non-terminal). Mixed selections stay fully
+ * enabled (RB-2 partial success untouched). WRITTEN RED-FIRST: at head the
+ * bar's buttons are never disabled.
+ */
+describe('AdminMembersList — WA-1(b): guaranteed-no-op bulk actions disable', () => {
+  const SUS = (r: Row): Row => ({ ...r, account_state: 'suspended' });
+
+  it('an all-suspended selection: Suspend disabled, Reactivate + Force sign-out enabled', async () => {
+    fetchMock.mockResolvedValue(okPage([SUS(AXEL), SUS(PIA)]));
+    render(<AdminMembersList />);
+    await screen.findByTestId(`admin-member-row-${AXEL.id}`);
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Select page' }));
+    expect(screen.getByTestId('bulk-suspend')).toBeDisabled();
+    expect(screen.getByTestId('bulk-reactivate')).toBeEnabled();
+    expect(screen.getByTestId('bulk-force-logout')).toBeEnabled();
+  });
+
+  it('a mixed selection keeps Suspend enabled — RB-2 partial success stands', async () => {
+    fetchMock.mockResolvedValue(okPage([AXEL, SUS(PIA)]));
+    render(<AdminMembersList />);
+    await screen.findByTestId(`admin-member-row-${AXEL.id}`);
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Select page' }));
+    expect(screen.getByTestId('bulk-suspend')).toBeEnabled();
+    expect(screen.getByTestId('bulk-reactivate')).toBeEnabled();
+  });
+
+  it('an all-active selection: Reactivate disabled, Suspend enabled', async () => {
+    fetchMock.mockResolvedValue(okPage([AXEL, ODA]));
+    render(<AdminMembersList />);
+    await screen.findByTestId(`admin-member-row-${AXEL.id}`);
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Select page' }));
+    expect(screen.getByTestId('bulk-reactivate')).toBeDisabled();
+    expect(screen.getByTestId('bulk-suspend')).toBeEnabled();
+  });
+
+  it('an all-decommissioned selection disables all three', async () => {
+    const DEC: Row = { ...AXEL, account_state: 'decommissioned' };
+    fetchMock.mockResolvedValue(okPage([DEC]));
+    render(<AdminMembersList />);
+    await screen.findByTestId(`admin-member-row-${AXEL.id}`);
+    await userEvent.click(screen.getByRole('checkbox', { name: `Select ${DEC.display_name}` }));
+    for (const id of ['bulk-suspend', 'bulk-reactivate', 'bulk-force-logout']) {
+      expect(screen.getByTestId(id)).toBeDisabled();
     }
   });
 });
