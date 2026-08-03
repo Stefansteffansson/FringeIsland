@@ -3,9 +3,31 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
 import { fetchProfile, displayLabel } from '@/lib/profile/client';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 import { Menu } from '@/components/ui/Menu';
+
+// FEAT-H038 STORY-1 (W-9): the admin-entry probe verdict is USER-SCOPED
+// (`hub.adminEntry:<user.id>`) and registered with the auth cache registry so
+// a sign-out drops every verdict — the unkeyed, never-invalidated cache let
+// one member's verdict render for the next (the photographed frame).
+const ADMIN_ENTRY_KEY_PREFIX = 'hub.adminEntry:';
+
+registerCacheInvalidator(() => {
+  try {
+    const doomed: string[] = [];
+    for (let i = 0; i < window.sessionStorage.length; i++) {
+      const key = window.sessionStorage.key(i);
+      if (key && (key === 'hub.adminEntry' || key.startsWith(ADMIN_ENTRY_KEY_PREFIX))) {
+        doomed.push(key);
+      }
+    }
+    for (const key of doomed) window.sessionStorage.removeItem(key);
+  } catch {
+    // No window / no sessionStorage: nothing cached, nothing to drop.
+  }
+});
 
 /**
  * FEAT-H005 — the shell account menu (IDN-4 entry + the IDN-3 sign-out tail).
@@ -27,18 +49,24 @@ export function AccountMenu() {
   // platform's own refusal on the admin read decides (never a role string);
   // probed lazily once per browser session and cached, so the shell costs
   // every member at most one extra request per session.
+  // FEAT-H038 STORY-1 (W-9): probe-per-session semantics, per USER — the
+  // verdict is cached under the caller's id (a grant/revoke answers correctly
+  // at the next session), the legacy unkeyed key is never read, and the
+  // registered invalidator above clears every verdict on auth change.
+  const userId = user?.id;
   useEffect(() => {
-    if (identity !== 'fim') return;
+    if (identity !== 'fim' || !userId) return;
     let active = true;
     // Cache and probe resolve through one promise so the state set lives in
     // the .then callback, never synchronously in the effect body
     // (react-hooks/set-state-in-effect).
+    const cacheKey = `${ADMIN_ENTRY_KEY_PREFIX}${userId}`;
     const resolveEntry = async (): Promise<boolean> => {
-      const cached = window.sessionStorage.getItem('hub.adminEntry');
+      const cached = window.sessionStorage.getItem(cacheKey);
       if (cached !== null) return cached === 'yes';
       const res = await fetch('/api/admin/statistics');
       const yes = res.ok;
-      window.sessionStorage.setItem('hub.adminEntry', yes ? 'yes' : 'no');
+      window.sessionStorage.setItem(cacheKey, yes ? 'yes' : 'no');
       return yes;
     };
     resolveEntry()
@@ -52,7 +80,7 @@ export function AccountMenu() {
     return () => {
       active = false;
     };
-  }, [identity]);
+  }, [identity, userId]);
 
   useEffect(() => {
     if (identity !== 'fim') return;

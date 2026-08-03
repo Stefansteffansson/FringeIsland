@@ -3,7 +3,7 @@
 ---
 id: TASK-HYGA-02
 title: Implement FEAT-H038 — suspension integrity and state honesty
-status: todo
+status: in_progress
 assigned_to: claude
 priority: high
 feature: FEAT-H038

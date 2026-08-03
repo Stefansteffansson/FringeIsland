@@ -12,6 +12,7 @@
 import type { Profile, ProfilePatch } from '@/lib/profile/queries';
 import { OverviewTransportError } from '@/lib/me/overview-shared';
 import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
+import { requestAccountStateRecheck } from '@/lib/account/AccountStateContext';
 
 async function errorMessage(res: Response, fallback: string): Promise<string> {
   const body = (await res.json().catch(() => null)) as { error?: string } | null;
@@ -85,6 +86,12 @@ export async function updateProfile(patch: ProfilePatch): Promise<Profile> {
     body: JSON.stringify(patch),
   });
   if (!res.ok) {
+    // FEAT-H038 STORY-4 (W-7): a 401/403 on a write suggests the session's
+    // account state is stale (suspension mid-session) — demand the truth now.
+    // The mapped message still surfaces at the form; this is a background check.
+    if (res.status === 401 || res.status === 403) {
+      requestAccountStateRecheck();
+    }
     throw new Error(await errorMessage(res, `Request failed (${res.status})`));
   }
   const data = (await res.json()) as { profile: Profile };
