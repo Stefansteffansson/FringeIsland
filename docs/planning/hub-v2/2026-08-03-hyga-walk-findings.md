@@ -54,3 +54,5 @@
 - **D (per-user admin-menu entry):** passed in both directions. One scenario-script correction recorded: the menu label is "Platform admin", not "Administration".
 
 End-state verified in the substrate at close: Gracy active, Walk Test active, no leftover holds; the audit trail carries the complete ceremony history. Directives WF-1 and WF-2 await slotting at the ADM-E kickoff.
+
+**Slotting settled 2026-08-03** (the ADM-E kickoff board, Stefan: "go with recommended"): **WF-2 → cycle ADM-G** (after ADM-F, **suspended groups only**); **WF-1 → cycle N-E** (after ADM-G, carrying the polish note as a rider); both ahead of AB-6 — see the [completion plan](./phase-3-platform-ops-completion-plan.md) §Decision board — WF slotting.
