@@ -43,3 +43,14 @@
 ---
 
 *Filed 2026-08-03 at the walk (session 4's follow-on); bridge: `2026-08-03_04`. The WF-2 substrate verification is recorded above so the future spec's dossier can start from it.*
+
+---
+
+## Walk verdict (2026-08-03, close of walk) — COMPLETE, all four scenarios passed
+
+- **A (Rest/Wake, member plane):** passed — invitation flow, the Rest ceremony, the Resting label, the read-only surface, holder exemption, Wake. (The invitation-UX observation became WF-1.)
+- **B (mode choice + the shell, both planes):** passed — admin Rest | Suspend choice, the member's sealed shell, Reactivate; audit rows verified for every ceremony. (The non-member-admin 404 on the member plane is the standing visibility law working; it became WF-2's trigger.)
+- **C (in-session suspension):** passed, several rounds — suspend → the wall arrives in-session → the explicit exit → sign-in-as-other lands clean; reactivate restores. The brief groups-flicker before the wall was walked, explained (the confirmed-state-only rule meeting the non-blocking-paint rule — only a suspended member ever sees it, and the substrate refuses their writes throughout), and **left as designed — no directive issued**.
+- **D (per-user admin-menu entry):** passed in both directions. One scenario-script correction recorded: the menu label is "Platform admin", not "Administration".
+
+End-state verified in the substrate at close: Gracy active, Walk Test active, no leftover holds; the audit trail carries the complete ceremony history. Directives WF-1 and WF-2 await slotting at the ADM-E kickoff.
