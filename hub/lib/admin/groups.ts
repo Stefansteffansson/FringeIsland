@@ -87,6 +87,21 @@ export async function suspendAdminGroup(client: SupabaseClient, groupId: string)
   if (error) throwTyped(error);
 }
 
+/** FEAT-H038 STORY-6 (FEAT-PC023): the admin rest ceremony — active → resting,
+ *  audited substrate-side (`group.rest`). */
+export async function restAdminGroup(client: SupabaseClient, groupId: string): Promise<void> {
+  const { error } = await client.rpc('admin_rest_group', { p_group_id: groupId });
+  if (error) throwTyped(error);
+}
+
+/** FEAT-H038 STORY-6 (FEAT-PC023): the admin wake ceremony — resting → active
+ *  only (suspended → active stays admin_reactivate_group's), audited
+ *  substrate-side (`group.wake`). */
+export async function wakeAdminGroup(client: SupabaseClient, groupId: string): Promise<void> {
+  const { error } = await client.rpc('admin_wake_group', { p_group_id: groupId });
+  if (error) throwTyped(error);
+}
+
 export async function reactivateAdminGroup(client: SupabaseClient, groupId: string): Promise<void> {
   const { error } = await client.rpc('admin_reactivate_group', { p_group_id: groupId });
   if (error) throwTyped(error);

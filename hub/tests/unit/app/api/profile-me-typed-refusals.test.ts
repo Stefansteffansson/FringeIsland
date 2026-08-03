@@ -90,6 +90,24 @@ describe('FEAT-H038 STORY-3 — PATCH /api/profile/me maps typed refusals', () =
     expect(res.status).toBe(404);
   });
 
+  it("28000 (the suspended actor's own row is invisible — users_select_active) → 401, and the recheck path owns the truth", async () => {
+    // WRITTEN RED-FIRST at the STORY-7 E2E (2026-08-03): a suspended member's
+    // save dies as PC003's NOT FOUND branch — the UPDATE ... RETURNING sees
+    // zero rows under `users_select_active` (is_active = true) and raises
+    // 28000 'Not authenticated.'. The route collapsed it to the generic 500,
+    // so the W-7 refusal-triggered re-check never fired and the wall never
+    // rendered. 28000 maps to 401 (the session cannot act as this identity);
+    // the client's 401/403 recheck then confirms the state and walls honestly.
+    updateMyProfile.mockRejectedValue(typedRefusal('28000', 'Not authenticated.'));
+    const res = (await PATCH(req({ nickname: 'x' }))) as { status: number; body: { error: string } };
+    expect(res.status).toBe(401);
+    expect(
+      getTelemetrySink().some(
+        (e) => e.name === 'profile.update_refused' && e.props?.code === '28000',
+      ),
+    ).toBe(true);
+  });
+
   it('LABELLED GREEN — an untyped failure still collapses to a generic 500 (nothing internal leaks)', async () => {
     updateMyProfile.mockRejectedValue(new Error('connection reset'));
     const res = (await PATCH(req({ nickname: 'x' }))) as { status: number; body: { error: string } };

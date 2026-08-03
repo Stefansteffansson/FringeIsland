@@ -11,6 +11,8 @@ import type {
   CreateGroupInput,
   CreateGroupRoleInput,
   GroupDetail,
+  GroupDetailPayload,
+  GroupDetailShell,
   GroupSummary,
   RoleEntry,
   RolesFabric,
@@ -19,18 +21,31 @@ import type {
 } from '@/lib/groups/queries';
 import { OverviewTransportError } from '@/lib/me/overview-shared';
 import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
+import { requestAccountStateRecheck } from '@/lib/account/AccountStateContext';
 import type { GroupEnrollmentSummary } from '@/lib/journeys/queries';
 
 export type {
   CreateGroupInput,
   CreateGroupRoleInput,
   GroupDetail,
+  GroupDetailPayload,
+  GroupDetailShell,
   GroupSummary,
   RoleEntry,
   RolesFabric,
   RoleTemplateOption,
   UpdateGroupSettingsInput,
 } from '@/lib/groups/queries';
+
+/**
+ * FEAT-H038 STORY-5: the payload-shape guard for the suspended minimal detail
+ * (FEAT-PC023 STORY-7). Lives HERE, not in queries.ts — a value export from
+ * the substrate module would pull it into the browser graph (outer-ring
+ * conformance, ADR-U009); the types stay in queries as type-only imports.
+ */
+export function isGroupDetailShell(payload: GroupDetailPayload): payload is GroupDetailShell {
+  return !('viewer' in payload);
+}
 
 /** The fabric BFF response: the contract payload + the template vocabulary. */
 export interface RolesReadResult {
@@ -51,6 +66,19 @@ export class GroupsApiError extends Error {
 async function throwFrom(res: Response, fallback: string): Promise<never> {
   const body = (await res.json().catch(() => null)) as { error?: string } | null;
   throw new GroupsApiError(body?.error ?? fallback, res.status);
+}
+
+/**
+ * FEAT-H038 STORY-4 (W-7): the write-transport variant — a 401/403 on a group
+ * WRITE suggests the session's account state is stale (suspension mid-session),
+ * so the refusal demands the truth now (the lib/profile/client.ts idiom).
+ * Reads keep plain `throwFrom`; availability/invariant refusals (409) never fire it.
+ */
+async function throwFromWrite(res: Response, fallback: string): Promise<never> {
+  if (res.status === 401 || res.status === 403) {
+    requestAccountStateRecheck();
+  }
+  return throwFrom(res, fallback);
 }
 
 // Session cache (perf revision 2026-07-06): the measured /groups first load
@@ -143,13 +171,14 @@ export async function createGroup(input: CreateGroupInput): Promise<string> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
   });
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
   const data = (await res.json()) as { id: string };
   return data.id;
 }
 
-/** GRP-4/GRP-5: the visibility-honest group detail. */
-export async function fetchGroupDetail(groupId: string): Promise<GroupDetail> {
+/** GRP-4/GRP-5: the visibility-honest group detail. FEAT-PC023: a suspended
+ *  group below the admin plane resolves to the minimal shell payload. */
+export async function fetchGroupDetail(groupId: string): Promise<GroupDetailPayload> {
   const { group } = await fetchGroupDetailEnvelope(groupId);
   return group;
 }
@@ -159,13 +188,13 @@ export async function fetchGroupDetail(groupId: string): Promise<GroupDetail> {
  *  `{ group, enrollments: {data}|{error} }`. The group read stays canonical;
  *  a failed slice renders an honest unavailable section, never a broken page. */
 export async function fetchGroupDetailEnvelope(groupId: string): Promise<{
-  group: GroupDetail;
+  group: GroupDetailPayload;
   enrollments: { data?: GroupEnrollmentSummary; error?: string };
 }> {
   const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}`);
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
   const data = (await res.json()) as {
-    group: GroupDetail;
+    group: GroupDetailPayload;
     enrollments?: { data?: GroupEnrollmentSummary; error?: string };
   };
   return { group: data.group, enrollments: data.enrollments ?? { error: 'unavailable' } };
@@ -181,7 +210,7 @@ export async function updateGroupSettings(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
   });
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
   const data = (await res.json()) as { group: GroupDetail };
   return data.group;
 }
@@ -210,7 +239,7 @@ export async function createGroupRole(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
   });
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
   const data = (await res.json()) as { id: string };
   return data.id;
 }
@@ -230,7 +259,7 @@ export async function setGroupRolePermission(
       body: JSON.stringify({ set_permission: { name: permissionName, granted } }),
     },
   );
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
   const data = (await res.json()) as { role: RoleEntry };
   return data.role;
 }
@@ -241,7 +270,7 @@ export async function deleteGroupRole(groupId: string, roleId: string): Promise<
     `/api/groups/${encodeURIComponent(groupId)}/roles/${encodeURIComponent(roleId)}`,
     { method: 'DELETE' },
   );
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }
 
 /** GRP-7: assign a role to an active member. */
@@ -254,7 +283,7 @@ export async function assignMemberRole(
     `/api/groups/${encodeURIComponent(groupId)}/members/${encodeURIComponent(memberGroupId)}/roles/${encodeURIComponent(roleId)}`,
     { method: 'POST' },
   );
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }
 
 /** GRP-7: remove a member's role binding (invariant refusals surface verbatim). */
@@ -267,7 +296,7 @@ export async function removeMemberRole(
     `/api/groups/${encodeURIComponent(groupId)}/members/${encodeURIComponent(memberGroupId)}/roles/${encodeURIComponent(roleId)}`,
     { method: 'DELETE' },
   );
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }
 
 /** GRP-8: the caller's effective permissions in this group (as themselves). */
@@ -325,7 +354,7 @@ export async function sendInvite(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
   return (await res.json()) as InviteByEmailResult;
 }
 
@@ -344,7 +373,7 @@ export async function cancelMemberInvite(
     `/api/groups/${encodeURIComponent(groupId)}/invitations/members/${encodeURIComponent(memberGroupId)}`,
     { method: 'DELETE' },
   );
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }
 
 export async function cancelEmailInvite(
@@ -355,7 +384,7 @@ export async function cancelEmailInvite(
     `/api/groups/${encodeURIComponent(groupId)}/invitations/email/${encodeURIComponent(invitationId)}`,
     { method: 'DELETE' },
   );
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }
 
 // ADR-U042: the bootstrap bundle may hand this session ONE adopted read per
@@ -394,7 +423,7 @@ export async function acceptInvitation(groupId: string): Promise<void> {
   const res = await fetch(`/api/me/invitations/${encodeURIComponent(groupId)}`, {
     method: 'POST',
   });
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }
 
 /** MEM-3: decline — the row leaves; re-invitation stays possible. */
@@ -402,7 +431,7 @@ export async function declineInvitation(groupId: string): Promise<void> {
   const res = await fetch(`/api/me/invitations/${encodeURIComponent(groupId)}`, {
     method: 'DELETE',
   });
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }
 
 /**
@@ -417,7 +446,7 @@ export async function pauseMember(groupId: string, memberGroupId: string): Promi
     `/api/groups/${encodeURIComponent(groupId)}/members/${encodeURIComponent(memberGroupId)}/pause`,
     { method: 'POST' },
   );
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }
 
 /** MEM-4: reactivate a paused member. */
@@ -426,7 +455,7 @@ export async function activateMember(groupId: string, memberGroupId: string): Pr
     `/api/groups/${encodeURIComponent(groupId)}/members/${encodeURIComponent(memberGroupId)}/activate`,
     { method: 'POST' },
   );
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }
 
 /** MEM-5: remove a member (never conflated with invitation cancels). */
@@ -435,7 +464,7 @@ export async function removeGroupMember(groupId: string, memberGroupId: string):
     `/api/groups/${encodeURIComponent(groupId)}/members/${encodeURIComponent(memberGroupId)}`,
     { method: 'DELETE' },
   );
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }
 
 /** MEM-6: the caller's own regular exit. */
@@ -445,7 +474,7 @@ export async function leaveGroup(
   const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/leave`, {
     method: 'POST',
   });
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
   return (await res.json()) as { group_id: string; group_name: string };
 }
 
@@ -471,7 +500,7 @@ export async function nominateSteward(
       body: JSON.stringify({ nominee_group_ids: nomineeGroupIds }),
     },
   );
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
   return (await res.json()) as { group_id: string; nominees_count: number };
 }
 
@@ -488,7 +517,7 @@ export async function respondToNomination(
       body: JSON.stringify({ accept }),
     },
   );
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
   return (await res.json()) as Record<string, unknown>;
 }
 
@@ -500,7 +529,7 @@ export async function handGroupToDeusEx(
     `/api/groups/${encodeURIComponent(groupId)}/hand-to-deusex`,
     { method: 'POST' },
   );
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
   return (await res.json()) as Record<string, unknown>;
 }
 
@@ -509,7 +538,7 @@ export async function closeGroup(groupId: string): Promise<Record<string, unknow
   const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/close`, {
     method: 'POST',
   });
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
   return (await res.json()) as Record<string, unknown>;
 }
 
@@ -519,8 +548,32 @@ export async function deleteGroup(groupId: string): Promise<Record<string, unkno
   const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}`, {
     method: 'DELETE',
   });
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
   return (await res.json()) as Record<string, unknown>;
+}
+
+/**
+ * FEAT-H038 STORY-6 — the member-plane Rest/Wake transports (FEAT-PC023
+ * `rest_group()` / `wake_group()`, the `rest_group` capability key). Thin
+ * couriers; refusal messages surface verbatim via GroupsApiError — they carry
+ * the honest availability copy ('group is resting' / 'group is suspended' /
+ * wrong-state) the Surface renders in place.
+ */
+
+/** Rest an active group (rest_group holders; the visible steward-fix hold). */
+export async function restGroupClient(groupId: string): Promise<void> {
+  const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/rest`, {
+    method: 'POST',
+  });
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
+}
+
+/** Wake a resting group — the symmetric half; never a path out of suspended. */
+export async function wakeGroupClient(groupId: string): Promise<void> {
+  const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/wake`, {
+    method: 'POST',
+  });
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }
 
 /**
@@ -569,7 +622,7 @@ export async function inviteGroupClient(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ invited_group_id: invitedGroupId }),
   });
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
   return (await res.json()) as { membership_id: string };
 }
 
@@ -608,7 +661,7 @@ export async function respondToGroupInvitationClient(
       body: JSON.stringify({ membership_id: membershipId, accept }),
     },
   );
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }
 
 /** STORY-3: withdraw the wielded group's membership (refusals verbatim). */
@@ -624,5 +677,5 @@ export async function leaveGroupAsGroupClient(
       body: JSON.stringify({ context_group_id: contextGroupId }),
     },
   );
-  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }

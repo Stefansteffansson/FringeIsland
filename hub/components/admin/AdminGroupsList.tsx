@@ -26,6 +26,8 @@ type FilterKey = (typeof FILTERS)[number]['key'];
 const STATUS_STYLES: Record<string, string> = {
   closed: 'bg-gray-200 text-gray-700',
   archived: 'bg-amber-100 text-amber-800',
+  // FEAT-H038 STORY-6 (FEAT-PC023): the visible steward-fix hold.
+  resting: 'bg-sky-100 text-sky-800',
   suspended: 'bg-red-100 text-red-700',
 };
 

@@ -122,3 +122,54 @@ describe('/groups first load (perf revision 2026-07-06)', () => {
     expect(fetchMyGroups).not.toHaveBeenCalled();
   });
 });
+
+/**
+ * FEAT-H038 STORY-5 (W-3 surface half) — the two-mode status labels on the
+ * list. WRITTEN RED-FIRST (2026-08-03): `get_member_groups` now carries the
+ * additive FEAT-PC023 `status` key, but the page renders no label — a resting
+ * or suspended group is indistinguishable from an active one.
+ */
+describe('FEAT-H038 STORY-5 — held groups are labeled on the list', () => {
+  const TWO_MODE: GroupSummary[] = [
+    {
+      id: 'g-active',
+      name: 'Active Circle',
+      description: null,
+      label: null,
+      is_public: false,
+      created_at: '2026-07-01T10:00:00+00:00',
+      member_count: 2,
+      status: 'active',
+    },
+    {
+      id: 'g-resting',
+      name: 'Resting Circle',
+      description: null,
+      label: null,
+      is_public: false,
+      created_at: '2026-07-01T10:00:00+00:00',
+      member_count: 2,
+      status: 'resting',
+    },
+    {
+      id: 'g-suspended',
+      name: 'Held Circle',
+      description: null,
+      label: null,
+      is_public: true,
+      created_at: '2026-07-01T10:00:00+00:00',
+      member_count: 3,
+      status: 'suspended',
+    },
+  ];
+
+  it('a resting row carries "Resting", a suspended row "Suspended", an active row no status label', async () => {
+    fetchMyGroups.mockResolvedValue(TWO_MODE);
+    render(<GroupsPage />);
+    await waitFor(() => expect(screen.getByTestId('groups-list')).toBeInTheDocument());
+    expect(screen.getByText('Resting')).toBeInTheDocument();
+    expect(screen.getByText('Suspended')).toBeInTheDocument();
+    // Exactly the two held rows are labeled — the active row carries none.
+    expect(screen.getAllByTestId('group-status-badge')).toHaveLength(2);
+  });
+});

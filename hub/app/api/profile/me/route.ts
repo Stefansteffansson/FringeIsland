@@ -96,6 +96,15 @@ export async function PATCH(request: Request) {
         code === '42501' ? 403 : code === 'P0001' ? 409 : code === '22023' ? 400 : 404;
       return NextResponse.json({ error: (err as Error).message }, { status });
     }
+    // Found at the STORY-7 E2E (2026-08-03): a suspended member's save raises
+    // 28000 — PC003's NOT FOUND branch fires because `users_select_active`
+    // hides the caller's own row from the UPDATE ... RETURNING. 401 is the
+    // honest shape (the session can no longer act as this identity), and the
+    // client's 401/403 re-check (W-7) confirms the state and walls the session.
+    if (code === '28000') {
+      emitTelemetry('profile.update_refused', { actor: user.id, code });
+      return NextResponse.json({ error: (err as Error).message }, { status: 401 });
+    }
     emitTelemetry('profile.update_failed', { actor: user.id, message: (err as Error).message });
     return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
   }

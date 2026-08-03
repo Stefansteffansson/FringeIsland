@@ -17,6 +17,7 @@ import type { AdminGroupDetail as Detail } from '@/lib/admin/groups';
 const STATUS_STYLES: Record<string, string> = {
   closed: 'bg-gray-200 text-gray-700',
   archived: 'bg-amber-100 text-amber-800',
+  resting: 'bg-sky-100 text-sky-800',
   suspended: 'bg-red-100 text-red-700',
 };
 
@@ -26,7 +27,10 @@ type ViewState =
   | { kind: 'error' }
   | { kind: 'loaded'; detail: Detail };
 
-type Ceremony = 'suspend' | 'reactivate' | 'reassign' | null;
+// FEAT-H038 STORY-6 (FEAT-PC023): the hold ceremony is a MODE CHOICE — Rest
+// (the visible steward-fix hold) or Suspend (the hard hazard hold) on an
+// active group; Wake on resting, Reactivate on suspended.
+type Ceremony = 'rest' | 'wake' | 'suspend' | 'reactivate' | 'reassign' | null;
 
 export function AdminGroupDetail({ groupId }: { groupId: string }) {
   const [view, setView] = useState<ViewState>({ kind: 'loading' });
@@ -128,7 +132,11 @@ export function AdminGroupDetail({ groupId }: { groupId: string }) {
 
   const d = view.detail;
   const isEngagement = d.group_type === 'engagement';
-  const canSuspend = isEngagement && d.status === 'active';
+  // FEAT-H038 STORY-6: active offers the mode choice (Rest | Suspend); resting
+  // offers Wake | Suspend (the escalation); suspended offers Reactivate only.
+  const canRest = isEngagement && d.status === 'active';
+  const canWake = isEngagement && d.status === 'resting';
+  const canSuspend = isEngagement && (d.status === 'active' || d.status === 'resting');
   const canReactivate = isEngagement && d.status === 'suspended';
   const canReassign = isEngagement && d.deusex_stewarded && d.status === 'active';
   const candidates = d.members.filter((m) => !m.is_steward);
@@ -197,8 +205,26 @@ export function AdminGroupDetail({ groupId }: { groupId: string }) {
         )}
       </section>
 
-      {(canSuspend || canReactivate || canReassign) && (
+      {(canRest || canWake || canSuspend || canReactivate || canReassign) && (
         <section aria-label="Actions" className="flex flex-wrap gap-3">
+          {canRest && (
+            <button
+              data-testid="rest-group"
+              onClick={() => setCeremony('rest')}
+              className="rounded bg-sky-700 px-4 py-2 text-sm text-white"
+            >
+              Rest
+            </button>
+          )}
+          {canWake && (
+            <button
+              data-testid="wake-group"
+              onClick={() => setCeremony('wake')}
+              className="rounded bg-sky-700 px-4 py-2 text-sm text-white"
+            >
+              Wake
+            </button>
+          )}
           {canSuspend && (
             <button
               data-testid="suspend-group"
@@ -264,6 +290,30 @@ export function AdminGroupDetail({ groupId }: { groupId: string }) {
         </section>
       )}
 
+      <ConfirmModal
+        isOpen={ceremony === 'rest'}
+        title="Rest group"
+        message={`Rest "${d.name}"? Every member sees the group resting — content stays readable, changes are off until it is woken.`}
+        confirmText="Rest"
+        variant="warning"
+        busy={busy}
+        onConfirm={() => void mutate('rest')}
+        onCancel={() => {
+          if (!busy) setCeremony(null);
+        }}
+      />
+      <ConfirmModal
+        isOpen={ceremony === 'wake'}
+        title="Wake group"
+        message={`Wake "${d.name}"? The group returns to active for every member.`}
+        confirmText="Wake"
+        variant="warning"
+        busy={busy}
+        onConfirm={() => void mutate('wake')}
+        onCancel={() => {
+          if (!busy) setCeremony(null);
+        }}
+      />
       <ConfirmModal
         isOpen={ceremony === 'suspend'}
         title="Suspend group"

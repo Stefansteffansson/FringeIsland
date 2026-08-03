@@ -18,6 +18,7 @@ import { GroupConversationsSection } from '@/components/groups/GroupConversation
 import { GroupAnnouncementsSection } from '@/components/groups/GroupAnnouncementsSection';
 import { GroupForumSection } from '@/components/groups/GroupForumSection';
 import { GroupJourneyProgressSection } from '@/components/groups/GroupJourneyProgressSection';
+import { SuspendedGroupShell } from '@/components/groups/SuspendedGroupShell';
 import {
   fetchActingContexts,
   fetchGroupDetailEnvelope,
@@ -27,12 +28,13 @@ import {
   fetchMyPermissions,
   fetchMyPermissionsActingAs,
   GroupsApiError,
+  isGroupDetailShell,
   type ActingContext,
   type ActingMembership,
   type PendingInvitations,
   type RolesReadResult,
 } from '@/lib/groups/client';
-import type { GroupDetail } from '@/lib/groups/queries';
+import type { GroupDetailPayload } from '@/lib/groups/queries';
 import type { GroupEnrollmentSummary } from '@/lib/journeys/queries';
 
 /**
@@ -54,7 +56,7 @@ export default function GroupDetailPage() {
   const params = useParams<{ id: string }>();
   const groupId = params.id;
 
-  const [group, setGroup] = useState<GroupDetail | null>(null);
+  const [group, setGroup] = useState<GroupDetailPayload | null>(null);
   // FEAT-H019 STORY-6: the enrolment-summary slice envelope rides the detail
   // response (ADR-U042) — rendered honestly by GroupJourneysSection.
   const [journeySlice, setJourneySlice] = useState<{
@@ -245,6 +247,14 @@ export default function GroupDetailPage() {
       ) : error ? (
         <InlineError message={error} />
       ) : group ? (
+        isGroupDetailShell(group) ? (
+          // FEAT-H038 STORY-5 (FEAT-PC023 STORY-7): the contract answered with
+          // the minimal suspended payload — found, labeled, and that's it. The
+          // shell is the whole page body: no panels, no sections, no actions.
+          // Payload-driven: an admin's FULL payload for a suspended group takes
+          // the normal branch below.
+          <SuspendedGroupShell group={group} />
+        ) : (
         <div className="space-y-6">
           <GroupDetailPanel
             group={group}
@@ -317,6 +327,7 @@ export default function GroupDetailPage() {
             onActAsChange={(v) => void changeActingAs(v)}
           />
         </div>
+        )
       ) : null}
     </AppShell>
   );
