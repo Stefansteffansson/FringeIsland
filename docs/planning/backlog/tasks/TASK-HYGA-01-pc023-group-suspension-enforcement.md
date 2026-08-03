@@ -16,7 +16,7 @@ estimated_hours: 6
 
 ## Description
 
-The platform half of cycle HYG-A, under the two-mode model (RB-6/RB-7 amendment): one schema-gate migration delivering the `offline` status value (check-constraint change), the `act_during_suspension` permission seed (Steward template), mode-aware `assert_group_writable()`, the ~28 guard re-issues per the PC023 matrix (suspended = member freeze with permission exemption; offline = everyone below admin), the `leave_group` amendment (admit `'suspended'`; refused under `'offline'`; `closed`/`archived` unchanged), off-line read minimalization on the enumerated read doors, the availability ceremonies (`admin_take_group_offline` new; suspend/reactivate amended for three-state moves, audited), the legacy RLS write-door closure on the four membership/role tables, and the additive `get_member_groups.status` key.
+The platform half of cycle HYG-A, under the two-mode model (RB-6/RB-7 amendment + the Active/Resting/Suspended naming settle): one schema-gate migration delivering the `resting` status value (check-constraint change), the `rest_group` permission seed (Steward template + admin auto-grant; one key = toggle + act-during-rest), mode-aware `assert_group_writable()`, the ~28 guard re-issues per the PC023 matrix (resting = member freeze with the `rest_group` exemption; suspended = everyone below admin), the `leave_group` amendment (admit `'resting'`; refused under `'suspended'`; `closed`/`archived` unchanged), suspended-content read minimalization on the enumerated read doors, the transition contracts (`rest_group()`/`wake_group()` member-plane; `admin_rest_group`/`admin_wake_group` audited wrappers; `admin_suspend_group` amended `active|resting → suspended`), the legacy RLS write-door closure on the four membership/role tables, and the additive `get_member_groups.status` key.
 
 ## Acceptance criteria
 
@@ -28,7 +28,7 @@ The platform half of cycle HYG-A, under the two-mode model (RB-6/RB-7 amendment)
 
 ## Technical notes
 
-Both enumeration dossiers are embedded in PC023 §Problem/§Solution (migration file:line per write AND read door). Guard: single indexed read, `P0001`, canonical messages `'group is suspended'` / `'group is offline'` (contract surface — H038 copy keys on them). Follow the COR-A re-issue pattern (replace-in-place, byte-identical signatures). Live-DB state verified 2026-08-03: 13 write policies + authenticated/anon write grants on the four tables; SELECT live for authenticated AND anon on all content tables — the RLS read-policy amendments are mandatory, with `is_conversation_participant()` as the conversations-family chokepoint. If the gate PR gets unwieldy, split write-plan / read-plan+ceremonies into two serial gates (PC023 §Appetite).
+Both enumeration dossiers are embedded in PC023 §Problem/§Solution (migration file:line per write AND read door). Guard: single indexed read (+ `has_permission()` on the resting arm), `P0001`, canonical messages `'group is resting'` / `'group is suspended'` (contract surface — H038 copy keys on them). Follow the COR-A re-issue pattern (replace-in-place, byte-identical signatures). Live-DB state verified 2026-08-03: 13 write policies + authenticated/anon write grants on the four tables; SELECT live for authenticated AND anon on all content tables — the RLS read-policy amendments are mandatory, with `is_conversation_participant()` as the conversations-family chokepoint. If the gate PR gets unwieldy, split write-plan / read-plan+ceremonies into two serial gates (PC023 §Appetite).
 
 ## Verification
 
