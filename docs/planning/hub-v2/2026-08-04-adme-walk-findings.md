@@ -32,6 +32,18 @@
 
 **Routing:** rider on the ADM-F opener's schema gate, alongside WA-2. Related standing item: TASK-E2E-02 (the same FK silently leaked 1,289 E2E fixtures — found at the ADM-E close).
 
+## WA-4 (DIRECTIVE) — admin force sign-out becomes instant at the device
+
+**The walk:** Stefan force-signed-out Gracy; her untouched browser stayed usable for ~a minute before throwing her out. Substrate-verified in-session: the sweep worked at 22:17:40 (sessions + refresh tokens deleted; the audit row per member); the tab coasted on its unexpired access token — reads validate the JWT signature only — until expiry killed it; the session visible afterwards was a fresh re-sign-in (22:19:22; force sign-out is a sweep, not a lock — Suspend is the lock, unchanged).
+
+**Stefan's directive:** force sign-out SHALL reach the signed-out device instantly.
+
+**What already exists:** the ADR-U039 session-signal channel `account:<auth_uid>:sessions` with the app-wide Hub tenant (FEAT-PC009/H012 — self-service revocation already makes "the device finds out fast" true, verify-on-signal). `admin_force_logout` deletes the same two tables but **never emits the hint** — the plumbing exists; the admin path doesn't feed it.
+
+**Build shape (PC021-family amendment — schema gate):** `admin_force_logout` emits the same `session_revoked` hint per target auth uid as `revoke_own_session`, alongside its existing deletes; no Hub change expected (the tenant already listens; verify at build). The ceremony's refresh-layer honesty copy softens accordingly once proven.
+
+**Routing:** rider on the ADM-F opener's schema gate, with WA-2/WA-3.
+
 ---
 
-*Filed 2026-08-04 during the walk (session 5's follow-on); bridge: `2026-08-03_05`. WA-1's fix rides the same PR as this file.*
+*Filed 2026-08-04 during the walk (session 5's follow-on); bridge: `2026-08-03_05`. WA-1's fix rides the same PR as this file; WA-4 added after the force-sign-out probe.*
