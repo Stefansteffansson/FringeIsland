@@ -44,3 +44,15 @@
 - [x] Task sweep — TASK-HYGA-01 `review` (schema gate), TASK-HYGA-02 `in_progress` (tranche 2 owed); deliberately alive
 - [x] Discovery sweep — worktree clean, not ahead, nothing owed (main didn't advance; opener sweep next session syncs)
 - [ ] CHANGELOG root cycle entry + `hub/CHANGELOG.md` — owed at cycle close (platform-core register entry already rides PR #390)
+
+---
+
+## ADDENDUM (same day, later): the gate CLOSED and everything MERGED — the "READ THIS FIRST" above is settled
+
+Stefan's named approvals landed in-session: **#390 merged + migration `20260803190000` APPLIED and verified** (gate suite 117/117; six labelled sibling adaptations + manifest classification + the ADM-C journey-fixture leak fixed at source — full record in PC023 §Gate close and PR #393), then **#391, #392, #393 all merged**. Discovery synced to main. TASK-HYGA-01 **done**; TASK-HYGA-02 `in_progress`.
+
+**The next session starts directly at the H038 post-apply tranche — the substrate is LIVE:**
+1. STORY-5: two-mode group rendering — "Resting"/"Suspended" labels off `get_member_groups.status` (live), the suspended found-but-that's-it shell off the minimal `{id,name,status}` payload, resting read-only for non-holders, honest refusal copy through the groups `http.ts` mappers (canonical strings `'group is resting'` / `'group is suspended'` are live), + wire `requestAccountStateRecheck()` at the group-write mappers.
+2. STORY-6: steward Rest/Wake on group settings (capability flag; `rest_group()`/`wake_group()` live) + the admin mode-choice ceremony on the H035 surface + the dated FEAT-H035 pointer.
+3. STORY-7: the account E2E (suspend → in-session wall → explicit exit → sign-in-as-other) + the group E2E (rest → read-only + holder exemption → wake → suspend → shell → reactivate); token + axe + `next build`.
+4. Cycle close: root + hub CHANGELOG entries, plain-English walkthrough, both specs 6-done + §L4 rows, tasks done, ADM-E next per RB-1.
