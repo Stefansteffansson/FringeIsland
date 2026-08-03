@@ -3,7 +3,7 @@
 ---
 id: TASK-HYGA-01
 title: Implement FEAT-PC023 — group suspension enforcement contracts
-status: todo
+status: review
 assigned_to: claude
 priority: high
 feature: FEAT-PC023
