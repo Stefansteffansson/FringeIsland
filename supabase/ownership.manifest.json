@@ -188,6 +188,7 @@
       "admin_get_users",
       "admin_grant_platform_admin",
       "admin_hard_delete_user",
+      "admin_moderate_group_forum_post",
       "admin_reactivate_group",
       "admin_reassign_group_stewardship",
       "admin_remove_member_from_group",
@@ -289,7 +290,8 @@
       "notify_report_resolved",
       "ds5_moderation_list_reports",
       "ds5_moderation_report_detail",
-      "ds5_moderation_resolve_report"
+      "ds5_moderation_resolve_report",
+      "ds5_moderation_moderate_group_post"
     ],
     "DS-7": [
       "create_journal_entry",
