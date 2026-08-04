@@ -392,8 +392,8 @@ describe('FEAT-PC026 — suspended-group admin access contracts (ADM-G)', () => 
   // STORY-4 — the members payload carries the unique identifier.
   // RED AT HEAD: no `email` key on members rows.
   // =========================================================================
-  describe('admin_get_group_detail members email (W-4 echo law)', () => {
-    it('every members row is {personal_group_id, display_name, email, is_steward}', async () => {
+  describe('admin_get_group_detail members email + user_id (W-4 echo law; the remove key)', () => {
+    it('every members row is {personal_group_id, display_name, email, user_id, is_steward}', async () => {
       const data = (await expectOk(adaC, 'admin_get_group_detail', { p_group_id: gSusp })) as {
         status: string;
         stewards: unknown[];
@@ -401,18 +401,23 @@ describe('FEAT-PC026 — suspended-group admin access contracts (ADM-G)', () => 
           personal_group_id: string;
           display_name: string;
           email: string;
+          user_id: string;
           is_steward: boolean;
         }>;
       };
       expect(data.status).toBe('suspended');
       expect(Array.isArray(data.stewards)).toBe(true); // rest of payload intact
-      const emails = new Map(data.members.map((m) => [m.personal_group_id, m.email]));
-      expect(emails.get(mona.personalGroupId)).toBe(mona.email);
-      expect(emails.get(paula.personalGroupId)).toBe(paula.email);
-      expect(emails.get(stella.personalGroupId)).toBe(stella.email);
+      const rows = new Map(data.members.map((m) => [m.personal_group_id, m]));
+      expect(rows.get(mona.personalGroupId)?.email).toBe(mona.email);
+      expect(rows.get(paula.personalGroupId)?.email).toBe(paula.email);
+      expect(rows.get(stella.personalGroupId)?.email).toBe(stella.email);
+      // user_id = public.users.id — the admin_remove_member_from_group key
+      // (the payload-walk build finding; the Hub cannot resolve it API-first).
+      expect(rows.get(paula.personalGroupId)?.user_id).toBe(paulaUserId);
       for (const m of data.members) {
         expect(typeof m.display_name).toBe('string');
         expect(typeof m.is_steward).toBe('boolean');
+        expect(typeof m.user_id).toBe('string');
       }
     });
   });

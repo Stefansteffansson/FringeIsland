@@ -39,10 +39,17 @@
 --     20260803190000:4467-4483). PC026 STORY-3 pins this as LAW via
 --     characterization cells; the Tier-1 mechanism is recorded as AB-6 audit
 --     material (any door gated purely by has_permission passes admins today).
---  6. admin_get_group_detail — members rows gain `email`
---     ({personal_group_id, display_name, email, is_steward}) — the W-4 echo
---     law for the Hub's remove ceremony (RB-8 doppelganger rule). Everything
---     else in the payload byte-stable.
+--  6. admin_get_group_detail — members rows gain `email` AND `user_id`
+--     ({personal_group_id, display_name, email, user_id, is_steward}).
+--     `email`: the W-4 echo law for the Hub's remove ceremony (RB-8
+--     doppelganger rule). `user_id` (BUILD FINDING, payload-walk gap): the
+--     remove act's contract is admin_remove_member_from_group(p_group_id,
+--     p_target_user_id) — keyed by public.users.id — and the Hub has no
+--     API-first way to resolve personal_group_id -> users.id (no table
+--     reads; no lookup contract). The member console keys members by user id
+--     natively; this read must too, or STORY-5's remove is unreachable from
+--     the wing. Both keys admin-gated, both already visible on the member
+--     console. Everything else in the payload byte-stable.
 --  7. NEW ds5_moderation_moderate_group_post (DS-5-owned, sealed) +
 --     admin_moderate_group_forum_post (PC-4 wrapper) — the "clean forums"
 --     act. ADR-U047 rule 3: only DS-5 may touch its own tables, so the
@@ -398,10 +405,12 @@ $$;
 
 -- ----------------------------------------------------------------------------
 -- 5. admin_get_group_detail — re-issued in place (STRICTLY ADDITIVE payload
---    key, the 20260801130000 pattern): members rows gain `email` — the W-4
---    echo law's requirement for the Hub's remove ceremony (RB-8 doppelganger
---    rule). LEFT JOIN so a personal group without a users row never drops a
---    member. Everything else byte-stable; grants preserved by
+--    keys, the 20260801130000 pattern): members rows gain `email` (the W-4
+--    echo law's requirement for the Hub's remove ceremony, RB-8 doppelganger
+--    rule) and `user_id` (the remove contract's key — header item 6, the
+--    payload-walk build finding). LEFT JOIN so a personal group without a
+--    users row never drops a member (sight over act — the ceremony disables
+--    on a null key). Everything else byte-stable; grants preserved by
 --    create-or-replace.
 -- ----------------------------------------------------------------------------
 create or replace function public.admin_get_group_detail(p_group_id uuid)
@@ -471,11 +480,14 @@ begin
 
   -- The members array (20260801130000): active HUMAN members — personal
   -- groups only. Display identity = the personal group's name (B-DISP).
-  -- FEAT-PC026 (ADM-G): + email — the W-4 echo law for the remove ceremony.
+  -- FEAT-PC026 (ADM-G): + email (the W-4 echo law for the remove ceremony)
+  -- + user_id (the admin_remove_member_from_group key — the payload-walk
+  -- build finding, header item 6).
   select coalesce(jsonb_agg(jsonb_build_object(
            'personal_group_id', pg.id,
            'display_name', pg.name,
            'email', u.email,
+           'user_id', u.id,
            'is_steward', exists (
               select 1
                 from public.user_group_roles ugr
@@ -516,7 +528,7 @@ end;
 $$;
 
 comment on function public.admin_get_group_detail(uuid) is
-  'FEAT-PC020 (ADM-8): admin group detail — the row, the member_count/non_system_member_count pair (the caretaker is never load-bearing in copy, ADR-U041 §5), human stewards only (display identity = the personal group''s name, the B-DISP oracle; the caretaker is carried by deusex_stewarded), status timestamps via the row''s created_at/updated_at, and (20260801130000, the TASK-ADMB-02 adjudication) `members`: active human members with is_steward flags — the reassign picker''s candidate source. FEAT-PC026 (20260804230000): members rows carry `email` — the W-4 echo law for the admin remove ceremony. Personal or unknown ids refuse P0002. SECURITY DEFINER required: admin-plane read across RLS.';
+  'FEAT-PC020 (ADM-8): admin group detail — the row, the member_count/non_system_member_count pair (the caretaker is never load-bearing in copy, ADR-U041 §5), human stewards only (display identity = the personal group''s name, the B-DISP oracle; the caretaker is carried by deusex_stewarded), status timestamps via the row''s created_at/updated_at, and (20260801130000, the TASK-ADMB-02 adjudication) `members`: active human members with is_steward flags — the reassign picker''s candidate source. FEAT-PC026 (20260804230000): members rows carry `email` (the W-4 echo law for the admin remove ceremony) and `user_id` (the admin_remove_member_from_group key — the Hub cannot resolve personal_group_id to users.id API-first). Personal or unknown ids refuse P0002. SECURITY DEFINER required: admin-plane read across RLS.';
 
 -- ----------------------------------------------------------------------------
 -- 6. The audited moderate act — sealed DS-5 body + PC-4 wrapper (the ADM-D
