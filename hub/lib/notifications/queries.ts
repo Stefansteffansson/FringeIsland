@@ -111,3 +111,20 @@ export async function respondToActingInvitationRpc(
   if (error) throw error;
   return data;
 }
+
+/** FEAT-PD017 (N-E) — respond to a personal group-invitation notification.
+ *  Thin dispatch to the DS-5 `respond_to_personal_invitation` contract (which
+ *  composes the untouched Core accept/decline pair; convergence is the
+ *  group_memberships trigger's job, same transaction — NB-1). */
+export async function respondToPersonalInvitationRpc(
+  supabase: SupabaseClient,
+  notificationId: string,
+  accept: boolean,
+): Promise<unknown> {
+  const { data, error } = await supabase.rpc('respond_to_personal_invitation', {
+    p_notification_id: notificationId,
+    p_accept: accept,
+  });
+  if (error) throw error;
+  return data;
+}

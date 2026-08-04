@@ -1,8 +1,8 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { AppShell } from '@/components/shell/AppShell';
 import { LoadingState } from '@/components/ui/LoadingState';
@@ -26,6 +26,17 @@ const STATUS_STYLES: Record<string, string> = {
   resting: 'bg-sky-100 text-sky-800',
   suspended: 'bg-red-100 text-red-700',
 };
+
+/** FEAT-H042 (N-E, WS-4): the focus param is read inside its own Suspense
+ *  boundary (the useSearchParams CSR-bailout rule — the login-page pattern) so
+ *  the rest of the page never waits on it. `?focus=invitations` is a landing
+ *  hint from the bell's answering-surface pointer, not page state. */
+function FocusedInvitations({ onAnswered }: { onAnswered: () => void }) {
+  const params = useSearchParams();
+  return (
+    <MyInvitations focus={params.get('focus') === 'invitations'} onAnswered={onAnswered} />
+  );
+}
 
 export default function GroupsPage() {
   const { user, identity, loading: authLoading } = useAuth();
@@ -77,6 +88,16 @@ export default function GroupsPage() {
     void loadGroups();
   }, [userId, authLoading, router, loadGroups]);
 
+  // FEAT-H042 (N-E): two doors, one truth — a bell answer given in the
+  // dropdown above this page announces itself on refreshNavigation (W-07);
+  // the groups list is one of its consequences (the accepted group appears
+  // without a reload).
+  useEffect(() => {
+    const onRefresh = () => void loadGroups();
+    window.addEventListener('refreshNavigation', onRefresh);
+    return () => window.removeEventListener('refreshNavigation', onRefresh);
+  }, [loadGroups]);
+
   return (
     <AppShell title="My Groups">
       <h1 className="mb-6 text-3xl font-bold text-gray-900">My Groups</h1>
@@ -94,8 +115,13 @@ export default function GroupsPage() {
 
       {/* FEAT-H015 STORY-4 (MEM-3): pending invitations live where the groups
           live — accepting re-reads the list (the group appears as the
-          invitation leaves). Absent entirely when there are none. */}
-      {!authLoading && user && <MyInvitations onAnswered={() => void loadGroups()} />}
+          invitation leaves). Absent entirely when there are none.
+          FEAT-H042 (N-E): the bell's landing focus rides ?focus=invitations. */}
+      {!authLoading && user && (
+        <Suspense fallback={null}>
+          <FocusedInvitations onAnswered={() => void loadGroups()} />
+        </Suspense>
+      )}
 
       {/* FEAT-H031 (N-B): the bespoke PendingNominations section retired here —
           stewardship offers now answer in the notification bell/inbox (the D8

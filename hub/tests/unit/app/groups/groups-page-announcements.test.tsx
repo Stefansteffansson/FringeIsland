@@ -20,7 +20,12 @@ const fetchMyGroups = jest.fn<() => Promise<GroupSummary[]>>();
 const peekMyGroups = jest.fn<() => GroupSummary[] | null>();
 
 jest.mock('@/lib/auth/AuthContext', () => ({ useAuth: () => authState }));
-jest.mock('next/navigation', () => ({ useRouter: () => router }));
+// FEAT-H042 (N-E): useSearchParams joined the page (the WS-4 focus reader) —
+// mock extended, no-param default (labelled sibling adaptation).
+jest.mock('next/navigation', () => ({
+  useRouter: () => router,
+  useSearchParams: () => new URLSearchParams(),
+}));
 jest.mock('@/lib/groups/client', () => ({
   fetchMyGroups: () => fetchMyGroups(),
   peekMyGroups: () => peekMyGroups(),

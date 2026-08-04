@@ -139,4 +139,39 @@ describe('notificationStatusChip', () => {
     ) as NotificationChip;
     expect(chip.label).toBe('Awaiting response');
   });
+
+  // FEAT-H042 (N-E): a cancelled invitation converges fact-only — the chip
+  // says "Withdrawn" and NEVER names an actor (FEAT-PD017 withholds
+  // resolved_by_name on cancel; the invitee may stand outside the group).
+  it('a cancelled convergence renders "Withdrawn" with no actor named', () => {
+    const chip = notificationStatusChip(
+      {
+        ...base,
+        action_type: 'accept_decline',
+        action_taken: 'cancelled',
+        expires_at: null,
+        action_data: { resolved_outcome: 'cancelled' },
+      },
+      NOW,
+    ) as NotificationChip;
+    expect(chip.label).toBe('Withdrawn');
+    expect(chip.label).not.toMatch(/by /);
+  });
+
+  it('a cancelled convergence ignores a resolver name even if one leaks into action_data', () => {
+    // Defense-in-depth for the withholding rule: the surface must not render
+    // an actor for a withdrawal even if a future platform change records one.
+    const chip = notificationStatusChip(
+      {
+        ...base,
+        action_type: 'accept_decline',
+        action_taken: 'cancelled',
+        expires_at: null,
+        action_data: { resolved_outcome: 'cancelled', resolved_by_name: 'Some Steward' },
+      },
+      NOW,
+    ) as NotificationChip;
+    expect(chip.label).toBe('Withdrawn');
+    expect(chip.label).not.toContain('Some');
+  });
 });

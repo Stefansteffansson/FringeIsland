@@ -358,7 +358,9 @@ describe('NotificationsPage (/notifications)', () => {
       fireEvent.click(clickableRow('n1')!);
     });
 
-    expect(push).toHaveBeenCalledWith('/groups');
+    // FEAT-H042 (N-E, WS-4 rider): the answering-surface pointer now lands
+    // focused — labelled sibling adaptation, flipped red-first.
+    expect(push).toHaveBeenCalledWith('/groups?focus=invitations');
     expect(push).not.toHaveBeenCalledWith('/groups/g-42');
   });
 
