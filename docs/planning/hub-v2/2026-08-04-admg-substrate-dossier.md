@@ -29,7 +29,9 @@
 
 11. **No group-keyed audit, export, or notification read exists.** `admin_get_audit_log` takes `(p_limit, p_before, p_action_prefix)` — not group-keyable; the export/notification composites are own-subject-only. Nothing to arm there; a per-group audit slice on the admin view would be *new* contract surface, out of WF-2's mandate (possible AB-6 material).
 
-## Decision board — ADM-G shape (open rows; recommendations marked)
+## Decision board — ADM-G shape — SETTLED 2026-08-04 (Stefan: all four rows as recommended)
+
+**Verdicts:** G-1 = (b) dedicated admin content view on `/admin/groups/[id]` · G-2 = new paired FEAT-PC026 ↔ FEAT-H041 · G-3 = journey progress OUT (dated deferral) · G-4 = message bodies IN, group-kind conversations only. The riding defaults below stand unobjected.
 
 **Settled, not reopened:** WS-2 suspended-only scope · schema-gate PRs held for NAMED approval · every admin mutation writes `admin_audit_log` · `admin_* → PC-4` manifest pin · ADR-U043 perf pass at the gate.
 
