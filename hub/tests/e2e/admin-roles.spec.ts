@@ -1,0 +1,364 @@
+import { test, expect, type BrowserContext, type Page } from '@playwright/test';
+import { createAdminClient, markArrivedOnce, runAdminSql, SESSION_EMAIL } from './helpers/auth';
+
+/**
+ * FEAT-H040 (E2E) — Cycle ADM-F: the role-template editor journey (STORY-8)
+ * plus the walk-rider verification cells (STORY-4/6/7).
+ *
+ * Elevate → roles card → clone a seed (both consequences named) → draft →
+ * apply with the diff preview → a template-less group carries the clone's
+ * role (the STORY-2 contract pin, observed through the session's own
+ * authorized door) → rollback through the same ceremony → audit rows carry
+ * the diffs → WA-4: force sign-out reaches the signed-in device within
+ * seconds → WA-3: a CONSENTED member hard-deletes end-to-end through the
+ * console (consent proof survives anonymised) → the STORY-4 route-tier pin
+ * (P0001 verbatim on a seed write) → demoted operator gets the 404 shape.
+ *
+ * Coverage label (honest): written AFTER the surface implementation — the
+ * red-first demonstrations live at the unit tier (admin-roles-view /
+ * admin-role-template-detail / admin-dashboard, red 2026-08-04
+ * pre-implementation) and at the platform tier (the PC025 gate suite, red
+ * pre-migration). Integrative journey coverage, labelled test-after by the
+ * house rule.
+ *
+ * Serial: the clone's ledger advances test to test. The session FIM is never
+ * signed out (WA-4 signs out a FIXTURE's context only — the TASK-E2E-01 trap
+ * class). Single-token fixture display names (nickname = first token).
+ */
+
+test.describe.configure({ mode: 'serial' });
+
+const stamp = Date.now();
+const password = 'e2e-test-password-123';
+const CLONE_NAME = `E2EADMFScribe${stamp}`;
+const GROUP_NAME = `E2EADMFCircle${stamp}`;
+const A_NAME = `E2EADMFTargetA${stamp}`;
+const B_NAME = `E2EADMFTargetB${stamp}`;
+const A_EMAIL = `e2e-admf-target-a-${stamp}@fringeisland.test`;
+const B_EMAIL = `e2e-admf-target-b-${stamp}@fringeisland.test`;
+const TOGGLED_PERMISSION = 'view_member_profiles';
+
+type Fim = { authId: string; pgId: string; userId: string };
+
+let memberA: Fim; // WA-4 target — force sign-out reaches their device
+let memberB: Fim; // WA-3 target — consented, hard-deleted through the console
+let stewardId: string;
+let cloneId: string | null = null;
+let groupId: string | null = null;
+let consentIdB: string | null = null;
+
+async function sessionPersonalGroupId(): Promise<string> {
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from('users')
+    .select('personal_group_id')
+    .eq('email', SESSION_EMAIL)
+    .maybeSingle();
+  return data?.personal_group_id as string;
+}
+
+async function setPlatformAdmin(elevate: boolean): Promise<void> {
+  const pg = await sessionPersonalGroupId();
+  if (elevate) {
+    await runAdminSql(`
+      DO $$
+      DECLARE v_deusex uuid; v_role uuid;
+      BEGIN
+        SELECT id INTO v_deusex FROM public.groups
+          WHERE name = 'DeusEx' AND group_type = 'system';
+        SELECT id INTO v_role FROM public.group_roles
+          WHERE group_id = v_deusex AND name = 'DeusEx';
+        INSERT INTO public.group_memberships (group_id, member_group_id, added_by_group_id, status)
+          VALUES (v_deusex, '${pg}', v_deusex, 'active')
+          ON CONFLICT (group_id, member_group_id) DO UPDATE SET status = 'active';
+        INSERT INTO public.user_group_roles (member_group_id, group_id, group_role_id, assigned_by_group_id)
+          VALUES ('${pg}', v_deusex, v_role, v_deusex)
+          ON CONFLICT DO NOTHING;
+      END $$;`);
+  } else {
+    await runAdminSql(`
+      DO $$
+      DECLARE v_deusex uuid;
+      BEGIN
+        SELECT id INTO v_deusex FROM public.groups
+          WHERE name = 'DeusEx' AND group_type = 'system';
+        DELETE FROM public.user_group_roles
+          WHERE member_group_id = '${pg}' AND group_id = v_deusex;
+        DELETE FROM public.group_memberships
+          WHERE group_id = v_deusex AND member_group_id = '${pg}';
+      END $$;`).catch(() => undefined);
+  }
+}
+
+async function waitForUserRow(authUserId: string): Promise<{ pgId: string; userId: string }> {
+  const admin = createAdminClient();
+  for (let i = 0; i < 20; i++) {
+    const { data } = await admin
+      .from('users')
+      .select('id, personal_group_id')
+      .eq('auth_user_id', authUserId)
+      .maybeSingle();
+    if (data?.personal_group_id) return { pgId: data.personal_group_id, userId: data.id };
+    await new Promise((r) => setTimeout(r, 500));
+  }
+  throw new Error(`users row never materialised for ${authUserId}`);
+}
+
+async function createFim(email: string, displayName: string): Promise<Fim> {
+  const admin = createAdminClient();
+  const { data, error } = await admin.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+    user_metadata: { display_name: displayName, consent_accepted: 'true' },
+  });
+  if (error) throw error;
+  await markArrivedOnce(admin, data.user.id);
+  const { pgId, userId } = await waitForUserRow(data.user.id);
+  return { authId: data.user.id, pgId, userId };
+}
+
+async function loginAs(context: BrowserContext, email: string): Promise<Page> {
+  const page = await context.newPage();
+  await page.goto('/login');
+  await page.locator('#email').fill(email);
+  await page.locator('#password').fill(password);
+  await page.locator('button[type="submit"]').click();
+  await expect(page).toHaveURL(/\/groups/, { timeout: 15000 });
+  return page;
+}
+
+test.beforeAll(async () => {
+  await setPlatformAdmin(true);
+  memberA = await createFim(A_EMAIL, A_NAME);
+  memberB = await createFim(B_EMAIL, B_NAME);
+  const admin = createAdminClient();
+  const { data: steward } = await admin
+    .from('role_templates')
+    .select('id')
+    .eq('name', 'Steward Role Template')
+    .single();
+  stewardId = steward!.id as string;
+  const { data: consent } = await admin
+    .from('consent_records')
+    .select('id')
+    .eq('subject_user_id', memberB.userId)
+    .maybeSingle();
+  consentIdB = (consent?.id as string) ?? null;
+});
+
+test.afterAll(async () => {
+  await setPlatformAdmin(false);
+  const admin = createAdminClient();
+  if (groupId) {
+    await runAdminSql(`DELETE FROM public.groups WHERE id = '${groupId}';`).catch(() => undefined);
+  }
+  await runAdminSql(`DELETE FROM public.role_templates WHERE name LIKE 'E2EADMF%';`).catch(
+    () => undefined,
+  );
+  await runAdminSql(
+    `DELETE FROM public.admin_audit_log
+      WHERE target IN ('${cloneId ?? '00000000-0000-4000-8000-000000000000'}',
+                       '${memberA.userId}', '${memberB.userId}')
+         OR metadata::text LIKE '%E2EADMF%'
+         OR metadata::text LIKE '%${memberA.userId}%';`,
+  ).catch(() => undefined);
+  if (consentIdB) {
+    await runAdminSql(`DELETE FROM public.consent_records WHERE id = '${consentIdB}';`).catch(
+      () => undefined,
+    );
+  }
+  await admin.auth.admin.deleteUser(memberA.authId).catch(() => undefined);
+  // No-op after a green run (WA-3 hard-deletes B in-journey); a failed run
+  // must not leak the fixture.
+  await admin.auth.admin.deleteUser(memberB.authId).catch(() => undefined);
+});
+
+test('the dashboard offers the Roles card and /admin/roles renders both panes', async ({
+  page,
+}) => {
+  await page.goto('/admin');
+  await page.getByTestId('admin-nav-roles').click();
+  await expect(page).toHaveURL(/\/admin\/roles$/);
+  await expect(page.getByTestId(`template-row-${stewardId}`)).toBeVisible();
+  await expect(page.getByTestId(`seeded-badge-${stewardId}`)).toBeVisible();
+  await expect(page.getByTestId('catalogue-browser')).toBeVisible();
+  await expect(page.getByTestId('as-of')).toBeVisible();
+});
+
+test('cloning a seed names both member-visible consequences and the clone joins the list', async ({
+  page,
+}) => {
+  await page.goto(`/admin/roles/${stewardId}`);
+  await page.getByTestId('clone-button').click();
+  const modal = page.getByTestId('confirm-modal');
+  await expect(modal).toContainText('group-creation options');
+  await expect(modal).toContainText('without a chosen template');
+  await page.getByTestId('clone-name-input').fill(CLONE_NAME);
+  await page.getByTestId('confirm-modal-confirm').click();
+  await expect(page.getByTestId('ceremony-outcome')).toContainText('Cloned.');
+
+  await page.goto('/admin/roles');
+  await expect(page.getByRole('link', { name: CLONE_NAME })).toBeVisible();
+
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from('role_templates')
+    .select('id, is_system')
+    .eq('name', CLONE_NAME)
+    .single();
+  cloneId = data!.id as string;
+  expect(data!.is_system).toBe(false);
+});
+
+test('a saved draft appears in the history while the live default is unchanged', async ({
+  page,
+}) => {
+  await page.goto(`/admin/roles/${cloneId}`);
+  const editor = page.getByTestId('draft-editor');
+  await expect(editor).toBeVisible();
+  await editor.getByTestId(`grant-toggle-${TOGGLED_PERMISSION}`).uncheck();
+  await page.getByTestId('save-draft-button').click();
+  await expect(page.getByTestId('confirm-modal')).toContainText(/nothing changes/i);
+  await page.getByTestId('confirm-modal-confirm').click();
+  await expect(page.getByTestId('ceremony-outcome')).toContainText('Draft saved.');
+
+  await expect(page.getByTestId('version-row-2')).toBeVisible();
+  // The live default is still v1 — a draft applies nothing.
+  await expect(
+    page.getByTestId('version-row-1').getByTestId('default-version-marker'),
+  ).toBeVisible();
+});
+
+test('Apply shows the diff preview + blast radius, and the default pointer moves', async ({
+  page,
+}) => {
+  await page.goto(`/admin/roles/${cloneId}`);
+  await page.getByTestId('apply-version-2').click();
+  const modal = page.getByTestId('confirm-modal');
+  await expect(modal.getByTestId('diff-removed')).toContainText(TOGGLED_PERMISSION);
+  await expect(modal.getByTestId('blast-radius')).toContainText(
+    'future groups instantiate the new set',
+  );
+  await page.getByTestId('confirm-modal-confirm').click();
+  await expect(page.getByTestId('ceremony-outcome')).toContainText('Applied.');
+  await expect(
+    page.getByTestId('version-row-2').getByTestId('default-version-marker'),
+  ).toBeVisible();
+});
+
+test('a group created without a template carries the clone role (STORY-2 pinned live)', async ({
+  page,
+}) => {
+  const res = await page.request.post('/api/groups', { data: { name: GROUP_NAME } });
+  expect(res.status()).toBe(201);
+  groupId = ((await res.json()) as { id: string }).id;
+
+  const admin = createAdminClient();
+  const { data: roles } = await admin
+    .from('group_roles')
+    .select('name, created_from_role_template_id')
+    .eq('group_id', groupId);
+  expect(roles!.some((r) => r.created_from_role_template_id === cloneId)).toBe(true);
+});
+
+test('rollback is the same ceremony pointed at the older version, diff reversed', async ({
+  page,
+}) => {
+  await page.goto(`/admin/roles/${cloneId}`);
+  await page.getByTestId('apply-version-1').click();
+  const modal = page.getByTestId('confirm-modal');
+  await expect(modal.getByTestId('diff-added')).toContainText(TOGGLED_PERMISSION);
+  await page.getByTestId('confirm-modal-confirm').click();
+  await expect(page.getByTestId('ceremony-outcome')).toContainText('Applied.');
+  await expect(
+    page.getByTestId('version-row-1').getByTestId('default-version-marker'),
+  ).toBeVisible();
+});
+
+test('audit rows carry the diffs and the browser renders the family', async ({ page }) => {
+  const admin = createAdminClient();
+  const { data: applies } = await admin
+    .from('admin_audit_log')
+    .select('metadata')
+    .eq('action', 'role_template.apply')
+    .eq('target', cloneId!);
+  expect(applies!.length).toBeGreaterThanOrEqual(2); // apply + rollback
+  for (const row of applies!) {
+    expect(row.metadata).toHaveProperty('added');
+    expect(row.metadata).toHaveProperty('removed');
+  }
+
+  await page.goto('/admin/audit');
+  await expect(page.getByText('role_template.apply').first()).toBeVisible();
+});
+
+test('WA-4: force sign-out reaches the signed-in device within seconds', async ({
+  page,
+  browser,
+}) => {
+  const deviceContext = await browser.newContext();
+  const devicePage = await loginAs(deviceContext, A_EMAIL);
+
+  await page.goto(`/admin/members/${memberA.userId}`);
+  await page.getByRole('button', { name: 'Force sign-out' }).click();
+  await page.getByTestId('confirm-modal-confirm').click();
+
+  // The session-guard hint path, not token expiry: the untouched tab lands
+  // on /login within seconds.
+  await expect(devicePage).toHaveURL(/\/login/, { timeout: 10000 });
+  await deviceContext.close();
+});
+
+test('WA-3: a consented member hard-deletes end-to-end through the console', async ({ page }) => {
+  expect(consentIdB).not.toBeNull(); // the fixture is genuinely consented
+
+  await page.goto(`/admin/members/${memberB.userId}`);
+  await page.getByTestId('hard-delete-member').click();
+  await page.getByTestId('hard-delete-input').fill(B_NAME);
+  await page.getByTestId('hard-delete-confirm').click();
+
+  // The repaint after completion finds no member — the 404 shape, not a 500.
+  await expect(page.getByRole('heading', { name: '404' })).toBeVisible({ timeout: 15000 });
+
+  const admin = createAdminClient();
+  const { data: gone } = await admin
+    .from('users')
+    .select('id')
+    .eq('id', memberB.userId)
+    .maybeSingle();
+  expect(gone).toBeNull();
+  // The consent EVENT survives as proof, subject links anonymised (WA-3).
+  const { data: consent } = await admin
+    .from('consent_records')
+    .select('subject_user_id, subject_group_id')
+    .eq('id', consentIdB!)
+    .single();
+  expect(consent!.subject_user_id).toBeNull();
+  expect(consent!.subject_group_id).toBeNull();
+});
+
+test('STORY-4 route pin: a seed write refuses with the platform message, verbatim', async ({
+  page,
+}) => {
+  const res = await page.request.post(`/api/admin/roles/${stewardId}/versions`, {
+    data: { name: 'Nope', description: null, permission_names: [] },
+  });
+  expect(res.status()).toBe(409);
+  const body = (await res.json()) as { error: string };
+  expect(body.error).toBe('Seeded role templates are immutable — clone, then edit the clone');
+});
+
+test('a demoted operator gets the 404 shape on the new routes', async ({ page }) => {
+  await setPlatformAdmin(false);
+
+  const res = await page.request.post(`/api/admin/roles/${stewardId}/clone`, {
+    data: { name: 'NopeToo' },
+  });
+  expect(res.status()).toBe(404);
+
+  await page.goto('/admin/roles');
+  await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
+  await page.goto(`/admin/roles/${stewardId}`);
+  await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
+});

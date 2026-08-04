@@ -1,0 +1,386 @@
+'use client';
+
+import { useCallback, useEffect, useState } from 'react';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import type { AdminRoleTemplateDetailPayload, AdminRoleTemplateVersion } from '@/lib/admin/roles';
+
+/**
+ * FEAT-H040 STORY-2/3/4 — /admin/roles/[id]: the template detail.
+ *
+ * Seeds render read-only with Clone as the ONLY action (no edit affordances
+ * exist to refuse — STORY-4; the platform's P0001 stays pinned at the door).
+ * Non-seeds get the draft editor: name/description + the checkbox fabric
+ * over the catalogue (the grant-toggle idiom borrowed from the member plane,
+ * not imported), prefilled from the live default set. Save-draft appends an
+ * unapplied version; Apply/Rollback is ONE danger ceremony carrying the
+ * client-computed diff over payload facts (both sides come from the
+ * contract; the client only presents) and the blast-radius line. Refusals
+ * render verbatim; every successful mutation repaints from a fresh read.
+ */
+
+type ViewState =
+  | { kind: 'loading' }
+  | { kind: 'refused' }
+  | { kind: 'error'; message: string }
+  | { kind: 'loaded'; payload: AdminRoleTemplateDetailPayload };
+
+type Ceremony =
+  | { kind: 'clone' }
+  | { kind: 'save' }
+  | { kind: 'apply'; version: AdminRoleTemplateVersion }
+  | null;
+
+type Outcome = { tone: 'error' | 'success'; text: string } | null;
+
+const computeDiff = (from: string[], to: string[]) => ({
+  added: to.filter((name) => !from.includes(name)).sort(),
+  removed: from.filter((name) => !to.includes(name)).sort(),
+});
+
+export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) {
+  const [view, setView] = useState<ViewState>({ kind: 'loading' });
+  const [ceremony, setCeremony] = useState<Ceremony>(null);
+  const [busy, setBusy] = useState(false);
+  const [outcome, setOutcome] = useState<Outcome>(null);
+  const [cloneName, setCloneName] = useState('');
+  const [draftName, setDraftName] = useState('');
+  const [draftDescription, setDraftDescription] = useState('');
+  const [draftChecked, setDraftChecked] = useState<Set<string>>(new Set());
+
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/admin/roles/${templateId}`);
+      if (res.status === 401 || res.status === 403 || res.status === 404) {
+        setView({ kind: 'refused' });
+        return;
+      }
+      if (!res.ok) {
+        setView({ kind: 'error', message: 'The role template could not be loaded.' });
+        return;
+      }
+      const payload = (await res.json()) as AdminRoleTemplateDetailPayload;
+      setView({ kind: 'loaded', payload });
+      // The draft editor prefills from the LIVE state — the template's name /
+      // description and the default version's permission set (what
+      // instantiation copies today). Reinitialised on every fresh read so a
+      // repaint after Save/Apply reflects the new ledger.
+      setDraftName(payload.template.name);
+      setDraftDescription(payload.template.description ?? '');
+      const live = payload.versions.find((v) => v.is_default);
+      setDraftChecked(new Set(live?.permission_names ?? []));
+    } catch {
+      setView({ kind: 'error', message: 'The role template could not be loaded.' });
+    }
+  }, [templateId]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const mutate = async (path: string, body: Record<string, unknown>, successText: string) => {
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/admin/roles/${templateId}/${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const payload = (await res.json().catch(() => ({}))) as { error?: string };
+        // The refusal renders verbatim — the platform's message is the truth.
+        setOutcome({ tone: 'error', text: payload.error ?? 'The request was refused.' });
+        setCeremony(null);
+        return;
+      }
+      setOutcome({ tone: 'success', text: successText });
+      setCeremony(null);
+      await load(); // the honest repaint — always from a fresh read
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (view.kind === 'refused') {
+    return (
+      <main className="flex min-h-[60vh] flex-col items-center justify-center gap-2">
+        <h1 className="text-2xl font-semibold">404</h1>
+        <p className="text-gray-600">This page could not be found.</p>
+      </main>
+    );
+  }
+
+  if (view.kind === 'loading') {
+    return (
+      <div role="status" aria-label="Loading role template" className="space-y-2 p-6">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="h-12 animate-pulse rounded bg-gray-200" />
+        ))}
+      </div>
+    );
+  }
+
+  if (view.kind === 'error') {
+    return (
+      <main className="p-6">
+        <div className="rounded border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+          <p>{view.message}</p>
+          <button
+            onClick={() => {
+              setView({ kind: 'loading' });
+              void load();
+            }}
+            className="mt-2 rounded border border-red-300 px-3 py-1 text-sm text-red-800"
+          >
+            Retry
+          </button>
+        </div>
+      </main>
+    );
+  }
+
+  const { template, versions, catalog } = view.payload;
+  const liveVersion = versions.find((v) => v.is_default) ?? null;
+  const applying = ceremony?.kind === 'apply' ? ceremony.version : null;
+  const diff = applying ? computeDiff(liveVersion?.permission_names ?? [], applying.permission_names) : null;
+
+  return (
+    <main className="space-y-6 p-6">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h1 className="flex items-center gap-2 text-2xl font-semibold">
+          {template.name}
+          {template.is_system && (
+            <span className="rounded bg-indigo-50 px-2 py-0.5 text-sm text-indigo-700">Seeded</span>
+          )}
+        </h1>
+        {template.is_system && (
+          <button
+            data-testid="clone-button"
+            onClick={() => {
+              setCloneName('');
+              setCeremony({ kind: 'clone' });
+            }}
+            className="rounded border border-indigo-300 px-3 py-1 text-sm text-indigo-700"
+          >
+            Clone…
+          </button>
+        )}
+      </div>
+      {template.description && <p className="text-sm text-gray-600">{template.description}</p>}
+      {template.is_system && (
+        <p className="text-sm text-gray-500">
+          Seeded role templates are immutable — clone one to make an editable template.
+        </p>
+      )}
+
+      {outcome && (
+        <p
+          data-testid="ceremony-outcome"
+          role={outcome.tone === 'error' ? 'alert' : 'status'}
+          className={
+            outcome.tone === 'error'
+              ? 'rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800'
+              : 'rounded border border-green-200 bg-green-50 p-3 text-sm text-green-800'
+          }
+        >
+          {outcome.text}
+        </p>
+      )}
+
+      <section className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+        <h2 className="mb-3 text-lg font-medium">Version history</h2>
+        <ul className="space-y-2">
+          {versions.map((v) => (
+            <li
+              key={v.id}
+              data-testid={`version-row-${v.version_number}`}
+              className="flex flex-wrap items-baseline gap-2 border-t border-gray-100 pt-2 text-sm first:border-t-0 first:pt-0"
+            >
+              <span className="font-medium">
+                v{v.version_number} · {v.name}
+              </span>
+              {v.is_default && (
+                <span
+                  data-testid="default-version-marker"
+                  className="rounded bg-green-50 px-1.5 py-0.5 text-xs text-green-800"
+                >
+                  Default
+                </span>
+              )}
+              <span className="text-xs text-gray-500">
+                {v.permission_names.length} permission{v.permission_names.length === 1 ? '' : 's'} ·{' '}
+                {v.created_by_display_name ?? 'unknown'} · {new Date(v.created_at).toLocaleString()}
+              </span>
+              {v.description && <span className="text-xs text-gray-500">{v.description}</span>}
+              {!template.is_system && !v.is_default && (
+                <button
+                  data-testid={`apply-version-${v.version_number}`}
+                  onClick={() => setCeremony({ kind: 'apply', version: v })}
+                  className="rounded border border-red-300 px-2 py-0.5 text-xs text-red-700"
+                >
+                  Apply…
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {!template.is_system && (
+        <section
+          data-testid="draft-editor"
+          className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
+        >
+          <h2 className="mb-1 text-lg font-medium">Draft a new version</h2>
+          <p className="mb-3 text-sm text-gray-500">
+            Edits here become a saved version in the history — nothing changes for any group or
+            member until you Apply it.
+          </p>
+          <div className="mb-3 space-y-2">
+            <label className="block text-sm">
+              <span className="mb-1 block text-xs font-medium text-gray-700">Name</span>
+              <input
+                data-testid="draft-name"
+                value={draftName}
+                onChange={(e) => setDraftName(e.target.value)}
+                className="w-full max-w-md rounded border border-gray-300 px-2 py-1 text-sm"
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="mb-1 block text-xs font-medium text-gray-700">Description</span>
+              <textarea
+                data-testid="draft-description"
+                value={draftDescription}
+                onChange={(e) => setDraftDescription(e.target.value)}
+                rows={2}
+                className="w-full max-w-md rounded border border-gray-300 px-2 py-1 text-sm"
+              />
+            </label>
+          </div>
+          <div className="mb-3 grid gap-1 sm:grid-cols-2">
+            {catalog.map((p) => (
+              <label key={p.name} className="flex items-center gap-2 text-xs text-gray-700">
+                <input
+                  type="checkbox"
+                  data-testid={`grant-toggle-${p.name}`}
+                  checked={draftChecked.has(p.name)}
+                  onChange={(e) => {
+                    const next = new Set(draftChecked);
+                    if (e.target.checked) next.add(p.name);
+                    else next.delete(p.name);
+                    setDraftChecked(next);
+                  }}
+                />
+                <span>{p.name}</span>
+                <span className="text-gray-400">({p.category})</span>
+              </label>
+            ))}
+          </div>
+          <button
+            data-testid="save-draft-button"
+            onClick={() => setCeremony({ kind: 'save' })}
+            className="rounded border border-indigo-300 px-3 py-1 text-sm text-indigo-700"
+          >
+            Save draft…
+          </button>
+        </section>
+      )}
+
+      <ConfirmModal
+        isOpen={ceremony?.kind === 'clone'}
+        title="Clone role template"
+        message={
+          <span className="block space-y-2 text-left">
+            <span className="block">
+              Clones {template.name}&rsquo;s live permission set into a new template. From the
+              moment it exists, the clone appears in every member&rsquo;s group-creation options and
+              rides every future group created without a chosen template.
+            </span>
+            <label className="block text-sm">
+              <span className="mb-1 block text-xs font-medium text-gray-700">New template name</span>
+              <input
+                data-testid="clone-name-input"
+                value={cloneName}
+                onChange={(e) => setCloneName(e.target.value)}
+                className="w-full rounded border border-gray-300 px-2 py-1 text-sm"
+              />
+            </label>
+          </span>
+        }
+        confirmText="Clone"
+        variant="info"
+        busy={busy}
+        onConfirm={() => void mutate('clone', { name: cloneName }, 'Cloned.')}
+        onCancel={() => {
+          if (!busy) setCeremony(null);
+        }}
+      />
+
+      <ConfirmModal
+        isOpen={ceremony?.kind === 'save'}
+        title="Save draft"
+        message={`Saves your edits as a new version in ${template.name}'s history. Nothing changes for any group or member until you Apply it.`}
+        confirmText="Save draft"
+        variant="info"
+        busy={busy}
+        onConfirm={() =>
+          void mutate(
+            'versions',
+            {
+              name: draftName,
+              description: draftDescription === '' ? null : draftDescription,
+              permission_names: Array.from(draftChecked).sort(),
+            },
+            'Draft saved.',
+          )
+        }
+        onCancel={() => {
+          if (!busy) setCeremony(null);
+        }}
+      />
+
+      <ConfirmModal
+        isOpen={ceremony?.kind === 'apply'}
+        title={applying ? `Apply v${applying.version_number}` : 'Apply'}
+        message={
+          applying && diff ? (
+            <span className="block space-y-2 text-left">
+              {applying.name !== template.name && (
+                <span data-testid="diff-name-change" className="block">
+                  Renames &ldquo;{template.name}&rdquo; to &ldquo;{applying.name}&rdquo;.
+                </span>
+              )}
+              {diff.added.length > 0 && (
+                <span data-testid="diff-added" className="block">
+                  Adds: <span className="font-mono text-xs">{diff.added.join(', ')}</span>
+                </span>
+              )}
+              {diff.removed.length > 0 && (
+                <span data-testid="diff-removed" className="block">
+                  Removes: <span className="font-mono text-xs">{diff.removed.join(', ')}</span>
+                </span>
+              )}
+              {diff.added.length === 0 && diff.removed.length === 0 && (
+                <span className="block">No permission changes.</span>
+              )}
+              <span data-testid="blast-radius" className="block">
+                {template.instantiated_role_count} existing group roles keep their snapshot; future
+                groups instantiate the new set.
+              </span>
+            </span>
+          ) : (
+            ''
+          )
+        }
+        confirmText="Apply"
+        variant="danger"
+        busy={busy}
+        onConfirm={() => {
+          if (applying) void mutate('default', { version_id: applying.id }, 'Applied.');
+        }}
+        onCancel={() => {
+          if (!busy) setCeremony(null);
+        }}
+      />
+    </main>
+  );
+}

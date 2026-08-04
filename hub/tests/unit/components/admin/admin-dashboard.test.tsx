@@ -192,4 +192,13 @@ describe('FEAT-H034 — AdminDashboard', () => {
     const card = screen.getByTestId('admin-nav-audit');
     expect(card).toHaveAttribute('href', '/admin/audit');
   });
+
+  // WRITTEN RED-FIRST (2026-08-04): the fifth card does not exist at head.
+  it('FEAT-H040: the loaded dashboard offers the Roles card', async () => {
+    fetchMock.mockResolvedValue(okResponse({ stats: STATS }));
+    render(<AdminDashboard />);
+    await screen.findByText('Members');
+    const card = screen.getByTestId('admin-nav-roles');
+    expect(card).toHaveAttribute('href', '/admin/roles');
+  });
 });

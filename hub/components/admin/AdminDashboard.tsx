@@ -221,6 +221,17 @@ export function AdminDashboard() {
             Every admin action and auth moment, newest first — the platform&rsquo;s own trail.
           </span>
         </Link>
+        {/* FEAT-H040: the Roles (ADM-17) entry — the role-template editor. */}
+        <Link
+          href="/admin/roles"
+          data-testid="admin-nav-roles"
+          className="block max-w-xs rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover:border-gray-400"
+        >
+          <span className="block text-sm font-medium text-gray-900">Role templates</span>
+          <span className="block text-sm text-gray-500">
+            The template catalogue and editor — clone, draft, preview, apply.
+          </span>
+        </Link>
       </nav>
 
       <section className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">

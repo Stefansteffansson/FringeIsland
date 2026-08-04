@@ -6,7 +6,7 @@ title: Role-template editing contracts (ADM-17 platform half per RB-4/RB-5 — v
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -136,3 +136,17 @@ Hub consumes via FEAT-H040 (BFF-wrapped); Gimbal inherits the contracts. Member-
 ## Performance budget
 
 N/A (no surface). All reads are small (4-ish templates, 48 catalogue rows, version lists); FEAT-H040 carries the page budgets. ADR-U043 measurement pass at the gate regardless (standing; the Amendment-2 dual signal applies).
+
+## Implementation notes (built 2026-08-04, Cycle ADM-F)
+
+**Two migrations, both held at the schema gate for named approval:**
+
+- **`20260804190000` (PR #408):** the versioning substrate (`role_template_versions` + junction, SELECT-only RLS matching the five sibling template tables; `role_templates.default_version_id`; `permissions.is_protected` with the seeded set `assign_roles, manage_roles, remove_roles, invite_members, remove_members, rest_group`; every-template-gets-version-1 backfill), the five editor contracts, and the three walk-rider re-issues. Manifest: 2 tables PC-3 (export-section classification at birth), 5 functions PC-4. Red evidence at head: 15 red / 2 designed-green of 17, every red verified to its designed class — including the live `23503` consent-FK refusal (the WA-3 walk defect demonstrated by the cell the family never had) and the live `'Unauthorized'` message drift.
+- **`20260804210000` (PR #410, the gate fixes):** the post-apply gate run left S2c/S4a/S6a red — both contract-body defects, deterministic across two runs. (1) `create_engagement_group`'s template-less branch read role templates **through `group_template_roles`**, equivalent to "EVERY role template" only while the catalogue is all-seeds — a clone never joins that junction, so it never instantiated. Re-issued: the template-less branch selects from `role_templates` directly. **This supersedes the decomposition-time derivation "zero changes to `create_engagement_group` — snapshot-now holds by construction": the snapshot physics did hold, but the EVERY-role-template reach did not; the gate cell caught exactly the assumption.** (2) `admin_get_audit_log` resolved targets to the personal-group name — the signup path sets that to the NICKNAME (first token); resolution now reads `users.full_name` for user-id targets and reaches through to the owning user's `full_name` for personal-group targets; other groups keep `groups.name`; actor resolution untouched (PC022 law — the rider re-specified targets only). Gate suite 17/17 green post-fix.
+
+**Build-time L4 corrections (recorded on the held branches):**
+
+- **WA-3 is anonymise-not-purge** (commit dae8b27): `erase_fim_account` retains consent events as GDPR proof (ADR-U034 §5) and composes `admin_hard_delete_user`; the leg copies `20260627120000:83-91` verbatim, idempotent under composition.
+- **Sibling-sweep correction (PR #411):** the #408 sweep marked the erasure suite's hard-delete assertions DELIBERATELY LEFT — wrong for the characterization pinning the pre-WA-3 `23503` refusal, which is precisely the law WA-3 inverted. Adapted post-apply (labelled, red-verified against the live behaviour): the pin is now "hard-deleting a consented FIM anonymises the consent proof, never orphans it" — the guarantee's mechanism changed (refusal → anonymise-then-delete), the guarantee held.
+
+**Post-apply verification:** gate suite 17/17 → full integration 1008/1008 (1 labelled adaptation, above) → affected E2E journeys (admin audit browser + admin members bulk) 10/10 → ADR-U043 pass as the Performance-DoD analysis (no first-paint request added or rerouted anywhere in the platform half; the HYG-A/ADM-E cycle precedent — the next full measurement pass lands at AB-6).

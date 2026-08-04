@@ -194,7 +194,12 @@ describe('AdminMemberDetail (FEAT-H036 STORY-2..6)', () => {
     expect(await screen.findByText(/cannot be undone|irreversible/i)).toBeInTheDocument();
   });
 
-  it('STORY-4 Force sign-out: ceremony carries the refresh-layer honesty; success reports the platform count', async () => {
+  // ADAPTED for FEAT-H040 WA-4 (2026-08-04, red-first): the refresh-layer
+  // hedge ("may stay signed in for a few minutes on its current token") was
+  // H036's honest copy for a mechanism that had never been device-proven.
+  // The ADM-F E2E cell proved the session-guard hint path lands the device on
+  // /login within seconds — the ceremony now states the instant behaviour.
+  it('WA-4 Force sign-out: ceremony states the instant behaviour (hedge retired); success reports the platform count', async () => {
     fetchMock
       .mockResolvedValueOnce(okDetail(activeDetail))
       .mockResolvedValueOnce(okBody({ count: 1 }))
@@ -202,7 +207,8 @@ describe('AdminMemberDetail (FEAT-H036 STORY-2..6)', () => {
     render(<AdminMemberDetail userId={MEMBER_ID} />);
     await screen.findByRole('heading', { name: 'Rolf Rowan' });
     await userEvent.click(screen.getByTestId('force-logout-member'));
-    expect(await screen.findByText(/current token|may stay signed in for a few minutes/i)).toBeInTheDocument();
+    expect(await screen.findByText(/open tabs sign out within seconds/i)).toBeInTheDocument();
+    expect(screen.queryByText(/may stay signed in|current token/i)).not.toBeInTheDocument();
     const dialog = screen.getByRole('dialog');
     await userEvent.click(within(dialog).getByRole('button', { name: 'Force sign-out' }));
     expect(await screen.findByTestId('action-success')).toHaveTextContent(/1 session/);

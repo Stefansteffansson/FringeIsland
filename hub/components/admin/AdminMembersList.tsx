@@ -461,6 +461,11 @@ export function AdminMembersList() {
                   </li>
                 ))}
               </ul>
+              {bulkSpec.action === 'force-logout' && (
+                <span className="mt-2 block">
+                  Their sessions end now; open tabs sign out within seconds.
+                </span>
+              )}
             </span>
           ) : (
             ''
