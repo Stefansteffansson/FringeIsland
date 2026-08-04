@@ -6,7 +6,7 @@ title: Suspended-group admin access contracts (WF-2 per the settled G-board — 
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -139,3 +139,12 @@ Paired with [FEAT-H041](../../../products/hub/features/FEAT-H041-suspended-group
 ## Performance budget
 
 N/A (no surface). The re-issued reads add one `groups.status` lookup per call — same class as the PC023 arms they join; no new budget row.
+
+## Implementation notes (built 2026-08-04, Cycle ADM-G)
+
+- **One migration** (`20260804230000_adm_g_pc026_suspended_group_admin_access.sql`), PR #418 held at the schema gate and applied on the named approval ("ok merge 418"). Red-first: **12 red / 7 labelled-green of 19** at head — the three armed doors' pre-PC026 refusals, the RLS new-arm zero-rows, the missing payload keys, the absent wrapper (PGRST202 class, with the non-admin/anon cells asserting post-apply refusal copy), and the remove door's `group is not active`; the greens were the two Tier-1 forum characterization pins, the member-quarantine continuity, the active-control and DM pins, the five unchanged truth-table rows, and the resting-refusal pin. Post-apply **19/19** (one test-only fix: `conversation_participants` is composite-keyed — no `id` column — masked pre-apply because the cell failed earlier on its intended red).
+- **Build finding 1 — the gate finding (spec Part 3 "not silent scope"):** `admin_remove_member_from_group` refused ALL non-active groups (`20260801190000:786-788`; its own COMMENT documents "non-active group P0001") — the dossier premise "PC023's exits family passes admins through the availability guard" did not hold for this door (PC023 never re-issued it; its inline status guard fires before any availability law). Re-issued byte-identical except `status NOT IN ('active','suspended')`; the resting refusal is pinned by a labelled-green cell; last-member removal on a suspended group takes the existing closure leg (suspended → closed, an admin-plane transition). FEAT-PC021's contract line carries the amendment pointer.
+- **Build finding 2 — the payload-walk gap:** members rows gain **`user_id`** (`public.users.id`) beside `email` — the remove contract's key, which the Hub cannot resolve from `personal_group_id` API-first (no table reads, no lookup contract). Both keys additive, admin-gated, already visible on the member console; LEFT JOIN preserves sight over act on a broken users row.
+- **The moderate composition settled (ADR-U047 rule 3, the ADM-D shape):** sealed DS-5 body `ds5_moderation_moderate_group_post` (post resolution P0002 · purpose-bound P0001 `group is not suspended`, raised domain-side because only DS-5 may resolve the post's group · the tombstone by REUSING `moderate_forum_post` — never a second table-touching body; its Tier-1-admitted permission gate is the law STORY-3 pins, and an AB-6 narrowing would fail the gate suite loudly) under PC-4 wrapper `admin_moderate_group_forum_post` (wall 42501 `platform administrator required` · required reason 22023 · audit `moderation.forum_post_moderated` with `{group_id, post_id, author_group_id, reason}`). Grants: body sealed from all client roles; wrapper authenticated + service_role. Manifest: wrapper → PC-4, body → DS-5.
+- **Sibling adaptations:** the delegated whole-tree sweep returned **zero will-flip assertions** (refusal copy is unpinned — suites assert SQLSTATEs); the one collision surfaced at the post-apply full sweep: the ADM-D S8a **`moderation.*` catalog pin** (`moderation-and-audit-contracts.test.ts:779`) — the append-only log now carries the second contract-written action, so the expected set grew (ADAPTED, labelled; the "only via the contract" law the cell pins is preserved). The pin queried the action namespace, not function names — why the name-based sweep missed it; recorded for the retro.
+- Verification: gate suite 19/19 · full integration sweep green with the one labelled S8a adaptation (final numbers in the cycle CHANGELOG entry) · platform conformance suites green (manifest registrations landed with the migration) · ADR-U043: no surface, no budget row (the paired H041 carries the surface analysis).

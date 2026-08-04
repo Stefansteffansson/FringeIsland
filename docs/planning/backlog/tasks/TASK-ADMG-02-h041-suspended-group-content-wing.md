@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMG-02
 title: Build FEAT-H041 — the content wing (plane banner + members/forum/announcements/conversations), six BFF routes, the moderate + remove ceremonies, the E2E journey
-status: in_progress
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H041
@@ -20,12 +20,12 @@ The surface half of Cycle ADM-G, per [FEAT-H041](../../../products/hub/features/
 
 ## Acceptance criteria
 
-- [ ] STORY-1..6 red-first and green: wing for suspended only (active/resting byte-identical page), plane banner, four sections rendering the contracts' payloads, both ceremonies (W-4 email echo on remove; author + group named on moderate; required reason; consequence stated before the click), honest repaint after acts, wing collapse on reactivation race, non-admin 404 on every new route
-- [ ] Durable telemetry asserted in the route suites (four read events, ids only, never content); acts verified against platform-side `admin_audit_log` rows (the BFF adds no second authority — ADR-U038)
-- [ ] Route-policy conformance green (no runtime/region exports; `getUser()` on POSTs, `getVerifiedUserId` on GETs); jest-axe clean on new states; tokens only
-- [ ] E2E journey per the spec's J-B narrative: suspend → wing → read all four families → moderate (tombstone verified member-side by a second context) → remove (membership gone member-side) → `/admin/audit` shows both rows → reactivate → wing gone, member plane restored; leak check 0→0
-- [ ] Performance budget honoured: sections are independent fetch-on-mount reads below the metadata anatomy (never blocking it), B6 skeletons, B5 ceremony feedback
-- [ ] Feature-inventory summary + README rows advanced in the same commits as maturity transitions; CHANGELOG(s) owed: root always; hub/ — admin-plane change, check the register precedent (ADM-B..F)
+- [x] STORY-1..6 red-first and green *(tranche 1 #419: wing suite 12 + route-tier suite 17 demonstrated red module-absent → green; unit 1291/1291)*: wing for suspended only, plane banner, four sections, both reason-required ceremonies, honest repaint, wing collapse on drift, non-admin 404 on every new route (E2E-verified while held)
+- [x] Durable telemetry asserted in the NEW route-tier suite (exact event names, exact ids-only props, no-emit on refusals — the pattern established this cycle; none existed before); acts verified platform-side (`admin_audit_log` rows in the PC026 gate suite + `/admin/audit` in the E2E)
+- [x] Route-policy conformance green, zero exceptions (per-verb identity convention); jest-axe clean on the wing + the suspended page
+- [x] E2E journey 6/6, leak 0→0 — member-side verification sequenced AFTER reactivation (the member plane is quarantined by design while held); two test-side selector fixes labelled (product correct both times)
+- [x] Performance budget honoured: first paint unchanged, post-paint fetch-on-mount sections, B6 skeletons, B5 ceremonies; no deep-cold spot owed (no first-paint request added); AB-6 carries the full pass
+- [x] Feature-inventory summary + README rows advanced with the 6-done move; CHANGELOGs: root cycle entry + hub/ member-register entry + platform-core (PC026)
 
 ## Technical notes
 
