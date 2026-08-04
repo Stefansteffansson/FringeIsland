@@ -6,7 +6,7 @@ title: Bell-answerable personal invitations (dispatch, typed response, all-doors
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

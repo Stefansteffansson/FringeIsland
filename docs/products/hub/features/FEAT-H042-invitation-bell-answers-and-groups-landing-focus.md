@@ -6,7 +6,7 @@ title: Invitations answer in the bell + the /groups landing focus
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
