@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMG-02
 title: Build FEAT-H041 — the content wing (plane banner + members/forum/announcements/conversations), six BFF routes, the moderate + remove ceremonies, the E2E journey
-status: todo
+status: in_progress
 assigned_to: Claude
 priority: high
 feature: FEAT-H041

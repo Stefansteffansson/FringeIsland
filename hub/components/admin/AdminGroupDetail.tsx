@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { AdminSuspendedContentWing } from '@/components/admin/AdminSuspendedContentWing';
 import type { AdminGroupDetail as Detail } from '@/lib/admin/groups';
 
 /**
@@ -288,6 +289,19 @@ export function AdminGroupDetail({ groupId }: { groupId: string }) {
             </div>
           )}
         </section>
+      )}
+
+      {/* FEAT-H041: the content wing — suspended engagement groups only
+          (state honesty both directions: the FEAT-PC026 contracts refuse
+          everyone else anyway). A section refusal mid-flight (the
+          reactivation race) re-reads the detail and the wing collapses. */}
+      {isEngagement && d.status === 'suspended' && (
+        <AdminSuspendedContentWing
+          groupId={groupId}
+          groupName={d.name}
+          members={d.members}
+          onStateDrift={load}
+        />
       )}
 
       <ConfirmModal
