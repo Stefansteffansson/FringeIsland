@@ -225,6 +225,19 @@ describe('AdminMembersList — the bulk family (FEAT-H039 STORY-3/4/5)', () => {
     expect(within(bar).getAllByRole('button')).toHaveLength(3);
   });
 
+  // WRITTEN RED-FIRST (2026-08-04, FEAT-H040 WA-4): the bulk force sign-out
+  // ceremony states the instant behaviour — proven by the ADM-F E2E cell
+  // (the device lands on /login within seconds via the session-guard hints).
+  it('WA-4: the bulk force sign-out ceremony states the instant behaviour', async () => {
+    await renderLoaded();
+    await selectRow(AXEL);
+    await userEvent.click(screen.getByTestId('bulk-force-logout'));
+    const modal = screen.getByTestId('confirm-modal');
+    expect(modal).toHaveTextContent(/sessions end now/i);
+    expect(modal).toHaveTextContent(/open tabs sign out within seconds/i);
+    await userEvent.click(screen.getByTestId('confirm-modal-cancel'));
+  });
+
   it('the ceremony names the action, the count, and every member by name + email (W-4 at bulk birth)', async () => {
     await renderLoaded();
     await selectRow(AXEL);

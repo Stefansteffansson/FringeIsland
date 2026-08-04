@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMF-02
 title: Build FEAT-H040 — /admin/roles (list, catalogue browser, detail, clone/draft/apply ceremonies), WA-2 target rendering, WA-4 instant-sign-out verification + copy softening
-status: in_progress
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H040
@@ -20,10 +20,10 @@ The surface half of Cycle ADM-F, per [FEAT-H040](../../../products/hub/features/
 
 ## Acceptance criteria
 
-- [ ] STORY-1..8 red-first and green: list/catalogue/detail rendering, both clone consequences in the ceremony copy, diff preview + rollback-as-repoint, seeds read-only in UI with the server refusal pinned at route tier, WA-2 target rendering (raw uuid into metadata details), WA-4 device sign-out within seconds + softened copy, WA-3 console completion, non-admin 404 on every new route
-- [ ] COR-C lattice: tokens only, jest-axe clean on new states, route-policy + outer-ring zero exceptions, durable content-free telemetry on the three mutation routes, mutations on `getUser()` (ADR-U037)
-- [ ] E2E journey per STORY-8 green; unit sweep green; lint 0 errors; `next build` green (the type gate)
-- [ ] Feature-inventory summary + README rows advanced in the same commits as maturity transitions
+- [x] STORY-1..8 red-first and green: list/catalogue/detail rendering, both clone consequences in the ceremony copy, diff preview + rollback-as-repoint, seeds read-only in UI with the server refusal pinned at route tier, WA-2 target rendering (raw uuid into metadata details), WA-4 device sign-out within seconds + softened copy, WA-3 console completion, non-admin 404 on every new route *(2026-08-04: tranche 1 #409; tranche 2 unit red→green 37 cells; E2E 11/11)*
+- [x] COR-C lattice: tokens only, jest-axe clean on new states, route-policy + outer-ring zero exceptions, durable content-free telemetry on the three mutation routes, mutations on `getUser()` (ADR-U037)
+- [x] E2E journey per STORY-8 green; unit sweep green; lint 0 errors; `next build` green (the type gate) *(11/11 · 1256/1256 · 0 errors · green)*
+- [x] Feature-inventory summary + README rows advanced in the same commits as maturity transitions
 
 ## Technical notes
 

@@ -407,7 +407,7 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
       <ConfirmModal
         isOpen={ceremony?.kind === 'force-logout'}
         title="Force sign-out"
-        message={`Sign ${who} out everywhere? Existing sessions end now; an open tab may stay signed in for a few minutes on its current token.`}
+        message={`Sign ${who} out everywhere? Every session ends now and their open tabs sign out within seconds.`}
         confirmText="Force sign-out"
         variant="warning"
         busy={busy}

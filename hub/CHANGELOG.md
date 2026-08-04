@@ -2,6 +2,15 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-04 — Role templates learn clone, draft, preview, apply — and the audit log names its targets ([FEAT-H040](../docs/products/hub/features/FEAT-H040-role-template-editor-and-audit-target-honesty.md))
+
+- **A new Roles area on the admin dashboard.** `/admin/roles` lists every role template — the four seeded ones badged — with its default version, version count, which group templates carry it, and how many live group roles it has instantiated, beside a read-only permission catalogue grouped by category with protected permissions marked. Nothing in the catalogue can be edited; permissions are platform atoms.
+- **Seeded templates are immutable — cloning is the door.** A seed's page offers exactly one action: Clone. The confirmation says out loud what cloning means: the new template appears in every member's group-creation options, and every future group created without choosing a template carries its role.
+- **Editing is drafting; nothing changes until Apply.** On a cloned template, edit the name, description, and permission checkboxes and save — that's a new version in the history, changing nothing live. Applying a version is a danger ceremony showing exactly what is added and removed, any rename, and the blast radius: existing group roles keep their snapshot; future groups instantiate the new set. Rolling back is the same ceremony pointed at an older version.
+- **The audit log names its targets.** Rows about a member now show the member's full name and email instead of a raw id (the id moves into the expandable detail); rows about a group show the group's name; erased targets render the raw value honestly.
+- **Force sign-out reaches the device in seconds — and now says so.** The ceremony no longer hedges about tokens and minutes: every session ends now, and open tabs sign themselves out within seconds. Verified end-to-end on a live signed-in browser before the copy changed.
+- **Hard delete now works on the members it exists for.** A member with recorded consent decisions can be hard-deleted through the console — the operation used to die in a generic error on exactly those members. Their consent record survives with the personal link anonymised: proof retained, person gone.
+
 ## 2026-08-03 — The members console: pages, real search, and acting on many at once ([FEAT-H039](../docs/products/hub/features/FEAT-H039-bulk-member-actions-and-bounded-list.md))
 
 - **The members list loads a page, not the whole platform.** `/admin/members` used to fetch every member (~1,900 rows) behind each paint; it now loads 50 at a time with Previous/Next, and shows *As of* with a Refresh button so you know how fresh what you're looking at is.

@@ -6,7 +6,7 @@ title: The role-template editor (/admin/roles per RB-4 — clone / draft / diff-
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -99,3 +99,24 @@ Gimbal inherits the contracts, not the shell. Member-facing surfaces change beha
 - **First-paint class:** B2/B3 for `/admin/roles` and the detail — justified standalone reads (admin-only, ADR-U042 guardrail 3); payloads are small (4-ish templates, 48 catalogue rows).
 - **Interaction class:** checkbox toggles, pane switches, and version selection are local state within B5 (100 ms feedback); ceremony submissions show busy states for the round-trip.
 - **Loading states:** skeletons on both reads (B6); ceremonies disable-with-progress; nothing renders optimistic.
+
+## Implementation notes (built 2026-08-04, Cycle ADM-F)
+
+**Two tranches (the H039 apply-order-independence pattern), both red-first at the unit tier:**
+
+- **Tranche 1 (PR #409, pre-apply):** the WA-2 shape-tolerant audit-target rendering — `AdminAuditRow` gained optional `target_display_name`/`target_email`, `AdminAuditLog` renders the resolved form with the raw uuid in the metadata details, unresolved rows regression-pinned to today's rendering. 2 red cells + 1 green control; 13/13 after; zero user-visible change pre-apply.
+- **Tranche 2 (this close):** `/admin/roles` + detail + the fifth dashboard card + ceremonies + the WA-4 softening. Red demonstrated 2026-08-04 pre-implementation: `admin-roles-view.test.tsx` and `admin-role-template-detail.test.tsx` failed at import (components absent), the dashboard suite red on exactly the Roles-card cell (10 sibling pins green). Green after implementation: 37 cells across the three suites, including the first-paint call-count pins (exactly one composed read per page), the zero-write-affordance catalogue sweep, both clone consequences in the ceremony copy, the client-computed diff + blast-radius line from payload facts, refusals rendered verbatim, and axe-clean list/detail/ceremony/outcome states.
+
+**Surface shape decisions within the spec's frame:** the detail BFF route composes `admin_get_role_template_detail` with the list read (catalogue + blast-radius facts) so the detail paints from ONE client request — presentation composition, both payloads platform-owned. Clone renders on seed details only (the draft editor is the non-seed door). The clone ceremony hosts its name input inside `ConfirmModal.message` (ReactNode, the H039 capability).
+
+**Walk riders, proven then softened:**
+
+- **WA-4:** the E2E cell proved the untouched signed-in device lands on `/login` within seconds of admin force sign-out (session-guard hint path — not token expiry). Only then was the copy softened, red-first: the single ceremony's refresh-layer hedge ("may stay signed in for a few minutes on its current token") retired for "Every session ends now and their open tabs sign out within seconds"; the bulk ceremony gained the instant line (force-logout only). The H036-era unit pin of the hedge was ADAPTED with the rationale in place.
+- **WA-3:** the E2E cell hard-deletes a genuinely CONSENTED fixture through the console type-to-confirm — completes (no generic 500), member gone on repaint (the 404 shape), consent record surviving subject-anonymised in the substrate.
+- **STORY-4 route pin:** an admin-session `POST /api/admin/roles/<seed>/versions` refuses 409 with the platform message verbatim ("Seeded role templates are immutable — clone, then edit the clone") — asserted via the journey's request context so a UI regression can't silently re-open the door.
+
+**E2E (labelled test-after by the house rule — red-first lives at the unit + platform tiers):** an 11-cell serial journey (`admin-roles.spec.ts`): card → clone (both consequences) → draft (live default unchanged) → apply with diff preview → a template-less group carries the clone's role (created through the session's own `POST /api/groups` door, asserted in the substrate) → rollback (reversed diff) → audit rows carry added/removed diffs (substrate + browser) → WA-4 → WA-3 → the STORY-4 pin → demoted-operator 404 sweep. 11/11 green, leak instrument 0→0. Build-time discovery: seed template display names carry the "Role Template" suffix ("Steward Role Template"), not the bare role names.
+
+**Gates:** route-policy + outer-ring conformance green with zero exception entries; durable content-free telemetry on all three mutation routes (actor + template uuid + counts, never names); mutations on `getUser()`, reads on `getVerifiedUserId()`; lint 0 errors; `next build` green; full unit sweep 1256/1256.
+
+**Performance (ADR-U043):** no member-facing first-paint change anywhere. The two new pages are admin-plane justified standalone reads with the call-count pinned at 1 by unit cells; interactions are local state (B5); skeletons per B6. No deep-cold spot measurement was run this cycle — deliberately: the admin plane's cold class was measured at the A-ADM area gate (provisioning-dominated, the standing pre-launch exception) and these pages ride the same physics with smaller payloads; the next full pass lands at AB-6. Named here so the deferral is visible, not implied.

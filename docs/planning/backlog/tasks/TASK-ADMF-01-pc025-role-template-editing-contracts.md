@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMF-01
 title: Build FEAT-PC025 — versioning substrate + editor contract family + WA-2/WA-3/WA-4 re-issues, red-first, held at the schema gate
-status: review
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PC025
@@ -25,7 +25,7 @@ The platform half of Cycle ADM-F, per [FEAT-PC025](../../../platform/core/featur
 - [ ] Sibling-assertion sweep enumerated in the migration header (`admin_get_audit_log`, `admin_hard_delete_user`, `admin_force_logout`, `get_role_templates`, the five template tables), each marked adapted or deliberately left
 - [ ] New tables registered PC-3 / functions PC-4 in the ownership manifest; platform conformance suites green
 - [ ] Protected-set membership settled against the live catalogue and enumerated in the migration header
-- [ ] PR held at the schema gate with red evidence + apply commands; post-apply: full integration green + the affected-E2E-journey verification set + ADR-U043 pass
+- [x] PR held at the schema gate with red evidence + apply commands; post-apply: full integration green + the affected-E2E-journey verification set + ADR-U043 pass *(2026-08-04: #408 applied on named approval; gate reds S2c/S4a/S6a → gate-fix migration #410, also named-approved; 17/17 green; integration 1008/1008 with the labelled #411 erasure-pin adaptation; E2E 10/10; U043 as the cycle-level Performance-DoD analysis)*
 
 ## Technical notes
 
