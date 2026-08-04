@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMF-02
 title: Build FEAT-H040 — /admin/roles (list, catalogue browser, detail, clone/draft/apply ceremonies), WA-2 target rendering, WA-4 instant-sign-out verification + copy softening
-status: todo
+status: in_progress
 assigned_to: Claude
 priority: high
 feature: FEAT-H040

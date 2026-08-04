@@ -14,6 +14,11 @@ export type AdminAuditRow = {
   actor_display_name: string | null;
   action: string;
   target: string;
+  // FEAT-H040 WA-2 (optional: pre-apply payloads omit them — the surface is
+  // shape-tolerant; the FEAT-PC025 re-issue resolves user-id targets to
+  // display name + email and group-id targets to name, server-side).
+  target_display_name?: string | null;
+  target_email?: string | null;
   metadata: Record<string, unknown>;
   created_at: string;
 };

@@ -29,8 +29,16 @@ ADM-G (WF-2, suspended-groups-only admin access) → N-E (WF-1 bell-answerable i
 
 TASK-E2E-02 (consented-fixture leak, 1,289 measured — purge decision is Stefan's; census size underpins pagination-test expectations) · TASK-E2E-01 (profile.spec flake, ~2 h fix due at a boundary) · the deferred Eid piles.
 
+## Build progress (same session, after the decomposition merged)
+
+- **TASK-ADMF-01 built red-first and HELD at the schema gate — [PR #408](https://github.com/Stefansteffansson/FringeIsland/pull/408), awaiting Stefan's NAMED approval.** Migration `20260804190000` (versioning substrate + backfill + the five editor contracts + the three rider re-issues), manifest registered (2 tables PC-3 with birth classification, 5 functions PC-4), sibling sweep + protected set (`assign_roles, manage_roles, remove_roles, invite_members, remove_members, rest_group`) enumerated in the migration header. Red evidence: **15 red / 2 designed-green of 17**, every red verified to its designed class — including the live `23503` consent-FK refusal (WA-3's defect demonstrated by the cell the family never had) and the live `'Unauthorized'` drift. The branch also carries FEAT-PC025 → `5-in-cycle` and TASK-ADMF-01 → `review` (they land on main when the gate merges).
+- **One build-time L4 correction (commit dae8b27, on the held branch):** WA-3 is **anonymise-not-purge** — `erase_fim_account` (ADR-U034 §5) retains consent events as GDPR proof and composes `admin_hard_delete_user`; a purge in the inner function would destroy that proof. The leg copies `20260627120000:83-91` verbatim, idempotent under composition.
+- **TASK-ADMF-02 tranche 1 shipped** (the H039 apply-order-independence pattern): the WA-2 shape-tolerant audit-target rendering — `AdminAuditRow` gains optional `target_display_name`/`target_email`, `AdminAuditLog` renders the resolved form (raw uuid moves into the detail block) and renders unresolved rows exactly as today (regression-pinned). Red-first: 2 red cells + 1 green control; 13/13 green after; zero user-visible change pre-apply. Tranche 2 (the `/admin/roles` editor surface + the fifth card + WA-4 verification/copy) starts after the gate applies.
+- **The next session's first move:** if #408 is approved and merged, apply the migration (commands in the PR body), run the post-apply verification set (gate suite → full integration → the affected E2E journeys → ADR-U043 pass), then build H040 tranche 2.
+
 ## Close ritual (this session)
 
 - [x] Both specs + tasks + index/summary rows + this bridge in one PR (fuller-auto; no schema, no ADR, no steering files)
 - [x] Discovery synced after merge
+- [x] TASK-ADMF-01 built to the held gate (#408); tranche 1 of TASK-ADMF-02 merged
 - [ ] No doc-health run owed (no cross-cutting change; cycle boundary not reached)

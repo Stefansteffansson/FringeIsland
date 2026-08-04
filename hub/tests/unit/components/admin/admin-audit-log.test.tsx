@@ -25,6 +25,8 @@ type Row = {
   actor_display_name: string | null;
   action: string;
   target: string;
+  target_display_name?: string | null;
+  target_email?: string | null;
   metadata: Record<string, unknown>;
   created_at: string;
 };
@@ -55,6 +57,29 @@ const ROW_OLD: Row = {
   target: 'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
   metadata: {},
   created_at: '2026-08-02T10:00:00+00:00',
+};
+
+const ROW_RESOLVED_MEMBER: Row = {
+  id: '44444444-4444-4444-8444-444444444444',
+  actor_group_id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+  actor_display_name: 'Oda Admin',
+  action: 'member.suspend',
+  target: 'dddddddd-dddd-4ddd-8ddd-dddddddddddd',
+  target_display_name: 'Nina Target',
+  target_email: 'nina@example.com',
+  metadata: {},
+  created_at: '2026-08-04T09:00:00+00:00',
+};
+const ROW_RESOLVED_GROUP: Row = {
+  id: '55555555-5555-4555-8555-555555555555',
+  actor_group_id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+  actor_display_name: 'Oda Admin',
+  action: 'group.suspend',
+  target: 'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee',
+  target_display_name: 'Evening Circle',
+  target_email: null,
+  metadata: {},
+  created_at: '2026-08-04T08:00:00+00:00',
 };
 
 const okRows = (rows: Row[]) =>
@@ -160,6 +185,44 @@ describe('AdminAuditLog (FEAT-H037 STORY-5)', () => {
     expect(await screen.findByText(/could not load/i)).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByTestId(`admin-audit-row-${ROW1.id}`)).toBeInTheDocument();
+  });
+
+  // -------------------------------------------------------------------------
+  // WA-2 (FEAT-H040 STORY-5, tranche 1 — shape-tolerant): resolved targets
+  // render for humans; unresolved rows keep today's raw rendering exactly.
+  // WRITTEN RED-FIRST (2026-08-04): the component renders the raw target only.
+  // -------------------------------------------------------------------------
+
+  it('WA-2: a resolved member target renders name + email, not the raw uuid; the raw value lives in the expandable detail', async () => {
+    fetchMock.mockResolvedValue(okRows([ROW_RESOLVED_MEMBER]));
+    render(<AdminAuditLog />);
+    const row = await screen.findByTestId(`admin-audit-row-${ROW_RESOLVED_MEMBER.id}`);
+    expect(row).toHaveTextContent('Nina Target');
+    expect(row).toHaveTextContent('nina@example.com');
+    // The summary line no longer shows the uuid…
+    const summaryLine = row.querySelector('div')!;
+    expect(summaryLine).not.toHaveTextContent(ROW_RESOLVED_MEMBER.target);
+    // …but the expandable detail carries it (metadata is empty — the details
+    // block exists because the row is resolved).
+    await userEvent.click(row.querySelector('summary')!);
+    expect(row).toHaveTextContent(ROW_RESOLVED_MEMBER.target);
+  });
+
+  it('WA-2: a resolved group target renders its name alone (no email)', async () => {
+    fetchMock.mockResolvedValue(okRows([ROW_RESOLVED_GROUP]));
+    render(<AdminAuditLog />);
+    const row = await screen.findByTestId(`admin-audit-row-${ROW_RESOLVED_GROUP.id}`);
+    expect(row).toHaveTextContent('Evening Circle');
+    expect(row).not.toHaveTextContent('@');
+    const summaryLine = row.querySelector('div')!;
+    expect(summaryLine).not.toHaveTextContent(ROW_RESOLVED_GROUP.target);
+  });
+
+  it('WA-2 control (regression pin, green pre- and post-apply): an unresolved row renders the raw target exactly as today', async () => {
+    fetchMock.mockResolvedValue(okRows([ROW1]));
+    render(<AdminAuditLog />);
+    const row = await screen.findByTestId(`admin-audit-row-${ROW1.id}`);
+    expect(row).toHaveTextContent(ROW1.target);
   });
 
   it('the loaded browser is axe-clean', async () => {
