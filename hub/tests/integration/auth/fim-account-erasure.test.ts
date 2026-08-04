@@ -217,25 +217,41 @@ describe('FEAT-PC002 STORY-5 crit-4 — FIM account-erasure: anonymise consent l
     expect(survivor!.is_temporary).toBe(true);
   });
 
-  // Characterization (TEST-AFTER, not TDD red): the consent FK RESTRICT means a
-  // raw hard-delete of a consented FIM is structurally blocked (23503) — this is
-  // WHY erase_fim_account must anonymise-first. Already true from the consent
-  // migration; documented here so the retention guarantee is regression-locked.
-  it('[characterization] a consented FIM cannot be raw hard-deleted out from under its consent proof', async () => {
+  // Characterization → ADAPTED (ADM-F FEAT-PC025 WA-3): the law pinned here
+  // pre-ADM-F was the WALK DEFECT — the consent FK RESTRICT made
+  // admin_hard_delete_user refuse (23503) on exactly the members the
+  // last-resort tool exists for. WA-3 gave the tool erase_fim_account's
+  // anonymise-first leg, so the guarantee's MECHANISM changed (refusal →
+  // anonymise-then-delete) while the guarantee itself held: a consented FIM is
+  // never deleted out from under its consent proof — the proof survives with
+  // subject links anonymised (gate cell S6c pins the same law at the PC025
+  // door; this sibling keeps it regression-locked at the erasure suite).
+  it('[characterization] hard-deleting a consented FIM anonymises the consent proof, never orphans it', async () => {
     const fim = await transcendedFim();
     subjectGroupIds.push(fim.groupId);
 
     const { error } = await adminClient.rpc('admin_hard_delete_user', { target_user_id: fim.userId });
-    expect(error).not.toBeNull();
-    expect(error!.code).toBe('23503'); // foreign_key_violation (consent FK RESTRICT)
+    expect(error).toBeNull();
+    erasedUserIds.add(fim.mistAuthId);
 
-    // The whole RPC rolled back — FIM and its consent proof both intact.
-    const { data: survivor } = await admin
+    // Account torn down — no profile remains…
+    const { data: gone } = await admin
       .from('users')
-      .select('is_temporary')
+      .select('id')
       .eq('auth_user_id', fim.mistAuthId)
-      .single();
-    expect(survivor!.is_temporary).toBe(false);
+      .maybeSingle();
+    expect(gone).toBeNull();
+
+    // …but the consent EVENT is retained as proof, subject links anonymised.
+    const { data: consent } = await admin
+      .from('consent_records')
+      .select('id, subject_user_id, subject_group_id')
+      .eq('id', fim.consentId)
+      .maybeSingle();
+    anonymisedConsentIds.push(fim.consentId);
+    expect(consent).not.toBeNull();
+    expect(consent!.subject_user_id).toBeNull();
+    expect(consent!.subject_group_id).toBeNull();
   });
 
   // Characterization (TEST-AFTER, green-before for PR #188 / ADR-U047 Amendment 1):
@@ -246,10 +262,9 @@ describe('FEAT-PC002 STORY-5 crit-4 — FIM account-erasure: anonymise consent l
   // COALESCE(sentinel, caller) (migration 20260223171200 :575); journey_enrollments
   // .enrolled_by_group_id is set to the sentinel directly, NO COALESCE (:597) — the two
   // land identically while the sentinel is seeded (it is, migration 20260227120843).
-  // Target is a Mist, NOT a FIM: a consented FIM's raw hard-delete is blocked by the
-  // consent-FK RESTRICT (23503, pinned by the sibling test above), so it can never reach
-  // this reassignment directly; a Mist holds no consent, so admin_hard_delete_user
-  // succeeds and the sentinel reassignment is observable in isolation.
+  // Target is a Mist, NOT a FIM: a Mist holds no consent, so the WA-3 anonymise
+  // leg (ADM-F FEAT-PC025 — the sibling test above pins it) stays out of the
+  // frame and the sentinel reassignment is observable in isolation.
   it('[characterization] reassigns the target group journeys + enrollments to the [Deleted User] sentinel on hard-delete', async () => {
     // Target: a Mist (consent-exempt, so the hard-delete is not RESTRICT-blocked).
     const mistClient = createTestClient();
