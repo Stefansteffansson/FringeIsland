@@ -154,14 +154,17 @@ describe('FEAT-PC026 — suspended-group admin access contracts (ADM-G)', () => 
     return count ?? 0;
   };
 
-  /** Direct PostgREST SELECT row count — the RLS verdict as the client sees it. */
+  /** Direct PostgREST SELECT row count — the RLS verdict as the client sees it.
+   *  selectCol defaults to 'id'; conversation_participants has no id column
+   *  (composite-keyed), so its cells pass participant_group_id. */
   const rlsRows = async (
     client: SupabaseClient,
     table: string,
     column: string,
     value: string,
+    selectCol = 'id',
   ): Promise<number> => {
-    const { data, error } = await client.from(table).select('id').eq(column, value);
+    const { data, error } = await client.from(table).select(selectCol).eq(column, value);
     if (error) throw new Error(`rls ${table}: ${error.message}`);
     return (data ?? []).length;
   };
@@ -367,7 +370,9 @@ describe('FEAT-PC026 — suspended-group admin access contracts (ADM-G)', () => 
     it('RLS truth table — the new arm: non-participant admin reads the suspended family (RED at head)', async () => {
       expect(await rlsRows(adaC, 'conversations', 'id', cSusp)).toBe(1);
       expect(await rlsRows(adaC, 'messages', 'conversation_id', cSusp)).toBeGreaterThanOrEqual(1);
-      expect(await rlsRows(adaC, 'conversation_participants', 'conversation_id', cSusp)).toBeGreaterThanOrEqual(1);
+      expect(
+        await rlsRows(adaC, 'conversation_participants', 'conversation_id', cSusp, 'participant_group_id'),
+      ).toBeGreaterThanOrEqual(1);
     });
 
     it('RLS truth table — the five unchanged rows hold (LABELLED GREEN)', async () => {
