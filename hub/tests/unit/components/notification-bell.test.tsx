@@ -167,7 +167,9 @@ describe('NotificationBell', () => {
       fireEvent.click(item);
     });
     expect(markNotificationRead).toHaveBeenCalledWith('n9');
-    expect(push).toHaveBeenCalledWith('/groups');
+    // FEAT-H042 (N-E, WS-4 rider): the answering-surface pointer now lands
+    // focused — labelled sibling adaptation, flipped red-first.
+    expect(push).toHaveBeenCalledWith('/groups?focus=invitations');
     expect(push).not.toHaveBeenCalledWith('/groups/g9');
   });
 

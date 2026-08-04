@@ -39,6 +39,10 @@ export function notificationStatusChip(
 ): NotificationChip | null {
   if (row.action_type == null) return null;
   if (row.action_taken === 'expired') return { label: 'Expired', tone: 'expired' };
+  // FEAT-H042 (N-E): a cancelled convergence is fact-only — FEAT-PD017
+  // withholds the resolver on cancel (the invitee may stand outside the
+  // group), and this branch must not name one even if a value leaks in.
+  if (row.action_taken === 'cancelled') return { label: 'Withdrawn', tone: 'expired' };
   if (row.action_taken != null) {
     const by = resolvedByName(row);
     // W-03 #2: the outcome was in `action_taken` all along and went unread, so

@@ -3,7 +3,7 @@
 ---
 id: TASK-NE-02
 title: Build FEAT-H042 — invitation-response BFF route, Withdrawn chip, two-doors consistency, /groups?focus=invitations rider, red-first; E2E journey post-gate
-status: todo
+status: in_progress
 assigned_to: Claude
 priority: high
 feature: FEAT-H042
@@ -30,6 +30,10 @@ The surface half of Cycle N-E, per [FEAT-H042](../../../products/hub/features/FE
 ## Technical notes
 
 Dispatch plumbing already routes by platform-served `dispatch_segment` (`hub/lib/notifications/client.ts:105-111`); `ANSWER_PATHS` + W-04 comment at `:113-127`; `respondToNotification` fires `refreshNavigation` (`:174`, W-07). Renderer: `NotificationActions.tsx` (generic), mounted `NotificationBell.tsx:314` + `app/notifications/page.tsx:291`; answer handlers `NotificationBell.tsx:197-236` / inbox `:200-236`. Groups page: `app/groups/page.tsx` (`MyInvitations` mount `:98`, `loadGroups` `:40`); card handle `data-testid="my-invitations"` (`MyInvitations.tsx:86`). No repo-wide scroll/highlight precedent — the rider introduces the pattern (param + `scrollIntoView` + transient class); `useSearchParams` precedent in `app/journeys/[id]/play/page.tsx:52`. Chip vocabulary lives in `hub/lib/notifications/format.ts`.
+
+## Post-apply sweep watch (named at the tranche, 2026-08-05)
+
+`tests/e2e/notifications.spec.ts:183` clicks the unread row's FIRST button — post-apply the armed invitation row carries Accept/Decline, so "first button" may stop meaning the row body/mark-read affordance. Verify (and adapt labelled if flipped) in the post-gate E2E sweep. Its `:58` URL pin is a regex (`/\/groups/`) and tolerates the focus param.
 
 ## Verification
 

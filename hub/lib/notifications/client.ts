@@ -121,9 +121,16 @@ export function notificationDispatchRoute(
  *  by the surface (W-03's copy law).
  *
  *  A kind that IS answerable in the row (see DISPATCH_SEGMENTS) needs no entry —
- *  it is answered where it is read. */
+ *  it is answered where it is read.
+ *
+ *  FEAT-H042 (N-E) makes `invitation_received` row-answerable, but its entry
+ *  DELIBERATELY stays: the body-click still navigates, and dropping the entry
+ *  would fall through to `/groups/[id]` — a page with no answering affordance
+ *  for an invited viewer, the exact W-04 dead end returning. The path gains
+ *  the WS-4 focus param so the landing anchors the invitation card
+ *  (two doors, one truth — MyInvitations remains the second door). */
 const ANSWER_PATHS: Record<string, string> = {
-  invitation_received: '/groups',
+  invitation_received: '/groups?focus=invitations',
 };
 
 /** Where activating a notification should take the member, or null to stay put.
