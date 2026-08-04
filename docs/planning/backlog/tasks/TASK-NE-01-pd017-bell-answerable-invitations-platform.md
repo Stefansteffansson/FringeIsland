@@ -3,7 +3,7 @@
 ---
 id: TASK-NE-01
 title: Build FEAT-PD017 — arm invitation_received, respond_to_personal_invitation, the group_memberships convergence trigger + backfill, red-first, held at the schema gate
-status: in_progress
+status: review
 assigned_to: Claude
 priority: high
 feature: FEAT-PD017
