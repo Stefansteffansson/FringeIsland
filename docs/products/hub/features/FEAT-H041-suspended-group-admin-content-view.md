@@ -6,7 +6,7 @@ title: The suspended-group admin content view (WF-2 per the settled G-board — 
 owner: hub
 consumers: []
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

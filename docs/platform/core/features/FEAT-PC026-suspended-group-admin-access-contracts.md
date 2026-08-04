@@ -6,7 +6,7 @@ title: Suspended-group admin access contracts (WF-2 per the settled G-board — 
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
