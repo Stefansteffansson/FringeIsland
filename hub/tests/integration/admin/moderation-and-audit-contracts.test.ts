@@ -776,7 +776,15 @@ describe('FEAT-PC022 — moderation + audit-read contracts (ADM-D gate)', () => 
         `SELECT DISTINCT action FROM public.admin_audit_log
           WHERE action LIKE 'moderation.%' ORDER BY action;`,
       )) as { action: string }[];
-      expect(rows.map((r) => r.action)).toEqual(['moderation.report_resolved']);
+      // ADAPTED for FEAT-PC026 (ADM-G, 2026-08-04): the catalog gained its
+      // second producer — admin_moderate_group_forum_post writes
+      // moderation.forum_post_moderated, a PC-4 contract like this suite's
+      // own producer, so the "only via the contract" law this cell pins is
+      // preserved; the append-only log carries the new action permanently.
+      expect(rows.map((r) => r.action)).toEqual([
+        'moderation.forum_post_moderated',
+        'moderation.report_resolved',
+      ]);
       // Scoped to THIS run's rows: the log is append-only and prior runs'
       // operators were cleaned up, so their rows legitimately read NULL actor
       // (the SET NULL anonymisation working as designed).

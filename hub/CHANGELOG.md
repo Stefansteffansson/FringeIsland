@@ -2,6 +2,13 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-04 — A suspended group can finally be stepped inside ([FEAT-H041](../docs/products/hub/features/FEAT-H041-suspended-group-admin-content-view.md))
+
+- **The group administration page grows a content wing — for suspended groups only.** When a group is suspended, its admin page now shows the group's members (with emails), forum, announcements, and conversations — including message bodies in group conversations — below the existing controls. A banner names what this is: the admin view of a suspended group's content, with every access audited. For any group that isn't suspended, the page is unchanged and the platform refuses the reads anyway.
+- **Cleaning up wrongdoing is now a lived affordance.** Each forum post offers Moderate: the confirmation names the author and the group, requires a written reason, and says what happens — the post is removed for every member, and the act lands in the audit log. Each member row offers Remove: the confirmation echoes the member's name *and email* beside the group's name, requires a reason, and states the consequence before anything happens.
+- **Direct messages stay private.** Admin sight covers group conversations in suspended groups only — never DMs, never groups in any other state.
+- **No surprises when the state changes underneath.** If the group is reactivated while the wing is open, the next read collapses the wing back to the ordinary page instead of showing stale affordances.
+
 ## 2026-08-04 — Role templates learn clone, draft, preview, apply — and the audit log names its targets ([FEAT-H040](../docs/products/hub/features/FEAT-H040-role-template-editor-and-audit-target-honesty.md))
 
 - **A new Roles area on the admin dashboard.** `/admin/roles` lists every role template — the four seeded ones badged — with its default version, version count, which group templates carry it, and how many live group roles it has instantiated, beside a read-only permission catalogue grouped by category with protected permissions marked. Nothing in the catalogue can be edited; permissions are platform atoms.

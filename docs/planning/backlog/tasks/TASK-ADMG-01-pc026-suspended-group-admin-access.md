@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMG-01
 title: Build FEAT-PC026 — three door re-issues + the conversations chokepoint + members-email + the audited moderate wrapper, red-first, held at the schema gate
-status: review
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PC026
@@ -22,12 +22,12 @@ The platform half of Cycle ADM-G, per [FEAT-PC026](../../../platform/core/featur
 
 ## Acceptance criteria
 
-- [ ] Migration implements the spec's Solution sketch exactly; the six-row `is_conversation_participant` truth table pinned at the RLS layer; member/non-admin behaviour byte-identical everywhere (the sweep proves no regression)
-- [ ] Gate suite red at head covering STORY-1..6, incl. the forum characterization pair (Tier-1 mechanism named in the docblock) and the remove-on-suspended cascade cell
-- [ ] The `admin_remove_member_from_group` gate-finding re-issue named in the migration header + PR body (never silent)
-- [ ] Sibling-assertion sweep enumerated in the migration header (PC023 gate cells, C-series communication suites, ADM-B `admin_get_group_detail` cells + the Hub `AdminGroupMember` type, ADM-C remove cells), each marked adapted or deliberately left
-- [ ] New functions registered in `supabase/ownership.manifest.json` (wrapper → PC-4, sealed body → DS-5); platform conformance suites green post-apply
-- [ ] PR held at the schema gate with red evidence + apply commands; post-apply: full integration green + ADR-U043 pass (no new surface budget — N/A row honoured)
+- [x] Migration implements the spec's Solution sketch exactly; the six-row `is_conversation_participant` truth table pinned at the RLS layer; member/non-admin behaviour byte-identical everywhere *(2026-08-04: PC023 suite + C-series green post-apply)*
+- [x] Gate suite red at head covering STORY-1..6, incl. the forum characterization pair and the remove-on-suspended cascade cell *(12 red / 7 labelled-green of 19 at head; 19/19 post-apply — one test-only column fix)*
+- [x] The `admin_remove_member_from_group` gate-finding re-issue named in the migration header + PR body *(+ a second build finding: members `user_id`, the payload-walk gap)*
+- [x] Sibling-assertion sweep enumerated in the migration header, lead-session-verified + delegated-sweep-reconciled (zero will-flip); one post-apply catch adapted labelled (the ADM-D S8a `moderation.*` catalog pin — action-namespace query, invisible to a name-based sweep)
+- [x] New functions registered in `supabase/ownership.manifest.json` (wrapper → PC-4, sealed body → DS-5); platform conformance suites green post-apply
+- [x] PR held at the schema gate with red evidence + apply commands; applied on the NAMED approval ("ok merge 418", 2026-08-04); post-apply full integration green with the one labelled adaptation; ADR-U043 N/A row honoured
 
 ## Technical notes
 
