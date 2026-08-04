@@ -334,6 +334,8 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
   // -------------------------------------------------------------------------
 
   it('S3a: version_create appends an unapplied draft and changes nothing live', async () => {
+    // Red at head by precondition: the clone door doesn't exist yet (S2a's PGRST202).
+    expect(cloneId).toBeDefined();
     const base = await liveTemplateSet(cloneId!);
     const draftSet = base.filter((n) => n !== 'send_announcements');
     const { error } = await rpcAdmin('admin_create_role_template_version', {
@@ -391,6 +393,8 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
   // -------------------------------------------------------------------------
 
   it('S4a: apply materialises the version, future groups copy the new set, prior groups keep their snapshot; rollback restores', async () => {
+    // Red at head by precondition: the clone door doesn't exist yet (S2a's PGRST202).
+    expect(cloneId).toBeDefined();
     const v1Set = await liveTemplateSet(cloneId!);
 
     // Snapshot witness: a group instantiated BEFORE the apply.
@@ -453,9 +457,12 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
   });
 
   it('S4b: a version belonging to another template refuses 22023; a seeded template never repoints', async () => {
+    // Red at head by precondition: the clone + detail doors don't exist yet.
+    expect(cloneId).toBeDefined();
     const { data: stewardDetail } = await rpcAdmin('admin_get_role_template_detail', {
       p_template_id: stewardTemplateId,
     });
+    expect(stewardDetail).not.toBeNull();
     const stewardV1 = (stewardDetail as DetailPayload).versions[0];
 
     const { error: crossErr } = await rpcAdmin('admin_set_role_template_default_version', {
@@ -479,6 +486,8 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
   // -------------------------------------------------------------------------
 
   it('S5: stripping the last holder of a protected permission on an instantiation path refuses P0001 naming it', async () => {
+    // Red at head by precondition: the clone door doesn't exist yet (S2a's PGRST202).
+    expect(cloneId).toBeDefined();
     // Give the clone rest_group (protected) and make a synthetic group template
     // whose ONLY member is the clone — the clone becomes that path's last holder.
     const base = await liveTemplateSet(cloneId!);

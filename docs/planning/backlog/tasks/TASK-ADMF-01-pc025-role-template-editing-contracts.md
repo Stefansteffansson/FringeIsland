@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMF-01
 title: Build FEAT-PC025 — versioning substrate + editor contract family + WA-2/WA-3/WA-4 re-issues, red-first, held at the schema gate
-status: todo
+status: review
 assigned_to: Claude
 priority: high
 feature: FEAT-PC025
