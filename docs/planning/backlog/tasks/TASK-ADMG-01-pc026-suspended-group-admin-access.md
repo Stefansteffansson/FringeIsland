@@ -3,7 +3,7 @@
 ---
 id: TASK-ADMG-01
 title: Build FEAT-PC026 — three door re-issues + the conversations chokepoint + members-email + the audited moderate wrapper, red-first, held at the schema gate
-status: todo
+status: review
 assigned_to: Claude
 priority: high
 feature: FEAT-PC026
