@@ -222,14 +222,28 @@ export function AdminAuditLog() {
                 </span>
                 <span className="font-mono text-xs text-gray-900">{r.action}</span>
                 <span className="text-gray-700">{r.actor_display_name ?? '—'}</span>
-                <span className="truncate font-mono text-xs text-gray-500">{r.target}</span>
+                {r.target_display_name ? (
+                  <span className="truncate text-gray-700">
+                    → {r.target_display_name}
+                    {r.target_email ? (
+                      <span className="text-xs text-gray-500"> ({r.target_email})</span>
+                    ) : null}
+                  </span>
+                ) : (
+                  <span className="truncate font-mono text-xs text-gray-500">{r.target}</span>
+                )}
               </div>
-              {Object.keys(r.metadata ?? {}).length > 0 && (
+              {(Object.keys(r.metadata ?? {}).length > 0 || r.target_display_name) && (
                 <details className="mt-1">
                   <summary className="cursor-pointer text-xs text-gray-500">detail</summary>
-                  <pre className="mt-1 overflow-x-auto rounded bg-gray-50 p-2 text-xs text-gray-700">
-                    {JSON.stringify(r.metadata, null, 2)}
-                  </pre>
+                  {r.target_display_name ? (
+                    <p className="mt-1 font-mono text-xs text-gray-500">target: {r.target}</p>
+                  ) : null}
+                  {Object.keys(r.metadata ?? {}).length > 0 ? (
+                    <pre className="mt-1 overflow-x-auto rounded bg-gray-50 p-2 text-xs text-gray-700">
+                      {JSON.stringify(r.metadata, null, 2)}
+                    </pre>
+                  ) : null}
                 </details>
               )}
             </li>
