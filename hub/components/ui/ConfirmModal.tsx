@@ -23,6 +23,10 @@ export interface ConfirmModalProps {
   onCancel: () => void;
   variant?: 'danger' | 'warning' | 'info';
   busy?: boolean;
+  /** Additive (FEAT-H041): gates Confirm on ceremony completeness (e.g. a
+   *  required reason field rendered inside `message`) — the H039 widening's
+   *  sibling. Cancel stays live; composes with `busy`. */
+  confirmDisabled?: boolean;
 }
 
 export function ConfirmModal({
@@ -35,6 +39,7 @@ export function ConfirmModal({
   onCancel,
   variant = 'info',
   busy = false,
+  confirmDisabled = false,
 }: ConfirmModalProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const cancelRef = useRef<HTMLButtonElement | null>(null);
@@ -98,7 +103,7 @@ export function ConfirmModal({
             type="button"
             data-testid="confirm-modal-confirm"
             onClick={onConfirm}
-            disabled={busy}
+            disabled={busy || confirmDisabled}
             className={`flex-1 rounded-lg px-4 py-3 font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${confirmClass}`}
           >
             {busy ? 'Working...' : confirmText}

@@ -19,7 +19,13 @@ expect.extend(toHaveNoViolations);
  * line reads through that rule.
  */
 
-type Member = { personal_group_id: string; display_name: string; is_steward: boolean };
+type Member = {
+  personal_group_id: string;
+  display_name: string;
+  email: string | null;
+  user_id: string | null;
+  is_steward: boolean;
+};
 type Detail = {
   id: string;
   name: string;
@@ -57,8 +63,8 @@ const baseDetail: Detail = {
     { display_name: 'Mona', personal_group_id: 'bbbb2222-2222-4222-8222-222222222222' },
   ],
   members: [
-    { personal_group_id: 'aaaa1111-1111-4111-8111-111111111111', display_name: 'Stella', is_steward: true },
-    { personal_group_id: 'bbbb2222-2222-4222-8222-222222222222', display_name: 'Mona', is_steward: true },
+    { personal_group_id: 'aaaa1111-1111-4111-8111-111111111111', display_name: 'Stella', email: 'stella@example.test', user_id: 'ee111111-1111-4111-8111-111111111111', is_steward: true },
+    { personal_group_id: 'bbbb2222-2222-4222-8222-222222222222', display_name: 'Mona', email: 'mona@example.test', user_id: 'ee222222-2222-4222-8222-222222222222', is_steward: true },
   ],
   created_at: '2026-07-01T10:00:00+00:00',
   updated_at: '2026-07-30T10:00:00+00:00',
@@ -72,7 +78,7 @@ const caretakerDetail: Detail = {
   deusex_stewarded: true,
   stewards: [],
   members: [
-    { personal_group_id: 'cccc3333-3333-4333-8333-333333333333', display_name: 'Hilda', is_steward: false },
+    { personal_group_id: 'cccc3333-3333-4333-8333-333333333333', display_name: 'Hilda', email: 'hilda@example.test', user_id: 'ee333333-3333-4333-8333-333333333333', is_steward: false },
   ],
 };
 
@@ -144,7 +150,10 @@ describe('AdminGroupDetail (FEAT-H035 STORY-2/3/4)', () => {
     const modal = screen.getByTestId('confirm-modal');
     expect(modal).toHaveTextContent('Harbour Circle');
     await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
+    // ADAPTED for FEAT-H041: the repaint-to-suspended mounts the content
+    // wing, whose fetch-on-mount section reads add calls beyond the original
+    // three — the pinned facts are the POST at index 1 and the repaint.
+    await waitFor(() => expect(fetchMock.mock.calls.length).toBeGreaterThanOrEqual(3));
     expect(fetchMock.mock.calls[1][0]).toBe(`/api/admin/groups/${GROUP_ID}/suspend`);
     expect(fetchMock.mock.calls[1][1]?.method).toBe('POST');
     expect(await screen.findByTestId('status-badge')).toHaveTextContent('suspended');
@@ -279,5 +288,64 @@ describe('AdminGroupDetail — the two-mode hold ceremony (FEAT-H038 STORY-6)', 
     await waitFor(() =>
       expect(screen.queryByTestId('status-badge')).not.toBeInTheDocument(),
     );
+  });
+});
+
+/**
+ * FEAT-H041 STORY-1 — the content-wing mount gate: /admin/groups/[id] grows
+ * the wing exactly when the group is suspended (and engagement-kind); for
+ * every other status the page is unchanged from pre-H041. The wing's own
+ * behaviour lives in admin-suspended-content-wing.test.tsx, whose red was
+ * demonstrated module-absent (2026-08-04) before implementation; these
+ * mount-site cells landed with the mount edit and are labelled as such.
+ */
+describe('AdminGroupDetail — the content wing gate (FEAT-H041 STORY-1)', () => {
+  const okBody = (body: unknown) =>
+    ({ ok: true, status: 200, json: async () => body }) as Response;
+
+  const routed = (detail: Detail) => {
+    fetchMock.mockImplementation((input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url === `/api/admin/groups/${GROUP_ID}`) return Promise.resolve(okDetail(detail));
+      if (url.endsWith('/forum')) return Promise.resolve(okBody({ posts: [] }));
+      if (url.endsWith('/announcements')) return Promise.resolve(okBody({ announcements: [] }));
+      if (url.endsWith('/conversations')) return Promise.resolve(okBody({ conversations: [] }));
+      return Promise.resolve(errResponse(404));
+    });
+  };
+
+  it('a suspended engagement group grows the wing: plane banner + the four named sections below the anatomy', async () => {
+    routed({ ...baseDetail, status: 'suspended' });
+    render(<AdminGroupDetail groupId={GROUP_ID} />);
+    expect(await screen.findByTestId('admin-content-plane-banner')).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Members' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Forum' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Announcements' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Conversations' })).toBeInTheDocument();
+    // the anatomy above the wing is untouched
+    expect(screen.getByTestId('status-badge')).toHaveTextContent('suspended');
+    expect(screen.getByTestId('reactivate-group')).toBeInTheDocument();
+  });
+
+  it('an active group renders no wing — the page is unchanged from pre-H041', async () => {
+    routed(baseDetail);
+    render(<AdminGroupDetail groupId={GROUP_ID} />);
+    await screen.findByRole('heading', { name: 'Harbour Circle' });
+    expect(screen.queryByTestId('admin-content-plane-banner')).not.toBeInTheDocument();
+    expect(screen.queryByRole('region', { name: 'Forum' })).not.toBeInTheDocument();
+  });
+
+  it('a resting group renders no wing (suspended only — the wing tracks the admin plane, not any hold)', async () => {
+    routed({ ...baseDetail, status: 'resting' });
+    render(<AdminGroupDetail groupId={GROUP_ID} />);
+    await screen.findByTestId('status-badge');
+    expect(screen.queryByTestId('admin-content-plane-banner')).not.toBeInTheDocument();
+  });
+
+  it('the suspended page with the wing is axe-clean', async () => {
+    routed({ ...baseDetail, status: 'suspended' });
+    const { container } = render(<AdminGroupDetail groupId={GROUP_ID} />);
+    await screen.findByTestId('admin-content-plane-banner');
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

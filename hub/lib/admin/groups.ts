@@ -23,6 +23,12 @@ export type AdminGroupRow = {
 export type AdminGroupMember = {
   personal_group_id: string;
   display_name: string;
+  /** FEAT-H041 (PC026 members re-issue): the W-4 echo key — null only on a
+   *  broken users row (platform LEFT JOIN; sight over act). */
+  email: string | null;
+  /** FEAT-H041 (PC026 members re-issue): the admin_remove_member_from_group
+   *  key (public.users.id) — the Hub cannot resolve it API-first. */
+  user_id: string | null;
   is_steward: boolean;
 };
 
