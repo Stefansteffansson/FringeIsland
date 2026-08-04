@@ -173,6 +173,7 @@ The two directives from Stefan's HYG-A walk ([findings + verdict](./2026-08-03-h
 - [ ] Oracle dispositioned row-by-row: the B-ADMIN-001..019 spine ported/adapted/superseded with citations (the A-NTF pattern — using a function is not testing it).
 - [ ] ADR-U043 measurement pass (cold + warm, tail rule) + Stefan's live walk, both before the area retro; numbers appended to the AB-1d ledger.
 - [ ] CHANGELOGs updated (root + `hub/` + platform-core as applicable — check both before calling an entry missing).
+- [ ] **Cycle N-E (WF-1) executed before AB-6** (the settled WS-board sequence): FEAT-PD017 + FEAT-H042 `6-done` — invitations answer in the bell, the all-doors convergence closes the verified cancelled-invitation hole, the WS-4 landing focus ships; one E2E covers both (WS-4's own line). *(Row added 2026-08-05 at the N-E decomposition — the checklist predated the WF slotting and carried no N-E row.)*
 - [ ] The post-area **FULL anatomy audit** (AB-6) run before Phase-4 cutover; findings converted to gates.
 - [x] **The deferred register presented to Stefan at area close, in plain language** (ADM-7/13/14/15/17 — "what this run did not do") — **EXECUTED 2026-08-02: 13/14/15 as proposed; ADM-7 and ADM-17 re-scoped INTO Ferd** (gate record §The deferred five).
 
