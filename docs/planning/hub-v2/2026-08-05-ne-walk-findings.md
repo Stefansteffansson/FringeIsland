@@ -24,7 +24,9 @@
 - **S4 (held-group refusal):** passed — refusal pinned on the letter, ask survived the hold, answerable after reactivation.
 - **S5 (two views racing):** passed — Window A converged automatically on the focus re-read ("Accepted by…"), the nicer of the two correct outcomes; no duplicate join.
 - **S6 (WA-2 audit targets):** passed — all three render classes on one screen: live member as name + email, literal as-is, erased fixtures falling back to raw uuid by design. (Script imprecision corrected mid-walk: the S4 rows are group-targeted and cannot show the email half — #432.)
-- **S7 (WA-4 instant force sign-out):** **not reported at write time** — the walk jumped to S8; verdict pending Stefan's word.
-- **S8 (WA-3 consented hard delete):** passed at the substrate on every axis (the erasure verified in-session, above); the stranded-404 ending became **WA-5**, ruled and fixed in-walk.
+- **S7 (WA-4 instant force sign-out):** passed (confirmed at walk close — "we have walked all S1–8 now").
+- **S8 (WA-3 consented hard delete):** passed at the substrate on every axis (the erasure verified in-session, above); the stranded-404 ending became **WA-5**, ruled and fixed in-walk — **and re-verified live post-fix** ("okay now it works"): a second disposable's hard delete ended on the "Member erased" panel.
+
+**Walk verdict: COMPLETE — S1–S8 all passed**, one directive (WA-5) ruled and fixed in-walk. Extension: Part 3 (the never-walked ADM-F role-template editor) added to the scenario script at walk close, on Stefan's ask.
 
 *Filed 2026-08-05 during the walk; bridges: `2026-08-05_03` (cycle close) and the session's mid-walk clarifications #431/#432. The WA-5 fix rides the same PR as this file.*

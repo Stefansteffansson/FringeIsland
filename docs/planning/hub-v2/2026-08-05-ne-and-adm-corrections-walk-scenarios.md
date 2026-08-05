@@ -104,6 +104,41 @@ Tip: keep INVITEE in one browser and INVITER/ADMIN in another; several scenarios
 
 ---
 
+## Part 3 — the role-template editor (ADM-F / FEAT-H040, never walked live) — added at walk close
+
+**One consequence to know before you start:** a cloned template is **member-visible platform-wide** (it appears in every member's group-creation options and rides template-less creation) and there is **no deletion affordance, by RB-4 design**. So the walk's clone persists until removed substrate-side — name it something you're willing to see in a list (the script uses "Walk Editor Test"), and tell Claude at walk close to clean it up.
+
+**The law under test in S11 (stated up front):** Apply moves the template's **default pointer** — it does **not** rewrite existing group roles. Existing groups keep their instantiated snapshot; only groups created **after** the apply carry the new set. The blast-radius line in the ceremony says exactly this.
+
+### S9 — The fifth card, the honest list, and the read-only catalogue
+
+1. ADMIN: open `/admin` — **the claim:** a fifth card, **Roles**, sits on the dashboard. Open it.
+2. `/admin/roles` renders two panes from one read: the **template list** (each row: name, a *seeded* badge on the four system templates, default version, version count, and how many live group roles instantiate it) and the **catalogue browser** — every permission, grouped by category, protected badges — with **zero write affordances anywhere** (no add, no edit, no toggles: the catalogue is read-only by the settled RB-4 board). As-of line + working Refresh.
+3. Open a seeded template's detail (note: seed names carry the suffix — e.g. **"Steward Role Template"**). **The claim:** version history renders, but **no draft editor, no save, no apply** — **Clone is the only action**. Seeds are immutable in the UI *and at the door* (the platform refuses seed writes with "Seeded role templates are immutable — clone, then edit the clone" — pinned by test, no need to provoke it).
+
+### S10 — Clone, with both consequences named
+
+1. On the seed detail, press **Clone**. The confirm hosts the name field — enter **Walk Editor Test**.
+2. **Before you confirm, the claim:** the ceremony copy names **both** member-visible consequences — the clone appears in every member's group-creation options, and it rides every future group created without a chosen template.
+3. Confirm. **The claim:** the list repaints with Walk Editor Test — no seeded badge, version 1 = the source's live set, instantiated-count 0.
+4. Optional refusal check: Clone the seed again with the **same name** — the platform's duplicate-name refusal renders verbatim.
+
+### S11 — Draft, diff preview, Apply — verified on a fresh group, snapshot law on an old one
+
+1. Open **Walk Editor Test**'s detail. **The claim:** the draft editor renders — name/description plus the permission **checkbox fabric** over the catalogue.
+2. Flip a small, memorable set — e.g. **remove** one grant the source had and **add** one it lacked. **Write down which two.**
+3. **Save draft.** **The claim:** a new **version 2** appears in the history, *unapplied*; the copy states nothing changes until Apply; the default pointer still marks version 1.
+4. Press **Apply** on version 2. **Before you confirm, the claim:** a danger-variant confirm shows the **added and removed lists** (exactly your two), any name change, and the blast-radius line: *N existing group roles keep their snapshot; future groups instantiate the new set*. Read N.
+5. Confirm. The default pointer moves to version 2 on the repaint.
+6. **Member-side verification (the law):** as a regular member (Avatar works), create a **new group without choosing a template**. Open its roles panel — **the claim:** the group carries a "Walk Editor Test" role whose grants are exactly the **edited** set (your two flips present).
+7. **Snapshot law:** open any **pre-existing** group's roles — **the claim:** untouched; nothing propagated backwards.
+
+### S12 — Rollback is the same door; the audit log carries the diffs
+
+1. Back on Walk Editor Test's detail: press **Apply** on **version 1**. **The claim:** the *same* ceremony renders with the diff **reversed** (your added grant now listed as removed, and vice versa) — rollback needs no special affordance. Confirm; the pointer returns to version 1.
+2. ADMIN: `/admin/audit` — **the claim:** the clone / save-draft / apply / rollback acts are all rows, and the apply/rollback rows carry the **added/removed diffs** in their expandable metadata — this is verification-by-audit, the ADM-13 waiver's compensating control, rendered real.
+3. Walk close: tell Claude to remove **Walk Editor Test** substrate-side (or keep it, your call — but it lives in every member's creation options until removed).
+
 ## If something looks wrong
 
 Same protocol as every walk: don't work around it — note what you clicked, what you expected (the stated claim), what you saw, and file it as a WA/WF finding; directives get slotted at the next planning step. The findings docs from the last rounds are the shape: [`2026-08-03-hyga-walk-findings.md`](./2026-08-03-hyga-walk-findings.md), [`2026-08-04-adme-walk-findings.md`](./2026-08-04-adme-walk-findings.md).
