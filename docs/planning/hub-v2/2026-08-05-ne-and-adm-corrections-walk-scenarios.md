@@ -58,13 +58,17 @@ Tip: keep INVITEE in one browser and INVITER/ADMIN in another; several scenarios
 4. Click Accept → confirm. Verify the pinned refusal.
 5. ADMIN: reactivate G4. INVITEE: answer Accept again — **claim:** it now lands normally (membership active, G4 in the list). The hold delayed the ask; it never destroyed it.
 
-### S5 — Two doors racing: first answer wins, the loser converges honestly
+### S5 — Two views racing one ask: first answer wins, the stale view can only converge
 
 1. INVITER: invite INVITEE to a fresh group **G5**.
-2. INVITEE: open `/groups` in **two tabs**. In tab 1, the card shows G5; in tab 2, open the bell dropdown so G5's letter shows its buttons. (Two stale views of one ask.)
-3. In tab 1: **Accept on the card** → confirm.
-4. In tab 2 (without refreshing): press **Accept on the letter** → confirm. **Before you do, the claim:** no error, no double-join — the response comes back as *already answered*, and the letter renders the recorded outcome ("Accepted by [you]").
-5. Verify: G5 appears once in the groups list; the letter shows the converged outcome.
+2. Get **the same INVITEE account signed in twice**, showing the same ask two ways *(clarified 2026-08-05 mid-walk — the original step glossed the focus re-read)*:
+   - **Window A** = the browser where INVITEE already is: open the bell dropdown so G5's letter shows Accept/Decline, and **leave the dropdown open**.
+   - **Window B** = a fresh incognito/private window: sign in as INVITEE again, go to `/groups` — the card shows G5.
+3. In **Window B**: **Accept on the card** → confirm. The ask is now settled server-side while Window A still displays a stale letter with live-looking buttons.
+4. Return to **Window A**. **The claim, before you touch anything — two outcomes possible, both correct:**
+   - switching to the window can trigger the bell's focus re-read, and the letter converges to **"Accepted by [you]"**, buttons gone, without you ever answering there; **or**
+   - if the stale buttons are still up and you click **Accept** → confirm: **no error, no second join** — the response returns *already answered* and the letter renders the recorded outcome.
+5. Verify: G5 appears **once** in the groups list; both windows agree after a re-read. The law under test: a stale view can never produce a duplicate join or an error — only convergence.
 
 ---
 
