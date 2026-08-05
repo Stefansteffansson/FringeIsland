@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, runAdminSql } from './helpers/auth';
 
 /**
  * FEAT-H042 / FEAT-PD017 (E2E) — Cycle N-E: the personal group invitation
@@ -41,6 +41,14 @@ const fims = {
 
 type Fim = { authId: string; pgId: string };
 
+/** Teardown ledger (added 2026-08-05 after the walk-debris sweep found this
+ *  spec's fixtures leaked — the TASK-E2E-02 class, caused here by a missing
+ *  afterAll: consented fixture users refuse a bare auth delete, and groups
+ *  never cascade from users at all). Everything created is tracked and
+ *  removed; the consent purge runs under the sanctioned erasure setting. */
+const createdFims: Fim[] = [];
+const createdGroupIds: string[] = [];
+
 async function waitForPersonalGroup(authUserId: string): Promise<string> {
   const admin = createAdminClient();
   for (let i = 0; i < 20; i++) {
@@ -66,8 +74,35 @@ async function createFim(email: string, displayName: string): Promise<Fim> {
   if (error) throw error;
   await markArrivedOnce(admin, data.user.id);
   const pgId = await waitForPersonalGroup(data.user.id);
-  return { authId: data.user.id, pgId };
+  const fim = { authId: data.user.id, pgId };
+  createdFims.push(fim);
+  return fim;
 }
+
+test.afterAll(async () => {
+  const admin = createAdminClient();
+  for (const gid of createdGroupIds) {
+    await runAdminSql(`DELETE FROM public.groups WHERE id = '${gid}';`).catch(() => undefined);
+  }
+  // Consented fixtures: purge consent under the sanctioned erasure setting
+  // FIRST — the append-only trigger rightly refuses anything else, and a bare
+  // auth delete then fails on the subject FK (the mechanism this spec leaked
+  // through before the teardown existed).
+  const authIds = createdFims.map((f) => `'${f.authId}'`).join(',');
+  if (authIds) {
+    await runAdminSql(`
+      DO $$ BEGIN
+        PERFORM set_config('app.consent_erasure_in_progress', 'true', true);
+        DELETE FROM public.consent_records
+         WHERE subject_user_id IN (SELECT id FROM public.users WHERE auth_user_id IN (${authIds}))
+            OR subject_group_id IN (SELECT personal_group_id FROM public.users WHERE auth_user_id IN (${authIds}));
+      END $$;`).catch(() => undefined);
+  }
+  for (const f of createdFims) {
+    await admin.auth.admin.deleteUser(f.authId).catch(() => undefined);
+    await admin.from('groups').delete().eq('id', f.pgId);
+  }
+});
 
 async function signIn(page: Page, email: string) {
   await page.goto('/login');
@@ -131,6 +166,7 @@ test.describe('FEAT-H042/PD017 — invitations answer in the bell (N-E journey)'
       decline: await createGroupViaUi(hostPage, names.decline),
       withdraw: await createGroupViaUi(hostPage, names.withdraw),
     };
+    createdGroupIds.push(...Object.values(groupIds));
     await hostCtx.close();
     for (const gid of Object.values(groupIds)) {
       await seedInvite(gid, invitee.pgId, host.pgId);
