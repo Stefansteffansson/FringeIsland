@@ -28,7 +28,7 @@
 
 - **Full shape (Eid-class):** publications/scope table (data-driven, open — `role_template_publications`), availability + update + retirement notifications (registered kinds through the existing registry/dispatcher), the Steward-side "available roles" view, the diff-on-copy ceremony, central retire + group retire ceremonies with the guards. A real subsystem, not a rider.
 - **Ferd kernel (pull early only if clutter bites):** visibility scoping alone — a clone is choosable where published, adoption stays pull. Cheap; no sovereignty questions.
-- **First slice / WA-7 candidate (standalone, small):** **central retire** ("clones can be retired — hidden from all pickers — never deleted"): a flag, filters on the two picker reads, a retire/unretire ceremony. Solves the immediate "Walk Editor Test lives forever" gap independent of the rest.
+- **First slice candidate (standalone, small; no WA number — WA-7 was subsequently allocated to the save-draft repaint finding):** **central retire** ("clones can be retired — hidden from all pickers — never deleted"): a flag, filters on the two picker reads, a retire/unretire ceremony. Solves the immediate "Walk Editor Test lives forever" gap independent of the rest.
 
 ## Standing context at filing
 

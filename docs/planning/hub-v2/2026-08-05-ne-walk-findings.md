@@ -16,6 +16,14 @@
 
 ---
 
+## WA-7 (RULED + FIXED IN-WALK) — Save draft wiped the edits back to the live set
+
+**The walk (Part 3, S11):** the admin unticked a permission, saved the draft (the confirm honestly said nothing changes until Apply), the version landed correctly in the history (v4, 34 permissions — the save itself was never wrong) — and then the checkbox fabric repainted "back to normal": the untick vanished, because the honest-repaint re-seeds the editor from the live default set after every mutation. Same family as WA-5: the honest repaint colliding with an act whose result lives somewhere other than the live state (here, in the version ledger).
+
+**Stefan's ruling:** after Save, the edits stay present in the table, and the outcome points at the version awaiting Apply.
+
+**Fixed in-walk (red-first, 1 red + 1 designed-green guard):** `load()` gained a `reseedDraft` switch — Save draft keeps the local fabric (the edits ARE the just-saved version) while the history repaints fresh; Apply/rollback keep the full re-seed (the live set genuinely changed — the guard cell pins it). The outcome banner now names the ledger row: **"Draft saved as v4 — awaiting Apply."** Suite 19/19, full unit 1300/1300, lint 0, build green. Hub-only — no gate; deployed on merge.
+
 ## Walk verdict (2026-08-05)
 
 - **S1 (bell accept + two-doors truth):** passed — chip "Accepted by [nickname]", card and list updated with no reload, durable across reload.
