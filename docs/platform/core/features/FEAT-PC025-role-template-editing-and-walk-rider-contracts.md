@@ -150,3 +150,9 @@ N/A (no surface). All reads are small (4-ish templates, 48 catalogue rows, versi
 - **Sibling-sweep correction (PR #411):** the #408 sweep marked the erasure suite's hard-delete assertions DELIBERATELY LEFT — wrong for the characterization pinning the pre-WA-3 `23503` refusal, which is precisely the law WA-3 inverted. Adapted post-apply (labelled, red-verified against the live behaviour): the pin is now "hard-deleting a consented FIM anonymises the consent proof, never orphans it" — the guarantee's mechanism changed (refusal → anonymise-then-delete), the guarantee held.
 
 **Post-apply verification:** gate suite 17/17 → full integration 1008/1008 (1 labelled adaptation, above) → affected E2E journeys (admin audit browser + admin members bulk) 10/10 → ADR-U043 pass as the Performance-DoD analysis (no first-paint request added or rerouted anywhere in the platform half; the HYG-A/ADM-E cycle precedent — the next full measurement pass lands at AB-6).
+
+---
+
+## Amendment (2026-08-05, WA-6 — walk ruling): STORY-2's template-less ride superseded
+
+Stefan's live walk of the editor ruled: template-less instantiation carries the **system templates only**; clones are **pull-only** (a chosen template's registered set, or `create_group_role` from the template picker — both untouched, and `get_role_templates` keeps listing clones). This supersedes STORY-2's "a clone rides every template-less instantiation" pin — itself the deliberate `20260804210000` gate fix, reversed by the ruling one day later. Realised by migration `20260805150000` (one WHERE-arm re-issue of `create_engagement_group`, held at the schema gate); gate cells S2c/S4a flipped/adapted red-first; the walk findings doc (`2026-08-05-ne-walk-findings.md` §WA-6) is the ruling of record.

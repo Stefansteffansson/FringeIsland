@@ -119,7 +119,7 @@ Tip: keep INVITEE in one browser and INVITER/ADMIN in another; several scenarios
 ### S10 — Clone, with both consequences named
 
 1. On the seed detail, press **Clone**. The confirm hosts the name field — enter **Walk Editor Test**.
-2. **Before you confirm, the claim:** the ceremony copy names **both** member-visible consequences — the clone appears in every member's group-creation options, and it rides every future group created without a chosen template.
+2. **Before you confirm, the claim** *(rewritten under WA-6, ruled mid-walk)*: the ceremony copy names the clone's visibility at **both pull doors** (member group-creation options; the Steward's add-role template picker) and states that groups created **without** a chosen template start with the **system set only** — a clone joins a group only when someone chooses it.
 3. Confirm. **The claim:** the list repaints with Walk Editor Test — no seeded badge, version 1 = the source's live set, instantiated-count 0.
 4. Optional refusal check: Clone the seed again with the **same name** — the platform's duplicate-name refusal renders verbatim.
 
@@ -130,8 +130,9 @@ Tip: keep INVITEE in one browser and INVITER/ADMIN in another; several scenarios
 3. **Save draft.** **The claim:** a new **version 2** appears in the history, *unapplied*; the copy states nothing changes until Apply; the default pointer still marks version 1.
 4. Press **Apply** on version 2. **Before you confirm, the claim:** a danger-variant confirm shows the **added and removed lists** (exactly your two), any name change, and the blast-radius line: *N existing group roles keep their snapshot; future groups instantiate the new set*. Read N.
 5. Confirm. The default pointer moves to version 2 on the repaint.
-6. **Member-side verification (the law):** as a regular member (Avatar works), create a **new group without choosing a template**. Open its roles panel — **the claim:** the group carries a "Walk Editor Test" role whose grants are exactly the **edited** set (your two flips present).
-7. **Snapshot law:** open any **pre-existing** group's roles — **the claim:** untouched; nothing propagated backwards.
+6. **Member-side verification** *(rewritten under WA-6 — walk this leg only after the WA-6 gate merges and the deploy lands)*: as a regular member (Avatar works), create a **new group without choosing a template**. Open its roles panel — **the claim:** it carries the **system roles only**; no "Walk Editor Test" rode along.
+7. **The pull door carries the edit:** in that group (or any existing one you steward), add a role **from the template picker**, choosing "Walk Editor Test" — **the claim:** the role lands with exactly the **edited** set (your two flips present). Pull works everywhere; the ride exists nowhere.
+8. **Snapshot law:** any role pulled or instantiated **before** the Apply keeps its old grants — **the claim:** nothing propagated backwards.
 
 ### S12 — Rollback is the same door; the audit log carries the diffs
 

@@ -168,7 +168,10 @@ describe('AdminRoleTemplateDetail (FEAT-H040 STORY-2/3/4)', () => {
     await userEvent.click(await screen.findByTestId('clone-button'));
     const modal = screen.getByTestId('confirm-modal');
     expect(modal).toHaveTextContent(/group-creation options/i);
-    expect(modal).toHaveTextContent(/without a chosen template/i);
+    // WA-6 (walk ruling 2026-08-05, flipped red-first): the template-less ride
+    // is gone — new groups start with the system set only; clones are pull-only.
+    expect(modal).toHaveTextContent(/system set only/i);
+    expect(modal).not.toHaveTextContent(/rides every future group/i);
     expect(within(modal).getByTestId('clone-name-input')).toBeInTheDocument();
   });
 

@@ -310,7 +310,9 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
             <span className="block">
               Clones {template.name}&rsquo;s live permission set into a new template. From the
               moment it exists, the clone appears in every member&rsquo;s group-creation options and
-              rides every future group created without a chosen template.
+              in every Steward&rsquo;s add-role template picker. Groups created without a
+              chosen template start with the system set only (WA-6) — a clone joins a
+              group only when someone chooses it.
             </span>
             <label className="block text-sm">
               <span className="mb-1 block text-xs font-medium text-gray-700">New template name</span>

@@ -16,6 +16,15 @@
 
 ---
 
+## WA-6 (RULED IN-WALK; fix HELD at the schema gate) — template-less groups instantiate the system set only; clones are pull-only
+
+**The walk (Part 3, S10→S11):** Stefan asked why only new groups carry a cloned template's set, learned the two doors (automatic ride on template-less creation vs. pull), and ruled: *"new groups shall by default only have the system [templates]. Only at pull they will see the cloned [ones]."*
+
+**What this reverses, named honestly:** the automatic ride was itself deliberate, two-day-old law — the ADM-F gate fix (`20260804210000` Defect 1) built it, and PC025 STORY-2 pinned it ("a clone rides every template-less instantiation"). The ruling supersedes that pin. What stays: both pull doors untouched (a chosen template's registered set at creation; `create_group_role` from the Steward's template picker) and `get_role_templates` keeps listing clones — pull visibility is the point.
+
+**The fix (held PR):** one re-issue of `create_engagement_group` — the template-less arm gains `and rt.is_system`, body otherwise byte-identical; function COMMENT restated. Surface: the clone ceremony's second consequence rewritten ("groups created without a chosen template start with the system set only — a clone joins a group only when someone chooses it"). Pins flipped red-first: gate S2c (red at head — the ride still exists), S4a adapted to pull-door witnesses (red at head for the right reason: the ridden clone collides 23505 with the pull witness; green post-apply), the ceremony-copy unit pin (red demonstrated with the copy stashed), the E2E STORY-2 cell flipped (verify post-apply). PC010 suites deliberately left (all-seed environments behave identically under the filter).
+
+**Walk consequence:** Part 3's S11/S12 pause until the gate merges and Vercel deploys; the script is updated to the new law.
 ## WA-7 (RULED + FIXED IN-WALK) — Save draft wiped the edits back to the live set
 
 **The walk (Part 3, S11):** the admin unticked a permission, saved the draft (the confirm honestly said nothing changes until Apply), the version landed correctly in the history (v4, 34 permissions — the save itself was never wrong) — and then the checkbox fabric repainted "back to normal": the untick vanished, because the honest-repaint re-seeds the editor from the live default set after every mutation. Same family as WA-5: the honest repaint colliding with an act whose result lives somewhere other than the live state (here, in the version ledger).
@@ -35,7 +44,6 @@
 - **Surface:** the group roles panel renders the provenance line on template-derived roles; optionally the "template has moved on" hint (current default ≠ snapshotted version) — which is exactly the update-signal kernel of the [role-distribution design note](./2026-08-05-role-distribution-design-note.md); this walk moment is that note's best evidence, and WA-8 is its natural first data slice.
 
 **Routing:** slotted at the next planning boundary, with the distribution design note.
-
 ## Walk verdict (2026-08-05)
 
 - **S1 (bell accept + two-doors truth):** passed — chip "Accepted by [nickname]", card and list updated with no reload, durable across reload.
