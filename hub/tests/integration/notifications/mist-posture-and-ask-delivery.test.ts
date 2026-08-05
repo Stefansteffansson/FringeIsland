@@ -50,7 +50,11 @@ const NEWS_CATEGORY = 'membership';
 
 /** The three asks, verified live 2026-07-27 — two actionable, one not. */
 const ASK_KINDS = ['invitation_received', 'acting_invitation', 'stewardship_nomination'];
-/** `invitation_received` carries NO action_type — which is exactly why the
+/** `invitation_received` carried NO action_type when this was pinned — which
+ *  is exactly why the W-09 exemption was rejected then. FEAT-PD017 (N-E) arms
+ *  DISPATCHED rows; this suite RAW-inserts the kind without action_type, so
+ *  the delivery-guard cells stand unchanged (labelled sibling adaptation,
+ *  2026-08-05 — comment only; the original second line kept below).
  *  surgical `action_type IS NOT NULL` exemption was rejected at W-09. */
 const ASK_KIND_WITHOUT_ACTION = 'invitation_received';
 /** A genuine piece of news that stays in `membership` and stays mutable. */

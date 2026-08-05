@@ -270,6 +270,8 @@
       "mark_all_notifications_read",
       "get_own_notifications_export",
       "respond_to_acting_invitation",
+      "respond_to_personal_invitation",
+      "converge_invitation_notifications",
       "notify_notification_hint",
 
       "ds5_emit_hint",
