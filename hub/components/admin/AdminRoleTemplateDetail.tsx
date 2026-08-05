@@ -47,7 +47,7 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
   const [draftDescription, setDraftDescription] = useState('');
   const [draftChecked, setDraftChecked] = useState<Set<string>>(new Set());
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (reseedDraft = true) => {
     try {
       const res = await fetch(`/api/admin/roles/${templateId}`);
       if (res.status === 401 || res.status === 403 || res.status === 404) {
@@ -62,12 +62,18 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
       setView({ kind: 'loaded', payload });
       // The draft editor prefills from the LIVE state — the template's name /
       // description and the default version's permission set (what
-      // instantiation copies today). Reinitialised on every fresh read so a
-      // repaint after Save/Apply reflects the new ledger.
-      setDraftName(payload.template.name);
-      setDraftDescription(payload.template.description ?? '');
-      const live = payload.versions.find((v) => v.is_default);
-      setDraftChecked(new Set(live?.permission_names ?? []));
+      // instantiation copies today). Reinitialised on a fresh mount and after
+      // Apply/rollback (the live set genuinely changed) — but NOT after Save
+      // draft (WA-7, walk ruling 2026-08-05): the local edits ARE the version
+      // just saved, and wiping them back to the live set read as "my edit
+      // vanished" in the walk.
+      if (reseedDraft) {
+        setDraftName(payload.template.name);
+        setDraftDescription(payload.template.description ?? '');
+        const live = payload.versions.find((v) => v.is_default);
+        setDraftChecked(new Set(live?.permission_names ?? []));
+      }
+      return payload;
     } catch {
       setView({ kind: 'error', message: 'The role template could not be loaded.' });
     }
@@ -77,7 +83,12 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
     void load();
   }, [load]);
 
-  const mutate = async (path: string, body: Record<string, unknown>, successText: string) => {
+  const mutate = async (
+    path: string,
+    body: Record<string, unknown>,
+    successText: string | ((fresh: AdminRoleTemplateDetailPayload | undefined) => string),
+    opts?: { keepDraft?: boolean },
+  ) => {
     setBusy(true);
     try {
       const res = await fetch(`/api/admin/roles/${templateId}/${path}`, {
@@ -92,9 +103,15 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
         setCeremony(null);
         return;
       }
-      setOutcome({ tone: 'success', text: successText });
       setCeremony(null);
-      await load(); // the honest repaint — always from a fresh read
+      // The honest repaint — always from a fresh read. WA-7: Save draft keeps
+      // the fabric (the edits are the version just saved); Apply/rollback
+      // re-seed it (the live set changed).
+      const fresh = await load(!opts?.keepDraft);
+      setOutcome({
+        tone: 'success',
+        text: typeof successText === 'function' ? successText(fresh) : successText,
+      });
     } finally {
       setBusy(false);
     }
@@ -332,7 +349,17 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
               description: draftDescription === '' ? null : draftDescription,
               permission_names: Array.from(draftChecked).sort(),
             },
-            'Draft saved.',
+            // WA-7: name the version the ledger just gained — the banner is
+            // the pointer from "my edits below" to "the row awaiting Apply".
+            (fresh) => {
+              const newest = fresh
+                ? Math.max(...fresh.versions.map((v) => v.version_number))
+                : null;
+              return newest
+                ? `Draft saved as v${newest} — awaiting Apply.`
+                : 'Draft saved — awaiting Apply.';
+            },
+            { keepDraft: true },
           )
         }
         onCancel={() => {
