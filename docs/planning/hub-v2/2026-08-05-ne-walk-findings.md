@@ -24,6 +24,18 @@
 
 **Fixed in-walk (red-first, 1 red + 1 designed-green guard):** `load()` gained a `reseedDraft` switch — Save draft keeps the local fabric (the edits ARE the just-saved version) while the history repaints fresh; Apply/rollback keep the full re-seed (the live set genuinely changed — the guard cell pins it). The outcome banner now names the ledger row: **"Draft saved as v4 — awaiting Apply."** Suite 19/19, full unit 1300/1300, lint 0, build green. Hub-only — no gate; deployed on merge.
 
+## WA-8 (DIRECTIVE) — group role copies show their source version + copied-date
+
+**The walk (Part 3, S11, the "Nya gruppen #2" moment):** Gracy's group pulled "Steward clone" while v1 (35 permissions) was the default; Stefan later applied v5 (32, assign/remove unticked) to the template and then watched Dev Login — holding the group's copy — lawfully assign a role. Everything was the snapshot law working (substrate-verified: the group copy carries the v1 set; every binding lawful; no escalation), but **nothing on the group's role said so** — the group surface shows a bare "Template" badge while the template editor shows v5, and the admin reads the mismatch as a security hole. The confusion is the finding.
+
+**Stefan's directive:** a group role copied from a template SHALL show its **source version and copied-date** (e.g. "Copied from Steward clone v1 · 2026-08-05").
+
+**Build shape (recorded for the next planning step, not built in-walk):**
+- **Substrate (schema-gated):** `group_roles` records *which version* was snapshotted — a `created_from_template_version_id` (or number) stamped at every instantiation door (template-less creation, chosen-template creation, `create_group_role` pull). Copies predating the column: backfill by grant-set match where unambiguous, else an honest "version unknown".
+- **Surface:** the group roles panel renders the provenance line on template-derived roles; optionally the "template has moved on" hint (current default ≠ snapshotted version) — which is exactly the update-signal kernel of the [role-distribution design note](./2026-08-05-role-distribution-design-note.md); this walk moment is that note's best evidence, and WA-8 is its natural first data slice.
+
+**Routing:** slotted at the next planning boundary, with the distribution design note.
+
 ## Walk verdict (2026-08-05)
 
 - **S1 (bell accept + two-doors truth):** passed — chip "Accepted by [nickname]", card and list updated with no reload, durable across reload.
