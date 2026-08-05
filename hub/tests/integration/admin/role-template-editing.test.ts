@@ -311,7 +311,7 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
     expect(error!.code).toBe('22023');
   });
 
-  it('S2c: the clone rides template-less instantiation and the member-facing read', async () => {
+  it('S2c (WA-6, flipped in-walk 2026-08-05): template-less instantiation carries the SYSTEM set only; the clone stays at the pull doors', async () => {
     const { data: groupId, error } = await fimClient.rpc('create_engagement_group', {
       p_name: `${TOKEN} no-template group`,
     });
@@ -322,7 +322,19 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
       `SELECT name, created_from_role_template_id FROM public.group_roles
         WHERE group_id = '${groupId}';`,
     )) as Array<{ name: string; created_from_role_template_id: string | null }>;
-    expect(roles.some((r) => r.created_from_role_template_id === cloneId)).toBe(true);
+    // WA-6 (Stefan's walk ruling, 2026-08-05): the clone does NOT ride —
+    // flipped from the PC025 STORY-2 pin under the new law, red-first.
+    expect(roles.some((r) => r.created_from_role_template_id === cloneId)).toBe(false);
+    // …and what DOES ride is exactly the system set, non-empty:
+    const seedCheck = (await runAdminSql(
+      `SELECT count(*)::int AS total,
+              count(*) FILTER (WHERE rt.is_system)::int AS system_count
+         FROM public.group_roles gr
+         JOIN public.role_templates rt ON rt.id = gr.created_from_role_template_id
+        WHERE gr.group_id = '${groupId}';`,
+    )) as Array<{ total: number; system_count: number }>;
+    expect(seedCheck[0].total).toBeGreaterThan(0);
+    expect(seedCheck[0].system_count).toBe(seedCheck[0].total);
 
     const { data: memberRead } = await fimClient.rpc('get_role_templates');
     const names = (memberRead as Array<{ name: string }>).map((t) => t.name);
@@ -392,7 +404,7 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
   // STORY-4 — apply is a repoint; rollback is the same door
   // -------------------------------------------------------------------------
 
-  it('S4a: apply materialises the version, future groups copy the new set, prior groups keep their snapshot; rollback restores', async () => {
+  it('S4a (WA-6-adapted: pull-door witnesses — RED at head, the old law\'s ridden clone collides 23505 with the pull; green post-apply): apply materialises the version, future PULLS copy the new set, prior instantiations keep their snapshot; rollback restores', async () => {
     // Red at head by precondition: the clone door doesn't exist yet (S2a's PGRST202).
     expect(cloneId).toBeDefined();
     const v1Set = await liveTemplateSet(cloneId!);
@@ -402,6 +414,14 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
       p_name: `${TOKEN} pre-apply group`,
     });
     createdGroupIds.push(preGroupId as string);
+    // WA-6: template-less groups no longer carry the clone — the witness
+    // instantiates through the PULL door (create_group_role from template).
+    const prePull = await fimClient.rpc('create_group_role', {
+      p_group_id: preGroupId as string,
+      p_name: cloneName,
+      p_role_template_id: cloneId!,
+    });
+    expect(prePull.error).toBeNull();
     const preSet = await groupRoleSet(preGroupId as string, cloneName);
 
     const { data: detail } = await rpcAdmin('admin_get_role_template_detail', {
@@ -421,11 +441,17 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
     expect(liveAfter).toEqual([...v2.permission_names].sort());
     expect(liveAfter).not.toContain('send_announcements');
 
-    // Future instantiation copies the new set…
+    // A future PULL copies the new set… (WA-6: the pull door, not the ride)
     const { data: postGroupId } = await fimClient.rpc('create_engagement_group', {
       p_name: `${TOKEN} post-apply group`,
     });
     createdGroupIds.push(postGroupId as string);
+    const postPull = await fimClient.rpc('create_group_role', {
+      p_group_id: postGroupId as string,
+      p_name: cloneName,
+      p_role_template_id: cloneId!,
+    });
+    expect(postPull.error).toBeNull();
     expect(await groupRoleSet(postGroupId as string, cloneName)).toEqual(liveAfter);
     // …and the pre-apply group's snapshot is untouched (RB-5 physics pinned).
     expect(await groupRoleSet(preGroupId as string, cloneName)).toEqual(preSet);

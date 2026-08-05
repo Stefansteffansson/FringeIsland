@@ -247,7 +247,7 @@ test('Apply shows the diff preview + blast radius, and the default pointer moves
   ).toBeVisible();
 });
 
-test('a group created without a template carries the clone role (STORY-2 pinned live)', async ({
+test('a template-less group carries the SYSTEM set only — the clone does not ride (WA-6 pinned live)', async ({
   page,
 }) => {
   const res = await page.request.post('/api/groups', { data: { name: GROUP_NAME } });
@@ -259,7 +259,16 @@ test('a group created without a template carries the clone role (STORY-2 pinned 
     .from('group_roles')
     .select('name, created_from_role_template_id')
     .eq('group_id', groupId);
-  expect(roles!.some((r) => r.created_from_role_template_id === cloneId)).toBe(true);
+  // WA-6 (walk ruling 2026-08-05): flipped from the STORY-2 pin — the clone
+  // does NOT ride; what rides is the non-empty system set.
+  expect(roles!.some((r) => r.created_from_role_template_id === cloneId)).toBe(false);
+  expect(roles!.length).toBeGreaterThan(0);
+  const { data: seedTemplates } = await admin
+    .from('role_templates')
+    .select('id')
+    .eq('is_system', true);
+  const seedIds = new Set((seedTemplates ?? []).map((t) => t.id));
+  expect(roles!.every((r) => seedIds.has(r.created_from_role_template_id as string))).toBe(true);
 });
 
 test('rollback is the same ceremony pointed at the older version, diff reversed', async ({

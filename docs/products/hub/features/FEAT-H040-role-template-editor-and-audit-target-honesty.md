@@ -120,3 +120,9 @@ Gimbal inherits the contracts, not the shell. Member-facing surfaces change beha
 **Gates:** route-policy + outer-ring conformance green with zero exception entries; durable content-free telemetry on all three mutation routes (actor + template uuid + counts, never names); mutations on `getUser()`, reads on `getVerifiedUserId()`; lint 0 errors; `next build` green; full unit sweep 1256/1256.
 
 **Performance (ADR-U043):** no member-facing first-paint change anywhere. The two new pages are admin-plane justified standalone reads with the call-count pinned at 1 by unit cells; interactions are local state (B5); skeletons per B6. No deep-cold spot measurement was run this cycle — deliberately: the admin plane's cold class was measured at the A-ADM area gate (provisioning-dominated, the standing pre-launch exception) and these pages ride the same physics with smaller payloads; the next full pass lands at AB-6. Named here so the deferral is visible, not implied.
+
+---
+
+## Amendment (2026-08-05, WA-6 — walk ruling): the clone ceremony's second consequence rewritten
+
+Under the WA-6 ruling (template-less groups instantiate the system set only; clones are pull-only — see FEAT-PC025's amendment and the `2026-08-05-ne-walk-findings.md` §WA-6 record), the clone confirmation no longer claims the template-less ride: it now names the two pull doors and states that groups created without a chosen template start with the system set only. Ceremony-copy unit pin flipped red-first (demonstrated with the copy stashed); the E2E STORY-2 live pin flipped to assert the system-only set.
