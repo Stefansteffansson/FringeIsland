@@ -235,8 +235,34 @@ describe('AdminMemberDetail (FEAT-H036 STORY-2..6)', () => {
         expect.objectContaining({ method: 'POST' }),
       ),
     );
-    // The repaint after deletion finds nothing — the 404 shape.
-    expect(await screen.findByText('404')).toBeInTheDocument();
+    // WA-5 (walk ruling 2026-08-05, flipped red-first): the one act that
+    // vacates its own subject must NOT fall into the honest-repaint's 404 —
+    // success renders an explicit erased confirmation with the member named
+    // (W-4 echo) and a way back to the list. No re-read of the void.
+    const erased = await screen.findByTestId('member-erased-panel');
+    expect(erased).toHaveTextContent('Rolf Rowan');
+    expect(erased).toHaveTextContent('rolf@example.com');
+    expect(erased).toHaveTextContent(/audit log/i);
+    const back = within(erased).getByRole('link', { name: /back to members/i });
+    expect(back).toHaveAttribute('href', '/admin/members');
+    expect(screen.queryByText('404')).toBeNull();
+  });
+
+  it('WA-5 guard: a REFUSED hard delete stays on the detail with the reason — never the erased panel', async () => {
+    fetchMock
+      .mockResolvedValueOnce(okDetail(activeDetail))
+      .mockResolvedValueOnce(errResponse(409, 'refused by the platform'))
+      .mockResolvedValue(okDetail(activeDetail));
+    render(<AdminMemberDetail userId={MEMBER_ID} />);
+    await screen.findByRole('heading', { name: 'Rolf Rowan' });
+    await userEvent.click(screen.getByTestId('hard-delete-member'));
+    await screen.findByTestId('hard-delete-panel');
+    await userEvent.type(screen.getByTestId('hard-delete-input'), 'Rolf Rowan');
+    await userEvent.click(screen.getByTestId('hard-delete-confirm'));
+    expect(await screen.findByText('refused by the platform')).toBeInTheDocument();
+    expect(screen.queryByTestId('member-erased-panel')).toBeNull();
+    // The honest repaint still runs on failure — the member is still there.
+    expect(screen.getByRole('heading', { name: 'Rolf Rowan' })).toBeInTheDocument();
   });
 
   it('STORY-5 Remove names the row scenario consequence; success repaints without the group', async () => {
