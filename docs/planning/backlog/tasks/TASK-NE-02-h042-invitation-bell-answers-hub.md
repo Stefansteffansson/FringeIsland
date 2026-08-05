@@ -3,7 +3,7 @@
 ---
 id: TASK-NE-02
 title: Build FEAT-H042 — invitation-response BFF route, Withdrawn chip, two-doors consistency, /groups?focus=invitations rider, red-first; E2E journey post-gate
-status: in_progress
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H042
@@ -20,12 +20,12 @@ The surface half of Cycle N-E, per [FEAT-H042](../../../products/hub/features/FE
 
 ## Acceptance criteria
 
-- [ ] Route follows the nomination-response shape (ADR-U037 `getUser()`, ADR-U038 private BFF; 42501→403, P0001→409, P0002→404); route-policy conformance stays green
-- [ ] Armed rows render Accept/Decline from registry data with ConfirmModal; optimistic + rollback with the reason pinned (`notification-action-error-<id>`); suspended-group refusal surfaces verbatim
-- [ ] "Withdrawn" renders for cancelled convergence with no buttons and no actor named; unknown outcomes keep the safe fallback
-- [ ] Bell answer over `/groups` updates `MyInvitations` + groups list without reload; card answer converges the bell row on re-read; `already:true` renders converged state, never an error toast
-- [ ] Focus rider: `?focus=invitations` scrolls + transiently highlights the card, degrades plainly with nothing pending, fires only on the param
-- [ ] One E2E journey covers bell-answer + landing focus (post-gate); pyramid upright (unit carries component/logic behaviour)
+- [x] Route follows the nomination-response shape; route-policy conformance green *(PR #427)*
+- [x] Armed rows render Accept/Decline from registry data with ConfirmModal *(the H031 generic rendered the kind untouched — verified, not rebuilt; suspended-group refusal cell integration-side)*
+- [x] "Withdrawn" renders for cancelled convergence, no buttons, no actor *(unit red-first incl. the leak-defense cell; E2E leg 4)*
+- [x] Two-doors consistency *(refreshNavigation listeners on MyInvitations + the groups list, unit red-first; E2E leg 2 asserts the no-reload update; `already:true` is the converged render per the integration idempotence cell)*
+- [x] Focus rider green *(unit red-first; E2E leg 1; plain degrade + param-only cells)*
+- [x] E2E journey green post-gate *(`invitation-bell-answers.spec.ts`, 5 legs, leak 0→0); unit 1297/1297, lint 0, `next build` green. One AC-wording correction recorded in the Implementation notes: the accepted/declined chip carries the member's own nickname (the shipped N-B answerer-row render), not bare "Accepted"*
 
 ## Technical notes
 
@@ -34,6 +34,8 @@ Dispatch plumbing already routes by platform-served `dispatch_segment` (`hub/lib
 ## Post-apply sweep watch (named at the tranche, 2026-08-05)
 
 `tests/e2e/notifications.spec.ts:183` clicks the unread row's FIRST button — post-apply the armed invitation row carries Accept/Decline, so "first button" may stop meaning the row body/mark-read affordance. Verify (and adapt labelled if flipped) in the post-gate E2E sweep. Its `:58` URL pin is a regex (`/\/groups/`) and tolerates the focus param.
+
+**Outcome (2026-08-05, post-gate sweep):** the first-button click did NOT flip — the row's body button precedes the actions block in the li, so `.first()` still means the letter. The spec's OTHER pin flipped as predicted: the anchored `/\/groups$/` at `:190` failed against the focused landing and was adapted labelled, observed red first.
 
 ## Verification
 

@@ -6,7 +6,7 @@ title: Bell-answerable personal invitations (dispatch, typed response, all-doors
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -15,6 +15,18 @@ requires-equipment: none
 The WF-1 directive (HYG-A walk, 2026-08-03): *invited members SHALL be able to accept/decline group invitations directly in the bell dropdown, exactly like stewardship nominations.* Today the personal branch of `notify_invitation_received` (`20260724120000:182-195`) emits `invitation_received` with payload only — no `action_type`, no `action_data` — so the bell renders a passive notice that routes to `/groups`, where `MyInvitations` does the answering. The typed-actions framework (FEAT-PD014, ADR-U051 + Amendment 1, COR-C W3 registry) already carries two precedents (nomination-response, acting-response); the personal invitation is the third kind, not a new framework.
 
 There is also a verified convergence hole, pre-existing: `cancel_member_invitation` deletes the `invited` membership row and never touches `public.notifications` — a cancelled invitation leaves a live notification standing forever. Once the kind becomes actionable, that hole would leave live *buttons* on a dead ask, so N-E must close it — and close it for every door at once (bell answer, `MyInvitations` answer, cancel, admin removal, group deletion), because invitations are `group_memberships` rows in `invited` state whose decline/cancel **DELETE the row** (no terminal status exists; ADR-U051 Option A durable convergence is the only record that survives).
+
+## Implementation notes
+
+*(6-done, 2026-08-05 — built Cycle N-E, red-first, merged at the schema gate as PR #426 on the named "ok merge 426". The solution sketch below stands as built.)*
+
+- **Where it lives:** one migration, `supabase/migrations/20260805120000_n_e_bell_answerable_personal_invitations.sql` — **applied to the dev DB and the migration log repaired**; do not re-apply. The sibling-assertion sweep is enumerated in its header.
+- **Red → green:** `invitation-bell-actions.test.ts` **11 red / 3 labelled-green of 14 at head** (the labelled greens: the server-copy designed-green pin, and the orphan/adversarial refusal cells — green-at-red by nature since the absent function refuses everything; both gained teeth post-apply, the H031 precedent) → **14/14 post-apply** with zero test-side changes.
+- **One gate catch, not a defect:** the first full post-apply sweep ran **1040/1041** — the sole red was `trigger-mount-conformance.test.ts` (GC-8) refusing the new cross-owner edge (a DS-5 function mounted on the PC-3 `group_memberships` table) until canon spoke. Licensed in `ownership.manifest.json` `exceptions.triggerMounts` citing ADR-U048 + ADR-U051 Amendment 2; gate 2/2; the sweep stands **1041/1041** with that one labelled registration. (The pre-existing `notify_*` mounts never tripped it because they are owner-classified CORE plumbing; this cycle's function is manifest-registered DS-5, so the gate saw it — the gate working as designed.)
+- **Convergence lives where the sketch put it:** the wrapper never converges — the trigger fires inside the Core call's own statement and the wrapper re-reads. Verified observable in STORY-2 cells (the same-transaction record comes back on the response).
+- **A rendering consequence worth naming (no platform deviation):** because accepted/declined convergence records the invitee's own display name, the surface's existing resolver rule renders **"Accepted/Declined by [own nickname]"** — identical to the shipped N-B answerer-row behaviour. FEAT-H042's STORY-1 AC wording ("shows 'Accepted'") was looser than the shipped copy; corrected surface-side in its notes, deliberately not by stripping the name platform-side (consistency with acting; the name is the member's own). `cancelled` stays fact-only with the name withheld, as specified.
+- **Confirmed end-to-end by the surface half:** `invitation-bell-answers.spec.ts` drives dispatch → typed response → all-doors convergence through a real browser and the BFF (five legs incl. the cancel door and Option-A durability), leak instrument 0→0.
+- **Sibling adaptations (all labelled):** the `mist-posture-and-ask-delivery` comment prose (comment-only; its raw-insert assertions stand), and — surface half — the `notifications.spec.ts` anchored URL pin (observed red first). The predicted first-button flip did **not** materialise (the row's body button precedes the actions block in DOM order).
 
 ## Solution sketch
 
