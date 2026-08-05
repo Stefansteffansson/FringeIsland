@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import type { AdminUserDetail as Detail, AdminUserMembership } from '@/lib/admin/users';
 
@@ -32,7 +33,10 @@ type ViewState =
   | { kind: 'loading' }
   | { kind: 'refused' }
   | { kind: 'error' }
-  | { kind: 'loaded'; detail: Detail; viewerIsSelf: boolean };
+  | { kind: 'loaded'; detail: Detail; viewerIsSelf: boolean }
+  // WA-5 (walk ruling 2026-08-05): hard delete is the one act that vacates its
+  // own subject — its success is a terminal state, never a repaint of the void.
+  | { kind: 'erased'; name: string; email: string | null };
 
 type Ceremony =
   | { kind: 'suspend' }
@@ -98,17 +102,56 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
           setHardDeleteOpen(false);
           setTyped('');
           if (onSuccess) setActionSuccess(onSuccess(payload));
+          // WA-5: a successful hard delete ends on the erased confirmation —
+          // the honest repaint of an erased member IS the stated fact, not a
+          // re-read that can only 404 (the stranded-404 the walk ruled out).
+          if (path === 'hard-delete') {
+            setView((v) =>
+              v.kind === 'loaded'
+                ? { kind: 'erased', name: v.detail.display_name, email: v.detail.email }
+                : v,
+            );
+            setCeremony(null);
+            setBusy(false);
+            return;
+          }
         }
       } catch {
         setActionError('The action could not be completed.');
       } finally {
         setCeremony(null);
         setBusy(false);
-        await load(); // the honest repaint — always from a fresh read
       }
+      await load(); // the honest repaint — always from a fresh read (WA-5: except the erased terminal above)
     },
     [userId, load],
   );
+
+  if (view.kind === 'erased') {
+    return (
+      <main className="mx-auto max-w-3xl px-4 py-8">
+        <section
+          aria-label="Member erased"
+          data-testid="member-erased-panel"
+          className="rounded border border-gray-300 bg-gray-50 p-6"
+        >
+          <h1 className="mb-2 text-xl font-semibold text-gray-900">Member erased</h1>
+          <p className="mb-2 text-sm text-gray-700">
+            {view.name} ({view.email ?? 'no email on record'}) has been permanently removed:
+            the account, their personal group, and their consent records are gone; their forum
+            posts and journeys reattribute to &quot;[Deleted User]&quot;.
+          </p>
+          <p className="mb-4 text-sm text-gray-700">The act is recorded in the audit log.</p>
+          <Link
+            href="/admin/members"
+            className="inline-block rounded bg-gray-900 px-4 py-2 text-sm text-white"
+          >
+            Back to members
+          </Link>
+        </section>
+      </main>
+    );
+  }
 
   if (view.kind === 'refused') {
     return (
