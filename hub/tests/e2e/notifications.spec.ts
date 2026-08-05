@@ -187,7 +187,10 @@ test.describe.serial('FEAT-H030 — notification bell, dropdown & inbox (NTF-1/2
     // because arriving at a page that cannot answer the question is the defect
     // W-04 named" (client.ts). The old /groups/<id> expectation was the
     // pre-W-04 dead end; the spec was behind canon, not the code.
-    await expect(inviteePage).toHaveURL(/\/groups$/, { timeout: 15000 });
+    // FEAT-H042 (N-E, WS-4 — labelled sibling adaptation, observed red first):
+    // the answering-surface pointer now lands FOCUSED — same W-04 door, plus
+    // the param that anchors the invitation card.
+    await expect(inviteePage).toHaveURL(/\/groups\?focus=invitations$/, { timeout: 15000 });
     // The badge follows the click without a reload — the sync contract spoken.
     await expect(badge).toBeHidden({ timeout: 15000 });
 

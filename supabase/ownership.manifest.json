@@ -372,7 +372,12 @@
     "crossServiceReads": [],
     "triggerMounts": [
       {
-        "function": "ds5_apply_notification_preference",
+        "function": "converge_invitation_notifications",
+  "table": "group_memberships",
+  "citation": "ADR-U048 (delivery-substrate obligation) + ADR-U051 Amendment 2 (2026-08-05, cycle N-E / FEAT-PD017): all-doors convergence of standing invitation_received rows at the invited membership's termination edge - accepted/declined/cancelled derived where every door passes (bell, MyInvitations, cancel, admin, cascade); cancelled withholds the resolver. Two triggers (converge_invitation_on_answer / converge_invitation_on_termination), one licensed edge. Gate: trigger-mount-conformance.test.ts (GC-8)."
+ },
+ {
+  "function": "ds5_apply_notification_preference",
         "table": "notifications",
         "citation": "ADR-U048 Amendment 1 (2026-07-31, Audit III R-5): DS-5 preference suppression mounted at the delivery substrate's write edge — central and non-bypassable per V3 §6; coupling is to the vertical's obligation table, not a domain contract. Gate: trigger-mount-conformance.test.ts (GC-8)."
       },

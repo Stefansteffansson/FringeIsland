@@ -2,6 +2,14 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-05 — Group invitations answer right in the bell ([FEAT-H042](../docs/products/hub/features/FEAT-H042-invitation-bell-answers-and-groups-landing-focus.md))
+
+- **Accept or decline where you read it.** An invitation notice in the bell or inbox now carries Accept and Decline, exactly like a stewardship nomination — each confirmed before it acts, and the letter then states its outcome durably, even after reload.
+- **The letter lands you on the invitation.** Clicking the notice body still takes you to your groups page — and now the invitation card scrolls into view with a brief highlight, so the landing never reads as "nothing happened".
+- **Two doors, one truth.** The invitations card on the groups page stays. Answer in the bell and the page beneath updates at once — the new group appears in your list without a reload; answer on the card and the bell letter settles too.
+- **A withdrawn invitation says so.** If an invitation is taken back while your letter stands, it reads "Withdrawn" — no dead buttons, and no one's name attached to the withdrawal.
+- **Held groups refuse honestly.** An invitation into a suspended group can't be answered while the hold stands; the reason appears on the letter itself, and the ask stays open rather than pretending to settle.
+
 ## 2026-08-04 — A suspended group can finally be stepped inside ([FEAT-H041](../docs/products/hub/features/FEAT-H041-suspended-group-admin-content-view.md))
 
 - **The group administration page grows a content wing — for suspended groups only.** When a group is suspended, its admin page now shows the group's members (with emails), forum, announcements, and conversations — including message bodies in group conversations — below the existing controls. A banner names what this is: the admin view of a suspended group's content, with every access audited. For any group that isn't suspended, the page is unchanged and the platform refuses the reads anyway.

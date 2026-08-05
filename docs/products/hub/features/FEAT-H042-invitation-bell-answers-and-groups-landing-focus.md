@@ -6,7 +6,7 @@ title: Invitations answer in the bell + the /groups landing focus
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -15,6 +15,17 @@ requires-equipment: none
 The WF-1 directive (HYG-A walk, 2026-08-03): invited members SHALL accept/decline group invitations directly in the bell, exactly like stewardship nominations. Today `invitation_received` renders passively and its click-through routes to `/groups` (the W-04 `ANSWER_PATHS` pointer), where `MyInvitations` answers. FEAT-PD017 arms the kind on the typed-actions framework; this feature is the surface half — and because the generic affordance (FEAT-H031's `NotificationActions`) is registry-driven, the surface work is deliberately thin: a BFF dispatch route, the two new render cases (`cancelled`, and answer-consequences on the groups surface), and the E2E journey.
 
 It also carries the WS-4 polish rider (settled 2026-08-03, "rides N-E"): a bell notice landing on `/groups` today anchors nothing — easy to read as "nothing happened". The landing must focus the invitation card.
+
+## Implementation notes
+
+*(6-done, 2026-08-05 — built Cycle N-E, red-first: tranche 1 merged pre-gate as PR #427, the E2E journey landed post-apply. The solution sketch below stands as built, with one AC-wording correction named here.)*
+
+- **Where it lives:** `hub/app/api/notifications/[id]/invitation-response/route.ts` (+ the `respondToPersonalInvitationRpc` courier in `lib/notifications/queries.ts`), the `cancelled → "Withdrawn"` branch in `lib/notifications/format.ts`, `ANSWER_PATHS` + the updated W-04 comment in `lib/notifications/client.ts`, the `focus` prop + `refreshNavigation` listener on `components/groups/MyInvitations.tsx`, and the Suspense-wrapped `FocusedInvitations` reader + list listener on `app/groups/page.tsx`. No change to `NotificationActions`/`NotificationItem` — the registry-driven generic rendered the third kind untouched, as designed.
+- **Red → green (unit):** 6 red at head across 4 suites (two Withdrawn-chip cells incl. the leak-defense; the two answering-pointer pins flipped first; the focus-scroll and refresh-listener cells) → green. Full unit **1297/1297** · lint 0 errors · `next build` green (the house type gate) · route-policy conformance green (no runtime/region exports; `getUser()` on the mutation). Two labelled mock adaptations (the groups-page suites' `next/navigation` mocks gained `useSearchParams`).
+- **AC-wording correction (STORY-1, recorded not patched):** the shipped chip reads **"Accepted/Declined by [own nickname]"**, not bare "Accepted" — the format layer's resolver rule meeting PD017's recorded self-name, exactly how the N-B acting answerer's own row renders. The AC's "shows 'Accepted'" meant "shows the accepted outcome"; the E2E asserts the true copy. "Withdrawn" is bare and names nobody, per the withholding rule (unit leak-defense cell pins it).
+- **E2E:** the one journey (`invitation-bell-answers.spec.ts`, WS-4's "one E2E covers both") — focus landing (URL + scroll + transient ring), bell Accept with the dispatch itself asserted (the H031 abort lesson) and the page beneath updating with no reload, Decline, the cancel door's fact-only "Withdrawn", durability across reload; leak 0→0. One sibling adaptation, observed red first: `notifications.spec.ts`'s anchored `/\/groups$/` → the focused landing. The `:183` first-button watch did **not** flip (body button precedes actions in the li).
+- **Performance DoD:** no new page and no new/rerouted first-paint request anywhere — the affordance renders from the already-fetched rows; `/groups` gains a param read + a post-mount scroll; the route is interaction-class (optimistic, rollback). The ADR-U043 deep-cold spot-measurement trigger ("adds or reroutes a request on a user-facing first paint") is therefore unmet — recorded as the budget section's N/A rationale, not skipped silently.
+- **Same-close, separate task:** the full-fleet red met at this close was `profile.spec` STORY-4 — TASK-E2E-01's family, control-proven found-not-caused (red with all four N-E surface files reverted), by now deterministic (4th occurrence). Its scheduled 2 h fix was executed at this boundary: the spec moved to a dedicated FIM (fresh context + UI sign-in per story), the AC-2 audit confirmed it was the fleet's only scope-global sign-out on the shared state.
 
 ## Solution sketch
 

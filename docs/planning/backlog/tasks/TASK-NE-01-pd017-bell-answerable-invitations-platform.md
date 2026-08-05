@@ -3,7 +3,7 @@
 ---
 id: TASK-NE-01
 title: Build FEAT-PD017 — arm invitation_received, respond_to_personal_invitation, the group_memberships convergence trigger + backfill, red-first, held at the schema gate
-status: review
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PD017
@@ -20,12 +20,12 @@ The platform half of Cycle N-E, per [FEAT-PD017](../../../platform/domain/featur
 
 ## Acceptance criteria
 
-- [ ] Migration implements the spec's Solution sketch exactly; Core contract bodies untouched; existing triggers untouched (additive only)
-- [ ] Gate suite red at head covering STORY-1..3 (arming + backfill classes, dispatch/convergence classes, all-doors classes incl. cancel and the name-withholding rule) with labelled designed-green controls (acting branch unchanged; orphans stay passive)
-- [ ] `cancelled` convergence withholds `resolved_by_name`; declined-by-self carries the invitee's name; keying strictly on `membership_id`
-- [ ] Sibling-assertion sweep enumerated in the migration header (the PD017 rabbit-hole list: `oracle-spine-port` passive-kind case, `typed-action-registry` catalog pins, `invitation-contracts` fixtures), each marked adapted or deliberately left
-- [ ] `respond_to_personal_invitation` + `converge_invitation_notifications` registered in `supabase/ownership.manifest.json` (DS-5); conformance suites green post-apply
-- [ ] PR held at the schema gate with red evidence + apply commands; applied only on a NAMED approval; post-apply full integration green
+- [x] Migration implements the spec's Solution sketch exactly; Core contract bodies untouched; existing triggers untouched (additive only) *(2026-08-05: PC012/PC023 suites green post-apply, zero re-issues beyond the dispatch trigger)*
+- [x] Gate suite red at head covering STORY-1..3 with labelled designed-green controls *(11 red / 3 labelled-green of 14 at head → 14/14 post-apply, zero test-side changes)*
+- [x] `cancelled` convergence withholds `resolved_by_name`; declined-by-self carries the invitee's name; keying strictly on `membership_id` *(STORY-3 cells green incl. the NULL-actor service-role delete)*
+- [x] Sibling-assertion sweep enumerated in the migration header *(the two suspected catalog pins turned out not to reference the kind; the one prose-stale pin adapted comment-only, labelled)*
+- [x] Both functions manifest-registered DS-5; conformance green — **plus the GC-8 catch**: the cross-owner trigger mount needed its `exceptions.triggerMounts` license (canon: U048 + U051A2); licensed, gate 2/2; full integration **1041/1041**
+- [x] PR #426 held at the gate; applied on the NAMED "ok merge 426" (2026-08-05); migration log repaired + consistent
 
 ## Technical notes
 
