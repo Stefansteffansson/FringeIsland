@@ -30,6 +30,10 @@
 - **Ferd kernel (pull early only if clutter bites):** visibility scoping alone — a clone is choosable where published, adoption stays pull. Cheap; no sovereignty questions.
 - **First slice candidate (standalone, small; no WA number — WA-7 was subsequently allocated to the save-draft repaint finding):** **central retire** ("clones can be retired — hidden from all pickers — never deleted"): a flag, filters on the two picker reads, a retire/unretire ceremony. Solves the immediate "Walk Editor Test lives forever" gap independent of the rest.
 
+## WA-8 (ruled 2026-08-05, after filing) — the first data slice
+
+The walk's "Nya gruppen #2" moment (a v1-snapshot copy read against a v5 template — lawful, illegible) produced **WA-8: group role copies show their source version + copied-date** (build shape in the [findings doc](./2026-08-05-ne-walk-findings.md) §WA-8). It is this note's first concrete slice: the provenance column is the substrate the update-notification half needs anyway.
+
 ## Standing context at filing
 
 WA-6 held at PR #435 (template-less = system set only); the walk's Part 3 paused at S11 pending its nod. "Walk Editor Test" (the walk's clone) persists platform-wide until retired/removed — substrate-side cleanup offered at walk close.
