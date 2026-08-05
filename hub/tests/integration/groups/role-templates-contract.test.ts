@@ -73,7 +73,17 @@ describe('COR-B W4 / AC2-4 — get_role_templates contract', () => {
     expect(error).toBeNull();
 
     const names = (data as { name: string }[]).map((r) => r.name);
-    expect(names).toEqual([...names].sort());
+    // Collation adaptation (2026-08-05, found at the WA-6 close sweep —
+    // labelled, found-not-caused): the contract orders by the DB's linguistic
+    // collation, which is case-insensitive ("Steward clone" precedes
+    // "Steward Role Template" — the order a human picker expects). The bare
+    // JS .sort() this cell used is code-unit order (uppercase first) and
+    // agreed with the DB only while every template name was identically
+    // cased; the first clone exposed the divergence. The contract is
+    // unchanged — the comparator now states the actual law.
+    expect(names).toEqual(
+      [...names].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())),
+    );
   });
 
   it('anon cannot execute the contract', async () => {

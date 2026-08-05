@@ -221,7 +221,10 @@ test('a saved draft appears in the history while the live default is unchanged',
   await page.getByTestId('save-draft-button').click();
   await expect(page.getByTestId('confirm-modal')).toContainText(/nothing changes/i);
   await page.getByTestId('confirm-modal-confirm').click();
-  await expect(page.getByTestId('ceremony-outcome')).toContainText('Draft saved.');
+  // WA-7 (2026-08-05, labelled adaptation — observed red first): the outcome
+  // now names the ledger row awaiting Apply instead of the bare "Draft saved."
+  await expect(page.getByTestId('ceremony-outcome')).toContainText('Draft saved as v2');
+  await expect(page.getByTestId('ceremony-outcome')).toContainText('awaiting Apply');
 
   await expect(page.getByTestId('version-row-2')).toBeVisible();
   // The live default is still v1 — a draft applies nothing.
@@ -327,8 +330,14 @@ test('WA-3: a consented member hard-deletes end-to-end through the console', asy
   await page.getByTestId('hard-delete-input').fill(B_NAME);
   await page.getByTestId('hard-delete-confirm').click();
 
-  // The repaint after completion finds no member — the 404 shape, not a 500.
-  await expect(page.getByRole('heading', { name: '404' })).toBeVisible({ timeout: 15000 });
+  // WA-5 (2026-08-05, labelled adaptation — observed red first): completion no
+  // longer strands on the 404 shape — the ceremony ends on the explicit
+  // erased confirmation, member named (W-4 echo), with the way back.
+  const erased = page.getByTestId('member-erased-panel');
+  await expect(erased).toBeVisible({ timeout: 15000 });
+  await expect(erased).toContainText(B_NAME);
+  await expect(erased).toContainText(B_EMAIL);
+  await expect(erased.getByRole('link', { name: /back to members/i })).toBeVisible();
 
   const admin = createAdminClient();
   const { data: gone } = await admin

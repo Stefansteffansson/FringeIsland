@@ -58,3 +58,16 @@
 **Walk verdict: COMPLETE — S1–S8 all passed**, one directive (WA-5) ruled and fixed in-walk. Extension: Part 3 (the never-walked ADM-F role-template editor) added to the scenario script at walk close, on Stefan's ask.
 
 *Filed 2026-08-05 during the walk; bridges: `2026-08-05_03` (cycle close) and the session's mid-walk clarifications #431/#432. The WA-5 fix rides the same PR as this file.*
+
+---
+
+## Part 3 verdict (2026-08-06, close of walk) — COMPLETE, all four scenarios passed
+
+- **S9 (list + read-only catalogue + seed immutability):** passed.
+- **S10 (clone, both consequences):** passed; the consequence copy subsequently rewritten under WA-6.
+- **S11 (draft → preview → apply → verify):** passed on every leg across two eras — WA-7 found and fixed mid-walk (the save-draft repaint); the snapshot law demonstrated live on Stefan's own data (the v1-copy-vs-v5-template moment → WA-8); step 6 verified live post-#435 (G10 born with the system set only) and the pull door delivered the live v6 set on demand.
+- **S12 (rollback + verification-by-audit):** passed.
+
+**The WA-6 rider's numbers:** gate suite **17/17** post-apply (S2c flipped; S4a's pull-door witnesses through) · `admin-roles` E2E **11/11** (incl. the flipped system-set-only cell; leak 0→0) — with the WA-5/WA-7 E2E cells adapted in-tree user-side, closing the follow-through this session's unit-only flips had missed · full unit **1300/1300** · lint 0 · build green. The late-night full integration sweeps were adjudicated honestly: one red diagnosed (the collation cell — deterministic once the first differently-cased template name existed), four fenced to the TASK-INT-01/02 environment family on untouched solo-green controls, and one earlier 27-red run excluded as self-caused (destructive debris deletes during a live sweep — the one-DB-consumer violation, owned).
+
+**Walk-born artifacts beyond the findings:** WA-6 shipped (#435 + `20260805150000`) · WA-7 shipped (#437) · WA-5 shipped (#433) · WA-8 slotted with the [role-distribution design note](./2026-08-05-role-distribution-design-note.md) · the debris swept (30 groups, 13 consented fixture users under the sanctioned erasure path) · both leaking E2E specs gained teardowns (#439) with the TASK-E2E-02 audit lead recorded.
