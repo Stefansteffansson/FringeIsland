@@ -244,6 +244,69 @@ describe('AdminRoleTemplateDetail (FEAT-H040 STORY-2/3/4)', () => {
     });
   });
 
+  it('WA-7 (walk ruling 2026-08-05, red-first): after Save draft the fabric KEEPS the edits and the banner names the version awaiting Apply', async () => {
+    fetchMock.mockResolvedValue(ok(CLONE_DETAIL));
+    render(<AdminRoleTemplateDetail templateId={CLONE_ID} />);
+    const editor = await screen.findByTestId('draft-editor');
+    // Edit: add assign_roles (absent from the default V2 set the fabric seeds from).
+    await userEvent.click(within(editor).getByTestId('grant-toggle-assign_roles'));
+    await userEvent.click(screen.getByTestId('save-draft-button'));
+
+    // The fresh read after saving returns the ledger WITH the new v4.
+    const V4 = {
+      id: 'cccccccc-0004-4000-8000-000000000004',
+      version_number: 4,
+      name: 'Scribe II',
+      description: 'Second cut.',
+      created_at: '2026-08-05T12:00:00.000Z',
+      created_by_display_name: 'Oda Admin',
+      permission_names: ['assign_roles', 'post_forum_messages', 'view_forum'],
+      is_default: false,
+    };
+    fetchMock.mockClear();
+    fetchMock.mockResolvedValueOnce(ok({})); // the POST
+    fetchMock.mockResolvedValue(ok({ ...CLONE_DETAIL, versions: [V1, V2, V3, V4] }));
+    await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
+
+    // The edits are the just-saved version — the repaint must not wipe them
+    // back to the live default (the walk's "back to normal" confusion).
+    await waitFor(() =>
+      expect(screen.getByTestId('ceremony-outcome')).toHaveTextContent(/draft saved as v4/i),
+    );
+    expect(screen.getByTestId('ceremony-outcome')).toHaveTextContent(/awaiting apply/i);
+    expect(
+      (within(screen.getByTestId('draft-editor')).getByTestId('grant-toggle-assign_roles') as HTMLInputElement)
+        .checked,
+    ).toBe(true);
+  });
+
+  it('WA-7 guard (designed-green control): Apply still re-seeds the fabric from the newly-live set', async () => {
+    fetchMock.mockResolvedValue(ok(CLONE_DETAIL));
+    render(<AdminRoleTemplateDetail templateId={CLONE_ID} />);
+    const editor = await screen.findByTestId('draft-editor');
+    // No local edits: assign_roles is unchecked (absent from the default V2 set).
+    expect((within(editor).getByTestId('grant-toggle-assign_roles') as HTMLInputElement).checked).toBe(false);
+
+    await userEvent.click(screen.getByTestId('apply-version-3'));
+    fetchMock.mockClear();
+    fetchMock.mockResolvedValueOnce(ok({})); // the POST
+    fetchMock.mockResolvedValue(
+      ok({
+        ...CLONE_DETAIL,
+        versions: [V1, { ...V2, is_default: false }, { ...V3, is_default: true }] as Version[],
+      }),
+    );
+    await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
+
+    // V3 (now live) carries assign_roles — the honest repaint re-seeds it in.
+    await waitFor(() =>
+      expect(
+        (within(screen.getByTestId('draft-editor')).getByTestId('grant-toggle-assign_roles') as HTMLInputElement)
+          .checked,
+      ).toBe(true),
+    );
+  });
+
   it('STORY-3: Apply is a danger ceremony with the added/removed diff and the blast-radius line', async () => {
     fetchMock.mockResolvedValue(ok(CLONE_DETAIL));
     render(<AdminRoleTemplateDetail templateId={CLONE_ID} />);
