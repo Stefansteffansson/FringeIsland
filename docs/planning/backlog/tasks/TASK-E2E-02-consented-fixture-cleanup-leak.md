@@ -34,3 +34,7 @@ Sanctioned GUCs: `app.consent_erasure_in_progress` (`20260626205412:68`), `app.b
 ## Verification
 
 `select count(*) from users where email like 'e2e-%@fringeisland.test'` stable across two consecutive full E2E sweeps; teardown fails red when a delete is refused.
+
+---
+
+**2026-08-05 occurrence (walk-debris sweep, mechanism confirmed live):** the two specs authored this session (`invitation-bell-answers.spec.ts`, the rebuilt `profile.spec.ts`) shipped without teardowns and leaked 13 consented fixture users + 20 groups in one day; a bare `auth.admin.deleteUser` fails `23503` on `consent_records_subject_user_id_fkey`, and the append-only consent trigger rightly refuses a bare purge — the sanctioned path is the transaction-local `app.consent_erasure_in_progress` setting, then the user, then the personal group (groups never cascade from users). Both specs gained that teardown same-day (the sweep PR). **Audit lead for this task:** `admin-roles.spec.ts` wraps its fixture `deleteUser` in `.catch(() => undefined)` — the same refusal would be swallowed silently there; sweep every spec's fixture-deletion path for the pattern when this task runs. The standing purge decision (the historical leaked population) remains Stefan's.

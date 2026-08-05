@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, runAdminSql } from './helpers/auth';
 
 /**
  * FEAT-H005 STORY-1/2/3/4 (E2E) — the member-profile + sign-out journeys against
@@ -24,6 +24,8 @@ const fim = {
   email: `e2e-profile-${stamp}@fringeisland.test`,
   name: `E2EProfile${stamp}`,
 };
+let fimAuthId: string | null = null;
+let fimPgId: string | null = null;
 
 async function waitForPersonalGroup(authUserId: string): Promise<string> {
   const admin = createAdminClient();
@@ -58,7 +60,26 @@ test.describe('FEAT-H005 — member profile + sign-out', () => {
     });
     if (error) throw error;
     await markArrivedOnce(admin, data.user.id);
-    await waitForPersonalGroup(data.user.id);
+    fimAuthId = data.user.id;
+    fimPgId = await waitForPersonalGroup(data.user.id);
+  });
+
+  test.afterAll(async () => {
+    // Teardown (2026-08-05, the walk-debris sweep found this spec's fixtures
+    // leaking — consented users refuse a bare auth delete): purge consent
+    // under the sanctioned erasure setting, then the user, then the personal
+    // group (groups never cascade from users).
+    if (!fimAuthId) return;
+    const admin = createAdminClient();
+    await runAdminSql(`
+      DO $$ BEGIN
+        PERFORM set_config('app.consent_erasure_in_progress', 'true', true);
+        DELETE FROM public.consent_records
+         WHERE subject_user_id IN (SELECT id FROM public.users WHERE auth_user_id = '${fimAuthId}')
+            OR subject_group_id = ${fimPgId ? `'${fimPgId}'` : 'NULL'};
+      END $$;`).catch(() => undefined);
+    await admin.auth.admin.deleteUser(fimAuthId).catch(() => undefined);
+    if (fimPgId) await admin.from('groups').delete().eq('id', fimPgId);
   });
 
   test('STORY-1: open the account menu and view the profile', async ({ browser }) => {
