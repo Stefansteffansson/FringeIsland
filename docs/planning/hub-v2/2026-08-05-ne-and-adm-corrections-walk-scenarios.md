@@ -78,9 +78,9 @@ Tip: keep INVITEE in one browser and INVITER/ADMIN in another; several scenarios
 
 **Context:** at the ADM-E walk, `/admin/audit` rendered member targets as raw uuids — "impossible for humans to understand."
 
-1. ADMIN: open `/admin/audit`. Recent rows exist from this very walk (S4's suspend + reactivate).
-2. **The claim:** member-targeted rows render the target as **display name + email**; group-targeted rows render the **group name**; the raw uuid still exists, tucked into the row's expandable metadata; old literal targets (like `'users'`) render as-is.
-3. Expand a row and verify the raw value survives underneath the readable form.
+1. ADMIN: open `/admin/audit`. S4's suspend + reactivate rows verify the **group** half: the target renders the group name, raw uuid in the expandable detail. *(Corrected mid-walk: these rows are group-targeted — they cannot show the email half.)*
+2. For the **member + email** half, the row's target must be another member: click the **`member.`** filter chip → Apply, and the ADM-era member acts (2026-08-02–04) render as **display name + email** — or simply run S7 first and come back; its force sign-out writes a fresh member-targeted row.
+3. **The claim:** member targets render name + email, group targets the group name, literals/erased targets as-is; the raw uuid always survives in the expandable detail. Expand one of each and verify.
 
 ### S7 — WA-4: force sign-out reaches the device instantly
 
