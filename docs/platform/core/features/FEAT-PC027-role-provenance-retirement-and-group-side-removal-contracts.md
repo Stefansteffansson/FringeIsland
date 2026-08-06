@@ -86,6 +86,10 @@ One cycle. The schema is one column plus two, the doors already exist, and the g
 - Given a retired template, when an admin unretires it, then `retired_at` and `retired_by` return to NULL and it is offerable again.
 - Given a **system** template (`is_system = true`), when a retire is attempted, then it is refused — the four seeded roles are the floor every group is built on.
 
+**Recorded at build, deliberately not decided: does retire stop a role template riding *group-template* instantiation?** A role template can be registered to a group template via `group_template_roles`; `create_engagement_group` instantiates that registered set. This build does **not** filter retired templates out of that path — retire removes the template from the two *offer* surfaces (`get_role_templates`, and the chooser by consequence) but does not silently change what an existing group template produces, which is the reading most consistent with RD-2 (a central act never rewrites a composition someone else made).
+
+The question is **currently unreachable**: verified against the live catalogue 2026-08-06, `group_template_roles` registers only the four system templates, and system templates cannot be retired. It becomes live the moment RD-B lets a clone be registered to a group template. **RD-B must settle it** — either retire filters the instantiation path too, or retiring a registered template is refused until it is unregistered.
+
 ### STORY-4: A Steward can remove a role the group adopted
 
 - Given a group role derived from a template and held by nobody, when a Steward with `manage_roles` deletes it, then it is deleted — the contract refusal and the affordance both permit it. (There is no RLS layer to permit: `group_roles` carries no DELETE policy and no DELETE grant below `service_role`, so the SECURITY DEFINER contract is the only door. See the Solution sketch §4 note.)
