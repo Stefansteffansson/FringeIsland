@@ -3,6 +3,7 @@
 ---
 id: TASK-E2E-01
 title: profile.spec STORY-4 intermittent failure — shared-storageState session revoked by scope-global sign-outs; move the spec to fresh logins
+successor: TASK-E2E-03 (the remaining audit scope named at the bottom of this file was NOT cleared here; it is carried forward there — see ./TASK-E2E-03-shared-identity-revocation-audit.md)
 status: done
 assigned_to: claude
 priority: medium

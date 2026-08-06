@@ -4,6 +4,8 @@
 **Scope:** Everything needed for the first usable version of FringeIsland
 **Date:** 2026-04-10
 **Verified against:** Codebase at commit `6bbc0d5` (main branch)
+**Staleness banner (added 2026-08-06 at the boundary doc-health run):** this map is a **dated baseline assessment** — its Status / Gap columns describe the codebase at commit `6bbc0d5` (2026-04-10), *before* the Hub v2 rebuild. Several rows are now false as current-state claims (e.g. row 35 "no admin UI to archive, suspend, or reactivate" — shipped by FEAT-PC020/H035, and the lifecycle gained `resting` via FEAT-PC023). **Current state lives in [`ferd.md`](./ferd.md), the [hub-v2 completion plans](../hub-v2/), and the feature specs themselves** — never infer today's capability state from a row here. The map is kept as the wave's scoping record, not as a tracker.
+
 **Terminology note (2026-06-10; updated 2026-06-21):** "visitor" below reads as **Mist** and the group-role "Member" as **Participant** (roles core, ADR-U031; the code/schema still uses the older names — rename deferred with the code correction target).
 
 ---

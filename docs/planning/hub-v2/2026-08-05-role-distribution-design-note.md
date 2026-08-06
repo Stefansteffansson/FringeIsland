@@ -1,7 +1,7 @@
 # Design note — role distribution ("publishing" permission sets), Stefan's model + the named decisions
 
 **Filed:** 2026-08-05, at the Part-3 walk pause (during the WA-6 hold).
-**Status (2026-08-06): PULLED INTO FERD, PRE-CUTOVER — Stefan's call** ("I want to build the publish sets of permissions by roles before closing Hub v1"). No longer parked and no longer Eid-class by default: it becomes build cycles in the [Platform-Ops completion plan](./phase-3-platform-ops-completion-plan.md), sequenced **ahead of AB-6** so the FULL audit covers what they ship (the RB-1 precedent). **The decision board below is OPEN and awaits Stefan's settlement** before decomposition.
+**Status (2026-08-06): PULLED INTO FERD, PRE-CUTOVER — Stefan's call** ("I want to build the publish sets of permissions by roles before closing Hub v1"). No longer parked and no longer Eid-class by default: it becomes build cycles in the [Platform-Ops completion plan](./phase-3-platform-ops-completion-plan.md), sequenced **ahead of AB-6** so the FULL audit covers what they ship (the RB-1 precedent). **The decision board below is CLOSED** — RD-1 settled 2026-08-06 at the walk close (both cycles, RD-A then RD-B), RD-2..RD-10 confirmed explicitly at the RD-A kickoff the same day ("all as recorded"). Decomposition proceeds against the settled rows.
 **Origin:** the S10/S11 walk discussion — WA-6 ruled template-less groups instantiate the **system set only** (clones pull-only), which leaves *all* clone distribution needing a deliberate story. Stefan sketched one; this note is its record.
 
 ---
@@ -41,7 +41,7 @@ WA-6 held at PR #435 (template-less = system set only); the walk's Part 3 paused
 
 ---
 
-## Decision board — role distribution (OPEN, opened 2026-08-06 on Stefan's pre-cutover call)
+## Decision board — role distribution (CLOSED 2026-08-06; opened the same day on Stefan's pre-cutover call)
 
 Presented whole, recommendations marked; settle with "go with recommended" or row-by-row. Settlement is followed by decomposition to 4-ready paired specs per cycle (spec → held schema gate → build → walk), then AB-6.
 
@@ -65,3 +65,21 @@ Presented whole, recommendations marked; settle with "go with recommended" or ro
 - **RD-1 SETTLED as recommended:** both cycles, **RD-A first, then RD-B**. The open question under the board ("is RD-A alone enough pre-cutover?") is answered — **it is not; RD-B's publishing ships too**, before Phase-4 cutover.
 - **RD-2..RD-10:** not named individually, so each stands at its recorded **Default if unaddressed** — which equals its recommendation in every row (offer-never-write · diff-ceremony-never-silent-merge · retire-never-delete centrally · lockout guard on retire · both ahead of AB-6 · passive notice kinds · data-driven targeting · platform-wide-only at creation time · honest-unknown backfill). **The RD-A kickoff should re-read these aloud for a confirming nod** before decomposition commits to them — cheap, and it keeps a defaulted row from hardening into an unexamined law.
 - **Execution deferred to a new session** at Stefan's request. Nothing starts here.
+
+### Board CLOSED (2026-08-06, next session open — Stefan: "all as recorded, start with the rituals")
+
+The nine defaulted rows were re-read back to Stefan at the RD-A kickoff and **confirmed explicitly**. RD-2..RD-10 are no longer defaults-by-silence — they are **settled law** for the RD-A and RD-B decompositions, and a spec that contradicts one of them is wrong, not merely unusual:
+
+| Row | Settled |
+|---|---|
+| RD-2 | Publish **offers**, never writes; adoption stays the Steward's act in the roles panel |
+| RD-3 | Copying an update runs the **diff ceremony** (current-vs-incoming, added/removed, confirm) — never a silent merge |
+| RD-4 | Central **retire only**; group-side delete of an adopted role is legitimate and is RD-A's third leg |
+| RD-5 | **Lockout guard**: refuse a retire that would strip a group's last role holding `assign_roles`; the ceremony states the member-stripping consequence before the click |
+| RD-6 | **Both cycles ahead of AB-6**; Phase-4 cutover moves out by them — the accepted cost of the pre-cutover call |
+| RD-7 | **Passive notice kinds** (published / updated / retired) through the existing registry + dispatcher, `dispatch_segment` NULL — no answerable ask in the bell |
+| RD-8 | **Data-driven publication rows**; a NULL group target means platform-wide, so "all" is never a special code path |
+| RD-9 | Only **platform-wide** publications appear in the group-creation template chooser |
+| RD-10 | Provenance backfill by grant-set match where unambiguous, else **"version unknown"** — never a guessed version |
+
+**The board is CLOSED.** Reopening a row is a new decision with its own record, not a decomposition-time reinterpretation.
