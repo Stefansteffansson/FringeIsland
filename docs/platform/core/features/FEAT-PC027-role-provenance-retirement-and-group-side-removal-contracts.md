@@ -6,7 +6,7 @@ title: Role-template provenance stamp, central retirement, and group-side remova
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 ---
 
 **Cycle:** RD-A (role distribution, foundation) · **Pairs with:** [FEAT-H043](../../../products/hub/features/FEAT-H043-role-provenance-retirement-and-role-removal.md)
@@ -20,7 +20,7 @@ A group role copied from a central template is, today, **illegible and permanent
 
 **Illegible:** `group_roles` records *which* template it came from (`created_from_role_template_id`) but not *which version*. Since PC025 gave templates versions and an Apply ceremony, a group can hold a copy of v1 while the catalogue serves v6, and nothing on either side can tell. Stefan's walk hit this exactly — "Nya gruppen #2", a v1-snapshot copy read against a v5 template: lawful, and illegible (WA-8).
 
-**Permanent:** an adopted role cannot be removed from its group at all. The refusal is three layers deep — the RLS delete rule, an explicit contract exception, and a hidden affordance (dossier Finding 3). A Steward who adopts a role by mistake, or outgrows it, has no way back.
+**Permanent:** an adopted role cannot be removed from its group at all. The refusal is two layers deep — an explicit contract exception and a hidden affordance (dossier Finding 3, as corrected). A Steward who adopts a role by mistake, or outgrows it, has no way back.
 
 **And the catalogue cannot forget.** There is no way to stop offering a template. "Steward clone" persists platform-wide with live copies and no retire affordance; the only way to un-offer something today is to delete it, which `ON DELETE SET NULL` would convert into a silent mass provenance wipe across every adopted copy (Finding 6).
 
@@ -38,7 +38,9 @@ The integer is denormalised deliberately. A version FK would evaporate under `ON
 
 **3. Central retirement.** Add `role_templates.retired_at timestamptz` + `retired_by uuid`. Retire flips offerability only — **it never reaches into a group** (RD-2), never deletes (RD-4), and leaves every existing copy and its history untouched. Both picker reads filter it: `get_role_templates` (member-facing) and `admin_get_role_templates` (admin plane, which shows retired rows explicitly rather than hiding them). Unretire is the same door in reverse.
 
-**4. Group-side removal.** Relax all three refusal layers for template-derived roles — RLS rule, contract exception, and (in H043) the affordance. The inherited held-by-members refusal stays exactly as it is (Finding 4), and the `is_protected` lockout guard binds here (Finding 5): a delete that would leave the group with no holder of a protected permission is refused with its reason.
+**4. Group-side removal.** Relax **both** live refusal layers for template-derived roles — the contract exception in `delete_group_role`, and (in H043) the affordance. The inherited held-by-members refusal stays exactly as it is (Finding 4), and the `is_protected` lockout guard binds here (Finding 5): a delete that would leave the group with no holder of a protected permission is refused with its reason.
+
+**No RLS change is carried, and none may be.** The dossier's Finding 3 counted three layers; the third is a tombstone. HYG-A dropped the `group_roles_delete` policy (`20260803190000:4533`) and revoked `insert, update, delete` on `group_roles` from `authenticated, anon` (`:4545`) — verified against the live catalogue 2026-08-06: one policy (`group_roles_select`), and `authenticated` holds SELECT/REFERENCES/TRIGGER only. The comment inside `delete_group_role` naming "the RLS delete rule" records where that rule *went*, not that it still stands. Re-adding a `group_roles` DELETE policy would re-open the direct-PostgREST write path HYG-A deliberately closed — an ADR-U038 regression, not a relaxation. **Leg 3 is contract + surface.**
 
 ## Appetite
 
@@ -86,7 +88,7 @@ One cycle. The schema is one column plus two, the doors already exist, and the g
 
 ### STORY-4: A Steward can remove a role the group adopted
 
-- Given a group role derived from a template and held by nobody, when a Steward with `manage_roles` deletes it, then it is deleted — the RLS rule, the contract refusal, and the affordance all permit it.
+- Given a group role derived from a template and held by nobody, when a Steward with `manage_roles` deletes it, then it is deleted — the contract refusal and the affordance both permit it. (There is no RLS layer to permit: `group_roles` carries no DELETE policy and no DELETE grant below `service_role`, so the SECURITY DEFINER contract is the only door. See the Solution sketch §4 note.)
 - Given the same role **held by one or more members**, when a delete is attempted, then it is refused with the inherited `P0001` — *"role is held by members — remove the role from all holders first"* (Open Q3's default, unchanged by this feature).
 - Given a role whose removal would leave the group with no holder of a protected permission (`assign_roles`, `manage_roles`, `remove_roles`, `invite_members`, `remove_members`, `rest_group`), when a delete is attempted, then it is refused naming the permission that would be lost — the group cannot be bricked from inside.
 - Given a resting or suspended group, when a delete is attempted, then the existing availability guard (`assert_group_writable`, FEAT-PC023) refuses first and unchanged.
