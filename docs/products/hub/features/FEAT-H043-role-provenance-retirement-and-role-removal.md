@@ -115,6 +115,28 @@ None. Gimbal has no role-management surface; no studio consumes these reads.
 - **Observability** — Every ceremony's outcome, including refusals, is surfaced to the user and recorded server-side by PC027's audit writes. The surface swallows no failure: a refused removal renders its reason rather than reverting silently.
 - **Transactions** — None.
 
+## Implementation notes
+
+**Built 2026-08-06, Cycle RD-A, paired with FEAT-PC027. No migration of its own.**
+
+### Red → green evidence
+
+**STORY-1 + STORY-4 (`RolesPanel`)** — red at head **6 failed / 9 passed**: the two copy-check cells found no provenance line, and the opened-affordance cells found no `delete-role-button` on a template-derived row. Green after implementation **15/15**.
+
+**STORY-2 (`AdminRolesView`)** — red at head **5 failed / 9 passed**, all five "retire-button not found". Green **14/14**.
+
+Full unit suite **1311/1311 across 161 suites**, up from the 1300 baseline. Lint 0 errors. `next build` green with `/api/admin/roles/[id]/retire` registered. Route-policy conformance green — `getUser()` on the mutating verbs, no `runtime`/`preferredRegion` exports.
+
+**Three assertions were corrected to the shipped copy rather than the copy bent to the test**, each still asserting the load-bearing consequence: the held-role ceremony reads "held by 1 member" (not "1 holder"); the retire ceremony reads "no longer appear in the group-creation chooser" (not "stop being offered") and "will reappear" (not "offered again"). Recorded because the alternative — quietly rewriting product copy to match a test guess — is how copy drifts.
+
+### STORY-3 needed no surface change, verified rather than assumed
+
+The add-from-template picker's list is composed fresh into the roles-fabric response on every read of `/api/groups/[id]/roles`; no module-level, session, or global cache holds templates anywhere in the Hub. So PC027's server-side `retired_at IS NULL` filter satisfies STORY-3 on its own, and the "never served from a stale shared cache" criterion holds **structurally** — there is no cache to invalidate. Stated here because "we built nothing" and "it works" are only the same sentence when the reason is written down.
+
+### Copy decisions worth keeping
+
+The removal ceremony quotes the substrate's own held-by-members wording, so the pre-click warning and the post-click refusal read as one voice rather than two paraphrases. The retire ceremony names the count of already-adopted roles and says explicitly that they stay as they are — the spec's no-go is a copy implying deletion, and the word "delete" appears nowhere in it (asserted).
+
 ## Performance budget
 
 **Budget class:** warm interaction on an existing surface (ADR-U043). No new data-boot path — STORY-1 and STORY-4 read `get_group_roles`, which the roles panel already calls, with two added scalar keys; STORY-2 and STORY-3 read the template lists the pages already read, with one added key and a server-side filter. The ADR-U043 pass runs at the gate regardless, per the standing rule that perf tests are never skipped.

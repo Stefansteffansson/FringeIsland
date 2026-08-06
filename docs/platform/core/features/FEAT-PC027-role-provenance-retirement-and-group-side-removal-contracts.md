@@ -127,6 +127,40 @@ Hub consumes all four areas through [FEAT-H043](../../../products/hub/features/F
 - **Observability** — Retire, unretire, and group-side role removal each write an audit-log row through the existing admin audit path, naming actor, target template or role, and the group where applicable. The refusals (held-by-members, protected-permission lockout, system-template retire) are recorded as refusals, never as silent no-ops.
 - **Transactions** — None. No entitlement, price, or receipt surface is touched.
 
+## Implementation notes
+
+**Built 2026-08-06, Cycle RD-A. Migration `20260806170000`, applied on the named approval "ok apply the RD-A migration and merge 448".**
+
+### Red → green evidence
+
+Red-first throughout, at `hub/tests/integration/groups/role-provenance-and-retirement.test.ts`.
+
+**Red at head: 16 failed / 3 passed**, every failure for the right reason — `column created_from_version_number does not exist` (STORY-1/2 and the retire snapshot), `column retired_at does not exist`, `PGRST202` on both new functions, and STORY-4's cells hitting the exact `42501 template-derived role instances cannot be deleted` refusal this feature inverts. Notably S4b (held-by-members) failed *red* rather than passing, because the template refusal masked the held check — proving the ordering claim rather than assuming it.
+
+**Green after apply: 19/19.** Full integration **1060/1060 across 75 suites** — no sibling fallout.
+
+**One suspect passer caught before implementation.** S4d asserted only `error not null` on a suspended group, which the *template-derived* refusal also satisfied — it would have passed for the wrong reason and gone on passing after the refusal it was meant to pin was removed. Tightened to assert `P0001` and `group is suspended` by name. This is the "green when it should be red" rule doing its job.
+
+**Three cells labelled honestly as NOT red-first**, green before and after by design: S4b and S4d pin *inherited* behaviour (PC011's held refusal, PC023's availability guard) that this feature must leave untouched; the ADR-U038 policy/grant cells assert the *existing* lockdown still holds.
+
+### The two corrections, and what produced them
+
+Both came from checking the substrate rather than trusting the decomposition. Both are recorded in full above (Solution sketch §4, and STORY-4's AC). The generalisable lesson from the first: **a comment naming a mechanism is evidence the mechanism was once there; the catalogue is the authority for whether it is there now.** The dossier read a tombstone as a live rule.
+
+### Sibling-assertion sweep
+
+Enumerated in the migration header. Two shipped assertions adapted as **labelled inversions** — `role-permission-contracts.test.ts:489`'s template-derived refusal clause and `RolesPanel.test.tsx:204`'s absent-affordance assertion. The anti-escalation pins (a caller without `manage_roles` still gets `42501`) deliberately left, because the permission check precedes the provenance check and those cells never exercised the removed refusal.
+
+One coupling trap caught while adapting: the rewritten clause originally deleted `guideInstanceId`, which a later cell still needs to exist — its `42501` would have silently decayed to `P0002` and passed for the wrong reason. Uses a freshly-pulled role instead.
+
+### Applied backfill result
+
+1771 rows stamped, **1** left honestly unknown, 4656 custom rows untouched. The unknown row is a `Member` instance in the FringeIsland Members system group whose grant set had drifted from its template's only version — a genuine ambiguity the backfill correctly declined to resolve. It is the live proof of the `version unknown` render path.
+
+### Found, filed, not fixed
+
+`set_group_role_permission` carries no `is_protected` check on the revoke direction — a group can be bricked by flipping a grant off rather than by deleting a role. Same outcome RD-5 prevents, neighbouring door. [TASK-RDA-03](../../../planning/backlog/tasks/TASK-RDA-03-set-group-role-permission-lacks-protected-guard.md), which leads with verifying the brick end-to-end rather than treating the reasoning as proven.
+
 ## Performance budget
 
 N/A (no surface). Platform-only contracts; the consuming surface's budget is carried by FEAT-H043. Two notes for the build: the picker reads gain a `retired_at IS NULL` predicate on an already-small table, and the backfill in STORY-2 is a one-shot migration-time pass over `group_roles`, not a runtime path.
