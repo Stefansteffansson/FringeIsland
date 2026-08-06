@@ -49,6 +49,17 @@ For FringeIsland-specific work in Claude Desktop, prefer the dedicated MCPs over
 
 Developer tools (`git`, `npm`, `node`, `mmdc`) require approval when called via super-shell. Super-shell has two operational quirks worth knowing: the whitelist does not persist across Claude Desktop restarts, and commands that exit non-zero (including `grep`/`findstr` on empty searches) surface as "Command failed" with stdout discarded. Prefer the filesystem MCP or a PowerShell terminal for text searches.
 
+### The dev database has one consumer at a time
+
+There is a single shared development database. Every integration suite, every E2E fleet run, every live manual walk, and every concurrent session point at it. It has no isolation between consumers, so **two consumers at once produce failures that look like defects and cost far more to diagnose than to avoid.**
+
+- **Never run two integration suites concurrently** against it — the reds are real-looking, non-reproducible, and land on whoever runs next.
+- **Destructive data operations count as a consumer.** Debris deletes, fixture purges, consented erasures, and admin cleanups are not "just cleanup" — they mutate the substrate a running suite is asserting against. Executing them during a live background sweep produced a 27-red run on 2026-08-05/06 that had to be excluded as self-caused. Wait for the sweep to finish, or do the deletes first and start the sweep after.
+- **Check for a live sibling session** before starting a suite, a fleet run, or a branch switch — more than one session can share this checkout, and the rule applies across sessions, not just within one.
+- **Stefan may be testing manually while a suite runs.** That collides in three ways beyond the data: the dev server, the auth rate limit, and cookie/session state. Ask before starting a long run if a walk might be in progress.
+
+When a run comes back red and something else was touching the database, **establish that first** — before diagnosing the diff. The control run is cheaper than the investigation.
+
 ### File operations on the repository
 
 When writing, editing, or reading files in this repository from Claude.ai or Claude Desktop, **always use the `fringeisland` MCP tools**:
