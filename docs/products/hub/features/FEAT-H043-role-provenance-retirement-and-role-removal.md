@@ -6,7 +6,7 @@ title: Role provenance on group roles, template retirement in the admin plane, a
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -133,6 +133,16 @@ Full unit suite **1311/1311 across 161 suites**, up from the 1300 baseline. Lint
 
 The add-from-template picker's list is composed fresh into the roles-fabric response on every read of `/api/groups/[id]/roles`; no module-level, session, or global cache holds templates anywhere in the Hub. So PC027's server-side `retired_at IS NULL` filter satisfies STORY-3 on its own, and the "never served from a stale shared cache" criterion holds **structurally** — there is no cache to invalidate. Stated here because "we built nothing" and "it works" are only the same sentence when the reason is written down.
 
+### The sweep missed one, and the reason generalises
+
+The full E2E fleet came back **131 passed / 1 failed**, in `announcements-window-reports.spec.ts` — a *forum-post* delete, nothing to do with roles. Control run: passed on `main` in isolation, failed on this branch in isolation. **Caused, not pre-existing** — verified, not assumed, and in the direction that costs the most to get wrong.
+
+The coupling: that step clicked `getByRole('button', { name: /^Delete$/ }).last()` — page-wide, positional. Opening the remove affordance for template-derived roles gave the group page four more buttons labelled "Delete", so `.last()` began resolving to a roles-panel button sitting behind the modal backdrop. Scoped to `confirm-modal-confirm`, which is what the step always meant.
+
+**Why the sibling-assertion sweep didn't catch it.** The sweep greps for assertions naming the objects whose behaviour changes — tables, functions, policies, refusal strings. This assertion names **no object at all**. It names a *button label*, and it depends on *how many* things on the page carry that label — a property no grep for `delete_group_role` or `created_from_role_template_id` could surface. The rule's own wording ("the table, function, trigger, policy, or the user-facing copy it drives") does reach it, but only if "copy" is read to include an affordance's label and not just refusal text.
+
+**The generalisable form: a change that alters how many elements match a generic selector is a sweep target, even when it changes no contract those tests name.** Worth carrying to the retro — the cheap version is to grep the E2E fleet for bare accessible-name selectors whenever a cycle opens or hides an affordance.
+
 ### Copy decisions worth keeping
 
 The removal ceremony quotes the substrate's own held-by-members wording, so the pre-click warning and the post-click refusal read as one voice rather than two paraphrases. The retire ceremony names the count of already-adopted roles and says explicitly that they stay as they are — the spec's no-go is a copy implying deletion, and the word "delete" appears nowhere in it (asserted).
@@ -140,3 +150,16 @@ The removal ceremony quotes the substrate's own held-by-members wording, so the 
 ## Performance budget
 
 **Budget class:** warm interaction on an existing surface (ADR-U043). No new data-boot path — STORY-1 and STORY-4 read `get_group_roles`, which the roles panel already calls, with two added scalar keys; STORY-2 and STORY-3 read the template lists the pages already read, with one added key and a server-side filter. The ADR-U043 pass runs at the gate regardless, per the standing rule that perf tests are never skipped.
+
+### Discharge at build (2026-08-06) — stated precisely, because a perf claim is easy to overstate
+
+**No first-paint request was added or rerouted, verified rather than asserted:**
+
+- `RolesPanel` gained **no** fetch. `created_from_version_number` and `created_at` ride the fabric read the panel already made — the two keys were added inside `role_fabric_entry`, which `get_group_roles` already composed.
+- `AdminRolesView`'s first paint is unchanged: still exactly one composed read, pinned by `toHaveBeenCalledTimes(1)` and re-pinned by the new "does not retire on open" cell, which asserts opening the ceremony issues no request at all.
+- The retire/unretire call is a **warm interaction**, not first paint, and its confirm path re-reads exactly once.
+- No new fetch plumbing was introduced — in-repo prior art (the composed roles-fabric response, the admin composed read) already carried both payloads.
+
+**Therefore the cycle-level deep-cold spot measurement is not triggered.** That obligation attaches to a cycle that adds or reroutes a request on a user-facing first paint; RD-A does neither.
+
+**What remains owed, and is not claimed here:** the full ADR-U043 pass — deep-cold with ≥20 minutes of enforced idle plus the warm sweep, appended to the [perf ledger](../../../planning/reference/PERF-MEASUREMENT-LEDGER.md). That is an area-gate exercise against production and it was **not run in this cycle**; it stays on the standing owed list alongside AB-6. No cold or warm number is recorded for RD-A because none was measured.

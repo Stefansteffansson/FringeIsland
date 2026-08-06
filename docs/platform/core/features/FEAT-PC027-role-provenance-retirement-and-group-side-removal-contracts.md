@@ -6,7 +6,7 @@ title: Role-template provenance stamp, central retirement, and group-side remova
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 ---
 
 **Cycle:** RD-A (role distribution, foundation) · **Pairs with:** [FEAT-H043](../../../products/hub/features/FEAT-H043-role-provenance-retirement-and-role-removal.md)

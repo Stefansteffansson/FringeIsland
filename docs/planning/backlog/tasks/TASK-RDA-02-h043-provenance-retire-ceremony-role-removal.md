@@ -3,7 +3,7 @@
 ---
 id: TASK-RDA-02
 title: Build FEAT-H043 — provenance render on the role row, retire/unretire on /admin/roles, opened removal affordance in RolesPanel; red-first
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H043

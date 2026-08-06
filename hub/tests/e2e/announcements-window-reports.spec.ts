@@ -285,7 +285,14 @@ test.describe('FEAT-H028 — announcements, edit window & reporting (journey ver
     await expect(pageA.getByText(DELETE_THREAD)).toBeVisible({ timeout: 15000 });
     const delPost = pageA.getByTestId(/^forum-post-/).filter({ hasText: DELETE_THREAD }).first();
     await delPost.getByRole('button', { name: 'Delete' }).click();
-    await pageA.getByRole('button', { name: /^Delete$/ }).last().click();
+    // ADAPTED at RD-A: this was `getByRole('button', {name: /^Delete$/}).last()`
+    // — page-wide, positional, and therefore hostage to how many other things
+    // on the group page happen to render a button labelled "Delete". RD-A
+    // opened the roles-panel remove affordance for template-derived roles, so
+    // the page gained four, and `.last()` started resolving to one of them
+    // behind the modal backdrop. Scoped to the modal's own confirm control,
+    // which is what the step always meant.
+    await pageA.getByTestId('confirm-modal-confirm').click();
     await expect(pageA.getByText(DELETE_THREAD)).toHaveCount(0, { timeout: 15000 });
     await expect(pageA.locator('[data-testid^="forum-tombstone-"]').first()).toBeVisible();
 
