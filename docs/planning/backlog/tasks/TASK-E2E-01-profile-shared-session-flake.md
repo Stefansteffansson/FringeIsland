@@ -25,7 +25,7 @@ The standing E2E flake-watch item (first fenced at C-B, bridge `2026-07-20_02`; 
 
 ## Acceptance criteria
 - [x] `profile.spec` runs on its own dedicated FIM — fresh context + UI sign-in per story, never the shared storageState; STORY-2/3's shared-user mutation obligation dissolved with it (the subject is spec-owned) *(3/3 green immediately, incl. the 4x-red STORY-4 — the sign-out under test now acts on a provably live session)*
-- [x] Audit done: `profile.spec` STORY-4 was the fleet's ONLY scope-global sign-out on the shared state — every other sign-out-mentioning spec manages its own contexts (`sessions`, `account-suspension-journey`, `admin-suspended-content`, `announcements-window-reports`, `lifecycle-and-export`) and `account-state.spec` only asserts the button's visibility, never clicks it. With the one poisoner moved off, `entry.spec`'s recorded same-family flake loses its mechanism
+- [x] ~~Audit done: `profile.spec` STORY-4 was the fleet's ONLY scope-global sign-out on the shared state~~ **← FALSIFIED the same day; see the REOPENED section below (sessions.spec revoked the shared *identity's* sessions from its own contexts)**. Original text kept for the record: every other sign-out-mentioning spec manages its own contexts — every other sign-out-mentioning spec manages its own contexts (`sessions`, `account-suspension-journey`, `admin-suspended-content`, `announcements-window-reports`, `lifecycle-and-export`) and `account-state.spec` only asserts the button's visibility, never clicks it. With the one poisoner moved off, `entry.spec`'s recorded same-family flake loses its mechanism
 - [x] Full fleet green **x2 consecutive** (133/133 + 133/133, 2026-08-05, leak 0→0 both) with zero profile failures; the flake-watch entry retired in the `2026-08-05_03` bridge
 
 ## Technical notes
@@ -33,3 +33,19 @@ Precedents: `hub/tests/e2e/sessions.spec.ts` (fresh sessions, the FEAT-H012 suit
 
 ## Verification
 Fleet runs (full, then profile-in-trio orderings) green with no profile flake across three consecutive runs.
+
+---
+
+## REOPENED then re-closed 2026-08-05 — the retirement claim was premature (second mechanism)
+
+**The correction:** this task was marked `done` and the flake-watch "retired" earlier the same day on the strength of the profile.spec fix plus **two consecutive green fleets**. The third fleet falsified it: `signup.spec` red, six specs unrun, `sessions.spec` red — the same shared-session signature, in a spec my AC-2 audit had explicitly cleared.
+
+**Why the audit missed it — the discriminator was wrong.** I classified specs by *"does it create its own browser contexts"* (sessions.spec does — four of them) and concluded profile.spec was the fleet's only hazard. But the poison is at the **identity** layer, not the browser-context layer: `sessions.spec` signed into the **shared `SESSION_EMAIL` user** in fresh contexts and then revoked `nonCurrentRows.first()` — a non-current session *of that shared identity*. When the shared storageState session sorted first, it was server-revoked and every later spec inherited a dead session. The suite's own docstring promised "the shared storageState session is never revoked"; `.first()` made that a hope, not a guarantee — and two green fleets were ordering luck, not proof.
+
+**The rule this yields (worth carrying into the next audit of this class):** a spec is hazardous when it *revokes, signs out, suspends, or deletes sessions belonging to the shared identity* — regardless of how many contexts it opens. Fresh context ≠ fresh identity.
+
+**Fix applied (same pattern as profile.spec):** `sessions.spec` now runs entirely on its **own dedicated FIM** (created in `beforeAll`, torn down via the consented-fixture pattern), so every session it lists, revokes, or signs out belongs to nobody else. 4/4 green; fleet re-run after the fix.
+
+**Re-closing discipline:** the earlier "×2 green fleets" bar is explicitly **insufficient** for this family — ordering luck can produce it. Any future re-closure states the *mechanism* removed, not just green runs.
+
+**Remaining audit scope (named, NOT cleared — the lesson applied to itself):** 23 specs sign in as the shared `SESSION_EMAIL`; 13 of those also contain a revocation-class verb (revoke / sign out / suspend / hard-delete). Most target *fixture* members and are harmless, but that has **not** been verified spec-by-spec, and a grep-level classification is exactly what produced the false all-clear above. `account-state.spec` is the named next suspect: it flips the **shared user's own** lifecycle state (suspend / decommission) and relies on `beforeEach`/`afterAll` restoration — safe only while every restore path runs. Whoever next touches this family: verify by *identity of the revocation target*, one spec at a time, and record each verdict.
