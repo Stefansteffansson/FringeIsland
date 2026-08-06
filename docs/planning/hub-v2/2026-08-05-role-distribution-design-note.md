@@ -1,6 +1,7 @@
 # Design note — role distribution ("publishing" permission sets), Stefan's model + the named decisions
 
-**Filed:** 2026-08-05, at the Part-3 walk pause (during the WA-6 hold). **Status: parked for the next planning boundary** (AB-6 kickoff / Eid planning). Not Ferd scope unless the named kernel is pulled early.
+**Filed:** 2026-08-05, at the Part-3 walk pause (during the WA-6 hold).
+**Status (2026-08-06): PULLED INTO FERD, PRE-CUTOVER — Stefan's call** ("I want to build the publish sets of permissions by roles before closing Hub v1"). No longer parked and no longer Eid-class by default: it becomes build cycles in the [Platform-Ops completion plan](./phase-3-platform-ops-completion-plan.md), sequenced **ahead of AB-6** so the FULL audit covers what they ship (the RB-1 precedent). **The decision board below is OPEN and awaits Stefan's settlement** before decomposition.
 **Origin:** the S10/S11 walk discussion — WA-6 ruled template-less groups instantiate the **system set only** (clones pull-only), which leaves *all* clone distribution needing a deliberate story. Stefan sketched one; this note is its record.
 
 ---
@@ -37,3 +38,24 @@ The walk's "Nya gruppen #2" moment (a v1-snapshot copy read against a v5 templat
 ## Standing context at filing
 
 WA-6 held at PR #435 (template-less = system set only); the walk's Part 3 paused at S11 pending its nod. "Walk Editor Test" (the walk's clone) persists platform-wide until retired/removed — substrate-side cleanup offered at walk close.
+
+---
+
+## Decision board — role distribution (OPEN, opened 2026-08-06 on Stefan's pre-cutover call)
+
+Presented whole, recommendations marked; settle with "go with recommended" or row-by-row. Settlement is followed by decomposition to 4-ready paired specs per cycle (spec → held schema gate → build → walk), then AB-6.
+
+| # | Question | Recommendation | Default if unaddressed |
+|---|---|---|---|
+| **RD-1** | Cycle shape | **Two cycles.** **RD-A (foundation):** WA-8 provenance stamp (source version + copied-date on every group role) · **central retire** (a template stops being offerable; history and copies untouched) · **group-side retire/delete of a template-derived role** (today only *custom* roles can be removed — `RolesPanel` gates deletion on `created_from_role_template_id` being null, so an adopted role is currently permanent in its group). **RD-B (distribution):** the publications table + scoped publish (one/many/all) · the availability/update/retirement notices · the Steward's "available roles" view · the diff-on-copy ceremony. RD-A is genuinely prerequisite — "your copy is behind" is unsayable without provenance, and publishing without retire makes every clone permanent | two cycles, RD-A first |
+| **RD-2** | What "publish" does | **Offer, never write.** Publishing changes *where a template is offerable*; it never reaches into a group and creates a role. Adoption stays the Steward's act in the roles panel (your model's own shape — the group stays sovereign, and it needs no consent machinery beyond a notice) | offer-only |
+| **RD-3** | Name collision / copying an update | **Diff ceremony, never silent merge.** "Merged" as a silent union would re-grant permissions a Steward deliberately removed — escalation by merge. The Steward sees current-vs-incoming with added/removed lists and confirms (the admin Apply ceremony's shape, reused) | diff ceremony |
+| **RD-4** | Central delete | **Retire only, never delete.** Version history is the audit evidence and provenance must not dangle. Group-side delete of an adopted role is legitimate (it's the group's property) — that's RD-A's third leg | retire-only |
+| **RD-5** | Retire guard | **Refuse the retire that strips a group's last management role** (nobody left holding `assign_roles` = a bricked group), the leave/remove guard shape; the ceremony states the member-stripping consequence before the click | guard required |
+| **RD-6** | Sequence vs AB-6 | **Both cycles ahead of AB-6**, per RB-1's own rule ("all ahead of AB-6, so the FULL audit covers everything the re-scope ships"). Phase-4 cutover therefore moves out by these two cycles — the explicit cost of the pre-cutover call | ahead of AB-6 |
+| **RD-7** | Notification shape | **Passive news, not asks.** Three registered kinds (published / updated / retired) through the existing registry + dispatcher, `dispatch_segment` NULL — the Steward acts in the roles panel, not in the bell. No new framework; contrast N-E, where the *invitation* was genuinely answerable in place | passive kinds |
+| **RD-8** | Targeting "all" | **Data-driven publication rows** — a row with a NULL group target means platform-wide; targeted rows name their group. Keeps "all" from being a special code path (ADR-U008/U018 non-closure) | data-driven |
+| **RD-9** | Creation-time visibility | Only **platform-wide** publications can appear in the group-creation template chooser (a targeted publication has no group yet to be targeted at). Write the rule down; no build cost | as stated |
+| **RD-10** | WA-8 backfill | Existing copies predating the provenance column: **backfill by grant-set match where unambiguous, else render "version unknown"** — never guess a version onto a role | honest-unknown |
+
+**Open for Stefan beyond the rows:** whether RD-A alone satisfies "before closing Hub v1" (it delivers provenance + retire, i.e. the legibility and the off-switch) or whether RD-B's publishing is the actual must-have pre-cutover. The recommendation assumes both, since RD-B is the thing you named.
