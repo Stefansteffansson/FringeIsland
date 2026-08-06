@@ -32,3 +32,18 @@ Gate suite (PC025) **17/17** post-apply · `admin-roles` E2E **11/11**, leak 0�
 ## Next
 
 **AB-6** — the full anatomy audit, the last unexecuted pre-cutover row on the Platform-Ops exit checklist. It opens with the retro (now six ledger items: ADM-G's two, N-E's two, plus this session's *conformance-gates-for-new-object-classes* and *identity-not-context* lessons) and the boundary doc-health run.
+
+---
+
+## HANDOFF — the next session opens at RD-A (added at session close, 2026-08-06)
+
+**Stefan's call at close:** *"go with both A and B but in a new session."* Role distribution is **pulled into Ferd, pre-cutover** ([design note](../hub-v2/2026-08-05-role-distribution-design-note.md) — status, board, and settlement all recorded there; plan row on the [Platform-Ops exit checklist](../hub-v2/phase-3-platform-ops-completion-plan.md) ahead of AB-6). **Nothing was started this session.**
+
+**The new session's first moves, in order:**
+
+1. **Read the board's settlement** (design note §Board settlement). RD-1 is settled explicitly — **RD-A then RD-B, both before AB-6**. RD-2..RD-10 stand at their defaults; **re-read them aloud for a confirming nod** before decomposition hardens them into law.
+2. **This is a boundary — the owed rituals land here:** the **cycle retro** (ledger now six items: ADM-G's two, N-E's two, plus this session's *conformance-gates-for-new-object-classes* and *identity-not-context* lessons) and the **boundary doc-health run**, both deferred from the N-E close.
+3. **Then decompose RD-A** to 4-ready paired specs (`ecosystem-decomposition`): WA-8 provenance stamp (source version + copied-date, stamped at all three instantiation doors, honest-unknown backfill) · central retire (offerable-flag + filters on both picker reads + retire/unretire ceremony) · **group-side retire of a template-derived role** — note the substrate fact found at board time: `RolesPanel` gates deletion on `created_from_role_template_id` being null, so an adopted role is **permanent in its group today**. Schema-gated; hold the migration PR for a named approval per the standing rule.
+4. **RD-B follows** (publications table + scoped publish + the three passive notice kinds + the Steward's available-roles view + the diff-on-copy ceremony), then **AB-6**, then Phase-4 cutover.
+
+**State at handoff:** main clean, discovery synced, dev server stopped, dashboard refreshed, E2E fleet 133/133, all gates green, no PR open or held. **Owed to Stefan personally:** nothing — the Avatar password rotation is his and he has it.

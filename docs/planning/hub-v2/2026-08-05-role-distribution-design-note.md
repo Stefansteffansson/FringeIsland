@@ -59,3 +59,9 @@ Presented whole, recommendations marked; settle with "go with recommended" or ro
 | **RD-10** | WA-8 backfill | Existing copies predating the provenance column: **backfill by grant-set match where unambiguous, else render "version unknown"** — never guess a version onto a role | honest-unknown |
 
 **Open for Stefan beyond the rows:** whether RD-A alone satisfies "before closing Hub v1" (it delivers provenance + retire, i.e. the legibility and the off-switch) or whether RD-B's publishing is the actual must-have pre-cutover. The recommendation assumes both, since RD-B is the thing you named.
+
+### Board settlement (2026-08-06, Stefan: "go with both A and B but in a new session")
+
+- **RD-1 SETTLED as recommended:** both cycles, **RD-A first, then RD-B**. The open question under the board ("is RD-A alone enough pre-cutover?") is answered — **it is not; RD-B's publishing ships too**, before Phase-4 cutover.
+- **RD-2..RD-10:** not named individually, so each stands at its recorded **Default if unaddressed** — which equals its recommendation in every row (offer-never-write · diff-ceremony-never-silent-merge · retire-never-delete centrally · lockout guard on retire · both ahead of AB-6 · passive notice kinds · data-driven targeting · platform-wide-only at creation time · honest-unknown backfill). **The RD-A kickoff should re-read these aloud for a confirming nod** before decomposition commits to them — cheap, and it keeps a defaulted row from hardening into an unexamined law.
+- **Execution deferred to a new session** at Stefan's request. Nothing starts here.
