@@ -2,6 +2,15 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-06 — Roles say where they came from, and can be put down ([FEAT-H043](../docs/products/hub/features/FEAT-H043-role-provenance-retirement-and-role-removal.md))
+
+- **A role now tells you where it came from.** Where the roles panel used to say only "Template", it now says which version of that template your copy was taken from and when — `Template · v3 · copied 14 May 2026`. If a group is running a copy made long before the template moved on, the panel finally shows it.
+- **It admits when it doesn't know.** For roles copied before this was recorded, the version can only be recovered where the answer is unambiguous. Where it isn't, the row says `version unknown` rather than inventing a number. The copied-date is always shown, because that was never in doubt.
+- **A role your group adopted can be removed.** Adopting a role by mistake used to be permanent. Now a Steward can remove it — with the ceremony saying, before the click, that removal is permanent for this group and does not touch the template it came from.
+- **It tells you what's in the way first.** If members still hold the role, the confirmation says so and names how many, instead of letting you find out by being refused. And a removal that would leave the group with no way to grant a permission like `manage_roles` is refused outright, naming what would be lost — a group can't be locked out from inside.
+- **A template can be taken out of circulation.** Admins can retire a role template so it stops being offered — it disappears from the group-creation chooser and the add-from-template picker. Retiring is not deleting: every group already using it keeps its roles, unchanged, and the confirmation says so plainly before the click. Retired templates stay listed and can be offered again at any time.
+- **The four built-in roles can't be retired.** Steward, Guide, Member and Observer are the floor every group is built on, so no retire option appears for them at all.
+
 ## 2026-08-05 — Group invitations answer right in the bell ([FEAT-H042](../docs/products/hub/features/FEAT-H042-invitation-bell-answers-and-groups-landing-focus.md))
 
 - **Accept or decline where you read it.** An invitation notice in the bell or inbox now carries Accept and Decline, exactly like a stewardship nomination — each confirmed before it acts, and the letter then states its outcome durably, even after reload.

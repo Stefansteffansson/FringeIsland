@@ -19,6 +19,13 @@ export type AdminRoleTemplateRow = {
   version_count: number;
   group_template_refs: string[];
   instantiated_role_count: number;
+  /**
+   * RD-A FEAT-PC027 STORY-3: when the catalogue stopped OFFERING this
+   * template. Null = still offered. The admin plane lists retired templates
+   * explicitly rather than hiding them — retirement is a state to see and
+   * reverse, not a disappearance.
+   */
+  retired_at: string | null;
 };
 
 export type AdminCatalogEntry = {
@@ -133,6 +140,34 @@ export async function createRoleTemplateVersion(
     p_name: input.name,
     p_description: input.description,
     p_permission_names: input.permission_names,
+  });
+  return { refused };
+}
+
+/**
+ * RD-A FEAT-PC027 STORY-3 — stop offering a template, or offer it again.
+ *
+ * Offerability only: the platform guarantees no group, copy, holder or version
+ * row is touched (RD-2/RD-4), and refuses system templates outright. These
+ * wrappers police nothing — they shape the call and rethrow the
+ * SQLSTATE-carrying error for the route to map.
+ */
+export async function retireRoleTemplate(
+  client: SupabaseClient,
+  templateId: string,
+): Promise<{ refused: boolean }> {
+  const { refused } = await call(client, 'admin_retire_role_template', {
+    p_role_template_id: templateId,
+  });
+  return { refused };
+}
+
+export async function unretireRoleTemplate(
+  client: SupabaseClient,
+  templateId: string,
+): Promise<{ refused: boolean }> {
+  const { refused } = await call(client, 'admin_unretire_role_template', {
+    p_role_template_id: templateId,
   });
   return { refused };
 }

@@ -3,7 +3,7 @@
 ---
 id: TASK-RDA-01
 title: Build FEAT-PC027 — group_roles provenance column, role_templates retirement, relaxed group-side delete, honest-unknown backfill; red-first, held at the schema gate
-status: todo
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PC027

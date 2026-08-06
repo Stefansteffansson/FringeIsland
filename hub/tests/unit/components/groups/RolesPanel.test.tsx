@@ -41,6 +41,9 @@ const FABRIC: RolesFabric = {
       name: 'Steward Role Template',
       description: null,
       created_from_role_template_id: 'tmpl-s',
+      // RD-A FEAT-H043 STORY-1: provenance rides the fabric.
+      created_from_version_number: 3,
+      created_at: '2026-05-14T09:12:00+00:00',
       holder_count: 1,
       permissions: ['manage_roles', 'assign_roles'],
     },
@@ -49,6 +52,19 @@ const FABRIC: RolesFabric = {
       name: 'Greeter',
       description: 'welcomes newcomers',
       created_from_role_template_id: null,
+      created_from_version_number: null,
+      created_at: '2026-05-14T09:12:00+00:00',
+      holder_count: 0,
+      permissions: ['view_member_list'],
+    },
+    {
+      // A template-derived copy the backfill could not resolve unambiguously.
+      id: 'role-u',
+      name: 'Observer Role Template',
+      description: null,
+      created_from_role_template_id: 'tmpl-o',
+      created_from_version_number: null,
+      created_at: '2026-05-14T09:12:00+00:00',
       holder_count: 0,
       permissions: ['view_member_list'],
     },
@@ -86,7 +102,7 @@ describe('FEAT-H014 — RolesPanel (STORY-1/2)', () => {
       <RolesPanel groupId="grp-1" fabric={flagless} templates={TEMPLATES} error={null} onMutated={onMutated} />,
     );
     const cards = screen.getAllByTestId('role-card');
-    expect(cards).toHaveLength(2);
+    expect(cards).toHaveLength(3);
 
     const steward = cards.find((c) => within(c).queryByText('Steward Role Template'))!;
     expect(within(steward).getByTestId('role-badge')).toHaveTextContent(/template/i);
@@ -97,6 +113,46 @@ describe('FEAT-H014 — RolesPanel (STORY-1/2)', () => {
     expect(within(greeter).getByTestId('role-badge')).toHaveTextContent(/custom/i);
     expect(within(greeter).getByText(/0 holders/i)).toBeInTheDocument();
     expect(within(greeter).getByText('view_member_list')).toBeInTheDocument();
+  });
+
+  // RD-A FEAT-H043 STORY-1 — the COPY CHECK (quote-bearing AC). A reviewer
+  // comparing the spec to the screen compares these exact strings, so they are
+  // asserted against the render, not against the payload keys.
+  it('renders the provenance line verbatim: Template · v{N} · copied {date}', () => {
+    render(
+      <RolesPanel groupId="grp-1" fabric={flagless} templates={TEMPLATES} error={null} onMutated={onMutated} />,
+    );
+    const steward = screen
+      .getAllByTestId('role-card')
+      .find((c) => within(c).queryByText('Steward Role Template'))!;
+    expect(within(steward).getByTestId('role-badge')).toHaveTextContent(
+      'Template · v3 · copied 14 May 2026',
+    );
+  });
+
+  it('says "version unknown" rather than inventing one when the backfill found no match', () => {
+    render(
+      <RolesPanel groupId="grp-1" fabric={flagless} templates={TEMPLATES} error={null} onMutated={onMutated} />,
+    );
+    const unknown = screen
+      .getAllByTestId('role-card')
+      .find((c) => within(c).queryByText('Observer Role Template'))!;
+    // The copied-date still shows — created_at is always honest (dossier Finding 1).
+    expect(within(unknown).getByTestId('role-badge')).toHaveTextContent(
+      'Template · version unknown · copied 14 May 2026',
+    );
+  });
+
+  it('a custom role states no provenance at all — just Custom', () => {
+    render(
+      <RolesPanel groupId="grp-1" fabric={flagless} templates={TEMPLATES} error={null} onMutated={onMutated} />,
+    );
+    const greeter = screen
+      .getAllByTestId('role-card')
+      .find((c) => within(c).queryByText('Greeter'))!;
+    const badge = within(greeter).getByTestId('role-badge');
+    expect(badge).toHaveTextContent('Custom');
+    expect(badge.textContent).not.toMatch(/copied|version|v\d/i);
   });
 
   it('is purely legible without management flags — no add/edit/delete affordances', () => {
@@ -194,14 +250,21 @@ describe('FEAT-H014 — RolesPanel (STORY-1/2)', () => {
     expect(onMutated).toHaveBeenCalled();
   });
 
-  it('deletes a custom role through ConfirmModal; template-derived roles carry no delete affordance', async () => {
+  // ADAPTED at RD-A (FEAT-H043 STORY-4). This cell asserted that a
+  // template-derived role carries NO delete affordance. RD-A opens it — the
+  // gate on created_from_role_template_id is lifted, and the contract beneath
+  // it now permits the delete too (FEAT-PC027 STORY-4). Labelled adaptation of
+  // a shipped assertion, inverted deliberately, not weakened: the
+  // no-management-flags cell above still proves the affordance stays hidden
+  // without can_manage_roles.
+  it('deletes a custom role through ConfirmModal; template-derived roles now carry one too (RD-A)', async () => {
     const user = userEvent.setup();
     render(
       <RolesPanel groupId="grp-1" fabric={FABRIC} templates={TEMPLATES} error={null} onMutated={onMutated} />,
     );
     const cards = screen.getAllByTestId('role-card');
     const steward = cards.find((c) => within(c).queryByText('Steward Role Template'))!;
-    expect(within(steward).queryByTestId('delete-role-button')).toBeNull();
+    expect(within(steward).queryByTestId('delete-role-button')).not.toBeNull();
 
     const greeter = cards.find((c) => within(c).queryByText('Greeter'))!;
     await user.click(within(greeter).getByTestId('delete-role-button'));
@@ -229,6 +292,65 @@ describe('FEAT-H014 — RolesPanel (STORY-1/2)', () => {
       expect(screen.getByRole('alert')).toHaveTextContent(/remove the role from all holders first/i),
     );
     expect(screen.getByText('Greeter')).toBeInTheDocument();
+    expect(onMutated).not.toHaveBeenCalled();
+  });
+
+  // RD-A FEAT-H043 STORY-4 — the ceremony states its consequences BEFORE the
+  // click, not after. The panel already reads holder_count, so a held role's
+  // obstacle is stated up front rather than discovered as a refusal.
+  it('the removal ceremony names the role and states it does not affect the source template', async () => {
+    const user = userEvent.setup();
+    render(
+      <RolesPanel groupId="grp-1" fabric={FABRIC} templates={TEMPLATES} error={null} onMutated={onMutated} />,
+    );
+    const observer = screen
+      .getAllByTestId('role-card')
+      .find((c) => within(c).queryByText('Observer Role Template'))!;
+    await user.click(within(observer).getByTestId('delete-role-button'));
+
+    const modal = screen.getByTestId('confirm-modal');
+    expect(modal).toHaveTextContent('Observer Role Template');
+    expect(modal).toHaveTextContent(/does not affect the source template/i);
+    expect(deleteGroupRole).not.toHaveBeenCalled();
+  });
+
+  it('a held role states its holder count and the strip-first requirement before the click', async () => {
+    const user = userEvent.setup();
+    render(
+      <RolesPanel groupId="grp-1" fabric={FABRIC} templates={TEMPLATES} error={null} onMutated={onMutated} />,
+    );
+    const steward = screen
+      .getAllByTestId('role-card')
+      .find((c) => within(c).queryByText('Steward Role Template'))!;
+    await user.click(within(steward).getByTestId('delete-role-button'));
+
+    const modal = screen.getByTestId('confirm-modal');
+    expect(modal).toHaveTextContent(/held by 1 member/i);
+    expect(modal).toHaveTextContent(/remove the role from all holders first/i);
+  });
+
+  it('renders the self-lockout refusal verbatim, naming the permission that would be lost', async () => {
+    const user = userEvent.setup();
+    deleteGroupRole.mockRejectedValue(
+      new GroupsApiError(
+        'removing this role would leave the group with no holder of: manage_roles — assign the permission elsewhere first',
+        409,
+      ),
+    );
+    render(
+      <RolesPanel groupId="grp-1" fabric={FABRIC} templates={TEMPLATES} error={null} onMutated={onMutated} />,
+    );
+    const observer = screen
+      .getAllByTestId('role-card')
+      .find((c) => within(c).queryByText('Observer Role Template'))!;
+    await user.click(within(observer).getByTestId('delete-role-button'));
+    await user.click(screen.getByTestId('confirm-modal-confirm'));
+
+    await waitFor(() =>
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        /no holder of: manage_roles — assign the permission elsewhere first/i,
+      ),
+    );
     expect(onMutated).not.toHaveBeenCalled();
   });
 });

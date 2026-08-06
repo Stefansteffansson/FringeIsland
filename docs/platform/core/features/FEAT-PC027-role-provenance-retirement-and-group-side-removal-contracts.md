@@ -6,7 +6,7 @@ title: Role-template provenance stamp, central retirement, and group-side remova
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 ---
 
 **Cycle:** RD-A (role distribution, foundation) · **Pairs with:** [FEAT-H043](../../../products/hub/features/FEAT-H043-role-provenance-retirement-and-role-removal.md)
@@ -86,11 +86,21 @@ One cycle. The schema is one column plus two, the doors already exist, and the g
 - Given a retired template, when an admin unretires it, then `retired_at` and `retired_by` return to NULL and it is offerable again.
 - Given a **system** template (`is_system = true`), when a retire is attempted, then it is refused — the four seeded roles are the floor every group is built on.
 
+**Recorded at build, deliberately not decided: does retire stop a role template riding *group-template* instantiation?** A role template can be registered to a group template via `group_template_roles`; `create_engagement_group` instantiates that registered set. This build does **not** filter retired templates out of that path — retire removes the template from the two *offer* surfaces (`get_role_templates`, and the chooser by consequence) but does not silently change what an existing group template produces, which is the reading most consistent with RD-2 (a central act never rewrites a composition someone else made).
+
+The question is **currently unreachable**: verified against the live catalogue 2026-08-06, `group_template_roles` registers only the four system templates, and system templates cannot be retired. It becomes live the moment RD-B lets a clone be registered to a group template. **RD-B must settle it** — either retire filters the instantiation path too, or retiring a registered template is refused until it is unregistered.
+
 ### STORY-4: A Steward can remove a role the group adopted
 
 - Given a group role derived from a template and held by nobody, when a Steward with `manage_roles` deletes it, then it is deleted — the contract refusal and the affordance both permit it. (There is no RLS layer to permit: `group_roles` carries no DELETE policy and no DELETE grant below `service_role`, so the SECURITY DEFINER contract is the only door. See the Solution sketch §4 note.)
 - Given the same role **held by one or more members**, when a delete is attempted, then it is refused with the inherited `P0001` — *"role is held by members — remove the role from all holders first"* (Open Q3's default, unchanged by this feature).
-- Given a role whose removal would leave the group with no holder of a protected permission (`assign_roles`, `manage_roles`, `remove_roles`, `invite_members`, `remove_members`, `rest_group`), when a delete is attempted, then it is refused naming the permission that would be lost — the group cannot be bricked from inside.
+- Given a role that is the group's **only definer** of a protected permission (`assign_roles`, `manage_roles`, `remove_roles`, `invite_members`, `remove_members`, `rest_group`), when a delete is attempted, then it is refused naming the permission that would be lost — the group cannot be bricked from inside.
+
+  **Two things learned at build about when this guard actually fires.** In a default group the Steward instance is the sole definer of all six protected permissions *and can never be made unheld* — `prevent_last_leader_removal` refuses to unbind the last Steward. So this guard fires only where some **other** role is the last definer of a protected permission. It is defensive depth, correctly placed and rarely reached, not a common path.
+
+  And the neighbouring door is still open: `set_group_role_permission` carries **no** `is_protected` check on the revoke direction, so a group can be bricked by flipping a grant off rather than by deleting a role — the same outcome RD-5 exists to prevent, through a door RD-A did not close. Filed as [TASK-RDA-03](../../../planning/backlog/tasks/TASK-RDA-03-set-group-role-permission-lacks-protected-guard.md); deliberately out of RD-A's scope.
+
+  **Corrected at build (2026-08-06), from "no holder" to "only definer".** As first written this AC was unreachable. The held-by-members refusal fires *first*, so by the time the lockout guard is evaluated the role provably has zero holders — deleting it removes no holder at all, and a holder-based test could never fire. The reachable and meaningful guard is by definer: if this role is the only one in the group granting a protected permission, deleting it means no member can be given that permission again without admin intervention. That is the brick RD-5 exists to prevent, and it is exactly the state a Steward reaches by obeying the held-first instruction — strip the holders, then delete. The guard is implemented by definer and the wording is corrected to match, rather than the guard being written to a test that cannot fire.
 - Given a resting or suspended group, when a delete is attempted, then the existing availability guard (`assert_group_writable`, FEAT-PC023) refuses first and unchanged.
 - Given a deleted adopted role, when the source template is read, then the template and its versions are untouched — group-side removal is the group's act on its own property.
 
@@ -116,6 +126,40 @@ Hub consumes all four areas through [FEAT-H043](../../../products/hub/features/F
 - **Notifications** — **None in this feature.** The three passive notice kinds (published / updated / retired) are RD-B's scope, deliberately: RD-A ships the state changes, RD-B ships the telling. A retire performed during RD-A is silent by design, and RD-B's retired-kind will announce retirements from then on.
 - **Observability** — Retire, unretire, and group-side role removal each write an audit-log row through the existing admin audit path, naming actor, target template or role, and the group where applicable. The refusals (held-by-members, protected-permission lockout, system-template retire) are recorded as refusals, never as silent no-ops.
 - **Transactions** — None. No entitlement, price, or receipt surface is touched.
+
+## Implementation notes
+
+**Built 2026-08-06, Cycle RD-A. Migration `20260806170000`, applied on the named approval "ok apply the RD-A migration and merge 448".**
+
+### Red → green evidence
+
+Red-first throughout, at `hub/tests/integration/groups/role-provenance-and-retirement.test.ts`.
+
+**Red at head: 16 failed / 3 passed**, every failure for the right reason — `column created_from_version_number does not exist` (STORY-1/2 and the retire snapshot), `column retired_at does not exist`, `PGRST202` on both new functions, and STORY-4's cells hitting the exact `42501 template-derived role instances cannot be deleted` refusal this feature inverts. Notably S4b (held-by-members) failed *red* rather than passing, because the template refusal masked the held check — proving the ordering claim rather than assuming it.
+
+**Green after apply: 19/19.** Full integration **1060/1060 across 75 suites** — no sibling fallout.
+
+**One suspect passer caught before implementation.** S4d asserted only `error not null` on a suspended group, which the *template-derived* refusal also satisfied — it would have passed for the wrong reason and gone on passing after the refusal it was meant to pin was removed. Tightened to assert `P0001` and `group is suspended` by name. This is the "green when it should be red" rule doing its job.
+
+**Three cells labelled honestly as NOT red-first**, green before and after by design: S4b and S4d pin *inherited* behaviour (PC011's held refusal, PC023's availability guard) that this feature must leave untouched; the ADR-U038 policy/grant cells assert the *existing* lockdown still holds.
+
+### The two corrections, and what produced them
+
+Both came from checking the substrate rather than trusting the decomposition. Both are recorded in full above (Solution sketch §4, and STORY-4's AC). The generalisable lesson from the first: **a comment naming a mechanism is evidence the mechanism was once there; the catalogue is the authority for whether it is there now.** The dossier read a tombstone as a live rule.
+
+### Sibling-assertion sweep
+
+Enumerated in the migration header. Two shipped assertions adapted as **labelled inversions** — `role-permission-contracts.test.ts:489`'s template-derived refusal clause and `RolesPanel.test.tsx:204`'s absent-affordance assertion. The anti-escalation pins (a caller without `manage_roles` still gets `42501`) deliberately left, because the permission check precedes the provenance check and those cells never exercised the removed refusal.
+
+One coupling trap caught while adapting: the rewritten clause originally deleted `guideInstanceId`, which a later cell still needs to exist — its `42501` would have silently decayed to `P0002` and passed for the wrong reason. Uses a freshly-pulled role instead.
+
+### Applied backfill result
+
+1771 rows stamped, **1** left honestly unknown, 4656 custom rows untouched. The unknown row is a `Member` instance in the FringeIsland Members system group whose grant set had drifted from its template's only version — a genuine ambiguity the backfill correctly declined to resolve. It is the live proof of the `version unknown` render path.
+
+### Found, filed, not fixed
+
+`set_group_role_permission` carries no `is_protected` check on the revoke direction — a group can be bricked by flipping a grant off rather than by deleting a role. Same outcome RD-5 prevents, neighbouring door. [TASK-RDA-03](../../../planning/backlog/tasks/TASK-RDA-03-set-group-role-permission-lacks-protected-guard.md), which leads with verifying the brick end-to-end rather than treating the reasoning as proven.
 
 ## Performance budget
 

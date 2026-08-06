@@ -486,7 +486,16 @@ describe('FEAT-PC011 — group role & permission contracts (G-B)', () => {
       expect(entry.description).toBe('original');
     });
 
-    it('deletes a custom unheld role; refuses while held (unbind first); refuses template-derived regardless', async () => {
+    // ADAPTED at RD-A (FEAT-PC027 STORY-4, migration 20260806170000). The
+    // third clause asserted 42501 on deleting a template-derived role. RD-A
+    // deliberately lifts that refusal — an adopted role is the group's own
+    // property and the group may put it down. The clause now asserts the
+    // inverted behaviour. This is a labelled adaptation of a shipped
+    // assertion, not a weakening: the anti-escalation pin below (a member
+    // WITHOUT manage_roles is still refused 42501) is untouched, and RD-A's
+    // own suite adds the held-by-members and self-lockout cells that now sit
+    // where this refusal used to be.
+    it('deletes a custom unheld role; refuses while held (unbind first); deletes template-derived too (RD-A)', async () => {
       const c = await asUser(steward);
 
       // Held: bind plainMember to the custom role first (admin — GRP-7's own
@@ -519,12 +528,24 @@ describe('FEAT-PC011 — group role & permission contracts (G-B)', () => {
         .eq('id', customRoleId);
       expect(gone ?? []).toHaveLength(0);
 
-      // Template-derived: refused regardless of holders.
-      const { error: tmplErr } = await c.rpc('delete_group_role', {
-        p_group_role_id: guideInstanceId,
+      // Template-derived, unheld: deleted since RD-A. Pulled fresh rather than
+      // reusing guideInstanceId — the anti-escalation pin below still needs
+      // that role to EXIST, or its 42501 would decay into a P0002 and the pin
+      // would pass for the wrong reason.
+      const { data: pulledId } = await c.rpc('create_group_role', {
+        p_group_id: groupId,
+        p_name: 'GB Pulled Guide',
+        p_role_template_id: guideTemplateId,
       });
-      expect(tmplErr).not.toBeNull();
-      expect(tmplErr!.code).toBe('42501');
+      const { error: tmplErr } = await c.rpc('delete_group_role', {
+        p_group_role_id: pulledId as string,
+      });
+      expect(tmplErr).toBeNull();
+      const { data: tmplGone } = await admin
+        .from('group_roles')
+        .select('id')
+        .eq('id', pulledId as string);
+      expect(tmplGone ?? []).toHaveLength(0);
     });
 
     it('refuses a member without manage_roles on every tending contract (42501); foreign role ids no-leak (P0002)', async () => {
