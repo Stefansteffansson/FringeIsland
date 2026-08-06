@@ -89,7 +89,7 @@ As the platform, I want group enrolment gated by the group-scoped permission, so
 - Given a FIM holding `enroll_group_in_journey` in an active engagement group, when they call `enroll_group_in_journey(group_id, journey_id)`, then the enrolment exists (`group_id` = the group, `enrolled_by_group_id` = the actor's personal group — provenance) and the group's active members each receive a durable notification row.
 - Given a member without that permission in the group, when they call it, then `42501`; given a group the caller cannot see (or no group), then `P0002` (the no-leak rule).
 - Given the group is already enrolled in that journey, when they call it, then it is refused and no second row exists.
-- Given the group's status is not `active` (closed/archived/suspended), when they call it, then it is refused honestly.
+- Given the group's status is not `active` (resting/suspended/closed/archived — `resting` added by FEAT-PC023's two-mode holds, 2026-08-03; the rule is keyed on "not active", so it already covered the new state), when they call it, then it is refused honestly.
 
 ### STORY-5: Withdraw through the same door
 As the platform, I want withdrawal to be a contract, so enrolment is never a one-way door and the rules live substrate-side.
