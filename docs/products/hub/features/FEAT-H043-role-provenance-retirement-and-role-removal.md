@@ -6,7 +6,7 @@ title: Role provenance on group roles, template retirement in the admin plane, a
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
@@ -20,7 +20,7 @@ Three surfaces are currently unable to tell the truth or take an obvious action.
 
 **The group's roles panel can't say where a role came from.** It renders a "Template" / "Custom" chip (`RolesPanel.tsx:127`) and stops there. Stefan's walk read a v1 copy against a v5 template and the surface offered nothing to explain the difference (WA-8).
 
-**The roles panel offers no way to remove an adopted role.** The delete affordance is gated on `!role.created_from_role_template_id` (`RolesPanel.tsx:146`), so a role the group adopted is permanent — and the two layers beneath the button refuse it too (dossier Finding 3).
+**The roles panel offers no way to remove an adopted role.** The delete affordance is gated on `!role.created_from_role_template_id` (`RolesPanel.tsx:146`), so a role the group adopted is permanent — and the contract beneath the button refuses it too (dossier Finding 3, as corrected: one live layer below the surface, not two — the RLS layer was retired at HYG-A).
 
 **The admin roles page can't retire anything.** "Steward clone" — created during the walk — persists platform-wide with live copies and no way to stop offering it. The page has an editor and no off-switch.
 

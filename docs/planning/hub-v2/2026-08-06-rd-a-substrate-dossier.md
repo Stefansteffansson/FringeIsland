@@ -36,17 +36,23 @@ So at copy time the honest provenance is *the version whose materialisation is l
 
 **Store the integer, not only the FK.** `role_template_versions.role_template_id` is `ON DELETE CASCADE`, so an FK-only stamp would evaporate if a template were ever deleted — the exact dangle RD-4 exists to prevent. A denormalised `version_number` survives independently and is also what renders.
 
-## Finding 3 — the group-side delete refusal is THREE layers deep, not one
+## Finding 3 — the group-side delete refusal is TWO layers deep
+
+> **CORRECTED 2026-08-06 at the RD-A build open.** As first filed, this finding claimed three live layers and listed an RLS rule first. That was wrong, and it was wrong in the direction the dossier exists to prevent. HYG-A **dropped** the `group_roles_delete` policy (`20260803190000:4533`) and revoked `insert, update, delete` on `group_roles` from `authenticated, anon` (`:4545`). Verified against the live catalogue: `group_roles` carries exactly one policy, `group_roles_select`, and `authenticated` holds SELECT/REFERENCES/TRIGGER only.
+>
+> **How the error was made — worth keeping.** The dossier cited the RLS rule as "named in the contract's own comment at `20260803190000`." That comment is a *tombstone*: the same migration that wrote it is the migration that dropped the policy, and the comment records where the rule **went** (into the contract), not that it still stands. A comment naming a mechanism is evidence the mechanism was *once* there — the catalogue is the authority for whether it is there now. The strikethrough row below is kept rather than deleted so the correction stays legible.
+>
+> **Consequence:** RD-A's leg 3 is **contract + surface**, and the migration carries no RLS delete change. Re-adding a DELETE policy would re-open the direct-PostgREST path HYG-A deliberately closed (ADR-U038 regression).
 
 **This corrects the board's own framing.** The design note recorded the Hub gate ("`RolesPanel` gates deletion on `created_from_role_template_id` being null"). That is true and it is one third of the picture:
 
 | Layer | Where | What it does |
 |---|---|---|
-| **RLS** | the `group_roles` delete policy, `created_from_role_template_id IS NULL` | named in the contract's own comment at `20260803190000` |
+| ~~**RLS**~~ | ~~the `group_roles` delete policy, `created_from_role_template_id IS NULL`~~ | **RETIRED at HYG-A** — policy dropped `20260803190000:4533`, DELETE grant revoked `:4545`. Not a live layer. |
 | **Contract** | `delete_group_role` | `raise exception 'template-derived role instances cannot be deleted' using errcode = '42501'` — deliberately an explicit refusal rather than a silent zero-row delete |
 | **Surface** | `hub/components/groups/RolesPanel.tsx:146` | `{canManage && !role.created_from_role_template_id && (` — the affordance never renders |
 
-**RD-A's third leg is therefore a schema + contract + surface change, not a Hub-only unlock.** A spec that only relaxes the panel would produce a button whose click is refused twice below it.
+**RD-A's third leg is therefore a contract + surface change, not a Hub-only unlock and not a schema change.** A spec that only relaxes the panel would produce a button whose click is refused once below it — by the contract, which is now the only door.
 
 ## Finding 4 — `delete_group_role` already refuses a role held by members
 
