@@ -28,6 +28,8 @@ type Template = {
   version_count: number;
   group_template_refs: string[];
   instantiated_role_count: number;
+  /** RD-A FEAT-PC027 STORY-3: null = still offered. */
+  retired_at: string | null;
 };
 
 type CatalogEntry = {
@@ -47,6 +49,7 @@ const TEMPLATES: Template[] = [
     version_count: 1,
     group_template_refs: ['Basic circle', 'Learning circle'],
     instantiated_role_count: 12,
+    retired_at: null,
   },
   {
     id: 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
@@ -57,7 +60,14 @@ const TEMPLATES: Template[] = [
     version_count: 3,
     group_template_refs: [],
     instantiated_role_count: 4,
+    retired_at: null,
   },
+];
+
+/** The same catalogue with the clone already retired. */
+const RETIRED_TEMPLATES: Template[] = [
+  TEMPLATES[0],
+  { ...TEMPLATES[1], retired_at: '2026-08-06T10:00:00.000Z' },
 ];
 
 const CATALOG: CatalogEntry[] = [
@@ -181,5 +191,99 @@ describe('AdminRolesView (FEAT-H040 STORY-1)', () => {
     const { container } = render(<AdminRolesView />);
     await screen.findByText('Steward');
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+/**
+ * RD-A FEAT-H043 STORY-2/3 — the retire ceremony.
+ * WRITTEN RED-FIRST (2026-08-06): no retire affordance exists at head.
+ *
+ * The contract under test: a non-system template can be retired from the list;
+ * the confirmation states the consequence accurately BEFORE the click (the
+ * template stops being offered; existing copies are unaffected); a retired
+ * template stays listed and marked, with unretire available; a system template
+ * offers no retire affordance at all; refusals render verbatim; and the list
+ * repaints from a FRESH read rather than mutating local state.
+ */
+describe('AdminRolesView — retire / unretire (RD-A FEAT-H043 STORY-2)', () => {
+  const SCRIBE = TEMPLATES[1];
+  const STEWARD = TEMPLATES[0];
+
+  it('offers retire on a non-system template and none at all on a seeded one', async () => {
+    fetchMock.mockResolvedValue(ok(PAYLOAD));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    expect(screen.getByTestId(`retire-button-${SCRIBE.id}`)).toBeInTheDocument();
+    // The four seeded roles are the floor; the contract refuses regardless, so
+    // the surface must not even offer it.
+    expect(screen.queryByTestId(`retire-button-${STEWARD.id}`)).not.toBeInTheDocument();
+  });
+
+  it('states the consequence accurately before the click — and does not retire on open', async () => {
+    fetchMock.mockResolvedValue(ok(PAYLOAD));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    await userEvent.click(screen.getByTestId(`retire-button-${SCRIBE.id}`));
+    const modal = screen.getByTestId('confirm-modal');
+    expect(modal).toHaveTextContent(/no longer appear in the group-creation chooser/i);
+    // The no-go: never imply the template was deleted or that copies changed.
+    expect(modal).toHaveTextContent(/existing copies in groups are unaffected/i);
+    expect(modal.textContent ?? '').not.toMatch(/delete/i);
+    // Opening the ceremony is not performing it.
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('retires on confirm and repaints from a fresh read', async () => {
+    fetchMock.mockResolvedValueOnce(ok(PAYLOAD)); // first paint
+    fetchMock.mockResolvedValueOnce(ok({ ok: true })); // the retire call
+    fetchMock.mockResolvedValueOnce(ok({ ...PAYLOAD, templates: RETIRED_TEMPLATES })); // re-read
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    await userEvent.click(screen.getByTestId(`retire-button-${SCRIBE.id}`));
+    await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
+
+    // The row REMAINS listed, marked — retirement is not a disappearance.
+    await waitFor(() =>
+      expect(screen.getByTestId(`retired-badge-${SCRIBE.id}`)).toHaveTextContent(/retired/i),
+    );
+    expect(screen.getByTestId(`template-row-${SCRIBE.id}`)).toBeInTheDocument();
+
+    // Fresh read, not local mutation (W-9: no cache keyed by nothing).
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(String(fetchMock.mock.calls[2][0])).toContain('/api/admin/roles');
+  });
+
+  it('offers unretire on a retired template, stating it will be offered again', async () => {
+    fetchMock.mockResolvedValue(ok({ ...PAYLOAD, templates: RETIRED_TEMPLATES }));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    expect(screen.queryByTestId(`retire-button-${SCRIBE.id}`)).not.toBeInTheDocument();
+    await userEvent.click(screen.getByTestId(`unretire-button-${SCRIBE.id}`));
+    expect(screen.getByTestId('confirm-modal')).toHaveTextContent(/will reappear/i);
+  });
+
+  it('renders a refusal verbatim and leaves the row as it was', async () => {
+    fetchMock.mockResolvedValueOnce(ok(PAYLOAD));
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 403,
+      json: async () => ({ error: 'a system role template cannot be retired' }),
+    } as Response);
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    await userEvent.click(screen.getByTestId(`retire-button-${SCRIBE.id}`));
+    await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
+
+    await waitFor(() =>
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        'a system role template cannot be retired',
+      ),
+    );
+    expect(screen.queryByTestId(`retired-badge-${SCRIBE.id}`)).not.toBeInTheDocument();
   });
 });

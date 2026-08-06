@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { AdminRolesPayload } from '@/lib/admin/roles';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
 /**
  * FEAT-H040 STORY-1 — /admin/roles: the template list + the read-only
@@ -20,6 +21,13 @@ type ViewState =
 
 export function AdminRolesView() {
   const [view, setView] = useState<ViewState>({ kind: 'loading' });
+  // RD-A FEAT-H043 STORY-2: the retire ceremony's target and its outcome.
+  const [ceremony, setCeremony] = useState<{
+    template: AdminRolesPayload['templates'][number];
+    verb: 'retire' | 'unretire';
+  } | null>(null);
+  const [ceremonyError, setCeremonyError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   const computeView = useCallback(async (): Promise<ViewState> => {
     try {
@@ -50,6 +58,37 @@ export function AdminRolesView() {
   const reload = () => {
     setView({ kind: 'loading' });
     void computeView().then(setView);
+  };
+
+  /**
+   * RD-A FEAT-H043 STORY-2/3 — perform the ceremony, then repaint from a FRESH
+   * read. Never a local mutation of the row: the list is server state, and the
+   * template list any picker serves must be re-read rather than patched (W-9 —
+   * no cache keyed by nothing). A refusal renders verbatim and changes nothing.
+   */
+  const confirmCeremony = async () => {
+    if (!ceremony) return;
+    setBusy(true);
+    setCeremonyError(null);
+    try {
+      const res = await fetch(`/api/admin/roles/${ceremony.template.id}/retire`, {
+        method: ceremony.verb === 'retire' ? 'POST' : 'DELETE',
+      });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
+        setCeremonyError(body.error ?? `The template could not be ${ceremony.verb}d.`);
+        setCeremony(null);
+        return;
+      }
+      setCeremony(null);
+      const next = await computeView();
+      setView(next);
+    } catch {
+      setCeremonyError(`The template could not be ${ceremony.verb}d.`);
+      setCeremony(null);
+    } finally {
+      setBusy(false);
+    }
   };
 
   if (view.kind === 'refused') {
@@ -102,6 +141,12 @@ export function AdminRolesView() {
         </span>
       </div>
 
+      {ceremonyError && (
+        <p role="alert" className="text-sm text-red-600">
+          {ceremonyError}
+        </p>
+      )}
+
       <section className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
         <h2 className="mb-3 text-lg font-medium">Templates</h2>
         <table className="w-full text-sm">
@@ -121,6 +166,9 @@ export function AdminRolesView() {
               </th>
               <th scope="col" className="py-1 font-medium">
                 Instantiated roles
+              </th>
+              <th scope="col" className="py-1 pl-4 text-right font-medium">
+                Offer
               </th>
             </tr>
           </thead>
@@ -144,6 +192,16 @@ export function AdminRolesView() {
                         Seeded
                       </span>
                     )}
+                    {/* RD-A: a retired template stays listed, marked. Retirement
+                        is a state to see and reverse, never a disappearance. */}
+                    {t.retired_at && (
+                      <span
+                        data-testid={`retired-badge-${t.id}`}
+                        className="rounded bg-amber-50 px-1.5 py-0.5 text-xs text-amber-700"
+                      >
+                        Retired
+                      </span>
+                    )}
                   </span>
                   {t.description && (
                     <span className="block text-xs text-gray-500">{t.description}</span>
@@ -159,6 +217,30 @@ export function AdminRolesView() {
                   {t.group_template_refs.length ? t.group_template_refs.join(', ') : '—'}
                 </td>
                 <td className="py-2">{t.instantiated_role_count}</td>
+                <td className="py-2 pl-4 text-right">
+                  {/* The seeded four are the floor every group is built on —
+                      the contract refuses regardless, so no affordance renders. */}
+                  {!t.is_system &&
+                    (t.retired_at ? (
+                      <button
+                        type="button"
+                        data-testid={`unretire-button-${t.id}`}
+                        onClick={() => setCeremony({ template: t, verb: 'unretire' })}
+                        className="rounded border border-gray-200 px-2 py-0.5 text-xs text-gray-700 hover:bg-gray-50"
+                      >
+                        Unretire
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        data-testid={`retire-button-${t.id}`}
+                        onClick={() => setCeremony({ template: t, verb: 'retire' })}
+                        className="rounded border border-amber-200 px-2 py-0.5 text-xs text-amber-700 hover:bg-amber-50"
+                      >
+                        Retire
+                      </button>
+                    ))}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -202,6 +284,53 @@ export function AdminRolesView() {
           </div>
         ))}
       </section>
+
+      {/* RD-A FEAT-H043 STORY-2: the ceremony states the consequence
+          ACCURATELY before the click — retiring stops the template being
+          offered and changes nothing that already exists. The no-go is a copy
+          that implies deletion or that adopted copies were disturbed. */}
+      <ConfirmModal
+        isOpen={ceremony !== null}
+        title={ceremony?.verb === 'unretire' ? 'Offer this template again' : 'Stop offering this template'}
+        message={ceremonyMessage(ceremony)}
+        confirmText={ceremony?.verb === 'unretire' ? 'Unretire' : 'Retire'}
+        variant={ceremony?.verb === 'unretire' ? 'info' : 'warning'}
+        busy={busy}
+        onConfirm={() => void confirmCeremony()}
+        onCancel={() => {
+          if (!busy) setCeremony(null);
+        }}
+      />
     </main>
+  );
+}
+
+/**
+ * The retire / unretire consequence copy. Retire is stated as what it is — an
+ * end to being offered — and is explicit that nothing already adopted moves,
+ * because that is the single thing an admin would otherwise fear (RD-2/RD-4).
+ */
+function ceremonyMessage(
+  ceremony: { template: AdminRolesPayload['templates'][number]; verb: 'retire' | 'unretire' } | null,
+): string {
+  if (!ceremony) return '';
+  const { template, verb } = ceremony;
+  if (verb === 'unretire') {
+    return (
+      `Offer "${template.name}" again? It will reappear in the group-creation ` +
+      `chooser and the add-from-template picker.`
+    );
+  }
+  const adopted =
+    template.instantiated_role_count > 0
+      ? ` The ${template.instantiated_role_count} role${
+          template.instantiated_role_count === 1 ? '' : 's'
+        } already adopted from it stay exactly as they are.`
+      : '';
+  return (
+    `Stop offering "${template.name}"? It will no longer appear in the ` +
+    `group-creation chooser or the add-from-template picker. Existing copies ` +
+    `in groups are unaffected — nothing is removed and no group changes.` +
+    `${adopted} You can offer it again at any time.`
   );
 }
