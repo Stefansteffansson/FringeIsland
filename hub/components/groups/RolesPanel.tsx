@@ -6,6 +6,66 @@ import type { RoleEntry, RolesFabric, RoleTemplateOption } from '@/lib/groups/qu
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
 /**
+ * RD-A FEAT-H043 STORY-1 — the provenance line.
+ *
+ * Replaces the binary "Template"/"Custom" chip. A template-derived role states
+ * which version it was copied from and when; where the backfill could not
+ * resolve a version unambiguously it says so plainly rather than inventing one
+ * (RD-10). A custom role has no provenance to state and keeps saying "Custom".
+ *
+ * The copied-date is always shown for a template-derived role because
+ * `created_at` is always honest — every instantiation door sets it at copy
+ * time (dossier Finding 1), so it needs no backfill and can never be unknown.
+ */
+export function provenanceLabel(role: RoleEntry): string {
+  if (!role.created_from_role_template_id) return 'Custom';
+  const version =
+    role.created_from_version_number === null
+      ? 'version unknown'
+      : `v${role.created_from_version_number}`;
+  return `Template · ${version} · copied ${formatCopiedDate(role.created_at)}`;
+}
+
+/**
+ * Postgres serialises timestamptz with a literal `+00:00`; parsing through
+ * `Date` normalises that rather than slicing the string (the house rule — the
+ * two shapes are not string-comparable).
+ */
+function formatCopiedDate(value: string): string {
+  const at = new Date(value);
+  if (Number.isNaN(at.getTime())) return 'date unknown';
+  return at.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+/**
+ * RD-A FEAT-H043 STORY-4 — the removal ceremony's copy.
+ *
+ * Two consequences, both stated before the click: removal is permanent for
+ * this group and does not touch the source template (retiring a template is a
+ * separate, central act — RD-2), and a held role must have its holders
+ * stripped first. The held sentence quotes the substrate's own refusal wording
+ * so the pre-click warning and the post-click refusal read as one voice.
+ */
+function removalMessage(role: RoleEntry | null): string {
+  if (!role) return '';
+  const held =
+    role.holder_count > 0
+      ? ` It is currently held by ${role.holder_count} ${
+          role.holder_count === 1 ? 'member' : 'members'
+        } — remove the role from all holders first.`
+      : '';
+  return (
+    `Remove "${role.name}" from this group? This is permanent for this group ` +
+    `and does not affect the source template.${held}`
+  );
+}
+
+/**
  * FEAT-H014 STORY-1/2 — the roles panel (GRP-6).
  * Renders exactly what the FEAT-PC011 fabric payload provides; management
  * affordances exist iff the viewer's capability flags say so (the Hub never
@@ -124,7 +184,7 @@ export function RolesPanel({
                         : 'bg-emerald-50 text-emerald-700'
                     }`}
                   >
-                    {role.created_from_role_template_id ? 'Template' : 'Custom'}
+                    {provenanceLabel(role)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -143,7 +203,7 @@ export function RolesPanel({
                       Edit grants
                     </button>
                   )}
-                  {canManage && !role.created_from_role_template_id && (
+                  {canManage && (
                     <button
                       type="button"
                       data-testid="delete-role-button"
@@ -196,11 +256,14 @@ export function RolesPanel({
         </ul>
       )}
 
+      {/* RD-A FEAT-H043 STORY-4: the ceremony states its consequences BEFORE
+          the click. holder_count already rides the fabric, so a held role's
+          obstacle is named up front rather than discovered as a refusal. */}
       <ConfirmModal
         isOpen={deleteTarget !== null}
-        title="Delete role"
-        message={`Delete "${deleteTarget?.name ?? ''}"? Members holding it must be unbound first — the platform refuses otherwise.`}
-        confirmText="Delete"
+        title="Remove role"
+        message={removalMessage(deleteTarget)}
+        confirmText="Remove"
         variant="danger"
         busy={busy}
         onConfirm={() => void confirmDelete()}

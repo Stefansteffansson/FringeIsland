@@ -83,7 +83,7 @@ One cycle, shared with FEAT-PC027. Surface-side this is one new render on an exi
 - Given they open the ceremony, when the confirmation renders, then it names the role and states that removal is permanent for this group and does not affect the source template, before the click.
 - Given a template-derived role **held by members**, when the Steward opens the ceremony, then it states the holder count and that holders must be removed first — the panel already reads `holder_count` on `get_group_roles`, so the consequence is stated before the click rather than discovered as a refusal after it.
 - Given the removal is attempted anyway and the contract refuses (`P0001`, held by members), when the refusal returns, then it renders verbatim and the role stays.
-- Given a removal that would leave the group with no holder of a protected permission, when the contract refuses, then the refusal renders verbatim, naming the permission that would be lost.
+- Given a removal of the group's only definer of a protected permission, when the contract refuses, then the refusal renders verbatim, naming the permission that would be lost. *(Corrected at build from "no holder" to "only definer" — see FEAT-PC027 STORY-4 for why the holder-based phrasing is unreachable under held-first ordering.)*
 - Given a successful removal, when it completes, then the panel repaints from a fresh read and the role is gone.
 - Given a resting or suspended group, when a Steward views the panel, then removal behaves exactly as every other group-write does under the availability guard — no new branch, no special case.
 

@@ -187,6 +187,16 @@ export interface RoleEntry {
   description: string | null;
   /** null = custom role; set = template-derived instance. */
   created_from_role_template_id: string | null;
+  /**
+   * RD-A FEAT-PC027 STORY-1: the source template version this copy was taken
+   * from. Null means honestly unknown — a pre-stamp row whose grant set matched
+   * no version unambiguously (RD-10), or a custom role with no provenance at
+   * all. The surface renders "version unknown"; it never derives a version the
+   * contract declined to assert.
+   */
+  created_from_version_number: number | null;
+  /** RD-A: the copied-date. Always honest — set by every instantiation door. */
+  created_at: string;
   holder_count: number;
   /** Granted permission names. */
   permissions: string[];
