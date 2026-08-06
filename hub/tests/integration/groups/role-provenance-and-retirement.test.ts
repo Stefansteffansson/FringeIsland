@@ -607,34 +607,48 @@ describe('FEAT-PC027 — provenance, retirement, group-side removal (RD-A)', () 
       const c = await asUser(steward);
       const payload = await fabric(c, groupId);
       const stewardRole = payload.roles.find((r) => r.name === 'Steward Role Template')!;
+      expect(stewardRole.permissions).toContain('rest_group');
 
-      // The Steward template is the SOLE definer of all six protected
-      // permissions among the system templates (verified against the live
-      // catalogue) — Guide/Member/Observer grant none of them.
-      expect(stewardRole.permissions).toContain('manage_roles');
+      // Reaching this guard takes a deliberately-built state, and the reason is
+      // worth stating: in a default group the Steward instance is the SOLE
+      // definer of all six protected permissions, and it can never be made
+      // unheld — prevent_last_leader_removal refuses to unbind the last
+      // Steward. So the guard only fires when some OTHER role is the last
+      // definer of a protected permission, which is exactly what this fixture
+      // constructs.
+      //
+      // 1. A custom role becomes a second definer of rest_group.
+      const { data: deputyId, error: createErr } = await c.rpc('create_group_role', {
+        p_group_id: groupId,
+        p_name: 'RD-A Deputy',
+        p_permissions: ['rest_group'],
+      });
+      expect(createErr).toBeNull();
 
-      // Reach the guard the way a Steward actually would: the held-by-members
-      // refusal fires FIRST, so the holders must be stripped before the delete
-      // is even attempted. That is precisely what makes the lockout reachable
-      // — and why the guard is by definer, not by holder (a holder-based test
-      // could never fire from this line; see the migration's ordering note).
-      await runAdminSql(
-        `DELETE FROM public.user_group_roles WHERE group_role_id = '${stewardRole.id}';`,
-      );
-
-      const { error } = await c.rpc('delete_group_role', {
+      // 2. The Steward instance gives rest_group up. Legal precisely because
+      //    the Deputy already holds it — this is not the last definer yet.
+      const { error: revokeErr } = await c.rpc('set_group_role_permission', {
         p_group_role_id: stewardRole.id,
+        p_permission_name: 'rest_group',
+        p_granted: false,
+      });
+      expect(revokeErr).toBeNull();
+
+      // 3. Now the Deputy is the group's only way to grant rest_group, and it
+      //    holds no members — so the held-check passes and the lockout is the
+      //    refusal that fires.
+      const { error } = await c.rpc('delete_group_role', {
+        p_group_role_id: deputyId as string,
       });
       expect(error).not.toBeNull();
       expect(error!.code).toBe('P0001');
-      // The refusal names the permissions that would be lost, not just that
-      // something would be.
-      expect(error!.message).toContain('manage_roles');
+      // The refusal names what would be lost, not merely that something would.
+      expect(error!.message).toContain('rest_group');
       expect(error!.message).toContain('no holder of');
 
       // And the role survives its own refusal.
       const alive = (await runAdminSql(
-        `SELECT count(*)::int AS n FROM public.group_roles WHERE id = '${stewardRole.id}';`,
+        `SELECT count(*)::int AS n FROM public.group_roles WHERE id = '${deputyId as string}';`,
       )) as Array<{ n: number }>;
       expect(alive[0].n).toBe(1);
     }, 180_000);
