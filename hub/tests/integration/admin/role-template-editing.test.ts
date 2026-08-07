@@ -336,7 +336,10 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
     expect(seedCheck[0].total).toBeGreaterThan(0);
     expect(seedCheck[0].system_count).toBe(seedCheck[0].total);
 
-    const { data: memberRead } = await fimClient.rpc('get_role_templates');
+    // ADAPTED by RD-B (RDB-1): repointed to the scoped offer read.
+    const { data: memberRead } = await fimClient.rpc('get_available_role_templates', {
+      p_group_id: groupId,
+    });
     const names = (memberRead as Array<{ name: string }>).map((t) => t.name);
     expect(names).toContain(cloneName);
   });

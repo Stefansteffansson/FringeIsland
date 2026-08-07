@@ -40,6 +40,7 @@ Depends on both platform tasks because every read and write it makes is one of t
 - [ ] The retired notice includes the sentence that the group's existing copy is unaffected — the line that stops it reading as a loss
 - [ ] `hub/lib/groups/queries.ts:239-244` moved from the dropped `get_role_templates()` to the scoped read
 - [ ] Uses `ConfirmModal` — never browser `confirm()`/`alert()`
+- [ ] **The new `roles` category needs an icon entry.** `hub/components/notifications/NotificationItem.tsx:15` keys an icon map by category (`'group-lifecycle': Flag, …`). Found during the platform half's sweep; a missing key renders the fallback rather than failing, which is exactly how it would ship unnoticed
 - [ ] **Pyramid upright**: unit-tier coverage for the three-state render logic, the diff list construction, and the permission-gated visibility — not only integration + E2E
 - [ ] **E2E sweep obligation discharged and recorded**: this feature adds Copy / Review update / Confirm / Publish / Unpublish to pages that already carry buttons. Grep the fleet for **bare accessible-name selectors** (`getByRole('button', {name: …})` without a scoping container) and **positional resolution** (`.first()` / `.last()`) on every page these surfaces touch — in addition to the normal object-named sweep. This is the RD-A miss generalised
 - [ ] `npm run lint` clean and **`next build` green** before `6-done` — ts-jest and eslint do not full-type-check

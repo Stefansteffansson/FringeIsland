@@ -220,6 +220,12 @@ export interface RoleTemplateOption {
   id: string;
   name: string;
   description: string | null;
+  /** RD-B FEAT-PC028 STORY-2: adoption state, so the surface renders
+   *  not-adopted / current / update-available from ONE read. */
+  adopted_group_role_id: string | null;
+  /** NULL where provenance is honestly unknown (RD-10) — never a guess. */
+  adopted_version_number: number | null;
+  current_version_number: number | null;
 }
 
 /**
@@ -236,8 +242,18 @@ export interface RoleTemplateOption {
  */
 export async function fetchRoleTemplates(
   supabase: SupabaseClient,
+  groupId: string,
 ): Promise<RoleTemplateOption[]> {
-  const { data, error } = await supabase.rpc('get_role_templates');
+  // REPOINTED by RD-B FEAT-PC028 (RDB-1). The zero-arg get_role_templates()
+  // is DROPPED: scoping needs p_group_id, a signature change cannot be a
+  // COR-A re-issue, and an overload would have let a caller that omitted the
+  // argument silently receive the unscoped catalogue — the exact footgun the
+  // cycle exists to close. Scope and retirement are both filtered
+  // server-side, so this wrapper never filters and a sibling Surface
+  // inherits both by calling the same door.
+  const { data, error } = await supabase.rpc('get_available_role_templates', {
+    p_group_id: groupId,
+  });
   if (error) throw error;
   // supabase-js types `.rpc()` loosely; narrow through `unknown` so
   // `next build` type-checks the shape the contract guarantees.

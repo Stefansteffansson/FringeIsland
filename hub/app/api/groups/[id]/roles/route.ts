@@ -34,11 +34,16 @@ export async function GET(
   const { id } = await params;
 
   try {
-    // Templates ride the response — platform vocabulary the picker needs,
-    // RLS-readable by any authenticated client (composed, not owned here).
+    // Templates ride the response — the picker needs them, and composing
+    // them here keeps it to one round-trip.
+    //
+    // RD-B FEAT-PC028: the offer is now GROUP-SCOPED, so it takes this
+    // route's group id. It is no longer "RLS-readable by any authenticated
+    // client" — the contract resolves the caller's `manage_roles` and filters
+    // by publication reach server-side, which is the point of the cycle.
     const [fabric, templates] = await Promise.all([
       fetchGroupRoles(supabase, id),
-      fetchRoleTemplates(supabase),
+      fetchRoleTemplates(supabase, id),
     ]);
     emitTelemetry('roles.fabric', { actor: userId, group: id });
     return NextResponse.json({ fabric, templates });

@@ -38,7 +38,7 @@ Shares one migration file and **one schema gate** with [TASK-RDB-01](./TASK-RDB-
 - [ ] Members holding the role keep the role; only its permissions move
 - [ ] Concurrent applies: the second observes the first's result — read and write in one transaction
 - [ ] New `roles` notification **category** seeded (`transactional` / `badge`), and three **kinds** — `role_template_published`, `role_template_updated`, `role_template_retired` — each with `dispatch_segment` **NULL** (the column default; assert it rather than setting it)
-- [ ] The **pinned vertical-set test** in `ownership-manifest-conformance.test.ts` updated for the new DS-5 registry rows — `notification_kinds` / `notification_categories` are **DS-5**-owned, and this expected-set update is in-scope work, not a build surprise
+- [x] **Checked, and no update is owed — the original criterion was wrong.** The pinned test in `ownership-manifest-conformance.test.ts` asserts the set of tables owned by `vertical:*` (exactly `['notifications']`). RD-B adds no vertical-owned table: `role_template_publications` is PC-3, and the category and kinds are *rows in* DS-5-owned tables. Swept for exact-set assertions over categories/kinds too — none (`preference-and-dispatcher-contracts.test.ts:722` asserts `>= 6`). DS-5 ownership still gates *function bodies* reaching into those tables; a migration seed is not that
 - [ ] Notices fan out to **`manage_roles`** holders (RDB-2), not `assign_roles`; a group with zero such holders completes without raising
 - [ ] `role_template_updated` reaches only groups that have **adopted** the template
 - [ ] Notice payloads carry ids + template name only — no member PII (the `20260721100000:279-290` content-minimal shape)
