@@ -83,3 +83,20 @@ The nine defaulted rows were re-read back to Stefan at the RD-A kickoff and **co
 | RD-10 | Provenance backfill by grant-set match where unambiguous, else **"version unknown"** — never a guessed version |
 
 **The board is CLOSED.** Reopening a row is a new decision with its own record, not a decomposition-time reinterpretation.
+
+---
+
+## Decomposition boards — what each cycle had to settle that this board did not reach
+
+This board rules on *what role distribution is*. Each cycle's decomposition then meets questions the board never posed. Those are recorded in the cycle's substrate dossier, not here, so this note stays the record of the model rather than of its construction.
+
+- **RD-A** — settled at build, two of them by correction: the delete refusal was **two** layers, not three (the third was a tombstone — HYG-A had already dropped the policy), and RD-5's lockout guard was specified unreachably and was re-specified **by definer** rather than by holder. Both are written into [FEAT-PC027](../../platform/core/features/FEAT-PC027-role-provenance-retirement-and-group-side-removal-contracts.md).
+- **RD-B** — seven rows (RDB-1..RDB-7), raised in the [RD-B substrate dossier](./2026-08-06-rd-b-substrate-dossier.md) and settled **all-as-recommended** on 2026-08-06 *before* the specs hardened them: the scoped picker read is a **new** function with the zero-arg dropped (RDB-1); notice recipients resolve by **`manage_roles`** (RDB-2); the three kinds get their **own `roles` category** (RDB-3); RD-9's guard is written even though its stated path does not exist (RDB-4); re-publishing is **idempotent** (RDB-5); publication rows **survive** retirement and are filtered at read (RDB-6); the pair is [FEAT-PC028](../../platform/core/features/FEAT-PC028-role-template-publication-scoped-offer-and-diff-on-copy-contracts.md) + [FEAT-H044](../../products/hub/features/FEAT-H044-available-roles-view-and-diff-on-copy-ceremony.md) (RDB-7).
+
+### One row of this board is amended by verification: RD-9
+
+**RD-9 as settled reads:** *"Only platform-wide publications appear in the group-creation template chooser."*
+
+**Verified 2026-08-06, and it describes a mechanism that does not exist.** Publications are `role_template ↔ group`; creation-time instantiation runs through `group_template_roles`, which is `group_template ↔ role_template` and which no publication row touches. There is no path by which a *role* publication reaches the group-creation chooser at all — platform-wide or targeted. RD-2 is why: publish **offers**, it never registers anything anywhere.
+
+This is not a reopening. RD-9's *intent* — that a targeted publication must never leak into a surface that predates the group it targets — is honoured, and holds by construction. What is corrected is the belief that a mechanism existed which needed the rule. RD-B ships the `retired_at IS NULL` predicate on both `create_engagement_group` branches anyway (RDB-4), because that hole is real, currently unreachable, and one future junction row from live.
