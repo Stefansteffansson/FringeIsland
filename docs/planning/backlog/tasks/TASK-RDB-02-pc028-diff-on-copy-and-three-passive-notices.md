@@ -3,7 +3,7 @@
 ---
 id: TASK-RDB-02
 title: FEAT-PC028 half two — get_role_copy_diff, apply_role_template_update, the roles notification category, and the three passive kinds
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PC028

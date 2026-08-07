@@ -6,7 +6,7 @@ title: Role-template publication scope, group-scoped offer read, diff-on-copy co
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 ---
 
 **Cycle:** RD-B (role distribution, distribution) · **Pairs with:** [FEAT-H044](../../../products/hub/features/FEAT-H044-available-roles-view-and-diff-on-copy-ceremony.md)
@@ -104,6 +104,10 @@ Named before `4-ready`, per the N-E lesson — a keyword sweep finds what resemb
 - Given a **retired** template that is still published, when the read is made, then it is absent — retirement and scope are independent filters and both must pass. The publication rows are **kept**, not deleted, so an unretire restores the reach that existed before (RDB-6).
 - Given a template the group has **already adopted**, when the read is made, then its entry carries `adopted_group_role_id`, the copy's `adopted_version_number`, and the catalogue's `current_version_number` — the three keys FEAT-H044 needs to render "copied · current" versus "copied · update available" without a second read.
 - Given a copy whose provenance is honestly unknown (`created_from_version_number IS NULL`, RD-10), when the read is made, then `adopted_version_number` is null and the entry is still returned — the view states what it knows and does not guess.
+
+  **Recorded at build, not decided: a group can adopt the same template twice.** `group_roles` is `UNIQUE(group_id, name)`, not unique per source template, so one group may hold two copies of template T under different names. `adopted_group_role_id` is therefore genuinely ambiguous, and the contract resolves it as the **earliest** adoption. Either choice is arbitrary for a single-pointer key, and the cost of the current one is small but real: the offer entry could read the older copy's version and show "update available" while a newer copy of the same template is already current.
+
+  Not fixed here, deliberately — the migration is applied, and the house rule is that an applied migration is corrected by a new one rather than rewritten, which would cost a second schema gate for an ambiguity that is not a defect. **Surfaced by a failing cell rather than reasoned about in advance:** S2f asserted against a group earlier cells had already adopted into, so it was testing cell ordering rather than the contract. The cell now uses a fresh group; the ambiguity is recorded here instead of being papered over there. If FEAT-H044's surface finds the earliest-copy pointer misleading, the fix is a one-line `order by` change in its own migration.
 - Given the zero-arg `get_role_templates()`, when it is called after this migration, then it **does not exist** (RDB-1).
 
 ### STORY-3: Adoption refuses what is not offered
@@ -188,6 +192,65 @@ Hub consumes every contract through [FEAT-H044](../../../products/hub/features/F
 - **Notifications** — The whole of RD-B's third leg. Three registered kinds in a new `roles` category, `dispatch_segment` NULL, delivered through the existing dispatcher and gated by the existing preference machinery. No new channel, segment, or handler. Recipients are resolved by permission (`manage_roles`), never by role name.
 - **Observability** — Publish, unpublish, version-apply, and retire each emit an audit row and a notice; the counts they report (groups reached, groups notified) are returned by the contract so a failure to fan out is visible rather than silent. Refusals — retired-template publish, empty group array, unoffered adoption, lockout-guarded apply — are recorded as refusals.
 - **Transactions** — None. No entitlement, price, or receipt surface is touched.
+
+## Implementation notes
+
+Built and applied 2026-08-07 on the named approval "ok apply the RD-B migration". Migration `20260807090000` — one table, nine functions (five new, four re-issued), four seed rows, one contract dropped.
+
+### Red → green evidence
+
+Written red-first as one suite, `hub/tests/integration/groups/role-publication-and-diff.test.ts`. **36 red / 4 green** before the migration, **40 / 40** after.
+
+Every red failed for the right reason: `PGRST202` on the five absent contracts, `PGRST205` on the absent table, and STORY-3/STORY-7 failing *by succeeding* — the write door was still open.
+
+The four pre-migration greens are labelled pins in the file header, not coverage: S3c/S3f are positive-path pins guarding against the new scope check **over**-refusing; S3d pins FEAT-PC011's anti-escalation ordering; S7b pins WA-6's template-less role set.
+
+### The premise was driven before the migration was written
+
+FEAT-PC028's largest area rests on the claim that `create_group_role` refused neither a retired nor an unoffered template. RD-A shipped two premises that verification overturned *at build*; this one was checked first, three ways, in increasing order of authority:
+
+1. **source** — `20260806170000:404-408` validates existence and nothing else;
+2. **live catalogue** — `pg_get_functiondef` shows no `retired_at` in `create_group_role` or `create_engagement_group`, while `get_role_templates` and `admin_retire_role_template` both carry one;
+3. **driven** (commit `ab2cc7b`) — a Steward adopted a **retired** template end-to-end: the call succeeded, the copy was created, its grants materialised, and the row was asserted at row level with its source provably retired.
+
+(3) is the one that mattered. Absence of a predicate from a function body is not proof of reachability — a trigger or a grant could still have refused. Nothing did. **No spec correction was owed**, which is the outcome RD-A did not get.
+
+### Six vacuous cells, caught and hardened
+
+The first red run came back **30 / 10**. Six of those ten passes were vacuous — they passed *because their subject did not exist yet*: `PGRST202` satisfies `expect(error).not.toBeNull()`; a `for` loop over zero notification rows asserts nothing; "before === after" holds when nothing ran. Each is now pinned so it can only pass for the intended reason.
+
+**`U038a` needed a second pass, and the reason generalises.** The first hardening *guessed* the error shape — Postgres `42P01` / "does not exist". PostgREST actually reports an unknown table as `PGRST205` / "in the schema cache", so the guard did not bite and the cell still passed. The shape was then verified against the live stack and the guard rewritten. **Guessing an error shape is how a vacuous test survives its own hardening.**
+
+### Three things the build corrected
+
+- **A claim in this spec was wrong and was retracted.** The spec, TASK-RDB-02 and the migration header all said the pinned vertical-set conformance expectation would need updating for the DS-5 registry seed. It does not: that test pins the set of tables owned by `vertical:*` — exactly `['notifications']` — and RD-B adds no vertical-owned table. `role_template_publications` is PC-3; the category and kinds are *rows in* DS-5-owned tables. The suite carries no exact-set assertion over categories or kinds either (`preference-and-dispatcher-contracts.test.ts:722` asserts `>= 6`, which survives a seventh).
+- **Two cells asserted the wrong group state, and the code was right.** S3e and S5d used `resting` to pin the availability guard. `assert_group_writable` deliberately lets a resting group be written by an actor holding `rest_group`, which the Steward template grants — a Steward managing their own resting group is designed behaviour. `suspended` is the state that refuses below the admin plane, so the cells now use it.
+- **A failing cell leaked state into a later one.** S5d set `groupA` to resting and failed *before* its trailing reset, so STORY-6's fan-out found no active group and reported a failure that was a **cascade, not a bug**. Both status mutations now sit in `try/finally`. The generalisable form: a trailing cleanup statement is not cleanup, because a failed `expect()` throws past it.
+
+### The regression the E2E fleet caught, and the unit tier should have
+
+The scoped read raises `42501` for a caller without `manage_roles`, where the dropped zero-arg catalogue was readable by any authenticated caller. Composed naively in `app/api/groups/[id]/roles/route.ts`'s `Promise.all`, that refusal rejected the whole route and the catch mapped it to **403** — so a *limited assigner* (holds `assign_roles`, not `manage_roles`) lost the **entire** roles panel: their own roles and the assign control they are entitled to use.
+
+`roles.spec.ts:102` caught it by timing out waiting for `assign-select`. The fix degrades a refused offer to an empty list, which is exactly FEAT-H044 STORY-1's specified surface behaviour; ADR-U038 holds because the *rule* about who may see the offer stays in the contract and the route only composes.
+
+**Labelled honestly: the two route cells in `group-roles-routes.test.ts` are test-AFTER.** The fix was written first, from the E2E diagnosis. They were then verified by reverting the fix — 1 failed / 21 passed with it reverted, 22 passed with it in place — so the coverage is demonstrated-red retroactively, which is not the same as test-first and is not claimed as such.
+
+### Recorded, not decided
+
+- **A group can adopt the same template twice** (`group_roles` is `UNIQUE(group_id, name)`, not unique per source template), so `adopted_group_role_id` is genuinely ambiguous; the contract resolves it as the earliest adoption. Detail and reasoning in STORY-2 above.
+- **Uniqueness on the nullable scope column** took the partial unique index (three repo precedents) over `UNIQUE NULLS NOT DISTINCT` (zero). S1c is the proof cell — a plain `UNIQUE` would not have caught a second platform-wide row, because NULLs are distinct in a UNIQUE constraint.
+
+### Sibling adaptation
+
+The sweep's good news: nearly every existing adoption uses a **system** template, and system templates are exempt from distribution. **No live group breaks** — the gate is at adoption time only, and existing copies are never re-checked. Adapted, never weakened: the BFF wrapper and its route; `role-templates-contract.test.ts` (the suite dedicated to the dropped contract, rewritten against the scoped one, with the INVOKER→DEFINER posture change stated in its header); RD-A's `role-provenance-and-retirement.test.ts` (clone fixture published, two offer reads repointed); ADM-F's `role-template-editing.test.ts` (clone published — **initially half-done**, which the admin slice caught as two failures). `role-permission-contracts.test.ts` needed no change.
+
+### Numbers at close
+
+Integration **1102/1102** (76 suites) · unit **1313/1313** (161 suites) · E2E **133/133**, leak delta 0 · lint **0 errors** (3 pre-existing warnings, none from these files) · `next build` green.
+
+### ADR-U043
+
+**Not triggered by this half and no number is claimed.** PC028 adds no request to any user-facing first paint — the scoped read replaces the catalogue read the roles route already made, one-for-one. The placement decision that *could* trigger it (the available-roles section) belongs to FEAT-H044, whose performance budget draws it behind an affordance.
 
 ## Performance budget
 

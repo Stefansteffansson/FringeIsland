@@ -404,14 +404,22 @@ describe('FEAT-PC028 — publication, scoped offer, diff-on-copy (RD-B)', () => 
       const a = await asUser(adminUser);
       await a.rpc('admin_publish_role_template', { p_role_template_id: clonedTemplateId });
 
+      // A FRESH group deliberately. group_roles is UNIQUE(group_id, name),
+      // so one group may adopt the SAME template more than once under
+      // different names — which makes adopted_group_role_id genuinely
+      // ambiguous, and the contract resolves it as the earliest adoption.
+      // Asserting against groupA (which earlier cells already adopted into)
+      // was testing cell ordering, not the contract. The multi-adoption
+      // ambiguity is recorded in the spec, not papered over here.
+      const freshGroup = await newGroup(steward, `${TOKEN} adoption keys`);
       const c = await asUser(steward);
       const { data: roleId } = await c.rpc('create_group_role', {
-        p_group_id: groupA,
+        p_group_id: freshGroup,
         p_name: `${TOKEN} Adoption Keys`,
         p_role_template_id: clonedTemplateId,
       });
 
-      const row = (await offers(c, groupA)).find((t) => t.id === clonedTemplateId)!;
+      const row = (await offers(c, freshGroup)).find((t) => t.id === clonedTemplateId)!;
       expect(row.adopted_group_role_id).toBe(roleId);
       expect(row.adopted_version_number).toBe(1);
       expect(row.current_version_number).toBe(1);
@@ -420,11 +428,17 @@ describe('FEAT-PC028 — publication, scoped offer, diff-on-copy (RD-B)', () => 
     it('S2g: an un-stamped copy yields a null adopted_version_number, not a guess', async () => {
       // RD-10's honest-unknown, surfaced through the offer read.
       const c = await asUser(steward);
+      const unstampedGroup = await newGroup(steward, `${TOKEN} unstamped`);
+      await c.rpc('create_group_role', {
+        p_group_id: unstampedGroup,
+        p_name: `${TOKEN} Unstamped Copy`,
+        p_role_template_id: clonedTemplateId,
+      });
       await runAdminSql(
         `UPDATE public.group_roles SET created_from_version_number = NULL
-          WHERE group_id = '${groupA}' AND created_from_role_template_id = '${clonedTemplateId}';`,
+          WHERE group_id = '${unstampedGroup}' AND created_from_role_template_id = '${clonedTemplateId}';`,
       );
-      const row = (await offers(c, groupA)).find((t) => t.id === clonedTemplateId)!;
+      const row = (await offers(c, unstampedGroup)).find((t) => t.id === clonedTemplateId)!;
       expect(row.adopted_group_role_id).not.toBeNull();
       expect(row.adopted_version_number).toBeNull();
       expect(row.current_version_number).toBe(1);
@@ -527,24 +541,39 @@ describe('FEAT-PC028 — publication, scoped offer, diff-on-copy (RD-B)', () => 
       expect(['42501', 'P0002']).toContain(error!.code);
     }, 180_000);
 
-    it('S3e: NOT red-first — assert_group_writable still fires first on a rested group', async () => {
+    it('S3e: NOT red-first — assert_group_writable still fires first on a SUSPENDED group', async () => {
       // FEAT-PC023's availability guard, pinned unchanged.
+      //
+      // CORRECTED AT BUILD: this cell first used 'resting' and failed — and
+      // the CODE was right, not the test. assert_group_writable lets a
+      // resting group be written by an actor holding 'rest_group', which the
+      // Steward template grants (a Steward managing their own resting group
+      // is the designed behaviour, not a hole). 'suspended' is the state that
+      // refuses everyone below the admin plane, so it is the state that
+      // actually pins "the guard fires first".
       await clearPublications();
       const a = await asUser(adminUser);
       await a.rpc('admin_publish_role_template', { p_role_template_id: clonedTemplateId });
 
-      const groupId = await newGroup(steward, `${TOKEN} rested`);
-      await runAdminSql(
-        `UPDATE public.groups SET status = 'resting' WHERE id = '${groupId}';`,
-      );
-      const c = await asUser(steward);
-      const { error } = await c.rpc('create_group_role', {
-        p_group_id: groupId,
-        p_name: `${TOKEN} Rested Adopt`,
-        p_role_template_id: clonedTemplateId,
-      });
-      expect(error).not.toBeNull();
-      await runAdminSql(`UPDATE public.groups SET status = 'active' WHERE id = '${groupId}';`);
+      const groupId = await newGroup(steward, `${TOKEN} suspended`);
+      try {
+        await runAdminSql(
+          `UPDATE public.groups SET status = 'suspended' WHERE id = '${groupId}';`,
+        );
+        const c = await asUser(steward);
+        const { error } = await c.rpc('create_group_role', {
+          p_group_id: groupId,
+          p_name: `${TOKEN} Suspended Adopt`,
+          p_role_template_id: clonedTemplateId,
+        });
+        expect(error).not.toBeNull();
+      } finally {
+        // try/finally, not a trailing statement: a failed expect() throws, and
+        // a leaked group status poisons every later cell that filters on
+        // status='active'. That is exactly how S6b failed on the first green
+        // run — a cascade from this cell, not a bug of its own.
+        await runAdminSql(`UPDATE public.groups SET status = 'active' WHERE id = '${groupId}';`);
+      }
     }, 240_000);
 
     it('S3f: the CUSTOM path is untouched — no offer to check', async () => {
@@ -762,14 +791,22 @@ describe('FEAT-PC028 — publication, scoped offer, diff-on-copy (RD-B)', () => 
     }, 240_000);
 
     it('S5d: apply refuses under the availability guard', async () => {
-      const roleId = await adopt(`${TOKEN} Apply Rested`);
-      await runAdminSql(`UPDATE public.groups SET status = 'resting' WHERE id = '${groupA}';`);
-      const c = await asUser(steward);
-      const { error } = await c.rpc('apply_role_template_update', { p_group_role_id: roleId });
-      expect(error).not.toBeNull();
-      // Not vacuous: the guard must be what refuses, not a missing function.
-      expect(error!.code).not.toBe('PGRST202');
-      await runAdminSql(`UPDATE public.groups SET status = 'active' WHERE id = '${groupA}';`);
+      // CORRECTED AT BUILD, same reason as S3e: 'resting' is writable by a
+      // rest_group holder by design. 'suspended' is the refusing state.
+      const roleId = await adopt(`${TOKEN} Apply Suspended`);
+      try {
+        await runAdminSql(
+          `UPDATE public.groups SET status = 'suspended' WHERE id = '${groupA}';`,
+        );
+        const c = await asUser(steward);
+        const { error } = await c.rpc('apply_role_template_update', { p_group_role_id: roleId });
+        expect(error).not.toBeNull();
+        // Not vacuous: the guard must be what refuses, not a missing function.
+        expect(error!.code).not.toBe('PGRST202');
+      } finally {
+        // See S3e — groupA is shared, so a leak here breaks STORY-6.
+        await runAdminSql(`UPDATE public.groups SET status = 'active' WHERE id = '${groupA}';`);
+      }
     }, 240_000);
   });
 

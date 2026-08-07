@@ -2,6 +2,14 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-07 — Role templates are offered to groups, not to everyone ([FEAT-PC028](../docs/platform/core/features/FEAT-PC028-role-template-publication-scoped-offer-and-diff-on-copy-contracts.md))
+
+- **The add-from-template picker now lists only the roles offered to your group.** Until now every role template on the platform appeared in every group's picker, including one-off clones made for somebody else. A group sees the four built-in roles plus whatever has actually been made available to it.
+- **A role that isn't offered can no longer be added**, even by someone who knows its name from elsewhere. The same is true of a template that has been retired — it used to disappear from the picker while still being addable behind it.
+- Nothing already in your group changed. Roles your group adopted before this keep working exactly as they were, whether or not the template behind them is still offered.
+
+*(The Steward-facing view of what's available, and the ceremony for taking an update into your group, arrive with FEAT-H044.)*
+
 ## 2026-08-06 — Roles say where they came from, and can be put down ([FEAT-H043](../docs/products/hub/features/FEAT-H043-role-provenance-retirement-and-role-removal.md))
 
 - **A role now tells you where it came from.** Where the roles panel used to say only "Template", it now says which version of that template your copy was taken from and when — `Template · v3 · copied 14 May 2026`. If a group is running a copy made long before the template moved on, the panel finally shows it.

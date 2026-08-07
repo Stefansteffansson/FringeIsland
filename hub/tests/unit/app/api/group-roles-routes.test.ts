@@ -166,6 +166,47 @@ describe('GET /api/groups/[id]/roles (fabric)', () => {
     expect(res.status).toBe(403);
     expect(emitted('roles.fabric_refused', 'u1')).toBe(true);
   });
+
+  it('a refused OFFER degrades to an empty list — it never takes the fabric down (RD-B)', async () => {
+    // REGRESSION CELL, and the regression was real rather than hypothetical.
+    // RD-B replaced the zero-arg template catalogue (readable by any
+    // authenticated caller) with a group-scoped read that raises 42501 for a
+    // caller without `manage_roles`. Composed naively in the route's
+    // Promise.all, that refusal rejected the WHOLE route and the catch mapped
+    // it to 403 — so a "limited assigner" (holds `assign_roles`, not
+    // `manage_roles`) lost the entire roles panel: their own roles, and the
+    // assign control they are entitled to use.
+    //
+    // The E2E fleet caught it (roles.spec.ts:102 timed out waiting for
+    // assign-select, because the panel never rendered). This cell is the
+    // cheap tier that should have caught it first.
+    //
+    // Empty-offer IS the specified surface behaviour — FEAT-H044 STORY-1 says
+    // the available-roles section is not rendered at all without
+    // `manage_roles`. The RULE stays server-side in the contract; this is
+    // presentation composition.
+    fetchRoleTemplates.mockRejectedValue({ code: '42501' });
+
+    const res = (await GET_ROLES(fakeRequest, idParams('grp-1'))) as {
+      status: number;
+      body: { fabric: typeof FABRIC; templates: unknown[] };
+    };
+
+    expect(res.status).toBe(200);
+    expect(res.body.fabric).toEqual(FABRIC);
+    expect(res.body.templates).toEqual([]);
+    expect(emitted('roles.offer_refused', 'u1')).toBe(true);
+    expect(telemetryIsContentFree()).toBe(true);
+  });
+
+  it('a non-42501 offer failure still fails the route — only the refusal degrades', async () => {
+    // The guard above must not become a blanket swallow: a genuine fault in
+    // the offer read is still a 500, not a silently empty picker.
+    fetchRoleTemplates.mockRejectedValue({ code: '08006' });
+
+    const res = (await GET_ROLES(fakeRequest, idParams('grp-1'))) as { status: number };
+    expect(res.status).toBe(500);
+  });
 });
 
 describe('POST /api/groups/[id]/roles (create)', () => {

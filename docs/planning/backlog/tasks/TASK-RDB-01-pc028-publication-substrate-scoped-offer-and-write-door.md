@@ -3,7 +3,7 @@
 ---
 id: TASK-RDB-01
 title: FEAT-PC028 half one — role_template_publications, publish/unpublish, get_available_role_templates, the create_group_role offerability fix, and the create_engagement_group retirement guard
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PC028
