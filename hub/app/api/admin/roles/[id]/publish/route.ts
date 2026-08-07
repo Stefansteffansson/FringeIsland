@@ -41,11 +41,21 @@ async function handle(
   }
 
   const { id } = await params;
-  const body = (await request.json().catch(() => ({}))) as { group_ids?: string[] | null };
-  // Absent or null both mean platform-wide — the contract's own default, not
-  // a Surface invention. An empty array is NOT the same thing and is refused
-  // here rather than silently widened to platform-wide.
-  const groupIds = body.group_ids ?? null;
+
+  // THE REACH-WIDENING GUARD. `null` means platform-wide — correct as an
+  // explicit instruction, dangerous as a fallback. If a targeted unpublish's
+  // body were lost or unparseable, defaulting to null would silently turn
+  // "stop offering this to Willow Circle" into "stop offering this to
+  // everyone". So the key must be PRESENT: absence is refused, never widened.
+  // An empty array is refused for the same reason — it is not platform-wide.
+  const body = await request.json().catch(() => undefined);
+  if (typeof body !== 'object' || body === null || !('group_ids' in body)) {
+    return NextResponse.json(
+      { error: 'Send group_ids explicitly: null for all groups, or a non-empty list' },
+      { status: 400 },
+    );
+  }
+  const groupIds = (body as { group_ids: unknown }).group_ids;
   if (groupIds !== null && (!Array.isArray(groupIds) || groupIds.length === 0)) {
     return NextResponse.json(
       { error: 'Send group_ids as a non-empty list, or null for all groups' },
@@ -56,8 +66,8 @@ async function handle(
   try {
     const { refused } =
       verb === 'publish'
-        ? await publishRoleTemplate(supabase, id, groupIds)
-        : await unpublishRoleTemplate(supabase, id, groupIds);
+        ? await publishRoleTemplate(supabase, id, groupIds as string[] | null)
+        : await unpublishRoleTemplate(supabase, id, groupIds as string[] | null);
     if (refused) {
       emitTelemetry(`admin.role_template_${verb}_refused`, { actor: user.id, target: id });
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
