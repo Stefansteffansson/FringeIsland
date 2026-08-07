@@ -57,7 +57,9 @@ Sections skipped (untriggered): 1, 1.5, 3.5, 3.6, 3.7, 4, 4.5, 6, 7, 9, 10, 11.
 
 ## Numbers at close
 
-Unit **1375/1375** (168 suites, up from 1313/161) · E2E **133/133**, nothing skipped, leak baseline 0 · lint 0 errors (3 pre-existing warnings, none from these files) · `next build` green, all three new routes registered · route-policy conformance green. Integration: the PC028 corrective's **C1–C5 are red by design** until the gate opens; C6 green. Dashboard refreshed (819 files). Discovery worktree clean and in sync at both open and close.
+Unit **1384/1384** (169 suites, up from 1313/161) · **integration 1103/1108, 75 of 76 suites green** — the 5 failures are **exactly C1–C5**, the PC028 corrective's cells, red by design until the gate opens (C6 green; nothing else in the fleet failed) · E2E **133/133**, nothing skipped, leak baseline 0 · lint 0 errors (3 pre-existing warnings, none from these files) · `next build` green, all three new routes registered · route-policy conformance green. Dashboard refreshed (819 files). Discovery worktree clean and in sync at both open and close.
+
+**One defect found in review of my own code, after the suites were green.** The publish route read `body.group_ids ?? null`, and `null` means platform-wide — correct as an explicit instruction, dangerous as a fallback. An unparseable or lost DELETE body would have silently turned *"stop offering this to Willow Circle"* into *"stop offering this to everyone"*. The key is now required: absence is refused with 400, never widened. Two guard cells driven red first. **No test would have caught this** — every caller in the tree sends the key; the hole only opens when the body is lost in transit.
 
 ## Next
 
