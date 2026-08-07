@@ -220,3 +220,20 @@ The RD-2..RD-10 board is CLOSED and is not reopened by any row here. These are t
 - **ADR-U043**: the available-roles view is a new panel read. If it lands on a first-paint path rather than behind an affordance, the cycle-level deep-cold spot measurement triggers. RD-A avoided it by riding an existing fabric read; RD-B probably cannot. Decide at spec time, not at the gate.
 - **The bare-accessible-name E2E trap** (RD-A's sibling-sweep miss): RD-B *adds* affordances to the roles panel — publish, copy-update, diff-confirm. Before the build closes, grep the E2E fleet for positional selectors like `getByRole('button', {name: /^Copy$/}).last()`, not just for assertions naming changed objects.
 - **Ownership manifest**: one new table + four-to-six new functions. Unregistered ⇒ two conformance suites fail, silently attributed to CORE.
+
+---
+
+## Post-filing verification — Findings 2 and 5 confirmed against the **live catalogue**
+
+Filed above from migration source. Confirmed 2026-08-07 against the deployed contracts on the dev DB (`pg_get_functiondef` over `pg_proc`), which is the authority the RD-A lesson names — source says what was written, the catalogue says what is *there*.
+
+| Contract | References `retired_at` | Reading |
+|---|---|---|
+| `get_role_templates` | **yes** | RD-A's picker filter is deployed |
+| `admin_retire_role_template` | **yes** | the retire door is deployed |
+| `create_group_role` | **no** | **Finding 2 confirmed** — the write door does not know about retirement |
+| `create_engagement_group` | **no** | **Finding 5 half-one confirmed** — neither instantiation branch filters |
+
+No contract references publications, confirming Finding 1's greenfield read at the catalogue level too.
+
+**What this does and does not settle.** It settles that the *predicate is absent* from the deployed contracts — the premise both FEAT-PC028 STORY-3 and STORY-7 rest on. It does **not** settle reachability: STORY-3's red cell must still drive an actual retired-template adoption to completion, because a refusal could come from somewhere other than this function body (a trigger, a grant, a downstream check). The spec's prove-it-red-first instruction stands unchanged — this narrows what the red cell is likely to show, it does not replace it.
