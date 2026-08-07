@@ -81,7 +81,7 @@ No catalogue CRUD (additions stay migrations — the DeusEx auto-grant continues
 
 ### STORY-2: Clone, honestly announced
 - Given a seeded template, when `admin_clone_role_template` runs with a fresh name, then a new `is_system = false` template exists with version 1 = the source's live set, live rows materialised, and an audit row carrying the full copied set; a duplicate name refuses `22023` typed.
-- Given the clone exists, when a group is created **without** a chosen group template, then the clone's role is copied into the new group (the every-template path — the consequence the ceremony names); and the clone appears in `get_role_templates()` (the member-facing options) — both pinned.
+- Given the clone exists, when a group is created **without** a chosen group template, then the clone's role is copied into the new group (the every-template path — the consequence the ceremony names); and the clone appears in `get_role_templates()` (the member-facing options) — both pinned. **[Both halves since superseded: the first by the WA-6 Amendment below (2026-08-05, template-less instantiation carries the system set only); the second by RD-B / FEAT-PC028 (2026-08-07), which dropped the zero-arg contract and made the member-facing offer publication-scoped — a clone now appears only where it has been published.]**
 
 ### STORY-3: Versions append; seeds refuse
 - Given a clone, when `admin_create_role_template_version` runs with a changed set, then version 2 exists as an unapplied draft (live rows unchanged, default pointer unchanged) with the draft diff in its audit row; an unknown permission name refuses `22023`; the same call against any `is_system` template refuses `P0001` typed.
