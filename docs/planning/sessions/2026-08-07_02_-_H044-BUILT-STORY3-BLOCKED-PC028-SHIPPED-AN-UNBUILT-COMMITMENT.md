@@ -7,9 +7,9 @@
 
 ## READ THIS FIRST
 
-1. **PR [#453](https://github.com/Stefansteffansson/FringeIsland/pull/453) is open and HELD AT THE SCHEMA GATE.** It carries migration `20260807140000`, written and red-proven but **not applied**. The gate opens only on an explicitly-named approval.
-2. **`FEAT-PC028` was reopened to `5-in-cycle`.** It reached `6-done` last session carrying a payload-walk commitment it never built: `admin_get_role_template_detail` was **never widened**. Found at the start of the Hub half, when STORY-3's reach section had no server key to read.
-3. **`FEAT-H044` stays `5-in-cycle`**, `TASK-RDB-03` at `review`. STORY-1, STORY-2 and STORY-4 are complete and green; STORY-3 is built but unverifiable until the gate opens.
+1. **The gate opened and closed in-session.** Migration `20260807140000` was applied on the named approval *"ok apply the RD-B corrective migration"*, repaired, and **re-verified against the live catalogue rather than trusted**: both keys present, signature byte-identical, SECURITY DEFINER + STABLE unchanged, and the **ACL preserved** (`anon` denied, `authenticated`/`service_role` allowed) — the COR-A claim, checked rather than assumed. C1–C5 went red → green.
+2. **`FEAT-PC028` reopened and reclosed at `6-done`.** It had reached `6-done` last session carrying a payload-walk commitment it never built: `admin_get_role_template_detail` was **never widened**. Found at the start of the Hub half, when STORY-3's reach section had no server key.
+3. **`FEAT-H044` is `6-done`, all four stories**; `TASK-RDB-03` and `TASK-RDB-04` both `done`. **PR [#453](https://github.com/Stefansteffansson/FringeIsland/pull/453) is open and no longer held** — it awaits an ordinary merge decision, not a gate approval.
 4. **The root cause is worth more than the fix.** *A cross-spec commitment recorded only in the **consumer's** payload walk has no home to be built from.* It lived in FEAT-H044's walk and in TASK-RDB-03's technical notes, and never became a story on the **provider** — so nothing in PC028's own scope described it, and its absence survived the build, the schema gate, a full green suite, **and** a doc-health run. Every one of those checks reads the provider's stories.
 5. **Two acceptance criteria could not be met as written.** Both were surfaced as a decision board rather than quietly reinterpreted; Stefan chose on both. Detail below.
 
@@ -37,9 +37,15 @@ Read the bridge → loaded the spec + task → gathered contracts from the migra
 - **A green-at-red anomaly was caught and labelled rather than absorbed.** All five STORY-4 notification cells passed on first run. Four pin the pre-existing passive render path (regression pins, labelled). The fifth — the icon entry — was test-after, and was **proven non-vacuous by control**: removing the entry fails it with the bell fallback's class. That silent fallback is precisely how the gap would have shipped.
 - **The CRLF trap bit once, in the control itself.** The first attempt to remove the icon entry used `\n` in a perl substitution and silently did nothing — the file is CRLF. The "control" then ran against unmodified code and reported a false green. Caught by grepping for the string after the edit rather than trusting the exit code. **A control that does not verify its own precondition is not a control.**
 
+## The E2E journey gate, added beyond the AC list
+
+The task's acceptance criteria named a *sweep* over the existing fleet but no new E2E. Added anyway, to keep the pyramid upright at all three tiers: `tests/e2e/role-distribution.spec.ts` walks offered → copied (provenance reads `v1`) → catalogue moves → panel says `v1 → v2` → ceremony shows the diff in **display names** → confirm → **provenance moves to `v2`**, asserted in the render *and* at row level → offer withdrawn → **the adopted copy survives untouched** (RD-2, the claim that would be easiest to get wrong and hardest to notice).
+
+**Labelled test-after, and proven non-vacuous by control** — neutralising the section fails it at the toggle click. That control also exposed something worth keeping: the permission-gated cell is all `toHaveCount(0)`, which passes vacuously if the section renders for *nobody*. It is guarded, but **the positive cell in the same file is what makes it bite** — recorded in the spec header so neither is deleted without the other.
+
 ## Standing items
 
-- **TASK-RDB-04 / the PC028 corrective** — apply commands are in the task and the PR body. On apply, C1–C6 go green and PC028 returns to `6-done` (rows in `features/README.md` and `governance-specification.md` follow).
+- **TASK-E2E-04** — the fenced `entry.spec` fleet-only failure. Needs a *second observation* before any mechanism is claimed, or three clean fleets to close as unreproduced.
 - **A latent E2E trap, recorded not fixed.** `roles.spec.ts:120` asserts a template name **inside** `roles-panel`, where the available-roles section now renders the same name a second time. It resolves to one element only because the section is **collapsed by default**. Changing that default inherits a strict-mode violation, not a missing element.
 - **Known remaining inconsistency:** `MyPermissionsPanel` and the admin draft editor still render raw permission keys — outside the scope Stefan set ("the roles panel").
 - **A nuance the payload cannot resolve:** the RD-3 restore sentence renders whenever `added` is non-empty, which covers both "the Steward revoked it" and "the template gained it later". The substrate cannot distinguish the two without per-grant history, and the walk's payload offers only `added[]`. Recorded in the spec, not hidden.
@@ -57,23 +63,30 @@ Sections skipped (untriggered): 1, 1.5, 3.5, 3.6, 3.7, 4, 4.5, 6, 7, 9, 10, 11.
 
 ## Numbers at close
 
-Unit **1384/1384** (169 suites, up from 1313/161) · **integration 1103/1108, 75 of 76 suites green** — the 5 failures are **exactly C1–C5**, the PC028 corrective's cells, red by design until the gate opens (C6 green; nothing else in the fleet failed) · E2E **133/133**, nothing skipped, leak baseline 0 · lint 0 errors (3 pre-existing warnings, none from these files) · `next build` green, all three new routes registered · route-policy conformance green. Dashboard refreshed (819 files). Discovery worktree clean and in sync at both open and close.
+**After the apply:** unit **1384/1384** (169 suites, up from 1313/161) · **integration 1108/1108, all 76 suites green** · **E2E 134 passed / 1 failed of 135**, leak delta 0 · lint 0 errors (3 pre-existing warnings, none from these files) · `next build` green, all three new routes registered · route-policy conformance green · doc-health whole-tree sweep **89 `6-done` specs, 0 with absent Implementation notes**. Dashboard refreshed. Discovery worktree clean and in sync at both open and close.
+
+**Before the apply**, integration was 1103/1108 with the 5 failures being **exactly C1–C5** — the corrective's cells, red by design and verified by name rather than by count.
+
+**The one E2E failure is fenced `found (not caused)` and filed, not called flake.** `entry.spec.ts:46` (the become-a-FIM CTA) failed once in fleet, passes **3/3 in isolation**, and **passed the earlier full fleet the same day on this branch**. Establishing "not caused" was done, not assumed: the failing path is `/` → Look around → auto-launched journey → `/mist` → become-a-FIM, which touches **none** of the RD-B diff, and `ConfirmModal` — the only shared component changed — is **absent** from those surfaces (grepped). Filed as **[TASK-E2E-04](../backlog/tasks/TASK-E2E-04-entry-spec-fleet-only-failure.md)** with one observation recorded, deliberately **not** declared flake: the standing-tasks table records `TASK-INT-04` being filed *"after an earlier flake call was retracted by a second failure"*, and one fleet-only failure is one observation.
 
 **One defect found in review of my own code, after the suites were green.** The publish route read `body.group_ids ?? null`, and `null` means platform-wide — correct as an explicit instruction, dangerous as a fallback. An unparseable or lost DELETE body would have silently turned *"stop offering this to Willow Circle"* into *"stop offering this to everyone"*. The key is now required: absence is refused with 400, never widened. Two guard cells driven red first. **No test would have caught this** — every caller in the tree sends the key; the hole only opens when the body is lost in transit.
 
 ## Next
 
-**Open the schema gate** (`TASK-RDB-04`), then finish `FEAT-H044` STORY-3's verification, close RD-B, run the RD-B walk, then **AB-6** and Phase-4 cutover.
+**Merge #453**, then the **RD-B walk** (the plain-English walkthrough against the shipped behaviour — RD-B is the first cycle where the walk has a real ceremony to exercise), then **AB-6** and Phase-4 cutover.
 
 ## Close ritual (this session)
 
 - [x] Decision board surfaced whole **before** building, not drip-fed
 - [x] STORY-1/2/4 driven red-first; every green-at-red anomaly surfaced and labelled
 - [x] The corrective's premise verified against the **live catalogue**, not inferred from source
-- [x] Migration written, red-proven, and **NOT applied** — held for a named approval
+- [x] Migration written and red-proven **before** being applied; applied only on a **named** approval, then verified against the live catalogue (keys, signature, volatility, and the ACL) rather than trusted
 - [x] E2E sweep obligation discharged and recorded, including the latent trap
+- [x] A journey-level E2E added beyond the AC list, labelled test-after and control-proven
+- [x] The one E2E failure fenced **found (not caused)** by evidence, filed as TASK-E2E-04, and **not** called flake on one observation
 - [x] Three CHANGELOGs written (root, hub, platform-core)
-- [x] doc-health triggered sections run; three false claims in shipped docs corrected
+- [x] doc-health triggered sections run; three false claims in shipped docs corrected; whole-tree `6-done` sweep clean at 89 specs
+- [x] `FEAT-H044` and `FEAT-PC028` both `6-done` with §L4 rows and both `features/README.md` indexes following in the same commits
 - [x] Dashboard refreshed; discovery sweep run at open and close
 - [x] Session bridge (this file)
-- [ ] **PR #453 open and HELD** — merge waits on an explicitly-named approval
+- [ ] **PR #453 open, gate discharged** — ordinary merge decision remains

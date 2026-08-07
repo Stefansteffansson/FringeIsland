@@ -6,15 +6,17 @@ title: Role-template publication scope, group-scoped offer read, diff-on-copy co
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 ---
 
-> **REOPENED 2026-08-07 — STORY-8 (corrective).** This feature reached `6-done`
-> with a payload-walk commitment unbuilt: `admin_get_role_template_detail` was
-> never widened. Found at the start of the Hub half, when FEAT-H044 STORY-3 had
-> no server key to read. See STORY-8 below. Migration `20260807140000` is
-> written and **held at the schema gate**; maturity returns to `6-done` when it
-> is applied and cells C1–C5 go green.
+> **REOPENED AND RECLOSED 2026-08-07 — STORY-8 (corrective).** This feature
+> first reached `6-done` with a payload-walk commitment unbuilt:
+> `admin_get_role_template_detail` was never widened. Found at the start of the
+> Hub half, when FEAT-H044 STORY-3 had no server key to read. Migration
+> `20260807140000` applied on the named approval *"ok apply the RD-B corrective
+> migration"*; cells C1–C5 went red → green and the live catalogue was
+> re-verified (both keys present, signature byte-identical, ACL preserved —
+> `anon` denied, `authenticated`/`service_role` allowed). See STORY-8 below.
 
 **Cycle:** RD-B (role distribution, distribution) · **Pairs with:** [FEAT-H044](../../../products/hub/features/FEAT-H044-available-roles-view-and-diff-on-copy-ceremony.md)
 **Board:** [role-distribution design note](../../../planning/hub-v2/2026-08-05-role-distribution-design-note.md) — CLOSED (RD-1 settled; RD-2..RD-10 confirmed 2026-08-06)

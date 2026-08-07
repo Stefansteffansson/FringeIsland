@@ -6,7 +6,7 @@ title: Available-roles view, diff-on-copy ceremony, admin publish surface, and t
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -147,7 +147,7 @@ The available-roles section loads **behind an affordance**, not on the group-det
 
 The section is one read; the three-state render must not fan out to a per-entry call (the payload walk exists to prevent exactly that). The diff is read on ceremony open, not for every listed entry.
 
-## Implementation notes (2026-08-07 — STORY-1/2/4 done; STORY-3 held at the gate)
+## Implementation notes (2026-08-07 — all four stories `6-done`)
 
 **Where the code went.** `hub/components/groups/AvailableRolesSection.tsx` (the section
 and the ceremony) · `hub/lib/groups/available-roles.ts` (the three-state logic, isolated
@@ -171,8 +171,9 @@ landed); and integration C6.
 **Three things the build corrected in the spec.**
 
 1. **STORY-3 had no server key.** The payload walk's finding 2 was never carried into
-   PC028's migration — see PC028 STORY-8. The section is built and unit-green against
-   fixtures; its contract is held at the schema gate, so this feature stays `5-in-cycle`.
+   PC028's migration — see PC028 STORY-8. Closed by migration `20260807140000`, applied
+   the same day on the named approval; the live catalogue was re-verified afterwards
+   rather than trusted (both keys present, signature byte-identical, ACL preserved).
 2. **"Permission display names" had no source.** `public.permissions` has no display-name
    column and `get_role_copy_diff` returns `p.name`. Closed Surface-side as presentation
    mapping (ADR-U038), with a *total* humaniser rather than a lookup table.
@@ -186,6 +187,15 @@ later version". The substrate cannot distinguish the two without per-grant histo
 group role, and the walk's payload offers only `added[]`. The sentence is therefore
 slightly over-broad in the second case. Cheap to fix only by widening the contract; left
 as specified.
+
+**The E2E journey gate** (`tests/e2e/role-distribution.spec.ts`) walks the whole arc:
+offered → copied (provenance reads `v1`) → catalogue moves → panel says `v1 → v2` →
+ceremony shows the diff in **display names** → confirm → **provenance moves to `v2`**,
+asserted both in the render and at row level (`created_from_version_number`) → offer
+withdrawn → **the adopted copy survives untouched** (RD-2). Labelled **test-after** and
+proven non-vacuous by control: neutralising the section fails it at the toggle. That
+control also showed the permission-gated cell is `toHaveCount(0)`-shaped and therefore
+meaningless alone — the positive cell in the same file is what makes it bite.
 
 **ADR-U043: not triggered, and by a stronger route than planned.** The spec drew its
 budget against deferring a new read behind an affordance. In fact the scoped catalogue

@@ -3,7 +3,7 @@
 ---
 id: TASK-RDB-03
 title: FEAT-H044 — Steward's available-roles section, diff-on-copy ceremony, AdminRoleTemplateDetail reach section, and the three passive notification renders
-status: review
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H044
@@ -68,12 +68,19 @@ E2E requires the dev server on `localhost:3000`.
 
 ---
 
-## Outcome (2026-08-07) — built; `review`, not `done`
+## Outcome (2026-08-07) — `done`, all four stories
 
-STORY-1, STORY-2 and STORY-4 are complete and green. **STORY-3 is built but cannot be
-verified** until [TASK-RDB-04](./TASK-RDB-04-pc028-corrective-widen-admin-role-template-detail.md)'s
-migration is applied — the reach section had no server key, because the widening
-FEAT-H044's payload walk committed to was never carried into PC028's migration.
+STORY-1, STORY-2 and STORY-4 were built and green first. **STORY-3 was built but
+unverifiable** until [TASK-RDB-04](./TASK-RDB-04-pc028-corrective-widen-admin-role-template-detail.md)'s
+migration was applied — the reach section had no server key, because the widening
+FEAT-H044's payload walk committed to was never carried into PC028's migration. That
+migration was applied the same day on a named approval, its cells went red → green, and
+`FEAT-H044` closed at `6-done`.
+
+**A journey-level E2E was added beyond the AC list** (`tests/e2e/role-distribution.spec.ts`)
+to keep the pyramid upright at all three tiers: offered → copied → catalogue moves →
+ceremony → provenance moves (asserted in the render **and** at row level) → offer
+withdrawn → copy survives. Labelled test-after; proven non-vacuous by control.
 
 **Two acceptance criteria were resolved differently than written, both deliberately:**
 

@@ -2,7 +2,7 @@
 
 Substrate-level changes to Platform Core (Infrastructure, Identity, Organisation, Governance). These are developer-facing platform changes, not end-user features; each entry links the feature spec with the full implementation notes.
 
-## 2026-08-07 — CORRECTIVE: `admin_get_role_template_detail` widened with reach and retirement ([FEAT-PC028](./features/FEAT-PC028-role-template-publication-scoped-offer-and-diff-on-copy-contracts.md) STORY-8, Cycle RD-B) — **HELD AT THE SCHEMA GATE**
+## 2026-08-07 — CORRECTIVE: `admin_get_role_template_detail` widened with reach and retirement ([FEAT-PC028](./features/FEAT-PC028-role-template-publication-scoped-offer-and-diff-on-copy-contracts.md) STORY-8, Cycle RD-B) — gate closed + applied 2026-08-07
 
 - **The widening this feature committed to and did not build.** FEAT-H044's payload walk recorded, and both specs stated, that `admin_get_role_template_detail` would carry publication rows "rather than adding a fourth read". Migration `20260807090000` never touched the function. Found at the start of the Hub half, when FEAT-H044 STORY-3's reach section had no server key to read.
 - **Two keys were missing, not one.** `retired_at` was never on the **detail** read either, though RD-A added it to the **list** read — so "publishing is unavailable, and here is why" had nothing to branch on.

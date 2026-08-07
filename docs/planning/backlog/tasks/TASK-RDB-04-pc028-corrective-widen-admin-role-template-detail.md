@@ -3,7 +3,7 @@
 ---
 id: TASK-RDB-04
 title: FEAT-PC028 STORY-8 (corrective) — admin_get_role_template_detail carries publications[] and retired_at
-status: review
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-PC028
@@ -52,8 +52,23 @@ Three ways, in increasing order of authority:
 - [x] Migration header names sibling assertions invalidated: **none**, grepped not assumed
 - [x] Integration cells C1–C5 demonstrated **red** against the live stack
       (`publications` undefined, `retired_at` absent); C6 labelled green-before-and-after
-- [ ] **Applied on a named approval**, then C1–C6 green
-- [ ] `FEAT-PC028` returns to `6-done`; §L4 rows and `features/README.md` follow
+- [x] **Applied on a named approval** (*"ok apply the RD-B corrective migration"*, 2026-08-07), then C1–C6 green — C1–C5 went red → green, C6 stayed green
+- [x] `FEAT-PC028` returned to `6-done`; §L4 rows and `features/README.md` follow
+
+## Post-apply verification (2026-08-07)
+
+Against the **live catalogue**, not the migration file:
+
+| Check | Result |
+|---|---|
+| `publications` in the function body | present |
+| `retired_at` in the function body | present |
+| Signature | `p_template_id uuid` — byte-identical |
+| SECURITY DEFINER / volatility | `true` / `STABLE` — unchanged |
+| ACL (the COR-A claim) | `anon` **denied**, `authenticated` + `service_role` allowed — preserved by create-or-replace, no grant restated |
+| Definition length | 1971 → 3378 bytes |
+
+Corrective cells: **6/6 green** (C1–C5 red → green; C6 green on both sides by design).
 
 ## Apply commands
 
