@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { createGroupRole, deleteGroupRole, setGroupRolePermission } from '@/lib/groups/client';
 import type { RoleEntry, RolesFabric, RoleTemplateOption } from '@/lib/groups/queries';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { AvailableRolesSection } from '@/components/groups/AvailableRolesSection';
+import { permissionLabel } from '@/lib/groups/permission-label';
 
 /**
  * RD-A FEAT-H043 STORY-1 — the provenance line.
@@ -81,12 +83,18 @@ export function RolesPanel({
   templates,
   error,
   onMutated,
+  groupStatus = 'active',
 }: {
   groupId: string;
   fabric: RolesFabric | null;
   templates: RoleTemplateOption[];
   error: string | null;
   onMutated: () => void;
+  /** RD-B FEAT-H044 STORY-1: the availability guard. Anything but `active`
+   *  renders the available-roles section read-only — the same posture every
+   *  other write affordance takes while a group rests. The substrate refuses
+   *  independently; this only stops offering an act that would be refused. */
+  groupStatus?: string;
 }) {
   const [adding, setAdding] = useState(false);
   const [expandedRoleId, setExpandedRoleId] = useState<string | null>(null);
@@ -227,7 +235,7 @@ export function RolesPanel({
                       key={p}
                       className="rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600"
                     >
-                      {p}
+                      {permissionLabel(p)}
                     </span>
                   ))}
                 </div>
@@ -245,7 +253,7 @@ export function RolesPanel({
                         checked={role.permissions.includes(p.name)}
                         onChange={(e) => void flipGrant(role, p.name, e.target.checked)}
                       />
-                      <span>{p.name}</span>
+                      <span>{permissionLabel(p.name)}</span>
                       <span className="text-gray-400">({p.category})</span>
                     </label>
                   ))}
@@ -254,6 +262,22 @@ export function RolesPanel({
             </li>
           ))}
         </ul>
+      )}
+
+      {/* RD-B FEAT-H044 STORY-1/2: what is offered to THIS group, and the
+          ceremony that copies an update in. Behind an affordance and fed by
+          the scoped catalogue that already rides the roles payload, so it
+          adds no request to the group-detail first paint (the spec's
+          ADR-U043 placement). */}
+      {fabric && (
+        <AvailableRolesSection
+          groupId={groupId}
+          templates={templates}
+          roles={fabric.roles}
+          canManage={canManage}
+          readOnly={groupStatus !== 'active'}
+          onMutated={onMutated}
+        />
       )}
 
       {/* RD-A FEAT-H043 STORY-4: the ceremony states its consequences BEFORE
@@ -407,7 +431,7 @@ function AddRoleForm({
                         checked={ticked.has(p.name)}
                         onChange={(e) => toggle(p.name, e.target.checked)}
                       />
-                      <span>{p.name}</span>
+                      <span>{permissionLabel(p.name)}</span>
                     </label>
                   ))}
               </div>

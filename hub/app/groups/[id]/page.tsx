@@ -291,6 +291,7 @@ export default function GroupDetailPage() {
             templates={rolesData?.templates ?? []}
             error={rolesError}
             onMutated={loadAll}
+            groupStatus={group.status}
           />
           <InvitationsPanel
             groupId={groupId}

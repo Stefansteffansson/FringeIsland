@@ -260,6 +260,64 @@ export async function fetchRoleTemplates(
   return (data ?? []) as unknown as RoleTemplateOption[];
 }
 
+/**
+ * RD-B FEAT-PC028 STORY-3 — what `get_role_copy_diff` serves.
+ *
+ * `added` / `removed` / `unchanged` are permission **keys** (`p.name`); the
+ * substrate has no display-name column, so the surface labels them through
+ * `permissionLabel` at render time.
+ *
+ * `from_version` is null where the copy's provenance is honestly unknown
+ * (RD-10). That blocks the version LABEL only — the sets above are computed
+ * from grants, so the diff is still exact and the update still offerable.
+ */
+export interface RoleCopyDiff {
+  added: string[];
+  removed: string[];
+  unchanged: string[];
+  from_version: number | null;
+  to_version: number | null;
+}
+
+/** RD-B FEAT-PC028 STORY-3 — what `apply_role_template_update` returns. */
+export interface RoleCopyApplied {
+  id: string;
+  from_version: number | null;
+  to_version: number | null;
+}
+
+/**
+ * RD-B FEAT-H044 STORY-2 — the diff behind the ceremony (read on open).
+ * SECURITY DEFINER contract; it re-checks `manage_roles` itself, so this
+ * wrapper adds no gate of its own (ADR-U038 — the rule lives below the API).
+ */
+export async function fetchRoleCopyDiff(
+  supabase: SupabaseClient,
+  roleId: string,
+): Promise<RoleCopyDiff> {
+  const { data, error } = await supabase.rpc('get_role_copy_diff', {
+    p_group_role_id: roleId,
+  });
+  if (error) throw error;
+  return data as unknown as RoleCopyDiff;
+}
+
+/**
+ * RD-B FEAT-H044 STORY-2 — apply the template's live set to the group's copy.
+ * The contract owns every refusal (lockout guard, retired template, the
+ * availability guard); this wrapper passes them through untouched.
+ */
+export async function applyRoleTemplateUpdate(
+  supabase: SupabaseClient,
+  roleId: string,
+): Promise<RoleCopyApplied> {
+  const { data, error } = await supabase.rpc('apply_role_template_update', {
+    p_group_role_id: roleId,
+  });
+  if (error) throw error;
+  return data as unknown as RoleCopyApplied;
+}
+
 export interface CreateGroupRoleInput {
   name: string;
   description?: string | null;

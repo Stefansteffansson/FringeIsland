@@ -147,8 +147,80 @@ The available-roles section loads **behind an affordance**, not on the group-det
 
 The section is one read; the three-state render must not fan out to a per-entry call (the payload walk exists to prevent exactly that). The diff is read on ceremony open, not for every listed entry.
 
+## Implementation notes (2026-08-07 — STORY-1/2/4 done; STORY-3 held at the gate)
+
+**Where the code went.** `hub/components/groups/AvailableRolesSection.tsx` (the section
+and the ceremony) · `hub/lib/groups/available-roles.ts` (the three-state logic, isolated
+from JSX so it could be pinned exhaustively) · `hub/lib/groups/permission-label.ts` (the
+display-name humaniser) · `hub/lib/admin/role-template-reach.ts` (the reach statement) ·
+the reach section inside `AdminRoleTemplateDetail.tsx` · three new BFF routes
+(`roles/[roleId]/diff`, `roles/[roleId]/apply-update`, `admin/roles/[id]/publish`) ·
+`NotificationItem.tsx`'s `roles` icon entry.
+
+**Red → green, honestly.** Unit tiers driven red-first: `permission-label` (7), the
+three-state logic (10), the section + ceremony (18), the reach statement + section (19),
+and the `ConfirmModal` `hideConfirm` widening (2 of 3 red — the third pinned the existing
+default). **Labelled test-after / green-before-and-after, not TDD:** the three
+notification copy cells and the two-group cell (the passive render path already existed —
+regression pins on shipped behaviour); the notification icon cell (written after the
+entry, then **proven non-vacuous by control** — removing the entry fails it with the bell
+fallback's class, which is exactly the silent-fallback mode that let the gap ship); the
+system-template reach cell (vacuous the day it was written, load-bearing once the section
+landed); and integration C6.
+
+**Three things the build corrected in the spec.**
+
+1. **STORY-3 had no server key.** The payload walk's finding 2 was never carried into
+   PC028's migration — see PC028 STORY-8. The section is built and unit-green against
+   fixtures; its contract is held at the schema gate, so this feature stays `5-in-cycle`.
+2. **"Permission display names" had no source.** `public.permissions` has no display-name
+   column and `get_role_copy_diff` returns `p.name`. Closed Surface-side as presentation
+   mapping (ADR-U038), with a *total* humaniser rather than a lookup table.
+3. **The BFF wrapper was already repointed** by the platform half — the dropped zero-arg
+   contract would have broken the Hub otherwise. Nothing was owed here.
+
+**A nuance the payload cannot resolve, recorded not hidden.** The RD-3 restore sentence
+renders whenever `added` is non-empty. `added` means *in the template, not in the group's
+current set* — which covers both "the Steward revoked it" and "the template gained it in a
+later version". The substrate cannot distinguish the two without per-grant history on the
+group role, and the walk's payload offers only `added[]`. The sentence is therefore
+slightly over-broad in the second case. Cheap to fix only by widening the contract; left
+as specified.
+
+**ADR-U043: not triggered, and by a stronger route than planned.** The spec drew its
+budget against deferring a new read behind an affordance. In fact the scoped catalogue
+**already rides the roles payload**, so the section consumes a read that has already
+happened and costs *zero* requests to open — asserted by a cell. No request was added to
+any first paint. If the section is ever given its own fetch, the deep-cold spot
+measurement becomes owed.
+
 ## E2E sweep obligation
 
 Named at spec time, from the RD-A miss. RD-A's sibling sweep grepped for assertions naming changed objects and missed a forum-post failure whose selector named **no object at all** — `getByRole('button', {name: /^Delete$/}).last()`, page-wide and positional, broken by a newly opened affordance adding buttons with that label.
 
 This feature adds **Copy**, **Review update**, **Confirm**, **Publish**, and **Unpublish** affordances to pages that already carry buttons. Before the build closes, the E2E fleet is grepped for **bare accessible-name selectors** — `getByRole('button', {name: …})` without a scoping container, and any `.first()` / `.last()` positional resolution — on every page these surfaces touch, in addition to the normal object-named sweep.
+
+**DISCHARGED 2026-08-07 — clean, with one latent trap recorded.** Swept `roles.spec.ts`,
+`admin-roles.spec.ts`, the notification specs, and every spec touching `/groups/[id]`.
+No bare selector and no positional resolution matches a new affordance: the page-level
+names in play are `/^create$/i`, `/^save$/i`, `/edit settings/i`, `'Force sign-out'` and
+`/remove steward role template from/i`, none of which any new label matches.
+`notifications.spec.ts:183`'s `unreadRow.getByRole('button').first()` is safe because the
+passive renders add no affordance to a notification row. `admin-roles.spec.ts:305`'s
+`getByText('role_template.apply').first()` is safe because the new audit actions are
+`role_template.publish` / `.unpublish`, which do not contain that substring.
+
+**The latent trap, recorded because it is luck-adjacent.**
+`roles.spec.ts:120` asserts `page.getByTestId('roles-panel').getByText('Steward Role
+Template')` — and the available-roles section now lives **inside** `roles-panel`, where
+the same template name would appear a second time. It resolves to one element only
+because the section is **collapsed by default**. That is by design (the AC requires the
+affordance), but it means defaulting the section to expanded would break that spec with a
+strict-mode violation rather than a missing element. Whoever changes that default owns
+scoping this assertion first.
+
+Permission chips now render display names, so a spec asserting a raw key inside
+`roles-panel` would have broken — swept, and none does. `roles.spec.ts:182`'s
+`invite_members` assertion is against `my-permissions-panel`, a component this feature
+does not touch; `perm-checkbox-*` and `grant-toggle-*` testids are still keyed by the raw
+permission name and are unchanged.

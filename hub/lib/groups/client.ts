@@ -14,6 +14,8 @@ import type {
   GroupDetailPayload,
   GroupDetailShell,
   GroupSummary,
+  RoleCopyApplied,
+  RoleCopyDiff,
   RoleEntry,
   RolesFabric,
   RoleTemplateOption,
@@ -31,6 +33,8 @@ export type {
   GroupDetailPayload,
   GroupDetailShell,
   GroupSummary,
+  RoleCopyApplied,
+  RoleCopyDiff,
   RoleEntry,
   RolesFabric,
   RoleTemplateOption,
@@ -271,6 +275,46 @@ export async function deleteGroupRole(groupId: string, roleId: string): Promise<
     { method: 'DELETE' },
   );
   if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
+}
+
+/**
+ * RD-B FEAT-H044 STORY-2 — the diff behind the ceremony.
+ *
+ * Read on ceremony open, never per listed entry (the spec's performance
+ * budget). Permission names arrive as internal keys; the surface labels them
+ * through `permissionLabel` at render time.
+ */
+export async function fetchRoleCopyDiff(
+  groupId: string,
+  roleId: string,
+): Promise<RoleCopyDiff> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(groupId)}/roles/${encodeURIComponent(roleId)}/diff`,
+  );
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  const data = (await res.json()) as { diff: RoleCopyDiff };
+  return data.diff;
+}
+
+/**
+ * RD-B FEAT-H044 STORY-2 — apply the template's live set to the group's copy.
+ *
+ * Take-it-or-leave-it by design (RD-3): the contract applies the diff and
+ * nothing but the diff, so there is no per-permission argument to pass.
+ * Refusals (lockout guard, retired template, resting group) surface verbatim
+ * through GroupsApiError and the ceremony stays open.
+ */
+export async function applyRoleTemplateUpdate(
+  groupId: string,
+  roleId: string,
+): Promise<RoleCopyApplied> {
+  const res = await fetch(
+    `/api/groups/${encodeURIComponent(groupId)}/roles/${encodeURIComponent(roleId)}/apply-update`,
+    { method: 'POST' },
+  );
+  if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
+  const data = (await res.json()) as { applied: RoleCopyApplied };
+  return data.applied;
 }
 
 /** GRP-7: assign a role to an active member. */
