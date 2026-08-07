@@ -98,7 +98,7 @@ All four areas come from [FEAT-PC027](../../../platform/core/features/FEAT-PC027
 | Template vs Custom (STORY-1) | `get_group_roles` → `created_from_role_template_id` (already served) |
 | holder count in the remove ceremony (STORY-4) | `get_group_roles` → `holder_count` (already served) |
 | retired state + unretire (STORY-2) | `admin_get_role_templates` → `retired_at` (PC027 STORY-3) |
-| picker absence (STORY-3) | `get_role_templates`, filtered server-side (PC027 STORY-3) |
+| picker absence (STORY-3) | `get_role_templates`, filtered server-side (PC027 STORY-3) — **since RD-B: `get_available_role_templates`, which adds publication scope to the same server-side filtering** |
 | every refusal string | PC027 STORY-3 / STORY-4 refusals, rendered verbatim |
 
 No key is rendered that PC027 does not serve; no key PC027 adds is unconsumed.
