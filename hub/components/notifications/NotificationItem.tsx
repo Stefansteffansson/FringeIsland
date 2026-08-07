@@ -1,4 +1,4 @@
-import { Bell, Users, Flag, UserCog, Compass, Megaphone } from 'lucide-react';
+import { Bell, Users, Flag, UserCog, Compass, Megaphone, KeyRound } from 'lucide-react';
 import type { NotificationRow } from '@/lib/notifications/queries';
 import { notificationStatusChip, isActionable } from '@/lib/notifications/format';
 
@@ -17,6 +17,11 @@ const CATEGORY_ICON: Record<string, typeof Bell> = {
   account: Bell,
   journeys: Compass,
   platform: Megaphone,
+  // RD-B FEAT-H044 STORY-4: the `roles` category (FEAT-PC028 STORY-6). A
+  // missing key here renders the bell fallback rather than failing, which is
+  // exactly how it would have shipped unnoticed — found during the platform
+  // half's sweep and filed into this feature.
+  roles: KeyRound,
 };
 
 function readableTime(iso: string): string {

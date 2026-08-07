@@ -52,12 +52,31 @@ export type AdminRoleTemplateVersion = {
   is_default: boolean;
 };
 
+/**
+ * RD-B FEAT-PC028 (corrective) — one row of a template's reach.
+ *
+ * `group_id` NULL is the platform-wide row (RD-8), and `group_name` is NULL
+ * with it by construction: the platform states reach as data and leaves the
+ * words ("all groups") to the surface.
+ */
+export type RoleTemplatePublication = {
+  group_id: string | null;
+  group_name: string | null;
+  published_at: string;
+};
+
 export type AdminRoleTemplateDetailPayload = {
   template: {
     id: string;
     name: string;
     description: string | null;
     is_system: boolean;
+    /**
+     * RD-B FEAT-PC028 (corrective): retirement state on the DETAIL read.
+     * RD-A put it on the list read only, so the detail page could not tell
+     * whether publishing was available. Present whether retired or not.
+     */
+    retired_at: string | null;
     // Composed into the detail response by the BFF from the list read — the
     // blast-radius facts the Apply ceremony renders (payload facts, never
     // client-computed platform state).
@@ -65,6 +84,14 @@ export type AdminRoleTemplateDetailPayload = {
     group_template_refs: string[];
   };
   versions: AdminRoleTemplateVersion[];
+  /**
+   * RD-B FEAT-PC028 (corrective): the reach FEAT-H044 STORY-3 renders. The
+   * widening PC028's payload walk committed to and its migration omitted —
+   * added rather than introducing a fourth read, which was the walk's whole
+   * point (the `get_journey_detail` lesson: a surface reading from a sibling
+   * feature's payload is where the walk earns its keep).
+   */
+  publications: RoleTemplatePublication[];
   catalog: AdminCatalogEntry[];
   generated_at: string;
 };
@@ -168,6 +195,44 @@ export async function unretireRoleTemplate(
 ): Promise<{ refused: boolean }> {
   const { refused } = await call(client, 'admin_unretire_role_template', {
     p_role_template_id: templateId,
+  });
+  return { refused };
+}
+
+/**
+ * RD-B FEAT-H044 STORY-3 / FEAT-PC028 STORY-1 — publish OFFERS a template.
+ *
+ * `groupIds === null` is platform-wide; a list targets those groups. Publish
+ * never reaches into a group (RD-2) — adoption stays the Steward's act in the
+ * roles panel, so this is purely a change to who is offered what.
+ */
+export async function publishRoleTemplate(
+  client: SupabaseClient,
+  templateId: string,
+  groupIds: string[] | null,
+): Promise<{ refused: boolean }> {
+  const { refused } = await call(client, 'admin_publish_role_template', {
+    p_role_template_id: templateId,
+    p_group_ids: groupIds,
+  });
+  return { refused };
+}
+
+/**
+ * RD-B FEAT-H044 STORY-3 / FEAT-PC028 STORY-1 — withdraw an offer.
+ *
+ * Copies already adopted are untouched and keep working (RD-2). Unpublish
+ * removes the offer, never the role — the surface states this where the
+ * action is taken.
+ */
+export async function unpublishRoleTemplate(
+  client: SupabaseClient,
+  templateId: string,
+  groupIds: string[] | null,
+): Promise<{ refused: boolean }> {
+  const { refused } = await call(client, 'admin_unpublish_role_template', {
+    p_role_template_id: templateId,
+    p_group_ids: groupIds,
   });
   return { refused };
 }

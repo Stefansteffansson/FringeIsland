@@ -975,4 +975,138 @@ describe('FEAT-PC028 — publication, scoped offer, diff-on-copy (RD-B)', () => 
       expect(rows[0].write_grants).toBe(0);
     }, 180_000);
   });
+
+  // ==========================================================================
+  // CORRECTIVE — the widening the payload walk committed to and the migration
+  // omitted. RED until 20260807140000 is applied.
+  //
+  // FEAT-PC028's spec states finding 2: "admin_get_role_template_detail knows
+  // nothing about publications. PC028 widens it rather than adding a fourth
+  // read." It was never widened. Found at the start of the Hub half, when
+  // FEAT-H044 STORY-3's reach section had no server key to read. Two keys are
+  // missing, not one — `retired_at` was never added to the DETAIL read either,
+  // though RD-A added it to the LIST read.
+  // ==========================================================================
+  describe('CORRECTIVE — admin_get_role_template_detail carries reach and retirement', () => {
+    const detail = async (c: SupabaseClient, templateId: string) => {
+      const { data, error } = await c.rpc('admin_get_role_template_detail', {
+        p_template_id: templateId,
+      });
+      if (error) throw new Error(`admin_get_role_template_detail: ${error.message}`);
+      return data as {
+        template: { id: string; is_system: boolean; retired_at: string | null };
+        versions: unknown[];
+        publications: Array<{
+          group_id: string | null;
+          group_name: string | null;
+          published_at: string;
+        }>;
+      };
+    };
+
+    it('C1: an unpublished template reports empty reach — the key exists and is []', async () => {
+      await clearPublications();
+      const a = await asUser(adminUser);
+      const d = await detail(a, clonedTemplateId);
+      // The key must be PRESENT and empty, never absent: the surface renders
+      // "Not published" from [], and an absent key is indistinguishable from a
+      // read that failed.
+      expect(Array.isArray(d.publications)).toBe(true);
+      expect(d.publications).toHaveLength(0);
+    }, 180_000);
+
+    it('C2: named-group reach lists each group with its name and publication date', async () => {
+      await clearPublications();
+      const a = await asUser(adminUser);
+      await a.rpc('admin_publish_role_template', {
+        p_role_template_id: clonedTemplateId,
+        p_group_ids: [groupA, groupB],
+      });
+
+      const d = await detail(a, clonedTemplateId);
+      expect(d.publications).toHaveLength(2);
+      const ids = d.publications.map((p) => p.group_id).sort();
+      expect(ids).toEqual([groupA, groupB].sort());
+      // STORY-3 lists the NAMED groups, so the name must ride the payload —
+      // the Hub may not look groups up itself (it has no such read).
+      for (const p of d.publications) {
+        expect(typeof p.group_name).toBe('string');
+        expect(p.group_name).toBeTruthy();
+        expect(p.published_at).toBeTruthy();
+      }
+    }, 180_000);
+
+    it('C3: platform-wide reach is one row with a NULL group_id, sorted first', async () => {
+      await clearPublications();
+      const a = await asUser(adminUser);
+      await a.rpc('admin_publish_role_template', {
+        p_role_template_id: clonedTemplateId,
+        p_group_ids: null,
+      });
+      await a.rpc('admin_publish_role_template', {
+        p_role_template_id: clonedTemplateId,
+        p_group_ids: [groupA],
+      });
+
+      const d = await detail(a, clonedTemplateId);
+      expect(d.publications.length).toBeGreaterThanOrEqual(2);
+      // NULL = platform-wide (RD-8), and it sorts first so the surface reads
+      // the broadest reach before the named ones.
+      expect(d.publications[0].group_id).toBeNull();
+      expect(d.publications[0].group_name).toBeNull();
+    }, 180_000);
+
+    it('C4: the detail read carries retired_at, present whether retired or not', async () => {
+      const a = await asUser(adminUser);
+      const before = await detail(a, clonedTemplateId);
+      // Present-and-null, not absent — STORY-3 branches on it unconditionally.
+      expect(before.template).toHaveProperty('retired_at');
+      expect(before.template.retired_at).toBeNull();
+
+      await a.rpc('admin_retire_role_template', { p_role_template_id: clonedTemplateId });
+      const after = await detail(a, clonedTemplateId);
+      expect(after.template.retired_at).not.toBeNull();
+
+      await a.rpc('admin_unretire_role_template', { p_role_template_id: clonedTemplateId });
+      const restored = await detail(a, clonedTemplateId);
+      expect(restored.template.retired_at).toBeNull();
+    }, 180_000);
+
+    it('C5: reach SURVIVES retirement (RDB-6) and the detail read still shows it', async () => {
+      await clearPublications();
+      const a = await asUser(adminUser);
+      await a.rpc('admin_publish_role_template', {
+        p_role_template_id: clonedTemplateId,
+        p_group_ids: [groupA],
+      });
+      await a.rpc('admin_retire_role_template', { p_role_template_id: clonedTemplateId });
+
+      const d = await detail(a, clonedTemplateId);
+      // The retirement filter lives at the OFFER read, not in a delete — so an
+      // unretire restores the reach that existed rather than silently
+      // publishing to nobody. The admin surface must be able to see that.
+      expect(d.publications).toHaveLength(1);
+      expect(d.publications[0].group_id).toBe(groupA);
+      expect(d.template.retired_at).not.toBeNull();
+
+      await a.rpc('admin_unretire_role_template', { p_role_template_id: clonedTemplateId });
+    }, 180_000);
+
+    // LABELLED GREEN BEFORE AND AFTER — a guard cell, not a red-first driver.
+    // C1–C5 are red until 20260807140000 lands; C6 pins the admin gate that
+    // must survive the widening untouched, so it passes today and is
+    // load-bearing only if the corrective ever loosens it.
+    it('C6: the widening does not open the payload to a non-admin', async () => {
+      // The function stays SECURITY DEFINER behind is_platform_admin; reach is
+      // admin-plane data and the widening must not have become a side door.
+      const c = await asUser(steward);
+      const { error } = await c.rpc('admin_get_role_template_detail', {
+        p_template_id: clonedTemplateId,
+      });
+      expect(error).not.toBeNull();
+      // Not vacuous: an absent function refuses everyone equally.
+      expect(error!.code).not.toBe('PGRST202');
+      expect(error!.code).toBe('42501');
+    }, 180_000);
+  });
 });

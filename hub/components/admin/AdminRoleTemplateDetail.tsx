@@ -3,6 +3,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import type { AdminRoleTemplateDetailPayload, AdminRoleTemplateVersion } from '@/lib/admin/roles';
+import {
+  reachSummary,
+  namedPublications,
+  isPlatformWide,
+  publishBlockedReason,
+} from '@/lib/admin/role-template-reach';
 
 /**
  * FEAT-H040 STORY-2/3/4 — /admin/roles/[id]: the template detail.
@@ -28,6 +34,11 @@ type Ceremony =
   | { kind: 'clone' }
   | { kind: 'save' }
   | { kind: 'apply'; version: AdminRoleTemplateVersion }
+  // RD-B FEAT-H044 STORY-3 — the reach acts. Each is a distribution decision
+  // (who is OFFERED this template), never a change to any group's roles.
+  | { kind: 'publish-all' }
+  | { kind: 'unpublish-all' }
+  | { kind: 'unpublish-group'; groupId: string; groupName: string | null }
   | null;
 
 type Outcome = { tone: 'error' | 'success'; text: string } | null;
@@ -87,12 +98,12 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
     path: string,
     body: Record<string, unknown>,
     successText: string | ((fresh: AdminRoleTemplateDetailPayload | undefined) => string),
-    opts?: { keepDraft?: boolean },
+    opts?: { keepDraft?: boolean; method?: 'POST' | 'DELETE' },
   ) => {
     setBusy(true);
     try {
       const res = await fetch(`/api/admin/roles/${templateId}/${path}`, {
-        method: 'POST',
+        method: opts?.method ?? 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
@@ -155,8 +166,12 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
     );
   }
 
-  const { template, versions, catalog } = view.payload;
+  const { template, versions, catalog, publications } = view.payload;
   const liveVersion = versions.find((v) => v.is_default) ?? null;
+  // RD-B FEAT-H044 STORY-3 — reach, read from the payload and never computed.
+  const reachNamed = namedPublications(publications);
+  const reachIsAll = isPlatformWide(publications);
+  const reachBlocked = publishBlockedReason(template);
   const applying = ceremony?.kind === 'apply' ? ceremony.version : null;
   const diff = applying ? computeDiff(liveVersion?.permission_names ?? [], applying.permission_names) : null;
 
@@ -241,6 +256,87 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
           ))}
         </ul>
       </section>
+
+      {/* RD-B FEAT-H044 STORY-3 — who this template is FOR.
+          Absent on system templates: they are the floor every group is built
+          on and are not distributed, so there is no reach to state and no act
+          to explain away. */}
+      {!template.is_system && (
+        <section
+          data-testid="reach-section"
+          className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
+        >
+          <h2 className="mb-1 text-lg font-medium">Reach</h2>
+          <p data-testid="reach-summary" className="mb-2 text-sm text-gray-700">
+            {reachSummary(publications)}
+          </p>
+
+          {reachBlocked && (
+            <p data-testid="reach-blocked" className="mb-2 text-sm text-amber-700">
+              {reachBlocked}
+            </p>
+          )}
+
+          {reachNamed.length > 0 && (
+            <ul className="mb-3 space-y-1">
+              {reachNamed.map((p) => (
+                <li
+                  key={p.group_id ?? 'all'}
+                  data-testid="reach-row"
+                  className="flex items-baseline gap-2 text-sm"
+                >
+                  <span className="font-medium">{p.group_name ?? 'Unknown group'}</span>
+                  <span className="text-xs text-gray-500">
+                    since {new Date(p.published_at).toLocaleDateString()}
+                  </span>
+                  <button
+                    onClick={() =>
+                      setCeremony({
+                        kind: 'unpublish-group',
+                        groupId: p.group_id!,
+                        groupName: p.group_name,
+                      })
+                    }
+                    className="rounded border border-gray-300 px-2 py-0.5 text-xs text-gray-700"
+                  >
+                    Unpublish
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <div className="flex flex-wrap gap-2">
+            {reachIsAll ? (
+              <button
+                onClick={() => setCeremony({ kind: 'unpublish-all' })}
+                className="rounded border border-gray-300 px-3 py-1 text-sm text-gray-700"
+              >
+                Unpublish from all groups
+              </button>
+            ) : (
+              // Retirement blocks the OFFER, not the withdrawal — so Publish
+              // disappears with a stated reason while Unpublish stays.
+              !reachBlocked && (
+                <button
+                  onClick={() => setCeremony({ kind: 'publish-all' })}
+                  className="rounded border border-indigo-300 px-3 py-1 text-sm text-indigo-700"
+                >
+                  Publish to all groups
+                </button>
+              )
+            )}
+          </div>
+
+          {/* RD-2, stated where the action is taken. Withdrawing an offer
+              never reaches into a group — this is the sentence that stops
+              Unpublish reading like a deletion. */}
+          <p data-testid="reach-unpublish-note" className="mt-2 text-xs text-gray-500">
+            Publishing only offers this template — it never adds a role to a group. Unpublishing
+            withdraws the offer; copies groups have already adopted are unaffected and keep working.
+          </p>
+        </section>
+      )}
 
       {!template.is_system && (
         <section
@@ -362,6 +458,46 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
             { keepDraft: true },
           )
         }
+        onCancel={() => {
+          if (!busy) setCeremony(null);
+        }}
+      />
+
+      {/* RD-B FEAT-H044 STORY-3 — one ceremony for all three reach acts. Each
+          states its consequence before the click, and every one of them is a
+          change to who is OFFERED the template, never to any group's roles. */}
+      <ConfirmModal
+        isOpen={
+          ceremony?.kind === 'publish-all' ||
+          ceremony?.kind === 'unpublish-all' ||
+          ceremony?.kind === 'unpublish-group'
+        }
+        title={ceremony?.kind === 'publish-all' ? 'Publish to all groups' : 'Withdraw the offer'}
+        message={
+          ceremony?.kind === 'publish-all'
+            ? `Offers "${template.name}" to every group. Stewards choose whether to copy it — publishing never adds a role to any group.`
+            : ceremony?.kind === 'unpublish-all'
+              ? `Stops offering "${template.name}" to all groups. Copies groups have already adopted are unaffected and keep working.`
+              : ceremony?.kind === 'unpublish-group'
+                ? `Stops offering "${template.name}" to ${ceremony.groupName ?? 'this group'}. Their existing copy, if they made one, is unaffected and keeps working.`
+                : ''
+        }
+        confirmText={ceremony?.kind === 'publish-all' ? 'Publish' : 'Unpublish'}
+        variant={ceremony?.kind === 'publish-all' ? 'info' : 'warning'}
+        busy={busy}
+        onConfirm={() => {
+          if (ceremony?.kind === 'publish-all') {
+            void mutate('publish', { group_ids: null }, 'Published to all groups.');
+          } else if (ceremony?.kind === 'unpublish-all') {
+            void mutate('publish', { group_ids: null }, 'Offer withdrawn.', {
+              method: 'DELETE',
+            });
+          } else if (ceremony?.kind === 'unpublish-group') {
+            void mutate('publish', { group_ids: [ceremony.groupId] }, 'Offer withdrawn.', {
+              method: 'DELETE',
+            });
+          }
+        }}
         onCancel={() => {
           if (!busy) setCeremony(null);
         }}

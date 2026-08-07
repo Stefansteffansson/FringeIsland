@@ -3,7 +3,7 @@
 ---
 id: TASK-RDB-03
 title: FEAT-H044 — Steward's available-roles section, diff-on-copy ceremony, AdminRoleTemplateDetail reach section, and the three passive notification renders
-status: todo
+status: done
 assigned_to: claude
 priority: high
 feature: FEAT-H044
@@ -65,3 +65,39 @@ npm run test:e2e
 ```
 
 E2E requires the dev server on `localhost:3000`.
+
+---
+
+## Outcome (2026-08-07) — `done`, all four stories
+
+STORY-1, STORY-2 and STORY-4 were built and green first. **STORY-3 was built but
+unverifiable** until [TASK-RDB-04](./TASK-RDB-04-pc028-corrective-widen-admin-role-template-detail.md)'s
+migration was applied — the reach section had no server key, because the widening
+FEAT-H044's payload walk committed to was never carried into PC028's migration. That
+migration was applied the same day on a named approval, its cells went red → green, and
+`FEAT-H044` closed at `6-done`.
+
+**A journey-level E2E was added beyond the AC list** (`tests/e2e/role-distribution.spec.ts`)
+to keep the pyramid upright at all three tiers: offered → copied → catalogue moves →
+ceremony → provenance moves (asserted in the render **and** at row level) → offer
+withdrawn → copy survives. Labelled test-after; proven non-vacuous by control.
+
+**Two acceptance criteria were resolved differently than written, both deliberately:**
+
+- **`hub/lib/groups/queries.ts:239-244` was already repointed** by the platform half —
+  the zero-arg contract was dropped, so the Hub would have been broken on `main`
+  otherwise. Nothing to do; verified on `main`.
+- **"permission display names, not internal keys"** had no substrate to draw on.
+  `public.permissions` is `(id, name, description, category, created_at)` — there is no
+  display-name column anywhere, and `get_role_copy_diff` returns `p.name`, the key. Closed
+  Surface-side with `hub/lib/groups/permission-label.ts`, a *total* humaniser rather than a
+  lookup table (a table renders raw keys for every permission seeded after it was written —
+  the open-registry failure the notification icon map already carries). Presentation
+  mapping, which ADR-U038 permits in a Surface. **Applied across the whole roles panel**,
+  not only the ceremony, on Stefan's call — one panel showing two conventions was the
+  alternative. Two RolesPanel chip assertions adapted, labelled.
+
+**Known remaining inconsistency, filed not fixed:** `MyPermissionsPanel` and the admin
+draft editor (`AdminRoleTemplateDetail`'s catalogue checkboxes) still render raw keys.
+Out of the scope Stefan set ("the roles panel"); widening it is a one-line change per
+surface plus its assertions.

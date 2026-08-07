@@ -9,6 +9,15 @@ wave: ferd
 maturity: 6-done
 ---
 
+> **REOPENED AND RECLOSED 2026-08-07 — STORY-8 (corrective).** This feature
+> first reached `6-done` with a payload-walk commitment unbuilt:
+> `admin_get_role_template_detail` was never widened. Found at the start of the
+> Hub half, when FEAT-H044 STORY-3 had no server key to read. Migration
+> `20260807140000` applied on the named approval *"ok apply the RD-B corrective
+> migration"*; cells C1–C5 went red → green and the live catalogue was
+> re-verified (both keys present, signature byte-identical, ACL preserved —
+> `anon` denied, `authenticated`/`service_role` allowed). See STORY-8 below.
+
 **Cycle:** RD-B (role distribution, distribution) · **Pairs with:** [FEAT-H044](../../../products/hub/features/FEAT-H044-available-roles-view-and-diff-on-copy-ceremony.md)
 **Board:** [role-distribution design note](../../../planning/hub-v2/2026-08-05-role-distribution-design-note.md) — CLOSED (RD-1 settled; RD-2..RD-10 confirmed 2026-08-06)
 **Substrate evidence:** [RD-B substrate dossier](../../../planning/hub-v2/2026-08-06-rd-b-substrate-dossier.md) — every claim below traces there with `file:line`. Its seven-row decomposition board (RDB-1..RDB-7) was settled **all as recommended**, 2026-08-06.
@@ -165,6 +174,21 @@ Named before `4-ready`, per the N-E lesson — a keyword sweep finds what resemb
 **Why this is defensive depth, stated plainly.** Verified 2026-08-06: `create_engagement_group` filters neither branch by `retired_at` (`20260806170000:274-284`), *and* the hole is unreachable — the template-less branch selects only `rt.is_system`, and `admin_retire_role_template` refuses system templates outright (`20260806170000:~700`), while the template-chosen branch selects through `group_template_roles`, which registers only the four system templates (`20260804210000:10-13`).
 
 **And RD-9, honestly.** The settled row reads *"only platform-wide publications appear in the group-creation template chooser."* No publication row reaches that chooser at all: publications are `role_template ↔ group`, while creation-time instantiation runs through `group_template_roles`, which is `group_template ↔ role_template`. RD-9 rules against a door that does not exist, and RD-B as scoped does not open it — publish **offers**, it does not register anything anywhere (RD-2). The predicate is written anyway because it is one line and one cell against a hole that is one future junction row from live, on the precedent of RD-A's own rarely-reached `is_protected` guard. RD-9's intent is honoured; its stated mechanism is recorded as not existing.
+
+### STORY-8 (CORRECTIVE): The admin detail read carries reach and retirement
+
+- Given an admin opens a non-system template's detail, when the payload returns, then it carries `publications[]` — one entry per reach, `{group_id, group_name, published_at}` — with `group_id` NULL for the platform-wide row, sorted first.
+- Given a template published to nobody, when the detail loads, then `publications` is present and empty — never absent, because the surface renders *"Not published"* from `[]` and an absent key is indistinguishable from a failed read.
+- Given a template published to named groups, when the detail loads, then each entry carries the group's **name**, because the Hub has no group-lookup read of its own and STORY-3 lists the named groups.
+- Given any template, when the detail loads, then `template.retired_at` is present whether retired or not — FEAT-H044 STORY-3 branches on it unconditionally to state why publishing is unavailable.
+- Given a **retired** template with existing reach, when the detail loads, then the publication rows are still returned (RDB-6 — reach survives retirement, so an unretire restores it rather than silently publishing to nobody).
+- Given a non-admin, when they call the read, then it still refuses with 42501 — the widening opens no side door onto admin-plane data.
+
+**Why this is a corrective and not a new story.** FEAT-H044's payload walk recorded this as *finding 2, fixed in PC028 before `4-ready`*: **"the admin reach display had no server key at all — `admin_get_role_template_detail` knows nothing about publications. PC028 widens it rather than adding a fourth read."** The finding was written into the **consumer's** payload walk and into TASK-RDB-03's technical notes, but never transcribed into a story **here**, in the provider's spec — so there was nothing in PC028's own scope to build it from, and its absence survived the build, the schema gate, the full suite, and doc-health.
+
+**The generalisable lesson: a cross-spec commitment recorded only in the consumer's payload walk has no home to be built from.** The walk is what *finds* the gap; the provider's stories are what *close* it. Both halves are needed, and a walk finding that changes the provider's payload must land as a story on the provider before either spec goes `4-ready`. Two keys were missing rather than one — `retired_at` was never on the detail read either — which is what a missing story looks like from the outside.
+
+Verified three ways before the corrective was written: PC028's migration does not mention the function; no later migration re-issues it; and the **live catalogue's** definition contains neither `role_template_publications` nor `retired_at` (`pg_get_functiondef`, 2026-08-07).
 
 ## Platform dependencies
 

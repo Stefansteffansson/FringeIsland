@@ -107,12 +107,18 @@ describe('FEAT-H014 — RolesPanel (STORY-1/2)', () => {
     const steward = cards.find((c) => within(c).queryByText('Steward Role Template'))!;
     expect(within(steward).getByTestId('role-badge')).toHaveTextContent(/template/i);
     expect(within(steward).getByText(/1 holder\b/i)).toBeInTheDocument();
-    expect(within(steward).getByText('manage_roles')).toBeInTheDocument();
+    // ADAPTED by RD-B FEAT-H044: permission chips render display names rather
+    // than internal keys. Deliberate behaviour change, not a weakened
+    // assertion — the key is still what the payload carries and what the
+    // `grant-toggle-*` / `perm-checkbox-*` testids are keyed by; only the
+    // rendered label moved. The panel showed two conventions once the diff
+    // ceremony started labelling, so the whole panel labels.
+    expect(within(steward).getByText('Manage roles')).toBeInTheDocument();
 
     const greeter = cards.find((c) => within(c).queryByText('Greeter'))!;
     expect(within(greeter).getByTestId('role-badge')).toHaveTextContent(/custom/i);
     expect(within(greeter).getByText(/0 holders/i)).toBeInTheDocument();
-    expect(within(greeter).getByText('view_member_list')).toBeInTheDocument();
+    expect(within(greeter).getByText('View member list')).toBeInTheDocument();
   });
 
   // RD-A FEAT-H043 STORY-1 — the COPY CHECK (quote-bearing AC). A reviewer

@@ -27,6 +27,12 @@ export interface ConfirmModalProps {
    *  required reason field rendered inside `message`) — the H039 widening's
    *  sibling. Cancel stays live; composes with `busy`. */
   confirmDisabled?: boolean;
+  /** Additive (FEAT-H044): acknowledge-only — the dialog states something and
+   *  offers only its dismissal. Distinct from `confirmDisabled`, which still
+   *  shows the act and then refuses it; here there is no act to offer (the
+   *  canonical case: an empty diff, where there is nothing to apply). Focus
+   *  falls back to Cancel, which stays the only live control. */
+  hideConfirm?: boolean;
 }
 
 export function ConfirmModal({
@@ -40,6 +46,7 @@ export function ConfirmModal({
   variant = 'info',
   busy = false,
   confirmDisabled = false,
+  hideConfirm = false,
 }: ConfirmModalProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const cancelRef = useRef<HTMLButtonElement | null>(null);
@@ -48,7 +55,14 @@ export function ConfirmModal({
   // COR-C W5 (AC3-8): the focus contract aria-modal promises — initial focus
   // on Cancel for a destructive ask (the safe default), Confirm otherwise;
   // Tab cycles inside; focus returns to the opener on close.
-  useFocusTrap(containerRef, isOpen, variant === 'danger' ? cancelRef : confirmRef);
+  // With no confirm button to focus (FEAT-H044 acknowledge-only), the initial
+  // target falls back to Cancel — otherwise focus would land nowhere and the
+  // dialog would break the containment aria-modal promises.
+  useFocusTrap(
+    containerRef,
+    isOpen,
+    variant === 'danger' || hideConfirm ? cancelRef : confirmRef,
+  );
 
   // Close on Escape (but never mid-flight — a busy confirm must resolve).
   useEffect(() => {
@@ -98,16 +112,18 @@ export function ConfirmModal({
           >
             {cancelText}
           </button>
-          <button
-            ref={confirmRef}
-            type="button"
-            data-testid="confirm-modal-confirm"
-            onClick={onConfirm}
-            disabled={busy || confirmDisabled}
-            className={`flex-1 rounded-lg px-4 py-3 font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${confirmClass}`}
-          >
-            {busy ? 'Working...' : confirmText}
-          </button>
+          {!hideConfirm && (
+            <button
+              ref={confirmRef}
+              type="button"
+              data-testid="confirm-modal-confirm"
+              onClick={onConfirm}
+              disabled={busy || confirmDisabled}
+              className={`flex-1 rounded-lg px-4 py-3 font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${confirmClass}`}
+            >
+              {busy ? 'Working...' : confirmText}
+            </button>
+          )}
         </div>
       </div>
     </div>

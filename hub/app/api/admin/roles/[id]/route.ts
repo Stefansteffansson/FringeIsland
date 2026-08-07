@@ -38,8 +38,19 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
         ...detail.payload.template,
         instantiated_role_count: row?.instantiated_role_count ?? 0,
         group_template_refs: row?.group_template_refs ?? [],
+        // RD-B FEAT-H044 STORY-3: retirement state. The PC028 corrective puts
+        // it on the detail CONTRACT — which is what matters for ADR-U038,
+        // since a sibling Surface calls the RPC and never this route. Here it
+        // is composed from the list read as well, exactly as the blast-radius
+        // facts above are, so the admin page states "why publish is
+        // unavailable" from one client request either way.
+        retired_at: detail.payload.template.retired_at ?? row?.retired_at ?? null,
       },
       versions: detail.payload.versions,
+      // RD-B FEAT-H044 STORY-3: reach. No other read carries it — this key
+      // exists only once the PC028 corrective lands, and degrades to empty
+      // reach ("Not published") rather than crashing the page before then.
+      publications: detail.payload.publications ?? [],
       catalog: list.payload.catalog,
       generated_at: detail.payload.generated_at,
     });
