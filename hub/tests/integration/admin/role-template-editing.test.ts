@@ -283,6 +283,17 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
     expect(error).toBeNull();
     cloneId = (data as { id: string }).id;
 
+    // ADAPTED by RD-B FEAT-PC028 STORY-3 (repointed, not weakened): a clone
+    // now reaches nobody until it is PUBLISHED — offerability is enforced at
+    // the write door, not just filtered out of the picker. System templates
+    // stay exempt, which is why the rest of this suite is untouched. Published
+    // platform-wide so the pull-door and offer-read cells below behave exactly
+    // as they did before RD-B.
+    await runAdminSql(`
+      INSERT INTO public.role_template_publications (role_template_id, group_id)
+      VALUES ('${cloneId}', NULL)
+      ON CONFLICT DO NOTHING;`);
+
     const { data: row } = await admin
       .from('role_templates')
       .select('id, name, is_system')
@@ -336,7 +347,10 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
     expect(seedCheck[0].total).toBeGreaterThan(0);
     expect(seedCheck[0].system_count).toBe(seedCheck[0].total);
 
-    const { data: memberRead } = await fimClient.rpc('get_role_templates');
+    // ADAPTED by RD-B (RDB-1): repointed to the scoped offer read.
+    const { data: memberRead } = await fimClient.rpc('get_available_role_templates', {
+      p_group_id: groupId,
+    });
     const names = (memberRead as Array<{ name: string }>).map((t) => t.name);
     expect(names).toContain(cloneName);
   });

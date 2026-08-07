@@ -404,6 +404,17 @@ describe('FEAT-PC027 — provenance, retirement, group-side removal (RD-A)', () 
       `)) as Array<{ id: string }>;
       retirableTemplateId = rows[0].id;
       createdTemplateIds.push(retirableTemplateId);
+
+      // ADAPTED by RD-B FEAT-PC028 STORY-3 (repointed, not weakened):
+      // adoption now requires the template to be OFFERED to the group. This
+      // fixture is a clone, and clones reach nobody until published — system
+      // templates stay exempt, which is why every guideTemplateId adoption in
+      // this file is untouched. Published platform-wide so RD-A's cells below
+      // adopt it exactly as they did before.
+      await runAdminSql(`
+        INSERT INTO public.role_template_publications (role_template_id, group_id)
+        VALUES ('${retirableTemplateId}', NULL)
+        ON CONFLICT DO NOTHING;`);
       await runAdminSql(`
         WITH v AS (
           INSERT INTO public.role_template_versions (role_template_id, version_number, name, description)
@@ -471,7 +482,12 @@ describe('FEAT-PC027 — provenance, retirement, group-side removal (RD-A)', () 
 
     it('S3b: get_role_templates stops offering a retired template', async () => {
       const c = await asUser(steward);
-      const { data, error } = await c.rpc('get_role_templates');
+      // ADAPTED by RD-B (RDB-1): the zero-arg contract is dropped; the offer
+      // read is group-scoped now. The assertion is unchanged — a retired
+      // template is absent from what a Steward is offered.
+      const { data, error } = await c.rpc('get_available_role_templates', {
+        p_group_id: createdGroupIds[createdGroupIds.length - 1],
+      });
       expect(error).toBeNull();
       const ids = (data as Array<{ id: string }>).map((t) => t.id);
       expect(ids).not.toContain(retirableTemplateId);
@@ -509,7 +525,10 @@ describe('FEAT-PC027 — provenance, retirement, group-side removal (RD-A)', () 
       expect(stamp[0].retired_by).toBeNull();
 
       const c = await asUser(steward);
-      const { data } = await c.rpc('get_role_templates');
+      // ADAPTED by RD-B (RDB-1): same repoint, same assertion.
+      const { data } = await c.rpc('get_available_role_templates', {
+        p_group_id: createdGroupIds[createdGroupIds.length - 1],
+      });
       expect((data as Array<{ id: string }>).map((t) => t.id)).toContain(retirableTemplateId);
     }, 120_000);
 

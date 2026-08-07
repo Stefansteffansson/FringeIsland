@@ -34,11 +34,40 @@ export async function GET(
   const { id } = await params;
 
   try {
-    // Templates ride the response — platform vocabulary the picker needs,
-    // RLS-readable by any authenticated client (composed, not owned here).
+    // Templates ride the response — the picker needs them, and composing
+    // them here keeps it to one round-trip.
+    //
+    // RD-B FEAT-PC028: the offer is now GROUP-SCOPED, so it takes this
+    // route's group id. It is no longer "RLS-readable by any authenticated
+    // client" — the contract resolves the caller's `manage_roles` and filters
+    // by publication reach server-side, which is the point of the cycle.
+    // The offer is ADDITIVE to the fabric, so its refusal must not take the
+    // fabric down with it.
+    //
+    // Caught by the E2E fleet, and it was a real regression rather than a test
+    // artifact: RD-B's scoped read raises 42501 for a caller without
+    // `manage_roles`, where the old zero-arg catalogue was readable by any
+    // authenticated caller. Composed naively in the Promise.all below, that
+    // refusal rejected the whole route and the catch turned it into a 403 —
+    // so a "limited assigner" (holds `assign_roles`, not `manage_roles`) lost
+    // the ENTIRE roles panel, including their own roles and the assign
+    // control they are entitled to.
+    //
+    // Degrading to an empty offer is exactly the specified surface behaviour
+    // (FEAT-H044 STORY-1: the available-roles section is not rendered at all
+    // for members without `manage_roles`). ADR-U038 is satisfied — the RULE
+    // about who may see the offer stays in the contract, server-side; this is
+    // presentation composition, which is what a BFF route is for. A fabric
+    // failure still propagates untouched.
     const [fabric, templates] = await Promise.all([
       fetchGroupRoles(supabase, id),
-      fetchRoleTemplates(supabase),
+      fetchRoleTemplates(supabase, id).catch((err: unknown) => {
+        if ((err as { code?: string }).code === '42501') {
+          emitTelemetry('roles.offer_refused', { actor: userId, group: id });
+          return [];
+        }
+        throw err;
+      }),
     ]);
     emitTelemetry('roles.fabric', { actor: userId, group: id });
     return NextResponse.json({ fabric, templates });
