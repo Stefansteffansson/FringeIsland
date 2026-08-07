@@ -6,7 +6,7 @@ title: Role-template publication scope, group-scoped offer read, diff-on-copy co
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 ---
 
 **Cycle:** RD-B (role distribution, distribution) · **Pairs with:** [FEAT-H044](../../../products/hub/features/FEAT-H044-available-roles-view-and-diff-on-copy-ceremony.md)
