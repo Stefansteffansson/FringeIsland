@@ -102,7 +102,6 @@ const renderSection = (over: Partial<Parameters<typeof AvailableRolesSection>[0]
       templates={TEMPLATES}
       roles={ROLES}
       canManage
-      readOnly={false}
       onMutated={onMutated}
       {...over}
     />,
@@ -141,7 +140,9 @@ describe('FEAT-H044 STORY-1 — the available-roles section', () => {
     expect(screen.queryByTestId('available-role-entry')).not.toBeInTheDocument();
 
     await expand(user);
-    expect(screen.getAllByTestId('available-role-entry')).toHaveLength(4);
+    // ADAPTED by walk fix W-3 (ruled): 4 fixtures, one of which is
+    // adopted-and-current and is now deliberately absent. 3 remain.
+    expect(screen.getAllByTestId('available-role-entry')).toHaveLength(3);
     // The ADR-U043 placement: the scoped catalogue already rode the roles
     // payload, so expanding fetches nothing. No new request at first paint,
     // and none on open either.
@@ -150,23 +151,44 @@ describe('FEAT-H044 STORY-1 — the available-roles section', () => {
     expect(applyRoleTemplateUpdate).not.toHaveBeenCalled();
   });
 
-  it('renders the three states: Copy, current, Review update', async () => {
+  // ADAPTED by walk fix W-3 (ruled 2026-08-08). This cell used to assert that
+  // an adopted-and-current entry rendered with no button. It must now assert
+  // the entry is ABSENT — the section lists only what can be acted on. A ruled
+  // behaviour change, not a weakened assertion: the "current" state is still
+  // pinned, by its absence here and by `availableRoleState` at the unit tier.
+  it('lists only actionable entries: Copy and Review update, never adopted-and-current', async () => {
     const user = userEvent.setup();
     renderSection();
     await expand(user);
 
     const entries = screen.getAllByTestId('available-role-entry');
     const notAdopted = entries.find((e) => within(e).queryByText('Greeter Role Template'))!;
-    const current = entries.find((e) => within(e).queryByText('Guide Role Template'))!;
     const behind = entries.find((e) => within(e).queryByText('Steward Role Template'))!;
 
     expect(within(notAdopted).getByRole('button', { name: /^Copy$/ })).toBeInTheDocument();
 
-    expect(within(current).getByText(/up to date/i)).toBeInTheDocument();
-    expect(within(current).queryByRole('button')).not.toBeInTheDocument();
-
     expect(within(behind).getByRole('button', { name: /^Review update$/ })).toBeInTheDocument();
     expect(within(behind).getByText('v1 → v3')).toBeInTheDocument();
+
+    // The adopted-and-current one is gone entirely — not rendered mute.
+    expect(screen.queryByText('Guide Role Template')).not.toBeInTheDocument();
+    expect(screen.queryByText(/up to date/i)).not.toBeInTheDocument();
+  });
+
+  it('states "nothing new" when every offer is already adopted and current (W-3)', async () => {
+    // The state that was unreachable before the ruling: a settled group is
+    // offered the system templates and holds all of them. This is now the
+    // normal resting render, not dead code.
+    const user = userEvent.setup();
+    renderSection({
+      templates: TEMPLATES.filter((t) => t.id === 'tmpl-cur'),
+    });
+    await expand(user);
+
+    expect(screen.queryByTestId('available-role-entry')).not.toBeInTheDocument();
+    expect(screen.getByTestId('available-roles-empty')).toHaveTextContent(
+      /nothing new is offered to this group/i,
+    );
   });
 
   it('offers Review update on a copy whose version is unknown (RD-10)', async () => {
@@ -191,16 +213,74 @@ describe('FEAT-H044 STORY-1 — the available-roles section', () => {
     );
   });
 
-  it('renders read-only under the availability guard, with the reason stated', async () => {
+  it('expands, and rings, when landed on from a roles notice (W-1)', async () => {
+    // Expanding is part of the fix, not a nicety: scrolling to a COLLAPSED
+    // disclosure would land the member on the section and still show them no
+    // roles — half-solving the complaint that started this.
+    const scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollIntoView = scrollIntoView as unknown as () => void;
+
+    renderSection({ focus: true });
+
+    // No click: the entries are already in the tree.
+    expect(screen.getAllByTestId('available-role-entry').length).toBeGreaterThan(0);
+    expect(scrollIntoView).toHaveBeenCalled();
+    expect(screen.getByTestId('available-roles-section').className).toMatch(/ring-2/);
+  });
+
+  it('does not scroll-jack a member who cannot manage roles (W-1)', async () => {
+    const scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollIntoView = scrollIntoView as unknown as () => void;
+
+    renderSection({ focus: true, canManage: false });
+
+    expect(screen.queryByTestId('available-roles-section')).not.toBeInTheDocument();
+    expect(scrollIntoView).not.toHaveBeenCalled();
+  });
+
+  it('stays collapsed on an ordinary visit (W-1 fires only on the hint)', async () => {
+    renderSection();
+    expect(screen.queryByTestId('available-role-entry')).not.toBeInTheDocument();
+  });
+
+  it('names no holders honestly when the role is unheld (W-4)', async () => {
     const user = userEvent.setup();
-    renderSection({ readOnly: true });
+    renderSection({ roles: [{ ...ROLES[0], holder_count: 0 }] });
+    await expand(user);
+    const behind = screen
+      .getAllByTestId('available-role-entry')
+      .find((e) => within(e).queryByText('Steward Role Template'))!;
+    await user.click(within(behind).getByRole('button', { name: /^Review update$/ }));
+    const modal = await screen.findByTestId('confirm-modal');
+
+    const holders = await within(modal).findByTestId('diff-holders');
+    // Not "0 members hold this role. They keep the role…" — there is no "they".
+    expect(holders).toHaveTextContent(/no one holds this role yet/i);
+    expect(holders).not.toHaveTextContent(/they keep the role/i);
+  });
+
+  // INVERTED by walk fix W-2 (ruled 2026-08-08). This cell used to assert the
+  // section withdrew its acts in a resting group. It now asserts the opposite,
+  // because the neighbouring affordances (Add role / Edit grants / Delete)
+  // never did, and the substrate genuinely permits a `rest_group` holder to
+  // write. One panel must not take two postures on one permission.
+  it('offers its acts on `canManage` alone — no availability gating of its own (W-2)', async () => {
+    const user = userEvent.setup();
+    renderSection();
     await expand(user);
 
-    // The entries and their states still read — only the acts are withdrawn.
-    expect(screen.getAllByTestId('available-role-entry')).toHaveLength(4);
-    expect(screen.queryByRole('button', { name: /^Copy$/ })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /^Review update$/ })).not.toBeInTheDocument();
-    expect(screen.getByTestId('available-roles-readonly')).toBeInTheDocument();
+    // Scoped to their entries — a bare page-level `getByRole` is ambiguous
+    // here (two fixtures are 'behind'), and unscoped accessible-name selectors
+    // are the precise hazard this cycle's E2E sweep obligation exists for.
+    // Writing one in this file would have been a poor advertisement for it.
+    const entries = screen.getAllByTestId('available-role-entry');
+    const notAdopted = entries.find((e) => within(e).queryByText('Greeter Role Template'))!;
+    const behind = entries.find((e) => within(e).queryByText('Steward Role Template'))!;
+
+    expect(within(notAdopted).getByRole('button', { name: /^Copy$/ })).toBeInTheDocument();
+    expect(within(behind).getByRole('button', { name: /^Review update$/ })).toBeInTheDocument();
+    // The read-only notice is gone with the gating that produced it.
+    expect(screen.queryByTestId('available-roles-readonly')).not.toBeInTheDocument();
   });
 
   it('copies an unadopted template through the existing create door', async () => {

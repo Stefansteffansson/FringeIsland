@@ -6,7 +6,7 @@ title: Available-roles view, diff-on-copy ceremony, admin publish surface, and t
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 6-done
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
@@ -147,7 +147,16 @@ The available-roles section loads **behind an affordance**, not on the group-det
 
 The section is one read; the three-state render must not fan out to a per-entry call (the payload walk exists to prevent exactly that). The diff is read on ceremony open, not for every listed entry.
 
-## Implementation notes (2026-08-07 — all four stories `6-done`)
+> **REOPENED 2026-08-08 by the live walk.** This feature reached `6-done` with
+> **STORY-3's "publish to named groups" never built** — the contract, route and lib
+> all supported it; the UI had no picker, so the targeted publish that is RD-B's
+> whole point was unreachable. Stefan found it on his first click of the reach
+> section. STORY-4's *"each names its own group"* was also unmet: all three notices
+> said *"your group"*. Both are fixed; the feature returns to `6-done` when
+> migration `20260808120000` (the W-8 copy fix, **held at the schema gate**) is
+> applied. Findings and rulings: [RD-B walk findings](../../../planning/hub-v2/2026-08-07-rd-b-desk-walk-findings.md).
+
+## Implementation notes (2026-08-07 — all four stories built; walk fixes 2026-08-08)
 
 **Where the code went.** `hub/components/groups/AvailableRolesSection.tsx` (the section
 and the ceremony) · `hub/lib/groups/available-roles.ts` (the three-state logic, isolated
@@ -196,6 +205,34 @@ withdrawn → **the adopted copy survives untouched** (RD-2). Labelled **test-af
 proven non-vacuous by control: neutralising the section fails it at the toggle. That
 control also showed the permission-gated cell is `toHaveCount(0)`-shaped and therefore
 meaningless alone — the positive cell in the same file is what makes it bite.
+
+## Walk fixes (2026-08-08) — what the live walk changed
+
+Ten findings; six acted on. Full record and rulings in the
+[walk findings](../../../planning/hub-v2/2026-08-07-rd-b-desk-walk-findings.md).
+
+| | Fix | Shape |
+|---|---|---|
+| **W-1** | Roles notices now land on `?focus=roles`: the section **expands**, scrolls into view and rings once. Expanding is part of the fix — scrolling to a collapsed disclosure would still show no roles. | Reuses N-E's WS-4 mechanism |
+| **W-2** | The section's availability gating **removed**. `canManage` alone, exactly like Add role / Edit grants / Delete beside it. **Amends STORY-1's AC**, whose premise about the panel was false. | Ruled |
+| **W-3** | Adopted-and-current entries **hidden**; the section lists only what can be acted on, and the "nothing new is offered" line becomes the normal resting state instead of dead code. | Ruled |
+| **W-4** | The holder sentence no longer reads *"0 members hold this role. They keep the role…"* — at zero there is no "they". | — |
+| **W-5** | **Publish to named groups, built.** A searchable picker inside the house ceremony (`ReactNode` message + `confirmDisabled`, both already there from H039/H041); already-published groups shown as such rather than offered again. | AC was unbuilt |
+| **W-8** | The three notices name their group. Server-authored copy, so substrate-side: migration `20260808120000`, three literals, `g.name` interpolated. **Held at the schema gate.** | Ruled |
+
+**The lesson the fixes are built around.** W-5 and W-8 shared one root cause: a unit
+test passed by asserting a shape **the substrate never produces**, because the fixture
+was hand-authored. W-5's fixture invented a `publications` payload no door could create;
+W-8's invented two notice bodies naming different groups, which the server never wrote.
+Both green, both meaningless. The payload walk traces *keys* and never asks what the
+*value* reads like.
+
+Two rules now encoded in the suite: **when copy is server-authored, the copy check reads
+the migration's literal, never the component's fixture**; and **when a feature adds a
+write door, at least one test must reach the state through that door** — which is why
+`role-distribution.spec.ts` now signs an admin in and publishes through the picker
+rather than inserting the row, and why that test also finally verifies the scoping claim
+(a group not named is not offered the template).
 
 **ADR-U043: not triggered, and by a stronger route than planned.** The spec drew its
 budget against deferring a new read behind an affordance. In fact the scoped catalogue

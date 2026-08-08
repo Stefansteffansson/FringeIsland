@@ -6,7 +6,7 @@ title: Role-template publication scope, group-scoped offer read, diff-on-copy co
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 6-done
+maturity: 5-in-cycle
 ---
 
 > **REOPENED AND RECLOSED 2026-08-07 — STORY-8 (corrective).** This feature
@@ -174,6 +174,32 @@ Named before `4-ready`, per the N-E lesson — a keyword sweep finds what resemb
 **Why this is defensive depth, stated plainly.** Verified 2026-08-06: `create_engagement_group` filters neither branch by `retired_at` (`20260806170000:274-284`), *and* the hole is unreachable — the template-less branch selects only `rt.is_system`, and `admin_retire_role_template` refuses system templates outright (`20260806170000:~700`), while the template-chosen branch selects through `group_template_roles`, which registers only the four system templates (`20260804210000:10-13`).
 
 **And RD-9, honestly.** The settled row reads *"only platform-wide publications appear in the group-creation template chooser."* No publication row reaches that chooser at all: publications are `role_template ↔ group`, while creation-time instantiation runs through `group_template_roles`, which is `group_template ↔ role_template`. RD-9 rules against a door that does not exist, and RD-B as scoped does not open it — publish **offers**, it does not register anything anywhere (RD-2). The predicate is written anyway because it is one line and one cell against a hole that is one future junction row from live, on the precedent of RD-A's own rarely-reached `is_protected` guard. RD-9's intent is honoured; its stated mechanism is recorded as not existing.
+
+### STORY-9 (WALK FIX W-8): Every distribution notice names the group it is about
+
+- Given a member holding `manage_roles` in several groups, when a template is published to all of them, then each notice **names its own group** — they are not interchangeable sentences.
+- Given a retirement notice, when it renders, then it names the group **and** keeps the clause that stops it reading as a loss: *"…&lt;Group&gt;'s existing copy is unaffected."*
+- Given an update notice, when it renders, then it names the group the copy lives in.
+- Given any of the three, when it is dispatched, then the **fan-out is unchanged** — one notice per group where the recipient holds `manage_roles` (RDB-2). The volume was never the defect.
+
+**Found at the live walk, 2026-08-08.** A Steward of five groups received five identical
+notices reading *"…is now available to copy into **your group**."* The rows were genuinely
+about five different groups — only the body was anonymous. FEAT-H044 STORY-4's AC says the
+opposite in as many words, and the recipient had to guess.
+
+Copy is server-authored (the V3 surfaces law), so the fix is here rather than at the
+surface: `20260808120000` re-issues the three dispatching functions with byte-identical
+signatures and changes nothing but the body literal. `g.name` was already in scope in all
+three — each INSERT selects from `public.groups g` and already emits `g.id` — so no JOIN
+is added and `DISTINCT` semantics are unchanged.
+
+**Why the tests did not catch it, which is the part worth keeping.** The unit cell that
+was meant to cover this hand-authored two bodies naming different groups and asserted the
+surface rendered them distinctly. It does. The server never wrote them. **A component test
+can prove the surface renders what it is given; it can never prove the server gives it
+that.** The rule earned: when copy is server-authored, the copy check reads *the
+migration's literal*. Pinned now in the integration suite (W8a–W8d) against the server's
+own output.
 
 ### STORY-8 (CORRECTIVE): The admin detail read carries reach and retirement
 

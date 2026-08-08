@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { Suspense, useCallback, useEffect, useState } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { AppShell } from '@/components/shell/AppShell';
 import { LoadingState } from '@/components/ui/LoadingState';
@@ -50,6 +50,18 @@ import type { GroupEnrollmentSummary } from '@/lib/journeys/queries';
  * mutation re-reads all three together). The fabric and permissions reads
  * fail panel-locally (STORY-1: the rest of the page stands).
  */
+/**
+ * RD-B walk fix W-1 (FEAT-H044 STORY-4) — the landing hint reader.
+ *
+ * Its own component so `useSearchParams` sits behind a Suspense boundary and
+ * cannot bail the whole page out of static rendering. Mirrors
+ * `FocusedInvitations` on `/groups`, which N-E introduced for the same reason.
+ */
+function FocusableRolesPanel(props: React.ComponentProps<typeof RolesPanel>) {
+  const search = useSearchParams();
+  return <RolesPanel {...props} focusAvailableRoles={search.get('focus') === 'roles'} />;
+}
+
 export default function GroupDetailPage() {
   const { user, identity, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -285,14 +297,31 @@ export default function GroupDetailPage() {
           {/* FEAT-H026 — the group forum (COM-5/6a/6b/7/14). Failure-isolated
               slice; post/reply/remove render only on the platform's grants. */}
           <GroupForumSection groupId={groupId} />
-          <RolesPanel
-            groupId={groupId}
-            fabric={rolesData?.fabric ?? null}
-            templates={rolesData?.templates ?? []}
-            error={rolesError}
-            onMutated={loadAll}
-            groupStatus={group.status}
-          />
+          {/* RD-B walk fix W-1: a roles notice lands on `?focus=roles`, and the
+              available-roles section expands, scrolls into view and rings once.
+              The param is read inside its own Suspense boundary (the
+              useSearchParams CSR-bailout rule — the /groups precedent) so the
+              rest of the page never waits on it, and the unfocused panel is the
+              fallback rather than a spinner. */}
+          <Suspense
+            fallback={
+              <RolesPanel
+                groupId={groupId}
+                fabric={rolesData?.fabric ?? null}
+                templates={rolesData?.templates ?? []}
+                error={rolesError}
+                onMutated={loadAll}
+              />
+            }
+          >
+            <FocusableRolesPanel
+              groupId={groupId}
+              fabric={rolesData?.fabric ?? null}
+              templates={rolesData?.templates ?? []}
+              error={rolesError}
+              onMutated={loadAll}
+            />
+          </Suspense>
           <InvitationsPanel
             groupId={groupId}
             permissions={permissions}
