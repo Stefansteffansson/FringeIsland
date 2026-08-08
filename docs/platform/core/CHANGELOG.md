@@ -2,7 +2,7 @@
 
 Substrate-level changes to Platform Core (Infrastructure, Identity, Organisation, Governance). These are developer-facing platform changes, not end-user features; each entry links the feature spec with the full implementation notes.
 
-## 2026-08-08 — WALK FIX W-8: the distribution notices name their group ([FEAT-PC028](./features/FEAT-PC028-role-template-publication-scoped-offer-and-diff-on-copy-contracts.md) STORY-9, Cycle RD-B) — **HELD AT THE SCHEMA GATE**
+## 2026-08-08 — WALK FIX W-8: the distribution notices name their group ([FEAT-PC028](./features/FEAT-PC028-role-template-publication-scoped-offer-and-diff-on-copy-contracts.md) STORY-9, Cycle RD-B) — gate closed + applied 2026-08-08
 
 - **All three notices said "your group" and never named it.** Found at the live walk: a Steward holding `manage_roles` in five groups received five identical notices. Verified at row level — the five rows were genuinely *about* five different groups; only the body was anonymous. FEAT-H044 STORY-4's AC says the opposite in as many words.
 - **Migration `20260808120000`** re-issues `admin_publish_role_template`, `admin_retire_role_template` and `admin_set_role_template_default_version` with **byte-identical signatures** (COR-A; ACL preserved by create-or-replace) and changes nothing but the body literal. `g.name` was already in scope in all three — each INSERT selects from `public.groups g` and already emits `g.id` — so **no JOIN is added and `DISTINCT` semantics are unchanged**. No schema change, no grant, no RLS.

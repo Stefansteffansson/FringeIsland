@@ -6,7 +6,7 @@ title: Available-roles view, diff-on-copy ceremony, admin publish surface, and t
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 

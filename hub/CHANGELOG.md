@@ -11,7 +11,7 @@ Changes from walking yesterday's release end to end.
 - **A resting group no longer half-freezes.** You could still add a role and edit its permissions by hand, but not copy one or take an update — the same permission, two different answers, in one panel. Now it behaves consistently.
 - **The confirmation stops saying odd things about nobody.** A role nobody holds used to read "0 members hold this role. They keep the role, and their permissions change with it."
 - *Admin:* **you can now publish a role to specific groups**, not only to every group at once — which was the point of all this, and was missing. Search, tick the groups, publish; groups that already have it are shown as such rather than offered again.
-- *Coming with the next release:* the three bell notices will name the group they're about. Right now they all say "your group", which is no help if you steward several.
+- **The bell notices now name the group they're about.** They all used to say "your group", which was no help at all if you steward several — five groups meant five identical notices. Now each one names its own, including the retirement notice, which still says plainly that that group's existing copy is unaffected.
 
 ## 2026-08-07 — See what's available to your group, and take an update on your own terms ([FEAT-H044](../docs/products/hub/features/FEAT-H044-available-roles-view-and-diff-on-copy-ceremony.md))
 

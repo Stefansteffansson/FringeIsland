@@ -325,6 +325,40 @@ Fix options, cheapest first: have the cell delete its own dispatched notices in 
 publishing platform-wide only where the fan-out is bounded. **The cell must keep proving
 the NULL-row uniqueness** — it is the reason the partial unique index exists.
 
+> **PROMOTED 2026-08-09 — this is not tidiness. It was breaking the suite.**
+>
+> After the W-8 apply, the full integration run came back **1109/1112**: three assertion
+> failures across two `tests/integration/notifications` suites. The measurement matrix:
+>
+> | Run | Result |
+> |---|---|
+> | `tests/integration/notifications` **alone** | **120/120 clean** |
+> | each failing suite alone | **51/51 clean** |
+> | `groups` + `notifications` | 1 failure — **a different suite again** |
+> | full fleet | 3 failures, two suites |
+> | `groups` + `notifications`, **after the teardown below** | **507/507 clean** |
+>
+> The victim **moves between runs** and every suite is green alone, which is the profile
+> of a volume- or timing-sensitive emission assertion rather than a broken test. The
+> failing cells are all PAIR-shaped — *"X emits and Y does not"* — i.e. exactly the
+> assertions a flood of concurrent notification inserts and their hint triggers would
+> disturb.
+>
+> **Attribution, stated honestly: partly mine.** The RD-B suite's notification churn grew
+> this session — C3's platform-wide publish (~427 rows) *plus* the four new W8 cells
+> publishing, retiring and dispatching. The clean full run this morning had C3 but not the
+> W8 cells. So I cannot fence this as "found, not caused"; the honest statement is that I
+> added to a load the directory was already carrying badly.
+>
+> **Fix applied:** the suite now deletes its own dispatched notices in `afterAll`. One
+> clean run each way is **supporting evidence, not proof** — the profile is probabilistic
+> (`TASK-INT-04` measured a sibling at 2 failures in 5), so this wants watching across
+> several fleets before anyone calls it closed.
+>
+> **Still open underneath it:** the emission assertions in that directory are sensitive to
+> notification volume at all. Cleaning up one suite's rows treats this instance; it does
+> not make those cells robust. Worth its own look.
+
 ## W-4 — Minor: the holder sentence reads oddly at zero
 
 `AvailableRolesSection.tsx` renders `0 members hold this role. They keep the role, and

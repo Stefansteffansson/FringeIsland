@@ -36,7 +36,7 @@ const row = (over: Partial<NotificationRow> = {}): NotificationRow => ({
   kind: 'role_template_published',
   category: 'roles',
   title: 'New role available',
-  body: 'The role "Greeter" is now available to copy into your group.',
+  body: 'The role "Greeter" is now available to copy into Willow Circle.',
   group_id: 'grp-1',
   created_at: '2026-08-07T09:00:00+00:00',
   is_read: false,
@@ -55,7 +55,7 @@ describe('FEAT-H044 STORY-4 — the three role-distribution notices', () => {
   it('renders the published notice as news, with no accept/decline affordance', () => {
     render(<NotificationItem row={row()} />);
     expect(
-      screen.getByText('The role "Greeter" is now available to copy into your group.'),
+      screen.getByText('The role "Greeter" is now available to copy into Willow Circle.'),
     ).toBeInTheDocument();
     // RD-7: no answerable affordance anywhere on the row.
     expect(screen.queryByRole('button', { name: /accept|decline|respond/i })).not.toBeInTheDocument();
@@ -69,13 +69,13 @@ describe('FEAT-H044 STORY-4 — the three role-distribution notices', () => {
           kind: 'role_template_updated',
           title: 'Role update available',
           body:
-            'A newer version of the role "Guide" is available. Review the changes before copying them into your group.',
+            'A newer version of the role "Guide" is available. Review the changes before copying them into Willow Circle.',
         })}
       />,
     );
     expect(
       screen.getByText(
-        'A newer version of the role "Guide" is available. Review the changes before copying them into your group.',
+        'A newer version of the role "Guide" is available. Review the changes before copying them into Willow Circle.',
       ),
     ).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /accept|decline|respond/i })).not.toBeInTheDocument();
@@ -89,7 +89,7 @@ describe('FEAT-H044 STORY-4 — the three role-distribution notices', () => {
           kind: 'role_template_retired',
           title: 'Role no longer offered',
           body:
-            'The role "Observer" is no longer offered by the platform. Your group\'s existing copy is unaffected.',
+            'The role "Observer" is no longer offered by the platform. Willow Circle\'s existing copy is unaffected.',
         })}
       />,
     );
@@ -98,7 +98,7 @@ describe('FEAT-H044 STORY-4 — the three role-distribution notices', () => {
     // frightening.
     expect(
       screen.getByText(
-        'The role "Observer" is no longer offered by the platform. Your group\'s existing copy is unaffected.',
+        'The role "Observer" is no longer offered by the platform. Willow Circle\'s existing copy is unaffected.',
       ),
     ).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /accept|decline|respond/i })).not.toBeInTheDocument();

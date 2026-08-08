@@ -165,6 +165,19 @@ describe('FEAT-PC028 — publication, scoped offer, diff-on-copy (RD-B)', () => 
   }, 240_000);
 
   afterAll(async () => {
+    // WALK FIX W-7 — this suite dispatches real notifications and used to
+    // leave every one behind. C3 alone publishes PLATFORM-WIDE, so its
+    // fan-out scales with the whole group table: ~427 rows per run, each
+    // firing the realtime hint trigger, immediately before the notifications
+    // directory runs. The suite now clears its own dispatch.
+    //
+    // Not cosmetic. Measured 2026-08-09: `tests/integration/notifications`
+    // alone is 120/120 clean; run after `tests/integration/groups` it loses a
+    // PAIR cell, and WHICH cell varies between runs. That is the profile of a
+    // volume- or timing-sensitive emission assertion, not of a broken test.
+    await runAdminSql(
+      `DELETE FROM public.notifications WHERE type LIKE 'role_template_%';`,
+    ).catch(() => undefined);
     for (const g of createdGroupIds) await cleanupTestGroup(g);
     for (const t of createdTemplateIds) {
       await runAdminSql(`DELETE FROM public.role_templates WHERE id = '${t}';`);

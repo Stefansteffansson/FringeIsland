@@ -6,7 +6,7 @@ title: Role-template publication scope, group-scoped offer read, diff-on-copy co
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 ---
 
 > **REOPENED AND RECLOSED 2026-08-07 — STORY-8 (corrective).** This feature
