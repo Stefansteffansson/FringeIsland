@@ -121,6 +121,60 @@ describe('FEAT-H014 — RolesPanel (STORY-1/2)', () => {
     expect(within(greeter).getByText('View member list')).toBeInTheDocument();
   });
 
+  // ==========================================================================
+  // WALK FIX W-9 (RD-A FEAT-H043 STORY-4) — a guaranteed refusal is not offered.
+  //
+  // Found at the RD-B live walk: a Steward opened Delete on a held role, the
+  // ceremony correctly warned it would fail, she confirmed, and the contract
+  // returned the same sentence as an error. Nothing was broken — but
+  // `holder_count` rides the fabric and is fresh, so the surface KNEW the click
+  // would fail and offered it anyway.
+  //
+  // Stefan ruled this exact pattern at the ADM-E walk (WA-1: guaranteed no-ops
+  // disable) and ruled it again here. `ConfirmModal.confirmDisabled` has
+  // existed since H041 for precisely this.
+  //
+  // Scope: RD-A's behaviour, fixed under RD-A's story. RD-B only made it
+  // visible by putting a careful ceremony beside a careless one.
+  // ==========================================================================
+  it('W-9: a held role cannot be confirmed for removal — the obstacle disables the act', async () => {
+    const user = userEvent.setup();
+    render(
+      <RolesPanel groupId="grp-1" fabric={FABRIC} templates={TEMPLATES} error={null} onMutated={onMutated} />,
+    );
+    // 'Steward Role Template' is held by 1 member in the fixture.
+    const steward = screen
+      .getAllByTestId('role-card')
+      .find((c) => within(c).queryByText('Steward Role Template'))!;
+    await user.click(within(steward).getByTestId('delete-role-button'));
+
+    const modal = await screen.findByTestId('confirm-modal');
+    // The obstacle is still stated — the warning was never the problem.
+    expect(modal).toHaveTextContent(/currently held by 1 member/i);
+    // ...and the act it guarantees will fail is not offered.
+    expect(within(modal).getByTestId('confirm-modal-confirm')).toBeDisabled();
+    // Cancel stays live: the member must always be able to leave.
+    expect(within(modal).getByTestId('confirm-modal-cancel')).toBeEnabled();
+    expect(deleteGroupRole).not.toHaveBeenCalled();
+  });
+
+  it('W-9: an unheld role is still removable — the guard is the holder count, not the ceremony', async () => {
+    const user = userEvent.setup();
+    render(
+      <RolesPanel groupId="grp-1" fabric={FABRIC} templates={TEMPLATES} error={null} onMutated={onMutated} />,
+    );
+    // 'Greeter' has 0 holders.
+    const greeter = screen
+      .getAllByTestId('role-card')
+      .find((c) => within(c).queryByText('Greeter'))!;
+    await user.click(within(greeter).getByTestId('delete-role-button'));
+
+    const modal = await screen.findByTestId('confirm-modal');
+    expect(within(modal).getByTestId('confirm-modal-confirm')).toBeEnabled();
+    await user.click(within(modal).getByTestId('confirm-modal-confirm'));
+    await waitFor(() => expect(deleteGroupRole).toHaveBeenCalledWith('grp-1', 'role-c'));
+  });
+
   // RD-A FEAT-H043 STORY-1 — the COPY CHECK (quote-bearing AC). A reviewer
   // comparing the spec to the screen compares these exact strings, so they are
   // asserted against the render, not against the payload keys.

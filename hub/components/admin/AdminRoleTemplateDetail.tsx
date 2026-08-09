@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import type { AdminRoleTemplateDetailPayload, AdminRoleTemplateVersion } from '@/lib/admin/roles';
 import type { AdminGroupRow } from '@/lib/admin/groups';
+import type { PublicationReachPreview } from '@/lib/admin/roles';
 import {
   reachSummary,
   namedPublications,
@@ -47,6 +48,38 @@ type Ceremony =
 
 type Outcome = { tone: 'error' | 'success'; text: string } | null;
 
+/**
+ * RD-B walk fix W-6 — the blast radius, stated before the click.
+ *
+ * RD-B's discipline is consequence-before-the-click, and the Steward's diff
+ * ceremony honours it: it names the holder count and says what happens to
+ * those people. The admin's publish ceremony said nothing, though its reach is
+ * two orders of magnitude larger and cannot be undone — unpublish withdraws
+ * the OFFER, while the notices correctly stand, because they recorded
+ * something that was true when sent.
+ *
+ * Renders nothing while the preview is absent: a missing number degrades the
+ * ceremony to what it was, never blocks the publish. The count is an aid, not
+ * a gate.
+ */
+function BlastRadius({ preview }: { preview: PublicationReachPreview | null }) {
+  if (!preview) return null;
+  const { recipient_count: people, group_count: groups } = preview;
+  if (people === 0) {
+    return (
+      <span data-testid="publish-blast-radius" className="mt-2 block text-xs text-gray-600">
+        No one is notified — no group in reach has a member who can manage roles.
+      </span>
+    );
+  }
+  return (
+    <span data-testid="publish-blast-radius" className="mt-2 block text-xs text-amber-700">
+      This will notify {people} {people === 1 ? 'steward' : 'stewards'} across {groups}{' '}
+      {groups === 1 ? 'group' : 'groups'}. Those notices cannot be withdrawn.
+    </span>
+  );
+}
+
 const computeDiff = (from: string[], to: string[]) => ({
   added: to.filter((name) => !from.includes(name)).sort(),
   removed: from.filter((name) => !to.includes(name)).sort(),
@@ -66,9 +99,32 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
   const [groupOptionsError, setGroupOptionsError] = useState<string | null>(null);
   const [groupQuery, setGroupQuery] = useState('');
   const [picked, setPicked] = useState<Set<string>>(new Set());
+  // RD-B walk fix W-6 — the blast radius, read before the click.
+  const [reachPreview, setReachPreview] = useState<PublicationReachPreview | null>(null);
+
+  const loadReachPreview = useCallback(
+    async (groupIds: string[] | null) => {
+      setReachPreview(null);
+      // An empty selection is not a question the contract will answer (22023),
+      // and a blank is the correct render for "nothing chosen yet".
+      if (groupIds !== null && groupIds.length === 0) return;
+      const qs = groupIds === null ? 'scope=all' : `groups=${groupIds.join(',')}`;
+      try {
+        const res = await fetch(`/api/admin/roles/${templateId}/publish/preview?${qs}`);
+        if (!res.ok) return;
+        const data = (await res.json()) as { preview: PublicationReachPreview };
+        setReachPreview(data.preview);
+      } catch {
+        // A missing preview degrades to the ceremony without it — never to a
+        // blocked publish. The number is an aid, not a gate.
+      }
+    },
+    [templateId],
+  );
 
   const openGroupPicker = async () => {
     setPicked(new Set());
+    setReachPreview(null);
     setGroupQuery('');
     setGroupOptions(null);
     setGroupOptionsError(null);
@@ -351,7 +407,12 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
               !reachBlocked && (
                 <>
                   <button
-                    onClick={() => setCeremony({ kind: 'publish-all' })}
+                    onClick={() => {
+                      setReachPreview(null);
+                      setCeremony({ kind: 'publish-all' });
+                      // W-6: read the blast radius as the ceremony opens.
+                      void loadReachPreview(null);
+                    }}
                     className="rounded border border-indigo-300 px-3 py-1 text-sm text-indigo-700"
                   >
                     Publish to all groups
@@ -557,6 +618,8 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
                               if (e.target.checked) next.add(g.id);
                               else next.delete(g.id);
                               setPicked(next);
+                              // W-6: preview exactly the selection being made.
+                              void loadReachPreview([...next]);
                             }}
                           />
                           <span>{g.name}</span>
@@ -564,9 +627,8 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
                       ),
                     )}
                 </div>
-                <p className="mt-2 text-xs text-gray-500">
-                  {picked.size} selected. Each Steward who can manage roles there is told.
-                </p>
+                <p className="mt-2 text-xs text-gray-500">{picked.size} selected.</p>
+                <BlastRadius preview={reachPreview} />
               </>
             )}
           </div>
@@ -596,9 +658,15 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
         }
         title={ceremony?.kind === 'publish-all' ? 'Publish to all groups' : 'Withdraw the offer'}
         message={
-          ceremony?.kind === 'publish-all'
-            ? `Offers "${template.name}" to every group. Stewards choose whether to copy it — publishing never adds a role to any group.`
-            : ceremony?.kind === 'unpublish-all'
+          ceremony?.kind === 'publish-all' ? (
+            <span className="block text-left">
+              <span className="block">
+                Offers &ldquo;{template.name}&rdquo; to every group. Stewards choose whether to
+                copy it — publishing never adds a role to any group.
+              </span>
+              <BlastRadius preview={reachPreview} />
+            </span>
+          ) : ceremony?.kind === 'unpublish-all'
               ? `Stops offering "${template.name}" to all groups. Copies groups have already adopted are unaffected and keep working.`
               : ceremony?.kind === 'unpublish-group'
                 ? `Stops offering "${template.name}" to ${ceremony.groupName ?? 'this group'}. Their existing copy, if they made one, is unaffected and keeps working.`
@@ -610,6 +678,7 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
         onConfirm={() => {
           if (ceremony?.kind === 'publish-all') {
             void mutate('publish', { group_ids: null }, 'Published to all groups.');
+
           } else if (ceremony?.kind === 'unpublish-all') {
             void mutate('publish', { group_ids: null }, 'Offer withdrawn.', {
               method: 'DELETE',

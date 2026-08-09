@@ -287,6 +287,14 @@ export function RolesPanel({
         confirmText="Remove"
         variant="danger"
         busy={busy}
+        // WALK FIX W-9 (2026-08-09) — a guaranteed refusal is not offered as a
+        // button. `holder_count` rides the fabric and is fresh, so a held role
+        // is a certain 409; offering Confirm meant warning the Steward, taking
+        // the click, and returning the same sentence as an error. Stefan ruled
+        // this pattern at the ADM-E walk (WA-1: guaranteed no-ops disable) and
+        // again at the RD-B walk. The obstacle is still STATED in the message —
+        // the warning was never the problem — and Cancel stays live.
+        confirmDisabled={(deleteTarget?.holder_count ?? 0) > 0}
         onConfirm={() => void confirmDelete()}
         onCancel={() => {
           if (!busy) setDeleteTarget(null);

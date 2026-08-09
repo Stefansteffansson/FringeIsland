@@ -199,6 +199,32 @@ export async function unretireRoleTemplate(
   return { refused };
 }
 
+/** RD-B walk fix W-6 — how far a publish would reach, before it is made. */
+export type PublicationReachPreview = {
+  group_count: number;
+  recipient_count: number;
+  notice_count: number;
+};
+
+/**
+ * RD-B walk fix W-6 — preview a publish's blast radius.
+ *
+ * Read-only and admin-gated. `groupIds === null` previews platform-wide,
+ * matching `publishRoleTemplate`'s own semantics, so the surface can preview
+ * exactly the act it is about to offer.
+ */
+export async function previewPublicationReach(
+  client: SupabaseClient,
+  templateId: string,
+  groupIds: string[] | null,
+): Promise<{ preview: PublicationReachPreview | null; refused: boolean }> {
+  const { data, refused } = await call(client, 'admin_preview_publication_reach', {
+    p_role_template_id: templateId,
+    p_group_ids: groupIds,
+  });
+  return { preview: (data as PublicationReachPreview) ?? null, refused };
+}
+
 /**
  * RD-B FEAT-H044 STORY-3 / FEAT-PC028 STORY-1 — publish OFFERS a template.
  *

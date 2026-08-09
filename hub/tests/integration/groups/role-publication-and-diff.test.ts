@@ -1152,6 +1152,109 @@ describe('FEAT-PC028 — publication, scoped offer, diff-on-copy (RD-B)', () => 
   });
 
   // ==========================================================================
+  // WALK FIX W-6 — the publish ceremony can state its blast radius.
+  // RED until 20260809100000 is applied.
+  //
+  // Ruled 2026-08-09. The Steward's diff ceremony names its holder count; the
+  // admin's publish ceremony named nothing, though its reach is two orders of
+  // magnitude larger and the notices cannot be withdrawn.
+  //
+  // W6c is the cell that matters: a preview whose predicate drifts from the act
+  // it previews is WORSE than no preview, because it states a confident number
+  // that is wrong. So it previews, publishes, and compares.
+  // ==========================================================================
+  describe('WALK FIX W-6 — admin_preview_publication_reach', () => {
+    const preview = async (c: SupabaseClient, groupIds: string[] | null) => {
+      const { data, error } = await c.rpc('admin_preview_publication_reach', {
+        p_role_template_id: clonedTemplateId,
+        p_group_ids: groupIds,
+      });
+      if (error) throw new Error(`preview: ${error.message}`);
+      return data as { group_count: number; recipient_count: number; notice_count: number };
+    };
+
+    it('W6a: a targeted preview counts only the named groups', async () => {
+      const a = await asUser(adminUser);
+      const r = await preview(a, [groupA]);
+      expect(r.group_count).toBe(1);
+      expect(r.recipient_count).toBeGreaterThan(0);
+      // One Steward in one group = one notice; the pair count never undercounts
+      // a recipient who holds manage_roles in several groups.
+      expect(r.notice_count).toBeGreaterThanOrEqual(r.recipient_count);
+    }, 180_000);
+
+    it('W6b: a platform-wide preview is at least as large as any targeted one', async () => {
+      const a = await asUser(adminUser);
+      const one = await preview(a, [groupA]);
+      const all = await preview(a, null);
+      expect(all.group_count).toBeGreaterThanOrEqual(one.group_count);
+      expect(all.notice_count).toBeGreaterThanOrEqual(one.notice_count);
+    }, 180_000);
+
+    it('W6c: THE MIRROR — the preview equals what publishing actually creates', async () => {
+      // The whole reason this contract can be trusted. If anyone edits the
+      // publish predicate without editing the preview's, this fails.
+      await clearPublications();
+      await runAdminSql(`DELETE FROM public.notifications WHERE type LIKE 'role_template_%';`);
+      const a = await asUser(adminUser);
+
+      const predicted = await preview(a, [groupA, groupB]);
+      const { error } = await a.rpc('admin_publish_role_template', {
+        p_role_template_id: clonedTemplateId,
+        p_group_ids: [groupA, groupB],
+      });
+      expect(error).toBeNull();
+
+      const actual = (await runAdminSql(
+        `SELECT count(*)::int AS notices,
+                count(DISTINCT recipient_group_id)::int AS recipients,
+                count(DISTINCT group_id)::int AS groups
+           FROM public.notifications
+          WHERE type = 'role_template_published';`,
+      )) as Array<{ notices: number; recipients: number; groups: number }>;
+
+      expect(actual[0].notices).toBe(predicted.notice_count);
+      expect(actual[0].recipients).toBe(predicted.recipient_count);
+      expect(actual[0].groups).toBe(predicted.group_count);
+    }, 240_000);
+
+    it('W6d: an empty array is refused rather than read as platform-wide', async () => {
+      // Same refusal as the write door. Reading [] as "everyone" would preview
+      // an act vastly larger than the one asked about.
+      const a = await asUser(adminUser);
+      const { error } = await a.rpc('admin_preview_publication_reach', {
+        p_role_template_id: clonedTemplateId,
+        p_group_ids: [],
+      });
+      expect(error).not.toBeNull();
+      expect(error!.code).not.toBe('PGRST202'); // not vacuous: absence refuses everyone
+      expect(error!.code).toBe('22023');
+    }, 180_000);
+
+    it('W6e: it writes nothing — a preview that publishes would be a trap', async () => {
+      await clearPublications();
+      const a = await asUser(adminUser);
+      await preview(a, null);
+      const rows = (await runAdminSql(
+        `SELECT count(*)::int AS n FROM public.role_template_publications
+          WHERE role_template_id = '${clonedTemplateId}';`,
+      )) as Array<{ n: number }>;
+      expect(rows[0].n).toBe(0);
+    }, 180_000);
+
+    it('W6f: a non-admin cannot read the platform-wide reach', async () => {
+      const c = await asUser(steward);
+      const { error } = await c.rpc('admin_preview_publication_reach', {
+        p_role_template_id: clonedTemplateId,
+        p_group_ids: null,
+      });
+      expect(error).not.toBeNull();
+      expect(error!.code).not.toBe('PGRST202');
+      expect(error!.code).toBe('42501');
+    }, 180_000);
+  });
+
+  // ==========================================================================
   // CORRECTIVE — the widening the payload walk committed to and the migration
   // omitted. RED until 20260807140000 is applied.
   //

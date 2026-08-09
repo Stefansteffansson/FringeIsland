@@ -59,11 +59,21 @@ const GROUPS = [
   { id: 'grp-3', name: 'Kiln Society', group_type: 'engagement', status: 'active' },
 ];
 
+/** RD-B walk fix W-6 — what the blast-radius preview returns. */
+const PREVIEW = { group_count: 425, recipient_count: 223, notice_count: 427 };
+
 /** Every GET returns the payload; every mutation succeeds unless overridden. */
 const wireFetch = (payload: unknown, mutation?: { ok: boolean; error?: string }) => {
   fetchMock.mockImplementation((url: unknown, init?: unknown) => {
     const method = (init as { method?: string } | undefined)?.method ?? 'GET';
     if (method === 'GET') {
+      if (String(url).includes('/publish/preview')) {
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          json: async () => ({ preview: PREVIEW }),
+        } as Response);
+      }
       // The picker's own read — a different door from the template detail.
       if (String(url).includes('/api/admin/groups')) {
         return Promise.resolve({
@@ -196,6 +206,73 @@ describe('FEAT-H044 STORY-3 — the reach section', () => {
     await user.click(within(section).getByRole('button', { name: /specific groups/i }));
     return screen.findByTestId('confirm-modal');
   };
+
+  // ==========================================================================
+  // WALK FIX W-6 — the ceremony states its blast radius before the click.
+  //
+  // RD-B's discipline is consequence-before-the-click, and the Steward's diff
+  // ceremony honours it with its holder count. The admin's publish ceremony —
+  // reach two orders of magnitude larger, and irreversible, because unpublish
+  // withdraws the OFFER while the notices correctly stand — said nothing.
+  // ==========================================================================
+  it('W6: the platform-wide ceremony names who it will notify, and that it cannot be undone', async () => {
+    wireFetch(basePayload());
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const user = userEvent.setup();
+    const section = await screen.findByTestId('reach-section');
+    await user.click(within(section).getByRole('button', { name: /^Publish to all groups$/i }));
+
+    const modal = await screen.findByTestId('confirm-modal');
+    const radius = await within(modal).findByTestId('publish-blast-radius');
+    expect(radius).toHaveTextContent(/223/);
+    expect(radius).toHaveTextContent(/425/);
+    // The irreversibility is the half an admin cannot infer from the numbers.
+    expect(radius).toHaveTextContent(/cannot be withdrawn|can't be withdrawn/i);
+
+    const read = fetchMock.mock.calls.map((c) => String(c[0])).find((u) => u.includes('/publish/preview'));
+    expect(read).toContain('scope=all');
+  });
+
+  it('W6: the targeted ceremony previews only the groups actually chosen', async () => {
+    wireFetch(basePayload());
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const user = userEvent.setup();
+    const section = await screen.findByTestId('reach-section');
+    await user.click(within(section).getByRole('button', { name: /specific groups/i }));
+    const modal = await screen.findByTestId('confirm-modal');
+    await within(modal).findByTestId('group-option-grp-1');
+
+    await user.click(within(modal).getByTestId('group-option-grp-1'));
+
+    await waitFor(() => {
+      const read = fetchMock.mock.calls
+        .map((c) => String(c[0]))
+        .find((u) => u.includes('/publish/preview') && u.includes('groups='));
+      expect(read).toContain('groups=grp-1');
+    });
+    expect(await within(modal).findByTestId('publish-blast-radius')).toHaveTextContent(/223/);
+  });
+
+  // GREEN BEFORE THE FEATURE EXISTED — nothing to find is not the same as
+  // correctly withheld. Labelled rather than counted as red-first; it became
+  // load-bearing the moment the preview landed, and now fails if an empty
+  // selection is previewed (which the contract refuses with 22023 anyway).
+  it('W6: nothing is previewed before a group is chosen', async () => {
+    // Previewing an empty selection would ask the contract a question it
+    // refuses (22023) and put an error where a blank is correct.
+    wireFetch(basePayload());
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const user = userEvent.setup();
+    const section = await screen.findByTestId('reach-section');
+    await user.click(within(section).getByRole('button', { name: /specific groups/i }));
+    const modal = await screen.findByTestId('confirm-modal');
+    await within(modal).findByTestId('group-option-grp-1');
+
+    expect(within(modal).queryByTestId('publish-blast-radius')).not.toBeInTheDocument();
+    expect(
+      fetchMock.mock.calls.map((c) => String(c[0])).some((u) => u.includes('/publish/preview')),
+    ).toBe(false);
+  });
 
   it('W5: offers a targeted publish beside the platform-wide one', async () => {
     wireFetch(basePayload());

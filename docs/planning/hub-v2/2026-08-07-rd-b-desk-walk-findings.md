@@ -265,6 +265,19 @@ group is built on. The substrate protects against lockout (the only-definer guar
 last-Steward invariant), so nothing unsafe can happen. It is a question of whether the
 affordance should be there, not of whether it is dangerous.
 
+> **RULED 2026-08-09: disable it, state the reason — and leave the built-in roles alone.**
+> When a role is held, Confirm is **disabled** with the obstacle stated; Cancel stays
+> live. `ConfirmModal.confirmDisabled` already exists for exactly this (added at H041).
+> The WA-1 ruling from the ADM-E walk now holds in both places it applies.
+>
+> The adjacent question was **answered by not extending**: Delete stays offered on the
+> four seeded-derived roles. RD-A's principle stands — an adopted role is the group's own
+> property, however it arrived — and the substrate already refuses anything unsafe.
+>
+> **Scope: this is RD-A's fix (FEAT-H043 STORY-4), not RD-B's.** RD-B only made it
+> visible by putting a careful ceremony beside a careless one. It lands under H043 so the
+> history reads honestly.
+
 ## W-10 — A clone can never leave the catalogue (observation, not a defect)
 
 The walk created two clones (`Walk Greeter`, `Walk Second`). Neither can be removed —
@@ -306,6 +319,34 @@ higher standard than the larger one.
 Measured 2026-08-08: 223 recipients = **4 real accounts** (the walk cast), 95 test
 fixtures, 124 orphaned personal groups (`TASK-INT-03`). **No real-user incident** — but
 the shape is wrong now and will not stay harmless.
+
+> **RULED 2026-08-09: state the count.** The publish ceremony names how many stewards
+> across how many groups it is about to notify, and says the notices cannot be withdrawn
+> — the same rule the Steward's diff ceremony already honours with its holder count.
+>
+> **Cost, surfaced rather than absorbed:** the two numbers are not equally cheap.
+> * **Group count** — free. The W-5 picker already loads the engagement-group list.
+> * **Recipient count** — needs a **new platform contract**. `admin_get_groups` returns
+>   `member_count` / `non_system_member_count`, neither of which is a `manage_roles`-holder
+>   count, and nothing in the substrate counts holders across groups. A preview read
+>   (`admin_preview_publication_reach` or equivalent) is a migration, and therefore
+>   another schema gate.
+>
+> **Scope ruled 2026-08-09: full version, with the gate.** Built as
+> `admin_preview_publication_reach(p_role_template_id, p_group_ids)` — migration
+> `20260809100000`, **held at the schema gate**. Both ceremonies (platform-wide and the
+> W-5 picker) now state *"This will notify N stewards across M groups. Those notices
+> cannot be withdrawn."*
+>
+> **The correctness risk was named and tested, not commented away.** A preview whose
+> predicate drifts from the act it previews is worse than no preview: it states a
+> confident number that is wrong. The preview's recipient predicate is a deliberate mirror
+> of `admin_publish_role_template`'s, and cell **W6c previews, publishes, then asserts the
+> preview equalled the rows actually created** — so editing one predicate without the
+> other fails loudly.
+>
+> A missing preview renders nothing and never blocks the publish: the count is an aid, not
+> a gate.
 
 ## W-7 — Integration cell C3 fans out to the whole group table on a shared DB
 
