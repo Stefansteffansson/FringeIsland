@@ -112,9 +112,30 @@ victim each run — **without appealing to notification volume at all**, and it 
 Measured in passing: **156** anonymous users at fleet time; **58** still present after the
 timed-out sweep, because the loop never finished.
 
-**Not yet confirmed.** The isolation re-run afterwards was 9/9 green, but with 58 anon users
-rather than 156 and without fleet pressure — weaker evidence than the failure it is meant to
-explain, and recorded as such. A clean full fleet is what would confirm it.
+**CONFIRMING FLEET, 2026-08-09 after the janitor fix: 136 / 136 GREEN (10.5 min).** The first
+fully green fleet on record — the previous best was 134/136. `entry.spec:46` and
+`notifications.spec:101`, the two cells this task was filed for, both passed under full fleet
+pressure. Orphan instrument 2 688 → 2 688, DeusEx 0 → 0.
+
+**This is NOT closure, and the distinction matters.** `TASK-E2E-01`'s discipline, cited at the
+top of this file, is that closure states *the mechanism removed*, never a count of green
+fleets. What actually happened is that the janitor's **constant** was cut (one batched consent
+statement and one batched profile read, instead of two round-trips per anonymous user) — the
+loop is **still O(every anonymous user in the database)** inside a 30-second `afterAll`. The
+headroom is much larger; the shape is unchanged. It will come back when N is large enough.
+
+**A retrospective reading worth stating, and worth doubting.** Playwright attributes an
+`afterAll` timeout to the test that preceded it — today's failures printed as
+`entry.spec.ts:46:5` with *"afterAll hook timeout"* underneath. The 2026-08-07 and earlier
+2026-08-09 failures were recorded by line number as *the become-a-FIM CTA test failing*, and
+this task's own AC concedes the artefacts were never read. **So the original failures may have
+been this same teardown timeout all along, misread as a test failure.** That would explain
+every recorded property. It is a strong candidate and it is **not proven** — the artefacts are
+gone, so it cannot now be checked.
+
+**To actually close this:** bound the janitor — scope it to the users the spec created, or
+move the sweep into global teardown where it is paid once — and state *that* as the mechanism
+removed.
 
 **If it holds, the fix is to bound the janitor** — scope it to the users the spec created, or
 move the sweep out of a per-spec `afterAll` into global teardown where it is paid once.
