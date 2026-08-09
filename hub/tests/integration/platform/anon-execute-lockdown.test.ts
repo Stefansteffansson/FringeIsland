@@ -19,10 +19,28 @@ import {
  * does not). Per ADR-U038 L27, PostgREST is directly reachable with the public
  * anon key — the grant layer IS an enforcement surface.
  *
- * The lockdown migration sweeps anon/PUBLIC EXECUTE off every public function,
- * fixes the DEFAULT PRIVILEGES so future functions never inherit the grant,
+ * The lockdown migration sweeps anon/PUBLIC EXECUTE off every public function
  * and drops `authenticated` from the two internal primitives (`_erase_mist`,
  * `reap_expired_mists`) that no client contract calls directly.
+ *
+ * CORRECTED 2026-08-09 (TASK-SEC-01). This docstring used to claim the migration
+ * also "fixes the DEFAULT PRIVILEGES so future functions never inherit the
+ * grant". **It does not, and no ALTER DEFAULT PRIVILEGES statement can.**
+ * Measured by creating a throwaway function through the real apply path
+ * (Management API, which runs as `postgres` — not `supabase_admin`) with no
+ * grant line of its own: it came out
+ * `{=X/postgres,postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}`
+ * — anon-executable via PUBLIC — even though `pg_default_acl` for `postgres`
+ * already lists neither PUBLIC nor anon. Postgres applies its built-in
+ * `EXECUTE TO PUBLIC` for functions on top of the pg_default_acl row rather
+ * than in place of it, so the row is already in the state the "fix" wants and
+ * the grant lands anyway.
+ *
+ * Consequence, and the reason this matters more than a stale comment: **every
+ * new function needs its own `revoke all ... from public, anon`.** The claim
+ * corrected here is what told two readers otherwise — it is why N-D shipped
+ * seven anon-executable contracts and why RD-B's W-6 shipped an eighth.
+ * The invariant below is the net; it is not a preventive.
  *
  * Red-first: before the migration these anon calls EXECUTE (the erasure
  * primitive runs — with a nonexistent UUID, a no-op); after, PostgREST refuses

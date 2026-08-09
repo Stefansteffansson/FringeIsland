@@ -1,8 +1,8 @@
-# The anon-EXECUTE default-privileges fix does not cover the path we apply migrations through
+# New functions are anon-executable on apply, and no ALTER DEFAULT PRIVILEGES can fix it
 
 ---
 id: TASK-SEC-01
-title: "ALTER DEFAULT PRIVILEGES is set FOR ROLE postgres, but migrations apply as supabase_admin — every new public function inherits anon EXECUTE"
+title: "Postgres applies its built-in EXECUTE-TO-PUBLIC on top of pg_default_acl, so every new public function is anon-executable until its own migration revokes PUBLIC"
 status: todo
 assigned_to: unassigned
 priority: high
@@ -12,75 +12,99 @@ depends_on: []
 estimated_hours: 3
 ---
 
+> **REWRITTEN 2026-08-09** after measurement. The original framing — *"ALTER DEFAULT
+> PRIVILEGES is set FOR ROLE postgres, but migrations apply as supabase_admin"* — was
+> **wrong**, and its proposed remedy would have changed nothing while touching a surface
+> that is not ours. The defect it describes is nonetheless **real**. Full evidence:
+> [`TASK-SEC-01-INVESTIGATION-2026-08-09.md`](./TASK-SEC-01-INVESTIGATION-2026-08-09.md).
+
 ## What was found
 
 2026-08-09, during the RD-B walk fixes. A new function
 (`admin_preview_publication_reach`, migration `20260809100000`) shipped **executable by
-`anon`** — the only one of the eight role-distribution functions in that state.
+`anon`** — the only one of the eight role-distribution functions in that state. Corrected
+per-function by `20260809140000`.
 
-The immediate cause looked like a simple omission: the migration granted EXECUTE to
-`authenticated` and did not write the matching `revoke all … from public, anon`, which the
-house pattern pairs it with (`20260807090000:987-997`). That is true, and it was corrected
-by `20260809140000`.
+It read as a simple omission: the migration granted EXECUTE to `authenticated` and never
+wrote the paired `revoke all … from public, anon` (`20260807090000:987-997`).
 
-**But the omission should not have mattered**, and that is the actual finding.
+**But the omission should not have mattered**, and that is the finding.
 
-## The protection exists and does not cover us
+## The measured mechanism
 
-`anon-execute-lockdown.test.ts`'s own docstring states that its migration *"fixes the
-DEFAULT PRIVILEGES so future functions never inherit the grant"*. `pg_default_acl` shows
-**two** entries for `public` schema functions:
+A throwaway function created through the **real apply path** (Management API — the endpoint
+`scripts/apply-migration-temp.js` posts to) with no grant or revoke of its own:
 
-| Creating role | Default ACL granted |
-|---|---|
-| `postgres` | `postgres`, `authenticated`, `service_role` — **no anon** ← the lockdown's fix |
-| `supabase_admin` | `postgres`, **`anon`**, `authenticated`, `service_role` ← Supabase's default, untouched |
+```
+proacl     {=X/postgres, postgres=X/postgres, authenticated=X/postgres, service_role=X/postgres}
+anon_exec  true
+```
 
-`ALTER DEFAULT PRIVILEGES` is **per creating role**. The lockdown set it for `postgres`.
+Three things this establishes:
 
-`scripts/apply-migration-temp.js` — the documented apply path in
-`docs/platform/CLAUDE.md` — posts to the **Supabase Management API**
-(`/v1/projects/{ref}/database/query`), which executes as `supabase_admin`, **not**
-`postgres`.
+1. **The apply path runs as `postgres`,** not `supabase_admin` (`current_user` and
+   `session_user` both `postgres`; all 226 public functions are owned by `postgres`). The
+   `supabase_admin` default-ACL row governs Supabase's own extension objects — irrelevant
+   to us, and `20260727120000:74-76` already said so.
+2. **The `postgres` default-ACL row is already in the desired state** —
+   `{postgres=X, authenticated=X, service_role=X}`, no PUBLIC, no anon — courtesy of
+   `20260727120000:78`.
+3. **And the created function got PUBLIC anyway.** Postgres applies its built-in
+   `EXECUTE TO PUBLIC` for functions *on top of* the `pg_default_acl` row, not in place of
+   it. **No `ALTER DEFAULT PRIVILEGES` statement can close this.**
 
-**So every function created through our normal apply path inherits `anon` EXECUTE**, and
-the default-privileges fix never applies to it. The five PC028 contracts are clean only
-because that migration wrote explicit revokes for every one of them.
+So the per-migration `revoke … from public, anon` is not belt-and-braces. It is the only
+thing standing between a new function and `anon`.
 
-## Why this has not bitten before
+## Why two people got this wrong
 
-`anon-execute-lockdown.test.ts` carries a blanket invariant (*"the invariant, not a list"*)
-that fails on **any** anon-executable public function. It is the real safety net and it
-works — it would have caught this one. What it cannot do is prevent the window between a
-migration being applied and the suite next running, which on a schema-gated cycle can be
-hours, and it does not stop the grant existing on production in the meantime.
+Both prior diagnoses read `pg_default_acl` and reasoned forward. That reasoning inverts the
+server's actual behaviour. **The catalogue row is not the answer; the created object is.**
 
-**No data has been exposed by this instance.** The function is SECURITY DEFINER behind
-`is_platform_admin()`, so an anon caller reaches the gate and is refused `42501`. The risk
-is structural, not realised: a future function whose own body is the authorization (the
-`_erase_mist` shape the 2026-07-06 audit found) would be reachable by `anon` the moment it
-is applied, and would stay so until someone ran the suite.
+Two docstrings encoded the wrong conclusion and are what let both instances ship:
+
+- `anon-execute-lockdown.test.ts` — *"fixes the DEFAULT PRIVILEGES so future functions never
+  inherit the grant."* **Corrected 2026-08-09.**
+- `20260727120000` §3 *"THE PREVENTION"* — its prose diagnosis is right; the statement it
+  then wrote does not prevent. Left in place (applied migrations are the audit record).
+
+`20260809140000`'s claim that `service_role` "had been reaching it through PUBLIC" is also
+wrong — `service_role` holds a direct grant from the default ACL. Left in place, same reason.
+
+## Blast radius
+
+**None realised, then or now.** 226 functions in `public`, **0 anon-executable**. Every
+instance was SECURITY DEFINER behind a gate that refused anon in the body (`42501`).
+
+The risk is structural: a function whose own body *is* the authorization — the `_erase_mist`
+shape the 2026-07-06 audit found — would be anon-reachable from the moment it is applied
+until someone next ran the suite.
 
 ## Acceptance criteria
 
-- [ ] `ALTER DEFAULT PRIVILEGES` set for **the role the apply path actually uses**, verified
-      by creating a throwaway function through `apply-migration-temp.js` and reading its
-      ACL — not by reading the migration and assuming
-- [ ] The claim in `anon-execute-lockdown.test.ts`'s docstring corrected or qualified: as
-      written it tells the next reader that new functions are safe by construction, which
-      is what let this ship
-- [ ] `docs/platform/CLAUDE.md`'s migration section states plainly that **every new
-      function needs the explicit `revoke all … from public, anon`**, because the default
-      privileges do not cover the apply path
-- [ ] Consider whether the gate checklist should read the new function's ACL as part of the
-      schema-review question set (it already asks the ADR-U038 direct-caller question; this
-      is the same question one layer down)
+- [x] Verify by **creating a throwaway function through `apply-migration-temp.js` and
+      reading its ACL** — not by reading the migration or the default ACL and assuming
+- [x] The false claim in `anon-execute-lockdown.test.ts`'s docstring corrected
+- [x] `docs/platform/CLAUDE.md` states plainly that **every new function needs the explicit
+      `revoke all … from public, anon`**, because the default privileges cannot cover it
+- [x] The schema-review question set reads the **applied** function's ACL (the ADR-U038
+      direct-caller question, one layer down)
+- [x] **The structural fix is unavailable — probed, not assumed.** An `ddl_command_end`
+      event trigger revoking PUBLIC/anon would be the only mechanism that closes the
+      apply-to-suite window. `CREATE EVENT TRIGGER` requires superuser; **`postgres` is not
+      superuser here** (`rolsuper = false`), and all six event triggers on this instance are
+      owned by `supabase_admin` — Supabase's surface, which we do not write to.
+- [ ] **Record the accepted limit** (governance, needs Stefan): enforced discipline is
+      therefore the ceiling. New functions are anon-executable from apply until the next
+      suite run, and the mitigations are the per-migration revoke, the gate's ACL question,
+      and the blanket invariant. That residual window should be an explicit accepted risk
+      with an owner, not an implicit one — it is the third time this class has cost a cycle.
 
 ## Related
 
-- `20260809140000` — the corrective for this instance.
-- Integration cell **W6g** pins the posture for this one function by name. It overlaps the
-  blanket invariant deliberately: a named local pin fails with an obvious message, where
-  the blanket one fails with a list.
-- The 2026-07-06 security audit that produced the lockdown migration — same class, and
-  the reason the invariant test exists at all.
+- `20260809140000` — the per-function corrective for this instance.
+- `20260727120000` — the N-D repair; same class, seven contracts, and the origin of the
+  inert prevention.
+- Integration cell **W6g** pins the posture for `admin_preview_publication_reach` by name,
+  deliberately overlapping the blanket invariant: a named pin fails with an obvious message.
+- The 2026-07-06 security audit that produced the lockdown migration.
