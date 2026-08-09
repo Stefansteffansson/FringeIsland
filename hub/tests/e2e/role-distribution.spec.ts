@@ -1,5 +1,5 @@
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, runAdminSql } from './helpers/auth';
 
 /**
  * RD-B FEAT-H044 (E2E) — the distribution journey end to end.
@@ -19,10 +19,18 @@ import { createAdminClient, markArrivedOnce } from './helpers/auth';
  * shared storageState session (the roles.spec precedent — the shared token is
  * contended by parallel workers).
  *
- * Fixture note: the catalogue side is built with the service-role client
- * rather than through the admin UI. The admin surface has its own coverage;
- * what this spec exists to prove is the STEWARD's journey, and driving two
- * signed-in planes to set it up would make the failure mode ambiguous.
+ * Fixture note, REVISED after the walk: the first test builds the catalogue
+ * side with the service-role client so its failure mode stays unambiguous —
+ * what it exists to prove is the STEWARD's journey. That was defensible for
+ * the journey and INDEFENSIBLE as the whole spec: the fixture inserted the
+ * publication row, which is precisely the thing "publish to named groups" was
+ * supposed to produce and never did (walk finding W-5). The spec passed over a
+ * hole in its own floor.
+ *
+ * The third test now drives that door for real — admin signs in, picks a group
+ * in the reach section, publishes — and asserts both the row and the scoping.
+ * The rule: a fixture may set up everything the door is not responsible for,
+ * never the thing it produces.
  *
  * HONEST PROVENANCE — this file is TEST-AFTER, not red-first. The feature was
  * driven red-first at the unit tier; this is the journey gate, written once the
@@ -250,8 +258,12 @@ test.describe.serial('FEAT-H044 — role distribution (RD-B)', () => {
     // Display names in the diff, never internal keys.
     await expect(modal.getByTestId('diff-added')).toContainText('View member list');
     await expect(modal.getByTestId('diff-added')).not.toContainText('view_member_list');
-    // Holder count and the "they keep the role" statement, before the click.
-    await expect(modal.getByTestId('diff-holders')).toContainText(/keep the role/i);
+    // The holder consequence, stated before the click. ADAPTED by walk fix W-4
+    // (ruled): this fixture role is unheld, and the ceremony no longer says
+    // "0 members hold this role. They keep the role…" — there is no "they".
+    // The held branch ("N members hold… they keep the role") is pinned at the
+    // unit tier, where both holder counts are cheap to drive.
+    await expect(modal.getByTestId('diff-holders')).toContainText(/no one holds this role yet/i);
     await expect(modal).toContainText('v1 → v2');
 
     // ---------------------------------------------------------------------
@@ -296,6 +308,139 @@ test.describe.serial('FEAT-H044 — role distribution (RD-B)', () => {
     await expect(adopted).toHaveCount(1);
     await expect(adopted.getByTestId('role-badge')).toHaveText(/Template · v2 · copied /);
     await expect(adopted.getByText('View member list')).toBeVisible();
+  });
+
+  test('W-5: an admin publishes to a NAMED group through the picker, and only that group is offered it', async ({
+    browser,
+  }) => {
+    test.setTimeout(180_000);
+    const admin = createAdminClient();
+
+    // ------------------------------------------------------------------
+    // THIS TEST EXISTS BECAUSE OF THE HOLE IT CLOSES.
+    //
+    // The journey above proved a Steward's side of a group-scoped offer —
+    // over a publication row the FIXTURE inserted with the service-role
+    // client. So it passed over a hole in its own floor: nothing in the
+    // product could produce that row, because "publish to named groups" was
+    // never built. Stefan found it on his first click of the reach section.
+    //
+    // The rule this encodes: when a feature adds a WRITE door, at least one
+    // test must reach the state THROUGH that door. A fixture may set up
+    // everything the door is not responsible for — never the thing it
+    // produces. The template below is fixture-made (the picker does not make
+    // templates); the PUBLICATION is made by clicking Publish.
+    // ------------------------------------------------------------------
+    const admName = `E2E RDB Admin ${stamp}`;
+    const adminEmail = `e2e-rdb-admin-${stamp}@fringeisland.test`;
+    const { data: adm, error: admErr } = await admin.auth.admin.createUser({
+      email: adminEmail,
+      password,
+      email_confirm: true,
+      user_metadata: { display_name: admName, consent_accepted: 'true' },
+    });
+    if (admErr) throw admErr;
+    await markArrivedOnce(admin, adm.user.id);
+    const admPg = await waitForPersonalGroup(adm.user.id);
+    await runAdminSql(`
+      DO $$
+      DECLARE v_deusex uuid; v_role uuid;
+      BEGIN
+        SELECT id INTO v_deusex FROM public.groups
+          WHERE name = 'DeusEx' AND group_type = 'system';
+        SELECT id INTO v_role FROM public.group_roles
+          WHERE group_id = v_deusex AND name = 'DeusEx';
+        INSERT INTO public.group_memberships (group_id, member_group_id, added_by_group_id, status)
+          VALUES (v_deusex, '${admPg}', v_deusex, 'active')
+          ON CONFLICT (group_id, member_group_id) DO UPDATE SET status = 'active';
+        INSERT INTO public.user_group_roles (member_group_id, group_id, group_role_id, assigned_by_group_id)
+          VALUES ('${admPg}', v_deusex, v_role, v_deusex)
+          ON CONFLICT DO NOTHING;
+      END $$;`);
+
+    // A fresh template offered to NOBODY, and a second group that must NOT be
+    // offered it — the scoping claim the live walk could not verify.
+    const targetedName = `E2E RDB Targeted ${stamp}`;
+    const { data: t2 } = await admin
+      .from('role_templates')
+      .insert({ name: targetedName, description: 'W-5 picker fixture', is_system: false })
+      .select('id')
+      .single();
+    const targetedId = (t2 as { id: string }).id;
+    const { data: tv } = await admin
+      .from('role_template_versions')
+      .insert({ role_template_id: targetedId, version_number: 1, name: targetedName, created_by: pgId })
+      .select('id')
+      .single();
+    await admin.from('role_template_permissions').insert({
+      role_template_id: targetedId,
+      permission_id: await permissionId('invite_members'),
+    });
+    await admin
+      .from('role_templates')
+      .update({ default_version_id: (tv as { id: string }).id })
+      .eq('id', targetedId);
+
+    const otherGroupName = `E2E RDB Unoffered ${stamp}`;
+    const { data: og } = await admin
+      .from('groups')
+      .insert({ name: otherGroupName, group_type: 'engagement', status: 'active' })
+      .select('id')
+      .single();
+    const otherGroupId = (og as { id: string }).id;
+
+    const admCtx = await browser.newContext();
+    const admPage = await admCtx.newPage();
+    try {
+      await signIn(admPage, adminEmail);
+      await admPage.goto(`/admin/roles/${targetedId}`);
+
+      const reach = admPage.getByTestId('reach-section');
+      await expect(reach).toBeVisible({ timeout: 15000 });
+      await expect(reach.getByTestId('reach-summary')).toHaveText('Not published');
+
+      // THE DOOR.
+      await reach.getByRole('button', { name: /specific groups/i }).click();
+      const modal = admPage.getByTestId('confirm-modal');
+      await expect(modal).toBeVisible({ timeout: 15000 });
+      await modal.getByTestId('group-search').fill(groupName);
+      await modal.getByTestId(`group-option-${groupId}`).click();
+      await modal.getByTestId('confirm-modal-confirm').click();
+      await expect(modal).toBeHidden({ timeout: 15000 });
+
+      // The observable effect, on the admin's own surface.
+      await expect(reach.getByTestId('reach-summary')).toHaveText('Published to 1 group', {
+        timeout: 15000,
+      });
+      await expect(reach.getByTestId('reach-row')).toContainText(groupName);
+
+      // ...and at row level: exactly one publication, for exactly this group.
+      const { data: pubs } = await admin
+        .from('role_template_publications')
+        .select('group_id')
+        .eq('role_template_id', targetedId);
+      expect((pubs as Array<{ group_id: string | null }>).map((p) => p.group_id)).toEqual([groupId]);
+
+      // THE SCOPING CLAIM the live walk could not reach: G1 is offered it,
+      // and a group that was not named is not.
+      await page.reload();
+      await expect(page.getByTestId('roles-panel')).toBeVisible({ timeout: 15000 });
+      await page.getByTestId('roles-panel').getByTestId('available-roles-toggle').click();
+      await expect(
+        page.getByTestId('roles-panel').getByTestId('available-role-entry').filter({ hasText: targetedName }),
+      ).toHaveCount(1);
+
+      const offers = (await admin.rpc('get_available_role_templates', {
+        p_group_id: otherGroupId,
+      })) as { data: Array<{ name: string }> | null };
+      expect((offers.data ?? []).some((o) => o.name === targetedName)).toBe(false);
+    } finally {
+      await admCtx.close();
+      await admin.from('role_templates').delete().eq('id', targetedId);
+      await admin.from('groups').delete().eq('id', otherGroupId);
+      await admin.from('groups').delete().eq('id', admPg);
+      await admin.auth.admin.deleteUser(adm.user.id);
+    }
   });
 
   test('the available-roles section is not rendered for a member without manage_roles', async ({

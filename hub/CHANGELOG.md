@@ -2,6 +2,17 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-08 — The available-roles section gets out of its own way ([FEAT-H044](../docs/products/hub/features/FEAT-H044-available-roles-view-and-diff-on-copy-ceremony.md))
+
+Changes from walking yesterday's release end to end.
+
+- **The section now shows only what you can actually do something about.** It used to open with your four built-in roles listed as "copied and up to date" — true, but four rows of nothing-to-do before anything you could act on. Those are gone; the roles you already hold still say where they came from, on the role card itself. When there's nothing new on offer, the section says so plainly.
+- **A notice about a role now takes you to the roles.** Clicking "a role is now available to copy into your group" used to drop you at the top of the group page, with the roles panel far below and this section closed. Now it opens the section, scrolls to it, and highlights it for a moment.
+- **A resting group no longer half-freezes.** You could still add a role and edit its permissions by hand, but not copy one or take an update — the same permission, two different answers, in one panel. Now it behaves consistently.
+- **The confirmation stops saying odd things about nobody.** A role nobody holds used to read "0 members hold this role. They keep the role, and their permissions change with it."
+- *Admin:* **you can now publish a role to specific groups**, not only to every group at once — which was the point of all this, and was missing. Search, tick the groups, publish; groups that already have it are shown as such rather than offered again.
+- **The bell notices now name the group they're about.** They all used to say "your group", which was no help at all if you steward several — five groups meant five identical notices. Now each one names its own, including the retirement notice, which still says plainly that that group's existing copy is unaffected.
+
 ## 2026-08-07 — See what's available to your group, and take an update on your own terms ([FEAT-H044](../docs/products/hub/features/FEAT-H044-available-roles-view-and-diff-on-copy-ceremony.md))
 
 - **The roles panel now shows what's available to your group.** Open "Show available roles" and you'll see the roles offered to this group — the ones you haven't copied yet, the ones you have and are up to date on, and the ones where the template has moved on since you copied it. It's tucked behind that one click rather than loading with the page, so opening a group is no slower than before.

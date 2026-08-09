@@ -83,18 +83,15 @@ export function RolesPanel({
   templates,
   error,
   onMutated,
-  groupStatus = 'active',
+  focusAvailableRoles = false,
 }: {
   groupId: string;
   fabric: RolesFabric | null;
   templates: RoleTemplateOption[];
   error: string | null;
   onMutated: () => void;
-  /** RD-B FEAT-H044 STORY-1: the availability guard. Anything but `active`
-   *  renders the available-roles section read-only — the same posture every
-   *  other write affordance takes while a group rests. The substrate refuses
-   *  independently; this only stops offering an act that would be refused. */
-  groupStatus?: string;
+  /** RD-B walk fix W-1: `?focus=roles` landed here from a roles notice. */
+  focusAvailableRoles?: boolean;
 }) {
   const [adding, setAdding] = useState(false);
   const [expandedRoleId, setExpandedRoleId] = useState<string | null>(null);
@@ -275,8 +272,8 @@ export function RolesPanel({
           templates={templates}
           roles={fabric.roles}
           canManage={canManage}
-          readOnly={groupStatus !== 'active'}
           onMutated={onMutated}
+          focus={focusAvailableRoles}
         />
       )}
 

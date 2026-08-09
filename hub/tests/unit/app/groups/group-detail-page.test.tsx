@@ -31,6 +31,10 @@ jest.mock('@/lib/auth/AuthContext', () => ({ useAuth: () => authState }));
 jest.mock('next/navigation', () => ({
   useRouter: () => router,
   useParams: () => ({ id: 'grp-1' }),
+  // ADDED by RD-B walk fix W-1: the page now reads `?focus=roles` behind a
+  // Suspense boundary to point a roles notice at the available-roles section.
+  // Default: no focus — these cells assert the ordinary landing.
+  useSearchParams: () => new URLSearchParams(),
 }));
 jest.mock('@/components/shell/AppShell', () => ({
   AppShell: ({ children }: { children: React.ReactNode }) => <div data-testid="shell">{children}</div>,

@@ -136,12 +136,35 @@ const ANSWER_PATHS: Record<string, string> = {
 /** Where activating a notification should take the member, or null to stay put.
  *  An explicit answering surface wins over the row's group, because arriving at
  *  a page that cannot answer the question is the defect W-04 named. */
+/**
+ * RD-B walk fix W-1 — kinds whose news lives in the group's ROLES panel.
+ *
+ * These three are passive (no answer path), so before this they fell through
+ * to the bare `/groups/<id>` fallback — which lands the member at the top of a
+ * long page with the roles panel seventh down and its available-roles section
+ * collapsed inside it. Told "a role is available", they arrived somewhere
+ * showing no roles at all.
+ *
+ * That is the HYG-A complaint — *"easy to read as nothing happened"* — which
+ * N-E answered for invitations with `?focus=invitations` + scroll + ring. Same
+ * hint, same mechanism, new destination. Not an ANSWER_PATHS entry: these are
+ * not answerable, and the path is group-dependent.
+ */
+const ROLES_FOCUS_KINDS = new Set([
+  'role_template_published',
+  'role_template_updated',
+  'role_template_retired',
+]);
+
 export function notificationTarget(
   row: Pick<NotificationRow, 'kind' | 'group_id'>,
 ): string | null {
   const answerPath = ANSWER_PATHS[row.kind];
   if (answerPath) return answerPath;
-  return row.group_id ? `/groups/${row.group_id}` : null;
+  if (!row.group_id) return null;
+  return ROLES_FOCUS_KINDS.has(row.kind)
+    ? `/groups/${row.group_id}?focus=roles`
+    : `/groups/${row.group_id}`;
 }
 
 export interface NotificationResponseResult {

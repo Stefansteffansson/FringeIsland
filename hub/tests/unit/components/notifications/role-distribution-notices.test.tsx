@@ -36,7 +36,7 @@ const row = (over: Partial<NotificationRow> = {}): NotificationRow => ({
   kind: 'role_template_published',
   category: 'roles',
   title: 'New role available',
-  body: 'The role "Greeter" is now available to copy into your group.',
+  body: 'The role "Greeter" is now available to copy into Willow Circle.',
   group_id: 'grp-1',
   created_at: '2026-08-07T09:00:00+00:00',
   is_read: false,
@@ -55,7 +55,7 @@ describe('FEAT-H044 STORY-4 — the three role-distribution notices', () => {
   it('renders the published notice as news, with no accept/decline affordance', () => {
     render(<NotificationItem row={row()} />);
     expect(
-      screen.getByText('The role "Greeter" is now available to copy into your group.'),
+      screen.getByText('The role "Greeter" is now available to copy into Willow Circle.'),
     ).toBeInTheDocument();
     // RD-7: no answerable affordance anywhere on the row.
     expect(screen.queryByRole('button', { name: /accept|decline|respond/i })).not.toBeInTheDocument();
@@ -69,13 +69,13 @@ describe('FEAT-H044 STORY-4 — the three role-distribution notices', () => {
           kind: 'role_template_updated',
           title: 'Role update available',
           body:
-            'A newer version of the role "Guide" is available. Review the changes before copying them into your group.',
+            'A newer version of the role "Guide" is available. Review the changes before copying them into Willow Circle.',
         })}
       />,
     );
     expect(
       screen.getByText(
-        'A newer version of the role "Guide" is available. Review the changes before copying them into your group.',
+        'A newer version of the role "Guide" is available. Review the changes before copying them into Willow Circle.',
       ),
     ).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /accept|decline|respond/i })).not.toBeInTheDocument();
@@ -89,7 +89,7 @@ describe('FEAT-H044 STORY-4 — the three role-distribution notices', () => {
           kind: 'role_template_retired',
           title: 'Role no longer offered',
           body:
-            'The role "Observer" is no longer offered by the platform. Your group\'s existing copy is unaffected.',
+            'The role "Observer" is no longer offered by the platform. Willow Circle\'s existing copy is unaffected.',
         })}
       />,
     );
@@ -98,7 +98,7 @@ describe('FEAT-H044 STORY-4 — the three role-distribution notices', () => {
     // frightening.
     expect(
       screen.getByText(
-        'The role "Observer" is no longer offered by the platform. Your group\'s existing copy is unaffected.',
+        'The role "Observer" is no longer offered by the platform. Willow Circle\'s existing copy is unaffected.',
       ),
     ).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /accept|decline|respond/i })).not.toBeInTheDocument();
@@ -120,8 +120,19 @@ describe('FEAT-H044 STORY-4 — the three role-distribution notices', () => {
 
   it('names its own group on every notice, so a two-group holder need not guess', () => {
     // The recipient holds manage_roles in two groups and both notices arrive.
-    // Each body names its own group server-side; the surface must render both
-    // distinctly rather than collapsing them.
+    //
+    // WALK FIX W-8 — THIS CELL WAS THE PROBLEM, NOT THE PROOF. Until 2026-08-08
+    // these fixtures were hand-authored to name different groups, and the cell
+    // passed: the surface does render distinct bodies distinctly. But the
+    // SERVER wrote "…into your group" on every row, so the distinction never
+    // existed and a Steward of five groups got five identical notices. Green,
+    // and meaningless.
+    //
+    // The bodies below are now quoted from the migration's own literals
+    // (20260808120000). The substrate side is pinned where it belongs — in the
+    // integration suite (W8a–W8d), against the server's output. A component
+    // test can prove the surface renders what it is given; it can never prove
+    // the server gives it that.
     const first = row({
       id: 'ntf-a',
       group_id: 'grp-1',

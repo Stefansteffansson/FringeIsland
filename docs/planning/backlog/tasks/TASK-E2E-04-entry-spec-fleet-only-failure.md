@@ -1,11 +1,11 @@
-# entry.spec's become-a-FIM CTA failed once in fleet — one observation, not yet a verdict
+# Fleet-only arrival/emission failures — reproduced 2026-08-09, across both test tiers
 
 ---
 id: TASK-E2E-04
-title: entry.spec.ts:46 (become-a-FIM CTA) failed in fleet and passes in isolation — one observation recorded
+title: "Fleet-only arrival/emission failures across both tiers — entry.spec + notifications.spec + the integration PAIR cells; reproduced 2026-08-09"
 status: todo
 assigned_to: unassigned
-priority: medium
+priority: high
 owner: hub
 wave: ferd
 depends_on: []
@@ -60,12 +60,42 @@ Note the spec is **not** in `TASK-E2E-03`'s shared-identity class — it runs se
 (`test.use({ storageState: { cookies: [], origins: [] } })`), so the revocation-target
 audit does not cover it.
 
+## SECOND OBSERVATION CAPTURED — 2026-08-09
+
+`entry.spec.ts:46` failed again in a full fleet run (134 passed / 2 failed of 136), and
+passes in isolation immediately afterwards. **The trigger condition this task was filed to
+wait for is met: it reproduces, so it is not a flake and the mechanism is now worth
+hunting.** Priority raised to **high**.
+
+**A sibling appeared in the same run:** `notifications.spec.ts:101` — *"an invitation
+surfaces in the bell + inbox, and read-state survives reload"*. Also fleet-only; both
+passed 4/4 when run together in isolation right after.
+
+**And the same profile is now visible one tier down.** The same day, the integration
+fleet lost PAIR-shaped emission cells in `tests/integration/notifications` — a *different
+suite each run*, every one green alone, and clean when that directory ran by itself
+(120/120). See [walk finding W-7](../../hub-v2/2026-08-07-rd-b-desk-walk-findings.md).
+
+**The hypothesis that now spans both tiers:** assertions about *a notification arriving*
+are sensitive to notification volume and write pressure, and the dev DB is carrying
+**73 633** notification rows (3 851 written in three hours of one session).
+`TASK-INT-03` already records this DB as notification-heavy from fixture leakage. Both
+failing E2E cells wait on something arriving — a Mist's onboarding auto-launch, and an
+invitation reaching the bell.
+
+**This reframes the task.** It is no longer "is `entry.spec` flaky" but "do our
+arrival/emission assertions degrade as the notifications table grows, across both tiers".
+Retitled accordingly; the original single-observation record is preserved above.
+
 ## Acceptance criteria
 
-- [ ] A **second observation** captured (fleet run reproducing the failure) before any
-      mechanism is claimed — or three consecutive clean fleets recorded, after which this
-      task closes as unreproduced with the runs named
-- [ ] If reproduced: the failing step identified from the trace/screenshot artefact, not
-      inferred from the line number
+- [x] A **second observation** captured — 2026-08-09, full fleet, with a sibling
+      (`notifications.spec.ts:101`) and the same profile at the integration tier
+- [ ] The failing step identified from the trace/screenshot artefact (preserved under
+      `test-results/`), not inferred from the line number
+- [ ] The volume hypothesis tested directly: run the fleet against a DB with the
+      notification table pruned, and against it as-is, and compare. If volume is the
+      mechanism, `TASK-INT-03`'s fixture leakage is the upstream cause and this closes
+      through it rather than on its own
 - [ ] Closure states the **mechanism removed**, never a count of green fleets (the
       `TASK-E2E-01` discipline)

@@ -52,11 +52,26 @@ beforeEach(() => {
   global.fetch = fetchMock as unknown as typeof fetch;
 });
 
+/** The engagement groups the W-5 picker offers. */
+const GROUPS = [
+  { id: 'grp-1', name: 'Willow Circle', group_type: 'engagement', status: 'active' },
+  { id: 'grp-2', name: 'Harbour Crew', group_type: 'engagement', status: 'active' },
+  { id: 'grp-3', name: 'Kiln Society', group_type: 'engagement', status: 'active' },
+];
+
 /** Every GET returns the payload; every mutation succeeds unless overridden. */
 const wireFetch = (payload: unknown, mutation?: { ok: boolean; error?: string }) => {
   fetchMock.mockImplementation((url: unknown, init?: unknown) => {
     const method = (init as { method?: string } | undefined)?.method ?? 'GET';
     if (method === 'GET') {
+      // The picker's own read — a different door from the template detail.
+      if (String(url).includes('/api/admin/groups')) {
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          json: async () => ({ groups: GROUPS }),
+        } as Response);
+      }
       return Promise.resolve({ ok: true, status: 200, json: async () => payload } as Response);
     }
     const m = mutation ?? { ok: true };
@@ -163,6 +178,135 @@ describe('FEAT-H044 STORY-3 — the reach section', () => {
     );
     expect(within(await screen.findByTestId('reach-section')).getByTestId('reach-summary'))
       .toHaveTextContent('Not published');
+  });
+
+  // ==========================================================================
+  // WALK FIX W-5 — publish to NAMED groups. Found live 2026-08-08: the section
+  // offered only "Publish to all groups", so the targeted publish — the entire
+  // point of RD-B's scoping — was unreachable from the admin plane, and
+  // FEAT-H044 shipped 6-done with STORY-3's AC unbuilt.
+  //
+  // The cells below drive the door itself. The ones that existed before only
+  // proved that named reach RENDERS from a fixture payload — a state nothing
+  // in the product could produce. That is the blind spot this whole batch
+  // exists to close, so these are written first and deliberately.
+  // ==========================================================================
+  const openPicker = async (user: ReturnType<typeof userEvent.setup>) => {
+    const section = await screen.findByTestId('reach-section');
+    await user.click(within(section).getByRole('button', { name: /specific groups/i }));
+    return screen.findByTestId('confirm-modal');
+  };
+
+  it('W5: offers a targeted publish beside the platform-wide one', async () => {
+    wireFetch(basePayload());
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const section = await screen.findByTestId('reach-section');
+    expect(within(section).getByRole('button', { name: /specific groups/i })).toBeInTheDocument();
+  });
+
+  it('W5: the picker lists engagement groups to choose from', async () => {
+    wireFetch(basePayload());
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const user = userEvent.setup();
+    const modal = await openPicker(user);
+
+    expect(await within(modal).findByTestId('group-option-grp-1')).toHaveTextContent('Willow Circle');
+    expect(within(modal).getByTestId('group-option-grp-2')).toHaveTextContent('Harbour Crew');
+    // It asks for engagement groups specifically — personal groups are not
+    // publication targets and the contract would ignore them anyway.
+    const read = fetchMock.mock.calls.map((c) => String(c[0])).find((u) => u.includes('/api/admin/groups'));
+    expect(read).toContain('filter=engagement');
+  });
+
+  it('W5: Confirm is gated until at least one group is chosen', async () => {
+    wireFetch(basePayload());
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const user = userEvent.setup();
+    const modal = await openPicker(user);
+    await within(modal).findByTestId('group-option-grp-1');
+
+    // Publishing to nobody is not a meaningful act — and an empty array is
+    // refused by the route, so offering it would be offering a refusal.
+    expect(within(modal).getByTestId('confirm-modal-confirm')).toBeDisabled();
+    await user.click(within(modal).getByTestId('group-option-grp-1'));
+    expect(within(modal).getByTestId('confirm-modal-confirm')).toBeEnabled();
+  });
+
+  it('W5: publishes exactly the chosen groups', async () => {
+    wireFetch(basePayload());
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const user = userEvent.setup();
+    const modal = await openPicker(user);
+    await within(modal).findByTestId('group-option-grp-1');
+
+    await user.click(within(modal).getByTestId('group-option-grp-1'));
+    await user.click(within(modal).getByTestId('group-option-grp-3'));
+    await user.click(within(modal).getByTestId('confirm-modal-confirm'));
+
+    await waitFor(() => {
+      const call = fetchMock.mock.calls.find(
+        (c) => (c[1] as { method?: string } | undefined)?.method === 'POST',
+      );
+      expect(call).toBeTruthy();
+      expect(String(call![0])).toContain('/api/admin/roles/tmpl-1/publish');
+      const body = JSON.parse((call![1] as { body: string }).body) as { group_ids: string[] };
+      expect([...body.group_ids].sort()).toEqual(['grp-1', 'grp-3']);
+    });
+  });
+
+  it('W5: a search narrows the list without losing what is already chosen', async () => {
+    wireFetch(basePayload());
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const user = userEvent.setup();
+    const modal = await openPicker(user);
+    await within(modal).findByTestId('group-option-grp-1');
+
+    await user.click(within(modal).getByTestId('group-option-grp-1')); // Willow
+    await user.type(within(modal).getByTestId('group-search'), 'harbour');
+
+    expect(within(modal).queryByTestId('group-option-grp-1')).not.toBeInTheDocument();
+    expect(within(modal).getByTestId('group-option-grp-2')).toBeInTheDocument();
+    // A filtered-out choice is still a choice — Confirm must stay live.
+    expect(within(modal).getByTestId('confirm-modal-confirm')).toBeEnabled();
+  });
+
+  it('W5: a group already published to is not offered again', async () => {
+    wireFetch(
+      basePayload({
+        publications: [
+          { group_id: 'grp-2', group_name: 'Harbour Crew', published_at: '2026-08-01T09:00:00+00:00' },
+        ],
+      }),
+    );
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const user = userEvent.setup();
+    const modal = await openPicker(user);
+    await within(modal).findByTestId('group-option-grp-1');
+
+    expect(within(modal).queryByTestId('group-option-grp-2')).not.toBeInTheDocument();
+    expect(within(modal).getByTestId('group-already-published-grp-2')).toBeInTheDocument();
+  });
+
+  // The next two were GREEN BEFORE THE BUTTON EXISTED — nothing to find is not
+  // the same as correctly withheld. Labelled rather than counted as red-first:
+  // they became load-bearing the moment the affordance landed, and would now
+  // fail if it were offered in either state.
+  it('W5: no targeted publish once the template is platform-wide', async () => {
+    // Everyone already has it; narrowing by name would be meaningless.
+    wireFetch(
+      basePayload({ publications: [{ group_id: null, group_name: null, published_at: '2026-08-01T09:00:00+00:00' }] }),
+    );
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const section = await screen.findByTestId('reach-section');
+    expect(within(section).queryByRole('button', { name: /specific groups/i })).not.toBeInTheDocument();
+  });
+
+  it('W5: no targeted publish on a retired template', async () => {
+    wireFetch(basePayload({ template: { ...TEMPLATE, retired_at: '2026-08-05T00:00:00+00:00' } }));
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const section = await screen.findByTestId('reach-section');
+    expect(within(section).queryByRole('button', { name: /specific groups/i })).not.toBeInTheDocument();
+    expect(within(section).getByTestId('reach-blocked')).toBeInTheDocument();
   });
 
   // LABELLED green-before-and-after. This cell passed before the section

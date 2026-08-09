@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   applyRoleTemplateUpdate,
   createGroupRole,
@@ -38,21 +38,39 @@ export function AvailableRolesSection({
   templates,
   roles,
   canManage,
-  readOnly,
   onMutated,
+  focus = false,
 }: {
   groupId: string;
   templates: RoleTemplateOption[];
   roles: RoleEntry[];
   canManage: boolean;
-  /** Resting or suspended: the section reads, but offers no act. */
-  readOnly: boolean;
   onMutated: () => void;
+  /** RD-B walk fix W-1: the landing hint from a roles notice
+   *  (`?focus=roles`). Expands the section, scrolls it into view and rings it
+   *  once — the WS-4 mechanism, pointed at a new destination. */
+  focus?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [copyingId, setCopyingId] = useState<string | null>(null);
   const [ceremony, setCeremony] = useState<CeremonyState | null>(null);
+  const [highlight, setHighlight] = useState(false);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const focusFired = useRef(false);
+
+  // Fire once per focused landing. Expanding is part of the fix, not a bonus:
+  // scrolling to a collapsed disclosure would land the member on the section
+  // and still show them no roles — half-solving the very complaint.
+  useEffect(() => {
+    if (!focus || focusFired.current || !canManage) return;
+    focusFired.current = true;
+    setExpanded(true);
+    sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setHighlight(true);
+    const t = setTimeout(() => setHighlight(false), 2500);
+    return () => clearTimeout(t);
+  }, [focus, canManage]);
 
   // Not rendered at all — not rendered-and-disabled. The section offers acts a
   // member without `manage_roles` cannot perform, and showing them a list of
@@ -115,8 +133,25 @@ export function AvailableRolesSection({
     ? (roles.find((r) => r.id === ceremony.roleId)?.holder_count ?? 0)
     : 0;
 
+  // RD-B walk fix W-3 (ruled 2026-08-08): only what can be ACTED on. A settled
+  // group is offered the four system templates unconditionally and has already
+  // adopted all four, so listing adopted-and-current entries meant the section
+  // opened with four rows of nothing-to-do and the "nothing new" line was
+  // unreachable. Hiding them makes that line the normal resting state.
+  //
+  // Nothing is lost: "Guide is current" still reads on the role card above, in
+  // the provenance line RD-A put there. This section is about what is on
+  // offer, not an inventory of what the group holds.
+  const offers = templates.filter((t) => availableRoleState(t) !== 'current');
+
   return (
-    <div data-testid="available-roles-section" className="mt-6 border-t border-gray-100 pt-4">
+    <div
+      ref={sectionRef}
+      data-testid="available-roles-section"
+      className={`mt-6 border-t border-gray-100 pt-4 ${
+        highlight ? 'rounded-lg ring-2 ring-indigo-400 ring-offset-2 transition-shadow' : ''
+      }`}
+    >
       <button
         type="button"
         data-testid="available-roles-toggle"
@@ -135,19 +170,13 @@ export function AvailableRolesSection({
 
       {expanded && (
         <div className="mt-3">
-          {readOnly && (
-            <p data-testid="available-roles-readonly" className="mb-2 text-xs text-gray-500">
-              This group is read-only right now, so roles cannot be copied or updated.
-            </p>
-          )}
-
-          {templates.length === 0 ? (
+          {offers.length === 0 ? (
             <p data-testid="available-roles-empty" className="text-sm text-gray-500">
               Nothing new is offered to this group right now.
             </p>
           ) : (
             <ul className="space-y-2">
-              {templates.map((entry) => {
+              {offers.map((entry) => {
                 const state = availableRoleState(entry);
                 return (
                   <li
@@ -160,19 +189,20 @@ export function AvailableRolesSection({
                       {entry.description && (
                         <p className="text-xs text-gray-500">{entry.description}</p>
                       )}
-                      {state === 'current' && (
-                        <p className="mt-1 text-xs text-gray-500">
-                          Copied and up to date ({adoptedVersionLabel(entry.adopted_version_number)}).
-                        </p>
-                      )}
                       {state === 'behind' && (
                         <p className="mt-1 text-xs text-amber-700">{versionMovement(entry)}</p>
                       )}
                     </div>
 
-                    {/* Read-only under the availability guard: the states still
-                        read, only the acts are withdrawn. */}
-                    {!readOnly && state === 'not-adopted' && (
+                    {/* RD-B walk fix W-2 (ruled 2026-08-08): NO availability
+                        gating. Add role, Edit grants and Delete sit beside this
+                        section gated on `canManage` alone, and the substrate
+                        genuinely permits them in a resting group — a
+                        `rest_group` holder may write, which the Steward
+                        template grants. Withholding Copy here made one panel
+                        take two postures on the same permission. The substrate
+                        remains the enforcement point and refuses verbatim. */}
+                    {state === 'not-adopted' && (
                       <button
                         type="button"
                         disabled={copyingId === entry.id}
@@ -182,7 +212,7 @@ export function AvailableRolesSection({
                         Copy
                       </button>
                     )}
-                    {!readOnly && state === 'behind' && (
+                    {state === 'behind' && (
                       <button
                         type="button"
                         onClick={() => void openCeremony(entry)}
@@ -306,10 +336,13 @@ function CeremonyBody({
                 </div>
               )}
 
-              {/* The consequence stated before the click, not discovered after. */}
+              {/* The consequence stated before the click, not discovered after.
+                  W-4: at zero there is no "they" to reassure, so the sentence
+                  says the true thing instead of a grammatically odd one. */}
               <p data-testid="diff-holders" className="text-xs text-gray-600">
-                {holderCount === 1 ? '1 member holds' : `${holderCount} members hold`} this role.
-                They keep the role, and their permissions change with it.
+                {holderCount === 0
+                  ? 'No one holds this role yet, so no member’s permissions change.'
+                  : `${holderCount === 1 ? '1 member holds' : `${holderCount} members hold`} this role. They keep the role, and their permissions change with it.`}
               </p>
             </>
           )}

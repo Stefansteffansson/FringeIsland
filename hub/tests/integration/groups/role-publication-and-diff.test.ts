@@ -165,6 +165,19 @@ describe('FEAT-PC028 — publication, scoped offer, diff-on-copy (RD-B)', () => 
   }, 240_000);
 
   afterAll(async () => {
+    // WALK FIX W-7 — this suite dispatches real notifications and used to
+    // leave every one behind. C3 alone publishes PLATFORM-WIDE, so its
+    // fan-out scales with the whole group table: ~427 rows per run, each
+    // firing the realtime hint trigger, immediately before the notifications
+    // directory runs. The suite now clears its own dispatch.
+    //
+    // Not cosmetic. Measured 2026-08-09: `tests/integration/notifications`
+    // alone is 120/120 clean; run after `tests/integration/groups` it loses a
+    // PAIR cell, and WHICH cell varies between runs. That is the profile of a
+    // volume- or timing-sensitive emission assertion, not of a broken test.
+    await runAdminSql(
+      `DELETE FROM public.notifications WHERE type LIKE 'role_template_%';`,
+    ).catch(() => undefined);
     for (const g of createdGroupIds) await cleanupTestGroup(g);
     for (const t of createdTemplateIds) {
       await runAdminSql(`DELETE FROM public.role_templates WHERE id = '${t}';`);
@@ -871,6 +884,168 @@ describe('FEAT-PC028 — publication, scoped offer, diff-on-copy (RD-B)', () => 
       )) as Array<{ n: number }>;
       expect(rows[0].n).toBeGreaterThan(0);
       await a.rpc('admin_unretire_role_template', { p_role_template_id: clonedTemplateId });
+    }, 240_000);
+
+    // ========================================================================
+    // WALK FIX W-8 — the notices name their group. RED until 20260808120000.
+    //
+    // Found live 2026-08-08: a Steward of five groups received five identical
+    // notices, all reading "...into your group". The rows were genuinely about
+    // five different groups; only the body was anonymous.
+    //
+    // These cells assert the SERVER'S literal. The unit cells that were
+    // supposed to cover this asserted bodies a fixture hand-authored — the
+    // substrate never wrote them, so they were green and meaningless. When
+    // copy is server-authored, this is where it must be pinned.
+    // ========================================================================
+    const groupNameOf = async (id: string): Promise<string> => {
+      const r = (await runAdminSql(
+        `SELECT name FROM public.groups WHERE id = '${id}';`,
+      )) as Array<{ name: string }>;
+      return r[0].name;
+    };
+
+    it('W8a: the published notice names the group and never says "your group"', async () => {
+      await clearPublications();
+      await runAdminSql(`DELETE FROM public.notifications WHERE type LIKE 'role_template_%';`);
+      const a = await asUser(adminUser);
+      await a.rpc('admin_publish_role_template', {
+        p_role_template_id: clonedTemplateId,
+        p_group_ids: [groupA],
+      });
+
+      const nameA = await groupNameOf(groupA);
+      const rows = (await runAdminSql(
+        `SELECT body FROM public.notifications WHERE type = 'role_template_published';`,
+      )) as Array<{ body: string }>;
+      expect(rows.length).toBeGreaterThan(0);
+      for (const r of rows) {
+        expect(r.body).toContain(nameA);
+        expect(r.body.toLowerCase()).not.toContain('your group');
+      }
+    }, 240_000);
+
+    it('W8b: the retired notice names the group AND keeps the reassurance clause', async () => {
+      await runAdminSql(`DELETE FROM public.notifications WHERE type LIKE 'role_template_%';`);
+      const a = await asUser(adminUser);
+      await a.rpc('admin_retire_role_template', { p_role_template_id: clonedTemplateId });
+
+      // try/finally, NOT a trailing statement — a failed expect() throws past
+      // a trailing cleanup and leaves the template retired, which silently
+      // refuses every later publish and turns the next cells' failures into a
+      // cascade. That exact trap was recorded at the PC028 build (S5d) and is
+      // the reason this reads the way it does.
+      try {
+        const rows = (await runAdminSql(
+          `SELECT n.body, g.name AS group_name
+             FROM public.notifications n
+             JOIN public.groups g ON g.id = n.group_id
+            WHERE n.type = 'role_template_retired';`,
+        )) as Array<{ body: string; group_name: string }>;
+        expect(rows.length).toBeGreaterThan(0);
+        for (const r of rows) {
+          expect(r.body).toContain(r.group_name);
+          // The clause that stops the notice reading as a loss must survive
+          // the rename — it is the whole reason this notice is not frightening.
+          expect(r.body).toContain('existing copy is unaffected');
+          expect(r.body.toLowerCase()).not.toContain('your group');
+        }
+      } finally {
+        await a.rpc('admin_unretire_role_template', { p_role_template_id: clonedTemplateId });
+      }
+    }, 240_000);
+
+    it('W8c: the update notice names the group', async () => {
+      await runAdminSql(`DELETE FROM public.notifications WHERE type LIKE 'role_template_%';`);
+      const a = await asUser(adminUser);
+
+      // PRECONDITION, made explicit rather than inherited from cell order: the
+      // "updated" notice only reaches groups that ADOPTED the template, so a
+      // copy must exist. Running this cell alone (-t "W8") would otherwise
+      // assert against zero rows and fail for the wrong reason.
+      const adopted = (await runAdminSql(
+        `SELECT count(*)::int AS n FROM public.group_roles
+          WHERE group_id = '${groupA}' AND created_from_role_template_id = '${clonedTemplateId}';`,
+      )) as Array<{ n: number }>;
+      if (adopted[0].n === 0) {
+        await clearPublications();
+        await a.rpc('admin_publish_role_template', {
+          p_role_template_id: clonedTemplateId,
+          p_group_ids: [groupA],
+        });
+        const s = await asUser(steward);
+        const { error: adoptErr } = await s.rpc('create_group_role', {
+          p_group_id: groupA,
+          p_name: `${TOKEN} Adopted For W8c`,
+          p_role_template_id: clonedTemplateId,
+        });
+        if (adoptErr) throw new Error(`W8c precondition adopt: ${adoptErr.message}`);
+        await runAdminSql(`DELETE FROM public.notifications WHERE type LIKE 'role_template_%';`);
+      }
+
+      // A second version, applied — the emission point for "updated".
+      const { data: ver, error: verErr } = await a.rpc('admin_create_role_template_version', {
+        p_template_id: clonedTemplateId,
+        p_name: `${TOKEN} Distributable`,
+        p_description: null,
+        p_permission_names: ['view_member_list'],
+      });
+      if (verErr) throw new Error(`create version: ${verErr.message}`);
+      const { error: applyErr } = await a.rpc('admin_set_role_template_default_version', {
+        p_template_id: clonedTemplateId,
+        p_version_id: (ver as { id: string }).id,
+      });
+      if (applyErr) throw new Error(`apply version: ${applyErr.message}`);
+
+      const rows = (await runAdminSql(
+        `SELECT n.body, g.name AS group_name
+           FROM public.notifications n
+           JOIN public.groups g ON g.id = n.group_id
+          WHERE n.type = 'role_template_updated';`,
+      )) as Array<{ body: string; group_name: string }>;
+      expect(rows.length).toBeGreaterThan(0);
+      for (const r of rows) {
+        expect(r.body).toContain(r.group_name);
+        expect(r.body.toLowerCase()).not.toContain('your group');
+      }
+    }, 240_000);
+
+    it('W8d: THE AC — one recipient, two groups, two distinguishable notices', async () => {
+      // FEAT-H044 STORY-4: "the recipient must not have to guess which group a
+      // notice is about." This is the cell the live walk proved was missing:
+      // the same Steward, two groups, and until the fix both notices read
+      // identically.
+      await clearPublications();
+      await runAdminSql(`DELETE FROM public.notifications WHERE type LIKE 'role_template_%';`);
+      const groupC = await newGroup(steward, `${TOKEN} Group C`);
+
+      const a = await asUser(adminUser);
+      const { error: pubErr } = await a.rpc('admin_publish_role_template', {
+        p_role_template_id: clonedTemplateId,
+        p_group_ids: [groupA, groupC],
+      });
+      // Checked, not assumed: a refused publish would otherwise surface as
+      // "0 rows" and read as the wrong defect entirely.
+      if (pubErr) throw new Error(`W8d publish refused: ${pubErr.message}`);
+
+      const rows = (await runAdminSql(
+        `SELECT n.body, n.group_id
+           FROM public.notifications n
+          WHERE n.type = 'role_template_published'
+            AND n.recipient_group_id = '${steward.personalGroupId}'
+          ORDER BY n.group_id;`,
+      )) as Array<{ body: string; group_id: string }>;
+
+      expect(rows).toHaveLength(2);
+      expect(new Set(rows.map((r) => r.group_id)).size).toBe(2);
+      // The point: two DIFFERENT sentences, each naming its own group.
+      expect(new Set(rows.map((r) => r.body)).size).toBe(2);
+      const nameA = await groupNameOf(groupA);
+      const nameC = await groupNameOf(groupC);
+      const forA = rows.find((r) => r.group_id === groupA)!;
+      const forC = rows.find((r) => r.group_id === groupC)!;
+      expect(forA.body).toContain(nameA);
+      expect(forC.body).toContain(nameC);
     }, 240_000);
 
     it('S6d: notice payloads carry ids and a template name only — no member PII', async () => {

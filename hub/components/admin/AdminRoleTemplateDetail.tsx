@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import type { AdminRoleTemplateDetailPayload, AdminRoleTemplateVersion } from '@/lib/admin/roles';
+import type { AdminGroupRow } from '@/lib/admin/groups';
 import {
   reachSummary,
   namedPublications,
@@ -37,6 +38,9 @@ type Ceremony =
   // RD-B FEAT-H044 STORY-3 — the reach acts. Each is a distribution decision
   // (who is OFFERED this template), never a change to any group's roles.
   | { kind: 'publish-all' }
+  // RD-B walk fix W-5: the targeted publish. The contract has always accepted
+  // `p_group_ids uuid[]`; until now nothing could produce one.
+  | { kind: 'publish-groups' }
   | { kind: 'unpublish-all' }
   | { kind: 'unpublish-group'; groupId: string; groupName: string | null }
   | null;
@@ -57,6 +61,33 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
   const [draftName, setDraftName] = useState('');
   const [draftDescription, setDraftDescription] = useState('');
   const [draftChecked, setDraftChecked] = useState<Set<string>>(new Set());
+  // RD-B walk fix W-5 — the targeted-publish picker.
+  const [groupOptions, setGroupOptions] = useState<AdminGroupRow[] | null>(null);
+  const [groupOptionsError, setGroupOptionsError] = useState<string | null>(null);
+  const [groupQuery, setGroupQuery] = useState('');
+  const [picked, setPicked] = useState<Set<string>>(new Set());
+
+  const openGroupPicker = async () => {
+    setPicked(new Set());
+    setGroupQuery('');
+    setGroupOptions(null);
+    setGroupOptionsError(null);
+    setCeremony({ kind: 'publish-groups' });
+    try {
+      // `engagement` specifically: personal groups are never publication
+      // targets, and the contract would ignore them anyway — offering them
+      // would be offering a no-op.
+      const res = await fetch('/api/admin/groups?filter=engagement');
+      if (!res.ok) {
+        setGroupOptionsError('The group list could not be loaded.');
+        return;
+      }
+      const data = (await res.json()) as { groups: AdminGroupRow[] };
+      setGroupOptions(data.groups ?? []);
+    } catch {
+      setGroupOptionsError('The group list could not be loaded.');
+    }
+  };
 
   const load = useCallback(async (reseedDraft = true) => {
     try {
@@ -318,12 +349,22 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
               // Retirement blocks the OFFER, not the withdrawal — so Publish
               // disappears with a stated reason while Unpublish stays.
               !reachBlocked && (
-                <button
-                  onClick={() => setCeremony({ kind: 'publish-all' })}
-                  className="rounded border border-indigo-300 px-3 py-1 text-sm text-indigo-700"
-                >
-                  Publish to all groups
-                </button>
+                <>
+                  <button
+                    onClick={() => setCeremony({ kind: 'publish-all' })}
+                    className="rounded border border-indigo-300 px-3 py-1 text-sm text-indigo-700"
+                  >
+                    Publish to all groups
+                  </button>
+                  {/* W-5: the act RD-B is actually FOR — offering a template to
+                      the groups it was made for, rather than to everyone. */}
+                  <button
+                    onClick={() => void openGroupPicker()}
+                    className="rounded border border-indigo-300 px-3 py-1 text-sm text-indigo-700"
+                  >
+                    Publish to specific groups…
+                  </button>
+                </>
               )
             )}
           </div>
@@ -457,6 +498,87 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
             },
             { keepDraft: true },
           )
+        }
+        onCancel={() => {
+          if (!busy) setCeremony(null);
+        }}
+      />
+
+      {/* RD-B walk fix W-5 — the targeted publish. The picker rides inside the
+          house ceremony (ReactNode message + confirmDisabled, both already
+          there from H039/H041) rather than becoming a bespoke modal. */}
+      <ConfirmModal
+        isOpen={ceremony?.kind === 'publish-groups'}
+        title="Publish to specific groups"
+        message={
+          <div className="text-left text-sm">
+            <p className="mb-2 text-gray-600">
+              Offers &ldquo;{template.name}&rdquo; to the groups you choose. Stewards there
+              decide whether to copy it — publishing never adds a role to a group.
+            </p>
+            {groupOptionsError && (
+              <p role="alert" className="mb-2 text-red-600">
+                {groupOptionsError}
+              </p>
+            )}
+            {!groupOptions && !groupOptionsError && <p>Loading groups…</p>}
+            {groupOptions && (
+              <>
+                <input
+                  data-testid="group-search"
+                  value={groupQuery}
+                  onChange={(e) => setGroupQuery(e.target.value)}
+                  placeholder="Search groups"
+                  className="mb-2 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+                />
+                <div className="max-h-64 space-y-1 overflow-y-auto">
+                  {groupOptions
+                    .filter((g) => g.name.toLowerCase().includes(groupQuery.toLowerCase()))
+                    .map((g) =>
+                      reachNamed.some((p) => p.group_id === g.id) ? (
+                        <p
+                          key={g.id}
+                          data-testid={`group-already-published-${g.id}`}
+                          className="px-1 text-xs text-gray-400"
+                        >
+                          {g.name} — already published
+                        </p>
+                      ) : (
+                        <label
+                          key={g.id}
+                          data-testid={`group-option-${g.id}`}
+                          className="flex items-center gap-2 px-1 text-sm text-gray-700"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={picked.has(g.id)}
+                            onChange={(e) => {
+                              const next = new Set(picked);
+                              if (e.target.checked) next.add(g.id);
+                              else next.delete(g.id);
+                              setPicked(next);
+                            }}
+                          />
+                          <span>{g.name}</span>
+                        </label>
+                      ),
+                    )}
+                </div>
+                <p className="mt-2 text-xs text-gray-500">
+                  {picked.size} selected. Each Steward who can manage roles there is told.
+                </p>
+              </>
+            )}
+          </div>
+        }
+        confirmText="Publish"
+        variant="info"
+        busy={busy}
+        // Publishing to nobody is not an act; the route refuses an empty array,
+        // so offering Confirm here would be offering a refusal (the WA-1 rule).
+        confirmDisabled={picked.size === 0}
+        onConfirm={() =>
+          void mutate('publish', { group_ids: [...picked] }, `Published to ${picked.size} group${picked.size === 1 ? '' : 's'}.`)
         }
         onCancel={() => {
           if (!busy) setCeremony(null);
