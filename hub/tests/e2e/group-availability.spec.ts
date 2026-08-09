@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce, runAdminSql, SESSION_EMAIL } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, runAdminSql, SESSION_EMAIL, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H038 STORY-7 (E2E) — the two-mode group journey: steward rest →
@@ -141,7 +141,7 @@ test.describe('FEAT-H038 — the two-mode group journey (STORY-7)', () => {
     if (groupId) await admin.from('groups').delete().eq('id', groupId);
     for (const u of created) {
       if (u?.pgId) await admin.from('groups').delete().eq('id', u.pgId);
-      if (u?.authId) await admin.auth.admin.deleteUser(u.authId);
+      if (u?.authId) await deleteE2EUserByAuthId(admin, u.authId);
     }
     const pg = await sessionPersonalGroupId();
     await runAdminSql(

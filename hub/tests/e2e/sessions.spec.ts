@@ -1,5 +1,5 @@
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce, runAdminSql, E2E_PASSWORD } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, runAdminSql, E2E_PASSWORD, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H012 — per-device sessions (IDN-11) E2E, against the live FEAT-PC009
@@ -63,7 +63,7 @@ test.afterAll(async () => {
        WHERE subject_user_id IN (SELECT id FROM public.users WHERE auth_user_id = '${subjectAuthId}')
           OR subject_group_id = ${subjectPgId ? `'${subjectPgId}'` : 'NULL'};
     END $$;`).catch(() => undefined);
-  await admin.auth.admin.deleteUser(subjectAuthId).catch(() => undefined);
+  await deleteE2EUserByAuthId(admin, subjectAuthId).catch(() => undefined);
   if (subjectPgId) await admin.from('groups').delete().eq('id', subjectPgId);
 });
 

@@ -1,6 +1,6 @@
 import { test, expect, type Page, type BrowserContext } from '@playwright/test';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { createAdminClient, markArrivedOnce, E2E_PASSWORD } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, E2E_PASSWORD, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H029 + FEAT-H007 — Cycle C-F E2E (IDN-10/IDN-12).
@@ -67,7 +67,7 @@ async function cleanupFim(admin: SupabaseClient, email: string) {
     await admin.from('journeys').delete().eq('created_by_group_id', data.personal_group_id);
     await admin.from('groups').delete().eq('id', data.personal_group_id);
   }
-  if (data?.auth_user_id) await admin.auth.admin.deleteUser(data.auth_user_id as string);
+  if (data?.auth_user_id) await deleteE2EUserByAuthId(admin, data.auth_user_id as string);
 }
 
 test.describe('C-F — the absence loop (pause → reactivate)', () => {

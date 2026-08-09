@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce, runAdminSql } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, runAdminSql, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H005 STORY-1/2/3/4 (E2E) — the member-profile + sign-out journeys against
@@ -78,7 +78,7 @@ test.describe('FEAT-H005 — member profile + sign-out', () => {
          WHERE subject_user_id IN (SELECT id FROM public.users WHERE auth_user_id = '${fimAuthId}')
             OR subject_group_id = ${fimPgId ? `'${fimPgId}'` : 'NULL'};
       END $$;`).catch(() => undefined);
-    await admin.auth.admin.deleteUser(fimAuthId).catch(() => undefined);
+    await deleteE2EUserByAuthId(admin, fimAuthId).catch(() => undefined);
     if (fimPgId) await admin.from('groups').delete().eq('id', fimPgId);
   });
 

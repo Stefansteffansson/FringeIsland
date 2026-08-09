@@ -1,5 +1,5 @@
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H015 (E2E) — Cycle G-C: the invitation arc (Steward finds a FIM by
@@ -110,7 +110,7 @@ test.describe.serial('FEAT-H015 — invitations & joining (MEM-1/2/3)', () => {
     }
     for (const u of all.reverse()) {
       if (u.pgId) await admin.from('groups').delete().eq('id', u.pgId);
-      if (u.authId) await admin.auth.admin.deleteUser(u.authId);
+      if (u.authId) await deleteE2EUserByAuthId(admin, u.authId);
     }
   });
 

@@ -1,5 +1,5 @@
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce, runAdminSql, SESSION_EMAIL } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, runAdminSql, SESSION_EMAIL, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H040 (E2E) — Cycle ADM-F: the role-template editor journey (STORY-8)
@@ -168,10 +168,10 @@ test.afterAll(async () => {
       () => undefined,
     );
   }
-  await admin.auth.admin.deleteUser(memberA.authId).catch(() => undefined);
+  await deleteE2EUserByAuthId(admin, memberA.authId).catch(() => undefined);
   // No-op after a green run (WA-3 hard-deletes B in-journey); a failed run
   // must not leak the fixture.
-  await admin.auth.admin.deleteUser(memberB.authId).catch(() => undefined);
+  await deleteE2EUserByAuthId(admin, memberB.authId).catch(() => undefined);
 });
 
 test('the dashboard offers the Roles card and /admin/roles renders both panes', async ({

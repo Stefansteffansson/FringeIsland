@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce, runAdminSql } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, runAdminSql, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H042 / FEAT-PD017 (E2E) — Cycle N-E: the personal group invitation
@@ -99,7 +99,7 @@ test.afterAll(async () => {
       END $$;`).catch(() => undefined);
   }
   for (const f of createdFims) {
-    await admin.auth.admin.deleteUser(f.authId).catch(() => undefined);
+    await deleteE2EUserByAuthId(admin, f.authId).catch(() => undefined);
     await admin.from('groups').delete().eq('id', f.pgId);
   }
 });

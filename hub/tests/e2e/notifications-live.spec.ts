@@ -1,5 +1,5 @@
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H032 (E2E) — A-NTF Cycle N-C: the bell goes LIVE (NTF-9).
@@ -168,7 +168,7 @@ test.describe.serial('FEAT-H032 — the notification bell goes live (NTF-9)', ()
     for (const u of [member, steward]) {
       if (!u) continue;
       if (u.pgId) await admin.from('groups').delete().eq('id', u.pgId);
-      if (u.authId) await admin.auth.admin.deleteUser(u.authId);
+      if (u.authId) await deleteE2EUserByAuthId(admin, u.authId);
     }
   });
 

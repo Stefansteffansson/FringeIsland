@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { createAdminClient, markArrivedOnce } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H038 STORY-7 (E2E) — the account journey, the walk's scenario
@@ -83,7 +83,7 @@ test.describe('FEAT-H038 — the suspension journey (W-7/W-10, STORY-7)', () => 
   test.afterAll(async () => {
     for (const u of created) {
       if (u?.pgId) await admin.from('groups').delete().eq('id', u.pgId);
-      if (u?.authId) await admin.auth.admin.deleteUser(u.authId);
+      if (u?.authId) await deleteE2EUserByAuthId(admin, u.authId);
     }
   });
 
