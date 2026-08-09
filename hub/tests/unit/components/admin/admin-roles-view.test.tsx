@@ -245,10 +245,17 @@ describe('AdminRolesView — retire / unretire (RD-A FEAT-H043 STORY-2)', () => 
     await userEvent.click(screen.getByTestId(`retire-button-${SCRIBE.id}`));
     await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
 
-    // The row REMAINS listed, marked — retirement is not a disappearance.
+    // ADAPTATION (FEAT-H045 STORY-1, 2026-08-09) — the ASSERTION IS KEPT, its
+    // reach moved. The row still does not disappear; it moves under the
+    // `Retired (N)` disclosure, one click away, still badged. The original
+    // intent ("retirement is not a disappearance") is what is being checked
+    // here, and it is checked more completely than before: the disclosure must
+    // appear AND the row must be revealed under it, still marked.
     await waitFor(() =>
-      expect(screen.getByTestId(`retired-badge-${SCRIBE.id}`)).toHaveTextContent(/retired/i),
+      expect(screen.getByTestId('retired-templates-toggle')).toHaveTextContent('Retired (1)'),
     );
+    await userEvent.click(screen.getByTestId('retired-templates-toggle'));
+    expect(screen.getByTestId(`retired-badge-${SCRIBE.id}`)).toHaveTextContent(/retired/i);
     expect(screen.getByTestId(`template-row-${SCRIBE.id}`)).toBeInTheDocument();
 
     // Fresh read, not local mutation (W-9: no cache keyed by nothing).
@@ -260,6 +267,12 @@ describe('AdminRolesView — retire / unretire (RD-A FEAT-H043 STORY-2)', () => 
     fetchMock.mockResolvedValue(ok({ ...PAYLOAD, templates: RETIRED_TEMPLATES }));
     render(<AdminRolesView />);
     await screen.findByText('Steward');
+
+    // ADAPTATION (FEAT-H045 STORY-1, 2026-08-09) — NOT a weakening. A retired
+    // template now starts inside the collapsed `Retired (N)` disclosure, so the
+    // row must be revealed before its affordances can be addressed. The
+    // assertions below are unchanged; only the reach changed, deliberately.
+    await userEvent.click(screen.getByTestId('retired-templates-toggle'));
 
     expect(screen.queryByTestId(`retire-button-${SCRIBE.id}`)).not.toBeInTheDocument();
     await userEvent.click(screen.getByTestId(`unretire-button-${SCRIBE.id}`));
@@ -285,5 +298,115 @@ describe('AdminRolesView — retire / unretire (RD-A FEAT-H043 STORY-2)', () => 
       ),
     );
     expect(screen.queryByTestId(`retired-badge-${SCRIBE.id}`)).not.toBeInTheDocument();
+  });
+});
+
+/**
+ * FEAT-H045 STORY-1 — the catalogue shows what is live, and says how much it is
+ * not showing. WRITTEN RED-FIRST (2026-08-09): at head the list renders every
+ * template in one flat table, retired ones included, which is the defect
+ * (W-10 — a working surface being used as an archive).
+ *
+ * The partition is computed from `retired_at` in the SAME payload the rows come
+ * from — the spec's rabbit hole is a count sourced separately from the rows,
+ * which would eventually lie.
+ */
+describe('AdminRolesView — retired collapse (FEAT-H045 STORY-1)', () => {
+  const SCRIBE = TEMPLATES[1];
+
+  /** Every template retired — the "list is empty" edge. */
+  const ALL_RETIRED = [
+    { ...TEMPLATES[0], retired_at: '2026-08-01T09:00:00.000Z' },
+    { ...TEMPLATES[1], retired_at: '2026-08-06T10:00:00.000Z' },
+  ];
+
+  it('renders only live templates in the main list, retired ones out of it', async () => {
+    fetchMock.mockResolvedValue(ok({ ...PAYLOAD, templates: RETIRED_TEMPLATES }));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    // the live one is in the working list
+    expect(screen.getByTestId(`template-row-${TEMPLATES[0].id}`)).toBeInTheDocument();
+    // the retired one is NOT rendered at all while the disclosure is collapsed
+    expect(screen.queryByTestId(`template-row-${SCRIBE.id}`)).not.toBeInTheDocument();
+  });
+
+  it('states the exact retired count in the disclosure, from the same payload as the rows', async () => {
+    fetchMock.mockResolvedValue(ok({ ...PAYLOAD, templates: RETIRED_TEMPLATES }));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    const toggle = screen.getByTestId('retired-templates-toggle');
+    expect(toggle).toHaveTextContent('Retired (1)');
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('reveals the retired templates with their existing affordances, and says they are offered to nobody', async () => {
+    fetchMock.mockResolvedValue(ok({ ...PAYLOAD, templates: RETIRED_TEMPLATES }));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    await userEvent.click(screen.getByTestId('retired-templates-toggle'));
+
+    expect(screen.getByTestId('retired-templates-toggle')).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByTestId(`template-row-${SCRIBE.id}`)).toBeInTheDocument();
+    // unretire survives the move — the section is a fold, not a graveyard
+    expect(screen.getByTestId(`unretire-button-${SCRIBE.id}`)).toBeInTheDocument();
+    expect(screen.getByTestId('retired-templates-note')).toHaveTextContent(
+      /not offered to any group/i,
+    );
+  });
+
+  it('omits the disclosure ENTIRELY when nothing is retired — never `Retired (0)`', async () => {
+    fetchMock.mockResolvedValue(ok(PAYLOAD));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    expect(screen.queryByTestId('retired-templates-toggle')).not.toBeInTheDocument();
+    expect(screen.queryByText(/retired \(0\)/i)).not.toBeInTheDocument();
+  });
+
+  it('shows a named empty state when every template is retired, never a blank region', async () => {
+    fetchMock.mockResolvedValue(ok({ ...PAYLOAD, templates: ALL_RETIRED }));
+    render(<AdminRolesView />);
+    await screen.findByTestId('retired-templates-toggle');
+
+    // the W-3 lesson: an empty region that renders as nothing is worse than one
+    // that says what it is
+    expect(screen.getByTestId('templates-empty')).toHaveTextContent(
+      /no templates are currently offered/i,
+    );
+    expect(screen.getByTestId('retired-templates-toggle')).toHaveTextContent('Retired (2)');
+  });
+
+  it('moves a template between the sections on a fresh read, with no manual refresh', async () => {
+    // The list is server state: retiring from the detail view and returning must
+    // repaint from a re-read. Here the second read is the post-retire truth.
+    fetchMock.mockResolvedValueOnce(ok(PAYLOAD));
+    fetchMock.mockResolvedValueOnce(ok({ ...PAYLOAD, templates: RETIRED_TEMPLATES }));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    // before: live, in the working list, no disclosure at all
+    expect(screen.getByTestId(`template-row-${SCRIBE.id}`)).toBeInTheDocument();
+    expect(screen.queryByTestId('retired-templates-toggle')).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: /refresh/i }));
+
+    await waitFor(() =>
+      expect(screen.getByTestId('retired-templates-toggle')).toHaveTextContent('Retired (1)'),
+    );
+    expect(screen.queryByTestId(`template-row-${SCRIBE.id}`)).not.toBeInTheDocument();
+  });
+
+  it('the partitioned view is axe-clean, collapsed and expanded', async () => {
+    fetchMock.mockResolvedValue(ok({ ...PAYLOAD, templates: RETIRED_TEMPLATES }));
+    const { container } = render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    expect(await axe(container)).toHaveNoViolations();
+
+    await userEvent.click(screen.getByTestId('retired-templates-toggle'));
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

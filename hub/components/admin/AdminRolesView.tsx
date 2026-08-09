@@ -28,6 +28,8 @@ export function AdminRolesView() {
   } | null>(null);
   const [ceremonyError, setCeremonyError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // FEAT-H045 STORY-1: retired templates are one click away, never gone.
+  const [retiredOpen, setRetiredOpen] = useState(false);
 
   const computeView = useCallback(async (): Promise<ViewState> => {
     try {
@@ -129,6 +131,111 @@ export function AdminRolesView() {
   const { templates, catalog, generated_at } = view.payload;
   const categories = Array.from(new Set(catalog.map((p) => p.category)));
 
+  /**
+   * FEAT-H045 STORY-1 — the catalogue is a working surface, not an archive
+   * (W-10). Retire already means "no longer offered"; the list was simply
+   * failing to act on what it already knew. Both partitions come from the SAME
+   * payload the rows come from, so the disclosure's count can never disagree
+   * with what expanding it reveals.
+   */
+  const live = templates.filter((t) => t.retired_at === null);
+  const retired = templates.filter((t) => t.retired_at !== null);
+
+  /** ONE row renderer for both sections — a second one would drift. */
+  const renderTemplateRow = (t: AdminRolesPayload['templates'][number]) => (
+    <tr key={t.id} data-testid={`template-row-${t.id}`} className="border-t border-gray-100">
+      <td className="py-2 pr-4">
+        <span className="flex items-center gap-2">
+          <Link href={`/admin/roles/${t.id}`} className="font-medium text-indigo-700">
+            {t.name}
+          </Link>
+          {t.is_system && (
+            <span
+              data-testid={`seeded-badge-${t.id}`}
+              className="rounded bg-indigo-50 px-1.5 py-0.5 text-xs text-indigo-700"
+            >
+              Seeded
+            </span>
+          )}
+          {/* RD-A: a retired template stays listed, marked. Retirement is a
+              state to see and reverse, never a disappearance. It now lives
+              under the disclosure, so the badge marks it there. */}
+          {t.retired_at && (
+            <span
+              data-testid={`retired-badge-${t.id}`}
+              className="rounded bg-amber-50 px-1.5 py-0.5 text-xs text-amber-700"
+            >
+              Retired
+            </span>
+          )}
+        </span>
+        {t.description && <span className="block text-xs text-gray-500">{t.description}</span>}
+      </td>
+      <td className="py-2 pr-4">
+        {t.default_version_number === null ? '—' : `v${t.default_version_number}`}
+      </td>
+      <td className="py-2 pr-4">
+        {t.version_count} version{t.version_count === 1 ? '' : 's'}
+      </td>
+      <td className="py-2 pr-4 text-gray-600">
+        {t.group_template_refs.length ? t.group_template_refs.join(', ') : '—'}
+      </td>
+      <td className="py-2">{t.instantiated_role_count}</td>
+      <td className="py-2 pl-4 text-right">
+        {/* The seeded four are the floor every group is built on — the contract
+            refuses regardless, so no affordance renders. */}
+        {!t.is_system &&
+          (t.retired_at ? (
+            <button
+              type="button"
+              data-testid={`unretire-button-${t.id}`}
+              onClick={() => setCeremony({ template: t, verb: 'unretire' })}
+              className="rounded border border-gray-200 px-2 py-0.5 text-xs text-gray-700 hover:bg-gray-50"
+            >
+              Unretire
+            </button>
+          ) : (
+            <button
+              type="button"
+              data-testid={`retire-button-${t.id}`}
+              onClick={() => setCeremony({ template: t, verb: 'retire' })}
+              className="rounded border border-amber-200 px-2 py-0.5 text-xs text-amber-700 hover:bg-amber-50"
+            >
+              Retire
+            </button>
+          ))}
+      </td>
+    </tr>
+  );
+
+  const templateTable = (rows: AdminRolesPayload['templates'], testid: string) => (
+    <table className="w-full text-sm" data-testid={testid}>
+      <thead>
+        <tr className="text-left text-xs text-gray-500">
+          <th scope="col" className="py-1 pr-4 font-medium">
+            Name
+          </th>
+          <th scope="col" className="py-1 pr-4 font-medium">
+            Default
+          </th>
+          <th scope="col" className="py-1 pr-4 font-medium">
+            Versions
+          </th>
+          <th scope="col" className="py-1 pr-4 font-medium">
+            Carried by
+          </th>
+          <th scope="col" className="py-1 font-medium">
+            Instantiated roles
+          </th>
+          <th scope="col" className="py-1 pl-4 text-right font-medium">
+            Offer
+          </th>
+        </tr>
+      </thead>
+      <tbody>{rows.map(renderTemplateRow)}</tbody>
+    </table>
+  );
+
   return (
     <main className="space-y-6 p-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -149,102 +256,43 @@ export function AdminRolesView() {
 
       <section className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
         <h2 className="mb-3 text-lg font-medium">Templates</h2>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-xs text-gray-500">
-              <th scope="col" className="py-1 pr-4 font-medium">
-                Name
-              </th>
-              <th scope="col" className="py-1 pr-4 font-medium">
-                Default
-              </th>
-              <th scope="col" className="py-1 pr-4 font-medium">
-                Versions
-              </th>
-              <th scope="col" className="py-1 pr-4 font-medium">
-                Carried by
-              </th>
-              <th scope="col" className="py-1 font-medium">
-                Instantiated roles
-              </th>
-              <th scope="col" className="py-1 pl-4 text-right font-medium">
-                Offer
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {templates.map((t) => (
-              <tr
-                key={t.id}
-                data-testid={`template-row-${t.id}`}
-                className="border-t border-gray-100"
-              >
-                <td className="py-2 pr-4">
-                  <span className="flex items-center gap-2">
-                    <Link href={`/admin/roles/${t.id}`} className="font-medium text-indigo-700">
-                      {t.name}
-                    </Link>
-                    {t.is_system && (
-                      <span
-                        data-testid={`seeded-badge-${t.id}`}
-                        className="rounded bg-indigo-50 px-1.5 py-0.5 text-xs text-indigo-700"
-                      >
-                        Seeded
-                      </span>
-                    )}
-                    {/* RD-A: a retired template stays listed, marked. Retirement
-                        is a state to see and reverse, never a disappearance. */}
-                    {t.retired_at && (
-                      <span
-                        data-testid={`retired-badge-${t.id}`}
-                        className="rounded bg-amber-50 px-1.5 py-0.5 text-xs text-amber-700"
-                      >
-                        Retired
-                      </span>
-                    )}
-                  </span>
-                  {t.description && (
-                    <span className="block text-xs text-gray-500">{t.description}</span>
-                  )}
-                </td>
-                <td className="py-2 pr-4">
-                  {t.default_version_number === null ? '—' : `v${t.default_version_number}`}
-                </td>
-                <td className="py-2 pr-4">
-                  {t.version_count} version{t.version_count === 1 ? '' : 's'}
-                </td>
-                <td className="py-2 pr-4 text-gray-600">
-                  {t.group_template_refs.length ? t.group_template_refs.join(', ') : '—'}
-                </td>
-                <td className="py-2">{t.instantiated_role_count}</td>
-                <td className="py-2 pl-4 text-right">
-                  {/* The seeded four are the floor every group is built on —
-                      the contract refuses regardless, so no affordance renders. */}
-                  {!t.is_system &&
-                    (t.retired_at ? (
-                      <button
-                        type="button"
-                        data-testid={`unretire-button-${t.id}`}
-                        onClick={() => setCeremony({ template: t, verb: 'unretire' })}
-                        className="rounded border border-gray-200 px-2 py-0.5 text-xs text-gray-700 hover:bg-gray-50"
-                      >
-                        Unretire
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        data-testid={`retire-button-${t.id}`}
-                        onClick={() => setCeremony({ template: t, verb: 'retire' })}
-                        className="rounded border border-amber-200 px-2 py-0.5 text-xs text-amber-700 hover:bg-amber-50"
-                      >
-                        Retire
-                      </button>
-                    ))}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+        {/* Every template retired is a real state, and it must SAY so. A region
+            that renders as nothing is the W-3 defect one worse. */}
+        {live.length === 0 ? (
+          <p data-testid="templates-empty" className="text-sm text-gray-500">
+            No templates are currently offered. Everything in the catalogue is retired — expand
+            Retired below to offer one again.
+          </p>
+        ) : (
+          templateTable(live, 'templates-table')
+        )}
+
+        {/* The disclosure is ABSENT when nothing is retired — a `Retired (0)`
+            control is a permanent reminder of an empty drawer. */}
+        {retired.length > 0 && (
+          <div className="mt-4 border-t border-gray-100 pt-3">
+            <button
+              type="button"
+              data-testid="retired-templates-toggle"
+              aria-expanded={retiredOpen}
+              onClick={() => setRetiredOpen((v) => !v)}
+              className="text-sm font-medium text-indigo-700 hover:underline"
+            >
+              Retired ({retired.length})
+            </button>
+
+            {retiredOpen && (
+              <div className="mt-3">
+                <p data-testid="retired-templates-note" className="mb-2 text-xs text-gray-500">
+                  These are not offered to any group. Copies already adopted are unaffected —
+                  unretire puts a template back on offer.
+                </p>
+                {templateTable(retired, 'retired-templates-table')}
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
       <section

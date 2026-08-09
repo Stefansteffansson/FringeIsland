@@ -6,7 +6,7 @@ title: Retired role templates collapse behind a disclosure in the admin catalogu
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
@@ -174,6 +174,22 @@ templates.
 - **Extensibility:** No new types, enums, or permission scopes in the Hub. `undeletable_reason` is
   rendered as **text**, never switched on — so a new server reason needs no Hub change, which is the
   point of it being an open code.
+
+## Implementation notes
+
+**STORY-1 is built and shipped (2026-08-09, [TASK-RDC-01](../../../planning/backlog/tasks/TASK-RDC-01-h045-story1-retired-collapse.md)). STORY-2 and STORY-3 are NOT built** — both consume `deletable` / `undeletable_reason` from FEAT-PC029, which has not landed. The feature is `5-in-cycle`, not `6-done`, and stays there until PC029 ships and its two halves are built.
+
+**What shipped.** `AdminRolesView` partitions `templates` on `retired_at` — live rows in the working list, retired ones behind a `Retired (N)` disclosure that reuses the H044 `AvailableRolesSection` idiom (button + `aria-expanded` + conditional render), as the rabbit hole instructed. One row renderer serves both sections; a second would drift. The count and the rows come from the same array, so the disclosure cannot lie. No migration, no API change, no new component family — the appetite held.
+
+**Red-first at the unit tier**, 6 new cases seen failing before any implementation (partition, exact count, reveal-with-unretire, absent-when-zero, named empty state, cross-section move on a fresh read, plus axe collapsed *and* expanded). Unit tier green at **1420/1420**.
+
+**Two sibling unit cases were adapted, and both are labelled in place as adaptations rather than silently rewritten** — `offers unretire on a retired template` and `retires on confirm and repaints from a fresh read`. Both addressed a retired row that now starts collapsed. The second is the one worth naming: its original intent — *"the row REMAINS listed, marked — retirement is not a disappearance"* — is exactly what STORY-1 changes the *reach* of, not the truth of. Its assertion was kept and extended (the disclosure must appear **and** the row must be revealed under it, still badged), never dropped.
+
+**PREMISE CORRECTION — the last acceptance criterion.** STORY-1's final AC says *"a template is retired or unretired **from the detail view**"*. **The detail view carries no retire affordance.** Retire/unretire live on the list; only the route `/api/admin/roles/[id]/retire` exists. So that AC's stated trigger is not a user action on today's surface, and building one would be new scope this story did not ask for. What the criterion protects is the no-stale-list guarantee (the J-D lesson), and *that* is pinned: an E2E walks list → detail client-side, the state changes underneath via the same endpoint the detail view would call, and the return is a **client-side `goBack()`** — never `page.goto`, which resets module state and would mask the staleness the criterion exists to catch. **If a detail-view retire button is ever added, this AC should be re-walked as written.**
+
+**Honest labelling:** that E2E is **test-after** — the partition it exercises was implemented under the unit tier's red-first work, and the repaint-on-return behaviour it pins is pre-existing. It passed on first run. It is not vacuous: `retired-templates-toggle` did not exist at head, so it would have failed against the pre-change component.
+
+**Gates:** unit 1420/1420 · `admin-roles.spec` 12/12 · eslint 0 errors (3 warnings, all pre-existing in untouched files — found, not caused) · `next build` clean.
 
 ## Performance budget
 
