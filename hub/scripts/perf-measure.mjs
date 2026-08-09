@@ -107,7 +107,44 @@ async function teardown() {
     ).catch((e) => console.log('  ! group cleanup: ' + e.message.slice(0, 90)));
     await a.from('journey_enrollments').delete().eq('group_id', pg);
     await a.from('journeys').delete().eq('created_by_group_id', pg);
-    await a.from('groups').delete().eq('id', pg);
+
+    // ORDER CORRECTED 2026-08-09 (TASK-INT-03). This used to delete the group
+    // HERE, before the auth user, and ignore the result — the identical defect
+    // `cleanupTestUser` carried until 2026-07-28 (hub/tests/helpers/supabase.ts).
+    // It can never succeed: `users` references the group, so deleting it fires
+    // the FK's SET NULL on `users.personal_group_id`, which an immutability
+    // trigger rejects with
+    //   "personal_group_id cannot be changed after it has been set"
+    // The discarded error was followed by the auth delete, which CASCADEd
+    // `public.users` away and left the group orphaned — while this function
+    // printed "teardown: done".
+    //
+    // Reproduced with an id before the fix: e378c1b5-… survived its own
+    // teardown by 47 minutes holding 10 notification rows, and a bracketed
+    // setup+teardown moved orphaned personal groups 2 688 -> 2 689.
+    //
+    // The auth user goes FIRST so `public.users` CASCADEs and only then is the
+    // group unreferenced and deletable.
+    if (p.auth_user_id) {
+      const { error: authErr } = await a.auth.admin.deleteUser(p.auth_user_id);
+      if (authErr) console.error('  ! auth user delete: ' + authErr.message);
+    }
+
+    const { error: groupErr } = await a.from('groups').delete().eq('id', pg);
+    if (groupErr) console.error('  ! personal group delete REFUSED: ' + groupErr.message);
+
+    // Verify rather than trust — the whole point of this task is that the old
+    // teardown reported success it had not achieved.
+    const { count } = await a
+      .from('groups')
+      .select('id', { count: 'exact', head: true })
+      .eq('id', pg);
+    if (count) {
+      console.error(`teardown: LEAKED personal group ${pg} — it survived teardown`);
+      throw new Error(`teardown leaked personal group ${pg}`);
+    }
+    console.log('teardown: done (personal group verified gone)');
+    return;
   }
   if (p?.auth_user_id) await a.auth.admin.deleteUser(p.auth_user_id);
   console.log('teardown: done');
