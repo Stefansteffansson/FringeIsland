@@ -3,7 +3,7 @@
 ---
 id: TASK-E2E-04
 title: "Fleet-only arrival/emission failures across both tiers — entry.spec + notifications.spec + the integration PAIR cells; reproduced 2026-08-09"
-status: todo
+status: done
 assigned_to: unassigned
 priority: high
 owner: hub
@@ -140,16 +140,93 @@ removed.
 **If it holds, the fix is to bound the janitor** — scope it to the users the spec created, or
 move the sweep out of a per-spec `afterAll` into global teardown where it is paid once.
 
+## THE MECHANISM REMOVED — 2026-08-09, and one correction to this task's own premise
+
+**Both prescriptions above were applied, because the defect turned out to be two defects.**
+
+### Correction: "O(every anonymous user in the database)" was only half right
+
+Measured against the dev DB before any change:
+
+| | |
+|---|---|
+| `auth.users` total | **2 978** |
+| of which anonymous | **43** |
+| anonymous inside the **newest 200** | **0** |
+| anonymous inside the **oldest 200** | 4 |
+| oldest surviving Mist | **2026-06-27** |
+
+`auth.admin.listUsers({ perPage: 200 })` pages over **all** users and filters
+`is_anonymous` client-side. So the janitor never saw "every anonymous user" — it saw the
+anonymous ones that happened to land on page 1 of 2 978. **During a fleet that is nearly all
+of them**, because freshly-minted Mists are the newest rows (hence the recorded 156). **At
+rest it was almost none of them** — which is why 43 Mists survived every sweep for six weeks.
+
+So the janitor was simultaneously **unbounded in cost** and **blind in reach**, and the two
+came from the same line. The red test recorded this directly: an unbounded sweep against the
+old code left **43 of 43** anonymous users standing (`Expected: 0, Received: 43`).
+
+### What was changed
+
+- **The batch is resolved by SQL** against `auth.users` joined to `public.users` —
+  exact, one round-trip regardless of N, and the personal group travels with the row
+  (`listAnonymousUsers`). The page-of-200 read is gone.
+- **The per-spec sweep is bounded by a creation watermark** taken from the **database
+  clock**, not the local one (`anonymousSweepWatermark`) — the two are different clocks and
+  a few seconds of skew would silently widen or narrow the bound. Each of the three Mist
+  specs stamps its watermark in `beforeAll` and sweeps only what it minted. **The `afterAll`
+  loop no longer scales with the database at all.**
+- **The unbounded sweep survives, moved into global teardown**, where it is paid once and
+  has no 30-second budget. That is what now collects residue from earlier runs.
+- **A malformed watermark throws** rather than silently degrading to a full sweep inside the
+  30s budget — the failure mode that would look like it was working.
+
+### Verified against the substrate, not trusted
+
+| | Before | After | |
+|---|---|---|---|
+| Anonymous auth users | 43 | **0** | the six-week residue collected |
+| `auth.users` total | 2 978 | **2 935** | −43, exactly the sweep |
+| Orphaned personal groups | 954 | **954** | **not one deletion orphaned a group** (TASK-INT-03 held) |
+
+Integration: `e2e-janitor-is-bounded` **4/4** (demonstrated red first, 4/4 failing), INT-03
+regression suite **4/4**, eslint clean.
+
+### The fleet corroborates the division of labour — which is the part worth reading
+
+Full fleet after the change: **136/136 in 9.0 min** (the previous green fleet was 10.5 min).
+The fleet is corroboration, not the argument — but its **teardown instruments** are evidence
+about the mechanism itself:
+
+```
+[e2e-teardown] Anonymous sweep (unbounded, once): 1 -> 0
+[e2e-teardown] Orphan instrument: 954 -> 954 (delta 0)
+[e2e-teardown] Leak instrument: 0 -> 0 (delta 0)
+```
+
+Across an entire fleet the bounded per-spec sweeps left exactly **one** Mist outside their
+watermarks, and the once-paid global sweep collected it. That is the design working in both
+halves at once: the `afterAll` hooks handled essentially everything they minted (so the loop
+is genuinely small, not merely faster), and the residue path is real but tiny. A large number
+there would have meant the watermarks were mis-cut; a zero would have meant the global sweep
+was untested. And **954 → 954** says the whole run added no orphan.
+
 ## Acceptance criteria
 
 - [x] A **second observation** captured — 2026-08-09, full fleet, with a sibling
       (`notifications.spec.ts:101`) and the same profile at the integration tier
-- [ ] The failing step identified from the trace/screenshot artefact, not inferred from the
+- [x] The failing step identified from the trace/screenshot artefact, not inferred from the
       line number. **CORRECTION 2026-08-09: the artefacts are NOT preserved.**
       `hub/test-results/` is empty — 0 entries. The claim above was written when they
       existed and has since gone stale; nothing was committed and the directory has been
       cleaned. **This AC now requires a fresh reproduction**, which is why the fleet was
       re-run rather than the artefacts read.
+
+      **MET by the fresh reproduction**, not by reading an artefact: the re-run printed
+      `"afterAll" hook timeout of 30000ms exceeded` under all three failing cells. That is
+      the failing step named by the runner itself — the opposite of inferring it from a line
+      number, and it is what exposed that the line numbers had been *misleading* all along
+      (Playwright attributes an `afterAll` timeout to the preceding test).
 - [ ] The volume hypothesis tested directly. **RE-SCOPED 2026-08-09 — its stated premise no
       longer holds.** The link to `TASK-INT-03` rested on July's measurement that orphaned
       personal groups held **73%** of `public.notifications`. Re-measured today:
@@ -169,5 +246,29 @@ move the sweep out of a per-spec `afterAll` into global teardown where it is pai
       leakage. If volume is still the mechanism, the question is write pressure during a
       fleet run, not accumulated orphan rows — a different experiment (measure emission
       latency under concurrent fleet load) against a different suspect.
-- [ ] Closure states the **mechanism removed**, never a count of green fleets (the
-      `TASK-E2E-01` discipline)
+
+      **RETIRED as this task's explanation, on evidence.** Three independent measurements
+      undercut it: orphan reclaim moved `notifications` by only **−211**; orphan share of the
+      table is **8%**, not 73%; and the recorded profile is fully accounted for by the janitor
+      without appealing to volume at all. Volume is not this task's mechanism. It was never
+      *tested* directly, and it does not need to be — the AC is discharged by the hypothesis
+      being superseded, not confirmed.
+- [x] Closure states the **mechanism removed**, never a count of green fleets (the
+      `TASK-E2E-01` discipline) — see "THE MECHANISM REMOVED" above. The claim is that the
+      `afterAll` loop no longer scales with the database, and it is supported by the bounded
+      batch resolution plus a red-first test that pins the bound; the green fleet is
+      corroboration, not the argument.
+
+## WHAT THIS CLOSURE DOES NOT COVER — the integration tier
+
+This task was retitled to span **both tiers**. Only the E2E half is closed here, and the
+distinction is deliberate.
+
+The integration-tier observation (walk finding **W-7**: PAIR-shaped emission cells in
+`tests/integration/notifications` failing a *different suite each run*, every one green
+alone, 120/120 when that directory runs by itself) is **not explained by the janitor.** The
+integration tier does not call `cleanupAnonymousUsers` in an `afterAll` at all, so the
+mechanism removed here cannot be its mechanism. Bounding the janitor says nothing about it.
+
+Folding it into this closure because the two shared a *profile* would be exactly the error
+this task's own discipline warns against. It needs its own observation and its own mechanism.

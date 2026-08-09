@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import {
   createAdminClient,
   cleanupAnonymousUsers,
+  anonymousSweepWatermark,
   deleteTranscendedUser,
 } from './helpers/auth';
 
@@ -29,8 +30,15 @@ test.use({ storageState: { cookies: [], origins: [] } });
 const PLAYER_URL = /\/journeys\/[0-9a-f-]+\/play/;
 const PASSWORD = 'Transcend123!@#';
 
+// TASK-E2E-04 — bounded to this spec's own Mists; see entry.spec.ts.
+let specStart: string;
+
+test.beforeAll(async () => {
+  specStart = await anonymousSweepWatermark();
+});
+
 test.afterAll(async () => {
-  await cleanupAnonymousUsers(createAdminClient());
+  await cleanupAnonymousUsers(createAdminClient(), { since: specStart });
 });
 
 test('a Mist arrives through the front door: welcome, free to leave, listed, never re-launched (STORY-1 + STORY-3)', async ({

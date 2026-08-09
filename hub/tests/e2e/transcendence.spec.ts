@@ -1,5 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { createAdminClient, cleanupAnonymousUsers, deleteTranscendedUser } from './helpers/auth';
+import {
+  createAdminClient,
+  cleanupAnonymousUsers,
+  anonymousSweepWatermark,
+  deleteTranscendedUser,
+} from './helpers/auth';
 
 /**
  * FEAT-H004 (E2E) — the IDN-2 journeys, end-to-end:
@@ -21,8 +26,15 @@ function freshEmail(tag: string): string {
   return `e2e-h004-${tag}-${Date.now()}@fringeisland.test`;
 }
 
+// TASK-E2E-04 — bounded to this spec's own Mists; see entry.spec.ts.
+let specStart: string;
+
+test.beforeAll(async () => {
+  specStart = await anonymousSweepWatermark();
+});
+
 test.afterAll(async () => {
-  await cleanupAnonymousUsers(createAdminClient());
+  await cleanupAnonymousUsers(createAdminClient(), { since: specStart });
 });
 
 test('become-a-FIM in place: Mist -> credentials + consent -> the carried walk RESUMES (continuity)', async ({

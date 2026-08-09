@@ -1,4 +1,6 @@
 import {
+  cleanupAnonymousUsers,
+  countAnonymousUsers,
   countDeusExE2ELeaks,
   countOrphanedPersonalGroups,
   createAdminClient,
@@ -26,6 +28,22 @@ export default async function globalTeardown() {
 
   await deleteE2EUser(admin, SESSION_EMAIL);
   console.log('[e2e-teardown] Session user removed');
+
+  // TASK-E2E-04: THE unbounded anonymous sweep, paid exactly once. The three
+  // Mist specs each sweep only what they minted (a watermark from the DB clock),
+  // because an O(every anonymous user) loop inside a 30s `afterAll` fails as
+  // soon as the fleet has minted enough Mists — which is what took out
+  // entry.spec:46, onboarding-arrival.spec:93 and transcendence.spec:83 on
+  // 2026-08-09. Here there is no 30s budget, so the residue is safe to collect.
+  //
+  // It is genuinely residue: the old page-of-200 janitor could not see anonymous
+  // users that had fallen off page 1 of `auth.users`, so 43 of them survived
+  // every sweep since 2026-06-27. Runs BEFORE the orphan instrument, so anything
+  // it erases is inside the measurement rather than beside it.
+  const anonBefore = await countAnonymousUsers();
+  await cleanupAnonymousUsers(admin);
+  const anonAfter = await countAnonymousUsers();
+  console.log(`[e2e-teardown] Anonymous sweep (unbounded, once): ${anonBefore} -> ${anonAfter}`);
 
   // TASK-INT-03 leak instrument. Runs AFTER the session user is removed, so the
   // shared fixture's own group is inside the measurement rather than a

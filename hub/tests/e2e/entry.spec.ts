@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { createAdminClient, cleanupAnonymousUsers } from './helpers/auth';
+import { createAdminClient, cleanupAnonymousUsers, anonymousSweepWatermark } from './helpers/auth';
 
 /**
  * FEAT-H003 (E2E) — the Mist arrival journey:
@@ -12,8 +12,18 @@ import { createAdminClient, cleanupAnonymousUsers } from './helpers/auth';
  */
 test.use({ storageState: { cookies: [], origins: [] } });
 
+// TASK-E2E-04 — sweep only the Mists THIS spec minted. Unbounded, this teardown
+// pays for every anonymous user in the database inside a 30s budget, and N grows
+// during a fleet because the fleet is what mints Mists. Residue from earlier
+// runs is collected once, unbounded, in global teardown.
+let specStart: string;
+
+test.beforeAll(async () => {
+  specStart = await anonymousSweepWatermark();
+});
+
 test.afterAll(async () => {
-  await cleanupAnonymousUsers(createAdminClient());
+  await cleanupAnonymousUsers(createAdminClient(), { since: specStart });
 });
 
 test('the FringeIsland entry loads sessionless with three doors and no redirect', async ({
