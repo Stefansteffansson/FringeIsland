@@ -127,34 +127,109 @@ export async function countOrphanedPersonalGroups(): Promise<number> {
   return Number(rows?.[0]?.n ?? 0);
 }
 
-/**
- * Delete every anonymous (Mist) auth user — the E2E janitor for FEAT-H003.
- * The only source of anonymous users in this project is the Mist feature, so
- * deleting all of them is safe.
- *
- * Routed through `eraseUserAndPersonalGroup` (TASK-INT-03): this function used
- * to delete the personal group before the auth user and discard the result, and
- * because it sweeps EVERY anonymous user (perPage 200) on each of the three Mist
- * specs that call it, it was the single largest orphan source in the project.
- */
-export async function cleanupAnonymousUsers(admin: SupabaseClient): Promise<void> {
-  const { data, error } = await admin.auth.admin.listUsers({ perPage: 200 });
-  if (error || !data) return;
-  const anon = data.users.filter((u) => u.is_anonymous);
-  if (anon.length === 0) return;
-
-  // Resolve every profile in ONE read rather than one per user. This function
-  // is O(every anonymous user in the database) and runs inside a 30s afterAll,
-  // so per-user round-trips are the budget.
-  const { data: profiles } = await admin
-    .from('users')
-    .select('auth_user_id, personal_group_id')
-    .in('auth_user_id', anon.map((u) => u.id));
-
-  const groupByAuthId = new Map<string, string | null>(
-    (profiles ?? []).map((p) => [p.auth_user_id as string, p.personal_group_id as string | null]),
+/** Count anonymous (Mist) auth users — the TASK-E2E-04 residue instrument.
+ *  Asked of `auth.users` directly, because the thing it exists to catch is a
+ *  janitor that cannot SEE some of them. */
+export async function countAnonymousUsers(): Promise<number> {
+  const rows = await runAdminSqlRows(
+    `SELECT count(*)::int AS n FROM auth.users WHERE is_anonymous;`,
   );
-  const groupIds = [...groupByAuthId.values()].filter(Boolean) as string[];
+  return Number(rows?.[0]?.n ?? 0);
+}
+
+/**
+ * Reject a watermark that is not an unambiguous instant, and re-serialise the
+ * ones that are. Two jobs, both load-bearing: a watermark that quietly parsed
+ * to nothing would restore the unbounded sweep inside a 30s budget while
+ * looking like it worked, and the value is interpolated into SQL.
+ */
+function normaliseWatermark(since: string): string {
+  const ms = Date.parse(since);
+  if (Number.isNaN(ms)) {
+    throw new Error(
+      `[e2e-cleanup] unusable sweep watermark ${JSON.stringify(since)} — expected an ISO instant ` +
+        `(use anonymousSweepWatermark(), which reads the database clock)`,
+    );
+  }
+  return new Date(ms).toISOString();
+}
+
+/**
+ * The sweep watermark for a spec, taken from the DATABASE clock (TASK-E2E-04).
+ *
+ * `auth.users.created_at` is stamped by the server. A local `new Date()` is a
+ * different clock, and a few seconds of skew would silently widen the bound
+ * (back to sweeping other specs' Mists) or narrow it (leaving this spec's own
+ * behind). One round-trip, paid once per spec in `beforeAll`.
+ */
+export async function anonymousSweepWatermark(): Promise<string> {
+  const rows = await runAdminSqlRows(
+    `SELECT to_char(now() AT TIME ZONE 'utc', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS t;`,
+  );
+  const t = rows?.[0]?.t;
+  if (!t) throw new Error('[e2e-cleanup] could not read the sweep watermark from the database clock');
+  return normaliseWatermark(String(t));
+}
+
+/**
+ * Resolve the anonymous (Mist) batch a sweep should erase — by SQL against
+ * `auth.users`, optionally bounded by a creation watermark.
+ *
+ * This replaces `auth.admin.listUsers({ perPage: 200 })`, which was BLIND:
+ * it pages over ALL users, not anonymous ones, and filters client-side.
+ * Measured against the dev DB on 2026-08-09 — 2 978 auth users, 43 anonymous,
+ * and ZERO of those 43 inside the newest 200. Mists minted by a running fleet
+ * dominate page 1 and get swept; Mists that fall off it become invisible to
+ * every later sweep, permanently. The oldest survivor dated 2026-06-27.
+ *
+ * One round-trip regardless of N, and the personal group travels with the row,
+ * so the sweep needs no per-user profile read either.
+ */
+export async function listAnonymousUsers(
+  since?: string,
+): Promise<Array<{ authId: string; personalGroupId: string | null }>> {
+  const bound = since ? `AND a.created_at >= '${normaliseWatermark(since)}'::timestamptz` : '';
+  const rows = await runAdminSqlRows(
+    `SELECT a.id::text AS auth_id, u.personal_group_id::text AS personal_group_id
+       FROM auth.users a
+       LEFT JOIN public.users u ON u.auth_user_id = a.id
+      WHERE a.is_anonymous ${bound}
+      ORDER BY a.created_at;`,
+  );
+  return rows.map((r) => ({
+    authId: String(r.auth_id),
+    personalGroupId: (r.personal_group_id as string | null) ?? null,
+  }));
+}
+
+/**
+ * Delete anonymous (Mist) auth users — the E2E janitor for FEAT-H003.
+ * The only source of anonymous users in this project is the Mist feature.
+ *
+ * PASS `since` FROM A PER-SPEC `beforeAll` (TASK-E2E-04). Unbounded, this
+ * function is O(every anonymous user in the database) and N grows *during* a
+ * fleet, because the fleet is what mints Mists — so a per-spec `afterAll`
+ * paying for the whole database gets slower the longer the fleet runs and
+ * fails only in a fleet. That is exactly what happened on 2026-08-09:
+ * entry.spec:46, onboarding-arrival.spec:93 and transcendence.spec:83, the
+ * three specs that call this, all died as `"afterAll" hook timeout of 30000ms
+ * exceeded`. Bounded by a watermark, a spec pays only for what it minted.
+ *
+ * The unbounded form is still correct and still needed — it is what collects
+ * residue from earlier runs — but it belongs in GLOBAL TEARDOWN, where it is
+ * paid once and has no 30-second budget.
+ *
+ * Erasure is routed through `eraseUserAndPersonalGroup` (TASK-INT-03), which
+ * takes the personal group with the account instead of orphaning it.
+ */
+export async function cleanupAnonymousUsers(
+  admin: SupabaseClient,
+  opts: { since?: string } = {},
+): Promise<void> {
+  const batch = await listAnonymousUsers(opts.since);
+  if (batch.length === 0) return;
+
+  const groupIds = batch.map((b) => b.personalGroupId).filter(Boolean) as string[];
 
   // Consent for the WHOLE batch in one statement (see eraseUserAndPersonalGroup's
   // clearConsent note). Per-user this was a Management API call each, which is
@@ -168,8 +243,8 @@ export async function cleanupAnonymousUsers(admin: SupabaseClient): Promise<void
     ).catch(() => undefined);
   }
 
-  for (const u of anon) {
-    await eraseUserAndPersonalGroup(admin, u.id, groupByAuthId.get(u.id) ?? null, {
+  for (const u of batch) {
+    await eraseUserAndPersonalGroup(admin, u.authId, u.personalGroupId, {
       clearConsent: false,
     });
   }
