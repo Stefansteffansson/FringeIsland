@@ -1,5 +1,5 @@
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H031 / FEAT-PD014 (E2E) — A-NTF Cycle N-B: the actionable notification,
@@ -161,7 +161,7 @@ test.describe.serial('FEAT-H031 — typed actions & co-leader convergence (N-B)'
     for (const id of groupIds) await admin.from('groups').delete().eq('id', id);
     for (const u of [...created].reverse()) {
       if (u?.pgId) await admin.from('groups').delete().eq('id', u.pgId);
-      if (u?.authId) await admin.auth.admin.deleteUser(u.authId);
+      if (u?.authId) await deleteE2EUserByAuthId(admin, u.authId);
     }
   });
 

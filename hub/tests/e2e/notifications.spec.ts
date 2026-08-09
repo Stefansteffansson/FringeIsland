@@ -1,5 +1,5 @@
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H030 (E2E) — A-NTF Cycle N-A: the notification surface end-to-end.
@@ -94,7 +94,7 @@ test.describe.serial('FEAT-H030 — notification bell, dropdown & inbox (NTF-1/2
     if (groupId) await admin.from('groups').delete().eq('id', groupId);
     for (const u of [...users].reverse()) {
       if (u.pgId) await admin.from('groups').delete().eq('id', u.pgId);
-      if (u.authId) await admin.auth.admin.deleteUser(u.authId);
+      if (u.authId) await deleteE2EUserByAuthId(admin, u.authId);
     }
   });
 

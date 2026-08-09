@@ -20,7 +20,7 @@ test('authenticated /groups renders without redirect, with the bell mount (V3 se
  * admin client (service_role — the ADR-U038 narrowing does not bind it) and a
  * second, spec-created FIM. Everything created here is cleaned up.
  */
-import { createAdminClient, markArrivedOnce } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, deleteE2EUserByAuthId } from './helpers/auth';
 
 test.describe('FEAT-H013 — create & steward (GRP-1/2/3/5 + GRP-4 detail)', () => {
   const stamp = Date.now();
@@ -122,7 +122,7 @@ test.describe('FEAT-H013 — non-member honesty (no-leak + member-list toggle)',
       if (profile?.personal_group_id) {
         await admin.from('groups').delete().eq('id', profile.personal_group_id);
       }
-      await admin.auth.admin.deleteUser(probeAuthId);
+      await deleteE2EUserByAuthId(admin, probeAuthId);
     }
   });
 

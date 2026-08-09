@@ -134,7 +134,7 @@ actually gone** before claiming success — it throws and exits non-zero if it i
 version's failure mode was reporting a success it had not achieved, so a self-check is the
 fix, not just the reordering. Red-run debris removed; counts back to 5 765 / 2 688.
 
-## STILL OPEN, and much larger than this task assumed — the Mist source
+## THE MIST SOURCE — found, attributed and fixed 2026-08-09
 
 The AC above (*"a full `tests/integration` run leaks zero"*) was verified 2026-07-29 at
 **674 orphans**. Today: **2 688**. Roughly **2 000 new orphans in 11 days**, so an active
@@ -158,15 +158,52 @@ rather than assumed:
   subtransaction. Since 2026-07-29: **1 175 runs, 105 swept, 105 erased, 0 skipped, 0 failed
   runs.** It cannot account for 1 357.
 
-So Mist personal groups are being orphaned by **test teardown deleting a Mist's auth user
-directly instead of calling `_erase_mist`** — precisely the shape line 63 above records as
-fixed in `mist-posture-and-ask-delivery.test.ts`. That fix was applied to one suite; the
-mechanism is evidently live in others. 99 direct `auth.admin.deleteUser` / `signInAnonymously`
-call sites across 63 test files are the search space.
+**The integration tier is clean**, established by bracketed runs rather than inspection:
+`mist-substrate.test.ts` alone → delta 0; the whole `tests/integration/auth` directory
+(12 suites, 35 tests) → delta 0.
 
-**Next step is attribution, not a fix** — the same discipline that worked in July: instrument,
-harvest which suites leak `Mist` groups, then correct those teardowns to route through
-`_erase_mist`. Do not weaken any guard.
+**The source is the E2E tier**, and one function accounts for the volume:
+
+> `cleanupAnonymousUsers` (`hub/tests/e2e/helpers/auth.ts`) lists **every anonymous user
+> (`perPage: 200`)** and, for each, deleted the personal group **before** the auth user and
+> discarded the result. It is called by three Mist specs — `entry.spec.ts:16`,
+> `onboarding-arrival.spec.ts:33`, `transcendence.spec.ts:25` — so **every E2E run orphaned
+> up to 200 Mist personal groups at once.**
+
+The same defect sat in **three** helpers in that one file (`cleanupAnonymousUsers`,
+`deleteTranscendedUser`, `deleteE2EUser`), plus **24 spec teardowns** calling
+`admin.auth.admin.deleteUser(authId)` directly with no group handling at all — those produce
+the non-Mist orphans, and the names confirm it exactly: `E2E` 82, `Grace` 27, `HygaStella`
+26, `H023` 25, `GB`/`JA`/`JC` — all E2E fixture names.
+
+**This is the fourth instance of one defect**: `cleanupTestUser` (fixed 2026-07-28),
+`perf-measure.mjs` (fixed 2026-08-09), and now the E2E tier's three helpers and 24 call
+sites. Each time it was re-diagnosed from scratch, because nothing counted the orphans.
+
+### The fix
+
+- **One primitive**, `eraseUserAndPersonalGroup` — consent → journeys → **auth user** →
+  group, and it **verifies the group is gone**, throwing if not. The old code's failure mode
+  was reporting a success it had not achieved, so a silent path would rebuild the bug.
+- **`deleteE2EUserByAuthId`** — the shape the 24 sites wanted. All 24, across 21 spec files,
+  now route through it (codemod; 0 leftovers, 0 new `tsc` errors against a 968-error
+  pre-existing baseline).
+- **A leak instrument** in E2E global setup/teardown, mirroring TASK-INT-05's DeusEx counter:
+  orphan growth **fails the run**. This is the piece that stops a fifth instance — the class
+  survived four times because nothing counted.
+- **Four regression tests** (`tests/integration/auth/e2e-teardown-erases-personal-group.test.ts`),
+  including one pinning **why** the order is mandatory: deleting the group first is refused
+  with *"personal_group_id cannot be changed after it has been set"*. The E2E helpers are
+  plain TS over supabase-js, so the integration tier can exercise them and then assert on the
+  substrate — the only tier that can.
+
+**No guard was weakened.** Every fix was a teardown-ordering correction, exactly as in July.
+
+### Still open
+
+The **2 688 existing orphans** are untouched. Cleaning them is the same
+attributes-nothing-that-survives decision made on 2026-07-28 (migration `20260728200000`),
+and it is a separate call with its own blast radius — not folded into a test-fixture fix.
 
 **It also links two open threads.** Orphaned personal groups holding notification rows are
 what inflate `public.notifications` (73 % of it, per the original finding) — and that table

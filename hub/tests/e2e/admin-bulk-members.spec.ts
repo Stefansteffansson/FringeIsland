@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { createAdminClient, markArrivedOnce, runAdminSql, SESSION_EMAIL } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, runAdminSql, SESSION_EMAIL, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H039 (E2E) — Cycle ADM-E: the bounded-list + bulk journey (STORY-7).
@@ -134,7 +134,7 @@ test.describe('FEAT-H039 — bulk member actions on the bounded list (ADM-7)', (
     const admin = createAdminClient();
     for (const u of [a, b]) {
       if (u?.pgId) await admin.from('groups').delete().eq('id', u.pgId);
-      if (u?.authId) await admin.auth.admin.deleteUser(u.authId).catch(() => undefined);
+      if (u?.authId) await deleteE2EUserByAuthId(admin, u.authId).catch(() => undefined);
     }
     const pg = await sessionPersonalGroupId();
     await runAdminSql(

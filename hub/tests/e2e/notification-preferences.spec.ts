@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce, runAdminSql } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, runAdminSql, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H033 / FEAT-PD016 (E2E) — A-NTF Cycle N-D: the mute round-trip.
@@ -101,7 +101,7 @@ test.afterAll(async () => {
     .eq('personal_group_id', memberPgId)
     .maybeSingle();
   if (user?.auth_user_id) {
-    await admin.auth.admin.deleteUser(user.auth_user_id as string);
+    await deleteE2EUserByAuthId(admin, user.auth_user_id as string);
   }
 });
 

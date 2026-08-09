@@ -1,5 +1,5 @@
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H016 (E2E) — Cycle G-D: the pause round-trip (paused member's honest
@@ -104,7 +104,7 @@ test.describe.serial('FEAT-H016 — membership lifecycle (MEM-4/5/6)', () => {
     if (groupId) await admin.from('groups').delete().eq('id', groupId);
     for (const u of [leaver, target, steward]) {
       if (u?.pgId) await admin.from('groups').delete().eq('id', u.pgId);
-      if (u?.authId) await admin.auth.admin.deleteUser(u.authId);
+      if (u?.authId) await deleteE2EUserByAuthId(admin, u.authId);
     }
   });
 

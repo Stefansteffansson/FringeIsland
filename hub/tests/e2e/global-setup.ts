@@ -8,6 +8,7 @@
 import { chromium, type FullConfig } from '@playwright/test';
 import {
   countDeusExE2ELeaks,
+  countOrphanedPersonalGroups,
   createAdminClient,
   deleteE2EUser,
   E2E_PASSWORD,
@@ -84,6 +85,14 @@ export default async function globalSetup(config: FullConfig) {
   const leakBaseline = await countDeusExE2ELeaks(admin);
   process.env.E2E_LEAK_BASELINE = String(leakBaseline);
   console.log(`[e2e-setup] DeusEx E2E-leak baseline: ${leakBaseline}`);
+
+  // TASK-INT-03 leak instrument: orphaned personal groups — groups no `users`
+  // row points at. The E2E tier orphaned 1 357 of them ("Mist") in 11 days
+  // because three helpers and 24 spec teardowns deleted the account and left
+  // its group behind. Nothing counted, so nothing complained.
+  const orphanBaseline = await countOrphanedPersonalGroups();
+  process.env.E2E_ORPHAN_BASELINE = String(orphanBaseline);
+  console.log(`[e2e-setup] Orphaned personal-group baseline: ${orphanBaseline}`);
 
   console.log('[e2e-setup] Global setup complete');
 }

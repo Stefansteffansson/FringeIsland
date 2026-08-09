@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce, runAdminSql, SESSION_EMAIL } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, runAdminSql, SESSION_EMAIL, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H035 (E2E) — Cycle ADM-B: the group administration journey (STORY-5).
@@ -148,7 +148,7 @@ test.describe('FEAT-H035 — group administration (ADM-8/ADM-9, the RW-05 exit)'
     for (const id of groupIds) await admin.from('groups').delete().eq('id', id);
     for (const u of created) {
       if (u?.pgId) await admin.from('groups').delete().eq('id', u.pgId);
-      if (u?.authId) await admin.auth.admin.deleteUser(u.authId);
+      if (u?.authId) await deleteE2EUserByAuthId(admin, u.authId);
     }
     const pg = await sessionPersonalGroupId();
     await runAdminSql(

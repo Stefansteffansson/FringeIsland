@@ -15,11 +15,114 @@ export function createAdminClient(): SupabaseClient {
 }
 
 /**
+ * THE erasure primitive for the E2E tier (TASK-INT-03, 2026-08-09).
+ *
+ * Every path that removes an E2E identity must go through this. The order is
+ * the whole point and it is not negotiable:
+ *
+ *   consent (RESTRICT) → journeys (RESTRICT) → **auth user** → personal group
+ *
+ * Deleting the group FIRST can never succeed: `users` references it, so the
+ * delete fires the FK's SET NULL on `users.personal_group_id`, which an
+ * immutability trigger rejects with
+ *   "personal_group_id cannot be changed after it has been set"
+ * If that error is discarded, the following auth delete CASCADEs `public.users`
+ * away and leaves the group with nothing pointing at it — an orphan, permanently
+ * unidentifiable as anyone's.
+ *
+ * That exact defect was fixed in the integration tier on 2026-07-28
+ * (`tests/helpers/supabase.ts`) and in `scripts/perf-measure.mjs` on 2026-08-09.
+ * The E2E tier never got the fix and carried it in THREE helpers plus 24 direct
+ * `auth.admin.deleteUser` call sites, which is why 1 357 orphaned personal
+ * groups named "Mist" accumulated in 11 days — `cleanupAnonymousUsers` alone
+ * orphaned up to 200 of them per run.
+ *
+ * It VERIFIES rather than trusts: the old code's failure mode was reporting a
+ * success it had not achieved, so a silent path here would rebuild the bug.
+ */
+export async function eraseUserAndPersonalGroup(
+  admin: SupabaseClient,
+  authUserId: string | null | undefined,
+  personalGroupId: string | null | undefined,
+): Promise<void> {
+  if (personalGroupId) {
+    // Consent rows FK-reference the group ON DELETE RESTRICT (retention,
+    // ADR-U034) — clear via the controlled-erasure bypass, as teardown is a
+    // legitimate bypass caller. Journeys are RESTRICT too.
+    await runAdminSql(
+      `DO $$ BEGIN PERFORM set_config('app.consent_erasure_in_progress','true',true); ` +
+        `DELETE FROM public.consent_records WHERE subject_group_id = '${personalGroupId}'; END $$;`,
+    ).catch(() => undefined);
+    await admin.from('journeys').delete().eq('created_by_group_id', personalGroupId);
+  }
+
+  // AUTH FIRST — so `public.users` CASCADEs and only then is the group
+  // unreferenced and deletable.
+  if (authUserId) {
+    const { error: authErr } = await admin.auth.admin.deleteUser(authUserId);
+    // "not found" means an earlier call already erased it — teardown is
+    // idempotent by design, and a false alarm here would train readers to
+    // ignore this line, which is how the original defect stayed invisible.
+    if (authErr && !/not.?found/i.test(authErr.message)) {
+      console.error(`[e2e-cleanup] auth user ${authUserId}: ${authErr.message}`);
+    }
+  }
+
+  if (personalGroupId) {
+    const { error: groupErr } = await admin.from('groups').delete().eq('id', personalGroupId);
+    if (groupErr) {
+      console.error(`[e2e-cleanup] personal group ${personalGroupId} REFUSED: ${groupErr.message}`);
+    }
+    const { count } = await admin
+      .from('groups')
+      .select('id', { count: 'exact', head: true })
+      .eq('id', personalGroupId);
+    if (count) {
+      throw new Error(
+        `[e2e-cleanup] LEAKED personal group ${personalGroupId} — it survived teardown (TASK-INT-03)`,
+      );
+    }
+  }
+}
+
+/**
+ * Delete an E2E identity by its AUTH user id — the shape 24 spec teardowns used
+ * to write by hand as a bare `admin.auth.admin.deleteUser(authId)`, which
+ * removed the account and left its personal group behind every single time.
+ */
+export async function deleteE2EUserByAuthId(
+  admin: SupabaseClient,
+  authUserId: string | null | undefined,
+): Promise<void> {
+  if (!authUserId) return;
+  const { data: profile } = await admin
+    .from('users')
+    .select('personal_group_id')
+    .eq('auth_user_id', authUserId)
+    .maybeSingle();
+  await eraseUserAndPersonalGroup(admin, authUserId, profile?.personal_group_id as string | null);
+}
+
+/** Count orphaned personal groups — groups no `users` row points at. The leak
+ *  instrument for TASK-INT-03, used by E2E global setup/teardown. */
+export async function countOrphanedPersonalGroups(): Promise<number> {
+  const rows = await runAdminSqlRows(
+    `SELECT count(*)::int AS n FROM public.groups g
+      WHERE g.group_type = 'personal'
+        AND NOT EXISTS (SELECT 1 FROM public.users u WHERE u.personal_group_id = g.id);`,
+  );
+  return Number(rows?.[0]?.n ?? 0);
+}
+
+/**
  * Delete every anonymous (Mist) auth user — the E2E janitor for FEAT-H003.
- * There is no FEAT-PC002 reaper yet (the known, bounded accumulation gap), so the
- * Mist journey specs clean up after themselves. The only source of anonymous
- * users in this project is the Mist feature, so deleting all of them is safe.
- * Mirrors the D15 cleanup chain (journeys → personal group → auth.users).
+ * The only source of anonymous users in this project is the Mist feature, so
+ * deleting all of them is safe.
+ *
+ * Routed through `eraseUserAndPersonalGroup` (TASK-INT-03): this function used
+ * to delete the personal group before the auth user and discard the result, and
+ * because it sweeps EVERY anonymous user (perPage 200) on each of the three Mist
+ * specs that call it, it was the single largest orphan source in the project.
  */
 export async function cleanupAnonymousUsers(admin: SupabaseClient): Promise<void> {
   const { data, error } = await admin.auth.admin.listUsers({ perPage: 200 });
@@ -31,11 +134,7 @@ export async function cleanupAnonymousUsers(admin: SupabaseClient): Promise<void
       .select('personal_group_id')
       .eq('auth_user_id', u.id)
       .maybeSingle();
-    if (profile?.personal_group_id) {
-      await admin.from('journeys').delete().eq('created_by_group_id', profile.personal_group_id);
-      await admin.from('groups').delete().eq('id', profile.personal_group_id);
-    }
-    await admin.auth.admin.deleteUser(u.id);
+    await eraseUserAndPersonalGroup(admin, u.id, profile?.personal_group_id as string | null);
   }
 }
 
@@ -46,6 +145,12 @@ export async function cleanupAnonymousUsers(admin: SupabaseClient): Promise<void
  * SUPABASE_ACCESS_TOKEN (hub/.env.local).
  */
 export async function runAdminSql(sql: string): Promise<void> {
+  await runAdminSqlRows(sql);
+}
+
+/** As `runAdminSql`, but returns the result rows (the Management API replies
+ *  with an array). Used by the TASK-INT-03 orphan leak instrument. */
+export async function runAdminSqlRows(sql: string): Promise<Array<Record<string, unknown>>> {
   const accessToken = process.env.SUPABASE_ACCESS_TOKEN;
   if (!accessToken) {
     throw new Error('runAdminSql requires SUPABASE_ACCESS_TOKEN (management API) in hub/.env.local');
@@ -59,9 +164,10 @@ export async function runAdminSql(sql: string): Promise<void> {
     body: JSON.stringify({ query: sql }),
   });
   const body = await res.json();
-  if (!res.ok || (body && (body as { error?: unknown }).error)) {
+  if (!res.ok || (body && !Array.isArray(body) && (body as { error?: unknown }).error)) {
     throw new Error(`runAdminSql failed: ${JSON.stringify(body)}`);
   }
+  return Array.isArray(body) ? (body as Array<Record<string, unknown>>) : [];
 }
 
 /**
@@ -77,19 +183,12 @@ export async function deleteTranscendedUser(admin: SupabaseClient, email: string
     .eq('email', email)
     .maybeSingle();
   if (!profile) return;
-
-  if (profile.personal_group_id) {
-    const gid = profile.personal_group_id as string;
-    await runAdminSql(
-      `DO $$ BEGIN PERFORM set_config('app.consent_erasure_in_progress','true',true); ` +
-        `DELETE FROM public.consent_records WHERE subject_group_id = '${gid}'; END $$;`,
-    ).catch(() => undefined);
-    await admin.from('journeys').delete().eq('created_by_group_id', gid);
-    await admin.from('groups').delete().eq('id', gid);
-  }
-  if (profile.auth_user_id) {
-    await admin.auth.admin.deleteUser(profile.auth_user_id as string);
-  }
+  // ORDER CORRECTED 2026-08-09 (TASK-INT-03) — see eraseUserAndPersonalGroup.
+  await eraseUserAndPersonalGroup(
+    admin,
+    profile.auth_user_id as string | null,
+    profile.personal_group_id as string | null,
+  );
 }
 
 /**
@@ -105,17 +204,12 @@ export async function deleteE2EUser(admin: SupabaseClient, email: string): Promi
     .eq('email', email)
     .maybeSingle();
 
-  if (profile?.personal_group_id) {
-    await runAdminSql(
-      `DO $$ BEGIN PERFORM set_config('app.consent_erasure_in_progress','true',true); ` +
-        `DELETE FROM public.consent_records WHERE subject_group_id = '${profile.personal_group_id}'; END $$;`,
-    ).catch(() => undefined);
-    await admin.from('journeys').delete().eq('created_by_group_id', profile.personal_group_id);
-    await admin.from('groups').delete().eq('id', profile.personal_group_id);
-  }
-  if (profile?.auth_user_id) {
-    await admin.auth.admin.deleteUser(profile.auth_user_id as string);
-  }
+  // ORDER CORRECTED 2026-08-09 (TASK-INT-03) — see eraseUserAndPersonalGroup.
+  await eraseUserAndPersonalGroup(
+    admin,
+    profile?.auth_user_id as string | null,
+    profile?.personal_group_id as string | null,
+  );
 }
 
 /**

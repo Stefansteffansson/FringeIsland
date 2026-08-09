@@ -1,5 +1,5 @@
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce, runAdminSql } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, runAdminSql, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * RD-B FEAT-H044 (E2E) — the distribution journey end to end.
@@ -121,7 +121,7 @@ test.describe.serial('FEAT-H044 — role distribution (RD-B)', () => {
     if (templateId) await admin.from('role_templates').delete().eq('id', templateId);
     if (groupId) await admin.from('groups').delete().eq('id', groupId);
     if (pgId) await admin.from('groups').delete().eq('id', pgId);
-    if (authId) await admin.auth.admin.deleteUser(authId);
+    if (authId) await deleteE2EUserByAuthId(admin, authId);
   });
 
   test('a Steward copies an offered role, takes an update through the ceremony, and keeps the copy when the offer is withdrawn', async () => {
@@ -439,7 +439,7 @@ test.describe.serial('FEAT-H044 — role distribution (RD-B)', () => {
       await admin.from('role_templates').delete().eq('id', targetedId);
       await admin.from('groups').delete().eq('id', otherGroupId);
       await admin.from('groups').delete().eq('id', admPg);
-      await admin.auth.admin.deleteUser(adm.user.id);
+      await deleteE2EUserByAuthId(admin, adm.user.id);
     }
   });
 
@@ -476,7 +476,7 @@ test.describe.serial('FEAT-H044 — role distribution (RD-B)', () => {
     } finally {
       await memberCtx.close();
       await admin.from('groups').delete().eq('id', memberPg);
-      await admin.auth.admin.deleteUser(member.user.id);
+      await deleteE2EUserByAuthId(admin, member.user.id);
     }
   });
 });

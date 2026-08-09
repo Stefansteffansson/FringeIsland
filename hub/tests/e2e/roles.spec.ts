@@ -1,5 +1,5 @@
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce } from './helpers/auth';
+import { createAdminClient, markArrivedOnce, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
  * FEAT-H014 (E2E) — Cycle G-B: the delegation journey (Steward shapes a
@@ -95,7 +95,7 @@ test.describe.serial('FEAT-H014 — roles & permissions (GRP-6/7/8)', () => {
       [stewardAuthId, stewardPgId],
     ] as const) {
       if (pgId) await admin.from('groups').delete().eq('id', pgId);
-      if (authId) await admin.auth.admin.deleteUser(authId);
+      if (authId) await deleteE2EUserByAuthId(admin, authId);
     }
   });
 
