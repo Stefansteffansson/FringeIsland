@@ -65,9 +65,32 @@ meantime. C keeps `admin_unpublish_role_template`'s meaning intact — which mat
 entirely" its own honest door. B is the tempting one and is the trap: it silently changes
 what an existing call does.
 
-## Recorded, not built
+## BUILT 2026-08-09 — on Stefan's second ask
 
-Half one is buildable now and needs no gate. Half two is Stefan's ruling. **Neither was
-built unilaterally**, because shipping half one alone would leave a button labelled *"all
-groups"* that still means *"the platform-wide row"* — which is the same class of defect as
-W-8's *"your group"*: a label that says more than the thing behind it does.
+I first recorded both halves and built neither, because shipping half one alone would
+leave a button labelled *"all groups"* that still meant *"the platform-wide row"* — the
+same class of defect as W-8's *"your group"*.
+
+**Stefan asked twice, which settles it.** His point is decisive on its own terms: an admin
+cannot tick hundreds of boxes to undo a publish that reached hundreds of groups. The
+asymmetry — one ceremony to publish, N clicks to withdraw — is the defect, and holding the
+fix behind a semantics ruling was the wrong trade.
+
+**Built without a migration, by making the mislabel impossible instead of ruling on it.**
+Each label now states its own scope, so no button can promise more than it delivers:
+
+| Reach | Label | Calls |
+|---|---|---|
+| N named groups | *"Unpublish from all N groups"* | one, with the N ids |
+| platform-wide only | *"Unpublish from all groups"* | one, with `null` |
+| both | *"Stop offering this template"* | two — the named ids, then `null` |
+
+Option **C** (a new `admin_unpublish_all_role_template_reach` contract) is still the
+tidier long-term shape and remains open; this closes the user-facing defect now without
+spending a gate, and without changing any shipped contract's meaning.
+
+**The honest-report rule carried into it.** Both calls are idempotent, so a partial failure
+is recoverable rather than corrupting — and the outcome is read from a **fresh repaint**,
+never from what was attempted. A withdrawal that does not fully land says *"Not fully
+withdrawn — N publications still offered"* instead of a green success it did not earn.
+That is pinned by its own cell.
