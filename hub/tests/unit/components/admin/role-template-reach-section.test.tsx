@@ -208,6 +208,142 @@ describe('FEAT-H044 STORY-3 — the reach section', () => {
   };
 
   // ==========================================================================
+  // WALK FIX W-11 — withdrawing an offer has a bulk door, and every label says
+  // exactly what it withdraws.
+  //
+  // Found live: `Walk Greeter` published to 14 named groups, and the only way
+  // back was fourteen individual clicks. Publishing to fourteen takes one
+  // ceremony; withdrawing took fourteen.
+  //
+  // The second half nobody had hit: `admin_unpublish_role_template` reads
+  // `p_group_ids => null` as "remove the PLATFORM-WIDE ROW", not "remove
+  // everything" — and the two kinds of row coexist, because publishing
+  // platform-wide deliberately does not delete targeted rows (RDB-6). So a
+  // button saying "all groups" withdrew less than it promised. That is the
+  // W-8 disease: a label that says more than the thing behind it does.
+  //
+  // Fixed without a migration by making each label state its own scope, and
+  // by reporting the outcome from a FRESH READ rather than from what was
+  // attempted.
+  // ==========================================================================
+  it('W11: named reach gets a bulk withdraw, labelled with its own count', async () => {
+    wireFetch(
+      basePayload({
+        publications: [
+          { group_id: 'grp-1', group_name: 'Willow Circle', published_at: '2026-08-01T09:00:00+00:00' },
+          { group_id: 'grp-2', group_name: 'Harbour Crew', published_at: '2026-08-02T09:00:00+00:00' },
+        ],
+      }),
+    );
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const user = userEvent.setup();
+    const section = await screen.findByTestId('reach-section');
+
+    // Names its scope: two groups, not a vague "all".
+    const bulk = within(section).getByTestId('reach-withdraw-all');
+    expect(bulk).toHaveTextContent(/all 2 groups/i);
+
+    await user.click(bulk);
+    const modal = await screen.findByTestId('confirm-modal');
+    await user.click(within(modal).getByTestId('confirm-modal-confirm'));
+
+    await waitFor(() => {
+      const del = fetchMock.mock.calls.find(
+        (c) => (c[1] as { method?: string } | undefined)?.method === 'DELETE',
+      );
+      expect(del).toBeTruthy();
+      const body = JSON.parse((del![1] as { body: string }).body) as { group_ids: string[] };
+      expect([...body.group_ids].sort()).toEqual(['grp-1', 'grp-2']);
+    });
+  });
+
+  it('W11: platform-wide reach still withdraws with null — its own scope, unchanged', async () => {
+    wireFetch(
+      basePayload({ publications: [{ group_id: null, group_name: null, published_at: '2026-08-01T09:00:00+00:00' }] }),
+    );
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const user = userEvent.setup();
+    const section = await screen.findByTestId('reach-section');
+
+    await user.click(within(section).getByTestId('reach-withdraw-all'));
+    const modal = await screen.findByTestId('confirm-modal');
+    await user.click(within(modal).getByTestId('confirm-modal-confirm'));
+
+    await waitFor(() => {
+      const del = fetchMock.mock.calls.find(
+        (c) => (c[1] as { method?: string } | undefined)?.method === 'DELETE',
+      );
+      expect(JSON.parse((del![1] as { body: string }).body)).toEqual({ group_ids: null });
+    });
+  });
+
+  it('W11: reach that is BOTH platform-wide and named withdraws both — the mislabel', async () => {
+    // The case the old button got wrong: it passed null, removed only the
+    // platform-wide row, and left the named ones offered.
+    wireFetch(
+      basePayload({
+        publications: [
+          { group_id: null, group_name: null, published_at: '2026-08-01T09:00:00+00:00' },
+          { group_id: 'grp-1', group_name: 'Willow Circle', published_at: '2026-08-01T09:00:00+00:00' },
+        ],
+      }),
+    );
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const user = userEvent.setup();
+    const section = await screen.findByTestId('reach-section');
+
+    const bulk = within(section).getByTestId('reach-withdraw-all');
+    // Promises to stop offering it entirely, and must then do so.
+    expect(bulk).toHaveTextContent(/stop offering/i);
+
+    await user.click(bulk);
+    const modal = await screen.findByTestId('confirm-modal');
+    await user.click(within(modal).getByTestId('confirm-modal-confirm'));
+
+    await waitFor(() => {
+      const deletes = fetchMock.mock.calls.filter(
+        (c) => (c[1] as { method?: string } | undefined)?.method === 'DELETE',
+      );
+      expect(deletes).toHaveLength(2);
+      const bodies = deletes.map((c) => JSON.parse((c[1] as { body: string }).body));
+      expect(bodies).toEqual(
+        expect.arrayContaining([{ group_ids: null }, { group_ids: ['grp-1'] }]),
+      );
+    });
+  });
+
+  it('W11: does not claim success when the fresh read shows reach surviving', async () => {
+    // The honesty cell. The outcome is reported from a REPAINT, never from
+    // what was attempted — so a withdrawal that did not fully land says so
+    // instead of showing a green "Offer withdrawn."
+    wireFetch(
+      basePayload({
+        publications: [
+          { group_id: 'grp-1', group_name: 'Willow Circle', published_at: '2026-08-01T09:00:00+00:00' },
+        ],
+      }),
+    );
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const user = userEvent.setup();
+    const section = await screen.findByTestId('reach-section');
+    await user.click(within(section).getByTestId('reach-withdraw-all'));
+    const modal = await screen.findByTestId('confirm-modal');
+    await user.click(within(modal).getByTestId('confirm-modal-confirm'));
+
+    // The GET keeps returning the same publication, i.e. the row survived.
+    const outcome = await screen.findByTestId('ceremony-outcome');
+    expect(outcome).toHaveTextContent(/still offered|not fully withdrawn/i);
+    expect(outcome).not.toHaveTextContent(/^Offer withdrawn\.$/);
+  });
+
+  it('W11: no bulk withdraw when nothing is published', async () => {
+    wireFetch(basePayload());
+    render(<AdminRoleTemplateDetail templateId="tmpl-1" />);
+    const section = await screen.findByTestId('reach-section');
+    expect(within(section).queryByTestId('reach-withdraw-all')).not.toBeInTheDocument();
+  });
+
+  // ==========================================================================
   // WALK FIX W-6 — the ceremony states its blast radius before the click.
   //
   // RD-B's discipline is consequence-before-the-click, and the Steward's diff

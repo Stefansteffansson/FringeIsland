@@ -42,6 +42,7 @@ type Ceremony =
   // RD-B walk fix W-5: the targeted publish. The contract has always accepted
   // `p_group_ids uuid[]`; until now nothing could produce one.
   | { kind: 'publish-groups' }
+  // RD-B walk fix W-11: withdraw the WHOLE reach, whatever shape it is.
   | { kind: 'unpublish-all' }
   | { kind: 'unpublish-group'; groupId: string; groupName: string | null }
   | null;
@@ -121,6 +122,60 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
     },
     [templateId],
   );
+
+  /**
+   * RD-B walk fix W-11 — withdraw the whole reach, whatever shape it is.
+   *
+   * `admin_unpublish_role_template` reads `p_group_ids => null` as *remove the
+   * platform-wide row*, not *remove everything*, and the two kinds of row
+   * coexist (RDB-6). So "stop offering this entirely" is up to two calls, and
+   * the button that claimed to do it in one was over-promising.
+   *
+   * Both calls are idempotent, so a partial failure is recoverable rather than
+   * corrupting — and the outcome below is read from a **fresh repaint**, never
+   * from what was attempted, so a withdrawal that did not fully land says so
+   * instead of showing a green success it did not earn.
+   */
+  const withdrawAllReach = async () => {
+    setBusy(true);
+    try {
+      const named = reachNamed.map((p) => p.group_id).filter((id): id is string => id !== null);
+      const calls: Array<string[] | null> = [];
+      if (named.length > 0) calls.push(named);
+      if (reachIsAll) calls.push(null);
+
+      for (const group_ids of calls) {
+        const res = await fetch(`/api/admin/roles/${templateId}/publish`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ group_ids }),
+        });
+        if (!res.ok) {
+          const payload = (await res.json().catch(() => ({}))) as { error?: string };
+          setOutcome({ tone: 'error', text: payload.error ?? 'The request was refused.' });
+          setCeremony(null);
+          await load(false);
+          return;
+        }
+      }
+
+      setCeremony(null);
+      const fresh = await load(false);
+      // THE HONEST REPORT. Count what actually survived rather than assuming
+      // the calls did what they were asked.
+      const left = fresh?.publications?.length ?? 0;
+      setOutcome(
+        left === 0
+          ? { tone: 'success', text: 'Offer withdrawn — this template is no longer published.' }
+          : {
+              tone: 'error',
+              text: `Not fully withdrawn — ${left} publication${left === 1 ? '' : 's'} still offered. Try again, or withdraw them individually.`,
+            },
+      );
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const openGroupPicker = async () => {
     setPicked(new Set());
@@ -394,14 +449,26 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
           )}
 
           <div className="flex flex-wrap gap-2">
-            {reachIsAll ? (
+            {/* W-11: ONE bulk withdraw, labelled by the reach it actually
+                clears. Publishing to fourteen groups took one ceremony;
+                withdrawing took fourteen clicks. And the old "all groups"
+                button passed null, which removes only the platform-wide row —
+                so it withdrew less than its label promised whenever both kinds
+                of row existed. Each label now states its own scope. */}
+            {(reachIsAll || reachNamed.length > 0) && (
               <button
+                data-testid="reach-withdraw-all"
                 onClick={() => setCeremony({ kind: 'unpublish-all' })}
                 className="rounded border border-gray-300 px-3 py-1 text-sm text-gray-700"
               >
-                Unpublish from all groups
+                {reachIsAll && reachNamed.length > 0
+                  ? 'Stop offering this template'
+                  : reachIsAll
+                    ? 'Unpublish from all groups'
+                    : `Unpublish from all ${reachNamed.length} group${reachNamed.length === 1 ? '' : 's'}`}
               </button>
-            ) : (
+            )}
+            {reachIsAll ? null : (
               // Retirement blocks the OFFER, not the withdrawal — so Publish
               // disappears with a stated reason while Unpublish stays.
               !reachBlocked && (
@@ -667,7 +734,13 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
               <BlastRadius preview={reachPreview} />
             </span>
           ) : ceremony?.kind === 'unpublish-all'
-              ? `Stops offering "${template.name}" to all groups. Copies groups have already adopted are unaffected and keep working.`
+              ? `Stops offering "${template.name}" ${
+                  reachIsAll && reachNamed.length > 0
+                    ? `everywhere — the platform-wide offer AND all ${reachNamed.length} named group${reachNamed.length === 1 ? '' : 's'}`
+                    : reachIsAll
+                      ? 'to all groups'
+                      : `to all ${reachNamed.length} group${reachNamed.length === 1 ? '' : 's'} it is published to`
+                }. Copies groups have already adopted are unaffected and keep working.`
               : ceremony?.kind === 'unpublish-group'
                 ? `Stops offering "${template.name}" to ${ceremony.groupName ?? 'this group'}. Their existing copy, if they made one, is unaffected and keeps working.`
                 : ''
@@ -680,9 +753,9 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
             void mutate('publish', { group_ids: null }, 'Published to all groups.');
 
           } else if (ceremony?.kind === 'unpublish-all') {
-            void mutate('publish', { group_ids: null }, 'Offer withdrawn.', {
-              method: 'DELETE',
-            });
+            // W-11: not `mutate(null)` — that removes only the platform-wide
+            // row. This clears the whole reach and reports from a fresh read.
+            void withdrawAllReach();
           } else if (ceremony?.kind === 'unpublish-group') {
             void mutate('publish', { group_ids: [ceremony.groupId] }, 'Offer withdrawn.', {
               method: 'DELETE',
