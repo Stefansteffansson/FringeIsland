@@ -199,10 +199,28 @@ sites. Each time it was re-diagnosed from scratch, because nothing counted the o
 
 **No guard was weakened.** Every fix was a teardown-ordering correction, exactly as in July.
 
-### The 2 688 existing orphans — classified, migration written, HELD AT THE GATE
+### The 2 688 existing orphans — APPLIED 2026-08-09, and verified rather than trusted
 
-Migration `20260809200000` is written and **awaiting a named apply approval** (destructive:
-it deletes group rows).
+Migration `20260809200000`, applied on the named approval *"ok apply the orphan reclaim
+migration"*, then **re-checked against the live catalogue independently** — the migration's
+own green was not taken as the answer:
+
+| | Before | After | |
+|---|---|---|---|
+| Orphaned personal groups | 2 688 | **954** | exactly the classified KEEP |
+| `groups` total | 6 142 | **4 408** | −1 734, exactly the classified DELETE |
+| Messages / **with a sender** | 1 112 / **523** | 1 112 / **523** | **not one message lost its author** |
+| Audit rows / **with an actor** | 6 327 / **3 355** | 6 327 / **3 355** | **not one audit row lost its actor** |
+| **Live** personal groups | 2 976 | **2 976** | untouched |
+
+Journeys 58, consent 3 349, forum authors 45 — all unchanged. Deliberately sequenced *after*
+the confirming E2E fleet finished: a 1 734-row delete cascading through `group_memberships`
+and `notifications` holds locks, and landing it mid-fleet would have made a teardown timeout
+impossible to attribute.
+
+**Notifications fell only 82 943 → 82 732 (−211).** Worth recording, because it is the
+counter-evidence to this task's own hypothesis: the deleted orphans were **not** holding the
+notification bloat. See the TASK-E2E-04 note.
 
 Same discriminator as 2026-07-28, and the same trap avoided: **not** *"does it attribute
 anything?"* — every personal group is the `created_by` / `added_by` / `assigned_by` of its own
