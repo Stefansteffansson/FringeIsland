@@ -367,6 +367,63 @@ test('STORY-4 route pin: a seed write refuses with the platform message, verbati
   expect(body.error).toBe('Seeded role templates are immutable — clone, then edit the clone');
 });
 
+/**
+ * FEAT-H045 STORY-1, last criterion — returning to the list after the template's
+ * state changed shows it under the correct heading WITHOUT a manual refresh.
+ *
+ * PREMISE CORRECTION (2026-08-09): the story words this as "retired or unretired
+ * *from the detail view*". **The detail view carries no retire affordance** —
+ * retire/unretire live on the list, and only the route
+ * `/api/admin/roles/[id]/retire` exists. So the criterion's stated trigger is not
+ * a user action on today's surface. What the criterion is actually protecting is
+ * the no-stale-list guarantee, and that is what is pinned here: the state changes
+ * while the admin is on the detail view, driving the same endpoint the detail
+ * view would call if it ever grows the button. If that button is added, this
+ * criterion should be re-walked as written.
+ *
+ * TEST-AFTER, labelled honestly: the partition it asserts was implemented
+ * before this spec was written (the unit tier carried the red-first work). The
+ * repaint-on-return behaviour it pins is pre-existing component behaviour.
+ */
+test('FEAT-H045 STORY-1: the list repaints on return from the detail view, with no manual refresh', async ({
+  page,
+}) => {
+  /** Robust to templates already retired in the dev catalogue. */
+  const retiredCount = async (): Promise<number> => {
+    const toggle = page.getByTestId('retired-templates-toggle');
+    if ((await toggle.count()) === 0) return 0;
+    return Number(/Retired \((\d+)\)/.exec((await toggle.textContent()) ?? '')?.[1] ?? 0);
+  };
+
+  await page.goto('/admin/roles');
+  await expect(page.getByTestId(`template-row-${cloneId}`)).toBeVisible();
+  const before = await retiredCount();
+
+  // Into the detail the way an admin gets there — client-side, from the list.
+  await page.getByRole('link', { name: CLONE_NAME }).click();
+  await expect(page).toHaveURL(new RegExp(`/admin/roles/${cloneId}$`));
+
+  const res = await page.request.post(`/api/admin/roles/${cloneId}/retire`);
+  expect(res.ok()).toBe(true);
+
+  // Back CLIENT-SIDE, never `page.goto` — a full load resets module state and
+  // would mask exactly the staleness this criterion exists to catch (J-D).
+  await page.goBack();
+  await expect(page).toHaveURL(/\/admin\/roles$/);
+
+  // No Refresh is clicked anywhere in this test.
+  await expect(page.getByTestId('retired-templates-toggle')).toBeVisible();
+  expect(await retiredCount()).toBe(before + 1);
+  await expect(page.getByTestId(`template-row-${cloneId}`)).toHaveCount(0);
+
+  await page.getByTestId('retired-templates-toggle').click();
+  await expect(page.getByTestId(`template-row-${cloneId}`)).toBeVisible();
+  await expect(page.getByTestId(`retired-badge-${cloneId}`)).toBeVisible();
+
+  // Leave the catalogue as we found it.
+  expect((await page.request.delete(`/api/admin/roles/${cloneId}/retire`)).ok()).toBe(true);
+});
+
 test('a demoted operator gets the 404 shape on the new routes', async ({ page }) => {
   await setPlatformAdmin(false);
 

@@ -2,6 +2,12 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-09 — The role catalogue stops being the place everything accumulates ([FEAT-H045](../docs/products/hub/features/FEAT-H045-retired-template-collapse-and-mistake-disposal.md))
+
+- *Admin:* **the template list now shows what's actually on offer.** Retired templates have moved out of the working list and sit behind a `Retired (3)` disclosure that says how many there are. Retiring already meant "this is no longer offered" — the list was just carrying on as if it didn't know. Nothing is hidden that isn't one click away, and nothing was deleted.
+- **Unretire is still right there.** Open the section and the retired templates look exactly as they did, with the same button to put one back on offer. The section says plainly that these aren't offered to any group and that copies already in groups are untouched.
+- **When nothing is retired, there's no control at all** — not an empty `Retired (0)` sitting there as a permanent reminder of an empty drawer. And if *everything* is retired, the list says so in words instead of rendering an empty box.
+
 ## 2026-08-09 — Two buttons that now tell you the truth before you press them ([FEAT-H044](../docs/products/hub/features/FEAT-H044-available-roles-view-and-diff-on-copy-ceremony.md))
 
 - *Admin:* **publishing now tells you how many people it's about to notify** — *"This will notify 223 stewards across 425 groups. Those notices cannot be withdrawn."* Publishing sends a notice to every steward it reaches, and unpublishing later takes back the offer but not the notices. You should know that before you click, not after.
