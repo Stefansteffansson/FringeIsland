@@ -1250,9 +1250,20 @@ describe('FEAT-PC028 — publication, scoped offer, diff-on-copy (RD-B)', () => 
       // live catalogue after the apply rather than trusting the migration.
       //
       // The is_platform_admin() gate meant nothing leaked (W6f pins that), but
-      // an unintended grant is not made acceptable by a gate behind it, and
-      // the next function created by copying this one would inherit the
-      // omission. Pinned here so it cannot recur silently.
+      // an unintended grant is not made acceptable by a gate behind it.
+      //
+      // OVERLAPS `anon-execute-lockdown.test.ts` DELIBERATELY, and that suite
+      // is the stronger guard — it fails on ANY anon-executable public
+      // function. This one names a single function, so it fails with an
+      // obvious message where the blanket invariant fails with a list.
+      //
+      // Neither is the real fix. The root cause is TASK-SEC-01: the lockdown's
+      // ALTER DEFAULT PRIVILEGES is set FOR ROLE postgres, while migrations
+      // apply through the Management API as supabase_admin — so EVERY new
+      // public function inherits anon EXECUTE and only an explicit revoke
+      // removes it. The five PC028 contracts are clean because that migration
+      // wrote the revoke for each of them, not because the default protected
+      // them.
       const rows = (await runAdminSql(
         `SELECT has_function_privilege('anon', p.oid, 'EXECUTE')          AS anon,
                 has_function_privilege('authenticated', p.oid, 'EXECUTE') AS authed,

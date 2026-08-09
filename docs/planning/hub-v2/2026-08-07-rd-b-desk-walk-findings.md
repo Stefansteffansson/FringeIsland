@@ -347,6 +347,24 @@ the shape is wrong now and will not stay harmless.
 >
 > A missing preview renders nothing and never blocks the publish: the count is an aid, not
 > a gate.
+>
+> **APPLIED 2026-08-09 — and verifying it caught a defect in my own migration.**
+> `20260809100000` granted EXECUTE to `authenticated` but never revoked the grant
+> Postgres gives PUBLIC by default on `CREATE FUNCTION`, so **`anon` could execute it** —
+> the only one of the eight role-distribution functions that could. The house pattern
+> (`20260807090000:987-997`) is a pair and I wrote half of it.
+>
+> **No data was exposed** — the function is SECURITY DEFINER behind `is_platform_admin()`,
+> so an anonymous caller reached the gate and got 42501 (W6f pins that and passed
+> throughout). Defence in depth restored, not a leak closed. Recorded as a real miss
+> anyway: *"the gate caught it"* is no reason to leave an unintended grant standing, and
+> the next function written by copying that one would inherit the omission.
+>
+> Corrected by `20260809140000`; **W6g now pins the posture directly** so it cannot recur
+> silently. All eight functions verified identical afterwards: anon denied,
+> authenticated and service_role allowed. **This is the third time this cycle that
+> checking the live catalogue after an apply found something the migration did not say**
+> — the PC028 widening, the notice literals, and now a grant.
 
 ## W-7 — Integration cell C3 fans out to the whole group table on a shared DB
 
