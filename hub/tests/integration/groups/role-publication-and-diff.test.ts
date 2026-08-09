@@ -1242,6 +1242,31 @@ describe('FEAT-PC028 — publication, scoped offer, diff-on-copy (RD-B)', () => 
       expect(rows[0].n).toBe(0);
     }, 180_000);
 
+    it('W6g: the preview carries the house grant posture — anon cannot execute it', async () => {
+      // CORRECTIVE 20260809140000. The original migration granted EXECUTE to
+      // `authenticated` and never revoked the one Postgres gives PUBLIC by
+      // default, so `anon` could execute it — the only one of the eight
+      // role-distribution functions that could be. Caught by verifying the
+      // live catalogue after the apply rather than trusting the migration.
+      //
+      // The is_platform_admin() gate meant nothing leaked (W6f pins that), but
+      // an unintended grant is not made acceptable by a gate behind it, and
+      // the next function created by copying this one would inherit the
+      // omission. Pinned here so it cannot recur silently.
+      const rows = (await runAdminSql(
+        `SELECT has_function_privilege('anon', p.oid, 'EXECUTE')          AS anon,
+                has_function_privilege('authenticated', p.oid, 'EXECUTE') AS authed,
+                has_function_privilege('service_role', p.oid, 'EXECUTE')  AS svc
+           FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+          WHERE n.nspname = 'public'
+            AND p.proname = 'admin_preview_publication_reach';`,
+      )) as Array<{ anon: boolean; authed: boolean; svc: boolean }>;
+      expect(rows).toHaveLength(1);
+      expect(rows[0].anon).toBe(false);
+      expect(rows[0].authed).toBe(true);
+      expect(rows[0].svc).toBe(true);
+    }, 180_000);
+
     it('W6f: a non-admin cannot read the platform-wide reach', async () => {
       const c = await asUser(steward);
       const { error } = await c.rpc('admin_preview_publication_reach', {
