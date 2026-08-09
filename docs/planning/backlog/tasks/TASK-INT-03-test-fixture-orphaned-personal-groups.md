@@ -199,11 +199,44 @@ sites. Each time it was re-diagnosed from scratch, because nothing counted the o
 
 **No guard was weakened.** Every fix was a teardown-ordering correction, exactly as in July.
 
-### Still open
+### The 2 688 existing orphans — classified, migration written, HELD AT THE GATE
 
-The **2 688 existing orphans** are untouched. Cleaning them is the same
-attributes-nothing-that-survives decision made on 2026-07-28 (migration `20260728200000`),
-and it is a separate call with its own blast radius — not folded into a test-fixture fix.
+Migration `20260809200000` is written and **awaiting a named apply approval** (destructive:
+it deletes group rows).
+
+Same discriminator as 2026-07-28, and the same trap avoided: **not** *"does it attribute
+anything?"* — every personal group is the `created_by` / `added_by` / `assigned_by` of its own
+bootstrap rows, so that test is self-referential and keeps everything (July's first strict pass
+said *"zero are safe"* and was wrong). The test is **does it attribute anything that SURVIVES
+its own deletion?** Every clause excludes the referencing rows this orphan's delete would take
+with it.
+
+Classified against the full FK surface — 2 RESTRICT columns that could block, 17 SET NULL
+columns that would silently lose attribution:
+
+| | Count |
+|---|---|
+| Orphans | **2 688** |
+| Blocked by RESTRICT | **0** — the delete cannot half-fail |
+| **KEEP** | **954** |
+| **DELETE** | **1 734** |
+
+Keep reasons: **audit actor 640** (audit rows never cascade — each would be a real, permanent
+loss) · **message sender 220** · created a surviving group 146 · enrolment 26 · authored content
+26 · inviter 26 · member/role 5.
+
+The classification is **recomputed inside the migration** rather than pasted as an id list, so
+the set deleted is the set true at apply time. Conservative by construction: a row attributed to
+orphan A but living inside orphan B counts as surviving for A, so A is kept — over-keeping is
+cheap, over-deleting is not.
+
+**Controls asserted in the migration, failing it rather than reporting a false green:** messages
+and their sender count unchanged (July's decisive control — *420 messages, all 420 still
+carrying a sender*), audit rows and actor count unchanged, **live** personal groups unchanged,
+forum authors unchanged, journeys and consent unchanged.
+
+This is a **one-time** reclaim, not a recurring one: the E2E orphan leak instrument now fails any
+run that grows the count.
 
 **It also links two open threads.** Orphaned personal groups holding notification rows are
 what inflate `public.notifications` (73 % of it, per the original finding) — and that table
