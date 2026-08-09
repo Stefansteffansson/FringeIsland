@@ -3,6 +3,13 @@
 **Date:** 2026-08-07 → 2026-08-09 (session 14, long) · **Wave:** Ferd · **Cycle:** RD-B (**CLOSED** — both halves `6-done`, walked, fixed, merged)
 **Follows:** [`2026-08-07_01_-_RD-B-DECOMPOSED-BUILT-APPLIED-MERGED-H044-REMAINS.md`](./2026-08-07_01_-_RD-B-DECOMPOSED-BUILT-APPLIED-MERGED-H044-REMAINS.md)
 
+> **CONTINUED — this bridge was written mid-session and stops at the walk fixes.** Its
+> "Next" and "Standing items" are superseded by
+> [`2026-08-09_02_-_RD-B-CLOSED-ALL-ELEVEN-FINDINGS-SETTLED-AND-MEASURED.md`](./2026-08-09_02_-_RD-B-CLOSED-ALL-ELEVEN-FINDINGS-SETTLED-AND-MEASURED.md),
+> which carries the final state: W-6/W-9/W-11 built, four migrations applied, the ADR-U043
+> measurement pass, and `TASK-SEC-01`. Everything below remains accurate as of the moment
+> it was written; nothing in it has been rewritten.
+
 ---
 
 ## READ THIS FIRST
