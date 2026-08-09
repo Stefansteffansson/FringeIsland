@@ -2,6 +2,11 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-09 — Two buttons that now tell you the truth before you press them ([FEAT-H044](../docs/products/hub/features/FEAT-H044-available-roles-view-and-diff-on-copy-ceremony.md))
+
+- *Admin:* **publishing now tells you how many people it's about to notify** — *"This will notify 223 stewards across 425 groups. Those notices cannot be withdrawn."* Publishing sends a notice to every steward it reaches, and unpublishing later takes back the offer but not the notices. You should know that before you click, not after.
+- **Removing a role that people still hold no longer lets you click through to an error.** The confirmation always warned you it would fail; now the Remove button is simply disabled, with the reason still shown. Cancel works as always.
+
 ## 2026-08-08 — The available-roles section gets out of its own way ([FEAT-H044](../docs/products/hub/features/FEAT-H044-available-roles-view-and-diff-on-copy-ceremony.md))
 
 Changes from walking yesterday's release end to end.

@@ -192,6 +192,7 @@
       "admin_grant_platform_admin",
       "admin_hard_delete_user",
       "admin_moderate_group_forum_post",
+      "admin_preview_publication_reach",
       "admin_publish_role_template",
       "admin_reactivate_group",
       "admin_reassign_group_stewardship",
