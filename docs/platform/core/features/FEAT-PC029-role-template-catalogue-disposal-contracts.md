@@ -6,30 +6,26 @@ title: Server-computed delete eligibility on the template list, and a hard delet
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 3-specified
+maturity: 4-ready
 requires-equipment: none
 ---
 
 **Follows:** RD-B walk finding **W-10** (*"a clone can never leave the catalogue"* — recorded as an observation, deliberately unruled) · **Pairs with:** [FEAT-H045](../../../products/hub/features/FEAT-H045-retired-template-collapse-and-mistake-disposal.md)
 
-> ## ⛔ GATE — this spec amends settled law RD-4, and cannot go `4-ready` until that amendment is taken
+> ## ✅ GATE CLEARED — RD-4a settled 2026-08-09
 >
-> **RD-4 is settled**, confirmed aloud at the RD-A kickoff, not defaulted:
+> **RD-4** (*"retire only, never delete"*) was settled law, confirmed aloud at the RD-A kickoff.
+> This feature introduces a delete, so it was written as a **narrow amendment** rather than a
+> silent contradiction — and the amendment was **accepted** (Stefan: *"RD-4a: i accept and
+> agree"*). Recorded in the [role-distribution design note](../../../planning/hub-v2/2026-08-05-role-distribution-design-note.md).
 >
-> > **Retire only, never delete.** Version history is the audit evidence and provenance must not dangle.
+> **RD-4a —** *retire-only stands for every template ever offered or ever adopted. A template
+> **never published** with **no copies** has no provenance to dangle and no audit evidence of
+> anything a Steward ever saw; for that case only, delete is permitted.*
 >
-> This feature introduces a delete. Per `ecosystem-decomposition`, *a spec that contradicts a
-> settled row is wrong, not merely unusual* — so it is written as a **narrow amendment**, and
-> the amendment is the one thing that must be granted before build:
->
-> **Proposed RD-4a —** *retire-only stands for every template that was ever offered or ever
-> adopted. A template that was **never published** and has **no copies** has no provenance to
-> dangle and no audit evidence of anything a Steward ever saw; for that case only, delete is
-> permitted.*
->
-> The amendment is narrow **by construction, not by convention**: STORY-2's guard is exactly
-> the set of conditions under which RD-4's own stated rationale does not apply. If the
-> rationale binds, the guard refuses.
+> Narrow **by construction, not by convention**: STORY-2's guard is exactly the set of
+> conditions under which RD-4's own rationale does not apply. If the rationale binds, the guard
+> refuses. **RD-4 is not weakened** — the amendment carves out the case it never contemplated.
 
 ---
 
@@ -222,10 +218,23 @@ Note for that budget: eligibility is computed **inside the existing list read**,
 the catalogue does not gain a second round-trip per template — the per-entry-second-call shape the
 PC028 payload walk caught and rejected.
 
-## Open questions
+## Open questions — both RESOLVED 2026-08-09, before `4-ready`
 
-1. **Does `admin_retire_role_template` accept a never-published template?** If it refuses, the
-   `retired_at` guard makes delete unreachable for exactly the case this feature exists to serve.
-   Resolve at build, before the guard is written (named in Rabbit holes).
-2. **Precedence order for `undeletable_reason`** when several guards fail. Proposal: system →
-   not-retired → published → adopted. Cheap to settle, must be fixed so the copy is deterministic.
+1. **Does `admin_retire_role_template` accept a never-published template?** **YES — read from the
+   live catalogue, not assumed.** The function refuses exactly one case, `is_system`; it never
+   consults `role_template_publications` or `group_roles`. So a never-published template retires
+   normally and the `retired_at` clause is reachable for precisely the case this feature serves.
+   **The Rabbit-hole risk is closed, not carried.**
+
+   Two things the same read confirmed, worth keeping:
+   - Retire's notification targets only groups that **adopted** it or that it was **published to**.
+     A never-offered, never-adopted template therefore notifies **nobody** on retire *or* delete —
+     which is why this feature's Notifications vertical is "None **by construction**" rather than
+     "None because we chose not to".
+   - Retire is **idempotent** (`already_retired: true` on a second call) and audits its refusals.
+     STORY-2's guard should match that posture: refuse loudly, audit the refusal, never half-act.
+
+2. **Precedence order for `undeletable_reason` when several guards fail.** **SETTLED:**
+   `system` → `not_retired` → `published` → `adopted`. Most-structural first, so the reason names
+   the condition the admin would have to address *first*. Fixed order means the same state always
+   reads the same way — a requirement of STORY-1's determinism AC, not a stylistic choice.
