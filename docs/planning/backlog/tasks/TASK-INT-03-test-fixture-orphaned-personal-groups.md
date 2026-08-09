@@ -3,9 +3,9 @@
 ---
 id: TASK-INT-03
 title: Test teardown leaks personal groups (sole-Steward guard + suites bypassing cleanupTestUser) — close the residual sources
-status: done
+status: todo
 assigned_to: unassigned
-priority: medium
+priority: high
 feature: none
 owner: platform/core/organisation
 wave: ferd
@@ -116,6 +116,57 @@ thousands of rows.
 
 **Left in place deliberately**, not cleaned up: deleting it destroys the cleanest
 reproduction of this leak that exists, and the row is harmless where it sits.
+
+**FIXED 2026-08-09 (session 15).** `hub/scripts/perf-measure.mjs:110` deleted the personal
+group **before** the auth user and discarded the result — byte-for-byte the `cleanupTestUser`
+defect described above, in a file nobody re-checked when that one was fixed.
+
+*Demonstrated red, then green, against the harness itself:*
+
+| | personal | orphaned |
+|---|---|---|
+| baseline | 5 765 | 2 688 |
+| after `setup` + `teardown` (before fix) | 5 766 | **2 689** ← leaked, while printing `teardown: done` |
+| after `setup` + `teardown` (after fix) | 5 766 | 2 689 — **delta 0** |
+
+Teardown now deletes the auth user first, checks both errors, and **verifies the group is
+actually gone** before claiming success — it throws and exits non-zero if it is not. The old
+version's failure mode was reporting a success it had not achieved, so a self-check is the
+fix, not just the reordering. Red-run debris removed; counts back to 5 765 / 2 688.
+
+## STILL OPEN, and much larger than this task assumed — the Mist source
+
+The AC above (*"a full `tests/integration` run leaks zero"*) was verified 2026-07-29 at
+**674 orphans**. Today: **2 688**. Roughly **2 000 new orphans in 11 days**, so an active
+source has been running the whole time and the delta-zero check did not see it.
+
+Attributed by name, orphans created since 2026-07-29:
+
+| Name | n | Window |
+|---|---|---|
+| **`Mist`** | **1 357** | 2026-07-30 → 2026-08-08 |
+| `E2E` | 82 | |
+| `Grace` / `HygaStella` / `H023` | 78 combined | |
+| `Perfwalker` | 4 | the harness fixed above |
+
+**`Mist` is 88% of it.** Both production paths are ruled out, read from the live catalogue
+rather than assumed:
+
+- **`_erase_mist` is correct** — it deletes `auth.users` first, then the group, with the
+  immutability bypass set. The exact ordering this task prescribes.
+- **`reap_expired_mists` is correct** — it delegates to `_erase_mist` inside a per-row
+  subtransaction. Since 2026-07-29: **1 175 runs, 105 swept, 105 erased, 0 skipped, 0 failed
+  runs.** It cannot account for 1 357.
+
+So Mist personal groups are being orphaned by **test teardown deleting a Mist's auth user
+directly instead of calling `_erase_mist`** — precisely the shape line 63 above records as
+fixed in `mist-posture-and-ask-delivery.test.ts`. That fix was applied to one suite; the
+mechanism is evidently live in others. 99 direct `auth.admin.deleteUser` / `signInAnonymously`
+call sites across 63 test files are the search space.
+
+**Next step is attribution, not a fix** — the same discipline that worked in July: instrument,
+harvest which suites leak `Mist` groups, then correct those teardowns to route through
+`_erase_mist`. Do not weaken any guard.
 
 **It also links two open threads.** Orphaned personal groups holding notification rows are
 what inflate `public.notifications` (73 % of it, per the original finding) — and that table
