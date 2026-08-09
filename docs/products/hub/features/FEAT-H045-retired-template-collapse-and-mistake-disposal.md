@@ -6,17 +6,17 @@ title: Retired role templates collapse behind a disclosure in the admin catalogu
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 3-specified
+maturity: 4-ready
 requires-equipment: none
 ---
 
 **Follows:** RD-B walk finding **W-10** · **Pairs with:** [FEAT-PC029](../../../platform/core/features/FEAT-PC029-role-template-catalogue-disposal-contracts.md) — consumed API-first; this feature carries **no migration of its own**
 **Capability:** Hub §L3 **ADM-17** — *render and manage role templates and the permission catalogue (DeusEx-scope CRUD)*
 
-> **STORY-2 is gated on the RD-4a amendment** described in [FEAT-PC029](../../../platform/core/features/FEAT-PC029-role-template-catalogue-disposal-contracts.md).
-> **STORY-1 is not** — it changes no contract and contradicts no ruling, and can ship alone.
-> That split is deliberate: the display fix is the larger part of the felt problem and should not
-> wait on a ruling.
+> **RD-4a was accepted 2026-08-09**, so STORY-2's gate is cleared and both stories are buildable.
+> The split still stands and still matters: **STORY-1 has no platform dependency and can ship
+> first**, on its own, because the display fix is the larger part of the felt problem. Build it
+> without waiting for PC029 to land.
 
 ## Problem
 
