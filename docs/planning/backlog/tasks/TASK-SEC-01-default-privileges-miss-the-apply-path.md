@@ -3,7 +3,7 @@
 ---
 id: TASK-SEC-01
 title: "Postgres applies its built-in EXECUTE-TO-PUBLIC on top of pg_default_acl, so every new public function is anon-executable until its own migration revokes PUBLIC"
-status: todo
+status: done
 assigned_to: unassigned
 priority: high
 owner: platform/core/infrastructure
@@ -94,11 +94,15 @@ until someone next ran the suite.
       apply-to-suite window. `CREATE EVENT TRIGGER` requires superuser; **`postgres` is not
       superuser here** (`rolsuper = false`), and all six event triggers on this instance are
       owned by `supabase_admin` — Supabase's surface, which we do not write to.
-- [ ] **Record the accepted limit** (governance, needs Stefan): enforced discipline is
-      therefore the ceiling. New functions are anon-executable from apply until the next
-      suite run, and the mitigations are the per-migration revoke, the gate's ACL question,
-      and the blanket invariant. That residual window should be an explicit accepted risk
-      with an owner, not an implicit one — it is the third time this class has cost a cycle.
+- [x] **The accepted limit is recorded — ACCEPTED 2026-08-09, owner Stefan Steffansson**
+      (*"ok i accept the risk and you can write it down and cite me"*). Written into
+      [`docs/platform/CLAUDE.md`](../../../platform/CLAUDE.md) **beside the revoke rule that
+      mitigates it**, rather than into this file — a task file is swept, and the next
+      migration author reads the tier steering file. It states the window (apply → next suite
+      run), why it cannot be closed by us (event trigger needs superuser; `postgres` is not
+      one here), the three accepted mitigations, and — the point of writing it at all — that
+      finding an anon-executable function means you have hit **the known thing, not a new
+      one**.
 
 ## Related
 
