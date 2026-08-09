@@ -91,3 +91,34 @@ Both sources were teardown-ordering faults in fixtures, and **neither was a faul
 ## Verification
 
 Run any integration directory, counting `public.groups WHERE group_type = 'personal'` before and after. The delta must be zero. Before this task: +6 to +7 per notifications run. Before the 2026-07-28 partial fix: every cleanup leaked.
+
+## REPRODUCED 2026-08-09 — a single instance, with an id and a 47-minute lifetime
+
+The RD-B gate perf pass (`hub/scripts/perf-measure.mjs`) provisions a measurement FIM and
+erases it at teardown. `teardown` reported "done". Verified against the database rather
+than trusted:
+
+| Object | After teardown |
+|---|---|
+| `auth.users` row | 0 — erased |
+| the 3 engagement groups | 0 — erased |
+| **the personal group `Perfwalker`** | **1 — SURVIVES** |
+
+`e378c1b5-a0f5-4a94-9f19-a1d300e0f850`, created 14:58:07 UTC, torn down 15:45:03 UTC. It
+has **no owning `users` row** and still holds **2 memberships and 10 notification rows**.
+
+**Why this instance is worth more than the population.** The 11 150 orphans are an
+accumulated mess of unknown provenance; this one has a known creator (one script), a known
+lifetime (47 minutes), and a known teardown path that believed it had succeeded. The
+harness's teardown deletes the auth user and the engagement groups and does not delete the
+personal group — so the mechanism is legible in one file rather than inferred across
+thousands of rows.
+
+**Left in place deliberately**, not cleaned up: deleting it destroys the cleanest
+reproduction of this leak that exists, and the row is harmless where it sits.
+
+**It also links two open threads.** Orphaned personal groups holding notification rows are
+what inflate `public.notifications` (73 % of it, per the original finding) — and that table
+is the prime suspect in `TASK-E2E-04` / walk finding W-7, where emission assertions across
+BOTH test tiers fail in fleet, pass in isolation, and pick a different victim each run. If
+the volume hypothesis holds, this task is the upstream cause and E2E-04 closes through it.
