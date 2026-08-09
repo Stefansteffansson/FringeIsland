@@ -44,15 +44,28 @@ export async function eraseUserAndPersonalGroup(
   admin: SupabaseClient,
   authUserId: string | null | undefined,
   personalGroupId: string | null | undefined,
+  opts: { clearConsent?: boolean } = {},
 ): Promise<void> {
+  const { clearConsent = true } = opts;
   if (personalGroupId) {
     // Consent rows FK-reference the group ON DELETE RESTRICT (retention,
     // ADR-U034) — clear via the controlled-erasure bypass, as teardown is a
     // legitimate bypass caller. Journeys are RESTRICT too.
-    await runAdminSql(
-      `DO $$ BEGIN PERFORM set_config('app.consent_erasure_in_progress','true',true); ` +
-        `DELETE FROM public.consent_records WHERE subject_group_id = '${personalGroupId}'; END $$;`,
-    ).catch(() => undefined);
+    //
+    // `clearConsent: false` exists for CALLERS THAT ALREADY CLEARED IN BULK.
+    // This step is a Management API round-trip — by far the most expensive call
+    // in this function — and `cleanupAnonymousUsers` runs the whole thing once
+    // per anonymous user in the database. Paying it per user put three specs'
+    // afterAll hooks over their 30s budget (2026-08-09 fleet: entry.spec:46,
+    // onboarding-arrival.spec:93, transcendence.spec:83, all three timing out
+    // in teardown). The janitor now clears consent for its whole batch in ONE
+    // statement and passes false here.
+    if (clearConsent) {
+      await runAdminSql(
+        `DO $$ BEGIN PERFORM set_config('app.consent_erasure_in_progress','true',true); ` +
+          `DELETE FROM public.consent_records WHERE subject_group_id = '${personalGroupId}'; END $$;`,
+      ).catch(() => undefined);
+    }
     await admin.from('journeys').delete().eq('created_by_group_id', personalGroupId);
   }
 
@@ -128,13 +141,37 @@ export async function cleanupAnonymousUsers(admin: SupabaseClient): Promise<void
   const { data, error } = await admin.auth.admin.listUsers({ perPage: 200 });
   if (error || !data) return;
   const anon = data.users.filter((u) => u.is_anonymous);
+  if (anon.length === 0) return;
+
+  // Resolve every profile in ONE read rather than one per user. This function
+  // is O(every anonymous user in the database) and runs inside a 30s afterAll,
+  // so per-user round-trips are the budget.
+  const { data: profiles } = await admin
+    .from('users')
+    .select('auth_user_id, personal_group_id')
+    .in('auth_user_id', anon.map((u) => u.id));
+
+  const groupByAuthId = new Map<string, string | null>(
+    (profiles ?? []).map((p) => [p.auth_user_id as string, p.personal_group_id as string | null]),
+  );
+  const groupIds = [...groupByAuthId.values()].filter(Boolean) as string[];
+
+  // Consent for the WHOLE batch in one statement (see eraseUserAndPersonalGroup's
+  // clearConsent note). Per-user this was a Management API call each, which is
+  // what blew the afterAll budget in the 2026-08-09 fleet.
+  if (groupIds.length > 0) {
+    await runAdminSql(
+      `DO $$ BEGIN PERFORM set_config('app.consent_erasure_in_progress','true',true); ` +
+        `DELETE FROM public.consent_records WHERE subject_group_id IN (` +
+        groupIds.map((g) => `'${g}'`).join(',') +
+        `); END $$;`,
+    ).catch(() => undefined);
+  }
+
   for (const u of anon) {
-    const { data: profile } = await admin
-      .from('users')
-      .select('personal_group_id')
-      .eq('auth_user_id', u.id)
-      .maybeSingle();
-    await eraseUserAndPersonalGroup(admin, u.id, profile?.personal_group_id as string | null);
+    await eraseUserAndPersonalGroup(admin, u.id, groupByAuthId.get(u.id) ?? null, {
+      clearConsent: false,
+    });
   }
 }
 

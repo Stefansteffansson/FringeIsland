@@ -87,15 +87,66 @@ invitation reaching the bell.
 arrival/emission assertions degrade as the notifications table grows, across both tiers".
 Retitled accordingly; the original single-observation record is preserved above.
 
+## A CANDIDATE MECHANISM, surfaced 2026-08-09 by breaking it harder
+
+The 2026-08-09 fleet re-run failed **3 of 136** — `entry.spec:46`,
+`onboarding-arrival.spec:93`, `transcendence.spec:83` — and **all three failed the same
+way: `"afterAll" hook timeout of 30000ms exceeded`.**
+
+Those are **exactly the three specs that call `cleanupAnonymousUsers`**, and the immediate
+cause was self-inflicted: that helper had just been rewritten (TASK-INT-03) to route through
+a verifying primitive that issues a **Management API round-trip per user**. Fixed by clearing
+consent for the whole batch in one statement and resolving profiles in one read.
+
+**But the shape it exposed is not self-inflicted, and it is the best lead this task has had:**
+
+> `cleanupAnonymousUsers` is **O(every anonymous user in the database)** and runs inside a
+> **30-second `afterAll`**. It has always been O(N) — the rewrite only raised the constant.
+> N grows during a fleet, because the fleet is what mints Mists. So the teardown of these
+> three specs gets slower the longer the fleet runs, and fails **only in a fleet**.
+
+That predicts precisely the observed profile — fleet-only, isolation-green, a different
+victim each run — **without appealing to notification volume at all**, and it explains why
+`entry.spec:46` (the first spec to run of the three) was the repeat victim.
+
+Measured in passing: **156** anonymous users at fleet time; **58** still present after the
+timed-out sweep, because the loop never finished.
+
+**Not yet confirmed.** The isolation re-run afterwards was 9/9 green, but with 58 anon users
+rather than 156 and without fleet pressure — weaker evidence than the failure it is meant to
+explain, and recorded as such. A clean full fleet is what would confirm it.
+
+**If it holds, the fix is to bound the janitor** — scope it to the users the spec created, or
+move the sweep out of a per-spec `afterAll` into global teardown where it is paid once.
+
 ## Acceptance criteria
 
 - [x] A **second observation** captured — 2026-08-09, full fleet, with a sibling
       (`notifications.spec.ts:101`) and the same profile at the integration tier
-- [ ] The failing step identified from the trace/screenshot artefact (preserved under
-      `test-results/`), not inferred from the line number
-- [ ] The volume hypothesis tested directly: run the fleet against a DB with the
-      notification table pruned, and against it as-is, and compare. If volume is the
-      mechanism, `TASK-INT-03`'s fixture leakage is the upstream cause and this closes
-      through it rather than on its own
+- [ ] The failing step identified from the trace/screenshot artefact, not inferred from the
+      line number. **CORRECTION 2026-08-09: the artefacts are NOT preserved.**
+      `hub/test-results/` is empty — 0 entries. The claim above was written when they
+      existed and has since gone stale; nothing was committed and the directory has been
+      cleaned. **This AC now requires a fresh reproduction**, which is why the fleet was
+      re-run rather than the artefacts read.
+- [ ] The volume hypothesis tested directly. **RE-SCOPED 2026-08-09 — its stated premise no
+      longer holds.** The link to `TASK-INT-03` rested on July's measurement that orphaned
+      personal groups held **73%** of `public.notifications`. Re-measured today:
+
+      | | |
+      |---|---|
+      | `notifications` total | **82 910** (up from the 73 633 recorded above) |
+      | held by orphaned personal groups | **6 807 — 8%** |
+
+      Migration `20260728080000` already retired the July rows, so **orphan leakage is no
+      longer what makes this table big**, and INT-03's reclaim (`20260809200000`, held at the
+      gate) would move it 82 910 → ~76 100 — not a step change. **So this task probably does
+      NOT close through INT-03**, and the "prune and compare" experiment as written would
+      prune 8% and prove little.
+
+      What that leaves: the table grew ~9 000 rows in a day from *live* fixture activity, not
+      leakage. If volume is still the mechanism, the question is write pressure during a
+      fleet run, not accumulated orphan rows — a different experiment (measure emission
+      latency under concurrent fleet load) against a different suspect.
 - [ ] Closure states the **mechanism removed**, never a count of green fleets (the
       `TASK-E2E-01` discipline)
