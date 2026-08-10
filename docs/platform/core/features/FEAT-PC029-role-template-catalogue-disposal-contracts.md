@@ -282,3 +282,52 @@ PC028 payload walk caught and rejected.
    `system` → `not_retired` → `published` → `adopted`. Most-structural first, so the reason names
    the condition the admin would have to address *first*. Fixed order means the same state always
    reads the same way — a requirement of STORY-1's determinism AC, not a stylistic choice.
+
+## Implementation notes
+
+**Backfilled 2026-08-10** by the `doc-health-check` Section 5.6 whole-tree sweep, which found this
+spec at `6-done` with the section absent. Recorded here rather than filed as a task: the identical
+finding on FEAT-PC002 (`TASK-DOC-004`) had to be filed twice before it was fixed, and filing reads
+as diligence while the original ages. This spec closed *after* the 2026-07-25 process fix that made
+the sweep whole-tree — so this is that fix catching its first new instance, working as designed.
+
+**Built 2026-08-09/10, Cycle RD-C. Two migrations, both applied on named approvals:**
+`20260810090000` (the feature) and `20260810120000` (the corrective, same session).
+
+- **One predicate, two consumers.** The `deletable` badge and the guarded write are served by the
+  same SQL predicate, so the affordance and the rule cannot disagree — a badge that says deletable
+  and a write that refuses is the failure this design forecloses. `admin_get_role_templates` was
+  widened **additively** (`deletable`, `undeletable_reason`), computed inside the read the catalogue
+  already makes, so the surface gains no second round-trip.
+- **The guard refuses before any write** and captures template name + version count **before** the
+  row ceases to exist — the audit row's target is gone the moment the delete succeeds.
+- **ACLs read from `pg_proc` after apply**, not trusted from migration text: no PUBLIC `=X/`, no
+  `anon=X` (TASK-SEC-01 discipline).
+
+**Three premises in this spec were false, and none was caught by review** — each by building or by
+a test. The pattern is the durable finding: *the spec asserted what an already-shipped mechanism
+does, without reading it.* Every one was a single catalogue query or `grep` away at spec time.
+
+1. **"Publication rows are never deleted"** — the guard's self-declared load-bearing half.
+   `admin_unpublish_role_template` **hard-deletes** them, so publish → unpublish would have read as
+   never-offered and destroyed a template RD-4 protects. Resolved by reading `admin_audit_log`,
+   whose publish record is provably complete (earliest audit row predates the earliest surviving
+   publication row). Measured exposure: **0 templates** — latent, not live. **Consequence carried:**
+   `admin_audit_log` is now load-bearing for a guard, not only observability — anything pruning it
+   must exclude `role_template.publish` rows.
+2. **"Retire audits its refusals"** — false family-wide; see the resolved open question above and
+   [TASK-RDC-03](../../../planning/backlog/tasks/TASK-RDC-03-refusal-audit-rows-are-dead-code.md),
+   which ruled the dead INSERTs deleted rather than made real (closed 2026-08-10).
+3. **The verbatim-refusal criterion was unreachable.** The guard raised `42501`, which the BFF maps
+   to an existence-hiding **404** — *"this template was offered to groups"* reached the admin as
+   *"Not found"*. Corrected to **P0001 → 409**, leaving `42501` to the non-admin gate where hiding
+   is right. **The gap was a missing tier, not a missing assertion:** the integration suite calls
+   the RPC directly and stayed green while the BFF path was broken. A route-level E2E cell now
+   asserts 409 plus the exact literal and would have failed against the pre-corrective contract.
+
+**A fourth was a near-miss, named rather than quietly closed:** a promise written into a migration
+header ("a route-level cell is added with STORY-2") before it was built. Built in the same session —
+but that is the PC028/H044 unbuilt-commitment shape recurring.
+
+**`next build` caught what no test could:** `useSearchParams()` opts a client component out of
+static prerendering without a `<Suspense>` boundary. Fixed at the page; `/admin/roles` stays static.

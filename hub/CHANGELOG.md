@@ -2,6 +2,12 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-10 — The role catalogue stops saying "Not found" about templates you can see ([TASK-RDC-03](../docs/planning/backlog/tasks/TASK-RDC-03-refusal-audit-rows-are-dead-code.md))
+
+- *Admin:* **two refusals now tell you why, instead of claiming the template isn't there.** Trying to retire one of the four seeded roles, or to offer a retired template to a group, used to come back as **"Not found"** — about a template sitting in the list you were looking at. They now answer in the platform's own words: *"a system role template cannot be retired"* and *"a retired role template cannot be published"*.
+- **Nothing about who can do what changed.** A genuine permission failure still refuses exactly as before, and still declines to confirm whether the template exists — that part was always right, and is deliberately untouched. What changed is that a *rule* refusal stopped borrowing the *permission* refusal's answer.
+- This is the same fix already made for delete on 2026-08-10, now carried to the two places it had not reached.
+
 ## 2026-08-10 — A mistake in the role catalogue can finally be thrown away ([FEAT-H045](../docs/products/hub/features/FEAT-H045-retired-template-collapse-and-mistake-disposal.md))
 
 - *Admin:* **a retired template nobody was ever offered can now be deleted for good.** Until now a clone made by mistake was a permanent catalogue entry — retiring it only stopped it being offered. Delete sits inside the Retired section, where the retired things already are, so you don't have to open the template first.

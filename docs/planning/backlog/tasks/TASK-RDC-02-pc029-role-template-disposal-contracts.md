@@ -73,8 +73,16 @@ exclude `role_template.publish` rows or this delete silently widens.
   **additive only**, computed inside the read the catalogue already makes so the
   surface gains no second round-trip per template.
 - `admin_delete_role_template(uuid)` — guarded hard delete. Refuses **before any
-  write**, audits its refusals, and captures name + version count **before** the
+  write**, ~~audits its refusals,~~ and captures name + version count **before** the
   delete because the target ceases to exist.
+
+  > **The struck clause was false when written and is no longer in the code**
+  > (corrected 2026-08-10, [TASK-RDC-03](./TASK-RDC-03-refusal-audit-rows-are-dead-code.md)).
+  > The refusal INSERT sat in the transaction its own `RAISE` aborted, so it never
+  > landed — 0 rows matching `%_refused` in 6 808. `20260810120000` removed this
+  > function's dead INSERT; `20260810150000` removed the two siblings'. Refusals are
+  > deliberately not audited. Left struck rather than deleted: this task is where the
+  > false claim was copied forward from PC029's spec, and that is the point.
 - Both new functions carry the explicit `revoke … from public, anon` / `grant …`
   pair (TASK-SEC-01: load-bearing, not hygiene).
 
