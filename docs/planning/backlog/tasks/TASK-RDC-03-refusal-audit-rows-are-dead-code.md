@@ -3,7 +3,7 @@
 ---
 id: TASK-RDC-03
 title: "admin_* refusal auditing never persists: INSERT-then-RAISE in one transaction discards the row. 0 of 6 619 audit rows are refusals."
-status: todo
+status: review
 assigned_to: unassigned
 priority: medium
 owner: platform/core/governance
@@ -74,14 +74,65 @@ exist and the `%_refused` names in the code are the population to enumerate.
 **Recommendation: option 1**, plus correcting the vertical text — unless refusal traceability is
 genuinely wanted, in which case option 2's contract change deserves its own ADR.
 
+## RULING — 2026-08-10, Stefan Steffansson
+
+**Option 1: delete the dead INSERTs.** Refusals are deliberately not audited; the Observability
+wording and PC029's resolved-open-question text are corrected to say so. **Plus a folded-in
+second correction** (ruled in the same sitting, see below).
+
+### The enumeration AC#1 demanded — and what it corrected
+
+Read from `pg_proc`, not from migration text, 2026-08-10. **The filing was wrong in both
+directions:**
+
+| Function | Filed as | Actually |
+|---|---|---|
+| `admin_retire_role_template` | in scope | **in scope** — `retire_refused`, dead |
+| `admin_publish_role_template` | **not named** | **in scope** — `publish_refused`, dead |
+| `admin_delete_role_template` | "correct in the same pass" | **already clean** — `20260810120000` removed it |
+
+Re-measured the same day: **6 808 audit rows · 46 distinct actions · 0 matching `%_refused`.**
+The premise holds. Live population of dead INSERTs: **two**, not the filed set.
+
+### The folded-in second defect — found by the same sweep
+
+Both guards raised **`42501` for a business refusal**. `call()` in `hub/lib/admin/roles.ts:130`
+collapses **every** `42501` into `refused`, which the routes turn into the admin-plane
+existence-hiding **404** — so the routes' own `42501 -> 403` branches were unreachable dead code,
+and:
+
+- *"a system role template cannot be retired"* reached the admin as **"Not found"**
+- *"a retired role template cannot be published"* reached the admin as **"Not found"**
+
+about a template plainly visible in the list they were reading. This is the **same defect PC029's
+corrective fixed for the delete guard**, surviving in the two siblings that guard did not touch.
+Both moved to **`P0001` -> 409 verbatim**; `42501` is left to the non-admin gate, where hiding
+existence is correct.
+
+**Why the integration tier could not have caught it:** it calls the RPC directly and sees the
+raise. Only the route tier crosses `call()`. Same missing-tier lesson as PC029 — and
+`hub/tests/unit/components/admin/admin-roles-view.test.tsx:297` was *mocking* a response body the
+real route could not produce.
+
+### Carried out
+
+`supabase/migrations/20260810150000_task_rdc03_dead_refusal_audits_and_business_refusal_sqlstate.sql`
+· both routes' `refusalStatus` tables · two red-first route-tier E2E cells in
+`hub/tests/e2e/admin-roles.spec.ts` (both demonstrated red at **404 where 409 belongs**) · the
+disposal-suite pinning cell flipped from pinning-a-defect to pinning-a-ruling.
+
 ## Acceptance criteria
 
-- [ ] The full population of dead refusal-audit INSERTs is enumerated by grep, not assumed
-- [ ] A ruling is taken on the three options and recorded
-- [ ] Whichever way it goes, **no function body claims to audit something it does not**
-- [ ] PC029's resolved-open-question text is corrected — it currently states the false half
+- [x] The full population of dead refusal-audit INSERTs is enumerated by grep, not assumed —
+      read from `pg_proc`; corrected the filing in **both** directions (see Ruling)
+- [x] A ruling is taken on the three options and recorded — option 1, 2026-08-10
+- [x] Whichever way it goes, **no function body claims to audit something it does not**
+- [x] PC029's resolved-open-question text is corrected — it currently states the false half
 - [ ] The Observability vertical wording for the affected features says what is actually true
-- [ ] A test pins the chosen behaviour, so it cannot silently regress either way
+- [x] A test pins the chosen behaviour, so it cannot silently regress either way — the disposal
+      cell now pins the ruling; two route-tier cells pin the 409-verbatim contract
+- [ ] **Schema gate:** migration applied, and the **applied** functions' ACLs read from `pg_proc`
+      (no bare `=X/`, no `anon=X`) — held for the named approval
 
 ## Note
 
