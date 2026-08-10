@@ -93,3 +93,33 @@ Built as migration `20260731190000_adm_a_pc019_auth_event_audit.sql` (PR #355, m
 2. **Caller action-string correction.** The four live Hub actions are `auth.sign_in`, `account.created`, `identity.transcended`, `mist.explicit_erase` — this spec's earlier prose (and the migration COMMENT's examples) named `auth.sign_up`/`mist.transcend` from the audit register's summary rather than the code. No contract impact (the namespace is open TEXT by design); the wiring (FEAT-H034 STORY-3) preserves the live strings verbatim.
 
 ADM-D inherits three recorded opens: durable failed-attempt/pre-session audit, narrowing the legacy pattern-(c) INSERT policy, and the ADR-U052 §6 export-shape rewrite of the manifest entry (with ADM-16).
+
+**RULED 2026-08-10 (Stefan) — the first of those three is a deliberate NON-GOAL.** Durable
+first-party logging of pre-session and failed-attempt auth moments is **not** something this platform
+does. ADM-D closed 2026-08-02 without ruling it; TASK-AB-01's pin surfaced the orphan and it is now
+settled rather than carried a sixth time.
+
+**What the ruling rests on** (verified at the pin, not assumed):
+
+- Both durable writers are `GRANT EXECUTE … TO authenticated` — `record_auth_event`
+  (`20260731190000:60`) and `record_telemetry_event` (`20260731180000:83`). A pre-session caller can
+  reach neither. The `emitTelemetry` "mirror" is console + in-memory only
+  (`hub/lib/observability/telemetry.ts:19-24`), **not** durable — so today a pre-session moment
+  leaves nothing durable anywhere.
+- **The headline case cannot be fixed at this seam.** A failed sign-in never reaches the Hub:
+  the client calls Supabase Auth directly, and `/api/auth/audit` runs only *after* a success. No
+  change to `record_auth_event` would make wrong-password attempts visible. That needs a GoTrue auth
+  hook, which is different work.
+- Supabase Auth already keeps its own auth logs and rate-limits sign-in. A partial first-party
+  duplicate is worse than pointing at the real source.
+- Granting `anon` a write path into a 90-day-retained table is an unauthenticated-flood surface.
+
+**Consequences, stated plainly:** pending-confirmation sign-ups and failed sign-ups leave no durable
+first-party record; failed sign-ins are observable only in Supabase's own logs. This is accepted,
+pre-launch, with near-zero detection value against a real abuse surface.
+
+**Activation point:** Phase-4 cutover planning, when launch/abuse monitoring becomes real — and then
+via a **GoTrue auth hook**, not by loosening either grant. This spec's §Non-goals line ("No anon
+EXECUTE") stands and is now the ruling's forward edge.
+
+Recorded in [`AB-REGISTER.md`](../../../planning/hub-v2/AB-REGISTER.md) finding 1.
