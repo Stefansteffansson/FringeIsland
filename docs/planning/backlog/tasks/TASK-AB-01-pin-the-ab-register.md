@@ -3,7 +3,7 @@
 ---
 id: TASK-AB-01
 title: "Pin AB-1..AB-8: confirm each item's real state against the substrate, not against the board's own claim"
-status: todo
+status: done
 assigned_to: unassigned
 priority: medium
 owner: platform/core
@@ -93,3 +93,29 @@ only these would mean the audit did not look.
   state, recorder behaviour). Per the one-checkout / one-dev-DB rule, do not run it while
   another session is doing schema work.
 - **Runs before Phase-4 cutover**, per AB-6.
+
+## Outcome — DONE 2026-08-10
+
+Pinned at [`docs/planning/hub-v2/AB-REGISTER.md`](../../hub-v2/AB-REGISTER.md). All eight rechecked
+against the live system (dev DB `jveybknjawtvosnahebd`, migration set, ownership manifest, test suites);
+nothing inherited from the board.
+
+**Four held clean:** AB-1 (sink live, 4,874 rows), AB-4 (narrowed Art. 15 split written in the manifest
+exactly as settled), AB-5 (TASK-INT-05 genuinely honoured), AB-7 (`hub/app/admin/` route group, ADM-16
+at `admin/audit`).
+
+**Four moved:**
+- **AB-2 — one clause FALSE.** The board says "null-actor accepted"; the built recorder *refuses*, raising
+  a typed `28000` (`20260731190000:40-49`). Compensated at the caller; corrected in the plan's row 81. The
+  question it deferred was homed to **ADM-D, which closed without ruling it** — now on the AB-6 docket.
+- **AB-3 — structure holds, but its gate was RED on `main`.** FEAT-PC029 shipped
+  `admin_delete_role_template` + `role_template_undeletable_reason` unregistered; 228 live vs 218 declared.
+  Registered (PC-4 / PC-3); platform conformance **22/23 -> 23/23**. Second instance of this miss.
+- **AB-6 — its audit is now DUE**, all preconditions closed. All three known anatomy-drift claims
+  confirmed; the PC-4 one *understates* it (34 live `admin_*`, not "~20"). `U052` appears zero times in
+  the anatomy doc.
+- **AB-8 — the deferred five is now a deferred THREE** (ADM-13/14/15); ADM-7 and ADM-17 were re-scoped
+  into Ferd and have both shipped.
+
+Also corrected: plan note 4's `admin_exit_user_from_platform` "no longer exists" is stale — ADM-C
+re-created it as the fresh ADM-6 contract (`20260801190000:451`), live and declared PC-4.
