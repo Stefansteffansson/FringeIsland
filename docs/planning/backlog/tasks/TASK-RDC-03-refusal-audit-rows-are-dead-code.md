@@ -3,7 +3,7 @@
 ---
 id: TASK-RDC-03
 title: "admin_* refusal auditing never persists: INSERT-then-RAISE in one transaction discards the row. 0 of 6 619 audit rows are refusals."
-status: review
+status: done
 assigned_to: unassigned
 priority: medium
 owner: platform/core/governance
@@ -132,11 +132,24 @@ disposal-suite pinning cell flipped from pinning-a-defect to pinning-a-ruling.
       PC027:127 and PC028:243 both claimed refusals "are recorded as refusals"; both corrected
 - [x] A test pins the chosen behaviour, so it cannot silently regress either way — the disposal
       cell now pins the ruling; two route-tier cells pin the 409-verbatim contract
-- [ ] **Schema gate:** migration applied, and the **applied** functions' ACLs read from `pg_proc`
-      (no bare `=X/`, no `anon=X`) — held for the named approval
+- [x] **Schema gate:** `20260810150000` applied 2026-08-10 on the named approval *"ok apply the
+      RDC-03 migration and merge 478"*. **Applied** objects read from `pg_proc`, not trusted from
+      migration text: ACL `postgres=X | authenticated=X | service_role=X` on both — no bare `=X/`,
+      no `anon=X`; dead INSERTs confirmed gone; `P0001` present; `SECURITY DEFINER` +
+      `search_path=""` preserved. Both E2E cells went **red → green**; the three integration
+      suites that assert on these functions pass **92/92**, confirming the zero-invalidated sweep
+      empirically rather than by reasoning; `next build` clean.
 
 ## Note
 
-`hub/tests/integration/admin/role-template-disposal.test.ts` currently **pins the defect as it
-truly behaves** (asserts 0 refusal rows) with a comment pointing here. When this task lands,
-that cell flips deliberately rather than quietly.
+`hub/tests/integration/admin/role-template-disposal.test.ts` **has now flipped** (2026-08-10),
+deliberately and not quietly. Its assertion value is unchanged — still 0 refusal rows — but its
+**meaning** moved from *pinning a defect* to *pinning this ruling*: refusals are not audited
+because we decided they are not, and if a refusal row ever appears there again, someone has
+re-added an INSERT that its own `RAISE` will discard.
+
+**The filing's own Scope section above is left as written, deliberately** — it names the wrong
+population (`admin_delete_role_template`, already clean; and misses
+`admin_publish_role_template`). Corrected in the Ruling rather than edited away, because the gap
+between what a finding assumes and what the catalogue says is the whole reason AC#1 demanded an
+enumeration.
