@@ -30,6 +30,7 @@ recorded:
 | 4 | **NEW:** the ADR index (`decisions/README.md`) itself had **no ADR-U052 row** — the anatomy-freshness gate compares the stamp against this index, so the gate's own input was stale and the check would have passed wrongly | U052 row added; gate hardening below |
 | 5 | **NEW:** the diagram's PC-1 box carried "feature flags" too — so U052 absorption had **diagram impact**, unlike the last four reviews | `ECOSYSTEM_ANATOMY_V6.svg` bumped v2.5 -> **v2.6**: box text swaps feature flags for telemetry sink; `<desc>`, `<title>`, caption updated |
 | 6 | **NEW:** `docs/platform/core/README.md` marked `organisation-specification.md` and `governance-specification.md` "_(to be written)_" — both have existed since 2026-05-15 (its own sibling `CLAUDE.md` says so); its PC-1 line also carried the feature-flags claim | Both corrected. (`ROADMAP.md` "(to be written)" is accurate and stands) |
+| 7 | **NEW (found at leg-4 close):** the RD-B gate pass (2026-08-09) never appended its `PERF-MEASUREMENT-LEDGER.md` row — the append ADR-U052 clause 5 mandates at every gate pass. Same register-then-forget class as the function-registration miss (AB-3, twice) | Row backfilled with a dated omission note; doc-health Section 11 gains a **measurement-ledger append check** (gate 4) |
 
 **Reviewed with no anatomy impact** (recorded so the review is visible, not inferable): the RD-A/RD-B/RD-C
 role-provenance and template-catalogue work (internal to the PC-3 row's "roles"), the group hold-state
@@ -76,10 +77,33 @@ harness-lag record). Fixture erased at teardown, residue-verified.
 | Window | Idle before nav | First page of session | Box-visible wall | Fan-out fires at | B2 <= 2 500 ms |
 |---|---|---|---|---|---|
 | 1 — **DISCLOSED PROTOCOL MISS: 18 min idle, short of the >= 20 min minimum** (timer arithmetic error, caught by reconstruction at run end; kept as a datum because the shape is unambiguously deep-cold — the nav drew a multi-second boot) | ~18 min | `/admin/roles` | **5 417 ms** (locator 5 561 ms) | 3 842 ms | **FAIL — 2.17x** |
-| 2 — clean window | *(pending)* | `/admin/roles` | *(pending)* | | |
+| 2 — clean window | ~24 min | `/admin/roles` | **5 359 ms** (locator 5 799 ms) | 3 997 ms | **FAIL — 2.14x** |
 
-Window 1 composition: provisioning + shell dominate (fan-out only fires at 3.8 s); the page's own
-2 API reads run 0.3–1.5 s; unaccounted 179 ms.
+The two windows agree to within ~1 % — which retroactively validates window 1's number and shows the
+instance was fully deprovisioned well before the 20-minute line. Composition both times:
+provisioning + shell dominate (fan-out fires only at ~3.9 s); the page's own 2 API reads run
+0.3–1.5 s. Also > 3 s, which B6 independently classes as a defect. **Extends the standing labelled
+pre-launch exception** (closed by decision at the A-NTF gate; A-ADM 08-02 extended it at 3.6–4.4 s;
+this page sits at ~5.4 s — the A-NTF-era magnitude — worth one line in the Phase-4 cutover
+conversation, not an investigation now: the composition is the established one and nothing here
+contradicts it).
+
+### Warm — fresh-context full loads (the strict B3 form), dual signal per U043 Amendment 2
+
+| Run | Box-visible | Locator-visible | B3 <= 1 000 ms |
+|---|---|---|---|
+| 1 (first fresh context after the cold session) | **518 ms** | 957 ms | PASS |
+| 2 | **415 ms** | 419 ms | PASS |
+| 3 | **422 ms** | 441 ms | PASS |
+
+**PASS with wide headroom** — box-visible 415–518 ms against the 1 000 ms ceiling; even the
+locator signal passes everywhere (run 1's 439 ms locator lag over box is the known Playwright
+`waitFor` slow mode the dual-signal amendment exists for). `/admin/roles` sits comfortably inside
+the binding budget — unlike the admin *detail* pages, which were the 08-02 pass's ceiling-hugging
+carried finding.
+
+Fixture: `perf-adm-fixture.mjs down` (1 report, 1 elevation deleted) -> `perf-measure.mjs teardown`
+(personal group verified gone) -> `verify` residue **{fimUsers: 0, reports: 0, elevations: 0}`.
 
 ## Leg 5 — doc-health-check (run inside the audit): EXECUTED, CLEAN
 
@@ -145,4 +169,33 @@ commit on this branch if ratified now, or a task if not; B1/B3 are a future sche
 
 ## Audit verdict
 
-*(Written at close, after legs 4 and 5.)*
+**The audit AB-6 scheduled is EXECUTED — all four docket items closed, doc-health clean, findings
+converted into gates, rulings landed.** The Platform-Ops exit checklist's last pre-cutover row is
+ticked; **Phase-4 cutover's entry condition is met** (pending the held PR's merge, ruling D).
+
+- Stamp: U052 + U051A2 absorbed in substance; diagram v2.6; **six** drift findings fixed (the
+  register's three plus three the sweep found: the ADR index's missing U052 row, the diagram's PC-1
+  box, the core README's phantom "(to be written)"s).
+- Docket 1 (Tier-1 `has_permission`): verified live, **ruled law (A1)** — ADR-U028 amendment +
+  anatomy sentence + pin test `tier1-context-free-arm.test.ts` **4/4 green** (shape pin, total-reach
+  pin incl. ghost-context, not-widened control, detachment control).
+- Docket 2 (`/admin/roles` ADR-U043): deep-cold ~5.4 s x2 windows, labelled exception extended;
+  **warm PASS wide** (415–518 ms box-visible). Ledger row appended.
+- Docket 3 (sealed threads): verified live, **ruled B1 (arm, bounded)** — TASK-SEAL-01 filed with
+  the four bounds as part of the ruling; slotting at Phase-4 cutover planning.
+- Leg 5 (doc-health): **0 critical**; 4 standard findings fixed in place; 3 judgment findings
+  dispositioned (2 fixed here, 1 deliberate-and-carried).
+- Gates shipped by this audit: the Section-11 **index-completeness check** (a stale ADR index can no
+  longer blind the freshness gate), the **Tier-1 arm pin test**, and ruling C's **schema-gate
+  registration line** in the platform tier file.
+
+**Audit honesty log** (a stamp over an unexamined process is the drift this audit exists to kill):
+
+1. Window 1's cold nav ran at ~18 min idle — **short of the >= 20 min protocol** (timer arithmetic
+   error, caught by clock reconstruction, disclosed in the table above). Window 2 was run clean at
+   ~24 min; the two agree to ~1 %, so the datum was kept rather than discarded.
+2. The pin test's first run **leaked two test users** (wrong field: `TestUser.id` does not exist —
+   `user.id` does; `afterAll` crashed on the first cleanup call). Both purged via the
+   consent-erasure bypass in the helper's own order, residue-verified **0/0/0**; the fix is in the
+   committed test. The leak never reached an orphan: caught in the same session by the suite's own
+   loud failure — the TASK-INT-03 instrument philosophy working as designed.

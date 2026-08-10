@@ -87,8 +87,8 @@ describe('Tier-1 context-free arm is law (ADR-U028 Amendment 2026-08-10, AB-6 ru
 
   afterAll(async () => {
     await demotePlatformAdmin(platformAdmin.personalGroupId);
-    await cleanupTestUser(platformAdmin.id);
-    await cleanupTestUser(bystander.id);
+    await cleanupTestUser(platformAdmin.user.id);
+    await cleanupTestUser(bystander.user.id);
   });
 
   it('the arm exists in the live definition, scoped to system groups and the named permission, with zero context reads (shape pin)', async () => {
