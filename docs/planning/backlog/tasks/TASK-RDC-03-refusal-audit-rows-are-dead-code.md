@@ -128,7 +128,8 @@ disposal-suite pinning cell flipped from pinning-a-defect to pinning-a-ruling.
 - [x] A ruling is taken on the three options and recorded — option 1, 2026-08-10
 - [x] Whichever way it goes, **no function body claims to audit something it does not**
 - [x] PC029's resolved-open-question text is corrected — it currently states the false half
-- [ ] The Observability vertical wording for the affected features says what is actually true
+- [x] The Observability vertical wording for the affected features says what is actually true —
+      PC027:127 and PC028:243 both claimed refusals "are recorded as refusals"; both corrected
 - [x] A test pins the chosen behaviour, so it cannot silently regress either way — the disposal
       cell now pins the ruling; two route-tier cells pin the 409-verbatim contract
 - [ ] **Schema gate:** migration applied, and the **applied** functions' ACLs read from `pg_proc`
