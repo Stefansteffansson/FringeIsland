@@ -119,7 +119,17 @@ snapshots bannered/watermarked.
    registering it; the conformance gate catches it only when the platform suite runs) — process
    question on the board, not silently adopted.
 
-## Decision board — all of it at once, nothing dripped
+## Decision board — RULED (Stefan, 2026-08-10, in-session)
+
+**A -> A1** (ratify + pin): executed — ADR-U028 gains the Amendment "the Tier-1 context-free arm is
+law", the anatomy carries the reach sentence under Platform Core, and the pinning conformance test
+ships with this audit. **B -> B1** (arm, bounded): recorded as [TASK-SEAL-01](../backlog/tasks/TASK-SEAL-01-sealed-thread-admin-sight.md)
+with the four bounds stated as part of the ruling; schema-gated cycle, slotting at Phase-4 cutover
+planning — the deferral has an owner from birth (the AB-2 lesson). **C -> adopted**: the schema-gate
+checklist line is live in `docs/platform/CLAUDE.md` (the reviewer bullet). **D** (merge) remains open
+— the PR holds for the named nod.
+
+The board as presented, for the record:
 
 | # | Question | Options | Recommendation |
 |---|---|---|---|

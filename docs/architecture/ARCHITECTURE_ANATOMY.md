@@ -74,6 +74,8 @@ Four domain-agnostic areas. Specs: [`docs/platform/core/`](../platform/core/READ
 - **PC-3 Organisation** — groups, memberships, roles, permissions.
 - **PC-4 Governance** — **governance by scope** ([ADR-U028](decisions/ADR-U028-governance-by-scope.md)), the Console (Ferd shape: Console-routed surfaces inside the Hub shell under its `admin` route group; Console-as-entity stays deferred — ADR-U025/U028), DeusEx, audit (the append-only `admin_audit_log` with its durable auth-event recorder and the narrowed Art. 15 export split, [ADR-U052](decisions/ADR-U052-telemetry-sink-and-analytics-posture.md) §6), moderation, platform rules, and the `admin_*` RPC contract family — canonically enumerated in [`supabase/ownership.manifest.json`](../../supabase/ownership.manifest.json) (PC-4 section), held complete by the gate-enforced mechanical rule `admin_*` -> PC-4.
 
+**Platform-admin reach is total, by ruling** (ADR-U028 Amendment 2026-08-10, AB-6 ruling A1): `has_permission`'s Tier-1 arm is context-free — a permission held via a `group_type='system'` group satisfies **any** group's check, so platform admins pass every purely permission-gated door platform-wide, including in groups they never joined. Gate-pinned by a platform conformance test so the arm can neither silently vanish nor silently widen.
+
 Platform Core is the stability zone; changes here carry the strictest review (see [`docs/platform/CLAUDE.md`](../platform/CLAUDE.md) and the core sub-tier rules).
 
 ## Identity states and roles
