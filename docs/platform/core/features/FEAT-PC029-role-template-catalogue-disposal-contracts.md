@@ -252,8 +252,24 @@ PC028 payload walk caught and rejected.
      A never-offered, never-adopted template therefore notifies **nobody** on retire *or* delete —
      which is why this feature's Notifications vertical is "None **by construction**" rather than
      "None because we chose not to".
-   - Retire is **idempotent** (`already_retired: true` on a second call) and audits its refusals.
-     STORY-2's guard should match that posture: refuse loudly, audit the refusal, never half-act.
+   - Retire is **idempotent** (`already_retired: true` on a second call) and ~~audits its
+     refusals~~. STORY-2's guard should match that posture: refuse loudly, ~~audit the refusal,~~
+     never half-act.
+
+     > **THE STRUCK HALF IS FALSE — found at build, 2026-08-10, by a test cell that asserted it.**
+     > The family writes its refusal row and then `RAISE`s **in the same transaction**, so
+     > Postgres discards the `INSERT` along with the exception. Measured live: **0 rows matching
+     > `%_refused`** out of **6 619** audit rows across **46** distinct actions, against 118
+     > successful retires. No refusal has ever been audited, anywhere in the family.
+     >
+     > PC029 was told to copy this posture and did — so `admin_delete_role_template` shipped with
+     > an equally dead refusal INSERT. Both are recorded in
+     > [TASK-RDC-03](../../../planning/backlog/tasks/TASK-RDC-03-refusal-audit-rows-are-dead-code.md),
+     > which owns the family-wide ruling. The disposal suite **pins the defect as it truly
+     > behaves** so the next reader meets the fact rather than rediscovering it.
+     >
+     > **What remains true:** refusals surface to the caller verbatim and are never swallowed —
+     > the V4 claim holds at the boundary. What does not hold is that the *trail* records them.
 
 2. **Precedence order for `undeletable_reason` when several guards fail.** **SETTLED:**
    `system` → `not_retired` → `published` → `adopted`. Most-structural first, so the reason names

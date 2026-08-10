@@ -362,7 +362,21 @@ describe('FEAT-PC029 STORY-3 — the deletion outlives the thing it deleted', ()
     if (Array.isArray(rows) && rows.length) expect(rows[0].nm).toBe(`${TOKEN} clean`);
   });
 
-  it('a refusal writes a refusal row and NO deletion row', async () => {
+  it('a refusal writes NO deletion row — and, as the substrate actually behaves, no refusal row either', async () => {
+    // THE ACCEPTANCE CRITERION is "no deletion row was written". That holds.
+    //
+    // FOUND HERE, 2026-08-10 — the second half of this cell originally asserted
+    // that the refusal is audited, because PC029's spec says retire "audits its
+    // refusals" and told STORY-2 to match that posture. IT DOES NOT, AND IT
+    // CANNOT: the admin family writes its refusal row and then RAISEs in the
+    // same transaction, so Postgres discards the INSERT along with the
+    // exception. Measured across the whole live log: 0 rows matching '%_refused'
+    // out of 6 619, against 118 successful retires. Every refusal-audit in the
+    // family is dead code and always has been.
+    //
+    // Pinned as it truly behaves so the next reader meets the fact instead of
+    // rediscovering it. See TASK-RDC-03 for the family-wide correction; when
+    // that lands, this cell flips deliberately rather than quietly.
     const rows = (await runAdminSql(
       `SELECT
          (SELECT count(*)::int FROM public.admin_audit_log
@@ -372,7 +386,10 @@ describe('FEAT-PC029 STORY-3 — the deletion outlives the thing it deleted', ()
     )) as unknown as Array<{ deletions: number; refusals: number }> | undefined;
     if (Array.isArray(rows) && rows.length) {
       expect(Number(rows[0].deletions)).toBe(0);
-      expect(Number(rows[0].refusals)).toBeGreaterThan(0);
+      expect(Number(rows[0].refusals)).toBe(0);
     }
+
+    // and the refusal genuinely changed nothing
+    expect(await stillExists(ids.pub)).toBe(true);
   });
 });
