@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import type { AdminRoleTemplateDetailPayload, AdminRoleTemplateVersion } from '@/lib/admin/roles';
 import type { AdminGroupRow } from '@/lib/admin/groups';
@@ -45,6 +46,9 @@ type Ceremony =
   // RD-B walk fix W-11: withdraw the WHOLE reach, whatever shape it is.
   | { kind: 'unpublish-all' }
   | { kind: 'unpublish-group'; groupId: string; groupName: string | null }
+  // RD-C FEAT-H045 STORY-2 — disposal. The only irreversible act in the
+  // family, offered ONLY where the server marked it possible.
+  | { kind: 'delete' }
   | null;
 
 type Outcome = { tone: 'error' | 'success'; text: string } | null;
@@ -87,6 +91,7 @@ const computeDiff = (from: string[], to: string[]) => ({
 });
 
 export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) {
+  const router = useRouter();
   const [view, setView] = useState<ViewState>({ kind: 'loading' });
   const [ceremony, setCeremony] = useState<Ceremony>(null);
   const [busy, setBusy] = useState(false);
@@ -172,6 +177,40 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
               text: `Not fully withdrawn — ${left} publication${left === 1 ? '' : 's'} still offered. Try again, or withdraw them individually.`,
             },
       );
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  /**
+   * RD-C FEAT-H045 STORY-2 — the only irreversible act in this family.
+   *
+   * On success the admin returns to the catalogue, because the page they are
+   * standing on no longer describes anything. The confirmation travels in the
+   * URL so it survives that navigation and can NAME what was deleted — the
+   * template row is gone, so nothing downstream can look the name up.
+   *
+   * On refusal (the publish-between-render-and-click race the AC names) the
+   * message renders VERBATIM, the admin stays exactly where they are, and the
+   * view re-reads so the now-current state — including the reason the delete
+   * is no longer possible — is what they see.
+   */
+  const performDelete = async () => {
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/admin/roles/${templateId}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const payload = (await res.json().catch(() => ({}))) as { error?: string };
+        setOutcome({ tone: 'error', text: payload.error ?? 'The request was refused.' });
+        setCeremony(null);
+        await load(false);
+        return;
+      }
+      const body = (await res.json().catch(() => ({}))) as { template_name?: string };
+      setCeremony(null);
+      const name =
+        body.template_name ?? (view.kind === 'loaded' ? view.payload.template.name : '');
+      router.push(`/admin/roles?deleted=${encodeURIComponent(name)}`);
     } finally {
       setBusy(false);
     }
@@ -326,6 +365,19 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
             <span className="rounded bg-indigo-50 px-2 py-0.5 text-sm text-indigo-700">Seeded</span>
           )}
         </h1>
+        {/* RD-C FEAT-H045 STORY-2: rendered from the server's own answer. The
+            Hub never computes eligibility — a client-side guess would drift
+            from the SQL guard and offer a button that refuses. */}
+        {!template.is_system && template.deletable && (
+          <button
+            type="button"
+            data-testid="delete-template-button"
+            onClick={() => setCeremony({ kind: 'delete' })}
+            className="rounded border border-red-300 px-3 py-1 text-sm text-red-700 hover:bg-red-50"
+          >
+            Delete permanently…
+          </button>
+        )}
         {template.is_system && (
           <button
             data-testid="clone-button"
@@ -343,6 +395,16 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
       {template.is_system && (
         <p className="text-sm text-gray-500">
           Seeded role templates are immutable — clone one to make an editable template.
+        </p>
+      )}
+
+      {/* RD-C FEAT-H045 STORY-2: where disposal is impossible, say WHY in the
+          server's own words rather than rendering a dead control. The reason is
+          an OPEN CODE — printed as text, never switched on — so a new
+          server-side reason needs no change here. */}
+      {!template.is_system && !template.deletable && template.undeletable_reason && (
+        <p data-testid="undeletable-reason" className="text-sm text-gray-500">
+          This template cannot be deleted: {template.undeletable_reason}.
         </p>
       )}
 
@@ -594,6 +656,28 @@ export function AdminRoleTemplateDetail({ templateId }: { templateId: string }) 
         variant="info"
         busy={busy}
         onConfirm={() => void mutate('clone', { name: cloneName }, 'Cloned.')}
+        onCancel={() => {
+          if (!busy) setCeremony(null);
+        }}
+      />
+
+      {/* RD-C FEAT-H045 STORY-2 — the consequence stated before the click, on
+          the family's established idiom. Three things it must say, because
+          each is what the admin would otherwise have to assume: that this is
+          permanent, that nobody ever saw this template, and WHICH template. */}
+      <ConfirmModal
+        isOpen={ceremony?.kind === 'delete'}
+        title="Delete this template permanently"
+        message={
+          `Delete "${template.name}" permanently? This cannot be undone. ` +
+          `It was never offered to any group and has no copies anywhere, so ` +
+          `nothing any member or group holds is affected — but the template ` +
+          `itself, and its version history, are gone for good.`
+        }
+        confirmText="Delete permanently"
+        variant="danger"
+        busy={busy}
+        onConfirm={() => void performDelete()}
         onCancel={() => {
           if (!busy) setCeremony(null);
         }}

@@ -3,7 +3,7 @@
 ---
 id: TASK-RDC-02
 title: "FEAT-PC029 — deletable/undeletable_reason on the list read + the guarded admin_delete_role_template, red-first, held at the schema gate"
-status: review
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PC029

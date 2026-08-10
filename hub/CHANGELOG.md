@@ -2,6 +2,14 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-10 — A mistake in the role catalogue can finally be thrown away ([FEAT-H045](../docs/products/hub/features/FEAT-H045-retired-template-collapse-and-mistake-disposal.md))
+
+- *Admin:* **a retired template nobody was ever offered can now be deleted for good.** Until now a clone made by mistake was a permanent catalogue entry — retiring it only stopped it being offered. Delete sits inside the Retired section, where the retired things already are, so you don't have to open the template first.
+- **It only appears where it can actually work.** Deletion is offered on templates the platform confirms were never offered to any group and have no copies anywhere. Everywhere else there's no button at all — just a plain sentence saying why not ("this role template was offered to groups and cannot be deleted"). A greyed-out button you can't press is still a button.
+- **A live template never offers delete.** Retire it first; that's always the first act.
+- **The confirmation says what it means before you press it:** that it's permanent and cannot be undone, that this template was never offered to any group and has no copies, and which template you're about to remove, by name. Cancel does nothing at all.
+- **If the answer changes while you're looking at it** — someone offers the template between the page loading and your click — you're told in the platform's own words, you stay where you are, and the page refreshes to show how things actually stand now.
+
 ## 2026-08-09 — The role catalogue stops being the place everything accumulates ([FEAT-H045](../docs/products/hub/features/FEAT-H045-retired-template-collapse-and-mistake-disposal.md))
 
 - *Admin:* **the template list now shows what's actually on offer.** Retired templates have moved out of the working list and sit behind a `Retired (3)` disclosure that says how many there are. Retiring already meant "this is no longer offered" — the list was just carrying on as if it didn't know. Nothing is hidden that isn't one click away, and nothing was deleted.
