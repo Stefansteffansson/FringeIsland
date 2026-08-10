@@ -16,9 +16,10 @@
    without registering them in `supabase/ownership.manifest.json`. 228 live functions vs 218
    declared. Registered PC-4 / PC-3; platform conformance **22/23 -> 23/23**.
 3. **The AB-6 audit is now DUE.** Every precondition cycle is closed. It is the last unexecuted
-   pre-cutover row on the Platform-Ops exit checklist. **Its docket is five, not four** — see Next.
-4. **One question is unowned and needs a ruling** — AB-2's pre-session logging question, homed to a
-   cycle that closed without ruling it. It is Stefan's call, not an audit finding.
+   pre-cutover row on the Platform-Ops exit checklist. **Its docket is four** — see Next.
+4. **The one question this pin orphaned is already RULED** (Stefan, same day): pre-session and
+   failed-attempt durable logging is a **deliberate non-goal** — see "The dangling half" below. It
+   never reached the audit docket, which is why that docket is four and not five.
 
 ## What the recheck was for
 
@@ -42,8 +43,25 @@ and the board row was never updated.
 
 **The dangling half:** both the migration comment and the route comment defer the question — *do
 pre-session and failed-auth moments deserve durable security logging?* — to **ADM-D. ADM-D closed
-2026-08-02 without ruling it.** Two pieces of shipped code point at an owner that never ruled. This
-is a ruling, not an investigation.
+2026-08-02 without ruling it.** Two pieces of shipped code pointed at an owner that never ruled.
+
+**RULED the same day (Stefan): a deliberate NON-GOAL.** Settled at the pin rather than carried, because
+it needed a judgment call rather than investigation. Two facts found while framing the options decided
+it:
+
+- **The comments overstated what was being kept.** "Stays mirror-only" reads like a lesser-but-real
+  record; it isn't. `emitTelemetry` is console + in-memory only (`hub/lib/observability/telemetry.ts:19-24`),
+  and both durable writers are `authenticated`-only (`20260731190000:60`, `20260731180000:83`). A
+  pre-session moment leaves nothing durable anywhere.
+- **The headline case was never fixable at this seam.** A failed sign-in does not reach the Hub — the
+  client calls Supabase Auth directly and `/api/auth/audit` runs only after success. Both "fix it"
+  options would have cost a schema gate and still not captured wrong-password attempts.
+
+Accepted: pending-confirmation and failed sign-ups leave no durable first-party record; failed sign-ins
+live only in Supabase's logs. Activation point is **Phase-4 cutover, via a GoTrue auth hook** — not by
+loosening either grant. Recorded in [FEAT-PC019](../../platform/core/features/FEAT-PC019-durable-auth-event-audit-binding.md)
+(the doc that made the deferral), at the live signup-route comment, and in the register. The applied
+migration keeps its original inline comment — migrations are history and are not rewritten.
 
 ## AB-3 — the structure held; the gate it installed was red
 
@@ -99,13 +117,15 @@ rows · dashboard refreshed (**843** files) · discovery worktree clean and sync
 **AB-6 — the FULL anatomy audit, in a fresh session** (Stefan's call, 2026-08-10). It is the last
 pre-cutover row; Phase-4 cutover follows it.
 
-**Its docket is five:**
+**Its docket is four:**
 
 1. The Tier-1 `has_permission` finding
 2. The `/admin/roles` + admin-plane deep-cold ADR-U043 pass
 3. The sealed-threads admin-sight safety question
 4. **The anatomy stamp** — U052, U051 Amendment 2, the PC-1 sink row, the PC-4 enumeration
-5. **New from this pin** — AB-2's unowned pre-session logging question (a ruling, not a finding)
+
+*(A fifth briefly joined it — AB-2's orphaned pre-session logging question — and was ruled a deliberate
+non-goal the same day rather than carried into the audit. The docket did not grow.)*
 
 **Starting conditions the fresh session should not have to re-derive:**
 
