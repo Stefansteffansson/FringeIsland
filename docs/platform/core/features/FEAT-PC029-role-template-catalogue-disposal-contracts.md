@@ -6,7 +6,7 @@ title: Server-computed delete eligibility on the template list, and a hard delet
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
@@ -84,7 +84,7 @@ undeletable_reason: text | null   -- open code, not a sealed enum
 |---|---|
 | not `is_system` | seeded templates are substrate |
 | `retired_at IS NOT NULL` | disposal is two deliberate acts, per Stefan's *"after they have been retired"* |
-| **zero rows ever** in `role_template_publications` | publication rows are never deleted, so this is a true "was never offered" — not a "no longer offered" |
+| ~~**zero rows ever** in `role_template_publications`~~ **— CORRECTED AT BUILD, see below** | ~~publication rows are never deleted, so this is a true "was never offered"~~ **This premise is FALSE.** `admin_unpublish_role_template` **hard-deletes** those rows and the table has no `unpublished_at`. "Was ever offered" is read from `admin_audit_log` instead |
 | **zero rows** in `group_roles.created_from_role_template_id` | nothing can lose a provenance line it never had |
 
 The same predicate serves `deletable` and enforces the write — **written once, in SQL**, so the
@@ -104,6 +104,27 @@ already exists. If it grows a table, a state machine, or a soft-delete tier, it 
   publication guard is what makes the test honest — a template that was ever *offered* is
   refused regardless of whether any copy survives. **Do not drop the publication clause as
   redundant; it is the load-bearing half.**
+
+  > **AND THE SAME TRAP CLAIMED THIS CLAUSE ITSELF (found at build, 2026-08-10).** The clause
+  > was written as *"zero rows ever in `role_template_publications`"* — which assumed publication
+  > rows are never deleted. **They are:** `admin_unpublish_role_template` hard-deletes them, and
+  > the table has no `unpublished_at`. So publish → unpublish leaves zero rows and the
+  > spec-as-written would have read a template that *was* offered as never-offered, made it
+  > `deletable`, and destroyed it — breaching RD-4a in exactly the case RD-4 still protects.
+  > **The rabbit hole named the right clause and then fell into it one level down.**
+  >
+  > **Resolved by reading `admin_audit_log`**, whose publication record is *complete*, not
+  > partial: the earliest `role_template.publish` audit row (**2026-08-07**) predates the
+  > earliest surviving publication row (**2026-08-09**), because publication shipped with PC028
+  > and has audited every publish since. Measured exposure at build time: **0 templates** — the
+  > defect was latent, not live, and reachable by precisely the journey this feature serves.
+  >
+  > **Decision (Stefan, 2026-08-10):** consult the audit log; do **not** tombstone the
+  > publications table — that changes shipped PC028 semantics and forces every existing reader
+  > to filter, which is the "grows a state machine" case this feature's appetite calls escaped.
+  >
+  > **Consequence to carry:** `admin_audit_log` is now load-bearing for a **guard**, not only
+  > for observability. Anything that prunes it must exclude `role_template.publish` rows.
 - **Deleting the audit trail of the deletion.** See STORY-3 — the audit row's target ceases to
   exist the moment the write succeeds.
 - **Retiring a never-published template.** `admin_retire_role_template` may or may not accept a
