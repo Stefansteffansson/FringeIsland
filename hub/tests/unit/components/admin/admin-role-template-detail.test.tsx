@@ -6,6 +6,13 @@ import { AdminRoleTemplateDetail } from '@/components/admin/AdminRoleTemplateDet
 
 expect.extend(toHaveNoViolations);
 
+/** FEAT-H045 STORY-2: a successful delete returns the admin to the catalogue,
+ *  so the component navigates. Harmless for every pre-existing case. */
+const pushMock = jest.fn();
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ push: (...args: unknown[]) => pushMock(...args), refresh: jest.fn() }),
+}));
+
 /**
  * FEAT-H040 STORY-2/3/4 — /admin/roles/[id]: the template detail.
  * WRITTEN RED-FIRST (2026-08-04): AdminRoleTemplateDetail does not exist at head.
@@ -393,5 +400,129 @@ describe('AdminRoleTemplateDetail (FEAT-H040 STORY-2/3/4)', () => {
     await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
     await screen.findByTestId('ceremony-outcome');
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+/**
+ * FEAT-H045 STORY-2 — a template nobody ever saw can be removed, and the
+ * ceremony says what that means. WRITTEN RED-FIRST (2026-08-10): the detail
+ * view has no delete affordance at head.
+ *
+ * The Hub NEVER computes eligibility. It renders PC029's server-computed
+ * `deletable` / `undeletable_reason`, and where deletion is impossible it
+ * shows the reason as TEXT rather than a disabled control — an affordance for
+ * an impossible act is still an affordance (the spec's No-go).
+ */
+describe('AdminRoleTemplateDetail — disposal (FEAT-H045 STORY-2)', () => {
+  const DISPOSABLE = {
+    ...CLONE_DETAIL,
+    template: {
+      ...CLONE_DETAIL.template,
+      name: 'Walk Greeter',
+      retired_at: '2026-08-09T10:00:00.000Z',
+      deletable: true,
+      undeletable_reason: null,
+    },
+  };
+  const REASON = 'this role template was offered to groups and cannot be deleted';
+  const UNDISPOSABLE = {
+    ...CLONE_DETAIL,
+    template: {
+      ...CLONE_DETAIL.template,
+      retired_at: '2026-08-09T10:00:00.000Z',
+      deletable: false,
+      undeletable_reason: REASON,
+    },
+  };
+
+  beforeEach(() => pushMock.mockClear());
+
+  it('offers Delete permanently when the server says deletable', async () => {
+    fetchMock.mockResolvedValue(ok(DISPOSABLE));
+    render(<AdminRoleTemplateDetail templateId={CLONE_ID} />);
+    await screen.findByText('Walk Greeter');
+
+    expect(await screen.findByTestId('delete-template-button')).toBeInTheDocument();
+  });
+
+  it('renders NO delete affordance when it is not deletable, and shows the reason as text', async () => {
+    fetchMock.mockResolvedValue(ok(UNDISPOSABLE));
+    render(<AdminRoleTemplateDetail templateId={CLONE_ID} />);
+    await screen.findByTestId('undeletable-reason');
+
+    // not disabled — absent. A greyed-out control is still an affordance for
+    // an impossible act.
+    expect(screen.queryByTestId('delete-template-button')).not.toBeInTheDocument();
+    expect(screen.getByTestId('undeletable-reason')).toHaveTextContent(REASON);
+  });
+
+  it('the ceremony states permanence, that nobody ever saw it, and names the target', async () => {
+    fetchMock.mockResolvedValue(ok(DISPOSABLE));
+    render(<AdminRoleTemplateDetail templateId={CLONE_ID} />);
+    await screen.findByText('Walk Greeter');
+
+    await userEvent.click(screen.getByTestId('delete-template-button'));
+    const modal = screen.getByTestId('confirm-modal');
+    expect(modal).toHaveTextContent(/permanent/i);
+    expect(modal).toHaveTextContent(/cannot be undone/i);
+    expect(modal).toHaveTextContent(/never offered to any group/i);
+    expect(modal).toHaveTextContent(/no copies/i);
+    expect(modal).toHaveTextContent('Walk Greeter');
+    // opening the ceremony calls nothing
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('cancelling calls nothing and changes nothing', async () => {
+    fetchMock.mockResolvedValue(ok(DISPOSABLE));
+    render(<AdminRoleTemplateDetail templateId={CLONE_ID} />);
+    await screen.findByText('Walk Greeter');
+
+    await userEvent.click(screen.getByTestId('delete-template-button'));
+    await userEvent.click(screen.getByTestId('confirm-modal-cancel'));
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(pushMock).not.toHaveBeenCalled();
+    expect(screen.getByTestId('delete-template-button')).toBeInTheDocument();
+  });
+
+  it('on success it returns to the catalogue and names what was deleted', async () => {
+    fetchMock.mockResolvedValueOnce(ok(DISPOSABLE));
+    fetchMock.mockResolvedValueOnce(ok({ deleted: true, template_name: 'Walk Greeter' }));
+    render(<AdminRoleTemplateDetail templateId={CLONE_ID} />);
+    await screen.findByText('Walk Greeter');
+
+    await userEvent.click(screen.getByTestId('delete-template-button'));
+    await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
+
+    // Back to the catalogue, CARRYING the name — the row is gone, so nothing
+    // downstream could look it up to name what was deleted.
+    await waitFor(() => expect(pushMock).toHaveBeenCalledTimes(1));
+    const dest = String(pushMock.mock.calls[0][0]);
+    expect(dest).toMatch(/^\/admin\/roles\?/);
+    expect(decodeURIComponent(dest)).toContain('Walk Greeter');
+    const call = fetchMock.mock.calls[1];
+    expect(String(call[0])).toContain(`/api/admin/roles/${CLONE_ID}`);
+    expect((call[1] as RequestInit).method).toBe('DELETE');
+  });
+
+  it('a refusal is surfaced VERBATIM, the admin stays, and the view refreshes', async () => {
+    // The race the AC names: someone published it between render and click.
+    fetchMock.mockResolvedValueOnce(ok(DISPOSABLE));
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 409,
+      json: async () => ({ error: REASON }),
+    } as Response);
+    fetchMock.mockResolvedValueOnce(ok(UNDISPOSABLE));
+    render(<AdminRoleTemplateDetail templateId={CLONE_ID} />);
+    await screen.findByText('Walk Greeter');
+
+    await userEvent.click(screen.getByTestId('delete-template-button'));
+    await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
+
+    await waitFor(() => expect(screen.getByTestId('ceremony-outcome')).toHaveTextContent(REASON));
+    expect(pushMock).not.toHaveBeenCalled();
+    // and it re-read, so the now-current state is what is on screen
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
   });
 });

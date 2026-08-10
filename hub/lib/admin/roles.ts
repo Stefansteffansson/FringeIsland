@@ -26,6 +26,19 @@ export type AdminRoleTemplateRow = {
    * reverse, not a disappearance.
    */
   retired_at: string | null;
+  /**
+   * RD-C FEAT-PC029 STORY-1: delete-eligibility, computed SERVER-SIDE by the
+   * one predicate that also enforces the write. The Hub NEVER derives this —
+   * two implementations of one rule drift, and the drifting one is the one
+   * users click. Rendered, never recomputed.
+   */
+  deletable: boolean;
+  /**
+   * Server-authored copy naming the FIRST condition that must be addressed.
+   * An OPEN CODE, not a sealed enum: rendered as text, never switched on, so
+   * a new server-side reason needs no Hub change.
+   */
+  undeletable_reason: string | null;
 };
 
 export type AdminCatalogEntry = {
@@ -82,6 +95,9 @@ export type AdminRoleTemplateDetailPayload = {
     // client-computed platform state).
     instantiated_role_count: number;
     group_template_refs: string[];
+    /** RD-C FEAT-PC029: carried from the list read, never derived here. */
+    deletable: boolean;
+    undeletable_reason: string | null;
   };
   versions: AdminRoleTemplateVersion[];
   /**
@@ -197,6 +213,30 @@ export async function unretireRoleTemplate(
     p_role_template_id: templateId,
   });
   return { refused };
+}
+
+/**
+ * RD-C FEAT-PC029 STORY-2: the guarded hard delete. Every condition is
+ * enforced in the contract (non-system, retired, never offered, never
+ * adopted); this is BFF plumbing only. A refusal arrives as an
+ * `AdminRolesError` and its message is the product copy — surfaced verbatim.
+ *
+ * Returns the name and version count the platform captured BEFORE the row
+ * ceased to exist, so the confirmation can name what was deleted.
+ */
+export async function deleteRoleTemplate(
+  client: SupabaseClient,
+  templateId: string,
+): Promise<{ refused: boolean; templateName: string | null; versionCount: number | null }> {
+  const { refused, data } = await call(client, 'admin_delete_role_template', {
+    p_template_id: templateId,
+  });
+  const payload = (data ?? null) as { template_name?: string; version_count?: number } | null;
+  return {
+    refused,
+    templateName: payload?.template_name ?? null,
+    versionCount: payload?.version_count ?? null,
+  };
 }
 
 /** RD-B walk fix W-6 — how far a publish would reach, before it is made. */

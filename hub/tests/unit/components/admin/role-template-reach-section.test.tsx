@@ -4,6 +4,17 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 /**
+ * ADAPTATION (FEAT-H045 STORY-2, 2026-08-10) — NOT a weakening, and nothing in
+ * this suite's assertions changed. `AdminRoleTemplateDetail` now calls
+ * `useRouter()`, because a successful delete must return the admin to the
+ * catalogue; without a mock the hook throws outside an App Router context and
+ * every cell here dies at render. Test infrastructure only.
+ */
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ push: jest.fn(), refresh: jest.fn() }),
+}));
+
+/**
  * RD-B FEAT-H044 STORY-3 (unit) — the admin reach surface.
  *
  * "An admin says who a template is for." Reach did not exist before RD-B, so

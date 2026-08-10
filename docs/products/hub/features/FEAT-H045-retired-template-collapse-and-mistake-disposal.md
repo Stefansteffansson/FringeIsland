@@ -191,6 +191,49 @@ templates.
 
 **Gates:** unit 1420/1420 · `admin-roles.spec` 12/12 · eslint 0 errors (3 warnings, all pre-existing in untouched files — found, not caused) · `next build` clean.
 
+### STORY-2 + STORY-3 — built 2026-08-10 (TASK-RDC-04), one AC blocked on a schema gate
+
+Built against PC029's applied contract. The Hub **renders** `deletable` / `undeletable_reason`
+and never derives them; where deletion is impossible it prints the reason as text rather than a
+disabled control. Disposal is reachable **inside the retired fold** (STORY-3) as well as on the
+detail view (STORY-2), driven by one ceremony carrying the same copy in both places.
+
+**The detail view gets the keys by BFF composition, not a new read.** `admin_get_role_template_detail`
+does not carry them — PC029 widened the *list* read. The detail route already composes the detail
+read with the list read to carry blast-radius facts, so eligibility rides the same path. That is
+the Hub *relaying the server's answer*, not computing it — the rabbit hole forbids the second, not
+the first. Defaults are the safe ones: an absent key means **no delete offered**.
+
+**Red-first at the unit tier**, 12 cases. Unit tier **1433/1433**.
+
+**One cell passed on first run and is labelled, not dressed up:** *"a LIVE template never offers
+delete anywhere"* is a **negative** assertion — trivially true before any affordance existed. It
+became load-bearing the moment delete shipped, and it is what would catch a delete offered on a
+live row.
+
+**One sibling test file adapted, labelled in place:** `role-template-reach-section.test.tsx` needed
+a `next/navigation` mock, because the detail component now calls `useRouter()` — a successful delete
+must return the admin to the catalogue. Test infrastructure only; no assertion changed.
+
+**`next build` caught what no test could.** The catalogue reads `?deleted=` to name what was
+removed, and `useSearchParams()` opts a client component out of static prerendering unless it sits
+under a `<Suspense>` boundary — the export failed on `/admin/roles`. Fixed at the page with a
+boundary whose fallback is the same B6 skeleton the view paints. `/admin/roles` remains static.
+
+> ### ⛔ ONE ACCEPTANCE CRITERION IS BUILT BUT NOT YET LIVE
+>
+> *"Given the server refuses … then the message is surfaced **verbatim**"* — the Hub does this
+> correctly, and it **cannot work against the applied contract**. `admin_delete_role_template`
+> shipped raising its guard refusals with `42501`, and the BFF lib maps 42501 to "not authorised",
+> collapsing it to an existence-hiding **404 Not found** with the reason discarded.
+>
+> 42501 is *insufficient_privilege*; a guard refusal is not a privilege failure. Corrective
+> migration `20260810120000` moves guard refusals to **P0001 → 409, verbatim**, leaving 42501 to
+> the non-admin gate where the 404 is correct. **Held at the schema gate — this AC is unmet until
+> it is applied**, which is why this feature stays `5-in-cycle`.
+>
+> Found by building the consumer, which is exactly where a contract walk earns its keep.
+
 ## Performance budget
 
 - **First-paint class:** **B2 (cold nav)** and **B3 (warm nav)** on `/admin/roles`. Data-boot path is

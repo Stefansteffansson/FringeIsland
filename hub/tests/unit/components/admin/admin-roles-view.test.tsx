@@ -6,6 +6,16 @@ import { AdminRolesView } from '@/components/admin/AdminRolesView';
 
 expect.extend(toHaveNoViolations);
 
+/** FEAT-H045 STORY-2: the post-delete confirmation arrives in the URL, because
+ *  the deleted row no longer exists for anything to look its name up from. */
+let mockSearchParams = new URLSearchParams();
+jest.mock('next/navigation', () => ({
+  useSearchParams: () => mockSearchParams,
+}));
+beforeEach(() => {
+  mockSearchParams = new URLSearchParams();
+});
+
 /**
  * FEAT-H040 STORY-1 — /admin/roles: the template list + read-only catalogue.
  * WRITTEN RED-FIRST (2026-08-04): AdminRolesView does not exist at head.
@@ -408,5 +418,142 @@ describe('AdminRolesView — retired collapse (FEAT-H045 STORY-1)', () => {
 
     await userEvent.click(screen.getByTestId('retired-templates-toggle'));
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+/**
+ * FEAT-H045 STORY-3 — the two halves do not disagree. WRITTEN RED-FIRST
+ * (2026-08-10): the retired disclosure carries no delete affordance at head.
+ *
+ * Disposal lives where the disposed-of things are, and retire is ALWAYS the
+ * first act — so a live template never offers delete, whatever its publication
+ * or adoption state.
+ */
+describe('AdminRolesView — disposal inside the retired fold (FEAT-H045 STORY-3)', () => {
+  const SCRIBE = TEMPLATES[1];
+  const REASON = 'this role template was offered to groups and cannot be deleted';
+
+  /** Scribe retired AND disposable. */
+  const RETIRED_DELETABLE = [
+    { ...TEMPLATES[0], deletable: false, undeletable_reason: 'seeded' },
+    {
+      ...TEMPLATES[1],
+      retired_at: '2026-08-06T10:00:00.000Z',
+      deletable: true,
+      undeletable_reason: null,
+    },
+  ];
+  /** Scribe retired but NOT disposable. */
+  const RETIRED_UNDELETABLE = [
+    { ...TEMPLATES[0], deletable: false, undeletable_reason: 'seeded' },
+    {
+      ...TEMPLATES[1],
+      retired_at: '2026-08-06T10:00:00.000Z',
+      deletable: false,
+      undeletable_reason: REASON,
+    },
+  ];
+  /** Live and — impossibly — flagged deletable. The server would never say
+   *  this (retire is a guard), but the surface must not offer it regardless. */
+  const LIVE_CLAIMING_DELETABLE = [
+    { ...TEMPLATES[0], deletable: false, undeletable_reason: 'seeded' },
+    { ...TEMPLATES[1], retired_at: null, deletable: true, undeletable_reason: null },
+  ];
+
+  it('a deletable retired template offers delete INSIDE the fold, no detour via the detail view', async () => {
+    fetchMock.mockResolvedValue(ok({ ...PAYLOAD, templates: RETIRED_DELETABLE }));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    await userEvent.click(screen.getByTestId('retired-templates-toggle'));
+    expect(screen.getByTestId(`delete-button-${SCRIBE.id}`)).toBeInTheDocument();
+  });
+
+  it('an undeletable retired template offers no delete control, and says why in words', async () => {
+    fetchMock.mockResolvedValue(ok({ ...PAYLOAD, templates: RETIRED_UNDELETABLE }));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    await userEvent.click(screen.getByTestId('retired-templates-toggle'));
+    expect(screen.queryByTestId(`delete-button-${SCRIBE.id}`)).not.toBeInTheDocument();
+    expect(screen.getByTestId(`undeletable-reason-${SCRIBE.id}`)).toHaveTextContent(REASON);
+  });
+
+  it('a LIVE template never offers delete anywhere — retire is always the first act', async () => {
+    fetchMock.mockResolvedValue(ok({ ...PAYLOAD, templates: LIVE_CLAIMING_DELETABLE }));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    // it is in the working list, not the fold, and carries retire — not delete
+    expect(screen.getByTestId(`template-row-${SCRIBE.id}`)).toBeInTheDocument();
+    expect(screen.getByTestId(`retire-button-${SCRIBE.id}`)).toBeInTheDocument();
+    expect(screen.queryByTestId(`delete-button-${SCRIBE.id}`)).not.toBeInTheDocument();
+    expect(screen.queryByTestId('retired-templates-toggle')).not.toBeInTheDocument();
+  });
+
+  it('the ceremony names the target and its permanence, and deletes on confirm', async () => {
+    fetchMock.mockResolvedValueOnce(ok({ ...PAYLOAD, templates: RETIRED_DELETABLE }));
+    fetchMock.mockResolvedValueOnce(ok({ deleted: true, template_name: 'Scribe' }));
+    fetchMock.mockResolvedValueOnce(ok({ ...PAYLOAD, templates: [TEMPLATES[0]] }));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    await userEvent.click(screen.getByTestId('retired-templates-toggle'));
+    await userEvent.click(screen.getByTestId(`delete-button-${SCRIBE.id}`));
+
+    const modal = screen.getByTestId('confirm-modal');
+    expect(modal).toHaveTextContent(/permanent/i);
+    expect(modal).toHaveTextContent(/cannot be undone/i);
+    expect(modal).toHaveTextContent('Scribe');
+
+    await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
+    const call = fetchMock.mock.calls[1];
+    expect(String(call[0])).toContain(`/api/admin/roles/${SCRIBE.id}`);
+    expect((call[1] as RequestInit).method).toBe('DELETE');
+    // gone from BOTH sections — the disclosure is absent again
+    await waitFor(() =>
+      expect(screen.queryByTestId('retired-templates-toggle')).not.toBeInTheDocument(),
+    );
+  });
+
+  it('a refusal renders verbatim and the row survives', async () => {
+    fetchMock.mockResolvedValueOnce(ok({ ...PAYLOAD, templates: RETIRED_DELETABLE }));
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 409,
+      json: async () => ({ error: REASON }),
+    } as Response);
+    fetchMock.mockResolvedValueOnce(ok({ ...PAYLOAD, templates: RETIRED_UNDELETABLE }));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    await userEvent.click(screen.getByTestId('retired-templates-toggle'));
+    await userEvent.click(screen.getByTestId(`delete-button-${SCRIBE.id}`));
+    await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
+
+    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent(REASON));
+  });
+});
+
+describe('AdminRolesView — the post-delete confirmation (FEAT-H045 STORY-2)', () => {
+  it('names what was deleted when returning from the detail view', async () => {
+    mockSearchParams = new URLSearchParams('deleted=Walk%20Greeter');
+    fetchMock.mockResolvedValue(ok(PAYLOAD));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    const note = screen.getByTestId('deleted-confirmation');
+    expect(note).toHaveTextContent('Walk Greeter');
+    expect(note).toHaveTextContent(/deleted/i);
+  });
+
+  it('says nothing when nothing was just deleted', async () => {
+    fetchMock.mockResolvedValue(ok(PAYLOAD));
+    render(<AdminRolesView />);
+    await screen.findByText('Steward');
+
+    expect(screen.queryByTestId('deleted-confirmation')).not.toBeInTheDocument();
   });
 });

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import type { AdminRolesPayload } from '@/lib/admin/roles';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
@@ -24,12 +25,21 @@ export function AdminRolesView() {
   // RD-A FEAT-H043 STORY-2: the retire ceremony's target and its outcome.
   const [ceremony, setCeremony] = useState<{
     template: AdminRolesPayload['templates'][number];
-    verb: 'retire' | 'unretire';
+    // RD-C FEAT-H045 STORY-3: disposal joins the same ceremony door, because
+    // it belongs where the disposed-of things are.
+    verb: 'retire' | 'unretire' | 'delete';
   } | null>(null);
   const [ceremonyError, setCeremonyError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   // FEAT-H045 STORY-1: retired templates are one click away, never gone.
   const [retiredOpen, setRetiredOpen] = useState(false);
+  /**
+   * FEAT-H045 STORY-2: the delete happened on the detail page, which then sent
+   * the admin here because the page they were standing on stopped describing
+   * anything. The name travels in the URL — the row is gone, so there is
+   * nothing left to look it up from.
+   */
+  const deletedName = useSearchParams()?.get('deleted') ?? null;
 
   const computeView = useCallback(async (): Promise<ViewState> => {
     try {
@@ -73,11 +83,18 @@ export function AdminRolesView() {
     setBusy(true);
     setCeremonyError(null);
     try {
-      const res = await fetch(`/api/admin/roles/${ceremony.template.id}/retire`, {
-        method: ceremony.verb === 'retire' ? 'POST' : 'DELETE',
-      });
+      // Disposal is a different door on the same resource: DELETE the template
+      // itself, not its retirement.
+      const res =
+        ceremony.verb === 'delete'
+          ? await fetch(`/api/admin/roles/${ceremony.template.id}`, { method: 'DELETE' })
+          : await fetch(`/api/admin/roles/${ceremony.template.id}/retire`, {
+              method: ceremony.verb === 'retire' ? 'POST' : 'DELETE',
+            });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
+        // Verbatim. A refusal here is the platform's own words (RD-C: the
+        // publish-between-render-and-click race), never paraphrased.
         setCeremonyError(body.error ?? `The template could not be ${ceremony.verb}d.`);
         setCeremony(null);
         return;
@@ -186,14 +203,40 @@ export function AdminRolesView() {
             refuses regardless, so no affordance renders. */}
         {!t.is_system &&
           (t.retired_at ? (
-            <button
-              type="button"
-              data-testid={`unretire-button-${t.id}`}
-              onClick={() => setCeremony({ template: t, verb: 'unretire' })}
-              className="rounded border border-gray-200 px-2 py-0.5 text-xs text-gray-700 hover:bg-gray-50"
-            >
-              Unretire
-            </button>
+            <span className="inline-flex items-center gap-2">
+              <button
+                type="button"
+                data-testid={`unretire-button-${t.id}`}
+                onClick={() => setCeremony({ template: t, verb: 'unretire' })}
+                className="rounded border border-gray-200 px-2 py-0.5 text-xs text-gray-700 hover:bg-gray-50"
+              >
+                Unretire
+              </button>
+              {/* RD-C FEAT-H045 STORY-3: disposal lives where the disposed-of
+                  things are — reachable here without opening the detail first.
+                  Offered ONLY on the server's `deletable`; where it is false we
+                  say why in words, because a greyed-out control is still an
+                  affordance for an impossible act. */}
+              {t.deletable ? (
+                <button
+                  type="button"
+                  data-testid={`delete-button-${t.id}`}
+                  onClick={() => setCeremony({ template: t, verb: 'delete' })}
+                  className="rounded border border-red-200 px-2 py-0.5 text-xs text-red-700 hover:bg-red-50"
+                >
+                  Delete
+                </button>
+              ) : (
+                t.undeletable_reason && (
+                  <span
+                    data-testid={`undeletable-reason-${t.id}`}
+                    className="text-xs font-normal text-gray-500"
+                  >
+                    {t.undeletable_reason}
+                  </span>
+                )
+              )}
+            </span>
           ) : (
             <button
               type="button"
@@ -247,6 +290,16 @@ export function AdminRolesView() {
           </button>
         </span>
       </div>
+
+      {deletedName && (
+        <p
+          data-testid="deleted-confirmation"
+          role="status"
+          className="rounded border border-green-200 bg-green-50 p-3 text-sm text-green-800"
+        >
+          &ldquo;{deletedName}&rdquo; was deleted permanently. It is gone from the catalogue.
+        </p>
+      )}
 
       {ceremonyError && (
         <p role="alert" className="text-sm text-red-600">
@@ -339,10 +392,28 @@ export function AdminRolesView() {
           that implies deletion or that adopted copies were disturbed. */}
       <ConfirmModal
         isOpen={ceremony !== null}
-        title={ceremony?.verb === 'unretire' ? 'Offer this template again' : 'Stop offering this template'}
+        title={
+          ceremony?.verb === 'delete'
+            ? 'Delete this template permanently'
+            : ceremony?.verb === 'unretire'
+              ? 'Offer this template again'
+              : 'Stop offering this template'
+        }
         message={ceremonyMessage(ceremony)}
-        confirmText={ceremony?.verb === 'unretire' ? 'Unretire' : 'Retire'}
-        variant={ceremony?.verb === 'unretire' ? 'info' : 'warning'}
+        confirmText={
+          ceremony?.verb === 'delete'
+            ? 'Delete permanently'
+            : ceremony?.verb === 'unretire'
+              ? 'Unretire'
+              : 'Retire'
+        }
+        variant={
+          ceremony?.verb === 'delete'
+            ? 'danger'
+            : ceremony?.verb === 'unretire'
+              ? 'info'
+              : 'warning'
+        }
         busy={busy}
         onConfirm={() => void confirmCeremony()}
         onCancel={() => {
@@ -359,10 +430,23 @@ export function AdminRolesView() {
  * because that is the single thing an admin would otherwise fear (RD-2/RD-4).
  */
 function ceremonyMessage(
-  ceremony: { template: AdminRolesPayload['templates'][number]; verb: 'retire' | 'unretire' } | null,
+  ceremony: {
+    template: AdminRolesPayload['templates'][number];
+    verb: 'retire' | 'unretire' | 'delete';
+  } | null,
 ): string {
   if (!ceremony) return '';
   const { template, verb } = ceremony;
+  // RD-C FEAT-H045 STORY-2/3: the irreversible one. Names the target, says it
+  // is permanent, and says why that is safe — nobody was ever offered it.
+  if (verb === 'delete') {
+    return (
+      `Delete "${template.name}" permanently? This cannot be undone. It was ` +
+      `never offered to any group and has no copies anywhere, so nothing any ` +
+      `member or group holds is affected — but the template itself, and its ` +
+      `version history, are gone for good.`
+    );
+  }
   if (verb === 'unretire') {
     return (
       `Offer "${template.name}" again? It will reappear in the group-creation ` +
