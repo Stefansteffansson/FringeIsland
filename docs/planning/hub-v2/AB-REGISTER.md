@@ -59,10 +59,38 @@ The change is defensible and was compensated at the caller: `signup` persists du
 session exists (`hub/app/api/auth/signup/route.ts:70`), and the pending-confirmation edge stays
 mirror-only. That is a **recorded limitation, not a silent gap** — the route says so in a comment.
 
-But the deferral has no home. Both the migration comment and the route comment defer the question —
-*whether pre-session and failed-auth moments deserve durable security logging* — to **ADM-D**. **ADM-D
-closed on 2026-08-02 without ruling it.** The question is live, unowned, and referenced by two pieces of
-shipped code. It belongs on the AB-6 audit docket.
+The deferral had no home. Both the migration comment and the route comment deferred the question —
+*whether pre-session and failed-auth moments deserve durable security logging* — to **ADM-D**, which
+**closed on 2026-08-02 without ruling it.**
+
+### RULED 2026-08-10 (Stefan): a deliberate NON-GOAL
+
+Settled at the pin rather than carried onto the audit docket, because it needed a judgment call, not an
+investigation. Durable first-party logging of pre-session and failed-attempt auth moments is **not**
+something this platform does.
+
+The facts the ruling rests on, verified rather than assumed:
+
+- Both durable writers are `authenticated`-only — `record_auth_event` (`20260731190000:60`) and
+  `record_telemetry_event` (`20260731180000:83`). The `emitTelemetry` "mirror" the code comments lean
+  on is **console + in-memory only** (`hub/lib/observability/telemetry.ts:19-24`), not durable. So a
+  pre-session moment leaves nothing durable anywhere today.
+- **The headline case cannot be fixed at this seam.** A failed sign-in never reaches the Hub — the
+  client calls Supabase Auth directly and `/api/auth/audit` runs only after a success. No change to
+  `record_auth_event` would make wrong-password attempts visible; that needs a GoTrue auth hook.
+- Supabase Auth already keeps auth logs and rate-limits sign-in. A partial first-party duplicate is
+  worse than pointing at the real source.
+- Granting `anon` a write path into a 90-day-retained table is an unauthenticated-flood surface.
+
+**Accepted consequences:** pending-confirmation sign-ups and failed sign-ups leave no durable
+first-party record; failed sign-ins live only in Supabase's logs.
+
+**Activation point:** Phase-4 cutover planning, via a GoTrue auth hook — not by loosening either grant.
+
+Recorded in the document that made the deferral: [FEAT-PC019](../../platform/core/features/FEAT-PC019-durable-auth-event-audit-binding.md)
+§Implementation notes, and at the live comment in `hub/app/api/auth/signup/route.ts`. The applied
+migration `20260731190000` keeps its original inline comment — migrations are history and are not
+rewritten (platform-tier rule); its "ADM-D question" wording is superseded by this ruling.
 
 ### Finding 2 — AB-3's structure holds, but the gate it installed was RED on `main`
 
@@ -96,7 +124,8 @@ Every gating cycle is closed. The docket, per [session 2026-08-06_02](../session
 3. the sealed-threads admin-sight safety question
 4. **the anatomy stamp** — flagged at its third consecutive boundary in that bridge, and it has been carried at every boundary since
 
-Add from this pin: **the unowned AB-2 pre-session logging question** (finding 1).
+This pin added a fifth — the unowned AB-2 pre-session logging question — and then **closed it the same
+day**: Stefan ruled it a deliberate non-goal (finding 1). **The docket stands at four.**
 
 **The three known anatomy-drift claims are all confirmed — and one is understated:**
 

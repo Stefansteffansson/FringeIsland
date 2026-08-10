@@ -57,9 +57,14 @@ export async function POST(request: Request) {
   // V1 audit seam — account creation + initial consent. Durable since ADM-A
   // (FEAT-PC019's record_auth_event): once the sign-up yields a session, the
   // actor exists and the row persists. The pending-confirmation edge has no
-  // session and stays mirror-only — a recorded limitation, not a silent gap
-  // (whether pre-session moments deserve durable security logging is ADM-D's
-  // open question).
+  // session and stays mirror-only — an accepted limitation, not a silent gap.
+  // RULED 2026-08-10 (Stefan): durable first-party logging of pre-session and
+  // failed-attempt auth moments is a deliberate NON-GOAL. Both durable writers
+  // are granted to `authenticated` only, and a failed sign-in never reaches
+  // this app at all (the client calls Supabase Auth directly), so the case
+  // this would appear to cover cannot be closed here. Revisit at Phase-4
+  // cutover via a GoTrue auth hook, not by loosening the grants.
+  // See FEAT-PC019 §Implementation notes and AB-REGISTER.md finding 1.
   recordAuditEntry({
     actorAuthId: result.user?.id ?? null,
     action: 'account.created',
