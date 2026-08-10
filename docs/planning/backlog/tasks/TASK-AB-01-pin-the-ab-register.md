@@ -60,7 +60,7 @@ The risk is not that these items are unfinished. It is that they are recorded as
 map on top of those records without rechecking any of them**, certifying drift rather than
 removing it. That is worse than not auditing, because afterwards the map carries a fresh stamp.
 
-This is the [mechanism walk](../../../.claude/skills/ecosystem-decomposition/SKILL.md) (PR #477)
+This is the [mechanism walk](../../../../.claude/skills/ecosystem-decomposition/SKILL.md) (PR #477)
 aimed at the audit's own inputs. **A board entry saying "verified executed" is a claim about
 the world, not proof.** The RD-C session produced three recorded claims that were false —
 including one written up as a *resolved open question*, investigated and documented.

@@ -123,6 +123,30 @@ Stefan, 2026-06-12; parked at `PENDING.md`, commit `0c1902c`); adjudicated and l
 Administration derivation (2026-06-12), whose §6 Platform Core carries the principle as its first
 obligation and whose §4 names the divergence as a failure mode.
 
+## Amendment — 2026-08-10: the Tier-1 context-free arm is law (AB-6 audit, ruling A1)
+
+`has_permission`'s Tier-1 arm (`20260222000000_rebuild_universal_group_pattern.sql:436-453`; live
+definition verified at the AB-6 full anatomy audit) matches any permission held via a
+`group_type = 'system'` group **with no context-group condition**. Because the seeded DeusEx role
+holds every permission (`auto_grant_to_deusex`), the arm's consequence is total reach:
+`has_permission(<platform admin>, <any group>, <any permission>)` is TRUE, including for groups the
+admin never joined — every purely permission-gated door platform-wide passes platform admins.
+
+**Ruled law, not accident (Stefan, 2026-08-10, the AB-6 decision board, ruling A1).** This is the
+2026-06-12 amendment's authority model realized: the Tier-1 arm *is* the group + role + permission
+walk, taken through the system group, and the context-free reach is the intended shape of
+platform-scope authority — governance by scope means the platform scope contains every group scope.
+The guard is structural: only `group_type = 'system'` groups reach Tier-1, and system-group
+membership is itself governed (the last-DeusEx floor, audited elevation ceremonies).
+
+**Gate:** the arm's behavioral consequence is pinned by the platform conformance test
+`hub/tests/integration/platform/tier1-context-free-arm.test.ts` (added with this ruling), so a
+rewrite that silently drops *or widens* the arm fails red.
+
+Provenance: discovered undocumented at the ADM-G substrate dossier (2026-08-04 — "any purely
+permission-gated door silently passes platform admins"); carried on the AB-6 docket; verified
+against the live catalogue and ruled at the audit ([record](../../planning/hub-v2/2026-08-10-ab6-full-anatomy-audit.md)).
+
 ## Links
 
 - Extends: [ADR-U019](ADR-U019-deusex-authority-last-resort.md)
