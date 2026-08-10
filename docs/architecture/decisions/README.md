@@ -72,3 +72,4 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 - ADR-U001 through U022 were extracted from a monolithic `ARCHITECTURE_DECISIONS.md` on 2026-04-05. They retain their original narrative structure with standardised headers added.
 - ADR-U023 onward use the full MADR template format.
 - All new ADRs use the template at `../../templates/adr.md`.
+- [`PENDING.md`](PENDING.md) holds ADR-grade candidates awaiting promotion; promoted entries gain an appended resolution note, never deletion. It is not an ADR and carries no table row — this line is its index presence.

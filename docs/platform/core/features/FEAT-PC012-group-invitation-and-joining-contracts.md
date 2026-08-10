@@ -79,6 +79,9 @@ As an `invite_members` holder, I want to invite a FIM to the group, so the group
 - Given a member without `invite_members`, then `42501`; the invited FIM does **not** appear in `get_group_detail`'s members payload (which filters `status='active'`) until they accept.
 
 ### STORY-3: Invite by email — durable, claimable, undispatched (MEM-2, D4)
+
+> **Superseded going forward ([ADR-U040](../../../architecture/decisions/ADR-U040-referral-not-email-membership.md), 2026-07-05):** this story's email-invite path (MEM-2) is retired — off-platform invitation becomes referral-to-the-platform. The shipped surface stays live until the referral-model rebuild is scoped; see the Post-6-done note further down this spec. (Marker placed at the story itself at the AB-6 audit, 2026-08-10 — a note far below the asset does not guard it.)
+
 As an `invite_members` holder, I want to invite someone who isn't on FringeIsland yet by email, so the invitation waits for them.
 
 **Acceptance criteria:**

@@ -64,15 +64,45 @@ rows for the admin plane. **Ruling B on the decision board.**
 
 ## Leg 4 — the `/admin/roles` + admin-plane deep-cold ADR-U043 pass (docket item 2)
 
-*(Results appended below when the pass completes — protocol per the 2026-08-02 A-ADM gate pass:
-production `fringe-island.vercel.app`, `perf-measure.mjs`, measurement FIM admin-elevated via
-`perf-adm-fixture.mjs`, deep-cold = >= 20 min enforced zero traffic after `signin`, completion to the
-unconditionally data-derived selector `[data-testid^="template-row-"]`, warm fresh-context via
-`breakdown`. Sign-in completed 19:59:15 UTC; idle window running.)*
+**Protocol:** per the 2026-08-02 A-ADM gate pass — production `fringe-island.vercel.app`,
+`perf-measure.mjs`, measurement FIM (`perf-antf@fringeisland.test`) admin-elevated via
+`perf-adm-fixture.mjs up`, deep-cold = enforced zero traffic after `signin`, completion measured to
+the unconditionally data-derived selector `[data-testid^="template-row-"]` with the ADR-U043
+Amendment 2 dual signal (box-visible is the verdict number; locator-visible shown for the
+harness-lag record). Fixture erased at teardown, residue-verified.
 
-## Leg 5 — doc-health-check (run inside the audit)
+### Deep-cold — first authenticated navigation
 
-*(Results appended below.)*
+| Window | Idle before nav | First page of session | Box-visible wall | Fan-out fires at | B2 <= 2 500 ms |
+|---|---|---|---|---|---|
+| 1 — **DISCLOSED PROTOCOL MISS: 18 min idle, short of the >= 20 min minimum** (timer arithmetic error, caught by reconstruction at run end; kept as a datum because the shape is unambiguously deep-cold — the nav drew a multi-second boot) | ~18 min | `/admin/roles` | **5 417 ms** (locator 5 561 ms) | 3 842 ms | **FAIL — 2.17x** |
+| 2 — clean window | *(pending)* | `/admin/roles` | *(pending)* | | |
+
+Window 1 composition: provisioning + shell dominate (fan-out only fires at 3.8 s); the page's own
+2 API reads run 0.3–1.5 s; unaccounted 179 ms.
+
+## Leg 5 — doc-health-check (run inside the audit): EXECUTED, CLEAN
+
+Full multi-section run (delegated, then spot-verified against disk). **Zero critical findings.** All
+sections clean: terminology, architectural drift (22 concepts), deviation markers, schema drift (10
+migrations since 08-01, each documented), archived-tree and deleted-file refs, snapshot banners,
+parked items (0), maturity consistency (**91** `6-done` specs, 0 gaps), entity coverage, placeholders,
+CLAUDE.md cascade (20 files, 0 flags), graduation tracker, gate-review flags (0 in the manifest).
+
+**Four standard findings, all fixed in place:** the architecture README's two current-diagram pointers
+still said v2.5 (stale the same hour v2.6 landed — Section 11 step 4 catching exactly its class);
+FEAT-H045's L4 maturity cell lagged its own YAML (`5-in-cycle` vs `6-done`, canonical wins); two
+relative-link depth errors (`backlog/tasks/README.md:26`, `TASK-AB-01:63`).
+
+**Three judgment findings, dispositioned here:** `PENDING.md` had zero mention in the ADR index it
+lives beside — one-line index presence added. FEAT-PC012's STORY-3 presented the retired email-invite
+path with its ADR-U040 supersession note 88 lines below — marker added at the story itself (its Hub
+twin FEAT-H015 already had one). ADR-U052's reference to the swept TASK-OBS-01 file is **deliberate
+and carried** (ADRs are append-only history; recorded at the sweep) — left standing.
+
+Anatomy freshness (Section 11) with the new index-completeness step: stamp matches newest ADR,
+**53/53 index rows present with matching statuses**, zero retired vocabulary in the living pair,
+snapshots bannered/watermarked.
 
 ---
 
