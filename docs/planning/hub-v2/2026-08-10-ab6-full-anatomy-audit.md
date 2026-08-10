@@ -1,0 +1,108 @@
+# AB-6 — the full anatomy audit (2026-08-10)
+
+**What this is:** the one FULL anatomy audit AB-6 schedules — after A-ADM closes, before Phase-4
+cutover. AB-6 itself is the standing cadence ruling, not this document; this document is the audit
+that ruling scheduled. It is the last unexecuted pre-cutover row on the Platform-Ops exit checklist.
+
+**Inputs, taken as verified:** [`AB-REGISTER.md`](./AB-REGISTER.md) (TASK-AB-01, pinned 2026-08-10,
+same day — every AB claim rechecked against the live system there; this audit trusts the register and
+does not re-derive it). The three anatomy-drift claims from the register are **starting conditions,
+not results** — an audit reporting only those did not look.
+
+**Docket (four items, per [session 2026-08-10_03](../sessions/2026-08-10_03_-_AB-REGISTER-PINNED-TWO-OF-EIGHT-HAD-DRIFTED.md)):**
+the Tier-1 `has_permission` finding · the `/admin/roles` + admin-plane deep-cold ADR-U043 pass ·
+the sealed-threads admin-sight safety question · the anatomy stamp. `doc-health-check` runs inside
+this audit (deferred into it by design at the session-19 close).
+
+---
+
+## Leg 1 — the anatomy stamp (docket item 4): EXECUTED
+
+The stamp moved from "ADR-U048 A1 + ADR-U051 A1 (2026-07-31)" to **"ADR-U052 + ADR-U051 Amendment 2
+(2026-08-10)"**. The three known drifts were fixed, and the sweep found **three more** nobody had
+recorded:
+
+| # | Finding | Fix |
+|---|---|---|
+| 1 | Stamp lagged U052 and U051A2 (third-plus consecutive boundary) | Stamp moved; both absorbed in substance, not just dated |
+| 2 | PC-1 row advertised **feature flags** (ADM-15: zero substrate, zero reading code) and lacked the telemetry sink | Row now carries the U052 sink (recorder, deny-all RLS, 90-day prune, computed-on-read) and marks feature flags **chartered but deferred** |
+| 3 | PC-4 row enumerated no RPCs while the live `admin_*` family is 34-strong (44 PC-4 total) | Row now points at the **canonical enumeration** — `supabase/ownership.manifest.json` (PC-4) held complete by the gate-enforced `admin_*` -> PC-4 rule — instead of hardcoding a count that would drift again (pointer, not snapshot) |
+| 4 | **NEW:** the ADR index (`decisions/README.md`) itself had **no ADR-U052 row** — the anatomy-freshness gate compares the stamp against this index, so the gate's own input was stale and the check would have passed wrongly | U052 row added; gate hardening below |
+| 5 | **NEW:** the diagram's PC-1 box carried "feature flags" too — so U052 absorption had **diagram impact**, unlike the last four reviews | `ECOSYSTEM_ANATOMY_V6.svg` bumped v2.5 -> **v2.6**: box text swaps feature flags for telemetry sink; `<desc>`, `<title>`, caption updated |
+| 6 | **NEW:** `docs/platform/core/README.md` marked `organisation-specification.md` and `governance-specification.md` "_(to be written)_" — both have existed since 2026-05-15 (its own sibling `CLAUDE.md` says so); its PC-1 line also carried the feature-flags claim | Both corrected. (`ROADMAP.md` "(to be written)" is accurate and stands) |
+
+**Reviewed with no anatomy impact** (recorded so the review is visible, not inferable): the RD-A/RD-B/RD-C
+role-provenance and template-catalogue work (internal to the PC-3 row's "roles"), the group hold-state
+vocabulary suspended/offline/resting (internal to "groups" / PC-4 moderation scope), and U051A2
+(framework-internal; dispatch wraps untouched Core contracts).
+
+## Leg 2 — the Tier-1 `has_permission` finding (docket item 1): VERIFIED LIVE, RULING ON THE BOARD
+
+**The mechanism, re-verified against the live database today** (not inherited from the ADM-G dossier):
+`has_permission`'s Tier-1 arm matches any permission held via a `group_type = 'system'` group **with no
+context-group condition** (`20260222000000_rebuild_universal_group_pattern.sql:436-453`; live definition
+confirmed by catalogue query). DeusEx is `group_type='system'`; `auto_grant_to_deusex` grants its role
+every permission at birth. Therefore **`has_permission(<any platform admin>, <ANY group>, <ANY
+permission>) = TRUE`** — every purely permission-gated door platform-wide silently passes platform
+admins, including for groups they never joined.
+
+This is **load-bearing, not theoretical**: the ADM-G suspension-quarantine verdicts were decided by it,
+and `get_group_forum` passes non-member admins through it today. It is also exactly the shape ADR-U028's
+amendment ("root-admin authority is role-based — authority flows from the role's permission set via the
+`has_permission()` walk") says platform authority SHOULD take — the Tier-1 arm *is* that walk. What has
+never been ruled is whether its context-free reach is law or accident. **Ruling A on the decision board.**
+
+## Leg 3 — the sealed-threads admin-sight question (docket item 3): VERIFIED LIVE, RULING ON THE BOARD
+
+**Re-verified live today:** `get_group_conversations` returns only `sealed_at IS NULL` rows (live
+definition, comment "FEAT-PD012: sealed threads are not live"). Under preserve-and-seal (C-E board D2,
+Option A), a departed or erased member's group threads are preserved but sealed — so **a bully's sealed
+thread is invisible to the admin wing**, even for a suspended group where G-4 (ADM-G board) ruled that
+admin sight includes group-kind conversations *because bullying evidence lives in messages*. H041's no-go
+was render-what-the-contract-returns; the open question is whether the **contract** should arm sealed
+rows for the admin plane. **Ruling B on the decision board.**
+
+## Leg 4 — the `/admin/roles` + admin-plane deep-cold ADR-U043 pass (docket item 2)
+
+*(Results appended below when the pass completes — protocol per the 2026-08-02 A-ADM gate pass:
+production `fringe-island.vercel.app`, `perf-measure.mjs`, measurement FIM admin-elevated via
+`perf-adm-fixture.mjs`, deep-cold = >= 20 min enforced zero traffic after `signin`, completion to the
+unconditionally data-derived selector `[data-testid^="template-row-"]`, warm fresh-context via
+`breakdown`. Sign-in completed 19:59:15 UTC; idle window running.)*
+
+## Leg 5 — doc-health-check (run inside the audit)
+
+*(Results appended below.)*
+
+---
+
+## Findings converted into gates (the AB-6 rule: every audit converts findings into gates)
+
+1. **The anatomy-freshness gate hardened against its own stale input** (finding 4): the
+   `doc-health-check` anatomy-freshness section now checks the stamp against the `decisions/`
+   **directory listing** as well as the index README, and treats an ADR file missing from the index as
+   a finding in its own right. (Skill edit — steering-file carve-out; in the held PR.)
+2. **Ruling A, if ratified as law, ships with a gate:** a platform conformance test pinning the Tier-1
+   arm's exact shape (`group_type = 'system'`, granted, name match, no context condition) so a future
+   rewrite that silently drops *or widens* it fails red.
+3. **The registration-second-act pattern** (two recorded instances of shipping a function without
+   registering it; the conformance gate catches it only when the platform suite runs) — process
+   question on the board, not silently adopted.
+
+## Decision board — all of it at once, nothing dripped
+
+| # | Question | Options | Recommendation |
+|---|---|---|---|
+| **A** | Is `has_permission`'s context-free Tier-1 arm **law**? | **A1** ratify + document + pin with a conformance gate (no schema change; the arm is ADR-U028's role-walk realized; guard = only `group_type='system'` groups reach Tier-1, and system-group membership is governed — last-DeusEx floor) · **A2** restrict Tier-1 (Core contract change, schema gate, breaks the ADM-G verdicts' basis) · **A3** leave undocumented | **A1.** It is already load-bearing; A2 re-opens settled admin-plane behaviour pre-cutover for no named harm |
+| **B** | Should the **contract** arm sealed threads for the admin plane? | **B1** arm, bounded: suspended-scope only, group-kind only, rendered with a sealed label, read through the audited admin door (durable read telemetry) — schema-gated cycle, slotting Stefan's · **B2** status quo: seal beats sight; record the moderation blind spot as deliberate law (the AB-2 non-goal shape) · **B3** purpose-bound arm: sealed rows visible only while a live moderation report references the group | **B1** — it extends G-4's own already-ruled line ("bullying evidence lives in messages") to the rows most likely to hold exactly that evidence; preserve-and-seal *preserved* precisely so legitimate review stays possible. B3 is the fallback if B1 feels too wide |
+| **C** | The registration-second-act gap: adopt a pre-merge rule that any migration creating a function runs the platform conformance suite (or at minimum `function-classification-completeness`) before merge? | adopt / fold into the schema-gate checklist / decline | **Adopt as a schema-gate checklist line** — cheapest form that closes both recorded instances |
+| **D** | The held PR (this audit): merge? | Carve-outs touched: `docs/platform/core/README.md`, the `doc-health-check` skill edit | Merge on your nod; everything else in the PR is routine docs |
+
+**Rulings A and B change no code in this session either way** — A1 adds one test in a follow-up
+commit on this branch if ratified now, or a task if not; B1/B3 are a future schema-gated cycle.
+
+---
+
+## Audit verdict
+
+*(Written at close, after legs 4 and 5.)*
