@@ -6,7 +6,7 @@ title: Server-computed delete eligibility on the template list, and a hard delet
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 

@@ -6,7 +6,7 @@ title: Retired role templates collapse behind a disclosure in the admin catalogu
 owner: hub
 consumers: [hub]
 wave: ferd
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -220,19 +220,29 @@ removed, and `useSearchParams()` opts a client component out of static prerender
 under a `<Suspense>` boundary — the export failed on `/admin/roles`. Fixed at the page with a
 boundary whose fallback is the same B6 skeleton the view paints. `/admin/roles` remains static.
 
-> ### ⛔ ONE ACCEPTANCE CRITERION IS BUILT BUT NOT YET LIVE
+> ### THE VERBATIM-REFUSAL AC — found broken, corrected, and now proven at the route
 >
-> *"Given the server refuses … then the message is surfaced **verbatim**"* — the Hub does this
-> correctly, and it **cannot work against the applied contract**. `admin_delete_role_template`
-> shipped raising its guard refusals with `42501`, and the BFF lib maps 42501 to "not authorised",
-> collapsing it to an existence-hiding **404 Not found** with the reason discarded.
+> *"Given the server refuses … then the message is surfaced **verbatim**"* was **unreachable
+> against the first applied contract**. `admin_delete_role_template` shipped raising its guard
+> refusals with `42501`, and the BFF lib maps 42501 to "not authorised", collapsing it to an
+> existence-hiding **404 Not found** with the reason discarded. So *"this role template was
+> offered to groups"* reached the admin as *"Not found"*.
 >
 > 42501 is *insufficient_privilege*; a guard refusal is not a privilege failure. Corrective
-> migration `20260810120000` moves guard refusals to **P0001 → 409, verbatim**, leaving 42501 to
-> the non-admin gate where the 404 is correct. **Held at the schema gate — this AC is unmet until
-> it is applied**, which is why this feature stays `5-in-cycle`.
+> migration `20260810120000` (**applied 2026-08-10** on a named approval) moves guard refusals to
+> **P0001 → 409, verbatim**, leaving 42501 to the non-admin gate where the 404 is correct. It also
+> removed the dead refusal-audit INSERT rather than leaving a line that reads as auditing but
+> audits nothing ([TASK-RDC-03](../../../planning/backlog/tasks/TASK-RDC-03-refusal-audit-rows-are-dead-code.md)).
 >
-> Found by building the consumer, which is exactly where a contract walk earns its keep.
+> **Why it had hidden:** the integration suite calls the RPC *directly*, so it stayed green while
+> the BFF path was broken. Only a cell going through the **route** could catch it. That cell now
+> exists (`admin-roles.spec`: *"an offered-then-withdrawn template refuses VERBATIM, not as Not
+> found"*) and asserts **409** plus the exact literal — it would have failed against the
+> pre-corrective contract with a 404.
+>
+> Found by building the consumer, which is exactly where a contract walk earns its keep — the
+> third premise in this feature pair to fail that way, and the second to be caught by a test
+> rather than by review.
 
 ## Performance budget
 

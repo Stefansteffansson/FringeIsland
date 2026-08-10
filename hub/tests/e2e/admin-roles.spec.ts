@@ -424,6 +424,94 @@ test('FEAT-H045 STORY-1: the list repaints on return from the detail view, with 
   expect((await page.request.delete(`/api/admin/roles/${cloneId}/retire`)).ok()).toBe(true);
 });
 
+/**
+ * FEAT-H045 STORY-2 + STORY-3 / FEAT-PC029 — disposal, end to end.
+ *
+ * The second cell is the ROUTE-LEVEL PROOF the corrective migration
+ * (20260810120000) promised in its header. The integration suite calls the RPC
+ * directly and so stayed green while the BFF path was broken: the lib mapped
+ * the guard's old 42501 to "not authorised" and returned an existence-hiding
+ * 404 with the reason discarded. Only a cell that goes through the ROUTE can
+ * catch that, which is precisely why the gap existed.
+ */
+test('FEAT-H045 STORY-3: a never-offered retired clone is disposed of from inside the fold', async ({
+  page,
+}) => {
+  const name = `${CLONE_NAME} disposable`;
+  const admin = createAdminClient();
+  expect((await page.request.post(`/api/admin/roles/${stewardId}/clone`, { data: { name } })).ok()).toBe(
+    true,
+  );
+  const { data: made } = await admin.from('role_templates').select('id').eq('name', name).single();
+  const id = made!.id as string;
+
+  // Disposal is two deliberate acts — retire first, as the guard requires.
+  expect((await page.request.post(`/api/admin/roles/${id}/retire`)).ok()).toBe(true);
+
+  await page.goto('/admin/roles');
+  await page.getByTestId('retired-templates-toggle').click();
+  await page.getByTestId(`delete-button-${id}`).click();
+
+  const modal = page.getByTestId('confirm-modal');
+  await expect(modal).toContainText('cannot be undone');
+  await expect(modal).toContainText('never offered to any group');
+  await expect(modal).toContainText(name);
+  await page.getByTestId('confirm-modal-confirm').click();
+
+  await expect(page.getByTestId(`template-row-${id}`)).toHaveCount(0);
+  const { data: after } = await admin.from('role_templates').select('id').eq('id', id).maybeSingle();
+  expect(after).toBeNull();
+});
+
+test('FEAT-H045 STORY-2: an offered-then-withdrawn template refuses VERBATIM, not as Not found', async ({
+  page,
+}) => {
+  const name = `${CLONE_NAME} offered`;
+  const admin = createAdminClient();
+  expect((await page.request.post(`/api/admin/roles/${stewardId}/clone`, { data: { name } })).ok()).toBe(
+    true,
+  );
+  const { data: made } = await admin.from('role_templates').select('id').eq('name', name).single();
+  const id = made!.id as string;
+
+  // Offer it to ONE group, then withdraw the offer. Publishing platform-wide
+  // would emit hundreds of notices for no extra coverage.
+  const { data: group } = await admin
+    .from('groups')
+    .select('id')
+    .neq('group_type', 'personal')
+    .eq('status', 'active')
+    .limit(1)
+    .single();
+  expect(
+    (
+      await page.request.post(`/api/admin/roles/${id}/publish`, {
+        data: { group_ids: [group!.id] },
+      })
+    ).ok(),
+  ).toBe(true);
+  expect(
+    (
+      await page.request.delete(`/api/admin/roles/${id}/publish`, {
+        data: { group_ids: [group!.id] },
+      })
+    ).ok(),
+  ).toBe(true);
+  expect((await page.request.post(`/api/admin/roles/${id}/retire`)).ok()).toBe(true);
+
+  // The publication row is gone; the audit trail remembers. THE guard case.
+  const res = await page.request.delete(`/api/admin/roles/${id}`);
+  expect(res.status()).toBe(409); // NOT 404 — that was the defect
+  const body = (await res.json()) as { error: string };
+  expect(body.error).toBe('this role template was offered to groups and cannot be deleted');
+
+  // and nothing was deleted
+  const { data: after } = await admin.from('role_templates').select('id').eq('id', id).maybeSingle();
+  expect(after).not.toBeNull();
+
+  await admin.from('role_templates').delete().eq('id', id);
+});
+
 test('a demoted operator gets the 404 shape on the new routes', async ({ page }) => {
   await setPlatformAdmin(false);
 
