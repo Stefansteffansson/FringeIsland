@@ -362,21 +362,24 @@ describe('FEAT-PC029 STORY-3 — the deletion outlives the thing it deleted', ()
     if (Array.isArray(rows) && rows.length) expect(rows[0].nm).toBe(`${TOKEN} clean`);
   });
 
-  it('a refusal writes NO deletion row — and, as the substrate actually behaves, no refusal row either', async () => {
+  it('a refusal writes NO deletion row — and no refusal row, which is now the RULED behaviour', async () => {
     // THE ACCEPTANCE CRITERION is "no deletion row was written". That holds.
     //
-    // FOUND HERE, 2026-08-10 — the second half of this cell originally asserted
-    // that the refusal is audited, because PC029's spec says retire "audits its
-    // refusals" and told STORY-2 to match that posture. IT DOES NOT, AND IT
-    // CANNOT: the admin family writes its refusal row and then RAISEs in the
-    // same transaction, so Postgres discards the INSERT along with the
-    // exception. Measured across the whole live log: 0 rows matching '%_refused'
-    // out of 6 619, against 118 successful retires. Every refusal-audit in the
-    // family is dead code and always has been.
+    // THE SECOND ASSERTION CHANGED MEANING, NOT VALUE (TASK-RDC-03, ruled
+    // 2026-08-10). It was written on 2026-08-10 to pin a DEFECT: the family
+    // wrote a refusal row and then RAISEd in the same transaction, so Postgres
+    // discarded the INSERT along with the exception. Measured across the whole
+    // live log at the time: 0 rows matching '%_refused' out of 6 619, against
+    // 118 successful retires. Dead code since those functions shipped.
     //
-    // Pinned as it truly behaves so the next reader meets the fact instead of
-    // rediscovering it. See TASK-RDC-03 for the family-wide correction; when
-    // that lands, this cell flips deliberately rather than quietly.
+    // The ruling was option 1 — DELETE the dead INSERTs rather than pretend,
+    // because Postgres has no autonomous transactions and the alternatives
+    // (dblink/pg_background, or turning every refusal into a returned result)
+    // cost more than a trail nobody has missed. So this cell now pins a
+    // DECISION: refusals are deliberately not audited. It is the deliberate
+    // flip the earlier comment promised, and it must stay red-proof — if a
+    // refusal row ever appears here again, someone has re-added an INSERT that
+    // its own RAISE will discard.
     const rows = (await runAdminSql(
       `SELECT
          (SELECT count(*)::int FROM public.admin_audit_log

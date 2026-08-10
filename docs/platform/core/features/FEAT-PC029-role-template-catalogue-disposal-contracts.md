@@ -263,10 +263,17 @@ PC028 payload walk caught and rejected.
      > successful retires. No refusal has ever been audited, anywhere in the family.
      >
      > PC029 was told to copy this posture and did — so `admin_delete_role_template` shipped with
-     > an equally dead refusal INSERT. Both are recorded in
-     > [TASK-RDC-03](../../../planning/backlog/tasks/TASK-RDC-03-refusal-audit-rows-are-dead-code.md),
-     > which owns the family-wide ruling. The disposal suite **pins the defect as it truly
-     > behaves** so the next reader meets the fact rather than rediscovering it.
+     > an equally dead refusal INSERT, corrected by `20260810120000` in the same session.
+     >
+     > **RULED 2026-08-10 — [TASK-RDC-03](../../../planning/backlog/tasks/TASK-RDC-03-refusal-audit-rows-are-dead-code.md),
+     > option 1: the dead INSERTs are deleted, not made real.** Postgres has no autonomous
+     > transactions, so the alternatives were a `dblink`/`pg_background` side-channel or turning
+     > every refusal into a returned result instead of a raise — a contract change across the
+     > family. Neither is worth it for a trail nobody has missed. **Refusals are deliberately not
+     > audited**, and no function body claims otherwise. `20260810150000` carries the correction
+     > for the two surviving carriers (`admin_retire_role_template`, `admin_publish_role_template`
+     > — the latter never named in the original filing and found by the enumeration the task's own
+     > AC demanded).
      >
      > **What remains true:** refusals surface to the caller verbatim and are never swallowed —
      > the V4 claim holds at the boundary. What does not hold is that the *trail* records them.

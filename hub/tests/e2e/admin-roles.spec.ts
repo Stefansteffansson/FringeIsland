@@ -512,6 +512,74 @@ test('FEAT-H045 STORY-2: an offered-then-withdrawn template refuses VERBATIM, no
   await admin.from('role_templates').delete().eq('id', id);
 });
 
+/**
+ * TASK-RDC-03 (route tier). Both cells below are RED before the corrective.
+ *
+ * A business refusal is not an authorization failure. Both siblings raised
+ * 42501 for theirs, and `call()` in lib/admin/roles.ts collapses EVERY 42501
+ * into `refused` — so the routes' own `42501 -> 403` branch never runs, and
+ * the refusal leaves as the existence-hiding 404 shape. The admin was told
+ * "Not found" about a template plainly visible in the list they were reading.
+ *
+ * The integration tier could not catch this: it calls the RPC directly and
+ * sees the raise. Only the route tier crosses `call()`. Same missing-tier
+ * lesson as PC029's delete guard, in the two functions that guard did not
+ * touch.
+ */
+test('retiring a system template refuses in its own words, not as Not found', async ({ page }) => {
+  const res = await page.request.post(`/api/admin/roles/${stewardId}/retire`);
+  expect(res.status()).toBe(409); // NOT 404 — that was the defect
+  const body = (await res.json()) as { error: string };
+  expect(body.error).toBe('a system role template cannot be retired');
+
+  // and the floor every group is built on is untouched
+  const admin = createAdminClient();
+  const { data: after } = await admin
+    .from('role_templates')
+    .select('retired_at')
+    .eq('id', stewardId)
+    .single();
+  expect(after!.retired_at).toBeNull();
+});
+
+test('publishing a retired template refuses in its own words, not as Not found', async ({
+  page,
+}) => {
+  const admin = createAdminClient();
+  const name = `E2ERDC03Retired${stamp}`;
+  expect(
+    (await page.request.post(`/api/admin/roles/${stewardId}/clone`, { data: { name } })).ok(),
+  ).toBe(true);
+  const { data: made } = await admin.from('role_templates').select('id').eq('name', name).single();
+  const id = made!.id as string;
+
+  expect((await page.request.post(`/api/admin/roles/${id}/retire`)).ok()).toBe(true);
+
+  const { data: group } = await admin
+    .from('groups')
+    .select('id')
+    .neq('group_type', 'personal')
+    .eq('status', 'active')
+    .limit(1)
+    .single();
+
+  const res = await page.request.post(`/api/admin/roles/${id}/publish`, {
+    data: { group_ids: [group!.id] },
+  });
+  expect(res.status()).toBe(409); // NOT 404 — that was the defect
+  const body = (await res.json()) as { error: string };
+  expect(body.error).toBe('a retired role template cannot be published');
+
+  // the catalogue offered nothing
+  const { count } = await admin
+    .from('role_template_publications')
+    .select('*', { count: 'exact', head: true })
+    .eq('role_template_id', id);
+  expect(count).toBe(0);
+
+  await admin.from('role_templates').delete().eq('id', id);
+});
+
 test('a demoted operator gets the 404 shape on the new routes', async ({ page }) => {
   await setPlatformAdmin(false);
 

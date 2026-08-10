@@ -18,10 +18,12 @@ import { emitDurableTelemetry } from '@/lib/observability/telemetry-server';
  * RPC, the system-template refusal, the retirement refusal — so a sibling
  * Surface calling the same RPC inherits all of it. This route decides nothing.
  */
+// TASK-RDC-03: 42501 is absent DELIBERATELY — see the retire sibling. `call()`
+// collapses it into `refused` before it can reach here, so only the non-admin
+// gate raises it and the 404 existence-hiding shape is correct for that.
 const refusalStatus = (code: string): number | null => {
   if (code === 'P0002') return 404;
-  if (code === '42501') return 403; // non-admin
-  if (code === 'P0001') return 409; // system or retired template
+  if (code === 'P0001') return 409; // retired template — surfaced verbatim
   if (code === '22023') return 400;
   return null;
 };

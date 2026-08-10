@@ -11,10 +11,15 @@ import { emitDurableTelemetry } from '@/lib/observability/telemetry-server';
 // SQLSTATE→HTTP mapping and telemetry. Every rule lives in the contract
 // (ADR-U038), so a sibling Surface calling the same RPC inherits all of it.
 
+// TASK-RDC-03: 42501 is absent DELIBERATELY. `call()` in lib/admin/roles.ts
+// collapses every 42501 into `refused`, handled above as the admin-plane 404
+// shape — so a `42501 -> 403` branch here could never run. Only the non-admin
+// gate raises 42501 now, and hiding existence from a non-admin is correct.
+// The system-template refusal moved to P0001: it is a business rule refused to
+// an admin who can SEE the template, so it answers in its own words.
 const refusalStatus = (code: string): number | null => {
   if (code === 'P0002') return 404;
-  if (code === '42501') return 403; // system template, or non-admin
-  if (code === 'P0001') return 409;
+  if (code === 'P0001') return 409; // business refusal — surfaced verbatim
   if (code === '22023') return 400;
   return null;
 };
