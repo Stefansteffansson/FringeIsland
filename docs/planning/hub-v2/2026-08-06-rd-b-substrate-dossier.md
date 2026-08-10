@@ -131,6 +131,8 @@ Neither branch carries `retired_at IS NULL`.
 
 **Half two — why it is unreachable today.** `admin_retire_role_template` refuses system templates outright (`20260806170000:~700`), and logs the refusal:
 
+> **SUPERSEDED SNAPSHOT — the quoted body below is no longer what the catalogue holds** (annotated 2026-08-10, [TASK-RDC-03](../backlog/tasks/TASK-RDC-03-refusal-audit-rows-are-dead-code.md)). Two of its three lines are now wrong: the `retire_refused` INSERT **never logged anything** — it sat in the transaction its own `RAISE` aborted — and has been deleted; and the errcode moved **`42501` → `P0001`**, because as `42501` the refusal was collapsed to an existence-hiding 404 and reached the admin as *"Not found"*. Migration `20260810150000`. **The surrounding argument is unaffected** — system templates are still refused, and both branches are still provably retirement-free. Quote left intact as the historical anchor it was; read the live body from `pg_proc`, not from here.
+
 ```sql
   -- The four seeded roles are the floor every group is built on.
   if v_template.is_system then
