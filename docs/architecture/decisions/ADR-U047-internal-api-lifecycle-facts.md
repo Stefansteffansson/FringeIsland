@@ -147,3 +147,41 @@ A platform function that fulfils a **cross-cutting vertical obligation** (ADR-U0
 - Rules 1–7 are otherwise unchanged; the lifecycle-fact vocabulary is untouched. The carve-out covers *vertical-obligation reads* only — any new lifecycle-shaped crossing still requires a new fact function, never an allowlist entry.
 - The W3 conformance test carries the allowlist as a distinct, cited category (not merged into the DS-owned list) so every carve-out use remains visible at the gate.
 - In the same change the W3 test's table matching is tightened to schema-qualified references (`public.<table>`, word-bounded): `search_path = ''` is mandatory in substrate code, so every real relation reference is schema-qualified, and bare-name matching false-positives on jsonb key literals (the W8 composite's `'journeys'` document key — PR #191).
+
+---
+
+## Amendment 3 (2026-08-11) — the declared-composition class; the manifest becomes the contract registry
+
+**Status:** Accepted (ruling R-7, Stefan, 2026-08-11 — Cycle COR-D W1, from [Audit IV](../../planning/reference/ANATOMY-CONFORMANCE-AUDIT-4.md) findings AC4-2/AC4-3/AC4-4/AC4-5)
+**Provenance (recorded honestly):** ADM-D/ADM-G shipped a deliberate pattern — PC-4 admin contracts wrapping sealed DS-5 moderation bodies, "the rider ownership split" — that rule 3 as written does not permit, justified in-repo only by a planning-doc line ("the composition IS the design; conformance gates green on the shape"). The gates were green because they enforced only the **table** half of rule 3; the **invocation** half had no check (Audit IV GC-15), and the area gate's acceptance leaned on exactly that blind spot. Same class, one more site: PC-1's `get_platform_statistics` composing `ds3_stats_snapshot()` (AC4-3). Two of the moderation callees **mutate**, which Amendment 2's read-only carve-out is structurally unable to legalise. This amendment ratifies the pattern with bounds and ships the gate that makes the bounds mechanical — the same day, red-first.
+
+### What changed — rule 3 gains the declared-composition class
+
+A core-class function realising a client-facing platform contract for a cross-cutting vertical obligation (ADR-U002) may **call** a domain service's sealed contract functions, under **all** of:
+
+- **(a) Declared, per pair.** Every (caller, callee) pair is declared in `supabase/ownership.manifest.json` → `exceptions.declaredCompositions`, with the vertical and the concrete obligation cited. An undeclared composition is a rule-3 violation, class membership or not — bound (a) of Amendment 2, unchanged.
+- **(b) Sealed body, own tables only.** The callee is DS-owned, EXECUTE revoked from client roles (reachable only through the wrapper), and references only its own service's tables — the table half of rule 3 applies to it unmodified.
+- **(c) Mutation only as the obligation itself.** A mutating callee is permitted only when the mutation *is* the declared vertical obligation (Administration's moderation actions are the founding case). Amendment 2's read-only compositions remain the default class and are unchanged.
+- **(d) The wrapper owns the wall.** Authorization, input vocabulary, presentation contract, and audit duty live at the core wrapper; the body owns the domain reaction — the ADR-U038 clause-1 trade, one level down, guarded the same way.
+
+### The registry home (resolves AC4-4 / AC4-5)
+
+The **manifest is the single living registry** of Internal-API contract instances: `exceptions.declaredCompositions` (this class), `verticalComposition[].composes` (the A2 class), and the new `exceptions.lifecycleFacts` — the fact vocabulary's current set, superseding this ADR's own tables as the live list. Division of labour, pointer-not-snapshot: the ADR family defines the classes and declares each new fact or composition as it is ratified; the manifest carries the current set; the W3 conformance family asserts the live catalog against the manifest. No prose list in any ADR is load-bearing again.
+
+Two facts gain their ADR-grade declaration here (AC4-4): `ds5_lifecycle_group_closed` (shipped Cycle C-E, referenced by ADR-U050 §4 as the deletion seal) and `ds5_lifecycle_user_hard_deleted` (shipped at feature level). With the four U047/A1 facts and ADR-U050's `ds3_/ds7_lifecycle_account_deleted`, the registered vocabulary is **eight**.
+
+### Initial declaredCompositions entries
+
+| Caller (core) | Callee (sealed, DS-owned) | Vertical | Mutation |
+|---|---|---|---|
+| `admin_get_content_reports` | `ds5_moderation_list_reports` | Administration | no |
+| `admin_get_content_report_detail` | `ds5_moderation_report_detail` | Administration | no |
+| `admin_resolve_content_report` | `ds5_moderation_resolve_report` | Administration | **yes** — bound (c) |
+| `admin_moderate_group_forum_post` | `ds5_moderation_moderate_group_post` | Administration | **yes** — bound (c) |
+| `get_platform_statistics` | `ds3_stats_snapshot` | Observability (ADR-U052 posture) | no |
+
+### Consequences
+
+- The W3 conformance family gains the **invocation axis** (COR-D W2, `classifyInvocations`): core→DS calls fail red unless the callee is a registered lifecycle fact or the pair is declared; DS→DS calls inherit the table axis's direction-plus-citation rule; a `ds{N}_lifecycle_` call to an unregistered name fails red. Demonstrated red on the five then-undeclared live calls **before** these declarations landed — the gate's teeth are the recorded proof, not an assertion.
+- Rules 1–7, Amendment 1, and Amendment 2 are otherwise unchanged. A new lifecycle-shaped crossing still requires a new fact; a new composition requires its declaration **before** it ships — the schema-gate checklist line (AB-6 ruling C) already forces the suite run that would catch it.
+- The static-match caveat is recorded in the gate itself: dynamic SQL (`EXECUTE format(...)`) would evade callee matching; none exists live today, absence not proven (Audit IV honesty log).

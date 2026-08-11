@@ -80,7 +80,9 @@ describe('ownership manifest wiring', () => {
     expect(functionOwner('close_group')).toBe('PC-3');
     expect(functionOwner('admin_hard_delete_user')).toBe('PC-4');
     expect(functionOwner('reap_expired_mists')).toBe('PC-2');
-    expect(functionOwner('is_platform_admin')).toBe('PC-1');
+    // Audit IV AC4-9 (COR-D W9): the governance predicate lives with the
+    // governance area it backs, not with the infrastructure that hosts it.
+    expect(functionOwner('is_platform_admin')).toBe('PC-4');
     // Anything unclassified still falls back to Core — the strict default
     // (and the completeness gate fails red on it, so it cannot persist).
     expect(functionOwner('some_function_nobody_declared')).toBe('CORE');
