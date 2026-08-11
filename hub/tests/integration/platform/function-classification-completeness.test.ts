@@ -41,11 +41,16 @@ function loadManifest(): Manifest {
 }
 
 async function liveFunctions(): Promise<string[]> {
+  // COR-D W8 (Audit IV GC-18): explicit prokind ('f','p') — this gate had NO
+  // prokind filter while the manifest gate filtered 'f' only, so a procedure
+  // would have been demanded by one gate and reported missing by the other.
+  // Aggregates/window functions carry no classifiable body and stay out.
   const rows = (await runAdminSql(`
     select p.proname as name
       from pg_proc p
       join pg_namespace n on n.oid = p.pronamespace
      where n.nspname = 'public'
+       and p.prokind in ('f', 'p')
      group by p.proname
      order by p.proname;
   `)) as unknown as { name: string }[];
@@ -104,6 +109,24 @@ describe('Function-classification completeness (COR-C W7, GC-1)', () => {
     );
     // Widening this pin requires editing this test and stating why — the
     // GC-3 pinned-set pattern applied to the admin family.
+    expect(misfiled).toEqual([]);
+  });
+
+  it('every ds{N}_-prefixed function is DS-{N} — the service-prefix pin (COR-D W8, GC-19)', () => {
+    // The admin_* -> PC-4 pin's sibling: a ds5_* function filed under any
+    // owner but DS-5 is a misclassification the gates would otherwise trust.
+    // Lifecycle handlers are prefix-owned by rule (never manifest-listed), so
+    // this pin covers the explicit entries; the prefix rule carries the rest
+    // by construction.
+    const m = loadManifest();
+    const misfiled = Object.entries(m.functions).flatMap(([svc, fns]) =>
+      fns
+        .filter((f) => {
+          const digit = f.match(/^ds(\d)_/);
+          return digit !== null && svc !== `DS-${digit[1]}`;
+        })
+        .map((f) => `${f} (${svc})`),
+    );
     expect(misfiled).toEqual([]);
   });
 
