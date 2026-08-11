@@ -1,0 +1,55 @@
+# FringeIsland CI — the DB-free gate (Phase-4 board ruling P4-2, option B).
+#
+# WHAT THIS GATES: `next build` (the type gate — ts-jest and eslint do NOT full-type-check;
+# PC003 merged build-broken because nothing ran it), lint, and the unit project.
+#
+# WHAT THIS DELIBERATELY DOES NOT RUN: the integration and E2E suites, and the platform
+# conformance family. Those need a real Postgres and today there is exactly one shared dev
+# database, which local sessions and manual testing also use — CI-driven runs would collide.
+# That posture is recorded as deliberate (GC-16), not forgotten. Revisit at Eid with an
+# isolated CI database; the conformance family stays a local gate until then
+# (`npm run test:integration:platform -w hub`).
+#
+# The Supabase values below are PLACEHOLDERS, not secrets. They exist only so the build can
+# construct clients at module scope; nothing here reaches a real database.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: build · lint · unit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key-not-a-secret
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install (workspace-aware)
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Build (the type gate)
+        run: npm run build
