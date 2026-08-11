@@ -128,7 +128,18 @@ Root now declares **zero dependencies and four dev dependencies** (`@supabase/su
 
 **The dashboard had been silently reporting zeros since June.** Its counters still walked `app/`, `lib/`, `components/`, `tests/` **at the repo root** — paths that stopped existing at the ADR-U032 relocation. **"API routes" read 0 against a real 124; "Test files" read 0 against a real 294** — on the very tool the session opener tells agents to orient with. This is *wrong*, not *missing*: a confident zero reads as "we have none". Counters are now surface-aware and extensible to `gimbal/`; the last-code-change probe follows `hub supabase`. **CI gained a `npm run dashboard` step** so the root keep-set cannot rot silently.
 
-**Verification, stated precisely:** the lockfile was updated with `--package-lock-only` and **`node_modules` deliberately left untouched** — a `next dev` server was live and a real install could have broken it mid-flight. CI's clean `npm ci` + build + lint + unit + dashboard is the proof, and it passed. **Integration and E2E were NOT run** — they need the one shared dev DB against a live dev server. They are owed in a clean window before the Phase-4 gate.
+**Verification — completed 2026-08-11 in a clean window** (Stefan killed the dev server on request). The lockfile was first updated with `--package-lock-only`, `node_modules` deliberately untouched while a server was live; then a real **`npm ci` from the new lockfile** was run and every package resolved (`next`, `react`, `@supabase/ssr`, `marked`, `gray-matter`, `dotenv`, `@supabase/supabase-js`, `pg`, `jest`).
+
+**Full suite against the clean install — W3's DoD is met:**
+
+| Tier | Result |
+|---|---|
+| Unit | **1443 passed / 170 suites** (18.8 s) |
+| Integration | **1154 passed / 81 suites** (19.8 min, `--runInBand`) |
+| E2E | **140 passed, 1 failed** (10.2 m) — see below |
+| CI (clean `npm ci` + build + lint + unit + dashboard) | green |
+
+**The one E2E failure, recorded honestly and NOT called a flake.** `profile.spec.ts:125` (FEAT-H005 STORY-4, sign-out). Re-run **isolated: 3/3 green including that cell**, so it is **full-sweep-only** — the same signature as [`TASK-E2E-04`](../backlog/tasks/TASK-E2E-04-entry-spec-fleet-only-failure.md)'s `entry.spec` observation and squarely in the population [`TASK-E2E-03`](../backlog/tasks/TASK-E2E-03-shared-identity-revocation-audit.md) exists to audit (`profile.spec` was itself one of E2E-01's two removed mechanisms). Per the TASK-INT-04 retraction precedent this is **one observation, deliberately not called flake and not called fixed** — it joins E2E-03's standing scope. It is not attributable to W3: the diff touches dependency declarations only, resolution was proven by clean install, and the cell passes in isolation. Teardown instruments were clean (leak delta 0, orphans 955 → 955).
 
 ### W2 — pre-flight safety check (superseded by execution above, kept as the record)
 **The reversibility half is done and verified.** Annotated tag **`hub-legacy-final`** created on commit `c51ed486` (the last commit containing the tree) and **pushed to origin**; `git ls-tree -r hub-legacy-final -- hub-legacy` lists **178 files**, so retrieval is proven, not assumed. The tag message carries the three retrieval commands and points at the discharge note. P4-7 is discharged.
