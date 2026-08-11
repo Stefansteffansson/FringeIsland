@@ -39,8 +39,29 @@ export type OwnershipManifest = {
   functions: Record<string, string[]>;
   lifecyclePrefixRule: string;
   exceptions: {
-    verticalComposition: { function: string; vertical: string; citation: string }[];
+    verticalComposition: {
+      function: string;
+      vertical: string;
+      citation: string;
+      composes?: string[];
+    }[];
     crossServiceReads: { function: string; table: string; citation: string }[];
+    // ADR-U047 Amendment 3 (Cycle COR-D): the declared-composition class.
+    // Optional so the gate reads an un-amended manifest as "nothing declared"
+    // — absence fails red, never green.
+    declaredCompositions?: {
+      caller: string;
+      callee: string;
+      vertical: string;
+      mutation: boolean;
+      citation: string;
+    }[];
+    // ADR-U047 A3: the lifecycle-fact registry — the vocabulary's single
+    // living home. A core call to a ds*_lifecycle_* function absent from this
+    // registry is an undeclared fact (audit AC4-4's class).
+    lifecycleFacts?: { function: string; citation: string }[];
+    // Reserved, mirror of crossServiceReads for the call axis. Empty today.
+    crossServiceCalls?: { function: string; callee: string; citation: string }[];
   };
 };
 
@@ -190,4 +211,138 @@ export function classifyReferences(fnName: string, body: string): Violation[] {
 /** Human-readable one-liner for gate reports. */
 export function formatViolation(fn: string, args: string, v: Violation): string {
   return `  - [${v.kind}] ${fn}(${args})  ${v.functionOwner} -> ${v.table} (${v.tableOwner})`;
+}
+
+export type InvocationViolationKind =
+  | 'undeclared-core-composition' // core-class calling a DS function that is neither a lifecycle fact nor declared
+  | 'unregistered-lifecycle-fact' // core-class calling a ds*_lifecycle_* function absent from the registry
+  | 'upward-cross-service-call'
+  | 'uncited-cross-service-call';
+
+export type InvocationViolation = {
+  callee: string;
+  calleeOwner: Owner;
+  functionOwner: Owner | 'CORE';
+  kind: InvocationViolationKind;
+};
+
+/**
+ * The invocation axis of ADR-U047 rule 3 (Cycle COR-D W2, audit GC-15).
+ *
+ * `classifyReferences` above enforces only the TABLE half of rule 3; the
+ * clause "core may invoke ds*_lifecycle_* functions and nothing else
+ * domain-side" had no mechanical check — which is how four undeclared
+ * PC-4 -> ds5_moderation_* calls and PC-1 -> ds3_stats_snapshot() shipped
+ * green (AC4-2/AC4-3), and how the platform-ops area gate came to accept them
+ * on the ground "conformance gates green on the shape".
+ *
+ * The rule, stated once:
+ *   - core-class may call `ds*_lifecycle_*` facts — each must be in the
+ *     manifest's `lifecycleFacts` registry (the ADR-declared vocabulary);
+ *   - core-class may call a DS function ONLY under a per-pair declaration:
+ *     `exceptions.declaredCompositions` (ADR-U047 A3 class) or the caller's
+ *     `verticalComposition.composes` list (A2 class);
+ *   - DS -> other-DS calls mirror the table axis: downward + cited only;
+ *   - own-service calls are always fine.
+ *
+ * Candidate callees are supplied by the caller (the live catalog in the
+ * integration half; explicit fixtures in the unit half). Matching is
+ * schema-qualified (`public.<fn>(`) after comment-stripping, same rationale
+ * as the table axis (search_path='' makes real calls schema-qualified).
+ * CAVEAT, recorded honestly: dynamic SQL (`EXECUTE format(...)`) would evade
+ * this static match; none exists in the live substrate today, absence not
+ * proven — Audit IV honesty log.
+ */
+export function classifyInvocations(
+  fnName: string,
+  body: string,
+  candidateCallees: string[],
+): InvocationViolation[] {
+  const m = loadOwnershipManifest();
+  const clean = stripComments(body ?? '');
+  const owner = functionOwner(fnName);
+  const coreClass = owner === 'CORE' || /^PC-\d$/.test(owner);
+
+  const declared = m.exceptions.declaredCompositions ?? [];
+  const composed = new Set(
+    m.exceptions.verticalComposition
+      .filter((e) => e.function === fnName)
+      .flatMap((e) => e.composes ?? []),
+  );
+  const factNames = new Set((m.exceptions.lifecycleFacts ?? []).map((f) => f.function));
+
+  const violations: InvocationViolation[] = [];
+
+  const dsCallees = candidateCallees.filter((f) => /^DS-\d$/.test(String(functionOwner(f))));
+
+  for (const callee of dsCallees) {
+    if (callee === fnName) continue;
+    if (!new RegExp(`\\bpublic\\.${callee}\\s*\\(`, 'i').test(clean)) continue;
+
+    const calleeOwner = functionOwner(callee) as Owner;
+    if (calleeOwner === owner) continue; // own service — always fine
+
+    if (coreClass) {
+      if (/^ds\d+_lifecycle_/.test(callee)) {
+        // The sanctioned seam — but the fact must be registered. An empty
+        // registry (pre-A3 manifest) keeps this arm dormant rather than
+        // flooding red on the four original facts.
+        if (factNames.size > 0 && !factNames.has(callee)) {
+          violations.push({
+            callee,
+            calleeOwner,
+            functionOwner: owner,
+            kind: 'unregistered-lifecycle-fact',
+          });
+        }
+        continue;
+      }
+      const isDeclared =
+        declared.some((d) => d.caller === fnName && d.callee === callee) || composed.has(callee);
+      if (!isDeclared) {
+        violations.push({
+          callee,
+          calleeOwner,
+          functionOwner: owner,
+          kind: 'undeclared-core-composition',
+        });
+      }
+      continue;
+    }
+
+    // DS caller -> DS callee of another service: direction first, citation second.
+    const from = serviceNumber(owner);
+    const to = serviceNumber(calleeOwner);
+    if (to > from) {
+      violations.push({
+        callee,
+        calleeOwner,
+        functionOwner: owner,
+        kind: 'upward-cross-service-call',
+      });
+      continue;
+    }
+    const cited = (m.exceptions.crossServiceCalls ?? []).some(
+      (e) => e.function === fnName && e.callee === callee,
+    );
+    if (!cited) {
+      violations.push({
+        callee,
+        calleeOwner,
+        functionOwner: owner,
+        kind: 'uncited-cross-service-call',
+      });
+    }
+  }
+
+  return violations;
+}
+
+/** Human-readable one-liner for invocation-gate reports. */
+export function formatInvocationViolation(
+  fn: string,
+  args: string,
+  v: InvocationViolation,
+): string {
+  return `  - [${v.kind}] ${fn}(${args})  ${v.functionOwner} -> ${v.callee}() (${v.calleeOwner})`;
 }

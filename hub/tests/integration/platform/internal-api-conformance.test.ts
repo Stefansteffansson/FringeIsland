@@ -1,11 +1,14 @@
-import { describe, it, expect, jest } from '@jest/globals';
+import { describe, it, expect, jest, beforeAll } from '@jest/globals';
 import { runAdminSql } from '@/tests/helpers/supabase';
 import {
   classifyReferences,
+  classifyInvocations,
   formatViolation,
+  formatInvocationViolation,
   functionOwner,
   dsTables,
   type Violation,
+  type InvocationViolation,
 } from '@/tests/helpers/ownership';
 
 jest.setTimeout(60_000); // real-substrate suite: one Management-API catalog query
@@ -77,9 +80,11 @@ const COR_A_W4_RELOCATION_TARGETS = new Set<string>([
 
 type FnRow = { name: string; args: string; body: string };
 
-describe('Internal-API conformance (ADR-U047 rule 3 + DS acyclicity, COR-A W3 / COR-B W2)', () => {
-  it('no function references a DS-owned table outside its ownership rule', async () => {
-    const rows = (await runAdminSql(`
+describe('Internal-API conformance (ADR-U047 rule 3 + DS acyclicity, COR-A W3 / COR-B W2 / COR-D W2)', () => {
+  let rows: FnRow[] = [];
+
+  beforeAll(async () => {
+    rows = (await runAdminSql(`
       select p.proname as name,
              pg_get_function_identity_arguments(p.oid) as args,
              p.prosrc as body
@@ -89,7 +94,9 @@ describe('Internal-API conformance (ADR-U047 rule 3 + DS acyclicity, COR-A W3 / 
          and p.prokind = 'f'
        order by p.proname;
     `)) as unknown as FnRow[];
+  });
 
+  it('no function references a DS-owned table outside its ownership rule', () => {
     expect(rows.length).toBeGreaterThan(0); // sanity: catalog reachable
     expect(dsTables().length).toBeGreaterThan(0); // sanity: manifest loaded
 
@@ -137,6 +144,63 @@ describe('Internal-API conformance (ADR-U047 rule 3 + DS acyclicity, COR-A W3 / 
     );
 
     const report = offenders.flatMap(lines).join('\n');
+    expect(report).toBe('');
+  });
+
+  it('no function invokes a DS-owned function outside ADR-U047 rule 3 (COR-D W2, GC-15)', () => {
+    // The invocation axis. The table half above went green while four
+    // undeclared PC-4 -> ds5_moderation_* calls and PC-1 -> ds3_stats_snapshot
+    // shipped (AC4-2/AC4-3) — rule 3's call clause had no gate. Candidate
+    // callees are every live function name; ownership resolves through the
+    // manifest, so an undeclared composition fails red here by construction.
+    expect(rows.length).toBeGreaterThan(0);
+    const names = rows.map((r) => r.name);
+
+    const offenders = rows
+      .map((r) => ({
+        name: r.name,
+        args: r.args,
+        owner: functionOwner(r.name),
+        violations: classifyInvocations(r.name, r.body ?? '', names),
+      }))
+      .filter((r) => r.violations.length > 0);
+
+    const byKind = (k: string) =>
+      offenders.flatMap((o) =>
+        o.violations
+          .filter((v) => v.kind === k)
+          .map((v) => formatInvocationViolation(o.name, o.args, v)),
+      );
+
+    const undeclaredCore = byKind('undeclared-core-composition');
+    const unregisteredFacts = byKind('unregistered-lifecycle-fact');
+    const upwardCalls = byKind('upward-cross-service-call');
+    const uncitedCalls = byKind('uncited-cross-service-call');
+
+    // eslint-disable-next-line no-console
+    console.error(
+      [
+        '',
+        'Internal-API invocation conformance (ADR-U047 rule 3 call clause, COR-D W2):',
+        `  Undeclared core -> domain compositions: ${undeclaredCore.length}`,
+        ...undeclaredCore,
+        `  Unregistered lifecycle facts:           ${unregisteredFacts.length}`,
+        ...unregisteredFacts,
+        `  Upward DS -> DS calls:                  ${upwardCalls.length}`,
+        ...upwardCalls,
+        `  Uncited downward DS -> DS calls:        ${uncitedCalls.length}`,
+        ...uncitedCalls,
+        '',
+      ].join('\n'),
+    );
+
+    const report = offenders
+      .flatMap((o) =>
+        o.violations.map((v: InvocationViolation) =>
+          formatInvocationViolation(o.name, o.args, v),
+        ),
+      )
+      .join('\n');
     expect(report).toBe('');
   });
 });

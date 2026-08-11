@@ -1,6 +1,7 @@
 import { describe, it, expect } from '@jest/globals';
 import {
   classifyReferences,
+  classifyInvocations,
   functionOwner,
   dsTables,
   loadOwnershipManifest,
@@ -79,7 +80,9 @@ describe('ownership manifest wiring', () => {
     expect(functionOwner('close_group')).toBe('PC-3');
     expect(functionOwner('admin_hard_delete_user')).toBe('PC-4');
     expect(functionOwner('reap_expired_mists')).toBe('PC-2');
-    expect(functionOwner('is_platform_admin')).toBe('PC-1');
+    // Audit IV AC4-9 (COR-D W9): the governance predicate lives with the
+    // governance area it backs, not with the infrastructure that hosts it.
+    expect(functionOwner('is_platform_admin')).toBe('PC-4');
     // Anything unclassified still falls back to Core — the strict default
     // (and the completeness gate fails red on it, so it cannot persist).
     expect(functionOwner('some_function_nobody_declared')).toBe('CORE');
@@ -161,5 +164,137 @@ describe('DS-to-DS direction rule (COR-B W2, audit AC2-1)', () => {
     const m = loadOwnershipManifest();
     const uncited = m.exceptions.crossServiceReads.filter((e) => !e.citation?.trim());
     expect(uncited).toEqual([]);
+  });
+});
+
+/**
+ * W2 — the INVOCATION axis of ADR-U047 rule 3 (Cycle COR-D, audit GC-15).
+ *
+ * WRITTEN RED-FIRST, the COR-B W2 pattern: at authoring, the declared-pair and
+ * registered-fact cases below FAIL — the manifest has no
+ * `declaredCompositions` and no `lifecycleFacts` registry, because the class
+ * they encode does not exist in canon yet (ADR-U047 A3 lands in the same
+ * cycle). Their red run is recorded in the COR-D PR; they go green when the
+ * amendment and its manifest declarations land.
+ *
+ * Why this suite exists: the table rule above went green while four undeclared
+ * PC-4 -> ds5_moderation_* calls and PC-1 -> ds3_stats_snapshot() shipped
+ * (AC4-2/AC4-3) — "core may invoke ds*_lifecycle_* and nothing else
+ * domain-side" had a gate for its table half only. The live half runs in
+ * `tests/integration/platform/internal-api-conformance.test.ts`.
+ */
+describe('invocation rule (ADR-U047 rule 3 call clause + A3, COR-D W2)', () => {
+  const call = (callee: string) => `
+    begin
+      perform public.${callee}(p_id);
+      return;
+    end;
+  `;
+
+  // Candidate callee pool — live function names plus one deliberately
+  // unregistered lifecycle-fact name (prefix-owned DS-3 by rule 1).
+  const CALLEES = [
+    'ds3_lifecycle_group_closed',
+    'ds3_lifecycle_not_a_registered_fact',
+    'ds5_moderation_list_reports',
+    'ds3_stats_snapshot',
+    'get_own_journal_export',
+    'get_group_forum',
+    'get_player_state',
+    'create_journal_entry',
+  ];
+
+  it('allows core to call a REGISTERED lifecycle fact', () => {
+    expect(
+      classifyInvocations('close_group', call('ds3_lifecycle_group_closed'), CALLEES),
+    ).toEqual([]);
+  });
+
+  it('flags a core call to a lifecycle-fact name absent from the registry (AC4-4 class)', () => {
+    const v = classifyInvocations(
+      'close_group',
+      call('ds3_lifecycle_not_a_registered_fact'),
+      CALLEES,
+    );
+    expect(v).toHaveLength(1);
+    expect(v[0]).toMatchObject({
+      callee: 'ds3_lifecycle_not_a_registered_fact',
+      kind: 'unregistered-lifecycle-fact',
+    });
+  });
+
+  it('flags an UNDECLARED core -> domain composition (AC4-2 class)', () => {
+    // The declaration is per (caller, callee) pair — close_group calling the
+    // moderation read is undeclared no matter what admin_get_content_reports
+    // declares.
+    const v = classifyInvocations('close_group', call('ds5_moderation_list_reports'), CALLEES);
+    expect(v).toHaveLength(1);
+    expect(v[0]).toMatchObject({
+      callee: 'ds5_moderation_list_reports',
+      kind: 'undeclared-core-composition',
+    });
+  });
+
+  it('honours a DECLARED composition pair (ADR-U047 A3 — the rider ownership split)', () => {
+    expect(
+      classifyInvocations(
+        'admin_get_content_reports',
+        call('ds5_moderation_list_reports'),
+        CALLEES,
+      ),
+    ).toEqual([]);
+    expect(
+      classifyInvocations('get_platform_statistics', call('ds3_stats_snapshot'), CALLEES),
+    ).toEqual([]);
+  });
+
+  it('honours the A2 composes list, per-function not blanket', () => {
+    expect(
+      classifyInvocations('get_own_data_export', call('get_own_journal_export'), CALLEES),
+    ).toEqual([]);
+    expect(
+      classifyInvocations('get_own_profile', call('get_own_journal_export'), CALLEES),
+    ).toHaveLength(1);
+  });
+
+  it('flags an UPWARD DS -> DS call — the acyclicity rule on the call axis', () => {
+    const v = classifyInvocations('get_player_state', call('get_group_forum'), CALLEES);
+    expect(v).toHaveLength(1);
+    expect(v[0]).toMatchObject({ callee: 'get_group_forum', kind: 'upward-cross-service-call' });
+  });
+
+  it('flags a DOWNWARD DS -> DS call that is not cited', () => {
+    const v = classifyInvocations('get_group_forum', call('get_player_state'), CALLEES);
+    expect(v).toHaveLength(1);
+    expect(v[0]).toMatchObject({ callee: 'get_player_state', kind: 'uncited-cross-service-call' });
+  });
+
+  it('allows own-service calls', () => {
+    expect(
+      classifyInvocations('get_group_forum', call('ds5_moderation_list_reports'), CALLEES),
+    ).toEqual([]);
+  });
+
+  it('ignores calls inside comments', () => {
+    const body = `
+      begin
+        -- used to perform public.ds5_moderation_list_reports(p_id)
+        /* and public.ds3_stats_snapshot() */
+        return;
+      end;
+    `;
+    expect(classifyInvocations('close_group', body, CALLEES)).toEqual([]);
+  });
+
+  it('every declared composition and registered fact carries a citation (registry hygiene)', () => {
+    const m = loadOwnershipManifest();
+    const compositions = m.exceptions.declaredCompositions ?? [];
+    const facts = m.exceptions.lifecycleFacts ?? [];
+    // The A3 class exists in canon => the registry must not be empty, and
+    // every entry must cite its declaring decision.
+    expect(compositions.length).toBeGreaterThan(0);
+    expect(facts.length).toBeGreaterThan(0);
+    expect(compositions.filter((e) => !e.citation?.trim())).toEqual([]);
+    expect(facts.filter((e) => !e.citation?.trim())).toEqual([]);
   });
 });

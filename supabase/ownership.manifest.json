@@ -78,7 +78,6 @@
   "functions": {
     "PC-1": [
       "get_platform_statistics",
-      "is_platform_admin",
       "prune_telemetry_events",
       "record_telemetry_event",
       "update_updated_at_column"
@@ -216,6 +215,7 @@
       "auto_grant_permission_to_deusex",
       "get_own_consent_state",
       "get_own_data_export",
+      "is_platform_admin",
       "prevent_last_deusex_membership_removal",
       "prevent_last_deusex_role_removal",
       "record_auth_event",
@@ -381,6 +381,54 @@
       }
     ],
     "crossServiceReads": [],
+    "declaredCompositions": [
+      {
+        "caller": "admin_get_content_reports",
+        "callee": "ds5_moderation_list_reports",
+        "vertical": "Administration",
+        "mutation": false,
+        "citation": "ADR-U047 Amendment 3 (2026-08-11, Cycle COR-D W1; Audit IV AC4-2). ADM-D rider ownership split ratified: the PC-4 wrapper owns the admin wall and filter vocabulary; the sealed DS-5 body (EXECUTE revoked from client roles) owns the report-store read."
+      },
+      {
+        "caller": "admin_get_content_report_detail",
+        "callee": "ds5_moderation_report_detail",
+        "vertical": "Administration",
+        "mutation": false,
+        "citation": "ADR-U047 Amendment 3 (2026-08-11, COR-D W1; Audit IV AC4-2). ADM-D rider split: wrapper owns the wall; the sealed DS-5 detail body owns author resolution and drift honesty."
+      },
+      {
+        "caller": "admin_resolve_content_report",
+        "callee": "ds5_moderation_resolve_report",
+        "vertical": "Administration",
+        "mutation": true,
+        "citation": "ADR-U047 Amendment 3 (2026-08-11, COR-D W1; Audit IV AC4-2), bound (c): the resolution write IS the Administration obligation. Wrapper owns the wall, outcome vocabulary and the moderation.report_resolved audit write; the sealed DS-5 body owns the one-resolution-only write."
+      },
+      {
+        "caller": "admin_moderate_group_forum_post",
+        "callee": "ds5_moderation_moderate_group_post",
+        "vertical": "Administration",
+        "mutation": true,
+        "citation": "ADR-U047 Amendment 3 (2026-08-11, COR-D W1; Audit IV AC4-2), bound (c): ADM-G suspended-group moderation action; the sealed DS-5 body owns P0002/P0001 and the write."
+      },
+      {
+        "caller": "get_platform_statistics",
+        "callee": "ds3_stats_snapshot",
+        "vertical": "Observability",
+        "mutation": false,
+        "citation": "ADR-U047 Amendment 3 (2026-08-11, COR-D W1; Audit IV AC4-3). ADR-U052 statistics posture: PC-1 composes DS-3's sealed enrollment snapshot; computed on read, no aggregate store."
+      }
+    ],
+    "lifecycleFacts": [
+      { "function": "ds3_lifecycle_member_departed", "citation": "ADR-U047 (2026-07-19) — initial vocabulary." },
+      { "function": "ds3_lifecycle_group_closed", "citation": "ADR-U047 (2026-07-19) — initial vocabulary." },
+      { "function": "ds3_lifecycle_personal_group_erased", "citation": "ADR-U047 (2026-07-19) — initial vocabulary." },
+      { "function": "ds3_lifecycle_user_hard_deleted", "citation": "ADR-U047 Amendment 1 (2026-07-19) — the fourth fact, found by the W3 gate itself." },
+      { "function": "ds3_lifecycle_account_deleted", "citation": "ADR-U050 (2026-07-26) §4 — new U047 fact handler for self-service account deletion." },
+      { "function": "ds7_lifecycle_account_deleted", "citation": "ADR-U050 (2026-07-26) §4 — new U047 fact handler for self-service account deletion." },
+      { "function": "ds5_lifecycle_group_closed", "citation": "Cycle C-E (2026-07-21) DS-5 lifecycle dispositions; referenced by ADR-U050 §4 as the C-E seal; ADR-grade at ADR-U047 Amendment 3 (Audit IV AC4-4)." },
+      { "function": "ds5_lifecycle_user_hard_deleted", "citation": "Shipped at feature level (A-COM lifecycle dispositions); ADR-grade at ADR-U047 Amendment 3 (Audit IV AC4-4)." }
+    ],
+    "lifecycleFactsNote": "ADR-U047 Amendment 3: this registry is the fact vocabulary's single living home — the ADR family defines the classes and declares new facts; this list carries the current set; the W3 conformance family asserts core lifecycle calls against it. A core call to a ds{N}_lifecycle_ name absent here fails the invocation gate red.",
     "triggerMounts": [
       {
         "function": "converge_invitation_notifications",
