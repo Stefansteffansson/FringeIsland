@@ -40,7 +40,7 @@ Design the seam that makes the direction rule real inside the monolith:
 - **Design constraints:** behavior-preserving (the current dispositions are correct product behavior — only their *home* moves); same-transaction semantics (the cascades are atomic with the core action today and must stay so — this is a synchronous in-transaction contract, not an async queue); DS-3's handler is SECURITY DEFINER with no client EXECUTE (core-internal contract, not a platform surface).
 - **ADR also records** the boundary rule the conformance test enforces (W3), so the rule survives as canon, not just as a test.
 
-Deliverable: `ADR-U047-internal-api-inversion-lifecycle-facts.md` draft → **pause for Stefan's nod** before W4/W5 build.
+Deliverable: `ADR-U047-internal-api-lifecycle-facts.md` draft *(filename corrected at Audit IV AC4-11 — the ADR shipped under this name, not the `-inversion-` form this plan drafted)* → **pause for Stefan's nod** before W4/W5 build.
 
 ### W2 — Characterization coverage (parallel with W1)
 
