@@ -39,4 +39,4 @@ Since the C-C close (2026-07-20, TASK-OBS-01) the platform **emits well but stor
 
 ## References
 
-A-ADM area-open board ([plan](../../planning/hub-v2/phase-3-platform-ops-completion-plan.md), AB-1a..d, AB-4) · [TASK-OBS-01](../../planning/backlog/tasks/TASK-OBS-01-telemetry-sink-and-analytics-posture.md) · ADR-U012 · ADR-U034 (consent purposes) · ADR-U042/U043 (measurement posture) · ADR-U031/U033 (Mist erasure) · COR-C W2 register (`supabase/ownership.manifest.json` export classifications) · AC3-O6/AC3-O7 (ANATOMY-CONFORMANCE-AUDIT-3).
+A-ADM area-open board ([plan](../../planning/hub-v2/phase-3-platform-ops-completion-plan.md), AB-1a..d, AB-4) · `TASK-OBS-01` (the task file was swept 2026-08-03 once this ADR and FEAT-PC018 discharged its subject; named here as provenance, not as a live link) · ADR-U012 · ADR-U034 (consent purposes) · ADR-U042/U043 (measurement posture) · ADR-U031/U033 (Mist erasure) · COR-C W2 register (`supabase/ownership.manifest.json` export classifications) · AC3-O6/AC3-O7 (ANATOMY-CONFORMANCE-AUDIT-3).
