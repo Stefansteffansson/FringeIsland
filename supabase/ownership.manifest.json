@@ -86,6 +86,7 @@
       "_erase_mist",
       "delete_own_account",
       "enforce_consent_append_only",
+      "enforce_consent_withdrawable",
       "enforce_decommission_invariant",
       "enforce_personal_group_id_immutability",
       "erase_fim_account",
