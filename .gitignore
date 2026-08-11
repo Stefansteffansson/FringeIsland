@@ -60,8 +60,11 @@ coverage
 # Playwright E2E
 test-results/
 playwright-report/
-tests/e2e/.auth/*.json
-hub-legacy/tests/e2e/.auth/*.json
+# Playwright auth state holds live session tokens — never commit it.
+# Un-anchored on purpose: this must reach every surface (hub/, later gimbal/,
+# studio surfaces) at any depth. The old root-anchored form silently protected
+# nothing after the ADR-U032 relocation moved tests under hub/.
+**/tests/e2e/.auth/
 
 # Vercel
 .vercel
