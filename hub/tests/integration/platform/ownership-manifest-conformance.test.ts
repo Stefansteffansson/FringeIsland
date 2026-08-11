@@ -68,12 +68,16 @@ function loadManifest(): Manifest {
 }
 
 async function liveTables(): Promise<string[]> {
+  // COR-D W8 (Audit IV GC-17): widened past relkind='r' — partitioned tables,
+  // foreign tables, views and matviews were invisible to BOTH diff directions.
+  // Latent when widened (none existed); the first view/partition now demands a
+  // manifest owner like any table.
   const rows = (await runAdminSql(`
     select c.relname as name
       from pg_class c
       join pg_namespace n on n.oid = c.relnamespace
      where n.nspname = 'public'
-       and c.relkind = 'r'
+       and c.relkind in ('r', 'p', 'f', 'v', 'm')
      order by c.relname;
   `)) as unknown as { name: string }[];
   return rows.map((r) => r.name);
@@ -115,12 +119,23 @@ describe('Ownership-manifest completeness (COR-B W1, audit AC2-2)', () => {
     expect(stale).toEqual([]);
   });
 
+  it('every admin_*-prefixed TABLE is PC-4 — the table half of the anatomy pin (COR-D W8, GC-21)', () => {
+    const m = loadManifest();
+    const misfiled = Object.entries(m.tables)
+      .filter(([t, v]) => /^admin_/.test(t) && v.owner !== 'PC-4')
+      .map(([t, v]) => `${t} (${v.owner})`);
+    expect(misfiled).toEqual([]);
+  });
+
   it('every function the manifest assigns to a service still exists', async () => {
+    // COR-D W8 (Audit IV GC-18): prokind widened to ('f','p') to match the
+    // classification gate — a procedure must be registered and diffed the same
+    // way both gates see it.
     const rows = (await runAdminSql(`
       select p.proname as name
         from pg_proc p
         join pg_namespace n on n.oid = p.pronamespace
-       where n.nspname = 'public' and p.prokind = 'f'
+       where n.nspname = 'public' and p.prokind in ('f', 'p')
        order by p.proname;
     `)) as unknown as { name: string }[];
     const live = new Set(rows.map((r) => r.name));
