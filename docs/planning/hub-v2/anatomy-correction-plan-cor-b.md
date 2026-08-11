@@ -85,7 +85,7 @@ Two legitimate paths — **this is a decision, not a defect**:
 - **(a) Relocate:** add `get_role_templates()`, make `fetchRoleTemplates` a thin RPC call. Uniform with the other 90+ data functions and with ADR-U038 tranche 2's treatment of `get_member_groups()`. Costs a migration — which would pull the schema gate into an otherwise gate-free cycle.
 - **(b) Record:** enter it in the manifest as a deliberate exception citing its RLS policy. Zero risk, keeps COR-B migration-free, and is defensible — the read is RLS-governed and hosts no rule.
 
-**Recommendation: (b) now, (a) whenever a Groups migration next opens.** Taking (a) alone would add a schema gate to a cycle that otherwise needs none.
+**Recommendation: (b) now, (a) whenever a Groups migration next opens.** Taking (a) alone would add a schema gate to a cycle that otherwise needs none. *(Superseded in execution — the DoD at the foot of this plan records that path (a) actually landed: `get_role_templates()`, PR #257, schema-gated, named approval. Annotated at Audit IV AC4-11 rather than rewritten.)*
 
 ## W5 — Docs (AC2-5)
 
