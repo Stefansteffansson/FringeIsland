@@ -7,7 +7,7 @@ import {
   runAdminSql,
   withAnonRateLimitRetry,
 } from '@/tests/helpers/supabase';
-import { finaliseTranscendence, TRANSCENDENCE_POLICY_VERSION } from '@/lib/auth/transcendence';
+import { finaliseTranscendence } from '@/lib/auth/transcendence';
 
 /**
  * FEAT-H004 STORY-1/2/5 (integration) — the Hub's in-place transcendence,
@@ -75,8 +75,8 @@ describe('FEAT-H004 — Hub in-place transcendence (consumes finalise_transcende
     expect(afterConv.user!.is_anonymous).toBe(false);
 
     // 2. Finalise via the Hub lib (the server-side wrapper over the RPC).
+    // COR-D W3 (AC4-1): no policy version is passed — the substrate stamps it.
     const { outcome, error } = await finaliseTranscendence(mist, {
-      policyVersion: TRANSCENDENCE_POLICY_VERSION,
       captureContext: { surface: 'hub', flow: 'mist-transcendence' },
     });
     expect(error).toBeNull();
@@ -108,14 +108,20 @@ describe('FEAT-H004 — Hub in-place transcendence (consumes finalise_transcende
     expect(membership).not.toBeNull();
     expect(membership!.status).toBe('active');
 
-    // Consent — exactly one transcendence record (the Hub passed it; platform persisted).
+    // Consent — exactly one transcendence record, stamped with the CATALOG's
+    // version (COR-D W3 / AC4-1: the substrate resolves it; the Hub asserts
+    // against the catalog, never against its own copy).
+    const catalog = (await runAdminSql(
+      `SELECT current_policy_version FROM public.consent_purposes WHERE key = 'transcendence';`,
+    )) as unknown as { current_policy_version: string }[];
     const { data: consent } = await admin
       .from('consent_records')
       .select('purpose, policy_version')
       .eq('subject_group_id', groupId);
     expect(consent!.length).toBe(1);
     expect(consent![0].purpose).toBe('transcendence');
-    expect(consent![0].policy_version).toBe(TRANSCENDENCE_POLICY_VERSION);
+    expect(consent![0].policy_version).toBe(catalog[0].current_policy_version);
+    expect(outcome!.policyVersion).toBe(catalog[0].current_policy_version);
   });
 
   // STORY-1 (failure) — the lib surfaces the error as { error } (never throws);
@@ -131,11 +137,24 @@ describe('FEAT-H004 — Hub in-place transcendence (consumes finalise_transcende
     const email = `h004b-${authId}@fringeisland.test`;
     await mist.auth.updateUser({ email, password: 'Transcend123!@#' });
 
-    // A null policy_version trips the consent NOT NULL AFTER the flip+enrolment —
-    // the whole txn rolls back ("no persistence without consent").
-    const { outcome, error } = await finaliseTranscendence(mist, {
-      policyVersion: null as unknown as string,
-    });
+    // Force a consent-write failure AFTER the flip+enrolment — the whole txn
+    // rolls back ("no persistence without consent"). Mechanism rewritten at
+    // COR-D W3 (AC4-1): the null-version lever died with the caller-supplied
+    // version; the catalog row is renamed away instead, so the W3 function's
+    // server-side resolve comes back NULL and the consent NOT NULL aborts the
+    // txn (see mist-transcendence.test.ts for the platform half + rationale).
+    let outcome: Awaited<ReturnType<typeof finaliseTranscendence>>['outcome'];
+    let error: string | null;
+    try {
+      await runAdminSql(
+        `UPDATE public.consent_purposes SET key = 'transcendence__w3_atomicity_test' WHERE key = 'transcendence';`,
+      );
+      ({ outcome, error } = await finaliseTranscendence(mist, {}));
+    } finally {
+      await runAdminSql(
+        `UPDATE public.consent_purposes SET key = 'transcendence' WHERE key = 'transcendence__w3_atomicity_test';`,
+      );
+    }
     expect(outcome).toBeNull();
     expect(error).not.toBeNull();
 

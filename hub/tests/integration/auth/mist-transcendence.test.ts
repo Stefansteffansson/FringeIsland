@@ -119,18 +119,37 @@ describe('FEAT-PC002 STORY-3 — atomic persistence-and-consent transcendence', 
     createdUserIds.push(mistId);
     const before = await waitForProfile(admin, mistId);
     const groupId = before.personal_group_id as string;
+    // Registered for afterAll erasure: pre-W3 this call SUCCEEDS (that is the
+    // red) and writes a consent row that must not outlive the suite.
+    subjectGroupIds.push(groupId);
 
-    // Force a partway failure: a null policy_version violates the consent NOT NULL
-    // AFTER the flip + enrolment — the whole txn must roll back ("no persistence
-    // without consent").
-    const { error } = await mistClient.rpc('finalise_transcendence', {
-      p_policy_version: null,
-    });
-    expect(error).not.toBeNull();
-    // 23502 (not_null_violation) on consent — proves the consent INSERT was reached
-    // (post-flip) and failed, vs. a missing-function PGRST202. Without this, the
-    // test would pass-at-red (missing fn also leaves a Mist with no consent).
-    expect(error!.code).toBe('23502');
+    // Force a partway failure AT THE CONSENT WRITE, after the flip + enrolment —
+    // the whole txn must roll back ("no persistence without consent").
+    // MECHANISM REWRITTEN at COR-D W3 (Audit IV AC4-1), red-first: the old
+    // lever (p_policy_version: null -> 23502) died with the caller-supplied
+    // version — the W3 function resolves the version from the catalog. So the
+    // catalog row is renamed away for the call: the resolve comes back NULL and
+    // the consent NOT NULL aborts the txn (23502) — the SAME structural
+    // guarantee, now server-owned. Anti-pass-at-red holds: a missing function
+    // is PGRST202 and the pre-W3 function SUCCEEDS here (param used, catalog
+    // ignored) — only the W3 shape produces 23502. RED before the migration
+    // applies, green after. Data-only lever (no DDL): consent_records.purpose
+    // carries no FK to the catalog, and the shared pooler chokes on mid-suite
+    // DDL (cached-plan resets — first attempt used an injected trigger).
+    try {
+      await runAdminSql(
+        `UPDATE public.consent_purposes SET key = 'transcendence__w3_atomicity_test' WHERE key = 'transcendence';`,
+      );
+      const { error } = await mistClient.rpc('finalise_transcendence', {
+        p_policy_version: 'v1',
+      });
+      expect(error).not.toBeNull();
+      expect(error!.code).toBe('23502');
+    } finally {
+      await runAdminSql(
+        `UPDATE public.consent_purposes SET key = 'transcendence' WHERE key = 'transcendence__w3_atomicity_test';`,
+      );
+    }
 
     // Still a valid Mist — the flip rolled back.
     const { data: after } = await admin
@@ -146,6 +165,40 @@ describe('FEAT-PC002 STORY-3 — atomic persistence-and-consent transcendence', 
       .select('*', { count: 'exact', head: true })
       .eq('subject_group_id', groupId);
     expect(count ?? 0).toBe(0);
+  });
+
+  // COR-D W3 (Audit IV AC4-1) — RED-FIRST: the stamped policy version is the
+  // GOVERNANCE CATALOG's, never the caller's. Before the W3 migration this
+  // cell is RED (the live function inserts p_policy_version verbatim, so the
+  // fake sticks — the finding itself); green once the server-side stamp lands.
+  it('ignores a caller-supplied policy version — the catalog is stamped (AC4-1)', async () => {
+    const admin = createAdminClient();
+    const mistClient = createTestClient();
+    const { data: signIn } = await withAnonRateLimitRetry(() => mistClient.auth.signInAnonymously());
+    const mistId = signIn.user!.id;
+    createdUserIds.push(mistId);
+    const before = await waitForProfile(admin, mistId);
+    const groupId = before.personal_group_id as string;
+    subjectGroupIds.push(groupId);
+
+    const { data: result, error } = await mistClient.rpc('finalise_transcendence', {
+      p_policy_version: 'vFAKE-ac4-1',
+    });
+    expect(error).toBeNull();
+    expect(result.transcended).toBe(true);
+
+    const catalog = (await runAdminSql(
+      `SELECT current_policy_version FROM public.consent_purposes WHERE key = 'transcendence';`,
+    )) as unknown as { current_policy_version: string }[];
+    const catalogVersion = catalog[0].current_policy_version;
+
+    const { data: consent } = await admin
+      .from('consent_records')
+      .select('policy_version')
+      .eq('subject_group_id', groupId);
+    expect(consent!.length).toBe(1);
+    expect(consent![0].policy_version).toBe(catalogVersion);
+    expect(consent![0].policy_version).not.toBe('vFAKE-ac4-1');
   });
 
   // STORY-3 — a non-temporary caller (already a FIM) is rejected.
