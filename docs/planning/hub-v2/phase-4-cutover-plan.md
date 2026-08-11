@@ -99,6 +99,11 @@ Ferd wave DoD walk (wave-planning skill, human verdict) → Ferd wave retrospect
 
 ## Workstream trail (execution record)
 
+### W1 — Oracle discharge check — **PASSED 2026-08-11** ([note](./2026-08-11-oracle-discharge-note.md), PR #499 merged)
+**Verdict: safe to delete, with named exceptions. Zero UNACCOUNTED findings.** All 10 Coverage-map rows exhausted; ~40 named guarantees traced to v2 test `file:line`; the six A-ADM deferrals each carry a dated, cited home. Three named exceptions recorded (E1 the catalog-write pin has no executable test; E2 the oracle's exact-count pins are retired by decision and template grant counts are not re-pinned; E3 two A-ADM drops are permanent with no revisit date) — **all pinning and paper-trail gaps, none a lost behaviour, none blocking.** The note states its own limits honestly, including that no suite was executed and that seven of nine rows lack a gate-authored oracle discharge.
+
+**The check then found something by closing its own limit.** Its limit 5 admitted E1's seal was *documented, not verified live*. A read-only query settled it: the seal **holds** (RLS enabled, one SELECT policy, zero write policies; all 42 public tables have RLS on) — but the ADM-F dossier's stated reason, *"no table GRANTs"*, is **false**: `anon` and `authenticated` both hold INSERT/UPDATE/DELETE/TRUNCATE on that table. Right conclusion, wrong reason. Measured wider: the ADR-U038 table-grant narrowing is **12 of 42**, and **TRUNCATE was never in the revoke recipe** (4 otherwise-narrowed tables kept it). **Not a live vulnerability** — RLS refuses the DML, and PostgREST exposes no TRUNCATE verb. Filed as [`TASK-SEC-02`](../backlog/tasks/TASK-SEC-02-table-grant-narrowing-and-truncate-sweep.md) with **the gate, not the sweep, as the deliverable** (the function-grant twin of this class was worked three times before the 07-06 retro escalated it structurally; the table twin never got a gate, which is why it drifted). Bearing on W2: none.
+
 ### W5 — CI posture — **DONE 2026-08-11** (PR #496, merged)
 `.github/workflows/ci.yml` — the P4-2 option-B gate: `next build` (the type gate) + lint + unit on every PR and on `main`. Node 20, `npm ci` workspace-aware, placeholder Supabase env (not secrets) so module-scope client construction succeeds without touching a database. **Verified on its own PR: green in 1m50s** — the workflow ran against its own branch, which is the proof the recipe works. A local `next build` was deliberately *not* run as pre-verification: a `next dev` server was live on `hub/.next` (PIDs 23616/15696) and a production build would have written into the same tree. The deliberate non-goal (integration + E2E + the platform conformance family stay local-first, one shared dev DB) is recorded **in the workflow header**, where the next reader of the pipeline will find it, not only here. GC-16's second half is now discharged.
 
@@ -111,7 +116,14 @@ Ferd wave DoD walk (wave-planning skill, human verdict) → Ferd wave retrospect
 - **No infrastructure change was made or needed.** The cutover is confirmed to be a retirement-and-hygiene exercise, not a deploy event.
 - **Carried for the launch checklist, not actioned here:** the stale-restored-build-cache hang (a Vercel deploy freezing right after the Turbopack banner is fixed by redeploying without cache).
 
-### W2 — pre-flight safety check for the deletion — **verified 2026-08-11**
+### W2 — retire the oracle — **retrieval tag PUSHED; the deletion itself is HELD for a named nod**
+**The reversibility half is done and verified.** Annotated tag **`hub-legacy-final`** created on commit `c51ed486` (the last commit containing the tree) and **pushed to origin**; `git ls-tree -r hub-legacy-final -- hub-legacy` lists **178 files**, so retrieval is proven, not assumed. The tag message carries the three retrieval commands and points at the discharge note. P4-7 is discharged.
+
+**The deletion is not done.** `git rm -r hub-legacy` is a destructive operation and a standing fuller-auto carve-out; it needs Stefan's explicitly-named approval. The permission layer independently refused the command, which is the process working rather than an obstacle. Working tree verified clean afterwards — nothing was half-applied, and `hub-legacy/` is intact on `main`.
+
+**Ready to execute on the nod, in one commit:** `git rm -r hub-legacy` · drop `.gitignore:64` (`hub-legacy/tests/e2e/.auth/*.json`) · root CHANGELOG entry. The provenance comments in `hub/` and the two migrations **stay** — their referent becomes the tag.
+
+**Pre-flight safety check — verified 2026-08-11**
 Every surviving `hub-legacy` reference outside the tree itself is a **comment** — provenance attributions in `hub/jest.config.js:6`, `hub/lib/auth/session-guard.ts:26`, `hub/tests/helpers/supabase.ts:4`, two integration test headers, and two migration headers. **No import, no require, no tsconfig/jest/playwright path, no Next or Vercel config reference.** `.gitignore:64` is the only non-comment line. Deletion is mechanically inert: 178 tracked files, 1.8 MB.
 
 ### W3 — root keep-set established by dependency sweep — **analysis done 2026-08-11**
