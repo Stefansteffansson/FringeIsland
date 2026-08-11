@@ -1,6 +1,6 @@
 # CLAUDE.md — Products tier
 
-**Applies to:** anything under `docs/products/` and the corresponding code in each surface's directory (e.g. `hub/app/`, `hub/components/`, `hub/lib/`; the old Hub MVP is frozen under `hub-legacy/`, per [ADR-U032](../architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)).
+**Applies to:** anything under `docs/products/` and the corresponding code in each surface's directory (e.g. `hub/app/`, `hub/components/`, `hub/lib/`) — a monorepo of surfaces per [ADR-U032](../architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md), whose Phase-4 cutover completed on 2026-08-11.
 **Load order:** root [`CLAUDE.md`](../../CLAUDE.md) → [`AGENTS.md`](../../AGENTS.md) → [`PROCESS.md`](../planning/PROCESS.md) → the skill matching the task → **this file** → the product's `README.md` → the feature spec.
 **Reads as a delta.** Assumes root `CLAUDE.md` is already loaded. Contains only what's specific to product-tier work.
 
