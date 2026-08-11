@@ -8,8 +8,12 @@ import { describe, it, expect, jest, beforeEach } from '@jest/globals';
  */
 
 const getUser = jest.fn(async () => ({ data: { user: { id: 'u1' } as { id: string } | null } }));
+// Outcome shape mirrors the substrate contract: finalise_transcendence returns
+// policy_version stamped server-side (COR-D W3 migration; the lib maps it to
+// policyVersion) — a mock of a contract boundary cites the substrate that
+// produces it (the RDC-03 rule).
 const finaliseTranscendence = jest.fn(async () => ({
-  outcome: { userId: 'u1', personalGroupId: 'g1', consentId: 'c1' },
+  outcome: { userId: 'u1', personalGroupId: 'g1', consentId: 'c1', policyVersion: 'v1' },
   error: null as string | null,
 }));
 
@@ -20,7 +24,6 @@ jest.mock('next/server', () => ({
 }));
 jest.mock('@/lib/supabase/server', () => ({ createClient: async () => ({ auth: { getUser } }) }));
 jest.mock('@/lib/auth/transcendence', () => ({
-  TRANSCENDENCE_POLICY_VERSION: 'v1',
   finaliseTranscendence: (...args: unknown[]) =>
     (finaliseTranscendence as unknown as (...a: unknown[]) => unknown)(...args),
 }));
@@ -36,7 +39,7 @@ beforeEach(() => {
   getUser.mockResolvedValue({ data: { user: { id: 'u1' } } });
   finaliseTranscendence.mockReset();
   finaliseTranscendence.mockResolvedValue({
-    outcome: { userId: 'u1', personalGroupId: 'g1', consentId: 'c1' },
+    outcome: { userId: 'u1', personalGroupId: 'g1', consentId: 'c1', policyVersion: 'v1' },
     error: null,
   });
 });

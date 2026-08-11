@@ -23,17 +23,18 @@ export type TranscendenceOutcome = {
   userId: string;
   personalGroupId: string;
   consentId: string;
+  /** Stamped server-side from the governance catalog (COR-D W3 / AC4-1). */
+  policyVersion: string;
 };
 
 export async function finaliseTranscendence(
   supabase: SupabaseClient,
-  {
-    policyVersion,
-    captureContext,
-  }: { policyVersion: string; captureContext?: Record<string, unknown> },
+  { captureContext }: { captureContext?: Record<string, unknown> } = {},
 ): Promise<{ outcome: TranscendenceOutcome | null; error: string | null }> {
+  // COR-D W3 (Audit IV AC4-1): the policy version is no longer passed — the
+  // substrate resolves it from consent_purposes.current_policy_version and
+  // returns the stamped truth in the outcome.
   const { data, error } = await supabase.rpc('finalise_transcendence', {
-    p_policy_version: policyVersion,
     p_capture_context: captureContext ?? null,
   });
   if (error) return { outcome: null, error: error.message };
@@ -42,6 +43,7 @@ export async function finaliseTranscendence(
       userId: data.user_id as string,
       personalGroupId: data.personal_group_id as string,
       consentId: data.consent_id as string,
+      policyVersion: data.policy_version as string,
     },
     error: null,
   };

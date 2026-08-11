@@ -9,7 +9,7 @@
  */
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { finaliseTranscendence, TRANSCENDENCE_POLICY_VERSION } from '@/lib/auth/transcendence';
+import { finaliseTranscendence } from '@/lib/auth/transcendence';
 import { recordAuditEntry, persistAuditEntry } from '@/lib/audit/audit';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 import { emitDurableTelemetry } from '@/lib/observability/telemetry-server';
@@ -44,7 +44,6 @@ export async function POST(request: Request) {
   emitTelemetry('transcendence.started', { actor: user.id });
 
   const { outcome, error } = await finaliseTranscendence(supabase, {
-    policyVersion: TRANSCENDENCE_POLICY_VERSION,
     captureContext: { surface: 'hub', flow: 'mist-transcendence' },
   });
 
@@ -60,15 +59,16 @@ export async function POST(request: Request) {
 
   // V1 audit — the lifecycle event. V4 — success. V3 — the welcome/onboarding
   // trigger seam (the Hub fires it; copy/routing is the Notifications area's).
+  // policyVersion is the substrate-stamped truth (COR-D W3), not a Hub constant.
   recordAuditEntry({
     actorAuthId: user.id,
     action: 'identity.transcended',
-    props: { consentId: outcome.consentId, policyVersion: TRANSCENDENCE_POLICY_VERSION },
+    props: { consentId: outcome.consentId, policyVersion: outcome.policyVersion },
   });
   // Durable since ADM-A (FEAT-PC019) — ids only, content-free.
   await persistAuditEntry(supabase, {
     action: 'identity.transcended',
-    metadata: { consentId: outcome.consentId, policyVersion: TRANSCENDENCE_POLICY_VERSION },
+    metadata: { consentId: outcome.consentId, policyVersion: outcome.policyVersion },
   });
   await emitDurableTelemetry(supabase, 'transcendence.succeeded', {
     actor: user.id,
