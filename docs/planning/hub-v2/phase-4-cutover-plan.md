@@ -94,3 +94,29 @@ W1 → W2 → W3 → { W4, W6 } · W5 after the board settles, anytime · W7/W8/
 ## After Phase 4
 
 Ferd wave DoD walk (wave-planning skill, human verdict) → Ferd wave retrospective → Eid kickoff planning (ROADMAP.md, G-3, the deferred piles).
+
+---
+
+## Workstream trail (execution record)
+
+### W5 — CI posture — **DONE 2026-08-11** (PR #496, merged)
+`.github/workflows/ci.yml` — the P4-2 option-B gate: `next build` (the type gate) + lint + unit on every PR and on `main`. Node 20, `npm ci` workspace-aware, placeholder Supabase env (not secrets) so module-scope client construction succeeds without touching a database. **Verified on its own PR: green in 1m50s** — the workflow ran against its own branch, which is the proof the recipe works. A local `next build` was deliberately *not* run as pre-verification: a `next dev` server was live on `hub/.next` (PIDs 23616/15696) and a production build would have written into the same tree. The deliberate non-goal (integration + E2E + the platform conformance family stay local-first, one shared dev DB) is recorded **in the workflow header**, where the next reader of the pipeline will find it, not only here. GC-16's second half is now discharged.
+
+**Noted in passing:** Vercel already builds a preview per PR, so `next build` had partial de-facto coverage; lint and the unit project did not. The gate is still worth its keep — PC003's class was a type error, and the Vercel check is a deploy artifact, not a merge gate.
+
+### W4 — Deploy posture attestation — **DONE 2026-08-11** (measured, not assumed)
+- **Production serves `hub/`.** `https://fringe-island.vercel.app/` → 200, `x-vercel-cache: PRERENDER`.
+- **The region pin is genuinely in effect, which proves the Vercel root directory is `hub/`.** Three dynamic API routes (`/api/me/journeys`, `/api/profile/me`, `/api/account/state`) each returned 401 with **`x-vercel-id: arn1::dub1::…`** — the request enters at the Stockholm edge (`arn1`, the nearest PoP) and **the function executes in Dublin (`dub1`)**, exactly the pin in [`hub/vercel.json`](../../../hub/vercel.json). Had the project's root directory been the repo root, `hub/vercel.json` would have been ignored and functions would have run in the platform default region. This closes a premise the ADR-U043 perf model rests on and had never been directly evidenced.
+- **Method note:** the root page's `x-vercel-id` shows `arn1` alone — that is the *edge* PoP serving prerendered HTML, **not** the function region. Reading it as the function region would have produced a false "the pin is not applied" finding. The dynamic-route probe is the real path; the static one is a proxy (per the standing measure-the-real-path rule).
+- **No infrastructure change was made or needed.** The cutover is confirmed to be a retirement-and-hygiene exercise, not a deploy event.
+- **Carried for the launch checklist, not actioned here:** the stale-restored-build-cache hang (a Vercel deploy freezing right after the Turbopack banner is fixed by redeploying without cache).
+
+### W2 — pre-flight safety check for the deletion — **verified 2026-08-11**
+Every surviving `hub-legacy` reference outside the tree itself is a **comment** — provenance attributions in `hub/jest.config.js:6`, `hub/lib/auth/session-guard.ts:26`, `hub/tests/helpers/supabase.ts:4`, two integration test headers, and two migration headers. **No import, no require, no tsconfig/jest/playwright path, no Next or Vercel config reference.** `.gitignore:64` is the only non-comment line. Deletion is mechanically inert: 178 tracked files, 1.8 MB.
+
+### W3 — root keep-set established by dependency sweep — **analysis done 2026-08-11**
+Sweep of `scripts/**` (the only root-owned JS) plus the session hook resolves the tooling keep-set to **four** packages: `dotenv` (7 scripts), `@supabase/supabase-js` (3 maintenance scripts), `gray-matter` and `marked` (both `scripts/dashboard/generate.js` — `marked` is *also* vendored to the browser from `node_modules/marked/lib/marked.umd.js`, so it must resolve at the repo root, not inside `hub/`).
+
+**Delta against ADR-U032's note, recorded honestly:** the ADR named only `gray-matter` + `marked`; the sweep adds `dotenv` and `@supabase/supabase-js`, which the maintenance scripts genuinely require. Three root deps have **no consumer anywhere in the repo** and are pure carry-over: `better-sqlite3` and `cross-fetch` (no tracked consumer at all, not even in `hub-legacy/`) and `whatwg-fetch` (only `hub-legacy/tests/setup.ts`, which dies with the tree). `hub/package.json` already declares every app dependency at identical versions — the root/hub delta is exactly these five root-only names plus `jest-axe`/`@types/jest-axe`, which `hub/` alone holds. No version mismatches exist, so the split cannot drift resolution.
+
+**Not yet executed, and why:** the split's Definition of Done requires the full suite green afterwards (unit + integration + E2E). A `next dev` server was live throughout this session and the integration suites run against the single shared dev database, so running them would have collided with manual testing. W3 executes in a clean window.
