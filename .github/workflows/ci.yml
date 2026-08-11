@@ -53,3 +53,9 @@ jobs:
 
       - name: Build (the type gate)
         run: npm run build
+
+      # Proves the ROOT tooling keep-set still resolves after the Phase-4 W3
+      # split (root is tooling-only; hub/ owns the app deps). The dashboard is
+      # the only root-owned consumer, so if its deps are wrong this fails.
+      - name: Dashboard generates (root tooling gate)
+        run: npm run dashboard
