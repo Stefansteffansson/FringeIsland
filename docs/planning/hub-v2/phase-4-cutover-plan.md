@@ -1,7 +1,7 @@
 # Phase 4 — Cutover & retire (the hub-v2 close-out plan)
 
 **Authored:** 2026-08-11, on the COR-D close ([bridge](../sessions/2026-08-11_02_-_COR-D-GATES-EXECUTED-ALL-MERGED-CYCLE-CLOSED.md): "Phase-4 cutover planning opens").
-**Status:** **decision board OPEN — Stefan's rulings pending.** No execution before the board settles.
+**Status:** **board SETTLED 2026-08-11** — Stefan: *"go with recommended"* (all eight rows P4-1..P4-8 as recommended). Execution in progress; the workstream trail at the foot records what has landed.
 **Charter:** [hub-v2 README](./README.md) Phase 4 ("When every area is replaced, cut over and archive/delete the old Hub. *Gate: v2 is the Hub.*") + [ADR-U032](../../architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md) ("Phase-4 cutover: delete `hub-legacy/`; `hub/` is simply the Hub. No 'promote to root' churn.").
 
 ---
@@ -20,9 +20,9 @@ The README's sequence to cutover — **RD-A → RD-B → the AB-6 FULL audit →
 
 ---
 
-## Decision board — OPEN — presented whole, recommendations marked
+## Decision board — SETTLED 2026-08-11 (Stefan: "go with recommended" — all eight rows) — presented whole, recommendations marked
 
-| # | Decision | Kind | Options | Lean (recommendation) |
+| # | Decision | Kind | Options | RULING (settled — the recommendation stands) |
 |---|----------|------|---------|------------------------|
 | P4-1 | **TASK-SEAL-01 slotting** ([task](../backlog/tasks/TASK-SEAL-01-sealed-thread-admin-sight.md) — "slotting is Stefan's call at Phase-4 cutover planning") | slotting | (a) pre-cutover cycle · (b) **post-cutover, inside Phase 4 / Ferd** · (c) defer to Eid | **(b)** — it realizes a safety ruling (bullying-evidence sight) on a now-complete admin plane; pre-launch is the cheapest time; running it *after* the mechanical cutover means the schema-gated cycle builds against the final tree |
 | P4-2 | **CI posture** (GC-16 second half, carried from COR-D board row 5 — "deploy posture is already on the table" here) | posture | (A) record full local-first non-goal · (B) **DB-free CI only**: GitHub Actions running `next build` + lint + unit on PR; conformance family + integration recorded as deliberate local-first · (C) full CI incl. DB suites | **(B)** — the build gate catches exactly the PC003 class (merged build-broken; ts-jest/eslint don't full-type-check). (C) rejected for Ferd: the integration suites run against the one live shared dev DB, where concurrent suite runs are a known hazard; CI-driven runs would collide with local sessions. Revisit (C) at Eid with an isolated CI database |
@@ -85,8 +85,8 @@ W1 → W2 → W3 → { W4, W6 } · W5 after the board settles, anytime · W7/W8/
 - **G-3 journeys deferral** — carried unchanged, to Eid.
 - **TASK-E2E-03** (shared-identity revocation audit, 13 named specs) — standing, continues on its own cadence; not a Phase-4 item.
 - **E2E-04's integration-tier half** — carried unchanged.
-- **`ROADMAP.md`** — per P4-6 lean: written at Eid kickoff, not here.
-- **The done-sweepable tension** — per P4-8 lean: Ferd wave retro.
+- **`ROADMAP.md`** — per the P4-6 ruling: written at Eid kickoff, not here.
+- **The done-sweepable tension** — per the P4-8 ruling: Ferd wave retro.
 - **Ferd wave close itself** — a separate, human-verified step under the `wave-planning` skill (feature-completeness / quality / documentation / DoD walk; populate the `ferd.md` stub there). Phase 4 ends the *rebuild program*; it does not declare the wave complete.
 - **Deferred Eid piles** — untouched, to Eid planning.
 - **Watch (no action owed):** AC4-O1 — DS-5 → `admin_audit_log` direct writes.
