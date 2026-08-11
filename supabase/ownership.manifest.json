@@ -185,6 +185,7 @@
       "admin_get_audit_log",
       "admin_get_content_report_detail",
       "admin_get_content_reports",
+      "admin_get_group_conversations",
       "admin_get_group_detail",
       "admin_get_groups",
       "admin_get_role_template_detail",
@@ -248,6 +249,7 @@
     "DS-5": [
       "create_group_conversation",
       "ds5_require_fim_actor",
+      "ds5_admin_group_conversations",
       "ds5_is_fim_actor",
       "ds5_resolve_author_display",
       "ds5_emit_message_hint",
@@ -383,6 +385,13 @@
     ],
     "crossServiceReads": [],
     "declaredCompositions": [
+      {
+        "caller": "admin_get_group_conversations",
+        "callee": "ds5_admin_group_conversations",
+        "vertical": "Administration",
+        "mutation": false,
+        "citation": "ADR-U047 Amendment 3 (2026-08-11, COR-D W1) applied to TASK-SEAL-01 — AB-6 ruling B1, re-scoped from 'suspended' to 'closed' by the Phase-4 W7 contract walk and Stefan's ruling A (2026-08-11), because seals only ever exist in closed groups. The PC-4 wrapper owns the admin wall and the closed-scope rule; the sealed DS-5 body (EXECUTE revoked from client roles) owns the thread read and is the one place in the schema a sealed conversation is readable. get_group_conversations' member-plane sealed_at IS NULL law is untouched."
+      },
       {
         "caller": "admin_get_content_reports",
         "callee": "ds5_moderation_list_reports",
