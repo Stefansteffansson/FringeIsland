@@ -1,6 +1,6 @@
 # TASK-SEAL-01 — contract walk (the DoR), and a blocking premise error
 
-**Date:** 2026-08-11 · **Phase-4 W7** · **Status: BLOCKED — needs Stefan's ruling before decomposition.**
+**Date:** 2026-08-11 · **Phase-4 W7** · **Status: RULED — Stefan chose option A ("go with A for seal-01"), 2026-08-11. Scope is `closed`. Unblocked for decomposition.**
 **What this is:** the [task's own Definition of Ready](../backlog/tasks/TASK-SEAL-01-sealed-thread-admin-sight.md) — *"contract walk against live signatures … decide at decomposition with file:line evidence"* and the ADR-U016 cascade check. It was done first, and it stopped the build.
 
 ---
@@ -45,6 +45,17 @@ The task's own framing is: *"a sealed thread is where exactly that evidence land
 | **D** | Close the task as based on a false premise | No build | Wrong — the underlying safety need (evidence survives the author's departure) is real |
 
 **Recommendation: A.** It preserves the ruling's purpose, keeps all four bounds intact except the scope word, and does not touch when sealing happens.
+
+## RULING — option A, 2026-08-11 (Stefan: *"go with A for seal-01"*)
+
+Scope becomes **`closed`**. All four other bounds stand unchanged: group-kind conversations only, direct conversations excluded, sealed state rendered explicitly, and the arm lands platform-side behind the audited admin door (never in a route).
+
+**The remaining cascade questions were then closed by measurement, and both came out in A's favour:**
+
+- **Does option A actually cover every path that produces a seal?** **Yes — all five.** `close_group`, `delete_group`, `delete_own_account`, `admin_exit_user_from_platform` and `admin_remove_member_from_group` each set `status = 'closed'`, and **none hard-deletes the group row** (checked directly: no `delete from public.groups` in any of them). So there is no sealing path that lands anywhere other than `closed`. Option A's scope is exhaustive, not merely better.
+- **Would a deleted group destroy the evidence anyway?** The FK is `conversations_group_id_fkey … ON DELETE CASCADE`, so a hard group delete *would* take its conversations with it, sealed or not. **That path is not reachable in Ferd:** `delete_group` is explicitly archival — its own comment reads *"preserve-and-seal; delete adds nothing destructive in Ferd (hard erasure stays with the personal paths: user hard-delete, Mist reaping)"* — and it seals with reason `group_archived` while setting `closed`. The CASCADE is a latent risk to the evidence guarantee **if** a future wave introduces a real hard-delete of groups; recorded here rather than acted on.
+
+**Still owed at decomposition** (unchanged from below): verify against the erasure path — not the spec text — that a seal survives the sealed member's erasure under D2's preserve rule. That is the one cascade item measurement has not yet closed.
 
 ## Cascade check (ADR-U016), completed against the re-scoped option A
 
