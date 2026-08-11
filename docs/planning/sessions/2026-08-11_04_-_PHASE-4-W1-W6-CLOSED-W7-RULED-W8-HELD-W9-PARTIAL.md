@@ -5,6 +5,8 @@
 
 ---
 
+> **AMENDED at session end — W7 and W8 both went further than this bridge's title says.** Both gates were executed on Stefan's named approvals: **W8 `TASK-RDA-03` is DONE** (#509, migration `20260811210000` applied, 2 red → **10/10**, groups **404/404**) and **W7 `TASK-SEAL-01`'s platform half is DONE** (#514, migration `20260811220000` applied, 6 red → **8/8**, conformance **30/30**, communication **107/107**). **Zero open PRs. Migration history verified aligned local-vs-remote for both.** What remains of W7 is the **Hub surface** that renders the sealed label — not built, and the paired follow-on. The per-workstream detail is in the [plan's trail](../hub-v2/phase-4-cutover-plan.md).
+
 ## READ THIS FIRST
 
 1. **The cutover is complete. `hub-legacy/` is gone** — 178 files, ~40 100 lines, deleted 2026-08-11 (#502) on the named approval, gated on the W1 discharge check (zero UNACCOUNTED). **Retrievable at annotated tag `hub-legacy-final`**, verified to list all 178. **ADR-U032 is marked FULLY EXECUTED** (#505).
