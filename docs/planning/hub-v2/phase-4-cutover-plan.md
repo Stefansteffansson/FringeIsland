@@ -99,6 +99,15 @@ Ferd wave DoD walk (wave-planning skill, human verdict) → Ferd wave retrospect
 
 ## Workstream trail (execution record)
 
+### W7 — `TASK-SEAL-01` — **platform half DONE 2026-08-11** (#514, gate executed) · surface half NOT built
+Ruled A, built, applied on the named nod. **6 red → 8/8**, conformance **30/30** (the invocation-axis gate accepted the new declared composition), communication slice **107/107**, both applied ACLs read at the gate — `ds5_admin_group_conversations` is `{postgres, service_role}`, sealed from client roles as designed. Shape is the ADR-U047 A3 declared-composition pair, not a PC-4 wrapper reaching into DS-5 tables. **The Hub admin rendering of the sealed label is the paired follow-on and is owed.** Observation carried, not acted on: admin sight of *suspended* groups' conversations still lives inside the member contract (FEAT-PC026's arm), so admin conversation sight now has two homes — pre-existing, worth an anatomy note.
+
+### W8 — `TASK-RDA-03` — **DONE 2026-08-11** (#509, gate executed)
+Brick **confirmed** end-to-end before the fix was designed (revoke succeeded; definers 1 → 0), then **2 red → 10/10**, groups slice **404/404**, conformance **30/30**, applied ACL clean. **No repair pass owed** — the 3 938 personal + 3 system groups without a protected-permission definer are by design and unreachable by this engagement-only contract. RD-A's S4c sibling survives untouched, checked rather than assumed.
+
+### W9 — `TASK-E2E-02` — **PARTIAL 2026-08-11** (#511): 3 of 5 closed
+The task's premise was overtaken — the helper it asked for exists and already throws. The live leak was **five identities per sweep from three specs** that delete groups but not the FIMs they create. **The instrument was measuring the wrong noun:** those users keep their personal groups, so nothing was ever *orphaned* and the orphan delta read 0 (955 → 955) while the census climbed 1 289 → 2 052. Fixed and verified for `group-of-groups` (a run created three fixtures and left zero); the two UI-created identities in `onboarding-arrival`/`transcendence` remain. Eight swallowing `.catch` wrappers removed across seven specs. **The purge is still Stefan's call** — its one named risk is cleared (census-dependent cells need > 200; purging leaves ~927).
+
 ### W1 — Oracle discharge check — **PASSED 2026-08-11** ([note](./2026-08-11-oracle-discharge-note.md), PR #499 merged)
 **Verdict: safe to delete, with named exceptions. Zero UNACCOUNTED findings.** All 10 Coverage-map rows exhausted; ~40 named guarantees traced to v2 test `file:line`; the six A-ADM deferrals each carry a dated, cited home. Three named exceptions recorded (E1 the catalog-write pin has no executable test; E2 the oracle's exact-count pins are retired by decision and template grant counts are not re-pinned; E3 two A-ADM drops are permanent with no revisit date) — **all pinning and paper-trail gaps, none a lost behaviour, none blocking.** The note states its own limits honestly, including that no suite was executed and that seven of nine rows lack a gate-authored oracle discharge.
 
