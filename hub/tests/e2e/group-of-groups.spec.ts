@@ -1,5 +1,10 @@
 import { test, expect, type Page } from '@playwright/test';
-import { createAdminClient, markArrivedOnce, cleanupE2EGroup } from './helpers/auth';
+import {
+  createAdminClient,
+  markArrivedOnce,
+  cleanupE2EGroup,
+  deleteE2EUserByAuthId,
+} from './helpers/auth';
 
 /**
  * FEAT-H018 (E2E) — Cycle G-F: group-of-groups, wielded end-to-end.
@@ -111,6 +116,25 @@ test.describe('FEAT-H018 — group-of-groups (Cycle G-F)', () => {
       await cleanupE2EGroup(id);
     }
     createdGroupIds.length = 0;
+
+    // TASK-E2E-02: the groups went, the FIMs did not. This spec created three
+    // consented fixture identities per run and deleted none of them — measured
+    // as exactly three of the five identities leaking on every full sweep
+    // (`gf-stewa`, `gf-stewb`, `gf-gracy`), which is why the census kept
+    // climbing while the orphan instrument read a clean delta of 0: these users
+    // kept their personal groups, so nothing was ever *orphaned*, just left.
+    // Resolved by email because the fixtures are created inside the test body.
+    const admin = createAdminClient();
+    for (const { email } of Object.values(fims)) {
+      const { data } = await admin
+        .from('users')
+        .select('auth_user_id')
+        .eq('email', email)
+        .maybeSingle();
+      // Not swallowed: deleteE2EUserByAuthId throws if the personal group
+      // survives, and that throw is the point (TASK-INT-03's instrument).
+      await deleteE2EUserByAuthId(admin, data?.auth_user_id as string | undefined);
+    }
   });
   test('a group is invited, answers through its wielder, and withdraws (STORY-1/2/3)', async ({
     browser,

@@ -63,7 +63,7 @@ test.afterAll(async () => {
        WHERE subject_user_id IN (SELECT id FROM public.users WHERE auth_user_id = '${subjectAuthId}')
           OR subject_group_id = ${subjectPgId ? `'${subjectPgId}'` : 'NULL'};
     END $$;`).catch(() => undefined);
-  await deleteE2EUserByAuthId(admin, subjectAuthId).catch(() => undefined);
+  await deleteE2EUserByAuthId(admin, subjectAuthId);
   if (subjectPgId) await admin.from('groups').delete().eq('id', subjectPgId);
 });
 

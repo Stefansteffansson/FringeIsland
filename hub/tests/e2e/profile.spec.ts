@@ -78,7 +78,7 @@ test.describe('FEAT-H005 — member profile + sign-out', () => {
          WHERE subject_user_id IN (SELECT id FROM public.users WHERE auth_user_id = '${fimAuthId}')
             OR subject_group_id = ${fimPgId ? `'${fimPgId}'` : 'NULL'};
       END $$;`).catch(() => undefined);
-    await deleteE2EUserByAuthId(admin, fimAuthId).catch(() => undefined);
+    await deleteE2EUserByAuthId(admin, fimAuthId);
     if (fimPgId) await admin.from('groups').delete().eq('id', fimPgId);
   });
 

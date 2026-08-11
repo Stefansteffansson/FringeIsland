@@ -20,6 +20,32 @@ Found at the ADM-E close (2026-08-03), while sweeping this cycle's own leaked fi
 
 The proven-good teardown order (used by this cycle's manual sweep): `set_config('app.consent_erasure_in_progress','true',true)` → delete the subject's `consent_records` → delete `auth.users` (cascades `public.users`) → delete the personal group. Group-before-auth trips `enforce_personal_group_id_immutability` on the SET NULL.
 
+---
+
+## 2026-08-11 (Phase-4 W9) — measured; the live mechanism is NOT the one this task describes
+
+**This task's premise has been overtaken by TASK-INT-03.** The shared helper it proposes to write already exists and is already correct: `eraseUserAndPersonalGroup` (`hub/tests/e2e/helpers/auth.ts:43`) performs exactly the order above and **throws** when the personal group survives. The consent-FK RESTRICT defect is closed.
+
+**What is actually still leaking, measured across two full sweeps:** exactly **five identities per sweep**, from three specs, the same five every time:
+
+| Fixture family | Owning spec | Shape |
+|---|---|---|
+| `gf-stewa`, `gf-stewb`, `gf-gracy` | `group-of-groups.spec.ts` | teardown deleted **groups only** — never the three FIMs it created |
+| `h023-carry` | `onboarding-arrival.spec.ts` | identity created **through the UI** (transcendence flow) |
+| `h004-transcend` | `transcendence.spec.ts` | identity created **through the UI** |
+
+**Why no instrument caught this.** These users keep their personal groups, so nothing is ever *orphaned*: the orphan instrument read a clean delta of 0 (955 → 955) on every sweep while the census climbed. **The instrument was measuring the wrong noun** — orphaned groups, not surviving fixtures. That is the transferable lesson, and it is why this ran for months looking healthy.
+
+**Fixed and verified — 3 of 5.** `group-of-groups.spec.ts` now resolves its three fixtures by email and deletes them through the throwing helper. Verified by measurement rather than assertion: a targeted run created three and left **zero**, while the prior sweep's three remain on record.
+
+**Still open — 2 of 5.** The UI-created identities (`onboarding-arrival`, `transcendence`). Different shape: the spec never holds an `authId`, so cleanup must resolve by the email it typed into the form. Not attempted here.
+
+**Also done:** eight `.catch(() => undefined)` wrappers around `deleteE2EUserByAuthId` removed across seven specs — they were filing the teeth off a helper that already throws.
+
+**Census is now 2 052**, up from the 1 289 recorded when this task was filed on 2026-08-03.
+
+**The purge decision remains Stefan's — its one named risk is now cleared.** `member-enumeration-bounded.test.ts:234,237` require a dev census > 200. Purging the 2 052 `e2e-%` fixtures leaves ~927 of 2 974 `public.users`, so both cells still bind. No other census-size-dependent assertion exists in the tree.
+
 ## Acceptance criteria
 
 - [ ] The shared E2E cleanup helper performs the proven-good order and **checks every returned error** (a failed cleanup fails the teardown loudly, never silently).

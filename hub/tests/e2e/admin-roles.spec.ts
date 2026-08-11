@@ -168,10 +168,10 @@ test.afterAll(async () => {
       () => undefined,
     );
   }
-  await deleteE2EUserByAuthId(admin, memberA.authId).catch(() => undefined);
+  await deleteE2EUserByAuthId(admin, memberA.authId);
   // No-op after a green run (WA-3 hard-deletes B in-journey); a failed run
   // must not leak the fixture.
-  await deleteE2EUserByAuthId(admin, memberB.authId).catch(() => undefined);
+  await deleteE2EUserByAuthId(admin, memberB.authId);
 });
 
 test('the dashboard offers the Roles card and /admin/roles renders both panes', async ({

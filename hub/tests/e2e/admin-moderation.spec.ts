@@ -188,7 +188,7 @@ test.describe('FEAT-H037 — moderation + audit view (ADM-10/11/16)', () => {
     await admin.from('groups').delete().eq('id', groupId);
     for (const u of [author, reporter]) {
       if (u?.pgId) await admin.from('groups').delete().eq('id', u.pgId);
-      if (u?.authId) await deleteE2EUserByAuthId(admin, u.authId).catch(() => undefined);
+      if (u?.authId) await deleteE2EUserByAuthId(admin, u.authId);
     }
   });
 

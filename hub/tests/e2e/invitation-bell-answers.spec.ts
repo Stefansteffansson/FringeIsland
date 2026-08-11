@@ -99,7 +99,7 @@ test.afterAll(async () => {
       END $$;`).catch(() => undefined);
   }
   for (const f of createdFims) {
-    await deleteE2EUserByAuthId(admin, f.authId).catch(() => undefined);
+    await deleteE2EUserByAuthId(admin, f.authId);
     await admin.from('groups').delete().eq('id', f.pgId);
   }
 });
