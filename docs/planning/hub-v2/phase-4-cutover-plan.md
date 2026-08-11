@@ -1,0 +1,96 @@
+# Phase 4 — Cutover & retire (the hub-v2 close-out plan)
+
+**Authored:** 2026-08-11, on the COR-D close ([bridge](../sessions/2026-08-11_02_-_COR-D-GATES-EXECUTED-ALL-MERGED-CYCLE-CLOSED.md): "Phase-4 cutover planning opens").
+**Status:** **decision board OPEN — Stefan's rulings pending.** No execution before the board settles.
+**Charter:** [hub-v2 README](./README.md) Phase 4 ("When every area is replaced, cut over and archive/delete the old Hub. *Gate: v2 is the Hub.*") + [ADR-U032](../../architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md) ("Phase-4 cutover: delete `hub-legacy/`; `hub/` is simply the Hub. No 'promote to root' churn.").
+
+---
+
+## Where this picks up
+
+The README's sequence to cutover — **RD-A → RD-B → the AB-6 FULL audit → Phase 4** — is fully discharged: RD-A/RD-B closed (2026-08-06/09), AB-6 executed 2026-08-10 ([record](./2026-08-10-ab6-full-anatomy-audit.md)), and its corrective cycle COR-D closed 2026-08-11 with the anatomy stamp at ADR-U047 A3. At authoring: zero open PRs; platform conformance family 30/30 (7 gates incl. the invocation axis); discovery worktree synced.
+
+**State of the ground (disk-verified 2026-08-11):**
+
+- **Production already serves v2.** The stable domain (`fringe-island.vercel.app`, per the [J-O3 gate protocol](./2026-07-19-journeys-area-gate.md)) runs `hub/`; `hub/vercel.json` carries the region pin (`dub1`); there is no root `vercel.json`. The cutover is therefore **not a deploy event** — it is retirement + hygiene.
+- **`hub-legacy/` has no `package.json`** — it leans on root's dependency set (dormant, per ADR-U032's interim note). The ADR's deferred half — **root reduced to tooling-only** — is still owed: root `package.json` has `workspaces: ["hub"]` and delegates all app scripts `-w hub`, but still carries app deps (`next`, `react`, `react-dom`, `@supabase/*`, `lucide-react`) and app devDeps alongside the genuine tooling deps (`gray-matter` + `marked` for the dashboard, `pg`, `better-sqlite3`, `dotenv` — exact keep-set to be established by a dependency sweep of `scripts/` + `.claude` hooks at execution).
+- **Non-doc references to `hub-legacy` are trivial:** one `.gitignore` line (`hub-legacy/tests/e2e/.auth/*.json`), CHANGELOG prose (historical), and provenance comments in `hub/` code + two migrations citing the oracle (copy-with-correction attributions — these stay; their referent becomes git history).
+- **There is no CI** (`.github/workflows` does not exist). The conformance family runs locally (`hub` script `test:integration:platform`; root delegation parity to be verified at execution).
+- **`docs/planning/waves/ferd.md` is a stub** ("Content to be populated") — noted here so the wave-close step (not this phase) owns it.
+
+---
+
+## Decision board — OPEN — presented whole, recommendations marked
+
+| # | Decision | Kind | Options | Lean (recommendation) |
+|---|----------|------|---------|------------------------|
+| P4-1 | **TASK-SEAL-01 slotting** ([task](../backlog/tasks/TASK-SEAL-01-sealed-thread-admin-sight.md) — "slotting is Stefan's call at Phase-4 cutover planning") | slotting | (a) pre-cutover cycle · (b) **post-cutover, inside Phase 4 / Ferd** · (c) defer to Eid | **(b)** — it realizes a safety ruling (bullying-evidence sight) on a now-complete admin plane; pre-launch is the cheapest time; running it *after* the mechanical cutover means the schema-gated cycle builds against the final tree |
+| P4-2 | **CI posture** (GC-16 second half, carried from COR-D board row 5 — "deploy posture is already on the table" here) | posture | (A) record full local-first non-goal · (B) **DB-free CI only**: GitHub Actions running `next build` + lint + unit on PR; conformance family + integration recorded as deliberate local-first · (C) full CI incl. DB suites | **(B)** — the build gate catches exactly the PC003 class (merged build-broken; ts-jest/eslint don't full-type-check). (C) rejected for Ferd: the integration suites run against the one live shared dev DB, where concurrent suite runs are a known hazard; CI-driven runs would collide with local sessions. Revisit (C) at Eid with an isolated CI database |
+| P4-3 | **Deep-cold ~5.4 s admin class** (labelled exception extended at AB-6) | posture | (A) **keep the labelled exception pre-launch; re-attest at the Phase-4 gate and again at wave close** · (B) buy Vercel Pro scale-to-one now (parked with Stefan since 07-19) · (C) engineering attack on the admin cold path | **(A)** — the class is deploy-platform cold provisioning, not an app regression; warm budgets stay fully binding and the ADR-U043 pass runs at the gate regardless (never skipped). (B) is the launch-readiness lever, priced then |
+| P4-4 | **TASK-RDA-03 slotting** (RD-5's lockout guard is on the delete door only; the grant-flip door can strip a group's last protected permission unguarded — high, ~3 h) | slotting | (a) **slot into Phase 4** as a small schema-gated corrective · (b) leave unscheduled | **(a)** — a known unguarded door on a protected-permission invariant should not survive into wave DoD ("no critical/high security vulnerabilities") |
+| P4-5 | **TASK-E2E-02 slotting** (E2E fixture-cleanup silently fails on the consent FK RESTRICT; 1,289 `e2e-%` users measured on the dev DB) | slotting | (a) **slot the fix into Phase 4 hygiene**; the detritus purge then executes under its own named nod (destructive, dev-DB data) · (b) leave unscheduled | **(a)** — the leak actively distorts measurement (it sized the PC024 page walks); fix the pattern, then purge deliberately |
+| P4-6 | **`ROADMAP.md` placeholder** (three live "when written" pointers: Hub DESCRIPTION, README, SPECIFICATION) | disposition | (a) write NOW/NEXT/LATER at Phase-4 close · (b) **defer to Eid kickoff, recorded here** | **(b)** — NEXT/LATER *is* Eid planning; writing it inside a retirement pass would invent forward canon ahead of the planning that owns it. The pointers already say "when written" and stay honest |
+| P4-7 | **Oracle retrieval form** | defaulting | (a) **annotated tag `hub-legacy-final` on the pre-deletion commit** · (b) archive branch | **(a)** — one-command retrieval (`git show hub-legacy-final:...`), nothing to maintain; an archive branch invites divergence and trips the pushed-but-unmerged deletion trap |
+| P4-8 | **"done no longer implies sweepable" tension** (recorded at the 2026-08-06 boundary retro) | defaulting | (a) rule here · (b) **stays with the retro record; adjudicate at the Ferd wave retro** | **(b)** — it is a lifecycle-policy question spanning all areas, exactly what the wave retro exists to settle |
+
+---
+
+## Workstreams
+
+### W1 — Oracle discharge check (blocks W2)
+Before the oracle is deleted, sweep the [behaviour inventory](./behaviour-inventory.md) coverage map (~650 cases / ~69 files): every STRONG/PARTIAL row is either **built** (evidence: the owning area gate) or **named in the deferred register below with an owner**; silences confirmed dispositioned. Output: a dated discharge note (appended here or as `./2026-08-XX-oracle-discharge-note.md`). Nothing the oracle guarantees may be silently lost with the tree.
+
+### W2 — Retire the oracle (destructive — PR held for a named nod)
+Tag per P4-7 → `git rm -r hub-legacy/` → drop `.gitignore` line 64. Provenance comments in `hub/` and the two migrations **stay** (referent: git history via the tag). Root CHANGELOG entry. This PR is held under the fuller-auto destructive-ops carve-out.
+
+### W3 — Root manifest to tooling-only (ADR-U032's deferred half — deps carve-out, PR held)
+Dependency sweep of `scripts/` + `.claude` hooks → establish the root keep-set; remove app deps/devDeps from root (they live in `hub/`); verify root delegation parity (incl. `test:integration:platform`). Green-after proof: `next build` (the type gate), full unit + integration + E2E, dashboard generate/serve, session hooks.
+
+### W4 — Deploy posture attestation
+Formally attest what is already true: the Vercel project builds from `hub/`, `fringe-island.vercel.app` serves it, region pin `dub1`. Note the stale-cache redeploy trap in the attestation. No infra change expected; any surprise found here stops the line.
+
+### W5 — CI posture (per P4-2)
+If (B): one workflow — `next build` + lint + unit on PR; record the conformance family's local-first posture in the GC-16 trail. If (A): the recorded non-goal, same trail.
+
+### W6 — Docs pass + doc-health
+ADR-U032 status → executed; hub-v2 README status table + Phase-4 row closed; active-tree pointer sweep (any doc pointing at `hub-legacy/` **as a live path** is fixed; historical records — bridges, plans, audits — are never rewritten); CHANGELOGs (root + `hub/`; check platform-core too per the standing which-changelog ambiguity); dashboard refresh; then a full **doc-health-check run** (mandated: tree deletion is a cross-cutting change).
+
+### W7 / W8 / W9 — slotted cycles (per P4-1 / P4-4 / P4-5)
+TASK-SEAL-01 (schema-gated cycle; DoR per the task file: contract walk against live signatures, ADR-U016 cascade check) · TASK-RDA-03 (schema-gated corrective: guard parity on the grant-flip door) · TASK-E2E-02 (cleanup-pattern fix, then the purge under its own named nod). All red-first, held at their gates, one integration-touching cycle at a time (shared dev-DB rule).
+
+---
+
+## Order and dependencies
+
+W1 → W2 → W3 → { W4, W6 } · W5 after the board settles, anytime · W7/W8/W9 after W3 (build against the final tree), sequentially. The phase's PR-hold points: W2 (destructive), W3 (deps), W7/W8 (schema gates), W9's purge (destructive, dev DB).
+
+---
+
+## Exit checklist — the Phase-4 gate (planted now; verdict is Stefan's)
+
+- [ ] W1 discharge note on record; the deferred register below restated plainly at close (standing ask)
+- [ ] `hub-legacy/` absent from `main`; tag `hub-legacy-final` exists; no active-tree doc treats `hub-legacy/` as a live path
+- [ ] Root `package.json` tooling-only; `hub/` owns all app deps; build + full suites + dashboard + hooks green after the split
+- [ ] Deploy attestation recorded (what production serves is `hub/`)
+- [ ] CI posture executed per P4-2 (workflow live, or the non-goal recorded)
+- [ ] Slotted cycles closed through their gates (red-first; held PRs; migrations only on named approval)
+- [ ] ADR-U043 pass at the gate: warm budgets binding; deep-cold per P4-3 (the pass itself is never skipped)
+- [ ] ADR-U032 marked executed; CHANGELOG entries; doc-health-check clean (0 critical); dashboard refreshed; closing session bridge written
+- [ ] **Gate: v2 is the Hub** — nothing in the repo, the deploy, or the active docs still needs the old one
+
+---
+
+## Deferred register — what Phase 4 deliberately does NOT do
+
+- **G-3 journeys deferral** — carried unchanged, to Eid.
+- **TASK-E2E-03** (shared-identity revocation audit, 13 named specs) — standing, continues on its own cadence; not a Phase-4 item.
+- **E2E-04's integration-tier half** — carried unchanged.
+- **`ROADMAP.md`** — per P4-6 lean: written at Eid kickoff, not here.
+- **The done-sweepable tension** — per P4-8 lean: Ferd wave retro.
+- **Ferd wave close itself** — a separate, human-verified step under the `wave-planning` skill (feature-completeness / quality / documentation / DoD walk; populate the `ferd.md` stub there). Phase 4 ends the *rebuild program*; it does not declare the wave complete.
+- **Deferred Eid piles** — untouched, to Eid planning.
+- **Watch (no action owed):** AC4-O1 — DS-5 → `admin_audit_log` direct writes.
+
+## After Phase 4
+
+Ferd wave DoD walk (wave-planning skill, human verdict) → Ferd wave retrospective → Eid kickoff planning (ROADMAP.md, G-3, the deferred piles).
