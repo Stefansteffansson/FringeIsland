@@ -25,7 +25,7 @@ feature_prefix: H
 ### 1. Surface
 
 - **Platform target:** Next.js web application — server-rendered React with App Router.
-- **Repo location:** [`Stefansteffansson/FringeIsland`](https://github.com/Stefansteffansson/FringeIsland) — a monorepo of surfaces ([ADR-U032](../../architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)). The v2 Hub is built fresh under `hub/`; the frozen old-Hub oracle lives under `hub-legacy/`. Implementation paths (within `hub/`): `app/` (routes and pages), `components/` (shared UI), `lib/` (client-side utilities, Supabase clients, hooks).
+- **Repo location:** [`Stefansteffansson/FringeIsland`](https://github.com/Stefansteffansson/FringeIsland) — a monorepo of surfaces ([ADR-U032](../../architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)). The Hub lives under `hub/`. The frozen old-Hub oracle that `hub-legacy/` held was **deleted at the Phase-4 cutover (2026-08-11)**, its guarantees discharged; it remains retrievable at the annotated tag `hub-legacy-final`. Implementation paths (within `hub/`): `app/` (routes and pages), `components/` (shared UI), `lib/` (client-side utilities, Supabase clients, hooks).
 - **Build / deploy pipeline:** Vercel preview deployments per pull request; production deploys from `main`. CI runs ESLint, TypeScript strict-mode checks, and unit tests on every PR (per [root `CLAUDE.md`](../../../CLAUDE.md) DoD).
 - **Environments:**
   - **Development** — local against a Supabase project shared with preview.
