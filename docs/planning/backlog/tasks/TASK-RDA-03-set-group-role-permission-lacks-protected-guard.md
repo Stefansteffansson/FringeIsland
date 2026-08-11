@@ -3,7 +3,7 @@
 ---
 id: TASK-RDA-03
 title: RD-5's lockout guard is on the delete door only; the grant-flip door can strip a group's last protected permission unguarded
-status: todo
+status: done
 assigned_to: unassigned
 priority: high
 feature: FEAT-PC027
@@ -38,11 +38,15 @@ Out of scope: RD-A's board settled the delete door, and widening a shipped sibli
 
 ## Acceptance criteria
 
-- [ ] **First: verify the brick end-to-end**, red-first. The reasoning above is read from the contract body and one incidental green revoke — it has not been driven all the way to an unrecoverable group. Confirm or refute before designing the fix.
-- [ ] Survey live data: are any groups already missing a definer for a protected permission? That answer changes whether the fix needs a repair pass.
-- [ ] If confirmed, `set_group_role_permission` refuses a revoke that would leave the group with no definer of a protected permission, naming it — the same shape and wording as RD-A's delete-door refusal, so the two doors speak with one voice.
-- [ ] Sibling-assertion sweep: `set_group_role_permission` carries live cells in `role-permission-contracts.test.ts` and `group-availability-enforcement.test.ts`.
-- [ ] Decide whether the admin plane can override (a DeusEx repair path) or whether a bricked group needs `admin_reassign_group_stewardship`.
+- [x] **First: verify the brick end-to-end**, red-first. **CONFIRMED, not refuted** (2026-08-11). Red run before the migration: the revoke returned `error === null` and drove `manage_roles` definers **1 → 0** — the group bricked from inside with no row deleted. 2 red / 8 green of 10 cells.
+- [x] Survey live data. **No repair pass owed.** Reads alarmingly at first — 3 941 groups hold no definer for a protected permission — but **3 938 are personal groups, which are designed to carry zero permissions** (the "Myself" role), 3 are system groups, and the single engagement group is a suspended dev fixture with **zero roles of any kind**. None reached this state through the grant-flip door, and none is reachable by this contract, which is engagement-only.
+- [x] `set_group_role_permission` refuses the revoke that would leave no definer, naming the permission — migration `20260811210000`, wording mirroring the delete door verbatim (`no holder of: % — assign the permission elsewhere first`, P0001) so the two doors speak with one voice. The delete door's message was **left untouched**: three live assertions bind it (`role-provenance-and-retirement.test.ts:666`, `RolesPanel.test.tsx:396,411`) and the Hub renders it.
+- [x] Sibling-assertion sweep. **RD-A's S4c cell survives unchanged** — it creates a "Deputy" second definer *before* revoking, so the guard never fires there; its own comment says the revoke is "legal precisely because" of that. Verified, not assumed. Full groups slice **404/404 across 15 suites** after apply; platform conformance **30/30**; applied-function ACL read at the gate (`{postgres,authenticated,service_role}` — no PUBLIC, no `anon`).
+- [ ] **STILL OPEN, deliberately:** whether the admin plane gets a DeusEx repair path for an already-bricked group, or whether `admin_reassign_group_stewardship` is the answer. Moot for existing data (none is bricked), so this is a forward-looking design question, not a defect. Carried.
+
+## Closure
+
+**DONE 2026-08-11** (Phase-4 W8, PR #509, merged on Stefan's named approval *"ok merge 509, apply the migration"*). Migration applied to the dev DB and history repaired; red-then-green demonstrated on the same suite (2 red → **10/10 green**).
 
 ## Related
 
