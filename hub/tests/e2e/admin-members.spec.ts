@@ -148,7 +148,7 @@ test.describe('FEAT-H036 — member administration (ADM-2/3/4/5/6/12/18)', () =>
     for (const id of groupIds) await admin.from('groups').delete().eq('id', id);
     for (const u of created) {
       if (u?.pgId) await admin.from('groups').delete().eq('id', u.pgId);
-      if (u?.authId) await deleteE2EUserByAuthId(admin, u.authId).catch(() => undefined);
+      if (u?.authId) await deleteE2EUserByAuthId(admin, u.authId);
     }
     const pg = await sessionPersonalGroupId();
     await runAdminSql(

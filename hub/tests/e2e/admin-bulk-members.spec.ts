@@ -134,7 +134,7 @@ test.describe('FEAT-H039 — bulk member actions on the bounded list (ADM-7)', (
     const admin = createAdminClient();
     for (const u of [a, b]) {
       if (u?.pgId) await admin.from('groups').delete().eq('id', u.pgId);
-      if (u?.authId) await deleteE2EUserByAuthId(admin, u.authId).catch(() => undefined);
+      if (u?.authId) await deleteE2EUserByAuthId(admin, u.authId);
     }
     const pg = await sessionPersonalGroupId();
     await runAdminSql(
