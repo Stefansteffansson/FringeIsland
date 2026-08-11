@@ -214,12 +214,17 @@ function blockWaves() {
 function blockMetrics() {
   const migrations = walk(path.join(REPO, 'supabase', 'migrations'),
     (f) => /\.sql$/.test(f) && !/[\\/]archive[\\/]/.test(f)).length;
-  const tests = walk(path.join(REPO, 'tests'), (f) => /\.(test|spec)\.[tj]sx?$/.test(f)).length;
-  const apiRoutes = walk(path.join(REPO, 'app', 'api'), (f) => /[\\/]route\.ts$/.test(f)).length;
+  // Surface trees, not the repo root: ADR-U032 moved app/ lib/ components/ tests/
+  // under hub/, and the repo is a monorepo of surfaces (gimbal/, studios later).
+  const surfaces = ['hub'];
+  const tests = surfaces.reduce((n, s) =>
+    n + walk(path.join(REPO, s, 'tests'), (f) => /\.(test|spec)\.[tj]sx?$/.test(f)).length, 0);
+  const apiRoutes = surfaces.reduce((n, s) =>
+    n + walk(path.join(REPO, s, 'app', 'api'), (f) => /[\\/]route\.ts$/.test(f)).length, 0);
   const adrs = walk(path.join(REPO, 'docs', 'architecture', 'decisions'), (f) => /ADR-.*\.md$/i.test(f)).length;
   let lastCode = 'unknown';
   try {
-    lastCode = execSync('git log -1 --format=%cs -- app lib components supabase', { cwd: REPO })
+    lastCode = execSync('git log -1 --format=%cs -- hub supabase', { cwd: REPO })
       .toString().trim() || 'unknown';
   } catch { /* ignore */ }
   const cards = [

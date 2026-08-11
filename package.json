@@ -32,39 +32,10 @@
     "test:e2e:headed": "npm run test:e2e:headed -w hub",
     "test:e2e:debug": "npm run test:e2e:debug -w hub"
   },
-  "dependencies": {
-    "@supabase/ssr": "^0.8.0",
-    "@supabase/supabase-js": "^2.91.0",
-    "lucide-react": "^0.563.0",
-    "next": "16.1.4",
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
-  },
   "devDependencies": {
-    "@jest/globals": "^30.2.0",
-    "@playwright/test": "^1.58.2",
-    "@tailwindcss/postcss": "^4",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^14.6.1",
-    "@types/jest": "^30.0.0",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "better-sqlite3": "^12.6.2",
-    "cross-fetch": "^4.1.0",
+    "@supabase/supabase-js": "^2.91.0",
     "dotenv": "^17.2.4",
-    "eslint": "^9",
-    "eslint-config-next": "16.1.4",
     "gray-matter": "^4.0.3",
-    "jest": "^30.2.0",
-    "jest-environment-jsdom": "^30.2.0",
-    "jest-environment-node": "^30.2.0",
-    "marked": "^18.0.5",
-    "pg": "^8.18.0",
-    "tailwindcss": "^4",
-    "ts-jest": "^29.4.6",
-    "typescript": "^5",
-    "whatwg-fetch": "^3.6.20"
+    "marked": "^18.0.5"
   }
 }
