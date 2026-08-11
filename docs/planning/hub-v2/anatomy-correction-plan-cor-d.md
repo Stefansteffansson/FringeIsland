@@ -1,6 +1,6 @@
 # Cycle COR-D — corrections from Anatomy-Conformance Audit IV
 
-**Date:** 2026-08-10 · **Status:** PLANNED — held for Stefan's dispositions (rulings R-7/R-8/R-9 + the decision board below). Nothing executes until the board is settled.
+**Date:** 2026-08-10 · **Status:** **CLOSED 2026-08-11.** Board approved as recommended (2026-08-11); W1–W9 built; #490/#491 merged fuller-auto; #487/#488/#489 merged and both migrations applied on the named approval "ok merge 487, 488 and 489 — apply the migrations". R-8's premise was corrected in execution (see W6's migration header + the register's AC4-6 closure); one same-day corrective (`20260811110000`, lockdown-gate catch). Family 30/30 at close. Per-finding closures: [the register](../reference/ANATOMY-CONFORMANCE-AUDIT-4.md).
 **Source register:** [`ANATOMY-CONFORMANCE-AUDIT-4.md`](../reference/ANATOMY-CONFORMANCE-AUDIT-4.md) (findings AC4-1..11, AC4-O1..O4, GC-15..23).
 **Shape:** same as COR-A/B/C — named workstreams, each mapped to finding IDs and a gate. Behavior-preserving unless a ruling says otherwise. Every workstream that touches substrate runs the platform conformance family before merge (ruling C checklist line).
 
@@ -52,10 +52,10 @@ Board settles → **W2 red demonstrated** (against un-amended substrate — the 
 
 ## Definition of done
 
-- [ ] All three rulings recorded (in the ADR amendment / this plan's board, per kind)
-- [ ] Every AC4 finding closed by name with a per-finding annotation in the register (AC-7 lesson: same-day closure notes)
-- [ ] W2's red run recorded before any declaration lands; green after
-- [ ] GC-15..21 each either patched or explicitly dispositioned (GC-22/23 recorded as observation-grade)
-- [ ] Anatomy stamp + diagram caption moved (v2.7), doc-health anatomy-freshness section green
-- [ ] Conformance family green at close; `next build` clean; CHANGELOGs per register (root + platform-core for substrate work)
-- [ ] The audit's own gate-conversion rule satisfied: GC-15's invocation check is the audit's shipped gate
+- [x] All three rulings recorded (R-7 in ADR-U047 A3; R-8 — premise-corrected — in W6's migration header + register; R-9 in the anatomy's Extension System note)
+- [x] Every AC4 finding closed by name with a per-finding annotation in the register (AC-7 lesson: same-day closure notes; final pass 2026-08-11)
+- [x] W2's red run recorded before any declaration landed (exactly the five live calls); green after (30/30)
+- [x] GC-15..21 each patched or explicitly dispositioned (GC-16's CI half → Phase-4 planning, board row 5; GC-20 rides R-9 until first substrate; GC-22/23 recorded observation-grade)
+- [x] Anatomy stamp moved (reflects through ADR-U047 A3, 2026-08-11) + diagram caption v2.7
+- [x] Conformance family 30/30 at close against the applied substrate; `next build` clean (W3 branch); CHANGELOGs written (root + platform-core)
+- [x] The audit's own gate-conversion rule satisfied: GC-15's invocation check is the audit's shipped gate — and the lockdown gate caught the cycle's own corrective (`20260811110000`) on its first run
