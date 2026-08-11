@@ -48,7 +48,12 @@ A code directory names a **permanent artifact** — the *surface* — so it is n
 
 ### Execution status / deferred work
 
-The directory relocation is **done**. The **per-app `package.json` split** (root reduced to tooling-only — the dashboard needs `gray-matter` + `marked`; `hub/` and `hub-legacy/` each owning their app deps, via workspaces) is **deferred to the `hub/` scaffold step**, to avoid doing it twice. In the interim, the root `package.json` + `node_modules` stay shared so the dashboard and session hooks keep working; the old Hub's app scripts at root are dormant until the split.
+**FULLY EXECUTED 2026-08-11 at the Phase-4 cutover.** This section records status only; the decision above is unchanged.
+
+- **Directory relocation** — done 2026-06-24.
+- **`hub-legacy/` deleted** — done 2026-08-11 (W2, PR #502): 178 files, ~40 100 lines. Gated on the [oracle discharge check](../../planning/hub-v2/2026-08-11-oracle-discharge-note.md) (all ten coverage-map rows exhausted, **zero UNACCOUNTED findings**), not on the calendar. **Retrievable at the annotated tag `hub-legacy-final`** (`git show hub-legacy-final:hub-legacy/<path>`) — this ADR's "read-only oracle, then retired" arc is complete, and the tag is now the referent of the copy-with-correction provenance comments left in `hub/` and in two migrations.
+- **The per-app `package.json` split** — done 2026-08-11 (W3, PR #503). Root is **tooling-only**: zero dependencies, four dev dependencies. **Correction to this section's own earlier estimate:** it named `gray-matter` + `marked`; a sweep of every root-owned `require` showed the true keep-set is **four** — `@supabase/supabase-js` and `dotenv` are required by the maintenance scripts. Three dependencies had **no consumer anywhere** and were dropped (`better-sqlite3`, `cross-fetch`, `whatwg-fetch`). `hub/` already declared every app dependency at identical versions, so resolution did not change.
+- **Deploy posture, verified rather than assumed:** production already served `hub/` before the cutover, so Phase 4 was retirement and hygiene, not a deploy event. Evidence: dynamic routes return `x-vercel-id: arn1::dub1::…` (edge Stockholm, **function Dublin**), which is only possible if Vercel's root directory is `hub/` and `hub/vercel.json`'s region pin is being read.
 
 ### Consequences
 
