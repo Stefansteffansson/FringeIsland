@@ -137,7 +137,7 @@ The `decorateAuthAdminError` fence stays — it is the right mitigation for a pl
 
 - [x] **Vercel project environment variables — CHECKED CLEAN (2026-07-23).** Project `stefansteffanssons-projects/fringe-island`. All three environments (production / preview / development) carry only `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`; the anon key is the **new-generation `sb_publishable_*`** in every environment — no legacy `eyJ…` JWT anywhere. Notably there is **no `SUPABASE_SERVICE_ROLE_KEY` on Vercel at all**, which is correct: the runtime BFF uses the anon key plus the user session; the service-role key is test-only and lives only in local `.env.local`. (Verified via `vercel env pull` to the scratchpad, shapes inspected without printing key material, pulled files scrubbed immediately.)
 - [ ] any other deployment, cron, webhook, or external integration holding an `eyJ…` key
-- [ ] `hub-legacy/` if it is ever run
+- [x] ~~`hub-legacy/` if it is ever run~~ — **n/a: the tree was deleted 2026-08-11** (Phase-4 W2). It can no longer be run, so it is no longer a consumer of the legacy JWT key. If it were ever restored from the tag `hub-legacy-final`, this precondition returns.
 - [ ] local `.env` files on any other machine (the two in *this* checkout are clean — see above)
 
 Only once every consumer is confirmed on `sb_publishable_*` / `sb_secret_*` is disabling the legacy keys safe. If the flake survives that, escalate to Supabase support with the log evidence above — at that point it is unambiguously platform-side.

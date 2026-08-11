@@ -30,7 +30,7 @@ Products are **equipment profiles**, not silos:
 - **The Gimbal** — the senses surface. → [`docs/products/gimbal/`](../products/gimbal/)
 - **The Game is a depth setting of journeys, not a product** (ADR-U025). Journeys declare required equipment and depth at authoring (DS-3).
 
-Repo note: the top-level `hub-legacy/` tree is the **frozen v1 oracle** ([ADR-U032](decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)) — read-only reference for the v2 rebuild, referenced by zero live code, deleted at Phase-4 cutover.
+Repo note: the top-level `hub-legacy/` tree held the **frozen v1 oracle** ([ADR-U032](decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)) — read-only reference for the v2 rebuild, referenced by zero live code. It was **deleted at the Phase-4 cutover (2026-08-11)**, its guarantees discharged; it remains retrievable at the annotated tag `hub-legacy-final`.
 
 Ground truth: [ADR-U025](decisions/ADR-U025-products-as-equipment-profiles.md) · [`docs/ecosystem/strategy/PRODUCTS_AND_PLATFORM.md`](../ecosystem/strategy/PRODUCTS_AND_PLATFORM.md).
 
