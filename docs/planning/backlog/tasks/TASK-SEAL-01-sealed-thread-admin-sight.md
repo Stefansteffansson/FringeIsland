@@ -1,7 +1,7 @@
 # TASK-SEAL-01 — arm sealed threads for the admin plane (bounded), per AB-6 ruling B1
 
 **Filed:** 2026-08-10, at the AB-6 full anatomy audit ([record](../../hub-v2/2026-08-10-ab6-full-anatomy-audit.md), ruling B1 — Stefan).
-**Status:** ready — **schema-gated cycle, not started**; slotting is Stefan's call at Phase-4 cutover planning.
+**Status:** **BLOCKED 2026-08-11 — the DoR contract walk found a premise error in the ruling's scope.** Slotted into Phase-4 as W7 (board P4-1), walk executed, build not started and deliberately not started. **As ruled, the contract can never match a row:** bound 1 scopes admin sight to `status = 'suspended'`, but the schema's single writer of `sealed_at` seals only while closing a group, so sealed threads exist only in `closed` groups — disjoint sets. Full evidence and the four scope options in [`2026-08-11-seal-01-contract-walk.md`](../../hub-v2/2026-08-11-seal-01-contract-walk.md); **recommendation is option A, re-scope to `closed`.** Needs Stefan's ruling — it changes the scope word of his own B1.
 **Owner tier:** platform/domain (DS-5 contract) + platform/core (admin door) + Hub admin plane.
 
 ## The ruling this task realizes
