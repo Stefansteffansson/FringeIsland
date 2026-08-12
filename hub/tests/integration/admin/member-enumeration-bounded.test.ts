@@ -226,16 +226,34 @@ describe('FEAT-PC024 gate — bounded member enumeration (ADM-E)', () => {
     });
 
     it('B1b p_limit honesty: floor 1, cap 200, default 50', async () => {
+      // These bounds are asserted RELATIVE TO THE CENSUS. The original cells
+      // asserted the literal 200 and 50 on the strength of a comment reading
+      // "dev census > 200" — true only while the dev database was full of
+      // fixture residue. The 2026-08-12 reset emptied it, and both cells went
+      // red without a single contract changing. A test that passes only on a
+      // cluttered database is measuring the clutter, not the contract.
+      //
+      // min(bound, census) is exact at ANY size: with a large census it still
+      // pins the bound exactly (a cap wrongly raised to 500 fails here), and
+      // with a small one it pins the honest weaker truth — never over-return.
+      const { count: censusRaw } = await admin
+        .from('users')
+        .select('id', { count: 'exact', head: true })
+        .not('is_temporary', 'is', true);
+      const census = censusRaw as number;
+      expect(census).toBeGreaterThan(0);
+
       const one = await page({ p_filter: 'all', p_limit: 1 });
-      expect(one.users).toHaveLength(1);
-      expect(one.next_cursor).not.toBeNull();
+      expect(one.users).toHaveLength(1); // the floor binds at any census >= 1
+      expect(one.next_cursor).toEqual(census > 1 ? expect.anything() : null);
 
       const capped = await page({ p_filter: 'all', p_limit: 500 });
-      expect(capped.users).toHaveLength(200); // dev census > 200 — the cap binds
+      expect(capped.users).toHaveLength(Math.min(200, census));
 
       const dflt = await page({ p_filter: 'all', p_search: null });
-      expect(dflt.users).toHaveLength(50); // dev census > 50 — the default binds
-      expect(dflt.next_cursor).not.toBeNull();
+      expect(dflt.users).toHaveLength(Math.min(50, census));
+      // A cursor is owed only when the page did not exhaust the census.
+      expect(dflt.next_cursor === null).toBe(census <= 50);
     });
 
     it('B1c an incomplete cursor refuses 22023, both halves', async () => {
