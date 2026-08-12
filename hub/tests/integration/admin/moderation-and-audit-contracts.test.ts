@@ -781,10 +781,22 @@ describe('FEAT-PC022 — moderation + audit-read contracts (ADM-D gate)', () => 
       // moderation.forum_post_moderated, a PC-4 contract like this suite's
       // own producer, so the "only via the contract" law this cell pins is
       // preserved; the append-only log carries the new action permanently.
-      expect(rows.map((r) => r.action)).toEqual([
-        'moderation.forum_post_moderated',
-        'moderation.report_resolved',
-      ]);
+      // The law this cell pins is "moderation.* joins the catalog ONLY via a
+      // contract" — i.e. nothing unexpected can appear. It used to assert both
+      // known actions were PRESENT, which quietly required a different suite
+      // (ADM-G's admin_moderate_group_forum_post) to have run first and its row
+      // to survive forever. The comment above even says so: "the append-only log
+      // carries the new action permanently". That stopped being true when the
+      // 2026-08-12 teardown began clearing the audit log each run, and this cell
+      // went red without any contract changing.
+      //
+      // Asserted as a CLOSED SET instead: every moderation.* action present must
+      // be one of the two sanctioned producers, and this suite's own producer
+      // must be among them. A third action appearing — the actual regression
+      // this guards — still fails, and it no longer depends on run order.
+      const SANCTIONED = ['moderation.forum_post_moderated', 'moderation.report_resolved'];
+      for (const r of rows) expect(SANCTIONED).toContain(r.action);
+      expect(rows.map((x) => x.action)).toContain('moderation.report_resolved');
       // Scoped to THIS run's rows: the log is append-only and prior runs'
       // operators were cleaned up, so their rows legitimately read NULL actor
       // (the SET NULL anonymisation working as designed).

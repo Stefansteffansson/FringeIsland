@@ -244,7 +244,9 @@ export const cleanupTestUser = async (userId: string): Promise<void> => {
     .maybeSingle();
 
   if (profile?.personal_group_id) {
-    await admin.from('journeys').delete().eq('created_by_group_id', profile.personal_group_id);
+    // Progress rows first — see purgeAuthoredJourneys. The bare delete this
+    // replaced failed silently for any journey that had been walked.
+    await purgeAuthoredJourneys(profile.personal_group_id);
     // Consent rows FK-reference users/groups ON DELETE RESTRICT (retention, ADR-U034).
     // A consented FIM (now incl. credentialed signups, ADR-U038 S3) can't be deleted
     // out from under its consent proof — clear it via the controlled-erasure bypass
@@ -289,12 +291,44 @@ export const cleanupTestUser = async (userId: string): Promise<void> => {
   if (error) console.error(decorateAuthAdminError('cleanup test user', error.message));
 };
 
-/** Clean up a test group (CASCADE handles memberships, roles, etc.). */
+/**
+ * Delete every journey a group authored — progress rows first.
+ *
+ * A bare `journeys.delete()` CANNOT succeed once anyone has walked the journey:
+ * `journey_step_instances.step_id` RESTRICTs `journey_steps`, so the step rows
+ * refuse to go, so the journey refuses to go — and because `journeys` in turn
+ * RESTRICTs its owning group, the group delete then fails too. Both callers
+ * below used to swallow that pair of failures, which is precisely how the HYGA
+ * fixtures survived every run: 2 engagement groups, their 2 journeys, and the
+ * Steward's personal group, left behind on each pass (measured 2026-08-12).
+ */
+const purgeAuthoredJourneys = async (groupId: string): Promise<void> => {
+  await runAdminSql(`
+    DELETE FROM public.journey_step_instances i
+     USING public.journey_steps s, public.journeys j
+     WHERE i.step_id = s.id AND s.journey_id = j.id AND j.created_by_group_id = '${groupId}';
+    DELETE FROM public.journey_enrollments e
+     USING public.journeys j
+     WHERE e.journey_id = j.id AND j.created_by_group_id = '${groupId}';
+    DELETE FROM public.journeys WHERE created_by_group_id = '${groupId}';
+  `);
+};
+
+/** Clean up a test group (CASCADE handles memberships, roles, conversations). */
 export const cleanupTestGroup = async (groupId: string): Promise<void> => {
   const admin = createAdminClient();
-  await admin.from('journeys').delete().eq('created_by_group_id', groupId);
+  await purgeAuthoredJourneys(groupId);
   const { error } = await admin.from('groups').delete().eq('id', groupId);
-  if (error) console.error('Failed to cleanup test group:', error);
+  if (error) {
+    // Loud, and named. A group that will not delete is a leak with a cause —
+    // usually a RESTRICT still holding — and the cause is worth more than the
+    // count. Not thrown: teardown runs after the assertions, and turning a
+    // hygiene failure into a red suite hides the real result.
+    console.error(
+      `cleanup test group: ${groupId} was NOT deleted (${error.message}) — it is now residue. ` +
+        `Fix the blocking reference rather than ignoring this line.`,
+    );
+  }
 };
 
 /**

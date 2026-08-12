@@ -348,17 +348,23 @@ describe('FEAT-PD013 — notification contracts & category registry (N-A)', () =
     });
 
     it('the unread predicate stays on the partial index (substrate-shape proof; LABELLED test-after — the index predates N-A (sprint3), so this is a regression guard, not a red-first behaviour test)', async () => {
-      const idx = await runAdminSql(
-        `SELECT indexname FROM pg_indexes
+      // Asserted as SHAPE, not as a planner choice. This cell used to EXPLAIN a
+      // live query and require the index to appear in the plan — which only held
+      // while the dev database was large enough for an index scan to win on cost.
+      // After the 2026-08-12 reset the table is near-empty, Postgres correctly
+      // prefers a Seq Scan, and the cell went red without the substrate changing
+      // at all. A test that depends on table size is measuring the clutter.
+      //
+      // The invariant this cell is named for — "the unread predicate stays ON the
+      // partial index" — is a property of the index definition, so read it there:
+      // exact-match on the predicate and the leading column, at any row count.
+      const idx = (await runAdminSql(
+        `SELECT indexdef FROM pg_indexes
           WHERE tablename = 'notifications' AND indexname = 'idx_notifications_recipient_unread';`,
-      );
+      )) as { indexdef: string }[];
       expect(idx.length).toBe(1);
-      const plan = await runAdminSql(
-        `EXPLAIN (FORMAT JSON)
-         SELECT count(*) FROM public.notifications
-          WHERE recipient_group_id = '${recipientR.personalGroupId}' AND is_read = false;`,
-      );
-      expect(JSON.stringify(plan)).toContain('idx_notifications_recipient_unread');
+      expect(idx[0].indexdef).toContain('WHERE (is_read = false)'); // still PARTIAL on unread
+      expect(idx[0].indexdef).toContain('recipient_group_id'); // still keyed by recipient
     });
   });
 
