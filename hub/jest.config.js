@@ -31,6 +31,10 @@ const customJestConfig = {
         '<rootDir>/tests/setup.ts',
         '<rootDir>/tests/integration/suite-setup.ts',
       ],
+      // Cleanup is part of testing. The E2E tier has had a global teardown since
+      // TASK-INT-05; this tier had none, so a suite that forgot its own afterAll
+      // leaked silently and forever. Sweeps `test-*` fixture residue and says so.
+      globalTeardown: '<rootDir>/tests/integration/global-teardown.ts',
       moduleNameMapper: { '^@/(.*)$': '<rootDir>/$1' },
       transform: {
         '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: { jsx: 'react-jsx' } }],
