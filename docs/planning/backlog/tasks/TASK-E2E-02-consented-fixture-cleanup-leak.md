@@ -44,7 +44,20 @@ The proven-good teardown order (used by this cycle's manual sweep): `set_config(
 
 **Census is now 2 052**, up from the 1 289 recorded when this task was filed on 2026-08-03.
 
-**PURGE EXECUTED 2026-08-12** on Stefan's instruction. Scoped to the reserved `.test` domains only, sparing `dev-login@fringeisland.test` (his manual-testing account, in use since June).
+**SUPERSEDED — FULL DEV-DB RESET 2026-08-12.** Stefan changed the ask from "purge the fixture residue" to "wipe user data for a clean Hub v2 start". Final state: **1 account** (`deusex@fringeisland.com`), **5 groups** (the four system groups + DeusEx's personal group), **1 journey** (`Arrival on FringeIsland`, the onboarding-designated one, kept by explicit instruction, with its 4 steps), **4 foundational role templates**, and **zero** messages / conversations / consent records / notifications / audit rows / telemetry. Preserved deliberately as vocabulary rather than data: the 48-permission catalogue, `step_kinds` (7), `content_families` (6), the notification registries.
+
+**Two things did not fall out with their owners, and would have been missed by a group-scoped wipe:**
+- **Direct-message conversations are not group-anchored** (`conversations.group_id IS NULL` for `kind='dm'`), so 557 DM threads and their 1 123 messages survived the deletion of every group and every account. They are only reachable through their participants, and the participants were gone — silent orphans.
+- **379 consent records had no subject group at all**, so the `RESTRICT` that normally protects them never engaged.
+Both were cleared in a follow-up pass. Worth remembering: "delete the groups and the people" does **not** empty the messaging substrate.
+
+**Consequence now live, previously predicted:** `member-enumeration-bounded.test.ts:234,237` assert the admin list caps at 200 and defaults to 50, commented "dev census > 200". With one account those cannot bind and will fail until the census is rebuilt. The fix is to assert the cap *behaviour* without depending on a crowded database — a test that only passes on a cluttered dev DB is exactly what this reset exists to end.
+
+**Also closed by this reset:** the offer to restore the `Gracy` persona. Her personal group and social graph survived the earlier purge and could have been re-linked to a new login; this pass deleted them along with everything else, per the instruction.
+
+---
+
+**Prior (superseded) — partial fixture purge, same day.** Scoped to the reserved `.test` domains only, sparing `dev-login@fringeisland.test` (his manual-testing account, in use since June).
 
 | | before | after |
 |---|---|---|
