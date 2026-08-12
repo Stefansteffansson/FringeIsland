@@ -52,14 +52,25 @@ const RESIDUE_SQL = `
     (SELECT count(*) FROM auth.users WHERE is_anonymous) AS mists,
     (SELECT count(*) FROM public.groups g WHERE g.group_type='personal'
        AND NOT EXISTS (SELECT 1 FROM public.users u WHERE u.personal_group_id=g.id)) AS personal_groups,
+    -- No journey guard here. An earlier version spared any engagement group
+    -- that owned a journey, to protect the seeded catalogue — and test-created
+    -- journeys then shielded their own test groups, which in turn kept a
+    -- fixture Steward alive and blocked the personal-group sweep. One wrong
+    -- discriminator held up the whole chain. Ownership is the right one:
+    -- every canonical journey is owned by a SYSTEM group.
     (SELECT count(*) FROM public.groups g WHERE g.group_type='engagement'
-       AND NOT EXISTS (SELECT 1 FROM public.journeys j WHERE j.created_by_group_id=g.id)
        AND NOT EXISTS (SELECT 1 FROM public.group_memberships gm
                        JOIN public.users u ON u.personal_group_id=gm.member_group_id
                        WHERE gm.group_id=g.id)) AS engagement_groups,
+    (SELECT count(*) FROM public.journeys j
+       JOIN public.groups g ON g.id=j.created_by_group_id
+      WHERE g.group_type <> 'system') AS test_journeys,
     (SELECT count(*) FROM public.conversations c
        WHERE NOT EXISTS (SELECT 1 FROM public.conversation_participants cp
-                         WHERE cp.conversation_id=c.id)) AS orphaned_conversations
+                         WHERE cp.conversation_id=c.id)) AS orphaned_conversations,
+    (SELECT count(*) FROM public.notifications) AS notifications,
+    (SELECT count(*) FROM public.admin_audit_log) AS audit_rows,
+    (SELECT count(*) FROM public.telemetry_events) AS telemetry_rows
 `;
 
 const SWEEP_SQL = `
@@ -86,10 +97,24 @@ const SWEEP_SQL = `
      WHERE email LIKE 'test-%@fringeisland.test'
         OR is_anonymous;
 
-    -- engagement groups no surviving member belongs to, owning no journey
+    -- Test-created journeys, BEFORE the groups that own them: journeys RESTRICT
+    -- their owning group, and progress rows RESTRICT the steps. Canonical
+    -- journeys are system-owned and are never touched here.
+    DELETE FROM public.journey_step_instances i
+     USING public.journey_steps s, public.journeys j, public.groups g
+     WHERE i.step_id = s.id AND s.journey_id = j.id
+       AND j.created_by_group_id = g.id AND g.group_type <> 'system';
+    DELETE FROM public.journey_enrollments e
+     USING public.journeys j, public.groups g
+     WHERE e.journey_id = j.id AND j.created_by_group_id = g.id AND g.group_type <> 'system';
+    DELETE FROM public.journeys j
+     USING public.groups g
+     WHERE j.created_by_group_id = g.id AND g.group_type <> 'system';
+
+    -- engagement groups no surviving member belongs to (conversations, forum
+    -- posts and memberships cascade with them)
     DELETE FROM public.groups g
      WHERE g.group_type = 'engagement'
-       AND NOT EXISTS (SELECT 1 FROM public.journeys j WHERE j.created_by_group_id = g.id)
        AND NOT EXISTS (SELECT 1 FROM public.group_memberships gm
                        JOIN public.users u ON u.personal_group_id = gm.member_group_id
                        WHERE gm.group_id = g.id);
@@ -113,6 +138,15 @@ const SWEEP_SQL = `
     DELETE FROM public.conversations c
      WHERE NOT EXISTS (SELECT 1 FROM public.conversation_participants cp
                        WHERE cp.conversation_id = c.id);
+
+    -- Trails. A run's notifications, audit rows and telemetry are as much its
+    -- residue as its accounts — they describe fixtures that no longer exist.
+    -- Cleared wholesale on Stefan's ruling (2026-08-12). TRADE-OFF, stated:
+    -- this also clears trails from a manual walk, so if you are inspecting an
+    -- audit trail by hand, read it before running a suite.
+    DELETE FROM public.notifications;
+    DELETE FROM public.admin_audit_log;
+    DELETE FROM public.telemetry_events;
   END $$;
 `;
 
@@ -121,7 +155,11 @@ type Residue = {
   mists: number;
   personal_groups: number;
   engagement_groups: number;
+  test_journeys: number;
   orphaned_conversations: number;
+  notifications: number;
+  audit_rows: number;
+  telemetry_rows: number;
 };
 
 type RunAdminSql = (sql: string) => Promise<Array<Record<string, unknown>>>;
@@ -134,16 +172,30 @@ const read = async (runAdminSql: RunAdminSql): Promise<Residue> => {
     mists: Number(r.mists ?? 0),
     personal_groups: Number(r.personal_groups ?? 0),
     engagement_groups: Number(r.engagement_groups ?? 0),
+    test_journeys: Number(r.test_journeys ?? 0),
     orphaned_conversations: Number(r.orphaned_conversations ?? 0),
+    notifications: Number(r.notifications ?? 0),
+    audit_rows: Number(r.audit_rows ?? 0),
+    telemetry_rows: Number(r.telemetry_rows ?? 0),
   };
 };
 
 const sum = (r: Residue) =>
-  r.accounts + r.mists + r.personal_groups + r.engagement_groups + r.orphaned_conversations;
+  r.accounts +
+  r.mists +
+  r.personal_groups +
+  r.engagement_groups +
+  r.test_journeys +
+  r.orphaned_conversations +
+  r.notifications +
+  r.audit_rows +
+  r.telemetry_rows;
 
 const describe = (r: Residue) =>
   `${r.accounts} accounts, ${r.mists} Mists, ${r.personal_groups} personal groups, ` +
-  `${r.engagement_groups} engagement groups, ${r.orphaned_conversations} orphaned conversations`;
+  `${r.engagement_groups} engagement groups, ${r.test_journeys} test journeys, ` +
+  `${r.orphaned_conversations} orphaned conversations, ${r.notifications} notifications, ` +
+  `${r.audit_rows} audit rows, ${r.telemetry_rows} telemetry rows`;
 
 export default async function globalTeardown(): Promise<void> {
   config({ path: resolve(__dirname, '..', '..', '.env.local') });
