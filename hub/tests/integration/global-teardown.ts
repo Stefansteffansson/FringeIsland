@@ -217,8 +217,7 @@ const entities = (r: Residue) =>
   r.personal_groups +
   r.engagement_groups +
   r.test_journeys +
-  r.orphaned_conversations +
-  r.orphaned_consent;
+  r.orphaned_conversations;
 
 /**
  * Trails: rows the SYSTEM writes in response to what a test did — an admin
@@ -228,7 +227,25 @@ const entities = (r: Residue) =>
  * reported without blame. Counting them as "a suite failed to clean up" would
  * make the warning permanent, and a warning that is always on is not a signal.
  */
-const trails = (r: Residue) => r.notifications + r.audit_rows + r.telemetry_rows;
+const trails = (r: Residue) => r.notifications + r.audit_rows + r.telemetry_rows + r.orphaned_consent;
+
+/*
+ * A NOTE ON WHERE subject-less consent sits, because moving it here could look
+ * like moving the goalposts to earn a green line.
+ *
+ * It is counted as a TRAIL, not as a suite's uncleaned fixture, for one
+ * reason: a consent row with a NULL `subject_group_id` is attributable to
+ * NOBODY. No suite can clean up "its own" — there is no link back to the
+ * fixture that caused it. It is produced by consent flows exercised during
+ * tests, which is the definition used for the other trails.
+ *
+ * That is containment, NOT a fix. The real question — whether an unattributable
+ * consent record should be creatable at all, i.e. whether the column should be
+ * NOT NULL — is open and filed under TASK-DM-01, where it was first measured
+ * (379 at the 2026-08-12 reset, ~7-18 per full run since). Sweeping them here
+ * stops the accumulation; it does not answer the question, and this comment
+ * exists so nobody mistakes the quiet log line for the question being settled.
+ */
 
 const describe = (r: Residue) =>
   `${r.accounts} accounts, ${r.mists} Mists, ${r.personal_groups} personal groups, ` +
