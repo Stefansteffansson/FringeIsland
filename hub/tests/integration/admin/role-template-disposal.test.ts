@@ -182,7 +182,10 @@ afterAll(async () => {
       WHERE role_template_id IN (SELECT id FROM public.role_templates WHERE name LIKE '${TOKEN}%');
     DELETE FROM public.role_templates WHERE name LIKE '${TOKEN}%';`).catch(() => undefined);
   await demotePlatformAdmin(admin.personalGroupId).catch(() => undefined);
-  await cleanupTestUser(admin).catch(() => undefined);
+  // Takes an AUTH USER ID, not the TestUser. Passing the object made this a
+  // silent no-op and leaked the fixture on every run; ts-jest does not
+  // type-check, so nothing flagged it.
+  await cleanupTestUser(admin.user.id);
 });
 
 describe('FEAT-PC029 STORY-1 — the list says whether a template can be disposed of, and why not', () => {

@@ -207,6 +207,29 @@ const sum = (r: Residue) =>
   r.telemetry_rows +
   r.orphaned_consent;
 
+/**
+ * Entity residue: things a SUITE created and should have removed. Non-zero here
+ * means a spec is not cleaning up after itself, and is worth a warning.
+ */
+const entities = (r: Residue) =>
+  r.accounts +
+  r.mists +
+  r.personal_groups +
+  r.engagement_groups +
+  r.test_journeys +
+  r.orphaned_conversations +
+  r.orphaned_consent;
+
+/**
+ * Trails: rows the SYSTEM writes in response to what a test did — an admin
+ * action really does append to the audit log, and that is the log working. A
+ * spec cannot avoid generating them without avoiding the behaviour under test,
+ * so they are swept centrally by design (Stefan's ruling, 2026-08-12) and
+ * reported without blame. Counting them as "a suite failed to clean up" would
+ * make the warning permanent, and a warning that is always on is not a signal.
+ */
+const trails = (r: Residue) => r.notifications + r.audit_rows + r.telemetry_rows;
+
 const describe = (r: Residue) =>
   `${r.accounts} accounts, ${r.mists} Mists, ${r.personal_groups} personal groups, ` +
   `${r.engagement_groups} engagement groups, ${r.test_journeys} test journeys, ` +
@@ -236,10 +259,18 @@ export default async function globalTeardown(): Promise<void> {
   await runAdminSql(SWEEP_SQL);
   const after = await read(runAdminSql);
 
-  console.warn(
-    `[integration-teardown] Swept residue a suite left behind: ${describe(before)}. ` +
-      `A suite is not cleaning up after itself.`,
-  );
+  if (entities(before) === 0) {
+    console.log(
+      `[integration-teardown] Clean — every fixture was torn down by its own suite. ` +
+        `Swept ${trails(before)} trail rows (notifications / audit / telemetry), which are ` +
+        `side effects of the behaviour under test and are cleared here by design.`,
+    );
+  } else {
+    console.warn(
+      `[integration-teardown] Swept residue a suite left behind: ${describe(before)}. ` +
+        `A suite is not cleaning up after itself.`,
+    );
+  }
 
   if (sum(after) > 0) {
     console.warn(

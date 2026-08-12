@@ -434,12 +434,17 @@ describe('FEAT-PC023 — group availability enforcement (Active / Resting / Susp
   });
 
   afterAll(async () => {
+    // The `.catch(() => undefined)` wrappers that used to sit on both loops are
+    // gone. They hid a real failure: cleanupTestGroup could not delete gRest or
+    // gSusp (their journeys had been walked, so a RESTRICT held), and the
+    // silence meant two engagement groups, two journeys and a Steward's personal
+    // group survived every single run. Both helpers now report loudly instead.
     for (const g of [gActA, gActB, gRest, gSusp, gCycle, gControl]) {
-      if (g) await cleanupTestGroup(g).catch(() => undefined);
+      if (g) await cleanupTestGroup(g);
     }
     await demotePlatformAdmin(ada.personalGroupId);
     for (const u of users) {
-      await cleanupTestUser(u.user.id).catch(() => undefined);
+      await cleanupTestUser(u.user.id);
     }
   });
 

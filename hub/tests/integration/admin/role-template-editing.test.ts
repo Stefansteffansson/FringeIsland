@@ -209,10 +209,15 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
       `DELETE FROM public.role_templates WHERE name LIKE '${TOKEN}%';`,
     ).catch(() => undefined);
     await demotePlatformAdmin(deusexGroupId);
-    if (consented) await cleanupTestUser(consented).catch(() => undefined);
-    if (logoutTarget) await cleanupTestUser(logoutTarget).catch(() => undefined);
-    await cleanupTestUser(deusex).catch(() => undefined);
-    await cleanupTestUser(fim).catch(() => undefined);
+    // `cleanupTestUser` takes an AUTH USER ID. These four passed the whole
+    // `TestUser` object, so the lookup matched nothing and the delete was a
+    // silent no-op — four fixture accounts leaked on every run. ts-jest does not
+    // type-check (only `next build` does), so the mismatch never surfaced, and
+    // the `.catch(() => undefined)` wrappers guaranteed nobody would ever see it.
+    if (consented) await cleanupTestUser(consented.user.id);
+    if (logoutTarget) await cleanupTestUser(logoutTarget.user.id);
+    await cleanupTestUser(deusex.user.id);
+    await cleanupTestUser(fim.user.id);
   });
 
   // -------------------------------------------------------------------------
