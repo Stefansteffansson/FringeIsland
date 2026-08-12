@@ -222,10 +222,24 @@ export default function ConversationPage({
                   className="rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-sm"
                 >
                   <p className="text-xs font-medium text-gray-500">{senderName(m.sender_group_id)}</p>
-                  <p className="mt-1 whitespace-pre-wrap text-sm text-gray-900">{m.content}</p>
+                  {m.is_deleted ? (
+                    <p
+                      data-testid={`message-tombstone-${m.id}`}
+                      className="mt-1 text-sm italic text-gray-400"
+                    >
+                      {/* FEAT-PD018 content-level tombstone. Worded like the
+                          forum's for one register across the product, and
+                          neutral for the same reason: it does not say who
+                          removed it or why. The thread shape survives so the
+                          other participant keeps their own record. */}
+                      This message was removed
+                    </p>
+                  ) : (
+                    <p className="mt-1 whitespace-pre-wrap text-sm text-gray-900">{m.content}</p>
+                  )}
                   <div className="mt-1 flex items-center justify-between">
                     <p className="text-xs text-gray-400">{new Date(m.created_at).toLocaleString()}</p>
-                    {!isMyMessage(m) && (
+                    {!m.is_deleted && !isMyMessage(m) && (
                       <ReportDialog targetKind="direct_message" targetId={m.id} />
                     )}
                   </div>

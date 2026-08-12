@@ -1,7 +1,7 @@
 ---
 id: TASK-DM-01
 title: Direct-message threads survive every erasure path — including hard delete, which documents a cascade that does not happen
-status: todo
+status: built — held at the schema gate
 assigned_to: unassigned
 priority: high
 feature: none
@@ -96,6 +96,38 @@ Per the 2026-07-06 retro's standing lesson — *a sweep list that grows back is 
 2. a **conformance test** that erases a fixture with a live DM and asserts the ruled outcome — red before the fix;
 3. an **instrument** counting conversations with zero surviving participants, alongside the existing orphaned-personal-group counter. **The current instrument measures the wrong noun** — it counts orphaned *groups*, which is why this ran invisibly for months: those DM threads never orphaned a group, so the delta read 0 (955 → 955) while residue accumulated.
 4. correcting the false cascade comment in `admin_hard_delete_user`, whichever way the ruling goes.
+
+## BUILT 2026-08-12 — held at the schema gate
+
+Spec: [`FEAT-PD018`](../../../platform/domain/features/FEAT-PD018-member-erasure-conversation-disposition.md) (cascade specification per ADR-U016 embedded).
+Migration: `supabase/migrations/20260812120000_dm_a_pd018_member_erasure_conversation_disposition.sql` — **not applied.**
+Suite: `hub/tests/integration/communication/member-erasure-disposition.test.ts` — **4 red / 5 labelled green**, pre-migration.
+
+**The red reproduces the original finding**, which is the point: STORY-3 shows a DM thread still standing after *both* its participants are hard-deleted, and STORY-7 counts it as residue. That is the 557-thread mechanism, in miniature, on demand.
+
+The 5 greens are labelled honestly and are not TDD red: three are the STORY-6 Mist-exclusion regression proofs (verify-and-record — a Mist can be neither party to a DM, so that leg of the cascade is structurally empty and no scrub is built), one is the thread-survives assertion, one is STORY-5's invariant that platform exit does *not* erase.
+
+**Two harness faults were caught and fixed during the red walk, both worth remembering:** `TestUser.user.id` is the *auth* user id while the `admin_*` contracts key on `public.users.id` — passing the wrong one answers a perfectly plausible `P0002 "user not found"` (the same class as the five silent no-op `cleanupTestUser` calls found in August). And a `select` naming a not-yet-existing column answers 42703 and returns null, which silently masked the behavioural assertions underneath it.
+
+### What the payload walk turned up
+
+- **`get_conversation_detail` and `get_own_messages_export` had to be re-issued** to carry `is_deleted` — a NULL body with no flag is indistinguishable from a bug at the surface. `get_my_conversations` was checked and deliberately left alone: it serves `last_message_at` only, no body preview, so no tombstoned text leaks through the inbox.
+- **A second copy of the same words exists and is NOT fixed here.** `submit_content_report` snapshots the reported message body into `content_reports.content_snapshot`, so a reported DM survives its sender's erasure in the report row. Verified against the live catalogue. It is the same failure class as the original finding, and it needs a ruling rather than a silent build decision — see the board below.
+
+### The instrument was already built
+
+TASK-DM-01 asked for an instrument counting participant-less conversations. It already exists — `global-teardown.ts:68-70` counts `orphaned_conversations` and `:142-147` sweeps them, added in the 2026-08-12 teardown work and already citing this task by name. A database view was drafted and then **removed**: it would have been the first view in the entire schema, a first-of-its-kind object class facing the ownership-manifest gate (widened to `relkind = 'v'` in COR-D W8), for coverage that already exists.
+
+### The board — four open, all recommended
+
+| # | Question | Recommendation |
+|---|---|---|
+| 1 | Does `admin_exit_user_from_platform` tombstone? | **No** — it erases neither journal nor enrolments; exit is a removal, not an erasure. Making DMs the one exception would be an asymmetry with no argument behind it. |
+| 2 | Is the last-participant thread delete in scope? | **Yes** — one statement in the same handler, and it is the structural answer to the residue rather than a sweep that grows back. |
+| 3 | `content_reports.content_snapshot` on erasure? | **Retain as evidence, scrub on resolution** — mirrors ADR-U034 §5 anonymise-then-retain for consent. Needs your call. |
+| 4 | `consent_records.subject_group_id` → `NOT NULL`? | Still open; ~18 rows per full run, swept by teardown as containment. |
+
+Decisions 1 and 2 are already built as recommended and are one statement each to reverse. Decision 3 is untouched. Decision 4 is untouched.
 
 ## Notes
 
