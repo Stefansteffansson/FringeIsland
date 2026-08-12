@@ -46,6 +46,10 @@ The proven-good teardown order (used by this cycle's manual sweep): `set_config(
 
 **SUPERSEDED — FULL DEV-DB RESET 2026-08-12.** Stefan changed the ask from "purge the fixture residue" to "wipe user data for a clean Hub v2 start". Final state: **1 account** (`deusex@fringeisland.com`), **5 groups** (the four system groups + DeusEx's personal group), **1 journey** (`Arrival on FringeIsland`, the onboarding-designated one, kept by explicit instruction, with its 4 steps), **4 foundational role templates**, and **zero** messages / conversations / consent records / notifications / audit rows / telemetry. Preserved deliberately as vocabulary rather than data: the 48-permission catalogue, `step_kinds` (7), `content_families` (6), the notification registries.
 
+**MEASURED: what one round of verification costs.** Immediately after the reset the suites were run to prove the substrate still worked (platform, auth, admin ×4, member-enumeration). That single verification pass left behind **63 fixture accounts, 14 anonymous Mists, 3 engagement groups, 77 personal groups, 2 DM threads with 2 messages, 157 notifications and 160 audit rows** — i.e. it re-dirtied a freshly-emptied database. The reset had to be run a second time.
+
+The operational rule that follows: **after a reset, verify by SQL query, not by running suites.** A suite run is itself a data-creating event. If a suite must run, budget a re-clean immediately after — and note that the re-clean must include the DM step below, which no group-scoped or account-scoped deletion reaches.
+
 **Two things did not fall out with their owners, and would have been missed by a group-scoped wipe:**
 - **Direct-message conversations are not group-anchored** (`conversations.group_id IS NULL` for `kind='dm'`), so 557 DM threads and their 1 123 messages survived the deletion of every group and every account. They are only reachable through their participants, and the participants were gone — silent orphans.
 - **379 consent records had no subject group at all**, so the `RESTRICT` that normally protects them never engaged.
