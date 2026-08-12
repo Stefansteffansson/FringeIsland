@@ -44,7 +44,29 @@ The proven-good teardown order (used by this cycle's manual sweep): `set_config(
 
 **Census is now 2 052**, up from the 1 289 recorded when this task was filed on 2026-08-03.
 
-**The purge decision remains Stefan's — its one named risk is now cleared.** `member-enumeration-bounded.test.ts:234,237` require a dev census > 200. Purging the 2 052 `e2e-%` fixtures leaves ~927 of 2 974 `public.users`, so both cells still bind. No other census-size-dependent assertion exists in the tree.
+**PURGE EXECUTED 2026-08-12** on Stefan's instruction. Scoped to the reserved `.test` domains only, sparing `dev-login@fringeisland.test` (his manual-testing account, in use since June).
+
+| | before | after |
+|---|---|---|
+| auth users | 3 014 | **44** (11 named + 33 anonymous Mists) |
+| groups | 4 450 | **140** |
+| — personal | 3 968 | 73 (29 still orphaned, see below) |
+| — engagement | 478 | 63 |
+| — system | 4 | **4, untouched** |
+| notifications | 87 274 | 4 185 |
+| journey enrolments | 2 294 | 69 |
+| consent records | 3 372 | 395 |
+| **journeys** | 62 | **62 — deliberately untouched** |
+
+**Journeys were NOT purged, and that is the finding worth keeping.** The measurement before deleting showed **61 of the 62 journeys are public and owned by engagement groups that every "is this test residue?" test classified as residue** — they have no surviving real member, because the seed data was created by fixture users. They are the published catalogue. A purge that trusted the residue classification would have destroyed it (or been blocked by the `RESTRICT` on `journeys.created_by_group_id`, which is the guard that exists for exactly this). The 54 groups owning them were excluded from deletion by name.
+
+**Other things the substrate refused, correctly:** 29 orphaned personal groups survive because `prevent_last_leader_removal` refuses to unbind the last Steward of a surviving group. They were deleted one-by-one with per-row exception handling precisely so the trigger could veto individual cases without aborting the batch.
+
+**Incidental finding:** three of the leaked fixtures held **platform-admin** rights (`e2e-rdb-admin-*`, `test-*`, granted 2026-08-08 and never cleaned up). Gone with the purge, but tests that grant admin and leak the account are worth a look — that is a wider blast radius than an ordinary fixture leak.
+
+**Verified after:** platform conformance **30/30**, auth slice **47/47** (which creates users, so the signup path is proven, not assumed).
+
+**Prior note — the risk assessment that cleared this:** `member-enumeration-bounded.test.ts:234,237` require a dev census > 200. Purging the 2 052 `e2e-%` fixtures leaves ~927 of 2 974 `public.users`, so both cells still bind. No other census-size-dependent assertion exists in the tree.
 
 ## Acceptance criteria
 
