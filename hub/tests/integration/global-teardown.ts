@@ -70,7 +70,14 @@ const RESIDUE_SQL = `
                          WHERE cp.conversation_id=c.id)) AS orphaned_conversations,
     (SELECT count(*) FROM public.notifications) AS notifications,
     (SELECT count(*) FROM public.admin_audit_log) AS audit_rows,
-    (SELECT count(*) FROM public.telemetry_events) AS telemetry_rows
+    (SELECT count(*) FROM public.telemetry_events) AS telemetry_rows,
+    -- Consent rows with NO subject group. The FK is ON DELETE RESTRICT, which
+    -- only protects a row that still references something — a NULL subject
+    -- slips it entirely and is attributable to nobody. ~18 accumulate per full
+    -- run. This was invisible until the DB was compared against a known
+    -- baseline: the teardown reported "clean" while they sat there, because
+    -- what a residue query does not COUNT it cannot report.
+    (SELECT count(*) FROM public.consent_records WHERE subject_group_id IS NULL) AS orphaned_consent
 `;
 
 const SWEEP_SQL = `
@@ -147,6 +154,12 @@ const SWEEP_SQL = `
     DELETE FROM public.notifications;
     DELETE FROM public.admin_audit_log;
     DELETE FROM public.telemetry_events;
+
+    -- Subject-less consent: unattributable to any member, so it can only be
+    -- residue. See TASK-DM-01's closing note — whether a NULL subject is ever
+    -- legitimate is a live question, and until it is settled this keeps the
+    -- rows from accumulating unseen.
+    DELETE FROM public.consent_records WHERE subject_group_id IS NULL;
   END $$;
 `;
 
@@ -160,6 +173,7 @@ type Residue = {
   notifications: number;
   audit_rows: number;
   telemetry_rows: number;
+  orphaned_consent: number;
 };
 
 type RunAdminSql = (sql: string) => Promise<Array<Record<string, unknown>>>;
@@ -177,6 +191,7 @@ const read = async (runAdminSql: RunAdminSql): Promise<Residue> => {
     notifications: Number(r.notifications ?? 0),
     audit_rows: Number(r.audit_rows ?? 0),
     telemetry_rows: Number(r.telemetry_rows ?? 0),
+    orphaned_consent: Number(r.orphaned_consent ?? 0),
   };
 };
 
@@ -189,13 +204,15 @@ const sum = (r: Residue) =>
   r.orphaned_conversations +
   r.notifications +
   r.audit_rows +
-  r.telemetry_rows;
+  r.telemetry_rows +
+  r.orphaned_consent;
 
 const describe = (r: Residue) =>
   `${r.accounts} accounts, ${r.mists} Mists, ${r.personal_groups} personal groups, ` +
   `${r.engagement_groups} engagement groups, ${r.test_journeys} test journeys, ` +
   `${r.orphaned_conversations} orphaned conversations, ${r.notifications} notifications, ` +
-  `${r.audit_rows} audit rows, ${r.telemetry_rows} telemetry rows`;
+  `${r.audit_rows} audit rows, ${r.telemetry_rows} telemetry rows, ` +
+  `${r.orphaned_consent} subject-less consent rows`;
 
 export default async function globalTeardown(): Promise<void> {
   config({ path: resolve(__dirname, '..', '..', '.env.local') });
