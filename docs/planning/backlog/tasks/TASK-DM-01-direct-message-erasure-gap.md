@@ -51,7 +51,22 @@ delete from public.groups where id = v_target_personal_group_id;
 
 `delete_own_account` is the member-facing "delete my account" door. Under GDPR Article 17 that door is the one that has to mean something.
 
-## The open question — a decision, not an implementation detail
+## RULED 2026-08-12 — content-level tombstone (option 2)
+
+**Stefan's ruling: redact the departed member's message bodies, keep the thread shape.** The survivor keeps their own words and the fact that a conversation happened; the erased member's content actually goes.
+
+**The ruling was made after clarifying what "tombstone" means here**, because the word is used at two layers in this codebase and they give opposite outcomes:
+
+| | mechanism | outcome |
+|---|---|---|
+| **Author-level** | `author_group_id` / `sender_group_id` → NULL, resolved to *Former member* / *Unknown* (`hub/lib/messages/queries.ts:55`) | words stay, name goes |
+| **Content-level** (ruled) | `is_deleted: true, content: null`, placeholder rendered (`GroupForumSection.tsx:201`) | words go, thread shape stays |
+
+**Why not author-level for DMs.** It is already the live behaviour — the DM sender map explicitly resolves "departed/erased included" — so choosing it would have been a no-op leaving the Article 17 exposure exactly as-is. And anonymising a name in a **two-party** thread obscures nothing: the surviving participant knows precisely who they were talking to. The mechanism that works in a many-voiced forum is close to meaningless in a conversation of two. That asymmetry is the reason the forum precedent (ADR-U021, posts remain) must NOT decide this by analogy.
+
+**Still to do at build:** the cascade specification (ADR-U016) across self-delete, admin exit, hard delete, Mist expiry and the last-participant case; the correction of `admin_hard_delete_user`'s false cascade comment; and the gate + instrument below. Next session.
+
+## The open question as it stood before the ruling — kept for provenance
 
 **What should happen to a two-party conversation when one party is erased?** It is genuinely contested, and the answer is not obvious:
 
@@ -84,5 +99,5 @@ Per the 2026-07-06 retro's standing lesson — *a sweep list that grows back is 
 
 ## Notes
 
-- The reset also found **379 consent records with a NULL `subject_group_id`**, which slipped their `ON DELETE RESTRICT` guard for the same reason — the guard only engages when the reference is present. Worth checking in the same pass whether a NULL subject is ever legitimate, or whether that column should be `NOT NULL`.
+- The reset also found **379 consent records with a NULL `subject_group_id`**, which slipped their `ON DELETE RESTRICT` guard for the same reason — the guard only engages when the reference is present. Worth checking in the same pass whether a NULL subject is ever legitimate, or whether that column should be `NOT NULL`. **Now measured as recurring, not historic: a full integration run produces ~18 of them.** The teardown sweeps them so they stop accumulating, but that is containment — the question of whether an unattributable consent record should be creatable at all is still open, and `NOT NULL` is the structural answer if it should not be.
 - Both residue sets were cleared during the reset; this task is about the mechanism, not the leftovers.
