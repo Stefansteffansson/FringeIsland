@@ -1,7 +1,7 @@
 ---
 id: TASK-DM-01
 title: Direct-message threads survive every erasure path — including hard delete, which documents a cascade that does not happen
-status: built — held at the schema gate
+status: done — gate executed 2026-08-12 (migration 20260812120000 applied, PR #526 merged)
 assigned_to: unassigned
 priority: high
 feature: none
