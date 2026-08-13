@@ -68,15 +68,17 @@ W1 → W2 → W3 → { W4, W6 } · W5 after the board settles, anytime · W7/W8/
 
 ## Exit checklist — the Phase-4 gate (planted now; verdict is Stefan's)
 
-- [ ] W1 discharge note on record; the deferred register below restated plainly at close (standing ask)
-- [ ] `hub-legacy/` absent from `main`; tag `hub-legacy-final` exists; no active-tree doc treats `hub-legacy/` as a live path
-- [ ] Root `package.json` tooling-only; `hub/` owns all app deps; build + full suites + dashboard + hooks green after the split
-- [ ] Deploy attestation recorded (what production serves is `hub/`)
-- [ ] CI posture executed per P4-2 (workflow live, or the non-goal recorded)
-- [ ] Slotted cycles closed through their gates (red-first; held PRs; migrations only on named approval)
-- [ ] ADR-U043 pass at the gate: warm budgets binding; deep-cold per P4-3 (the pass itself is never skipped)
-- [ ] ADR-U032 marked executed; CHANGELOG entries; doc-health-check clean (0 critical); dashboard refreshed; closing session bridge written
-- [ ] **Gate: v2 is the Hub** — nothing in the repo, the deploy, or the active docs still needs the old one
+**Ticked 2026-08-13 against evidence, not recollection** — each line carries the measurement that closed it. Two remain open and are named as such; one of those is Stefan's to give.
+
+- [x] **W1 discharge note on record; deferred register restated at close.** [Note](./2026-08-11-oracle-discharge-note.md) merged (#499): all ten Coverage-map rows exhausted, **zero UNACCOUNTED**, three named exceptions. Deferred register restated in the [session bridge](../sessions/2026-08-12_01_-_PHASE-4-CLOSED-DB-RESET-SEEDED-TEARDOWN-COMPLIANT.md).
+- [x] **`hub-legacy/` absent; tag exists; no active-tree doc treats it as a live path.** `git ls-files hub-legacy` → **0**; `git ls-tree -r hub-legacy-final` → **178 files retrievable**. The surviving mentions are the three legitimate classes (historical records, provenance comments, decision-board reasoning inside shipped specs) — verified again at tick time; the two present-tense structural claims found on 2026-08-11 were fixed then.
+- [x] **Root `package.json` tooling-only; suites green after the split.** Root is **0 dependencies / 4 dev-dependencies**; `hub/` owns every app dep at identical versions. Full integration **1181/1181 across 84 suites**; dashboard generates; session hooks intact.
+- [x] **Deploy attestation recorded.** Production serves `hub/`, proven rather than assumed: dynamic routes return `x-vercel-id: arn1::dub1::…` — edge at Stockholm, **function in Dublin** — which is only possible if Vercel reads `hub/vercel.json`. Closes a premise the ADR-U043 model rests on that had never been directly evidenced.
+- [x] **CI posture executed per P4-2.** `.github/workflows/ci.yml` live — `next build` (the type gate) + lint + unit on every PR; the local-first non-goal for the integration/conformance families recorded **in the workflow header**, where its next reader will find it.
+- [x] **Slotted cycles closed through their gates.** W7 `TASK-SEAL-01` (#514) · W8 `TASK-RDA-03` (#509) · W9 `TASK-E2E-02` (superseded by the reset, its leak class closed structurally) · plus `TASK-DM-01` / FEAT-PD018 (#526). Every one red-first, held at its gate, migration applied only on a named approval.
+- [ ] **ADR-U043 pass at the gate** — **NOT DONE, and deliberately deferred.** The dev database was reset to a clean start, so the authenticated waterfall would measure an empty substrate and return flatteringly fast numbers that mean nothing. **It waits for Stefan's five test users and enough walking to be representative.** The pass itself is never skipped (P4-3); this is a timing decision, not an exemption.
+- [x] **ADR-U032 executed; CHANGELOGs; dashboard; closing bridge.** ADR marked **FULLY EXECUTED** with the correction to its own keep-set estimate; root CHANGELOG carries the cutover, W8, W7 and DM-A entries; dashboard refreshed (and repaired — it had been reporting 0 API routes against a real 124); bridges written. **doc-health re-run at the gate:** [record](./2026-08-13-phase-4-gate-doc-health.md).
+- [ ] **Gate: v2 is the Hub** — **Stefan's verdict, outstanding.** Everything above is discharged except the performance pass; nothing in the repo, the deploy, or the active docs still needs the old Hub.
 
 ---
 

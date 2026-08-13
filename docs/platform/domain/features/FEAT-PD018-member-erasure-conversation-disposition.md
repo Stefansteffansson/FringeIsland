@@ -6,7 +6,7 @@ title: Member-erasure conversation disposition — the DM content-level tombston
 owner: platform/domain/communication
 consumers: [hub]
 wave: ferd
-maturity: 3-specified
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -174,11 +174,27 @@ So **a reported DM survives its sender's erasure inside the report row** — an 
 
 **Deliberately not fixed here.** It is a genuine policy question, not an oversight: moderation evidence has a legitimate-interest argument for retention that a plain DM body does not, and the platform already has a sanctioned shape for exactly that tension — ADR-U034 §5's *anonymise-then-retain* for consent records. Deciding it silently inside a build would be the wrong way to settle it. **Recommendation:** treat the snapshot as retained evidence but scrub it on erasure once the report is resolved, mirroring the consent precedent. Carried to the board below.
 
-## Open decisions
+## Open decisions — SETTLED at build (1, 2) / CARRIED (3, 4)
 
-Carried to Stefan before `4-ready` — see the task file for the board.
+The board was carried to Stefan and answered; two of the four are now facts of the shipped substrate, not recommendations.
 
-1. **Does `admin_exit_user_from_platform` tombstone?** Recommendation **no**, on the consistency argument above.
-2. **Is the last-participant delete in scope here?** Recommendation **yes** — it is the structural answer to the residue, and it costs one statement in the same handler.
-3. **What happens to `content_reports.content_snapshot` on erasure?** The finding above. Recommendation: retain-as-evidence, scrub on resolution.
-4. **Should `consent_records.subject_group_id` become `NOT NULL`?** Filed against this task; ~18 subject-less rows per full integration run, currently swept by teardown (containment, not a fix).
+1. **Does `admin_exit_user_from_platform` tombstone?** **SETTLED — no**, as recommended, and shipped that way. The migration's cascade specification states the distinction plainly: *"exit is a removal; delete is an erasure"*, and the exit path is left unchanged.
+2. **Is the last-participant delete in scope here?** **SETTLED — yes**, as recommended. Part (b) of `ds5_lifecycle_account_deleted` deletes a DM thread left with no participant other than the departing member — the structural answer to the 557-thread residue class rather than a sweep of it.
+3. **What happens to `content_reports.content_snapshot` on erasure?** **STILL OPEN — deliberately out of scope here.** Nothing in this cycle touches it. A moderation snapshot is retained evidence about a member who may since have erased, so it needs its own ruling (retain-as-evidence vs scrub-on-resolution) rather than being decided as a side effect of the DM disposition. **Owed a home.**
+4. **Should `consent_records.subject_group_id` become `NOT NULL`?** **STILL OPEN.** ~18 subject-less rows accrue per full integration run; the integration teardown sweeps them, which is **containment, not a fix**. Tracked in [`TASK-DM-01`](../../../planning/backlog/tasks/TASK-DM-01-direct-message-erasure-gap.md)'s notes.
+
+## Implementation notes
+
+**Built as Cycle DM-A, 2026-08-12; gate executed 2026-08-13** (migration `20260812120000`, PR #526).
+
+**What shipped.** One new sealed DS-5 fact handler, `ds5_lifecycle_account_deleted(uuid)`, called by the two erasure paths (`delete_own_account`, `admin_hard_delete_user`). It (a) sets `content = NULL, is_deleted = true` on the departing member's `kind='dm'` messages, guarded by `is_deleted = false` so a second pass is a no-op, and (b) deletes DM threads left with no other participant. `get_conversation_detail` and `get_own_messages_export` were replaced so the tombstone renders and the export agrees with it — Article 15 and Article 17 must not contradict each other.
+
+**Registered as a lifecycle fact**, not a declared composition: Core emits the fact, DS-5 owns the disposition, mirroring `ds5_lifecycle_group_closed`. It rides the `/^ds\d+_lifecycle_/` auto-allow in the conformance allowlist. EXECUTE is revoked from PUBLIC/anon/authenticated — verified on the applied object as `{postgres, service_role}`.
+
+**A false premise corrected.** `admin_hard_delete_user` carried a comment claiming the personal-group delete cascaded conversations. It does not for DMs, whose `group_id` is NULL — which is exactly how 557 threads survived the 2026-08-12 reset. The comment now names the mechanism and the consequence.
+
+**Sibling assertions invalidated — caught at the gate review, not before it.** This migration changed shipped semantics without the sweep `docs/platform/CLAUDE.md` requires, the fourth time that class has bitten. `PC017 S5b` was invalidated in three places; the sharpest asserted that the surviving party could still read the departed member's words — **that assertion was the exposure this feature closes**. All three adapted, and the sweep is now recorded in the migration header.
+
+**Verified at the gate:** PD018 suite 9/9 · platform conformance 30/30 · full integration 1181/1181 across 84 suites · teardown clean · applied ACLs read directly.
+
+**Not built here:** the Mist leg, which is empty by construction — `get_or_create_dm_conversation` refuses a temporary actor *and* a temporary recipient, so no Mist can be party to a DM. FEAT-PD012 STORY-6's verify-and-record posture applies: the deliverable was a regression proof, not a scrub.
