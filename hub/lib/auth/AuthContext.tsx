@@ -67,6 +67,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  // TASK-TRX-02: true while transcend() is between the SDK conversion and the
+  // finalisation route resolving. The conversion flips `is_anonymous` (and
+  // fires USER_UPDATED) BEFORE the platform txn commits, so deriving 'fim'
+  // from the user alone opens a window where every fim-keyed read fires into
+  // a mid-transaction substrate refusal — which then sticks in session caches
+  // (the 2026-08-13 live-walk bug). Identity holds at 'mist' until the seam
+  // knows the substrate agrees.
+  const [transcending, setTranscending] = useState(false);
 
   useEffect(() => {
     // Seed the initial session, then subscribe to changes. Per the Hub gotcha,
@@ -178,44 +186,60 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return { error: TRANSCENDENCE_CONSENT_REQUIRED_ERROR };
     }
 
-    // 1. Convert: anon -> permanent via the auth SDK (the narrow exception).
-    //    Preserves the same auth.users.id, so the proto group + journeys carry
-    //    over with continuity — the Hub copies no rows.
-    const { error: convertError } = await supabase.auth.updateUser({
-      email,
-      password,
-      data: { display_name: displayName },
-    });
-    if (convertError) {
-      emitTelemetry('transcendence.failed', { reason: 'conversion_error' });
-      return { error: convertError.message };
-    }
-
-    // 2. Finalise via the Platform API route (the RPC runs server-side, never in
-    //    the browser — ADR-U009). Order matters: convert, then finalise.
+    // TASK-TRX-02: hold identity at 'mist' for the whole convert->finalise
+    // window (see the state's comment). Dropped in `finally` on every path —
+    // the failure paths keep today's semantics.
+    setTranscending(true);
     try {
-      const res = await fetch('/api/auth/transcend', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ consentAccepted: true }),
+      // 1. Convert: anon -> permanent via the auth SDK (the narrow exception).
+      //    Preserves the same auth.users.id, so the proto group + journeys carry
+      //    over with continuity — the Hub copies no rows.
+      const { error: convertError } = await supabase.auth.updateUser({
+        email,
+        password,
+        data: { display_name: displayName },
       });
-      let payload: { ok?: boolean; error?: string } | null = null;
-      try {
-        payload = await res.json();
-      } catch {
-        /* non-JSON response */
+      if (convertError) {
+        emitTelemetry('transcendence.failed', { reason: 'conversion_error' });
+        return { error: convertError.message };
       }
-      if (!res.ok) {
-        // No half-FIM swallow — surface the failure (the platform RPC rolled back).
-        return {
-          error: payload?.error ?? 'Could not complete becoming a FIM. Please try again.',
-        };
-      }
-    } catch {
-      return { error: 'Could not reach the server. Please try again.' };
-    }
 
-    return { error: null };
+      // 2. Finalise via the Platform API route (the RPC runs server-side, never in
+      //    the browser — ADR-U009). Order matters: convert, then finalise.
+      try {
+        const res = await fetch('/api/auth/transcend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ consentAccepted: true }),
+        });
+        let payload: { ok?: boolean; error?: string } | null = null;
+        try {
+          payload = await res.json();
+        } catch {
+          /* non-JSON response */
+        }
+        if (!res.ok) {
+          // No half-FIM swallow — surface the failure (the platform RPC rolled back).
+          return {
+            error: payload?.error ?? 'Could not complete becoming a FIM. Please try again.',
+          };
+        }
+      } catch {
+        return { error: 'Could not reach the server. Please try again.' };
+      }
+
+      // TASK-TRX-02: converge — no Mist-era cache (profile label, adopted
+      // bundle slices, session caches) survives into the FIM session, and
+      // mounted listeners re-read over the house channel. Any read that
+      // slipped into the transcend window and was refused mid-transaction is
+      // dropped here rather than left to stick.
+      invalidateAllCaches();
+      window.dispatchEvent(new Event('refreshNavigation'));
+
+      return { error: null };
+    } finally {
+      setTranscending(false);
+    }
   }
 
   async function sayGoodbye(): Promise<{ error: string | null }> {
@@ -261,7 +285,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   // Derived in render (not in the auth listener) — pure, no query, no deadlock.
-  const identity = useMemo(() => deriveIdentity(user), [user]);
+  // TASK-TRX-02: while a transcend is in flight the converted user already
+  // reads non-anonymous, but the substrate is still mid-transaction — hold
+  // 'mist' until the seam confirms (the state's comment has the full story).
+  const identity = useMemo(
+    () => (transcending && user ? 'mist' : deriveIdentity(user)),
+    [user, transcending],
+  );
 
   // FEAT-H012: the ADR-U039 session guard — the private session-signal channel
   // (verify-on-signal) + focus/visibility + slow-poll fallback validation. Runs

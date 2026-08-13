@@ -2,6 +2,11 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-13 — Becoming a FIM keeps the name you signed up with ([TASK-TRX-01](../docs/planning/backlog/tasks/TASK-TRX-01-transcendence-drops-entered-identity.md) / [TASK-TRX-02](../docs/planning/backlog/tasks/TASK-TRX-02-post-transcendence-read-race-poisons-session.md))
+
+- **The name and email you enter when you become a FIM are now actually yours.** Signing up from a look-around visit used to leave your profile reading **"Mist"** — the anonymous visitor's placeholder — with no email on file, so email invitations addressed to you could never find you. The platform now carries the name and address you entered into your profile (and your personal group) the moment you become a FIM, and the one account this had already happened to has been repaired.
+- **The first page after signing up no longer shows broken panels.** Right after becoming a FIM, the groups page could greet you with *"Failed to load your invitations."* and *"Platform announcements can't be shown right now."* — and keep saying it until you signed out. That was the app asking for member things a beat before the platform had finished making you a member, then remembering the refusal. The app now waits until the platform agrees you're a FIM, and starts your member session with a clean slate.
+
 ## 2026-08-10 — The role catalogue stops saying "Not found" about templates you can see ([TASK-RDC-03](../docs/planning/backlog/tasks/TASK-RDC-03-refusal-audit-rows-are-dead-code.md))
 
 - *Admin:* **two refusals now tell you why, instead of claiming the template isn't there.** Trying to retire one of the four seeded roles, or to offer a retired template to a group, used to come back as **"Not found"** — about a template sitting in the list you were looking at. They now answer in the platform's own words: *"a system role template cannot be retired"* and *"a retired role template cannot be published"*.
