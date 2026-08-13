@@ -1,7 +1,7 @@
 ---
 id: TASK-TRX-02
 title: Identity flips FIM before finalisation commits — refused reads poison the session's caches
-status: todo
+status: done — 2026-08-13, PR #531 merged (identity hold + converge in AuthContext; unit red-first 2 cells + labelled boundary guard; E2E journey extended 3/3; unit tier 1450/1450, lint 0 errors, build green)
 assigned_to: unassigned
 priority: high
 feature: FEAT-H004
