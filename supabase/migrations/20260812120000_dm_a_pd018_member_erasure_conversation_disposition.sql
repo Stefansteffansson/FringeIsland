@@ -47,6 +47,31 @@
 -- from PUBLIC/anon/authenticated — a direct PostgREST call answers 42501. It
 -- rides the /^ds\d+_lifecycle_/ auto-allow in the conformance allowlist.
 -- No new tables; supabase/ownership.manifest.json needs no new entry.
+--
+-- SIBLING ASSERTIONS INVALIDATED (house rule, docs/platform/CLAUDE.md — added
+-- at review, 2026-08-12; the sweep was owed and missing, which is the fourth
+-- time this class has been caught). This migration changes SHIPPED semantics:
+-- a DM body used to survive its author's erasure untouched. Grepping the suite
+-- for assertions over `messages` content after a delete path finds exactly one:
+--
+--   hub/tests/integration/account/account-lifecycle-self-service.test.ts
+--     S5b "communal classes are retained untouched and stay readable to the
+--     other party" — ADAPTED, in THREE places, not one:
+--       (i)  the raw-row count of the DM body (asserted present -> asserted gone);
+--       (ii) a new tombstone assertion (row present, content NULL, is_deleted
+--            true) keyed on is_deleted and NOT on a null sender — this is the
+--            SELF-delete path, which decommissions and leaves the personal group
+--            standing, so sender_group_id is never SET NULL here;
+--       (iii) the survivor's contract read, which asserted Sam could still see
+--            "CF dm words". That was the exposure itself. It now asserts the
+--            thread survives with its shape (one message, content NULL,
+--            is_deleted true) and that the words are absent.
+--     Its forum-post assertions are unchanged, because forum disposition is not.
+--
+-- Deliberately left, verified unaffected: the forum half of S5b (ADR-U021 —
+-- posts remain, read-time attribution), and PD012's group-kind seal cells,
+-- which this touches not at all (group conversations cascade with their group,
+-- as they always did).
 -- ============================================================================
 
 -- ----------------------------------------------------------------------------

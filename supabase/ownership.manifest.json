@@ -436,7 +436,8 @@
       { "function": "ds3_lifecycle_account_deleted", "citation": "ADR-U050 (2026-07-26) §4 — new U047 fact handler for self-service account deletion." },
       { "function": "ds7_lifecycle_account_deleted", "citation": "ADR-U050 (2026-07-26) §4 — new U047 fact handler for self-service account deletion." },
       { "function": "ds5_lifecycle_group_closed", "citation": "Cycle C-E (2026-07-21) DS-5 lifecycle dispositions; referenced by ADR-U050 §4 as the C-E seal; ADR-grade at ADR-U047 Amendment 3 (Audit IV AC4-4)." },
-      { "function": "ds5_lifecycle_user_hard_deleted", "citation": "Shipped at feature level (A-COM lifecycle dispositions); ADR-grade at ADR-U047 Amendment 3 (Audit IV AC4-4)." }
+      { "function": "ds5_lifecycle_user_hard_deleted", "citation": "Shipped at feature level (A-COM lifecycle dispositions); ADR-grade at ADR-U047 Amendment 3 (Audit IV AC4-4)." },
+      { "function": "ds5_lifecycle_account_deleted", "citation": "TASK-DM-01 / FEAT-PD018 (2026-08-12) — the DS-5 sibling of the ADR-U050 §4 pair; DM content-level tombstone on account erasure. Registered because the W3 invocation gate refused it, which is the gate working." }
     ],
     "lifecycleFactsNote": "ADR-U047 Amendment 3: this registry is the fact vocabulary's single living home — the ADR family defines the classes and declares new facts; this list carries the current set; the W3 conformance family asserts core lifecycle calls against it. A core call to a ds{N}_lifecycle_ name absent here fails the invocation gate red.",
     "triggerMounts": [

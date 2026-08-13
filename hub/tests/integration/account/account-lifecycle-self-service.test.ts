@@ -404,7 +404,15 @@ describe('FEAT-PC017 — account lifecycle self-service (C-F red suite)', () => 
       expect(j[0].n).toBe(0);
     });
 
-    it('S5b: communal classes are retained untouched and stay readable to the other party', async () => {
+    it('S5b: communal content is retained; the departed member\'s DM words are tombstoned', async () => {
+      // ADAPTED for FEAT-PD018 (Cycle DM-A, 2026-08-12). This cell used to
+      // assert that the DM body survived erasure "untouched" — the behaviour
+      // TASK-DM-01 deliberately retired. Stefan ruled a CONTENT-level tombstone:
+      // the departed member's words go, the thread shape and the survivor's own
+      // words stay. Forum posts are UNCHANGED and still asserted below, because
+      // the ruling explicitly refused to decide DMs by the forum's analogy: a
+      // forum post is communal and other participants have a legitimate interest
+      // in an intact thread; a two-party DM has no such argument.
       const fp = await runAdminSql(
         `SELECT content, is_deleted FROM public.forum_posts WHERE id = '${forumPostId}';`,
       );
@@ -412,19 +420,43 @@ describe('FEAT-PC017 — account lifecycle self-service (C-F red suite)', () => 
       expect(fp[0].is_deleted).toBe(false);
 
       // `messages` — direct_messages was RENAMEd in place at C-A (PD008 Q2).
-      const dm = await runAdminSql(
+      // The words themselves are gone...
+      const gone = await runAdminSql(
         `SELECT count(*)::int AS n FROM public.messages
           WHERE conversation_id = '${dmConversationId}' AND content = 'CF dm words';`,
       );
-      expect(dm[0].n).toBe(1);
+      expect(gone[0].n).toBe(0);
 
-      // Sam (the surviving party) still reads the conversation via the contract.
+      // ...but the row survives as a tombstone, so the thread keeps its shape
+      // and the survivor's side of the exchange still makes sense.
+      // Keyed on is_deleted, NOT on a null sender: this is the SELF-delete path,
+      // which decommissions the account and leaves the personal group standing,
+      // so `sender_group_id` is never SET NULL here. (It does null on the
+      // hard-delete path, where the group actually goes — a different cell.)
+      const tomb = await runAdminSql(
+        `SELECT content, is_deleted FROM public.messages
+          WHERE conversation_id = '${dmConversationId}'
+            AND is_deleted = true;`,
+      );
+      expect(tomb).toHaveLength(1);
+      expect(tomb[0].content).toBeNull();
+      expect(tomb[0].is_deleted).toBe(true);
+
+      // Sam (the surviving party) still reads the conversation via the contract —
+      // the THREAD survives, which is the half of the ruling that protects the
+      // person who did not leave. What he no longer reads is Dave's words: this
+      // used to assert the content was still there, and that is precisely the
+      // exposure the content-level tombstone closes.
       const samClient = await asUser(sam);
       const { data, error } = await samClient.rpc('get_conversation_detail', {
         p_conversation_id: dmConversationId,
       });
       expect(error).toBeNull();
-      expect(JSON.stringify(data)).toContain('CF dm words');
+      const payload = data as { messages: Array<{ content: string | null; is_deleted: boolean }> };
+      expect(JSON.stringify(data)).not.toContain('CF dm words'); // erased, not merely unattributed
+      expect(payload.messages).toHaveLength(1); // the thread keeps its shape
+      expect(payload.messages[0].content).toBeNull();
+      expect(payload.messages[0].is_deleted).toBe(true);
       await samClient.auth.signOut();
     });
 
