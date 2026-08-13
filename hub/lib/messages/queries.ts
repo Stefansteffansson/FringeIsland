@@ -23,7 +23,11 @@ export interface ConversationSummary {
 export interface ConversationMessage {
   id: string;
   sender_group_id: string | null;
-  content: string;
+  /** NULL when the sender was erased — FEAT-PD018's content-level tombstone.
+   *  Distinct from attribution: `sender_group_id` still resolves through the
+   *  C-B ladder, because the ruling erased the words, not the name. */
+  content: string | null;
+  is_deleted: boolean;
   created_at: string;
 }
 

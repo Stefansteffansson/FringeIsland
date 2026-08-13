@@ -28,6 +28,7 @@ const WITNESS_EMAIL = `cf-witness-${RUN}@fringeisland.test`;
 const WITNESS_NAME = `CFWitness${RUN}`;
 const GROUP_NAME = `CF Departure ${RUN}`;
 const POST = `The departed member's words ${RUN}`;
+const DM_TEXT = `A private word between us ${RUN}`;
 const CONFIRM_PHRASE = 'delete my account';
 
 async function createFim(admin: SupabaseClient, email: string, displayName: string) {
@@ -64,6 +65,17 @@ async function cleanupFim(admin: SupabaseClient, email: string) {
     .eq('email', email)
     .maybeSingle();
   if (data?.personal_group_id) {
+    // DM threads are not group-anchored (FEAT-PD018 / TASK-DM-01), and this
+    // cleanup deletes the personal group DIRECTLY — bypassing the contract
+    // that would have disposed the thread. Without this the conversation
+    // orphans and the leak instrument attributes it to the next suite.
+    const { data: convs } = await admin
+      .from('conversation_participants')
+      .select('conversation_id')
+      .eq('participant_group_id', data.personal_group_id);
+    for (const c of convs ?? []) {
+      await admin.from('conversations').delete().eq('id', c.conversation_id as string);
+    }
     await admin.from('journeys').delete().eq('created_by_group_id', data.personal_group_id);
     await admin.from('groups').delete().eq('id', data.personal_group_id);
   }
@@ -117,6 +129,8 @@ test.describe('C-F — the departure (delete → farewell; the record survives)'
   const admin = createAdminClient();
   let groupId: string | null = null;
   let departerPgid: string | null = null;
+  let dmId: string | null = null;
+  let dmMsgId: string | null = null;
 
   test.beforeAll(async () => {
     const departer = await createFim(admin, DEPARTER_EMAIL, DEPARTER_NAME);
@@ -176,6 +190,35 @@ test.describe('C-F — the departure (delete → farewell; the record survives)'
       .eq('group_id', groupId)
       .eq('member_group_id', witness!.personal_group_id);
 
+    // ── A private word, so the departure gets asked the DM question too.
+    //    The forum keeps the words and drops the name (ADR-U021); a two-party
+    //    thread does the opposite, because anonymising a name in front of the
+    //    one person who was there hides nothing. Both answers, one walk.
+    await departerPage.goto(`/groups/${groupId}`);
+    const witnessRow = departerPage.getByTestId(`member-row-${witness!.personal_group_id}`);
+    await expect(witnessRow).toBeVisible({ timeout: 60_000 });
+    await witnessRow.getByRole('button', { name: /^Message/ }).click();
+    await expect(departerPage).toHaveURL(/\/messages\/[0-9a-f-]{36}/, { timeout: 15000 });
+    dmId = departerPage.url().match(/\/messages\/([0-9a-f-]{36})/)?.[1] ?? null;
+    expect(dmId).not.toBeNull();
+
+    await expect(departerPage.getByRole('textbox', { name: 'Message' })).toBeVisible({
+      timeout: 60_000,
+    });
+    await departerPage.getByRole('textbox', { name: 'Message' }).fill(DM_TEXT);
+    await departerPage.getByRole('button', { name: /^send$/i }).click();
+    await expect(departerPage.getByText(DM_TEXT)).toBeVisible({ timeout: 15000 });
+
+    // The tombstone renders by message id, so resolve it from the substrate
+    // rather than scraping the DOM for a testid the erasure is about to change.
+    const { data: sent } = await admin
+      .from('messages')
+      .select('id')
+      .eq('conversation_id', dmId)
+      .eq('sender_group_id', departerPgid)
+      .single();
+    dmMsgId = sent!.id as string;
+
     // ── The ceremony (FEAT-H029 STORY-2): consequences, export offer,
     //    type-to-confirm — then the farewell (STORY-3).
     await departerPage.goto('/profile');
@@ -213,6 +256,17 @@ test.describe('C-F — the departure (delete → farewell; the record survives)'
     await expect(witnessPage.getByTestId('group-forum')).toBeVisible({ timeout: 60_000 });
     await expect(witnessPage.getByText(POST)).toBeVisible({ timeout: 15000 });
     await expect(witnessPage.getByText(DEPARTER_NAME)).toHaveCount(0);
+
+    // ── The contrast, in the same walk: the forum post above survived the
+    //    departure; the private message did not. FEAT-PD018 content-level
+    //    tombstone — the words go, the thread shape and the witness's own
+    //    access stay, so their record of the exchange is not destroyed to
+    //    satisfy someone else's erasure.
+    await witnessPage.goto(`/messages/${dmId}`);
+    await expect(witnessPage.getByTestId(`message-tombstone-${dmMsgId}`)).toBeVisible({
+      timeout: 60_000,
+    });
+    await expect(witnessPage.getByText(DM_TEXT)).toHaveCount(0);
     await witnessContext.close();
   });
 });
