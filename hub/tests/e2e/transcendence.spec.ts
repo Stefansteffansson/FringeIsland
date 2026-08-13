@@ -68,6 +68,15 @@ test('become-a-FIM in place: Mist -> credentials + consent -> the carried walk R
     // completed-walk coverage at unit tier).
     await expect(page).toHaveURL(/\/journeys\/[0-9a-f-]+\/play/, { timeout: 20000 });
     await expect(page.getByTestId('journey-player')).toBeVisible({ timeout: 15000 });
+
+    // TASK-TRX-01/02 (2026-08-13): the ENTERED identity is the FIM's identity —
+    // the header label renders the nickname (first token of the entered name),
+    // never the Mist default. Pre-fix, transcendence left full_name='Mist' and
+    // this header read "Mist" (red demonstrated at the integration tier; the
+    // migration was applied before this journey-level extension, so this cell
+    // is the observable-effect proof, not the red demonstration).
+    await expect(page.getByText('Mae', { exact: true })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Mist', { exact: true })).not.toBeVisible();
   } finally {
     await deleteTranscendedUser(admin, email);
   }
