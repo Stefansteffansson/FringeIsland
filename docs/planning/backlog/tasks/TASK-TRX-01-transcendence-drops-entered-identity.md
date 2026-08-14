@@ -1,7 +1,7 @@
 ---
 id: TASK-TRX-01
 title: Transcendence drops the entered identity — the FIM keeps the Mist's name and no email
-status: review — held at the schema gate (migration 20260813204500 applied to dev 2026-08-13; red demonstrated, suite 7/7, Erik's row repaired)
+status: done — gate executed 2026-08-14 on named approval ("ok merge 530"); PR #530 merged (migration 20260813204500 applied 2026-08-13; red demonstrated, suite 7/7, Erik's row repaired, ACL verified)
 assigned_to: unassigned
 priority: high
 feature: FEAT-PC002
