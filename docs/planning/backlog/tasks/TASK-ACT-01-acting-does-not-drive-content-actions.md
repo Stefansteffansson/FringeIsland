@@ -1,7 +1,8 @@
 ---
 id: TASK-ACT-01
 title: Acting-as stops at the permissions panel — a wielded group's content powers have no doors
-status: registered — forward item, needs a decomposition board before any build (Stefan, 2026-08-14)
+status: registered — forward item, needs a decomposition board before any build (Stefan, 2026-08-14); REAFFIRMED same day ("what is the meaning of having a representative if they cannot act or view?") — the walk judged current representation near-hollow; priority raised
+priority_note: raised medium -> high on Stefan's reaffirmation
 assigned_to: unassigned
 priority: medium
 feature: FEAT-H018 (finding) — the build itself would span platform Communication contracts + Hub surfaces
@@ -27,6 +28,10 @@ estimated_hours: unestimated — decomposition first
 - **Platform half:** the DS-5 content contracts (forum read/post/reply, group conversations, group announcements at minimum) gain the acting parameter with the ADR-U041 wielding gate (`act_as_group` held by the caller IN the acting group; the acting group's own powers checked in the context group — the pattern the role contracts already use). Authorship fits the substrate as-is: posts/messages already carry `author_group_id`/`sender_group_id`, so a wielded write stamps the acting group.
 - **Hub half:** content affordances key on the substitution permissions while a hat is selected (composer render, refused-state copy naming the hat); attribution renders the group as author.
 - **Design questions for the board:** which contract families are in scope first; whether a wielded READ (forum as the group) is wanted or only writes; per-surface copy for "acting as" states; notification routing when a group authors (V3).
+
+## Second verified finding (2026-08-14, same walk): group-addressed notifications are dead letters
+
+`send_community_announcement`'s fan-out addresses **each direct member** (`gm.member_group_id`, one level, no recursion — `20260720200000:237-248`). For a nested member-GROUP that row's `recipient_group_id` is the engagement group itself, and **nothing ever delivers it to a person**: `get_own_notifications` reads the caller's personal-group rows only, `notify_notification_hint` explicitly resolves an engagement-group recipient to no-topic/no-hint (its own comment names this), and no surface shows a wielded group its notifications. **Live evidence: 1 row addressed to "Albin group 1" already sits unseeable in `public.notifications`.** The board owns the delivery-semantics question: expand to the nested group's people at fan-out (one level? recursive with loop guard? act_as_group holders only?), or surface a group inbox to wielders — either way, dead letters stop being written silently.
 
 ## Related
 
