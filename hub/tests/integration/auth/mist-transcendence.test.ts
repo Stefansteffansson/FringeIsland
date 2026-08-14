@@ -247,3 +247,103 @@ describe('FEAT-PC002 STORY-3 — atomic persistence-and-consent transcendence', 
     expect(survivor!.is_temporary).toBe(false);
   });
 });
+
+// ---------------------------------------------------------------------------
+// TASK-TRX-01 — transcendence carries the entered identity (post-6-done fix,
+// found 2026-08-13 live walk). The Hub's SDK conversion (updateUser: email,
+// password, display_name metadata) precedes finalisation; the pre-fix function
+// flipped is_temporary but left full_name/nickname='Mist', email=NULL, and the
+// proto personal group named 'Mist'. These cells exercise the substrate
+// contract directly (adversarial path: plain PostgREST RPC after a real
+// conversion). TDD red-first: RED until the TRX-01 migration lands.
+// ---------------------------------------------------------------------------
+describe('TASK-TRX-01 — transcendence carries the entered identity into the profile', () => {
+  const createdUserIds: string[] = [];
+  const subjectGroupIds: string[] = [];
+
+  afterAll(async () => {
+    if (subjectGroupIds.length) {
+      const list = subjectGroupIds.map((g) => `'${g}'`).join(',');
+      await runAdminSql(
+        `DO $$ BEGIN PERFORM set_config('app.consent_erasure_in_progress','true',true); ` +
+          `DELETE FROM public.consent_records WHERE subject_group_id IN (${list}); END $$;`,
+      ).catch(() => undefined);
+    }
+    for (const id of createdUserIds) await cleanupTestUser(id);
+  });
+
+  it('carries display name, nickname, and email into users, and renames the proto personal group', async () => {
+    const admin = createAdminClient();
+    const mistClient = createTestClient();
+    const { data: signIn, error: signInErr } = await withAnonRateLimitRetry(() =>
+      mistClient.auth.signInAnonymously(),
+    );
+    expect(signInErr).toBeNull();
+    const mistId = signIn.user!.id;
+    createdUserIds.push(mistId);
+    const before = await waitForProfile(admin, mistId);
+    const groupId = before.personal_group_id as string;
+    subjectGroupIds.push(groupId);
+
+    // The Hub's conversion step (FEAT-H004): anon -> permanent, same auth id.
+    const email = `trx01-carry-${Date.now()}@transcendence.test`;
+    const { error: convErr } = await mistClient.auth.updateUser({
+      email,
+      password: 'Transcend123!@#',
+      data: { display_name: 'Erika Hopper' },
+    });
+    expect(convErr).toBeNull();
+
+    const { data: result, error } = await mistClient.rpc('finalise_transcendence', {
+      p_capture_context: { surface: 'test', flow: 'trx-01' },
+    });
+    expect(error).toBeNull();
+    expect(result.transcended).toBe(true);
+
+    // The entered identity is now the profile's identity — same row, same group.
+    const { data: after } = await admin
+      .from('users')
+      .select('full_name, nickname, email, is_temporary, personal_group_id')
+      .eq('auth_user_id', mistId)
+      .single();
+    expect(after!.is_temporary).toBe(false);
+    expect(after!.full_name).toBe('Erika Hopper');
+    expect(after!.nickname).toBe('Erika'); // house rule: nickname = first token
+    expect(after!.email).toBe(email);
+
+    // Mirror of handle_new_user step 2: the personal group is named the nickname.
+    const { data: pg } = await admin.from('groups').select('name').eq('id', groupId).single();
+    expect(pg!.name).toBe('Erika');
+  });
+
+  it('falls back to the auth email when the conversion carries no display name', async () => {
+    const admin = createAdminClient();
+    const mistClient = createTestClient();
+    const { data: signIn } = await withAnonRateLimitRetry(() =>
+      mistClient.auth.signInAnonymously(),
+    );
+    const mistId = signIn.user!.id;
+    createdUserIds.push(mistId);
+    const before = await waitForProfile(admin, mistId);
+    subjectGroupIds.push(before.personal_group_id as string);
+
+    const email = `trx01-fallback-${Date.now()}@transcendence.test`;
+    const { error: convErr } = await mistClient.auth.updateUser({
+      email,
+      password: 'Transcend123!@#',
+    });
+    expect(convErr).toBeNull();
+
+    const { error } = await mistClient.rpc('finalise_transcendence', {});
+    expect(error).toBeNull();
+
+    const { data: after } = await admin
+      .from('users')
+      .select('full_name, email')
+      .eq('auth_user_id', mistId)
+      .single();
+    // Never 'Mist' for a credentialed caller — the COALESCE chain lands on email.
+    expect(after!.full_name).toBe(email);
+    expect(after!.email).toBe(email);
+  });
+});
