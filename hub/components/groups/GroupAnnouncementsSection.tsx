@@ -10,6 +10,7 @@ import {
 } from '@/lib/announcements/client';
 import { authorClassName } from '@/lib/forum/attribution';
 import { fetchMyPermissions } from '@/lib/groups/client';
+import { isForbidden } from '@/lib/http/status-error';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
 /**
@@ -28,6 +29,7 @@ const PAGE = 20;
 export function GroupAnnouncementsSection({ groupId }: { groupId: string }) {
   const [items, setItems] = useState<Announcement[] | null>(() => peekGroupAnnouncements(groupId));
   const [failed, setFailed] = useState(false);
+  const [membersOnly, setMembersOnly] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [perms, setPerms] = useState<Set<string>>(new Set());
 
@@ -47,8 +49,12 @@ export function GroupAnnouncementsSection({ groupId }: { groupId: string }) {
       setItems(rows);
       setHasMore(rows.length >= PAGE);
       setFailed(false);
-    } catch {
-      setFailed(true);
+      setMembersOnly(false);
+    } catch (err) {
+      // Post-6-done fix (2026-08-14, live walk): a member-gated refusal is not
+      // a malfunction — honest members-only copy, never the failure fallback.
+      setMembersOnly(isForbidden(err));
+      setFailed(!isForbidden(err));
     }
   }, [groupId]);
 
@@ -159,7 +165,11 @@ export function GroupAnnouncementsSection({ groupId }: { groupId: string }) {
         </p>
       )}
 
-      {failed ? (
+      {membersOnly ? (
+        <p data-testid="group-announcements-members-only" className="mt-3 text-sm text-gray-500">
+          Announcements are for members of this group.
+        </p>
+      ) : failed ? (
         <p data-testid="group-announcements-unavailable" className="mt-3 text-sm text-gray-500">
           Announcements can&apos;t be shown right now.
         </p>

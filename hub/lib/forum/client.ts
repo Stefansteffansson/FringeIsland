@@ -14,6 +14,7 @@
  */
 import type { ForumPost, ForumPostRow } from '@/lib/forum/queries';
 import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
+import { HttpStatusError } from '@/lib/http/status-error';
 
 export type { ForumPost, ForumPostRow, AuthorDisplay } from '@/lib/forum/queries';
 
@@ -30,7 +31,10 @@ const forumInFlight = new Map<string, Promise<ForumPost[]>>();
 async function requestForum(groupId: string, before?: string): Promise<ForumPost[]> {
   const qs = before ? `?before=${encodeURIComponent(before)}` : '';
   const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/forum${qs}`);
-  if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
+  // Status carried so the section can branch honestly on a member-gated 403
+  // (post-6-done fix 2026-08-14); write paths keep plain Errors.
+  if (!res.ok)
+    throw new HttpStatusError(await errorMessage(res, `Request failed (${res.status})`), res.status);
   const data = (await res.json()) as { posts: ForumPost[] };
   return data.posts;
 }

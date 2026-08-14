@@ -15,6 +15,7 @@ import {
 } from '@/lib/forum/client';
 import { authorClassName } from '@/lib/forum/attribution';
 import { fetchMyPermissions } from '@/lib/groups/client';
+import { isForbidden } from '@/lib/http/status-error';
 import { useForumTenant, forumTopic } from '@/lib/realtime/forum-tenant';
 import { useCommChannel } from '@/lib/realtime/use-comm-channel';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
@@ -40,6 +41,7 @@ const EDIT_WINDOW_MS = 15 * 60 * 1000;
 export function GroupForumSection({ groupId }: { groupId: string }) {
   const [posts, setPosts] = useState<ForumPost[] | null>(() => peekForum(groupId));
   const [failed, setFailed] = useState(false);
+  const [membersOnly, setMembersOnly] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [perms, setPerms] = useState<Set<string>>(new Set());
 
@@ -93,8 +95,12 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
       setPosts(rows);
       setHasMore(rows.length >= PAGE);
       setFailed(false);
-    } catch {
-      setFailed(true);
+      setMembersOnly(false);
+    } catch (err) {
+      // Post-6-done fix (2026-08-14, live walk): a member-gated refusal is not
+      // a malfunction — honest members-only copy, never the failure fallback.
+      setMembersOnly(isForbidden(err));
+      setFailed(!isForbidden(err));
     }
   }, [groupId]);
 
@@ -434,7 +440,11 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
         </p>
       )}
 
-      {failed ? (
+      {membersOnly ? (
+        <p data-testid="group-forum-members-only" className="mt-3 text-sm text-gray-500">
+          The forum is for members of this group.
+        </p>
+      ) : failed ? (
         <p data-testid="group-forum-unavailable" className="mt-3 text-sm text-gray-500">
           The forum can&apos;t be shown right now.
         </p>

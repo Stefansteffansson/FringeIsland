@@ -18,6 +18,7 @@ import type {
   GroupConversationRow,
 } from '@/lib/messages/queries';
 import { registerCacheInvalidator } from '@/lib/auth/cache-registry';
+import { HttpStatusError } from '@/lib/http/status-error';
 
 export type {
   ConversationSummary,
@@ -152,7 +153,10 @@ export async function fetchGroupConversations(
   groupId: string,
 ): Promise<{ conversations: GroupConversationRow[] }> {
   const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/conversations`);
-  if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
+  // Status carried so the section can branch honestly on a member-gated 403
+  // (post-6-done fix 2026-08-14); write paths keep plain Errors.
+  if (!res.ok)
+    throw new HttpStatusError(await errorMessage(res, `Request failed (${res.status})`), res.status);
   return (await res.json()) as { conversations: GroupConversationRow[] };
 }
 

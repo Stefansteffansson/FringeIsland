@@ -2,6 +2,10 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-14 — A group page you're not a member of stops looking broken
+
+- **Visiting a group you don't belong to no longer shows error messages.** The Forum, Announcements, and Conversations sections used to greet a non-member with *"…can't be shown right now"* — wording that reads like something is broken, when the platform was simply (and correctly) saying these areas are for members. Each section now says so plainly: *"The forum is for members of this group."* A genuine failure still shows the failure wording — the two states are no longer conflated.
+
 ## 2026-08-13 — Becoming a FIM keeps the name you signed up with ([TASK-TRX-01](../docs/planning/backlog/tasks/TASK-TRX-01-transcendence-drops-entered-identity.md) / [TASK-TRX-02](../docs/planning/backlog/tasks/TASK-TRX-02-post-transcendence-read-race-poisons-session.md))
 
 - **The name and email you enter when you become a FIM are now actually yours.** Signing up from a look-around visit used to leave your profile reading **"Mist"** — the anonymous visitor's placeholder — with no email on file, so email invitations addressed to you could never find you. The platform now carries the name and address you entered into your profile (and your personal group) the moment you become a FIM, and the one account this had already happened to has been repaired.
