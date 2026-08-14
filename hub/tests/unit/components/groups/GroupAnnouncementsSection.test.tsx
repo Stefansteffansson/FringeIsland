@@ -1,4 +1,5 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { HttpStatusError } from '@/lib/http/status-error';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { Announcement } from '@/lib/announcements/queries';
@@ -175,5 +176,21 @@ describe('GroupAnnouncementsSection', () => {
     expect(await screen.findByText('Older notice')).toBeInTheDocument();
     // keyset continuation is called with the oldest loaded created_at
     expect(mockClient.fetchGroupAnnouncements).toHaveBeenLastCalledWith('g1', '2026-07-20T10:19:00Z');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Post-6-done fix (2026-08-14, live walk): same-page sibling of the forum's
+// members-only honesty — a 403 is a refusal, not a failure. Red-first.
+// ---------------------------------------------------------------------------
+describe('members-only honesty (post-6-done fix 2026-08-14)', () => {
+  it('renders members-only copy when the read is refused (403), never the failure fallback', async () => {
+    mockClient.fetchGroupAnnouncements.mockRejectedValue(new HttpStatusError('Not allowed', 403));
+    render(<GroupAnnouncementsSection groupId="g1" />);
+    expect(await screen.findByTestId('group-announcements-members-only')).toBeInTheDocument();
+    expect(screen.getByTestId('group-announcements-members-only')).toHaveTextContent(
+      'Announcements are for members of this group.',
+    );
+    expect(screen.queryByTestId('group-announcements-unavailable')).toBeNull();
   });
 });

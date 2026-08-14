@@ -10,6 +10,7 @@ import {
   type GroupConversationRow,
 } from '@/lib/messages/client';
 import { fetchMyPermissions } from '@/lib/groups/client';
+import { isForbidden } from '@/lib/http/status-error';
 
 /**
  * FEAT-H025 STORY-6 — the group page's Conversations panel (COM-15, CB-7).
@@ -24,6 +25,7 @@ export function GroupConversationsSection({ groupId }: { groupId: string }) {
   const router = useRouter();
   const [rows, setRows] = useState<GroupConversationRow[] | null>(null);
   const [failed, setFailed] = useState(false);
+  const [membersOnly, setMembersOnly] = useState(false);
   const [canCreate, setCanCreate] = useState(false);
   const [creating, setCreating] = useState(false);
   const [title, setTitle] = useState('');
@@ -35,8 +37,12 @@ export function GroupConversationsSection({ groupId }: { groupId: string }) {
       const listing = await fetchGroupConversations(groupId);
       setRows(listing.conversations);
       setFailed(false);
-    } catch {
-      setFailed(true);
+      setMembersOnly(false);
+    } catch (err) {
+      // Post-6-done fix (2026-08-14, live walk): a member-gated refusal is not
+      // a malfunction — honest members-only copy, never the failure fallback.
+      setMembersOnly(isForbidden(err));
+      setFailed(!isForbidden(err));
     }
   }, [groupId]);
 
@@ -149,7 +155,11 @@ export function GroupConversationsSection({ groupId }: { groupId: string }) {
         </p>
       )}
 
-      {failed ? (
+      {membersOnly ? (
+        <p data-testid="group-conversations-members-only" className="mt-3 text-sm text-gray-500">
+          Group conversations are for members of this group.
+        </p>
+      ) : failed ? (
         <p data-testid="group-conversations-unavailable" className="mt-3 text-sm text-gray-500">
           The group&apos;s conversations can&apos;t be shown right now.
         </p>

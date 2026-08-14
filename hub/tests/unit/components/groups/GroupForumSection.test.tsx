@@ -1,4 +1,5 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { HttpStatusError } from '@/lib/http/status-error';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ForumPost } from '@/lib/forum/queries';
@@ -235,5 +236,21 @@ describe('GroupForumSection', () => {
 
     expect(mockForum.dropGroup).toHaveBeenCalledWith('g1');
     expect(await screen.findByText('caught up thread')).toBeInTheDocument();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Post-6-done fix (2026-08-14, live walk — TASK-ACT-01's sibling finding): a
+// 403 on the member-gated read is a refusal, not a failure. Red-first.
+// ---------------------------------------------------------------------------
+describe('members-only honesty (post-6-done fix 2026-08-14)', () => {
+  it('renders members-only copy when the read is refused (403), never the failure fallback', async () => {
+    mockForum.fetchForum.mockRejectedValue(new HttpStatusError('Not allowed', 403));
+    render(<GroupForumSection groupId="g1" />);
+    expect(await screen.findByTestId('group-forum-members-only')).toBeInTheDocument();
+    expect(screen.getByTestId('group-forum-members-only')).toHaveTextContent(
+      'The forum is for members of this group.',
+    );
+    expect(screen.queryByTestId('group-forum-unavailable')).toBeNull();
   });
 });
