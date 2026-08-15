@@ -9,8 +9,10 @@ import { requestDelete } from '@/lib/account/lifecycleClient';
  * multi-step surface — never a one-click destruction:
  *   1. What this means — the honest F-2 split: what is erased (journal, journey
  *      record) and what remains for others, attributed "Former member"
- *      (forum posts, messages). Immediate and irreversible (F-3 — no grace
- *      period, no countdown).
+ *      (forum posts, messages). The content erasure is immediate and
+ *      irreversible; the ACCOUNT is scheduled for permanent deletion with a
+ *      restore door until the date (TASK-IDN-01 amended the original F-3
+ *      "no grace period" posture — migration 20260815210000).
  *   2. The export offer — a working path to the FEAT-H010 download, reachable
  *      before any destructive control (CB-6: access before erasure; never
  *      gated, even if the member exported yesterday).
@@ -57,14 +59,19 @@ export function DeleteAccountCeremony({ onCancel }: { onCancel: () => void }) {
 
       <div data-testid="delete-consequences" className="mt-3 space-y-2 text-sm text-red-900">
         <p>
-          This is <strong>immediate and cannot be undone</strong>. Your private journal and your
-          journey record are <strong>erased</strong>. Your groups see you leave the way the
-          platform always handles a departure.
+          The erasure is <strong>immediate and cannot be undone</strong>: your private journal and
+          your journey record are erased now, and your groups see you leave the way the platform
+          always handles a departure.
         </p>
         <p>
           What you wrote to others — forum posts and messages — <strong>stays with them</strong>,
           shown as &ldquo;Former member&rdquo;. Nothing you shared is ripped out of anyone
           else&rsquo;s record.
+        </p>
+        <p>
+          Your account itself — your name and sign-in — is then{' '}
+          <strong>scheduled for permanent deletion</strong>. Until the scheduled date, signing
+          back in will offer to restore it; after that, everything goes for good.
         </p>
       </div>
 

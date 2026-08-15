@@ -3,6 +3,7 @@ import type { Identity } from '@/lib/auth/mist';
 import type { AccountState } from '@/lib/account/queries';
 import { AccountStateSurface } from '@/components/account/AccountStateSurface';
 import { PausedAccountSurface } from '@/components/account/PausedAccountSurface';
+import { DecommissionedAccountSurface } from '@/components/account/DecommissionedAccountSurface';
 
 /**
  * FEAT-H006 — render account state (IDN-9). Pure branch over the resolved
@@ -90,15 +91,10 @@ export function AccountStateView({
         />
       );
     case 'decommissioned':
-      return (
-        <AccountStateSurface
-          testId="account-closed-surface"
-          title="This account is closed"
-          message="This account has been permanently closed. It can't be reopened."
-          onSignOut={onSignOut}
-          signOutLabel="Return to the front page"
-        />
-      );
+      // TASK-IDN-01: the terminal card is conditionally false now — a
+      // member-origin deletion inside its grace window can be restored. The
+      // surface probes the substrate and renders door or wall accordingly.
+      return <DecommissionedAccountSurface onSignOut={onSignOut} />;
     default:
       return (
         <AccountStateSurface
