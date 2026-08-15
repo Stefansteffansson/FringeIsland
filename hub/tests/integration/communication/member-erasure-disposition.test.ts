@@ -25,6 +25,14 @@
  * before and after: it asserts an invariant the migration must not break —
  * exit is a removal, not an erasure, consistent with its own posture of leaving
  * the journal and enrolments standing (20260801190000:232-241).
+ *
+ * TASK-DM-02 (added 2026-08-15, red-first, pre-migration 20260815190000): the
+ * C-B display law says erased authors render 'Unknown', never the sentinel's
+ * literal (20260720120000:41-43) — but the scrub-in-place shape passes the
+ * ladder's rung-3 gate, so the survivor's view served "[Deleted User]" on the
+ * bylines (senders), the participants array (thread title), and the inbox's
+ * other_participant_name. Expected red class: behavioural — the scrubbed
+ * literal with attribution 'active' where 'Unknown'/'unknown' is ruled.
  */
 
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
@@ -306,6 +314,54 @@ describe('FEAT-PD018 — member-erasure conversation disposition (content-level 
       expect(mine?.content).toContain('from-b self-delete');
       expect(theirs).toBeDefined();
       expect(theirs?.content).toBeNull();
+    });
+  });
+
+  // ------------------------------------------------------------- TASK-DM-02
+  // Runs after STORY-1 erased the leaver: the survivor's reads must say
+  // 'Unknown' everywhere — the sentinel's literal is a lifecycle leak.
+  describe('TASK-DM-02 — the survivor never learns what the other member did', () => {
+    it('resolves the erased author to Unknown on bylines and in the participants array', async () => {
+      const c = await asUser(survivor);
+      const { data, error } = await c.rpc('get_conversation_detail', {
+        p_conversation_id: dmSelfDelete,
+      });
+      expect(error).toBeNull();
+
+      const payload = data as {
+        senders: Record<string, { display_name: string; attribution: string }>;
+        participants: Array<{ participant_group_id: string; name: string | null; is_me: boolean }>;
+      };
+
+      // The erased leaver: rung 3, both keys — never the scrubbed literal.
+      expect(payload.senders[leaver.personalGroupId]).toEqual({
+        display_name: 'Unknown',
+        attribution: 'unknown',
+      });
+      const leaverParticipant = payload.participants.find(
+        (p) => p.participant_group_id === leaver.personalGroupId,
+      );
+      expect(leaverParticipant?.name).toBe('Unknown');
+
+      // The survivor is untouched: still themselves, still 'active'.
+      expect(payload.senders[survivor.personalGroupId]?.attribution).toBe('active');
+
+      // The law itself, payload-wide: the literal appears nowhere.
+      expect(JSON.stringify(data)).not.toContain('[Deleted User]');
+    });
+
+    it('names the counterpart Unknown in the inbox — the thread-title leak', async () => {
+      const c = await asUser(survivor);
+      const { data, error } = await c.rpc('get_my_conversations');
+      expect(error).toBeNull();
+
+      const rows = (
+        data as { conversations: Array<{ id: string; other_participant_name: string | null }> }
+      ).conversations;
+      const dm = rows.find((r) => r.id === dmSelfDelete);
+      expect(dm).toBeDefined();
+      expect(dm!.other_participant_name).toBe('Unknown');
+      expect(JSON.stringify(data)).not.toContain('[Deleted User]');
     });
   });
 
