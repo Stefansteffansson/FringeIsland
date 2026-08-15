@@ -1,7 +1,7 @@
 ---
 id: TASK-ACT-01
 title: Acting-as stops at the permissions panel — a wielded group's content powers have no doors
-status: registered — forward item, needs a decomposition board before any build (Stefan, 2026-08-14); REAFFIRMED same day ("what is the meaning of having a representative if they cannot act or view?") — the walk judged current representation near-hollow; priority raised
+status: registered — forward item, needs a decomposition board before any build (Stefan, 2026-08-14); REAFFIRMED same day ("what is the meaning of having a representative if they cannot act or view?") — the walk judged current representation near-hollow; priority raised. BOARD SETTLED (Stefan, 2026-08-15): see "The board, settled" — decomposition may proceed
 priority_note: raised medium -> high on Stefan's reaffirmation
 assigned_to: unassigned
 priority: medium
@@ -27,7 +27,12 @@ estimated_hours: unestimated — decomposition first
 
 - **Platform half:** the DS-5 content contracts (forum read/post/reply, group conversations, group announcements at minimum) gain the acting parameter with the ADR-U041 wielding gate (`act_as_group` held by the caller IN the acting group; the acting group's own powers checked in the context group — the pattern the role contracts already use). Authorship fits the substrate as-is: posts/messages already carry `author_group_id`/`sender_group_id`, so a wielded write stamps the acting group.
 - **Hub half:** content affordances key on the substitution permissions while a hat is selected (composer render, refused-state copy naming the hat); attribution renders the group as author.
-- **Design questions for the board:** which contract families are in scope first; whether a wielded READ (forum as the group) is wanted or only writes; per-surface copy for "acting as" states; notification routing when a group authors (V3).
+- ~~Design questions for the board~~ **The board, settled (Stefan, 2026-08-15):**
+  1. **Wielded scope: read + write.** The reaffirmation named viewing explicitly ("act **or view**") — `view_forum` is honoured as a wielded power, not just the write family.
+  2. **Family order: forum → group conversations → announcements** (the walk's exact frustration first).
+  3. **Dead-letter delivery: fan-out expansion to the nested group's `act_as_group` holders ∪ its Stewards, one level, no recursion.** The people who can answer for the group hear what is addressed to it; Stewards as the floor so a group with no wielder still cannot accumulate dead letters.
+  4. **Hat-lifecycle staleness rides the delivery mechanism** — the pause notice reaching a person is the signal that refreshes open pages (house notification → `refreshNavigation` path). No separate build.
+  - Still open for the decomposition itself: per-surface copy for "acting as" states; notification routing when a group authors (V3).
 
 ## Second verified finding (2026-08-14, same walk): group-addressed notifications are dead letters
 

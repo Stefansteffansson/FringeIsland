@@ -1,7 +1,7 @@
 ---
 id: TASK-IDN-01
 title: Self-deletion is half the standard pattern — no restore door, no scheduled final wipe
-status: registered — RULED (Stefan, 2026-08-15): adopt the grace-period blueprint; "we'll build it soon"
+status: registered — RULED (Stefan, 2026-08-15): adopt the grace-period blueprint; "we'll build it soon". BOARD SETTLED (Stefan, 2026-08-15, second session): see "The board, settled" below — build unblocked behind the fresh-slice verdict
 assigned_to: unassigned
 priority: high
 feature: FEAT-PC002-adjacent (reaper) + PC-2 Identity lifecycle
@@ -27,7 +27,12 @@ estimated_hours: unestimated — needs a small board (grace length + restore UX 
 
 - The platform already owns both halves: the Mist reaper is the scheduled-sweep precedent; `admin_hard_delete_user` is the wipe. The new piece is the join: a sweep predicate (`is_decommissioned AND deactivation_origin='member' AND status_changed past window`) + the restore contract + surfaces.
 - Needs a `deletion_scheduled_at`-style fact (or derive from the decommission timestamp) — schema-gated.
-- Board questions: grace length (default 30d), what the restore door restores exactly (roles/memberships survive the window untouched — they do today), whether a suppression record (hashed email) survives the wipe for abuse-lock, notification/email of the schedule (V3 — email channel not live).
+- ~~Board questions~~ **The board, settled (Stefan, 2026-08-15):**
+  1. **Grace length: 30 days**, confirmed.
+  2. **Restore returns the account whole — identity is stashed at click.** `delete_own_account` keeps the pre-scrub name/nickname (stash fact, wiped by the reaper); the restore door unstashes. Roles/memberships survive the window untouched, as they do today.
+  3. **Timestamp: new `decommissioned_at` column** (verified 2026-08-15: no decommission timestamp exists anywhere in the schema — `deactivation_origin` is bare TEXT). The deletion date is derived (+30d), not stored twice. Schema-gated.
+  4. **No suppression record.** No abuse-lock mechanism exists to consume a hashed email; the wipe stays total (GDPR-cleanest). Revisit only if abuse appears.
+  5. **Schedule notice is in-app copy naming the date** (the ruling's item 4); email of the schedule rides V3 (channel not live), deferred.
 - Related display fix ships separately: [TASK-DM-02](TASK-DM-02-erased-author-renders-forbidden-literal.md).
 
 ## Acceptance criteria (sketch — the board finalises)
