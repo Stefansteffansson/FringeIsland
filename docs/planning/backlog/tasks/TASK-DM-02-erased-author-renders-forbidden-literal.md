@@ -1,7 +1,7 @@
 ---
 id: TASK-DM-02
 title: An erased author renders the forbidden literal "[Deleted User]" — the C-B display law says "Unknown"
-status: registered (2026-08-15) — small corrective; mechanism choice rides TASK-IDN-01's board
+status: registered (2026-08-15) — small corrective; mechanism RULED same day with TASK-IDN-01's board: option A (display-side), see below
 assigned_to: unassigned
 priority: medium
 feature: FEAT-PD012/DS-5 display (COM-14 attribution ladder) + PC-2 scrub mechanics
@@ -20,10 +20,10 @@ estimated_hours: 2-3 once the mechanism is chosen
 
 `delete_own_account` does not reassign authorship to the sentinel — it **scrubs in place**: Beppe's `users` row and personal group persist, renamed to `[Deleted User]`. The attribution ladder then fires **rung 1** (backing users row exists → show the privacy-shaped name) and faithfully renders the scrubbed literal. Two individually-coherent mechanisms (C-B's ladder, the IDN scrub) colliding on exactly the string the law forbade. The DM read's thread *title* resolves the participant name through the same scrubbed row.
 
-## Fix directions (pick with TASK-IDN-01's mechanism)
+## Fix direction — RULED: A (Stefan, 2026-08-15, with the IDN-01 board)
 
-- **A. Display-side:** the ladder (and the DM participant-name resolution) treats `is_decommissioned = true` as rung 3 → 'Unknown'. Works regardless of scrub mechanics; smallest diff.
-- **B. Scrub-side:** `delete_own_account` reassigns content to the sentinel (no backing row → rung 3 fires naturally) instead of renaming in place. Heavier; aligns with what `admin_hard_delete_user` produces, and IDN-01's final wipe converges the states anyway.
+- **A. Display-side (CHOSEN):** the ladder (and the DM participant-name resolution) treats `is_decommissioned = true` as rung 3 → 'Unknown'. Works regardless of scrub mechanics; smallest diff. **Decisive under the grace blueprint:** B's click-time reassignment to the sentinel would have to be clawed back on restore, and A is what makes a decommissioned-during-grace member render correctly anyway.
+- ~~**B. Scrub-side:**~~ rejected for the click path — `delete_own_account` reassigning content to the sentinel fights the restore door. IDN-01's final wipe still produces the sentinel state naturally (via `admin_hard_delete_user` mechanics), so the two states converge after the window.
 - Either way, red-first: a cell that self-deletes a fixture and asserts the survivor's read returns `Unknown`/`unknown` attribution — never the literal.
 
 ## Related
