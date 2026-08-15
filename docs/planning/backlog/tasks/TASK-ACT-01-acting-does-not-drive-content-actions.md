@@ -1,7 +1,7 @@
 ---
 id: TASK-ACT-01
 title: Acting-as stops at the permissions panel — a wielded group's content powers have no doors
-status: registered — forward item, needs a decomposition board before any build (Stefan, 2026-08-14); REAFFIRMED same day ("what is the meaning of having a representative if they cannot act or view?") — the walk judged current representation near-hollow; priority raised. BOARD SETTLED (Stefan, 2026-08-15): see "The board, settled" — decomposition may proceed
+status: registered — forward item, needs a decomposition board before any build (Stefan, 2026-08-14); REAFFIRMED same day ("what is the meaning of having a representative if they cannot act or view?") — the walk judged current representation near-hollow; priority raised. BOARD SETTLED (Stefan, 2026-08-15): see "The board, settled". DECOMPOSED same day into [FEAT-PD019](../../../platform/domain/features/FEAT-PD019-wielded-content-authorship-acting-in-content-contracts.md) (wielded content contracts, forum tranche first, 4-ready), [FEAT-PD020](../../../platform/domain/features/FEAT-PD020-group-addressed-notification-delivery.md) (dead-letter expansion + hat-staleness rider, 4-ready), and [FEAT-H046](../../../products/hub/features/FEAT-H046-wielded-content-affordances.md) (surface half, 4-ready) — this task's remaining life is as the finding record; the build queue lives in the specs
 priority_note: raised medium -> high on Stefan's reaffirmation
 assigned_to: unassigned
 priority: medium
