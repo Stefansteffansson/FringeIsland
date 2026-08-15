@@ -1,5 +1,5 @@
 import { describe, it, expect } from '@jest/globals';
-import { isManagementApiTransient } from '@/tests/helpers/supabase';
+import { isManagementApiTransient, isManagementApiThrottled } from '@/tests/helpers/supabase';
 
 /**
  * TASK-INT-04 — the retry predicate guarding `runAdminSql`.
@@ -139,5 +139,42 @@ describe('isManagementApiTransient — TASK-INT-04 retry predicate', () => {
     it('a password-reset message is not a connection reset', () => {
       expect(isManagementApiTransient('{"message":"password reset required"}')).toBe(false);
     });
+  });
+});
+
+/**
+ * The throttle predicate — written RED-FIRST 2026-08-15, unlike its
+ * test-after sibling above.
+ *
+ * Why it is a SEPARATE predicate and not another line in the transient one:
+ * the two classes need opposite backoffs. A transport flake heals in
+ * milliseconds (250ms·2^n is right); a burnt rate-limit window heals in tens
+ * of seconds — retrying it on the transient schedule burns all four attempts
+ * inside two seconds and reads as a mass red. Measured twice on 2026-08-15
+ * (both notifications-slice runs at main HEAD): the slice's OWN runAdminSql
+ * volume exhausts the Management-API budget mid-run and whichever suites run
+ * LAST red out, 100% of failures carrying the one signature below. The
+ * separation keeps each predicate's over-matching risk independently pinned.
+ */
+describe('isManagementApiThrottled — the rate-limit branch (TASK-IDN-01 session, 2026-08-15)', () => {
+  it('matches the exact captured signature (26 hits, run 1; 9 hits, run 2)', () => {
+    expect(
+      isManagementApiThrottled('{"message":"ThrottlerException: Too Many Requests"}'),
+    ).toBe(true);
+  });
+
+  it('does NOT match genuine SQL errors or auth failures', () => {
+    expect(isManagementApiThrottled('{"message":"ERROR:  42883: function x() does not exist"}')).toBe(false);
+    expect(isManagementApiThrottled('{"message":"Unauthorized"}')).toBe(false);
+    expect(isManagementApiThrottled('')).toBe(false);
+  });
+
+  it('the two classes stay disjoint — throttle is not "transient" and vice versa', () => {
+    expect(
+      isManagementApiTransient('{"message":"ThrottlerException: Too Many Requests"}'),
+    ).toBe(false);
+    expect(
+      isManagementApiThrottled('{"message":"upstream connect error or disconnect/reset before headers"}'),
+    ).toBe(false);
   });
 });
