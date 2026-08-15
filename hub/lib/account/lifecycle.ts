@@ -41,9 +41,11 @@ export async function reactivateOwnAccount(
 }
 
 /**
- * The terminal departure (F-3: immediate, irreversible). The platform runs the
+ * The terminal departure (F-3, amended by TASK-IDN-01): the platform runs the
  * membership walk, the F-2 erasure/retention split, decommission + scrub, and
- * ends every session in one transaction.
+ * ends every session in one transaction — and that click now STARTS the
+ * 30-day grace window (migration 20260815210000). The content consequences
+ * stay immediate; the account itself is restorable until the scheduled wipe.
  */
 export async function deleteOwnAccount(
   supabase: SupabaseClient,
@@ -51,4 +53,28 @@ export async function deleteOwnAccount(
   const { data, error } = await supabase.rpc('delete_own_account');
   if (error) throw error;
   return data as unknown as DeleteAccountResult;
+}
+
+/** TASK-IDN-01: the restore-window facts for the caller's own account. */
+export interface RestoreState {
+  restorable: boolean;
+  decommissioned_at?: string | null;
+  scheduled_deletion_at: string | null;
+}
+
+/** TASK-IDN-01: what the restore door renders from — own row, substrate truth. */
+export async function getOwnRestoreState(supabase: SupabaseClient): Promise<RestoreState> {
+  const { data, error } = await supabase.rpc('get_own_restore_state');
+  if (error) throw error;
+  return data as unknown as RestoreState;
+}
+
+/**
+ * TASK-IDN-01: the grace-window restore — member-origin decommission only,
+ * refused past the window (P0001 with the substrate's honest reason).
+ * Restores identity; groups and content were left/dispositioned at click.
+ */
+export async function restoreOwnAccount(supabase: SupabaseClient): Promise<void> {
+  const { error } = await supabase.rpc('restore_own_account');
+  if (error) throw error;
 }

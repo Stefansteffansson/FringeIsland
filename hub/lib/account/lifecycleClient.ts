@@ -35,3 +35,25 @@ export function requestDelete(): Promise<void> {
 export function requestReactivate(): Promise<void> {
   return post('/api/account/reactivate', 'Could not reactivate your account');
 }
+
+/** TASK-IDN-01: the restore-window facts for the decommissioned surface. */
+export interface RestoreState {
+  restorable: boolean;
+  decommissioned_at?: string | null;
+  scheduled_deletion_at: string | null;
+}
+
+/** TASK-IDN-01: probe whether this account's grace window is still open. */
+export async function fetchRestoreState(): Promise<RestoreState> {
+  const res = await fetch('/api/account/restore-state');
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, 'Could not check whether this account can be restored'));
+  }
+  const body = (await res.json()) as { state: RestoreState };
+  return body.state;
+}
+
+/** TASK-IDN-01: restore my account within the grace window. */
+export function requestRestore(): Promise<void> {
+  return post('/api/account/restore', 'Could not restore your account');
+}

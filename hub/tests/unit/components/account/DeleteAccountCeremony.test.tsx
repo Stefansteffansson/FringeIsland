@@ -89,3 +89,24 @@ describe('DeleteAccountCeremony (FEAT-H029)', () => {
     expect(requestDelete).not.toHaveBeenCalled();
   });
 });
+
+/**
+ * TASK-IDN-01 (red-first, 2026-08-15): the grace ruling makes the old
+ * account-level "immediate and cannot be undone" claim FALSE — the account is
+ * now scheduled for permanent deletion with a restore door until then. The
+ * CONTENT half stays exactly as harsh as before (journal/journey erased now,
+ * groups left now — that part cannot be undone) and the pinned phrase stays,
+ * scoped to what it is still true of.
+ */
+describe('TASK-IDN-01 — the ceremony tells the grace truth', () => {
+  it('names the schedule and the way back; keeps irreversibility scoped to the content', () => {
+    render(<DeleteAccountCeremony onCancel={jest.fn()} />);
+    const consequences = screen.getByTestId('delete-consequences');
+    // The account itself is SCHEDULED, not instantly gone:
+    expect(consequences).toHaveTextContent(/scheduled for permanent deletion/i);
+    // The way back is named:
+    expect(consequences).toHaveTextContent(/sign(ing)? back in/i);
+    // The content erasure stays immediate and final — the pinned phrase holds:
+    expect(consequences).toHaveTextContent(/cannot be undone/i);
+  });
+});

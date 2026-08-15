@@ -24,6 +24,20 @@ jest.mock('next/navigation', () => ({
 jest.mock('@/lib/account/AccountStateContext', () => ({
   useAccountState: () => ({ state: null, loading: false, error: null, reload: jest.fn() }),
 }));
+// TASK-IDN-01: the decommissioned branch now renders DecommissionedAccountSurface,
+// which probes the restore state through the BFF on mount. This file tests the
+// VIEW's branching; the surface's own modes live in
+// DecommissionedAccountSurface.test.tsx. Resolve the probe as not-restorable so
+// STORY-3's terminal card renders as before.
+jest.mock('@/lib/account/lifecycleClient', () => ({
+  requestPause: jest.fn(),
+  requestDelete: jest.fn(),
+  requestReactivate: jest.fn(),
+  requestRestore: jest.fn(),
+  fetchRestoreState: jest.fn(() =>
+    Promise.resolve({ restorable: false, scheduled_deletion_at: null }),
+  ),
+}));
 
 function st(state: string): AccountState {
   return {
@@ -120,13 +134,16 @@ describe('AccountStateView (FEAT-H006 — render account state)', () => {
     expect(screen.getByRole('button', { name: /sign out/i })).toBeInTheDocument();
   });
 
-  it('STORY-3: a decommissioned FIM sees a terminal closed surface, distinct from suspended, no reactivation', () => {
+  it('STORY-3: a decommissioned FIM sees a terminal closed surface, distinct from suspended, no reactivation', async () => {
+    // ADAPTATION (TASK-IDN-01, labelled): the branch now probes the restore
+    // state first (mocked not-restorable above), so the terminal card arrives
+    // async. Everything it asserts still holds for a non-restorable account.
     render(
       <AccountStateView identity="fim" loading={false} error={null} state={st('decommissioned')} onRetry={noop} onSignOut={noop}>
         {children}
       </AccountStateView>,
     );
-    expect(screen.getByTestId('account-closed-surface')).toBeInTheDocument();
+    expect(await screen.findByTestId('account-closed-surface')).toBeInTheDocument();
     expect(screen.queryByTestId('account-suspended-surface')).not.toBeInTheDocument();
     expect(screen.queryByTestId('app-children')).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /reactivate/i })).not.toBeInTheDocument();

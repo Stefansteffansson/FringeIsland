@@ -1,7 +1,7 @@
 ---
 id: TASK-IDN-01
 title: Self-deletion is half the standard pattern — no restore door, no scheduled final wipe
-status: registered — RULED (Stefan, 2026-08-15): adopt the grace-period blueprint; "we'll build it soon". BOARD SETTLED (Stefan, 2026-08-15, second session): see "The board, settled" below — build unblocked behind the fresh-slice verdict
+status: BUILT (2026-08-15, same session as the board) — migration `20260815210000`: stash trigger + `decommissioned_at` + `get_own_restore_state` + `restore_own_account` + the extracted `_pc2_hard_erase_user` primitive + `reap_expired_member_deletions` (pg_cron hourly, job 'member-deletion-reaper'). Hub half: restore door surface (`DecommissionedAccountSurface`), BFF routes `/api/account/restore-state` + `/api/account/restore`, grace-honest ceremony copy. Red-first both tiers: integration 6 reds → 8/8; unit 3 reds → 41/41 account, 1465/1465 full; siblings (admin hard-delete wrapper, lifecycle doors, fim erasure) green; `next build` exit 0. PR held at the schema gate. Deferred to gate execution: the E2E journey (delete → re-login → restore) — labelled, per the H018 journey-tier pattern
 assigned_to: unassigned
 priority: high
 feature: FEAT-PC002-adjacent (reaper) + PC-2 Identity lifecycle
@@ -29,7 +29,7 @@ estimated_hours: unestimated — needs a small board (grace length + restore UX 
 - Needs a `deletion_scheduled_at`-style fact (or derive from the decommission timestamp) — schema-gated.
 - ~~Board questions~~ **The board, settled (Stefan, 2026-08-15):**
   1. **Grace length: 30 days**, confirmed.
-  2. **Restore returns the account whole — identity is stashed at click.** `delete_own_account` keeps the pre-scrub name/nickname (stash fact, wiped by the reaper); the restore door unstashes. Roles/memberships survive the window untouched, as they do today.
+  2. **Restore returns the identity whole — stashed at click.** `delete_own_account` keeps the pre-scrub identity (full_name/nickname/bio/avatar, wiped by the reaper); the restore door unstashes. **Correction (disk-verified 2026-08-15): memberships do NOT survive the click** — the membership walk exits every active group at delete time (`20260812120000:268-430`, `groups_exited` in the audit row), and the DS-3/5/7 dispositions fire at click too. The ruling keeps that click behaviour; restore therefore returns the account's identity, not its social state — the restore copy says so honestly. (The earlier "roles/memberships survive the window untouched" note was wrong.)
   3. **Timestamp: new `decommissioned_at` column** (verified 2026-08-15: no decommission timestamp exists anywhere in the schema — `deactivation_origin` is bare TEXT). The deletion date is derived (+30d), not stored twice. Schema-gated.
   4. **No suppression record.** No abuse-lock mechanism exists to consume a hashed email; the wipe stays total (GDPR-cleanest). Revisit only if abuse appears.
   5. **Schedule notice is in-app copy naming the date** (the ruling's item 4); email of the schedule rides V3 (channel not live), deferred.
