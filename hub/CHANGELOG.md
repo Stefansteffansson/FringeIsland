@@ -2,6 +2,11 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-15 — "Roles & permissions" now means your roles, and preferences got a door
+
+- **The notification switch that says "Roles & permissions" now governs role changes that happen to you.** Being assigned or losing a role used to ride the "Group & membership updates" switch — so muting the one you'd never guess silenced the news you were looking for, and ticking "Roles & permissions" didn't bring it back. Personal role news now lives where every member looks first, alongside role-catalogue news. Joins, leaves and removals stay under "Group & membership updates".
+- **Notification preferences are now reachable from the app.** The preferences page existed, but no link led to it — you had to know the address. The Notifications page header now carries a **Preferences** link.
+
 ## 2026-08-14 — A group page you're not a member of stops looking broken
 
 - **Visiting a group you don't belong to no longer shows error messages.** The Forum, Announcements, and Conversations sections used to greet a non-member with *"…can't be shown right now"* — wording that reads like something is broken, when the platform was simply (and correctly) saying these areas are for members. Each section now says so plainly: *"The forum is for members of this group."* A genuine failure still shows the failure wording — the two states are no longer conflated.

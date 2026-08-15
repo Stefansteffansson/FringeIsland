@@ -459,3 +459,16 @@ describe('NotificationsPage (/notifications)', () => {
     window.removeEventListener('notificationsChanged', heard);
   });
 });
+
+// ---------------------------------------------------------------------------
+// N-D corrective (2026-08-15, live walk): /notifications/preferences existed
+// but nothing in the app linked to it — reachable by typed URL only. The inbox
+// header is the door. TDD red-first.
+// ---------------------------------------------------------------------------
+describe('preferences door (post-6-done fix 2026-08-15)', () => {
+  it('the inbox header links to notification preferences', async () => {
+    render(<NotificationsPage />);
+    const link = await screen.findByRole('link', { name: /preferences/i });
+    expect(link).toHaveAttribute('href', '/notifications/preferences');
+  });
+});
