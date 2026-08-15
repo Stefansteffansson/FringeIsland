@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed — personal role news moves to "Roles & permissions"; the preferences page gets its door (2026-08-15)
+- **`role_assigned`/`role_removed` remapped `membership` → `roles`** (data migration `20260815143000`, ruled option A on the 2026-08-15 live walk). A member assigned Steward looked under "Roles & permissions", found it ticked, got silence — personal role news was filed under "Group & membership updates" while `roles` held only the template-catalog family. The registry now files ALL role news under `roles`; suppression semantics follow. Red-first mapping cell in `notification-contracts.test.ts`; sweep in the migration header (dispatcher suite's muted-kind fixture is `member_left` — unaffected).
+- **The `/notifications/preferences` page was reachable by typed URL only** — no in-app link existed. The inbox header now carries the door (red-first unit cell).
+- **Labelled adaptations (3 cells)**: the dispatcher suite pinned `realtime_hint_platform_announcements` at its seed default `'false'`, and went red when the 2026-08-14 ruling turned platform-announcement bells on. The regression guard now proves the *mechanism* under both config states (set → assert → restore); the two policy cells assert mirror-the-disk / before-equals-after instead of the literal. The config flip itself predates this entry and is recorded in the session bridge.
+
 ### Fixed — group-page sections tell non-members the truth (2026-08-14)
 - **A member-gated refusal no longer renders as a malfunction.** The group page's Forum / Announcements / Conversations sections showed the generic *"can't be shown right now"* failure fallback to a permission-refused non-member (live-walk finding, beside [TASK-ACT-01](docs/planning/backlog/tasks/TASK-ACT-01-acting-does-not-drive-content-actions.md)). The three section reads now carry the BFF status (`HttpStatusError`, new `hub/lib/http/status-error.ts`) and a 403 renders honest members-only copy; genuine failures keep the fallback. Red-first (3 cells); `GroupConversationsSection` gained its first unit harness (its generic-failure cell labelled test-after). Unit tier 1454/1454.
 

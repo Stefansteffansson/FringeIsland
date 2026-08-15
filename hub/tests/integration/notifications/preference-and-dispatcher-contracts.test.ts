@@ -714,19 +714,36 @@ describe('FEAT-PD016 — notification preferences & the shared suppression dispa
         config: { key: string; value: string }[];
         categories: { key: string; nudge: boolean }[];
       };
+      // ADAPTED 2026-08-15: assert the read MIRRORS the disk, not the seed
+      // literal — the value is a ruled environment setting, not a constant.
+      const cfgOnDisk = await runAdminSql(
+        `SELECT value FROM public.ds5_config WHERE key = 'realtime_hint_platform_announcements';`,
+      );
       expect(
         doc.config.some(
-          (c) => c.key === 'realtime_hint_platform_announcements' && c.value === 'false',
+          (c) =>
+            c.key === 'realtime_hint_platform_announcements' &&
+            c.value === (cfgOnDisk[0] as { value: string }).value,
         ),
       ).toBe(true);
       expect(doc.categories.length).toBeGreaterThanOrEqual(6);
     });
 
     it('a non-admin cannot change the nudge policy — the gate is the contract', async () => {
+      // ADAPTED 2026-08-15: the refused write now attempts the OPPOSITE of the
+      // current value and asserts before == after — sharper than pinning the
+      // seed literal, and true under any ruled environment setting.
+      const beforeCfg = await runAdminSql(
+        `SELECT value FROM public.ds5_config
+          WHERE key = 'realtime_hint_platform_announcements';`,
+      );
+      const current = (beforeCfg[0] as { value: string }).value;
+      const flipped = current === 'true' ? 'false' : 'true';
+
       const c = await asUser(member);
       const { error: policyErr } = await c.rpc('set_notification_nudge_policy', {
         p_key: 'realtime_hint_platform_announcements',
-        p_value: 'true',
+        p_value: flipped,
       });
       expect((policyErr as { code?: string } | null)?.code).toBe('42501');
 
@@ -736,12 +753,12 @@ describe('FEAT-PD016 — notification preferences & the shared suppression dispa
       });
       expect((categoryErr as { code?: string } | null)?.code).toBe('42501');
 
-      // Unchanged on disk.
+      // Unchanged on disk — the refused write left no trace.
       const cfg = await runAdminSql(
         `SELECT value FROM public.ds5_config
           WHERE key = 'realtime_hint_platform_announcements';`,
       );
-      expect((cfg[0] as { value: string }).value).toBe('false');
+      expect((cfg[0] as { value: string }).value).toBe(current);
     });
 
     it('the reach count is a real measured number, not a warning', async () => {
@@ -790,12 +807,37 @@ describe('FEAT-PD016 — notification preferences & the shared suppression dispa
       expect(['PGRST202', '42501']).toContain((error as { code?: string }).code);
     });
 
-    it('N-C’s platform-announcement suppression still holds — this feature must not regress it', async () => {
+    // ADAPTED 2026-08-15: this cell pinned the SEED default ('false' -> no
+    // hint), and went red the day the dev environment ruled the switch on
+    // (Stefan, 2026-08-14 — platform-announcement bells live). The guard's real
+    // intent is the MECHANISM — the hint follows the config — so it now proves
+    // both states explicitly and restores whatever the environment had.
+    it('the platform-announcement hint follows the config switch — suppressed at false, emitted at true', async () => {
       const authUid = member.user.id;
-      const before = await hintCount(authUid);
-      await rawInsert(member.personalGroupId, 'announcement', { scope_kind: 'platform' });
-      // Config is 'false': the row is delivered, the hint is not emitted.
-      expect(await hintCount(authUid)).toBe(before);
+      const prior = await runAdminSql(
+        `SELECT value FROM public.ds5_config WHERE key = 'realtime_hint_platform_announcements';`,
+      );
+      try {
+        await runAdminSql(
+          `UPDATE public.ds5_config SET value = 'false' WHERE key = 'realtime_hint_platform_announcements';`,
+        );
+        const before = await hintCount(authUid);
+        await rawInsert(member.personalGroupId, 'announcement', { scope_kind: 'platform' });
+        // false: the row is delivered, the hint is not emitted.
+        expect(await hintCount(authUid)).toBe(before);
+
+        await runAdminSql(
+          `UPDATE public.ds5_config SET value = 'true' WHERE key = 'realtime_hint_platform_announcements';`,
+        );
+        await rawInsert(member.personalGroupId, 'announcement', { scope_kind: 'platform' });
+        // true: the hint is emitted for the same shape of row.
+        expect(await hintCount(authUid)).toBe(before + 1);
+      } finally {
+        await runAdminSql(
+          `UPDATE public.ds5_config SET value = '${(prior[0] as { value: string }).value}'
+            WHERE key = 'realtime_hint_platform_announcements';`,
+        );
+      }
     });
 
     it('an unmuted member’s notification is delivered and readable through the contract', async () => {

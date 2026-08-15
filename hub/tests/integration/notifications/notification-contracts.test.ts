@@ -225,6 +225,23 @@ describe('FEAT-PD013 — notification contracts & category registry (N-A)', () =
       }
     });
 
+    // N-D corrective (2026-08-15, live walk): a member assigned the Steward role
+    // looked under "Roles & permissions" and found silence — role_assigned/
+    // role_removed lived in `membership` while `roles` held only the template-
+    // catalog family. Ruled (Stefan, option A): personal role news joins the
+    // roles category, where every member looks first. TDD red-first: RED until
+    // the remap migration lands.
+    it('personal role news lives under Roles & permissions — role_assigned/role_removed map to the roles category', async () => {
+      const kinds = await runAdminSql(
+        `SELECT kind, category_key FROM public.notification_kinds
+          WHERE kind IN ('role_assigned','role_removed');`,
+      );
+      expect(kinds.length).toBe(2);
+      for (const k of kinds) {
+        expect(k.category_key).toBe('roles');
+      }
+    });
+
     it('every realized kind is registered — zero orphaned type strings in the delivery table', async () => {
       const orphans = await runAdminSql(
         `SELECT count(*)::int AS n

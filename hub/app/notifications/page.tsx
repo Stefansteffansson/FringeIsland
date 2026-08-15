@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { AppShell } from '@/components/shell/AppShell';
@@ -250,15 +251,25 @@ export default function NotificationsPage() {
     <AppShell title="Notifications">
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-lg font-semibold text-gray-900">Notifications</h1>
-        {rows && rows.some((r) => !r.is_read) && (
-          <button
-            type="button"
-            onClick={markAll}
+        <div className="flex items-center gap-4">
+          {rows && rows.some((r) => !r.is_read) && (
+            <button
+              type="button"
+              onClick={markAll}
+              className="text-sm font-medium text-indigo-600 hover:underline"
+            >
+              Mark all read
+            </button>
+          )}
+          {/* Post-6-done fix (2026-08-15, live walk): the preferences page
+              existed but nothing linked to it — this is the door. */}
+          <Link
+            href="/notifications/preferences"
             className="text-sm font-medium text-indigo-600 hover:underline"
           >
-            Mark all read
-          </button>
-        )}
+            Preferences
+          </Link>
+        </div>
       </div>
 
       {failed ? (
