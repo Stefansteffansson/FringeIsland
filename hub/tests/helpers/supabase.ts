@@ -381,6 +381,27 @@ export const isManagementApiTransient = (message: string): boolean =>
   /\bECONNRESET\b/.test(message) ||
   /\bETIMEDOUT\b/.test(message);
 
+/**
+ * The RATE-LIMIT class — deliberately a SEPARATE predicate, not another line
+ * in `isManagementApiTransient`, because the two classes need opposite
+ * backoffs: a transport flake heals in milliseconds; a burnt rate-limit
+ * window heals in tens of seconds, so retrying it on the 250ms·2^n schedule
+ * burns every attempt inside two seconds and the failure reads as a mass red.
+ *
+ * Measured twice at main HEAD (2026-08-15, both notifications-slice runs):
+ * a full 8-suite slice's own runAdminSql volume exhausts the Management-API
+ * budget mid-run, and whichever suites happen to run LAST red out — 26 hits
+ * in run 1, 9 in run 2, 100% of all 28 test failures carrying exactly this
+ * signature, zero genuine reds. The narrow single-signature match is the
+ * house doctrine (see the transient predicate's history above): if the API
+ * ever throttles wearing a different face, the retry warn-log shows it
+ * before anyone widens this.
+ *
+ * Exported so its over-matching risk is unit-testable without the network.
+ */
+export const isManagementApiThrottled = (message: string): boolean =>
+  /ThrottlerException: Too Many Requests/.test(message);
+
 export const runAdminSql = async (
   sql: string,
   options?: { maxRetries?: number },
@@ -431,7 +452,8 @@ export const runAdminSql = async (
     // `SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON` —
     // the same outage wearing a different message. Adding another regex would
     // have invited a third. Structure beats enumeration.
-    const retryable = threw || isManagementApiTransient(lastMessage);
+    const throttled = !threw && isManagementApiThrottled(lastMessage);
+    const retryable = threw || throttled || isManagementApiTransient(lastMessage);
     if (!retryable || attempt === maxRetries) {
       throw new Error(`runAdminSql failed: ${lastMessage}`);
     }
@@ -442,11 +464,14 @@ export const runAdminSql = async (
     // accumulate unnoticed (TASK-INT-03). This line is the instrument: if this
     // flake ever changes character, the frequency is in the run log.
     console.warn(
-      `runAdminSql: transient ${threw ? 'transport' : 'API'} failure, ` +
+      `runAdminSql: ${throttled ? 'RATE-LIMITED' : `transient ${threw ? 'transport' : 'API'} failure`}, ` +
         `retrying (attempt ${attempt}/${maxRetries}): ${lastMessage.slice(0, 200)}`,
     );
-    // Exponential backoff, matching createTestUser's shape.
-    await new Promise((r) => setTimeout(r, 250 * 2 ** (attempt - 1)));
+    // Two backoff schedules for two failure classes: the transport flake heals
+    // in milliseconds (exponential, matching createTestUser's shape); the
+    // rate-limit window heals in tens of seconds (linear 15s/30s/45s — sized
+    // to outwait a per-minute budget without blowing the suite timeout).
+    await new Promise((r) => setTimeout(r, throttled ? 15_000 * attempt : 250 * 2 ** (attempt - 1)));
   }
 
   throw new Error(`runAdminSql failed after ${maxRetries} attempts: ${lastMessage}`);
