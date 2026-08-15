@@ -274,12 +274,21 @@ describe('FEAT-PD015 — notification realtime hint, nudge policy & reconnect (N
       const resolvable = await seedNotification(alice, 'group_closed', { group_id: g1 });
       expect(await countHints(alice.user.id, resolvable)).toBe(1);
 
-      // A group-addressed row: recipient_group_id is an engagement group, which
-      // resolves to no users.personal_group_id -> no auth uid -> no topic.
+      // ADAPTATION (FEAT-PD020, 2026-08-15, labelled): this half originally
+      // used an ENGAGEMENT-group recipient — the dead-letter shape, which
+      // 20260815223000 now expands at write time into personal rows (the row
+      // this cell used to observe no longer lands; that behaviour is pinned
+      // in group-addressed-expansion.test.ts). The unresolvable-recipient
+      // shape that REMAINS is a SYSTEM group: it passes the expansion trigger
+      // untouched, its insert still succeeds, and it resolves to no
+      // users.personal_group_id -> no auth uid -> no topic -> no hint.
+      const deusex = (await runAdminSql(`
+        SELECT id FROM public.groups
+         WHERE name = 'DeusEx' AND group_type = 'system' LIMIT 1;`)) as SqlRows;
       const { data, error } = await admin
         .from('notifications')
         .insert({
-          recipient_group_id: g1,
+          recipient_group_id: deusex[0].id as string,
           type: 'group_closed',
           title: `N-C group-addressed ${runTag}`,
           body: 'group-addressed body',

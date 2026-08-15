@@ -1,7 +1,7 @@
 ---
 id: TASK-PD020-1
 title: Build the group-addressed expansion trigger, the writer-path proofs, and the disposition migration
-status: in_progress
+status: review — built and verified 2026-08-15 (red-first 5/5; slice 9 suites green; conformance 15/15; two labelled sibling adaptations); the migration holds at the schema gate per the tier rule
 assigned_to: claude
 priority: high
 feature: FEAT-PD020

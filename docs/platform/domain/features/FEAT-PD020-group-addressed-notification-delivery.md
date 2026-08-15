@@ -6,7 +6,7 @@ title: Group-addressed notification delivery — engagement-group recipients exp
 owner: platform/domain/communication
 consumers: [hub]
 wave: unassigned
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -87,6 +87,16 @@ Hub: no payload changes; FEAT-H046 STORY-4 verifies the refresh pairing. Gimbal 
 - **Observability:** the residue instrument (STORY-3) + expansion counts in migration output; suppressed-vs-delivered stays traceable per N-D.
 - **Transactions:** none.
 - **Extensibility:** expansion keys on `group_type`/permission facts, no kind enum — future kinds inherit; the trigger is data-driven (no hardcoded role names — Steward resolution via role machinery, ADR-U007).
+
+## Implementation notes (6-done — built 2026-08-15, same session as the board; shipped through the schema gate on named approval)
+
+**Plain-English walkthrough:** a group that belongs to another group used to get mail no human could ever open — announcements from its host, notices that its membership was paused, roles it was given. Now that mail goes straight to the people who answer for the group (anyone holding its act-as key, and its Stewards as the floor), each copy obeying that person's own notification preferences, ringing their own bell. Nobody can write the unreadable kind of letter anymore — not today's code, not next year's.
+
+- **Migration `20260815223000`** (applied to dev + history repaired): `ds5_expand_group_addressed_notification()` mounted as `trg_ds5_aa_expand_group_addressed` — BEFORE INSERT, named to fire before the N-D dispatcher (alphabetical ordering), SECURITY DEFINER, REVOKEd from clients. Engagement-group recipients expand (STORY-1: active personal members with `has_permission(pg, group, 'act_as_group')` ∪ Steward-role holders via the template-id/name house pattern; DISTINCT dedupe; `get_current_personal_group_id()` excluded NULL-safely); personal/system recipients pass through byte-identical — recursion bounded by shape, PD014's personal fan-out untouched. Expanded rows re-enter the chain: per-recipient N-D suppression, per-row N-C hints (STORY-2). The disposition (STORY-3) re-addresses stranded rows created_at-preserved and deletes the originals, RAISE-NOTICEing its counts — dev carried 0 (probed); the 6 live prod rows are verified by that NOTICE at prod apply. STORY-4's substrate leg is STORY-1+2 composed; the surface pairing lands with FEAT-H046 STORY-4.
+- **Red → green:** 4 behavioural reds (announcement fan-out leaving the group-addressed row and no answerer rows; two direct group-addressed writes landing unseeable; the residue instrument counting the strays) + 1 labelled green-both-sides guard (personal-addressed byte-identity) → 5/5. Full notifications slice (9 suites) green post-apply: 7 in one run, the two rate-limited suites green on targeted re-verify.
+- **Conformance:** function registered under DS-5; the mount carries its GC-8 license in `exceptions.triggerMounts` (cross-owner: DS-5 on `vertical:notifications` — the N-D suppression precedent, ADR-U048 A1). trigger-mount / function-classification / ownership-manifest gates 15/15. The 4-ready spec's "same-owner, GC-8 n/a" claim was wrong and is corrected in the walks section below.
+- **Sibling adaptations (labelled, found by the post-apply slice run — the grep sweep missed both):** the N-C "unresolvable recipient" cell used the exact dead-letter shape this feature retires — adapted to a system-group recipient; the N-D suite ran on jest's 30s default, which the #543 rate-limit backoff can legitimately exceed — timeout aligned to the 180s sibling standard.
+- **Vertical/API DoD:** no new endpoint, no route — the contract is a substrate trigger (nothing app-layer to adversarially bypass; the direct PostgREST INSERT path IS the tested path). Performance: write-side only, no first-paint impact.
 
 ## Decomposition walks (recorded 2026-08-15)
 

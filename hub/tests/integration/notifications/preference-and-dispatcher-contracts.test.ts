@@ -10,6 +10,13 @@ import {
 } from '@/tests/helpers/supabase';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+// Sibling adaptation (FEAT-PD020 build, 2026-08-15, labelled): this suite ran
+// on jest's 30s default while every sibling sets 180s. The runAdminSql
+// rate-limit backoff (PR #543 — 15s/30s/45s waits instead of a mass red) can
+// legitimately hold a single call longer than 30s under a burnt Management-API
+// window, which surfaced here as a timeout wearing a genuine-failure face.
+jest.setTimeout(180_000);
+
 /**
  * FEAT-PD016 (A-NTF Cycle N-D) — notification preference contracts and the
  * shared suppression dispatcher. NTF-10, the area's last capability.
