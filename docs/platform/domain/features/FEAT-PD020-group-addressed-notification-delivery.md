@@ -6,7 +6,7 @@ title: Group-addressed notification delivery — engagement-group recipients exp
 owner: platform/domain/communication
 consumers: [hub]
 wave: unassigned
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
@@ -92,4 +92,4 @@ Hub: no payload changes; FEAT-H046 STORY-4 verifies the refresh pairing. Gimbal 
 
 - **Mechanism walk:** dead-letter proof `20260726120000:272-276` (hint no-topic comment) + `:129-137` (personal-only RLS); fan-out `20260720200000:237-248`; writer census via `role_assigned` grep (`20260801190000`, remapped `20260815143000`); PD014 precedent (communication.md §L4 row, ADR-U049 ruling 3).
 - **Payload walk:** zero surface payload changes; expanded rows are ordinary rows (verified against `get_own_notifications`' served keys).
-- **Conformance gates named:** new trigger function registers in `supabase/ownership.manifest.json` under DS-5 (functionOwner defaults to CORE — label mandatory); trigger mount is same-owner (DS-5 function, DS-5 table — GC-8 license n/a, stated deliberately); the migration names sibling assertions it invalidates (dispatcher cells pinning group-addressed no-delivery, if any — sweep at build).
+- **Conformance gates named (CORRECTED at build, 2026-08-15):** new trigger function registers in `supabase/ownership.manifest.json` under DS-5 (functionOwner defaults to CORE — label mandatory); the trigger mount is **cross-owner** — `notifications` is `vertical:notifications`, NOT DS-5 (the 4-ready text said "same-owner, GC-8 n/a"; the manifest says otherwise, and the mechanism walk should have read it) — so a cited `exceptions.triggerMounts` license is REQUIRED, on the N-D suppression mount's exact precedent (ADR-U048 Amendment 1); the migration names sibling assertions it invalidates (dispatcher cells pinning group-addressed no-delivery, if any — sweep at build).
