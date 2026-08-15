@@ -1,7 +1,7 @@
 ---
 id: TASK-DM-02
 title: An erased author renders the forbidden literal "[Deleted User]" — the C-B display law says "Unknown"
-status: BUILT (2026-08-15) — mechanism A ruled with the IDN-01 board and shipped same day: migration `20260815190000` re-issues the ladder (decommissioned → rung 3), `get_conversation_detail` participants[], and `get_my_conversations` other_participant_name (a third leak site the build found — the inbox served raw g2.name). Red-first 2 cells → 11/11; siblings forum/conversation/lifecycle 62/62. PR held at the schema gate
+status: BUILT (2026-08-15) — mechanism A ruled with the IDN-01 board and shipped same day: migration `20260815190000` re-issues the ladder (decommissioned → rung 3), `get_conversation_detail` participants[], and `get_my_conversations` other_participant_name (a third leak site the build found — the inbox served raw g2.name). Red-first 2 cells → 11/11; siblings forum/conversation/lifecycle 62/62. MERGED at the schema gate on named approval ("approved PR #544 and #545", Stefan, 2026-08-15) — PR #544. DONE
 assigned_to: unassigned
 priority: medium
 feature: FEAT-PD012/DS-5 display (COM-14 attribution ladder) + PC-2 scrub mechanics

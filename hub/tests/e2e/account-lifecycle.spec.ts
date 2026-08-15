@@ -16,6 +16,13 @@ import { createAdminClient, markArrivedOnce, E2E_PASSWORD, deleteE2EUserByAuthId
  * no longer attributed by the departed member's name (F-2 communal
  * retention + read-time tombstone, ADR-U021).
  *
+ * Journey 3 — the return (TASK-IDN-01, journey tier, labelled post-
+ * implementation per the H018 pattern — the demonstrated reds live at the
+ * integration + unit tiers): a FIM deletes, signs back in inside the grace
+ * window, meets the restore door naming the scheduled date, restores behind
+ * the ConfirmModal, and lands back in the active experience with their
+ * identity whole.
+ *
  * Fresh logins per journey, no shared storageState (the TASK-E2E-01 rule);
  * each user is created in-test and cleaned up.
  */
@@ -208,16 +215,29 @@ test.describe('C-F — the departure (delete → farewell; the record survives)'
     await departerPage.getByRole('textbox', { name: 'Message' }).fill(DM_TEXT);
     await departerPage.getByRole('button', { name: /^send$/i }).click();
     await expect(departerPage.getByText(DM_TEXT)).toBeVisible({ timeout: 15000 });
+    // The bubble renders OPTIMISTICALLY with a "Sending…" label — the text
+    // being visible does not mean the row exists yet (this raced once,
+    // 2026-08-15: the substrate read below answered null under a slow send).
+    // Wait for the confirmed state before reading the substrate.
+    await expect(departerPage.getByText(/sending…/i)).toHaveCount(0, { timeout: 15000 });
 
     // The tombstone renders by message id, so resolve it from the substrate
     // rather than scraping the DOM for a testid the erasure is about to change.
-    const { data: sent } = await admin
-      .from('messages')
-      .select('id')
-      .eq('conversation_id', dmId)
-      .eq('sender_group_id', departerPgid)
-      .single();
-    dmMsgId = sent!.id as string;
+    await expect
+      .poll(
+        async () => {
+          const { data: sent } = await admin
+            .from('messages')
+            .select('id')
+            .eq('conversation_id', dmId)
+            .eq('sender_group_id', departerPgid)
+            .maybeSingle();
+          dmMsgId = (sent?.id as string | undefined) ?? null;
+          return dmMsgId;
+        },
+        { timeout: 15000 },
+      )
+      .not.toBeNull();
 
     // ── The ceremony (FEAT-H029 STORY-2): consequences, export offer,
     //    type-to-confirm — then the farewell (STORY-3).
@@ -233,17 +253,22 @@ test.describe('C-F — the departure (delete → farewell; the record survives)'
     await expect(departerPage.getByTestId('farewell-surface')).toBeVisible();
 
     // Signed out for good — the observable effect: the departed member can
-    // never reach the active experience again. Two honest terminal outcomes
-    // exist (both proven live in this journey's runs): cleared credentials →
-    // the /login redirect; a stale ssr cookie → H006's gate intercepts with
-    // the terminal "This account is closed" surface. Either way, no groups
-    // chrome, no data.
+    // never reach the active experience again unbidden. Three honest
+    // outcomes exist since TASK-IDN-01: cleared credentials → the /login
+    // redirect; a stale ssr cookie → H006's gate intercepts — with the
+    // RESTORE DOOR while the grace window is open (a member-origin deletion
+    // is restorable now, and this fixture is exactly that), or the terminal
+    // closed card otherwise. Either way, no groups chrome, no data; the
+    // restore loop itself is Journey 3's walk.
     await expect(departerPage.getByTestId('farewell-signed-out')).toBeAttached({
       timeout: 15000,
     });
     await departerPage.goto('/groups');
     await expect(
-      departerPage.getByTestId('account-closed-surface').or(departerPage.locator('#email')),
+      departerPage
+        .getByTestId('account-closed-surface')
+        .or(departerPage.getByTestId('account-restorable-surface'))
+        .or(departerPage.locator('#email')),
     ).toBeVisible({ timeout: 15000 });
     await expect(departerPage.getByTestId('account-lifecycle-section')).not.toBeVisible();
     await departerContext.close();
@@ -268,5 +293,76 @@ test.describe('C-F — the departure (delete → farewell; the record survives)'
     });
     await expect(witnessPage.getByText(DM_TEXT)).toHaveCount(0);
     await witnessContext.close();
+  });
+});
+
+test.describe('TASK-IDN-01 — the return (delete → sign back in → restore)', () => {
+  const admin = createAdminClient();
+  const RETURNER_EMAIL = `cf-returner-${RUN}@fringeisland.test`;
+  const RETURNER_NAME = `CFReturner${RUN}`;
+
+  test.beforeAll(async () => {
+    await createFim(admin, RETURNER_EMAIL, RETURNER_NAME);
+  });
+  test.afterAll(async () => {
+    await cleanupFim(admin, RETURNER_EMAIL);
+  });
+
+  test('the restore door names the date; one confirm returns the identity whole', async ({
+    browser,
+  }) => {
+    test.setTimeout(180_000);
+
+    // ── The ceremony tells the grace truth before the click (the amended
+    //    copy: the account is SCHEDULED, the way back is named, the content
+    //    erasure keeps its "cannot be undone").
+    const firstContext = await browser.newContext();
+    const firstPage = await loginAs(firstContext, RETURNER_EMAIL);
+    await firstPage.goto('/profile');
+    await firstPage.getByTestId('open-delete-ceremony').click();
+    const consequences = firstPage.getByTestId('delete-consequences');
+    await expect(consequences).toContainText(/scheduled for permanent deletion/i);
+    await expect(consequences).toContainText(/signing back in/i);
+    await expect(consequences).toContainText(/cannot be undone/i);
+    await firstPage.getByTestId('delete-confirm-input').fill(CONFIRM_PHRASE);
+    await firstPage.getByTestId('delete-account-confirm').click();
+    await expect(firstPage).toHaveURL(/\/farewell/, { timeout: 30_000 });
+    await firstContext.close();
+
+    // ── The return: credentials survive the window by design — a fresh
+    //    sign-in works and the gate meets the member with the door, not the
+    //    wall. The scheduled date is named (the year pins the render).
+    const returnContext = await browser.newContext({ storageState: undefined });
+    const returnPage = await returnContext.newPage();
+    await returnPage.goto('/login');
+    await expect(returnPage.locator('#email')).toBeVisible({ timeout: 15000 });
+    await returnPage.locator('#email').fill(RETURNER_EMAIL);
+    await returnPage.locator('#password').fill(E2E_PASSWORD);
+    await returnPage.locator('button[type="submit"]').click();
+    await expect(returnPage).toHaveURL(/\/groups/, { timeout: 30_000 });
+
+    // Full mount (goto, not the SPA hop): the gate's provider resolves the
+    // account state on a page it owns from the first render.
+    await returnPage.goto('/groups');
+    const door = returnPage.getByTestId('account-restorable-surface');
+    await expect(door).toBeVisible({ timeout: 30_000 });
+    await expect(door).toContainText(/202\d/);
+    await expect(returnPage.getByTestId('account-lifecycle-section')).not.toBeVisible();
+
+    // ── Restore behind the ConfirmModal; land back in the active experience.
+    await returnPage.getByTestId('restore-account').click();
+    await returnPage.getByTestId('confirm-modal-confirm').click();
+    await expect(returnPage).toHaveURL(/\/groups/, { timeout: 30_000 });
+    await expect(door).not.toBeVisible();
+
+    // ── Identity whole: the profile is active again under the stashed name
+    //    (never the scrub literal).
+    await returnPage.goto('/profile');
+    await expect(returnPage.getByTestId('account-state-line')).toContainText('active', {
+      timeout: 15000,
+    });
+    await expect(returnPage.getByText(RETURNER_NAME).first()).toBeVisible({ timeout: 15000 });
+    await expect(returnPage.getByText('[Deleted User]')).toHaveCount(0);
+    await returnContext.close();
   });
 });
