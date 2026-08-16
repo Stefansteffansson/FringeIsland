@@ -2,6 +2,15 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-15 — mail addressed to a group reaches the people who answer for it ([FEAT-PD020](../docs/platform/domain/features/FEAT-PD020-group-addressed-notification-delivery.md))
+
+- **When something happens to a group your group placed inside another group, the people who answer for it now hear about it personally.** Announcements from the host community, a pause or reactivation of the group's membership, a role it was given — these used to be addressed to the group itself, where no one's bell could ever ring. They now arrive in the inboxes of everyone who can act for the group (its representatives and Stewards), each copy respecting that person's own notification preferences. The handful of older notices stranded this way are re-delivered, dated as they were.
+
+## 2026-08-15 — deleting your account now comes with a way back ([TASK-IDN-01](../docs/planning/backlog/tasks/TASK-IDN-01-self-deletion-grace-period-completion.md) / [TASK-DM-02](../docs/planning/backlog/tasks/TASK-DM-02-erased-author-renders-forbidden-literal.md))
+
+- **"Delete my account" now schedules the permanent deletion instead of leaving your sign-in in limbo forever.** What it erases, it still erases immediately — your journal, your journey record, your places in groups. But your account itself now gets a stated deletion date about a month out, and until that date, signing back in offers to restore it: your name and profile return whole. After the date, an automatic sweep erases everything for good — credentials included, which previously lingered indefinitely. The ceremony's wording tells this truth before you confirm.
+- **What a deleted member's conversation partners see now says "Unknown" — never "[Deleted User]".** The old label quietly told the other person what you did with your account; the display law always said it shouldn't. Thread titles, message bylines, and the inbox now all say "Unknown".
+
 ## 2026-08-15 — "Roles & permissions" now means your roles, and preferences got a door
 
 - **The notification switch that says "Roles & permissions" now governs role changes that happen to you.** Being assigned or losing a role used to ride the "Group & membership updates" switch — so muting the one you'd never guess silenced the news you were looking for, and ticking "Roles & permissions" didn't bring it back. Personal role news now lives where every member looks first, alongside role-catalogue news. Joins, leaves and removals stay under "Group & membership updates".

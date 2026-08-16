@@ -300,6 +300,7 @@
       "ds5_require_fim_subject",
       "ds5_may_deliver",
       "ds5_apply_notification_preference",
+      "ds5_expand_group_addressed_notification",
       "get_own_notification_preferences",
       "set_own_notification_preference",
       "get_own_notification_preferences_export",
@@ -455,6 +456,11 @@
   "function": "ds5_apply_notification_preference",
         "table": "notifications",
         "citation": "ADR-U048 Amendment 1 (2026-07-31, Audit III R-5): DS-5 preference suppression mounted at the delivery substrate's write edge — central and non-bypassable per V3 §6; coupling is to the vertical's obligation table, not a domain contract. Gate: trigger-mount-conformance.test.ts (GC-8)."
+      },
+      {
+        "function": "ds5_expand_group_addressed_notification",
+        "table": "notifications",
+        "citation": "FEAT-PD020 (2026-08-15, board ruling): DS-5 group-recipient expansion mounted at the delivery substrate's write edge on the suppression mount's precedent (ADR-U048 Amendment 1) — an engagement-group recipient becomes its answerers (act_as_group holders + Stewards, the ADR-U041/ADR-U049 recipient set) so dead letters stop by construction for every writer; per-writer fixes would invert Core->Domain (the role/participation writers are PC021's). Named trg_ds5_aa_* to fire before the dispatcher. Gate: trigger-mount-conformance.test.ts (GC-8)."
       },
       {
         "function": "notify_notification_hint",
