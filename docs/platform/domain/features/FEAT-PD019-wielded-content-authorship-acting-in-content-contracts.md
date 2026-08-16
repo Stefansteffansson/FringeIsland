@@ -6,7 +6,7 @@ title: Wielded content authorship — the ADR-U041 acting parameter reaches the 
 owner: platform/domain/communication
 consumers: [hub]
 wave: unassigned
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
@@ -89,6 +89,22 @@ Paired surface spec: [FEAT-H046](../../../products/hub/features/FEAT-H046-wielde
 - **Observability:** wielded content acts emit the house id-only telemetry; refusals are 42501s with limb-naming copy (traceable).
 - **Transactions:** none.
 - **Extensibility:** `p_acting` is additive-default (no signature break, ADR-U015 compliant); `kind` is an open-set additive key (no sealed switch); no new enums.
+
+## Implementation notes (tranche 1 — 2026-08-16, TASK-PD019-1)
+
+**Migration `20260816120000`** (held at the schema gate). What shipped, and the decisions the build recorded:
+
+- **The gate is one shared helper**: `ds5_assert_wielded_content_gate(p_actor, p_acting_group_id, p_context_group_id, p_permission_name)` — limb 1 verbatim from the acting fabric (`'you do not have permission to act as this group'`, S5: keyless learns nothing); limb 2 split into two named refusals (`'the acting group is not an active member of this group'` / `'the acting group does not hold <perm> in this group'`) so the copy names the failing limb per the ACs. Internal ACL (revoked from `authenticated`, the `ds5_resolve_author_display` posture); registered DS-5 in the ownership manifest. Tranches 2/3 reuse it as-is.
+- **The three re-issues are DROP + CREATE**, not CREATE OR REPLACE — the added `p_acting` changes the signature, and create-or-replace would leave the old arity alive as an overload (the `20260706150000` lesson). ACLs re-stated from the **applied** objects (probed before authoring — they carry `service_role` beyond what the C-B migration text shows); a DO block proves the old arities gone and the gate helper client-sealed.
+- **When acting, the personal permission check is substituted, not stacked** — the wielder needs no personal `view_forum`/`post_forum_messages` in the context (that absence is the walk's exact frustration). The FIM check (`ds5_require_fim_actor`) still precedes everything: a Mist with `p_acting` is refused before the limbs.
+- **The availability guard's subject is the actor of record**: a wielded write runs `assert_group_writable(context, p_acting)` — pure substitution; the acting group's own `rest_group` standing governs, not the wielder's.
+- **`kind` lands on resolvable identities only** (rungs 1/2 and the DM rung); rung-3 `'Unknown'` returns are byte-identical to before — 'Unknown' claims no kind. Two sibling cells (rung-3 exact-equality assertions) were deliberately left and now double as the guard for this.
+- **Named v1 posture, found at build**: a wielded post is editable by *no one* — `edit_own_forum_post` matches `author_group_id` against the caller's personal group only, so a group-authored row refuses even the wielder acting as the group. Consistent with the spec's no-gos (no wielded edit was specified); FEAT-H046's session should not render an edit affordance on `kind: 'group'` posts it cannot honour, and a wielded-edit contract is a future tranche's board if wanted.
+- **Red → green**: red run 2026-08-16 — 13 red / 2 labelled guards green (10 `p_acting` cells PGRST202 signature-absent; 3 ladder cells red on the personal-only identity gate; guards: the additive-default member read, the rung-3 byte-identity). Green after apply: `wielded-forum-contracts.test.ts` 15/15.
+- **Sibling sweep (named in the migration header)**: `forum-contracts.test.ts:443` and `:449` adapted (rung-2 person objects gain `kind: 'person'`); `forum-contracts.test.ts:513` and `member-erasure-disposition.test.ts:337` deliberately left (rung-3 guards). All other author/sender consumers assert key-by-key.
+- **Dev-DB state**: the migration is applied; the `migration repair --status applied 20260816120000` bookkeeping step was classifier-denied in the autonomous session and is listed in the PR body for the gate.
+
+Tranches 2 (group conversations, STORY-4) and 3 (announcements, STORY-5) remain unpulled; maturity stays `5-in-cycle` until they ship or wave-planning re-scopes the feature.
 
 ## Decomposition walks (recorded 2026-08-15, session of the board)
 

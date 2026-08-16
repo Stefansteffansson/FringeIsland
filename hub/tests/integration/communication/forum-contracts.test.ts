@@ -440,15 +440,23 @@ describe('FEAT-PD009 — forum & attribution contracts (C-B)', () => {
       const cs = await asUser(steward);
       const { data } = await forumRead(cs, g1, { p_limit: 20 });
       const post = (data as { posts: ForumPost[] }).posts.find((p) => p.id === leaverPostId);
-      expect(post!.author).toEqual({ display_name: 'Former member', attribution: 'former' });
+      // ADAPTED (FEAT-PD019, 20260816120000): resolvable identities gain the
+      // additive kind key — a rung-2 person author is kind: 'person'.
+      expect(post!.author).toEqual({
+        display_name: 'Former member',
+        attribution: 'former',
+        kind: 'person',
+      });
 
       const { data: detail } = await cs.rpc('get_conversation_detail', {
         p_conversation_id: gcId,
       });
       const senders = (detail as { senders: Record<string, AuthorDisplay> }).senders;
+      // ADAPTED (FEAT-PD019, 20260816120000): same widening on the sender map.
       expect(senders[leaver.personalGroupId]).toEqual({
         display_name: 'Former member',
         attribution: 'former',
+        kind: 'person',
       });
 
       // stored rows untouched (ADR-U021 — display law, never data mutation)
