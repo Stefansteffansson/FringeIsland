@@ -6,7 +6,7 @@ title: Wielded content affordances — the hat's content powers open real doors 
 owner: hub
 consumers: []
 wave: unassigned
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -83,6 +83,20 @@ The wielded-banner + badge pattern is the reference for the Gimbal's render of t
 - **Observability:** wielded acts emit id-only telemetry (house posture); refused states are events, not silent fallbacks.
 - **Transactions:** none.
 - **Extensibility:** badges key on the open-set `kind` with default rendering for unknown values; affordances key on permissions, never role names.
+
+## Performance budget
+
+Added at build (2026-08-16) — the section was missing at 4-ready, flagged in TASK-H046-1. **Budget class: interaction-follow-up reads on an existing page; no new first paint.** The affordance gate is H018's already-fetched substitution read (no new probing — the spec's own rule); selecting a hat triggers one wielded forum read (the same `/api/groups/[id]/forum` request with `?acting=`, keyset-paged as before) and one substitution-permissions read (pre-existing H018 path). The forum session cache keys by view, so hat-switching repaints from each view's own peek and never re-fetches on churn. No page joins or leaves the overview bundle; no first-paint request is added or rerouted, so no deep-cold spot measurement is owed (ADR-U043). Loading states: the existing section skeleton covers the wielded read (B6).
+
+## Implementation notes (2026-08-16, TASK-H046-1 — all four stories)
+
+Built same-day on FEAT-PD019 tranche 1's merged gate (#551). No migration (house pattern held). Two calls ruled by Stefan mid-build:
+
+- **Wielded affordance set (RULED): read/post/reply only.** Under a selected hat the composer and reply gates key on the hat's substitution permissions; edit/delete/moderate/report affordances hide until "Myself" — pure substitution, and nothing dead-ends against the substrate's refusals (a wielded post is editable by no one — the PD019 v1 posture; no edit affordance renders on `kind: 'group'` posts by construction, since editing hides whenever a hat is on and a group-authored row is never "mine" otherwise).
+- **STORY-4 wiring (RULED): the narrow mechanism.** The page re-reads the acting slice on `NOTIFICATIONS_CHANGED_EVENT` (the bell's coalesced hint-arrival event) and revalidates the selected hat (`revalidateHat`, `lib/groups/acting-selection.ts` — pure and browser-safe; the outer-ring conformance gate is why it does not live beside the server-side RPC couriers in `acting.ts`). A hat that lost standing falls back to "Myself" with a dismissible notice naming it. Deliberate narrowing of the sketch's "hint → `refreshNavigation`": firing the house full-re-read event per hint burst would turn every notification into a platform-wide page re-read — blast radius PD020's expansion amplifies. The `refreshNavigation` full path is untouched and inherits the revalidation (guard cell).
+- **Mechanics:** `GroupForumSection` gains an `acting` prop ({groupId, name, permissions}); the BFF forum routes pass `p_acting` through (`?acting=` / body key — plumbing only, ADR-U038); the forum session cache keys by `(group, acting)` so wielded and personal views never share a peek, and `dropGroup` stales every view; wielded writes confirm per act ("You are posting as {A}" / "You are replying as {A}", confirm buttons "Post as {A}" / "Reply as {A}") then re-read (no optimistic wielded state — the rabbit hole); `mapForumError` passes the PD019 limb-naming 42501 copy through verbatim (the window-refusal precedent); `authorKindBadge` renders the H018 open-set badge posture (group → "Group", person/absent → nothing, unknown kind → raw value).
+- **Red → green:** 18 red / 2 labelled guards at the unit tier (banner, acting read, hat-insufficiency copy, hat-gated composer, per-act confirms, verbatim 42501, ruled affordance-hide, badges, `authorKindBadge`, `revalidateHat`, page passthrough + hint revalidation) → 23/23; full unit tier 176 suites 1485/1485 (two labelled sibling adaptations: the outer-ring conformance catch above, and the prepend cell's client arity). E2E: the wielded journey (banner → confirm → Group-badged thread) green against the live substrate beside the untouched FEAT-H026 forum journey — **labelled honestly: the E2E was authored with the implementation and first ran green; the red-first proof of every AC lives at the unit tier.** Lint 0 errors; `next build` green (the type gate); route-policy conformance green (no new routes, identity split unchanged).
+- **Deferred, stated plainly:** tranche-2/3 affordances (conversations, announcements) ride their platform tranches; STORY-4's full delivery loop has no single E2E — its links are individually proven (PD020 expansion integration; N-C's bell hint; unit cells here) and the safe floor is PD019's integration suite.
 
 ## Decomposition walks (recorded 2026-08-15)
 

@@ -16,3 +16,18 @@ export function authorClassName(author: AuthorDisplay): string {
     ? 'font-medium text-gray-800'
     : 'italic text-gray-400';
 }
+
+/**
+ * FEAT-H046 STORY-3 (ADR-U041 §5) — the `kind` badge label, or null for no
+ * badge. `'group'` badges "Group"; `'person'` and an absent kind badge
+ * nothing (tolerant reader — pre-PD019 payloads carry no kind); an unknown
+ * kind renders its raw value (open set — visible for what it is, never a
+ * crash). The badge never overrides the ladder: attribution styling above is
+ * untouched by kind.
+ */
+export function authorKindBadge(author: AuthorDisplay): string | null {
+  const kind = author.kind;
+  if (kind === undefined || kind === 'person') return null;
+  if (kind === 'group') return 'Group';
+  return kind;
+}

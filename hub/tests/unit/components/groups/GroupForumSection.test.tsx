@@ -139,7 +139,9 @@ describe('GroupForumSection', () => {
     await userEvent.type(box, 'fresh thread');
     await userEvent.click(screen.getByTestId('forum-post-submit'));
     expect(await screen.findByText('fresh thread')).toBeInTheDocument();
-    expect(mockForum.createForumPost).toHaveBeenCalledWith('g1', 'fresh thread');
+    // ADAPTED (FEAT-H046): the client gained a trailing acting arg — undefined
+    // on the Myself path (byte-identical personal behaviour).
+    expect(mockForum.createForumPost).toHaveBeenCalledWith('g1', 'fresh thread', undefined);
   });
 
   it('renders a tombstone in place for a removed post, with content withheld', async () => {

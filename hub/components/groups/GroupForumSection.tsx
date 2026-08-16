@@ -13,7 +13,7 @@ import {
   type ForumPost,
   type ForumPostRow,
 } from '@/lib/forum/client';
-import { authorClassName } from '@/lib/forum/attribution';
+import { authorClassName, authorKindBadge } from '@/lib/forum/attribution';
 import { fetchMyPermissions } from '@/lib/groups/client';
 import { isForbidden } from '@/lib/http/status-error';
 import { useForumTenant, forumTopic } from '@/lib/realtime/forum-tenant';
@@ -32,14 +32,38 @@ import { ReportDialog } from '@/components/reports/ReportDialog';
  * the platform, never computed locally; the RPC is the gate, the button is UX.
  * Attribution (COM-14) renders exactly the platform's `{display_name,
  * attribution}` — 'former'/'unknown' muted, never linked. No sockets (C-C).
+ *
+ * FEAT-H046 (over FEAT-PD019): the wielded render. With an `acting` context
+ * (a hat with standing, selected on the page), the read and writes carry the
+ * acting group, a banner names the substitution, and composer/reply gate on
+ * the HAT's permissions — pure substitution, nothing of the member's own
+ * standing mixes in (RULED 2026-08-16: read/post/reply only — edit/delete/
+ * moderate/report affordances hide until "Myself"). Wielded writes confirm
+ * with copy naming the wielding, then re-read (never optimistic). Group
+ * authors badge on the additive `kind` key wherever authors render.
  */
 const PAGE = 20;
+
+/** FEAT-H046: the acting context the page passes when a hat is selected. */
+export interface ForumActingContext {
+  groupId: string;
+  name: string;
+  /** The hat's substitution permissions (H018's already-fetched read). */
+  permissions: string[];
+}
 /** FEAT-H028 COM-12 — the fixed 15-minute own-edit window (CB-3). Client-side
  *  this only decides affordance visibility; the server owns the true edge. */
 const EDIT_WINDOW_MS = 15 * 60 * 1000;
 
-export function GroupForumSection({ groupId }: { groupId: string }) {
-  const [posts, setPosts] = useState<ForumPost[] | null>(() => peekForum(groupId));
+export function GroupForumSection({
+  groupId,
+  acting = null,
+}: {
+  groupId: string;
+  acting?: ForumActingContext | null;
+}) {
+  const actingId = acting?.groupId;
+  const [posts, setPosts] = useState<ForumPost[] | null>(() => peekForum(groupId, actingId));
   const [failed, setFailed] = useState(false);
   const [membersOnly, setMembersOnly] = useState(false);
   const [hasMore, setHasMore] = useState(false);
@@ -56,6 +80,11 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
   const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
   const [removeBusy, setRemoveBusy] = useState(false);
 
+  // FEAT-H046 STORY-2: per-act confirms for wielded writes (the H018 rabbit
+  // hole — no session-wide acting mode; each act names the wielding).
+  const [confirmWieldedPost, setConfirmWieldedPost] = useState(false);
+  const [confirmWieldedReply, setConfirmWieldedReply] = useState<string | null>(null);
+
   // FEAT-H028 STORY-4 (COM-12): my personal-group id (the effective-permissions
   // member_group_id) drives the own-post check; a coarse ticker retires the
   // window affordances client-side as 15 minutes pass (the server owns the edge).
@@ -69,6 +98,10 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
   const [deleteBusy, setDeleteBusy] = useState(false);
 
   const can = (p: string) => perms.has(p);
+
+  // FEAT-H046: under a hat, affordances key on the HAT's permissions — pure
+  // substitution, never the member's own grants (ADR-U041 §2a).
+  const gate = (p: string) => (acting ? acting.permissions.includes(p) : perms.has(p));
 
   // Own-ness is a payload fact (author_group_id vs my personal-group id) — never
   // a role name, never a server round-trip to decide the affordance.
@@ -91,7 +124,7 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
 
   const load = useCallback(async () => {
     try {
-      const rows = await fetchForum(groupId);
+      const rows = await fetchForum(groupId, undefined, actingId);
       setPosts(rows);
       setHasMore(rows.length >= PAGE);
       setFailed(false);
@@ -99,10 +132,11 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
     } catch (err) {
       // Post-6-done fix (2026-08-14, live walk): a member-gated refusal is not
       // a malfunction — honest members-only copy, never the failure fallback.
+      // FEAT-H046: under a hat the same branch names the hat's insufficiency.
       setMembersOnly(isForbidden(err));
       setFailed(!isForbidden(err));
     }
-  }, [groupId]);
+  }, [groupId, actingId]);
 
   // FEAT-H027 STORY-4: a live forum hint drops this group's cache and re-reads
   // the loaded window through the contract — new threads appear newest-first,
@@ -122,6 +156,11 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
 
   useEffect(() => {
     let active = true;
+    // FEAT-H046: view switch (Myself <-> a hat) repaints from that view's own
+    // peek — the two views never share a cache entry.
+    setPosts(peekForum(groupId, actingId));
+    setMembersOnly(false);
+    setFailed(false);
     (async () => {
       await load();
       try {
@@ -140,7 +179,7 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
     return () => {
       active = false;
     };
-  }, [groupId, load]);
+  }, [groupId, actingId, load]);
 
   // FEAT-H028 STORY-4: a coarse ticker so own-edit affordances disappear as the
   // window passes even with no other interaction (the server owns the true edge).
@@ -153,7 +192,7 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
     if (!posts || posts.length === 0) return;
     const oldest = posts[posts.length - 1].created_at;
     try {
-      const older = await fetchForum(groupId, oldest);
+      const older = await fetchForum(groupId, oldest, actingId);
       setPosts([...posts, ...older]);
       setHasMore(older.length >= PAGE);
     } catch {
@@ -161,41 +200,72 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
     }
   }
 
-  async function handlePost() {
+  async function submitPost(asGroupId?: string) {
     const content = composer.trim();
     if (!content) return;
     setPosting(true);
     setPostError(null);
     try {
-      const created = await createForumPost(groupId, content); // confirmed row
-      setPosts((prev) => [created, ...(prev ?? [])]);
+      const created = await createForumPost(groupId, content, asGroupId); // confirmed row
+      if (asGroupId) {
+        // FEAT-H046: no optimistic wielded state — the write re-reads.
+        await load();
+      } else {
+        setPosts((prev) => [created, ...(prev ?? [])]);
+      }
       setComposer('');
     } catch (err) {
       setPostError(err instanceof Error ? err.message : 'Your post could not be saved');
     } finally {
       setPosting(false);
+      setConfirmWieldedPost(false);
     }
   }
 
-  async function handleReply(parentId: string) {
+  function handlePost() {
+    if (composer.trim() === '') return;
+    if (acting) {
+      // FEAT-H046 STORY-2: the per-act confirm names the wielding first.
+      setConfirmWieldedPost(true);
+      return;
+    }
+    void submitPost();
+  }
+
+  async function submitReply(parentId: string, asGroupId?: string) {
     const content = replyText.trim();
     if (!content) return;
     setReplyBusy(true);
     try {
-      const created = await replyToForumPost(groupId, parentId, content);
-      setPosts(
-        (prev) =>
-          prev?.map((p) =>
-            p.id === parentId ? { ...p, replies: [...p.replies, created] } : p,
-          ) ?? null,
-      );
+      const created = await replyToForumPost(groupId, parentId, content, asGroupId);
+      if (asGroupId) {
+        // FEAT-H046: no optimistic wielded state — the write re-reads.
+        await load();
+      } else {
+        setPosts(
+          (prev) =>
+            prev?.map((p) =>
+              p.id === parentId ? { ...p, replies: [...p.replies, created] } : p,
+            ) ?? null,
+        );
+      }
       setReplyTo(null);
       setReplyText('');
     } catch (err) {
       setPostError(err instanceof Error ? err.message : 'Your reply could not be saved');
     } finally {
       setReplyBusy(false);
+      setConfirmWieldedReply(null);
     }
+  }
+
+  function handleReply(parentId: string) {
+    if (replyText.trim() === '') return;
+    if (acting) {
+      setConfirmWieldedReply(parentId);
+      return;
+    }
+    void submitReply(parentId);
   }
 
   async function handleRemove() {
@@ -263,12 +333,26 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
       <li key={post.id} data-testid={`forum-post-${post.id}`} className={isReply ? 'ml-6 mt-2' : ''}>
         <div className="rounded-lg border border-gray-100 px-4 py-3">
           <div className="flex items-center justify-between">
-            <span data-testid={`forum-author-${post.id}`} className={`text-sm ${authorClassName(post.author)}`}>
-              {post.author.display_name}
+            <span className="flex items-center gap-1.5">
+              <span data-testid={`forum-author-${post.id}`} className={`text-sm ${authorClassName(post.author)}`}>
+                {post.author.display_name}
+              </span>
+              {authorKindBadge(post.author) && (
+                // FEAT-H046 STORY-3 (ADR-U041 §5): representation visible for
+                // what it is — the H018 kind-badge posture; the ladder's
+                // attribution styling above is never overridden.
+                <span
+                  data-testid={`forum-author-badge-${post.id}`}
+                  className="rounded bg-violet-100 px-1.5 py-0.5 text-xs font-medium text-violet-800"
+                >
+                  {authorKindBadge(post.author)}
+                </span>
+              )}
             </span>
             <div className="flex items-center gap-1">
-              {/* FEAT-H028 STORY-4: my own fresh post — fix or withdraw, briefly. */}
-              {canEditOwn(post) && editingId !== post.id && (
+              {/* FEAT-H028 STORY-4: my own fresh post — fix or withdraw, briefly.
+                  FEAT-H046 (ruled): hidden under a hat — read/post/reply only. */}
+              {!acting && canEditOwn(post) && editingId !== post.id && (
                 <>
                   <button
                     type="button"
@@ -288,7 +372,7 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
                   </button>
                 </>
               )}
-              {!post.is_deleted && can('moderate_forum') && (
+              {!acting && !post.is_deleted && can('moderate_forum') && (
                 <button
                   type="button"
                   data-testid={`forum-remove-${post.id}`}
@@ -298,8 +382,9 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
                   Remove
                 </button>
               )}
-              {/* FEAT-H028 STORY-5 (COM-13): report content that isn't mine. */}
-              {!post.is_deleted && !isMine(post) && (
+              {/* FEAT-H028 STORY-5 (COM-13): report content that isn't mine.
+                  FEAT-H046 (ruled): reporting is a personal act — hidden under a hat. */}
+              {!acting && !post.is_deleted && !isMine(post) && (
                 <ReportDialog targetKind="forum_post" targetId={post.id} />
               )}
             </div>
@@ -360,7 +445,7 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
               )}
             </p>
           )}
-          {!isReply && can('reply_to_messages') && (
+          {!isReply && gate('reply_to_messages') && (
             <button
               type="button"
               data-testid={`forum-reply-open-${post.id}`}
@@ -410,7 +495,18 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
       <h2 className="text-lg font-semibold text-gray-800">Forum</h2>
       {reconnecting && <ReconnectingNotice className="mt-1" />}
 
-      {can('post_forum_messages') && (
+      {acting && !membersOnly && (
+        // FEAT-H046 STORY-1: the substitution named per-section (the H018
+        // rabbit hole — never a global acting mode).
+        <p
+          data-testid="forum-acting-banner"
+          className="mt-2 rounded-lg bg-violet-50 px-3 py-2 text-sm text-violet-800"
+        >
+          Viewing as {acting.name}
+        </p>
+      )}
+
+      {gate('post_forum_messages') && (
         <div className="mt-3">
           <textarea
             value={composer}
@@ -441,9 +537,17 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
       )}
 
       {membersOnly ? (
+        acting ? (
+          // FEAT-H046 STORY-1: the hat's insufficiency named honestly — no
+          // malfunction fallback, no fake door.
+          <p data-testid="group-forum-hat-insufficient" className="mt-3 text-sm text-gray-500">
+            The {acting.name} hat doesn&apos;t open this forum.
+          </p>
+        ) : (
         <p data-testid="group-forum-members-only" className="mt-3 text-sm text-gray-500">
           The forum is for members of this group.
         </p>
+        )
       ) : failed ? (
         <p data-testid="group-forum-unavailable" className="mt-3 text-sm text-gray-500">
           The forum can&apos;t be shown right now.
@@ -493,6 +597,35 @@ export function GroupForumSection({ groupId }: { groupId: string }) {
         onConfirm={handleDeleteOwn}
         onCancel={() => setConfirmDelete(null)}
       />
+
+      {/* FEAT-H046 STORY-2: per-act confirms naming the wielding — the spec's
+          quoted copy, the group signs the row, never the person. */}
+      {acting && (
+        <ConfirmModal
+          isOpen={confirmWieldedPost}
+          title={`Post as ${acting.name}?`}
+          message={`You are posting as ${acting.name} — the thread will carry the group's name, not yours.`}
+          confirmText={`Post as ${acting.name}`}
+          variant="info"
+          busy={posting}
+          onConfirm={() => void submitPost(acting.groupId)}
+          onCancel={() => setConfirmWieldedPost(false)}
+        />
+      )}
+      {acting && (
+        <ConfirmModal
+          isOpen={confirmWieldedReply !== null}
+          title={`Reply as ${acting.name}?`}
+          message={`You are replying as ${acting.name} — the reply will carry the group's name, not yours.`}
+          confirmText={`Reply as ${acting.name}`}
+          variant="info"
+          busy={replyBusy}
+          onConfirm={() => {
+            if (confirmWieldedReply) void submitReply(confirmWieldedReply, acting.groupId);
+          }}
+          onCancel={() => setConfirmWieldedReply(null)}
+        />
+      )}
     </section>
   );
 }

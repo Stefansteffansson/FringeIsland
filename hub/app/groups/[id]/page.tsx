@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { AppShell } from '@/components/shell/AppShell';
@@ -34,6 +34,8 @@ import {
   type PendingInvitations,
   type RolesReadResult,
 } from '@/lib/groups/client';
+import { revalidateHat } from '@/lib/groups/acting-selection';
+import { NOTIFICATIONS_CHANGED_EVENT } from '@/lib/realtime/notifications-tenant';
 import type { GroupDetailPayload } from '@/lib/groups/queries';
 import type { GroupEnrollmentSummary } from '@/lib/journeys/queries';
 
@@ -94,6 +96,11 @@ export default function GroupDetailPage() {
   const [actingPermissions, setActingPermissions] = useState<string[] | null>(null);
   const [memberships, setMemberships] = useState<ActingMembership[] | null>(null);
   const [membershipsError, setMembershipsError] = useState<string | null>(null);
+  // FEAT-H046 STORY-4: the selection mirrored in a ref (id + name captured at
+  // selection time) so a contexts re-read can revalidate it without a stale
+  // closure — and the honest notice when a hat is dropped mid-visit.
+  const actingSelRef = useRef<{ id: string; name: string } | null>(null);
+  const [droppedHat, setDroppedHat] = useState<string | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -182,6 +189,17 @@ export default function GroupDetailPage() {
       // gates the memberships panel below.
       const contexts = await fetchActingContexts(groupId);
       setActingContexts(contexts);
+      // FEAT-H046 STORY-4: a selected hat must survive the fresh read WITH
+      // standing — a paused/removed hat falls back to "Myself" with honest
+      // copy (informed degradation; the server-side refusal floor is the
+      // already-proven guard either way).
+      const check = revalidateHat(actingSelRef.current, contexts);
+      if (!check.keep) {
+        actingSelRef.current = null;
+        setActingAs('myself');
+        setActingPermissions(null);
+        setDroppedHat(check.droppedName);
+      }
       if (contexts.some((c) => c.group_id === groupId)) {
         try {
           setMemberships(await fetchMembershipsOf(groupId));
@@ -205,10 +223,18 @@ export default function GroupDetailPage() {
   const changeActingAs = useCallback(
     async (value: string) => {
       setActingAs(value);
+      setDroppedHat(null);
       if (value === 'myself') {
+        actingSelRef.current = null;
         setActingPermissions(null);
         return;
       }
+      // FEAT-H046 STORY-4: capture the name at selection time so a later
+      // contexts re-read can name the hat honestly even after it vanishes.
+      actingSelRef.current = {
+        id: value,
+        name: actingContexts.find((c) => c.group_id === value)?.name ?? value,
+      };
       try {
         setActingPermissions(await fetchMyPermissionsActingAs(groupId, value));
       } catch {
@@ -216,7 +242,7 @@ export default function GroupDetailPage() {
         setPermissionsError('Failed to load the acting permissions.');
       }
     },
-    [groupId],
+    [groupId, actingContexts],
   );
 
   // The one refresh path (FEAT-H014 STORY-4): every mutation re-reads all
@@ -250,6 +276,19 @@ export default function GroupDetailPage() {
     return () => window.removeEventListener('refreshNavigation', onRefresh);
   }, [authLoading, identity, loadAll]);
 
+  // FEAT-H046 STORY-4 (RULED 2026-08-16 — the narrow mechanism): a delivered
+  // notification (PD020 expands the pause notice to the wielder personally)
+  // re-reads ONLY the acting slice via the bell's coalesced hint event —
+  // deliberately not a hint-fired `refreshNavigation`, which would turn every
+  // notification into a platform-wide full-page re-read. The revalidation
+  // lives in loadActing, so the refreshNavigation full path inherits it too.
+  useEffect(() => {
+    if (authLoading || identity !== 'fim') return;
+    const onHint = () => void loadActing();
+    window.addEventListener(NOTIFICATIONS_CHANGED_EVENT, onHint);
+    return () => window.removeEventListener(NOTIFICATIONS_CHANGED_EVENT, onHint);
+  }, [authLoading, identity, loadActing]);
+
   return (
     <AppShell title="Group">
       {authLoading || identity !== 'fim' || (loading && !group) ? (
@@ -268,6 +307,24 @@ export default function GroupDetailPage() {
           <SuspendedGroupShell group={group} />
         ) : (
         <div className="space-y-6">
+          {droppedHat && (
+            // FEAT-H046 STORY-4: informed degradation — the hat left while the
+            // page was open (pause/removal delivered via PD020); every wielded
+            // section below already fell back to the member's own standing.
+            <p
+              data-testid="hat-dropped-notice"
+              className="flex items-center justify-between rounded-lg bg-amber-50 px-4 py-2 text-sm text-amber-800"
+            >
+              <span>You are no longer acting as {droppedHat} here — showing your own view.</span>
+              <button
+                type="button"
+                onClick={() => setDroppedHat(null)}
+                className="ml-3 text-xs font-medium text-amber-700 hover:underline"
+              >
+                Dismiss
+              </button>
+            </p>
+          )}
           <GroupDetailPanel
             group={group}
             fabric={rolesData?.fabric ?? null}
@@ -295,8 +352,26 @@ export default function GroupDetailPage() {
               only on the platform's send_announcements grant. */}
           <GroupAnnouncementsSection groupId={groupId} />
           {/* FEAT-H026 — the group forum (COM-5/6a/6b/7/14). Failure-isolated
-              slice; post/reply/remove render only on the platform's grants. */}
-          <GroupForumSection groupId={groupId} />
+              slice; post/reply/remove render only on the platform's grants.
+              FEAT-H046: with a hat selected (standing here), the section
+              renders the wielded view — banner, hat-gated composer, confirms
+              naming the wielding. */}
+          <GroupForumSection
+            groupId={groupId}
+            acting={(() => {
+              if (actingAs === 'myself') return null;
+              const hat = actingContexts.find(
+                (c) => c.group_id === actingAs && c.is_member_of_context === true,
+              );
+              return hat
+                ? {
+                    groupId: hat.group_id,
+                    name: hat.name,
+                    permissions: actingPermissions ?? [],
+                  }
+                : null;
+            })()}
+          />
           {/* RD-B walk fix W-1: a roles notice lands on `?focus=roles`, and the
               available-roles section expands, scrolls into view and rings once.
               The param is read inside its own Suspense boundary (the

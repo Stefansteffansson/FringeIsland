@@ -2,6 +2,12 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-16 — acting for a group now opens real doors ([FEAT-H046](../docs/products/hub/features/FEAT-H046-wielded-content-affordances.md))
+
+- **Wearing a group's hat now lets you read and write its host community's forum.** If a group has empowered you to act for it, choosing it under "Acting as" on the host group's page now opens the forum with that group's own powers — before, the selector showed you what the group could do, and every door stayed shut. A banner says *"Viewing as …"* while you look, and posting first asks you to confirm: *"You are posting as …"* — because the post is signed by the group, not by you.
+- **Posts written by a group are visibly a group's.** A group-authored post carries the group's name with a **Group** badge wherever the forum shows authors. A group that has since left shows as *"Former member"*, exactly like a person who left. While acting for a group you can read, post, and reply — editing, moderation, and reporting wait until you switch back to "Myself".
+- **If the group's membership is paused while you're on the page, the hat withdraws by itself.** The delivered notice reaches you personally (that's the 2026-08-15 delivery change working), the hat leaves the "Acting as" selector without a reload, and a note says the page has returned to your own view.
+
 ## 2026-08-15 — mail addressed to a group reaches the people who answer for it ([FEAT-PD020](../docs/platform/domain/features/FEAT-PD020-group-addressed-notification-delivery.md))
 
 - **When something happens to a group your group placed inside another group, the people who answer for it now hear about it personally.** Announcements from the host community, a pause or reactivation of the group's membership, a role it was given — these used to be addressed to the group itself, where no one's bell could ever ring. They now arrive in the inboxes of everyone who can act for the group (its representatives and Stewards), each copy respecting that person's own notification preferences. The handful of older notices stranded this way are re-delivered, dated as they were.
