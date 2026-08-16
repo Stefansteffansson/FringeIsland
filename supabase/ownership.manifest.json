@@ -255,6 +255,7 @@
       "create_group_conversation",
       "ds5_require_fim_actor",
       "ds5_admin_group_conversations",
+      "ds5_assert_wielded_content_gate",
       "ds5_is_fim_actor",
       "ds5_resolve_author_display",
       "ds5_emit_message_hint",
