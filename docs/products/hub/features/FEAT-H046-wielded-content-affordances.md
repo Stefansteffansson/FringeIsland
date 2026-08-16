@@ -6,7 +6,7 @@ title: Wielded content affordances — the hat's content powers open real doors 
 owner: hub
 consumers: []
 wave: unassigned
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
