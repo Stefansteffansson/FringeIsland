@@ -6,7 +6,7 @@ title: Wielded content authorship — the ADR-U041 acting parameter reaches the 
 owner: platform/domain/communication
 consumers: [hub]
 wave: unassigned
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
