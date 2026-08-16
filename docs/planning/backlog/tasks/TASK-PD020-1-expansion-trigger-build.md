@@ -1,7 +1,7 @@
 ---
 id: TASK-PD020-1
 title: Build the group-addressed expansion trigger, the writer-path proofs, and the disposition migration
-status: review — built and verified 2026-08-15 (red-first 5/5; slice 9 suites green; conformance 15/15; two labelled sibling adaptations); the migration holds at the schema gate per the tier rule
+status: done — built and verified 2026-08-15 (red-first 5/5; slice 9 suites green; conformance 15/15; two labelled sibling adaptations); MERGED at the schema gate on named approval ("ok merge when green", Stefan, 2026-08-16; all three PR checks SUCCESS) — PR #548. Outstanding: the prod-apply NOTICE verifies the 6 live dead letters' re-address counts when the migration reaches production
 assigned_to: claude
 priority: high
 feature: FEAT-PD020
