@@ -1,6 +1,6 @@
 import { describe, it, expect } from '@jest/globals';
-import { revalidateHat } from '@/lib/groups/acting';
-import type { ActingContext } from '@/lib/groups/acting';
+import { revalidateHat } from '@/lib/groups/acting-selection';
+import type { ActingContextLike as ActingContext } from '@/lib/groups/acting-selection';
 
 /**
  * FEAT-H046 STORY-4 (unit, RED-FIRST) — hat revalidation after an

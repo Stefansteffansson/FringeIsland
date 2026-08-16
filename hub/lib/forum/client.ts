@@ -28,8 +28,24 @@ async function errorMessage(res: Response, fallback: string): Promise<string> {
 const cachedForum = new Map<string, ForumPost[]>();
 const forumInFlight = new Map<string, Promise<ForumPost[]>>();
 
-async function requestForum(groupId: string, before?: string): Promise<ForumPost[]> {
-  const qs = before ? `?before=${encodeURIComponent(before)}` : '';
+/** FEAT-H046: the cache keys by VIEW — a wielded read (acting group) and the
+ *  personal read of the same group never share a peek; serving one for the
+ *  other would paint content the other standing may not hold. */
+function viewKey(groupId: string, acting?: string): string {
+  return acting ? `${groupId}::${acting}` : groupId;
+}
+
+async function requestForum(
+  groupId: string,
+  before?: string,
+  acting?: string,
+): Promise<ForumPost[]> {
+  const params = new URLSearchParams();
+  if (before) params.set('before', before);
+  // FEAT-H046 over FEAT-PD019: the wielded read — the gate is substrate-side.
+  if (acting) params.set('acting', acting);
+  const query = params.toString();
+  const qs = query ? `?${query}` : '';
   const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/forum${qs}`);
   // Status carried so the section can branch honestly on a member-gated 403
   // (post-6-done fix 2026-08-14); write paths keep plain Errors.
@@ -39,27 +55,32 @@ async function requestForum(groupId: string, before?: string): Promise<ForumPost
   return data.posts;
 }
 
-/** The last resolved first page of threads for this group — instant revisit. */
-export function peekForum(groupId: string): ForumPost[] | null {
-  return cachedForum.get(groupId) ?? null;
+/** The last resolved first page of threads for this view — instant revisit. */
+export function peekForum(groupId: string, acting?: string): ForumPost[] | null {
+  return cachedForum.get(viewKey(groupId, acting)) ?? null;
 }
 
-/** First page (cached). Pass `before` for load-earlier — never cached, since
- *  it is a keyset continuation, not the head the peek paints. */
-export function fetchForum(groupId: string, before?: string): Promise<ForumPost[]> {
-  if (before) return requestForum(groupId, before);
-  const existing = forumInFlight.get(groupId);
+/** First page (cached per view). Pass `before` for load-earlier — never
+ *  cached, since it is a keyset continuation, not the head the peek paints. */
+export function fetchForum(
+  groupId: string,
+  before?: string,
+  acting?: string,
+): Promise<ForumPost[]> {
+  if (before) return requestForum(groupId, before, acting);
+  const key = viewKey(groupId, acting);
+  const existing = forumInFlight.get(key);
   if (existing) return existing;
-  const inFlight = requestForum(groupId)
+  const inFlight = requestForum(groupId, undefined, acting)
     .then((rows) => {
-      cachedForum.set(groupId, rows);
+      cachedForum.set(key, rows);
       return rows;
     })
     .finally(() => {
-      if (forumInFlight.get(groupId) === inFlight) forumInFlight.delete(groupId);
+      if (forumInFlight.get(key) === inFlight) forumInFlight.delete(key);
     });
   inFlight.catch(() => {});
-  forumInFlight.set(groupId, inFlight);
+  forumInFlight.set(key, inFlight);
   return inFlight;
 }
 
@@ -71,19 +92,30 @@ export function invalidateForumCache(): void {
 registerCacheInvalidator(invalidateForumCache);
 
 /** Drop one group's forum peek + in-flight (after a write, or a live hint —
- *  FEAT-H027 STORY-4). Exported for the page-scoped forum tenant. */
+ *  FEAT-H027 STORY-4). Drops EVERY view of the group — personal and wielded
+ *  alike (FEAT-H046): a write through either view stales them all. */
 export function dropGroup(groupId: string): void {
-  cachedForum.delete(groupId);
-  forumInFlight.delete(groupId);
+  for (const key of [...cachedForum.keys()]) {
+    if (key === groupId || key.startsWith(`${groupId}::`)) cachedForum.delete(key);
+  }
+  for (const key of [...forumInFlight.keys()]) {
+    if (key === groupId || key.startsWith(`${groupId}::`)) forumInFlight.delete(key);
+  }
 }
 
 // --- transports (each drops the group's peek: the thread list changed) --------
 
-export async function createForumPost(groupId: string, content: string): Promise<ForumPost> {
+export async function createForumPost(
+  groupId: string,
+  content: string,
+  acting?: string,
+): Promise<ForumPost> {
   const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/forum`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content }),
+    // FEAT-H046: a wielded post names the acting group; the two-limb gate is
+    // substrate-side (FEAT-PD019).
+    body: JSON.stringify({ content, ...(acting ? { acting } : {}) }),
   });
   if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
   const data = (await res.json()) as { post: ForumPost };
@@ -95,11 +127,12 @@ export async function replyToForumPost(
   groupId: string,
   parentPostId: string,
   content: string,
+  acting?: string,
 ): Promise<ForumPost> {
   const res = await fetch(`/api/forum/${encodeURIComponent(parentPostId)}/reply`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content }),
+    body: JSON.stringify({ content, ...(acting ? { acting } : {}) }),
   });
   if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
   const data = (await res.json()) as { post: ForumPost };

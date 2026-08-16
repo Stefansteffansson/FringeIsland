@@ -22,15 +22,21 @@ export async function POST(
   }
   const { postId } = await params;
 
-  const payload = (await request.json().catch(() => null)) as { content?: unknown } | null;
+  const payload = (await request.json().catch(() => null)) as {
+    content?: unknown;
+    acting?: unknown;
+  } | null;
   const content = payload?.content;
   if (typeof content !== 'string' || content.trim() === '') {
     return NextResponse.json({ error: 'A reply needs content' }, { status: 400 });
   }
+  // FEAT-H046 over FEAT-PD019: a wielded reply — plumbing only, every limb
+  // substrate-side.
+  const acting = typeof payload?.acting === 'string' ? payload.acting : undefined;
 
   try {
-    const post = await replyToForumPostRpc(supabase, postId, content);
-    emitTelemetry('forum.replied', { actor: user.id });
+    const post = await replyToForumPostRpc(supabase, postId, content, acting);
+    emitTelemetry('forum.replied', { actor: user.id, wielded: Boolean(acting) });
     return NextResponse.json({ post }, { status: 201 });
   } catch (err) {
     return mapForumError(err, 'forum.reply_failed', user.id);

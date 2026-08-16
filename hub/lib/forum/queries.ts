@@ -15,6 +15,10 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 export interface AuthorDisplay {
   display_name: string;
   attribution: 'active' | 'former' | 'unknown';
+  /** FEAT-PD019 additive key (ADR-U041 §5): present on resolvable identities
+   *  ('person' | 'group', open set); absent on rung-3 'Unknown' and on
+   *  pre-PD019 payloads — readers stay tolerant. */
+  kind?: string;
 }
 
 export interface ForumPost {
@@ -38,12 +42,15 @@ export type ForumPostRow = Omit<ForumPost, 'replies'>;
 export async function fetchGroupForum(
   supabase: SupabaseClient,
   groupId: string,
-  options?: { before?: string; limit?: number },
+  options?: { before?: string; limit?: number; acting?: string },
 ): Promise<ForumPost[]> {
   const { data, error } = await supabase.rpc('get_group_forum', {
     p_group_id: groupId,
     ...(options?.before ? { p_before: options.before } : {}),
     ...(options?.limit !== undefined ? { p_limit: options.limit } : {}),
+    // FEAT-H046 over FEAT-PD019: the wielded read — the two-limb gate is
+    // substrate-side; omitting the key keeps the call byte-identical to today.
+    ...(options?.acting ? { p_acting: options.acting } : {}),
   });
   if (error) throw error;
   return (data as { posts: ForumPost[] }).posts;
@@ -53,10 +60,12 @@ export async function createForumPostRpc(
   supabase: SupabaseClient,
   groupId: string,
   content: string,
+  acting?: string,
 ): Promise<ForumPost> {
   const { data, error } = await supabase.rpc('create_forum_post', {
     p_group_id: groupId,
     p_content: content,
+    ...(acting ? { p_acting: acting } : {}),
   });
   if (error) throw error;
   return data as ForumPost;
@@ -66,10 +75,12 @@ export async function replyToForumPostRpc(
   supabase: SupabaseClient,
   parentPostId: string,
   content: string,
+  acting?: string,
 ): Promise<ForumPost> {
   const { data, error } = await supabase.rpc('reply_to_forum_post', {
     p_parent_post_id: parentPostId,
     p_content: content,
+    ...(acting ? { p_acting: acting } : {}),
   });
   if (error) throw error;
   return data as ForumPost;

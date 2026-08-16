@@ -22,6 +22,13 @@ export function mapForumError(
   const availability = availabilityRefusal(err);
   if (availability) return availability;
   if (code === '42501') {
+    // FEAT-H046 STORY-2 over FEAT-PD019: the wielding gate's limb-naming
+    // refusals surface verbatim (the mapForumOwnMutationError window
+    // precedent) — a stale hat learns WHICH limb failed, not "Not allowed".
+    const message = (err as { message?: string }).message ?? '';
+    if (/acting group|act as this group/i.test(message)) {
+      return NextResponse.json({ error: message }, { status: 403 });
+    }
     return NextResponse.json({ error: 'Not allowed' }, { status: 403 });
   }
   if (code === '22023' || code === 'P0001') {

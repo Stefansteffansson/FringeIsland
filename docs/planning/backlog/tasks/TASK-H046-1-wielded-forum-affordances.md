@@ -1,7 +1,7 @@
 ---
 id: TASK-H046-1
 title: The hat opens the forum — banner, wielded composer with named confirm, Group badges, and the hat-staleness loop
-status: in-progress
+status: done — built and verified 2026-08-16 (red-first 18 red / 2 labelled guards -> 23/23; unit tier 176 suites 1485/1485; wielded E2E journey green beside the untouched forum journey; lint 0 errors; next build green). Two rulings recorded (wielded surface read/post/reply only; STORY-4 narrow mechanism). FEAT-H046 6-done — no schema, fuller-auto merge
 assigned_to: claude
 priority: high
 feature: FEAT-H046
