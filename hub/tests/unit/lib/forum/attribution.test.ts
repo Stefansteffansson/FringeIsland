@@ -1,5 +1,5 @@
 import { describe, it, expect } from '@jest/globals';
-import { isResolvedAuthor, authorClassName } from '@/lib/forum/attribution';
+import { isResolvedAuthor, authorClassName, authorKindBadge } from '@/lib/forum/attribution';
 import type { AuthorDisplay } from '@/lib/forum/queries';
 
 /**
@@ -34,5 +34,42 @@ describe('forum attribution presentation', () => {
     const weird = { display_name: 'x', attribution: 'future-kind' } as unknown as AuthorDisplay;
     expect(isResolvedAuthor(weird)).toBe(false);
     expect(authorClassName(weird)).toContain('italic');
+  });
+});
+
+/**
+ * FEAT-H046 STORY-3 (unit, RED-FIRST) — the `kind` badge rule (ADR-U041 §5).
+ * `kind: 'group'` badges "Group"; person/absent badge nothing (tolerant
+ * reader — pre-PD019 payloads carry no kind); an unknown kind renders its raw
+ * value (open set, extensibility rule — never a crash, never hidden).
+ */
+describe('author kind badge (FEAT-H046 STORY-3)', () => {
+  it("kind 'group' badges as Group", () => {
+    expect(
+      authorKindBadge({ display_name: 'Alpha', attribution: 'active', kind: 'group' }),
+    ).toBe('Group');
+  });
+
+  it("kind 'person' and an absent kind badge nothing (tolerant reader)", () => {
+    expect(
+      authorKindBadge({ display_name: 'Ada', attribution: 'active', kind: 'person' }),
+    ).toBeNull();
+    expect(authorKindBadge({ display_name: 'Ada', attribution: 'active' })).toBeNull();
+  });
+
+  it('an unknown kind renders its raw value (open set — never a crash)', () => {
+    expect(
+      authorKindBadge({
+        display_name: 'x',
+        attribution: 'active',
+        kind: 'collective',
+      } as unknown as AuthorDisplay),
+    ).toBe('collective');
+  });
+
+  it('the badge never overrides the ladder: a former group author still badges', () => {
+    expect(
+      authorKindBadge({ display_name: 'Former member', attribution: 'former', kind: 'group' }),
+    ).toBe('Group');
   });
 });
