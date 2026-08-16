@@ -1,7 +1,7 @@
 ---
 id: TASK-PD019-1
 title: Tranche 1 platform build — the two-limb gate reaches the three forum contracts, wielded writes stamp the group, the ladder learns group authors
-status: in-progress
+status: review — built and verified 2026-08-16 (red-first 13 red / 2 labelled guards -> 15/15; communication slice 9 suites 133/133; conformance gates 30/30; two labelled sibling adaptations); HELD at the schema gate per the migration-apply discipline — merge only on an explicitly named approval. Outstanding: `bash supabase-cli.sh migration repair --status applied 20260816120000` (classifier-denied in the autonomous session; schema itself is applied to dev)
 assigned_to: claude
 priority: high
 feature: FEAT-PD019
