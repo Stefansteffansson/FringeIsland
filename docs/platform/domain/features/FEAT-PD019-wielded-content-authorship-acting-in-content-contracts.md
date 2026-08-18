@@ -114,7 +114,19 @@ Paired surface spec: [FEAT-H046](../../../products/hub/features/FEAT-H046-wielde
 - **Sibling sweep (named in the migration header)**: `forum-contracts.test.ts:443` and `:449` adapted (rung-2 person objects gain `kind: 'person'`); `forum-contracts.test.ts:513` and `member-erasure-disposition.test.ts:337` deliberately left (rung-3 guards). All other author/sender consumers assert key-by-key.
 - **Dev-DB state**: the migration is applied; the `migration repair --status applied 20260816120000` bookkeeping step was classifier-denied in the autonomous session and is listed in the PR body for the gate.
 
-Tranches 2 (group conversations, STORY-4) and 3 (announcements, STORY-5) remain unpulled; maturity stays `5-in-cycle` until they ship or wave-planning re-scopes the feature.
+Tranche 3 (announcements, STORY-5) remains unpulled; maturity stays `5-in-cycle` until it ships or wave-planning re-scopes the feature.
+
+## Implementation notes (tranche 2 — 2026-08-18, TASK-PD019-2)
+
+**Migration `20260818120000`** (held at the schema gate). Built same-session as the STORY-4 pull; the four board rulings are recorded in STORY-4 above. What the build recorded beyond the board:
+
+- **The gate widened, not forked**: `ds5_assert_wielded_content_gate` gained `p_permission_name DEFAULT NULL` (same signature, CREATE OR REPLACE — no overload risk); NULL skips limb 2b. Five of the six contracts pass NULL (this family's bar is membership, which limb 2a checks); only `create_group_conversation` passes `create_group_conversations`. The tranche-1 forum callers are untouched.
+- **Six DROP + CREATE re-issues** with trailing `p_acting uuid DEFAULT NULL`, bodies copied from the applied definitions (probed, not migration text); ACLs `{authenticated, service_role}` re-stated; DO-block proves old arities gone and the helper still client-sealed.
+- **The DM refusal is structural, not coded**: a wielded act against `kind='dm'` (or a nonexistent conversation) leaves the gate's context NULL, and limb 2a refuses — no special-case branch exists to drift.
+- **`am_i_participant` and `my_last_read` change referent, not shape** (A's participation / A's clock on the wielded path); `is_me` deliberately stays the personal identity — the surface highlights the acting row client-side by `participant_group_id`.
+- **Red → green**: red run 2026-08-18 — **12 red / 1 labelled guard green** (all reds PGRST202 signature-absent; the guard: the personal list + join + send flow, self-sufficient). Green after apply: `wielded-conversation-contracts.test.ts` **13/13**, including the standing-per-act cell (membership removed → all four wielded acts refuse while A's participant row verifiably survives) and the shared-clock cell (wielded mark-read advances A's single row; wielded detail serves it).
+- **Sibling sweep**: 14 suite files exercise the six contracts — all on personal paths (byte-identical), no arity pins, nothing names the helper; **all deliberately left**, with the post-apply communication slice as the honest verifier.
+- **Dev-DB state**: migration applied AND recorded in the migration log (`migration repair` succeeded in-session this time).
 
 ## Decomposition walks (recorded 2026-08-15, session of the board)
 

@@ -1,7 +1,7 @@
 ---
 id: TASK-PD019-2
 title: Tranche 2 platform build — the two-limb gate reaches the six group-conversation contracts; the group sits, reads, and speaks as itself
-status: in-progress
+status: review — built and verified 2026-08-18 (red-first 12 red / 1 labelled guard -> 13/13; communication slice 10 suites 146/146; conformance gates 30/30; sibling sweep 14 files all personal-path, deliberately left; lint 0 errors); HELD at the schema gate — merge only on an explicitly named approval. Migration applied to dev AND recorded in the migration log (repair succeeded in-session)
 assigned_to: claude
 priority: high
 feature: FEAT-PD019

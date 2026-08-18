@@ -38,7 +38,7 @@ test.describe('FEAT-H046 — posting as the group (wielded forum)', () => {
 
     // A fixture steward creates both groups through the real contract (role
     // instantiation rides create_engagement_group; no data-level replicas).
-    const { data: created, error: createErr } = await admin.auth.admin.createUser({
+    const { error: createErr } = await admin.auth.admin.createUser({
       email: STEWARD_EMAIL,
       password: 'e2e-test-password-123',
       email_confirm: true,
