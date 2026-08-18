@@ -1,7 +1,7 @@
 ---
 id: TASK-PD019-2
 title: Tranche 2 platform build — the two-limb gate reaches the six group-conversation contracts; the group sits, reads, and speaks as itself
-status: review — built and verified 2026-08-18 (red-first 12 red / 1 labelled guard -> 13/13; communication slice 10 suites 146/146; conformance gates 30/30; sibling sweep 14 files all personal-path, deliberately left; lint 0 errors); HELD at the schema gate — merge only on an explicitly named approval. Migration applied to dev AND recorded in the migration log (repair succeeded in-session)
+status: done — built and verified 2026-08-18 (red-first 12 red / 1 labelled guard -> 13/13; communication slice 10 suites 146/146; conformance gates 30/30; sibling sweep 14 files all personal-path, deliberately left); MERGED at the schema gate on named approval ("ok merge PR #556", Stefan, 2026-08-18; all three PR checks SUCCESS; mergedAt verified) — PR #556. Migration applied to dev and recorded in the log — no outstanding steps. Remaining pulls: tranche 3 (announcements, PD020-interplay walk) + the Hub conversation affordances; feature maturity stays 5-in-cycle
 assigned_to: claude
 priority: high
 feature: FEAT-PD019
