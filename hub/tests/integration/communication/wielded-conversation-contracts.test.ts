@@ -356,6 +356,43 @@ describe('FEAT-PD019 T2 — wielded group conversations (two-limb gate, standing
     expect((sent as { sender_group_id: string }).sender_group_id).toBe(memberB.personalGroupId);
   });
 
+  // --------------------------------------------------- the leave rider (T2R)
+  // Found at the H047 consumer build (2026-08-20): leave_group_conversation
+  // existed and tranche 2 missed it — the walk enumerated a hand-list instead
+  // of sweeping the family. Wielded leave is KEY-ONLY (limb 1 + A's row): the
+  // PC015 exit-family precedent (leave_group_as_group, 20260706120000) —
+  // withdrawing A from a thread must never require A's standing, or a
+  // removed group could not be cleaned up by its own key-holders.
+  it("T2R-leave: a wielded leave sets A's left_at; a wielded rejoin reopens it (the family's own door)", async () => {
+    const cw = await asUser(wielder);
+    const { error } = await cw.rpc('leave_group_conversation', {
+      p_conversation_id: joinTargetConv,
+      p_acting: gA,
+    });
+    expect(error).toBeNull();
+    const rows = (await runAdminSql(
+      `SELECT (left_at IS NOT NULL) AS left FROM public.conversation_participants
+       WHERE conversation_id = '${joinTargetConv}' AND participant_group_id = '${gA}';`
+    )) as Array<{ left: boolean }>;
+    expect(rows[0].left).toBe(true);
+
+    const { error: rejoinErr } = await cw.rpc('join_group_conversation', {
+      p_conversation_id: joinTargetConv,
+      p_acting: gA,
+    });
+    expect(rejoinErr).toBeNull();
+  });
+
+  it('T2R-leave-keyless: refused 42501 naming the acting limb (S5 — learns nothing)', async () => {
+    const ck = await asUser(keyless);
+    const { error } = await ck.rpc('leave_group_conversation', {
+      p_conversation_id: joinTargetConv,
+      p_acting: gA,
+    });
+    expect(error?.code).toBe('42501');
+    expect(error?.message).toMatch(/permission to act as this group/);
+  });
+
   // ------------------------------------------------- standing per act (RULED)
   it("S4-standing (LAST): A removed from B — every wielded act refuses despite A's surviving participant row", async () => {
     await runAdminSql(`
@@ -385,5 +422,18 @@ describe('FEAT-PD019 T2 — wielded group conversations (two-limb gate, standing
       expect(error?.code).toBe('42501');
       expect(error?.message).toMatch(/not an active member/);
     }
+
+    // T2R: leave is the ONE act that still works after removal — key-only by
+    // design (cleanup must not require standing; the exit-family precedent).
+    const { error: leaveErr } = await cw.rpc('leave_group_conversation', {
+      p_conversation_id: joinTargetConv,
+      p_acting: gA,
+    });
+    expect(leaveErr).toBeNull();
+    const leftRows = (await runAdminSql(
+      `SELECT (left_at IS NOT NULL) AS left FROM public.conversation_participants
+       WHERE conversation_id = '${joinTargetConv}' AND participant_group_id = '${gA}';`
+    )) as Array<{ left: boolean }>;
+    expect(leftRows[0].left).toBe(true);
   });
 });
