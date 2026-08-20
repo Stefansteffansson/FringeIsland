@@ -1,7 +1,7 @@
 ---
 id: TASK-H047-1
 title: The hat opens the conversations — wielded list/join/leave/create, the param-carried thread, the labelled composer
-status: done — built and verified 2026-08-20 (red-first 11 red / 1 pure guard -> 12/12; unit tier 178 suites 1497/1497; wielded conversation E2E green beside the wielded-forum + forum journeys; lint 0 errors; next build green). The consumer build surfaced the T2R leave-rider gap (own PR #562). FEAT-H047 6-done; PR merges AFTER #562's schema gate
+status: done — built and verified 2026-08-20 (red-first 11 red / 1 pure guard -> 12/12; unit tier 178 suites 1497/1497; wielded conversation E2E green beside the wielded-forum + forum journeys; lint 0 errors; next build green). The consumer build surfaced the T2R leave-rider gap (own PR #562). FEAT-H047 6-done; MERGED — PR #563, in order after the rider gate (#562, named approval 2026-08-20)
 assigned_to: claude
 priority: high
 feature: FEAT-H047
