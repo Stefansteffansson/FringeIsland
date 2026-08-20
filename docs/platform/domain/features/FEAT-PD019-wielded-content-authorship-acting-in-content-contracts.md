@@ -5,7 +5,7 @@ id: FEAT-PD019
 title: Wielded content authorship — the ADR-U041 acting parameter reaches the content contracts (forum first), and the attribution ladder learns to name a group author
 owner: platform/domain/communication
 consumers: [hub]
-wave: unassigned
+wave: ferd
 maturity: 6-done
 requires-equipment: none
 ---

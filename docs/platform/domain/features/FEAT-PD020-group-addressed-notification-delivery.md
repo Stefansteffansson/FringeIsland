@@ -5,7 +5,7 @@ id: FEAT-PD020
 title: Group-addressed notification delivery — engagement-group recipients expand to the people who answer for the group, at write time, by construction
 owner: platform/domain/communication
 consumers: [hub]
-wave: unassigned
+wave: ferd
 maturity: 6-done
 requires-equipment: none
 ---

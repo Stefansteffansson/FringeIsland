@@ -5,7 +5,7 @@ id: FEAT-H046
 title: Wielded content affordances — the hat's content powers open real doors (forum first), and hat lifecycle stays fresh through delivery
 owner: hub
 consumers: []
-wave: unassigned
+wave: ferd
 maturity: 6-done
 requires-equipment: none
 ---

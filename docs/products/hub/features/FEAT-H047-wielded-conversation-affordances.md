@@ -5,7 +5,7 @@ id: FEAT-H047
 title: Wielded conversation affordances — the hat opens the conversations list and the thread, and the group speaks with a labelled composer
 owner: hub
 consumers: []
-wave: unassigned
+wave: ferd
 maturity: 6-done
 requires-equipment: none
 ---
