@@ -6,7 +6,7 @@ title: Wielded content authorship — the ADR-U041 acting parameter reaches the 
 owner: platform/domain/communication
 consumers: [hub]
 wave: unassigned
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -126,7 +126,13 @@ Paired surface spec: [FEAT-H046](../../../products/hub/features/FEAT-H046-wielde
 - **Sibling sweep (named in the migration header)**: `forum-contracts.test.ts:443` and `:449` adapted (rung-2 person objects gain `kind: 'person'`); `forum-contracts.test.ts:513` and `member-erasure-disposition.test.ts:337` deliberately left (rung-3 guards). All other author/sender consumers assert key-by-key.
 - **Dev-DB state**: the migration is applied; the `migration repair --status applied 20260816120000` bookkeeping step was classifier-denied in the autonomous session and is listed in the PR body for the gate.
 
-Tranche 3 (announcements, STORY-5) remains unpulled; maturity stays `5-in-cycle` until it ships or wave-planning re-scopes the feature.
+## Implementation notes (tranche 3 — 2026-08-20, TASK-PD019-3; the family closes)
+
+**Migration `20260820150000`** (held at the schema gate; carrying the feature to `6-done` — all five stories built). The three community-announcement contracts gain `p_acting` under the shared gate: the board read (limbs 1+2a), the send (limb 2b = `send_announcements`), and retract (the family's role-power semantics wielded verbatim; the platform arm refuses at limb 2a's NULL scope — structural, no branch to drift). The wielded send carries the two walk-pinned consequences: **dual actor exclusion** (byte-identical predicate on the personal path, since `v_actor = v_me`) and **`sent_by_group_id = A`** in the FIM-visible payload (privacy-forced). **The PD020 interplay is proven by cell, guarded for the personal path**: a wielded announcement's engagement-group recipient rows expand to answerers' personal rows with zero group-addressed residue — the dead-letter class stays retired under wielded authorship.
+
+**Red → green:** 7 red (PGRST202) / 2 labelled guards → **9/9**, including the interplay cell and the structural platform-arm refusal. Slices at the gate: communication + platform + notifications. Sibling sweep: personal paths byte-identical, no arity pins, all deliberately left.
+
+**The family, complete (platform side):** forum (T1, #551) · conversations (T2, #556 + T2R #562) · announcements (T3, this gate). Hub halves shipped for forum (H046) and conversations (H047); the **announcements Hub affordances are a future H-spec** (the wielded composer on the group announcements board — deferred, stated plainly). The v1 postures on record: wielded forum posts editable by no one; hint silence (topic-channel rider recorded); DMs and the platform plane never wieldable — both structural.
 
 ## Implementation notes (tranche 2 — 2026-08-18, TASK-PD019-2)
 
