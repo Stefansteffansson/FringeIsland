@@ -6,7 +6,7 @@ title: Wielded content authorship — the ADR-U041 acting parameter reaches the 
 owner: platform/domain/communication
 consumers: [hub]
 wave: unassigned
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -82,8 +82,18 @@ As an `act_as_group` holder in A, I want the six group-conversation contracts to
 
 **Rider (2026-08-20, TASK-PD019-2R — found at the H047 consumer build):** `leave_group_conversation` was the family's seventh contract and the tranche missed it. It gains `p_acting` under a **key-only** gate (limb 1 + A's own participant row, deliberately no limb 2a — the `leave_group_as_group` exit-family precedent: withdrawing A is an act on A's own participation, and a removed group must stay cleanable by its key-holders). AC: given the key, a wielded leave sets A's `left_at` (rejoin via the family's own door); it is the one wielded act that still works after A loses standing; keyless refuses 42501 naming the limb.
 
-### STORY-5: Announcements as the group (tranche 3 — pulled separately)
-Same shape over the announcement contracts (`author_group_id` already a groups FK, `20260720200000:79`). Firm G/W/T at pull, including the FEAT-PD020 interplay (a group-authored announcement's fan-out must not re-create dead letters).
+### STORY-5: Announcements as the group (tranche 3 — pulled 2026-08-20)
+As an `act_as_group` holder in A, I want the three community-announcement contracts (`get_group_announcements`, `send_community_announcement`, `retract_announcement`) to accept `p_acting` under the two limbs, so that the group can hear, speak to, and correct itself before its host community.
+
+**Walk findings at pull (no board forks — everything follows ruled precedent):** retraction is already a **role power, not an author right** (`send_announcements` in the scope group retracts any community announcement — probed applied body), so wielded retract carries the family's own gate with no new posture; the platform-announcement arm refuses wielding **structurally** (its scope group is NULL — limb 2a, no special-case code); two consequences the wielded send must carry: the fan-out excludes **both identities of the act** (A as author-of-record and the wielder as acting person — the actor-exclusion principle applied whole), and the FIM-visible payload's `sent_by_group_id` becomes **A** (the current `v_me` would leak the person behind the hat — the PD019 privacy posture).
+
+**Acceptance criteria:**
+- Given both limbs hold (my key in A; A an active engagement member of B), when I call `get_group_announcements(B, p_acting := A)`, then the board is byte-shaped like a member's read (authors already ride the widened ladder with `kind`); either limb failing refuses `42501` naming the limb.
+- Given A also holds `send_announcements` in B (limb 2b), when I call `send_community_announcement(B, title, body, p_acting := A)`, then the announcement lands `author_group_id = A` and the read serves it as `{A's name, 'active', kind: 'group'}`; given A lacks the permission, `42501` naming it, no row.
+- Given the wielded send's fan-out, then every **person** member of B gets a personal notification whose payload names **A** as sender; **neither A nor the wielder** receives one (dual actor exclusion); every **other engagement-group** member's row expands through the FEAT-PD020 trigger to its answerers' personal rows — **zero group-addressed notification rows survive** (the dead-letter class stays retired; the interplay proven by cell, not assumed).
+- Given A holds `send_announcements` in B, when I call `retract_announcement(id, p_acting := A)` on a community announcement in B, then `retracted_at` is set with `retracted_by_group_id = A` and the board no longer serves it (the family's role-power semantics, wielded verbatim).
+- Given any wielded call against a **platform** announcement, then `42501` — limb 2a has no context group to hold in (the DeusEx plane is never wieldable, by construction).
+- Given no `p_acting` on any of the three, then behaviour is byte-identical to today (additive default).
 
 ## Platform dependencies
 
@@ -116,7 +126,13 @@ Paired surface spec: [FEAT-H046](../../../products/hub/features/FEAT-H046-wielde
 - **Sibling sweep (named in the migration header)**: `forum-contracts.test.ts:443` and `:449` adapted (rung-2 person objects gain `kind: 'person'`); `forum-contracts.test.ts:513` and `member-erasure-disposition.test.ts:337` deliberately left (rung-3 guards). All other author/sender consumers assert key-by-key.
 - **Dev-DB state**: the migration is applied; the `migration repair --status applied 20260816120000` bookkeeping step was classifier-denied in the autonomous session and is listed in the PR body for the gate.
 
-Tranche 3 (announcements, STORY-5) remains unpulled; maturity stays `5-in-cycle` until it ships or wave-planning re-scopes the feature.
+## Implementation notes (tranche 3 — 2026-08-20, TASK-PD019-3; the family closes)
+
+**Migration `20260820150000`** (held at the schema gate; carrying the feature to `6-done` — all five stories built). The three community-announcement contracts gain `p_acting` under the shared gate: the board read (limbs 1+2a), the send (limb 2b = `send_announcements`), and retract (the family's role-power semantics wielded verbatim; the platform arm refuses at limb 2a's NULL scope — structural, no branch to drift). The wielded send carries the two walk-pinned consequences: **dual actor exclusion** (byte-identical predicate on the personal path, since `v_actor = v_me`) and **`sent_by_group_id = A`** in the FIM-visible payload (privacy-forced). **The PD020 interplay is proven by cell, guarded for the personal path**: a wielded announcement's engagement-group recipient rows expand to answerers' personal rows with zero group-addressed residue — the dead-letter class stays retired under wielded authorship.
+
+**Red → green:** 7 red (PGRST202) / 2 labelled guards → **9/9**, including the interplay cell and the structural platform-arm refusal. Slices at the gate: communication + platform + notifications. Sibling sweep: personal paths byte-identical, no arity pins, all deliberately left.
+
+**The family, complete (platform side):** forum (T1, #551) · conversations (T2, #556 + T2R #562) · announcements (T3, this gate). Hub halves shipped for forum (H046) and conversations (H047); the **announcements Hub affordances are a future H-spec** (the wielded composer on the group announcements board — deferred, stated plainly). The v1 postures on record: wielded forum posts editable by no one; hint silence (topic-channel rider recorded); DMs and the platform plane never wieldable — both structural.
 
 ## Implementation notes (tranche 2 — 2026-08-18, TASK-PD019-2)
 
