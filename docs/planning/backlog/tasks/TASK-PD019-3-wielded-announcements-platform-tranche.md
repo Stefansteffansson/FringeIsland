@@ -1,7 +1,7 @@
 ---
 id: TASK-PD019-3
 title: Tranche 3 platform build — the three community-announcement contracts learn wielding; the PD020 interplay proven by cell
-status: review — built and verified 2026-08-20 (red-first 7 red / 2 labelled guards -> 9/9; slices communication+platform+notifications 26 suites 313/313; lint 0 errors); HELD at the schema gate — merge only on an explicitly named approval; merging takes FEAT-PD019 to 6-done. Migration applied + recorded in the log
+status: done — built and verified 2026-08-20 (red-first 7 red / 2 labelled guards -> 9/9; slices 26 suites 313/313); MERGED at the schema gate on named approval ("ok merge PR #567", Stefan, 2026-08-20; checks SUCCESS; mergedAt verified) — PR #567. FEAT-PD019 is 6-done: all five stories built, the acting family platform-complete (T1 #551, T2 #556+#562, T3 #567). Remaining surface pull: the announcements Hub half (future H-spec)
 assigned_to: claude
 priority: high
 feature: FEAT-PD019
