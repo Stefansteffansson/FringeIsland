@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   }
 
   const payload = (await request.json().catch(() => null)) as
-    | { group_id?: unknown; title?: unknown }
+    | { group_id?: unknown; title?: unknown; acting?: unknown }
     | null;
   const groupId = payload?.group_id;
   const title = payload?.title;
@@ -31,14 +31,22 @@ export async function POST(request: Request) {
   ) {
     return NextResponse.json({ error: 'A group is required' }, { status: 400 });
   }
+  // FEAT-H047: a wielded create — the acting group takes the first seat
+  // (limb 2b = create_group_conversations, substrate-side; PD019 T2).
+  const acting = typeof payload?.acting === 'string' ? payload.acting : undefined;
 
   try {
     const conversationId = await createGroupConversationRpc(
       supabase,
       groupId,
       (title as string | null) ?? null,
+      acting,
     );
-    emitTelemetry('messages.group_conversation_created', { actor: user.id, group: groupId });
+    emitTelemetry('messages.group_conversation_created', {
+      actor: user.id,
+      group: groupId,
+      wielded: Boolean(acting),
+    });
     return NextResponse.json({ conversation_id: conversationId }, { status: 201 });
   } catch (err) {
     return mapContractError(err, 'messages.group_conversation_create_failed', user.id);

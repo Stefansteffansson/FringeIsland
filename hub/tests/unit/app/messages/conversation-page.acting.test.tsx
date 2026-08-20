@@ -1,5 +1,5 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ConversationDetail } from '@/lib/messages/queries';
 
@@ -88,8 +88,14 @@ const DETAIL: ConversationDetail = {
   my_last_read_at: null,
 } as unknown as ConversationDetail;
 
-const renderPage = () =>
-  render(<ConversationPage params={Promise.resolve({ id: 'c1' })} />);
+// `use(params)` suspends on first render; rendering inside an ASYNC act lets
+// the already-resolved promise resume the tree under RTL (harness
+// accommodation — React 19 requires the suspending render to be awaited).
+const renderPage = async () => {
+  await act(async () => {
+    render(<ConversationPage params={Promise.resolve({ id: 'c1' })} />);
+  });
+};
 
 describe('ConversationPage — the param-carried hat (FEAT-H047)', () => {
   beforeEach(() => {
@@ -101,47 +107,59 @@ describe('ConversationPage — the param-carried hat (FEAT-H047)', () => {
   });
 
   it('S2: the param drives the wielded read, the banner, the composer label, and the group clock', async () => {
-    renderPage();
+    await renderPage();
     expect(await screen.findByTestId('thread-acting-banner')).toHaveTextContent(
       'Viewing as Alpha',
     );
     expect(screen.getByTestId('thread-acting-send-label')).toHaveTextContent('Sending as Alpha');
-    expect(mockMsgs.fetchConversationDetail.mock.calls.at(-1)?.flat(2).join(',')).toContain('ga');
+    expect(JSON.stringify(mockMsgs.fetchConversationDetail.mock.calls.at(-1))).toContain('ga');
     await waitFor(() => expect(mockMsgs.markRead).toHaveBeenCalled());
     expect(mockMsgs.markRead.mock.calls.at(-1) ?? []).toContain('ga');
   });
 
-  it('S2: a wielded send carries the acting group and shows NO optimistic bubble', async () => {
+  it('S2: a wielded send carries the acting group, shows NO optimistic bubble, and RE-READS', async () => {
     const user = userEvent.setup();
+    const DETAIL_AFTER = {
+      ...DETAIL,
+      messages: [
+        ...DETAIL.messages,
+        {
+          id: 'm9',
+          sender_group_id: 'ga',
+          content: 'as the group',
+          is_deleted: false,
+          created_at: '2026-08-19T10:05:00Z',
+        },
+      ],
+    } as unknown as ConversationDetail;
     mockMsgs.sendMessage.mockImplementation(
       () =>
         new Promise((resolve) =>
-          setTimeout(
-            () =>
-              resolve({
-                id: 'm9',
-                sender_group_id: 'ga',
-                content: 'as the group',
-                is_deleted: false,
-                created_at: '2026-08-19T10:05:00Z',
-              }),
-            50,
-          ),
+          setTimeout(() => {
+            // the re-read after the send serves the confirmed row (and the
+            // senders map — a first-time sender resolves on the re-read)
+            mockMsgs.fetchConversationDetail.mockResolvedValue(DETAIL_AFTER);
+            resolve({ id: 'm9' });
+          }, 50),
         ),
     );
-    renderPage();
+    await renderPage();
     await screen.findByText('spoken for the group');
-    await user.type(screen.getByLabelText('Message'), 'as the group');
+    await user.type(screen.getByRole('textbox', { name: 'Message' }), 'as the group');
     await user.click(screen.getByRole('button', { name: 'Send' }));
 
     // No optimistic bubble while in flight (the wielded no-optimism rule).
     expect(screen.queryByTestId('pending-sending')).toBeNull();
     await waitFor(() => expect(screen.getByText('as the group')).toBeInTheDocument());
     expect(mockMsgs.sendMessage.mock.calls.at(-1) ?? []).toContain('ga');
+    // The write re-read: the detail fetch ran again after the send.
+    expect(mockMsgs.fetchConversationDetail.mock.calls.length).toBeGreaterThan(1);
+    // ...and the re-served row carries the badge.
+    expect(screen.getByTestId('message-sender-badge-m9')).toHaveTextContent('Group');
   });
 
   it("S3: group senders badge on the senders map's kind; person senders don't; Report hides under the hat", async () => {
-    renderPage();
+    await renderPage();
     await screen.findByText('spoken for the group');
     expect(screen.getByTestId('message-sender-badge-m1')).toHaveTextContent('Group');
     expect(screen.queryByTestId('message-sender-badge-m2')).toBeNull();
@@ -150,13 +168,13 @@ describe('ConversationPage — the param-carried hat (FEAT-H047)', () => {
 
   it('S3 guard: without the param the page is byte-identical — no banner, no label, Report renders, badges still payload-driven', async () => {
     searchParams = new URLSearchParams();
-    renderPage();
+    await renderPage();
     await screen.findByText('spoken for the group');
     expect(screen.queryByTestId('thread-acting-banner')).toBeNull();
     expect(screen.queryByTestId('thread-acting-send-label')).toBeNull();
     expect(screen.getAllByTestId('report-stub').length).toBeGreaterThan(0);
     expect(screen.getByTestId('message-sender-badge-m1')).toHaveTextContent('Group');
-    expect(mockMsgs.fetchConversationDetail.mock.calls.at(-1)?.flat(2).join(',')).not.toContain('ga');
+    expect(JSON.stringify(mockMsgs.fetchConversationDetail.mock.calls.at(-1))).not.toContain('ga');
   });
 
   it('S2: a refused wielded read names the hat and "View as myself" drops the param', async () => {
@@ -164,7 +182,7 @@ describe('ConversationPage — the param-carried hat (FEAT-H047)', () => {
     mockMsgs.fetchConversationDetail.mockRejectedValue(
       new Error('the acting group is not an active member of this group'),
     );
-    renderPage();
+    await renderPage();
     const notice = await screen.findByTestId('thread-acting-refused');
     expect(notice).toHaveTextContent(/the acting group is not an active member/);
     await user.click(screen.getByRole('button', { name: 'View as myself' }));

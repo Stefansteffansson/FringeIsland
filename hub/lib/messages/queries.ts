@@ -45,6 +45,10 @@ export interface ConversationParticipant {
 export interface AuthorDisplay {
   display_name: string;
   attribution: 'active' | 'former' | 'unknown';
+  /** FEAT-PD019 additive key (ADR-U041 §5): present on resolvable identities
+   *  ('person' | 'group', open set); absent on rung-3 'Unknown' and on
+   *  pre-PD019 payloads — readers stay tolerant. */
+  kind?: string;
 }
 
 export interface ConversationDetail {
@@ -80,12 +84,14 @@ export async function fetchMyConversations(
 export async function fetchConversationDetail(
   supabase: SupabaseClient,
   conversationId: string,
-  options?: { before?: string; limit?: number },
+  options?: { before?: string; limit?: number; acting?: string },
 ): Promise<ConversationDetail> {
   const { data, error } = await supabase.rpc('get_conversation_detail', {
     p_conversation_id: conversationId,
     ...(options?.before ? { p_before: options.before } : {}),
     ...(options?.limit !== undefined ? { p_limit: options.limit } : {}),
+    // FEAT-H047 over FEAT-PD019 T2: the wielded read — gate substrate-side.
+    ...(options?.acting ? { p_acting: options.acting } : {}),
   });
   if (error) throw error;
   return data as ConversationDetail;
@@ -95,10 +101,12 @@ export async function sendConversationMessage(
   supabase: SupabaseClient,
   conversationId: string,
   content: string,
+  acting?: string,
 ): Promise<ConversationMessage> {
   const { data, error } = await supabase.rpc('send_message', {
     p_conversation_id: conversationId,
     p_content: content,
+    ...(acting ? { p_acting: acting } : {}),
   });
   if (error) throw error;
   return data as ConversationMessage;
@@ -121,10 +129,12 @@ export async function createGroupConversationRpc(
   supabase: SupabaseClient,
   groupId: string,
   title: string | null,
+  acting?: string,
 ): Promise<string> {
   const { data, error } = await supabase.rpc('create_group_conversation', {
     p_group_id: groupId,
     p_title: title,
+    ...(acting ? { p_acting: acting } : {}),
   });
   if (error) throw error;
   return data as string;
@@ -133,9 +143,11 @@ export async function createGroupConversationRpc(
 export async function fetchGroupConversationsRpc(
   supabase: SupabaseClient,
   groupId: string,
+  acting?: string,
 ): Promise<GroupConversationRow[]> {
   const { data, error } = await supabase.rpc('get_group_conversations', {
     p_group_id: groupId,
+    ...(acting ? { p_acting: acting } : {}),
   });
   if (error) throw error;
   return (data as { conversations: GroupConversationRow[] }).conversations;
@@ -144,9 +156,11 @@ export async function fetchGroupConversationsRpc(
 export async function joinGroupConversationRpc(
   supabase: SupabaseClient,
   conversationId: string,
+  acting?: string,
 ): Promise<void> {
   const { error } = await supabase.rpc('join_group_conversation', {
     p_conversation_id: conversationId,
+    ...(acting ? { p_acting: acting } : {}),
   });
   if (error) throw error;
 }
@@ -154,9 +168,11 @@ export async function joinGroupConversationRpc(
 export async function leaveGroupConversationRpc(
   supabase: SupabaseClient,
   conversationId: string,
+  acting?: string,
 ): Promise<void> {
   const { error } = await supabase.rpc('leave_group_conversation', {
     p_conversation_id: conversationId,
+    ...(acting ? { p_acting: acting } : {}),
   });
   if (error) throw error;
 }
@@ -164,9 +180,11 @@ export async function leaveGroupConversationRpc(
 export async function markConversationReadRpc(
   supabase: SupabaseClient,
   conversationId: string,
+  acting?: string,
 ): Promise<void> {
   const { error } = await supabase.rpc('mark_conversation_read', {
     p_conversation_id: conversationId,
+    ...(acting ? { p_acting: acting } : {}),
   });
   if (error) throw error;
 }

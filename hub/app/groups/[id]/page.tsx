@@ -289,6 +289,19 @@ export default function GroupDetailPage() {
     return () => window.removeEventListener(NOTIFICATIONS_CHANGED_EVENT, onHint);
   }, [authLoading, identity, loadActing]);
 
+  // FEAT-H046/H047: the acting context both wielded sections consume — built
+  // once from the selector state + the standing-filtered contexts + the
+  // substitution permissions (pure substitution; null means "Myself").
+  const actingContext = (() => {
+    if (actingAs === 'myself') return null;
+    const hat = actingContexts.find(
+      (c) => c.group_id === actingAs && c.is_member_of_context === true,
+    );
+    return hat
+      ? { groupId: hat.group_id, name: hat.name, permissions: actingPermissions ?? [] }
+      : null;
+  })();
+
   return (
     <AppShell title="Group">
       {authLoading || identity !== 'fim' || (loading && !group) ? (
@@ -346,7 +359,7 @@ export default function GroupDetailPage() {
           {/* FEAT-H025 STORY-6 (COM-15, CB-7): the group's conversations — a
               failure-isolated slice; create renders only on the platform's
               create_group_conversations grant. */}
-          <GroupConversationsSection groupId={groupId} />
+          <GroupConversationsSection groupId={groupId} acting={actingContext} />
           {/* FEAT-H028 STORY-1/2 (COM-8): the group's announcement board — a
               failure-isolated slice above the forum; compose/retract render
               only on the platform's send_announcements grant. */}
@@ -356,22 +369,7 @@ export default function GroupDetailPage() {
               FEAT-H046: with a hat selected (standing here), the section
               renders the wielded view — banner, hat-gated composer, confirms
               naming the wielding. */}
-          <GroupForumSection
-            groupId={groupId}
-            acting={(() => {
-              if (actingAs === 'myself') return null;
-              const hat = actingContexts.find(
-                (c) => c.group_id === actingAs && c.is_member_of_context === true,
-              );
-              return hat
-                ? {
-                    groupId: hat.group_id,
-                    name: hat.name,
-                    permissions: actingPermissions ?? [],
-                  }
-                : null;
-            })()}
-          />
+          <GroupForumSection groupId={groupId} acting={actingContext} />
           {/* RD-B walk fix W-1: a roles notice lands on `?focus=roles`, and the
               available-roles section expands, scrolls into view and rings once.
               The param is read inside its own Suspense boundary (the

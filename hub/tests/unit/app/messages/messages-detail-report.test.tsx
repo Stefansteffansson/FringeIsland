@@ -21,7 +21,7 @@ const markRead = jest.fn<() => Promise<void>>();
 const sendMessage = jest.fn();
 
 jest.mock('@/lib/auth/AuthContext', () => ({ useAuth: () => authState }));
-jest.mock('next/navigation', () => ({ useRouter: () => router }));
+jest.mock('next/navigation', () => ({ useRouter: () => router, useSearchParams: () => new URLSearchParams() }));
 jest.mock('@/lib/messages/client', () => ({
   fetchConversationDetail: () => fetchConversationDetail(),
   markRead: () => markRead(),

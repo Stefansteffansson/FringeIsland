@@ -89,10 +89,17 @@ function badgeRefresh(): void {
 
 export async function fetchConversationDetail(
   conversationId: string,
-  options?: { before?: string },
+  options?: { before?: string; acting?: string },
 ): Promise<ConversationDetail> {
-  const qs = options?.before ? `?before=${encodeURIComponent(options.before)}` : '';
-  const res = await fetch(`/api/messages/${encodeURIComponent(conversationId)}${qs}`);
+  const params = new URLSearchParams();
+  if (options?.before) params.set('before', options.before);
+  // FEAT-H047 over FEAT-PD019 T2: the wielded read — the two-limb gate is
+  // substrate-side; omitting the key keeps the call byte-identical.
+  if (options?.acting) params.set('acting', options.acting);
+  const query = params.toString();
+  const res = await fetch(
+    `/api/messages/${encodeURIComponent(conversationId)}${query ? `?${query}` : ''}`,
+  );
   if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
   return (await res.json()) as ConversationDetail;
 }
@@ -100,11 +107,12 @@ export async function fetchConversationDetail(
 export async function sendMessage(
   conversationId: string,
   content: string,
+  acting?: string,
 ): Promise<ConversationMessage> {
   const res = await fetch(`/api/messages/${encodeURIComponent(conversationId)}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content }),
+    body: JSON.stringify({ content, ...(acting ? { acting } : {}) }),
   });
   if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
   const data = (await res.json()) as { message: ConversationMessage };
@@ -112,9 +120,15 @@ export async function sendMessage(
   return data.message;
 }
 
-export async function markRead(conversationId: string): Promise<void> {
+export async function markRead(conversationId: string, acting?: string): Promise<void> {
   const res = await fetch(`/api/messages/${encodeURIComponent(conversationId)}/read`, {
     method: 'POST',
+    ...(acting
+      ? {
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ acting }),
+        }
+      : {}),
   });
   if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
   badgeRefresh();
@@ -137,11 +151,12 @@ export async function openDm(otherGroupId: string): Promise<string> {
 export async function createGroupConversation(
   groupId: string,
   title: string | null,
+  acting?: string,
 ): Promise<string> {
   const res = await fetch('/api/messages/group', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ group_id: groupId, title }),
+    body: JSON.stringify({ group_id: groupId, title, ...(acting ? { acting } : {}) }),
   });
   if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
   const data = (await res.json()) as { conversation_id: string };
@@ -151,8 +166,10 @@ export async function createGroupConversation(
 
 export async function fetchGroupConversations(
   groupId: string,
+  acting?: string,
 ): Promise<{ conversations: GroupConversationRow[] }> {
-  const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/conversations`);
+  const qs = acting ? `?acting=${encodeURIComponent(acting)}` : '';
+  const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/conversations${qs}`);
   // Status carried so the section can branch honestly on a member-gated 403
   // (post-6-done fix 2026-08-14); write paths keep plain Errors.
   if (!res.ok)
@@ -160,18 +177,28 @@ export async function fetchGroupConversations(
   return (await res.json()) as { conversations: GroupConversationRow[] };
 }
 
-export async function joinConversation(conversationId: string): Promise<void> {
-  const res = await fetch(`/api/messages/${encodeURIComponent(conversationId)}/join`, {
+async function conversationAct(
+  conversationId: string,
+  door: 'join' | 'leave',
+  acting?: string,
+): Promise<void> {
+  const res = await fetch(`/api/messages/${encodeURIComponent(conversationId)}/${door}`, {
     method: 'POST',
+    ...(acting
+      ? {
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ acting }),
+        }
+      : {}),
   });
   if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
   badgeRefresh();
 }
 
-export async function leaveConversation(conversationId: string): Promise<void> {
-  const res = await fetch(`/api/messages/${encodeURIComponent(conversationId)}/leave`, {
-    method: 'POST',
-  });
-  if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
-  badgeRefresh();
+export async function joinConversation(conversationId: string, acting?: string): Promise<void> {
+  return conversationAct(conversationId, 'join', acting);
+}
+
+export async function leaveConversation(conversationId: string, acting?: string): Promise<void> {
+  return conversationAct(conversationId, 'leave', acting);
 }

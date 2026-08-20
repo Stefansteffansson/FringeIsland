@@ -6,7 +6,7 @@ title: Wielded conversation affordances — the hat opens the conversations list
 owner: hub
 consumers: []
 wave: unassigned
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -58,11 +58,11 @@ As a wielder, I want `/messages/[id]?acting=A` to render the thread as the group
 - Given the same thread without the param, then behaviour is byte-identical to today — including from the personal inbox.
 
 ### STORY-3: Group identities render honestly, everywhere
-As any reader, I want group senders and participants visibly badged, so representation stays visible in conversations exactly as in the forum (ADR-U041 §5).
+As any reader, I want group senders visibly badged, so representation stays visible in conversations exactly as in the forum (ADR-U041 §5).
 
 **Acceptance criteria:**
-- Given a sender or participant whose display object carries `kind: 'group'`, then the "Group" badge renders beside the name in the thread and its participant list — in personal AND wielded views (payload-driven; absent/`person` kinds render as today).
-- Given the wielded view, then A's own participant row is highlighted client-side by `participant_group_id` (`is_me` stays the personal identity — the T2 payload note), and the Report affordance hides (the ruled wielded surface: read/send/join/leave only).
+- Given a message whose sender's display object (the senders map) carries `kind: 'group'`, then the "Group" badge renders beside the byline — in personal AND wielded views (payload-driven; absent/`person` kinds render as today). *(Payload-walk correction, 2026-08-20: `participants[]` serve `name` only — `kind` lives on the senders map, and the thread page renders no participant roster; the byline is the badge's one home.)*
+- Given the wielded view, then the banner and composer label are A's presence rendering (no separate roster highlight exists to draw), and the Report affordance hides (the ruled wielded surface: read/send/join/leave only).
 
 ## Platform dependencies
 
@@ -85,7 +85,17 @@ The param-carried per-page acting pattern is the reference for any future surfac
 
 Interaction-follow-up reads on existing pages; **no new first paint**. The wielded list/thread are the same requests with a param; hat-switching repaints from the section's own state; the thread page adds zero requests (the acting read the banner needs rides the already-fetched payload's participants). No page joins or leaves the overview bundle; no deep-cold measurement owed (ADR-U043).
 
+## Implementation notes (2026-08-20, TASK-H047-1 — all three stories)
+
+Built same-session as the pull, on the merged T2 contracts + the T2R rider (whose PR this one merges after). No migration. Beyond the two rulings:
+
+- **The consumer build caught a platform gap first**: the Leave door had no wielded contract — tranche 2 had missed `leave_group_conversation` (the T2R rider, its own gate-held PR; the walk lesson recorded in PD019). The section's Leave-as-group affordance calls it.
+- **The wielded send re-reads, and the re-read is load-bearing**: an appended confirmed row would render 'Unknown' for a first-time sender — the senders map is per-page, and A's entry only exists after a re-read serves it. (The personal path's optimistic append has the same latent first-message quirk — pre-existing, found not caused, left untouched.)
+- **Mechanics:** `acting` params through `lib/messages` client + queries and six BFF routes (plumbing, `wielded` telemetry flag); the section and thread page render the H046 posture (banner, hat-gated affordances, honest hat-insufficiency copy); the thread page's `useSearchParams` sits behind Suspense (W-1); confirm copies — "You are joining/leaving as {A}", "You are opening this conversation as {A}"; the composer label "Sending as {A}"; Report hidden under the hat; sender `kind` badges in both views (`authorKindBadge` reuse; `AuthorDisplay.kind` added to the messages types, additive).
+- **Red → green:** 11 red / 1 pure guard at the unit tier (the S3 "guard" cell deliberately half-new — badges are new in both views) → **12/12**; full unit tier **178 suites 1497/1497** (labelled sibling adaptation: the three thread-page suites' navigation mocks gained `useSearchParams`); lint 0 errors; `next build` green; **E2E: the wielded conversation journey green** (hat → banner → confirmed join → param-carried thread → labelled send → Group-badged message) beside the wielded-forum and forum journeys — labelled honestly: the E2E was authored with the implementation (it caught the senders-map re-read fact); red-first proof lives at the unit tier. The wielded Leave affordance is unit-covered; no E2E leg (labelled).
+- **Test-harness note:** `use(params)` + Suspense requires rendering inside an async `act` under RTL (React 19) — the pattern is in `conversation-page.acting.test.tsx` for the next page harness.
+
 ## Decomposition walks (recorded 2026-08-20)
 
-- **Payload walk:** every rendered field traces to served keys — list rows are byte-shaped with `am_i_participant` re-referented (T2); the thread renders `senders[].kind`, `participants[].name/kind` (widened ladder, T1), `my_last_read_at` (A's clock, T2); A's banner name comes from the payload's own participants row (no extra fetch). Quote-bearing copy is new to this spec ("Sending as {A}", "You are joining/leaving as {A}") — checked against H046's confirm register, no collisions.
+- **Payload walk:** every rendered field traces to served keys — list rows are byte-shaped with `am_i_participant` re-referented (T2); the thread renders `senders[].kind` (widened ladder, T1) and `my_last_read_at` (A's clock, T2); **`participants[]` serve `name` only — no `kind`** (walk correction 2026-08-20, caught before red: the earlier draft claimed a participants kind that is not served; the byline is the badge's home). A's banner name comes from the payload's own participants row (no extra fetch). Quote-bearing copy is new to this spec ("Sending as {A}", "You are joining/leaving as {A}") — checked against H046's confirm register, no collisions.
 - **Mechanism walk:** BFF routes `/api/groups/[id]/conversations` + `/api/messages/[id]` (+ `/join`, `/leave`, `/read`, `/group`) gain param/body passthrough (plumbing only, ADR-U038); `useSearchParams` on the thread page sits behind Suspense (the W-1 CSR-bailout precedent, `app/groups/[id]/page.tsx:60`); the pending-bubble machinery stays personal-only; `leave` requires the T2R rider (`20260820120000` — the walk-miss lesson recorded in PD019). Conformance: no new routes, identity split unchanged (route-policy test is the gate).
