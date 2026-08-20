@@ -82,8 +82,18 @@ As an `act_as_group` holder in A, I want the six group-conversation contracts to
 
 **Rider (2026-08-20, TASK-PD019-2R — found at the H047 consumer build):** `leave_group_conversation` was the family's seventh contract and the tranche missed it. It gains `p_acting` under a **key-only** gate (limb 1 + A's own participant row, deliberately no limb 2a — the `leave_group_as_group` exit-family precedent: withdrawing A is an act on A's own participation, and a removed group must stay cleanable by its key-holders). AC: given the key, a wielded leave sets A's `left_at` (rejoin via the family's own door); it is the one wielded act that still works after A loses standing; keyless refuses 42501 naming the limb.
 
-### STORY-5: Announcements as the group (tranche 3 — pulled separately)
-Same shape over the announcement contracts (`author_group_id` already a groups FK, `20260720200000:79`). Firm G/W/T at pull, including the FEAT-PD020 interplay (a group-authored announcement's fan-out must not re-create dead letters).
+### STORY-5: Announcements as the group (tranche 3 — pulled 2026-08-20)
+As an `act_as_group` holder in A, I want the three community-announcement contracts (`get_group_announcements`, `send_community_announcement`, `retract_announcement`) to accept `p_acting` under the two limbs, so that the group can hear, speak to, and correct itself before its host community.
+
+**Walk findings at pull (no board forks — everything follows ruled precedent):** retraction is already a **role power, not an author right** (`send_announcements` in the scope group retracts any community announcement — probed applied body), so wielded retract carries the family's own gate with no new posture; the platform-announcement arm refuses wielding **structurally** (its scope group is NULL — limb 2a, no special-case code); two consequences the wielded send must carry: the fan-out excludes **both identities of the act** (A as author-of-record and the wielder as acting person — the actor-exclusion principle applied whole), and the FIM-visible payload's `sent_by_group_id` becomes **A** (the current `v_me` would leak the person behind the hat — the PD019 privacy posture).
+
+**Acceptance criteria:**
+- Given both limbs hold (my key in A; A an active engagement member of B), when I call `get_group_announcements(B, p_acting := A)`, then the board is byte-shaped like a member's read (authors already ride the widened ladder with `kind`); either limb failing refuses `42501` naming the limb.
+- Given A also holds `send_announcements` in B (limb 2b), when I call `send_community_announcement(B, title, body, p_acting := A)`, then the announcement lands `author_group_id = A` and the read serves it as `{A's name, 'active', kind: 'group'}`; given A lacks the permission, `42501` naming it, no row.
+- Given the wielded send's fan-out, then every **person** member of B gets a personal notification whose payload names **A** as sender; **neither A nor the wielder** receives one (dual actor exclusion); every **other engagement-group** member's row expands through the FEAT-PD020 trigger to its answerers' personal rows — **zero group-addressed notification rows survive** (the dead-letter class stays retired; the interplay proven by cell, not assumed).
+- Given A holds `send_announcements` in B, when I call `retract_announcement(id, p_acting := A)` on a community announcement in B, then `retracted_at` is set with `retracted_by_group_id = A` and the board no longer serves it (the family's role-power semantics, wielded verbatim).
+- Given any wielded call against a **platform** announcement, then `42501` — limb 2a has no context group to hold in (the DeusEx plane is never wieldable, by construction).
+- Given no `p_acting` on any of the three, then behaviour is byte-identical to today (additive default).
 
 ## Platform dependencies
 
