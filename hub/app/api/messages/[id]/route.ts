@@ -23,12 +23,20 @@ export async function GET(
   const { id } = await params;
   const url = new URL(request.url);
   const before = url.searchParams.get('before') ?? undefined;
+  // FEAT-H047 over FEAT-PD019 T2: the wielded read — plumbing only, the
+  // two-limb gate lives in the substrate.
+  const acting = url.searchParams.get('acting') ?? undefined;
 
   try {
     const detail = await fetchConversationDetail(supabase, id, {
       ...(before ? { before } : {}),
+      ...(acting ? { acting } : {}),
     });
-    emitTelemetry('messages.detail', { actor: userId, count: detail.messages.length });
+    emitTelemetry('messages.detail', {
+      actor: userId,
+      count: detail.messages.length,
+      wielded: Boolean(acting),
+    });
     return NextResponse.json(detail);
   } catch (err) {
     return mapContractError(err, 'messages.detail_failed', userId);
@@ -49,16 +57,18 @@ export async function POST(
   const { id } = await params;
 
   const payload = (await request.json().catch(() => null)) as
-    | { content?: unknown }
+    | { content?: unknown; acting?: unknown }
     | null;
   const content = payload?.content;
   if (typeof content !== 'string' || content.trim() === '') {
     return NextResponse.json({ error: 'A message needs content' }, { status: 400 });
   }
+  // FEAT-H047: a wielded send — every limb substrate-side.
+  const acting = typeof payload?.acting === 'string' ? payload.acting : undefined;
 
   try {
-    const message = await sendConversationMessage(supabase, id, content);
-    emitTelemetry('messages.sent', { actor: user.id });
+    const message = await sendConversationMessage(supabase, id, content, acting);
+    emitTelemetry('messages.sent', { actor: user.id, wielded: Boolean(acting) });
     return NextResponse.json({ message }, { status: 201 });
   } catch (err) {
     return mapContractError(err, 'messages.send_failed', user.id);

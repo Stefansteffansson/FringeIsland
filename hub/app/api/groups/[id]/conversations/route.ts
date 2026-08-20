@@ -10,7 +10,7 @@ import { emitTelemetry } from '@/lib/observability/telemetry';
  * listing read). Membership gating is substrate-side (FEAT-PD008 STORY-6).
  */
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const supabase = await createClient();
@@ -19,9 +19,15 @@ export async function GET(
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
   const { id } = await params;
+  // FEAT-H047: the wielded list door — plumbing only (PD019 T2).
+  const acting = new URL(request.url).searchParams.get('acting') ?? undefined;
   try {
-    const conversations = await fetchGroupConversationsRpc(supabase, id);
-    emitTelemetry('messages.group_listing', { actor: userId, count: conversations.length });
+    const conversations = await fetchGroupConversationsRpc(supabase, id, acting);
+    emitTelemetry('messages.group_listing', {
+      actor: userId,
+      count: conversations.length,
+      wielded: Boolean(acting),
+    });
     return NextResponse.json({ conversations });
   } catch (err) {
     return mapContractError(err, 'messages.group_listing_failed', userId);

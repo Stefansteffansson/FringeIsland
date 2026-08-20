@@ -9,7 +9,7 @@ import { emitTelemetry } from '@/lib/observability/telemetry';
  * substrate-side (FEAT-PD008 STORY-6); rejoin clears `left_at` there too.
  */
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const supabase = await createClient();
@@ -20,9 +20,12 @@ export async function POST(
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
   const { id } = await params;
+  // FEAT-H047: a wielded join seats the GROUP — plumbing only (PD019 T2).
+  const payload = (await request.json().catch(() => null)) as { acting?: unknown } | null;
+  const acting = typeof payload?.acting === 'string' ? payload.acting : undefined;
   try {
-    await joinGroupConversationRpc(supabase, id);
-    emitTelemetry('messages.joined', { actor: user.id });
+    await joinGroupConversationRpc(supabase, id, acting);
+    emitTelemetry('messages.joined', { actor: user.id, wielded: Boolean(acting) });
     return NextResponse.json({ ok: true });
   } catch (err) {
     return mapContractError(err, 'messages.join_failed', user.id);

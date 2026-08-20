@@ -9,7 +9,7 @@ import { emitTelemetry } from '@/lib/observability/telemetry';
  * own read cursor; own-row-only is substrate-enforced (FEAT-PD008 STORY-7).
  */
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const supabase = await createClient();
@@ -20,9 +20,12 @@ export async function POST(
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
   const { id } = await params;
+  // FEAT-H047: a wielded read advances the GROUP's clock (shared — PD019 T2).
+  const payload = (await request.json().catch(() => null)) as { acting?: unknown } | null;
+  const acting = typeof payload?.acting === 'string' ? payload.acting : undefined;
   try {
-    await markConversationReadRpc(supabase, id);
-    emitTelemetry('messages.read', { actor: user.id });
+    await markConversationReadRpc(supabase, id, acting);
+    emitTelemetry('messages.read', { actor: user.id, wielded: Boolean(acting) });
     return NextResponse.json({ ok: true });
   } catch (err) {
     return mapContractError(err, 'messages.read_failed', user.id);

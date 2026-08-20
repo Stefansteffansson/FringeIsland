@@ -9,7 +9,7 @@ import { emitTelemetry } from '@/lib/observability/telemetry';
  * active-participant-only, substrate-enforced (FEAT-PD008 STORY-6).
  */
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const supabase = await createClient();
@@ -20,9 +20,12 @@ export async function POST(
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
   const { id } = await params;
+  // FEAT-H047: a wielded leave withdraws the GROUP (key-only — PD019 T2R).
+  const payload = (await request.json().catch(() => null)) as { acting?: unknown } | null;
+  const acting = typeof payload?.acting === 'string' ? payload.acting : undefined;
   try {
-    await leaveGroupConversationRpc(supabase, id);
-    emitTelemetry('messages.left', { actor: user.id });
+    await leaveGroupConversationRpc(supabase, id, acting);
+    emitTelemetry('messages.left', { actor: user.id, wielded: Boolean(acting) });
     return NextResponse.json({ ok: true });
   } catch (err) {
     return mapContractError(err, 'messages.leave_failed', user.id);

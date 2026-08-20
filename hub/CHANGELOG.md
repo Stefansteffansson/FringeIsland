@@ -2,6 +2,12 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-20 — the group can now sit in its host's conversations ([FEAT-H047](../docs/products/hub/features/FEAT-H047-wielded-conversation-affordances.md))
+
+- **Wearing a group's hat now opens the host community's conversations too.** With the hat selected on the host group's page, the Conversations panel shows the threads through the group's own standing — *"Viewing as …"* — and Join, Leave, and New conversation each ask once, naming the group ("You are joining as …"), before they act. The group itself takes the seat: every representative shares it, and one representative reading marks the thread read for the group.
+- **Inside a thread, the address carries the hat.** Opening a conversation from the hatted panel lands on the thread *as the group* — banner at the top, and a steady **"Sending as …"** label right on the message box instead of a pop-up per message. Messages sent land under the group's name with the **Group** badge, for everyone. Reloading keeps the hat; opening the same thread from your own Messages inbox shows your normal view.
+- **Group voices are badged everywhere.** Any message sent by a group now carries the Group badge beside its name in every thread, whoever is reading.
+
 ## 2026-08-16 — acting for a group now opens real doors ([FEAT-H046](../docs/products/hub/features/FEAT-H046-wielded-content-affordances.md))
 
 - **Wearing a group's hat now lets you read and write its host community's forum.** If a group has empowered you to act for it, choosing it under "Acting as" on the host group's page now opens the forum with that group's own powers — before, the selector showed you what the group could do, and every door stayed shut. A banner says *"Viewing as …"* while you look, and posting first asks you to confirm: *"You are posting as …"* — because the post is signed by the group, not by you.
