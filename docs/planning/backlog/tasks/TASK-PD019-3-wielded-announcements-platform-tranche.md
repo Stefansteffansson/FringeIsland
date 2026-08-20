@@ -1,7 +1,7 @@
 ---
 id: TASK-PD019-3
 title: Tranche 3 platform build — the three community-announcement contracts learn wielding; the PD020 interplay proven by cell
-status: in-progress
+status: review — built and verified 2026-08-20 (red-first 7 red / 2 labelled guards -> 9/9; slices communication+platform+notifications 26 suites 313/313; lint 0 errors); HELD at the schema gate — merge only on an explicitly named approval; merging takes FEAT-PD019 to 6-done. Migration applied + recorded in the log
 assigned_to: claude
 priority: high
 feature: FEAT-PD019
