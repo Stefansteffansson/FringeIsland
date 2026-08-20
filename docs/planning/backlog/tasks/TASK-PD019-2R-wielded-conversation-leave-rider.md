@@ -1,7 +1,7 @@
 ---
 id: TASK-PD019-2R
 title: Tranche-2 rider — wielded conversation leave (key-only, the exit-family precedent)
-status: review — built and verified 2026-08-20 (red-first 3 red -> 15/15 in the T2 suite; slices at gate); HELD at the schema gate — merge only on an explicitly named approval, and BEFORE the FEAT-H047 PR
+status: done — built and verified 2026-08-20 (red-first 3 red -> 15/15; slices 16 suites 178/178); MERGED at the schema gate on named approval ("ok merge PR #562", Stefan, 2026-08-20; checks SUCCESS; mergedAt verified) — PR #562, with FEAT-H047 (#563) merged in order immediately after
 assigned_to: claude
 priority: high
 feature: FEAT-PD019
