@@ -51,9 +51,11 @@ export interface ForumActingContext {
   /** The hat's substitution permissions (H018's already-fetched read). */
   permissions: string[];
 }
-/** FEAT-H028 COM-12 — the fixed 15-minute own-edit window (CB-3). Client-side
- *  this only decides affordance visibility; the server owns the true edge. */
-const EDIT_WINDOW_MS = 15 * 60 * 1000;
+/** TASK-EDT-01 (RULED 2026-08-19 + delete-ruling 2026-08-21) — own edit and
+ *  delete are UNLIMITED; the 15-minute window is retired. Transparency
+ *  replaces the clock: "(edited)" renders whenever the last edit landed more
+ *  than the grace past creation — a fresh typo repair stays silent. */
+const EDITED_GRACE_MS = 3 * 60 * 1000;
 
 export function GroupForumSection({
   groupId,
@@ -86,10 +88,9 @@ export function GroupForumSection({
   const [confirmWieldedReply, setConfirmWieldedReply] = useState<string | null>(null);
 
   // FEAT-H028 STORY-4 (COM-12): my personal-group id (the effective-permissions
-  // member_group_id) drives the own-post check; a coarse ticker retires the
-  // window affordances client-side as 15 minutes pass (the server owns the edge).
+  // member_group_id) drives the own-post check. TASK-EDT-01 retired the window
+  // ticker — own affordances no longer expire.
   const [myGroupId, setMyGroupId] = useState<string | null>(null);
-  const [now, setNow] = useState(() => Date.now());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editDraft, setEditDraft] = useState('');
   const [editBusy, setEditBusy] = useState(false);
@@ -108,11 +109,14 @@ export function GroupForumSection({
   const isMine = (post: ForumPost): boolean =>
     myGroupId !== null && post.author_group_id === myGroupId;
 
-  const canEditOwn = (post: ForumPost): boolean =>
-    !post.is_deleted && isMine(post) && now - new Date(post.created_at).getTime() < EDIT_WINDOW_MS;
+  const canEditOwn = (post: ForumPost): boolean => !post.is_deleted && isMine(post);
 
+  // TASK-EDT-01: the note keys on the LAST edit — an edit inside the grace
+  // stays silent; any later edit turns it on (accepted edge: a minute-2 edit
+  // followed by a minute-50 edit shows the note, honestly).
   const isEdited = (post: ForumPost): boolean =>
-    !post.is_deleted && new Date(post.updated_at).getTime() > new Date(post.created_at).getTime();
+    !post.is_deleted &&
+    new Date(post.updated_at).getTime() - new Date(post.created_at).getTime() > EDITED_GRACE_MS;
 
   // Write a confirmed edit/tombstone row-doc (replies omitted) through onto the
   // matching node, preserving that node's replies.
@@ -180,13 +184,6 @@ export function GroupForumSection({
       active = false;
     };
   }, [groupId, actingId, load]);
-
-  // FEAT-H028 STORY-4: a coarse ticker so own-edit affordances disappear as the
-  // window passes even with no other interaction (the server owns the true edge).
-  useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), 30_000);
-    return () => clearInterval(t);
-  }, []);
 
   async function loadEarlier() {
     if (!posts || posts.length === 0) return;
@@ -350,8 +347,9 @@ export function GroupForumSection({
               )}
             </span>
             <div className="flex items-center gap-1">
-              {/* FEAT-H028 STORY-4: my own fresh post — fix or withdraw, briefly.
-                  FEAT-H046 (ruled): hidden under a hat — read/post/reply only. */}
+              {/* FEAT-H028 STORY-4 as amended by TASK-EDT-01: my own live post —
+                  fix or withdraw, whenever. FEAT-H046 (ruled): hidden under a
+                  hat — read/post/reply only. */}
               {!acting && canEditOwn(post) && editingId !== post.id && (
                 <>
                   <button

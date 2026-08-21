@@ -42,10 +42,9 @@ export function mapForumError(
 
 /**
  * FEAT-H028 — the own-edit/own-delete presentation mapping. Same shape as
- * `mapForumError`, but the 42501 window-edge refusal (its message matches
- * /window/i, FEAT-PD011) is surfaced honestly so the author learns the window
- * closed — not a generic "Not allowed". The client preserves the draft either
- * way (the H026 optimistic-with-retry posture).
+ * `mapForumError`. TASK-EDT-01 retired the 15-minute window and its dedicated
+ * refusal copy — every 42501 maps to the generic refusal now. The client
+ * preserves the draft either way (the H026 optimistic-with-retry posture).
  */
 export function mapForumOwnMutationError(
   err: unknown,
@@ -53,19 +52,14 @@ export function mapForumOwnMutationError(
   actor: string | undefined,
 ): NextResponse {
   const code = (err as { code?: string }).code;
-  const message = (err as { message?: string }).message ?? '';
   emitTelemetry(event, { actor, code });
   // FEAT-H038 STORY-5: availability refusals pass through verbatim here too —
   // own-edit/own-delete doors are frozen while the group is held.
   const availability = availabilityRefusal(err);
   if (availability) return availability;
   if (code === '42501') {
-    if (/window/i.test(message)) {
-      return NextResponse.json(
-        { error: 'Your 15-minute edit window has closed.' },
-        { status: 403 },
-      );
-    }
+    // TASK-EDT-01: the 15-minute window refusal died with the contract's edge;
+    // every 42501 maps to the generic refusal.
     return NextResponse.json({ error: 'Not allowed' }, { status: 403 });
   }
   if (code === '22023') {

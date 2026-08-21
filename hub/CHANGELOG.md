@@ -2,6 +2,12 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-21 — your own forum posts: fix them or withdraw them, whenever (TASK-EDT-01)
+
+- **The 15-minute clock on editing and deleting your own forum posts is gone.** Edit and Delete now stay on your own posts for good — a typo found next week is as fixable as one found now, and a post you regret can be withdrawn whenever (it leaves the same neutral tombstone as before, so replies keep their place).
+- **Honesty moved from the clock to a label.** An edited post says *"(edited)"* beside its timestamp — except when the edit lands within three minutes of posting, which stays silent so a quick typo fix doesn't wear a badge forever. Any later edit turns the label on.
+- Nothing else moved: moderation, reporting, group-authored posts (still editable by no one), and direct messages (still immutable) are exactly as they were.
+
 ## 2026-08-21 — a group can now speak from its host's announcement board ([FEAT-H048](../docs/products/hub/features/FEAT-H048-wielded-announcement-affordances.md))
 
 - **Wearing a group's hat now opens the host community's announcements too.** With the hat selected on the host group's page, the Announcements panel shows the board through the group's own standing — *"Viewing as …"* — and if the hat doesn't reach, the panel says so plainly, naming the hat, instead of pretending something broke.

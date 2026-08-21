@@ -120,3 +120,7 @@ None outward this cycle. Forward: A-NTF's bell will badge announcements from del
 - **First-paint class:** group page unchanged (the section is a failure-isolated panel on an existing page — B3 warm nav); the `/groups` landing gains one justified standalone read (ADR-U042) with session cache + W9 registration — post-paint behind a skeleton, B2/B3 budgets unchanged.
 - **Interaction class:** compose/edit/delete/report are B5 (≤ 200 ms to next paint via optimistic-with-confirmed-write-through or dialog feedback within 100 ms).
 - **Loading states:** B6 — skeletons for the two announcement sections; dialogs render instantly with inline pending states.
+
+## Amendment — TASK-EDT-01 (2026-08-21): unlimited own edit/delete, "(edited)" + grace
+
+The 15-minute window this spec built (COM-12) is retired — paired with FEAT-PD011's contract amendment (migration `20260821150000`). On the Hub: `EDIT_WINDOW_MS` and the affordance ticker are gone (Edit/Delete on own live posts never expire); `isEdited` keys on `updated_at − created_at > 3 minutes` (an edit inside the grace stays silent — the Stack Overflow/Discourse pattern; any later edit turns the note on, reflecting the last state honestly); the dedicated window-refusal copy in `mapForumOwnMutationError` died with the contract's edge. The STORY-4 text above stands as the record of what C-D shipped. Tombstone rendering, the report dialog, DM immutability, and the wielded no-edit posture are all untouched.

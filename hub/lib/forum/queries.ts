@@ -97,11 +97,10 @@ export async function moderateForumPostRpc(
   return data as { id: string; is_deleted: boolean };
 }
 
-/** FEAT-H028 COM-12 — windowed own-edit. Author = me, not deleted,
- *  `post_forum_messages` held, and created within 15 minutes (all gated
- *  substrate-side, FEAT-PD011); a window-edge refusal raises a 42501-class
- *  error surfaced honestly. Returns the updated post row-doc (`replies`
- *  omitted). */
+/** FEAT-H028 COM-12, amended by TASK-EDT-01 — unlimited own-edit. Author =
+ *  me, not deleted, and `post_forum_messages` held (all gated substrate-side,
+ *  FEAT-PD011; the 15-minute window was retired). Returns the updated post
+ *  row-doc (`replies` omitted). */
 export async function editOwnForumPostRpc(
   supabase: SupabaseClient,
   postId: string,
