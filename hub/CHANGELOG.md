@@ -2,6 +2,12 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-08-21 — a group can now speak from its host's announcement board ([FEAT-H048](../docs/products/hub/features/FEAT-H048-wielded-announcement-affordances.md))
+
+- **Wearing a group's hat now opens the host community's announcements too.** With the hat selected on the host group's page, the Announcements panel shows the board through the group's own standing — *"Viewing as …"* — and if the hat doesn't reach, the panel says so plainly, naming the hat, instead of pretending something broke.
+- **Announcing and retracting as the group each ask once, by name.** An announcement is said to everyone at once, so before it goes the page asks: *"You are announcing as … — the board will carry the group's name, not yours, and everyone in this group is told."* Taking one back asks the same way. There is no steady label on the box here, unlike the message composer — a board is not a chat.
+- **The powers are the group's, not yours.** The compose box and the Retract buttons appear only if the *group* may announce in that community — whatever you may do there under your own name changes nothing while the hat is on. Announcements written by a group carry the group's name with the **Group** badge, for every reader.
+
 ## 2026-08-20 — the group can now sit in its host's conversations ([FEAT-H047](../docs/products/hub/features/FEAT-H047-wielded-conversation-affordances.md))
 
 - **Wearing a group's hat now opens the host community's conversations too.** With the hat selected on the host group's page, the Conversations panel shows the threads through the group's own standing — *"Viewing as …"* — and Join, Leave, and New conversation each ask once, naming the group ("You are joining as …"), before they act. The group itself takes the seat: every representative shares it, and one representative reading marks the thread read for the group.

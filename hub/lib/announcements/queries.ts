@@ -16,6 +16,11 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 export interface AuthorDisplay {
   display_name: string;
   attribution: 'active' | 'former' | 'unknown';
+  /** FEAT-PD019 additive key (ADR-U041 §5), served by the shared
+   *  `ds5_resolve_author_display`: present on resolvable identities
+   *  ('person' | 'group', open set); absent on rung-3 'Unknown' and on
+   *  pre-PD019 payloads — readers stay tolerant. */
+  kind?: string;
 }
 
 /** A read/send announcement row-doc — the FEAT-PD011 shape shared by
@@ -39,12 +44,15 @@ export interface AnnouncementRetraction {
 export async function fetchGroupAnnouncements(
   supabase: SupabaseClient,
   groupId: string,
-  options?: { before?: string; limit?: number },
+  options?: { before?: string; limit?: number; acting?: string },
 ): Promise<Announcement[]> {
   const { data, error } = await supabase.rpc('get_group_announcements', {
     p_group_id: groupId,
     ...(options?.before ? { p_before: options.before } : {}),
     ...(options?.limit !== undefined ? { p_limit: options.limit } : {}),
+    // FEAT-H048 over FEAT-PD019 T3: the wielded read — the two-limb gate
+    // (limbs 1+2a) runs against the acting group substrate-side.
+    ...(options?.acting ? { p_acting: options.acting } : {}),
   });
   if (error) throw error;
   return (data as { announcements: Announcement[] }).announcements;
@@ -67,11 +75,15 @@ export async function sendCommunityAnnouncementRpc(
   groupId: string,
   title: string,
   body: string,
+  acting?: string,
 ): Promise<Announcement> {
   const { data, error } = await supabase.rpc('send_community_announcement', {
     p_group_id: groupId,
     p_title: title,
     p_body: body,
+    // FEAT-H048: the group announces — `sent_by_group_id` and the dual actor
+    // exclusion on the fan-out are platform facts, not surface work.
+    ...(acting ? { p_acting: acting } : {}),
   });
   if (error) throw error;
   return data as Announcement;
@@ -80,9 +92,13 @@ export async function sendCommunityAnnouncementRpc(
 export async function retractAnnouncementRpc(
   supabase: SupabaseClient,
   announcementId: string,
+  acting?: string,
 ): Promise<AnnouncementRetraction> {
   const { data, error } = await supabase.rpc('retract_announcement', {
     p_announcement_id: announcementId,
+    // FEAT-H048: the wielded correction. A PLATFORM row's scope group is NULL,
+    // so limb 2a refuses by construction — the DeusEx plane is never wieldable.
+    ...(acting ? { p_acting: acting } : {}),
   });
   if (error) throw error;
   return data as AnnouncementRetraction;
