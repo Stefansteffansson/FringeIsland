@@ -1,7 +1,7 @@
 ---
 id: TASK-EDT-01
 title: Own-post editing goes unlimited — "(edited)" label always, except a 3-minute silent grace for typo fixes
-status: built 2026-08-21, held at the schema gate — red-first 3 red at the unit tier -> 179 suites 1518/1518; the flipped integration cell demonstrated red against the live windowed contracts (42501 /window/i); lint 0; next build green. Delete RULED unlimited at pull (Stefan, 2026-08-21 — one consistent posture). Awaits the named apply+merge nod
+status: done — built and verified 2026-08-21 (red-first 3 red at the unit tier -> 179 suites 1518/1518; migration applied on the named nod, the flipped integration cell red->green, communication slice 11 suites 157/157; lint 0; next build green). Delete RULED unlimited at pull (Stefan, 2026-08-21 — one consistent posture). MERGED — PR #575, gate approval 'go for merging #575'
 assigned_to: claude
 priority: medium
 feature: FEAT-PD011 (platform contract) + FEAT-H028 (Hub affordance) — amendment pair
