@@ -97,8 +97,20 @@ jest.mock('@/components/groups/GroupJourneyProgressSection', () => ({
 jest.mock('@/components/groups/GroupConversationsSection', () => ({
   GroupConversationsSection: () => <div />,
 }));
+// FEAT-H048: the third consumer of the page's one acting context — the stub
+// surfaces the prop it received, exactly as the forum stub does.
 jest.mock('@/components/groups/GroupAnnouncementsSection', () => ({
-  GroupAnnouncementsSection: () => <div />,
+  GroupAnnouncementsSection: ({
+    acting,
+  }: {
+    acting?: { groupId: string; name: string; permissions: string[] } | null;
+  }) => (
+    <div
+      data-testid="announcements-stub"
+      data-acting={acting ? acting.groupId : 'none'}
+      data-acting-perms={acting ? acting.permissions.join(',') : ''}
+    />
+  ),
 }));
 jest.mock('@/components/groups/GroupMembershipsPanel', () => ({
   GroupMembershipsPanel: () => <div />,
@@ -174,6 +186,23 @@ describe('FEAT-H046 — the group page acting slice', () => {
       expect(screen.getByTestId('forum-stub')).toHaveAttribute('data-acting', 'ga'),
     );
     expect(screen.getByTestId('forum-stub')).toHaveAttribute(
+      'data-acting-perms',
+      'view_forum,post_forum_messages',
+    );
+  });
+
+  it('FEAT-H048: hands the announcements board the same acting context; Myself hands nothing', async () => {
+    const user = userEvent.setup();
+    render(<GroupDetailPage />);
+    await waitFor(() =>
+      expect(screen.getByTestId('announcements-stub')).toHaveAttribute('data-acting', 'none'),
+    );
+
+    await user.click(screen.getByTestId('stub-select-hat'));
+    await waitFor(() =>
+      expect(screen.getByTestId('announcements-stub')).toHaveAttribute('data-acting', 'ga'),
+    );
+    expect(screen.getByTestId('announcements-stub')).toHaveAttribute(
       'data-acting-perms',
       'view_forum,post_forum_messages',
     );

@@ -30,8 +30,23 @@ async function errorMessage(res: Response, fallback: string): Promise<string> {
 const cachedGroup = new Map<string, Announcement[]>();
 const groupInFlight = new Map<string, Promise<Announcement[]>>();
 
-async function requestGroup(groupId: string, before?: string): Promise<Announcement[]> {
-  const qs = before ? `?before=${encodeURIComponent(before)}` : '';
+/** FEAT-H048 (the H046 pattern): the cache keys by VIEW — a wielded board (the
+ *  acting group) and the personal board are different reads and never share an
+ *  entry, so a hat switch can never paint the other view's head. */
+function viewKey(groupId: string, acting?: string): string {
+  return acting ? `${groupId}::${acting}` : groupId;
+}
+
+async function requestGroup(
+  groupId: string,
+  before?: string,
+  acting?: string,
+): Promise<Announcement[]> {
+  const params = new URLSearchParams();
+  if (before) params.set('before', before);
+  if (acting) params.set('acting', acting);
+  const query = params.toString();
+  const qs = query ? `?${query}` : '';
   const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/announcements${qs}`);
   // Status carried so the section can branch honestly on a member-gated 403
   // (post-6-done fix 2026-08-14); write paths keep plain Errors.
@@ -41,34 +56,45 @@ async function requestGroup(groupId: string, before?: string): Promise<Announcem
   return data.announcements;
 }
 
-/** The last resolved first page of announcements for this group. */
-export function peekGroupAnnouncements(groupId: string): Announcement[] | null {
-  return cachedGroup.get(groupId) ?? null;
+/** The last resolved first page of announcements for this group, in this view. */
+export function peekGroupAnnouncements(groupId: string, acting?: string): Announcement[] | null {
+  return cachedGroup.get(viewKey(groupId, acting)) ?? null;
 }
 
-/** First page (cached). Pass `before` for load-earlier — never cached, since it
- *  is a keyset continuation, not the head the peek paints. */
-export function fetchGroupAnnouncements(groupId: string, before?: string): Promise<Announcement[]> {
-  if (before) return requestGroup(groupId, before);
-  const existing = groupInFlight.get(groupId);
+/** First page (cached per view). Pass `before` for load-earlier — never cached,
+ *  since it is a keyset continuation, not the head the peek paints. */
+export function fetchGroupAnnouncements(
+  groupId: string,
+  before?: string,
+  acting?: string,
+): Promise<Announcement[]> {
+  if (before) return requestGroup(groupId, before, acting);
+  const key = viewKey(groupId, acting);
+  const existing = groupInFlight.get(key);
   if (existing) return existing;
-  const inFlight = requestGroup(groupId)
+  const inFlight = requestGroup(groupId, undefined, acting)
     .then((rows) => {
-      cachedGroup.set(groupId, rows);
+      cachedGroup.set(key, rows);
       return rows;
     })
     .finally(() => {
-      if (groupInFlight.get(groupId) === inFlight) groupInFlight.delete(groupId);
+      if (groupInFlight.get(key) === inFlight) groupInFlight.delete(key);
     });
   inFlight.catch(() => {});
-  groupInFlight.set(groupId, inFlight);
+  groupInFlight.set(key, inFlight);
   return inFlight;
 }
 
-/** Drop one group's announcements peek + in-flight (after a write). */
+/** Drop one group's announcements peek + in-flight (after a write). Drops EVERY
+ *  view of the group — personal and wielded alike (FEAT-H048): the board
+ *  changed for everyone, so a write through either view stales them all. */
 export function dropGroupAnnouncements(groupId: string): void {
-  cachedGroup.delete(groupId);
-  groupInFlight.delete(groupId);
+  for (const key of [...cachedGroup.keys()]) {
+    if (key === groupId || key.startsWith(`${groupId}::`)) cachedGroup.delete(key);
+  }
+  for (const key of [...groupInFlight.keys()]) {
+    if (key === groupId || key.startsWith(`${groupId}::`)) groupInFlight.delete(key);
+  }
 }
 
 // --- platform-scope session cache (B4) ---------------------------------------
@@ -120,11 +146,14 @@ export async function sendCommunityAnnouncement(
   groupId: string,
   title: string,
   body: string,
+  acting?: string,
 ): Promise<Announcement> {
   const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/announcements`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title, body }),
+    // FEAT-H048: a wielded announce names the acting group; every limb of the
+    // gate is the substrate's (the button is UX, the RPC is the gate).
+    body: JSON.stringify({ title, body, ...(acting ? { acting } : {}) }),
   });
   if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
   const data = (await res.json()) as { announcement: Announcement };
@@ -135,9 +164,16 @@ export async function sendCommunityAnnouncement(
 export async function retractAnnouncement(
   groupId: string,
   announcementId: string,
+  acting?: string,
 ): Promise<AnnouncementRetraction> {
   const res = await fetch(`/api/announcements/${encodeURIComponent(announcementId)}/retract`, {
     method: 'POST',
+    ...(acting
+      ? {
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ acting }),
+        }
+      : {}),
   });
   if (!res.ok) throw new Error(await errorMessage(res, `Request failed (${res.status})`));
   const data = (await res.json()) as { retracted: AnnouncementRetraction };

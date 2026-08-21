@@ -8,7 +8,7 @@ import {
   retractAnnouncement,
   type Announcement,
 } from '@/lib/announcements/client';
-import { authorClassName } from '@/lib/forum/attribution';
+import { authorClassName, authorKindBadge } from '@/lib/forum/attribution';
 import { fetchMyPermissions } from '@/lib/groups/client';
 import { isForbidden } from '@/lib/http/status-error';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
@@ -23,11 +23,38 @@ import { ConfirmModal } from '@/components/ui/ConfirmModal';
  * the platform via effective-permissions, never computed locally; the RPC is
  * the gate, the button is UX. The surface renders from the confirmed response
  * and preserves a composed draft on a refusal. No sockets (C-D carry rule).
+ *
+ * FEAT-H048 (over FEAT-PD019 T3): the wielded render — the third and last
+ * consumer of the group page's one acting context. With an `acting` context
+ * (a hat with standing, selected on the page), the read and both writes carry
+ * the acting group, a banner names the substitution, and compose/Retract gate
+ * on the HAT's `send_announcements` — pure substitution, nothing of the
+ * wielder's own standing mixes in. RULED: a board is not a cadence surface, so
+ * both acts CONFIRM with copy naming the wielding (no H047-style composer
+ * label). Group authors badge on the additive `kind` key, in both views.
  */
 const PAGE = 20;
 
-export function GroupAnnouncementsSection({ groupId }: { groupId: string }) {
-  const [items, setItems] = useState<Announcement[] | null>(() => peekGroupAnnouncements(groupId));
+/** FEAT-H048: the acting context the page passes when a hat is selected — the
+ *  same shape the Forum and Conversations sections already receive. */
+export interface AnnouncementsActingContext {
+  groupId: string;
+  name: string;
+  /** The hat's substitution permissions (H018's already-fetched read). */
+  permissions: string[];
+}
+
+export function GroupAnnouncementsSection({
+  groupId,
+  acting = null,
+}: {
+  groupId: string;
+  acting?: AnnouncementsActingContext | null;
+}) {
+  const actingId = acting?.groupId;
+  const [items, setItems] = useState<Announcement[] | null>(() =>
+    peekGroupAnnouncements(groupId, actingId),
+  );
   const [failed, setFailed] = useState(false);
   const [membersOnly, setMembersOnly] = useState(false);
   const [hasMore, setHasMore] = useState(false);
@@ -41,11 +68,17 @@ export function GroupAnnouncementsSection({ groupId }: { groupId: string }) {
   const [confirmRetract, setConfirmRetract] = useState<string | null>(null);
   const [retractBusy, setRetractBusy] = useState(false);
 
-  const can = (p: string) => perms.has(p);
+  // FEAT-H048 STORY-2: the wielded announce names the wielding before it fires
+  // (the H018 rabbit hole — no session-wide acting mode; each act names it).
+  const [confirmWieldedSend, setConfirmWieldedSend] = useState(false);
+
+  // FEAT-H048: under a hat, affordances key on the HAT's permissions — pure
+  // substitution, never the wielder's own grants (ADR-U041 §2a).
+  const can = (p: string) => (acting ? acting.permissions.includes(p) : perms.has(p));
 
   const load = useCallback(async () => {
     try {
-      const rows = await fetchGroupAnnouncements(groupId);
+      const rows = await fetchGroupAnnouncements(groupId, undefined, actingId);
       setItems(rows);
       setHasMore(rows.length >= PAGE);
       setFailed(false);
@@ -53,13 +86,19 @@ export function GroupAnnouncementsSection({ groupId }: { groupId: string }) {
     } catch (err) {
       // Post-6-done fix (2026-08-14, live walk): a member-gated refusal is not
       // a malfunction — honest members-only copy, never the failure fallback.
+      // FEAT-H048: under a hat the same branch names the hat's insufficiency.
       setMembersOnly(isForbidden(err));
       setFailed(!isForbidden(err));
     }
-  }, [groupId]);
+  }, [groupId, actingId]);
 
   useEffect(() => {
     let active = true;
+    // FEAT-H048: a view switch (Myself <-> a hat) repaints from that view's own
+    // peek — the two views never share a cache entry.
+    setItems(peekGroupAnnouncements(groupId, actingId));
+    setMembersOnly(false);
+    setFailed(false);
     (async () => {
       await load();
       try {
@@ -72,13 +111,13 @@ export function GroupAnnouncementsSection({ groupId }: { groupId: string }) {
     return () => {
       active = false;
     };
-  }, [groupId, load]);
+  }, [groupId, actingId, load]);
 
   async function loadEarlier() {
     if (!items || items.length === 0) return;
     const oldest = items[items.length - 1].created_at;
     try {
-      const older = await fetchGroupAnnouncements(groupId, oldest);
+      const older = await fetchGroupAnnouncements(groupId, oldest, actingId);
       setItems([...items, ...older]);
       setHasMore(older.length >= PAGE);
     } catch {
@@ -86,14 +125,18 @@ export function GroupAnnouncementsSection({ groupId }: { groupId: string }) {
     }
   }
 
-  async function handleSend() {
+  async function submitSend(asGroupId?: string) {
     const t = title.trim();
     const b = body.trim();
     if (!t || !b) return;
     setSending(true);
     setSendError(null);
     try {
-      const created = await sendCommunityAnnouncement(groupId, t, b); // confirmed row
+      // The confirmed row-doc carries its OWN platform-resolved author (name,
+      // attribution, kind), so this prepend renders the platform's answer, not
+      // optimism — wielded or not. There is no per-page senders map here to go
+      // stale, which is what forced H047's wielded send to re-read.
+      const created = await sendCommunityAnnouncement(groupId, t, b, asGroupId); // confirmed row
       setItems((prev) => [created, ...(prev ?? [])]);
       setTitle('');
       setBody('');
@@ -102,14 +145,26 @@ export function GroupAnnouncementsSection({ groupId }: { groupId: string }) {
       setSendError(err instanceof Error ? err.message : 'Your announcement could not be sent');
     } finally {
       setSending(false);
+      setConfirmWieldedSend(false);
     }
+  }
+
+  function handleSend() {
+    if (title.trim() === '' || body.trim() === '') return;
+    if (acting) {
+      // FEAT-H048 STORY-2: the confirm names the wielding first — a board is
+      // spoken to everyone, once.
+      setConfirmWieldedSend(true);
+      return;
+    }
+    void submitSend();
   }
 
   async function handleRetract() {
     if (!confirmRetract) return;
     setRetractBusy(true);
     try {
-      const { id } = await retractAnnouncement(groupId, confirmRetract); // confirmed
+      const { id } = await retractAnnouncement(groupId, confirmRetract, actingId); // confirmed
       setItems((prev) => prev?.filter((a) => a.id !== id) ?? null);
       setConfirmRetract(null);
     } catch (err) {
@@ -125,6 +180,17 @@ export function GroupAnnouncementsSection({ groupId }: { groupId: string }) {
       className="mt-8 rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
     >
       <h2 className="text-lg font-semibold text-gray-800">Announcements</h2>
+
+      {acting && !membersOnly && (
+        // FEAT-H048 STORY-1: the substitution named per-section (the H018
+        // rabbit hole — never a global acting mode).
+        <p
+          data-testid="announcements-acting-banner"
+          className="mt-2 rounded-lg bg-violet-50 px-3 py-2 text-sm text-violet-800"
+        >
+          Viewing as {acting.name}
+        </p>
+      )}
 
       {can('send_announcements') && (
         <div className="mt-3 space-y-2">
@@ -166,9 +232,20 @@ export function GroupAnnouncementsSection({ groupId }: { groupId: string }) {
       )}
 
       {membersOnly ? (
-        <p data-testid="group-announcements-members-only" className="mt-3 text-sm text-gray-500">
-          Announcements are for members of this group.
-        </p>
+        acting ? (
+          // FEAT-H048 STORY-1: the hat's insufficiency named honestly — no
+          // malfunction fallback, no fake door.
+          <p
+            data-testid="group-announcements-hat-insufficient"
+            className="mt-3 text-sm text-gray-500"
+          >
+            The {acting.name} hat doesn&apos;t open these announcements.
+          </p>
+        ) : (
+          <p data-testid="group-announcements-members-only" className="mt-3 text-sm text-gray-500">
+            Announcements are for members of this group.
+          </p>
+        )
       ) : failed ? (
         <p data-testid="group-announcements-unavailable" className="mt-3 text-sm text-gray-500">
           Announcements can&apos;t be shown right now.
@@ -208,6 +285,17 @@ export function GroupAnnouncementsSection({ groupId }: { groupId: string }) {
                   <span data-testid={`announcement-author-${a.id}`} className={authorClassName(a.author)}>
                     {a.author.display_name}
                   </span>
+                  {authorKindBadge(a.author) && (
+                    // FEAT-H048 STORY-3 (ADR-U041 §5): representation visible
+                    // for what it is — the H046 badge posture; the ladder's
+                    // attribution styling beside it is never overridden.
+                    <span
+                      data-testid={`announcement-author-badge-${a.id}`}
+                      className="rounded bg-violet-100 px-1.5 py-0.5 text-xs font-medium text-violet-800"
+                    >
+                      {authorKindBadge(a.author)}
+                    </span>
+                  )}
                   <span className="text-gray-400">{new Date(a.created_at).toLocaleString()}</span>
                 </div>
               </li>
@@ -228,14 +316,31 @@ export function GroupAnnouncementsSection({ groupId }: { groupId: string }) {
 
       <ConfirmModal
         isOpen={confirmRetract !== null}
-        title="Retract this announcement?"
-        message="It will leave the board for everyone. This can’t be undone."
-        confirmText="Retract"
+        title={acting ? `Retract as ${acting.name}?` : 'Retract this announcement?'}
+        message={
+          acting
+            ? `You are retracting as ${acting.name} — it will leave the board for everyone. This can’t be undone.`
+            : 'It will leave the board for everyone. This can’t be undone.'
+        }
+        confirmText={acting ? `Retract as ${acting.name}` : 'Retract'}
         variant="danger"
         busy={retractBusy}
         onConfirm={handleRetract}
         onCancel={() => setConfirmRetract(null)}
       />
+
+      {acting && (
+        // FEAT-H048 STORY-2: the wielded announce, named before it fires.
+        <ConfirmModal
+          isOpen={confirmWieldedSend}
+          title={`Announce as ${acting.name}?`}
+          message={`You are announcing as ${acting.name} — the board will carry the group's name, not yours, and everyone in this group is told.`}
+          confirmText={`Announce as ${acting.name}`}
+          busy={sending}
+          onConfirm={() => void submitSend(acting.groupId)}
+          onCancel={() => setConfirmWieldedSend(false)}
+        />
+      )}
     </section>
   );
 }

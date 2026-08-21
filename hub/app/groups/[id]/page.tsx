@@ -289,7 +289,7 @@ export default function GroupDetailPage() {
     return () => window.removeEventListener(NOTIFICATIONS_CHANGED_EVENT, onHint);
   }, [authLoading, identity, loadActing]);
 
-  // FEAT-H046/H047: the acting context both wielded sections consume — built
+  // FEAT-H046/H047/H048: the acting context all three wielded sections consume — built
   // once from the selector state + the standing-filtered contexts + the
   // substitution permissions (pure substitution; null means "Myself").
   const actingContext = (() => {
@@ -363,7 +363,7 @@ export default function GroupDetailPage() {
           {/* FEAT-H028 STORY-1/2 (COM-8): the group's announcement board — a
               failure-isolated slice above the forum; compose/retract render
               only on the platform's send_announcements grant. */}
-          <GroupAnnouncementsSection groupId={groupId} />
+          <GroupAnnouncementsSection groupId={groupId} acting={actingContext} />
           {/* FEAT-H026 — the group forum (COM-5/6a/6b/7/14). Failure-isolated
               slice; post/reply/remove render only on the platform's grants.
               FEAT-H046: with a hat selected (standing here), the section

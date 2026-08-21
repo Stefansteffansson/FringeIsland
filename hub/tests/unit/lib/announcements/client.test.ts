@@ -104,3 +104,91 @@ describe('announcements client cache', () => {
     expect(mockRegister).toHaveBeenCalled();
   });
 });
+
+/**
+ * FEAT-H048 — the wielded transport. These cells pin the layer the section
+ * suites cannot see: they mock this module wholesale, so nothing above ever
+ * exercises the query string or the request body. Written after the E2E
+ * journey caught a dropped `acting` param here: the builder used
+ * `URLSearchParams.size`, which the bundled Chromium does not implement, so
+ * `undefined > 0` was false, the whole query string vanished, and the read fell
+ * to the personal branch and 403'd. HONEST LIMIT: these cells do NOT catch that
+ * bug -- jsdom/Node DO implement `.size`, so both spellings pass here; only the
+ * browser tier discriminates it, which is where it was found. They are kept as
+ * transport coverage (the param reaches the URL/body at all, view-keying, the
+ * both-views drop) -- the class of thing the section suites cannot see, since
+ * they mock this module wholesale.
+ */
+describe('announcements client — the wielded transport (FEAT-H048)', () => {
+  const urlOf = (call: number) => String((mockFetch.mock.calls[call] ?? [])[0]);
+
+  it('the wielded read carries acting on the query string', async () => {
+    mockFetch.mockReturnValue(okJson({ announcements: [ann()] }));
+    await fetchGroupAnnouncements('g1', undefined, 'ga');
+    expect(urlOf(0)).toContain('/api/groups/g1/announcements');
+    expect(urlOf(0)).toContain('acting=ga');
+  });
+
+  it('the personal read carries no query string at all', async () => {
+    mockFetch.mockReturnValue(okJson({ announcements: [ann()] }));
+    await fetchGroupAnnouncements('g1');
+    expect(urlOf(0)).not.toContain('?');
+  });
+
+  it('load-earlier carries before AND acting together', async () => {
+    mockFetch.mockReturnValue(okJson({ announcements: [] }));
+    await fetchGroupAnnouncements('g1', '2026-07-20T10:00:00Z', 'ga');
+    expect(urlOf(0)).toContain('before=');
+    expect(urlOf(0)).toContain('acting=ga');
+  });
+
+  it('the two views never share a cache entry', async () => {
+    mockFetch.mockReturnValue(okJson({ announcements: [ann({ id: 'personal' })] }));
+    await fetchGroupAnnouncements('g1');
+    expect(peekGroupAnnouncements('g1', 'ga')).toBeNull();
+
+    mockFetch.mockReturnValue(okJson({ announcements: [ann({ id: 'wielded' })] }));
+    await fetchGroupAnnouncements('g1', undefined, 'ga');
+    expect(peekGroupAnnouncements('g1')![0].id).toBe('personal');
+    expect(peekGroupAnnouncements('g1', 'ga')![0].id).toBe('wielded');
+  });
+
+  it('a write through either view stales BOTH views (the board changed for everyone)', async () => {
+    mockFetch.mockReturnValue(okJson({ announcements: [ann()] }));
+    await fetchGroupAnnouncements('g1');
+    await fetchGroupAnnouncements('g1', undefined, 'ga');
+    expect(peekGroupAnnouncements('g1')).not.toBeNull();
+    expect(peekGroupAnnouncements('g1', 'ga')).not.toBeNull();
+
+    mockFetch.mockReturnValue(okJson({ announcement: ann({ id: 'new' }) }));
+    await sendCommunityAnnouncement('g1', 'T', 'B', 'ga');
+    expect(peekGroupAnnouncements('g1')).toBeNull();
+    expect(peekGroupAnnouncements('g1', 'ga')).toBeNull();
+  });
+
+  it('a wielded send and retract each name the acting group in the body', async () => {
+    mockFetch.mockReturnValue(okJson({ announcement: ann() }));
+    await sendCommunityAnnouncement('g1', 'T', 'B', 'ga');
+    expect(JSON.parse(String(mockFetch.mock.calls[0][1].body))).toEqual({
+      title: 'T',
+      body: 'B',
+      acting: 'ga',
+    });
+
+    mockFetch.mockReset();
+    mockFetch.mockReturnValue(okJson({ retracted: { id: 'a1', retracted_at: 'now' } }));
+    await retractAnnouncement('g1', 'a1', 'ga');
+    expect(JSON.parse(String(mockFetch.mock.calls[0][1].body))).toEqual({ acting: 'ga' });
+  });
+
+  it('the personal write paths send no acting key', async () => {
+    mockFetch.mockReturnValue(okJson({ announcement: ann() }));
+    await sendCommunityAnnouncement('g1', 'T', 'B');
+    expect(JSON.parse(String(mockFetch.mock.calls[0][1].body))).toEqual({ title: 'T', body: 'B' });
+
+    mockFetch.mockReset();
+    mockFetch.mockReturnValue(okJson({ retracted: { id: 'a1', retracted_at: 'now' } }));
+    await retractAnnouncement('g1', 'a1');
+    expect(mockFetch.mock.calls[0][1].body).toBeUndefined();
+  });
+});

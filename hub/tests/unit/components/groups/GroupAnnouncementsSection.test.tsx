@@ -118,7 +118,14 @@ describe('GroupAnnouncementsSection', () => {
     await userEvent.type(screen.getByTestId('announcement-compose-body'), 'Just now.');
     await userEvent.click(screen.getByTestId('announcement-send'));
     expect(await screen.findByText('Fresh word')).toBeInTheDocument();
-    expect(mockClient.sendCommunityAnnouncement).toHaveBeenCalledWith('g1', 'Fresh word', 'Just now.');
+    // FEAT-H048: the trailing arg is the acting group — undefined on the
+    // personal path, which is exactly what this cell pins.
+    expect(mockClient.sendCommunityAnnouncement).toHaveBeenCalledWith(
+      'g1',
+      'Fresh word',
+      'Just now.',
+      undefined,
+    );
   });
 
   it('preserves the composed draft when a send is refused', async () => {
@@ -160,7 +167,7 @@ describe('GroupAnnouncementsSection', () => {
     expect(screen.getByTestId('confirm-modal')).toBeInTheDocument();
     await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
     await waitFor(() => expect(screen.queryByText('Welcome')).not.toBeInTheDocument());
-    expect(mockClient.retractAnnouncement).toHaveBeenCalledWith('g1', 'a1');
+    expect(mockClient.retractAnnouncement).toHaveBeenCalledWith('g1', 'a1', undefined);
   });
 
   it('continues keyset pagination without duplication on load-more', async () => {
@@ -175,7 +182,11 @@ describe('GroupAnnouncementsSection', () => {
     await userEvent.click(screen.getByTestId('announcements-load-earlier'));
     expect(await screen.findByText('Older notice')).toBeInTheDocument();
     // keyset continuation is called with the oldest loaded created_at
-    expect(mockClient.fetchGroupAnnouncements).toHaveBeenLastCalledWith('g1', '2026-07-20T10:19:00Z');
+    expect(mockClient.fetchGroupAnnouncements).toHaveBeenLastCalledWith(
+      'g1',
+      '2026-07-20T10:19:00Z',
+      undefined,
+    );
   });
 });
 
