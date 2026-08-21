@@ -5,7 +5,8 @@ import { mapForumOwnMutationError } from '@/lib/forum/http';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 /**
- * FEAT-H028 — POST /api/forum/[postId]/delete (COM-12): windowed own-delete.
+ * FEAT-H028 — POST /api/forum/[postId]/delete (COM-12, amended by
+ * TASK-EDT-01): unlimited own-delete (the window was retired with edit's).
  * Same gate as edit minus content, all substrate-side (FEAT-PD011); idempotent
  * soft-delete, and the existing C-C moderation-hint trigger fires on the
  * transition (no new channel). Content-free telemetry.

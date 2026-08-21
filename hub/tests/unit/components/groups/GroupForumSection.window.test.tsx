@@ -4,18 +4,22 @@ import userEvent from '@testing-library/user-event';
 import type { ForumPost } from '@/lib/forum/queries';
 
 /**
- * FEAT-H028 STORY-4 (unit) — the forum's own-edit window affordances (COM-12,
- * Cycle C-D). On my own live post younger than 15 minutes: Edit (inline,
- * confirmed write-through) and Delete (ConfirmModal -> tombstone, rendered
- * exactly like moderation). Own-ness derives from payload facts —
- * `author_group_id` vs my personal-group id (the effective-permissions
- * `member_group_id`), `created_at` (window), `is_deleted` (no affordance on a
- * tombstone). "(edited)" renders when `updated_at > created_at`. A server
- * window refusal is surfaced honestly and the draft is preserved; affordances
- * are absent on others' posts, tombstones, and posts past the window.
+ * FEAT-H028 STORY-4 (unit), amended by TASK-EDT-01 (RULED 2026-08-19 +
+ * delete-ruling 2026-08-21) — own-post editing and deletion go UNLIMITED; the
+ * 15-minute window is retired. Transparency replaces the clock: "(edited)"
+ * renders whenever `updated_at − created_at > 3 minutes` — the 3-minute grace
+ * lets a fresh typo repair stay silent (the Stack Overflow/Discourse pattern);
+ * any later edit turns the note on, honestly reflecting the LAST state.
+ * Own-ness still derives from payload facts (`author_group_id` vs my
+ * personal-group id); tombstones still carry no affordances; the wielded
+ * no-edit posture is untouched.
  *
- * Red-first: Edit/Delete affordances and the edit/delete couriers do not exist
- * yet.
+ * Adapted from the windowed suite (labelled): the stale-post cell FLIPPED
+ * (affordances now render regardless of age — red-first against the windowed
+ * render), the in-grace silent cell is new (red-first: the old rule showed
+ * the note for any updated_at > created_at), and the window-refusal cell
+ * became a generic-refusal cell (the window refusal no longer exists; the
+ * draft-preservation coverage it carried lives on).
  */
 
 const mockForum = {
@@ -90,7 +94,7 @@ describe('GroupForumSection — own-edit window (FEAT-H028 STORY-4)', () => {
     withMine('post_forum_messages');
   });
 
-  it('shows Edit and Delete on my own live post younger than 15 minutes', async () => {
+  it('shows Edit and Delete on my own live post', async () => {
     render(<GroupForumSection groupId="g1" />);
     await screen.findByText('my fresh post');
     expect(screen.getByTestId('forum-edit-p1')).toBeInTheDocument();
@@ -107,13 +111,12 @@ describe('GroupForumSection — own-edit window (FEAT-H028 STORY-4)', () => {
     expect(screen.queryByTestId('forum-delete-other')).not.toBeInTheDocument();
   });
 
-  it('shows no Edit/Delete on my own post past the 15-minute window', async () => {
+  it('TASK-EDT-01 (flipped): Edit and Delete render on my own old post — the window is retired', async () => {
     const created = stale();
     mockForum.fetchForum.mockResolvedValue([post({ id: 'old', created_at: created, updated_at: created })]);
     render(<GroupForumSection groupId="g1" />);
-    await screen.findByText('my fresh post');
-    expect(screen.queryByTestId('forum-edit-old')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('forum-delete-old')).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.getByTestId('forum-edit-old')).toBeInTheDocument());
+    expect(screen.getByTestId('forum-delete-old')).toBeInTheDocument();
   });
 
   it('shows no Edit/Delete on a tombstone, even my own', async () => {
@@ -124,8 +127,8 @@ describe('GroupForumSection — own-edit window (FEAT-H028 STORY-4)', () => {
     expect(screen.queryByTestId('forum-delete-gone')).not.toBeInTheDocument();
   });
 
-  it('edits inline and writes through the confirmed row, marking "(edited)"', async () => {
-    const created = recent();
+  it('edits an OLD post inline and writes through the confirmed row, marking "(edited)" (TASK-EDT-01: no clock)', async () => {
+    const created = stale(); // 20 min old — editable now that the window is retired
     mockForum.fetchForum.mockResolvedValue([post({ id: 'p1', content: 'typo here', created_at: created, updated_at: created })]);
     mockForum.editForumPost.mockResolvedValue({
       id: 'p1',
@@ -133,7 +136,7 @@ describe('GroupForumSection — own-edit window (FEAT-H028 STORY-4)', () => {
       content: 'fixed now',
       is_deleted: false,
       created_at: created,
-      updated_at: new Date(Date.now() - 30_000).toISOString(), // later than created
+      updated_at: new Date().toISOString(), // 20 min past created — well past the grace
       author_group_id: MINE,
       author: { display_name: 'Me', attribution: 'active' },
     });
@@ -149,9 +152,9 @@ describe('GroupForumSection — own-edit window (FEAT-H028 STORY-4)', () => {
     expect(screen.getByTestId('forum-edited-p1')).toBeInTheDocument();
   });
 
-  it('surfaces a window refusal honestly and preserves the draft edit', async () => {
+  it('surfaces a server refusal honestly and preserves the draft edit (TASK-EDT-01: the window refusal is gone; the coverage stays)', async () => {
     mockForum.fetchForum.mockResolvedValue([post({ id: 'p1', content: 'original' })]);
-    mockForum.editForumPost.mockRejectedValue(new Error('Your 15-minute edit window has closed.'));
+    mockForum.editForumPost.mockRejectedValue(new Error('Not allowed'));
     render(<GroupForumSection groupId="g1" />);
     await screen.findByText('original');
     await userEvent.click(screen.getByTestId('forum-edit-p1'));
@@ -159,9 +162,48 @@ describe('GroupForumSection — own-edit window (FEAT-H028 STORY-4)', () => {
     await userEvent.clear(box);
     await userEvent.type(box, 'my draft edit');
     await userEvent.click(screen.getByTestId('forum-edit-save-p1'));
-    expect(await screen.findByRole('alert')).toHaveTextContent(/window/i);
+    expect(await screen.findByRole('alert')).toHaveTextContent('Not allowed');
     // draft not lost — the editor stays open with my text
     expect(screen.getByTestId('forum-edit-input-p1')).toHaveValue('my draft edit');
+  });
+
+  it('TASK-EDT-01: an edit inside the 3-minute grace stays silent — no "(edited)" note', async () => {
+    const created = recent(); // 1 min ago
+    mockForum.fetchForum.mockResolvedValue([post({ id: 'p1', content: 'typo here', created_at: created, updated_at: created })]);
+    mockForum.editForumPost.mockResolvedValue({
+      id: 'p1',
+      parent_post_id: null,
+      content: 'fixed quietly',
+      is_deleted: false,
+      created_at: created,
+      updated_at: new Date(new Date(created).getTime() + 2 * 60_000).toISOString(), // 2 min after created — inside the grace
+      author_group_id: MINE,
+      author: { display_name: 'Me', attribution: 'active' },
+    });
+    render(<GroupForumSection groupId="g1" />);
+    await screen.findByText('typo here');
+    await userEvent.click(screen.getByTestId('forum-edit-p1'));
+    const box = screen.getByTestId('forum-edit-input-p1');
+    await userEvent.clear(box);
+    await userEvent.type(box, 'fixed quietly');
+    await userEvent.click(screen.getByTestId('forum-edit-save-p1'));
+    expect(await screen.findByText('fixed quietly')).toBeInTheDocument();
+    expect(screen.queryByTestId('forum-edited-p1')).not.toBeInTheDocument();
+  });
+
+  it('TASK-EDT-01 (guard): a fetched post edited past the grace renders the note payload-driven', async () => {
+    const created = stale();
+    mockForum.fetchForum.mockResolvedValue([
+      post({
+        id: 'p1',
+        content: 'long since amended',
+        created_at: created,
+        updated_at: new Date(new Date(created).getTime() + 10 * 60_000).toISOString(), // 10 min after created
+      }),
+    ]);
+    render(<GroupForumSection groupId="g1" />);
+    await screen.findByText('long since amended');
+    expect(screen.getByTestId('forum-edited-p1')).toBeInTheDocument();
   });
 
   it('deletes behind a ConfirmModal and renders the tombstone in place from the confirmed response', async () => {

@@ -5,10 +5,11 @@ import { mapForumOwnMutationError } from '@/lib/forum/http';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 /**
- * FEAT-H028 — POST /api/forum/[postId]/edit (COM-12): windowed own-edit. Author
- * = me, not deleted, `post_forum_messages` held, and created within 15 minutes
- * are all gated substrate-side (FEAT-PD011); a window-edge refusal (42501,
- * /window/i) is surfaced honestly. Content-free telemetry.
+ * FEAT-H028 — POST /api/forum/[postId]/edit (COM-12, amended by TASK-EDT-01):
+ * unlimited own-edit. Author = me, not deleted, and `post_forum_messages` held
+ * are gated substrate-side (FEAT-PD011; the 15-minute window was retired —
+ * transparency via the "(edited)" note replaced the clock). Content-free
+ * telemetry.
  */
 export async function POST(
   request: Request,

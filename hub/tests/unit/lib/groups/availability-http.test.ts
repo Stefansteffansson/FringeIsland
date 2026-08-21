@@ -71,7 +71,7 @@ describe('the domain mappers carry the availability refusals (FEAT-H038 STORY-5)
     expect(nested.status).toBe(400);
   });
 
-  it('mapForumOwnMutationError: availability → 409 verbatim; the window-edge 403 copy stands', () => {
+  it('mapForumOwnMutationError: availability -> 409 verbatim; a 42501 maps to the generic 403 (TASK-EDT-01: the window branch is retired)', () => {
     const held = mapForumOwnMutationError(
       suspended,
       'forum.edit_refused',
@@ -80,13 +80,22 @@ describe('the domain mappers carry the availability refusals (FEAT-H038 STORY-5)
     expect(held.status).toBe(409);
     expect(held.body.error).toBe('group is suspended');
 
-    const window = mapForumOwnMutationError(
-      { code: '42501', message: 'edit window elapsed' },
+    const refusal = mapForumOwnMutationError(
+      { code: '42501', message: 'Only the author may edit their post' },
       'forum.edit_refused',
       'u1',
     ) as unknown as MockResponse;
-    expect(window.status).toBe(403);
-    expect(window.body.error).toMatch(/window/i);
+    expect(refusal.status).toBe(403);
+    expect(refusal.body.error).toBe('Not allowed');
+
+    // The discriminating cell: a window-worded 42501 no longer gets the
+    // retired window copy — the branch itself is gone, not just unreachable.
+    const windowWorded = mapForumOwnMutationError(
+      { code: '42501', message: 'The edit window (15 minutes) has closed' },
+      'forum.edit_refused',
+      'u1',
+    ) as unknown as MockResponse;
+    expect(windowWorded.body.error).toBe('Not allowed');
   });
 
   it('mapAnnouncementError: availability → 409 verbatim; P0002 keeps its 404', () => {

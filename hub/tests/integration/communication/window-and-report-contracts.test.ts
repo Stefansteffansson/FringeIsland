@@ -78,7 +78,7 @@ type ForumPost = {
   author_group_id: string;
 };
 
-describe('FEAT-PD011 — windowed own-edit/delete + content reports (C-D)', () => {
+describe('FEAT-PD011 — own-edit/delete (unlimited since TASK-EDT-01) + content reports (C-D)', () => {
   const admin = createAdminClient();
   const runTag = `cdw${Date.now()}`;
 
@@ -200,7 +200,7 @@ describe('FEAT-PD011 — windowed own-edit/delete + content reports (C-D)', () =
   }, 120_000);
 
   // ---------------------------------------------------------------- STORY-6
-  describe('STORY-6 — fifteen minutes to fix it', () => {
+  describe('STORY-6 — fix it or withdraw it, whenever (TASK-EDT-01 retired the 15-minute window)', () => {
     it('the author edits their fresh post; content updates and the row-doc returns', async () => {
       const ca = await asUser(author);
       const post = await newPost(ca, `CDwEditable${runTag}`);
@@ -220,7 +220,7 @@ describe('FEAT-PD011 — windowed own-edit/delete + content reports (C-D)', () =
       expect(posts.find((p) => p.id === post.id)?.content).toBe(`CDwEdited${runTag}`);
     });
 
-    it('the author self-deletes within the window; the tombstone is idempotent and the EXISTING moderation hint fires', async () => {
+    it('the author self-deletes; the tombstone is idempotent and the EXISTING moderation hint fires', async () => {
       const ca = await asUser(author);
       const post = await newPost(ca, `CDwDeletable${runTag}`);
       const { data, error } = await ca.rpc('delete_own_forum_post', { p_post_id: post.id });
@@ -249,21 +249,31 @@ describe('FEAT-PD011 — windowed own-edit/delete + content reports (C-D)', () =
       expect(Number((hints?.[0] as { n: unknown }).n)).toBeGreaterThan(0);
     });
 
-    it('at or past the window edge the edit and the delete refuse (42501, named as the window)', async () => {
+    it('TASK-EDT-01 (flipped from the window-edge refusal cell): an OLD post edits and deletes — the clock no longer closes the door', async () => {
       const ca = await asUser(author);
       const post = await newPost(ca, `CDwStale${runTag}`);
       await backdate(post.id, 16);
 
-      const { error: editErr } = await ca.rpc('edit_own_forum_post', {
+      // RED-FIRST against the pre-EDT-01 contracts: both acts refused 42501
+      // /window/i here. Now the edit lands and updated_at moves (the trigger
+      // — which is what the Hub's 3-minute-grace "(edited)" note keys on)...
+      const { data: edited, error: editErr } = await ca.rpc('edit_own_forum_post', {
         p_post_id: post.id,
-        p_content: 'too late',
+        p_content: 'never too late',
       });
-      expect(editErr?.code).toBe('42501');
-      expect(editErr?.message ?? '').toMatch(/window/i);
+      expect(editErr).toBeNull();
+      const doc = edited as { content: string; created_at: string; updated_at: string };
+      expect(doc.content).toBe('never too late');
+      expect(new Date(doc.updated_at).getTime()).toBeGreaterThan(
+        new Date(doc.created_at).getTime(),
+      );
 
-      const { error: delErr } = await ca.rpc('delete_own_forum_post', { p_post_id: post.id });
-      expect(delErr?.code).toBe('42501');
-      expect(delErr?.message ?? '').toMatch(/window/i);
+      // ...and the delete tombstones it, idempotently as ever.
+      const { data: deleted, error: delErr } = await ca.rpc('delete_own_forum_post', {
+        p_post_id: post.id,
+      });
+      expect(delErr).toBeNull();
+      expect((deleted as { is_deleted: boolean }).is_deleted).toBe(true);
     });
 
     it("another member cannot edit or delete the author's live post (42501); unknown post is P0002; empty content is 22023", async () => {
@@ -436,7 +446,7 @@ describe('FEAT-PD011 — windowed own-edit/delete + content reports (C-D)', () =
       expect(count).toBe(1);
     });
 
-    it('the snapshot survives a within-window edit of the reported post (the COM-12/13 interplay)', async () => {
+    it('the snapshot survives a later edit of the reported post (the COM-12/13 interplay; TASK-EDT-01 unbounded the edit)', async () => {
       const ca = await asUser(author);
       const { error } = await ca.rpc('edit_own_forum_post', {
         p_post_id: reportedPost.id,
