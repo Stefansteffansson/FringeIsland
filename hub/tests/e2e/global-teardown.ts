@@ -5,7 +5,9 @@ import {
   countOrphanedPersonalGroups,
   createAdminClient,
   deleteE2EUser,
+  listE2EFixtureAccounts,
   SESSION_EMAIL,
+  sweepE2EFixtureAccounts,
 } from './helpers/auth';
 
 export default async function globalTeardown() {
@@ -45,6 +47,28 @@ export default async function globalTeardown() {
   const anonAfter = await countAnonymousUsers();
   console.log(`[e2e-teardown] Anonymous sweep (unbounded, once): ${anonBefore} -> ${anonAfter}`);
 
+  // TASK-E2E-02 — fixture accounts a spec created and never deleted. Neither
+  // instrument on this page can see them (they keep their `users` row and
+  // their personal group — nothing orphaned, nothing a caretaker), which is
+  // how five identities per sweep accumulated behind two clean deltas. The
+  // session user is already gone, so every `e2e-*` account left now is
+  // residue by definition. Swept HERE so it never accumulates, and — the
+  // tier's posture, as for the two instruments — the run still fails, by name,
+  // so the spec that leaked gets fixed rather than cleaned up after forever.
+  // Runs BEFORE the orphan instrument so the groups it erases are inside that
+  // measurement; the failure is raised after it, so every line still prints.
+  const leakedFixtures = await listE2EFixtureAccounts();
+  if (leakedFixtures.length > 0) {
+    await sweepE2EFixtureAccounts(admin, leakedFixtures);
+    const stems = [...new Set(leakedFixtures.map((f) => f.stem))].join(', ');
+    console.error(
+      `[e2e-teardown] TASK-E2E-02: ${leakedFixtures.length} fixture account(s) survived their spec ` +
+        `— swept: ${stems}`,
+    );
+  } else {
+    console.log('[e2e-teardown] Fixture accounts: 0 survived their specs');
+  }
+
   // TASK-INT-03 leak instrument. Runs AFTER the session user is removed, so the
   // shared fixture's own group is inside the measurement rather than a
   // permanent +1. Growth fails the run: an orphaned personal group is
@@ -67,6 +91,14 @@ export default async function globalTeardown() {
   } else {
     console.log(
       `[e2e-teardown] Orphan instrument: ${orphanBefore} -> ${orphanAfter} (delta ${orphanAfter - orphanBefore})`,
+    );
+  }
+
+  if (leakedFixtures.length > 0) {
+    throw new Error(
+      `[e2e-teardown] TASK-E2E-02: ${leakedFixtures.length} fixture account(s) survived their spec ` +
+        `(${[...new Set(leakedFixtures.map((f) => f.stem))].join(', ')}) — swept, but the spec ` +
+        `that minted them must tear them down (eraseUserAndPersonalGroup / deleteE2EUserByAuthId).`,
     );
   }
 }
