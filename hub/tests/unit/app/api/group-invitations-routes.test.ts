@@ -11,7 +11,7 @@ import { getTelemetrySink } from '@/lib/observability/telemetry';
  *
  * Private BFF per ADR-U038 — the FEAT-PC012 contracts self-gate; these routes
  * only map session → 401 and SQLSTATE → HTTP (42501 → 403, P0002 → 404,
- * 22023 → 400, 23505 → 409 with the contract's message passed through, else
+ * 22023 → 400, 23505 → 409 with the house sentence (a constraint's message is never copy — 2026-09-02), else
  * 500 content-free). Telemetry is id-only: EMAIL ADDRESSES AND SEARCH QUERIES
  * ARE PII/member content and never appear in events (STORY-6).
  *
@@ -229,13 +229,52 @@ describe('POST /api/groups/[id]/invitations (invite: member XOR email)', () => {
     expect(inviteByEmail).not.toHaveBeenCalled();
   });
 
-  it('maps 23505 → 409 (already invited/member; duplicate email) with message through', async () => {
+  it('maps 23505 → 409 (already invited/member; duplicate email)', async () => {
     inviteMember.mockRejectedValue(sqlErr('23505', 'already invited'));
     const res = (await POST_INVITE(
       jsonRequest({ member_group_id: 'pg-2' }),
       idParams('grp-1'),
     )) as unknown as { status: number; body: { error: string } };
     expect(res.status).toBe(409);
+  });
+
+  // CQ-017's "separate, still-wanted fix" (OPEN_QUESTIONS.md, 2026-07-05) —
+  // found ALREADY FIXED platform-side at the Ferd leftovers pass (2026-09-02):
+  // `invite_member` pre-checks and raises a human, state-specific message under
+  // 23505 (FEAT-PC012 STORY-2b, `invitation-contracts.test.ts`), and that
+  // message is the copy the panel shows. What remained was the guard below:
+  // should a raw constraint ever fire instead, Postgres's own text must not
+  // become member-facing copy. Demonstrated red at head (the raw text reached
+  // the body), then green.
+  it('guard: a raw Postgres constraint message under 23505 becomes the house sentence, never copy', async () => {
+    inviteMember.mockRejectedValue(
+      sqlErr(
+        '23505',
+        'duplicate key value violates unique constraint "group_memberships_group_id_member_group_id_key"',
+      ),
+    );
+    const res = (await POST_INVITE(
+      jsonRequest({ member_group_id: 'pg-2' }),
+      idParams('grp-1'),
+    )) as unknown as { status: number; body: { error: string } };
+    expect(res.status).toBe(409);
+    expect(res.body.error).toBe('This member has already been invited or is already a member.');
+    expect(res.body.error).not.toMatch(/duplicate key|unique constraint/i);
+  });
+
+  // Labelled guard (green at head, kept on purpose): the contract's OWN human
+  // message is the copy and must keep passing through — the guard above must
+  // not flatten "a pending invitation already exists" into the generic line.
+  it("the contract's state-specific 23505 message passes through as the copy", async () => {
+    inviteMember.mockRejectedValue(
+      sqlErr('23505', 'a pending invitation already exists for this member'),
+    );
+    const res = (await POST_INVITE(
+      jsonRequest({ member_group_id: 'pg-2' }),
+      idParams('grp-1'),
+    )) as unknown as { status: number; body: { error: string } };
+    expect(res.status).toBe(409);
+    expect(res.body.error).toBe('a pending invitation already exists for this member');
   });
 
   it('maps 22023 → 400 (malformed email), 42501 → 403, P0002 → 404', async () => {
