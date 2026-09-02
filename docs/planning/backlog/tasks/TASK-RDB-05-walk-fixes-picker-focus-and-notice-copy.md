@@ -3,7 +3,7 @@
 ---
 id: TASK-RDB-05
 title: RD-B live-walk fixes — W-1 focus landing, W-2/W-3/W-4 section behaviour, W-5 named-group picker, W-8 notice copy
-status: review
+status: done  # closed 2026-09-02 backlog-truth pass: RD-B closed 2026-08-09 (bridge 2026-08-09_02), migration 20260808120000 applied, FEAT-H044 + FEAT-PC028 at 6-done — was: review
 assigned_to: claude
 priority: high
 feature: FEAT-H044
@@ -55,8 +55,8 @@ applied.
 - [x] Integration W8a–W8d demonstrated **red** against the live stack
 - [x] The E2E creates named reach **through the picker**, not by inserting the row
 - [x] Unit 1403/1403 · lint 0 errors · `next build` green · `role-distribution.spec.ts` 3/3
-- [ ] **Migration applied on a named approval**, then W8a–W8d green
-- [ ] `FEAT-H044` and `FEAT-PC028` return to `6-done`; §L4 rows follow
+- [x] **Migration applied on a named approval**, then W8a–W8d green — done by RD-B close 2026-08-09 (bridge `2026-08-09_02`); ticked at the 2026-09-02 backlog-truth pass
+- [x] `FEAT-H044` and `FEAT-PC028` return to `6-done`; §L4 rows follow — both read `maturity: 6-done` (verified 2026-09-02)
 
 ## Apply commands
 
