@@ -30,5 +30,5 @@
 
 ## The rest of the board
 
-- **TASK-DBT-02** (COR-C E2E fallout, four specs) remains at its own priority — the last DBT item.
+- **TASK-DBT-02 is NOT open** — its frontmatter has read `status: done` since 2026-08-01 (ADM-B hygiene block; all four adjudicated, sweep 93/93 twice). The "DBT-01 / DBT-02 remain in the backlog" line in `2026-09-01_02` and the DBT-03 bridge was carried forward stale. **The DBT family is complete.**
 - The ADR-U039 topic-channel rider (recorded, unscheduled); DM message editing (open, unpulled); beppe.hopper reaps ~2026-09-14 by design.
