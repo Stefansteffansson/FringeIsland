@@ -6,7 +6,6 @@ import {
   cleanupTestUser,
   generateTestEmail,
   withAnonRateLimitRetry,
-  runAdminSql,
 } from '@/tests/helpers/supabase';
 
 /**

@@ -125,7 +125,6 @@ describe('Internal-API conformance (ADR-U047 rule 3 + DS acyclicity, COR-A W3 / 
       .map((o) => o.name);
 
     // Print the full breakdown so the evidence is complete either way.
-    // eslint-disable-next-line no-console
     console.error(
       [
         '',
@@ -177,7 +176,6 @@ describe('Internal-API conformance (ADR-U047 rule 3 + DS acyclicity, COR-A W3 / 
     const upwardCalls = byKind('upward-cross-service-call');
     const uncitedCalls = byKind('uncited-cross-service-call');
 
-    // eslint-disable-next-line no-console
     console.error(
       [
         '',
