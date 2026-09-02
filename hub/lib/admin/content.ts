@@ -81,6 +81,40 @@ export async function fetchAdminGroupConversations(
   }
 }
 
+/**
+ * TASK-SEAL-01 (Hub half) — a CLOSED group's group-kind thread set, sealed
+ * rows INCLUDED and labelled. The one contract in the schema where a sealed
+ * thread is visible (`admin_get_group_conversations`, migration
+ * 20260811220000, ruling B1 re-scoped to `closed`). Direct conversations are
+ * never returned (bound 2). P0001 here is the ruling-A scope refusal
+ * ("sealed-thread sight is scoped to closed groups") and reads as `refused`.
+ */
+export type ClosedGroupThreadRow = {
+  id: string;
+  title: string | null;
+  created_at: string;
+  last_message_at: string | null;
+  sealed_at: string | null;
+  is_sealed: boolean;
+  message_count: number;
+};
+
+export async function fetchAdminClosedGroupThreads(
+  client: SupabaseClient,
+  groupId: string,
+): Promise<Flags<ClosedGroupThreadRow[]>> {
+  try {
+    const { data, error } = await client.rpc('admin_get_group_conversations', {
+      p_group_id: groupId,
+    });
+    if (error) throw error;
+    const envelope = data as { conversations?: ClosedGroupThreadRow[] } | null;
+    return { data: envelope?.conversations ?? [], refused: false, notFound: false };
+  } catch (err) {
+    return toFlags<ClosedGroupThreadRow[]>(err);
+  }
+}
+
 export async function fetchAdminGroupConversationDetail(
   client: SupabaseClient,
   conversationId: string,

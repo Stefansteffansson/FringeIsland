@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { AdminSuspendedContentWing } from '@/components/admin/AdminSuspendedContentWing';
+import { AdminClosedThreadsSection } from '@/components/admin/AdminClosedThreadsSection';
 import type { AdminGroupDetail as Detail } from '@/lib/admin/groups';
 
 /**
@@ -302,6 +303,15 @@ export function AdminGroupDetail({ groupId }: { groupId: string }) {
           members={d.members}
           onStateDrift={load}
         />
+      )}
+
+      {/* TASK-SEAL-01 (Hub half): sealed-thread sight — a CLOSED engagement
+          group's preserved thread set, sealed threads labelled and never live
+          (AB-6 ruling B1, re-scoped to `closed`). The contract refuses every
+          other state; a refusal mid-flight re-reads the detail and the
+          section collapses, like the wing. */}
+      {isEngagement && d.status === 'closed' && (
+        <AdminClosedThreadsSection groupId={groupId} groupName={d.name} onStateDrift={load} />
       )}
 
       <ConfirmModal

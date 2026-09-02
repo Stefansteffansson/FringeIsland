@@ -131,6 +131,31 @@ describe('AdminGroupDetail (FEAT-H035 STORY-2/3/4)', () => {
     expect(screen.queryByTestId('suspend-group')).not.toBeInTheDocument();
   });
 
+  // TASK-SEAL-01 (Hub half): a CLOSED engagement group mounts the preserved-
+  // threads section (the sealed-thread sight ruling B1 realises, re-scoped to
+  // `closed`); a suspended one keeps the H041 wing and NOT this section; an
+  // active one has neither. Red at head: the section does not exist.
+  it('a closed engagement group mounts the preserved-threads section; suspended and active do not', async () => {
+    fetchMock.mockImplementation(async (input) => {
+      const url = String(input);
+      if (url.endsWith('/closed-threads')) {
+        return { ok: true, status: 200, json: async () => ({ threads: [] }) } as Response;
+      }
+      return okDetail({ ...baseDetail, status: 'closed' });
+    });
+    const first = render(<AdminGroupDetail groupId={GROUP_ID} />);
+    expect(await screen.findByTestId('closed-threads-section')).toBeInTheDocument();
+    expect(fetchMock.mock.calls.some(([u]) => String(u).endsWith(`/api/admin/groups/${GROUP_ID}/closed-threads`))).toBe(true);
+    first.unmount();
+
+    fetchMock.mockReset();
+    fetchMock.mockResolvedValue(okDetail({ ...baseDetail, status: 'suspended' }));
+    render(<AdminGroupDetail groupId={GROUP_ID} />);
+    await screen.findAllByTestId('status-badge');
+    expect(screen.queryByTestId('closed-threads-section')).not.toBeInTheDocument();
+    expect(fetchMock.mock.calls.some(([u]) => String(u).endsWith('/closed-threads'))).toBe(false);
+  });
+
   it('a closed group renders no lifecycle actions (state honesty — the platform refuses anyway)', async () => {
     fetchMock.mockResolvedValue(okDetail({ ...baseDetail, status: 'closed' }));
     render(<AdminGroupDetail groupId={GROUP_ID} />);

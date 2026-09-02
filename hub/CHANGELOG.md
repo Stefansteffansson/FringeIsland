@@ -2,6 +2,11 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-09-02 — platform admins can see a closed group's preserved threads ([FEAT-H041](../docs/products/hub/features/FEAT-H041-suspended-group-content-wing.md) · TASK-SEAL-01)
+
+- **When a group has closed, its group conversations are preserved — and now a platform admin can see that they exist.** Open a closed group in the admin area and a "Preserved threads" section lists each group thread with how many messages it holds and when it was last active. A thread that was sealed when its author departed is labelled *Sealed* with the date, and nothing about it is live: there is no way to open it, reply to it, or mistake it for an ongoing conversation. This is where evidence of bullying lands when someone leaves, so the admin plane should at least know it is there.
+- **What it deliberately does not do:** the contents of a sealed thread are not readable from the admin area. The section says so plainly. Direct messages are never shown.
+
 ## 2026-09-02 — a stale Mist session no longer strands you ([FEAT-H003](../docs/products/hub/features/FEAT-H003-mist-identity-on-arrival.md) · TASK-MIST-01)
 
 - **If your look-around identity was cleared on the server while your browser still remembered it, the Hub now notices and starts you fresh.** A Mist (the anonymous look-around identity) expires after 72 hours, and saying goodbye on one device cannot reach another device's memory of it. Before, that other browser could sit on the Mist page as a ghost — remembered locally, gone on the server, every door quietly refusing. Now the first refusal ends the stale session and you land on the entry page; the next "Look around" gives you a brand-new Mist and the front door opens as on a first visit.
