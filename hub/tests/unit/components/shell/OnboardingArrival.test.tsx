@@ -17,11 +17,13 @@ import { render, waitFor } from '@testing-library/react';
 type AuthShape = {
   identity: 'sessionless' | 'mist' | 'fim';
   loading: boolean;
+  dropGhostSession?: () => Promise<void>;
 };
 
 let authState: AuthShape;
 let pathname = '/groups';
 const push = jest.fn();
+const dropGhostSession = jest.fn<() => Promise<void>>();
 
 jest.mock('@/lib/auth/AuthContext', () => ({ useAuth: () => authState }));
 jest.mock('next/navigation', () => ({
@@ -55,13 +57,46 @@ const NEVER_ARRIVED = {
 beforeEach(() => {
   jest.clearAllMocks();
   resetOnboardingArrivalLatch();
-  authState = { identity: 'fim', loading: false };
+  authState = { identity: 'fim', loading: false, dropGhostSession };
+  dropGhostSession.mockResolvedValue(undefined);
   pathname = '/groups';
   fetchOnboardingStatus.mockResolvedValue(NEVER_ARRIVED);
   enrollSelf.mockResolvedValue({ enrollment_id: 'e-9' });
 });
 
 describe('FEAT-H023 — OnboardingArrival (the uniform auto-launch decision)', () => {
+  // TASK-MIST-01 — the ghost window (J-O3, 2026-07-19). A Mist erased
+  // server-side (the ADR-U033 reaper, a goodbye on another domain) while this
+  // browser still holds its JWT reads `identity === 'mist'` locally (ADR-U037,
+  // correct by design) and then fails its arrival check with "no resolvable
+  // actor" (42501 → 403, carried as a code). That is not a transient — nothing
+  // will ever resolve this actor again — so the honest move is to drop the
+  // local session: sessionless entry, and the next "look around" mints a
+  // fresh Mist. Red at head: the catch treated it as a retryable failure.
+  it('a ghost Mist (no resolvable actor) drops the local session instead of retrying', async () => {
+    authState = { identity: 'mist', loading: false, dropGhostSession };
+    pathname = '/mist';
+    fetchOnboardingStatus.mockRejectedValue(
+      Object.assign(new Error('No resolvable actor'), {
+        status: 403,
+        code: 'no_resolvable_actor',
+      }),
+    );
+    const { unmount } = render(<OnboardingArrival />);
+    await waitFor(() => expect(dropGhostSession).toHaveBeenCalledTimes(1));
+    expect(enrollSelf).not.toHaveBeenCalled();
+    expect(push).not.toHaveBeenCalled();
+
+    // The one-shot latch must be released: the next "look around" mints a
+    // fresh Mist in the SAME page context (client-side navigation), and that
+    // arrival must launch. Found by the E2E arc — the first cut returned
+    // without releasing it and the fresh Mist sat on /mist.
+    unmount();
+    fetchOnboardingStatus.mockResolvedValue(NEVER_ARRIVED);
+    render(<OnboardingArrival />);
+    await waitFor(() => expect(push).toHaveBeenCalledWith('/journeys/jz-1/play?enrollment=e-9'));
+  });
+
   it('first arrival: enrols and routes into the player at the welcome (post-paint)', async () => {
     render(<OnboardingArrival />);
     await waitFor(() => expect(push).toHaveBeenCalledWith('/journeys/jz-1/play?enrollment=e-9'));

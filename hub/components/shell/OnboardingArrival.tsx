@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { isGhostSessionRefusal } from '@/lib/auth/mist';
 import { fetchOnboardingStatus, markOnboardingArrived } from '@/lib/onboarding/client';
 import { enrollSelf } from '@/lib/journeys/client';
 import { emitTelemetry } from '@/lib/observability/telemetry';
@@ -38,7 +39,7 @@ export function resetOnboardingArrivalLatch(): void {
  * latch re-arms so a later landing may retry.
  */
 export function OnboardingArrival() {
-  const { identity, loading } = useAuth();
+  const { identity, loading, dropGhostSession } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -61,11 +62,20 @@ export function OnboardingArrival() {
         const q = enrollment.enrollment_id ? `?enrollment=${enrollment.enrollment_id}` : '';
         router.push(`/journeys/${status.onboarding_journey_id}/play${q}`);
       } catch (err) {
+        if (isGhostSessionRefusal(err)) {
+          // TASK-MIST-01: not a transient — the actor behind this JWT no longer
+          // exists. Drop the session; the entry page takes it from here.
+          await dropGhostSession();
+          // Release the one-shot latch: the next "look around" mints a fresh
+          // Mist in this same page context, and that arrival must launch.
+          launchAttempted = false;
+          return;
+        }
         emitTelemetry('onboarding.arrival_failed', { message: (err as Error).message });
         launchAttempted = false; // a later landing may retry
       }
     })();
-  }, [identity, loading, pathname, router]);
+  }, [identity, loading, pathname, router, dropGhostSession]);
 
   return null;
 }

@@ -2,6 +2,11 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-09-02 — a stale Mist session no longer strands you ([FEAT-H003](../docs/products/hub/features/FEAT-H003-mist-identity-on-arrival.md) · TASK-MIST-01)
+
+- **If your look-around identity was cleared on the server while your browser still remembered it, the Hub now notices and starts you fresh.** A Mist (the anonymous look-around identity) expires after 72 hours, and saying goodbye on one device cannot reach another device's memory of it. Before, that other browser could sit on the Mist page as a ghost — remembered locally, gone on the server, every door quietly refusing. Now the first refusal ends the stale session and you land on the entry page; the next "Look around" gives you a brand-new Mist and the front door opens as on a first visit.
+- Nothing changes for a live Mist or for a signed-up member; saying goodbye works exactly as before.
+
 ## 2026-08-21 — your own forum posts: fix them or withdraw them, whenever (TASK-EDT-01)
 
 - **The 15-minute clock on editing and deleting your own forum posts is gone.** Edit and Delete now stay on your own posts for good — a typo found next week is as fixable as one found now, and a post you regret can be withdrawn whenever (it leaves the same neutral tombstone as before, so replies keep their place).

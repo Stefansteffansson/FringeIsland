@@ -22,11 +22,29 @@ let cachedStatus: OnboardingStatus | null = null;
 let statusInFlight: Promise<OnboardingStatus> | null = null;
 let adoptedStatus: Promise<OnboardingStatus> | null = null;
 
+/** Carries the BFF's status and, when the route names one, its code — so the
+ *  arrival check can tell "this actor will never resolve" (TASK-MIST-01) from
+ *  a transient. */
+export class OnboardingApiError extends Error {
+  status: number;
+  code?: string;
+  constructor(message: string, status: number, code?: string) {
+    super(message);
+    this.name = 'OnboardingApiError';
+    this.status = status;
+    this.code = code;
+  }
+}
+
 async function requestStatus(): Promise<OnboardingStatus> {
   const res = await fetch('/api/me/onboarding');
   if (!res.ok) {
-    const body = (await res.json().catch(() => null)) as { error?: string } | null;
-    throw new Error(body?.error ?? `Request failed (${res.status})`);
+    const body = (await res.json().catch(() => null)) as { error?: string; code?: string } | null;
+    throw new OnboardingApiError(
+      body?.error ?? `Request failed (${res.status})`,
+      res.status,
+      body?.code,
+    );
   }
   const data = (await res.json()) as { onboarding: OnboardingStatus };
   return data.onboarding;

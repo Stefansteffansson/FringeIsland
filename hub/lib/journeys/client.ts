@@ -18,16 +18,20 @@ export type { JourneyCard, JourneyDetail, MyEnrollment };
 /** Carries the BFF's HTTP status so pages can render 404 honestly. */
 export class JourneysApiError extends Error {
   status: number;
-  constructor(message: string, status: number) {
+  /** The BFF's named refusal, when it names one (TASK-MIST-01:
+   *  `no_resolvable_actor` on the own-enrolments read). */
+  code?: string;
+  constructor(message: string, status: number, code?: string) {
     super(message);
     this.name = 'JourneysApiError';
     this.status = status;
+    this.code = code;
   }
 }
 
 async function throwFrom(res: Response, fallback: string): Promise<never> {
-  const body = (await res.json().catch(() => null)) as { error?: string } | null;
-  throw new JourneysApiError(body?.error ?? fallback, res.status);
+  const body = (await res.json().catch(() => null)) as { error?: string; code?: string } | null;
+  throw new JourneysApiError(body?.error ?? fallback, res.status, body?.code);
 }
 
 // --- catalogue cache ---------------------------------------------------------

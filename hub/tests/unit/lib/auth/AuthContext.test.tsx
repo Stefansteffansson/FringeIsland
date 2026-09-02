@@ -89,6 +89,32 @@ function SignOutProbe() {
   return <button onClick={() => signOut()}>sign out</button>;
 }
 
+function GhostProbe() {
+  const { dropGhostSession } = useAuth();
+  return <button onClick={() => dropGhostSession()}>drop ghost</button>;
+}
+
+describe('TASK-MIST-01 — dropGhostSession (the ghost window)', () => {
+  // Labelled test-after (2026-09-02): the behaviour was driven red-first at the
+  // call sites (OnboardingArrival, the Mist page, both BFF routes, both
+  // clients, and the E2E arc); this cell pins the provider's own contract —
+  // local scope, telemetry — so the door cannot quietly widen to global.
+  it('ends THIS browser only (local scope) and says so in telemetry', async () => {
+    fakeSession = { user: { id: 'ghost-1', is_anonymous: true } } as unknown as Session;
+    render(
+      <AuthProvider>
+        <GhostProbe />
+      </AuthProvider>,
+    );
+    await userEvent.click(await screen.findByRole('button', { name: /drop ghost/i }));
+
+    await waitFor(() => expect(signOutSpy).toHaveBeenCalled());
+    expect(signOutSpy).toHaveBeenCalledWith({ scope: 'local' });
+    expect(signOutSpy.mock.calls.every(([opts]) => opts?.scope === 'local')).toBe(true);
+    expect(getTelemetrySink().some((e) => e.name === 'mist.ghost_session_dropped')).toBe(true);
+  });
+});
+
 describe('sign-out scope (2026-07-27 decision) — local, never global', () => {
   it('a deliberate sign-out ends THIS browser only', async () => {
     fakeSession = { user: { id: 'u1', is_anonymous: false } } as unknown as Session;
