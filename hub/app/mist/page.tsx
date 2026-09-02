@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { isGhostSessionRefusal } from '@/lib/auth/mist';
 import { AppShell } from '@/components/shell/AppShell';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { InlineError } from '@/components/ui/InlineError';
@@ -22,7 +23,7 @@ import type { MyEnrollment } from '@/lib/journeys/queries';
  * only and confirms through `ConfirmModal` (never `confirm()`).
  */
 export default function MistPresencePage() {
-  const { identity, loading, sayGoodbye } = useAuth();
+  const { identity, loading, sayGoodbye, dropGhostSession } = useAuth();
   const router = useRouter();
 
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -44,11 +45,18 @@ export default function MistPresencePage() {
           peekMyJourneyEnrollments() ?? ((await fetchMyJourneyEnrollments()) as MyEnrollment[]);
         const walk = list.find((e) => e.kind === 'individual');
         if (walk) setWalkHref(`/journeys/${walk.journey_id}/play?enrollment=${walk.enrollment_id}`);
-      } catch {
+      } catch (err) {
+        // TASK-MIST-01: a ghost session (the Mist behind this JWT was erased
+        // server-side) is not a fallback case — drop it; the identity flips to
+        // sessionless and the effect below sends the visitor to the entry.
+        if (isGhostSessionRefusal(err)) {
+          await dropGhostSession();
+          return;
+        }
         /* keep the catalogue fallback — the door stays a door */
       }
     })();
-  }, [identity, loading]);
+  }, [identity, loading, dropGhostSession]);
 
   useEffect(() => {
     if (loading) return;

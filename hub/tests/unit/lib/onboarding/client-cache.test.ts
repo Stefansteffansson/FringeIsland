@@ -57,6 +57,22 @@ describe('FEAT-H023 — onboarding client (cache + adoption)', () => {
     await expect(fetchOnboardingStatus()).resolves.toEqual(STATUS);
   });
 
+  // TASK-MIST-01: the BFF names a ghost session with a code; the thrown error
+  // must carry status + code so the arrival check can tell "this actor will
+  // never resolve" from a transient. Red at head: a bare Error, message only.
+  it('a 403 with the no_resolvable_actor code throws an error carrying status and code', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 403,
+      json: async () => ({ error: 'No resolvable actor', code: 'no_resolvable_actor' }),
+    });
+    await expect(fetchOnboardingStatus()).rejects.toMatchObject({
+      status: 403,
+      code: 'no_resolvable_actor',
+    });
+    expect(peekOnboardingStatus()).toBeNull();
+  });
+
   it('adopts the bundle slice consume-once — zero standalone fetches, then revalidates', async () => {
     adoptOnboardingRead(Promise.resolve(STATUS));
     await expect(fetchOnboardingStatus()).resolves.toEqual(STATUS);

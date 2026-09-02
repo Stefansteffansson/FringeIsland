@@ -31,7 +31,11 @@ export async function GET() {
     const code = (err as { code?: string }).code;
     emitTelemetry('onboarding.status_failed', { actor: userId, code });
     if (code === '42501') {
-      return NextResponse.json({ error: 'No resolvable actor' }, { status: 403 });
+      // TASK-MIST-01: named, so the client can tell a ghost session from a transient.
+      return NextResponse.json(
+        { error: 'No resolvable actor', code: 'no_resolvable_actor' },
+        { status: 403 },
+      );
     }
     return NextResponse.json({ error: 'Failed to read onboarding status' }, { status: 500 });
   }

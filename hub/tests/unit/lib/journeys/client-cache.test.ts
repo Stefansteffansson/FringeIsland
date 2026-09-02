@@ -87,6 +87,20 @@ describe('detail + mutation transports (no optimistic state, errors carry HTTP s
     expect(fetchMock).toHaveBeenCalledWith('/api/journeys/j1');
   });
 
+  // TASK-MIST-01: the enrolments read is the Mist page's walk resolution; a
+  // "no resolvable actor" refusal is carried as a code so the page can drop a
+  // ghost session rather than fall back. Red at head: JourneysApiError had
+  // status only.
+  it('fetchMyJourneyEnrollments carries the BFF code on a 403 (no_resolvable_actor)', async () => {
+    fetchMock.mockResolvedValue(
+      errJson(403, { error: 'Not permitted', code: 'no_resolvable_actor' }),
+    );
+    await expect(client.fetchMyJourneyEnrollments()).rejects.toMatchObject({
+      status: 403,
+      code: 'no_resolvable_actor',
+    });
+  });
+
   it('fetchJourneyDetail surfaces the BFF status (404 stays recognisable for the not-found page)', async () => {
     fetchMock.mockResolvedValue(errJson(404, { error: 'Journey not found' }));
     await expect(client.fetchJourneyDetail('ghost')).rejects.toMatchObject({ status: 404 });

@@ -108,3 +108,7 @@ git-blob-*/
 # perf-measure.mjs output (local measurement runs)
 hub/scripts/perf-results.jsonl
 hub/scripts/perf-state.json
+
+# Obsidian files
+.obsidian/workspace.json
+.obsidian/cache/

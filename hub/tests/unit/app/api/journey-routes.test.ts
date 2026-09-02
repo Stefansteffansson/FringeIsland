@@ -146,10 +146,15 @@ describe('GET /api/me/journeys — my enrolments', () => {
     expect(emitted('journey.my_enrollments_loaded', 'fim-1')).toBe(true);
   });
 
-  it('maps 42501 (no session actor) to 403', async () => {
+  it('maps 42501 (no session actor) to 403 — and names the ghost with a code (TASK-MIST-01)', async () => {
     fetchMyEnrollments.mockRejectedValue(sqlErr('42501'));
     const res = (await MY_JOURNEYS()) as unknown as RouteResponse;
     expect(res.status).toBe(403);
+    // Red at head: the body carried `error` only. A 42501 on an own-enrolments
+    // read means the JWT's actor cannot be resolved — a Mist erased server-side
+    // while the browser kept its session — and the Mist page must be able to
+    // tell that from a transient.
+    expect(res.body.code).toBe('no_resolvable_actor');
   });
 });
 

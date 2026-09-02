@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import MistPresencePage from '@/app/mist/page';
 
+const dropGhostSession = jest.fn<() => Promise<void>>();
+
 /**
  * FEAT-H003 STORY-2/3/4 (unit) — the minimal-but-real Mist-presence landing.
  * Identity-level only (no town, no accretion visuals): a real beginning + the
@@ -43,6 +45,7 @@ function mockAuth(identity: 'sessionless' | 'mist' | 'fim') {
     transcend: jest.fn(),
     sayGoodbye: jest.fn(),
     signOut: jest.fn(),
+    dropGhostSession,
   } as unknown as ReturnType<typeof useAuth>);
 }
 
@@ -57,6 +60,20 @@ beforeEach(() => {
 });
 
 describe('FEAT-H003 STORY-2 (unit) — Mist-presence landing', () => {
+  // TASK-MIST-01 — the ghost window: the walk resolution refuses with "no
+  // resolvable actor" because the Mist behind this JWT no longer exists.
+  // The door must not merely fall back to the catalogue; the session is
+  // broken for good and is dropped. Red at head: the catch kept the fallback.
+  it('a ghost Mist — the walk resolution refuses with no resolvable actor — drops the local session', async () => {
+    mockAuth('mist');
+    dropGhostSession.mockReset().mockResolvedValue(undefined);
+    fetchMyJourneyEnrollments.mockRejectedValue(
+      Object.assign(new Error('Not permitted'), { status: 403, code: 'no_resolvable_actor' }),
+    );
+    render(<MistPresencePage />);
+    await waitFor(() => expect(dropGhostSession).toHaveBeenCalledTimes(1));
+  });
+
   it('shows a real beginning and the become-a-FIM CTA opening the in-place flow', () => {
     mockAuth('mist');
     render(<MistPresencePage />);

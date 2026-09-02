@@ -21,6 +21,21 @@ export type MistSessionResult = {
  * anonymous Supabase user (`is_anonymous`). Pure + synchronous, so it is safe to
  * call inside render and from the auth-state listener (no query, no deadlock).
  */
+/**
+ * TASK-MIST-01 — the ghost window. The BFF names a 42501 from an actor-bound
+ * read with this code: the JWT is still signed, but the substrate can no
+ * longer resolve the actor behind it — a Mist erased server-side (the
+ * ADR-U033 reaper, a goodbye said on another domain) while this browser kept
+ * its session. Nothing will ever resolve that actor again, so it is not a
+ * transient: the honest response is to drop the local session.
+ */
+export const NO_RESOLVABLE_ACTOR = 'no_resolvable_actor';
+
+/** True for a BFF refusal carrying the ghost code (any client error shape). */
+export function isGhostSessionRefusal(err: unknown): boolean {
+  return (err as { code?: unknown } | null)?.code === NO_RESOLVABLE_ACTOR;
+}
+
 export function deriveIdentity(user: User | null): Identity {
   if (!user) return 'sessionless';
   return user.is_anonymous ? 'mist' : 'fim';

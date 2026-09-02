@@ -28,7 +28,12 @@ export async function GET() {
     const code = (err as { code?: string }).code;
     if (code === '42501') {
       emitTelemetry('journey.my_enrollments_refused', { actor: userId, code });
-      return NextResponse.json({ error: 'Not permitted' }, { status: 403 });
+      // TASK-MIST-01: a 42501 on an own-enrolments read means the JWT's actor cannot
+      // be resolved (a Mist erased server-side) — named so the Mist page can drop it.
+      return NextResponse.json(
+        { error: 'Not permitted', code: 'no_resolvable_actor' },
+        { status: 403 },
+      );
     }
     emitTelemetry('journey.my_enrollments_failed', { actor: userId, code });
     return NextResponse.json({ error: 'Failed to load your journeys' }, { status: 500 });

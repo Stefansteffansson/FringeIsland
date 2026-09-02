@@ -118,6 +118,8 @@ Transcendence + farewell are **equipment-agnostic** (`requires-equipment: none`)
 
 ## Implementation notes (2026-06-27, `6-done`)
 
+**Note 2026-09-02 (TASK-MIST-01).** The farewell drops only THIS browser's session (`scope: 'local'`), and a browser session is per origin: a goodbye said on one domain cannot clear another domain's remembered Mist. That other browser is a *ghost* — its JWT still signed, its actor erased — and it discovers the erasure on its next actor-bound read (`no_resolvable_actor`), whereupon `dropGhostSession()` lands it sessionless (FEAT-H003, amendment of the same date). The farewell path itself was re-verified end-to-end on one domain at that pass (`transcendence.spec.ts`, the farewell cell).
+
 Built across three tasks (`TASK-H004-01..03`), TDD red-first, reusing the FEAT-H001/H002/H003 spine — no re-scaffold, no migration (consumes the merged FEAT-PC002 substrate).
 
 - **TASK-H004-01 — in-place transcendence + consent gate (STORY-1/2/5).** New `hub/lib/auth/transcendence.ts` (`finaliseTranscendence` wrapping the `finalise_transcendence` RPC) behind `POST /api/auth/transcend` (server consent gate + audit/telemetry/welcome-trigger); `AuthContext.transcend` does the client-side anon→permanent `updateUser` then posts the route (convert-then-finalise); new `/become-a-fim` page (reuses the FEAT-H002 fields + a required consent control, Mist-gated); the `/mist` CTA repointed `/signup`→`/become-a-fim`. RPCs go through the route, never the browser (ADR-U009).

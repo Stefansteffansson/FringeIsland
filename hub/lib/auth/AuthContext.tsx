@@ -57,6 +57,15 @@ type AuthState = {
    */
   sayGoodbye: () => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
+  /**
+   * TASK-MIST-01 — the ghost window. A Mist erased server-side while this
+   * browser kept its JWT still reads `identity === 'mist'` locally (ADR-U037,
+   * correct by design); its first actor-bound read then refuses with
+   * `no_resolvable_actor`. Nothing will resolve that actor again, so the
+   * session is dropped (local scope — a Mist is per-device) and the visitor
+   * lands sessionless; the next "look around" mints a fresh Mist.
+   */
+  dropGhostSession: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
@@ -284,6 +293,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut({ scope: 'local' });
   }
 
+  async function dropGhostSession() {
+    emitTelemetry('mist.ghost_session_dropped');
+    await supabase.auth.signOut({ scope: 'local' });
+  }
+
   // Derived in render (not in the auth listener) — pure, no query, no deadlock.
   // TASK-TRX-02: while a transcend is in flight the converted user already
   // reads non-anonymous, but the substrate is still mid-transaction — hold
@@ -319,6 +333,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         transcend,
         sayGoodbye,
         signOut,
+        dropGhostSession,
       }}
     >
       {children}
