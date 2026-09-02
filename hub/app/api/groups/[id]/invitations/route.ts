@@ -125,8 +125,22 @@ export async function POST(
     }
     if (code === '23505') {
       emitTelemetry('invitations.invite_conflict', { actor: user.id, code });
+      // The contracts pre-check and raise a human, state-specific message
+      // under 23505 ("a pending invitation already exists" / "already a
+      // member" / "paused" — FEAT-PC012 STORY-2b), and that message IS the
+      // copy, so it passes through. The guard is for the day a raw constraint
+      // fires instead: Postgres's own "duplicate key value violates unique
+      // constraint …" is never copy and never leaves the server (CQ-017's
+      // "still-wanted fix", found already fixed platform-side 2026-09-02;
+      // this guard is what remained).
+      const raw = /duplicate key value|unique constraint/i;
       return NextResponse.json(
-        { error: message ?? 'Already invited' },
+        {
+          error:
+            message && !raw.test(message)
+              ? message
+              : 'This member has already been invited or is already a member.',
+        },
         { status: 409 },
       );
     }
