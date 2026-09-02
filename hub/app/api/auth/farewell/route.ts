@@ -11,7 +11,6 @@ import { createClient } from '@/lib/supabase/server';
 import { explicitEraseMist } from '@/lib/auth/farewell';
 import { recordAuditEntry, persistAuditEntry } from '@/lib/audit/audit';
 import { emitTelemetry } from '@/lib/observability/telemetry';
-import { emitDurableTelemetry } from '@/lib/observability/telemetry-server';
 
 export async function POST() {
   const supabase = await createClient();

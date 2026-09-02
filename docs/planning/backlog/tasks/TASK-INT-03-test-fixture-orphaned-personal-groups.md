@@ -3,7 +3,7 @@
 ---
 id: TASK-INT-03
 title: Test teardown leaks personal groups (sole-Steward guard + suites bypassing cleanupTestUser) — close the residual sources
-status: todo
+status: done  # closed 2026-09-02 on measurement — 0 orphaned personal groups after the 2026-08-12 reset; growth instrumented in BOTH tiers; the Mist source fixed 2026-08-09
 assigned_to: unassigned
 priority: high
 feature: none
@@ -261,3 +261,14 @@ what inflate `public.notifications` (73 % of it, per the original finding) — a
 is the prime suspect in `TASK-E2E-04` / walk finding W-7, where emission assertions across
 BOTH test tiers fail in fleet, pass in isolation, and pick a different victim each run. If
 the volume hypothesis holds, this task is the upstream cause and E2E-04 closes through it.
+
+## Closed 2026-09-02 — on measurement, not on a green run
+
+**Measured today (read-only, one shared database):** orphaned personal groups (`group_type = 'personal'` with no `users` row) = **0**, after the 2026-08-12 database reset and three weeks of fleet, integration, and walk traffic since.
+
+**Why it stays 0 now, structurally rather than by inspection:**
+- the Mist source (1 357 in 11 days) was attributed and fixed 2026-08-09 (above), and the E2E erasure primitive `eraseUserAndPersonalGroup` orders consent → journeys → auth user → personal group so the immutability trigger can no longer orphan a group;
+- **both tiers instrument growth**: the E2E global teardown fails the run when orphaned personal groups grow against the run baseline (TASK-INT-03 instrument, `hub/tests/e2e/global-teardown.ts`), and the integration global teardown sweeps them and reports the residue by class (2026-08-12, extended by TASK-DBT-03 on 2026-09-02);
+- the one 2026-08-09 single-instance reproduction (perf-measure teardown) was fixed in `scripts/perf-measure.mjs` the same day (helper comment, `hub/tests/e2e/helpers/auth.ts`).
+
+The remaining kept orphans from the 2026-07-28 decision (674, each there for a stated reason) were removed with the 2026-08-12 reset. Nothing is left to build; the AC above are all ticked. Closed at the Ferd leftovers pass (bridge `2026-09-02_03`).
