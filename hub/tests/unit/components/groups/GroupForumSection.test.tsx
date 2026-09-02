@@ -3,6 +3,8 @@ import { HttpStatusError } from '@/lib/http/status-error';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ForumPost } from '@/lib/forum/queries';
+import type * as ForumClient from '@/lib/forum/client';
+import type * as GroupsClient from '@/lib/groups/client';
 
 /**
  * FEAT-H026 (unit) — the group Forum section.
@@ -17,27 +19,27 @@ import type { ForumPost } from '@/lib/forum/queries';
  */
 
 const mockForum = {
-  peekForum: jest.fn(),
-  fetchForum: jest.fn(),
-  createForumPost: jest.fn(),
-  replyToForumPost: jest.fn(),
-  moderateForumPost: jest.fn(),
-  dropGroup: jest.fn(),
+  peekForum: jest.fn<typeof ForumClient.peekForum>(),
+  fetchForum: jest.fn<typeof ForumClient.fetchForum>(),
+  createForumPost: jest.fn<typeof ForumClient.createForumPost>(),
+  replyToForumPost: jest.fn<typeof ForumClient.replyToForumPost>(),
+  moderateForumPost: jest.fn<typeof ForumClient.moderateForumPost>(),
+  dropGroup: jest.fn<typeof ForumClient.dropGroup>(),
 };
 jest.mock('@/lib/forum/client', () => ({
   __esModule: true,
-  peekForum: (...a: unknown[]) => mockForum.peekForum(...a),
-  fetchForum: (...a: unknown[]) => mockForum.fetchForum(...a),
-  createForumPost: (...a: unknown[]) => mockForum.createForumPost(...a),
-  replyToForumPost: (...a: unknown[]) => mockForum.replyToForumPost(...a),
-  moderateForumPost: (...a: unknown[]) => mockForum.moderateForumPost(...a),
-  dropGroup: (...a: unknown[]) => mockForum.dropGroup(...a),
+  peekForum: (...a: Parameters<typeof ForumClient.peekForum>) => mockForum.peekForum(...a),
+  fetchForum: (...a: Parameters<typeof ForumClient.fetchForum>) => mockForum.fetchForum(...a),
+  createForumPost: (...a: Parameters<typeof ForumClient.createForumPost>) => mockForum.createForumPost(...a),
+  replyToForumPost: (...a: Parameters<typeof ForumClient.replyToForumPost>) => mockForum.replyToForumPost(...a),
+  moderateForumPost: (...a: Parameters<typeof ForumClient.moderateForumPost>) => mockForum.moderateForumPost(...a),
+  dropGroup: (...a: Parameters<typeof ForumClient.dropGroup>) => mockForum.dropGroup(...a),
 }));
 
-const mockPerms = jest.fn();
+const mockPerms = jest.fn<typeof GroupsClient.fetchMyPermissions>();
 jest.mock('@/lib/groups/client', () => ({
   __esModule: true,
-  fetchMyPermissions: (...a: unknown[]) => mockPerms(...a),
+  fetchMyPermissions: (...a: Parameters<typeof GroupsClient.fetchMyPermissions>) => mockPerms(...a),
 }));
 
 // Capture the section's realtime hint callback so a live hint can be simulated.
@@ -80,7 +82,10 @@ function post(overrides: Partial<ForumPost> = {}): ForumPost {
   };
 }
 
-const withPerms = (...perms: string[]) => mockPerms.mockResolvedValue({ permissions: perms });
+// member_group_id is the read's own-post key (FEAT-H017); no fixture post is authored by
+// 'g-me', so the own-post affordances stay off exactly as they did before the key existed.
+const withPerms = (...perms: string[]) =>
+  mockPerms.mockResolvedValue({ permissions: perms, member_group_id: 'g-me' });
 
 describe('GroupForumSection', () => {
   beforeEach(() => {

@@ -53,7 +53,7 @@ describe('GET /api/groups', () => {
 
   it('returns 200 with the member groups and emits load telemetry', async () => {
     getClaims.mockResolvedValue({ data: { claims: { sub: 'u-read' } }, error: null });
-    const res = (await GET()) as { status: number; body: { groups: unknown[] } };
+    const res = (await GET()) as unknown as { status: number; body: { groups: unknown[] } };
     expect(res.status).toBe(200);
     expect(res.body.groups).toHaveLength(1);
     expect(emitted('groups.loaded', 'u-read')).toBe(true);

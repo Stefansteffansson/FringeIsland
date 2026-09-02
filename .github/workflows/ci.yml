@@ -1,7 +1,8 @@
 # FringeIsland CI — the DB-free gate (Phase-4 board ruling P4-2, option B).
 #
-# WHAT THIS GATES: `next build` (the type gate — ts-jest and eslint do NOT full-type-check;
-# PC003 merged build-broken because nothing ran it), lint, and the unit project.
+# WHAT THIS GATES: `next build` (the APP type gate — ts-jest and eslint do NOT full-type-check;
+# PC003 merged build-broken because nothing ran it), `tsc --noEmit` over app + tests
+# (TASK-DBT-01 — the test tier is outside `next build`'s program), lint, and the unit project.
 #
 # WHAT THIS DELIBERATELY DOES NOT RUN: the integration and E2E suites, and the platform
 # conformance family. Those need a real Postgres and today there is exactly one shared dev
@@ -47,6 +48,13 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      # TASK-DBT-01 (2026-09-02): `next build` type-checks the APP only — tests/ is
+      # outside its program, and ts-jest transpiles without checking. The test tier
+      # carried 1 099 type errors nobody had seen. `tsc --noEmit` covers app + tests,
+      # was cleaned in that task, and is gated here so the debt cannot regrow.
+      - name: Type-check (app + tests)
+        run: npm run typecheck
 
       - name: Unit tests
         run: npm run test:unit

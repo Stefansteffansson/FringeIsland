@@ -1,5 +1,5 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
-import { getTelemetrySink } from '@/lib/observability/telemetry';
+import { getTelemetrySink, resetTelemetrySink } from '@/lib/observability/telemetry';
 
 /**
  * FEAT-H017 (unit) — the leadership-transfer + closure BFF routes (Cycle G-E):
@@ -23,11 +23,11 @@ import { getTelemetrySink } from '@/lib/observability/telemetry';
 
 const getUser = jest.fn<() => Promise<{ data: { user: { id: string } | null } }>>();
 const getVerifiedUserId = jest.fn<() => Promise<string | null>>();
-const nominateSteward = jest.fn<() => Promise<unknown>>();
-const respondToNomination = jest.fn<() => Promise<unknown>>();
-const handToDeusEx = jest.fn<() => Promise<unknown>>();
-const closeGroup = jest.fn<() => Promise<unknown>>();
-const deleteGroup = jest.fn<() => Promise<unknown>>();
+const nominateSteward = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const respondToNomination = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const handToDeusEx = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const closeGroup = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const deleteGroup = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 const fetchPendingNominations = jest.fn<() => Promise<unknown[]>>();
 
 jest.mock('next/server', () => ({
@@ -119,7 +119,7 @@ beforeEach(() => {
     .mockReset()
     .mockResolvedValue({ group_id: 'grp-1', status: 'archived' });
   fetchPendingNominations.mockReset().mockResolvedValue([]);
-  getTelemetrySink().length = 0;
+  resetTelemetrySink();
 });
 
 describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
@@ -153,7 +153,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
 
     it('401s the pending-nomination read without a session', async () => {
       getVerifiedUserId.mockResolvedValue(null);
-      const res = (await MY_NOMINATIONS()) as RouteResponse;
+      const res = (await MY_NOMINATIONS()) as unknown as RouteResponse;
       expect(res.status).toBe(401);
       expect(emitted('nominations.mine_unauthenticated')).toBe(true);
       expect(fetchPendingNominations).not.toHaveBeenCalled();
@@ -165,7 +165,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
       const res = (await NOMINATE(
         jsonRequest({ nominee_group_ids: ['n1', 'n2'] }),
         idParams('grp-1'),
-      )) as RouteResponse;
+      )) as unknown as RouteResponse;
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ group_id: 'grp-1', nominees_count: 2 });
       expect(nominateSteward).toHaveBeenCalledWith(expect.anything(), 'grp-1', ['n1', 'n2']);
@@ -174,10 +174,10 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
 
     it('400s a missing, empty, or non-array body without calling the contract', async () => {
       for (const body of [{}, { nominee_group_ids: [] }, { nominee_group_ids: 'n1' }]) {
-        const res = (await NOMINATE(jsonRequest(body), idParams('grp-1'))) as RouteResponse;
+        const res = (await NOMINATE(jsonRequest(body), idParams('grp-1'))) as unknown as RouteResponse;
         expect(res.status).toBe(400);
       }
-      const res = (await NOMINATE(badJsonRequest(), idParams('grp-1'))) as RouteResponse;
+      const res = (await NOMINATE(badJsonRequest(), idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(400);
       expect(nominateSteward).not.toHaveBeenCalled();
       expect(emitted('leadership.nominate_invalid', 'u1')).toBe(true);
@@ -188,7 +188,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
       let res = (await NOMINATE(
         jsonRequest({ nominee_group_ids: ['n1'] }),
         idParams('grp-1'),
-      )) as RouteResponse;
+      )) as unknown as RouteResponse;
       expect(res.status).toBe(403);
 
       nominateSteward.mockImplementation(() =>
@@ -197,7 +197,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
       res = (await NOMINATE(
         jsonRequest({ nominee_group_ids: ['n1'] }),
         idParams('grp-1'),
-      )) as RouteResponse;
+      )) as unknown as RouteResponse;
       expect(res.status).toBe(409);
       expect(res.body.error).toContain('already in flight');
       expect(emitted('leadership.nominate_conflict', 'u1')).toBe(true);
@@ -206,7 +206,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
       res = (await NOMINATE(
         jsonRequest({ nominee_group_ids: ['n1'] }),
         idParams('grp-1'),
-      )) as RouteResponse;
+      )) as unknown as RouteResponse;
       expect(res.status).toBe(404);
 
       nominateSteward.mockImplementation(() =>
@@ -215,7 +215,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
       res = (await NOMINATE(
         jsonRequest({ nominee_group_ids: ['n1'] }),
         idParams('grp-1'),
-      )) as RouteResponse;
+      )) as unknown as RouteResponse;
       expect(res.status).toBe(400);
       expect(res.body.error).toContain('not an active member');
 
@@ -223,7 +223,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
       res = (await NOMINATE(
         jsonRequest({ nominee_group_ids: ['n1'] }),
         idParams('grp-1'),
-      )) as RouteResponse;
+      )) as unknown as RouteResponse;
       expect(res.status).toBe(500);
       expect(res.body.error).not.toContain('boom');
       expect(emitted('leadership.nominate_failed', 'u1')).toBe(true);
@@ -240,7 +240,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
 
   describe('POST .../hand-to-deusex (STORY-3)', () => {
     it('relays the hand-over and its result', async () => {
-      const res = (await HANDOVER(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      const res = (await HANDOVER(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ group_id: 'grp-1', steward: 'deusex' });
       expect(handToDeusEx).toHaveBeenCalledWith(expect.anything(), 'grp-1');
@@ -251,7 +251,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
       handToDeusEx.mockImplementation(() =>
         sqlErr('P0001', 'you are the last member — close the group instead'),
       );
-      const res = (await HANDOVER(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      const res = (await HANDOVER(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(409);
       expect(res.body.error).toContain('close the group instead');
       expect(emitted('leadership.hand_to_deusex_conflict', 'u1')).toBe(true);
@@ -259,15 +259,15 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
 
     it('maps 42501→403, P0002→404, else 500', async () => {
       handToDeusEx.mockImplementation(() => sqlErr('42501', 'not permitted'));
-      let res = (await HANDOVER(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      let res = (await HANDOVER(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(403);
 
       handToDeusEx.mockImplementation(() => sqlErr('P0002', 'group not found'));
-      res = (await HANDOVER(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      res = (await HANDOVER(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(404);
 
       handToDeusEx.mockImplementation(() => sqlErr('XX000', 'boom'));
-      res = (await HANDOVER(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      res = (await HANDOVER(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(500);
       expect(res.body.error).not.toContain('boom');
     });
@@ -278,7 +278,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
       const res = (await RESPOND(
         jsonRequest({ accept: true }),
         idParams('ntf-1'),
-      )) as RouteResponse;
+      )) as unknown as RouteResponse;
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ outcome: 'accepted', group_id: 'grp-1' });
       expect(respondToNomination).toHaveBeenCalledWith(expect.anything(), 'ntf-1', true);
@@ -290,7 +290,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
       const res = (await RESPOND(
         jsonRequest({ accept: false }),
         idParams('ntf-1'),
-      )) as RouteResponse;
+      )) as unknown as RouteResponse;
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ outcome: 'passed_on' });
       expect(respondToNomination).toHaveBeenCalledWith(expect.anything(), 'ntf-1', false);
@@ -298,7 +298,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
 
     it('400s a missing or non-boolean accept without calling the contract', async () => {
       for (const body of [{}, { accept: 'yes' }, { accept: 1 }]) {
-        const res = (await RESPOND(jsonRequest(body), idParams('ntf-1'))) as RouteResponse;
+        const res = (await RESPOND(jsonRequest(body), idParams('ntf-1'))) as unknown as RouteResponse;
         expect(res.status).toBe(400);
       }
       expect(respondToNomination).not.toHaveBeenCalled();
@@ -312,23 +312,23 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
       let res = (await RESPOND(
         jsonRequest({ accept: true }),
         idParams('ntf-1'),
-      )) as RouteResponse;
+      )) as unknown as RouteResponse;
       expect(res.status).toBe(409);
       expect(res.body.error).toContain('expired');
 
       respondToNomination.mockImplementation(() => sqlErr('P0002', 'notification not found'));
-      res = (await RESPOND(jsonRequest({ accept: true }), idParams('ntf-1'))) as RouteResponse;
+      res = (await RESPOND(jsonRequest({ accept: true }), idParams('ntf-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(404);
 
       respondToNomination.mockImplementation(() => sqlErr('42501', 'not yours'));
-      res = (await RESPOND(jsonRequest({ accept: true }), idParams('ntf-1'))) as RouteResponse;
+      res = (await RESPOND(jsonRequest({ accept: true }), idParams('ntf-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(403);
     });
   });
 
   describe('POST .../close (STORY-4)', () => {
     it('relays the close and its result', async () => {
-      const res = (await CLOSE(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      const res = (await CLOSE(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ group_id: 'grp-1', status: 'closed' });
       expect(closeGroup).toHaveBeenCalledWith(expect.anything(), 'grp-1');
@@ -339,21 +339,21 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
       closeGroup.mockImplementation(() =>
         sqlErr('P0001', 'only the last active member can close a group'),
       );
-      let res = (await CLOSE(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      let res = (await CLOSE(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(409);
       expect(res.body.error).toContain('last active member');
       expect(emitted('groups.close_conflict', 'u1')).toBe(true);
 
       closeGroup.mockImplementation(() => sqlErr('42501', 'not permitted'));
-      res = (await CLOSE(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      res = (await CLOSE(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(403);
 
       closeGroup.mockImplementation(() => sqlErr('P0002', 'group not found'));
-      res = (await CLOSE(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      res = (await CLOSE(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(404);
 
       closeGroup.mockImplementation(() => sqlErr('XX000', 'boom'));
-      res = (await CLOSE(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      res = (await CLOSE(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(500);
       expect(res.body.error).not.toContain('boom');
     });
@@ -361,7 +361,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
 
   describe('DELETE /api/groups/[id] (STORY-5 — deliberate deletion, never member removal)', () => {
     it('relays the deletion and its result', async () => {
-      const res = (await DELETE_GROUP(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      const res = (await DELETE_GROUP(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ group_id: 'grp-1', status: 'archived' });
       expect(deleteGroup).toHaveBeenCalledWith(expect.anything(), 'grp-1');
@@ -370,21 +370,21 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
 
     it('maps refusals: 42501→403, P0002→404, P0001→409 (message through), else 500', async () => {
       deleteGroup.mockImplementation(() => sqlErr('42501', 'delete_group permission required'));
-      let res = (await DELETE_GROUP(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      let res = (await DELETE_GROUP(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(403);
       expect(emitted('groups.delete_refused', 'u1')).toBe(true);
 
       deleteGroup.mockImplementation(() => sqlErr('P0002', 'group not found'));
-      res = (await DELETE_GROUP(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      res = (await DELETE_GROUP(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(404);
 
       deleteGroup.mockImplementation(() => sqlErr('P0001', 'this group cannot be deleted'));
-      res = (await DELETE_GROUP(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      res = (await DELETE_GROUP(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(409);
       expect(res.body.error).toContain('cannot be deleted');
 
       deleteGroup.mockImplementation(() => sqlErr('XX000', 'boom'));
-      res = (await DELETE_GROUP(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      res = (await DELETE_GROUP(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(500);
       expect(res.body.error).not.toContain('boom');
     });
@@ -401,7 +401,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
           expires_at: '2026-07-12T00:00:00Z',
         },
       ]);
-      const res = (await MY_NOMINATIONS()) as RouteResponse;
+      const res = (await MY_NOMINATIONS()) as unknown as RouteResponse;
       expect(res.status).toBe(200);
       expect(Array.isArray(res.body)).toBe(true);
       expect((res.body as unknown as unknown[]).length).toBe(1);
@@ -411,7 +411,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
 
     it('500s content-free on failure', async () => {
       fetchPendingNominations.mockImplementation(() => sqlErr('XX000', 'boom'));
-      const res = (await MY_NOMINATIONS()) as RouteResponse;
+      const res = (await MY_NOMINATIONS()) as unknown as RouteResponse;
       expect(res.status).toBe(500);
       expect(res.body.error).not.toContain('boom');
       expect(emitted('nominations.mine_failed', 'u1')).toBe(true);

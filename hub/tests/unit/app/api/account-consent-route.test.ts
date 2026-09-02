@@ -77,7 +77,7 @@ describe('GET /api/account/consent', () => {
 
   it('returns 200 with the consent projections, emits read telemetry, and reports Server-Timing', async () => {
     getClaims.mockResolvedValue({ data: { claims: { sub: 'u-read' } }, error: null });
-    const res = (await GET()) as {
+    const res = (await GET()) as unknown as {
       status: number;
       body: { consent: { effective: unknown[]; history: unknown[] } };
       headers?: Record<string, string>;

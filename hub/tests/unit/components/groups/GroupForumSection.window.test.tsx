@@ -2,6 +2,8 @@ import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ForumPost } from '@/lib/forum/queries';
+import type * as ForumClient from '@/lib/forum/client';
+import type * as GroupsClient from '@/lib/groups/client';
 
 /**
  * FEAT-H028 STORY-4 (unit), amended by TASK-EDT-01 (RULED 2026-08-19 +
@@ -23,31 +25,31 @@ import type { ForumPost } from '@/lib/forum/queries';
  */
 
 const mockForum = {
-  peekForum: jest.fn(),
-  fetchForum: jest.fn(),
-  createForumPost: jest.fn(),
-  replyToForumPost: jest.fn(),
-  moderateForumPost: jest.fn(),
-  editForumPost: jest.fn(),
-  deleteForumPost: jest.fn(),
-  dropGroup: jest.fn(),
+  peekForum: jest.fn<typeof ForumClient.peekForum>(),
+  fetchForum: jest.fn<typeof ForumClient.fetchForum>(),
+  createForumPost: jest.fn<typeof ForumClient.createForumPost>(),
+  replyToForumPost: jest.fn<typeof ForumClient.replyToForumPost>(),
+  moderateForumPost: jest.fn<typeof ForumClient.moderateForumPost>(),
+  editForumPost: jest.fn<typeof ForumClient.editForumPost>(),
+  deleteForumPost: jest.fn<typeof ForumClient.deleteForumPost>(),
+  dropGroup: jest.fn<typeof ForumClient.dropGroup>(),
 };
 jest.mock('@/lib/forum/client', () => ({
   __esModule: true,
-  peekForum: (...a: unknown[]) => mockForum.peekForum(...a),
-  fetchForum: (...a: unknown[]) => mockForum.fetchForum(...a),
-  createForumPost: (...a: unknown[]) => mockForum.createForumPost(...a),
-  replyToForumPost: (...a: unknown[]) => mockForum.replyToForumPost(...a),
-  moderateForumPost: (...a: unknown[]) => mockForum.moderateForumPost(...a),
-  editForumPost: (...a: unknown[]) => mockForum.editForumPost(...a),
-  deleteForumPost: (...a: unknown[]) => mockForum.deleteForumPost(...a),
-  dropGroup: (...a: unknown[]) => mockForum.dropGroup(...a),
+  peekForum: (...a: Parameters<typeof ForumClient.peekForum>) => mockForum.peekForum(...a),
+  fetchForum: (...a: Parameters<typeof ForumClient.fetchForum>) => mockForum.fetchForum(...a),
+  createForumPost: (...a: Parameters<typeof ForumClient.createForumPost>) => mockForum.createForumPost(...a),
+  replyToForumPost: (...a: Parameters<typeof ForumClient.replyToForumPost>) => mockForum.replyToForumPost(...a),
+  moderateForumPost: (...a: Parameters<typeof ForumClient.moderateForumPost>) => mockForum.moderateForumPost(...a),
+  editForumPost: (...a: Parameters<typeof ForumClient.editForumPost>) => mockForum.editForumPost(...a),
+  deleteForumPost: (...a: Parameters<typeof ForumClient.deleteForumPost>) => mockForum.deleteForumPost(...a),
+  dropGroup: (...a: Parameters<typeof ForumClient.dropGroup>) => mockForum.dropGroup(...a),
 }));
 
-const mockPerms = jest.fn();
+const mockPerms = jest.fn<typeof GroupsClient.fetchMyPermissions>();
 jest.mock('@/lib/groups/client', () => ({
   __esModule: true,
-  fetchMyPermissions: (...a: unknown[]) => mockPerms(...a),
+  fetchMyPermissions: (...a: Parameters<typeof GroupsClient.fetchMyPermissions>) => mockPerms(...a),
 }));
 
 jest.mock('@/lib/realtime/forum-tenant', () => ({

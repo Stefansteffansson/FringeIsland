@@ -16,13 +16,13 @@ jest.mock('next/navigation', () => ({
   useRouter: () => ({ push, replace: jest.fn() }),
 }));
 
-const fetchNotifications = jest.fn<Promise<unknown>, [unknown?]>();
-const fetchUnreadCount = jest.fn<Promise<number>, []>();
-const peekUnreadCount = jest.fn<number | null, []>(() => null);
-const markNotificationRead = jest.fn<Promise<void>, [string]>();
-const markAllNotificationsRead = jest.fn<Promise<number>, []>();
+const fetchNotifications = jest.fn<(opts?: unknown) => Promise<unknown>>();
+const fetchUnreadCount = jest.fn<() => Promise<number>>();
+const peekUnreadCount = jest.fn<() => number | null>(() => null);
+const markNotificationRead = jest.fn<(id: string) => Promise<void>>();
+const markAllNotificationsRead = jest.fn<() => Promise<number>>();
 const invalidateNotificationsCache = jest.fn();
-const respondToNotification = jest.fn<Promise<unknown>, [unknown, boolean]>();
+const respondToNotification = jest.fn<(row: unknown, accept: boolean) => Promise<unknown>>();
 jest.mock('@/lib/notifications/client', () => ({
   fetchNotifications: (opts?: unknown) => fetchNotifications(opts),
   fetchUnreadCount: () => fetchUnreadCount(),

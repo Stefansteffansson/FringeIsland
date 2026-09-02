@@ -66,7 +66,13 @@ const CELLS = [
 
 import { NotificationPreferencesPanel } from '@/components/notifications/NotificationPreferencesPanel';
 
-const fetchMock = jest.fn();
+/** A fetch stand-in: the panel reads only `ok`, `status` and `json()` off a
+ *  response, so the stub carries just those (never a full `Response`). */
+type FetchStub = (
+  input: RequestInfo | URL,
+  init?: RequestInit,
+) => Promise<{ ok: boolean; status: number; json?: () => Promise<unknown> }>;
+const fetchMock = jest.fn<FetchStub>();
 
 beforeEach(() => {
   fetchMock.mockReset();

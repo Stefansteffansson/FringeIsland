@@ -9,9 +9,9 @@ jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
 }));
 
-const fetchGroupConversations = jest.fn<Promise<unknown>, [string]>();
-const fetchMyPermissions = jest.fn<Promise<unknown>, [string]>();
-const leaveConversation = jest.fn<Promise<void>, [string]>();
+const fetchGroupConversations = jest.fn<(g: string) => Promise<unknown>>();
+const fetchMyPermissions = jest.fn<(g: string) => Promise<unknown>>();
+const leaveConversation = jest.fn<(c: string) => Promise<void>>();
 jest.mock('@/lib/messages/client', () => ({
   fetchGroupConversations: (g: string) => fetchGroupConversations(g),
   joinConversation: jest.fn(),

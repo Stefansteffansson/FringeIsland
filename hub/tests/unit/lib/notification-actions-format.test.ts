@@ -155,14 +155,14 @@ describe('notificationStatusChip — N-B convergence + expiry', () => {
   // who accepted. Nobody to name is not the same as nothing to say.
   it('a nomination answered by its only recipient names the outcome, with nobody to attribute it to', () => {
     const accepted = notificationStatusChip(
-      { ...base, kind: 'stewardship_nomination', action_type: 'accept_decline', action_taken: 'accepted' },
+      { ...base, action_type: 'accept_decline', action_taken: 'accepted' },
       NOW,
     ) as NotificationChip;
     expect(accepted.label).toBe('Accepted');
     expect(accepted.tone).toBe('done');
 
     const declined = notificationStatusChip(
-      { ...base, kind: 'stewardship_nomination', action_type: 'accept_decline', action_taken: 'declined' },
+      { ...base, action_type: 'accept_decline', action_taken: 'declined' },
       NOW,
     ) as NotificationChip;
     expect(declined.label).toBe('Declined');
@@ -173,7 +173,7 @@ describe('notificationStatusChip — N-B convergence + expiry', () => {
   // outcome this surface does not recognise (U008 open set).
   it('an unrecognised outcome still reads "Handled" — the N-A fallback is preserved, not deleted', () => {
     const chip = notificationStatusChip(
-      { ...base, kind: 'stewardship_nomination', action_type: 'accept_decline', action_taken: 'withdrawn' },
+      { ...base, action_type: 'accept_decline', action_taken: 'withdrawn' },
       NOW,
     ) as NotificationChip;
     expect(chip.label).toBe('Handled');

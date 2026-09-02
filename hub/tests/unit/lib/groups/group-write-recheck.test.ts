@@ -28,11 +28,11 @@ const refusal = (status: number) =>
     json: async () => ({ error: 'refused' }),
   }) as Response;
 
-let fetchMock: jest.Mock<Promise<Response>, [RequestInfo | URL, RequestInit?]>;
+let fetchMock: jest.Mock<typeof fetch>;
 
 beforeEach(() => {
   requestAccountStateRecheck.mockReset();
-  fetchMock = jest.fn<Promise<Response>, [RequestInfo | URL, RequestInit?]>();
+  fetchMock = jest.fn<typeof fetch>();
   global.fetch = fetchMock as unknown as typeof fetch;
 });
 

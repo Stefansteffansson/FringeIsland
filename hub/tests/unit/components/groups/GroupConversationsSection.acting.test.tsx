@@ -2,6 +2,8 @@ import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { HttpStatusError } from '@/lib/http/status-error';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type * as MessagesClient from '@/lib/messages/client';
+import type * as GroupsClient from '@/lib/groups/client';
 
 /**
  * FEAT-H047 STORY-1 (unit, RED-FIRST) — the wielded conversations list door.
@@ -15,23 +17,23 @@ import userEvent from '@testing-library/user-event';
  */
 
 const mockMsgs = {
-  fetchGroupConversations: jest.fn(),
-  joinConversation: jest.fn(),
-  leaveConversation: jest.fn(),
-  createGroupConversation: jest.fn(),
+  fetchGroupConversations: jest.fn<typeof MessagesClient.fetchGroupConversations>(),
+  joinConversation: jest.fn<typeof MessagesClient.joinConversation>(),
+  leaveConversation: jest.fn<typeof MessagesClient.leaveConversation>(),
+  createGroupConversation: jest.fn<typeof MessagesClient.createGroupConversation>(),
 };
 jest.mock('@/lib/messages/client', () => ({
   __esModule: true,
-  fetchGroupConversations: (...a: unknown[]) => mockMsgs.fetchGroupConversations(...a),
-  joinConversation: (...a: unknown[]) => mockMsgs.joinConversation(...a),
-  leaveConversation: (...a: unknown[]) => mockMsgs.leaveConversation(...a),
-  createGroupConversation: (...a: unknown[]) => mockMsgs.createGroupConversation(...a),
+  fetchGroupConversations: (...a: Parameters<typeof MessagesClient.fetchGroupConversations>) => mockMsgs.fetchGroupConversations(...a),
+  joinConversation: (...a: Parameters<typeof MessagesClient.joinConversation>) => mockMsgs.joinConversation(...a),
+  leaveConversation: (...a: Parameters<typeof MessagesClient.leaveConversation>) => mockMsgs.leaveConversation(...a),
+  createGroupConversation: (...a: Parameters<typeof MessagesClient.createGroupConversation>) => mockMsgs.createGroupConversation(...a),
 }));
 
-const mockPerms = jest.fn();
+const mockPerms = jest.fn<typeof GroupsClient.fetchMyPermissions>();
 jest.mock('@/lib/groups/client', () => ({
   __esModule: true,
-  fetchMyPermissions: (...a: unknown[]) => mockPerms(...a),
+  fetchMyPermissions: (...a: Parameters<typeof GroupsClient.fetchMyPermissions>) => mockPerms(...a),
 }));
 
 const push = jest.fn();

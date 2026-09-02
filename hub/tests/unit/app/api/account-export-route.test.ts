@@ -76,7 +76,7 @@ describe('GET /api/account/export', () => {
 
   it('returns 200 with the document as a downloadable attachment and emits telemetry', async () => {
     getUser.mockResolvedValue({ data: { user: { id: 'u-exp' } } });
-    const res = (await GET()) as {
+    const res = (await GET()) as unknown as {
       status: number;
       body: { schema_version: number };
       headers: Record<string, string>;
@@ -121,7 +121,7 @@ describe('GET /api/account/export', () => {
         },
       ],
     });
-    const res = (await GET()) as {
+    const res = (await GET()) as unknown as {
       status: number;
       body: {
         schema_version: number;
@@ -141,7 +141,7 @@ describe('GET /api/account/export', () => {
   });
 
   it('an entry-less, walk-less member gets both sections present-and-empty — never an omission', async () => {
-    const res = (await GET()) as {
+    const res = (await GET()) as unknown as {
       body: { journal: { entries: unknown[] }; journeys: unknown[] };
     };
     // the platform guarantees present-and-empty; the courier must not drop them

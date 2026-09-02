@@ -12,14 +12,15 @@ import type { Announcement } from '@/lib/announcements/queries';
  * Red-first: the component does not exist yet — import fails.
  */
 
+type AnnouncementsClient = typeof import('@/lib/announcements/client');
 const mockClient = {
-  peekPlatformAnnouncements: jest.fn(),
-  fetchPlatformAnnouncements: jest.fn(),
+  peekPlatformAnnouncements: jest.fn<AnnouncementsClient['peekPlatformAnnouncements']>(),
+  fetchPlatformAnnouncements: jest.fn<AnnouncementsClient['fetchPlatformAnnouncements']>(),
 };
 jest.mock('@/lib/announcements/client', () => ({
   __esModule: true,
-  peekPlatformAnnouncements: (...a: unknown[]) => mockClient.peekPlatformAnnouncements(...a),
-  fetchPlatformAnnouncements: (...a: unknown[]) => mockClient.fetchPlatformAnnouncements(...a),
+  peekPlatformAnnouncements: () => mockClient.peekPlatformAnnouncements(),
+  fetchPlatformAnnouncements: (before?: string) => mockClient.fetchPlatformAnnouncements(before),
 }));
 
 import { PlatformAnnouncementsSection } from '@/components/announcements/PlatformAnnouncementsSection';

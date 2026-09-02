@@ -70,7 +70,7 @@ describe('GET /api/profile/me', () => {
 
   it('returns 200 with the profile, emits read telemetry, and reports Server-Timing', async () => {
     getClaims.mockResolvedValue({ data: { claims: { sub: 'u-read' } }, error: null });
-    const res = (await GET()) as {
+    const res = (await GET()) as unknown as {
       status: number;
       body: { profile: unknown };
       headers?: Record<string, string>;
@@ -107,7 +107,7 @@ describe('PATCH /api/profile/me', () => {
   it('maps a ProfileValidationError to 400 and emits a rejection event', async () => {
     getUser.mockResolvedValue({ data: { user: { id: 'u-rej' } } });
     updateMyProfile.mockRejectedValue(new ProfileValidationError('Cannot update non-identity-scope field(s): is_temporary'));
-    const res = (await PATCH(req({ is_temporary: true }))) as { status: number; body: { error: string } };
+    const res = (await PATCH(req({ is_temporary: true }))) as unknown as { status: number; body: { error: string } };
     expect(res.status).toBe(400);
     expect(res.body.error).toMatch(/is_temporary/);
     expect(emitted('profile.update_rejected', 'u-rej')).toBe(true);

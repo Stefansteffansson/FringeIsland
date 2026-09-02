@@ -1,6 +1,7 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type * as GroupsClient from '@/lib/groups/client';
 
 /**
  * FEAT-H018 STORY-2 (unit) — "Invite a group" (the Steward's admission door).
@@ -10,14 +11,13 @@ import userEvent from '@testing-library/user-event';
  * TASK-H018-02.
  */
 
-const searchInvitableGroupsClient = jest.fn<() => Promise<Array<{ id: string; name: string }>>>();
-const inviteGroupClient = jest.fn<() => Promise<unknown>>();
+const searchInvitableGroupsClient = jest.fn<typeof GroupsClient.searchInvitableGroupsClient>();
+const inviteGroupClient = jest.fn<typeof GroupsClient.inviteGroupClient>();
 
 jest.mock('@/lib/groups/client', () => ({
-  searchInvitableGroupsClient: (...a: unknown[]) =>
-    (searchInvitableGroupsClient as unknown as (...x: unknown[]) => unknown)(...a),
-  inviteGroupClient: (...a: unknown[]) =>
-    (inviteGroupClient as unknown as (...x: unknown[]) => unknown)(...a),
+  searchInvitableGroupsClient: (...a: Parameters<typeof GroupsClient.searchInvitableGroupsClient>) =>
+    searchInvitableGroupsClient(...a),
+  inviteGroupClient: (...a: Parameters<typeof GroupsClient.inviteGroupClient>) => inviteGroupClient(...a),
 }));
 
 import { InviteGroupPanel } from '@/components/groups/InviteGroupPanel';
@@ -25,7 +25,9 @@ import { InviteGroupPanel } from '@/components/groups/InviteGroupPanel';
 describe('FEAT-H018 — InviteGroupPanel (STORY-2)', () => {
   const onMutated = jest.fn();
 
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('searches and invites a hit, then re-reads', async () => {
     const user = userEvent.setup();

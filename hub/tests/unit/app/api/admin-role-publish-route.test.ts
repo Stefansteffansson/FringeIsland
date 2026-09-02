@@ -119,13 +119,13 @@ describe('FEAT-H044 STORY-3 — publish/unpublish route', () => {
     );
     const res = await POST(req({ group_ids: null }), { params });
     expect(res.status).toBe(409);
-    expect((res.body as { error: string }).error).toBe('cannot publish a retired role template');
+    expect((res.body as unknown as { error: string }).error).toBe('cannot publish a retired role template');
   });
 
   it('does not leak existence on a 404-mapped refusal', async () => {
     publishRoleTemplate.mockRejectedValue(new AdminRolesError('P0002', 'Role template not found'));
     const res = await POST(req({ group_ids: null }), { params });
     expect(res.status).toBe(404);
-    expect((res.body as { error: string }).error).toBe('Not found');
+    expect((res.body as unknown as { error: string }).error).toBe('Not found');
   });
 });

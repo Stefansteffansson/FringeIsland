@@ -27,7 +27,9 @@ const rows = [
 describe('FEAT-H018 — GroupMembershipsPanel (STORY-3)', () => {
   const onMutated = jest.fn();
 
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('lists where the group belongs and its pending invitations', () => {
     render(

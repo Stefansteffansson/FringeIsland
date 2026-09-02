@@ -1,5 +1,5 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
-import { getTelemetrySink } from '@/lib/observability/telemetry';
+import { getTelemetrySink, resetTelemetrySink } from '@/lib/observability/telemetry';
 
 /**
  * FEAT-H022 (unit) — POST /api/journeys/enrollments/[enrollmentId]/sharing
@@ -11,7 +11,7 @@ import { getTelemetrySink } from '@/lib/observability/telemetry';
  */
 
 const getUser = jest.fn<() => Promise<{ data: { user: { id: string } | null } }>>();
-const setJourneyProgressSharing = jest.fn<() => Promise<unknown>>();
+const setJourneyProgressSharing = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -37,7 +37,7 @@ const emitted = (name: string) => getTelemetrySink().some((e) => e.name === name
 
 beforeEach(() => {
   jest.clearAllMocks();
-  getTelemetrySink().length = 0;
+  resetTelemetrySink();
   getUser.mockResolvedValue({ data: { user: { id: 'fim-1' } } });
 });
 

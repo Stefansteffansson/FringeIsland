@@ -116,7 +116,13 @@ const stillExists = async (id: string): Promise<boolean> => {
 };
 
 beforeAll(async () => {
-  admin = await createTestUser(`${TOKEN}-admin@fringeisland.test`);
+  // TASK-DBT-01: this used to pass the email as a bare string, which the helper
+  // ignored (ts-jest never type-checks) — the admin was always created with a
+  // generated address. Deliberately NOT pinned now: the integration teardown
+  // sweeps accounts by `test-%@fringeisland.test`, so a pinned `pc029x…@` address
+  // would be invisible to it if this suite's afterAll ever failed. The run token
+  // rides the display name instead.
+  admin = await createTestUser({ displayName: `${TOKEN} admin` });
   await makePlatformAdmin(admin.personalGroupId);
   client = createTestClient();
   await signInWithRetry(client, admin.email, admin.password);

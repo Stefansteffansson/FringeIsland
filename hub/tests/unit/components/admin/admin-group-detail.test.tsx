@@ -183,7 +183,7 @@ describe('AdminGroupDetail (FEAT-H035 STORY-2/3/4)', () => {
           deusex_stewarded: false,
           stewards: [{ display_name: 'Hilda', personal_group_id: 'cccc3333-3333-4333-8333-333333333333' }],
           members: [
-            { personal_group_id: 'cccc3333-3333-4333-8333-333333333333', display_name: 'Hilda', is_steward: true },
+            { personal_group_id: 'cccc3333-3333-4333-8333-333333333333', display_name: 'Hilda', email: 'hilda@example.test', user_id: 'ee333333-3333-4333-8333-333333333333', is_steward: true },
           ],
         }),
       );

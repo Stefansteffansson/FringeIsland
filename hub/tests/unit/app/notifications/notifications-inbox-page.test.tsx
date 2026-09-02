@@ -25,11 +25,11 @@ jest.mock('next/navigation', () => ({
   useRouter: () => router,
 }));
 
-const fetchNotifications = jest.fn<Promise<unknown>, [unknown?]>();
-const markNotificationRead = jest.fn<Promise<void>, [string]>();
-const markAllNotificationsRead = jest.fn<Promise<number>, []>();
+const fetchNotifications = jest.fn<(opts?: unknown) => Promise<unknown>>();
+const markNotificationRead = jest.fn<(id: string) => Promise<void>>();
+const markAllNotificationsRead = jest.fn<() => Promise<number>>();
 const invalidateNotificationsCache = jest.fn();
-const respondToNotification = jest.fn<Promise<unknown>, [unknown, boolean]>();
+const respondToNotification = jest.fn<(row: unknown, accept: boolean) => Promise<unknown>>();
 jest.mock('@/lib/notifications/client', () => ({
   fetchNotifications: (opts?: unknown) => fetchNotifications(opts),
   markNotificationRead: (id: string) => markNotificationRead(id),
@@ -84,7 +84,7 @@ describe('NotificationsPage (/notifications)', () => {
     fetchNotifications.mockReset();
     fetchNotifications.mockResolvedValue([]);
     markNotificationRead.mockReset();
-    markNotificationRead.mockResolvedValue();
+    markNotificationRead.mockResolvedValue(undefined);
     markAllNotificationsRead.mockReset();
     markAllNotificationsRead.mockResolvedValue(0);
     invalidateNotificationsCache.mockReset();

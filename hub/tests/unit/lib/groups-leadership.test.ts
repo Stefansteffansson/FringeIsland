@@ -20,7 +20,7 @@ import {
  */
 
 type RpcResult = { data: unknown; error: { code?: string; message?: string } | null };
-const rpc = jest.fn<() => Promise<RpcResult>>();
+const rpc = jest.fn<(fn: string, args?: Record<string, unknown>) => Promise<RpcResult>>();
 
 /** Chainable PostgREST builder mock for the notifications read. */
 const chainCalls: Record<string, unknown[][]> = {};
@@ -34,7 +34,7 @@ for (const m of ['select', 'eq', 'is', 'gt', 'order']) {
 }
 chain.then = (onFulfilled: (v: { data: unknown[]; error: null }) => unknown) =>
   Promise.resolve({ data: rows, error: null }).then(onFulfilled);
-const from = jest.fn(() => chain);
+const from = jest.fn<(table: string) => typeof chain>(() => chain);
 
 const supabase = { rpc, from } as unknown as SupabaseClient;
 

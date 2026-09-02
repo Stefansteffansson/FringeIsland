@@ -87,6 +87,9 @@ const ROLES_FABRIC: RolesFabric = {
       name: 'Steward Role Template',
       description: null,
       created_from_role_template_id: 'tmpl-s',
+      // RD-A FEAT-H043 STORY-1: provenance rides the fabric (not rendered by this panel).
+      created_from_version_number: 3,
+      created_at: '2026-05-14T09:12:00+00:00',
       holder_count: 1,
       permissions: ['manage_roles', 'assign_roles', 'remove_roles'],
     },
@@ -95,6 +98,8 @@ const ROLES_FABRIC: RolesFabric = {
       name: 'Greeter',
       description: null,
       created_from_role_template_id: null,
+      created_from_version_number: null,
+      created_at: '2026-05-14T09:12:00+00:00',
       holder_count: 0,
       permissions: ['invite_members'],
     },

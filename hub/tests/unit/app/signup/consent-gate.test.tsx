@@ -23,7 +23,7 @@ jest.mock('next/link', () => ({
 }));
 
 const push = jest.fn();
-const signUp = jest.fn(async () => ({ error: null as string | null }));
+const signUp = jest.fn<ReturnType<typeof useAuth>['signUp']>(async () => ({ error: null }));
 
 beforeEach(() => {
   push.mockClear();

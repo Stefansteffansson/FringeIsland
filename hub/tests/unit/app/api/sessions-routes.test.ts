@@ -18,7 +18,7 @@ const getClaims = jest.fn<
   () => Promise<{ data: { claims: { sub: string } } | null; error: null }>
 >();
 const fetchOwnSessions = jest.fn<() => Promise<unknown>>();
-const revokeOwnSession = jest.fn<() => Promise<unknown>>();
+const revokeOwnSession = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -95,7 +95,7 @@ describe('GET /api/sessions', () => {
   });
 
   it('returns 200 with the inventory pass-through; telemetry carries actor + count, never UA/IP', async () => {
-    const res = (await GET()) as { status: number; body: { sessions: typeof SESSIONS } };
+    const res = (await GET()) as unknown as { status: number; body: { sessions: typeof SESSIONS } };
     expect(res.status).toBe(200);
     expect(res.body.sessions).toEqual(SESSIONS);
     expect(emitted('sessions.list', 'u1')).toBe(true);
@@ -111,7 +111,7 @@ describe('GET /api/sessions', () => {
 
   it('maps other failures to 500, content-free', async () => {
     fetchOwnSessions.mockRejectedValue({ code: 'XX000', message: 'boom 203.0.113.7' });
-    const res = (await GET()) as { status: number; body: { error: string } };
+    const res = (await GET()) as unknown as { status: number; body: { error: string } };
     expect(res.status).toBe(500);
     expect(res.body.error).not.toContain('203.0.113.7');
     expect(emitted('sessions.list_failed', 'u1')).toBe(true);
@@ -129,7 +129,7 @@ describe('DELETE /api/sessions/[id]', () => {
   });
 
   it('revokes the named session and returns 200 { revoked }', async () => {
-    const res = (await DELETE(fakeRequest, deleteParams('sess-other'))) as {
+    const res = (await DELETE(fakeRequest, deleteParams('sess-other'))) as unknown as {
       status: number;
       body: { revoked: string };
     };
@@ -155,7 +155,7 @@ describe('DELETE /api/sessions/[id]', () => {
 
   it('maps other failures to 500, content-free', async () => {
     revokeOwnSession.mockRejectedValue({ code: 'XX000', message: 'TestBrowser/9.9 (Windows) exploded' });
-    const res = (await DELETE(fakeRequest, deleteParams('sess-other'))) as {
+    const res = (await DELETE(fakeRequest, deleteParams('sess-other'))) as unknown as {
       status: number;
       body: { error: string };
     };

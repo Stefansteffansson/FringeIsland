@@ -1,5 +1,5 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
-import { getTelemetrySink } from '@/lib/observability/telemetry';
+import { getTelemetrySink, resetTelemetrySink } from '@/lib/observability/telemetry';
 
 /**
  * FEAT-H022 (unit) — GET /api/groups/[id]/journeys/[enrollmentId]/progress
@@ -12,7 +12,7 @@ import { getTelemetrySink } from '@/lib/observability/telemetry';
  */
 
 const getVerifiedUserId = jest.fn<() => Promise<string | null>>();
-const fetchGroupJourneyProgress = jest.fn<() => Promise<unknown>>();
+const fetchGroupJourneyProgress = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -42,7 +42,7 @@ const emitted = (name: string) => getTelemetrySink().some((e) => e.name === name
 
 beforeEach(() => {
   jest.clearAllMocks();
-  getTelemetrySink().length = 0;
+  resetTelemetrySink();
   getVerifiedUserId.mockResolvedValue('fim-1');
 });
 

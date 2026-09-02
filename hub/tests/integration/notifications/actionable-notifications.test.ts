@@ -93,7 +93,7 @@ describe('FEAT-PD014 — actionable notifications: fan-out, dispatch & convergen
   const freshActingInvite = async (): Promise<{
     contextGroup: string;
     membershipId: string;
-    bobNotifId: string;
+    bobNotifId: string | undefined;
     carolNotifId: string | null;
   }> => {
     const ca = await asUser(alice);
@@ -110,11 +110,11 @@ describe('FEAT-PD014 — actionable notifications: fan-out, dispatch & convergen
     expect(iErr).toBeNull();
     const membershipId = (inv as { membership_id: string }).membership_id;
 
-    const rows = await runAdminSql(
+    const rows = (await runAdminSql(
       `SELECT id, recipient_group_id FROM public.notifications
         WHERE type = 'acting_invitation'
           AND action_data->>'membership_id' = '${membershipId}';`,
-    );
+    )) as Array<{ id: string; recipient_group_id: string }>;
     const bobRow = rows.find((r) => r.recipient_group_id === bob.personalGroupId);
     const carolRow = rows.find((r) => r.recipient_group_id === carol.personalGroupId);
     return {
@@ -177,9 +177,9 @@ describe('FEAT-PD014 — actionable notifications: fan-out, dispatch & convergen
     });
     expect(rErr).toBeNull();
 
-    const bn = await runAdminSql(
+    const bn = (await runAdminSql(
       `SELECT name FROM public.groups WHERE id = '${bob.personalGroupId}';`,
-    );
+    )) as Array<{ name: string }>;
     bobName = bn[0].name;
   });
 
@@ -226,12 +226,12 @@ describe('FEAT-PD014 — actionable notifications: fan-out, dispatch & convergen
       expect(bobNotifId).toBeTruthy();
       expect(carolNotifId).toBeTruthy();
 
-      const rows = await runAdminSql(
+      const rows = (await runAdminSql(
         `SELECT recipient_group_id, action_type, action_data
            FROM public.notifications
           WHERE type = 'acting_invitation'
             AND action_data->>'membership_id' = '${membershipId}';`,
-      );
+      )) as Array<{ recipient_group_id: string; action_type: string; action_data: { membership_id?: string; invited_group_id?: string } }>;
       const recipients = rows.map((r) => r.recipient_group_id).sort();
       expect(recipients).toEqual([bob.personalGroupId, carol.personalGroupId].sort());
       expect(recipients).not.toContain(dave.personalGroupId);

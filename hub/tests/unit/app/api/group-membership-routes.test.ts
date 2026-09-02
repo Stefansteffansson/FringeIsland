@@ -1,5 +1,5 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
-import { getTelemetrySink } from '@/lib/observability/telemetry';
+import { getTelemetrySink, resetTelemetrySink } from '@/lib/observability/telemetry';
 
 /**
  * FEAT-H016 (unit) — the membership lifecycle BFF routes (Cycle G-D):
@@ -18,10 +18,10 @@ import { getTelemetrySink } from '@/lib/observability/telemetry';
  */
 
 const getUser = jest.fn<() => Promise<{ data: { user: { id: string } | null } }>>();
-const pauseMember = jest.fn<() => Promise<unknown>>();
-const activateMember = jest.fn<() => Promise<unknown>>();
-const removeGroupMember = jest.fn<() => Promise<unknown>>();
-const leaveGroup = jest.fn<() => Promise<unknown>>();
+const pauseMember = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const activateMember = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const removeGroupMember = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const leaveGroup = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -79,7 +79,7 @@ beforeEach(() => {
   activateMember.mockReset().mockResolvedValue(undefined);
   removeGroupMember.mockReset().mockResolvedValue(undefined);
   leaveGroup.mockReset().mockResolvedValue({ group_id: 'grp-1', group_name: 'GDCanaryName' });
-  getTelemetrySink().length = 0;
+  resetTelemetrySink();
 });
 
 describe('FEAT-H016 — membership lifecycle BFF routes', () => {
@@ -104,7 +104,7 @@ describe('FEAT-H016 — membership lifecycle BFF routes', () => {
 
   describe('POST .../members/[memberGroupId]/pause (STORY-1)', () => {
     it('pauses and emits id-only telemetry', async () => {
-      const res = (await PAUSE(fakeRequest, memberParams('grp-1', 'm1'))) as RouteResponse;
+      const res = (await PAUSE(fakeRequest, memberParams('grp-1', 'm1'))) as unknown as RouteResponse;
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ ok: true });
       expect(pauseMember).toHaveBeenCalledWith(expect.anything(), 'grp-1', 'm1');
@@ -113,23 +113,23 @@ describe('FEAT-H016 — membership lifecycle BFF routes', () => {
 
     it('maps refusals: 42501→403, P0001→409 (message through), P0002→404, else 500', async () => {
       pauseMember.mockImplementation(() => sqlErr('42501', 'pause_members permission required'));
-      let res = (await PAUSE(fakeRequest, memberParams('grp-1', 'm1'))) as RouteResponse;
+      let res = (await PAUSE(fakeRequest, memberParams('grp-1', 'm1'))) as unknown as RouteResponse;
       expect(res.status).toBe(403);
 
       pauseMember.mockImplementation(() =>
         sqlErr('P0001', 'cannot pause the last active Steward — assign another Steward first'),
       );
-      res = (await PAUSE(fakeRequest, memberParams('grp-1', 'm1'))) as RouteResponse;
+      res = (await PAUSE(fakeRequest, memberParams('grp-1', 'm1'))) as unknown as RouteResponse;
       expect(res.status).toBe(409);
       expect(res.body.error).toContain('assign another Steward first');
       expect(emitted('membership.pause_conflict', 'u1')).toBe(true);
 
       pauseMember.mockImplementation(() => sqlErr('P0002', 'member not found'));
-      res = (await PAUSE(fakeRequest, memberParams('grp-1', 'm1'))) as RouteResponse;
+      res = (await PAUSE(fakeRequest, memberParams('grp-1', 'm1'))) as unknown as RouteResponse;
       expect(res.status).toBe(404);
 
       pauseMember.mockImplementation(() => sqlErr('XX000', 'boom'));
-      res = (await PAUSE(fakeRequest, memberParams('grp-1', 'm1'))) as RouteResponse;
+      res = (await PAUSE(fakeRequest, memberParams('grp-1', 'm1'))) as unknown as RouteResponse;
       expect(res.status).toBe(500);
       expect(res.body.error).not.toContain('boom');
     });
@@ -137,7 +137,7 @@ describe('FEAT-H016 — membership lifecycle BFF routes', () => {
 
   describe('POST .../members/[memberGroupId]/activate (STORY-1)', () => {
     it('reactivates and emits id-only telemetry', async () => {
-      const res = (await ACTIVATE(fakeRequest, memberParams('grp-1', 'm1'))) as RouteResponse;
+      const res = (await ACTIVATE(fakeRequest, memberParams('grp-1', 'm1'))) as unknown as RouteResponse;
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ ok: true });
       expect(activateMember).toHaveBeenCalledWith(expect.anything(), 'grp-1', 'm1');
@@ -146,12 +146,12 @@ describe('FEAT-H016 — membership lifecycle BFF routes', () => {
 
     it('maps refusals: not-paused P0001→409, wrong key 42501→403', async () => {
       activateMember.mockImplementation(() => sqlErr('P0001', 'member is not paused'));
-      let res = (await ACTIVATE(fakeRequest, memberParams('grp-1', 'm1'))) as RouteResponse;
+      let res = (await ACTIVATE(fakeRequest, memberParams('grp-1', 'm1'))) as unknown as RouteResponse;
       expect(res.status).toBe(409);
       expect(res.body.error).toBe('member is not paused');
 
       activateMember.mockImplementation(() => sqlErr('42501', 'activate_members permission required'));
-      res = (await ACTIVATE(fakeRequest, memberParams('grp-1', 'm1'))) as RouteResponse;
+      res = (await ACTIVATE(fakeRequest, memberParams('grp-1', 'm1'))) as unknown as RouteResponse;
       expect(res.status).toBe(403);
       expect(emitted('membership.activate_refused', 'u1')).toBe(true);
     });
@@ -159,7 +159,7 @@ describe('FEAT-H016 — membership lifecycle BFF routes', () => {
 
   describe('DELETE .../members/[memberGroupId] (STORY-2)', () => {
     it('removes and emits id-only telemetry', async () => {
-      const res = (await REMOVE(fakeRequest, memberParams('grp-1', 'm1'))) as RouteResponse;
+      const res = (await REMOVE(fakeRequest, memberParams('grp-1', 'm1'))) as unknown as RouteResponse;
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ ok: true });
       expect(removeGroupMember).toHaveBeenCalledWith(expect.anything(), 'grp-1', 'm1');
@@ -170,7 +170,7 @@ describe('FEAT-H016 — membership lifecycle BFF routes', () => {
       removeGroupMember.mockImplementation(() =>
         sqlErr('P0001', 'cannot remove the last active Steward — assign another Steward first'),
       );
-      const res = (await REMOVE(fakeRequest, memberParams('grp-1', 'm1'))) as RouteResponse;
+      const res = (await REMOVE(fakeRequest, memberParams('grp-1', 'm1'))) as unknown as RouteResponse;
       expect(res.status).toBe(409);
       expect(res.body.error).toContain('last active Steward');
       expect(emitted('membership.remove_conflict', 'u1')).toBe(true);
@@ -179,7 +179,7 @@ describe('FEAT-H016 — membership lifecycle BFF routes', () => {
 
   describe('POST /api/groups/[id]/leave (STORY-3)', () => {
     it('leaves and relays the contract payload', async () => {
-      const res = (await LEAVE(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      const res = (await LEAVE(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ group_id: 'grp-1', group_name: 'GDCanaryName' });
       expect(leaveGroup).toHaveBeenCalledWith(expect.anything(), 'grp-1');
@@ -190,7 +190,7 @@ describe('FEAT-H016 — membership lifecycle BFF routes', () => {
       leaveGroup.mockImplementation(() =>
         sqlErr('P0001', 'cannot leave: you are the only active Steward — assign another Steward first'),
       );
-      const res = (await LEAVE(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      const res = (await LEAVE(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(409);
       expect(res.body.error).toBe(
         'cannot leave: you are the only active Steward — assign another Steward first',
@@ -200,7 +200,7 @@ describe('FEAT-H016 — membership lifecycle BFF routes', () => {
 
     it('maps the no-leak refusal: P0002→404', async () => {
       leaveGroup.mockImplementation(() => sqlErr('P0002', 'group not found'));
-      const res = (await LEAVE(fakeRequest, idParams('grp-1'))) as RouteResponse;
+      const res = (await LEAVE(fakeRequest, idParams('grp-1'))) as unknown as RouteResponse;
       expect(res.status).toBe(404);
       expect(emitted('membership.leave_missing', 'u1')).toBe(true);
     });

@@ -12,10 +12,11 @@ import userEvent from '@testing-library/user-event';
  * Red-first: the component does not exist yet — import fails.
  */
 
-const mockSubmit = jest.fn();
+type ReportsClient = typeof import('@/lib/reports/client');
+const mockSubmit = jest.fn<ReportsClient['submitReport']>();
 jest.mock('@/lib/reports/client', () => ({
   __esModule: true,
-  submitReport: (...a: unknown[]) => mockSubmit(...a),
+  submitReport: (...a: Parameters<ReportsClient['submitReport']>) => mockSubmit(...a),
   hasReported: () => false,
 }));
 

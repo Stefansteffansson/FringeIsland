@@ -42,7 +42,7 @@ jest.mock('@/components/announcements/PlatformAnnouncementsSection', () => ({
 import GroupsPage from '@/app/groups/page';
 
 const GROUPS: GroupSummary[] = [
-  { id: 'g1', name: 'Cohort', description: null, is_public: false, member_count: 1 },
+  { id: 'g1', name: 'Cohort', description: null, label: null, is_public: false, created_at: '2026-07-01T10:00:00+00:00', member_count: 1, status: 'active' },
 ];
 
 beforeEach(() => {

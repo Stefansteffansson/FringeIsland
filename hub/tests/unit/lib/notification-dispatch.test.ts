@@ -36,10 +36,13 @@ describe('notificationDispatchRoute (platform dispatch_segment -> route)', () =>
 });
 
 describe('respondToNotification', () => {
-  let fetchMock: jest.Mock;
+  // The stubs are partial Responses (ok/status/json/text) — typed as such rather
+  // than cast up to a full Response the runtime never builds.
+  type FetchLike = (input: RequestInfo | URL, init?: RequestInit) => Promise<Partial<Response>>;
+  let fetchMock: jest.Mock<FetchLike>;
   beforeEach(() => {
-    fetchMock = jest.fn();
-    (global as unknown as { fetch: jest.Mock }).fetch = fetchMock;
+    fetchMock = jest.fn<FetchLike>();
+    (global as unknown as { fetch: unknown }).fetch = fetchMock;
   });
   afterEach(() => {
     jest.restoreAllMocks();

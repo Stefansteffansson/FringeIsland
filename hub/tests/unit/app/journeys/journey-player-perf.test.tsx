@@ -91,8 +91,12 @@ describe('FEAT-H020 — cold player boot request behaviour (ADR-U043)', () => {
 });
 
 describe('FEAT-H020 — the B6 loading rule (deferred player skeleton, never spinner-first)', () => {
-  beforeEach(() => jest.useFakeTimers());
-  afterEach(() => jest.useRealTimers());
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+  afterEach(() => {
+    jest.useRealTimers();
+  });
 
   it('PlayerSkeleton renders NOTHING before its 300 ms deferral', () => {
     render(<PlayerSkeleton />);

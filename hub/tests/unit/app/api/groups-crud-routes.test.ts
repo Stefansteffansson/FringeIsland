@@ -19,9 +19,9 @@ const getUser = jest.fn<() => Promise<{ data: { user: { id: string } | null } }>
 const getClaims = jest.fn<
   () => Promise<{ data: { claims: { sub: string } } | null; error: null }>
 >();
-const createEngagementGroup = jest.fn<() => Promise<unknown>>();
+const createEngagementGroup = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 const fetchGroupDetail = jest.fn<() => Promise<unknown>>();
-const updateGroupSettings = jest.fn<() => Promise<unknown>>();
+const updateGroupSettings = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -100,7 +100,7 @@ describe('POST /api/groups', () => {
   it('creates and returns 201 { id }, telemetry id-only', async () => {
     const res = (await POST(
       jsonRequest({ name: 'Secret Society', description: 'very private notes' }),
-    )) as { status: number; body: { id: string } };
+    )) as unknown as { status: number; body: { id: string } };
     expect(res.status).toBe(201);
     expect(res.body.id).toBe('grp-new');
     expect(createEngagementGroup).toHaveBeenCalledWith(
@@ -127,7 +127,7 @@ describe('POST /api/groups', () => {
 
   it('maps other failures to 500, content-free', async () => {
     createEngagementGroup.mockRejectedValue({ code: 'XX000', message: 'Secret Society exploded' });
-    const res = (await POST(jsonRequest({ name: 'Secret Society' }))) as {
+    const res = (await POST(jsonRequest({ name: 'Secret Society' }))) as unknown as {
       status: number;
       body: { error: string };
     };
@@ -149,7 +149,7 @@ describe('GET /api/groups/[id]', () => {
   });
 
   it('returns 200 with the detail pass-through incl. viewer capability flags', async () => {
-    const res = (await GET_DETAIL(fakeRequest, idParams('grp-1'))) as {
+    const res = (await GET_DETAIL(fakeRequest, idParams('grp-1'))) as unknown as {
       status: number;
       body: { group: typeof DETAIL };
     };
@@ -190,7 +190,7 @@ describe('PATCH /api/groups/[id]', () => {
     const res = (await PATCH(
       jsonRequest({ name: 'Secret Society', is_public: true }),
       idParams('grp-1'),
-    )) as { status: number; body: { group: typeof DETAIL } };
+    )) as unknown as { status: number; body: { group: typeof DETAIL } };
     expect(res.status).toBe(200);
     expect(res.body.group).toEqual(DETAIL);
     expect(updateGroupSettings).toHaveBeenCalledWith(
@@ -221,7 +221,7 @@ describe('PATCH /api/groups/[id]', () => {
 
   it('maps other failures to 500, content-free', async () => {
     updateGroupSettings.mockRejectedValue({ code: 'XX000', message: 'very private notes leak' });
-    const res = (await PATCH(jsonRequest({ description: 'very private notes' }), idParams('grp-1'))) as {
+    const res = (await PATCH(jsonRequest({ description: 'very private notes' }), idParams('grp-1'))) as unknown as {
       status: number;
       body: { error: string };
     };

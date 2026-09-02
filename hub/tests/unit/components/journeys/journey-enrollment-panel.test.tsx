@@ -21,7 +21,7 @@ import type { JourneyDetail } from '@/lib/journeys/queries';
  * Red-first for TASK-JA-07.
  */
 
-const enrollSelf = jest.fn<() => Promise<unknown>>();
+const enrollSelf = jest.fn<(j: string) => Promise<unknown>>();
 const enrollGroup = jest.fn<(j: string, g: string) => Promise<unknown>>();
 const withdrawEnrollment = jest.fn<(j: string, e: string) => Promise<unknown>>();
 

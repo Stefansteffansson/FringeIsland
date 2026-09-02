@@ -74,8 +74,12 @@ describe('FEAT-H019 — /journeys first-paint request behaviour (ADR-U043)', () 
 });
 
 describe('FEAT-H019 — the B6 loading-state rule (deferred skeleton, never spinner-first)', () => {
-  beforeEach(() => jest.useFakeTimers());
-  afterEach(() => jest.useRealTimers());
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+  afterEach(() => {
+    jest.useRealTimers();
+  });
 
   it('SkeletonGrid renders NOTHING before its 300 ms deferral', () => {
     render(<SkeletonGrid />);

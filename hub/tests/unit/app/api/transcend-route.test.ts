@@ -12,7 +12,9 @@ const getUser = jest.fn(async () => ({ data: { user: { id: 'u1' } as { id: strin
 // policy_version stamped server-side (COR-D W3 migration; the lib maps it to
 // policyVersion) — a mock of a contract boundary cites the substrate that
 // produces it (the RDC-03 rule).
-const finaliseTranscendence = jest.fn(async () => ({
+const finaliseTranscendence = jest.fn<
+  typeof import('@/lib/auth/transcendence').finaliseTranscendence
+>(async () => ({
   outcome: { userId: 'u1', personalGroupId: 'g1', consentId: 'c1', policyVersion: 'v1' },
   error: null as string | null,
 }));
