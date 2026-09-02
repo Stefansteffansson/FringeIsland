@@ -4,6 +4,7 @@ import {
   createAdminClient,
   createTestUser,
   cleanupTestUser,
+  cleanupTestGroup,
   runAdminSql,
   signInWithRetry,
   type TestUser,
@@ -192,32 +193,114 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
   });
 
   afterAll(async () => {
+    // TASK-DBT-03. On 2026-08-19 a run of this suite (tag pc025xmsq8d0lb) died
+    // mid-way and left its clone (3 versions, 1 publication) and its synthetic
+    // group template on the one shared database. The afterAll it had (a) only
+    // knew rows whose id a cell had managed to capture, (b) hard-deleted a
+    // house-created clone data-level instead of walking the disposal contracts,
+    // and (c) wrapped every step in `.catch(() => undefined)`, so nothing was
+    // ever heard. The sharpened stake: a clone this run OFFERS is refused by
+    // RD-4a forever once it leaks — every leak is a permanent production row.
+    //
+    // So: every class is found BY RUN TOKEN (a cell that died before its push
+    // still gets cleaned); the clone walks retire -> unpublish -> delete through
+    // the house contracts, in the disposal order, as the elevated DeusEx
+    // fixture; each step reports its own failure by name; and what is left is
+    // counted and said out loud. Not thrown — a hygiene failure must not hide
+    // the suite's real result (the `cleanupTestGroup` posture). The
+    // `[integration-teardown]` sweep is the net beneath this for a run that
+    // dies outright, and it now counts these classes.
+    const step = async (label: string, fn: () => Promise<unknown>) => {
+      try {
+        await fn();
+      } catch (err) {
+        console.warn(`[pc025-teardown] ${label} failed: ${(err as Error).message}`);
+      }
+    };
+    const like = `${TOKEN}%`;
+
+    // 1. Adopters first. Copies made from the clone live in the run's groups,
+    //    and RD-4a's last clause refuses the delete while any survive.
+    for (const g of createdGroupIds) await step(`group ${g}`, () => cleanupTestGroup(g));
+    await step('groups by token', () =>
+      runAdminSql(
+        `DELETE FROM public.groups WHERE group_type = 'engagement' AND name LIKE '${like}';`,
+      ),
+    );
+
+    // 2. Synthetic group templates: created data-level (S5), removed
+    //    data-level. The green path deletes its own inside the cell; this is
+    //    the mid-run-failure path. group_template_roles cascades.
     for (const gt of syntheticGtIds) {
-      await runAdminSql(`DELETE FROM public.group_templates WHERE id = '${gt}';`).catch(
-        () => undefined,
+      await step(`synthetic group template ${gt}`, () =>
+        runAdminSql(`DELETE FROM public.group_templates WHERE id = '${gt}';`),
       );
     }
-    for (const g of createdGroupIds) {
-      await runAdminSql(`DELETE FROM public.groups WHERE id = '${g}';`).catch(() => undefined);
+    await step('synthetic group templates by token', () =>
+      runAdminSql(`DELETE FROM public.group_templates WHERE name LIKE '${like}';`),
+    );
+
+    // 3. The clone(s), through the house contracts. The offer was a data-level
+    //    INSERT (S2a, platform-wide); the house unpublish is its symmetric
+    //    withdrawal — it hard-deletes the row and leaves an audit line. With
+    //    no `role_template.publish` audit row and no surviving copy, the house
+    //    delete is then permitted, so nothing needs a data-level bypass.
+    const clones = (await runAdminSql(
+      `SELECT id::text AS id, name FROM public.role_templates
+        WHERE NOT is_system AND name LIKE '${like}';`,
+    ).catch(() => [])) as Array<{ id: string; name: string }>;
+    for (const c of clones) {
+      await step(`retire "${c.name}"`, async () => {
+        const { error } = await rpcAdmin('admin_retire_role_template', {
+          p_role_template_id: c.id,
+        });
+        if (error) throw new Error(error.message);
+      });
+      await step(`unpublish "${c.name}"`, async () => {
+        const { error } = await rpcAdmin('admin_unpublish_role_template', {
+          p_role_template_id: c.id,
+        });
+        if (error) throw new Error(error.message);
+      });
+      await step(`delete "${c.name}"`, async () => {
+        const { error } = await rpcAdmin('admin_delete_role_template', { p_template_id: c.id });
+        if (error) throw new Error(error.message);
+      });
     }
-    if (cloneId) {
-      await runAdminSql(`DELETE FROM public.role_templates WHERE id = '${cloneId}';`).catch(
-        () => undefined,
-      );
+
+    // 4. Say what is left, by class. Engagement groups only: the fixture
+    //    accounts' PERSONAL groups also carry the token (a personal group is
+    //    named after its display name) and go with the accounts in step 5.
+    await step('residue count', async () => {
+      const [left] = (await runAdminSql(`
+        SELECT
+          (SELECT count(*) FROM public.role_templates WHERE name LIKE '${like}') AS role_templates,
+          (SELECT count(*) FROM public.group_templates WHERE name LIKE '${like}') AS group_templates,
+          (SELECT count(*) FROM public.groups
+            WHERE group_type = 'engagement' AND name LIKE '${like}') AS groups;`)) as Array<
+        Record<string, unknown>
+      >;
+      const n =
+        Number(left?.role_templates ?? 0) +
+        Number(left?.group_templates ?? 0) +
+        Number(left?.groups ?? 0);
+      if (n > 0) {
+        console.warn(
+          `[pc025-teardown] LEAKED (run ${TOKEN}): ${left.role_templates} role templates, ` +
+            `${left.group_templates} group templates, ${left.groups} groups — the ` +
+            `integration-teardown sweep reports this class and removes what it can.`,
+        );
+      }
+    });
+
+    // 5. Elevation off, accounts out — after the house calls, which need it.
+    //    `cleanupTestUser` takes an AUTH USER ID (an earlier version passed the
+    //    whole `TestUser` and leaked four accounts per run, unheard behind the
+    //    same `.catch(() => undefined)`; ts-jest does not type-check).
+    if (deusexGroupId) await step('demote DeusEx fixture', () => demotePlatformAdmin(deusexGroupId));
+    for (const u of [consented, logoutTarget, deusex, fim]) {
+      if (u) await step(`account ${u.email}`, () => cleanupTestUser(u.user.id));
     }
-    await runAdminSql(
-      `DELETE FROM public.role_templates WHERE name LIKE '${TOKEN}%';`,
-    ).catch(() => undefined);
-    await demotePlatformAdmin(deusexGroupId);
-    // `cleanupTestUser` takes an AUTH USER ID. These four passed the whole
-    // `TestUser` object, so the lookup matched nothing and the delete was a
-    // silent no-op — four fixture accounts leaked on every run. ts-jest does not
-    // type-check (only `next build` does), so the mismatch never surfaced, and
-    // the `.catch(() => undefined)` wrappers guaranteed nobody would ever see it.
-    if (consented) await cleanupTestUser(consented.user.id);
-    if (logoutTarget) await cleanupTestUser(logoutTarget.user.id);
-    await cleanupTestUser(deusex.user.id);
-    await cleanupTestUser(fim.user.id);
   });
 
   // -------------------------------------------------------------------------
