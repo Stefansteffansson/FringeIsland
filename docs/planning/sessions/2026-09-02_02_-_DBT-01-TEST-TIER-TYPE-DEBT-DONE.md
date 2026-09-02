@@ -25,7 +25,7 @@
 
 ## Stated plainly (for Stefan's nod)
 
-- **DoD wording.** `feature-development` SKILL.md §Step 4.5 and `AGENTS.md` say "run lint and type-check" without naming the command. Naming `npm run typecheck` there is a steering-file edit, so it is **not** done here; the CI step is the enforcement home either way.
+- **DoD wording — nodded and done the same day.** `feature-development` SKILL.md (Step 4.5, the Test DoD checklist, the Always-do boundary) and `AGENTS.md` (Always-do) now name `npm run typecheck` beside `npm run lint`. Rationale recorded in the skill line: CI gates both, but a fuller-auto merge can land before CI finishes, so the local run is the one that counts.
 - **Lint warnings:** 4 (0 errors), **all in files this sweep did not touch** (`app/api/auth/farewell/route.ts` unused import; `internal-api-conformance.test.ts` two unused `eslint-disable no-console`; `api-boundary-hardening.test.ts` unused `runAdminSql`) — pre-existing, found not caused, left for a hygiene pass.
 
 ## The rest of the board
