@@ -90,7 +90,7 @@ The Anthropic computer-use tools have legitimate uses for sandbox-side analysis,
 ## Boundaries
 
 ### Always do
-- Run lint and type-check before committing
+- Run lint (`npm run lint`) and type-check (`npm run typecheck` — app + tests) before committing
 - Check the relevant feature spec in the ecosystem tree before implementing
 - Follow API-first principle (ADR-U009)
 - Update the CHANGELOG(s) for user-visible changes — there are **three**, and one change can owe more than one: root `CHANGELOG.md` (the cycle entry — always), `hub/CHANGELOG.md` (Hub-surface changes, member-facing register), `docs/platform/core/CHANGELOG.md` (Core substrate). Canonical rule and registers: [`docs/planning/PROCESS.md`](docs/planning/PROCESS.md) DoD

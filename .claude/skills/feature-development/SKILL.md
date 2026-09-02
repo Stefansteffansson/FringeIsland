@@ -76,7 +76,7 @@ For each story, then each acceptance criterion:
 2. **Red** — write the test, tag it with the story/behaviour ID, run it, and confirm it FAILS for the right reason. Capture the red result.
 3. **Green** — implement the minimum to pass; run the test; confirm it passes.
 4. **Refactor** — clean up with the test green.
-5. Run lint/type-check (`npm run lint`) and the relevant suite.
+5. Run lint (`npm run lint`), type-check (`npm run typecheck` — app + tests; ts-jest checks nothing, `next build` checks the app only) and the relevant suite.
 6. Update task status to `review` or `done`.
 
 Every acceptance criterion ends with at least one passing test that was **first seen red**. A behaviour with no failing-first test is not done. **If a freshly-written test passes the first time it runs (green when it should be red), STOP and surface it** — the test is suspect (vacuous, mis-targeted, or the behaviour already exists), and a test that never failed proves nothing; investigate before writing any implementation. (Coverage added test-after — e.g. backfill on already-shipped code — is allowed, but must be **labelled honestly** as test-after, never claimed as TDD.)
@@ -99,7 +99,7 @@ After all tasks for a story are done:
 - **Test DoD (required before `6-done`):**
   - every acceptance criterion has a passing test that was **demonstrated red first**
   - the **pyramid is upright** — unit-tier coverage exists for component/logic behaviour, not only integration + E2E
-  - lint + build + the **full suite** are green
+  - lint + `npm run typecheck` + build + the **full suite** are green
   - the Implementation notes record the red → green evidence honestly; any test-after coverage is **labelled as such** (never claimed as test-first)
   - a **pre-existing failure** discovered during the cycle is verified at main HEAD on a clean build, fenced **"found (not caused)"** out of the cycle's green claim by name, and routed to its own diagnosis — never retry-masked or silently absorbed into a passing sweep (J-E, PR #166)
 - **API-boundary DoD (required before `6-done`, ADR-U038)** — for every new or changed endpoint:
@@ -136,7 +136,7 @@ After all tasks for a story are done:
 - Keep the test pyramid upright — cover logic/component behaviour at the unit tier, not only via integration/E2E
 - Follow the acceptance criteria exactly — don't add unrequested scope
 - Respect the No-gos section — these are explicit exclusions
-- Run lint and type-check before committing
+- Run lint (`npm run lint`) and type-check (`npm run typecheck`) before committing — CI gates both, but a fuller-auto merge can land before CI finishes, so the local run is the one that counts
 - Update the CHANGELOG(s) for user-visible changes — all that are owed, not just one (see Step 5; root always, `hub/` if Hub-visible, platform-core if Core substrate)
 - Walk dependency-upgrade PRs through the feature gates (lint + `next build` at minimum) before merge (bound at J-A)
 

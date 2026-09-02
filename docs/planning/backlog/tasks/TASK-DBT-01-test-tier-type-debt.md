@@ -62,4 +62,4 @@ COR-C W8 as the demonstrator.
 
 **Evidence:** `npm run typecheck` exit 0, 0 errors (the wiring itself verified); unit tier full — see the session bridge for the count; the four type-touched integration suites (lifecycle-dispositions, actionable-notifications, role-template-disposal, invitation-bell-actions) **60/60**, teardown clean; lint clean. No red-first claim: the task's own red is `tsc` exit 2 → exit 0.
 
-**Gate decision:** YES. `typecheck` scripts at root and hub; `.github/workflows/ci.yml` runs it between Lint and Unit tests with the reason in a comment. The DoD wording in `feature-development` / `AGENTS.md` already says "lint and type-check"; naming `npm run typecheck` there is a steering-file edit left for Stefan's nod (bridge).
+**Gate decision:** YES. `typecheck` scripts at root and hub; `.github/workflows/ci.yml` runs it between Lint and Unit tests with the reason in a comment. The DoD wording in `feature-development` / `AGENTS.md` now names `npm run typecheck` (Stefan's nod, 2026-09-02, same day — four lines: SKILL.md Step 4.5, the Test DoD checklist, the Always-do boundary; AGENTS.md Always-do).
