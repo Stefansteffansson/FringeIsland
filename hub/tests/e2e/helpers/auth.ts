@@ -256,6 +256,74 @@ export async function cleanupAnonymousUsers(
  * consent-erasure bypass. Mirrors `tests/helpers/supabase.ts`. Requires
  * SUPABASE_ACCESS_TOKEN (hub/.env.local).
  */
+/**
+ * TASK-E2E-02 — the residue class no instrument above could see.
+ *
+ * The orphan instrument counts personal groups that no `users` row points at;
+ * the caretaker instrument counts DeusEx memberships. A fixture FIM a spec
+ * created and never deleted trips NEITHER: it keeps its `users` row and its
+ * personal group, so nothing is orphaned and nothing is a caretaker — it is
+ * simply left. Measured 2026-08-11: exactly five such identities per full
+ * sweep, from three specs, while both instruments read a clean delta of 0 and
+ * the census climbed. And an account that only ever leaks on a killed run is
+ * invisible to every per-spec afterAll by construction.
+ *
+ * Structural rule, the same species as the integration tier's
+ * `test-%@fringeisland.test` sweep: every E2E identity is minted as
+ * `e2e-<stem>-…@fringeisland.test`, the shared session user is removed by the
+ * teardown before this runs, so at the end of a run there is no such thing as
+ * a legitimate surviving `e2e-*` account. Listed by SQL against `auth.users`
+ * (LEFT JOIN — a half-created account with no `users` row yet is still
+ * residue), erased through THE erasure primitive in its proven order.
+ */
+export type E2EFixtureAccount = {
+  authId: string;
+  personalGroupId: string | null;
+  email: string;
+  /** `e2e-<stem>` — the spec-identifying prefix, run stamp stripped. */
+  stem: string;
+};
+
+export async function listE2EFixtureAccounts(): Promise<E2EFixtureAccount[]> {
+  const rows = await runAdminSqlRows(
+    `SELECT au.id::text AS auth_id, u.personal_group_id::text AS personal_group_id, au.email
+       FROM auth.users au
+       LEFT JOIN public.users u ON u.auth_user_id = au.id
+      WHERE au.email LIKE 'e2e-%@fringeisland.test'
+      ORDER BY au.created_at;`,
+  );
+  return rows.map((r) => {
+    const email = String(r.email);
+    return {
+      authId: String(r.auth_id),
+      personalGroupId: (r.personal_group_id as string | null) ?? null,
+      email,
+      stem: email.replace(/@.*$/, '').replace(/-\d{6,}.*$/, ''),
+    };
+  });
+}
+
+/** Erases every listed fixture account: consent for the batch in ONE statement
+ *  (the `cleanupAnonymousUsers` lesson), then the primitive per account. */
+export async function sweepE2EFixtureAccounts(
+  admin: SupabaseClient,
+  batch: E2EFixtureAccount[],
+): Promise<void> {
+  if (batch.length === 0) return;
+  const groupIds = batch.map((b) => b.personalGroupId).filter(Boolean) as string[];
+  if (groupIds.length > 0) {
+    await runAdminSql(
+      `DO $$ BEGIN PERFORM set_config('app.consent_erasure_in_progress','true',true); ` +
+        `DELETE FROM public.consent_records WHERE subject_group_id IN (` +
+        groupIds.map((g) => `'${g}'`).join(',') +
+        `); END $$;`,
+    ).catch(() => undefined);
+  }
+  for (const b of batch) {
+    await eraseUserAndPersonalGroup(admin, b.authId, b.personalGroupId, { clearConsent: false });
+  }
+}
+
 export async function runAdminSql(sql: string): Promise<void> {
   await runAdminSqlRows(sql);
 }

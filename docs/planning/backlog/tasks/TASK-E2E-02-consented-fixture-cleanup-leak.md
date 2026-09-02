@@ -3,7 +3,7 @@
 ---
 id: TASK-E2E-02
 title: Fix the E2E fixture-cleanup pattern (consent FK RESTRICT + swallowed supabase-js errors) and decide the detritus purge
-status: todo
+status: done  # 2026-09-02 — the class is now instrumented + swept structurally in the E2E global teardown; the three 2026-08-11 leakers were already fixed; detritus superseded by the 2026-08-12 reset
 assigned_to: unassigned
 priority: medium
 feature: none
@@ -87,10 +87,25 @@ Both were cleared in a follow-up pass. Worth remembering: "delete the groups and
 
 ## Acceptance criteria
 
-- [ ] The shared E2E cleanup helper performs the proven-good order and **checks every returned error** (a failed cleanup fails the teardown loudly, never silently).
-- [ ] All specs using the local `createFim`/afterAll copy route through the shared helper (grep the e2e tree; admin-members / admin-bulk-members / admin-groups at minimum).
-- [ ] The detritus question decided by Stefan and executed accordingly: purge the 1,289 (shrinks the census ~1,900 → ~600 — perf/pagination test expectations re-checked, e.g. the PC024 B1b "census > 200" cells) or keep as scale ballast with a dated record.
-- [ ] The leak instrument (TASK-INT-05's) extended or a one-off audit run confirming zero new leaks after one full E2E sweep.
+- [x] The shared E2E cleanup helper performs the proven-good order and **checks every returned error** (a failed cleanup fails the teardown loudly, never silently). — `eraseUserAndPersonalGroup` (TASK-INT-03, 2026-08-09): consent → journeys → auth user → personal group; an auth-delete error is printed by name, and a personal group that survives **throws**. Verified 2026-09-02.
+- [x] All specs using the local `createFim`/afterAll copy route through the shared helper (grep the e2e tree; admin-members / admin-bulk-members / admin-groups at minimum). — **Deletion side: done** — a 2026-09-02 grep finds **zero** specs calling `auth.admin.deleteUser` directly; the three 2026-08-11 leakers already tear down through `deleteE2EUserByAuthId` / `deleteTranscendedUser` (group-of-groups' afterAll cites this task). **Creation side: 17 specs keep a local `createFim`** — not refactored here (a 17-spec change for no residue benefit); recorded, not hidden.
+- [x] ~~The detritus question decided by Stefan and executed accordingly~~ — **superseded by the 2026-08-12 database reset** (Phase-4 W9, `phase-4-cutover-plan.md`): the 1,289 no longer exist; the `e2e-*` census read **0** on 2026-09-02 before this build.
+- [x] The leak instrument (TASK-INT-05's) extended or a one-off audit run confirming zero new leaks after one full E2E sweep. — **Extended, structurally (2026-09-02):** see the disposition below.
+
+## Disposition — done 2026-09-02 (fuller-auto; test tier only)
+
+**What was still missing, and why it mattered:** the E2E global teardown carried two instruments — orphaned personal groups (TASK-INT-03) and DeusEx caretaker memberships (TASK-INT-05) — and the unbounded Mist sweep (TASK-E2E-04). A fixture FIM a spec creates and never deletes trips **none of them**: it keeps its `users` row and its personal group, so nothing is orphaned and nothing is a caretaker — it is simply left. That is exactly how five identities per sweep accumulated behind two clean deltas (the 2026-08-11 note above), and an account that only leaks on a *killed* run is invisible to every per-spec afterAll by construction. The specs were fixed; the class was not.
+
+**Built:** `listE2EFixtureAccounts()` + `sweepE2EFixtureAccounts()` in `hub/tests/e2e/helpers/auth.ts` — every `e2e-%@fringeisland.test` account listed by SQL against `auth.users` (LEFT JOIN `public.users`, so a half-created account counts), erased through THE erasure primitive with the batch-consent lesson from `cleanupAnonymousUsers`. The global teardown runs it after the session user is removed and before the orphan instrument (so the groups it erases are inside that measurement), prints the surviving **stems** by name, sweeps, and then — the tier's posture, as for the two instruments — **fails the run** after every line has printed, so the spec that leaked gets fixed rather than cleaned up after forever. Structural rule, the same species as the integration tier's `test-%@` sweep (TASK-DBT-03): at the end of a run there is no legitimate surviving `e2e-*` account.
+
+**Red → green, demonstrated with a planted probe** (`e2e-dbt-probe-<stamp>`, a consented FIM with a personal group, created data-level and torn down by nothing), one `auth.spec.ts` run each:
+| Run | Teardown said | DB after |
+|---|---|---|
+| HEAD, probe present | `Leak 0→0 · Session user removed · Anonymous 0→0 · Orphan 0→0`, **4 passed, exit 0** — silent | probe account + group **still there** |
+| After, probe present | `TASK-E2E-02: 1 fixture account(s) survived their spec — swept: e2e-dbt-probe`, then the named failure, **exit 1** | 0 `e2e-*` accounts, probe group gone, 0 orphans |
+| After, clean | `Fixture accounts: 0 survived their specs`, exit 0 | 0 |
+
+Lint 0; `npm run typecheck` 0 errors. The full-fleet double-green stays a **wave-gate** item (it is the E2E-03 verification too), not a per-task one — see the Ferd close.
 
 ## Technical notes
 
