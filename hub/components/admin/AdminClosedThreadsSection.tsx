@@ -40,35 +40,46 @@ const fmtDate = (iso: string | null) =>
 
 const countLabel = (n: number) => (n === 1 ? '1 message' : `${n} messages`);
 
-// The loader lives in a hook, the H041 wing's shape (`usePaneLoad`): fetch on
-// mount, a refusal hands the drift to the parent, a retry re-runs the same
-// load. Kept identical in posture so the two admin sections behave alike.
+const FAILED = 'The preserved threads could not be loaded.';
+
+// The loader is an effect that synchronises with the BFF and sets state only
+// from the response callbacks (the react-hooks rule's own shape — never
+// synchronously in the effect body). A retry bumps the nonce; a refusal
+// hands the drift to the parent, whose re-read collapses this section.
 function useClosedThreadsLoad(groupId: string, onStateDrift: Props['onStateDrift']) {
   const [state, setState] = useState<State>({ kind: 'loading' });
-  const load = useCallback(async () => {
-    setState({ kind: 'loading' });
-    try {
-      const res = await fetch(`/api/admin/groups/${groupId}/closed-threads`);
-      if (res.status === 404 || res.status === 403 || res.status === 401) {
-        // The admin-plane refusal (no longer closed, or no longer an admin):
-        // the parent re-reads the detail and this section collapses.
-        onStateDrift();
-        setState({ kind: 'error', message: 'The preserved threads could not be loaded.' });
-        return;
-      }
-      if (!res.ok) {
-        setState({ kind: 'error', message: 'The preserved threads could not be loaded.' });
-        return;
-      }
-      const body = (await res.json()) as { threads?: ClosedGroupThreadRow[] };
-      setState({ kind: 'loaded', threads: body.threads ?? [] });
-    } catch {
-      setState({ kind: 'error', message: 'The preserved threads could not be loaded.' });
-    }
-  }, [groupId, onStateDrift]);
+  const [nonce, setNonce] = useState(0);
+
   useEffect(() => {
-    void load();
-  }, [load]);
+    let active = true;
+    fetch(`/api/admin/groups/${groupId}/closed-threads`)
+      .then(async (res) => {
+        if (!active) return;
+        if (res.status === 404 || res.status === 403 || res.status === 401) {
+          onStateDrift();
+          setState({ kind: 'error', message: FAILED });
+          return;
+        }
+        if (!res.ok) {
+          setState({ kind: 'error', message: FAILED });
+          return;
+        }
+        const body = (await res.json()) as { threads?: ClosedGroupThreadRow[] };
+        if (active) setState({ kind: 'loaded', threads: body.threads ?? [] });
+      })
+      .catch(() => {
+        if (active) setState({ kind: 'error', message: FAILED });
+      });
+    return () => {
+      active = false;
+    };
+  }, [groupId, onStateDrift, nonce]);
+
+  const load = useCallback(() => {
+    setState({ kind: 'loading' });
+    setNonce((n) => n + 1);
+  }, []);
+
   return { state, load };
 }
 
@@ -100,7 +111,7 @@ export function AdminClosedThreadsSection({ groupId, groupName, onStateDrift }: 
       {state.kind === 'error' && (
         <div className="mt-3 text-sm text-red-700" role="alert">
           {state.message}{' '}
-          <button type="button" className="underline" onClick={() => void load()}>
+          <button type="button" className="underline" onClick={load}>
             Retry
           </button>
         </div>
