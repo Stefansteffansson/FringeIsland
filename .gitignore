@@ -112,3 +112,5 @@ hub/scripts/perf-state.json
 # Obsidian files
 .obsidian/workspace.json
 .obsidian/cache/
+# Obsidian vault config (local editor state, incl. obsidian-git plugin data) — accidentally committed in #589, untracked in the follow-up
+.obsidian/
