@@ -390,15 +390,23 @@ describe('FEAT-PC010 — group creation & settings contracts (G-A)', () => {
       expect(g!.status).toBe('active');
     });
 
-    // Regression-guard, not red-first: this path works today and must keep
-    // working after the narrowing (the permission rule lives in RLS either way).
-    it('still allows the permitted Steward to update a settable column directly (rule lives substrate-side, not route-side)', async () => {
+    // LABELLED ADAPTATION — INVERTED (TASK-SEC-02, migration 20260902210000).
+    // This cell pinned the OPPOSITE: FEAT-PC010's column-scoped UPDATE grant let
+    // a permitted Steward write settable columns directly under `groups_update`.
+    // The Hub never used that path — `PATCH /api/groups/[id]` goes through
+    // `update_group_settings()` (SECURITY DEFINER), the one door (proven by its
+    // own cells above) — and SEC-02's posture is that the client roles hold NO
+    // table DML: the direct write now refuses at the grant layer, 42501, and
+    // the permission rule still lives substrate-side, in the contract.
+    it('refuses the permitted Steward\'s direct settable-column UPDATE too — the contract is the one door', async () => {
       const c = await asUser(steward);
       const { error } = await c
         .from('groups')
         .update({ description: 'settable directly' })
         .eq('id', groupId);
-      expect(error).toBeNull();
+      expect(error?.code).toBe('42501');
+      const { data: g } = await admin.from('groups').select('description').eq('id', groupId).single();
+      expect(g!.description).not.toBe('settable directly');
     });
   });
 
