@@ -55,7 +55,7 @@ describe('GET /api/account/state', () => {
 
   it('returns 200 with the state and emits read telemetry (STORY-1)', async () => {
     getClaims.mockResolvedValue({ data: { claims: { sub: 'u-read' } }, error: null });
-    const res = (await GET()) as { status: number; body: { state: { state: string; is_active: boolean } } };
+    const res = (await GET()) as unknown as { status: number; body: { state: { state: string; is_active: boolean } } };
     expect(res.status).toBe(200);
     expect(res.body.state).toMatchObject({ state: 'active', is_active: true });
     expect(emitted('account.state_read', 'u-read')).toBe(true);
@@ -67,7 +67,7 @@ describe('GET /api/account/state', () => {
       is_decommissioned: false,
       state: 'suspended',
     });
-    const res = (await GET()) as { status: number; body: { state: { state: string } } };
+    const res = (await GET()) as unknown as { status: number; body: { state: { state: string } } };
     expect(res.status).toBe(200);
     expect(res.body.state.state).toBe('suspended');
   });

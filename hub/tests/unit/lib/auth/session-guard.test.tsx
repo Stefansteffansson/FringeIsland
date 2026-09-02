@@ -68,7 +68,9 @@ const refusal = () => new AuthApiError('Session from session_id claim in JWT doe
 const getUser = jest.fn<() => Promise<{ error: AuthError | null }>>();
 const authSignOut = jest.fn<(opts?: { scope?: string }) => Promise<{ error: null }>>();
 const setAuth = jest.fn();
-const channel = jest.fn(() => channelObj);
+const channel = jest.fn<(...args: Parameters<SupabaseClient['channel']>) => typeof channelObj>(
+  () => channelObj,
+);
 const removeChannel = jest.fn();
 
 const supabase = {

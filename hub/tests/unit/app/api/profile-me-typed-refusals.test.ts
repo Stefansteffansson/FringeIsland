@@ -65,21 +65,21 @@ beforeEach(() => {
 describe('FEAT-H038 STORY-3 — PATCH /api/profile/me maps typed refusals', () => {
   it('42501 (account suspended at the substrate) → 403 with the honest message', async () => {
     updateMyProfile.mockRejectedValue(typedRefusal('42501', 'account is suspended'));
-    const res = (await PATCH(req({ nickname: 'x' }))) as { status: number; body: { error: string } };
+    const res = (await PATCH(req({ nickname: 'x' }))) as unknown as { status: number; body: { error: string } };
     expect(res.status).toBe(403);
     expect(res.body.error).toBe('account is suspended');
   });
 
   it('P0001 (a state refusal) → 409 with the honest message', async () => {
     updateMyProfile.mockRejectedValue(typedRefusal('P0001', 'group is resting'));
-    const res = (await PATCH(req({ nickname: 'x' }))) as { status: number; body: { error: string } };
+    const res = (await PATCH(req({ nickname: 'x' }))) as unknown as { status: number; body: { error: string } };
     expect(res.status).toBe(409);
     expect(res.body.error).toBe('group is resting');
   });
 
   it('22023 (substrate validation) → 400 with the honest message', async () => {
     updateMyProfile.mockRejectedValue(typedRefusal('22023', 'nickname too long'));
-    const res = (await PATCH(req({ nickname: 'x' }))) as { status: number; body: { error: string } };
+    const res = (await PATCH(req({ nickname: 'x' }))) as unknown as { status: number; body: { error: string } };
     expect(res.status).toBe(400);
     expect(res.body.error).toBe('nickname too long');
   });
@@ -99,7 +99,7 @@ describe('FEAT-H038 STORY-3 — PATCH /api/profile/me maps typed refusals', () =
     // rendered. 28000 maps to 401 (the session cannot act as this identity);
     // the client's 401/403 recheck then confirms the state and walls honestly.
     updateMyProfile.mockRejectedValue(typedRefusal('28000', 'Not authenticated.'));
-    const res = (await PATCH(req({ nickname: 'x' }))) as { status: number; body: { error: string } };
+    const res = (await PATCH(req({ nickname: 'x' }))) as unknown as { status: number; body: { error: string } };
     expect(res.status).toBe(401);
     expect(
       getTelemetrySink().some(
@@ -110,7 +110,7 @@ describe('FEAT-H038 STORY-3 — PATCH /api/profile/me maps typed refusals', () =
 
   it('LABELLED GREEN — an untyped failure still collapses to a generic 500 (nothing internal leaks)', async () => {
     updateMyProfile.mockRejectedValue(new Error('connection reset'));
-    const res = (await PATCH(req({ nickname: 'x' }))) as { status: number; body: { error: string } };
+    const res = (await PATCH(req({ nickname: 'x' }))) as unknown as { status: number; body: { error: string } };
     expect(res.status).toBe(500);
     expect(res.body.error).toBe('Failed to update profile');
   });

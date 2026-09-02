@@ -45,7 +45,7 @@ describe('StepCanvas — the Ask capture placement (FEAT-H024 STORY-1)', () => {
         step={STEP({ kind: 'reflection', ask_verb: 'Reflect', captures_response: true })}
         completed={false}
         locked={false}
-        onComplete={jest.fn()}
+        onComplete={jest.fn<() => Promise<void>>()}
         responseBody=""
         onSaveResponse={saveResponse()}
       />,
@@ -60,7 +60,7 @@ describe('StepCanvas — the Ask capture placement (FEAT-H024 STORY-1)', () => {
         step={STEP({ kind: 'reflection', captures_response: false })}
         completed={false}
         locked={false}
-        onComplete={jest.fn()}
+        onComplete={jest.fn<() => Promise<void>>()}
         responseBody=""
         onSaveResponse={saveResponse()}
       />,
@@ -74,7 +74,7 @@ describe('StepCanvas — the Ask capture placement (FEAT-H024 STORY-1)', () => {
         step={STEP({ kind: 'ritual-of-the-mist', ask_verb: 'Offer', captures_response: true })}
         completed={false}
         locked={false}
-        onComplete={jest.fn()}
+        onComplete={jest.fn<() => Promise<void>>()}
         responseBody=""
         onSaveResponse={saveResponse()}
       />,
@@ -124,7 +124,7 @@ describe('StepCanvas — the per-step takeaway (FEAT-H024 STORY-4)', () => {
 
   it('does not render the takeaway before completion — it never front-runs the step', () => {
     render(
-      <StepCanvas step={withTakeaway()} completed={false} locked={false} onComplete={jest.fn()} />,
+      <StepCanvas step={withTakeaway()} completed={false} locked={false} onComplete={jest.fn<() => Promise<void>>()} />,
     );
     expect(screen.queryByTestId('step-takeaway')).toBeNull();
   });
@@ -137,7 +137,7 @@ describe('StepCanvas — the per-step takeaway (FEAT-H024 STORY-4)', () => {
 
 describe('StepCanvas — presentation + kind rendering (STORY-6)', () => {
   it('renders the title, duration and the kind renderer payload', () => {
-    render(<StepCanvas step={STEP()} completed={false} locked={false} onComplete={jest.fn()} />);
+    render(<StepCanvas step={STEP()} completed={false} locked={false} onComplete={jest.fn<() => Promise<void>>()} />);
     const canvas = screen.getByTestId('step-canvas');
     expect(canvas.textContent).toContain('Orient');
     expect(canvas.textContent).toContain('10 min');
@@ -151,7 +151,7 @@ describe('StepCanvas — presentation + kind rendering (STORY-6)', () => {
         step={STEP({ kind: 'ritual-of-the-mist', content: null })}
         completed={false}
         locked={false}
-        onComplete={jest.fn()}
+        onComplete={jest.fn<() => Promise<void>>()}
       />,
     );
     const canvas = screen.getByTestId('step-canvas');
@@ -162,7 +162,7 @@ describe('StepCanvas — presentation + kind rendering (STORY-6)', () => {
 
   it('labels the complete affordance with the payload ask_verb (never a hardcoded verb)', () => {
     render(
-      <StepCanvas step={STEP({ ask_verb: 'Reflect' })} completed={false} locked={false} onComplete={jest.fn()} />,
+      <StepCanvas step={STEP({ ask_verb: 'Reflect' })} completed={false} locked={false} onComplete={jest.fn<() => Promise<void>>()} />,
     );
     expect(screen.getByTestId('step-complete').textContent).toContain('Reflect');
   });
@@ -206,7 +206,7 @@ describe('StepCanvas — gating (STORY-3 state b)', () => {
         completed={false}
         locked
         lockReason={'Complete "Orient" first.'}
-        onComplete={jest.fn()}
+        onComplete={jest.fn<() => Promise<void>>()}
       />,
     );
     const btn = screen.getByTestId('step-complete') as HTMLButtonElement;
@@ -230,14 +230,14 @@ describe('StepCanvas — gating (STORY-3 state b)', () => {
 
 describe('StepCanvas — read-only (FEAT-H022 frozen posture)', () => {
   it('renders content but NO complete affordance, ever — a completed step shows only its mark', () => {
-    render(<StepCanvas step={STEP()} completed readOnly onComplete={jest.fn()} />);
+    render(<StepCanvas step={STEP()} completed readOnly onComplete={jest.fn<() => Promise<void>>()} />);
     expect(screen.getByTestId('step-canvas').textContent).toContain('Welcome to the journey.');
     expect(screen.getByTestId('step-completed')).toBeTruthy();
     expect(screen.queryByTestId('step-complete')).toBeNull();
   });
 
   it('an incomplete step read-only shows content with no affordance and no lock', () => {
-    render(<StepCanvas step={STEP()} completed={false} readOnly onComplete={jest.fn()} />);
+    render(<StepCanvas step={STEP()} completed={false} readOnly onComplete={jest.fn<() => Promise<void>>()} />);
     expect(screen.getByTestId('step-canvas').textContent).toContain('Welcome to the journey.');
     expect(screen.queryByTestId('step-complete')).toBeNull();
     expect(screen.queryByTestId('step-completed')).toBeNull();
@@ -246,7 +246,7 @@ describe('StepCanvas — read-only (FEAT-H022 frozen posture)', () => {
 
   it('suppresses the repeat affordance too — a completed repeatable step offers nothing to press', () => {
     render(
-      <StepCanvas step={STEP({ repeatable: true, ask_verb: 'Write an entry' })} completed readOnly onComplete={jest.fn()} />,
+      <StepCanvas step={STEP({ repeatable: true, ask_verb: 'Write an entry' })} completed readOnly onComplete={jest.fn<() => Promise<void>>()} />,
     );
     expect(screen.queryByTestId('step-complete')).toBeNull();
     expect(screen.getByTestId('step-completed')).toBeTruthy();
@@ -255,7 +255,7 @@ describe('StepCanvas — read-only (FEAT-H022 frozen posture)', () => {
 
 describe('StepCanvas — completed posture (STORY-3 state c/d)', () => {
   it('a completed non-repeatable step renders in review posture (mark, no affordance)', () => {
-    render(<StepCanvas step={STEP({ repeatable: false })} completed locked={false} onComplete={jest.fn()} />);
+    render(<StepCanvas step={STEP({ repeatable: false })} completed locked={false} onComplete={jest.fn<() => Promise<void>>()} />);
     expect(screen.getByTestId('step-completed')).toBeTruthy();
     expect(screen.queryByTestId('step-complete')).toBeNull();
     // Content stays visible in review posture.
@@ -268,7 +268,7 @@ describe('StepCanvas — completed posture (STORY-3 state c/d)', () => {
         step={STEP({ repeatable: true, ask_verb: 'Write an entry' })}
         completed
         locked={false}
-        onComplete={jest.fn()}
+        onComplete={jest.fn<() => Promise<void>>()}
       />,
     );
     const btn = screen.getByTestId('step-complete') as HTMLButtonElement;

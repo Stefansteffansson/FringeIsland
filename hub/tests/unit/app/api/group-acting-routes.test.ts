@@ -1,5 +1,5 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
-import { getTelemetrySink } from '@/lib/observability/telemetry';
+import { getTelemetrySink, resetTelemetrySink } from '@/lib/observability/telemetry';
 
 /**
  * FEAT-H018 (unit) — the group-of-groups acting BFF routes (Cycle G-F):
@@ -88,7 +88,7 @@ const telemetryIsContentFree = () =>
 describe('FEAT-H018 — acting BFF routes (TASK-H018-01)', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    getTelemetrySink().length = 0;
+    resetTelemetrySink();
     // GET reads verify identity locally (getClaims via getVerifiedUserId);
     // the POST mutations verify over the network (getUser) per ADR-U037.
     getVerifiedUserId.mockResolvedValue('user-1');
@@ -105,13 +105,13 @@ describe('FEAT-H018 — acting BFF routes (TASK-H018-01)', () => {
       ACTING_MEMBERSHIPS(fakeRequest(), groupParams),
       ACTING_RESPOND(jsonRequest({ membership_id: 'm', accept: true }), groupParams),
       ACTING_LEAVE(jsonRequest({ context_group_id: 'b' }), groupParams),
-    ])) as RouteResponse[];
+    ])) as unknown as RouteResponse[];
     for (const r of results) expect(r.status).toBe(401);
   });
 
   it('GET /api/me/acting-contexts relays the wieldable groups', async () => {
     fetchActingContexts.mockResolvedValue([{ group_id: 'a', name: 'GoGCanaryName' }]);
-    const res = (await ACTING_CONTEXTS(fakeRequest())) as RouteResponse;
+    const res = (await ACTING_CONTEXTS(fakeRequest())) as unknown as RouteResponse;
     expect(res.status).toBe(200);
     expect(res.body).toEqual([{ group_id: 'a', name: 'GoGCanaryName' }]);
     expect(telemetryIsContentFree()).toBe(true);
@@ -121,7 +121,7 @@ describe('FEAT-H018 — acting BFF routes (TASK-H018-01)', () => {
     fetchActingContexts.mockResolvedValue([]);
     const res = (await ACTING_CONTEXTS(
       fakeRequest('http://x/api/me/acting-contexts?context=ctx-1'),
-    )) as RouteResponse;
+    )) as unknown as RouteResponse;
     expect(res.status).toBe(200);
     const args = (fetchActingContexts as jest.Mock).mock.calls[0] as unknown[];
     expect(args[1]).toBe('ctx-1');
@@ -132,7 +132,7 @@ describe('FEAT-H018 — acting BFF routes (TASK-H018-01)', () => {
     const ok = (await INVITE_GROUP(
       jsonRequest({ invited_group_id: 'a' }),
       groupParams,
-    )) as RouteResponse;
+    )) as unknown as RouteResponse;
     expect(ok.status).toBe(200);
 
     inviteGroup.mockRejectedValue(
@@ -141,7 +141,7 @@ describe('FEAT-H018 — acting BFF routes (TASK-H018-01)', () => {
     const cycle = (await INVITE_GROUP(
       jsonRequest({ invited_group_id: 'a' }),
       groupParams,
-    )) as RouteResponse;
+    )) as unknown as RouteResponse;
     expect(cycle.status).toBe(409);
     expect(cycle.body.error).toMatch(/membership cycle is not allowed/);
   });
@@ -151,30 +151,30 @@ describe('FEAT-H018 — acting BFF routes (TASK-H018-01)', () => {
     const missing = (await INVITE_GROUP(
       jsonRequest({ invited_group_id: 'ghost' }),
       groupParams,
-    )) as RouteResponse;
+    )) as unknown as RouteResponse;
     expect(missing.status).toBe(404);
 
     inviteGroup.mockRejectedValue(sqlstate('42501', 'you do not have permission to invite members'));
     const refused = (await INVITE_GROUP(
       jsonRequest({ invited_group_id: 'a' }),
       groupParams,
-    )) as RouteResponse;
+    )) as unknown as RouteResponse;
     expect(refused.status).toBe(403);
 
-    const badBody = (await INVITE_GROUP(jsonRequest({}), groupParams)) as RouteResponse;
+    const badBody = (await INVITE_GROUP(jsonRequest({}), groupParams)) as unknown as RouteResponse;
     expect(badBody.status).toBe(400);
     expect(inviteGroup).toHaveBeenCalledTimes(2);
   });
 
   it('GET invitable-groups requires q and never puts the query in telemetry', async () => {
-    const empty = (await INVITABLE_GROUPS(fakeRequest('http://x/api'), groupParams)) as RouteResponse;
+    const empty = (await INVITABLE_GROUPS(fakeRequest('http://x/api'), groupParams)) as unknown as RouteResponse;
     expect(empty.status).toBe(400);
 
     searchInvitableGroups.mockResolvedValue([{ id: 'a', name: 'Nya' }]);
     const res = (await INVITABLE_GROUPS(
       fakeRequest('http://x/api?q=GoGCanaryQuery'),
       groupParams,
-    )) as RouteResponse;
+    )) as unknown as RouteResponse;
     expect(res.status).toBe(200);
     expect(telemetryIsContentFree()).toBe(true);
   });
@@ -183,19 +183,19 @@ describe('FEAT-H018 — acting BFF routes (TASK-H018-01)', () => {
     fetchGroupMembershipsOf.mockResolvedValue([
       { membership_id: 'm1', group_id: 'b', name: 'B', status: 'invited' },
     ]);
-    const res = (await ACTING_MEMBERSHIPS(fakeRequest(), groupParams)) as RouteResponse;
+    const res = (await ACTING_MEMBERSHIPS(fakeRequest(), groupParams)) as unknown as RouteResponse;
     expect(res.status).toBe(200);
 
     fetchGroupMembershipsOf.mockRejectedValue(
       sqlstate('42501', 'you do not have permission to act as this group'),
     );
-    const keyless = (await ACTING_MEMBERSHIPS(fakeRequest(), groupParams)) as RouteResponse;
+    const keyless = (await ACTING_MEMBERSHIPS(fakeRequest(), groupParams)) as unknown as RouteResponse;
     expect(keyless.status).toBe(403);
     expect(keyless.body.error).toMatch(/act as this group/);
   });
 
   it('POST acting/respond validates the body and passes P0001 copy through as 409', async () => {
-    const badBody = (await ACTING_RESPOND(jsonRequest({ accept: true }), groupParams)) as RouteResponse;
+    const badBody = (await ACTING_RESPOND(jsonRequest({ accept: true }), groupParams)) as unknown as RouteResponse;
     expect(badBody.status).toBe(400);
 
     respondToGroupInvitation.mockRejectedValue(
@@ -204,7 +204,7 @@ describe('FEAT-H018 — acting BFF routes (TASK-H018-01)', () => {
     const stale = (await ACTING_RESPOND(
       jsonRequest({ membership_id: 'm1', accept: true }),
       groupParams,
-    )) as RouteResponse;
+    )) as unknown as RouteResponse;
     expect(stale.status).toBe(409);
     expect(stale.body.error).toMatch(/not active/);
   });
@@ -216,7 +216,7 @@ describe('FEAT-H018 — acting BFF routes (TASK-H018-01)', () => {
     const res = (await ACTING_LEAVE(
       jsonRequest({ context_group_id: 'b' }),
       groupParams,
-    )) as RouteResponse;
+    )) as unknown as RouteResponse;
     expect(res.status).toBe(409);
     expect(res.body.error).toMatch(/transfer stewardship first/);
   });

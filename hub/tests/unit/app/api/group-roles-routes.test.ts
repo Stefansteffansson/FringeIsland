@@ -24,13 +24,13 @@ const getClaims = jest.fn<
 >();
 const fetchGroupRoles = jest.fn<() => Promise<unknown>>();
 const fetchRoleTemplates = jest.fn<() => Promise<unknown>>();
-const createGroupRole = jest.fn<() => Promise<unknown>>();
-const updateGroupRole = jest.fn<() => Promise<unknown>>();
-const setGroupRolePermission = jest.fn<() => Promise<unknown>>();
-const deleteGroupRole = jest.fn<() => Promise<unknown>>();
-const assignMemberRole = jest.fn<() => Promise<unknown>>();
-const removeMemberRole = jest.fn<() => Promise<unknown>>();
-const fetchMyPermissions = jest.fn<() => Promise<unknown>>();
+const createGroupRole = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const updateGroupRole = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const setGroupRolePermission = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const deleteGroupRole = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const assignMemberRole = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const removeMemberRole = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const fetchMyPermissions = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -144,7 +144,7 @@ describe('GET /api/groups/[id]/roles (fabric)', () => {
   });
 
   it('returns 200 with the fabric pass-through + the foundational templates, telemetry id-only', async () => {
-    const res = (await GET_ROLES(fakeRequest, idParams('grp-1'))) as {
+    const res = (await GET_ROLES(fakeRequest, idParams('grp-1'))) as unknown as {
       status: number;
       body: { fabric: typeof FABRIC; templates: typeof TEMPLATES };
     };
@@ -187,7 +187,7 @@ describe('GET /api/groups/[id]/roles (fabric)', () => {
     // presentation composition.
     fetchRoleTemplates.mockRejectedValue({ code: '42501' });
 
-    const res = (await GET_ROLES(fakeRequest, idParams('grp-1'))) as {
+    const res = (await GET_ROLES(fakeRequest, idParams('grp-1'))) as unknown as {
       status: number;
       body: { fabric: typeof FABRIC; templates: unknown[] };
     };
@@ -224,7 +224,7 @@ describe('POST /api/groups/[id]/roles (create)', () => {
     const res = (await POST_ROLE(
       jsonRequest({ name: 'Secret Wrangler', permissions: ['view_forum'] }),
       idParams('grp-1'),
-    )) as { status: number; body: { id: string } };
+    )) as unknown as { status: number; body: { id: string } };
     expect(res.status).toBe(201);
     expect(res.body.id).toBe('role-new');
     expect(createGroupRole).toHaveBeenCalledWith(
@@ -257,7 +257,7 @@ describe('POST /api/groups/[id]/roles (create)', () => {
 
   it('maps other failures to 500, content-free', async () => {
     createGroupRole.mockRejectedValue({ code: 'XX000', message: 'Secret Wrangler exploded' });
-    const res = (await POST_ROLE(jsonRequest({ name: 'Secret Wrangler' }), idParams('grp-1'))) as {
+    const res = (await POST_ROLE(jsonRequest({ name: 'Secret Wrangler' }), idParams('grp-1'))) as unknown as {
       status: number;
       body: { error: string };
     };
@@ -273,7 +273,7 @@ describe('PATCH /api/groups/[id]/roles/[roleId] (update / grant toggle)', () => 
     const res = (await PATCH_ROLE(
       jsonRequest({ set_permission: { name: 'view_forum', granted: true } }),
       roleParams('grp-1', 'role-1'),
-    )) as { status: number; body: { role: typeof ROLE_ENTRY } };
+    )) as unknown as { status: number; body: { role: typeof ROLE_ENTRY } };
     expect(res.status).toBe(200);
     expect(res.body.role).toEqual(ROLE_ENTRY);
     expect(setGroupRolePermission).toHaveBeenCalledWith(
@@ -319,7 +319,7 @@ describe('PATCH /api/groups/[id]/roles/[roleId] (update / grant toggle)', () => 
     const res = (await PATCH_ROLE(
       jsonRequest({ set_permission: { name: 'edit_group_settings', granted: true } }),
       roleParams('grp-1', 'role-1'),
-    )) as { status: number; body: { error: string } };
+    )) as unknown as { status: number; body: { error: string } };
     expect(res.status).toBe(403);
     expect(res.body.error).toContain('cannot grant');
     expect(emitted('roles.update_refused', 'u1')).toBe(true);
@@ -328,7 +328,7 @@ describe('PATCH /api/groups/[id]/roles/[roleId] (update / grant toggle)', () => 
 
 describe('DELETE /api/groups/[id]/roles/[roleId]', () => {
   it('deletes and returns 200 { ok }', async () => {
-    const res = (await DELETE_ROLE(fakeRequest, roleParams('grp-1', 'role-1'))) as {
+    const res = (await DELETE_ROLE(fakeRequest, roleParams('grp-1', 'role-1'))) as unknown as {
       status: number;
       body: { ok: boolean };
     };
@@ -343,7 +343,7 @@ describe('DELETE /api/groups/[id]/roles/[roleId]', () => {
       code: 'P0001',
       message: 'role is held by members — remove the role from all holders first',
     });
-    const res = (await DELETE_ROLE(fakeRequest, roleParams('grp-1', 'role-1'))) as {
+    const res = (await DELETE_ROLE(fakeRequest, roleParams('grp-1', 'role-1'))) as unknown as {
       status: number;
       body: { error: string };
     };
@@ -383,7 +383,7 @@ describe('POST/DELETE /api/groups/[id]/members/[memberGroupId]/roles/[roleId] (a
       code: '42501',
       message: 'cannot assign a role granting permissions you do not hold',
     });
-    let res = (await ASSIGN(fakeRequest, bindingParams('grp-1', 'pg-2', 'role-1'))) as {
+    let res = (await ASSIGN(fakeRequest, bindingParams('grp-1', 'pg-2', 'role-1'))) as unknown as {
       status: number;
       body: { error: string };
     };
@@ -392,7 +392,7 @@ describe('POST/DELETE /api/groups/[id]/members/[memberGroupId]/roles/[roleId] (a
     expect(emitted('roles.assign_refused', 'u1')).toBe(true);
 
     assignMemberRole.mockRejectedValue({ code: '22023' });
-    res = (await ASSIGN(fakeRequest, bindingParams('grp-1', 'pg-2', 'role-1'))) as {
+    res = (await ASSIGN(fakeRequest, bindingParams('grp-1', 'pg-2', 'role-1'))) as unknown as {
       status: number;
       body: { error: string };
     };
@@ -400,7 +400,7 @@ describe('POST/DELETE /api/groups/[id]/members/[memberGroupId]/roles/[roleId] (a
     expect(emitted('roles.assign_invalid', 'u1')).toBe(true);
 
     assignMemberRole.mockRejectedValue({ code: '23505' });
-    res = (await ASSIGN(fakeRequest, bindingParams('grp-1', 'pg-2', 'role-1'))) as {
+    res = (await ASSIGN(fakeRequest, bindingParams('grp-1', 'pg-2', 'role-1'))) as unknown as {
       status: number;
       body: { error: string };
     };
@@ -411,6 +411,7 @@ describe('POST/DELETE /api/groups/[id]/members/[memberGroupId]/roles/[roleId] (a
   it('removes and returns 200; the last-Steward invariant (P0001) maps to 409 with the message', async () => {
     let res = (await UNASSIGN(fakeRequest, bindingParams('grp-1', 'pg-2', 'role-1'))) as {
       status: number;
+      body: { error?: string };
     };
     expect(res.status).toBe(200);
     expect(removeMemberRole).toHaveBeenCalledWith(expect.anything(), 'grp-1', 'pg-2', 'role-1');
@@ -420,7 +421,7 @@ describe('POST/DELETE /api/groups/[id]/members/[memberGroupId]/roles/[roleId] (a
       code: 'P0001',
       message: 'Cannot remove the last Steward from the group. Assign another Steward first.',
     });
-    res = (await UNASSIGN(fakeRequest, bindingParams('grp-1', 'pg-1', 'role-s'))) as {
+    res = (await UNASSIGN(fakeRequest, bindingParams('grp-1', 'pg-1', 'role-s'))) as unknown as {
       status: number;
       body: { error: string };
     };
@@ -450,7 +451,7 @@ describe('GET /api/groups/[id]/my-permissions (GRP-8 read)', () => {
   });
 
   it('returns 200 { permissions, member_group_id }, telemetry id-only', async () => {
-    const res = (await GET_MY_PERMISSIONS(fakeRequest, idParams('grp-1'))) as {
+    const res = (await GET_MY_PERMISSIONS(fakeRequest, idParams('grp-1'))) as unknown as {
       status: number;
       body: { permissions: string[]; member_group_id: string };
     };

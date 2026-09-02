@@ -12,7 +12,7 @@ jest.mock('@/lib/auth/cache-registry', () => ({
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const clientModule = () => require('@/lib/messages/client') as typeof import('@/lib/messages/client');
 
-type FetchMock = jest.Mock<Promise<Response>, [RequestInfo | URL, RequestInit?]>;
+type FetchMock = jest.Mock<typeof fetch>;
 
 function okJson(body: unknown): Response {
   return { ok: true, status: 200, json: async () => body } as unknown as Response;
@@ -34,7 +34,7 @@ describe('messages client — inbox session cache (B4) + W9', () => {
   beforeEach(() => {
     jest.resetModules();
     registerCacheInvalidator.mockClear();
-    fetchMock = jest.fn() as unknown as FetchMock;
+    fetchMock = jest.fn<typeof fetch>();
     (globalThis as { fetch: unknown }).fetch = fetchMock;
   });
 

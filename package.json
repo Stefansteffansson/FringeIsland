@@ -10,6 +10,7 @@
     "build": "npm run build -w hub",
     "start": "npm run start -w hub",
     "lint": "npm run lint -w hub",
+    "typecheck": "npm run typecheck -w hub",
     "dashboard": "node scripts/dashboard/generate.js",
     "dashboard:serve": "node scripts/dashboard/serve.js",
     "test": "npm run test -w hub",

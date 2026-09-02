@@ -1,7 +1,7 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { RolesFabric } from '@/lib/groups/queries';
+import type { RoleTemplateOption, RolesFabric } from '@/lib/groups/queries';
 
 /**
  * FEAT-H014 STORY-1/2 (unit) — the roles panel (GRP-6).
@@ -77,9 +77,25 @@ const FABRIC: RolesFabric = {
   ],
 };
 
-const TEMPLATES = [
-  { id: 'tmpl-g', name: 'Guide Role Template', description: null },
-  { id: 'tmpl-s', name: 'Steward Role Template', description: null },
+// RD-B FEAT-PC028 STORY-2: adoption state rides the option; null = not adopted, which is
+// the state these cells always exercised (the fields were simply absent before).
+const TEMPLATES: RoleTemplateOption[] = [
+  {
+    id: 'tmpl-g',
+    name: 'Guide Role Template',
+    description: null,
+    adopted_group_role_id: null,
+    adopted_version_number: null,
+    current_version_number: null,
+  },
+  {
+    id: 'tmpl-s',
+    name: 'Steward Role Template',
+    description: null,
+    adopted_group_role_id: null,
+    adopted_version_number: null,
+    current_version_number: null,
+  },
 ];
 
 const flagless: RolesFabric = {

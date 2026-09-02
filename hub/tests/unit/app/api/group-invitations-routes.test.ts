@@ -170,7 +170,7 @@ describe('GET /api/groups/[id]/invitations (pending list)', () => {
   });
 
   it('200 pass-through; telemetry id-only (no emails ever)', async () => {
-    const res = (await GET_PENDING(fakeRequest, idParams('grp-1'))) as {
+    const res = (await GET_PENDING(fakeRequest, idParams('grp-1'))) as unknown as {
       status: number;
       body: typeof PENDING;
     };
@@ -208,7 +208,7 @@ describe('POST /api/groups/[id]/invitations (invite: member XOR email)', () => {
     const res = (await POST_INVITE(
       jsonRequest({ email: 'newcomer@example.test' }),
       idParams('grp-1'),
-    )) as { status: number; body: { kind: string } };
+    )) as unknown as { status: number; body: { kind: string } };
     expect(res.status).toBe(201);
     expect(res.body.kind).toBe('member_invitation');
     expect(emitted('invitations.invite_email', 'u1')).toBe(true);
@@ -234,7 +234,7 @@ describe('POST /api/groups/[id]/invitations (invite: member XOR email)', () => {
     const res = (await POST_INVITE(
       jsonRequest({ member_group_id: 'pg-2' }),
       idParams('grp-1'),
-    )) as { status: number; body: { error: string } };
+    )) as unknown as { status: number; body: { error: string } };
     expect(res.status).toBe(409);
   });
 
@@ -304,7 +304,7 @@ describe('DELETE cancel routes (member + email shapes, never conflated)', () => 
 
 describe('GET /api/groups/[id]/member-search', () => {
   it('relays q and returns hits; the query itself never enters telemetry', async () => {
-    const res = (await SEARCH(searchRequest('GCFindme'), idParams('grp-1'))) as {
+    const res = (await SEARCH(searchRequest('GCFindme'), idParams('grp-1'))) as unknown as {
       status: number;
       body: typeof HITS;
     };
@@ -341,12 +341,12 @@ describe('GET /api/groups/[id]/member-search', () => {
 
 describe('GET /api/me/invitations + POST/DELETE /api/me/invitations/[groupId]', () => {
   it('returns my invitations (200); 401 sessionless', async () => {
-    const res = (await GET_MINE(fakeRequest)) as { status: number; body: typeof MINE };
+    const res = (await GET_MINE()) as unknown as { status: number; body: typeof MINE };
     expect(res.status).toBe(200);
     expect(res.body).toEqual(MINE);
     expect(emitted('invitations.mine', 'u1')).toBe(true);
     getClaims.mockResolvedValue({ data: null, error: null });
-    const anon = (await GET_MINE(fakeRequest)) as { status: number };
+    const anon = (await GET_MINE()) as { status: number };
     expect(anon.status).toBe(401);
   });
 

@@ -20,7 +20,9 @@ describe('FEAT-H014/H018 — MyPermissionsPanel', () => {
   const onReload = jest.fn();
   const onActAsChange = jest.fn();
 
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('renders the effective permission names as chips', () => {
     render(

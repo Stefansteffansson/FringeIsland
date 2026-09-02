@@ -1,5 +1,5 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
-import { getTelemetrySink } from '@/lib/observability/telemetry';
+import { getTelemetrySink, resetTelemetrySink } from '@/lib/observability/telemetry';
 
 /**
  * FEAT-H019 (unit) — the Journeys BFF routes (Cycle J-A):
@@ -22,11 +22,11 @@ import { getTelemetrySink } from '@/lib/observability/telemetry';
 const getUser = jest.fn<() => Promise<{ data: { user: { id: string } | null } }>>();
 const getVerifiedUserId = jest.fn<() => Promise<string | null>>();
 const fetchJourneyCatalog = jest.fn<() => Promise<unknown[]>>();
-const fetchJourneyDetail = jest.fn<() => Promise<unknown>>();
+const fetchJourneyDetail = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 const fetchMyEnrollments = jest.fn<() => Promise<unknown[]>>();
-const enrollSelfInJourney = jest.fn<() => Promise<unknown>>();
-const enrollGroupInJourney = jest.fn<() => Promise<unknown>>();
-const withdrawFromJourney = jest.fn<() => Promise<unknown>>();
+const enrollSelfInJourney = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const enrollGroupInJourney = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const withdrawFromJourney = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -79,7 +79,7 @@ const emitted = (name: string, actor?: string) =>
 
 beforeEach(() => {
   jest.clearAllMocks();
-  getTelemetrySink().length = 0;
+  resetTelemetrySink();
   getUser.mockResolvedValue({ data: { user: { id: 'fim-1' } } });
   getVerifiedUserId.mockResolvedValue('fim-1');
 });

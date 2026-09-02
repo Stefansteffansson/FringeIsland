@@ -12,12 +12,11 @@ import type { ConsentState, ConsentEffectiveEntry } from '@/lib/consent/queries'
  * failure surfaces a clear error and leaves the decision as it was.
  */
 const fetchConsentState = jest.fn<() => Promise<ConsentState>>();
-const postConsentDecision = jest.fn<() => Promise<ConsentEffectiveEntry>>();
+const postConsentDecision = jest.fn<(purpose: string, decision: string) => Promise<ConsentEffectiveEntry>>();
 
 jest.mock('@/lib/consent/client', () => ({
   fetchConsentState: () => fetchConsentState(),
-  postConsentDecision: (...args: unknown[]) =>
-    (postConsentDecision as unknown as (...a: unknown[]) => unknown)(...args),
+  postConsentDecision: (purpose: string, decision: string) => postConsentDecision(purpose, decision),
 }));
 
 import { ConsentPanel } from '@/components/consent/ConsentPanel';

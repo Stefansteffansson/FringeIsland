@@ -12,7 +12,7 @@ import { getTelemetrySink } from '@/lib/observability/telemetry';
  * `app/api/account/consent/route.ts`.
  */
 const getUser = jest.fn<() => Promise<{ data: { user: { id: string } | null } }>>();
-const recordConsentDecision = jest.fn<() => Promise<unknown>>();
+const recordConsentDecision = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -61,7 +61,7 @@ describe('POST /api/account/consent', () => {
   });
 
   it('returns 200 with the updated effective entry and emits write telemetry', async () => {
-    const res = (await POST(req({ purpose: 'product_analytics', decision: 'granted' }))) as {
+    const res = (await POST(req({ purpose: 'product_analytics', decision: 'granted' }))) as unknown as {
       status: number;
       body: { entry: { decision: string } };
     };

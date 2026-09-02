@@ -11,8 +11,8 @@ jest.mock('@/lib/auth/AuthContext', () => ({
   useAuth: () => ({ identity, user: { id: 'u1' } }),
 }));
 
-const fetchConversations = jest.fn<Promise<unknown>, []>();
-const peekConversations = jest.fn<unknown, []>(() => null);
+const fetchConversations = jest.fn<() => Promise<unknown>>();
+const peekConversations = jest.fn<() => unknown>(() => null);
 const invalidateMessagesCache = jest.fn();
 jest.mock('@/lib/messages/client', () => ({
   fetchConversations: () => fetchConversations(),

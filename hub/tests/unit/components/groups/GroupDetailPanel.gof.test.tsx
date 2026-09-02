@@ -68,7 +68,9 @@ const baseGroup = (over: Partial<GroupDetail>): GroupDetail => ({
 describe('FEAT-H018 — GroupDetailPanel member kinds (STORY-4/5)', () => {
   const onRefresh = jest.fn();
 
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('badges group and system members; persons carry no kind badge; unknown kinds render raw', () => {
     render(

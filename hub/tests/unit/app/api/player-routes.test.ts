@@ -1,5 +1,5 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
-import { getTelemetrySink } from '@/lib/observability/telemetry';
+import { getTelemetrySink, resetTelemetrySink } from '@/lib/observability/telemetry';
 
 /**
  * FEAT-H020 (unit) — the player BFF routes (Cycle J-B):
@@ -22,9 +22,9 @@ import { getTelemetrySink } from '@/lib/observability/telemetry';
 
 const getUser = jest.fn<() => Promise<{ data: { user: { id: string } | null } }>>();
 const getVerifiedUserId = jest.fn<() => Promise<string | null>>();
-const fetchPlayerState = jest.fn<() => Promise<unknown>>();
-const enterJourneyStep = jest.fn<() => Promise<unknown>>();
-const completeJourneyStep = jest.fn<() => Promise<unknown>>();
+const fetchPlayerState = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const enterJourneyStep = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const completeJourneyStep = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -71,7 +71,7 @@ const emitted = (name: string, actor?: string) =>
 
 beforeEach(() => {
   jest.clearAllMocks();
-  getTelemetrySink().length = 0;
+  resetTelemetrySink();
   getUser.mockResolvedValue({ data: { user: { id: 'fim-1' } } });
   getVerifiedUserId.mockResolvedValue('fim-1');
 });

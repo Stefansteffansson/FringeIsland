@@ -1,5 +1,5 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
-import { getTelemetrySink } from '@/lib/observability/telemetry';
+import { getTelemetrySink, resetTelemetrySink } from '@/lib/observability/telemetry';
 
 /**
  * FEAT-H019 STORY-6 (unit) — the GRP-4 enrolment-summary slice on
@@ -64,7 +64,7 @@ const SUMMARY = { count: 1, enrollments: [{ journey_id: 'j1', title: 'T', status
 
 beforeEach(() => {
   jest.clearAllMocks();
-  getTelemetrySink().length = 0;
+  resetTelemetrySink();
   getVerifiedUserId.mockResolvedValue('fim-1');
   fetchGroupDetail.mockResolvedValue(GROUP);
   fetchGroupEnrollmentSummary.mockResolvedValue(SUMMARY);

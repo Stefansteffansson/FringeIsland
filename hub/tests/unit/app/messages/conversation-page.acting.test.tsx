@@ -1,7 +1,8 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { ConversationDetail } from '@/lib/messages/queries';
+import type { ConversationDetail, ConversationMessage } from '@/lib/messages/queries';
+import type { fetchConversationDetail, markRead, sendMessage } from '@/lib/messages/client';
 
 /**
  * FEAT-H047 STORY-2/3 (unit, RED-FIRST) — the param-carried wielded thread.
@@ -42,15 +43,16 @@ jest.mock('@/components/reports/ReportDialog', () => ({
 }));
 
 const mockMsgs = {
-  fetchConversationDetail: jest.fn(),
-  markRead: jest.fn(),
-  sendMessage: jest.fn(),
+  fetchConversationDetail: jest.fn<typeof fetchConversationDetail>(),
+  markRead: jest.fn<typeof markRead>(),
+  sendMessage: jest.fn<typeof sendMessage>(),
 };
 jest.mock('@/lib/messages/client', () => ({
   __esModule: true,
-  fetchConversationDetail: (...a: unknown[]) => mockMsgs.fetchConversationDetail(...a),
-  markRead: (...a: unknown[]) => mockMsgs.markRead(...a),
-  sendMessage: (...a: unknown[]) => mockMsgs.sendMessage(...a),
+  fetchConversationDetail: (...a: Parameters<typeof fetchConversationDetail>) =>
+    mockMsgs.fetchConversationDetail(...a),
+  markRead: (...a: Parameters<typeof markRead>) => mockMsgs.markRead(...a),
+  sendMessage: (...a: Parameters<typeof sendMessage>) => mockMsgs.sendMessage(...a),
 }));
 
 import ConversationPage from '@/app/messages/[id]/page';
@@ -119,27 +121,27 @@ describe('ConversationPage — the param-carried hat (FEAT-H047)', () => {
 
   it('S2: a wielded send carries the acting group, shows NO optimistic bubble, and RE-READS', async () => {
     const user = userEvent.setup();
+    // The confirmed row the send resolves with — the wielded path ignores it
+    // and re-reads (the page only appends the send result on the personal path).
+    const SENT: ConversationMessage = {
+      id: 'm9',
+      sender_group_id: 'ga',
+      content: 'as the group',
+      is_deleted: false,
+      created_at: '2026-08-19T10:05:00Z',
+    };
     const DETAIL_AFTER = {
       ...DETAIL,
-      messages: [
-        ...DETAIL.messages,
-        {
-          id: 'm9',
-          sender_group_id: 'ga',
-          content: 'as the group',
-          is_deleted: false,
-          created_at: '2026-08-19T10:05:00Z',
-        },
-      ],
+      messages: [...DETAIL.messages, SENT],
     } as unknown as ConversationDetail;
     mockMsgs.sendMessage.mockImplementation(
       () =>
-        new Promise((resolve) =>
+        new Promise<ConversationMessage>((resolve) =>
           setTimeout(() => {
             // the re-read after the send serves the confirmed row (and the
             // senders map — a first-time sender resolves on the re-read)
             mockMsgs.fetchConversationDetail.mockResolvedValue(DETAIL_AFTER);
-            resolve({ id: 'm9' });
+            resolve(SENT);
           }, 50),
         ),
     );

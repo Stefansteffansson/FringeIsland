@@ -12,7 +12,9 @@ import { signUpFim, CONSENT_REQUIRED_ERROR, DUPLICATE_EMAIL_ERROR } from '@/lib/
  * confirmations-on duplicate path (empty `identities`). From FEAT-H003 onward
  * the unit tier is written red-first.
  */
-function clientWith(signUp: ReturnType<typeof jest.fn>): SupabaseClient {
+type SignUpCredentials = Parameters<SupabaseClient['auth']['signUp']>[0];
+
+function clientWith(signUp: (...args: never[]) => unknown): SupabaseClient {
   return { auth: { signUp } } as unknown as SupabaseClient;
 }
 
@@ -33,7 +35,7 @@ describe('FEAT-H002 (unit) — signUpFim branch logic', () => {
   });
 
   it('passes the display name through as user metadata (the key handle_new_user reads)', async () => {
-    const signUp = jest.fn(async () => ({
+    const signUp = jest.fn<(creds: SignUpCredentials) => Promise<unknown>>(async () => ({
       data: {
         user: { id: 'u1', identities: [{}] },
         session: { access_token: 'a', refresh_token: 'r' },

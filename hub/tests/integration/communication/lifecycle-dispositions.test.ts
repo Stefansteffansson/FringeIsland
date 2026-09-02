@@ -405,7 +405,7 @@ describe('FEAT-PD012 — lifecycle dispositions: preserve-and-seal (C-E)', () =>
   describe('STORY-6 — CB-1 Mist-exclusion proof [REGRESSION — verify-and-record, expected green pre-migration]', () => {
     it('a Mist is refused at every conversation/message write door (42501, never a hole)', async () => {
       const m = await asMist();
-      const probes: Array<Promise<{ error: { code?: string } | null }>> = [
+      const probes: Array<PromiseLike<{ error: { code?: string } | null }>> = [
         m.rpc('send_message', { p_conversation_id: conv1, p_content: 'mist voice' }),
         m.rpc('get_or_create_dm_conversation', { p_other_group_id: memberA.personalGroupId }),
         m.rpc('create_group_conversation', { p_group_id: g1, p_title: 'mist thread' }),
@@ -422,7 +422,7 @@ describe('FEAT-PD012 — lifecycle dispositions: preserve-and-seal (C-E)', () =>
 
     it('a Mist is refused at every forum, window, report, and announcement write door (42501)', async () => {
       const m = await asMist();
-      const probes: Array<Promise<{ error: { code?: string } | null }>> = [
+      const probes: Array<PromiseLike<{ error: { code?: string } | null }>> = [
         m.rpc('create_forum_post', { p_group_id: g2, p_content: 'mist post' }),
         m.rpc('reply_to_forum_post', { p_parent_post_id: g2PostKept.id, p_content: 'mist reply' }),
         m.rpc('edit_own_forum_post', { p_post_id: g2PostKept.id, p_content: 'mist edit' }),

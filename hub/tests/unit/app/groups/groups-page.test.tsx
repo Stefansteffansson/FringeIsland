@@ -56,11 +56,11 @@ jest.mock('@/components/groups/MyInvitations', () => ({
 import GroupsPage from '@/app/groups/page';
 
 const GROUPS: GroupSummary[] = [
-  { id: 'g1', name: 'Dev Test Cohort', description: null, is_public: false, member_count: 1 },
+  { id: 'g1', name: 'Dev Test Cohort', description: null, label: null, is_public: false, created_at: '2026-07-01T10:00:00+00:00', member_count: 1, status: 'active' },
 ];
 const REFRESHED: GroupSummary[] = [
   ...GROUPS,
-  { id: 'g2', name: 'Nya gruppen', description: null, is_public: true, member_count: 2 },
+  { id: 'g2', name: 'Nya gruppen', description: null, label: null, is_public: true, created_at: '2026-07-02T10:00:00+00:00', member_count: 2, status: 'active' },
 ];
 
 beforeEach(() => {

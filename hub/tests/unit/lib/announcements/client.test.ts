@@ -41,7 +41,7 @@ function ann(o: Partial<Announcement> = {}): Announcement {
 const okJson = (payload: unknown) =>
   Promise.resolve({ ok: true, json: () => Promise.resolve(payload) } as Response);
 
-const mockFetch = jest.fn();
+const mockFetch = jest.fn<typeof fetch>();
 
 beforeEach(() => {
   invalidateAnnouncementsCache();
@@ -169,7 +169,7 @@ describe('announcements client — the wielded transport (FEAT-H048)', () => {
   it('a wielded send and retract each name the acting group in the body', async () => {
     mockFetch.mockReturnValue(okJson({ announcement: ann() }));
     await sendCommunityAnnouncement('g1', 'T', 'B', 'ga');
-    expect(JSON.parse(String(mockFetch.mock.calls[0][1].body))).toEqual({
+    expect(JSON.parse(String(mockFetch.mock.calls[0][1]?.body))).toEqual({
       title: 'T',
       body: 'B',
       acting: 'ga',
@@ -178,17 +178,17 @@ describe('announcements client — the wielded transport (FEAT-H048)', () => {
     mockFetch.mockReset();
     mockFetch.mockReturnValue(okJson({ retracted: { id: 'a1', retracted_at: 'now' } }));
     await retractAnnouncement('g1', 'a1', 'ga');
-    expect(JSON.parse(String(mockFetch.mock.calls[0][1].body))).toEqual({ acting: 'ga' });
+    expect(JSON.parse(String(mockFetch.mock.calls[0][1]?.body))).toEqual({ acting: 'ga' });
   });
 
   it('the personal write paths send no acting key', async () => {
     mockFetch.mockReturnValue(okJson({ announcement: ann() }));
     await sendCommunityAnnouncement('g1', 'T', 'B');
-    expect(JSON.parse(String(mockFetch.mock.calls[0][1].body))).toEqual({ title: 'T', body: 'B' });
+    expect(JSON.parse(String(mockFetch.mock.calls[0][1]?.body))).toEqual({ title: 'T', body: 'B' });
 
     mockFetch.mockReset();
     mockFetch.mockReturnValue(okJson({ retracted: { id: 'a1', retracted_at: 'now' } }));
     await retractAnnouncement('g1', 'a1');
-    expect(mockFetch.mock.calls[0][1].body).toBeUndefined();
+    expect(mockFetch.mock.calls[0][1]?.body).toBeUndefined();
   });
 });

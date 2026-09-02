@@ -19,7 +19,7 @@ import { submitReport, hasReported, invalidateReportsCache } from '@/lib/reports
 
 const okJson = (payload: unknown) =>
   Promise.resolve({ ok: true, json: () => Promise.resolve(payload) } as Response);
-const mockFetch = jest.fn();
+const mockFetch = jest.fn<typeof fetch>();
 
 beforeEach(() => {
   invalidateReportsCache();

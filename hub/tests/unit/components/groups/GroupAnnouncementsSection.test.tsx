@@ -3,6 +3,8 @@ import { HttpStatusError } from '@/lib/http/status-error';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { Announcement } from '@/lib/announcements/queries';
+import type * as AnnouncementsClient from '@/lib/announcements/client';
+import type * as GroupsClient from '@/lib/groups/client';
 
 /**
  * FEAT-H028 STORY-1/2 (unit) — the group page Announcements section.
@@ -17,25 +19,25 @@ import type { Announcement } from '@/lib/announcements/queries';
  */
 
 const mockClient = {
-  peekGroupAnnouncements: jest.fn(),
-  fetchGroupAnnouncements: jest.fn(),
-  sendCommunityAnnouncement: jest.fn(),
-  retractAnnouncement: jest.fn(),
-  dropGroupAnnouncements: jest.fn(),
+  peekGroupAnnouncements: jest.fn<typeof AnnouncementsClient.peekGroupAnnouncements>(),
+  fetchGroupAnnouncements: jest.fn<typeof AnnouncementsClient.fetchGroupAnnouncements>(),
+  sendCommunityAnnouncement: jest.fn<typeof AnnouncementsClient.sendCommunityAnnouncement>(),
+  retractAnnouncement: jest.fn<typeof AnnouncementsClient.retractAnnouncement>(),
+  dropGroupAnnouncements: jest.fn<typeof AnnouncementsClient.dropGroupAnnouncements>(),
 };
 jest.mock('@/lib/announcements/client', () => ({
   __esModule: true,
-  peekGroupAnnouncements: (...a: unknown[]) => mockClient.peekGroupAnnouncements(...a),
-  fetchGroupAnnouncements: (...a: unknown[]) => mockClient.fetchGroupAnnouncements(...a),
-  sendCommunityAnnouncement: (...a: unknown[]) => mockClient.sendCommunityAnnouncement(...a),
-  retractAnnouncement: (...a: unknown[]) => mockClient.retractAnnouncement(...a),
-  dropGroupAnnouncements: (...a: unknown[]) => mockClient.dropGroupAnnouncements(...a),
+  peekGroupAnnouncements: (...a: Parameters<typeof AnnouncementsClient.peekGroupAnnouncements>) => mockClient.peekGroupAnnouncements(...a),
+  fetchGroupAnnouncements: (...a: Parameters<typeof AnnouncementsClient.fetchGroupAnnouncements>) => mockClient.fetchGroupAnnouncements(...a),
+  sendCommunityAnnouncement: (...a: Parameters<typeof AnnouncementsClient.sendCommunityAnnouncement>) => mockClient.sendCommunityAnnouncement(...a),
+  retractAnnouncement: (...a: Parameters<typeof AnnouncementsClient.retractAnnouncement>) => mockClient.retractAnnouncement(...a),
+  dropGroupAnnouncements: (...a: Parameters<typeof AnnouncementsClient.dropGroupAnnouncements>) => mockClient.dropGroupAnnouncements(...a),
 }));
 
-const mockPerms = jest.fn();
+const mockPerms = jest.fn<typeof GroupsClient.fetchMyPermissions>();
 jest.mock('@/lib/groups/client', () => ({
   __esModule: true,
-  fetchMyPermissions: (...a: unknown[]) => mockPerms(...a),
+  fetchMyPermissions: (...a: Parameters<typeof GroupsClient.fetchMyPermissions>) => mockPerms(...a),
 }));
 
 import { GroupAnnouncementsSection } from '@/components/groups/GroupAnnouncementsSection';

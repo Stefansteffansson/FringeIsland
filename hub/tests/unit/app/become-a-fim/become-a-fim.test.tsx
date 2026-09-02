@@ -35,7 +35,7 @@ jest.mock('@/lib/onboarding/client', () => ({
 
 const push = jest.fn();
 const replace = jest.fn();
-const transcend = jest.fn(async () => ({ error: null as string | null }));
+const transcend = jest.fn<ReturnType<typeof useAuth>['transcend']>(async () => ({ error: null }));
 
 function mockAuth(identity: 'sessionless' | 'mist' | 'fim') {
   jest.mocked(useAuth).mockReturnValue({

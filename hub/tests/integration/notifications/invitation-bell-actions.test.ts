@@ -122,9 +122,9 @@ describe('FEAT-PD017 — bell-answerable personal invitations (N-E)', () => {
       createTestUser({ displayName: `NEe Eve ${runTag}` }),
       createTestUser({ displayName: `NEf Frank ${runTag}` }),
     ]);
-    const en = await runAdminSql(
+    const en = (await runAdminSql(
       `SELECT name FROM public.groups WHERE id = '${eve.personalGroupId}';`,
-    );
+    )) as Array<{ name: string }>;
     eveName = en[0].name;
   });
 
