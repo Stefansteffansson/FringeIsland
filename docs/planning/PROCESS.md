@@ -196,6 +196,7 @@ A work item is done when **every** applicable box is checked. "Applicable" matte
 - [ ] **Mobile responsive** — manual check on a small viewport for any UI change
 - [ ] **Supabase RLS policies applied** — every new table or new access pattern has explicit row-level security
 - [ ] **Vertical checklists pass** — the feature satisfies each applicable cross-cutting checklist in the five vertical specs (`docs/verticals/*/SPECIFICATION.md` §7)
+- [ ] **Post-apply verification covers the journeys nothing names** — when a migration changes surface-reachable behaviour, the affected E2E journeys join the post-apply verification set beside the sibling-assertion sweep: **run, not re-authored**, minutes per gate. The sibling sweep covers assertions that name the changed object; this covers the journeys that merely walk through it. Adopted at the Platform-Ops area gate (Q1, Stefan, 2026-08-02) after four E2E specs broke silently under COR-C and read as environment faults for a costly while; codified here at the Ferd leftovers pass (2026-09-02). The tier-level statement sits in [`docs/platform/CLAUDE.md`](../platform/CLAUDE.md) with the sibling-assertion rule.
 - [ ] **Builds without errors** locally and in CI
 - [ ] **Deployed to preview environment and verified** — not just merged
 - [ ] **README updated** if user-visible behavior changed
