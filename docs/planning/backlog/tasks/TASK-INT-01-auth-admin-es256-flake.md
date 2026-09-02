@@ -173,6 +173,12 @@ A preflight health check in `tests/integration/suite-setup.ts` was considered an
 - [ ] **When Supabase replies — the one open action.** Apply whatever they advise, then re-measure: `cd hub && npm run probe:auth` (the permanent probe at `hub/scripts/auth-admin-es256-probe.mjs`). It prints the ES256-flake rate against the ~5-8% baseline. **Remove the `decorateAuthAdminError` fence only when the flake reads 0 across a couple of runs.** If they confirm it's a known transient with no project-side fix, keep the fence and close this task as accepted-platform-limitation.
 - [ ] (If a fix lands) A full `tests/integration/` run completes green twice consecutively, and — if the cause turns out to be concurrency — enforce the "run integration suites serially" rule mechanically (jest `maxWorkers` for the integration project) rather than by memory.
 
+## 2026-09-02 — the close attempted at the Ferd leftovers pass; blocked on two gates
+
+- `npm run probe:auth`: **90 cycles, 0 ES256 flakes (0.0 %), 0 other errors** — against the 2026-07-23 baseline of ~5–8 %. The probe's own verdict: reproducible across a couple of runs ⇒ the vendor fix held.
+- Full `tests/integration` run 1 (the first since 2026-08-20): **87/90 suites, 1 237/1 241 cells**, zero ES256 signatures in the log. The four reds are **not this flake**: three are TASK-SEC-02's labelled sibling adaptations meeting the un-migrated substrate (held at #593), one is a genuine regression found by this very run (TASK-ANN-01, held at #594).
+- **The ×2-consecutive-green bar resumes after #593 and #594 apply**; a second probe run is owed at the same time. Until then this stays `review`.
+
 ## Notes
 
 - Separate trap seen the same day, already understood — **not part of this task**: a hand-rolled probe calling `admin.auth.admin.createUser` *without* `user_metadata.consent_accepted` fails with "Database error creating new user". That is `handle_new_user` correctly enforcing the ADR-U038 S3 consent gate. Working as designed; pass the consent metadata as the helper does.
