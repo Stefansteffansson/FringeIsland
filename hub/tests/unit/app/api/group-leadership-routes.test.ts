@@ -8,7 +8,7 @@ import { getTelemetrySink, resetTelemetrySink } from '@/lib/observability/teleme
  * POST /api/notifications/[id]/nomination-response,
  * POST /api/groups/[id]/close,
  * DELETE /api/groups/[id] (deliberate deletion — never member removal),
- * GET /api/me/nominations (the scoped pending-nomination read — A-NTF seam).
+ * (GET /api/me/nominations retired 2026-09-03 with its whole chain, TASK-H017-01.)
  *
  * Private BFF per ADR-U038 — the FEAT-PC014 contracts self-gate; these routes
  * only map session → 401, validate body shape, and map SQLSTATE → HTTP
@@ -28,7 +28,6 @@ const respondToNomination = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 const handToDeusEx = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 const closeGroup = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 const deleteGroup = jest.fn<(...a: unknown[]) => Promise<unknown>>();
-const fetchPendingNominations = jest.fn<() => Promise<unknown[]>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -60,8 +59,6 @@ jest.mock('@/lib/groups/leadership', () => ({
     (closeGroup as unknown as (...x: unknown[]) => unknown)(...a),
   deleteGroup: (...a: unknown[]) =>
     (deleteGroup as unknown as (...x: unknown[]) => unknown)(...a),
-  fetchPendingNominations: (...a: unknown[]) =>
-    (fetchPendingNominations as unknown as (...x: unknown[]) => unknown)(...a),
 }));
 
 import { POST as NOMINATE } from '@/app/api/groups/[id]/nominate-steward/route';
@@ -69,7 +66,6 @@ import { POST as HANDOVER } from '@/app/api/groups/[id]/hand-to-deusex/route';
 import { POST as RESPOND } from '@/app/api/notifications/[id]/nomination-response/route';
 import { POST as CLOSE } from '@/app/api/groups/[id]/close/route';
 import { DELETE as DELETE_GROUP } from '@/app/api/groups/[id]/route';
-import { GET as MY_NOMINATIONS } from '@/app/api/me/nominations/route';
 
 type RouteResponse = { status: number; body: { error?: string } & Record<string, unknown> };
 
@@ -118,7 +114,6 @@ beforeEach(() => {
   deleteGroup
     .mockReset()
     .mockResolvedValue({ group_id: 'grp-1', status: 'archived' });
-  fetchPendingNominations.mockReset().mockResolvedValue([]);
   resetTelemetrySink();
 });
 
@@ -149,14 +144,6 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
       }
       expect(nominateSteward).not.toHaveBeenCalled();
       expect(deleteGroup).not.toHaveBeenCalled();
-    });
-
-    it('401s the pending-nomination read without a session', async () => {
-      getVerifiedUserId.mockResolvedValue(null);
-      const res = (await MY_NOMINATIONS()) as unknown as RouteResponse;
-      expect(res.status).toBe(401);
-      expect(emitted('nominations.mine_unauthenticated')).toBe(true);
-      expect(fetchPendingNominations).not.toHaveBeenCalled();
     });
   });
 
@@ -390,35 +377,7 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
     });
   });
 
-  describe('GET /api/me/nominations (STORY-2 read — the A-NTF seam)', () => {
-    it('relays the scoped read', async () => {
-      fetchPendingNominations.mockResolvedValue([
-        {
-          notification_id: 'ntf-1',
-          group_id: 'grp-1',
-          group_name: 'GDCanaryName',
-          created_at: '2026-07-05T00:00:00Z',
-          expires_at: '2026-07-12T00:00:00Z',
-        },
-      ]);
-      const res = (await MY_NOMINATIONS()) as unknown as RouteResponse;
-      expect(res.status).toBe(200);
-      expect(Array.isArray(res.body)).toBe(true);
-      expect((res.body as unknown as unknown[]).length).toBe(1);
-      expect(emitted('nominations.mine', 'u1')).toBe(true);
-      expect(telemetryIsContentFree()).toBe(true);
-    });
-
-    it('500s content-free on failure', async () => {
-      fetchPendingNominations.mockImplementation(() => sqlErr('XX000', 'boom'));
-      const res = (await MY_NOMINATIONS()) as unknown as RouteResponse;
-      expect(res.status).toBe(500);
-      expect(res.body.error).not.toContain('boom');
-      expect(emitted('nominations.mine_failed', 'u1')).toBe(true);
-    });
-  });
-
-  it('keeps success telemetry content-free across all six handlers (STORY-6 canary)', async () => {
+  it('keeps success telemetry content-free across all five handlers (STORY-6 canary)', async () => {
     nominateSteward.mockResolvedValue({ group_id: 'grp-1', group_name: 'GDCanaryName' });
     handToDeusEx.mockResolvedValue({ group_name: 'GDCanaryName' });
     closeGroup.mockResolvedValue({ group_name: 'GDCanaryName' });
@@ -429,7 +388,6 @@ describe('FEAT-H017 — leadership transfer + closure BFF routes', () => {
     await RESPOND(jsonRequest({ accept: true }), idParams('ntf-1'));
     await CLOSE(fakeRequest, idParams('grp-1'));
     await DELETE_GROUP(fakeRequest, idParams('grp-1'));
-    await MY_NOMINATIONS();
     expect(telemetryIsContentFree()).toBe(true);
   });
 });

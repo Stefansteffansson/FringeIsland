@@ -116,7 +116,7 @@ As a member, I want the groups page not to do work that is thrown away, so that 
 - **DS-5 Communication:** the N-A/N-B contracts already consumed by the bell — `get_own_notifications`, `get_own_unread_notification_count`, `mark_notification_read`, `mark_all_notifications_read` (all verified deployed). No signature changes.
 - **PC-1 Infrastructure:** Supabase Realtime channel infrastructure (load-bearing per §L2 §4).
 - **FEAT-H027:** `hub/lib/realtime/manager.ts` and the `use-comm-channel.ts` hook pattern — consumed as-is, not modified.
-- **FEAT-H017:** owns `/api/me/nominations`, deliberately left intact; a follow-up is filed against it.
+- **FEAT-H017:** owns `/api/me/nominations`, deliberately left intact; a follow-up is filed against it. *(Closed 2026-09-03: TASK-H017-01 retired the whole chain — route, relay, and FEAT-PC016's contract.)*
 
 ## Cross-product impact
 

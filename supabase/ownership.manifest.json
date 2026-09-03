@@ -140,7 +140,6 @@
       "get_group_roles",
       "get_member_groups",
       "get_my_invitations",
-      "get_my_pending_nominations",
       "get_available_role_templates",
       "get_permission_name",
       "get_role_copy_diff",
