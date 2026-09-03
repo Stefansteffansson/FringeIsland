@@ -2,6 +2,11 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-09-03 — you can pause a journey and pick it up later ([FEAT-H019](../docs/products/hub/features/FEAT-H019-journey-catalogue-and-enrolment.md) · TASK-JRN-PAUSE-01)
+
+- **A walk you are on can now rest.** On a journey's page and inside the player there is a Pause; a paused journey shows "(paused)" on your journeys list with Resume beside it, and the player opens on a plain "This walk is paused" panel with Resume. No confirmation dialog — pausing is reversible, and resuming puts you back on exactly the step you were on, with everything you had done still done.
+- **What it deliberately does not do:** you can only pause your own travel — a group's journey is the group's, and one member does not pause it. Pausing tells no one. And if your group closes, or you leave it, a paused journey is held for review exactly as an active one would be.
+
 ## 2026-09-02 — platform admins can see a closed group's preserved threads ([FEAT-H041](../docs/products/hub/features/FEAT-H041-suspended-group-content-wing.md) · TASK-SEAL-01)
 
 - **When a group has closed, its group conversations are preserved — and now a platform admin can see that they exist.** Open a closed group in the admin area and a "Preserved threads" section lists each group thread with how many messages it holds and when it was last active. A thread that was sealed when its author departed is labelled *Sealed* with the date, and nothing about it is live: there is no way to open it, reply to it, or mistake it for an ongoing conversation. This is where evidence of bullying lands when someone leaves, so the admin plane should at least know it is there.

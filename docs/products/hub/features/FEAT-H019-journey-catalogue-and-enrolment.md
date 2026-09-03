@@ -44,7 +44,7 @@ Medium-plus — two pages, an enrolment block with two flows, a summary slice, f
 - No Mist-facing surface, no onboarding auto-launch (J-E, ADR-U045).
 - No authoring/publishing affordances (Journey Studio scope), no discovery/search/ranking (A-DIS/DS-6).
 - No realtime, no push notifications (durable rows land platform-side; rendering rides A-NTF).
-- No pause affordance (no write path exists; recorded, not built).
+- ~~No pause affordance (no write path exists; recorded, not built).~~ **Built 2026-09-03 (STORY-8, TASK-JRN-PAUSE-01):** own walks only. Still out: no group-walk pause, no reason prompt, no notification, no ConfirmModal (a pause is reversible — no ceremony).
 
 ## Stories
 
@@ -106,6 +106,18 @@ As the platform, I want every J-A surface action observable, content-free.
 - Given a successful catalogue load / detail load / self-enrol / group-enrol / withdraw, when the route completes, then a structured event fires (actor, journey id, group id where applicable, outcome) — no titles, descriptions, or member data in events.
 - Given any refused or failed call, when the route returns, then a failure-variant event fires with the mapped status — refusals are never silent.
 
+### STORY-8: Pause and resume my walk (JRN-19 — amendment 2026-09-03, TASK-JRN-PAUSE-01)
+As a traveller on my own walk, I want to pause it and pick it up later without ceremony, so resting is a state the Hub tells honestly, not a walk I abandon.
+
+**Acceptance criteria:**
+- Given an active own enrolment, when the traveller presses Pause on the journey detail's enrolment block or in the player, then no confirmation modal interposes (a pause is reversible), the contract is called, and on re-read the block reads "(paused)" with Resume in place of Continue — the affordance swaps on the payload's status, never on a client flip.
+- Given a paused own enrolment, when the traveller presses Resume on the detail block, on the `/journeys` card, or in the player's paused panel, then the walk is active on re-read and Continue returns; while paused the `/journeys` card shows "(paused)" and Resume, never Continue.
+- Given the player opened on a paused enrolment, when it boots, then it renders the honest paused panel (no canvas, no rail engagement) with Resume; on Resume the player re-reads and lands at the step it held before the pause — position carried.
+- Given a via-group enrolment, when the traveller looks for Pause, then no affordance exists (own rows only — the Hub renders per the payload, the contract refuses the rest).
+- Given a refusal (frozen, completed, withdrawn, already paused / not paused), when it returns, then the message shows in place and last-read truth stays.
+- Given a pause or resume succeeds, when the session cache holds the my-enrolments slice, then the confirmed status is written through to it before the re-read (the J-D write-through rule).
+- Given a pause or resume lands, then a durable telemetry event records it (a mutation — Q2), ids only.
+
 ## Platform dependencies
 
 - **[FEAT-PD002](../../../platform/domain/features/FEAT-PD002-journey-catalogue-and-enrolment-contracts.md)** — all six contracts + the viewer block + the write-narrowing (schema gate lands platform-side; this feature carries no migration).
@@ -118,9 +130,9 @@ The **Gimbal** consumes the same PD002 contracts for its journey surfaces; the v
 ## Vertical impact
 
 - **Privacy/GDPR:** enrolment state renders only to its subject (own enrolments) or through group-visibility scope (summary); no traveller lists, no comparative progress anywhere (DS-3 invariant 8); ids-only telemetry.
-- **Notifications:** group-enrolment durable rows are written platform-side (PD002); this surface renders nothing new — the bell/inbox is A-NTF's. None beyond relaying.
-- **Administration:** withdraw is ConfirmModal-gated and named; frozen-enrolment posture renders from the payload; no admin affordances (freeze/ownership are Console scope, board J-A5).
-- **Observability:** STORY-7 — content-free structured events on every action and failure; 403/404 mappings keep substrate refusals diagnosable; slice-failure of the summary is logged, never swallowed (ADR-U042 §2).
+- **Notifications:** group-enrolment durable rows are written platform-side (PD002); this surface renders nothing new — the bell/inbox is A-NTF's. None beyond relaying. **STORY-8 (2026-09-03):** pause/resume notify no one — the traveller's own act.
+- **Administration:** withdraw is ConfirmModal-gated and named; frozen-enrolment posture renders from the payload; no admin affordances (freeze/ownership are Console scope, board J-A5). **STORY-8 (2026-09-03):** Pause/Resume are ConfirmModal-free by design — reversible and the traveller's own; a paused walk still freezes under the ADR-U016 cascade (PD002 STORY-8), and the Hub renders that frozen posture as before.
+- **Observability:** STORY-7 — content-free structured events on every action and failure; 403/404 mappings keep substrate refusals diagnosable; slice-failure of the summary is logged, never swallowed (ADR-U042 §2). **STORY-8 (2026-09-03):** `journey.paused` / `journey.resumed` (+ the `_unauthenticated` / `_invalid` / `_refused` / `_missing` / `_conflict` / `_failed` family) mirror-emitted on the route pair, and the two successes adopt the durable leg (a mutation — Q2), ids only.
 - **Transactions:** None.
 - **Extensibility:** vocabulary-tolerant rendering (difficulty, status, step kinds); the enrolment block renders whatever the viewer block provides (additive payload growth safe); no journey-type branching anywhere in the surface.
 
@@ -129,7 +141,7 @@ The **Gimbal** consumes the same PD002 contracts for its journey surfaces; the v
 *(First Hub spec under [ADR-U043](../../../architecture/decisions/ADR-U043-performance-budgets.md); classes B1–B6, data-boot per [ADR-U042](../../../architecture/decisions/ADR-U042-first-paint-bootstrap-read-bff-bundle.md).)*
 
 - **First-paint class:** `/journeys` and `/journeys/[id]` are navigation targets — **B2** (cold ≤ 2.5 s, target 2.0 s) / **B3** (warm ≤ 1.0 s) / **B4** (revisit: no visible loading state — session-cached catalogue re-paints instantly with background revalidate). **Data-boot path: justified standalone reads + session cache** — not overview-bundle slices (nothing here is first-paint-at-landing; ADR-U042's promotion rule is not triggered). Detail navigation seeds from the catalogue's cached card data where present (title paints immediately; the full payload fills in).
-- **Interaction class:** enrol / group-enrol / withdraw are **B5**-bound — busy feedback within 100 ms on the pressed affordance, next paint ≤ 200 ms (the confirm/re-read completes in the background against last-read truth); card → detail navigation must paint within B3/B4.
+- **Interaction class:** enrol / group-enrol / withdraw — and, from STORY-8 (2026-09-03), pause / resume, which add no first-paint read anywhere (the affordances render from payloads already on the page) — are **B5**-bound — busy feedback within 100 ms on the pressed affordance, next paint ≤ 200 ms (the confirm/re-read completes in the background against last-read truth); card → detail navigation must paint within B3/B4.
 - **Loading states:** **B6** — < 1 s: nothing (the deferred 300 ms `LoadingState` covers this); 1–3 s: **skeleton** grid/page, never a spinner; > 3 s: treated as a defect (fails the area gate).
 - **Gate:** measured on the production stable domain, authenticated real path, cold + warm, ≥ 3 runs per scenario — every run within budget (the J-O3 waterfall; this page set joins the area-gate protocol).
 
@@ -149,3 +161,5 @@ Built Cycle J-A, 2026-07-07, consuming FEAT-PD002 API-first; carries no migratio
 **Performance DoD (ADR-U043):** budget section bound as authored (B2/B3/B4 pages, B5 interactions, B6 rule). Asserted at the unit tier: first paint = exactly 2 reads, zero duplicate fetches across auth-event churn (the groups-page 3x-refire guard), SkeletonGrid deferral + skeleton-not-spinner. In-repo prior art checked before new plumbing (session caches, `LoadingState`, card grid). **The production waterfall (cold + warm, ≥3 runs, stable domain) rides the J-O3 area gate with Stefan's live walk — pending at 6-done, per the completion plan's area-gate protocol.**
 
 **Test evidence (red-first TDD; labelled exceptions honest):** routes/lib 19 + cache 8 unit demonstrated red (module-absent) → green; pages/panel 22 red → green; slice 4 (3 red-first, 1 carried-forward 404 guard, labelled); detail-seed 1 red → green; perf DoD rows 4 **labelled test-after** (verification of behaviour built under the STORY suites); E2E 2 journeys green (solo travel arc; the wielding walk incl. the group page's journeys section). Final: unit **509/509** (74 suites), `next build` green, lint 0 errors (3 `react-hooks/set-state-in-effect` suppressions — new-plugin lint drift, pre-existing on main's groups page; disposition routed to the J-A retro). PC016's STORY-2 rider (leadership.ts thinning) landed in this cycle's surface branch.
+
+**Amendment 2026-09-03 (TASK-JRN-PAUSE-01, STORY-8).** Two BFF routes on the withdraw shape (`POST /api/journeys/[id]/pause` + `/resume`: getUser, the house SQLSTATE map with P0001's message through, and the durable leg on success — Q2), two lib relays, two transports that write the confirmed status through to the my-enrolments cache (the J-D rule); Pause/Resume on `JourneyEnrollmentPanel` (own active/paused rows only), "(paused)" + Resume on the `/journeys` card (individual walks), Pause in the player for an active own walk (`progress_sharing.available` marks the via-group side, PD005) and the honest paused panel with Resume; the no-param player resolution and the chooser now treat a paused walk as a walk. **Red-first:** 15 unit cells across five suites (routes module-absent; panel, list, player, cache) red → green; two pre-existing player cells that used `paused` as the stand-in for the generic non-active panel adapted and labelled (`withdrawn` is that status now). **E2E:** `journey-pause.spec.ts` — pause in the player, "(paused)" + Resume on the card, resume, re-enter on step 2 with step 1 ticked — runs against the applied substrate (the post-apply set). **A lint find:** a plain async handler with try/catch/finally in the list page's body made the React Compiler lint bail out of the page silently (an injected synchronous setState in the effect went unreported — the probe that exposed it); `useCallback` restored the analysis. The two `react-hooks/set-state-in-effect` suppression directives on `/journeys` and the player became unused once `load` / `applyState` gained a second caller and were removed (zero-warning lint), the reason left in place. Performance: no new first-paint read; Pause/Resume are B5 interactions.

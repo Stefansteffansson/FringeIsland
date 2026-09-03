@@ -100,7 +100,7 @@
 | 56 | Group journey enrollment | Not started | 0 | 51, 19 | Schema has `group_id` on `journey_enrollments` but no group enrollment flow or UI. |
 | 57 | Journey content delivery (step-by-step) | Partial | 40 | 52, 55 | `app/journeys/[id]/play/page.tsx` exists. `JourneyPlayer.tsx`, `StepContent.tsx`, `StepSidebar.tsx`, `ProgressBar.tsx` components exist. Basic player structure built, but content rendering completeness unclear. |
 | 58 | Journey progress tracking | Partial | 30 | 55, 57 | `journey_enrollments.progress_data` (JSONB). `ProgressBar.tsx` component exists. Progress persistence logic may be incomplete. |
-| 59 | Journey pause | Not started | 0 | 58 | `leave_group()` freezes enrollments (status='frozen'). No user-initiated journey pause. |
+| 59 | Journey pause | Done | 100 | 58 | Built 2026-09-03 (TASK-JRN-PAUSE-01): `pause_journey_enrollment` / `resume_journey_enrollment` (FEAT-PD002 STORY-8), own walks only; the freeze cascade reaches paused rows. |
 | 60 | Journey leave (with progress persisted) | Partial | 40 | 58 | `leave_group()` and `admin_exit_user_from_platform()` freeze non-public enrollments with `frozen_reason` + `frozen_at`. Progress is preserved. But no user-initiated "leave this journey" action. |
 | 61 | Journey resume (continue where left off) | Not started | 0 | 59, 60 | No resume logic. Frozen enrollments stay frozen. |
 | 62 | Journey completion | Not started | 0 | 58 | No completion detection or status transition. |
@@ -144,7 +144,7 @@
 | 85 | Journey enrollment UI | Partial | 50 | 55, 56 | `EnrollmentModal.tsx` exists. Individual enrollment via API route. Group enrollment not built. |
 | 86 | Journey content delivery UI | Partial | 40 | 57, 65 | `app/journeys/[id]/play/page.tsx` + `JourneyPlayer.tsx`, `StepContent.tsx`, `StepSidebar.tsx`, `ProgressBar.tsx`. Basic player exists but completeness unclear. |
 | 87 | Journey progress UI | Partial | 30 | 58 | `ProgressBar.tsx` exists. Progress display may be incomplete. |
-| 88 | Journey pause/leave/resume UI | Not started | 0 | 59, 60, 61 | No user-facing journey lifecycle controls. |
+| 88 | Journey pause/leave/resume UI | Done | 100 | 59, 60, 61 | Withdraw (FEAT-H019 STORY-5, J-A) + Pause/Resume on the detail block, the `/journeys` card and in the player (FEAT-H019 STORY-8, 2026-09-03). |
 | 89 | Forum UI | Partial | 70 | 66, 67 | `ForumSection.tsx`, `ForumComposer.tsx`, `ForumPost.tsx`, `ForumReplyList.tsx`. Embedded in group detail page. Permission-gated. |
 | 90 | Direct messaging UI | Partial | 60 | 68 | `app/messages/page.tsx` (list), `app/messages/[conversationId]/page.tsx` (thread). Real-time via MessagingContext. |
 | 91 | Group messaging UI | Not started | 0 | 69, 70, 71 | Depends on group messaging backend. |

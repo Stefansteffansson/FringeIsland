@@ -134,3 +134,56 @@ describe('detail + mutation transports (no optimistic state, errors carry HTTP s
     });
   });
 });
+
+describe('STORY-8 — pause / resume transports write the confirmed status through to the my-enrolments cache (TASK-JRN-PAUSE-01)', () => {
+  const cached = [
+    { enrollment_id: 'e1', kind: 'individual', journey_id: 'j1', status: 'active' },
+    { enrollment_id: 'e2', kind: 'via_group', journey_id: 'j2', status: 'active' },
+  ];
+
+  it('pauseEnrollment POSTs and patches ONLY the confirmed entry to paused', async () => {
+    fetchMock.mockResolvedValueOnce(okJson({ enrollments: cached }));
+    await client.fetchMyJourneyEnrollments();
+    const reply = { enrollment_id: 'e1', journey_id: 'j1', status: 'paused' };
+    fetchMock.mockResolvedValueOnce(okJson(reply));
+    await expect(client.pauseEnrollment('j1', 'e1')).resolves.toEqual(reply);
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      '/api/journeys/j1/pause',
+      expect.objectContaining({ method: 'POST', body: JSON.stringify({ enrollment_id: 'e1' }) }),
+    );
+    const mine = client.peekMyJourneyEnrollments()!;
+    expect(mine.find((e) => e.enrollment_id === 'e1')?.status).toBe('paused');
+    expect(mine.find((e) => e.enrollment_id === 'e2')?.status).toBe('active');
+  });
+
+  it('resumeEnrollment POSTs and patches the entry back to active', async () => {
+    fetchMock.mockResolvedValueOnce(okJson({ enrollments: [{ ...cached[0], status: 'paused' }] }));
+    await client.fetchMyJourneyEnrollments();
+    const reply = { enrollment_id: 'e1', journey_id: 'j1', status: 'active' };
+    fetchMock.mockResolvedValueOnce(okJson(reply));
+    await expect(client.resumeEnrollment('j1', 'e1')).resolves.toEqual(reply);
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      '/api/journeys/j1/resume',
+      expect.objectContaining({ method: 'POST', body: JSON.stringify({ enrollment_id: 'e1' }) }),
+    );
+    expect(client.peekMyJourneyEnrollments()?.[0].status).toBe('active');
+  });
+
+  it('a refused pause carries the BFF status + message and leaves the cache untouched', async () => {
+    fetchMock.mockResolvedValueOnce(okJson({ enrollments: cached }));
+    await client.fetchMyJourneyEnrollments();
+    fetchMock.mockResolvedValueOnce(errJson(409, { error: 'enrollment is frozen' }));
+    await expect(client.pauseEnrollment('j1', 'e1')).rejects.toMatchObject({
+      status: 409,
+      message: 'enrollment is frozen',
+    });
+    expect(client.peekMyJourneyEnrollments()?.[0].status).toBe('active');
+  });
+
+  it('with no cached slice the transports still succeed — nothing to patch, nothing invented', async () => {
+    expect(client.peekMyJourneyEnrollments()).toBeNull();
+    fetchMock.mockResolvedValueOnce(okJson({ enrollment_id: 'e1', journey_id: 'j1', status: 'paused' }));
+    await expect(client.pauseEnrollment('j1', 'e1')).resolves.toMatchObject({ status: 'paused' });
+    expect(client.peekMyJourneyEnrollments()).toBeNull();
+  });
+});

@@ -1,5 +1,5 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import type { JourneyCard, MyEnrollment } from '@/lib/journeys/queries';
 
 /**
@@ -36,11 +36,13 @@ jest.mock('@/components/shell/AppShell', () => ({
 jest.mock('@/components/ui/SkeletonGrid', () => ({
   SkeletonGrid: () => <div data-testid="journeys-skeleton" />,
 }));
+const resumeEnrollment = jest.fn<(j: string, e: string) => Promise<unknown>>();
 jest.mock('@/lib/journeys/client', () => ({
   fetchJourneyCatalog: () => fetchJourneyCatalog(),
   fetchMyJourneyEnrollments: () => fetchMyJourneyEnrollments(),
   peekJourneyCatalog: () => peekJourneyCatalog(),
   peekMyJourneyEnrollments: () => peekMyJourneyEnrollments(),
+  resumeEnrollment: (j: string, e: string) => resumeEnrollment(j, e),
 }));
 
 import JourneysPage from '@/app/journeys/page';
@@ -171,5 +173,59 @@ describe('FEAT-H022 STORY-1 — View opens the read-only frozen walk, on the car
     expect(view?.textContent).toContain('Alpha Party');
     expect(screen.getByTestId('journey-card-j1').querySelector('[data-testid="card-continue"]')).toBeNull();
     expect(screen.getByTestId('journey-card-j1').querySelector('[data-testid="card-review"]')).toBeNull();
+  });
+});
+
+describe('FEAT-H019 STORY-8 — a paused walk on the card (TASK-JRN-PAUSE-01)', () => {
+  const PAUSED: MyEnrollment = {
+    enrollment_id: 'e1',
+    kind: 'individual',
+    journey_id: 'j1',
+    journey_title: 'Leadership Fundamentals',
+    status: 'paused',
+    last_accessed_at: null,
+  };
+  const ACTIVE: MyEnrollment = { ...PAUSED, status: 'active' };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    authState = { user: { id: 'u1' }, identity: 'fim', loading: false };
+    peekJourneyCatalog.mockReturnValue(null);
+    peekMyJourneyEnrollments.mockReturnValue(null);
+    fetchJourneyCatalog.mockResolvedValue([CARD()]);
+    resumeEnrollment.mockResolvedValue({ enrollment_id: 'e1', journey_id: 'j1', status: 'active' });
+  });
+
+  it('shows "(paused)" and Resume on a paused own enrolment — never Continue', async () => {
+    fetchMyJourneyEnrollments.mockResolvedValue([PAUSED]);
+    render(<JourneysPage />);
+    const card = await screen.findByTestId('journey-card-j1');
+    await waitFor(() => expect(card.querySelector('[data-testid="card-paused"]')).not.toBeNull());
+    expect(card.querySelector('[data-testid="card-resume"]')).not.toBeNull();
+    expect(card.querySelector('[data-testid="card-continue"]')).toBeNull();
+  });
+
+  it('Resume calls the transport and re-reads — Continue returns from the payload, never a client flip', async () => {
+    fetchMyJourneyEnrollments.mockResolvedValueOnce([PAUSED]).mockResolvedValueOnce([ACTIVE]);
+    render(<JourneysPage />);
+    const card = await screen.findByTestId('journey-card-j1');
+    await waitFor(() => expect(card.querySelector('[data-testid="card-resume"]')).not.toBeNull());
+    fireEvent.click(card.querySelector('[data-testid="card-resume"]') as HTMLElement);
+    await waitFor(() => expect(resumeEnrollment).toHaveBeenCalledWith('j1', 'e1'));
+    await waitFor(() => expect(card.querySelector('[data-testid="card-continue"]')).not.toBeNull());
+    expect(card.querySelector('[data-testid="card-paused"]')).toBeNull();
+    expect(fetchMyJourneyEnrollments).toHaveBeenCalledTimes(2);
+  });
+
+  it('a refused resume shows the message and keeps the paused card', async () => {
+    fetchMyJourneyEnrollments.mockResolvedValue([PAUSED]);
+    resumeEnrollment.mockRejectedValue(new Error('enrollment is frozen'));
+    render(<JourneysPage />);
+    const card = await screen.findByTestId('journey-card-j1');
+    await waitFor(() => expect(card.querySelector('[data-testid="card-resume"]')).not.toBeNull());
+    fireEvent.click(card.querySelector('[data-testid="card-resume"]') as HTMLElement);
+    await waitFor(() => expect(screen.getByText('enrollment is frozen')).toBeTruthy());
+    expect(card.querySelector('[data-testid="card-paused"]')).not.toBeNull();
+    expect(fetchMyJourneyEnrollments).toHaveBeenCalledTimes(1);
   });
 });

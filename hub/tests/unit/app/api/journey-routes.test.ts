@@ -27,6 +27,9 @@ const fetchMyEnrollments = jest.fn<() => Promise<unknown[]>>();
 const enrollSelfInJourney = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 const enrollGroupInJourney = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 const withdrawFromJourney = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const pauseJourneyEnrollment = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const resumeJourneyEnrollment = jest.fn<(...a: unknown[]) => Promise<unknown>>();
+const emitDurableTelemetry = jest.fn<(...a: unknown[]) => Promise<unknown>>();
 
 jest.mock('next/server', () => ({
   NextResponse: {
@@ -43,6 +46,16 @@ jest.mock('@/lib/supabase/auth', () => ({
   getVerifiedUserId: (...a: unknown[]) =>
     (getVerifiedUserId as unknown as (...x: unknown[]) => unknown)(...a),
 }));
+jest.mock('@/lib/observability/telemetry-server', () => ({
+  // The real durable leg mirrors first, then records (ADR-U052 §2) — the mock
+  // keeps the mirror (so the sink assertions hold) and captures the durable call.
+  emitDurableTelemetry: (c: unknown, name: string, props?: Record<string, unknown>) => {
+    (jest.requireActual('@/lib/observability/telemetry') as {
+      emitTelemetry: (n: string, p?: Record<string, unknown>) => void;
+    }).emitTelemetry(name, props);
+    return (emitDurableTelemetry as unknown as (...x: unknown[]) => unknown)(c, name, props);
+  },
+}));
 jest.mock('@/lib/journeys/queries', () => ({
   fetchJourneyCatalog: (...a: unknown[]) =>
     (fetchJourneyCatalog as unknown as (...x: unknown[]) => unknown)(...a),
@@ -56,6 +69,10 @@ jest.mock('@/lib/journeys/queries', () => ({
     (enrollGroupInJourney as unknown as (...x: unknown[]) => unknown)(...a),
   withdrawFromJourney: (...a: unknown[]) =>
     (withdrawFromJourney as unknown as (...x: unknown[]) => unknown)(...a),
+  pauseJourneyEnrollment: (...a: unknown[]) =>
+    (pauseJourneyEnrollment as unknown as (...x: unknown[]) => unknown)(...a),
+  resumeJourneyEnrollment: (...a: unknown[]) =>
+    (resumeJourneyEnrollment as unknown as (...x: unknown[]) => unknown)(...a),
 }));
 
 import { GET as CATALOG } from '@/app/api/journeys/route';
@@ -63,6 +80,8 @@ import { GET as DETAIL } from '@/app/api/journeys/[id]/route';
 import { GET as MY_JOURNEYS } from '@/app/api/me/journeys/route';
 import { POST as ENROLL } from '@/app/api/journeys/[id]/enroll/route';
 import { POST as WITHDRAW } from '@/app/api/journeys/[id]/withdraw/route';
+import { POST as PAUSE } from '@/app/api/journeys/[id]/pause/route';
+import { POST as RESUME } from '@/app/api/journeys/[id]/resume/route';
 
 type RouteResponse = { status: number; body: { error?: string } & Record<string, unknown> };
 
@@ -233,5 +252,92 @@ describe('POST /api/journeys/[id]/withdraw', () => {
     withdrawFromJourney.mockRejectedValue(sqlErr('P0002'));
     const res = (await WITHDRAW(jsonRequest({ enrollment_id: 'e1' }), params(J1))) as unknown as RouteResponse;
     expect(res.status).toBe(404);
+  });
+});
+
+describe('POST /api/journeys/[id]/pause + /resume — FEAT-H019 STORY-8 (TASK-JRN-PAUSE-01)', () => {
+  const PAUSED = { enrollment_id: 'e1', journey_id: J1, status: 'paused' };
+  const ACTIVE = { enrollment_id: 'e1', journey_id: J1, status: 'active' };
+
+  it('401s without a session — no contract call, the unauthenticated event only', async () => {
+    getUser.mockResolvedValue({ data: { user: null } });
+    const p = (await PAUSE(jsonRequest({ enrollment_id: 'e1' }), params(J1))) as unknown as RouteResponse;
+    const r = (await RESUME(jsonRequest({ enrollment_id: 'e1' }), params(J1))) as unknown as RouteResponse;
+    expect(p.status).toBe(401);
+    expect(r.status).toBe(401);
+    expect(pauseJourneyEnrollment).not.toHaveBeenCalled();
+    expect(resumeJourneyEnrollment).not.toHaveBeenCalled();
+    expect(emitted('journey.pause_unauthenticated')).toBe(true);
+    expect(emitted('journey.resume_unauthenticated')).toBe(true);
+  });
+
+  it('400s a missing enrollment_id (presentation-only shape check)', async () => {
+    const p = (await PAUSE(jsonRequest({}), params(J1))) as unknown as RouteResponse;
+    const r = (await RESUME(jsonRequest({}), params(J1))) as unknown as RouteResponse;
+    expect(p.status).toBe(400);
+    expect(r.status).toBe(400);
+    expect(pauseJourneyEnrollment).not.toHaveBeenCalled();
+    expect(resumeJourneyEnrollment).not.toHaveBeenCalled();
+  });
+
+  it('pauses: relays the contract reply; journey.paused mirrors AND lands durably (a mutation — Q2), ids only', async () => {
+    pauseJourneyEnrollment.mockResolvedValue(PAUSED);
+    const res = (await PAUSE(jsonRequest({ enrollment_id: 'e1' }), params(J1))) as unknown as RouteResponse;
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual(PAUSED);
+    expect(pauseJourneyEnrollment).toHaveBeenCalledWith(expect.anything(), 'e1');
+    expect(emitted('journey.paused', 'fim-1')).toBe(true);
+    expect(emitDurableTelemetry).toHaveBeenCalledWith(
+      expect.anything(),
+      'journey.paused',
+      expect.objectContaining({ actor: 'fim-1', journey: J1, enrollment: 'e1' }),
+    );
+  });
+
+  it('resumes: relays the contract reply; journey.resumed mirrors AND lands durably', async () => {
+    resumeJourneyEnrollment.mockResolvedValue(ACTIVE);
+    const res = (await RESUME(jsonRequest({ enrollment_id: 'e1' }), params(J1))) as unknown as RouteResponse;
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual(ACTIVE);
+    expect(resumeJourneyEnrollment).toHaveBeenCalledWith(expect.anything(), 'e1');
+    expect(emitted('journey.resumed', 'fim-1')).toBe(true);
+    expect(emitDurableTelemetry).toHaveBeenCalledWith(
+      expect.anything(),
+      'journey.resumed',
+      expect.objectContaining({ actor: 'fim-1', journey: J1, enrollment: 'e1' }),
+    );
+  });
+
+  it('maps P0001 -> 409 with the contract message through (the state named)', async () => {
+    pauseJourneyEnrollment.mockRejectedValue(sqlErr('P0001', 'enrollment is frozen'));
+    const p = (await PAUSE(jsonRequest({ enrollment_id: 'e1' }), params(J1))) as unknown as RouteResponse;
+    expect(p.status).toBe(409);
+    expect(p.body.error).toBe('enrollment is frozen');
+    expect(emitted('journey.pause_conflict', 'fim-1')).toBe(true);
+    resumeJourneyEnrollment.mockRejectedValue(sqlErr('P0001', 'enrollment is not paused'));
+    const r = (await RESUME(jsonRequest({ enrollment_id: 'e1' }), params(J1))) as unknown as RouteResponse;
+    expect(r.status).toBe(409);
+    expect(r.body.error).toBe('enrollment is not paused');
+    expect(emitted('journey.resume_conflict', 'fim-1')).toBe(true);
+    expect(emitDurableTelemetry).not.toHaveBeenCalled();
+  });
+
+  it('maps 42501 -> 403 and P0002 -> 404 content-free, anything else -> 500 content-free', async () => {
+    pauseJourneyEnrollment.mockRejectedValue(sqlErr('42501', 'only the traveller may pause their own walk'));
+    let res = (await PAUSE(jsonRequest({ enrollment_id: 'e1' }), params(J1))) as unknown as RouteResponse;
+    expect(res.status).toBe(403);
+    expect(res.body.error).not.toContain('traveller');
+    expect(emitted('journey.pause_refused', 'fim-1')).toBe(true);
+
+    resumeJourneyEnrollment.mockRejectedValue(sqlErr('P0002', 'enrollment not found'));
+    res = (await RESUME(jsonRequest({ enrollment_id: 'e1' }), params(J1))) as unknown as RouteResponse;
+    expect(res.status).toBe(404);
+    expect(emitted('journey.resume_missing', 'fim-1')).toBe(true);
+
+    pauseJourneyEnrollment.mockRejectedValue(sqlErr('XX000', 'boom'));
+    res = (await PAUSE(jsonRequest({ enrollment_id: 'e1' }), params(J1))) as unknown as RouteResponse;
+    expect(res.status).toBe(500);
+    expect(res.body.error).not.toContain('boom');
+    expect(emitted('journey.pause_failed', 'fim-1')).toBe(true);
   });
 });

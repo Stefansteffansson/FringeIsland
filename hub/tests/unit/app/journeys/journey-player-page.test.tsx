@@ -61,9 +61,13 @@ jest.mock('@/lib/journeys/player', () => ({
   enterStep: (e: string, s: string) => enterStep(e, s),
   completeStep: (e: string, s: string) => completeStep(e, s),
 }));
+const pauseEnrollment = jest.fn<(j: string, e: string) => Promise<unknown>>();
+const resumeEnrollment = jest.fn<(j: string, e: string) => Promise<unknown>>();
 jest.mock('@/lib/journeys/client', () => ({
   peekJourneyCatalog: () => peekJourneyCatalog(),
   peekMyJourneyEnrollments: () => peekMyJourneyEnrollments(),
+  pauseEnrollment: (j: string, e: string) => pauseEnrollment(j, e),
+  resumeEnrollment: (j: string, e: string) => resumeEnrollment(j, e),
   fetchMyJourneyEnrollments: () => fetchMyJourneyEnrollments(),
   JourneysApiError: class JourneysApiError extends Error {
     status: number;
@@ -269,13 +273,15 @@ describe('STORY-2/4 — linear walk with optimistic advance + background auto-sa
 
 describe('STORY-1 — non-active enrolment', () => {
   it('renders one honest state naming the status, with no step affordances', async () => {
-    // H022 gave `frozen` its own read-only posture; `paused` stands in as the
-    // bare-panel non-active status this H020 behaviour still covers.
+    // H022 gave `frozen` its own read-only posture and FEAT-H019 STORY-8 gave
+    // `paused` its own (TASK-JRN-PAUSE-01, 2026-09-03 — labelled adaptation:
+    // this cell used `paused` as the stand-in); `withdrawn` is the bare-panel
+    // non-active status this H020 behaviour still covers.
     withParam();
-    fetchPlayerState.mockResolvedValue(STATE({ status: 'paused' }));
+    fetchPlayerState.mockResolvedValue(STATE({ status: 'withdrawn' }));
     render(<JourneyPlayerPage />);
     await waitFor(() => expect(screen.getByTestId('player-nonactive')).toBeTruthy());
-    expect(screen.getByTestId('player-nonactive').textContent).toContain('paused');
+    expect(screen.getByTestId('player-nonactive').textContent).toContain('withdrawn');
     expect(screen.queryByTestId('journey-player')).toBeNull();
     expect(screen.queryByTestId('player-next')).toBeNull();
   });
@@ -511,15 +517,9 @@ describe('FEAT-H021 STORY-2 — completed walks open in review (JRN-13)', () => 
     expect(screen.queryByTestId('player-nonactive')).toBeNull();
   });
 
-  it('keeps the honest status panel for withdrawn and paused — review admits completed only (frozen is its own H022 posture)', async () => {
+  it('keeps the honest status panel for withdrawn — review admits completed only (frozen is H022 posture; paused is H019 STORY-8 posture — labelled adaptation 2026-09-03)', async () => {
     withParam();
     fetchPlayerState.mockResolvedValue(STATE({ status: 'withdrawn' }));
-    const { unmount } = render(<JourneyPlayerPage />);
-    await waitFor(() => expect(screen.getByTestId('player-nonactive')).toBeTruthy());
-    expect(screen.queryByTestId('journey-completion-panel')).toBeNull();
-    unmount();
-
-    fetchPlayerState.mockResolvedValue(STATE({ status: 'paused' }));
     render(<JourneyPlayerPage />);
     await waitFor(() => expect(screen.getByTestId('player-nonactive')).toBeTruthy());
     expect(screen.queryByTestId('journey-completion-panel')).toBeNull();
@@ -650,5 +650,63 @@ describe('FEAT-H021 STORY-3 — per-step time on the rail in review (JRN-11)', (
     expect(rail.querySelector('[data-testid="rail-time-s2"]')?.textContent).toContain('—');
     expect(rail.querySelector('[data-testid="rail-time-s3"]')?.textContent).toContain('—');
     expect(rail.querySelector('[data-testid="rail-time-s3"]')?.textContent).not.toContain('0 min');
+  });
+});
+
+describe('FEAT-H019 STORY-8 — pause in the player, resume from the paused panel (TASK-JRN-PAUSE-01)', () => {
+  it('offers Pause on an active walk; pressing it calls the transport (no ConfirmModal) and re-reads into the paused panel', async () => {
+    withParam();
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    pauseEnrollment.mockResolvedValue({ enrollment_id: 'e1', journey_id: 'j1', status: 'paused' });
+    fetchPlayerState.mockResolvedValue(STATE({ status: 'paused' }));
+    fireEvent.click(screen.getByTestId('player-pause'));
+    expect(pauseEnrollment).toHaveBeenCalledWith('j1', 'e1');
+    await waitFor(() => expect(screen.getByTestId('player-paused')).toBeTruthy());
+    expect(fetchPlayerState).toHaveBeenCalledTimes(2);
+    expect(screen.queryByTestId('step-canvas')).toBeNull();
+  });
+
+  it('a paused walk boots into the honest paused panel with Resume — no canvas, no rail, no generic nonactive panel', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(STATE({ status: 'paused' }));
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('player-paused')).toBeTruthy());
+    expect(screen.getByTestId('player-resume')).toBeTruthy();
+    expect(screen.queryByTestId('step-canvas')).toBeNull();
+    expect(screen.queryByTestId('player-nonactive')).toBeNull();
+    expect(screen.queryByTestId('player-pause')).toBeNull();
+  });
+
+  it('Resume calls the transport and re-reads; the canvas lands on the held step (position carried)', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValueOnce(STATE({ status: 'paused' })).mockResolvedValueOnce(STATE());
+    resumeEnrollment.mockResolvedValue({ enrollment_id: 'e1', journey_id: 'j1', status: 'active' });
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('player-resume')).toBeTruthy());
+    fireEvent.click(screen.getByTestId('player-resume'));
+    expect(resumeEnrollment).toHaveBeenCalledWith('j1', 'e1');
+    await waitFor(() => expect(screen.getByTestId('step-canvas').textContent).toContain('Reflect'));
+    expect(fetchPlayerState).toHaveBeenCalledTimes(2);
+    expect(screen.queryByTestId('player-paused')).toBeNull();
+  });
+
+  it('a refused pause shows the message in place and keeps the walk', async () => {
+    withParam();
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    pauseEnrollment.mockRejectedValue(new Error('enrollment is frozen'));
+    fireEvent.click(screen.getByTestId('player-pause'));
+    await waitFor(() => expect(screen.getByText('enrollment is frozen')).toBeTruthy());
+    expect(screen.getByTestId('step-canvas')).toBeTruthy();
+    expect(fetchPlayerState).toHaveBeenCalledTimes(1);
+  });
+
+  it('no Pause in review posture (a completed walk is not paused, it is done)', async () => {
+    withParam();
+    fetchPlayerState.mockResolvedValue(STATE({ status: 'completed' }));
+    render(<JourneyPlayerPage />);
+    await waitFor(() => expect(screen.getByTestId('journey-player')).toBeTruthy());
+    expect(screen.queryByTestId('player-pause')).toBeNull();
   });
 });

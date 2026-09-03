@@ -25,10 +25,14 @@ const enrollSelf = jest.fn<(j: string) => Promise<unknown>>();
 const enrollGroup = jest.fn<(j: string, g: string) => Promise<unknown>>();
 const withdrawEnrollment = jest.fn<(j: string, e: string) => Promise<unknown>>();
 
+const pauseEnrollment = jest.fn<(j: string, e: string) => Promise<unknown>>();
+const resumeEnrollment = jest.fn<(j: string, e: string) => Promise<unknown>>();
 jest.mock('@/lib/journeys/client', () => ({
   enrollSelf: (j: string) => enrollSelf(j),
   enrollGroup: (j: string, g: string) => enrollGroup(j, g),
   withdrawEnrollment: (j: string, e: string) => withdrawEnrollment(j, e),
+  pauseEnrollment: (j: string, e: string) => pauseEnrollment(j, e),
+  resumeEnrollment: (j: string, e: string) => resumeEnrollment(j, e),
   JourneysApiError: class JourneysApiError extends Error {
     status: number;
     constructor(message: string, status: number) {
@@ -39,6 +43,7 @@ jest.mock('@/lib/journeys/client', () => ({
 }));
 
 import { JourneyEnrollmentPanel } from '@/components/journeys/JourneyEnrollmentPanel';
+import { JourneysApiError } from '@/lib/journeys/client';
 
 const BASE: JourneyDetail = {
   id: 'j1',
@@ -262,5 +267,66 @@ describe('FEAT-H022 STORY-1 — View opens the read-only frozen walk (detail pan
     expect(links).toHaveLength(1);
     expect(links[0].getAttribute('href')).toBe('/journeys/j1/play?enrollment=ge1');
     expect(links[0].textContent).toContain('Alpha Party');
+  });
+});
+
+describe('STORY-8 — pause / resume my walk (TASK-JRN-PAUSE-01)', () => {
+  const OWN_ACTIVE: Partial<JourneyDetail> = {
+    is_enrolled_individually: true,
+    individual_enrollment: { enrollment_id: 'e1', status: 'active' },
+  };
+  const OWN_PAUSED: Partial<JourneyDetail> = {
+    is_enrolled_individually: true,
+    individual_enrollment: { enrollment_id: 'e1', status: 'paused' },
+  };
+
+  beforeEach(() => {
+    pauseEnrollment.mockResolvedValue({ enrollment_id: 'e1', journey_id: 'j1', status: 'paused' });
+    resumeEnrollment.mockResolvedValue({ enrollment_id: 'e1', journey_id: 'j1', status: 'active' });
+  });
+
+  it('offers Pause on an active own enrolment — pressing it calls the transport at once (no ConfirmModal) and re-reads', async () => {
+    renderPanel(OWN_ACTIVE);
+    expect(screen.queryByTestId('resume-self')).toBeNull();
+    expect(screen.queryByTestId('paused-state')).toBeNull();
+    fireEvent.click(screen.getByTestId('pause-self'));
+    expect(pauseEnrollment).toHaveBeenCalledWith('j1', 'e1');
+    await waitFor(() => expect(onRefresh).toHaveBeenCalledTimes(1));
+  });
+
+  it('reads "(paused)" with Resume in place of Continue on a paused own enrolment — no Pause, no Continue', () => {
+    renderPanel(OWN_PAUSED);
+    expect(screen.getByTestId('paused-state').textContent?.toLowerCase()).toContain('paused');
+    expect(screen.getByTestId('resume-self')).toBeTruthy();
+    expect(screen.queryByTestId('pause-self')).toBeNull();
+    expect(screen.queryByTestId('continue-individual')).toBeNull();
+  });
+
+  it('Resume calls the transport at once and re-reads; Continue returns from the payload, never a client flip', async () => {
+    renderPanel(OWN_PAUSED);
+    fireEvent.click(screen.getByTestId('resume-self'));
+    expect(resumeEnrollment).toHaveBeenCalledWith('j1', 'e1');
+    await waitFor(() => expect(onRefresh).toHaveBeenCalledTimes(1));
+    // Still the last-read (paused) truth until the parent re-reads — no optimistic flip.
+    expect(screen.queryByTestId('continue-individual')).toBeNull();
+  });
+
+  it('surfaces a refusal honestly and keeps last-read truth', async () => {
+    pauseEnrollment.mockRejectedValue(new JourneysApiError('enrollment is frozen', 409));
+    renderPanel(OWN_ACTIVE);
+    fireEvent.click(screen.getByTestId('pause-self'));
+    await waitFor(() => expect(screen.getByText('enrollment is frozen')).toBeTruthy());
+    expect(onRefresh).not.toHaveBeenCalled();
+    expect(screen.getByTestId('pause-self')).toBeTruthy();
+  });
+
+  it('offers no Pause on a via-group enrolment — own rows only (the contract refuses the rest)', () => {
+    renderPanel({
+      enrolled_via: [
+        { group_id: 'g1', group_name: 'Alpha Party', enrollment_id: 'ge1', status: 'active', can_withdraw: true },
+      ],
+    });
+    expect(screen.queryByTestId('pause-self')).toBeNull();
+    expect(screen.queryByTestId('resume-self')).toBeNull();
   });
 });
