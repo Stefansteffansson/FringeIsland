@@ -4,7 +4,7 @@ title: Sanction communication (DB-4) — pulled into Ferd by ruling; needs a dec
 status: todo
 assigned_to: unassigned
 priority: high
-feature: to be decomposed — a paired PC/PD spec (transition notification kinds + a reason carried on the transition) and an H spec (the wall/label says why; the bell says it happened); amends FEAT-PC023 + FEAT-H038 No-gos
+feature: FEAT-PD021 (the kinds, DS-5) + FEAT-PC030 (the contracts, PC-4 with PC-3's rest/wake) + FEAT-H049 (the surfaces, hub) — decomposed 2026-09-03; FEAT-PC023 + FEAT-H038 No-gos amended
 owner: platform/core (governance — the hold/suspension transitions) + platform/domain (DS-5 notification kinds) + hub
 wave: ferd
 cycle: none — ruled at the Ferd leftovers pass (Stefan, 2026-09-03: "DB-4 … now"), queued for the next session
@@ -31,3 +31,11 @@ estimated_hours: 12-16 (one to two days) + one schema gate
 ## Order among the four pulled items
 
 Build last of the four (largest; needs the board): H017-01 retire → journey pause → SEAL-02 → DB4-01. See bridge `2026-09-03_02`.
+
+## Decomposition done (2026-09-03) — the board ruled by default, the three specs at 4-ready
+
+The eight rulings on the decision board (bridge `2026-09-03_04`) were adopted as defaults on Stefan's "continue with the eight rulings … now" (2026-09-03); reversing any reopens the named story. Specs: [FEAT-PD021](../../../platform/domain/features/FEAT-PD021-sanction-notification-kinds.md) (DS-5 — the locked-on `sanctions` category + six kinds), [FEAT-PC030](../../../platform/core/features/FEAT-PC030-sanction-communication-contracts.md) (PC-4 with PC-3's rest/wake — the reason on the seven transitions, the columns, the per-member notices, the reads, the column-scoped groups SELECT), [FEAT-H049](../../../products/hub/features/FEAT-H049-sanction-communication-surfaces.md) (the ceremonies, the wall/label, the account surface, the bell). L3 rows added: Hub GRP-10 + IDN-13 (ADM-3 / ADM-9 amended), PC-4 "Sanction communication". FEAT-PC023 + FEAT-H038 No-gos amended with the dated ruling.
+
+**Two mechanism reads changed the shape (the skill's walk):** (1) FEAT-PD020's expansion trigger reaches `act_as_group` holders ∪ Stewards, not every member — the contracts fan out per member themselves (the PD011 announcements precedent). (2) `public.groups` carries a table-level SELECT grant, so `hold_reason` would be readable by any authenticated direct caller on a public held group — the migration scopes the SELECT grant to every column but `hold_reason` (the PC003 S2 pattern; sweep: zero client `select(*)` on groups in the integration tree, 39 column-named selects).
+
+**Build order (one schema gate):** the migration (PD021 rows + PC030 columns, seven DROP + CREATE re-issues with grants, two read re-issues, the column-scoped grant) with its sibling sweep across the 17 suites naming the contracts → the Hub half → the E2E arc. Estimated 12-16 h; the next session's work.

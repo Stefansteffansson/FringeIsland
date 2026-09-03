@@ -85,8 +85,8 @@ The platform half of cycle HYG-A — grown by the two-mode model and the rest co
 
 ## No-gos
 
-- No member notifications on any transition — sanction-communication kinds stay the Eid deferral (DB-4).
-- No member-facing reason for a hold (the label states the state, never the why — Eid).
+- ~~No member notifications on any transition — sanction-communication kinds stay the Eid deferral (DB-4).~~ **Ruled into Ferd 2026-09-03 (Stefan, the leftovers pass — TASK-DB4-01):** the notices and the reason are [FEAT-PC030](./FEAT-PC030-sanction-communication-contracts.md) (this feature's transition contracts re-issued with `p_reason`) over [FEAT-PD021](../../domain/features/FEAT-PD021-sanction-notification-kinds.md); this spec's law is otherwise unchanged.
+- ~~No member-facing reason for a hold (the label states the state, never the why — Eid).~~ **Superseded by the same ruling** — `groups.hold_reason`, served to members by `get_group_detail` (FEAT-PC030 STORY-4).
 - No DM severing (the recorded verdict above).
 - No realtime hold push (the refresh-based no-go stands; in-session discovery is FEAT-H038's W-7).
 - No unsuspend-request or appeal flow; no steward path out of `suspended`.
