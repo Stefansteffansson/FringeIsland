@@ -95,6 +95,14 @@
 --   * e2e/admin-suspended-content.spec.ts, e2e/group-availability.spec.ts —
 --     the Q1 post-apply verification set (they walk the ceremonies, which now
 --     carry the reason field) — run from hub/ after the Hub half.
+--   ADAPTED, found by the post-apply SLICE run (notifications + account), not
+--   the grep — they name no contract, only a shape this migration widens:
+--   * integration/account/account-state-read.test.ts (FEAT-PC004 STORY-1 pins
+--     get_own_account_state's key set — `suspension_reason` joins it, null
+--     while active)
+--   * integration/notifications/preference-and-dispatcher-contracts.test.ts
+--     (FEAT-PD016 STORY-1 pins the locked-on category set exhaustively —
+--     `sanctions` joins `account` and `asks`)
 --   LEFT (they name the `rest_group` PERMISSION seed or a fixture, not a
 --   contract this migration changes):
 --   * integration/admin/suspended-group-admin-access.test.ts
