@@ -1,7 +1,7 @@
 ---
 id: TASK-DB4-01
 title: Sanction communication (DB-4) — pulled into Ferd by ruling; needs a decomposition board before any build (member notification + member-facing reason on hold/suspension transitions)
-status: review
+status: done
 assigned_to: claude-code (built 2026-09-03; the schema gate applied on the named approval)
 priority: high
 feature: FEAT-PD021 (the kinds, DS-5) + FEAT-PC030 (the contracts, PC-4 with PC-3's rest/wake) + FEAT-H049 (the surfaces, hub) — decomposed 2026-09-03; FEAT-PC023 + FEAT-H038 No-gos amended
