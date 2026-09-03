@@ -1,6 +1,6 @@
 # ADR-U047: Internal API inversion — core emits lifecycle facts; domain services own their dispositions
 
-**Status:** Accepted (ratified 2026-07-19, Stefan — "ok merge 182"). Amended 2026-07-19 (A1: fourth fact — user hard-deleted; A2: vertical composition; see Amendments below).
+**Status:** Accepted (ratified 2026-07-19, Stefan — "ok merge 182"). Amended 2026-07-19 (A1: fourth fact — user hard-deleted; A2: vertical composition), 2026-08-11 (A3: the declared-composition class) and 2026-09-03 (A4: the member-scoped and group-closed freeze shapes reach `paused` enrolments — Stefan, after "ok merge #601"); see Amendments below.
 **Date:** 2026-07-19
 **Deciders:** Stefan + Claude (from the [anatomy-conformance audit](../../planning/reference/ANATOMY-CONFORMANCE-AUDIT.md), findings AC-1/AC-2)
 **Tags:** scope:platform-core · scope:domain-service · wave:ferd
@@ -185,3 +185,29 @@ Two facts gain their ADR-grade declaration here (AC4-4): `ds5_lifecycle_group_cl
 - The W3 conformance family gains the **invocation axis** (COR-D W2, `classifyInvocations`): core→DS calls fail red unless the callee is a registered lifecycle fact or the pair is declared; DS→DS calls inherit the table axis's direction-plus-citation rule; a `ds{N}_lifecycle_` call to an unregistered name fails red. Demonstrated red on the five then-undeclared live calls **before** these declarations landed — the gate's teeth are the recorded proof, not an assertion.
 - Rules 1–7, Amendment 1, and Amendment 2 are otherwise unchanged. A new lifecycle-shaped crossing still requires a new fact; a new composition requires its declaration **before** it ships — the schema-gate checklist line (AB-6 ruling C) already forces the suite run that would catch it.
 - The static-match caveat is recorded in the gate itself: dynamic SQL (`EXECUTE format(...)`) would evade callee matching; none exists live today, absence not proven (Audit IV honesty log).
+
+## Amendment 4 (2026-09-03) — the member-scoped and group-closed freeze shapes reach `paused` enrolments
+
+**Status:** Accepted (Stefan, 2026-09-03 — "then do the ADR-U047 amendment", after the named approval "ok merge #601")
+**Date:** 2026-09-03
+**Provenance (recorded honestly):** surfaced by [TASK-JRN-PAUSE-01](../../planning/backlog/tasks/TASK-JRN-PAUSE-01-journey-enrolment-pause-write-path.md)'s ADR-U016 cascade check, the one the task named before any build. `paused` had been a CHECK value with no write path since J-A; the moment it gained one ([FEAT-PD002](../../platform/domain/features/FEAT-PD002-journey-catalogue-and-enrolment-contracts.md) STORY-8), rule 7's recorded shape — "every other live site freezes `status = 'active'` only" — became a hole: a traveller who paused a walk in a group's non-public journey would have kept it out of the freeze when they left, were removed, or the group closed. Two integration cells proved it on the live substrate before the migration (a row paused by admin SQL stayed `paused` through `leave_group` and `delete_group`).
+
+### What changed — rule 7's "active-only" shape is widened, not silently
+
+Rule 7 said aligning the member-scoped shape to anything other than `active`-only "is a behavior change requiring its own decision + test". This amendment is that decision, and the test is the cascade pair in `hub/tests/integration/journeys/journey-enrolment-pause-contracts.test.ts`.
+
+- **`ds3_lifecycle_member_departed`** — the `left_group` / `removed_from_group` branch now freezes `status in ('active', 'paused')` (was `= 'active'`); the `left_as_group` branch is **untouched** — it already froze paused rows (`status <> 'frozen'`, the pc015 divergence rule 7 preserved verbatim).
+- **`ds3_lifecycle_group_closed`** — both shapes (member enrolments in the group's non-public journeys; the group's own group-level enrolments) now freeze `status in ('active', 'paused')` (was `= 'active'`).
+- Realised by migration `20260903100000` — the two handlers re-issued in place, byte-identical except the three predicates (extracted from `20260719190205` at authoring, not retyped; the migration self-verifies 1 + 2 widened predicates). CREATE OR REPLACE preserved the ACLs; the revokes were re-asserted anyway.
+
+The contract table's row for `ds3_lifecycle_member_departed` reads, from this amendment on, "the departing member's **active or paused** enrolments"; the group-closed row likewise. The signatures, the fact vocabulary, and the reasons are unchanged — this is a predicate widening inside DS-3's own dispositions, exactly the kind of change rule 2 places in the domain service's hands.
+
+### What is deliberately still divergent
+
+- The wielded-exit shape (`left_as_group`) still freezes `completed` rows too; the member-scoped and group-closed shapes still do not. That residual divergence is rule 7's original subject and stands as recorded — a completed walk's disposition on departure is a separate decision, not taken here.
+- `withdrawn` rows are terminal and untouched by every shape.
+
+### Consequences
+
+- The frozen shape wins over the paused one: pause is a rest, never a third terminal, and never shelters a walk from a lifecycle fact. FEAT-PD002 STORY-8 and FEAT-H019 STORY-8 record the same rule from the contract and the surface sides; FEAT-PC013 / FEAT-PC014 carry revision lines pointing here.
+- Rules 1–7 and Amendments 1–3 are otherwise unchanged.
