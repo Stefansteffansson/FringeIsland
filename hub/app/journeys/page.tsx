@@ -12,6 +12,7 @@ import { emitTelemetry } from '@/lib/observability/telemetry';
 import {
   fetchJourneyCatalog,
   fetchMyJourneyEnrollments,
+  resumeEnrollment,
   peekJourneyCatalog,
   peekMyJourneyEnrollments,
 } from '@/lib/journeys/client';
@@ -57,6 +58,28 @@ export default function JourneysPage() {
     }
   }, []);
 
+  // FEAT-H019 STORY-8 (TASK-JRN-PAUSE-01): Resume from the card — no ceremony.
+  // The transport writes the confirmed status through to the session cache and
+  // the list re-reads, so Continue returns from the payload, never a client flip.
+  // A refusal shows above the list and the paused card stays as last read.
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [resuming, setResuming] = useState<string | null>(null);
+  const resume = useCallback(
+    async (journeyId: string, enrollmentId: string) => {
+      setResuming(enrollmentId);
+      setActionError(null);
+      try {
+        await resumeEnrollment(journeyId, enrollmentId);
+        await load();
+      } catch (err) {
+        setActionError((err as Error).message || 'The request was refused.');
+      } finally {
+        setResuming(null);
+      }
+    },
+    [load],
+  );
+
   // Keyed on the STABLE user id, never the user object (the groups-page
   // 3x-refire lesson, measured 2026-07-06).
   const userId = user?.id ?? null;
@@ -70,9 +93,11 @@ export default function JourneysPage() {
     // deliberately resumable from this list (STORY-3, ADR-U045). The reads
     // (catalogue, my-enrolments) are actor-gated Mist-callable contracts;
     // enrol attempts on anything but onboarding refuse 42501 platform-side.
-    // react-hooks/set-state-in-effect suppression: deliberate load-on-mount
-    // house pattern (see app/groups/page.tsx note; disposition at the J-A retro).
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    // Deliberate load-on-mount house pattern (see app/groups/page.tsx note;
+    // disposition at the J-A retro). The react-hooks/set-state-in-effect
+    // suppression that stood here became unused on 2026-09-03, when STORY-8 gave
+    // `load` a second caller and the rule stopped reporting this call; it was
+    // removed to keep lint at zero warnings — restore it if the report returns.
     void load();
   }, [userId, identity, authLoading, router, load]);
 
@@ -81,6 +106,7 @@ export default function JourneysPage() {
   return (
     <AppShell title="Journeys">
       <h1 className="mb-6 text-3xl font-bold text-gray-900">Journeys</h1>
+      {actionError && <InlineError message={actionError} />}
 
       {/* FEAT-H023: a Mist renders too (their onboarding row lives here) —
           the skeleton covers auth resolution + the sessionless window only. */}
@@ -145,12 +171,35 @@ export default function JourneysPage() {
                 .filter(
                   (e) =>
                     e.journey_id === j.id &&
-                    (e.status === 'active' || e.status === 'completed' || e.status === 'frozen'),
+                    (e.status === 'active' || e.status === 'completed' || e.status === 'frozen' || e.status === 'paused'),
                 )
                 .map((e) => {
                   const suffix =
                     e.kind === 'via_group' && e.group_name ? ` (${e.group_name})` : '';
                   const href = `/journeys/${j.id}/play?enrollment=${e.enrollment_id}`;
+                  // FEAT-H019 STORY-8: a paused walk reads "(paused)" + Resume — never
+                  // Continue. Only an own (individual) walk can be resumed here; a
+                  // group's walk is the group's (the contract refuses the rest).
+                  if (e.status === 'paused') {
+                    return (
+                      <span key={e.enrollment_id} className="mt-4 mr-3 inline-block text-xs">
+                        <span data-testid="card-paused" className="text-gray-500">
+                          (paused{suffix})
+                        </span>
+                        {e.kind === 'individual' && (
+                          <button
+                            type="button"
+                            data-testid="card-resume"
+                            disabled={resuming === e.enrollment_id}
+                            onClick={() => void resume(j.id, e.enrollment_id)}
+                            className="ml-2 font-medium text-blue-600 hover:underline disabled:opacity-50"
+                          >
+                            Resume
+                          </button>
+                        )}
+                      </span>
+                    );
+                  }
                   const label =
                     e.status === 'completed' ? 'Review' : e.status === 'frozen' ? 'View' : 'Continue';
                   const testId =

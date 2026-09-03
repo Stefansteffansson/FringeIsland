@@ -6,6 +6,10 @@ User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is
 
 - **When a group has closed, its preserved threads can now be opened from the admin area — read-only.** Each thread in the "Preserved threads" section has an Open button. The thread view says plainly when it was sealed and that nothing in it is live; it lists the messages in order, names who wrote each one (someone who has since left the group shows as "Former member"), and offers no way to reply, react or write. Back returns to the list. Every read is recorded.
 - **What it deliberately does not do:** direct messages are never shown, and threads in groups that are still open or on hold cannot be opened here — only a closed group's preserved threads.
+## 2026-09-03 — you can pause a journey and pick it up later ([FEAT-H019](../docs/products/hub/features/FEAT-H019-journey-catalogue-and-enrolment.md) · TASK-JRN-PAUSE-01)
+
+- **A walk you are on can now rest.** On a journey's page and inside the player there is a Pause; a paused journey shows "(paused)" on your journeys list with Resume beside it, and the player opens on a plain "This walk is paused" panel with Resume. No confirmation dialog — pausing is reversible, and resuming puts you back on exactly the step you were on, with everything you had done still done.
+- **What it deliberately does not do:** you can only pause your own travel — a group's journey is the group's, and one member does not pause it. Pausing tells no one. And if your group closes, or you leave it, a paused journey is held for review exactly as an active one would be.
 
 ## 2026-09-02 — platform admins can see a closed group's preserved threads ([FEAT-H041](../docs/products/hub/features/FEAT-H041-suspended-group-content-wing.md) · TASK-SEAL-01)
 

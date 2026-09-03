@@ -150,6 +150,8 @@ Mostly additive: 3 new functions, 1 replacement-in-place (`leave_group` — same
 
 ## Implementation notes (6-done — Cycle G-D platform half, 2026-07-04)
 
+*(Revision 2026-09-03, TASK-JRN-PAUSE-01: the enrolment freezes this cascade triggers now reach `paused` rows as well as `active` ones — the DS-3 lifecycle-fact handlers (`ds3_lifecycle_member_departed` / `ds3_lifecycle_group_closed`, ADR-U047) were widened in migration `20260903100000`; the Core contracts here are untouched.)*
+
 Built TDD red-first. **Schema gate passed the same day:** Stefan reviewed PR #71 (Open Q1–Q4 defaults, the two build amendments, the policy-drop audit, the direct-caller answer) and gave the nod; merged. Consumed by FEAT-H016 (Surface half; its notes carry the Hub side).
 
 - **Migration** `supabase/migrations/20260704192549_feat_pc013_membership_lifecycle_contracts.sql` (applied to dev + repaired, gate passed). `pause_member` / `activate_member` / `remove_member` + the internal-only `active_steward_count(p_group_id, p_excluding)` helper (no client execute); `leave_group` **replaced in place** (regular exit; sole-active-Steward and last-member refused `P0001` with actionable copy — the G-E re-entry points); `get_group_detail` amended additively (`membership_status`; paused rows for management-key holders); `memberships_delete_leave` + `memberships_delete_remove` **dropped** behind a `pg_policies` name-guard (refuses on a half-match). **No new table, no trigger changes.**

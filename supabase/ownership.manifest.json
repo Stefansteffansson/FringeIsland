@@ -247,6 +247,8 @@
       "get_player_state",
       "is_enrolled_in_journey",
       "is_journey_enrollable",
+      "pause_journey_enrollment",
+      "resume_journey_enrollment",
       "save_step_response",
       "set_journey_progress_sharing",
       "withdraw_from_journey"

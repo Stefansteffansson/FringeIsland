@@ -285,6 +285,32 @@ export async function enrollGroupInJourney(
   return data as Record<string, unknown>;
 }
 
+/** FEAT-PD002 STORY-8 (TASK-JRN-PAUSE-01): pause the caller's own walk — the
+ *  contract owns every rule (own row only; completed/frozen/withdrawn/already-
+ *  paused refuse P0001 naming the state). A thin relay. */
+export async function pauseJourneyEnrollment(
+  supabase: SupabaseClient,
+  enrollmentId: string,
+): Promise<Record<string, unknown>> {
+  const { data, error } = await supabase.rpc('pause_journey_enrollment', {
+    p_enrollment_id: enrollmentId,
+  });
+  if (error) throw error;
+  return data as Record<string, unknown>;
+}
+
+/** FEAT-PD002 STORY-8: resume the caller's own paused walk at the held position. */
+export async function resumeJourneyEnrollment(
+  supabase: SupabaseClient,
+  enrollmentId: string,
+): Promise<Record<string, unknown>> {
+  const { data, error } = await supabase.rpc('resume_journey_enrollment', {
+    p_enrollment_id: enrollmentId,
+  });
+  if (error) throw error;
+  return data as Record<string, unknown>;
+}
+
 export async function withdrawFromJourney(
   supabase: SupabaseClient,
   enrollmentId: string,

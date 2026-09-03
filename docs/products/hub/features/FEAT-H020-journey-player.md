@@ -119,6 +119,8 @@ None beyond the shared contracts (the Gimbal player will consume the same payloa
 - **Loading states:** B6 — < 1 s nothing (deferred 300 ms), 1–3 s player skeleton (canvas + rail), > 3 s defect. Skeleton, never spinner.
 - **Gate:** production stable domain, authenticated real path, cold + warm, ≥ 3 runs per scenario, every run within budget (J-O3 protocol) + Stefan's live walk.
 
+*(Revision 2026-09-03, TASK-JRN-PAUSE-01: the player gains a Pause affordance on an active own walk and an honest paused panel with Resume — owned and specified by [FEAT-H019](./FEAT-H019-journey-catalogue-and-enrolment.md) STORY-8, riding this page; the no-param enrolment resolution now treats a paused walk as a walk. Nothing else in the player changed.)*
+
 ## Open spec questions
 
 1. **Player route shape.** Default: `/journeys/[id]/play` with optional `?enrollment=`; BFF at `/api/journeys/enrollments/[enrollmentId]/player`. Confirmed at task review before build (no gate implication — pure Hub surface).
