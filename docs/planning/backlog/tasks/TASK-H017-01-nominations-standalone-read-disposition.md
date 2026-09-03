@@ -3,7 +3,7 @@
 ---
 id: TASK-H017-01
 title: Disposition the superseded pending-nominations read chain (Hub route + DS/Core contract)
-status: review
+status: done
 assigned_to: claude
 priority: low
 feature: FEAT-H017
@@ -63,7 +63,7 @@ N-C deliberately left the whole chain standing rather than deleting any of it:
 - `cd hub && npx next build` — the type gate, per the house rule that `ts-jest`/eslint do not full-type-check.
 - Full unit suite green. Integration suite required only if the platform contract is dropped.
 
-## Implementation notes (2026-09-03 — option (a), the whole chain retired; HELD at the schema gate)
+## Implementation notes (2026-09-03 — option (a), the whole chain retired; applied on the named approval "ok merge #600")
 
 **What went.** `hub/app/api/me/nominations/route.ts` (the route), `fetchPendingNominations()` + the `PendingNomination` interface in `hub/lib/groups/leadership.ts`, the type re-export in `hub/lib/groups/client.ts`, `hub/tests/integration/groups/pending-nominations-contract.test.ts` (the contract's six cells), the three `/api/me/nominations` cells in `group-leadership-routes.test.ts` (the STORY-6 canary now spans five handlers), the two relay cells in `groups-leadership.test.ts`, and the `get_my_pending_nominations` entry in `supabase/ownership.manifest.json`. Migration `20260903090000_task_h017_01_retire_get_my_pending_nominations.sql` drops the function with a self-verifying catalog check; its header carries the sibling sweep and the Q1 post-apply set.
 
