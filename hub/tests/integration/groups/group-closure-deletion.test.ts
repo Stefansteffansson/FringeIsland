@@ -566,8 +566,12 @@ describe('FEAT-PC014 — group closure and deletion contracts (G-E, MEM-8/GRP-9)
       const groupId = await seedGroup('RawDeleteJourneyless', [memberA]);
       const c = await asUser(steward);
       const { data, error } = await c.from('groups').delete().eq('id', groupId).select('id');
-      expect(error).toBeNull();
-      expect(data).toEqual([]);
+      // LABELLED ADAPTATION (TASK-SEC-02, migration 20260902210000): the door
+      // is now closed one lock earlier — DELETE is revoked from the client
+      // roles, so the refusal is the grant's 42501, not RLS's silent 0 rows.
+      // Same outcome, stated by the earlier lock: the row survives.
+      expect(error?.code).toBe('42501');
+      expect(data ?? []).toEqual([]);
       expect(await groupRow(groupId)).not.toBeNull();
     });
 
@@ -576,8 +580,10 @@ describe('FEAT-PC014 — group closure and deletion contracts (G-E, MEM-8/GRP-9)
       await seedJourneyFixture(groupId, memberA);
       const c = await asUser(steward);
       const { data, error } = await c.from('groups').delete().eq('id', groupId).select('id');
-      expect(error).toBeNull();
-      expect(data).toEqual([]);
+      // LABELLED ADAPTATION (TASK-SEC-02): the grant refuses (42501) before
+      // RLS, before the FK wall — the row survives either way.
+      expect(error?.code).toBe('42501');
+      expect(data ?? []).toEqual([]);
       expect(await groupRow(groupId)).not.toBeNull();
     });
 
