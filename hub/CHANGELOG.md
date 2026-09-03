@@ -2,6 +2,15 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-09-03 — when your group or your account is put on hold, you are told why ([FEAT-H049](../docs/products/hub/features/FEAT-H049-sanction-communication-surfaces.md) · TASK-DB4-01)
+
+- **A held group now says why.** If a platform administrator suspends your group, or rests or wakes it, the reason they gave is shown on the group's page — beneath "Suspended" on the wall, under the "Resting" label — and a notice arrives in your bell ("Your group has been suspended", with the reason). Reactivation, and a wake, tell you too. Only the group's members see the reason; nobody outside the group can.
+- **Your Steward can leave you a note.** When a Steward rests or wakes the group, they can add a short note to the members — optional; if they leave it empty, you still hear that the group is resting or awake again.
+- **A suspended account says why.** If your account is suspended, the page that tells you so now shows the reason you were given, above the way out; when you are reinstated, a notice says so.
+- **Administrators must say why, every time.** Every suspend, reactivate, rest and wake ceremony in the admin area — for a group, for a member, and for the bulk bar on the members list — asks for a reason in words the affected people will see; it cannot be confirmed without one.
+- **These notices cannot be muted.** "Holds & sanctions" appears in your notification preferences as always on, with the reason stated.
+- **What it deliberately does not do:** no reason is asked for, or shown, when a group is closed, deleted, or a member is removed — those keep their own notices; a reason cannot be edited afterwards (a changed reason is a new act); and nothing is emailed or pushed beyond the bell.
+
 ## 2026-09-03 — platform admins can now read a closed group's preserved threads ([FEAT-H041](../docs/products/hub/features/FEAT-H041-suspended-group-content-wing.md) · TASK-SEAL-02)
 
 - **When a group has closed, its preserved threads can now be opened from the admin area — read-only.** Each thread in the "Preserved threads" section has an Open button. The thread view says plainly when it was sealed and that nothing in it is live; it lists the messages in order, names who wrote each one (someone who has since left the group shows as "Former member"), and offers no way to reply, react or write. Back returns to the list. Every read is recorded.

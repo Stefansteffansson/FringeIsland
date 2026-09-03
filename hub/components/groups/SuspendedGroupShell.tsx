@@ -5,9 +5,11 @@ import type { GroupDetailShell } from '@/lib/groups/queries';
 /**
  * FEAT-H038 STORY-5 (FEAT-PC023 STORY-7) — the suspended found-but-that's-it
  * shell. Renders exactly what the minimal payload provides: the name and the
- * "Suspended" label. No content, no actions, not even Leave — and no why (the
- * label says the state; sanction communication is Eid's). The shell is the
+ * "Suspended" label. No content, no actions, not even Leave. The shell is the
  * whole page body for every non-admin viewer, `rest_group` holders included.
+ * FEAT-H049 STORY-3 (DB-4): the WHY — the payload's `hold_reason` (present for
+ * members only; the platform decides) renders beneath the sentence; null
+ * renders the shell exactly as before.
  */
 export function SuspendedGroupShell({ group }: { group: GroupDetailShell }) {
   return (
@@ -24,6 +26,11 @@ export function SuspendedGroupShell({ group }: { group: GroupDetailShell }) {
       <p className="mt-3 text-sm text-gray-600">
         This group is suspended. Its content is unavailable while the suspension stands.
       </p>
+      {group.hold_reason && (
+        <p data-testid="hold-reason" className="mt-2 text-sm text-gray-800">
+          Reason given: {group.hold_reason}
+        </p>
+      )}
     </div>
   );
 }

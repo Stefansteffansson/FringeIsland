@@ -96,12 +96,16 @@ export async function bulkAdminUserAction(
   client: SupabaseClient,
   action: BulkAction,
   userIds: string[],
+  /** FEAT-PC030 (DB-4): ONE member-facing reason for the whole batch — every
+   *  suspend/reactivate call relays it (the contract refuses without one);
+   *  force-logout takes none. */
+  reason?: string,
 ): Promise<BulkRowOutcome[]> {
   const outcomes: BulkRowOutcome[] = [];
   for (const id of userIds) {
     try {
-      if (action === 'suspend') await suspendAdminUser(client, id);
-      else if (action === 'reactivate') await reactivateAdminUser(client, id);
+      if (action === 'suspend') await suspendAdminUser(client, id, reason ?? '');
+      else if (action === 'reactivate') await reactivateAdminUser(client, id, reason ?? '');
       else await forceLogoutAdminUser(client, id);
       outcomes.push({ id, ok: true });
     } catch (err) {
@@ -135,18 +139,30 @@ export async function fetchOwnUserId(client: SupabaseClient): Promise<string | n
   return (data as string | null) ?? null;
 }
 
-export async function suspendAdminUser(client: SupabaseClient, userId: string): Promise<void> {
+// FEAT-PC030 (DB-4, FEAT-H049): the member hold calls carry the REQUIRED
+// member-facing reason as `p_reason` (22023 'Reason required' otherwise).
+export async function suspendAdminUser(
+  client: SupabaseClient,
+  userId: string,
+  reason: string,
+): Promise<void> {
   const { error } = await client.rpc('admin_update_user_status', {
     target_user_id: userId,
     new_is_active: false,
+    p_reason: reason,
   });
   if (error) throwTyped(error);
 }
 
-export async function reactivateAdminUser(client: SupabaseClient, userId: string): Promise<void> {
+export async function reactivateAdminUser(
+  client: SupabaseClient,
+  userId: string,
+  reason: string,
+): Promise<void> {
   const { error } = await client.rpc('admin_update_user_status', {
     target_user_id: userId,
     new_is_active: true,
+    p_reason: reason,
   });
   if (error) throwTyped(error);
 }

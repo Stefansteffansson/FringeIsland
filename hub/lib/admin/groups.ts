@@ -88,28 +88,51 @@ export async function fetchAdminGroupDetail(
   return { detail: data as AdminGroupDetail, refused: false, notFound: false };
 }
 
-export async function suspendAdminGroup(client: SupabaseClient, groupId: string): Promise<void> {
-  const { error } = await client.rpc('admin_suspend_group', { p_group_id: groupId });
+// FEAT-PC030 (DB-4, FEAT-H049): every admin hold call carries the REQUIRED
+// member-facing reason as `p_reason` — the contract refuses a blank one with
+// 22023 ('Reason required'); the route maps it to 400. The wrapper relays,
+// never re-decides.
+export async function suspendAdminGroup(
+  client: SupabaseClient,
+  groupId: string,
+  reason: string,
+): Promise<void> {
+  const { error } = await client.rpc('admin_suspend_group', { p_group_id: groupId, p_reason: reason });
   if (error) throwTyped(error);
 }
 
 /** FEAT-H038 STORY-6 (FEAT-PC023): the admin rest ceremony — active → resting,
  *  audited substrate-side (`group.rest`). */
-export async function restAdminGroup(client: SupabaseClient, groupId: string): Promise<void> {
-  const { error } = await client.rpc('admin_rest_group', { p_group_id: groupId });
+export async function restAdminGroup(
+  client: SupabaseClient,
+  groupId: string,
+  reason: string,
+): Promise<void> {
+  const { error } = await client.rpc('admin_rest_group', { p_group_id: groupId, p_reason: reason });
   if (error) throwTyped(error);
 }
 
 /** FEAT-H038 STORY-6 (FEAT-PC023): the admin wake ceremony — resting → active
  *  only (suspended → active stays admin_reactivate_group's), audited
  *  substrate-side (`group.wake`). */
-export async function wakeAdminGroup(client: SupabaseClient, groupId: string): Promise<void> {
-  const { error } = await client.rpc('admin_wake_group', { p_group_id: groupId });
+export async function wakeAdminGroup(
+  client: SupabaseClient,
+  groupId: string,
+  reason: string,
+): Promise<void> {
+  const { error } = await client.rpc('admin_wake_group', { p_group_id: groupId, p_reason: reason });
   if (error) throwTyped(error);
 }
 
-export async function reactivateAdminGroup(client: SupabaseClient, groupId: string): Promise<void> {
-  const { error } = await client.rpc('admin_reactivate_group', { p_group_id: groupId });
+export async function reactivateAdminGroup(
+  client: SupabaseClient,
+  groupId: string,
+  reason: string,
+): Promise<void> {
+  const { error } = await client.rpc('admin_reactivate_group', {
+    p_group_id: groupId,
+    p_reason: reason,
+  });
   if (error) throwTyped(error);
 }
 

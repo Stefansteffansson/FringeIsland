@@ -264,6 +264,7 @@ describe('AdminMembersList — the bulk family (FEAT-H039 STORY-3/4/5)', () => {
       ]),
     );
     await userEvent.click(screen.getByTestId('bulk-suspend'));
+    await userEvent.type(screen.getByTestId('ceremony-reason'), 'FEAT-PC030 adapted: reason required'); // FEAT-PC030 adapted (DB-4): the bulk hold requires a reason
     await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
 
     const outcomes = await screen.findByTestId('bulk-outcomes');
@@ -274,7 +275,7 @@ describe('AdminMembersList — the bulk family (FEAT-H039 STORY-3/4/5)', () => {
 
     const bulkCall = fetchMock.mock.calls.find((c) => String(c[0]).includes('/bulk/suspend'));
     expect(bulkCall).toBeDefined();
-    expect(JSON.parse(String(bulkCall![1]?.body))).toEqual({ user_ids: [AXEL.id, PIA.id] });
+    expect(JSON.parse(String(bulkCall![1]?.body))).toEqual({ user_ids: [AXEL.id, PIA.id], reason: 'FEAT-PC030 adapted: reason required' }) // FEAT-PC030 adapted (DB-4);
     // The list repainted from a fresh read after the run.
     const afterBulk = urlsCalled().slice(urlsCalled().indexOf('/api/admin/users/bulk/suspend') + 1);
     expect(afterBulk.some((u) => u.startsWith('/api/admin/users?filter='))).toBe(true);
@@ -296,6 +297,7 @@ describe('AdminMembersList — the bulk family (FEAT-H039 STORY-3/4/5)', () => {
       await selectRow(AXEL);
       fetchMock.mockResolvedValueOnce(okBulk([{ id: AXEL.id, ok: true }]));
       await userEvent.click(screen.getByTestId(testid));
+      if (testid !== 'bulk-force-logout') await userEvent.type(screen.getByTestId('ceremony-reason'), 'FEAT-PC030 adapted: reason required'); // FEAT-PC030 adapted (DB-4): the bulk hold requires a reason
       await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
       await screen.findByTestId('bulk-outcomes');
       expect(urlsCalled().some((u) => u === path)).toBe(true);

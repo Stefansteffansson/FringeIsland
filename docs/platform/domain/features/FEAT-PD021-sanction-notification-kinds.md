@@ -6,7 +6,7 @@ title: Sanction notification kinds — a `sanctions` category that no member can
 owner: platform/domain/communication
 consumers: [hub, platform/core]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 

@@ -1,13 +1,13 @@
 ---
 id: TASK-DB4-01
 title: Sanction communication (DB-4) — pulled into Ferd by ruling; needs a decomposition board before any build (member notification + member-facing reason on hold/suspension transitions)
-status: todo
-assigned_to: unassigned
+status: review
+assigned_to: claude-code (built 2026-09-03; the schema gate applied on the named approval)
 priority: high
 feature: FEAT-PD021 (the kinds, DS-5) + FEAT-PC030 (the contracts, PC-4 with PC-3's rest/wake) + FEAT-H049 (the surfaces, hub) — decomposed 2026-09-03; FEAT-PC023 + FEAT-H038 No-gos amended
 owner: platform/core (governance — the hold/suspension transitions) + platform/domain (DS-5 notification kinds) + hub
 wave: ferd
-cycle: none — ruled at the Ferd leftovers pass (Stefan, 2026-09-03: "DB-4 … now"), queued for the next session
+cycle: none — ruled at the Ferd leftovers pass (Stefan, 2026-09-03: "DB-4 … now"); built the same day
 depends_on: []
 estimated_hours: 12-16 (one to two days) + one schema gate
 ---
@@ -39,3 +39,15 @@ The eight rulings on the decision board (bridge `2026-09-03_04`) were adopted as
 **Two mechanism reads changed the shape (the skill's walk):** (1) FEAT-PD020's expansion trigger reaches `act_as_group` holders ∪ Stewards, not every member — the contracts fan out per member themselves (the PD011 announcements precedent). (2) `public.groups` carries a table-level SELECT grant, so `hold_reason` would be readable by any authenticated direct caller on a public held group — the migration scopes the SELECT grant to every column but `hold_reason` (the PC003 S2 pattern; sweep: zero client `select(*)` on groups in the integration tree, 39 column-named selects).
 
 **Build order (one schema gate):** the migration (PD021 rows + PC030 columns, seven DROP + CREATE re-issues with grants, two read re-issues, the column-scoped grant) with its sibling sweep across the 17 suites naming the contracts → the Hub half → the E2E arc. Estimated 12-16 h; the next session's work.
+
+## Build (2026-09-03) — the gate applied on the named approval, the three halves green
+
+**Approval:** Stefan, 2026-09-03, before the build — "you have my blessing to do the migration (ref. Migration (one schema gate, held for your named approval))". Both migrations applied and repaired to `applied` under it: `20260903120000_db4_pc030_pd021_sanction_communication.sql` (the gate as specified) and the same-day corrective `20260903130000_db4_pc030_notice_titles_are_core_literals.sql` (the invocation-axis gate refused the fan-out bodies' read of the DS-5 registry post-apply; the notice titles are Core literals, pinned equal to the registry labels).
+
+**Platform (FEAT-PC030 + FEAT-PD021):** integration 23/23 red at HEAD → 24/24 green (two test-side corrections along the way: the admin's act reaches the Steward too — four recipients, not three; a recovery hook and a self-contained cell). Sibling sweep 408/410 on the first pass — ten suites adapted with a labelled reason (33 lines), the PC023 STORY-7 minimal-payload key pin gains `hold_reason`, the gate finding above — then 152/152 on the post-corrective set. Gate reads on the applied objects recorded in FEAT-PC030's Implementation notes (nine functions `{postgres, authenticated, service_role}`; `groups` relacl `anon=m, authenticated=m`; no client grant on either reason column).
+
+**Hub (FEAT-H049):** unit tier 39 red at HEAD across nine suites → 1616/1616; lint, typecheck, `next build` green; route-policy conformance green with zero new exceptions. **A decomposition gap found at build:** the admin members list's bulk Suspend / Reactivate bar composes `admin_update_user_status` and would have refused every row — shaped as one required reason per batch (*Shown to each member*), the seventh ceremony, recorded in FEAT-H049's notes.
+
+**E2E (FEAT-H049 STORY-5):** `tests/e2e/sanction-communication.spec.ts` (the group arc with the reason on the wall and in the bell, the Steward's note, the member-suspension arc on the account surface) + the two adapted ceremony specs (`admin-suspended-content`, `group-availability`) — the run's result is in the PR body.
+
+**Deferred, plainly (unchanged No-gos):** no reason on closure / deletion / removal; no reason edit after the fact; no push or email; no Steward-side suspension; no category taxonomy of reasons; no internal admin-only note. The TASK-E2E-04 recommendation (an E2E smoke job in CI) is still Stefan's ruling to take.

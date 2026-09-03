@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { CeremonyReasonField } from '@/components/ui/CeremonyReasonField';
 import type { AdminUserDetail as Detail, AdminUserMembership } from '@/lib/admin/users';
 
 /**
@@ -57,6 +58,11 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
+  // FEAT-H049 STORY-1 (DB-4, ADM-9): the Suspend/Reactivate ceremonies'
+  // member-facing reason and the in-place refusal (a 400 — the contract's
+  // 22023 — keeps the modal open with the reason still typed).
+  const [reason, setReason] = useState('');
+  const [ceremonyError, setCeremonyError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -85,10 +91,13 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
       path: string,
       body?: Record<string, unknown>,
       onSuccess?: (payload: Record<string, unknown>) => string | null,
+      opts?: { holdCeremony?: boolean },
     ) => {
       setBusy(true);
       setActionError(null);
       setActionSuccess(null);
+      setCeremonyError(null);
+      let keepOpen = false;
       try {
         const res = await fetch(`/api/admin/users/${userId}/${path}`, {
           method: 'POST',
@@ -97,7 +106,13 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
         });
         const payload = (await res.json().catch(() => ({}))) as Record<string, unknown>;
         if (!res.ok) {
-          setActionError((payload.error as string) ?? 'The action was refused.');
+          if (opts?.holdCeremony && res.status === 400) {
+            // FEAT-H049 STORY-1: the reason was refused — in place, modal open.
+            setCeremonyError((payload.error as string) ?? 'The reason was refused.');
+            keepOpen = true;
+          } else {
+            setActionError((payload.error as string) ?? 'The action was refused.');
+          }
         } else {
           setHardDeleteOpen(false);
           setTyped('');
@@ -119,13 +134,38 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
       } catch {
         setActionError('The action could not be completed.');
       } finally {
-        setCeremony(null);
+        if (!keepOpen) {
+          setCeremony(null);
+          setReason('');
+        }
         setBusy(false);
       }
       await load(); // the honest repaint — always from a fresh read (WA-5: except the erased terminal above)
     },
     [userId, load],
   );
+
+  const closeCeremony = () => {
+    if (busy) return;
+    setCeremony(null);
+    setReason('');
+    setCeremonyError(null);
+  };
+
+  /** The hold ceremonies' message: the consequence, the member-facing reason
+   *  field, the in-place refusal if any (FEAT-H049 STORY-1). */
+  const holdMessage = (text: string) => (
+    <span>
+      {text}
+      <CeremonyReasonField value={reason} onChange={setReason} label="Shown to the member" />
+      {ceremonyError && (
+        <span role="alert" data-testid="ceremony-error" className="mt-2 block text-sm text-red-700">
+          {ceremonyError}
+        </span>
+      )}
+    </span>
+  );
+  const reasonMissing = reason.trim().length === 0;
 
   if (view.kind === 'erased') {
     return (
@@ -411,29 +451,31 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
         </section>
       )}
 
+      {/* FEAT-H049 STORY-1 (DB-4): the two hold ceremonies collect the member-
+          facing reason (FEAT-PC030 requires it — 22023 otherwise). */}
       <ConfirmModal
         isOpen={ceremony?.kind === 'suspend'}
         title="Suspend member"
-        message={`Suspend ${who}? They lose access until an admin reactivates the account; this hold cannot be lifted by the member.`}
+        message={holdMessage(
+          `Suspend ${who}? They lose access until an admin reactivates the account; this hold cannot be lifted by the member.`,
+        )}
         confirmText="Suspend"
         variant="danger"
         busy={busy}
-        onConfirm={() => void mutate('suspend')}
-        onCancel={() => {
-          if (!busy) setCeremony(null);
-        }}
+        confirmDisabled={reasonMissing}
+        onConfirm={() => void mutate('suspend', { reason }, undefined, { holdCeremony: true })}
+        onCancel={closeCeremony}
       />
       <ConfirmModal
         isOpen={ceremony?.kind === 'reactivate'}
         title="Reactivate member"
-        message={reactivateMessage}
+        message={holdMessage(reactivateMessage)}
         confirmText="Reactivate"
         variant="warning"
         busy={busy}
-        onConfirm={() => void mutate('reactivate')}
-        onCancel={() => {
-          if (!busy) setCeremony(null);
-        }}
+        confirmDisabled={reasonMissing}
+        onConfirm={() => void mutate('reactivate', { reason }, undefined, { holdCeremony: true })}
+        onCancel={closeCeremony}
       />
       <ConfirmModal
         isOpen={ceremony?.kind === 'decommission'}

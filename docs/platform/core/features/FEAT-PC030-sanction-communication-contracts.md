@@ -6,7 +6,7 @@ title: Sanction communication contracts — the seven hold-family transitions ga
 owner: platform/core/governance
 consumers: [hub]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 

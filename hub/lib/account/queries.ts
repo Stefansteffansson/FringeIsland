@@ -32,6 +32,12 @@ export interface AccountState {
   deactivation_origin: string | null;
   /** Open label; known values in {@link KnownAccountState}. */
   state: string;
+  /**
+   * FEAT-PC030 additive key (DB-4, IDN-13): the CURRENT account hold's
+   * member-facing reason, own row only; null while active. Optional for
+   * tolerance — the surface renders it when carried.
+   */
+  suspension_reason?: string | null;
 }
 
 /**

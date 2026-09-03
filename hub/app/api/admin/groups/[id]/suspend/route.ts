@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { suspendAdminGroup, AdminGroupsError } from '@/lib/admin/groups';
+import { readJsonBody, requiredReason } from '@/lib/admin/reason';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 import { emitDurableTelemetry } from '@/lib/observability/telemetry-server';
 
@@ -14,7 +15,7 @@ const refusalStatus = (code: string): number | null => {
   return null;
 };
 
-export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -24,8 +25,15 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
   const { id } = await params;
+  // FEAT-H049 (DB-4): the member-facing reason is REQUIRED (FEAT-PC030 22023);
+  // refused blank up front, never logged, never in telemetry.
+  const reason = requiredReason(await readJsonBody(request));
+  if (reason === null) {
+    emitTelemetry('admin.group_suspend_refused', { actor: user.id, group: id, code: '22023' });
+    return NextResponse.json({ error: 'Reason required' }, { status: 400 });
+  }
   try {
-    await suspendAdminGroup(supabase, id);
+    await suspendAdminGroup(supabase, id, reason);
     await emitDurableTelemetry(supabase, 'admin.group_suspend', { actor: user.id, group: id });
     return NextResponse.json({});
   } catch (err) {

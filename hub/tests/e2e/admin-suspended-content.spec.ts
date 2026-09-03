@@ -230,6 +230,7 @@ test.describe('FEAT-H041 — the suspended-group admin content wing', () => {
     await page.goto(`/admin/groups/${groupId}`);
     await expect(page.getByRole('heading', { name: groupName })).toBeVisible({ timeout: 15000 });
     await page.getByTestId('suspend-group').click();
+    await page.getByTestId('ceremony-reason').fill('E2E H041: held for the content wing'); // FEAT-H049 adaptation: the suspend ceremony requires a reason
     await page.getByTestId('confirm-modal-confirm').click();
     await expect(page.getByTestId('status-badge')).toHaveText('suspended', { timeout: 15000 });
 
@@ -331,6 +332,7 @@ test.describe('FEAT-H041 — the suspended-group admin content wing', () => {
     test.setTimeout(180_000);
     await page.goto(`/admin/groups/${groupId}`);
     await page.getByTestId('reactivate-group').click();
+    await page.getByTestId('ceremony-reason').fill('E2E H041: wing closed, group restored'); // FEAT-H049 adaptation: the reactivate ceremony requires a reason
     await page.getByTestId('confirm-modal-confirm').click();
     await expect(page.getByTestId('suspend-group')).toBeVisible({ timeout: 15000 });
     await expect(page.getByTestId('admin-content-plane-banner')).not.toBeVisible();

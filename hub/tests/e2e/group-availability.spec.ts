@@ -208,6 +208,7 @@ test.describe('FEAT-H038 — the two-mode group journey (STORY-7)', () => {
     await expect(page.getByTestId('rest-group')).toBeVisible({ timeout: 15000 });
     await page.getByTestId('suspend-group').click();
     await expect(page.getByTestId('confirm-modal')).toContainText(groupName);
+    await page.getByTestId('ceremony-reason').fill('E2E H038: suspended for the shell walk'); // FEAT-H049 adaptation: the suspend ceremony requires a reason
     await page.getByTestId('confirm-modal-confirm').click();
     await expect(page.getByTestId('status-badge')).toHaveText('suspended', { timeout: 15000 });
 
@@ -230,6 +231,7 @@ test.describe('FEAT-H038 — the two-mode group journey (STORY-7)', () => {
 
     // --- The admin reactivates; the group returns whole. ---
     await page.getByTestId('reactivate-group').click();
+    await page.getByTestId('ceremony-reason').fill('E2E H038: reactivated'); // FEAT-H049 adaptation: the reactivate ceremony requires a reason
     await page.getByTestId('confirm-modal-confirm').click();
     await expect(page.getByTestId('status-badge')).toHaveCount(0, { timeout: 15000 });
     await membPage.goto(`/groups/${groupId}`);

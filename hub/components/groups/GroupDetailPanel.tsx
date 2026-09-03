@@ -20,6 +20,7 @@ import {
 } from '@/lib/groups/client';
 import type { GroupDetail, GroupMemberEntry, RolesFabric, UpdateGroupSettingsInput } from '@/lib/groups/queries';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { CeremonyReasonField } from '@/components/ui/CeremonyReasonField';
 
 /**
  * FEAT-H013 STORY-2/3/4 — the group detail panel (GRP-2/3/4/5).
@@ -135,6 +136,9 @@ export function GroupDetailPanel({
   const [restWakeAction, setRestWakeAction] = useState<'rest' | 'wake' | null>(null);
   const [restWakeBusy, setRestWakeBusy] = useState(false);
   const [restWakeError, setRestWakeError] = useState<string | null>(null);
+  // FEAT-H049 STORY-2 (DB-4, GRP-10): the Steward's OPTIONAL note to the
+  // members — blank sends nothing (the old call shape).
+  const [restWakeNote, setRestWakeNote] = useState('');
 
   const canAssign = fabric?.viewer.can_assign_roles ?? false;
   const canRemove = fabric?.viewer.can_remove_roles ?? false;
@@ -265,15 +269,18 @@ export function GroupDetailPanel({
     if (!restWakeAction) return;
     setRestWakeBusy(true);
     setRestWakeError(null);
+    const note = restWakeNote.trim().length > 0 ? restWakeNote : undefined;
     try {
-      if (restWakeAction === 'rest') await restGroupClient(group.id);
-      else await wakeGroupClient(group.id);
+      if (restWakeAction === 'rest') await restGroupClient(group.id, note);
+      else await wakeGroupClient(group.id, note);
       setRestWakeAction(null);
+      setRestWakeNote('');
       onRefresh();
     } catch (err) {
       // The contract's honest copy, in place — the state stays contract-reported.
       setRestWakeError((err as Error).message);
       setRestWakeAction(null);
+      setRestWakeNote('');
     } finally {
       setRestWakeBusy(false);
     }
@@ -371,6 +378,15 @@ export function GroupDetailPanel({
         </div>
 
         {group.description && <p className="mt-3 text-sm text-gray-600">{group.description}</p>}
+
+        {group.hold_reason && (
+          // FEAT-H049 STORY-3 (DB-4, GRP-10): the WHY under the held label —
+          // rendered whenever the payload carries it (members only; the
+          // platform decides), never gated on a role string.
+          <p data-testid="hold-reason" className="mt-3 text-sm text-sky-900">
+            Reason given: {group.hold_reason}
+          </p>
+        )}
 
         {isResting && !holdsRestGroup && (
           // FEAT-H038 STORY-5: the read-only banner — the state, never the why.
@@ -842,16 +858,28 @@ export function GroupDetailPanel({
         isOpen={restWakeAction !== null}
         title={restWakeAction === 'wake' ? 'Wake this group?' : 'Rest this group?'}
         message={
-          restWakeAction === 'wake'
-            ? `Wake "${group.name}"? The group returns to active and members can act again.`
-            : `Rest "${group.name}"? Members keep reading, but nothing changes while it rests — you can wake it anytime.`
+          <span>
+            {restWakeAction === 'wake'
+              ? `Wake "${group.name}"? The group returns to active and members can act again.`
+              : `Rest "${group.name}"? Members keep reading, but nothing changes while it rests — you can wake it anytime.`}
+            {/* FEAT-H049 STORY-2 (DB-4): the optional note — Confirm never waits on it. */}
+            <CeremonyReasonField
+              value={restWakeNote}
+              onChange={setRestWakeNote}
+              label="A note to your members — optional"
+              testId="ceremony-note"
+            />
+          </span>
         }
         confirmText={restWakeAction === 'wake' ? 'Wake group' : 'Rest group'}
         variant="info"
         busy={restWakeBusy}
         onConfirm={() => void confirmRestWake()}
         onCancel={() => {
-          if (!restWakeBusy) setRestWakeAction(null);
+          if (!restWakeBusy) {
+            setRestWakeAction(null);
+            setRestWakeNote('');
+          }
         }}
       />
 

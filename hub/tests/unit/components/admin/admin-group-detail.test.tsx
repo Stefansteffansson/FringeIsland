@@ -174,6 +174,7 @@ describe('AdminGroupDetail (FEAT-H035 STORY-2/3/4)', () => {
     await userEvent.click(await screen.findByTestId('suspend-group'));
     const modal = screen.getByTestId('confirm-modal');
     expect(modal).toHaveTextContent('Harbour Circle');
+    await userEvent.type(screen.getByTestId('ceremony-reason'), 'FEAT-PC030 adapted: reason required'); // FEAT-PC030 adapted (DB-4): the hold ceremony requires a reason
     await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
     // ADAPTED for FEAT-H041: the repaint-to-suspended mounts the content
     // wing, whose fetch-on-mount section reads add calls beyond the original
@@ -191,6 +192,7 @@ describe('AdminGroupDetail (FEAT-H035 STORY-2/3/4)', () => {
       .mockResolvedValueOnce(okDetail(baseDetail));
     render(<AdminGroupDetail groupId={GROUP_ID} />);
     await userEvent.click(await screen.findByTestId('suspend-group'));
+    await userEvent.type(screen.getByTestId('ceremony-reason'), 'FEAT-PC030 adapted: reason required'); // FEAT-PC030 adapted (DB-4): the hold ceremony requires a reason
     await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
     expect(await screen.findByTestId('action-error')).toHaveTextContent(
       'cannot suspend a group that is not active',
@@ -293,6 +295,7 @@ describe('AdminGroupDetail — the two-mode hold ceremony (FEAT-H038 STORY-6)', 
     await userEvent.click(await screen.findByTestId('rest-group'));
     const modal = screen.getByTestId('confirm-modal');
     expect(modal).toHaveTextContent('Harbour Circle');
+    await userEvent.type(screen.getByTestId('ceremony-reason'), 'FEAT-PC030 adapted: reason required'); // FEAT-PC030 adapted (DB-4): the hold ceremony requires a reason
     await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
     expect(fetchMock.mock.calls[1][0]).toBe(`/api/admin/groups/${GROUP_ID}/rest`);
@@ -307,6 +310,7 @@ describe('AdminGroupDetail — the two-mode hold ceremony (FEAT-H038 STORY-6)', 
       .mockResolvedValueOnce(okDetail(baseDetail));
     render(<AdminGroupDetail groupId={GROUP_ID} />);
     await userEvent.click(await screen.findByTestId('wake-group'));
+    await userEvent.type(screen.getByTestId('ceremony-reason'), 'FEAT-PC030 adapted: reason required'); // FEAT-PC030 adapted (DB-4): the hold ceremony requires a reason
     await userEvent.click(screen.getByTestId('confirm-modal-confirm'));
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
     expect(fetchMock.mock.calls[1][0]).toBe(`/api/admin/groups/${GROUP_ID}/wake`);

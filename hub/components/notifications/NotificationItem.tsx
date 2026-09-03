@@ -1,4 +1,4 @@
-import { Bell, Users, Flag, UserCog, Compass, Megaphone, KeyRound } from 'lucide-react';
+import { Bell, Users, Flag, UserCog, Compass, Megaphone, KeyRound, Gavel } from 'lucide-react';
 import type { NotificationRow } from '@/lib/notifications/queries';
 import { notificationStatusChip, isActionable } from '@/lib/notifications/format';
 
@@ -22,6 +22,10 @@ const CATEGORY_ICON: Record<string, typeof Bell> = {
   // exactly how it would have shipped unnoticed — found during the platform
   // half's sweep and filed into this feature.
   roles: KeyRound,
+  // DB-4 FEAT-H049 STORY-4: the `sanctions` category (FEAT-PD021) — the six
+  // hold kinds render as plain notices (title = the kind's label, body = the
+  // reason); the icon is the only surface-authored part.
+  sanctions: Gavel,
 };
 
 function readableTime(iso: string): string {
