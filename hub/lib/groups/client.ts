@@ -529,8 +529,6 @@ export async function leaveGroup(
  * last-member-close-instead, expired) the Surface renders in place.
  */
 
-export type { PendingNomination } from '@/lib/groups/leadership';
-
 /** MEM-7: nominate ranked successors — the ordered ids ARE the ranking. */
 export async function nominateSteward(
   groupId: string,

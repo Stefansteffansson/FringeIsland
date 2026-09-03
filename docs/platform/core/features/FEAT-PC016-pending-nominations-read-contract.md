@@ -1,14 +1,16 @@
-# FEAT-PC016: Pending-nominations read contract — the nominee's window, substrate-homed
+# FEAT-PC016: Pending-nominations read contract — the nominee's window, substrate-homed (RETIRED 2026-09-03)
 
 ---
 id: FEAT-PC016
-title: get_my_pending_nominations() — the stewardship nominee's own pending-nomination read, mirroring get_my_invitations(); leadership.ts becomes a thin consumer (closes the 2026-07-06 audit LOW finding)
+title: get_my_pending_nominations() — the stewardship nominee's own pending-nomination read, mirroring get_my_invitations(); leadership.ts becomes a thin consumer (closes the 2026-07-06 audit LOW finding) — RETIRED 2026-09-03 (TASK-H017-01): superseded by the bell, function dropped
 owner: platform/core/organisation
 consumers: [hub]
 wave: ferd
 maturity: 6-done
 requires-equipment: none
 ---
+
+> **RETIRED 2026-09-03 ([TASK-H017-01](../../../planning/backlog/tasks/TASK-H017-01-nominations-standalone-read-disposition.md); ruled by Stefan: "retire H017-01").** This contract shipped (6-done, Cycle J-A) and was then **superseded, not replaced**: A-NTF N-B ([FEAT-H031](../../../products/hub/features/FEAT-H031-notification-typed-actions.md)) moved the nominee's answer into the notification bell, which reads the notification records through `get_own_notifications()` — a different path entirely — and N-C ([FEAT-H032](../../../products/hub/features/FEAT-H032-live-notification-bell-and-reconnect-reconciliation.md)) removed the last caller. `get_my_pending_nominations()` is dropped by migration `20260903090000`; the Hub route `GET /api/me/nominations`, `fetchPendingNominations()`, the `PendingNomination` type, and the six-cell contract suite went with it. Maturity stays `6-done` because the ladder records what was built; the capability lives on in the bell. Everything below this line is history.
 
 ## Problem
 
@@ -91,3 +93,5 @@ N/A (no surface) — the read replaces a client-side derivation with one RPC of 
 Built Cycle J-A, 2026-07-07, riding the FEAT-PD002 schema-gate migration `20260707130821` (nodded by Stefan). `get_my_pending_nominations()` mirrors `get_my_invitations()` exactly (FIM-only guard, `search_path=''`, STABLE, `coalesce('[]')`, revoke-from-anon-explicitly grants); `group_name` resolves from the payload the PC014 nomination writer embedded (the display-identity-in-row posture); ordering `created_at DESC, id DESC`. **Red-first:** 6 integration tests demonstrated red (PGRST202, fixtures via the real `nominate_steward` writer) → green post-apply. **STORY-2:** `fetchPendingNominations()` thinned to a pure RPC relay (no table read, no filtering, no client-clock math); the two unit tests that pinned the old table-read mechanics were re-pointed at the thin-relay behaviour (labelled — the spec prescribes exactly this change); `GET /api/me/nominations` and the `PendingNomination` payload unchanged, remaining leadership tests green unchanged. The 2026-07-06 audit LOW finding is closed (recorded in `docs/planning/hub-v2/api-conformance-register.md` at the J-A close).
 
 **Consumer status (2026-07-24, A-NTF Cycle N-B):** this contract's only surface consumer — the Hub's `PendingNominations` section — was **retired** when nominations moved into the notification bell/inbox (FEAT-H031, ADR-U051). The contract itself is untouched and still live, but it is now reached only through the `/api/me/overview` bundle's `nominations` slice, which **no surface reads**. Retiring that orphaned slice is an **N-C rider** (recorded in the A-NTF completion plan); whether `get_my_pending_nominations()`, `GET /api/me/nominations`, and `fetchPendingNominations()` retire with it is decided in the same pass. Flagged here so the contract is not read as actively consumed.
+
+**Retired (2026-09-03, TASK-H017-01):** the whole chain, ruled as one question. `DROP FUNCTION IF EXISTS public.get_my_pending_nominations()` with a self-verifying catalog check (migration `20260903090000`, schema gate); the ownership manifest entry removed in the same PR; the Hub route, relay, re-exported type, and the six-cell contract suite deleted. **Red-first for a deletion:** `tests/integration/groups/pending-nominations-retired.test.ts` — two absence cells (pg_proc has no row; a FIM's call returns PGRST202) demonstrated red at HEAD against the live function (it returned the nominee's payload), plus one **labelled pin**, green at HEAD by design, that the nominee still sees the offer through `get_own_notifications()`; and `function-classification-completeness.test.ts`'s "every live public function is explicitly classified" cell demonstrated red at HEAD with the manifest entry removed (unclassified: `get_my_pending_nominations`). Both flip green at apply. The body and its revoke/grant remain in `20260707130821:669-715, 783-785` for re-issue if the chain is ever wanted back.

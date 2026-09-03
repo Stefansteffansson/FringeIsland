@@ -3,13 +3,13 @@
 ---
 id: TASK-H017-01
 title: Disposition the superseded pending-nominations read chain (Hub route + DS/Core contract)
-status: todo
+status: done
 assigned_to: claude
 priority: low
 feature: FEAT-H017
 owner: hub
 wave: ferd
-cycle: unscheduled — candidate for the A-NTF area gate or an A-GRP revisit
+cycle: 2026-09-03 session (bridge 2026-09-03_02, item 1 of four)
 depends_on: []
 estimated_hours: 2
 ---
@@ -43,11 +43,11 @@ N-C deliberately left the whole chain standing rather than deleting any of it:
 
 ## Acceptance criteria
 
-- [ ] One recorded decision covering the **whole chain**, not the route alone. Either: **(a) retire it** — route, `fetchPendingNominations`, and `get_my_pending_nominations` — updating FEAT-H017's and FEAT-PC016's specs plus both feature-inventory summary rows in the same commit; or **(b) retain it deliberately** under ADR-U042 guardrail 3, recording in both specs *why* an uncalled read is kept, so a future audit does not re-flag it as dead code.
-- [ ] If retired: FEAT-PC016's maturity/status honestly reflects that its capability was superseded rather than simply completed — a contract removed because the capability moved is a different record from one that shipped and stayed.
-- [ ] MEM-7's capability row in the Hub §L3 inventory reads truthfully about where a member sees pending nominations (the bell, since N-B) regardless of which option is taken.
-- [ ] The conformance gate's `DS_OWNED_ALLOWLIST` / RPC registers are updated if the contract retires.
-- [ ] No member-facing capability changes under either option — nominations remain fully available through the bell and `/notifications`.
+- [x] One recorded decision covering the **whole chain**, not the route alone. Either: **(a) retire it** — route, `fetchPendingNominations`, and `get_my_pending_nominations` — updating FEAT-H017's and FEAT-PC016's specs plus both feature-inventory summary rows in the same commit; or **(b) retain it deliberately** under ADR-U042 guardrail 3, recording in both specs *why* an uncalled read is kept, so a future audit does not re-flag it as dead code.
+- [x] If retired: FEAT-PC016's maturity/status honestly reflects that its capability was superseded rather than simply completed — a contract removed because the capability moved is a different record from one that shipped and stayed.
+- [x] MEM-7's capability row in the Hub §L3 inventory reads truthfully about where a member sees pending nominations (the bell, since N-B) regardless of which option is taken.
+- [x] The conformance gate's `DS_OWNED_ALLOWLIST` / RPC registers are updated if the contract retires.
+- [x] No member-facing capability changes under either option — nominations remain fully available through the bell and `/notifications`.
 
 ## Technical notes
 
@@ -62,3 +62,22 @@ N-C deliberately left the whole chain standing rather than deleting any of it:
 - If the contract retires: `grep -rn "get_my_pending_nominations" supabase/ hub/` returns only the migration that drops it.
 - `cd hub && npx next build` — the type gate, per the house rule that `ts-jest`/eslint do not full-type-check.
 - Full unit suite green. Integration suite required only if the platform contract is dropped.
+
+## Implementation notes (2026-09-03 — option (a), the whole chain retired; applied on the named approval "ok merge #600")
+
+**What went.** `hub/app/api/me/nominations/route.ts` (the route), `fetchPendingNominations()` + the `PendingNomination` interface in `hub/lib/groups/leadership.ts`, the type re-export in `hub/lib/groups/client.ts`, `hub/tests/integration/groups/pending-nominations-contract.test.ts` (the contract's six cells), the three `/api/me/nominations` cells in `group-leadership-routes.test.ts` (the STORY-6 canary now spans five handlers), the two relay cells in `groups-leadership.test.ts`, and the `get_my_pending_nominations` entry in `supabase/ownership.manifest.json`. Migration `20260903090000_task_h017_01_retire_get_my_pending_nominations.sql` drops the function with a self-verifying catalog check; its header carries the sibling sweep and the Q1 post-apply set.
+
+**What stayed.** The write path (`nominate_steward`, `respond_to_stewardship_nomination`, `POST /api/notifications/[id]/nomination-response`) and the bell path (`get_own_notifications`, FEAT-H031/H032). The stale comments in `overview/route.ts` and `groups/page.tsx` now say the chain followed.
+
+**Red-first for a deletion.** `pending-nominations-retired.test.ts`: two absence cells (pg_proc has no row; a FIM's call returns PGRST202) — **red at HEAD** (the live function returned the nominee's payload), plus one **labelled PIN**, green at HEAD by design, that the nominee still sees the offer through `get_own_notifications()` (AC 5). `function-classification-completeness.test.ts` "every live public function is explicitly classified" — **red at HEAD** with the manifest entry removed (`unclassified: ["get_my_pending_nominations"]`). Both flip green at apply.
+
+**Records.** FEAT-PC016: title + banner + notes ("superseded by the bell, retired"; maturity stays `6-done` — the ladder records what was built). FEAT-H017 §Implementation notes revision. Hub §L3 MEM-7 row and §L4 FEAT-H017 row; PC-3 §L3 rows in `organisation-specification.md`; both features READMEs; `api-conformance-register.md` §7; the N-C rider in the notifications completion plan closed; root + Platform Core CHANGELOGs (no `hub/CHANGELOG.md` entry — nothing a member can see changed).
+
+**Gate.** Apply from the repo root on the named approval:
+
+```
+node scripts/apply-migration-temp.js 20260903090000_task_h017_01_retire_get_my_pending_nominations.sql
+bash supabase-cli.sh migration repair --status applied 20260903090000
+```
+
+Post-apply verification: `pending-nominations-retired.test.ts` (3/3), `npm run test:integration:platform`, `npm run test:integration:groups`, and the two bell-walking E2E journeys (`leadership-transfer.spec.ts`, `notifications-live.spec.ts`) from `hub/`.
