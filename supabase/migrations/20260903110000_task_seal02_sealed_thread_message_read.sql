@@ -10,8 +10,9 @@
 --     client roles; {postgres, service_role}); touches only DS-5's own tables;
 --     no wall of its own. FEAT-PD012 amendment.
 --   * `admin_get_group_conversation_detail` — PC-4 wrapper, owns the admin wall,
---     the closed-scope rule, and the AUDIT row. Client-callable. FEAT-PC026
---     amendment. Registered under both owners + a declaredCompositions entry in
+--     the closed-scope rule, and the AUDIT row; touches no DS-5 table (it
+--     reads the body's reply — the gate refused a first draft that pre-read
+--     `conversations`). Client-callable. FEAT-PC026 amendment. Registered under both owners + a declaredCompositions entry in
 --     supabase/ownership.manifest.json (the invocation-axis gate).
 --
 -- BOUNDS (SEAL-01's, carried verbatim):
@@ -158,7 +159,6 @@ as $function$
 declare
   v_actor uuid;
   v_group uuid;
-  v_kind text;
   v_status text;
   v_result jsonb;
 begin
@@ -166,23 +166,22 @@ begin
     raise exception 'Unauthorized' using errcode = '42501';
   end if;
 
-  select c.group_id, c.kind into v_group, v_kind
-    from public.conversations c
-   where c.id = p_conversation_id;
-  if v_group is null or v_kind <> 'group' then
-    -- Bound 2, at the wall as well: a direct conversation never exists here.
-    raise exception 'conversation not found' using errcode = 'P0002';
-  end if;
+  -- The DS-5 body owns the conversation read entirely: absent or direct is its
+  -- P0002 (bound 2), and its reply carries the group and the group's status.
+  -- This wrapper touches NO DS-5 table — the invocation-axis gate refused the
+  -- first draft of this function for pre-reading `conversations` here (ADR-U047
+  -- rule 3, the exact shape Audit IV caught before SEAL-01). Nothing the body
+  -- read leaves this function unless the scope rule below admits it.
+  v_result := public.ds5_admin_conversation_detail(p_conversation_id);
+  v_group := (v_result->>'group_id')::uuid;
+  v_status := v_result->>'group_status';
 
-  select g.status into v_status from public.groups g where g.id = v_group;
   -- Ruling A: sealed-thread sight is scoped to CLOSED groups — the only state
   -- in which sealed threads exist. Active, resting, suspended: refused here.
   if v_status is distinct from 'closed' then
     raise exception 'sealed-thread sight is scoped to closed groups (group is %)', v_status
       using errcode = 'P0001';
   end if;
-
-  v_result := public.ds5_admin_conversation_detail(p_conversation_id);
 
   -- Bound 4: the read is an admin-plane act — audited, ids only, never content.
   v_actor := public.get_current_personal_group_id();
