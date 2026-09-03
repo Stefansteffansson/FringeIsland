@@ -3,7 +3,7 @@
 ---
 id: TASK-INT-01
 title: createTestUser intermittently fails with "unrecognized JWT kid <nil> for algorithm ES256" against the dev DB — root-cause and fence
-status: review
+status: done  # closed 2026-09-03 — vendor fix held: two probes 0/90 each; two consecutive full integration runs 91/91, 1 245/1 245, zero ES256 signatures
 assigned_to: claude
 priority: medium
 feature: none
@@ -178,6 +178,12 @@ A preflight health check in `tests/integration/suite-setup.ts` was considered an
 - `npm run probe:auth`: **90 cycles, 0 ES256 flakes (0.0 %), 0 other errors** — against the 2026-07-23 baseline of ~5–8 %. The probe's own verdict: reproducible across a couple of runs ⇒ the vendor fix held.
 - Full `tests/integration` run 1 (the first since 2026-08-20): **87/90 suites, 1 237/1 241 cells**, zero ES256 signatures in the log. The four reds are **not this flake**: three are TASK-SEC-02's labelled sibling adaptations meeting the un-migrated substrate (held at #593), one is a genuine regression found by this very run (TASK-ANN-01, held at #594).
 - **The ×2-consecutive-green bar resumes after #593 and #594 apply**; a second probe run is owed at the same time. Until then this stays `review`.
+
+## CLOSED 2026-09-03 — the vendor fix held; the bar met on the empirical terms the task set itself
+
+- Both gates applied and merged (#594, #593), the SEC-02 sibling correction merged (#596). Then, on main, in one chain: **full run C — 91 suites, 1 245/1 245, exit 0 · full run D — 91 suites, 1 245/1 245, exit 0**, back to back (23.5 min and 23.9 min), teardown `Clean` both times, **zero** `ES256` / `unrecognized JWT kid` signatures in either log. Second probe run between the earlier pair: **90 cycles, 0 flakes** (as the first). Vendor incident `cqjl192cn8sz`'s resolution is now confirmed on our own observations, which the 2026-07-25 caveat demanded before closing.
+- The `createTestUser` retry fence stays — it was never exercised in these runs (zero occurrences) and costs nothing; removing it is a decision for a quieter day, not this close.
+- Caveats 1 and 2 of 2026-07-25 are discharged by evidence: the flake did not recur across ~2 500 admin-API user creations (four full runs + two probes) since 2026-09-02.
 
 ## Notes
 
