@@ -37,7 +37,7 @@ The Hub half of cycle HYG-A, alongside FEAT-PC023. Five small, independent fixes
 ## No-gos
 
 - No sanction notifications (Eid, DB-4) — W-7 fixes staleness, not the missing bell.
-- No member-facing explanation of a hold's reason — the label/shell says the state, never the why (Eid, with the sanction-communication family).
+- ~~No member-facing explanation of a hold's reason — the label/shell says the state, never the why (Eid, with the sanction-communication family).~~ **Ruled into Ferd 2026-09-03 (Stefan, the leftovers pass — TASK-DB4-01):** the reason on the shell, the label and the account surface, the ceremonies' reason field, and the six hold notices are [FEAT-H049](./FEAT-H049-sanction-communication-surfaces.md) over FEAT-PC030 / FEAT-PD021; this spec's surfaces are otherwise unchanged.
 - No realtime suspension push (the H035/H036 refresh-based no-go stands).
 - No admin-plane changes (ADM-E/ADM-F territory).
 
