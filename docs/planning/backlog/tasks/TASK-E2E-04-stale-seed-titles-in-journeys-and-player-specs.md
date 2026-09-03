@@ -1,8 +1,8 @@
 ---
 id: TASK-E2E-04
 title: journeys.spec + player.spec still walk the pre-reset seed titles — four E2E cells red since the 2026-08-12 reseed, found (not caused) at the #601 gate
-status: todo
-assigned_to: unassigned
+status: done
+assigned_to: claude
 priority: medium
 feature: FEAT-H019 (journeys.spec) + FEAT-H020 (player.spec) — test maintenance, no spec change
 owner: hub
@@ -29,3 +29,7 @@ The later journey specs already follow the right pattern — `frozen-and-group-p
 
 - `npx playwright test tests/e2e/journeys.spec.ts tests/e2e/player.spec.ts` green from `hub/` with the dev server on :3000, twice.
 - `git grep -n "Personal Development Kickstart\|Leadership Fundamentals" hub/tests/e2e` returns nothing.
+
+## Done (2026-09-03)
+
+Both specs re-seeded on dedicated fixtures, the pattern the later journey specs use: `journeys.spec.ts` seeds an owner group + two public three-step journeys (*E2E H019 Solo Walk*, *E2E H019 Group Walk*) by title in `beforeAll` and tears them down by title; `player.spec.ts` seeds *E2E H020 Player Walk* (five required steps) and purges only the fixture's enrolments between its two arcs — the session FIM's onboarding enrolment is never touched, so the arrived-once re-arm is gone. Every assertion keeps its intent (the catalogue card, the steps overview, self-enrol, the badge scoped to the fixture card, withdraw, the wielding walk with the picker + the confirm naming the group, the group page's journeys section, the resume-at-step-2 arc, the gated step 3, the withdraw-then-re-enrol reactivation). **Green twice:** 4/4 (36.0 s), 4/4 (20.3 s), against the applied substrate on the dev server. `git grep` for the three old titles in `hub/tests/e2e` returns nothing. Labelled **test maintenance** (test-after by nature — the behaviour was already shipped), never claimed as TDD. FEAT-H019 / FEAT-H020 carry a revision line each. The CI smoke-job question is left as a ruling for Stefan.

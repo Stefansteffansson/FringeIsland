@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { createAdminClient, SESSION_EMAIL, markArrivedOnce } from './helpers/auth';
+import { createAdminClient, SESSION_EMAIL } from './helpers/auth';
 
 /**
  * FEAT-H020 — the journey player (JRN-6/7/8/9) end-to-end, against the live
@@ -8,15 +8,14 @@ import { createAdminClient, SESSION_EMAIL, markArrivedOnce } from './helpers/aut
  * shared e2e-session FIM (global-setup storageState) — the suite's dedicated
  * test user, never a real account.
  *
- * One focused walk on a seeded journey ("Leadership Fundamentals", five required
- * steps): catalogue -> detail -> self-enrol -> enter via Continue -> boot resumes
- * at the first (incomplete) step -> complete step 1 (the ask-verb affordance, the
- * rail tick confirms the landed write) -> advance (the click auto-saves engagement
- * with step 2, JRN-9) -> leave the player entirely -> re-enter through the
- * catalogue -> the boot resumes at step 2 (latest open engagement / first
- * incomplete, Q6) -> walk onto step 3 and see it gated behind the required step 2
- * with the reason naming it (JRN-8). Distinct journey from journeys.spec so the
- * two specs never contend for the session FIM's enrolments.
+ * One focused walk on a DEDICATED seeded journey (five required steps):
+ * catalogue -> detail -> self-enrol -> enter via Continue -> boot resumes
+ * at the first (incomplete) step -> complete step 1 (the ask-verb affordance,
+ * the rail tick confirms the landed write) -> advance (the click auto-saves
+ * engagement with step 2, JRN-9) -> leave the player entirely -> re-enter
+ * through the catalogue -> the boot resumes at step 2 (latest open engagement
+ * / first incomplete, Q6) -> walk onto step 3 and see it gated behind the
+ * required step 2 with the reason naming it (JRN-8).
  *
  * A second arc covers the FEAT-PD003 re-enrolment amendment (Stefan's finding):
  * walk to step 2, WITHDRAW from the detail page (the enrolment goes terminal
@@ -25,32 +24,94 @@ import { createAdminClient, SESSION_EMAIL, markArrivedOnce } from './helpers/aut
  * row (never a fresh start), so Continue resumes at step 2 with step 1 still
  * ticked. Withdraw-then-restart would have reset to step 1; this proves it doesn't.
  *
- * Cleanup purges the session FIM's enrolments after each test (the two arcs are
- * independent); step-instances ride the enrolment's ON DELETE CASCADE (ADR-U031
- * erasure), so a re-run starts clean.
+ * TASK-E2E-04 (2026-09-03, labelled test maintenance): this spec walked the
+ * pre-2026-08-12 seed journey the Phase-4 reseed removed (TASK-E2E-04 names it) —
+ * both cells sat red for three weeks because E2E is not in
+ * CI. It now seeds its own five-step journey by title in beforeAll and tears
+ * it down by title (the pattern the later journey specs follow), purging only
+ * the fixture's enrolments between the arcs — the session FIM's onboarding
+ * enrolment is never touched, so no arrived-once re-arm is needed.
  */
 
-const JOURNEY = 'Leadership Fundamentals';
-const STEP1 = 'What is Leadership?';
-const STEP2 = 'Self-Assessment: Your Leadership Style';
-const STEP3 = 'Building Trust and Credibility';
+const OWNER_GROUP = 'E2E H020 Player Owner';
+const JOURNEY = 'E2E H020 Player Walk';
+const STEP1 = 'Player Marker One';
+const STEP2 = 'Player Marker Two';
+const STEP3 = 'Player Marker Three';
+const STEPS = [STEP1, STEP2, STEP3, 'Player Marker Four', 'Player Marker Five'];
 
-async function purgePlayerState(): Promise<void> {
+let journeyId: string;
+
+/** Id-independent teardown (by title/name) — safe before seeding and after. */
+async function teardownFixture(): Promise<void> {
   const admin = createAdminClient();
-  const { data } = await admin
-    .from('users')
-    .select('personal_group_id, auth_user_id')
-    .eq('email', SESSION_EMAIL)
-    .maybeSingle();
-  const gid = data?.personal_group_id as string | undefined;
-  if (gid) {
+  const { data: journeys } = await admin.from('journeys').select('id').eq('title', JOURNEY);
+  for (const j of journeys ?? []) {
+    const jid = j.id as string;
     // Enrolment deletion cascades journey_step_instances (the progress grain).
-    await admin.from('journey_enrollments').delete().eq('group_id', gid);
-    // C-A adaptation (labelled): the purge also wipes the session FIM's
-    // onboarding enrolment (global-setup's arrived-once state) — any sibling
-    // booting /groups afterwards gets the JRN-15 auto-launch. Re-arm it.
-    if (data?.auth_user_id) await markArrivedOnce(admin, data.auth_user_id as string);
+    await admin.from('journey_enrollments').delete().eq('journey_id', jid);
+    await admin.from('journey_steps').delete().eq('journey_id', jid);
   }
+  await admin.from('journeys').delete().eq('title', JOURNEY);
+  await admin.from('groups').delete().eq('name', OWNER_GROUP);
+}
+
+async function seedFixture(): Promise<void> {
+  const admin = createAdminClient();
+  const { data: group, error: gErr } = await admin
+    .from('groups')
+    .insert({
+      name: OWNER_GROUP,
+      description: 'FEAT-H020 E2E fixture owner',
+      group_type: 'engagement',
+      is_public: false,
+      show_member_list: false,
+    })
+    .select('id')
+    .single();
+  if (gErr) throw new Error(`seedFixture group: ${gErr.message}`);
+  const ownerG = group!.id as string;
+
+  const { data: journey, error: jErr } = await admin
+    .from('journeys')
+    .insert({
+      title: JOURNEY,
+      description: 'FEAT-H020 E2E player fixture — five required steps.',
+      created_by_group_id: ownerG,
+      is_published: true,
+      is_public: true,
+      journey_type: 'predefined',
+      difficulty_level: 'beginner',
+      estimated_duration_minutes: 25,
+      tags: ['h020-e2e'],
+      content: null,
+      published_at: new Date().toISOString(),
+    })
+    .select('id')
+    .single();
+  if (jErr) throw new Error(`seedFixture journey: ${jErr.message}`);
+  journeyId = journey!.id as string;
+
+  const { error: sErr } = await admin.from('journey_steps').insert(
+    STEPS.map((title, i) => ({
+      journey_id: journeyId,
+      step_order: i + 1,
+      title,
+      step_kind_key: 'narrative',
+      content_family_key: 'witness',
+      required: true,
+      repeatable: false,
+      duration_minutes: 5,
+      content: { body: `${title} — E2E fixture step` },
+    })),
+  );
+  if (sErr) throw new Error(`seedFixture steps: ${sErr.message}`);
+}
+
+/** Between the arcs: only the fixture's enrolments go (instances cascade). */
+async function purgeFixtureEnrollments(): Promise<void> {
+  const admin = createAdminClient();
+  if (journeyId) await admin.from('journey_enrollments').delete().eq('journey_id', journeyId);
 }
 
 test.describe('FEAT-H020 — journey player: enrol, walk, resume, gating', () => {
@@ -60,11 +121,16 @@ test.describe('FEAT-H020 — journey player: enrol, walk, resume, gating', () =>
       .from('users')
       .update({ is_active: true, is_decommissioned: false })
       .eq('email', SESSION_EMAIL);
-    await purgePlayerState();
+    await teardownFixture();
+    await seedFixture();
   });
 
   test.afterEach(async () => {
-    await purgePlayerState();
+    await purgeFixtureEnrollments();
+  });
+
+  test.afterAll(async () => {
+    await teardownFixture();
   });
 
   test('enrol -> walk -> complete step -> leave -> resume -> gated step', async ({ page }) => {

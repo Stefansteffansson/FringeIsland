@@ -124,3 +124,5 @@ None beyond the shared contracts (the Gimbal player will consume the same payloa
 ## Open spec questions
 
 1. **Player route shape.** Default: `/journeys/[id]/play` with optional `?enrollment=`; BFF at `/api/journeys/enrollments/[enrollmentId]/player`. Confirmed at task review before build (no gate implication — pure Hub surface).
+
+*(Test maintenance 2026-09-03, [TASK-E2E-04](../../../planning/backlog/tasks/TASK-E2E-04-stale-seed-titles-in-journeys-and-player-specs.md): `player.spec.ts` walked the pre-2026-08-12 seed titles the Phase-4 reseed removed and sat red for three weeks unnoticed — E2E is not in CI. Re-seeded on dedicated fixtures by title, every assertion's intent kept; green twice (4/4 with its sibling). Labelled test-after, not TDD.)*
