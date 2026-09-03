@@ -129,8 +129,8 @@ export default function GroupsPage() {
           FEAT-H032 (N-C) finished the job: the overview bundle's `nominations`
           slice went too. N-B removed the renderer but left the read, so this
           page kept paying for an answer nothing displayed on every first paint.
-          The standalone /api/me/nominations route is deliberately untouched
-          (ADR-U042 guardrail 3); its whole-chain disposition is TASK-H017-01. */}
+          The standalone /api/me/nominations route followed on 2026-09-03: its
+          owner retired the whole chain (TASK-H017-01, FEAT-PC016 dropped). */}
 
       {authLoading || (!error && groups === null) ? (
         <LoadingState label="Loading your groups..." />

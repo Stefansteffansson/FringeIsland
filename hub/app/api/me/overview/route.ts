@@ -20,9 +20,10 @@ import { emitTelemetry } from '@/lib/observability/telemetry';
  * The `nominations` slice was removed in A-NTF N-C (FEAT-H032 STORY-4): N-B
  * retired the `PendingNominations` section, its only consumer, leaving the
  * bundle computing a read that nothing rendered on every `/groups` first paint.
- * The standalone `/api/me/nominations` route remains canonical and untouched
- * (guardrail 3 below); only the bundle stopped calling it. Members see their
- * pending nominations in the bell — a different read path entirely.
+ * The standalone `/api/me/nominations` route outlived the bundle's use of it
+ * under guardrail 3 until 2026-09-03, when its owner retired the whole chain
+ * (TASK-H017-01). Members see their pending nominations in the bell -- a
+ * different read path entirely.
  *
  * Guardrail 1 (bundle-only): this route aggregates and shapes; it never
  * decides. No filtering, no derivation, no authorization beyond what the five

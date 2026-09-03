@@ -6,18 +6,6 @@ import type { SupabaseClient } from '@supabase/supabase-js';
  * substrate-side; these relay and type the payloads).
  */
 
-/** A pending stewardship offer, shaped for the /groups affordance (STORY-2).
- *  Sourced from the caller's own `stewardship_nomination` notification row —
- *  the A-NTF re-home seam, not an inbox. */
-export interface PendingNomination {
-  notification_id: string;
-  group_id: string;
-  group_name: string;
-  created_at: string;
-  /** The 7-day window's end, contract-enforced — shown, never counted down client-side. */
-  expires_at: string;
-}
-
 export interface NominateResult {
   group_id: string;
   nominees_count: number;
@@ -87,17 +75,4 @@ export async function deleteGroup(
   const { data, error } = await supabase.rpc('delete_group', { p_group_id: groupId });
   if (error) throw error;
   return data as Record<string, unknown>;
-}
-
-/** STORY-2 read: the caller's own pending stewardship nominations via the
- *  FEAT-PC016 contract — pending-ness (type + unanswered + SERVER-clock
- *  expiry) is derived in exactly one home; this is a thin relay (closes the
- *  2026-07-06 audit LOW finding). Re-homes into the A-NTF inbox when it
- *  lands (seam, D8). */
-export async function fetchPendingNominations(
-  supabase: SupabaseClient,
-): Promise<PendingNomination[]> {
-  const { data, error } = await supabase.rpc('get_my_pending_nominations');
-  if (error) throw error;
-  return (data ?? []) as PendingNomination[];
 }
