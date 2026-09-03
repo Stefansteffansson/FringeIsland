@@ -17,6 +17,8 @@ import {
   peekJourneyCatalog,
   peekMyJourneyEnrollments,
   fetchMyJourneyEnrollments,
+  pauseEnrollment,
+  resumeEnrollment,
   JourneysApiError,
 } from '@/lib/journeys/client';
 import {
@@ -110,7 +112,9 @@ function JourneyPlayer() {
     try {
       const list = peekMyJourneyEnrollments() ?? (await fetchMyJourneyEnrollments());
       setMine(list);
-      const active = list.filter((e) => e.journey_id === journeyId && e.status === 'active');
+      const active = list.filter(
+        (e) => e.journey_id === journeyId && (e.status === 'active' || e.status === 'paused'),
+      ); // STORY-8: a paused walk is still a walk — the door stays a door
       if (active.length === 0) {
         router.replace(`/journeys/${journeyId}`); // nothing active to walk
         return;
@@ -141,10 +145,12 @@ function JourneyPlayer() {
     // player (STORY-1, ADR-U045). What a Mist may boot stays enforced
     // platform-side: get_player_state is enrolment-scoped, and a Mist can
     // hold exactly one enrolment (the designated onboarding journey).
-    // react-hooks/set-state-in-effect suppression: the deliberate load-on-mount
-    // house pattern (catalogue / detail / groups) — a single `boot()` per stable
-    // (userId, enrolment) so auth-event churn fires no duplicate read.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    // The deliberate load-on-mount house pattern (catalogue / detail / groups) —
+    // a single `boot()` per stable (userId, enrolment) so auth-event churn fires
+    // no duplicate read. The react-hooks/set-state-in-effect suppression that
+    // stood here became unused on 2026-09-03, when STORY-8 gave `applyState` a
+    // second caller and the rule stopped reporting this call; it was removed to
+    // keep lint at zero warnings — restore it if the report returns.
     void boot();
   }, [userId, identity, authLoading, router, journeyId, paramEnrollment, boot]);
 
@@ -174,8 +180,11 @@ function JourneyPlayer() {
   // The gentle completion framing renders in review, and inside frozen for a walk
   // completed before it froze.
   const showCompletion = travellerComplete && (inReview || isFrozen);
-  // paused/withdrawn keep the bare honest panel; frozen no longer falls here.
-  const honestStatus = player != null && player.status !== 'active' && !inReview && !isFrozen;
+  // withdrawn keeps the bare honest panel; frozen and paused each have their own
+  // posture (paused: FEAT-H019 STORY-8 — Resume in place, nothing else).
+  const isPaused = player != null && player.status === 'paused';
+  const honestStatus =
+    player != null && player.status !== 'active' && !inReview && !isFrozen && !isPaused;
 
   // Observability: the freeze banner render is a meaningful surface event (STORY-1),
   // emitted once the frozen payload resolves. Telemetry only — no state, no suppression.
@@ -290,8 +299,44 @@ function JourneyPlayer() {
     [enrollmentId, player, applyState],
   );
 
+  // FEAT-H019 STORY-8 (TASK-JRN-PAUSE-01): pause / resume the walk in place —
+  // reversible, so no ConfirmModal. The transport lands (and writes the confirmed
+  // status through to the my-enrolments cache), then the player re-reads: the
+  // paused panel / the canvas render from the payload's status, never a client
+  // flip. A refusal shows in place and keeps the walk as last read.
+  const [pauseError, setPauseError] = useState<string | null>(null);
+  const [transitioning, setTransitioning] = useState(false);
+  const transition = useCallback(
+    async (verb: 'pause' | 'resume') => {
+      if (!enrollmentId) return;
+      setTransitioning(true);
+      setPauseError(null);
+      try {
+        if (verb === 'pause') await pauseEnrollment(journeyId, enrollmentId);
+        else await resumeEnrollment(journeyId, enrollmentId);
+        emitTelemetry(verb === 'pause' ? 'player.paused' : 'player.resumed', {
+          enrollment: enrollmentId,
+        });
+        applyState(await fetchPlayerState(enrollmentId));
+      } catch (err) {
+        setPauseError((err as Error).message || 'The request was refused.');
+      } finally {
+        setTransitioning(false);
+      }
+    },
+    [enrollmentId, journeyId, applyState],
+  );
+  // Own rows only: a via-group walk is the group's. progress_sharing.available
+  // marks the via-group side (FEAT-PD005 STORY-2), so no Pause renders there —
+  // and the contract refuses the rest regardless (42501, relayed in place).
+  const canPause =
+    player != null &&
+    player.status === 'active' &&
+    !readPosture &&
+    !player.progress_sharing?.available;
+
   const activeForJourney = (mine ?? []).filter(
-    (e) => e.journey_id === journeyId && e.status === 'active',
+    (e) => e.journey_id === journeyId && (e.status === 'active' || e.status === 'paused'),
   );
 
   const title = player?.journey.title ?? seedTitle ?? 'Journey';
@@ -330,6 +375,27 @@ function JourneyPlayer() {
       );
   } else if (!player) {
     body = <PlayerSkeleton />;
+  } else if (isPaused) {
+    // FEAT-H019 STORY-8: the honest paused panel — no canvas, no rail engagement.
+    // Resume re-reads and the canvas returns at the step it held (position carried).
+    body = (
+      <div data-testid="player-paused">
+        <EmptyState
+          title="This walk is paused"
+          description="Resume whenever you are ready — you will pick up exactly where you stopped."
+        />
+        {pauseError && <InlineError message={pauseError} />}
+        <button
+          type="button"
+          data-testid="player-resume"
+          disabled={transitioning}
+          onClick={() => void transition('resume')}
+          className="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+        >
+          {transitioning ? 'Working...' : 'Resume'}
+        </button>
+      </div>
+    );
   } else if (honestStatus) {
     body = (
       <div data-testid="player-nonactive">
@@ -343,6 +409,27 @@ function JourneyPlayer() {
     body = (
       <div data-testid="journey-player" className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <div>
+          {/* FEAT-H019 STORY-8 (TASK-JRN-PAUSE-01): Pause an active OWN walk in place —
+              reversible, so no ConfirmModal; the paused panel replaces the canvas on
+              re-read. A refusal (e.g. frozen underneath) shows here and keeps the walk. */}
+          {canPause && (
+            <div className="mb-4 flex items-center justify-end gap-3">
+              {pauseError && (
+                <span data-testid="player-pause-error" className="text-xs text-red-600">
+                  {pauseError}
+                </span>
+              )}
+              <button
+                type="button"
+                data-testid="player-pause"
+                disabled={transitioning}
+                onClick={() => void transition('pause')}
+                className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              >
+                {transitioning ? 'Working...' : 'Pause'}
+              </button>
+            </div>
+          )}
           {/* JRN-14: the freeze banner sits above everything — it explains the frozen
               state and adds to the record; it never replaces the completion framing. */}
           {isFrozen && <FreezeBanner freeze={player.freeze} />}

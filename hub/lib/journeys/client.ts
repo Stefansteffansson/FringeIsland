@@ -161,3 +161,43 @@ export async function withdrawEnrollment(
   if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
   return (await res.json()) as Record<string, unknown>;
 }
+
+// --- STORY-8 (TASK-JRN-PAUSE-01): pause / resume, with the J-D write-through ---
+
+/** The confirmed status is written through to the session cache so the next
+ *  client-side mount never replays the pre-transition slice (the J-D rule, PR
+ *  #146). Nothing is invented: with no cached slice there is nothing to patch. */
+function applyEnrollmentStatus(enrollmentId: string, status: string): void {
+  if (!cachedEnrollments) return;
+  cachedEnrollments = cachedEnrollments.map((e) =>
+    e.enrollment_id === enrollmentId ? { ...e, status } : e,
+  );
+}
+
+async function postEnrollmentTransition(
+  journeyId: string,
+  enrollmentId: string,
+  verb: 'pause' | 'resume',
+): Promise<Record<string, unknown>> {
+  const res = await fetch(`/api/journeys/${journeyId}/${verb}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ enrollment_id: enrollmentId }),
+  });
+  if (!res.ok) await throwFrom(res, `Request failed (${res.status})`);
+  const confirmed = (await res.json()) as Record<string, unknown>;
+  const status =
+    typeof confirmed.status === 'string' ? confirmed.status : verb === 'pause' ? 'paused' : 'active';
+  applyEnrollmentStatus(enrollmentId, status);
+  return confirmed;
+}
+
+/** STORY-8: pause an own walk (refusals carry the contract's message + the BFF status). */
+export function pauseEnrollment(journeyId: string, enrollmentId: string): Promise<Record<string, unknown>> {
+  return postEnrollmentTransition(journeyId, enrollmentId, 'pause');
+}
+
+/** STORY-8: resume an own paused walk at the held position. */
+export function resumeEnrollment(journeyId: string, enrollmentId: string): Promise<Record<string, unknown>> {
+  return postEnrollmentTransition(journeyId, enrollmentId, 'resume');
+}

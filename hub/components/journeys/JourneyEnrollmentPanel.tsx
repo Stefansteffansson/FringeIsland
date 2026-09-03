@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { InlineError } from '@/components/ui/InlineError';
-import { enrollSelf, enrollGroup, withdrawEnrollment } from '@/lib/journeys/client';
+import { enrollSelf, enrollGroup, withdrawEnrollment, pauseEnrollment, resumeEnrollment } from '@/lib/journeys/client';
 import type { JourneyDetail, JourneyGroupRef, JourneyEnrolledVia } from '@/lib/journeys/queries';
 
 /**
@@ -87,6 +87,38 @@ export function JourneyEnrollmentPanel({
             >
               Continue
             </Link>
+          )}
+          {/* FEAT-H019 STORY-8 (TASK-JRN-PAUSE-01): Pause on an active own walk —
+              reversible, so no ConfirmModal; the transport fires at once and the
+              panel re-reads. Own rows only: via-group walks never get one. */}
+          {own?.status === 'active' && (
+            <button
+              type="button"
+              data-testid="pause-self"
+              disabled={busy}
+              onClick={() => void run(() => pauseEnrollment(journey.id, own.enrollment_id))}
+              className="ml-3 text-xs font-medium text-gray-600 hover:underline disabled:opacity-50"
+            >
+              Pause
+            </button>
+          )}
+          {/* A paused walk reads "(paused)" with Resume where Continue was — the
+              affordance swaps on the payload's status, never on a client flip. */}
+          {own?.status === 'paused' && (
+            <>
+              <span data-testid="paused-state" className="ml-3 text-xs text-gray-500">
+                (paused)
+              </span>
+              <button
+                type="button"
+                data-testid="resume-self"
+                disabled={busy}
+                onClick={() => void run(() => resumeEnrollment(journey.id, own.enrollment_id))}
+                className="ml-3 text-xs font-medium text-blue-600 hover:underline disabled:opacity-50"
+              >
+                Resume
+              </button>
+            </>
           )}
           {/* FEAT-H021 STORY-4: a completed walk opens Review where an active one
               offers Continue — the affordance swaps on status, deep-link preserved. */}

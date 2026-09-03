@@ -163,6 +163,8 @@ Mostly additive with two narrowings. One replacement-in-place (`nominate_steward
 
 ## Implementation notes (6-done — Cycle G-E platform half, 2026-07-05)
 
+*(Revision 2026-09-03, TASK-JRN-PAUSE-01: the enrolment freezes this cascade triggers now reach `paused` rows as well as `active` ones — the DS-3 lifecycle-fact handlers (`ds3_lifecycle_member_departed` / `ds3_lifecycle_group_closed`, ADR-U047) were widened in migration `20260903100000`; the Core contracts here are untouched.)*
+
 Built TDD red-first. **Schema gate passed:** Stefan reviewed PR #80 (Open Q1–Q5 defaults, the four build findings, the ADR-U038 direct-caller answer) and gave the nod — defaults and findings all approved as implemented; merged. Consumed by FEAT-H017 (Surface half; its notes carry the Hub side).
 
 - **Migration** `supabase/migrations/20260705072252_feat_pc014_leadership_transfer_closure_contracts.sql` (applied to dev + repaired; gate pending). `nominate_steward` **replaced in place** (template-aware + active-membership Steward resolution, house no-leak, 22023 nominee validation incl. the duplicate check the legacy body lacked); `respond_to_stewardship_nomination` (accept / decline→next / decline→DeusEx; **plus staleness guards** the trusting legacy dispatch lacked — group-still-active, nominator-still-member, nominee-still-member, all `P0001` mutating nothing); `_transfer_stewardship_to_deusex` internal helper (no client execute); `hand_stewardship_to_deusex`; `close_group`; `delete_group`. `handle_notification_action` + `_handle_stewardship_nomination_action` **dropped** (Open Q2 default); `groups_delete` **dropped** behind a `pg_policies` name-guard (Open Q4); anon/PUBLIC grants revoked across the surface. **No new table, no trigger changes.**
