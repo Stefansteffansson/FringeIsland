@@ -1,7 +1,7 @@
 ---
 id: TASK-ANN-01
 title: REGRESSION — a platform admin can no longer read a suspended group's announcements; the PC026 sight arm was dropped when PD019 T3 re-issued get_group_announcements (2026-08-20)
-status: review  # corrective built 2026-09-02, HELD at the schema gate
+status: done  # corrective applied 2026-09-03 on Stefan's approval ("approve schema migrations"); admin 173/173, communication 157/157, the two admin E2E journeys 7/7 — the pane is back
 assigned_to: claude
 priority: high
 feature: FEAT-PC026 (ADM-G admin sight) ← broken by FEAT-PD019 T3 (wielded announcements)
@@ -43,10 +43,12 @@ The wielded limb (`p_acting`) is untouched — the admin plane does not wield. N
 
 ## Acceptance criteria
 
-- [ ] `suspended-group-admin-access.test.ts` green (the red cell is the existing one — no new test needed; it was doing its job).
-- [ ] `admin-suspended-content.spec.ts` green (the E2E that asserts the pane).
-- [ ] The announcement suites (`communication` slice + `wielded-announcements` E2E) still green — the wielded limb untouched.
-- [ ] FEAT-PC026 and FEAT-PD019 carry a dated corrective note; the T3 lesson recorded (a re-issue's sibling sweep must include every suite naming the function, not the feature's own).
+- [x] `suspended-group-admin-access.test.ts` green — **admin slice 9 suites, 173/173** after apply (2026-09-03); the cell *"get_group_announcements admits the admin"* √.
+- [x] `admin-suspended-content.spec.ts` green — **7/7** with `wielded-announcements.spec.ts` in the same run; the Announcements pane renders the announcement again.
+- [x] The announcement suites still green — **communication slice 11 suites, 157/157**; the wielded limb untouched.
+- [x] FEAT-PC026 and FEAT-PD019 carry a dated corrective note; the T3 lesson recorded.
+
+**Gate record (2026-09-03):** applied via `apply-migration-temp.js` + `migration repair --status applied 20260902220000` on Stefan's approval; the applied function read at the gate — SECURITY DEFINER, anon EXECUTE false, authenticated true, the arm present in the live body.
 
 ## Verification (at the gate, on the named approval)
 
