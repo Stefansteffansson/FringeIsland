@@ -2,6 +2,11 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-09-03 — platform admins can now read a closed group's preserved threads ([FEAT-H041](../docs/products/hub/features/FEAT-H041-suspended-group-content-wing.md) · TASK-SEAL-02)
+
+- **When a group has closed, its preserved threads can now be opened from the admin area — read-only.** Each thread in the "Preserved threads" section has an Open button. The thread view says plainly when it was sealed and that nothing in it is live; it lists the messages in order, names who wrote each one (someone who has since left the group shows as "Former member"), and offers no way to reply, react or write. Back returns to the list. Every read is recorded.
+- **What it deliberately does not do:** direct messages are never shown, and threads in groups that are still open or on hold cannot be opened here — only a closed group's preserved threads.
+
 ## 2026-09-02 — platform admins can see a closed group's preserved threads ([FEAT-H041](../docs/products/hub/features/FEAT-H041-suspended-group-content-wing.md) · TASK-SEAL-01)
 
 - **When a group has closed, its group conversations are preserved — and now a platform admin can see that they exist.** Open a closed group in the admin area and a "Preserved threads" section lists each group thread with how many messages it holds and when it was last active. A thread that was sealed when its author departed is labelled *Sealed* with the date, and nothing about it is live: there is no way to open it, reply to it, or mistake it for an ongoing conversation. This is where evidence of bullying lands when someone leaves, so the admin plane should at least know it is there.

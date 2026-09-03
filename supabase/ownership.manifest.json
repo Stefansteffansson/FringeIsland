@@ -189,6 +189,7 @@
       "admin_get_audit_log",
       "admin_get_content_report_detail",
       "admin_get_content_reports",
+      "admin_get_group_conversation_detail",
       "admin_get_group_conversations",
       "admin_get_group_detail",
       "admin_get_groups",
@@ -253,6 +254,7 @@
     "DS-5": [
       "create_group_conversation",
       "ds5_require_fim_actor",
+      "ds5_admin_conversation_detail",
       "ds5_admin_group_conversations",
       "ds5_assert_wielded_content_gate",
       "ds5_is_fim_actor",
@@ -397,6 +399,13 @@
         "vertical": "Administration",
         "mutation": false,
         "citation": "ADR-U047 Amendment 3 (2026-08-11, COR-D W1) applied to TASK-SEAL-01 — AB-6 ruling B1, re-scoped from 'suspended' to 'closed' by the Phase-4 W7 contract walk and Stefan's ruling A (2026-08-11), because seals only ever exist in closed groups. The PC-4 wrapper owns the admin wall and the closed-scope rule; the sealed DS-5 body (EXECUTE revoked from client roles) owns the thread read and is the one place in the schema a sealed conversation is readable. get_group_conversations' member-plane sealed_at IS NULL law is untouched."
+      },
+      {
+        "caller": "admin_get_group_conversation_detail",
+        "callee": "ds5_admin_conversation_detail",
+        "vertical": "Administration",
+        "mutation": false,
+        "citation": "ADR-U047 Amendment 3 applied to TASK-SEAL-02 (2026-09-03) — the SEAL-01 rider: AB-6 ruling B1's motivation (the evidence lives in the messages). The PC-4 wrapper owns the admin wall, the closed-scope rule, the DM no-leak and the audit row (admin_audit_log 'sealed_thread.read'); the sealed DS-5 body (EXECUTE revoked from client roles) owns the message read with COM-14 attribution. The member doors (get_group_conversations' sealed_at IS NULL law; get_conversation_detail's participant wall + suspended-only arm) are untouched."
       },
       {
         "caller": "admin_get_content_reports",

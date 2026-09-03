@@ -7,6 +7,7 @@ import {
   deleteE2EUser,
   markArrivedOnce,
   runAdminSql,
+  runAdminSqlRows,
   SESSION_EMAIL,
 } from './helpers/auth';
 
@@ -28,6 +29,11 @@ import {
  *
  * Red at head: /admin/groups/[id] renders a closed group with no thread
  * section at all — the H041 wing mounts for suspended groups only.
+ *
+ * TASK-SEAL-02 (2026-09-03, the rider): the sealed row gains exactly ONE
+ * affordance — Open — leading to a read-only thread view (the sealed label,
+ * the evidence body, no composer) over the audited platform door. SEAL-01's
+ * "never a door" assertion is adapted below, labelled.
  */
 
 const stamp = Date.now();
@@ -106,6 +112,7 @@ const rpcOk = async (c: SupabaseClient, fn: string, args: Record<string, unknown
 
 test.describe('TASK-SEAL-01 — sealed-thread sight on a closed group', () => {
   let groupId: string | null = null;
+  let conversationId: string | null = null;
   let leaksBefore = 0;
 
   test.beforeAll(async () => {
@@ -127,9 +134,15 @@ test.describe('TASK-SEAL-01 — sealed-thread sight on a closed group', () => {
     groupId = (await rpcOk(c, 'create_engagement_group', {
       p_name: `E2E SEAL Closed Cohort ${stamp}`,
     })) as string;
-    await rpcOk(c, 'create_group_conversation', {
+    const created = (await rpcOk(c, 'create_group_conversation', {
       p_group_id: groupId,
       p_title: 'SEAL evidence thread',
+    })) as string | { id?: string };
+    conversationId = typeof created === 'string' ? created : (created.id as string);
+    // TASK-SEAL-02: the evidence itself — a message body the admin will read.
+    await rpcOk(c, 'send_message', {
+      p_conversation_id: conversationId,
+      p_content: 'SEAL evidence message body',
     });
     // The REAL sealer, then the real status — the platform suite's fixture recipe.
     await runAdminSql(`
@@ -160,8 +173,32 @@ test.describe('TASK-SEAL-01 — sealed-thread sight on a closed group', () => {
     const row = section.getByTestId('closed-thread-row').filter({ hasText: 'SEAL evidence thread' });
     await expect(row).toHaveCount(1);
     await expect(row.getByTestId('sealed-badge')).toHaveText(/sealed/i);
-    // Never a door: no link, no button on a sealed row.
+    // TASK-SEAL-02 (labelled adaptation of SEAL-01's "never a door"): the sealed
+    // row now carries exactly ONE affordance — Open — and still no link, no live chrome.
     await expect(row.getByRole('link')).toHaveCount(0);
-    await expect(row.getByRole('button')).toHaveCount(0);
+    await expect(row.getByRole('button')).toHaveCount(1);
+    await row.getByTestId(`open-closed-thread-${conversationId}`).click();
+
+    // The read-only thread view: the sealed label, the evidence, no composer.
+    const view = section.getByTestId('closed-thread-view');
+    await expect(view).toBeVisible({ timeout: 20000 });
+    await expect(view.getByTestId('sealed-thread-label')).toContainText(/sealed/i);
+    await expect(view.getByTestId('sealed-thread-label')).toContainText(/nothing here is live/i);
+    await expect(view.getByText('SEAL evidence message body')).toBeVisible();
+    await expect(view.getByRole('textbox')).toHaveCount(0);
+    await expect(view.getByRole('button', { name: /send|reply|react|join|leave/i })).toHaveCount(0);
+
+    // Bound 4: the read left an audit row (ids only) — the platform wrote it, not the Hub.
+    const audit = await runAdminSqlRows(
+      `SELECT action, target FROM public.admin_audit_log
+        WHERE action = 'sealed_thread.read' AND target = '${conversationId}';`,
+    );
+    expect(audit.length).toBeGreaterThanOrEqual(1);
+
+    // Back returns to the list; the row is still there, still one door.
+    await section.getByTestId('closed-thread-back').click();
+    await expect(
+      section.getByTestId('closed-thread-row').filter({ hasText: 'SEAL evidence thread' }),
+    ).toHaveCount(1);
   });
 });
