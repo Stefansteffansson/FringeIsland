@@ -147,3 +147,51 @@ export async function moderateAdminGroupForumPost(
   if (error) throw new AdminContentError(error.code ?? 'unknown', error.message ?? 'unknown error');
   return data as ModerationResult;
 }
+
+/**
+ * TASK-SEAL-02 — ONE preserved thread's messages on a CLOSED group, through the
+ * SEAL-01 rider's door (`admin_get_group_conversation_detail`, migration
+ * `20260903110000`). The contract owns the wall (42501 → `refused`), the
+ * closed-scope rule (P0001 → `refused`), the DM no-leak (P0002 → `notFound`)
+ * and the audit row. Senders arrive ladder-resolved (COM-14): a departed
+ * author is "Former member", never a raw id. The sealed state is explicit so
+ * the surface can never present the thread as live.
+ */
+export type SealedThreadMessage = {
+  id: string;
+  sender_group_id: string | null;
+  content: string | null;
+  is_deleted: boolean;
+  created_at: string;
+};
+
+export type SealedThreadDetail = {
+  id: string;
+  kind: string;
+  title: string | null;
+  group_id: string;
+  group_name: string | null;
+  group_status: string;
+  created_at: string;
+  sealed_at: string | null;
+  is_sealed: boolean;
+  message_count: number;
+  truncated: boolean;
+  messages: SealedThreadMessage[];
+  senders: Record<string, { display_name: string; attribution: string; kind?: string }>;
+};
+
+export async function fetchAdminSealedThreadDetail(
+  client: SupabaseClient,
+  conversationId: string,
+): Promise<Flags<SealedThreadDetail>> {
+  try {
+    const { data, error } = await client.rpc('admin_get_group_conversation_detail', {
+      p_conversation_id: conversationId,
+    });
+    if (error) throw error;
+    return { data: data as SealedThreadDetail, refused: false, notFound: false };
+  } catch (err) {
+    return toFlags<SealedThreadDetail>(err);
+  }
+}

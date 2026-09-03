@@ -116,3 +116,7 @@ Hub only, and surface-neutral: the Messages inbox stops listing sealed threads (
 ## Performance budget
 
 N/A (no surface). The inbox exclusion adds a NULL-check predicate to existing reads; the export is an on-demand composite read outside any budget class.
+
+## Amendment 2026-09-03 — TASK-SEAL-02, the DS-5 half (migration `20260903110000`, applied on the named approval)
+
+`ds5_admin_conversation_detail(p_conversation_id)` — the sealed DS-5 body (EXECUTE revoked from client roles; `{postgres, service_role}`) serving **one** group-kind conversation's messages, sealed or not: oldest first, capped at 500 with `truncated` reported honestly, `message_count` total, senders resolved through the COM-14 ladder scoped to the conversation's group (a departed author is "Former member", a decommissioned one "Unknown" — never a raw id, never `[Deleted User]`); a direct conversation is P0002. It carries no wall of its own — the PC-4 wrapper `admin_get_group_conversation_detail` ([FEAT-PC026](../../core/features/FEAT-PC026-suspended-group-admin-access-contracts.md) amendment) owns admission, the closed-scope rule and the audit row. Preserve-and-seal's promise is unchanged: the seal still ends activity for everyone, the member plane still never lists a sealed thread, and this body is the second (and last) place in the schema a sealed thread is readable — the first being SEAL-01's list. This is why the evidence is still there when the author is not: `messages.sender_group_id` is `ON DELETE SET NULL`, and the ladder handles the NULL.
