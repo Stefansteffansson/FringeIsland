@@ -473,7 +473,11 @@ describe('FEAT-PD008 — conversation & message contracts (C-A)', () => {
         .eq('conversation_id', dmId)
         .eq('participant_group_id', member.personalGroupId)
         .select();
-      expect(error).toBeNull();
+      // LABELLED ADAPTATION (TASK-SEC-02, migration 20260902210000, applied 2026-09-03):
+      // the door is now closed one lock earlier — the client roles hold no table DML,
+      // so the grant refuses (42501 'permission denied for table …') before RLS's
+      // silent 0 rows. Same outcome, stated by the earlier lock: the cursor does not move.
+      expect(error?.code).toBe('42501');
       expect(data ?? []).toHaveLength(0);
     });
 

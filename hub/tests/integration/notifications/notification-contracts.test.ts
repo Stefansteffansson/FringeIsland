@@ -448,8 +448,12 @@ describe('FEAT-PD013 — notification contracts & category registry (N-A)', () =
         .update({ is_read: true })
         .eq('id', oRowId)
         .select('id');
-      expect(error).toBeNull(); // RLS filters silently
-      expect(updated).toEqual([]); // zero rows affected
+      // LABELLED ADAPTATION (TASK-SEC-02, migration 20260902210000, applied 2026-09-03):
+      // the door is now closed one lock earlier — the client roles hold no table DML,
+      // so the grant refuses (42501 'permission denied for table …') before RLS's
+      // silent 0 rows. Same outcome, stated by the earlier lock: the row stays unread.
+      expect(error?.code).toBe('42501');
+      expect(updated ?? []).toEqual([]); // zero rows affected
       const { data: oCount } = await co.rpc('get_own_unread_notification_count');
       expect(oCount as number).toBe(oUnreadBaseline); // still unread — the contract is the only door
     });
