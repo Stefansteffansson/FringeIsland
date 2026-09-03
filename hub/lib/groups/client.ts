@@ -602,19 +602,22 @@ export async function deleteGroup(groupId: string): Promise<Record<string, unkno
  * wrong-state) the Surface renders in place.
  */
 
+/** FEAT-H049 STORY-2 (DB-4): the Steward's OPTIONAL note rides the body as
+ *  `{ note }`; a blank note sends no body at all (the old shape). */
+const noteInit = (note?: string): RequestInit =>
+  note && note.trim().length > 0
+    ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ note }) }
+    : { method: 'POST' };
+
 /** Rest an active group (rest_group holders; the visible steward-fix hold). */
-export async function restGroupClient(groupId: string): Promise<void> {
-  const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/rest`, {
-    method: 'POST',
-  });
+export async function restGroupClient(groupId: string, note?: string): Promise<void> {
+  const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/rest`, noteInit(note));
   if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }
 
 /** Wake a resting group — the symmetric half; never a path out of suspended. */
-export async function wakeGroupClient(groupId: string): Promise<void> {
-  const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/wake`, {
-    method: 'POST',
-  });
+export async function wakeGroupClient(groupId: string, note?: string): Promise<void> {
+  const res = await fetch(`/api/groups/${encodeURIComponent(groupId)}/wake`, noteInit(note));
   if (!res.ok) await throwFromWrite(res, `Request failed (${res.status})`);
 }
 

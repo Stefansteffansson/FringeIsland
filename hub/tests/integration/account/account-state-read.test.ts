@@ -45,7 +45,9 @@ describe('FEAT-PC004 — own account-state read', () => {
       // user's data. ADAPTATION (C-F, labelled): deactivation_origin joined the
       // payload additively (ADR-U050 origin split — null while active).
       expect(Object.keys(state!).sort()).toEqual(
-        ['is_active', 'is_decommissioned', 'deactivation_origin', 'state'].sort(),
+        // ADAPTATION (FEAT-PC030, DB-4, 2026-09-03, labelled): suspension_reason joined the
+        // payload additively — null while active, the current hold's reason while suspended.
+        ['is_active', 'is_decommissioned', 'deactivation_origin', 'state', 'suspension_reason'].sort(),
       );
     });
   });

@@ -163,6 +163,7 @@ describe('AdminMemberDetail (FEAT-H036 STORY-2..6)', () => {
     await screen.findByRole('heading', { name: 'Rolf Rowan' });
     await userEvent.click(screen.getByTestId('suspend-member'));
     const dialog = await screen.findByRole('dialog');
+    await userEvent.type(within(dialog).getByTestId('ceremony-reason'), 'FEAT-PC030 adapted: reason required'); // FEAT-PC030 adapted (DB-4): the hold ceremony requires a reason
     await userEvent.click(within(dialog).getByRole('button', { name: 'Suspend' }));
     await waitFor(() =>
       expect(fetchMock).toHaveBeenCalledWith(
@@ -182,6 +183,7 @@ describe('AdminMemberDetail (FEAT-H036 STORY-2..6)', () => {
     await screen.findByRole('heading', { name: 'Rolf Rowan' });
     await userEvent.click(screen.getByTestId('suspend-member'));
     const dialog = await screen.findByRole('dialog');
+    await userEvent.type(within(dialog).getByTestId('ceremony-reason'), 'FEAT-PC030 adapted: reason required'); // FEAT-PC030 adapted (DB-4): the hold ceremony requires a reason
     await userEvent.click(within(dialog).getByRole('button', { name: 'Suspend' }));
     expect(await screen.findByTestId('action-error')).toHaveTextContent(
       'User is already in the requested state',

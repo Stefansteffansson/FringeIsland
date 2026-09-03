@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { CeremonyReasonField } from '@/components/ui/CeremonyReasonField';
 import { AdminSuspendedContentWing } from '@/components/admin/AdminSuspendedContentWing';
 import { AdminClosedThreadsSection } from '@/components/admin/AdminClosedThreadsSection';
 import type { AdminGroupDetail as Detail } from '@/lib/admin/groups';
@@ -41,6 +42,12 @@ export function AdminGroupDetail({ groupId }: { groupId: string }) {
   const [chosenId, setChosenId] = useState('');
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  // FEAT-H049 STORY-1 (DB-4, ADM-3): the hold ceremonies' member-facing reason
+  // and the in-place refusal (a 400 — the contract's 22023 — keeps the modal
+  // open with the reason still typed; every other refusal keeps the H035
+  // shape: modal closes, page-level error, honest repaint).
+  const [reason, setReason] = useState('');
+  const [ceremonyError, setCeremonyError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -65,9 +72,11 @@ export function AdminGroupDetail({ groupId }: { groupId: string }) {
   }, [load]);
 
   const mutate = useCallback(
-    async (path: string, body?: Record<string, unknown>) => {
+    async (path: string, body?: Record<string, unknown>, opts?: { holdCeremony?: boolean }) => {
       setBusy(true);
       setActionError(null);
+      setCeremonyError(null);
+      let keepOpen = false;
       try {
         const res = await fetch(`/api/admin/groups/${groupId}/${path}`, {
           method: 'POST',
@@ -76,7 +85,14 @@ export function AdminGroupDetail({ groupId }: { groupId: string }) {
         });
         if (!res.ok) {
           const payload = (await res.json()) as { error?: string };
-          setActionError(payload.error ?? 'The action was refused.');
+          if (opts?.holdCeremony && res.status === 400) {
+            // FEAT-H049 STORY-1: the reason was refused — say so in place and
+            // stay open, the reason still typed.
+            setCeremonyError(payload.error ?? 'The reason was refused.');
+            keepOpen = true;
+          } else {
+            setActionError(payload.error ?? 'The action was refused.');
+          }
         } else {
           setReassignOpen(false);
           setChosenId('');
@@ -84,13 +100,38 @@ export function AdminGroupDetail({ groupId }: { groupId: string }) {
       } catch {
         setActionError('The action could not be completed.');
       } finally {
-        setCeremony(null);
+        if (!keepOpen) {
+          setCeremony(null);
+          setReason('');
+        }
         setBusy(false);
         await load(); // the honest repaint — always from a fresh read
       }
     },
     [groupId, load],
   );
+
+  const closeCeremony = () => {
+    if (busy) return;
+    setCeremony(null);
+    setReason('');
+    setCeremonyError(null);
+  };
+
+  /** The hold ceremonies' message: the consequence, then the reason field
+   *  (labelled with WHO reads it), then the in-place refusal if any. */
+  const holdMessage = (text: string) => (
+    <span>
+      {text}
+      <CeremonyReasonField value={reason} onChange={setReason} label="Shown to the group's members" />
+      {ceremonyError && (
+        <span role="alert" data-testid="ceremony-error" className="mt-2 block text-sm text-red-700">
+          {ceremonyError}
+        </span>
+      )}
+    </span>
+  );
+  const reasonMissing = reason.trim().length === 0;
 
   if (view.kind === 'refused') {
     return (
@@ -314,53 +355,56 @@ export function AdminGroupDetail({ groupId }: { groupId: string }) {
         <AdminClosedThreadsSection groupId={groupId} groupName={d.name} onStateDrift={load} />
       )}
 
+      {/* FEAT-H049 STORY-1 (DB-4): every hold ceremony collects the member-
+          facing reason (FEAT-PC030 requires it — 22023 otherwise); Confirm is
+          gated on it, the route relays it, the members read it. */}
       <ConfirmModal
         isOpen={ceremony === 'rest'}
         title="Rest group"
-        message={`Rest "${d.name}"? Every member sees the group resting — content stays readable, changes are off until it is woken.`}
+        message={holdMessage(
+          `Rest "${d.name}"? Every member sees the group resting — content stays readable, changes are off until it is woken.`,
+        )}
         confirmText="Rest"
         variant="warning"
         busy={busy}
-        onConfirm={() => void mutate('rest')}
-        onCancel={() => {
-          if (!busy) setCeremony(null);
-        }}
+        confirmDisabled={reasonMissing}
+        onConfirm={() => void mutate('rest', { reason }, { holdCeremony: true })}
+        onCancel={closeCeremony}
       />
       <ConfirmModal
         isOpen={ceremony === 'wake'}
         title="Wake group"
-        message={`Wake "${d.name}"? The group returns to active for every member.`}
+        message={holdMessage(`Wake "${d.name}"? The group returns to active for every member.`)}
         confirmText="Wake"
         variant="warning"
         busy={busy}
-        onConfirm={() => void mutate('wake')}
-        onCancel={() => {
-          if (!busy) setCeremony(null);
-        }}
+        confirmDisabled={reasonMissing}
+        onConfirm={() => void mutate('wake', { reason }, { holdCeremony: true })}
+        onCancel={closeCeremony}
       />
       <ConfirmModal
         isOpen={ceremony === 'suspend'}
         title="Suspend group"
-        message={`Suspend "${d.name}"? Every member sees the group marked suspended until it is reactivated.`}
+        message={holdMessage(
+          `Suspend "${d.name}"? Every member sees the group marked suspended until it is reactivated.`,
+        )}
         confirmText="Suspend"
         variant="danger"
         busy={busy}
-        onConfirm={() => void mutate('suspend')}
-        onCancel={() => {
-          if (!busy) setCeremony(null);
-        }}
+        confirmDisabled={reasonMissing}
+        onConfirm={() => void mutate('suspend', { reason }, { holdCeremony: true })}
+        onCancel={closeCeremony}
       />
       <ConfirmModal
         isOpen={ceremony === 'reactivate'}
         title="Reactivate group"
-        message={`Reactivate "${d.name}"? The group returns to active for every member.`}
+        message={holdMessage(`Reactivate "${d.name}"? The group returns to active for every member.`)}
         confirmText="Reactivate"
         variant="warning"
         busy={busy}
-        onConfirm={() => void mutate('reactivate')}
-        onCancel={() => {
-          if (!busy) setCeremony(null);
-        }}
+        confirmDisabled={reasonMissing}
+        onConfirm={() => void mutate('reactivate', { reason }, { holdCeremony: true })}
+        onCancel={closeCeremony}
       />
       <ConfirmModal
         isOpen={ceremony === 'reassign'}

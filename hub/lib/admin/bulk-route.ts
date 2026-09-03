@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { bulkAdminUserAction, AdminUsersError, type BulkAction } from '@/lib/admin/users';
+import { readJsonBody, requiredReason } from '@/lib/admin/reason';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 import { emitDurableTelemetry } from '@/lib/observability/telemetry-server';
 
@@ -25,12 +26,8 @@ export async function handleBulkAuthed(
   action: BulkAction,
 ) {
   const slug = action.replace('-', '_');
-  let userIds: unknown;
-  try {
-    userIds = ((await request.json()) as { user_ids?: unknown }).user_ids;
-  } catch {
-    userIds = undefined;
-  }
+  const body = await readJsonBody(request);
+  const userIds = body.user_ids;
   if (
     !Array.isArray(userIds) ||
     userIds.length < 1 ||
@@ -42,8 +39,21 @@ export async function handleBulkAuthed(
       { status: 400 },
     );
   }
+  // FEAT-H049 (DB-4): suspend/reactivate carry ONE member-facing reason for
+  // the batch (FEAT-PC030 refuses each call without one — 22023); the BFF
+  // refuses a blank one up front (defense-in-depth). Force-logout takes none.
+  const needsReason = action === 'suspend' || action === 'reactivate';
+  const reason = needsReason ? requiredReason(body) : undefined;
+  if (needsReason && reason === null) {
+    return NextResponse.json({ error: 'Reason required' }, { status: 400 });
+  }
   try {
-    const results = await bulkAdminUserAction(supabase, action, userIds as string[]);
+    const results = await bulkAdminUserAction(
+      supabase,
+      action,
+      userIds as string[],
+      reason ?? undefined,
+    );
     await emitDurableTelemetry(supabase, `admin.bulk_${slug}`, {
       actor: actorId,
       requested: results.length,

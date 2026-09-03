@@ -354,6 +354,7 @@ describe('FEAT-PC021 gate 2 — member administration operations family (ADM-3/4
       const { error } = await odaClient.rpc('admin_update_user_status', {
         target_user_id: stenId,
         new_is_active: false,
+        p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
       });
       expect(error).toBeNull();
       const row = await lifecycleRowOf(sten);
@@ -367,6 +368,7 @@ describe('FEAT-PC021 gate 2 — member administration operations family (ADM-3/4
       const { error } = await odaClient.rpc('admin_update_user_status', {
         target_user_id: stenId,
         new_is_active: false,
+        p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
       });
       expect(error?.code).toBe('P0001');
       expect(await auditRows('member.suspend', stenId)).toHaveLength(1);
@@ -377,6 +379,7 @@ describe('FEAT-PC021 gate 2 — member administration operations family (ADM-3/4
       const { error } = await odaClient.rpc('admin_update_user_status', {
         target_user_id: stenId,
         new_is_active: true,
+        p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
       });
       expect(error).toBeNull();
       const row = await lifecycleRowOf(sten);
@@ -390,6 +393,7 @@ describe('FEAT-PC021 gate 2 — member administration operations family (ADM-3/4
       const { error } = await odaClient.rpc('admin_update_user_status', {
         target_user_id: stenId,
         new_is_active: true,
+        p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
       });
       expect(error?.code).toBe('P0001');
       expect(await auditRows('member.reactivate', stenId)).toHaveLength(1);
@@ -421,6 +425,7 @@ describe('FEAT-PC021 gate 2 — member administration operations family (ADM-3/4
       const { error } = await odaClient.rpc('admin_update_user_status', {
         target_user_id: await idOf(dre),
         new_is_active: true,
+        p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
       });
       expect(error?.code).toBe('P0001');
       expect(error?.message ?? '').toMatch(/decommissioned/i);
@@ -430,6 +435,7 @@ describe('FEAT-PC021 gate 2 — member administration operations family (ADM-3/4
       const upd = await odaClient.rpc('admin_update_user_status', {
         target_user_id: GHOST_USER,
         new_is_active: false,
+        p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
       });
       expect(upd.error?.code).toBe('P0002');
       const dec = await odaClient.rpc('admin_decommission_user', { target_user_id: GHOST_USER });
@@ -446,6 +452,7 @@ describe('FEAT-PC021 gate 2 — member administration operations family (ADM-3/4
       const { error: holdErr } = await odaClient.rpc('admin_update_user_status', {
         target_user_id: finnId,
         new_is_active: false,
+        p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
       });
       expect(holdErr).toBeNull();
       expect(await sessionCountOf(finn.user.id)).toBeGreaterThanOrEqual(1);
@@ -501,6 +508,7 @@ describe('FEAT-PC021 gate 2 — member administration operations family (ADM-3/4
       const { error: holdErr } = await odaClient.rpc('admin_update_user_status', {
         target_user_id: rolfId,
         new_is_active: false,
+        p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
       });
       expect(holdErr).toBeNull();
       expect(await sessionCountOf(rolf.user.id)).toBeGreaterThanOrEqual(1);

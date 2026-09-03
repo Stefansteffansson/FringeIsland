@@ -81,6 +81,9 @@ export function AccountStateView({
       // W-10: the exit reads as the way out — distinct from the error body —
       // and lands on /login (the walk found the bare sign-out parked the
       // member on the wall's URL, the button reading as part of the error).
+      // FEAT-H049 STORY-3 (DB-4, IDN-13): the WHY — the account-state read's
+      // `suspension_reason` renders above the exit; "contact support" stays
+      // the way out; null renders the surface exactly as before.
       return (
         <AccountStateSurface
           testId="account-suspended-surface"
@@ -88,7 +91,13 @@ export function AccountStateView({
           message="Your account has been suspended by an administrator. Please contact support to resolve this."
           onSignOut={onWallExit ?? onSignOut}
           signOutLabel="Sign out to use another account"
-        />
+        >
+          {state?.suspension_reason && (
+            <p data-testid="suspension-reason" className="mt-3 text-sm text-gray-800">
+              The reason given: {state.suspension_reason}
+            </p>
+          )}
+        </AccountStateSurface>
       );
     case 'decommissioned':
       // TASK-IDN-01: the terminal card is conditionally false now — a

@@ -91,6 +91,13 @@ export interface GroupDetail {
    * member_count when absent.
    */
   non_system_member_count?: number;
+  /**
+   * FEAT-PC030 additive key (DB-4, FEAT-H049): the CURRENT hold's member-facing
+   * reason — present for active members of a resting/suspended group, null
+   * otherwise (the platform decides; the surface renders it when carried and
+   * never gates on a role string). Optional for tolerance.
+   */
+  hold_reason?: string | null;
   viewer: GroupViewer;
   /** Present iff the contract decided the caller may see it. */
   members?: GroupMemberEntry[];
@@ -107,6 +114,9 @@ export interface GroupDetailShell {
   id: string;
   name: string;
   status: string;
+  /** FEAT-PC030 (DB-4): the suspension's member-facing reason on the minimal
+   *  payload — the member reading their own wall; null for everyone else. */
+  hold_reason?: string | null;
   /** Never present — the discriminant that keeps the union narrowable (a full
    *  GroupDetail is otherwise structurally assignable to the shell). */
   viewer?: undefined;
@@ -164,13 +174,20 @@ export async function fetchGroupDetail(
  * rule); these wrappers only shape the calls and rethrow the SQLSTATE-carrying
  * errors for the routes to map.
  */
-export async function restGroup(supabase: SupabaseClient, groupId: string): Promise<void> {
-  const { error } = await supabase.rpc('rest_group', { p_group_id: groupId });
+/** FEAT-PC030 (DB-4): the Steward's OPTIONAL note rides `p_reason`; a blank
+ *  note omits the key — the defaulted parameter keeps the old call shape. */
+const withOptionalNote = (groupId: string, note?: string) => {
+  const trimmed = note?.trim() ?? '';
+  return trimmed.length > 0 ? { p_group_id: groupId, p_reason: note } : { p_group_id: groupId };
+};
+
+export async function restGroup(supabase: SupabaseClient, groupId: string, note?: string): Promise<void> {
+  const { error } = await supabase.rpc('rest_group', withOptionalNote(groupId, note));
   if (error) throw error;
 }
 
-export async function wakeGroup(supabase: SupabaseClient, groupId: string): Promise<void> {
-  const { error } = await supabase.rpc('wake_group', { p_group_id: groupId });
+export async function wakeGroup(supabase: SupabaseClient, groupId: string, note?: string): Promise<void> {
+  const { error } = await supabase.rpc('wake_group', withOptionalNote(groupId, note));
   if (error) throw error;
 }
 

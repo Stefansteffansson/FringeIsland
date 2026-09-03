@@ -103,7 +103,7 @@ describe('bulkAdminUserAction (FEAT-H039, RB-2)', () => {
       }
       return { data: { success: true }, error: null };
     });
-    const out = await bulkAdminUserAction(client, 'suspend', [A, B, C]);
+    const out = await bulkAdminUserAction(client, 'suspend', [A, B, C], 'FEAT-PC030 adapted: reason required');
     expect(calls).toEqual([A, B, C]); // serial, selection order, past the refusal
     expect(out).toEqual([
       { id: A, ok: true },
@@ -113,15 +113,17 @@ describe('bulkAdminUserAction (FEAT-H039, RB-2)', () => {
     expect(rpc).toHaveBeenCalledWith('admin_update_user_status', {
       target_user_id: A,
       new_is_active: false,
+      p_reason: 'FEAT-PC030 adapted: reason required', // FEAT-PC030 adapted (DB-4)
     });
   });
 
   it('reactivate flips the flag true', async () => {
     const { client, rpc } = clientWith(() => ({ data: { success: true }, error: null }));
-    await bulkAdminUserAction(client, 'reactivate', [A]);
+    await bulkAdminUserAction(client, 'reactivate', [A], 'FEAT-PC030 adapted: reason required');
     expect(rpc).toHaveBeenCalledWith('admin_update_user_status', {
       target_user_id: A,
       new_is_active: true,
+      p_reason: 'FEAT-PC030 adapted: reason required', // FEAT-PC030 adapted (DB-4)
     });
   });
 

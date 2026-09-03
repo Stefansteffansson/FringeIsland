@@ -692,10 +692,12 @@ describe('FEAT-PC025 — role-template editing contracts + the walk riders (gate
     await rpcAdmin('admin_update_user_status', {
       target_user_id: fimUserRow!.id,
       new_is_active: false,
+      p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
     });
     await rpcAdmin('admin_update_user_status', {
       target_user_id: fimUserRow!.id,
       new_is_active: true,
+      p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
     });
     // A group-target row (synthetic, service-role INSERT — the read resolves it).
     await runAdminSql(

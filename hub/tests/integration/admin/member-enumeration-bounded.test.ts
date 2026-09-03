@@ -155,6 +155,7 @@ describe('FEAT-PC024 gate — bounded member enumeration (ADM-E)', () => {
       const { error } = await odaClient.rpc('admin_update_user_status', {
         target_user_id: await idOf(cyr),
         new_is_active: false,
+        p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
       });
       if (error) throw new Error(`suspend(cyr): ${error.message}`);
     }

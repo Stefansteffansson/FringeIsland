@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { wakeGroup } from '@/lib/groups/queries';
 import { availabilityRefusal } from '@/lib/groups/http';
+import { readJsonBody, optionalNote } from '@/lib/admin/reason';
 import { emitTelemetry } from '@/lib/observability/telemetry';
 
 /**
@@ -12,7 +13,7 @@ import { emitTelemetry } from '@/lib/observability/telemetry';
  * Mapping and posture identical to the rest route.
  */
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const supabase = await createClient();
@@ -26,9 +27,12 @@ export async function POST(
   }
 
   const { id } = await params;
+  // FEAT-H049 STORY-2 (DB-4): the Steward's OPTIONAL note (`{ note }`) —
+  // absent or blank sends the old call shape; never in telemetry.
+  const note = optionalNote(await readJsonBody(request));
 
   try {
-    await wakeGroup(supabase, id);
+    await wakeGroup(supabase, id, note);
     emitTelemetry('groups.wake', { actor: user.id, group: id });
     return NextResponse.json({});
   } catch (err) {

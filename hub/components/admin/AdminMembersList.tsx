@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import type { AdminUsersPage, BulkAction, BulkRowOutcome } from '@/lib/admin/users';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { CeremonyReasonField } from '@/components/ui/CeremonyReasonField';
 
 /**
  * FEAT-H039 STORY-1..5 — /admin/members, bounded: server keyset paging (page
@@ -88,6 +89,9 @@ export function AdminMembersList() {
   const [selected, setSelected] = useState<string[]>([]);
   const [bulk, setBulk] = useState<BulkAction | null>(null);
   const [bulkBusy, setBulkBusy] = useState(false);
+  // FEAT-H049 (DB-4): ONE member-facing reason for a bulk suspend/reactivate
+  // (FEAT-PC030 requires it per call); force sign-out takes none.
+  const [bulkReason, setBulkReason] = useState('');
   const [bulkError, setBulkError] = useState<string | null>(null);
   const [outcomes, setOutcomes] = useState<{ title: string; rows: OutcomeRow[] } | null>(null);
 
@@ -173,7 +177,11 @@ export function AdminMembersList() {
       const res = await fetch(`/api/admin/users/bulk/${spec.action}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_ids: selected }),
+        body: JSON.stringify(
+          spec.action === 'force-logout'
+            ? { user_ids: selected }
+            : { user_ids: selected, reason: bulkReason },
+        ),
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
@@ -196,8 +204,10 @@ export function AdminMembersList() {
     } finally {
       setBulkBusy(false);
       setBulk(null);
+      setBulkReason('');
     }
   };
+  const bulkNeedsReason = bulkSpec !== null && bulkSpec.action !== 'force-logout';
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-8">
@@ -466,6 +476,15 @@ export function AdminMembersList() {
                   Their sessions end now; open tabs sign out within seconds.
                 </span>
               )}
+              {bulkSpec.action !== 'force-logout' && (
+                // FEAT-H049 (DB-4): the bulk hold's ONE member-facing reason —
+                // the same text reaches every member in the batch.
+                <CeremonyReasonField
+                  value={bulkReason}
+                  onChange={setBulkReason}
+                  label="Shown to each member"
+                />
+              )}
             </span>
           ) : (
             ''
@@ -474,11 +493,15 @@ export function AdminMembersList() {
         confirmText={bulkSpec?.label ?? 'Confirm'}
         variant="danger"
         busy={bulkBusy}
+        confirmDisabled={bulkNeedsReason && bulkReason.trim().length === 0}
         onConfirm={() => {
           if (bulkSpec) void runBulk(bulkSpec);
         }}
         onCancel={() => {
-          if (!bulkBusy) setBulk(null);
+          if (!bulkBusy) {
+            setBulk(null);
+            setBulkReason('');
+          }
         }}
       />
     </main>

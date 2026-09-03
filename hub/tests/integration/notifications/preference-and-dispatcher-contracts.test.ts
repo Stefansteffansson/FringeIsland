@@ -347,7 +347,8 @@ describe('FEAT-PD016 — notification preferences & the shared suppression dispa
       // rather than a `contains` — the value of this test is that it fails when
       // a category quietly becomes unmutable, so it must stay exhaustive.
       const locked = rows.filter((r) => !r.member_suppressible).map((r) => r.key).sort();
-      expect(locked).toEqual([LOCKED_CATEGORY, LOCKED_ASKS_CATEGORY].sort());
+      // FEAT-PD021 adapted (DB-4, 2026-09-03): the sanctions category is locked on too.
+      expect(locked).toEqual([LOCKED_CATEGORY, LOCKED_ASKS_CATEGORY, 'sanctions'].sort());
       expect(rows.every((r) => r.nudge === true)).toBe(true);
       // The GDPR field is untouched — suppressibility is its own axis.
       const basis = (await runAdminSql(

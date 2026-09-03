@@ -6,7 +6,7 @@ title: Sanction notification kinds — a `sanctions` category that no member can
 owner: platform/domain/communication
 consumers: [hub, platform/core]
 wave: ferd
-maturity: 4-ready
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -90,3 +90,14 @@ N/A (no surface) — six registry rows; the bell's existing reads are unchanged.
 ## Open spec questions
 
 None open. The DB-4 board rulings 1 and 6 (bridge `2026-09-03_04`) are adopted as this spec's defaults; reversing either reopens STORY-1.
+
+## Implementation notes
+
+**Built 2026-09-03 (TASK-DB4-01), migration `20260903120000_db4_pc030_pd021_sanction_communication.sql` §1 — applied 2026-09-03 on Stefan's named approval ("you have my blessing to do the migration (ref. Migration (one schema gate, held for your named approval))"), repaired to `applied`.** Registry rows only, idempotent (`on conflict do nothing`) and self-verified at apply (a `DO` block counts the category and the six kinds and aborts on surprise).
+
+- **What landed:** `notification_categories.sanctions` (*Holds & sanctions*, `transactional`, `badge`, `member_suppressible = false`, `nudge` at the house default); `notification_kinds` `group_rested` / `group_woken` / `group_suspended` / `group_reactivated` under `sanctions`, `account_suspended` / `account_reinstated` under `account`, labels as specified. Nothing else — no table, function, policy, or dispatcher change.
+- **Test-first (integration, `hub/tests/integration/notifications/sanction-notification-kinds.test.ts`, 4 cells):** RED at HEAD 4/4 — the registry read found no category, the service-role insert of a `group_suspended` row violated the kinds FK, the preference write on `sanctions` failed as an *unknown* category (not the non-suppressible refusal), and `get_own_notifications` carried no sanction row. GREEN post-apply 4/4. Labelled green inside the suite: the `account` refusal (N-D) and the muted-suppressible control (a muted `group_closed` row is dropped by `ds5_apply_notification_preference`).
+- **One payload fact corrected against the spec's wording:** `get_own_notifications.category` carries the category **key** (`k.category_key` — `'sanctions'`), not the label; STORY-1's fourth criterion is pinned on the key, and the label stays the registry's (the console and the bell resolve it from there). No behaviour changed — the spec's "the category's label" was a description of the same fact.
+- **STORY-2 (the console):** no Hub change; the locked-on rendering is registry-driven (`NotificationPreferencesPanel.tsx`), pinned in FEAT-H049's build — see that spec's notes.
+- **Gate reads:** none of PD021's own (no function); the migration's function ACLs and the `groups` column grant belong to FEAT-PC030 and are recorded there.
+- **A sibling found by the slice run, not the grep:** FEAT-PD016's STORY-1 cell pins the locked-on category set exhaustively ("so it must stay exhaustive") — `sanctions` joins `account` and `asks`; adapted, labelled, green on re-run.
