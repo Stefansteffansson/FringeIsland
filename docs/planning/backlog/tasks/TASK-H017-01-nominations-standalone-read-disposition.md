@@ -14,6 +14,8 @@ depends_on: []
 estimated_hours: 2
 ---
 
+**RULED 2026-09-03 (Stefan: "retire H017-01"): option (a) — retire the whole chain.** Route `/api/me/nominations` + `fetchPendingNominations` + the contract `get_my_pending_nominations` (migration `DROP FUNCTION`, schema gate) + its six-cell contract test + the ownership-manifest entry + the conformance registers; FEAT-PC016 records *superseded by the bell (N-B), retired at pull*; MEM-7's §L3 row and the Hub §L4 inventory read truthfully. No member-facing change. Queued for the next session — see bridge `2026-09-03_02`.
+
 ## Description
 
 **Widened 2026-07-25** from "should `/api/me/nominations` retire?" to the whole chain, because the audit that produced it found the interesting fact one level down: **the bell did not reuse this read path, it superseded it.**
