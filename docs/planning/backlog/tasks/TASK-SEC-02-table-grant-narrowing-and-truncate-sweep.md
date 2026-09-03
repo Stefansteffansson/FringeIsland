@@ -1,7 +1,7 @@
 ---
 id: TASK-SEC-02
 title: Table-grant narrowing is partial (12 of 42) and TRUNCATE was never in the revoke recipe — close it structurally, with a gate
-status: review  # built 2026-09-02 — migration + gate + labelled siblings; HELD at the schema gate for the named approval
+status: done  # applied 2026-09-03 on Stefan's approval ("approve schema migrations"); gate 4/4, platform 37/37, groups 404/404, profile 14/14, E2E groups+profile 7/7; live grants read at the gate: 0 table DML, 1 column grant (users ×6), default ACL rm
 assigned_to: unassigned
 priority: medium
 feature: none
@@ -67,6 +67,8 @@ The **table**-grant analogue never got that treatment. That is precisely why 30 
 - Siblings adapted with labels: `group-closure-deletion.test.ts` STORY-6 ×2 (42501 before RLS's silent 0 rows), `group-crud-contracts.test.ts` (the settable-column guard inverted). Left as-is: `invitation-contracts.test.ts:916` (already expected a refusal), the profile suites (the exception keeps them working), every E2E (admin-client writes are service_role; no journey walks a direct write — Q1: nothing beyond the post-apply slices).
 
 **At the gate (named approval, per the standing rule):** apply the migration; run `test:integration:platform` (the gate flips green), `groups` (the adapted siblings), `profile` (the exception); then merge.
+
+**Gate record (2026-09-03, Stefan: "approve schema migrations"):** applied via `apply-migration-temp.js` + `migration repair --status applied 20260902210000`. **Live grants read at the gate, not inferred:** table-level DML/TRUNCATE/REFERENCES/TRIGGER for anon/authenticated on public tables = **0**; column-level = exactly **one** — `users` · `authenticated` · UPDATE · `avatar_url,bio,display_preference,full_name,nickname,show_real_name`; SELECT for authenticated untouched (38 tables, as before); default ACL for role postgres on tables now `anon=rm, authenticated=rm`. **Verification:** platform slice 8 suites **37/37** (the gate 4/4 flipped green, incl. the column-exact exception cell); groups slice 15 suites **404/404** (both adapted STORY-6 cells and the inverted settable-column cell green); profile 4 suites **14/14** (`update_own_profile` and the direct own-row updates on the six columns still work); E2E `groups.spec` + `profile.spec` **7/7** (create/steward/rename through the contract; profile edit through the exception). The 2026-07-06 retro's lesson is now realised for tables: a regrown grant fails the conformance family on its next run.
 
 ## Notes
 
