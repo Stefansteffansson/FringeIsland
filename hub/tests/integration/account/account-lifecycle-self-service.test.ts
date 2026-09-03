@@ -112,6 +112,7 @@ describe('FEAT-PC017 — account lifecycle self-service (C-F red suite)', () => 
       const { error } = await c.rpc('admin_update_user_status', {
         target_user_id: target[0].id,
         new_is_active: false,
+        p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
       });
       if (error) throw new Error(`producer hold fixture: ${error.message}`);
       await c.auth.signOut();

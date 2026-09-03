@@ -206,6 +206,7 @@ describe('FEAT-PC021 gate 1 — member administration read family (ADM-2)', () =
       const { error } = await adaClient.rpc('admin_update_user_status', {
         target_user_id: await idOf(sven),
         new_is_active: false,
+        p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
       });
       if (error) throw new Error(`suspend(sven): ${error.message}`);
     }

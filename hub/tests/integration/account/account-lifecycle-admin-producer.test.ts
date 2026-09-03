@@ -115,6 +115,7 @@ describe('COR-C W1 — ADR-U050 admin half through the real producer', () => {
     adaClient.rpc('admin_update_user_status', {
       target_user_id: targetPublicId,
       new_is_active: active,
+      p_reason: 'FEAT-PC030 adapted: reason required', // DB-4: the admin sanctions require a reason (labelled adaptation)
     });
 
   beforeAll(async () => {

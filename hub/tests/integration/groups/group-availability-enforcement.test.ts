@@ -489,7 +489,7 @@ describe('FEAT-PC023 — group availability enforcement (Active / Resting / Susp
   // =========================================================================
   describe('suspended — the hard hold', () => {
     beforeAll(async () => {
-      await expectOk(adaC, 'admin_suspend_group', { p_group_id: gSusp });
+      await expectOk(adaC, 'admin_suspend_group', { p_group_id: gSusp, p_reason: 'FEAT-PC030 adapted: reason required' });
     });
 
     describe('the communication plane refuses everyone below the admin plane', () => {
@@ -712,7 +712,11 @@ describe('FEAT-PC023 — group availability enforcement (Active / Resting / Susp
         const { data, error } = await monaC.rpc('get_group_detail', { p_group_id: gSusp });
         expect(error).toBeNull();
         const payload = data as Record<string, unknown>;
-        expect(Object.keys(payload).sort()).toEqual(['id', 'name', 'status']);
+        // FEAT-PC030 adapted (DB-4, 2026-09-03): the minimal payload gains hold_reason — the
+        // member's wall reads the why here. mona is an active member, so the adapted admin
+        // reason (line ~492) is what she sees.
+        expect(Object.keys(payload).sort()).toEqual(['hold_reason', 'id', 'name', 'status']);
+        expect(payload.hold_reason).toBe('FEAT-PC030 adapted: reason required');
         expect(payload.status).toBe('suspended');
         expect(payload.name).toBe('HYGA Suspended Target');
       });
@@ -1160,17 +1164,17 @@ describe('FEAT-PC023 — group availability enforcement (Active / Resting / Susp
     it('the admin ceremonies compose the member contracts and write audit rows', async () => {
       const restBefore = await auditCount('group.rest', gCycle);
       const wakeBefore = await auditCount('group.wake', gCycle);
-      await expectOk(adaC, 'admin_rest_group', { p_group_id: gCycle });
+      await expectOk(adaC, 'admin_rest_group', { p_group_id: gCycle, p_reason: 'FEAT-PC030 adapted: reason required' });
       expect(await groupStatus(gCycle)).toBe('resting');
       expect(await auditCount('group.rest', gCycle)).toBe(restBefore + 1);
-      await expectOk(adaC, 'admin_wake_group', { p_group_id: gCycle });
+      await expectOk(adaC, 'admin_wake_group', { p_group_id: gCycle, p_reason: 'FEAT-PC030 adapted: reason required' });
       expect(await groupStatus(gCycle)).toBe('active');
       expect(await auditCount('group.wake', gCycle)).toBe(wakeBefore + 1);
     });
 
     it('admin_suspend_group admits the resting origin and audits it', async () => {
       await expectOk(stellaC, 'rest_group', { p_group_id: gCycle });
-      await expectOk(adaC, 'admin_suspend_group', { p_group_id: gCycle });
+      await expectOk(adaC, 'admin_suspend_group', { p_group_id: gCycle, p_reason: 'FEAT-PC030 adapted: reason required' });
       expect(await groupStatus(gCycle)).toBe('suspended');
       const { data } = await admin
         .from('admin_audit_log')
@@ -1181,7 +1185,7 @@ describe('FEAT-PC023 — group availability enforcement (Active / Resting / Susp
         .limit(1)
         .single();
       expect((data as { metadata: { previous_status?: string } }).metadata.previous_status).toBe('resting');
-      await expectOk(adaC, 'admin_reactivate_group', { p_group_id: gCycle });
+      await expectOk(adaC, 'admin_reactivate_group', { p_group_id: gCycle, p_reason: 'FEAT-PC030 adapted: reason required' });
       expect(await groupStatus(gCycle)).toBe('active');
     });
 
@@ -1195,10 +1199,10 @@ describe('FEAT-PC023 — group availability enforcement (Active / Resting / Susp
       await expectOk(monaC, 'create_forum_post', { p_group_id: gCycle, p_content: 'after wake' });
       // rest -> admin suspend (from resting) -> hard hold -> reactivate -> works
       await expectOk(stellaC, 'rest_group', { p_group_id: gCycle });
-      await expectOk(adaC, 'admin_suspend_group', { p_group_id: gCycle });
+      await expectOk(adaC, 'admin_suspend_group', { p_group_id: gCycle, p_reason: 'FEAT-PC030 adapted: reason required' });
       await expectRefusal(monaC, 'create_forum_post', { p_group_id: gCycle, p_content: 'x' }, SUSPENDED_MSG);
       await expectRefusal(monaC, 'get_group_forum', { p_group_id: gCycle }, SUSPENDED_MSG);
-      await expectOk(adaC, 'admin_reactivate_group', { p_group_id: gCycle });
+      await expectOk(adaC, 'admin_reactivate_group', { p_group_id: gCycle, p_reason: 'FEAT-PC030 adapted: reason required' });
       await expectOk(monaC, 'create_forum_post', { p_group_id: gCycle, p_content: 'after restore' });
       await expectOk(monaC, 'get_group_forum', { p_group_id: gCycle });
       // one more rest/wake — the symmetric pair holds after the hard cycle

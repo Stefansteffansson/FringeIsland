@@ -281,7 +281,7 @@ describe('FEAT-PC020 — group administration contracts (ADM-8/ADM-9, RW-05 exit
     });
 
     it("admin_get_groups('suspended') returns suspended groups once the producer has written one", async () => {
-      const { error: suspendErr } = await adaClient.rpc('admin_suspend_group', { p_group_id: gSusp });
+      const { error: suspendErr } = await adaClient.rpc('admin_suspend_group', { p_group_id: gSusp, p_reason: 'FEAT-PC030 adapted: reason required' });
       expect(suspendErr).toBeNull();
       const { data, error } = await adaClient.rpc('admin_get_groups', { p_filter: 'suspended' });
       expect(error).toBeNull();
@@ -410,7 +410,7 @@ describe('FEAT-PC020 — group administration contracts (ADM-8/ADM-9, RW-05 exit
 
   describe("STORY-3 — suspend / reactivate (the first 'suspended' producers)", () => {
     it('suspending an active engagement group writes status + audit row', async () => {
-      const { error } = await adaClient.rpc('admin_suspend_group', { p_group_id: gCycle });
+      const { error } = await adaClient.rpc('admin_suspend_group', { p_group_id: gCycle, p_reason: 'FEAT-PC030 adapted: reason required' });
       expect(error).toBeNull();
       expect(await groupStatus(gCycle)).toBe('suspended');
       const rows = await auditRows('group.suspend', gCycle);
@@ -427,14 +427,14 @@ describe('FEAT-PC020 — group administration contracts (ADM-8/ADM-9, RW-05 exit
     });
 
     it('re-suspending refuses P0001 and writes nothing', async () => {
-      const { error } = await adaClient.rpc('admin_suspend_group', { p_group_id: gCycle });
+      const { error } = await adaClient.rpc('admin_suspend_group', { p_group_id: gCycle, p_reason: 'FEAT-PC030 adapted: reason required' });
       expect(error).not.toBeNull();
       expect(error!.code).toBe('P0001');
       expect(await auditRows('group.suspend', gCycle)).toHaveLength(1); // still exactly one
     });
 
     it('reactivating a suspended group restores active + audit row', async () => {
-      const { error } = await adaClient.rpc('admin_reactivate_group', { p_group_id: gCycle });
+      const { error } = await adaClient.rpc('admin_reactivate_group', { p_group_id: gCycle, p_reason: 'FEAT-PC030 adapted: reason required' });
       expect(error).toBeNull();
       expect(await groupStatus(gCycle)).toBe('active');
       const rows = await auditRows('group.reactivate', gCycle);
@@ -443,13 +443,13 @@ describe('FEAT-PC020 — group administration contracts (ADM-8/ADM-9, RW-05 exit
     });
 
     it('reactivating an active group refuses P0001 (wrong-state transition)', async () => {
-      const { error } = await adaClient.rpc('admin_reactivate_group', { p_group_id: gCycle });
+      const { error } = await adaClient.rpc('admin_reactivate_group', { p_group_id: gCycle, p_reason: 'FEAT-PC030 adapted: reason required' });
       expect(error).not.toBeNull();
       expect(error!.code).toBe('P0001');
     });
 
     it('suspending a closed group refuses P0001 and writes nothing', async () => {
-      const { error } = await adaClient.rpc('admin_suspend_group', { p_group_id: gClosed });
+      const { error } = await adaClient.rpc('admin_suspend_group', { p_group_id: gClosed, p_reason: 'FEAT-PC030 adapted: reason required' });
       expect(error).not.toBeNull();
       expect(error!.code).toBe('P0001');
       expect(await groupStatus(gClosed)).toBe('closed');
@@ -457,7 +457,7 @@ describe('FEAT-PC020 — group administration contracts (ADM-8/ADM-9, RW-05 exit
     });
 
     it('suspending an archived group refuses P0001', async () => {
-      const { error } = await adaClient.rpc('admin_suspend_group', { p_group_id: gArchived });
+      const { error } = await adaClient.rpc('admin_suspend_group', { p_group_id: gArchived, p_reason: 'FEAT-PC030 adapted: reason required' });
       expect(error).not.toBeNull();
       expect(error!.code).toBe('P0001');
       expect(await groupStatus(gArchived)).toBe('archived');
@@ -466,19 +466,20 @@ describe('FEAT-PC020 — group administration contracts (ADM-8/ADM-9, RW-05 exit
     it('suspending a personal group refuses 22023 (engagement groups only)', async () => {
       const { error } = await adaClient.rpc('admin_suspend_group', {
         p_group_id: mona.personalGroupId,
+        p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
       });
       expect(error).not.toBeNull();
       expect(error!.code).toBe('22023');
     });
 
     it('suspending a system group refuses 22023', async () => {
-      const { error } = await adaClient.rpc('admin_suspend_group', { p_group_id: deusexId });
+      const { error } = await adaClient.rpc('admin_suspend_group', { p_group_id: deusexId, p_reason: 'FEAT-PC030 adapted: reason required' });
       expect(error).not.toBeNull();
       expect(error!.code).toBe('22023');
     });
 
     it('reactivating a closed group refuses P0001 (not suspended)', async () => {
-      const { error } = await adaClient.rpc('admin_reactivate_group', { p_group_id: gClosed });
+      const { error } = await adaClient.rpc('admin_reactivate_group', { p_group_id: gClosed, p_reason: 'FEAT-PC030 adapted: reason required' });
       expect(error).not.toBeNull();
       expect(error!.code).toBe('P0001');
     });

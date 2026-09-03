@@ -753,11 +753,13 @@ describe('FEAT-PC022 — moderation + audit-read contracts (ADM-D gate)', () => 
       const { error: suspendErr } = await co.rpc('admin_update_user_status', {
         target_user_id: authorProfileId,
         new_is_active: false,
+        p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
       });
       expect(suspendErr).toBeNull();
       const { error: reactivateErr } = await co.rpc('admin_update_user_status', {
         target_user_id: authorProfileId,
         new_is_active: true,
+        p_reason: 'FEAT-PC030 adapted: reason required', // DB-4 adaptation
       });
       expect(reactivateErr).toBeNull();
 
