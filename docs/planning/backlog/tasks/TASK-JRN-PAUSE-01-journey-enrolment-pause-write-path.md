@@ -1,7 +1,7 @@
 ---
 id: TASK-JRN-PAUSE-01
 title: Journey enrolment pause — `paused` is a CHECK value with no write path ("recorded, not built"); give it a contract and a Hub affordance
-status: review
+status: done
 assigned_to: claude
 priority: medium
 feature: FEAT-PD002 (journey catalogue and enrolment contracts) + FEAT-H019 (journey catalogue and enrolment) — both amend
@@ -25,7 +25,7 @@ estimated_hours: 4-6 + one schema gate
 - **Tests, red-first:** integration (contract cells incl. the adversarial direct-UPDATE proof — remember the grant now refuses first, 42501), unit (route pair + the affordance), one E2E (pause in the player, resume from the list, position carried).
 - One schema gate, held for the named approval.
 
-## Implementation notes (2026-09-03 — built; HELD at the schema gate)
+## Implementation notes (2026-09-03 — built; applied on the named approval "ok merge #601")
 
 **Substrate (migration `20260903100000_task_jrn_pause_01_journey_enrolment_pause_resume.sql`).** `pause_journey_enrollment(p_enrollment_id)` / `resume_journey_enrollment(p_enrollment_id)` — SECURITY DEFINER, `search_path = ''`, own row only (42501 for a visible row that is not the caller's; P0002 invisible/absent), P0001 naming the state, progress untouched, Mist-callable; revoke public + anon, execute for authenticated + service_role. The cascade check found the gap the task predicted: `ds3_lifecycle_member_departed` and `ds3_lifecycle_group_closed` froze `status = 'active'` rows only — re-issued byte-identical except three predicates (`in ('active', 'paused')`), extracted from `20260719190205` rather than retyped; self-verifying DO block. Manifest: both contracts registered under DS-3. **ADR-U047 rule 7** describes the sprint2 shape as active-only — superseded for paused rows; flagged for the gate (ADR edits are a carve-out).
 
