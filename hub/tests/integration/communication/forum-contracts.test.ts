@@ -608,7 +608,11 @@ describe('FEAT-PD009 — forum & attribution contracts (C-B)', () => {
         .update({ content: 'edited around the door' })
         .eq('id', mine!.id)
         .select();
-      expect(error).toBeNull();
+      // LABELLED ADAPTATION (TASK-SEC-02, migration 20260902210000, applied 2026-09-03):
+      // the door is now closed one lock earlier — the client roles hold no table DML,
+      // so the grant refuses (42501 'permission denied for table …') before RLS's
+      // silent 0 rows. Same outcome, stated by the earlier lock: nothing edited.
+      expect(error?.code).toBe('42501');
       expect(data ?? []).toHaveLength(0);
     });
 
@@ -625,7 +629,11 @@ describe('FEAT-PD009 — forum & attribution contracts (C-B)', () => {
         .update({ is_deleted: true })
         .eq('id', any!.id)
         .select();
-      expect(error).toBeNull();
+      // LABELLED ADAPTATION (TASK-SEC-02, migration 20260902210000, applied 2026-09-03):
+      // the door is now closed one lock earlier — the client roles hold no table DML,
+      // so the grant refuses (42501 'permission denied for table …') before RLS's
+      // silent 0 rows. Same outcome, stated by the earlier lock: nothing moderated around the contract.
+      expect(error?.code).toBe('42501');
       expect(data ?? []).toHaveLength(0);
     });
 
