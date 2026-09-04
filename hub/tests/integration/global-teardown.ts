@@ -27,12 +27,17 @@ import { resolve } from 'node:path';
  * is defined STRUCTURALLY rather than as a before/after delta — nothing to plumb
  * between setup and teardown, and it stays correct when a run dies half-way.
  *
- * SCOPE. Integration fixtures are `test-<seed>-<hash>@fringeisland.test`
- * (`generateTestEmail`); E2E's are `e2e-*`. This sweeps only the former, so the
- * tiers never reach into each other's fixtures, and it never touches an address
- * outside `@fringeisland.test` — a real account cannot be caught by it. That
- * scoping care is deliberate: a broader rule cost a hand-made persona on
- * 2026-08-12.
+ * SCOPE (widened 2026-09-04, Stefan: "we do NOT want any test accounts to be
+ * left overs from testing — this needs to STOP"). Every `@fringeisland.test`
+ * address is residue EXCEPT the allowlist — the standing walk cast (`walk-*`)
+ * and the E2E session user (`e2e-session@`). That reaches `test-*` (integration,
+ * `generateTestEmail`), `e2e-*` (a leaked E2E fixture is caught here as the
+ * backstop to the E2E teardown's own census), and any probe or one-off script's
+ * family — `intprobe-*` (scripts/auth-admin-es256-probe.mjs) left 180 accounts
+ * across two runs that the old `test-*` rule could not see. It still never
+ * touches an address outside `@fringeisland.test`, so a real account cannot be
+ * caught by it; the 2026-08-12 lesson (a broader rule cost a hand-made persona)
+ * survives as the allowlist: hand-made personas live under `walk-*`.
  *
  * CONCURRENCY. Assumes the standing house rule — never two integration suites
  * against the shared dev DB at once. A concurrent run's live fixtures would look
@@ -90,7 +95,7 @@ const SEEDED_GROUP_TEMPLATE_LIST = SEEDED_GROUP_TEMPLATE_NAMES.map((n) => `'${n}
 
 const RESIDUE_SQL = `
   SELECT
-    (SELECT count(*) FROM auth.users WHERE email LIKE 'test-%@fringeisland.test') AS accounts,
+    (SELECT count(*) FROM auth.users WHERE email LIKE '%@fringeisland.test' AND email NOT LIKE 'walk-%' AND email <> 'e2e-session@fringeisland.test') AS accounts,
     -- Mists carry no email, so the pattern above cannot see them. Any anonymous
     -- user alive at the end of an integration run was minted by it (the E2E tier
     -- sweeps its own the same way, TASK-E2E-04).
@@ -187,7 +192,7 @@ const SWEEP_SQL = `
      WHERE cr.subject_group_id IN (
        SELECT u.personal_group_id FROM public.users u
        JOIN auth.users au ON au.id = u.auth_user_id
-       WHERE au.email LIKE 'test-%@fringeisland.test');
+       WHERE au.email LIKE '%@fringeisland.test' AND au.email NOT LIKE 'walk-%' AND au.email <> 'e2e-session@fringeisland.test');
 
     DELETE FROM public.consent_records cr
      WHERE cr.subject_group_id IN (
@@ -196,7 +201,7 @@ const SWEEP_SQL = `
        WHERE au.is_anonymous);
 
     DELETE FROM auth.users
-     WHERE email LIKE 'test-%@fringeisland.test'
+     WHERE (email LIKE '%@fringeisland.test' AND email NOT LIKE 'walk-%' AND email <> 'e2e-session@fringeisland.test')
         OR is_anonymous;
 
     -- Test-created journeys, BEFORE the groups that own them: journeys RESTRICT
