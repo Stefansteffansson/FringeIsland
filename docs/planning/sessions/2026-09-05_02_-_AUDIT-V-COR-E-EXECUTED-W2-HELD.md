@@ -37,6 +37,13 @@ Stefan: "ok merge 621" → **#621 merged**, the hook verified on `main` (opener 
 - **Class rule for the cutover:** a spec that relied on production's population for isolation is racy on the test project — assert the exact fixture count after a search, never mere presence, and "n selected" before any page-scoped action. The sweep of the other specs found no second instance (the members journey acts row-scoped by fixture id).
 - **Step-3 evidence closed:** the auth probe (N = 5) and the walk cast (create → census → teardown) on test — results in the cutover record's suites table.
 
+## Addendum 4 (session close) — live state, cite this
+
+- **`main` = #625 merge; zero open PRs; the discovery worktree level with `main`.** #624 ("ok merge 624", 12:57Z) carried the whole ADR-U053 realisation; #625 ("ok merge 625", 13:00Z) the steering files and **ADR-U053 → Accepted** with its Realisation section. #624's first CI run failed on the workflow's placeholder Supabase URL (the fuse fails closed on a URL without a known ref; two unit suites import the suite helpers) — CI now names the test project's public URL, pinned to `supabase/projects.json` by `production-fuse.test.ts` (the cutover record's seventh finding).
+- **The test project is the only consumer target now:** `.env.local` = test; production reachable only through `--production` + `ALLOW_PRODUCTION=1`. Evidence closed: platform family 46/46, unit tier green, integration tier green, **E2E 150/150**, probe 0 flake, walk cast create/teardown clean. No `walk-*` accounts exist on test at close (the cast was torn down after the rehearsal) — **the Ferd close's live walk starts with `npm run walk:cast -- create`**.
+- **Stefan's, unchanged:** the three production commands in the cutover record (`migration-drift.js` stays red until the first two run); Vercel Preview → the test project; leaked-password protection.
+- **Next session = the Ferd close**, a fresh session: write the front door first if the plan changes, then `ferd.md` under `wave-planning`, the DoD walk, DB-4 legs 4/5/6/8 on the fresh cast, the retrospective, the Eid kickoff.
+
 ## Not done — plainly
 
 - ~~#621 merge~~ — done; see the addendum.
