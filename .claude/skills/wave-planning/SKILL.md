@@ -126,6 +126,7 @@ When all features reach maturity 6-done AND all DoD criteria are met:
 3. Update `docs/ecosystem/ECOSYSTEM_ROADMAP.md` to reflect the shift in strategic focus
 4. Identify any incomplete items that should carry over to the next wave
 5. Clean up: ensure all tasks from this wave have been deleted (they should have been deleted after cycle retros, but verify)
+6. **Repoint the front door.** A wave close is a cycle close too: `docs/planning/cycles/cycle-current.md` must name what follows (the next wave's first cycle, or "next: …") — the unit gate `hub/tests/unit/platform/cycle-current-front-door.test.ts` goes red on a closed plan until it does (PROCESS.md §3; Audit V R-14, 2026-09-05).
 
 ## Boundaries
 
