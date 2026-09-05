@@ -63,6 +63,7 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 | ADR-U050 | [The account lifecycle state machine — four states split by deactivation origin](ADR-U050-account-lifecycle-state-machine.md) | Accepted | platform-core · product |
 | ADR-U051 | [Actionable notifications are a typed, data-driven response framework with permission-fanned shared actions](ADR-U051-actionable-notification-typed-response-framework.md) | Accepted | domain-service · product |
 | ADR-U052 | [Telemetry sink and analytics posture — a durable PC-1 event store, 90-day retention, computed-on-read aggregates, and the split audit-trail right of access](ADR-U052-telemetry-sink-and-analytics-posture.md) | Accepted | platform-core · vertical |
+| ADR-U053 | [The test tier leaves the production database — a dedicated test project, a code fuse, and the schema gate rehearsed before it lands](ADR-U053-test-tier-off-the-production-database.md) | Proposed | platform-core · infrastructure |
 
 ---
 
