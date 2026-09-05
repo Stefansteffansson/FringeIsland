@@ -1,7 +1,7 @@
 # CLAUDE.md — AI Context for FringeIsland
 
-**Last updated:** 2026-06-21 (Mist reconciliation; prior: 2026-06-10 reconciliation Session B).
-**Reflects:** Model A (feature specs with embedded stories in the ecosystem tree; no PRDs); four skills as the execution layer; the reconciled entity model — products as equipment profiles with the Game as depth (ADR-U025), studios nested under Universe Studio with World Studio added (ADR-U026), the Mist lifecycle (ADR-U031, superseding ADR-U027 — the anonymous entrant renamed from "Shadow", which now names the place-3 menace), governance by scope (ADR-U028) — and the canonical cosmology and roles cores under `docs/ecosystem/universe/`.
+**Last updated:** 2026-09-05 (Cycle COR-E W2 — this header became a pointer; prior: 2026-06-21 Mist reconciliation).
+**Reflects:** the anatomy as [`docs/architecture/ARCHITECTURE_ANATOMY.md`](docs/architecture/ARCHITECTURE_ANATOMY.md) states it — its "Reflects decisions through" stamp is the freshness contract, checked by doc-health §11 — and the decisions in the [ADR index](docs/architecture/decisions/README.md); Model A (feature specs with embedded stories in the ecosystem tree; no PRDs); four skills as the execution layer. This header no longer enumerates decisions or the entity model: pointer, not snapshot (Audit V AC5-7).
 
 This file is the project's entry point for AI agents. It tells you WHERE to look and WHICH skill to load — it does not try to describe every mechanic.
 
@@ -99,7 +99,7 @@ Start at [`docs/README.md`](docs/README.md) for the full navigation map. Everyth
 | **Planning** | |
 | Current wave (Ferd) | [`docs/planning/waves/ferd.md`](docs/planning/waves/ferd.md) |
 | Ferd capability map | [`docs/planning/waves/FERD-CAPABILITY-MAP.md`](docs/planning/waves/FERD-CAPABILITY-MAP.md) |
-| Active cycle (when one exists) | `docs/planning/cycles/cycle-current.md` |
+| **The front door** — what is being built now (cycle, dated plan, latest bridge, next) | [`docs/planning/cycles/cycle-current.md`](docs/planning/cycles/cycle-current.md) — written at every cycle kickoff, repointed at every close (PROCESS.md §3) |
 | Tasks in motion | [`docs/planning/backlog/tasks/`](docs/planning/backlog/) |
 | Retrospectives (weekly / cycle / wave / quarterly) | [`docs/planning/retrospectives/`](docs/planning/retrospectives/) |
 | Session bridges | [`docs/planning/sessions/`](docs/planning/sessions/) |
