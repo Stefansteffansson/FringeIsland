@@ -19,9 +19,13 @@
 - **A `&&` chain that crosses a heredoc is not a chain.** The steering PR's first attempt pushed an empty branch because the push line after the commit heredoc ran unconditionally; recovered cleanly, but the pattern is worth remembering: check `git status` after any multi-statement git command.
 - **Stefan's R-14 reading changed the recommendation for the better:** the never-used cycle file was not a dead convention but a front door nobody wrote — the fix is a writing step, a hook and a gate, not deletion.
 
+## Addendum (same session, after the nod)
+
+Stefan: "ok merge 621" → **#621 merged**, the hook verified on `main` (opener + front door injected). **Cycle COR-E CLOSED 2026-09-05.** The plan reads CLOSED; the front door repointed to [the Ferd close plan](../hub-v2/2026-09-05-ferd-close-plan.md) (Status PLANNED; the close's four decisions are Stefan's); the register's held rows closed; hub-v2 README and `ferd.md` point at the close plan. The front-door gate is green against the new target.
+
 ## Not done — plainly
 
-- **#621 merge** (Stefan's nod), then the COR-E close: plan status CLOSED, front door repointed to the Ferd close, one more `npm run dashboard`.
+- ~~#621 merge~~ — done; see the addendum.
 - **ADR-U053** — Stefan's ruling (plan, cost, Option A vs B, date); the ADR also still names `apply-migration-temp.js` — an ask-first edit owed at its acceptance pass.
 - **Leaked-password protection** — a Supabase Auth dashboard toggle (COR-E board row 9: enable); Stefan's.
 - **The Ferd close** — `ferd.md` proper (the `wave-planning` skill), the wave DoD walk, DB-4 legs 4/5/6/8 on a fresh cast (`npm run walk:cast -- create`), the close retrospective, the Eid kickoff — in that order, after #621.

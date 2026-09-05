@@ -1,7 +1,7 @@
 # Anatomy-Conformance Audit V — the whole repository vs the anatomy, post-cutover
 
 **Date:** 2026-09-05
-**Status:** Executed; **[Cycle COR-E](../hub-v2/anatomy-correction-plan-cor-e.md) executed 2026-09-05** — board settled as recommended (Stefan: "go with the recommended rulings and start COR-E"); PRs **#618** (W1/W3/W4/W7 docs) · **#619** (W5/W8 tooling + gates) · **#620** (W6 registers + gates) merged fuller-auto; **#621** (W2 steering files) prepared and **HELD** for the named nod. Per-finding closures: the closure register at the foot.
+**Status:** Executed; **[Cycle COR-E](../hub-v2/anatomy-correction-plan-cor-e.md) executed 2026-09-05** — board settled as recommended (Stefan: "go with the recommended rulings and start COR-E"); PRs **#618** (W1/W3/W4/W7 docs) · **#619** (W5/W8 tooling + gates) · **#620** (W6 registers + gates) merged fuller-auto; **#621** (W2 steering files) merged on the named approval ("ok merge 621"), **#622** closure + doc-health — **Cycle COR-E CLOSED 2026-09-05.** Per-finding closures: the closure register at the foot.
 **Trigger:** Stefan's request at the end of Ferd's build — "a deep analysis of our code base and also the documentation", then "a plan to fix whatever is not in line with our anatomy and system architecture (ref. files in `docs/architecture`)".
 **Baseline (canon wins):** [`ARCHITECTURE_ANATOMY.md`](../../architecture/ARCHITECTURE_ANATOMY.md) (stamp: ADR-U047 Amendment 3, 2026-08-11) + [`ECOSYSTEM_ANATOMY_V6.svg`](../../architecture/ECOSYSTEM_ANATOMY_V6.svg) (v2.7) + [`DOMAIN_ENTITIES.md`](../../architecture/DOMAIN_ENTITIES.md) (stamp: ADR-U046) + the ADR index through [ADR-U053](../../architecture/decisions/ADR-U053-test-tier-off-the-production-database.md) (Proposed). Ring law: [ADR-U009](../../architecture/decisions/ADR-U009-api-first-frontend-agnostic.md) · [ADR-U038](../../architecture/decisions/ADR-U038-platform-contracts-platform-side-surface-bff.md) · [ADR-U047 + A1..A4](../../architecture/decisions/ADR-U047-internal-api-lifecycle-facts.md) · [ADR-U048 + A1](../../architecture/decisions/ADR-U048-notifications-vertical-delivery-substrate.md). Openness law: [ADR-U008](../../architecture/decisions/ADR-U008-step-type-extensibility.md) · [ADR-U018 (amended 2026-05-14)](../../architecture/decisions/ADR-U018-no-hardcoded-group-types.md).
 **Predecessors:** [Audit I / COR-A](ANATOMY-CONFORMANCE-AUDIT.md) · [Audit II / COR-B](ANATOMY-CONFORMANCE-AUDIT-2.md) · [Audit III / COR-C](ANATOMY-CONFORMANCE-AUDIT-3.md) · [Audit IV / COR-D](ANATOMY-CONFORMANCE-AUDIT-4.md) (2026-08-10, ring-focused) · the [AB-6 full anatomy audit](../hub-v2/2026-08-10-ab6-full-anatomy-audit.md) · the [Phase-4 gate doc-health run](../hub-v2/2026-08-13-phase-4-gate-doc-health.md) · the last clean doc-health run ([2026-08-20](../sessions/2026-08-20_04_-_CLOSING-SWEEP-WAVES-FERD-DOC-HEALTH-CLEAN.md)).
@@ -224,19 +224,19 @@ Deny-all-by-absence is the right posture for a contracts-only table, but it is i
 | AC5-4 | **CLOSED** (R-12 delete) — the three scripts removed; `scripts/README.md` is the registry; GC-27 gate | #619 (W5) |
 | AC5-5 | **CLOSED** — stamp → ADR-U047 A4 + the retention rule; PC-1 row carries retention as a gated obligation; ADR-U053 noted Proposed | #618 (W1) |
 | AC5-6 | **CLOSED** — README v2.7; doc-health §11 compares the version text (GC-24) | #618 (W1) · #619 (W8) |
-| AC5-7 | **PREPARED, HELD** — AGENTS.md structure + gates, SESSION-OPENER focus line, root CLAUDE.md pointer header | #621 (W2, needs the nod) |
+| AC5-7 | **CLOSED** — AGENTS.md structure + gates, SESSION-OPENER focus line, root CLAUDE.md pointer header | #621 (W2, merged on the nod) |
 | AC5-8 | **CLOSED** — platform CLAUDE.md test domains = live dirs; dead scripts removed; root passthroughs added; GC-25 gate | #618 (W4) · #619 (W5/W8) |
 | AC5-9 | **CLOSED** — `apply-migration.js` (renamed, header rewritten; allowlist + procedure updated); registry | #619 (W5) |
 | AC5-10 | **CLOSED** — both links fixed | #618 (W4) |
 | AC5-11 | **CLOSED** — "path segment" in H034/H040 | #618 (W4) |
-| AC5-12 | **CLOSED** (R-11 grandfather) — template rule + PD019/PD020 "N/A" sections (#618); the AGENTS.md clause rides #621 | #618 (W7) · #621 |
+| AC5-12 | **CLOSED** (R-11 grandfather) — template rule + PD019/PD020 "N/A" sections (#618); the AGENTS.md clause (#621) | #618 (W7) · #621 |
 | AC5-13 | **WITHDRAWN** — both Implementation notes were filled; regex false positive | this register |
 | AC5-14 | **CLOSED** — reference README rows for Audit IV and V | #615 |
-| AC5-15 | **PREPARED, HELD** — `.agents/` + `skills-lock.json` named in AGENTS.md project structure | #621 (W2) |
+| AC5-15 | **CLOSED** — `.agents/` + `skills-lock.json` named in AGENTS.md project structure | #621 (W2) |
 | AC5-16 | **CLOSED** — ADR index rows U004 / U014 / U015 annotated | #618 (W4) |
 | AC5-17 | **CLOSED** — `clientAccess.contractsOnly` declares the seven zero-policy tables with reasons; gate | #620 (W6) |
 | AC5-O1 | **Watch** — two lib read compositions + the U042 bundle; candidates for single contracts at the Gimbal build | — |
-| AC5-O2 | **CLOSED** (R-14 adopt) — front door written for COR-E; rules in `cycles/README.md`; gate; skills; PROCESS.md wording held | #618 · #619 · #621 |
+| AC5-O2 | **CLOSED** (R-14 adopt) — front door written for COR-E and repointed to the Ferd close at its close; rules in `cycles/README.md` + PROCESS.md §3; the hook injects it; gate; skills | #618 · #619 · #621 |
 | AC5-O3 | **CLOSED** — how-we-work README banner + reconciliation stamp | #618 (W4) |
 | AC5-O4 | **Dependency** — CI has no database gate by ruling (GC-16); ADR-U053 unlocks it | — |
 | AC5-O5 | **Executed** — the cycle-boundary doc-health run is recorded at `docs/planning/hub-v2/2026-09-05-cor-e-doc-health.md` | the close |
