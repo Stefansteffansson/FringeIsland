@@ -115,6 +115,7 @@ Every work item has a type. The type determines which template to use, which DoD
   - Reprioritise the backlog
   - Adjust the current cycle plan if the week revealed new information
 - **Cycle boundary (~2 hrs):**
+  - **Repoint the front door.** The moment the closing cycle's plan is marked closed, `cycles/cycle-current.md` names what follows — the next cycle's dated plan, or "next: …" — so nobody (Stefan first) has to hunt for the newest date-stamped file. The unit gate `hub/tests/unit/platform/cycle-current-front-door.test.ts` is red until it does. (Adopted 2026-09-05, Audit V R-14; shape in `cycles/README.md`.)
   - Shape 1–2 bets for the next cycle (Shape Up style)
   - **Tech-debt / NFR / process allocation:** At least one bet per cycle should be a tech-debt, NFR, or process item — unless the backlog genuinely contains none. The "unless" matters: don't invent debt to meet a quota. But absent a deliberate allocation, feature work consistently crowds out quality work, and the ecosystem degrades in ways that aren't visible until they're expensive.
   - **Gap review:** Read `../ecosystem/how-we-work/gaps.md` as input to the betting session. High-priority gaps are candidates for the tech-debt/NFR/process allocation until closed; medium-priority gaps accumulate until their compounding cost warrants a bet; low-priority gaps are typically swept up during cooldown weeks. If the cycle just closed a gap, remove the entry from the register, update the header count, and remove the matching callout from the relevant how-we-work chapter. New gaps surfaced during the cycle are added to the register with the next sequential ID (G-NN).
@@ -124,6 +125,8 @@ Every work item has a type. The type determines which template to use, which DoD
   - **Backlog triage:** walk the open tasks in `backlog/tasks/` (including the standing-tasks table in its `README.md`). For each: still valid? still the right priority? Any task that has survived two boundaries is either bet on, re-scoped, or dropped with a reason — not silently carried a third time. Without a read-point, filing becomes a way of forgetting: FEAT-PC002's missing Implementation notes were filed at the A-JRN boundary, ignored, then *re-filed as a new task* at the next boundary (2026-07-24) because nobody read the backlog the finding was already sitting in.
   - Regenerate the project dashboard (`npm run dashboard`) so its snapshot panels reflect the current state — see [`../../scripts/dashboard/README.md`](../../scripts/dashboard/README.md). It is a derived view: the file viewer is always live, but the overview panels are a snapshot from the last generate.
   - Run retrospective for the cycle that just ended (template: `../templates/retrospective.md`)
+- **Cycle kickoff (before anything is decomposed):**
+  - **Write the front door first.** `cycles/cycle-current.md` — five fields: the cycle and its goal in one sentence, a link to the dated plan document, a link to the latest bridge, the board's status, what comes next. Never the plan itself: the plan is a dated document written from `../templates/cycle-plan.md` (today under `hub-v2/`). The session-start hook injects the front door into every session, so the first thing every session reads is what is being built now.
 
 ### Waves as thematic focus
 
@@ -228,7 +231,7 @@ This is the trigger → artifact map. Whenever you find yourself starting work, 
 | Significant architectural decision is taken | ADR | `../templates/adr.md` | `../architecture/decisions/NNNN-{title}.md` |
 | Planning / design session with Claude | Session bridge | `../templates/session-bridge.md` | `sessions/YYYY-MM-DD-{topic}.md` |
 | Research needed before specifying | Research spike | `../templates/research-spike.md` | `../research/{topic}.md` |
-| Cycle starts | Cycle plan | `../templates/cycle-plan.md` | `cycles/cycle-current.md` |
+| Cycle starts | Cycle plan (a dated document) **+ the front door** | `../templates/cycle-plan.md` | the plan under the cycle's home (today `hub-v2/`); `cycles/cycle-current.md` is the five-field front door that points at it (R-14, 2026-09-05) |
 | Cycle ends | Retrospective | `../templates/retrospective.md` | `retrospectives/retro-YYYY-MM-DD.md` |
 | Wave completes (last Build item Done) | Wave retrospective + ecosystem roadmap update | `../templates/retrospective.md` (wave-scoped) | `retrospectives/retro-wave-{name}.md` + edit `../ecosystem/ECOSYSTEM_ROADMAP.md` |
 | Cross-cutting vertical concern needs specifying | Vertical spec | `../templates/vertical-spec.md` | `../verticals/{name}.md` |
@@ -369,7 +372,7 @@ This loop is the *reconciliation* half of the decomposition method (the `ecosyst
 - **Where do I put a new idea?** Create a feature spec at maturity 0-raw under its owner: `../{owner}/features/FEAT-{PREFIX}{NNN}-{slug}.md`, using `../templates/feature-spec.md`. If ownership is unclear, park it in `../ecosystem/thinking/OPEN_QUESTIONS.md` until it's clear where it belongs.
 - **Where do I write a feature spec?** `../{owner}/features/FEAT-{PREFIX}{NNN}-{slug}.md`, using `../templates/feature-spec.md`. The same file carries the feature from maturity 0 through 6.
 - **Where do I record a decision?** `../architecture/decisions/NNNN-{title}.md`, using `../templates/adr.md`
-- **Where do I find what I'm working on this cycle?** `cycles/cycle-current.md` + the TASK-*.md files in `backlog/tasks/`
+- **Where do I find what I'm working on this cycle?** `cycles/cycle-current.md` — the front door; it links the cycle's dated plan — + the TASK-*.md files in `backlog/tasks/`
 - **Where do I park something I don't want to forget but can't act on?** Add `parked: true` and `parked_reason: {explanation}` to the feature spec's YAML frontmatter. No separate icebox file.
 - **Where do I document a session with Claude?** `sessions/YYYY-MM-DD-{topic}.md`
 - **How does a feature actually get built day-to-day?** Use the `feature-development` skill (`.claude/skills/feature-development/SKILL.md`). See the "Skills as the execution layer" section.

@@ -10,16 +10,19 @@ Next.js 16.1 App Router, TypeScript, Tailwind CSS, Supabase/PostgreSQL
 ## Build & test
 - `npm run dev` — start dev server
 - `npm run build` — production build
-- `npm run lint` — ESLint
-- `npx supabase test db` — database/RLS tests
+- `npm run lint` — ESLint · `npm run typecheck` — app + tests (both CI gates)
+- `npm run test:unit` — the unit tier (CI) · `npm run test:integration` — the integration tier against the one shared database (local; one consumer at a time — see below)
+- `npm run test:integration:platform` — the platform conformance family: ownership, internal API, exposure, lockdowns, retention — the anatomy's mechanical gates (local until ADR-U053; there is no pgTAP suite)
 
 ## Project structure
 - `docs/` — all documentation, split into ecosystem (what) and planning (how)
 - `docs/products/hub/` — The Hub (canvas-surface equipment profile, ADR-U025) shell specs and features
 - `docs/platform/` — shared platform infrastructure
 - `docs/planning/` — waves, cycles, backlog, sessions
-- `app/`, `components/`, `lib/` — application source code
-- `supabase/migrations/` — database migrations
+- `hub/` — the Hub application (`hub/app/`, `hub/components/`, `hub/lib/`; its tests under `hub/tests/`). The root holds no application source since the Phase-4 cutover (ADR-U032; root is tooling-only)
+- `supabase/migrations/` — database migrations; `supabase/ownership.manifest.json` — the ownership, exposure, retention and client-access registers the conformance family enforces
+- `scripts/`, `hub/scripts/` — repository tooling; every script is a row in `scripts/README.md` (gate-enforced)
+- `.agents/skills/` — vendored Supabase agent skills (`skills-lock.json`), reference material only; FringeIsland's own skills live in `.claude/skills/`
 
 ## Documentation navigation
 Start at `docs/README.md` for the full map. Key entry points:
@@ -96,7 +99,7 @@ The Anthropic computer-use tools have legitimate uses for sandbox-side analysis,
 - Update the CHANGELOG(s) for user-visible changes — there are **three**, and one change can owe more than one: root `CHANGELOG.md` (the cycle entry — always), `hub/CHANGELOG.md` (Hub-surface changes, member-facing register), `docs/platform/core/CHANGELOG.md` (Core substrate). Canonical rule and registers: [`docs/planning/PROCESS.md`](docs/planning/PROCESS.md) DoD
 - Read the product/service CLAUDE.md before touching that area
 - Complete the Vertical Impact section in every feature spec — no vertical left blank
-- Complete the Performance budget section in every feature spec with a user-facing surface (ADR-U043: budget class + data-boot path); platform-only features write "N/A (no surface)"
+- Complete the Performance budget section in every feature spec with a user-facing surface (ADR-U043: budget class + data-boot path); platform-only features write "N/A (no surface)". Specs authored before ADR-U043 (2026-07-07) are grandfathered until their next amendment (Audit V R-11, 2026-09-05)
 - Verify extensibility — no hardcoded enums, sealed type systems, or closed permission sets in new features
 - When a search or lookup returns a negative result (not found, no matches, empty), cross-check with a direct listing or independent method before logging it as missing, absent, or non-existent
 - **Git lifecycle — fuller-auto (Stefan, 2026-06-27 standing authorization):** for routine, low-risk changes, run the whole cycle without pausing for the merge — branch off `main`, commit (conventional), push, open the PR, then merge + clean up in one step (`gh pr merge <n> --merge --delete-branch`) and `git pull main` to sync. Don't stop to ask whether to merge; Stefan steps in only if he chooses. The "Ask first" carve-outs below still pause even under this default.
