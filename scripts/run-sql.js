@@ -1,33 +1,43 @@
 #!/usr/bin/env node
 /**
- * Run an arbitrary SQL file against the Supabase management API.
- * Usage: node scripts/run-sql.js <path-to-sql-file>
+ * Run an arbitrary SQL file against a project via the Supabase management API.
+ *
+ *   node scripts/run-sql.js <path-to-sql-file>                              # test project (default)
+ *   ALLOW_PRODUCTION=1 node scripts/run-sql.js --production <path-to-sql-file>   # production, named on purpose
+ *
+ * It does whatever the file says. Use it for read-only investigation or a
+ * reviewed one-off corrective — never as a side door around a migration. The
+ * fuse (scripts/lib/target.js) keeps it off production unless ALLOW_PRODUCTION=1
+ * names the intent (ADR-U053 §3). Registry: scripts/README.md.
  */
 
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '..', '.env.local') });
+const { loadTarget } = require('./lib/target');
 
-const sqlFile = process.argv[2];
+const args = process.argv.slice(2);
+const sqlFile = args.find((a) => !a.startsWith('--'));
 if (!sqlFile) {
-  console.error('Usage: node run-sql.js <path-to-sql-file>');
+  console.error('Usage: node scripts/run-sql.js [--production] <path-to-sql-file>');
   process.exit(1);
 }
 
-const projectRef = process.env.NEXT_PUBLIC_SUPABASE_URL?.match(/https:\/\/([^.]+)\./)?.[1];
-const accessToken = process.env.SUPABASE_ACCESS_TOKEN;
-
-if (!projectRef || !accessToken) {
-  console.error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_ACCESS_TOKEN in .env.local');
+let target;
+try {
+  target = loadTarget({ argv: process.argv });
+} catch (e) {
+  console.error(e.message);
   process.exit(1);
 }
+const projectRef = target.ref;
+const accessToken = target.accessToken;
 
 // Resolve path relative to cwd if not absolute
 const resolvedPath = path.isAbsolute(sqlFile) ? sqlFile : path.resolve(process.cwd(), sqlFile);
 const sql = fs.readFileSync(resolvedPath, 'utf8');
 
 console.log(`Running SQL: ${path.basename(resolvedPath)}`);
-console.log(`Project: ${projectRef}`);
+console.log(`Target: ${target.target} (${projectRef})`);
 console.log(`SQL length: ${sql.length} chars`);
 
 fetch(`https://api.supabase.com/v1/projects/${projectRef}/database/query`, {

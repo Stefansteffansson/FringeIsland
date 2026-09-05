@@ -32,6 +32,7 @@ import path from 'path';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
+import target from '../../scripts/lib/target.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const env = fs.readFileSync(path.resolve(here, '..', '.env.local'), 'utf8');
@@ -41,6 +42,8 @@ const secret = g('SUPABASE_SERVICE_ROLE_KEY');
 const anonKey = g('NEXT_PUBLIC_SUPABASE_ANON_KEY');
 const accessToken = g('SUPABASE_ACCESS_TOKEN');
 const projectRef = url?.match(/https:\/\/([^.]+)\./)?.[1];
+// ADR-U053 §3 — the fuse: the walk cast lives on the test project only.
+target.assertNotProduction(url, process.env);
 if (!url || !secret || !anonKey || !accessToken || !projectRef) {
   console.error('hub/.env.local must carry NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY and SUPABASE_ACCESS_TOKEN');
   process.exit(1);

@@ -6,6 +6,7 @@ import {
   E2E_PASSWORD,
   deleteE2EUser,
   markArrivedOnce,
+  runAdminSql,
 } from './helpers/auth';
 
 /**
@@ -248,7 +249,7 @@ test.describe('FEAT-H028 — announcements, edit window & reporting (journey ver
     await ctxB.close();
   });
 
-  test('the author gets fifteen minutes: edit shows "(edited)", self-delete tombstones in place', async ({
+  test('the author edits freely: "(edited)" shows once the three-minute grace has passed, self-delete tombstones in place', async ({
     browser,
   }) => {
     test.setTimeout(180_000);
@@ -259,7 +260,7 @@ test.describe('FEAT-H028 — announcements, edit window & reporting (journey ver
     const forum = pageA.getByTestId('group-forum');
     await expect(forum).toBeVisible({ timeout: 60_000 });
 
-    // Post, then edit within the window.
+    // Post, then edit — no window since EDT-01; the grace governs the label only.
     await forum.getByRole('textbox', { name: 'Forum post' }).fill(EDIT_THREAD);
     await forum.getByTestId('forum-post-submit').click();
     await expect(pageA.getByText(EDIT_THREAD)).toBeVisible({ timeout: 15000 });
@@ -273,6 +274,15 @@ test.describe('FEAT-H028 — announcements, edit window & reporting (journey ver
       .first()
       .getAttribute('data-testid'))!;
     const post = pageA.getByTestId(postId);
+    // TASK-EDT-01 (2026-08-21): the fifteen-minute window is gone; "(edited)"
+    // renders only when the edit lands more than three minutes after the post
+    // (the silent typo-repair grace). Age the post past the grace before
+    // editing — the label is the thing under test, not the wait. (This spec
+    // still expected the label immediately; caught by the first full fleet run
+    // after the cutover, ADR-U053, 2026-09-05.)
+    await runAdminSql(
+      `UPDATE public.forum_posts SET created_at = now() - interval '5 minutes' WHERE id = '${postId.replace('forum-post-', '')}'`,
+    );
     await post.getByRole('button', { name: /^Edit$/ }).click();
     await post.locator('textarea').fill(EDIT_THREAD_2);
     await post.getByRole('button', { name: 'Save' }).click();

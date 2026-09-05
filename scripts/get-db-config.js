@@ -1,13 +1,27 @@
 #!/usr/bin/env node
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '..', '.env.local') });
+/**
+ * Prints the target project's database host / port / name from the management
+ * API (test by default; `--production` + ALLOW_PRODUCTION=1 for production —
+ * the fuse names the intent even for a read, ADR-U053 §3). The connection
+ * string it prints carries the database password: never paste it anywhere
+ * that is committed. Registry: scripts/README.md.
+ */
+const { loadTarget } = require('./lib/target');
 
-const projectRef = process.env.NEXT_PUBLIC_SUPABASE_URL?.match(/https:\/\/([^.]+)\./)?.[1];
-const accessToken = process.env.SUPABASE_ACCESS_TOKEN;
+let target;
+try {
+  target = loadTarget({ argv: process.argv });
+} catch (e) {
+  console.error(e.message);
+  process.exit(1);
+}
+const projectRef = target.ref;
+const accessToken = target.accessToken;
 
 fetch(`https://api.supabase.com/v1/projects/${projectRef}/config/database`, {
   headers: { 'Authorization': `Bearer ${accessToken}` },
 }).then(r => r.json()).then(d => {
+  console.log(`Target: ${target.target} (${projectRef})`);
   if (d.host) {
     console.log('Host:', d.host);
     console.log('Port:', d.port);

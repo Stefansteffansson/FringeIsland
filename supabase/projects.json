@@ -1,0 +1,18 @@
+{
+  "$schema-note": "ADR-U053 (adopted 2026-09-05): the ONE place that knows which Supabase project is production and which is the test tier. Read by scripts/lib/target.js (root + hub scripts), hub/tests/helpers/target.ts (Jest + Playwright) and the unit gate hub/tests/unit/platform/production-fuse.test.ts. The fuse refuses the production ref unless ALLOW_PRODUCTION=1 names the intent; .env.local (root and hub/) carries the TEST project; .env.production-gate.local carries production for the schema gate's production leg only; Vercel's production environment alone carries production keys at runtime.",
+  "production": {
+    "ref": "jveybknjawtvosnahebd",
+    "name": "FringeIslandDB",
+    "region": "eu-west-1",
+    "serves": "fringe-island.vercel.app — members only after the 2026-09-05 cutover; the ADR-U043 performance pass reads it; the retention jobs run on it",
+    "envFile": ".env.production-gate.local"
+  },
+  "test": {
+    "ref": "spxitjjiawxatwmyjmsp",
+    "name": "FringeIsland-test",
+    "region": "eu-west-1",
+    "createdAt": "2026-09-05",
+    "serves": "every Jest integration suite, the Playwright E2E fleet, the probes, the walk cast, the local dev server, and the schema gate's rehearsal leg",
+    "envFile": ".env.local"
+  }
+}

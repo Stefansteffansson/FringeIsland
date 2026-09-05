@@ -27,6 +27,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
+import target from '../../scripts/lib/target.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const envPath = path.resolve(here, '..', '.env.local');
@@ -37,6 +38,8 @@ const url = g('NEXT_PUBLIC_SUPABASE_URL');
 const secret = g('SUPABASE_SERVICE_ROLE_KEY');
 const accessToken = g('SUPABASE_ACCESS_TOKEN');
 const projectRef = url?.match(/https:\/\/([^.]+)\./)?.[1];
+// ADR-U053 §3 — the fuse: the probe creates accounts; never on production.
+target.assertNotProduction(url, process.env);
 if (!url || !secret) {
   console.error('Missing NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY in hub/.env.local');
   process.exit(1);

@@ -1,0 +1,27 @@
+{
+  "$schema-note": "ADR-U053 §1/§2 — how scripts/replay-migrations.js builds a FRESH project from the chain when the chain alone cannot. Two kinds of entry. `recordOnly`: migrations that cannot execute on an empty project and are RECORDED as applied (exactly what `supabase migration repair --status applied` does) rather than executed — each names why it is production-history-only and what subsumes its effect; both histories still carry the version, so scripts/migration-drift.js sees no drift. `seedsBefore` / `seedsAfterAll`: the hand-run seed files under supabase/seeds/ that production received outside the migration history, replayed at the point in the chain where production had them (seeds 01–04 before the first migration that depends on them) or after the whole chain (the idempotent seed 06). Seeds are not migrations and are recorded nowhere; `seedsBefore` runs only when its anchor migration is about to be applied, so a resumed run never re-seeds. Adding an entry is a schema-gate matter: never a way to skip a migration that should run. First built 2026-09-05 (FringeIsland-test, the ADR-U053 seed pre-flight).",
+  "recordOnly": {
+    "20260221221300": {
+      "file": "20260221221300_fix_users_select_policy.sql",
+      "reason": "Pre-rebuild fix on the archived (pre-D15) schema — `public.users` did not yet exist on a fresh project at this point in the chain; 20260222000000_rebuild_universal_group_pattern.sql recreates the schema and the policy from scratch."
+    },
+    "20260221222339": {
+      "file": "20260221222339_auto_link_role_templates.sql",
+      "reason": "Pre-rebuild fix on the archived schema (role-template auto-link trigger); the rebuild migration 20260222000000 carries the universal group pattern's own version."
+    },
+    "20260221224330": {
+      "file": "20260221224330_fix_personal_group_myself_role.sql",
+      "reason": "Pre-rebuild fix on the archived schema (personal-group Myself role); subsumed by 20260222000000's handle_new_user + personal-group creation."
+    }
+  },
+  "seedsBefore": {
+    "20260227120843": {
+      "seeds": ["01_permissions.sql", "02_role_templates.sql", "03_group_templates.sql", "04_system_groups.sql"],
+      "reason": "The permission catalogue, the four role templates, the four group templates and the four system groups (FringeIsland Members, Visitor — later renamed Mist by migration —, DeusEx, [Deleted User]) were run by hand from supabase/seeds/01–04 on production between the D15 rebuild (20260222000000) and 20260227120843_seed_deleted_user_sentinel_group.sql — which is guarded by WHERE NOT EXISTS and so no-ops after seed 04; anchoring the seeds any later duplicates the [Deleted User] sentinel (the first build anchored at 20260228111514 — the first migration to fail without them — and produced two sentinels; corrected 2026-09-05). Seeds 01–04 are not idempotent, so they run exactly once, here."
+    }
+  },
+  "seedsAfterAll": {
+    "seeds": ["06_starter_journeys.sql"],
+    "reason": "The three founding-question journeys (Who am I? / What do I want? / How do I get there?) were seeded by hand on 2026-08-12 after the Phase-4 reset; idempotent by title; owned by the DeusEx system group. Seed 05 (Professional Pathfinders + 8 journeys) is NOT current canon — production carries 4 journeys — and is deliberately not replayed."
+  }
+}

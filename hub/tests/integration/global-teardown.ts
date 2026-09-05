@@ -400,6 +400,9 @@ const describeNotes = (r: Residue) =>
 
 export default async function globalTeardown(): Promise<void> {
   config({ path: resolve(__dirname, '..', '..', '.env.local') });
+  // ADR-U053 §3 — the fuse, before the helper module (which fuses again on load).
+  const { assertNotProduction } = await import('../helpers/target');
+  assertNotProduction(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env);
   const { runAdminSql } = (await import('../helpers/supabase')) as { runAdminSql: RunAdminSql };
 
   let before: Residue;

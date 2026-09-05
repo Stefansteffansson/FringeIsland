@@ -2,6 +2,19 @@ import { test, expect, type Page } from '@playwright/test';
 import { createAdminClient, markArrivedOnce, runAdminSql, SESSION_EMAIL, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
+ * DB-4 (FEAT-H049, 2026-09-03): the admin sanctions require a reason in words
+ * the member will see; Confirm stays disabled until it is given. Ceremonies
+ * that carry no reason field confirm as before. (This spec predated DB-4 and
+ * clicked Confirm bare; caught by the first full fleet run after the cutover,
+ * ADR-U053, 2026-09-05.)
+ */
+async function confirmCeremony(page: Page) {
+  const reason = page.getByTestId('ceremony-reason');
+  if (await reason.count()) await reason.fill('E2E: the reason, as the member will read it.');
+  await page.getByTestId('confirm-modal-confirm').click();
+}
+
+/**
  * FEAT-H036 (E2E) — Cycle ADM-C: the member administration journey (STORY-7).
  * Elevate → the list finds the fixture members → the suspend/reactivate
  * round-trip through the ceremonies → a scenario-named removal → the platform
@@ -174,13 +187,13 @@ test.describe('FEAT-H036 — member administration (ADM-2/3/4/5/6/12/18)', () =>
     test.setTimeout(120_000);
     await page.goto(`/admin/members/${sanc.userId}`);
     await page.getByTestId('suspend-member').click();
-    await page.getByTestId('confirm-modal-confirm').click();
+    await confirmCeremony(page);
     await expect(page.getByTestId('state-badge')).toHaveText('suspended', { timeout: 15000 });
 
     await page.getByTestId('reactivate-member').click();
     // Origin-honest copy: this lift names the admin hold, not a self-pause.
     await expect(page.getByText(/admin hold/i)).toBeVisible();
-    await page.getByTestId('confirm-modal-confirm').click();
+    await confirmCeremony(page);
     await expect(page.getByTestId('state-badge')).toHaveCount(0, { timeout: 15000 });
     await expect(page.getByTestId('suspend-member')).toBeVisible();
   });
@@ -203,7 +216,7 @@ test.describe('FEAT-H036 — member administration (ADM-2/3/4/5/6/12/18)', () =>
     await expect(row).toBeVisible({ timeout: 15000 });
     await row.getByTestId(`remove-from-group-${sancGroupId}`).click();
     await expect(page.getByText(/closes the group/i)).toBeVisible();
-    await page.getByTestId('confirm-modal-confirm').click();
+    await confirmCeremony(page);
     await expect(row).not.toBeVisible({ timeout: 15000 });
   });
 
@@ -226,7 +239,7 @@ test.describe('FEAT-H036 — member administration (ADM-2/3/4/5/6/12/18)', () =>
     await page.getByTestId('platform-exit-member').click();
     await expect(page.getByText(/1 will close/i)).toBeVisible();
     await expect(page.getByText(/profile remains/i)).toBeVisible();
-    await page.getByTestId('confirm-modal-confirm').click();
+    await confirmCeremony(page);
     await expect(page.getByTestId('state-badge')).toHaveText('decommissioned', {
       timeout: 20000,
     });
@@ -237,11 +250,11 @@ test.describe('FEAT-H036 — member administration (ADM-2/3/4/5/6/12/18)', () =>
     test.setTimeout(120_000);
     await page.goto(`/admin/members/${grantee.userId}`);
     await page.getByTestId('grant-admin').click();
-    await page.getByTestId('confirm-modal-confirm').click();
+    await confirmCeremony(page);
     await expect(page.getByTestId('admin-chip')).toBeVisible({ timeout: 15000 });
 
     await page.getByTestId('revoke-admin').click();
-    await page.getByTestId('confirm-modal-confirm').click();
+    await confirmCeremony(page);
     await expect(page.getByTestId('admin-chip')).toHaveCount(0, { timeout: 15000 });
     await expect(page.getByTestId('grant-admin')).toBeVisible();
   });

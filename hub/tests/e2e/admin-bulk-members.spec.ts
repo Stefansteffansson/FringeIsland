@@ -1,5 +1,18 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { createAdminClient, markArrivedOnce, runAdminSql, SESSION_EMAIL, deleteE2EUserByAuthId } from './helpers/auth';
+
+/**
+ * DB-4 (FEAT-H049, 2026-09-03): the admin sanctions — the bulk bar included —
+ * require a reason in words the member will see; Confirm stays disabled until
+ * it is given. Ceremonies that carry no reason field confirm as before. (This
+ * spec predated DB-4 and clicked Confirm bare; caught by the first full fleet
+ * run after the cutover, ADR-U053, 2026-09-05.)
+ */
+async function confirmCeremony(page: Page) {
+  const reason = page.getByTestId('ceremony-reason');
+  if (await reason.count()) await reason.fill('E2E: the reason, as the member will read it.');
+  await page.getByTestId('confirm-modal-confirm').click();
+}
 
 /**
  * FEAT-H039 (E2E) — Cycle ADM-E: the bounded-list + bulk journey (STORY-7).
@@ -18,7 +31,8 @@ import { createAdminClient, markArrivedOnce, runAdminSql, SESSION_EMAIL, deleteE
  *
  * Serial: the fixtures' account state advances test to test. No sign-out ever
  * happens on the shared session (the TASK-E2E-01 trap class — this journey
- * force-logs-out FIXTURES only, never the session FIM). No groups needed.
+ * force-logs-out FIXTURES only, never the session FIM; `selectThePair` is the
+ * guard that keeps that promise on any population). No groups needed.
  */
 
 test.describe.configure({ mode: 'serial' });
@@ -148,8 +162,25 @@ test.describe('FEAT-H039 — bulk member actions on the bounded list (ADM-7)', (
   const searchFixtures = async (page: import('@playwright/test').Page) => {
     await page.goto('/admin/members');
     await page.getByRole('searchbox', { name: /search/i }).fill(String(stamp));
-    await expect(page.getByTestId(`admin-member-row-${a.userId}`)).toBeVisible({ timeout: 15000 });
+    // The precondition must be one only the APPLIED search can satisfy. On a
+    // small population (the test project, ADR-U053) the unfiltered first page
+    // already shows A and B, so waiting on their visibility alone passed before
+    // the 300 ms debounce applied the search — and the whole chain below fit
+    // inside that window on a warm server, so "Select page" took the
+    // unfiltered page: A, B, the standing DeusEx member and the OPERATOR, whose
+    // session the force sign-out then revoked (the 2026-09-05 full-fleet
+    // cascade). Production's population made the old wait deterministic by
+    // accident. Exactly two rows is the premise of this journey ("server
+    // search isolates the fixtures"), so it is asserted, not assumed.
+    await expect(page.getByTestId(/^admin-member-row-/)).toHaveCount(2, { timeout: 15000 });
+    await expect(page.getByTestId(`admin-member-row-${a.userId}`)).toBeVisible();
     await expect(page.getByTestId(`admin-member-row-${b.userId}`)).toBeVisible();
+  };
+
+  /** Page-scoped selection, guarded: the pair and nothing else, never the session FIM. */
+  const selectThePair = async (page: import('@playwright/test').Page) => {
+    await page.getByRole('checkbox', { name: 'Select page' }).check();
+    await expect(page.getByTestId('selection-count')).toHaveText('2 selected');
   };
 
   test('the bounded list: server search isolates the fixtures; As-of and the pager render', async ({
@@ -173,7 +204,7 @@ test.describe('FEAT-H039 — bulk member actions on the bounded list (ADM-7)', (
     const modal = page.getByTestId('confirm-modal');
     await expect(modal).toContainText(A_EMAIL);
     await expect(modal).toContainText(B_EMAIL);
-    await page.getByTestId('confirm-modal-confirm').click();
+    await confirmCeremony(page);
 
     const outcomes = page.getByTestId('bulk-outcomes');
     await expect(outcomes).toBeVisible({ timeout: 15000 });
@@ -193,9 +224,9 @@ test.describe('FEAT-H039 — bulk member actions on the bounded list (ADM-7)', (
 
   test('bulk reactivate restores the pair', async ({ page }) => {
     await searchFixtures(page);
-    await page.getByRole('checkbox', { name: 'Select page' }).check();
+    await selectThePair(page);
     await page.getByTestId('bulk-reactivate').click();
-    await page.getByTestId('confirm-modal-confirm').click();
+    await confirmCeremony(page);
     await expect(page.getByTestId(`bulk-outcome-${a.userId}`)).toContainText('done', {
       timeout: 15000,
     });
@@ -207,9 +238,9 @@ test.describe('FEAT-H039 — bulk member actions on the bounded list (ADM-7)', (
 
   test('bulk force sign-out reports per member with per-member audit rows', async ({ page }) => {
     await searchFixtures(page);
-    await page.getByRole('checkbox', { name: 'Select page' }).check();
+    await selectThePair(page);
     await page.getByTestId('bulk-force-logout').click();
-    await page.getByTestId('confirm-modal-confirm').click();
+    await confirmCeremony(page);
     await expect(page.getByTestId(`bulk-outcome-${a.userId}`)).toContainText('done', {
       timeout: 15000,
     });

@@ -43,6 +43,13 @@ for (const line of readFileSync(envPath, 'utf8').split(/\r?\n/)) {
 
 // Single-token display name: surfaces render nickname = first token, and a
 // multi-token name has previously broken fixture assertions.
+// ADR-U053 §3/§5 — the fuse. The ADR-U043 pass measures PRODUCTION read paths
+// by design, so this is the one script run with the production leg on purpose:
+//   PERF_ENV=../.env.production-gate.local ALLOW_PRODUCTION=1 node scripts/perf-measure.mjs …
+// Without ALLOW_PRODUCTION=1 it runs on the test project (a rehearsal, not a ledger row).
+import target from '../../scripts/lib/target.js';
+target.assertNotProduction(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env);
+
 const EMAIL = 'perf-antf@fringeisland.test';
 const PASSWORD = 'perf-antf-password-123';
 const NAME = 'Perfwalker';
