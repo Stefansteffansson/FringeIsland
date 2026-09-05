@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   fetchForum,
   peekForum,
@@ -68,6 +68,10 @@ export function GroupForumSection({
   const [posts, setPosts] = useState<ForumPost[] | null>(() => peekForum(groupId, actingId));
   const [failed, setFailed] = useState(false);
   const [membersOnly, setMembersOnly] = useState(false);
+  // 2026-09-05 (the Ferd-close E2E race, the conversations section's shape):
+  // only the LATEST read may write — a read takes a sequence number before
+  // its await and drops its result if a newer read has started since.
+  const readSeq = useRef(0);
   const [hasMore, setHasMore] = useState(false);
   const [perms, setPerms] = useState<Set<string>>(new Set());
 
@@ -127,8 +131,10 @@ export function GroupForumSection({
   };
 
   const load = useCallback(async () => {
+    const seq = ++readSeq.current;
     try {
       const rows = await fetchForum(groupId, undefined, actingId);
+      if (seq !== readSeq.current) return; // superseded by a newer read
       setPosts(rows);
       setHasMore(rows.length >= PAGE);
       setFailed(false);
@@ -137,6 +143,7 @@ export function GroupForumSection({
       // Post-6-done fix (2026-08-14, live walk): a member-gated refusal is not
       // a malfunction — honest members-only copy, never the failure fallback.
       // FEAT-H046: under a hat the same branch names the hat's insufficiency.
+      if (seq !== readSeq.current) return; // superseded by a newer read
       setMembersOnly(isForbidden(err));
       setFailed(!isForbidden(err));
     }

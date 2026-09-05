@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   peekGroupAnnouncements,
   fetchGroupAnnouncements,
@@ -76,9 +76,15 @@ export function GroupAnnouncementsSection({
   // substitution, never the wielder's own grants (ADR-U041 §2a).
   const can = (p: string) => (acting ? acting.permissions.includes(p) : perms.has(p));
 
+  // 2026-09-05 (the Ferd-close E2E race, the conversations section's shape):
+  // only the LATEST read may write — a read takes a sequence number before
+  // its await and drops its result if a newer read has started since.
+  const readSeq = useRef(0);
   const load = useCallback(async () => {
+    const seq = ++readSeq.current;
     try {
       const rows = await fetchGroupAnnouncements(groupId, undefined, actingId);
+      if (seq !== readSeq.current) return; // superseded by a newer read
       setItems(rows);
       setHasMore(rows.length >= PAGE);
       setFailed(false);
@@ -87,6 +93,7 @@ export function GroupAnnouncementsSection({
       // Post-6-done fix (2026-08-14, live walk): a member-gated refusal is not
       // a malfunction — honest members-only copy, never the failure fallback.
       // FEAT-H048: under a hat the same branch names the hat's insufficiency.
+      if (seq !== readSeq.current) return; // superseded by a newer read
       setMembersOnly(isForbidden(err));
       setFailed(!isForbidden(err));
     }

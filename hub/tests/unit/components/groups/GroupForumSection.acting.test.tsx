@@ -1,6 +1,6 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { HttpStatusError } from '@/lib/http/status-error';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ForumPost } from '@/lib/forum/queries';
 import type * as ForumClient from '@/lib/forum/client';
@@ -234,5 +234,50 @@ describe('GroupForumSection — wielded render (FEAT-H046)', () => {
     expect(screen.getByTestId('forum-author-pf')).toHaveTextContent('Former member');
     expect(screen.queryByTestId('forum-author-badge-pp')).toBeNull();
     expect(screen.queryByTestId('forum-author-badge-pl')).toBeNull();
+  });
+});
+
+/**
+ * 2026-09-05 (the Ferd-close E2E run) — the stale-response race, the same
+ * shape the conversations section failed on: the personal read fired at
+ * mount was still in flight when the hat went on; the wielded read landed
+ * first, the personal read resolved last as a 403 and flipped the section
+ * to "the hat doesn't open this group's forum". A superseded read never writes.
+ */
+function deferredRace<T>() {
+  let resolve!: (v: T) => void;
+  let reject!: (e: unknown) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+}
+const RACE_ACTING = { groupId: 'ga', name: 'Alpha', permissions: ['view_forum', 'post_forum_messages'] };
+
+describe('GroupForumSection — a superseded read never overwrites the current view', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockForum.peekForum.mockReturnValue(null);
+    mockPerms.mockResolvedValue({ permissions: [], member_group_id: 'pg-me' });
+  });
+
+  it('the personal read in flight when the hat went on resolves last as a refusal — the wielded posts stay, the hat is not called insufficient', async () => {
+    const stale = deferredRace<ForumPost[]>();
+    mockForum.fetchForum.mockImplementation((_groupId, _before, acting) =>
+      acting ? Promise.resolve([post()]) : stale.promise,
+    );
+    const view = render(<GroupForumSection groupId="g1" />);
+    view.rerender(<GroupForumSection groupId="g1" acting={RACE_ACTING} />);
+    expect(await screen.findByTestId(`forum-post-${post().id}`)).toBeInTheDocument();
+
+    await act(async () => {
+      stale.reject(new HttpStatusError('Not allowed', 403));
+      await Promise.resolve();
+    });
+
+    expect(screen.queryByTestId('group-forum-hat-insufficient')).toBeNull();
+    expect(screen.queryByTestId('group-forum-members-only')).toBeNull();
+    expect(screen.getByTestId(`forum-post-${post().id}`)).toBeInTheDocument();
   });
 });
