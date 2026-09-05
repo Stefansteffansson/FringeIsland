@@ -1,0 +1,41 @@
+# Session bridge — 2026-09-05 (3): the Ferd close ran — the wave file, the DoD walked, a race found and fixed, the retro drafted; the declaration is Stefan's
+
+**Continuation of `2026-09-05_02`** (Addendum 4: "Next session = the Ferd close, a fresh session"). Stefan opened with "please continue according to our bridge document" and was not in the loop after that — every ask-first item below is staged, not taken. Two PRs: **#627** (the race fix, merged on CI green — fuller-auto routine) and the close-docs PR (this branch — see the front door and the plan for its number once merged).
+
+## Live state (verified at close — cite, don't re-derive)
+
+- **`main` = #627 merge + the close-docs PR; the discovery worktree level with `main` at the sweep; zero open PRs after the merge.** The front door names the Ferd close with its board; the [plan](../hub-v2/2026-09-05-ferd-close-plan.md) reads **IN PROGRESS**; `ferd.md` reads `status: cooldown`. **One change closes the wave on Stefan's declaration:** the front door → the Eid kickoff, the plan → CLOSED, `ferd.md` → `completed`, the retro's §3 confirmed (the unit gate `cycle-current-front-door.test.ts` stays green either way until the plan is marked closed).
+- **[`docs/planning/waves/ferd.md`](../waves/ferd.md) is written** from the template: the theme, the 100 `wave: ferd` specs linked by owner (49 H / 30 PC / 21 PD, every one `6-done`, IDs contiguous), the DoD in four areas, the carry-overs.
+- **The DoD walk** ([record](../hub-v2/2026-09-05-ferd-dod-walk.md)) — 8 lines GREEN with this session's own runs (unit 200 / 1 659 · integration 98 / 1 299, teardown clean · **E2E 150 / 150 on the fixed tree** · lint + typecheck + CI · RLS 42 / 42 on both projects · advisor 0 ERROR on production · ADR index 0 Proposed after the U053 row fix · exposure register · anatomy stamp · retro + sweep); **3 OPEN, Stefan's** (F2 legs 4/5/6/8 · R2 G-04 · R3 the declaration); **1 RED for a ruling** — `npm audit --omit=dev` on the Hub: 5 high, 0 critical (`next` 16.1.4 → 16.3.4 closes next / postcss / sharp; `nanoid` + `ws` have fixes), a deps carve-out prepared on the nod.
+- **A product race found and fixed** — [TASK-RACE-01](../backlog/tasks/TASK-RACE-01-superseded-read-overwrites-current-view.md), PR #627: the first fleet run failed `wielded-conversations.spec.ts` (green three times the same morning, same code, same project); in isolation and under `--trace on` it failed again — the wielded read served 200, then a members-only read still in flight when the hat went on resolved *last* as a 403 and flipped the section to "the hat doesn't open …". `load` in the Conversations, Forum and Announcements sections now takes a read sequence number and a superseded read never writes. Red-first (4 cells, the exact copy from the screenshot) → green; the four journeys 19/19; the full fleet 150 / 150. `admin-roles` "cloning a seed" was the other fleet red — a fleet-order flake, green in isolation before and after.
+- **The wave retrospective** ([`retro-wave-ferd.md`](../retrospectives/retro-wave-ferd.md), indexed) is drafted: Three Ls across the fifteen retros, wave metrics, four decisions for Stefan (the close against the DoD as written; **G-04: the waves README is the ecosystem roadmap band**, no `ECOSYSTEM_ROADMAP.md`; the sweep per the link rule; the cadence text to the area rhythm), five process changes (the wave DoD at the kickoff; `npm audit` at the boundary; the ADR index row with the status line; the advisor read at the boundary; the latest-read-wins rule), action items with owners, Eid's inheritance, the doc-health section.
+- **The task sweep:** 14 `done` files deleted after the whole-tree link check (`TASK-RDB-04` restored when the doc-health run found a sibling link); 38 `done` files kept as live link targets; the tasks README carries the log. Still open: `TASK-FORUM-01` (`todo`, `wave: ferd`), `TASK-I18N-01` (`todo`, `wave: eid`), the standing tasks.
+- **DB-4 legs 4 / 5 / 6 / 8 staged** ([walk script](../hub-v2/2026-09-05-db4-walk-legs-4-5-6-8.md)) on the **test project**: the cast (`npm run walk:cast -- create`, five accounts, three groups) plus `walk-admin@fringeisland.test` ("Warden", a DeusEx member by the seed script's idiom, torn down with the cast) — census **6 accounts / 3 groups / 0 orphans**, unchanged through the full fleet. **The cast password is in the close session's final message to Stefan — never in the repository.** The E2E fleet leaves the cast alone by design (its census exempts `walk-*`).
+- **Doc-health cycle + wave boundary run** ([record](../hub-v2/2026-09-05-ferd-close-doc-health.md)): 0 critical, 0 backlog, 0 re-finds; 4 stale links fixed; the ADR-U053 index row Proposed → Accepted (the file had read Accepted since #625 — the lag pattern the A-NTF retro named); the anatomy and entity stamps reviewed against ADR-U053, no impact; Section 3.6's ADR-U053 note closed; the placeholder registry reviewed at the wave boundary (18 pending; two to the Eid board).
+- **The database:** test project — the walk cast + DeusEx + canon; production — untouched (read-only advisor + RLS census only); the two production commands and the drift check still Stefan's (test 142 applied, production 141 with the mis-stamped `20260821132432`).
+
+## Findings worth carrying
+
+- **Run the DoD, don't cite the morning.** The E2E fleet had passed three times that morning on the same code; the close's own run found a stale-async write that only a slower cold compile exposed. The third instance of the class in the Hub (the consume-once adoption cache bit three times before) — the `feature-development` line is in the retro's §5.
+- **Citation-by-inference struck three times in one day** — #624's Hub `CLAUDE.md` ADR-U053 link and two spec filenames in the walk script I wrote from their titles. Verify every filename against a listing, including one's own, before it lands.
+- **A sweep's link check must cover the tasks directory itself.** A kept sibling (`TASK-RDB-03`) linked a swept file (`TASK-RDB-04`); the outside-only check missed it and the doc-health run caught it. The tasks README rule now reads "from anywhere else in the tree".
+- **Playwright's `--trace on` plus the network snapshot answered in one run what code reading could not:** the response completion order. The trace zip's `*.network` file lists the calls with status and body; reading it beat reasoning about effects.
+- **`gh pr merge --delete-branch` switches the checkout to `main`** while a background run may be reading the working tree — harmless here (main already carried the fix), but a run on a branch whose merge switches the tree is a class to remember.
+- **The walk-cast script prints `PASSWORD <value>` in capitals;** a lowercase capture pattern missed it and the walk admin had to be created in a second pass. Check the control before trusting a "captured: NO".
+
+## Stefan's board (in the retro §5 with owners)
+
+1. **Declare the Ferd close** — against `ferd.md` and the walk record (the two OPEN rulings below may close with it or be recorded as carried).
+2. **Walk DB-4 legs 4 / 5 / 6 / 8** on the test project ([script](../hub-v2/2026-09-05-db4-walk-legs-4-5-6-8.md)); `walk:cast teardown` after.
+3. **The production-dependency upgrade** — `next` 16.3.4 + `npm audit fix` (the nod; Claude Code prepares it through the feature gates).
+4. **G-04** — the waves README as the ecosystem roadmap band (a steering edit on the nod).
+5. **The three ADR-U053 production commands** (the cutover record) · **the Vercel Preview → test wiring** · **the E2E smoke job** (TASK-E2E-04) · **leaked-password protection** (both projects).
+6. **The Eid kickoff** — a fresh session: the front door first, then the Eid wave file with its DoD from day one (the §4 rule applied), the home directory for Eid's dated plans named, then decomposition.
+
+## Not done — plainly
+
+- **The wave is not declared closed** — by design (`wave-planning`: a human verifies the DoD).
+- **Legs 4 / 5 / 6 / 8 are staged, not walked.**
+- **The dependency audit is red** until the upgrade PR (the nod).
+- **`ECOSYSTEM_ROADMAP.md` is not written** — the G-04 recommendation stands in for it until ruled.
+- **The Eid kickoff has not started** — nothing under `waves/studies/eid/` was touched.
