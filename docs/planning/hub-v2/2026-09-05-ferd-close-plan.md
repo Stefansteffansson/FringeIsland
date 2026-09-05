@@ -1,6 +1,6 @@
 # The Ferd close — plan
 
-**Date:** 2026-09-05 · **Status:** **PLANNED** — written at the COR-E close as the front door's next target (PROCESS.md §3: close repoints the door to what is next); decomposed at its own kickoff under the `wave-planning` skill. Nothing executed.
+**Date:** 2026-09-05 · **Status:** **IN PROGRESS** — kicked off 2026-09-05 (afternoon session) under the `wave-planning` skill: step 1 (`ferd.md`) written; step 2 (the DoD walk) recorded in [`2026-09-05-ferd-dod-walk.md`](./2026-09-05-ferd-dod-walk.md); step 3 staged as a walk script ([`2026-09-05-db4-walk-legs-4-5-6-8.md`](./2026-09-05-db4-walk-legs-4-5-6-8.md)) for Stefan's hand; step 4 drafted ([`retro-wave-ferd.md`](../retrospectives/retro-wave-ferd.md)); step 5 on the board. **The close declaration is Stefan's** (declaring a wave complete is a human call) — until then this plan stays open and the front door stays here. Written at the COR-E close as the front door's next target (PROCESS.md §3: close repoints the door to what is next).
 **Predecessor:** [Cycle COR-E](./anatomy-correction-plan-cor-e.md) — CLOSED 2026-09-05 (#618–#622): the tidy-up that makes the close's reads true (the routing chain, the wave pointer, the entity model, the gates).
 **Goal:** close Wave 1 (Ferd) formally — write the wave file, walk the wave-level Definition of Done, finish the last live-walk legs, hold the wave retrospective, kick off Eid.
 
