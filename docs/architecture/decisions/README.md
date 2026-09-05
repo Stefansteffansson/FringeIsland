@@ -14,7 +14,7 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 | ADR-U001 | [Layered anatomy framework](ADR-U001-layered-anatomy-framework.md) | Superseded by ADR-U023 | platform-core |
 | ADR-U002 | [Five cross-cutting verticals](ADR-U002-five-cross-cutting-verticals.md) | Accepted | vertical |
 | ADR-U003 | [Supabase backend platform](ADR-U003-supabase-backend-platform.md) | Accepted | platform-core |
-| ADR-U004 | [Visitor anonymous sign-in](ADR-U004-visitor-anonymous-sign-in.md) | Accepted | platform-core |
+| ADR-U004 | [Visitor anonymous sign-in](ADR-U004-visitor-anonymous-sign-in.md) | Accepted — the mechanism stands; the vocabulary moved Visitor → Shadow → **Mist** (U027 → U031) | platform-core |
 | ADR-U005 | [Profile data flexible table](ADR-U005-profile-data-flexible-table.md) | Accepted | platform-core |
 | ADR-U006 | [Universal Group Pattern](ADR-U006-universal-group-pattern.md) | Accepted | platform-core |
 | ADR-U007 | [Three-layer permission model](ADR-U007-three-layer-permission-model.md) | Accepted | platform-core |
@@ -24,8 +24,8 @@ One file per significant architectural decision, MADR format. Numbered sequentia
 | ADR-U011 | [Transactions Stripe Connect](ADR-U011-transactions-stripe-connect.md) | Accepted | vertical |
 | ADR-U012 | [Observability dedicated vertical](ADR-U012-observability-dedicated-vertical.md) | Accepted | vertical |
 | ADR-U013 | [Design system i18n a11y](ADR-U013-design-system-i18n-a11y.md) | Accepted | design-system |
-| ADR-U014 | [Feature flags infrastructure](ADR-U014-feature-flags-infrastructure.md) | Accepted | platform-core |
-| ADR-U015 | [API versioning](ADR-U015-api-versioning.md) | Accepted | platform-core |
+| ADR-U014 | [Feature flags infrastructure](ADR-U014-feature-flags-infrastructure.md) | Accepted — chartered on the PC-1 row, **zero substrate, deferred** (ADM-15; activation no earlier than post-cutover planning) | platform-core |
+| ADR-U015 | [API versioning](ADR-U015-api-versioning.md) | Accepted — scope narrowed by [ADR-U038](ADR-U038-platform-contracts-platform-side-surface-bff.md) clause 3 to the **platform surface** (PostgREST signatures, platform-hosted routes); a product's private-BFF routes are exempt plumbing | platform-core |
 | ADR-U016 | [Cascade specification first](ADR-U016-cascade-specification-first.md) | Accepted | platform-core |
 | ADR-U017 | [Journeys content templates](ADR-U017-journeys-content-templates.md) | Accepted | domain-service |
 | ADR-U018 | [No hardcoded group types](ADR-U018-no-hardcoded-group-types.md) | Accepted | platform-core |

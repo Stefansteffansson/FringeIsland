@@ -71,7 +71,7 @@ For each vertical, state the impact or write "None" — do not leave blank.
 
 ## Performance budget
 
-Required for any feature with a user-facing surface (page, panel, interaction); platform-only features write "N/A (no surface)". Budget classes are defined in [ADR-U043](../architecture/decisions/ADR-U043-performance-budgets.md).
+Required for any feature with a user-facing surface (page, panel, interaction); platform-only features write "N/A (no surface)". **Grandfather rule (Audit V R-11, 2026-09-05):** specs authored before ADR-U043 (2026-07-07) carry no section — their surfaces were measured under ADR-U043 at their area gates and the numbers live in `docs/planning/reference/PERF-MEASUREMENT-LEDGER.md`; the section becomes owed at the spec's next amendment. Budget classes are defined in [ADR-U043](../architecture/decisions/ADR-U043-performance-budgets.md).
 
 - **First-paint class:** which budget rows apply (B1 sign-in flow · B2 cold nav · B3 warm nav · B4 revisit) and the page's data-boot path per ADR-U042 — overview-bundle slice · session cache · justified standalone read.
 - **Interaction class:** any interaction at risk of exceeding B5 (200 ms to next paint) and the feedback it shows within 100 ms.

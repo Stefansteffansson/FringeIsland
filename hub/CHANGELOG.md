@@ -11,7 +11,7 @@ User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is
 - **These notices cannot be muted.** "Holds & sanctions" appears in your notification preferences as always on, with the reason stated.
 - **What it deliberately does not do:** no reason is asked for, or shown, when a group is closed, deleted, or a member is removed — those keep their own notices; a reason cannot be edited afterwards (a changed reason is a new act); and nothing is emailed or pushed beyond the bell.
 
-## 2026-09-03 — platform admins can now read a closed group's preserved threads ([FEAT-H041](../docs/products/hub/features/FEAT-H041-suspended-group-content-wing.md) · TASK-SEAL-02)
+## 2026-09-03 — platform admins can now read a closed group's preserved threads ([FEAT-H041](../docs/products/hub/features/FEAT-H041-suspended-group-admin-content-view.md) · TASK-SEAL-02)
 
 - **When a group has closed, its preserved threads can now be opened from the admin area — read-only.** Each thread in the "Preserved threads" section has an Open button. The thread view says plainly when it was sealed and that nothing in it is live; it lists the messages in order, names who wrote each one (someone who has since left the group shows as "Former member"), and offers no way to reply, react or write. Back returns to the list. Every read is recorded.
 - **What it deliberately does not do:** direct messages are never shown, and threads in groups that are still open or on hold cannot be opened here — only a closed group's preserved threads.
@@ -20,7 +20,7 @@ User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is
 - **A walk you are on can now rest.** On a journey's page and inside the player there is a Pause; a paused journey shows "(paused)" on your journeys list with Resume beside it, and the player opens on a plain "This walk is paused" panel with Resume. No confirmation dialog — pausing is reversible, and resuming puts you back on exactly the step you were on, with everything you had done still done.
 - **What it deliberately does not do:** you can only pause your own travel — a group's journey is the group's, and one member does not pause it. Pausing tells no one. And if your group closes, or you leave it, a paused journey is held for review exactly as an active one would be.
 
-## 2026-09-02 — platform admins can see a closed group's preserved threads ([FEAT-H041](../docs/products/hub/features/FEAT-H041-suspended-group-content-wing.md) · TASK-SEAL-01)
+## 2026-09-02 — platform admins can see a closed group's preserved threads ([FEAT-H041](../docs/products/hub/features/FEAT-H041-suspended-group-admin-content-view.md) · TASK-SEAL-01)
 
 - **When a group has closed, its group conversations are preserved — and now a platform admin can see that they exist.** Open a closed group in the admin area and a "Preserved threads" section lists each group thread with how many messages it holds and when it was last active. A thread that was sealed when its author departed is labelled *Sealed* with the date, and nothing about it is live: there is no way to open it, reply to it, or mistake it for an ongoing conversation. This is where evidence of bullying lands when someone leaves, so the admin plane should at least know it is there.
 - **What it deliberately does not do:** the contents of a sealed thread are not readable from the admin area. The section says so plainly. Direct messages are never shown.

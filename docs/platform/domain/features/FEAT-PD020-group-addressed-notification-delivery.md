@@ -88,6 +88,10 @@ Hub: no payload changes; FEAT-H046 STORY-4 verifies the refresh pairing. Gimbal 
 - **Transactions:** none.
 - **Extensibility:** expansion keys on `group_type`/permission facts, no kind enum — future kinds inherit; the trigger is data-driven (no hardcoded role names — Steward resolution via role machinery, ADR-U007).
 
+## Performance budget
+
+N/A (no surface) — a write-time expansion inside the delivery substrate; no page, panel or interaction of its own.
+
 ## Implementation notes (6-done — built 2026-08-15, same session as the board; shipped through the schema gate on named approval)
 
 **Plain-English walkthrough:** a group that belongs to another group used to get mail no human could ever open — announcements from its host, notices that its membership was paused, roles it was given. Now that mail goes straight to the people who answer for the group (anyone holding its act-as key, and its Stewards as the floor), each copy obeying that person's own notification preferences, ringing their own bell. Nobody can write the unreadable kind of letter anymore — not today's code, not next year's.

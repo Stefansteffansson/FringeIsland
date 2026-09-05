@@ -112,6 +112,10 @@ Paired surface spec: [FEAT-H046](../../../products/hub/features/FEAT-H046-wielde
 - **Transactions:** none.
 - **Extensibility:** `p_acting` is additive-default (no signature break, ADR-U015 compliant); `kind` is an open-set additive key (no sealed switch); no new enums.
 
+## Performance budget
+
+N/A (no surface) — platform contracts only; the Hub surfaces that consume them (FEAT-H046/H047/H048) carry the budget.
+
 ## Implementation notes (tranche 1 — 2026-08-16, TASK-PD019-1)
 
 **Migration `20260816120000`** (held at the schema gate). What shipped, and the decisions the build recorded:

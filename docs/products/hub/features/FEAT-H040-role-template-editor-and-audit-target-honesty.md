@@ -36,7 +36,7 @@ Surface half of cycle ADM-F, consuming [FEAT-PC025](../../../platform/core/featu
 
 ## Appetite
 
-Small cycle — one new route group + detail view, one card, three ceremony routes, one audit-row render change, one copy softening. Every pattern is proven (H034 As-of/Refresh, H035/H036 detail + ceremony shape, H037 audit rows, RolesPanel checkbox fabric, H039 ReactNode confirm). The care points are ceremony honesty (the clone's two consequences; the diff preview's completeness) — not volume.
+Small cycle — one new route segment (`/admin/roles`, a plain path segment) + detail view, one card, three ceremony routes, one audit-row render change, one copy softening. Every pattern is proven (H034 As-of/Refresh, H035/H036 detail + ceremony shape, H037 audit rows, RolesPanel checkbox fabric, H039 ReactNode confirm). The care points are ceremony honesty (the clone's two consequences; the diff preview's completeness) — not volume.
 
 ## Rabbit holes
 
