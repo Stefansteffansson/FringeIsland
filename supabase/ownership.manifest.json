@@ -376,6 +376,16 @@
     }
   },
 
+  "retention": {
+    "note": "2026-09-05 (Stefan: \"we do want to fix whatever we need to fix in order not to end up there again\"): every log-shaped table (name matching _log|_runs|_events|_history|_audit) states how it is bounded — {days, job} naming the pg_cron job that prunes it, or {policy: \"forever\", reason}. cronHistory names the job that prunes pg_cron's own run history (kept forever by default); maintenance names the weekly VACUUM FULL stopgap while the production database also carries the test tier. Enforced by hub/tests/integration/platform/retention-conformance.test.ts: a log-shaped table without an entry, or a declared job that is not scheduled and active, fails red.",
+    "tables": {
+      "reaper_runs": { "days": 30, "job": "reaper-runs-prune", "since": "20260904100000" },
+      "telemetry_events": { "days": 90, "job": "telemetry-prune", "since": "20260731180000" },
+      "admin_audit_log": { "policy": "forever", "reason": "PC-4's accountability record (FEAT-PC022): the admin plane's acts are kept for as long as the platform exists; a member's erasure travels the consent path (erase_fim_account), never a prune." }
+    },
+    "cronHistory": { "days": 7, "job": "cron-history-prune", "since": "20260905100000" },
+    "maintenance": { "job": "weekly-vacuum-full", "schedule": "0 4 * * 0", "since": "20260905100000", "reason": "the one production database also carries the suites' churn (2026-09-05 review: notifications 16 MB with zero rows; 444,950 inserts / 423,030 deletes lifetime) and autovacuum never returns file space — a declared stopgap until the test tier moves off production." }
+  },
   "lifecyclePrefixRule": "^ds\\d+_lifecycle_",
   "lifecyclePrefixNote": "ADR-U047 rule 1: the ds{N}_lifecycle_ prefix is reserved for domain-owned lifecycle-fact handlers. Auto-allowed by prefix — the owning service is read from the digit, so these need no explicit entry above.",
 
