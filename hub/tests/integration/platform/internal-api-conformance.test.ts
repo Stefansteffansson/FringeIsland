@@ -7,6 +7,8 @@ import {
   formatInvocationViolation,
   functionOwner,
   dsTables,
+  bareReferences,
+  dynamicSqlSites,
   type Violation,
   type InvocationViolation,
 } from '@/tests/helpers/ownership';
@@ -200,5 +202,32 @@ describe('Internal-API conformance (ADR-U047 rule 3 + DS acyclicity, COR-A W3 / 
       )
       .join('\n');
     expect(report).toBe('');
+  });
+  it('no function references a table or a classified function by a bare, schema-unqualified name (COR-E W6, GC-28)', () => {
+    // The qualified-only blind spot, closed. classifyReferences and
+    // classifyInvocations match public.<name> BY DESIGN (ADR-U047 A2: search_path
+    // is pinned, so a real reference is always qualified) — but nothing asserted
+    // the "always". A bare `from groups` would have passed both gates green.
+    // Audit V's live sweep (2026-09-05) found zero; this keeps it at zero.
+    expect(rows.length).toBeGreaterThan(0);
+    const offenders = rows.flatMap((r) =>
+      bareReferences(r.name, r.body ?? '').map(
+        (b) => `  - ${r.name}(${r.args})  bare ${b.kind} reference: ${b.name}`,
+      ),
+    );
+    if (offenders.length) {
+      console.error(['', 'Bare (schema-unqualified) references (COR-E W6, GC-28):', ...offenders, ''].join('\n'));
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it('no function builds SQL at runtime (dynamic SQL would evade every static ring check)', () => {
+    // Audit IV's honesty log named EXECUTE format(...) as the one shape the
+    // static callee regex could not see; none was observed, absence not proven.
+    // Proven here on every run.
+    const sites = rows.flatMap((r) =>
+      dynamicSqlSites(r.body ?? '').map((line) => `  - ${r.name}(${r.args})  ${line}`),
+    );
+    expect(sites).toEqual([]);
   });
 });
