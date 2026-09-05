@@ -44,3 +44,16 @@ review checklist carries it.
 6. **Schema-gate posture.** Function-body or RLS changes ride a HELD PR: red
    test demonstrated at HEAD + apply commands in the body; merge only on an
    explicitly named approval.
+7. **Every log-shaped table declares how it is bounded — in the migration that
+   creates it.** A table whose name ends in `_log`, `_runs`, `_events`,
+   `_history` or `_audit` (or that is a run log by any other name) ships with
+   either a prune function + a `cron.schedule` job, or an explicit
+   "kept forever because …", and the declaration lands in
+   `../ownership.manifest.json` `retention` in the same commit. A scheduled job
+   likewise names who prunes its run history (pg_cron keeps
+   `cron.job_run_details` forever by default; `cron-history-prune` owns it).
+   `hub/tests/integration/platform/retention-conformance.test.ts` is the gate:
+   a log-shaped table without a declaration, or a declared job that is not
+   scheduled, fails red. Origin: the 2026-09-04/05 review — `reaper_runs` at
+   7,400 rows (created 2026-06-26, no retention, nothing asked) and pg_cron's
+   history at 7,284.
