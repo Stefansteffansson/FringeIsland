@@ -7,7 +7,7 @@
 **Predecessors:** [Audit I / COR-A](ANATOMY-CONFORMANCE-AUDIT.md) · [Audit II / COR-B](ANATOMY-CONFORMANCE-AUDIT-2.md) · [Audit III / COR-C](ANATOMY-CONFORMANCE-AUDIT-3.md) · [Audit IV / COR-D](ANATOMY-CONFORMANCE-AUDIT-4.md) (2026-08-10, ring-focused) · the [AB-6 full anatomy audit](../hub-v2/2026-08-10-ab6-full-anatomy-audit.md) · the [Phase-4 gate doc-health run](../hub-v2/2026-08-13-phase-4-gate-doc-health.md) · the last clean doc-health run ([2026-08-20](../sessions/2026-08-20_04_-_CLOSING-SWEEP-WAVES-FERD-DOC-HEALTH-CLEAN.md)).
 **Delta boundary:** full coverage at HEAD `c7128b53` (main, clean; discovery worktree in sync). Everything since Audit IV was audited for the first time here: the Phase-4 cutover and its hygiene (root tooling-only, `hub-legacy/` deleted), DM-01, ACT-01, PD019/PD020, H046–H048, DBT-01/03, SEC-02, ANN-01, H017-01, JRN-PAUSE-01, SEAL-02, DB-4 (PC030/PD021), the reaper-runs and retention gates, ADR-U047 A4, ADR-U053.
 **Scope — wider than IV by design:** `hub/` + `supabase/` (code rings, ownership, openness) **and** the documentation tree end to end (`docs/architecture`, the CLAUDE.md cascade, the steering files, `docs/planning`, the 100 feature specs, `docs/verticals`) **and** the repository's tooling surface (`scripts/`, `hub/scripts/`, `.github/`, `package.json`, `.agents/`). Test code stays exempt from API-first rules but its *runner wiring* is in scope.
-**Finding IDs:** `AC5-1..16` (deviations) · `AC5-O1..O6` (observations) · `GC-24..27` (gate-coverage gaps, continuing Audit IV's namespace) · rulings continue at **R-10**.
+**Finding IDs:** `AC5-1..17` (deviations) · `AC5-O1..O8` (observations) · `GC-24..29` (gate-coverage gaps, continuing Audit IV's namespace) · rulings continue at **R-10** (R-15 added by the backend addendum below).
 **Method:** the live conformance gates run first as ground truth (platform integration family **9/9 suites, 42/42 tests**, integration teardown "Clean"; run this session against the clean-slate database with no sibling consumer); then static sweeps over `git ls-files` (1 931 tracked files): route/lib/component data-path census (129 routes, 85 lib modules, 74 components, 31 pages), manifest-by-owner tally (42 tables, 234 classified functions across PC-1..4 / DS-3 / DS-5 / DS-7 / `vertical:notifications`), lifecycle-handler and declared-composition inventory, closed-set CHECK census over the 141 live migrations, feature-spec template conformance (100 specs), a relative-link check over 596 markdown files (2 690 links; sessions and the novel excluded), a retired-vocabulary grep, and a line-by-line read of every status-bearing routing document. Every registered finding was disk-verified by this session; the honesty log records what was checked and *not* registered.
 
 ---
@@ -166,6 +166,52 @@ Append-only ADRs are right not to change; the **index** is where the reader is c
 - **Checked against canon and NOT registered:** the `group_type IN ('system','personal','engagement')` CHECK, the 67 migrations with `group_type = '…'` paths and the Hub's caretaker rendering on `member_group_type === 'system'` — all explicitly permitted by ADR-U018's 2026-05-14 amendment (discriminator column, entity-state enums, growth-vocabulary registries); `journey_type` / `difficulty_level` CHECKs — live DS-3 columns read by PD002/PD003 contracts and the catalogue page, not dead; the retro-to-deleted-task link — by design (doc-health §3.6 scopes ephemeral tasks out); `hub-legacy/` mentions — all ADR-U032 history or the discharge note; the two `ROADMAP.md` links — registered expected placeholders (doc-health §7, T3.4).
 - **The scope grew on purpose.** Audits I–IV were ring audits; this one was asked for as "codebase and documentation" and the register's centre of gravity is documentation because that is where the drift is. The code dimensions are reported at the same depth as IV (full census, no sampling).
 - **Counts in this register are dated 2026-09-05** and are evidence for these findings only; the routing documents keep pointing at the sources (pointer-not-snapshot).
+- **The first pass trusted the gates for the inner ring; the addendum below re-derived it.** Stefan challenged whether the backend had really been audited and named the rings as inviolable; the addendum answers with a live-catalog sweep that does not depend on the gate's regex. Its two gate gaps (GC-28, GC-29) are the honest yield of that challenge.
+
+---
+
+## Addendum (2026-09-05, same day) — the backend deep pass: the rings re-derived from the live catalog
+
+**Trigger:** Stefan — *"have you really challenged the full code base including back end with DB functions etc.?"* and *"specifically pay attention to the inner and outer API rings. Those can never be violated."*
+**Method:** read-only queries against the live catalog (management API, no writes, no sibling consumer): `pg_get_functiondef` for all **243** public functions, classified against the manifest (234 declared + 9 `ds{N}_lifecycle_*` by prefix); every (function, table) mention counted two ways — **schema-qualified** (`public.<table>`, what the W3 gate sees) and **bare-word** (`\m<table>\M`, what it cannot see); `has_function_privilege` for `anon` and `authenticated` on all 243; RLS flag and policy count per table; the Supabase security linter. Every bare-word cross-owner mention was then read line by line.
+
+### Inner ring (Domain ↔ Core, ADR-U047) — verified independently of the gate
+
+| Check | Result |
+|---|---|
+| Qualified cross-owner table references, core → DS | **0** (all qualified cross-owner refs run DS → core or → the notifications substrate: the permitted direction) |
+| Bare-word cross-owner mentions the gate cannot see | 24 (function, table) pairs, 30 lines read: **22 comment lines, 8 string literals or JSON keys, 0 identifiers** — no unqualified reference exists |
+| Dynamic SQL (`EXECUTE format(...)` and kin) | **0** functions |
+| `SECURITY DEFINER` functions without a pinned `search_path` | **0** of 236 |
+| Functions absent from the manifest and not lifecycle-prefixed | **0** |
+| Sealed-by-doctrine set (22: `ds5_admin_*`, `ds5_moderation_*`, `ds{N}_lifecycle_*`, `_erase_mist`, `_pc2_hard_erase_user`, `prune_*`, `reap_*`, `ds3_stats_snapshot`) executable by a client role | **none**, for either `anon` or `authenticated` |
+
+The gate's green is therefore confirmed by a method that does not share its blind spot. The blind spot itself is real and is registered as **GC-28**.
+
+### Outer ring (Product ↔ Platform API, ADR-U009 / ADR-U038) — verified from both sides
+
+| Side | Check | Result |
+|---|---|---|
+| Product | Routes touching a table or RPC directly | 0 of 129; every substrate call is in a `lib/*` server helper |
+| Product | Distinct RPC names the Hub calls | **138**, all classified in the manifest (PC-1 2 · PC-2 13 · PC-3 42 · PC-4 28 · DS-3 16 · DS-5 32 · DS-7 5); 0 unclassified |
+| Platform | Functions executable by `anon` | **0** of 243 |
+| Platform | Functions executable by `authenticated` | 198: 23 trigger-returning (not RPC-callable), the rest the contract surface; the 5 with internal-looking names (`finalise_transcendence`, `record_auth_event`, `ds5_require_fim_actor`, `ds5_require_fim_subject`, `ds5_is_fim_actor`) all carry explicit `REVOKE … FROM PUBLIC, anon` + `GRANT … TO authenticated` lines in their migrations — deliberate, not Postgres's default |
+| Platform | Tables with RLS enabled | **42 of 42**, 47 policies |
+| Platform | Tables with RLS on and zero policies (deny-all by absence) | 7: `ds5_config`, `pc2_config` (both declared deny-all in their migration comments), `journey_steps`, `journey_step_instances`, `notification_action_types`, `reaper_runs`, `telemetry_events` (posture not declared beside their `CREATE`; `telemetry_events` is declared deny-all in ADR-U052 and the anatomy) |
+| Vendor linter | Supabase security advisor | 43 lints: **40 × `auth_allow_anonymous_sign_ins`** — the Mist posture by design (anonymous sessions hold `authenticated`; FIM-only doors are enforced inside the contracts, ADR-U031) — accepted; 1 × `rls_enabled_no_policy` (INFO, = AC5-17); 1 × `authenticated_security_definer_function_executable` (the contract surface is SECURITY DEFINER by design under ADR-U038 — accepted); 1 × `auth_leaked_password_protection` (an Auth setting, AC5-O8) |
+
+### New findings from the addendum
+
+#### AC5-17 · Minor — five zero-policy tables carry no declared client-access posture
+Deny-all-by-absence is the right posture for a contracts-only table, but it is indistinguishable from a forgotten policy unless it is declared. `ds5_config` and `pc2_config` declare it; `journey_steps`, `journey_step_instances`, `notification_action_types`, `reaper_runs`, `telemetry_events` do not. → COR-E **W6** (manifest `clientAccess` per table + gate).
+
+- **AC5-O7** — `ds5_is_fim_actor()` is granted to `authenticated` and has no consumer outside SQL. Harmless (a boolean about the caller) but a contract nobody asked for. → **R-15**: declare it as a Gimbal-ready predicate, or revoke (schema gate).
+- **AC5-O8** — leaked-password protection is off in Auth. Not schema; a dashboard setting and Stefan's call (production configuration is never-do for agents). Recommend enabling.
+
+| ID | Gap | Evidence | Disposition |
+|---|---|---|---|
+| **GC-28** | **The inner-ring gate is qualified-only.** `classifyReferences` matches `public.<table>` (`ownership.ts:158`) and the invocation check matches `public.<callee>(` (`:280`); a bare-word reference would pass green. Zero exist today — verified above — but nothing keeps it so | this addendum's sweep | COR-E **W6**: the gate additionally asserts *no* bare-word table or classified-function name appears in a function body outside comments and string literals ("always qualify", made mechanical), with the dynamic-SQL absence asserted alongside |
+| **GC-29** | **No pinned inventory of the `authenticated` EXECUTE surface.** Postgres's default `PUBLIC` EXECUTE reaches `authenticated`; the anon gate cannot see it; a new function shipped without its `REVOKE` becomes RPC-callable by every signed-in session, silently. The sealed set is pinned; the exposed set is not | 198 executable today, intent recorded nowhere | COR-E **W6**: a manifest `exposure` field per function (`client` / `sealed` / `trigger` / `internal`) and a gate that the live grants match it both ways — the outer ring's platform side pinned the way its product side already is |
 
 ## Related
 
