@@ -18,6 +18,8 @@
 | 5 | W2 wording for the three steering files (`AGENTS.md` structure + test line; `SESSION-OPENER.md` focus line; root `CLAUDE.md` header) | steering-file carve-out | Draft in the PR body, merge on the named nod |
 | 6 | Sequencing: COR-E → Ferd close (`ferd.md` + DoD walk + doc-health) → ADR-U053 adoption, or interleave U053 now | priority call | **COR-E first, one session;** ADR-U053's ruling can land in parallel (it is Stefan's), its adoption steps after the close |
 | 7 | AC5-O3 — `how-we-work/`: add a reconciliation stamp and a "derived from PROCESS.md" banner, or leave as a dated narrative | editorial | Stamp + banner (W4, two lines); no content rewrite |
+| 8 | **R-15** — `ds5_is_fim_actor()`: declare it a Gimbal-ready client predicate in the exposure register, or revoke EXECUTE from `authenticated` (one migration, schema gate) | ruling | **Declare** — it is harmless and a sibling surface will want the same question answered; revoke only if nobody wants it |
+| 9 | AC5-O8 — enable leaked-password protection in Supabase Auth (a dashboard setting, not schema; production configuration is Stefan's alone) | ops call | **Enable** — no code, no migration; note the date in the next bridge |
 
 ---
 
@@ -62,8 +64,14 @@
 - **GC-27 gate:** `hub/tests/unit/platform/script-registry.test.ts` — every file under `scripts/` and `hub/scripts/` is a row in `scripts/README.md`; any script whose source calls `auth.admin.createUser` or `auth.admin.deleteUser` carries a teardown/census note in its row.
 **Gate:** unit tier green (CI); `npm run dashboard` still generates (the root-tooling keep-set check in CI).
 
-### W6 — nothing (reserved) — Audit V registered no code-ring or schema deviation
-Recorded so the COR-lettering stays comparable with A–D: no schema gate, no migration, no ownership move this cycle. If R-10 (W1) surfaces a substrate fact the entity file cannot cite, that becomes a finding for the next audit, not a W6.
+### W6 — the exposure and posture registers: both rings pinned on the platform side (AC5-17, AC5-O7 · GC-28, GC-29 · R-15) — *fuller-auto except the optional revoke*
+Added by the backend addendum. No ring is violated today; this workstream makes the two ways a violation could arrive *silently* impossible.
+- **Manifest, per function: `exposure`** — `client` (RPC-callable by `authenticated`; the Platform API surface), `sealed` (EXECUTE revoked from client roles; declared-composition bodies, erasure primitives, pruners, lifecycle handlers), `trigger` (trigger-returning; not RPC-callable), `internal` (helpers callable only from other functions). Seeded from the live grants (198 / 22 / 23 / rest) and reviewed by name; R-15 decides `ds5_is_fim_actor`.
+- **Manifest, per table: `clientAccess`** — `policies` (RLS policies exist) or `contracts-only` (RLS on, zero policies by design, with a one-line reason). The seven zero-policy tables get their declaration; the two already-commented ones cite their migration.
+- **Gate (GC-29):** `exposure-register-conformance.test.ts` in the platform family — for every live function, `has_function_privilege('authenticated', …)` and `('anon', …)` match the declared class both ways; a function absent from the register fails red (same shape as function-classification-completeness). `clientAccess` likewise: a `policies` table with zero policies, or a `contracts-only` table with any, fails red.
+- **Gate (GC-28):** `internal-api-conformance.test.ts` gains the bare-word assertion — after stripping `--` comments, `/* */` blocks and string literals from each body, no manifest table name or classified function name may appear unqualified; `EXECUTE format(` and friends are asserted absent in the same pass. Both are green at HEAD by this addendum's evidence, so the change is gate-only.
+- **Migration only if R-15 = revoke:** one `REVOKE EXECUTE ON FUNCTION public.ds5_is_fim_actor() FROM authenticated` — schema gate, named nod.
+**Gate:** platform family green locally (CI after ADR-U053); `ownership.manifest.json` version bump with the two new sections documented in its `$schema-note`.
 
 ### W7 — Performance-budget disposition (AC5-12 · R-11) — *fuller-auto once ruled*
 - If grandfather: `docs/templates/feature-spec.md` §Performance budget gains the dated rule; `AGENTS.md` §Always do gains the clause (rides W2's steering PR); `FEAT-PD019` and `FEAT-PD020` gain the "N/A (no surface)" line.
@@ -83,6 +91,7 @@ Recorded so the COR-lettering stays comparable with A–D: no schema gate, no mi
 1. **Board settles** (rows 1–7). Row 6 fixes the sequence: COR-E → Ferd close → ADR-U053 adoption.
 2. **W1, W3, W4 in one docs PR** (fuller-auto) — they share files (`README.md`s, the anatomy pair) and a single doc-health run verifies them together.
 3. **W5 + W8** in one tooling PR — W5's deletion needs the nod (row 3); the two unit tests and the skill edit are fuller-auto and travel with it so the gates land in the same change as the surface they pin.
+3b. **W6** as its own PR — manifest sections + the two platform-family gates; run the family locally before merge (the one-consumer rule). If R-15 = revoke, the migration rides the same PR and holds at the schema gate.
 4. **W2 (+ W7 if grandfather)** as the steering PR — prepared with the full wording in the PR body, merged only on the named nod.
 5. **Cycle close:** `npm run dashboard`; the `doc-health-check` skill runs as the cycle-boundary audit (AC5-O5) — its record goes under `docs/planning/hub-v2/` as `2026-MM-DD-cor-e-doc-health.md`; a session bridge; per-finding closure notes appended to the register (the COR-D pattern).
 6. **Then the Ferd close begins**, not before: `ferd.md` written under the `wave-planning` skill (scope = the `wave: ferd` specs, DoD from the template), the wave DoD walk, DB-4's four unwalked legs on a fresh cast (or on the test project once ADR-U053 lands), the close retrospective.
@@ -92,7 +101,7 @@ Estimated size: one focused session for steps 2–4 (W1+W3+W4 ≈ half a session
 ## Definition of done
 
 - Every AC5 finding carries a closure note in the register naming the PR (or the ruling that dispositioned it); observations AC5-O1..O6 carry their disposition.
-- The three gates GC-24/25/27 exist and are green; GC-26 is recorded as structural (W3), not gated.
+- The three gates GC-24/25/27 exist and are green; GC-26 is recorded as structural (W3), not gated; GC-28 and GC-29 exist in the platform family and are green, and the manifest carries `exposure` for every function and `clientAccess` for every table.
 - Doc-health run clean at the cycle boundary, with §11's two new rows exercised.
 - The routing chain a new session walks — `SESSION-OPENER.md` → `cycle-current.md` (injected by the hook) → `CLAUDE.md` → `AGENTS.md` → `hub-v2/README.md` → the latest bridge → `waves/ferd.md` — reads true at every hop on 2026-09-XX; the front-door test is green and has been seen to go red once (at COR-E's own close) before being repointed.
 - `git status` clean; the discovery worktree synced; the dashboard regenerated.
