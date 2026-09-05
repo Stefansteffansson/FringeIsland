@@ -1,10 +1,12 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { assertNotProduction } from '../../helpers/target';
 
 export const SESSION_EMAIL = 'e2e-session@fringeisland.test';
 export const E2E_PASSWORD = 'e2e-test-password-123';
 
 export function createAdminClient(): SupabaseClient {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  assertNotProduction(url, process.env); // ADR-U053 §3 — the fuse
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
   if (!url || !serviceKey) {
     throw new Error('E2E requires NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (hub/.env.local)');
@@ -336,6 +338,7 @@ export async function runAdminSqlRows(sql: string): Promise<Array<Record<string,
     throw new Error('runAdminSql requires SUPABASE_ACCESS_TOKEN (management API) in hub/.env.local');
   }
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  assertNotProduction(url, process.env); // ADR-U053 §3 — the fuse
   const ref = url.match(/https:\/\/([^.]+)\./)?.[1];
   if (!ref) throw new Error(`Could not derive project ref from ${url}`);
   const res = await fetch(`https://api.supabase.com/v1/projects/${ref}/database/query`, {

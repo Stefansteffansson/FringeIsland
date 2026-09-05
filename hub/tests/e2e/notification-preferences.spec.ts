@@ -182,16 +182,21 @@ test.describe('FEAT-H033 — notification preferences, end to end', () => {
     await signIn(page, member.email);
     await page.goto('/notifications/preferences');
 
-    // TASK-DBT-02 adjudication (canonical-wins): TWO non-suppressible
-    // categories are INTENDED data — `account`, plus `asks` since the GB-1
-    // asks split (migration 20260727180000: "exactly as it does for account").
-    // The single-category premise was stale; the surface rendered the registry
-    // faithfully. Both locked rows asserted, neither with an operable control.
+    // TASK-DBT-02 adjudication (canonical-wins): the non-suppressible
+    // categories are INTENDED data — `account`, `asks` since the GB-1 asks
+    // split (migration 20260727180000: "exactly as it does for account"), and
+    // `sanctions` since DB-4 (FEAT-PD021, 2026-09-03: a hold or a suspension
+    // always reaches the member). The surface renders the registry faithfully;
+    // every locked row asserted, none with an operable control. (The "two"
+    // premise went stale at DB-4; caught by the first full fleet run after the
+    // cutover, ADR-U053, 2026-09-05.)
     await expect(page.getByTestId('pref-locked-account-in_app')).toBeVisible({ timeout: 15000 });
     await expect(page.getByTestId('pref-toggle-account-in_app')).toHaveCount(0);
     await expect(page.getByTestId('pref-locked-asks-in_app')).toBeVisible();
     await expect(page.getByTestId('pref-toggle-asks-in_app')).toHaveCount(0);
-    await expect(page.getByText(/always on/i)).toHaveCount(2);
+    await expect(page.getByTestId('pref-locked-sanctions-in_app')).toBeVisible();
+    await expect(page.getByTestId('pref-toggle-sanctions-in_app')).toHaveCount(0);
+    await expect(page.getByText(/always on/i)).toHaveCount(3);
 
     // Email is stored but does not deliver, so it gets no toggle anywhere —
     // asserted across every category, not just one.

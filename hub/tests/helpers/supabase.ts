@@ -6,6 +6,7 @@
  * assertions); the service-role admin client bypasses RLS (setup/teardown only).
  */
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { assertNotProduction } from './target';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -13,6 +14,9 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl) throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL in environment');
 if (!supabaseAnonKey) throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY in environment');
+// ADR-U053 §3 — the code fuse: every suite that imports this module runs on the
+// test project or not at all. Production needs ALLOW_PRODUCTION=1 (the gate's leg).
+assertNotProduction(supabaseUrl, process.env);
 
 /** Anon client — respects RLS. Use for user-facing assertions. */
 export const createTestClient = (): SupabaseClient =>

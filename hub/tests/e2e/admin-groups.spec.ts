@@ -2,6 +2,19 @@ import { test, expect, type Page } from '@playwright/test';
 import { createAdminClient, markArrivedOnce, runAdminSql, SESSION_EMAIL, deleteE2EUserByAuthId } from './helpers/auth';
 
 /**
+ * DB-4 (FEAT-H049, 2026-09-03): the admin sanctions require a reason in words
+ * the member will see; Confirm stays disabled until it is given. Ceremonies
+ * that carry no reason field confirm as before. (This spec predated DB-4 and
+ * clicked Confirm bare; caught by the first full fleet run after the cutover,
+ * ADR-U053, 2026-09-05.)
+ */
+async function confirmCeremony(page: Page) {
+  const reason = page.getByTestId('ceremony-reason');
+  if (await reason.count()) await reason.fill('E2E: the reason, as the member will read it.');
+  await page.getByTestId('confirm-modal-confirm').click();
+}
+
+/**
  * FEAT-H035 (E2E) — Cycle ADM-B: the group administration journey (STORY-5).
  * A real hand-to-FringeIsland group appears under Platform-stewarded → the
  * admin reassigns it back to a member → it leaves the tab; the
@@ -204,7 +217,7 @@ test.describe('FEAT-H035 — group administration (ADM-8/ADM-9, the RW-05 exit)'
     await page.getByTestId('reassign-stewardship').click();
     await page.getByTestId('reassign-picker').selectOption(memb.pgId);
     await page.getByTestId('reassign-confirm').click();
-    await page.getByTestId('confirm-modal-confirm').click();
+    await confirmCeremony(page);
 
     // The honest repaint: the banner goes, the member reads as steward.
     await expect(page.getByTestId('caretaker-banner')).not.toBeVisible({ timeout: 15000 });
@@ -219,11 +232,11 @@ test.describe('FEAT-H035 — group administration (ADM-8/ADM-9, the RW-05 exit)'
     test.setTimeout(120_000);
     await page.goto(`/admin/groups/${caretakerGroupId}`);
     await page.getByTestId('suspend-group').click();
-    await page.getByTestId('confirm-modal-confirm').click();
+    await confirmCeremony(page);
     await expect(page.getByTestId('status-badge')).toHaveText('suspended', { timeout: 15000 });
 
     await page.getByTestId('reactivate-group').click();
-    await page.getByTestId('confirm-modal-confirm').click();
+    await confirmCeremony(page);
     await expect(page.getByTestId('status-badge')).toHaveCount(0, { timeout: 15000 });
     await expect(page.getByTestId('suspend-group')).toBeVisible();
   });

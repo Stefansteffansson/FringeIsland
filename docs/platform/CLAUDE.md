@@ -69,15 +69,19 @@ Schema changes — new tables, altered columns, new indexes, new RLS policies, n
 # 1. Create migration
 bash supabase-cli.sh migration new add_my_feature
 # 2. Edit the generated SQL file in supabase/migrations/
-# 3. Apply migration
+# 3. Apply to the TEST project (the default target — .env.local) and record it there
 node scripts/apply-migration.js <timestamp>_name.sql
-# 4. Mark as applied
-bash supabase-cli.sh migration repair --status applied <timestamp>
-# 5. Verify
-bash supabase-cli.sh migration list
+bash supabase-cli.sh migration repair --status applied <timestamp> --project-ref <test ref — supabase/projects.json>
+# 4. Rehearse on test: the post-apply verification set, the sibling-assertion sweep, the platform family
+npm run test:integration:platform -w hub
+# 5. On the NAMED approval only — the production leg (ALLOW_PRODUCTION=1 is the fuse; --production picks .env.production-gate.local)
+ALLOW_PRODUCTION=1 node scripts/apply-migration.js --production <timestamp>_name.sql
+bash supabase-cli.sh migration repair --status applied <timestamp> --project-ref <production ref — supabase/projects.json>
+# 6. Prove the histories agree: files = test = production, or the gate is not done
+node scripts/migration-drift.js
 ```
 
-The two-step apply-then-mark-as-applied sequence is intentional: `apply-migration.js` runs the SQL against the database, and the `repair --status applied` step records that the migration is now part of the project's applied history. Skipping the repair step leaves the migration in pending state in the migration log even though the schema has already been mutated; future migration runs then attempt re-applying.
+The apply-then-record sequence is intentional: `apply-migration.js` runs the SQL against the target, and the `repair --status applied` step records the version in that project's applied history; skipping the repair leaves the migration pending in the log even though its SQL ran. **The gate runs twice, test first (ADR-U053 §2, adopted 2026-09-05):** the test project (`FringeIsland-test`, built from the chain by `scripts/replay-migrations.js`) takes the apply, the post-apply verification and the conformance family; production takes the apply only on the named approval; `scripts/migration-drift.js` proves the two histories and the files agree at the end of every gate. The fuse (`scripts/lib/target.js`) makes the order structural: without `--production` and `ALLOW_PRODUCTION=1` the apply script cannot reach production. A migration that cannot execute on an empty project (a pre-rebuild fix, a corrective on rows a fresh project never has) is declared in `supabase/migrations/REPLAY-EXCEPTIONS.json` with its reason — a schema-gate matter, never a way to skip a migration that should run.
 
 ---
 
@@ -87,7 +91,7 @@ Integration tests exercise platform-tier code — database constraints, RLS poli
 
 **During dev:** `npm run test:integration:<domain>` runs the slice you're working on. Domains (the live `hub/tests/integration/` directories): `account`, `admin`, `auth`, `communication`, `groups`, `journal`, `journeys`, `notifications`, `observability`, `platform`, `profile`, `security` — `platform` is the conformance family (ownership, internal-API, lockdowns, retention; the anatomy's mechanical gates, local-only until ADR-U053). Domain names refer to what the *code under test* manages, not which tier the tests exercise — every `test:integration:<domain>` is a platform-tier integration test (DB + API + RLS), even when the domain name appears product-flavoured.
 
-**Before commit:** `npm run test:integration` runs the full suite with `--runInBand --verbose`. Run in background — the suite hits a real database and is not fast.
+**Before commit:** `npm run test:integration` runs the full suite with `--runInBand --verbose`. Run in background — the suite hits a real database and is not fast. **Which database:** the test project (`FringeIsland-test`, `supabase/projects.json`) — `.env.local` points there and the fuse (`hub/tests/helpers/target.ts`) refuses production; the one-consumer rule (`AGENTS.md`) now guards the test project, and a fixture-domain account on production is an alarm, not residue (ADR-U053, 2026-09-05).
 
 **Quick regression:** `npm run test:integration:quick` adds `--bail` so it stops on first failure. Useful when iterating on a fix that should pass everything.
 

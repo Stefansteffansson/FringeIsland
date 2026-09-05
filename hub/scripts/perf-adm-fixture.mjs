@@ -24,6 +24,10 @@ for (const line of readFileSync(envPath, 'utf8').split(/\r?\n/)) {
   if (m) process.env[m[1]] ??= m[2].trim();
 }
 
+// ADR-U053 §3 — the fuse (companion to perf-measure.mjs: same PERF_ENV + ALLOW_PRODUCTION=1 for the production pass).
+import target from '../../scripts/lib/target.js';
+target.assertNotProduction(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env);
+
 const EMAIL = 'perf-antf@fringeisland.test';
 const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },

@@ -18,9 +18,9 @@
 
 | # | Decision | Where it lands |
 |---|---|---|
-| 1 | **ADR-U053** — the plan, the cost, Option A vs branching, the cutover date; the ADR still names `apply-migration-temp.js` (an ask-first edit at its acceptance pass) | the ADR's status line |
+| 1 | **ADR-U053** — ~~the plan, the cost, Option A vs branching, the cutover date~~ **RULED AND EXECUTED 2026-09-05** ("do the ADR-U053 now"): Option A, cost $0, cutover the same day — [record](./2026-09-05-adr-u053-cutover.md). Left for Stefan: the three production commands in the record (history repair, the corrective's production leg, the drift check), the Vercel Preview wiring, and the ADR's Accepted line (held steering PR) | the cutover record |
 | 2 | **The E2E smoke job in CI** (TASK-E2E-04's recommendation) | `.github/workflows/ci.yml` |
-| 3 | **Where DB-4 legs 4/5/6/8 run** — production with a fresh cast now, or the test project first | sequencing of step 3 vs decision 1 |
+| 3 | **Where DB-4 legs 4/5/6/8 run** — settled by decision 1: on the test project (`npm run walk:cast -- create` now lands there by default; the fuse refuses production), against the local dev server or a Vercel Preview wired to test | step 3 |
 | 4 | **Leaked-password protection** in Supabase Auth (COR-E board row 9 — enable) | the dashboard; note the date in the next bridge |
 
 ## Gates
