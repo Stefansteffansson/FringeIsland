@@ -1,6 +1,6 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { HttpStatusError } from '@/lib/http/status-error';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type * as MessagesClient from '@/lib/messages/client';
 import type * as GroupsClient from '@/lib/groups/client';
@@ -156,5 +156,68 @@ describe('GroupConversationsSection — wielded list door (FEAT-H047 STORY-1)', 
     await waitFor(() => expect(mockMsgs.createGroupConversation).toHaveBeenCalled());
     expect(mockMsgs.createGroupConversation.mock.calls.at(-1) ?? []).toContain('ga');
     await waitFor(() => expect(push).toHaveBeenCalledWith('/messages/c9?acting=ga'));
+  });
+});
+
+/**
+ * 2026-09-05 (the Ferd-close E2E run, wielded-conversations.spec) — the
+ * stale-response race. The personal read fired at mount was still in flight
+ * when the hat went on; the wielded read returned first (200), then the
+ * personal read resolved last as a 403 and flipped the section to "the hat
+ * doesn't open this group's conversations". Timing-dependent: green three
+ * times in the morning, red twice in the afternoon. The rule: a superseded
+ * read never writes — only the latest read for the current view lands.
+ */
+function deferred<T>() {
+  let resolve!: (v: T) => void;
+  let reject!: (e: unknown) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+}
+
+describe('GroupConversationsSection — a superseded read never overwrites the current view', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockPerms.mockResolvedValue({ permissions: [], member_group_id: 'pg-me' });
+  });
+
+  it('the personal read in flight when the hat went on resolves last as a refusal — the wielded list stays, the hat is not called insufficient', async () => {
+    const stale = deferred<{ conversations: ReturnType<typeof row>[] }>();
+    mockMsgs.fetchGroupConversations.mockImplementation((_groupId, acting) =>
+      acting ? Promise.resolve({ conversations: [row()] }) : stale.promise,
+    );
+    const view = render(<GroupConversationsSection groupId="g1" />);
+    view.rerender(<GroupConversationsSection groupId="g1" acting={ACTING} />);
+    expect(await screen.findByTestId('conversation-join-c1')).toBeInTheDocument();
+
+    await act(async () => {
+      stale.reject(new HttpStatusError('Not allowed', 403));
+      await Promise.resolve();
+    });
+
+    expect(screen.queryByTestId('group-conversations-hat-insufficient')).toBeNull();
+    expect(screen.queryByTestId('group-conversations-members-only')).toBeNull();
+    expect(screen.getByTestId('conversation-join-c1')).toBeInTheDocument();
+  });
+
+  it('the mirror: a wielded read still in flight when the hat came off never resurrects the wielded rows over the members-only view', async () => {
+    const stale = deferred<{ conversations: ReturnType<typeof row>[] }>();
+    mockMsgs.fetchGroupConversations.mockImplementation((_groupId, acting) =>
+      acting ? stale.promise : Promise.reject(new HttpStatusError('Not allowed', 403)),
+    );
+    const view = render(<GroupConversationsSection groupId="g1" acting={ACTING} />);
+    view.rerender(<GroupConversationsSection groupId="g1" />);
+    expect(await screen.findByTestId('group-conversations-members-only')).toBeInTheDocument();
+
+    await act(async () => {
+      stale.resolve({ conversations: [row()] });
+      await Promise.resolve();
+    });
+
+    expect(screen.getByTestId('group-conversations-members-only')).toBeInTheDocument();
+    expect(screen.queryByTestId('conversation-join-c1')).toBeNull();
   });
 });

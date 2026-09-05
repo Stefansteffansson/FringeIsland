@@ -2,6 +2,11 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
+## 2026-09-05 — putting on a group's hat no longer sometimes says the hat "doesn't open" a section it does open ([FEAT-H047](../docs/products/hub/features/FEAT-H047-wielded-conversation-affordances.md) · [FEAT-H046](../docs/products/hub/features/FEAT-H046-wielded-content-affordances.md) · [FEAT-H048](../docs/products/hub/features/FEAT-H048-wielded-announcement-affordances.md))
+
+- **What you could see.** On a group's page, choosing a hat ("View as …") right after the page opened could leave the Conversations, Forum or Announcements section saying the hat doesn't open it — even though it does. The page had asked twice (once as you, once as the group) and the slower, earlier answer sometimes arrived last and won.
+- **Now:** only the latest answer for the view you are in is shown. Switching hats always shows what that hat can see.
+
 ## 2026-09-03 — when your group or your account is put on hold, you are told why ([FEAT-H049](../docs/products/hub/features/FEAT-H049-sanction-communication-surfaces.md) · TASK-DB4-01)
 
 - **A held group now says why.** If a platform administrator suspends your group, or rests or wakes it, the reason they gave is shown on the group's page — beneath "Suspended" on the wall, under the "Resting" label — and a notice arrives in your bell ("Your group has been suspended", with the reason). Reactivation, and a wake, tell you too. Only the group's members see the reason; nobody outside the group can.

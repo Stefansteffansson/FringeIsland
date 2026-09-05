@@ -1,6 +1,6 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { HttpStatusError } from '@/lib/http/status-error';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { Announcement } from '@/lib/announcements/queries';
 import type * as AnnouncementsClient from '@/lib/announcements/client';
@@ -251,5 +251,50 @@ describe('GroupAnnouncementsSection — wielded render (FEAT-H048)', () => {
     render(<GroupAnnouncementsSection groupId="g1" acting={ACTING} />);
     await screen.findByText('Group announced');
     expect(screen.getByTestId('announcement-author-badge-ag')).toHaveTextContent('Group');
+  });
+});
+
+/**
+ * 2026-09-05 (the Ferd-close E2E run) — the stale-response race, the same
+ * shape the conversations section failed on: the personal read fired at
+ * mount was still in flight when the hat went on; the wielded read landed
+ * first, the personal read resolved last as a 403 and flipped the section
+ * to the hat-insufficient copy. A superseded read never writes.
+ */
+function deferredRace<T>() {
+  let resolve!: (v: T) => void;
+  let reject!: (e: unknown) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+}
+const RACE_ACTING = { groupId: 'ga', name: 'Alpha', permissions: ['view_announcements'] };
+
+describe('GroupAnnouncementsSection — a superseded read never overwrites the current view', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockClient.peekGroupAnnouncements.mockReturnValue(null);
+    mockPerms.mockResolvedValue({ permissions: [], member_group_id: 'pg-me' });
+  });
+
+  it('the personal read in flight when the hat went on resolves last as a refusal — the wielded announcements stay, the hat is not called insufficient', async () => {
+    const stale = deferredRace<Announcement[]>();
+    mockClient.fetchGroupAnnouncements.mockImplementation((_groupId, _before, acting) =>
+      acting ? Promise.resolve([ann()]) : stale.promise,
+    );
+    const view = render(<GroupAnnouncementsSection groupId="g1" />);
+    view.rerender(<GroupAnnouncementsSection groupId="g1" acting={RACE_ACTING} />);
+    expect(await screen.findByTestId(`announcement-${ann().id}`)).toBeInTheDocument();
+
+    await act(async () => {
+      stale.reject(new HttpStatusError('Not allowed', 403));
+      await Promise.resolve();
+    });
+
+    expect(screen.queryByTestId('group-announcements-hat-insufficient')).toBeNull();
+    expect(screen.queryByTestId('group-announcements-members-only')).toBeNull();
+    expect(screen.getByTestId(`announcement-${ann().id}`)).toBeInTheDocument();
   });
 });

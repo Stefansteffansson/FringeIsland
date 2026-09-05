@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   createGroupConversation,
@@ -43,6 +43,12 @@ export function GroupConversationsSection({
   const [rows, setRows] = useState<GroupConversationRow[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [membersOnly, setMembersOnly] = useState(false);
+  // 2026-09-05 (the Ferd-close E2E race): only the LATEST read may write. A
+  // personal read still in flight when the hat went on resolved last as a
+  // 403 and flipped the wielded list to "the hat doesn't open …". Every read
+  // takes a sequence number before its await and drops its result if a newer
+  // read has started since — a superseded read never writes.
+  const readSeq = useRef(0);
   const [canCreatePersonally, setCanCreatePersonally] = useState(false);
   const [creating, setCreating] = useState(false);
   const [title, setTitle] = useState('');
@@ -64,8 +70,10 @@ export function GroupConversationsSection({
     `/messages/${conversationId}${actingId ? `?acting=${actingId}` : ''}`;
 
   const load = useCallback(async () => {
+    const seq = ++readSeq.current;
     try {
       const listing = await fetchGroupConversations(groupId, actingId);
+      if (seq !== readSeq.current) return; // superseded by a newer read
       setRows(listing.conversations);
       setFailed(false);
       setMembersOnly(false);
@@ -73,6 +81,7 @@ export function GroupConversationsSection({
       // Post-6-done fix (2026-08-14, live walk): a member-gated refusal is not
       // a malfunction — honest members-only copy, never the failure fallback.
       // FEAT-H047: under a hat the same branch names the hat's insufficiency.
+      if (seq !== readSeq.current) return; // superseded by a newer read
       setMembersOnly(isForbidden(err));
       setFailed(!isForbidden(err));
     }
