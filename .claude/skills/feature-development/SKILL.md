@@ -26,6 +26,7 @@ This skill guides the implementation of a FringeIsland feature from its specific
 
 Load files in this order — stop when you have enough context:
 
+0. `docs/planning/cycles/cycle-current.md` — **the front door**: which cycle is running, its dated plan, the latest bridge, what is next. The session-start hook injects it; if you are starting a cycle and it names the previous one, write it first (PROCESS.md §3 — kickoff writes the front door before decomposing anything; Audit V R-14).
 1. Root `CLAUDE.md` — project conventions, stack, patterns
 2. `AGENTS.md` — boundaries (always do / ask first / never do)
 3. The owner's `CLAUDE.md` — tier-specific constraints
@@ -125,6 +126,7 @@ After all tasks for a story are done:
 
 - Ensure all code is committed with conventional commits: `feat(hub): ...` or `feat(platform): ...`
 - Tasks stay in `tasks/` until the cycle retrospective — do NOT delete them
+- **Repoint the front door at cycle close.** `docs/planning/cycles/cycle-current.md` must name the next cycle's plan (or "next: …") once this cycle's plan is marked closed — the unit gate `hub/tests/unit/platform/cycle-current-front-door.test.ts` goes red on a closed plan until you do (PROCESS.md §3; Audit V R-14, 2026-09-05).
 - **Plain-English walkthrough at cycle close** (bound at J-B, twice-proven): before (or with) the session bridge, write a short "what did we build, as a user would tell it" narrative and walk it against the shipped behaviour — explicitly asking the continuity/lifecycle questions the test tiers don't
 - **Stacked PRs: retarget the child PR's base before deleting the merged parent branch** (bound at J-A)
 

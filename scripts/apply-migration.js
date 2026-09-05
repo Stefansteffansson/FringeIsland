@@ -1,7 +1,18 @@
 #!/usr/bin/env node
 /**
- * Temporary script to apply a single migration via Supabase management API.
- * Usage: node scripts/apply-migration-temp.js <migration-filename>
+ * Apply ONE migration file from supabase/migrations/ to the project named by
+ * .env.local, via the Supabase management API (database/query endpoint).
+ *
+ * Step 3 of the migration procedure in docs/platform/CLAUDE.md — always pair it
+ * with step 4, `bash supabase-cli.sh migration repair --status applied <ts>`,
+ * so the project's applied history records what this script applied. The
+ * schema gate applies to everything it applies (schema tasks land at `review`).
+ *
+ * Renamed from apply-migration-temp.js on 2026-09-05 (COR-E W5, Audit V AC5-9):
+ * it had been the canonical apply path since 2026-02 and was never temporary.
+ * Registry: scripts/README.md.
+ *
+ * Usage: node scripts/apply-migration.js <migration-filename>
  */
 
 const fs = require('fs');
@@ -10,7 +21,7 @@ require('dotenv').config({ path: path.join(__dirname, '..', '.env.local') });
 
 const migrationFile = process.argv[2];
 if (!migrationFile) {
-  console.error('Usage: node apply-migration-temp.js <migration-filename>');
+  console.error('Usage: node scripts/apply-migration.js <migration-filename>');
   process.exit(1);
 }
 

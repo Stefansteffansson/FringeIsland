@@ -1,6 +1,6 @@
 {
   "permissions": {
-    "allow": ["Bash(node scripts/apply-migration-temp.js:*)"]
+    "allow": ["Bash(node scripts/apply-migration.js:*)"]
   },
   "hooks": {
     "SessionStart": [
