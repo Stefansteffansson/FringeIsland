@@ -18,6 +18,7 @@ Domain-agnostic foundation that all of FringeIsland is built on. Rarely changed,
 - `identity-specification.md` — PC-2 area spec
 - `organisation-specification.md` — PC-3 area spec
 - `governance-specification.md` — PC-4 area spec
+- `CHANGELOG.md` — the Core substrate changelog, one of the three (`AGENTS.md` Always-do; register: substrate, not member-facing)
 - `ROADMAP.md` — PC-wide NOW/NEXT/LATER view across all four areas _(to be written)_
 
 Use the [`platform-core-spec.md`](../../templates/platform-core-spec.md) template when authoring an area specification.
