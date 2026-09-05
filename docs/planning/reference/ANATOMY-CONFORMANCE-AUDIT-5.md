@@ -25,7 +25,7 @@
 | **Steering + routing files** (root `CLAUDE.md`, `AGENTS.md`, `SESSION-OPENER.md`) | **Stale on structure and phase** — the second and third files every session loads describe a pre-cutover tree and a phase closed four weeks ago | AC5-7 |
 | **Planning-tree status layer** (`hub-v2/README.md`, `waves/ferd.md`) | **Stale / placeholder** — the named "current focus" document is six weeks behind; the "current wave" pointer resolves to an empty file | AC5-1 (Major), AC5-2 (Major), AC5-O2 |
 | CLAUDE.md cascade (tier / entity files) | Minor drift at the edges | AC5-8, AC5-9, AC5-11 |
-| Feature specs (100, all `6-done`) | Vertical Impact 100/100; Performance budget 64/100; two placeholder Implementation-notes | AC5-12, AC5-13 |
+| Feature specs (100, all `6-done`) | Vertical Impact 100/100; Performance budget 64/100; Implementation notes filled 100/100 (AC5-13 withdrawn at execution) | AC5-12 |
 | Tooling surface (`scripts/`, `package.json`, `.agents/`) | **One rule-adjacent finding** + hygiene | AC5-4 (Major), AC5-8, AC5-9, AC5-15 |
 | Links + vocabulary | 2 real broken links; retired vocabulary only as rename pointers or ADR history | AC5-10, AC5-11, AC5-14 |
 
@@ -94,9 +94,9 @@ Audit IV corrected the anatomy and the AB-7 register; the instance grep did not 
 
 `AGENTS.md` §Always do: *"Complete the Performance budget section in every feature spec with a user-facing surface (ADR-U043) … platform-only features write 'N/A (no surface)'."* The template has the section (`feature-spec.md` line 72). 34 of the 36 predate ADR-U043 (2026-07-07): FEAT-H001–H018, FEAT-PC001–PC015, FEAT-PD001. Two are post-U043 platform-only specs with no section at all rather than an "N/A" line: FEAT-PD019, FEAT-PD020. Vertical Impact, by contrast, is 100/100. → **R-11**, COR-E **W7**.
 
-### AC5-13 · Minor — two `6-done` specs still carry placeholder Implementation notes
+### AC5-13 · ~~Minor~~ **WITHDRAWN at execution (2026-09-05, COR-E W4)** — the two "placeholder" Implementation notes are filled
 
-`FEAT-PC019-durable-auth-event-audit-binding.md` and `FEAT-H037-moderation-and-audit-view.md` — the section exists with its "filled at 6-done" placeholder text. Doc-health Section 5 material. → COR-E **W4**.
+The sweep's placeholder regex matched the date parentheticals in the section headers of `FEAT-PC019` ("(6-done, 2026-07-31)") and `FEAT-H037` ("(built 2026-08-02, Cycle ADM-D)"); both sections carry full build records (migration, suite, red→green, recorded opens). Disk-verified before any edit; no action. Recorded in the honesty log; the Feature-specs row of the verdict table is corrected.
 
 ### AC5-14 · Minor — the reference index omits Audit IV (and would have omitted this one)
 
@@ -166,6 +166,7 @@ Append-only ADRs are right not to change; the **index** is where the reader is c
 - **Checked against canon and NOT registered:** the `group_type IN ('system','personal','engagement')` CHECK, the 67 migrations with `group_type = '…'` paths and the Hub's caretaker rendering on `member_group_type === 'system'` — all explicitly permitted by ADR-U018's 2026-05-14 amendment (discriminator column, entity-state enums, growth-vocabulary registries); `journey_type` / `difficulty_level` CHECKs — live DS-3 columns read by PD002/PD003 contracts and the catalogue page, not dead; the retro-to-deleted-task link — by design (doc-health §3.6 scopes ephemeral tasks out); `hub-legacy/` mentions — all ADR-U032 history or the discharge note; the two `ROADMAP.md` links — registered expected placeholders (doc-health §7, T3.4).
 - **The scope grew on purpose.** Audits I–IV were ring audits; this one was asked for as "codebase and documentation" and the register's centre of gravity is documentation because that is where the drift is. The code dimensions are reported at the same depth as IV (full census, no sampling).
 - **Counts in this register are dated 2026-09-05** and are evidence for these findings only; the routing documents keep pointing at the sources (pointer-not-snapshot).
+- **One finding did not survive execution.** AC5-13 (placeholder Implementation notes) was a regex false positive on section-header dates; withdrawn on disk-verification before any edit, per the verify-before-asserting rule. The sweep's other spec-level counts (Vertical Impact, Performance budget, maturity) were re-checked by a different pattern and stand.
 - **The first pass trusted the gates for the inner ring; the addendum below re-derived it.** Stefan challenged whether the backend had really been audited and named the rings as inviolable; the addendum answers with a live-catalog sweep that does not depend on the gate's regex. Its two gate gaps (GC-28, GC-29) are the honest yield of that challenge.
 
 ---

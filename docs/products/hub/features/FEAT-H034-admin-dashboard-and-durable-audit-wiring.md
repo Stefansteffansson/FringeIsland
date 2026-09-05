@@ -16,7 +16,7 @@ A-ADM opens with no admin surface at all in v2: a platform admin (DeusEx member)
 
 ## Solution sketch
 
-- **`/admin` route group** — the AB-7 shape: Console-routed surfaces live in the Hub shell under one distinct admin section; the Console-as-entity question stays deferred (ADR-U028/U025), recorded not reopened.
+- **`/admin` path segment** (a plain segment, not a parenthesised Next.js route group — Audit IV AC4-10) — the AB-7 shape: Console-routed surfaces live in the Hub shell under one distinct admin section; the Console-as-entity question stays deferred (ADR-U028/U025), recorded not reopened.
 - **Gated entry:** nav link rendered only for platform admins (derived from a BFF probe of the statistics read — never role-string matching, per the products-tier rule); direct navigation by a non-admin gets a 404-shaped refusal (no existence leak). BFF route `GET /api/admin/statistics` wraps `get_platform_statistics()` (presentation-only per ADR-U038: SQLSTATE→HTTP, no rule of its own — `42501` → 404).
 - **Dashboard render:** four tiles + a 30-day activity trend, keyed exactly to the walked payload (FEAT-PC018's walk table); an "as of" caption from `generated_at`; a refresh affordance; B6 skeleton while loading. Design-system primitives only, tokens only, jest-axe green (the COR-C lattice from first commit).
 - **Durable audit wiring:** `lib/audit/audit.ts` gains a persist path calling `record_auth_event` with the route's session-bound server client — **awaited-but-non-fatal** (a refusal or failure logs + keeps the console/telemetry mirror; it never fails the auth flow). All four callers wired (sign-up post-session-establishment, sign-in, transcend, farewell); the stale `A-OPS` area naming in the file's comments corrected to A-ADM; the TODO discharged.

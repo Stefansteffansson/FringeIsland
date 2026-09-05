@@ -10,7 +10,7 @@ Each wave file defines: thematic focus, features in scope (linking to feature sp
 
 | Wave | Name | Meaning | Status | File |
 |------|------|---------|--------|------|
-| 1 | Ferd | Voyage / departure — foundation | Active | [`ferd.md`](./ferd.md) |
+| 1 | Ferd | Voyage / departure — foundation | **Build complete; close pending** (the wave file is the close's first deliverable — see inside) | [`ferd.md`](./ferd.md) |
 | 2 | Eid | Narrow passage — design tools + narrative | Planned | [`eid.md`](./eid.md) |
 | 3 | Hamn | Harbour — mobile + polish | Planned | [`hamn.md`](./hamn.md) |
 | 4 | Heim | Home — community + world | Planned | [`heim.md`](./heim.md) |

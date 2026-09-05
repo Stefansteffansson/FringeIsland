@@ -1,8 +1,8 @@
 # Domain Entities
 
 **Status:** Derived inventory — **canon wins.** Where this document and a pointed-at source disagree, the ADR, canonical core, or service specification is authoritative and this file is the thing to fix.
-**Reflects decisions through:** [ADR-U046](decisions/ADR-U046-step-response-capture.md) (2026-07-09) — the Journeys step substrate and response capture, absorbed 2026-07-26. Account-lifecycle states follow [ADR-U050](decisions/ADR-U050-account-lifecycle-state-machine.md); see the User entity.
-**Freshness caveat:** entity coverage is Ferd-era. Areas that shipped after the stamp above (Communication, Notifications) may hold detail this document does not yet carry — this file is an entity-level orientation, not a schema of record. The schema of record is `supabase/migrations/`.
+**Reflects decisions through:** [ADR-U050](decisions/ADR-U050-account-lifecycle-state-machine.md) — the four-state account lifecycle, absorbed into the User entity 2026-09-05 (Cycle COR-E W1, Audit V AC5-3 / R-10). Prior: [ADR-U046](decisions/ADR-U046-step-response-capture.md) (2026-07-09) — the Journeys step substrate and response capture, absorbed 2026-07-26. Like the anatomy, this stamp is checked against the ADR index at every doc-health run (Section 11); a review that finds no entity impact still moves it and says so.
+**Scope:** the six Ferd-era core entities below are described in depth (properties, relationships, rules, transitions). Every entity realised after that inventory — Communication, Notifications, Governance, Intelligence, Infrastructure — is carried as a **one-line pointer** in the section "Entities realised since the Ferd-era inventory" near the end: what it is, who owns it, where its contract and substrate live. This file is an orientation, **not the schema of record**: the schema of record is `supabase/migrations/` and the owning feature specs, and on any conflict they win.
 
 This document defines the core business entities in FringeIsland, their properties, relationships, and business logic.
 
@@ -88,17 +88,30 @@ FringeIsland is built around six core domain entities:
 **Business Rules:**
 
 1. **Unique Email**: Each email can only be associated with one account
-2. **Active Status**: Inactive users cannot access platform features
+2. **Account lifecycle (ADR-U050)**: four states derived from `is_active`, the decommission markers and `deactivation_origin` — see the table below. A `paused` member returns to `active` by their own act; a `suspended` member never does (admin hold, PC-4 Governance); `decommissioned` is terminal for everybody; an off row of unknown origin reads `suspended`.
 3. **Auth Integration**: Every user must have a corresponding Supabase Auth record
 4. **Multi-Group Membership**: Users can belong to unlimited groups
 5. **Multi-Role Assignment**: Users can have multiple roles in the same group
 
+**Account lifecycle (ADR-U050 — the four states and who may move between them):**
+
+| State | Meaning | Derived from | Who moves it |
+|-------|---------|--------------|--------------|
+| `active` | The member is in the world | `is_active = true`, not decommissioned | — |
+| `paused` | The member stepped away, reversibly | `is_active = false`, `deactivation_origin = 'member'` | the member (`pause_own_account` / `reactivate_own_account`, own-row `SECURITY DEFINER` contracts — FEAT-PC017, FEAT-PC005) |
+| `suspended` | An admin hold; the member cannot lift it | `is_active = false`, `deactivation_origin = 'admin'` — or unknown | PC-4 Governance (`admin_update_user_status`, FEAT-PC021, ADR-U028) |
+| `decommissioned` | Terminal; identity stashed, personal group erased on the reaper's schedule | the decommission markers (`enforce_decommission_invariant`) | PC-4 (`admin_decommission_user`, FEAT-PC021) or the member's own erasure path (`delete_own_account` → consent → `erase_fim_account`, FEAT-PC002) |
+
+Read contract: `get_own_account_state()` (FEAT-PC004) returns the derived state; the Hub renders it (FEAT-H006) and never derives it client-side. The **Mist** is not a state of this machine: it is the anonymous identity that precedes the FIM row (ADR-U031; `is_temporary`, reaped by `reap_expired_mists` unless transcended by `finalise_transcendence`).
+
 **State Transitions:**
 
 ```
-[New] ──register──> [Active] ──pause──> [Paused] ──activate──> [Active]
-                       │
-                       └──delete──> [Deleted]
+[Mist] ──transcend (consent)──> [Active] ──pause (self)──> [Paused] ──reactivate (self)──> [Active]
+                                   │                                                          
+                                   ├──suspend (admin)──> [Suspended] ──reactivate (admin)──> [Active]
+                                   │
+                                   └──decommission (admin) / erase (self, consent)──> [Decommissioned]  (terminal)
 ```
 
 **Example:**
@@ -612,6 +625,28 @@ interface JourneyValidation {
 
 ---
 
+## Entities realised since the Ferd-era inventory
+
+One line each — what it is, who owns it, where to read the contract (the feature spec) and the substrate (the migration that created it; the ownership manifest at `supabase/ownership.manifest.json` is the canonical owner list). None of these is described in depth here by design (R-10, 2026-09-05).
+
+| Entity | Owner | What it is | Contract / substrate |
+|--------|-------|------------|----------------------|
+| Conversation, Message, Conversation participant | DS-5 Communication | Direct messages and group conversations (`conversation_kinds` is an open registry); sealed on group closure, read by admins only through a declared composition (ADR-U047 A3) | [`../platform/domain/communication.md`](../platform/domain/communication.md) · FEAT-PD008 · FEAT-PD018 · `conversations`, `messages`, `conversation_participants` |
+| Forum post | DS-5 Communication | Flat-threaded group forum with wielded (as-the-group) authorship (FEAT-PD019) and moderation | FEAT-PD009 · `forum_posts` |
+| Announcement | DS-5 Communication | The durable announcements home, routed onto the delivery substrate (ADR-U049); community and platform scope | FEAT-PD011 · `announcements` |
+| Content report | DS-5 Communication (store) · PC-4 Governance (resolution wall) | A member's report on content, resolved by the Console through the declared `admin_resolve_content_report` → `ds5_moderation_resolve_report` composition | FEAT-PD011 · FEAT-PC022 (ADM-D) · `content_reports` |
+| Notification | `vertical:notifications` (substrate) · DS-5 (routing above it) | The delivery substrate every tier writes as an obligation (ADR-U048); kinds, categories, channels and action types are open registries; typed responses (ADR-U051) | [`../verticals/notifications/SPECIFICATION.md`](../verticals/notifications/SPECIFICATION.md) · FEAT-PD013/PD014/PD015/PD016/PD017/PD020/PD021 · `notifications`, `notification_kinds`, `notification_categories`, `notification_channels`, `notification_action_types`, `notification_preferences` |
+| Consent record, Consent purpose | PC-2 Identity | Append-only consent ledger written at transcendence and credentialed sign-up (ADR-U034); the purpose catalogue | FEAT-PC006/PC007 · `consent_records`, `consent_purposes` |
+| Audit row | PC-4 Governance | The append-only `admin_audit_log`: every Console act and the four durable member-auth moments (`record_auth_event`, FEAT-PC019); kept forever by declared retention | FEAT-PC022 · `admin_audit_log` |
+| Journal entry | DS-7 Intelligence | The member's private journal — own-row only, "nothing depends on DS-7" | FEAT-PD001 · `journal_entries` |
+| Telemetry event | PC-1 Infrastructure | Content-free fire-and-forget events, deny-all RLS, 90-day prune, aggregates computed on read (ADR-U052) | FEAT-PC018 · `telemetry_events` |
+| Reaper run | PC-2 Identity | The Mist / member-deletion reaper's run log (ADR-U033), 30-day retention | FEAT-PC002 · `reaper_runs` |
+| Role template version, publication | PC-3 Organisation | Versioned role templates with publication reach (where a template is offerable) | FEAT-PC025 · FEAT-PC028 · `role_template_versions`, `role_template_publications` |
+| Pending e-mail invitation | PC-3 Organisation | Referral-to-the-platform, never a pre-committed membership (ADR-U040) | FEAT-PC012 · `pending_email_invitations` |
+| Journey step, Step instance, Step kind, Content family | DS-3 Journeys | Steps as first-class rows over open registries; the per-traveller lived record (ADR-U044/U046) — described under the Journey entity above | FEAT-PD003/PD007 · `journey_steps`, `journey_step_instances`, `step_kinds`, `content_families` |
+
+---
+
 ## Domain Events (Future)
 
 These events could be published for real-time updates, notifications, and analytics:
@@ -644,6 +679,6 @@ These events could be published for real-time updates, notifications, and analyt
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: January 2026  
+**Document Version**: 1.1 (2026-09-05 — ADR-U050 absorbed; the entities-since table added; scope re-stated per Audit V R-10)  
+**Last Updated**: 2026-09-05  
 **Next Review**: After initial entity implementation

@@ -16,7 +16,7 @@ docs/architecture/
 ├── ARCHITECTURE_ANATOMY.md                ← living anatomy overview (derived — canon wins)
 ├── ARCHITECTURE_ANATOMY_V1.md             ← original L0-L7 layered anatomy (frozen historical reference)
 ├── DOMAIN_ENTITIES.md                     ← core domain model: entities, relationships, business rules
-├── ECOSYSTEM_ANATOMY_V6.svg               ← current ecosystem anatomy diagram (v2.6, August 2026)
+├── ECOSYSTEM_ANATOMY_V6.svg               ← current ecosystem anatomy diagram (v2.7, August 2026 — the version string lives in the SVG's <desc>; doc-health §11 checks this line against it)
 ├── ECOSYSTEM_ANATOMY_V5.svg               ← superseded anatomy diagram (kept as history)
 ├── ECOSYSTEM_ANATOMY_V4.svg               ← superseded anatomy diagram (kept as history)
 ├── DOMAIN_SERVICE_DEPENDENCIES.svg        ← domain service dependency flow
@@ -38,8 +38,8 @@ docs/architecture/
 |----------|---------|
 | ARCHITECTURE_ANATOMY.md | **The living anatomy overview** — derived one-stop prose companion to the current diagram; canon wins; carries the "Reflects decisions through: ADR-U0XX" freshness stamp (checked by doc-health Section 11). |
 | ARCHITECTURE_ANATOMY_V1.md | Original L0-L7 layered anatomy. Superseded by ADR-U023 (Platform Core / Domain Services decomposition), but contains unique rationale (build order, vertical descriptions, cascade principle). Frozen historical reference — see its banner. |
-| DOMAIN_ENTITIES.md | Core domain model: User, Group, Journey, Role, Permission, Enrollment. Entity properties, relationships, business rules, state transitions. The only place these are documented. |
-| ECOSYSTEM_ANATOMY_V6.svg | **Current ecosystem anatomy** (v2.6, August 2026) — v2.5 refreshed per ADR-U052 (the PC-1 box swaps feature flags for the durable telemetry sink; AB-6 audit, 2026-08-10). Prior v2.5 pass carried ADR-U047/U048/U049; v2.4 before it carried ADR-U029/U031/U038. Supersedes V5. |
+| DOMAIN_ENTITIES.md | Entity-level orientation — the six Ferd-era core entities in depth (User, Group, Journey, Role, Permission, Enrollment) plus one-line pointers for every entity realised since; carries a "Reflects decisions through" stamp checked by doc-health §11 like the anatomy's. **Not the schema of record** — that is `supabase/migrations/` and the owning feature specs; on any conflict they win (Audit V AC5-3, R-10). |
+| ECOSYSTEM_ANATOMY_V6.svg | **Current ecosystem anatomy** (v2.7, August 2026) — v2.6 refreshed at Audit IV W7 (2026-08-11, AC4-7: the PC-1 box sheds substrate-less `email`; `Storage` stays); before that, v2.5 refreshed per ADR-U052 (the PC-1 box swaps feature flags for the durable telemetry sink; AB-6 audit, 2026-08-10). Prior v2.5 pass carried ADR-U047/U048/U049; v2.4 before it carried ADR-U029/U031/U038. Supersedes V5. |
 | ECOSYSTEM_ANATOMY_V5.svg | Superseded anatomy (v2.3, June 2026, reconciliation Session B) — kept as architectural history; watermarked. |
 | ECOSYSTEM_ANATOMY_V4.svg | Superseded anatomy (v2.2, April 2026) — kept as architectural history; watermarked; carries the pre-reconciliation entity model. |
 | DOMAIN_SERVICE_DEPENDENCIES.svg | How domain services depend on each other and on Platform Core; studios (children of Universe Studio, ADR-U026) write to their domain services |

@@ -85,7 +85,7 @@ The two-step apply-then-mark-as-applied sequence is intentional: `apply-migratio
 
 Integration tests exercise platform-tier code — database constraints, RLS policies, SQL function behaviour, API route handlers — through Jest. The integration suite runs against a real Supabase instance (not mocks) so the tests catch behaviours that only surface against the actual Postgres + RLS stack (PG17 RLS complexity ceiling, INSERT…RETURNING dual-policy evaluation, cascade trigger interactions — see §Gotchas).
 
-**During dev:** `npm run test:integration:<domain>` runs the slice you're working on. Domains: `auth`, `groups`, `journeys`, `rls`, `rbac`, `admin`, `communication`, `security`. Domain names refer to what the *code under test* manages, not which tier the tests exercise — every `test:integration:<domain>` is a platform-tier integration test (DB + API + RLS), even when the domain name appears product-flavoured.
+**During dev:** `npm run test:integration:<domain>` runs the slice you're working on. Domains (the live `hub/tests/integration/` directories): `account`, `admin`, `auth`, `communication`, `groups`, `journal`, `journeys`, `notifications`, `observability`, `platform`, `profile`, `security` — `platform` is the conformance family (ownership, internal-API, lockdowns, retention; the anatomy's mechanical gates, local-only until ADR-U053). Domain names refer to what the *code under test* manages, not which tier the tests exercise — every `test:integration:<domain>` is a platform-tier integration test (DB + API + RLS), even when the domain name appears product-flavoured.
 
 **Before commit:** `npm run test:integration` runs the full suite with `--runInBand --verbose`. Run in background — the suite hits a real database and is not fast.
 

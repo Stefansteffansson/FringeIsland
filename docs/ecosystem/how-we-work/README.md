@@ -4,7 +4,7 @@
 
 **Purpose:** a single navigable description of the FringeIsland development system, intended both as a self-orientation aid for Stefan and as onboarding material for future contributors.
 
-**Status:** living document. Reflects the state of the ecosystem as of 2026-06-10. Updated whenever a canonical source (PROCESS.md, a skill, a CLAUDE.md in the cascade, an ADR) changes materially.
+**Status:** living document, **derived — canon wins.** This is a narrative *over* the way of working, not its source: the canonical sources are [`docs/planning/PROCESS.md`](../../planning/PROCESS.md), the four skills under `.claude/skills/`, the `CLAUDE.md` cascade and the ADRs; where a chapter and a source disagree, the source is right and the chapter is the thing to fix. **Last reconciled:** 2026-07-31 (V4 / ADR-U052 pass); first written as of 2026-06-10. Reconciled whenever a canonical source changes materially — the date above moves when that happens (Audit V AC5-O3, 2026-09-05).
 
 ---
 

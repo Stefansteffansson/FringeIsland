@@ -5,7 +5,7 @@
 **Length:** {3 weeks build + 1 week cooldown — or actual cadence}
 **Status:** Planned · In progress · Closed
 
-> The plan for one Shaped-Personal-Kanban cycle. Lives at `../planning/cycles/cycle-current.md` while active; renamed to `cycle-{YYYY-MM-DD}.md` and archived at the end. See `../planning/PROCESS.md` §3 for cadence rules.
+> The plan for one Shaped-Personal-Kanban cycle. Lives as a **dated document** for the whole cycle (today under `../planning/hub-v2/`; after Ferd, that directory's successor); `../planning/cycles/cycle-current.md` is the five-field **front door** that points at it (see `../planning/cycles/README.md`), never the plan itself (Audit V R-14, 2026-09-05). See `../planning/PROCESS.md` §3 for cadence rules.
 
 ---
 
