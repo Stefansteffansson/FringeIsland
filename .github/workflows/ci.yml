@@ -32,7 +32,12 @@ jobs:
     timeout-minutes: 20
 
     env:
-      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      # The TEST project's public URL (ADR-U053; the ref is `supabase/projects.json` → test).
+      # CI has no database and calls nothing — but the production fuse
+      # (`hub/tests/helpers/target.ts`) fails closed on a URL without a known ref,
+      # and the unit tier imports the suite helpers for their pure functions.
+      # `production-fuse.test.ts` pins this value to the registry; never production.
+      NEXT_PUBLIC_SUPABASE_URL: https://spxitjjiawxatwmyjmsp.supabase.co
       NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key-not-a-secret
 
     steps:

@@ -78,6 +78,29 @@ describe('Production fuse (ADR-U053 §3)', () => {
     expect(() => js.assertNotProduction(undefined, {})).toThrow(/refusing to run/);
   });
 
+  it('CI names the test project: every workflow NEXT_PUBLIC_SUPABASE_URL resolves to the test ref', () => {
+    // CI has no database (the GC-16 posture) and used to carry a placeholder
+    // URL. The fuse fails closed on a URL without a recognisable ref, and the
+    // unit tier imports `tests/helpers/supabase.ts` for pure helpers — so the
+    // placeholder broke the tier on #624's first CI run. The URL is public
+    // (the anon key stays a placeholder); it is pinned here to the ref in
+    // `supabase/projects.json`, so a project change cannot leave CI behind and
+    // CI can never be pointed at production by an env edit.
+    const { test, production } = loadProjects();
+    const dir = path.join(REPO_ROOT, '.github', 'workflows');
+    const found: Array<{ file: string; url: string }> = [];
+    for (const f of fs.readdirSync(dir)) {
+      if (!/\.ya?ml$/.test(f)) continue;
+      const src = fs.readFileSync(path.join(dir, f), 'utf8');
+      for (const m of src.matchAll(/NEXT_PUBLIC_SUPABASE_URL:\s*(\S+)/g)) found.push({ file: f, url: m[1] });
+    }
+    expect(found.length).toBeGreaterThan(0);
+    for (const { file, url } of found) {
+      expect({ file, ref: projectRefOf(url) }).toEqual({ file, ref: test.ref });
+      expect(projectRefOf(url)).not.toBe(production.ref);
+    }
+  });
+
   it('live sweep: every database-touching module goes through the fuse', () => {
     // Modules that construct a service-role client or call the management API.
     const consumers = [
