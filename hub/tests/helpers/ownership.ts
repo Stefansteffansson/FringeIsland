@@ -346,3 +346,65 @@ export function formatInvocationViolation(
 ): string {
   return `  - [${v.kind}] ${fn}(${args})  ${v.functionOwner} -> ${v.callee}() (${v.calleeOwner})`;
 }
+
+// ---------------------------------------------------------------------------
+// COR-E W6 — GC-28: the qualified-only blind spot, closed (Audit V addendum).
+//
+// `classifyReferences` and `classifyInvocations` match `public.<name>` by
+// design (ADR-U047 A2: `search_path` is pinned, so a real reference is always
+// qualified). Nothing asserted the "always" — a bare `from groups` would have
+// passed both gates green. These three keep the live count at zero. Specified
+// on fixtures in `tests/unit/platform/bare-reference-rule.test.ts`; swept live
+// in `tests/integration/platform/internal-api-conformance.test.ts`.
+// ---------------------------------------------------------------------------
+
+/**
+ * Comments AND single-quoted string literals stripped (`''` escapes handled).
+ * A table name inside a `raise exception '…'` message or a `jsonb_build_object`
+ * key is prose, not a reference — Audit V read 24 such mentions.
+ */
+export function stripLiterals(src: string): string {
+  return stripComments(src ?? '').replace(/'(?:[^']|'')*'/g, "''");
+}
+
+export type BareReference = { kind: 'table' | 'function'; name: string };
+
+const escapeRe = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
+ * Every manifest table name and every classified function name that appears
+ * in `body` WITHOUT a schema prefix (any schema counts as qualified — `public.`,
+ * `auth.`, `cron.`). Identifiers that merely contain the name (`p_groups`,
+ * `v_users_count`) are not matches; a function calling itself is not a match.
+ */
+export function bareReferences(
+  fnName: string,
+  body: string,
+  opts?: { tables?: string[]; functions?: string[] },
+): BareReference[] {
+  const m = loadOwnershipManifest();
+  const tables = opts?.tables ?? Object.keys(m.tables);
+  const functions = opts?.functions ?? Object.values(m.functions).flat();
+  const clean = stripLiterals(body);
+  const out: BareReference[] = [];
+  for (const t of tables) {
+    if (new RegExp(`(?:^|[^\\w.])${escapeRe(t)}\\b`, 'i').test(clean)) out.push({ kind: 'table', name: t });
+  }
+  for (const f of functions) {
+    if (f === fnName) continue;
+    if (new RegExp(`(?:^|[^\\w.])${escapeRe(f)}\\s*\\(`, 'i').test(clean)) out.push({ kind: 'function', name: f });
+  }
+  return out;
+}
+
+/**
+ * Lines that build SQL at runtime — `EXECUTE format(...)`, `EXECUTE '…'`,
+ * `EXECUTE $q$…`, `EXECUTE v_sql USING/INTO …`. Dynamic SQL evades every
+ * static ring check, so its absence is asserted on every run.
+ */
+export function dynamicSqlSites(body: string): string[] {
+  return stripComments(body ?? '')
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => /\bEXECUTE\s+(?:format\s*\(|'|\$|[a-z_]\w*\s*(?:;|using\b|into\b))/i.test(l));
+}
