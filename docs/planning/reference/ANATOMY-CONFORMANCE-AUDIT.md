@@ -216,6 +216,8 @@ No `mist/*` or `become-a-fim/*` API routes exist: Mist entry is client-side `sig
 
 ## Appendix B — Table ownership map (28 net tables)
 
+> **SUPERSEDED — NOT canonical.** This table is the July 2026 snapshot this audit worked from (28 tables). The canonical, gate-enforced owner list is `supabase/ownership.manifest.json` (42 tables at 2026-09-05, plus the `exposure`, `retention` and `clientAccess` registers). Read it for history only — doc-health §3.7 banner, added 2026-09-05.
+
 | Owner | Tables |
 |---|---|
 | PC-1 Infrastructure | (no app tables — Supabase substrate itself) |

@@ -1,6 +1,6 @@
 # Cycle COR-E — corrections from Anatomy-Conformance Audit V (the post-cutover tidy-up before the Ferd close)
 
-**Date:** 2026-09-05 · **Status:** **IN EXECUTION** — board settled 2026-09-05 (Stefan: "go with the recommended rulings and start COR-E"; all nine rows as recommended). PR #618 landed W1/W3/W4/W7; the tooling PR (W5+W8), the registers PR (W6) and the held steering PR (W2) follow in the plan's order. Workstreams marked *fuller-auto* can run the moment the board settles; those marked *ask-first* are steering-file, ADR-index or deletion carve-outs and wait for Stefan's named nod per `AGENTS.md`.
+**Date:** 2026-09-05 · **Status:** **IN EXECUTION — seven of eight workstreams merged; W2 held.** Board settled 2026-09-05 (Stefan: "go with the recommended rulings and start COR-E"; all nine rows as recommended). **#618** W1/W3/W4/W7 · **#619** W5/W8 · **#620** W6 — merged fuller-auto. **#621** W2 (steering files + the session hook) — prepared with its full wording, **held for the named nod**; the cycle closes the moment it merges (this line then reads CLOSED and the front door repoints to the Ferd close). Row 9 (leaked-password protection) is a dashboard setting, Stefan's. Execution record and DoD at the foot. Workstreams marked *fuller-auto* can run the moment the board settles; those marked *ask-first* are steering-file, ADR-index or deletion carve-outs and wait for Stefan's named nod per `AGENTS.md`.
 **Source register:** [`ANATOMY-CONFORMANCE-AUDIT-5.md`](../reference/ANATOMY-CONFORMANCE-AUDIT-5.md) (findings AC5-1..16, AC5-O1..O6, GC-24..27, rulings R-10..R-14).
 **Shape:** same as COR-A..D — named workstreams, each mapped to finding IDs and a gate; behaviour-preserving throughout. **This cycle touches no code ring and no schema**: Audit V found the code conformant and gate-green; every item below is documentation, steering, tooling, or a gate that keeps documentation honest. The one code-adjacent workstream (W5) deletes three scripts and adds one unit test.
 **Why now:** the Ferd close is next. Its wave DoD walk reads the routing documents, the wave file, the plan status and the feature specs — all of which Audit V found stale or missing. COR-E lands first so the close audits a tree that tells the truth, then the close writes `ferd.md` and walks the DoD.
@@ -98,9 +98,18 @@ Added by the backend addendum. No ring is violated today; this workstream makes 
 
 Estimated size: one focused session for steps 2–4 (W1+W3+W4 ≈ half a session; W5+W8 ≈ a quarter; W2/W7 wording ≈ a quarter, plus the wait for the nods). No migrations, no test-database consumer beyond the unit tier.
 
+## Execution record (2026-09-05)
+
+| PR | Workstreams | What landed | Gate evidence |
+|---|---|---|---|
+| [#618](https://github.com/Stefansteffansson/FringeIsland/pull/618) | W1 · W3 · W4 · W7 | anatomy stamp + PC-1 retention clause; README v2.7; DOMAIN_ENTITIES absorbs U050 + entities-since table; hub-v2 README pointer + closed rows; ferd.md pointer; **the first front door**; cycles README + template; cascade fixes; ADR index annotations; how-we-work banner; template grandfather rule + PD019/PD020 sections; AC5-13 withdrawn | 20 files, 0 broken links, dashboard generates |
+| [#619](https://github.com/Stefansteffansson/FringeIsland/pull/619) | W5 · W8 | three scripts deleted (R-12); `apply-migration.js`; `scripts/README.md` registry; dead npm scripts out, root passthroughs in; **three gates red-first** (integration-scripts-resolve, script-registry, cycle-current-front-door); doc-health §11/§5 rows + Known gaps; skills carry the front-door steps | unit 197/197 → 1 629 tests; lint + typecheck clean |
+| [#620](https://github.com/Stefansteffansson/FringeIsland/pull/620) | W6 | manifest v2: `exposure` (175 / 22 / 36 / 10) + `clientAccess.contractsOnly` (7); **two gates red-first** (exposure-register-conformance + rule; bare-reference + dynamic-SQL assertions in internal-api-conformance + rule); R-15 declared | platform family 10/10, 46 tests, teardown clean; unit 199/199, 1 646 |
+| [#621](https://github.com/Stefansteffansson/FringeIsland/pull/621) | W2 | AGENTS.md (gates, structure, grandfather clause, `.agents/`); SESSION-OPENER focus line; root CLAUDE.md pointer header + front-door row; PROCESS.md §3 kickoff/close rules; the hook injects the front door | **HELD** — hook verified to emit both parts; merge on the nod |
+
 ## Definition of done
 
-- Every AC5 finding carries a closure note in the register naming the PR (or the ruling that dispositioned it); observations AC5-O1..O6 carry their disposition.
+- Every AC5 finding carries a closure note in the register naming the PR (or the ruling that dispositioned it); observations AC5-O1..O6 carry their disposition. *(Done — the register's closure table, 2026-09-05.)*
 - The three gates GC-24/25/27 exist and are green; GC-26 is recorded as structural (W3), not gated; GC-28 and GC-29 exist in the platform family and are green, and the manifest carries `exposure` for every function and `clientAccess` for every table.
 - Doc-health run clean at the cycle boundary, with §11's two new rows exercised.
 - The routing chain a new session walks — `SESSION-OPENER.md` → `cycle-current.md` (injected by the hook) → `CLAUDE.md` → `AGENTS.md` → `hub-v2/README.md` → the latest bridge → `waves/ferd.md` — reads true at every hop on 2026-09-XX; the front-door test is green and has been seen to go red once (at COR-E's own close) before being repointed.
