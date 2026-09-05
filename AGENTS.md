@@ -20,7 +20,7 @@ Next.js 16.1 App Router, TypeScript, Tailwind CSS, Supabase/PostgreSQL
 - `docs/platform/` — shared platform infrastructure
 - `docs/planning/` — waves, cycles, backlog, sessions
 - `hub/` — the Hub application (`hub/app/`, `hub/components/`, `hub/lib/`; its tests under `hub/tests/`). The root holds no application source since the Phase-4 cutover (ADR-U032; root is tooling-only)
-- `supabase/migrations/` — database migrations; `supabase/ownership.manifest.json` — the ownership, exposure, retention and client-access registers the conformance family enforces
+- `supabase/migrations/` — database migrations (`REPLAY-EXCEPTIONS.json` beside them: the migrations a fresh project records-not-executes, and the seeds at their historical point); `supabase/ownership.manifest.json` — the ownership, exposure, retention and client-access registers the conformance family enforces; `supabase/projects.json` — the production and test project refs the fuse reads
 - `scripts/`, `hub/scripts/` — repository tooling; every script is a row in `scripts/README.md` (gate-enforced)
 - `.agents/skills/` — vendored Supabase agent skills (`skills-lock.json`), reference material only; FringeIsland's own skills live in `.claude/skills/`
 
@@ -52,16 +52,17 @@ For FringeIsland-specific work in Claude Desktop, prefer the dedicated MCPs over
 
 Developer tools (`git`, `npm`, `node`, `mmdc`) require approval when called via super-shell. Super-shell has two operational quirks worth knowing: the whitelist does not persist across Claude Desktop restarts, and commands that exit non-zero (including `grep`/`findstr` on empty searches) surface as "Command failed" with stdout discarded. Prefer the filesystem MCP or a PowerShell terminal for text searches.
 
-### The dev database has one consumer at a time
+### The test project has one consumer at a time; production has one kind of consumer
 
-There is a single shared development database. Every integration suite, every E2E fleet run, every live manual walk, and every concurrent session point at it. It has no isolation between consumers, so **two consumers at once produce failures that look like defects and cost far more to diagnose than to avoid.**
+Since 2026-09-05 (ADR-U053) there are **two** Supabase projects, one migration history. `supabase/projects.json` names them. **Production** (`FringeIslandDB`, the project behind `fringe-island.vercel.app`) carries members only: no suite, probe, walk or dev server ever points at it, and the code fuse (`scripts/lib/target.js`, `hub/tests/helpers/target.ts`) refuses its ref unless `ALLOW_PRODUCTION=1` names the intent — the schema gate's production leg and the ADR-U043 performance pass are the two legitimate cases. **The test project** (`FringeIsland-test`) carries every integration suite, every E2E fleet run, every probe, the standing walk cast and the local dev server; `.env.local` (root and `hub/`) points there. It has no isolation between consumers, so the old rule moves with it:
 
-- **Never run two integration suites concurrently** against it — the reds are real-looking, non-reproducible, and land on whoever runs next.
-- **Destructive data operations count as a consumer.** Debris deletes, fixture purges, consented erasures, and admin cleanups are not "just cleanup" — they mutate the substrate a running suite is asserting against. Executing them during a live background sweep produced a 27-red run on 2026-08-05/06 that had to be excluded as self-caused. Wait for the sweep to finish, or do the deletes first and start the sweep after.
-- **Check for a live sibling session** before starting a suite, a fleet run, or a branch switch — more than one session can share this checkout, and the rule applies across sessions, not just within one.
-- **Stefan may be testing manually while a suite runs.** That collides in three ways beyond the data: the dev server, the auth rate limit, and cookie/session state. Ask before starting a long run if a walk might be in progress.
+- **Never run two integration suites concurrently** against the test project — the reds are real-looking, non-reproducible, and land on whoever runs next.
+- **Destructive data operations count as a consumer** there too — debris deletes, fixture purges, consented erasures, and admin cleanups mutate the substrate a running suite is asserting against. Wait for the sweep to finish, or do the deletes first.
+- **Check for a live sibling session** before starting a suite, a fleet run, or a branch switch — more than one session can share this checkout.
+- **Stefan may be walking manually** — on a Vercel Preview wired to the test project or the local dev server. That collides on the dev server, the auth rate limit and cookie state. Ask before starting a long run if a walk might be in progress.
+- **A fixture-domain account on production after the cutover is an alarm, not residue.** The teardown census stays as defence in depth.
 
-When a run comes back red and something else was touching the database, **establish that first** — before diagnosing the diff. The control run is cheaper than the investigation.
+When a run comes back red and something else was touching the test project, **establish that first** — before diagnosing the diff. The control run is cheaper than the investigation. The management API throttles under volume (a replay plus a full tier in one hour): a 60-second timeout on a plain catalog read is the throttle, not a defect — re-run the suite alone.
 
 ### File operations on the repository
 

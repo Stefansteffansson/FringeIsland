@@ -1,6 +1,6 @@
 # ADR-U053: The test tier leaves the production database — a dedicated test project, a code fuse, and the schema gate rehearsed before it lands
 
-**Status:** Proposed (drafted 2026-09-05 on Stefan's request after the 2026-09-04/05 database review; awaits his ruling — the plan, cost and cutover date are his).
+**Status:** Accepted — ruled and adopted 2026-09-05 (Stefan: "do the ADR-U053 now"), cutover the same day; realisation notes below. (Was: Proposed, drafted 2026-09-05.)
 **Date:** 2026-09-05
 **Deciders:** Stefan.
 **Tags:** scope:platform-core · scope:infrastructure · wave:ferd (adopt) · wave:eid (branching refinement, if ever)
@@ -82,6 +82,18 @@ The decision has six parts:
 3. Env split and the fuse (§3); run the full integration tier, the E2E fleet, the probe and `walk-cast create` / `teardown` on test — all green, census clean.
 4. Wire the Vercel Preview environment to test; walk the DB-4 legs 4, 5, 6 and 8 there with a fresh cast.
 5. Amend AGENTS.md, `docs/platform/CLAUDE.md` (the migration workflow gains the test leg), PROCESS.md §5 (the post-apply set names the test project), and retire the "one database" memory. Promote this ADR to Accepted on the day of cutover.
+
+## Realisation (2026-09-05, appended at acceptance — the ADR body above is unchanged)
+
+Executed in the session that closed Cycle COR-E; record: `docs/planning/hub-v2/2026-09-05-adr-u053-cutover.md`. Where the realisation differs from the letter of the decision, the letter yields to the reason:
+
+1. **Env file names.** The decision named `hub/.env.test.local` for the test project and `hub/.env.local` for production. Realised the other way round: `.env.local` (root and `hub/`) = **test**, `.env.production-gate.local` = production. Reason: Next.js, dotenv, Jest and Playwright all load `.env.local` by default — the DEFAULT had to be the test project for "a suite cannot reach production by accident" to be structural rather than a convention. Production is reachable only by naming it twice (`--production` selects the gate file; `ALLOW_PRODUCTION=1` passes the fuse).
+2. **The chain is not replayable from empty as-is.** `scripts/replay-migrations.js` + `supabase/migrations/REPLAY-EXCEPTIONS.json`: three pre-D15-rebuild fixes are recorded-not-executed (their effect is subsumed by `20260222000000`); seeds 01–04 replay before `20260227120843` and seed 06 after the chain — the point in history production received them by hand. Adding an entry is a schema-gate matter.
+3. **The standing DeusEx member.** A fresh project has no platform administrator, and the last-DeusEx-member guards then refuse every fixture demotion. `scripts/seed-test-deusex.js` creates `deusex@fringeisland-test.internal` (outside the swept fixture domain) through the real sign-up path and elevates it. Production keeps its own.
+4. **The pre-flight's production findings.** One residue notification kind (`na_test_kind_msug30be`) → corrective migration `20260905130000`, rehearsed on test, production leg on the named approval. One mis-stamped history record (`20260821132432` for the file `20260821150000`) — the drift check's first catch; repair SQL under `docs/planning/hub-v2/sql/`. Both production writes were refused by the auto-mode classifier — the fuse's intent honoured by the harness — and wait for Stefan's hand.
+5. **Names.** `apply-migration-temp.js` (as this ADR was drafted) is `scripts/apply-migration.js` since COR-E W5; every script under `scripts/` and `hub/scripts/` is registered in `scripts/README.md` and loads its target through the fuse (`production-fuse.test.ts` sweeps them).
+6. **What stays on production (§5) — confirmed:** the retention jobs and the weekly `VACUUM FULL` (still declared a stopgap; revisit once the churn has visibly left), the ADR-U043 pass (`perf-measure.mjs` with `PERF_ENV=../.env.production-gate.local ALLOW_PRODUCTION=1`), the teardown census as defence in depth.
+7. **Still open at acceptance:** the Vercel Preview environment wired to the test project (§4 — dashboard, Stefan's); a CI step for the drift check (needs a management-API secret in CI — the GC-16 posture, revisit at Eid); Option B (branching) remains the refinement this ADR names.
 
 ## Links
 
