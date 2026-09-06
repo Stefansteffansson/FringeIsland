@@ -16,7 +16,7 @@
 - The felt items of DB-4 legs 4/5/6/8 (copy, timing, empty states) — read the runner's screenshots (`npm run walk:report` from `hub/`)
 - G-04 — the waves README as the ecosystem roadmap band (the [wave retro](../retrospectives/retro-wave-ferd.md) carries the recommendation)
 - The three ADR-U053 production commands ([cutover record](../hub-v2/2026-09-05-adr-u053-cutover.md)) — `migration-drift.js` stays red until then
-- Vercel Preview → the test project; the E2E smoke job in CI; leaked-password protection
+- The E2E smoke job in CI; leaked-password protection (the Vercel Preview → test wiring landed 2026-09-06)
 
 ## Landed this cycle
 - DB-4 legs 4/5/6/8 walked GREEN 2026-09-06 by the new **walk runner** (`hub/tests/walks`, one test per script step, a screenshot per step; [script](../hub-v2/2026-09-05-db4-walk-legs-4-5-6-8.md)) — one script correction, no product finding
