@@ -10,7 +10,6 @@
 
 ## In motion
 - The Eid kickoff waits on the close declaration — it opens in a fresh session with `npm run cycle:kickoff`
-- PR #631 (PROCESS.md §3: the front door is written by the kickoff script from the template) — held for the nod
 
 ## Waiting on Stefan
 - The close declaration — one change: front door → the Eid kickoff, the plan CLOSED, `ferd.md` `completed`
@@ -21,7 +20,7 @@
 
 ## Landed this cycle
 - DB-4 legs 4/5/6/8 walked GREEN 2026-09-06 by the new **walk runner** (`hub/tests/walks`, one test per script step, a screenshot per step; [script](../hub-v2/2026-09-05-db4-walk-legs-4-5-6-8.md)) — one script correction, no product finding
-- The front door's fixed shape — the template, `npm run cycle:kickoff`, the gate's shape half (#630)
+- The front door's fixed shape — the template, `npm run cycle:kickoff`, the gate's shape half (#630); PROCESS.md §3 says so (#631)
 - `ferd.md` written — 100 features, the wave DoD; the DoD walked ([record](../hub-v2/2026-09-05-ferd-dod-walk.md)); the wave retrospective drafted; the done tasks swept
 - ADR-U053 executed and Accepted — the test project, the fuse, the replay and drift scripts (#624, #625)
 - TASK-RACE-01 — the stale-read race the fleet found, fixed (#627); the dependency red line closed — `next` 16.3.4, `npm audit` 0 (#629)
