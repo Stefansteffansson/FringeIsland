@@ -8,6 +8,7 @@
       "blurb": "Entry points, and where everything lives.",
       "blocks": [
         { "type": "links", "label": "Key documents", "items": [
+          { "label": "The front door — what is being built now (cycle-current.md)", "path": "docs/planning/cycles/cycle-current.md" },
           { "label": "Project entry — CLAUDE.md", "path": "CLAUDE.md" },
           { "label": "Way of working — PROCESS.md", "path": "docs/planning/PROCESS.md" },
           { "label": "Current wave — Ferd", "path": "docs/planning/waves/ferd.md" },
@@ -124,6 +125,13 @@
       "title": "Focus & Horizon — now and open",
       "blurb": "What we're on, what's open, what's ahead.",
       "blocks": [
+        { "type": "intro", "label": "Now building — the front door (written at every kickoff, repointed at every close: the cycle, its plan, the latest bridge, the board, what is next)", "path": "docs/planning/cycles/cycle-current.md" },
+        { "type": "links", "label": "Where the state lives", "items": [
+          { "label": "Session bridges — the live state at each close (the newest file wins)", "path": "docs/planning/sessions/README.md" },
+          { "label": "The current wave file — scope and Definition of Done", "path": "docs/planning/waves/ferd.md" },
+          { "label": "Retrospectives — the permanent learning record", "path": "docs/planning/retrospectives/README.md" },
+          { "label": "Tasks in motion and the sweep log", "path": "docs/planning/backlog/tasks/README.md" }
+        ] },
         { "type": "section", "label": "Hub v2 — phases (where we are)", "path": "docs/planning/hub-v2/README.md", "heading": "## Phases at a glance" },
         { "type": "links", "label": "Hub v2 rebuild", "items": [
           { "label": "Hub v2 — the plan", "path": "docs/planning/hub-v2/README.md" },
