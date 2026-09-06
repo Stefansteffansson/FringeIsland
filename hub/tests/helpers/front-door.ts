@@ -29,11 +29,91 @@ const FIELDS: ReadonlyArray<[keyof FrontDoor, string]> = [
   ['next', 'Next'],
 ];
 
-/** The raw text after `**Label:**` on its line — null when the line is absent, '' when present but empty. */
+/**
+ * The raw text of a field — null when absent, '' when present but empty.
+ * Two shapes: the original bold line `**Label:** text`, and (since 2026-09-06,
+ * the template `docs/templates/cycle-current.md`) the header-table row
+ * `| **Label** | text |`, which the dashboard renders as a compact card.
+ */
 function fieldText(md: string, label: string): string | null {
-  const re = new RegExp(`^\\*\\*${label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}:\\*\\*[ \\t]*(.*)$`, 'm');
-  const m = re.exec(md);
-  return m ? m[1].trim() : null;
+  const esc = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const line = new RegExp(`^\\*\\*${esc}:\\*\\*[ \\t]*(.*)$`, 'm').exec(md);
+  if (line) return line[1].trim();
+  const row = new RegExp(`^\\|\\s*\\*\\*${esc}:?\\*\\*\\s*\\|\\s*(.*?)\\s*\\|\\s*$`, 'm').exec(md);
+  return row ? row[1].trim() : null;
+}
+
+/**
+ * The shape (2026-09-06): the dashboard renders the front door as Markdown,
+ * so the layout IS the file. The template gives it a title, the five fields
+ * as a header table, then three sections in a fixed order; the kickoff script
+ * writes it. This half of the gate keeps a hand edit from drifting: sections
+ * present, in order and no others; one line per item, six at most; a Board
+ * value that says open/settled with a date; a size budget so the door never
+ * becomes the plan.
+ */
+export const FRONT_DOOR_SECTIONS: readonly string[] = [
+  '## In motion',
+  '## Waiting on Stefan',
+  '## Landed this cycle',
+];
+
+export const FRONT_DOOR_LIMITS = {
+  maxLines: 60,
+  maxBulletsPerSection: 6,
+  maxBulletChars: 300,
+} as const;
+
+export function frontDoorShapeViolations(md: string): string[] {
+  const violations: string[] = [];
+  const lines = md.split('\n');
+
+  const title = lines.find((l) => l.trim() !== '') ?? '';
+  if (!/^# Now building\b/.test(title)) violations.push('title must start with "# Now building"');
+
+  // Sections: every `## ` heading and the bullets under it.
+  const found: Array<{ heading: string; bullets: string[] }> = [];
+  for (const raw of lines) {
+    const l = raw.replace(/\r$/, '');
+    if (/^## /.test(l)) found.push({ heading: l.trim(), bullets: [] });
+    else if (found.length && /^- /.test(l)) found[found.length - 1].bullets.push(l);
+  }
+  const headings = found.map((s) => s.heading);
+  for (const expected of FRONT_DOOR_SECTIONS) {
+    if (!headings.includes(expected)) violations.push(`missing section: ${expected}`);
+  }
+  for (const h of headings) {
+    if (!FRONT_DOOR_SECTIONS.includes(h)) violations.push(`unexpected section: ${h}`);
+  }
+  const known = headings.filter((h) => FRONT_DOOR_SECTIONS.includes(h));
+  const expectedOrder = FRONT_DOOR_SECTIONS.filter((h) => known.includes(h));
+  if (known.join('|') !== expectedOrder.join('|')) {
+    violations.push(`sections out of order: ${known.join(', ')}`);
+  }
+  for (const s of found) {
+    if (!FRONT_DOOR_SECTIONS.includes(s.heading)) continue;
+    if (s.bullets.length > FRONT_DOOR_LIMITS.maxBulletsPerSection) {
+      violations.push(`${s.heading} has ${s.bullets.length} bullets (max ${FRONT_DOOR_LIMITS.maxBulletsPerSection})`);
+    }
+    if (s.bullets.some((b) => b.length > FRONT_DOOR_LIMITS.maxBulletChars)) {
+      violations.push(
+        `${s.heading} has a bullet over ${FRONT_DOOR_LIMITS.maxBulletChars} chars — link the record, do not restate it`,
+      );
+    }
+  }
+
+  const board = fieldText(md, 'Board');
+  if (board !== null && (!/^(settled|open)\b/i.test(board) || !/\d{4}-\d{2}-\d{2}/.test(board))) {
+    violations.push(`Board must start with "settled" or "open" and carry a date (got "${board}")`);
+  }
+
+  if (lines.length > FRONT_DOOR_LIMITS.maxLines) {
+    violations.push(
+      `${FRONT_DOOR_LIMITS.maxLines}-line budget exceeded (${lines.length} lines) — the front door is not the plan`,
+    );
+  }
+
+  return violations;
 }
 
 function linkTarget(text: string | null): string | null {

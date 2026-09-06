@@ -13,6 +13,7 @@
     "typecheck": "npm run typecheck -w hub",
     "dashboard": "node scripts/dashboard/generate.js",
     "dashboard:serve": "node scripts/dashboard/serve.js",
+    "cycle:kickoff": "node scripts/cycle-kickoff.js",
     "test": "npm run test -w hub",
     "test:watch": "npm run test:watch -w hub",
     "test:coverage": "npm run test:coverage -w hub",
