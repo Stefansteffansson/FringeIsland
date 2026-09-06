@@ -126,7 +126,7 @@ Every work item has a type. The type determines which template to use, which DoD
   - Regenerate the project dashboard (`npm run dashboard`) so its snapshot panels reflect the current state — see [`../../scripts/dashboard/README.md`](../../scripts/dashboard/README.md). It is a derived view: the file viewer is always live, but the overview panels are a snapshot from the last generate.
   - Run retrospective for the cycle that just ended (template: `../templates/retrospective.md`)
 - **Cycle kickoff (before anything is decomposed):**
-  - **Write the front door first.** `cycles/cycle-current.md` — five fields: the cycle and its goal in one sentence, a link to the dated plan document, a link to the latest bridge, the board's status, what comes next. Never the plan itself: the plan is a dated document written from `../templates/cycle-plan.md` (today under `hub-v2/`). The session-start hook injects the front door into every session, so the first thing every session reads is what is being built now.
+  - **Write the front door first.** `cycles/cycle-current.md` — run `npm run cycle:kickoff -- "<cycle name>" <plan path>` (from the repo root), which writes it from `../templates/cycle-current.md`: the five fields as a header table (the cycle and its goal in one sentence, a link to the dated plan document, a link to the latest bridge, the board's status as `open`/`settled` with a date, what comes next), then three sections in a fixed order — **In motion · Waiting on Stefan · Landed this cycle** — one line per item, six at most. Never the plan itself: the plan is a dated document written from `../templates/cycle-plan.md` (today under `hub-v2/`). The dev dashboard renders the door as Markdown, so the template's layout is what Stefan sees; the unit gate holds the shape as well as the content. The session-start hook injects the front door into every session, so the first thing every session reads is what is being built now.
 
 ### Waves as thematic focus
 
@@ -231,7 +231,7 @@ This is the trigger → artifact map. Whenever you find yourself starting work, 
 | Significant architectural decision is taken | ADR | `../templates/adr.md` | `../architecture/decisions/NNNN-{title}.md` |
 | Planning / design session with Claude | Session bridge | `../templates/session-bridge.md` | `sessions/YYYY-MM-DD-{topic}.md` |
 | Research needed before specifying | Research spike | `../templates/research-spike.md` | `../research/{topic}.md` |
-| Cycle starts | Cycle plan (a dated document) **+ the front door** | `../templates/cycle-plan.md` | the plan under the cycle's home (today `hub-v2/`); `cycles/cycle-current.md` is the five-field front door that points at it (R-14, 2026-09-05) |
+| Cycle starts | Cycle plan (a dated document) **+ the front door** | `../templates/cycle-plan.md` · `../templates/cycle-current.md` | the plan under the cycle's home (today `hub-v2/`); `cycles/cycle-current.md` is the front door that points at it — written by `npm run cycle:kickoff`, overwritten every cycle (R-14, 2026-09-05; the shape 2026-09-06) |
 | Cycle ends | Retrospective | `../templates/retrospective.md` | `retrospectives/retro-YYYY-MM-DD.md` |
 | Wave completes (last Build item Done) | Wave retrospective + ecosystem roadmap update | `../templates/retrospective.md` (wave-scoped) | `retrospectives/retro-wave-{name}.md` + edit `../ecosystem/ECOSYSTEM_ROADMAP.md` |
 | Cross-cutting vertical concern needs specifying | Vertical spec | `../templates/vertical-spec.md` | `../verticals/{name}.md` |
