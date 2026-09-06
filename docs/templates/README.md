@@ -34,7 +34,8 @@ docs/templates/
 │
 │   ── Planning ──
 ├── wave-spec.md                           ← wave thematic focus + scope
-├── cycle-plan.md                          ← Shape Up betting cycle plan
+├── cycle-plan.md                          ← Shape Up betting cycle plan (a dated document)
+├── cycle-current.md                       ← the front door: what is being built now (written by `npm run cycle:kickoff`)
 ├── retrospective.md                       ← cycle or wave retrospective
 ├── session-bridge.md                      ← session artifact for continuity
 │
@@ -66,7 +67,8 @@ docs/templates/
 | [`design-system-specification.md`](./design-system-specification.md) | Design system enters active development | `../design-system/SPECIFICATION.md` |
 | [`vertical-spec.md`](./vertical-spec.md) | Cross-cutting vertical needs specifying | `../verticals/{name}.md` |
 | [`wave-spec.md`](./wave-spec.md) | Defining or updating a wave | `../planning/waves/{wave}.md` |
-| [`cycle-plan.md`](./cycle-plan.md) | New build cycle starts | `../planning/cycles/cycle-current.md` |
+| [`cycle-plan.md`](./cycle-plan.md) | New build cycle starts — the dated plan document | `../planning/hub-v2/YYYY-MM-DD-{slug}-plan.md` today (that directory's successor after Ferd) |
+| [`cycle-current.md`](./cycle-current.md) | The same moment, before decomposing anything — the front door, written by `npm run cycle:kickoff -- "<name>" <plan path>`; repointed at close | `../planning/cycles/cycle-current.md` (overwritten every cycle) |
 | [`retrospective.md`](./retrospective.md) | Cycle or wave retro | `../planning/retrospectives/retro-{scope}-{date}.md` |
 | [`session-bridge.md`](./session-bridge.md) | Planning/design session with Claude | `../planning/sessions/YYYY-MM-DD_-_{TOPIC}.md` |
 | [`autonomous-l1-l3-session-opener.md`](./autonomous-l1-l3-session-opener.md) | Authoring a per-instance opener for an autonomous CC run of L1→L3 derivation on a single entity | `../planning/sessions/openers/cc-{entity-short-name}-autonomous.md` |
