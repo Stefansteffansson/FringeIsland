@@ -1,0 +1,27 @@
+# Session bridge — 2026-09-06 (1): the front door gets its shape; the walk runner; DB-4 legs 4/5/6/8 green
+
+**Continuation of `2026-09-05_02` (this session) after the other session's Ferd close (`2026-09-05_03`) and its deps fix (#629).** Stefan asked three things in a row: where the dashboard is; *"We need the front door … formatted in a nice way so that when I open it in our dev dashboard it's easy to overview … What do we need to change to make this formatting land every time we cycle?"* → "build"; then, on the walk script, *"how can we make it possible for you to run these scenarios / scripts? Maybe via playwright or claude-in-chrome?"* → *"can both option 1 and 2 run multiple users at the time?"* → *"build us the playwright part now and then we'll test run the latest walk"*.
+
+## Live state (verified at close — cite, don't re-derive)
+
+- **`main`** = #630 (the front door's shape) + this session's walk-runner PR; **#631 open, held** (PROCESS.md §3 — ask-first). The discovery worktree level with `main`.
+- **The front door has a fixed shape that lands every cycle:** `docs/templates/cycle-current.md` (the five fields as a header table, then **In motion · Waiting on Stefan · Landed this cycle**, one line per item, six at most, a 60-line budget); `npm run cycle:kickoff -- "<name>" <plan path>` writes it (refuses a missing or closed plan, an unfilled placeholder, a bad Board value, an overwrite of a still-open cycle without `--force`); the gate `cycle-current-front-door.test.ts` holds the shape as well as the content (red-first 3/7). The dashboard renders the file as Markdown, so the layout is the file. `cycles/README.md` and the templates index point at the template.
+- **The walk runner exists:** `hub/playwright.walks.config.ts` + `hub/tests/walks/` (`*.walk.ts` — the fleet's glob never sees a leg; no global setup/teardown; every actor on its own context; a screenshot per step in an HTML report; `npm run walk:run`, `walk:run:headed`, `walk:report`; the cast password in the gitignored `hub/.env.walk.local`). Legs 4, 5, 6 and 8 of the DB-4 script are codified one test per numbered step.
+- **DB-4 legs 4/5/6/8 walked GREEN by the runner, 2026-09-06, Stefan watching the headed windows:** leg 4 10/10, leg 5 4/4, leg 6 6/6, leg 8 7/7. One script correction (leg 4 step 4: the admin rail shows the state, not the reason — FEAT-H049's privacy line), **no product finding.** The DoD walk record's F2 row and its open-items row say so; the felt items stay Stefan's.
+- **The cast on the test project:** six walk accounts, three groups — **Drift is CLOSED** (leg 8, as the script prescribes); Mona and Kalle active; Kalle's walk resumed at its carried position. `npm run walk:cast -- teardown` then `create` before another full pass (the walk password changes with it — rewrite `.env.walk.local`).
+- **The dev server** started by this session is still running on `localhost:3000` against the test project (started for Stefan's own walk); stop it by killing its process tree, never by stopping the background task (the wounded-server trap).
+
+## Findings worth carrying
+
+- **A walk spec is a walk script made executable, not an E2E spec in disguise.** The differences that mattered: the standing cast instead of fixtures, no sweep, evidence per step, several actors signed in at once (leg 4's live Mona window; leg 8's Astrid → Wanda → admin). Two idioms the fleet never needed: a *settle* step so an interrupted run can restart (leg 4 reactivates a held pair through the product's own bulk reactivate), and per-run stamps on reasons and titles so a re-run's notices and threads never collide with the last run's.
+- **Every red in the runner's first passes was the runner or the script, never the product:** the locked chip vs its row's sentence (leg 5); Kalle suspended by an interrupted leg 4 (leg 6); a strict locator against a re-run's duplicate notice; the instant sign-out hint aborting the runner's own navigation (leg 4 step 9 — the product proving the script's "seconds, not a reload"); a join that needs no confirmation without an acting hat and pushes straight into the thread (leg 8). Reading the component beat guessing at it every time.
+- **Where the reason renders is a privacy decision, not a display choice.** The script's step 4 assumed the admin's rail shows the reason; FEAT-H049 says the reason renders only where the platform delivers it. The runner asserts the state on the rail and proves the reason on the member's own surfaces.
+- **claude-in-chrome is one user per Chrome profile.** For multi-actor legs Playwright's contexts are the mechanism; the combination that matches how Stefan walks is him as one actor in Chrome and Playwright headed as the others.
+
+## Not done — plainly
+
+- **#631** (PROCESS.md §3 front-door wording) — Stefan's nod.
+- **The Ferd close declaration** (front door → the Eid kickoff, the plan CLOSED, `ferd.md` `completed`), **G-04**, the three ADR-U053 production commands, Vercel Preview → test, the E2E smoke job, leaked-password protection — Stefan's, unchanged.
+- **The felt items of legs 4/5/6/8** (copy, timing, empty states) — the runner's screenshots are the reading material; the sign-off is the walker's.
+- **Legs 1/2/3/7 as walk specs** — not codified (walked by hand 2026-09-04); a natural next step if the runner earns its keep.
+- **The `next dev` agent-rules files** (`hub/AGENTS.md`, `hub/CLAUDE.md`) stay uncommitted pending Stefan's ruling (the other session's open question).

@@ -14,6 +14,8 @@
     "dashboard": "node scripts/dashboard/generate.js",
     "dashboard:serve": "node scripts/dashboard/serve.js",
     "cycle:kickoff": "node scripts/cycle-kickoff.js",
+    "walk:run": "npm run walk:run -w hub --",
+    "walk:run:headed": "npm run walk:run:headed -w hub --",
     "test": "npm run test -w hub",
     "test:watch": "npm run test:watch -w hub",
     "test:coverage": "npm run test:coverage -w hub",
