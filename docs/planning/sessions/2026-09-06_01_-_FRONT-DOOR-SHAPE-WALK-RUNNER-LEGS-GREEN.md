@@ -21,7 +21,7 @@
 ## Not done — plainly
 
 - **#631** (PROCESS.md §3 front-door wording) — Stefan's nod.
-- **The Ferd close declaration** (front door → the Eid kickoff, the plan CLOSED, `ferd.md` `completed`), **G-04**, the three ADR-U053 production commands, Vercel Preview → test, the E2E smoke job, leaked-password protection — Stefan's, unchanged.
+- **The Ferd close declaration** (front door → the Eid kickoff, the plan CLOSED, `ferd.md` `completed`), **G-04**, the three ADR-U053 production commands, the E2E smoke job, leaked-password protection — Stefan's, unchanged. ~~Vercel Preview → test~~ — **done the same evening** through Stefan's Chrome (claude-in-chrome): the shared Supabase variables *detached* for Preview and pointed at the test project; proven on a Preview deployment's bundle (test ref present, production ref absent). Recorded in the cutover record.
 - **The felt items of legs 4/5/6/8** (copy, timing, empty states) — the runner's screenshots are the reading material; the sign-off is the walker's.
 - **Legs 1/2/3/7 as walk specs** — not codified (walked by hand 2026-09-04); a natural next step if the runner earns its keep.
 - **The `next dev` agent-rules files** (`hub/AGENTS.md`, `hub/CLAUDE.md`) stay uncommitted pending Stefan's ruling (the other session's open question).
