@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
   },
   // Override default ignores of eslint-config-next.
   globalIgnores([
+    // The walk runner's report and Playwright's artefacts (gitignored; minified assets):
+    "playwright-report-walks/**",
+    "test-results/**",
     // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
