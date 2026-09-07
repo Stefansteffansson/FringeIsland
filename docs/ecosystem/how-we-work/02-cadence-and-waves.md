@@ -57,7 +57,7 @@ Because waves are thematic and cycles are operational, a single cycle can legiti
 
 Four gaps, consolidated in [`gaps.md`](./gaps.md):
 
-**Wave ↔ roadmap relationship.** PROCESS.md §3 references ecosystem, product, and platform roadmaps alongside the wave model. The relationship is unresolved: do waves duplicate roadmaps, complement them, or replace them? If `ECOSYSTEM_ROADMAP.md` lists "NOW: Ferd / NEXT: Eid / LATER: Hamn," it duplicates the waves band; if it lists features in NOW/NEXT/LATER buckets independent of wave grouping, it's a third band on this axis that the current diagram doesn't show.
+**Wave ↔ roadmap relationship.** PROCESS.md §3 references ecosystem, product, and platform roadmaps alongside the wave model. The relationship is unresolved: do waves duplicate roadmaps, complement them, or replace them? If `ECOSYSTEM_ROADMAP.md` lists "NOW: Ferd / NEXT: Eid / LATER: Hamn," it duplicates the waves band; if it lists features in NOW/NEXT/LATER buckets independent of wave grouping, it's a third band on this axis that the current diagram doesn't show. **Resolved 2026-09-07 (G-04, at the Ferd close):** the waves band *is* the ecosystem roadmap — `docs/planning/waves/README.md`; no separate file, no third band; product roadmaps stay per product.
 
 **Review queue not operationalized.** Tasks have `status: review` and `assigned_to` in frontmatter, but no document describes how a reviewer is chosen, how a task flows from in_progress to review to approved, or how the WIP-at-review rule actually bites. The bottleneck exists on paper; it has no handle.
 

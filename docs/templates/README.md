@@ -67,7 +67,7 @@ docs/templates/
 | [`design-system-specification.md`](./design-system-specification.md) | Design system enters active development | `../design-system/SPECIFICATION.md` |
 | [`vertical-spec.md`](./vertical-spec.md) | Cross-cutting vertical needs specifying | `../verticals/{name}.md` |
 | [`wave-spec.md`](./wave-spec.md) | Defining or updating a wave | `../planning/waves/{wave}.md` |
-| [`cycle-plan.md`](./cycle-plan.md) | New build cycle starts — the dated plan document | `../planning/hub-v2/YYYY-MM-DD-{slug}-plan.md` today (that directory's successor after Ferd) |
+| [`cycle-plan.md`](./cycle-plan.md) | New build cycle starts — the dated plan document | `../planning/cycles/YYYY-MM-DD-{slug}-plan.md` (since the Ferd close; the Ferd-era plans stay under `../planning/hub-v2/`) |
 | [`cycle-current.md`](./cycle-current.md) | The same moment, before decomposing anything — the front door, written by `npm run cycle:kickoff -- "<name>" <plan path>`; repointed at close | `../planning/cycles/cycle-current.md` (overwritten every cycle) |
 | [`retrospective.md`](./retrospective.md) | Cycle or wave retro | `../planning/retrospectives/retro-{scope}-{date}.md` |
 | [`session-bridge.md`](./session-bridge.md) | Planning/design session with Claude | `../planning/sessions/YYYY-MM-DD_-_{TOPIC}.md` |

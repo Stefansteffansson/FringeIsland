@@ -2,12 +2,13 @@
 
 ---
 name: ferd
-status: cooldown
+status: completed
 started: 2026-04-10
 target_completion: 2026-09-05
+completed: 2026-09-07
 ---
 
-**Status (2026-09-05):** the build is complete — the last Ferd item, DB-4 sanction communication (FEAT-PD021 / PC030 / H049), landed 2026-09-03 — and the close ritual is running under the [Ferd close plan](../hub-v2/2026-09-05-ferd-close-plan.md). `status:` reads `cooldown` until Stefan declares the wave closed against the Definition of Done below (declaring a wave complete is a human call — `wave-planning` skill, "Ask first"); the close flips it to `completed`. Live state: the most recent bridge under [`../sessions/`](../sessions/) and the front door [`../cycles/cycle-current.md`](../cycles/cycle-current.md). Written 2026-09-05 from [`../../templates/wave-spec.md`](../../templates/wave-spec.md) as the close's first deliverable (Audit V AC5-2, Cycle COR-E W3).
+**Status (2026-09-05):** the build is complete — the last Ferd item, DB-4 sanction communication (FEAT-PD021 / PC030 / H049), landed 2026-09-03 — and the close ritual is running under the [Ferd close plan](../hub-v2/2026-09-05-ferd-close-plan.md). `status:` read `cooldown` until Stefan declared the wave closed against the Definition of Done below (declaring a wave complete is a human call — `wave-planning` skill, "Ask first"). **Declared closed 2026-09-07** ("done and close") after the DoD walk ([record](../hub-v2/2026-09-05-ferd-dod-walk.md)), the hand-walk of DB-4 legs 4/5/6/8 and the G-04 ruling; `status: completed`. The [wave retrospective](../retrospectives/retro-wave-ferd.md) carries the carry-overs into Eid. Live state: the most recent bridge under [`../sessions/`](../sessions/) and the front door [`../cycles/cycle-current.md`](../cycles/cycle-current.md). Written 2026-09-05 from [`../../templates/wave-spec.md`](../../templates/wave-spec.md) as the close's first deliverable (Audit V AC5-2, Cycle COR-E W3).
 
 ## Theme
 
@@ -172,7 +173,7 @@ Walked, with evidence per line, in the close's DoD walk record under [`../hub-v2
 
 ### Retrospective
 - [ ] Wave retrospective completed ([`../retrospectives/retro-wave-ferd.md`](../retrospectives/retro-wave-ferd.md)); the done `TASK-*` files swept after the link check.
-- [ ] Ecosystem roadmap updated (`../../ecosystem/ECOSYSTEM_ROADMAP.md`) — or the G-04 decision (waves vs roadmaps) taken and recorded with the deferral's reason.
+- [x] Ecosystem roadmap updated — G-04 ruled 2026-09-07: the waves band (`README.md`) IS the ecosystem roadmap, `ECOSYSTEM_ROADMAP.md` never written; the decision (waves vs roadmaps) taken and recorded with the deferral's reason.
 - [ ] The front door repointed to the Eid kickoff, the close plan CLOSED and this file `status: completed` — in the same change.
 
 ## Carried out of Ferd (owned, not lost)

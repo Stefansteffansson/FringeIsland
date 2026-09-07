@@ -41,7 +41,7 @@ Waves are thematic focus buckets, NOT sequential gates. Work from any wave can b
 
 1. `docs/planning/waves/{wave}.md` — current wave file
 2. `docs/ecosystem/VISION.md` — ecosystem vision (what the wave serves)
-3. `docs/ecosystem/ECOSYSTEM_ROADMAP.md` — strategic priorities
+3. `docs/planning/waves/README.md` — the waves band, which is the ecosystem roadmap (G-04, 2026-09-07); strategic priorities in wave order
 4. Feature indexes across relevant products/services — scan `features/README.md` files
 
 ### Step 2: Identify features in scope
@@ -123,7 +123,7 @@ When all features reach maturity 6-done AND all DoD criteria are met:
 
 1. Update wave status to `completed` in the wave file
 2. Create a wave retrospective: `docs/planning/retrospectives/retro-wave-{name}.md`
-3. Update `docs/ecosystem/ECOSYSTEM_ROADMAP.md` to reflect the shift in strategic focus
+3. Update the waves band in `docs/planning/waves/README.md` (the ecosystem roadmap, G-04) to reflect the shift in strategic focus — the closing wave's row reads completed, the next wave's row reads NOW
 4. Identify any incomplete items that should carry over to the next wave
 5. Clean up: ensure all tasks from this wave have been deleted (they should have been deleted after cycle retros, but verify)
 6. **Repoint the front door.** A wave close is a cycle close too: `docs/planning/cycles/cycle-current.md` must name what follows (the next wave's first cycle, or "next: …") — the unit gate `hub/tests/unit/platform/cycle-current-front-door.test.ts` goes red on a closed plan until it does (PROCESS.md §3; Audit V R-14, 2026-09-05).

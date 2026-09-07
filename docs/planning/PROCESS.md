@@ -120,13 +120,13 @@ Every work item has a type. The type determines which template to use, which DoD
   - **Tech-debt / NFR / process allocation:** At least one bet per cycle should be a tech-debt, NFR, or process item — unless the backlog genuinely contains none. The "unless" matters: don't invent debt to meet a quota. But absent a deliberate allocation, feature work consistently crowds out quality work, and the ecosystem degrades in ways that aren't visible until they're expensive.
   - **Gap review:** Read `../ecosystem/how-we-work/gaps.md` as input to the betting session. High-priority gaps are candidates for the tech-debt/NFR/process allocation until closed; medium-priority gaps accumulate until their compounding cost warrants a bet; low-priority gaps are typically swept up during cooldown weeks. If the cycle just closed a gap, remove the entry from the register, update the header count, and remove the matching callout from the relevant how-we-work chapter. New gaps surfaced during the cycle are added to the register with the next sequential ID (G-NN).
   - Review metrics (cycle time, throughput, deployment frequency)
-  - Update the relevant roadmaps (`docs/ecosystem/ECOSYSTEM_ROADMAP.md`, product roadmaps, `docs/platform/core/ROADMAP.md`)
+  - Update the relevant roadmaps — the ecosystem roadmap is the waves band, `docs/planning/waves/README.md` (G-04, ruled 2026-09-07: no separate `ECOSYSTEM_ROADMAP.md`); product roadmaps; `docs/platform/core/ROADMAP.md`
   - Run the `doc-health-check` skill (`.claude/skills/doc-health-check/SKILL.md`) to verify ecosystem docs are clean — stale paths, terminology drift, README indexes out of sync, missing DESCRIPTION.md for active entities, unfilled Implementation notes on 6-done specs, parked items whose `parked_reason` no longer holds
   - **Backlog triage:** walk the open tasks in `backlog/tasks/` (including the standing-tasks table in its `README.md`). For each: still valid? still the right priority? Any task that has survived two boundaries is either bet on, re-scoped, or dropped with a reason — not silently carried a third time. Without a read-point, filing becomes a way of forgetting: FEAT-PC002's missing Implementation notes were filed at the A-JRN boundary, ignored, then *re-filed as a new task* at the next boundary (2026-07-24) because nobody read the backlog the finding was already sitting in.
   - Regenerate the project dashboard (`npm run dashboard`) so its snapshot panels reflect the current state — see [`../../scripts/dashboard/README.md`](../../scripts/dashboard/README.md). It is a derived view: the file viewer is always live, but the overview panels are a snapshot from the last generate.
   - Run retrospective for the cycle that just ended (template: `../templates/retrospective.md`)
 - **Cycle kickoff (before anything is decomposed):**
-  - **Write the front door first.** `cycles/cycle-current.md` — run `npm run cycle:kickoff -- "<cycle name>" <plan path>` (from the repo root), which writes it from `../templates/cycle-current.md`: the five fields as a header table (the cycle and its goal in one sentence, a link to the dated plan document, a link to the latest bridge, the board's status as `open`/`settled` with a date, what comes next), then three sections in a fixed order — **In motion · Waiting on Stefan · Landed this cycle** — one line per item, six at most. Never the plan itself: the plan is a dated document written from `../templates/cycle-plan.md` (today under `hub-v2/`). The dev dashboard renders the door as Markdown, so the template's layout is what Stefan sees; the unit gate holds the shape as well as the content. The session-start hook injects the front door into every session, so the first thing every session reads is what is being built now.
+  - **Write the front door first.** `cycles/cycle-current.md` — run `npm run cycle:kickoff -- "<cycle name>" <plan path>` (from the repo root), which writes it from `../templates/cycle-current.md`: the five fields as a header table (the cycle and its goal in one sentence, a link to the dated plan document, a link to the latest bridge, the board's status as `open`/`settled` with a date, what comes next), then three sections in a fixed order — **In motion · Waiting on Stefan · Landed this cycle** — one line per item, six at most. Never the plan itself: the plan is a dated document written from `../templates/cycle-plan.md` (under `cycles/` since the Ferd close, 2026-09-07; `hub-v2/` holds the Ferd-era plans). The dev dashboard renders the door as Markdown, so the template's layout is what Stefan sees; the unit gate holds the shape as well as the content. The session-start hook injects the front door into every session, so the first thing every session reads is what is being built now.
 
 ### Waves as thematic focus
 
@@ -140,7 +140,7 @@ Wave tags (`ferd`, `eid`, `hamn`, etc.) are used for filtering, prioritisation, 
 
 When a wave's core work is substantially complete, it triggers:
 - A **wave retrospective** (use `../templates/retrospective.md`, scope = entire wave, not just last cycle)
-- An **ecosystem roadmap update** (`docs/ecosystem/ECOSYSTEM_ROADMAP.md`) reflecting the shift in strategic focus
+- An **ecosystem roadmap update** — the waves band in `docs/planning/waves/README.md` (G-04: the band is the roadmap) — reflecting the shift in strategic focus
 
 ### Deferred and cross-wave work
 
@@ -233,7 +233,7 @@ This is the trigger → artifact map. Whenever you find yourself starting work, 
 | Research needed before specifying | Research spike | `../templates/research-spike.md` | `../research/{topic}.md` |
 | Cycle starts | Cycle plan (a dated document) **+ the front door** | `../templates/cycle-plan.md` · `../templates/cycle-current.md` | the plan under the cycle's home (today `hub-v2/`); `cycles/cycle-current.md` is the front door that points at it — written by `npm run cycle:kickoff`, overwritten every cycle (R-14, 2026-09-05; the shape 2026-09-06) |
 | Cycle ends | Retrospective | `../templates/retrospective.md` | `retrospectives/retro-YYYY-MM-DD.md` |
-| Wave completes (last Build item Done) | Wave retrospective + ecosystem roadmap update | `../templates/retrospective.md` (wave-scoped) | `retrospectives/retro-wave-{name}.md` + edit `../ecosystem/ECOSYSTEM_ROADMAP.md` |
+| Wave completes (last Build item Done) | Wave retrospective + ecosystem roadmap update | `../templates/retrospective.md` (wave-scoped) | `retrospectives/retro-wave-{name}.md` + update the waves band in `waves/README.md` (the ecosystem roadmap, G-04) |
 | Cross-cutting vertical concern needs specifying | Vertical spec | `../templates/vertical-spec.md` | `../verticals/{name}.md` |
 | Ecosystem vision changes | Update VISION.md | (no template — constitutional) | `../ecosystem/VISION.md` |
 

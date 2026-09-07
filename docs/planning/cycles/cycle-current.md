@@ -1,27 +1,26 @@
-# Now building — the Ferd close
+# Now building — The Eid kickoff
 
 | | |
 |---|---|
-| **Cycle** | The Ferd close — close Wave 1 formally: the wave file, the wave-level DoD walk, DB-4's last live-walk legs, the wave retrospective, then the Eid kickoff. |
-| **Plan** | [`../hub-v2/2026-09-05-ferd-close-plan.md`](../hub-v2/2026-09-05-ferd-close-plan.md) |
-| **Latest bridge** | [`../sessions/2026-09-06_01_-_FRONT-DOOR-SHAPE-WALK-RUNNER-LEGS-GREEN.md`](../sessions/2026-09-06_01_-_FRONT-DOOR-SHAPE-WALK-RUNNER-LEGS-GREEN.md) |
-| **Board** | open 2026-09-06 — the close ran and its last legs are walked; the declaration is Stefan's |
-| **Next** | The Eid kickoff — design tools and narrative (Journey Studio v1, the minimal design foundation, the Whisp; studies under `../waves/studies/eid/`). |
+| **Cycle** | The Eid kickoff — open Wave 2 — the wave file with its DoD on day one, the carry-overs dispositioned, design tools and narrative decomposed to 4-ready |
+| **Plan** | [`2026-09-07-eid-kickoff-plan.md`](2026-09-07-eid-kickoff-plan.md) |
+| **Latest bridge** | [`../sessions/2026-09-07_01_-_FERD-CLOSED-G04-RULED-EID-DOOR-OPEN.md`](../sessions/2026-09-07_01_-_FERD-CLOSED-G04-RULED-EID-DOOR-OPEN.md) |
+| **Board** | open 2026-09-07 — the kickoff decomposes in a fresh session; two decisions in the plan are Stefan's |
+| **Next** | the first Eid build cycle — Journey Studio v1, the minimal design foundation or the Whisp, whichever the kickoff bets on first |
 
 ## In motion
-- The Eid kickoff waits on the close declaration — it opens in a fresh session with `npm run cycle:kickoff`
+- The kickoff itself — a fresh session under `wave-planning`: `waves/eid.md` with its DoD on day one, then the decomposition of design tools and narrative (studies under `../waves/studies/eid/`)
+- The carry-over dispositions listed in the [plan](2026-09-07-eid-kickoff-plan.md) §2 — each gets a written in-or-out at the kickoff
 
 ## Waiting on Stefan
-- The close declaration — one change: front door → the Eid kickoff, the plan CLOSED, `ferd.md` `completed`
-- The felt-items verdict on DB-4 legs 4/5/6/8 — Stefan walked all four by hand 2026-09-07 (green; three script corrections; two backlog observations); one word closes it
-- G-04 — the waves README as the ecosystem roadmap band (the [wave retro](../retrospectives/retro-wave-ferd.md) carries the recommendation)
-- Leaked-password protection — **needs the Supabase Pro plan** (the org is on Free; the toggle refuses to save, verified 2026-09-07): upgrade, or accept the gap and note it; the E2E smoke job in CI → Eid's first tooling item
+- The two kickoff decisions in the plan §4 — the Eid appetite, and which of the three themes goes first
+- Leaked-password protection — a Supabase Pro decision (the org is on Free; the toggle refuses to save)
+- The `next dev` agent-rules files in `hub/` — commit (recommended), disable, or ignore
+- The E2E smoke job in CI — Eid's first tooling item, a ruling on design before a build
 
 ## Landed this cycle
-- DB-4 legs 4/5/6/8 hand-walked green by Stefan 2026-09-07, and walked GREEN 2026-09-06 by the new **walk runner** (`hub/tests/walks`, one test per script step, a screenshot per step; [script](../hub-v2/2026-09-05-db4-walk-legs-4-5-6-8.md)) — one script correction, no product finding
-- The front door's fixed shape — the template, `npm run cycle:kickoff`, the gate's shape half (#630); PROCESS.md §3 says so (#631)
-- `ferd.md` written — 100 features, the wave DoD; the DoD walked ([record](../hub-v2/2026-09-05-ferd-dod-walk.md)); the wave retrospective drafted; the done tasks swept
-- ADR-U053 executed and Accepted — the test project, the fuse, the replay and drift scripts (#624, #625)
-- TASK-RACE-01 — the stale-read race the fleet found, fixed (#627); the dependency red line closed — `next` 16.3.4, `npm audit` 0 (#629)
+- **Wave 1, Ferd, declared CLOSED 2026-09-07** — `ferd.md` completed, the [close plan](../hub-v2/2026-09-05-ferd-close-plan.md) CLOSED, the [DoD walk](../hub-v2/2026-09-05-ferd-dod-walk.md) with no open row, the [wave retro](../retrospectives/retro-wave-ferd.md) carrying the carry-overs
+- G-04 ruled and executed — the waves band is the ecosystem roadmap; six pointers repointed, nothing deleted
+- The front door written by `npm run cycle:kickoff`; cycle plans live in `cycles/` from now on
 
 _Read this first. Written at kickoff by `npm run cycle:kickoff` before anything is decomposed; repointed at close. The front door, never the plan — the gate `cycle-current-front-door.test.ts` holds the five fields, the three sections and the size._

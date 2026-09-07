@@ -537,7 +537,7 @@ For each feature spec (grep `docs/**/features/FEAT-*.md`):
 
 **Question:** Do any active files reference structural documents that are architecturally expected but not yet authored — and if so, are those references being correctly treated as scaffolding rather than drift?
 
-The FringeIsland architecture has intentional placeholders: files the design expects to exist eventually, but that haven't been written yet. Examples: `docs/ecosystem/ECOSYSTEM_ROADMAP.md` (deferred as T3.5), `docs/platform/DEPENDENCIES.md` (deferred as T4.1), per-product `SPECIFICATION.md` and `ROADMAP.md` files for products not yet in active development. References to these files in active docs (feature specs, tier-level `CLAUDE.md` files, PROCESS.md, templates) are **scaffolding, not drift** — they describe the designed structure and point future contributors at where content will land.
+The FringeIsland architecture has intentional placeholders: files the design expects to exist eventually, but that haven't been written yet. Examples: `docs/platform/DEPENDENCIES.md` (deferred as T4.1), per-product `SPECIFICATION.md` and `ROADMAP.md` files for products not yet in active development. References to these files in active docs (feature specs, tier-level `CLAUDE.md` files, PROCESS.md, templates) are **scaffolding, not drift** — they describe the designed structure and point future contributors at where content will land.
 
 Without this section, Sections 3, 3.6, and 6 would flag placeholder references as broken links, missing files, or entity-coverage gaps. That would start an erosion loop: each sweep would prune more architectural scaffolding, and the designed structure would silently degrade with every run.
 
@@ -547,9 +547,10 @@ This section is the explicit protection.
 
 | Path | Purpose | Why it's expected | Pending-since |
 |------|---------|-------------------|---------------|
-| `docs/ecosystem/ECOSYSTEM_ROADMAP.md` | Ecosystem-level NOW/NEXT/LATER roadmap | Referenced by `wave-planning` skill, `product-roadmap.md` template, `wave-spec.md` template, PROCESS.md §3 cycle-boundary checklist, PROCESS.md §6 trigger table | T3.5 (deferred at 2026-04-17 WoW review) |
 | `docs/platform/DEPENDENCIES.md` | Cross-service dependency table | Referenced by `docs/platform/README.md`, `docs/platform/CLAUDE.md` Where-to-go-next | T4.1 (deferred at 2026-04-17 WoW review) |
 | `docs/products/hub/ROADMAP.md` | Hub NOW/NEXT/LATER | Referenced by `products/hub/DESCRIPTION.md`, `products/hub/README.md` | T3.4 (deferred at 2026-04-17 WoW review) |
+
+**Resolved by decision, not by authoring:** `docs/ecosystem/ECOSYSTEM_ROADMAP.md` — G-04, ruled 2026-09-07 at the Ferd close: the waves band (`docs/planning/waves/README.md`) IS the ecosystem roadmap; the file is never written; PROCESS.md §3/§6 and this skill repointed. A reference to it in an active file is drift now, not scaffolding.
 | `docs/products/gimbal/DESCRIPTION.md` | Gimbal product identity | Expected per `products/gimbal/README.md`; product is planned, not yet scoped | Pending — wave Eid+ |
 | `docs/products/gimbal/SPECIFICATION.md` | Gimbal build spec | Expected per product-tier pattern | Pending — wave Eid+ |
 | `docs/products/gimbal/ROADMAP.md` | Gimbal roadmap | Expected per product-tier pattern | Pending — wave Eid+ |
@@ -569,7 +570,7 @@ This section is the explicit protection.
 ### Procedure
 
 1. **Before flagging a missing-file finding in Sections 3, 3.6, or 6, cross-check the registry above.** If the missing file is listed here, the reference is scaffolding — do not flag. Record in the output summary under "Placeholders confirmed scaffolding" rather than under "Critical findings."
-2. **When a registry entry is authored** (someone finally writes `ECOSYSTEM_ROADMAP.md`, for example), remove its row from the registry in the same commit that adds the file. A stale registry entry pointing at a file that now exists is its own kind of drift.
+2. **When a registry entry is authored** (someone finally writes `DEPENDENCIES.md`, for example), remove its row from the registry in the same commit that adds the file. A stale registry entry pointing at a file that now exists is its own kind of drift.
 3. **When a new architectural placeholder is introduced** (a decision locks a new expected structural doc), add a row to the registry in the same session that locks the decision. Same discipline as Sections 1.5 and 3.6 — the registry's value depends on it being fed.
 4. **The registry is for structural placeholders, not wishlists.** A file belongs here only if (a) it has a defined purpose, (b) it is referenced by at least one active doc, and (c) its eventual authoring is committed (locked decision, roadmap entry, or session record). Speculative files that someone might write someday do not belong here — they bloat the registry and dilute its signal.
 5. **Review the registry at wave boundaries.** At each wave transition (PROCESS.md §3), walk the registry and confirm each pending item still reflects current plans. Items whose purpose has evaporated (the capability was scoped out, the dependency was absorbed elsewhere) are removed. Items whose authoring should happen imminently get promoted to backlog items.

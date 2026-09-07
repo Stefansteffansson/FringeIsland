@@ -4,7 +4,7 @@ Cycles are **Shape Up betting periods** — typically 2–3 weeks of focused bui
 
 ## The front door: `cycle-current.md`
 
-[`cycle-current.md`](./cycle-current.md) is the one fixed place to see **what is being built right now** — for Stefan first, and for every session that starts. It is a front door, never the plan itself, and it is **overwritten every cycle**: nothing is recorded here that is not linked from here. The plan is a **dated document** (today under [`../hub-v2/`](../hub-v2/); after Ferd, that directory's successor) written from [`../../templates/cycle-plan.md`](../../templates/cycle-plan.md); the bridges, the wave file, the retrospectives and the task files are the records.
+[`cycle-current.md`](./cycle-current.md) is the one fixed place to see **what is being built right now** — for Stefan first, and for every session that starts. It is a front door, never the plan itself, and it is **overwritten every cycle**: nothing is recorded here that is not linked from here. The plan is a **dated document in this directory** — `YYYY-MM-DD-{slug}-plan.md` beside the front door, since the Ferd close (2026-09-07); the Ferd-era plans stay under [`../hub-v2/`](../hub-v2/) — written from [`../../templates/cycle-plan.md`](../../templates/cycle-plan.md); the bridges, the wave file, the retrospectives and the task files are the records.
 
 **The shape is the template** [`../../templates/cycle-current.md`](../../templates/cycle-current.md), and the kickoff script writes it — `npm run cycle:kickoff -- "<cycle name>" <plan path>` (from the repo root; `--goal`, `--bridge`, `--next`, `--board`, `--dry-run`; see `scripts/README.md`). The dev dashboard renders the file as Markdown, so the layout is the file:
 
