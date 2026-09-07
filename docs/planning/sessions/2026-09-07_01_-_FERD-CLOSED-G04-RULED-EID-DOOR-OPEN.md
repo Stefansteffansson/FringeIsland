@@ -21,6 +21,6 @@
 
 - **The Eid kickoff session** — fresh session: the wave file `waves/eid.md` with its DoD on day one, the carry-over dispositions, the decomposition under `wave-planning` / `ecosystem-decomposition`; the stub plan is the door's target until then.
 - **Leaked-password protection** — a Supabase Pro decision, Stefan's.
-- **The `next dev` agent-rules files** (`hub/AGENTS.md`, `hub/CLAUDE.md`) — Stefan's ruling; recommendation: commit them.
+- ~~The `next dev` agent-rules files~~ — ruled "commit!" and committed (#643); the tree is clean. The cast is torn down (census zero) and the dev server stopped; nothing runs on this machine at close.
 - **The E2E smoke job in CI**, TASK-FORUM-01, the un-specced fundamentals, the latest-read-wins rule, the four §4 process changes — the retro's open boxes, now Eid's kickoff board.
 - **Legs 1/2/3/7 as walk specs** — not codified; walked by hand 2026-09-04.
