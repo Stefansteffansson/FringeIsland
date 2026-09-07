@@ -83,14 +83,14 @@ Candidates, each a `type:process` work item; steering files wait for the nod.
 
 ## 5. Action items
 
-- [ ] **Declare the wave closed** (or not) against [`ferd.md`](../waves/ferd.md) and the walk record — owner: Stefan
-- [ ] **The three ADR-U053 production commands** in the [cutover record](../hub-v2/2026-09-05-adr-u053-cutover.md) (the history repair, the corrective's production leg, `migration-drift.js` green) — owner: Stefan
-- [ ] **Vercel Preview → the test project** (walks and Previews off production) — owner: Stefan
-- [ ] **Leaked-password protection** in Supabase Auth, both projects (the advisor's one WARN that is not by design) — owner: Stefan; note the date in the next bridge
+- [x] **Declare the wave closed** — DONE 2026-09-07 ("done and close") (or not) against [`ferd.md`](../waves/ferd.md) and the walk record — owner: Stefan
+- [x] **The three ADR-U053 production commands** — DONE 2026-09-07 (drift green 142 = 142 = 142) in the [cutover record](../hub-v2/2026-09-05-adr-u053-cutover.md) (the history repair, the corrective's production leg, `migration-drift.js` green) — owner: Stefan
+- [x] **Vercel Preview → the test project** — DONE 2026-09-06 (walks and Previews off production) — owner: Stefan
+- [ ] **Leaked-password protection** — PLAN-GATED (Supabase Free; needs Pro — a billing decision, 2026-09-07) in Supabase Auth, both projects (the advisor's one WARN that is not by design) — owner: Stefan; note the date in the next bridge
 - [x] **The production-dependency audit** — DONE 2026-09-06 on Stefan's "go ahead": `next` + `eslint-config-next` 16.1.4 → 16.3.4 (pinned) and `npm audit fix` (nanoid, ws, and the dev-only handlebars / js-yaml / minimatch / picomatch / flatted / brace-expansion / browserslist) → 0 vulnerabilities; the feature gates green on the upgraded tree; the E2E fleet re-run (bridge `2026-09-05_03`, addendum) — owner: Claude Code
 - [ ] **The E2E smoke job in CI** (TASK-E2E-04's recommendation) — ruling: Stefan; build: Claude Code
-- [ ] **DB-4 legs 4 / 5 / 6 / 8** on the fresh cast per [the walk script](../hub-v2/2026-09-05-db4-walk-legs-4-5-6-8.md); teardown and census after — owner: Stefan (walker), Claude Code (script, cast, record)
-- [ ] **G-04 executed as decided** (waves README = ecosystem roadmap; PROCESS.md §3/§6 + the two skills repointed; the gap closed) — owner: Claude Code, on the nod
+- [x] **DB-4 legs 4 / 5 / 6 / 8** — DONE: runner 2026-09-06, hand-walk 2026-09-07, all green on the fresh cast per [the walk script](../hub-v2/2026-09-05-db4-walk-legs-4-5-6-8.md); teardown and census after — owner: Stefan (walker), Claude Code (script, cast, record)
+- [x] **G-04 executed as decided** — DONE 2026-09-07 on the go (waves README = ecosystem roadmap; PROCESS.md §3/§6 + the two skills repointed; the gap closed) — owner: Claude Code, on the nod
 - [ ] **TASK-FORUM-01** re-tagged to Eid, bet on, or dropped with a reason at the Eid kickoff (PROCESS.md §3 backlog triage) — owner: Stefan
 - [ ] **Eid-kickoff triage of the 2026-04 map's un-specced fundamentals** (feature-flag infrastructure, the ADR-U005 flexible profile table, visitor activity transfer) — in or out, in writing — owner: Stefan, at the kickoff board
 - [ ] **The latest-read-wins rule** as a `feature-development` line — a section that re-reads on a view switch guards its state writes with a read sequence (TASK-RACE-01's shape; the third stale-async write in the Hub) — owner: Claude Code, on the nod (a skill edit)

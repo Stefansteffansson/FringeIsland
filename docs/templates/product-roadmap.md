@@ -3,7 +3,7 @@
 **Status:** Living document
 **Owner:** {name}
 **Last updated:** YYYY-MM-DD
-**Companion:** `DESCRIPTION.md` · `SPECIFICATION.md` · ecosystem roadmap at `../../ecosystem/ECOSYSTEM_ROADMAP.md`
+**Companion:** `DESCRIPTION.md` · `SPECIFICATION.md` · the ecosystem roadmap is the waves band at `../../planning/waves/README.md` (G-04)
 
 > NOW / NEXT / LATER. No dates. Items move left as confidence grows. If something has a date, it belongs in `../../planning/cycles/cycle-current.md`, not here.
 

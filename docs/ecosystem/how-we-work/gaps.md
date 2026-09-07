@@ -14,7 +14,7 @@
 |----|------|-----|----------|--------------|
 | G-02 | Decomposition (L4) | Cross-product feature sync | Medium | Extend `ecosystem-decomposition` skill with paired-spec sync protocol |
 | G-03 | Decomposition (cross-cut) | Vertical specs are scaffolds | **High** | Populate §3 through §6 of each of the five vertical specs |
-| G-04 | Cadence | Wave ↔ roadmap relationship | Medium | Session decision: do waves replace, duplicate, or complement roadmaps? |
+| G-04 | Cadence | Wave ↔ roadmap relationship | Medium | **RESOLVED 2026-09-07 (Ferd close):** option (a) — the waves band is the ecosystem roadmap (`docs/planning/waves/README.md`); no `ECOSYSTEM_ROADMAP.md` |
 | G-05 | Cadence | Review queue not operationalized | **High** | Extend PROCESS.md or `feature-development` skill with review handoff protocol |
 | G-06 | Cadence | Multi-agent task locking | **High** | ADR + `assigned_to` atomicity rule in `feature-development` skill |
 | G-07 | Cadence | Ferd DoD empty | Medium | Populate `docs/planning/waves/ferd.md` DoD section |
@@ -61,6 +61,8 @@ Five vertical spec files exist (`docs/verticals/{administration,privacy,notifica
 PROCESS.md §3 references `docs/ecosystem/ECOSYSTEM_ROADMAP.md`, product roadmaps, and `docs/platform/core/ROADMAP.md` as things to update at cycle boundary. Separately, wave files exist under `docs/planning/waves/`. If the ecosystem roadmap shows "NOW: Ferd / NEXT: Eid / LATER: Hamn", it duplicates the waves band. If it shows NOW/NEXT/LATER features independent of wave grouping, it's a separate planning layer not currently reflected in the how-we-work diagrams.
 
 *Proposed fix:* session decision, probably during a cooldown week. Three options — (a) waves replace roadmaps, (b) roadmaps are NOW/NEXT/LATER within waves, (c) waves and roadmaps are orthogonal planning layers. Then update `ecosystem-decomposition` skill, `wave-planning` skill, and chapter 02 of this doc to match.
+
+**Resolved 2026-09-07 (G-04, ruled at the Ferd close):** option (a). The waves band — `docs/planning/waves/README.md` — is the ecosystem roadmap; `ECOSYSTEM_ROADMAP.md` is never written; PROCESS.md §3/§6, the `wave-planning` and `doc-health-check` skills and the placeholder registry repointed; product roadmaps stay per product.
 
 **G-05 — Review queue not operationalized.** **High priority.**
 Tasks have `status: review` and `assigned_to` in frontmatter. No document describes how a reviewer is chosen, how a task flows from in_progress to review to approved (or back to in_progress with changes requested), or how the WIP-at-review rule actually bites. The bottleneck the WIP limit is supposed to enforce has no enforcement mechanism.
@@ -211,7 +213,7 @@ The 2026-04-27 cascade-plan bridge (`docs/planning/sessions/2026-04-27_01_-_AGEN
 
 **Medium priority** (affects clarity and contributor onboarding but not blocking today):
 - G-02 Cross-product feature sync
-- G-04 Wave ↔ roadmap relationship
+- ~~G-04 Wave ↔ roadmap relationship~~ — resolved 2026-09-07 (option a)
 - G-07 Ferd DoD empty
 - G-09 Refinement ritual undocumented
 - G-10 Board mechanic unchosen

@@ -6,12 +6,14 @@ Each wave file defines: thematic focus, features in scope (linking to feature sp
 
 **Template:** [`../../templates/wave-spec.md`](../../templates/wave-spec.md)
 
+**This README is the ecosystem roadmap** (G-04, ruled 2026-09-07 at the Ferd close): the wave order below is the NOW / NEXT / LATER view at the ecosystem tier. There is no separate `ECOSYSTEM_ROADMAP.md`, by decision — it would duplicate this band; product roadmaps stay per product.
+
 ## The six waves
 
 | Wave | Name | Meaning | Status | File |
 |------|------|---------|--------|------|
-| 1 | Ferd | Voyage / departure — foundation | **Build complete; close in progress** (`status: cooldown` — the wave file, scope and DoD written 2026-09-05; the close declaration is Stefan's) | [`ferd.md`](./ferd.md) |
-| 2 | Eid | Narrow passage — design tools + narrative | Planned | [`eid.md`](./eid.md) |
+| 1 | Ferd | Voyage / departure — foundation | **Completed 2026-09-07** — declared closed against its DoD ([walk record](../hub-v2/2026-09-05-ferd-dod-walk.md), [retro](../retrospectives/retro-wave-ferd.md)) | [`ferd.md`](./ferd.md) |
+| 2 | Eid | Narrow passage — design tools + narrative | **NOW** — the kickoff opens 2026-09-07 (the [front door](../cycles/cycle-current.md)) | [`eid.md`](./eid.md) |
 | 3 | Hamn | Harbour — mobile + polish | Planned | [`hamn.md`](./hamn.md) |
 | 4 | Heim | Home — community + world | Planned | [`heim.md`](./heim.md) |
 | 5 | Brim | Horizon — discovery + growth | Planned | [`brim.md`](./brim.md) |

@@ -35,15 +35,15 @@ Migration state, for the record (not a DoD line): test 142 applied, latest `2026
 | # | Criterion | Evidence (this session) | Verdict |
 |---|---|---|---|
 | R1 | Wave retrospective completed; the done `TASK-*` files swept after the link check | [`retro-wave-ferd.md`](../retrospectives/retro-wave-ferd.md) written (Three Ls, metrics, decisions, process changes, action items, wave transition, doc health). Sweep: 14 `done` files deleted, 38 `done` files kept as live link targets (the 2026-08-06 rule), logged in the tasks README; `TASK-RDB-04` restored when the doc-health run found a sibling link. | **GREEN** (the retro's decisions and rows marked Stefan's are his to confirm) |
-| R2 | Ecosystem roadmap updated — or the G-04 decision taken and recorded with the deferral's reason | `ECOSYSTEM_ROADMAP.md` does not exist (registry placeholder since 2026-04-17; G-04 open). Recommendation recorded in the retro §3: the waves README is the ecosystem roadmap band (option a); PROCESS.md §3 / §6 and the two skills repoint; G-04 closes. A steering change — Stefan's nod. | **OPEN** — Stefan's ruling |
-| R3 | The front door repointed to the Eid kickoff, the close plan CLOSED, `ferd.md` `status: completed` — in the same change | Not done by design: these are the close **declaration**, a human call (`wave-planning` "Ask first"). The front door names the Ferd close with its board; the plan reads IN PROGRESS; `ferd.md` reads `cooldown`. One change flips all three on Stefan's "close Ferd". | **OPEN** — the declaration |
+| R2 | Ecosystem roadmap updated — or the G-04 decision taken and recorded with the deferral's reason | `ECOSYSTEM_ROADMAP.md` does not exist (registry placeholder since 2026-04-17; G-04 open). Recommendation recorded in the retro §3: the waves README is the ecosystem roadmap band (option a); PROCESS.md §3 / §6 and the two skills repoint; G-04 closes. A steering change — Stefan's nod. | **CLOSED 2026-09-07** — ruled option (a): the waves band is the ecosystem roadmap; executed the same day |
+| R3 | The front door repointed to the Eid kickoff, the close plan CLOSED, `ferd.md` `status: completed` — in the same change | Not done by design: these are the close **declaration**, a human call (`wave-planning` "Ask first"). The front door names the Ferd close with its board; the plan reads IN PROGRESS; `ferd.md` reads `cooldown`. One change flips all three on Stefan's "close Ferd". | **OPEN** — the declaration **CLOSED 2026-09-07** — declared ("done and close"): the plan CLOSED, `ferd.md` `status: completed`, the front door → the Eid kickoff, in one change. |
 
 ## Summary
 
 | Verdict | Lines |
 |---|---|
 | GREEN | F1, Q1, Q2, Q4, D1, D2, D3, R1 (8) — Q1 after a fix this walk found: the E2E fleet's first run exposed a stale-read race in three Hub sections (TASK-RACE-01, PR #627); 150 / 150 on the fixed tree |
-| OPEN — Stefan's | R2 (G-04), R3 (the declaration) — F2's legs 4/5/6/8 closed GREEN 2026-09-06 by the walk runner (the felt items his) |
+| OPEN | none — **Wave 1, Ferd, CLOSED 2026-09-07.** R2 ruled (G-04 option a), R3 declared; F2 walked twice (runner 2026-09-06, hand 2026-09-07). |
 | RED → ruled and fixed | Q3's dependency half — RED at the walk (5 high), **GREEN 2026-09-06** on Stefan's "go ahead" (`next` 16.3.4 + `npm audit fix`, 0 vulnerabilities, the gates green); the advisor half green by design with one toggle Stefan's |
 
 **What closes the wave:** Stefan's walk of the four legs (F2); the G-04 ruling (R2); then the declaration (R3) — one change: front door → the Eid kickoff, plan CLOSED, `ferd.md` `status: completed`, the retro's §3 confirmed.
