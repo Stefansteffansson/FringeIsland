@@ -50,7 +50,12 @@ export async function signIn(page: Page, key: CastKey): Promise<void> {
   await page.locator('#email').fill(CAST[key].email);
   await page.locator('#password').fill(walkPassword());
   await page.locator('button[type="submit"]').click();
-  await expect(page).toHaveURL(/\/groups/, { timeout: 20_000 });
+  // Signed in = away from /login. A fresh cast member's FIRST landing is the
+  // onboarding journey's player (the cast's arrival latch is an active own walk
+  // on that journey); a member who has arrived before lands on /groups. Both are
+  // the product being right — every step navigates explicitly anyway.
+  await page.waitForURL((u) => !u.pathname.startsWith('/login'), { timeout: 20_000 });
+  await expect(page).toHaveURL(/\/(groups|journeys\/[0-9a-f-]{36}\/play)/);
 }
 
 /** A cast member signed in on a fresh, isolated context (own cookies, own session). */
