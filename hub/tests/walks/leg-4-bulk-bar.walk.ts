@@ -30,7 +30,6 @@ const REFUSAL = 'User is already in the requested state';
 
 let admin: Actor;
 let mona: Actor;
-let monaAgain: Actor | null = null;
 let monaUser: CastUser;
 let kalleUser: CastUser;
 
@@ -85,7 +84,7 @@ test.beforeAll(async ({ browser }: { browser: Browser }) => {
 });
 
 test.afterAll(async () => {
-  for (const a of [admin, mona, monaAgain]) await a?.context.close();
+  for (const a of [admin, mona]) await a?.context.close();
 });
 
 test.describe('Leg 4 — the bulk bar: one reason, per-member outcomes', () => {
@@ -155,15 +154,21 @@ test.describe('Leg 4 — the bulk bar: one reason, per-member outcomes', () => {
     await evidence(admin.page, 'leg4 step6 reactivated');
   });
 
-  test('step 7 — B: Mona signs in again — two plain notices, the reasons as bodies, no action affordance', async ({ browser }) => {
-    monaAgain = await openAs(browser, 'mona');
-    await monaAgain.page.goto('/notifications');
-    await expect(monaAgain.page.getByText(REASON_HOLD)).toBeVisible({ timeout: 20_000 });
-    await expect(monaAgain.page.getByText(REASON_LIFT)).toBeVisible();
-    await expect(monaAgain.page.getByText(/suspended/i).first()).toBeVisible();
-    await expect(monaAgain.page.getByText(/reinstated/i).first()).toBeVisible();
-    await expect(monaAgain.page.locator('[data-testid^="notif-action-"]')).toHaveCount(0);
-    await evidence(monaAgain.page, 'leg4 step7 two plain notices');
+  test('step 7 — B: Mona reloads her own window — still signed in, the wall gone; two plain notices, the reasons as bodies, no action affordance', async () => {
+    // Script correction (Stefan's hand-walk, 2026-09-07): a hold does NOT end
+    // the session — `admin_update_user_status` touches none; the wall is an
+    // in-session revalidation (FEAT-H038 W-7). So Mona's ORIGINAL window is
+    // reused here: a reload after the lift lands her inside, no sign-in. Only
+    // the force sign-out (step 9) ends sessions — the contrast is the proof.
+    await mona.page.goto('/notifications');
+    await expect(mona.page).not.toHaveURL(/\/login/);
+    await expect(mona.page.getByTestId('account-suspended-surface')).toHaveCount(0);
+    await expect(mona.page.getByText(REASON_HOLD)).toBeVisible({ timeout: 20_000 });
+    await expect(mona.page.getByText(REASON_LIFT)).toBeVisible();
+    await expect(mona.page.getByText(/suspended/i).first()).toBeVisible();
+    await expect(mona.page.getByText(/reinstated/i).first()).toBeVisible();
+    await expect(mona.page.locator('[data-testid^="notif-action-"]')).toHaveCount(0);
+    await evidence(mona.page, 'leg4 step7 same window still signed in two plain notices');
   });
 
   test('step 8 — A: the mixed pair — Mona succeeds, Kalle refused verbatim; then both reactivated', async () => {
@@ -206,14 +211,14 @@ test.describe('Leg 4 — the bulk bar: one reason, per-member outcomes', () => {
     // ADR-U039's instant hint: Mona's window moves itself to sign-in within
     // seconds. A navigation of our own may be aborted by that very move
     // (net::ERR_ABORTED on the first run) — which is the proof, not a failure.
-    const m = monaAgain ?? mona;
+    // The same window that survived the hold in step 7 is ended by this one.
     try {
-      await m.page.goto('/groups', { waitUntil: 'commit' });
+      await mona.page.goto('/groups', { waitUntil: 'commit' });
     } catch {
       /* the hint navigated first */
     }
-    await expect(m.page).toHaveURL(/\/login/, { timeout: 20_000 });
-    await evidence(m.page, 'leg4 step9 mona on sign-in');
+    await expect(mona.page).toHaveURL(/\/login/, { timeout: 20_000 });
+    await evidence(mona.page, 'leg4 step9 mona on sign-in');
   });
 
   test('the substrate — an audit row per member for every hold; none for the refusal', async () => {
