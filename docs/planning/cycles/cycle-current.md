@@ -15,7 +15,6 @@
 ## Waiting on Stefan
 - The two kickoff decisions in the plan §4 — the Eid appetite, and which of the three themes goes first
 - Leaked-password protection — a Supabase Pro decision (the org is on Free; the toggle refuses to save)
-- The `next dev` agent-rules files in `hub/` — commit (recommended), disable, or ignore
 - The E2E smoke job in CI — Eid's first tooling item, a ruling on design before a build
 
 ## Landed this cycle
