@@ -18,6 +18,13 @@
 - **Where the reason renders is a privacy decision, not a display choice.** The script's step 4 assumed the admin's rail shows the reason; FEAT-H049 says the reason renders only where the platform delivers it. The runner asserts the state on the rail and proves the reason on the member's own surfaces.
 - **claude-in-chrome is one user per Chrome profile.** For multi-actor legs Playwright's contexts are the mechanism; the combination that matches how Stefan walks is him as one actor in Chrome and Playwright headed as the others.
 
+## Addendum (2026-09-07) — Stefan walked legs 4/5/6/8 by hand; the last production items closed
+
+- **The three ADR-U053 production commands ran** (history repair, corrective leg + record, drift check green 142 = 142 = 142); **Vercel Preview wired to the test project** and proven on a Preview bundle; **leaked-password protection is plan-gated** (the org is on Supabase Free; the toggle refuses to save) — a billing decision, not a click.
+- **`walk:cast create` now makes the walk admin too** (#637); Stefan re-created the cast with his own password (`--password`) and wrote `hub/.env.walk.local` himself; the runner's sign-in helper accepts a fresh member's first landing in the onboarding player (#639).
+- **Legs 4, 5, 6 and 8 hand-walked, all green.** Three script corrections found by the hand-walk and merged (#638, #640): a hold does not end the session — only force sign-out does (the runner now proves it on Mona's own window); nobody can pause a group's walk this cycle, the Steward included (FEAT-H019 STORY-8 no-go); plus the earlier admin-rail-shows-the-state correction. **No product defect.** Two observations for the backlog: the Pause affordance in the player is small and easy to miss; a Steward wanting to pause the group's walk has no door (the no-go). The runner re-proved legs 4, 5 and 6 on the same cast; leg 8 stands on its 2026-09-06 runner pass plus the hand-walk (Drift is closed on this cast now).
+- **Two test-data arrangements were made on the test project** to serve the hand-walk (Kalle's completed onboarding walk un-completed at step 4, later reset to step 1) — service-role writes on fixture rows, never on production.
+
 ## Not done — plainly
 
 - **#631** (PROCESS.md §3 front-door wording) — Stefan's nod.
