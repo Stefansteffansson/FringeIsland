@@ -5,7 +5,7 @@
  * any test accounts to be left overs from testing … this needs to STOP").
  *
  * USAGE (from hub/):
- *   npm run walk:cast -- create              # five accounts + three groups; prints the password once
+ *   npm run walk:cast -- create              # six accounts (five members + the walk admin, a DeusEx member) + three groups; prints the password once
  *   npm run walk:cast -- create --password X # your own password
  *   npm run walk:cast -- teardown            # everything the cast made, in the house order, then a census
  *   npm run walk:cast -- census              # read-only: what of the cast exists right now
@@ -73,6 +73,7 @@ const GROUPS = [
   { name: 'Drift', steward: 'astrid', members: ['wanda'], isPublic: false },
 ];
 const emailOf = (key) => `walk-${key}@fringeisland.test`;
+const ADMIN_EMAIL = 'walk-admin@fringeisland.test';
 
 const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
 const pick = (n) => Array.from(crypto.randomBytes(n)).map((b) => alphabet[b % alphabet.length]).join('');
@@ -124,6 +125,37 @@ async function create(password) {
       });
     }
     console.log(`ok   ${emailOf(c.key)} (${c.name})`);
+  }
+  // The walk admin (the walk script's P3): a sixth walk-* account, same password,
+  // made a DeusEx member with the seed script's own idiom (membership + role).
+  // Teardown removes it with the cast (email LIKE 'walk-%'); the standing test
+  // DeusEx member keeps the last-member guards satisfied.
+  {
+    const { data, error } = await admin.auth.admin.createUser({
+      email: ADMIN_EMAIL,
+      password,
+      email_confirm: true,
+      user_metadata: { display_name: 'Warden', consent_accepted: 'true' },
+    });
+    if (error) throw new Error(`create walk admin: ${error.message}`);
+    const row = await waitForUserRow(data.user.id);
+    await adminSql(`
+      DO $$
+      DECLARE v_deusex uuid; v_role uuid;
+      BEGIN
+        SELECT id INTO v_deusex FROM public.groups WHERE name = 'DeusEx' AND group_type = 'system';
+        SELECT id INTO v_role FROM public.group_roles WHERE group_id = v_deusex AND name = 'DeusEx';
+        INSERT INTO public.group_memberships (group_id, member_group_id, added_by_group_id, status)
+          VALUES (v_deusex, '${row.personal_group_id}', v_deusex, 'active')
+          ON CONFLICT (group_id, member_group_id) DO UPDATE SET status = 'active';
+        INSERT INTO public.user_group_roles (member_group_id, group_id, group_role_id, assigned_by_group_id)
+          VALUES ('${row.personal_group_id}', v_deusex, v_role, v_deusex)
+          ON CONFLICT DO NOTHING;
+      END $$;`);
+    const deusex = (await adminSql(`
+      SELECT count(*)::int AS n FROM public.group_memberships m JOIN public.groups g ON g.id = m.group_id
+       WHERE g.name = 'DeusEx' AND g.group_type = 'system' AND m.status = 'active'`))[0];
+    console.log(`ok   ${ADMIN_EMAIL} (Warden) — DeusEx member; active DeusEx members=${deusex.n} (expect 2)`);
   }
   for (const grp of GROUPS) {
     // The group is created THROUGH THE CONTRACT as its Steward (the creator gets the Steward role).
