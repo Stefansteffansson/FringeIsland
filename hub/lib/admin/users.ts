@@ -219,39 +219,6 @@ export async function removeAdminUserFromGroup(
   return { group_id: body.group_id, group_name: body.group_name, scenario: body.scenario };
 }
 
-/**
- * FEAT-PC031 / ADR-U054 — the rectification payload. Both addresses and both
- * counts come back so the surface renders the outcome from the contract's own
- * report rather than from the state it happened to be holding.
- */
-export type EmailRectificationResult = {
-  success: boolean;
-  previous_email: string;
-  new_email: string;
-  sessions_revoked: number;
-  invitations_deleted: number;
-};
-
-/**
- * FEAT-H050: correct a member's login email. A typed pass-through — the
- * contract owns every rule (ADR-U038), including normalising the address and
- * requiring the reason; nothing is validated or transformed here.
- */
-export async function updateAdminUserEmail(
-  client: SupabaseClient,
-  userId: string,
-  newEmail: string,
-  reason: string,
-): Promise<EmailRectificationResult> {
-  const { data, error } = await client.rpc('admin_update_user_email', {
-    target_user_id: userId,
-    p_new_email: newEmail,
-    p_reason: reason,
-  });
-  if (error) throwTyped(error);
-  return data as EmailRectificationResult;
-}
-
 export async function grantPlatformAdmin(client: SupabaseClient, userId: string): Promise<void> {
   const { error } = await client.rpc('admin_grant_platform_admin', { p_target_user_id: userId });
   if (error) throwTyped(error);
