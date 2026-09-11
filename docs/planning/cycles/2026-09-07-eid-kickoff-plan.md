@@ -24,14 +24,21 @@
 - Two walk observations: the player's Pause affordance is easy to miss; a Steward wanting to pause the group's walk has no door (FEAT-H019 STORY-8's no-go).
 - The `next dev` agent-rules files (`hub/AGENTS.md`, `hub/CLAUDE.md`) — commit, disable, or ignore.
 
+## 2b. Candidates raised after the close (not Ferd carry-overs)
+
+- **Member email rectification** — raised 2026-09-11. No path exists today for anyone, admin or member, to change an account's email address; `FEAT-PC003` parked it as ADR-gated and ADR-U038 revoked the column grant. Investigation, the five stores it touches and a proposed ADR-plus-two-specs plan: [`../reference/EMAIL-CHANGE-GAP-ANALYSIS.md`](../reference/EMAIL-CHANGE-GAP-ANALYSIS.md). Seven decisions wait on Stefan in its §7; the first (may an admin change a login identity at all?) blocks the rest.
+- **Art. 16 rectification is absent from the Privacy vertical.** `../../verticals/privacy/SPECIFICATION.md` enumerates access (Art. 15) and erasure (Art. 17) and not rectification. True whatever the email decision is.
+
 ## 3. Definition of Done for this cycle
 
 - [ ] `../waves/eid.md` exists with scope, carry-overs and a DoD
 - [ ] the front door names the first Eid build cycle's plan
 - [ ] every carry-over above has a written disposition
 - [ ] the Eid studies are linked from the wave file
+- [ ] the §2b candidates have a written in-or-out
 
 ## 4. Decisions for Stefan at the kickoff
 
 - The Eid appetite: how many build cycles before the first live walk of a Journey Studio v1 slice
 - Which of the three Eid themes goes first (Journey Studio v1 · the design foundation · the Whisp)
+- Member email rectification — in or out of Eid, and the §7 board in the gap analysis
