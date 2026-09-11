@@ -3,7 +3,7 @@
 ---
 id: TASK-EML-01
 title: The member email rectification contract — admin_update_user_email(uuid, text, text) + its migration
-status: review
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-PC031

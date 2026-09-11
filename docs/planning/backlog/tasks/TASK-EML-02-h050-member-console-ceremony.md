@@ -3,7 +3,7 @@
 ---
 id: TASK-EML-02
 title: The member console's email rectification ceremony — BFF route, lib function, and the dialog on the member detail page
-status: review
+status: done
 assigned_to: Claude
 priority: high
 feature: FEAT-H050
