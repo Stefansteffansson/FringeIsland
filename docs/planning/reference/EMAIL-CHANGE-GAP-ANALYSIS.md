@@ -106,7 +106,7 @@ This is a genuine gap in the Privacy vertical's obligation inventory, independen
 
 Two feature specs plus one ADR, following Model A. Sequenced so nothing is written before the decision it depends on.
 
-### Step 0 — the ADR (blocking)
+### Step 0 — the ADR (blocking) — **DONE, [ADR-U054](../../architecture/decisions/ADR-U054-admin-email-rectification.md)**
 
 `FEAT-PC003:57` already ruled that auth-surface changes are ADR-gated. So an ADR comes first, not a spec. It settles one question: **may a platform administrator change the login identity of an account they do not own, and under what ceremony?** The answer decides everything downstream. Draft it; Stefan rules it.
 
@@ -143,7 +143,10 @@ Per the standing TDD rule: integration tests against the contract for each refus
 
 ---
 
-## 7. The decision board — all of it, at once
+## 7. The decision board — RULED 2026-09-11
+
+> **Stefan ruled the board on 2026-09-11.** D1 is **yes**, explicitly; D2 through D7 were delegated to the recommendations below, which therefore all stand as ruled. The decision is recorded in [ADR-U054](../../architecture/decisions/ADR-U054-admin-email-rectification.md). Section 6's Step 0 is discharged; the two feature specs are now unblocked. The recommendation column is preserved unedited as the record of what was put to him.
+
 
 | # | Decision | Options | Recommendation |
 |---|---|---|---|
@@ -161,10 +164,13 @@ Per the standing TDD rule: integration tests against the contract for each refus
 
 ## 8. What this document did not settle
 
-- No ADR is drafted. D1 has to be ruled first.
-- No spec is written, and nothing is at 4-ready.
+_Updated 2026-09-11 after the ruling._
+
+- ~~No ADR is drafted. D1 has to be ruled first.~~ **Settled** — the board is ruled and [ADR-U054](../../architecture/decisions/ADR-U054-admin-email-rectification.md) records it.
+- No spec is written, and nothing is at 4-ready. The two specs in §6 Steps 1 and 2 are unblocked but unwritten.
 - No code, no migration, no test.
-- The Supabase mailer configuration was not inspected — there is no `config.toml` in the repo, so auth mail settings live in the dashboard and were not read.
+- The Supabase mailer configuration was not inspected — there is no `config.toml` in the repo, so auth mail settings live in the dashboard and were not read. This matters for the deferred self-service path (D3) and for the outbound-notice limitation ADR-U054 names, not for the admin path itself.
+- The Privacy vertical amendment naming Art. 16 (D7) is not written. ADR-U054 records it as a separate item on purpose.
 
 ---
 

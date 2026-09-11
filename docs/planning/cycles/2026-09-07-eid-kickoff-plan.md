@@ -26,7 +26,7 @@
 
 ## 2b. Candidates raised after the close (not Ferd carry-overs)
 
-- **Member email rectification** — raised 2026-09-11. No path exists today for anyone, admin or member, to change an account's email address; `FEAT-PC003` parked it as ADR-gated and ADR-U038 revoked the column grant. Investigation, the five stores it touches and a proposed ADR-plus-two-specs plan: [`../reference/EMAIL-CHANGE-GAP-ANALYSIS.md`](../reference/EMAIL-CHANGE-GAP-ANALYSIS.md). Seven decisions wait on Stefan in its §7; the first (may an admin change a login identity at all?) blocks the rest.
+- **Member email rectification** — raised 2026-09-11. No path exists today for anyone, admin or member, to change an account's email address; `FEAT-PC003` parked it as ADR-gated and ADR-U038 revoked the column grant. Investigation, the five stores it touches and the two-spec plan: [`../reference/EMAIL-CHANGE-GAP-ANALYSIS.md`](../reference/EMAIL-CHANGE-GAP-ANALYSIS.md). Board RULED 2026-09-11 — see [ADR-U054](../../architecture/decisions/ADR-U054-admin-email-rectification.md). The two feature specs are unblocked and unwritten.
 - **Art. 16 rectification is absent from the Privacy vertical.** `../../verticals/privacy/SPECIFICATION.md` enumerates access (Art. 15) and erasure (Art. 17) and not rectification. True whatever the email decision is.
 
 ## 3. Definition of Done for this cycle
@@ -41,4 +41,4 @@
 
 - The Eid appetite: how many build cycles before the first live walk of a Journey Studio v1 slice
 - Which of the three Eid themes goes first (Journey Studio v1 · the design foundation · the Whisp)
-- Member email rectification — in or out of Eid, and the §7 board in the gap analysis
+- Member email rectification — in or out of Eid (the capability itself is ruled, ADR-U054; only the scheduling is open)
