@@ -6,7 +6,7 @@ title: Member email rectification contract — an audited, platform-admin-gated 
 owner: platform/core/governance
 consumers: [hub]
 wave: eid
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -18,28 +18,23 @@ The platform therefore cannot honour a GDPR Art. 16 rectification request at all
 
 **Why this must be Platform Core and not a Domain Service** (sub-tier authoring discipline, `docs/platform/core/CLAUDE.md`). The capability mutates `auth.users` and `auth.identities`. Those rows are the authentication substrate that PC-2 Identity owns and every Domain Service depends on; a Domain Service reaching them would invert the one-way dependency rule outright. There is no Domain form of this capability to reject on convenience grounds — the bar is capability, and Domain does not have it. The contract is placed in PC-4 Governance rather than PC-2 Identity because it is an *administrator* operation over another member's row, which is the defining shape of the PC-4 `admin_*` family (FEAT-PC020/021/022 precedent), not of PC-2's own-row contracts.
 
-## Solution sketch
+## Implementation notes
 
-One `SECURITY DEFINER` function in the PC-4 member-administration family:
+Built 2026-09-11 (TASK-EML-01, PR #650). Migration `20260911100000_eml_pc031_member_email_rectification.sql`, applied to the test project and then to production on Stefan's named approval ("ok merge"); `migration-drift.js` reads *files = test = production* at 143.
 
-```
-admin_update_user_email(target_user_id uuid, p_new_email text, p_reason text) returns jsonb
-```
+**The contract.** `public.admin_update_user_email(target_user_id uuid, p_new_email text, p_reason text) returns jsonb`, `SECURITY DEFINER`, `SET search_path = ''`, on the family's spine: `is_platform_admin()` gate, reason gate, normalise, target `FOR UPDATE`, typed refusals, mutation, audit, notice, jsonb. Returns `{ success, previous_email, new_email, sessions_revoked, invitations_deleted }`.
 
-It follows the family's established spine exactly — `is_platform_admin()` guard, target read `FOR UPDATE`, typed refusals, mutation, `admin_audit_log` insert, member notice, `jsonb` result — and adds the three-store write that makes an email change correct rather than partial.
+**What shipped differently from the sketch:** nothing material. The sketch's payload is the payload.
 
-**Returned payload:** `{ success, previous_email, new_email, sessions_revoked, invitations_deleted }`. The two counts are not decoration. The change cuts the member's live sessions and deletes offers addressed to them, and the administrator confirming the action should see those consequences named rather than inferred. The payload walk against FEAT-H050 is in that spec.
+**The first auth-schema write in the repository.** Confirmed at build: every other auth-schema access is a `DELETE`, and no migration had touched `auth.identities`. `UPDATE auth.users` clears the five GoTrue change-flow columns to their *resting* values, which were read off a live row rather than guessed — empty strings for the three token columns, `0` for `email_change_confirm_status`, `NULL` for `email_change_sent_at`. `auth.identities.identity_data` is written with `jsonb_set`; the table's `email` column is `GENERATED ALWAYS AS (lower(identity_data ->> 'email')) STORED` and follows on its own, which the suite asserts explicitly.
 
-## Appetite
+**Red-first evidence.** `hub/tests/integration/admin/member-email-rectification.test.ts`, 11 cells, **all red at head with `PGRST202` "Could not find the function public.admin_update_user_email"**, all green after the apply. One cell was first red for the *wrong* reason (a `signInWithRetry` signature) and was corrected before any implementation existed. A second cell then failed green-side on a stale precondition — it signed in with the fixture's original address after an earlier cell had rectified it — which was the contract working; the test now reads the current address.
 
-One build cycle for the contract, its migration and its integration tests. It is a single function in a family of nine siblings whose shape is settled; the cost is in the correctness of the three-store write and its refusal matrix, not in novelty.
+**Refusals are not audited, and that is deliberate.** The family raises inside the transaction, so Postgres discards any audit row written before the raise. The no-op cell asserts `latestAudit(...)` is null rather than asserting an audit trail that would not survive.
 
-## Rabbit holes
+**Registration and lockdown.** `functions."PC-4"` and `exposure.client` in `supabase/ownership.manifest.json`; the paired `revoke all ... from public, anon` + grant. The applied ACL was read on **both** projects at the gate — `{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}`, no bare `=X/` and no `anon=X`. Platform conformance family 10/10 green.
 
-- **Do not reach for the Supabase Auth Admin API.** It needs a service-role key on the Surface, which [ADR-U038](../../../architecture/decisions/ADR-U038-platform-contracts-platform-side-surface-bff.md) exists to prevent. The contract writes the auth schema from inside Postgres, as `admin_hard_delete_user` already does.
-- **Do not build a confirmation-token flow.** The GoTrue `email_change*` columns exist on `auth.users` and will tempt a half-implementation. ADR-U054 ruled the change immediate and the address confirmed; the contract *clears* those columns rather than using them.
-- **Do not add an `AFTER UPDATE` trigger on `auth.users` to sync the mirror.** It would fire for every GoTrue write (sign-in timestamps, token rotation) to solve a problem this contract already solves in-transaction. Timebox any discussion of it to zero.
-- **Case sensitivity is a trap with a live edge.** The unique index `users_email_partial_key` on `auth.users` is case-**sensitive**; only the non-unique `users_instance_id_email_idx` is on `lower(email)`. Normalising is a correctness requirement, not tidiness.
+**Sibling-assertion sweep:** none. The migration adds behaviour and changes no shipped SQL semantics; the header records the sweep and its zero.
 
 ## No-gos
 

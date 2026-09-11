@@ -6,7 +6,7 @@ title: Admin member email rectification — a reasoned, consequence-naming cerem
 owner: hub
 consumers: [hub]
 wave: eid
-maturity: 5-in-cycle
+maturity: 6-done
 requires-equipment: none
 ---
 
@@ -16,15 +16,27 @@ The member console already shows an administrator a member's email address, in t
 
 So when a member writes in saying they mistyped their address at signup or lost their mailbox, the administrator looking straight at the wrong value has nothing to click. [ADR-U054](../../../architecture/decisions/ADR-U054-admin-email-rectification.md) ruled that they should. This is the surface half; [FEAT-PC031](../../../platform/core/features/FEAT-PC031-member-email-rectification-contract.md) is the contract.
 
-## Solution sketch
+## Implementation notes
 
-Three pieces, each mirroring a sibling that already exists.
+Built 2026-09-11 (TASK-EML-02, PR #650). Three pieces, each beside a sibling:
 
-1. **A control in the member detail header**, beside the rendered address. It opens a ceremony rather than an inline edit, because the action cuts sessions and deletes invitations and those consequences have to be read before they are accepted. The ceremony is built from the two primitives `AdminMemberDetail.tsx` already imports — `ConfirmModal` (`hub/components/ui/ConfirmModal.tsx`, the Hub's mandatory confirmation primitive; browser `confirm()` is forbidden at this entity) and `CeremonyReasonField` (`hub/components/ui/CeremonyReasonField.tsx`, the reason input the DB-4 ceremonies already use) — plus one new address input. No new UI primitive is introduced.
-2. **A BFF route** at `hub/app/api/admin/users/[id]/email/route.ts`, POST, shaped like the suspend route: authenticate, read the body with `readJsonBody` / `requiredReason`, emit durable telemetry, call the lib, map refusals.
-3. **`updateAdminUserEmail(client, userId, email, reason)`** in `hub/lib/admin/users.ts`, alongside its nine siblings, calling the contract by RPC.
+- `updateAdminUserEmail(client, userId, newEmail, reason)` and the `EmailRectificationResult` type in `hub/lib/admin/users.ts` — a typed pass-through; the contract owns every rule, so nothing is validated or normalised here.
+- `hub/app/api/admin/users/[id]/email/route.ts` — POST, `getUser()`, `readJsonBody` + `requiredReason`, `emitDurableTelemetry` before the mutation (a mutation adopts the durable leg), refusal mapping 42501/P0002 → 404, P0001 → 409, 22023 → 400. No `runtime` or `preferredRegion` export; route-policy conformance green.
+- The ceremony in `hub/components/admin/AdminMemberDetail.tsx` — `ConfirmModal` + `CeremonyReasonField` + one address input. No new primitive.
 
-**The ceremony names the consequences before the click, not after.** The dialog states both addresses in full, requires a reason, and says plainly that the member's sessions will end and that pending invitations to the old address will be deleted. On success the confirmation reports what actually happened, using the counts the contract returns rather than restating what was promised.
+**A shipped-semantics change I made and then withdrew.** Holding the ceremony open on a 409 was first written into the shared `mutate` helper, which silently changed suspend and reactivate too and failed `admin-member-detail`'s STORY-3. The sibling was **not** adapted to match. The hold is scoped to this ceremony alone through an explicit `holdOnConflict` opt; the hold family's 409 behaviour is exactly as it was.
+
+**Red-first evidence.** 25 unit cells across three files, all red at head for the right reason:
+
+| File | Red at head |
+|---|---|
+| `tests/unit/lib/admin/email-rectification.test.ts` | 7 — missing exports |
+| `tests/unit/app/api/admin-member-email-route.test.ts` | suite — missing route module |
+| `tests/unit/components/admin/admin-member-email-rectification.test.tsx` | 9 — no `rectify-email` control renders |
+
+**The journey, labelled honestly.** `hub/tests/e2e/admin-member-email-rectification.spec.ts` (4 tests, green) was written **test-after**, per the house rule — the red-first demonstrations are the unit and integration tiers above. It walks the control, the consequence copy, an in-place collision refusal that keeps the typed address, the successful rectification with its real counts, the mirror moving platform-side, the audit row, and the 404 shape for a demoted operator. Teardown reports zero surviving fixture accounts and zero orphaned personal groups.
+
+**Zero is reported, not hidden.** `rectifySummary` renders "no sessions were active" and "no pending invitations to the old address" rather than omitting a count of zero — the E2E asserts the zero-sessions phrasing on a fixture that never signed in.
 
 ### Payload walk
 
@@ -39,17 +51,6 @@ Every field this surface renders, traced to a key in FEAT-PC031's returned paylo
 | The refusal message on a collision or invalid address | the mapped HTTP status and the contract's message | Per the family's mapping; see STORY-5. |
 
 **Keys with no consumer:** none. **Rendered fields with no key:** none. The dialog's pre-action warning text is static copy, not payload-derived, and is listed here so its absence from the table is deliberate rather than an omission.
-
-## Appetite
-
-One build cycle, sharing the cycle with FEAT-PC031. The route and lib function are near-mechanical against nine siblings; the design work is entirely in the dialog's copy, because this is the one admin ceremony whose consequences are invisible to the administrator performing it.
-
-## Rabbit holes
-
-- **Do not build an inline-editable field.** The address is not a profile attribute here; it is a credential. An inline edit invites a mistyped save with no confirmation step, and a mistyped save points a real person's account at an address nobody holds.
-- **Do not add an email-change column to the members list.** The list is bounded and already carries the fields FEAT-H039 settled. This action belongs on the detail page only.
-- **Do not reuse the bulk-action machinery.** The safe subset is deliberate.
-- **Do not let the dialog offer to "notify the member by email."** There is no mailer. Offering it would be a lie in the interface.
 
 ## No-gos
 
