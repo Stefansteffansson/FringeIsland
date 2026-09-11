@@ -14,7 +14,7 @@ Verified on disk and against the test project (`spxitjjiawxatwmyjmsp`, ADR-U053)
 |---|---|---|
 | Admin changes a member's email | **No** | The nine admin user routes under `hub/app/api/admin/users/[id]/` are `decommission`, `force-logout`, `grant-admin`, `hard-delete`, `platform-exit`, `reactivate`, `remove-from-group`, `revoke-admin`, `suspend`. No email route. |
 | Admin UI offers it | **No** | `hub/components/admin/AdminMemberDetail.tsx:294` renders the email **read-only** in the member header. No control, no dialog. |
-| Member changes their own email | **No** | `hub/app/profile/page.tsx` contains no occurrence of the string `email`. |
+| Member changes their own email | **No** | `hub/app/profile/page.tsx` contains no occurrence of the string `email`, and the contract behind it refuses the field **by name**: `update_own_profile(p_patch jsonb)` gates writable keys to six identity-scope fields and raises `22023` on anything else (`supabase/migrations/20260702130000_feat_pc003_own_profile_contract.sql:81-88`). |
 | A platform contract does it | **No** | No `admin_*` RPC in `supabase/migrations/` writes `users.email`. |
 | The Auth Admin API does it | **No** | The only `auth.updateUser` call in the whole Hub is `hub/lib/auth/AuthContext.tsx:206`, and it is the Mist transcendence conversion (anonymous to permanent) — it *sets* an email on an account that had none. There is no `auth.admin.*` usage and no service-role key anywhere in the Hub. |
 
@@ -52,7 +52,9 @@ The `provider = 'email'` identity row carries the address inside `identity_data`
 
 Populated once by `handle_new_user()`, the `AFTER INSERT` seam-trigger on `auth.users`. There are only two triggers on `auth.users` in the whole migration history, `AFTER INSERT` and `AFTER DELETE` (`supabase/migrations/20260222000000_rebuild_universal_group_pattern.sql:1317,1321`). **There is no `AFTER UPDATE` sync.** Change the auth side alone and the mirror silently goes stale — and the mirror is what every admin read returns (`admin_get_user_detail` selects `u.email`, `20260801170000_adm_c_pc021_member_read_family.sql`). The admin list would keep showing the old address indefinitely.
 
-`public.users.email` is also `UNIQUE` (`users_email_key`) and nullable (a Mist has none).
+`public.users.email` is also `UNIQUE` (`users_email_key`) and **nullable** — a Mist has none. (The column was `NOT NULL` in the original 2026-02 table definition; the Mist substrate work relaxed it. Nullability confirmed against the live schema, not the migration text.)
+
+**A stale mirror would corrupt erasure, not just display.** `erase_fim_account` reads `lower(email)` from `public.users` and uses it to `DELETE FROM public.pending_email_invitations WHERE lower(invited_email) = v_target_email` — the Art. 17 step that removes unclaimed offers carrying the person's address. If the mirror still held the pre-change address, erasure would scrub invitations to an address the member no longer uses and **leave invitations to their current address in place as orphaned PII**. This raises the mirror sync from a display concern to a correctness one, and it is the strongest single argument for writing all three stores in one transaction.
 
 ### 2d. `pending_email_invitations.invited_email`
 
@@ -82,7 +84,9 @@ So `supabase.auth.admin.updateUserById()` is **not** available to this codebase 
 
 ## 4. Where a notice would land
 
-`notification_kinds` already has an `account` category seeded with `account_suspended` and `account_reinstated` (`20260903120000_db4_pc030_pd021_sanction_communication.sql:155-156`). An `account_email_changed` kind joins that category with no new machinery. The dispatcher writes to `public.notifications` keyed on the member's `personal_group_id`; a Mist has none and yields no row.
+`notification_kinds` already has an `account` category holding four kinds — `participation_paused` and `participation_activated` from the base registry (`20260723120000_n_a_notification_registry_and_contracts.sql:78`), plus `account_suspended` and `account_reinstated` added by DB-4 (`20260903120000_db4_pc030_pd021_sanction_communication.sql:155-156`). Verified against the live registry. An `account_email_changed` kind joins them with no new machinery.
+
+Seeding it is **mandatory, not optional**: `notifications.type` carries a foreign key to the registry (`notifications_type_fkey REFERENCES notification_kinds(kind)`, verified live), so a bespoke unregistered kind is structurally impossible. Use the family's `on conflict (kind) do nothing` seed pattern. The dispatcher writes to `public.notifications` keyed on the member's `personal_group_id`; a Mist has none and yields no row.
 
 Note the ceiling: these are **in-app** notices. The platform has no outbound mail of its own — `supabase/` carries no `config.toml`, so auth mail is dashboard-configured, and the org is on the Supabase Free tier, whose built-in mailer is rate-limited to a handful of messages per hour. **A design that depends on emailing the old address to warn it, or the new address to confirm it, is gated on a Supabase Pro decision and custom SMTP.** That is the same gate the leaked-password toggle sits behind.
 
@@ -92,7 +96,9 @@ Note the ceiling: these are **in-app** notices. The platform has no outbound mai
 
 `docs/verticals/privacy/SPECIFICATION.md:36-37` enumerates the member's rights as *access* (Art. 15, export) and *erasure* (Art. 17, delete). **Art. 16, the right to rectification, is not in the list.** Correcting a wrong email address is the textbook rectification case, and the platform currently cannot honour it at all.
 
-This is a genuine gap in the Privacy vertical's obligation inventory, independent of whether the admin feature gets built. It should be raised at the Eid kickoff whatever is decided here.
+This is a genuine gap in the Privacy vertical's obligation inventory, independent of whether the admin feature gets built. The Administration vertical's specification is equally silent on an administrator acting on a member's behalf. Both should be raised at the Eid kickoff whatever is decided here.
+
+**An adjacent gap, still open.** `docs/planning/waves/FERD-CAPABILITY-MAP.md` rows 15 and 16, flagged CRITICAL at line 188, record that decommission and platform exit set the flags but scrub neither `public.users.email` nor the `auth.users` record. That map is an April 2026 snapshot and several of its neighbouring rows have since shipped, so treat it as a register rather than current truth — but these two rows are **still accurate**: no function in the live schema nulls `public.users.email`, and only full erasure removes the auth row. The address therefore outlives the account in both non-erasure paths. Rectification and scrubbing are two faces of the same unowned column, and are worth dispositioning together.
 
 ---
 
@@ -129,7 +135,7 @@ Schema change, so it lands at task status `review` behind the schema-review gate
 
 ### Step 3 — decide the two riders
 
-Whether to re-point `pending_email_invitations` (§2d) and whether to force-logout on change (§7 D4). Both are one-line additions to the RPC if ruled in; both are scope creep if ruled in silently.
+What to do with `pending_email_invitations` addressed to the old address (§2d, §7 D5 — now recommended as a delete, because erasure cannot reach them afterwards) and whether to force-logout on change (§7 D4). Both are a few lines in the RPC if ruled in; both are scope creep if ruled in silently.
 
 ### Step 4 — tests, red first
 
@@ -145,9 +151,11 @@ Per the standing TDD rule: integration tests against the contract for each refus
 | **D2** | Is the new address marked confirmed? | (a) Yes, `email_confirmed_at = now()` — admin vouches. (b) No — member must confirm before sign-in works. | **(a)**. (b) locks the member out with no way back, since the confirmation mail cannot be reliably sent on Free tier. |
 | **D3** | Self-service email change too? | (a) Admin only now. (b) Both. (c) Self-service only. | **(a)**. Self-service is the larger and better feature, but it needs the confirmation mail, so it is Pro-gated. Ship the admin path, register self-service as an Eid candidate. |
 | **D4** | Force-logout on change? | (a) Yes — treat it as a credential change. (b) No — leave sessions alone. | **(a)**. `admin_force_logout` already exists and the change is a security event; if the address was changed because the old one was compromised, live sessions are the thing you want cut. |
-| **D5** | Re-point outstanding invitations to the old address? | (a) Yes. (b) No, leave orphaned. (c) Out of scope, note it. | **(b)** with the behaviour documented. An invitation is addressed to a person at an address; silently redirecting it is a surprise. |
+| **D5** | Outstanding invitations to the old address? | (a) Re-point them to the new address. (b) Leave them orphaned. (c) Delete them. | **Revised to (c)** — see below. Originally (b); §2c's erasure finding rules that out. |
 | **D6** | Does it go into Eid? | (a) Bet on it in the first Eid build cycle. (b) A kickoff candidate, ruled with the rest. (c) Later wave. | **(b)**. The Eid wave file is still a stub and the kickoff has not run. This belongs on the candidate list, not in front of it. |
 | **D7** | Raise Art. 16 rectification as a Privacy gap? | (a) Yes, at the kickoff. (b) No. | **(a)**. §5. It is true whatever D1 is. |
+
+**Why D5 moved from "leave them" to "delete them."** The first pass reasoned that an invitation is addressed to a person at an address, so silently redirecting it would surprise the sender. That still holds against option (a). But leaving them orphaned is worse than it looked: `erase_fim_account` finds invitations by matching the member's *current* mirrored address, so after an email change an invitation to the old address becomes unreachable by the erasure path and survives an Art. 17 request as permanent PII residue. Deleting them at change time is the only option that leaves no orphan and tells no lie. It costs the inviter a re-send, which is visible and recoverable, rather than leaving an invisible record that erasure cannot reach.
 
 ---
 
@@ -162,4 +170,6 @@ Per the standing TDD rule: integration tests against the contract for each refus
 
 ## 9. Sources
 
-Code and schema as of 2026-09-11 on `main` at `3b446541`. Schema facts verified by read-only introspection of the test project `spxitjjiawxatwmyjmsp` (`auth.users` columns, `auth.identities.email` generation expression, unique indexes on both `auth.users` and `public.users`). Production was not touched.
+Code and schema as of 2026-09-11 on `main` at `3b446541`. Schema facts verified by read-only introspection of the test project `spxitjjiawxatwmyjmsp` (`auth.users` columns, `auth.identities.email` generation expression, unique indexes on both `auth.users` and `public.users`, `public.users.email` nullability, the `notification_kinds` rows in the `account` and `platform` categories, `notifications_type_fkey`, and the bodies of `erase_fim_account` and `admin_exit_user_from_platform`). Production was not touched.
+
+A second reviewer pass confirmed the central finding independently and contributed §2c's erasure consequence, the registry foreign key, the `update_own_profile` refusal citation and the capability-map cross-reference. Two of its claims were corrected against the live schema and are recorded here in their corrected form: `public.users.email` is nullable today despite its original `NOT NULL` definition, and the `account` notification category holds four kinds rather than two.
