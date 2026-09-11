@@ -48,10 +48,6 @@ type Ceremony =
   | { kind: 'grant-admin' }
   | { kind: 'revoke-admin' }
   | { kind: 'remove'; membership: AdminUserMembership }
-  // FEAT-H050 (ADR-U054): correcting the login identity. A ceremony, never an
-  // inline edit — the act cuts sessions and deletes offers, and those
-  // consequences have to be read before they are accepted.
-  | { kind: 'rectify-email' }
   | null;
 
 export function AdminMemberDetail({ userId }: { userId: string }) {
@@ -67,8 +63,6 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
   // 22023 — keeps the modal open with the reason still typed).
   const [reason, setReason] = useState('');
   const [ceremonyError, setCeremonyError] = useState<string | null>(null);
-  // FEAT-H050: the proposed address. Held here so a refusal keeps it typed.
-  const [newEmail, setNewEmail] = useState('');
 
   const load = useCallback(async () => {
     try {
@@ -97,7 +91,7 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
       path: string,
       body?: Record<string, unknown>,
       onSuccess?: (payload: Record<string, unknown>) => string | null,
-      opts?: { holdCeremony?: boolean; holdOnConflict?: boolean },
+      opts?: { holdCeremony?: boolean },
     ) => {
       setBusy(true);
       setActionError(null);
@@ -112,15 +106,8 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
         });
         const payload = (await res.json().catch(() => ({}))) as Record<string, unknown>;
         if (!res.ok) {
-          if (
-            opts?.holdCeremony &&
-            (res.status === 400 || (res.status === 409 && opts?.holdOnConflict))
-          ) {
+          if (opts?.holdCeremony && res.status === 400) {
             // FEAT-H049 STORY-1: the reason was refused — in place, modal open.
-            // FEAT-H050 STORY-5: `holdOnConflict` extends that to a 409 for the
-            // rectification ceremony ONLY, so a collision never costs the admin
-            // the typed address. The hold family's 409 behaviour is deliberately
-            // untouched — it closes and reports, as it always has.
             setCeremonyError((payload.error as string) ?? 'The reason was refused.');
             keepOpen = true;
           } else {
@@ -150,7 +137,6 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
         if (!keepOpen) {
           setCeremony(null);
           setReason('');
-          setNewEmail('');
         }
         setBusy(false);
       }
@@ -163,7 +149,6 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
     if (busy) return;
     setCeremony(null);
     setReason('');
-    setNewEmail('');
     setCeremonyError(null);
   };
 
@@ -181,58 +166,6 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
     </span>
   );
   const reasonMissing = reason.trim().length === 0;
-
-  /** FEAT-H050 STORY-2: the rectification ceremony. Both addresses visible at
-   *  the moment of confirming, and every consequence named BEFORE the click —
-   *  including the one the platform cannot deliver. */
-  const rectifyMessage = (currentEmail: string) => (
-    <span>
-      <span className="block">
-        This changes the address <strong>{currentEmail}</strong> signs in with.
-      </span>
-      <label className="mt-3 block text-sm">
-        <span className="block text-gray-700">New email address</span>
-        <input
-          type="email"
-          data-testid="rectify-email-input"
-          value={newEmail}
-          onChange={(e) => setNewEmail(e.target.value)}
-          className="mt-1 w-full rounded border border-gray-300 px-2 py-1"
-          placeholder="their.new@address"
-        />
-      </label>
-      <CeremonyReasonField value={reason} onChange={setReason} label="Shown to the member" />
-      <span className="mt-3 block text-sm text-gray-700">
-        Their active sessions will end, and any pending invitations to the old address will
-        be deleted. They are told in the Hub — no email is sent to either address.
-      </span>
-      {ceremonyError && (
-        <span role="alert" data-testid="ceremony-error" className="mt-2 block text-sm text-red-700">
-          {ceremonyError}
-        </span>
-      )}
-    </span>
-  );
-
-  /** FEAT-H050 STORY-3: the outcome, read off the contract's own counts —
-   *  never a restatement of what the ceremony promised. Zero is reported, not
-   *  hidden: "no sessions were active" is a fact the admin needs. */
-  const rectifySummary = (payload: Record<string, unknown>): string => {
-    const previous = String(payload.previous_email ?? '');
-    const next = String(payload.new_email ?? '');
-    const sessions = Number(payload.sessions_revoked ?? 0);
-    const invites = Number(payload.invitations_deleted ?? 0);
-    const sessionPart =
-      sessions === 0
-        ? 'no sessions were active'
-        : `${sessions} session${sessions === 1 ? '' : 's'} ended`;
-    const invitePart =
-      invites === 0
-        ? 'no pending invitations to the old address'
-        : `${invites} pending invitation${invites === 1 ? '' : 's'} to the old address deleted`;
-    return `Changed ${previous} to ${next}. ${sessionPart}; ${invitePart}.`;
-  };
-  const rectifyIncomplete = newEmail.trim().length === 0 || reasonMissing;
 
   if (view.kind === 'erased') {
     return (
@@ -358,26 +291,7 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
         )}
       </div>
       <p className="mb-4 text-sm text-gray-500">
-        {d.email ?? '—'}
-        {/* FEAT-H050 (ADR-U054): the address stops being read-only. Absent when
-            the member has none — the contract refuses those, and the surface
-            never offers an action that cannot succeed. */}
-        {d.email && (
-          <button
-            type="button"
-            data-testid="rectify-email"
-            onClick={() => {
-              setCeremonyError(null);
-              setNewEmail('');
-              setReason('');
-              setCeremony({ kind: 'rectify-email' });
-            }}
-            className="ml-2 rounded border border-gray-300 px-2 py-0.5 text-xs text-gray-700 hover:bg-gray-50"
-          >
-            Correct address
-          </button>
-        )}{' '}
-        · joined {new Date(d.created_at).toLocaleDateString()}
+        {d.email ?? '—'} · joined {new Date(d.created_at).toLocaleDateString()}
       </p>
 
       {actionError && (
@@ -539,22 +453,6 @@ export function AdminMemberDetail({ userId }: { userId: string }) {
 
       {/* FEAT-H049 STORY-1 (DB-4): the two hold ceremonies collect the member-
           facing reason (FEAT-PC030 requires it — 22023 otherwise). */}
-      <ConfirmModal
-        isOpen={ceremony?.kind === 'rectify-email'}
-        title="Correct email address"
-        message={rectifyMessage(d.email ?? '')}
-        confirmText="Change address"
-        variant="warning"
-        busy={busy}
-        confirmDisabled={rectifyIncomplete}
-        onConfirm={() =>
-          void mutate('email', { email: newEmail, reason }, rectifySummary, {
-            holdCeremony: true,
-            holdOnConflict: true,
-          })
-        }
-        onCancel={closeCeremony}
-      />
       <ConfirmModal
         isOpen={ceremony?.kind === 'suspend'}
         title="Suspend member"

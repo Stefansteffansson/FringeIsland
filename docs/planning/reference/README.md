@@ -21,7 +21,6 @@ docs/planning/reference/
 ├── PERF-MEASUREMENT-LEDGER.md             ← the durable ADR-U043 record — one row per measurement pass (ADR-U052 §5; append-only from 2026-07-31)
 ├── supabase-support-es256-admin-api.md    ← ready-to-send Supabase support ticket for the Admin-API ES256 flake (TASK-INT-01)
 ├── mist-reconciliation-register.md        ← Shadow -> Mist rename + re-scope worklist (June 2026; Step 1 ratified 2026-06-21, ADR-U031)
-├── EMAIL-CHANGE-GAP-ANALYSIS.md           ← no path exists to change a member's email (2026-09-11); the five stores it touches and a two-spec plan. Board RULED 2026-09-11 → ADR-U054
 ├── ADMIN-DEUSEX-GAP-ANALYSIS.md           ← admin/DeusEx capability gaps (April 2026)
 ├── GROUP-MODEL-CURRENT-STATE.md           ← group model assessment (April 2026)
 ├── PLATFORM-EXIT-GAP-ANALYSIS.md          ← platform exit gaps (April 2026)

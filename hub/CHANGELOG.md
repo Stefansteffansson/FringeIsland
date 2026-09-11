@@ -2,12 +2,6 @@
 
 User-visible changes to the Hub (the canvas surface of FringeIsland). The Hub is being rebuilt fresh under `hub/` ([ADR-U032](../docs/architecture/decisions/ADR-U032-hub-v2-coexistence-separate-tree.md)); entries below track the Phase-3 rebuild. Each entry links the feature spec, which carries the full implementation notes.
 
-## 2026-09-11 — an administrator can correct your email address ([FEAT-H050](../docs/products/hub/features/FEAT-H050-admin-member-email-rectification.md))
-
-- **If you mistyped your email when you signed up, or lost access to that mailbox, it can now be fixed.** Until now the only way out was deleting your account and starting over, which would have taken your groups, your journeys and everything you had written with it. Ask a platform administrator.
-- **What happens when they do it.** You are signed out everywhere, so you will need to sign in again with the new address. Any group invitations that were sent to your old address are removed — whoever invited you can send a fresh one. A notice arrives in your bell telling you the address changed, and the reason the administrator gave.
-- **Note:** no email is sent to either address, so nothing lands in your old mailbox or your new one. The notice in the Hub is how you find out.
-
 ## 2026-09-05 — putting on a group's hat no longer sometimes says the hat "doesn't open" a section it does open ([FEAT-H047](../docs/products/hub/features/FEAT-H047-wielded-conversation-affordances.md) · [FEAT-H046](../docs/products/hub/features/FEAT-H046-wielded-content-affordances.md) · [FEAT-H048](../docs/products/hub/features/FEAT-H048-wielded-announcement-affordances.md))
 
 - **What you could see.** On a group's page, choosing a hat ("View as …") right after the page opened could leave the Conversations, Forum or Announcements section saying the hat doesn't open it — even though it does. The page had asked twice (once as you, once as the group) and the slower, earlier answer sometimes arrived last and won.
