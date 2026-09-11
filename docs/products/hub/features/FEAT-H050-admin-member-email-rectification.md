@@ -6,7 +6,7 @@ title: Admin member email rectification — a reasoned, consequence-naming cerem
 owner: hub
 consumers: [hub]
 wave: eid
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 

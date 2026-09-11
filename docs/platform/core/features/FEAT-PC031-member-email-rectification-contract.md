@@ -6,7 +6,7 @@ title: Member email rectification contract — an audited, platform-admin-gated 
 owner: platform/core/governance
 consumers: [hub]
 wave: eid
-maturity: 4-ready
+maturity: 5-in-cycle
 requires-equipment: none
 ---
 
