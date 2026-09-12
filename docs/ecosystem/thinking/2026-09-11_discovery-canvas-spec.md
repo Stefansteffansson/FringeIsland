@@ -1,6 +1,8 @@
 # Discovery Canvas — specification
 
-**Status:** Draft v0.3 for review (2026-09-12; v0.3 replaces the up-front migration with an in-app importer, D21). Design document, not canon. Lives in `thinking/` because it describes tooling for the discovery process; it graduates nowhere.
+**Status:** Draft v0.4 (2026-09-12). Contract for Phase 0 and Phase 1.
+
+**Change log.** v0.1 (2026-09-11): first draft. v0.2: entity files (D18), separate app repo (D17), cores whole (D19), push manual (D20). v0.3: in-app importer instead of migration (D21). v0.4: nested tabs (D22), automatic inbox sync (D23), portals with canon vocabulary (D24), no overlap and Arrange (D25), four-side edge handles (D26), multi-select, groups and per-placement color (D27), hover "+" in the tab tree (D28), reader overlay with edit mode and write-only-on-change (D29); sizing, align and distribute, selection toolbar and context menu; shell layout, palette, glass values and the control map (section 17); Phase 1 mockup under `docs/ecosystem/canvas/branding/mockups/phase-1/`. Design document, not canon. Lives in `thinking/` because it describes tooling for the discovery process; it graduates nowhere.
 
 **Owner:** Stefan. **Author of this draft:** Claude (Cowork session, 2026-09-11).
 
@@ -23,7 +25,7 @@ The Discovery Canvas is a local web app that turns that material into cards on z
 
 ---
 
-## 2. Decisions taken (2026-09-11)
+## 2. Decisions taken (2026-09-11 to 2026-09-12)
 
 | # | Decision | Rationale |
 |---|----------|-----------|
@@ -35,7 +37,7 @@ The Discovery Canvas is a local web app that turns that material into cards on z
 | D6 | Two tab kinds: manual (placements) and dynamic (query + layout rule); a manual tab can also hold saved filter views | Tag-driven canvases |
 | D7 | Tags form a tree of unlimited depth, created and managed in-app; cards carry any number of tags; tags referenced by stable ID | Rename/move never breaks cards |
 | D8 | Relationships: explicit typed edges (drawn) and implicit tag-derived relationships (computed, dashed, never stored); implicit can be promoted to explicit | Tags describe cards, edges describe relationships; the two never substitute |
-| D9 | Phone: capture only, via a separate free-tier Supabase project; captures can target a tab and carry tags; desktop app imports the inbox on launch | Arranging on a phone is a poor experience; isolation from the platform's Supabase project |
+| D9 | Phone: capture only, via a separate free-tier Supabase project; captures can target a tab and carry tags; desktop app imports the inbox automatically (D23) | Arranging on a phone is a poor experience; isolation from the platform's Supabase project |
 | D10 | Locked statements become editable with revisions (was: append-only). Statement keeps its number, gets a revision marker, previous text kept in history, edges touching it flagged for review; minor wording fixes carry no flag | Canon must follow the evolving narrative; traceability preserved by revision records instead of append-only |
 | D11 | Write policies per entity folder or doc source: `revisioned` (statements), `editable` (other entity folders), `read-only` (cores and main repo) | Folder rules: never write to the main repo |
 | D12 | The app writes files and a change journal; Claude Code owns commits, pushes and merges, driven by the journal | Existing role split |
@@ -45,9 +47,17 @@ The Discovery Canvas is a local web app that turns that material into cards on z
 | D16 | Modern light/dark UI with a glass look; landing page carrying the FringeIsland feeling from an image Stefan supplies (section 17) | The tool should feel like part of the universe, not a utility |
 | D17 | The app lives in a separate repository; canvas data stays in the discovery worktree | Tooling code and universe documentation have different lifecycles; the FringeIsland repo stays about FringeIsland |
 | D18 | Canon on the canvas is one file per entity under `docs/ecosystem/discovery/` (statements, candidates, KB entries, questions, gaps, session notes); readable long views are generated from the entity files | One card = one file: no parser, no partial writes, per-statement git history, frontmatter as the single home for status and tags |
-| D21 | No up-front migration. The app is built first; existing files are brought in later, when Stefan chooses, through an in-app importer that splits a markdown file into entity files by a chosen rule with a preview. Originals are left untouched by the importer | Build the tool, then decide what to import and how; the chop is a feature, not a one-off script |
 | D19 | Canonical cores under `universe/` stay whole (one card per file, read-only); their statement citations become `derived-from` edges | Cores are coherent documents; graduation picture comes from citations, not from splitting |
 | D20 | Sweep commits only; push stays manual. Voice-note transcription is in the inbox phase | Stefan's call |
+| D21 | No up-front migration. The app is built first; existing files are brought in later, when Stefan chooses, through an in-app importer that splits a markdown file into entity files by a chosen rule with a preview. Originals are left untouched by the importer | Build the tool, then decide what to import and how; the chop is a feature, not a one-off script |
+| D22 | Tabs nest: a tab can have child tabs to any depth; the panel shows a collapsible tree; a parent tab is a full canvas, not a folder; every child tab is the far side of a portal card on its parent (D24) | Discovery material clusters naturally (a universe tab with beings, places and narrative under it) |
+| D23 | Inbox sync is automatic: on launch, live via Supabase Realtime while the app runs, and by a 2-minute poll as fallback; the sync button stays but is never required | The phone postbox should just arrive |
+| D24 | Any card or frame can become a portal: "Open a portal" creates a child tab as the card's far side; double-click is "Cross" (a Shimmer transition), Escape or the breadcrumb is "Return", "Close the portal" brings the far side back to the near side; the link lives on the canvas side, never in entity files | Folding detail away without losing it, in the universe's own words; the nested-tab tree gets a spatial entrance |
+| D25 | Cards and frames never overlap: placing, moving or resizing nudges neighbours aside; frames grow to hold their contents; "Arrange" lays out a tab, a frame or a selection and zooms to fit | Legibility without housekeeping; z-order becomes irrelevant |
+| D26 | Every card has an edge handle on each of its four sides; an edge records the side it attaches to at both ends; several edges on one side fan out along it | Relationships stay readable as tabs grow |
+| D27 | Multi-select by Ctrl-click or marquee drag; Group (Ctrl G) wraps the selection in a frame; every frame carries a tint from a small palette so groups read as colored regions; cards can be colored the same way, per placement (border at full strength, face at a faint alpha), so one card may differ in color between tabs; edges keep their type colors | Grouping is the everyday gesture; color is an arrangement tool, the status dot stays the semantic signal |
+| D28 | Every row in the tab tree shows a right-aligned "+" on hover that opens a portal under that tab | Creating structure where you are looking |
+| D29 | A reader overlay shows any card's full content over the dimmed canvas, with its own scroll, editable per the card's write policy, and arrows to the neighbouring cards on the tab | Content lives in the overlay, metadata in the inspector |
 
 ---
 
@@ -58,7 +68,7 @@ The Discovery Canvas is a local web app that turns that material into cards on z
 |  Phone (PWA / share target)   |  --->  |  Supabase (inbox project)  |
 |  capture: url/photo/note/pdf  |        |  captures, manifest, bucket|
 +-------------------------------+        +-------------+--------------+
-                                                       | pull on launch
+                                              | launch pull + realtime + poll
                                                        v
 +------------------------------------------------------------------------+
 |  Local Next.js app (PC)                                                |
@@ -108,6 +118,7 @@ docs/ecosystem/canvas/
     <slug>.md            markdown twin, written on save, read-only
   assets/
     YYYY-MM-DD_<slug>.<ext>   dropped/imported files (pdf, png, jpg, mp3, mp4, ...)
+  portals.json           card id -> far-side tab id (section 10.1)
   cache/                 gitignored: thumbnails, page renders, extracted text, index
   changes.jsonl          append-only change journal (section 14)
   inbox-state.json       last imported capture id
@@ -173,7 +184,7 @@ Tags are written as paths in frontmatter for readability; `canvas/tags.json` map
 
 ### 5.4 Registry maintenance
 
-On load the app scans the entity folders and `cards.json`. A file whose `id` collides with another is reported, never silently renamed. A card that is not placed on any tab is "unplaced" and shows in the drawer (section 10.5), whatever its tags or edges.
+On load the app scans the entity folders and `cards.json`. A file whose `id` collides with another is reported, never silently renamed. A card that is not placed on any tab is "unplaced" and shows in the panel (section 10.5), whatever its tags or edges.
 
 ### 5.5 Canonical cores
 
@@ -197,7 +208,8 @@ The importer is how existing and future documents become entity cards.
 - Split rule, chosen per import: whole file as one card; one card per heading at a chosen level (`##`, `###`); or a regex over heading lines (presets for `## N. Title` statements, `### N. Name — Title` KB entries, `### CQ-NNN:` questions, `**G-NN —**` gaps). Text before the first match becomes a session-note card or is skipped, Stefan's choice.
 - Mapping: target folder, ID prefix, numbering source (from the heading number, or sequential), status to assign, optional tags to apply to all cards, and optional field extraction (a labelled block such as "Refines / extends:" into `refines:`, a "held" block into `held:`).
 - Preview: every card the rule would produce, with title, ID and body length, before anything is written; collisions with existing IDs are shown and block the import until resolved.
-- Write: entity files under the chosen folder, verbatim bodies, frontmatter per section 5.2; a journal entry `import-file` listing the source and every file created. The original file is never modified.
+- Write: entity files under the chosen folder, verbatim bodies, frontmatter per section 5.2; a journal entry `import` listing the source and every file created. The original file is never modified.
+- Promote (native note to entity): the note's context menu offers "Promote to…" with a kind (candidate, question, session note, KB entry) and a file name defaulting to the title. The app writes a new entity file under the matching folder with frontmatter carried over (title, tags, created) and the body verbatim, then rewrites the card id everywhere (placements, edges, portals, tables) to the new entity id in one journaled `promote` step, so the card keeps its place on every tab. Statements cannot be promoted into directly; a note becomes a candidate and is locked later through the revision flow.
 - Re-import: importing the same source again offers to update existing entity bodies (if the entity's `updated` is not later than the source's) or to create only the new ones.
 
 ---
@@ -230,7 +242,7 @@ The importer is how existing and future documents become entity cards.
 Policies:
 
 - `read-only` — card shows content; "open in editor" is the only action.
-- `editable` — double-click edits body and frontmatter fields in place; the app writes the whole file.
+- `editable` — the reader overlay (section 10.6) opens in edit mode for body and frontmatter fields; the app writes the whole file, only on change.
 - `revisioned` — as `editable`, plus the revision protocol in section 7.
 
 Guards for every write: the app refuses to write if the file's mtime or hash changed since the card was loaded (shows a diff and offers reload); writes are atomic (temp file + rename); the app never writes outside the configured entity folders and `canvas/`.
@@ -270,7 +282,7 @@ Types: `supports`, `contradicts`, `clarifies`, `depends-on`, `derived-from`, `su
 
 `origin`: `manual` (drawn), `frontmatter` (from `refines`/`cites` fields; regenerated on load, edited only by editing the field), `table:<id>/row/<n>` (from a card-reference cell, section 12), `import` (from the inbox importer when a capture names a target card), `promoted` (from a tag-derived line).
 
-Edges reference card IDs only. A tab shows an edge when both endpoints are placed on it; when only one is, the placed card shows a badge with the count of off-tab links and a jump list.
+Edges are created by dragging from a side handle to another card, or in Link mode (click source, then target). Edges reference card IDs only, plus the attachment side at each end (`fromSide`, `toSide`: `top` | `right` | `bottom` | `left`, D26); sides are chosen at creation from where the drag started and ended, re-pickable in the edge inspector, and optionally re-chosen by Arrange for cleaner routing. Several edges on one side spread evenly along it. A tab shows an edge when both endpoints are placed on it; when only one is, the placed card shows a badge with the count of off-tab links and a jump list.
 
 ---
 
@@ -300,14 +312,27 @@ Rules: a card carries a set of tag IDs; a card tagged with both a tag and its an
 
 ```json
 { "id": "tab:origin-mythology", "kind": "manual", "title": "Origin mythology",
+  "parent": "tab:universe", "order": 2, "collapsed": false,
   "viewport": { "x": 0, "y": 0, "zoom": 1 },
   "frames": [ { "id": "f_1", "title": "Sections A-H", "x": 0, "y": 0, "w": 1600, "h": 900, "color": "#f2c94c" } ],
-  "placements": [ { "card": "cand:2026-07-24/B", "x": 40, "y": 80, "w": 320, "h": 200, "frame": "f_1", "display": "summary" } ],
+  "placements": [ { "card": "cand:2026-07-24/B", "x": 40, "y": 80, "w": 320, "h": 200, "frame": "f_1", "display": "summary", "color": "sky" } ],
   "views": [ { "title": "Contradictions only", "edgeTypes": ["contradicts"], "query": null } ]
 }
 ```
 
-`display`: `summary` (title + first lines), `full` (rendered body), `thumb` (media), `embed` (URL iframe or PDF page). Deleting a tab deletes placements only; cards and edges survive as unplaced.
+`display`: `summary` (title + first lines), `full` (rendered body), `thumb` (media), `embed` (URL iframe or PDF page), `portal` (live thumbnail of the far side).
+
+**Sizing.** A placement has a width and either an automatic or a fixed height. Auto height (default): height follows the content for the current `display` mode (`summary` clamps the body to a few lines; `full` shows everything), so text is never clipped unintentionally; `h` is then stored as the last computed value for layout only. Dragging the bottom edge or a corner switches to fixed height: the body scrolls inside the card and a bottom fade signals overflow; dragging back past the auto height, or double-clicking the bottom handle, returns to auto. Minimum width 160 px, no maximum; minimum height the header plus one line. Eight handles (corners and mid-edges) on hover and selection; Shift keeps aspect, Alt resizes from the centre. Media cards keep their aspect by default and free it with Shift; the PDF thumbnail scales with the card. Frames never shrink below their contents (an inward drag past a card is refused; an outward drag adds margin). Portal cards resize like any card, the far-side thumbnail scaling inside. Resizes obey no-overlap and snapping, are undoable, and write one `layout` journal entry on release.
+
+**Align and distribute.** With two or more placements selected: align left, horizontal centre, right, top, vertical centre, bottom; distribute horizontally or vertically with equal gaps; match width, height or size. Frames rename on double-click of the title chip; an edge's type changes on double-click of its label; "Copy id" puts the card id on the clipboard; Paste on the canvas places copied placements (or creates note cards from pasted text, media from pasted images or URLs); "Delete card" removes every placement and every edge of the card and asks first. Alignment is relative to the selection's bounding box, or to the last-selected card when Alt is held on the menu item. One undo step, one `layout` journal entry, subject to no-overlap (aligned cards that would collide are nudged; distribute resolves it). Alt + arrow keys nudge the selection by 8 px, Alt Shift + arrows by 40 px.
+
+**No overlap (D25).** Placements are solid. On drop, move or resize, overlapping neighbours are pushed along the shortest clear direction with a short ease (~150 ms); pushes cascade; frames expand to keep their contents inside and are pushed as a unit. Snapping to an 8 px grid and to neighbours' edges is on by default (Space disables while dragging). Selection: click, Ctrl-click to add, marquee drag on empty canvas; Ctrl G groups the selection into a new frame (Ctrl Shift G ungroups). Frames carry `color` from a palette of six tints derived from the theme tokens (accent, sky, meadow, glow, ember, muted) at low alpha; the label chip takes the same hue. Placements carry an optional `color` from the same palette or a custom hex: the card border takes the color at full strength and the card face at about 8% alpha (Obsidian-style); absent means the default card look. Color is per placement, so the same card can be colored differently on different tabs. Edges are colored by type only. "Arrange" (right pill, and per frame in its context menu) runs a layered graph layout (ELK/dagre) over the tab, frame or selection: edges pull connected cards together, frames stay intact, unconnected cards fill a grid to the side; then zoom to fit. Arrange is undoable and writes one `layout` journal entry. Deleting a tab deletes placements only; cards and edges survive as unplaced.
+
+**Portals (D24).** Vocabulary, from canon: a card with a far side is a *portal*; the tab behind it is its *far side*; the tab it sits on is the *near side*; entering is *Cross*, the transition is *the Shimmer*, leaving is *Return*. `canvas/portals.json` maps a card id to a tab id. "Open a portal" on a selected card creates a child tab of the current tab (title = card title, `parent` = current tab), writes the mapping and journals it; on a frame it moves the frame's placements to the far side and leaves one portal card. The portal card shows a small Shimmer marker and the far side's card count, and can display a live thumbnail of the far side (`display: portal`). Double-click (Cross): the card scales to fill the viewport while the far side fades in through the Shimmer; on the far side the portal card is pinned as the header. Escape, the breadcrumb in the top bar ("Return"), or zooming out past the minimum returns to the near side with the reverse transition. Portals nest without limit. "Close the portal" moves the far side's placements back into a frame on the near side and deletes the child tab. Because the mapping is per card, not per placement, a portal crosses from every tab it is placed on. Deleting a portal card's placement does not delete its far side; the card goes to the unplaced list in the panel.
+
+Portals can also be opened from the panel: "+" on a tab row, or right-click "New portal", creates the child tab and at the same time a portal card on the near side's canvas (a native note card titled with the new tab's name, placed at the centre of the current viewport). Rule: every child tab is the far side of exactly one portal card on its near side, whichever way it was created; only root-level tabs have no portal card. The portal card can later be swapped for an entity card ("Use as portal" on a selected card while the far side exists).
+
+**Nesting (D22).** `parent` names another tab (any kind); `order` sorts siblings; `collapsed` remembers the tree state. The panel's tab tree renders the hierarchy with chevrons; drag a tab onto another to reparent, drag between siblings to reorder; "New portal" in a tab's context menu (section 10.1, Portals). Deleting or closing: "Close the portal" (on a child tab or its portal card) moves the far side's placements back into a frame on the near side and deletes the child tab; "Delete tab" (any tab) removes its placements (cards go to the unplaced panel) and asks whether child tabs move up one level or are deleted with it. In Phase 1 the tree can nest before portals exist; when Phase 2 lands, every existing child tab gets its portal card created on its parent at the viewport centre. A dynamic tab's query may use `in:<tab-id>` to match cards placed anywhere in that tab's subtree. Tab ids are stable across moves, so placements, edges and captures targeting a tab are unaffected by reparenting.
 
 ### 10.2 Dynamic tab
 
@@ -331,9 +356,15 @@ Rendered dashed, weight by shared depth, hover shows the shared tag, never store
 
 Card inspector shows "appears on" (tabs) and "linked off this tab" (edges) with jump actions. Edge inspector has "go to source / go to target" (opens the tab where the other endpoint is, or offers to place it here).
 
-### 10.5 Drawer
+### 10.5 Panel (Tabs mode)
 
-A side panel listing unplaced cards, the general Inbox, and search results; drag from it onto the current tab.
+The rail's panel in Tabs mode: the tab tree, then the unplaced cards (cards placed on no tab), then the inbox summary; drag from it onto the current tab. Other rail items swap the panel's content (tags, analysis, inbox). Earlier drafts called the unplaced list "the drawer"; it is this panel.
+
+### 10.6 Reader overlay (D29)
+
+Enter on a selected card, "Open" in the selection toolbar, or double-click on a non-portal card opens a centred glass overlay (about two thirds of the viewport, canvas dimmed behind). Layout: header with kind, id, status chip and the source path; body rendered as markdown with its own vertical scroll; a side column with the frontmatter fields (title, status, tags, refines, cites) as editable controls; the links list at the bottom; left and right arrows step to the neighbouring cards on the current tab in placement order. Media cards open in the section 11 viewer inside the same overlay; URL cards show the cached text with a button to the live page. Editing follows section 6 and opens directly: native cards and `editable` entities open in edit mode (live-preview markdown editor for the body, frontmatter fields active); `revisioned` statements open read-only with the Revise button (section 7); `read-only` docs open read-only with "Open in editor". Writes happen only on change: the overlay keeps the file as loaded, and on close (Escape, or stepping to a neighbour) or Ctrl S it serialises the current state and compares it byte for byte with the loaded version; identical means no write, no journal entry and no mtime change; different means one whole-file write with the conflict guard and one `edit` journal entry. There is no autosave timer while typing; closing with changes saves, and "Discard changes" in the overlay footer drops them.
+
+Formatting in edit mode: standard shortcuts (Ctrl B bold, Ctrl I italic, Ctrl K link, Ctrl Shift 1-3 headings, Ctrl Shift 8 bullet list, Ctrl Shift 7 numbered list, Ctrl Shift 9 quote, Ctrl E inline code, Ctrl Shift C code block, Tab / Shift Tab list indent) plus markdown-as-you-type (`# `, `- `, `> `, `**` pairs). A compact glass formatting bar sits above the body with one icon per action; hovering an icon shows the action name and its shortcut. The bar is hidden in read-only mode. While the overlay is open it owns the keyboard, so canvas shortcuts do not fire. Reading is Phase 1, editing Phase 4.
 
 ---
 
@@ -343,7 +374,7 @@ A side panel listing unplaced cards, the general Inbox, and search results; drag
 
 **PDF caches** (in `cache/`, keyed by hash): first-page thumbnail (PNG), per-page renders on demand (pdf.js), extracted text layer (`.txt`) for search and for Claude sessions, page count. A PDF with no text layer is marked "no text layer"; OCR is out of scope for v1.
 
-**Semantic zoom** (from Canvas for OneNote): `thumb` at low zoom, readable page at high zoom, same object. Double-click opens the in-app viewer (pdf.js in a side panel, canvas still visible). Context menu "Open in external app" shells out on the PC.
+**Semantic zoom** (from Canvas for OneNote): `thumb` at low zoom, readable page at high zoom, same object. Double-click opens the in-app viewer (pdf.js inside the reader overlay, section 10.6). Context menu "Open in external app" shells out on the PC.
 
 **Update:** "Replace file" on the card copies the new file over the asset path (old version stays in git history), records `replacedOn` and page-count change, rehashes, invalidates caches. If any edge or note on this card carries a page anchor and the page count changed, the card gets the flag `page-anchors-stale` until cleared. On app load the file API rehashes all assets so out-of-band replacements are also detected.
 
@@ -399,7 +430,7 @@ bucket: captures (images, PDFs, audio)
 
 Phone page: a PWA registered as a share target; fields: payload (auto-filled from share), note, target tab (picker from manifest, remembers last used), tags (picker from manifest tree). Voice note transcribed to text (in scope for Phase 6).
 
-Desktop app on launch (and on a "Sync inbox" button): pulls captures with `imported_at is null`, downloads files into `assets/`, creates cards (`status: raw`), applies tags, places the card in an "Inbox" frame on the target manual tab, or leaves it unplaced if the target is dynamic (the tags decide visibility), or places it on the general Inbox tab when no target; sets `imported_at`; updates `inbox-state.json`. On every save the desktop app pushes the manifest (tab list, tag tree; nothing else). Apart from that manifest, canvas data never leaves the PC.
+Desktop app sync runs three ways: on launch, live while running (a Supabase Realtime subscription on `captures` inserts, so a phone capture appears in the Inbox within seconds with a toast and the rail badge), and a poll every 2 minutes as fallback when the socket is down; a "Sync now" button remains for reassurance. Each sync pulls captures with `imported_at is null`, downloads files into `assets/`, creates cards (`status: raw`), applies tags, places the card in an "Inbox" frame on the target manual tab, or leaves it unplaced if the target is dynamic (the tags decide visibility), or places it on the general Inbox tab when no target; sets `imported_at`; updates `inbox-state.json`. On every save the desktop app pushes the manifest (tab list, tag tree; nothing else). Apart from that manifest, canvas data never leaves the PC.
 
 ---
 
@@ -408,10 +439,10 @@ Desktop app on launch (and on a "Sync inbox" button): pulls captures with `impor
 Every write appends one line to `changes.jsonl`:
 
 ```json
-{ "ts": "2026-09-11T14:02:11+02:00", "op": "revise", "card": "stmt:26", "rev": 2, "reason": "Section B reconciliation", "files": ["docs/ecosystem/thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md", "docs/ecosystem/canvas/cards.json", "docs/ecosystem/canvas/edges.json"], "flagged": ["e_7d1a", "e_02cc", "e_9a10"] }
+{ "ts": "2026-09-11T14:02:11+02:00", "op": "revise", "card": "stmt:26", "rev": 2, "reason": "Section B reconciliation", "files": ["docs/ecosystem/discovery/statements/S026.md", "docs/ecosystem/discovery/statements/S026.history.md", "docs/ecosystem/canvas/edges.json"], "flagged": ["e_7d1a", "e_02cc", "e_9a10"] }
 ```
 
-Ops: `revise`, `edit`, `append-statement`, `add-card`, `replace-asset`, `add-edge`, `edit-edge`, `delete-edge`, `tag`, `tag-tree`, `table`, `tab`, `layout`, `import`.
+Ops: `revise`, `edit`, `append-statement`, `add-card`, `promote`, `replace-asset`, `add-edge`, `edit-edge`, `delete-edge`, `tag`, `tag-tree`, `table`, `tab`, `portal`, `layout`, `import`.
 
 The sweep is a Claude Code skill: read journal entries since the last sweep marker, group into commits (canon revisions and appends; edits to editable sources; graph changes: edges, tags, tables; layout and imports), stage exactly the files listed (never glob), write `docs(scope): subject` messages with bodies from the journal reasons, commit on the discovery branch, append a `sweep` marker line. Push stays manual (Stefan pushes); the sweep never pushes. Canon revisions are the commits worth reviewing before merge. The journal is committed with the changes so history and journal always agree.
 
@@ -446,7 +477,7 @@ Available as a panel, as derived tables, and (where spatial) as dynamic-tab layo
 | Drop a folder to add all files | Same (bulk import into `assets/` or as `doc:` cards) |
 | Groups: create from selection, rename, color, move as unit | Frames |
 | Connections with labels, colors, direction; go to source/target | Typed edges, global, cross-tab |
-| Swap card, convert text card to file | Swap; "promote note to candidate file" under `thinking/` with status candidate |
+| Swap card, convert text card to file | Swap; "Promote to…" writes a new entity file under `discovery/` (section 5.7) |
 | Resize (Shift keeps aspect), Alt-drag duplicate, Shift-drag axis lock, Space disables snapping | Same |
 | Multi-select, delete via key or menu | Same |
 | Card and edge colors | Same, plus tag colors |
@@ -457,15 +488,166 @@ Additions beyond Obsidian: global card identity across tabs, typed edges, tag tr
 
 ---
 
----
-
 ## 17. Look and feel
 
 - Light and dark themes, following the OS by default with a manual toggle; both are first-class (no dark-only afterthought). Tokens for surfaces, text, accent, tag colors and edge colors are defined once and used by both themes.
-- "Glass" look: translucent panels (inspector, drawer, tag tree, toolbars, tab bar) with backdrop blur, soft borders and low-elevation shadows, floating over the canvas so the canvas stays the visual ground. Cards are opaque for legibility; frames are translucent. Keep blur off the canvas layer itself so React Flow stays fast at hundreds of nodes.
+- "Glass" look: translucent panels (inspector, rail panel, toolbars, tab bar) with backdrop blur, soft borders and low-elevation shadows, floating over the canvas so the canvas stays the visual ground. Cards are opaque for legibility; frames are translucent. Keep blur off the canvas layer itself so React Flow stays fast at hundreds of nodes.
+- Branding image: `docs/ecosystem/canvas/branding/gimbal-dusk.jpg` (the Gimbal held up against a dusk meadow, 1856 x 2304). Palette sampled from it, the seed for `design/tokens.json`:
+
+  | Token | Dark theme | Light theme | Source in the image |
+  |-------|-----------|-------------|---------------------|
+  | ground | `#121512` | `#e9eef3` | leather / pale dusk sky |
+  | surface (glass) | `rgba(37,44,31,0.55)` | `rgba(255,255,255,0.55)` | tree line / haze |
+  | text | `#e9e4d8` | `#1e2420` | warm off-white / near-black |
+  | text muted | `#8a8f86` | `#5e6560` | brushed metal grey |
+  | accent (brass) | `#c9a35e` | `#8a6a34` | the housing |
+  | highlight (glow) | `#f0cf8a` | `#a8823f` | the ball's light (darkened on light ground for contrast) |
+  | ember | `#d98a5a` | `#b8683a` | the glow's warm edge; used for contradicts edges and the sixth tint |
+  | sky | `#98b3cd` | `#5f83a8` | dusk sky |
+  | meadow | `#6b8a4a` | `#4f6a3a` | grass |
+  | border | `rgba(201,163,94,0.25)` | `rgba(138,106,52,0.25)` | brass, faint |
+
+  Status colors: locked = accent, candidate = sky, open = meadow, raw = text muted, paused/retired = muted with strikethrough. Edge type colors are picked from the same set so nothing on the canvas falls outside the image's palette.
+- Shell layout (Obsidian-shaped, from the Phase 1 mockup): a slim icon rail on the far left (Home, Tabs, Tags, Analysis, Inbox; Settings and Help at the bottom) that opens a panel next to it whose content follows the rail item (Tabs: the tab tree plus unplaced cards and the inbox summary; Tags: the tag tree; Analysis: the views; Inbox: captures); a glass top bar with the app name, the breadcrumb of the current tab's near-side chain, the recently opened tabs, search, "Sweep now" and the theme toggle; the canvas; a floating creation toolbar bottom-center (Note, Entity, Media, Frame, Link, Import) with keyboard shortcuts in tooltips; a vertical pill on the canvas's right edge (zoom in, level, zoom out, fit, reset, Arrange, undo, redo); the inspector on the right. Cards show a small file label above media cards (the asset filename) and a handle on each side on hover for drawing edges.
 - Front page: the app opens on a landing view rather than directly on a tab: a full-bleed image or short loop that carries the FringeIsland feeling (supplied by Stefan, stored at `docs/ecosystem/canvas/branding/`), the tab list as glass tiles over it, the inbox count, recent activity, and the flag queue count. One click into a tab. The same image, heavily blurred and dimmed, can serve as the canvas backdrop in both themes.
-- Typography and spacing: quiet and dense enough for analysis work; no decoration on cards beyond status color, tag chips and kind icon.
-- Motion: subtle (panel slide, zoom easing); respect the reduced-motion preference.
+- Typography: Manrope for UI (400-700), Instrument Serif for the landing title and the inspector's card title; fallbacks Segoe UI / Georgia. Type sizes in the mockup: UI 12-13.5px, card titles 13.5px/600, inspector title 20px serif, landing title 58px serif.
+- Glass values from the Phase 1 mockup (`docs/ecosystem/canvas/branding/mockups/phase-1/`): panels `backdrop-filter: blur(18px)`, surface alpha 0.55 (0.75 for the active tab and zoom pill), 1px brass border at 0.25 alpha, radius 14px for panels and 12px for cards, chips 20px tall with 999px radius, shadow `0 10px 30px` at 0.35 (dark) / 0.12 (light). Cards are opaque (`#1b201a` dark, `#fbfaf7` light). Edge colors: supports = meadow, clarifies = sky, depends-on = accent, evidence-for = highlight, contradicts = ember (`#d98a5a` dark / `#b8683a` light, dashed).
+- Spacing: quiet and dense enough for analysis work; no decoration on cards beyond status dot, tag chips and kind icon.
+- Motion: subtle (panel slide, zoom easing); respect the reduced-motion preference. The one deliberate piece of motion is the Shimmer: ~350 ms, the portal card scaling to the viewport with the far side cross-fading in underneath, reversed on Return; with reduced motion it is a plain crossfade.
+
+### 17.1 Control map (Phase 1 mockup)
+
+Every visible control, what it does, where the spec defines it, and the phase it lands in. Claude Code treats this as the parity list for the shell.
+
+**Top bar**
+
+| Control | Does | Spec | Phase |
+|---------|------|------|-------|
+| Gimbal mark + "Discovery Canvas" | Click: back to the landing view | 17 | 1 |
+| Tab chips (Origin mythology, Place 3 map, Whisp craft) | Recently opened tabs; the active one is filled. Middle-click or x removes the chip (the tab stays in the tree); drag to reorder; right-click: rename, duplicate tab (placements copied), New portal, Delete tab | 10, D22 | 1 |
+| "+" after the tabs | New tab at root (manual by default; dynamic via the dialog) | 10 | 1 (manual), 2 (dynamic) |
+| Search field (Ctrl K) | Command palette: cards by id, title, body and tag; tabs; actions ("new tab", "import"). Enter jumps to the card on its tab | 16 (on-canvas search) | 1 |
+| "Sweep now" | Writes the `sweep-requested` marker for Claude Code; never runs git | 14 | 1 |
+| Sun / moon | Theme toggle (system, light, dark) | 17 | 1 |
+
+**Rail (far left)**
+
+| Control | Does | Spec | Phase |
+|---------|------|------|-------|
+| Home | Landing view | 17 | 1 |
+| Tabs | Panel shows the tab tree, unplaced cards and inbox summary (default) | 10, 17 | 1 |
+| Tags | Panel shows the tag tree and tag manager | 9 | 2 |
+| Analysis | Panel shows the analysis views; each can be placed as a derived table or opened as a dynamic tab | 15 | 7 (panel), 2 (dynamic tabs) |
+| Inbox (with dot) | Panel shows captures waiting; dot = unimported count | 13 | 6 |
+| Settings | Data folder, write policies, edge types and colors, tokens, Supabase keys | 6, 8, 17 | 1 (basic), 6 (Supabase) |
+| Help | Keyboard shortcuts and the section 16 gesture list | 16 | 1 |
+
+**Panel (next to the rail, Tabs mode)**
+
+| Control | Does | Spec | Phase |
+|---------|------|------|-------|
+| TABS header "+" | New tab at root | 10 | 1 |
+| Tree rows with chevrons | Click: open the tab; chevron: collapse or expand (remembered); drag onto a row: reparent; drag between rows: reorder; right-aligned "+" on hover (D28) or right-click "New portal": child tab plus its portal card on this tab's canvas; right-click also: rename, Close the portal (asks about children) | 10.1 nesting, D24 | 1 (tree), 2 (portals) |
+| "DYN" badge | Marks a dynamic tab | 10.2 | 2 |
+| UNPLACED list (count) | Cards on no tab; drag onto the canvas to place; click: open in inspector | 10.5 | 1 |
+| INBOX summary (badge) | Count and a one-line summary; click: switch panel to Inbox mode | 13 | 6 |
+
+**Canvas**
+
+| Control | Does | Spec | Phase |
+|---------|------|------|-------|
+| Card | Never overlaps another (neighbours are nudged aside on drop, move, resize); click: select (inspector follows); double-click: Cross if the card is a portal, else the reader overlay; right-click: Open a portal / Close the portal (Phase 2); drag: move; Alt-drag: duplicate placement; Shift-drag: axis lock; resize at eight handles (auto height by default, fixed height once the bottom edge is dragged; Shift keeps aspect, Alt from centre); hover shows four edge handles | 16 | 1 |
+| Kind icon + id (card header) | Kind at a glance; id is copyable | 5 | 1 |
+| Status dot | locked = accent, candidate = sky, open = meadow, raw = muted | 5.3, 17 | 1 |
+| Tag chips on cards | Click: filter the current tab to that tag (saved view) | 9, 10.1 views | 2 |
+| Frame (dashed, tinted) | Group: Ctrl-click or marquee to select several cards, then Ctrl G or the Frame tool; tint from the frame palette (menu); drag moves contents; double-click title to rename; color from the properties menu; right-click: Open a portal (folds contents onto a far side, Phase 2) | 16, 10.1 | 1 |
+| Portal card (Shimmer marker + count) | Double-click: Cross to the far side; pinned as header there; Escape / breadcrumb / zoom-out: Return | 10.1 D24, 17 | 2 |
+| Breadcrumb (top bar, on a far side) | Near-side chain of the current tab; click any level to Return to it | 10.1 D24 | 2 |
+| Edge line + label | Click: select edge (inspector shows type, note, endpoints, "go to source / target"); double-click label: change type; Delete removes | 8 | 1 |
+| Edge handles (top, right, bottom, left; visible on hover and selection) | Drag from a handle to any side of another card to create an edge; the sides are recorded; type picker appears on drop; several edges per side fan out | 8, D26 | 1 |
+| Filename label above media card | Asset filename; click: open in external app | 11 | 3 |
+| Dashed tag-derived line (dynamic tabs only) | Hover: shared tag; right-click: "make explicit" | 10.3 | 2 |
+
+**Selection toolbar (floats above the selection)**
+
+| Control | Does | Spec | Phase |
+|---------|------|------|-------|
+| Delete | Removes the placement from this tab (card stays in the unplaced list); on a frame: removes the frame, keeps its cards; on an edge: deletes the edge | 10.1, 8 | 1 |
+| Color | Palette of six tints plus custom hex; on a card paints border and a faint face tint (per placement), on a frame the region tint; "None" clears | D27 | 1 |
+| Zoom to selection | Fits the selection in the viewport | 16 | 1 |
+| Open | Reader overlay for the selected card (Enter does the same); in edit mode a formatting bar with shortcut tooltips | 10.6 | 1 |
+| Edit / Open source | Native card: edit in the overlay (Phase 1); entity card: open the file (Phase 1) or edit in the overlay (Phase 4) | 6, 10.6 | 1 |
+| Open a portal / Cross | Card without a far side: open one; portal card: Cross | D24 | 2 |
+| Align (2+ selected) | Menu: align left / centre / right / top / middle / bottom, distribute horizontally / vertically, match width / height / size; Alt on an item aligns to the last-selected card | 10.1 align | 1 |
+| Frame only: title field | Rename inline | 16 | 1 |
+| Edge only: type, direction, note | Change the edge type, flip direction, edit the note | 8 | 1 |
+
+**Context menu (right-click on a card, frame, edge or empty canvas)**
+
+Card: Open (reader overlay) · Cross (portal) · Open a portal / Close the portal · Edit or Open source · Revise (statement, Phase 4) · Add tag · Duplicate placement · Copy id · Open in external app / Show in folder (assets and entity files) · Zoom to selection · Remove from this tab · Delete card (asks; removes every placement and its edges). Frame: Rename · Color · Arrange contents · Open a portal (folds contents) · Ungroup · Delete frame. Edge: type · flip · note · Delete. Empty canvas: Note here · Paste · Arrange · Zoom to fit. Deliberately absent from Obsidian's list: Send to back / front (nothing overlaps) and Narrow to heading / block (an entity is already one section).
+
+**Less frequent controls (where they live)**
+
+| Control | Does | Spec | Phase |
+|---------|------|------|-------|
+| Freeze (dynamic tab header) | Copies the computed layout into a new manual tab | 10.2 | 2 |
+| Saved views (manual tab header menu) | Save the current filter as a view; switch or delete views | 10.1 views | 2 |
+| Sync now (Inbox panel) | Pulls the inbox immediately; otherwise automatic | 13, D23 | 6 |
+| Replace file (media card context menu) | Swaps the asset, rehashes, invalidates caches, flags page anchors | 11 | 3 |
+| Append a clarifying statement (statement context menu) | New statement file with `refines` set | 7 | 4 |
+| Promote to… (note context menu) | Turns a native note into a candidate, question, session note or KB entity file; card id rewritten everywhere | 5.7 | 1 |
+| Use as portal (card context menu, when the current tab is a far side) | Makes this card the portal of the current far side | 10.1 portals | 2 |
+| Clear flag (edge inspector) | Clears `endpoint-revised` on the edge | 7 | 4 |
+| Off-tab link badge (on a card) | Count of edges whose other end is on another tab; click: jump list | 8 | 1 |
+| Export tab (empty-canvas context menu) | PNG or SVG of the tab | 16 | 3 |
+| Link mode (toolbar Link, or L) | Click a source card, then a target; Esc exits; same result as dragging a handle | 8 | 1 |
+| Search (Ctrl K) | Command palette over cards (id, title, body, tags), tabs and actions; Enter jumps or runs | 17 | 1 |
+
+**Creation toolbar (bottom center)**
+
+| Control | Does | Spec | Phase |
+|---------|------|------|-------|
+| Note (N) | New native note card at the cursor | 5, 11 | 1 |
+| Entity (E) | Picker: existing entity from the panel's unplaced list, or "new statement / question / candidate" which writes a new entity file | 5, 6 | 1 (pick), 4 (new) |
+| Media (M) | File dialog or paste: image, PDF, audio/video, or a URL | 11 | 3 |
+| Frame (F) | Drag out a frame; with a selection, wraps it | 16 | 1 |
+| Link (L) | Link mode: click source card, then target; Esc exits | 8 | 1 |
+| Import | The importer: pick a markdown or other file, split rule, preview, write entity files | 5.7 | 1 |
+
+**Right pill (canvas edge)**
+
+| Control | Does | Spec | Phase |
+|---------|------|------|-------|
+| + / % / - | Zoom in, current level (click: 100%), zoom out | 16 | 1 |
+| Fit | Zoom to fit all, or to selection when something is selected | 16 | 1 |
+| Reset | Reset viewport to the tab's saved viewport | 10.1 | 1 |
+| Arrange | Auto-layout the tab (or the selection) respecting edges and frames, then zoom to fit; undoable | 10.1 D25 | 1 |
+| Undo / Redo | Ctrl Z / Ctrl Shift Z; layout, edges, tags, native card edits; entity file edits undo until saved | 16 | 1 |
+
+**Inspector (right)**
+
+| Control | Does | Spec | Phase |
+|---------|------|------|-------|
+| Kind icon + id + status chip | Identity; status chip shows revision for statements | 5, 7 | 1 |
+| Title, source line | Title; source path opens the file location | 5 | 1 |
+| Tag chips + "+ tag" | Add or remove tags; typing creates missing tags | 9 | 2 |
+| LINKS list | Every edge on this card, typed; rows on other tabs show the tab name with a jump chevron | 8, 10.4 | 1 |
+| APPEARS ON chips | Tabs where the card is placed; click jumps | 10.4 | 1 |
+| Open source | Opens the entity file in the system editor | 6 | 1 |
+| Revise | Revision dialog for statements (text, reason, minor); "Edit" for editable entities and native cards | 7 | 4 (disabled in Phase 1) |
+
+**Landing**
+
+| Control | Does | Spec | Phase |
+|---------|------|------|-------|
+| Tab tiles | Open that tab; tiles reflect the tab tree's top level | 17 | 1 |
+| New tab / Import a file | Same as the toolbar actions | 10, 5.7 | 1 |
+| "flags to review" | Opens the flag queue in the Analysis panel | 15 | 7 |
+| RECENT list | Last journal entries; click jumps to the card | 14 | 1 |
+| Footer line | Data folder and last sweep time | 14 | 1 |
+
+
+---
 
 ## 18. Working loop
 
@@ -480,7 +662,6 @@ Rules: a decision counts only once it is in the spec; Claude Code never edits th
 
 ### Later (parked ideas, not scheduled)
 
-- Embed a tab as a card on another tab.
 - Split canonical cores into per-section entities.
 - OCR for scanned PDFs.
 - Main-repo sources (ADRs, features) for traceability.
@@ -493,16 +674,16 @@ Each phase is shippable and usable on its own. Claude Code owns implementation; 
 
 **Phase 0 — Repo setup (Claude Code).** In the discovery worktree: commit the spec, add it to `thinking/README.md`, create `docs/ecosystem/discovery/` and `docs/ecosystem/canvas/` with `config.json` and a `.gitignore` for `cache/`. In a new repo `D:\WebDev\GitHub\FringeIsland-canvas`: scaffold the Next.js app, `canvas.local.json` (gitignored) pointing at the data folder, a README that points back at the spec, and `design/tokens.json` with a first token set for both themes (the mockup for Phase 1 starts from it).
 
-**Phase 1 — Registry, manual tabs and importer.** Theme tokens (light/dark) and the glass shell (tab bar, inspector, drawer) from the start, so later phases inherit it; landing page with placeholder image until Stefan supplies the FringeIsland one. File API; entity-file reader with frontmatter validation; the importer (section 5.7) with the four presets, so the discovery material can be brought in from day one; `cards.json` for native cards; React Flow canvas with manual tabs (CRUD), frames, placements, summary/full display; typed edges with global list; card inspector; drawer with unplaced cards; on-canvas search; change journal. Read-only cards. Outcome: Stefan imports the discovery log and whatever else he wants through the importer, and has the statements, KB entries, CQs and gaps on tabs with drawn typed relations.
+**Phase 1 — Registry, manual tabs and importer.** No-overlap nudging, snapping, Arrange and four-side edge handles are Phase 1 canvas behaviour. Theme tokens (light/dark) and the glass shell (tab bar, rail, panel, inspector) from the start, so later phases inherit it; landing page with placeholder image until Stefan supplies the FringeIsland one. File API; entity-file reader with frontmatter validation; the importer (section 5.7) with the four presets, so the discovery material can be brought in from day one; `cards.json` for native cards; React Flow canvas with manual tabs (CRUD), frames, placements, summary/full display; typed edges with global list; card inspector; reader overlay (read-only for entities, editable for notes); note promotion to entity files; panel with the tab tree and unplaced cards; on-canvas search; change journal. Read-only cards. Outcome: Stefan imports the discovery log and whatever else he wants through the importer, and has the statements, KB entries, CQs and gaps on tabs with drawn typed relations.
 
-**Phase 2 — Tags and dynamic tabs.** Tag tree and manager; tagging in inspector; tag expressions; dynamic tabs with `cluster-by-tag`, `shared-tag-graph`, `force`; implicit relations and promotion; freeze; saved views on manual tabs.
+**Phase 2 — Tags, dynamic tabs and portals.** Open / close portal, portal cards, the Shimmer transition and breadcrumb; tag tree and manager; tagging in inspector; tag expressions; dynamic tabs with `cluster-by-tag`, `shared-tag-graph`, `force`; implicit relations and promotion; freeze; saved views on manual tabs.
 
-**Phase 3 — Native cards and media.** Notes, URLs, images, PDFs (caches, viewer, external open, replace-file), audio/video; folder drop; export tab as PNG/SVG.
+**Phase 3 — Media.** URLs, images, PDFs (caches, viewer, external open, replace-file), audio/video; folder drop; export tab as PNG/SVG.
 
-**Phase 4 — Write-back.** Whole-file editing for `editable` entities; revision protocol for statements; append-statement; promote note to candidate entity; conflict guard; Claude Code sweep skill including view regeneration; freezing imported originals on request.
+**Phase 4 — Write-back.** Editing in the reader overlay; whole-file editing for `editable` entities; revision protocol for statements; append-statement; conflict guard; Claude Code sweep skill including view regeneration; freezing imported originals on request.
 
 **Phase 5 — Tables.** Authored tables with editor and markdown twin; cardref edges; derived tables from analysis views.
 
-**Phase 6 — Inbox.** Supabase project, schema, RLS; PWA share-target page; manifest push; importer with tab targeting.
+**Phase 6 — Inbox.** Supabase project, schema, RLS; PWA share-target page; manifest push; importer with tab targeting; realtime subscription and poll fallback; voice-note transcription.
 
 **Phase 7 — Analysis and polish.** Analysis panel, activity slider, matrix and timeline layouts.
