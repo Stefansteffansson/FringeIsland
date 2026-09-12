@@ -27,7 +27,8 @@ docs/
 │   ├── strategy/                          ← stable directional documents
 │   ├── thinking/                          ← open questions, explorations, legacy mining
 │   │   ├── OPEN_QUESTIONS.md               ← ecosystem-level open questions
-│   │   └── 2026-09-11_discovery-canvas-spec.md  ← Discovery Canvas spec (tooling design, draft v0.3)
+│   │   ├── 2026-09-11_discovery-canvas-spec.md  ← Discovery Canvas spec (tooling design, draft v0.4)
+│   │   └── universe-discovery/            ← discovery session logs (statements + held paraphrases), candidate material, backlog
 │   ├── discovery/                         ← discovery canon as entity files: one statement, entry, question or gap per file
 │   └── canvas/                            ← Discovery Canvas data (config, cards, edges, tags, tabs, tables, assets); owned by the canvas app
 │
@@ -95,6 +96,8 @@ docs/
 | `ecosystem/universe/` | Universe design — cosmology, developmental mechanics, narrative, beings, community | Technical service specs (→ platform/), open questions (→ thinking/) |
 | `ecosystem/strategy/` | Stable directional documents — product family, contributor model | Open questions, exploratory thinking (→ ecosystem/thinking/) |
 | `ecosystem/thinking/` | Open questions, explorations, legacy content being mined | Stable strategy (→ ecosystem/strategy/), research (→ research/) |
+| `ecosystem/discovery/` | Discovery canon as entity files — one statement, KB entry, candidate section, question or gap per markdown file with frontmatter; generated long views | Canvas layout and relations (→ ecosystem/canvas/), the original long documents (→ ecosystem/thinking/), canonical cores (→ ecosystem/universe/) |
+| `ecosystem/canvas/` | Discovery Canvas data owned by the app — config, cards, edges, tags, tabs, tables, assets, change journal | Canon (→ ecosystem/discovery/), the app code (own repository, canvas spec D17) |
 | `architecture/` | Structural models, binding decisions (ADRs), dependency diagrams | Service descriptions, feature specs, planning snapshots |
 | `platform/` | Service descriptions, feature specs, API contracts | Binding decisions (→ architecture), ecosystem strategy (→ ecosystem) |
 | `planning/reference/` | Point-in-time snapshots that inform planning cycles | Permanent structural models (→ architecture), ecosystem strategy (→ ecosystem) |
