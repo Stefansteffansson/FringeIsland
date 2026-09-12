@@ -36,10 +36,22 @@ docs/ecosystem/
 │
 ├── how-we-work/                           ← the way of working, illustrated (decomposition, cadence, kanban, build loop, agent routing) + `assets/` diagrams
 │
-└── thinking/                              ← working ideas, explorations, open questions
-    ├── README.md                          ← index of active thinking
-    ├── OPEN_QUESTIONS.md                  ← ecosystem-level open questions
-    └── 2026-06-15_knowledge-base_whisp-and-universe-foundations.md  ← Whisp & universe foundations KB (exploratory)
+├── thinking/                              ← working ideas, explorations, open questions
+│   ├── README.md                          ← index of active thinking
+│   ├── OPEN_QUESTIONS.md                  ← ecosystem-level open questions
+│   ├── 2026-06-15_knowledge-base_whisp-and-universe-foundations.md  ← Whisp & universe foundations KB (exploratory)
+│   └── 2026-09-11_discovery-canvas-spec.md  ← Discovery Canvas spec (tooling design, draft v0.3)
+│
+├── discovery/                             ← discovery canon as entity files: one statement, entry, question or gap per file (canvas spec, section 5)
+│   ├── README.md                          ← folder rules, ID scheme, write policies
+│   ├── statements/                        ← locked statements (stmt:N, revisioned)
+│   ├── candidates/                        ← candidate sections, one subfolder per source file (cand:)
+│   ├── kb/                                ← knowledge-base entries (kb:N) and non-numbered sections (kbx:)
+│   ├── questions/                         ← open questions (cq:NNN)
+│   ├── gaps/                              ← gaps-register entries (gap:N)
+│   └── session-notes/                     ← non-statement log material (log:)
+│
+└── canvas/                                ← Discovery Canvas data, owned by the canvas app: config, cards, edges, tags, tabs/, tables/, assets/ (canvas spec, section 4)
 ```
 
 ---

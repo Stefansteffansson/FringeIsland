@@ -25,8 +25,11 @@ docs/
 │   │   ├── community/                     ← community dynamics, roles in practice
 │   │   └── kickstarter/                   ← the founding moment: Season Zero
 │   ├── strategy/                          ← stable directional documents
-│   └── thinking/                          ← open questions, explorations, legacy mining
-│       ├── OPEN_QUESTIONS.md               ← ecosystem-level open questions
+│   ├── thinking/                          ← open questions, explorations, legacy mining
+│   │   ├── OPEN_QUESTIONS.md               ← ecosystem-level open questions
+│   │   └── 2026-09-11_discovery-canvas-spec.md  ← Discovery Canvas spec (tooling design, draft v0.3)
+│   ├── discovery/                         ← discovery canon as entity files: one statement, entry, question or gap per file
+│   └── canvas/                            ← Discovery Canvas data (config, cards, edges, tags, tabs, tables, assets); owned by the canvas app
 │
 ├── products/                              ← equipment profiles of the one experience (ADR-U025)
 │   ├── hub/                               ← The Hub — the canvas surface (active in Ferd)
