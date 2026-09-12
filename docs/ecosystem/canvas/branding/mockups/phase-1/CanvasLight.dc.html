@@ -1,0 +1,261 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Instrument+Serif:ital@0;1&amp;display=swap">
+  <style>
+    body { margin: 0; font-family: Manrope, "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #8a6a34; } a:hover { color: #a8823f; }
+    * { box-sizing: border-box; }
+  </style>
+</helmet>
+
+<div style="position: relative; width: 1440px; height: 900px; overflow: hidden; background: #e9eef3 url(./gimbal-blur-light.jpg) center / cover no-repeat; color: #1e2420">
+  <div style="position: absolute; inset: 0; background: rgba(233,238,243,0.55)"></div>
+
+  <!-- top bar -->
+  <div style="position: absolute; left: 12px; right: 12px; top: 12px; height: 48px; display: flex; align-items: center; gap: 14px; padding: 0 14px; border-radius: 14px; background: rgba(255,255,255,0.55); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(138,106,52,0.25); box-shadow: 0 10px 30px rgba(30,36,32,0.12)">
+    <div style="display: flex; align-items: center; gap: 9px; padding-right: 12px; border-right: 1px solid rgba(138,106,52,0.25)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8a6a34" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><ellipse cx="12" cy="12" rx="9" ry="3.5"></ellipse><circle cx="12" cy="12" r="3"></circle></svg>
+      <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 19px; letter-spacing: 0.01em; color: #1e2420">Discovery Canvas</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 6px; padding-right: 10px; border-right: 1px solid rgba(138,106,52,0.25); color: #5e6560; font-size: 12px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg><span>Universe</span><span style="opacity: 0.5">/</span><span style="color: #1e2420; font-weight: 600">Origin mythology</span></div>
+    <div style="display: flex; align-items: center; gap: 4px"><div style="display: flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px; border-radius: 8px; background: rgba(255,255,255,0.75); border: 1px solid rgba(138,106,52,0.25); color: #1e2420; font-size: 12.5px; font-weight: 600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e2420" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 9h18"></path></svg><span>Origin mythology</span></div><div style="display: flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px; border-radius: 8px; background: transparent; border: 1px solid transparent; color: #5e6560; font-size: 12.5px; font-weight: 600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"></circle><circle cx="18" cy="8" r="2"></circle><circle cx="10" cy="18" r="2"></circle><path d="M7.5 7.2l8.6 .6M7 8l2.5 8M16.5 9.6l-5 7"></path></svg><span>Place 3 map</span></div><div style="display: flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px; border-radius: 8px; background: transparent; border: 1px solid transparent; color: #5e6560; font-size: 12.5px; font-weight: 600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 9h18"></path></svg><span>Whisp craft</span></div><div style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; color: #5e6560"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg></div></div>
+    <span style="flex-grow: 1"></span>
+    <div style="display: flex; align-items: center; gap: 8px; width: 240px; height: 32px; padding: 0 10px; border-radius: 8px; background: rgba(255,255,255,0.6); border: 1px solid rgba(30,36,32,0.08); color: #5e6560; font-size: 12px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5"></path></svg><span>Search cards, tags, ids</span><span style="margin-left: auto; font-size: 10px; padding: 1px 5px; border-radius: 4px; border: 1px solid rgba(30,36,32,0.08)">Ctrl K</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid rgba(138,106,52,0.25); color: #8a6a34; font-size: 12px; font-weight: 600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8a6a34" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l6-6"></path><path d="M14 4l6 6-8 8-6-6z"></path></svg><span>Sweep now</span></div>
+    <div style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; border: 1px solid rgba(30,36,32,0.08)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg></div>
+  </div>
+
+  <!-- rail -->
+  <div style="position: absolute; left: 12px; top: 72px; bottom: 12px; width: 44px; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 0; border-radius: 14px; background: rgba(255,255,255,0.55); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(138,106,52,0.25); box-shadow: 0 10px 30px rgba(30,36,32,0.12)">
+    <div style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"></path><path d="M6 10v10h12V10"></path></svg></div>
+    <div style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: rgba(255,255,255,0.75); border: 1px solid rgba(138,106,52,0.25)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8a6a34" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 9h18"></path></svg></div>
+    <div style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7l9 9-7 7-9-9z"></path><circle cx="8" cy="8" r="1.5"></circle></svg></div>
+    <div style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4"></path><path d="M4 20h16"></path><path d="M8 14l4-5 3 3 5-6"></path></svg></div>
+    <div style="position: relative; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"></path><path d="M4 14h4l2 3h4l2-3h4"></path></svg><span style="position: absolute; right: 2px; top: 2px; width: 8px; height: 8px; border-radius: 50%; background: #8a6a34"></span></div>
+    <span style="flex-grow: 1"></span>
+    <div style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"></path></svg></div>
+    <div style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7"></path><path d="M12 17h.01"></path></svg></div>
+  </div>
+
+  <!-- drawer -->
+  <div style="position: absolute; left: 64px; top: 72px; bottom: 12px; width: 210px; display: flex; flex-direction: column; gap: 10px; padding: 14px 12px; border-radius: 14px; background: rgba(255,255,255,0.55); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(138,106,52,0.25); box-shadow: 0 10px 30px rgba(30,36,32,0.12)">
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5e6560">Tabs</span>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 1px"><div style="display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px 0 4px; border-radius: 5px;  color: #5e6560; font-size: 12px; font-weight: 500; min-width: 0"><span style="display: inline-flex; width: 12px; justify-content: center; transform: rotate(90deg)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 9h18"></path></svg><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Universe</span></div><div style="display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px 0 16px; border-radius: 5px; background: rgba(30,36,32,0.05); color: #1e2420; font-size: 12px; font-weight: 600; min-width: 0"><span style="width: 12px"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e2420" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 9h18"></path></svg><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Origin mythology</span></div><div style="display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px 0 16px; border-radius: 5px; background: rgba(30,36,32,0.05); color: #5e6560; font-size: 12px; font-weight: 500; min-width: 0"><span style="display: inline-flex; width: 12px; justify-content: center; transform: rotate(90deg)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 9h18"></path></svg><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Beings</span><span style="margin-left: auto; display: inline-flex"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a6a34" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg></span></div><div style="display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px 0 28px; border-radius: 5px;  color: #5e6560; font-size: 12px; font-weight: 500; min-width: 0"><span style="width: 12px"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 9h18"></path></svg><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Whisp craft</span></div><div style="display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px 0 28px; border-radius: 5px;  color: #5e6560; font-size: 12px; font-weight: 500; min-width: 0"><span style="width: 12px"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 9h18"></path></svg><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Mist and Shadow</span></div><div style="display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px 0 28px; border-radius: 5px;  color: #5e6560; font-size: 12px; font-weight: 500; min-width: 0"><span style="width: 12px"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 9h18"></path></svg><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Cord and branches</span></div><div style="display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px 0 16px; border-radius: 5px;  color: #5e6560; font-size: 12px; font-weight: 500; min-width: 0"><span style="display: inline-flex; width: 12px; justify-content: center"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 9h18"></path></svg><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Places</span></div><div style="display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px 0 16px; border-radius: 5px;  color: #5e6560; font-size: 12px; font-weight: 500; min-width: 0"><span style="display: inline-flex; width: 12px; justify-content: center"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 9h18"></path></svg><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Narrative</span></div><div style="display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px 0 4px; border-radius: 5px;  color: #5e6560; font-size: 12px; font-weight: 500; min-width: 0"><span style="width: 12px"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"></circle><circle cx="18" cy="8" r="2"></circle><circle cx="10" cy="18" r="2"></circle><path d="M7.5 7.2l8.6 .6M7 8l2.5 8M16.5 9.6l-5 7"></path></svg><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Place 3 map</span><span style="margin-left: 6px; font-size: 9px; font-weight: 700; letter-spacing: 0.06em; color: #5f83a8">DYN</span></div><div style="display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px 0 4px; border-radius: 5px;  color: #5e6560; font-size: 12px; font-weight: 500; min-width: 0"><span style="width: 12px"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"></circle><circle cx="18" cy="8" r="2"></circle><circle cx="10" cy="18" r="2"></circle><path d="M7.5 7.2l8.6 .6M7 8l2.5 8M16.5 9.6l-5 7"></path></svg><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Thinkers by theme</span><span style="margin-left: 6px; font-size: 9px; font-weight: 700; letter-spacing: 0.06em; color: #5f83a8">DYN</span></div><div style="display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 6px 0 4px; border-radius: 5px;  color: #5e6560; font-size: 12px; font-weight: 500; min-width: 0"><span style="width: 12px"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"></path><path d="M4 14h4l2 3h4l2-3h4"></path></svg><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Inbox</span></div></div>
+    <div style="height: 1px; background: rgba(138,106,52,0.25); margin: 6px 0"></div>
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5e6560">Unplaced</span>
+      <span style="font-size: 11px; color: #5e6560">31</span>
+    </div>
+    <div style="display: flex; gap: 9px; padding: 9px 10px; border-radius: 9px; border: 1px solid rgba(30,36,32,0.08); background: rgba(30,36,32,0.05)"><div style="padding-top: 1px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg></div><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; color: #8a6a34">stmt:12</span><span style="font-size: 12px; line-height: 1.3; color: #1e2420">The world spans a full tonal range</span></div></div><div style="display: flex; gap: 9px; padding: 9px 10px; border-radius: 9px; border: 1px solid rgba(30,36,32,0.08); background: rgba(30,36,32,0.05)"><div style="padding-top: 1px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"></path><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg></div><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; color: #5e6560">url:1c7e</span><span style="font-size: 12px; line-height: 1.3; color: #1e2420">Terminal lucidity — Nahm & Greyson</span></div></div>
+    <div style="height: 1px; background: rgba(138,106,52,0.25); margin: 6px 0"></div>
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5e6560">Inbox</span>
+      <span style="font-size: 11px; font-weight: 700; color: #e9eef3; background: #8a6a34; border-radius: 999px; padding: 1px 7px">3</span>
+    </div>
+    <div style="font-size: 12px; color: #5e6560; line-height: 1.45">2 URLs and 1 photo from the phone, targeted at Place 3 map.</div>
+  </div>
+
+  <!-- canvas -->
+  <div style="position: absolute; left: 286px; top: 56px; width: 830px; height: 844px">
+    
+    <div style="position: absolute; left: 400px; top: 410px; width: 300px; height: 200px; border-radius: 14px; background: rgba(138,106,52,0.07); border: 1px dashed rgba(138,106,52,0.25)">
+      <div style="position: absolute; left: 12px; top: -11px; padding: 2px 8px; border-radius: 6px; background: #fbfaf7; border: 1px solid rgba(30,36,32,0.08); font-size: 11px; font-weight: 600; color: #8a6a34">Sections A–H · candidate</div>
+    </div>
+    <div style="position: absolute; left: 376px; top: 34px; width: 400px; height: 356px; border-radius: 14px; background: rgba(152,179,205,0.07); border: 1px dashed rgba(152,179,205,0.4)">
+      <div style="position: absolute; left: 12px; top: -11px; padding: 2px 8px; border-radius: 6px; background: #fbfaf7; border: 1px solid rgba(30,36,32,0.08); font-size: 11px; font-weight: 600; color: #5f83a8">Parfit and his evidence · group</div>
+    </div>
+    
+    <div style="position: absolute; left: 40px; top: 60px; width: 280px; "><span style="width: 9px; height: 9px; border-radius: 50%; background: #fbfaf7; border: 2px solid #8a6a34; position: absolute; left: 50%; top: -5px; transform: translateX(-50%)"></span><span style="width: 9px; height: 9px; border-radius: 50%; background: #fbfaf7; border: 2px solid #8a6a34; position: absolute; left: 50%; bottom: -5px; transform: translateX(-50%)"></span><span style="width: 9px; height: 9px; border-radius: 50%; background: #fbfaf7; border: 2px solid #8a6a34; position: absolute; top: 50%; left: -5px; transform: translateY(-50%)"></span><span style="width: 9px; height: 9px; border-radius: 50%; background: #fbfaf7; border: 2px solid #8a6a34; position: absolute; top: 50%; right: -5px; transform: translateY(-50%)"></span>
+    <div style="background: #fbfaf7; border: 1px solid rgba(30,36,32,0.08); border-radius: 12px; padding: 12px 14px 12px; box-shadow: 0 0 0 2px #8a6a34, 0 10px 30px rgba(30,36,32,0.12); display: flex; flex-direction: column; gap: 8px; overflow: hidden; ">
+      
+      <div style="display: flex; align-items: center; gap: 8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg>
+        <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: #5e6560">stmt:26</span>
+        <span style="flex-grow: 1"></span>
+        
+        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #8a6a34"></span>
+      </div>
+      <div style="font-size: 13.5px; font-weight: 600; line-height: 1.3; color: #1e2420">Worlds topology locked: Ordinary World, the Shimmer, the Fringe</div>
+      <div style="font-size: 12px; line-height: 1.45; color: #5e6560">FringeIsland as collective island and safe harbor; per-FIM private places; the Tree and the glowing glass balls.</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px"><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #5e6560; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">place</span><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #5e6560; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">entity/ball</span><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #5e6560; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">locked 2026-05-18</span></div>
+    </div>
+    </div>
+    <div style="position: absolute; left: 40px; top: 390px; width: 280px; ">
+    <div style="background: #fbfaf7; border: 1px solid rgba(30,36,32,0.08); border-radius: 12px; padding: 12px 14px 12px; box-shadow: 0 10px 30px rgba(30,36,32,0.12); display: flex; flex-direction: column; gap: 8px; overflow: hidden; ">
+      
+      <div style="display: flex; align-items: center; gap: 8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg>
+        <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: #5e6560">stmt:31</span>
+        <span style="flex-grow: 1"></span>
+        <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: #5f83a8"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5f83a8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c3-4 6-4 9 0s6 4 9 0"></path><path d="M3 7c3-4 6-4 9 0s6 4 9 0" opacity="0.5"></path><path d="M3 17c3-4 6-4 9 0s6 4 9 0" opacity="0.5"></path></svg>12</span>
+        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #8a6a34"></span>
+      </div>
+      <div style="font-size: 13.5px; font-weight: 600; line-height: 1.3; color: #1e2420">The Fringe is two places — place 2 and place 3 — both behind the one Shimmer</div>
+      <div style="font-size: 12px; line-height: 1.45; color: #5e6560">Supersedes the single-Fringe reading of S26 by addition.</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px"><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #5e6560; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">place/2</span><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #5e6560; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">place/3</span><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #5e6560; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">shimmer</span></div>
+    </div>
+    </div>
+    <div style="position: absolute; left: 400px; top: 640px; width: 250px; ">
+    <div style="background: #fbfaf7; border: 1px solid rgba(30,36,32,0.08); border-radius: 12px; padding: 12px 14px 12px; box-shadow: 0 10px 30px rgba(30,36,32,0.12); display: flex; flex-direction: column; gap: 8px; overflow: hidden; ">
+      
+      <div style="display: flex; align-items: center; gap: 8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg>
+        <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: #5e6560">stmt:39</span>
+        <span style="flex-grow: 1"></span>
+        
+        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #8a6a34"></span>
+      </div>
+      <div style="font-size: 13.5px; font-weight: 600; line-height: 1.3; color: #1e2420">Every FIM has their own Whisp and cord; the ball is what transcendence grants</div>
+      <div style="font-size: 12px; line-height: 1.45; color: #5e6560"></div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px"><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #5e6560; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">entity/whisp/cord</span></div>
+    </div>
+    </div>
+    <div style="position: absolute; left: 390px; top: 66px; width: 210px; ">
+    <div style="background: #fbfaf7; border: 1px solid rgba(30,36,32,0.08); border-radius: 12px; padding: 12px 14px 12px; box-shadow: 0 10px 30px rgba(30,36,32,0.12); display: flex; flex-direction: column; gap: 8px; overflow: hidden; ">
+      
+      <div style="display: flex; align-items: center; gap: 8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H4z"></path><path d="M20 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z"></path></svg>
+        <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: #5e6560">kb:2</span>
+        <span style="flex-grow: 1"></span>
+        <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: #5f83a8"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5f83a8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c3-4 6-4 9 0s6 4 9 0"></path><path d="M3 7c3-4 6-4 9 0s6 4 9 0" opacity="0.5"></path><path d="M3 17c3-4 6-4 9 0s6 4 9 0" opacity="0.5"></path></svg>7</span>
+        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #5f83a8"></span>
+      </div>
+      <div style="font-size: 13.5px; font-weight: 600; line-height: 1.3; color: #1e2420">Derek Parfit — The non-fixed self</div>
+      <div style="font-size: 12px; line-height: 1.45; color: #5e6560">Psychological continuity, not identity, is what matters; the Whisp as a future self that need not be the same person.</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px"><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #5e6560; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">thinker/parfit</span><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #5e6560; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">theme/identity</span></div>
+    </div>
+    </div><div style="position: absolute; left: 634px; top: 46px; font-size: 10.5px; color: #5e6560">reasons-and-persons-III.pdf</div>
+    <div style="position: absolute; left: 630px; top: 66px; width: 140px; ">
+    <div style="background: #fbfaf7; border: 1px solid rgba(30,36,32,0.08); border-radius: 12px; padding: 12px 14px 12px; box-shadow: 0 10px 30px rgba(30,36,32,0.12); display: flex; flex-direction: column; gap: 8px; overflow: hidden; ">
+      <div style="height: 96px; margin: -12px -14px 10px; background: linear-gradient(135deg, #d8dfe6, #c3ccd4); border-bottom: 1px solid rgba(30,36,32,0.08); display: flex; align-items: flex-end; padding: 8px 14px; gap: 6px"><span style="font-size: 10px; color: #5e6560">p. 1 of 12</span></div>
+      <div style="display: flex; align-items: center; gap: 8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l5 5v13H6z"></path><path d="M14 3v5h5"></path><path d="M9 14h6M9 17h6"></path></svg>
+        <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: #5e6560">pdf:5b02</span>
+        <span style="flex-grow: 1"></span>
+        
+        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #5e6560"></span>
+      </div>
+      <div style="font-size: 13.5px; font-weight: 600; line-height: 1.3; color: #1e2420">Reasons and Persons, Part III (excerpt)</div>
+      <div style="font-size: 12px; line-height: 1.45; color: #5e6560">12 pages, text layer present.</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px"><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #5e6560; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">raw</span></div>
+    </div>
+    </div>
+    <div style="position: absolute; left: 40px; top: 650px; width: 280px; ">
+    <div style="background: #fbfaf7; border: 1px solid rgba(30,36,32,0.08); border-radius: 12px; padding: 12px 14px 12px; box-shadow: 0 10px 30px rgba(30,36,32,0.12); display: flex; flex-direction: column; gap: 8px; overflow: hidden; ">
+      
+      <div style="display: flex; align-items: center; gap: 8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v11l-5 5H5z"></path><path d="M14 20v-5h5"></path></svg>
+        <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: #5e6560">note:22ac</span>
+        <span style="flex-grow: 1"></span>
+        
+        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #5e6560"></span>
+      </div>
+      <div style="font-size: 13.5px; font-weight: 600; line-height: 1.3; color: #1e2420">Why does the system not know about place 3?</div>
+      <div style="font-size: 12px; line-height: 1.45; color: #5e6560"></div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px"><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #5e6560; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">place/3</span><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #5e6560; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">from phone</span></div>
+    </div>
+    </div>
+    <div style="position: absolute; left: 412px; top: 432px; width: 136px; height: 176px; ">
+    <div style="background: #fbfaf7; border: 1px solid rgba(30,36,32,0.08); border-radius: 12px; padding: 12px 14px 12px; box-shadow: 0 10px 30px rgba(30,36,32,0.12); display: flex; flex-direction: column; gap: 8px; overflow: hidden; height: 176px; ">
+      
+      <div style="display: flex; align-items: center; gap: 8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z"></path></svg>
+        <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: #5e6560">cand:B</span>
+        <span style="flex-grow: 1"></span>
+        
+        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #5f83a8"></span>
+      </div>
+      <div style="font-size: 13.5px; font-weight: 600; line-height: 1.3; color: #1e2420">The key/instrument split</div>
+      <div style="font-size: 12px; line-height: 1.45; color: #5e6560">Ball as key; Gimbal as instrument.</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px"></div>
+    </div>
+    </div>
+    <div style="position: absolute; left: 556px; top: 432px; width: 136px; height: 176px; ">
+    <div style="background: #fbfaf7; border: 1px solid rgba(30,36,32,0.08); border-radius: 12px; padding: 12px 14px 12px; box-shadow: 0 10px 30px rgba(30,36,32,0.12); display: flex; flex-direction: column; gap: 8px; overflow: hidden; height: 176px; ">
+      
+      <div style="display: flex; align-items: center; gap: 8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z"></path></svg>
+        <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: #5e6560">cand:D</span>
+        <span style="flex-grow: 1"></span>
+        
+        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #5f83a8"></span>
+      </div>
+      <div style="font-size: 13.5px; font-weight: 600; line-height: 1.3; color: #1e2420">The ball matures</div>
+      <div style="font-size: 12px; line-height: 1.45; color: #5e6560">Reconcile with S37 before locking.</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px"></div>
+    </div>
+    </div>
+    
+    <svg style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none" viewBox="0 0 830 844">
+      <defs>
+        <marker id="arr-contradicts" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#b8683a"></path></marker>
+        <marker id="arr-supports" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#4f6a3a"></path></marker>
+        <marker id="arr-clarifies" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5f83a8"></path></marker>
+        <marker id="arr-depends-on" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8a6a34"></path></marker>
+        <marker id="arr-evidence-for" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#a8823f"></path></marker>
+      </defs>
+      <path d="M180 342 Q180.0 342.0 180 390" stroke="#5f83a8" stroke-width="1.8" fill="none" marker-end="url(#arr-clarifies)"></path><rect x="146.0" y="345.0" width="68" height="18" rx="9" fill="#fbfaf7" stroke="#5f83a8" stroke-width="1"></rect><text x="180.0" y="357.5" text-anchor="middle" font-family="Manrope, sans-serif" font-size="10" font-weight="600" fill="#5f83a8">clarifies</text>
+      <path d="M320 130 Q355.0 106.0 390 130" stroke="#4f6a3a" stroke-width="1.8" fill="none" marker-end="url(#arr-supports)"></path><rect x="321.0" y="109.0" width="68" height="18" rx="9" fill="#fbfaf7" stroke="#4f6a3a" stroke-width="1"></rect><text x="355.0" y="121.5" text-anchor="middle" font-family="Manrope, sans-serif" font-size="10" font-weight="600" fill="#4f6a3a">supports</text>
+      <path d="M480 640 Q479.0 601.5 478 611" stroke="#b8683a" stroke-width="1.8" fill="none" stroke-dasharray="6 5" marker-end="url(#arr-contradicts)"></path><rect x="445.0" y="604.5" width="68" height="18" rx="9" fill="#fbfaf7" stroke="#b8683a" stroke-width="1"></rect><text x="479.0" y="617.0" text-anchor="middle" font-family="Manrope, sans-serif" font-size="10" font-weight="600" fill="#b8683a">contradicts</text>
+      <path d="M600 120 Q615.0 96.0 630 120" stroke="#a8823f" stroke-width="1.8" fill="none" marker-end="url(#arr-evidence-for)"></path><rect x="581.0" y="99.0" width="68" height="18" rx="9" fill="#fbfaf7" stroke="#a8823f" stroke-width="1"></rect><text x="615.0" y="111.5" text-anchor="middle" font-family="Manrope, sans-serif" font-size="10" font-weight="600" fill="#a8823f">evidence</text>
+      <path d="M320 500 Q366.0 476.0 412 500" stroke="#8a6a34" stroke-width="1.8" fill="none" marker-end="url(#arr-depends-on)"></path><rect x="332.0" y="479.0" width="68" height="18" rx="9" fill="#fbfaf7" stroke="#8a6a34" stroke-width="1"></rect><text x="366.0" y="491.5" text-anchor="middle" font-family="Manrope, sans-serif" font-size="10" font-weight="600" fill="#8a6a34">depends on</text>
+    </svg>
+    <div style="position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); display: flex; align-items: center; gap: 2px; height: 44px; padding: 0 8px; border-radius: 12px; background: rgba(255,255,255,0.75); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(138,106,52,0.25); box-shadow: 0 10px 30px rgba(30,36,32,0.12)">
+      <div style="display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border-radius: 8px; color: #1e2420; font-size: 12px; font-weight: 600"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e2420" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v11l-5 5H5z"></path><path d="M14 20v-5h5"></path></svg><span>Note</span></div>
+      <div style="display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border-radius: 8px; color: #1e2420; font-size: 12px; font-weight: 600"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e2420" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"></path><path d="M9 12h6M9 16h6"></path></svg><span>Entity</span></div>
+      <div style="display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border-radius: 8px; color: #1e2420; font-size: 12px; font-weight: 600"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e2420" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="10" r="1.5"></circle><path d="M21 16l-5-5-8 8"></path></svg><span>Media</span></div>
+      <div style="display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border-radius: 8px; color: #1e2420; font-size: 12px; font-weight: 600"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e2420" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" stroke-dasharray="3 3"></rect></svg><span>Frame</span></div>
+      <div style="display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border-radius: 8px; color: #1e2420; font-size: 12px; font-weight: 600"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e2420" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6"></path><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="12" r="2.5"></circle></svg><span>Link</span></div>
+      <div style="width: 1px; height: 20px; background: rgba(138,106,52,0.25); margin: 0 4px"></div>
+      <div style="display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border-radius: 8px; color: #8a6a34; font-size: 12px; font-weight: 600"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8a6a34" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg><span>Import</span></div>
+    </div>
+    <div style="position: absolute; right: 12px; top: 16px; display: flex; flex-direction: column; align-items: center; gap: 2px; width: 36px; padding: 6px 0; border-radius: 10px; background: rgba(255,255,255,0.75); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(138,106,52,0.25); box-shadow: 0 10px 30px rgba(30,36,32,0.12)">
+      <div style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg></div>
+      <span style="font-size: 10px; font-weight: 600; color: #1e2420">100%</span>
+      <div style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path></svg></div>
+      <div style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"></path></svg></div>
+      <div style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.3-5.7"></path><path d="M4 4v5h5"></path></svg></div>
+      <div style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 7px; background: rgba(30,36,32,0.05)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8a6a34" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="14" width="6" height="6" rx="1"></rect></svg></div>
+      <div style="width: 20px; height: 1px; background: rgba(138,106,52,0.25); margin: 4px 0"></div>
+      <div style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"></path><path d="M4 9h9a6 6 0 0 1 0 12H8"></path></svg></div>
+      <div style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"></path><path d="M20 9h-9a6 6 0 0 0 0 12h5"></path></svg></div>
+    </div>
+  </div>
+
+  <!-- inspector -->
+  <div style="position: absolute; right: 12px; top: 72px; bottom: 12px; width: 300px; display: flex; flex-direction: column; gap: 12px; padding: 16px 16px; border-radius: 14px; background: rgba(255,255,255,0.55); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(138,106,52,0.25); box-shadow: 0 10px 30px rgba(30,36,32,0.12); overflow: hidden">
+    <div style="display: flex; align-items: center; gap: 8px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a6a34" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg>
+      <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.06em; color: #8a6a34">stmt:26</span>
+      <span style="flex-grow: 1"></span>
+      <span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #8a6a34; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">locked · rev 1</span>
+    </div>
+    <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 20px; line-height: 1.2; color: #1e2420">Worlds topology locked: Ordinary World, the Shimmer, the Fringe (near side and Beyond)</div>
+    <div style="font-size: 12px; line-height: 1.5; color: #5e6560">Session 01 · 2026-05-18 · statements/S026.md</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 6px"><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #8a6a34; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">place</span><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #8a6a34; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">entity/ball</span><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #8a6a34; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">locked 2026-05-18</span><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; color: #5e6560; border: 1px dashed rgba(138,106,52,0.25)">+ tag</span></div>
+    <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5e6560; margin-top: 4px">Links · 4</div>
+    <div style="display: flex; flex-direction: column"><div style="display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid rgba(30,36,32,0.08); font-size: 12px"><span style="color: #5f83a8; font-weight: 600; min-width: 84px">clarified by</span><span style="color: #1e2420">stmt:31</span></div><div style="display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid rgba(30,36,32,0.08); font-size: 12px"><span style="color: #4f6a3a; font-weight: 600; min-width: 84px">supports</span><span style="color: #1e2420">kb:2</span></div><div style="display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid rgba(30,36,32,0.08); font-size: 12px"><span style="color: #8a6a34; font-weight: 600; min-width: 84px">depends on</span><span style="color: #1e2420">cand:B</span></div><div style="display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid rgba(30,36,32,0.08); font-size: 12px"><span style="color: #a8823f; font-weight: 600; min-width: 84px">derived from</span><span style="color: #1e2420">doc:cosmology</span><span style="margin-left: auto; font-size: 10.5px; color: #5e6560; display: inline-flex; align-items: center; gap: 4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5e6560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>Whisp craft</span></div></div>
+    <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5e6560; margin-top: 4px">Appears on</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 6px"><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #1e2420; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">Origin mythology</span><span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 500; color: #1e2420; background: rgba(30,36,32,0.05); border: 1px solid rgba(30,36,32,0.08)">Whisp craft</span></div>
+    <span style="flex-grow: 1"></span>
+    <div style="display: flex; gap: 8px">
+      <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; gap: 7px; height: 36px; border-radius: 9px; border: 1px solid rgba(138,106,52,0.25); font-size: 12.5px; font-weight: 600; color: #1e2420"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e2420" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="M20 4l-9 9"></path><path d="M19 14v6H4V5h6"></path></svg><span>Open source</span></div>
+      <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; gap: 7px; height: 36px; border-radius: 9px; background: #8a6a34; font-size: 12.5px; font-weight: 700; color: #e9eef3"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e9eef3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10-10-4-4L4 16z"></path><path d="M13 7l4 4"></path></svg><span>Revise</span></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
