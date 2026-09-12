@@ -1,0 +1,18 @@
+{
+  "roots": {
+    "discovery": "D:/WebDev/GitHub/FringeIsland-discovery",
+    "main": "D:/WebDev/GitHub/FringeIsland"
+  },
+  "entities": [
+    { "path": "docs/ecosystem/discovery/statements",    "kind": "stmt", "policy": "revisioned" },
+    { "path": "docs/ecosystem/discovery/candidates",    "kind": "cand", "policy": "editable" },
+    { "path": "docs/ecosystem/discovery/kb",            "kind": "kb",   "policy": "editable" },
+    { "path": "docs/ecosystem/discovery/questions",     "kind": "cq",   "policy": "editable" },
+    { "path": "docs/ecosystem/discovery/gaps",          "kind": "gap",  "policy": "editable" },
+    { "path": "docs/ecosystem/discovery/session-notes", "kind": "log",  "policy": "editable" }
+  ],
+  "docs": [
+    { "path": "docs/ecosystem/universe/**/*.md", "policy": "read-only" },
+    { "root": "main", "path": "docs/architecture/decisions/*.md", "policy": "read-only", "enabled": false }
+  ]
+}
