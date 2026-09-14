@@ -4,7 +4,7 @@
 |---|---|
 | **Cycle** | The Eid kickoff — open Wave 2 — the wave file with its DoD on day one, the carry-overs dispositioned, design tools and narrative decomposed to 4-ready |
 | **Plan** | [`2026-09-07-eid-kickoff-plan.md`](2026-09-07-eid-kickoff-plan.md) |
-| **Latest bridge** | [`../sessions/2026-09-07_01_-_FERD-CLOSED-G04-RULED-EID-DOOR-OPEN.md`](../sessions/2026-09-07_01_-_FERD-CLOSED-G04-RULED-EID-DOOR-OPEN.md) |
+| **Latest bridge** | [`../sessions/2026-09-14_01_-_DISCOVERY-CANVAS-REVERTED-APP-KEPT.md`](../sessions/2026-09-14_01_-_DISCOVERY-CANVAS-REVERTED-APP-KEPT.md) |
 | **Board** | open 2026-09-07 — the kickoff decomposes in a fresh session; two decisions in the plan are Stefan's |
 | **Next** | the first Eid build cycle — Journey Studio v1, the minimal design foundation or the Whisp, whichever the kickoff bets on first |
 
