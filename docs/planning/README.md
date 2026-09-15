@@ -42,7 +42,7 @@ docs/planning/
 
 **Current wave:** Ferd
 
-> **On deferral and research-first planning:** Both topics are covered directly in [`PROCESS.md`](./PROCESS.md). Deferral mechanics live in §3 (wave tags + the `parked` YAML flag + the betting table + `../ecosystem/thinking/OPEN_QUESTIONS.md` for homeless items). The research-first discipline is built into the maturity pipeline (§1): an item cannot be specified until it has been explored, and the "Why the pipeline matters" paragraph records the Ferd lesson that motivated the rule. There are no separate protocol files — PROCESS.md is the single source.
+> **On deferral and research-first planning:** Both topics are covered directly in [`PROCESS.md`](./PROCESS.md). Deferral mechanics live in §3 (wave tags + the `parked` YAML flag + the betting table + `../fringeisland-thinking/questions--ecosystem-open-questions.md` for homeless items). The research-first discipline is built into the maturity pipeline (§1): an item cannot be specified until it has been explored, and the "Why the pipeline matters" paragraph records the Ferd lesson that motivated the rule. There are no separate protocol files — PROCESS.md is the single source.
 
 ---
 

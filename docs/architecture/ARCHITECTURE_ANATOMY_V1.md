@@ -8,7 +8,7 @@
 > ADR-U025, ADR-U026, ADR-U027, and ADR-U028. Role and visitor terminology inside is era-correct
 > but retired — the canonical identity states and role taxonomy (Shadow, FIM, the per-group roles
 > Steward / Guide / Participant / Observer, the Dreamineer specialisations) live in the roles core:
-> [`../ecosystem/universe/roles/README.md`](../ecosystem/universe/roles/README.md). The body below
+> [`../fringeisland-thinking/canon--roles--taxonomy.md`](../fringeisland-thinking/canon--roles--taxonomy.md). The body below
 > is a historical record and is deliberately left unedited.
 >
 > **Identity-state rename (2026-06-21, ADR-U031):** the anonymous entrant called the **Shadow** below
@@ -18,7 +18,7 @@
 > **Whisp naming + living-anatomy pointer (2026-07-18):** the companion called the **AI Mentor** below
 > is the **Whisp** in current canon, with ownership split by face (ADR-U029: DS-1 world-presence,
 > DS-7 the being); "The Other Side" below is old-cosmology naming — the canonical worlds topology
-> lives in [`../ecosystem/universe/cosmology/`](../ecosystem/universe/cosmology/README.md). The
+> lives in [`../fringeisland-thinking/canon--cosmology--worlds-topology.md`](../fringeisland-thinking/canon--cosmology--worlds-topology.md). The
 > **current living anatomy** is [`ARCHITECTURE_ANATOMY.md`](ARCHITECTURE_ANATOMY.md) plus the current
 > `ECOSYSTEM_ANATOMY_*` diagram (indexed in [`README.md`](README.md)). As before, the body below is
 > era-correct and deliberately unedited.

@@ -4,7 +4,7 @@
 **Branch:** main (last commit b1f34ca, the 2026-06-01 Statements 37-40 resume; this session's edits to the universe-discovery file are not yet committed - see "Commit and push" below)
 **Type:** Bridge (permanent record - not rewritten after the fact)
 **Prior session:** universe-discovery Session 01, 2026-06-01 resume (Statements 37-40)
-**This session's authoring:** appended a 2026-06-05 resume to `docs/ecosystem/thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md` (product/ecosystem layer design locks + Statements 41-46; new Patterns bullets; a Divergences entry; an Open-threads resolution note; header refreshed 40 -> 46).
+**This session's authoring:** appended a 2026-06-05 resume to `docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md` (product/ecosystem layer design locks + Statements 41-46; new Patterns bullets; a Divergences entry; an Open-threads resolution note; header refreshed 40 -> 46).
 
 ---
 
@@ -76,8 +76,8 @@ Discipline: bridges and prior statements are permanent - reconciliation is forwa
 ## Candidate starting read-list (seed for the Phase 1 inventory; verify on disk, do not treat as complete)
 
 - `docs/ecosystem/` - VISION.md (constitutional), the manifesto, Hub DESCRIPTION.md
-- `docs/ecosystem/universe/` - the universe writings (beings/README.md and siblings)
-- `docs/ecosystem/thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md` - Statements 1-46 + the 2026-06-05 product locks (the source of truth for this session)
+- `docs/fringeisland-thinking/README.md` - the universe writings (beings/README.md and siblings)
+- `docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md` - Statements 1-46 + the 2026-06-05 product locks (the source of truth for this session)
 - `docs/architecture/` - ARCHITECTURE_ANATOMY_V1.md, ECOSYSTEM_ANATOMY_V4.svg, decisions/ADR-U023-*
 - `docs/ecosystem/how-we-work/` - the five chapters
 - `AGENTS.md` (root) + the five tier CLAUDE.md files

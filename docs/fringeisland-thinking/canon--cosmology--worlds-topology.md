@@ -2,7 +2,7 @@
 
 **Status:** Canonical. Ratified in reconciliation Session B (2026-06-10) from the universe-discovery
 work, which is the single source of truth
-(`docs/ecosystem/thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md`;
+(`docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md`;
 statements cited as S-numbers below).
 **Supersedes:** the Three Worlds model (Ordinary World / Safe Harbour / The Other Side) — see
 "What this supersedes" at the end.

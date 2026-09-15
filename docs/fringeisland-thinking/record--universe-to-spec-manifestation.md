@@ -1,6 +1,6 @@
 # Universe → spec manifestation map
 
-*Authored 2026-06-13. A snapshot analysis: for each doc under `docs/ecosystem/universe/` and `docs/ecosystem/thinking/`, what it is and how strongly its concepts are realized as named capabilities/obligations in the entity SPECIFICATIONs produced during the architecture descent (Platform Core, the seven Domain Services, the Extension System, the five verticals, and the Hub). This is a **design record / analysis snapshot**, not an obligation source — it cites the specs; it does not supersede them. Re-run when the descent advances (Gimbal, the studios, or a Hub re-derivation) since manifestation will change.*
+*Authored 2026-06-13. A snapshot analysis: for each doc under `docs/fringeisland-thinking/README.md` and `docs/fringeisland-thinking/README.md`, what it is and how strongly its concepts are realized as named capabilities/obligations in the entity SPECIFICATIONs produced during the architecture descent (Platform Core, the seven Domain Services, the Extension System, the five verticals, and the Hub). This is a **design record / analysis snapshot**, not an obligation source — it cites the specs; it does not supersede them. Re-run when the descent advances (Gimbal, the studios, or a Hub re-derivation) since manifestation will change.*
 
 **Spec set traced:** `docs/platform/core/{governance,identity,infrastructure,organisation}-specification.md` · `docs/platform/domain/{world-model,narrative,journeys,content,communication,discovery,intelligence}.md` · `docs/platform/extensions/SPECIFICATION.md` · `docs/verticals/{administration,privacy,notifications,observability,transactions}/SPECIFICATION.md` · `docs/products/hub/{SPECIFICATION,DESCRIPTION}.md`.
 
@@ -17,7 +17,7 @@ The world's **structural / mechanical layer is strongly manifested**; the **atmo
 
 ---
 
-## `docs/ecosystem/universe/` — the canonical world
+## `docs/fringeisland-thinking/README.md` — the canonical world
 
 ### Cosmology — `cosmology/README.md` (canonical core, ratified Session B)
 The spine of the worlds topology: Ordinary World → Shimmer → Fringe (place 2 / place 3, near side / Beyond), the Void as an *axis* of separation, the cord (FIM–Whisp lifeline), balls/Tree/branches/village, seeds, severance/respawn, and the "gardening-not-guarding" genesis rule.
@@ -65,7 +65,7 @@ Public launch as "Season Zero": backers arrive on the island, rewards are arriva
 
 ---
 
-## `docs/ecosystem/thinking/` — working ideas
+## `docs/fringeisland-thinking/README.md` — working ideas
 
 ### `OPEN_QUESTIONS.md`
 15 cross-cutting questions (CQ-001…CQ-015); none formally marked resolved. The pattern: **structural** questions are answered in substance (Shadow/visitor access via ADR-U027; governance roles named), while the **human/business** questions stay open — cold-start (CQ-001), Dreamineer recruitment (CQ-002), content bootstrap (CQ-003), monetization timing (CQ-005), the first-hour experience (CQ-010), AI feasibility (CQ-011, contracts specced but capability unvalidated). CQ-015 (Hub rebuild-vs-evolve) is the **only** CQ cited in a spec (`extensions/SPECIFICATION.md`, per-slice strangler as the default candidate).

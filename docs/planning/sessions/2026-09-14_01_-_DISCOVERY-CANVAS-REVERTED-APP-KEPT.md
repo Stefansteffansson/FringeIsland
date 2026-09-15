@@ -34,7 +34,7 @@ Checks run before deleting: 0 entity files with `revision` above 1; `candidates/
 
 ## What was kept
 
-`docs/ecosystem/thinking/canvas-experiment/` — the hand-authored remnants, the only things not re-derivable:
+`docs/fringeisland-thinking/canvas--what-was-kept.md` — the hand-authored remnants, the only things not re-derivable:
 
 - **`feedback-v0.4.md`** — Stefan's Phase 1 first-use notes, 23 items and bugs B1–B3. The spec names it as the source of D31–D35. It was **untracked** and would have been lost.
 - `canvas-tab-taxonomy.md` — the 13-tab structure at revert. The tab *files* are fossils of earlier names (`shimmer`, `whisp`, `entology`, `it-is`, `origin-mythology`) while the titles had become a novel structure, *Days of Merry & Bright*: the canvas was repurposed from universe discovery to novel planning partway through.
@@ -58,7 +58,7 @@ The six commits are preserved behind the annotated tag **`archive/discovery-canv
 ## Open
 
 - **The original structural question is unresolved and worth returning to.** Standing recommendation: keep the ecosystem tree's nesting, because the `CLAUDE.md` cascade addresses documents by path and `doc-health-check` §9 verifies it; reserve flat-plus-typed-IDs for entity-like material.
-- `docs/ecosystem/universe/` is still six directories holding one README each — structure heavier than content, and part of what made things hard to find.
-- `docs/research/` carries four coexisting naming conventions and real `.docx`/`.md` duplicate pairs.
+- `docs/fringeisland-thinking/README.md` is still six directories holding one README each — structure heavier than content, and part of what made things hard to find.
+- `docs/fringeisland-thinking/README.md` carries four coexisting naming conventions and real `.docx`/`.md` duplicate pairs.
 - Whether the Canvas app should keep writing a `.gitignore` into its data folder is a spec question, left with Stefan and Cowork.
 - Whether the fixture ships a small committed image so a fresh clone demos well — currently `fixtures/canvas/branding/` is gitignored, so a clone still lands on the placeholder.

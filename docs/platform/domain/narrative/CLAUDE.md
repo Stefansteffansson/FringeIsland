@@ -8,7 +8,7 @@
 
 ## What makes this entity different
 
-DS-2 owns the **structure of story** — seasons/episodes, plot, loop structure, the NPC character layer — never its delivery, its position-resolution, or its content. Its ground truth is the narrative core ([`docs/ecosystem/universe/narrative/README.md`](../../../ecosystem/universe/narrative/README.md)); when a DS-2 question feels open, check the core (and cosmology core sections 8 and 10 for anything loop-adjacent) before designing. The service was renamed from "Narrative Engine" at its descent (Engine-suffix decision, [`PENDING.md`](../../../architecture/decisions/PENDING.md)) — older material may still carry the suffixed name.
+DS-2 owns the **structure of story** — seasons/episodes, plot, loop structure, the NPC character layer — never its delivery, its position-resolution, or its content. Its ground truth is the narrative core ([`docs/fringeisland-thinking/canon--narrative--how-story-works.md`](../../../fringeisland-thinking/canon--narrative--how-story-works.md)); when a DS-2 question feels open, check the core (and cosmology core sections 8 and 10 for anything loop-adjacent) before designing. The service was renamed from "Narrative Engine" at its descent (Engine-suffix decision, [`PENDING.md`](../../../architecture/decisions/PENDING.md)) — older material may still carry the suffixed name.
 
 ## Rules that only apply at this entity
 

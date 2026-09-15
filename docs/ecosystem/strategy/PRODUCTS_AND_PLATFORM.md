@@ -136,7 +136,7 @@ Design system, accessibility (WCAG 2.1 AA + enhancements), and UX/UI redesign of
 ### Heim — *Home*
 *You arrive home.*
 
-FringeIsland universe design — what the village and the warm place actually look like, regions, architecture, visual language (per the [cosmology core](../universe/cosmology/)). Dynamic journey paths (branching, conditional logic). Foundation for the cord/Void and AR layers in Brim.
+FringeIsland universe design — what the village and the warm place actually look like, regions, architecture, visual language (per the [cosmology core](../../fringeisland-thinking/canon--cosmology--worlds-topology.md)). Dynamic journey paths (branching, conditional logic). Foundation for the cord/Void and AR layers in Brim.
 
 ### Brim — *Edge, surf, horizon*
 *You stand at the edge, gazing outward.*

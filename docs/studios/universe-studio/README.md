@@ -29,7 +29,7 @@ Studios are a role-gated authoring MODE inside the one experience (ADR-U026). En
 is a permission check against the platform's group/role mechanism (ADR-U006, ADR-U007):
 **Creator and Anthropologist -> World Studio; Teller -> Arc Studio; Wayfinder -> Journey
 Studio** — the Dreamineer specialisations (see the
-[roles core](../../ecosystem/universe/roles/README.md)). The same person moves fluidly between
+[roles core](../../fringeisland-thinking/canon--roles--taxonomy.md)). The same person moves fluidly between
 the immersed and authorial stances. World Studio access additionally tiers by scope: own home is
 open to every FIM; the shared world is Dreamineer-gated.
 

@@ -8,10 +8,10 @@ Read first, in order:
 1. docs/planning/sessions/2026-06-10_-_SESSION-B-CONFORMANCE-REGISTER.md
    - Section 3 (descent-impact view: the PC-1..PC-4 verdicts and the DS-1 constraint row)
      and Section 6 (execution record + handoff). This is the session's work order.
-2. docs/ecosystem/universe/cosmology/README.md
+2. docs/fringeisland-thinking/canon--cosmology--worlds-topology.md
    - DS-1's GROUND TRUTH: the worlds topology, balls/branches/crown, seeds/anchors/cord,
      the tendable world, the access map. Every DS-1 capability traces here.
-3. docs/ecosystem/universe/roles/README.md and docs/ecosystem/universe/beings/README.md
+3. docs/fringeisland-thinking/canon--roles--taxonomy.md and docs/fringeisland-thinking/canon--beings--whisp-and-npcs.md
    - role gates (World Studio scope tiers) and the Whisp boundary (see Phase 1 decision).
 4. .claude/skills/ecosystem-decomposition/SKILL.md - the methodology (this is an L1->L3 session).
 5. docs/templates/domain-service-spec.md - the L2 spec shape.

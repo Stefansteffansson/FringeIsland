@@ -3,7 +3,7 @@
 **Date:** 2026-06-21. **Shape:** interactive reconciliation pass (audit-first, gated, then rectify cluster-by-cluster).
 **Brief:** [`openers/mist-reconciliation-brief.md`](./openers/mist-reconciliation-brief.md).
 **Register (worklist):** [`../reference/mist-reconciliation-register.md`](../reference/mist-reconciliation-register.md).
-**Authority:** discovery Statements 47-48 (`../../ecosystem/thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md`, commit `28cc770`).
+**Authority:** discovery Statements 47-48 (`../../fringeisland-thinking/discovery--2026-05-18--universe-session-01.md`, commit `28cc770`).
 
 ---
 

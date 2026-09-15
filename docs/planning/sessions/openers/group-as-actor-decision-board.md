@@ -19,7 +19,7 @@ The substrate already accepts a group as the acting principal — `has_permissio
 
 These bound every option below; the session works inside them.
 
-- **R1 — Single permission mechanism.** All agency flows through the universal group pattern (group + role + permission walk, ADR-U006/U007); no new permission system, no ad-hoc admin roles (`docs/architecture/decisions/ADR-U028-governance-by-scope.md:41` chosen option; roles core `docs/ecosystem/universe/roles/README.md:86` — support roles are the PC-3 per-group role templates).
+- **R1 — Single permission mechanism.** All agency flows through the universal group pattern (group + role + permission walk, ADR-U006/U007); no new permission system, no ad-hoc admin roles (`docs/architecture/decisions/ADR-U028-governance-by-scope.md:41` chosen option; roles core `docs/fringeisland-thinking/canon--roles--taxonomy.md:86` — support roles are the PC-3 per-group role templates).
 - **R2 — Membership is the container; the role's permission set is the authority.** Holding a membership confers nothing by itself (`ADR-U028:105`, the 2026-06-12 amendment).
 - **R3 — Permission key, never role name; no name checks.** The house rule that just paid off live (transfer affordance keyed off `assign_roles`, `FEAT-H017:136`); any new gate must be a typed key or typed column, never string-matching a role or group name.
 - **R4 — The acting principal is an acting group id.** The rebuilt permission functions expect an acting group id, not a profile id (`ADR-U028:118`); group-as-actor means passing A as that principal.

@@ -13,5 +13,5 @@ cite them as sources. The Model A feature specs under the ecosystem tree superse
 
 **Read-through caveat:** they predate the reconciliation (Session B, 2026-06-10). "Visitor" reads
 as Mist, the group-role "Member" as Participant, and any cosmology as superseded — see
-`docs/ecosystem/universe/roles/README.md` and `docs/ecosystem/universe/cosmology/README.md`.
+`docs/fringeisland-thinking/canon--roles--taxonomy.md` and `docs/fringeisland-thinking/canon--cosmology--worlds-topology.md`.
 References to `docs/old_products/...` paths inside are era-correct; those trees no longer exist.

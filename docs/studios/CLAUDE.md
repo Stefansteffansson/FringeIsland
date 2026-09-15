@@ -8,7 +8,7 @@
 
 ## What makes this tier different
 
-Studios are a **role-gated authoring mode inside the one experience, not products** ([ADR-U026](../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md)). A studio serves the FIM in their authorial stance — a **Dreamineer** specialisation — and entering one is a permission check against the platform's own group/role mechanism (ADR-U006, ADR-U007). The gates, per the [roles core](../ecosystem/universe/roles/README.md):
+Studios are a **role-gated authoring mode inside the one experience, not products** ([ADR-U026](../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md)). A studio serves the FIM in their authorial stance — a **Dreamineer** specialisation — and entering one is a permission check against the platform's own group/role mechanism (ADR-U006, ADR-U007). The gates, per the [roles core](../fringeisland-thinking/canon--roles--taxonomy.md):
 
 | Dreamineer specialisation | Studio |
 |---|---|

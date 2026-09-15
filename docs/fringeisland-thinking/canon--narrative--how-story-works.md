@@ -11,7 +11,7 @@ FringeIsland is experienced as story. Seasons and episodes. An A-plot, B-stories
 Design principle: **stories stand alone as entertainment while developmental themes remain invisible in the foundation layer.** A member could engage purely for the story and still have a valuable experience. For those who look deeper, the educational scaffolding is always there.
 
 Stories play out on the worlds' full tonal range — warmth and forgiveness to traps and betrayal,
-two poles of one continuum (S12, [cosmology core](../cosmology/)). Narrative is the figure; the
+two poles of one continuum (S12, [cosmology core](canon--cosmology--worlds-topology.md)). Narrative is the figure; the
 tonal world is the ground. The world contains life and death; the experience of being in it is
 meta-safe.
 

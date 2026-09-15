@@ -68,11 +68,11 @@ Columns: status vs the discovery (after steps 1-2) -> correction -> batch mark.
 | `ecosystem/strategy/PRODUCTS_AND_PLATFORM.md` | CONTRADICTS (Game = Unreal product, Beyond-Urd; device products) | equipment profiles + Game-as-depth with revisit trigger (per ADR-U025) | G-1 |
 | `ecosystem/strategy/CONTRIBUTION_ARCHITECTURE.md` | STALE (four-group roles) | role language per roles core | G-1 |
 | `ecosystem/strategy/IP_AND_LICENSING.md` | STALE ("Foundation/Council/Community") | align to L2 plane (Universeers/Council/DeusEx) | G-1 |
-| `ecosystem/universe/beings/README.md` | CONTRADICTS (Whisp = future self; Makers/Weavers/Skalds) | full rewrite: Whisp per S1-5/17-18/22/39 (inner dialogue + avatar, two views both true); NPC layered composite (S30); retired names out; roles -> pointer to roles core | G-1 |
-| `ecosystem/universe/community/README.md` | CONTRADICTS (Member/Steward/Dreamineer/Council ladder) | replace ladder with pointer to roles core; keep community-dynamics content | G-1 |
-| `ecosystem/universe/narrative/README.md` | STALE/placeholder (no respawn model) | seasons/episodes + respawn topologies, loop textures, home base (S19-21, 12) | G-1 |
-| `ecosystem/universe/personal-growth/three-questions.md` | faithful, thin | add the Live/Grow/Matter layer beneath the questions (S28, kinship-not-equivalence discipline) | G-1 |
-| `ecosystem/universe/personal-growth/privacy-model.md` | faithful (strongest Shadow/consent home) | cross-link S43/S46 (per-region home sharing; ephemerality) | G-1 |
+| `fringeisland-thinking/canon--beings--whisp-and-npcs.md` | CONTRADICTS (Whisp = future self; Makers/Weavers/Skalds) | full rewrite: Whisp per S1-5/17-18/22/39 (inner dialogue + avatar, two views both true); NPC layered composite (S30); retired names out; roles -> pointer to roles core | G-1 |
+| `fringeisland-thinking/README.md` | CONTRADICTS (Member/Steward/Dreamineer/Council ladder) | replace ladder with pointer to roles core; keep community-dynamics content | G-1 |
+| `fringeisland-thinking/canon--narrative--how-story-works.md` | STALE/placeholder (no respawn model) | seasons/episodes + respawn topologies, loop textures, home base (S19-21, 12) | G-1 |
+| `fringeisland-thinking/canon--growth--three-questions.md` | faithful, thin | add the Live/Grow/Matter layer beneath the questions (S28, kinship-not-equivalence discipline) | G-1 |
+| `fringeisland-thinking/canon--growth--privacy-model.md` | faithful (strongest Shadow/consent home) | cross-link S43/S46 (per-region home sharing; ephemerality) | G-1 |
 | `ecosystem/community/member-archetypes.md` | STALE (Dreamineer as persona) | align to modes-not-castes | G-1 |
 | `ecosystem/kickstarter/kickstarter-vision.md` | STALE ("Dreamineer Council") | naming fix per roles core | G-1 |
 | root `README.md` | STALE (sub-project framing; old role list) | refresh entity + role language | G-1 |

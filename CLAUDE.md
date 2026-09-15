@@ -78,12 +78,12 @@ Start at [`docs/README.md`](docs/README.md) for the full navigation map. Everyth
 | **Ecosystem (what we're building)** | |
 | Vision (constitutional) | [`docs/ecosystem/VISION.md`](docs/ecosystem/VISION.md) |
 | Manifesto | [`docs/ecosystem/MANIFESTO.md`](docs/ecosystem/MANIFESTO.md) |
-| Universe design (cosmology, beings, narrative, …) | [`docs/ecosystem/universe/`](docs/ecosystem/universe/) |
-| Worlds topology (canonical core) | [`docs/ecosystem/universe/cosmology/`](docs/ecosystem/universe/cosmology/) |
-| Role taxonomy (canonical core) | [`docs/ecosystem/universe/roles/`](docs/ecosystem/universe/roles/) |
+| Universe design (cosmology, beings, narrative, …) | [`docs/fringeisland-thinking/README.md`](docs/fringeisland-thinking/README.md) |
+| Worlds topology (canonical core) | [`docs/fringeisland-thinking/canon--cosmology--worlds-topology.md`](docs/fringeisland-thinking/canon--cosmology--worlds-topology.md) |
+| Role taxonomy (canonical core) | [`docs/fringeisland-thinking/canon--roles--taxonomy.md`](docs/fringeisland-thinking/canon--roles--taxonomy.md) |
 | AI principles (constitutional) | [`docs/ecosystem/PRINCIPLES-AI.md`](docs/ecosystem/PRINCIPLES-AI.md) |
 | Products & platform strategy | [`docs/ecosystem/strategy/PRODUCTS_AND_PLATFORM.md`](docs/ecosystem/strategy/PRODUCTS_AND_PLATFORM.md) |
-| Open questions | [`docs/ecosystem/thinking/OPEN_QUESTIONS.md`](docs/ecosystem/thinking/OPEN_QUESTIONS.md) |
+| Open questions | [`docs/fringeisland-thinking/questions--ecosystem-open-questions.md`](docs/fringeisland-thinking/questions--ecosystem-open-questions.md) |
 | **Products, platform, studios** | |
 | The Hub (canvas surface — equipment profile, ADR-U025) | [`docs/products/hub/`](docs/products/hub/) |
 | The Gimbal (senses surface — equipment profile, ADR-U025) | [`docs/products/gimbal/`](docs/products/gimbal/) |
@@ -105,7 +105,7 @@ Start at [`docs/README.md`](docs/README.md) for the full navigation map. Everyth
 | Session bridges | [`docs/planning/sessions/`](docs/planning/sessions/) |
 | Reference snapshots | [`docs/planning/reference/`](docs/planning/reference/) |
 | **Templates** (canonical shapes) | [`docs/templates/`](docs/templates/) |
-| **Research reports** | [`docs/research/`](docs/research/) |
+| **Research reports** | [`docs/fringeisland-thinking/README.md`](docs/fringeisland-thinking/README.md) |
 
 ---
 

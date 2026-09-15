@@ -123,4 +123,4 @@ The hand-authored remnants of the discovery-canvas experiment (2026-09-11 to 202
 
 ---
 
-*Flattened from `docs/ecosystem/universe/`, `docs/ecosystem/thinking/` and `docs/research/` on 2026-09-15 (TASK-UNI-02). This folder is the creative heart of the ecosystem documentation. It grows as the universe is defined — through sessions, through community input, and through the work of Dreamineers who haven't arrived yet.*
+*Flattened on 2026-09-15 (TASK-UNI-02) from the former `ecosystem/universe/`, `ecosystem/thinking/` and `research/` trees. This folder is the creative heart of the ecosystem documentation. It grows as the universe is defined — through sessions, through community input, and through the work of Dreamineers who haven't arrived yet.*

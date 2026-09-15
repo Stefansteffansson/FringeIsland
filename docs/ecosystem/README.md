@@ -4,7 +4,7 @@
 
 **This is for:** Constitutional documents, ecosystem strategy, universe design, and exploratory thinking that answers "what is FringeIsland and how does the whole thing fit together?" Strategic, philosophical, cross-product, foundational.
 
-**This is NOT for:** Technical architecture and binding decisions (→ `docs/architecture/`), service or product descriptions (→ `docs/platform/`, `docs/products/`), operational planning (→ `docs/planning/`), or research reports (→ `docs/research/`).
+**This is NOT for:** Technical architecture and binding decisions (→ `docs/architecture/`), service or product descriptions (→ `docs/platform/`, `docs/products/`), operational planning (→ `docs/planning/`), or research reports (→ `docs/fringeisland-thinking/README.md`).
 
 ---
 

@@ -28,7 +28,7 @@ The campaign speaks to two audiences at once:
 
 The founding Dreamineer cohort — the people who self-select by backing at the world-builder tier — is the most valuable thing the campaign will produce. More valuable than the funding. More valuable than the member count.
 
-They are the first Dreamineers — the seed of the world's authorial community. The first creative community. (Dreamineer is an authorial mode, not a governing body; enterprise stewardship sits with the Universeers, the FringeIsland Council, and DeusEx — see the [roles core](../roles/README.md).) The people who will shape what FringeIsland becomes before the wider world arrives.
+They are the first Dreamineers — the seed of the world's authorial community. The first creative community. (Dreamineer is an authorial mode, not a governing body; enterprise stewardship sits with the Universeers, the FringeIsland Council, and DeusEx — see the [roles core](canon--roles--taxonomy.md).) The people who will shape what FringeIsland becomes before the wider world arrives.
 
 ---
 
@@ -45,9 +45,9 @@ Its design is its own exploration — a dedicated session, approached with the s
 - Campaign tiers, rewards, and funding goal — not yet designed
 - Video concept and production — not yet designed
 - Pre-launch strategy — not yet designed
-- Foundation legal entity needed to receive funds → see [Open Questions CQ-006](../../thinking/OPEN_QUESTIONS.md)
-- When must monetization work post-campaign? → see [Open Questions CQ-005](../../thinking/OPEN_QUESTIONS.md)
+- Foundation legal entity needed to receive funds → see [Open Questions CQ-006](questions--ecosystem-open-questions.md)
+- When must monetization work post-campaign? → see [Open Questions CQ-005](questions--ecosystem-open-questions.md)
 
 ---
 
-*See [BUSINESS_MODEL.md](../../strategy/BUSINESS_MODEL.md) for how Kickstarter fits into the broader revenue model. See [community/](../community/) for how the founding cohort shapes the living community.*
+*See [BUSINESS_MODEL.md](../ecosystem/strategy/BUSINESS_MODEL.md) for how Kickstarter fits into the broader revenue model. See [community/](README.md) for how the founding cohort shapes the living community.*

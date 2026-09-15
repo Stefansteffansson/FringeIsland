@@ -1,7 +1,7 @@
 # F-04 — Whisp amendment proposal (DRAFT for review; nothing applied yet)
 
 **Finding:** [F-04](./phase-1-review-findings.md) · **Loop:** PROCESS §9 · **Drafted:** 2026-06-22
-**Authority:** `docs/ecosystem/universe/beings/README.md` (Status: Canonical; S-numbers) + [ADR-U029](../../architecture/decisions/ADR-U029-whisp-ownership-split-by-face.md).
+**Authority:** `docs/fringeisland-thinking/canon--beings--whisp-and-npcs.md` (Status: Canonical; S-numbers) + [ADR-U029](../../architecture/decisions/ADR-U029-whisp-ownership-split-by-face.md).
 **Status:** Awaiting Stefan's bounce. On approval I apply upstream-first (SPECIFICATION -> DESCRIPTION -> re-derive tours), each with provenance.
 
 ## The error being corrected

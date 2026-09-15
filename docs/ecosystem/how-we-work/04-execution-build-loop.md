@@ -18,7 +18,7 @@ Three stacked sections.
 
 ## The build loop: Research → Plan → Annotate → Implement
 
-This is the core working pattern with Claude Code and any similar AI coding agent. It comes from the research report "The Solo Developer's Complete Guide to Systematic Web Development" under `docs/research/`. The report frames it as "the most effective pattern for Claude Code."
+This is the core working pattern with Claude Code and any similar AI coding agent. It comes from the research report "The Solo Developer's Complete Guide to Systematic Web Development" under `docs/fringeisland-thinking/README.md`. The report frames it as "the most effective pattern for Claude Code."
 
 1. **Research.** The agent reads relevant code and writes findings to a research document (typically `docs/research/research-{feature}.md`). "What does the current auth flow look like? What tables are involved? What helpers exist?"
 2. **Plan.** The agent produces a detailed implementation plan with code snippets in a plan document (typically `docs/research/plan-{feature}.md`). Concrete enough to be actionable; structured enough to review.
@@ -88,7 +88,7 @@ The highest-leverage improvement available is probably **expanding the `feature-
 - [`docs/planning/PROCESS.md`](../../planning/PROCESS.md) §5 — Definition of Done
 - [`.claude/skills/feature-development/SKILL.md`](../../../.claude/skills/feature-development/SKILL.md) — the execution skill
 - [`docs/templates/feature-spec.md`](../../templates/feature-spec.md) — Given/When/Then shape
-- [`docs/research/The solo developer's complete guide to systematic web development.md`](../../research/The%20solo%20developer%27s%20complete%20guide%20to%20systematic%20web%20development.md) — research behind the build loop and the Testing Trophy
+- [`docs/fringeisland-thinking/research--method--solo-developer-systematic-web-development.md`](../../fringeisland-thinking/research--method--solo-developer-systematic-web-development.md) — research behind the build loop and the Testing Trophy
 - [`/CLAUDE.md`](../../../CLAUDE.md) — TDD mandate, testing commands
 
 ---

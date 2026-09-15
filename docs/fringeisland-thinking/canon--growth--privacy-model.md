@@ -19,7 +19,7 @@ A FIM's inner journey is private from the start. No opt-in required — privacy 
 
 What is private by default:
 - The inner journey and self-discovery progress
-- Home and garden (the inviolable ball — the FIM holds the only key; see the [cosmology core](../cosmology/README.md))
+- Home and garden (the inviolable ball — the FIM holds the only key; see the [cosmology core](canon--cosmology--worlds-topology.md))
 - Journal entries
 - Assessment results and developmental data
 - Cord health and the Whisp's filling (visible to a friend only along a grown branch — glanceable, invited, self first)
@@ -55,8 +55,8 @@ Even within transparently shared groups, the FIM retains control over what they 
 - A Mist's own data is ephemeral: anonymous auth, no PII, erased soon after inactivity or explicit close; its presence is session-ephemeral and unlinkable and no trait-profile is computed before consent; transcendence (metamorphosis) is the persistence-and-consent threshold, and the migration is atomic (S46, S47-48)
 - Group Stewards cannot see members' private developmental data
 - No aggregate data derived from private journeys is visible to other FIMs
-- Anonymised aggregate data may be explored only with explicit informed consent, responsible handling, and clear member benefit — under enterprise stewardship (the Universeers and the FringeIsland Council, with the Foundation as legal holder; see the [roles core](../roles/README.md))
+- Anonymised aggregate data may be explored only with explicit informed consent, responsible handling, and clear member benefit — under enterprise stewardship (the Universeers and the FringeIsland Council, with the Foundation as legal holder; see the [roles core](canon--roles--taxonomy.md))
 
 ---
 
-*See [MANIFESTO.md](../../MANIFESTO.md) §Member privacy for the cultural value. See [IP_AND_LICENSING.md](../../strategy/IP_AND_LICENSING.md) §What is never licensable for the structural protection. See [VISION.md](../../VISION.md) §Non-negotiable principles #4.*
+*See [MANIFESTO.md](../ecosystem/MANIFESTO.md) §Member privacy for the cultural value. See [IP_AND_LICENSING.md](../ecosystem/strategy/IP_AND_LICENSING.md) §What is never licensable for the structural protection. See [VISION.md](../ecosystem/VISION.md) §Non-negotiable principles #4.*

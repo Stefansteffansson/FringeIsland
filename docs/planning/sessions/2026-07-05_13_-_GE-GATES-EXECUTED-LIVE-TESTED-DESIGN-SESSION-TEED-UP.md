@@ -24,7 +24,7 @@
 
 - **The core question:** *who inside group A may wield A's agency inside group B* — FEAT-PC011 Open Q1 (the act-as selector ships honestly v1, "Myself" only, FEAT-H014).
 - **The depth question:** G-29 in `docs/ecosystem/how-we-work/gaps.md` — transitive resolution beyond depth 1 (G-F builds depth-1 only, D5).
-- **Governance frame:** ADR-U028 (governance by scope); the roles core (`docs/ecosystem/universe/roles/`).
+- **Governance frame:** ADR-U028 (governance by scope); the roles core (`docs/fringeisland-thinking/canon--roles--taxonomy.md`).
 - **The oracle:** legacy group-as-member + group-as-actor behaviour (`docs/planning/hub-v2/behaviour-inventory.md` §A-GRP).
 - **New riders from today's live testing:** (a) should **DeusEx be nominatable** as a stewardship successor? (b) how do **system members** behave in member-facing flows generally (pick-lists, counts, member lists — the payload carries no system-member flag; name checks are out by rule).
 - **Output shape:** a full decision board (answered / open / defaulting + recommendation per item — the house all-at-once discipline), as a session opener under `docs/planning/sessions/openers/`.

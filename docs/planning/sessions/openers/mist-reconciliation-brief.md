@@ -10,7 +10,7 @@
 ## Why this exists
 
 A 2026-06-21 universe-discovery resume added **Statements 47-48** to the canonical discovery log
-(`docs/ecosystem/thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md`,
+(`docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md`,
 commit `28cc770`). They rework the anonymous tier and the Whisp/cord origin. The discovery log is
 the single source of truth and **outranks every other artifact in the repo** (docs, ADRs, specs,
 code); on conflict, those artifacts are corrected to match the discovery, never the reverse.
@@ -118,7 +118,7 @@ blocking the gate.
    "Superseded by ADR-U031"** and add a one-line pointer at its top — **U027's body stays intact as
    history** (forward-only correction; do not rewrite the decision record). Update the decisions
    `README.md` index and the retired-names table in the roles core.
-2. **Universe cores** (`docs/ecosystem/universe/`): roles, beings, cosmology, community,
+2. **Universe cores** (`docs/fringeisland-thinking/README.md`): roles, beings, cosmology, community,
    personal-growth/privacy-model, and the universe README. These are canonical; correct the Shadow
    sense to Mist and make the place-3-menace sense explicit where it now lives.
 3. **Architecture**: `ARCHITECTURE_ANATOMY_V1.md`, `DOMAIN_ENTITIES.md`, ADR-U025/U029 references,

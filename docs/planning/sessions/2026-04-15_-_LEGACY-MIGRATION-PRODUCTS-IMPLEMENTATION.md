@@ -78,9 +78,9 @@ Every file across all 6 wave directories + root was assessed, categorised, and e
 
 | File | Location | Content |
 |------|----------|---------|
-| member-archetypes.md | `docs/ecosystem/universe/community/` | Three personas (Homebody/Explorer/Dreamineer) with three-perspectives alignment |
+| member-archetypes.md | `docs/fringeisland-thinking/README.md` | Three personas (Homebody/Explorer/Dreamineer) with three-perspectives alignment |
 | EXPERIENCE_PRINCIPLES.md | `docs/ecosystem/strategy/` | Four design principles (felt transitions, Whisp companion, stories first, creator-friendly) |
-| CQ-014 | Added to `docs/ecosystem/thinking/OPEN_QUESTIONS.md` | Visitor experience — what can visitors do? (ADR-U004 locks technical approach, product experience unspecified) |
+| CQ-014 | Added to `docs/fringeisland-thinking/questions--ecosystem-open-questions.md` | Visitor experience — what can visitors do? (ADR-U004 locks technical approach, product experience unspecified) |
 
 ### 4. docs/old_INDEX.md
 
@@ -158,7 +158,7 @@ If this conversation is lost, the essential new information:
 - **Old agent system deleted** — replaced by AGENTS.md + skills
 - **Old feature docs + behavior specs deleted** — replaced by PRDs through process pipeline
 - **Path to known state locked** — Hub Specification → Ferd scoping → PRDs → code delta (four states: correct, partial, missing, wrong) → cycle work
-- **New files created**: `ecosystem/universe/community/member-archetypes.md`, `ecosystem/strategy/EXPERIENCE_PRINCIPLES.md`, CQ-014 in OPEN_QUESTIONS.md
+- **New files created**: `fringeisland-thinking/canon--community--member-archetypes.md`, `ecosystem/strategy/EXPERIENCE_PRINCIPLES.md`, CQ-014 in OPEN_QUESTIONS.md
 - **31 study docs** now in `docs/planning/waves/studies/{wave}/`
 - **34 session records** now in `docs/planning/sessions/`
 - **CLAUDE.md is severely broken** — most path references point to deleted files, needs full rewrite
@@ -177,8 +177,8 @@ If this conversation is lost, the essential new information:
 | Hub specification (to create) | `docs/products/hub/SPECIFICATION.md` |
 | Wave studies | `docs/planning/waves/studies/{wave}/` |
 | Session records | `docs/planning/sessions/` |
-| Open questions | `docs/ecosystem/thinking/OPEN_QUESTIONS.md` |
-| Member archetypes (new) | `docs/ecosystem/universe/community/member-archetypes.md` |
+| Open questions | `docs/fringeisland-thinking/questions--ecosystem-open-questions.md` |
+| Member archetypes (new) | `docs/fringeisland-thinking/canon--community--member-archetypes.md` |
 | Experience principles (new) | `docs/ecosystem/strategy/EXPERIENCE_PRINCIPLES.md` |
 | Feature spec template | `docs/templates/feature-spec.md` |
 | PRD template | `docs/templates/prd.md` |

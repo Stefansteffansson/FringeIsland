@@ -230,4 +230,4 @@ deep artifact) may deepen the experience but must never gate it.
 | H. Physical ball | **Paused by decision** |
 
 **Not yet done:** none of this has been promoted to numbered statements; no `Refines / extends`
-lines have been written; no reconciliation with `../../universe/` or the novel has been attempted.
+lines have been written; no reconciliation with `README.md` or the novel has been attempted.

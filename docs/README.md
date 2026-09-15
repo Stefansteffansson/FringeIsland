@@ -89,14 +89,14 @@ docs/
 | Directory | What belongs here | What does NOT belong here |
 |-----------|-------------------|--------------------------|
 | `ecosystem/` | Strategic, philosophical, cross-product — "what is FringeIsland?" | Technical architecture, service specs, planning artifacts |
-| `ecosystem/universe/` | Universe design — cosmology, developmental mechanics, narrative, beings, community | Technical service specs (→ platform/), open questions (→ thinking/) |
-| `ecosystem/strategy/` | Stable directional documents — product family, contributor model | Open questions, exploratory thinking (→ ecosystem/thinking/) |
-| `ecosystem/thinking/` | Open questions, explorations, legacy content being mined | Stable strategy (→ ecosystem/strategy/), research (→ research/) |
+| `fringeisland-thinking/README.md` | Universe design — cosmology, developmental mechanics, narrative, beings, community | Technical service specs (→ platform/), open questions (→ thinking/) |
+| `ecosystem/strategy/` | Stable directional documents — product family, contributor model | Open questions, exploratory thinking (→ fringeisland-thinking/README.md) |
+| `fringeisland-thinking/README.md` | Open questions, explorations, legacy content being mined | Stable strategy (→ ecosystem/strategy/), research (→ research/) |
 | `architecture/` | Structural models, binding decisions (ADRs), dependency diagrams | Service descriptions, feature specs, planning snapshots |
 | `platform/` | Service descriptions, feature specs, API contracts | Binding decisions (→ architecture), ecosystem strategy (→ ecosystem) |
 | `planning/reference/` | Point-in-time snapshots that inform planning cycles | Permanent structural models (→ architecture), ecosystem strategy (→ ecosystem) |
 | `research/` | Research reports and studies, regardless of topic | Strategy documents (→ ecosystem), decisions (→ architecture) |
-| `novel/` | Fiction layer — narrative work set in the universe; canon-conformant but never canon-defining | Universe canon (→ ecosystem/universe/ + discovery), specs, planning artifacts |
+| `novel/` | Fiction layer — narrative work set in the universe; canon-conformant but never canon-defining | Universe canon (→ fringeisland-thinking/README.md + discovery), specs, planning artifacts |
 
 ---
 
@@ -115,7 +115,7 @@ Never load all features at once — load only what you're working on.
 ## Key Entry Points
 
 - **Ecosystem vision:** `ecosystem/VISION.md`
-- **Universe design:** `ecosystem/universe/`
+- **Universe design:** `fringeisland-thinking/README.md`
 - **Products & platform strategy:** `ecosystem/strategy/PRODUCTS_AND_PLATFORM.md`
 - **Hub description:** `products/hub/DESCRIPTION.md`
 - **Way of working:** `planning/PROCESS.md`
@@ -130,7 +130,7 @@ Never load all features at once — load only what you're working on.
 
 The `old_universe/`, `old_products/`, and `old_implementation/` directories no longer exist. Their content has been migrated into the active trees above:
 
-- `old_universe/` — deleted April 2026. All 24 ADRs (U001–U024) migrated to `architecture/decisions/`; universe design content migrated to `ecosystem/universe/`.
+- `old_universe/` — deleted April 2026. All 24 ADRs (U001–U024) migrated to `architecture/decisions/`; universe design content migrated to `fringeisland-thinking/README.md`.
 - `old_products/` — deleted April 2026 (legacy-migration session). Product scope, requirements, roadmap, and feature docs migrated into `products/hub/` and associated planning/backlog/reference files.
 - `old_implementation/` — deleted April 2026. Implementation state is now read directly from the codebase (migrations, schema, code) rather than from snapshot files; reference snapshots that still matter live under `planning/reference/`.
 

@@ -18,7 +18,7 @@ The UI reflects where the member is: the Ordinary World, the near side seen thro
 
 The interface itself is a narrative device.
 
-→ *Canonical topology: [universe/cosmology/](../universe/cosmology/).*
+→ *Canonical topology: [universe/cosmology/](../../fringeisland-thinking/canon--cosmology--worlds-topology.md).*
 
 ---
 
@@ -46,7 +46,7 @@ The studios — World, Arc, and Journey under Universe Studio — are a role-gat
 
 Creation is a first-class experience.
 
-→ *Canonical roles: [universe/roles/](../universe/roles/).*
+→ *Canonical roles: [universe/roles/](../../fringeisland-thinking/canon--roles--taxonomy.md).*
 
 ---
 

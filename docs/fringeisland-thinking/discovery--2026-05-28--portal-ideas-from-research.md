@@ -6,9 +6,9 @@ decision_status: open — no decision made
 generated: 2026-05-28
 generated_by: Claude.ai sounding-board conversation
 source_research:
-  - docs/research/Portal_Fantasy_Research_Report.md
-  - docs/research/Parallel_Worlds_Research_Report.md
-cosmological_frame: docs/ecosystem/thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md
+  - docs/fringeisland-thinking/research--worlds--portal-fantasy.md
+  - docs/fringeisland-thinking/research--worlds--parallel-worlds.md
+cosmological_frame: docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md
 ---
 
 # Portal Ideas for FringeIsland — Candidates from Research
@@ -182,4 +182,4 @@ Suggested, not committed:
 
 - **Highest leverage to test next** in a Session-XX discovery pass: Cairn portals (2) and Anchored descent (4). Each would force concrete decisions on currently-open Session 01 threads — Anthropologist's Studio scope; what counts as a valid anchor object.
 - **Before any acceptance**, run each candidate through the five constraints listed near the top of this document.
-- **Reconciliation note:** the existing `docs/ecosystem/universe/cosmology/` documentation predates Session 01's locked topology. When portal design becomes active, expect to reconcile any portal vocabulary already in cosmology/ against the Session-01 truth-direction (per the locked principle: Session 01 is the source of truth; the earlier cosmology is challenged against it, not the reverse).
+- **Reconciliation note:** the existing `docs/fringeisland-thinking/canon--cosmology--worlds-topology.md` documentation predates Session 01's locked topology. When portal design becomes active, expect to reconcile any portal vocabulary already in cosmology/ against the Session-01 truth-direction (per the locked principle: Session 01 is the source of truth; the earlier cosmology is challenged against it, not the reverse).

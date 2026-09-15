@@ -9,7 +9,7 @@
 > row of its decomposition diagram (entity identity) while explicitly CONFIRMING its Platform Core /
 > Domain Services split, both contract boundaries, and products-as-clients-over-one-Platform-API.
 > Source of truth: the universe-discovery 2026-06-05 product/ecosystem design locks
-> (`docs/ecosystem/thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md`).
+> (`docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md`).
 > Ratified in reconciliation Session B (2026-06-10).
 
 ---
@@ -131,5 +131,5 @@ Hub/Gimbal identities as complementary surfaces, and it removes device bookkeepi
 - Related: [ADR-U009 — API-first frontend-agnostic](ADR-U009-api-first-frontend-agnostic.md) (confirmed)
 - Related: [ADR-U017 — Journeys content templates](ADR-U017-journeys-content-templates.md) (compatible; carries the Game-as-depth journey grounding)
 - Related: [ADR-U026 — Studio decomposition](ADR-U026-studio-decomposition-universe-studio-parent.md) (the sibling entity-decomposition decision)
-- Source: `docs/ecosystem/thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md` (2026-06-05 product/ecosystem design locks)
+- Source: `docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md` (2026-06-05 product/ecosystem design locks)
 - Session record: `docs/planning/sessions/2026-06-05_02_-_SESSION-A-REPO-MAP.md` (the map this resolves)

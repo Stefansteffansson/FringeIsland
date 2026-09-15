@@ -150,7 +150,7 @@ Work that doesn't fit the current wave or cycle is handled through the existing 
 - **Icebox (YAML flag)** — items that are correct but not currently relevant get `parked: true` + `parked_reason` added to their feature spec frontmatter. See Section 1. Parked items are reviewed at cycle boundaries.
 - **Betting table** — items that aren't bet on stay in the backlog. No formal "deferral" is needed — the betting table is the prioritisation mechanism.
 
-The principle: **a deferred item is not done until someone owns it.** When work is moved to a later wave, it must have a clear wave tag and enough context (in its feature spec) that a future contributor can pick it up without re-litigating the original decision. Items that have no clear owner after review surface in `../ecosystem/thinking/OPEN_QUESTIONS.md` for strategic resolution.
+The principle: **a deferred item is not done until someone owns it.** When work is moved to a later wave, it must have a clear wave tag and enough context (in its feature spec) that a future contributor can pick it up without re-litigating the original decision. Items that have no clear owner after review surface in `../fringeisland-thinking/questions--ecosystem-open-questions.md` for strategic resolution.
 
 ### Why this shape
 
@@ -356,7 +356,7 @@ Specs are servants of end-user value, not cages. Building will reveal things the
 
 1. **Ratified ≠ frozen.** Every spec and ADR carries a status; "Canonical / Ratified" means current best truth — build against it, change it deliberately. Even ADRs evolve, via amendment or a superseding ADR (precedent: ADR-U002 amendment, ADR-U028 root-admin amendment).
 2. **Capture findings at the moment of discovery — cheaply, and never silently.** When building reveals a spec that is wrong, incomplete, or harms the member, log a one-line finding where the work is (the feature spec's notes, or the task), tagged with the upstream spec/ADR it bears on. Don't halt the build; note the deviation and keep moving. **A silent deviation is the real failure** — it is how drift accumulates. **A code comment is *not* a filed deviation.** A `// directional` / `// not yet realised` note in the source satisfies the *letter* of "never silent" while bypassing triage (step 3) — the finding must land in the owning spec's notes or the task with its triage tag, or it is invisible to the reconcile. `doc-health-check` greps the codebase for `directional` / `not yet realised` markers and flags any that lack a filed, triaged deviation. *(The ADR-U038 lesson: an unfiled "the spec's `/api/v1` + Bearer is directional" comment rode along in five features' route files across DoD, and the load-bearing question underneath it — are these routes even the canonical API surface? — surfaced only by accident months later.)*
-3. **Triage the finding:** *local* (only this code → fix here, note it) · *upstream-bearing* (contradicts/extends a PC/DS/vertical spec or an ADR → route to that owner) · *open question* (needs a decision or more thought → `../ecosystem/thinking/OPEN_QUESTIONS.md`).
+3. **Triage the finding:** *local* (only this code → fix here, note it) · *upstream-bearing* (contradicts/extends a PC/DS/vertical spec or an ADR → route to that owner) · *open question* (needs a decision or more thought → `../fringeisland-thinking/questions--ecosystem-open-questions.md`).
 4. **Amend now vs. batch.** Load-bearing or blocking findings amend the owning spec immediately; small, non-blocking ones batch to the cooldown/cycle boundary (the consolidate-at-close-out pattern). Either way, recorded — never silent.
 5. **Amend with provenance, don't rewrite.** A change appends the new decision, cites the build-learning that drove it and the date, and marks what it supersedes. ADRs get an amendment block or a superseding ADR.
 6. **Propagate via the cascade.** When a spec changes, check its downstream consumers — other specs, surface specs, the vertical checklists, the CLAUDE.md cascade. Tools: the `doc-health-check` skill and the "template change → grep instances" discipline.
@@ -369,7 +369,7 @@ This loop is the *reconciliation* half of the decomposition method (the `ecosyst
 
 ## Quick reference
 
-- **Where do I put a new idea?** Create a feature spec at maturity 0-raw under its owner: `../{owner}/features/FEAT-{PREFIX}{NNN}-{slug}.md`, using `../templates/feature-spec.md`. If ownership is unclear, park it in `../ecosystem/thinking/OPEN_QUESTIONS.md` until it's clear where it belongs.
+- **Where do I put a new idea?** Create a feature spec at maturity 0-raw under its owner: `../{owner}/features/FEAT-{PREFIX}{NNN}-{slug}.md`, using `../templates/feature-spec.md`. If ownership is unclear, park it in `../fringeisland-thinking/questions--ecosystem-open-questions.md` until it's clear where it belongs.
 - **Where do I write a feature spec?** `../{owner}/features/FEAT-{PREFIX}{NNN}-{slug}.md`, using `../templates/feature-spec.md`. The same file carries the feature from maturity 0 through 6.
 - **Where do I record a decision?** `../architecture/decisions/NNNN-{title}.md`, using `../templates/adr.md`
 - **Where do I find what I'm working on this cycle?** `cycles/cycle-current.md` — the front door; it links the cycle's dated plan — + the TASK-*.md files in `backlog/tasks/`

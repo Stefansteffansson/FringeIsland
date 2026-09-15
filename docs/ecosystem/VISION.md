@@ -1,7 +1,7 @@
 # FringeIsland — Vision
 
 **Status:** Constitutional document
-**Version:** 1.2 (reconciliation Session B, 2026-06-10 — aligned to the universe-discovery locks; cosmology and roles now live in canonical cores under [Universe](./universe/))
+**Version:** 1.2 (reconciliation Session B, 2026-06-10 — aligned to the universe-discovery locks; cosmology and roles now live in canonical cores under [Universe](../fringeisland-thinking/README.md))
 
 ---
 
@@ -40,7 +40,7 @@ An immersive edutainment platform where personal development happens through liv
 
 **The worlds** — the cosmological frame: the *Ordinary World* (daily life — always present, never absent), the *Shimmer* (the membrane between), and the *Fringe* — two co-located places behind the one Shimmer: a warm, welcoming place and a hostile, cold one, two poles of a single continuum, each with a near side (tied to worldly coordinates) and a Beyond. The *village* — the safe-harbour commons with the Tree and its glowing glass balls — lies in the Beyond of the warm place. The *Void* is the axis of separation: the medium the Whisp hangs in, out on its cord.
 
-→ *See [Universe / cosmology](./universe/cosmology/) — the canonical core.*
+→ *See [Universe / cosmology](../fringeisland-thinking/canon--cosmology--worlds-topology.md) — the canonical core.*
 
 **The Whisp** — each FIM's own inner dialogue. The Whisp IS the FIM: a sometimes-wiser counterweight to the default inner voice, empty at first and filled *by* the FIM's growing self-awareness. It is also the avatar through which the FIM walks the Fringe — perceiving through the Shimmer, exposed on the cord while the human stays safe. Its destination is internalisation: a human carrying their own wiser voice, without the platform.
 
@@ -48,7 +48,7 @@ An immersive edutainment platform where personal development happens through liv
 
 **Dreamineers** — FIMs in their authorial mode: **Creators** and **Anthropologists** (World Studio), **Tellers** (Arc Studio), **Wayfinders** (Journey Studio) — authoring the world, its stories, and its journeys. Roles are modes a person occupies, not kinds of people.
 
-→ *See [Universe / roles](./universe/roles/) — the canonical core.*
+→ *See [Universe / roles](../fringeisland-thinking/canon--roles--taxonomy.md) — the canonical core.*
 
 ---
 
@@ -86,4 +86,4 @@ The ecosystem consists of **products** — the shipped surfaces of one experienc
 
 ---
 
-*This document constrains. The [Manifesto](./MANIFESTO.md) inspires. The [Universe](./universe/) imagines. Together they define FringeIsland.*
+*This document constrains. The [Manifesto](./MANIFESTO.md) inspires. The [Universe](../fringeisland-thinking/README.md) imagines. Together they define FringeIsland.*

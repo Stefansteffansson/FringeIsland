@@ -4,7 +4,7 @@ The design system is **not yet specified**. This directory will contain the shar
 
 **Feature ID prefix:** `DS`
 
-When work begins, expect: tokens (colour, type, spacing), component contracts, accessibility rules (WCAG 2.1 AA), theming, motion, and the visual identity for the worlds (per the cosmology core, `../ecosystem/universe/cosmology/README.md`).
+When work begins, expect: tokens (colour, type, spacing), component contracts, accessibility rules (WCAG 2.1 AA), theming, motion, and the visual identity for the worlds (per the cosmology core, `../fringeisland-thinking/canon--cosmology--worlds-topology.md`).
 
 ## Structure (when active)
 

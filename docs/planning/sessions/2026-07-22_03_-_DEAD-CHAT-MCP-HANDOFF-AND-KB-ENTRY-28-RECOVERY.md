@@ -22,7 +22,7 @@ Nothing local repairs the old thread: not killing every desktop process, not tog
 
 ## Work landed
 
-`docs/ecosystem/thinking/2026-06-15_knowledge-base_whisp-and-universe-foundations.md`, +47 lines, merged to `main` via **#246**:
+`docs/fringeisland-thinking/discovery--2026-06-15--knowledge-base-whisp-and-universe-foundations.md`, +47 lines, merged to `main` via **#246**:
 
 1. **Entry 28** — John Flavell, metacognition as the named substrate — plus its index row (`4181482`).
 2. **Four reciprocal "Metacognition link (entry 28)" back-pointers** (`d091a7e`), in entries **3** (Korzybski), **12** (Kegan / vertical learning), **16** (ACT), **26** (Kross) — each as the entry's closing line above its `---` separator.

@@ -14,12 +14,12 @@ All 22 remaining ADR files (U001–U022) deleted from `docs/old_universe/decisio
 
 ### 2. Universe design directory created
 
-New `docs/ecosystem/universe/` directory established as the home for "what the FringeIsland world is and how it works" — the creative, conceptual, evolving description of FringeIsland as a world.
+New `docs/fringeisland-thinking/README.md` directory established as the home for "what the FringeIsland world is and how it works" — the creative, conceptual, evolving description of FringeIsland as a world.
 
 Structure:
 
 ```
-docs/ecosystem/universe/
+docs/fringeisland-thinking/README.md
 ├── README.md
 ├── cosmology/           ← Three Worlds (placeholder)
 ├── personal-growth/     ← red thread, engagement, void, privacy
@@ -82,7 +82,7 @@ The three empty placeholder directories (`whisp/`, `community/`, `kickstarter/`)
 |------|-------------|
 | `docs/ecosystem/VISION.md` | v1.1 — SFM epigraph added, links updated to universe/ |
 | `docs/ecosystem/README.md` | Rewritten with universe/ as first-class layer, graduation paths |
-| `docs/ecosystem/thinking/README.md` | Graduation path includes universe/, deleted files removed |
+| `docs/fringeisland-thinking/README.md` | Graduation path includes universe/, deleted files removed |
 | `docs/ecosystem/strategy/README.md` | BUSINESS_MODEL.md and IP_AND_LICENSING.md added |
 | `docs/README.md` | Universe/ in tree, old_universe marked deleted, protocols removed |
 | `docs/planning/PROCESS.md` | Two new subsections added |
@@ -91,7 +91,7 @@ The three empty placeholder directories (`whisp/`, `community/`, `kickstarter/`)
 
 ## Decisions locked this session
 
-1. **`docs/ecosystem/universe/` is the home for universe design** — creative, conceptual, evolving. Separate from platform architecture (how software implements it) and strategy (how ecosystem is structured).
+1. **`docs/fringeisland-thinking/README.md` is the home for universe design** — creative, conceptual, evolving. Separate from platform architecture (how software implements it) and strategy (how ecosystem is structured).
 2. **Folder renamed: `development/` → `personal-growth/`** to avoid ambiguity with software development.
 3. **Kickstarter gets its own top-level folder in universe/** — it's a cross-cutting founding event, not a subcategory of community.
 4. **COMMUNITY_OPEN_QUESTIONS.md → OPEN_QUESTIONS.md** — the file covers the full ecosystem, not just community.
@@ -147,7 +147,7 @@ Other wave directories (eid, hamn, heim, brim, urd) are mostly scaffolding with 
 
 If this conversation is lost, the essential new information:
 
-- `docs/ecosystem/universe/` exists — the creative heart of the ecosystem docs, with 7 subdirectories
+- `docs/fringeisland-thinking/README.md` exists — the creative heart of the ecosystem docs, with 7 subdirectories
 - VISION.md is now v1.1 with SFM epigraph and links to universe/
 - OLD_VISION.md and OLD_VISION_DECISIONS.md are deleted — all unique content extracted
 - DEFERRAL_PROTOCOL.md and PLANNING_PROTOCOL.md are deleted — principles in PROCESS.md
@@ -163,9 +163,9 @@ If this conversation is lost, the essential new information:
 | What | Where |
 |------|-------|
 | Session bridges | docs/planning/sessions/ |
-| Universe design (new) | docs/ecosystem/universe/ |
+| Universe design (new) | docs/fringeisland-thinking/README.md |
 | Strategy docs (updated) | docs/ecosystem/strategy/ |
-| Open questions (renamed) | docs/ecosystem/thinking/OPEN_QUESTIONS.md |
+| Open questions (renamed) | docs/fringeisland-thinking/questions--ecosystem-open-questions.md |
 | PROCESS.md (updated) | docs/planning/PROCESS.md |
 | old_products/ (to migrate) | docs/old_products/ |
 | old_implementation/ (to migrate) | docs/old_implementation/ |

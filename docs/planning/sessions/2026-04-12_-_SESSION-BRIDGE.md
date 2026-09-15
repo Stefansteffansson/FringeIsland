@@ -19,7 +19,7 @@ Every file in `docs/old_universe/` was read, assessed, and categorised:
 
 ### 2. Directory purpose clarification locked
 
-Resolved ambiguity between `docs/architecture/`, `docs/platform/`, `docs/planning/reference/`, `docs/ecosystem/`, and `docs/research/`:
+Resolved ambiguity between `docs/architecture/`, `docs/platform/`, `docs/planning/reference/`, `docs/ecosystem/`, and `docs/fringeisland-thinking/README.md`:
 
 | Directory | Purpose |
 |-----------|---------|
@@ -27,7 +27,7 @@ Resolved ambiguity between `docs/architecture/`, `docs/platform/`, `docs/plannin
 | `docs/architecture/` | Structural models, binding decisions (ADRs), dependency diagrams — "how is the system structured and why?" |
 | `docs/platform/` | Service descriptions, feature specs, API contracts — "what does this service do and how does it work?" |
 | `docs/planning/reference/` | Point-in-time snapshots — gap analyses, current-state assessments, capability maps |
-| `docs/research/` | All research reports regardless of topic — domain (human development) and methodology (ecosystem management) |
+| `docs/fringeisland-thinking/README.md` | All research reports regardless of topic — domain (human development) and methodology (ecosystem management) |
 
 ### 3. Ecosystem subfolder structure locked
 
@@ -52,10 +52,10 @@ ECOSYSTEM_ANATOMY_V3.svg and DOMAIN_SERVICE_DEPENDENCIES.svg moved from `docs/pl
 | community/OPEN_QUESTIONS.md | docs/ecosystem/thinking/COMMUNITY_OPEN_QUESTIONS.md | 9 open questions, needs triage |
 | processes/DEFERRAL_PROTOCOL.md | docs/planning/DEFERRAL_PROTOCOL.md | Review note added |
 | processes/PLANNING_PROTOCOL.md | docs/planning/PLANNING_PROTOCOL.md | Review note added |
-| research/adult-development/Kegan_ITC_Research_Report.md | docs/research/ | |
-| research/human-flourishing/What_Fills_a_Life_v1.md | docs/research/ | |
-| research/human-flourishing/What_Fills_a_Life_v2.md | docs/research/ | |
-| research/theory-u/Theory_U_Research_Report.md | docs/research/ | |
+| research/adult-development/Kegan_ITC_Research_Report.md | docs/fringeisland-thinking/README.md | |
+| research/human-flourishing/What_Fills_a_Life_v1.md | docs/fringeisland-thinking/README.md | |
+| research/human-flourishing/What_Fills_a_Life_v2.md | docs/fringeisland-thinking/README.md | |
+| research/theory-u/Theory_U_Research_Report.md | docs/fringeisland-thinking/README.md | |
 | strategy/PRODUCTS_AND_PLATFORM.md | docs/ecosystem/strategy/ | Needs review and update |
 | strategy/CONTRIBUTION_ARCHITECTURE.md | docs/ecosystem/strategy/ | Needs review and update |
 | vision/VISION.md | docs/ecosystem/thinking/OLD_VISION.md | Needs content extraction |
@@ -80,13 +80,13 @@ All READMEs now follow a consistent pattern: purpose statement, "this is for" / 
 | docs/README.md | Full rewrite: annotated tree of entire docs/ structure, directory purpose guide, updated entry points |
 | docs/ecosystem/README.md | Three-layer structure with annotated tree, reading order, graduation path |
 | docs/ecosystem/strategy/README.md | Created — purpose + boundary + annotated tree |
-| docs/ecosystem/thinking/README.md | Created — purpose + graduation path + annotated tree |
+| docs/fringeisland-thinking/README.md | Created — purpose + graduation path + annotated tree |
 | docs/architecture/README.md | Rewritten with annotated tree, key documents table |
 | docs/platform/README.md | Purpose + boundary + annotated tree + two-tier diagram |
 | docs/products/README.md | Annotated tree + feature prefix table |
 | docs/planning/README.md | Annotated tree of full planning structure |
 | docs/planning/reference/README.md | Created — purpose + annotated tree |
-| docs/research/README.md | Annotated tree, domain + methodology sections |
+| docs/fringeisland-thinking/README.md | Annotated tree, domain + methodology sections |
 | docs/templates/README.md | Annotated tree, updated session bridge output path |
 
 ### 8. Template updates (2 files)
@@ -101,7 +101,7 @@ All READMEs now follow a consistent pattern: purpose statement, "this is for" / 
 | File | What changed |
 |------|-------------|
 | README.md (root) | Vision link updated to docs/ecosystem/VISION.md, simplified |
-| CLAUDE.md | Document map fully updated to ecosystem/strategy/ and ecosystem/thinking/ paths, directory purpose guide expanded, documentation structure section updated |
+| CLAUDE.md | Document map fully updated to ecosystem/strategy/ and fringeisland-thinking/README.md paths, directory purpose guide expanded, documentation structure section updated |
 
 ---
 
@@ -132,9 +132,9 @@ All READMEs now follow a consistent pattern: purpose statement, "this is for" / 
 | PLANNING_PROTOCOL.md | docs/planning/ | Challenge what to bring into new way of working |
 | PRODUCTS_AND_PLATFORM.md | docs/ecosystem/strategy/ | Review and update |
 | CONTRIBUTION_ARCHITECTURE.md | docs/ecosystem/strategy/ | Review and update |
-| COMMUNITY_OPEN_QUESTIONS.md | docs/ecosystem/thinking/ | Triage all 9 questions |
-| OLD_VISION.md | docs/ecosystem/thinking/ | Extract unique content |
-| OLD_VISION_DECISIONS.md | docs/ecosystem/thinking/ | Review for unique content |
+| COMMUNITY_OPEN_QUESTIONS.md | docs/fringeisland-thinking/README.md | Triage all 9 questions |
+| OLD_VISION.md | docs/fringeisland-thinking/README.md | Extract unique content |
+| OLD_VISION_DECISIONS.md | docs/fringeisland-thinking/README.md | Review for unique content |
 
 ### Also outstanding (from previous sessions)
 

@@ -37,7 +37,7 @@
 **Triage:** **UPSTREAM — load-bearing.** Grounded against canon:
 - ADR-U029: *"the Whisp is… each FIM's inner dialogue AND their avatar… two framings, one entity"*; DS-7 owns *"the Whisp as a being: dialogue, …"*. ADR-U031: Mists carry their own Whisp.
 - "Mentor" appears only in `OPEN_QUESTIONS.md` — **not** ratified canon. §L3's A-COI "Mentor" construct (COI-1..COI-5) is a derivation that drifted from the canonical Whisp.
-**Owning artifacts (in order):** beings core `docs/ecosystem/universe/beings/README.md` (+ the planned `whisp.md`) is the authority → amend **SPECIFICATION §L3 A-COI** (recast Mentor capabilities onto the dialogic Whisp; fix COI-6's "internal-state surface" framing) → **SPECIFICATION external-deps** (DS-7 "AI Mentor lifecycle") and **DESCRIPTION** (DS-7 "AI mentor") → re-derive `HUMAN.md` Ch. 6.
+**Owning artifacts (in order):** beings core `docs/fringeisland-thinking/canon--beings--whisp-and-npcs.md` (+ the planned `whisp.md`) is the authority → amend **SPECIFICATION §L3 A-COI** (recast Mentor capabilities onto the dialogic Whisp; fix COI-6's "internal-state surface" framing) → **SPECIFICATION external-deps** (DS-7 "AI Mentor lifecycle") and **DESCRIPTION** (DS-7 "AI mentor") → re-derive `HUMAN.md` Ch. 6.
 **Disposition:** Deliberate spec correction (not a quick edit), grounded in the beings core. **Does not block the Phase-1 gate or Phase 2** — A-COI is post-Ferd (no substrate, no oracle). But it must be corrected before A-COI is built, and the spec shouldn't carry the wrong concept meanwhile. Candidate for an amendment pass.
 
 ### F-05 — Missing admin capability: remove user(s) from a *specific* group/groups (Ch. 8)
@@ -46,7 +46,7 @@
 **Owning artifact:** SPECIFICATION §L3 A-ADM (add a capability) → re-derive `HUMAN.md`. **Disposition:** Add an A-ADM row (admin targeted group removal, single + bulk); moderate.
 
 ### F-07 — The Hub reads as "just a platform"; the intended purpose is higher (Finally)
-**Stefan:** The tour frames the Hub as a platform for journeys + notes + communication + Whisp, but the real intent is "much higher and advanced purposes." Maybe later? Pointer: read `docs/ecosystem/universe` and `docs/ecosystem/thinking`.
+**Stefan:** The tour frames the Hub as a platform for journeys + notes + communication + Whisp, but the real intent is "much higher and advanced purposes." Maybe later? Pointer: read `docs/fringeisland-thinking/README.md` and `docs/fringeisland-thinking/README.md`.
 **Triage:** OPEN-Q / strategic. Signals the product-layer derivation (DESCRIPTION / §L3) may under-scope the universe vision. Likely correlated with F-04 (the experience layer lagging the universe canon).
 **Owning artifact:** `OPEN_QUESTIONS.md` (strategic scope) + Hub DESCRIPTION scope boundary. **Disposition:** Log as a vision-altitude scope question; revisit DESCRIPTION/§L3 against the universe canon. I have not yet read `universe/` + `thinking/` in full — that's the grounding step before any answer.
 
