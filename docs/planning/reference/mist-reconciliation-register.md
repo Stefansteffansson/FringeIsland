@@ -60,9 +60,9 @@ These are accepted (not superseded) ADR bodies. Recommended treatment: **pointer
 - [ ] **`docs/fringeisland-thinking/canon--roles--taxonomy.md`** (4: L0 line :20, Shadow def :33, transcendence :39, retired-names Visitor->Shadow :125) - **RENAME + NEEDS-MECHANICS.** Keystone-canonical: rewrite the Shadow definition as the **Mist** (hyaline, accretion, two paths/one gate, Whisp carried from start); change retired-names **Visitor -> Mist**; ADD a canonical entry for **Shadow = place-3 menace** and a retired-name note that old-sense "Shadow (anonymous entrant)" -> Mist.
 - [ ] **`docs/fringeisland-thinking/canon--cosmology--worlds-topology.md`** (7: :57,:105,:142,:178,:181,:182,:218) - **RENAME + NEEDS-MECHANICS.** Access table + "no ball" rows -> Mist. This is also where place-3 lives: **make the place-3-menace "Shadow" sense explicit** (KEEP-target now populated).
 - [ ] `docs/fringeisland-thinking/canon--beings--whisp-and-npcs.md:22` - "everyone has one, Shadow or FIM" -> Mist or FIM. RENAME.
-- [ ] `docs/fringeisland-thinking/README.md:18` - identity states Shadow/FIM -> Mist/FIM. RENAME.
+- [ ] `docs/ecosystem/universe/README.md:18` (that README was folded into `docs/fringeisland-thinking/README.md` on 2026-09-15) - identity states Shadow/FIM -> Mist/FIM. RENAME.
 - [ ] **`docs/fringeisland-thinking/canon--growth--privacy-model.md`** (2: :55 + status :3) - **RENAME + NEEDS-MECHANICS** (ephemerality now extends to assessment + presence layers; "no trait-profile pre-consent").
-- [ ] `docs/fringeisland-thinking/README.md:42` - roles-tier description -> Mist. RENAME.
+- [ ] `docs/ecosystem/universe/README.md:42` (folded likewise) - roles-tier description -> Mist. RENAME.
 - [ ] **`docs/ecosystem/VISION.md:39`** (constitutional) - "Entrants begin as **Shadows** ... may **transcend**" -> Mist + metamorphosis/transcendence per decision A. **RENAME + NEEDS-MECHANICS; constitutional - careful edit.**
 - [ ] **`docs/ecosystem/strategy/CONTRIBUTION_ARCHITECTURE.md`** (12: "Group 0 - Shadows" :23 + :24,:26,:28,:52,:62,:72,:82,:92,:101,:103,:105) - **RENAME + NEEDS-MECHANICS** (the whole Group-0 section models the tier; "move through ... like a shadow" prose needs rewording so the figure-noun and the simile don't collide).
 - [ ] `docs/ecosystem/strategy/PRODUCTS_AND_PLATFORM.md:162` - "Shadow experience" -> Mist. RENAME.

@@ -22,7 +22,7 @@ The first token says **what kind of thing this is**. The second token is **what 
 
 | Register | Meaning | Graduation |
 |---|---|---|
-| `canon--` | The canonical world — what the universe **is**. The Status line at the top of each file carries the finer grade (Canonical / Extracted / Thinking). | Arrives here from `discovery--`. |
+| `canon--` | The canonical world — what the universe **is**. The Status line at the top of each file carries the finer grade (Canonical / Extracted / Thinking / Scaffold). | Arrives here from `discovery--`. |
 | `discovery--` | Dated working sessions on the universe, and their graduation tracker + backlog. Working notes, **never canon**. | A concept that crystallises is written into a `canon--` file (or an ADR) and gets a row in [`discovery--tracker-and-backlog.md`](discovery--tracker-and-backlog.md). |
 | `research--` | Reports and studies — what we learned from studying something. Areas: `growth` (human development, flourishing, facilitation), `worlds` (portals, parallel worlds), `method` (how a solo developer runs an ecosystem), `engineering`. | Informs canon, ADRs and specs; never becomes them. |
 | `record--` | Design records and snapshots produced by a session — the design lives here, the obligations land in the owning specs. | — |
@@ -40,7 +40,12 @@ This is the puzzle — pieces placed as they are defined, gaps visible where the
 | [`canon--cosmology--worlds-topology.md`](canon--cosmology--worlds-topology.md) | The worlds topology — Ordinary World, the Shimmer, the Fringe (two co-located places, near side and the Beyond), the Void and the cord, the village and the Tree | **Canonical** — ratified Session B, 2026-06-10 |
 | [`canon--roles--taxonomy.md`](canon--roles--taxonomy.md) | The role taxonomy — L0 identity states, L1 FIM modes, L2 the enterprise-stewardship plane; retired names; why NPCs are not roles | **Canonical** — ratified Session B, 2026-06-10 |
 | [`canon--beings--whisp-and-npcs.md`](canon--beings--whisp-and-npcs.md) | Beings that inhabit the world — the Whisp; NPCs as layered, depth-on-demand composites; where the creative roles went | **Canonical** — rewritten Session B, 2026-06-10 |
+| [`canon--beings--whisp.md`](canon--beings--whisp.md) | The Whisp's full specification — encounter phenomenology, dialogue mechanics, the senses model, internalisation arc | Scaffold — awaiting specification |
+| [`canon--beings--npcs.md`](canon--beings--npcs.md) | NPC behaviour authoring, layer-promotion workflow, role in seasons and episodes | Scaffold — awaiting specification |
 | [`canon--narrative--how-story-works.md`](canon--narrative--how-story-works.md) | How story works — seasons, episodes, journeys; Respawn, the loop as the medium | Respawn section ratified 2026-06-10; the rest overview |
+| [`canon--narrative--seasons-and-episodes.md`](canon--narrative--seasons-and-episodes.md) | Four seasons per year, twelve episodes per season, universal calendar plus adaptive AI personalisation | Scaffold — awaiting specification |
+| [`canon--narrative--journeys.md`](canon--narrative--journeys.md) | Route types (Fixed, Hybrid, Traveler-Initiated, AI-Generative), content families (Witness, Reflect, Decide, Act, Encounter, Rest) | Scaffold — awaiting specification |
+| [`canon--narrative--first-experience.md`](canon--narrative--first-experience.md) | The founding narrative — what happens in the first hour; the single highest-risk gap in the design | Scaffold — awaiting a discovery session (CQ-010) |
 | [`canon--growth--three-questions.md`](canon--growth--three-questions.md) | The red thread — Who am I? What do I want? How do I get there? × three perspectives; the Live / Grow / Matter teleology beneath; the 9-cell matrix | Extracted from founding vision (April 2026); Live/Grow/Matter added Session B |
 | [`canon--growth--engagement-spectrum.md`](canon--growth--engagement-spectrum.md) | The Homebody → Explorer spectrum and its developmental honesty | Extracted from founding vision (April 2026) |
 | [`canon--growth--privacy-model.md`](canon--growth--privacy-model.md) | Three tiers of avatar / personal-data visibility — private by default, selectively shared, transparently shared | Extracted; re-grounded on the Mist 2026-06-21 (ADR-U031) |
@@ -83,12 +88,11 @@ Any document that answers "what did we learn from studying something?" Research 
 | File | Topic |
 |---|---|
 | [`research--growth--kegan-immunity-to-change.md`](research--growth--kegan-immunity-to-change.md) | Kegan's adult-development theory and Immunity to Change — how adults actually grow, and why they often don't |
-| [`research--growth--what-fills-a-life-v2.md`](research--growth--what-fills-a-life-v2.md) | What Fills a Life — the architecture of human flourishing (v2, most complete; [`.docx`](research--growth--what-fills-a-life-v2.docx)) |
-| [`research--growth--what-fills-a-life-v1.md`](research--growth--what-fills-a-life-v1.md) | What Fills a Life — v1 (superseded by v2; retirement is a TASK-UNI-03 question) |
+| [`research--growth--what-fills-a-life-v2.md`](research--growth--what-fills-a-life-v2.md) | What Fills a Life — the architecture of human flourishing ([`.docx`](research--growth--what-fills-a-life-v2.docx)); v1 retired 2026-09-15, in git history |
 | [`research--growth--theory-u.md`](research--growth--theory-u.md) | Theory U — Scharmer's phenomenology of transformation; facilitation methodology |
 | [`research--worlds--portal-fantasy.md`](research--worlds--portal-fantasy.md) | Portal fantasy — thresholds, doorways, and other worlds across books, film, theatre, games, folklore (54 entries) |
 | [`research--worlds--parallel-worlds.md`](research--worlds--parallel-worlds.md) | Worlds beside our own — parallel and alternative realities across five media (22 entries) |
-| [`research--method--multi-product-ecosystem-management.md`](research--method--multi-product-ecosystem-management.md) | Multi-product ecosystem management for solo developers — the document hierarchy, description vs specification ([`rev1.docx`](research--method--multi-product-ecosystem-management-rev1.docx), [`rev2.docx`](research--method--multi-product-ecosystem-management-rev2.docx)) |
+| [`research--method--multi-product-ecosystem-management.md`](research--method--multi-product-ecosystem-management.md) | Multi-product ecosystem management for solo developers — the document hierarchy, description vs specification ([`rev2.docx`](research--method--multi-product-ecosystem-management-rev2.docx); rev1 retired 2026-09-15, in git history) |
 | [`research--method--solo-developer-systematic-web-development.md`](research--method--solo-developer-systematic-web-development.md) | The solo developer's complete guide to systematic web development ([`.docx`](research--method--solo-developer-systematic-web-development.docx)) |
 | [`research--engineering--performance-budget.md`](research--engineering--performance-budget.md) | First-paint performance budget vetted against Core Web Vitals, RAIL, Nielsen limits, SaaS benchmarks (2026-07-07) |
 | [`research--engineering--cold-start-industry.md`](research--engineering--cold-start-industry.md) | Cold-start — how the field solves what we measured; Vercel's solution stack (2026-07-10) |

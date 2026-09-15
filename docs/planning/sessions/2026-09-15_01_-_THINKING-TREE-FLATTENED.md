@@ -43,6 +43,10 @@ Judgment calls made by Claude and accepted on "go": `record--` as a sixth regist
 - After merge: sync `main` → the `discovery` worktree (its Claude.ai write surface now includes the new folder).
 - Pass 2 is TASK-UNI-03 — seven items, each with a recommendation; item 1 (member-archetypes' grade) and item 2 (retire What-Fills-a-Life v1) are Stefan's.
 
+## Pass 2 — same day, after the merge of #657
+
+Stefan: "go but keep (create?) whisp.md, npcs.md, seasons-and-episodes.md, journeys.md, first-experience.md." Branch `docs/thinking-pass-2`. The five planned pages exist now as **scaffolds** — `canon--beings--whisp.md`, `canon--beings--npcs.md`, `canon--narrative--seasons-and-episodes.md`, `canon--narrative--journeys.md`, `canon--narrative--first-experience.md` — each with its scope carried verbatim from the parent core's table, pointers to where the substance lives today, and empty sections on purpose; no canon was written (the first-experience scaffold explicitly does not reopen the CQ-010 sequencing note). `what-fills-a-life-v1` and the rev1 docx retired (zero live references). The tracker's Sessions table was **kept**, not deleted — its Status cell is the only place Session 01's resume history lives. 12 index-landing sentences re-pointed to the precise register. Rulings and the one deviation are recorded in [`TASK-UNI-03`](../backlog/tasks/TASK-UNI-03-thinking-tree-content-consolidation.md).
+
 ## Open
 
 - The three kickoff decisions from the [front door](../cycles/cycle-current.md) are untouched by this session: the Eid appetite and first theme; leaked-password protection (Supabase Pro); the E2E smoke job's design.

@@ -15,7 +15,9 @@
 
 ---
 
-## Sessions
+## Session log
+
+*The [index](README.md) lists every discovery file; this table carries each session's **focus and resume history**, which the index does not.*
 
 | Session | Date | Focus | Status |
 |---------|------|-------|--------|
@@ -65,4 +67,4 @@ When a concept from these sessions reaches stable form and moves into canon — 
 | Mist identity lifecycle (renames the Shadow lifecycle; accretion, two-paths/one-consent-gate, presence/assessment ephemerality, Whisp-carried/cord-kept; "Shadow" reassigned to the place-3 menace) | Session 01 resume (S47-48) | [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md) (supersedes ADR-U027) | ADR | 2026-06-21 |
 | Governance by scope (Console, Universeers, DeusEx) | Session 01 (S29) + 2026-06-05 locks | [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md) | ADR | 2026-06-10 |
 
-**Not yet graduated — still open, no firm canonical home yet (do not treat as settled truth):** the rest of `narrative/` beyond respawn (content families, journey route types as universe canon), the first-hour / first experience, community formation / cold-start, and the Kickstarter / founding-moment design. These remain in discovery or as open questions ([`questions--ecosystem-open-questions.md`](questions--ecosystem-open-questions.md)) until a session crystallizes them.
+**Not yet graduated — still open, no firm canonical home yet (do not treat as settled truth):** the rest of the narrative core (`canon--narrative--*`) beyond respawn (content families, journey route types as universe canon), the first-hour / first experience, community formation / cold-start, and the Kickstarter / founding-moment design. These remain in discovery or as open questions ([`questions--ecosystem-open-questions.md`](questions--ecosystem-open-questions.md)) until a session crystallizes them.
