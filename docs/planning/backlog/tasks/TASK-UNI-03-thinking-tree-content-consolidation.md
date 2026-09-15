@@ -39,6 +39,7 @@ estimated_hours: 3
 | 5 | Left as records. | — |
 | 7 | 12 sentences re-pointed from the index to the precise register (`canon--*`, `canon--growth--*`, `discovery--*`, one to the specific research file); 14 left where the index is the right landing. Two of the 12 are in carve-out files (ADR-U044, `journeys/CLAUDE.md`) — path wording only. | yes |
 | 8 | Left — a correctly-worded historical note. | — |
+| 9 *(raised by Stefan mid-review)* | **The `canvas--` register dissolved.** Four app-side files → the `FringeIsland-canvas` repo (`15921fb`); `the-seam.pdf` → `docs/novel/` (a short story, self-declared non-canon); the two Gimbal images deleted — the app serves them from its data folder (byte-identical copies), the canvas repo refuses them by policy. Five registers remain. | yes |
 
 ## Done when
 

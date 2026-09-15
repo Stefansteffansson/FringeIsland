@@ -18,3 +18,4 @@ the novel is corrected forward.
 | `STORY-BIBLE.sv.md` | Swedish translation of the story bible (locked universe terms kept in English) |
 | `chapters/` | One markdown file per chapter (`00-prologue.md` … `37-epilogue.md`) |
 | `chapters-sv/` | Swedish translation of the manuscript, chapter by chapter (in progress) |
+| `the-seam.pdf` | "The Seam" — a short story set in the universe (Alexandria · Norrland · Stockholm), built on the 2026-07-24 Gimbal candidate material; self-declared non-canon, names, places and dates invented. Printed to PDF 2026-09-11; moved here from the thinking tree 2026-09-15 (TASK-UNI-03) |

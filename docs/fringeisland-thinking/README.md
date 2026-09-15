@@ -15,7 +15,7 @@
 ```
 <register>--<area>--<topic>.ext          canon, research, record
 <register>--<yyyy-mm-dd>--<topic>.ext    discovery (dated sessions)
-<register>--<topic>.ext                  questions, canvas
+<register>--<topic>.ext                  questions
 ```
 
 The first token says **what kind of thing this is**. The second token is **what you would scan for inside that register** — the area for canon and research, the date for discovery sessions. Sorted alphabetically, any file lister groups by register, then by area or date.
@@ -27,7 +27,6 @@ The first token says **what kind of thing this is**. The second token is **what 
 | `research--` | Reports and studies — what we learned from studying something. Areas: `growth` (human development, flourishing, facilitation), `worlds` (portals, parallel worlds), `method` (how a solo developer runs an ecosystem), `engineering`. | Informs canon, ADRs and specs; never becomes them. |
 | `record--` | Design records and snapshots produced by a session — the design lives here, the obligations land in the owning specs. | — |
 | `questions--` | The ecosystem open-questions (CQ) register. | Resolved questions move to the register's Resolved section; strategic direction → `../ecosystem/strategy/`; constitutional change → `VISION.md` / `MANIFESTO.md`. |
-| `canvas--` | What was kept from the discovery-canvas experiment (2026-09-11 to 2026-09-14). | Closed record. |
 
 ---
 
@@ -109,21 +108,6 @@ Cross-cutting design records produced by joint-design spikes — the design live
 |---|---|
 | [`record--breach-response-gdpr-art-33-34.md`](record--breach-response-gdpr-art-33-34.md) | Breach-response design (GDPR Art. 33/34) across all five verticals — detect → assess → clock → notify authority → notify members → record |
 | [`record--universe-to-spec-manifestation.md`](record--universe-to-spec-manifestation.md) | Snapshot map of how the canon and discovery concepts are (or aren't) realised as capabilities in the entity specifications; prioritised gaps |
-
----
-
-## canvas-- — the discovery-canvas experiment
-
-The hand-authored remnants of the discovery-canvas experiment (2026-09-11 to 2026-09-14) — the only material not re-derivable from the app repository. The app and its spec live in `FringeIsland-canvas`; the six commits are behind the tag `archive/discovery-canvas-2026-09-14`.
-
-| File | What it is |
-|---|---|
-| [`canvas--what-was-kept.md`](canvas--what-was-kept.md) | What was kept, what was deliberately not kept, a note on the tab names |
-| [`canvas--feedback-v0.4.md`](canvas--feedback-v0.4.md) | Stefan's Phase 1 first-use feedback — 23 items and bugs B1–B3, the source of spec decisions D31–D35 |
-| [`canvas--tab-taxonomy.md`](canvas--tab-taxonomy.md) | The 13-tab structure at revert |
-| [`canvas--the-seam.pdf`](canvas--the-seam.pdf) | The Seam (20 pp) |
-| [`canvas--gimbal-dusk.jpg`](canvas--gimbal-dusk.jpg) · [`canvas--gimbal-workshop.jpg`](canvas--gimbal-workshop.jpg) | The two Gimbal images |
-| [`canvas--mockup-dark-variant.png`](canvas--mockup-dark-variant.png) | A dark-canvas mockup variant matching nothing committed in either repo |
 
 ---
 
