@@ -9,7 +9,7 @@
 1. **Discovery worktree is canonical:** `D:\WebDev\GitHub\FringeIsland-discovery`, a permanent git worktree pinned to the long-lived `discovery` branch — the ONLY write surface for Claude.ai / Claude Desktop discovery sessions, writes confined to `docs/ecosystem/` by instruction (full worktree access accepted; the boundary is guarded convention + sweep gate, not a hard wall — Stefan's explicit call). Claude Code owns all git. Canonical text: AGENTS.md **"Discovery worktree (Claude.ai write surface)"** (merged in #236).
 2. **The sweep runs at every session boundary** (opener updated): commit dirty `docs/ecosystem/` files as `docs(discovery):` → merge `discovery` → `main` when ahead (routine fuller-auto; the branch is never deleted) → merge `main` back into `discovery` and push. Out-of-bounds dirty files are surfaced, never auto-committed.
 3. **Claude Desktop `fringeisland` filesystem MCP is now dual-root** (dev checkout + worktree). Claude.ai side split into two projects: **"FringeIsland"** (live-repo work, unchanged) and **"FringeIsland - Discovery"** (worktree, strict write instructions); three existing discovery chats moved over. Smoke test passed: both roots visible, writes correctly self-scoped.
-4. **First sweep executed:** whisp & universe foundations findings (+84 lines, `docs/ecosystem/thinking/`) merged to `main` via #237; `discovery` fast-forwarded to main and pushed.
+4. **First sweep executed:** whisp & universe foundations findings (+84 lines, `docs/fringeisland-thinking/README.md`) merged to `main` via #237; `discovery` fast-forwarded to main and pushed.
 
 ## Carry resolved from bridge 01
 

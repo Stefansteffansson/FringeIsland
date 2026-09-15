@@ -117,7 +117,7 @@ Use `OLD-UNIVERSE-REVIEW-PROMPT.md` (in docs/TMP/ or outputs) to kick off.
 Key facts:
 - ADR-U001 through ADR-U022 in `docs/old_universe/decisions/` — all active,
   all need migration to `docs/architecture/decisions/`
-- Research reports (Kegan, Theory U, What Fills a Life) — move to docs/research/
+- Research reports (Kegan, Theory U, What Fills a Life) — move to docs/fringeisland-thinking/README.md
 - MANIFESTO.md and VISION.md in old_universe/vision/ — already migrated,
   mark SUPERSEDED
 - DOMAIN_SERVICE_DEPENDENCIES.svg and ECOSYSTEM_ANATOMY_V2.svg in

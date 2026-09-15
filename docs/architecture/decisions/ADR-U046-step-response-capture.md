@@ -51,4 +51,4 @@ Ratified by Stefan, 2026-07-09 (all six board recommendations accepted):
 - ADR-U044 (step model; §4 step-instances as lived records) · ADR-U045 (onboarding journey — the Mist constraint) · ADR-U031 (ephemerality) · ADR-U026 (studios — authoring out of scope)
 - FEAT-PD001 (Journal primitive — FIM-only create; the rejected home) · FEAT-H010 (export seam) · FEAT-H011 (Journal surface)
 - DS-3 spec: [`docs/platform/domain/journeys.md`](../../platform/domain/journeys.md) (invariants 3, 4, 8)
-- Privacy canon: `docs/ecosystem/universe/personal-growth/privacy-model.md` (sharing model — garden vs journal)
+- Privacy canon: `docs/fringeisland-thinking/canon--growth--privacy-model.md` (sharing model — garden vs journal)

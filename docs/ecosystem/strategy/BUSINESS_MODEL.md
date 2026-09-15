@@ -58,8 +58,8 @@ Corporate sponsorship is deliberately excluded. The temptation will come as Frin
 
 ## Open questions
 
-- When must monetization work? → see [Open Questions CQ-005](../thinking/OPEN_QUESTIONS.md)
-- Foundation legal structure needed before Kickstarter → see [Open Questions CQ-006](../thinking/OPEN_QUESTIONS.md)
+- When must monetization work? → see [Open Questions CQ-005](../../fringeisland-thinking/questions--ecosystem-open-questions.md)
+- Foundation legal structure needed before Kickstarter → see [Open Questions CQ-006](../../fringeisland-thinking/questions--ecosystem-open-questions.md)
 - Content licensing model for marketplace → see [IP & Licensing](./IP_AND_LICENSING.md)
 
 ---

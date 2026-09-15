@@ -49,7 +49,7 @@ docs/
 └── TMP/                    ← UNTRACKED scratch (planning docs, will be moved/cleaned in Phase 4)
 ```
 
-**Untracked items in `docs/TMP/`:** `EXECUTION-PLAN-DOC-RESTRUCTURE.md`, `EXECUTION-PLAN-DOC-RESTRUCTURE_1.md`, `multi-product-ecosystem-management_2.md`, `Solo-Developers-Guide-to-Systematic-Web-Development.docx`, two `.docx` ecosystem mgmt files, `DOMAIN_SERVICE_DEPENDENCIES.svg`, `ECOSYSTEM_ANATOMY_V2.svg`, `The solo developer's complete guide to systematic web development.md`, `test`. **Decision needed in Phase 4:** which of these become `docs/research/`, which become `docs/architecture/`, which get archived.
+**Untracked items in `docs/TMP/`:** `EXECUTION-PLAN-DOC-RESTRUCTURE.md`, `EXECUTION-PLAN-DOC-RESTRUCTURE_1.md`, `multi-product-ecosystem-management_2.md`, `Solo-Developers-Guide-to-Systematic-Web-Development.docx`, two `.docx` ecosystem mgmt files, `DOMAIN_SERVICE_DEPENDENCIES.svg`, `ECOSYSTEM_ANATOMY_V2.svg`, `The solo developer's complete guide to systematic web development.md`, `test`. **Decision needed in Phase 4:** which of these become `docs/fringeisland-thinking/README.md`, which become `docs/architecture/`, which get archived.
 
 ---
 
@@ -68,7 +68,7 @@ Highlights inside `old_*`:
 - `old_universe/architecture/ARCHITECTURE_ANATOMY.md` + `ARCHITECTURE_ANATOMY_DIAGRAM.svg` + `DOMAIN_SERVICE_DEPENDENCIES.svg` + `ECOSYSTEM_ANATOMY_V2.svg`
 - `old_universe/vision/{VISION,MANIFESTO,VISION_DECISIONS}.md` — feed `docs/ecosystem/`
 - `old_universe/strategy/{PRODUCTS_AND_PLATFORM,CONTRIBUTION_ARCHITECTURE,OPEN_QUESTIONS}.md`
-- `old_universe/research/` — adult-development, human-flourishing, theory-u (3 dirs, 4 reports) → feeds `docs/research/`
+- `old_universe/research/` — adult-development, human-flourishing, theory-u (3 dirs, 4 reports) → feeds `docs/fringeisland-thinking/README.md`
 - `old_products/ferd/` — the bulk: 7 agent contexts + 7 journals, 17 feature docs (FR/AR/NF), 16 spec files, full sessions/ archive, planning study/, BOOT_UP/CLOSE_DOWN/WORKFLOW
 - `old_products/{eid,hamn,heim,brim,urd}/` — wave folders with `planning/study/*.md` (research notes per wave) and mostly `.gitkeep` placeholders elsewhere
 - `old_products/hamn/_archive/2026-04-06-wave2-content/` — 7 files (legacy Hamn-as-product content, archived during wave restructuring)

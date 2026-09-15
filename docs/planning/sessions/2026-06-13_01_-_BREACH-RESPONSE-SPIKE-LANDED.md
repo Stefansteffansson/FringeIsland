@@ -5,7 +5,7 @@
 
 ## What the spike produced
 
-The end-to-end breach-response story no single spec held before — **detect -> assess -> clock -> notify authority -> notify members -> record** — designed once, jointly, with each piece landed back in its owning vertical spec. The design record lives at [`docs/research/breach-response-design.md`](../../research/breach-response-design.md); the obligations live in the specs. The report cites; it does not supersede.
+The end-to-end breach-response story no single spec held before — **detect -> assess -> clock -> notify authority -> notify members -> record** — designed once, jointly, with each piece landed back in its owning vertical spec. The design record lives at [`docs/fringeisland-thinking/record--breach-response-gdpr-art-33-34.md`](../../fringeisland-thinking/record--breach-response-gdpr-art-33-34.md); the obligations live in the specs. The report cites; it does not supersede.
 
 ## How the session ran
 
@@ -30,7 +30,7 @@ The five input holdings were disk-verified against the brief's citations before 
 
 ## Deliverables landed
 
-- **Design record (new):** [`docs/research/breach-response-design.md`](../../research/breach-response-design.md) — spine, jurisdiction, roles, becoming-aware, rubric, both notification paths, vendor path, register schema, on-call posture, landing record, open seams. Indexed in `docs/research/README.md` (new "Design records" section).
+- **Design record (new):** [`docs/fringeisland-thinking/record--breach-response-gdpr-art-33-34.md`](../../fringeisland-thinking/record--breach-response-gdpr-art-33-34.md) — spine, jurisdiction, roles, becoming-aware, rubric, both notification paths, vendor path, register schema, on-call posture, landing record, open seams. Indexed in `docs/fringeisland-thinking/README.md` (new "Design records" section).
 - **Four spec advances** (each appended in place to its existing open question, following the dated-decision convention):
   - V2 Privacy §5 Q5 — **Resolved**.
   - V1 Administration §5 Q5 — **Resolved**.
@@ -61,6 +61,6 @@ Sessions append-only. ASCII-only labels held. No new ADR; no ADR amendment. The 
 
 ## Repo state at session close
 
-- Four spec files advanced in place (V1/V2/V3/V4 §5/§6); `docs/research/breach-response-design.md` created; `docs/research/README.md` indexed.
+- Four spec files advanced in place (V1/V2/V3/V4 §5/§6); `docs/fringeisland-thinking/record--breach-response-gdpr-art-33-34.md` created; `docs/fringeisland-thinking/README.md` indexed.
 - Brief archived to `openers/archive/`; report brief-link re-pointed to the archived path.
 - this commit — closing bridge + STATUS.md revision-log entry (no Next designation).

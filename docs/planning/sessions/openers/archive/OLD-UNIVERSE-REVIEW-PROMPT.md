@@ -13,7 +13,7 @@ The new ecosystem documentation tree lives in:
 - `docs/architecture/decisions/` — ADRs (pending migration)
 - `docs/verticals/` — five cross-cutting verticals
 - `docs/templates/` — all document templates
-- `docs/research/` — research reports
+- `docs/fringeisland-thinking/README.md` — research reports
 
 The old documentation lives in `docs/old_universe/`. This session's job is to:
 1. Review every file in `docs/old_universe/`
@@ -34,7 +34,7 @@ For each file, state:
   - `MIGRATE` — valuable content not captured in new tree, needs a home
   - `SUPERSEDED` — content exists in better form in new tree, safe to delete
   - `ADR-MIGRATE` — is an ADR, migrate to `docs/architecture/decisions/`
-  - `RESEARCH-KEEP` — research content, move to `docs/research/`
+  - `RESEARCH-KEEP` — research content, move to `docs/fringeisland-thinking/README.md`
   - `DELETE` — no value, safe to delete
 - **Migration target** — if MIGRATE or ADR-MIGRATE, where should it go?
 
@@ -66,7 +66,7 @@ Once Stefan confirms the assessment (possibly with modifications):
 1. Migrate ADRs to `docs/architecture/decisions/`
    - Update `docs/architecture/decisions/README.md` with the full ADR index
 2. Migrate any MIGRATE files to their confirmed destinations
-3. Move RESEARCH-KEEP files to `docs/research/` if not already there
+3. Move RESEARCH-KEEP files to `docs/fringeisland-thinking/README.md` if not already there
 4. Delete all SUPERSEDED and DELETE files
 5. Delete `docs/old_universe/` if empty after migration
 6. Update `docs/architecture/decisions/README.md` to list all migrated ADRs
@@ -104,7 +104,7 @@ Before starting the assessment, read these to understand the new structure:
   by V3 in `docs/planning/reference/` — mark as SUPERSEDED.
 - Research reports in `docs/old_universe/research/` (Kegan, Theory U,
   What Fills a Life) are valuable for Dreamineer/content design work
-  and should move to `docs/research/`.
+  and should move to `docs/fringeisland-thinking/README.md`.
 
 ---
 

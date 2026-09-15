@@ -83,12 +83,13 @@ The Anthropic computer-use tools have legitimate uses for sandbox-side analysis,
 
 `D:\WebDev\GitHub\FringeIsland-discovery` is a permanent git worktree of this repo, pinned to the long-lived `discovery` branch. It exists so Claude.ai / Claude Desktop discovery sessions and Claude Code development never write into the same checkout.
 
-- **Discovery sessions (Claude.ai / Claude Desktop):** write only in the worktree, and only under `docs/ecosystem/`. Never run git there; never write to the main checkout at `D:\WebDev\GitHub\FringeIsland`.
+- **Discovery sessions (Claude.ai / Claude Desktop):** write only in the worktree, and only under `docs/ecosystem/` or `docs/fringeisland-thinking/`. Never run git there; never write to the main checkout at `D:\WebDev\GitHub\FringeIsland`.
 - **Claude Code owns all git for `discovery`.** The sweep — run at session start and again in the close ritual:
-  1. In the worktree: commit any dirty files under `docs/ecosystem/` as `docs(discovery): ...` and push.
-  2. If `discovery` is ahead of `main`: open a PR `discovery` → `main` and merge it (docs-only under `docs/ecosystem/` is routine → fuller-auto; **never delete the `discovery` branch**).
+  1. In the worktree: commit any dirty files under `docs/ecosystem/` or `docs/fringeisland-thinking/` as `docs(discovery): ...` and push.
+  2. If `discovery` is ahead of `main`: open a PR `discovery` → `main` and merge it (docs-only under those two trees is routine → fuller-auto; **never delete the `discovery` branch**).
   3. Sync back: merge `main` into `discovery` and push, so discovery sessions always see current ecosystem docs.
-- **Anomalies — surface to Stefan, don't auto-commit:** a dirty file outside `docs/ecosystem/` in the worktree; the worktree checked out on anything other than `discovery`; unexplained dirty `docs/ecosystem/` files in the main checkout (suspect a mispointed Claude.ai session).
+- **Anomalies — surface to Stefan, don't auto-commit:** a dirty file outside `docs/ecosystem/` and `docs/fringeisland-thinking/` in the worktree; the worktree checked out on anything other than `discovery`; unexplained dirty `docs/ecosystem/` or `docs/fringeisland-thinking/` files in the main checkout (suspect a mispointed Claude.ai session).
+- **New files in `docs/fringeisland-thinking/` follow its naming convention** — `<register>--<area>--<topic>.md`, one level deep, no sub-directories (the folder's README explains the six registers). A discovery session lands as `discovery--<yyyy-mm-dd>--<topic>.md`; a crystallised concept becomes a `canon--` file **and** a row in `discovery--tracker-and-backlog.md`.
 - Feature commits in the main checkout must never bundle discovery-tree edits.
 
 ## Boundaries

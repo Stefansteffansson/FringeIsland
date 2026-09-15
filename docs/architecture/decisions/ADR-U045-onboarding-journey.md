@@ -53,4 +53,4 @@ This refines §3's wording; it does not reopen §1/§2/§4/§5. The auto-launch,
 - J-E decomposition (this amendment's origin): [`FEAT-PD006`](../../platform/domain/features/FEAT-PD006-onboarding-designation-and-arrival-contracts.md) ↔ [`FEAT-H023`](../../products/hub/features/FEAT-H023-onboarding-arrival-and-carry-over.md)
 - DS-3 spec: [`docs/platform/domain/journeys.md`](../../platform/domain/journeys.md) (§8 Q2 — resolved to this ADR in the same batch; invariant 3)
 - ADR-U031 (Mist lifecycle + ephemerality) · ADR-U034 (transcendence consent) · ADR-U044 (step model — the placeholder journey's structure)
-- Historical record: `docs/planning/waves/studies/ferd/journeys.md` (Journey Zero); `docs/ecosystem/thinking/OPEN_QUESTIONS.md` CQ-010 (first-experience gap — content, not mechanics)
+- Historical record: `docs/planning/waves/studies/ferd/journeys.md` (Journey Zero); `docs/fringeisland-thinking/questions--ecosystem-open-questions.md` CQ-010 (first-experience gap — content, not mechanics)

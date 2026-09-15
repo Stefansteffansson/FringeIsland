@@ -89,7 +89,7 @@ The 2026-04-22 session rebuilt the `ecosystem-decomposition` skill around explic
 **G-09 — Refinement ritual undocumented.**
 Maturity levels 0→1→2→3→4 are named. The activity that produces the transitions is not. Is it a recurring meeting? A solo shaping session? A back-and-forth with Claude? The canonical skill describes artifacts at each level; it doesn't describe how to actually refine one into the next.
 
-*Proposed fix:* extend `ecosystem-decomposition` skill with a "refinement" section — the activity patterns for each transition. Probably: 0→1 is a solo pause to articulate the problem; 1→2 is research (a spike or a research doc under `docs/research/`); 2→3 is story writing with Given/When/Then; 3→4 is DoR pass with Stefan as product owner.
+*Proposed fix:* extend `ecosystem-decomposition` skill with a "refinement" section — the activity patterns for each transition. Probably: 0→1 is a solo pause to articulate the problem; 1→2 is research (a spike or a research doc under `docs/fringeisland-thinking/research--*`); 2→3 is story writing with Given/When/Then; 3→4 is DoR pass with Stefan as product owner.
 
 **G-10 — Board mechanic unchosen.**
 Six-column kanban board depicted on the execution axis. No document says where that board physically lives. GitHub Projects? Linear? A markdown table? A query over YAML frontmatter? PROCESS.md §3 names the WIP limit without specifying the artifact.
@@ -117,7 +117,7 @@ No branching strategy. No commit cadence beyond "conventional commits". No PR sh
 *Proposed fix:* add a level-0 section to `ecosystem-decomposition` skill describing capture (where does a raw idea land? `OPEN_QUESTIONS.md`? a lightweight `FEAT-*.md` at maturity 0? Both?), articulation (how does it become maturity 1?), and exploration (how does it become maturity 2? spike ticket? research document? short investigation session?).
 
 **G-18 — Research pathway under-specified.**
-Three research mechanisms exist in the system but are not unified or connected to the backlog: (1) maturity 2-explored is described as a research stage on a feature spec; (2) `spike` is listed as a work-item type with a template at `docs/templates/research-spike.md`, defined as time-boxed research producing findings + follow-up items; (3) `docs/research/` holds long-form research reports that inform strategic and architectural decisions (e.g. the two reports that shaped PROCESS.md itself).
+Three research mechanisms exist in the system but are not unified or connected to the backlog: (1) maturity 2-explored is described as a research stage on a feature spec; (2) `spike` is listed as a work-item type with a template at `docs/templates/research-spike.md`, defined as time-boxed research producing findings + follow-up items; (3) `docs/fringeisland-thinking/research--*` holds long-form research reports that inform strategic and architectural decisions (e.g. the two reports that shaped PROCESS.md itself).
 
 What's missing is the connective tissue. When does a question warrant a spike versus a research report? How do spike findings flow back into affected feature specs? How do research-report conclusions become ADRs, skill updates, or new features? When a spike produces follow-up items, how do they enter the backlog at the right maturity level with the right context preserved? This gap is related to but distinct from G-14: G-14 is about ideas entering the system; G-18 is about ideas being validated before they become commitments.
 

@@ -115,7 +115,7 @@ Vercel deprecated standalone Edge Functions (June 2025); Edge-runtime functions 
 
 ### What changed since the addendum
 
-The addendum's evidence base moved twice within 24 hours ([analysis §7](../../planning/hub-v2/2026-07-09-cold-load-regression-analysis.md), [industry research](../../research/2026-07-10-cold-start-industry-research.md)):
+The addendum's evidence base moved twice within 24 hours ([analysis §7](../../planning/hub-v2/2026-07-09-cold-load-regression-analysis.md), [industry research](../../fringeisland-thinking/research--engineering--cold-start-industry.md)):
 
 1. **Provisioning is per-instance, not per-environment.** The addendum's operational fix ("the keep-warm pinger holds the environment provisioned") did not survive measurement: a live 4-way concurrent `/journeys` boot drew three fresh ~4–5 s boots two minutes after the environment was provisioned (656 / 4 846 / 3 643 / 4 876 ms), and the L2′ experiment showed a 60-second-old warm pool missing 2/4 of a real fan-out (3 842 / 5 219 ms). A ping warms one instance; concurrency defeats it. **Pinging was retired as a strategy (2026-07-10);** the GitHub Actions workflow — which also underdelivered on cadence (10 fires in ~23 h against `*/5`) — was disabled 09:19 UTC and is **removed from the repo with this amendment**.
 2. **Vercel has deprecated the Edge runtime** and recommends migrating edge → Node "for improved performance"; Fluid's in-instance concurrency — the mitigation matched to exactly our measured fan-out failure mode — is Node-only.

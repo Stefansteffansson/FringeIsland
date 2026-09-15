@@ -5,7 +5,7 @@ Continue the FringeIsland reconciliation. This is Session B - the challenge.
      - the Session A map (committed b90baf1). This is your INPUT: the concept->where
        map, the 3-bucket gap list, the canonical-description finding, the proposed
        unified role model (section 3A), and the "Handoff to Session B" section.
-  2. docs/ecosystem/thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md
+  2. docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md
      - the yardstick: Statements 1-46 + the 2026-06-05 product/ecosystem design locks.
   3. docs/planning/sessions/2026-06-05_01_-_PRODUCT-ECOSYSTEM-LAYER-AND-RECONCILIATION-BRIDGE.md
      - the pipeline framing (Session A -> Session B).

@@ -82,7 +82,7 @@ The 9-cell matrix is not a curriculum. It is a **structural description of the d
 
 - **Journey designers** can ensure coverage across perspectives, not just individual reflection
 - **The Whisp** can orient its responses to the perspective the FIM is currently engaging
-- **The collapse structure** maps directly: the individual column can be collapsed alone; the relational and communal columns require others (see [engagement-spectrum.md](./engagement-spectrum.md))
+- **The collapse structure** maps directly: the individual column can be collapsed alone; the relational and communal columns require others (see [engagement-spectrum.md](canon--growth--engagement-spectrum.md))
 - **Seasons and episodes** can be structured to move FIMs across perspectives naturally over time
 
 ---
@@ -98,8 +98,8 @@ The three questions draw on a broad research base woven into the experience laye
 - Belonging and connection: Baumeister & Leary, attachment theory, Harvard Study of Adult Development
 - Self-efficacy: Bandura
 
-→ *See [research/](../../../research/) for full research reports.*
+→ *See [research/](README.md) for full research reports.*
 
 ---
 
-*See [engagement-spectrum.md](./engagement-spectrum.md) for how members engage across the spectrum. The Void is defined in the [cosmology core](../cosmology/README.md) — the axis of separation along the cord; the once-planned `void-dimensions.md` (three-dimensional void) is superseded and will not be written.*
+*See [engagement-spectrum.md](canon--growth--engagement-spectrum.md) for how members engage across the spectrum. The Void is defined in the [cosmology core](canon--cosmology--worlds-topology.md) — the axis of separation along the cord; the once-planned `void-dimensions.md` (three-dimensional void) is superseded and will not be written.*

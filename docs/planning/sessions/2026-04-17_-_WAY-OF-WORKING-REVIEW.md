@@ -603,7 +603,7 @@ Mechanical changes. Can be done in a single focused session or batched. No strat
 
 **T1.4 — Rewrite PROCESS.md Quick Reference section**
 
-- "Where do I put a new idea?" → create a feature spec at maturity 0-raw in the owner's features directory, OR park it in `ecosystem/thinking/OPEN_QUESTIONS.md` if ownership is unclear.
+- "Where do I put a new idea?" → create a feature spec at maturity 0-raw in the owner's features directory, OR park it in `fringeisland-thinking/questions--ecosystem-open-questions.md` if ownership is unclear.
 - "Where do I write a feature spec?" → `docs/{owner}/features/FEAT-{PREFIX}{NNN}-{slug}.md`, using `feature-spec.md`.
 - Remove `prds/prd-{slug}.md` references.
 - "Where do I park something?" → add `parked: true` + `parked_reason` to the feature spec frontmatter.

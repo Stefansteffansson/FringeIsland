@@ -4,7 +4,7 @@
 **Type:** Session snapshot (generate-on-demand; NOT a maintained state-doc). A point-in-time map.
 **Run shape:** CC-run end-to-end (repo tree + term-grep + a 10-cluster per-file conformance sweep
 by subagents); Stefan ratifies the judgment calls.
-**Input / yardstick:** `docs/ecosystem/thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md`
+**Input / yardstick:** `docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md`
 (Statements 1-46 + the 2026-06-05 product/ecosystem design locks).
 **Precedence (hard):** the universe-discovery work is the SINGLE SOURCE OF TRUTH. This session
 INVENTORIES and CLASSIFIES the repo against it - it does not edit canon or code. Where a file
@@ -117,7 +117,7 @@ root-context. Relationship: =OK (faithful home) | ~stale | !contradicts | (silen
 | **Whole code** | **carries NO universe-fiction vocabulary; implements only the platform substrate. It does not contradict the affordance/Game-as-depth locks - it predates them.** | - |
 
 ### E. Reference tier (evidence base, not conformance-classified)
-`docs/research/` (Portal_Fantasy, Parallel_Worlds, What_Fills_a_Life v1/v2, Kegan_ITC, Theory_U)
+`docs/fringeisland-thinking/README.md` (Portal_Fantasy, Parallel_Worlds, What_Fills_a_Life v1/v2, Kegan_ITC, Theory_U)
 and the discovery siblings (onboarding-summary, portal-ideas-from-research) - inputs that FEED
 the discovery; they inform canon, they do not assert "what FringeIsland is".
 

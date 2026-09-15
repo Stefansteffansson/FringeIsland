@@ -1,7 +1,7 @@
 # Mist reconciliation register (Shadow -> Mist rename + re-scope)
 
 **Authored:** 2026-06-21 (Step 1 audit, read-only). **Brief:** [`docs/planning/sessions/openers/mist-reconciliation-brief.md`](../sessions/openers/mist-reconciliation-brief.md).
-**Authority:** discovery Statements 47-48 (`docs/ecosystem/thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md`, commit `28cc770`). Discovery outranks every other artifact; on conflict, the artifact is corrected to match the discovery, never the reverse.
+**Authority:** discovery Statements 47-48 (`docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md`, commit `28cc770`). Discovery outranks every other artifact; on conflict, the artifact is corrected to match the discovery, never the reverse.
 **Status:** **STEP 1 RATIFIED by Stefan 2026-06-21.** Inventory approved; decisions A-F ruled (see foot). Step 2 (rectify) in progress, keystone first. AMBIGUOUS items that surface mid-rectification stay open for Stefan.
 
 This register IS the worklist. Each cluster carries a completion checkbox; AMBIGUOUS items stay open for Stefan.
@@ -57,12 +57,12 @@ These are accepted (not superseded) ADR bodies. Recommended treatment: **pointer
 
 > **CLUSTER 2 COMPLETE (2026-06-21).** All 10 files dispositioned. Verified by git grep: the only "Shadow" remaining in these files is the **intentional place-3-menace introduction** (cosmology README + its statement index) and **provenance/retired-names notes** (roles core; privacy-model status line). No stray entrant-sense "Shadow" remains. Cosmology points "Shadow" at the place-3 menace via a **pointer + open-clause** (Stefan, 2026-06-21): the rename's job (the word now points at place 3, not newcomers) is done, but the Shadow's **nature - force / entity / class - is left OPEN**, deferred to the dark-origin mythology work. No characterization is committed in this rename pass. See "Named open items" below.
 
-- [ ] **`docs/ecosystem/universe/roles/README.md`** (4: L0 line :20, Shadow def :33, transcendence :39, retired-names Visitor->Shadow :125) - **RENAME + NEEDS-MECHANICS.** Keystone-canonical: rewrite the Shadow definition as the **Mist** (hyaline, accretion, two paths/one gate, Whisp carried from start); change retired-names **Visitor -> Mist**; ADD a canonical entry for **Shadow = place-3 menace** and a retired-name note that old-sense "Shadow (anonymous entrant)" -> Mist.
-- [ ] **`docs/ecosystem/universe/cosmology/README.md`** (7: :57,:105,:142,:178,:181,:182,:218) - **RENAME + NEEDS-MECHANICS.** Access table + "no ball" rows -> Mist. This is also where place-3 lives: **make the place-3-menace "Shadow" sense explicit** (KEEP-target now populated).
-- [ ] `docs/ecosystem/universe/beings/README.md:22` - "everyone has one, Shadow or FIM" -> Mist or FIM. RENAME.
-- [ ] `docs/ecosystem/universe/community/README.md:18` - identity states Shadow/FIM -> Mist/FIM. RENAME.
-- [ ] **`docs/ecosystem/universe/personal-growth/privacy-model.md`** (2: :55 + status :3) - **RENAME + NEEDS-MECHANICS** (ephemerality now extends to assessment + presence layers; "no trait-profile pre-consent").
-- [ ] `docs/ecosystem/universe/README.md:42` - roles-tier description -> Mist. RENAME.
+- [ ] **`docs/fringeisland-thinking/canon--roles--taxonomy.md`** (4: L0 line :20, Shadow def :33, transcendence :39, retired-names Visitor->Shadow :125) - **RENAME + NEEDS-MECHANICS.** Keystone-canonical: rewrite the Shadow definition as the **Mist** (hyaline, accretion, two paths/one gate, Whisp carried from start); change retired-names **Visitor -> Mist**; ADD a canonical entry for **Shadow = place-3 menace** and a retired-name note that old-sense "Shadow (anonymous entrant)" -> Mist.
+- [ ] **`docs/fringeisland-thinking/canon--cosmology--worlds-topology.md`** (7: :57,:105,:142,:178,:181,:182,:218) - **RENAME + NEEDS-MECHANICS.** Access table + "no ball" rows -> Mist. This is also where place-3 lives: **make the place-3-menace "Shadow" sense explicit** (KEEP-target now populated).
+- [ ] `docs/fringeisland-thinking/canon--beings--whisp-and-npcs.md:22` - "everyone has one, Shadow or FIM" -> Mist or FIM. RENAME.
+- [ ] `docs/fringeisland-thinking/README.md:18` - identity states Shadow/FIM -> Mist/FIM. RENAME.
+- [ ] **`docs/fringeisland-thinking/canon--growth--privacy-model.md`** (2: :55 + status :3) - **RENAME + NEEDS-MECHANICS** (ephemerality now extends to assessment + presence layers; "no trait-profile pre-consent").
+- [ ] `docs/fringeisland-thinking/README.md:42` - roles-tier description -> Mist. RENAME.
 - [ ] **`docs/ecosystem/VISION.md:39`** (constitutional) - "Entrants begin as **Shadows** ... may **transcend**" -> Mist + metamorphosis/transcendence per decision A. **RENAME + NEEDS-MECHANICS; constitutional - careful edit.**
 - [ ] **`docs/ecosystem/strategy/CONTRIBUTION_ARCHITECTURE.md`** (12: "Group 0 - Shadows" :23 + :24,:26,:28,:52,:62,:72,:82,:92,:101,:103,:105) - **RENAME + NEEDS-MECHANICS** (the whole Group-0 section models the tier; "move through ... like a shadow" prose needs rewording so the figure-noun and the simile don't collide).
 - [ ] `docs/ecosystem/strategy/PRODUCTS_AND_PLATFORM.md:162` - "Shadow experience" -> Mist. RENAME.
@@ -144,7 +144,7 @@ Mechanically uniform: noun swap **Shadow -> Mist** and cross-ref **ADR-U027 -> A
 - [ ] `docs/planning/waves/FERD-CAPABILITY-MAP.md:7` - terminology note "'visitor' reads as Shadow" -> Mist. RENAME.
 - [ ] `docs/planning/reference/ADMIN-DEUSEX-GAP-ANALYSIS.md:171` - "Shadow/visitor account management" -> Mist. RENAME (light).
 - [ ] `docs/planning/reference/legacy-feature-docs/README.md:15` - "read ... as Shadow" -> Mist. RENAME (light; reference snapshot - leave its referenced legacy bodies).
-- [ ] `docs/ecosystem/thinking/OPEN_QUESTIONS.md:131` - the 2026-06-10 note narrowing the visitor question -> Mist + U031. RENAME + NEEDS-MECHANICS (light).
+- [ ] `docs/fringeisland-thinking/questions--ecosystem-open-questions.md:131` - the 2026-06-10 note narrowing the visitor question -> Mist + U031. RENAME + NEEDS-MECHANICS (light).
 
 ---
 

@@ -2,11 +2,11 @@
 
 **Status:** Canonical. Rewritten in reconciliation Session B (2026-06-10) from the
 universe-discovery work, which is the single source of truth
-(`../../thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md`; statements
+(`discovery--2026-05-18--universe-session-01.md`; statements
 cited as S-numbers).
 **Covers:** the Whisp and the NPCs. Roles (FIM modes, Dreamineer specialisations, the enterprise
-plane) live in the [roles core](../roles/); the worlds the beings inhabit live in the
-[cosmology core](../cosmology/).
+plane) live in the [roles core](canon--roles--taxonomy.md); the worlds the beings inhabit live in the
+[cosmology core](canon--cosmology--worlds-topology.md).
 
 ---
 
@@ -63,7 +63,7 @@ painstakingly-filled projection of themselves.
 
 Two framings, one entity: the **inner dialogue** (the Whisp's relationship to the FIM's interior)
 and the **avatar** (the Whisp's role in the parallel world). Both true; two angles on the same
-being. The cord, the Void, anchoring, and severance live in the [cosmology core](../cosmology/).
+being. The cord, the Void, anchoring, and severance live in the [cosmology core](canon--cosmology--worlds-topology.md).
 
 ### Internalised by design
 
@@ -104,7 +104,7 @@ open thread (S30).
 
 Dreamineers and their specialisations (Creator, Anthropologist, Teller, Wayfinder) are **modes a
 FIM occupies**, not world-inhabitants of a separate kind — they are defined in the
-[roles core](../roles/). The earlier in-world creative-role names **Makers, Weavers, and Skalds
+[roles core](canon--roles--taxonomy.md). The earlier in-world creative-role names **Makers, Weavers, and Skalds
 are retired** (ratified 2026-06-10); how Dreamineers manifest *within* the narrative (rather than
 behind it) remains an open design thread.
 

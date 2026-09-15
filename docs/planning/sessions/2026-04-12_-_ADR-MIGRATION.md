@@ -90,8 +90,8 @@ First ADR written in the full MADR template format. All future ADRs follow this 
 
 | File | Location | What's needed |
 |------|----------|---------------|
-| OLD_VISION.md | docs/ecosystem/thinking/ | Extract unique content not already in VISION.md |
-| OLD_VISION_DECISIONS.md | docs/ecosystem/thinking/ | Review for unique content |
+| OLD_VISION.md | docs/fringeisland-thinking/README.md | Extract unique content not already in VISION.md |
+| OLD_VISION_DECISIONS.md | docs/fringeisland-thinking/README.md | Review for unique content |
 | DEFERRAL_PROTOCOL.md | docs/planning/ | Challenge what to bring into new way of working |
 | PLANNING_PROTOCOL.md | docs/planning/ | Challenge what to bring into new way of working |
 
@@ -99,7 +99,7 @@ First ADR written in the full MADR template format. All future ADRs follow this 
 
 - PRODUCTS_AND_PLATFORM.md — needs review and update (docs/ecosystem/strategy/)
 - CONTRIBUTION_ARCHITECTURE.md — needs review and update (docs/ecosystem/strategy/)
-- COMMUNITY_OPEN_QUESTIONS.md — triage all 9 questions (docs/ecosystem/thinking/)
+- COMMUNITY_OPEN_QUESTIONS.md — triage all 9 questions (docs/fringeisland-thinking/README.md)
 - PROCESS.md — needs Shape Up mechanisms (redefine cycles, add appetite/betting table/cooldown/circuit breaker)
 - 32 files reference deleted SPRINT.md
 - Level 4 retroactive feature specs (36 specs)

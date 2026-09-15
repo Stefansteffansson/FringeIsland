@@ -3,7 +3,7 @@
 > **SUPERSEDED-MODEL NOTICE (2026-06-10, reconciliation Session B).** This is a temporal
 > planning record, preserved as written. The device-product framing it describes has since
 > been superseded by the canonical cores and ADRs: see
-> `docs/ecosystem/universe/cosmology/README.md`, `docs/ecosystem/universe/roles/README.md`,
+> `docs/fringeisland-thinking/canon--cosmology--worlds-topology.md`, `docs/fringeisland-thinking/canon--roles--taxonomy.md`,
 > ADR-U025 (products as equipment profiles; the Game is depth), and ADR-U026 (Universe Studio
 > as parent; World Studio). Where this file conflicts with those, they win.
 

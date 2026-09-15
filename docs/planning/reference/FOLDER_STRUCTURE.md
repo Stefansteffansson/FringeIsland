@@ -429,7 +429,7 @@
 - `docs/products/gimbal/ios/README.md`
 - `docs/products/hub/README.md`
 - `docs/products/hub/features/README.md`
-- `docs/research/README.md`
+- `docs/fringeisland-thinking/README.md`
 - `docs/studios/README.md`
 - `docs/studios/arc-designer/README.md`
 - `docs/studios/arc-designer/features/README.md`

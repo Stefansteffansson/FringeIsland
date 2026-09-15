@@ -159,7 +159,7 @@ Added a Session A block to `[Unreleased]` documenting all of the above in Keep-a
 - **Session files under `docs/planning/sessions/`** — historical records; never rewrite (per PROCESS.md discipline).
 - **Retrospective files** — historical records; don't retouch past retros.
 - **`docs/old_universe/`, `docs/old_products/`, `docs/old_implementation/`** — confirmed deleted; nothing to touch.
-- **Research reports under `docs/research/`** — out of scope.
+- **Research reports under `docs/fringeisland-thinking/README.md`** — out of scope.
 - **`PLATFORM-EXIT-GAP-ANALYSIS.md`** — reference snapshot under `docs/planning/reference/`, still carries "Phase 3 / Phase 4" language. CC correctly flagged and left unfixed: reference snapshots are point-in-time records, not living documents. If the snapshot is ever refreshed, the phase language gets updated then.
 - **`FERD-CAPABILITY-MAP.md:271`** — cites "Binding rule (REQUIREMENTS.md, 2026-04-05)"; CC classified as historical provenance, not a directive. Left as-is.
 - **Feature specs (FEAT-*.md)** — none exist yet in the active ecosystem tree under Model A; Section 5 of the skill will become relevant when the first is specified. No action required now.
@@ -330,7 +330,7 @@ If this bridge has been uploaded to you fresh, proceed as follows:
 8. **Proactively use the tier CLAUDE.md file** for whatever tier the stub's owner lives in (e.g., reading `docs/products/CLAUDE.md` when generating Hub feature stubs). The files you wrote in Session A are now the canonical guidance for working inside each tier.
 
 9. **Anticipated open questions during stub generation:**
-   - Some capabilities in the map will have unclear ownership. Default behaviour: put them under `docs/ecosystem/thinking/OPEN_QUESTIONS.md` as candidate features awaiting ownership, rather than forcing them into a tier.
+   - Some capabilities in the map will have unclear ownership. Default behaviour: put them under `docs/fringeisland-thinking/questions--ecosystem-open-questions.md` as candidate features awaiting ownership, rather than forcing them into a tier.
    - Some capabilities will already be partially implemented (code exists; spec does not). Write the stub as a retroactive-documentation feature spec, following the "retroactive documentation mode" locked on 2026-04-11 (Solution sketch / Appetite / Rabbit holes replaced by `## Implementation notes`).
 
 Confirm briefly that you understand the next-session instructions, note any of the above that's ambiguous, and wait for Stefan's go-ahead before starting generation.

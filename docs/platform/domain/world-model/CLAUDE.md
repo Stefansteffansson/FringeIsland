@@ -8,7 +8,7 @@
 
 ## What makes this entity different
 
-DS-1 owns the **state of the created universe** and sits at the **bottom of the Domain dependency order**: it depends on no other Domain Service, and the other six all consume it. Its ground truth is not a product decision or an API contract — it is the cosmology core ([`docs/ecosystem/universe/cosmology/README.md`](../../../ecosystem/universe/cosmology/README.md)). When a DS-1 question feels open, the answer is usually already in that core; check it before designing.
+DS-1 owns the **state of the created universe** and sits at the **bottom of the Domain dependency order**: it depends on no other Domain Service, and the other six all consume it. Its ground truth is not a product decision or an API contract — it is the cosmology core ([`docs/fringeisland-thinking/canon--cosmology--worlds-topology.md`](../../../fringeisland-thinking/canon--cosmology--worlds-topology.md)). When a DS-1 question feels open, the answer is usually already in that core; check it before designing.
 
 ## Rules that only apply at this entity
 

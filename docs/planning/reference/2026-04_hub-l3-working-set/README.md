@@ -19,6 +19,6 @@ absorbed, current content. These files are evidence of the derivation, not input
 **Read-through caveat:** the whole set predates the reconciliation (Session B, 2026-06-10) and
 carries the superseded model throughout — Three Worlds / Safe Harbour / The Other Side,
 Whisp-as-future-self, "visitor" identity. The canonical cores
-(`docs/ecosystem/universe/cosmology/README.md`, `roles/README.md`, `beings/README.md`) win
+(`docs/fringeisland-thinking/canon--cosmology--worlds-topology.md`, `roles/README.md`, `beings/README.md`) win
 wherever they conflict. Do NOT use this set as derivation input; DS-1 derives from the cosmology
 core and the Session B register.

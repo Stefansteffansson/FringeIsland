@@ -65,6 +65,6 @@ Full plan: [`docs/planning/hub-v2/README.md`](../../planning/hub-v2/README.md).
 ## Links
 
 - Plan: [`docs/planning/hub-v2/README.md`](../../planning/hub-v2/README.md)
-- Closes: CQ-015 (Hub Rebuild-vs-Evolve) in [`docs/ecosystem/thinking/OPEN_QUESTIONS.md`](../../ecosystem/thinking/OPEN_QUESTIONS.md)
+- Closes: CQ-015 (Hub Rebuild-vs-Evolve) in [`docs/fringeisland-thinking/questions--ecosystem-open-questions.md`](../../fringeisland-thinking/questions--ecosystem-open-questions.md)
 - Related ADRs: U009 (API-first), U012 (observability), U023 (Platform Core / Domain Services decomposition), U025 (products as equipment profiles)
 - Process: the build-informed spec-evolution loop, [`docs/planning/PROCESS.md`](../../planning/PROCESS.md) §9

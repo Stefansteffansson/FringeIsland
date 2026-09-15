@@ -17,7 +17,7 @@ Members engage with FringeIsland along a natural spectrum. No one position is mo
 
 **Explorer** — deep in narrative arcs, seasonal episodes, quests, group dynamics, community contribution, world-building. Living in FringeIsland as a genuine second world. Explorers naturally engage the relational and communal perspectives (1+1, 1+community) — the ones that require other people.
 
-**Beyond** — those who press further still, past the village and far out on the cord into the Fringe's deep reaches — the growth-bearing Void distance the world holds but does not yet fully reveal (see the [cosmology core](../cosmology/README.md)).
+**Beyond** — those who press further still, past the village and far out on the cord into the Fringe's deep reaches — the growth-bearing Void distance the world holds but does not yet fully reveal (see the [cosmology core](canon--cosmology--worlds-topology.md)).
 
 Between these: infinite gradations. Members move along the spectrum freely. There is no progression requirement — a Homebody is not "behind" an Explorer.
 
@@ -40,8 +40,8 @@ The island invites, but does not force.
 - The platform must support the full spectrum — solo tools are as important as social features
 - Homebody-oriented features (garden, journal, personal reflection) are not lesser or preliminary — they are a complete mode of engagement
 - Community and group features are not add-ons — they are the only path to collapsing the relational and communal perspectives
-- The cold-start problem (see [Open Questions CQ-001](../../thinking/OPEN_QUESTIONS.md)) is particularly acute here: relational and communal perspectives need real people
+- The cold-start problem (see [Open Questions CQ-001](questions--ecosystem-open-questions.md)) is particularly acute here: relational and communal perspectives need real people
 
 ---
 
-*See [three-questions.md](./three-questions.md) for the red thread mapped across all three perspectives. The Void is defined in the [cosmology core](../cosmology/README.md) — the axis of separation along the cord (the once-planned three-dimensional "void-dimensions" model is superseded and will not be written).*
+*See [three-questions.md](canon--growth--three-questions.md) for the red thread mapped across all three perspectives. The Void is defined in the [cosmology core](canon--cosmology--worlds-topology.md) — the axis of separation along the cord (the once-planned three-dimensional "void-dimensions" model is superseded and will not be written).*

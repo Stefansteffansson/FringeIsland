@@ -99,5 +99,5 @@ entry, data handling, and transcendence?"*
 ## Links
 
 - Extends: [ADR-U004](ADR-U004-visitor-anonymous-sign-in.md) · [ADR-U010](ADR-U010-privacy-dedicated-vertical.md) · [ADR-U016](ADR-U016-cascade-specification-first.md)
-- Related: [ADR-U025](ADR-U025-products-as-equipment-profiles.md) (status + equipment gating) · the roles core (`docs/ecosystem/universe/roles/README.md`) · the cosmology core (anchoring gate)
+- Related: [ADR-U025](ADR-U025-products-as-equipment-profiles.md) (status + equipment gating) · the roles core (`docs/fringeisland-thinking/canon--roles--taxonomy.md`) · the cosmology core (anchoring gate)
 - Source: universe-discovery Statements 16, 39, 45, 46

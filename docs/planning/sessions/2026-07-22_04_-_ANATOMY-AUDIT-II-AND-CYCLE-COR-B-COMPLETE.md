@@ -44,7 +44,7 @@ It is now direction-checked, and ownership derives from a single manifest whose 
 | #256 | W5 doc pass — anatomy stamp U048 → **U049**, AC2-5, README indexes, one broken ADR link |
 | #257 | W4 `get_role_templates()` — schema gate, applied on a named approval |
 | #258 | Cycle close |
-| #259 | Homed the What Fills a Life v2 `.docx` into `docs/research/` |
+| #259 | Homed the What Fills a Life v2 `.docx` into `docs/fringeisland-thinking/README.md` |
 
 New artifacts worth knowing about:
 

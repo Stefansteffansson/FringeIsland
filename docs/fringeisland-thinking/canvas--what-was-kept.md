@@ -6,7 +6,7 @@ Between 2026-09-11 and 2026-09-14 the discovery material was split into entity f
 
 On 2026-09-14 Stefan reverted that decomposition. The originals were never modified by the
 importer, so the revert restored nothing — it only removed the derived copies. The big source
-file, [`universe-discovery/2026-05-18_universe-discovery-session-01.md`](../universe-discovery/2026-05-18_universe-discovery-session-01.md),
+file, [`universe-discovery/2026-05-18_universe-discovery-session-01.md`](discovery--2026-05-18--universe-session-01.md),
 is byte-identical to what it was before the experiment (blob `d910825c`), and its 48 numbered
 sections were what became statements `S001`–`S048`.
 

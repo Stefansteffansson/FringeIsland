@@ -12,21 +12,20 @@ docs/
 │
 │   ── Tree 1: Ecosystem — What We're Building ──
 │
-├── ecosystem/                             ← vision, values, strategy, universe, explorations
+├── ecosystem/                             ← vision, values, strategy, the way of working
 │   ├── VISION.md                          ← constitutional — the north star
 │   ├── MANIFESTO.md                       ← constitutional — founding principles
 │   ├── PRINCIPLES-AI.md                   ← constitutional — how FringeIsland creates with AI
-│   ├── universe/                          ← what the world is and how it works
-│   │   ├── cosmology/                     ← the worlds topology (canonical core)
-│   │   ├── personal-growth/               ← red thread, engagement spectrum, privacy model
-│   │   ├── beings/                        ← Whisp, NPCs (canonical core)
-│   │   ├── roles/                         ← the canonical role taxonomy (the spine)
-│   │   ├── narrative/                     ← seasons, episodes, journeys
-│   │   ├── community/                     ← community dynamics, roles in practice
-│   │   └── kickstarter/                   ← the founding moment: Season Zero
-│   ├── strategy/                          ← stable directional documents
-│   └── thinking/                          ← open questions, explorations, legacy mining
-│       ├── OPEN_QUESTIONS.md               ← ecosystem-level open questions
+│   └── strategy/                          ← stable directional documents
+│
+├── fringeisland-thinking/                 ← the universe, the discovery work, the research — one flat folder, the filename carries the register
+│   ├── README.md                          ← the index: how to read a filename, one table per register
+│   ├── canon--*                           ← the canonical world: cosmology, roles, beings, narrative, growth, community
+│   ├── discovery--*                       ← dated universe-discovery sessions + the graduation tracker
+│   ├── research--*                        ← reports: growth, worlds, method, engineering
+│   ├── record--*                          ← design records
+│   ├── questions--*                       ← the open-questions (CQ) register
+│   └── canvas--*                          ← the discovery-canvas experiment remnants
 │
 ├── products/                              ← equipment profiles of the one experience (ADR-U025)
 │   ├── hub/                               ← The Hub — the canvas surface (active in Ferd)
@@ -55,8 +54,6 @@ docs/
 │   ├── ECOSYSTEM_ANATOMY_V6.svg           ← current anatomy diagram
 │   ├── DOMAIN_SERVICE_DEPENDENCIES.svg    ← dependency flow
 │   └── decisions/                         ← ADRs (the index README is the canonical list)
-│
-├── research/                              ← all research reports (domain + methodology)
 │
 ├── novel/                                 ← fiction layer — thriller set in the universe (not a canon source)
 │   ├── STORY-BIBLE.md                     ← premise, cast, canon-conformance register, chapter outline
@@ -89,14 +86,12 @@ docs/
 | Directory | What belongs here | What does NOT belong here |
 |-----------|-------------------|--------------------------|
 | `ecosystem/` | Strategic, philosophical, cross-product — "what is FringeIsland?" | Technical architecture, service specs, planning artifacts |
-| `ecosystem/universe/` | Universe design — cosmology, developmental mechanics, narrative, beings, community | Technical service specs (→ platform/), open questions (→ thinking/) |
-| `ecosystem/strategy/` | Stable directional documents — product family, contributor model | Open questions, exploratory thinking (→ ecosystem/thinking/) |
-| `ecosystem/thinking/` | Open questions, explorations, legacy content being mined | Stable strategy (→ ecosystem/strategy/), research (→ research/) |
+| `fringeisland-thinking/` | The universe (`canon--`), the discovery sessions (`discovery--`), research reports (`research--`), design records (`record--`), the open-questions register (`questions--`) — one flat folder, the filename prefix is the register | Constitutional docs and strategy (→ ecosystem/), technical service specs (→ platform/), decisions (→ architecture/) |
+| `ecosystem/strategy/` | Stable directional documents — product family, contributor model | Open questions, exploratory thinking (→ fringeisland-thinking/) |
 | `architecture/` | Structural models, binding decisions (ADRs), dependency diagrams | Service descriptions, feature specs, planning snapshots |
 | `platform/` | Service descriptions, feature specs, API contracts | Binding decisions (→ architecture), ecosystem strategy (→ ecosystem) |
 | `planning/reference/` | Point-in-time snapshots that inform planning cycles | Permanent structural models (→ architecture), ecosystem strategy (→ ecosystem) |
-| `research/` | Research reports and studies, regardless of topic | Strategy documents (→ ecosystem), decisions (→ architecture) |
-| `novel/` | Fiction layer — narrative work set in the universe; canon-conformant but never canon-defining | Universe canon (→ ecosystem/universe/ + discovery), specs, planning artifacts |
+| `novel/` | Fiction layer — narrative work set in the universe; canon-conformant but never canon-defining | Universe canon (→ fringeisland-thinking/ canon-- + discovery--), specs, planning artifacts |
 
 ---
 
@@ -115,7 +110,7 @@ Never load all features at once — load only what you're working on.
 ## Key Entry Points
 
 - **Ecosystem vision:** `ecosystem/VISION.md`
-- **Universe design:** `ecosystem/universe/`
+- **Universe design:** `fringeisland-thinking/canon--*` (index: `fringeisland-thinking/README.md`)
 - **Products & platform strategy:** `ecosystem/strategy/PRODUCTS_AND_PLATFORM.md`
 - **Hub description:** `products/hub/DESCRIPTION.md`
 - **Way of working:** `planning/PROCESS.md`
@@ -130,7 +125,7 @@ Never load all features at once — load only what you're working on.
 
 The `old_universe/`, `old_products/`, and `old_implementation/` directories no longer exist. Their content has been migrated into the active trees above:
 
-- `old_universe/` — deleted April 2026. All 24 ADRs (U001–U024) migrated to `architecture/decisions/`; universe design content migrated to `ecosystem/universe/`.
+- `old_universe/` — deleted April 2026. All 24 ADRs (U001–U024) migrated to `architecture/decisions/`; universe design content migrated to `ecosystem/universe/` (flattened into `fringeisland-thinking/canon--*` on 2026-09-15).
 - `old_products/` — deleted April 2026 (legacy-migration session). Product scope, requirements, roadmap, and feature docs migrated into `products/hub/` and associated planning/backlog/reference files.
 - `old_implementation/` — deleted April 2026. Implementation state is now read directly from the codebase (migrations, schema, code) rather than from snapshot files; reference snapshots that still matter live under `planning/reference/`.
 

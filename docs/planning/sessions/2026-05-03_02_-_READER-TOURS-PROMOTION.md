@@ -45,7 +45,7 @@ Two reader tours per entity, ecosystem-wide:
   - `docs/products/hub/tours/HUMAN.md` and `tours/TECHNICAL.md` placed in repo (208 + 586 lines). Source files were untracked drafts; `mv` not `git mv` (no prior history to preserve).
   - In-file title edit: HUMAN.md "A Reader's Tour" → "A Human's Tour" (frontmatter + h1, both occurrences). TECHNICAL.md unchanged.
   - Two `.docx` exports in `docs/products/hub/` deleted from working tree.
-  - `.gitignore`: scoped patterns for `docs/{products,platform,studios,design-system,verticals}/**/*.docx`. `docs/research/` and `docs/ecosystem/how-we-work/` exempted (intentional `.docx` homes per find audit and G-25).
+  - `.gitignore`: scoped patterns for `docs/{products,platform,studios,design-system,verticals}/**/*.docx`. `docs/fringeisland-thinking/README.md` and `docs/ecosystem/how-we-work/` exempted (intentional `.docx` homes per find audit and G-25).
   - `docs/products/README.md`: tours/ registered in Hub structure tree.
   - `docs/products/hub/README.md`: tours/ entry added; SPECIFICATION line drift-fixed (was "L2 sections populated; L3/L4 sections pending"; now "L2 and L3 sections populated; L4 section pending").
   - `docs/products/hub/CLAUDE.md` "Where to go next": Reader-tours bullet added immediately after Identity bullet.

@@ -126,7 +126,7 @@ Six gaps, consolidated in [`gaps.md`](./gaps.md):
 - [`docs/templates/feature-spec.md`](../../templates/feature-spec.md) — feature spec shape, including Implementation notes section
 - [`docs/templates/cycle-plan.md`](../../templates/cycle-plan.md) — cycle plan shape
 - [`.claude/skills/feature-development/SKILL.md`](../../../.claude/skills/feature-development/SKILL.md) — task creation step
-- [`docs/research/The solo developer's complete guide to systematic web development.md`](../../research/The%20solo%20developer%27s%20complete%20guide%20to%20systematic%20web%20development.md) — the research that shaped the pipeline
+- [`docs/fringeisland-thinking/research--method--solo-developer-systematic-web-development.md`](../../fringeisland-thinking/research--method--solo-developer-systematic-web-development.md) — the research that shaped the pipeline
 
 ---
 

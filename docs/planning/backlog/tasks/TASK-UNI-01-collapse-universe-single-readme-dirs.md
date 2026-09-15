@@ -3,8 +3,8 @@
 ---
 id: TASK-UNI-01
 title: "Collapse the single-README directories under docs/ecosystem/universe/ — or rule that the cores stay directories and fix findability at the index"
-status: open
-assigned_to: unassigned
+status: absorbed — into TASK-UNI-02 (2026-09-15): the shape was ruled as one flat folder, docs/fringeisland-thinking/, the filename carrying the register; the four canonical cores became canon--*.md files
+assigned_to: claude
 priority: medium
 owner: ecosystem
 wave: eid

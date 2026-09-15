@@ -43,7 +43,7 @@ The skill has eleven sections. Four (1.5, 3.5, 3.6, 3.7) exist to catch drift in
 | **After scoping a new product/studio/service, or writing a feature spec that references pending structural docs** | Section 7 (Expected placeholders) — and update Section 7's registry in the same session |
 | **After a feature is created, advances in maturity, or is deleted** | Section 8 (Feature-inventory summary consistency) |
 | **After authoring or restructuring any `CLAUDE.md` file** | Section 9 (CLAUDE.md cascade consistency) |
-| **After ratifying a `universe/` core, or adding an ADR sourced from universe-discovery** | Section 10 (Graduation-tracker completeness) — and add the matching tracker row in the same session |
+| **After ratifying a `canon--` core, or adding an ADR sourced from universe-discovery** | Section 10 (Graduation-tracker completeness) — and add the matching tracker row in the same session |
 | **After adding or amending any ADR, or moving/renaming files under `docs/architecture/`** | Section 11 (Anatomy freshness) — stamp, retired vocabulary, and current-pointer checks on the living anatomy pair |
 | On-demand, any time | Any subset — the skill is cheap to invoke partially |
 
@@ -145,7 +145,7 @@ This is subtler than Section 1 because there's no "old term → new term" mappin
 | **The Game as a product** (added 2026-06-10) | Third product entity (Unreal Engine, prefix GM, `docs/products/game/`) | Retired by ADR-U025 — the Game is a depth setting of journeys, not a product; GM prefix retired | "The Game" as a current product, `FEAT-GM`, `products/game` |
 | **Device sub-entities** (added 2026-06-10) | `gimbal/ios/` + `gimbal/android/` as cascade sub-entities | Dissolved by ADR-U025 — devices are points in equipment space; native builds are shipping targets of the one Gimbal surface | `gimbal/ios`, `gimbal/android`, "Gimbal-iOS vs Gimbal-Android" as the sub-entity canonical case |
 | **Sibling-studios model** (added 2026-06-10) | Journey/Universe/Arc as three sibling studios; Universe Studio excluding Arc; "FringeIsland Studio" as the world-authoring tool | Superseded by ADR-U026 — Universe Studio is the parent/binding frame over World, Arc, Journey Studios | "three studios" as siblings, "FringeIsland Studio", flat `docs/studios/{name}` paths |
-| **Three Worlds cosmology** (added 2026-06-10) | Ordinary World / Safe Harbour / The Other Side as the cosmological frame; the "three-dimensional void" | Superseded by the cosmology core (`docs/ecosystem/universe/cosmology/README.md`, ratified Session B): Ordinary World -> Shimmer -> Fringe (place 2 + place 3, near side + Beyond); the Void as the axis of separation | "Three Worlds", "Safe Harbour" (as a world), "The Other Side", "void dimensions" |
+| **Three Worlds cosmology** (added 2026-06-10) | Ordinary World / Safe Harbour / The Other Side as the cosmological frame; the "three-dimensional void" | Superseded by the cosmology core (`docs/fringeisland-thinking/canon--cosmology--worlds-topology.md`, ratified Session B): Ordinary World -> Shimmer -> Fringe (place 2 + place 3, near side + Beyond); the Void as the axis of separation | "Three Worlds", "Safe Harbour" (as a world), "The Other Side", "void dimensions" |
 | **"Affordance" as the device-capability term** (added 2026-06-10) | The discovery log's term for what features require from devices | Renamed to **equipment** in canon (ADR-U025); plain-English "affordance" (UI affordances) remains fine | `affordance` used as the technical keying term (not ordinary UI prose) |
 | **Shadow as the anonymous entrant** (added 2026-06-21) | The pre-signup anonymous identity state was named the **Shadow** (ADR-U027) | Renamed the **Mist** (ADR-U031, discovery S47-48); ADR-U027 superseded by ADR-U031. **"Shadow" reassigned to the place-3 / sleep-paralysis menace** (cosmology core). Two senses now: entrant-sense "Shadow" is drift → Mist; menace-sense "Shadow" (place 3) is correct. **Classify each hit by sense; never blind-replace.** Lifecycle cross-refs also moved ADR-U027 → ADR-U031 | `Shadow` (entrant sense = drift → Mist; place-3-menace sense = correct), and `U027` (lifecycle cross-refs → U031) |
 | **Suspended as the only group hold** (added 2026-08-03) | Group lifecycle enumerated `active / closed / archived / suspended`, with `suspended` the single hold state | Retired by FEAT-PC023 (Cycle HYG-A): two-mode holds — **`resting`** (the visible steward-fix hold, `rest_group`-gated) + **`suspended`** (the hard hazard hold); enumerations are `active / resting / suspended / closed / archived`. **Classify by sense: account-`suspended` (ADR-U050, the users axis) is a different axis and is NOT drift** — only group-status enumerations omitting `resting` are | Group-status lists without `resting`; "suspend" as the only group-hold verb in active docs (account-suspension hits are correct as-is) |
@@ -252,6 +252,7 @@ README files at these locations are expected to list their directory contents (o
 |--------|---------------------|
 | `docs/README.md` | Top-level ecosystem + planning map |
 | `docs/ecosystem/README.md` | Files directly under `ecosystem/` |
+| `docs/fringeisland-thinking/README.md` | **Every** file in the flat folder, both directions — a file on disk with no row, or a row with no file, is a finding (no curation: the folder has no sub-directories, so the index is the only navigation). Names must match the `<register>--<area>--<topic>` convention the README states |
 | `docs/products/README.md` | All product subdirectories + their status |
 | `docs/products/{name}/README.md` | Files and subdirectories under that product |
 | `docs/platform/README.md` | Core + domain structure |
@@ -351,6 +352,8 @@ This is different from Section 3 (README sync) because it doesn't require knowin
 | **The whole `hub-legacy/` tree** (178 files — `app/`, `components/`, `lib/`, `tests/`, configs) | Phase-4 W2 (2026-08-11, PR #502) | `hub-legacy/` (directory deleted) | **The annotated tag `hub-legacy-final`** — `git show hub-legacy-final:hub-legacy/<path>`. Discharge evidence: `docs/planning/hub-v2/2026-08-11-oracle-discharge-note.md`. **Grep note:** `hub-legacy` still appears legitimately in three classes — historical records (session bridges, area gates, completion plans, retros) which are never rewritten; provenance comments in `hub/` code and two migrations whose referent is now the tag; and feature-spec prose describing where a pattern came from. A hit is a **finding only when it makes a present-tense structural claim** (e.g. an `Applies to:` scope line, or the living anatomy overview) — both such cases were found and fixed on 2026-08-11 |
 | `TASK-OBS-01-telemetry-sink-and-analytics-posture.md` | 2026-08-03 sweep (A-ADM gate close, commit d01e641) | `docs/planning/backlog/tasks/` | None needed — the bet paid: its subject was decided by ADR-U052 and built as FEAT-PC018. Its two stale markdown links (in `ADR-U052` and the notifications completion plan) were demoted to plain text on 2026-08-11 |
 | `scripts/cleanup-test-data.js`, `scripts/cleanup-test-users.js`, `scripts/seed-test-members.js` (deleted) and `scripts/apply-migration-temp.js` (renamed) | Cycle COR-E W5 (2026-09-05, PR #619; Audit V AC5-4 / AC5-9, ruling R-12) | Repo root `scripts/` | The three test-data scripts: **none** — the sanctioned paths are `hub/scripts/walk-cast.mjs` (create / teardown / census), the suite helpers' `cleanupTestUser` chain, and the integration teardown census; registry `scripts/README.md`. The applier: **`scripts/apply-migration.js`** (same script, honest name). **Grep note:** the old names survive legitimately in done-task records awaiting the retro sweep, session bridges, the COR-E plan and register (as the finding text), FEAT-PD007's implementation history and `CHANGELOG.md`; `ADR-U053`'s drafting text keeps the old name beside its §5 realisation note (the acceptance pass of 2026-09-05, PR #625, recorded the rename — closed at the Ferd-close run). A hit is a finding only when it is an **instruction** to run the old name |
+
+| The six navigation-only READMEs of the flattened trees — `docs/ecosystem/universe/README.md`, `…/universe/personal-growth/README.md`, `…/universe/community/README.md`, `…/universe/kickstarter/README.md`, `docs/ecosystem/thinking/README.md`, `docs/research/README.md` — and the three trees themselves | TASK-UNI-02 (2026-09-15, commit A of the flatten) | `docs/ecosystem/universe/`, `docs/ecosystem/thinking/`, `docs/research/` (all three directories gone; the other 39 files were `git mv`'d, content-pure) | **`docs/fringeisland-thinking/README.md`** — the one index for the flat folder; the six READMEs' Purpose/Overview prose was folded into it. Any former directory reference lands on that index; a former core (`cosmology/README.md` etc.) is now a `canon--*.md` file (mapping in `TASK-UNI-02` §3). **Grep note:** the old paths survive legitimately in session bridges, retros, `planning/reference/` registers, archived openers and the TASK-UNI records. A hit is a finding only in an active file that presents an old path as a place to read or write |
 
 **Ephemeral `TASK-*.md` files are out of scope for this table.** They are deleted by design at each area retro (the task lifecycle in `docs/planning/backlog/tasks/README.md`), in batches of thirty-plus, and the sweep line in that README is their record. Adding a row per swept task would bloat the table without adding signal — the sweeps deliberately leave only prose mentions, never markdown links. Verified 2026-07-27: the `TASK-NA-*` / `TASK-NB-*` / `TASK-C*` sweeps left zero broken links.
 
@@ -674,20 +677,20 @@ When the cascade structure changes (new tier, new sub-tier convention, new sub-e
 
 **Question:** Does every concept that has graduated from universe-discovery into canon have a row in the graduation tracker?
 
-Universe-discovery sessions (`docs/ecosystem/thinking/universe-discovery/`) are working notes, **not** canon. When a concept crystallises it graduates into a **canonical home** — a `docs/ecosystem/universe/` core, or an ADR when the concept is an architectural decision — and that move must be recorded in the graduation tracker (the "## Graduation tracker" table in `docs/ecosystem/thinking/universe-discovery/README.md`). The tracker is hand-maintained, so it lags silently: a concept can be firmly canonical while the tracker still implies it never graduated. This check is the guardrail that keeps the record matching canon. (Added 2026-06-14 after an audit found the tracker missing the beings core, the narrative respawn section, and ADRs U025–U028.)
+Universe-discovery sessions (`docs/fringeisland-thinking/discovery--*`) are working notes, **not** canon. When a concept crystallises it graduates into a **canonical home** — a `docs/fringeisland-thinking/canon--*` core, or an ADR when the concept is an architectural decision — and that move must be recorded in the graduation tracker (the "## Graduation tracker" table in `docs/fringeisland-thinking/discovery--tracker-and-backlog.md`). The tracker is hand-maintained, so it lags silently: a concept can be firmly canonical while the tracker still implies it never graduated. This check is the guardrail that keeps the record matching canon. (Added 2026-06-14 after an audit found the tracker missing the beings core, the narrative respawn section, and ADRs U025–U028.)
 
 ### Procedure
 
 1. Enumerate the canonical homes that should be tracked:
-   - **Universe cores** — every `docs/ecosystem/universe/*/README.md` whose top-of-file Status line reads "Canonical" (cosmology, roles, beings today; narrative is partial — its ratified sections count). Confirm each cites the universe-discovery work as its source:
+   - **Universe cores** — every `docs/fringeisland-thinking/canon--*.md` whose top-of-file Status line reads "Canonical" (cosmology, roles, beings today; narrative is partial — its ratified sections count). Confirm each cites the universe-discovery work as its source:
      ```
-     grep -rniE "canonical|ratified|rewritten|universe-discovery|session 0|S[0-9]" docs/ecosystem/universe/*/README.md
+     grep -rniE "canonical|ratified|rewritten|universe-discovery|session 0|S[0-9]" docs/fringeisland-thinking/canon--*.md
      ```
    - **Discovery-sourced ADRs** — every ADR under `docs/architecture/decisions/` whose Source/provenance line cites the universe-discovery work or the 2026-06-05 product locks:
      ```
      grep -rlniE "universe-discovery|2026-06-05 product lock|session 0" docs/architecture/decisions/
      ```
-2. Read the graduation tracker table in `docs/ecosystem/thinking/universe-discovery/README.md`.
+2. Read the graduation tracker table in `docs/fringeisland-thinking/discovery--tracker-and-backlog.md`.
 3. **Forward check:** for each canonical home from step 1, assert a tracker row names it. A core or ADR that cites discovery as its source but has **no** tracker row is a finding — the tracker is lagging.
 4. **Reverse check:** for each tracker row, confirm its "Canonical home" target still exists and still carries canonical/ratified status. A row pointing at a downgraded, renamed, or deleted home is stale.
 5. **Open-list check:** confirm the tracker's "not yet graduated / still open" note lists nothing that has since acquired a canonical home — an open item that quietly graduated should move up into the table.
@@ -695,13 +698,13 @@ Universe-discovery sessions (`docs/ecosystem/thinking/universe-discovery/`) are 
 ### What is and isn't in scope
 
 - **In scope:** concepts whose source is the universe-discovery sessions/notes.
-- **Out of scope:** docs sourced from `OLD_VISION.md` / the founding-vision extraction (most of `personal-growth/`, `community/`, `kickstarter/`). That is a different graduation path, not discovery promotion — do not flag those for the discovery tracker. (A discovery *graft* onto an old-vision doc — a single statement folded in — may warrant a tracker footnote but is not a missing-row finding.)
+- **Out of scope:** docs sourced from `OLD_VISION.md` / the founding-vision extraction (most of `canon--growth--*` and `canon--community--*`). That is a different graduation path, not discovery promotion — do not flag those for the discovery tracker. (A discovery *graft* onto an old-vision doc — a single statement folded in — may warrant a tracker footnote but is not a missing-row finding.)
 
 ### Fixing
 
 Missing rows are a one-line fix: add the row (Concept | Source | Canonical home | Type | Date) from the home file's own provenance line. If the tracker schema cannot express the destination (e.g. a new destination type), generalise the schema in the same pass. Both are in-place fixes, not backlog items.
 
-**Skip if:** No `universe/` core has been authored or ratified, and no discovery-sourced ADR has been added, since the last check.
+**Skip if:** No `canon--` core has been authored or ratified, and no discovery-sourced ADR has been added, since the last check.
 
 ---
 

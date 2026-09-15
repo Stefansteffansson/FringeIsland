@@ -8,7 +8,7 @@
 
 ## Identity
 
-The Hub is **the canvas surface** of the one FringeIsland experience (ADR-U025) — the equipment profile built on screen room, keyboard, precision input, and file system, shipping today as the web app. It is the primary surface where FIMs arrive, orient, connect, and experience journeys: a browser-based environment where FIMs manage their identity, belong to groups, and engage with structured developmental experiences. It serves the same one experience as the Gimbal; what differs is equipment, not audience. (Where FIMs rest and gather in world-language is the village, in the Beyond of the warm place — see the cosmology core, [`docs/ecosystem/universe/cosmology/README.md`](../../ecosystem/universe/cosmology/README.md).)
+The Hub is **the canvas surface** of the one FringeIsland experience (ADR-U025) — the equipment profile built on screen room, keyboard, precision input, and file system, shipping today as the web app. It is the primary surface where FIMs arrive, orient, connect, and experience journeys: a browser-based environment where FIMs manage their identity, belong to groups, and engage with structured developmental experiences. It serves the same one experience as the Gimbal; what differs is equipment, not audience. (Where FIMs rest and gather in world-language is the village, in the Beyond of the warm place — see the cosmology core, [`docs/fringeisland-thinking/canon--cosmology--worlds-topology.md`](../../fringeisland-thinking/canon--cosmology--worlds-topology.md).)
 
 The Hub is where you land. It is not where you author.
 
@@ -16,7 +16,7 @@ The Hub is where you land. It is not where you author.
 
 ## Target users
 
-The canonical role taxonomy lives in [`docs/ecosystem/universe/roles/README.md`](../../ecosystem/universe/roles/README.md) — this section names who the Hub serves; the roles core defines them.
+The canonical role taxonomy lives in [`docs/fringeisland-thinking/canon--roles--taxonomy.md`](../../fringeisland-thinking/canon--roles--taxonomy.md) — this section names who the Hub serves; the roles core defines them.
 
 **Mists** — the anonymous entrants (the identity state before transcendence). Mists can browse, explore, and begin participating before creating an account. Their activity and preferences accumulate via anonymous sessions (ADR-U004) and transfer seamlessly into a FIM account upon sign-up. The Mist-to-FIM transition is a soft threshold, not a wall.
 

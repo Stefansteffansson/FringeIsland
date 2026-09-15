@@ -37,7 +37,7 @@ Related law already settled (consume, don't reopen): the U028 root-admin amendme
 
 ## Deliverables
 
-1. **The spike report / runbook design** — one document carrying the end-to-end process skeleton, the role definitions, the grading rubric, and the notification content rules. Landing-path lean: `docs/research/breach-response-design.md` (the canonical *obligations* land in the specs, not here; this is the design record). Stefan ratifies the path at the session.
+1. **The spike report / runbook design** — one document carrying the end-to-end process skeleton, the role definitions, the grading rubric, and the notification content rules. Landing-path lean: `docs/fringeisland-thinking/record--breach-response-gdpr-art-33-34.md` (the canonical *obligations* land in the specs, not here; this is the design record). Stefan ratifies the path at the session.
 2. **Sanctioned spec amendments** (ownership discipline — each spec's own section-5/section-6 edited only on ratification): V2 Q5 and V1 Q5 resolved or advanced to named decisions; V3 Q6 channel half closed or sharpened; V4 enriched only if the design adds a detection/on-call obligation; V5 untouched unless the vendor path changes mode 6's citation.
 3. **A PENDING entry or candidate ADR** only if a durable architectural principle emerges (e.g., incident-response ownership as a named role) — the promotion-as-amendment vs standalone-ADR selection rationale from the V1 close binds (clarifies-existing -> amendment; new-boundary -> ADR).
 

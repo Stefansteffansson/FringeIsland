@@ -147,7 +147,7 @@ conformance register tracks the correction:
 
 NPCs are authored, layered, depth-on-demand composites — body (Creator) + culture (Anthropologist)
 + character (Teller), layers added in proportion to the depth a role demands (S30). They are
-world-inhabitants, not modes a person occupies; they live in `../beings/`.
+world-inhabitants, not modes a person occupies; they live in `canon--beings--whisp-and-npcs.md`.
 
 ## Open threads (deferred, tracked in the discovery log)
 

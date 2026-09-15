@@ -4,7 +4,7 @@
 
 **This is for:** Documents that answer "how is the ecosystem structured?" — product family vision, contribution boundaries, platform strategy.
 
-**This is NOT for:** Open questions or exploratory thinking (→ `../thinking/`), constitutional documents (→ `../VISION.md`, `../MANIFESTO.md`), or research reports (→ `../../research/`).
+**This is NOT for:** Open questions or exploratory thinking (→ `../../fringeisland-thinking/README.md`), constitutional documents (→ `../VISION.md`, `../MANIFESTO.md`), or research reports (→ `../../fringeisland-thinking/README.md`).
 
 ---
 

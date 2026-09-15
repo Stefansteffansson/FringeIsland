@@ -54,7 +54,7 @@ Regardless of licence layer, the following are held permanently by the Foundatio
 - The red thread — the three questions, the fundamental purpose
 - Member data and privacy architecture
 - The brand and world identity — name, visual identity, canonical lore
-- The governance structure — the Foundation as legal holder, with enterprise stewardship by the Universeers, the FringeIsland Council, and DeusEx (see the [roles core](../universe/roles/README.md))
+- The governance structure — the Foundation as legal holder, with enterprise stewardship by the Universeers, the FringeIsland Council, and DeusEx (see the [roles core](../../fringeisland-thinking/canon--roles--taxonomy.md))
 
 → *See [CONTRIBUTION_ARCHITECTURE.md](./CONTRIBUTION_ARCHITECTURE.md) §What Is Never Open to Contribution for the full list.*
 
@@ -62,7 +62,7 @@ Regardless of licence layer, the following are held permanently by the Foundatio
 
 ## Open questions
 
-- How is CC BY-SA + CLA surfaced to users and enforced in the marketplace? → see [Open Questions CQ-007](../thinking/OPEN_QUESTIONS.md)
+- How is CC BY-SA + CLA surfaced to users and enforced in the marketplace? → see [Open Questions CQ-007](../../fringeisland-thinking/questions--ecosystem-open-questions.md)
 - Revenue sharing percentages — not yet defined
 - CLA legal drafting — not yet started
 

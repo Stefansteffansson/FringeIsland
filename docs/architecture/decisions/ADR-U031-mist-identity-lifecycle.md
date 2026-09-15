@@ -199,5 +199,5 @@ Making the entry/access boundary precise for implementation, consistent with thi
   reaper — the deferred TTL/inactivity threshold) · [ADR-U034](ADR-U034-consent-record-substrate.md)
   (the transcendence consent substrate).
 - **Source:** universe-discovery **Statements 47-48** (2026-06-21), preserving Statements 16, 39, 45, 46
-  (`docs/ecosystem/thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md`).
+  (`docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md`).
 - **Reconciliation worklist:** `docs/planning/reference/mist-reconciliation-register.md`.
