@@ -4,14 +4,14 @@
 |---|---|
 | **Cycle** | The Eid kickoff — open Wave 2 — the wave file with its DoD on day one, the carry-overs dispositioned, design tools and narrative decomposed to 4-ready |
 | **Plan** | [`2026-09-07-eid-kickoff-plan.md`](2026-09-07-eid-kickoff-plan.md) |
-| **Latest bridge** | [`../sessions/2026-09-14_01_-_DISCOVERY-CANVAS-REVERTED-APP-KEPT.md`](../sessions/2026-09-14_01_-_DISCOVERY-CANVAS-REVERTED-APP-KEPT.md) |
+| **Latest bridge** | [`../sessions/2026-09-15_01_-_THINKING-TREE-FLATTENED.md`](../sessions/2026-09-15_01_-_THINKING-TREE-FLATTENED.md) |
 | **Board** | open 2026-09-07 — the kickoff decomposes in a fresh session; two decisions in the plan are Stefan's |
 | **Next** | the first Eid build cycle — Journey Studio v1, the minimal design foundation or the Whisp, whichever the kickoff bets on first |
 
 ## In motion
 - The kickoff itself — a fresh session under `wave-planning`: `waves/eid.md` with its DoD on day one, then the decomposition of design tools and narrative (studies under `../waves/studies/eid/`)
 - The carry-over dispositions listed in the [plan](2026-09-07-eid-kickoff-plan.md) §2 — each gets a written in-or-out at the kickoff
-- **Thinking tree flattened 2026-09-15** — [`TASK-UNI-02`](../backlog/tasks/TASK-UNI-02-flatten-thinking-tree-into-fringeisland-thinking.md): `universe/`, `thinking/` and `research/` are one flat folder, [`docs/fringeisland-thinking/`](../../fringeisland-thinking/README.md), the filename carrying the register. Pass 2 (content consolidation) is [`TASK-UNI-03`](../backlog/tasks/TASK-UNI-03-thinking-tree-content-consolidation.md)
+- **Thinking tree flattened 2026-09-15** — [`TASK-UNI-02`](../backlog/tasks/TASK-UNI-02-flatten-thinking-tree-into-fringeisland-thinking.md); pass 2 is [`TASK-UNI-03`](../backlog/tasks/TASK-UNI-03-thinking-tree-content-consolidation.md)
 
 ## Waiting on Stefan
 - The two kickoff decisions in the plan §4 — the Eid appetite, and which of the three themes goes first
