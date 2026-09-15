@@ -11,7 +11,7 @@
 ## In motion
 - The kickoff itself — a fresh session under `wave-planning`: `waves/eid.md` with its DoD on day one, then the decomposition of design tools and narrative (studies under `../waves/studies/eid/`)
 - The carry-over dispositions listed in the [plan](2026-09-07-eid-kickoff-plan.md) §2 — each gets a written in-or-out at the kickoff
-- **Next session:** collapse `universe/` — [`TASK-UNI-01`](../backlog/tasks/TASK-UNI-01-collapse-universe-single-readme-dirs.md). Rule the shape before renaming: the four single-README dirs are the canonical cores, ~130 files reference them
+- **Thinking tree flattened 2026-09-15** — [`TASK-UNI-02`](../backlog/tasks/TASK-UNI-02-flatten-thinking-tree-into-fringeisland-thinking.md): `universe/`, `thinking/` and `research/` are one flat folder, [`docs/fringeisland-thinking/`](../../fringeisland-thinking/README.md), the filename carrying the register. Pass 2 (content consolidation) is [`TASK-UNI-03`](../backlog/tasks/TASK-UNI-03-thinking-tree-content-consolidation.md)
 
 ## Waiting on Stefan
 - The two kickoff decisions in the plan §4 — the Eid appetite, and which of the three themes goes first
