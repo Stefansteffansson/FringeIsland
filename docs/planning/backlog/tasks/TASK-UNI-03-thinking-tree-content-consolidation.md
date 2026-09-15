@@ -3,7 +3,7 @@
 ---
 id: TASK-UNI-03
 title: "Pass 2 after TASK-UNI-02: rule the graded files, retire superseded versions, drop the navigation tables that the index now owns, decide the fate of the raw transcripts"
-status: in-progress — executed 2026-09-15 on branch docs/thinking-pass-2; done at merge
+status: done — merged as #658 on 2026-09-15; rulings recorded below; pass 3 is TASK-UNI-04
 assigned_to: claude
 priority: medium
 owner: ecosystem
@@ -43,7 +43,7 @@ estimated_hours: 3
 
 ## Done when
 
-- [ ] Every item above has a ruling recorded here (who, when, what)
-- [ ] The edits are on one branch, one PR, reviewed as content changes (not renames)
-- [ ] `doc-health-check` run: README index, §10 graduation tracker (the headings item 4 depends on are intact)
-- [ ] The index `README.md` rows for any deleted or re-registered file updated in the same PR
+- [x] Every item above has a ruling recorded here (who, when, what)
+- [x] The edits are on one branch, one PR, reviewed as content changes (not renames)
+- [x] `doc-health-check` run: README index, §10 graduation tracker (the headings item 4 depends on are intact)
+- [x] The index `README.md` rows for any deleted or re-registered file updated in the same PR

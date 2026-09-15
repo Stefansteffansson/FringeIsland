@@ -11,12 +11,13 @@
 ## In motion
 - The kickoff itself — a fresh session under `wave-planning`: `waves/eid.md` with its DoD on day one, then the decomposition of design tools and narrative (studies under `../waves/studies/eid/`)
 - The carry-over dispositions listed in the [plan](2026-09-07-eid-kickoff-plan.md) §2 — each gets a written in-or-out at the kickoff
-- **Thinking tree flattened 2026-09-15** — [`TASK-UNI-02`](../backlog/tasks/TASK-UNI-02-flatten-thinking-tree-into-fringeisland-thinking.md); pass 2 is [`TASK-UNI-03`](../backlog/tasks/TASK-UNI-03-thinking-tree-content-consolidation.md)
+- **Thinking tree flattened 2026-09-15** — passes 1–2 landed (#657, #658); pass 3 is planned in [`TASK-UNI-04`](../backlog/tasks/TASK-UNI-04-condense-thinking-tree.md), four rulings Stefan's
 
 ## Waiting on Stefan
 - The two kickoff decisions in the plan §4 — the Eid appetite, and which of the three themes goes first
 - Leaked-password protection — a Supabase Pro decision (the org is on Free; the toggle refuses to save)
 - The E2E smoke job in CI — Eid's first tooling item, a ruling on design before a build
+- The pass-3 rulings D1–D4 in [`TASK-UNI-04`](../backlog/tasks/TASK-UNI-04-condense-thinking-tree.md) — fold the five scaffolds, merge the Homebody/Explorer twins (and their area), retire the pre-canon summary
 
 ## Landed this cycle
 - **Wave 1, Ferd, declared CLOSED 2026-09-07** — `ferd.md` completed, the [close plan](../hub-v2/2026-09-05-ferd-close-plan.md) CLOSED, the [DoD walk](../hub-v2/2026-09-05-ferd-dod-walk.md) with no open row, the [wave retro](../retrospectives/retro-wave-ferd.md) carrying the carry-overs
