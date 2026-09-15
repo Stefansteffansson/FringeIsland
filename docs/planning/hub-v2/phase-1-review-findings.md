@@ -46,7 +46,7 @@
 **Owning artifact:** SPECIFICATION §L3 A-ADM (add a capability) → re-derive `HUMAN.md`. **Disposition:** Add an A-ADM row (admin targeted group removal, single + bulk); moderate.
 
 ### F-07 — The Hub reads as "just a platform"; the intended purpose is higher (Finally)
-**Stefan:** The tour frames the Hub as a platform for journeys + notes + communication + Whisp, but the real intent is "much higher and advanced purposes." Maybe later? Pointer: read `docs/fringeisland-thinking/README.md` and `docs/fringeisland-thinking/README.md`.
+**Stefan:** The tour frames the Hub as a platform for journeys + notes + communication + Whisp, but the real intent is "much higher and advanced purposes." Maybe later? Pointer: read the `canon--*` and `discovery--*` files in `docs/fringeisland-thinking/`.
 **Triage:** OPEN-Q / strategic. Signals the product-layer derivation (DESCRIPTION / §L3) may under-scope the universe vision. Likely correlated with F-04 (the experience layer lagging the universe canon).
 **Owning artifact:** `OPEN_QUESTIONS.md` (strategic scope) + Hub DESCRIPTION scope boundary. **Disposition:** Log as a vision-altitude scope question; revisit DESCRIPTION/§L3 against the universe canon. I have not yet read `universe/` + `thinking/` in full — that's the grounding step before any answer.
 

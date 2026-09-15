@@ -108,14 +108,14 @@ FIM occupies**, not world-inhabitants of a separate kind — they are defined in
 are retired** (ratified 2026-06-10); how Dreamineers manifest *within* the narrative (rather than
 behind it) remains an open design thread.
 
-## Sub-pages
+## Companion pages
 
 | Document | What it covers | Status |
 |----------|---------------|--------|
-| *(planned)* `whisp.md` | The Whisp's full specification — encounter phenomenology, dialogue mechanics, the senses model, internalisation arc | Awaiting specification (derives from this core; prerequisite to DS-7 Intelligence implementation) |
-| *(planned)* `npcs.md` | NPC behaviour authoring, layer-promotion workflow, role in seasons and episodes | Awaiting specification |
+| [`canon--beings--whisp.md`](canon--beings--whisp.md) | The Whisp's full specification — encounter phenomenology, dialogue mechanics, the senses model, internalisation arc | Scaffold — awaiting specification (derives from this core; prerequisite to DS-7 Intelligence implementation) |
+| [`canon--beings--npcs.md`](canon--beings--npcs.md) | NPC behaviour authoring, layer-promotion workflow, role in seasons and episodes | Scaffold — awaiting specification |
 
 ---
 
 *The Whisp remains the highest-consequence concept in the roadmap — it touches every wave from
-Eid onward. This core states what it IS; the sub-pages will specify how it behaves.*
+Eid onward. This core states what it IS; the companion pages will specify how it behaves.*

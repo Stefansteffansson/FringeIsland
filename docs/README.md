@@ -24,8 +24,7 @@ docs/
 │   ├── discovery--*                       ← dated universe-discovery sessions + the graduation tracker
 │   ├── research--*                        ← reports: growth, worlds, method, engineering
 │   ├── record--*                          ← design records
-│   ├── questions--*                       ← the open-questions (CQ) register
-│   └── canvas--*                          ← the discovery-canvas experiment remnants
+│   └── questions--*                       ← the open-questions (CQ) register
 │
 ├── products/                              ← equipment profiles of the one experience (ADR-U025)
 │   ├── hub/                               ← The Hub — the canvas surface (active in Ferd)
@@ -57,6 +56,7 @@ docs/
 │
 ├── novel/                                 ← fiction layer — thriller set in the universe (not a canon source)
 │   ├── STORY-BIBLE.md                     ← premise, cast, canon-conformance register, chapter outline
+│   ├── the-seam.pdf                       ← a short story set in the universe (2026-09-11; non-canon)
 │   └── chapters/                          ← one file per chapter
 │
 │   ── Tree 2: Planning — How We're Building It ──

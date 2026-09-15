@@ -42,14 +42,14 @@ structural affordance, across all three perspectives (alone, pair, group).
 
 ---
 
-## Sub-pages
+## Companion pages
 
 | Document | What it covers | Status |
 |----------|---------------|--------|
-| *(planned)* `seasons-and-episodes.md` | Four seasons per year, twelve episodes per season, universal calendar plus adaptive AI personalisation | Awaiting specification |
-| *(planned)* `journeys.md` | Route types (Fixed, Hybrid, Traveler-Initiated, AI-Generative), content families (Witness, Reflect, Decide, Act, Encounter, Rest) | Awaiting specification |
-| *(planned)* `first-experience.md` | The founding narrative — what happens in the first hour. The single highest-risk gap in the design | Awaiting specification |
+| [`canon--narrative--seasons-and-episodes.md`](canon--narrative--seasons-and-episodes.md) | Four seasons per year, twelve episodes per season, universal calendar plus adaptive AI personalisation | Scaffold — awaiting specification |
+| [`canon--narrative--journeys.md`](canon--narrative--journeys.md) | Route types (Fixed, Hybrid, Traveler-Initiated, AI-Generative), content families (Witness, Reflect, Decide, Act, Encounter, Rest) | Scaffold — awaiting specification |
+| [`canon--narrative--first-experience.md`](canon--narrative--first-experience.md) | The founding narrative — what happens in the first hour. The single highest-risk gap in the design | Scaffold — awaiting a discovery session (CQ-010) |
 
 ---
 
-*Narrative is authored in Arc Studio (seasons and episodes) and Journey Studio (individual journeys). This directory describes the creative framework; the studios describe the tools.*
+*Narrative is authored in Arc Studio (seasons and episodes) and Journey Studio (individual journeys). This core and its companion pages describe the creative framework; the studios describe the tools.*
