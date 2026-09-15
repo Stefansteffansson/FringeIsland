@@ -30,5 +30,5 @@ DS-3 owns the **structured travel of travellers through the experience** — jou
 ## Where to go next
 
 - **The service spec:** [`../journeys.md`](../journeys.md) — L2 identity + §7 invariants + §L3 capability inventory (Steps 1-3 complete 2026-06-10; first non-zero-delta stress-test — 6 capabilities partially realized, 9 full forward-commitment).
-- **Ground truth:** the personal-growth core (+ three-questions, engagement-spectrum, privacy-model sub-pages); the narrative core (respawn section + journeys line); cosmology core (sections 8 + 10); roles core (Wayfinder; Steward/Guide/Participant/Observer); universe-discovery S19 (signature vs charter).
+- **Ground truth:** the growth canon (`canon--growth--three-questions`, `--engagement-spectrum`, `--privacy-model`); the narrative core (respawn section + journeys line); cosmology core (sections 8 + 10); roles core (Wayfinder; Steward/Guide/Participant/Observer); universe-discovery S19 (signature vs charter).
 - **Relevant decisions:** ADR-U023 (anatomy) · ADR-U025/U026 (equipment, depth, Journey Studio writes → DS-3) · ADR-U017 (journeys as content templates) · ADR-U020 (pairs are groups) · ADR-U008/U018 (non-closure; step types) · ADR-U031 (Mist lifecycle) · ADR-U016 (cascade first) · the rename and Whisp-split entries in [`PENDING.md`](../../../architecture/decisions/PENDING.md).

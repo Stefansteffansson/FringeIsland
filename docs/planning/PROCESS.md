@@ -230,7 +230,7 @@ This is the trigger → artifact map. Whenever you find yourself starting work, 
 | Feature enters the pipeline (maturity 0-raw or higher) | Feature spec (stories embedded) | `../templates/feature-spec.md` | `../{owner}/features/FEAT-{PREFIX}{NNN}-{slug}.md` |
 | Significant architectural decision is taken | ADR | `../templates/adr.md` | `../architecture/decisions/NNNN-{title}.md` |
 | Planning / design session with Claude | Session bridge | `../templates/session-bridge.md` | `sessions/YYYY-MM-DD-{topic}.md` |
-| Research needed before specifying | Research spike | `../templates/research-spike.md` | `../research/{topic}.md` |
+| Research needed before specifying | Research spike | `../templates/research-spike.md` | `../fringeisland-thinking/research--{area}--{topic}.md` (areas: `growth`, `worlds`, `method`, `engineering`) |
 | Cycle starts | Cycle plan (a dated document) **+ the front door** | `../templates/cycle-plan.md` · `../templates/cycle-current.md` | the plan under the cycle's home (today `hub-v2/`); `cycles/cycle-current.md` is the front door that points at it — written by `npm run cycle:kickoff`, overwritten every cycle (R-14, 2026-09-05; the shape 2026-09-06) |
 | Cycle ends | Retrospective | `../templates/retrospective.md` | `retrospectives/retro-YYYY-MM-DD.md` |
 | Wave completes (last Build item Done) | Wave retrospective + ecosystem roadmap update | `../templates/retrospective.md` (wave-scoped) | `retrospectives/retro-wave-{name}.md` + update the waves band in `waves/README.md` (the ecosystem roadmap, G-04) |
