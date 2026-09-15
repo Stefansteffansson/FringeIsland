@@ -99,7 +99,7 @@ None. Vision is constitutional — there is no level above it.
 ### Read context
 
 - `docs/ecosystem/MANIFESTO.md` — the cultural and values companion; consult to keep Vision and Manifesto in harmony.
-- `docs/fringeisland-thinking/README.md` — world-building content that Vision references as structural concepts (the worlds topology and role taxonomy — canonical cores under `cosmology/` and `roles/` — and the Whisp, `beings/`). Consult for naming and conceptual alignment.
+- `docs/fringeisland-thinking/canon--*` — world-building content that Vision references as structural concepts: the worlds topology (`canon--cosmology--worlds-topology.md`), the role taxonomy (`canon--roles--taxonomy.md`), the Whisp (`canon--beings--whisp-and-npcs.md`). The folder's `README.md` is the index. Consult for naming and conceptual alignment.
 - `docs/fringeisland-thinking/questions--ecosystem-open-questions.md` — ecosystem-level open questions that may inform revisions.
 
 ### Write scope

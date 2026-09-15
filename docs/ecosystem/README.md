@@ -1,10 +1,10 @@
 # Ecosystem
 
-**Purpose:** Everything that defines FringeIsland as a universe and ecosystem — vision, values, strategy, universe design, and the shape of the whole.
+**Purpose:** Everything that defines FringeIsland as a universe and ecosystem at the constitutional and strategic level — vision, values, strategy, and the way of working.
 
-**This is for:** Constitutional documents, ecosystem strategy, universe design, and exploratory thinking that answers "what is FringeIsland and how does the whole thing fit together?" Strategic, philosophical, cross-product, foundational.
+**This is for:** Constitutional documents, ecosystem strategy, and the illustrated way of working — the documents that answer "what is FringeIsland and how does the whole thing fit together?" Strategic, philosophical, cross-product, foundational.
 
-**This is NOT for:** Technical architecture and binding decisions (→ `docs/architecture/`), service or product descriptions (→ `docs/platform/`, `docs/products/`), operational planning (→ `docs/planning/`), or research reports (→ `docs/fringeisland-thinking/README.md`).
+**This is NOT for:** The universe design itself, the discovery sessions, research reports, or the open-questions register — those live one level up in [`../fringeisland-thinking/`](../fringeisland-thinking/README.md), one flat folder where the filename carries the register (`canon--`, `discovery--`, `research--`, `record--`, `questions--`, `canvas--`). Also not for technical architecture and binding decisions (→ `docs/architecture/`), service or product descriptions (→ `docs/platform/`, `docs/products/`), or operational planning (→ `docs/planning/`).
 
 ---
 
@@ -17,15 +17,6 @@ docs/ecosystem/
 ├── MANIFESTO.md                           ← constitutional — founding principles
 ├── PRINCIPLES-AI.md                       ← constitutional — AI principles
 │
-├── universe/                              ← what the FringeIsland world is and how it works
-│   ├── README.md                          ← universe overview
-│   ├── cosmology/                         ← the worlds topology (canonical core)
-│   ├── roles/                             ← the role taxonomy (canonical core)
-│   ├── personal-growth/                   ← red thread, engagement spectrum, privacy model
-│   ├── beings/                            ← Whisp, NPCs (canonical core)
-│   ├── narrative/                         ← seasons, episodes, journeys, first experience
-│   └── community/                         ← community dynamics, Kickstarter founding moment
-│
 ├── strategy/                              ← how the ecosystem is shaped (stable, directional)
 │   ├── README.md                          ← strategy overview
 │   ├── PRODUCTS_AND_PLATFORM.md           ← full product family vision
@@ -34,13 +25,12 @@ docs/ecosystem/
 │   ├── EXPERIENCE_PRINCIPLES.md           ← experience design principles
 │   └── IP_AND_LICENSING.md               ← intellectual property + licensing
 │
-├── how-we-work/                           ← the way of working, illustrated (decomposition, cadence, kanban, build loop, agent routing) + `assets/` diagrams
-│
-└── thinking/                              ← working ideas, explorations, open questions
-    ├── README.md                          ← index of active thinking
-    ├── OPEN_QUESTIONS.md                  ← ecosystem-level open questions
-    └── 2026-06-15_knowledge-base_whisp-and-universe-foundations.md  ← Whisp & universe foundations KB (exploratory)
+└── how-we-work/                           ← the way of working, illustrated (decomposition, cadence, kanban, build loop, agent routing) + `assets/` diagrams
+
+docs/fringeisland-thinking/                ← the universe, the discovery work, the research (see its README)
 ```
+
+The universe design (`universe/`) and the exploratory thinking (`thinking/`) lived here until 2026-09-15; they were flattened into [`../fringeisland-thinking/`](../fringeisland-thinking/README.md) together with `docs/research/` (TASK-UNI-02).
 
 ---
 
@@ -48,17 +38,17 @@ docs/ecosystem/
 
 1. Start here — this README gives you the map
 2. `VISION.md` and `MANIFESTO.md` — the constitutional foundation
-3. `universe/` — what the world is and how it works
+3. [`../fringeisland-thinking/canon--*`](../fringeisland-thinking/README.md) — what the world is and how it works
 4. `strategy/` — how the ecosystem is shaped (product family, contributors)
-5. `thinking/` — open questions and exploratory work
+5. [`../fringeisland-thinking/questions--ecosystem-open-questions.md`](../fringeisland-thinking/questions--ecosystem-open-questions.md) and the `discovery--*` sessions — open questions and exploratory work
 
 ---
 
 ## Graduation paths
 
-- When something in `thinking/` matures into universe design (how the world works) → moves to `universe/`
-- When something in `thinking/` matures into strategic direction (how the ecosystem is shaped) → moves to `strategy/`
-- When something in `thinking/` reaches constitutional significance → absorbed into `VISION.md` or `MANIFESTO.md`
+- When a discovery concept matures into universe design (how the world works) → it is written into a `canon--` file in `../fringeisland-thinking/` and gets a row in [`discovery--tracker-and-backlog.md`](../fringeisland-thinking/discovery--tracker-and-backlog.md)
+- When exploratory thinking matures into strategic direction (how the ecosystem is shaped) → moves to `strategy/`
+- When it reaches constitutional significance → absorbed into `VISION.md` or `MANIFESTO.md`
 
 ---
 
@@ -66,9 +56,9 @@ docs/ecosystem/
 
 - `VISION.md` **constrains** — it says what FringeIsland is and isn't
 - `MANIFESTO.md` **inspires** — it says what we value
-- `universe/` **imagines** — it says how the world actually works
+- `../fringeisland-thinking/canon--*` **imagines** — it says how the world actually works
 - `strategy/` **directs** — it says how the ecosystem is structured
-- `thinking/` **explores** — it holds questions not yet answered
+- `../fringeisland-thinking/discovery--*` and `questions--*` **explore** — they hold questions not yet answered
 
 ---
 

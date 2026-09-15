@@ -78,7 +78,7 @@ Start at [`docs/README.md`](docs/README.md) for the full navigation map. Everyth
 | **Ecosystem (what we're building)** | |
 | Vision (constitutional) | [`docs/ecosystem/VISION.md`](docs/ecosystem/VISION.md) |
 | Manifesto | [`docs/ecosystem/MANIFESTO.md`](docs/ecosystem/MANIFESTO.md) |
-| Universe design (cosmology, beings, narrative, …) | [`docs/fringeisland-thinking/README.md`](docs/fringeisland-thinking/README.md) |
+| Universe design (cosmology, beings, narrative, …) — the `canon--` files | [`docs/fringeisland-thinking/README.md`](docs/fringeisland-thinking/README.md) |
 | Worlds topology (canonical core) | [`docs/fringeisland-thinking/canon--cosmology--worlds-topology.md`](docs/fringeisland-thinking/canon--cosmology--worlds-topology.md) |
 | Role taxonomy (canonical core) | [`docs/fringeisland-thinking/canon--roles--taxonomy.md`](docs/fringeisland-thinking/canon--roles--taxonomy.md) |
 | AI principles (constitutional) | [`docs/ecosystem/PRINCIPLES-AI.md`](docs/ecosystem/PRINCIPLES-AI.md) |
@@ -105,7 +105,7 @@ Start at [`docs/README.md`](docs/README.md) for the full navigation map. Everyth
 | Session bridges | [`docs/planning/sessions/`](docs/planning/sessions/) |
 | Reference snapshots | [`docs/planning/reference/`](docs/planning/reference/) |
 | **Templates** (canonical shapes) | [`docs/templates/`](docs/templates/) |
-| **Research reports** | [`docs/fringeisland-thinking/README.md`](docs/fringeisland-thinking/README.md) |
+| **Thinking** — the universe canon, discovery sessions, research reports, design records (one flat folder; the filename prefix is the register) | [`docs/fringeisland-thinking/`](docs/fringeisland-thinking/) |
 
 ---
 
@@ -113,7 +113,7 @@ Start at [`docs/README.md`](docs/README.md) for the full navigation map. Everyth
 
 The codebase already reflects these patterns — this list is orientation for agents new to the repo, not a re-specification.
 
-- **Two trees, never mixed:** `docs/ecosystem/`, `docs/products/`, `docs/platform/`, `docs/studios/`, `docs/design-system/`, `docs/verticals/`, `docs/architecture/` (the ecosystem tree — WHAT) versus `docs/planning/` (the planning tree — HOW). Features live in the ecosystem tree under their owner; tasks and cycles live in the planning tree.
+- **Two trees, never mixed:** `docs/ecosystem/`, `docs/fringeisland-thinking/`, `docs/products/`, `docs/platform/`, `docs/studios/`, `docs/design-system/`, `docs/verticals/`, `docs/architecture/` (the ecosystem tree — WHAT) versus `docs/planning/` (the planning tree — HOW). Features live in the ecosystem tree under their owner; tasks and cycles live in the planning tree.
 - **Wave model (not phases):** Six named waves — **Ferd** → **Eid** → **Hamn** → **Heim** → **Brim** → **Urd**. Thematic focus buckets, not sequential gates (see ADR-U022 naming, ADR-U024 operational semantics).
 - **Five verticals (obligations on every tier):** Administration · Privacy/GDPR · Notifications · Observability · Transactions (ADR-U002). Verticals are not services — they are cross-cutting obligations that every platform service, product, studio, and design-system component must fulfil. Every feature spec has a mandatory Vertical Impact section (see AGENTS.md). The tier-level `CLAUDE.md` files describe how each vertical applies to their tier specifically.
 - **API-first (ADR-U009):** Build every feature as if every other client surface already exists (the Gimbal shell as much as the Hub shell): `Database → API route → Frontend component`. Never `Database → Frontend component directly`.

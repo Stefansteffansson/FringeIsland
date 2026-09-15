@@ -43,7 +43,7 @@ The skill has eleven sections. Four (1.5, 3.5, 3.6, 3.7) exist to catch drift in
 | **After scoping a new product/studio/service, or writing a feature spec that references pending structural docs** | Section 7 (Expected placeholders) — and update Section 7's registry in the same session |
 | **After a feature is created, advances in maturity, or is deleted** | Section 8 (Feature-inventory summary consistency) |
 | **After authoring or restructuring any `CLAUDE.md` file** | Section 9 (CLAUDE.md cascade consistency) |
-| **After ratifying a `universe/` core, or adding an ADR sourced from universe-discovery** | Section 10 (Graduation-tracker completeness) — and add the matching tracker row in the same session |
+| **After ratifying a `canon--` core, or adding an ADR sourced from universe-discovery** | Section 10 (Graduation-tracker completeness) — and add the matching tracker row in the same session |
 | **After adding or amending any ADR, or moving/renaming files under `docs/architecture/`** | Section 11 (Anatomy freshness) — stamp, retired vocabulary, and current-pointer checks on the living anatomy pair |
 | On-demand, any time | Any subset — the skill is cheap to invoke partially |
 
@@ -674,14 +674,14 @@ When the cascade structure changes (new tier, new sub-tier convention, new sub-e
 
 **Question:** Does every concept that has graduated from universe-discovery into canon have a row in the graduation tracker?
 
-Universe-discovery sessions (`docs/fringeisland-thinking/discovery--tracker-and-backlog.md`) are working notes, **not** canon. When a concept crystallises it graduates into a **canonical home** — a `docs/fringeisland-thinking/README.md` core, or an ADR when the concept is an architectural decision — and that move must be recorded in the graduation tracker (the "## Graduation tracker" table in `docs/fringeisland-thinking/discovery--tracker-and-backlog.md`). The tracker is hand-maintained, so it lags silently: a concept can be firmly canonical while the tracker still implies it never graduated. This check is the guardrail that keeps the record matching canon. (Added 2026-06-14 after an audit found the tracker missing the beings core, the narrative respawn section, and ADRs U025–U028.)
+Universe-discovery sessions (`docs/fringeisland-thinking/discovery--*`) are working notes, **not** canon. When a concept crystallises it graduates into a **canonical home** — a `docs/fringeisland-thinking/canon--*` core, or an ADR when the concept is an architectural decision — and that move must be recorded in the graduation tracker (the "## Graduation tracker" table in `docs/fringeisland-thinking/discovery--tracker-and-backlog.md`). The tracker is hand-maintained, so it lags silently: a concept can be firmly canonical while the tracker still implies it never graduated. This check is the guardrail that keeps the record matching canon. (Added 2026-06-14 after an audit found the tracker missing the beings core, the narrative respawn section, and ADRs U025–U028.)
 
 ### Procedure
 
 1. Enumerate the canonical homes that should be tracked:
-   - **Universe cores** — every `docs/ecosystem/universe/*/README.md` whose top-of-file Status line reads "Canonical" (cosmology, roles, beings today; narrative is partial — its ratified sections count). Confirm each cites the universe-discovery work as its source:
+   - **Universe cores** — every `docs/fringeisland-thinking/canon--*.md` whose top-of-file Status line reads "Canonical" (cosmology, roles, beings today; narrative is partial — its ratified sections count). Confirm each cites the universe-discovery work as its source:
      ```
-     grep -rniE "canonical|ratified|rewritten|universe-discovery|session 0|S[0-9]" docs/ecosystem/universe/*/README.md
+     grep -rniE "canonical|ratified|rewritten|universe-discovery|session 0|S[0-9]" docs/fringeisland-thinking/canon--*.md
      ```
    - **Discovery-sourced ADRs** — every ADR under `docs/architecture/decisions/` whose Source/provenance line cites the universe-discovery work or the 2026-06-05 product locks:
      ```
@@ -695,13 +695,13 @@ Universe-discovery sessions (`docs/fringeisland-thinking/discovery--tracker-and-
 ### What is and isn't in scope
 
 - **In scope:** concepts whose source is the universe-discovery sessions/notes.
-- **Out of scope:** docs sourced from `OLD_VISION.md` / the founding-vision extraction (most of `personal-growth/`, `community/`, `kickstarter/`). That is a different graduation path, not discovery promotion — do not flag those for the discovery tracker. (A discovery *graft* onto an old-vision doc — a single statement folded in — may warrant a tracker footnote but is not a missing-row finding.)
+- **Out of scope:** docs sourced from `OLD_VISION.md` / the founding-vision extraction (most of `canon--growth--*` and `canon--community--*`). That is a different graduation path, not discovery promotion — do not flag those for the discovery tracker. (A discovery *graft* onto an old-vision doc — a single statement folded in — may warrant a tracker footnote but is not a missing-row finding.)
 
 ### Fixing
 
 Missing rows are a one-line fix: add the row (Concept | Source | Canonical home | Type | Date) from the home file's own provenance line. If the tracker schema cannot express the destination (e.g. a new destination type), generalise the schema in the same pass. Both are in-place fixes, not backlog items.
 
-**Skip if:** No `universe/` core has been authored or ratified, and no discovery-sourced ADR has been added, since the last check.
+**Skip if:** No `canon--` core has been authored or ratified, and no discovery-sourced ADR has been added, since the last check.
 
 ---
 
