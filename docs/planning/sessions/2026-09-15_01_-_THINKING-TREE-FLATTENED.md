@@ -52,3 +52,23 @@ Stefan: "go but keep (create?) whisp.md, npcs.md, seasons-and-episodes.md, journ
 ## Open
 
 - The three kickoff decisions from the [front door](../cycles/cycle-current.md) are untouched by this session: the Eid appetite and first theme; leaked-password protection (Supabase Pro); the E2E smoke job's design.
+
+## Doc health at close
+
+```
+Doc Health Check — 2026-09-15 — on-demand, close of the thinking-tree restructure (#657-#660 on main)
+
+Sections run:
+1.5  Architectural drift           — 28 keywords swept over the 11 files whose content is new today / 5 hits, all "never use X" clauses in the Claude.ai instructions (glossary helper) / 0 directives / clean
+3.   Path + README sync            — fringeisland-thinking/ 35 files, index exact both directions, 0 off-convention names, 0 sub-dirs; ecosystem/, novel/, openers/ READMEs match disk / resolver 3473 links, 80 unresolved = the pre-existing set, 0 new / clean
+3.5  Archived-tree leak            — 0 old_*/ refs in active files / clean
+3.6  Deleted-file refs             — 8 names deleted today (v1, rev1, 6 canvas--*) + the 3 old trees / 0 refs in active files / clean; table fed (#658, #659)
+5.   Front door                    — latest-bridge row names the newest session file; plan status open / clean
+9.   CLAUDE.md cascade consistency — 28 files / 0 broken pointers / clean
+10.  Graduation-tracker completeness — 3 Canonical cores all in tracker, 11 home refs resolve, 5 scaffolds (Status Planned) correctly outside the enumeration, dashboard-read headings intact / clean
+Skipped: 1, 2, 4, 6, 7, 8, 11 — no rename, schema, parked, entity, feature or ADR change today; ADR-U044 got a path-wording tidy only.
+
+Critical findings: none.  Backlog items created: none.  Re-finds: none.
+Table updates: §3 README-index row for the flat folder; §3.6 rows for the six folded READMEs and the dissolved canvas-- register; §10 procedure repointed at canon--*.md.
+Notes: the 80 pre-existing unresolved links are 52 in session bridges, 9 in planning/reference legacy-feature-docs, template placeholders (link-to-feature-spec, …), 3 CHANGELOG, 2 registry scaffolds — none in the trees touched.
+```
