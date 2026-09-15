@@ -41,6 +41,7 @@ When the closing bridge has landed, update STATUS.md to mark the entity `Done`, 
 - `STATUS.md` — pipeline status across all entities and amendment sessions.
 - `cc-create-opener-prompt.md` — the generic Step 1 prompt; paste into CC verbatim to author the next opener.
 - `cc-execute-prompt.md` — the generic Step 2 prompt; paste into CC verbatim to execute a freshly-authored opener.
+- `claude-ai-discovery-project-instructions.md` — the versioned copy of the Claude.ai discovery project's instructions (the other side of the `discovery` worktree): where it may write, the five registers of `docs/fringeisland-thinking/`, session shape, global statement numbering, vocabulary authority. Re-paste into the project whenever it changes.
 - `{entity-slug}-descent-opener.md` — per-entity opener instances (authored at entity entry; one per entity; e.g. `ds2-narrative-engine-descent-opener.md`). Moved to `archive/` once the entity's closing bridge lands.
 - `archive/` — executed and superseded openers: the pre-template PC-3 chain + Experiment B + prep, the executed PC-era `cc-*` instances, and executed per-entity descent openers.
 
