@@ -3,7 +3,7 @@
 ---
 id: TASK-UNI-04
 title: "Pass 3 after TASK-UNI-03: fold the empty scaffolds into their cores, merge the Homebody/Explorer twins, retire the pre-canon onboarding summary, fix the sweep artefacts the flatten left in the tracker and the manifestation record"
-status: todo — analysis done 2026-09-15; items 5–7 and 10 need no ruling; items 1–4 wait for Stefan's rulings D1–D4
+status: todo — analysis done 2026-09-15; items 5–7 and 10 need no ruling; D2 ruled 2026-09-16 (`growth`); D1, D3, D4 open
 assigned_to: claude
 priority: medium
 owner: ecosystem
@@ -44,25 +44,34 @@ This file is the analysis and the plan. Nothing is executed until the rulings be
 |---|---|---|---|---|
 | 1 | Beings scaffolds | Fold `canon--beings--whisp.md` and `canon--beings--npcs.md` back into `canon--beings--whisp-and-npcs.md` as one **"Planned — not yet written"** block per page: the scope sentence, the where-the-substance-lives pointers, the how-it-gets-written line; the empty H2s become a bullet list of promised sections. The day a discovery session fills one, the file is split out again under the same name (that is the graduation path). **Reverses today's ruling** (TASK-UNI-03 #3 + 6, "keep (create?) whisp.md, npcs.md, …"). | 3 → 1 | **D1** |
 | 2 | Narrative scaffolds | The same for `seasons-and-episodes`, `journeys`, `first-experience` into `canon--narrative--how-story-works.md`. The first-experience block keeps its CQ-010 pointer and the "deferred until the fundamentals are firm" sequencing line verbatim (Stefan, 2026-06-14). | 4 → 1 | **D1** |
-| 3 | Homebody / Explorer twins | One file, **`canon--community--engagement-spectrum-and-archetypes.md`**: the spectrum text (vision-extracted, the higher grade) as the body; the three personas as a section with its own grade line ("Thinking — needs deepening and validation"; precedent for a per-section grade: how-story-works, Respawn ratified, rest overview); the two Open-questions lists merged, the "how do archetypes relate to the spectrum" question closed by the merge itself. `git mv` the spectrum file (the one three-questions cites) so `--follow` history holds; the archetypes body moves in as content. Area `community`: both files describe how a member inhabits the world; `growth` keeps three-questions and privacy-model. | 2 → 1 | **D2** (area) · **D3** (merge vs cross-link) |
+| 3 | Homebody / Explorer twins | One file, **`canon--growth--engagement-spectrum.md`** — the spectrum keeps its name and its history, no `git mv`; the archetypes body moves in as content. The spectrum text (vision-extracted, the higher grade) stays the body; the three personas fold in as a section with its own grade line ("Thinking — needs deepening and validation"; precedent for a per-section grade: how-story-works, Respawn ratified, rest overview) — Homebody and Explorer as the two poles, the Dreamineer persona kept as the 1+Community perspective illustration with the existing note that Dreamineer is an authorial mode per the roles core; the two Open-questions lists merged, the "how do archetypes relate to the spectrum" question closed by the merge itself. Area `growth`, ruled D2: the spectrum is two ways of engaging as a FIM — cultivate the home, or go on expeditions near or far from it — not the community that creates the experience. | 2 → 1 | **D3** (merge vs cross-link); D2 ruled |
 | 4 | Pre-canon summary | Retire `discovery--2026-05-18--the-universe-explained.md`; git history keeps it. **Before deleting**, read it against the three cores and the index and list anything not carried — expected: nothing (its "one picture" table and glossary are what Session B ratified, and its Shadow usage is now wrong). The index's discovery row goes in the same commit. | 1 → 0 | **D4** |
 | 5 | Tracker header | Rewrite the **Discipline** block and the graduation-tracker intro of `discovery--tracker-and-backlog.md` to the current convention: sessions are `discovery--<yyyy-mm-dd>--<topic>.md`; concepts graduate into a `canon--*` core or an ADR; the two worlds reports by their current names. Headings untouched (§10 and the dashboard read them). | — | none (correctness) |
 | 6 | Manifestation record | Re-point each H3 of `record--universe-to-spec-manifestation.md` to the current filename (nine old-path mentions). The record stays a dated snapshot; `## Headline` stays (dashboard). | — | none (correctness) |
-| 7 | Footers | `canon--growth--three-questions.md`: "See [research/](README.md)" → the three `research--growth--*` files. `canon--community--kickstarter-season-zero.md`: "See [community/](README.md)" → the merged community file (or drop if D3 says cross-link). | — | none |
+| 7 | Footers | `canon--growth--three-questions.md`: "See [research/](README.md)" → the three `research--growth--*` files. `canon--community--kickstarter-season-zero.md`: "See [community/](README.md)" → drop; after D2 the `community` area holds only this file. | — | none |
 | 8 | Steering | `AGENTS.md` line 92: six → five registers. The Claude.ai project instructions and the index tables updated for every fold, merge, rename and retire. `sources.json` is untouched unless item 10 renames a path it holds (it does: what-fills-a-life-v2). | — | carve-out: merge on Stefan's nod |
 | 9 | Left alone, deliberately | Everything under "What is not a problem". Two Whisp names remain after item 1 — the canon core and the discovery knowledge base — and that is the convention working: the register token is the difference. | — | — |
 | 10 | Version suffixes that point at nothing | `research--growth--what-fills-a-life-v2.{md,docx}` → `…what-fills-a-life.{md,docx}`; `research--method--multi-product-ecosystem-management-rev2.docx` → `…management.docx`. v1 and rev1 were retired today, so the suffix now tells an outsider a version is missing. Referrers: `sources.json`, the index, TASK-UNI-02. | rename | none (recommend yes) |
 
-**Result if D1–D4 follow the recommendations:** 33 → 26 `.md` files; `canon--` from 14 to 8 (cosmology, roles, beings, narrative, three-questions, privacy-model, engagement-spectrum-and-archetypes, kickstarter-season-zero); every remaining name is the only file for its topic in its register. If D1 says keep: 33 → 31 (items 3 and 4 only).
+**Result if D1–D4 follow the recommendations:** 33 → 26 `.md` files; `canon--` from 14 to 8 (cosmology, roles, beings, narrative, three-questions, privacy-model, engagement-spectrum, kickstarter-season-zero); every remaining name is the only file for its topic in its register. If D1 says keep: 33 → 31 (items 3 and 4 only).
 
 ## Decisions for Stefan
 
 | # | Question | Recommendation | Alternative |
 |---|---|---|---|
 | **D1** | Fold the five scaffolds created today back into their cores? | **Fold.** The empty files are the confusion; the promise survives as a headed "Planned" block inside the core, and a file is split out the day a session fills it. | Keep the five files, accept that `whisp.md` is empty and `whisp-and-npcs.md` is the one with content. |
-| **D2** | Area token for the merged Homebody / Explorer file | **`community`** — how a member inhabits the world. | `growth` — keep `canon--growth--engagement-spectrum.md` as the name and fold the archetypes in. |
+| **D2** | Area token for the merged Homebody / Explorer file | ~~`community`~~ **Ruled `growth`** (Stefan, 2026-09-16 — see Rulings): keep `canon--growth--engagement-spectrum.md` as the name and fold the archetypes in. | — |
 | **D3** | Merge the twins, or only cross-link them? | **Merge** — 110 lines about the same two figures. | Cross-link only; both files stay. |
 | **D4** | Retire the 2026-05-18 onboarding summary? | **Retire** — pre-Mist, superseded by the cores and the index. | Keep it as the newcomer narrative — then it needs re-grounding on the Mist canon, which is canon writing and not this pass. |
+
+## Rulings
+
+| # | Ruling | Who, when |
+|---|---|---|
+| D2 | **`growth`.** "Homebody and Explorer refer to two different ways of engaging in FringeIsland as a FIM. Either you cultivate your FIM home at FringeIsland or you go on expeditions and explore near or far from your FringeIsland home. It's not meant to be for the community creating the actual FringeIsland experience." So the merged file is `canon--growth--engagement-spectrum.md` (no rename), and the `community` area keeps only the Kickstarter. The Dreamineer persona stays in the merged file as the 1+Community perspective illustration, with the existing note that Dreamineer is an authorial mode (roles core) — it is not a position on the spectrum. | Stefan, 2026-09-16 |
+| D1 | open | |
+| D3 | open | |
+| D4 | open | |
 
 ## Execution (after the rulings)
 

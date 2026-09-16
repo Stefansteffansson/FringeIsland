@@ -17,7 +17,7 @@
 - The two kickoff decisions in the plan §4 — the Eid appetite, and which of the three themes goes first
 - Leaked-password protection — a Supabase Pro decision (the org is on Free; the toggle refuses to save)
 - The E2E smoke job in CI — Eid's first tooling item, a ruling on design before a build
-- The pass-3 rulings D1–D4 in [`TASK-UNI-04`](../backlog/tasks/TASK-UNI-04-condense-thinking-tree.md) — fold the five scaffolds, merge the Homebody/Explorer twins (and their area), retire the pre-canon summary
+- The pass-3 rulings D1, D3, D4 in [`TASK-UNI-04`](../backlog/tasks/TASK-UNI-04-condense-thinking-tree.md) — fold the five scaffolds, merge the Homebody/Explorer twins, retire the pre-canon summary (D2 ruled 2026-09-16: `growth`)
 
 ## Landed this cycle
 - **Wave 1, Ferd, declared CLOSED 2026-09-07** — `ferd.md` completed, the [close plan](../hub-v2/2026-09-05-ferd-close-plan.md) CLOSED, the [DoD walk](../hub-v2/2026-09-05-ferd-dod-walk.md) with no open row, the [wave retro](../retrospectives/retro-wave-ferd.md) carrying the carry-overs
