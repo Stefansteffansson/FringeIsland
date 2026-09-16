@@ -32,7 +32,7 @@
         { "type": "group", "note": "**research--** (study the world)  →  feeds  →  **discovery--** (generate our ideas)  →  graduates  →  **canon--** (the world as it is) — one flat folder, `docs/fringeisland-thinking/`, the filename prefix is the register", "blocks": [
           { "type": "links", "label": "Foundations — research", "items": [
             { "label": "Kegan & Immunity to Change — how adults grow", "path": "docs/fringeisland-thinking/research--growth--kegan-immunity-to-change.md" },
-            { "label": "What Fills a Life — human flourishing", "path": "docs/fringeisland-thinking/research--growth--what-fills-a-life-v2.md" },
+            { "label": "What Fills a Life — human flourishing", "path": "docs/fringeisland-thinking/research--growth--what-fills-a-life.md" },
             { "label": "Theory U — facilitation methodology", "path": "docs/fringeisland-thinking/research--growth--theory-u.md" },
             { "label": "Portal Fantasy — cross-media portals", "path": "docs/fringeisland-thinking/research--worlds--portal-fantasy.md" },
             { "label": "Parallel Worlds — alternative realities", "path": "docs/fringeisland-thinking/research--worlds--parallel-worlds.md" }

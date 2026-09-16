@@ -108,14 +108,16 @@ FIM occupies**, not world-inhabitants of a separate kind — they are defined in
 are retired** (ratified 2026-06-10); how Dreamineers manifest *within* the narrative (rather than
 behind it) remains an open design thread.
 
-## Companion pages
+## Planned — not yet written
 
-| Document | What it covers | Status |
-|----------|---------------|--------|
-| [`canon--beings--whisp.md`](canon--beings--whisp.md) | The Whisp's full specification — encounter phenomenology, dialogue mechanics, the senses model, internalisation arc | Scaffold — awaiting specification (derives from this core; prerequisite to DS-7 Intelligence implementation) |
-| [`canon--beings--npcs.md`](canon--beings--npcs.md) | NPC behaviour authoring, layer-promotion workflow, role in seasons and episodes | Scaffold — awaiting specification |
+Two pages this core has promised since Session B. They existed as empty scaffold files from 2026-09-15 to 2026-09-16 and were folded back here (TASK-UNI-04, ruling D1) so that no file in the folder is empty; each is split out again as its own `canon--beings--*` file the day a discovery session fills it. **Nothing below is canon; this core is.**
+
+**The Whisp — full specification.** Encounter phenomenology, dialogue mechanics, the senses model, internalisation arc. Derives from this core; prerequisite to the DS-7 Intelligence implementation. Where the substance lives today: §The Whisp above (ratified Session B, 2026-06-10); [ADR-U029](../architecture/decisions/ADR-U029-whisp-ownership-split-by-face.md) (the Whisp's ownership split by face); [`../platform/domain/intelligence.md`](../platform/domain/intelligence.md) (DS-7 Intelligence, the service that will implement it); [`discovery--2026-06-15--knowledge-base-whisp-and-universe-foundations.md`](discovery--2026-06-15--knowledge-base-whisp-and-universe-foundations.md) (the philosophical, psychological and empirical foundations — working material, not canon); [`discovery--2026-05-18--universe-session-01.md`](discovery--2026-05-18--universe-session-01.md) statements S1–S5.
+
+**NPCs — behaviour authoring and layer promotion.** NPC behaviour authoring, layer-promotion workflow, role in seasons and episodes. Where the substance lives today: §NPCs and §Where the creative roles went above; [`../platform/domain/narrative.md`](../platform/domain/narrative.md) (DS-2 Narrative owns the NPC character layer); [`../platform/domain/content.md`](../platform/domain/content.md) (DS-4 Content, the media and assets an NPC is composed from); [`../studios/universe-studio/arc-studio/README.md`](../studios/universe-studio/arc-studio/README.md) (where seasons and episodes, and the NPCs in them, are authored).
+
+How either gets written: the graduation path — a discovery session → statements → a ratification pass → a new `canon--beings--*` file whose Status line reads "Canonical", and a row in [`discovery--tracker-and-backlog.md`](discovery--tracker-and-backlog.md).
 
 ---
 
-*The Whisp remains the highest-consequence concept in the roadmap — it touches every wave from
-Eid onward. This core states what it IS; the companion pages will specify how it behaves.*
+*The Whisp remains the highest-consequence concept in the roadmap — it touches every wave from Eid onward. This core states what it IS; the planned pages above will specify how it behaves.*

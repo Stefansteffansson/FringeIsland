@@ -89,7 +89,7 @@ The Anthropic computer-use tools have legitimate uses for sandbox-side analysis,
   2. If `discovery` is ahead of `main`: open a PR `discovery` → `main` and merge it (docs-only under those two trees is routine → fuller-auto; **never delete the `discovery` branch**).
   3. Sync back: merge `main` into `discovery` and push, so discovery sessions always see current ecosystem docs.
 - **Anomalies — surface to Stefan, don't auto-commit:** a dirty file outside `docs/ecosystem/` and `docs/fringeisland-thinking/` in the worktree; the worktree checked out on anything other than `discovery`; unexplained dirty `docs/ecosystem/` or `docs/fringeisland-thinking/` files in the main checkout (suspect a mispointed Claude.ai session).
-- **New files in `docs/fringeisland-thinking/` follow its naming convention** — `<register>--<area>--<topic>.md`, one level deep, no sub-directories (the folder's README explains the six registers). A discovery session lands as `discovery--<yyyy-mm-dd>--<topic>.md`; a crystallised concept becomes a `canon--` file **and** a row in `discovery--tracker-and-backlog.md`.
+- **New files in `docs/fringeisland-thinking/` follow its naming convention** — `<register>--<area>--<topic>.md`, one level deep, no sub-directories (the folder's README explains the five registers). A discovery session lands as `discovery--<yyyy-mm-dd>--<topic>.md`; a crystallised concept becomes a `canon--` file **and** a row in `discovery--tracker-and-backlog.md`.
 - Feature commits in the main checkout must never bundle discovery-tree edits.
 
 ## Boundaries

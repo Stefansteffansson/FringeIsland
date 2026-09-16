@@ -2,16 +2,16 @@
 
 **Purpose:** Working sessions exploring the FringeIsland universe — its cosmology, beings, dynamics, and meaning. Each session is a discrete artifact capturing statements, "held" interpretations, and emerging patterns.
 
-**Status:** Exploration. Content here is not yet canonical. When concepts crystallise into stable positions about how the universe works, they graduate into `README.md` per the standard graduation path.
+**Status:** Exploration. Content here is not yet canonical. When concepts crystallise into stable positions about how the universe works, they graduate into a `canon--*` core (or an ADR) per the graduation path recorded below.
 
-**Related research:** External cross-media research dossiers feeding this work live in `README.md` (Portal_Fantasy_Research_Report.md, Parallel_Worlds_Research_Report.md, and others).
+**Related research:** the external cross-media surveys feeding this work are [`research--worlds--portal-fantasy.md`](research--worlds--portal-fantasy.md) and [`research--worlds--parallel-worlds.md`](research--worlds--parallel-worlds.md).
 
 **Discipline:**
-- One session = one file. Named `YYYY-MM-DD_universe-discovery-session-NN.md`.
+- One session = one file. Named `discovery--<yyyy-mm-dd>--<topic>.md` — the folder's convention (see the [index](README.md)).
 - Sessions are append-only during the session; closed when the session ends.
 - Direct statements from Stefan are recorded verbatim; Claude's "held" paraphrases are kept as separate interpretation checks so drift is visible.
-- Divergence from existing universe writings is permitted and expected — reconciliation happens when concepts are promoted to `README.md`.
-- **Sounding-board notes** are exploratory outputs from non-session conversations (e.g. parking-lot files for ideas not yet considered). They live alongside sessions but follow no fixed schema and carry an explicit `decision_status: open` marker. Distinguished from sessions in the directory by their filename (not `*-session-NN.md`).
+- Divergence from existing universe writings is permitted and expected — reconciliation happens when concepts are promoted to a `canon--*` core.
+- **Sounding-board notes** are exploratory outputs from non-session conversations (e.g. parking-lot files for ideas not yet considered). They live alongside sessions but follow no fixed schema and carry an explicit `decision_status: open` marker. Distinguished from sessions by the Sounding-board table below, not by filename.
 
 ---
 
@@ -33,7 +33,7 @@ These concepts are named in the universe design and in [`questions--ecosystem-op
 | Topic | Why it needs a session | Status |
 |-------|------------------------|--------|
 | Universe-mechanics fundamentals — how the near and far ends of place 2 (the warm Fringe) and place 3 (the hostile Fringe) actually look and function | The [cosmology core](canon--cosmology--worlds-topology.md) fixes the topology at a high level, but the working detail of the places is not yet pinned, and most downstream design depends on it | **Open — the foundational next step** |
-| The first hour / first experience | The universe's named highest-risk gap; DS-3 Journeys and `narrative/` are waiting on it (CQ-010) | Open — **deferred**, blocked on the universe-mechanics fundamentals above |
+| The first hour / first experience | The universe's named highest-risk gap; DS-3 Journeys and the narrative core are waiting on it (CQ-010) | Open — **deferred**, blocked on the universe-mechanics fundamentals above |
 | Narrative beyond respawn | Content families, journey route types, and arc/episode design as universe canon — only the respawn section is ratified so far | Not yet scheduled |
 | Community formation / cold-start | How the relational and communal layers work when few members are present (CQ-001, CQ-002, CQ-003) | Not yet scheduled |
 | Kickstarter / founding moment | The "Season Zero" launch, arrival rituals, and the founding Dreamineer cohort (currently an old-vision sketch only) | Not yet scheduled |
@@ -47,13 +47,13 @@ Exploratory outputs from non-session conversations. Not decisions; not statement
 
 | Note | Date | Focus | Decision status |
 |------|------|-------|-----------------|
-| [Portal ideas from research](discovery--2026-05-28--portal-ideas-from-research.md) | 2026-05-28 | Ten candidate portal-type ideas for FringeIsland, sourced from the Portal Fantasy and Parallel Worlds research dossiers (see `README.md`) and cross-checked against Session 01's locked topology | open — no decision made |
+| [Portal ideas from research](discovery--2026-05-28--portal-ideas-from-research.md) | 2026-05-28 | Ten candidate portal-type ideas for FringeIsland, sourced from the Portal Fantasy and Parallel Worlds research dossiers (`research--worlds--portal-fantasy.md`, `research--worlds--parallel-worlds.md`) and cross-checked against Session 01's locked topology | open — no decision made |
 
 ---
 
 ## Graduation tracker
 
-When a concept from these sessions reaches stable form and moves into canon — a `README.md` core, or an ADR when the concept is an architectural decision — record the move here. The discovery notes are never canon; the "Canonical home" below is the single source of truth for each concept. (Verified complete against the canonical cores and the discovery-sourced ADRs on 2026-06-14.)
+When a concept from these sessions reaches stable form and moves into canon — a `canon--*` core, or an ADR when the concept is an architectural decision — record the move here. The discovery notes are never canon; the "Canonical home" below is the single source of truth for each concept. (Verified complete against the canonical cores and the discovery-sourced ADRs on 2026-06-14.)
 
 | Concept | Source | Canonical home (single source of truth) | Type | Date |
 |---------|--------|------------------------------------------|------|------|
@@ -67,4 +67,4 @@ When a concept from these sessions reaches stable form and moves into canon — 
 | Mist identity lifecycle (renames the Shadow lifecycle; accretion, two-paths/one-consent-gate, presence/assessment ephemerality, Whisp-carried/cord-kept; "Shadow" reassigned to the place-3 menace) | Session 01 resume (S47-48) | [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md) (supersedes ADR-U027) | ADR | 2026-06-21 |
 | Governance by scope (Console, Universeers, DeusEx) | Session 01 (S29) + 2026-06-05 locks | [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md) | ADR | 2026-06-10 |
 
-**Not yet graduated — still open, no firm canonical home yet (do not treat as settled truth):** the rest of the narrative core (`canon--narrative--*`) beyond respawn (content families, journey route types as universe canon), the first-hour / first experience, community formation / cold-start, and the Kickstarter / founding-moment design. These remain in discovery or as open questions ([`questions--ecosystem-open-questions.md`](questions--ecosystem-open-questions.md)) until a session crystallizes them.
+**Not yet graduated — still open, no firm canonical home yet (do not treat as settled truth):** the rest of the narrative core (`canon--narrative--how-story-works.md`, whose planned pages are listed inside it) beyond respawn (content families, journey route types as universe canon), the first-hour / first experience, community formation / cold-start, and the Kickstarter / founding-moment design. These remain in discovery or as open questions ([`questions--ecosystem-open-questions.md`](questions--ecosystem-open-questions.md)) until a session crystallizes them.

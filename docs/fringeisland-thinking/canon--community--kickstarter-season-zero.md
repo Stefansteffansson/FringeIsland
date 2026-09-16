@@ -50,4 +50,4 @@ Its design is its own exploration — a dedicated session, approached with the s
 
 ---
 
-*See [BUSINESS_MODEL.md](../ecosystem/strategy/BUSINESS_MODEL.md) for how Kickstarter fits into the broader revenue model. See [community/](README.md) for how the founding cohort shapes the living community.*
+*See [BUSINESS_MODEL.md](../ecosystem/strategy/BUSINESS_MODEL.md) for how Kickstarter fits into the broader revenue model.*
