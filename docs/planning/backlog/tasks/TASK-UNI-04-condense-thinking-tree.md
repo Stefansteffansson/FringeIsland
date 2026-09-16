@@ -3,7 +3,7 @@
 ---
 id: TASK-UNI-04
 title: "Pass 3 after TASK-UNI-03: fold the empty scaffolds into their cores, merge the Homebody/Explorer twins, retire the pre-canon onboarding summary, fix the sweep artefacts the flatten left in the tracker and the manifestation record"
-status: todo — analysis done 2026-09-15; items 5–7 and 10 need no ruling; D2 ruled 2026-09-16 (`growth`); D1, D3, D4 open
+status: in-progress — all four rulings in 2026-09-16; executed the same day on branch docs/thinking-pass-3; done at merge
 assigned_to: claude
 priority: medium
 owner: ecosystem
@@ -69,9 +69,11 @@ This file is the analysis and the plan. Nothing is executed until the rulings be
 | # | Ruling | Who, when |
 |---|---|---|
 | D2 | **`growth`.** "Homebody and Explorer refer to two different ways of engaging in FringeIsland as a FIM. Either you cultivate your FIM home at FringeIsland or you go on expeditions and explore near or far from your FringeIsland home. It's not meant to be for the community creating the actual FringeIsland experience." So the merged file is `canon--growth--engagement-spectrum.md` (no rename), and the `community` area keeps only the Kickstarter. The Dreamineer persona stays in the merged file as the 1+Community perspective illustration, with the existing note that Dreamineer is an authorial mode (roles core) — it is not a position on the spectrum. | Stefan, 2026-09-16 |
-| D1 | open | |
-| D3 | open | |
-| D4 | open | |
+| D1 | **Fold.** The five scaffolds folded back into their cores as one "Planned — not yet written" block each (scope, where the substance lives today, how it gets written); the five files deleted, git history keeps them. The two entity `CLAUDE.md` files that named a scaffold (`platform/domain/intelligence`, `platform/domain/content`) re-worded to the planned page inside the core. | Stefan, 2026-09-16 — "D1 fold, D3 merge, D4 retire - go" |
+| D3 | **Merge.** `canon--community--member-archetypes.md` folded into `canon--growth--engagement-spectrum.md` as the section "The member archetypes (Thinking — needs deepening and validation)"; the file deleted, git history keeps it. The spectrum file kept its name and history (no `git mv`). | Stefan, 2026-09-16 |
+| D4 | **Retire.** Read-through done before the delete (recorded below); `discovery--2026-05-18--the-universe-explained.md` deleted, git history keeps it; the index row and the manifestation record's heading updated. | Stefan, 2026-09-16 |
+
+**Item 4 read-through (2026-09-16, before the delete — every distinctive claim of the summary grepped against its candidate home):** the Whisp sections (inner dialogue, empty-then-filled, tough love, voluntary → self-love, internalised, the Jake / Avatar picture) → `canon--beings--whisp-and-npcs.md`; overlay / beyond and the tonal range → `canon--cosmology--worlds-topology.md` and how-story-works (S12); respawn, productive failure, the growth zone → `canon--narrative--how-story-works.md`; Big Five dissolved into dialogue and the senses → the beings core + `canon--growth--three-questions.md`; Universe Studio and its three sub-studios → `VISION.md` + ADR-U026; human-first, first thought / expansion / last say, dreaming sessions, two-way guard rails → `PRINCIPLES-AI.md`; the influences (the ARGs, Stålenhag, Åkerman, geocaching, signature journey vs charter trip, *Edge of Tomorrow*, the telescope image) → Session 01 itself, the append-only source the summary distilled. Not carried, and correctly so: "Shadow" for the anonymous entrant (now the Mist, ADR-U031) and "the difference between Dreamineer and Creator has not been pinned down" (settled in the roles core: Creator is a Dreamineer specialisation). Nothing to rescue.
 
 ## Execution (after the rulings)
 
@@ -81,9 +83,9 @@ One branch `docs/thinking-pass-3`, one PR, content changes reviewed as content, 
 
 ## Done when
 
-- [ ] D1–D4 ruled here (who, when, what)
-- [ ] Items 5, 6, 7 and 10 done regardless of the rulings
-- [ ] Every fold, merge, rename and retire has its outside referrers re-pointed in the same PR; the index exact both directions
-- [ ] `AGENTS.md` and the Claude.ai project instructions say five registers and name only files that exist
-- [ ] doc-health run (§3, §3.6, §9, §10) clean; retired names in the §3.6 table
+- [x] D1–D4 ruled here (who, when, what)
+- [x] Items 5, 6, 7 and 10 done regardless of the rulings
+- [x] Every fold, merge, rename and retire has its outside referrers re-pointed in the same PR; the index exact both directions (28 / 28; link resolver 80 unresolved before and after, zero new)
+- [x] `AGENTS.md` and the Claude.ai project instructions say five registers and name only files that exist
+- [x] doc-health run (§3, §3.6, §9, §10) clean; retired names in the §3.6 table (four rows: the five scaffolds, the archetypes file, the onboarding summary, the two suffix renames)
 - [ ] `npm run dashboard` regenerates; the front door's thinking-tree bullet repointed at the close

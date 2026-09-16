@@ -24,7 +24,7 @@ Filenames are `<register>--<area>--<topic>.md`, or `<register>--<yyyy-mm-dd>--<t
 
 | Register | What it is | You may… |
 |---|---|---|
-| `canon--` | The canonical world — what the universe **is**. The Status line inside each file carries its grade (Canonical / Extracted / Thinking / Scaffold). | **read; not write.** Canon changes through a ratification pass in Claude Code, which also writes the graduation-tracker row. If a session crystallises something, say so in the session file's closing section and leave the canon edit to that pass. |
+| `canon--` | The canonical world — what the universe **is**. The Status line inside each file carries its grade (Canonical / Extracted / Thinking; a planned-but-unwritten page is listed inside its core under "Planned — not yet written", never as an empty file). | **read; not write.** Canon changes through a ratification pass in Claude Code, which also writes the graduation-tracker row. If a session crystallises something, say so in the session file's closing section and leave the canon edit to that pass. |
 | `discovery--` | Dated working sessions and candidate material, plus `discovery--tracker-and-backlog.md`. Never canon. | **write** — this is your register. |
 | `research--` | Reports (areas `growth`, `worlds`, `method`, `engineering`). | read; write only if Stefan asks for a research report, named `research--<area>--<topic>.md`. |
 | `record--` | Design records and snapshots. | read. |

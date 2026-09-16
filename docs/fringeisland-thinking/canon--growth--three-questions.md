@@ -98,7 +98,7 @@ The three questions draw on a broad research base woven into the experience laye
 - Belonging and connection: Baumeister & Leary, attachment theory, Harvard Study of Adult Development
 - Self-efficacy: Bandura
 
-→ *See [research/](README.md) for full research reports.*
+→ *Full reports: [`research--growth--kegan-immunity-to-change.md`](research--growth--kegan-immunity-to-change.md), [`research--growth--theory-u.md`](research--growth--theory-u.md), [`research--growth--what-fills-a-life.md`](research--growth--what-fills-a-life.md).*
 
 ---
 
