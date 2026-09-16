@@ -1,4 +1,511 @@
-# Universe Discovery — Session 01
+# The universe in the making — where discovery stands, the ideas on the table, and everything said so far
+
+**What this file is:** the whole discovery register of the FringeIsland universe in one place. **Nothing here is canon** — canon is the `canon--*` files, and the graduation tracker in Part 1 says which concept lives in which. Three parts:
+
+1. **Where things stand** — the session log, the discovery backlog (topics that still need a session), the sounding-board notes, and the graduation tracker (what became canon, and where).
+2. **Ideas on the table** — candidate material generated between sessions. Not locked; nothing in it is a decision.
+3. **The sessions** — Stefan's statements verbatim, numbered S001 onward across all sessions, each with Claude's held interpretation kept separate so drift stays visible. This is the record the three Canonical cores were ratified from.
+
+**How it grows.** A new session is appended at the end of Part 3 under its own `### Session NN — <date> — <topic>` heading and continues the statement numbering (S049 is next). The session log in Part 1 gets its row. A new candidate note is appended under Part 2 as `### Candidate X — <topic> (<date>)`. Statements are never renumbered or edited after a session closes; a superseding statement is added, and reconciliation happens when a concept is promoted to a `canon--*` core. Divergence from the existing canon is permitted and expected here.
+
+**How to cite.** By statement number — `S12`, `S19-21` — unique across the whole file. The cores, the ADRs and the reconciliation registers cite this way.
+
+**Read by tooling.** doc-health §10 and the dashboard read the headings "Discovery backlog (open topics awaiting sessions)" and "Graduation tracker" in Part 1 by name — keep them verbatim.
+
+**History.** Assembled 2026-09-16 (TASK-UNI-05) from `discovery--tracker-and-backlog.md`, `discovery--2026-05-28--portal-ideas-from-research.md`, `discovery--2026-07-24--gimbal-origin-and-altered-states.md` and `discovery--2026-05-18--universe-session-01.md`; their text is carried unchanged apart from heading levels and in-file pointers, and the session file's git history follows this file.
+
+---
+
+## Part 1 — Where things stand
+
+### Session log
+
+*This table carries each session's **focus and resume history**; the sessions themselves are in Part 3.*
+
+| Session | Date | Focus | Status |
+|---------|------|-------|--------|
+| Session 01 (Part 3) | 2026-05-18 | Foundations: Whisp as inner dialogue and avatar; two-register universe topology; full tonal range; Universe Studio frame; Shadows, NPCs, Dreamineers, Creators; assessment-as-dialogue; signature journeys; respawn and the Jake/Avatar metaphor | In progress, resumed 2026-06-05 (product/ecosystem layer + Statements 41-46: products are situations not devices and Gimbal/Hub are two affordance profiles, the glowing glass ball is a two-zone home/village gateway, the self-chosen inviolable private home, anchoring as the near-side/Beyond gate making the village FIM-only, and Shadow anonymous-auth with ephemeral erased-on-inactivity data); resumed 2026-06-01 (Statements 37-40: balls glow equal while the cord carries health, the branches are the visible crown, every FIM and Shadow has their own Whisp and cord with only the ball granted at transcendence, and the seed / portal / anchor mechanics); prior resume 2026-05-29 (Statements 31-36: the Fringe reshaped) |
+---
+
+### Discovery backlog (open topics awaiting sessions)
+
+These concepts are named in the universe design and in [`questions--ecosystem-open-questions.md`](questions--ecosystem-open-questions.md) but have **no firm canonical home yet** (they also appear in the "not yet graduated" note under the graduation tracker below). Each needs its own discovery session to crystallise before it can graduate. **None is currently scheduled.**
+
+**Sequencing (Stefan, 2026-06-14):** the platform's universe *mechanics* are not yet fully on paper. Detailed experience design — above all the opening sequence — is **deferred until the fundamentals are firm**. You cannot choreograph how a newcomer first encounters the world before you know how the world itself works (e.g. how the near and far ends of place 2 and place 3 actually look and function). Fundamentals first; experience after. (A first-hour session was scaffolded on 2026-06-14 and withdrawn the same day as premature.)
+
+| Topic | Why it needs a session | Status |
+|-------|------------------------|--------|
+| Universe-mechanics fundamentals — how the near and far ends of place 2 (the warm Fringe) and place 3 (the hostile Fringe) actually look and function | The [cosmology core](canon--cosmology--worlds-topology.md) fixes the topology at a high level, but the working detail of the places is not yet pinned, and most downstream design depends on it | **Open — the foundational next step** |
+| The first hour / first experience | The universe's named highest-risk gap; DS-3 Journeys and the narrative core are waiting on it (CQ-010) | Open — **deferred**, blocked on the universe-mechanics fundamentals above |
+| Narrative beyond respawn | Content families, journey route types, and arc/episode design as universe canon — only the respawn section is ratified so far | Not yet scheduled |
+| Community formation / cold-start | How the relational and communal layers work when few members are present (CQ-001, CQ-002, CQ-003) | Not yet scheduled |
+| Kickstarter / founding moment | The "Season Zero" launch, arrival rituals, and the founding Dreamineer cohort (currently an old-vision sketch only) | Not yet scheduled |
+| Hub experiential trajectory + DESCRIPTION ambition (CQ-016) — *Hub-spec framing, not universe canon* | Routed from Phase-1 finding F-07. Two sizes: a **framing slice** (does the Hub DESCRIPTION convey the "doorway into a world" ambition, or undersell it as a utility?) and the **full trajectory design** (wave-staging the six experiential gap-map mechanisms) | **Framing slice — runnable now** (one focused session; framing, not experience-mechanics, so not blocked). **Full design — deferred**, multi-session, blocked on the universe-mechanics fundamentals above + CQ-010/012/014 |
+
+---
+
+### Sounding-board notes
+
+Exploratory outputs from non-session conversations. Not decisions; not statements; reference material for future sessions to draw on or supersede.
+
+| Note | Date | Focus | Decision status |
+|------|------|-------|-----------------|
+| Portal ideas from research (Part 2, Candidate A) | 2026-05-28 | Ten candidate portal-type ideas for FringeIsland, sourced from the Portal Fantasy and Parallel Worlds research dossiers (`research--worlds--portal-fantasy.md`, `research--worlds--parallel-worlds.md`) and cross-checked against Session 01's locked topology | open — no decision made |
+| The Gimbal's origin, the ball as key, the three altered states (Part 2, Candidate B) | 2026-07-24 | The Gimbal as ancient knowledge with a modern implementation, the key/instrument split, ball resonance as a third connection channel, the three altered states as modes of the threshold, the first opening and its shutdown, the physical glass ball (paused) | CANDIDATE — not locked |
+
+---
+
+### Graduation tracker
+
+When a concept from these sessions reaches stable form and moves into canon — a `canon--*` core, or an ADR when the concept is an architectural decision — record the move here. The discovery notes are never canon; the "Canonical home" below is the single source of truth for each concept. (Verified complete against the canonical cores and the discovery-sourced ADRs on 2026-06-14.)
+
+| Concept | Source | Canonical home (single source of truth) | Type | Date |
+|---------|--------|------------------------------------------|------|------|
+| Worlds topology (Ordinary World / Shimmer / Fringe; the Void as axis; cord, balls, branches, seeds, anchoring, portals, severance & respawn; the comfort→growth→panic gradient) | Session 01 (S-numbers cited in the core) | [`canon--cosmology--worlds-topology.md`](canon--cosmology--worlds-topology.md) (supersedes the Three Worlds model) | universe core | 2026-06-10 |
+| Role taxonomy (Mist → FIM transcendence/metamorphosis; Steward / Guide / Participant / Observer; Universeers / Council / DeusEx / Console; Dreamineer sub-roles) | Session 01 (S16, S29-30, S39, S44, S46) + S47-48 (Mist rename) + 2026-06-05 product locks | [`canon--roles--taxonomy.md`](canon--roles--taxonomy.md) | universe core | 2026-06-10 (Mist re-grounding 2026-06-21) |
+| The Whisp (inner dialogue, fills-by-growth, dissolved assessment, senses, internalisation) + NPCs as layered composites | Session 01 (S1-9, S15, S17-18, S22, S30) | [`canon--beings--whisp-and-npcs.md`](canon--beings--whisp-and-npcs.md) | universe core | 2026-06-10 |
+| Respawn — "the loop is the medium" | Session 01 (S19-21) | [`canon--narrative--how-story-works.md`](canon--narrative--how-story-works.md) (Respawn section; remainder still placeholder) | universe section (partial) | 2026-06-10 |
+| Products as equipment profiles; the Game as journey-depth | 2026-06-05 product locks | [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md) | ADR | 2026-06-10 |
+| Studio decomposition — Universe Studio parent + World Studio | Session 01 (S13-14, S29-30, S44) + 2026-06-05 locks | [ADR-U026](../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md) | ADR | 2026-06-10 |
+| Shadow identity lifecycle (anon auth, ephemerality, transcendence) — **superseded by ADR-U031** | Session 01 (S16, S39, S45, S46) | [ADR-U027](../architecture/decisions/ADR-U027-shadow-identity-lifecycle.md) | ADR | 2026-06-10 |
+| Mist identity lifecycle (renames the Shadow lifecycle; accretion, two-paths/one-consent-gate, presence/assessment ephemerality, Whisp-carried/cord-kept; "Shadow" reassigned to the place-3 menace) | Session 01 resume (S47-48) | [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md) (supersedes ADR-U027) | ADR | 2026-06-21 |
+| Governance by scope (Console, Universeers, DeusEx) | Session 01 (S29) + 2026-06-05 locks | [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md) | ADR | 2026-06-10 |
+
+**Not yet graduated — still open, no firm canonical home yet (do not treat as settled truth):** the rest of the narrative core (`canon--narrative--how-story-works.md`, whose planned pages are listed inside it) beyond respawn (content families, journey route types as universe canon), the first-hour / first experience, community formation / cold-start, and the Kickstarter / founding-moment design. These remain in discovery or as open questions ([`questions--ecosystem-open-questions.md`](questions--ecosystem-open-questions.md)) until a session crystallizes them.
+
+---
+
+## Part 2 — Ideas on the table (candidates, not locked)
+
+Candidate material generated between sessions — sounding-board notes and research-fed options. Each carries its own date and status; none is a decision, and a future session locks or drops it.
+
+### Candidate A — Portal ideas from research (2026-05-28; sounding-board, no decision made)
+
+**title:** "Portal Ideas for FringeIsland — Candidates from Research"
+**type:** sounding-board-notes
+**status:** exploratory
+**decision_status:** open — no decision made
+**generated:** 2026-05-28
+**generated_by:** Claude.ai sounding-board conversation
+source_research:
+  - docs/fringeisland-thinking/research--worlds--portal-fantasy.md
+  - docs/fringeisland-thinking/research--worlds--parallel-worlds.md
+**cosmological_frame:** Session 01, Part 3 of this file
+
+
+#### Purpose and status of this document
+
+This is a **parking-lot** for ten candidate portal ideas surfaced in a Claude.ai sounding-board conversation on 2026-05-28. The conversation was triggered by Stefan asking Claude to read the two new external research dossiers (Portal Fantasy and Parallel Worlds) and propose ideas that could feed FringeIsland's portal/portals design.
+
+**Decision status:** No decision has been made on any of these ideas. None has been promoted to discovery-session statement, none is in the locked cosmology, and the partitioning logic below is one possible framing, not the framing. Ideas are recorded here only so they can be retrieved when the work returns to portal design.
+
+**This is not a session.** Sessions under `universe-discovery/` follow a verbatim-statements + held-paraphrase schema. This file does not — it is the output of an exploratory conversation, recorded for future reference. It is filed here, not as `2026-05-28_universe-discovery-session-XX.md`, deliberately. Treat the ideas with the same caution as any unconfirmed sounding-board output: a starting point for thought, not a position.
+
+**How to use this file later:** when portal design becomes active work, read this file alongside the two research dossiers and Session 01's locked cosmology. Each idea names which research entries it draws from and which Session 01 statements it builds on, so it can be cross-checked against the canonical layer. Several of the ideas would benefit from a Session-XX discovery pass of their own before any of them are accepted.
+
+#### Locked cosmology these ideas were generated against
+
+From Session 01 (Part 3 of this file), the topology relevant to portals (Statements 10, 11, 26, 27):
+
+- **Ordinary World → the Shimmer (membrane/edge) → the Fringe.**
+- The Fringe has a **near side** (coordinate-tied to the Ordinary World, perceived through the Shimmer via Whisp + Gimbal) and the **Beyond** (untethered, reached through thresholds).
+- **The Tree of glowing glass balls** in the FringeIsland sea-village is the locked portal for FIM-to-FIM-private-place traffic. Each glass ball is one FIM's private-place entrance.
+- **The cord and the Void.** The FIM stays bodily safe in the Ordinary World; the Whisp ventures outward on a cord. The cord is the lifeline. Anchoring is climber-style fastening of the cord to objects. Cooperative cord-healing between FIMs gives the social layer a survival function.
+- **Meta-safety with respawn (Statement 19).** The FIM cannot be broken by the world; the Whisp can suffer or die. Failure is reversible at the existential level while remaining real at the narrative level.
+- **Voluntariness is structural (Statement 5).** Everything is up to the FIM.
+- **Tonal range (Statement 12).** The FringeIsland universe runs warm-to-hostile, with traps and betrayal at one pole and forgiveness and warmth at the other.
+- **The five senses ↔ Big-5 mapping (Statement 18).** The world reveals itself in proportion to the FIM's self-disclosure to the Whisp.
+- **Phenomenological signatures.** Geocaching ("I know something the mugglers don't") for the near side; Jake/Avatar (Statement 22) for the projection-with-lifeline mode of being.
+
+#### Constraints any new portal idea must satisfy
+
+Surfaced in the conversation as filters for evaluating the candidates:
+
+1. **The Tree of glowing glass balls is already canonical.** New portal types must either be of a different topological function than the Tree (which handles FIM→FIM-private-place traffic), or cohere with it as a sibling.
+2. **Two registers, two transit problems.** Each portal must serve the near side, the Beyond, or both — and which it serves should be explicit.
+3. **The Shimmer is a membrane, not a portal.** Distinguish "thinning of the Shimmer" (a perception/access gradient) from "discrete threshold" (a defined crossing). The research splits exactly this way: Mendlesohn's portal-quest mode vs. intrusion mode; folklore's unmarked sídhe vs. literature's wardrobe.
+4. **The cord-and-anchor system is locked.** New portals should be testable against the existing cord/Void/anchoring mechanic, not require a separate one.
+5. **Every enduring portal has a single rule.** From the Portal_Fantasy meta-section: Lucy must leave the wardrobe open; Orpheus must not look back; Oisín must never touch Irish soil; the subtle knife must close every window. Each FringeIsland portal type should carry one rule or taboo. The cord-anchoring discipline (Statement 27) already qualifies as one such rule.
+
+---
+
+#### The five primary candidates
+
+These are the strongest candidates surfaced — roughly one per topological function FringeIsland actually needs given the locked cosmology.
+
+##### 1. The Shimmer-cut — a portable, costly cut between worlds (the FIM's own subtle knife)
+
+**Source lineage:**
+- Portal_Fantasy book-4: His Dark Materials / the subtle knife (Pullman). The knife cuts windows between worlds anywhere; every cut leaks Dust and admits Spectres; the bearer is morally accountable for closing windows. Rules: never use it for a base purpose, always close the windows.
+- Parallel_Worlds, Mirror Cities entry (Schwab, Shades of Magic): Antari are rare bearers who can travel between four parallel Londons; cross-world travel is gated by rare ability.
+
+**FringeIsland fit:** An advanced FIM (Whisp filled enough, anchored cord taut) can, at certain locations of *thinned* Shimmer, cut a window — a discrete passage from the near side into a piece of Beyond. The act has a real cost: each cut leaves a Shimmer-scar visible to other FIMs through their Gimbal, and an unhealed scar bleeds Void exposure (the cord stretches into ground it shouldn't have to cover). FIMs are expected to close their cuts; uncared-for scars accumulate as Shimmer-weather visible in that region. The carried rule: close what you cut.
+
+**Why this earns its place:** It's the single design move that resolves "where do new thresholds come from?" without making the Beyond feel pre-installed. It also encodes the Statement-3 tough-love stance into geography — the universe trusts the FIM with power that has consequences, but doesn't pretend the consequences aren't there. Pairs naturally with the Whisp-quality-by-disclosure mechanic (Statement 17): only FIMs whose Whisps are sufficiently full can cut, so the capacity is earned, not granted.
+
+##### 2. The Cairn portals — anchored, place-bound, location-tied passages in the Ordinary World
+
+**Source lineage:**
+- Portal_Fantasy book-6: Outlander / Craigh na Dun. Bronze-Age stone circle; most active at Celtic feasts (Samhain, Beltane); only certain people can "hear" the stones humming; gemstones offer some steering; the cleft central stone is the active gate.
+- Portal_Fantasy folklore-4: Sídhe / fairy mounds and rings. Irish roads literally re-routed around fairy forts to avoid disturbing them. A living belief, not just literature.
+- Portal_Fantasy folklore-2: Bifröst. Fixed, fated, guarded by Heimdall.
+
+**FringeIsland fit:** A small set of real, named, geo-coordinate-bound portal sites exist in the Ordinary World. A FIM with the Gimbal at the right place + right Whisp state + (optionally) right time-window perceives them. Not universal-access — the Whisp's quality gates perception (Statements 17–18). These are the public, anthropologically-rooted thresholds, sitting in the **World Studio** authority: a Dreamineer Anthropologist *places* a Cairn at a location with cultural and narrative weight; the Creator builds its 3D form; over time the local FIM community develops its own customs around it (Statement 30's culture-layer). The carried rule could be temporal (only at certain times of year), perceptual (only when the Whisp's sight-trait is sufficient), or social (only when approached respectfully).
+
+**Why this earns its place:** It gives the geocaching feeling its strongest expression — a real hillside or a real harbor wall that, for those who can see it, is something more. It also gives the Anthropologist role a concrete in-world authorial output beyond NPCs, which the open threads under Statement 30 explicitly flag as still loose. Strongest candidate for testing how the World Studio's hard/soft (Creator/Anthropologist) collaboration actually plays out on a non-NPC artifact.
+
+##### 3. The Threshold-by-condition — passable only when an inner state is right
+
+**Source lineage:**
+- Portal_Fantasy book-5: Coraline / the little door. Opens with an old black key; functions only when the Other Mother wills it. Sometimes a brick wall, sometimes a soft tunnel.
+- Portal_Fantasy film-8: Everything Everywhere All at Once / verse-jumping. No physical portal; the gateway is an action — a sufficiently improbable, absurd act briefly links the user to a parallel-universe self.
+- Parallel_Worlds, Spirited Away spirit world: rules are strict and folkloric — eating the food traps you, names can be stolen, forgetting your name means never leaving. Survival is etiquette, not strength.
+
+**FringeIsland fit:** Certain thresholds are always there (a door under a stair in the FringeIsland sea-village, say) but pass only when the FIM meets a condition — a particular Whisp-fullness in a particular trait, a particular relational completion (1+1 portals that open only when both FIMs are present and synchronised), a particular Immunity-to-Change unlock. The door doesn't test you; it reflects you. When you can't pass, you simply meet the door's outside; when you can, the wall thins. This is the **Wayfinder's** portal — Journey-Studio-authored thresholds whose gating is a developmental marker, not a puzzle. The carried rule: the door is the FIM, not a challenge to be solved.
+
+**Why this earns its place:** It's the cleanest expression of "the world becomes more available as the Whisp fills" (Statement 18) as *geography*, not as menu unlock. Mathematically it's also one of the few ways the universe can render the comfort/growth/panic gradient (Statement 26's spatial reading) as literal access — readiness becomes literal passage. Strong candidate for use with Immunity-to-Change work specifically: the four-column map's hidden assumptions could each be a threshold-condition.
+
+##### 4. The Anchored descent — a deliberate, equipment-aware journey deep into the Beyond
+
+**Source lineage:**
+- Portal_Fantasy folklore-1: Orpheus at Cape Tainaron. Descent through a known cave, charm the guardian, *don't look back*. Establishes the archetypal "don't look back" portal rule.
+- Portal_Fantasy game-8: Diablo's Town Portal scroll. Opened on demand, persists until caster returns through it; bone walls can trap the open portal.
+- Portal_Fantasy book-9: The Magicians / the Neitherlands. A hub between worlds, reached via button, then choose your fountain. Hub-and-spoke.
+
+**FringeIsland fit:** Some Beyond destinations are reached not by cut or door but by a roped descent from a known anchored start point — explicitly using the cord-and-anchor mechanic from Statement 27. The FIM (often with a partner — the cooperative cord-healing of Statement 27) starts from an anchor, descends/transits, and the cord pays out behind them. The classical "don't look back" rule from Orpheus becomes a structural option for Tellers — some descents require a specific in-narrative discipline to complete. The descent's return is along the same cord; severance mid-descent is the worst case and triggers the unanchored-overshoot restart from Statement 27.
+
+**Why this earns its place:** This is the portal that fully integrates with the cord/Void/anchoring system already locked. It also gives 1+1 journeys (the Three Perspectives middle term) a signature topology — two FIMs roped together — that solo and group journeys don't have. The strongest candidate for the universe's deepest, most-stakeful Beyond work.
+
+##### 5. The Mirror-overlay — the same near-side place, but inverted
+
+**Source lineage:**
+- Portal_Fantasy game-4 / Parallel_Worlds Dark World entry (Zelda: A Link to the Past). Shadow version of Hyrule overlapping point-for-point; the Dark World physically reshapes visitors to reflect their inner nature; players solve puzzles by toggling between the two mirrored maps.
+- Parallel_Worlds, the Upside Down (Stranger Things). 1:1 rotting copy of Hawkins, Indiana. Sameness of place is the point. Horror by negation of the familiar.
+- Parallel_Worlds, Lyra's two Oxfords (Pullman). Uncanny double of a real city.
+
+**FringeIsland fit:** Specific real-world locations have a Shadow-side — a coordinate-tied near-side region that is the same place rendered cold, hostile, traps-and-betrayal (the dark pole of Statement 12). Access is via flipping the Gimbal view (a deliberate gesture, not an accident) at locations where the Shimmer is thin enough for the flip to take. The Shadow-side is what carries the dark-pole narrative weight on the near side — meaning Tellers don't need to push every dark story into the Beyond. The name "Shadow-side" deliberately rhymes with Shadows-the-being from Statement 16: both are the thin, half-formed register of the universe. The carried rule could be temporal (Shadow-side may only be accessed before nightfall, or only during it).
+
+**Why this earns its place:** It solves a tonal-distribution problem the Session 01 open threads flag explicitly: "is the overlaid register more weighted toward warmth and the beyond-register toward danger?" The answer this candidate proposes: *no — the overlay itself has a dark face, accessed by gesture, and the tonal spectrum is fully present on both registers*.
+
+---
+
+#### Five texture portals to hold as a palette
+
+These are weaker primary candidates but each adds a useful texture to the universe's portal palette.
+
+##### 6. The Book-as-portal — the Studio's published work as in-world threshold
+
+**Source lineage:**
+- Portal_Fantasy game-6: Myst / Linking Books. Books written in "the Art" of the D'ni; touching the moving image links you to the Age described. Trap-books imprison the careless.
+- Portal_Fantasy film-9: The NeverEnding Story. As Bastian reads, the world of the book bleeds into his own; eventually the story absorbs him.
+
+**FringeIsland fit:** A Teller's published Arc — a season or episode — is itself entered as a book. The FIM finds a copy in the sea-village library; opening it is the threshold. Half-read books leave you in the story; closing the book respawns at the home-base (Statement 21). This makes the Arc Studio's *output* a portal type, not just a script. It also gives the Tree of glass balls (Statement 26) a sibling structure: the Library of journeys, where authored worlds live as touchable books. Carried rule: leave the book open if you intend to return.
+
+##### 7. The Mask — the FIM puts on a face to enter
+
+**Source lineage:**
+- Portal_Fantasy play-3: Sleep No More (Punchdrunk). The white mask is the portal; silence is the rule; every spectator's path is different.
+- Portal_Fantasy film-7: Pan's Labyrinth. The faun sets three tasks; magic chalk opens doorways. The portal is poised between literal magic and a traumatised child's imagination.
+
+**FringeIsland fit:** Some episodes are entered by donning a mask (in-Gimbal gesture, or in-world artifact picked up at the threshold). The mask both grants access and constrains behaviour — you cannot speak, or cannot be recognised by certain NPCs, or must follow a specific etiquette. The mask itself is the portal and the behavioural ruleset. Gives Tellers a powerful affordance: a portal that pre-loads the story's discipline before any narrative even begins. Carried rule: the mask's silence (or whatever constraint it imposes) is the rule.
+
+##### 8. The Cyclone — the involuntary, environmental crossing
+
+**Source lineage:**
+- Portal_Fantasy book-3 / film-1: Oz's cyclone. No door, no key, just weather. Pioneered the environmental portal.
+- Portal_Fantasy folklore-7: The Wild Hunt. The threshold gallops *to* you. A rare moving, ephemeral portal.
+
+**FringeIsland fit:** A rare, scheduled or seasonal event in which the Shimmer itself reaches for FIMs — a storm-front rolls in over the FringeIsland sea-village or sweeps a stretch of Ordinary-world coastline, and FIMs caught in it are pulled into a story without choosing to enter that specific story. Voluntary in the larger sense (the FIM elected to be present at the festival or weather-window) but involuntary in the immediate sense (the storm comes for *you*). This is the *intrusion* mode in Mendlesohn's terms — and it's the universe's way of doing collective, simultaneous, ARG-style mass-events (Statement 23) without breaking voluntariness. Carried rule: those caught by the storm share the story.
+
+##### 9. The Mirror in the FIM's private place — turning the personal portal inward
+
+**Source lineage:**
+- Portal_Fantasy book-2: Through the Looking-Glass. The mirror softens into silvery mist and Alice steps through.
+- Parallel_Worlds, The Midnight Library (Matt Haig). Between life and death sits a library of infinite books, each a version of the protagonist's life had she made different choices.
+- Portal_Fantasy film-10: Being John Malkovich. The most surreal portal in mainstream cinema — a doorway into a specific living person's mind. Time-bounded: fifteen-minute ejection.
+- Portal_Fantasy folklore-6: Bloody Mary as the domestic mirror-portal (handle with care — source is folkloric divination, not the horror version).
+
+**FringeIsland fit:** Each FIM's private place behind their glass ball contains a mirror. Looking into it under the right conditions opens a portal into one of the FIM's own counterfactual lives — explicitly counterfactual ("a version"), not "the truth." Time-bounded (a clean ejection stop, Malkovich-style). Only reachable from one's own private place. This is the universe's most intimate portal, and it sits firmly inside the Statement-26 architecture (Tree → glass ball → private place → mirror). Use sparingly; this is a Wayfinder's high-stakes tool for Immunity-to-Change work and lives near the panic-zone edge. Carried rule: the mirror always returns you to your own life; what is on the other side cannot be brought back.
+
+##### 10. The Living-bridge / Bifröst — between FIMs, between groups
+
+**Source lineage:**
+- Portal_Fantasy folklore-2: Bifröst. Rainbow bridge between Midgard and Asgard, watched by Heimdall, fated to break.
+- Portal_Fantasy film-12: Bridge to Terabithia. Rope-swing into a shared imaginary kingdom; the portal is a children's game given full emotional weight.
+
+**FringeIsland fit:** A portal type that exists only between two or more FIMs' Whisps simultaneously. When two FIMs (or a group) align — through a ritual, a shared anchor, a coincident readiness — a bridge briefly forms between their journeys. They can cross into a shared sub-Beyond that no single FIM can reach alone. This is the universe's structural answer to "some mattering cannot be reached solo" (open thread under Statement 28's Matter external pole). The bridge is fragile; it breaks if the alignment fails; what's at stake is the relationship's progress, not the FIM. It's the 1+community version of the cord-healing mechanic (Statement 27), now positive: relationships don't just keep the Whisp alive, they unlock geography only relationships can reach. Carried rule: only those present at bridge-formation may cross.
+
+---
+
+#### How the ten partition the design space
+
+One possible framing — not the framing — of how these ten cover the universe's portal needs:
+
+- **Near side, coordinate-bound, public:** Cairn portals (2), Shadow-side mirror-overlay (5), the Cyclone (8).
+- **Beyond, threshold-discrete, FIM-specific:** Shimmer-cut (1), Threshold-by-condition (3), Anchored descent (4), Book-portal (6), Mask (7).
+- **Inward, private-place register:** The personal Mirror (9), the Tree-of-glass-balls itself (already locked from Statement 26).
+- **Inter-FIM:** Living-bridge / Bifröst (10).
+
+That gives the universe one portal-type per relational scope (solo near, solo Beyond, inward, paired/group), one for involuntary intrusion, and one for FIM-authored cutting — covering Mendlesohn's portal-quest, intrusion, and immersive modes cleanly without forcing the universe into any one mode.
+
+#### Two cross-cutting notes worth holding
+
+**On the "don't look back" / rules-and-taboos thread (Portal_Fantasy meta).** Almost every enduring portal has a single rule. The research is unambiguous that this is what turns a doorway into a story. Whatever the universe picks for its own portals, each portal type should carry one taboo or rule — the cord-anchoring discipline from Statement 27 already qualifies as one such rule, well-cast.
+
+**On the genre stream FringeIsland is closer to.** Portal_Fantasy's meta-section names two streams: the Western (objects, places, portable knives) and the Eastern isekai (death, reincarnation, summoning, the loosened portal). FringeIsland's meta-safety + respawn (Statement 19) sits unexpectedly close to the isekai loop — try, die, return — but its Whisp + Gimbal + cord architecture is firmly Western (objects, instruments, accountability for what you leave open). The hybrid is genuinely novel territory and worth naming as a design position: *Western-instrument front-end, isekai-loop back-end*. Not a portal idea in itself, but it suggests the universe should keep at least one portal type that embraces the isekai looseness — the Cyclone (8) is that candidate.
+
+---
+
+#### Next moves if/when this is revisited
+
+Suggested, not committed:
+
+- **Highest leverage to test next** in a Session-XX discovery pass: Cairn portals (2) and Anchored descent (4). Each would force concrete decisions on currently-open Session 01 threads — Anthropologist's Studio scope; what counts as a valid anchor object.
+- **Before any acceptance**, run each candidate through the five constraints listed near the top of this document.
+- **Reconciliation note:** the existing `docs/fringeisland-thinking/canon--cosmology--worlds-topology.md` documentation predates Session 01's locked topology. When portal design becomes active, expect to reconcile any portal vocabulary already in cosmology/ against the Session-01 truth-direction (per the locked principle: Session 01 is the source of truth; the earlier cosmology is challenged against it, not the reverse).
+
+### Candidate B — The Gimbal's origin, the ball as key, and the three altered states (2026-07-24; candidate material, not locked)
+
+
+**Date:** 2026-07-24
+**Status:** CANDIDATE MATERIAL -- NOT LOCKED
+**Kind:** Exploratory ideas feeding the discovery log (cf. Candidate A above)
+**Relates to:** Session 01 (Part 3 below), currently at Statement 48
+
+---
+
+#### What this file is
+
+Working material from a session on 2026-07-24. It is **not canon**. Nothing here has been
+promoted to a numbered statement in the session log, and several items were explicitly left
+open ("don't lock yet"). This file exists so the thinking is not lost, and so a later session
+can decide what to lock, what to refine, and what to discard.
+
+The same session also produced the Mist and the Whisp-delivered material, which **is** locked --
+as Statements 47 and 48, dated 2026-06-21. Nothing in this file duplicates those. This file
+holds the material from that session that was never captured anywhere.
+
+---
+
+#### A. The Gimbal's origin: ancient knowledge, modern implementation
+
+**The core idea.** The knowledge of the fringe is not new. It has been with humanity for a long
+time, surfacing across cultures as mysticism, shamanism, lucid-dreaming traditions, out-of-body
+practice, and sleep-paralysis folklore. Humans have known this territory experientially for
+millennia.
+
+**What was missing was not knowledge and not even science -- it was implementation.** Scientific
+formalisation happened in bursts (state-funded research into altered states, remote viewing,
+dream control). Those programmes got closer but could not complete the picture: the work required
+massive hardware, substances, and extreme physiological states, and could never be reduced to
+anything a person could carry.
+
+**A(G)I closed the gap.** Agentic coding and machine synthesis are what finally made the
+algorithms practically buildable. The Gimbal is therefore **not a discovery -- it is a
+culmination.** Every shaman, every lucid dreamer, every OBE researcher, every classified
+programme was pointing at the same thing. The Gimbal is the first time the full signal could be
+caught and held.
+
+**Framing note (matters for tone):** AI *finished something ancient*. It did not find something
+new. This keeps the universe experiential rather than technological at its root.
+
+---
+
+#### B. The key/instrument split
+
+**The Gimbal is an instrument. The glowing glass ball is a key.**
+
+- **Gimbal = instrument.** It reads and translates the Shimmer. It can have institutional origin.
+  It can be studied, replicated, and in principle misused.
+- **Ball = key.** It grants access. It is irreducibly personal, cannot be replicated, cannot be
+  transferred.
+
+**The asymmetry this creates is the universe's central dramatic tension:** an institution can
+build the Gimbal and still never get through, because it has no keys. The research works
+mechanically but is missing the irreducibly personal element. **They can build the instrument.
+They cannot use it.**
+
+> **Open tension to reconcile before locking.** Statement 26 frames the Gimbal as the device and
+> the Whisp as the faculty of perception ("an instrument enabling FIMs to perceive the Shimmer and
+> beyond via their Whisp"). The ball-as-key adds a *third* element to that pair. A locking session
+> must decide how ball, Gimbal, and Whisp compose -- in particular whether the Gimbal works
+> *through* the Whisp (as S26 implies) with the ball as the enabling key, or whether the
+> relationship is different. Statement 39 is also adjacent: only the ball is granted at
+> transcendence, and the ball is home base, seed-source, and anchor-root. "Key" would be a fourth
+> role for the ball and should be stated as such if adopted.
+
+---
+
+#### C. Ball resonance: a third connection channel
+
+If balls are connected -- **not merged, but resonant** -- this maps onto the equality principle
+and the Tree/branch structure already in canon. The ball could be the *seat* of that resonance:
+not seeing another FIM's interior, but feeling the *shape* of their experience. Tuning forks
+rather than mirrors.
+
+This would distinguish three kinds of connection:
+
+| Channel | Between | Character |
+|---|---|---|
+| **Cord** | FIM <-> Whisp | vertical, inward |
+| **Branch** | FIM <-> FIM | horizontal, relational, chosen |
+| **Ball resonance** | ball <-> ball | ambient, felt rather than chosen |
+
+> **Open.** Whether ball resonance is adopted at all, and if so how it differs from the branch
+> (Statements 36, 38) without duplicating it.
+
+---
+
+#### D. The ball matures: clunky to Ferrari
+
+**The ball is not a static key -- it is a living key.** Early on it unlocks the door but barely.
+As the Whisp develops -- as the FIM does the inner work -- the ball becomes more capable, more
+precise, more powerful as an instrument.
+
+Consequences:
+
+- **Progression is intrinsic.** Not gamified XP but genuine inner development reflected in
+  capability.
+- **The Gimbal's features are not unlocked by the app** -- they are unlocked by the person. The
+  app reads what the ball has become.
+- **It cannot be shortcut.** No purchase, no hack, no transfer.
+
+The filling mechanism is already implied by canon: cord length measures readiness to receive
+modelling from the Whisp (Statement 40). The ball's maturation tracks the FIM-Whisp relationship
+deepening.
+
+> **Open tension.** Statement 37 locks the **equality principle**: all FIM balls glow equal, and
+> the variable signal lives on the *cord* (colour and integrity), not the ball. The
+> ball-brightness-as-fullness idea was explicitly *paused* there. A maturing ball must therefore
+> express maturity as **capability**, not as brightness, or it will contradict S37. Worth stating
+> explicitly if locked. (Compare Statement 47's treatment of Mist accretion: two Mists at the same
+> stage look equally present -- maturity showed as *stage*, never as worth.)
+
+---
+
+#### E. The three altered states as three modes of the threshold
+
+A proposed mapping of real altered-state phenomenology onto the locked topology:
+
+| State | Where it lands | Character |
+|---|---|---|
+| **Lucid dreaming** | **place 2** | you are *through*; vivid, responsive, warm; you have agency within it |
+| **Out-of-body experience** | **place 3** | you are *through* but exposed; observing from outside yourself; the world pushes back |
+| **Sleep paralysis** | **caught in the Shimmer itself** | neither here nor there; you perceive but cannot act; the crossing fails or does not complete |
+
+**Why this is structurally interesting.** Place 2 and place 3 are not opposites -- they are two
+faces of the same location (Statement 31), co-located, causally coupled. You cross the same
+Shimmer and land differently depending on *something*. That "something" becomes productive: the
+same instrument, the same key, but the quality of your inner state determines which face of the
+Fringe receives you. **Place 2 and place 3 would then not be only geography -- they would be
+feedback.** The Fringe reflects something back.
+
+**Sleep paralysis gives the Shimmer a third mode.** Not only a threshold you cross cleanly, but a
+place you can get *stuck in*. Possible mechanics: crossing without a properly matured ball leaves
+you held; a damaged cord leaves the crossing incomplete; the classic "presence" of sleep paralysis
+maps onto the membrane's own character rather than onto place 2 or place 3.
+
+**This reframes the ball-as-key.** Without the key you do not get through -- you get *held*. The
+Shimmer does not reject you violently; it just will not release you. More unsettling than a hard
+no.
+
+> **Note on vocabulary.** Statement 47 re-scoped "Shadow" to the place-3 / sleep-paralysis menace.
+> This mapping is consistent with that and gives it phenomenological content, but the mapping
+> itself is not locked.
+
+---
+
+#### F. The first opening, and the shutdown of unknown cause
+
+**Something came through.** When the original researchers first properly opened the door -- not
+glimpsed it, but opened it -- what was on the other side was not merely landscape. Two readings,
+which can coexist:
+
+- **Place 2 responded.** Something beautiful, overwhelming, destabilising in its wonder. The
+  researchers were not prepared for contact with something genuinely flourishing and alive. It
+  broke people softly.
+- **Place 3 responded.** Something came back through that should not have. The hostile face does
+  not sit passively. It noticed the door.
+
+**The programme did not end in good order.** This is the key refinement: it was not a purposeful
+shutdown by people in control. It was **shut down in a way that is not understood** -- fast enough
+that the institutional knowledge of *how to close it properly* was lost with the people who had it.
+
+What that leaves behind is not a buried programme but **a wound**: incomplete, possibly never
+properly closed, with no one left who knows the full state of what was left running -- or what was
+left through.
+
+The archives that were later synthesised were therefore **fragments from before the shutdown**.
+The researchers documented what they found but not what happened at the end, because they could
+not.
+
+---
+
+#### G. The system was designed for place 2 without knowing about place 3
+
+**This is the sharpest idea of the session and the likely spine of the novel.**
+
+The ball-cord-Whisp architecture is elegant, humane, and protective -- and it was built from
+fragments that only ever documented **the beautiful side**. The researchers who found place 2 made
+it back; their notes survived. The researchers who found place 3 did not.
+
+Consequences:
+
+- The **Whisp** as intermediary was designed for place 2's relational warmth. Its modelling
+  posture -- patient, growth-oriented -- may be exactly wrong in place 3, or dangerously naive, or
+  legible to whatever is there as a signal of vulnerability.
+- The **cord** as voluntariness dial was calibrated for a nurturing environment.
+- The **ball** as anchor was conceived as a home base to return to from somewhere safe.
+- None of it was stress-tested against somewhere hostile.
+
+Because place 2 and place 3 are co-located and causally coupled, and because what determines which
+face receives you was never fully understood, **at scale some FIMs will land in place 3.** The
+system was not designed for that. The Whisp does not know it. The FIM does not know it.
+
+**The secret at the centre:** somewhere in the fragmented pre-shutdown archives -- under what the
+synthesis did not surface or could not interpret -- is the record of what happened the first time
+someone crossed into place 3, and why the programme went dark.
+
+---
+
+#### H. Paused: the physical glass ball
+
+Explicitly **paused** in session, recorded only so it is not lost.
+
+A 2-3 cm physical sphere, FIM-unique, potentially NFC-paired to the phone. Community-developed
+over time; a possible Kickstarter or revenue line.
+
+**The access decision, if it is ever revived:** the physical object must **not** be required for
+access. The digital ball is the real key; the physical object is a *materialisation* of something
+that already exists in the app -- a talisman, not a dongle. Requiring it would break the equality
+principle and turn FringeIsland into a hardware paywall. Tiers (standard / community-evolved /
+deep artifact) may deepen the experience but must never gate it.
+
+---
+
+#### Status summary for a future locking session
+
+| Item | Readiness |
+|---|---|
+| A. Ancient knowledge, AGI as implementation | Coherent; ready to consider |
+| B. Key/instrument split | Strong, but **must reconcile with S26 and S39** |
+| C. Ball resonance | Speculative; risks duplicating the branch (S36, S38) |
+| D. Ball matures | Strong, but **must express as capability, not brightness (S37)** |
+| E. Three altered states | Strong; gives S47's "Shadow" re-scope real content |
+| F. Shutdown of unknown cause | Strong; mythology, low canon-collision risk |
+| G. Designed for place 2, blind to place 3 | Strongest; likely novel spine |
+| H. Physical ball | **Paused by decision** |
+
+**Not yet done:** none of this has been promoted to numbered statements; no `Refines / extends`
+lines have been written; no reconciliation with `README.md` or the novel has been attempted.
+---
+
+## Part 3 — The sessions (the record, S001 onward)
+
+The statements, verbatim, in the order they were made. Each session is one heading; each statement is one sub-heading with Stefan's words, Claude's held interpretation, and the open threads it left. Append-only.
+
+### Session 01 — 2026-05-18, resumed 2026-05-29, 2026-06-01 and 2026-06-05 — the Whisp, the worlds, the roles
+
 
 **Date:** 2026-05-18
 **Status:** In progress (resumed 2026-06-05)
@@ -16,7 +523,7 @@ The 2026-06-21 resume adds Statements 47-48, reworking the anonymous tier and th
 
 ---
 
-## How to read this document
+#### How to read this document
 
 Each numbered section captures one input from Stefan. The structure is:
 
@@ -27,7 +534,7 @@ Patterns and cross-cutting observations are collected at the end.
 
 ---
 
-## Opening frame
+#### Opening frame
 
 The session begins clean. No prior definitions of the universe, the Whisp, the FIM, or the worlds are carried in. We start with what is obvious — the world we all know.
 
@@ -39,7 +546,7 @@ The starting point is the everyday world that everyone inhabits — daily life, 
 
 ---
 
-## 1. The Whisp is my inner dialogue
+#### 1. The Whisp is my inner dialogue
 
 **Statement:**
 > The "Whisp" is my "inner dialogue". It's unique to me. Everyone at FringeIsland has their own Whisp that is very much private.
@@ -51,7 +558,7 @@ The starting point is the everyday world that everyone inhabits — daily life, 
 
 ---
 
-## 2. The Whisp starts empty and fills over time
+#### 2. The Whisp starts empty and fills over time
 
 **Statement:**
 > When first encountering my "whisp", it's completely empty. Even though we don't say this out loud but the whisp is like a "tool" for the FringeIsland system to extract the personality of it's connected human. How this works is that the whisp starts all empty but over time and by the support from it's human (the FringeIsland member also referred to as the "FIM") gradually becomes more and more complete and "chiseled out". More and more of a clear and aware clone of it's human counterpart. Now, very few (if any) humans are 100% self aware and due to the whisp's curiosity and it's questions to the human this will spark self reflection in the human counterpart that builds self awareness at the same time as the whisp "fills up" with more and more of the humans personality.
@@ -65,7 +572,7 @@ The starting point is the everyday world that everyone inhabits — daily life, 
 
 ---
 
-## 3. The Whisp practices tough love
+#### 3. The Whisp practices tough love
 
 **Statement:**
 > The whisp always wants its human well but not to the cost of avoiding things that will hold the human back instead of flourishing. Maybe we can call it "tough love"? This means that even though the whisp is empty at start, it also has it's say and it doesn't always agree to what the human expresses IF those expressions do not support the humans long term growth. The whisp in a way has a handicap due to it's initial "emptiness" but it it's super intelligent when it comes to adult development and growth at the same time filled with compassion and emotional awareness. It never uses it's human counterpart as a tool to "get something" but always wants it's human to flourish.
@@ -78,7 +585,7 @@ The starting point is the everyday world that everyone inhabits — daily life, 
 
 ---
 
-## 4. The Whisp IS the human
+#### 4. The Whisp IS the human
 
 **Statement:**
 > And to make it super clear, "the whisp IS the human" but works as a sometimes wiser counterweight to what we humans usually end up with... an inner voice that tells us all kinds of things that sometimes is not really productive nor nice.
@@ -90,7 +597,7 @@ The starting point is the everyday world that everyone inhabits — daily life, 
 
 ---
 
-## 5. The Whisp as voluntary coach; friendship and self-love
+#### 5. The Whisp as voluntary coach; friendship and self-love
 
 **Statement:**
 > So our whisps are by nature very curious. Never judging in a negative way but very understanding. A being that wants to learn and understand whilst at the same time give ideas of how to see things in new perspectives when needed. By this the whisp functions a bit like a coach to it's FIM. The good thing about this is that the FIM can decide by him/herself if they want to listen to their whisp or not. Everything is very much voluntarily and up to the FIM to decide. The FIM and its whisp get to know each other over time. At start things might feel a but awkward and mechanical but over time true friendship builds and eventually love. What the FIM experiences at that point is self love and compassion for him/herself.
@@ -104,7 +611,7 @@ The starting point is the everyday world that everyone inhabits — daily life, 
 
 ---
 
-## 6. The purpose of FringeIsland: self-awareness, then graduation
+#### 6. The purpose of FringeIsland: self-awareness, then graduation
 
 **Statement:**
 > So in essence what we're after and what the FringeIsland universe is all about is for the FIM's to become more self aware (both internal self awareness and external self awareness) to who they are, what they want and how they get there = how they deliberately move forward in life. Eventually and over time, the FringeIsland experience will internalize in the FIM's so they can move on in life without the support from FringeIsland as they have now become so aware of who they are, what they want and how they get there.
@@ -117,7 +624,7 @@ The starting point is the everyday world that everyone inhabits — daily life, 
 
 ---
 
-## 7. Whisp internalised; FringeIsland no longer needed
+#### 7. Whisp internalised; FringeIsland no longer needed
 
 **Statement:**
 > And in the end, the whisp is now an integral part of the human - without the need for FringeIsland.
@@ -129,7 +636,7 @@ The starting point is the everyday world that everyone inhabits — daily life, 
 
 ---
 
-## 8. The Whisp draws on prior research about flourishing
+#### 8. The Whisp draws on prior research about flourishing
 
 **Statement (paraphrased question):**
 > According to earlier research we have also found "evidence" to what really makes a human flourish which the whisp needs to care for in its dialogue with the human.
@@ -147,7 +654,7 @@ The starting point is the everyday world that everyone inhabits — daily life, 
 
 ---
 
-## 9. Anchors lifted forward: Three Perspectives and Immunity to Change
+#### 9. Anchors lifted forward: Three Perspectives and Immunity to Change
 
 **Statement:**
 > I specifically like "The Three Perspectives meta-lens" and also the "Immunity to change" from Robert Kegan with colleagues.
@@ -162,7 +669,7 @@ The Whisp must be fluent in both: Three Perspectives as the lens through which i
 
 ---
 
-## 10. The FringeIsland world as parallel reality, perceived through the Whisp via the Gimbal
+#### 10. The FringeIsland world as parallel reality, perceived through the Whisp via the Gimbal
 
 **Statement:**
 > Let's play with the though that the FringeIsland "world" exists as a parallel reality/universe to our ordinary world. Everything we experience in our ordinary world can also be seen "through the eyes of the whisp" and then we see the FringeIsland reality overlayed on our ordinary world. Example, I stand outside looking at a field in the countryside. I then use the "Gimbal" (i.e., the FringeIsland mobile app) and point the phones camera towards the same field and can then see additional FringeIsland world artifacts layered on top of the original image - like in augmented reality. We see this additional reality through our own whisp which is made possible by the Gimbal app on our phone. So in a way our Whisp and the Gimbal then becomes our tools to see and interact with what happens in the FringeIsland world. A thing that comes to mind is the feeling when you're Geocaching because you know something that the people (mugglers) do not know and that created kind of a unique feeling.
@@ -178,7 +685,7 @@ The Whisp must be fluent in both: Three Perspectives as the lens through which i
 
 ---
 
-## 11. The FringeIsland universe extends beyond the ordinary-world overlay
+#### 11. The FringeIsland universe extends beyond the ordinary-world overlay
 
 **Statement:**
 > Now, one might think that the FringeIsland overlay to the ordinary world is it... but it isn't! The FringeIsland universe as a lot more that is "beyond" the coordinates of the ordinary world. There are "doors/passages/rabbit holes" to other places in FringeIsland beyond our ordinary world / it's coordinates.
@@ -195,7 +702,7 @@ The Whisp must be fluent in both: Three Perspectives as the lens through which i
 
 ---
 
-## 12. The FringeIsland world spans a full tonal range — the backdrop for narrative-driven edutainment
+#### 12. The FringeIsland world spans a full tonal range — the backdrop for narrative-driven edutainment
 
 **Statement:**
 > So one part of the FringeIsland world is warm, welcoming and beautifully filled with colors and human forgiveness whilst there is another side too - a hostile place, cold and filled with traps and betrayal. So these opposites (and all in between) are the backdrop for the compelling storytelling and narratives that fills FringeIsland with life and death - the driving force behind our "immersive edutainment".
@@ -215,7 +722,7 @@ The Whisp must be fluent in both: Three Perspectives as the lens through which i
 
 ---
 
-## 13. The world is made alive by Dreamineers and Creators; Universe Studio encapsulates World, Arch, and Journey Studios
+#### 13. The world is made alive by Dreamineers and Creators; Universe Studio encapsulates World, Arch, and Journey Studios
 
 **Statement:**
 > The FringeIsland world, with it's AR overlay and it's doors/passages/rabbit holes, is coming to life by all objects and artifacts that is continuously being created by contributing and collaborating FIM's that we refer to as "dreamineers" and "Creators". Those FIM's contribute with their time and knowledge to create the FringeIsland to the compelling universe it is. We will also go "AI first" meaning that we will utilize AI heavily in every possible way that benefits FringeIsland BUT we will never sacrifice privacy nor individual contributions in favors for AI. Humans always comes first even though we will appreciate experimentation and trying new things out as well as phase out what doesn't work. FringeIsland will always be in constant change. Mind also that one part of FringeIsland that is even more important than it's visual style and "being" are the humans and their stories. This all together will be kept together by the "FringeIsland Universe Studio" that encapsulate both "World Studio" (how the FringeIsland world looks, works, it's places, lore's, communities etc.), "Arch Studio" (where Dreamineers craft narratives and storys in the form of seasons and episodes) and "Journey Studio" (where Dreamineers craft journeys for FIM's to embark upon - either alone, in pairs or in a group/community).
@@ -259,7 +766,7 @@ All of this is held together by the **FringeIsland Universe Studio**, which enca
 
 ---
 
-## 14. Correction and confirmation: Arc Studio (not Arch); Universe Studio is overarching and binds the set
+#### 14. Correction and confirmation: Arc Studio (not Arch); Universe Studio is overarching and binds the set
 
 **Statement:**
 > my fault, it shall be "arc studio" and yes the Universe Studio is an overarching naming of the full set of studios (world + arc + journy) that also keeps everything together.
@@ -272,7 +779,7 @@ All of this is held together by the **FringeIsland Universe Studio**, which enca
 
 ---
 
-## 15. The FringeIsland world has both FIMs and NPCs acting in it
+#### 15. The FringeIsland world has both FIMs and NPCs acting in it
 
 **Statement:**
 > Mind you that the FringeIsland world has both FIM's acting but also NPC's!
@@ -287,7 +794,7 @@ All of this is held together by the **FringeIsland Universe Studio**, which enca
 
 ---
 
-## 16. Shadows: anonymous entrants who can transcend into FIMs with continuity preserved
+#### 16. Shadows: anonymous entrants who can transcend into FIMs with continuity preserved
 
 **Statement:**
 > When someone enters FringeIsland for the first time and they have not yet regestered as a FIM they enter the universe as "Shadows" with limited abilities . Exactly what these limitations are we need to discover further down the road but the important thing here is that the anonymous users (i.e., Shadows) can transcend into FIM's seamlessly meaning that whatever they have done or experienced in their current "session" in FringeIsland will be transferred into their FIM character if ever they decide to register/signing up for being part of FringeIsland by becoming a FIM.
@@ -306,7 +813,7 @@ All of this is held together by the **FringeIsland Universe Studio**, which enca
 
 ---
 
-## 17. The Whisp fills by the human growing; assessments dissolved into Whisp-led dialogue; the Whisp's quality is anchored to FIM self-disclosure
+#### 17. The Whisp fills by the human growing; assessments dissolved into Whisp-led dialogue; the Whisp's quality is anchored to FIM self-disclosure
 
 **Statement:**
 > The Whisp fills by the human growing. One part of human growth is increased awareness. We will base parts of growing the awareness in humans by utilizing whet us usually referred to as assessments/tests such as "The Big 5" et.al. One idea is to have new FIM's to take the Big 5 test. But not in an ordinary fashion where someone answers a number of written questions but rather in the way of the Whisp being curious about "who am I?" and by this curiosity asks it's human questions - that all relates to the questions in Big 5. Now an ordinary Big 5 tests has quite a big number of questions so we need to be smart here not to bother the FIM too much with boring questions but keep things interesting, engaging etc. One way this could be done is to anchor the Whisps "quality" to mediate the FringeIsland world to the human by how much the human has exposed him/herself to the Whisp i.e., and by this how much the Whisp has gone from being completely empty to now be on it's way to replicate the human.
@@ -352,7 +859,7 @@ All of this is held together by the **FringeIsland Universe Studio**, which enca
 
 ---
 
-## 18. The Big 5 traits map to the five human senses; the world requires all five senses for full experience
+#### 18. The Big 5 traits map to the five human senses; the world requires all five senses for full experience
 
 **Statement:**
 > Maybe the five traits in Big 5 represents the human five senses? By the human disclosing themselves to the Whisps curious questions the Whisps ability to navigate and mediate the FringeIsland world on behalf of the human increases. If the world and it's narratives and journeys is built in a way that it requires all five human sesnses to be experienced to its full this will motivate the FIM to start filling their Whisp with knowledge.
@@ -391,7 +898,7 @@ All of this is held together by the **FringeIsland Universe Studio**, which enca
 
 ---
 
-## 19. Signature journey vs. charter trip; cautious push toward the growth zone; FringeIsland is safe, with respawn-style rewind
+#### 19. Signature journey vs. charter trip; cautious push toward the growth zone; FringeIsland is safe, with respawn-style rewind
 
 **Statement:**
 > Completely agree with you and I already had more assessments/tests in mind just like you listed above but I wanted to have you onboard the initial train first ;-) The more relevant assessments/tests the FIM discloses the more custom made their journeys will become - finally more of a signature journey than a charter trip. Also, just like in Immunity to Change the FIM needs to be cautiously pushed out from their comfort zone to their growth zone without getting into panic. The great thing with FringeIsland is that it is "safe" and if ever the Whisp and its human "get into trouble and die"(!) it's super simple just to rewind and redo. It's kind of like when you respawn in a game in order to try again and again and again until you master your new skill(s) or accomplish what the story puts in front of you or you and your travelling partner or you together with your group/collective.
@@ -457,7 +964,7 @@ All of this is held together by the **FringeIsland Universe Studio**, which enca
 
 ---
 
-## 20. Multiple respawn topologies; repeat-narratives as design vocabulary
+#### 20. Multiple respawn topologies; repeat-narratives as design vocabulary
 
 **Statement:**
 > Group respawn is harder than solo respawn: Can be true but in games like Counter-Strike groups work together and respawns when dead. This is just one ide and there are most probably may other ideas on how this could work. Also movies Edge of Tomorrow, Happy Death Day, Source Code and  Relive gives ideas to how stories can work in repeat.
@@ -525,7 +1032,7 @@ What persists across the loop varies:
 
 ---
 
-## 21. Respawn locations within the same journey/season/episode: home base and episode-repeat as two examples
+#### 21. Respawn locations within the same journey/season/episode: home base and episode-repeat as two examples
 
 **Statement:**
 > Group respawn is solvable. Counter-Strike is the working example. Players play together, die during a round, and respawn together at the next round = and in FringeIsland a FIM can respawn already -in- the same journey or season/episode but at "home base" or maybe when the episode is repeted once again?! Just two examples.
@@ -580,7 +1087,7 @@ These aren't competing modes — they can exist alongside each other, or even wi
 
 ---
 
-## 22. The FIM and Whisp as Jake Sully and his Avatar: stakes-without-harm, presence-in-two-places
+#### 22. The FIM and Whisp as Jake Sully and his Avatar: stakes-without-harm, presence-in-two-places
 
 **Statement:**
 > Also one can think of the FIM and their Whisp as Jake Sully and his Avatar in the move with the same name. If the Avatar dies/goes to sleep Jake is still very much alive BUT I bet Jake does not want his Avatar to get hurt... just like our FIM and their Whisp ;-)
@@ -650,7 +1157,7 @@ These aren't competing modes — they can exist alongside each other, or even wi
 
 ---
 
-## 23. "Alternative Reality" as a logbook term; ARG and analog-horror reference set
+#### 23. "Alternative Reality" as a logbook term; ARG and analog-horror reference set
 
 **Statement:**
 > We shall also take into our log book of ideas the term "Alternative Reality". Next to this I'd like to mention a few "games" or puzzles like: I love bees / The Beast (2001) / Year Zero (2007) / The Art of the Heist (2005) / Portal 2 ARG (2010) / Cicada 3301 / The Sun Vanished / Local58. These alternative realities blurs the line between reality and fiction which can be an interesting twist to our FringeIsland universe.
@@ -695,7 +1202,7 @@ These split into two distinct families, and the distinction matters for FringeIs
 
 ---
 
-## 24. AI as extension of human capability; dreaming sessions; bidirectional guard railing
+#### 24. AI as extension of human capability; dreaming sessions; bidirectional guard railing
 
 **Statements (across the AI-collaboration exchange):**
 > [On the ARG / AI-era opportunity:] FringeIsland with the support from AI could spin up new web sites and apps almost autonomous, change these when needed and integrate these elements with real world happenings and also happenings in the FringeIsland world.
@@ -765,7 +1272,7 @@ The driving metaphor: the human is behind the wheel (authorship, last say, first
 
 ---
 
-## 25. World-builder references: Mats Akerman (Den Svagiska Unionen) and Simon Stalenhag
+#### 25. World-builder references: Mats Akerman (Den Svagiska Unionen) and Simon Stalenhag
 
 **Statement:**
 > [I'd like to add references to people who have developed their own worlds:] Mats Akerman - Den Svagiska Unionen / Simon Stalenhag
@@ -803,7 +1310,7 @@ Two references to individuals who have each built an entire coherent world — a
 - Both being Swedish is worth noting given the founder's context. There may be a distinctly Nordic sensibility to FringeIsland's aesthetic lineage — the uncanny-in-the-everyday, melancholy light, quiet rather than spectacular fantasy.
 - These are *aspirational quality references* for what a single Dreamineer's coherent world can be, distinct from the *experiential/structural* references (the ARGs, Statement 23) which are about how a world is delivered and played. Worth keeping the two reference families distinct: ARGs = how the world reaches people; Akerman/Stalenhag = how deep and coherent a single authored world can be.
 
-## 26. Worlds topology locked: Ordinary World, the Shimmer, the Fringe (near side and Beyond); FringeIsland as collective island and safe harbor; per-FIM private places; the Tree and glowing glass balls
+#### 26. Worlds topology locked: Ordinary World, the Shimmer, the Fringe (near side and Beyond); FringeIsland as collective island and safe harbor; per-FIM private places; the Tree and glowing glass balls
 
 **Statement (locking decisions, today 2026-05-20):**
 > Today we shall lock:
@@ -874,7 +1381,7 @@ Two references to individuals who have each built an entire coherent world — a
 - Whether today's "safe harbor" *is* the existing cosmology's "Safe Harbour" — and how the Fringe near-side/Beyond maps onto the existing "Other Side" — is a deliberate reconciliation decision to make at graduation. Flagged so the alignment is conscious, not accidental.
 - This whole topology diverges from / refines earlier definitions. Per session discipline, divergence is permitted; reconciliation happens at graduation.
 
-## 27. The Void: the cord, anchoring, severance recovery, cooperative healing, and the safe-but-mobile FIM
+#### 27. The Void: the cord, anchoring, severance recovery, cooperative healing, and the safe-but-mobile FIM
 
 **Note on truth-direction (per Stefan, 2026-05-20):** This discovery work is the *emerging source of truth*. The project's earlier cosmology writings are held away for now and are *not* a constraint on what is discovered here. At reconciliation, the earlier writings are to be challenged *against* this — not the reverse. Where they conflict, this is the candidate truth and the older material must justify itself or yield.
 
@@ -946,7 +1453,7 @@ Two references to individuals who have each built an entire coherent world — a
 - The cord-visibility arc may double as a *developmental signal*. The cord is very visible early (when the Whisp relationship is new and must be felt) and should recede as it matures so as not to distract. This mirrors the graduation/internalisation arc (Statements 6–7): early on the FIM is highly aware of the Whisp as separate (cord visible); as they mature, the connection becomes second-nature (cord recedes). Possibly not only a UX concession but an internalisation cue. (Held as possibility, not claim.)
 - Anchor-object placement is a worldbuilding lever for Dreamineers — effectively laying protection on a route. Sparse-anchor regions = riskier/more committing; richly-anchored regions = safer/more forgiving. (Candidate difficulty lever; not yet locked.)
 
-## 28. Live / Grow / Matter: the foundational drives beneath the founding questions
+#### 28. Live / Grow / Matter: the foundational drives beneath the founding questions
 
 **Statements (assembled across this exchange):**
 > The who/what/how are fundamental, but why are we dwelling on this? Because I believe (with no hard evidence) that all humans, in the ultimate end, want to live, to grow, and to matter — either to themselves and/or to someone or something bigger than themselves.
@@ -1008,7 +1515,7 @@ Live/Grow/Matter and the scientific frameworks operate at *different altitudes* 
 
 **Open (RESOLVED 2026-05-25):** Live / Grow / Matter **dance together** — held in simultaneous *balance*, not a developmental *sequence*. The argument is decisive: none of the three is ever "complete," so there are no completable rungs for a ladder — a sequence is structurally impossible. Moreover the three are *mutually constituting*: living fully makes you teachable (feeds Grow); growing gives you something to contribute (feeds Matter); mattering makes the moment worth savouring (feeds Live). Pull one out and the other two wobble — the same corrective-pairing seen in Live (indulgence without Grow) and Grow (grind without Live), now extended to all three. **Implication for the Whisp:** it does not walk a FIM *up* through the drives in order; it senses which drive is currently *starved* and gently leans the journey toward restoring balance — a dance partner keeping all three in motion, not a guide marching up a staircase.
 
-## 29. Role taxonomy: FIM as base identity; Dreamineer as permission-gated authorial modes; the enterprise-stewardship plane
+#### 29. Role taxonomy: FIM as base identity; Dreamineer as permission-gated authorial modes; the enterprise-stewardship plane
 
 **Statements (assembled across this exchange):**
 > Roles as of now:
@@ -1071,7 +1578,7 @@ Live/Grow/Matter and the scientific frameworks operate at *different altitudes* 
 
 **Naming-register note (flagged, not resolved).** Three builder roles are coined/evocative (Dreamineer, Teller, Wayfinder); two are plain real-world titles (Creator, Anthropologist). "Anthropologist" especially is a literal academic discipline sitting among invented words. Conscious choice to make later: do all in-world roles want FringeIsland-native coinages, or is the mixed register deliberate?
 
-## 30. NPCs as layered, depth-on-demand composites (builds on Statement 29; refines Statement 15)
+#### 30. NPCs as layered, depth-on-demand composites (builds on Statement 29; refines Statement 15)
 
 **Builds directly on Statement 29 (role taxonomy) and refines Statement 15 (NPCs as agents, not scenery).** Two role-refinements discussed on the way to this (World Studio's hard/soft split, and the Anthropologist/Teller/Wayfinder scale separation) are captured here as the foundation the NPC model rests on.
 
@@ -1124,7 +1631,7 @@ Depth is **additive**, and "*when depth is needed*" is the governing principle. 
 
 ---
 
-## 31. The Fringe is two places — place 2 and place 3 — both behind the one Shimmer
+#### 31. The Fringe is two places — place 2 and place 3 — both behind the one Shimmer
 
 **Statement (resumed 2026-05-29):**
 > what if the Fringe in FringeIsland is actually "two" separate places, each one with a near and far side? [...] 2) The FringeIsland place (world?) - warm and welcoming i.e., maybe a positive future? 3) ...for now "unnamed"... - the hostile and dystopian side filled with traps, betrayal and danger i.e., maybe a negative future? [...] The Shimmer is the membrane between the world 1 and the other two places, i.e., 2+3. [...] I suspect that both place 2 and 3 are laid on top of the ordinary world and separated from it by the shimmer? You reach into these two places through the shimmer and relevant portals.
@@ -1141,7 +1648,7 @@ Depth is **additive**, and "*when depth is needed*" is the governing principle. 
 
 ---
 
-## 32. The near-side coupling — the same coordinates seen two ways; every wound in place 2 has a cause in place 3
+#### 32. The near-side coupling — the same coordinates seen two ways; every wound in place 2 has a cause in place 3
 
 **Statement:**
 > [place 2 near] I [...] point the phones camera [...] and [...] see vehicles going up and down that road but these vehicles belongs to place 2. Next to the road and on the ground is a small patch that looks strange. It grows and "eats" up the beautiful flowers [...]
@@ -1156,7 +1663,7 @@ Depth is **additive**, and "*when depth is needed*" is the governing principle. 
 
 ---
 
-## 33. The home portal, and FringeIsland-the-village placed in the far side of place 2
+#### 33. The home portal, and FringeIsland-the-village placed in the far side of place 2
 
 **Statement:**
 > There is a special portal that is always next to the FIM in the ordinary world that leads to the FIM's glowing glass ball -> their "home" and "garden".
@@ -1172,7 +1679,7 @@ Depth is **additive**, and "*when depth is needed*" is the governing principle. 
 
 ---
 
-## 34. The inviolable ball, the tendable world, and the rule: gardening, not guarding
+#### 34. The inviolable ball, the tendable world, and the rule: gardening, not guarding
 
 **Statement (assembled across this sitting):**
 > What if the FringeIsland "island" [...] is -always- safe but the remaining "place 2" [...] can be destroyed by the forces coming from place [3]? The further away a FIM goes from the FringeIsland island the more they get into unchartered territory [...]
@@ -1189,7 +1696,7 @@ Depth is **additive**, and "*when depth is needed*" is the governing principle. 
 
 ---
 
-## 35. World-genesis — the world grows from the balls and their bonds; place 2 is revived place 3
+#### 35. World-genesis — the world grows from the balls and their bonds; place 2 is revived place 3
 
 **Statement:**
 > What if the FIM's warm glowing glass balls hang in the void and by FIM's care and growth slowly starts to connect to each other like in growing branches and when enough branches have connected enough glowing glass balls the trunk starts to form [...] or glass balls starts to emerge from a "black nothingness ground", connected to each other by branches in a way that they form the crown of a tree that grows up and finally gives life to the ground that also starts to glow and spread -> becomes the village -> becomes the island -> becomes the whole far and near place 2?
@@ -1205,7 +1712,7 @@ Depth is **additive**, and "*when depth is needed*" is the governing principle. 
 
 ---
 
-## 36. Cords and branches — two distinct, interlocking bonds
+#### 36. Cords and branches — two distinct, interlocking bonds
 
 **Statement:**
 > we need to have a super clear idea about the important cord between each FIM and their respective whisp. FIM's can support each other by healing other FIM<->whisp cords. Now, is there also cords between FIM's like you discussed when referring to the branches in the trees crown?
@@ -1222,7 +1729,7 @@ Depth is **additive**, and "*when depth is needed*" is the governing principle. 
 
 ---
 
-## 37. Two luminosities: the balls glow equal, the cord carries health
+#### 37. Two luminosities: the balls glow equal, the cord carries health
 
 **Statement:**
 > Let's go a bit creative here and pause the statement about the glass ball changing intensity. What if all FIM's glass balls glow equal in order to be true to our statement that no one is better or worse than anyone else and that the cord connecting the FIM with their Whisp can for each individual FIM have different intensity and color depending on their current health... shall this health be visible also to other FIM's and their Whisps in order to be able to support and help healing their friend?
@@ -1242,7 +1749,7 @@ Depth is **additive**, and "*when depth is needed*" is the governing principle. 
 
 ---
 
-## 38. The branches are the visible crown
+#### 38. The branches are the visible crown
 
 **Statement:**
 > Can a FIM see their branches to others in the tree (1+1 and 1+community) with some kind of connection (lines?) and/or glow?
@@ -1259,7 +1766,7 @@ Depth is **additive**, and "*when depth is needed*" is the governing principle. 
 
 ---
 
-## 39. Every FIM has their own Whisp and cord; the ball is what transcendence grants
+#### 39. Every FIM has their own Whisp and cord; the ball is what transcendence grants
 
 **Statement:**
 > I think everyone has their whisp regardless if they are a FIM or not. Someone is always whispering in my head but maybe that "one" is not as elegant and caring for me as a more developed Whisp in FringeIsland. [...] the whisp is a super good coach and uses tough love BUT it is empty in the sense of being "me". That last part is what starts filling up when in FringeIsland. So, I believe all shadows do have their own whisp, and by that also a cord that connects the two. It's also the whisp that (together with the gimbal) let the shadow pass through the portal to FringeIsland. The shadow do not have a glowing glass ball yet. That they get when transcending to become a FIM.
@@ -1275,7 +1782,7 @@ Depth is **additive**, and "*when depth is needed*" is the governing principle. 
 
 ---
 
-## 40. Portals, seeds, and the cord as the FIM's dial (assembled across this exchange)
+#### 40. Portals, seeds, and the cord as the FIM's dial (assembled across this exchange)
 
 **Statement:**
 > the far can also be reached through portals directly from the ordinary world meaning that the cord between the FIM and their whisp can actually go from where the FIM physically is in the ordinary world, into a portal and out to the dangerous space 3 by their whisp. So, this means that a FIM and their whisp can anchor their cord anywhere and multiple times. Maybe by placing smaller glowing glass balls or maybe something like seeds or similar?
@@ -1298,11 +1805,11 @@ Depth is **additive**, and "*when depth is needed*" is the governing principle. 
 
 ---
 
-## 2026-06-05 resume — the product/ecosystem layer; village, home, ball-UI, and Shadow refinements
+#### 2026-06-05 resume — the product/ecosystem layer; village, home, ball-UI, and Shadow refinements
 
 This resume turns from the universe-fiction to the **product/ecosystem layer** — what the named products (Hub, Gimbal, Game, and the three studios) are, and what lands where — and, in doing so, adds Statements 41-46 of fiction that the product questions forced into the open. Worked as a Claude.ai bouncing session: a hypothesis was built, dry-run against the locked capabilities and the edge cases, and the loose threads resolved one at a time. Per session discipline, no prior statement is edited; the product locks and Statements 41-46 extend earlier material by addition. Reconciliation with `README.md` and the planning tree is the next session's work (see the bridge).
 
-### Product / ecosystem layer (design locks)
+##### Product / ecosystem layer (design locks)
 
 - **Not clones; one shared core plus a situation-specific surface.** ADR-U023 already makes every product a client over one Platform API, so the brain is shared by design; products differ only at the surface, by the FIM's situation. This dissolves "are they just clones on different devices."
 - **"Gimbal" and "Hub" name two affordance *profiles*, not two devices.** Two axes: a *physical-world membrane* (camera, LiDAR, GPS, mic, AR display, hands-free, portability — perception and capture) and a *canvas/tooling membrane* (screen size, precision input, keyboard, file system, external plugins). Devices are points in that space: phone (high physical / low canvas), laptop (low / high), tablet (high / medium, the convergence device), AR glasses (max physical + immersion). Capabilities key to required affordances and light up on any device that offers them — device-independent and future-proof against new hardware.
@@ -1316,7 +1823,7 @@ This resume turns from the universe-fiction to the **product/ecosystem layer** �
 
 ---
 
-## 41. "The village" as the working name for the FringeIsland safe harbor
+#### 41. "The village" as the working name for the FringeIsland safe harbor
 
 **Statement:**
 > We can in future sessions refer to the FringeIsland safe harbor as "the village" for now.
@@ -1326,7 +1833,7 @@ This resume turns from the universe-fiction to the **product/ecosystem layer** �
 
 ---
 
-## 42. The glowing glass ball has an inside and an outer rim — tap in for home, tap the rim for the village
+#### 42. The glowing glass ball has an inside and an outer rim — tap in for home, tap the rim for the village
 
 **Statement:**
 > In the Gimbal or on the Hub there is a graphical visualization of the glowing glass ball. For a FIM the ball has an inside and an outer rim. Pressing the inside transports the FIM to their private home/garden (the glowing glass ball). Pressing the outer rim transports them to the village of FringeIsland, where they interact and socialise with other FIMs and maybe NPCs.
@@ -1338,7 +1845,7 @@ This resume turns from the universe-fiction to the **product/ecosystem layer** �
 
 ---
 
-## 43. The private home is a self-chosen representation of where the FIM feels safest — inviolable, selectively shareable
+#### 43. The private home is a self-chosen representation of where the FIM feels safest — inviolable, selectively shareable
 
 **Statement:**
 > Each FIM has a private home, represented by a self-chosen visualization of how it looks — a field or garden of flowers and grass with small pathways, a small den up in the attic on the roof somewhere unknown, a house on top of a trunk reaching above the clouds. The home is visualized by where the FIM feels most safe, and a place to be creative and feel free. It is the most private place, locked only to the specific FIM. A FIM can however selectively invite other FIMs to their whole home or parts of it — all decided by the FIM themselves.
@@ -1350,7 +1857,7 @@ This resume turns from the universe-fiction to the **product/ecosystem layer** �
 
 ---
 
-## 44. The home is furnished with the personal-scope slice of World Studio, and evolves as the FIM grows
+#### 44. The home is furnished with the personal-scope slice of World Studio, and evolves as the FIM grows
 
 **Statement:**
 > Each FIM uses parts of World Studio to furnish their private home. And the home will likely evolve as the FIM grows and the Whisp fills.
@@ -1362,7 +1869,7 @@ This resume turns from the universe-fiction to the **product/ecosystem layer** �
 
 ---
 
-## 45. Anchoring is universal for leaving the near side — the gate is near-side vs Beyond, not safe vs dangerous
+#### 45. Anchoring is universal for leaving the near side — the gate is near-side vs Beyond, not safe vs dangerous
 
 **Statement:**
 > Portals to the far side of place 2 do need seeds, so "no seed for the village" does not really hold. Are we starting to erode the whole seed-versus-portal concept by having no seeds needed for the village?
@@ -1377,7 +1884,7 @@ This resume turns from the universe-fiction to the **product/ecosystem layer** �
 
 ---
 
-## 46. Shadow access and data — anonymous auth, ephemeral state, erased on inactivity; transcendence is the persistence-and-consent threshold
+#### 46. Shadow access and data — anonymous auth, ephemeral state, erased on inactivity; transcendence is the persistence-and-consent threshold
 
 **Statement:**
 > A Shadow needs anonymous auth to access parts of the FringeIsland system, but actual private data will be lost if a session ends before the Shadow transcends to become a FIM. If for this reason some data is stored server-side for a while we need to care for that, but the important statement is that the data is erased soon after a Shadow has been inactive or purposely closed their activities at FringeIsland.
@@ -1393,13 +1900,13 @@ This resume turns from the universe-fiction to the **product/ecosystem layer** �
 
 ---
 
-## 2026-06-21 resume -- the Mist, the reassignment of "Shadow", and the Whisp delivered at metamorphosis
+#### 2026-06-21 resume -- the Mist, the reassignment of "Shadow", and the Whisp delivered at metamorphosis
 
 This resume adds Statements 47-48. It renames the anonymous becoming-figure the **Mist** and re-scopes "Shadow" to the place-3 / sleep-paralysis menace (47), and it reconciles the Whisp/cord origin with Statement 39 by the Option-A "carried-from-the-start, delivered-at-metamorphosis, cord-kept-not-severed" model (48). Per session discipline, none of Statements 16, 17, 19, 27, 34, 39, 40, 45, 46 is edited; 47-48 supersede or extend them by addition only. A novel-reconciliation flag is recorded under Divergences.
 
 ---
 
-## 47. The Mist: the anonymous becoming-figure; "Shadow" reassigned to the place-3 menace
+#### 47. The Mist: the anonymous becoming-figure; "Shadow" reassigned to the place-3 menace
 
 **Statement:**
 > The anonymous entrant -- previously called the Shadow -- is renamed the Mist. A Mist is a translucent, drifting figure in the hyaline state: present but not yet anchored, seen but incomplete. "Shadow" is no longer the newcomer; the word is reserved for the place-3 / sleep-paralysis menace (the hostile face of the Fringe).
@@ -1448,7 +1955,7 @@ This resume adds Statements 47-48. It renames the anonymous becoming-figure the 
 
 ---
 
-## 48. The Whisp is carried from the start and delivered at metamorphosis; the cord is kept, not severed
+#### 48. The Whisp is carried from the start and delivered at metamorphosis; the cord is kept, not severed
 
 **Statement:**
 > The Whisp is present from the Mist's first moment -- carried within, unseparated, felt as the pull-toward-becoming rather than met as a companion. This preserves Statement 39: a Mist (formerly Shadow) already has its own Whisp and cord. The cord, while a Mist, is unpaid-out -- at rest, near-zero length, the Whisp still "in the skull."
@@ -1484,7 +1991,7 @@ This resume adds Statements 47-48. It renames the anonymous becoming-figure the 
 
 ---
 
-## Patterns emerging so far
+#### Patterns emerging so far
 
 *(Updated as the session continues.)*
 
@@ -1584,7 +2091,7 @@ This resume adds Statements 47-48. It renames the anonymous becoming-figure the 
 
 ---
 
-## Divergences from existing universe writings
+#### Divergences from existing universe writings
 
 Noted for reconciliation when concepts graduate to `README.md`:
 
@@ -1600,7 +2107,7 @@ Noted for reconciliation when concepts graduate to `README.md`:
 
 ---
 
-## Open threads (continuing in this session)
+#### Open threads (continuing in this session)
 
 *(Updated as the session continues.)*
 

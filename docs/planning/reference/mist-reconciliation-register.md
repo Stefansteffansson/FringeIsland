@@ -1,7 +1,7 @@
 # Mist reconciliation register (Shadow -> Mist rename + re-scope)
 
 **Authored:** 2026-06-21 (Step 1 audit, read-only). **Brief:** [`docs/planning/sessions/openers/mist-reconciliation-brief.md`](../sessions/openers/mist-reconciliation-brief.md).
-**Authority:** discovery Statements 47-48 (`docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md`, commit `28cc770`). Discovery outranks every other artifact; on conflict, the artifact is corrected to match the discovery, never the reverse.
+**Authority:** discovery Statements 47-48 (`docs/fringeisland-thinking/discovery--the-universe-in-the-making.md`, commit `28cc770`). Discovery outranks every other artifact; on conflict, the artifact is corrected to match the discovery, never the reverse.
 **Status:** **STEP 1 RATIFIED by Stefan 2026-06-21.** Inventory approved; decisions A-F ruled (see foot). Step 2 (rectify) in progress, keystone first. AMBIGUOUS items that surface mid-rectification stay open for Stefan.
 
 This register IS the worklist. Each cluster carries a completion checkbox; AMBIGUOUS items stay open for Stefan.

@@ -39,7 +39,7 @@
           ] },
           { "type": "links", "label": "Thinking & discovery", "items": [
             { "label": "Thinking — index", "path": "docs/fringeisland-thinking/README.md" },
-            { "label": "Universe discovery — sessions, graduation tracker, backlog", "path": "docs/fringeisland-thinking/discovery--tracker-and-backlog.md" },
+            { "label": "The universe in the making — where discovery stands, the ideas on the table, the sessions", "path": "docs/fringeisland-thinking/discovery--the-universe-in-the-making.md" },
             { "label": "Open questions (CQ register)", "path": "docs/fringeisland-thinking/questions--ecosystem-open-questions.md" },
             { "label": "Universe → spec manifestation map", "path": "docs/fringeisland-thinking/record--universe-to-spec-manifestation.md" }
           ] }
@@ -137,7 +137,7 @@
           { "label": "Hub v2 — the plan", "path": "docs/planning/hub-v2/README.md" },
           { "label": "ADR-U030 — rebuild decision", "path": "docs/architecture/decisions/ADR-U030-hub-v2-greenfield-rebuild.md" }
         ] },
-        { "type": "section", "label": "Discovery backlog", "path": "docs/fringeisland-thinking/discovery--tracker-and-backlog.md", "heading": "## Discovery backlog (open topics awaiting sessions)" },
+        { "type": "section", "label": "Discovery backlog", "path": "docs/fringeisland-thinking/discovery--the-universe-in-the-making.md", "heading": "### Discovery backlog (open topics awaiting sessions)" },
         { "type": "cqs", "label": "Open questions", "path": "docs/fringeisland-thinking/questions--ecosystem-open-questions.md" },
         { "type": "waves", "label": "Wave roadmap" },
         { "type": "activity", "label": "Recent activity" }

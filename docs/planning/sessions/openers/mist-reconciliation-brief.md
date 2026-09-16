@@ -10,7 +10,7 @@
 ## Why this exists
 
 A 2026-06-21 universe-discovery resume added **Statements 47-48** to the canonical discovery log
-(`docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md`,
+(`docs/fringeisland-thinking/discovery--the-universe-in-the-making.md`,
 commit `28cc770`). They rework the anonymous tier and the Whisp/cord origin. The discovery log is
 the single source of truth and **outranks every other artifact in the repo** (docs, ADRs, specs,
 code); on conflict, those artifacts are corrected to match the discovery, never the reverse.

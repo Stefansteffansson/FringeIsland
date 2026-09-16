@@ -55,7 +55,7 @@ Read these files in order. Stop at any point if a read fails or content diverges
    - `docs/fringeisland-thinking/canon--roles--taxonomy.md` - journey-role gating (Steward leads, Guide facilitates, Member takes part, Observer watches); Journey Studio scope tiers if named.
    - `docs/fringeisland-thinking/canon--beings--whisp-and-npcs.md` - FIM/Shadow as the enrolled travellers; ADR-U027 lifecycle hooks.
    - `docs/fringeisland-thinking/README.md` - group journeys / village surfaces where journeys are group-shaped.
-   - Plus the universe-discovery files under `docs/fringeisland-thinking/discovery--tracker-and-backlog.md` where the cores cite them.
+   - Plus the universe-discovery files under `docs/fringeisland-thinking/discovery--the-universe-in-the-making.md` where the cores cite them.
 8. **`docs/platform/domain/README.md` + `docs/platform/domain/CLAUDE.md`** - sub-tier rules; the DS-3 L2 inventory line; Platform API posture; Ferd non-closure discipline.
 9. **ADRs:** U023 (decomposition) + **U025 (products as equipment profiles; the Game as journey DEPTH - load-bearing: depth is a journey setting DS-3 owns or hosts, not a product)** + U026 (Journey Studio as DS-3's studio write-path affinity) + U027 (Shadow lifecycle - enrolment/identity obligations) + U028 (governance by scope) + U008/U018 (Ferd non-closure - journey kinds, depth settings, progress states as data-driven registries, never sealed enums).
 10. **`docs/planning/sessions/openers/STATUS.md`** - confirm the DS-3 row is `In flight` with this opener linked (the authoring commits set it); this run flips it to `Done` at close (Section 10).

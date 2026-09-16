@@ -8,7 +8,7 @@
 > Source of truth: universe-discovery Statements 13-14 (Universe Studio as overarching, binding
 > frame), 29-30 (Dreamineer specialisations gate studios; World Studio's hard/soft faces), 44
 > (World Studio access tiers by scope), and the 2026-06-05 product/ecosystem design locks
-> (`docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md`).
+> (`docs/fringeisland-thinking/discovery--the-universe-in-the-making.md`).
 > Ratified in reconciliation Session B (2026-06-10). Sibling decision: ADR-U025.
 
 ---
@@ -127,5 +127,5 @@ very structure it documents.
 - Related: [ADR-U025 — Products as equipment profiles](ADR-U025-products-as-equipment-profiles.md) (sibling decision; equipment-keying of studio surfaces)
 - Related: [ADR-U023 — Platform Core / Domain Services decomposition](ADR-U023-platform-core-domain-services-decomposition.md) (Studios row reads through this ADR)
 - Related: [ADR-U006 — Universal Group Pattern](ADR-U006-universal-group-pattern.md) / [ADR-U007 — Three-layer permission model](ADR-U007-three-layer-permission-model.md) (the gating mechanism)
-- Source: `docs/fringeisland-thinking/discovery--2026-05-18--universe-session-01.md` (Statements 13-14, 29-30, 44; 2026-06-05 product locks)
+- Source: `docs/fringeisland-thinking/discovery--the-universe-in-the-making.md` (Statements 13-14, 29-30, 44; 2026-06-05 product locks)
 - Session record: `docs/planning/sessions/2026-06-05_02_-_SESSION-A-REPO-MAP.md`
