@@ -88,4 +88,4 @@ One branch `docs/thinking-pass-3`, one PR, content changes reviewed as content, 
 - [x] Every fold, merge, rename and retire has its outside referrers re-pointed in the same PR; the index exact both directions (28 / 28; link resolver 80 unresolved before and after, zero new)
 - [x] `AGENTS.md` and the Claude.ai project instructions say five registers and name only files that exist
 - [x] doc-health run (§3, §3.6, §9, §10) clean; retired names in the §3.6 table (four rows: the five scaffolds, the archetypes file, the onboarding summary, the two suffix renames)
-- [ ] `npm run dashboard` regenerates; the front door's thinking-tree bullet repointed at the close
+- [x] `npm run dashboard` regenerates (921 files); the front door's thinking-tree bullet repointed (PR #664; the "merge nod" row on the front door comes off after the merge)
