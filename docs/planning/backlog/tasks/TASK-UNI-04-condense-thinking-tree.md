@@ -3,7 +3,7 @@
 ---
 id: TASK-UNI-04
 title: "Pass 3 after TASK-UNI-03: fold the empty scaffolds into their cores, merge the Homebody/Explorer twins, retire the pre-canon onboarding summary, fix the sweep artefacts the flatten left in the tracker and the manifestation record"
-status: in-progress — all four rulings in 2026-09-16; executed the same day on branch docs/thinking-pass-3; done at merge
+status: done — merged as #664 on 2026-09-16 ("ok merge"); 33 → 26 files
 assigned_to: claude
 priority: medium
 owner: ecosystem
