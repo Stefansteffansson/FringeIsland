@@ -64,3 +64,16 @@ Doc Health Check — 2026-09-17 (fourth run) — on-demand after #673 (this brid
 dashboard — 0 "Section not found"
 Skipped: 1, 1.6, 2, 3.7, 4, 4.5, 6, 7, 8, 9, 11 — no trigger since the previous run. Critical findings: none. Fixes: none needed.
 ```
+
+```
+Doc Health Check — 2026-09-17 (fifth run) — on-demand after #676 (MANIFESTO 0.2, the two flipped tags, the tracker row, this addendum)
+
+1.5  Architectural drift           — 11 keyword groups over the 14 new lines / 1 hit, this addendum's own sentence naming the superseded Shadow patterns (history) / no retired vocabulary in the two new Manifesto principles / clean
+3.   Path + README sync            — the Manifesto's one link (PRINCIPLES-AI) and the tracker row's link to the Manifesto resolve; index 23 / 23; resolver 3 464 links, 80 unresolved before #676 and now, 0 new / clean
+3.7-style (restated inventory)     — the Manifesto's value list grew from 11 to 13: no active document restates the list or counts it; three cite one principle ("Community ownership over corporate control") as a constitutional anchor — citations, not snapshots / clean
+3.5 / 3.6                          — 0 old_*/ paths; the only retired-name mentions are the discovery file's History line and this bridge's explanatory sentence, by design / clean
+5.   Maturity consistency          — front door names this bridge, the newest session file; 6-done sweep 100 / 100 / clean
+10.  Graduation-tracker completeness — four headings intact; ten rows now (the three cores, the ratified respawn section, five ADRs, and the first row of type "constitutional" — MANIFESTO.md), every home exists / clean
+dashboard — 0 "Section not found"
+Skipped: 1, 1.6, 2, 4, 4.5, 6, 7, 8, 9, 11 — no trigger. Critical findings: none. Fixes: none needed.
+```
