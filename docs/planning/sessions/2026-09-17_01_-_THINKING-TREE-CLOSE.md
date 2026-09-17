@@ -77,3 +77,17 @@ Doc Health Check — 2026-09-17 (fifth run) — on-demand after #676 (MANIFESTO 
 dashboard — 0 "Section not found"
 Skipped: 1, 1.6, 2, 4, 4.5, 6, 7, 8, 9, 11 — no trigger. Critical findings: none. Fixes: none needed.
 ```
+
+```
+Doc Health Check — 2026-09-17 (sixth run) — on-demand; nothing changed since the fifth run but its own block (#677), so run at full-folder scope: every section that applies to docs/fringeisland-thinking/ and what references it
+
+1.5  Architectural drift           — 12 keyword groups + "Shadow" and "affordance" by sense over all 21 files / every hit is a retired-name or supersedes table (roles core, cosmology core), a provenance line (how-growth-works: Hamn PRODUCT_SPEC.md), the transcript and its tags, a research report's own vocabulary ("the other side of the U", the solo-dev report's phase plan), the Jungian / place-3 Shadow (thinkers KB, cosmology), or CQ-017's correct sense; the one "Shadow" in a canon file outside a supersedes table is the roles core's rename note / 0 directives / clean
+3.   Path + README sync            — index 23 / 23; 0 off-convention names; the one anchor link into the folder resolves; resolver 3 464 links, 80 unresolved before #677 and now, 0 new, 0 inside the folder / clean
+3.5  Archived-tree leak            — 2 hits, both the April method report's own recommendations (historical) / 0 directive / clean
+3.6  Deleted-file refs             — the discovery file's History line only (by design) / clean
+5.   Maturity consistency          — front door names this bridge, the newest session file; 6-done sweep 100 / 100 / clean
+9.   CLAUDE.md cascade             — 30 files, 0 broken load-order pointers; every thinking path in a CLAUDE.md or AGENTS.md resolves / clean
+10.  Graduation-tracker completeness — four headings intact; the three Canonical cores rowed; every home in the table exists / clean
+dashboard — 0 "Section not found"
+Skipped: 1, 1.6, 2, 3.7, 4, 4.5, 6, 7, 8, 11 — no trigger. Critical findings: none. Fixes: none needed. The folder is at rest.
+```
