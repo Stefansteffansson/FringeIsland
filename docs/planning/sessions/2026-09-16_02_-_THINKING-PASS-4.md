@@ -89,3 +89,15 @@ Re-run 2026-09-17, after #668 (the fixes above) and #669 (the manifestation map 
 dashboard — Design-vs-build reads the new Headline, 0 "Section not found"
 Skipped: 1, 1.6, 2, 3.7, 4, 4.5, 6, 7, 8, 9, 10, 11 — no trigger since the morning run (no CLAUDE.md, ADR, tracker, entity, feature or schema change). Critical findings: none. Fixes: none needed.
 ```
+
+## Content review of the discovery file (2026-09-17, Stefan: "run the four fixes and the open-threads reconciliation")
+
+Stefan asked whether the one discovery file had been reviewed for content, not only for names and links. It had not — pass 4 moved its text unchanged. The review found five things and fixed them on one branch, nothing else touched:
+
+- **Status lines**: Session 01 was still "In progress, resumed 2026-06-05" three months after its last edit; now "Closed at S48 (2026-06-21); the next session appends as Session 02 from S049", in the Part 3 header and the session log.
+- **Candidate A** (the portal ideas, 2026-05-28) framed itself on the Statement-26 topology, one day before the 2026-05-29 reshape and before Session B ratified the cosmology core. A banner above it says: read the ten candidates against the core, not against the frame below. One stale path inside it (`universe-discovery/`) repointed to Part 3.
+- **The open threads** already carried a first tag layer from the G-33 pass of 2026-05-29, against Statements 1–36 only. Every one of the 130 threads now carries a **second, dated tag** against everything after: the resumes to S48, the three ratified cores, ADR-U025 / U026 / U028 / U029 / U031 (and U018, U040, U044–U046 where touched), the DS-1 / DS-2 / DS-3 / DS-7 specs, PRINCIPLES-AI, the CQ register and the backlog. **Tally: 39 RESOLVED, 57 PARTIAL, 34 OPEN.** RESOLVED names the canonical home; PARTIAL the home and the remainder; OPEN where the thread is tracked (a planned page inside a core, a CQ, the backlog, a spec's open question). No bullet edited; the originals verified byte-for-byte as prefixes of the tagged lines. The Divergences section above the list carries a one-paragraph "reconciled by" note; its intro no longer says "graduate to `README.md`" (a pass-1 sweep artefact).
+- **The graduation tracker's** verification date now names the two doc-health §10 runs of this week.
+- **The backlog row for CQ-016** notes that the question sits in the register's Parked section and that the Hub v2 rebuild re-derived the DESCRIPTION it asks about.
+
+What the tally says: of the threads Session 01 left open, three in ten are settled canon, four in ten are settled in their structure with a named remainder, and a quarter are genuinely open — almost all of those pointing at the same three places: the planned Whisp page, the planned NPC page, and the universe-mechanics fundamentals session the backlog names as the foundational next step. The reconciliation writes no canon; every tag is a pointer.
