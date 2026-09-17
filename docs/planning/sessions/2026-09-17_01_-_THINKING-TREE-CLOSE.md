@@ -52,3 +52,15 @@ The index's **Start here**: the graduation table in Part 1 of the discovery file
 ## Addendum — the patterns piece (same day, after the close; Stefan: "go, run the patterns piece")
 
 The last unreconciled section of the discovery file, "Patterns emerging so far" (93 mid-session syntheses written before the reshape and before Session B), now carries a dated tag per pattern in three classes — **75 CANON** (the section that carries it now; one in structure only, the Big-5-to-sense mapping), **5 SUPERSEDED** (the two-register topology, the Shadow→FIM ladder, the 05-20 topology lock, the village-distance gradient, the Shadow vocabulary of the ball rule), **13 OPEN** (design lineage such as the ARG family and the Nordic aesthetic, the hidden-layer feeling, signature-vs-charter, the hard/soft signature, and two founding stances that turned out to be written into **no constitutional document**: "constant change is the steady state" and "humans outrank stories outrank world" — tagged with their natural home, PROCESS.md and MANIFESTO.md, not a claimed one). Every home was grepped before it was named; originals byte-preserved by script. With this the file is reviewed end to end except for the statements themselves, which are the record and stay as written. The two un-homed stances are a small canon question for Stefan: write them into the MANIFESTO, or let them stay discovery.
+
+```
+Doc Health Check — 2026-09-17 (fourth run) — on-demand after #673 (this bridge) and #674 (the patterns tags)
+
+1.5  Architectural drift           — 12 keyword groups over the 94 new lines / 2 hits, both tags stating a rename ("affordance" → equipment, ADR-U025; "the Mist, not the Shadow", ADR-U031) / clean
+3.   Path + README sync            — index 23 / 23; every core file, ADR (U025, U026, U028, U029, U031), feature (PC002, PD002 — 6-done), CQ (001, 003) and core section the tags cite exists (cosmology §1–§11, six beings sections, two narrative, three growth, the roles "not a ladder"); the bridge's four links resolve; resolver 3 463 links, 80 unresolved before and after, 0 new / clean
+3.5 / 3.6                          — 0 old_*/ paths; the discovery file's History line and this bridge's own explanatory sentence are the only retired-name mentions, both by design / clean
+5.   Maturity consistency          — front door names this bridge, the newest session file; 6-done sweep 100 / 100 / clean
+10.  Graduation-tracker completeness — four headings intact; rows for the three Canonical cores, the ratified respawn section and ADR-U025 / U026 / U027 (superseded) / U028 / U031 / clean
+dashboard — 0 "Section not found"
+Skipped: 1, 1.6, 2, 3.7, 4, 4.5, 6, 7, 8, 9, 11 — no trigger since the previous run. Critical findings: none. Fixes: none needed.
+```
