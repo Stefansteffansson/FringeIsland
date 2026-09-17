@@ -20,12 +20,12 @@ You are running a **FringeIsland universe-discovery session** — the mechanism 
 
 ### How the folder is organised — read `docs/fringeisland-thinking/README.md` first, every session
 
-Filenames are `<register>--<area>--<topic>.md`, or `<register>--<yyyy-mm-dd>--<topic>.md` for dated sessions. Five registers:
+Filenames are `<register>--<area>--<topic>.md`, or `<register>--<topic>.md` for the two single-file registers (discovery, questions). Five registers:
 
 | Register | What it is | You may… |
 |---|---|---|
 | `canon--` | The canonical world — what the universe **is**. The Status line inside each file carries its grade (Canonical / Extracted / Thinking; a planned-but-unwritten page is listed inside its core under "Planned — not yet written", never as an empty file). | **read; not write.** Canon changes through a ratification pass in Claude Code, which also writes the graduation-tracker row. If a session crystallises something, say so in the session file's closing section and leave the canon edit to that pass. |
-| `discovery--` | Dated working sessions and candidate material, plus `discovery--tracker-and-backlog.md`. Never canon. | **write** — this is your register. |
+| `discovery--` | One file, `discovery--the-universe-in-the-making.md`: Part 1 where things stand (session log, backlog, sounding-board notes, graduation tracker), Part 2 the ideas on the table (candidates, not locked), Part 3 the sessions (statements S001 onward, append-only). Never canon. | **write** — this is your register; you append to it and never create a second discovery file. |
 | `research--` | Reports (areas `growth`, `worlds`, `method`, `engineering`). | read; write only if Stefan asks for a research report, named `research--<area>--<topic>.md`. |
 | `record--` | Design records and snapshots. | read. |
 | `questions--` | `questions--ecosystem-open-questions.md`, the CQ register (CQ-001 … CQ-017 today). | append a new CQ (continue the numbering) when a session surfaces an ecosystem-level question it cannot settle. |
@@ -34,14 +34,14 @@ Filenames are `<register>--<area>--<topic>.md`, or `<register>--<yyyy-mm-dd>--<t
 
 1. `docs/fringeisland-thinking/README.md` — the index and the conventions.
 2. The `canon--` files the session will touch — cosmology, roles, beings, narrative, growth, community. **They are the vocabulary authority.** Use their names: the **Mist** (never "Shadow" for the anonymous entrant — "Shadow" is the place-3 menace), **equipment** (not "affordance"), **the Whisp** (never "AI Mentor"), the **Ordinary World → Shimmer → Fringe** topology (never "Three Worlds", "Safe Harbour", "The Other Side"), **the Game is a depth setting of journeys, not a product**.
-3. `discovery--tracker-and-backlog.md` — the discovery backlog (open topics awaiting sessions), the sounding-board notes, and the graduation tracker (what has already become canon — do not re-discover it).
+3. Part 1 of `discovery--the-universe-in-the-making.md` — the discovery backlog (open topics awaiting sessions), the sounding-board notes, and the graduation tracker (what has already become canon — do not re-discover it).
 4. `questions--ecosystem-open-questions.md` — what is open, parked, resolved.
-5. The newest `discovery--` session, to continue where it left off.
+5. The last session in Part 3 of the same file, to continue where it left off.
 6. `docs/ecosystem/VISION.md` constrains and `docs/ecosystem/MANIFESTO.md` inspires — check a new idea against both before holding it.
 
 ### What you write
 
-**A session** → `docs/fringeisland-thinking/discovery--<yyyy-mm-dd>--<topic>.md`, in the shape of `discovery--2026-05-18--universe-session-01.md`:
+**A session** → appended at the end of Part 3 of `docs/fringeisland-thinking/discovery--the-universe-in-the-making.md`, under a new `### Session NN — <yyyy-mm-dd> — <topic>` heading, in the shape of Session 01 there:
 
 - Header: `# Universe Discovery — <topic>`, then `**Date:**`, `**Status:** In progress` (or `Complete`), `**Relates to:**` (the sessions and cores it builds on).
 - A short "How to read this document" section.
@@ -49,9 +49,9 @@ Filenames are `<register>--<area>--<topic>.md`, or `<register>--<yyyy-mm-dd>--<t
 - **Statement numbers are global across sessions.** Session 01 ends at Statement 48; the cores, ADRs and the tracker cite statements as `S<n>`. The next session's first statement is **49**. Never renumber.
 - At the end: **Patterns and cross-cutting observations**, then **Open threads** (what this session raised and did not settle), then **Candidates for graduation** (statements that read as settled — for the ratification pass, not for you to write into canon).
 
-**Candidate material** (ideas generated between sessions, research-fed options) → the same filename shape, with `**Status:** CANDIDATE MATERIAL -- NOT LOCKED` and `**Kind:**` / `**Relates to:**` lines, as in `discovery--2026-07-24--gimbal-origin-and-altered-states.md`. Nothing in a candidate file is canon.
+**Candidate material** (ideas generated between sessions, research-fed options) → appended under Part 2 of the same file as `### Candidate X — <topic> (<yyyy-mm-dd>)`, with `**Status:** CANDIDATE MATERIAL -- NOT LOCKED` and `**Kind:**` / `**Relates to:**` lines, as Candidate B there. Nothing in a candidate is canon.
 
-**The tracker** (`discovery--tracker-and-backlog.md`): you may add a row to *Discovery backlog* or a note under *Sounding-board notes*, and a line to the *Session log* for the session you ran. You do not edit the *Graduation tracker* table — that is the ratification pass's.
+**Part 1 of the same file**: you may add a row to *Discovery backlog* or a note under *Sounding-board notes*, and a line to the *Session log* for the session you ran. You do not edit the *Graduation tracker* table — that is the ratification pass's.
 
 ### The standing sequencing rule (Stefan, 2026-06-14)
 

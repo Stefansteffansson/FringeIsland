@@ -15,7 +15,7 @@ How should felt performance become a first-class, enforceable property of every 
 
 ## Decision drivers
 
-- Budgets must anchor to external standards and measured user tolerance, not invented numbers — vetted 2026-07-07 against Core Web Vitals, RAIL, Nielsen's response-time limits, MDN guidance, and SaaS benchmarks ([`Performance_Budget_Research_Report.md`](../../fringeisland-thinking/research--engineering--performance-budget.md)).
+- Budgets must anchor to external standards and measured user tolerance, not invented numbers — vetted 2026-07-07 against Core Web Vitals, RAIL, Nielsen's response-time limits, MDN guidance, and SaaS benchmarks ([`Performance_Budget_Research_Report.md`](../../fringeisland-thinking/research--engineering--performance-budget-and-cold-start.md)).
 - Enforceable at build time and at the area gate — prose-only rules demonstrably drift within a cycle (the route-policy lesson, retro 2026-07-06 §1), while DoD rows hold.
 - Must not lock the project to costs it doesn't control — the Supabase token exchange (~1.0 s) is a vendor floor inside the sign-in flow.
 - With no real-user monitoring yet, lab measurements must map honestly onto the industry's percentile-based thresholds (CWV "good" = 75th percentile of field data).
@@ -71,7 +71,7 @@ Enforcement homes: the feature-spec **Performance budget** section (template + A
 
 ## Links
 
-- Vetting: [`docs/fringeisland-thinking/research--engineering--performance-budget.md`](../../fringeisland-thinking/research--engineering--performance-budget.md) (Core Web Vitals, RAIL, Nielsen, MDN, Catchpoint SaaS benchmarks — external sources cited there)
+- Vetting: [`docs/fringeisland-thinking/research--engineering--performance-budget-and-cold-start.md`](../../fringeisland-thinking/research--engineering--performance-budget-and-cold-start.md) (Core Web Vitals, RAIL, Nielsen, MDN, Catchpoint SaaS benchmarks — external sources cited there)
 - Related ADRs: [ADR-U035](ADR-U035-compute-datastore-colocation.md) (co-location), [ADR-U036](ADR-U036-edge-runtime-hot-read-routes.md) (runtime/region), [ADR-U037](ADR-U037-local-jwt-verification-hot-path.md) (auth verbs + measure-the-real-path), [ADR-U042](ADR-U042-first-paint-bootstrap-read-bff-bundle.md) (bootstrap bundle — the B1–B4 delivery pattern)
 - Origin: [`retro-2026-07-06.md`](../../planning/retrospectives/retro-2026-07-06.md) §4; [`2026-07-06-groups-first-load-perf.md`](../../planning/hub-v2/2026-07-06-groups-first-load-perf.md) §5.3
 

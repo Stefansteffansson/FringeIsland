@@ -4,7 +4,7 @@
 
 **This is for:** Constitutional documents, ecosystem strategy, and the illustrated way of working — the documents that answer "what is FringeIsland and how does the whole thing fit together?" Strategic, philosophical, cross-product, foundational.
 
-**This is NOT for:** The universe design itself, the discovery sessions, research reports, or the open-questions register — those live one level up in [`../fringeisland-thinking/`](../fringeisland-thinking/README.md), one flat folder where the filename carries the register (`canon--`, `discovery--`, `research--`, `record--`, `questions--`, `canvas--`). Also not for technical architecture and binding decisions (→ `docs/architecture/`), service or product descriptions (→ `docs/platform/`, `docs/products/`), or operational planning (→ `docs/planning/`).
+**This is NOT for:** The universe design itself, the discovery sessions, research reports, or the open-questions register — those live one level up in [`../fringeisland-thinking/`](../fringeisland-thinking/README.md), one flat folder where the filename carries the register (`canon--`, `discovery--`, `research--`, `record--`, `questions--`). Also not for technical architecture and binding decisions (→ `docs/architecture/`), service or product descriptions (→ `docs/platform/`, `docs/products/`), or operational planning (→ `docs/planning/`).
 
 ---
 
@@ -40,13 +40,13 @@ The universe design (`universe/`) and the exploratory thinking (`thinking/`) liv
 2. `VISION.md` and `MANIFESTO.md` — the constitutional foundation
 3. [`../fringeisland-thinking/canon--*`](../fringeisland-thinking/README.md) — what the world is and how it works
 4. `strategy/` — how the ecosystem is shaped (product family, contributors)
-5. [`../fringeisland-thinking/questions--ecosystem-open-questions.md`](../fringeisland-thinking/questions--ecosystem-open-questions.md) and the `discovery--*` sessions — open questions and exploratory work
+5. [`../fringeisland-thinking/questions--ecosystem-open-questions.md`](../fringeisland-thinking/questions--ecosystem-open-questions.md) and [`../fringeisland-thinking/discovery--the-universe-in-the-making.md`](../fringeisland-thinking/discovery--the-universe-in-the-making.md) — open questions and exploratory work
 
 ---
 
 ## Graduation paths
 
-- When a discovery concept matures into universe design (how the world works) → it is written into a `canon--` file in `../fringeisland-thinking/` and gets a row in [`discovery--tracker-and-backlog.md`](../fringeisland-thinking/discovery--tracker-and-backlog.md)
+- When a discovery concept matures into universe design (how the world works) → it is written into a `canon--` file in `../fringeisland-thinking/` and gets a row in [`discovery--the-universe-in-the-making.md`](../fringeisland-thinking/discovery--the-universe-in-the-making.md)
 - When exploratory thinking matures into strategic direction (how the ecosystem is shaped) → moves to `strategy/`
 - When it reaches constitutional significance → absorbed into `VISION.md` or `MANIFESTO.md`
 

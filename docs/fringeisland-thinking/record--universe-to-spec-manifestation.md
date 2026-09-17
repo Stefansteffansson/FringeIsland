@@ -47,13 +47,13 @@ How story works: seasons/episodes, A-plot/B-stories, journey route types (Fixed/
 - Content families — **PARTIAL** (scattered references; no single owning capability; likely folded into DS-3 step-kinds).
 - First experience / first hour — **ABSENT** (undecomposed; the universe doc itself flags it as the single highest-risk gap; DS-3 open question; CQ-010).
 
-### Personal growth — `canon--growth--*` (three-questions, privacy-model, engagement-spectrum)
+### Personal growth — `canon--growth--*` (how-growth-works, privacy-model)
 - Three questions × three perspectives (the 9-cell matrix) — **STRONG** as structure (every Hub capability row is tagged with the founding question + dimension it serves; `journeys.md` invariant: journeys are the vehicle of the three questions). **PARTIAL** as enforcement (a tagging convention, not a checked coverage obligation).
 - Private-by-default + granular sharing — **STRONG** (V2 Privacy "private-by-default inversion" failure mode; journeys tags Progress private-by-default; Hub IDN-7 granular consent; "Stewards can't see private dev data" honored as a journeys invariant). The three named visibility *tiers* as a single model — **PARTIAL**.
 - Engagement spectrum (Homebody/Explorer/Beyond) — **STRONG** as a rule ("a Homebody is not behind an Explorer" cited verbatim as a journeys invariant); **PARTIAL** as a driver (discovery is affinity-shaped/anti-leaderboard but not segmented by spectrum position). Cold-start — **ABSENT** (lives only as CQ-001).
 - "Scaffolding stays invisible / entertainment-first" — **STRONG** (journeys invariant: no didactic/assessment/"lesson" surface).
 
-### Community — the member archetypes (since 2026-09-16 a section of `canon--growth--engagement-spectrum.md`)
+### Community — the member archetypes (since 2026-09-16 a section of `canon--growth--how-growth-works.md`)
 Community dynamics + three provisional archetypes (Homebody/Elena, Explorer/David, Dreamineer/Astrid), explicitly "not marketing segments."
 - Member archetypes — **ABSENT** (zero spec hits; only the orthogonal *role* taxonomy is built).
 - Cold-start / founding-cohort dynamics — **ABSENT** (open questions only).
