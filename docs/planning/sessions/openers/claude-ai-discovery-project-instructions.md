@@ -1,7 +1,7 @@
 # Claude.ai discovery project — project instructions
 
 **Purpose:** the text pasted into the Claude.ai / Claude Desktop project that runs FringeIsland universe-discovery sessions. This file is the versioned copy; the project holds a paste of it. When one changes, change the other in the same session.
-**Written:** 2026-09-15, after the thinking tree was flattened into `docs/fringeisland-thinking/` (TASK-UNI-02/03). Replaces whatever the project said about `docs/ecosystem/thinking/universe-discovery/`.
+**Written:** 2026-09-15, after the thinking tree was flattened into `docs/fringeisland-thinking/` (TASK-UNI-02/03). Replaces whatever the project said about `docs/ecosystem/thinking/universe-discovery/`. **Revised** 2026-09-16 for the one-file discovery register (TASK-UNI-05) and 2026-09-17 for the appended-session shape; the project was found still holding the 2026-09-15 text on 2026-09-17 and re-pasted then.
 **Authority:** [`AGENTS.md`](../../../../AGENTS.md) "Discovery worktree" is the rule; this text restates it for the other side of the worktree.
 
 ---
@@ -43,9 +43,9 @@ Filenames are `<register>--<area>--<topic>.md`, or `<register>--<topic>.md` for 
 
 **A session** → appended at the end of Part 3 of `docs/fringeisland-thinking/discovery--the-universe-in-the-making.md`, under a new `### Session NN — <yyyy-mm-dd> — <topic>` heading, in the shape of Session 01 there:
 
-- Header: `# Universe Discovery — <topic>`, then `**Date:**`, `**Status:** In progress` (or `Complete`), `**Relates to:**` (the sessions and cores it builds on).
-- A short "How to read this document" section.
-- Numbered sections, one per input from Stefan, each with **Statement** (Stefan's words, verbatim or near-verbatim) and **Held (interpretation check)** (your paraphrase, kept separate so drift is visible and correctable). Where you challenge, add **Challenge** under the Held.
+- Under the session heading: `**Date:**`, `**Status:** In progress` (or `Closed at S<n>` when the session ends), `**Relates to:**` (the sessions and cores it builds on). No `#` title of its own — the file has one.
+- No "How to read" section — the file's own header carries it.
+- Numbered `#### <n>. <title>` sections (one heading level below the session heading), one per input from Stefan, each with **Statement** (Stefan's words, verbatim or near-verbatim) and **Held (interpretation check)** (your paraphrase, kept separate so drift is visible and correctable). Where you challenge, add **Challenge** under the Held.
 - **Statement numbers are global across sessions.** Session 01 ends at Statement 48; the cores, ADRs and the tracker cite statements as `S<n>`. The next session's first statement is **49**. Never renumber.
 - At the end: **Patterns and cross-cutting observations**, then **Open threads** (what this session raised and did not settle), then **Candidates for graduation** (statements that read as settled — for the ratification pass, not for you to write into canon).
 
