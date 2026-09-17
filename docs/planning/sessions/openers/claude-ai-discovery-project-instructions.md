@@ -32,7 +32,7 @@ Filenames are `<register>--<area>--<topic>.md`, or `<register>--<topic>.md` for 
 
 ### Read before writing, in this order
 
-1. `docs/fringeisland-thinking/README.md` — the index and the conventions.
+1. `docs/fringeisland-thinking/README.md` — the index and the conventions, starting with its "Start here" block.
 2. The `canon--` files the session will touch — cosmology, roles, beings, narrative, growth, community. **They are the vocabulary authority.** Use their names: the **Mist** (never "Shadow" for the anonymous entrant — "Shadow" is the place-3 menace), **equipment** (not "affordance"), **the Whisp** (never "AI Mentor"), the **Ordinary World → Shimmer → Fringe** topology (never "Three Worlds", "Safe Harbour", "The Other Side"), **the Game is a depth setting of journeys, not a product**.
 3. Part 1 of `discovery--the-universe-in-the-making.md` — the discovery backlog (open topics awaiting sessions), the sounding-board notes, and the graduation tracker (what has already become canon — do not re-discover it).
 4. `questions--ecosystem-open-questions.md` — what is open, parked, resolved.
