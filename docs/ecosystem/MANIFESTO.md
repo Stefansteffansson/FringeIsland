@@ -1,5 +1,5 @@
 # The FringeIsland Manifesto
-*Version 0.1 — March 2026*
+*Version 0.2 — March 2026, amended 2026-09-17*
 *Status: Living document — will evolve as FringeIsland grows*
 
 ---
@@ -27,6 +27,8 @@
 | **Member privacy** | *...over...* | Commercial opportunity |
 | **Open contribution** | *...over...* | Closed gatekeeping |
 | **Community ownership** | *...over...* | Corporate control |
+| **Humans and their stories** | *...over...* | Aesthetics and worldbuilding |
+| **Constant change** | *...over...* | Being done |
 
 ---
 
@@ -88,8 +90,18 @@ The best world is not built by one person or one team behind closed doors. It is
 
 FringeIsland was not built to be sold. It was built to last — as a world that belongs to the people who inhabit and create it, not to investors, shareholders or anyone whose interests might one day diverge from yours. The FringeIsland Foundation exists to hold that line permanently. What we are building together cannot be bought. That is not an accident. It is the whole point.
 
+### Humans and their stories over aesthetics and worldbuilding.
+
+The world we are building is beautiful, and it will get more beautiful — but beauty is not the point. Every landscape, every artifact, every rule of the universe exists to serve the humans inside it and the stories they are living. When the two pull in different directions, the human wins, then the story, then the world. Aesthetics and worldbuilding serve the humans, never the other way around.
+
+### Constant change over being done.
+
+FringeIsland will never be finished, and that is not a phase we are passing through — it is the steady state. We experiment, we look honestly at what worked, and we retire what did not. A world that stopped changing would be a world that stopped growing, and growth is the reason it exists.
+
 ---
 
 *This manifesto is a living document. It will evolve as FringeIsland grows and as the community earns new wisdom about what it means to build a world worth belonging to.*
+
+*The two principles under "How the movement operates" that speak of humans over aesthetics and of constant change entered on 2026-09-17, from the universe-discovery record (Statement 13, 2026-05-18), on the founder's ruling.*
 
 *How FringeIsland creates with AI — humans first, always — is stated in the constitutional [AI Principles](./PRINCIPLES-AI.md).*
