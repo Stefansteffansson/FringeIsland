@@ -4,14 +4,14 @@
 |---|---|
 | **Cycle** | The Eid kickoff — open Wave 2 — the wave file with its DoD on day one, the carry-overs dispositioned, design tools and narrative decomposed to 4-ready |
 | **Plan** | [`2026-09-07-eid-kickoff-plan.md`](2026-09-07-eid-kickoff-plan.md) |
-| **Latest bridge** | [`../sessions/2026-09-16_02_-_THINKING-PASS-4.md`](../sessions/2026-09-16_02_-_THINKING-PASS-4.md) |
+| **Latest bridge** | [`../sessions/2026-09-17_01_-_THINKING-TREE-CLOSE.md`](../sessions/2026-09-17_01_-_THINKING-TREE-CLOSE.md) |
 | **Board** | open 2026-09-07 — the kickoff decomposes in a fresh session; two decisions in the plan are Stefan's |
 | **Next** | the first Eid build cycle — Journey Studio v1, the minimal design foundation or the Whisp, whichever the kickoff bets on first |
 
 ## In motion
 - The kickoff itself — a fresh session under `wave-planning`: `waves/eid.md` with its DoD on day one, then the decomposition of design tools and narrative (studies under `../waves/studies/eid/`)
 - The carry-over dispositions listed in the [plan](2026-09-07-eid-kickoff-plan.md) §2 — each gets a written in-or-out at the kickoff
-- **Thinking tree flattened 2026-09-15, condensed 2026-09-16** — passes 1–4: 33 → 21 files, names that say what is inside, one discovery file; pass 4 is [`TASK-UNI-05`](../backlog/tasks/TASK-UNI-05-one-topic-one-file-pass-4.md), PR #666
+- **Thinking tree closed 2026-09-17** — 33 → 21 files, names that say what is inside, the discovery file content-reviewed, the manifestation map re-run; inputs for the kickoff in the [close bridge](../sessions/2026-09-17_01_-_THINKING-TREE-CLOSE.md)
 
 ## Waiting on Stefan
 - The two kickoff decisions in the plan §4 — the Eid appetite, and which of the three themes goes first
@@ -22,5 +22,6 @@
 - **Wave 1, Ferd, declared CLOSED 2026-09-07** — `ferd.md` completed, the [close plan](../hub-v2/2026-09-05-ferd-close-plan.md) CLOSED, the [DoD walk](../hub-v2/2026-09-05-ferd-dod-walk.md) with no open row, the [wave retro](../retrospectives/retro-wave-ferd.md) carrying the carry-overs
 - G-04 ruled and executed — the waves band is the ecosystem roadmap; six pointers repointed, nothing deleted
 - The front door written by `npm run cycle:kickoff`; cycle plans live in `cycles/` from now on
+- **`docs/fringeisland-thinking/` rebuilt 2026-09-15 → 17** — TASK-UNI-02..05 done, 33 → 21 files, a Start-here block in its index; #657–#672
 
 _Read this first. Written at kickoff by `npm run cycle:kickoff` before anything is decomposed; repointed at close. The front door, never the plan — the gate `cycle-current-front-door.test.ts` holds the five fields, the three sections and the size._
