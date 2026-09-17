@@ -80,4 +80,12 @@ Placeholders confirmed scaffolding: docs/products/hub/DESCRIPTION.md and SPECIFI
 Table updates: none this run — the 1.5 and 3.6 rows for passes 3 and 4 were fed in the passes themselves.
 Fixes in place (9, one branch): the record's vocabulary note; the index convention line + prose; docs/README.md wording; journeys.md; narrative.md; FEAT-PD001; FEAT-H011; ADR-U045.
 Notes: 3.6's filename grep found the scaffold names in a shape the pass-4 sweep could not — bare short names (`three-questions.md`) and "sub-page" prose — which is exactly why the section runs after every refactor; the two platform specs' ground-truth notes and the two journal feature specs were the only active files still describing the pre-fold shape.
+
+Re-run 2026-09-17, after #668 (the fixes above) and #669 (the manifestation map re-run) — scope: the two files changed since.
+1.5 — 18 keyword groups over the record + the index / 1 hit (ADR-U027, marked superseded in the tracker summary) + 1 "Shadow" (the provenance note, correct sense) / clean
+3   — index 23 / 23; 0 off-convention names; every thinking file and every FEAT / ADR the record names exists; link resolver 3 459 links, 80 unresolved before #668 and now, 0 new / clean
+3.5 / 3.6 — 0 old_*/ paths, 0 retired names in the two files / clean
+5   — front door names the newest session file; whole-tree 6-done sweep 100 / 100 with Implementation notes / clean
+dashboard — Design-vs-build reads the new Headline, 0 "Section not found"
+Skipped: 1, 1.6, 2, 3.7, 4, 4.5, 6, 7, 8, 9, 10, 11 — no trigger since the morning run (no CLAUDE.md, ADR, tracker, entity, feature or schema change). Critical findings: none. Fixes: none needed.
 ```
