@@ -108,7 +108,7 @@ Cross-cutting design records produced by joint-design spikes — the design live
 | File | What it is |
 |---|---|
 | [`record--breach-response-gdpr-art-33-34.md`](record--breach-response-gdpr-art-33-34.md) | Breach-response design (GDPR Art. 33/34) across all five verticals — detect → assess → clock → notify authority → notify members → record |
-| [`record--universe-to-spec-manifestation.md`](record--universe-to-spec-manifestation.md) | Snapshot map of how the canon and discovery concepts are (or aren't) realised as capabilities in the entity specifications; prioritised gaps |
+| [`record--universe-to-spec-manifestation.md`](record--universe-to-spec-manifestation.md) | Snapshot map of how the canon and discovery concepts are (or aren't) realised as capabilities in the entity specifications, and since the 2026-09-17 re-run whether a shipped feature has built them; what changed since June; prioritised gaps |
 
 ---
 
