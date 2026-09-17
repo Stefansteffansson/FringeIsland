@@ -101,3 +101,15 @@ Stefan asked whether the one discovery file had been reviewed for content, not o
 - **The backlog row for CQ-016** notes that the question sits in the register's Parked section and that the Hub v2 rebuild re-derived the DESCRIPTION it asks about.
 
 What the tally says: of the threads Session 01 left open, three in ten are settled canon, four in ten are settled in their structure with a named remainder, and a quarter are genuinely open — almost all of those pointing at the same three places: the planned Whisp page, the planned NPC page, and the universe-mechanics fundamentals session the backlog names as the foundational next step. The reconciliation writes no canon; every tag is a pointer.
+
+```
+Doc Health Check — 2026-09-17 (third run) — on-demand after #671, the discovery file's content review
+
+1.5  Architectural drift           — 11 keyword groups over the 134 new lines (the tags, the two notes, the banner, the status lines) / 1 hit, a tag naming "Safe Harbour / Other Side" as the superseded terms the cosmology core replaces (glossary sense) / 0 "Shadow" / clean
+3.   Path + README sync            — index 23 / 23, 0 off-convention names; every core, research file, ADR (U018, U025, U026, U028, U029, U031), feature (PC001, PC002, PD002 — 6-done) and CQ (002, 003, 004, 007, 012, 013) the tags name exists; every cosmology section §2–§11 and "What this supersedes", every beings / narrative / growth / roles section and DS-7 invariant 9 the tags cite exists; resolver 3 459 links, 80 unresolved before #671 and now, 0 new / clean
+3.5 / 3.6                          — 0 old_*/ paths, 0 retired names in the two changed files (the file's own History line names the four absorbed files by design) / clean
+5.   Maturity consistency          — front door names the newest session file; 6-done sweep 100 / 100 / clean
+10.  Graduation-tracker completeness — the four Part 1 headings intact; rows for the three Canonical cores, the ratified respawn section and ADR-U025 / U026 / U027 (superseded) / U028 / U031; every home in the table exists / clean
+dashboard — 0 "Section not found"
+Skipped: 1, 1.6, 2, 3.7, 4, 4.5, 6, 7, 8, 9, 11 — no trigger since the previous run. Critical findings: none. Fixes: none needed.
+```
