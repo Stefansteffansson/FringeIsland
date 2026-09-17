@@ -11,4 +11,5 @@ You are starting a session on **FringeIsland**. (This text is injected at sessio
   - run the `doc-health-check` skill if it's a cycle boundary or after cross-cutting changes (renames, deletions, schema migrations, restructures)
   - write a session bridge under `docs/planning/sessions/` if the session made decisions
   - run the discovery sweep again (AGENTS.md "Discovery worktree") so Claude.ai findings land on `main` and the worktree is synced
+  - **if `docs/planning/sessions/openers/claude-ai-discovery-project-instructions.md` changed this session, tell Stefan to re-paste its "Paste from here" block into the Claude.ai discovery project** — the project only ever holds a paste, nothing syncs it, and it fell two revisions behind between 2026-09-15 and 2026-09-17
   - commit / push / PR / merge is **fuller-auto** (see `AGENTS.md` Boundaries): for routine low-risk changes, carry the full branch → commit → push → PR → merge (`--delete-branch`) → pull-`main` cycle without pausing. Pause only for the fuller-auto carve-outs (schema/RLS + the schema-review gate, `platform/core/`, ADRs, deps, destructive ops, and edits to steering files).
