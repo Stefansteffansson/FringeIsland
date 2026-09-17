@@ -49,3 +49,35 @@ The cited target list, plus: **"2. one file as recommended. 4. ok. 3. okay."** �
 - PR #666 open; **merge waits for Stefan's nod** — steering carve-outs.
 - After the merge: pull `main`, sync `main` → the `discovery` worktree (the Claude.ai instructions changed: sessions now append to one file), remove the "waiting" row from the front door, flip TASK-UNI-04 and TASK-UNI-05 to done.
 - The three kickoff decisions on the front door are untouched by this session.
+
+## Doc health after the merge (2026-09-17, on Stefan's request: "run the doc-health check on the whole folder")
+
+```
+Doc Health Check — 2026-09-17 — on-demand, after thinking-tree passes 3 and 4 (#664, #666 on main)
+
+Sections run:
+1.   Terminology drift            — skipped: no term renamed (the discovery register's shape changed, not a term)
+1.5  Architectural drift           — 25 keywords over the folder + the 8 steering/config files the passes touched / 12 keyword hits, all historical, glossary or a different sense (transcript, retired-names table, "supersedes" section, the Claude.ai "never use X" clause, the solo-dev report's own phase plan) / 1 soft finding fixed in place: the 2026-06-13 manifestation record said "Shadow" for the entrant and cited ADR-U027 with no inline note — a vocabulary-note line added under its header (annotate, never rewrite a snapshot)
+1.6  Unfiled deviation markers     — skipped: no code changed
+2.   Schema drift                  — skipped: no migration
+3.   Path + README sync            — index exact both directions 23 / 23 (docx twins included); 1 anchor link into the folder resolves; naming: the two record-- files carry no area token, which the convention line demanded — fixed in the index (record joins the <register>--<topic> form; no rename); docs/README.md still said "discovery sessions" — fixed ("the discovery work, one file"); link resolver over every tracked .md against a detached HEAD worktree: 3 459 links, 80 unresolved before and after, 0 new (the 80: 52 in session bridges, 9 in planning/reference, 8 template placeholders, 3 CHANGELOG, 8 other — all pre-existing; the two hub ROADMAP.md links are §7 registry scaffolding)
+3.5  Archived-tree leak            — hits only in the frozen V1 anatomy (struck-through), two dated reference snapshots, the April method report's own recommendations, and a doc-health run record / 0 directive / clean
+3.6  Deleted-file refs             — 23 filename groups checked / every pass-3 and pass-4 name: 0 hits in active files / older rows: the known reference-snapshot and provenance classes only (FOLDER_STRUCTURE banner'd, ADR-U025's own dissolution text, hub-legacy/, TASK-OBS-01, the test-script names) / 5 hits from the scaffold-and-growth names in a different shape, fixed in place: DS-3 journeys.md and DS-2 narrative.md said "the journeys.md / seasons-and-episodes.md sub-page is unwritten" (now "the narrative core's planned page … under Planned — not yet written"); FEAT-PD001 and FEAT-H011 cited the growth canon as bare `engagement-spectrum.md` / `three-questions.md` (now the how-growth-works file); ADR-U045 said "`first-experience.md` is unwritten" (path wording only) / disk cross-check: all 16 retired names absent, all 7 replacements present / 2 left as history: phase-1-review-findings (a Phase-1 record naming the pre-flatten path) and the solo-dev report's example path
+3.7  Snapshot drift (inventories)  — skipped: no new snapshot restating an inventory
+4.   Parked items                  — skipped: no wave shift
+4.5  Manifest gate-review flags    — 0 flags / clean
+5.   Maturity consistency          — whole-tree 6-done sweep: 100 specs, 0 without Implementation notes / front door: the latest-bridge row names the newest session file, the plan's Status is open / clean
+6.   Entity coverage               — skipped: no entity changed status
+7.   Expected placeholders         — no entry authored or introduced; the two hub ROADMAP.md links confirmed scaffolding
+8.   Feature-inventory summary     — skipped: no feature created, advanced or deleted
+9.   CLAUDE.md cascade consistency — 30 files / 0 broken load-order pointers / every fringeisland-thinking path in a CLAUDE.md, AGENTS.md or sources.json resolves (the doc-health skill's own 3.6 table names retired files by design) / clean
+10.  Graduation-tracker completeness — 3 Canonical cores + the ratified narrative section + 5 discovery-sourced ADRs (U025, U026, U027 superseded, U028, U031) all have rows in Part 1 of the one discovery file; every canonical home in the table exists; the open-list note present / clean
+11.  Anatomy freshness              — skipped: no ADR added or amended (ADR-U045 received a path-wording line only), nothing under docs/architecture/ moved
+
+Critical findings: none.
+Backlog items created: none.  Re-finds: none.
+Placeholders confirmed scaffolding: docs/products/hub/DESCRIPTION.md and SPECIFICATION.md -> ./ROADMAP.md (§7 registry, T3.4).
+Table updates: none this run — the 1.5 and 3.6 rows for passes 3 and 4 were fed in the passes themselves.
+Fixes in place (9, one branch): the record's vocabulary note; the index convention line + prose; docs/README.md wording; journeys.md; narrative.md; FEAT-PD001; FEAT-H011; ADR-U045.
+Notes: 3.6's filename grep found the scaffold names in a shape the pass-4 sweep could not — bare short names (`three-questions.md`) and "sub-page" prose — which is exactly why the section runs after every refactor; the two platform specs' ground-truth notes and the two journal feature specs were the only active files still describing the pre-fold shape.
+```

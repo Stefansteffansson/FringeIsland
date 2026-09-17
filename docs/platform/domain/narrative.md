@@ -175,7 +175,7 @@ Cross-referenced per the template rule: the PC-1 pg_cron row exists in PC-1's in
 
 ### Sources-status block
 
-- **Narrative core (ground truth):** solid — rewritten at Session B G-1, ratified 2026-06-10; the respawn section (S19-21, S12) and the design principles consumed without gap. The `seasons-and-episodes.md` sub-page is **unwritten**: the four-seasons / twelve-episodes / universal-calendar structure is canon from the core's planned sub-page line; proceeded with remark — Q1 carries the personalisation half of that line.
+- **Narrative core (ground truth):** solid — rewritten at Session B G-1, ratified 2026-06-10; the respawn section (S19-21, S12) and the design principles consumed without gap. The narrative core's planned *seasons and episodes* page (an entry under its "Planned — not yet written" block in `canon--narrative--how-story-works.md`, not a file) is **unwritten**: the four-seasons / twelve-episodes / universal-calendar structure is canon from the core's planned sub-page line; proceeded with remark — Q1 carries the personalisation half of that line.
 - **Cosmology core (sections 8 + 10):** solid — the loop framing here stays consistent with the two-tier severance recovery and the Void-distance growth gradient; DS-2 never restates either.
 - **Beings core (NPCs):** solid — the three-layer composite and the World → Arc handoff seam consumed; the S30 collaboration protocol carried as §8 Q6.
 - **Roles core:** solid — Teller gating (Arc Studio, ADR-U026) consumed via PC-3 primitives per D7.

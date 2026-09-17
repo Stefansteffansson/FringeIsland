@@ -2,6 +2,8 @@
 
 *Authored 2026-06-13. A snapshot analysis: for each doc under the former `docs/ecosystem/universe/` and `docs/ecosystem/thinking/` (now `docs/fringeisland-thinking/`), what it is and how strongly its concepts are realized as named capabilities/obligations in the entity SPECIFICATIONs produced during the architecture descent (Platform Core, the seven Domain Services, the Extension System, the five verticals, and the Hub). This is a **design record / analysis snapshot**, not an obligation source — it cites the specs; it does not supersede them. Re-run when the descent advances (Gimbal, the studios, or a Hub re-derivation) since manifestation will change.*
 
+**Vocabulary note (added 2026-09-17, doc-health §1.5):** written before the Mist rename — "Shadow" below means the anonymous entrant, now the **Mist** (ADR-U031, 2026-06-21, which supersedes the ADR-U027 cited here); the canon's "Shadow" is the place-3 menace. Left as the snapshot it is.
+
 **Spec set traced:** `docs/platform/core/{governance,identity,infrastructure,organisation}-specification.md` · `docs/platform/domain/{world-model,narrative,journeys,content,communication,discovery,intelligence}.md` · `docs/platform/extensions/SPECIFICATION.md` · `docs/verticals/{administration,privacy,notifications,observability,transactions}/SPECIFICATION.md` · `docs/products/hub/{SPECIFICATION,DESCRIPTION}.md`.
 
 **Manifestation scale:**
