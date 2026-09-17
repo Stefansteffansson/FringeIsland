@@ -53,41 +53,4 @@ The index's **Start here**: the graduation table in Part 1 of the discovery file
 
 The last unreconciled section of the discovery file, "Patterns emerging so far" (93 mid-session syntheses written before the reshape and before Session B), now carries a dated tag per pattern in three classes — **75 CANON** (the section that carries it now; one in structure only, the Big-5-to-sense mapping), **5 SUPERSEDED** (the two-register topology, the Shadow→FIM ladder, the 05-20 topology lock, the village-distance gradient, the Shadow vocabulary of the ball rule), **13 OPEN** (design lineage such as the ARG family and the Nordic aesthetic, the hidden-layer feeling, signature-vs-charter, the hard/soft signature, and two founding stances that turned out to be written into **no constitutional document**: "constant change is the steady state" and "humans outrank stories outrank world" — tagged with their natural home, PROCESS.md and MANIFESTO.md, not a claimed one). Every home was grepped before it was named; originals byte-preserved by script. With this the file is reviewed end to end except for the statements themselves, which are the record and stay as written. The two un-homed stances were a small canon question for Stefan — ruled the same day: **"write them into the MANIFESTO."** Done: Manifesto 0.2, two principles under "How the movement operates" in its own "X over Y" voice — *Humans and their stories over aesthetics and worldbuilding* and *Constant change over being done* — with two At-a-Glance rows and a provenance line naming Statement 13; the two pattern tags flipped to CANON (tally 77 / 5 / 11) and the graduation tracker gained a row of type "constitutional". A constitutional edit, so the merge waited for the nod.
 
-```
-Doc Health Check — 2026-09-17 (fourth run) — on-demand after #673 (this bridge) and #674 (the patterns tags)
-
-1.5  Architectural drift           — 12 keyword groups over the 94 new lines / 2 hits, both tags stating a rename ("affordance" → equipment, ADR-U025; "the Mist, not the Shadow", ADR-U031) / clean
-3.   Path + README sync            — index 23 / 23; every core file, ADR (U025, U026, U028, U029, U031), feature (PC002, PD002 — 6-done), CQ (001, 003) and core section the tags cite exists (cosmology §1–§11, six beings sections, two narrative, three growth, the roles "not a ladder"); the bridge's four links resolve; resolver 3 463 links, 80 unresolved before and after, 0 new / clean
-3.5 / 3.6                          — 0 old_*/ paths; the discovery file's History line and this bridge's own explanatory sentence are the only retired-name mentions, both by design / clean
-5.   Maturity consistency          — front door names this bridge, the newest session file; 6-done sweep 100 / 100 / clean
-10.  Graduation-tracker completeness — four headings intact; rows for the three Canonical cores, the ratified respawn section and ADR-U025 / U026 / U027 (superseded) / U028 / U031 / clean
-dashboard — 0 "Section not found"
-Skipped: 1, 1.6, 2, 3.7, 4, 4.5, 6, 7, 8, 9, 11 — no trigger since the previous run. Critical findings: none. Fixes: none needed.
-```
-
-```
-Doc Health Check — 2026-09-17 (fifth run) — on-demand after #676 (MANIFESTO 0.2, the two flipped tags, the tracker row, this addendum)
-
-1.5  Architectural drift           — 11 keyword groups over the 14 new lines / 1 hit, this addendum's own sentence naming the superseded Shadow patterns (history) / no retired vocabulary in the two new Manifesto principles / clean
-3.   Path + README sync            — the Manifesto's one link (PRINCIPLES-AI) and the tracker row's link to the Manifesto resolve; index 23 / 23; resolver 3 464 links, 80 unresolved before #676 and now, 0 new / clean
-3.7-style (restated inventory)     — the Manifesto's value list grew from 11 to 13: no active document restates the list or counts it; three cite one principle ("Community ownership over corporate control") as a constitutional anchor — citations, not snapshots / clean
-3.5 / 3.6                          — 0 old_*/ paths; the only retired-name mentions are the discovery file's History line and this bridge's explanatory sentence, by design / clean
-5.   Maturity consistency          — front door names this bridge, the newest session file; 6-done sweep 100 / 100 / clean
-10.  Graduation-tracker completeness — four headings intact; ten rows now (the three cores, the ratified respawn section, five ADRs, and the first row of type "constitutional" — MANIFESTO.md), every home exists / clean
-dashboard — 0 "Section not found"
-Skipped: 1, 1.6, 2, 4, 4.5, 6, 7, 8, 9, 11 — no trigger. Critical findings: none. Fixes: none needed.
-```
-
-```
-Doc Health Check — 2026-09-17 (sixth run) — on-demand; nothing changed since the fifth run but its own block (#677), so run at full-folder scope: every section that applies to docs/fringeisland-thinking/ and what references it
-
-1.5  Architectural drift           — 12 keyword groups + "Shadow" and "affordance" by sense over all 21 files / every hit is a retired-name or supersedes table (roles core, cosmology core), a provenance line (how-growth-works: Hamn PRODUCT_SPEC.md), the transcript and its tags, a research report's own vocabulary ("the other side of the U", the solo-dev report's phase plan), the Jungian / place-3 Shadow (thinkers KB, cosmology), or CQ-017's correct sense; the one "Shadow" in a canon file outside a supersedes table is the roles core's rename note / 0 directives / clean
-3.   Path + README sync            — index 23 / 23; 0 off-convention names; the one anchor link into the folder resolves; resolver 3 464 links, 80 unresolved before #677 and now, 0 new, 0 inside the folder / clean
-3.5  Archived-tree leak            — 2 hits, both the April method report's own recommendations (historical) / 0 directive / clean
-3.6  Deleted-file refs             — the discovery file's History line only (by design) / clean
-5.   Maturity consistency          — front door names this bridge, the newest session file; 6-done sweep 100 / 100 / clean
-9.   CLAUDE.md cascade             — 30 files, 0 broken load-order pointers; every thinking path in a CLAUDE.md or AGENTS.md resolves / clean
-10.  Graduation-tracker completeness — four headings intact; the three Canonical cores rowed; every home in the table exists / clean
-dashboard — 0 "Section not found"
-Skipped: 1, 1.6, 2, 3.7, 4, 4.5, 6, 7, 8, 11 — no trigger. Critical findings: none. Fixes: none needed. The folder is at rest.
-```
+*Doc-health ran six times on 2026-09-17, each on request (#668, #670, #672, #675, #677, #678). Only the first run, after passes 3 and 4, found anything — nine in-place fixes, recorded in the pass-4 bridge. Runs 2 to 6 (after the map re-run, the two reconciliations, the Manifesto amendment, and once with nothing changed at all) were clean by construction; from the third on, the right answer was to say so instead of running them.*

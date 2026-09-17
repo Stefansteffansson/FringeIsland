@@ -80,15 +80,9 @@ Placeholders confirmed scaffolding: docs/products/hub/DESCRIPTION.md and SPECIFI
 Table updates: none this run — the 1.5 and 3.6 rows for passes 3 and 4 were fed in the passes themselves.
 Fixes in place (9, one branch): the record's vocabulary note; the index convention line + prose; docs/README.md wording; journeys.md; narrative.md; FEAT-PD001; FEAT-H011; ADR-U045.
 Notes: 3.6's filename grep found the scaffold names in a shape the pass-4 sweep could not — bare short names (`three-questions.md`) and "sub-page" prose — which is exactly why the section runs after every refactor; the two platform specs' ground-truth notes and the two journal feature specs were the only active files still describing the pre-fold shape.
-
-Re-run 2026-09-17, after #668 (the fixes above) and #669 (the manifestation map re-run) — scope: the two files changed since.
-1.5 — 18 keyword groups over the record + the index / 1 hit (ADR-U027, marked superseded in the tracker summary) + 1 "Shadow" (the provenance note, correct sense) / clean
-3   — index 23 / 23; 0 off-convention names; every thinking file and every FEAT / ADR the record names exists; link resolver 3 459 links, 80 unresolved before #668 and now, 0 new / clean
-3.5 / 3.6 — 0 old_*/ paths, 0 retired names in the two files / clean
-5   — front door names the newest session file; whole-tree 6-done sweep 100 / 100 with Implementation notes / clean
-dashboard — Design-vs-build reads the new Headline, 0 "Section not found"
-Skipped: 1, 1.6, 2, 3.7, 4, 4.5, 6, 7, 8, 9, 10, 11 — no trigger since the morning run (no CLAUDE.md, ADR, tracker, entity, feature or schema change). Critical findings: none. Fixes: none needed.
 ```
+
+*The check ran twice more that day on request (after #669 and #671) and found nothing; the no-op runs are summarised in one line in the [close bridge](2026-09-17_01_-_THINKING-TREE-CLOSE.md).*
 
 ## Content review of the discovery file (2026-09-17, Stefan: "run the four fixes and the open-threads reconciliation")
 
@@ -101,15 +95,3 @@ Stefan asked whether the one discovery file had been reviewed for content, not o
 - **The backlog row for CQ-016** notes that the question sits in the register's Parked section and that the Hub v2 rebuild re-derived the DESCRIPTION it asks about.
 
 What the tally says: of the threads Session 01 left open, three in ten are settled canon, four in ten are settled in their structure with a named remainder, and a quarter are genuinely open — almost all of those pointing at the same three places: the planned Whisp page, the planned NPC page, and the universe-mechanics fundamentals session the backlog names as the foundational next step. The reconciliation writes no canon; every tag is a pointer.
-
-```
-Doc Health Check — 2026-09-17 (third run) — on-demand after #671, the discovery file's content review
-
-1.5  Architectural drift           — 11 keyword groups over the 134 new lines (the tags, the two notes, the banner, the status lines) / 1 hit, a tag naming "Safe Harbour / Other Side" as the superseded terms the cosmology core replaces (glossary sense) / 0 "Shadow" / clean
-3.   Path + README sync            — index 23 / 23, 0 off-convention names; every core, research file, ADR (U018, U025, U026, U028, U029, U031), feature (PC001, PC002, PD002 — 6-done) and CQ (002, 003, 004, 007, 012, 013) the tags name exists; every cosmology section §2–§11 and "What this supersedes", every beings / narrative / growth / roles section and DS-7 invariant 9 the tags cite exists; resolver 3 459 links, 80 unresolved before #671 and now, 0 new / clean
-3.5 / 3.6                          — 0 old_*/ paths, 0 retired names in the two changed files (the file's own History line names the four absorbed files by design) / clean
-5.   Maturity consistency          — front door names the newest session file; 6-done sweep 100 / 100 / clean
-10.  Graduation-tracker completeness — the four Part 1 headings intact; rows for the three Canonical cores, the ratified respawn section and ADR-U025 / U026 / U027 (superseded) / U028 / U031; every home in the table exists / clean
-dashboard — 0 "Section not found"
-Skipped: 1, 1.6, 2, 3.7, 4, 4.5, 6, 7, 8, 9, 11 — no trigger since the previous run. Critical findings: none. Fixes: none needed.
-```
