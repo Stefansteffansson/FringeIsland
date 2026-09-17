@@ -14,7 +14,7 @@ requires-equipment: none
 
 ## Problem
 
-IDN-5 ("Provide private personal Journal surface", `docs/products/hub/SPECIFICATION.md:190`) is the last purely-additive capability in the Phase-3 Identity area: the Hub gives a FIM no place to write. The ecosystem treats journaling as a complete engagement mode, not an accessory — the Homebody "tends their inner garden … reflects quietly" (`engagement-spectrum.md`), and the individual perspective of the three questions runs through "reflection, assessment, journaling" (`three-questions.md`). Today that mode has zero surface.
+IDN-5 ("Provide private personal Journal surface", `docs/products/hub/SPECIFICATION.md:190`) is the last purely-additive capability in the Phase-3 Identity area: the Hub gives a FIM no place to write. The ecosystem treats journaling as a complete engagement mode, not an accessory — the Homebody "tends their inner garden … reflects quietly" (the engagement spectrum in `canon--growth--how-growth-works.md`), and the individual perspective of the three questions runs through "reflection, assessment, journaling" (the three questions, same file). Today that mode has zero surface.
 
 This is the Hub half of IDN-5: a journal page where a FIM writes, reads, edits, and deletes their own entries — and nothing else. All privacy rules live platform-side in FEAT-PD001 (ADR-U038); the Hub renders the experience and carries no rule the substrate doesn't already enforce. It also closes the export seam at the surface: "Download my data" comes to include the journal by composing the two platform contracts.
 

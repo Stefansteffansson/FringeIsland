@@ -86,7 +86,7 @@ docs/
 | Directory | What belongs here | What does NOT belong here |
 |-----------|-------------------|--------------------------|
 | `ecosystem/` | Strategic, philosophical, cross-product — "what is FringeIsland?" | Technical architecture, service specs, planning artifacts |
-| `fringeisland-thinking/` | The universe (`canon--`), the discovery sessions (`discovery--`), research reports (`research--`), design records (`record--`), the open-questions register (`questions--`) — one flat folder, the filename prefix is the register | Constitutional docs and strategy (→ ecosystem/), technical service specs (→ platform/), decisions (→ architecture/) |
+| `fringeisland-thinking/` | The universe (`canon--`), the discovery work (`discovery--`, one file), research reports (`research--`), design records (`record--`), the open-questions register (`questions--`) — one flat folder, the filename prefix is the register | Constitutional docs and strategy (→ ecosystem/), technical service specs (→ platform/), decisions (→ architecture/) |
 | `ecosystem/strategy/` | Stable directional documents — product family, contributor model | Open questions, exploratory thinking (→ fringeisland-thinking/) |
 | `architecture/` | Structural models, binding decisions (ADRs), dependency diagrams | Service descriptions, feature specs, planning snapshots |
 | `platform/` | Service descriptions, feature specs, API contracts | Binding decisions (→ architecture), ecosystem strategy (→ ecosystem) |

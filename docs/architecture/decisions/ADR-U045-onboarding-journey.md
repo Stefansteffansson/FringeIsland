@@ -13,7 +13,7 @@
 
 Three questions arrived at the Journeys-area kickoff entangled:
 
-- **What journey grain is open to Mists?** (DS-3 `journeys.md` §8 Q2 — open, deferred to the first-experience canon work; `first-experience.md` is unwritten and tracked as CQ-010, the canon's named highest-risk gap.)
+- **What journey grain is open to Mists?** (DS-3 `journeys.md` §8 Q2 — open, deferred to the first-experience canon work; the narrative core's planned first-experience page (listed inside `canon--narrative--how-story-works.md` under "Planned — not yet written") is unwritten and tracked as CQ-010, the canon's named highest-risk gap.)
 - **JRN-5** — preserve in-flight journey enrolment across Mist→FIM conversion. Substrate finding at kickoff: `finalise_transcendence` (PC002) preserves `personal_group_id`, and enrolments are personal-group-keyed, so carry-over is continuity-free at the substrate level; the gate was purely the enrolment posture.
 - **JRN-15** — detect first-arrival state and auto-launch a *designated* journey. Historical record: "Journey Zero" was defined as "the onboarding journey … walked automatically on arrival … same data model, flagged differently" (Ferd journeys study; Swedish decision log BESLUT 4), later demoted by the Hub §L3 to trigger-only ("Journey Zero is no longer modelled as a special journey").
 

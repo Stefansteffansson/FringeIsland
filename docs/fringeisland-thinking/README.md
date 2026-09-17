@@ -27,11 +27,11 @@
 ## How to read a filename
 
 ```
-<register>--<area>--<topic>.ext    canon, research, record
-<register>--<topic>.ext            discovery, questions (one file each)
+<register>--<area>--<topic>.ext    canon, research
+<register>--<topic>.ext            discovery, questions (one file each), record (one-off design records)
 ```
 
-The first token says **what kind of thing this is**. The second token is **what you would scan for inside that register** — the area for canon, research and records; for the two single-file registers the name says what the file holds. Sorted alphabetically, any file lister groups by register, then by area.
+The first token says **what kind of thing this is**. The second token is **what you would scan for inside that register** — the area for canon and research; for discovery, questions and the records the name itself says what the file holds. Sorted alphabetically, any file lister groups by register, then by area.
 
 | Register | Meaning | Graduation |
 |---|---|---|
