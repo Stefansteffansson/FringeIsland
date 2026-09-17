@@ -3,7 +3,7 @@
 ---
 id: TASK-UNI-05
 title: "Pass 4 after TASK-UNI-04: the discovery register becomes one file, the knowledge base moves to research, growth becomes one canon file, the engineering pair merges, and the index gets a Start-here block"
-status: in-progress — executed 2026-09-16 on branch docs/thinking-pass-4; done at merge
+status: done — merged as #666 on 2026-09-17 ("ok merge"); 26 → 21 files
 assigned_to: claude
 priority: medium
 owner: ecosystem
@@ -53,4 +53,4 @@ Nine old names, one mapping, applied by a script over every tracked text file: 2
 - [x] Every referrer repointed; index exact both directions; link resolver zero new
 - [x] `AGENTS.md`, the Claude.ai instructions, the doc-health skill and `sources.json` describe the one-file discovery register
 - [x] Dashboard regenerates from the new paths
-- [ ] Bridge written, front door repointed, PR merged on the nod; TASK-UNI-04 and this task flipped to done at the close
+- [x] Bridge written (`2026-09-16_02_-_THINKING-PASS-4.md`), front door repointed, PR #666 merged on the nod 2026-09-17; TASK-UNI-04 was already done (#664), this task flipped to done at the close
