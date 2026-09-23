@@ -57,3 +57,21 @@ review checklist carries it.
    scheduled, fails red. Origin: the 2026-09-04/05 review — `reaper_runs` at
    7,400 rows (created 2026-06-26, no retention, nothing asked) and pg_cron's
    history at 7,284.
+8. **Every table the migration creates is granted in the same file.** From
+   2026-10-30 Supabase no longer grants new `public` tables to the Data API
+   roles by default (the `postgres` default ACL row that handed every new
+   table `SELECT` to `anon`/`authenticated` and `ALL` to `service_role` goes
+   away). The house block, right after `enable row level security`:
+   `grant select on public.X to anon, authenticated;` (drop `anon` when no
+   anon policy reads it; column-scope it for sensitive columns — the
+   `users`/`groups` shape) then `grant all on public.X to service_role;`.
+   Never Supabase's own template block (`… insert, update, delete … to
+   authenticated`) — it reopens TASK-SEC-02's lock. A contract-only table
+   carries `-- no-client-read: X — <reason>` instead of the client grant.
+   Gates: `hub/tests/unit/platform/migration-table-grants.test.ts` reads the
+   files before apply; the presence cells in
+   `hub/tests/integration/platform/table-grant-lockdown.test.ts` read the live
+   catalog. The reviewer also reads the applied table's ACL at the gate, as
+   row 4 asks for functions. Origin: the Supabase notice of 2026-09 and the
+   2026-09-23 measurement — 40 of 42 tables had no grant in any migration
+   (TASK-SEC-03; stated explicitly by `20260923120000`).
