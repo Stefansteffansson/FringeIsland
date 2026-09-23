@@ -148,8 +148,8 @@ that pin 42501 on direct writes or a specific table's SELECT — all read the sa
    and replayed differ by that bit. Decide: revoke it live (a one-liner + a lockdown cell reading
    `pg_class.relacl`, same-shape follow-up, next schema-gated cycle — recommended) or leave it.
    **Ruled 2026-09-23 (Stefan: "revoke MAINTAIN then, same gate shape") →
-   [TASK-SEC-04](./TASK-SEC-04-maintain-off-the-client-roles.md), migration `20260923150000`, held
-   at the gate.**
+   [TASK-SEC-04](./TASK-SEC-04-maintain-off-the-client-roles.md), migration `20260923150000`, applied on both projects the same day on "ok merge" (#684) —
+   client-role MAINTAIN 0, the live projects now equal the chain.**
 2. **`anon` SELECT on 35 tables is default residue**, RLS-governed. The backfill restates it as it
    is; narrowing `anon` to the tables an anon policy actually reads is a separate decision that
    starts with an audit of the anon policies, not this task.

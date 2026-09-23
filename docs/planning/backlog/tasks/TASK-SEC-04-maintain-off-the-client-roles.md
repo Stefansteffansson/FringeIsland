@@ -1,7 +1,7 @@
 ---
 id: TASK-SEC-04
 title: MAINTAIN off the client roles — the PG17 privilege the default ACL handed anon/authenticated on every table and no revoke ever named, gated
-status: review  # built 2026-09-23 on Stefan's ruling ("revoke MAINTAIN then, same gate shape"), HELD at the schema gate; rehearsed in a rolled-back transaction on the test project: client-role MAINTAIN 0, service_role 42, standard grants untouched
+status: done  # applied 2026-09-23 on both projects on Stefan's "ok merge" (#684); platform suite 49/49 (lockdown gate 7/7); drift 144 = 144 = 144; client-role MAINTAIN 0 on both, standard grants unchanged
 assigned_to: unassigned
 priority: medium
 feature: none
@@ -77,6 +77,18 @@ node scripts/migration-drift.js
 
 Expected: the lockdown gate flips GREEN 7/7 (platform suite 49/49), drift clean at 144, and on
 both projects client-role MAINTAIN = 0 with the standard-grant md5 still `8ce5c98e…`. Then merge.
+
+**Gate record (2026-09-23, Stefan: "ok merge"):**
+
+| Leg | Result |
+|---|---|
+| Test project — apply + `migration repair --status applied` | applied; the self-check raised nothing; `[20260923150000] => applied` |
+| `npm run test:integration:platform` | **49/49**, 10 suites — the lockdown gate GREEN 7/7, red 2/7 at HEAD an hour earlier |
+| Production — `ALLOW_PRODUCTION=1 … --production` + repair | applied; history repaired |
+| `migration-drift.js` | **No drift: files = test = production = 144** |
+| Read back on BOTH projects | client-role MAINTAIN **0** · `service_role` MAINTAIN 42 · default ACL `anon=r, authenticated=r` · standard-grant md5 `8ce5c98e89de293de2310a135263b792` **unchanged** · version `20260923150000` recorded |
+
+The live projects now equal the chain: no client role holds MAINTAIN anywhere, and nothing else moved.
 
 ## Sibling assertions
 

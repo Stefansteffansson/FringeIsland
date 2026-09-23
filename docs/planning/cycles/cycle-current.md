@@ -17,7 +17,6 @@
 - The two kickoff decisions in the plan §4 — the Eid appetite, and which of the three themes goes first
 - Leaked-password protection — a Supabase Pro decision (the org is on Free; the toggle refuses to save)
 - The E2E smoke job in CI — Eid's first tooling item, a ruling on design before a build
-- **TASK-SEC-04 held at the schema gate** — MAINTAIN off the client roles (Stefan's ruling); "ok merge" after the gate commands in the [task](../backlog/tasks/TASK-SEC-04-maintain-off-the-client-roles.md)
 
 ## Landed this cycle
 - **Wave 1, Ferd, declared CLOSED 2026-09-07** — `ferd.md` completed, the [close plan](../hub-v2/2026-09-05-ferd-close-plan.md) CLOSED, the [DoD walk](../hub-v2/2026-09-05-ferd-dod-walk.md) with no open row, the [wave retro](../retrospectives/retro-wave-ferd.md) carrying the carry-overs
@@ -25,5 +24,6 @@
 - The front door written by `npm run cycle:kickoff`; cycle plans live in `cycles/` from now on
 - **`docs/fringeisland-thinking/` rebuilt 2026-09-15 → 17** — TASK-UNI-02..05 done, 33 → 21 files, a Start-here block in its index; #657–#672
 - **TASK-SEC-03 landed 2026-09-23 (#683)** — every table's grants stated in the chain before Supabase drops the default ACL on 2026-10-30; residues deferred in the [task](../backlog/tasks/TASK-SEC-03-explicit-table-grants-before-supabase-drops-the-default-acl.md)
+- **TASK-SEC-04 landed 2026-09-23 (#684)** — MAINTAIN off the client roles on both projects; the lockdown gate green 7/7 on live; details in the [task](../backlog/tasks/TASK-SEC-04-maintain-off-the-client-roles.md)
 
 _Read this first. Written at kickoff by `npm run cycle:kickoff` before anything is decomposed; repointed at close. The front door, never the plan — the gate `cycle-current-front-door.test.ts` holds the five fields, the three sections and the size._

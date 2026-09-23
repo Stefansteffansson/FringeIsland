@@ -2,7 +2,7 @@
 
 Substrate-level changes to Platform Core (Infrastructure, Identity, Organisation, Governance). These are developer-facing platform changes, not end-user features; each entry links the feature spec with the full implementation notes.
 
-## 2026-09-23 — MAINTAIN off the client roles: the PG17 privilege the default ACL handed anon/authenticated on every table (TASK-SEC-04; migration `20260923150000`, HELD at the schema gate)
+## 2026-09-23 — MAINTAIN off the client roles: the PG17 privilege the default ACL handed anon/authenticated on every table (TASK-SEC-04; migration `20260923150000`, applied on both projects 2026-09-23 on Stefan's "ok merge" — client-role MAINTAIN 0, standard grants unchanged, drift 144 = 144 = 144; #684)
 
 - **Why:** `anon=rm, authenticated=rm` — the `m` is MAINTAIN (VACUUM / ANALYZE / CLUSTER / REINDEX / REFRESH MATERIALIZED VIEW / LOCK TABLE), new in PG17, never in TASK-SEC-02's revoke list, invisible to `information_schema.role_table_grants`. Live on both projects: anon 37 tables, authenticated 39. Not a live exploit; the SEC-02 class; SEC-03's deferred item 1, ruled by Stefan the same day.
 - **The migration:** a DO loop `REVOKE MAINTAIN ON TABLE … FROM anon, authenticated` (the SEC-02 shape) + `ALTER DEFAULT PRIVILEGES … REVOKE MAINTAIN ON TABLES FROM anon, authenticated`; `service_role` keeps ALL; a self-verifying block. Rehearsed inside a rolled-back transaction on the test project: client-role MAINTAIN 0, `service_role` 42, default ACL `anon=r, authenticated=r`, the standard-grant md5 unchanged.
