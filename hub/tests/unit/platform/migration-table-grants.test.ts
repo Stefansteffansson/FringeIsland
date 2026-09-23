@@ -110,6 +110,10 @@ describe('migration table grants (TASK-SEC-03) — the static half of the gate',
     ]);
     const all = 'create table public.widgets (id int);\ngrant all on public.widgets to authenticated, service_role;';
     expect(checkMigration('20260923130000_x.sql', all).map((f) => f.kind)).toEqual(['client-dml']);
+    // MAINTAIN (PG17) is a write-side privilege too — VACUUM / REINDEX / LOCK TABLE (TASK-SEC-04).
+    const maintain =
+      'create table public.widgets (id int);\ngrant select, maintain on public.widgets to authenticated;\ngrant all on public.widgets to service_role;';
+    expect(checkMigration('20260923130000_x.sql', maintain).map((f) => f.kind)).toEqual(['client-dml']);
   });
 
   it('fixture: a migration before the rule is not checked (the backfill grants its tables); one at or after it is', () => {

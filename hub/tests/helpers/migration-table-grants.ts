@@ -19,7 +19,7 @@ import * as path from 'path';
  *                              (a contract-only table, ADR-U038: reads go through a
  *                              SECURITY DEFINER function; say so, with the reason)
  *   - `client-dml`             a GRANT hands INSERT / UPDATE / DELETE / TRUNCATE /
- *                              REFERENCES / TRIGGER / ALL to `anon` or `authenticated` —
+ *                              REFERENCES / TRIGGER / MAINTAIN / ALL to `anon` or `authenticated` —
  *                              Supabase's own template block does this; it reopens the
  *                              TASK-SEC-02 lock and `table-grant-lockdown.test.ts` would
  *                              refuse it live. A named exception (the `users` column
@@ -53,7 +53,8 @@ export type GrantFinding = {
 };
 
 const CLIENT_ROLES = ['anon', 'authenticated'];
-const DML_WORDS = ['ALL', 'INSERT', 'UPDATE', 'DELETE', 'TRUNCATE', 'REFERENCES', 'TRIGGER'];
+/** The write side. MAINTAIN (PG17: VACUUM / ANALYZE / REINDEX / LOCK TABLE) belongs here too — TASK-SEC-04. */
+const DML_WORDS = ['ALL', 'INSERT', 'UPDATE', 'DELETE', 'TRUNCATE', 'REFERENCES', 'TRIGGER', 'MAINTAIN'];
 
 /** The 14-digit version prefix of a migration file name, or null for anything else. */
 export const migrationVersion = (fileName: string): string | null => {

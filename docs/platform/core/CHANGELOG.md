@@ -2,6 +2,12 @@
 
 Substrate-level changes to Platform Core (Infrastructure, Identity, Organisation, Governance). These are developer-facing platform changes, not end-user features; each entry links the feature spec with the full implementation notes.
 
+## 2026-09-23 — MAINTAIN off the client roles: the PG17 privilege the default ACL handed anon/authenticated on every table (TASK-SEC-04; migration `20260923150000`, HELD at the schema gate)
+
+- **Why:** `anon=rm, authenticated=rm` — the `m` is MAINTAIN (VACUUM / ANALYZE / CLUSTER / REINDEX / REFRESH MATERIALIZED VIEW / LOCK TABLE), new in PG17, never in TASK-SEC-02's revoke list, invisible to `information_schema.role_table_grants`. Live on both projects: anon 37 tables, authenticated 39. Not a live exploit; the SEC-02 class; SEC-03's deferred item 1, ruled by Stefan the same day.
+- **The migration:** a DO loop `REVOKE MAINTAIN ON TABLE … FROM anon, authenticated` (the SEC-02 shape) + `ALTER DEFAULT PRIVILEGES … REVOKE MAINTAIN ON TABLES FROM anon, authenticated`; `service_role` keeps ALL; a self-verifying block. Rehearsed inside a rolled-back transaction on the test project: client-role MAINTAIN 0, `service_role` 42, default ACL `anon=r, authenticated=r`, the standard-grant md5 unchanged.
+- **The gate:** `table-grant-lockdown.test.ts` gains an `aclexplode` cell (no client-role MAINTAIN on any public table — RED 76 rows at HEAD) and the `m` letter in its default-ACL cell (RED); `migration-table-grants.ts` refuses `grant maintain … to <client role>` statically (fixture RED → GREEN 10/10). GREEN once the gate applies the migration.
+
 ## 2026-09-23 — every public table's Data API grants stated explicitly before Supabase drops the default ACL on 2026-10-30 (TASK-SEC-03; migration `20260923120000`, applied on both projects 2026-09-23 on Stefan's "ok merge" — live grant md5 unchanged, drift 143 = 143 = 143; #683)
 
 - **Why:** Supabase's notice of 2026-09 — new `public` tables no longer receive `SELECT` / `ALL` for the Data API roles by default; the `postgres` default ACL row (`anon=rm, authenticated=rm, service_role=arwdDxtm`) goes away. 40 of the 42 tables got their grants from that row and never from a migration (measured read-only on both projects, identical: md5 `8ce5c98e…` over 366 grant rows). Existing tables are unaffected; a new table without its own GRANT is unreachable for every role, and a replay onto a fresh project would come up dead.

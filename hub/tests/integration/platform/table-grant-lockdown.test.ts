@@ -117,6 +117,26 @@ describe('table-grant lockdown — no client role may write a public table direc
     }
   });
 
+  it('no public table grants MAINTAIN to anon or authenticated — the PG17 privilege the information_schema views hide (TASK-SEC-04)', async () => {
+    // MAINTAIN (VACUUM / ANALYZE / CLUSTER / REINDEX / REFRESH MATERIALIZED
+    // VIEW / LOCK TABLE) rode in with the default ACL's `rm` and survived
+    // SEC-02's revoke list and the SELECT revokes on users / groups. It is not
+    // in `role_table_grants`, so this cell reads the ACL itself.
+    // Red-first: 37 (anon) + 39 (authenticated) rows at HEAD until migration
+    // `20260923150000_task_sec04_client_role_maintain_revoke` is applied.
+    const rows = await runAdminSql(`
+      SELECT c.relname AS table_name, pg_get_userbyid(a.grantee) AS grantee
+      FROM pg_class c
+      JOIN pg_namespace n ON n.oid = c.relnamespace,
+      LATERAL aclexplode(c.relacl) a
+      WHERE n.nspname = 'public' AND c.relkind IN ('r', 'p')
+        AND a.privilege_type = 'MAINTAIN'
+        AND pg_get_userbyid(a.grantee) IN ('anon', 'authenticated')
+      ORDER BY 1, 2;
+    `);
+    expect(rows.map((r) => `${r.grantee} MAINTAIN ON ${r.table_name}`)).toEqual([]);
+  });
+
   it('the default privileges for role postgres grant no DML on future public tables to the client roles', async () => {
     // Supabase ships `ALTER DEFAULT PRIVILEGES ... GRANT ALL ON TABLES TO anon,
     // authenticated, service_role` for the migration role, so a table created by
@@ -130,12 +150,13 @@ describe('table-grant lockdown — no client role may write a public table direc
         AND pg_get_userbyid(d.defaclrole) = 'postgres';
     `);
     // Each ACL entry looks like `role=privs/grantor`; a (append), w (update),
-    // d (delete), D (truncate), x (references), t (trigger) are the DML letters.
+    // d (delete), D (truncate), x (references), t (trigger) are the DML letters;
+    // m (MAINTAIN, PG17 — VACUUM / ANALYZE / REINDEX / LOCK TABLE) joins them (TASK-SEC-04).
     const clientDml = rows
       .map((r) => String(r.acl))
       .flatMap((acl) => acl.replace(/^\{|\}$/g, '').split(','))
       .filter((entry) => /^(anon|authenticated)=/.test(entry))
-      .filter((entry) => /=[^/]*[awdDxt]/.test(entry));
+      .filter((entry) => /=[^/]*[awdDxtm]/.test(entry));
     expect(clientDml).toEqual([]);
   });
 

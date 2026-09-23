@@ -19,7 +19,7 @@
 - TASK-FORUM-01 — re-tag to Eid, bet on, or drop with a reason.
 - The 2026-04 map's un-specced fundamentals (feature-flag infrastructure, the ADR-U005 flexible profile table, visitor activity transfer) — in or out, in writing.
 - The E2E smoke job in CI — Eid's first tooling item (the test project exists; secrets and the one-consumer rule are the design questions).
-- **Supabase drops the default table grants on 2026-10-30** — [TASK-SEC-03](../backlog/tasks/TASK-SEC-03-explicit-table-grants-before-supabase-drops-the-default-acl.md), Eid's second tooling item, built and applied 2026-09-23 (#683): the backfill migration, the static gate over the files, the presence cells, the rule. Landed before the first Eid table migration; the hard external date is met. Two residues (the client roles' MAINTAIN, anon's default SELECT) wait in the task for a ruling.
+- **Supabase drops the default table grants on 2026-10-30** — [TASK-SEC-03](../backlog/tasks/TASK-SEC-03-explicit-table-grants-before-supabase-drops-the-default-acl.md), Eid's second tooling item, built and applied 2026-09-23 (#683): the backfill migration, the static gate over the files, the presence cells, the rule. Landed before the first Eid table migration; the hard external date is met. MAINTAIN ruled the same day → [TASK-SEC-04](../backlog/tasks/TASK-SEC-04-maintain-off-the-client-roles.md) (held at the gate); anon's default SELECT waits for the anon-policy audit.
 - The latest-read-wins rule as a `feature-development` line.
 - Leaked-password protection — plan-gated (Supabase Pro); a billing decision.
 - Two walk observations: the player's Pause affordance is easy to miss; a Steward wanting to pause the group's walk has no door (FEAT-H019 STORY-8's no-go).
