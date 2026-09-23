@@ -32,7 +32,7 @@
 
 ## What is still open — Stefan
 
-- **"ok merge"** for the held PR, after the six gate commands in the task file (test leg, platform suite, production leg, drift).
+- ~~"ok merge" for the held PR~~ — **given the same session.** Gate record: test leg applied + repaired; `test:integration:platform` 48/48; production leg applied + repaired; `migration-drift.js` files = test = production = 143; the applied grants read back on both projects — md5 `8ce5c98e89de293de2310a135263b792`, 366 rows, 42 tables, version `20260923120000` recorded. The migration changed nothing live, exactly as claimed. #683 merged.
 - **MAINTAIN residue** — the client roles hold PG17's `MAINTAIN` on the default-granted tables (live only; a replay will not). Revoke live (recommended, next schema-gated cycle) or leave.
 - **anon SELECT on 35 tables** — default residue, RLS-governed; narrowing starts with an anon-policy audit, a separate task.
 

@@ -2,7 +2,7 @@
 
 Substrate-level changes to Platform Core (Infrastructure, Identity, Organisation, Governance). These are developer-facing platform changes, not end-user features; each entry links the feature spec with the full implementation notes.
 
-## 2026-09-23 — every public table's Data API grants stated explicitly before Supabase drops the default ACL on 2026-10-30 (TASK-SEC-03; migration `20260923120000`, HELD at the schema gate)
+## 2026-09-23 — every public table's Data API grants stated explicitly before Supabase drops the default ACL on 2026-10-30 (TASK-SEC-03; migration `20260923120000`, applied on both projects 2026-09-23 on Stefan's "ok merge" — live grant md5 unchanged, drift 143 = 143 = 143; #683)
 
 - **Why:** Supabase's notice of 2026-09 — new `public` tables no longer receive `SELECT` / `ALL` for the Data API roles by default; the `postgres` default ACL row (`anon=rm, authenticated=rm, service_role=arwdDxtm`) goes away. 40 of the 42 tables got their grants from that row and never from a migration (measured read-only on both projects, identical: md5 `8ce5c98e…` over 366 grant rows). Existing tables are unaffected; a new table without its own GRANT is unreachable for every role, and a replay onto a fresh project would come up dead.
 - **The migration:** 42 × `grant all … to service_role`, 35 × `grant select … to anon, authenticated`, 2 × `grant select … to authenticated`; the three contract-only tables (`journal_entries`, `journey_steps`, `journey_step_instances`) and the column-scoped `users` / `groups` reads untouched — explicit where they were decided; a self-verifying DO block. No `ALTER DEFAULT PRIVILEGES … GRANT`. A no-op on both live projects (rehearsed in a rolled-back transaction on the test project: hash unchanged).

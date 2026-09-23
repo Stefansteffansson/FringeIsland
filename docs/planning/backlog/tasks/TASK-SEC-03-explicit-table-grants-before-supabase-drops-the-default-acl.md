@@ -1,7 +1,7 @@
 ---
 id: TASK-SEC-03
 title: Every public table's Data API grants stated in the migrations before Supabase stops granting them by default (2026-10-30) — a backfill, a static gate, presence cells, the rule
-status: review  # built 2026-09-23, HELD at the schema gate; the migration is a proven no-op on both live projects (rolled-back rehearsal on the test project: grant-state hash unchanged)
+status: done  # applied 2026-09-23 on both projects on Stefan's "ok merge" (#683); platform suite 48/48; drift 143 = 143 = 143; live grant md5 8ce5c98e… / 366 rows on both — the migration changed nothing live, as claimed; the chain now grants its own tables
 assigned_to: unassigned
 priority: high
 feature: none
@@ -117,6 +117,18 @@ node scripts/migration-drift.js
 Expected: the platform suite green (the presence cells were green before; the migration changes no
 grant), drift clean (files = test = production), and the live grant hash still `8ce5c98e…` on both.
 Then merge. The reviewer reads the applied grants, not this file.
+
+**Gate record (2026-09-23, Stefan: "ok merge"):**
+
+| Leg | Result |
+|---|---|
+| Test project — `apply-migration.js` + `migration repair --status applied` | applied; the DO block raised nothing; history repaired `[20260923120000] => applied` |
+| `npm run test:integration:platform` | **48/48**, 10 suites (the lockdown gate's six cells among them) |
+| Production — `ALLOW_PRODUCTION=1 … --production` + repair | applied; history repaired |
+| `migration-drift.js` | **No drift: files = test = production = 143** |
+| The applied grants, read back on BOTH projects | md5 `8ce5c98e89de293de2310a135263b792` · 366 rows · 42 tables · version `20260923120000` recorded — **unchanged from the pre-gate measurement, exactly as the migration claimed** |
+
+The chain now states its own table grants; the first Eid table migration writes its grant block under the rule, and a replay after 2026-10-30 no longer depends on the row Supabase removes.
 
 ## Sibling assertions
 
