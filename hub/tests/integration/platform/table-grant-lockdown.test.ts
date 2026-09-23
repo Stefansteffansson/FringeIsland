@@ -138,4 +138,71 @@ describe('table-grant lockdown — no client role may write a public table direc
       .filter((entry) => /=[^/]*[awdDxt]/.test(entry));
     expect(clientDml).toEqual([]);
   });
+
+  // ── TASK-SEC-03 — the PRESENCE half ──────────────────────────────────────
+  // On 2026-10-30 Supabase removes the default ACL that handed every new
+  // public table SELECT for anon / authenticated and ALL for service_role.
+  // The cells above pin what the client roles must NOT hold; a table that
+  // arrives with NO grant at all passes them and is unreachable for everyone
+  // (the Hub, the BFF, the helpers). These two pin what every table MUST hold.
+  // The static twin reads the migration files before apply:
+  // `unit/platform/migration-table-grants.test.ts`.
+
+  /** No client role reads these at all — every read is a SECURITY DEFINER
+   *  contract (ADR-U038). Adding a row is a decision with a reason. */
+  const CONTRACT_ONLY_TABLES: Array<{ table: string; reason: string }> = [
+    {
+      table: 'journal_entries',
+      reason: 'FEAT-PD001 — `REVOKE ALL … FROM anon, authenticated` (20260703084810); the journal contracts read it',
+    },
+    {
+      table: 'journey_steps',
+      reason: 'FEAT-PD003 — step substrate, `revoke all … from anon, authenticated` (20260707190000)',
+    },
+    {
+      table: 'journey_step_instances',
+      reason: 'FEAT-PD003 — progress substrate, same migration',
+    },
+  ];
+
+  it('every public table is readable by authenticated — table- or column-scoped SELECT — beyond the named contract-only tables (TASK-SEC-03)', async () => {
+    // `role_column_grants` expands a table-level SELECT per column and lists a
+    // column-scoped one as written, so `users` / `groups` (the S2 column
+    // lists) count as readable here without a special case.
+    const rows = await runAdminSql(`
+      SELECT t.tablename AS table_name
+      FROM pg_tables t
+      WHERE t.schemaname = 'public'
+        AND NOT EXISTS (
+          SELECT 1 FROM information_schema.role_column_grants g
+          WHERE g.table_schema = 'public' AND g.table_name = t.tablename
+            AND g.grantee = 'authenticated' AND g.privilege_type = 'SELECT'
+        )
+      ORDER BY 1;
+    `);
+    const unreadable = rows.map((r) => String(r.table_name));
+    const contractOnly = CONTRACT_ONLY_TABLES.map((x) => x.table).sort();
+    // Nothing unreadable beyond the list — a table that arrived without its
+    // grant lands here.
+    expect(unreadable.filter((t) => !contractOnly.includes(t))).toEqual([]);
+    // And the list is exact — a contract-only table that became readable is a
+    // widening somebody must have decided.
+    expect(unreadable).toEqual(contractOnly);
+  });
+
+  it('every public table grants the full set to service_role — the BFF, the admin client and the test helpers depend on it (TASK-SEC-03)', async () => {
+    const rows = await runAdminSql(`
+      SELECT t.tablename AS table_name,
+             coalesce(string_agg(g.privilege_type, ',' ORDER BY g.privilege_type), '(none)') AS held
+      FROM pg_tables t
+      LEFT JOIN information_schema.role_table_grants g
+        ON g.table_schema = 'public' AND g.table_name = t.tablename AND g.grantee = 'service_role'
+       AND g.privilege_type IN ('SELECT', 'INSERT', 'UPDATE', 'DELETE', 'TRUNCATE', 'REFERENCES', 'TRIGGER')
+      WHERE t.schemaname = 'public'
+      GROUP BY t.tablename
+      HAVING count(DISTINCT g.privilege_type) < 7
+      ORDER BY 1;
+    `);
+    expect(rows.map((r) => `${r.table_name}: ${r.held}`)).toEqual([]);
+  });
 });

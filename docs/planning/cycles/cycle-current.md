@@ -4,7 +4,7 @@
 |---|---|
 | **Cycle** | The Eid kickoff — open Wave 2 — the wave file with its DoD on day one, the carry-overs dispositioned, design tools and narrative decomposed to 4-ready |
 | **Plan** | [`2026-09-07-eid-kickoff-plan.md`](2026-09-07-eid-kickoff-plan.md) |
-| **Latest bridge** | [`../sessions/2026-09-17_01_-_THINKING-TREE-CLOSE.md`](../sessions/2026-09-17_01_-_THINKING-TREE-CLOSE.md) |
+| **Latest bridge** | [`../sessions/2026-09-23_01_-_SUPABASE-DEFAULT-GRANT-REMOVAL-TASK-SEC-03.md`](../sessions/2026-09-23_01_-_SUPABASE-DEFAULT-GRANT-REMOVAL-TASK-SEC-03.md) |
 | **Board** | open 2026-09-07 — the kickoff decomposes in a fresh session; two decisions in the plan are Stefan's |
 | **Next** | the first Eid build cycle — Journey Studio v1, the minimal design foundation or the Whisp, whichever the kickoff bets on first |
 
@@ -23,5 +23,6 @@
 - G-04 ruled and executed — the waves band is the ecosystem roadmap; six pointers repointed, nothing deleted
 - The front door written by `npm run cycle:kickoff`; cycle plans live in `cycles/` from now on
 - **`docs/fringeisland-thinking/` rebuilt 2026-09-15 → 17** — TASK-UNI-02..05 done, 33 → 21 files, a Start-here block in its index; #657–#672
+- **TASK-SEC-03 landed 2026-09-23 (#683)** — every table's grants stated in the chain before Supabase drops the default ACL on 2026-10-30; residues deferred in the [task](../backlog/tasks/TASK-SEC-03-explicit-table-grants-before-supabase-drops-the-default-acl.md)
 
 _Read this first. Written at kickoff by `npm run cycle:kickoff` before anything is decomposed; repointed at close. The front door, never the plan — the gate `cycle-current-front-door.test.ts` holds the five fields, the three sections and the size._
