@@ -1,5 +1,5 @@
 # The FringeIsland Manifesto
-*Version 0.2 — March 2026, amended 2026-09-17*
+*Version 0.2 — March 2026, amended 2026-09-17 and 2026-09-24*
 *Status: Living document — will evolve as FringeIsland grows*
 
 ---
@@ -7,6 +7,8 @@
 *Every human being arrives in this world without instructions. Somewhere along the way three questions emerge — quietly at first, then louder, then impossible to ignore: Who am I? What do I want? How do I get there? Most people carry these questions alone, never quite finding the space to answer them honestly.*
 
 *FringeIsland exists for those questions — a world where you arrive undefined and unfinished, and through story, challenge, reflection and connection, gradually become more honestly yourself.*
+
+*We are living through one of the largest shifts humanity has ever faced. Technology — artificial intelligence above all — is placing more power in human hands than ever before, and faster than ever before. Whether that power builds a world people want to belong to will depend less on the machines than on us: on how clearly we see ourselves, how honestly we understand what drives us, and how wisely we choose. We believe inner growth has never mattered more. That is why FringeIsland exists, and why it exists now.*
 
 *These are the values we hold, the principles we build by, and the promises we make to each other.*
 
@@ -103,5 +105,7 @@ FringeIsland will never be finished, and that is not a phase we are passing thro
 *This manifesto is a living document. It will evolve as FringeIsland grows and as the community earns new wisdom about what it means to build a world worth belonging to.*
 
 *The two principles under "How the movement operates" that speak of humans over aesthetics and of constant change entered on 2026-09-17, from the universe-discovery record (Statement 13, 2026-05-18), on the founder's ruling.*
+
+*The "why now" paragraph of the preamble — why inner growth has never mattered more, with artificial intelligence as the largest force of the time — entered on 2026-09-24, from the universe-discovery record (Session 03, Statements 66, 76 and 77), on the founder's ruling. It states the founders' conviction only; the universe's backdrop is not told here, by design.*
 
 *How FringeIsland creates with AI — humans first, always — is stated in the constitutional [AI Principles](./PRINCIPLES-AI.md).*
