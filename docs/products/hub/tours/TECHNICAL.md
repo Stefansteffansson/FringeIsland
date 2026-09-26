@@ -383,7 +383,7 @@ This area is fundamentally about the question **what do I want?** — an awarene
 
 **7 capabilities. All post-Ferd.** DS-1 World Model and DS-7 Intelligence are not yet in Hub consumption posture per §L2's "Domain services not yet consumed" list. Activation is post-Ferd.
 
-The Hub provides the canvas surfaces for the member's **Whisp** — the FIM's own AI-driven inner dialogue voice (the Whisp is the human; ADR-U029, beings core) — universal and voluntary, never imposed, and never exposing the member's private interior to anyone but themselves. The Whisp is dialogic and mentors through warm, caring challenge ("tough love"); "Mentor" is a function it performs, not a separate entity.
+The Hub provides the canvas surfaces for the member's **Whisp** — the FIM's own AI-driven inner dialogue voice (the Whisp is the human; ADR-U029, the bible's beings chapter) — universal and voluntary, never imposed, and never exposing the member's private interior to anyone but themselves. The Whisp is dialogic and mentors through warm, caring challenge ("tough love"); "Mentor" is a function it performs, not a separate entity.
 
 ### Capabilities
 
@@ -399,7 +399,7 @@ The Hub provides the canvas surfaces for the member's **Whisp** — the FIM's ow
 
 ### One being, two faces
 
-A-COI is not two presences but one — the **Whisp** — surfaced two ways. The Whisp is the FIM's own AI-driven inner dialogue voice (ADR-U029, beings core); per ADR-U029 the one entity is split across DS-7 (the being-face: dialogue, filling, senses, maturity) and DS-1 (the world-presence/avatar face).
+A-COI is not two presences but one — the **Whisp** — surfaced two ways. The Whisp is the FIM's own AI-driven inner dialogue voice (ADR-U029, the bible's beings chapter); per ADR-U029 the one entity is split across DS-7 (the being-face: dialogue, filling, senses, maturity) and DS-1 (the world-presence/avatar face).
 
 | Face | Mode | Capabilities | What it offers |
 |------|------|--------------|----------------|

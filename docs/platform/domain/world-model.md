@@ -185,7 +185,7 @@ Cross-referenced per the template rule: the scheduled-job substrate row was **ad
 
 - **L1 (`docs/ecosystem/VISION.md` v1.2):** solid — rewritten at Session B G-1; teleology, structural concepts, and principles consumed without gap.
 - **Cosmology core (ground truth):** solid — canonical, ratified 2026-06-10; every capability row traces to its sections (statement index at its foot).
-- **Roles + beings cores:** solid — scope tiers, Dreamineer gating, Whisp two-faces partition consumed.
+- **Roles + the bible's beings chapter:** solid — scope tiers, Dreamineer gating, Whisp two-faces partition consumed.
 - **Session B register Section 3 DS-1 row + Phase 0 delta record:** consumed as the derivation constraint set (S43 seam, ball-grant placement, PC re-check verdicts).
 - **Whisp-split decision:** ratified at this service's descent; **promoted to ADR-U029 at the DS-7 descent (2026-06-11)** — the DS-7 derivation surfaced nothing contradicting the split; the Whisp-presence area here stands as derived. (Originally recorded in `decisions/PENDING.md` as an ADR candidate, promotion pending.)
 - **Vertical specs:** Privacy is substantive (S43/Mist obligations landed at G-3); Administration/Transactions corrected at G-3; Notifications/Observability remain scaffold-tier — proceeded with remark per G-03 (`docs/ecosystem/how-we-work/gaps.md`).

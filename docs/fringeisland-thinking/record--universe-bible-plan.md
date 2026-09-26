@@ -1,6 +1,6 @@
 # The Universe Bible — the plan (a single truth)
 
-**Status (2026-09-25):** Phases 0–3 done — the rulings list is complete (discovery Sessions 04–05, S79–S114). Next is Phase 4, starting with the glossary.
+**Status (2026-09-26):** Phases 0–5 done — the bible written (nine chapters, 73 Open boxes), reviewed, merged and its glossary trimmed; the canon files and the Phase 2 records deleted and every active reference repointed; two Phase 5 pull requests (the ADR amendments #688, the steering-file pointers #690) held for Stefan's nod. Next is Phase 6: prioritise the open questions from the bible's chapter 8. Decision 2 was changed at the switch-over: the canon files were deleted, not stubbed.
 **Origin:** drafted 2026-09-24 with Stefan at the end of discovery Session 03; kept in the claude.ai project as `claude/universe-bible-plan.md`; this copy placed in the repository on 2026-09-25 so Claude Code can read it. If the two differ, the newer date wins.
 
 ## Goal

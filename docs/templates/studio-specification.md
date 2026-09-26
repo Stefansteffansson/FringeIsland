@@ -93,7 +93,7 @@ If a feature spec under this studio needs to write to a *second* Domain Service,
 Per `docs/studios/CLAUDE.md` "Studios enforce constraints on creators; they don't trust creator input": the World Model, cosmological canon, and platform safety bar are enforced at save, at publish, and at every lifecycle transition — not only once. This section names *which* constraints this studio enforces and *where* they fire.
 
 - **World Model constraints:** {canonical entities, locked relationships, world-state rules this studio must not violate}
-- **Cosmological canon constraints:** {worlds-topology boundaries per the cosmology core, Whisp interactions, locked cosmology this studio respects}
+- **Cosmological canon constraints:** {worlds-topology boundaries per the bible's worlds chapter, Whisp interactions, locked cosmology this studio respects}
 - **Platform safety / quality bar:** {moderation hooks, content-policy validation, reporting integration}
 - **Where each constraint fires:** save · publish · republish · cross-reference resolution · retirement
 - **What happens when a constraint fails:** {error surfaced to creator, draft saved with violation flag, publish blocked, etc.}
