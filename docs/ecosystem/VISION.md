@@ -38,17 +38,17 @@ An immersive edutainment platform where personal development happens through liv
 
 **FIM** (FringeIsland Member) — the base identity: a person with a Whisp. Entrants begin as **Mists** (anonymous, ephemeral, unlinkable, near-side only — translucent becoming-figures that accrete form as they answer the founding questions) and **transcend** into FIMs at the persistence-and-consent threshold — also called **metamorphosis**, fired when the questions are complete and consent is given — which grants their glowing glass ball in the Tree (ADR-U031).
 
-**The worlds** — the cosmological frame: the *Ordinary World* (daily life — always present, never absent), the *Shimmer* (the membrane between), and the *Fringe* — two co-located places behind the one Shimmer: a warm, welcoming place and a hostile, cold one, two poles of a single continuum, each with a near side (tied to worldly coordinates) and a Beyond. The *village* — the safe-harbour commons with the Tree and its glowing glass balls — lies in the Beyond of the warm place. The *Void* is the axis of separation: the medium the Whisp hangs in, out on its cord.
+**The worlds** — the cosmological frame: the *Ordinary World* (daily life — always present, never absent), the *Shimmer* (the membrane between), and the *Fringe* — two co-located worlds behind the one Shimmer: *Nalome*, warm and welcoming, and *Marath*, hostile and cold, two poles of a single continuum, each with a near side (tied to worldly coordinates), a far side (with no earthly coordinates) and a beyond (not yet known). The *village* — the commons with the Tree, where each FIM's drip hangs and every ball glows equal — lies on the far side of Nalome. The *Void* is the axis of separation: the medium the Whisp hangs in, out on its cord.
 
-→ *See [Universe / cosmology](../fringeisland-thinking/canon--cosmology--worlds-topology.md) — the canonical core.*
+→ *See the [Universe Bible, chapter 2 — The worlds](../fringeisland-thinking/bible--fringeisland-universe.md#2-the-worlds).*
 
 **The Whisp** — each FIM's own inner dialogue. The Whisp IS the FIM: a sometimes-wiser counterweight to the default inner voice, empty at first and filled *by* the FIM's growing self-awareness. It is also the avatar through which the FIM walks the Fringe — perceiving through the Shimmer, exposed on the cord while the human stays safe. Its destination is internalisation: a human carrying their own wiser voice, without the platform.
 
-**Three Perspectives** — Individual (1), Relationship (1+1), Collective (1+Community). The relationship and collective perspectives require others to collapse, creating developmental interdependence by design.
+**Three Perspectives** — Individual (1), Relationship (1+1), Collective (1+Community). The relationship and collective perspectives can only be worked through with others, creating developmental interdependence by design.
 
 **Dreamineers** — FIMs in their authorial mode: **Creators** and **Anthropologists** (World Studio), **Tellers** (Arc Studio), **Wayfinders** (Journey Studio) — authoring the world, its stories, and its journeys. Roles are modes a person occupies, not kinds of people.
 
-→ *See [Universe / roles](../fringeisland-thinking/canon--roles--taxonomy.md) — the canonical core.*
+→ *See the [Universe Bible, chapter 6 — Roles and governance](../fringeisland-thinking/bible--fringeisland-universe.md#6-roles-and-governance).*
 
 ---
 

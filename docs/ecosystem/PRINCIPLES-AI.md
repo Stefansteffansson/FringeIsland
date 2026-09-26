@@ -71,6 +71,6 @@ operates within them and helps enforce them — including back upon the humans.
 ---
 
 *Source: universe-discovery Session 01, Statements 13 and 24
-(`thinking/universe-discovery/2026-05-18_universe-discovery-session-01.md`). This document states
+(`docs/fringeisland-thinking/discovery--the-universe-in-the-making.md`, Part 3). This document states
 the constitutional principle; operational AI practice in studios and the way of working derives
 from it.*
