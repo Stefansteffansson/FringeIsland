@@ -150,5 +150,5 @@ against the live catalogue and ruled at the audit ([record](../../planning/hub-v
 ## Links
 
 - Extends: [ADR-U019](ADR-U019-deusex-authority-last-resort.md)
-- Related: [ADR-U006](ADR-U006-universal-group-pattern.md) · [ADR-U007](ADR-U007-three-layer-permission-model.md) · [ADR-U025](ADR-U025-products-as-equipment-profiles.md) · the roles core (`docs/fringeisland-thinking/canon--roles--taxonomy.md`)
+- Related: [ADR-U006](ADR-U006-universal-group-pattern.md) · [ADR-U007](ADR-U007-three-layer-permission-model.md) · [ADR-U025](ADR-U025-products-as-equipment-profiles.md) · the Universe Bible's roles and governance chapter (`docs/fringeisland-thinking/bible--fringeisland-universe.md`, chapter 6; the roles canon file was folded into the bible on 2026-09-26)
 - Source: universe-discovery 2026-06-05 product locks (governance by scope; the console; Ferd routing); Statement 29; Session B DeusEx ratification (2026-06-10)

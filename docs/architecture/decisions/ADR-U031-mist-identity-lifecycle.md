@@ -171,6 +171,16 @@ Making the entry/access boundary precise for implementation, consistent with thi
 - Cross-session return reaffirms the existing rule "on return it forms anew (a fresh Mist, not a resumed one)": a return across a true session boundary (expired/reaped session, or a different device) has **no server-side cross-session identifier**. The permitted **device-local-only kindness** (stage 3) is unchanged and is *not* built in IDN-1. The server-side anonymous token's required **hard retention clock** (TTL + reaper) is **FEAT-H004 (IDN-2)**; until it lands, the small set of actual-entrant Mist rows accumulates as a known, logged gap.
 - **Durable cross-session memory is the FIM's**, granted at transcendence — the platform-promise / manifesto-aligned conversion incentive.
 
+## Amendment — 2026-09-26: vocabulary corrections from the Universe Bible (discovery Sessions 04–05)
+
+Vocabulary only; no decision changes. The decision text above is left as written; read it with these corrections, which the Universe Bible (`docs/fringeisland-thinking/bible--fringeisland-universe.md`, chapters 2 and 3, and its glossary) states as current.
+
+- **Becoming a FIM is consent; transcendence names the birth only** (Session 05, S104, ruling R-40). The persistence-and-consent threshold of §"The lifecycle" point 4 is *becoming a FIM*: at sign-up on the sign-up-first path, at the Mist's own choice on the walk-in path, even partway through the walk. *Transcendence* / *metamorphosis* / *the birth* is the completion event: the founding questions complete, the Gimbal fully loaded, the transcendence portal opens, the drip is born on a limb of the Tree, the ball is released to the FIM and locked to their Gimbal (bound to the account, not to hardware), the Whisp is delivered with an anonymous, wise face, and the cord pays out for the first time. Between the two a person is *a FIM not yet born*, still in the hyaline state. The one-event rule ("fires only when both hold") survives for the birth; the consent step is no longer called transcendence, and "the Mist → FIM transition" is retired wording.
+- **The reaches** (Session 02, S52, S55; Session 05, S111): "the Beyond" reads *the far side*; "deep place 3" reads *Marath's far side*; "place 2" is *Nalome*; the further reach past the far side is *the beyond*, lowercase and unnamed.
+- **Portals and seeds** (Session 04, S82–S84, S89): the ball on the Gimbal opens portals; a seed at a portal's edge is the FIM's choice, not a toll; a Mist passes no portal but the transcendence portal. The Mist's lock on the far side is therefore the ball, not the seed rule.
+- **A returning Mist** (Session 04, S96, S98): within the inactivity window a Mist on the same device continues where it left off (ADR-U033); "unlinkable across sessions" reads "across the inactivity window".
+- **The Hub's `/api/auth/transcend` route and its "transcendence" telemetry perform the consent step.** The code stays; renaming them, and a distinct event for the birth, are follow-ups when the birth is built.
+
 ## Pros and cons of each option
 
 ### Option A — Blind rename Shadow → Mist
