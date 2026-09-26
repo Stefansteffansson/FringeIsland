@@ -712,11 +712,163 @@ The public launch is Season Zero: the founding campaign as a founding moment and
 
 ## 6. Roles and governance
 
-*To be written.*
+This chapter says who does what in FringeIsland and how the endeavour is governed: the shape of the role model, the identity states, the FIM's modes and the Dreamineer specialisations, the enterprise plane, governance by scope and the Console, the studios, the rules for creating with AI, the platform's two faces, and referral. The beings a role belongs to are chapter 3; what the authors make is chapter 5; how the community begins is chapter 7.
+
+Open questions stand in **Open** boxes with an R-number; chapter 8 indexes them.
+
+### 6.1 The shape: not a ladder
+
+There is no role ladder. A person holds an identity state and positions in three layers at once, and moves between them fluidly:
+
+```
+L0  Identity state      Mist --(consent: becoming a FIM; completion: the birth)--> FIM
+L1  FIM modes           experiential | authorial (Dreamineer) | support roles within a group
+L2  Enterprise plane    Universeers | the FringeIsland Council | DeusEx      (surface: the Console)
+```
+
+Roles are modes a person occupies, not kinds of people. The same FIM is immersed in the world one hour and authoring it the next.
+
+**One system, two faces.** Every role is a set of permissions granted through groups, and entering a studio or a governance surface is a permission check. Fiction names and platform permissions are the same system seen from two sides, never two systems kept in sync. Where the platform has already decided, the fiction follows it. *Platform: [ADR-U006](../architecture/decisions/ADR-U006-universal-group-pattern.md) and [ADR-U007](../architecture/decisions/ADR-U007-three-layer-permission-model.md).*
+
+Every participant is a FIM. You cannot build FringeIsland from truly outside it: to create for the world you must be a member of it. The founder is a FIM, and so is every seat of the enterprise plane.
+
+### 6.2 The identity states
+
+A person enters as a **Mist**, the anonymous entrant in the hyaline state, with their own Whisp and cord from the first moment, a Gimbal without a ball, and three limits: reach (the near side only, and only to see), accretion (interaction grows as the static clears), memory (nothing remembered once the Mist is erased). Every anonymous exchange is live and unrecorded beyond the session; no profile is computed before consent; a Mist that drifts away returns to potential, not yet, never dead.
+
+**Becoming a FIM is consent**: the moment a person agrees to be remembered by the world. On the sign-up-first path it happens at sign-up; on the walk-in path whenever a Mist chooses. Consent buys memory, not voice: it does not unlock the ability to interact, it unlocks the ability for interaction to be remembered, the lines, names, messages, the journal, everything persistent or reciprocal. Between consent and the birth a person is a FIM not yet born, still in the hyaline state.
+
+**The birth is completion**: when the founding questions are complete, the transcendence portal opens and the drip is born on a limb of the Tree, the ball is released and locked to the FIM's Gimbal, and the Whisp is delivered. It grants what the Mist did not have: the ball, the portals, the far side with the village and the private home. Nothing else was ever withheld by fence; the Mist's lock on the far side is intrinsic, no ball and so no purchase. Session experience carries over continuously and the change is atomic; nothing restarts. *Transcendence* is the platform's name for the birth only. The beings chapter tells all of this in full. *Platform: [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md).*
+
+**A FIM** is the base identity: a person with a Whisp, taking their equal place in the Tree. "Member" is the platform's synonym and is used for nothing else.
+
+### 6.3 The FIM's modes
+
+**Experiential.** The default: the FIM journeying in the world, the Whisp out on the cord, cultivating the home or going on expeditions.
+
+**Authorial: the Dreamineer.** A Dreamineer is a FIM in their authorial, dream-it-into-being mode. Becoming one is a FIM acquiring an authority, not a change of being; the authority is granted through group and role permissions and is not open to every FIM. There are four specialisations, each gating one studio, and the human appears at three scales across them:
+
+| Specialisation | Studio | Authors | Scale |
+|---|---|---|---|
+| **Creator** | World Studio, the hard side | the physical substrate: terrain, water, rivers, mountains, sky, portals, models | — |
+| **Anthropologist** | World Studio, the soft side | the cultural substrate: peoples, customs, heritage, beliefs, countries | the typical |
+| **Teller** | Arc Studio | stories as seasons and episodes; named characters with arcs | the particular |
+| **Wayfinder** | Journey Studio | journeys walked alone, in pairs or in a group | the personal |
+
+The Anthropologist and the Teller are supply, not competition: the one authors the soil, the other grows characters from it. Dreamineers run dreaming sessions. *Name: from Disney's Imagineers, imagine turned into dream; where Disney builds a theme park, Dreamineers build a world for becoming.*
+
+**Support roles, within a group.** These are a FIM's role in a given group, never global tiers: the **Steward** leads and cares for a group; the **Guide** facilitates a joint journey; the **Participant** takes part; the **Observer** watches. Probably many more will follow as groups find real use. *Platform: per-group role templates, [ADR-U007](../architecture/decisions/ADR-U007-three-layer-permission-model.md).*
+
+> **Open R-01 — How a FIM acquires a Dreamineer authority.** The mechanism is fixed, a permission granted through a group; the route is not: earned by journeying, granted by Stewards or Universeers, applied for, or entered through furnishing one's own home, which is offered as an on-ramp and not locked. *Waits for:* Stefan, or the session on community formation; practically also for Dreamineers to exist.
+
+> **Open R-02 — The full family of support roles.** What roles beyond Steward, Guide, Participant and Observer a group needs, and what each cares for. Open by design. *Waits for:* groups in real use.
+
+> **Open R-03 — The naming register.** Whether the in-world role names should be register-consistent, coined like Dreamineer, Teller and Wayfinder, or plain like Creator and Anthropologist, or whether the mix is deliberate. *Waits for:* Stefan.
+
+> **Open R-10 — A human mentor or elder.** Whether the universe wants a human wisdom-sharing role beyond the Guide, and whether the Guide is sufficient. "Mentor" never means the Whisp. *Waits for:* Stefan.
+
+### 6.4 The enterprise plane
+
+The enterprise plane is genuinely separate from the FIM's modes. It cares for the continuation of the endeavour, not for a stance toward the fiction; the dividing line is between being a FIM and stewarding the project that sustains the universe, not between people inside and outside the world. Every seat is held by a FIM.
+
+- **The Universeers** care for the constituency across the whole universe, the ecosystem's product portfolio, the community, the economy, and legal matters.
+- **The FringeIsland Council** cares for all major decisions concerning FringeIsland and its connection to partners.
+- **DeusEx** is the human root-admin group of the running platform: the people who administrate and maintain FringeIsland in the eyes of all its users, the visible in-platform authority, holding the authority of last resort. They act within the platform, and they touch the ecosystem's development at releases and as a stakeholder, feeding observations of everyday platform life back to the developers. DeusEx is the link between life inside FringeIsland and the development of the ecosystem. Platform operations are theirs, not the Universeers'.
+
+Authority on the platform is role-based: a group is the container, the role's permissions are the authority, and membership of DeusEx alone confers nothing. Platform-scope authority reaches every group scope by design, guarded by the rule that only system groups reach it and system-group membership is itself governed. Anonymised aggregate member data may be explored only with explicit informed consent, responsible handling and clear member benefit, under this plane's stewardship, with the Foundation as the legal holder; a group's Steward cannot see its members' private developmental data. *Platform: [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md) and [ADR-U019](../architecture/decisions/ADR-U019-deusex-authority-last-resort.md).*
+
+> **Open R-04 — How the enterprise plane is structured.** Whether the Universeers' five care domains are sub-roles, committees or one role; how the Council relates to them; how the Council operates, by vote, consensus or rotating seats, and what tooling it needs. *Waits for:* Stefan, and people who do not exist yet.
+
+### 6.5 Governance by scope and the Console
+
+Governance splits by scope, and gate by scope is a law of the system, not a one-off. Community-scoped care, a Steward moderating their own group, a Guide facilitating their journey, stays woven in place in the FIM experience, with no separate surface. Universe-scoped governance, the economy, the portfolio, legal matters, platform operations, happens on **the Console**, a distinct back-of-house surface. The same law tiers World Studio: furnishing your own home is open to every FIM, authoring the shared world is Dreamineer-gated.
+
+The Console is a surface, not a new permission system; there is one permission mechanism throughout, and no ad-hoc admin roles exist beside the per-group templates and the enterprise seats. Reporting and moderation happen in place; the audit log and feature flags live on the Console; a member leaving is self-service in the experience, never an admin act; buying is in the experience, managing the economy is on the Console. Whether the Console is a bundle inside the canvas surface or a thin surface of its own is a build decision. "The Console" is a working name. *Platform: [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md).*
+
+> **Open R-05 — The Console's name in the fiction.** *Waits for:* Stefan.
+
+### 6.6 The studios
+
+**Universe Studio** is the overarching parent and the binding frame: it encapsulates World Studio, Arc Studio and Journey Studio, keeps the set coherent, and is not a fourth sibling. Coherence across worldbuilding, narrative and journeys is held at its level, and the canon function lives inside it.
+
+- **World Studio** is how the world looks and works: its places, its lore, its communities. Two faces of one discipline: the hard side, the Creator's, and the soft side, the Anthropologist's. Terrain without culture is a stage set; culture without terrain is a history book. Its personal-scope slice, the furnishing of one's own home, is open to every FIM. An NPC is built here, body and culture, and promoted into Arc Studio's care when a story reaches for it.
+- **Arc Studio** is where Tellers craft narratives as seasons and episodes.
+- **Journey Studio** is where Wayfinders craft journeys for FIMs to embark on alone, in pairs, or in a group; the three modes are the three perspectives.
+
+The studios are role-gated authoring modes inside the one experience, not products. They surface on both of the platform's faces: World Studio has a capture foot on the senses, scanning the real world, and its deep edit on the canvas; Arc and Journey Studios lean to the canvas with light review on the go. No studio is bound to a device, and each journey declares the equipment it needs when it is authored. The world is continuously made by contributing and collaborating FIMs; it is a living construction, never pre-built. *Platform: [ADR-U026](../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md).*
+
+> **Open R-09 — The quality bar, made together.** Whether a single Dreamineer can author a whole coherent world, as the authored worlds that set the bar were made by one hand, or worlds are inherently collaborative; how the bar is met collaboratively; and how creation as discovery is designed for inside Universe Studio. *Waits for:* the studios.
+
+### 6.7 Creating with AI
+
+AI is an extension of human capability. It speeds production and widens the space of perspectives, while authorship, integrity, privacy and the originating creative intention remain wholly human. FringeIsland is AI-first and human-first, and when the two conflict, humans first: AI never overrides privacy, a person's own contribution, or the primacy of humans.
+
+The sequence is fixed: human intent first, AI expansion second, human selection last. The first thought is sacred, and AI must never anchor the human; the last say is authorship. **Dreaming sessions** are facilitated ideation and the early steps of design, run human-first before AI expands the field; AI may facilitate, asking, prompting, holding the structure, but never generates the content of this phase.
+
+**Guard railing** is bidirectional and always human-authored. One kind of rail constrains the AI: no acting without sign-off, no touching privacy, no unreviewed shipping, no pre-empting intent. The other kind protects the human at the wheel: the AI flags the author's blind spots against the author's own stated values. FringeIsland needs both, because it deliberately includes a hostile pole, blurs reality and fiction, and pushes FIMs toward growth. AI collapses the production cost of story surfaces, sites, in-world documents, NPC voices, images, audio, micro-apps, and nothing ships that a human did not choose to ship. The Whisp runs on AI, and in the lore the one speaking is the FIM's own future self; the AI is only the medium, and the Whisp borrows no authority from that. *Constitution: PRINCIPLES-AI.*
+
+> **Open R-06 — Dreaming sessions in practice.** How they are run, solo, in a group, with FIMs; where in Universe Studio; who besides Dreamineers may run one; and where exactly AI as facilitator ends and AI as generator begins, since even a question can anchor. *Waits for:* the studios.
+
+> **Open R-07 — Guard rails in practice.** At what levels they are set, ecosystem-wide, per story, per Dreamineer; how they are versioned and enforced; how the rails that protect the author are surfaced without nannying; and whether the rails themselves are authored by the human-first sequence. *Waits for:* Stefan and the studios.
+
+> **Open R-08 — AI inside each studio, and protecting a contribution.** How AI is used in each studio, and how individual contributions are protected technically and culturally: attribution, authorship, withdrawal. The licensing half is a business question and stays in the questions register. *Waits for:* the studios.
+
+### 6.8 The platform's two faces
+
+There is one lived experience, being in FringeIsland as a Mist or a FIM, over one shared core. Products are shipped surfaces of it, each with a shell and releases, and there are two:
+
+- **The Hub** is the canvas surface: the screen room, precision input, keyboard, file system, plugins. Refinement and depth, at the desk.
+- **The Gimbal** is the senses surface: camera, location, microphone, augmented-reality display, hands free and portable. Perception and capture, out in the world. In the fiction it is the instrument that opens the Shimmer; on the platform it is the FIM's own phone running the app, at its most immersive in a Gimbal shell.
+
+Hub and Gimbal name equipment profiles, not devices. A device is a point in equipment space: a phone high in senses and low in canvas, a laptop the reverse, a tablet the convergence, glasses the maximum of senses and immersion. A surface lights up on any device whose equipment matches, and no device is an entity. The two surfaces are complementary, not clones: capture on the Gimbal and refine on the Hub are two ends of one workflow. Every feature declares the equipment it needs from a small fixed set, senses, a comfortable canvas, precision input, or none, and appears wherever that equipment exists; a restriction is allowed only when named by equipment, never by device or whim. Products own only their shell; experience features belong to the capabilities beneath and light up wherever their equipment is. The question "is this a Hub or a Gimbal feature?" is retired; the question is "what equipment does it need?".
+
+The Game is depth, not a product: a depth setting of journeys inside the one lived experience, to be revisited only when a journey needs a fidelity, an engine or a play surface the phone and the web cannot render. The Mist is one status across both surfaces, not a product: gated by equipment where the near side needs senses, and by status where the ball gates the far side. The ball is pictured on both surfaces, since the two-zone gateway needs no sensors. "Product" remains the tier's word, redefined and not retired. *Platform: [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md).*
+
+### 6.9 Referral
+
+A FIM inviting someone is a referral to the platform: an invitation carrying a group as its destination. The invited person arrives as everyone does, becomes a FIM by consent and is born by completion, and only then receives the pending invitation to the group. Membership of a group never precedes becoming a FIM; an email address is never a membership. The downstream mechanics, tokens, whether the platform ever sends mail, invitations from group to group, are build decisions. *Platform: [ADR-U040](../architecture/decisions/ADR-U040-referral-not-email-membership.md).*
+
+### 6.10 Who holds the canon
+
+Canon keeping is a function inside Universe Studio, not a role or a rank; the founder is the first canon keeper. The deep bible is received by commission, never by rank or developmental level, and every Teller and Wayfinder receives the story bible; authoring access is never gated on a person's order of mind, which the platform never labels. The repository is not the vault. How the mythology is held, the tiers, the fixed points, the mythology arcs and the breadcrumb register, is chapter 5's; who keeps the canon after the founder, and how an author enters the deep bible, is its open question S-12.
 
 ## 7. Community and the founding moment
 
-*To be written.*
+This chapter says what the community is, what it owns, how its members are bound to one another in the universe, and how it begins. The roles its members hold are chapter 6; the perspectives that need other people are chapter 4.
+
+Open questions stand in **Open** boxes with a C-number; chapter 8 indexes them.
+
+### 7.1 A movement, not a product
+
+FringeIsland is a movement, not a product. The community is not an add-on to the platform; it is the reason the platform exists. Humans and their stories outrank aesthetics and worldbuilding: when they pull apart, the human wins, then the story, then the world. Constant change is the steady state.
+
+Growth is structurally social. The relationship and collective perspectives can only be worked through with real people, never with NPCs or AI-generated activity, so community and group features are not add-ons; they are the only path to two of the three perspectives. Participation is always voluntary, and a FIM who cultivates their home alone is inhabiting FringeIsland completely; the full arc opens only through connection. The world invites, and does not force.
+
+### 7.2 What the community owns
+
+FringeIsland was not built to be sold. It was built to last, as a world that belongs to the people who inhabit and create it, not to investors or shareholders. **The FringeIsland Foundation** is the intended permanent holder of that ownership; its formal establishment is not yet done. Contribution is open, never gatekept: the world is built by many, the doors are open, and the values are the only walls. Member privacy outranks commercial opportunity: member data serves the member, and the platform never profits from what members entrust to it. Anonymised aggregates may be explored only with explicit informed consent, responsible handling and clear member benefit, under enterprise stewardship. The founders' reason why, that inner growth has never mattered more in a time when artificial intelligence places more power in human hands than ever, is stated in the MANIFESTO as conviction only, never as lore.
+
+### 7.3 How members are bound to one another
+
+In the universe the community is visible on the Tree. Every FIM's drip glows equal. The bonds between FIMs are the lines between their drips, two or more, brighter with a stronger bond, seen only by those who share them and ambient to everyone else; there are no rankings, no counts and no comparative progress anywhere. A drifted line fades and glows again when tended.
+
+The social layer has a survival function. Along a shared line a friend sees your cord's health and can steady it; relationships and community keep a Whisp alive when its FIM is stretched thin. Along a shared line another FIM's Shadow can manifest to you, as form and force, never content, and a friend can stand with you against yours. A pair or a community can carry a shared hidden rule, and meet its shared Shadow in Marath. Mattering to others and to something bigger is the outer pole of Matter, pursued through what one can offer, with the outcome held lightly.
+
+A FIM's own home is inviolable and shared only by invitation, region by region. Groups agree to greater openness only by the explicit informed consent of every participant, and a group's Steward cannot see its members' private developmental data. What is intimate travels only along the bond that can help it.
+
+> **Open C-01 — Community formation when few are present.** How the relationship and collective perspectives work while the community is small: how enough human relationships are seeded, what the smallest viable community is, and how the near side is made dense where few FIMs live, seeds planted by FIMs being one answer. The business halves, cold start, recruiting Dreamineers before their tools exist, and content before there is a community to make it, stay in the questions register. *Research input, not adopted: Robin Dunbar's layered social capacity, in the thinkers-behind-the-Whisp report.* *Waits for:* a discovery session; people who do not exist yet.
+
+### 7.4 The founding moment
+
+How it begins, as current intention. The first public chapter of FringeIsland's story is told through a founding campaign, on Kickstarter: not primarily a fundraiser but a founding moment, a community-building event, a world-launch, an invitation. The campaign is **Season Zero**: the launch's name, a founding moment and the platform's first public story told to the world, not an authored season in Arc Studio's sense.
+
+When someone backs the campaign, they do not become a backer. They arrive in FringeIsland: on the near side, and through the founding questions, like everyone else. The accretion is the arrival, and the birth is the same for a founder as for anyone. Rewards are arrival rituals, not merchandise; the campaign page is the first world-building document. The campaign speaks to two audiences at once: **founding FIMs**, who feel the pull of the three questions and want a world built around them; and **founding Dreamineers**, who recognise the invitation to build a world worth living in.
+
+The **founding Dreamineer cohort**, the people who self-select by backing at the world-builder tier, is the most valuable thing the campaign produces: more valuable than the funding, more valuable than the member count. They are the first Dreamineers, the seed of the world's authorial community, the people who shape FringeIsland before the wider world arrives. They receive their authority as a grant; Dreamineer is an authorial mode, not a governing body, and enterprise stewardship sits with the Universeers, the Council and DeusEx.
+
+The campaign launches after the full ecosystem vision is set, not before. Its design is its own exploration, approached with the same care as everything else: it is not a marketing exercise bolted onto the platform. A physical glass ball, linked to a FIM's account, and a Gimbal shell for the phone are optional keepsakes it may offer; a talisman, never a key, and never needed to engage.
+
+> **Open C-02 — The founding moment's design.** Its tiers, rewards and funding goal; the arrival rituals; whether its updates are told as the first episodes; the video; the pre-launch. Blocked by the first hour and by the working detail of the worlds; the Foundation as the legal recipient of funds and the timing of monetisation are business items in the questions register. *Waits for:* the full ecosystem vision, the first hour, the fundamentals, then a dedicated session.
 
 ## 8. Open questions — the index
 
