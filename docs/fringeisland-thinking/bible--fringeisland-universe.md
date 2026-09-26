@@ -400,7 +400,161 @@ NPCs are categorically different from FIMs: authored composites, with no Whisp. 
 
 ## 4. Growth
 
-*To be written.*
+This chapter says what the universe is for and how growth works in it: the three questions and the three perspectives, the drives beneath them, the transfer from Mara to the Whisp, the zones a FIM moves through, rest, the two ways of engaging, what the world may see of you, and graduation. The places are chapter 2 and the beings chapter 3; the stories in which growth happens are chapter 5.
+
+Open questions stand in **Open** boxes with a G-number; chapter 8 indexes them.
+
+### 4.1 What the universe is for
+
+FringeIsland is built around three questions: Who am I? What do I want? How do I get there? The platform does not answer them. It holds them, with space, structure and companionship, so that each person finds their own answers.
+
+What the universe is for is that FIMs become more self-aware, inside and out, about who they are, what they want and how they get there, so that they move forward in life deliberately. Self-awareness has two kinds: seeing who you are from the inside, and seeing how you appear and operate in the world. *Origin: Tasha Eurich,* Insight *(2017); the thinkers-behind-the-Whisp report.*
+
+Over time the experience internalises. The member carries their own wiser inner voice into ordinary life and no longer needs the platform. That is success: FringeIsland is built to graduate, not retain.
+
+Growth here means becoming more truly yourself, clearer on who you are, what you want and where you are going; not faster, louder or more impressive. And growth is delight, not deficiency. FringeIsland never runs on "you are not good enough". This inverts the premise of the mainstream self-improvement industry and it is a guarded core value: every mechanic that would motivate by threat, guilt or comparison is ruled out by it. FringeIsland is not a course platform with certificates, not a social network optimised for engagement, not a therapy service or clinical tool, and not a gamified productivity app.
+
+Personal development happens through lived experience, not instruction. Members grow by entering a world, not by completing a course; entertainment is the surface and development the consequence, and the developmental scaffolding stays invisible underneath. You must live something to know it, and being told is not the same: that is why assessments dissolve into dialogue, why the world is felt through the senses, why the story carries felt stakes rather than stated lessons, and why the backdrop survives being spoiled. *Lineage, held lightly: the knowledge argument, Frank Jackson's "Mary's Room" (1982).*
+
+### 4.2 The three questions and the three perspectives
+
+The three questions are the red thread. They run through every journey, every episode, every group and every conversation; a FIM can engage them lightly or deeply, quickly or slowly, and they are always there: the invitation to know yourself more honestly, alone, with others, and as part of something larger. They are fundamental questions that may take a whole life to answer, and they are not the founding questions a newcomer loads into the Gimbal.
+
+Each question exists across three perspectives: Individual (1), Relationship (1+1), Collective (1+Community). These are three simultaneous angles on the same human, three scales of self, not three separate domains and not stages. *Origin: the Three Perspectives meta-lens of the What Fills a Life report, which draws on ikigai's three levels and on Erikson's arc from identity through intimacy to generativity.*
+
+Three questions across three perspectives make the nine-cell matrix. It is not a curriculum; it is a structural description of the developmental space FringeIsland holds. A journey, an episode or an encounter may touch one cell, several, or all nine.
+
+| | Individual (1) | Relationship (1+1) | Collective (1+Community) |
+|---|---|---|---|
+| **Who am I?** | My values, strengths, blind spots and edges: reflection, dialogue with the Whisp, journaling | How I show up with another person, what patterns I carry: pair work, feedback, encounter | What role I play and what I contribute in the groups I belong to: group dynamics, belonging, contribution |
+| **What do I want?** | What matters to me and what I move toward: purpose, values, direction | What connections I want to build: relational intention, attachment, intimacy, trust | What world I want to help create: collective vision, social purpose, civic imagination |
+| **How do I get there?** | The practices and disciplines that carry me: habits, skills, discipline | How I learn to be present with another: listening, conflict, vulnerability | How I contribute to something larger: leadership, service, stewardship, collective action |
+
+"Who am I?" is answered with tools that illuminate, never tests that categorise. "What do I want?" is the difference between what you have been told to want and what actually calls you. "How do I get there?" is the practical architecture of becoming. The matrix makes the space visible so that journey designers cover every perspective and not only individual reflection, the Whisp orients to the perspective the FIM is engaging, and seasons and episodes can move FIMs across perspectives over time.
+
+**Working through a perspective.** To work through a perspective is to do the work of its cells and resolve its question at that level. The "me" perspective can be worked through alone, by reflection, journaling and solo journeys. "Me with you" and "me in a community" can only be worked through with real people: not NPCs, not AI-generated activity. This is developmental interdependence: growth is structurally social. Participation is always voluntary; a FIM who never engages with others can still grow. And the full arc opens only through connection. That is the shape of the model, not a rule imposed on anyone: the world invites, and does not force.
+
+The three perspectives run through everything in the universe. Respawn happens alone, with a travelling partner, or with a group. FIMs heal one another's cords, so that relationships and community keep a Whisp alive when its FIM is stretched thin. A bond in the Tree joins two FIMs or several. Mara, and so the Shadow, exists at the individual, pair and community levels. Mattering has the same three-fold shape, to oneself, to others, and to something bigger.
+
+> **Open G-04 — Journeys that require others, and Matter's outer pole.** Whether some journeys are designed to require the relationship or the collective perspective, and how mattering to others is delivered without over-promising it. *Waits for:* Journey Studio and a session on Wayfinder craft.
+
+### 4.3 Beneath the questions: Live, Grow, Matter
+
+Beneath the questions lie the drives: why a human bothers to ask at all. All humans, in the end, want to live, to grow, and to matter, to themselves and to someone or something bigger than themselves. This is held as a design axiom, chosen and not derived, and supported by convergent evidence rather than claimed as its sum.
+
+- **Live** is present-moment engagement: enjoying the ride, not postponing happiness to a far future.
+- **Grow** is curiosity and the urge to learn, explicitly not from deficiency. Growth is delight, never repair. It includes deliberate choices of action and planned happenstance, the readiness to act on the unplanned. The healthiest Grow is responsiveness, not tightness: awake enough to catch the train, loose enough to enjoy the platform while waiting. *Origin of planned happenstance: John Krumboltz.*
+- **Matter** has two poles, bridged by influence. The internal pole, "I feel I matter", is anchored in what I think, feel and do, which is within my control: the seat of freedom and security. The external pole, mattering to others and to something bigger, is the seat of contribution and connection, pursued through what one can offer and influence, with the outcome held lightly. You cannot control whether you matter to others; you can contribute, and let it follow. The internal anchor makes you free; the external reaching makes you not alone. Collapsing Matter onto the internal pole alone would be a cruel empty promise to the genuinely isolated. *Origins: for the internal pole the Stoic dichotomy of control, Epictetus; for the external pole Morris Rosenberg's work on mattering.*
+
+Live and Grow are a corrective pair: Live without Grow is indulgence, Grow without Live is joyless striving. The three dance in balance, never in sequence. None is ever complete, so there are no rungs to climb, and each feeds the other two. The Whisp does not march a FIM up through them; it senses which drive is currently starved and leans the journey toward restoring the balance.
+
+The triads nest: Live, Grow and Matter, the why, under Who, What and How, the questions, under 1, 1+1 and 1+community, the perspectives. And the architecture already holds both poles of Matter: the internal pole in meta-safety, the FIM who cannot be broken; the external pole in the bonds, in FIMs healing one another's cords, and in Dreamineers contributing to the world.
+
+**The framing discipline.** Live, Grow and Matter is the plain-language, human-facing aspiration, and it is FringeIsland's own. The science beneath it is the substrate: borrowed, cited, never claimed as FringeIsland's own. The one rule is that the universe's language is always *informed by* or *resonant with* the science, never *equal to* it: kinship claimed, equivalence never. Convergence without collapse is the evidence that the three words point at something real. The same discipline governs the zones and Immunity to Change: the universe speaks of Mara, the Whisp and the zones, and the frameworks sit beneath. The plain-language foundation is durable, because the substrate can be refined or swapped as the science moves without shaking it; and the drives stay accountable to the science without being derived from it. The platform never labels or measures a FIM's order of mind. *Substrate, informed by and never equal to: self-determination theory (Edward Deci and Richard Ryan); Martin Seligman's PERMA; the flourishing dimensions gathered in the What Fills a Life report. As kinship, never a mapping: Live is near PERMA's positive emotion and engagement; Grow near self-determination's competence and autonomy and PERMA's accomplishment; Matter near relatedness, relationships and meaning. The thinkers-behind-the-Whisp report opens with this mission.*
+
+> **Open G-07 — The Whisp and the full set of flourishing dimensions.** Whether the Whisp's work relates to the whole flourishing research or only to the balance of Live, Grow and Matter. *Waits for:* the Whisp's specification.
+
+### 4.4 How growth is registered
+
+Growth is the mechanism; the Whisp's filling is the record of it. The Whisp fills *by* the human growing: its curious questions spark self-reflection, self-reflection builds self-awareness, and the Whisp fills with more of the person. Two completions, mutually driven, one process seen from two angles.
+
+Growth is registered along the Whisp's two channels, chapter 3's. Who I am: validated instruments never delivered as questionnaires but dissolved into the Whisp's dialogue and spread over time, the structure preserved and the form transformed; the FIM is not completing a profile, they are bringing their Whisp to life. The Big Five is the on-ramp, not the destination; other instruments come in over time, and the more instruments a FIM discloses across, the more their journeys become a signature journey rather than a charter trip. What has had me: what Mara releases as the FIM sees through a hidden rule. The universe's responsiveness is earned by the FIM's willingness to be seen, by themselves: the five senses of the parallel world open as the FIM discloses, and the world needs all five for its full experience, so the motivation is intrinsic and sensory, never coerced.
+
+### 4.5 Mara and the transfer
+
+The Whisp is the growth voice; Mara is the negative voice most people obey without knowing it. Mara does not need to be discovered to be obeyed, only to be seen. The Whisp starts empty of content and full of wisdom; Mara starts full of content, the limits experience wrote into the person, and empties as the Whisp grows. In the end both are internalised and the FIM is whole.
+
+Internalising Mara is the move Immunity to Change describes. Beneath a person's stated wish to change lies a hidden competing commitment that protects them, and beneath that a Big Assumption, a rule about the world that runs them unseen. Together they are an immune system: intelligent self-protection, not weakness, keeping the person safe by keeping them the same. Change is a developmental problem, not a willpower problem, and the old behaviour does real protective work. The work is to learn and internalise what hinders you before you can change: become aware, turn it into a step forward, and step through it. What was subject, what had you, becomes object, something you can hold and test; and because the assumption did not hold, Mara's authority to rule the FIM empties, while the knowledge of one's limits is kept. That is what "internalised" means. *Origin: Robert Kegan and Lisa Laskow Lahey,* Immunity to Change *(2009); the Kegan report.*
+
+The Whisp's filling and Mara's emptying are one process seen from two ends: the transfer. What Mara loses, the Whisp gains, and since the Whisp is the human's own wiser voice, what the FIM ends up owning is themselves. Marath is Mara made into a place; the Shadow is Mara met there as a form; healing a wound in Nalome by acting on its cause in Marath is confronting one's own negative self-talk at its source. The confrontation is always mediated through the Whisp: the wiser voice walks in and meets the Shadow, and that is the point. The test that moves a rule across is run wherever the Shadow is met, the near side included; Marath's depth sets the size of the test, not whether growth happens.
+
+The transfer scales. Immunity to Change in the universe runs from the smallest change, one assumption tested in one encounter, up to the magnitude of a move between orders of mind, if the FIM so wishes and allows it. What the FIM dials is the depth of the invitation, how much of Mara they let be surfaced and tested and how often, never the outcome: a move between orders takes years and cannot be willed into being. The reaches are scales of test, adopted for now: one hidden belief on the near side, a competing commitment met in full on the far side, the whole immune system as one figure in the beyond, which is optional and for most never met. *Origin of the orders of mind: Robert Kegan,* The Evolving Self *(1982),* In Over Our Heads *(1994); the Kegan report.*
+
+Mara exists at three levels, a person's own, a pair's and a community's, so the transfer does too; and in the backdrop the same mechanism runs at the scale of a civilisation, a collective immunity to change. Personal growth and the world's future are the same mechanism at different sizes, which is why the Whisp's personal work carries a civilisational stake without changing what it does. That scale is never told.
+
+> **Open G-06 — Whether the Whisp's own wisdom changes.** The Whisp is born full of wisdom; whether it is itself changed by deep encounter with its FIM is unsaid. *Waits for:* the Whisp's specification.
+
+### 4.6 The zones
+
+Growth happens by a FIM being cautiously pushed out of their comfort zone toward growth, without getting into panic. "Cautiously" is structural: the Whisp reads where the FIM is and nudges. There are five zones, comfort, fear, learning and growth, with panic as the fence around them. They are the felt experience of the transfer from the inside, and they follow the four stages of overturning an immunity.
+
+| Zone | What it feels like | In the universe |
+|---|---|---|
+| Comfort | The immune system works unseen and feels normal | Mara unseen, obeyed without knowing it |
+| Fear | The immunity is seen, and the anxiety it was managing is felt | Mara seen and speaking loudest, excuses and "what will others think"; met as the Shadow, through the Whisp |
+| Learning | Safe, modest, actionable tests against the hidden belief | The test run, in Marath or wherever the Shadow is met, under meta-safety and respawn |
+| Growth | The new way has become natural | Mara's authority emptied into the Whisp |
+| Panic | A test too big to be safe; the anxiety overwhelms and the immunity snaps back harder | The fence the Whisp never opens |
+
+*Substrate, informed by and never equal to: the four stages in Kegan and Lahey's* Immunity to Change, *unconsciously immune, consciously immune, consciously released, unconsciously released; the immune system as an anxiety-management system; the Kegan report.*
+
+A FIM is in a zone per hidden belief, not as a whole person. One belief may be released while another is still unseen, so there is no single zone a FIM is "in" and no zone meter. What the Whisp shows of any of this, if anything, is open.
+
+**The fence.** The Whisp never opens the panic zone, even when a FIM asks for more depth. This is not only care: a test that overwhelms does not merely hurt, it confirms the hidden belief and strengthens the immunity, so the fence protects the growth itself. Voluntariness sets the ceiling and care sets the floor. The FIM's wish and self-permission decide how deep the invitation goes and whether to listen at all; from the other side the Whisp may decline to open the panic zone, while it never refuses a retreat and never shortens the FIM's dial. The structural floors do the rest: no one enters the panic zone before they have a home to return to, and the Mist's lock on the far side is intrinsic, not a fence.
+
+**Fear.** The fear zone is where Mara speaks loudest: the excuses, the "what will others think", the reasons not to go on. It is met through the Whisp. It is never a feeling the world is designed to cause, and no story is designed to frighten a FIM into it. The dark future is the stage and the stake of the storytelling; it never drives an individual FIM's pace or depth, no countdown, no guilt, no hurry. The FIM uses the world for growth at their own pace, with the Whisp's tough love, across the three perspectives and the zones.
+
+**The gradient as geography.** The zones are spatial. The distance that matters is Void distance, how far the Whisp has ventured out on the cord, not how far the body walks; "far from home" means far out on the lifeline. The zone bands sit on that one gradient, beside the Shadow's growth with depth. The FIM holds the dial: pay out to venture, reel in to retreat; risk is depth times protection, and the peril is opt-in, since no one is ever sent further than they allow. Anchoring encodes a lesson of growth: consolidate before advancing. Venture out for challenge, return home for safety, and out again: the breath-rhythm of development, rendered as geography.
+
+**The holding environment.** Beneath the Whisp's tough love lies what growth needs around it: confirmation of the person where they are, contradiction that challenges the limits of how they now make sense of things, and continuity that holds the relationship through the challenge. Too little contradiction keeps a FIM in comfort; too little confirmation tips them into panic. Deep change takes months to years; the platform creates the conditions and never forces the timing. *Origin: Robert Kegan; the Kegan report.*
+
+> **Open G-01 — What is ever shown.** Whether the Whisp shows a FIM anything of their zones, of their map of hidden beliefs, or of the balance of Live, Grow and Matter, felt or legible; and whether the immunity map ever appears as a visible journey step or a respawn carries a prompt about one's assumptions. Depends on how the software is built and what testing shows works. *Waits for:* the Whisp's specification, build and testing.
+
+> **Open G-05 — Holding environments beyond the Whisp.** Whether the village, the home or a group is a holding environment by design, with confirmation, contradiction and continuity of its own. *Waits for:* a discovery session on community formation.
+
+### 4.7 What makes the test safe
+
+FringeIsland is safe. The world contains threat; the experience of being in the world does not. Real felt stakes inside a frame that guarantees reversibility: when the Whisp gets into trouble and dies, the FIM rewinds and tries again, alone, with a travelling partner or with a group, until the skill is mastered or the story's task is met. The human is never the thing at risk. The Whisp is what walks the world, what can be harmed, what dies in a story and respawns; the FIM is the constant point of consciousness, and harm travels the cord toward the Whisp, never back. Failure is one of growth's most reliable teachers: nothing is permanent, everything is tryable, every wrong turn becomes wisdom carried forward. The world itself is gardened, not guarded, so nothing in it is permanently destroyed either.
+
+This is exactly what lets Marath be the testing ground for one's hidden beliefs: the tests must be safe, modest and actionable, and nothing there can break the FIM. How respawn is built into stories is chapter 5's.
+
+### 4.8 Rest
+
+Rest is legitimate. Stopping during a storm is wisdom, not weakness or failure; rest protects what flies; and the return is built in, the rest has an end and flight follows. A return to comfort is part of the breath-rhythm, not a step back. The shelter is always there, the ball one step away and the home behind it, and the FIM is not meant to stay in it: availability, not occupancy.
+
+Three rules hold. Rest is the Whisp's when it is chosen knowingly and ends in flight; it is Mara's when it is avoidance that never ends and calls the sky dangerous, since "it's okay, you can rest" is also what the immune system says to keep a person in comfort. The FIM decides when the storm has passed, and the Whisp may ask, "is it still raining, or is that Mara talking?" And rest costs nothing permanent, but not everything waits: journeys, seasons and episodes that rely on action move on without a FIM who is away, and a FIM who simply disappears and stays gone will in the end lose cord health, the bond with the Whisp weakening with lasting absence. Chosen rest slows or pauses that weakening; silent absence does not. The weakening is felt on return and never pushed as a guilt notification; absence never kills a Whisp; and health recovers when the FIM returns, as the world regrows the moment care resumes.
+
+*Image: the butterfly that rests when it rains, because the water would damage its wings, and flies again when the storm has passed. A widely shared saying of unknown authorship; an image of the universe, not a fact about butterflies.*
+
+### 4.9 The two ways of engaging
+
+There are two ways of engaging in FringeIsland as a FIM: cultivate your home, or go on expeditions and explore near or far from it. This is about how a FIM engages, not about the community that creates the experience; that is chapter 6.
+
+To cultivate the home is to tend the inner garden and the digital one, to reflect quietly, to journal and to walk solo journeys, doing deep work in the individual perspective without venturing far into the wider narrative. It is a complete way to inhabit FringeIsland, not a lesser or preliminary one. To go on expeditions is to live deep in the narrative arcs, the seasonal episodes, the quests, the group dynamics and the community, in FringeIsland as a genuine second world, working the relationship and collective perspectives that need other people. Between the two lie infinite gradations; a FIM moves along the spectrum freely, and no one who cultivates is behind anyone who explores. Every path leads to growth: the near side of Marath is visible from the Ordinary World and the Shadow is small there, and reflection at home is the individual column of the matrix.
+
+Two consequences hold for the platform. Solo tools are as important as social features; the garden, the journal and personal reflection are a complete mode of engagement. And community and group features are not add-ons; they are the only path to the relationship and collective perspectives. Nowhere in the universe is there a ranking, a count or a comparative progress: every ball glows equal, the Tree's lines are ambient to all but those who share them, and the cord's signals are legible only to their endpoints.
+
+> **Open G-03 — Member archetypes.** Provisional personas once illustrated the two ways of engaging; they are out of the bible until validated, challenged or replaced by real members. *Waits for:* the first real members.
+
+### 4.10 What the world may see of you
+
+What happens on FringeIsland is yours: your inner journey, your discoveries, the person you are becoming. You decide what stays private and what you share, with whom and when. This is a founding principle, not a policy. Member data serves the member, never the platform, and the platform never profits from what you entrust to it.
+
+There are three tiers of visibility.
+
+- **Private by default.** No opt-in is needed. Your inner journey and self-discovery progress; your home and garden, the FIM holds the only key; your journal; your assessment results and developmental data; the Whisp's filling, and its second channel, what has had you, which is never visible to anyone and never shown as a score; your cord's maturity; your seeds and your Whisp's paths; your location; the Whisp's face as it changes.
+- **Selectively shared.** You choose what to reveal, to whom and when: to specific people or to specific groups; per aspect, or per region of your home, so that you can share the garden without the journal and open one room to a friend while the rest stays locked. Always voluntary, always revocable.
+- **Transparently shared.** Opt-in groups whose members agree to a norm of openness, accountability circles, growth cohorts, mastermind groups, facilitated group journeys where openness is part of the design. Never the default: it takes explicit, informed consent from every participant, and even there each FIM keeps control over what they contribute. The agreement is to a norm, not a forfeiture.
+
+What is intimate is seen only along the bond that can help it. A friend perceives your cord's health only along a shared line, as a glance, never a diagnosis, invited and not imposed, and your own Whisp is the first responder. Another FIM's Shadow manifests to you only along a shared line, and what you see is its form and force, that they are struggling and how heavily, never its content; content is shared only by the FIM's own telling, and strangers see no Shadow. The stage of a Mist's accretion is legible, its content never. Every readout of becoming in the universe shows that becoming happened, and never what was disclosed.
+
+The platform never surfaces private data without the FIM's own action. Sharing controls are granular, per aspect, per audience and per timeframe. A group's Steward cannot see its members' private developmental data. No aggregate derived from private journeys is visible to other FIMs, and anonymised aggregates may be explored only with explicit informed consent, responsible handling and clear member benefit, under enterprise stewardship. A Mist's own data is ephemeral, anonymous, erased after inactivity or goodbye, and no profile is computed before consent; becoming a FIM unlocks not the ability to interact but the ability for interaction to be remembered. Location is shared with no one unless the FIM turns it on, and then to degrees they choose, with clear warnings.
+
+### 4.11 Graduation
+
+In the end the Whisp is an integral part of the human, without the need for FringeIsland. The cord's vividness recedes as the relationship matures. Wholeness is two-sided: the Whisp has filled and Mara has emptied, both internalised, and the FIM is the newborn made free again, knowingly, free of what experience wrote and not innocent of it. The personal core of the backdrop, that the Whisp is the FIM's own future self, is discovered along the way as the Whisp fills, never announced; the moment of recognition in the Whisp's face is the personal reveal.
+
+Graduation is an arc of internalisation. It has no gate, no ceremony and no loss of access defined. It is not gated on the beyond: a FIM can be whole without ever having gone there, and FringeIsland has no end to reach and no final boss. Deep change takes months to years, and the platform never turns graduation into a schedule.
+
+> **Open G-02 — Graduation as an experience.** What internalisation looks like at the end; whether a graduate leaves, keeps access, keeps their ball, their drip and their lines; what the receded cord is; whether anything marks it; and whether the Whisp's fully formed face belongs to it. *Waits for:* a discovery session, after the fundamentals.
+
+### 4.12 The research anchors
+
+The Whisp draws on the research behind human flourishing as substrate, never as script. Four anchors are named, without statistics. The dual continuum: mental health and mental illness are separate dimensions, not opposite ends of one, so flourishing must be actively built and is not the absence of trouble. The multi-system requirement: flourishing has several parts, and no single axis substitutes for the others. The Three Perspectives meta-lens: every dimension of flourishing exists at three scales of self at once. And Immunity to Change: why genuine growth is hard and what dialogue can unlock. The Whisp is fluent in the last two above all.
+
+The wider research base woven into the experience layer, never surfaced and always present structurally, includes the Big Five, the VIA character strengths and Erin Meyer's Culture Map for self-understanding; Frankl, Steger and ikigai for purpose and meaning; self-determination theory, Ryff's psychological well-being and Keyes's flourishing for human flourishing; Kegan's constructive-developmental theory for adult development; Baumeister and Leary, attachment theory and the Harvard Study of Adult Development for belonging; and Bandura for self-efficacy.
+
+The research stays outside the bible, in its own reports, and it is never deleted: it is the record of where FringeIsland comes from. *Origins: Corey Keyes's dual continuum model; the What Fills a Life report; the Kegan report; the Theory U report; the report on the thinkers and models behind the Whisp.*
 
 ## 5. Story
 
