@@ -56,6 +56,10 @@ The Whisp is the highest-consequence concept in the roadmap — each FIM's inner
 - Pros: one entity, one owner, nominally clean.
 - Cons: **rejected as a thin orchestrator** — it would own almost no data of its own, merely coordinating DS-1 + DS-7 state; an anatomy smell under ADR-U023.
 
+## Amendment — 2026-09-26: vocabulary, from the Universe Bible
+
+"The beings core" in the text above is now the Universe Bible's beings chapter (`docs/fringeisland-thinking/bible--fringeisland-universe.md`, chapter 3), where the entity stays canonical and both framings are stated; the planned `whisp.md` canon sub-page is the bible's Open box B-01, the Whisp's full specification. Vocabulary only; the split by face is unchanged.
+
 ## Links
 
 - Related ADRs: ADR-U023 (Platform Core / Domain Services decomposition — the boundary law this decision operates within); ADR-U005 (profile_data — DS-7's accumulation shape); ADR-U031 (Mist lifecycle — Mists carry their own Whisp from the start; supersedes ADR-U027, which called the Mist the Shadow).

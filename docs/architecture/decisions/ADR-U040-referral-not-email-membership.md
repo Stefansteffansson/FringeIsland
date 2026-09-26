@@ -77,6 +77,10 @@ This **supersedes the MEM-2 "invite by email" capability** as specified in FEAT-
 - Pros: keeps the growth loop *and* the consent gate; no platform-sent email to strangers (FIM shares the link); membership stays FIM-only and post-consent; turns an awkward path into an honest onboarding entry.
 - Cons: requires reworking part of the G-C invitation model and specifying a new referral concept + its transcendence-time resolution; touches identity, consent, and organisation contracts at once.
 
+## Amendment — 2026-09-26: vocabulary, from the Universe Bible
+
+Where this ADR says the recipient "transcends and consents to become a FIM" and that membership follows "transcendence-and-consent", read: the recipient **becomes a FIM by consent**, and only then receives the pending group invitation. Since discovery Session 05 (S104, ruling R-40) "transcendence" names the birth only, the completion event; consent is "becoming a FIM". The decision is unchanged: no membership precedes becoming a FIM.
+
 ## Links
 
 - **Reshapes / supersedes the capability of:** FEAT-PC012 (Cycle G-C invitation contracts — MEM-2 `invite_by_email`) and its Hub surface FEAT-H015; the `pending_email_invitations` substrate and the `handle_new_user` Step-8 auto-claim.
