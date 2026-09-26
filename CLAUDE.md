@@ -78,9 +78,9 @@ Start at [`docs/README.md`](docs/README.md) for the full navigation map. Everyth
 | **Ecosystem (what we're building)** | |
 | Vision (constitutional) | [`docs/ecosystem/VISION.md`](docs/ecosystem/VISION.md) |
 | Manifesto | [`docs/ecosystem/MANIFESTO.md`](docs/ecosystem/MANIFESTO.md) |
-| Universe design (cosmology, beings, narrative, …) — the `canon--` files | [`docs/fringeisland-thinking/README.md`](docs/fringeisland-thinking/README.md) |
-| Worlds topology (canonical core) | [`docs/fringeisland-thinking/canon--cosmology--worlds-topology.md`](docs/fringeisland-thinking/canon--cosmology--worlds-topology.md) |
-| Role taxonomy (canonical core) | [`docs/fringeisland-thinking/canon--roles--taxonomy.md`](docs/fringeisland-thinking/canon--roles--taxonomy.md) |
+| Universe design — the Universe Bible (worlds, beings, growth, story, roles and governance, community; its glossary is the vocabulary authority; load the chapter you need) | [`docs/fringeisland-thinking/bible--fringeisland-universe.md`](docs/fringeisland-thinking/bible--fringeisland-universe.md) — index: [`docs/fringeisland-thinking/README.md`](docs/fringeisland-thinking/README.md) |
+| The worlds (Nalome and Marath, the reaches, the Tree, the lines) | [bible, chapter 2](docs/fringeisland-thinking/bible--fringeisland-universe.md#2-the-worlds) |
+| Roles and governance (Mist, FIM, Dreamineers, the enterprise plane) | [bible, chapter 6](docs/fringeisland-thinking/bible--fringeisland-universe.md#6-roles-and-governance) |
 | AI principles (constitutional) | [`docs/ecosystem/PRINCIPLES-AI.md`](docs/ecosystem/PRINCIPLES-AI.md) |
 | Products & platform strategy | [`docs/ecosystem/strategy/PRODUCTS_AND_PLATFORM.md`](docs/ecosystem/strategy/PRODUCTS_AND_PLATFORM.md) |
 | Open questions | [`docs/fringeisland-thinking/questions--ecosystem-open-questions.md`](docs/fringeisland-thinking/questions--ecosystem-open-questions.md) |
