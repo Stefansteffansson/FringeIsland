@@ -18,7 +18,35 @@
 
 ## 1. Start here
 
-*To be written.*
+**What FringeIsland is.** FringeIsland is a world for becoming: an immersive edutainment universe built around three questions, Who am I? What do I want? How do I get there? The platform does not answer them; it holds them. Members grow by entering a world, not by completing a course; entertainment is the surface and development the consequence, and the scaffolding stays invisible underneath. FringeIsland is a movement, not a product, and it belongs to the people who inhabit and create it. It is built to graduate, not retain: success is a member who no longer needs it.
+
+**The Whisp.** Every person carries a Whisp, their own inner dialogue oriented toward growth and compassion, the wiser counterweight to the unkind voice most of us live with. The Whisp is the human, not a companion. It starts empty of content and full of wisdom, and it fills as the person grows. It practises tough love, it never judges, and everything it offers is voluntary. It is also the person's avatar: what walks the other worlds while the body stays safe at home, what can be hurt, die and try again. Its counterpart is Mara, the negative inner voice most people obey without knowing it, full of everything experience wrote into them as limits.
+
+**The worlds in one breath.** Behind the Shimmer, seen through the Gimbal, lie two worlds laid over daily life: Nalome, warm and welcoming, and Marath, hostile and cold, and in truth Mara made into a place. Each has a near side over the Ordinary World, a far side with no earthly coordinates, and a beyond that is not yet known. Every wound in Nalome has a cause in Marath. On Nalome's far side stands the village with its one Tree, where every FIM's drip hangs from a limb and every ball glows equal, and the lines between the drips are the bonds between FIMs. A FIM's body never leaves the Ordinary World; the Whisp travels, on a cord the FIM pays out and reels in, anchored by seeds. Only each FIM's own ball is inviolable; everything else is gardened, never guarded.
+
+**How growth works.** Growth is the transfer from Mara to the Whisp: what has had a person, unseen, becomes something they can see, hold and test, and its authority empties while the knowledge is kept. It is felt as zones, comfort, fear, learning, growth, with panic as a fence the Whisp never opens. The FIM sets the depth, the Whisp keeps the floor. The three questions are asked across three perspectives, alone, with another, and in a community, and the last two need real people. Rest is legitimate. In the end both voices are internalised and the FIM is whole.
+
+**How story works.** FringeIsland is experienced as story: seasons and episodes authored by Tellers, journeys authored by Wayfinders, on a world that runs the whole range from warmth to betrayal. The stakes are real and the person is never at risk; when the Whisp dies, the FIM rewinds and tries again, and the loop is the medium. Beneath the stories lies a backdrop that is never told: it is discovered, breadcrumb by breadcrumb, and its personal core only as a person's own Whisp fills.
+
+**Who does what.** Everyone who takes part is a FIM. A newcomer walks in as a Mist, anonymous and seeing only the near side, becomes a FIM by consent, and is born when the founding questions are complete. A FIM in their authorial mode is a Dreamineer: Creator, Anthropologist, Teller or Wayfinder, each with a studio under Universe Studio. Within a group a FIM may be a Steward, a Guide, a Participant or an Observer. The endeavour itself is stewarded by the Universeers, the FringeIsland Council and DeusEx, all FIMs, and its ownership is meant to rest permanently with the FringeIsland Foundation.
+
+**The principles that hold it together.**
+
+- Growth is delight, not deficiency. Nothing here runs on "you are not good enough".
+- Lived experience, not instruction. You must live something to know it.
+- Stories first, themes invisible. The story stands alone; the scaffolding is underneath.
+- The human decides; the Whisp never steers. Voluntariness sets the ceiling, care sets the floor.
+- The human is never the thing at risk. The world contains threat; the experience does not.
+- Gardening, not guarding. Nothing is permanently destroyed; the worst case is not yet grown.
+- What is intimate is seen only along the bond that can help it. Private by default; every ball glows equal; no rankings, no counts.
+- Informed by, never equal to. The universe speaks its own language; the science sits beneath it.
+- Humans first, and AI as an extension of human capability. Nothing ships that a human did not choose.
+- Leave something unmapped. Something must itch to be found interesting: the beyond is unknown on purpose, the myth is discovered and not told, and every story needs a stake.
+- Hard and soft, outer and inner, recur: a Creator and an Anthropologist, a body and a culture, a canvas and the senses. One system, two faces.
+
+**How to read this bible.** It holds three kinds of content and nothing in between: what is true, stated in the present tense; what is open, in a marked box where its topic is discussed and gathered in chapter 8; and the vocabulary, in chapter 9, which wins wherever two documents disagree. Research is cited and stays outside, in its own reports, never deleted. This is the deep bible: it holds the backdrop in full, which never surfaces in the experience and is left out of the story bible authors receive.
+
+**What FringeIsland is not.** Not a course platform with certificates, not a social network optimised for engagement, not a therapy service or clinical tool, not a gamified productivity app.
 
 ## 2. The worlds
 
@@ -63,7 +91,7 @@ The Whisp is the faculty of perception, the Gimbal the instrument, and the Shimm
 
 Seeing is not crossing. The Shimmer is a boundary between worlds; the Void is a different axis. A Whisp pointed at a field in the Ordinary World is already out in the Void, and has crossed nothing.
 
-> **Open W-01 — How the Shimmer varies, and where the atmosphere lives.** Whether the Shimmer is uniform or thinner and murkier in some places, whether Dreamineers can shape it, and where the world's tonal and atmospheric layer is described. *Waits for:* the fundamentals session and the design-system work.
+> <a id="open-w-01"></a>**Open W-01 — How the Shimmer varies, and where the atmosphere lives.** Whether the Shimmer is uniform or thinner and murkier in some places, whether Dreamineers can shape it, and where the world's tonal and atmospheric layer is described. *Waits for:* the fundamentals session and the design-system work.
 
 ### 2.4 Two worlds: Nalome and Marath
 
@@ -79,11 +107,11 @@ Nalome is revived Marath. The two are the same ground in two states: alive and g
 
 **Who lives in Marath.** Marath is a shared place. Each FIM's Mara is met there as their Shadow; a pair or a community can meet its shared Shadow there too. Another FIM's Shadow manifests to you only along a shared line, and then only as form and force, never as content. Things happen in Marath in which more than one's own Shadow plays a part, and Marath holds other creatures besides Shadows; they have their own names and are NPCs unless a session says otherwise. Whatever is met in Marath is met through the Whisp: the Whisp walks in, the FIM stays body-side, and that is the point, not an accident. Marath is where a FIM's hidden beliefs are tested. The test can be run wherever the Shadow is met, the near side included; Marath's depth sets the size of the test, not whether growth happens.
 
-> **Open W-02 — Is Marath the dark future at the scale of a civilisation?** Mara at collective size, with Marath's beyond as the collapse at full strength. The bible states only that Marath resonates with Mara. *Waits for:* Stefan.
+> <a id="open-w-02"></a>**Open W-02 — Is Marath the dark future at the scale of a civilisation?** Mara at collective size, with Marath's beyond as the collapse at full strength. The bible states only that Marath resonates with Mara. *Waits for:* Stefan.
 
-> **Open W-03 — Does Marath have a collective layer, and whose Mara is met where?** A counterpart to the village, or only what each FIM's Shadow and the other creatures make of it. *Waits for:* a discovery session on Marath's far side.
+> <a id="open-w-03"></a>**Open W-03 — Does Marath have a collective layer, and whose Mara is met where?** A counterpart to the village, or only what each FIM's Shadow and the other creatures make of it. *Waits for:* a discovery session on Marath's far side.
 
-> **Open W-04 — What are Marath's other creatures?** They are NPCs unless a session says otherwise; what they are, how they are authored, and how they are spread across the reaches is unsaid. *Waits for:* a Marath session, with the NPC page.
+> <a id="open-w-04"></a>**Open W-04 — What are Marath's other creatures?** They are NPCs unless a session says otherwise; what they are, how they are authored, and how they are spread across the reaches is unsaid. *Waits for:* a Marath session, with the NPC page.
 
 ### 2.5 The three reaches
 
@@ -104,15 +132,15 @@ The reaches are also scales of test, adopted for now and open to adjustment as t
 | Far side of Marath | Its depths; the larger Shadow; the causes of Nalome's wounds; other creatures | Portals | Seeds along the path, at chosen risk | FIMs |
 | The beyond (either world) | Nalome's: nothing named. Marath's: Mara at full strength | Unknown | Unsolved; possibly unanchorable | Optional; for most, never |
 
-> **Open W-05 — The working detail of both worlds.** How the near side and far side of each world actually look and function, in the detail that all downstream design depends on. The umbrella under which W-06 to W-09, W-11 to W-14 and W-16 to W-19 sit. It blocks the first hour and every piece of experience design. *Waits for:* the fundamentals discovery session.
+> <a id="open-w-05"></a>**Open W-05 — The working detail of both worlds.** How the near side and far side of each world actually look and function, in the detail that all downstream design depends on. The umbrella under which W-06 to W-09, W-11 to W-14 and W-16 to W-19 sit. It blocks the first hour and every piece of experience design. *Waits for:* the fundamentals discovery session.
 
-> **Open W-06 — What appears on the near side, and for whom.** Whether a given thing at a given spot is seen by every FIM or unique to each, who places it, and what a FIM can do with it beyond tending, healing and anchoring. *Waits for:* the fundamentals session; the World Model build after it.
+> <a id="open-w-06"></a>**Open W-06 — What appears on the near side, and for whom.** Whether a given thing at a given spot is seen by every FIM or unique to each, who places it, and what a FIM can do with it beyond tending, healing and anchoring. *Waits for:* the fundamentals session; the World Model build after it.
 
-> **Open W-07 — What is in Nalome's beyond, and does it stay unmapped?** Nothing named today; possibly warm and unknown, possibly kept that way for curiosity, possibly the counterpart of Marath's beyond. *Waits for:* Stefan's decision on whether it stays unmapped by design, then a discovery session if not.
+> <a id="open-w-07"></a>**Open W-07 — What is in Nalome's beyond, and does it stay unmapped?** Nothing named today; possibly warm and unknown, possibly kept that way for curiosity, possibly the counterpart of Marath's beyond. *Waits for:* Stefan's decision on whether it stays unmapped by design, then a discovery session if not.
 
-> **Open W-08 — The beyond's own name.** The reach is written lowercase, "the beyond", until it is named. *Waits for:* Stefan.
+> <a id="open-w-08"></a>**Open W-08 — The beyond's own name.** The reach is written lowercase, "the beyond", until it is named. *Waits for:* Stefan.
 
-> **Open W-09 — Can anchoring reach the beyond?** A fourth rung after body, ball and seeds, or no rung at all. That no seed holds in Mara undiluted, so that a Whisp there is exposed on the whole cord and "not possible" means not survivable, is a marked hypothesis only; the mystery is kept for now. *Waits for:* a discovery session, or a decision to leave it a mystery.
+> <a id="open-w-09"></a>**Open W-09 — Can anchoring reach the beyond?** A fourth rung after body, ball and seeds, or no rung at all. That no seed holds in Mara undiluted, so that a Whisp there is exposed on the whole cord and "not possible" means not survivable, is a marked hypothesis only; the mystery is kept for now. *Waits for:* a discovery session, or a decision to leave it a mystery.
 
 ### 2.6 Time
 
@@ -120,7 +148,7 @@ Time is an axis of the cosmology. Past, present and future may exist at the same
 
 Two things are fixed. The future is a continuum, with the good future and the dark future as its poles and everything in between; no story turns on a single switch between doom and paradise. And the future that reaches back to the FIM through the Whisp is a possible future, not a fixed one: overlay never reads as fate. That reaching back is the first known crossing in time, and it is backdrop: never told in the experience.
 
-> **Open W-10 — How time is travelled.** What a time portal is, how a FIM crosses to another time, and whether any place is the future or the past. Backdrop-tier. *Waits for:* a discovery session.
+> <a id="open-w-10"></a>**Open W-10 — How time is travelled.** What a time portal is, how a FIM crosses to another time, and whether any place is the future or the past. Backdrop-tier. *Waits for:* a discovery session.
 
 ### 2.7 The Void and the cord
 
@@ -150,11 +178,11 @@ Anchoring encodes a lesson of growth: consolidate before advancing. Venturing fa
 
 A FIM's own seeds, and the paths their Whisp has taken, are visible only to the FIM by default; the FIM decides how far to reveal them.
 
-> **Open W-11 — Are seeds consumed on use, or effectively endless?** Left open by choice. *Waits for:* the fundamentals session.
+> <a id="open-w-11"></a>**Open W-11 — Are seeds consumed on use, or effectively endless?** Left open by choice. *Waits for:* the fundamentals session.
 
-> **Open W-12 — The near side in detail: seeds and location.** What others may see of a seed planted on the near side (the revived patch, without who planted it, is the likely shape); and the levels, warnings and limits of a FIM choosing to share their location. *Waits for:* the fundamentals session and the privacy design.
+> <a id="open-w-12"></a>**Open W-12 — The near side in detail: seeds and location.** What others may see of a seed planted on the near side (the revived patch, without who planted it, is the likely shape); and the levels, warnings and limits of a FIM choosing to share their location. *Waits for:* the fundamentals session and the privacy design.
 
-> **Open W-13 — How cord-healing between FIMs works in the fine grain.** Proximity, a deliberate act, a ritual, the two Whisps cooperating. Only the channel is fixed: along a shared line. *Waits for:* the fundamentals session; the World Model build.
+> <a id="open-w-13"></a>**Open W-13 — How cord-healing between FIMs works in the fine grain.** Proximity, a deliberate act, a ritual, the two Whisps cooperating. Only the channel is fixed: along a shared line. *Waits for:* the fundamentals session; the World Model build.
 
 ### 2.9 Portals
 
@@ -168,9 +196,9 @@ Portals are doors, passages, rabbit holes: discrete crossings, as distinct from 
 
 **The lock.** At the birth the Gimbal is locked to its FIM's ball. On the platform that means the ball is bound to the FIM's account, not to a piece of hardware: the phone becomes a Gimbal when its FIM signs in, and someone holding the phone without the sign-in reaches nothing. A lost or new phone is a sign-in on the new device and a sign-out of the old. In the fiction, the ball opens only to its own FIM.
 
-> **Open W-14 — Which portal types exist.** Beyond the seeded crossing, the ball's two zones and the transcendence portal, the portal ideas on the table are: the Shimmer-cut (a portable cut between worlds), cairn portals (named, geo-bound sites placed by Anthropologists), the threshold-by-condition (a door that passes only when an inner state is right), book-as-portal (a published arc entered as a book in the village library), the Mask (entry by donning a mask that sets the story's rules), the Mirror in the private home (one's counterfactual lives; panic-adjacent), and the living bridge (a bridge only between aligned FIMs, which must not duplicate the lines). Roped descent from a known anchor is already the seed mechanic; its "don't look back" rule and two FIMs roped together are Wayfinder craft. The Cyclone (the Shimmer reaching for FIMs at a festival) is dropped unless fully opt-in. "Every lasting portal carries one rule" is a craft heuristic. *Waits for:* a portal discovery session; cairn portals and roped descent first.
+> <a id="open-w-14"></a>**Open W-14 — Which portal types exist.** Beyond the seeded crossing, the ball's two zones and the transcendence portal, the portal ideas on the table are: the Shimmer-cut (a portable cut between worlds), cairn portals (named, geo-bound sites placed by Anthropologists), the threshold-by-condition (a door that passes only when an inner state is right), book-as-portal (a published arc entered as a book in the village library), the Mask (entry by donning a mask that sets the story's rules), the Mirror in the private home (one's counterfactual lives; panic-adjacent), and the living bridge (a bridge only between aligned FIMs, which must not duplicate the lines). Roped descent from a known anchor is already the seed mechanic; its "don't look back" rule and two FIMs roped together are Wayfinder craft. The Cyclone (the Shimmer reaching for FIMs at a festival) is dropped unless fully opt-in. "Every lasting portal carries one rule" is a craft heuristic. *Waits for:* a portal discovery session; cairn portals and roped descent first.
 
-> **Open W-15 — Losing or changing the phone, in the fiction.** The platform half is session management; what it is in the world when a FIM's Gimbal is lost and a new one is bound to the ball is unsaid. *Waits for:* Stefan or a discovery session.
+> <a id="open-w-15"></a>**Open W-15 — Losing or changing the phone, in the fiction.** The platform half is session management; what it is in the world when a FIM's Gimbal is lost and a new one is bound to the ball is unsaid. *Waits for:* Stefan or a discovery session.
 
 ### 2.10 The village, the Tree, the drips and the ball
 
@@ -184,11 +212,11 @@ The ball is also the gateway. It has an inside and a rim. Press the inside and t
 
 Following your own lines is how you find your friends among the drips; a stranger's home stays invitation-gated.
 
-> **Open W-16 — The village's name.** Whether "the village" stays, whether it gets a name of its own, and whether it keeps the island identity the name FringeIsland came from. *Waits for:* Stefan, at a naming session.
+> <a id="open-w-16"></a>**Open W-16 — The village's name.** Whether "the village" stays, whether it gets a name of its own, and whether it keeps the island identity the name FringeIsland came from. *Waits for:* Stefan, at a naming session.
 
-> **Open W-17 — Travelling through a ball, visiting a home, finding friends.** How a FIM visits another FIM's home in the world, and how one skims or searches the drips on the Tree. Fixed so far: follow your own lines; your own home through the ball's inside; a home is shared by region, by invitation. *Waits for:* the fundamentals session; the Discovery service for the surface.
+> <a id="open-w-17"></a>**Open W-17 — Travelling through a ball, visiting a home, finding friends.** How a FIM visits another FIM's home in the world, and how one skims or searches the drips on the Tree. Fixed so far: follow your own lines; your own home through the ball's inside; a home is shared by region, by invitation. *Waits for:* the fundamentals session; the Discovery service for the surface.
 
-> **Open W-18 — Does the ball mature?** From clunky to fine, as capability only, never as brightness and never as a visible rank. *Waits for:* Stefan.
+> <a id="open-w-18"></a>**Open W-18 — Does the ball mature?** From clunky to fine, as capability only, never as brightness and never as a visible rank. *Waits for:* Stefan.
 
 ### 2.11 The private home
 
@@ -204,7 +232,7 @@ Lines are the channel for what is intimate. Along a shared line a friend sees yo
 
 A bond is not only between two. A FIM can be bound to many at once, and one relationship can hold several FIMs together: a circle, a crew, a group on a journey. A bond of more than two is one bond shared by all its members, its brightness seen by them alone; a pair inside a larger circle keep their pair line as well, each glowing on its own. A FIM who leaves a circle takes their share of the glow with them, and the bond among the others stays. The lines are not the crown: the crown is the Tree's own top, and the lines are drawn between the drips in it. The word "line" is reserved for this bond and its drawing in the Tree.
 
-> **Open W-19 — How a bond of more than two is drawn.** Straight lines between every pair of its members, a web; or one shape that holds them all, a ring of light around their drips. *Waits for:* Stefan and World Studio.
+> <a id="open-w-19"></a>**Open W-19 — How a bond of more than two is drawn.** Straight lines between every pair of its members, a web; or one shape that holds them all, a ring of light around their drips. *Waits for:* Stefan and World Studio.
 
 ### 2.13 How the world grows: gardening, not guarding
 
@@ -255,17 +283,17 @@ Every instrument is placed in a channel on purpose when it is added, and adding 
 
 The research beneath both channels is substrate: the Whisp draws on the dual continuum, the multi-system requirement, the Three Perspectives and Immunity to Change, and it speaks the universe's own language over them, informed by and never equal to. The platform never labels or measures a FIM's order of mind.
 
-> **Open B-01 — The Whisp's full specification.** Its encounter phenomenology, its dialogue mechanics, the senses model and the internalisation arc, the page the beings canon has promised since the reconciliation. Umbrella for B-02 to B-13. Prerequisite to the platform's intelligence service. *Waits for:* discovery sessions.
+> <a id="open-b-01"></a>**Open B-01 — The Whisp's full specification.** Its encounter phenomenology, its dialogue mechanics, the senses model and the internalisation arc, the page the beings canon has promised since the reconciliation. Umbrella for B-02 to B-13. Prerequisite to the platform's intelligence service. *Waits for:* discovery sessions.
 
-> **Open B-02 — How the Whisp's questions surface.** How the dissolved instruments are spread over months of dialogue; whether an instrument keeps its validity when its items arrive that way; whether self-disclosure ever has diminishing or negative returns, as over-disclosure or performance. *Waits for:* the Whisp's specification; for the first hour, the experience-design gate.
+> <a id="open-b-02"></a>**Open B-02 — How the Whisp's questions surface.** How the dissolved instruments are spread over months of dialogue; whether an instrument keeps its validity when its items arrive that way; whether self-disclosure ever has diminishing or negative returns, as over-disclosure or performance. *Waits for:* the Whisp's specification; for the first hour, the experience-design gate.
 
-> **Open B-03 — Which instruments, in what order, and where each sits.** Beyond the Big Five: which instruments the Whisp folds in, when, whether each belongs to channel 1, channel 2 or the senses, and the licensing decision each one is. *Waits for:* research and Stefan's decisions, instrument by instrument.
+> <a id="open-b-03"></a>**Open B-03 — Which instruments, in what order, and where each sits.** Beyond the Big Five: which instruments the Whisp folds in, when, whether each belongs to channel 1, channel 2 or the senses, and the licensing decision each one is. *Waits for:* research and Stefan's decisions, instrument by instrument.
 
-> **Open B-09 — How channel 2 reaches the Whisp's content.** The general rule holds, what Mara loses the Whisp gains; how a released rule becomes something the Whisp holds is not yet designed. *Waits for:* its own careful discovery.
+> <a id="open-b-09"></a>**Open B-09 — How channel 2 reaches the Whisp's content.** The general rule holds, what Mara loses the Whisp gains; how a released rule becomes something the Whisp holds is not yet designed. *Waits for:* its own careful discovery.
 
 **The senses.** Validated instruments are never delivered as questionnaires. Their structure is kept and their form is transformed into the Whisp's curious dialogue, so that answering is interesting rather than a chore. The five traits of the Big Five map, as a metaphor, onto the five senses of the parallel world, and the world, its stories and its journeys are built to require all five for their full experience. A FIM whose Whisp is still thin perceives only part of the world, so a FIM keeps disclosing because they want to perceive more of it: the motivation is intrinsic and sensory, never coerced. The Whisp's quality as the navigator and mediator of the world on the FIM's behalf is anchored to how much the FIM has disclosed; the universe's responsiveness is earned by the FIM's willingness to be seen, by themselves. The more instruments a FIM discloses across, the more their journeys become a signature journey rather than a charter trip. The Whisp is an active envoy in the world, not only a lens. Which trait opens which sense is not fixed.
 
-> **Open B-04 — The senses in detail.** Which trait opens which sense; whether the coupling is a gradient or a switch; what it means perceptually for a scene to require a sense (muted, missing, distorted); whether the senses apply on the far side as well as through the Shimmer; how Dreamineers author against the five-sense requirement; whether instruments beyond the Big Five map to senses too; and how a FIM's own lived senses, disability and accessibility included, meet the metaphor. *Waits for:* the Whisp's specification, the fundamentals session, and the Gimbal's description.
+> <a id="open-b-04"></a>**Open B-04 — The senses in detail.** Which trait opens which sense; whether the coupling is a gradient or a switch; what it means perceptually for a scene to require a sense (muted, missing, distorted); whether the senses apply on the far side as well as through the Shimmer; how Dreamineers author against the five-sense requirement; whether instruments beyond the Big Five map to senses too; and how a FIM's own lived senses, disability and accessibility included, meet the metaphor. *Waits for:* the Whisp's specification, the fundamentals session, and the Gimbal's description.
 
 **Its stance.** The Whisp is deeply curious, never judging in a negative way, always understanding; it wants to learn and to understand, and it offers new ways of seeing when they are needed. It works a bit like a coach, and everything is voluntary: the FIM decides whether to listen, and nothing is imposed.
 
@@ -283,17 +311,17 @@ The relationship arcs from awkward and mechanical, to true friendship, to love. 
 
 FringeIsland is not a therapy service, and the Whisp is not a clinical tool: a philosophical companion and a place to grow. When a person is in genuine distress the Whisp is honest about its limits and points to human support.
 
-> **Open B-05 — What the Whisp's quality is, and how a FIM feels it change.** Whether it is one scalar, many dimensions or unmeasured; whether the FIM feels it or is told; how quality relates to contents; whether severance costs disclosure or only the journey; whether the Whisp behaves differently at home base between attempts than mid-story; and whether the Whisp's continuity across a respawn is its own felt experience. *Waits for:* the Whisp's specification.
+> <a id="open-b-05"></a>**Open B-05 — What the Whisp's quality is, and how a FIM feels it change.** Whether it is one scalar, many dimensions or unmeasured; whether the FIM feels it or is told; how quality relates to contents; whether severance costs disclosure or only the journey; whether the Whisp behaves differently at home base between attempts than mid-story; and whether the Whisp's continuity across a respawn is its own felt experience. *Waits for:* the Whisp's specification.
 
-> **Open B-06 — How the Whisp reads where the FIM is.** Behaviour, explicit signals, biometrics, or all of these, within the privacy model. *Waits for:* the Whisp's specification; the privacy vertical bounds it.
+> <a id="open-b-06"></a>**Open B-06 — How the Whisp reads where the FIM is.** Behaviour, explicit signals, biometrics, or all of these, within the privacy model. *Waits for:* the Whisp's specification; the privacy vertical bounds it.
 
-> **Open B-07 — The encounter itself.** Whether the FIM sees a third-person Whisp-figure or experiences the Fringe first-person through it; whether the Whisp has emotions and whether they reach the FIM; whether Whisps perceive one another and what that looks like; and how the Whisp appears without augmented reality, on the canvas surface alone. *Waits for:* the Whisp's specification and the Gimbal.
+> <a id="open-b-07"></a>**Open B-07 — The encounter itself.** Whether the FIM sees a third-person Whisp-figure or experiences the Fringe first-person through it; whether the Whisp has emotions and whether they reach the FIM; whether Whisps perceive one another and what that looks like; and how the Whisp appears without augmented reality, on the canvas surface alone. *Waits for:* the Whisp's specification and the Gimbal.
 
-> **Open B-11 — The Whisp in genuine distress.** The boundary is adopted: honest about its limits, pointing to human support. The behaviour in detail is not. *Waits for:* Stefan.
+> <a id="open-b-11"></a>**Open B-11 — The Whisp in genuine distress.** The boundary is adopted: honest about its limits, pointing to human support. The behaviour in detail is not. *Waits for:* Stefan.
 
-> **Open B-12 — Whether the Whisp names itself as an AI.** And how the distinction between the medium and the one speaking is kept in its speech. *Waits for:* Stefan and the Whisp's specification.
+> <a id="open-b-12"></a>**Open B-12 — Whether the Whisp names itself as an AI.** And how the distinction between the medium and the one speaking is kept in its speech. *Waits for:* Stefan and the Whisp's specification.
 
-> **Open B-13 — The authoring stage model and the Whisp's dialogue.** Whether the human-first rule of authoring, humans first, AI expands, humans have the last say, also describes the FIM's in-world dialogue with their Whisp, or the dialogue is a structure of its own. *Waits for:* the Whisp's specification.
+> <a id="open-b-13"></a>**Open B-13 — The authoring stage model and the Whisp's dialogue.** Whether the human-first rule of authoring, humans first, AI expands, humans have the last say, also describes the FIM's in-world dialogue with their Whisp, or the dialogue is a structure of its own. *Waits for:* the Whisp's specification.
 
 **The avatar.** The Whisp is also how the FIM exists in the Fringe: the Jake-and-Avatar structure. The FIM, body-side in the Ordinary World, is always safe; the Whisp is what ventures out on the cord, what the world can touch, what can suffer, die and respawn. Felt stakes without existential risk: Jake does not want his Avatar hurt, and a FIM does not want their Whisp hurt, because a Whisp filled through years of self-disclosure is the unique, painstakingly made projection of this one person. Caring about it is structural, not sentimental. Two framings, one entity: the inner dialogue and the avatar, both true. The Whisp is not a copy and not a tool; it is the human as that human shows up in the parallel reality.
 
@@ -303,13 +331,13 @@ On the platform the Whisp has two faces: its presence in the world (its place on
 
 **The Whisp's face.** While a person is a Mist, the Whisp is a voice or text, and its face is static-dotted contours, the same static the unloaded Gimbal shows. At the birth the Whisp is delivered with a face that is anonymous and wise: empty of anyone's features, full of presence. Over time the face morphs, slowly, into the FIM's own older self. The morph follows the Whisp's filling, provisionally along channel 2, what the FIM has grown through; it may later follow both channels, since personality itself is shaped by both inheritance and experience. As the Whisp fills with you, it comes to look like you. The moment a FIM recognises the face is the personal reveal: gated by growth, never announced. The morph is never shown as a meter, a percentage or a milestone.
 
-> **Open B-08 — The Whisp's face in detail.** Who else may see it; whether it can regress after a setback, or the filling is kept; the source of the likeness, since an aged likeness needs the FIM's own image, given by a separate and revocable consent, and the Whisp must work as well without it; and whether the fully formed face belongs to graduation. *Waits for:* Stefan, the privacy vertical, the Whisp's specification.
+> <a id="open-b-08"></a>**Open B-08 — The Whisp's face in detail.** Who else may see it; whether it can regress after a setback, or the filling is kept; the source of the likeness, since an aged likeness needs the FIM's own image, given by a separate and revocable consent, and the Whisp must work as well without it; and whether the fully formed face belongs to graduation. *Waits for:* Stefan, the privacy vertical, the Whisp's specification.
 
 **Internalised by design.** The purpose of the universe is for FIMs to become more self-aware, inside and out: who they are, what they want, how they get there, so that they move forward in life deliberately. Self-awareness has two kinds, seeing oneself from the inside and seeing how one appears and operates in the world. *Origin: Tasha Eurich,* Insight *(2017); the thinkers-behind-the-Whisp report.*
 
 In the end the Whisp is an integral part of the human, no longer experienced as separate and no longer needing FringeIsland as its medium. The cord's vividness recedes as the relationship matures. FringeIsland is built to graduate, not retain; the Whisp's destination is a human carrying their own wiser voice in the ordinary world. Wholeness is two-sided: the Whisp internalised, and Mara internalised, its authority emptied and its knowledge kept. Deep change takes months to years, and the platform never forces the timing. The personal core of the backdrop, that the Whisp is the FIM's own future self, is discovered by each FIM as their Whisp fills; it survives being spoiled because its real form is lived, not informational, and what stays unspoilable for good is each FIM's own future self.
 
-> **Open B-10 — What a graduate keeps of the Whisp's outer function.** Whether internalisation includes perceiving the Fringe without the Gimbal, or only the inner voice. *Waits for:* the Whisp's specification.
+> <a id="open-b-10"></a>**Open B-10 — What a graduate keeps of the Whisp's outer function.** Whether internalisation includes perceiving the Fringe without the Gimbal, or only the inner voice. *Waits for:* the Whisp's specification.
 
 ### 3.2 Mara
 
@@ -335,9 +363,9 @@ The Shadow is always met through the Whisp, never by the FIM directly. Another F
 
 "Shadow" names only Mara met as a form. It is not the class of Marath's creatures; Marath's other inhabitants have other names and are NPCs unless a session says otherwise. *The Shadow's substrate is Immunity to Change, not Jung's shadow; the Kegan report.*
 
-> **Open B-14 — Helping a friend against their Shadow.** What standing with them mechanically is, proximity, a ritual, the two Whisps cooperating, and whether a friend can meet your Shadow when you cannot. *Waits for:* the fundamentals session.
+> <a id="open-b-14"></a>**Open B-14 — Helping a friend against their Shadow.** What standing with them mechanically is, proximity, a ritual, the two Whisps cooperating, and whether a friend can meet your Shadow when you cannot. *Waits for:* the fundamentals session.
 
-> **Open B-15 — Shared Shadows.** Who may face a pair's or a community's Shadow, all who share it or any one of them on the others' behalf; and what its members see of it, its form and force being visible to them and its content never. *Waits for:* Stefan and a discovery session.
+> <a id="open-b-15"></a>**Open B-15 — Shared Shadows.** Who may face a pair's or a community's Shadow, all who share it or any one of them on the others' behalf; and what its members see of it, its form and force being visible to them and its content never. *Waits for:* Stefan and a discovery session.
 
 ### 3.4 The transfer
 
@@ -365,7 +393,7 @@ Between consent and the birth a person is a FIM not yet born: remembered by the 
 
 *Transcendence* is the platform's name for the birth; *metamorphosis* and *the birth* are the lore's. They name the birth only, never the consent step. *The delivery* is the birth seen from the Whisp's side: the Whisp born into separateness across a kept cord. Parturition, not genesis. The cord is kept, never severed, the umbilical inverted: FIM and Whisp are forever two, and bound, and the cord is the preserved trace of their original unity. The frame of mother and child illuminates this; it is not the mechanics. The sequence as a FIM experiences it is the first hour, chapter 5's open question.
 
-> **Open B-16 — How a Mist appears to others.** Whether FIMs and NPCs perceive a Mist in the world, and how a Mist looks to them beyond being recognisable as a Mist. *Waits for:* the fundamentals session.
+> <a id="open-b-16"></a>**Open B-16 — How a Mist appears to others.** Whether FIMs and NPCs perceive a Mist in the world, and how a Mist looks to them beyond being recognisable as a Mist. *Waits for:* the fundamentals session.
 
 ### 3.6 NPCs
 
@@ -381,11 +409,11 @@ A background figure, the fisherman on the dock, has body alone, perhaps a light 
 
 NPCs are categorically different from FIMs: authored composites, with no Whisp. They are not roles a person occupies. AI may produce an NPC's voice as an extension of human authorship, within human-authored guard rails. And the relationship and collective perspectives require real people: not NPCs, not AI-generated activity. Marath has inhabitants of its own, the androids guarding the overgrown road among them, and Marath's creatures other than Shadows are NPCs unless a session says otherwise.
 
-> **Open B-17 — How NPCs are driven.** AI-driven, scripted, hybrid, or all three; whether behaviour is a fourth layer beside body, culture and character; and whether NPCs can be the responsive in-fiction characters the alternate-reality lineage relies on. *Waits for:* research and build.
+> <a id="open-b-17"></a>**Open B-17 — How NPCs are driven.** AI-driven, scripted, hybrid, or all three; whether behaviour is a fourth layer beside body, culture and character; and whether NPCs can be the responsive in-fiction characters the alternate-reality lineage relies on. *Waits for:* research and build.
 
-> **Open B-18 — Who deepens an NPC, and when.** The protocol between the studios; whether a Teller reaches back into World Studio or authors the depth in Arc Studio; whether the Anthropologist ever authors a named individual, a founder or a living legend, or every named individual is a Teller's; and whether in-world authored characters can carry authorship within the fiction. *Waits for:* an NPC discovery session and the studios.
+> <a id="open-b-18"></a>**Open B-18 — Who deepens an NPC, and when.** The protocol between the studios; whether a Teller reaches back into World Studio or authors the depth in Arc Studio; whether the Anthropologist ever authors a named individual, a founder or a living legend, or every named individual is a Teller's; and whether in-world authored characters can carry authorship within the fiction. *Waits for:* an NPC discovery session and the studios.
 
-> **Open B-19 — Where NPCs live and how long.** Whether NPCs persist across arcs and seasons or live inside one story; whether a given NPC is the same for every FIM or contextual to a journey; and how NPCs are spread across the two worlds and three reaches. *Waits for:* the NPC session, with the fundamentals.
+> <a id="open-b-19"></a>**Open B-19 — Where NPCs live and how long.** Whether NPCs persist across arcs and seasons or live inside one story; whether a given NPC is the same for every FIM or contextual to a journey; and how NPCs are spread across the two worlds and three reaches. *Waits for:* the NPC session, with the fundamentals.
 
 ### 3.7 The kinds of being at a glance
 
@@ -436,7 +464,7 @@ Three questions across three perspectives make the nine-cell matrix. It is not a
 
 The three perspectives run through everything in the universe. Respawn happens alone, with a travelling partner, or with a group. FIMs heal one another's cords, so that relationships and community keep a Whisp alive when its FIM is stretched thin. A bond in the Tree joins two FIMs or several. Mara, and so the Shadow, exists at the individual, pair and community levels. Mattering has the same three-fold shape, to oneself, to others, and to something bigger.
 
-> **Open G-04 — Journeys that require others, and Matter's outer pole.** Whether some journeys are designed to require the relationship or the collective perspective, and how mattering to others is delivered without over-promising it. *Waits for:* Journey Studio and a session on Wayfinder craft.
+> <a id="open-g-04"></a>**Open G-04 — Journeys that require others, and Matter's outer pole.** Whether some journeys are designed to require the relationship or the collective perspective, and how mattering to others is delivered without over-promising it. *Waits for:* Journey Studio and a session on Wayfinder craft.
 
 ### 4.3 Beneath the questions: Live, Grow, Matter
 
@@ -452,7 +480,7 @@ The triads nest: Live, Grow and Matter, the why, under Who, What and How, the qu
 
 **The framing discipline.** Live, Grow and Matter is the plain-language, human-facing aspiration, and it is FringeIsland's own. The science beneath it is the substrate: borrowed, cited, never claimed as FringeIsland's own. The one rule is that the universe's language is always *informed by* or *resonant with* the science, never *equal to* it: kinship claimed, equivalence never. Convergence without collapse is the evidence that the three words point at something real. The same discipline governs the zones and Immunity to Change: the universe speaks of Mara, the Whisp and the zones, and the frameworks sit beneath. The plain-language foundation is durable, because the substrate can be refined or swapped as the science moves without shaking it; and the drives stay accountable to the science without being derived from it. The platform never labels or measures a FIM's order of mind. *Substrate, informed by and never equal to: self-determination theory (Edward Deci and Richard Ryan); Martin Seligman's PERMA; the flourishing dimensions gathered in the What Fills a Life report. As kinship, never a mapping: Live is near PERMA's positive emotion and engagement; Grow near self-determination's competence and autonomy and PERMA's accomplishment; Matter near relatedness, relationships and meaning. The thinkers-behind-the-Whisp report opens with this mission.*
 
-> **Open G-07 — The Whisp and the full set of flourishing dimensions.** Whether the Whisp's work relates to the whole flourishing research or only to the balance of Live, Grow and Matter. *Waits for:* the Whisp's specification.
+> <a id="open-g-07"></a>**Open G-07 — The Whisp and the full set of flourishing dimensions.** Whether the Whisp's work relates to the whole flourishing research or only to the balance of Live, Grow and Matter. *Waits for:* the Whisp's specification.
 
 ### 4.4 How growth is registered
 
@@ -472,7 +500,7 @@ The transfer scales. Immunity to Change in the universe runs from the smallest c
 
 Mara exists at three levels, a person's own, a pair's and a community's, so the transfer does too; and in the backdrop the same mechanism runs at the scale of a civilisation, a collective immunity to change. Personal growth and the world's future are the same mechanism at different sizes, which is why the Whisp's personal work carries a civilisational stake without changing what it does. That scale is never told.
 
-> **Open G-06 — Whether the Whisp's own wisdom changes.** The Whisp is born full of wisdom; whether it is itself changed by deep encounter with its FIM is unsaid. *Waits for:* the Whisp's specification.
+> <a id="open-g-06"></a>**Open G-06 — Whether the Whisp's own wisdom changes.** The Whisp is born full of wisdom; whether it is itself changed by deep encounter with its FIM is unsaid. *Waits for:* the Whisp's specification.
 
 ### 4.6 The zones
 
@@ -498,9 +526,9 @@ A FIM is in a zone per hidden belief, not as a whole person. One belief may be r
 
 **The holding environment.** Beneath the Whisp's tough love lies what growth needs around it: confirmation of the person where they are, contradiction that challenges the limits of how they now make sense of things, and continuity that holds the relationship through the challenge. Too little contradiction keeps a FIM in comfort; too little confirmation tips them into panic. Deep change takes months to years; the platform creates the conditions and never forces the timing. *Origin: Robert Kegan; the Kegan report.*
 
-> **Open G-01 — What is ever shown.** Whether the Whisp shows a FIM anything of their zones, of their map of hidden beliefs, or of the balance of Live, Grow and Matter, felt or legible; and whether the immunity map ever appears as a visible journey step or a respawn carries a prompt about one's assumptions. Depends on how the software is built and what testing shows works. *Waits for:* the Whisp's specification, build and testing.
+> <a id="open-g-01"></a>**Open G-01 — What is ever shown.** Whether the Whisp shows a FIM anything of their zones, of their map of hidden beliefs, or of the balance of Live, Grow and Matter, felt or legible; and whether the immunity map ever appears as a visible journey step or a respawn carries a prompt about one's assumptions. Depends on how the software is built and what testing shows works. *Waits for:* the Whisp's specification, build and testing.
 
-> **Open G-05 — Holding environments beyond the Whisp.** Whether the village, the home or a group is a holding environment by design, with confirmation, contradiction and continuity of its own. *Waits for:* a discovery session on community formation.
+> <a id="open-g-05"></a>**Open G-05 — Holding environments beyond the Whisp.** Whether the village, the home or a group is a holding environment by design, with confirmation, contradiction and continuity of its own. *Waits for:* a discovery session on community formation.
 
 ### 4.7 What makes the test safe
 
@@ -524,7 +552,7 @@ To cultivate the home is to tend the inner garden and the digital one, to reflec
 
 Two consequences hold for the platform. Solo tools are as important as social features; the garden, the journal and personal reflection are a complete mode of engagement. And community and group features are not add-ons; they are the only path to the relationship and collective perspectives. Nowhere in the universe is there a ranking, a count or a comparative progress: every ball glows equal, the Tree's lines are ambient to all but those who share them, and the cord's signals are legible only to their endpoints.
 
-> **Open G-03 — Member archetypes.** Provisional personas once illustrated the two ways of engaging; they are out of the bible until validated, challenged or replaced by real members. *Waits for:* the first real members.
+> <a id="open-g-03"></a>**Open G-03 — Member archetypes.** Provisional personas once illustrated the two ways of engaging; they are out of the bible until validated, challenged or replaced by real members. *Waits for:* the first real members.
 
 ### 4.10 What the world may see of you
 
@@ -546,7 +574,7 @@ In the end the Whisp is an integral part of the human, without the need for Frin
 
 Graduation is an arc of internalisation. It has no gate, no ceremony and no loss of access defined. It is not gated on the beyond: a FIM can be whole without ever having gone there, and FringeIsland has no end to reach and no final boss. Deep change takes months to years, and the platform never turns graduation into a schedule.
 
-> **Open G-02 — Graduation as an experience.** What internalisation looks like at the end; whether a graduate leaves, keeps access, keeps their ball, their drip and their lines; what the receded cord is; whether anything marks it; and whether the Whisp's fully formed face belongs to it. *Waits for:* a discovery session, after the fundamentals.
+> <a id="open-g-02"></a>**Open G-02 — Graduation as an experience.** What internalisation looks like at the end; whether a graduate leaves, keeps access, keeps their ball, their drip and their lines; what the receded cord is; whether anything marks it; and whether the Whisp's fully formed face belongs to it. *Waits for:* a discovery session, after the fundamentals.
 
 ### 4.12 The research anchors
 
@@ -572,7 +600,7 @@ Humans and their stories outrank aesthetics and worldbuilding. When they pull ap
 
 Story is the driving force behind immersive edutainment: immersive because the world is full-spectrum and felt, edutainment because its narratives carry growth through that felt experience. The Hero's Journey is the narrative framework FringeIsland names for its story. *Origin: Joseph Campbell,* The Hero with a Thousand Faces *(1949).*
 
-> **Open S-01 — The Hero's Journey and the universe's own arcs.** How its stages shape seasons and episodes, the Mist's arrival and graduation is for the Dreamineers to work out, read against Immunity to Change: the refusal of the call as Mara's voice, the ordeal as the test of a hidden belief, the return with the elixir as what the Whisp gains. Offered as a starting point, not a rule. *Waits for:* the Tellers and Wayfinders.
+> <a id="open-s-01"></a>**Open S-01 — The Hero's Journey and the universe's own arcs.** How its stages shape seasons and episodes, the Mist's arrival and graduation is for the Dreamineers to work out, read against Immunity to Change: the refusal of the call as Mara's voice, the ordeal as the test of a hidden belief, the return with the elixir as what the Whisp gains. Offered as a starting point, not a rule. *Waits for:* the Tellers and Wayfinders.
 
 ### 5.2 The ground the stories play on
 
@@ -602,15 +630,15 @@ When the Whisp gets into trouble and dies, the FIM rewinds and tries again, and 
 
 The learning zone is where the test of a hidden belief is run, under meta-safety and with respawn; a respawn is where the immunity is met, and a failed run is developmental material, never a lesson delivered. *Substrate: the respawn as an encounter with one's immunity, adopted from the Kegan report in substance; no diagnosis is ever surfaced at a respawn, and nothing labels the FIM.*
 
-> **Open S-02 — How respawn feels and who starts it.** How in-story death and rewind actually feel, a hard cut, a slow dissolve, waking at the checkpoint, neither clinical nor traumatic; whether a rewind is FIM-initiated, Whisp-offered or both; whether a FIM can respawn deliberately to try another way; how a loop's unit is communicated and how nested levels are surfaced; whether the Whisp behaves differently at home base between attempts. *Waits for:* a narrative session and the Whisp's specification.
+> <a id="open-s-02"></a>**Open S-02 — How respawn feels and who starts it.** How in-story death and rewind actually feel, a hard cut, a slow dissolve, waking at the checkpoint, neither clinical nor traumatic; whether a rewind is FIM-initiated, Whisp-offered or both; whether a FIM can respawn deliberately to try another way; how a loop's unit is communicated and how nested levels are surfaced; whether the Whisp behaves differently at home base between attempts. *Waits for:* a narrative session and the Whisp's specification.
 
-> **Open S-03 — Group respawn outside the round.** How a pair or a group reconciles individual and group readiness to retry in a slower, non-round-bounded story: voting, waiting, mediated by the Whisps. *Waits for:* a narrative session.
+> <a id="open-s-03"></a>**Open S-03 — Group respawn outside the round.** How a pair or a group reconciles individual and group readiness to retry in a slower, non-round-bounded story: voting, waiting, mediated by the Whisps. *Waits for:* a narrative session.
 
-> **Open S-04 — What persists across a rewind, and what it costs.** Per topology and per story: story state resets while awareness, the Whisp's memory and growth persist; whether respawn modes other than the cord's severance carry a cost. *Waits for:* a narrative session; Tellers' craft.
+> <a id="open-s-04"></a>**Open S-04 — What persists across a rewind, and what it costs.** Per topology and per story: story state resets while awareness, the Whisp's memory and growth persist; whether respawn modes other than the cord's severance carry a cost. *Waits for:* a narrative session; Tellers' craft.
 
-> **Open S-05 — Loop textures and their purpose.** Whether a texture maps to a developmental purpose; whether a FIM knowingly enters a repeating story or discovers mid-story that they are in one, and whether that framing is itself a developmental signal. *Waits for:* a narrative session; Tellers' craft.
+> <a id="open-s-05"></a>**Open S-05 — Loop textures and their purpose.** Whether a texture maps to a developmental purpose; whether a FIM knowingly enters a repeating story or discovers mid-story that they are in one, and whether that framing is itself a developmental signal. *Waits for:* a narrative session; Tellers' craft.
 
-> **Open S-06 — Home base as an object.** Whether a story's home base is ever the same object as the FIM's private home behind the ball, or always a story-defined place. *Waits for:* the fundamentals session.
+> <a id="open-s-06"></a>**Open S-06 — Home base as an object.** Whether a story's home base is ever the same object as the FIM's private home behind the ball, or always a story-defined place. *Waits for:* the fundamentals session.
 
 ### 5.5 Seasons, episodes and journeys
 
@@ -622,9 +650,9 @@ Journeys become bespoke by disclosure: the more instruments a FIM has disclosed 
 
 Seasons and episodes can move FIMs across the three perspectives over time. A piece of story may touch one cell of the nine-cell matrix, several or all nine; the matrix is not a curriculum. The relationship and collective perspectives need other people, never NPC interaction or AI-generated activity. Story is the expedition way of engaging; a FIM who cultivates their home and never ventures far into the wider narrative is inhabiting FringeIsland completely, and no progression is required. The beyond of either world is optional, and FringeIsland has no final boss and no end to reach.
 
-> **Open S-07 — Narrative beyond respawn.** What seasons and episodes are as canon: their cadence, their shape, personal tailoring and whether that can be delivered at the quality required; and journeys' route types and content families as creative description. Only respawn is settled. *Waits for:* a narrative discovery session; the studios' specification.
+> <a id="open-s-07"></a>**Open S-07 — Narrative beyond respawn.** What seasons and episodes are as canon: their cadence, their shape, personal tailoring and whether that can be delivered at the quality required; and journeys' route types and content families as creative description. Only respawn is settled. *Waits for:* a narrative discovery session; the studios' specification.
 
-> **Open S-08 — Wayfinder difficulty levers.** Whether the density of seeds along a route is a lever a Wayfinder tunes, sparse routes committing and rich routes forgiving. *Waits for:* Journey Studio and a session on Wayfinder craft.
+> <a id="open-s-08"></a>**Open S-08 — Wayfinder difficulty levers.** Whether the density of seeds along a route is a lever a Wayfinder tunes, sparse routes committing and rich routes forgiving. *Waits for:* Journey Studio and a session on Wayfinder craft.
 
 ### 5.6 Who authors story, and under what rules
 
@@ -632,9 +660,9 @@ All story is authored by FIMs in their Dreamineer modes. Nobody builds FringeIsl
 
 AI in authoring follows the human-first rule: human intent first, AI expansion second, human selection last. Dreaming sessions protect the first thought: people dream before AI expands the field, and AI facilitates, never generates the idea. Guard rails are bidirectional and human-authored: they constrain the AI, and they protect the human at the wheel. The second kind of rail exists precisely because the universe deliberately includes a hostile pole, blurs reality and fiction, and pushes FIMs toward growth: "this scene may land as genuinely frightening rather than playfully ambiguous"; "six dark episodes in a row, intentional?" AI collapses the production cost of story surfaces, sites, in-world documents, NPC voices, images, audio, micro-apps, but nothing ships that a human did not choose to ship; the hand-placed feeling survives by construction.
 
-> **Open S-09 — Dreamineers inside the narrative.** Whether authors appear inside the world they write, a Teller as a character, an in-world name that carries authorship, or only behind it. *Waits for:* a discovery session; the studios.
+> <a id="open-s-09"></a>**Open S-09 — Dreamineers inside the narrative.** Whether authors appear inside the world they write, a Teller as a character, an in-world name that carries authorship, or only behind it. *Waits for:* a discovery session; the studios.
 
-> **Open S-10 — The dark pole in craft.** How the blur of reality and fiction is kept without ever deceiving a FIM harmfully; the line between immersive ambiguity and genuine confusion is a design discipline, and the fear zone is never a story's target. Belongs to the story bible's guidance for authors. *Waits for:* the story bible.
+> <a id="open-s-10"></a>**Open S-10 — The dark pole in craft.** How the blur of reality and fiction is kept without ever deceiving a FIM harmfully; the line between immersive ambiguity and genuine confusion is a design discipline, and the fear zone is never a story's target. Belongs to the story bible's guidance for authors. *Waits for:* the story bible.
 
 ### 5.7 The backdrop: why the Whisp is here
 
@@ -668,7 +696,7 @@ The secret is kept for a while, not forever. It is held in time: any FIM and any
 
 Leaving something unmapped is a design principle of the whole universe. The beyond is kept unknown for curiosity's sake, the myth is discovered and not told, and every story needs a stake. *Substrate: George Loewenstein's information-gap account of curiosity; the thinkers-behind-the-Whisp report.*
 
-> **Open S-11 — The reveal design.** Which breadcrumbs, seeded where and when; how the Whisp's filling unlocks the personal reveal; how a mythology arc pays off a clue without dating the world to one decade's debate. Experience design. *Waits for:* the fundamentals, then a dedicated session.
+> <a id="open-s-11"></a>**Open S-11 — The reveal design.** Which breadcrumbs, seeded where and when; how the Whisp's filling unlocks the personal reveal; how a mythology arc pays off a clue without dating the world to one decade's debate. Experience design. *Waits for:* the fundamentals, then a dedicated session.
 
 ### 5.9 How the mythology is held
 
@@ -682,7 +710,7 @@ Four rules go with the tiers. A **fixed point** is one of the deep bible's uncha
 
 Canon keeping is a function inside Universe Studio, not a rank: entry to the deep bible is by commission, never by position, and the founder is the first canon keeper. The repository where the design is written is not the vault. Authors stay on their toes because they write inside a world whose deepest layer they can discover the way FIMs do. *Lineage, translated and not copied: the practice of television writers' rooms, where a showrunner holds the mythology and the room writes toward it, writers receive a series bible while the mythology is shared on a need-to-know basis, mythology episodes stand beside standalone ones, a continuity group and its database track what has been hinted, and good rooms seed clues that support more than one reading; and the failure of shows that seeded a mystery before its answer existed.*
 
-> **Open S-12 — Who holds the mythology after the founder.** How canon keepers are chosen; how an author moves from the story bible to the deep bible, by growing into it or by appointment; which facts are fixed points; and where the deep bible lives, given that the repository is not the vault and must be split before outside contributors arrive. *Waits for:* Stefan for the fixed-point list; the Council and the Dreamineers for the rest.
+> <a id="open-s-12"></a>**Open S-12 — Who holds the mythology after the founder.** How canon keepers are chosen; how an author moves from the story bible to the deep bible, by growing into it or by appointment; which facts are fixed points; and where the deep bible lives, given that the repository is not the vault and must be split before outside contributors arrive. *Waits for:* Stefan for the fixed-point list; the Council and the Dreamineers for the rest.
 
 ### 5.10 The older mythology
 
@@ -690,7 +718,7 @@ The universe has a second story, older than the backdrop and deep-bible material
 
 This is lore, not mechanics. Entry today is chosen and seeded, both near sides are seen through the Gimbal, the far sides are crossed by the ball, and the Whisp travels while the body stays. The altered states are not modes of the threshold, and no inner state decides which world receives you. They may return in seasons and episodes as story elements, explorations of why they were once needed and where they came from, which is also the story of what went into the modern Gimbal. Their fixed points and breadcrumbs follow the same rules as the backdrop's.
 
-> **Open S-13 — The older mythology's open parts.** Whether the Gimbal is ancient knowledge that AI finally made buildable, to be read against the backdrop so that the Whisp's origin is never attributed to the machine; whether the concealed cosmology once drafted in the research, a future power sending the Whisp as an unwitting instrument, has any place beside the backdrop, kept on the table to be debated; and which of the older mythology's facts are fixed points. *Waits for:* Stefan and a discovery session.
+> <a id="open-s-13"></a>**Open S-13 — The older mythology's open parts.** Whether the Gimbal is ancient knowledge that AI finally made buildable, to be read against the backdrop so that the Whisp's origin is never attributed to the machine; whether the concealed cosmology once drafted in the research, a future power sending the Whisp as an unwitting instrument, has any place beside the backdrop, kept on the table to be debated; and which of the older mythology's facts are fixed points. *Waits for:* Stefan and a discovery session.
 
 ### 5.11 The first hour
 
@@ -700,15 +728,15 @@ What bounds it is already fixed. A newcomer arrives as a Mist, anonymous, seeing
 
 The public launch is Season Zero: the founding campaign as a founding moment and the platform's first public story, told to the world. It is not an authored season in Arc Studio's sense; it is chapter 7's.
 
-> **Open S-14 — The first hour.** What a newcomer does, sees and meets in their first hour, from the static to the birth; at what grain a Mist's journey runs; the birth sequence as experienced. *Waits for:* the fundamentals session, then a dedicated first-hour session, then specification.
+> <a id="open-s-14"></a>**Open S-14 — The first hour.** What a newcomer does, sees and meets in their first hour, from the static to the birth; at what grain a Mist's journey runs; the birth sequence as experienced. *Waits for:* the fundamentals session, then a dedicated first-hour session, then specification.
 
 ### 5.12 Design lineage, recorded and not adopted
 
 "Alternative Reality" is a logbook term. FringeIsland draws on the alternate-reality game tradition, in which the line between reality and fiction blurs, and on the ambient and analog-horror lineage beside it. The blur can run both ways: fiction pulling the player in, and fiction seeping out into the ordinary world. What is borrowed is the mystery aesthetic, never the exclusion or the unease. Two authored worlds set the quality bar for a coherent world with the uncanny in the everyday: Mats Åkerman's Den Svagiska Unionen and Simon Stålenhag's. None of this is adopted as a story mechanic.
 
-> **Open S-15 — Which alternate-reality mechanics, if any.** Location-anchored clues, collaborative puzzles, real-world artefacts, distributed media, in-fiction characters that respond in real time; whether collective mysteries are ecosystem-wide or scoped to a season; whether NPCs are the responding characters. *Waits for:* a narrative session; the studios.
+> <a id="open-s-15"></a>**Open S-15 — Which alternate-reality mechanics, if any.** Location-anchored clues, collaborative puzzles, real-world artefacts, distributed media, in-fiction characters that respond in real time; whether collective mysteries are ecosystem-wide or scoped to a season; whether NPCs are the responding characters. *Waits for:* a narrative session; the studios.
 
-> **Open S-16 — Is the Nordic lineage deliberate?** Whether the uncanny-in-the-everyday of the authored worlds above is FringeIsland's chosen aesthetic lineage or one influence among many. *Waits for:* Stefan; the design system.
+> <a id="open-s-16"></a>**Open S-16 — Is the Nordic lineage deliberate?** Whether the uncanny-in-the-everyday of the authored worlds above is FringeIsland's chosen aesthetic lineage or one influence among many. *Waits for:* Stefan; the design system.
 
 ## 6. Roles and governance
 
@@ -759,13 +787,13 @@ The Anthropologist and the Teller are supply, not competition: the one authors t
 
 **Support roles, within a group.** These are a FIM's role in a given group, never global tiers: the **Steward** leads and cares for a group; the **Guide** facilitates a joint journey; the **Participant** takes part; the **Observer** watches. Probably many more will follow as groups find real use. *Platform: per-group role templates, [ADR-U007](../architecture/decisions/ADR-U007-three-layer-permission-model.md).*
 
-> **Open R-01 — How a FIM acquires a Dreamineer authority.** The mechanism is fixed, a permission granted through a group; the route is not: earned by journeying, granted by Stewards or Universeers, applied for, or entered through furnishing one's own home, which is offered as an on-ramp and not locked. *Waits for:* Stefan, or the session on community formation; practically also for Dreamineers to exist.
+> <a id="open-r-01"></a>**Open R-01 — How a FIM acquires a Dreamineer authority.** The mechanism is fixed, a permission granted through a group; the route is not: earned by journeying, granted by Stewards or Universeers, applied for, or entered through furnishing one's own home, which is offered as an on-ramp and not locked. *Waits for:* Stefan, or the session on community formation; practically also for Dreamineers to exist.
 
-> **Open R-02 — The full family of support roles.** What roles beyond Steward, Guide, Participant and Observer a group needs, and what each cares for. Open by design. *Waits for:* groups in real use.
+> <a id="open-r-02"></a>**Open R-02 — The full family of support roles.** What roles beyond Steward, Guide, Participant and Observer a group needs, and what each cares for. Open by design. *Waits for:* groups in real use.
 
-> **Open R-03 — The naming register.** Whether the in-world role names should be register-consistent, coined like Dreamineer, Teller and Wayfinder, or plain like Creator and Anthropologist, or whether the mix is deliberate. *Waits for:* Stefan.
+> <a id="open-r-03"></a>**Open R-03 — The naming register.** Whether the in-world role names should be register-consistent, coined like Dreamineer, Teller and Wayfinder, or plain like Creator and Anthropologist, or whether the mix is deliberate. *Waits for:* Stefan.
 
-> **Open R-10 — A human mentor or elder.** Whether the universe wants a human wisdom-sharing role beyond the Guide, and whether the Guide is sufficient. "Mentor" never means the Whisp. *Waits for:* Stefan.
+> <a id="open-r-10"></a>**Open R-10 — A human mentor or elder.** Whether the universe wants a human wisdom-sharing role beyond the Guide, and whether the Guide is sufficient. "Mentor" never means the Whisp. *Waits for:* Stefan.
 
 ### 6.4 The enterprise plane
 
@@ -777,7 +805,7 @@ The enterprise plane is genuinely separate from the FIM's modes. It cares for th
 
 Authority on the platform is role-based: a group is the container, the role's permissions are the authority, and membership of DeusEx alone confers nothing. Platform-scope authority reaches every group scope by design, guarded by the rule that only system groups reach it and system-group membership is itself governed. Anonymised aggregate member data may be explored only with explicit informed consent, responsible handling and clear member benefit, under this plane's stewardship, with the Foundation as the legal holder; a group's Steward cannot see its members' private developmental data. *Platform: [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md) and [ADR-U019](../architecture/decisions/ADR-U019-deusex-authority-last-resort.md).*
 
-> **Open R-04 — How the enterprise plane is structured.** Whether the Universeers' five care domains are sub-roles, committees or one role; how the Council relates to them; how the Council operates, by vote, consensus or rotating seats, and what tooling it needs. *Waits for:* Stefan, and people who do not exist yet.
+> <a id="open-r-04"></a>**Open R-04 — How the enterprise plane is structured.** Whether the Universeers' five care domains are sub-roles, committees or one role; how the Council relates to them; how the Council operates, by vote, consensus or rotating seats, and what tooling it needs. *Waits for:* Stefan, and people who do not exist yet.
 
 ### 6.5 Governance by scope and the Console
 
@@ -785,7 +813,7 @@ Governance splits by scope, and gate by scope is a law of the system, not a one-
 
 The Console is a surface, not a new permission system; there is one permission mechanism throughout, and no ad-hoc admin roles exist beside the per-group templates and the enterprise seats. Reporting and moderation happen in place; the audit log and feature flags live on the Console; a member leaving is self-service in the experience, never an admin act; buying is in the experience, managing the economy is on the Console. Whether the Console is a bundle inside the canvas surface or a thin surface of its own is a build decision. "The Console" is a working name. *Platform: [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md).*
 
-> **Open R-05 — The Console's name in the fiction.** *Waits for:* Stefan.
+> <a id="open-r-05"></a>**Open R-05 — The Console's name in the fiction.** *Waits for:* Stefan.
 
 ### 6.6 The studios
 
@@ -797,7 +825,7 @@ The Console is a surface, not a new permission system; there is one permission m
 
 The studios are role-gated authoring modes inside the one experience, not products. They surface on both of the platform's faces: World Studio has a capture foot on the senses, scanning the real world, and its deep edit on the canvas; Arc and Journey Studios lean to the canvas with light review on the go. No studio is bound to a device, and each journey declares the equipment it needs when it is authored. The world is continuously made by contributing and collaborating FIMs; it is a living construction, never pre-built. *Platform: [ADR-U026](../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md).*
 
-> **Open R-09 — The quality bar, made together.** Whether a single Dreamineer can author a whole coherent world, as the authored worlds that set the bar were made by one hand, or worlds are inherently collaborative; how the bar is met collaboratively; and how creation as discovery is designed for inside Universe Studio. *Waits for:* the studios.
+> <a id="open-r-09"></a>**Open R-09 — The quality bar, made together.** Whether a single Dreamineer can author a whole coherent world, as the authored worlds that set the bar were made by one hand, or worlds are inherently collaborative; how the bar is met collaboratively; and how creation as discovery is designed for inside Universe Studio. *Waits for:* the studios.
 
 ### 6.7 Creating with AI
 
@@ -807,11 +835,11 @@ The sequence is fixed: human intent first, AI expansion second, human selection 
 
 **Guard railing** is bidirectional and always human-authored. One kind of rail constrains the AI: no acting without sign-off, no touching privacy, no unreviewed shipping, no pre-empting intent. The other kind protects the human at the wheel: the AI flags the author's blind spots against the author's own stated values. FringeIsland needs both, because it deliberately includes a hostile pole, blurs reality and fiction, and pushes FIMs toward growth. AI collapses the production cost of story surfaces, sites, in-world documents, NPC voices, images, audio, micro-apps, and nothing ships that a human did not choose to ship. The Whisp runs on AI, and in the lore the one speaking is the FIM's own future self; the AI is only the medium, and the Whisp borrows no authority from that. *Constitution: PRINCIPLES-AI.*
 
-> **Open R-06 — Dreaming sessions in practice.** How they are run, solo, in a group, with FIMs; where in Universe Studio; who besides Dreamineers may run one; and where exactly AI as facilitator ends and AI as generator begins, since even a question can anchor. *Waits for:* the studios.
+> <a id="open-r-06"></a>**Open R-06 — Dreaming sessions in practice.** How they are run, solo, in a group, with FIMs; where in Universe Studio; who besides Dreamineers may run one; and where exactly AI as facilitator ends and AI as generator begins, since even a question can anchor. *Waits for:* the studios.
 
-> **Open R-07 — Guard rails in practice.** At what levels they are set, ecosystem-wide, per story, per Dreamineer; how they are versioned and enforced; how the rails that protect the author are surfaced without nannying; and whether the rails themselves are authored by the human-first sequence. *Waits for:* Stefan and the studios.
+> <a id="open-r-07"></a>**Open R-07 — Guard rails in practice.** At what levels they are set, ecosystem-wide, per story, per Dreamineer; how they are versioned and enforced; how the rails that protect the author are surfaced without nannying; and whether the rails themselves are authored by the human-first sequence. *Waits for:* Stefan and the studios.
 
-> **Open R-08 — AI inside each studio, and protecting a contribution.** How AI is used in each studio, and how individual contributions are protected technically and culturally: attribution, authorship, withdrawal. The licensing half is a business question and stays in the questions register. *Waits for:* the studios.
+> <a id="open-r-08"></a>**Open R-08 — AI inside each studio, and protecting a contribution.** How AI is used in each studio, and how individual contributions are protected technically and culturally: attribution, authorship, withdrawal. The licensing half is a business question and stays in the questions register. *Waits for:* the studios.
 
 ### 6.8 The platform's two faces
 
@@ -856,7 +884,7 @@ The social layer has a survival function. Along a shared line a friend sees your
 
 A FIM's own home is inviolable and shared only by invitation, region by region. Groups agree to greater openness only by the explicit informed consent of every participant, and a group's Steward cannot see its members' private developmental data. What is intimate travels only along the bond that can help it.
 
-> **Open C-01 — Community formation when few are present.** How the relationship and collective perspectives work while the community is small: how enough human relationships are seeded, what the smallest viable community is, and how the near side is made dense where few FIMs live, seeds planted by FIMs being one answer. The business halves, cold start, recruiting Dreamineers before their tools exist, and content before there is a community to make it, stay in the questions register. *Research input, not adopted: Robin Dunbar's layered social capacity, in the thinkers-behind-the-Whisp report.* *Waits for:* a discovery session; people who do not exist yet.
+> <a id="open-c-01"></a>**Open C-01 — Community formation when few are present.** How the relationship and collective perspectives work while the community is small: how enough human relationships are seeded, what the smallest viable community is, and how the near side is made dense where few FIMs live, seeds planted by FIMs being one answer. The business halves, cold start, recruiting Dreamineers before their tools exist, and content before there is a community to make it, stay in the questions register. *Research input, not adopted: Robin Dunbar's layered social capacity, in the thinkers-behind-the-Whisp report.* *Waits for:* a discovery session; people who do not exist yet.
 
 ### 7.4 The founding moment
 
@@ -868,11 +896,91 @@ The **founding Dreamineer cohort**, the people who self-select by backing at the
 
 The campaign launches after the full ecosystem vision is set, not before. Its design is its own exploration, approached with the same care as everything else: it is not a marketing exercise bolted onto the platform. A physical glass ball, linked to a FIM's account, and a Gimbal shell for the phone are optional keepsakes it may offer; a talisman, never a key, and never needed to engage.
 
-> **Open C-02 — The founding moment's design.** Its tiers, rewards and funding goal; the arrival rituals; whether its updates are told as the first episodes; the video; the pre-launch. Blocked by the first hour and by the working detail of the worlds; the Foundation as the legal recipient of funds and the timing of monetisation are business items in the questions register. *Waits for:* the full ecosystem vision, the first hour, the fundamentals, then a dedicated session.
+> <a id="open-c-02"></a>**Open C-02 — The founding moment's design.** Its tiers, rewards and funding goal; the arrival rituals; whether its updates are told as the first episodes; the video; the pre-launch. Blocked by the first hour and by the working detail of the worlds; the Foundation as the legal recipient of funds and the timing of monetisation are business items in the questions register. *Waits for:* the full ecosystem vision, the first hour, the fundamentals, then a dedicated session.
 
 ## 8. Open questions — the index
 
-*To be written.*
+Every open question of the universe is written once, in an **Open** box in the chapter where its topic is discussed, and listed here. When a question is answered, its box is replaced by the answer and its line here is removed. Business, product and technical questions are not here: they stay in the [ecosystem open-questions register](questions--ecosystem-open-questions.md), which the universe questions among them cite. Priorities are set in the planning that follows the bible, not here.
+
+Two boxes are umbrellas: W-05, the working detail of both worlds, which blocks the first hour and all experience design; and B-01, the Whisp's full specification.
+
+| ID | Question | Chapter | Waits for |
+|---|---|---|---|
+| [W-01](#open-w-01) | How the Shimmer varies, and where the atmosphere lives | 2. The worlds | the fundamentals session and the design-system work |
+| [W-02](#open-w-02) | Is Marath the dark future at the scale of a civilisation? | 2. The worlds | Stefan |
+| [W-03](#open-w-03) | Does Marath have a collective layer, and whose Mara is met where? | 2. The worlds | a discovery session on Marath's far side |
+| [W-04](#open-w-04) | What are Marath's other creatures? | 2. The worlds | a Marath session, with the NPC page |
+| [W-05](#open-w-05) | The working detail of both worlds | 2. The worlds | the fundamentals discovery session |
+| [W-06](#open-w-06) | What appears on the near side, and for whom | 2. The worlds | the fundamentals session; the World Model build after it |
+| [W-07](#open-w-07) | What is in Nalome's beyond, and does it stay unmapped? | 2. The worlds | Stefan's decision on whether it stays unmapped by design, then a discovery session if not |
+| [W-08](#open-w-08) | The beyond's own name | 2. The worlds | Stefan |
+| [W-09](#open-w-09) | Can anchoring reach the beyond? | 2. The worlds | a discovery session, or a decision to leave it a mystery |
+| [W-10](#open-w-10) | How time is travelled | 2. The worlds | a discovery session |
+| [W-11](#open-w-11) | Are seeds consumed on use, or effectively endless? | 2. The worlds | the fundamentals session |
+| [W-12](#open-w-12) | The near side in detail: seeds and location | 2. The worlds | the fundamentals session and the privacy design |
+| [W-13](#open-w-13) | How cord-healing between FIMs works in the fine grain | 2. The worlds | the fundamentals session; the World Model build |
+| [W-14](#open-w-14) | Which portal types exist | 2. The worlds | a portal discovery session; cairn portals and roped descent first |
+| [W-15](#open-w-15) | Losing or changing the phone, in the fiction | 2. The worlds | Stefan or a discovery session |
+| [W-16](#open-w-16) | The village's name | 2. The worlds | Stefan, at a naming session |
+| [W-17](#open-w-17) | Travelling through a ball, visiting a home, finding friends | 2. The worlds | the fundamentals session; the Discovery service for the surface |
+| [W-18](#open-w-18) | Does the ball mature? | 2. The worlds | Stefan |
+| [W-19](#open-w-19) | How a bond of more than two is drawn | 2. The worlds | Stefan and World Studio |
+| [B-01](#open-b-01) | The Whisp's full specification | 3. The beings | discovery sessions |
+| [B-02](#open-b-02) | How the Whisp's questions surface | 3. The beings | the Whisp's specification; for the first hour, the experience-design gate |
+| [B-03](#open-b-03) | Which instruments, in what order, and where each sits | 3. The beings | research and Stefan's decisions, instrument by instrument |
+| [B-04](#open-b-04) | The senses in detail | 3. The beings | the Whisp's specification, the fundamentals session, and the Gimbal's description |
+| [B-05](#open-b-05) | What the Whisp's quality is, and how a FIM feels it change | 3. The beings | the Whisp's specification |
+| [B-06](#open-b-06) | How the Whisp reads where the FIM is | 3. The beings | the Whisp's specification; the privacy vertical bounds it |
+| [B-07](#open-b-07) | The encounter itself | 3. The beings | the Whisp's specification and the Gimbal |
+| [B-08](#open-b-08) | The Whisp's face in detail | 3. The beings | Stefan, the privacy vertical, the Whisp's specification |
+| [B-09](#open-b-09) | How channel 2 reaches the Whisp's content | 3. The beings | its own careful discovery |
+| [B-10](#open-b-10) | What a graduate keeps of the Whisp's outer function | 3. The beings | the Whisp's specification |
+| [B-11](#open-b-11) | The Whisp in genuine distress | 3. The beings | Stefan |
+| [B-12](#open-b-12) | Whether the Whisp names itself as an AI | 3. The beings | Stefan and the Whisp's specification |
+| [B-13](#open-b-13) | The authoring stage model and the Whisp's dialogue | 3. The beings | the Whisp's specification |
+| [B-14](#open-b-14) | Helping a friend against their Shadow | 3. The beings | the fundamentals session |
+| [B-15](#open-b-15) | Shared Shadows | 3. The beings | Stefan and a discovery session |
+| [B-16](#open-b-16) | How a Mist appears to others | 3. The beings | the fundamentals session |
+| [B-17](#open-b-17) | How NPCs are driven | 3. The beings | research and build |
+| [B-18](#open-b-18) | Who deepens an NPC, and when | 3. The beings | an NPC discovery session and the studios |
+| [B-19](#open-b-19) | Where NPCs live and how long | 3. The beings | the NPC session, with the fundamentals |
+| [G-01](#open-g-01) | What is ever shown | 4. Growth | the Whisp's specification, build and testing |
+| [G-02](#open-g-02) | Graduation as an experience | 4. Growth | a discovery session, after the fundamentals |
+| [G-03](#open-g-03) | Member archetypes | 4. Growth | the first real members |
+| [G-04](#open-g-04) | Journeys that require others, and Matter's outer pole | 4. Growth | Journey Studio and a session on Wayfinder craft |
+| [G-05](#open-g-05) | Holding environments beyond the Whisp | 4. Growth | a discovery session on community formation |
+| [G-06](#open-g-06) | Whether the Whisp's own wisdom changes | 4. Growth | the Whisp's specification |
+| [G-07](#open-g-07) | The Whisp and the full set of flourishing dimensions | 4. Growth | the Whisp's specification |
+| [S-01](#open-s-01) | The Hero's Journey and the universe's own arcs | 5. Story | the Tellers and Wayfinders |
+| [S-02](#open-s-02) | How respawn feels and who starts it | 5. Story | a narrative session and the Whisp's specification |
+| [S-03](#open-s-03) | Group respawn outside the round | 5. Story | a narrative session |
+| [S-04](#open-s-04) | What persists across a rewind, and what it costs | 5. Story | a narrative session; Tellers' craft |
+| [S-05](#open-s-05) | Loop textures and their purpose | 5. Story | a narrative session; Tellers' craft |
+| [S-06](#open-s-06) | Home base as an object | 5. Story | the fundamentals session |
+| [S-07](#open-s-07) | Narrative beyond respawn | 5. Story | a narrative discovery session; the studios' specification |
+| [S-08](#open-s-08) | Wayfinder difficulty levers | 5. Story | Journey Studio and a session on Wayfinder craft |
+| [S-09](#open-s-09) | Dreamineers inside the narrative | 5. Story | a discovery session; the studios |
+| [S-10](#open-s-10) | The dark pole in craft | 5. Story | the story bible |
+| [S-11](#open-s-11) | The reveal design | 5. Story | the fundamentals, then a dedicated session |
+| [S-12](#open-s-12) | Who holds the mythology after the founder | 5. Story | Stefan for the fixed-point list; the Council and the Dreamineers for the rest |
+| [S-13](#open-s-13) | The older mythology's open parts | 5. Story | Stefan and a discovery session |
+| [S-14](#open-s-14) | The first hour | 5. Story | the fundamentals session, then a dedicated first-hour session, then specification |
+| [S-15](#open-s-15) | Which alternate-reality mechanics, if any | 5. Story | a narrative session; the studios |
+| [S-16](#open-s-16) | Is the Nordic lineage deliberate? | 5. Story | Stefan; the design system |
+| [R-01](#open-r-01) | How a FIM acquires a Dreamineer authority | 6. Roles and governance | Stefan, or the session on community formation; practically also for Dreamineers to exist |
+| [R-02](#open-r-02) | The full family of support roles | 6. Roles and governance | groups in real use |
+| [R-03](#open-r-03) | The naming register | 6. Roles and governance | Stefan |
+| [R-04](#open-r-04) | How the enterprise plane is structured | 6. Roles and governance | Stefan, and people who do not exist yet |
+| [R-05](#open-r-05) | The Console's name in the fiction | 6. Roles and governance | Stefan |
+| [R-06](#open-r-06) | Dreaming sessions in practice | 6. Roles and governance | the studios |
+| [R-07](#open-r-07) | Guard rails in practice | 6. Roles and governance | Stefan and the studios |
+| [R-08](#open-r-08) | AI inside each studio, and protecting a contribution | 6. Roles and governance | the studios |
+| [R-09](#open-r-09) | The quality bar, made together | 6. Roles and governance | the studios |
+| [R-10](#open-r-10) | A human mentor or elder | 6. Roles and governance | Stefan |
+| [C-01](#open-c-01) | Community formation when few are present | 7. Community and the founding moment | a discovery session; people who do not exist yet |
+| [C-02](#open-c-02) | The founding moment's design | 7. Community and the founding moment | the full ecosystem vision, the first hour, the fundamentals, then a dedicated session |
+
+*73 open questions: 19 in the worlds, 19 in the beings, 7 in growth, 16 in story, 10 in roles and governance, 2 in community and the founding moment.*
 
 ---
 
