@@ -25,7 +25,10 @@
 | Session | Date | Focus | Status |
 |---------|------|-------|--------|
 | Session 01 (Part 3) | 2026-05-18 | Foundations: Whisp as inner dialogue and avatar; two-register universe topology; full tonal range; Universe Studio frame; Shadows, NPCs, Dreamineers, Creators; assessment-as-dialogue; signature journeys; respawn and the Jake/Avatar metaphor | Closed at S48 on 2026-06-21; open threads reconciled 2026-09-17 (a second tag layer, Part 3). Resumed 2026-06-05 (product/ecosystem layer + Statements 41-46: products are situations not devices and Gimbal/Hub are two affordance profiles, the glowing glass ball is a two-zone home/village gateway, the self-chosen inviolable private home, anchoring as the near-side/Beyond gate making the village FIM-only, and Shadow anonymous-auth with ephemeral erased-on-inactivity data); resumed 2026-06-01 (Statements 37-40: balls glow equal while the cord carries health, the branches are the visible crown, every FIM and Shadow has their own Whisp and cord with only the ball granted at transcendence, and the seed / portal / anchor mechanics); prior resume 2026-05-29 (Statements 31-36: the Fringe reshaped) |
-| Session 02 (Part 3) | 2026-09-17 | The places named: place 3 is Marath, Mara as the negative inner voice and Marath as its manifestation, three reaches (near side / far side / beyond) for both places | In progress — S49 onward |
+| Session 02 (Part 3) | 2026-09-17 | The places named: place 3 is Marath, Mara as the negative inner voice and Marath as its manifestation, three reaches (near side / far side / beyond) for both places | Closed — the naming journey ended at S111 (recorded in Session 05): place 2 is **Nalome** |
+| Session 03 (Part 3) | 2026-09-24 | The backdrop: the Whisp sent back in time; AI forks the future; growth into higher orders of mind as the lever | Closed at S78 on 2026-09-24 (S66–S78: the backdrop — the Whisp as the FIM's own future self; the AI fork; the zones and Immunity to Change; the backdrop discovered, not told; the MANIFESTO "why now" paragraph). Ended by deciding to build the Universe Bible |
+| Session 04 (Part 3) | 2026-09-25 | The Mist, the Gimbal and the ball; portals and seeds: rulings R-01, R-02, R-05, R-08; loading the Gimbal clears the static; the transcendence portal and the birth; the Gimbal locked to the ball; the glass drip; optional seeds; portals in sequence; near-side journeys and location play; the Tree's limbs and glowing lines; the Whisp's face morphing into the FIM's older self; portals never keyed to traits | Closed at S102 on 2026-09-25 |
+| Session 05 (Part 3) | 2026-09-25 | Phase 3 rulings in plain English: R-11 (the Whisp's two channels — who I am, what has had me); R-40 (becoming a FIM is consent, transcendence is the birth); the worlds rulings R-03, R-04, R-06, R-07, R-09, R-10; the beings rulings R-12 to R-19 (the Whisp as newborn: wise and without judgement); the growth rulings R-20 to R-30; the story rulings R-31 to R-39; roles, community and cross-cutting rulings R-41 to R-50; place 2 named **Nalome** (S111–S112, from the unalome, said na-LOME); Part 3 candidate rulings (S113); shared Shadows at pair and community level; research never deleted (S114) | Closed at S114 on 2026-09-25 — the rulings list is complete |
 ---
 
 ### Discovery backlog (open topics awaiting sessions)
@@ -38,6 +41,8 @@ These concepts are named in the universe design and in [`questions--ecosystem-op
 |-------|------------------------|--------|
 | Universe-mechanics fundamentals — how the near and far ends of place 2 (the warm Fringe) and place 3 (the hostile Fringe) actually look and function | The [cosmology core](canon--cosmology--worlds-topology.md) fixes the topology at a high level, but the working detail of the places is not yet pinned, and most downstream design depends on it | **Open — the foundational next step** |
 | The first hour / first experience | The universe's named highest-risk gap; DS-3 Journeys and the narrative core are waiting on it (CQ-010) | Open — **deferred**, blocked on the universe-mechanics fundamentals above |
+| **The Universe Bible — one single truth** | Stefan, 2026-09-24: today's stance on how FringeIsland works is spread across canon files that lag behind, the discovery log, candidates and registers; a reader cannot find a single truth. Plan: one present-tense bible (start here, worlds, beings, growth, story, roles and governance, community, open questions, glossary), no history in the body, candidates ruled on before they enter, every session afterwards bakes its results in (replacing the ratification pass and graduation tracker). Phases: close Session 03 → decide method → inventory and rulings list → rulings session → write chapter by chapter → switch-over in Claude Code → prioritise the open questions. Full plan: project doc `claude/universe-bible-plan.md` | **Next — highest priority.** Decided 2026-09-24: built in Cowork; one file, `bible--fringeisland-universe.md`; open questions written once in their chapter plus one index chapter. Session 03 closed. Project instructions updated 2026-09-24. Phase 2 done: `record--universe-bible-phase-2-rulings.md` (50 rulings, 18 supersessions, candidates) and `record--universe-bible-phase-2-chapter-maps.md` (content maps, 75 open items, glossary draft). Next: Phase 3, the rulings session |
+| Narrative governance at scale — the writers'-room model | Session 03 (S75–S76) looked at how television keeps a long-held mythology coherent across a large crew and proposed a shape for FringeIsland: a canon keeper in the showrunner role (with a continuity function like Lucasfilm's Story Group); three knowledge tiers — deep bible, story bible for Tellers and Wayfinders, breadcrumbs for FIMs; a few "mythology" arcs that pass through the canon keeper and many free seasons and episodes bound only by canon; a breadcrumb register (each hint logged with what it points to); the answer fixed before the first clue; reveals gated by growth, not by the calendar. The existing ratification pass and graduation tracker are already a canon-keeper mechanism for the universe; this extends the discipline to seasons, episodes and clues. Who holds the deep bible is CQ-018; related CQ-004 (Council governance), ADR-U028 (governance by scope), CQ-013 (NPC authoring) | Open — the knowledge-tier and mythology-arc structure can be settled now (governance, not experience design); the reveal design itself is **deferred** with the other experience work |
 | Narrative beyond respawn | Content families, journey route types, and arc/episode design as universe canon — only the respawn section is ratified so far | Not yet scheduled |
 | Community formation / cold-start | How the relational and communal layers work when few members are present (CQ-001, CQ-002, CQ-003) | Not yet scheduled |
 | Kickstarter / founding moment | The "Season Zero" launch, arrival rituals, and the founding Dreamineer cohort (currently an old-vision sketch only) | Not yet scheduled |
@@ -503,6 +508,8 @@ deep artifact) may deepen the experience but must never gate it.
 **Not yet done:** none of this has been promoted to numbered statements; no `Refines / extends`
 lines have been written; no reconciliation with `README.md` or the novel has been attempted.
 ### Candidate C — Naming the warm world: Buddhist and Taoist terms for the Whisp's voice (2026-09-17; sounding-board, no decision made)
+
+**Outcome (2026-09-25):** closed by S111 — Stefan named place 2 **Nalome**, covering the whole world. The passes below are kept as the record of the journey.
 
 **Date:** 2026-09-17
 **Status:** CANDIDATE MATERIAL -- NOT LOCKED
@@ -2595,3 +2602,637 @@ Noted for reconciliation when concepts graduate to a `canon--*` core:
 
 **Claude's answer:** yes. Two cautions for the journey. (1) The counterpart must not be Mara's *opposite* in the sense of "comfort" or "pleasure" — the Whisp is tough love (S5), and the place is tendable and can be wounded (S32, S34). The term should carry wisdom-that-encourages, not bliss. (2) The name is also the first thing a newcomer will hear about the warm world, so it must work in plain speech beside "Marath" — two syllables or three, sayable in Swedish and English, and not already a brand.
 
+### Session 03 — 2026-09-24 — the backdrop: why the Whisp is here
+
+**Date:** 2026-09-24
+**Status:** Closed at S78
+**Relates to:** Session 01 (S1–S5 the Whisp, S13/S24 the AI principle, S28 Live/Grow/Matter, S31 "maybe a positive / negative future" held as stake, not coordinate); Session 02 (S51 Mara, S54–S58 the ITC transfer and the scaling to a change of order, S59–S60 the beyond); `canon--beings--whisp-and-npcs.md`; `canon--cosmology--worlds-topology.md`; `VISION.md` principles 1, 2, 5, 6, 8; `PRINCIPLES-AI.md`; `research--growth--kegan-immunity-to-change.md`. Session 02 stays open for the place-2 naming journey (Candidate C).
+**Participants:** Stefan (Founder), Claude (Cowork)
+**Focus:** A proposed backstory for the whole universe — the Whisp sent back in time, because the arrival of AI forks humanity's future.
+
+#### 66. The Whisp was sent back in time to grow FIMs into higher orders of mind — so that they steer the AI transition toward the good future
+
+**Statement (Stefan, 2026-09-24):** "What if the back drop to FringeIsland with the Whisp's willingness to grow the FIM by 'tough love' (as opposite to the chattering 'Mara') and, according to Robert Kegan, to get the FIM to transform by how we know and make sense of the world in higher orders of mind — and that the Whisp has been sent back in time to support the FIM with all this... BECAUSE... AI will be a bigger leap than Internet and because of this possibility and threat there are two ways future can take — a positive and beautiful world where AI is part of a well balanced future -or- a more dark and negative future where things go wrong as humans by (some) nature are greedy and only look for the short term benefits = maximize income but letting the AI race run loose which ends in catastrophe for human kind. So the Whisp was sent back in time for a higher cause — to transform FIMs by how we know and make sense of the world in higher orders of mind --> in order for these FIMs to advocate a sensible use of AI that eventually will avoid catastrophe and lead the world into a beautiful and sensible world that people want to belong to."
+
+**Held (interpretation check):** Offered as a "what if" and a discussion opener; held as a candidate backdrop, nothing locked. Four claims in one. (1) *Origin:* the Whisp comes from the future — it was sent back. (2) *Cause:* AI is a larger discontinuity than the internet and forks the future: a balanced world with AI in it, or a catastrophe driven by short-term greed and an unchecked race. (3) *Mechanism:* the Whisp's tough love (against Mara's chatter) exists to move FIMs up Kegan's orders of mind — a change in *how* they know, not only in what they know (the S58 top of the scale). (4) *Purpose:* FIMs grown this way will advocate sensible AI use, and enough of them tip the world to the good branch. The universe acquires a *why* above the individual: personal growth (Live/Grow/Matter) is also the lever on a civilisational outcome.
+
+**What it connects to (Claude):** (a) S31 first described places 2 and 3 as "maybe a positive future / maybe a negative future"; the log resolved that to *stake, not coordinate*. This statement brings the future back as the stake of the whole universe — FringeIsland the flourishing branch, Marath the collapse branch. (b) Mara scales. S56 made Mara the immune system — intelligent self-protection that keeps us the same. The AI race as Stefan describes it is a *collective* immunity to change: a stated commitment (safety, balance) held against a hidden competing one (don't fall behind, capture the gain now). Marath would then be Mara at civilisational scale, and Marath's beyond (S59: Mara at full strength) the catastrophe future itself. (c) Kegan's own argument in *In Over Our Heads* (1994) is that modern life's "hidden curriculum" asks more of adults than most orders of mind can meet. AI steepens that curriculum; the backdrop is Kegan's thesis turned into myth. (d) Session 01's review (tracker note under S1–S5) found the Whisp was once described as "each FIM's personal future self". A Whisp from the future brings that older framing back, and may be the way to reconcile it with S4.
+
+**Challenge:** (1) *"The Whisp IS the human" (S4, Canonical).* An envoy sent back in time is a separate agent with its own mission; canon says the Whisp is the human's own wiser voice, not an external companion. The two can only coexist if what is sent back is not a being but something the Whisp is *made of*. Candidate reconciliation, not Stefan's: the Whisp is born "empty of content, full of wisdom" (S54), and S54 challenge 4 flagged that the source of that wisdom was never said. The future could be the source — the wisdom is the FIM's own future whole self reaching back, and, summed over many FIMs, the good future reaching back for its own making. Then "sent back in time" and "the Whisp IS the human" are the same fact. (2) *"Never using its human as a tool" (S3).* A Whisp whose purpose is to turn FIMs into AI advocates uses the FIM for a cause. VISION principle 1 (no position on questions of meaning) and 5 (orients, does not prescribe) point the same way. The backdrop survives only if the Whisp's mission is the *growth*, never the *conclusion*: it trusts that people who see their own immunities choose better, and it never steers what they choose. The good future is a consequence, not a target — "Development is the consequence" (VISION) at world scale. (3) *Fear as fuel.* A catastrophe clock motivates by threat; principle 6 says growth is delight, never deficiency. The dark branch can exist in the backdrop as a stake without ever being used to hurry or guilt a FIM. (4) *The Whisp is itself an AI.* DS-7 Intelligence implements it. An AI that says it came from the future to save humanity from AI is a strong irony — and a trust hazard: it tells members to trust the AI because of its story. PRINCIPLES-AI puts humans first and forbids AI anchoring; a myth that puts the AI in the saviour role inverts that, unless the myth itself says the saviour is the human's own future self (challenge 1). (5) *Stories first, themes invisible (principle 2).* A stated AI-policy mission is theme at the surface, dates the world to the 2020s debate, and reads as political advocacy. Where the backdrop sits matters: in-world lore told up front, a hidden layer found late (the ARG pattern — Candidate A lists *I Love Bees*, a fractured AI from the future), or the founders' real-world why, stated in the MANIFESTO and never told as lore. (6) *Binary or continuum.* "Two ways the future can take" is a fork; S31 reconciled the two places into two poles of one continuum. The same probably holds for the future. (7) *Time is new to the cosmology.* The worlds topology has no time axis; a sent-back Whisp adds one. Whether the far side or the beyond of FringeIsland *is* the future (S59 challenge 4 left FringeIsland's beyond as the possible source of the Whisp's wisdom) is a mechanics question with real consequence.
+
+#### 67. The Whisp is the FIM's own future, whole self reaching back
+
+**Statement (Stefan, 2026-09-24):** On the S066 reconciliation offered under challenge 1 — "It's the FIM's own future, whole self reaching back!"
+
+**Held (interpretation check):** Locked as the answer to S066 challenge 1. What was "sent back in time" is not a separate being: it is the FIM's own future self, the one that has become whole (S54), reaching back to the FIM of now. So S4 ("the Whisp IS the human") and S66 ("sent back") are one fact. It also names the source of the Whisp's wisdom, which S54 challenge 4 flagged as unsaid: the Whisp is "full of wisdom" because it is the self that has already grown. And it restores, in a reconciled form, the older framing found in the Session 01 review ("each FIM's personal future self").
+
+**Challenge:** (1) *Wisdom without spoilers.* A future self knows how your life went. The Whisp is "empty of content" (S54) and fills only as the FIM grows (S57). Held reading: the future self sends back *wisdom* (how to see, how to meet what has you), never *content* (who you became, what you chose). If it brought the answers it would prescribe (VISION principle 5) and take the three questions away from the FIM. The emptiness is chosen, not a lack. (2) *The loop.* The whole self exists because the Whisp helped, and the Whisp helps because the whole self exists — a closed loop in time. That matches the narrative core ("the loop as the medium", Respawn), but it raises a question: is that future *guaranteed* (the FIM will become whole) or *possible* (a future that reaches back to make itself more likely)? Held as possible, which keeps voluntariness (S5) intact; needs a statement. (3) *Mists.* Every entrant has a Whisp (S39, S48), so an anonymous Mist also has a future self reaching back. Consistent, but worth saying.
+
+#### 68. The chain from inner growth to the good future
+
+**Statement (Stefan, 2026-09-24):** "The Whisp's mission is the growth itself = it trusts that people who can see their own immunities will choose well = better equipped to use AI responsibly = a future world that people want to belong."
+
+**Held (interpretation check):** Locked as the answer to S066 challenge 2. The Whisp's mission is **the growth, not the conclusion**. The chain is: growth → seeing one's own immunities (Mara made Object, S56) → choosing well → using AI responsibly → a future world people want to belong to. The Whisp never recruits and never steers what the FIM chooses. The good future is a *consequence* that the Whisp *trusts in*, the civilisational version of "Development is the consequence" (VISION). S3 ("never using its human as a tool") and VISION principles 1 and 5 stand.
+
+**Challenge:** (1) *Trust, not guarantee.* The middle links are a bet. A later order of mind is a greater *capacity* to see and hold complexity, not a guarantee of good values: a self-authoring person can author a bad agenda. The universe should hold the chain as the Whisp's *trust* (Stefan's word) and not as a claim that growth produces right answers. (2) *Who defines "well".* Non-judgment (principle 1) means the Whisp never defines the good choice for the FIM, including about AI. "Choose well" has to mean "choose seeing" — with the immunities visible — not "choose what the Whisp would". (3) *"A world people want to belong to"* echoes the MANIFESTO ("a world worth belonging to"). The personal and the civilisational end in the same word.
+
+#### 69. The saviour is your own future self
+
+**Statement (Stefan, 2026-09-24):** On S066 challenge 4 (an AI claiming to come from the future to save humans from AI) — "Challenge 1 solves this: the saviour turns out to be your own future self."
+
+**Held (interpretation check):** Locked. The myth does not put the AI in the saviour role. What reaches back to help is the FIM themself (S67); the AI (DS-7) is only the medium through which one's future self speaks. That keeps the story in line with PRINCIPLES-AI (humans first; AI extends and does not author) and turns the irony into a point: the tool that could run away with the future is used by humans to hear their own wiser voice.
+
+**Challenge:** The distinction between "the medium" and "the one speaking" has to hold in how the Whisp talks, not only in the lore. If the Whisp ever claims authority *because* it is from the future ("trust me, I have seen it"), it moves the saviour back to the machine. Held as a rule for the Whisp's voice: it borrows no authority from the backstory.
+
+#### 70. The dark branch is a stake, never a whip — and the itch that makes the story worth finding
+
+**Statement (Stefan, 2026-09-24):** "The dark branch can exist as the stake, but it should never be used to hurry a FIM or make them feel guilty. The dark branch is the fundament for a great story telling. Something needs to itch to be found interesting and to gain peoples curiosity."
+
+**Held (interpretation check):** Locked as the answer to S066 challenge 3, with a positive role added. Two rules: (a) the dark future is **the stake of the universe, never a motivator used on a FIM** — no countdown, no guilt, no "hurry or the world ends" (principle 6, growth is delight). (b) The dark branch is **the basis of the storytelling**: stories need tension, and a world with nothing at stake does not make anyone curious. The dark future gives the narrative its danger, its mystery and its reason to keep looking — stories first, as entertainment (principle 2), with the theme underneath.
+
+**Challenge:** (1) *The two rules meet at the individual.* The dark branch drives the *story* (the world's plot, seasons, episodes); it never drives the *FIM* (their pace, their depth, their cord dial, S40, S58). The narrative core should keep those two apart at ratification. (2) *Where the dark future lives.* The natural home is Marath — Mara at civilisational scale, its beyond the collapse at full strength (S66 connection b, S59). That is a pattern, not a statement; Stefan to confirm. (3) *Curiosity is already a stance.* S55 kept FringeIsland's beyond unmapped "for curiosity reasons". S70 makes curiosity a design principle for the whole universe: leave something itching. Worth holding together.
+
+#### 71. Wisdom without spoilers — confirmed; the future that reaches back is possible, not guaranteed
+
+**Statement (Stefan, 2026-09-24):** On the S067 challenge (wisdom without spoilers, and the future held as possible rather than guaranteed) — "confirm."
+
+**Held (interpretation check):** Locked. The future self sends back **wisdom** (how to see, how to meet what has you), never **content** (who you became, what you chose). The Whisp's emptiness about *this* human (S2, S54) is therefore chosen, not a lack: it protects the three questions as the FIM's own to answer. The future that reaches back is a **possible** future, not a guaranteed one. The Whisp is that future reaching back to make itself more likely, and the FIM stays free to walk towards it or not (S5). The time loop is real, but it does not close by itself; the FIM closes it by growing.
+
+#### 72. "Choose well" means choose while seeing your immunities
+
+**Statement (Stefan, 2026-09-24):** On the S068 challenge (a bet, not a promise; who defines "well") — "choose while seeing your immunities."
+
+**Held (interpretation check):** Locked as the meaning of "choose well" in S68. Choosing well is defined by **how** the choice is made, not by **what** is chosen: made with one's immunities in view (Mara as Object, S56), not run by them unseen. The Whisp never has a preferred answer, about AI or anything else (VISION principle 1). The chain in S68 stays a bet the Whisp trusts in: more people choosing while seeing their immunities, including about AI, is what makes the good future more likely.
+
+#### 73. The dark branch sets the stage; the FIM uses it for growth at their own pace, across the three perspectives and the zones
+
+**Statement (Stefan, 2026-09-24):** "It never drives an individual FIM's pace or depth, it gives a platform that a FIM can use for personal growth (as individual + relationship + society) by the support from their Whisps tough love and comfort zone vs. fear zone vs. learning zone vs. growth zone vs. panic zone."
+
+**Held (interpretation check):** Locks the S070 split between story and FIM, and says what the dark branch is *for*. The dark future is the **stage**, not the pace-setter: it gives the world its tension, and the FIM uses that world as a place to grow in all **three perspectives** — individual (1), relationship (1+1), collective/society (1+Community) (VISION, Three Perspectives). The Whisp's tough love accompanies the FIM through a **five-zone** model: comfort, fear, learning, growth, panic. The FIM moves through them with the Whisp's support, and at their own pace (S40 cord dial, S58 depth of the invitation).
+
+**Challenge:** (1) *Five zones where canon has three.* The cosmology core (§10) and the narrative core fix a three-step gradient, comfort → growth → panic, laid out spatially as Void distance (S26, S40), with the Whisp pushing toward growth and never into panic (S19). This statement adds a **fear zone** and a **learning zone**. Candidate reading: the gradient becomes comfort → fear → learning → growth, with panic past the edge. The *fear zone* is where Mara speaks loudest: excuses, "what will others think", the reasons not to go on. So the first thing past comfort is meeting one's immune system (S56), which fits the Shadow growing with depth (S59). The *learning zone* is where the test is run and the Big Assumption is found not to hold, and the *growth zone* is where the new way is lived. This refines the canon gradient at ratification; it is my reading and needs Stefan's confirmation. (2) *Informed by, not equal to.* The comfort / stretch-learning / panic model (Senninger) has a research lineage; the popular comfort → fear → learning → growth diagram is mostly an infographic. Per the growth core's framing discipline (S28), the universe uses the zones as its own language and does not claim them as science. (3) *Panic stays a fence.* Adding zones does not move the fence: the Whisp still never opens the panic zone, and you do not enter it before you have a home to return to (cosmology §10). The fear zone must also not become a place the story uses to scare the FIM (S70). Fear is Mara's voice, met through the Whisp (S61); it is not a feeling the world is designed to cause.
+
+#### 74. The zones are the felt experience of the Mara-to-Whisp transfer — informed by Immunity to Change
+
+**Statement (Stefan, 2026-09-24):** Asked whether the zones relate to the Immunity to Change framework; on Claude's reading (below) — "yes it matches."
+
+**Held (interpretation check):** Locked, and it confirms the order proposed under S073 challenge 1: **comfort → fear → learning → growth, with panic past the fence**. The zones are not a second model laid on top of Mara and the Whisp. They are how the transfer of S57 *feels* from inside, and they map onto the four stages of change in Kegan and Lahey's Immunity to Change:
+
+| Zone | ITC stage (Kegan & Lahey) | In the universe |
+|---|---|---|
+| Comfort | Unconsciously immune — the immune system works unseen and feels normal | Mara unseen, obeyed without knowing it (S51) |
+| Fear | Consciously immune — the immunity is seen, and the anxiety it was managing is felt | Mara seen and speaking loudest; met as the Shadow, through the Whisp (S59, S61) |
+| Learning | Consciously released — safe, modest, actionable tests against the Big Assumption | The test run in Marath, with meta-safety and respawn (S19–S21, S56) |
+| Growth | Unconsciously released — the new way has become natural | Mara's authority emptied into the Whisp (S57) |
+| Panic | What ITC warns against — a test too big to be safe; the anxiety overwhelms and the immune system snaps back harder | The fence the Whisp never opens (S19, cosmology §10) |
+
+Two supports from the same source. (a) Kegan and Lahey call the immune system an *anxiety-management system*: the worries written down when one imagines doing the opposite of one's undermining behaviour are exactly what the fear zone feels like. (b) Kegan's **holding environment** (confirmation, contradiction, continuity) is the Whisp's tough love in theory: too little contradiction keeps the FIM in comfort, too little confirmation tips them into panic (`research--growth--kegan-immunity-to-change.md` §1.3, §4.4).
+
+**Why panic matters mechanically:** in ITC a test that overwhelms does not merely hurt; it *confirms* the Big Assumption and strengthens the immunity. So the panic fence is not only care. It protects the growth itself, which is why the Whisp holds it even when a FIM asks for more depth (S58 refinement: voluntariness sets the ceiling, care sets the floor).
+
+**Framing note:** the four stages are Kegan and Lahey's; mapping them onto the zone diagram is Claude's synthesis, adopted by Stefan. Per the growth core's discipline (S28), the universe speaks in its own language of zones, and ITC is the substrate underneath — informed by, not equal to. At ratification this refines the three-step gradient (comfort → growth → panic) in the cosmology core §10 and the narrative core, and the zone bands can sit on the existing Void-distance gradient (S26, S40) alongside the Shadow's growth with depth (S59).
+
+**Challenge:** (1) *Fear is not a place the story aims at.* The fear zone is where Mara is loudest, not where the world is designed to frighten (S70, S73). The narrative core must keep that distinction. (2) *Zones per assumption, not per person.* In ITC a person can be in "consciously released" on one Big Assumption and "unconsciously immune" on another. So a FIM is not "in the learning zone" as a whole; each assumption has its own zone. That fits S58 (ITC scales from one small assumption up) and argues against any single visible "zone meter" for a FIM. Held open for the Whisp's full specification.
+
+#### 75. The backdrop is not told up front — and it must keep both FIMs and the authors of seasons and episodes on their toes
+
+**Statement (Stefan, 2026-09-24):** On where the backdrop lives (S066 challenge 5: Option 1 told up front, Option 2 found late, Option 3 the founders' why only) — "definitely not option 1. If we are to keep people / FIMs on their toes and also the developers of seasons and episodes, what's your suggestion? I'd like to know how screenwriters for TV series usually approach this dilemma and how they handle it when there is such a big crowd that work on production."
+
+**Held (interpretation check):** Option 1 is ruled out: the backdrop (S66–S69) is never told to FIMs up front. The choice is between Option 2 (a hidden layer found over time) and Option 3 (the founders' why only), and Stefan's framing ("keep people on their toes") leans to Option 2. A second requirement is new: the secret is kept not only from FIMs but, at least in part, from the **Dreamineers who author seasons and episodes** (Tellers, Arc Studio). So the backdrop needs rules for *who knows what*, inside the authoring community as well as in the world.
+
+**Claude's answer (a suggestion, not a statement):** what television does, and what could carry over.
+
+*How writers' rooms handle a long-held secret.*
+- **The showrunner holds the mythology.** One person or a very small group owns the answer; the room writes toward it. Babylon 5 (a five-year arc planned in advance, with "trapdoors" for when actors left) and *Dark* (three seasons of time travel planned before shooting) are the clean examples. Battlestar Galactica ("they have a plan") and Lost show the failure: the mystery was seeded before the answer existed, and the ending could not pay the clues off.
+- **Tiered disclosure.** Writers get the *series bible* — the rules of the world, the characters, the tone, what must never happen. The *mythology* is shared on a need-to-know basis. Westworld and Lost withheld twists from parts of the crew and even from actors; many shows hand out scripts with the reveal scenes removed.
+- **Mythology episodes and standalone episodes.** The X-Files split its episodes into "mythology" episodes (the conspiracy, written or approved by the showrunner) and "monster of the week" episodes (free for any writer, bound only by the bible). Most writers wrote freely without touching the secret.
+- **A canon keeper and a clue register.** Large franchises keep a continuity group and a database: Lucasfilm's Story Group and its Holocron database track what is canon, what has been hinted, and what each hint points to, so that hundreds of authors do not contradict one another.
+- **Clues that point both ways.** Fans online solve twists early (Westworld's first-season twist was guessed on Reddit). Good rooms seed clues that support more than one reading, and make sure the reveal still *means* something when it is guessed.
+
+*A possible shape for FringeIsland (Option 2).*
+1. **Three tiers of knowledge.** The **deep bible** — the full backdrop (future self, the AI fork, the stakes of Marath's beyond) — held by the canon keepers (Stefan, and later whoever governance names). The **story bible** for Tellers and Wayfinders — the rules, the fixed points, and *what may be hinted, not what it means*. **Breadcrumbs** for FIMs, in the world.
+2. **Mythology arcs and free episodes.** Most seasons and episodes are free, bound only by canon; a few "mythology" episodes carry the backdrop and pass through the canon keepers. Authors stay on their toes because they are writing inside a world whose deepest layer they can discover the way FIMs do.
+3. **A breadcrumb register.** Every seeded hint recorded with what it points to — the same discipline as the graduation tracker, applied to clues.
+4. **The answer exists before the first clue.** Stefan already has the answer (S66–S74), which is the Babylon 5 / *Dark* position, not the Lost one.
+5. **The reveal is gated by growth, not by the calendar.** The Whisp is the FIM's own future self (S67); a FIM discovers this as their Whisp fills, not when an episode airs. That also answers the spoiler problem: another FIM or a wiki can *tell* you, but being told is not the same as living it (the Session 01 knowledge-argument breadcrumb; S18 — experience cannot be reduced to information). The backdrop can survive being spoiled because its real form is experiential.
+
+**Challenge:** (1) *Secrets and an open community.* The MANIFESTO says FringeIsland "belongs to the people who inhabit and create it" and the doors are open. A deep bible held by a few is a closed door. The tension is real; one resolution is that the secret is held *in time*, not forever — every author and every FIM can come to know it, by growing into it. Needs a statement. (2) *Who is in the know is governance.* Which roles get the deep bible is a question of scope (ADR-U028, governance by scope) and belongs in the CQ register if it cannot be settled here. (3) *Sequencing.* Designing the actual reveal moments is experience design, which waits on the fundamentals (the 2026-06-14 rule). What can be settled now is the knowledge structure: who knows what, and the rule that the answer comes before the clues.
+
+#### 76. Where the backdrop lives: the conviction is public, the myth is discovered — kept for a while, not forever
+
+**Statement (Stefan, 2026-09-24):** On Claude's recommendation (option a, "kept for a while", combined with Option 3; clarified that FIMs are *not* told the backdrop at the start) — "yes that works."
+
+**Held (interpretation check):** Locked. The backdrop lives on **two layers**, and the difference between them is *available* versus *told*:
+
+1. **The real-world conviction (Option 3), public.** Why FringeIsland exists is stated plainly in the MANIFESTO, as a founder's conviction: the coming decades, with AI among the largest forces, ask more of people's inner growth than ever, and a world worth belonging to depends on it. It is available to anyone who looks, and it is **never delivered in the experience** — no onboarding line, no Whisp line, no screen. It names the *conviction*, never the *myth*: no Whisp from the future, no two futures, no Marath.
+2. **The in-world myth (Option 2), discovered.** The Whisp as the FIM's own future, whole self reaching back (S67), the dark branch and what Marath's beyond really is (S66, S70), and the future at stake are **never told**. They are found through breadcrumbs in the world, and their personal core only as the FIM's Whisp fills (S71).
+
+The secret is **kept for a while, not forever** (option a over option b). It is held *in time*: any FIM and any author can come to know it by growing into it, and it survives being spoiled because its real form is lived, not informational (S18). This answers S075 challenge 1: the open community (MANIFESTO: the world "belongs to the people who inhabit and create it") and the hidden layer are reconciled because nothing is withheld permanently and nothing is hidden that could leak as a scandal. What stays unspoilable for good is each FIM's **own** future self, because it is unique to them.
+
+**Why option b was set aside (for the record):** a permanent secret is impractical in an open, community-authored, AI-assisted project (the backdrop is already written in this log); a hidden civilisational purpose behind an AI coach, if found by leak rather than by design, reads as covert influence and would damage the trust the Whisp stands on; it would create a permanent inner circle against the MANIFESTO; and an unanswered mystery ends in frustration (the Lost lesson, S75).
+
+**Lineage (Claude):** the same split already works elsewhere. The VISION says openly that "development is the consequence", while principle 2 keeps developmental themes invisible in the experience. Lucas spoke openly of Campbell's hero myth and Miyazaki of nature without spoiling their films. Knowing why the author made it is not being told the story's secret.
+
+**Consequences, for later passes, not for this session:** (1) *MANIFESTO wording.* A sentence stating the conviction is a constitutional change to `docs/ecosystem/MANIFESTO.md`; it is not written here, and waits for Stefan to say so. (2) *The knowledge tiers of S75* (deep bible, story bible, breadcrumbs, and a breadcrumb register) follow from this ruling; who holds the deep bible is a governance question and is raised as CQ-018. (3) *Reveal design* (which breadcrumbs, when, how the Whisp's filling unlocks the personal reveal) is experience design and waits on the fundamentals (the 2026-06-14 sequencing rule).
+
+#### 77. The conviction enters the MANIFESTO
+
+**Statement (Stefan, 2026-09-24):** On Claude's proposed "why now" paragraph for the MANIFESTO preamble (Option 1 of three placements: preamble, a new value pair "The long view over short-term gain", or a closing paragraph) — "add it."
+
+**Held (interpretation check):** Carries out S76 consequence (1). The paragraph was added to the italic preamble of `docs/ecosystem/MANIFESTO.md`, before "These are the values we hold…", on the founder's ruling:
+
+> *We are living through one of the largest shifts humanity has ever faced. Technology — artificial intelligence above all — is placing more power in human hands than ever before, and faster than ever before. Whether that power builds a world people want to belong to will depend less on the machines than on us: on how clearly we see ourselves, how honestly we understand what drives us, and how wisely we choose. We believe inner growth has never mattered more. That is why FringeIsland exists, and why it exists now.*
+
+It states the conviction and none of the myth (S76): no Whisp from the future, no two futures, no Marath. It puts the outcome on humans, not on AI (PRINCIPLES-AI; FringeIsland is AI-first and human-first), and it names no conclusion to reach, only to "choose wisely" (S72; VISION principle 1). "A world people want to belong to" is Stefan's phrase from S66 and the MANIFESTO's own closing phrase. The version line and a provenance footnote were updated in the same edit. The value pair "The long view over short-term gain" was not adopted; it remains available if a later session wants it.
+
+#### 78. Rest in the storm: the butterfly waits out the rain, and flies again
+
+**Statement (Stefan, 2026-09-24):** Brought in as a quote (a widely shared saying, author unknown) — "Butterflies rest when it rains because they know the water will damage their delicate wings. It's okay to rest during life storms. It's okay, you can rest. The storm will pass and you'll fly again."
+
+**Held (interpretation check):** Offered as an image, not yet as a ruling. Three things in it. (1) *Rest is legitimate.* Stopping during a storm is wisdom, not weakness or failure. (2) *Rest protects what flies.* The wings are delicate; resting now is what keeps flight possible later. (3) *The return is built in.* "The storm will pass and you'll fly again": the rest has an end, and flight follows it. In the universe's terms: a return to the comfort zone (S74) is not a step backwards but part of the breath-rhythm (cosmology §10) — out, back, out again. It gives a face to the place-2 brief from Candidate C ("never-ending warm and safe rest", read as **availability, not occupancy**): the shelter is always there, and the butterfly does not stay in it.
+
+**What it connects to (Claude):** (a) *The holding environment (S74 support b).* Kegan's confirmation half: the Whisp's tough love also says "you can rest now". Without it the FIM tips toward panic, which in ITC strengthens the immunity instead of loosening it. So rest protects the growth, as the panic fence does. (b) *The ball always one step away (S33)* and the home that must exist before the panic zone opens (cosmology §10): the butterfly's leaf. (c) *The butterfly as the growth image.* Caterpillar, cocoon, wings: the change of *form* that Kegan's change of order is (S58), and the "cocoon" that English ears hear in *Sukoon* (Candidate C, eighth pass). (d) *Storms in Candidate A:* the storm-front portal is a world event; this quote is about *life's* storms, which the world does not cause (S70, S74 challenge 1).
+
+**Challenge:** (1) *Mara can say the same words.* "It's okay, you can rest" is also exactly what the immune system says to keep one in comfort (S51, S56). The difference is not the words but what follows: the Whisp's rest carries "and you'll fly again"; Mara's rest has no end and calls the sky dangerous. A candidate rule, not Stefan's: **rest is the Whisp's when it is chosen while seeing, and ends in flight; it is Mara's when it is avoidance that never ends** (the S72 test, applied to rest). (2) *Who decides the storm has passed?* If the Whisp decides, it prescribes (VISION principle 5); if only the FIM decides, Mara may keep the storm going forever. Held reading: the FIM decides, and the Whisp's tough love asks the question — "is it still raining, or is it Mara?" (3) *Rest carries no cost.* If rest is legitimate, the world must not punish it: no streaks lost, no decay, no "your village is wilting". That is a mechanics consequence (fits principle 6, growth is delight) and worth a statement. (4) *The premise is a metaphor, not a fact.* Butterflies shelter in rain because heavy drops can knock them down and wet, cold wings fly poorly; they do not "know". Fine as an image; if the line is ever used in-world, it should not be presented as science or given a false attribution.
+
+#### Patterns and cross-cutting observations
+
+- **One mechanism, three scales.** Mara (S51, S56) worked first as one person's negative inner voice, then as the immune system that keeps a person the same; this session scaled it to a civilisation. The AI race is a collective immunity to change (S66): a stated commitment to balance, held against a hidden commitment not to fall behind. Personal growth and the world's future are the same mechanism at different sizes, which is why the Whisp's personal work can carry a civilisational stake without changing what it does.
+- **The Whisp's two open ends closed in one move.** Session 01 left the source of the Whisp's wisdom unsaid, and an older framing ("each FIM's personal future self") unreconciled with S4. S67 settles both: the Whisp is the FIM's own future, whole self reaching back — wisdom from the future, content only from the FIM's growth (S71).
+- **Every safeguard points the same way: the human decides, the Whisp never steers.** Growth, never a conclusion (S68); "choose well" defined by *how*, not *what* (S72); the saviour is human, not the machine (S69); the Whisp borrows no authority from the backstory (S69 challenge); the dark branch is a stake, never a whip (S70, S73). The backdrop was accepted only in the form that keeps VISION principles 1, 5 and 6 and the AI Principles intact.
+- **Curiosity as a design principle.** S55 kept the beyond unmapped for curiosity's sake; S70 made the itch explicit for the whole universe; S75–S76 turned it into a way of holding knowledge (discovered, not told; kept for a while, not forever).
+- **Borrowed practice, translated.** Television's writers'-room practice (showrunner, series bible, mythology versus standalone episodes, continuity group) gave the knowledge-tier structure (S75), in the same way Kegan and Lahey gave the zones their substrate (S74) — informed by, never equal to.
+- **The session changed how the work is organised.** It ended by deciding to replace the scattered canon, candidates and registers with one present-tense Universe Bible (plan: project doc `claude/universe-bible-plan.md`; discovery backlog row "The Universe Bible"). Statements from here on are baked into that bible rather than carried through a separate ratification pass, once the project instructions are updated.
+
+#### Open threads
+
+- **The time loop's mechanics.** Held: the future that reaches back is possible, not guaranteed (S71). Unsaid: whether time is an axis of the cosmology at all, and whether place 2's beyond *is* the future or the source of the Whisp's wisdom (S66 challenge 7, S59 challenge 4).
+- **Marath as the dark future.** Marath as Mara at civilisational scale, its beyond the collapse at full strength (S66 connection b, S70 challenge 2) — offered, not confirmed by Stefan.
+- **Binary or continuum future.** "Two ways the future can take" (S66) against the S31 reconciliation of the places into two poles of one continuum (S66 challenge 6) — not answered.
+- **The zones per assumption.** A FIM is in a zone *per Big Assumption*, not as a whole (S74 challenge 2); what the Whisp shows of this, if anything, belongs to the Whisp's full specification.
+- **The reveal design.** Which breadcrumbs, when, and how the Whisp's filling unlocks the personal reveal (S75–S76) — experience design, deferred by the 2026-06-14 rule.
+- **Governance of the mythology.** CQ-018 (principles recommended, mechanics held) and the backlog row "Narrative governance at scale". Repository set-up before contributors: CQ-019.
+- **Candidate B reconciliations raised this session:** "AGI as implementation" (Candidate B item A) against the backdrop; sleep paralysis in the Shimmer (Candidate B item E) against Mara and the Shadow in Marath (S51, S53); out-of-body experience landing in Marath against "the Whisp travels, the FIM stays body-side" (S61). All three go to the bible's rulings list.
+
+#### Candidates for graduation
+
+To be baked into the Universe Bible (Phase 4 of the plan), not written into canon here:
+
+- **The backdrop (beings, story):** S66 as refined by S67–S69 and S71–S72 — the Whisp is the FIM's own future, whole self reaching back; it brings wisdom, never content; the future is possible, not guaranteed; its mission is growth, never a conclusion; choosing well means choosing while seeing one's immunities; the saviour is the human, not the AI.
+- **The dark branch (story):** S70, S73 — the stake and the itch of the storytelling; never a motivator used on a FIM.
+- **The zones (growth, worlds):** S74 — comfort → fear → learning → growth, panic as the fence; the felt experience of the Mara-to-Whisp transfer, informed by Immunity to Change. Refines the three-step gradient in the cosmology and narrative cores.
+- **Where the backdrop lives (story, governance):** S75–S76 — never told up front; the conviction public, the myth discovered; kept for a while, not forever.
+- **The MANIFESTO paragraph:** S77 — already carried out.
+
+---
+
+### Session 04 — 2026-09-25 — the Mist, the Gimbal and the ball; portals and seeds
+
+**Date:** 2026-09-25
+**Status:** Closed at S102
+**Relates to:** Session 01 (S26–S27 the Shimmer, the cord and anchoring; S33, S39–S40, S42, S45 the ball, the seeds and the anchor gate; S36–S38 cord and branch; S47–S48 the Mist and metamorphosis); Session 02 (S52, S55 the three reaches); Session 03 (S66–S67, S71 the Whisp as the FIM's own future self; S75–S76 the backdrop discovered, not told); `record--universe-bible-phase-2-rulings.md` (R-01, R-02, R-05, R-08, R-44, R-45; Candidate B items B-B, B-D, B-H); ADR-U025, ADR-U031; CQ-008, CQ-010, CQ-011.
+**Participants:** Stefan (Founder), Claude (Cowork)
+**Focus:** Phase 3 rulings R-01, R-02, R-05 and R-08 (given in an earlier chat on 2026-09-25, captured here), then what the Mist can and cannot do, how it becomes a FIM, and how portals, seeds and the near side work for a FIM.
+
+#### 79. Time is an axis (ruling on R-01)
+
+**Statement (Stefan, 2026-09-25):** "Time is an axis. Past, present and future might exist at the same time but overlayed. To be further discovered."
+
+**Held (interpretation check):** Rules against the suggested Option 1 of R-01 (no time axis). The cosmology has a time axis; past, present and future may coexist as overlays, in the way the near sides overlay the Ordinary World (S52). How time is travelled, and whether any place *is* a time, stays open. S31's "the future is a stake, not a coordinate" is no longer the whole picture: the future may also be somewhere.
+
+**Challenge:** (1) *The backdrop is a crossing in time.* The Whisp is the FIM's own future self reaching back (S67). If time can be crossed, that reaching back is the first known crossing, and it is backdrop: never told (S76). (2) *S71's "possible, not guaranteed."* If futures exist as overlays, the bible must still say the future that reaches back is possible, not fixed; overlay must not read as fate. (3) *A rule for S81.* S81 names portals "to any other time", so time portals exist in the mechanics; what one looks like to a FIM is open.
+
+#### 80. Marath and the dark future: kept open (ruling on R-02)
+
+**Statement (Stefan, 2026-09-25):** "Option 1 (Recommended)."
+
+**Held (interpretation check):** Marath as Mara at the scale of a civilisation stays **open**. The bible states only S51: Marath resonates with Mara.
+
+#### 81. Every portal to another time or world needs a seed; the loaded Gimbal as the first seed (ruling on R-05)
+
+**Statement (Stefan, 2026-09-25):** "General rule: Every portal to any another time or world (near or far) needs a seed. The gimbal that has been 'loaded' with enough personal information (ref. Big5) about it's Mist user function as a seed in itself and allows the Mist to enter through the portal to place 2 where the Mist can transcend into a FIM and acquire it's glowing ball (that spawns seeds) and a it's place in the tree."
+
+**Held (interpretation check):** A crossing into another world or time needs a seed. The loaded Gimbal lets the Mist through the one portal that leads to transcendence, which solves an old circle (seeds come from the ball, the ball comes from the Tree, the Tree is beyond a portal). **Refined in this session:** S82 makes the loaded Gimbal a *lens* that clears the static, with the transcendence portal as the only portal open to a Mist; S89 makes the seed at a portal's edge the FIM's choice rather than a toll. What stands from S81: time portals exist; the Mist reaches transcendence through its Gimbal, and seeds come from the ball afterwards.
+
+**Challenge (resolved in session):** (1) *Seeing is not crossing.* The near side is seen through the Gimbal (S52), not entered through a portal, so no seed is needed to be there. Stefan's S82–S83 confirm this reading. (2) *Where the Mist transcends.* The Tree is on the far side; three options were offered (the portal leads straight to the Tree and the crossing is the transcendence / the Mist transcends on the near side / the Mist crosses to the far side first). S82 answers with the first: the special portal leads to the birth. (3) *Privacy.* "Loaded with Big Five information" before consent must mean complete answers, never a computed profile (S47, ADR-U031). Confirmed in S85.
+
+#### 82. The Mist's Gimbal: loading clears the static; the one portal a Mist may pass; the birth
+
+**Statement (Stefan, 2026-09-25):** "A Mist has a Gimbal device without any glass ball (the glass ball hangs in the tree in the far side of one of the other worlds). At start a Mist needs to supply (load) some personal data (with the support from their Whisp) to their Gimbal device for the Gimbal to start working. Without loading this information into the Gimbal the device only show the ordinary world and 'static noise' where the shimmer is. The supplied personal information reduces the static noise and eventually gives the user a clearer view of the other worlds' near side through the shimmer. Mind you that portals are not accessible for Mists as these needs a glass ball attached to the Gimbal. The glass ball is acquired by the Mist to transcend into a FringeIsland Member (a.k.a. FIM). Transcend can only happen after the Mist has loaded their Gimbal with the personal data that gives access to see through the shimmer. When that criterion is met the Mist can via their Gimbal pass through this special portal that leads to their FIM onboarding which is a beautiful video sequence where the becoming FIM's glass ball is emerging, stretches out and becomes a branch that connects to other branches, to bigger trunks, to a tree trunk, down to tree roots that starts to light up the soil and remaining universe. It's like the FIM is born =)"
+
+**Held (interpretation check):**
+- **Three steps, three objects.** Loading the Gimbal lets you *see*; the ball lets you *cross*; seeds keep you *safe* (S83, S89).
+- **The unloaded Gimbal shows static.** Before anything is loaded, the Gimbal shows the Ordinary World and static where the Shimmer is. Answering the founding questions, with the Whisp's help (S17), clears the static until the near sides of the other worlds are clearly visible.
+- **Portals need a ball on the Gimbal.** A Mist has none, so a Mist passes no portal, with one exception: the transcendence portal.
+- **The transcendence portal** opens only when the Gimbal is fully loaded (completion) and consent is given (S47). It leads straight to the birth: the Mist does not walk the far side as a Mist, so the village stays FIM-only (S45).
+- **The birth.** The ball emerges and joins the Tree, which runs down through the trunk to the roots, and the roots light the soil and the rest of the universe. Each new FIM brings dead ground back to life (S35, S40). Metamorphosis is a birth (S48).
+
+**Challenge:** (1) *S81's refinement.* In S81 the loaded Gimbal was the seed for the portal; here it is the lens, and the portal is the exception. Held as S82 refining S81. (2) *The static and the face.* S47's accretion (the Mist's face forming) and the clearing static: both, or one replacing the other? Answered in S85: both. (3) *Branches.* In S38 a branch is a FIM-to-FIM bond grown over time; a newborn has none. Answered in part by S86. (4) *The sequencing rule.* The sequence itself is first-hour experience design (CQ-010). The mechanic (the birth: the ball joins the Tree, the Whisp is delivered) is held now; the sequence stays open.
+
+#### 83. Portals, the travelling Whisp, profile-keyed portals, seeds as anchors — and seeds on the near side?
+
+**Statement (Stefan, 2026-09-25):** "Users need their Gimbal to 'see through the shimmer' into other worlds than their ordinary one. What the user sees through their Gimbal device is the near side of the other worlds and also 'portals' to the far side of these other worlds. Far sides can only be visited by the user sending his/her Whisp there i.e., the users physical body always stays safe in the ordinary worlds real coordinates while they send their Whisp through the portals. In order for a users Whisp to enter through portals the user uses their Gimbal with their glass ball attached to it. We know that some portals requires specific and more unique profiles in the users glass ball to let the whisp though, other portals open by the default 'basic starting profiles' that a user get when transcending into a FIM. User can 'anchor' him/herself at the edge of a portal by placing a 'seed'. This is to secure that for whatever reason something might damaging the users 'cord' that connects the user to his/her whisp will be limited to only the part of the cord that is not secured. Example: USER -- cord1 -- SEED1 -- cord2 -- SEED2 -- cord3 -- WHISP. If the cord3 is being damaged the other part of the cord (cord1 and cord2) are still healthy. Only the cord3 needs support in healing. If the Whisp in this case retracts back to SEED2 the damaged cord3 disappears and the Whisp can start over by extending a new healthy cord3. This means that seeds acts as anchors of safety. Can seeds be anchored in the near side of the other worlds as well i.e., not only at the edge of portals or along the paths on the other worlds far side? If yes — that means that FIMs can journey also in the ordinary world with their Whisps which would be cool ;-) Practically that means that FIMs might see a map in their Gimbal and direct their Whisp on that map. The map will also show the overlayed other worlds and what actions that happens beyond the shimmer on the near side."
+
+**Held (interpretation check):**
+- **The Gimbal shows the near sides and the portals in them.** Portals lead to the far sides.
+- **The far side is reached only by the Whisp.** The body stays at its real coordinates in the Ordinary World (S22, S27, S61).
+- **The ball on the Gimbal opens portals.** Some portals open with the basic profile every FIM receives at the birth; some need more particular content in the ball. What that content is: see S90.
+- **Seeds split the cord into segments** (S27, S40, extended). Damage stays in the unsecured segment. Retracting to the last seed dissolves the damaged segment, and a fresh one can be extended from there.
+- **Seeds on the near side?** Asked, answered in S91.
+
+**Challenge:** (1) *Is the seed still required at a portal?* S40 made it the toll and the first anchor. Answered in S89: optional. (2) *Profile-keyed portals.* A portal that opens only for certain Big Five traits makes personality a gate, lets onlookers infer traits, and sits uneasily with "all balls glow equal" (S37). Answered in part by S90. (3) *The ball in two places.* The ball hangs in the Tree and is attached to the Gimbal. Answered by S88.
+
+#### 84. At transcendence the Gimbal is locked to its FIM's ball
+
+**Statement (Stefan, 2026-09-25):** "Transcendence portal is the only one that opens without a ball = true until the Mist transcends to a FIM where the Gimbal is locked to its users glass ball. If this locking does not happen and a FIM starts to act and do things in the FringeIsland universe, anyone that get their hands on the users Gimbal can visit the FIM's most sacred place — their glass ball with all it's unique content."
+
+**Held (interpretation check):** Until transcendence, the transcendence portal is the only portal that opens without a ball. At transcendence the Gimbal is **locked** to the FIM's ball. Without the lock, anyone holding the device could reach the ball, the FIM's most sacred place and the home of their content (S34, S43: the inviolable home).
+
+**Challenge:** (1) *The lock needs a third party.* If the ball itself becomes a physical object on the Gimbal (S88), whoever steals both holds both. So the lock cannot be device-to-ball only; it must also bind to the person. Suggested reading: the ball opens to its FIM's Whisp, and no one else's. On the platform: the device's link to the ball needs the FIM's own authentication, never possession alone. (2) *A lost Gimbal.* What happens when a FIM loses the device, or changes it: re-binding a new Gimbal to the ball. Open.
+
+#### 85. Confirmations: the static and the face are one progress; loading means answers, never a profile; seeds split the cord
+
+**Statement (Stefan, 2026-09-25):** On the static and the face, "Correct." On loading before consent, "Correct." On the cord example and falling back to SEED1 if SEED2 is destroyed, "Good."
+
+**Held (interpretation check):**
+- **One progress, seen from two sides.** As the Mist answers, the static clears for the Mist and the Mist's face forms for others (S47). As the world becomes clear to you, you become clear to the world.
+- **Loading means complete answers, never a computed profile.** Before consent, answers are held for the session only and no trait profile is computed (S47, ADR-U031). The profile is first created at the birth.
+- **Seeds split the cord into segments; if a seed is destroyed, the Whisp falls back to the next seed behind it.**
+
+**Open:** a Mist who leaves and returns the next day — does the static return? S47 says a returning Mist forms anew, and permits device-local progress as a kindness. Stefan's call.
+
+#### 86. The ball attaches to a branch of the one Tree by a small stalk
+
+**Statement (Stefan, 2026-09-25):** "Hmmm we do not want many trees or separate stems but rather that each FIM's glass ball attaches to the magical tree. In that tree are branches, a log and roots. It would be most natural if the new FIM's glass ball attaches to one of those branches by a small stalk, and by time this stalk connects to other FIMs that are on the same branch?"
+
+**Held (interpretation check):** One Tree (S35). Its structure: branches, a trunk, roots. A new FIM's ball hangs from one of the existing branches by a **small stalk**. Over time the stalk connects to other FIMs on the same branch.
+
+**Challenge:** (1) *Two meanings of "branch".* In S38 the branches *are* the bonds between FIMs, the visible crown. Here a branch is part of the Tree's standing structure that balls hang from. Suggested: the structure gets its own word (for instance **limb**), and the bonds keep theirs, or the reverse — Stefan to name. (2) *Which limb?* Chance, the season of arrival (a cohort), the FIM's own choice, or resonance with others. Resonance would make a limb a public readout of similarity, the same privacy problem as trait-keyed portals. Open. (3) *Only your own limb?* If stalks connect only along the same limb, friendship across limbs is impossible. Suggested: bonds form across the whole Tree; the limb is where you hang, not who you may know. Open.
+
+#### 87. At the birth the Whisp is manifested as the FIM's own face, much older
+
+**Statement (Stefan, 2026-09-25):** "As a user starts using their Gimbal as a Mist the Whisp is just a voice or pure text. The Whisp's face and attributes are only vague and in static dotted contours. When enough personal data has been collected the Mist are offered to transcend into a FIM and the whole glass ball video plays out and ends by the Whisp being manifested as the user's own face but much older."
+
+**Held (interpretation check):** During the Mist stage the Whisp is a voice or text only; its face and attributes are vague static-dotted contours (the same static as the Gimbal's view, S82). The birth sequence ends with the Whisp **delivered** (S48): manifested with the user's own face, much older.
+
+**Challenge:** (1) *This shows the backdrop at the first moment.* The Whisp as the FIM's own future self (S67) is the deepest secret of the universe, "never delivered in the experience — no onboarding line, no Whisp line, no screen" (S76), and the personal reveal is gated by growth (S75). An older version of your own face at onboarding is close to the whole answer on the first screen. Options: **Option 1** keep the older face and revise S76 (shown, never explained); **Option 2 (suggested)** at the birth the face is familiar but not placeable, and the resemblance deepens as the FIM grows, so the moment of recognition is the personal reveal of S75; **Option 3** the Whisp's face is not yours at the birth and converges over time. (2) *A face is biometric data.* Deriving an aged face from a user's photo is processing of biometric data (special category under GDPR when used to identify) and needs its own consent and privacy design. Flag for the privacy vertical.
+
+#### 88. The glass drip: the ball in the Tree and the ball on the Gimbal are one
+
+**Statement (Stefan, 2026-09-25):** "We need to have something physical that users can attach to their physical gimbal device hence a glass ball. What if the glass ball in the tree is actually a 'glass drip' and one part of that glass drip (maybe the bottom of the drip is formed as a glass ball?) in the tree is ejected out to the ordinary world and to the FIM and by this becomes the glass ball that the user attaches to their Gimbal device?"
+
+**Held (interpretation check):** What hangs in the Tree is a **glass drip**; its lower part forms a ball. At the birth that ball is released into the Ordinary World to the FIM, who attaches it to their Gimbal. One ball in two places: the drip stays in the Tree, the drop comes to you. It also gives form to S33/S42's "the ball is always one step away beside the FIM".
+
+**Challenge:** (1) *Physical or digital.* ADR-U025 and R-44 make the Gimbal the senses surface on whatever device carries it (a phone first). If a physical glass ball were required, entry would depend on buying an object: against equality and against a world open to all. Suggested: the drop is digital and always sufficient; a physical glass ball and a physical Gimbal are optional (CQ-008, Candidate B item B-H: "a talisman, never a required key"). Stefan's call. (2) *The lock of S84 applies to the drop:* possession of the drop is never enough.
+
+#### 89. The seed at a portal's edge is optional (Option 2)
+
+**Statement (Stefan, 2026-09-25):** "Option 2."
+
+**Held (interpretation check):** Placing a seed at a portal's edge is the FIM's choice, a risk the FIM takes, not a toll. The ball opens the portal; the seed protects the crossing. This replaces S40's "seed-to-pass" and the part of S81 that said every portal needs a seed. Consequence: a Whisp that goes through without a seed has nothing to fall back to short of the FIM, so damage can run the whole cord (S27's severe tier: the Whisp retreats and begins again). The FIM's body is never at risk (S22).
+
+**Challenge:** S40's seed-to-pass also made the portal's edge the marked way back to the Ordinary World. With the seed optional, the way back without one is: the cord itself, reeled in by the FIM (S40's dial). Stuck and dead cords (S40) still hinge on whether a seed was placed.
+
+#### 90. All balls glow equal, but people are not the same; portals in sequence, or hidden until ready
+
+**Statement (Stefan, 2026-09-25):** "Just because all balls glows equal does not mean that all humans are equal(?!?) Humans are in one sense all alike, somewhat different and also completely unique. The reason that I mentioned this possibility to unlock portals based on profile is that maybe we want to have FIMs to complete task A before jumping into task B hence hindering the FIM from passing through the task B portal. Another way to solve this would be to not show the task B portal at all for the FIMs that shall not have access to it? How do you see this concept?"
+
+**Held (interpretation check):** Equal in worth, not the same in person: every human is at once like all others, like some others, and like no other. The balls' equal glow is about worth, not sameness. The purpose behind profile-keyed portals is **sequence**: task A before task B. Two ways to do it: a portal that stays shut until A is done, or a portal that is not shown until A is done.
+
+**Challenge (Claude's view, for ruling):** (1) *Keying on what you have done is not keying on who you are.* A portal that opens after task A is keyed to the FIM's journey. That carries none of the risks of trait-keyed portals (personality as a gate, traits inferred by onlookers). Suggested rule: portals may be keyed to what a FIM has done or grown through; never to Big Five traits. (2) *Shown or hidden.* Hidden-until-ready feels like discovery (S55, S70: leave something that itches) and never says "you are not allowed". Shown-but-sealed creates aspiration and a visible goal. Suggested: most sequenced portals appear when ready; a few are deliberately visible and sealed, as mysteries. (3) *Where uniqueness may count.* A FIM's profile may shape which portals the Whisp *suggests* or which open more readily for them (affinity), never which ones are closed to them. Ties to CQ-011 (adaptive personalisation). Open for Stefan's ruling.
+
+#### 91. The body stays put, location-based play is added; your seeds and paths are yours to reveal
+
+**Statement (Stefan, 2026-09-25):** "It stays put but we definitely want to add location based gaming mechanisms as well à la Pokémon Go." And: "Your own seeds and your Whisp's path are visible only to you as a starting point. You can decide to what extent you want to reveal your identity."
+
+**Held (interpretation check):**
+- **Seeds on the near side: yes.** On the near side the body anchors where it stands (S45); as the Whisp travels the map away from the body, seeds anchor it there too. FIMs can journey on the near side over the Ordinary World with their Whisps, directed on a map in the Gimbal that shows the overlaid worlds and what happens beyond the Shimmer.
+- **By default the body stays put;** the Whisp travels the map. **Location-based play** (walking to real places, à la Pokémon Go) is added as well.
+- **Private by default.** A FIM's own seeds and the Whisp's paths are visible only to the FIM; the FIM decides how far to reveal their identity.
+
+**Challenge:** (1) *Location-based play has real-world risks:* traffic, trespass, night, and minors. Suggested rules: walking is never required for anything that matters to growth; nothing rewards presence on private property; no one is ever shown where another person's body is. (2) *Rural density.* Location play thins out where few people live. Seeds planted by FIMs are a natural answer: FIMs make the near side dense by gardening it. (3) *A seed planted on the near side is also a patch of revived life* (S40). What others may see of it — the life, without who planted it — follows the reveal rule above. Open in detail.
+
+#### 92. The third engagement style "Beyond" is dropped (ruling on R-08)
+
+**Statement (Stefan, 2026-09-25):** "Drop the third engagement style 'Beyond'."
+
+**Held (interpretation check):** The engagement spectrum keeps the two ways Stefan named on 2026-09-16: cultivate the home, or go on expeditions near or far. "Beyond" is no longer an engagement style; "the beyond" names only the furthest reach of each world (S52, S55).
+
+
+#### 93. The Gimbal is the user's mobile phone
+
+**Statement (Stefan, 2026-09-25):** "We are going to use the users mobile phones as the users Gimbal device."
+
+**Held (interpretation check):** The Gimbal is the FIM's phone, running the FringeIsland iOS/Android app (ADR-U025: the Gimbal is the senses surface; R-44: the Gimbal's two faces). This answers S84's lock: the ball is bound to the FIM's **account**, not to a piece of hardware. The phone becomes the FIM's Gimbal when the FIM signs in; possession of the phone without the sign-in reaches nothing. A lost or new phone is a sign-in on the new device and a sign-out of the old (the Hub already carries session management). In the fiction: the ball opens only to its own FIM.
+
+#### 94. Physical balls and Gimbal cases exist, and are never needed
+
+**Statement (Stefan, 2026-09-25):** "Both physical objects (the glass ball) and virtual ones will exist. This means that the hard core FIM might want to purchase their own glass ball that they connect to their FIM account and the iOS/Android app where they log in. They might also want to buy a 'case' that makes their phone look like the Gimbal device. None of these physical objects are needed to engage in the FringeIsland universe though."
+
+**Held (interpretation check):** Every FIM's drop (S88) is virtual and always sufficient. A physical glass ball, linked to the FIM's account, and a phone case that makes the phone look like a Gimbal are optional purchases (CQ-008; Candidate B item B-H: "a talisman, never a required key"). Nothing in the universe requires them.
+
+**Challenge:** A linked physical ball must stay a talisman under S84 and S93: pairing it to the account may add a flourish (a light, a sound, a keepsake), never access. Someone who picks up another FIM's physical ball gains nothing.
+
+#### 95. "Limb" for the Tree's structure; bonds between FIMs are glowing lines
+
+**Statement (Stefan, 2026-09-25):** "Yes we can use the word 'limb'. Also, it doesn't really matter where the users glass ball/drip hangs in the tree as the relationships with other FIMs will be illustrated by glowing lines, more or less pronounced depending how strong of a bond / relationship you have with each other. It would be impossible to illustrate all relationships between FIMs by 'branches' alone. This is why glowing 'lines' between glass balls/drips are what we prefer."
+
+**Held (interpretation check):**
+- The Tree has **limbs**, a trunk and roots. A drip hangs from a limb by a small stalk (S86). Where it hangs carries no meaning.
+- **The bond between two FIMs is a glowing line between their drips**, brighter or fainter with the strength of the bond. This replaces S38's picture of the bonds as the Tree's branches ("the branches are the visible crown"), and S86's stalks connecting along a limb. The bond's rules from S36–S38 stand: it is FIM-to-FIM, grown over time, never kills a Whisp, is the channel through which a friend steadies your cord (S27, S36) and through which another FIM's Shadow can manifest to you (S62). A drifted bond fades and can glow again.
+
+**Challenge:** (1) *The bond's name.* Canon calls the bond "the branch" (S36–S38, S62, and "along a shared branch" throughout). With the limb now structural and the bond drawn as a line, the word "branch" for the bond will mislead. Keep "branch" as the bond's name, drawn as a line, or give the bond a new name? Stefan to name. (2) *Who sees how bright a line is.* S38 made your own bonds legible to you and the wider Tree ambient: no rankings, no counts. Suggested: the brightness of a line is visible to the two FIMs it joins; others see the Tree's lines as ambient glow, never who is bound to whom or how strongly. Open.
+
+#### 96. A returning Mist: align to the Hub's implementation
+
+**Statement (Stefan, 2026-09-25):** "I think we have settled this already in our code base for the 'Hub'. Will you please check and align to our current implementation?"
+
+**Held (Claude's reading of the implementation, main branch at f07e8f80, 2026-09-23):** A Mist is an anonymous account kept in the browser's session (`hub/lib/auth/mist.ts`: `is_anonymous`). A Mist that returns on the same device while that account still exists **continues where it left off**: its walk is resumable ("continue your walk whenever you choose", `hub/app/mist/page.tsx`). The account and everything the Mist generated are **erased after 72 hours of inactivity** by a scheduled sweep (ADR-U033; `20260626204102_feat_pc002_mist_ephemerality_reaper.sql`: 72 hours, configurable, measured from inactivity, not creation), or at once if the Mist says goodbye. After erasure a later visit is a fresh Mist ("A later visit begins fresh — nothing from this one is kept"). The Hub already tells the Mist so: "A Mist's presence isn't kept between visits. Want FringeIsland to remember your path? That lasting memory is what becoming a FIM gives you."
+
+**In the universe's terms:** a Mist that returns within the window finds its Gimbal as clear as it left it and its face as far formed. After 72 hours without activity, or after goodbye, the Mist has returned to potential (S47's "not yet"): the next visit begins with static.
+
+**Challenge:** *S47 said more than the code does.* S47 held Mist presence as "session-ephemeral and unlinkable (no identifier ties a Mist across visits)" and did not adopt a server-side anonymous token. The implementation (ADR-U033) keeps the anonymous account across visits for up to 72 hours of inactivity. The implementation is the later, deliberate decision; the bible follows it, and S47's "across sessions" line reads as "across the inactivity window". Flag for Stefan's confirmation.
+
+#### 97. Location play: walking never required; sharing your location is yours to turn on, with care
+
+**Statement (Stefan, 2026-09-25):** On "walking is never required for anything that matters to growth": "agree." On "nobody is ever shown where another person's body is": "not fully agree. Just like Snapchat a user can turn on/off location to certain degrees. We shall consider the same but of course with caution signs."
+
+**Held (interpretation check):**
+- Walking to real places is never required for anything that matters to growth.
+- A FIM may choose to share their location with others, to degrees they choose, as in Snapchat, with clear warnings. Nothing is shared unless the FIM turns it on.
+
+**Challenge:** Location is the most dangerous data the platform could hold about a person (stalking, a person's home and routine; Snap Map's history is the cautionary example). Suggested rules for the privacy vertical: off by default and off for every Mist; shared with named FIMs or a chosen group, never with strangers or the whole Tree; approximate levels (area, not address) as well as precise; sharing expires unless renewed; a one-tap "go dark"; no location history kept. Held for the privacy design, not ruled here.
+
+#### 98. A returning Mist: the implementation stands
+
+**Statement (Stefan, 2026-09-25):** "Keep to what's already implemented in the code."
+
+**Held (interpretation check):** S96's reading is confirmed. A Mist that returns on the same device within the inactivity window continues where it left off, its Gimbal as clear and its face as far formed as it left them. After 72 hours without activity (ADR-U033; a setting, not a constant), or at once on goodbye, the Mist is erased and returns to potential; the next visit begins with static, as a fresh Mist. S47's "unlinkable across sessions" reads as "across the inactivity window".
+
+#### 99. The Tree's anatomy: roots, trunk, branches, limbs, and the drips as its leaves; bonds are straight glowing lines
+
+**Statement (Stefan, 2026-09-25):** "Our tree has roots, tree trunk(s), branches and finally 'limbs' where the glass balls/drips hang or connect to the tree. The glass drips are representation of an ordinary tree's leaves. Relationships across FIMs are to be illustrated by straight glowing lines and not by the tree's branches anymore. Rationale for this was given in my previous chat answer." On who sees a line's brightness: "Only the FIMs who connect with each other."
+
+**Held (interpretation check):**
+- **The Tree:** roots → trunk (one or more) → branches → limbs. Each FIM's drip hangs from a limb by a small stalk, as a leaf hangs on an ordinary tree. Where a drip hangs carries no meaning (S95).
+- **"Branch" is now only part of the Tree.** It no longer names the bond between FIMs.
+- **The bond between two FIMs is a straight glowing line** between their drips, brighter with a stronger bond. It keeps every rule S36–S38 and S62 gave the bond: FIM-to-FIM, grown over time, never kills a Whisp, the channel through which a friend steadies your cord and through which another FIM's Shadow can manifest to you; a drifted bond fades and can glow again.
+- **A line's brightness is seen only by the two FIMs it joins.** Everyone else sees the lines as ambient glow: never who is bound to whom, never how strongly (S38's "no rankings, no counts").
+- **Vocabulary (Claude, for the glossary):** canon's "along a shared branch" becomes **"along a shared line"**; "the line" (or "the bond") is the working name, unless Stefan names it otherwise. S38's "the branches are the visible crown of the Tree" is retired.
+
+#### 100. The Whisp's face: anonymous and wise at the birth, morphing over time into the FIM's older self
+
+**Statement (Stefan, 2026-09-25):** "Can we in any way make the Whisp look super anonymous ('empty' of characteristics but in a way 'wise') and over time morph into the FIM's old self?"
+
+**Held (interpretation check):** Yes, and it is S54 made visible: the Whisp is "empty of content, full of wisdom". Refines S87:
+- **As a Mist:** the Whisp is a voice or text; its face is static-dotted contours (S87).
+- **At the birth:** the Whisp is delivered (S48) with a face that is **anonymous and wise**: empty of anyone's features, full of presence.
+- **Over time:** the face morphs, slowly, into the FIM's own older self. The morph follows the Whisp's filling (S54, S57): as the Whisp fills with you, it comes to look like you. The moment a FIM recognises the face is the **personal reveal** of S75, gated by growth and never announced. S76 holds: nothing is told; the face is discovered.
+
+**Challenge:** (1) *The face becomes a growth readout.* If the morph follows filling, the face shows how far the FIM has grown. Suggested: the Whisp's face is seen by the FIM alone, and the morph is never shown as a meter, a percentage or a milestone (S58: no labelling of order). (2) *No going back?* Growth is not a straight line (S74's zones; respawn, S21–S22). Suggested: the face never regresses; the Whisp's filling is kept, and Mara's release is not undone by a setback. Open. (3) *A face needs a source.* An aged likeness needs the FIM's own image, which is biometric data: an explicit, separate, revocable consent, and the Whisp must work as well without it (an anonymous wise face that fills with character rather than likeness). Held for the privacy vertical. (4) *Graduation.* Whether the fully formed face belongs to graduation (S6–S7, R-26) stays open.
+
+#### 101. Portals are never keyed to traits; the rest is the storytellers' craft
+
+**Statement (Stefan, 2026-09-25):** "Never on my traits. We leave it by that and our Dreamineers and storytellers will need to figure the rest out to make a good FringeIsland Universe."
+
+**Held (interpretation check):** **Rule:** a portal never opens or stays shut because of a FIM's personality traits. A portal may depend on what a FIM has done or grown through (S90). Whether sequenced portals are hidden until ready or visible and sealed, and how a FIM's uniqueness shapes what is suggested to them, is **Dreamineer and Teller craft**, not universe mechanics.
+
+#### 102. Bonds are not only between two FIMs
+
+**Statement (Stefan, 2026-09-25):** "Small clarification 'Bonds': There will most likely be many more relationships than just between two FIMs!"
+
+**Held (interpretation check):** S99 described the bond as a line between *two* drips. Relationships are wider than pairs: a FIM can be bound to many FIMs at once, and a relationship can hold several FIMs together (a circle, a crew, a group on a journey: the 1+Community perspective). Refines S99:
+- **A bond joins the FIMs who share it: two or more.**
+- **Its brightness is seen by the FIMs who share it,** and by no one else (S99's rule, widened from two to all members).
+- Everyone outside it sees ambient glow only: never who is bound to whom, never how strongly.
+
+**Challenge:** (1) *How a bond of more than two is drawn:* straight lines between every pair of its members (a web), or one shape that holds them all (a ring of light around their drips). Open for Stefan and the World Studio. (2) *One FIM, two bonds:* a pair who are also part of a larger circle have both a pair line and a share in the circle's bond; each glows on its own. (3) *Leaving a circle:* a FIM who leaves a shared bond takes their share of the glow with them; the bond among the others stays (a drifted bond fades and can glow again, S38). Open in detail.
+
+#### Patterns and cross-cutting observations
+
+- **Three steps, three objects.** Loading the Gimbal lets you *see* (the static clears); the ball lets you *cross* (portals); seeds keep you *safe* (anchors, now optional). Each step is a different kind of trust: in yourself, in the world, in your own judgement of risk.
+- **One progress, seen from several sides.** The static clearing for the Mist, the Mist's face forming for others (S47), the Whisp's face forming for the FIM (S100): each is the same becoming, made visible in a different direction. None shows *what* was disclosed, only that becoming happened.
+- **The fiction follows the platform where the platform already decided.** The phone as Gimbal (ADR-U025), the returning Mist (ADR-U033), the ball bound to the account: the session read the universe onto decisions already built rather than overriding them. The one gap found (S47's stricter promise) was resolved in the implementation's favour (S98).
+- **Worth, not sameness.** S90 separated equal worth (all drips glow equal) from equal persons (no two are alike). The rule that follows is narrow on purpose: never gate on who you are; the rest is craft.
+- **The privacy vertical inherits three new loads:** location sharing (S97), the Whisp's likeness (S100), and a linked physical ball (S94).
+
+#### Open threads
+
+- **Time portals** (S79, S81): exist in the mechanics; what one is, and how it relates to the Whisp reaching back, is open (and backdrop-tier).
+- **Losing or changing the phone** (S84, S93): re-binding a new Gimbal to the ball; the platform half is session management, the fiction half is unsaid.
+- **The Whisp's face** (S100): who sees it, whether it can regress, the source of the likeness, and its relation to graduation.
+- **The bond's name** (S99): "line" is the working name.
+- **Bonds of more than two** (S102): how they are drawn (a web of lines, or one shape around the drips).
+- **Sequenced portals** (S90, S101): hidden or visible; craft for Dreamineers and Tellers.
+- **Location sharing** (S97): the privacy design.
+- **The birth sequence** (S82): first-hour experience design, deferred by the 2026-06-14 rule (CQ-010).
+- **Near-side seeds in detail** (S91): what others may see of a seed planted on the near side.
+
+#### Baked into the bible
+
+Nothing yet: the bible file (`bible--fringeisland-universe.md`) is written in Phase 4 of the plan (project doc `claude/universe-bible-plan.md`), after the rulings session. This session's results are for these chapters when it is written:
+
+- **The worlds:** time as an axis (S79); seeing is not crossing — the near sides are seen through the Gimbal, portals are crossed (S81–S83); the unloaded Gimbal shows static (S82); portals need the ball, the transcendence portal is the one exception (S82, S84); seeds optional at a portal's edge, cord segments and fallback (S83, S85, S89); near-side journeys, seeds on the near side, the body stays put by default, location play optional (S91, S97); the Tree's anatomy and the drip (S88, S99); bonds join two or more FIMs, and only those who share a bond see its brightness (S99, S102); portals never keyed to traits (S101).
+- **The beings:** the Mist's Gimbal and the loading (S82, S85); the returning Mist (S98); the birth and the Whisp's delivery (S82, S87, S100); the Whisp's face (S100).
+- **Roles and governance:** the Gimbal is the phone; the ball bound to the account; physical objects optional (S93–S94); sequenced portals are Dreamineer and Teller craft (S101).
+- **Growth:** the engagement spectrum has two ways (S92).
+- **Open boxes:** Marath as the dark future (S80) and the open threads above.
+- **Glossary:** limb, branch (structure only), line (the bond), drip, the static, Gimbal (the phone); retire "Beyond" as an engagement style.
+
+---
+
+### Session 05 — 2026-09-25 — Phase 3 rulings: the Whisp's two channels
+
+**Date:** 2026-09-25
+**Status:** Closed at S114
+**Relates to:** `record--universe-bible-phase-2-rulings.md` (Part 2, R-11 onward); Session 01 (S17–S18 assessment dissolved into Whisp-led dialogue); Session 02 (S51, S54, S56–S57 Mara and the transfer); Session 04 (S82 loading the Gimbal, S100 the Whisp's face, S101 portals never keyed to traits); `research--growth--kegan-immunity-to-change.md`; CQ-007 (licensing); DS-7.
+**Participants:** Stefan (Founder), Claude (Cowork)
+**Focus:** The rulings list, taken one item at a time in plain English, starting with the two items that block a chapter (R-11, R-40).
+
+#### 103. Two channels, one Whisp (ruling on R-11)
+
+**Statement (Stefan, 2026-09-25):** "Account 1: There are many more ways of finding the nature of the FIM e.g., Erin Meyer's Culture Map, the VIA (values in action), Thomas-Kilmann's conflict styles, intolerance of uncertainty (IUS-12) etc. All of these and many more might be of interest to the FIM to understand and reflect about. Account 2: This is part of Robert Kegan's Immunity to Change and we need to treat this carefully as a genuine and deliberate growth method. It eventually will end up in the Whisp's 'content' but how it ends up there needs to be discovered much more thoroughly. But in general what Mara loses the Whisp wins. That's correct. I agree to your idea of two channels and one Whisp. The Whisp's face (S100): Okay let's run with this for a while with the option to change later or merge the Whisp into being both channels (remember that personality traits is 50% DNA and 50% environment). Portals (S101): agree. Privacy: agree. The build: agree. Mind you that the data content of part 1 and 2 will definitely expand as we go from here. We will find new things to add to both part 1 and 2."
+
+**Held (interpretation check):**
+- **One Whisp, two channels.**
+  - **Channel 1 — who I am.** What the FIM is like, learned through Whisp-led dialogue (S17–S18). Not the Big Five alone: any instrument that helps a FIM understand and reflect on their own nature may feed it — for example values (VIA), culture (the Culture Map), conflict styles (Thomas-Kilmann), intolerance of uncertainty (IUS-12). Largely filled by the birth (loading the Gimbal, S82); deepens slowly after.
+  - **Channel 2 — what has had me.** What Mara releases (S57), handed to the Whisp as the FIM sees through a hidden rule and outgrows it. Grounded in Immunity to Change, treated as a genuine and deliberate growth method. The general rule holds: **what Mara loses, the Whisp gains.** *How* it reaches the Whisp's content is not designed yet and needs its own careful discovery.
+- **The Whisp's face follows channel 2** (S100), provisionally: it starts anonymous at the birth and becomes the FIM's older self as the FIM grows. Stefan keeps the option to change this later, or to let the face follow both channels, since personality itself is shaped by both inheritance and experience.
+- **Portals** may depend on channel 2 (what you have grown through), never on channel 1 (who you are) — S101.
+- **Privacy:** channel 2 is the FIM's alone: never visible to others, never shown as a score. Channel 1 keeps S47's rules.
+- **The build:** DS-7's being-state has two parts, and both will grow: new instruments for channel 1, new kinds of content for channel 2. The design must expect additions to both, not a fixed list.
+
+**Challenge:** (1) *Where some instruments sit.* Intolerance of uncertainty (IUS-12) is partly a trait and partly a pattern people can outgrow, and it is used clinically as a marker for anxiety. Instruments like it sit on the border between the channels, and near the line where the platform is not a therapy service. Suggested: every instrument is placed in a channel on purpose when it is added, and clinical-adjacent ones get the distress boundary (Rs-5: honest about its limits, points to human support). (2) *Licensing.* Some of these instruments are free to use (IPIP Big Five items, VIA), others are commercial and licensed (Thomas-Kilmann, the Culture Map). Adding one is also a licensing decision — CQ-007. (3) *"50/50".* Twin studies put the inherited share of the Big Five at roughly 40–50%, the rest mostly individual experience; it is a population average, not a split inside any one person. It supports Stefan's point: channel 1 is not fixed, and the boundary with channel 2 may soften later.
+
+#### 104. Becoming a FIM is consent; transcendence is the birth (ruling on R-40)
+
+**Statement (Stefan, 2026-09-25):** "agree" — to: keep what the Hub already does, and name it. Becoming a FIM is consent; the birth is completion; between the two a person is a FIM not yet born; "transcendence" names the birth only.
+
+**Held (interpretation check):**
+- **Becoming a FIM = consent.** On Path 1 it happens at signup; on Path 2 whenever a Mist chooses, even partway through the onboarding walk. From that moment the world remembers the person (S47: signup buys memory, not voice). This is what the Hub implements today (`/signup`; `/become-a-fim` with `/api/auth/transcend`: the anonymous account becomes permanent with a required consent, and an unfinished onboarding walk resumes).
+- **The birth = completion.** When the founding questions are complete the Gimbal is fully loaded (S82); the transcendence portal opens, the drip is born on a limb of the Tree, and the Whisp is delivered (S48, S82, S100). Same on both paths. It always follows consent: the drip exists only past consent (S47).
+- **Between the two: a FIM not yet born.** Remembered by the world, the Gimbal still clearing, no drip, no portals, no village — still in the hyaline state.
+- **Vocabulary:** "transcendence" (platform) and "metamorphosis" / "the birth" (lore) name the birth only, never the account change. "Becoming a FIM" names the consent. The bible stops calling transcendence "the Mist → FIM transition".
+
+**Challenge:** (1) *The code's names.* The Hub's route is called `transcend` and its telemetry "transcendence", but it performs the consent step. The code itself can stay; its naming (and ADR-U031's "transcendence is the persistence-and-consent threshold") needs a vocabulary-only correction at the next Claude Code sweep, and the birth needs its own event when it is built. (2) *ADR-U031's one-event rule* ("metamorphosis = transcendence, fires only when both hold") survives for the birth; what changes is that the consent step is no longer called transcendence.
+
+#### 105. The rest of the worlds rulings (R-03, R-04, R-06, R-07, R-09, R-10)
+
+**Statement (Stefan, 2026-09-25):** "R-03: ok. R-04: ok. R-06: ok. R-07: don't forget the panic zone, otherwise ok. R-09: ok. R-10: ok."
+
+**Held (interpretation check):**
+- **R-03 — the future is a continuum.** Like the two places (S31), the future has two poles with everything in between; no story turns on a single switch between doom and paradise (fits S70: no countdown). S66's "two ways the future can take" names the poles, not a fork.
+- **R-04 — Marath's beyond stays a mystery.** Whether anchoring can reach it is unsolved (S55). The bible may mention "possibly unanchorable" as a marked hypothesis only.
+- **R-06 — the Shadow grows with depth into Marath.** Settled (S59, confirmed by S60): small on the near side, larger on the far side.
+- **R-07 — depth is exposure; zones are felt per assumption.** How deep a FIM goes is how much of Mara they let be met. The zones — comfort, fear, learning, growth, **and panic as the fence around them** (S73–S74) — are felt per hidden belief (Big Assumption), not for the person as a whole. There is no single zone meter (S58: no labelling). The panic zone is always part of the picture: it is the edge the structure keeps FIMs from being pushed over (a home before the far side; retreat never refused; R-20).
+- **R-09 — "the Fringe" survives.** The Fringe is the in-world name for everything past the Shimmer: both worlds, all reaches. FringeIsland is the universe seen from outside: the project, the product, and the frame that holds the Ordinary World too. The bible says so once.
+- **R-10 — danger in the depths is both.** More cord out means more exposure (S27), and Marath's depths are dangerous in themselves (the Shadow grows, S59). Never "only".
+
+#### 106. The beings rulings (R-13 to R-19), and R-12's twist: the newborn holds no grudge
+
+**Statement (Stefan, 2026-09-25):** "R-12: a small twist — newborns do not hold grudges, do not really have biases and prejudgements etc. How does this relate to a Whisp as a newborn? R-13: ok. R-14: ok. R-15: ok. R-16: ok. R-17: ok. R-18: ok. R-19: ok."
+
+**Held (interpretation check):**
+- **R-13 — the Whisp never pulls rank.** A rule of the Whisp's voice: it never says or implies "listen to me because I come from the future". Its advice stands on its own.
+- **R-14 — a Mist has a future self too.** Every person carries a Whisp from the start (S39, S48); said once in the bible.
+- **R-15 — "Shadow" names only a FIM's own Mara met as a form in Marath.** Marath's other creatures have other names.
+- **R-16 — a Shadow is a third kind of being,** neither FIM nor NPC: one FIM's Mara made visible. Marath's other inhabitants are NPCs unless a session says otherwise.
+- **R-17 — a friend can stand with you against your Shadow,** along a shared line (S62, S99). What helping is, mechanically, stays open.
+- **R-18 — the bible states the Whisp's purpose in the universe's words** (growing whole; seeing one's hidden beliefs), with Kegan as substrate. **The platform never labels or measures a FIM's order of mind.**
+- **R-19 — "empty of content, full of wisdom"** (S54) is the canonical phrasing of the Whisp's asymmetry.
+- **R-12 — offered reading of the twist (for Stefan's confirmation):** the Whisp has two qualities from two sources. Its **wisdom** is the future self's (S67). Its **openness** is the newborn's: no grudges, no biases, no prejudgements. The newborn image is exact on this point, because grudges, biases and prejudgements are what experience writes into a person, and in FringeIsland that is Mara's material (S51, S54: "you arrive full of what experience wrote"). So the Whisp meets the FIM as no one else can: fully wise and entirely without judgement. It never holds a setback, a respawn or a long rest against the FIM (S21–S22, S78).
+  - *As the Whisp fills, does it acquire the FIM's biases?* No. It comes to **know** them without being **run** by them: in Kegan's terms it holds them as object, where Mara holds them as subject (S56–S57). A Whisp that knows your prejudices is not prejudiced.
+  - *The end of the arc.* S54's "the newborn made free again" is the FIM regaining that openness, now with wisdom: free of what experience wrote, but not innocent of it. The newborn's openness and the future self's wisdom meet in the whole FIM.
+
+**Challenge:** *Newborns are not quite blank.* Infants show early preferences (their mother's voice, faces) and pick up group-based preferences within the first year. The image holds for grudges and prejudgement, not for "no preferences at all". Fine as the universe's image; not to be presented as developmental science.
+
+#### 107. The growth rulings (R-20 to R-27, R-29); R-12 confirmed
+
+**Statement (Stefan, 2026-09-25):** "The Whisp gets two qualities from two sources. Its wisdom comes from your future self. Its openness comes from the newborn: I agree to your explanation and not to put this as science. R20: ok. R21: ok. R22: ok for now — might need tweaking in the future cosmology. R23: ok. R24: ok. R25: ok. R26: ok. R27: ok. R28: I don't understand your writing, please elaborate in plain English. R29: partly true as FIMs might engage in journeys and seasons/episodes that do rely on action. A FIM that just exits will in the end lose their cord health connected to the Whisp. R30: I don't understand your writing, please elaborate in plain English."
+
+**Held (interpretation check):**
+- **R-12 — confirmed as offered in S106.** Wisdom from the future self; openness from the newborn (no grudges, no biases, no prejudgement). An image of the universe, never presented as science.
+- **R-20 — voluntariness sets the ceiling, care sets the floor.** The Whisp may decline to open the panic zone; it never refuses a retreat and never shortens the FIM's cord. The structural floors (a home before the far side) do the rest.
+- **R-21 — the test is run wherever the Shadow is met,** near side included. Depth sets the size of the test, not whether growth happens.
+- **R-22 — the reaches as scales of test** (near side: one hidden belief; far side: a competing commitment in full; the beyond: the whole immune system as one figure). Adopted for now; may be adjusted as the cosmology develops.
+- **R-23 — the member archetypes stay out of the bible** until validated by real members.
+- **R-24 — participation is always voluntary;** the relationship and collective perspectives can only be reached with real people. Structure, not rule.
+- **R-25 — cord health is the current state of the FIM–Whisp bond;** its maturity is the FIM's own, not visible to friends.
+- **R-26 — graduation is an internalisation arc** with no gate, no ceremony and no loss of access defined; its mechanics stay open.
+- **R-27 — the bible names its research anchors without statistics** and cites only reports that exist.
+- **R-29 — rest is not fully free (Option 1, sharpened).** Rest costs nothing permanent, but not everything waits: journeys, seasons and episodes that rely on action move on without a FIM who is away. A FIM who simply leaves and stays gone will, in the end, lose cord health — the bond with the Whisp weakens with lasting absence. It recovers when the FIM returns (S34–S35: gardening, not guarding).
+
+**Challenge (R-29):** (1) *Rest versus leaving.* S78 made rest legitimate. Suggested: a FIM who chooses to rest (the butterfly under the leaf) is not the same as one who simply disappears; chosen rest slows or pauses the decline, silent absence does not. For Stefan's ruling. (2) *Never a guilt lever.* The decline is felt on return, never pushed as a notification ("your Whisp is fading") — S70: the dark branch is a stake, never a whip; the same holds for the cord. (3) *Absence never kills the Whisp.* A dead cord is a Marath event (S27, S40); absence only thins health.
+- **R-28 and R-30:** re-explained in plain English; rulings pending.
+
+#### 108. R-28, R-29's follow-up and R-30
+
+**Statement (Stefan, 2026-09-25):** "R28: ok. R29: ok. R30: ok."
+
+**Held (interpretation check):**
+- **R-28 — "collapse a perspective" is retired.** The bible writes **"work through a perspective"**: the "me" perspective can be worked through alone; "me with you" and "me in a community" only with real people.
+- **R-29 — chosen rest and leaving differ.** Chosen rest (the butterfly under the leaf) slows or pauses the weakening of cord health; simply disappearing does not. The weakening is felt on return, never pushed as a guilt notification; absence never kills the Whisp, it only thins cord health, and health recovers on return. Journeys, seasons and episodes that rely on action move on without an absent FIM.
+- **R-30 — the three rest rules (S78) are adopted.** (1) Rest is the Whisp's when chosen knowingly and ending in flight; Mara's when it is avoidance that never ends. (2) The FIM decides when the storm has passed; the Whisp may ask, "is it still raining, or is that Mara talking?" (3) Place 2's "never-ending rest" means the shelter is always there to return to, not a place to stay forever.
+
+#### 109. The story rulings (R-31 to R-39)
+
+**Statement (Stefan, 2026-09-25):** "R31: keep seasons and episodes open. R32: There are deeper ideas behind 'journeys into route types (fixed, hybrid, started by the traveller, AI-generated) and content families (witness, reflect, decide, act, encounter, rest)' so keep this but flag this as something that needs to be dealt with once the studios are being specified and designed. R33: Agree to your given explanation but keep the TV lingo as it's widely used in the industry. R34: ok. R35: ok. R36: ok. R37: Flag it as something that needs to be dealt with by Dreamineers and then with a reference / connected to Kegan's Immunity to Change framework. R38: ok. R39: ok."
+
+**Held (interpretation check):**
+- **R-31 — seasons and episodes, rhythm open.** Story is authored as seasons and episodes. The cadence (how many, how often) and any personal tailoring stay open (CQ-011).
+- **R-32 — route types and content families are kept, flagged.** The bible carries the signature-journey-to-charter-trip range (S19) and keeps the route types (fixed / hybrid / traveller-initiated / AI-generative) and the content families (witness / reflect / decide / act / encounter / rest) as ideas with more behind them, in an Open box: **to be worked out when the studios (Journey Studio, Arc Studio) are specified and designed.**
+- **R-33 — plain words and the industry's words, both.** The bible explains the structure plainly (seasons and episodes; a mythology; a mystery that unfolds) and keeps the television terms (A-plot, B-stories, sub-plots, mythology arc versus standalone episode) because they are the industry's working vocabulary that authors will know.
+- **R-34 — home base.** A story may define its own home base within an arc, which may be the FIM's own home; whether they are ever the same object stays open.
+- **R-35 — the knowledge tiers are adopted:** the deep bible (the whole truth), the story bible (what authors receive), breadcrumbs (what FIMs find); a breadcrumb register; mythology arcs versus free episodes; the answer fixed before the first clue; the personal reveal gated by growth. Who holds the deep bible and how an author enters it stays with CQ-018.
+- **R-36 — all story is authored by FIMs in Dreamineer mode;** the founder is a FIM; mythology arcs are commissioned through the canon function.
+- **R-37 — the Hero's Journey, flagged for the Dreamineers.** The bible states it once, as VISION does, and carries an Open box: how the Hero's Journey shapes seasons, the Mist's arrival and graduation is **for the Dreamineers (Tellers, Wayfinders) to work out, connected to Kegan's Immunity to Change** — the journey's stages read against the Mara-to-Whisp transfer and the zones (S56–S57, S74).
+- **R-38 — "Season Zero" is the launch's name,** a founding moment, not an authored season.
+- **R-39 — fear in stories.** The fear zone is where Mara is loudest inside the FIM; the world is never designed to frighten; the dark future drives the plot, never the FIM. Stated in the story chapter as well as in growth.
+
+**Observation (Claude):** R-37 pairs two maps that fit naturally: the Hero's Journey's call, refusal, threshold, ordeal and return, and Immunity to Change's commitment, competing commitment, Big Assumption, test and release. The "refusal of the call" is Mara's voice; the ordeal is the test of a Big Assumption; the return with the elixir is what the Whisp gains. Offered as a starting point for the Dreamineers, not a ruling.
+
+#### 110. Roles, community and cross-cutting rulings (R-41 to R-50)
+
+**Statement (Stefan, 2026-09-25):** "R41: ok. R42: ok. R43: ok. R44: It's both and in the most immersive way it's a phone in a 'gimbal shell' giving the phone a visual look of an ancient device that allows a physical glowing ball to be attached to it. R45: ok. R46: ok. R47: point 3 needs explanation, otherwise ok. R48: ok. R49: ok. R50: ok. We have not yet named 'place 2'!"
+
+**Held (interpretation check):**
+- **R-41 — every L2 seat (Universeers, the FringeIsland Council, DeusEx) is held by a FIM.** You cannot build FringeIsland from outside it (S29).
+- **R-42 — the founding moment, as current intention.** Backers arrive in FringeIsland (the universe) on the near side, through the founding questions like everyone else; founding Dreamineers receive their authority as a grant; everything else is in a "not yet designed" box.
+- **R-43 — CQ-009 restated (Option 1):** "Is a human mentor or elder role wanted, and is the Guide role sufficient?" — without the age claim.
+- **R-44 — the Gimbal's two faces, and its most immersive form.** In the fiction, the ancient instrument that opens the Shimmer; on the platform, the FIM's phone running the app (S93). **At its most immersive it is a phone in a Gimbal shell** — a case that gives the phone the look of the ancient device, with a mount for a physical glowing ball. Shell and ball are optional (S94).
+- **R-45 — a Mist's limits, precisely:** reach (the near side only; no portal but the birth's); accretion (interaction grows as the static clears); memory (nothing remembered once the Mist's account is erased, S98).
+- **R-46 — the Foundation** is the intended permanent holder; formal establishment: not yet.
+- **R-47 — the CQ-018 principles:** points 1, 2 and 4 adopted (canon keeping is a function inside Universe Studio; the deep bible by commission, never by rank; the repository is not the vault). Point 3 re-explained; ruling pending.
+- **R-48 — "leave something unmapped" is a stated design principle** of the universe, in the bible's Start here chapter.
+- **R-49 — the bible's own tier.** A notice at the top: it holds the backdrop, which is never surfaced in the experience and is left out of the story bible; its distribution follows CQ-019.
+- **R-50 — Claude Code may make vocabulary-only corrections to VISION.md** at the switch-over (Marath; the far side; the beyond; the village; lines, not branches, for bonds). No substance changes.
+- **Place 2 is still unnamed.** Session 02 stays open for it (S65, Candidate C, twelve passes).
+
+#### 111. Place 2 is named Nalome — the whole world
+
+**Statement (Stefan, 2026-09-25):** "R47: ok. Place 2's name: Nalome is the name of 'place 2' and it covers the whole place 2 world."
+
+**Held (interpretation check):**
+- **R-47 — point 3 adopted,** with its explanation: the deep bible's unchangeable truths are **fixed points**; a **breadcrumb** is a clue planted in a story that points toward one. A story that touches a fixed point or plants a breadcrumb is a **mythology arc** and involves the canon keepers; every other story is a free episode any Teller may write. All four CQ-018 principles are now adopted; membership mechanics, the fixed-point list and the repository split stay open (CQ-018, CQ-019).
+- **Place 2 is named Nalome.** The name covers the whole world — its near side, its far side and its beyond — not only the village and the private home (this answers Candidate C's fourth-pass question: the whole world). The pair is now **Nalome and Marath**. "Place 2" and "the warm world" are retired as working names. This closes Session 02's naming journey (S63–S65) and Candidate C.
+
+**Challenge:** (1) *Its lineage.* S65 asked for a name derived from the Whisp's voice, as Marath is from Mara. Nalome is new to the record (none of the twelve passes tabled it), so its meaning and origin, if any, are Stefan's to state; the bible's glossary needs one line on it. (2) *Pronunciation.* NA-lo-me, na-LO-me or na-LOME: one should be fixed, since English, Swedish and French readers will each guess differently (French ears may hear *Lomé*, the capital of Togo). (3) *Checks.* A quick web search (2026-09-25) found Nalome only as a personal name and surname (for instance in north-east India) and no company or brand; Bolagsverket, trademark (EUIPO, USPTO) and domain checks are still owed before it is used publicly.
+
+#### 112. Nalome: from the unalome, chosen for its sound; said na-LOME
+
+**Statement (Stefan, 2026-09-25):** "What it carries: from Unalome and for its sound. How to say it: na-LOME."
+
+**Held (interpretation check):**
+- **Lineage.** Nalome is derived from the **unalome**, the Buddhist symbol (known above all from Thai *sak yant*) of the path to enlightenment: a line that begins in spirals — the confusion, doubts and struggles of a life — straightens as it rises, and ends in dots, clarity reached. Chosen for this and for its sound.
+- **Pronunciation:** na-LOME (stress on the second syllable, rhyming with "home").
+- **Why it fits (Claude):** (1) *One source for the pair.* Mara is the Buddhist tempter who tried to stop the Buddha's awakening; the unalome draws that awakening as a path. Marath and Nalome now come from the same tradition, as Candidate C's first pass hoped, and the Buddhist idea sits under a Western-soft sound, as Stefan asked in the third and tenth passes. (2) *The spiral that straightens is the universe's growth.* The static clearing (S82), the Mist's face forming (S47), Mara's hold loosening as the Whisp fills (S57), the Whisp's face turning from anonymous to one's own (S100): each is the spiral becoming a line. (3) *na-LOME rhymes with home* — the drip, the village, the private home, the shelter that is always there (S33, R-30).
+
+**Challenge:** *A sacred symbol.* The unalome is sacred in Thai Buddhist practice and widely worn as a tattoo, which some Buddhists find disrespectful. Suggested: the name borrows the idea; the symbol itself is not used as a logo, ornament or in-world decoration unless a person from the tradition is consulted. Glossary line: "Nalome (na-LOME): the world counterpart to Marath; the name is derived from the unalome, the Buddhist figure of the path from confusion to clarity."
+
+#### 113. Part 3 rulings: the candidate tables (A, B, research ideas); citations always kept
+
+**Statement (Stefan, 2026-09-25):** On Part 3 of the rulings record, with every row not mentioned agreed as suggested: "B-B: The drip bottom forms a glowing ball, the glowing ball opens portals and the Gimbal sees. B-D: correct but do not mix drips and balls! B-E: keep but as part of the story of how portals were discovered in the first place. The Gimbal has since been developed to skip these original 'musts' for transporting to the other worlds. Mind you that these phenomena might reoccur in seasons and episodes as story elements and explorations WHY these phenomena were needed and where they come from = what has gone into the development of more modern Gimbal devices. B-F: no this is a definite keep! It happened according to the story and lore but that was a long time ago. Also reference my comments to B-E. Keep Rs-1 but with a flag that we need to discover and debate later. Rs-2: The three levels are super important, individual, pair and community. Whatever you do, do not drop these three perspectives as these are very important to a person's inner development. Rs-7: please explain further. Rs-12: keep citation. Always keep citations and references to research origins."
+
+**Held (interpretation check):**
+- **Agreed as suggested:** A-1 Shimmer-cut (open); A-2 cairn portals (open); A-3 door by inner state (open); A-4 roped descent (adopted in substance; "don't look back" and two FIMs roped together open as craft); A-5 "Shadow-side" (name dropped; the mechanic is the near side); A-6 book-as-portal (open); A-7 the Mask (open); A-8 the Cyclone (dropped unless fully opt-in); A-9 the Mirror in the home (open, flagged panic-adjacent); A-10 the living bridge (open; must not duplicate the lines); A-x "every lasting portal carries one rule" (craft heuristic). B-A the Gimbal as ancient knowledge made buildable by AI (open, to be read against the backdrop); B-C ball resonance (dropped: the lines do this); B-G (the claim that the Whisp does not know Marath dropped; "the instrument was never tested against Marath" kept as backstory); B-H the physical ball (settled, S94). Rs-3 (adopted: the Whisp models what the FIM grows toward); Rs-4 (research for the Whisp's specification); Rs-5 (the distress boundary adopted; the detailed behaviour open); Rs-6 (Kegan's orders as a ladder or compass dropped, R-18); Rs-8 (holding environment adopted for the Whisp; village and groups open); Rs-9 (adopted: deep change takes months to years); Rs-10, Rs-11 (research); Rs-13 (kept for the MANIFESTO); Rs-14 (open, Teller craft).
+- **B-B — three objects, never mixed.** The **drip** hangs in the Tree, a leaf on a limb. The **ball** is the glowing bottom of the drip, released to the FIM in the Ordinary World and attached to the Gimbal. **The ball opens portals; the Gimbal sees.** (Claude's summaries earlier in this session sometimes said "the drip opens portals"; the ball does.)
+- **B-D — the ball may mature** (clunky to Ferrari): open, as capability only, never a visible rank. Drips and balls are kept apart in every sentence.
+- **B-E — the altered states are how portals were first discovered.** Lucid dreaming, out-of-body experience and sleep paralysis were the original ways across; the Gimbal was developed over time to make them unnecessary. They are **lore, not mechanics**, and may return in seasons and episodes as story elements exploring *why* they were once needed and where they came from — which is also the story of what went into the modern Gimbal.
+- **B-F — the first opening, and its shutdown of unknown cause, is lore: a definite keep.** It happened, long ago. With B-E it forms the universe's **older mythology**: how the worlds were first reached, how the way closed, and how the Gimbal reopened it. Deep-bible material: its fixed points and breadcrumbs follow R-47.
+- **Rs-1 — kept, flagged:** the concealed cosmology (a future power sending the Whisp as an unwitting instrument) stays on the table against the S67 backdrop, **to be discovered and debated later**.
+- **Rs-2 — the three levels stay: individual, pair, community.** They are the three perspectives (1, 1+1, 1+Community; VISION) and central to inner development. Claude's suggestion was only to drop the *Jungian* shadow mechanism behind the research idea; the three levels themselves were never to be dropped. Whether Mara, and so the Shadow, also exists at the pair and community levels is asked in the reply below.
+- **Rs-12 — the knowledge argument (Mary's Room) keeps its citation.**
+- **Standing rule for the bible: always keep citations and references to research origins.** Every research-grounded idea carries its source (thinker, work, and where useful the research report in this folder). R-27 is read with this: no statistics in the body, but citations always.
+- **Rs-7:** re-explained below; ruling pending.
+
+#### 114. Shadows at the pair and community levels; Rs-7 open; the research and the Whisp's wisdom are never deleted
+
+**Statement (Stefan, 2026-09-25):** "Option 1. Rs-7: we keep this one open as it depends on how we build the software in the future and what we by testing find works best. By the way, we have a lot in our research and also for the wisdom of the Whisp — I don't want to lose this material. Please make sure to keep records of these parts of our core origin. Rename and rearrange if necessary but never delete!"
+
+**Held (interpretation check):**
+- **Rs-2 (Option 1) — Mara exists at all three levels.** Besides each person's own Mara, a **pair** can have a shared hidden rule that holds both back ("we never argue, so we never say what matters"), and a **community** can have one too. So a pair or a group can meet a **shared Shadow** in Marath. Grounded in Kegan and Lahey's collective immunity to change (*Immunity to Change*, 2009, on teams and organisations; `research--growth--kegan-immunity-to-change.md`) and consistent with S66, which scaled Mara to a civilisation. This refines R-15/R-16: "Shadow" names a Mara met as a form in Marath, whether one person's, a pair's or a community's. A shared Shadow manifests only to those who share it (S62's rule, widened as in S102).
+- **Rs-7 — open.** Whether the four-column immunity map becomes a visible journey step, and whether a respawn carries a prompt about one's assumptions, depends on how the software is built and on what testing shows works best.
+- **The research and the Whisp's wisdom are core origin material and are never deleted.** The `research--` reports, above all `research--growth--thinkers-and-models-behind-the-whisp.md` (the thinkers behind the Whisp), the Kegan, Theory U and what-fills-a-life reports, and the worlds and method reports, are kept as the record of where FringeIsland comes from. They may be renamed and rearranged; they are never deleted. The same holds for the discovery log and the candidate material. The bible cites them (S113's standing rule) but does not replace them. The switch-over (Phase 5, Claude Code) inherits this rule. Stefan, in the same exchange: "that last part can be kept aside from the bible of course!" — the research stays **outside** the bible, in its own register; the bible only cites it.
+
+**Challenge:** *Shared Shadows raise two design questions,* both open: (1) who may face a shared Shadow — all who share it, or any one of them on the others' behalf; (2) a shared Shadow shows something about a relationship or group to its members, so its form and force may be visible to them, never its content (S62's rule).
+
+#### Patterns and cross-cutting observations
+
+- **The rulings list is complete.** R-01 to R-50 and all of Part 3 are ruled (S79–S81, S92, S103–S114), with open items carried as Open boxes. The bible can now be written.
+- **Plain English first.** Several rulings were only possible once the item was restated in plain words (R-11, R-28, R-30, R-47, Rs-7). The bible should be written the same way: plain words first, the technical term and its source beside it.
+- **Stefan protects origins.** Three rulings keep material the suggestions would have trimmed: the TV craft vocabulary (R-33), the older mythology of the altered states and the first opening (B-E, B-F), and citations and research (S113–S114). The bible is the single truth, not the only record.
+- **The three levels run through everything.** The Whisp's two channels, bonds of two or more (S102), shared Shadows (S114), and the three perspectives: individual, pair and community recur at every layer.
+
+#### Open threads
+
+- Shared Shadows: who faces them, and what their members see (S114).
+- The Whisp's channel 2: how Mara's release reaches the Whisp's content (S103).
+- Rs-7: the immunity map and respawn prompts, decided by build and testing.
+- Rs-1: the concealed cosmology, to be debated later.
+- B-A: the Gimbal as ancient knowledge made buildable, read against the backdrop; B-E and B-F: the older mythology's fixed points.
+- R-32 and R-37: route types, content families and the Hero's Journey, for the studios and the Dreamineers.
+- Nalome: Bolagsverket, trademark and domain checks (S111).
+
+#### Baked into the bible
+
+Nothing yet: the bible file is written next, in Phase 4, starting with the glossary. Sessions 04 and 05 together supply every ruling it needs; each statement's held text names its chapter.
