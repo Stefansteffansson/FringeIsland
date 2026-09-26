@@ -558,7 +558,157 @@ The research stays outside the bible, in its own reports, and it is never delete
 
 ## 5. Story
 
-*To be written.*
+This chapter says how story works in FringeIsland: what it is for, the ground it plays on, felt stakes and respawn, seasons, episodes and journeys, who authors them and under what rules, the backdrop and where it lives, how the mythology is held, the older mythology, and the first hour. The places are chapter 2, the beings chapter 3, growth chapter 4; the studios and the roles that author story are chapter 6.
+
+Open questions stand in **Open** boxes with an S-number; chapter 8 indexes them.
+
+### 5.1 What story is for
+
+FringeIsland is experienced as story. Members do not use FringeIsland; they enter a world, and through that experience something real changes. Personal development happens through lived experience, not instruction: entertainment is the surface and development the consequence. Story, not data, is how FringeIsland helps a person discover who they are: not metrics, not scores, not algorithms.
+
+Stories stand alone as entertainment while the developmental themes stay invisible in the foundation. A member can engage purely for the story and have a full experience; for those who look deeper, the scaffolding is always there. Learning emerges implicitly. Being told is not the same as living it, which is why the story carries felt stakes rather than stated lessons.
+
+Humans and their stories outrank aesthetics and worldbuilding. When they pull apart, the human wins, then the story, then the world. And constant change is the steady state: experiment, look honestly at what worked, retire what did not.
+
+Story is the driving force behind immersive edutainment: immersive because the world is full-spectrum and felt, edutainment because its narratives carry growth through that felt experience. The Hero's Journey is the narrative framework FringeIsland names for its story. *Origin: Joseph Campbell,* The Hero with a Thousand Faces *(1949).*
+
+> **Open S-01 — The Hero's Journey and the universe's own arcs.** How its stages shape seasons and episodes, the Mist's arrival and graduation is for the Dreamineers to work out, read against Immunity to Change: the refusal of the call as Mara's voice, the ordeal as the test of a hidden belief, the return with the elixir as what the Whisp gains. Offered as a starting point, not a rule. *Waits for:* the Tellers and Wayfinders.
+
+### 5.2 The ground the stories play on
+
+The world spans a full tonal range. One pole is warm, welcoming, colourful and full of human forgiveness; the other is hostile, cold, full of traps and betrayal; and everything in between. The poles are Nalome and Marath, two centres of gravity of one continuous spectrum, not two sealed boxes, and the contested ground between them is where most stories live. Marath is at first sight hostile, deceiving and evil; underneath it is Mara made into a place. These opposites and all that lies between them are the backdrop for storytelling that fills FringeIsland with life and death. Narrative is the figure; the tonal world is the ground.
+
+The Whisp's tough love and the world's full range are temperamentally matched: a world of only warmth would undercut the Whisp, a world of only threat would crush it.
+
+The dark pole is not confined to a far frontier. Marath is co-located with Nalome and reachable by crossing, and every wound in Nalome has a cause in Marath. That gives story a legible loop: notice the blight, cross a portal, stop the cause, watch the warm world heal. The world contains life and death; the experience of being in it is meta-safe.
+
+### 5.3 Felt stakes over stated lessons
+
+FringeIsland is safe. Stories can put a FIM through hard things because the FIM cannot be broken by them: narrative consequence is real, existential consequence is reversible. What is at stake is the projection, the relationship and the progress, never the human. The Whisp walks the world, can be hurt, dies in a story and respawns; the FIM in the Ordinary World is always safe and still cares deeply what happens to their Whisp, as Jake does not want his Avatar hurt. Felt stakes do not need existential risk. When a story brings a FIM to their own negative voice, it is the Whisp that meets the Shadow; the FIM never faces Mara directly.
+
+The growth pressure of a story is Void distance on the cord, and the FIM holds the dial. The Whisp pushes cautiously toward growth, never into panic, and panic is a fence, not a zone a story visits: a test too big to be safe strengthens the immunity. Two rules follow for every author. The fear zone is where Mara is loudest inside a FIM, never a place the world is designed to frighten; fear is Mara's voice met through the Whisp, not a feeling a story aims to cause. And the dark future drives the plot, never the FIM: it gives a story its danger, its mystery and its reason to keep looking, and it never hurries, guilts or paces the person. Rest is legitimate, and a return to comfort is part of the rhythm, not a step back.
+
+### 5.4 Respawn: the loop is the medium
+
+When the Whisp gets into trouble and dies, the FIM rewinds and tries again, and again, until the skill is mastered or the story's task is accomplished, alone, with a travelling partner, or with a group. It is the Whisp that dies and re-enters; the FIM holds continuity of self across every re-entry. Productive failure is built into the structure.
+
+**Respawn is plural, not singular.** Topologies coexist: event-local, for a FIM alone; round-bounded, where a group dies during a round and returns together at the next, as in Counter-Strike; day-bounded; episode-bounded. Different stories use different loop units, and group respawn is solvable because a round-bounded structure resets everyone at a shared boundary.
+
+**Respawn stays inside the story.** A FIM who dies respawns within the same journey, season or episode: at home base, a safe return point within the arc, or by episode-repeat, the whole episode replayed. The containing arc keeps holding the FIM; a story never ejects its participant on failure. A story may define its own home base, which may be the FIM's own home.
+
+**Respawn is nested and scaled.** Small failures, small respawn, at home base; large failures, a larger unit repeats, the episode, and by the same scaling the season. The units nest: journey, season, episode, moment, and a respawn exists at each level. The cord's two tiers of severance, fall back to the last seed or start over from the beginning, are the same system given a cause and a currency.
+
+**The loop is the medium, not a safety net.** What persists across a loop, tactical knowledge, relational insight, emotional clarity, is part of what the story is about. Failure and retry are how the story works, not what it falls back on when it breaks. Loop textures are a craft palette for Tellers, and respawn need not be combat-coded: combat practice, as in Edge of Tomorrow; the mystery-puzzle, as in Happy Death Day; constrained inquiry, as in Source Code; reflective grief, as in Re/Live.
+
+The learning zone is where the test of a hidden belief is run, under meta-safety and with respawn; a respawn is where the immunity is met, and a failed run is developmental material, never a lesson delivered. *Substrate: the respawn as an encounter with one's immunity, adopted from the Kegan report in substance; no diagnosis is ever surfaced at a respawn, and nothing labels the FIM.*
+
+> **Open S-02 — How respawn feels and who starts it.** How in-story death and rewind actually feel, a hard cut, a slow dissolve, waking at the checkpoint, neither clinical nor traumatic; whether a rewind is FIM-initiated, Whisp-offered or both; whether a FIM can respawn deliberately to try another way; how a loop's unit is communicated and how nested levels are surfaced; whether the Whisp behaves differently at home base between attempts. *Waits for:* a narrative session and the Whisp's specification.
+
+> **Open S-03 — Group respawn outside the round.** How a pair or a group reconciles individual and group readiness to retry in a slower, non-round-bounded story: voting, waiting, mediated by the Whisps. *Waits for:* a narrative session.
+
+> **Open S-04 — What persists across a rewind, and what it costs.** Per topology and per story: story state resets while awareness, the Whisp's memory and growth persist; whether respawn modes other than the cord's severance carry a cost. *Waits for:* a narrative session; Tellers' craft.
+
+> **Open S-05 — Loop textures and their purpose.** Whether a texture maps to a developmental purpose; whether a FIM knowingly enters a repeating story or discovers mid-story that they are in one, and whether that framing is itself a developmental signal. *Waits for:* a narrative session; Tellers' craft.
+
+> **Open S-06 — Home base as an object.** Whether a story's home base is ever the same object as the FIM's private home behind the ball, or always a story-defined place. *Waits for:* the fundamentals session.
+
+### 5.5 Seasons, episodes and journeys
+
+Story is authored as seasons and episodes by Tellers in Arc Studio. Journeys, a FIM's own paths through the world, walked alone, in a pair or in a group, the three perspectives, are authored by Wayfinders in Journey Studio. Universe Studio is the parent and binding frame that keeps world, story and journeys coherent. The units nest for the purposes of respawn: journey, season, episode, moment.
+
+The world has a mythology, a mystery, and an unfolding. The television vocabulary stays in use beside the plain words, because it is the working vocabulary authors know: a season has an A-plot, B-stories and sub-plots; mythology episodes, which carry the deep story, stand beside standalone ones. How many seasons there are and how often, and any tailoring of a season to a person, are open.
+
+Journeys become bespoke by disclosure: the more instruments a FIM has disclosed across, the more their journeys become a signature journey rather than a charter trip, the same bus for everyone. Journeys declare the equipment they need when they are authored. The Game is a depth setting of journeys inside the one lived experience, not a product. Two ideas with more behind them are kept for the studios to work out: route types, whether a journey's path is fixed, hybrid, started by the traveller or generated; and content families, the kinds of moment a journey is built from, witness, reflect, decide, act, encounter, rest.
+
+Seasons and episodes can move FIMs across the three perspectives over time. A piece of story may touch one cell of the nine-cell matrix, several or all nine; the matrix is not a curriculum. The relationship and collective perspectives need other people, never NPC interaction or AI-generated activity. Story is the expedition way of engaging; a FIM who cultivates their home and never ventures far into the wider narrative is inhabiting FringeIsland completely, and no progression is required. The beyond of either world is optional, and FringeIsland has no final boss and no end to reach.
+
+> **Open S-07 — Narrative beyond respawn.** What seasons and episodes are as canon: their cadence, their shape, personal tailoring and whether that can be delivered at the quality required; and journeys' route types and content families as creative description. Only respawn is settled. *Waits for:* a narrative discovery session; the studios' specification.
+
+> **Open S-08 — Wayfinder difficulty levers.** Whether the density of seeds along a route is a lever a Wayfinder tunes, sparse routes committing and rich routes forgiving. *Waits for:* Journey Studio and a session on Wayfinder craft.
+
+### 5.6 Who authors story, and under what rules
+
+All story is authored by FIMs in their Dreamineer modes. Nobody builds FringeIsland from outside it; the founder is a FIM. Tellers author the particular: a specific named individual with a history, a wound, a desire and an arc, a character in motion. Anthropologists supply the cultural soil; Tellers grow characters from it. A story-critical NPC, the betrayer of this episode, the mentor, carries all three authorial layers, and an inhabitant built in World Studio is deepened when a story reaches for it. Mythology arcs are commissioned through the canon function. The in-world creative names of an earlier draft, Makers, Weavers and Skalds, are retired.
+
+AI in authoring follows the human-first rule: human intent first, AI expansion second, human selection last. Dreaming sessions protect the first thought: people dream before AI expands the field, and AI facilitates, never generates the idea. Guard rails are bidirectional and human-authored: they constrain the AI, and they protect the human at the wheel. The second kind of rail exists precisely because the universe deliberately includes a hostile pole, blurs reality and fiction, and pushes FIMs toward growth: "this scene may land as genuinely frightening rather than playfully ambiguous"; "six dark episodes in a row, intentional?" AI collapses the production cost of story surfaces, sites, in-world documents, NPC voices, images, audio, micro-apps, but nothing ships that a human did not choose to ship; the hand-placed feeling survives by construction.
+
+> **Open S-09 — Dreamineers inside the narrative.** Whether authors appear inside the world they write, a Teller as a character, an in-world name that carries authorship, or only behind it. *Waits for:* a discovery session; the studios.
+
+> **Open S-10 — The dark pole in craft.** How the blur of reality and fiction is kept without ever deceiving a FIM harmfully; the line between immersive ambiguity and genuine confusion is a design discipline, and the fear zone is never a story's target. Belongs to the story bible's guidance for authors. *Waits for:* the story bible.
+
+### 5.7 The backdrop: why the Whisp is here
+
+*This section is deep-bible tier: never surfaced in the experience, and left out of the story bible.*
+
+The Whisp is the FIM's own future, whole self reaching back to the FIM of now. What reaches back is not a separate being; "the Whisp is the human" and "the Whisp comes from the future" are one fact, and that is the source of the Whisp's wisdom: it is the self that has already grown. The future self sends back wisdom, how to see and how to meet what has you, never content, who you became or what you chose; the Whisp's emptiness is chosen, and it protects the three questions as the FIM's own to answer. The future that reaches back is possible, not guaranteed. The time loop is real, but it does not close by itself: the FIM closes it by growing, and stays free to walk toward it or not.
+
+The cause is this. The arrival of AI is a larger leap than the internet, and it places more power in human hands, faster, than anything before. The future runs between two poles: a balanced, beautiful world with AI part of a well-balanced whole, a world people want to belong to; and a dark future in which short-term greed lets the race run loose and ends in catastrophe. The future is a continuum, not a fork: two poles and everything in between, so that no story turns on a single switch between doom and paradise. Time is an axis of the cosmology, and this reaching back is its first known crossing.
+
+The Whisp's mission is the growth itself, never a conclusion. The chain runs: growth, then seeing one's own immunities, then choosing well, then using AI responsibly, then a future world people want to belong to. Choosing well means choosing while seeing your immunities: it is defined by how a choice is made, not by what is chosen, and the Whisp has no preferred answer, about AI or anything else. It never recruits and never steers what a FIM chooses; the good future is a consequence it trusts in, never a target. The middle links are a bet, not a promise: a greater capacity to see is not a guarantee of good values.
+
+The saviour is the human's own future self, never the machine. The AI that runs the Whisp is only the medium through which one's future self speaks; the tool that could run away with the future is used by humans to hear their own wiser voice. And the Whisp borrows no authority from the backstory: it never says "trust me, I have seen it".
+
+The dark future is the stake of the universe, never a whip. It is never used to hurry a FIM or make them feel guilty: no countdown, no "hurry or the world ends". It is the fundament of great storytelling, because something needs to itch to be found interesting and to gain people's curiosity; it gives the narrative its danger, its mystery and its reason to keep looking. It drives the story, the world's plot, its seasons and its episodes; it never drives the FIM, their pace, their depth or their dial. It sets a stage the FIM uses for growth in all three perspectives, with the Whisp's tough love, through the zones.
+
+Mara scales. Beneath a stated commitment to balance lies a hidden commitment not to fall behind, to capture the gain now: the race is a collective immunity to change. Personal growth and the world's future are the same mechanism at different sizes, and that is why the Whisp's personal work can carry a civilisational stake without changing what it does. Whether Marath is that dark future at the scale of a civilisation, its beyond the collapse at full strength, is open; the bible states only that Marath resonates with Mara. *Substrate: Kegan and Lahey's collective immunity to change; the Kegan report. Robert Kegan's own argument, that modern life asks more of adults than most ways of making meaning can meet, is this backdrop's thesis before it became myth.*
+
+### 5.8 Where the backdrop lives: the conviction and the myth
+
+The backdrop is never told up front. It lives on two layers, and the difference between them is available versus told.
+
+**The conviction, public.** Why FringeIsland exists is stated plainly in the MANIFESTO, as the founders' conviction:
+
+> *We are living through one of the largest shifts humanity has ever faced. Technology — artificial intelligence above all — is placing more power in human hands than ever before, and faster than ever before. Whether that power builds a world people want to belong to will depend less on the machines than on us: on how clearly we see ourselves, how honestly we understand what drives us, and how wisely we choose. We believe inner growth has never mattered more. That is why FringeIsland exists, and why it exists now.*
+
+It is available to anyone who looks, and it is never delivered in the experience: no onboarding line, no Whisp line, no screen. It names the conviction and none of the myth: no Whisp from the future, no two futures, no Marath. It puts the outcome on humans, not on machines, and names no conclusion to reach, only to choose wisely.
+
+**The myth, discovered.** The Whisp as the FIM's own future self, the dark future and what Marath's beyond really is, the future at stake: never told. They are found through breadcrumbs in the world, and their personal core only as the FIM's Whisp fills.
+
+The secret is kept for a while, not forever. It is held in time: any FIM and any author can come to know it by growing into it. Nothing is withheld permanently and nothing is hidden that could leak as a scandal. It survives being spoiled because its real form is lived, not informational; another FIM or a wiki can tell you, and being told is not the same as living it. What stays unspoilable for good is each FIM's own future self, because it is unique to them. The open world, which belongs to the people who inhabit and create it, and the hidden layer are reconciled by this: knowing why the author made it is not being told the story's secret.
+
+Leaving something unmapped is a design principle of the whole universe. The beyond is kept unknown for curiosity's sake, the myth is discovered and not told, and every story needs a stake. *Substrate: George Loewenstein's information-gap account of curiosity; the thinkers-behind-the-Whisp report.*
+
+> **Open S-11 — The reveal design.** Which breadcrumbs, seeded where and when; how the Whisp's filling unlocks the personal reveal; how a mythology arc pays off a clue without dating the world to one decade's debate. Experience design. *Waits for:* the fundamentals, then a dedicated session.
+
+### 5.9 How the mythology is held
+
+The backdrop needs rules for who knows what, inside the authoring community as well as in the world, so that both FIMs and the authors of seasons and episodes stay on their toes. Knowledge is held in three tiers.
+
+- **The deep bible** is the whole truth, backdrop included: this document. It is held by the canon keepers.
+- **The story bible** is what authors receive: the rules of the world, the fixed points, and what may be hinted but not what it means. It leaves out the backdrop and is cut from the deep bible.
+- **Breadcrumbs** are what FIMs find in the world: clues planted in stories that point toward a fixed point.
+
+Four rules go with the tiers. A **fixed point** is one of the deep bible's unchangeable truths, a backdrop fact no story may contradict. A story that touches a fixed point or plants a breadcrumb is a **mythology arc**; it passes through the canon keepers and is commissioned through the canon function. Every other story is a **free episode**, which any Teller may write, bound only by canon; most seasons and episodes are free. Every planted hint is recorded in the **breadcrumb register** with what it points to. The answer exists before the first clue, so the mystery can always pay its clues off. And the reveal is gated by growth, not by the calendar: a FIM discovers that the Whisp is their own future self as their Whisp fills, not when an episode airs.
+
+Canon keeping is a function inside Universe Studio, not a rank: entry to the deep bible is by commission, never by position, and the founder is the first canon keeper. The repository where the design is written is not the vault. Authors stay on their toes because they write inside a world whose deepest layer they can discover the way FIMs do. *Lineage, translated and not copied: the practice of television writers' rooms, where a showrunner holds the mythology and the room writes toward it, writers receive a series bible while the mythology is shared on a need-to-know basis, mythology episodes stand beside standalone ones, a continuity group and its database track what has been hinted, and good rooms seed clues that support more than one reading; and the failure of shows that seeded a mystery before its answer existed.*
+
+> **Open S-12 — Who holds the mythology after the founder.** How canon keepers are chosen; how an author moves from the story bible to the deep bible, by growing into it or by appointment; which facts are fixed points; and where the deep bible lives, given that the repository is not the vault and must be split before outside contributors arrive. *Waits for:* Stefan for the fixed-point list; the Council and the Dreamineers for the rest.
+
+### 5.10 The older mythology
+
+The universe has a second story, older than the backdrop and deep-bible material like it. Long ago the worlds were first reached through the altered states: lucid dreaming, out-of-body experience and sleep paralysis were the original ways across. The first opening happened; and then the way shut, for a cause unknown. Over time the Gimbal was developed to make the altered states unnecessary, and it reopened the way. The instrument was never tested against Marath.
+
+This is lore, not mechanics. Entry today is chosen and seeded, both near sides are seen through the Gimbal, the far sides are crossed by the ball, and the Whisp travels while the body stays. The altered states are not modes of the threshold, and no inner state decides which world receives you. They may return in seasons and episodes as story elements, explorations of why they were once needed and where they came from, which is also the story of what went into the modern Gimbal. Their fixed points and breadcrumbs follow the same rules as the backdrop's.
+
+> **Open S-13 — The older mythology's open parts.** Whether the Gimbal is ancient knowledge that AI finally made buildable, to be read against the backdrop so that the Whisp's origin is never attributed to the machine; whether the concealed cosmology once drafted in the research, a future power sending the Whisp as an unwitting instrument, has any place beside the backdrop, kept on the table to be debated; and which of the older mythology's facts are fixed points. *Waits for:* Stefan and a discovery session.
+
+### 5.11 The first hour
+
+The first hour is the founding narrative: the story a newcomer first enters, the first mystery and conflict, the world coming to life for the first time. It is the universe's single highest-risk gap, because everything else is irrelevant if the first experience does not work. It is deferred by rule: mechanics before experience design. The opening is too consequential to choreograph before the universe's own mechanics are firm on paper, above all how the near and far sides of Nalome and Marath look and function.
+
+What bounds it is already fixed. A newcomer arrives as a Mist, anonymous, seeing only the near side, with their own Whisp and cord from the start; the static clears as the founding questions are answered; a Mist that drifts away is not yet, never dead; consent buys memory, not voice; and the birth is completion, the drip joining the Tree and the Whisp delivered with an anonymous, wise face. The mechanics of arrival are built on the platform; the narrative is unwritten.
+
+The public launch is Season Zero: the founding campaign as a founding moment and the platform's first public story, told to the world. It is not an authored season in Arc Studio's sense; it is chapter 7's.
+
+> **Open S-14 — The first hour.** What a newcomer does, sees and meets in their first hour, from the static to the birth; at what grain a Mist's journey runs; the birth sequence as experienced. *Waits for:* the fundamentals session, then a dedicated first-hour session, then specification.
+
+### 5.12 Design lineage, recorded and not adopted
+
+"Alternative Reality" is a logbook term. FringeIsland draws on the alternate-reality game tradition, in which the line between reality and fiction blurs, and on the ambient and analog-horror lineage beside it. The blur can run both ways: fiction pulling the player in, and fiction seeping out into the ordinary world. What is borrowed is the mystery aesthetic, never the exclusion or the unease. Two authored worlds set the quality bar for a coherent world with the uncanny in the everyday: Mats Åkerman's Den Svagiska Unionen and Simon Stålenhag's. None of this is adopted as a story mechanic.
+
+> **Open S-15 — Which alternate-reality mechanics, if any.** Location-anchored clues, collaborative puzzles, real-world artefacts, distributed media, in-fiction characters that respond in real time; whether collective mysteries are ecosystem-wide or scoped to a season; whether NPCs are the responding characters. *Waits for:* a narrative session; the studios.
+
+> **Open S-16 — Is the Nordic lineage deliberate?** Whether the uncanny-in-the-everyday of the authored worlds above is FringeIsland's chosen aesthetic lineage or one influence among many. *Waits for:* Stefan; the design system.
 
 ## 6. Roles and governance
 
