@@ -22,7 +22,7 @@ sacred — and both live here.
 
 World Studio also authors the first two layers of every NPC (body and culture); the character
 layer is added in Arc Studio when a story reaches for an inhabitant (see the
-[beings core](../../../fringeisland-thinking/canon--beings--whisp-and-npcs.md)).
+[the bible's beings chapter](../../../fringeisland-thinking/bible--fringeisland-universe.md#3-the-beings)).
 
 ## Access — gated by scope, not by status
 
@@ -51,8 +51,8 @@ product. Its features key to equipment (ADR-U025):
 - **Siblings:** Arc Studio (stories grown from this world's soil), Journey Studio (paths walked
   through it).
 - **Writes to:** DS-1 World Model (the domain service this studio's output lives in).
-- **Canonical grounding:** the [cosmology core](../../../fringeisland-thinking/canon--cosmology--worlds-topology.md)
-  (what the world IS), the [roles core](../../../fringeisland-thinking/canon--roles--taxonomy.md) (who may
+- **Canonical grounding:** the [bible's worlds chapter](../../../fringeisland-thinking/bible--fringeisland-universe.md#2-the-worlds)
+  (what the world IS), the [bible's roles and governance chapter](../../../fringeisland-thinking/bible--fringeisland-universe.md#6-roles-and-governance) (who may
   author it).
 
 ## Features

@@ -8,7 +8,7 @@
 
 ## Identity
 
-The Hub is **the canvas surface** of the one FringeIsland experience (ADR-U025) — the equipment profile built on screen room, keyboard, precision input, and file system, shipping today as the web app. It is the primary surface where FIMs arrive, orient, connect, and experience journeys: a browser-based environment where FIMs manage their identity, belong to groups, and engage with structured developmental experiences. It serves the same one experience as the Gimbal; what differs is equipment, not audience. (Where FIMs rest and gather in world-language is the village, in the Beyond of the warm place — see the cosmology core, [`docs/fringeisland-thinking/canon--cosmology--worlds-topology.md`](../../fringeisland-thinking/canon--cosmology--worlds-topology.md).)
+The Hub is **the canvas surface** of the one FringeIsland experience (ADR-U025) — the equipment profile built on screen room, keyboard, precision input, and file system, shipping today as the web app. It is the primary surface where FIMs arrive, orient, connect, and experience journeys: a browser-based environment where FIMs manage their identity, belong to groups, and engage with structured developmental experiences. It serves the same one experience as the Gimbal; what differs is equipment, not audience. (Where FIMs rest and gather in world-language is the village, in the Beyond of the warm place — see the bible's worlds chapter, [`docs/fringeisland-thinking/bible--fringeisland-universe.md`](../../fringeisland-thinking/bible--fringeisland-universe.md#2-the-worlds).)
 
 The Hub is where you land. It is not where you author.
 
@@ -16,7 +16,7 @@ The Hub is where you land. It is not where you author.
 
 ## Target users
 
-The canonical role taxonomy lives in [`docs/fringeisland-thinking/canon--roles--taxonomy.md`](../../fringeisland-thinking/canon--roles--taxonomy.md) — this section names who the Hub serves; the roles core defines them.
+The canonical role taxonomy lives in [`docs/fringeisland-thinking/bible--fringeisland-universe.md`](../../fringeisland-thinking/bible--fringeisland-universe.md#6-roles-and-governance) — this section names who the Hub serves; the bible's roles and governance chapter defines them.
 
 **Mists** — the anonymous entrants (the identity state before transcendence). Mists can browse, explore, and begin participating before creating an account. Their activity and preferences accumulate via anonymous sessions (ADR-U004) and transfer seamlessly into a FIM account upon sign-up. The Mist-to-FIM transition is a soft threshold, not a wall.
 
@@ -74,7 +74,7 @@ The Hub intentionally does **not**:
 - The Gimbal (the senses surface) — shares the same Platform API and serves the same one experience; the Hub carries the features keyed to canvas equipment, the Gimbal those keyed to `sensors`. (The Game is not a product — it is a depth setting of journeys; ADR-U025.)
 
 **Does not consume (yet):**
-- Domain Services — World Model (future: Whisp presence, the worlds' atmosphere — see the cosmology core)
+- Domain Services — World Model (future: Whisp presence, the worlds' atmosphere — see the bible's worlds chapter)
 - Domain Services — Narrative (future: seasons and episodes)
 - Domain Services — Discovery (future: search, recommendations)
 - Domain Services — Intelligence (future: the Whisp's being-face — its dialogue and growth-driven accumulation; ADR-U029)

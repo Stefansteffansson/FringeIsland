@@ -54,7 +54,7 @@ Open at §2 (resolved at Step 2; see §8):
 
 #### Governance by scope and the enterprise-stewardship plane (ADR-U028; added 2026-06-10)
 
-Per ADR-U028 and the roles core (`docs/fringeisland-thinking/canon--roles--taxonomy.md`, L2), the enterprise-stewardship plane has named human seats, all realized via the universal group pattern (groups + role permissions; no new permission mechanism):
+Per ADR-U028 and the bible's roles and governance chapter (`docs/fringeisland-thinking/bible--fringeisland-universe.md`, L2), the enterprise-stewardship plane has named human seats, all realized via the universal group pattern (groups + role permissions; no new permission mechanism):
 
 - **Universeers** — care domains spanning the whole Universe: constituency, portfolio, community, economy, legal.
 - **The FringeIsland Council** — major decisions concerning FringeIsland and its connection to partners.

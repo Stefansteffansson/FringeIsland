@@ -54,7 +54,7 @@ Regardless of licence layer, the following are held permanently by the Foundatio
 - The red thread — the three questions, the fundamental purpose
 - Member data and privacy architecture
 - The brand and world identity — name, visual identity, canonical lore
-- The governance structure — the Foundation as legal holder, with enterprise stewardship by the Universeers, the FringeIsland Council, and DeusEx (see the [roles core](../../fringeisland-thinking/canon--roles--taxonomy.md))
+- The governance structure — the Foundation as legal holder, with enterprise stewardship by the Universeers, the FringeIsland Council, and DeusEx (see the [bible's roles and governance chapter](../../fringeisland-thinking/bible--fringeisland-universe.md#6-roles-and-governance))
 
 → *See [CONTRIBUTION_ARCHITECTURE.md](./CONTRIBUTION_ARCHITECTURE.md) §What Is Never Open to Contribution for the full list.*
 

@@ -10,7 +10,7 @@ This document defines the core business entities in FringeIsland, their properti
 
 FringeIsland is built around six core domain entities:
 
-1. **User** - Individual people using the platform. Canonically this entity is the **FIM** (the base identity); "Member" is the platform-technical synonym for FIM and is used for nothing else. The anonymous, ephemeral **Mist** identity state precedes the FIM and transcends (metamorphoses) into it (ADR-U031). Identity-state and role naming follows the roles core: [`../fringeisland-thinking/canon--roles--taxonomy.md`](../fringeisland-thinking/canon--roles--taxonomy.md).
+1. **User** - Individual people using the platform. Canonically this entity is the **FIM** (the base identity); "Member" is the platform-technical synonym for FIM and is used for nothing else. The anonymous, ephemeral **Mist** identity state precedes the FIM and transcends (metamorphoses) into it (ADR-U031). Identity-state and role naming follows the bible's roles and governance chapter: [`../fringeisland-thinking/bible--fringeisland-universe.md`](../fringeisland-thinking/bible--fringeisland-universe.md#6-roles-and-governance).
 2. **Group** - Flexible organizational units
 3. **Journey** - Structured learning experiences. Steps are first-class rows (`journey_steps`) over open kind/family registries, with a per-traveller lived record (`journey_step_instances`) — see Step substrate under the Journey entity (ADR-U044, ADR-U046)
 4. **Role** - Collections of permissions (templates and instances)
@@ -58,7 +58,7 @@ FringeIsland is built around six core domain entities:
 
 ### 1. User
 
-**Description**: Individual person with an account on FringeIsland — the **FIM** (base identity) record in the canonical identity-state model ("Member" is the platform-technical synonym for FIM). The anonymous **Mist** state (server-issued anonymous identity, ephemeral own-data, unlinkable presence) precedes this record and becomes it at transcendence/metamorphosis (ADR-U031); the Mist lifecycle is specified at PC-2 Identity. See the roles core ([`../fringeisland-thinking/canon--roles--taxonomy.md`](../fringeisland-thinking/canon--roles--taxonomy.md)) for the full taxonomy.
+**Description**: Individual person with an account on FringeIsland — the **FIM** (base identity) record in the canonical identity-state model ("Member" is the platform-technical synonym for FIM). The anonymous **Mist** state (server-issued anonymous identity, ephemeral own-data, unlinkable presence) precedes this record and becomes it at transcendence/metamorphosis (ADR-U031); the Mist lifecycle is specified at PC-2 Identity. See the bible's roles and governance chapter ([`../fringeisland-thinking/bible--fringeisland-universe.md`](../fringeisland-thinking/bible--fringeisland-universe.md#6-roles-and-governance)) for the full taxonomy.
 
 **Properties:**
 
@@ -367,7 +367,7 @@ Retained only so an unconverted row is recognisable. **Do not build against this
 - Platform Admin Role Template
 - Steward Role Template
 - Guide Role Template
-- Participant Role Template *(per-group role renamed from "Member", ratified 2026-06-10 — "Member" remains purely the platform synonym for FIM; see the roles core, [`../fringeisland-thinking/canon--roles--taxonomy.md`](../fringeisland-thinking/canon--roles--taxonomy.md). The on-disk `role_templates` TEXT value still says "Member"; the code/data rename is deferred with the code correction target.)*
+- Participant Role Template *(per-group role renamed from "Member", ratified 2026-06-10 — "Member" remains purely the platform synonym for FIM; see the bible's roles and governance chapter, [`../fringeisland-thinking/bible--fringeisland-universe.md`](../fringeisland-thinking/bible--fringeisland-universe.md#6-roles-and-governance). The on-disk `role_templates` TEXT value still says "Member"; the code/data rename is deferred with the code correction target.)*
 - Observer Role Template
 
 ---

@@ -20,11 +20,12 @@ docs/
 │
 ├── fringeisland-thinking/                 ← the universe, the discovery work, the research — one flat folder, the filename carries the register
 │   ├── README.md                          ← the index: how to read a filename, one table per register
-│   ├── canon--*                           ← the canonical world: cosmology, roles, beings, narrative, growth, community
-│   ├── discovery--*                       ← dated universe-discovery sessions + the graduation tracker
+│   ├── bible--*                           ← the Universe Bible: the single truth about the world — nine chapters, one file
+│   ├── discovery--*                       ← the universe-discovery sessions and where discovery stands (one file)
 │   ├── research--*                        ← reports: growth, worlds, method, engineering
 │   ├── record--*                          ← design records
-│   └── questions--*                       ← the open-questions (CQ) register
+│   ├── questions--*                       ← the open-questions (CQ) register
+│   └── quotes--*                          ← quotes kept for later
 │
 ├── products/                              ← equipment profiles of the one experience (ADR-U025)
 │   ├── hub/                               ← The Hub — the canvas surface (active in Ferd)
@@ -86,12 +87,12 @@ docs/
 | Directory | What belongs here | What does NOT belong here |
 |-----------|-------------------|--------------------------|
 | `ecosystem/` | Strategic, philosophical, cross-product — "what is FringeIsland?" | Technical architecture, service specs, planning artifacts |
-| `fringeisland-thinking/` | The universe (`canon--`), the discovery work (`discovery--`, one file), research reports (`research--`), design records (`record--`), the open-questions register (`questions--`) — one flat folder, the filename prefix is the register | Constitutional docs and strategy (→ ecosystem/), technical service specs (→ platform/), decisions (→ architecture/) |
+| `fringeisland-thinking/` | The Universe Bible (`bible--`, one file), the discovery work (`discovery--`, one file), research reports (`research--`), design records (`record--`), the open-questions register (`questions--`), the quotes collection (`quotes--`) — one flat folder, the filename prefix is the register | Constitutional docs and strategy (→ ecosystem/), technical service specs (→ platform/), decisions (→ architecture/) |
 | `ecosystem/strategy/` | Stable directional documents — product family, contributor model | Open questions, exploratory thinking (→ fringeisland-thinking/) |
 | `architecture/` | Structural models, binding decisions (ADRs), dependency diagrams | Service descriptions, feature specs, planning snapshots |
 | `platform/` | Service descriptions, feature specs, API contracts | Binding decisions (→ architecture), ecosystem strategy (→ ecosystem) |
 | `planning/reference/` | Point-in-time snapshots that inform planning cycles | Permanent structural models (→ architecture), ecosystem strategy (→ ecosystem) |
-| `novel/` | Fiction layer — narrative work set in the universe; canon-conformant but never canon-defining | Universe canon (→ fringeisland-thinking/ canon-- + discovery--), specs, planning artifacts |
+| `novel/` | Fiction layer — narrative work set in the universe; canon-conformant but never canon-defining | Universe truth (→ fringeisland-thinking/ bible-- + discovery--), specs, planning artifacts |
 
 ---
 
@@ -110,7 +111,7 @@ Never load all features at once — load only what you're working on.
 ## Key Entry Points
 
 - **Ecosystem vision:** `ecosystem/VISION.md`
-- **Universe design:** `fringeisland-thinking/canon--*` (index: `fringeisland-thinking/README.md`)
+- **Universe design:** `fringeisland-thinking/bible--fringeisland-universe.md` (index: `fringeisland-thinking/README.md`)
 - **Products & platform strategy:** `ecosystem/strategy/PRODUCTS_AND_PLATFORM.md`
 - **Hub description:** `products/hub/DESCRIPTION.md`
 - **Way of working:** `planning/PROCESS.md`
@@ -125,7 +126,7 @@ Never load all features at once — load only what you're working on.
 
 The `old_universe/`, `old_products/`, and `old_implementation/` directories no longer exist. Their content has been migrated into the active trees above:
 
-- `old_universe/` — deleted April 2026. All 24 ADRs (U001–U024) migrated to `architecture/decisions/`; universe design content migrated to `ecosystem/universe/` (flattened into `fringeisland-thinking/canon--*` on 2026-09-15).
+- `old_universe/` — deleted April 2026. All 24 ADRs (U001–U024) migrated to `architecture/decisions/`; universe design content migrated to `ecosystem/universe/` (flattened into `fringeisland-thinking/canon--*` on 2026-09-15; replaced by the one Universe Bible on 2026-09-26).
 - `old_products/` — deleted April 2026 (legacy-migration session). Product scope, requirements, roadmap, and feature docs migrated into `products/hub/` and associated planning/backlog/reference files.
 - `old_implementation/` — deleted April 2026. Implementation state is now read directly from the codebase (migrations, schema, code) rather than from snapshot files; reference snapshots that still matter live under `planning/reference/`.
 

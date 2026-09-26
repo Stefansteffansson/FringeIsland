@@ -136,17 +136,17 @@ Design system, accessibility (WCAG 2.1 AA + enhancements), and UX/UI redesign of
 ### Heim — *Home*
 *You arrive home.*
 
-FringeIsland universe design — what the village and the warm place actually look like, regions, architecture, visual language (per the [cosmology core](../../fringeisland-thinking/canon--cosmology--worlds-topology.md)). Dynamic journey paths (branching, conditional logic). Foundation for the cord/Void and AR layers in Brim.
+FringeIsland universe design — what the village and the warm place actually look like, regions, architecture, visual language (per the [bible's worlds chapter](../../fringeisland-thinking/bible--fringeisland-universe.md#2-the-worlds)). Dynamic journey paths (branching, conditional logic). Foundation for the cord/Void and AR layers in Brim.
 
 ### Brim — *Edge, surf, horizon*
 *You stand at the edge, gazing outward.*
 
-AR near-side visualization — the Fringe seen through the Shimmer at the member's real-world coordinates, with the cord and the Void rendered per the cosmology core. The Gimbal ships native on iOS and Android (the senses surface alongside the Hub).
+AR near-side visualization — the Fringe seen through the Shimmer at the member's real-world coordinates, with the cord and the Void rendered per the bible's worlds chapter. The Gimbal ships native on iOS and Android (the senses surface alongside the Hub).
 
 ### Urd — *Fate, origin, what has become*
 *You touch something older than the journey itself.*
 
-Worlds UI design (felt transitions across the Ordinary World, the Shimmer, the Fringe's places and reaches — per the cosmology core), Seasons and Episodes mechanics, NPC behaviour authoring, respawning mechanics, advanced analytics, monetization at scale, the Endowment — and, if the depth revisit trigger has fired (ADR-U025), the game-engine journey runtime. Beyond Urd: distribution of that runtime to consoles and VR/AR headsets.
+Worlds UI design (felt transitions across the Ordinary World, the Shimmer, the Fringe's places and reaches — per the bible's worlds chapter), Seasons and Episodes mechanics, NPC behaviour authoring, respawning mechanics, advanced analytics, monetization at scale, the Endowment — and, if the depth revisit trigger has fired (ADR-U025), the game-engine journey runtime. Beyond Urd: distribution of that runtime to consoles and VR/AR headsets.
 
 ---
 

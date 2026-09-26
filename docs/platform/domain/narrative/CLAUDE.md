@@ -8,7 +8,7 @@
 
 ## What makes this entity different
 
-DS-2 owns the **structure of story** — seasons/episodes, plot, loop structure, the NPC character layer — never its delivery, its position-resolution, or its content. Its ground truth is the narrative core ([`docs/fringeisland-thinking/canon--narrative--how-story-works.md`](../../../fringeisland-thinking/canon--narrative--how-story-works.md)); when a DS-2 question feels open, check the core (and cosmology core sections 8 and 10 for anything loop-adjacent) before designing. The service was renamed from "Narrative Engine" at its descent (Engine-suffix decision, [`PENDING.md`](../../../architecture/decisions/PENDING.md)) — older material may still carry the suffixed name.
+DS-2 owns the **structure of story** — seasons/episodes, plot, loop structure, the NPC character layer — never its delivery, its position-resolution, or its content. Its ground truth is the bible's story chapter ([`docs/fringeisland-thinking/bible--fringeisland-universe.md`](../../../fringeisland-thinking/bible--fringeisland-universe.md#5-story)); when a DS-2 question feels open, check the core (and the bible's worlds chapter sections 8 and 10 for anything loop-adjacent) before designing. The service was renamed from "Narrative Engine" at its descent (Engine-suffix decision, [`PENDING.md`](../../../architecture/decisions/PENDING.md)) — older material may still carry the suffixed name.
 
 ## Rules that only apply at this entity
 
@@ -28,5 +28,5 @@ DS-2 owns the **structure of story** — seasons/episodes, plot, loop structure,
 ## Where to go next
 
 - **The service spec:** [`../narrative.md`](../narrative.md) — L2 identity + §7 invariants + §L3 capability inventory (Steps 1-3 complete 2026-06-10; zero-delta stress-test — all twelve capabilities full forward-commitment, nothing exists in code yet).
-- **Ground truth:** the narrative core; cosmology core (sections 8 + 10); beings core (NPC three-layer composite); roles core (Teller gating).
+- **Ground truth:** the bible's story chapter; the bible's worlds chapter; the bible's beings chapter (NPC three-layer composite); the bible's roles and governance chapter (Teller gating).
 - **Relevant decisions:** ADR-U023 (anatomy) · ADR-U025/U026 (entities; Arc Studio writes → DS-2) · ADR-U008/U018 (non-closure) · ADR-U016 (cascade first) · the Engine-suffix outcome and Whisp-split entries in [`PENDING.md`](../../../architecture/decisions/PENDING.md).

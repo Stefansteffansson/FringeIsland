@@ -54,7 +54,7 @@ A running register (lean path: `docs/planning/reference/alignment-register.md` �
 ## Recommended first move — a pilot, not a commitment
 
 Run ONE pilot to calibrate the format and the verdict vocabulary before committing to multiple sessions. Two candidate pilots:
-- **Roles / Three Perspectives** (Steward / Guide / Participant / Observer; `docs/fringeisland-thinking/canon--roles--taxonomy.md`) — central, well-specified, fast to confirm the format works.
+- **Roles / Three Perspectives** (Steward / Guide / Participant / Observer; `docs/fringeisland-thinking/bible--fringeisland-universe.md`) — central, well-specified, fast to confirm the format works.
 - **One end-to-end member journey** narrated by Stefan — broader, reveals seam drift quickly.
 
 After the pilot: decide cadence, and whether to formalize this as a named, repeatable session shape.
