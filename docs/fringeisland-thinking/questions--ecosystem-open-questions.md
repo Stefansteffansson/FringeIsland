@@ -100,6 +100,14 @@
 
 ---
 
+### CQ-020: Nalome — Trademark, Bolagsverket and Domain Checks Before Public Use
+**Status:** Open — Active (owed before the name is used publicly; the founding campaign at the latest)
+**Scope:** Business / legal; all waves
+**Raised:** 2026-09-25 (universe-discovery Session 05, S111–S112)
+**In the bible:** the name is settled (Nalome, na-LOME, from the unalome) and carried in the glossary; only the checks are open, and they are business items, so they live here.
+
+The warm world was named Nalome in Session 05. A web search on 2026-09-25 found the name only as a personal name and surname, and no company or brand; the Bolagsverket, trademark (EUIPO, USPTO) and domain checks are still owed before the name appears publicly. The unalome is sacred in Thai Buddhist practice: the name borrows the idea, and the symbol itself is not used as a logo, ornament or in-world decoration unless a person from the tradition is consulted.
+
 ## Open — Parked
 
 ### CQ-006: Foundation Formal Establishment
@@ -129,7 +137,7 @@
 **Raised:** 2026-04-05
 **Blocks:** Nothing immediate
 **Context:** VISION.md highlights 50+ as "a particularly important role" for wisdom-sharing. How do we attract and empower them? Is the Guide role sufficient or do we need a Mentor/Elder concept?
-**Note (2026-06-22, F-04):** "Mentor/Elder" here denotes a *human* wisdom-sharing role — distinct from the FIM's AI companion, which is canonically the **Whisp** (the inner dialogue voice that mentors through warm challenge; ADR-U029, beings core), not a separate "Mentor." The Hub's Whisp representation in Ferd/Eid without AR is tracked separately as CQ-012.
+**Note (2026-06-22, F-04):** "Mentor/Elder" here denotes a *human* wisdom-sharing role — distinct from the FIM's AI companion, which is canonically the **Whisp** (the inner dialogue voice that mentors through warm challenge; ADR-U029, the bible's beings chapter), not a separate "Mentor." The Hub's Whisp representation in Ferd/Eid without AR is tracked separately as CQ-012.
 
 ### CQ-012: Whisp Representation in Ferd/Eid — Without AR
 **Status:** Parked
@@ -159,7 +167,7 @@
 **Scope:** Ferd
 **Raised:** 2026-04-14 (extracted from hamn VISION_TO_SPEC_MAPPING.md)
 **Blocks:** Ferd visitor implementation, onboarding funnel design
-**Note (2026-06-10; updated 2026-06-21):** "Visitor" is canonically the **Mist** (roles core, ADR-U031; the anonymous entrant renamed from "Shadow" per discovery S47-48). The question is now substantially narrowed by the reconciliation: access is intrinsic (near side open, the Beyond closed — no ball, S39/S45), data is ephemeral and unlinkable with transcendence (metamorphosis) as the consent threshold (S46/ADR-U031). What remains open is the product-level surface: which pages/content, the taster journey, the garden glimpse.
+**Note (2026-06-10; updated 2026-06-21):** "Visitor" is canonically the **Mist** (the bible's roles and governance chapter, ADR-U031; the anonymous entrant renamed from "Shadow" per discovery S47-48). The question is now substantially narrowed by the reconciliation: access is intrinsic (near side open, the Beyond closed — no ball, S39/S45), data is ephemeral and unlinkable with transcendence (metamorphosis) as the consent threshold (S46/ADR-U031). What remains open is the product-level surface: which pages/content, the taster journey, the garden glimpse.
 **Context:** ADR-U004 locks the technical approach (anonymous sign-in, temporary profiles, pg_cron cleanup). But the product-level visitor experience is unspecified: what pages/content are visible to non-authenticated visitors? What constitutes a "taster journey"? What is the garden glimpse? What carries forward on registration? This needs a feature spec before implementation.
 
 ### CQ-016: Hub Experiential Trajectory Across Waves — and Does the DESCRIPTION Convey the Ambition?

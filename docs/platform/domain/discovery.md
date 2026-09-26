@@ -142,7 +142,7 @@ Cross-referenced per the template rule: DS-3's catalog reads exist (`journeys.md
 ### Sources-status block
 
 - **Transactions vertical spec is scaffold-tier** (G-03, `docs/ecosystem/how-we-work/gaps.md`) — DS-6 is the first Domain Service to substantively touch Transactions; proceeded with remark; the marketplace capabilities' obligations firm up when the vertical's obligation inventory is derived.
-- **No dedicated canonical-core sub-page for discovery** — the charter traces to the cosmology core (S38, ambient crown) + the register row + ADR-U011/U016 rather than to a discovery-named core (canon-sub-page-gap remark per the DS-3 precedent; proceeded).
+- **No dedicated canonical-core sub-page for discovery** — the charter traces to the bible's worlds chapter (S38, ambient crown) + the register row + ADR-U011/U016 rather than to a discovery-named core (canon-sub-page-gap remark per the DS-3 precedent; proceeded).
 - **The naming collision is dispositioned** — FIRST DECISION kept "Discovery"; the PENDING.md watch-item resolves in this descent's close batch.
 - **Sibling-provisional rule:** DS-7 remains undefined — the recommendation-signal seam (§8 Q2) and the DS-7 consumer line are provisional; DS-7's descent re-checks. The five landed-sibling consumer lines against DS-6 were re-checked at this descent: four confirmed (journeys catalog; narrative structure; content registry; communication indexing-in-principle), one revised (world-model branch-routes — DS-6 does not consume; sanctioned edit at Step 3).
 - **L2-line revision** — the domain README's DS-6 line ("Search, recommendations, marketplace") predates the charter re-derivation; revised at Step 3 per the ratified charter.

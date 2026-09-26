@@ -1,7 +1,7 @@
 # FringeIsland — Vision
 
 **Status:** Constitutional document
-**Version:** 1.2 (reconciliation Session B, 2026-06-10 — aligned to the universe-discovery locks; cosmology and roles now live in canonical cores under [Universe](../fringeisland-thinking/README.md))
+**Version:** 1.3 (2026-09-26 — vocabulary aligned to the Universe Bible, which replaced the canonical cores; before that 1.2, reconciliation Session B, 2026-06-10 — aligned to the universe-discovery locks; cosmology and roles then lived in canonical cores under [Universe](../fringeisland-thinking/README.md))
 
 ---
 

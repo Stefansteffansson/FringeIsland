@@ -28,5 +28,5 @@ DS-6 owns **how travellers find things in the published shared world** — catal
 ## Where to go next
 
 - **The service spec:** [`../discovery.md`](../discovery.md) — L2 identity + §7 invariants + §L3 capability inventory (Steps 1-3 complete 2026-06-11; all thirteen capabilities full-forward; zero cold retractions; FIRST DECISION record at §L3 Step 3).
-- **Ground truth:** the cosmology core (S38 — branches as the visible crown; own branches legible, no rankings, no counts; branch-routed people-finding) + the Session B register DS-6 row (navigation by own branches; anti-leaderboard guardrails).
+- **Ground truth:** the bible's worlds chapter (S38 — branches as the visible crown; own branches legible, no rankings, no counts; branch-routed people-finding) + the Session B register DS-6 row (navigation by own branches; anti-leaderboard guardrails).
 - **Relevant decisions:** ADR-U023 (anatomy) · ADR-U011 (the marketplace lock — Hamn+, Stripe Connect; surface here, rails Transactions) · ADR-U016 (cascade first — the "Discovery:" slot) · ADR-U018 (kind registries never sealed) · ADR-U002 (verticals law) · ADR-U025/U026/U031/U028 (equipment-grain; no studio writes; Mist lifecycle; governance by scope) · the resolved DS-6 naming watch-item in [`PENDING.md`](../../../architecture/decisions/PENDING.md).
